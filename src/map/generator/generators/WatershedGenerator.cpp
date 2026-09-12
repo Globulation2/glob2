@@ -3,6 +3,8 @@
 #include "FertilityField.h"
 #include "Game.h"
 #include "GenerationContext.h"
+#include "Topology.h"
+#include "Grid.h"
 #include "Resources.h"
 #include "Settlements.h"
 #include "Unit.h"
@@ -1210,33 +1212,8 @@ template <typename Water> std::string checkChannels(const Layout &layout, Water 
 // Labels 8-connected components of open tiles; closed tiles get -1.
 std::vector<int> components(const std::vector<unsigned char> &open, int w, int h, int &count)
 {
-	std::vector<int> label(open.size(), -1);
-	std::vector<int> queue;
-	queue.reserve(open.size());
-	count = 0;
-	for (size_t start = 0; start < open.size(); ++start)
-	{
-		if (!open[start] || label[start] >= 0)
-			continue;
-		queue.clear();
-		queue.push_back(int(start));
-		label[start] = count;
-		for (size_t head = 0; head < queue.size(); ++head)
-		{
-			const int x = queue[head] % w, y = queue[head] / w;
-			for (int dy = -1; dy <= 1; ++dy)
-				for (int dx = -1; dx <= 1; ++dx)
-				{
-					const size_t q = size_t(wrapIndex(y + dy, h)) * w + wrapIndex(x + dx, w);
-					if (open[q] && label[q] < 0)
-					{
-						label[q] = count;
-						queue.push_back(int(q));
-					}
-				}
-		}
-		++count;
-	}
+	const std::vector<int> label = connectedRegions(open, w, h, true, GridNeighbors::Eight);
+	count = label.empty() ? 0 : *std::max_element(label.begin(), label.end()) + 1;
 	return label;
 }
 
@@ -1250,34 +1227,6 @@ struct Tiles
 	std::vector<int> component;  // walkable component, -1 on water
 	int mainComponent = -1;
 };
-
-// Steps from every tile to the nearest tile where `seed` holds.
-std::vector<int> stepsFrom(const std::vector<unsigned char> &seed, int w, int h)
-{
-	std::vector<int> steps(seed.size(), -1), queue;
-	queue.reserve(seed.size());
-	for (size_t i = 0; i < seed.size(); ++i)
-		if (seed[i])
-		{
-			steps[i] = 0;
-			queue.push_back(int(i));
-		}
-	for (size_t head = 0; head < queue.size(); ++head)
-	{
-		const int x = queue[head] % w, y = queue[head] / w;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				const size_t q = size_t(wrapIndex(y + dy, h)) * w + wrapIndex(x + dx, w);
-				if (steps[q] < 0)
-				{
-					steps[q] = steps[queue[head]] + 1;
-					queue.push_back(int(q));
-				}
-			}
-	}
-	return steps;
-}
 
 Tiles tileView(const std::vector<unsigned char> &terrain, int w, int h)
 {
@@ -1297,14 +1246,14 @@ Tiles tileView(const std::vector<unsigned char> &terrain, int w, int h)
 			t.water[i] = a == WATER && b == WATER && c == WATER && d == WATER;
 			t.grass[i] = a == GRASS && b == GRASS && c == GRASS && d == GRASS;
 		}
-	t.waterSteps = stepsFrom(t.water, w, h);
+	t.waterSteps = stepsFrom(Torus{w, h}, t.water);
 	std::vector<unsigned char> land(n), notGrass(n);
 	for (size_t i = 0; i < n; ++i)
 	{
 		land[i] = !t.water[i];
 		notGrass[i] = !t.grass[i];
 	}
-	t.grassDepth = stepsFrom(notGrass, w, h);
+	t.grassDepth = stepsFrom(Torus{w, h}, notGrass);
 	int count = 0;
 	t.component = components(land, w, h, count);
 	std::vector<int> sizes(count, 0);
@@ -1481,54 +1430,6 @@ std::vector<MapGeneratorPoint> chooseSites(const Layout &layout, const Tiles &t,
 	return sites;
 }
 
-// Walking steps from the given tiles over land that is free of resources and buildings.
-std::vector<int> walk(const Map &map, const std::vector<int> &from)
-{
-	const int w = map.getW(), h = map.getH();
-	std::vector<int> distance(size_t(w) * h, -1);
-	std::vector<int> queue;
-	queue.reserve(distance.size());
-	for (int p : from)
-		if (distance[p] < 0)
-		{
-			distance[p] = 0;
-			queue.push_back(p);
-		}
-	for (size_t head = 0; head < queue.size(); ++head)
-	{
-		const int x = queue[head] % w, y = queue[head] / w;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				const int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
-				const size_t q = size_t(ny) * w + nx;
-				if (distance[q] < 0 && !map.isWater(nx, ny) && !map.isResource(nx, ny) &&
-					map.getBuilding(nx, ny) == NOGBID)
-				{
-					distance[q] = distance[queue[head]] + 1;
-					queue.push_back(int(q));
-				}
-			}
-	}
-	return distance;
-}
-
-std::vector<std::vector<int>> workersByTeam(const Map &map, int teams)
-{
-	std::vector<std::vector<int>> workers(teams);
-	for (int y = 0; y < map.getH(); ++y)
-		for (int x = 0; x < map.getW(); ++x)
-		{
-			const Uint16 gid = map.getGroundUnit(x, y);
-			if (gid == NOGUID)
-				continue;
-			const int team = Unit::GIDtoTeam(gid);
-			if (team >= 0 && team < teams)
-				workers[team].push_back(y * map.getW() + x);
-		}
-	return workers;
-}
-
 // Clumps keep a gap of open ground between them, so no two can join into a wall.
 class Reservations
 {
@@ -1565,10 +1466,11 @@ void placeStarterKits(Game &game, GenerationContext &context, int teams, const T
 {
 	Map &map = game.map;
 	const int w = map.getW(), h = map.getH();
-	const auto workers = workersByTeam(map, teams);
+	const auto workers = unitTilesByTeam(map, teams);
 	for (int team = 0; team < teams; ++team)
 	{
-		const std::vector<int> distance = walk(map, workers[team]);
+		const std::vector<int> distance =
+			stepsFrom(Torus(map), tileMask(Torus(map), workers[team]), walkableTiles(map));
 		const int bx = context.bootX[team], by = context.bootY[team];
 		const Vec centre{bx + 2.0, by + 2.0};
 		struct Spot
@@ -1832,10 +1734,11 @@ bool connectColonies(Game &game, int teams, std::string &detail)
 {
 	Map &map = game.map;
 	const int w = map.getW(), h = map.getH();
-	const auto workers = workersByTeam(map, teams);
+	const auto workers = unitTilesByTeam(map, teams);
 	for (int team = 1; team < teams; ++team)
 	{
-		std::vector<int> reach = walk(map, workers[0]);
+		std::vector<int> reach =
+			stepsFrom(Torus(map), tileMask(Torus(map), workers[0]), walkableTiles(map));
 		bool connected = false;
 		for (int p : workers[team])
 			connected = connected || reach[p] >= 0;
@@ -2003,14 +1906,15 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 {
 	const Map &map = game.map;
 	const int w = map.getW(), h = map.getH(), teams = context.request.nbTeams;
-	const auto workers = workersByTeam(map, teams);
+	const auto workers = unitTilesByTeam(map, teams);
 	for (int team = 0; team < teams; ++team)
 		if (workers[team].empty())
 			return "Colony " + std::to_string(team) + " has no workers.";
 	std::vector<int> fromFirst;
 	for (int team = 0; team < teams; ++team)
 	{
-		const std::vector<int> reach = walk(map, workers[team]);
+		const std::vector<int> reach =
+			stepsFrom(Torus(map), tileMask(Torus(map), workers[team]), walkableTiles(map));
 		if (team == 0)
 			fromFirst = reach;
 		bool met = false;

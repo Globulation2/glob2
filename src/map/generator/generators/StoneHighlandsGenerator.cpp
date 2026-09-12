@@ -3,6 +3,7 @@
 #include "FertilityField.h"
 #include "Game.h"
 #include "GenerationContext.h"
+#include "Grid.h"
 #include "Resources.h"
 #include "Settlements.h"
 #include "Topology.h"
@@ -74,34 +75,6 @@ constexpr int kAlgaePercent = 12;     // of each pond's open water
 constexpr int kFruitGrove = 6;
 constexpr int kAreaPerColony = 1024;
 constexpr int kFar = INT_MAX / 4;
-
-struct Torus
-{
-	int w, h;
-	int x(int v) const { return ((v % w) + w) % w; }
-	int y(int v) const { return ((v % h) + h) % h; }
-	int at(int px, int py) const { return y(py) * w + x(px); }
-	// Signed shortest offset from a to b.
-	int offsetX(int a, int b) const
-	{
-		const int d = x(b - a);
-		return d > w / 2 ? d - w : d;
-	}
-	int offsetY(int a, int b) const
-	{
-		const int d = y(b - a);
-		return d > h / 2 ? d - h : d;
-	}
-	int dist2(int ax, int ay, int bx, int by) const
-	{
-		const int dx = offsetX(ax, bx), dy = offsetY(ay, by);
-		return dx * dx + dy * dy;
-	}
-	int chebyshev(int ax, int ay, int bx, int by) const
-	{
-		return std::max(std::abs(offsetX(ax, bx)), std::abs(offsetY(ay, by)));
-	}
-};
 
 template <typename T>
 void shuffle(std::vector<T> &values, GenerationContext &context, const char *stream)
@@ -611,7 +584,7 @@ void growPond(Layout &L, const std::vector<int> &depth, const std::vector<int> &
 	std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> frontier;
 	frontier.push({key(seed), seed});
 	queued[seed] = queuedStamp;
-	static const int steps[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+	const auto &steps = kCardinalSteps;
 	int grown = 0;
 	while (!frontier.empty() && grown < target)
 	{
@@ -818,7 +791,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const int thickShare = int(std::min<std::int64_t>(100, scaledCount(45, o.stone)));
 	const int thickLevel = percentile(thickness, 100 - thickShare);
 	std::vector<unsigned char> thick = L.ridge;
-	static const int steps[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+	const auto &steps = kCardinalSteps;
 	for (int i = 0; i < n; ++i)
 	{
 		if (!L.ridge[i] || thickShare <= 0 || thickness[i] < thickLevel)
@@ -1322,42 +1295,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 					return "Pass " + std::to_string(k) + " at (" + std::to_string(p.x) + ", " +
 						   std::to_string(p.y) + ") is blocked.";
 	}
-	std::vector<unsigned char> reached(n, 0);
-	std::vector<int> queue;
-	for (int i = 0; i < n; ++i)
-	{
-		const Uint16 gid = map.getGroundUnit(i % t.w, i / t.w);
-		if (gid != NOGUID && Unit::GIDtoTeam(gid) == 0)
-		{
-			reached[i] = 1;
-			queue.push_back(i);
-		}
-	}
-	for (size_t head = 0; head < queue.size(); ++head)
-	{
-		const int p = queue[head], px = p % t.w, py = p / t.w;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				const int x = t.x(px + dx), y = t.y(py + dy), q = y * t.w + x;
-				if (!reached[q] && walkable(x, y))
-				{
-					reached[q] = 1;
-					queue.push_back(q);
-				}
-			}
-	}
-	std::vector<unsigned char> teamReached(teams, 0);
-	for (int i = 0; i < n; ++i)
-	{
-		const Uint16 gid = map.getGroundUnit(i % t.w, i / t.w);
-		if (gid != NOGUID && reached[i] && Unit::GIDtoTeam(gid) < teams)
-			teamReached[Unit::GIDtoTeam(gid)] = 1;
-	}
-	for (int team = 0; team < teams; ++team)
-		if (!teamReached[team])
-			return "Colony " + std::to_string(team) +
-				   " cannot walk to colony 0 over the highlands.";
+	const auto units = unitTilesByTeam(map, teams);
+	const std::vector<int> reached =
+		stepsFrom(t, tileMask(t, teams > 0 ? units[0] : std::vector<int>{}), walkableTiles(map));
+	if (const int cut = firstColonyCutOff(reached, units, 0); cut >= 0)
+		return "Colony " + std::to_string(cut) + " cannot walk to colony 0 over the highlands.";
 	// Each pass must be on the colonies' walkable network and lead straight through: walking out
 	// of its box, without going far, reaches both valleys it joins.
 	for (size_t k = 0; k < L.passes.size(); ++k)

@@ -201,6 +201,7 @@ map/generator/shared/Distances.cpp
 map/generator/shared/HeightMap.cpp
 map/generator/shared/Noise.cpp
 map/generator/shared/Geometry.cpp
+map/generator/shared/Grid.cpp
 map/generator/shared/Topology.cpp
 map/generator/shared/Settlements.cpp
 map/generator/shared/Regions.cpp

@@ -4,6 +4,7 @@
 #include "BuildingType.h"
 #include "Game.h"
 #include "GenerationContext.h"
+#include "Grid.h"
 #include "GlobalContainer.h"
 #include "HeightMap.h"
 #include "Resources.h"
@@ -610,35 +611,6 @@ bool buildTerrain(Map &map, GenerationContext &context, const Arena &a, const La
 	return true;
 }
 
-// Walking steps (8-neighbour) from every tile to the nearest source tile: exact integers, so
-// symmetric terrain gives symmetric distances. -1 where no source is reachable.
-std::vector<int> stepsFrom(int w, int h, const std::vector<unsigned char> &source)
-{
-	std::vector<int> dist(source.size(), -1), queue;
-	queue.reserve(source.size());
-	for (size_t i = 0; i < source.size(); ++i)
-		if (source[i])
-		{
-			dist[i] = 0;
-			queue.push_back(int(i));
-		}
-	for (size_t head = 0; head < queue.size(); ++head)
-	{
-		const int x = queue[head] % w, y = queue[head] / w;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				const size_t j = size_t(wrap(y + dy, h)) * w + wrap(x + dx, w);
-				if (dist[j] < 0)
-				{
-					dist[j] = dist[size_t(queue[head])] + 1;
-					queue.push_back(int(j));
-				}
-			}
-	}
-	return dist;
-}
-
 // Every swarm, then every worker, from colony 0's choices mapped by each colony's symmetry:
 // its footprint centred on its home corner (the image of a footprint needs its own top-left
 // anchor, since a turn or mirror moves which corner is top-left), and a random choice of the
@@ -748,7 +720,8 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 			blocked[i] = homeClear[i] || landing[i] || onPath(x, y) || onPath(x + 1, y) ||
 						 onPath(x, y + 1) || onPath(x + 1, y + 1);
 		}
-	const std::vector<int> waterSteps = stepsFrom(w, h, water), landSteps = stepsFrom(w, h, land);
+	const std::vector<int> waterSteps = MapGeneration::stepsFrom(MapGeneration::Torus{w, h}, water),
+						   landSteps = MapGeneration::stepsFrom(MapGeneration::Torus{w, h}, land);
 	const float coarse = std::min(24.0f, std::max(8.0f, std::min(w, h) / 10.0f));
 	std::vector<int> plan(n, -1);
 

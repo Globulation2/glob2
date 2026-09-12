@@ -3,6 +3,7 @@
 #include "FertilityField.h"
 #include "Game.h"
 #include "GenerationContext.h"
+#include "Grid.h"
 #include "Geometry.h"
 #include "HeightMap.h"
 #include "Resources.h"
@@ -108,55 +109,6 @@ enum HeartKind
 	ForestHeart,
 	kHeartKinds
 };
-
-struct Torus
-{
-	int w, h;
-	int x(int v) const { return ((v % w) + w) % w; }
-	int y(int v) const { return ((v % h) + h) % h; }
-	int at(int px, int py) const { return y(py) * w + x(px); }
-	int offsetX(int from, int to) const
-	{
-		const int d = x(to - from);
-		return d > w / 2 ? d - w : d;
-	}
-	int offsetY(int from, int to) const
-	{
-		const int d = y(to - from);
-		return d > h / 2 ? d - h : d;
-	}
-};
-
-// Breadth-first 8-neighbour steps on the torus from every source tile through open tiles; -1
-// where the flood never arrives.
-std::vector<int> stepsFrom(const Torus &t, const std::vector<unsigned char> &source,
-						   const std::vector<unsigned char> &open)
-{
-	std::vector<int> dist(size_t(t.w) * t.h, -1);
-	std::vector<int> queue;
-	queue.reserve(dist.size());
-	for (size_t i = 0; i < dist.size(); ++i)
-		if (source[i])
-		{
-			dist[i] = 0;
-			queue.push_back(int(i));
-		}
-	for (size_t head = 0; head < queue.size(); ++head)
-	{
-		const int x = queue[head] % t.w, y = queue[head] / t.w;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				const int n = t.at(x + dx, y + dy);
-				if (dist[n] < 0 && open[n])
-				{
-					dist[n] = dist[queue[head]] + 1;
-					queue.push_back(n);
-				}
-			}
-	}
-	return dist;
-}
 
 // A smooth random curve round a ring, periodic in u over [0, 1): a few harmonics with random
 // phases, scaled so its peak is one.
@@ -923,7 +875,7 @@ int growPatch(Map &map, const Torus &t, int seed, int type, int count, Eligible 
 	std::vector<int> frontier{seed};
 	queued[seed] = 1;
 	int placed = 0;
-	static const int steps[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+	const auto &steps = kCardinalSteps;
 	for (size_t head = 0; head < frontier.size() && placed < count; ++head)
 	{
 		const int i = frontier[head], x = i % t.w, y = i / t.w;
@@ -1498,29 +1450,15 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		if (L.ford[i] && !walkable(i))
 			return "The ford at " + where(i) + " is blocked.";
 	}
-	std::vector<std::vector<int>> workers(std::max(teams, 1));
-	for (int i = 0; i < n; ++i)
-	{
-		const Uint16 gid = map.getGroundUnit(i % t.w, i / t.w);
-		if (gid != NOGUID && Unit::GIDtoTeam(gid) < teams)
-			workers[Unit::GIDtoTeam(gid)].push_back(i);
-	}
+	const auto workers = unitTilesByTeam(map, teams);
 	if (teams < 1 || workers[0].empty())
 		return "Colony 0 has no workers to walk the map.";
 	std::vector<unsigned char> open(n, 0), source(n, 0);
 	for (int i = 0; i < n; ++i)
 		open[i] = walkable(i);
-	for (int i : workers[0])
-		source[i] = 1;
-	const std::vector<int> fromFirst = stepsFrom(t, source, open);
-	for (int team = 1; team < teams; ++team)
-	{
-		bool arrived = false;
-		for (int i : workers[team])
-			arrived = arrived || fromFirst[i] >= 0;
-		if (!arrived)
-			return "Colony " + std::to_string(team) + " cannot walk to colony 0.";
-	}
+	const std::vector<int> fromFirst = stepsFrom(t, tileMask(t, workers[0]), open);
+	if (const int cut = firstColonyCutOff(fromFirst, workers); cut >= 0)
+		return "Colony " + std::to_string(cut) + " cannot walk to colony 0.";
 	const std::vector<unsigned char> heart = heartTiles(map, L);
 	bool heartReached = false;
 	for (int i = 0; i < n && !heartReached; ++i)

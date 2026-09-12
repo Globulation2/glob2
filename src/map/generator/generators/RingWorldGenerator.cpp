@@ -2,6 +2,7 @@
 #include "RingWorldGenerator.h"
 #include "Game.h"
 #include "GenerationContext.h"
+#include "Grid.h"
 #include "Geometry.h"
 #include "Resources.h"
 #include "Settlements.h"
@@ -87,38 +88,6 @@ int wrapSquare(int width, int height, int ax, int ay, int bx, int by)
 	dx = std::min(dx, width - dx);
 	dy = std::min(dy, height - dy);
 	return dx * dx + dy * dy;
-}
-
-// Breadth-first 8-neighbour steps on the torus from every source tile through open tiles; -1
-// where the flood never arrives.
-std::vector<int> stepsFrom(int width, int height, const std::vector<unsigned char> &source,
-						   const std::vector<unsigned char> &open)
-{
-	std::vector<int> dist(size_t(width) * height, -1);
-	std::vector<int> queue;
-	queue.reserve(dist.size());
-	for (size_t i = 0; i < dist.size(); ++i)
-		if (source[i])
-		{
-			dist[i] = 0;
-			queue.push_back(int(i));
-		}
-	for (size_t head = 0; head < queue.size(); ++head)
-	{
-		const int x = queue[head] % width, y = queue[head] / width;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				const size_t n =
-					size_t((y + dy + height) % height) * width + (x + dx + width) % width;
-				if (dist[n] < 0 && open[n])
-				{
-					dist[n] = dist[queue[head]] + 1;
-					queue.push_back(int(n));
-				}
-			}
-	}
-	return dist;
 }
 
 // A smooth closed curve along the belt, one sample per tile. Its harmonics are whole numbers of
@@ -270,7 +239,7 @@ void carveLakes(std::vector<unsigned char> &terrain, const Belt &belt, Generatio
 	}
 	if (density <= 0 || dry.empty())
 		return;
-	const std::vector<int> shore = stepsFrom(width, height, water, land);
+	const std::vector<int> shore = stepsFrom(Torus{width, height}, water, land);
 	const int wanted = int(std::lround(density * double(dry.size()) / 4096.0));
 	const double scale = std::clamp(std::sqrt(belt.axes.breadth() / 128.0), 0.8, 1.6);
 	struct Lake
@@ -336,7 +305,7 @@ std::vector<Island> raiseIslands(std::vector<unsigned char> &terrain, int width,
 	}
 	if (sea.empty())
 		return islands;
-	const std::vector<int> offshore = stepsFrom(width, height, land, water);
+	const std::vector<int> offshore = stepsFrom(Torus{width, height}, land, water);
 	const int wanted = std::max(1, int(std::lround(perStandardMap * double(area) / 16384.0)));
 	// Never smaller than on a 128-tile map: any smaller and the beach leaves no grass for a prize.
 	const double scale = std::clamp(std::sqrt(std::min(width, height) / 128.0), 1.0, 1.6);
@@ -430,7 +399,7 @@ bool placeColonies(Game &game, GenerationContext &context, const Belt &belt, boo
 			water[size_t(y) * width + x] = map.isWater(x, y);
 			dry[size_t(y) * width + x] = !map.isWater(x, y);
 		}
-	const std::vector<int> shore = stepsFrom(width, height, water, dry);
+	const std::vector<int> shore = stepsFrom(Torus{width, height}, water, dry);
 	// Only the belt itself: an island or a stretch of rough coast cut off at sea can offer the same
 	// shore, but a colony there would have no land neighbours at all. The spine is always dry, so
 	// the belt is whatever land is reached from it.
@@ -439,7 +408,7 @@ bool placeColonies(Game &game, GenerationContext &context, const Belt &belt, boo
 		for (int x = 0; x < width; ++x)
 			spine[size_t(y) * width + x] =
 				!map.isWater(x, y) && std::abs(belt.across(x, y)) < kSpineHalf - 1;
-	const std::vector<int> onBelt = stepsFrom(width, height, spine, dry);
+	const std::vector<int> onBelt = stepsFrom(Torus{width, height}, spine, dry);
 	const double slot = double(length) / teams;
 	const double first = context.bounded("colonies", 3600) / 3600.0 * length;
 	const int firstSide = int(context.bounded("colonies", 2));
@@ -519,7 +488,7 @@ int growPatch(Map &map, int seed, int type, int count, Eligible eligible)
 	std::vector<int> frontier{seed};
 	queued[seed] = 1;
 	int placed = 0;
-	static const int steps[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+	const auto &steps = kCardinalSteps;
 	for (size_t head = 0; head < frontier.size() && placed < count; ++head)
 	{
 		const int i = frontier[head], x = i % width, y = i / width;
@@ -559,7 +528,7 @@ void furnishHomes(Game &game, GenerationContext &context)
 			for (int dx = -kSwarmClearance; dx < 4 + kSwarmClearance; ++dx)
 				reserved[size_t(map.normalizeY(context.bootY[team] + dy)) * width +
 						 map.normalizeX(context.bootX[team] + dx)] = 1;
-	const std::vector<int> shore = stepsFrom(width, height, water, dry);
+	const std::vector<int> shore = stepsFrom(Torus{width, height}, water, dry);
 	const auto eligible = [&](int i)
 	{
 		const int x = i % width, y = i / width;
@@ -573,7 +542,7 @@ void furnishHomes(Game &game, GenerationContext &context)
 			for (int dx = 0; dx < 4; ++dx)
 				footprint[size_t(map.normalizeY(context.bootY[team] + dy)) * width +
 						  map.normalizeX(context.bootX[team] + dx)] = 1;
-		const std::vector<int> walk = stepsFrom(width, height, footprint, dry);
+		const std::vector<int> walk = stepsFrom(Torus{width, height}, footprint, dry);
 		// Wettest (or, for stone, driest) eligible tile in a walking band, nearest first on ties.
 		const auto pick = [&](int nearest, int farthest, bool wet, int avoid)
 		{
@@ -649,7 +618,7 @@ void seedAlgae(Map &map, GenerationContext &context, int algaePercent)
 			water[size_t(y) * width + x] = map.isWater(x, y);
 			dry[size_t(y) * width + x] = !map.isWater(x, y);
 		}
-	const std::vector<int> offshore = stepsFrom(width, height, dry, water);
+	const std::vector<int> offshore = stepsFrom(Torus{width, height}, dry, water);
 	std::vector<MapGeneratorPoint> shallows;
 	for (int i = 0; i < int(area); ++i)
 		if (offshore[i] >= 2 && offshore[i] <= 5)
@@ -688,13 +657,8 @@ bool openBeltRoad(Game &game, GenerationContext &context, const Axes &axes)
 	const int area = width * height;
 	constexpr int kLayers = 4; // windings -1 to 2 along the belt
 	std::vector<std::vector<int>> workers(teams);
-	for (int y = 0; y < height; ++y)
-		for (int x = 0; x < width; ++x)
-		{
-			const Uint16 gid = map.getGroundUnit(x, y);
-			if (gid != NOGUID && Unit::GIDtoTeam(gid) < teams)
-				workers[Unit::GIDtoTeam(gid)].push_back(y * width + x);
-		}
+	for (int team = 0; team < teams; ++team)
+		workers[team] = unitTilesByTeam(map, teams)[team];
 	std::vector<std::pair<double, int>> order;
 	for (int team = 0; team < teams; ++team)
 		order.emplace_back(
@@ -921,13 +885,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Axes axes = axesFor(width, height);
 	const size_t area = size_t(width) * height;
 	std::vector<std::vector<int>> workers(std::max(teams, 1));
-	for (int y = 0; y < height; ++y)
-		for (int x = 0; x < width; ++x)
-		{
-			const Uint16 gid = map.getGroundUnit(x, y);
-			if (gid != NOGUID && Unit::GIDtoTeam(gid) < teams)
-				workers[Unit::GIDtoTeam(gid)].push_back(y * width + x);
-		}
+	for (int team = 0; team < teams; ++team)
+		workers[team] = unitTilesByTeam(map, teams)[team];
 	if (teams < 1 || workers[0].empty())
 		return "Colony 0 has no workers to walk the belt.";
 	std::vector<int> winding(area, kUnreached), reached;

@@ -2,6 +2,7 @@
 #include "MazeGenerator.h"
 #include "Game.h"
 #include "GenerationContext.h"
+#include "Grid.h"
 #include "Resources.h"
 #include "Settlements.h"
 #include "Unit.h"
@@ -504,7 +505,7 @@ void scatterThroughMaze(Map &map, GenerationContext &context, const MazeGrid &g,
 		}
 		if (seed < 0)
 			return 0;
-		static const int steps[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+		const auto &steps = kCardinalSteps;
 		std::vector<int> frontier{seed};
 		free[seed] = 0;
 		int placed = 0;
@@ -742,46 +743,12 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 {
 	const Map &map = game.map;
 	const int w = map.getW(), h = map.getH(), teams = context.request.nbTeams;
-	std::vector<unsigned char> reached(size_t(w) * h, 0);
-	std::vector<int> queue;
-	queue.reserve(size_t(w) * h);
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-		{
-			const Uint16 gid = map.getGroundUnit(x, y);
-			if (gid != NOGUID && Unit::GIDtoTeam(gid) == 0)
-			{
-				reached[size_t(y) * w + x] = 1;
-				queue.push_back(y * w + x);
-			}
-		}
-	for (size_t head = 0; head < queue.size(); ++head)
-	{
-		const int x = queue[head] % w, y = queue[head] / w;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				const int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
-				const size_t n = size_t(ny) * w + nx;
-				if (!reached[n] && !map.isWater(nx, ny) && !map.isResource(nx, ny) &&
-					map.getBuilding(nx, ny) == NOGBID)
-				{
-					reached[n] = 1;
-					queue.push_back(int(n));
-				}
-			}
-	}
-	std::vector<unsigned char> teamReached(teams, 0);
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-		{
-			const Uint16 gid = map.getGroundUnit(x, y);
-			if (gid != NOGUID && reached[size_t(y) * w + x] && Unit::GIDtoTeam(gid) < teams)
-				teamReached[Unit::GIDtoTeam(gid)] = 1;
-		}
-	for (int team = 0; team < teams; ++team)
-		if (!teamReached[team])
-			return "Colony " + std::to_string(team) + " cannot walk to colony 0 through the maze.";
+	const Torus t(map);
+	const auto units = unitTilesByTeam(map, teams);
+	const std::vector<int> reached =
+		stepsFrom(t, tileMask(t, teams > 0 ? units[0] : std::vector<int>{}), walkableTiles(map));
+	if (const int cut = firstColonyCutOff(reached, units, 0); cut >= 0)
+		return "Colony " + std::to_string(cut) + " cannot walk to colony 0 through the maze.";
 	return "";
 }
 } // namespace
