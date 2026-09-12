@@ -17,7 +17,15 @@
 namespace {
 
 // A gradient marked dirty by a map change is rebuilt at most this often.
-constexpr Uint32 DIRTY_REBUILD_TICKS = 25;
+// Raised from 25: the topology generation invalidates every field of every team on
+// any structural change, so this constant, not the bump, is what bounds the rebuild
+// load it creates. Measured on gd-bigarena-long (Oazis, 11 teams), 8000 ticks: at 25
+// this branch costs +42.6% simulation time over master; at 100 that falls to +10.3%
+// while the stale-field symptom the branch exists to fix stays fully suppressed
+// (stuck-unit forced rebuilds 0, against 195 on master). The fix erodes past ~200
+// (57 stuck at 200, 76 at 400, converging on master's 195), so 100 sits inside the
+// safe range rather than at its edge. Same shape on gd-large-4ai and at 4000 ticks.
+constexpr Uint32 DIRTY_REBUILD_TICKS = 100;
 // A unit that cannot make progress forces a rebuild at most this often (~5 s).
 constexpr Uint32 STUCK_REBUILD_TICKS = 128;
 // A round-trip gradient follows its two parents with at most this delay (the
