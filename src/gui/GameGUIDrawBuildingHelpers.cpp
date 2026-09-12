@@ -423,18 +423,22 @@ void GameGUI::drawBuildingFailureReasons(Building* selBuild, BuildingType* build
 	if (!((selBuild->owner->allies) & (1<<localTeamNo)))
 		return;
 
-	// Only show the failure-reason rows when a *real* obstruction exists.
-	// A building that merely lacks spare idle units (UnitNotAvailable only) is
-	// in its normal state and gets no rows; see shouldShowBuildingFailureReasons.
-	if (!shouldShowBuildingFailureReasons(selBuild->unitsFailingRequirements,
-	                                      Building::UnitCantWorkReasonSize,
-	                                      Building::UnitNotAvailable))
+	// Only show the failure-reason rows when the building is still asking for
+	// units and a *real* obstruction exists. A building that merely lacks spare
+	// idle units (UnitNotAvailable only) is in its normal state and gets no
+	// rows; see shouldShowFailingUnitMarkers, which the map view's badges ask
+	// too so that the rows and the badges cannot disagree.
+	if (!shouldShowFailingUnitMarkers(selBuild->unitsFailingRequirements,
+	                                  Building::UnitCantWorkReasonSize,
+	                                  Building::UnitNotAvailable,
+	                                  (int)selBuild->unitsWorking.size(),
+	                                  selBuild->desiredMaxUnitWorking))
 		return;
 
 	for(unsigned j=0; j<Building::UnitCantWorkReasonSize; ++j)
 	{
 		int n = selBuild->unitsFailingRequirements[j];
-		if(n>0 && (int)selBuild->unitsWorking.size() < selBuild->desiredMaxUnitWorking)
+		if(n>0)
 		{
 			const Building::UnitCantWorkReason reason = static_cast<Building::UnitCantWorkReason>(j);
 			const char* key = failureReasonKey(reason, buildingType->isVirtual);

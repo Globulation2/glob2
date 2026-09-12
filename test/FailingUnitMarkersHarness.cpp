@@ -181,6 +181,60 @@ public:
 		gui.setSelection(GameGUI::NO_SELECTION, static_cast<void*>(nullptr));
 	}
 
+	// A building only refreshes its failure tallies while it is asking for
+	// units. Drag the "Working" ratio down to what is already hired and it
+	// stops asking, keeping the gids its last scan recorded -- and the panel
+	// stops drawing the rows that explain them. The badges have to go with the
+	// rows, or the player is left with marks and nothing to read them against.
+	static void checkStoppedAskingDropsBadges()
+	{
+		GameGUI gui;
+		gui.init();
+		Scene scene = buildScene(gui.game);
+		gui.localTeamNo = 0;
+		gui.localPlayer = 0;
+		gui.localTeam = gui.game.teams[0];
+		gui.teamStats = &gui.localTeam->stats;
+		gui.setSelection(GameGUI::BUILDING_SELECTION, static_cast<void*>(scene.inn));
+		scene.team->updateAllBuildingTasks();
+		require(scene.inn->unitsFailingByReason[Building::UnitTooLowLevel].size() == LOW_COUNT,
+			"the scan with an open slot remembers every unschooled worker");
+
+		// The player drags the ratio down to the one worker already hired.
+		scene.inn->maxUnitWorking = 1;
+		scene.inn->updateCallLists();
+		scene.team->updateAllBuildingTasks();
+		require((int)scene.inn->unitsWorking.size() == scene.inn->desiredMaxUnitWorking,
+			"the inn is now staffed to its reduced ratio");
+		require(scene.inn->unitsFailingByReason[Building::UnitTooLowLevel].size() == LOW_COUNT,
+			"and it still holds the gids of the scan that ran while it was asking");
+
+		gui.updateCamera();
+		auto* gfx = globalContainer->gfx;
+		std::set<Building*> visible;
+		Game::ViewState view;
+		view.selectedBuilding = scene.inn;
+		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
+		gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP);
+		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr);
+		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view);
+		Frame stopped = grab();
+		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
+		gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP);
+		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr);
+		Game::ViewState none;
+		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, none);
+		Frame baseline = grab();
+		for (int i = 0; i < LOW_COUNT; ++i)
+		{
+			const int added = redPixelsInTile(stopped, scene.lowX[i], scene.lowY[i])
+				- redPixelsInTile(baseline, scene.lowX[i], scene.lowY[i]);
+			require(added == 0, "a building that stopped asking for units marks nobody");
+		}
+		std::puts("markers: a building that stopped asking for units drops its badges with its panel rows");
+		gui.setSelection(GameGUI::NO_SELECTION, static_cast<void*>(nullptr));
+	}
+
 	static void run()
 	{
 
@@ -239,6 +293,7 @@ public:
 	inn->setRecordFailingUnits(false);
 	require(tooLow.empty(), "deselecting drops the remembered units");
 	capturePanel();
+	checkStoppedAskingDropsBadges();
 	std::puts("PASS units a selected building could not hire wear the reason's shape");
 }
 };
