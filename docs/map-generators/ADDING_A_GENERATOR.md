@@ -17,7 +17,7 @@ Extract on the second use. When a routine you are about to write already exists 
 ## Register a module
 
 1. Add `ExampleGenerator.h/.cpp` under `src/map/generator/generators/`. Use a named options struct that reads its scalar values from the request by stable option ID.
-2. Return a `GeneratorDefinition` from `exampleDefinition()`. Provide a stable string ID, unique nonnegative numeric ID, translation key, revision, editor-only availability, control list and callback. Numeric IDs are identifiers, never list positions; gaps are supported. `hasStartingColonies` defaults to true. Uniform alone disables normal starting-colony validation in the shipped catalog.
+2. Return a `GeneratorDefinition` from `exampleDefinition()`. Provide a stable string ID, unique nonnegative numeric ID, translation key, revision, editor-only availability, control list and callback. Numeric IDs are identifiers, never list positions; gaps are supported, and the id lives only in the definition (`GeneratorRegistry::idOf` looks one up by string; the `Method` enum names only the ids the legacy descriptor knows). `hasStartingColonies` defaults to true. Uniform alone disables normal starting-colony validation in the shipped catalog.
 3. Add that definition to the single list in `GeneratorRegistry::builtins()` and its source to `src/SConscript`. Add the display name and control labels to the translation tables using the existing translation workflow.
 4. Write the callback as `bool generate(Game&, GenerationContext&)`. Read the immutable request, build into the supplied fresh game, set `context.stage` before operations that may fail, and return false with a useful `context.detail` if the layout cannot be placed. The usual shape is a `design()` that computes the whole layout from the request and the context's streams without touching the map, a `generate()` that stamps it through the shared stages, and a `validateWorld` that calls `design()` again and checks the finished map against it (`designMismatch`, `walkFromFirstColony` in `Pipeline.h`).
 
@@ -34,6 +34,46 @@ Lobby preferences save a control through its legacy descriptor field when it has
 Shared settings are width and height exponents, colony count, starting workers and background terrain. The request's `options` map contains only controls for its selected generator. Generator-specific structs give these values meaningful names such as `lake_size`, `channel_width` and `bridge_width`; there is no reuse of unrelated descriptor slots.
 
 Switch modes with `GenerationHistory::select()`. It remembers options per stable numeric ID and carries the shared controls between modes. Do not add UI-specific defaults or range tables.
+
+## A generator from the stages
+
+The shape most generators take, as an outline (the real ones add their own design):
+
+```cpp
+struct Layout { Torus t{1, 1}; std::vector<unsigned char> water; std::vector<int> homeX, homeY;
+                std::string failure; };
+Layout design(const GenerationRequest &r, GenerationContext &c);   // pure: request and streams only
+
+bool generate(Game &game, GenerationContext &context)
+{
+    const Layout L = design(context.request, context);
+    if (!L.failure.empty()) { context.detail = L.failure; return false; }
+    for (int i = 0; i < context.request.nbTeams; ++i) game.addTeam();
+    TerrainSketch terrain(L.t.size(), GRASS);          // stamp the design
+    for (int i = 0; i < L.t.size(); ++i) if (L.water[i]) terrain[i] = WATER;
+    layBeaches(terrain, L.t);
+    writeUndermap(game.map, terrain);
+    if (!settleColonies(game, context, "starts", homeMaskFor(L), anchorFor(L))) return false;
+    for (int team = 0; team < context.request.nbTeams; ++team)
+        plantKit(game.map, L.t, context, kitFor(L, team), eligibleFor(L, team));
+    scatterResources(game, context, {24, 12, 10, 0, 3});
+    seedAlgae(game.map, context, L.t, "algae", options.algae, AlgaeBand::shallows(2, 4));
+    clearAroundSwarms(game.map, context, L.t);
+    guaranteeStartingResources(game, context, 24, 32);
+    reopenCrampedStarts(game, context, {options.wheat, options.wood, options.stone, options.algae});
+    return true;
+}
+
+std::string validateWorld(const Game &game, const GenerationContext &context)
+{
+    GenerationContext replay(context.request);
+    const Layout L = design(context.request, replay);
+    if (const std::string m = designMismatch(L, game.map, "example"); !m.empty()) return m;
+    return walkFromFirstColony(game.map, context.request.nbTeams, "the map", "").error;
+}
+```
+
+Everything named here is in `shared/`; `homeMaskFor`, `anchorFor`, `kitFor` and `eligibleFor` are the generator's own lambdas over its layout.
 
 ## Generation, randomness and failure
 

@@ -10,6 +10,9 @@
 class GeneratorRegistry;
 struct GenerationRequest
 {
+	/// The numeric ids the fixed legacy descriptor (compatibility/) knows by name. Every other
+	/// generator's id lives only in its GeneratorDefinition; look one up by its string id with
+	/// GeneratorRegistry::idOf.
 	enum Method : int
 	{
 		/// No terrain (terrain undefined)
@@ -27,17 +30,7 @@ struct GenerationRequest
 		eCONCRETEISLANDS = 5,
 		eISLES = 6,
 		eOLDRANDOM = 7,
-		eOLDISLANDS = 8,
-		eCONTESTEDCOMMONS = 9,
-		eMAZE = 11,
-		eFJORDCONTINENT = 12,
-		eWATERSHED = 13,
-		eSTONEHIGHLANDS = 14,
-		eSYMMETRICARENA = 15,
-		eRINGWORLD = 16,
-		eCITYSTATES = 17,
-		eTIDALFLATS = 18,
-		eEVERGLADES = 19
+		eOLDISLANDS = 8
 	};
 
 	using Control = GeneratorControl;

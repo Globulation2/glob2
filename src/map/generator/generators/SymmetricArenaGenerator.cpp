@@ -9,6 +9,7 @@
 #include "GlobalContainer.h"
 #include "HeightMap.h"
 #include "Resources.h"
+#include "Roads.h"
 #include "Topology.h"
 #include "Unit.h"
 #include <algorithm>
@@ -425,48 +426,27 @@ bool carvePaths(const Arena &a, const Layout &l, Terrain &t)
 	constexpr int kStraight = 2, kDiagonal = 3, kFord = 60;
 	const int w = a.width, h = a.height;
 	const size_t n = size_t(w) * h;
+	const MapGeneration::Torus torus(w, h);
 	std::vector<unsigned char> route(n, 0);
 	for (double angle : l.gates)
 	{
 		const double reach = a.centre + a.moat + 3.5;
 		const int target = wrap(int(std::lround(h / 2.0 + reach * std::sin(angle))), h) * w +
 						   wrap(int(std::lround(w / 2.0 + reach * std::cos(angle))), w);
-		const int start = l.homeV * w + l.homeU;
-		std::vector<int> cost(n, INT_MAX), parent(n, -1);
-		using Entry = std::pair<int, int>;
-		std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> queue;
-		queue.push({0, start});
-		cost[size_t(start)] = 0;
-		while (!queue.empty())
-		{
-			const auto [c, i] = queue.top();
-			queue.pop();
-			if (c != cost[size_t(i)])
-				continue;
-			if (i == target)
-				break;
-			const int u = i % w, v = i / w;
-			for (int dy = -1; dy <= 1; ++dy)
-				for (int dx = -1; dx <= 1; ++dx)
-				{
-					if (!dx && !dy)
-						continue;
-					const int j = wrap(v + dy, h) * w + wrap(u + dx, w);
-					const bool water = t.undermap[size_t(j)] == WATER;
-					if (water && (t.moat[size_t(j)] || t.ponds[size_t(j)]))
-						continue;
-					const int next = c + (dx && dy ? kDiagonal : kStraight) + (water ? kFord : 0);
-					if (next < cost[size_t(j)])
-					{
-						cost[size_t(j)] = next;
-						parent[size_t(j)] = i;
-						queue.push({next, j});
-					}
-				}
-		}
-		if (cost[size_t(target)] == INT_MAX)
+		std::vector<unsigned char> goal(n, 0);
+		goal[size_t(target)] = 1;
+		const std::vector<int> walk = MapGeneration::cheapestWalk(
+			torus, MapGeneration::GridNeighbors::Eight, {l.homeV * w + l.homeU}, goal,
+			[&](int, int j, int dx, int dy)
+			{
+				const bool water = t.undermap[size_t(j)] == WATER;
+				if (water && (t.moat[size_t(j)] || t.ponds[size_t(j)]))
+					return -1;
+				return (dx && dy ? kDiagonal : kStraight) + (water ? kFord : 0);
+			});
+		if (walk.empty())
 			return false;
-		for (int i = target; i != -1; i = parent[size_t(i)])
+		for (int i : walk)
 			route[size_t(i)] = 1;
 	}
 	t.paths = stamp(a.symmetry, route, true);

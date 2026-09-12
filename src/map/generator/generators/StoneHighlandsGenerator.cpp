@@ -1246,7 +1246,7 @@ GeneratorDefinition stoneHighlandsDefinition()
 	return {"stone-highlands",
 			14,
 			"Stone highlands",
-			1,
+			2,
 			false,
 			{// Average spacing between valley centres, in tiles.
 			 {"valley-size", "Valley size", 20, 44, 4, 32, ControlGroup::Layout},

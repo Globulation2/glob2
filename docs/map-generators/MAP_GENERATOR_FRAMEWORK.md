@@ -24,11 +24,11 @@ and Terrain take a `Game` because placing buildings and units needs its mutation
 | `Geometry` | `kPi`; `ShapeTransform` (invertible stretch and rotation); `RadialShape`, a seeded rough outline with a per-angle `radiusAt()`; `stampShape` and `stampRoughDisc` into a label grid |
 | `Wedge` | `WedgeFrame`: the map as one equal wedge per colony round the centre, so a feature designed once in a wedge's frame is stamped into every wedge alike; `Blob`, a stretched, turned rough disc in that frame |
 | `Sketch` | `TerrainSketch`, the undermap designed in memory; `layBeaches`, the order-independent beach pass; `raiseIslands`; `writeUndermap` |
-| `LatticeNoise` | Value noise that tiles the torus exactly, in three flavours (`PeriodicNoise` sampled anywhere; `periodicNoise`/`fractalNoise` integer fields; `torusNoise`), plus `percentile` |
+| `LatticeNoise` | `PeriodicNoise`, value noise that tiles the torus exactly and samples anywhere, with `periodicNoise`/`fractalNoise` (integer fields per tile, octaves) and `torusNoise` (four octaves in [-1, 1]) sampled from it, plus `percentile` |
 | `HeightMap`, `Noise` | Perlin noise faded across the wrap, and the stamped height fields the height-field generators shape |
-| `Planting` | The deposits a generator places by hand: `clearGround`, `growPatch`, `seedNear`, `swarmSurroundings`, `clearAroundSwarms`, `seedAlgae` (any water or a shallows band), `stockIslands` |
+| `Planting` | The deposits a generator places by hand: `clearGround`, `growPatch`, `seedNear`, `plantKit` (a home's wheat, wood and stone from three seeds), `swarmSurroundings`, `clearAroundSwarms`, `seedAlgae` (any water or a shallows band), `stockIslands` |
 | `Resources` | The ambient layer and its fairness guards: `scaledCount`/`scaledShare`, `placeResourceClump`, `setScaledResource`, `scatterResources`, `guaranteeStartingResources`, `openCrampedStarts` |
-| `Roads` | `cheapestRoute` and `openRoad`: the walk that crosses the fewest deposits, with only those cleared |
+| `Roads` | `cheapestRoute` and `openRoad`: the walk that crosses the fewest deposits, with only those cleared; `cheapestWalk`, the same search by any step cost (Everglades' fords, Symmetric arena's causeway routes) |
 | `Settlements` | `placeSettlement`: whole-footprint home mask, nearest legal anchor, exact worker count, per-colony diagnostics |
 | `BalancedStarts` | `chooseBalancedStarts`: boot tiles whose walks to wheat and wood are as nearly equal as the finished map allows |
 | `Pipeline` | The stages round the others: `settleColonies`, `reopenCrampedStarts`, `designMismatch` and `walkFromFirstColony` for validators, `ResourceAmounts` |
@@ -53,7 +53,8 @@ more than a sequence of shared stages:
    request leaves no room.
 2. `generate` stamps the layout into a `TerrainSketch`, calls `layBeaches` and `writeUndermap`,
    then `settleColonies` with a home mask and an anchor per colony.
-3. The kits go down with `growPatch` from `seedNear` seeds, then the ambient layers
+3. The kits go down with `plantKit` (three seeds, each grown from the nearest eligible
+   tile), then the ambient layers
    (`scatterResources` or the generator's own, `seedAlgae`, `stockIslands`), then
    `clearAroundSwarms`, `guaranteeStartingResources` and `clearAroundSwarms` again.
 4. `openRoad` (or the generator's own cheapest-walk variant) keeps every walk the map promises
@@ -63,8 +64,8 @@ more than a sequence of shared stages:
    design promised: ponds present, walls standing, fords open, symmetry exact.
 
 A generator with a different order calls the same stages in its own order; a generator with a
-different need (Ring world's belt-wide road, Everglades' fords, Symmetric arena's orbit
-stamping) writes that one piece itself and says why in its header comment.
+different need (Ring world's belt-wide road, Symmetric arena's orbit stamping) writes that one
+piece itself and says why in its header comment.
 
 ## The generator catalog
 

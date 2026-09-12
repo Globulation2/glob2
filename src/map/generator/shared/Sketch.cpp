@@ -71,8 +71,7 @@ std::vector<Island> raiseIslands(TerrainSketch &terrain, const Torus &t, Generat
 		bool clear = true;
 		for (const Island &other : islands)
 		{
-			const double gap =
-				(placement.gapFromBothReaches ? reach + other.reach : 2 * reach) + placement.moat;
+			const double gap = reach + other.reach + placement.moat;
 			clear = clear && t.dist2(x, y, other.x, other.y) >= gap * gap;
 		}
 		if (!clear)

@@ -63,6 +63,13 @@ const GeneratorDefinition &GeneratorRegistry::at(int id) const
 		return *d;
 	throw std::invalid_argument("Unknown generator ID");
 }
+int GeneratorRegistry::idOf(const std::string &id) const
+{
+	for (const auto &d : definitions)
+		if (id == d.id)
+			return d.legacyId;
+	throw std::invalid_argument("Unknown generator: " + id);
+}
 std::vector<int> GeneratorRegistry::methods(bool editor) const
 {
 	std::vector<int> result;

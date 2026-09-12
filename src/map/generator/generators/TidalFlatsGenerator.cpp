@@ -279,22 +279,18 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const T
 		{ return L.islandOf[i] == team && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
 		const double a = std::atan2(double(t.offsetY(L.cy, L.pondY[team])),
 									double(t.offsetX(L.cx, L.pondX[team])));
-		const auto at = [&](double along, double across)
+		const auto at = [&](double along, double across, int within)
 		{
-			return std::make_pair(
+			return KitSeed{
 				L.pondX[team] + int(std::lround(along * std::cos(a) - across * std::sin(a))),
-				L.pondY[team] + int(std::lround(along * std::sin(a) + across * std::cos(a))));
+				L.pondY[team] + int(std::lround(along * std::sin(a) + across * std::cos(a))),
+				within};
 		};
 		// Wheat and wood on the two sides of the pond, the quarry towards the map's centre.
-		if (const auto [x, y] = at(0, -pondRadius); true)
-			if (const int seed = seedNear(t, x, y, 12, eligible); seed >= 0)
-				growPatch(map, t, seed, CORN, kHomeWheat, eligible);
-		if (const auto [x, y] = at(0, pondRadius); true)
-			if (const int seed = seedNear(t, x, y, 12, eligible); seed >= 0)
-				growPatch(map, t, seed, WOOD, kHomeWood, eligible);
-		if (const auto [x, y] = at(-(pondRadius + 4), 0); true)
-			if (const int seed = seedNear(t, x, y, 10, eligible); seed >= 0)
-				placeResourceClump(map, context, {seed % t.w, seed / t.w}, STONE, 2);
+		plantKit(map, t, context,
+				 {at(0, -pondRadius, 12), at(0, pondRadius, 12), at(-(pondRadius + 4), 0, 10),
+				  kHomeWheat, kHomeWood, 2},
+				 eligible);
 		// Ambient farmland on the island's fertile ground, split two to one.
 		std::vector<int> ground;
 		std::vector<std::pair<double, int>> farm;
@@ -343,20 +339,22 @@ void stockIslands(Map &map, const Layout &L, GenerationContext &context, const T
 {
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
-	// Every neutral island is its own component of grass; each gets its prize at its middle. The
-	// engine draws each deposit's amount from the gameplay RNG as it is placed, so an island's
-	// tiles are planted in the order a flood from its first tile reaches them.
+	// Every neutral island is its own component of grass; each gets its prize at its middle.
 	std::vector<unsigned char> neutral(n, 0);
 	for (int i = 0; i < n; ++i)
 		neutral[i] = L.islandOf[i] == -3 && L.prizeOf[i] >= 0;
 	const std::vector<int> label = connectedRegions(neutral, t.w, t.h, true, GridNeighbors::Eight);
-	std::vector<int> firstTile;
+	std::vector<std::vector<int>> islands;
 	for (int i = 0; i < n; ++i)
-		if (label[i] >= int(firstTile.size()))
-			firstTile.push_back(i);
-	for (const int start : firstTile)
+		if (label[i] >= 0)
+		{
+			if (label[i] >= int(islands.size()))
+				islands.resize(label[i] + 1);
+			islands[label[i]].push_back(i);
+		}
+	for (const std::vector<int> &tiles : islands)
 	{
-		const std::vector<int> tiles = floodFrom(t, tileMask(t, {start}), neutral).visited;
+		const int start = tiles.front();
 		double sx = 0, sy = 0;
 		for (int i : tiles)
 		{
@@ -539,7 +537,7 @@ GeneratorDefinition tidalFlatsDefinition()
 		"tidal-flats",
 		18,
 		"Tidal flats",
-		3,
+		4,
 		false,
 		// The home islands' radius as a share of the half side; extra islands, sandbars and
 		// lagoons per colony; tide pools per 128x128 of flats.

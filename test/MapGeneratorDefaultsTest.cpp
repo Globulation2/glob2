@@ -155,7 +155,7 @@ class MapGeneratorDefaultsTest
 			for (std::uint32_t seed = 1; seed <= 3; ++seed)
 			{
 				D crowded;
-				crowded.setMethodDefaults(D::eCONTESTEDCOMMONS);
+				crowded.setMethodDefaults(GeneratorRegistry::builtins().idOf("contested-commons"));
 				crowded.wDec = crowded.hDec = dims;
 				crowded.nbTeams = teams;
 				crowded.seed = seed;
@@ -379,8 +379,8 @@ class MapGeneratorDefaultsTest
 		s.dispatchInit();
 		CustomGameSetup lobby;
 		D commons;
-		commons.setMethodDefaults(D::eCONTESTEDCOMMONS);
-		assert(GeneratorRegistry::builtins().methods(false).front() == D::eCONTESTEDCOMMONS);
+		commons.setMethodDefaults(GeneratorRegistry::builtins().idOf("contested-commons"));
+		assert(GeneratorRegistry::builtins().methods(false).front() == GeneratorRegistry::builtins().idOf("contested-commons"));
 		assert(s.methods->getSelectionIndex() == 0);
 		sameControls(s.descriptor, commons);
 		sameControls(lobby.generator, commons);
@@ -418,7 +418,7 @@ class MapGeneratorDefaultsTest
 				assert(decoded.setData(encoded.getData(), encoded.getDataLength()));
 				sameControls(fromLegacyDescriptor(decoded, 0), expected);
 			}
-			if (output && ((m >= 4 && m <= 8) || m == D::eFJORDCONTINENT))
+			if (output && ((m >= 4 && m <= 8) || m == GeneratorRegistry::builtins().idOf("fjord-continent")))
 			{
 				s.gfx->drawFilledRect(0, 0, 640, 480, GAGCore::Color(34, 55, 42));
 				for (auto *w : s.widgets)

@@ -40,10 +40,6 @@ struct IslandPlacement
 	int attemptsPerIsland;
 	/// Water kept between an island and any coast, and between two islands.
 	double moat;
-	/// Two islands keep the sum of their reaches plus the moat apart. Off, they keep twice the
-	/// new island's reach plus the moat: City states' original rule, kept until its revision
-	/// moves, since the difference changes which candidates it accepts.
-	bool gapFromBothReaches = true;
 };
 
 /// Small islands out in the open water, each well clear of every coast and of each other, so

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "GeneratorRegistry.h"
 #include "AIImplementation.h"
 #include "AINames.h"
 #include "CustomGameScreen.h"
@@ -125,7 +126,7 @@ struct CustomGameSetupHarness
 			return loaded && reloaded.setup.generator.method == method &&
 				   reloaded.setup.generator.options == draft.setup.generator.options;
 		};
-		const int fjord = GenerationRequest::eFJORDCONTINENT, ring = GenerationRequest::eRINGWORLD;
+		const int fjord = GeneratorRegistry::builtins().idOf("fjord-continent"), ring = GeneratorRegistry::builtins().idOf("ring-world");
 		// Fjord's lake size shares the legacy field that held the old generators' "use the
 		// default" sentinel 50, and used to reload as 30.
 		assert(roundTrip(fjord, {{"lake-size", 50}}));
@@ -731,7 +732,7 @@ struct CustomGameSetupHarness
     capture("shattered-coast-controls");
     // Switches are checkboxes: a click, or Space or Return on the focused row, flips one, and
     // either edit invalidates the preview like any other generator control.
-    landscape(GenerationRequest::eFJORDCONTINENT);
+    landscape(GeneratorRegistry::builtins().idOf("fjord-continent"));
     screen.expanded[0] = screen.expanded[1] = screen.expanded[2] = true;
     preview();
     assert(screen.validMap);
@@ -764,7 +765,7 @@ struct CustomGameSetupHarness
     capture("map-1000");
     // Rectangular terrain and markers must use the same cropped preview area.
     for (auto dimensions : {std::pair{9, 7}, std::pair{7, 9}, std::pair{9, 6}, std::pair{6, 9}}) {
-      screen.setup.generatorHistory.select(screen.setup.generator, GenerationRequest::eCONTESTEDCOMMONS);
+      screen.setup.generatorHistory.select(screen.setup.generator, GeneratorRegistry::builtins().idOf("contested-commons"));
       screen.setup.generator.wDec = dimensions.first;
       screen.setup.generator.hDec = dimensions.second;
       screen.setup.setCapacity(4);
@@ -827,7 +828,7 @@ struct CustomGameSetupHarness
     // playing exactly the map that was shown.
     {
       screen.setup.generatorHistory.select(screen.setup.generator,
-                                           GenerationRequest::eCONTESTEDCOMMONS);
+                                           GeneratorRegistry::builtins().idOf("contested-commons"));
       screen.setup.generator.wDec = screen.setup.generator.hDec = 8;
       screen.setup.setCapacity(4);
       screen.invalidate();

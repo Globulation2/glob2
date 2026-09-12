@@ -2,6 +2,7 @@
 #pragma once
 #include "Grid.h"
 #include "Map.h"
+#include "Resources.h"
 #include "Sketch.h"
 #include <climits>
 #include <vector>
@@ -65,6 +66,36 @@ int seedNear(const Torus &t, int ax, int ay, int within, Eligible eligible)
 			}
 		}
 	return seed;
+}
+
+/// Where a kit's three deposits go: each grows from the nearest eligible tile to its point,
+/// searched `within` tiles of it.
+struct KitSeed
+{
+	int x, y, within;
+};
+struct Kit
+{
+	KitSeed wheat, wood, stone;
+	int wheatTiles, woodTiles; // patch sizes
+	int stoneRadius;           // a clump
+};
+/// A home's starter kit: a wheat patch, a wood patch and a stone clump, each from the nearest
+/// eligible tile to its seed, in that order. A deposit whose seed finds no eligible tile is left
+/// out, since the guarantee that follows tops a colony up.
+template <typename Eligible>
+void plantKit(Map &map, const Torus &t, GenerationContext &context, const Kit &kit,
+			  Eligible eligible)
+{
+	if (const int seed = seedNear(t, kit.wheat.x, kit.wheat.y, kit.wheat.within, eligible);
+		seed >= 0)
+		growPatch(map, t, seed, CORN, kit.wheatTiles, eligible);
+	if (const int seed = seedNear(t, kit.wood.x, kit.wood.y, kit.wood.within, eligible); seed >= 0)
+		growPatch(map, t, seed, WOOD, kit.woodTiles, eligible);
+	if (const int seed = seedNear(t, kit.stone.x, kit.stone.y, kit.stone.within, eligible);
+		seed >= 0)
+		placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), STONE,
+						   kit.stoneRadius);
 }
 
 /// A mask of the tiles within `clearance` of every colony's swarm footprint: the ground a kit

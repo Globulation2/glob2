@@ -867,41 +867,20 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 		// creek, and the quarry behind the lake.
 		const double reach = std::clamp(0.1 * L.g.depth(), 2.0, 6.0) * 1.3 + 3;
 		const double flank = L.creekSide != 0 ? -L.creekSide : -1.0;
-		const auto seedNear = [&](double along, double across, int within)
+		const auto at = [&](double along, double across, int within)
 		{
-			const int ax =
-				h.lakeX + int(std::lround(along * std::cos(h.angle) - across * std::sin(h.angle)));
-			const int ay =
-				h.lakeY + int(std::lround(along * std::sin(h.angle) + across * std::cos(h.angle)));
-			int seed = -1, nearest = INT_MAX;
-			for (int dy = -within; dy <= within; ++dy)
-				for (int dx = -within; dx <= within; ++dx)
-				{
-					const int i = t.at(ax + dx, ay + dy);
-					if (eligible(i) && dx * dx + dy * dy < nearest)
-					{
-						nearest = dx * dx + dy * dy;
-						seed = i;
-					}
-				}
-			return seed;
+			return KitSeed{
+				h.lakeX + int(std::lround(along * std::cos(h.angle) - across * std::sin(h.angle))),
+				h.lakeY + int(std::lround(along * std::sin(h.angle) + across * std::cos(h.angle))),
+				within};
 		};
-		if (L.creekSide == 0)
-		{
-			if (const int seed = seedNear(-0.3 * reach, -reach, 14); seed >= 0)
-				growPatch(map, t, seed, CORN, kHomeWheat, eligible);
-			if (const int seed = seedNear(-0.3 * reach, reach, 14); seed >= 0)
-				growPatch(map, t, seed, WOOD, kHomeWood, eligible);
-		}
-		else
-		{
-			if (const int seed = seedNear(-0.5 * reach, flank * reach, 14); seed >= 0)
-				growPatch(map, t, seed, CORN, kHomeWheat, eligible);
-			if (const int seed = seedNear(0.6 * reach, flank * (reach + 1), 14); seed >= 0)
-				growPatch(map, t, seed, WOOD, kHomeWood, eligible);
-		}
-		if (const int seed = seedNear(reach + 8, 0, 12); seed >= 0)
-			placeResourceClump(map, context, {seed % t.w, seed / t.w}, STONE, 2);
+		const Kit kit = L.creekSide == 0
+							? Kit{at(-0.3 * reach, -reach, 14), at(-0.3 * reach, reach, 14),
+								  at(reach + 8, 0, 12), kHomeWheat, kHomeWood, 2}
+							: Kit{at(-0.5 * reach, flank * reach, 14),
+								  at(0.6 * reach, flank * (reach + 1), 14), at(reach + 8, 0, 12),
+								  kHomeWheat, kHomeWood, 2};
+		plantKit(map, t, context, kit, eligible);
 		// Ambient farmland on the home's fertile ground, in patches, then outcrops and a grove.
 		std::vector<int> ground;
 		std::vector<std::pair<double, int>> farm;
@@ -1145,7 +1124,7 @@ bool generate(Game &game, GenerationContext &context)
 		terrain, t, context,
 		{"city-islands",
 		 int(std::lround(o.resourceIslands * double(countTiles(terrain, WATER)) / 16384.0)), 60,
-		 kLakeShore + 1, /*gapFromBothReaches=*/false});
+		 kLakeShore + 1});
 	layBeaches(terrain, t);
 	writeUndermap(map, terrain);
 	const std::vector<unsigned char> line = stoneTiles(map, L);
@@ -1314,7 +1293,7 @@ GeneratorDefinition cityStatesDefinition()
 		"city-states",
 		17,
 		"City states",
-		4,
+		5,
 		false,
 		// The commons' radius as a share of half the shorter side, the strait's width as a
 		// share of the shorter side, the causeway's road in tiles; valleys per 128x128 of

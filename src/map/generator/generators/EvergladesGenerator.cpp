@@ -9,6 +9,7 @@
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Resources.h"
+#include "Roads.h"
 #include "Settlements.h"
 #include "Sketch.h"
 #include "Unit.h"
@@ -18,7 +19,6 @@
 #include <cmath>
 #include <cstdint>
 #include <functional>
-#include <queue>
 #include <string>
 #include <utility>
 #include <vector>
@@ -320,22 +320,17 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context)
 		{ return L.clearingOf[i] == team && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
 		const double a =
 			std::atan2(double(t.offsetY(L.cy, home.y)), double(t.offsetX(L.cx, home.x)));
-		const auto at = [&](double along, double across)
+		const auto at = [&](double along, double across, int within)
 		{
-			return std::make_pair(
-				home.x + int(std::lround(along * std::cos(a) - across * std::sin(a))),
-				home.y + int(std::lround(along * std::sin(a) + across * std::cos(a))));
+			return KitSeed{home.x + int(std::lround(along * std::cos(a) - across * std::sin(a))),
+						   home.y + int(std::lround(along * std::sin(a) + across * std::cos(a))),
+						   within};
 		};
 		const double beside = L.g.pond * 1.3 + 3;
-		if (const auto [x, y] = at(0, -beside); true)
-			if (const int seed = seedNear(t, x, y, 10, eligible); seed >= 0)
-				growPatch(map, t, seed, CORN, kHomeWheat, eligible);
-		if (const auto [x, y] = at(0, beside); true)
-			if (const int seed = seedNear(t, x, y, 10, eligible); seed >= 0)
-				growPatch(map, t, seed, WOOD, kHomeWood, eligible);
-		if (const auto [x, y] = at(-(L.g.clearing - 4), 0); true)
-			if (const int seed = seedNear(t, x, y, 8, eligible); seed >= 0)
-				placeResourceClump(map, context, {seed % t.w, seed / t.w}, STONE, 2);
+		plantKit(map, t, context,
+				 {at(0, -beside, 10), at(0, beside, 10), at(-(L.g.clearing - 4), 0, 8), kHomeWheat,
+				  kHomeWood, 2},
+				 eligible);
 	}
 }
 
@@ -445,7 +440,6 @@ void openRoutes(Game &game, const Layout &L, GenerationContext &context)
 				}
 		return tiles;
 	};
-	const auto &steps = kCardinalSteps;
 	bool changed = false;
 	for (int team = 1; team < teams; ++team)
 	{
@@ -465,40 +459,14 @@ void openRoutes(Game &game, const Layout &L, GenerationContext &context)
 		if (arrived)
 			continue;
 		// The cheapest way from anything colony 0 can reach to this colony's doorstep.
-		std::vector<int> cost(n, INT_MAX), from(n, -1);
-		std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<>>
-			heap;
+		std::vector<int> reachable;
 		for (int i = 0; i < n; ++i)
 			if (walk[i] >= 0)
-			{
-				cost[i] = 0;
-				heap.push({0, i});
-			}
-		int reached = -1;
-		while (!heap.empty() && reached < 0)
-		{
-			const auto [c, i] = heap.top();
-			heap.pop();
-			if (c > cost[i])
-				continue;
-			if (target[i])
-			{
-				reached = i;
-				break;
-			}
-			const int x = i % t.w, y = i / t.w;
-			for (const auto &step : steps)
-			{
-				const int m = t.at(x + step[0], y + step[1]);
-				const int stepCost = costAt(m);
-				if (stepCost < 0 || c + stepCost >= cost[m])
-					continue;
-				cost[m] = c + stepCost;
-				from[m] = i;
-				heap.push({cost[m], m});
-			}
-		}
-		for (int i = reached; i >= 0 && cost[i] > 0; i = from[i])
+				reachable.push_back(i);
+		const std::vector<int> route =
+			cheapestWalk(t, GridNeighbors::Cardinal, reachable, target,
+						 [&](int, int to, int, int) { return costAt(to); });
+		for (int i : route)
 		{
 			const int x = i % t.w, y = i / t.w;
 			if (map.isWater(x, y))
