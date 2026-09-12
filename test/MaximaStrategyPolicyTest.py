@@ -148,8 +148,9 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
             re.findall(r"StrategyImpact(Critical|High|Medium|Low)", line)
             for line in specifications
         ]
-        # 689 before the food ledger, plus its fifteen food.* parameters.
-        self.assertEqual(689, len(specifications))
+        # 689 with the gated tactical layer; the relentless offense removed 50
+        # muster, casualty, relief and teamplay keys and added three.
+        self.assertEqual(642, len(specifications))
         self.assertTrue(all(len(impact) == 1 for impact in impacts))
         self.assertEqual(
             {"Critical", "High", "Medium", "Low"},
@@ -204,7 +205,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
 
     def test_swarm_executor_does_not_override_controller(self) -> None:
         staffing = self.maxima[self.maxima.index("void Maxima::manage_swarm"):
-                               self.maxima.index("int Maxima::choose_building_to_attack")]
+                               self.maxima.index("void Maxima::OffenseDiagnostics::reset")]
         # Staffing is the building's own closed loop, but birth funding stays a
         # colony decision: the executor may consult the budget to pause
         # production and must never derive its own.

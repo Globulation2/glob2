@@ -237,8 +237,6 @@ private:
 		bool preemptive_defense_active;
 		bool preemptive_amphibious_active;
 		int preemptive_effective_zone_max;
-		int campaign_stall_ticks;
-		int campaign_retreat_cooldown_ticks;
 		int target_switch_margin;
 		int preemptive_recompute_ticks;
 		int preemptive_inner_distance;
@@ -289,12 +287,6 @@ private:
 		int priority_racetracks;
 		int priority_hospitals;
 		int priority_towers;
-		bool tactics_enabled;
-		bool raid_enabled;
-		bool siege_enabled;
-		bool siege_target_lock_enabled;
-		bool teamplay_enabled;
-		bool teamplay_defense_enabled;
 		Tactics::MissionKind tactical_kind;
 		int tactical_target_team;
 		int tactical_dig_out_team;
@@ -303,41 +295,14 @@ private:
 		int tactical_target_y;
 		int tactical_candidate_score;
 		int tactical_requested_force;
-		int tactical_minimum_force;
-		bool tactical_contact_visible;
-		bool tactical_allied_player_pressure;
-		bool tactical_allied_target_pressure;
-		int tactical_visible_enemy_warriors;
-		int tactical_visible_enemy_power;
-		int tactical_allied_warriors;
-		int tactical_allied_power;
-		int tactical_route_distance;
 		int tactical_review_interval;
-		int tactical_rally_radius;
+		bool tactics_enabled;
+		int tactical_flag_level;
 		int tactical_siege_radius;
-		int tactical_siege_muster_percent;
-		int tactical_siege_strength_percent;
-		int tactical_siege_casualty_percent;
-		int tactical_siege_threat_radius;
-		int tactical_target_lock_ticks;
 		int raid_flag_radius;
-		int raid_muster_percent;
-		int raid_muster_timeout;
-		int raid_contact_ttl;
-		int raid_max_engagement;
-		int raid_casualty_percent;
-		int raid_survivor_min;
-		int raid_cooldown;
-		int raid_defender_min;
-		int raid_defender_percent;
-		int raid_building_buffer;
-		int raid_tower_buffer;
-		int raid_retarget_margin;
-		int relief_contact_ttl;
-		int relief_max_engagement;
-		int relief_cooldown;
-		int relief_follow_radius;
-		int relief_retarget_margin;
+		int tactical_stall_ticks;
+		bool tactical_quarantine_enabled;
+		int tactical_quarantine_ticks;
 	};
 
 	enum PolicyKind
@@ -470,59 +435,22 @@ private:
 	/// Ephemeral explanation of the most recent tactical authorization pass.
 	/// This is deliberately not serialized: it is derived from the same fog-safe
 	/// observations as DirectorPlan and exists only for the in-game debug HUD.
-	struct TacticalDecisionDiagnostics
+	/// Explanation of the most recent offensive plan for the F10 panel and telemetry.
+	struct OffenseDiagnostics
 	{
-		TacticalDecisionDiagnostics();
+		OffenseDiagnostics() { reset(0); }
 		void reset(int currentTick);
 		int tick;
-		std::string authorization;
+		std::string gate;
 		std::string decision;
-		int trainedWarriors;
-		int defenseReserve;
-		int deployableWarriors;
-
-		std::string raidGate;
-		int raidCandidates;
-		int viableRaids;
-		int raidScore;
-		int raidRawScore;
-		int raidRoute;
-		int raidRoutePenalty;
-		int raidOutskirtsBonus;
-		int raidAlliedBonus;
-		int raidFfaPenalty;
-		int raidWorkers;
-		int raidDefenders;
-
-		std::string siegeGate;
-		int siegeCandidates;
-		int viableSieges;
-		std::map<std::string, int> siegeRejections;
-		std::vector<std::string> siegeCandidateDetails;
-		int siegeScore;
-		int siegeTargetValue;
-		int siegeOpponentScore;
-		int siegeAlliedPlayerBonus;
-		int siegeAlliedTargetBonus;
-		int siegeTowerPenalty;
-		int siegeRoutePenalty;
-		int siegeLocalPower;
-		int siegeUncertainty;
-		int siegeNearbyTowers;
-		int siegeRequiredPower;
-
-		std::string reliefGate;
-		int reliefCandidates;
-		int viableReliefs;
-		int reliefScore;
-		int reliefBaseScore;
-		int reliefAssetValue;
-		int reliefThreatBonus;
-		int reliefUnderAttackBonus;
-		int reliefRoutePenalty;
-		int reliefEnemyPower;
-		int reliefAlliedPower;
-		int reliefRequiredPower;
+		int eligibleWarriors;
+		int openTrainingSlots;
+		int buildingCandidates;
+		int viableBuildings;
+		int clusterCandidates;
+		int viableClusters;
+		int bestScore;
+		std::map<std::string, int> rejections;
 	};
 
 	struct ClearedEnemySite
@@ -559,7 +487,7 @@ private:
 	void arbitrate_policy_bids();
 	const char* policy_name(PolicyKind policy) const;
 	void finalize_director_plan(AIMaximaRuntime::Context& echo);
-	void plan_tactical_authorization(AIMaximaRuntime::Context& echo);
+	void plan_offense(AIMaximaRuntime::Context& echo);
 	void emit_telemetry(AIMaximaRuntime::Context& echo, const std::string& event,
 		const std::string& fields=std::string()) const;
 	void emit_ablation_opportunities(AIMaximaRuntime::Context& echo) const;
@@ -594,7 +522,7 @@ private:
 	CampaignPlan campaign;
 	Tactics::Program tactics;
 	Tactics::Mission tactical_mission;
-	TacticalDecisionDiagnostics tactical_diagnostics;
+	OffenseDiagnostics offense_diagnostics;
 	std::vector<ClearedEnemySite> cleared_enemy_sites;
 	// Runtime startup latch; saves before version 95 recheck workers and food.
 	std::set<int> operating_colonies;
@@ -792,25 +720,11 @@ private:
 	int choose_building_to_attack(AIMaximaRuntime::Context& echo);
 	///This function starts an attack on another enemy building
 	void attack_building(AIMaximaRuntime::Context& echo);
-	///This function controls the attacking of enemies, such as how many flags are active at one time
-	void control_attacks(AIMaximaRuntime::Context& echo);
-	void control_legacy_attacks(AIMaximaRuntime::Context& echo);
+	///Keep one war flag on the planned offensive target; runs every review tick.
+	void control_offense(AIMaximaRuntime::Context& echo);
+	void end_offense(AIMaximaRuntime::Context& echo, const char* reason);
 	///This function chooses the enemy team to target
 	void choose_enemy_target(AIMaximaRuntime::Context& echo);
-	bool raid_candidate_safe(AIMaximaRuntime::Context& echo,
-		const Tactics::RaidCandidate& candidate, int raidForce, int& routeDistance,
-		int& nearestBuildingDistance) const;
-	bool choose_tactical_rally(AIMaximaRuntime::Context& echo,
-		int targetX, int targetY, int& rallyX, int& rallyY) const;
-	void begin_tactical_mission(AIMaximaRuntime::Context& echo);
-	///Apply a replacement siege's force contract; return true when remustering.
-	bool retarget_tactical_siege(AIMaximaRuntime::Context& echo);
-	void withdraw_tactical_mission(AIMaximaRuntime::Context& echo,
-		const char* reason, bool immediate);
-	void finish_tactical_mission(AIMaximaRuntime::Context& echo,
-		const char* reason);
-	void transition_tactical_mission(AIMaximaRuntime::Context& echo,
-		Tactics::MissionPhase phase, const char* reason);
 	///This function digs out an enemy building that is surrounded by resources.
 	///It will also cause Maxima to dig itself out in certain situations.
 	///Returns true if there are buildings that it can dig out, false otherwise

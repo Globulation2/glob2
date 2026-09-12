@@ -152,27 +152,8 @@ public:
 	const std::vector<RaidCandidate>& raidCandidates() const { return raids; }
 	const RaidCandidate* bestRaidForTeam(int team) const;
 
-	static int desiredRaidForce(int workerCount, int forceBonus,
-		int minimumForce, int maximumForce);
-	static bool musterReady(int enrolled, int onSite, int requested,
-		int requiredPercent);
-	static bool musterLaunchAllowed(MissionKind kind, int enrolled, int onSite,
-		int requested, int reliefMinimumForce, int requiredPercent);
-	static bool raidRetargetAllowed(bool sameTeam, int distanceSquare,
-		int followRadius, int candidateScore, int currentScore, int scoreMargin);
 	static bool targetQuarantined(int gid, int tick, bool enabled,
 		const std::map<int, int>& quarantineUntil);
-	static bool raidUnsafe(int visibleDefenders, int launchedForce,
-		int defenderMinimum, int defenderPercent);
-	static bool casualtiesRequireWithdrawal(int enrolled, int launchedForce,
-		int survivorMinimum, int casualtyPercent);
-	static bool reliefRetargetAllowed(bool changed, bool sameTeam,
-		int distanceSquare, int followRadius, int candidateScore,
-		int currentScore, int scoreMargin);
-	static SiegeTargetContinuity siegeTargetContinuity(bool targetRemembered,
-		int currentTarget, int replacementTarget);
-	static int forceForPower(const std::vector<int>& descendingPowers,
-		int requiredPower, int minimumForce, int maximumForce);
 
 private:
 	void refreshRaidThreats();

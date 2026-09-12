@@ -71,8 +71,8 @@ class MaximaOptimizerContractTest(unittest.TestCase):
             # stable signal without depending on tournament artifacts.
             attack = parameters["military.offense_warrior_base_percent"]
             reserve = parameters["military.defense_reserve_floor"]
-            stall = parameters["scheduling.campaign_stall_ticks"]
-            cooldown = parameters["scheduling.campaign_retreat_cooldown_ticks"]
+            stall = parameters["tactics.stall_ticks"]
+            cooldown = parameters["tactics.retarget_margin"]
             objective = -abs(attack * 10 - reserve) / 1000.0
             objective -= abs(stall - cooldown) / 1000000.0
             records.append({
@@ -246,9 +246,9 @@ class MaximaOptimizerContractTest(unittest.TestCase):
                 "military.defense_enemy_percent",
                 "military.offense_warrior_base_percent",
                 "recon.offense_population_divisor",
-                "military.campaign_deployable_min",
-                "scheduling.campaign_stall_ticks",
-                "scheduling.campaign_retreat_cooldown_ticks",
+                "tactics.min_force",
+                "tactics.stall_ticks",
+                "tactics.retarget_margin",
                 "scoring.target_switch_margin",
                 "scoring.target_reachable_weight",
                 "scoring.target_warrior_weight",
@@ -258,19 +258,6 @@ class MaximaOptimizerContractTest(unittest.TestCase):
                 "fruit.flag_radius",
             },
         )
-
-    def test_teamplay_stage_contains_every_teamplay_parameter(self) -> None:
-        self.optimizer.configure_parameters(self.binary, "teamplay", "2v2")
-        self.addCleanup(
-            self.optimizer.configure_parameters, self.binary, "director", "2v2"
-        )
-        selected = {parameter.name for parameter in self.optimizer.PARAMETERS}
-        schema = {
-            item["key"]
-            for item in self.optimizer.STRATEGY_SCHEMA["parameters"]
-            if item["group"] == "teamplay"
-        }
-        self.assertEqual(selected, schema)
 
     def test_candidate_resolves_with_canonical_provenance(self) -> None:
         candidate = self.optimizer.default_parameters()

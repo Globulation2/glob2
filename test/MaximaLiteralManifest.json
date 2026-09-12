@@ -3,8 +3,8 @@
   "algorithm": "sorted-comment-string-stripped-numeric-token-sha256",
   "sources": {
     "src/AIMaxima.cpp": {
-      "tokens": 1963,
-      "sha256": "fcabecc530c41cb60dc9b4670aca884fc2e3972c1ebffdb44d9687d95dd25c73",
+      "tokens": 1731,
+      "sha256": "3c4d383b7c4db60ff001be3fa2d5e1320a5953a8de62dedd198617b16a5ff79c",
       "classifications": [
         "live selection authorization, swimming-builder counts, and shared reactive-defense reserve",
         "schema-backed strategy member use",
@@ -37,7 +37,8 @@
         "shared deterministic food measurement and single continuous swarm capacity controller",
         "minimum nonzero explorer production weight for any unmet colony target",
         "food ledger demand rates, coverage thresholds, and retirement timing",
-        "per-building staffing control band, window and worker bounds"
+        "per-building staffing control band, window and worker bounds",
+        "relentless offense target scoring, dwell, and flag geometry"
       ]
     },
     "src/AIMaximaFarmingPolicy.cpp": {
@@ -125,8 +126,8 @@
       ]
     },
     "src/AIMaximaTactics.cpp": {
-      "tokens": 71,
-      "sha256": "7676132bd6fe64b1a7e2fd8ec27f78e1651ad360decc366ffec1c7b38c1dd683",
+      "tokens": 58,
+      "sha256": "2e89a5f1b75227e19a95855b6d6c28ff5618929d80c178ee5e5f48b2c6ab9a64",
       "classifications": [
         "recomputed raid defenders and scores after threat replacement",
         "schema-backed tactical rule defaults",

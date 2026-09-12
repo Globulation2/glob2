@@ -74,9 +74,9 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
     def test_selected_executors_consume_only_the_plan(self) -> None:
         ranges = (
             ("void Maxima::manage_inn", "void Maxima::manage_swarm"),
-            ("void Maxima::manage_swarm", "int Maxima::choose_building_to_attack"),
+            ("void Maxima::manage_swarm", "void Maxima::OffenseDiagnostics::reset"),
             ("void Maxima::development_cycle", "void Maxima::manage_buildings"),
-            ("void Maxima::control_attacks", "void Maxima::clear_preemptive_defense"),
+            ("void Maxima::control_offense", "void Maxima::clear_preemptive_defense"),
             ("void Maxima::update_preemptive_defense", "void Maxima::compute_defense_flag_positioning"),
             ("void Maxima::compute_defense_flag_positioning", "void Maxima::modify_points"),
             ("void Maxima::update_fruit_flags", "void Maxima::update_fruit_alliances"),
@@ -93,150 +93,76 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
     def test_dirty_plan_is_recomputed_before_scheduled_executors(self) -> None:
         tick = function(self.source, "void Maxima::tick", "void Maxima::handle_event")
         replan = tick.index("director.evaluate(*this, echo);")
-        for executor in ("manage_buildings(echo)", "control_attacks(echo)",
+        for executor in ("manage_buildings(echo)", "control_offense(echo)",
                          "update_farming(echo)", "update_fruit_flags(echo)"):
             self.assertLess(replan, tick.index(executor))
         self.assertIn("director.invalidate();", self.source)
 
-    def test_warrior_lifecycle_has_a_real_muster_gate(self) -> None:
-        tactics = (ROOT / "src/AIMaximaTactics.h").read_text()
-        phases = tactics[tactics.index("enum MissionPhase") :]
-        phases = phases[:phases.index("};")]
-        self.assertLess(phases.index("PhaseIdle"), phases.index("PhaseMuster"))
-        self.assertLess(phases.index("PhaseMuster"), phases.index("PhaseTransit"))
-        control = function(
-            self.source,
-            "void Maxima::control_attacks",
-            "void Maxima::control_legacy_attacks",
-        )
-        self.assertIn("get_enrolled(flag)", control)
-        self.assertIn("get_on_site(flag)", control)
-        self.assertIn("Tactics::Program::musterLaunchAllowed", control)
-        self.assertIn('"muster_underfilled"', control)
-        self.assertIn("Tactics::PhaseTransit", control)
-        self.assertIn("if(!ready && !timed_out)", control)
-        self.assertNotIn('"muster_timeout_short"', control)
+    def test_offense_keeps_one_flag_without_muster_or_withdrawal(self) -> None:
+        planner = function(self.source, "void Maxima::plan_offense",
+                           "void Maxima::end_offense")
+        control = function(self.source, "void Maxima::control_offense",
+                           "void Maxima::choose_enemy_target")
+        for gone in ("PhaseMuster", "PhaseWithdraw", "PhaseCooldown",
+                     "musterLaunchAllowed", "casualtiesRequireWithdrawal",
+                     "MissionRelief"):
+            self.assertNotIn(gone, planner)
+            self.assertNotIn(gone, control)
+        self.assertIn("ChangeFlagPosition", control)
+        self.assertIn("AssignWorkers", control)
+        self.assertIn("budget.tactical_requested_force=std::min(cap, surplus);", planner)
+        self.assertIn("reason=stalled", control)
 
     def test_active_siege_selector_honors_quarantine(self) -> None:
-        selection = function(
-            self.source, "void Maxima::plan_tactical_authorization",
-            "void Maxima::emit_director_snapshot",
-        )
-        check = selection.index("Tactics::Program::targetQuarantined")
+        planner = function(self.source, "void Maxima::plan_offense",
+                           "void Maxima::end_offense")
+        check = planner.index("Tactics::Program::targetQuarantined")
         self.assertIn("strategy.tactics.failed_target_quarantine_enabled",
-                      selection[check:check + 220])
-        self.assertIn("attack_target_quarantine_until", selection[check:check + 220])
-        self.assertLess(check, selection.index("int local_power=0;"))
-
-    def test_both_siege_replacement_paths_reset_target_state(self) -> None:
-        control = function(
-            self.source, "void Maxima::control_attacks",
-            "void Maxima::control_legacy_attacks",
-        )
-        self.assertEqual(control.count("retarget_tactical_siege(echo)"), 2)
+                      planner[check:check + 220])
+        self.assertIn("attack_target_quarantine_until", planner[check:check + 220])
 
     def test_active_tactical_loop_can_open_a_sealed_enemy_route(self) -> None:
-        control = function(
-            self.source,
-            "void Maxima::control_attacks",
-            "void Maxima::control_legacy_attacks",
-        )
+        control = function(self.source, "void Maxima::control_offense",
+                           "void Maxima::choose_enemy_target")
         self.assertIn("dig_out_enemy(echo);", control)
         self.assertIn("budget.tactical_dig_out_team>=0", control)
-        self.assertLess(
-            control.index("budget.tactical_kind!=Tactics::MissionNone"),
-            control.index("budget.tactical_dig_out_team>=0"),
-        )
-
-        planner = function(
-            self.source,
-            "void Maxima::plan_tactical_authorization",
-            "void Maxima::emit_director_snapshot",
-        )
-        self.assertIn("opponent.known_buildings<=0", planner)
-        self.assertIn("opponent.reachable_buildings!=0", planner)
-        self.assertIn("budget.attack_flags>0", planner)
+        planner = function(self.source, "void Maxima::plan_offense",
+                           "void Maxima::end_offense")
+        self.assertIn("strategy.tactics.dig_out_enabled", planner)
         self.assertIn("budget.attack_clearing_workers>0", planner)
 
-    def test_withdrawal_is_terminal_and_relief_retargets_are_local(self) -> None:
-        control = function(
-            self.source,
-            "void Maxima::control_attacks",
-            "void Maxima::control_legacy_attacks",
-        )
-        withdrawal = control.index(
-            "if(tactical_mission.phase==Tactics::PhaseWithdraw)"
-        )
-        relief = control.index(
-            "if(tactical_mission.kind==Tactics::MissionRelief)"
-        )
-        self.assertLess(withdrawal, relief)
-        self.assertEqual(
-            control.count("if(tactical_mission.phase==Tactics::PhaseWithdraw)"),
-            1,
-        )
-        self.assertIn("Program::reliefRetargetAllowed", control)
-        self.assertIn("budget.relief_follow_radius", control)
-        self.assertIn("budget.relief_retarget_margin", control)
-        self.assertNotIn("const bool acceptable=!changed || same_team", control)
-
     def test_active_mission_force_uses_the_runtime_building_register(self) -> None:
-        planner = function(
-            self.source,
-            "void Maxima::plan_tactical_authorization",
-            "void Maxima::emit_director_snapshot",
-        )
-        self.assertIn("active_relief || replacement_siege_team>=0", planner)
-        self.assertIn(
-            "get_building(tactical_mission.flagId)", planner
-        )
-        self.assertIn(
-            "tactical_warrior_available(warrior, continuing_flag)", planner
-        )
+        planner = function(self.source, "void Maxima::plan_offense",
+                           "void Maxima::end_offense")
+        self.assertIn("get_building(tactical_mission.flagId)", planner)
+        self.assertIn("tactical_warrior_available(warrior, flag,", planner)
         eligibility = function(
             self.source, "bool tactical_warrior_available", "int warrior_power"
         )
         self.assertIn("warrior->attachedBuilding==continuingFlag", eligibility)
-        self.assertNotIn("warrior->attachedBuilding->gid==tactical_mission.flagId", planner)
 
-    def test_tactical_debug_view_explains_gates_scores_and_winner(self) -> None:
-        self.assertIn("struct TacticalDecisionDiagnostics", self.header)
+    def test_tactical_debug_view_explains_gate_and_winner(self) -> None:
+        self.assertIn("struct OffenseDiagnostics", self.header)
         diagnostics = function(
             self.source,
             "void Maxima::getDiagnosticSections",
             "void Maxima::emit_telemetry",
         )
-        self.assertIn('AIDiagnosticSection section("TACTICAL CHOICE")', diagnostics)
-        self.assertIn('AIDiagnosticSection section("TACTICAL EVIDENCE")', diagnostics)
-        for evidence in (
-            "raidGate", "raidScore", "raidRoutePenalty",
-            "siegeGate", "siegeScore", "siegeRequiredPower",
-            "reliefGate", "reliefScore", "reliefRequiredPower",
-            "tactical_diagnostics.decision",
-        ):
+        self.assertIn('AIDiagnosticSection section("OFFENSE")', diagnostics)
+        for evidence in ("offense_diagnostics.gate", "eligibleWarriors",
+                         "bestScore", "offense_diagnostics.decision",
+                         "offense_diagnostics.rejections"):
             self.assertIn(evidence, diagnostics)
-
-        planner = function(
-            self.source,
-            "void Maxima::plan_tactical_authorization",
-            "void Maxima::emit_director_snapshot",
-        )
-        self.assertIn("tactical_diagnostics.reset(timer);", planner)
-        self.assertIn(
-            "tactical_diagnostics=previous_diagnostics;", planner
-        )
-        self.assertIn('tactical_diagnostics.authorization="blocked"', planner)
-        self.assertIn('tactical_diagnostics.authorization="mission locked"', planner)
-        self.assertIn('tactical_diagnostics.authorization="cooldown"', planner)
-        self.assertIn("siege "+'"+diagnostic_value(siege_score)', planner)
-        self.assertIn("ally defense "+'"+', planner)
-
+        planner = function(self.source, "void Maxima::plan_offense",
+                           "void Maxima::end_offense")
+        self.assertIn("offense_diagnostics.reset(timer);", planner)
+        self.assertIn('offense_diagnostics.gate="open";', planner)
         # The explanation is derived UI state and must not alter save compatibility.
         serialization = self.source[
             self.source.index("void Maxima::saveDirector") :
             self.source.index("bool Maxima::load(")
         ]
-        self.assertNotIn("tactical_diagnostics", serialization)
+        self.assertNotIn("offense_diagnostics", serialization)
 
     def test_preemptive_defense_remains_active_under_pressure(self) -> None:
         update = function(

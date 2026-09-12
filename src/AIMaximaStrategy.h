@@ -341,7 +341,6 @@ struct MaximaStrategy
 
 	struct Military
 	{
-		bool counterattack_enabled;
 		bool explorer_defense_enabled;
 		bool warrior_training_backlog_throttle_enabled;
 		int defense_reserve_min;
@@ -357,7 +356,6 @@ struct MaximaStrategy
 		int defense_reserve_floor;
 		int defense_enemy_percent;
 		int offense_warrior_base_percent;
-		int campaign_deployable_min;
 		int reserve_enemy_bonus;
 		int reserve_force_divisor;
 		int endgame_enemy_count;
@@ -371,7 +369,6 @@ struct MaximaStrategy
 		int campaign_food_percent;
 		int campaign_worker_population_ratio;
 		int campaign_sustainable_food_percent;
-		int counterattack_force_margin;
 		int defense_utility_floor_bonus;
 		int explorer_defense_utility_bonus;
 		int warrior_cap;
@@ -568,16 +565,13 @@ struct MaximaStrategy
 		bool siege_enabled;
 		bool dig_out_enabled;
 		bool failed_target_quarantine_enabled;
-		bool siege_target_lock_enabled;
 		int review_interval_ticks;
-		int rally_flag_radius;
 		int siege_flag_radius;
-		int siege_min_force;
-		int siege_muster_percent;
-		int siege_strength_percent;
-		int siege_casualty_percent;
-		int siege_local_threat_radius;
-		int siege_target_lock_ticks;
+		int flag_minimum_level;
+		int min_force;
+		int retarget_margin;
+		int dwell_ticks;
+		int stall_ticks;
 		int target_swarm_value;
 		int target_food_value;
 		int target_barracks_value;
@@ -587,70 +581,27 @@ struct MaximaStrategy
 		int target_construction_bonus;
 		int target_tower_penalty;
 		int route_distance_weight;
-		int uncertainty_percent;
-		int failed_target_max_duration_ticks;
 		int failed_target_quarantine_ticks;
 	} tactics;
 
 	struct Raiding
 	{
 		bool enabled;
-		int population_min;
 		int worker_min;
 		int cluster_radius;
 		int threat_radius;
-		int force_bonus;
-		int min_force;
-		int max_force;
 		int flag_radius;
-		int muster_percent;
-		int muster_timeout_ticks;
-		int contact_ttl_ticks;
-		int max_engagement_ticks;
-		int casualty_percent;
-		int survivor_min;
-		int cooldown_ticks;
-		int defender_min;
-		int defender_percent;
-		int building_buffer;
-		int tower_buffer;
-		int retarget_margin;
 		int worker_weight;
 		int harvesting_bonus;
 		int carrying_bonus;
 		int resource_weight;
 		int defender_penalty;
 		int route_distance_weight;
-		int outskirts_weight;
-		int allied_pressure_bonus;
-		int ffa_third_party_penalty;
 		int food_resource_value;
 		int material_resource_value;
 		int fruit_resource_value;
 		int other_resource_value;
 	} raiding;
-
-	struct Teamplay
-	{
-		bool enabled;
-		bool pressure_coordination_enabled;
-		bool defense_enabled;
-		int allied_pressure_radius;
-		int defense_min_force;
-		int defense_strength_percent;
-		int defense_base_score;
-		int defense_threat_weight;
-		int defense_under_attack_bonus;
-		int defense_unit_value;
-		int defense_route_distance_weight;
-		int defense_contact_ttl_ticks;
-		int defense_max_engagement_ticks;
-		int defense_cooldown_ticks;
-		int defense_follow_radius;
-		int defense_retarget_margin;
-		int siege_player_pressure_bonus;
-		int siege_building_pressure_bonus;
-	} teamplay;
 
 	struct ExplorerCampaign
 	{
@@ -792,8 +743,6 @@ struct MaximaStrategy
 	struct Scheduling
 	{
 		int normal_posture_commitment_ticks;
-		int campaign_stall_ticks;
-		int campaign_retreat_cooldown_ticks;
 		int preemptive_defense_recompute_ticks;
 		int strategy_interval_ticks;
 		int strategy_phase_offset_ticks;

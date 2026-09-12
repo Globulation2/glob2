@@ -168,7 +168,6 @@ comparison; **END** extend terminal-sensitive branches to game end.
 | `recon.enabled` | FS 30k | fog and shared-vision formats | information regret and predicted value |
 | `tactics.enabled` | CP+END | mission exists, before selection/order | mission net value |
 | `colonization.enabled` | FS+CP | valid distant parcel, before commitment | 30k economy and colony NPV |
-| `teamplay.enabled` | FS+CP+END | 2v2; ally-aware choice differs | team value |
 | `defense.reactive.enabled` | CP+END | local threat crosses threshold; no active flag | retained value |
 | `military.preemptive_defense_enabled` | CP+END | qualifying choke/forecast before guard | retained value minus prevention cost |
 | `military.explorer_defense_enabled` | CP+END | attack explorers near valuable colony before response | survival/value retained |
@@ -192,7 +191,6 @@ comparison; **END** extend terminal-sensitive branches to game end.
 | `economy.amphibious_network_maintenance_enabled` | CP | amphibious economy lacks pool capacity | economy/route value, 20k |
 | `economy.worker_birth_throttle_enabled` | CP | excess free labor before birth decision | growth/utilization, 10k |
 | `repairs.enabled` | CP+END | valuable damaged building before repair | uptime/value retained |
-| `military.counterattack_enabled` | CP+END | colony threatened with campaign target available | survival plus mission value |
 | `military.warrior_training_backlog_throttle_enabled` | CP | saturated backlog before birth decision | force readiness net of economy |
 | `placement.food_preservation_enabled` | SH+CP | parcel differs because of farm loss | food/economic AUC |
 | `placement.defensive_siting_enabled` | SH+CP+END | parcel differs because of threat/defendedness | retained value/completion |
@@ -200,7 +198,6 @@ comparison; **END** extend terminal-sensitive branches to game end.
 | `tactics.siege_enabled` | CP+END | valuable reachable building and ready force | mission net value |
 | `tactics.dig_out_enabled` | CP+END | route blocked only by clearable resources | access and mission value |
 | `raiding.enabled` | CP+END | safe worker cluster and deployable force | disruption minus opportunity cost |
-| `teamplay.defense_enabled` | CP+END | ally threatened; focal has surplus warriors | team survival/value |
 | `explorer_campaign.enabled` | CP+END | strike threshold plus enemy warrior cluster | power destroyed net of cost |
 | `recon.scouting_missions_enabled` | CP | contact/frontier mission before flag | information regret/economy |
 | `recon.force_memory_enabled` | CP | observed force has just gone under fog | estimate error/downstream value |
@@ -217,8 +214,6 @@ comparison; **END** extend terminal-sensitive branches to game end.
 | `military.preemptive_amphibious_enabled` | CP+END | route classification differs through water | retained value |
 | `placement.spacing_compactness_enabled` | SH+CP | parcel differs due to spacing score | completion/economy |
 | `tactics.failed_target_quarantine_enabled` | CP+END | recent fast failure before repeat targeting | loss avoidance/mission value |
-| `tactics.siege_target_lock_enabled` | CP+END | productive siege before retarget decision | progress/mission value |
-| `teamplay.pressure_coordination_enabled` | SH+CP+END | ally pressure changes target choice | combined mission value |
 | `fruit.enabled` | CP | accessible fruit before flag/sharing action | food/happiness/economy |
 | `recon.economic_watch_enabled` | CP | late-game watch patrol before creation | information net of explorer cost |
 | `farming.wheat_invasion_clearing_enabled` | FS+CP | wood can invade protected wheat boundaries | food/economy minus clearing cost |
@@ -250,7 +245,6 @@ colonization.enabled
 economy.food_service_safeguards_enabled
 economy.large_economy_adaptation_enabled
 upgrades.enabled
-teamplay.enabled                 # 2v2 stratum only
 ```
 
 Use 64 independent map/seed blocks per switch and arm. Average candidate seat
@@ -352,15 +346,6 @@ For a production run, execute these tools from an immutable source snapshot and
 pass that snapshot's remote path through `--remote-root`. Record the snapshot
 digest and the identical Linux binary digest in the result directory before
 launch so later working-tree edits cannot affect an in-progress campaign.
-
-Harvest teamplay opportunities separately on a four-team map so allied behavior
-is not mixed with duel/FFA source blocks:
-
-```sh
-python3 tools/harvest_maxima_checkpoints.py \
-  --output-dir tournament-results/maxima-ablation-teamplay-bank \
-  --format 2v2 --map maps/FourSquares1.map --rounds 40
-```
 
 Manifest rows may select `victory_score`, `economy_advantage`,
 `military_advantage`, `resilience_advantage`, or `prestige_advantage` and may

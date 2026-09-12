@@ -46,7 +46,6 @@ layers easy to review:
 | `postures` | Utility and readiness rules choosing recover, defend, expand, develop, mobilize, campaign, or finish. |
 | `placement` | Candidate utility components, placement weights, routing costs, labor estimates, and action timeout. |
 | `defense`, `tactics`, `raiding` | Reactive defense and execution policy after strategic authorization. |
-| `teamplay` | Ally-aware defense, rescue, target coordination, and shared pressure. |
 | `explorer_campaign`, `fruit`, `recon` | Explorer production, mission count, target valuation, retasking, and fruit work. |
 | `farming` | Review cadence, fertility policy, wood pressure, buffers, and proactive clearing. |
 | `food` | Protected farm capacity claimed by inns and swarms, and the placement, upgrade and retirement decisions taken from it. |
@@ -108,28 +107,28 @@ can consider the remaining enemies without waiting for the lock timer to expire.
 
 `emergencies.population_trend_threshold`, `emergencies.food_trend_threshold` and
 `military.campaign_sustainable_food_percent` remain accepted for compatibility
-but have no runtime effect. The campaign retreat cooldown defaults to 1,000 AI
-ticks (`scheduling.campaign_retreat_cooldown_ticks`).
+but have no runtime effect.
 
-## Offensive muster quorum
+## Relentless offense
 
-Both `tactics.siege_muster_percent` and `raiding.muster_percent` default to **50**.
-They accept integer percentages from 1 to 100 through the normal strategy layers
-and overrides. A siege or raid launches when at least
-`ceil(requested_force * muster_percent / 100)` enrolled warriors are physically
-at the flag. For example, 11 requested warriors need 6 present at 50%, or 9 at
-75%. Empty flags never launch. There is no absolute minimum override and a
-timeout cannot bypass the quorum.
-
-The minimum-force settings still size the requested mission and determine
-whether enough eligible warriors exist to plan it. They do not impose a second
-offensive muster or arrival threshold. Urgent ally relief retains its existing
-enrollment-only dispatch rule. Survivor floors cannot exceed the force actually
-launched, so a valid partial muster does not immediately retreat without losses.
-
-Rallies are selected near friendly supply buildings. For amphibious operations,
-the flag area excludes dry shores whose walkers cannot reach the target. This
-allows warriors to assemble near home before moving the flag to the objective.
+Warriors attack continuously. Every `tactics.review_interval_ticks` Maxima
+counts the warriors that satisfy the flag level in `tactics.flag_minimum_level`
+(1 admits untrained warriors) and are free or already on its offensive flag.
+Training comes first: every open barracks slot is reserved for a warrior, and
+only the surplus beyond that capacity is offered to the flag. When at least
+`tactics.min_force` surplus warriors can reach a remembered enemy building or a
+visible worker cluster, one war flag is placed directly on the best target and
+requests that surplus, up to `military.attack_unit_cap`; the request follows
+the surplus as warriors enter and leave training. Buildings score by type
+value minus tower penalty and route distance; clusters use the raid cluster
+score minus route distance. The flag only moves when its target disappears or,
+after `tactics.dwell_ticks`, when a rival target beats it by
+`tactics.retarget_margin`. There is no muster, rally,
+casualty withdrawal, cooldown or defensive reserve gate. A visible siege target
+that takes no damage for `tactics.stall_ticks` is quarantined for
+`tactics.failed_target_quarantine_ticks`. A colony emergency recalls the flag.
+When every known building is sealed behind resources, `tactics.dig_out_enabled`
+opens a corridor with the clearing workers the director allocates.
 
 ## Policy switches
 
@@ -148,12 +147,11 @@ The complete switch inventory is:
 | --- | --- |
 | Economy adaptations | `economy.swarm_retirement_enabled`, `economy.large_economy_adaptation_enabled`, `economy.amphibious_network_maintenance_enabled`, `economy.food_service_safeguards_enabled`, `economy.worker_birth_throttle_enabled` |
 | Development actions | `upgrades.enabled`, `repairs.enabled` |
-| Military responses | `military.counterattack_enabled`, `military.explorer_defense_enabled`, `military.warrior_training_backlog_throttle_enabled`, `military.preemptive_defense_enabled`, `military.preemptive_amphibious_enabled` |
+| Military responses | `military.explorer_defense_enabled`, `military.warrior_training_backlog_throttle_enabled`, `military.preemptive_defense_enabled`, `military.preemptive_amphibious_enabled` |
 | Strategic postures | `postures.recover_enabled`, `postures.defend_enabled`, `postures.expand_enabled`, `postures.develop_enabled`, `postures.mobilize_enabled`, `postures.campaign_enabled`, `postures.finish_enabled` |
 | Placement heuristics | `placement.food_preservation_enabled`, `placement.defensive_siting_enabled`, `placement.spacing_compactness_enabled`, `placement.artery_routing_enabled` |
 | Colonization and defense | `colonization.enabled`, `defense.reactive.enabled` |
-| Combat tactics | `tactics.enabled`, `tactics.siege_enabled`, `tactics.dig_out_enabled`, `tactics.failed_target_quarantine_enabled`, `tactics.siege_target_lock_enabled`, `raiding.enabled` |
-| Team coordination | `teamplay.enabled`, `teamplay.pressure_coordination_enabled`, `teamplay.defense_enabled` |
+| Combat tactics | `tactics.enabled`, `tactics.siege_enabled`, `tactics.dig_out_enabled`, `tactics.failed_target_quarantine_enabled`, `raiding.enabled` |
 | Explorer work | `explorer_campaign.enabled`, `fruit.enabled` |
 | Reconnaissance | `recon.enabled`, `recon.scouting_missions_enabled`, `recon.economic_watch_enabled`, `recon.force_memory_enabled` |
 | Farming and clearing | `farming.enabled`, `farming.farm_protection_enabled`, `farming.maintenance_clearing_enabled`, `farming.proactive_clearing_enabled` |
@@ -193,7 +191,7 @@ windows, and construction caps—are checked after all layers resolve.
 The complete schema is a behavior inventory, not a recommendation to optimize
 every dimension in one experiment. Impact ranking helps choose review and
 experiment priority; `tools/optimize_maxima.py` still selects bounded
-stage subsets such as `director`, `economy`, `tactical`, `teamplay`, `farming`,
+stage subsets such as `director`, `economy`, `tactical`, `farming`,
 and `preemptive-defense`. Unselected parameters remain fixed at their resolved
 base or layer value. Every proposed candidate is sent back through the runtime
 resolver before a match, so both individual hard bounds and cross-parameter
@@ -278,28 +276,6 @@ At the original 25 ticks per second, those defaults are a 100-second hold and a
 total memory of 6 minutes 40 seconds. General intelligence confidence continues
 to describe overall contact freshness; it is separate from the force-specific
 hold.
-
-## Teamplay behavior
-
-`teamplay.defense_enabled` allows the tactical director to bid a relief mission
-against its normal raid or siege options. Relief candidates require a currently
-visible enemy force near a currently visible allied building or an allied unit
-under attack. Maxima subtracts visible allied warrior power from the required
-response, checks route and force availability, and only uses warriors above its
-own defense reserve. The strength, minimum force, score components, distance
-cost, contact lifetime, mission duration, and cooldown are all configurable in
-the `teamplay` group. `teamplay.defense_follow_radius` permits ordinary local
-movement without changing targets, while a longer jump must improve the mission
-score by `teamplay.defense_retarget_margin`. Muster and casualty handling reuse
-the existing tactical settings, except that urgent relief dispatches as soon as
-`teamplay.defense_min_force` warriors have enrolled instead of waiting for them
-to gather at a siege-style rally point.
-
-The same `teamplay.allied_pressure_radius` supplies raid and siege coordination.
-For sieges, `teamplay.siege_player_pressure_bonus` affects opponent selection
-when allied warriors are near any known building, while
-`teamplay.siege_building_pressure_bonus` affects the particular building near
-those warriors. Only allied warriors visible to the Maxima player contribute.
 
 ## Compatibility baseline
 

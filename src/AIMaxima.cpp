@@ -132,14 +132,14 @@ namespace
 	}
 
 	bool tactical_warrior_available(const Unit* warrior,
-		const Building* continuingFlag)
+		const Building* continuingFlag, int minimumLevel)
 	{
-		// Tactical flags require level 1 in both combat abilities (the runtime's
-		// ChangeFlagMinimumLevel(2)). Match the engine's subscription rules.
+		// Match the engine's flag subscription rule: the lower of the two combat
+		// abilities must reach the flag's minimum level (user level minus one).
 		if(!warrior || warrior->typeNum!=WARRIOR || warrior->isDead
 		   || warrior->medical!=Unit::MED_FREE
 		   || std::min(warrior->level[ATTACK_SPEED],
-			warrior->level[ATTACK_STRENGTH])<1)
+			warrior->level[ATTACK_STRENGTH])<minimumLevel-1)
 			return false;
 		if(continuingFlag && warrior->attachedBuilding==continuingFlag)
 			return true;
@@ -159,7 +159,8 @@ namespace
 	class TacticalReachability
 	{
 	public:
-		explicit TacticalReachability(Map* map) : map(map) {}
+		TacticalReachability(Map* map, int minimumLevel)
+			: map(map), minimumLevel(minimumLevel) {}
 		std::vector<int> powersAt(Team* team, const Building* continuingFlag,
 			int x, int y, int cap, bool swimmersOnly=false,
 			std::map<std::string, int>* diagnostics=NULL)
@@ -171,14 +172,23 @@ namespace
 				const Unit* warrior=team->myUnits[id];
 				if(diagnostics && warrior && warrior->typeNum==WARRIOR && !warrior->isDead)
 				{
-					if(std::min(warrior->level[ATTACK_SPEED],warrior->level[ATTACK_STRENGTH])<1)
+					if(std::min(warrior->level[ATTACK_SPEED],warrior->level[ATTACK_STRENGTH])<minimumLevel-1)
 						++(*diagnostics)["untrained"];
 					else if(warrior->medical!=Unit::MED_FREE)
 						++(*diagnostics)["medical"];
-					else if(!tactical_warrior_available(warrior,continuingFlag))
+					else if(!tactical_warrior_available(warrior,continuingFlag,minimumLevel))
+					{
 						++(*diagnostics)["busy"];
+						if(warrior->attachedBuilding)
+							++(*diagnostics)["busy_attached_type"+diagnostic_value(
+								warrior->attachedBuilding->type->shortTypeNum)];
+						else if(warrior->activity!=Unit::ACT_RANDOM)
+							++(*diagnostics)["busy_activity"+diagnostic_value(int(warrior->activity))];
+						else
+							++(*diagnostics)["busy_attacking"];
+					}
 				}
-				if(!tactical_warrior_available(warrior,continuingFlag)) continue;
+				if(!tactical_warrior_available(warrior,continuingFlag,minimumLevel)) continue;
 				const bool swimming=warrior->performance[SWIM]>0;
 				if(swimmersOnly && !swimming)
 				{
@@ -201,6 +211,7 @@ namespace
 		}
 	private:
 		Map* map;
+		int minimumLevel;
 		std::vector<int> components[2];
 		void label(bool swimming)
 		{
@@ -227,61 +238,6 @@ namespace
 			}
 		}
 	};
-
-	struct AlliedPressure
-	{
-		AlliedPressure() : warriors(0), power(0) {}
-		int warriors;
-		int power;
-	};
-
-	struct ReliefCandidate
-	{
-		ReliefCandidate()
-			: team(-1), x(0), y(0), score(INT_MIN), requested(0),
-			  enemies(0), enemyPower(0), allies(0), alliedPower(0), route(-1)
-		{
-		}
-		int team;
-		int x;
-		int y;
-		int score;
-		int requested;
-		int enemies;
-		int enemyPower;
-		int allies;
-		int alliedPower;
-		int route;
-	};
-
-	AlliedPressure visible_allied_pressure_near(Player* player, int x, int y,
-		int radius)
-	{
-		AlliedPressure result;
-		if(!player || !player->game || !player->map || !player->team)
-			return result;
-		const int radius_square=radius*radius;
-		for(int team=0; team<Team::MAX_COUNT; ++team)
-		{
-			Team* allied_team=player->game->teams[team];
-			if(!allied_team || allied_team==player->team
-			   || !(player->team->allies&allied_team->me))
-				continue;
-			for(int unit_id=0; unit_id<Unit::MAX_COUNT; ++unit_id)
-			{
-				Unit* allied=allied_team->myUnits[unit_id];
-				if(!allied || allied->typeNum!=WARRIOR
-				   || !player->map->isFOWDiscovered(allied->posX, allied->posY,
-					player->team->me)
-				   || player->map->warpDistSquare(x, y, allied->posX, allied->posY)
-					>radius_square)
-					continue;
-				++result.warriors;
-				result.power+=warrior_power(allied);
-			}
-		}
-		return result;
-	}
 
 	struct EconomicWatchSite
 	{
@@ -625,7 +581,6 @@ Maxima::DirectorPlan::DirectorPlan()
 	  reactive_defense_unit_cap(0), reactive_defense_advantage_min(0),
 	  reactive_defense_advantage_percent(0), preemptive_defense_active(false),
 	  preemptive_amphibious_active(false), preemptive_effective_zone_max(0),
-	  campaign_stall_ticks(1), campaign_retreat_cooldown_ticks(1),
 	  target_switch_margin(0),
 	  preemptive_recompute_ticks(1), preemptive_inner_distance(0),
 	  preemptive_band_width(0), preemptive_path_slack(0),
@@ -653,28 +608,14 @@ Maxima::DirectorPlan::DirectorPlan()
 	  farming_wood_pressure_growth_divisor(1), farming_economic_envelope_radius(0),
 	  priority_inns(50), priority_swarms(40), priority_barracks(30), priority_schools(25),
 	  priority_pools(25), priority_racetracks(20), priority_hospitals(30),
-	  priority_towers(20), tactics_enabled(true), raid_enabled(true),
-	  siege_enabled(true), siege_target_lock_enabled(true), teamplay_enabled(true),
-	  teamplay_defense_enabled(true), tactical_kind(Tactics::MissionNone),
+	  priority_towers(20), tactical_kind(Tactics::MissionNone),
 	  tactical_target_team(-1), tactical_dig_out_team(-1),
 	  tactical_target_gid(-1), tactical_target_x(0),
 	  tactical_target_y(0), tactical_candidate_score(INT_MIN),
-	  tactical_requested_force(0), tactical_minimum_force(0),
-	  tactical_contact_visible(false), tactical_allied_player_pressure(false),
-	  tactical_allied_target_pressure(false), tactical_visible_enemy_warriors(0),
-	  tactical_visible_enemy_power(0), tactical_allied_warriors(0),
-	  tactical_allied_power(0), tactical_route_distance(-1),
-	  tactical_review_interval(100), tactical_rally_radius(2),
-	  tactical_siege_radius(6), tactical_siege_muster_percent(50),
-	  tactical_siege_strength_percent(125), tactical_siege_casualty_percent(40),
-	  tactical_siege_threat_radius(12), tactical_target_lock_ticks(15000),
-	  raid_flag_radius(2), raid_muster_percent(50), raid_muster_timeout(1500),
-	  raid_contact_ttl(300), raid_max_engagement(2400),
-	  raid_casualty_percent(25), raid_survivor_min(4), raid_cooldown(2000),
-	  raid_defender_min(2), raid_defender_percent(50), raid_building_buffer(3),
-	  raid_tower_buffer(2), raid_retarget_margin(60), relief_contact_ttl(500),
-	  relief_max_engagement(2400), relief_cooldown(1000),
-	  relief_follow_radius(6), relief_retarget_margin(60)
+	  tactical_requested_force(0), tactical_review_interval(100),
+	  tactics_enabled(true), tactical_flag_level(2), tactical_siege_radius(6),
+	  raid_flag_radius(2), tactical_stall_ticks(3000),
+	  tactical_quarantine_enabled(true), tactical_quarantine_ticks(5000)
 {
 	const StaffingControl::Policy defaults;
 	staffing_window_samples=defaults.windowSamples;
@@ -733,66 +674,6 @@ Maxima::CampaignPlan::CampaignPlan()
 	  last_progress_tick(0), last_target_buildings(0), buildings_destroyed(0),
 	  cooldown_until(0)
 {
-}
-
-
-Maxima::TacticalDecisionDiagnostics::TacticalDecisionDiagnostics()
-{
-	reset(0);
-}
-
-
-void Maxima::TacticalDecisionDiagnostics::reset(int currentTick)
-{
-	tick=currentTick;
-	authorization="evaluating";
-	decision="none";
-	trainedWarriors=0;
-	defenseReserve=0;
-	deployableWarriors=0;
-
-	raidGate="not evaluated";
-	raidCandidates=0;
-	viableRaids=0;
-	raidScore=INT_MIN;
-	raidRawScore=0;
-	raidRoute=-1;
-	raidRoutePenalty=0;
-	raidOutskirtsBonus=0;
-	raidAlliedBonus=0;
-	raidFfaPenalty=0;
-	raidWorkers=0;
-	raidDefenders=0;
-
-	siegeGate="not evaluated";
-	siegeCandidates=0;
-	viableSieges=0;
-	siegeRejections.clear();
-	siegeCandidateDetails.clear();
-	siegeScore=INT_MIN;
-	siegeTargetValue=0;
-	siegeOpponentScore=0;
-	siegeAlliedPlayerBonus=0;
-	siegeAlliedTargetBonus=0;
-	siegeTowerPenalty=0;
-	siegeRoutePenalty=0;
-	siegeLocalPower=0;
-	siegeUncertainty=0;
-	siegeNearbyTowers=0;
-	siegeRequiredPower=0;
-
-	reliefGate="not evaluated";
-	reliefCandidates=0;
-	viableReliefs=0;
-	reliefScore=INT_MIN;
-	reliefBaseScore=0;
-	reliefAssetValue=0;
-	reliefThreatBonus=0;
-	reliefUnderAttackBonus=0;
-	reliefRoutePenalty=0;
-	reliefEnemyPower=0;
-	reliefAlliedPower=0;
-	reliefRequiredPower=0;
 }
 
 
@@ -919,109 +800,28 @@ void Maxima::getDiagnosticSections(
 	}
 
 	{
-		AIDiagnosticSection section("TACTICAL CHOICE");
-		MAXIMA_DIAGNOSTIC_ROW("Review tick", tactical_diagnostics.tick);
-		MAXIMA_DIAGNOSTIC_ROW("Authorization",
-			tactical_diagnostics.authorization);
+		AIDiagnosticSection section("OFFENSE");
+		MAXIMA_DIAGNOSTIC_ROW("Review tick", offense_diagnostics.tick);
+		MAXIMA_DIAGNOSTIC_ROW("Gate", offense_diagnostics.gate);
+		MAXIMA_DIAGNOSTIC_ROW("Eligible warriors", offense_diagnostics.eligibleWarriors);
+		MAXIMA_DIAGNOSTIC_ROW("Open training slots", offense_diagnostics.openTrainingSlots);
 		{
 			std::ostringstream value;
-			value<<tactical_diagnostics.trainedWarriors<<" - "
-				<<tactical_diagnostics.defenseReserve<<" = "
-				<<tactical_diagnostics.deployableWarriors;
-			section.rows.push_back(AIDiagnosticRow(
-				"Warriors trained-reserved=free", value.str()));
-		}
-		{
-			std::ostringstream value;
-			value<<"R "<<tactical_diagnostics.raidCandidates
-				<<" | S "<<tactical_diagnostics.siegeCandidates
-				<<" | A "<<tactical_diagnostics.reliefCandidates;
-			section.rows.push_back(AIDiagnosticRow("Candidates seen R/S/A",
+			value<<"B "<<offense_diagnostics.viableBuildings<<"/"
+				<<offense_diagnostics.buildingCandidates
+				<<" | C "<<offense_diagnostics.viableClusters<<"/"
+				<<offense_diagnostics.clusterCandidates;
+			section.rows.push_back(AIDiagnosticRow("Reachable/seen buildings, clusters",
 				value.str()));
 		}
-		{
-			std::ostringstream value;
-			value<<"R "<<tactical_diagnostics.viableRaids
-				<<" | S "<<tactical_diagnostics.viableSieges
-				<<" | A "<<tactical_diagnostics.viableReliefs;
-			section.rows.push_back(AIDiagnosticRow("Candidates viable R/S/A",
-				value.str()));
-		}
-		{
-			std::ostringstream value;
-			value<<"R "<<diagnostic_score(tactical_diagnostics.raidScore)
-				<<" | S "<<diagnostic_score(tactical_diagnostics.siegeScore)
-				<<" | A "<<diagnostic_score(tactical_diagnostics.reliefScore);
-			section.rows.push_back(AIDiagnosticRow("Best scores R/S/A", value.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Authorized tactic",
+		MAXIMA_DIAGNOSTIC_ROW("Best score", diagnostic_score(offense_diagnostics.bestScore));
+		MAXIMA_DIAGNOSTIC_ROW("Planned tactic",
 			Tactics::missionKindName(budget.tactical_kind));
-		MAXIMA_DIAGNOSTIC_ROW("Why", tactical_diagnostics.decision);
-		sections.push_back(section);
-	}
-
-	{
-		AIDiagnosticSection section("TACTICAL EVIDENCE");
-		MAXIMA_DIAGNOSTIC_ROW("Raid gate", tactical_diagnostics.raidGate);
-		if(tactical_diagnostics.raidScore!=INT_MIN)
-		{
-			std::ostringstream target;
-			target<<tactical_diagnostics.raidWorkers<<" / "
-				<<tactical_diagnostics.raidDefenders;
-			section.rows.push_back(AIDiagnosticRow("Raid workers/guards", target.str()));
-			std::ostringstream score;
-			score<<tactical_diagnostics.raidRawScore<<" - "
-				<<tactical_diagnostics.raidRoutePenalty<<" + "
-				<<tactical_diagnostics.raidOutskirtsBonus<<" + "
-				<<tactical_diagnostics.raidAlliedBonus<<" - "
-				<<tactical_diagnostics.raidFfaPenalty<<" = "
-				<<tactical_diagnostics.raidScore;
-			section.rows.push_back(AIDiagnosticRow(
-				"Raid raw-route+edge+ally-FFA", score.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Siege gate", tactical_diagnostics.siegeGate);
-		if(tactical_diagnostics.siegeScore!=INT_MIN)
-		{
-			std::ostringstream value;
-			value<<tactical_diagnostics.siegeTargetValue<<" + "
-				<<tactical_diagnostics.siegeOpponentScore;
-			section.rows.push_back(AIDiagnosticRow("Siege target+opponent", value.str()));
-			value.str(""); value.clear();
-			value<<tactical_diagnostics.siegeAlliedPlayerBonus<<" + "
-				<<tactical_diagnostics.siegeAlliedTargetBonus<<" - "
-				<<tactical_diagnostics.siegeTowerPenalty<<" - "
-				<<tactical_diagnostics.siegeRoutePenalty;
-			section.rows.push_back(AIDiagnosticRow(
-				"Siege ally P/T-tower-route", value.str()));
-			MAXIMA_DIAGNOSTIC_ROW("Siege final score",
-				tactical_diagnostics.siegeScore);
-			value.str(""); value.clear();
-			value<<tactical_diagnostics.siegeLocalPower<<" + uncertainty "
-				<<tactical_diagnostics.siegeUncertainty<<" + towers "
-				<<tactical_diagnostics.siegeNearbyTowers<<" -> "
-				<<tactical_diagnostics.siegeRequiredPower;
-			section.rows.push_back(AIDiagnosticRow("Siege opposition -> required",
-				value.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Ally-defense gate", tactical_diagnostics.reliefGate);
-		if(tactical_diagnostics.reliefScore!=INT_MIN)
-		{
-			std::ostringstream value;
-			value<<tactical_diagnostics.reliefEnemyPower<<" / "
-				<<tactical_diagnostics.reliefAlliedPower<<" / "
-				<<tactical_diagnostics.reliefRequiredPower;
-			section.rows.push_back(AIDiagnosticRow(
-				"Enemy/allied/needed power", value.str()));
-			value.str(""); value.clear();
-			value<<tactical_diagnostics.reliefBaseScore<<" + "
-				<<tactical_diagnostics.reliefAssetValue<<" + "
-				<<tactical_diagnostics.reliefThreatBonus<<" + "
-				<<tactical_diagnostics.reliefUnderAttackBonus<<" - "
-				<<tactical_diagnostics.reliefRoutePenalty<<" = "
-				<<tactical_diagnostics.reliefScore;
-			section.rows.push_back(AIDiagnosticRow(
-				"Defense base+asset+threat+hit-route", value.str()));
-		}
+		MAXIMA_DIAGNOSTIC_ROW("Why", offense_diagnostics.decision);
+		for(std::map<std::string,int>::const_iterator r=offense_diagnostics.rejections.begin();
+			r!=offense_diagnostics.rejections.end(); ++r)
+			section.rows.push_back(AIDiagnosticRow("Rejected: "+r->first,
+				diagnostic_value(r->second)));
 		sections.push_back(section);
 	}
 
@@ -1398,9 +1198,6 @@ void Maxima::emit_ablation_opportunities(Context& echo) const
 			strategy.economy.large_economy_adaptation_enabled,
 			snapshot.population);
 		emit("upgrades.enabled", strategy.upgrades.enabled, snapshot.population);
-		if(echo.player && echo.player->team
-		   && (echo.player->team->allies & ~echo.player->team->me))
-			emit("teamplay.enabled", strategy.teamplay.enabled, 1);
 	}
 	const bool postureEnabled=posture==PostureExpand
 		? strategy.postures.expand_enabled : posture==PostureDevelop
@@ -3085,49 +2882,23 @@ void Maxima::allocate_resources()
 	for(int team=0; team<Team::MAX_COUNT; ++team)
 		if(opponents[team].alive)
 			largest_enemy_force=std::max(largest_enemy_force, opponents[team].estimated_warriors);
-	const bool direct_threat=snapshot.visible_colony_threat>0
-		|| snapshot.own_buildings_under_attack>0
-		|| explorer_defense_emergency();
-	// Economy, production and construction are owned by the policy bidders.
-	// This provisional reserve survives only to gate campaign deployment before
-	// the defense bidder produces the executable reserve.
+	// The reserve is advisory for the reactive defense; it no longer rations
+	// the offense.
 	budget.defense_reserve=std::max(strategy.military.defense_reserve_min,
 		std::max(largest_enemy_force*strategy.military.defense_enemy_percent/100
 				+strategy.military.reserve_enemy_bonus,
 			snapshot.trained_warriors/strategy.military.reserve_force_divisor));
-	const int deployable=snapshot.trained_warriors-budget.defense_reserve;
 	budget.attack_flags=0;
 	bool known_target=false;
 	for(int team=0; team<Team::MAX_COUNT; ++team)
 		if(opponents[team].alive && opponents[team].score!=INT_MIN)
 			known_target=true;
-	const bool endgame=snapshot.alive_enemies<=strategy.military.endgame_enemy_count;
-	const int autonomous_campaign_force=endgame
-		? std::max(strategy.military.endgame_force_floor,
-			largest_enemy_force+budget.defense_reserve
-			+std::max(0, strategy.military.campaign_force_margin-1))
-		: std::max(strategy.military.campaign_force_floor,
-			largest_enemy_force+budget.defense_reserve
-			+strategy.military.campaign_force_margin);
-	// The economic director can restrict births and construction, but existing
-	// warriors are deployed according to military readiness alone.
-	const bool counterattack_window=strategy.military.counterattack_enabled
-		&& direct_threat && !severe_colony_emergency()
-		&& deployable>=largest_enemy_force+strategy.military.counterattack_force_margin;
-	const bool campaign_ordered=strategy.tactics.enabled
-		&& strategy.tactics.siege_enabled && known_target
-		&& !severe_colony_emergency()
-		&& (!direct_threat || counterattack_window)
-		&& timer>=campaign.cooldown_until
-		&& (snapshot.trained_warriors>=autonomous_campaign_force
-			|| campaign.state==CampaignActive || campaign.state==CampaignPaused);
-	if(campaign_ordered && deployable>=strategy.military.campaign_deployable_min)
+	// The offense keeps a flag on the enemy whenever a target is known; the
+	// economic director never rations existing warriors.
+	if(strategy.tactics.enabled && known_target && !severe_colony_emergency())
 		budget.attack_flags=1;
-	// Concentrate the deployable force on one objective. A paired screen showed
-	// that even a heavily gated second flag consumed economic strength without
-	// improving conversion on the island map it was meant to accelerate.
 	budget.attack_units=budget.attack_flags>0
-		? std::min(strategy.military.attack_unit_cap, deployable) : 0;
+		? std::min(strategy.military.attack_unit_cap, snapshot.trained_warriors) : 0;
 
 	// Campaign readiness feeds the offense bid; the arbiter owns the executable
 	// economy and production budget.
@@ -3730,31 +3501,13 @@ void Maxima::finalize_director_plan(Context& echo)
 	budget.reactive_defense_advantage_percent=
 		strategy.reactive_defense.advantage_percent;
 	budget.tactical_review_interval=strategy.tactics.review_interval_ticks;
-	budget.tactical_rally_radius=strategy.tactics.rally_flag_radius;
+	budget.tactics_enabled=strategy.tactics.enabled;
+	budget.tactical_flag_level=strategy.tactics.flag_minimum_level;
 	budget.tactical_siege_radius=strategy.tactics.siege_flag_radius;
-	budget.tactical_siege_muster_percent=strategy.tactics.siege_muster_percent;
-	budget.tactical_siege_strength_percent=strategy.tactics.siege_strength_percent;
-	budget.tactical_siege_casualty_percent=strategy.tactics.siege_casualty_percent;
-	budget.tactical_siege_threat_radius=strategy.tactics.siege_local_threat_radius;
-	budget.tactical_target_lock_ticks=strategy.tactics.siege_target_lock_ticks;
 	budget.raid_flag_radius=strategy.raiding.flag_radius;
-	budget.raid_muster_percent=strategy.raiding.muster_percent;
-	budget.raid_muster_timeout=strategy.raiding.muster_timeout_ticks;
-	budget.raid_contact_ttl=strategy.raiding.contact_ttl_ticks;
-	budget.raid_max_engagement=strategy.raiding.max_engagement_ticks;
-	budget.raid_casualty_percent=strategy.raiding.casualty_percent;
-	budget.raid_survivor_min=strategy.raiding.survivor_min;
-	budget.raid_cooldown=strategy.raiding.cooldown_ticks;
-	budget.raid_defender_min=strategy.raiding.defender_min;
-	budget.raid_defender_percent=strategy.raiding.defender_percent;
-	budget.raid_building_buffer=strategy.raiding.building_buffer;
-	budget.raid_tower_buffer=strategy.raiding.tower_buffer;
-	budget.raid_retarget_margin=strategy.raiding.retarget_margin;
-	budget.relief_contact_ttl=strategy.teamplay.defense_contact_ttl_ticks;
-	budget.relief_max_engagement=strategy.teamplay.defense_max_engagement_ticks;
-	budget.relief_cooldown=strategy.teamplay.defense_cooldown_ticks;
-	budget.relief_follow_radius=strategy.teamplay.defense_follow_radius;
-	budget.relief_retarget_margin=strategy.teamplay.defense_retarget_margin;
+	budget.tactical_stall_ticks=strategy.tactics.stall_ticks;
+	budget.tactical_quarantine_enabled=strategy.tactics.failed_target_quarantine_enabled;
+	budget.tactical_quarantine_ticks=strategy.tactics.failed_target_quarantine_ticks;
 	budget.preemptive_effective_zone_max=
 		strategy.military.preemptive_defense_enabled
 		? AIMaxima::Defense::effectiveZoneCap(snapshot.trained_warriors,
@@ -3768,9 +3521,6 @@ void Maxima::finalize_director_plan(Context& echo)
 		strategy.military.preemptive_defense_amphibious_enabled,
 		snapshot.swimming_warriors,
 		strategy.military.preemptive_defense_min_swimming_warriors);
-	budget.campaign_stall_ticks=strategy.scheduling.campaign_stall_ticks;
-	budget.campaign_retreat_cooldown_ticks=
-		strategy.scheduling.campaign_retreat_cooldown_ticks;
 	budget.target_switch_margin=strategy.scoring.target_switch_margin;
 	budget.preemptive_recompute_ticks=
 		strategy.scheduling.preemptive_defense_recompute_ticks;
@@ -3793,13 +3543,6 @@ void Maxima::finalize_director_plan(Context& echo)
 		strategy.reconnaissance.mission_review_interval_ticks;
 	budget.reconnaissance_economic_watch_revisit=
 		strategy.reconnaissance.economic_watch_revisit_ticks;
-	budget.tactics_enabled=strategy.tactics.enabled;
-	budget.raid_enabled=strategy.raiding.enabled;
-	budget.siege_enabled=strategy.tactics.siege_enabled;
-	budget.siege_target_lock_enabled=
-		strategy.tactics.siege_target_lock_enabled;
-	budget.teamplay_enabled=strategy.teamplay.enabled;
-	budget.teamplay_defense_enabled=strategy.teamplay.defense_enabled;
 	budget.farming_normal_interval=strategy.farming.normal_interval_ticks;
 	budget.farming_urgent_interval=strategy.farming.urgent_interval_ticks;
 	budget.farming_enabled=strategy.farming.enabled;
@@ -3867,843 +3610,6 @@ void Maxima::finalize_director_plan(Context& echo)
 	budget.farming_urgent=farming_urgent || budget.food_emergency
 		|| environment.space_capacity<strategy.farming.urgent_space_threshold
 		|| recent_construction_failures>=strategy.farming.proactive_failure_threshold;
-}
-
-
-bool Maxima::raid_candidate_safe(Context& echo,
-	const Tactics::RaidCandidate& candidate, int raidForce, int& routeDistance,
-	int& nearestBuildingDistance) const
-{
-	routeDistance=-1;
-	nearestBuildingDistance=INT_MAX;
-	if(Tactics::Program::raidUnsafe(candidate.defenders,
-		raidForce, budget.raid_defender_min,
-		budget.raid_defender_percent))
-		return false;
-	const Recon::OpponentIntel* intel=reconnaissance.opponent(candidate.team);
-	if(!intel)
-		return false;
-	Map* map=echo.player->map;
-	for(enemy_team_iterator enemy(echo); enemy!=enemy_team_iterator(); ++enemy)
-	{
-		const Recon::OpponentIntel* hostile=reconnaissance.opponent(*enemy);
-		if(!hostile)
-			continue;
-		for(std::map<int, Recon::BuildingSighting>::const_iterator building=
-			hostile->buildings.begin(); building!=hostile->buildings.end(); ++building)
-		{
-			const Recon::BuildingSighting& sighting=building->second;
-			// Preserve the target team's economic-building buffer and outskirts
-			// score, but towers belonging to any hostile team can shoot the raiders.
-			if(*enemy!=candidate.team && sighting.type!=IntBuildingType::DEFENSE_BUILDING)
-				continue;
-			int distance=INT_MAX;
-			for(int dx=0; dx<sighting.width; ++dx)
-				for(int dy=0; dy<sighting.height; ++dy)
-					distance=std::min(distance, map->warpDistSquare(candidate.x,
-						candidate.y, sighting.x+dx, sighting.y+dy));
-			if(*enemy==candidate.team)
-				nearestBuildingDistance=std::min(nearestBuildingDistance, distance);
-			int buffer=budget.raid_building_buffer+budget.raid_flag_radius;
-			if(sighting.type==IntBuildingType::DEFENSE_BUILDING)
-			{
-				BuildingType* tower=globalContainer->buildingsTypes.getByType(
-					IntBuildingType::typeFromShortNumber(sighting.type), 1, false);
-				const int range=tower ? tower->shootingRange : buffer;
-				buffer=range+budget.raid_tower_buffer+budget.raid_flag_radius;
-			}
-			if(distance<=buffer*buffer)
-				return false;
-		}
-	}
-
-	GradientInfo land_info;
-	land_info.add_source(new Entities::AnyTeamBuilding(
-		echo.player->team->teamNumber, CompletedBuildings));
-	land_info.add_obstacle(new Entities::AnyResource);
-	land_info.add_obstacle(new Entities::Water);
-	Gradient& land=echo.get_gradient_manager().get_gradient(land_info);
-	routeDistance=land.get_height(candidate.x, candidate.y);
-	if(routeDistance>=0)
-		return true;
-	const Building* continuing_flag=tactical_mission.kind==Tactics::MissionRaid
-		? echo.get_building_register().get_building(tactical_mission.flagId) : NULL;
-	int available_swimmers=0;
-	for(int id=0; id<Unit::MAX_COUNT; ++id)
-	{
-		const Unit* warrior=echo.player->team->myUnits[id];
-		if(tactical_warrior_available(warrior, continuing_flag)
-		   && warrior->performance[SWIM]>0)
-			++available_swimmers;
-	}
-	if(available_swimmers<raidForce)
-		return false;
-	GradientInfo swim_info;
-	swim_info.add_source(new Entities::AnyTeamBuilding(
-		echo.player->team->teamNumber, CompletedBuildings));
-	swim_info.add_obstacle(new Entities::AnyResource);
-	Gradient& swim=echo.get_gradient_manager().get_gradient(swim_info);
-	routeDistance=swim.get_height(candidate.x, candidate.y);
-	return routeDistance>=0;
-}
-
-
-bool Maxima::choose_tactical_rally(Context& echo, int targetX, int targetY,
-	int& rallyX, int& rallyY) const
-{
-	Map* map=echo.player->map;
-	GradientInfo target_land_info;
-	target_land_info.add_source(new Entities::Position(
-		map->normalizeX(targetX), map->normalizeY(targetY)));
-	target_land_info.add_obstacle(new Entities::AnyResource);
-	target_land_info.add_obstacle(new Entities::Water);
-	GradientInfo target_swim_info;
-	target_swim_info.add_source(new Entities::Position(
-		map->normalizeX(targetX), map->normalizeY(targetY)));
-	target_swim_info.add_obstacle(new Entities::AnyResource);
-	GradientManager target_gradients(echo.player);
-	Gradient& target_land=target_gradients.get_gradient(target_land_info);
-	Gradient& target_swim=target_gradients.get_gradient(target_swim_info);
-
-	std::vector<const Unit*> available;
-	for(int i=0; i<Unit::MAX_COUNT; ++i)
-	{
-		const Unit* unit=echo.player->team->myUnits[i];
-		if(tactical_warrior_available(unit, NULL)
-		   && (unit->performance[SWIM]>0 ? target_swim : target_land)
-			.get_height(unit->posX,unit->posY)>=0)
-			available.push_back(unit);
-	}
-	const int radius=budget.tactical_rally_radius;
-	const int requested=std::max(1, budget.tactical_requested_force);
-	const int search_radius=std::max(12, radius+1);
-	int best=INT_MAX;
-	std::set<int> considered;
-	for(int i=0; i<Building::MAX_COUNT; ++i)
-	{
-		Building* home=echo.player->team->myBuildings[i];
-		if(!home || home->type->isVirtual || home->type->isBuildingSite
-		   || home->underAttackTimer)
-			continue;
-		const int type=home->type->shortTypeNum;
-		if(type!=IntBuildingType::FOOD_BUILDING
-		   && type!=IntBuildingType::HEAL_BUILDING
-		   && type!=IntBuildingType::SWARM_BUILDING)
-			continue;
-		const bool amphibious=target_land.get_height(home->posX,home->posY)<0;
-		for(int dy=-search_radius; dy<=search_radius; ++dy)
-			for(int dx=-search_radius; dx<=search_radius; ++dx)
-			{
-				if(dx*dx+dy*dy>search_radius*search_radius) continue;
-				const int x=map->normalizeX(home->posX+dx);
-				const int y=map->normalizeY(home->posY+dy);
-				// Assemble by our supply buildings, not on the enemy island.
-				// A water rally recruits swimmers without a new engine flag type.
-				if(!map->isFOWDiscovered(x,y,echo.player->team->me)
-				   || map->isWater(x,y)!=amphibious
-				   || map->getBuilding(x,y)!=NOGBID
-				   || map->getResource(x,y).type!=NO_RES_TYPE
-				   || map->isForbidden(x,y,echo.player->team->me)
-				   || (amphibious ? target_swim : target_land).get_height(x,y)<0)
-					continue;
-				if(!considered.insert(y*map->getW()+x).second) continue;
-				bool safe=true;
-				for(std::vector<Tactics::ThreatSighting>::const_iterator threat=
-					tactics.threats().begin(); threat!=tactics.threats().end(); ++threat)
-					if(map->warpDistSquare(x,y,threat->x,threat->y)
-						<=(radius+4)*(radius+4)) { safe=false; break; }
-				if(!safe) continue;
-				int capacity=0;
-				for(int ry=-radius; ry<=radius && safe; ++ry)
-					for(int rx=-radius; rx<=radius; ++rx)
-					{
-						if(rx*rx+ry*ry>radius*radius) continue;
-						const int px=map->normalizeX(x+rx),py=map->normalizeY(y+ry);
-						if(map->getBuilding(px,py)!=NOGBID
-						   || map->getResource(px,py).type!=NO_RES_TYPE
-						   || map->isForbidden(px,py,echo.player->team->me)) continue;
-						// The engine recruits against the entire flag radius. Never
-						// admit walkers from a shore that cannot reach the target.
-						if(!map->isWater(px,py) && target_land.get_height(px,py)<0)
-						{ safe=false; break; }
-						if((amphibious ? target_swim : target_land).get_height(px,py)>=0)
-							++capacity;
-					}
-				if(!safe || capacity<requested) continue;
-				std::vector<int> distances;
-				for(size_t unit=0; unit<available.size(); ++unit)
-					if(!amphibious || available[unit]->performance[SWIM]>0)
-						distances.push_back(map->warpDistSquare(x,y,
-							available[unit]->posX,available[unit]->posY));
-				if(int(distances.size())<requested) continue;
-				std::sort(distances.begin(),distances.end());
-				int score=dx*dx+dy*dy;
-				for(int unit=0; unit<std::min(requested,int(distances.size())); ++unit)
-					score+=distances[unit];
-				if(score<best)
-				{ best=score; rallyX=x; rallyY=y; }
-			}
-	}
-	return best!=INT_MAX;
-}
-
-void Maxima::plan_tactical_authorization(Context& echo)
-{
-	const TacticalDecisionDiagnostics previous_diagnostics=tactical_diagnostics;
-	tactical_diagnostics.reset(timer);
-	tactical_diagnostics.trainedWarriors=snapshot.trained_warriors;
-	tactical_diagnostics.defenseReserve=budget.defense_reserve;
-	tactical_diagnostics.deployableWarriors=std::max(0,
-		snapshot.trained_warriors-budget.defense_reserve);
-	budget.tactical_kind=Tactics::MissionNone;
-	budget.tactical_target_team=-1;
-	budget.tactical_dig_out_team=-1;
-	budget.tactical_target_gid=-1;
-	budget.tactical_candidate_score=INT_MIN;
-	budget.tactical_requested_force=0;
-	budget.tactical_minimum_force=0;
-	budget.tactical_contact_visible=false;
-	budget.tactical_allied_player_pressure=false;
-	budget.tactical_allied_target_pressure=false;
-	budget.tactical_visible_enemy_warriors=0;
-	budget.tactical_visible_enemy_power=0;
-	budget.tactical_allied_warriors=0;
-	budget.tactical_allied_power=0;
-	budget.tactical_route_distance=-1;
-	if(!strategy.tactics.enabled)
-	{
-		tactical_diagnostics.authorization="blocked";
-		tactical_diagnostics.decision="warrior tactics disabled";
-		return;
-	}
-	if(budget.colony_emergency)
-	{
-		tactical_diagnostics.authorization="blocked";
-		tactical_diagnostics.decision="colony emergency protects the army";
-		return;
-	}
-	int replacement_siege_team=-1;
-	bool active_relief=false;
-	if(tactical_mission.phase!=Tactics::PhaseIdle
-	   && tactical_mission.phase!=Tactics::PhaseCooldown)
-	{
-		budget.tactical_kind=tactical_mission.kind;
-		budget.tactical_target_team=tactical_mission.targetTeam;
-		budget.tactical_target_gid=tactical_mission.targetGid;
-		budget.tactical_target_x=tactical_mission.targetX;
-		budget.tactical_target_y=tactical_mission.targetY;
-		budget.tactical_candidate_score=tactical_mission.candidateScore;
-		budget.tactical_requested_force=tactical_mission.requestedForce;
-		budget.tactical_minimum_force=tactical_mission.minimumForce;
-		if(tactical_mission.kind==Tactics::MissionRaid)
-		{
-			tactical_diagnostics=previous_diagnostics;
-			tactical_diagnostics.authorization="mission locked";
-			if(tactical_diagnostics.decision=="none")
-			{
-				tactical_diagnostics.tick=timer;
-				tactical_diagnostics.decision="continuing loaded raid lifecycle";
-			}
-			return;
-		}
-		if(tactical_mission.kind==Tactics::MissionRelief)
-			active_relief=true;
-		else
-		{
-			const Recon::OpponentIntel* active_intel=
-				reconnaissance.opponent(tactical_mission.targetTeam);
-			if(active_intel && active_intel->buildings.find(tactical_mission.targetGid)
-				!=active_intel->buildings.end())
-			{
-				tactical_diagnostics=previous_diagnostics;
-				tactical_diagnostics.authorization="mission locked";
-				if(tactical_diagnostics.decision=="none")
-				{
-					tactical_diagnostics.tick=timer;
-					tactical_diagnostics.decision="continuing loaded siege lifecycle";
-				}
-				return;
-			}
-			replacement_siege_team=tactical_mission.targetTeam;
-			// The copied target is no longer valid. A candidate selected below may
-			// replace it; otherwise withdraw instead of waiting indefinitely.
-			budget.tactical_target_gid=-1;
-		}
-	}
-	if(timer<tactical_mission.cooldownUntil)
-	{
-		tactical_diagnostics.authorization="cooldown";
-		tactical_diagnostics.decision="waiting "+diagnostic_value(
-			tactical_mission.cooldownUntil-timer)+" ticks";
-		return;
-	}
-
-	tactical_diagnostics.authorization="open";
-	const int deployable=tactical_diagnostics.deployableWarriors;
-	int raid_score=INT_MIN;
-	Tactics::RaidCandidate raid;
-	const bool can_raid=strategy.raiding.enabled
-		&& !active_relief && replacement_siege_team<0
-		&& deployable>=strategy.raiding.min_force;
-	if(active_relief)
-		tactical_diagnostics.raidGate="blocked: active ally defense";
-	else if(replacement_siege_team>=0)
-		tactical_diagnostics.raidGate="blocked: replacing siege target";
-	else if(deployable<strategy.raiding.min_force)
-		tactical_diagnostics.raidGate="blocked: too few free warriors";
-	else
-		tactical_diagnostics.raidGate="open";
-	tactical_diagnostics.raidCandidates=
-		static_cast<int>(tactics.raidCandidates().size());
-	if(can_raid)
-	{
-		for(std::vector<Tactics::RaidCandidate>::const_iterator candidate=
-			tactics.raidCandidates().begin(); candidate!=tactics.raidCandidates().end();
-			++candidate)
-		{
-			const int requested=Tactics::Program::desiredRaidForce(candidate->workers,
-				strategy.raiding.force_bonus, strategy.raiding.min_force,
-				std::min(strategy.raiding.max_force, deployable));
-			int route=-1;
-			int nearest=INT_MAX;
-			if(!raid_candidate_safe(echo, *candidate, requested, route, nearest))
-				continue;
-			if(requested<strategy.raiding.min_force)
-				continue;
-			++tactical_diagnostics.viableRaids;
-			const int route_penalty=route*strategy.raiding.route_distance_weight;
-			int outskirts_bonus=0;
-			int allied_bonus=0;
-			int ffa_penalty=0;
-			int score=candidate->score-route_penalty;
-			if(nearest!=INT_MAX)
-			{
-				outskirts_bonus=std::min(100, nearest/16)
-					*strategy.raiding.outskirts_weight;
-				score+=outskirts_bonus;
-			}
-		if(strategy.teamplay.enabled
-		   && strategy.teamplay.pressure_coordination_enabled
-		   && visible_allied_pressure_near(echo.player, candidate->x, candidate->y,
-			strategy.teamplay.allied_pressure_radius).warriors>0)
-			{
-				allied_bonus=strategy.raiding.allied_pressure_bonus;
-				score+=allied_bonus;
-			}
-			if(snapshot.alive_enemies>1 && snapshot.visible_colony_threat>0)
-			{
-				ffa_penalty=strategy.raiding.ffa_third_party_penalty;
-				score-=ffa_penalty;
-			}
-			if(score>raid_score)
-			{
-				raid_score=score;
-				raid=*candidate;
-				tactical_diagnostics.raidScore=score;
-				tactical_diagnostics.raidRawScore=candidate->score;
-				tactical_diagnostics.raidRoute=route;
-				tactical_diagnostics.raidRoutePenalty=route_penalty;
-				tactical_diagnostics.raidOutskirtsBonus=outskirts_bonus;
-				tactical_diagnostics.raidAlliedBonus=allied_bonus;
-				tactical_diagnostics.raidFfaPenalty=ffa_penalty;
-				tactical_diagnostics.raidWorkers=candidate->workers;
-				tactical_diagnostics.raidDefenders=candidate->defenders;
-			}
-		}
-		if(tactical_diagnostics.viableRaids==0)
-			tactical_diagnostics.raidGate="open, but no safe reachable cluster";
-	}
-
-	int siege_score=INT_MIN;
-	int siege_gid=-1;
-	int siege_team=-1;
-	int siege_x=0;
-	int siege_y=0;
-	int siege_requested=0;
-	bool siege_player_pressure=false;
-	bool siege_target_pressure=false;
-	std::vector<int> available_powers;
-	// Mission IDs belong to the runtime register, not the engine GID space.
-	// Reuse the deployed force when refreshing relief or replacing a siege target.
-	Building* continuing_flag=(active_relief || replacement_siege_team>=0)
-		? echo.get_building_register().get_building(tactical_mission.flagId) : NULL;
-	for(int unit_id=0; unit_id<Unit::MAX_COUNT; ++unit_id)
-	{
-		Unit* warrior=echo.player->team->myUnits[unit_id];
-		if(!tactical_warrior_available(warrior, continuing_flag))
-			continue;
-		const int power=std::max(1, warrior->getRealAttackStrength()
-			*warrior->performance[ATTACK_SPEED]*warrior->hp
-			/std::max(1, warrior->performance[HP]));
-		available_powers.push_back(power);
-	}
-	std::sort(available_powers.begin(), available_powers.end(), std::greater<int>());
-	if(static_cast<int>(available_powers.size())>deployable)
-		available_powers.resize(deployable);
-	const int representative_power=available_powers.empty() ? 1
-		: available_powers[available_powers.size()/2];
-	TacticalReachability reachability(echo.player->map);
-
-	ReliefCandidate relief;
-	bool has_living_ally=false;
-	for(int team=0; team<Team::MAX_COUNT && !has_living_ally; ++team)
-	{
-		Team* possible=echo.player->game->teams[team];
-		has_living_ally=possible && possible!=echo.player->team && possible->isAlive
-			&& (echo.player->team->allies&possible->me);
-	}
-	const bool can_relieve=strategy.teamplay.enabled
-		&& strategy.teamplay.defense_enabled
-		&& has_living_ally
-		&& replacement_siege_team<0
-		&& deployable>=strategy.teamplay.defense_min_force;
-	if(!strategy.teamplay.defense_enabled)
-		tactical_diagnostics.reliefGate="blocked: ally defense disabled";
-	else if(!has_living_ally)
-		tactical_diagnostics.reliefGate="blocked: no living ally";
-	else if(replacement_siege_team>=0)
-		tactical_diagnostics.reliefGate="blocked: replacing siege target";
-	else if(deployable<strategy.teamplay.defense_min_force)
-		tactical_diagnostics.reliefGate="blocked: too few free warriors";
-	else
-		tactical_diagnostics.reliefGate="open";
-	if(can_relieve)
-	{
-		GradientInfo land_route_info;
-		land_route_info.add_source(new Entities::AnyTeamBuilding(
-			echo.player->team->teamNumber, CompletedBuildings));
-		land_route_info.add_obstacle(new Entities::AnyResource);
-		land_route_info.add_obstacle(new Entities::Water);
-		Gradient& land_route=echo.get_gradient_manager().get_gradient(land_route_info);
-		GradientInfo swim_route_info;
-		swim_route_info.add_source(new Entities::AnyTeamBuilding(
-			echo.player->team->teamNumber, CompletedBuildings));
-		swim_route_info.add_obstacle(new Entities::AnyResource);
-		Gradient& swim_route=echo.get_gradient_manager().get_gradient(swim_route_info);
-		const int radius_square=strategy.teamplay.allied_pressure_radius
-			*strategy.teamplay.allied_pressure_radius;
-
-		const auto consider_relief=[&](int team, int x, int y, int asset_value,
-			bool under_attack)
-		{
-			++tactical_diagnostics.reliefCandidates;
-			int enemies=0;
-			int enemy_power=0;
-			for(std::vector<Tactics::ThreatSighting>::const_iterator threat=
-				tactics.threats().begin(); threat!=tactics.threats().end(); ++threat)
-				if(echo.player->map->warpDistSquare(x, y, threat->x, threat->y)
-				   <=radius_square)
-				{
-					++enemies;
-					enemy_power+=threat->power;
-				}
-			if(enemies==0)
-				return;
-			const AlliedPressure pressure=visible_allied_pressure_near(echo.player,
-				x, y, strategy.teamplay.allied_pressure_radius);
-			const int required_combined=(enemy_power
-				*strategy.teamplay.defense_strength_percent+99)/100;
-			const int required_power=std::max(0, required_combined-pressure.power);
-			if(required_power==0)
-				return;
-			int route=land_route.get_height(x, y);
-			int requested=Tactics::Program::forceForPower(reachability.powersAt(
-				echo.player->team,continuing_flag,x,y,deployable),
-				required_power, strategy.teamplay.defense_min_force,
-				strategy.military.attack_unit_cap);
-			if(route<0 || requested==0)
-			{
-				route=swim_route.get_height(x, y);
-				requested=Tactics::Program::forceForPower(reachability.powersAt(
-					echo.player->team,continuing_flag,x,y,deployable,true),
-					required_power, strategy.teamplay.defense_min_force,
-					strategy.military.attack_unit_cap);
-			}
-			if(route<0 || requested==0)
-				return;
-			const int score=strategy.teamplay.defense_base_score+asset_value
-				+enemies*strategy.teamplay.defense_threat_weight
-				+(under_attack ? strategy.teamplay.defense_under_attack_bonus : 0)
-				-route*strategy.teamplay.defense_route_distance_weight;
-			if(score<=0)
-				return;
-			++tactical_diagnostics.viableReliefs;
-			if(score<=relief.score)
-				return;
-			relief.team=team;
-			relief.x=x;
-			relief.y=y;
-			relief.score=score;
-			relief.requested=requested;
-			relief.enemies=enemies;
-			relief.enemyPower=enemy_power;
-			relief.allies=pressure.warriors;
-			relief.alliedPower=pressure.power;
-			relief.route=route;
-			tactical_diagnostics.reliefScore=score;
-			tactical_diagnostics.reliefBaseScore=
-				strategy.teamplay.defense_base_score;
-			tactical_diagnostics.reliefAssetValue=asset_value;
-			tactical_diagnostics.reliefThreatBonus=
-				enemies*strategy.teamplay.defense_threat_weight;
-			tactical_diagnostics.reliefUnderAttackBonus=under_attack
-				? strategy.teamplay.defense_under_attack_bonus : 0;
-			tactical_diagnostics.reliefRoutePenalty=
-				route*strategy.teamplay.defense_route_distance_weight;
-			tactical_diagnostics.reliefEnemyPower=enemy_power;
-			tactical_diagnostics.reliefAlliedPower=pressure.power;
-			tactical_diagnostics.reliefRequiredPower=required_power;
-		};
-
-		for(int team=0; team<Team::MAX_COUNT; ++team)
-		{
-			Team* allied_team=echo.player->game->teams[team];
-			if(!allied_team || allied_team==echo.player->team
-			   || !(echo.player->team->allies&allied_team->me))
-				continue;
-			for(int building_id=0; building_id<Building::MAX_COUNT; ++building_id)
-			{
-				Building* building=allied_team->myBuildings[building_id];
-				if(!building || !building_currently_visible(echo.player, building)
-				   || building->type->isVirtual || building->type->isBuildingSite)
-					continue;
-				consider_relief(team, building->posX+building->type->width/2,
-					building->posY+building->type->height/2,
-					tactical_building_value(building->type->shortTypeNum,
-						strategy.tactics), building->underAttackTimer!=0);
-			}
-			for(int unit_id=0; unit_id<Unit::MAX_COUNT; ++unit_id)
-			{
-				Unit* unit=allied_team->myUnits[unit_id];
-				if(!unit || unit->typeNum==EXPLORER
-				   || !echo.player->map->isFOWDiscovered(unit->posX, unit->posY,
-					echo.player->team->me)
-				   || !unit->underAttackTimer)
-					continue;
-				consider_relief(team, unit->posX, unit->posY,
-					strategy.teamplay.defense_unit_value, true);
-			}
-		}
-		if(tactical_diagnostics.viableReliefs==0)
-			tactical_diagnostics.reliefGate=
-				"open, but no threatened reachable ally";
-	}
-
-	// Progress commits us to a living opponent, never an eliminated one.
-	// Share this gate with dig-out selection so a stale campaign cannot block
-	// both direct attacks and opening routes to the remaining enemies.
-	const Recon::OpponentIntel* campaign_intel=
-		reconnaissance.opponent(campaign.target_team);
-	const bool progress_lock=strategy.tactics.siege_target_lock_enabled
-		&& campaign_intel && campaign_intel->alive
-		&& campaign.buildings_destroyed>0
-		&& timer-campaign.last_progress_tick<=strategy.tactics.siege_target_lock_ticks;
-	const bool can_siege=strategy.tactics.siege_enabled && !active_relief
-		&& deployable>=strategy.tactics.siege_min_force;
-	if(active_relief)
-		tactical_diagnostics.siegeGate="blocked: active ally defense";
-	else if(!strategy.tactics.siege_enabled)
-		tactical_diagnostics.siegeGate="blocked: sieges disabled";
-	else if(deployable<strategy.tactics.siege_min_force)
-		tactical_diagnostics.siegeGate="blocked: too few free warriors";
-	else
-		tactical_diagnostics.siegeGate="open";
-	if(can_siege)
-	{
-		const Recon::ReconReport& report=reconnaissance.report();
-		for(std::map<int, Recon::OpponentIntel>::const_iterator opponent=
-			report.opponents.begin(); opponent!=report.opponents.end(); ++opponent)
-		{
-			if(!opponent->second.alive)
-				continue;
-			if(progress_lock && opponent->first!=campaign.target_team)
-			{
-				tactical_diagnostics.siegeRejections["progress_lock"]+=opponent->second.buildings.size();
-				continue;
-			}
-			if(replacement_siege_team>=0
-			   && opponent->first!=replacement_siege_team)
-			{
-				tactical_diagnostics.siegeRejections["replacement_lock"]+=opponent->second.buildings.size();
-				continue;
-			}
-			if(opponent->second.buildings.empty())
-				++tactical_diagnostics.siegeRejections["opponent_without_known_buildings"];
-			const int unseen=std::max(0, opponent->second.estimatedWarriors
-				-opponent->second.visibleWarriors);
-			const int uncertainty=unseen*(100-opponent->second.confidence)
-				*strategy.tactics.uncertainty_percent/10000;
-			GradientInfo land_route_info;
-			land_route_info.add_source(new Entities::AnyTeamBuilding(
-				echo.player->team->teamNumber, CompletedBuildings));
-			land_route_info.add_obstacle(new Entities::AnyResource);
-			land_route_info.add_obstacle(new Entities::Water);
-			Gradient& land_route=echo.get_gradient_manager().get_gradient(land_route_info);
-			GradientInfo swim_route_info;
-			swim_route_info.add_source(new Entities::AnyTeamBuilding(
-				echo.player->team->teamNumber, CompletedBuildings));
-			swim_route_info.add_obstacle(new Entities::AnyResource);
-			Gradient& swim_route=echo.get_gradient_manager().get_gradient(swim_route_info);
-			bool allied_player_pressure=false;
-			for(std::map<int, Recon::BuildingSighting>::const_iterator pressured=
-				opponent->second.buildings.begin();
-				pressured!=opponent->second.buildings.end() && !allied_player_pressure;
-				++pressured)
-				allied_player_pressure=strategy.teamplay.enabled
-					&& strategy.teamplay.pressure_coordination_enabled
-					&& visible_allied_pressure_near(echo.player,
-					pressured->second.x+pressured->second.width/2,
-					pressured->second.y+pressured->second.height/2,
-					strategy.teamplay.allied_pressure_radius).warriors>0;
-			for(std::map<int, Recon::BuildingSighting>::const_iterator building=
-				opponent->second.buildings.begin();
-				building!=opponent->second.buildings.end(); ++building)
-			{
-				const Recon::BuildingSighting& sighting=building->second;
-				++tactical_diagnostics.siegeCandidates;
-				if(Tactics::Program::targetQuarantined(sighting.gid, timer,
-					strategy.tactics.failed_target_quarantine_enabled,
-					attack_target_quarantine_until))
-				{
-					++tactical_diagnostics.siegeRejections["quarantined"];
-					continue;
-				}
-				int local_power=0;
-				// Threat observations already contain only hostile teams. Their
-				// warriors can defend this location regardless of who owns it.
-				for(std::vector<Tactics::ThreatSighting>::const_iterator threat=
-					tactics.threats().begin(); threat!=tactics.threats().end(); ++threat)
-					if(echo.player->map->warpDistSquare(sighting.x, sighting.y,
-						threat->x, threat->y)<=strategy.tactics.siege_local_threat_radius
-						*strategy.tactics.siege_local_threat_radius)
-					{
-						local_power+=threat->power;
-					}
-				int nearby_towers=0;
-				for(enemy_team_iterator enemy(echo); enemy!=enemy_team_iterator(); ++enemy)
-				{
-					const Recon::OpponentIntel* hostile=reconnaissance.opponent(*enemy);
-					if(!hostile || !hostile->alive) continue;
-					for(std::map<int, Recon::BuildingSighting>::const_iterator tower=
-						hostile->buildings.begin();
-						tower!=hostile->buildings.end(); ++tower)
-						if(tower->second.type==IntBuildingType::DEFENSE_BUILDING
-						   && echo.player->map->warpDistSquare(sighting.x, sighting.y,
-							tower->second.x, tower->second.y)<=strategy.tactics.siege_local_threat_radius
-							*strategy.tactics.siege_local_threat_radius)
-							++nearby_towers;
-				}
-				const int required_power=(local_power
-					+(uncertainty+nearby_towers*2)*representative_power)
-					*strategy.tactics.siege_strength_percent/100;
-				int distance=land_route.get_height(sighting.x, sighting.y);
-				const bool amphibious=distance<0;
-				if(amphibious) distance=swim_route.get_height(sighting.x,sighting.y);
-				std::map<std::string, int> eligibility;
-				const bool diagnostic_logging=globalContainer && globalContainer->nicowarTelemetry;
-				const std::vector<int> reachable_powers=reachability.powersAt(
-					echo.player->team,continuing_flag,
-					sighting.x,sighting.y,deployable,amphibious,
-					diagnostic_logging ? &eligibility : NULL);
-				const int required=Tactics::Program::forceForPower(
-					reachable_powers,
-					required_power,strategy.tactics.siege_min_force,
-					strategy.military.attack_unit_cap);
-				int capped_power=0, total_power=0;
-				for(size_t i=0; i<reachable_powers.size(); ++i)
-				{
-					total_power+=reachable_powers[i];
-					if(int(i)<strategy.military.attack_unit_cap) capped_power+=reachable_powers[i];
-				}
-				const char* rejection=distance<0 ? "no_base_route"
-					: int(reachable_powers.size())<strategy.tactics.siege_min_force ? "too_few_eligible"
-					: strategy.military.attack_unit_cap<strategy.tactics.siege_min_force ? "cap_below_minimum"
-					: required==0 ? (total_power>=required_power ? "attack_cap_power" : "insufficient_power")
-					: "viable";
-				if(distance<0 || required==0) ++tactical_diagnostics.siegeRejections[rejection];
-				if(diagnostic_logging)
-				{
-					std::ostringstream detail;
-					detail<<"\ttactical_review_tick="<<timer
-						<<"\ttarget_team="<<opponent->first<<"\ttarget_gid="<<sighting.gid
-						<<"\treason="<<rejection<<"\tdistance="<<distance<<"\tamphibious="<<amphibious
-						<<"\teligible="<<reachable_powers.size()<<"\tdeployable="<<deployable
-						<<"\tminimum="<<strategy.tactics.siege_min_force<<"\tcap="<<strategy.military.attack_unit_cap
-						<<"\tavailable_power="<<capped_power<<"\tuncapped_power="<<total_power
-						<<"\trequired_power="<<required_power<<"\tlocal_enemy_power="<<local_power
-						<<"\tunseen_allowance="<<uncertainty<<"\tnearby_towers="<<nearby_towers
-						<<"\trepresentative_power="<<representative_power
-						<<"\tstrength_percent="<<strategy.tactics.siege_strength_percent;
-					for(std::map<std::string,int>::const_iterator e=eligibility.begin(); e!=eligibility.end(); ++e)
-						detail<<"\tunits_"<<e->first<<"="<<e->second;
-					tactical_diagnostics.siegeCandidateDetails.push_back(detail.str());
-				}
-				if(distance<0 || required==0) continue;
-				++tactical_diagnostics.viableSieges;
-				int value=tactical_building_value(sighting.type, strategy.tactics);
-				if(sighting.construction)
-					value+=strategy.tactics.target_construction_bonus;
-				const bool allied_target_pressure=strategy.teamplay.enabled
-					&& strategy.teamplay.pressure_coordination_enabled
-					&& visible_allied_pressure_near(
-					echo.player, sighting.x+sighting.width/2,
-					sighting.y+sighting.height/2,
-					strategy.teamplay.allied_pressure_radius).warriors>0;
-				const int score=value+opponents[opponent->first].score
-					+(allied_player_pressure
-						? strategy.teamplay.siege_player_pressure_bonus : 0)
-					+(allied_target_pressure
-						? strategy.teamplay.siege_building_pressure_bonus : 0)
-					-nearby_towers*strategy.tactics.target_tower_penalty
-					-distance*strategy.tactics.route_distance_weight;
-				if(score>siege_score)
-				{
-					siege_score=score;
-					siege_gid=sighting.gid;
-					siege_team=opponent->first;
-					siege_x=echo.player->map->normalizeX(sighting.x+sighting.width/2);
-					siege_y=echo.player->map->normalizeY(sighting.y+sighting.height/2);
-					siege_requested=std::min(strategy.military.attack_unit_cap,
-						std::max(required, strategy.tactics.siege_min_force));
-					siege_player_pressure=allied_player_pressure;
-					siege_target_pressure=allied_target_pressure;
-					tactical_diagnostics.siegeScore=score;
-					tactical_diagnostics.siegeTargetValue=value;
-					tactical_diagnostics.siegeOpponentScore=
-						opponents[opponent->first].score;
-					tactical_diagnostics.siegeAlliedPlayerBonus=
-						allied_player_pressure
-						? strategy.teamplay.siege_player_pressure_bonus : 0;
-					tactical_diagnostics.siegeAlliedTargetBonus=
-						allied_target_pressure
-						? strategy.teamplay.siege_building_pressure_bonus : 0;
-					tactical_diagnostics.siegeTowerPenalty=nearby_towers
-						*strategy.tactics.target_tower_penalty;
-					tactical_diagnostics.siegeRoutePenalty=distance
-						*strategy.tactics.route_distance_weight;
-					tactical_diagnostics.siegeLocalPower=local_power;
-					tactical_diagnostics.siegeUncertainty=uncertainty;
-					tactical_diagnostics.siegeNearbyTowers=nearby_towers;
-					tactical_diagnostics.siegeRequiredPower=required_power;
-				}
-			}
-		}
-		if(tactical_diagnostics.viableSieges==0)
-			tactical_diagnostics.siegeGate=
-				"open, but no reachable beatable target";
-	}
-
-	const bool choose_siege=siege_gid!=-1
-		&& (replacement_siege_team>=0 || raid_score==INT_MIN
-			|| siege_score>=raid_score);
-	const int offense_score=choose_siege ? siege_score : raid_score;
-	const bool choose_relief=relief.team>=0
-		&& (active_relief || relief.score>offense_score);
-	if(choose_relief)
-	{
-		budget.tactical_kind=Tactics::MissionRelief;
-		budget.tactical_target_team=relief.team;
-		budget.tactical_target_gid=-1;
-		budget.tactical_target_x=relief.x;
-		budget.tactical_target_y=relief.y;
-		budget.tactical_candidate_score=relief.score;
-		budget.tactical_requested_force=relief.requested;
-		budget.tactical_minimum_force=strategy.teamplay.defense_min_force;
-		budget.tactical_contact_visible=true;
-		budget.tactical_visible_enemy_warriors=relief.enemies;
-		budget.tactical_visible_enemy_power=relief.enemyPower;
-		budget.tactical_allied_warriors=relief.allies;
-		budget.tactical_allied_power=relief.alliedPower;
-		budget.tactical_route_distance=relief.route;
-		if(active_relief)
-			tactical_diagnostics.decision=
-				"active ally defense keeps priority";
-		else
-			tactical_diagnostics.decision="ally defense "+
-				diagnostic_value(relief.score)+" > offense "+
-				diagnostic_score(offense_score);
-	}
-	else if(active_relief)
-	{
-		// Preserve the active mission while its short contact TTL expires. The
-		// executor owns withdrawal and cooldown transitions.
-		tactical_diagnostics.authorization="mission grace";
-		tactical_diagnostics.decision="holding ally defense during contact TTL";
-		return;
-	}
-	else if(choose_siege)
-	{
-		budget.tactical_kind=Tactics::MissionSiege;
-		budget.tactical_target_team=siege_team;
-		budget.tactical_target_gid=siege_gid;
-		budget.tactical_target_x=siege_x;
-		budget.tactical_target_y=siege_y;
-		budget.tactical_candidate_score=siege_score;
-		budget.tactical_requested_force=siege_requested;
-		budget.tactical_minimum_force=strategy.tactics.siege_min_force;
-		budget.tactical_allied_player_pressure=siege_player_pressure;
-		budget.tactical_allied_target_pressure=siege_target_pressure;
-		if(replacement_siege_team>=0)
-			tactical_diagnostics.decision="replacing lost siege target";
-		else if(raid_score==INT_MIN)
-			tactical_diagnostics.decision="siege viable; no viable raid";
-		else
-			tactical_diagnostics.decision="siege "+diagnostic_value(siege_score)
-				+" >= raid "+diagnostic_value(raid_score);
-	}
-	else if(raid_score!=INT_MIN)
-	{
-		budget.tactical_kind=Tactics::MissionRaid;
-		budget.tactical_target_team=raid.team;
-		budget.tactical_target_x=raid.x;
-		budget.tactical_target_y=raid.y;
-		// The mission stores the raw cluster score so later retarget hysteresis
-		// compares like with like. Route and outskirts modifiers above decide
-		// whether a raid beats a siege, but are not properties of a moving cluster.
-		budget.tactical_candidate_score=raid.score;
-		budget.tactical_requested_force=Tactics::Program::desiredRaidForce(
-			raid.workers, strategy.raiding.force_bonus, strategy.raiding.min_force,
-			std::min(strategy.raiding.max_force, deployable));
-		budget.tactical_minimum_force=strategy.raiding.min_force;
-		if(siege_score==INT_MIN)
-			tactical_diagnostics.decision="raid viable; no viable siege";
-		else
-			tactical_diagnostics.decision="raid "+diagnostic_value(raid_score)
-				+" > siege "+diagnostic_value(siege_score);
-	}
-	else
-	{
-		int dig_out_team=-1;
-		int dig_out_score=INT_MIN;
-		if(strategy.tactics.dig_out_enabled && can_siege && budget.attack_flags>0
-		   && budget.attack_clearing_workers>0)
-		{
-			for(int team=0; team<Team::MAX_COUNT; ++team)
-			{
-				const OpponentAssessment& opponent=opponents[team];
-				if(!opponent.alive || opponent.known_buildings<=0
-				   || opponent.reachable_buildings!=0 || opponent.score==INT_MIN
-				   || (progress_lock && team!=campaign.target_team)
-				   || (replacement_siege_team>=0
-					&& team!=replacement_siege_team))
-					continue;
-				if(opponent.score>dig_out_score)
-				{
-					dig_out_team=team;
-					dig_out_score=opponent.score;
-				}
-			}
-		}
-		if(dig_out_team>=0)
-		{
-			budget.tactical_dig_out_team=dig_out_team;
-			tactical_diagnostics.decision="opening route to sealed team "+
-				diagnostic_value(dig_out_team);
-		}
-		else
-			tactical_diagnostics.decision=
-				"no viable raid, siege, ally defense, or dig-out target";
-	}
 }
 
 
@@ -4957,16 +3863,15 @@ void Maxima::emit_director_snapshot(Context& echo) const
 		<<"\tcampaign_state="<<int(campaign.state)
 		<<"\tcampaign_cooldown="<<std::max(0, campaign.cooldown_until-timer)
 		<<"\ttarget="<<target
-		<<"\ttactical_review_tick="<<tactical_diagnostics.tick
-		<<"\ttactical_authorization="<<tactical_diagnostics.authorization
-		<<"\ttactical_decision="<<tactical_diagnostics.decision
-		<<"\ttactical_deployable="<<tactical_diagnostics.deployableWarriors
-		<<"\traid_gate="<<tactical_diagnostics.raidGate
-		<<"\tsiege_gate="<<tactical_diagnostics.siegeGate
-		<<"\traid_candidates="<<tactical_diagnostics.raidCandidates
-		<<"\tviable_raids="<<tactical_diagnostics.viableRaids
-		<<"\tsiege_candidates="<<tactical_diagnostics.siegeCandidates
-		<<"\tviable_sieges="<<tactical_diagnostics.viableSieges
+		<<"\ttactical_review_tick="<<offense_diagnostics.tick
+		<<"\toffense_gate="<<offense_diagnostics.gate
+		<<"\toffense_decision="<<offense_diagnostics.decision
+		<<"\toffense_eligible="<<offense_diagnostics.eligibleWarriors
+		<<"\toffense_training_slots="<<offense_diagnostics.openTrainingSlots
+		<<"\tsiege_candidates="<<offense_diagnostics.buildingCandidates
+		<<"\tviable_sieges="<<offense_diagnostics.viableBuildings
+		<<"\traid_candidates="<<offense_diagnostics.clusterCandidates
+		<<"\tviable_raids="<<offense_diagnostics.viableClusters
 		<<"\tmission_kind="<<Tactics::missionKindName(tactical_mission.kind)
 		<<"\tmission_phase="<<Tactics::missionPhaseName(tactical_mission.phase)
 		<<"\tmission_requested="<<tactical_mission.requestedForce
@@ -4981,13 +3886,10 @@ void Maxima::emit_director_snapshot(Context& echo) const
 	for(int policy=0; policy<PolicyCount; ++policy)
 		fields<<"\tbid_"<<policy_name(PolicyKind(policy))
 			<<"="<<policy_bids[policy].utility;
-	for(std::map<std::string,int>::const_iterator r=tactical_diagnostics.siegeRejections.begin();
-		r!=tactical_diagnostics.siegeRejections.end(); ++r)
-		fields<<"\tsiege_reject_"<<r->first<<"="<<r->second;
+	for(std::map<std::string,int>::const_iterator r=offense_diagnostics.rejections.begin();
+		r!=offense_diagnostics.rejections.end(); ++r)
+		fields<<"\toffense_reject_"<<r->first<<"="<<r->second;
 	emit_telemetry(echo, "director_snapshot", fields.str());
-	for(std::vector<std::string>::const_iterator detail=tactical_diagnostics.siegeCandidateDetails.begin();
-		detail!=tactical_diagnostics.siegeCandidateDetails.end(); ++detail)
-		emit_telemetry(echo, "siege_candidate_evaluated", *detail);
 }
 
 
@@ -5047,7 +3949,7 @@ void Maxima::evaluate_strategy(Context& echo)
 	select_posture();
 	allocate_resources();
 	finalize_director_plan(echo);
-	plan_tactical_authorization(echo);
+	plan_offense(echo);
 	// Explorer strikes share the offensive target. Keep the existing strategic
 	// target selector available when there is no warrior mission to follow.
 	if(budget.tactical_kind==Tactics::MissionRaid
@@ -5305,8 +4207,6 @@ template<class Archive> void Maxima::executionState(Archive& a)
 	a("budget.preemptive_defense_active",budget.preemptive_defense_active);
 	a("budget.preemptive_amphibious_active",budget.preemptive_amphibious_active);
 	a("budget.preemptive_effective_zone_max",budget.preemptive_effective_zone_max);
-	a("budget.campaign_stall_ticks",budget.campaign_stall_ticks);
-	a("budget.campaign_retreat_cooldown_ticks",budget.campaign_retreat_cooldown_ticks);
 	a("budget.target_switch_margin",budget.target_switch_margin);
 	a("budget.preemptive_recompute_ticks",budget.preemptive_recompute_ticks);
 	a("budget.preemptive_inner_distance",budget.preemptive_inner_distance);
@@ -5357,12 +4257,6 @@ template<class Archive> void Maxima::executionState(Archive& a)
 	a("budget.priority_racetracks",budget.priority_racetracks);
 	a("budget.priority_hospitals",budget.priority_hospitals);
 	a("budget.priority_towers",budget.priority_towers);
-	a("budget.tactics_enabled",budget.tactics_enabled);
-	a("budget.raid_enabled",budget.raid_enabled);
-	a("budget.siege_enabled",budget.siege_enabled);
-	a("budget.siege_target_lock_enabled",budget.siege_target_lock_enabled);
-	a("budget.teamplay_enabled",budget.teamplay_enabled);
-	a("budget.teamplay_defense_enabled",budget.teamplay_defense_enabled);
 	a("budget.tactical_target_team",budget.tactical_target_team);
 	a("budget.tactical_dig_out_team",budget.tactical_dig_out_team);
 	a("budget.tactical_target_gid",budget.tactical_target_gid);
@@ -5370,41 +4264,10 @@ template<class Archive> void Maxima::executionState(Archive& a)
 	a("budget.tactical_target_y",budget.tactical_target_y);
 	a("budget.tactical_candidate_score",budget.tactical_candidate_score);
 	a("budget.tactical_requested_force",budget.tactical_requested_force);
-	a("budget.tactical_minimum_force",budget.tactical_minimum_force);
-	a("budget.tactical_contact_visible",budget.tactical_contact_visible);
-	a("budget.tactical_allied_player_pressure",budget.tactical_allied_player_pressure);
-	a("budget.tactical_allied_target_pressure",budget.tactical_allied_target_pressure);
-	a("budget.tactical_visible_enemy_warriors",budget.tactical_visible_enemy_warriors);
-	a("budget.tactical_visible_enemy_power",budget.tactical_visible_enemy_power);
-	a("budget.tactical_allied_warriors",budget.tactical_allied_warriors);
-	a("budget.tactical_allied_power",budget.tactical_allied_power);
-	a("budget.tactical_route_distance",budget.tactical_route_distance);
 	a("budget.tactical_review_interval",budget.tactical_review_interval);
-	a("budget.tactical_rally_radius",budget.tactical_rally_radius);
-	a("budget.tactical_siege_radius",budget.tactical_siege_radius);
-	a("budget.tactical_siege_muster_percent",budget.tactical_siege_muster_percent);
-	a("budget.tactical_siege_strength_percent",budget.tactical_siege_strength_percent);
-	a("budget.tactical_siege_casualty_percent",budget.tactical_siege_casualty_percent);
-	a("budget.tactical_siege_threat_radius",budget.tactical_siege_threat_radius);
-	a("budget.tactical_target_lock_ticks",budget.tactical_target_lock_ticks);
-	a("budget.raid_flag_radius",budget.raid_flag_radius);
-	a("budget.raid_muster_percent",budget.raid_muster_percent);
-	a("budget.raid_muster_timeout",budget.raid_muster_timeout);
-	a("budget.raid_contact_ttl",budget.raid_contact_ttl);
-	a("budget.raid_max_engagement",budget.raid_max_engagement);
-	a("budget.raid_casualty_percent",budget.raid_casualty_percent);
-	a("budget.raid_survivor_min",budget.raid_survivor_min);
-	a("budget.raid_cooldown",budget.raid_cooldown);
-	a("budget.raid_defender_min",budget.raid_defender_min);
-	a("budget.raid_defender_percent",budget.raid_defender_percent);
-	a("budget.raid_building_buffer",budget.raid_building_buffer);
-	a("budget.raid_tower_buffer",budget.raid_tower_buffer);
-	a("budget.raid_retarget_margin",budget.raid_retarget_margin);
-	a("budget.relief_contact_ttl",budget.relief_contact_ttl);
-	a("budget.relief_max_engagement",budget.relief_max_engagement);
-	a("budget.relief_cooldown",budget.relief_cooldown);
-	a("budget.relief_follow_radius",budget.relief_follow_radius);
-	a("budget.relief_retarget_margin",budget.relief_retarget_margin);
+	a("budget.tactics_enabled",budget.tactics_enabled);
+	a("budget.tactical_flag_level",budget.tactical_flag_level);
+	a("budget.tactical_stall_ticks",budget.tactical_stall_ticks);
 	a("budget.tactical_kind",budget.tactical_kind);
 	a("director.initialized",director.initialized);
 	a("director.dirty",director.dirty);
@@ -6072,7 +4935,7 @@ void Maxima::tick(Context& echo)
 	   && timer%budget.tactical_review_interval
 		==staggered_phase(0,budget.tactical_review_interval,team))
 	{
-		control_attacks(echo);
+		control_offense(echo);
 	}
 	const int defenseInterval=strategy.scheduling.defense_interval_ticks;
 	const int defensePhase=staggered_phase(
@@ -6214,22 +5077,6 @@ void Maxima::handle_event(Context& echo, const RuntimeEvent& event)
 		std::map<int, int>::const_iterator started=attack_flag_started_ticks.find(id);
 		if(started!=attack_flag_started_ticks.end())
 			duration=timer-started->second;
-		if(strategy.tactics.failed_target_quarantine_enabled
-		   && finished_target!=-1 && duration>=0
-		   && duration<=strategy.tactics.failed_target_max_duration_ticks
-		   && (reason=="flag_removed" || reason=="unreachable"))
-		{
-			const int quarantine_until=
-				timer+strategy.tactics.failed_target_quarantine_ticks;
-			attack_target_quarantine_until[finished_target]=quarantine_until;
-			campaign.cooldown_until=std::max(campaign.cooldown_until,
-				timer+budget.campaign_retreat_cooldown_ticks);
-			emit_telemetry(echo, "target_quarantined",
-				"\tbuilding="+boost::lexical_cast<std::string>(finished_target)
-				+"\treason="+reason
-				+"\tcooldown="+boost::lexical_cast<std::string>(
-					strategy.tactics.failed_target_quarantine_ticks));
-		}
 		emit_telemetry(echo, "attack_finished",
 			"\tflag="+boost::lexical_cast<std::string>(id)
 			+"\ttarget_building="+boost::lexical_cast<std::string>(finished_target)
@@ -6245,17 +5092,8 @@ void Maxima::handle_event(Context& echo, const RuntimeEvent& event)
 		attack_flag_end_reasons.erase(id);
 		if(tactical_flag)
 		{
-			const Tactics::MissionKind interrupted_kind=tactical_mission.kind;
-			const int cooldown=tactical_mission.kind==Tactics::MissionRaid
-				? budget.raid_cooldown
-				: (tactical_mission.kind==Tactics::MissionRelief
-					? budget.relief_cooldown : budget.campaign_retreat_cooldown_ticks);
 			tactical_mission.reset();
-			tactical_mission.phase=Tactics::PhaseCooldown;
-			tactical_mission.phaseSinceTick=timer;
-			tactical_mission.cooldownUntil=timer+cooldown;
-			if(interrupted_kind==Tactics::MissionSiege)
-				campaign.state=CampaignIdle;
+			campaign.state=CampaignIdle;
 		}
 	}
 	if(event.type == RuntimeEvent::GuardFlagDeleted)
@@ -7504,927 +6342,541 @@ void Maxima::manage_swarm(Context& echo, int id)
 
 
 
-int Maxima::choose_building_to_attack(Context& echo)
-{
-	if(target<0 || target>=Team::MAX_COUNT || !echo.player->game->teams[target])
-		return -1;
-	AIMaximaRuntime::Gradients::GradientInfo gi_building;
-	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, CompletedBuildings));
-	gi_building.add_obstacle(new Entities::AnyResource);
-	if(snapshot.swimming_warriors<6)
-		gi_building.add_obstacle(new Entities::Water);
-	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
+// ---------------------------------------------------------------------------
+// Relentless offense.
+//
+// Maxima keeps one war flag on the best reachable enemy target for as long as
+// it has warriors to send. There is no muster, no rally, no reserve gate and
+// no casualty withdrawal: every eligible warrior is requested at the flag, the
+// flag moves to a new target when the current one is destroyed or clearly
+// outscored, and a target that stops taking damage is quarantined so the army
+// does not grind against one tower for the rest of the game.
+// ---------------------------------------------------------------------------
 
-	int best_building=-1;
-	int best_score=INT_MIN;
-	int ties=0;
-	for(enemy_building_iterator ebi(echo, target, -1, -1, AnyConstruction); ebi!=enemy_building_iterator(); ++ebi)
+namespace
+{
+	int wrapped_center(int origin, int size, int extent)
 	{
-		std::map<int, int>::const_iterator quarantined=attack_target_quarantine_until.find(*ebi);
-		if(quarantined!=attack_target_quarantine_until.end()
-		   && quarantined->second>timer)
-			continue;
-		Building* b=echo.player->game->teams[target]->myBuildings[Building::GIDtoID(*ebi)];
-		if(!b || b->type->isVirtual)
-			continue;
-		const int distance=gradient.get_height(b->posX, b->posY);
-		if(distance<0)
-			continue;
-		int value=8;
-		switch(b->type->shortTypeNum)
-		{
-			case IntBuildingType::SWARM_BUILDING: value=42; break;
-			case IntBuildingType::FOOD_BUILDING: value=36; break;
-			case IntBuildingType::ATTACK_BUILDING: value=32; break;
-			case IntBuildingType::SCIENCE_BUILDING: value=22; break;
-			case IntBuildingType::HEAL_BUILDING: value=18; break;
-			default: break;
-		}
-		if(b->type->isBuildingSite)
-			value+=8;
-		const int score=value+std::max(0, 70-distance);
-		if(score>best_score)
-		{
-			best_score=score;
-			best_building=*ebi;
-			ties=1;
-		}
-		else if(score==best_score && ++ties>0 && syncRand()%ties==0)
-			best_building=*ebi;
+		return (origin+size/2+extent)%extent;
 	}
-	return best_building;
 }
 
-
-void Maxima::attack_building(Context& echo)
+void Maxima::OffenseDiagnostics::reset(int currentTick)
 {
-	int building=choose_building_to_attack(echo);
-	if(building==-1)
+	tick=currentTick;
+	gate="not evaluated";
+	decision="none";
+	eligibleWarriors=0;
+	openTrainingSlots=0;
+	buildingCandidates=0;
+	viableBuildings=0;
+	clusterCandidates=0;
+	viableClusters=0;
+	bestScore=INT_MIN;
+	rejections.clear();
+}
+
+/// Choose the target the offensive flag should sit on. Fills the tactical
+/// budget fields and the diagnostics; the executor moves the flag.
+void Maxima::plan_offense(Context& echo)
+{
+	offense_diagnostics.reset(timer);
+	budget.tactical_kind=Tactics::MissionNone;
+	budget.tactical_target_team=-1;
+	budget.tactical_dig_out_team=-1;
+	budget.tactical_target_gid=-1;
+	budget.tactical_target_x=0;
+	budget.tactical_target_y=0;
+	budget.tactical_candidate_score=INT_MIN;
+	budget.tactical_requested_force=0;
+	if(!strategy.tactics.enabled)
 	{
-		// A reachable target may merely be cooling down after an invalid flag.
-		// Wait for another target-selection cycle rather than treating that as
-		// proof that the enemy must be dug out.
-		if(target>=0 && target<Team::MAX_COUNT
-		   && opponents[target].reachable_buildings>0)
-			return;
-		if(!is_digging_out)
-			if(!dig_out_enemy(echo))
-			{
-				target = -1;
-			}
+		offense_diagnostics.gate="blocked: warrior tactics disabled";
 		return;
 	}
-	Building* enemy=echo.player->game->teams[target]
-		->myBuildings[Building::GIDtoID(building)];
-	BuildingOrder* bo = new BuildingOrder(IntBuildingType::WAR_FLAG, budget.attack_units);
-	bo->add_constraint(new CenterOfBuilding(building));
-	unsigned int id=echo.add_building_order(bo);
-
-	ManagementOrder* mo_minimum=new ChangeFlagMinimumLevel(2,id);
-	echo.add_management_order(mo_minimum);
-
-	ManagementOrder* mo_destroyed_1=new DestroyBuilding(id);
-	mo_destroyed_1->add_condition(new EnemyBuildingDestroyed(echo, building));
-	echo.add_management_order(mo_destroyed_1);
-
-	ManagementOrder* mo_destroyed_2=new Notify(RuntimeEvent(RuntimeEvent::AttackFinished, id));
-	mo_destroyed_2->add_condition(new BuildingDestroyed(id));
-	echo.add_management_order(mo_destroyed_2);
-	
-	attack_flags.push_back(id);
-	attack_flag_targets[id]=building;
-	attack_flag_started_ticks[id]=timer;
-	attack_flag_last_progress[id]=timer;
-	if(enemy)
-		attack_flag_last_hp[id]=enemy->hp;
-	if(campaign.state==CampaignIdle || campaign.state==CampaignPreparing)
+	if(severe_colony_emergency())
 	{
-		const bool continuing_progress=campaign.target_team==target
-			&& campaign.buildings_destroyed>0
-			&& timer-campaign.last_progress_tick<=15000;
-		if(!continuing_progress)
-			campaign.buildings_destroyed=0;
-		campaign.state=CampaignActive;
-		campaign.target_team=target;
-		campaign.started_tick=timer;
-		campaign.last_progress_tick=timer;
-		campaign.last_target_buildings=opponents[target].known_buildings;
+		offense_diagnostics.gate="blocked: colony emergency keeps the army home";
+		return;
 	}
-	emit_telemetry(echo, "attack_launched",
-		"\ttarget="+boost::lexical_cast<std::string>(target)
-		+"\tbuilding="+boost::lexical_cast<std::string>(building)
-		+"\tflag="+boost::lexical_cast<std::string>(id)
-		+"\tassigned="+boost::lexical_cast<std::string>(budget.attack_units)
-		+"\tdefense_reserve="+boost::lexical_cast<std::string>(budget.defense_reserve)
-		+"\ttarget_score="+boost::lexical_cast<std::string>(opponents[target].score)
-		+"\ttarget_buildings="
-			+boost::lexical_cast<std::string>(opponents[target].known_buildings)
-		+"\ttarget_warriors="
-			+boost::lexical_cast<std::string>(opponents[target].estimated_warriors)
-		+"\ttarget_reachable="
-			+boost::lexical_cast<std::string>(opponents[target].reachable_buildings)
-		+"\tcampaign_destroyed="
-			+boost::lexical_cast<std::string>(campaign.buildings_destroyed)
-		+"\tposture="+posture_name(posture));
+	Map* map=echo.player->map;
+	const Building* flag=tactical_mission.flagId>=0
+		&& echo.get_building_register().is_building_found(tactical_mission.flagId)
+		? echo.get_building_register().get_building(tactical_mission.flagId) : NULL;
+	TacticalReachability reachability(map, strategy.tactics.flag_minimum_level);
+	int eligible=0;
+	int eligible_swimmers=0;
+	for(int id=0; id<Unit::MAX_COUNT; ++id)
+	{
+		const Unit* warrior=echo.player->team->myUnits[id];
+		if(!tactical_warrior_available(warrior, flag, strategy.tactics.flag_minimum_level))
+			continue;
+		++eligible;
+		if(warrior->performance[SWIM]>0) ++eligible_swimmers;
+	}
+	offense_diagnostics.eligibleWarriors=eligible;
+	// Training comes first: every open barracks slot is reserved for a warrior,
+	// and only the surplus beyond that capacity goes to the flag.
+	int open_training_slots=0;
+	for(int id=0; id<Building::MAX_COUNT; ++id)
+	{
+		const Building* barracks=echo.player->team->myBuildings[id];
+		if(!barracks || barracks->type->shortTypeNum!=IntBuildingType::ATTACK_BUILDING
+		   || barracks->type->isBuildingSite)
+			continue;
+		open_training_slots+=std::max(0,
+			barracks->maxUnitInside-int(barracks->unitsInside.size()));
+	}
+	offense_diagnostics.openTrainingSlots=open_training_slots;
+	const int surplus=eligible-open_training_slots;
+	// The minimum force only gates raising a new flag. An existing flag keeps
+	// its target while any warrior can still reach it, so that warriors cycling
+	// through inns and training halls do not make the offense flap.
+	const bool active=tactical_mission.flagId>=0;
+	const int minimum=active ? 1 : std::max(1, strategy.tactics.min_force);
+	if(surplus<minimum)
+	{
+		offense_diagnostics.gate="blocked: "+diagnostic_value(eligible)
+			+" eligible warriors minus "+diagnostic_value(open_training_slots)
+			+" open training slots is below "+diagnostic_value(minimum);
+		return;
+	}
+	offense_diagnostics.gate="open";
+
+	GradientInfo land_info;
+	land_info.add_source(new Entities::AnyTeamBuilding(
+		echo.player->team->teamNumber, CompletedBuildings));
+	land_info.add_obstacle(new Entities::AnyResource);
+	land_info.add_obstacle(new Entities::Water);
+	Gradient& land_route=echo.get_gradient_manager().get_gradient(land_info);
+	GradientInfo swim_info;
+	swim_info.add_source(new Entities::AnyTeamBuilding(
+		echo.player->team->teamNumber, CompletedBuildings));
+	swim_info.add_obstacle(new Entities::AnyResource);
+	Gradient& swim_route=echo.get_gradient_manager().get_gradient(swim_info);
+
+	// Reachable force at a point: land walkers first, swimmers when the only
+	// route crosses water. Returns the route length, or -1 when unreachable.
+	struct Reach
+	{
+		int distance;
+		int force;
+	};
+	const int cap=strategy.military.attack_unit_cap;
+	const int minimum_level=strategy.tactics.flag_minimum_level;
+	Team* team=echo.player->team;
+	const Building* continuing=flag;
+	const int need=minimum;
+	std::map<std::string,int>& why=offense_diagnostics.rejections;
+	// Lambda-free helper via a local functor, so the two candidate loops share it.
+	class Reacher
+	{
+	public:
+		Reacher(TacticalReachability& reachability, Team* team,
+			const Building* flag, Gradient& land, Gradient& swim,
+			int cap, int need, std::map<std::string,int>& why)
+			: reachability(reachability), team(team), flag(flag), land(land),
+			  swim(swim), cap(cap), need(need), why(why) {}
+		Reach at(int x, int y)
+		{
+			Reach result={-1,0};
+			int distance=land.get_height(x,y);
+			bool amphibious=false;
+			if(distance<0)
+			{
+				distance=swim.get_height(x,y);
+				amphibious=true;
+			}
+			if(distance<0) { ++why["no_route"]; return result; }
+			const int force=int(reachability.powersAt(team, flag, x, y, cap,
+				amphibious).size());
+			if(force<need) { ++why["too_few_reachable"]; return result; }
+			result.distance=distance;
+			result.force=force;
+			return result;
+		}
+	private:
+		TacticalReachability& reachability;
+		Team* team;
+		const Building* flag;
+		Gradient& land;
+		Gradient& swim;
+		int cap;
+		int need;
+		std::map<std::string,int>& why;
+	};
+	Reacher reach(reachability, team, continuing, land_route, swim_route, cap, need, why);
+	(void)minimum_level;
+	(void)eligible_swimmers;
+
+	int best_score=INT_MIN;
+	Tactics::MissionKind best_kind=Tactics::MissionNone;
+	int best_team=-1, best_gid=-1, best_x=0, best_y=0;
+	// A young objective that is still alive is kept whatever else appears, so
+	// the army actually arrives somewhere instead of chasing every sighting.
+	const bool dwelling=active
+		&& timer-tactical_mission.phaseSinceTick<strategy.tactics.dwell_ticks;
+	bool current_alive=false;
+	int current_score=INT_MIN, current_x=0, current_y=0;
+	bool known_unreachable=false;
+	int unreachable_team=-1;
+	int unreachable_score=INT_MIN;
+
+	if(strategy.tactics.siege_enabled)
+	{
+		const Recon::ReconReport& report=reconnaissance.report();
+		for(std::map<int, Recon::OpponentIntel>::const_iterator opponent=
+			report.opponents.begin(); opponent!=report.opponents.end(); ++opponent)
+		{
+			if(!opponent->second.alive) continue;
+			for(std::map<int, Recon::BuildingSighting>::const_iterator building=
+				opponent->second.buildings.begin();
+				building!=opponent->second.buildings.end(); ++building)
+			{
+				const Recon::BuildingSighting& sighting=building->second;
+				++offense_diagnostics.buildingCandidates;
+				if(Tactics::Program::targetQuarantined(sighting.gid, timer,
+					strategy.tactics.failed_target_quarantine_enabled,
+					attack_target_quarantine_until))
+				{
+					++why["quarantined"];
+					continue;
+				}
+				const int x=wrapped_center(sighting.x, sighting.width, map->getW());
+				const int y=wrapped_center(sighting.y, sighting.height, map->getH());
+				const Reach r=reach.at(x, y);
+				if(r.distance<0)
+				{
+					if(opponents[opponent->first].score>unreachable_score)
+					{
+						known_unreachable=true;
+						unreachable_team=opponent->first;
+						unreachable_score=opponents[opponent->first].score;
+					}
+					continue;
+				}
+				++offense_diagnostics.viableBuildings;
+				int nearby_towers=0;
+				for(std::map<int, Recon::BuildingSighting>::const_iterator tower=
+					opponent->second.buildings.begin();
+					tower!=opponent->second.buildings.end(); ++tower)
+					if(tower->second.type==IntBuildingType::DEFENSE_BUILDING
+					   && map->warpDistSquare(sighting.x, sighting.y,
+						tower->second.x, tower->second.y)<=64)
+						++nearby_towers;
+				int score=tactical_building_value(sighting.type, strategy.tactics)
+					+std::max(0, opponents[opponent->first].score)
+					+(sighting.construction ? strategy.tactics.target_construction_bonus : 0)
+					-nearby_towers*strategy.tactics.target_tower_penalty
+					-r.distance*strategy.tactics.route_distance_weight;
+				if(active && sighting.gid==tactical_mission.targetGid)
+				{
+					score+=strategy.tactics.retarget_margin;
+					current_alive=true;
+					current_score=score;
+					current_x=x;
+					current_y=y;
+				}
+				if(score>best_score)
+				{
+					best_score=score;
+					best_kind=Tactics::MissionSiege;
+					best_team=opponent->first;
+					best_gid=sighting.gid;
+					best_x=x;
+					best_y=y;
+				}
+			}
+		}
+	}
+	if(strategy.raiding.enabled)
+	{
+		for(std::vector<Tactics::RaidCandidate>::const_iterator candidate=
+			tactics.raidCandidates().begin(); candidate!=tactics.raidCandidates().end();
+			++candidate)
+		{
+			++offense_diagnostics.clusterCandidates;
+			const Reach r=reach.at(candidate->x, candidate->y);
+			if(r.distance<0) continue;
+			++offense_diagnostics.viableClusters;
+			int score=candidate->score
+				-r.distance*strategy.raiding.route_distance_weight;
+			// A cluster that drifted within the threat radius of the current
+			// raid is the same objective moving, not a new one.
+			if(active && tactical_mission.kind==Tactics::MissionRaid
+			   && candidate->team==tactical_mission.targetTeam
+			   && map->warpDistSquare(candidate->x, candidate->y,
+				tactical_mission.targetX, tactical_mission.targetY)
+				<=strategy.raiding.threat_radius*strategy.raiding.threat_radius)
+			{
+				score+=strategy.tactics.retarget_margin;
+				if(!current_alive || score>current_score)
+				{
+					current_alive=true;
+					current_score=score;
+					current_x=candidate->x;
+					current_y=candidate->y;
+				}
+			}
+			if(score>best_score)
+			{
+				best_score=score;
+				best_kind=Tactics::MissionRaid;
+				best_team=candidate->team;
+				best_gid=-1;
+				best_x=candidate->x;
+				best_y=candidate->y;
+			}
+		}
+	}
+	if(dwelling && current_alive)
+	{
+		best_kind=tactical_mission.kind;
+		best_team=tactical_mission.targetTeam;
+		best_gid=tactical_mission.targetGid;
+		best_x=current_x;
+		best_y=current_y;
+		best_score=current_score;
+	}
+	offense_diagnostics.bestScore=best_score;
+	if(best_kind!=Tactics::MissionNone)
+	{
+		budget.tactical_kind=best_kind;
+		budget.tactical_target_team=best_team;
+		budget.tactical_target_gid=best_gid;
+		budget.tactical_target_x=best_x;
+		budget.tactical_target_y=best_y;
+		budget.tactical_candidate_score=best_score;
+		budget.tactical_requested_force=std::min(cap, surplus);
+		offense_diagnostics.decision=std::string(best_kind==Tactics::MissionSiege
+			? "siege " : "raid ")+diagnostic_value(best_score);
+		return;
+	}
+	if(known_unreachable && strategy.tactics.dig_out_enabled
+	   && budget.attack_clearing_workers>0)
+	{
+		budget.tactical_dig_out_team=unreachable_team;
+		offense_diagnostics.decision="opening route to sealed team "
+			+diagnostic_value(unreachable_team);
+		return;
+	}
+	offense_diagnostics.decision="no reachable target";
 }
 
-
-void Maxima::transition_tactical_mission(Context& echo,
-	Tactics::MissionPhase phase, const char* reason)
+void Maxima::end_offense(Context& echo, const char* reason)
 {
-	const Tactics::MissionPhase previous=tactical_mission.phase;
-	tactical_mission.phase=phase;
-	tactical_mission.phaseSinceTick=timer;
-	if(tactical_mission.kind==Tactics::MissionSiege)
+	if(tactical_mission.flagId>=0)
 	{
-		if(phase==Tactics::PhaseTransit || phase==Tactics::PhaseEngage)
-			campaign.state=CampaignActive;
-		else if(phase==Tactics::PhaseWithdraw)
-			campaign.state=CampaignRetreating;
+		emit_telemetry(echo, "mission_finished",
+			"\tkind="+std::string(Tactics::missionKindName(tactical_mission.kind))
+			+"\ttarget_team="+diagnostic_value(tactical_mission.targetTeam)
+			+"\ttarget_gid="+diagnostic_value(tactical_mission.targetGid)
+			+"\treason="+reason
+			+"\tduration="+diagnostic_value(timer-tactical_mission.startedTick));
+		attack_flag_end_reasons[tactical_mission.flagId]=reason;
+		echo.cancel_or_destroy_building(tactical_mission.flagId);
 	}
-	emit_telemetry(echo, "mission_phase_changed",
-		"\tkind="+std::string(Tactics::missionKindName(tactical_mission.kind))
-		+"\tprevious="+Tactics::missionPhaseName(previous)
-		+"\tphase="+Tactics::missionPhaseName(phase)
-		+"\treason="+reason
-		+"\tflag="+boost::lexical_cast<std::string>(tactical_mission.flagId));
-}
-
-
-void Maxima::finish_tactical_mission(Context& echo, const char* reason)
-{
-	const int flag=tactical_mission.flagId;
-	const int enrolled=flag>=0 ? echo.get_building_register().get_enrolled(flag) : 0;
-	const int launched=tactical_mission.launchedForce;
-	const Tactics::MissionKind completed_kind=tactical_mission.kind;
-	emit_telemetry(echo, "mission_finished",
-		"\tkind="+std::string(Tactics::missionKindName(tactical_mission.kind))
-		+"\ttarget_team="+boost::lexical_cast<std::string>(tactical_mission.targetTeam)
-		+"\ttarget_gid="+boost::lexical_cast<std::string>(tactical_mission.targetGid)
-		+"\treason="+reason
-		+"\tduration="+boost::lexical_cast<std::string>(timer-tactical_mission.startedTick)
-		+"\tlaunched="+boost::lexical_cast<std::string>(launched)
-		+"\tsurvivors="+boost::lexical_cast<std::string>(enrolled));
-	if(flag>=0)
-	{
-		attack_flag_end_reasons[flag]=reason;
-		echo.cancel_or_destroy_building(flag);
-	}
-	const int cooldown=tactical_mission.kind==Tactics::MissionRaid
-		? budget.raid_cooldown
-		: (tactical_mission.kind==Tactics::MissionRelief
-			? budget.relief_cooldown : budget.campaign_retreat_cooldown_ticks);
+	attack_flags.clear();
 	tactical_mission.reset();
-	tactical_mission.phase=Tactics::PhaseCooldown;
-	tactical_mission.phaseSinceTick=timer;
-	tactical_mission.cooldownUntil=timer+cooldown;
-	if(completed_kind==Tactics::MissionSiege)
-	{
-		campaign.cooldown_until=std::max(campaign.cooldown_until,
-			tactical_mission.cooldownUntil);
-		campaign.state=CampaignIdle;
-	}
+	campaign.state=CampaignIdle;
 	director.invalidate();
 }
 
-
-void Maxima::withdraw_tactical_mission(Context& echo, const char* reason,
-	bool immediate)
+/// Keep the offensive flag on the planned target. Runs every review tick.
+void Maxima::control_offense(Context& echo)
 {
-	if(tactical_mission.phase==Tactics::PhaseIdle
-	   || tactical_mission.phase==Tactics::PhaseCooldown)
-		return;
-	if(immediate || tactical_mission.flagId<0
-	   || !echo.get_building_register().is_building_found(tactical_mission.flagId))
-	{
-		finish_tactical_mission(echo, reason);
-		return;
-	}
-	echo.add_management_order(new ChangeFlagSize(budget.tactical_rally_radius,
-		tactical_mission.flagId));
-	echo.add_management_order(new ChangeFlagPosition(tactical_mission.rallyX,
-		tactical_mission.rallyY, tactical_mission.flagId));
-	transition_tactical_mission(echo, Tactics::PhaseWithdraw, reason);
-}
+	// Flags from older saves or disabled tactics are simply removed.
+	for(std::vector<int>::const_iterator legacy=attack_flags.begin();
+		legacy!=attack_flags.end(); ++legacy)
+		if(*legacy!=tactical_mission.flagId
+		   && (echo.get_building_register().is_building_found(*legacy)
+			|| echo.get_building_register().is_building_pending(*legacy)))
+			echo.add_management_order(new DestroyBuilding(*legacy));
+	attack_flags.clear();
+	if(tactical_mission.flagId>=0)
+		attack_flags.push_back(tactical_mission.flagId);
 
-
-void Maxima::begin_tactical_mission(Context& echo)
-{
-	if(budget.tactical_kind==Tactics::MissionNone)
-		return;
-	int rally_x=0;
-	int rally_y=0;
-	if(!choose_tactical_rally(echo, budget.tactical_target_x,
-		budget.tactical_target_y, rally_x, rally_y))
+	if(!budget.tactics_enabled || severe_colony_emergency())
 	{
-		emit_telemetry(echo, "mission_finished", "\tkind="
-			+std::string(Tactics::missionKindName(budget.tactical_kind))
-			+"\treason=no_safe_rally");
+		end_offense(echo, budget.tactics_enabled
+			? "colony_emergency" : "tactics_disabled");
 		return;
 	}
-	BuildingOrder* flag_order=new BuildingOrder(IntBuildingType::WAR_FLAG,
-		budget.tactical_requested_force);
-	flag_order->add_constraint(new Construction::SinglePosition(rally_x, rally_y));
-	const int flag=echo.add_building_order(flag_order);
-	echo.add_management_order(new ChangeFlagMinimumLevel(2, flag));
-	echo.add_management_order(new ChangeFlagSize(budget.tactical_rally_radius, flag));
-	ManagementOrder* deleted=new Notify(RuntimeEvent(RuntimeEvent::AttackFinished, flag));
-	deleted->add_condition(new BuildingDestroyed(flag));
-	echo.add_management_order(deleted);
-
-	tactical_mission.reset();
-	tactical_mission.kind=budget.tactical_kind;
-	tactical_mission.flagId=flag;
-	tactical_mission.targetTeam=budget.tactical_target_team;
-	tactical_mission.targetGid=budget.tactical_target_gid;
-	tactical_mission.targetX=budget.tactical_target_x;
-	tactical_mission.targetY=budget.tactical_target_y;
-	tactical_mission.rallyX=rally_x;
-	tactical_mission.rallyY=rally_y;
-	tactical_mission.requestedForce=budget.tactical_requested_force;
-	tactical_mission.minimumForce=budget.tactical_minimum_force;
-	tactical_mission.startedTick=timer;
-	tactical_mission.phaseSinceTick=timer;
-	tactical_mission.lastContactTick=timer;
-	tactical_mission.lastProgressTick=timer;
-	tactical_mission.candidateScore=budget.tactical_candidate_score;
-	const Tactics::RaidCandidate* raid=tactical_mission.kind==Tactics::MissionRaid
-		? tactics.bestRaidForTeam(tactical_mission.targetTeam) : NULL;
-	tactical_mission.initialTargetWorkers=raid ? raid->workers : 0;
-	attack_flags.push_back(flag);
-	attack_flag_started_ticks[flag]=timer;
-	if(tactical_mission.targetGid>=0)
-		attack_flag_targets[flag]=tactical_mission.targetGid;
-	if(tactical_mission.kind==Tactics::MissionSiege)
+	const bool active=tactical_mission.flagId>=0;
+	if(active && !echo.get_building_register().is_building_found(tactical_mission.flagId)
+	   && !echo.get_building_register().is_building_pending(tactical_mission.flagId))
 	{
-		const bool continuing_progress=campaign.target_team==tactical_mission.targetTeam
-			&& timer-campaign.last_progress_tick<=budget.tactical_target_lock_ticks;
-		if(!continuing_progress)
-			campaign.buildings_destroyed=0;
-		campaign.state=CampaignPreparing;
-		campaign.target_team=tactical_mission.targetTeam;
-		campaign.started_tick=timer;
-		campaign.last_progress_tick=timer;
-		const Recon::OpponentIntel* intel=
-			reconnaissance.opponent(tactical_mission.targetTeam);
-		campaign.last_target_buildings=intel ? intel->knownBuildings : 0;
-	}
-	transition_tactical_mission(echo, Tactics::PhaseMuster,
-		"mission_selected");
-	emit_telemetry(echo, "mission_selected",
-		"\tkind="+std::string(Tactics::missionKindName(tactical_mission.kind))
-		+"\ttarget_team="+boost::lexical_cast<std::string>(tactical_mission.targetTeam)
-		+"\ttarget_gid="+boost::lexical_cast<std::string>(tactical_mission.targetGid)
-		+"\tflag="+boost::lexical_cast<std::string>(flag)
-		+"\trequested="+boost::lexical_cast<std::string>(tactical_mission.requestedForce)
-		+"\tminimum="+boost::lexical_cast<std::string>(tactical_mission.minimumForce)
-		+"\trally_x="+boost::lexical_cast<std::string>(rally_x)
-		+"\trally_y="+boost::lexical_cast<std::string>(rally_y)
-		+"\tvisible_enemies="
-			+boost::lexical_cast<std::string>(budget.tactical_visible_enemy_warriors)
-		+"\tenemy_power="
-			+boost::lexical_cast<std::string>(budget.tactical_visible_enemy_power)
-		+"\tallied_warriors="
-			+boost::lexical_cast<std::string>(budget.tactical_allied_warriors)
-		+"\tallied_power="
-			+boost::lexical_cast<std::string>(budget.tactical_allied_power)
-		+"\troute="+boost::lexical_cast<std::string>(budget.tactical_route_distance)
-		+"\tallied_player_pressure="
-			+boost::lexical_cast<std::string>(budget.tactical_allied_player_pressure ? 1 : 0)
-		+"\tallied_target_pressure="
-			+boost::lexical_cast<std::string>(budget.tactical_allied_target_pressure ? 1 : 0));
-}
-
-
-bool Maxima::retarget_tactical_siege(Context& echo)
-{
-	const int flag=tactical_mission.flagId;
-	const int previousRequested=tactical_mission.requestedForce;
-	const int previousMinimum=tactical_mission.minimumForce;
-	const Recon::OpponentIntel* previous_intel=
-		reconnaissance.opponent(tactical_mission.targetTeam);
-	const std::map<int, int>::const_iterator previous_target=attack_flag_targets.find(flag);
-	// Recon only removes remembered buildings after confirming their footprint
-	// is empty. Credit that success before replacing the flag's target record;
-	// AttackFinished can then credit only the final target, without double counts.
-	if(tactical_mission.targetGid>=0
-	   && tactical_mission.targetGid!=budget.tactical_target_gid
-	   && previous_target!=attack_flag_targets.end()
-	   && previous_target->second==tactical_mission.targetGid
-	   && previous_intel
-	   && previous_intel->buildings.count(tactical_mission.targetGid)==0)
-	{
-		++campaign.buildings_destroyed;
-		campaign.last_progress_tick=timer;
-	}
-	tactical_mission.retargetSiege(budget.tactical_target_gid,
-		echo.player->map->normalizeX(budget.tactical_target_x),
-		echo.player->map->normalizeY(budget.tactical_target_y), timer);
-	tactical_mission.targetTeam=budget.tactical_target_team;
-	tactical_mission.requestedForce=budget.tactical_requested_force;
-	tactical_mission.minimumForce=budget.tactical_minimum_force;
-	tactical_mission.candidateScore=budget.tactical_candidate_score;
-	attack_flag_targets[flag]=tactical_mission.targetGid;
-	echo.add_management_order(new AssignWorkers(tactical_mission.requestedForce, flag));
-	if(tactical_mission.phase==Tactics::PhaseMuster)
-	{
-		if(tactical_mission.requestedForce>previousRequested
-		   || tactical_mission.minimumForce>previousMinimum)
-			tactical_mission.phaseSinceTick=timer;
-		return true;
-	}
-	const bool ready=Tactics::Program::musterLaunchAllowed(Tactics::MissionSiege,
-		echo.get_building_register().get_enrolled(flag),
-		echo.get_building_register().get_on_site(flag),
-		tactical_mission.requestedForce, tactical_mission.minimumForce,
-		budget.tactical_siege_muster_percent);
-	if(!ready)
-	{
-		// Reinforcements must assemble before a stronger replacement is attacked.
-		echo.add_management_order(new ChangeFlagSize(budget.tactical_rally_radius, flag));
-		echo.add_management_order(new ChangeFlagPosition(tactical_mission.rallyX,
-			tactical_mission.rallyY, flag));
-		tactical_mission.launchedForce=0;
-		campaign.state=CampaignPreparing;
-		transition_tactical_mission(echo, Tactics::PhaseMuster, "replacement_requires_muster");
-		return true;
-	}
-	// Reducing the assignment intentionally releases units; it is not a casualty.
-	tactical_mission.launchedForce=std::min(tactical_mission.launchedForce,
-		tactical_mission.requestedForce);
-	echo.add_management_order(new ChangeFlagPosition(tactical_mission.targetX,
-		tactical_mission.targetY, flag));
-	return false;
-}
-
-
-void Maxima::control_attacks(Context& echo)
-{
-	if(!budget.tactics_enabled)
-	{
-		if(tactical_mission.phase!=Tactics::PhaseIdle
-		   && tactical_mission.phase!=Tactics::PhaseCooldown
-		   && tactical_mission.phase!=Tactics::PhaseWithdraw)
-			withdraw_tactical_mission(echo, "tactics_disabled", true);
-		else if(tactical_mission.phase==Tactics::PhaseCooldown)
-			tactical_mission.reset();
-		for(std::vector<int>::const_iterator legacy=attack_flags.begin();
-			legacy!=attack_flags.end(); ++legacy)
-			if(echo.get_building_register().is_building_found(*legacy)
-			   ||echo.get_building_register().is_building_pending(*legacy))
-				echo.add_management_order(new DestroyBuilding(*legacy));
-		attack_flags.clear();
-		return;
-	}
-	const bool active_tactic_disabled=
-		(tactical_mission.kind==Tactics::MissionRaid
-			&& !budget.raid_enabled)
-		||(tactical_mission.kind==Tactics::MissionSiege
-			&& !budget.siege_enabled)
-		||(tactical_mission.kind==Tactics::MissionRelief
-			&& (!budget.teamplay_enabled
-				|| !budget.teamplay_defense_enabled));
-	if(active_tactic_disabled
-	   && tactical_mission.phase!=Tactics::PhaseIdle
-	   && tactical_mission.phase!=Tactics::PhaseCooldown
-	   && tactical_mission.phase!=Tactics::PhaseWithdraw)
-	{
-		withdraw_tactical_mission(echo, "tactic_disabled", true);
-		return;
-	}
-	if(budget.colony_emergency
-	   && tactical_mission.phase!=Tactics::PhaseIdle
-	   && tactical_mission.phase!=Tactics::PhaseCooldown
-	   && tactical_mission.phase!=Tactics::PhaseWithdraw)
-	{
-		withdraw_tactical_mission(echo, "colony_emergency", true);
-		return;
-	}
-	if(tactical_mission.phase==Tactics::PhaseCooldown)
-	{
-		if(timer<tactical_mission.cooldownUntil)
-			return;
+		// The engine already removed the flag; AttackFinished did the bookkeeping.
 		tactical_mission.reset();
+		campaign.state=CampaignIdle;
 	}
-	if(tactical_mission.phase==Tactics::PhaseIdle)
+	if(budget.tactical_kind==Tactics::MissionNone)
 	{
-		if(!attack_flags.empty())
-		{
-			for(std::vector<int>::const_iterator legacy=attack_flags.begin();
-				legacy!=attack_flags.end(); ++legacy)
-				if(echo.get_building_register().is_building_found(*legacy))
-					echo.add_management_order(new DestroyBuilding(*legacy));
-			attack_flags.clear();
-			return;
-		}
-		if(budget.tactical_kind!=Tactics::MissionNone)
-		{
-			begin_tactical_mission(echo);
-			return;
-		}
-		// A sealed colony produces no reachable siege candidate, so it cannot be
-		// represented by a warrior mission yet. Once the director has authorized
-		// an offensive campaign, open a resource corridor and let the regular
-		// tactical planner launch the siege as soon as that corridor is usable.
-		if(!is_digging_out && budget.tactical_dig_out_team>=0)
+		if(tactical_mission.flagId>=0)
+			end_offense(echo, "no_target");
+		else if(!is_digging_out && budget.tactical_dig_out_team>=0)
 		{
 			target=budget.tactical_dig_out_team;
 			dig_out_enemy(echo);
 		}
 		return;
 	}
-	const int flag=tactical_mission.flagId;
-	if(flag<0 || (!echo.get_building_register().is_building_found(flag)
-	   && !echo.get_building_register().is_building_pending(flag)))
+	const bool same_target=tactical_mission.flagId>=0
+		&& tactical_mission.kind==budget.tactical_kind
+		&& tactical_mission.targetTeam==budget.tactical_target_team
+		&& tactical_mission.targetGid==budget.tactical_target_gid
+		&& tactical_mission.targetX==budget.tactical_target_x
+		&& tactical_mission.targetY==budget.tactical_target_y;
+	const bool same_raid_moved=!same_target && tactical_mission.flagId>=0
+		&& tactical_mission.kind==Tactics::MissionRaid
+		&& budget.tactical_kind==Tactics::MissionRaid
+		&& tactical_mission.targetTeam==budget.tactical_target_team
+		&& echo.player->map->warpDistSquare(tactical_mission.targetX,
+			tactical_mission.targetY, budget.tactical_target_x, budget.tactical_target_y)
+			<=budget.raid_flag_radius*budget.raid_flag_radius*16;
+	if(same_raid_moved)
 	{
-		finish_tactical_mission(echo, "flag_missing");
+		tactical_mission.targetX=budget.tactical_target_x;
+		tactical_mission.targetY=budget.tactical_target_y;
+		tactical_mission.candidateScore=budget.tactical_candidate_score;
+		echo.add_management_order(new ChangeFlagPosition(budget.tactical_target_x,
+			budget.tactical_target_y, tactical_mission.flagId));
 		return;
 	}
-	if(!echo.get_building_register().is_building_found(flag))
-		return;
-	const int enrolled=echo.get_building_register().get_enrolled(flag);
-	const int on_site=echo.get_building_register().get_on_site(flag);
-	// Withdrawal is terminal for every mission kind. Handle it before any
-	// mission-specific timeout or retarget logic so the rally command and its
-	// completion timer cannot be restarted on every strategy cycle.
-	if(tactical_mission.phase==Tactics::PhaseWithdraw)
+	const int radius=budget.tactical_kind==Tactics::MissionRaid
+		? budget.raid_flag_radius : budget.tactical_siege_radius;
+	if(tactical_mission.flagId<0)
 	{
-		if(on_site*100>=std::max(1, enrolled)*75
-		   || timer-tactical_mission.phaseSinceTick>=budget.raid_muster_timeout)
-			finish_tactical_mission(echo, "withdrawn");
-		return;
+		BuildingOrder* order=new BuildingOrder(IntBuildingType::WAR_FLAG,
+			budget.tactical_requested_force);
+		order->add_constraint(new Construction::SinglePosition(
+			budget.tactical_target_x, budget.tactical_target_y));
+		const int flag=echo.add_building_order(order);
+		echo.add_management_order(new ChangeFlagMinimumLevel(
+			budget.tactical_flag_level, flag));
+		echo.add_management_order(new ChangeFlagSize(radius, flag));
+		ManagementOrder* deleted=new Notify(RuntimeEvent(RuntimeEvent::AttackFinished, flag));
+		deleted->add_condition(new BuildingDestroyed(flag));
+		echo.add_management_order(deleted);
+		tactical_mission.reset();
+		tactical_mission.flagId=flag;
+		tactical_mission.phase=Tactics::PhaseEngage;
+		tactical_mission.startedTick=timer;
+		attack_flags.push_back(flag);
+		attack_flag_started_ticks[flag]=timer;
 	}
-	if(tactical_mission.kind==Tactics::MissionRelief)
+	else if(same_target)
 	{
-		bool contact_refreshed=false;
-		if(budget.tactical_contact_visible)
+		// The request follows the training surplus, releasing warriors to the
+		// barracks or admitting newly free ones.
+		if(budget.tactical_requested_force!=tactical_mission.requestedForce)
 		{
-			const bool same_team=budget.tactical_target_team
-				==tactical_mission.targetTeam;
-			const bool changed=budget.tactical_target_team
-				!=tactical_mission.targetTeam
-				|| budget.tactical_target_x!=tactical_mission.targetX
-				|| budget.tactical_target_y!=tactical_mission.targetY;
-			const int retarget_distance=echo.player->map->warpDistSquare(
-				tactical_mission.targetX, tactical_mission.targetY,
-				budget.tactical_target_x, budget.tactical_target_y);
-			const bool acceptable=Tactics::Program::reliefRetargetAllowed(
-				changed, same_team, retarget_distance,
-				budget.relief_follow_radius, budget.tactical_candidate_score,
-				tactical_mission.candidateScore, budget.relief_retarget_margin);
-			if(acceptable)
-			{
-				contact_refreshed=true;
-				tactical_mission.lastContactTick=timer;
-				const int requested=budget.tactical_requested_force;
-				const int minimum=budget.tactical_minimum_force;
-				if(requested!=tactical_mission.requestedForce
-				   || minimum!=tactical_mission.minimumForce)
-				{
-					if(tactical_mission.phase==Tactics::PhaseMuster
-					   && (requested>tactical_mission.requestedForce
-						|| minimum>tactical_mission.minimumForce))
-						tactical_mission.phaseSinceTick=timer;
-					tactical_mission.requestedForce=requested;
-					tactical_mission.minimumForce=minimum;
-					echo.add_management_order(new AssignWorkers(requested, flag));
-				}
-				// Count reinforcements only once they actually enroll, and do not
-				// mistake units deliberately released by a smaller request for deaths.
-				if(tactical_mission.phase!=Tactics::PhaseMuster)
-					tactical_mission.launchedForce=std::min(requested,
-						std::max(tactical_mission.launchedForce, enrolled));
-			}
-			if(changed && acceptable)
-			{
-				tactical_mission.targetTeam=budget.tactical_target_team;
-				tactical_mission.targetX=budget.tactical_target_x;
-				tactical_mission.targetY=budget.tactical_target_y;
-				tactical_mission.candidateScore=budget.tactical_candidate_score;
-				if(tactical_mission.phase!=Tactics::PhaseMuster)
-					echo.add_management_order(new ChangeFlagPosition(
-						tactical_mission.targetX, tactical_mission.targetY, flag));
-				emit_telemetry(echo, "mission_retargeted",
-					"\tkind=relief\ttarget_team="
-					+boost::lexical_cast<std::string>(tactical_mission.targetTeam)
-					+"\tx="+boost::lexical_cast<std::string>(tactical_mission.targetX)
-					+"\ty="+boost::lexical_cast<std::string>(tactical_mission.targetY)
-					+"\tvisible_enemies="+boost::lexical_cast<std::string>(
-						budget.tactical_visible_enemy_warriors));
-			}
+			tactical_mission.requestedForce=budget.tactical_requested_force;
+			echo.add_management_order(new AssignWorkers(
+				tactical_mission.requestedForce, tactical_mission.flagId));
 		}
-		if(!contact_refreshed && timer-tactical_mission.lastContactTick
-		   >=budget.relief_contact_ttl)
-		{
-			if(tactical_mission.phase==Tactics::PhaseMuster)
-				finish_tactical_mission(echo, "ally_threat_lost_before_launch");
-			else
-				withdraw_tactical_mission(echo, "ally_threat_resolved", false);
-			return;
-		}
-		if(timer-tactical_mission.startedTick>=budget.relief_max_engagement)
-		{
-			withdraw_tactical_mission(echo, "relief_timeout", false);
-			return;
-		}
-	}
-	if(tactical_mission.phase==Tactics::PhaseMuster)
-	{
-		if(globalContainer && globalContainer->nicowarTelemetry
-		   && timer>tactical_mission.phaseSinceTick
-		   && (timer-tactical_mission.phaseSinceTick)%500==0)
-		{
-			Building* rally=echo.get_building_register().get_building(flag);
-			int swimmers=0, fighting=0, farthest=0;
-			for(std::list<Unit*>::const_iterator member=rally->unitsWorking.begin();
-				member!=rally->unitsWorking.end(); ++member)
-			{
-				const Unit* unit=*member;
-				swimmers+=unit->performance[SWIM]>0;
-				fighting+=unit->movement==Unit::MOV_ATTACKING_TARGET;
-				farthest=std::max(farthest,echo.player->map->warpDistSquare(
-					rally->posX,rally->posY,unit->posX,unit->posY));
-			}
-			int open_tiles=0;
-			const int radius=rally->unitStayRange;
-			for(int dy=-radius; dy<=radius; ++dy)
-				for(int dx=-radius; dx<=radius; ++dx)
-				{
-					const int x=echo.player->map->normalizeX(rally->posX+dx);
-					const int y=echo.player->map->normalizeY(rally->posY+dy);
-					if(dx*dx+dy*dy<=radius*radius
-					   && echo.player->map->getBuilding(x,y)==NOGBID
-					   && echo.player->map->getResource(x,y).type==NO_RES_TYPE
-					   && !echo.player->map->isForbidden(x,y,echo.player->team->me))
-						++open_tiles;
-				}
-			emit_telemetry(echo, "mission_muster_progress",
-				"\tkind="+std::string(Tactics::missionKindName(tactical_mission.kind))
-				+"\tflag="+boost::lexical_cast<std::string>(flag)
-				+"\tenrolled="+boost::lexical_cast<std::string>(enrolled)
-				+"\ton_site="+boost::lexical_cast<std::string>(on_site)
-				+"\trequested="+boost::lexical_cast<std::string>(tactical_mission.requestedForce)
-				+"\tminimum="+boost::lexical_cast<std::string>(tactical_mission.minimumForce)
-				+"\tmuster_percent="+boost::lexical_cast<std::string>(
-					tactical_mission.kind==Tactics::MissionRaid
-						? budget.raid_muster_percent : budget.tactical_siege_muster_percent)
-				+"\trally_open_tiles="+boost::lexical_cast<std::string>(open_tiles)
-				+"\trally_radius="+boost::lexical_cast<std::string>(radius)
-				+"\trally_x="+boost::lexical_cast<std::string>(rally->posX)
-				+"\trally_y="+boost::lexical_cast<std::string>(rally->posY)
-				+"\tenrolled_swimmers="+boost::lexical_cast<std::string>(swimmers)
-				+"\tfighting_before_launch="+boost::lexical_cast<std::string>(fighting)
-				+"\tfarthest_distance_squared="+boost::lexical_cast<std::string>(farthest));
-		}
+		// Progress watch: a visible target that stops losing hit points for
+		// the stall period is quarantined so the next plan looks elsewhere.
 		if(tactical_mission.kind==Tactics::MissionSiege)
 		{
-			const Recon::OpponentIntel* intel=
-				reconnaissance.opponent(tactical_mission.targetTeam);
-			const bool target_remembered=intel
-				&& intel->buildings.find(tactical_mission.targetGid)
-					!=intel->buildings.end();
-			const Tactics::SiegeTargetContinuity continuity=
-				Tactics::Program::siegeTargetContinuity(target_remembered,
-					tactical_mission.targetGid, budget.tactical_target_gid);
-			if(continuity==Tactics::SiegeTargetLost)
+			const int team=tactical_mission.targetTeam;
+			const int local=Building::GIDtoID(tactical_mission.targetGid);
+			Building* building=team>=0 && team<Team::MAX_COUNT
+				&& echo.player->game->teams[team] && local>=0 && local<Building::MAX_COUNT
+				? echo.player->game->teams[team]->myBuildings[local] : NULL;
+			if(building && building->gid==tactical_mission.targetGid
+			   && building_currently_visible(echo.player, building)
+			   && (tactical_mission.lastTargetHp<0
+				|| building->hp<tactical_mission.lastTargetHp))
 			{
-				finish_tactical_mission(echo,
-					"target_lost_from_recon_during_muster");
-				return;
-			}
-			if(continuity==Tactics::SiegeTargetReplacementAvailable)
-			{
-				retarget_tactical_siege(echo);
-			}
-		}
-		if(tactical_mission.kind==Tactics::MissionRaid)
-		{
-			const Tactics::RaidCandidate* current=NULL;
-			bool saw_cluster=false;
-			for(std::vector<Tactics::RaidCandidate>::const_iterator candidate=
-				tactics.raidCandidates().begin();
-				candidate!=tactics.raidCandidates().end(); ++candidate)
-			{
-				if(candidate->team!=tactical_mission.targetTeam)
-					continue;
-				saw_cluster=true;
-				int route=-1;
-				int nearest=INT_MAX;
-				if(raid_candidate_safe(echo, *candidate,
-					tactical_mission.requestedForce, route, nearest))
-				{
-					current=&*candidate;
-					break;
-				}
-			}
-			// The original workers may move under protection during muster. Keep
-			// the assembled force useful by switching to the best safe visible
-			// cluster, including another opponent, before giving up the mission.
-			if(!current)
-				for(std::vector<Tactics::RaidCandidate>::const_iterator candidate=
-					tactics.raidCandidates().begin();
-					candidate!=tactics.raidCandidates().end(); ++candidate)
-				{
-					saw_cluster=true;
-					int route=-1;
-					int nearest=INT_MAX;
-					if(raid_candidate_safe(echo, *candidate,
-						tactical_mission.requestedForce, route, nearest))
-					{
-						current=&*candidate;
-						break;
-					}
-				}
-			if(current)
-			{
-				const bool changed=current->team!=tactical_mission.targetTeam
-					|| current->x!=tactical_mission.targetX
-					|| current->y!=tactical_mission.targetY;
-				tactical_mission.targetTeam=current->team;
-				tactical_mission.lastContactTick=timer;
-				tactical_mission.targetX=current->x;
-				tactical_mission.targetY=current->y;
-				tactical_mission.candidateScore=current->score;
-				if(changed)
-					emit_telemetry(echo, "mission_retargeted",
-						"\tkind=raid\tphase=muster\ttarget_team="
-						+boost::lexical_cast<std::string>(current->team)
-						+"\tx="+boost::lexical_cast<std::string>(current->x)
-						+"\ty="+boost::lexical_cast<std::string>(current->y)
-						+"\tworkers="+boost::lexical_cast<std::string>(current->workers));
-			}
-			else
-			{
-				if(timer-tactical_mission.lastContactTick>=budget.raid_contact_ttl)
-					finish_tactical_mission(echo, saw_cluster
-						? "unsafe_before_launch" : "workers_lost_before_launch");
-				// Contact grace keeps the mission alive, not its launch permission.
-				// Wait for a safe cluster even if the force has fully assembled.
-				return;
-			}
-		}
-		const int percent=tactical_mission.kind==Tactics::MissionRaid
-			? budget.raid_muster_percent : budget.tactical_siege_muster_percent;
-		const int timeout=tactical_mission.kind==Tactics::MissionRaid
-			? budget.raid_muster_timeout : budget.raid_muster_timeout*2;
-		// Relief is time-sensitive: once enough warriors subscribe, move the flag
-		// immediately and let them converge on the ally while travelling. Raids and
-		// sieges still assemble on site before committing.
-		const bool timed_out=timer-tactical_mission.phaseSinceTick>=timeout;
-		const bool ready=Tactics::Program::musterLaunchAllowed(
-			tactical_mission.kind, enrolled, on_site,
-			tactical_mission.requestedForce, tactical_mission.minimumForce,
-			percent);
-		if(!ready && !timed_out)
-			return;
-		if(!ready)
-		{
-			finish_tactical_mission(echo, "muster_underfilled");
-			return;
-		}
-		tactical_mission.launchedForce=enrolled;
-		echo.add_management_order(new ChangeFlagSize(
-			tactical_mission.kind==Tactics::MissionRaid
-				? budget.raid_flag_radius : budget.tactical_siege_radius, flag));
-		echo.add_management_order(new ChangeFlagPosition(tactical_mission.targetX,
-			tactical_mission.targetY, flag));
-		transition_tactical_mission(echo, Tactics::PhaseTransit,
-			"muster_ready");
-		return;
-	}
-	if(tactical_mission.kind==Tactics::MissionRaid)
-	{
-		const Tactics::RaidCandidate* current=NULL;
-		bool saw_cluster=false;
-		bool saw_safe_cluster=false;
-		for(std::vector<Tactics::RaidCandidate>::const_iterator candidate=
-			tactics.raidCandidates().begin();
-			candidate!=tactics.raidCandidates().end(); ++candidate)
-		{
-			if(candidate->team!=tactical_mission.targetTeam)
-				continue;
-			saw_cluster=true;
-			int route=-1;
-			int nearest=INT_MAX;
-			if(raid_candidate_safe(echo, *candidate,
-				tactical_mission.launchedForce, route, nearest))
-			{
-				saw_safe_cluster=true;
-				if(!Tactics::Program::raidRetargetAllowed(true,
-					echo.player->map->warpDistSquare(tactical_mission.targetX,
-						tactical_mission.targetY, candidate->x, candidate->y),
-					budget.raid_flag_radius, candidate->score,
-					tactical_mission.candidateScore, budget.raid_retarget_margin))
-					continue;
-				current=&*candidate;
-				break;
-			}
-		}
-		// If the selected workers move under protection, preserve the assembled
-		// raiding force by looking for a safe cluster belonging to another enemy.
-		if(!current)
-			for(std::vector<Tactics::RaidCandidate>::const_iterator candidate=
-				tactics.raidCandidates().begin();
-				candidate!=tactics.raidCandidates().end(); ++candidate)
-			{
-				if(candidate->team==tactical_mission.targetTeam)
-					continue;
-				saw_cluster=true;
-				int route=-1;
-				int nearest=INT_MAX;
-				if(raid_candidate_safe(echo, *candidate,
-					tactical_mission.launchedForce, route, nearest))
-				{
-					current=&*candidate;
-					break;
-				}
-			}
-		if(current)
-		{
-			const bool moved=current->x!=tactical_mission.targetX
-				|| current->y!=tactical_mission.targetY;
-			tactical_mission.targetTeam=current->team;
-			tactical_mission.lastContactTick=timer;
-			tactical_mission.targetX=current->x;
-			tactical_mission.targetY=current->y;
-			tactical_mission.candidateScore=current->score;
-			if(moved)
-			{
-				echo.add_management_order(new ChangeFlagPosition(current->x,
-					current->y, flag));
-				emit_telemetry(echo, "mission_retargeted",
-					"\tkind=raid\tx="+boost::lexical_cast<std::string>(current->x)
-					+"\ty="+boost::lexical_cast<std::string>(current->y)
-					+"\ttarget_team="+boost::lexical_cast<std::string>(current->team)
-					+"\tworkers="+boost::lexical_cast<std::string>(current->workers));
-			}
-		}
-		else if(saw_cluster && !saw_safe_cluster)
-		{
-			withdraw_tactical_mission(echo, "raid_zone_became_unsafe", false);
-			return;
-		}
-		if(timer-tactical_mission.lastContactTick>=budget.raid_contact_ttl)
-		{
-			withdraw_tactical_mission(echo, "workers_lost", false);
-			return;
-		}
-		if(timer-tactical_mission.startedTick>=budget.raid_max_engagement)
-		{
-			withdraw_tactical_mission(echo, "engagement_timeout", false);
-			return;
-		}
-	}
-	else if(tactical_mission.kind==Tactics::MissionSiege)
-	{
-		const int team=tactical_mission.targetTeam;
-		const Recon::OpponentIntel* intel=reconnaissance.opponent(team);
-		const bool target_remembered=intel
-			&& intel->buildings.find(tactical_mission.targetGid)
-				!=intel->buildings.end();
-		const Tactics::SiegeTargetContinuity continuity=
-			Tactics::Program::siegeTargetContinuity(target_remembered,
-				tactical_mission.targetGid, budget.tactical_target_gid);
-		if(continuity==Tactics::SiegeTargetLost)
-		{
-			withdraw_tactical_mission(echo, "target_lost_from_recon", false);
-			return;
-		}
-		if(budget.tactical_target_gid>=0
-		   && budget.tactical_target_gid!=tactical_mission.targetGid)
-		{
-			if(retarget_tactical_siege(echo)) return;
-			emit_telemetry(echo, "mission_retargeted",
-				"\tkind=siege\ttarget_gid="
-				+boost::lexical_cast<std::string>(tactical_mission.targetGid));
-		}
-		const int local=Building::GIDtoID(tactical_mission.targetGid);
-		Building* target_building=team>=0 && team<Team::MAX_COUNT
-			&& echo.player->game->teams[team] && local>=0 && local<Building::MAX_COUNT
-			? echo.player->game->teams[team]->myBuildings[local] : NULL;
-		if(target_building && target_building->gid==tactical_mission.targetGid
-		   && building_currently_visible(echo.player, target_building))
-		{
-			if(tactical_mission.lastTargetHp<0
-			   || target_building->hp<tactical_mission.lastTargetHp)
-			{
-				tactical_mission.lastTargetHp=target_building->hp;
+				tactical_mission.lastTargetHp=building->hp;
 				tactical_mission.lastProgressTick=timer;
 				campaign.last_progress_tick=timer;
 			}
+			const int enrolled=echo.get_building_register().get_enrolled(
+				tactical_mission.flagId);
+			if(enrolled>0 && budget.tactical_quarantine_enabled
+			   && timer-tactical_mission.lastProgressTick
+				>=budget.tactical_stall_ticks)
+			{
+				attack_target_quarantine_until[tactical_mission.targetGid]=
+					timer+budget.tactical_quarantine_ticks;
+				emit_telemetry(echo, "target_quarantined",
+					"\tbuilding="+diagnostic_value(tactical_mission.targetGid)
+					+"\treason=stalled\tcooldown="
+					+diagnostic_value(budget.tactical_quarantine_ticks));
+				tactical_mission.lastProgressTick=timer;
+				director.invalidate();
+			}
 		}
-		if(timer-tactical_mission.lastProgressTick>=budget.campaign_stall_ticks)
-		{
-			withdraw_tactical_mission(echo, "stalled", false);
-			return;
-		}
-	}
-	const int casualty_percent=tactical_mission.kind==Tactics::MissionRaid
-		? budget.raid_casualty_percent : budget.tactical_siege_casualty_percent;
-	const int survivors=tactical_mission.kind==Tactics::MissionRaid
-		? budget.raid_survivor_min : std::max(1,
-			tactical_mission.minimumForce*(100-casualty_percent)/100);
-	if(Tactics::Program::casualtiesRequireWithdrawal(enrolled,
-		tactical_mission.launchedForce,
-		std::min(survivors,tactical_mission.launchedForce), casualty_percent))
-	{
-		withdraw_tactical_mission(echo, "casualties", false);
 		return;
 	}
-	const int arrival_percent=tactical_mission.kind==Tactics::MissionRaid
-		? budget.raid_muster_percent : budget.tactical_siege_muster_percent;
-	if(tactical_mission.phase==Tactics::PhaseTransit
-	   && (tactical_mission.kind==Tactics::MissionRelief
-		? on_site>=tactical_mission.minimumForce
-		: Tactics::Program::musterReady(enrolled,on_site,
-			tactical_mission.requestedForce,arrival_percent)))
-		transition_tactical_mission(echo, Tactics::PhaseEngage, "force_arrived");
-}
-
-
-void Maxima::control_legacy_attacks(Context& echo)
-{
-	choose_enemy_target(echo);
-	const bool must_retreat=budget.colony_emergency
-		|| snapshot.trained_warriors<budget.defense_reserve;
-	for(std::vector<int>::const_iterator flag=attack_flags.begin();
-		flag!=attack_flags.end(); ++flag)
+	else
 	{
-		std::map<int, int>::const_iterator target_it=attack_flag_targets.find(*flag);
-		if(target_it==attack_flag_targets.end())
-			continue;
-		const int gid=target_it->second;
-		const int team=Building::GIDtoTeam(gid);
-		const int local=Building::GIDtoID(gid);
-		Building* building=(team>=0 && team<Team::MAX_COUNT
-			&& echo.player->game->teams[team] && local>=0 && local<Building::MAX_COUNT)
-			? echo.player->game->teams[team]->myBuildings[local] : NULL;
-		if(!building)
+		// Recon drops a remembered building only after seeing its footprint
+		// empty, so a vanished siege target counts as destroyed.
+		if(tactical_mission.kind==Tactics::MissionSiege && tactical_mission.targetGid>=0)
 		{
-			campaign.last_progress_tick=timer;
-			continue;
-		}
-		// Once a known target drops out of vision, retain its last-known identity
-		// but do not inspect live health through fog of war.
-		if(!building_currently_visible(echo.player, building))
-			continue;
-		std::map<int, int>::iterator last_hp=attack_flag_last_hp.find(*flag);
-		if(last_hp==attack_flag_last_hp.end() || building->hp<last_hp->second)
-		{
-			attack_flag_last_hp[*flag]=building->hp;
-			attack_flag_last_progress[*flag]=timer;
-			campaign.last_progress_tick=timer;
-		}
-		std::map<int, int>::const_iterator progress=attack_flag_last_progress.find(*flag);
-		if(progress!=attack_flag_last_progress.end()
-		   && timer-progress->second>=budget.campaign_stall_ticks)
-		{
-			attack_flag_end_reasons[*flag]="stalled";
-			if(echo.get_building_register().is_building_found(*flag))
-				echo.add_management_order(new DestroyBuilding(*flag));
-		}
-	}
-
-	if(must_retreat && !attack_flags.empty())
-	{
-		if(campaign.state!=CampaignRetreating)
-		{
-			campaign.state=CampaignRetreating;
-			campaign.cooldown_until=std::max(campaign.cooldown_until,
-				timer+budget.campaign_retreat_cooldown_ticks);
-			for(std::vector<int>::const_iterator flag=attack_flags.begin();
-				flag!=attack_flags.end(); ++flag)
+			const Recon::OpponentIntel* intel=
+				reconnaissance.opponent(tactical_mission.targetTeam);
+			if(intel && intel->buildings.count(tactical_mission.targetGid)==0)
 			{
-				attack_flag_end_reasons[*flag]=budget.colony_emergency
-					? "colony_emergency" : "insufficient_force";
-				if(echo.get_building_register().is_building_found(*flag))
-					echo.add_management_order(new DestroyBuilding(*flag));
+				++campaign.buildings_destroyed;
+				campaign.last_progress_tick=timer;
 			}
-			emit_telemetry(echo, "campaign_retreat",
-				"\ttarget="+boost::lexical_cast<std::string>(target)
-				+"\tflags="+boost::lexical_cast<std::string>(attack_flags.size())
-				+"\tcooldown="+boost::lexical_cast<std::string>(
-					budget.campaign_retreat_cooldown_ticks));
 		}
+		echo.add_management_order(new ChangeFlagSize(radius, tactical_mission.flagId));
+		echo.add_management_order(new ChangeFlagPosition(budget.tactical_target_x,
+			budget.tactical_target_y, tactical_mission.flagId));
+		echo.add_management_order(new AssignWorkers(budget.tactical_requested_force,
+			tactical_mission.flagId));
+		emit_telemetry(echo, "mission_retargeted",
+			"\tkind="+std::string(Tactics::missionKindName(budget.tactical_kind))
+			+"\ttarget_team="+diagnostic_value(budget.tactical_target_team)
+			+"\ttarget_gid="+diagnostic_value(budget.tactical_target_gid)
+			+"\tx="+diagnostic_value(budget.tactical_target_x)
+			+"\ty="+diagnostic_value(budget.tactical_target_y));
 	}
-	else if(!attack_flags.empty())
-		campaign.state=(budget.attack_flags>0) ? CampaignActive : CampaignPaused;
-	else if(budget.attack_flags>0 && target!=-1)
-		campaign.state=CampaignPreparing;
+	const int flag=tactical_mission.flagId;
+	tactical_mission.kind=budget.tactical_kind;
+	tactical_mission.targetTeam=budget.tactical_target_team;
+	tactical_mission.targetGid=budget.tactical_target_gid;
+	tactical_mission.targetX=budget.tactical_target_x;
+	tactical_mission.targetY=budget.tactical_target_y;
+	tactical_mission.requestedForce=budget.tactical_requested_force;
+	tactical_mission.candidateScore=budget.tactical_candidate_score;
+	tactical_mission.lastTargetHp=-1;
+	tactical_mission.lastProgressTick=timer;
+	tactical_mission.phaseSinceTick=timer;
+	tactical_mission.phase=Tactics::PhaseEngage;
+	if(tactical_mission.targetGid>=0)
+		attack_flag_targets[flag]=tactical_mission.targetGid;
+	else
+		attack_flag_targets.erase(flag);
+	target=tactical_mission.targetTeam;
+	if(tactical_mission.kind==Tactics::MissionSiege)
+	{
+		if(campaign.target_team!=tactical_mission.targetTeam)
+			campaign.buildings_destroyed=0;
+		campaign.state=CampaignActive;
+		campaign.target_team=tactical_mission.targetTeam;
+		campaign.started_tick=campaign.state==CampaignActive && campaign.target_team==tactical_mission.targetTeam
+			? campaign.started_tick : timer;
+		campaign.last_progress_tick=timer;
+	}
 	else
 		campaign.state=CampaignIdle;
-
-	if(!must_retreat && target!=-1 && budget.attack_flags>0
-	   && attack_flags.size()<static_cast<unsigned>(budget.attack_flags))
-		attack_building(echo);
-
-	// Target selection already rejects buildings without a navigable path. Testing
-	// the war flag's own tile here produced false "unreachable" results whenever
-	// it overlapped the enemy structure, so valid campaigns repeatedly deleted
-	// and recreated their flag. The stalled-progress watchdog above remains the
-	// fallback for genuinely bad paths.
+	emit_telemetry(echo, "mission_selected",
+		"\tkind="+std::string(Tactics::missionKindName(tactical_mission.kind))
+		+"\ttarget_team="+diagnostic_value(tactical_mission.targetTeam)
+		+"\ttarget_gid="+diagnostic_value(tactical_mission.targetGid)
+		+"\tflag="+diagnostic_value(flag)
+		+"\trequested="+diagnostic_value(tactical_mission.requestedForce)
+		+"\tx="+diagnostic_value(tactical_mission.targetX)
+		+"\ty="+diagnostic_value(tactical_mission.targetY)
+		+"\tscore="+diagnostic_value(tactical_mission.candidateScore));
+	director.invalidate();
 }
-
 
 
 void Maxima::choose_enemy_target(Context& echo)
@@ -8440,35 +6892,16 @@ void Maxima::choose_enemy_target(Context& echo)
 			best_target=*candidate;
 		}
 	}
-	const bool progress_target_valid=budget.siege_target_lock_enabled
-		&& campaign.target_team>=0
-		&& campaign.target_team<Team::MAX_COUNT
-		&& echo.player->game->teams[campaign.target_team]
-		&& echo.player->game->teams[campaign.target_team]->isAlive
-		&& opponents[campaign.target_team].score!=INT_MIN
-		&& campaign.buildings_destroyed>0
-		&& timer-campaign.last_progress_tick<=budget.tactical_target_lock_ticks;
-	// Commitment is earned by destroying something, not merely by picking the
-	// first visible opponent.  Once an assault proves productive, keep converting
-	// that damage toward an elimination instead of repeatedly softening all three
-	// rivals for somebody else.
-	if(progress_target_valid)
-	{
-		best_target=campaign.target_team;
-		best_score=opponents[best_target].score;
-	}
 	const bool current_valid=target>=0 && target<Team::MAX_COUNT
 		&& echo.player->game->teams[target]
 		&& echo.player->game->teams[target]->isAlive
 		&& opponents[target].score!=INT_MIN;
 	const bool campaign_committed=!attack_flags.empty()
-		|| campaign.state==CampaignActive || campaign.state==CampaignPaused
-		|| progress_target_valid;
+		|| campaign.state==CampaignActive || campaign.state==CampaignPaused;
 	const bool materially_better=current_valid && best_target!=-1
 		&& best_target!=target
 		&& best_score>=opponents[target].score+budget.target_switch_margin;
-	if(!current_valid || (progress_target_valid && target!=best_target)
-		|| (!campaign_committed && materially_better))
+	if(!current_valid || (!campaign_committed && materially_better))
 	{
 		const int previous=target;
 		target=best_target;
@@ -9487,11 +7920,9 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 	// Keep explorer and warrior pressure concentrated on the same opponent. The
 	// lower-threshold independent raids tested here produced weaker, fragmented
 	// strikes and lost the G2 gate that the concentrated version had won.
-	const bool following_offense=(tactical_mission.kind==Tactics::MissionRaid
-		|| tactical_mission.kind==Tactics::MissionSiege)
-		&& tactical_mission.phase!=Tactics::PhaseIdle
-		&& tactical_mission.phase!=Tactics::PhaseCooldown
-		&& tactical_mission.phase!=Tactics::PhaseWithdraw;
+	const bool following_offense=tactical_mission.flagId>=0
+		&& (tactical_mission.kind==Tactics::MissionRaid
+			|| tactical_mission.kind==Tactics::MissionSiege);
 	const int strike_target=following_offense ? tactical_mission.targetTeam : target;
 	
 	if(budget.explorer_campaign_active && strike_target>=0

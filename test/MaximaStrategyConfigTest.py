@@ -68,13 +68,13 @@ class MaximaStrategyConfigTest(unittest.TestCase):
     def values(payload: dict) -> dict:
         return {item["key"]: item["value"] for item in payload["parameters"]}
 
-    def test_offensive_muster_defaults_and_overrides(self) -> None:
-        keys = ("tactics.siege_muster_percent", "raiding.muster_percent")
+    def test_offense_defaults_and_overrides(self) -> None:
+        keys = ("tactics.min_force", "tactics.retarget_margin")
         defaults = self.values(self.resolved)
-        self.assertEqual([50, 50], [defaults[key] for key in keys])
+        self.assertEqual([4, 60], [defaults[key] for key in keys])
         changed = self.values(self.resolve("--maxima-overrides",
-            "tactics.siege_muster_percent=75,raiding.muster_percent=60"))
-        self.assertEqual([75, 60], [changed[key] for key in keys])
+            "tactics.min_force=6,tactics.retarget_margin=90"))
+        self.assertEqual([6, 90], [changed[key] for key in keys])
 
     def test_schema_base_and_round_trip_are_bijective(self) -> None:
         self.assertEqual(self.schema["schemaVersion"], 2)
@@ -147,7 +147,6 @@ class MaximaStrategyConfigTest(unittest.TestCase):
             "economy.worker_birth_throttle_enabled",
             "upgrades.enabled",
             "repairs.enabled",
-            "military.counterattack_enabled",
             "military.explorer_defense_enabled",
             "military.warrior_training_backlog_throttle_enabled",
             "postures.recover_enabled",
@@ -166,10 +165,7 @@ class MaximaStrategyConfigTest(unittest.TestCase):
             "tactics.siege_enabled",
             "tactics.dig_out_enabled",
             "tactics.failed_target_quarantine_enabled",
-            "tactics.siege_target_lock_enabled",
             "raiding.enabled",
-            "teamplay.enabled",
-            "teamplay.pressure_coordination_enabled",
             "explorer_campaign.enabled",
             "fruit.enabled",
             "recon.enabled",
@@ -415,10 +411,9 @@ class MaximaStrategyConfigTest(unittest.TestCase):
         with self.assertRaises(subprocess.CalledProcessError) as raised:
             self.resolve(
                 "--maxima-overrides",
-                "teamplay.defense_contact_ttl_ticks=2000,"
-                "teamplay.defense_max_engagement_ticks=1000",
+                "tactics.min_force=20,military.attack_unit_cap=10",
             )
-        self.assertIn("teamplay.defense_contact_ttl_ticks", raised.exception.stderr)
+        self.assertIn("tactics.min_force", raised.exception.stderr)
 
         with self.assertRaises(subprocess.CalledProcessError) as raised:
             self.resolve(

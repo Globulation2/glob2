@@ -32,8 +32,7 @@ FAST_READINESS_OVERRIDES = ",".join(
         "military.defense_reserve_floor=0",
         "military.reserve_enemy_bonus=0",
         "military.reserve_force_divisor=20",
-        "military.campaign_deployable_min=4",
-        "tactics.siege_min_force=4",
+        "tactics.min_force=4",
         "postures.campaign_base=300",
         "military.first_barracks_population_min=4",
     )

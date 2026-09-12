@@ -29,17 +29,6 @@ static void explorerDefenseSwitch()
         assert(count==1);
     }
 }
-static void counterattackSwitch()
-{
-    for(bool enabled:{false,true})for(bool parent:{false,true})for(bool siege:{false,true})for(bool threat:{false,true})for(bool ready:{false,true}) {
-        combat_regressions::Fixture f;auto& a=*f.ai;
-        a.strategy.military.counterattack_enabled=enabled;a.strategy.tactics.enabled=parent;a.strategy.tactics.siege_enabled=siege;
-        a.snapshot.visible_colony_threat=threat?1:0;a.snapshot.critical_food=0;a.snapshot.unserved_food=0;
-        a.snapshot.trained_warriors=ready?100:0;a.snapshot.workers=100;a.snapshot.population=200;
-        a.opponents[1].alive=true;a.opponents[1].score=100;a.opponents[1].estimated_warriors=1;
-        a.allocate_resources();assert((a.budget.attack_flags>0)==(parent&&siege&&ready&&(!threat||enabled)));
-    }
-}
 static void amphibiousMaintenanceSwitch()
 {
     for(bool enabled:{false,true})for(bool parent:{false,true})for(bool opportunity:{false,true}) {
@@ -74,6 +63,6 @@ static void foodServiceSwitch()
 int main()
 {
     GlobalContainer container;globalContainer=&container;container.runNoX=true;container.buildingsTypes.init();IntBuildingType::init();
-    trainingSwitch();explorerDefenseSwitch();counterattackSwitch();amphibiousMaintenanceSwitch();foodServiceSwitch();
-    std::cout<<"Five policy switches: 60 paired activation, suppression and dependency cases PASS\n";
+    trainingSwitch();explorerDefenseSwitch();amphibiousMaintenanceSwitch();foodServiceSwitch();
+    std::cout<<"Four policy switches: 28 paired activation, suppression and dependency cases PASS\n";
 }

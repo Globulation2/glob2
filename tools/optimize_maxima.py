@@ -115,9 +115,9 @@ PARAMETER_SETS = {
         "military.defense_enemy_percent",
         "military.offense_warrior_base_percent",
         "recon.offense_population_divisor",
-        "military.campaign_deployable_min",
-        "scheduling.campaign_stall_ticks",
-        "scheduling.campaign_retreat_cooldown_ticks",
+        "tactics.min_force",
+        "tactics.stall_ticks",
+        "tactics.retarget_margin",
         "scoring.target_switch_margin",
         "scoring.target_reachable_weight",
         "scoring.target_warrior_weight",
@@ -145,9 +145,9 @@ PARAMETER_SETS = {
         "military.defense_enemy_percent",
         "military.offense_warrior_base_percent",
         "recon.offense_population_divisor",
-        "military.campaign_deployable_min",
-        "scheduling.campaign_stall_ticks",
-        "scheduling.campaign_retreat_cooldown_ticks",
+        "tactics.min_force",
+        "tactics.stall_ticks",
+        "tactics.retarget_margin",
         "scoring.target_switch_margin",
         "scoring.target_reachable_weight",
         "scoring.target_warrior_weight",
@@ -157,26 +157,6 @@ PARAMETER_SETS = {
         "fruit.flag_radius",
     ),
     "tactical-expanded": (),
-    "teamplay": (
-        "teamplay.enabled",
-        "teamplay.pressure_coordination_enabled",
-        "teamplay.defense_enabled",
-        "teamplay.allied_pressure_radius",
-        "teamplay.defense_min_force",
-        "teamplay.defense_strength_percent",
-        "teamplay.defense_base_score",
-        "teamplay.defense_threat_weight",
-        "teamplay.defense_under_attack_bonus",
-        "teamplay.defense_unit_value",
-        "teamplay.defense_route_distance_weight",
-        "teamplay.defense_contact_ttl_ticks",
-        "teamplay.defense_max_engagement_ticks",
-        "teamplay.defense_cooldown_ticks",
-        "teamplay.defense_follow_radius",
-        "teamplay.defense_retarget_margin",
-        "teamplay.siege_player_pressure_bonus",
-        "teamplay.siege_building_pressure_bonus",
-    ),
     "preemptive-defense-toggle": ("military.preemptive_defense_enabled",),
     "preemptive-defense": (
         "military.preemptive_defense_enabled",
@@ -221,7 +201,7 @@ PARAMETER_SETS = {
     ),
 }
 PARAMETER_SETS["tactical-expanded"] = (
-    PARAMETER_SETS["tactical"] + PARAMETER_SETS["teamplay"]
+    PARAMETER_SETS["tactical"]
 )
 
 PARAMETERS: tuple[Parameter, ...] = ()

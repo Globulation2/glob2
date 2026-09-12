@@ -48,16 +48,16 @@ def main():
     exp.verify_freeze(protocol)
     exp.atomic(args.output/'PASS.json', {
         'protocol_id': protocol['protocol_id'], 'passed': True,
-        'validated_switches': ['tactics.dig_out_enabled','tactics.failed_target_quarantine_enabled','tactics.siege_target_lock_enabled'], 'cases': 48,
-        'checks': ['paired ON/OFF', 'quarantined target authorization and expiry', 'resource-sealed target route opening authorization and worker availability', 'progress target commitment, expiry and eliminated opponent'],
-        'parent_disabled': 'dig-out and quarantine tested with tactics and siege independently disabled; target lock selection tested with no progress, dead opponent and expired commitment',
+        'validated_switches': ['tactics.dig_out_enabled','tactics.failed_target_quarantine_enabled'], 'cases': 32,
+        'checks': ['paired ON/OFF', 'quarantined target authorization and expiry', 'resource-sealed target route opening authorization and worker availability'],
+        'parent_disabled': 'dig-out and quarantine tested with tactics and siege independently disabled',
         'source_sha256': exp.sha(source), 'script_sha256': exp.sha(__file__),
         'command_sha256': exp.sha(args.output/'command.json'),
         'objects': {str(p): exp.sha(p) for p in objects},
         'fixture_binary_sha256': exp.sha(args.output/'fixture-binary'),
         'native_log_sha256': exp.sha(args.output/'native.log'), 'cpu': args.cpu,
         'purpose': 'behavioral qualification only; never inferential samples'})
-    print('Three tactics switches: 48 behavioral cases PASS')
+    print('Two tactics switches: 32 behavioral cases PASS')
 
 
 if __name__ == '__main__':

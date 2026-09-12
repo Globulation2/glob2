@@ -71,7 +71,7 @@ struct Fixture
         ai->budget.colony_emergency=false;
         ai->strategy.tactics.enabled=true;
         ai->strategy.tactics.siege_enabled=true;
-        ai->strategy.tactics.siege_min_force=4;
+        ai->strategy.tactics.min_force=4;
         ai->strategy.raiding.enabled=false;
     }
 
@@ -198,19 +198,18 @@ static void thirdPartyTower() {
     auto tower=f.building(43,40,2,"defencetower",2);
     for(int i=0;i<12;++i) f.warrior(8+i,8);
     auto& a=*f.ai; auto& c=a.context; c.initialize();
-    a.strategy.teamplay.defense_enabled=false;
     a.reconnaissance.beginObservation(a.timer,{1,2});
     for(auto b:{target,tower}) a.reconnaissance.observeBuilding(Recon::BuildingSighting(
         b->gid,b->owner->teamNumber,b->type->shortTypeNum,b->posX,b->posY,
         b->type->width,b->type->height,false,a.timer));
     a.reconnaissance.finishObservation();
     a.opponents[1].score=10000; a.opponents[2].score=0;
-    a.plan_tactical_authorization(c);
+    a.plan_offense(c);
     assert(a.budget.tactical_target_gid==target->gid);
     // Remembered towers belonging to a current ally must not be counted.
     f.player.team->enemies &= ~f.game.teams[2]->me;
     f.player.team->allies |= f.game.teams[2]->me;
-    a.plan_tactical_authorization(c);
+    a.plan_offense(c);
     assert(a.budget.tactical_target_gid==target->gid);
 }
 
@@ -222,22 +221,21 @@ static void disconnectedArmy() {
         auto u=f.warrior(6+i,6);u->performance[SWIM]=0;warriors.push_back(u);
     }
     auto& a=*f.ai; auto& c=a.context; c.initialize(); f.remember(target);
-    a.strategy.teamplay.defense_enabled=false;
-    a.plan_tactical_authorization(c);
+    a.plan_offense(c);
     assert(a.budget.tactical_kind==Tactics::MissionNone);
     for(int i=0;i<4;++i) warriors[i]->performance[SWIM]=1;
-    a.plan_tactical_authorization(c);
+    a.plan_offense(c);
     assert(a.budget.tactical_kind==Tactics::MissionSiege);
-    assert(a.budget.tactical_requested_force==4);
+    assert(a.budget.tactical_requested_force==a.offense_diagnostics.eligibleWarriors);
     // Warriors already in the destination component need no swimming ability.
     for(int i=0;i<4;++i) {
         auto u=warriors[i];u->performance[SWIM]=0;
         f.game.map.setGroundUnit(u->posX,u->posY,NOGUID);
         u->posX=30+i;u->posY=20;f.game.map.setGroundUnit(u->posX,u->posY,u->gid);
     }
-    a.plan_tactical_authorization(c);
+    a.plan_offense(c);
     assert(a.budget.tactical_kind==Tactics::MissionSiege);
-    assert(a.budget.tactical_requested_force==4);
+    assert(a.budget.tactical_requested_force==a.offense_diagnostics.eligibleWarriors);
 }
 
 static void reusedOwnId() {

@@ -25,8 +25,10 @@ incrementally, then revalidates the selected action against the live world. A
 building being upgraded is raised to high worker priority for as long as its
 site is live, and returns to normal priority when the upgrade completes: a
 half-finished upgrade serves nobody, so it outranks its equals until it is
-done. Combat policy considers
-reachable trained forces, defending reserves, and remembered enemy activity.
+done. Combat policy is
+relentless: whenever enough eligible warriors can reach a remembered enemy
+building or a visible worker cluster, one war flag sits on the best target and
+moves only when that target falls or a clearly better one appears.
 
 ## Configuration
 

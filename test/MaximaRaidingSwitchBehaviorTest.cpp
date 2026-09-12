@@ -16,18 +16,17 @@ static void raidingSwitch()
         a.strategy.tactics.enabled=parent;
         a.strategy.tactics.siege_enabled=false;
         a.strategy.raiding.enabled=enabled;
-        a.strategy.raiding.min_force=4;
-        a.strategy.teamplay.enabled=false;
+        a.strategy.tactics.min_force=4;
         a.tactics.beginObservation(a.timer);
         if(eligible)for(int i=0;i<4;++i)
             a.tactics.observeWorker(Tactics::WorkerSighting(100+i,1,30+i,30,a.timer,true,true,1));
         Tactics::RaidRules rules;rules.width=rules.height=64;rules.tick=a.timer;
         a.tactics.finishObservation(rules);
         a.finalize_director_plan(c);
-        a.plan_tactical_authorization(c);
+        a.plan_offense(c);
         const bool expected=parent&&enabled&&eligible;
         assert((a.budget.tactical_kind==Tactics::MissionRaid)==expected);
-        a.control_attacks(c);
+        a.control_offense(c);
         assert((a.tactical_mission.kind==Tactics::MissionRaid)==expected);
         assert(!c.buildingOrders.empty()==expected);
         if(expected) {

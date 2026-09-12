@@ -48,10 +48,10 @@ def main():
     exp.verify_freeze(protocol)
     exp.atomic(args.output/'PASS.json', {
         'protocol_id': protocol['protocol_id'], 'passed': True,
-        'validated_switches': ['military.warrior_training_backlog_throttle_enabled','military.explorer_defense_enabled','military.counterattack_enabled','economy.amphibious_network_maintenance_enabled','economy.food_service_safeguards_enabled'], 'cases': 60,
+        'validated_switches': ['military.warrior_training_backlog_throttle_enabled','military.explorer_defense_enabled','economy.amphibious_network_maintenance_enabled','economy.food_service_safeguards_enabled'], 'cases': 28,
         'checks': ['paired on/off', 'training backlog and birth funding, explorer threat, campaign readiness and tactics parent, amphibious commitment and parent, food pressure and supply', 'inactive-world silence',
                    'tower carrier and warrior birth-ratio orders; campaign deployment authorization and executable pool/inn targets'],
-        'parent_disabled': 'counterattack: tactics and siege; amphibious maintenance: large economy; all tested both enabled and disabled',
+        'parent_disabled': 'amphibious maintenance: large economy; all tested both enabled and disabled',
         'source_sha256': exp.sha(source), 'script_sha256': exp.sha(__file__),
         'command_sha256': exp.sha(args.output/'command.json'),
         'objects': {str(p): exp.sha(p) for p in objects},

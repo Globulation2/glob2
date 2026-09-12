@@ -69,7 +69,6 @@ def inventory(binary):
         if key.startswith('farming.') and key!='farming.enabled': parents=['farming.enabled']
         if key.startswith('recon.') and key!='recon.enabled': parents=['recon.enabled']
         if key.startswith('tactics.') and key!='tactics.enabled': parents=['tactics.enabled']
-        if key.startswith('teamplay.') and key!='teamplay.enabled': parents=['teamplay.enabled']
         if key=='military.preemptive_amphibious_enabled': parents=['military.preemptive_defense_enabled']
         matrix.append({'switch':key,'member':f'{group}.{member}','aliases':[],
                        'defaults':{fmt:defaults[fmt][key] for fmt in FORMATS},
@@ -120,8 +119,8 @@ def prepare(binary,out):
            ROOT/'test/TrappedUnitLifecycleTest.cpp',
            ROOT/'test/ClearingFlagGradientTest.cpp',
            ROOT/'test/SwarmSurvivalTest.cpp',
-           *[ROOT/'test'/name for name in ('MaximaAdditionalSwitchBehaviorTest.cpp','MaximaTeamplaySwitchBehaviorTest.cpp','MaximaPreemptiveSwitchBehaviorTest.cpp')],
-           *[ROOT/'tools'/name for name in ('qualify_maxima_additional_behavior.py','qualify_maxima_teamplay_behavior.py','qualify_maxima_preemptive_behavior.py')],
+           *[ROOT/'test'/name for name in ('MaximaAdditionalSwitchBehaviorTest.cpp','MaximaPreemptiveSwitchBehaviorTest.cpp')],
+           *[ROOT/'tools'/name for name in ('qualify_maxima_additional_behavior.py','qualify_maxima_preemptive_behavior.py')],
            ROOT/'test/MaximaFleetTest.py',
            ROOT/'test/MaximaWinExperimentTest.py', ROOT/'test/MaximaAuditReceiptTest.py', ROOT/'requirements-maxima-experiment.txt']
     protocol['runtime_and_analysis']={str(p.relative_to(ROOT)):sha(p) for p in files if p.is_file()}

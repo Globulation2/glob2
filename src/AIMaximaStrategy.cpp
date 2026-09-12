@@ -325,7 +325,6 @@ namespace
 		INT_SPEC(construction, emergency_max_sites, "construction.emergency_max_sites", 1, 16, "sites", "construction", "Maximum construction sites retained in a food emergency", StrategyImpactCritical),
 		INT_SPEC(construction, defense_emergency_sites, "construction.defense_emergency_sites", 1, 16, "sites", "construction", "Minimum sites during an explorer-defense emergency", StrategyImpactHigh),
 
-		BOOL_SPEC(military, counterattack_enabled, "military.counterattack_enabled", "enabled", "military", "Allow campaigns to launch while the colony is directly threatened", StrategyImpactHigh),
 		BOOL_SPEC(military, explorer_defense_enabled, "military.explorer_defense_enabled", "enabled", "military", "Enable anti-explorer towers, defenders, and emergency reactions", StrategyImpactCritical),
 		BOOL_SPEC(military, warrior_training_backlog_throttle_enabled, "military.warrior_training_backlog_throttle_enabled", "enabled", "military", "Pause warrior births while the training backlog is saturated", StrategyImpactHigh),
 		INT_SPEC(military, defense_reserve_min, "military.defense_reserve_min", 0, 100, "units", "military", "Minimum defense reserve", StrategyImpactCritical),
@@ -341,7 +340,6 @@ namespace
 		INT_SPEC(military, defense_reserve_floor, "military.defense_reserve_floor", 0, 1000, "units", "military", "Adaptive defense reserve floor", StrategyImpactCritical),
 		INT_SPEC(military, defense_enemy_percent, "military.defense_enemy_percent", 0, 200, "percent", "military", "Enemy force percentage reserved for defense", StrategyImpactHigh),
 		INT_SPEC(military, offense_warrior_base_percent, "military.offense_warrior_base_percent", 0, 100, "percent", "military", "Base population percentage for offensive warriors", StrategyImpactCritical),
-		INT_SPEC(military, campaign_deployable_min, "military.campaign_deployable_min", 0, 1000, "units", "military", "Deployable force required to launch a campaign", StrategyImpactHigh),
 		INT_SPEC(military, reserve_enemy_bonus, "military.reserve_enemy_bonus", 0, 100, "units", "military", "Units added above the enemy-scaled defense reserve", StrategyImpactHigh),
 		INT_SPEC(military, reserve_force_divisor, "military.reserve_force_divisor", 1, 20, "units", "military", "Own trained-force divisor contributing to defense reserve", StrategyImpactHigh),
 		INT_SPEC(military, endgame_enemy_count, "military.endgame_enemy_count", 1, 16, "teams", "military", "Remaining enemies at or below which endgame campaign rules apply", StrategyImpactHigh),
@@ -355,7 +353,6 @@ namespace
 		INT_SPEC(military, campaign_food_percent, "military.campaign_food_percent", 0, 100, "percent", "military", "Food-pressure threshold for economic campaign support; does not gate tactics", StrategyImpactHigh),
 		INT_SPEC(military, campaign_worker_population_ratio, "military.campaign_worker_population_ratio", 1, 10, "ratio", "military", "Population per worker allowed at campaign launch", StrategyImpactHigh),
 		INT_SPEC(military, campaign_sustainable_food_percent, "military.campaign_sustainable_food_percent", 0, 100, "percent", "military", "Legacy compatibility value; food pressure no longer cancels an active campaign", StrategyImpactHigh),
-		INT_SPEC(military, counterattack_force_margin, "military.counterattack_force_margin", 0, 100, "units", "military", "Deployable force required above the enemy for a counterattack", StrategyImpactHigh),
 		INT_SPEC(military, defense_utility_floor_bonus, "military.defense_utility_floor_bonus", 0, 100, "score", "military", "Threat-pressure bonus establishing minimum defense utility", StrategyImpactHigh),
 		INT_SPEC(military, explorer_defense_utility_bonus, "military.explorer_defense_utility_bonus", 0, 100, "score", "military", "Defense-utility bonus while explorer defense is active", StrategyImpactHigh),
 		INT_SPEC(military, warrior_cap, "military.warrior_cap", 0, 1000, "units", "military", "Maximum defense or offense warrior target", StrategyImpactHigh),
@@ -537,16 +534,13 @@ namespace
 		BOOL_SPEC(tactics, siege_enabled, "tactics.siege_enabled", "enabled", "tactics", "Enable warrior sieges against enemy buildings", StrategyImpactHigh),
 		BOOL_SPEC(tactics, dig_out_enabled, "tactics.dig_out_enabled", "enabled", "tactics", "Enable attack-route clearing against sealed targets", StrategyImpactHigh),
 		BOOL_SPEC(tactics, failed_target_quarantine_enabled, "tactics.failed_target_quarantine_enabled", "enabled", "tactics", "Quarantine targets after fast failed attacks", StrategyImpactMedium),
-		BOOL_SPEC(tactics, siege_target_lock_enabled, "tactics.siege_target_lock_enabled", "enabled", "tactics", "Retain a target team after productive siege progress", StrategyImpactMedium),
 		INT_SPEC(tactics, review_interval_ticks, "tactics.review_interval_ticks", 1, 1000000, "ticks", "tactics", "Interval between warrior mission reviews", StrategyImpactMedium),
-		INT_SPEC(tactics, rally_flag_radius, "tactics.rally_flag_radius", 1, 32, "tiles", "tactics", "Warrior muster and withdrawal flag radius", StrategyImpactMedium),
 		INT_SPEC(tactics, siege_flag_radius, "tactics.siege_flag_radius", 1, 32, "tiles", "tactics", "Siege engagement flag radius", StrategyImpactMedium),
-		INT_SPEC(tactics, siege_min_force, "tactics.siege_min_force", 1, 20, "units", "tactics", "Minimum staged warriors for a siege", StrategyImpactMedium),
-		INT_SPEC(tactics, siege_muster_percent, "tactics.siege_muster_percent", 1, 100, "percent", "tactics", "Percentage of requested siege warriors required on site; no absolute muster minimum", StrategyImpactMedium),
-		INT_SPEC(tactics, siege_strength_percent, "tactics.siege_strength_percent", 1, 400, "percent", "tactics", "Required power relative to target-area opposition", StrategyImpactMedium),
-		INT_SPEC(tactics, siege_casualty_percent, "tactics.siege_casualty_percent", 1, 100, "percent", "tactics", "Siege losses that force withdrawal", StrategyImpactMedium),
-		INT_SPEC(tactics, siege_local_threat_radius, "tactics.siege_local_threat_radius", 1, 64, "tiles", "tactics", "Radius used to estimate siege opposition", StrategyImpactMedium),
-		INT_SPEC(tactics, siege_target_lock_ticks, "tactics.siege_target_lock_ticks", 0, 1000000, "ticks", "tactics", "Target-team commitment after siege progress", StrategyImpactMedium),
+		INT_SPEC(tactics, flag_minimum_level, "tactics.flag_minimum_level", 1, 4, "level", "tactics", "Minimum warrior level (1 = untrained) admitted to raid and siege flags", StrategyImpactHigh),
+		INT_SPEC(tactics, min_force, "tactics.min_force", 1, 20, "units", "tactics", "Eligible warriors required before the offensive flag is raised", StrategyImpactHigh),
+		INT_SPEC(tactics, retarget_margin, "tactics.retarget_margin", 0, 1000, "score", "tactics", "Score advantage a new target needs over the current one before the flag moves", StrategyImpactMedium),
+		INT_SPEC(tactics, dwell_ticks, "tactics.dwell_ticks", 0, 1000000, "ticks", "tactics", "Ticks a live objective is kept before a better-scoring one may replace it", StrategyImpactMedium),
+		INT_SPEC(tactics, stall_ticks, "tactics.stall_ticks", 1, 1000000, "ticks", "tactics", "Ticks without damage to a visible siege target before it is quarantined", StrategyImpactMedium),
 		INT_SPEC(tactics, target_swarm_value, "tactics.target_swarm_value", 0, 1000, "score", "tactics", "Siege value of a swarm", StrategyImpactMedium),
 		INT_SPEC(tactics, target_food_value, "tactics.target_food_value", 0, 1000, "score", "tactics", "Siege value of an inn", StrategyImpactMedium),
 		INT_SPEC(tactics, target_barracks_value, "tactics.target_barracks_value", 0, 1000, "score", "tactics", "Siege value of a barracks", StrategyImpactMedium),
@@ -556,63 +550,24 @@ namespace
 		INT_SPEC(tactics, target_construction_bonus, "tactics.target_construction_bonus", 0, 1000, "score", "tactics", "Additional siege value of a building site", StrategyImpactMedium),
 		INT_SPEC(tactics, target_tower_penalty, "tactics.target_tower_penalty", 0, 1000, "score", "tactics", "Penalty per known tower near a siege target", StrategyImpactMedium),
 		INT_SPEC(tactics, route_distance_weight, "tactics.route_distance_weight", 0, 100, "weight", "tactics", "Siege route-distance penalty", StrategyImpactMedium),
-		INT_SPEC(tactics, uncertainty_percent, "tactics.uncertainty_percent", 0, 100, "percent", "tactics", "Unseen target force reserved under weak intelligence", StrategyImpactMedium),
-		INT_SPEC(tactics, failed_target_max_duration_ticks, "tactics.failed_target_max_duration_ticks", 0, 1000000, "ticks", "tactics", "Maximum duration treated as a fast failed attack for quarantine", StrategyImpactMedium),
 		INT_SPEC(tactics, failed_target_quarantine_ticks, "tactics.failed_target_quarantine_ticks", 0, 1000000, "ticks", "tactics", "Time before a fast failed attack target may be selected again", StrategyImpactMedium),
 
 		BOOL_SPEC(raiding, enabled, "raiding.enabled", "enabled", "raiding", "Enable warrior raids against visible worker clusters", StrategyImpactHigh),
-		INT_SPEC(raiding, population_min, "raiding.population_min", 0, 1000, "units", "raiding", "Population required before warrior raids", StrategyImpactMedium),
 		INT_SPEC(raiding, worker_min, "raiding.worker_min", 1, 100, "workers", "raiding", "Minimum currently visible workers in a raid cluster", StrategyImpactMedium),
 		INT_SPEC(raiding, cluster_radius, "raiding.cluster_radius", 1, 64, "tiles", "raiding", "Distance joining visible workers into a cluster", StrategyImpactMedium),
 		INT_SPEC(raiding, threat_radius, "raiding.threat_radius", 1, 64, "tiles", "raiding", "Escort detection radius around a worker cluster", StrategyImpactMedium),
-		INT_SPEC(raiding, force_bonus, "raiding.force_bonus", 0, 20, "units", "raiding", "Warriors added above visible worker count", StrategyImpactMedium),
-		INT_SPEC(raiding, min_force, "raiding.min_force", 1, 20, "units", "raiding", "Minimum warrior raid force", StrategyImpactMedium),
-		INT_SPEC(raiding, max_force, "raiding.max_force", 1, 20, "units", "raiding", "Maximum warrior raid force", StrategyImpactMedium),
 		INT_SPEC(raiding, flag_radius, "raiding.flag_radius", 1, 8, "tiles", "raiding", "Tight worker-raid engagement radius", StrategyImpactMedium),
-		INT_SPEC(raiding, muster_percent, "raiding.muster_percent", 1, 100, "percent", "raiding", "Percentage of requested raiders required on site; no absolute muster minimum", StrategyImpactMedium),
-		INT_SPEC(raiding, muster_timeout_ticks, "raiding.muster_timeout_ticks", 1, 1000000, "ticks", "raiding", "Maximum raid muster duration", StrategyImpactMedium),
-		INT_SPEC(raiding, contact_ttl_ticks, "raiding.contact_ttl_ticks", 1, 1000000, "ticks", "raiding", "Maximum pursuit age of a last-known worker cluster", StrategyImpactMedium),
-		INT_SPEC(raiding, max_engagement_ticks, "raiding.max_engagement_ticks", 1, 1000000, "ticks", "raiding", "Maximum raid engagement duration", StrategyImpactMedium),
-		INT_SPEC(raiding, casualty_percent, "raiding.casualty_percent", 1, 100, "percent", "raiding", "Raid losses that force withdrawal", StrategyImpactMedium),
-		INT_SPEC(raiding, survivor_min, "raiding.survivor_min", 1, 20, "units", "raiding", "Minimum useful surviving raid force", StrategyImpactMedium),
-		INT_SPEC(raiding, cooldown_ticks, "raiding.cooldown_ticks", 0, 1000000, "ticks", "raiding", "Cooldown after a warrior raid", StrategyImpactMedium),
-		INT_SPEC(raiding, defender_min, "raiding.defender_min", 1, 20, "units", "raiding", "Minimum visible escorts that make a raid unsafe", StrategyImpactMedium),
-		INT_SPEC(raiding, defender_percent, "raiding.defender_percent", 1, 200, "percent", "raiding", "Escort strength relative to launched raiders that forces withdrawal", StrategyImpactMedium),
-		INT_SPEC(raiding, building_buffer, "raiding.building_buffer", 0, 32, "tiles", "raiding", "Required separation from known enemy buildings", StrategyImpactMedium),
-		INT_SPEC(raiding, tower_buffer, "raiding.tower_buffer", 0, 32, "tiles", "raiding", "Additional separation from known towers", StrategyImpactMedium),
-		INT_SPEC(raiding, retarget_margin, "raiding.retarget_margin", 0, 1000, "score", "raiding", "Score improvement required to retarget a raid", StrategyImpactMedium),
 		INT_SPEC(raiding, worker_weight, "raiding.worker_weight", 0, 1000, "weight", "raiding", "Raid value per visible worker", StrategyImpactMedium),
 		INT_SPEC(raiding, harvesting_bonus, "raiding.harvesting_bonus", 0, 1000, "score", "raiding", "Raid bonus per actively harvesting worker", StrategyImpactMedium),
 		INT_SPEC(raiding, carrying_bonus, "raiding.carrying_bonus", 0, 1000, "score", "raiding", "Raid bonus per resource-carrying worker", StrategyImpactMedium),
 		INT_SPEC(raiding, resource_weight, "raiding.resource_weight", 0, 1000, "weight", "raiding", "Multiplier for observed resource value", StrategyImpactMedium),
 		INT_SPEC(raiding, defender_penalty, "raiding.defender_penalty", 0, 1000, "score", "raiding", "Raid penalty per visible escort", StrategyImpactMedium),
 		INT_SPEC(raiding, route_distance_weight, "raiding.route_distance_weight", 0, 100, "weight", "raiding", "Raid route-distance penalty", StrategyImpactMedium),
-		INT_SPEC(raiding, outskirts_weight, "raiding.outskirts_weight", 0, 100, "weight", "raiding", "Bonus for workers far outside known enemy buildings", StrategyImpactMedium),
-		INT_SPEC(raiding, allied_pressure_bonus, "raiding.allied_pressure_bonus", 0, 1000, "score", "raiding", "Raid bonus for a target under visible allied warrior pressure", StrategyImpactMedium),
-		INT_SPEC(raiding, ffa_third_party_penalty, "raiding.ffa_third_party_penalty", 0, 1000, "score", "raiding", "FFA penalty while another enemy threatens the colony", StrategyImpactMedium),
 		INT_SPEC(raiding, food_resource_value, "raiding.food_resource_value", 0, 100, "value", "raiding", "Economic value of corn or algae carried by a worker", StrategyImpactMedium),
 		INT_SPEC(raiding, material_resource_value, "raiding.material_resource_value", 0, 100, "value", "raiding", "Economic value of wood or stone carried by a worker", StrategyImpactMedium),
 		INT_SPEC(raiding, fruit_resource_value, "raiding.fruit_resource_value", 0, 100, "value", "raiding", "Economic value of fruit carried by a worker", StrategyImpactMedium),
 		INT_SPEC(raiding, other_resource_value, "raiding.other_resource_value", 0, 100, "value", "raiding", "Economic value of any other carried resource", StrategyImpactLow),
 
-		BOOL_SPEC(teamplay, enabled, "teamplay.enabled", "enabled", "teamplay", "Enable all ally-aware tactical behavior", StrategyImpactHigh),
-		BOOL_SPEC(teamplay, pressure_coordination_enabled, "teamplay.pressure_coordination_enabled", "enabled", "teamplay", "Use visible allied pressure in raid and siege scoring", StrategyImpactMedium),
-		BOOL_SPEC(teamplay, defense_enabled, "teamplay.defense_enabled", "enabled", "teamplay", "Allow surplus warriors to defend a visibly threatened ally", StrategyImpactHigh),
-		INT_SPEC(teamplay, allied_pressure_radius, "teamplay.allied_pressure_radius", 1, 64, "tiles", "teamplay", "Radius used to measure visible allied warrior pressure", StrategyImpactMedium),
-		INT_SPEC(teamplay, defense_min_force, "teamplay.defense_min_force", 1, 20, "units", "teamplay", "Minimum warriors assigned to an allied relief mission", StrategyImpactMedium),
-		INT_SPEC(teamplay, defense_strength_percent, "teamplay.defense_strength_percent", 1, 400, "percent", "teamplay", "Desired combined allied power relative to visible attackers", StrategyImpactMedium),
-		INT_SPEC(teamplay, defense_base_score, "teamplay.defense_base_score", 0, 1000, "score", "teamplay", "Base utility of defending a threatened ally", StrategyImpactMedium),
-		INT_SPEC(teamplay, defense_threat_weight, "teamplay.defense_threat_weight", 0, 1000, "score", "teamplay", "Relief utility per visible enemy warrior", StrategyImpactMedium),
-		INT_SPEC(teamplay, defense_under_attack_bonus, "teamplay.defense_under_attack_bonus", 0, 1000, "score", "teamplay", "Relief utility bonus when the protected asset is under attack", StrategyImpactMedium),
-		INT_SPEC(teamplay, defense_unit_value, "teamplay.defense_unit_value", 0, 1000, "score", "teamplay", "Relief value of a threatened allied unit", StrategyImpactMedium),
-		INT_SPEC(teamplay, defense_route_distance_weight, "teamplay.defense_route_distance_weight", 0, 100, "weight", "teamplay", "Relief route-distance penalty", StrategyImpactMedium),
-		INT_SPEC(teamplay, defense_contact_ttl_ticks, "teamplay.defense_contact_ttl_ticks", 1, 1000000, "ticks", "teamplay", "Time a relief mission may pursue its last visible threat", StrategyImpactMedium),
-		INT_SPEC(teamplay, defense_max_engagement_ticks, "teamplay.defense_max_engagement_ticks", 1, 1000000, "ticks", "teamplay", "Maximum relief mission duration", StrategyImpactMedium),
-		INT_SPEC(teamplay, defense_cooldown_ticks, "teamplay.defense_cooldown_ticks", 0, 1000000, "ticks", "teamplay", "Cooldown after an allied relief mission", StrategyImpactMedium),
-		INT_SPEC(teamplay, defense_follow_radius, "teamplay.defense_follow_radius", 1, 64, "tiles", "teamplay", "Distance a relief target may move without retarget hysteresis", StrategyImpactMedium),
-		INT_SPEC(teamplay, defense_retarget_margin, "teamplay.defense_retarget_margin", 0, 1000, "score", "teamplay", "Score improvement required for a distant relief retarget", StrategyImpactMedium),
-		INT_SPEC(teamplay, siege_player_pressure_bonus, "teamplay.siege_player_pressure_bonus", 0, 1000, "score", "teamplay", "Siege bonus for targeting an opponent engaged by visible allied warriors", StrategyImpactMedium),
-		INT_SPEC(teamplay, siege_building_pressure_bonus, "teamplay.siege_building_pressure_bonus", 0, 1000, "score", "teamplay", "Siege bonus for a building near visible allied warriors", StrategyImpactMedium),
 
 		BOOL_SPEC(explorer_campaign, enabled, "explorer_campaign.enabled", "enabled", "explorer_campaign", "Enable explorer strikes against enemy warrior groups", StrategyImpactHigh),
 		INT_SPEC(explorer_campaign, trained_min, "explorer_campaign.trained_min", 0, 1000, "units", "explorer_campaign", "Trained explorers required to activate a campaign", StrategyImpactHigh),
@@ -731,8 +686,6 @@ namespace
 		INT_SPEC(scoring, priority_tower_emergency_bonus, "scoring.priority_tower_emergency_bonus", 0, 200, "score", "scoring", "Additional tower priority during an explorer emergency", StrategyImpactMedium),
 
 		INT_SPEC(scheduling, normal_posture_commitment_ticks, "scheduling.posture_commitment_ticks", 1, 1000000, "ticks", "scheduling", "Normal minimum posture commitment", StrategyImpactHigh),
-		INT_SPEC(scheduling, campaign_stall_ticks, "scheduling.campaign_stall_ticks", 1, 1000000, "ticks", "scheduling", "Campaign progress stall timeout", StrategyImpactHigh),
-		INT_SPEC(scheduling, campaign_retreat_cooldown_ticks, "scheduling.campaign_retreat_cooldown_ticks", 0, 1000000, "ticks", "scheduling", "Cooldown after campaign retreat", StrategyImpactHigh),
 		INT_SPEC(scheduling, preemptive_defense_recompute_ticks, "scheduling.preemptive_defense_recompute_ticks", 1, 1000000, "ticks", "scheduling", "Preemptive topology recompute interval", StrategyImpactMedium),
 		INT_SPEC(scheduling, strategy_interval_ticks, "scheduling.strategy_interval_ticks", 1, 1000000, "ticks", "scheduling", "Interval between strategic director evaluations", StrategyImpactMedium),
 		INT_SPEC(scheduling, strategy_phase_offset_ticks, "scheduling.strategy_phase_offset_ticks", 0, 1000000, "ticks", "scheduling", "Phase offset for strategic director evaluations", StrategyImpactLow),
@@ -1134,18 +1087,8 @@ namespace
 			value.reconnaissance.economic_watch_radius_max)
 			error="recon.economic_watch_radius_min must be <= "
 				"recon.economic_watch_radius_max";
-		else if(value.raiding.min_force>value.raiding.max_force)
-			error="raiding.min_force ("+valueSource(provenance,
-				"raiding.min_force")+") must be <= raiding.max_force ("
-				+valueSource(provenance, "raiding.max_force")+")";
-		else if(value.raiding.survivor_min>value.raiding.max_force)
-			error="raiding.survivor_min must be <= raiding.max_force";
-		else if(value.teamplay.defense_min_force>value.military.attack_unit_cap)
-			error="teamplay.defense_min_force must be <= military.attack_unit_cap";
-		else if(value.teamplay.defense_contact_ttl_ticks>
-			value.teamplay.defense_max_engagement_ticks)
-			error="teamplay.defense_contact_ttl_ticks must be <= "
-				"teamplay.defense_max_engagement_ticks";
+		else if(value.tactics.min_force>value.military.attack_unit_cap)
+			error="tactics.min_force must be <= military.attack_unit_cap";
 		else
 			return true;
 		return false;

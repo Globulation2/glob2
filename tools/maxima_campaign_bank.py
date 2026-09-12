@@ -19,8 +19,7 @@ import run_maxima_switch_ablation as ablation
 TEAM_SWITCHES = {key for key in ablation.ALL_SWITCHES if key.startswith("teamplay.")}
 MAJOR = {"farming.enabled", "recon.enabled", "colonization.enabled",
          "economy.food_service_safeguards_enabled",
-         "economy.large_economy_adaptation_enabled", "upgrades.enabled",
-         "teamplay.enabled"}
+         "economy.large_economy_adaptation_enabled", "upgrades.enabled"}
 TOPOLOGY = {"FourSquares1": "partitioned", "G2": "land",
             "Garden_3": "land", "Holiday_Island_2": "islands",
             "Isles": "islands", "Migration": "migration", "balanced": "land"}
@@ -62,7 +61,7 @@ def event_switches(event: str, values: dict[str, str]) -> set[str]:
     direct = {
         "swarm_retirement_issued": {"economy.swarm_retirement_enabled"},
         "target_quarantined": {"tactics.failed_target_quarantine_enabled"},
-        "mission_retargeted": {"tactics.siege_target_lock_enabled"},
+        "mission_retargeted": {"tactics.siege_enabled"},
         "dig_out_started": {"tactics.dig_out_enabled"},
         "explorer_strike_launched": {"explorer_campaign.enabled"},
         "recon_mission_created": {"recon.scouting_missions_enabled"},
@@ -72,7 +71,6 @@ def event_switches(event: str, values: dict[str, str]) -> set[str]:
         kind = values.get("kind", "")
         if kind == "siege": keys.add("tactics.siege_enabled")
         if kind == "raid": keys.add("raiding.enabled")
-        if kind in ("ally_defense", "relief"): keys.add("teamplay.defense_enabled")
     return keys
 
 

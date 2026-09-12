@@ -276,94 +276,11 @@ const RaidCandidate* Program::bestRaidForTeam(int team) const
 	return NULL;
 }
 
-int Program::desiredRaidForce(int workerCount, int forceBonus,
-	int minimumForce, int maximumForce)
-{
-	return std::max(minimumForce,
-		std::min(maximumForce, workerCount+forceBonus));
-}
-
-bool Program::musterReady(int enrolled, int onSite, int requested,
-	int requiredPercent)
-{
-	if(requested<=0 || enrolled<=0 || onSite<=0)
-		return false;
-	return std::min(enrolled,onSite)*100LL>=requested*static_cast<long long>(requiredPercent);
-}
-
-bool Program::raidUnsafe(int visibleDefenders, int launchedForce,
-	int defenderMinimum, int defenderPercent)
-{
-	const int proportional=(launchedForce*defenderPercent+99)/100;
-	return visibleDefenders>=std::max(defenderMinimum, proportional);
-}
-
-bool Program::musterLaunchAllowed(MissionKind kind, int enrolled, int onSite,
-	int requested, int reliefMinimumForce, int requiredPercent)
-{
-	// Urgent ally relief keeps its existing enrollment-only dispatch rule.
-	if(kind==MissionRelief)
-		return enrolled>=reliefMinimumForce;
-	// Offensive flags use only the configured fraction of their request. A
-	// deadline neither raises this quorum nor permits a launch below it.
-	return musterReady(enrolled, onSite, requested, requiredPercent);
-}
-
-bool Program::raidRetargetAllowed(bool sameTeam, int distanceSquare,
-	int followRadius, int candidateScore, int currentScore, int scoreMargin)
-{
-	// Moving within the current raid area is tracking, not a new objective.
-	return !sameTeam || distanceSquare<=followRadius*followRadius
-		|| candidateScore>=currentScore+scoreMargin;
-}
-
 bool Program::targetQuarantined(int gid, int tick, bool enabled,
 	const std::map<int, int>& quarantineUntil)
 {
 	const std::map<int, int>::const_iterator found=quarantineUntil.find(gid);
 	return enabled && found!=quarantineUntil.end() && tick<found->second;
-}
-
-bool Program::casualtiesRequireWithdrawal(int enrolled, int launchedForce,
-	int survivorMinimum, int casualtyPercent)
-{
-	if(enrolled<survivorMinimum)
-		return true;
-	return launchedForce>0
-		&& (launchedForce-enrolled)*100>=launchedForce*casualtyPercent;
-}
-
-bool Program::reliefRetargetAllowed(bool changed, bool sameTeam,
-	int distanceSquare, int followRadius, int candidateScore,
-	int currentScore, int scoreMargin)
-{
-	return !changed
-		|| (sameTeam && distanceSquare<=followRadius*followRadius)
-		|| candidateScore>=currentScore+scoreMargin;
-}
-
-SiegeTargetContinuity Program::siegeTargetContinuity(bool targetRemembered,
-	int currentTarget, int replacementTarget)
-{
-	if(targetRemembered)
-		return SiegeTargetTracked;
-	if(replacementTarget>=0 && replacementTarget!=currentTarget)
-		return SiegeTargetReplacementAvailable;
-	return SiegeTargetLost;
-}
-
-int Program::forceForPower(const std::vector<int>& descendingPowers,
-	int requiredPower, int minimumForce, int maximumForce)
-{
-	int power=0;
-	const int limit=std::min(maximumForce, int(descendingPowers.size()));
-	for(int count=1; count<=limit; ++count)
-	{
-		power+=descendingPowers[count-1];
-		if(count>=minimumForce && power>=requiredPower)
-			return count;
-	}
-	return 0;
 }
 
 const char* missionKindName(MissionKind kind)

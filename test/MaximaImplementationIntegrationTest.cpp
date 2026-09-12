@@ -255,7 +255,7 @@ static void executionRegressions()
     bool complete=false;
     PlacementResult location=wrapped.find_location(c,1,complete);
     assert(complete && location.found && location.value.x==0 && location.value.y==0);
-    // Rally selection now requires visible space and a recruitable force.
+    // Explorer strikes need visible space and a warrior force to follow.
     for(int y=0;y<64;++y) for(int x=0;x<64;++x)
         game.map.setMapDiscovered(x,y,player.team->me);
     for(int i=0;i<8;++i) {
@@ -264,8 +264,6 @@ static void executionRegressions()
         warrior->activity=Unit::ACT_RANDOM;
         warrior->level[ATTACK_SPEED]=warrior->level[ATTACK_STRENGTH]=1;
     }
-    int rallyX=-1,rallyY=-1;
-    assert(ai.choose_tactical_rally(c,30,64,rallyX,rallyY));
 
     // A raid retarget can happen between director ticks. Explorers follow that
     // live mission, not the unset or obsolete legacy target.
@@ -278,7 +276,8 @@ static void executionRegressions()
     ai.budget.explorer_campaign_flags=1;
     ai.budget.explorer_campaign_units_per_flag=2;
     ai.tactical_mission.kind=AIMaxima::Tactics::MissionRaid;
-    ai.tactical_mission.phase=AIMaxima::Tactics::PhaseTransit;
+    ai.tactical_mission.phase=AIMaxima::Tactics::PhaseEngage;
+    ai.tactical_mission.flagId=1;
     for(int team=1; team<=2; ++team) {
         ai.tactical_mission.targetTeam=team;
         ai.compute_explorer_flag_attack_positioning(c);
@@ -291,27 +290,28 @@ static void executionRegressions()
     }
     c.orders.clear();
 
-    // An emergency before issue must remove the creation and suppress staffing.
+    // Ending the offense before the flag order is issued removes it entirely.
     ai.budget.tactical_kind=AIMaxima::Tactics::MissionSiege;
     ai.budget.tactical_target_team=1;
     ai.budget.tactical_target_x=30; ai.budget.tactical_target_y=30;
-    ai.budget.tactical_requested_force=6; ai.budget.tactical_minimum_force=4;
-    ai.begin_tactical_mission(c);
+    ai.budget.tactical_requested_force=6;
+    ai.control_offense(c);
     int pending=ai.tactical_mission.flagId;
-    ai.finish_tactical_mission(c,"economic_emergency");
+    assert(pending>=0);
+    ai.end_offense(c,"economic_emergency");
     c.update_management_orders(); c.update_building_orders();
     assert(!c.buildings.is_building_pending(pending));
     assert(c.buildingOrders.empty() && c.orders.empty() && ai.attack_flags.empty());
 
-    // Cancellation after OrderCreate was issued still deletes the eventual flag.
-    ai.begin_tactical_mission(c);
+    // Ending it after OrderCreate was issued still deletes the eventual flag.
+    ai.control_offense(c);
     pending=ai.tactical_mission.flagId;
     c.update_building_orders();
     assert(c.orders.size()==1);
     auto create=std::dynamic_pointer_cast<OrderCreate>(c.orders.front());
     assert(create);
     c.orders.clear();
-    ai.finish_tactical_mission(c,"economic_emergency");
+    ai.end_offense(c,"economic_emergency");
     ::Building* flag=game.addBuilding(create->posX,create->posY,create->typeNum,0);
     assert(flag);
     c.buildings.tick(); c.update_management_orders();
@@ -322,42 +322,6 @@ static void executionRegressions()
     }
     assert(deleted);
     c.orders.clear(); c.managementOrders.clear(); ai.attack_flags.clear();
-
-    // Both replacement paths must apply the new staffing contract. A deployed
-    // understrength force returns to muster; it must not march to the new target.
-    const int flagId=pending;
-    for(int deployed=0; deployed<2; ++deployed) {
-        ai.tactical_mission.reset();
-        ai.tactical_mission.kind=AIMaxima::Tactics::MissionSiege;
-        ai.tactical_mission.phase=deployed ? AIMaxima::Tactics::PhaseTransit
-            : AIMaxima::Tactics::PhaseMuster;
-        ai.tactical_mission.flagId=flagId;
-        ai.tactical_mission.targetTeam=1; ai.tactical_mission.targetGid=100;
-        ai.tactical_mission.requestedForce=6; ai.tactical_mission.minimumForce=4;
-        ai.tactical_mission.launchedForce=6;
-        ai.tactical_mission.rallyX=10; ai.tactical_mission.rallyY=10;
-        ai.budget.tactics_enabled=true; ai.budget.siege_enabled=true;
-        ai.budget.food_emergency=false; ai.budget.colony_emergency=false;
-        ai.budget.tactical_target_gid=101;
-        ai.budget.tactical_target_x=40; ai.budget.tactical_target_y=40;
-        ai.budget.tactical_requested_force=20; ai.budget.tactical_minimum_force=8;
-        ai.budget.tactical_siege_muster_percent=80;
-        ai.budget.raid_muster_timeout=1500;
-        ai.timer=100;
-        c.managementOrders.clear();
-        ai.control_attacks(c);
-        assert(ai.tactical_mission.targetGid==101);
-        assert(ai.tactical_mission.requestedForce==20 && ai.tactical_mission.minimumForce==8);
-        assert(ai.tactical_mission.phase==AIMaxima::Tactics::PhaseMuster);
-        bool staffed=false;
-        for(auto order:c.managementOrders) {
-            auto assignment=dynamic_cast<Management::AssignWorkers*>(order.get());
-            if(assignment && assignment->id==flagId && assignment->workers==20) staffed=true;
-            auto movement=dynamic_cast<Management::ChangeFlagPosition*>(order.get());
-            if(movement) assert(movement->x==10 && movement->y==10);
-        }
-        assert(staffed);
-    }
     c.managementOrders.clear();
 
     // Failed searches retry independently, while pending/successful fruit flags
@@ -453,52 +417,37 @@ static void reviewBugRegressions()
         game.map.setMapDiscovered(x,y,player.team->me);
     }
     c.gradients.invalidate();
-    Gradients::GradientInfo homeInfo;
-    homeInfo.add_source(new Gradients::Entities::AnyTeamBuilding(0,CompletedBuildings));
-    homeInfo.add_obstacle(new Gradients::Entities::AnyResource);
-    homeInfo.add_obstacle(new Gradients::Entities::Water);
-    auto& home=c.gradients.get_gradient(homeInfo);
-    assert(home.get_height(27,30)<0);
+    ::Building* across=game.addBuilding(27,30,innType,2); assert(across);
+    across->seenByMask|=player.team->me;
+    ai.reconnaissance.beginObservation(ai.timer,std::vector<int>(1,2));
+    ai.reconnaissance.observeBuilding(AIMaxima::Recon::BuildingSighting(
+        across->gid,2,across->type->shortTypeNum,across->posX,across->posY,
+        across->type->width,across->type->height,false,ai.timer));
+    ai.reconnaissance.finishObservation();
+    ai.strategy.tactics.min_force=4;
+    for(int i=0;i<8;++i) {
+        Unit* walker=game.addUnit(6+i,7,0,WARRIOR,1,1,1,1); assert(walker);
+        walker->medical=Unit::MED_FREE; walker->activity=Unit::ACT_RANDOM;
+        walker->level[ATTACK_SPEED]=walker->level[ATTACK_STRENGTH]=1;
+        walker->performance[SWIM]=0;
+    }
+    // Walkers cannot reach the far island, so no offense is planned.
+    ai.plan_offense(c);
+    assert(ai.budget.tactical_kind==AIMaxima::Tactics::MissionNone);
+    assert(ai.offense_diagnostics.rejections["too_few_reachable"]==1);
     for(int i=0;i<4;++i) {
-        Unit* swimmer=game.addUnit(6+i,7,0,WARRIOR,1,1,1,1); assert(swimmer);
+        Unit* swimmer=game.addUnit(6+i,8,0,WARRIOR,1,1,1,1); assert(swimmer);
         swimmer->medical=Unit::MED_FREE; swimmer->activity=Unit::ACT_RANDOM;
         swimmer->level[ATTACK_SPEED]=swimmer->level[ATTACK_STRENGTH]=1;
         swimmer->performance[SWIM]=1;
     }
-    ai.budget.tactical_requested_force=4;
-    ai.budget.tactical_rally_radius=2;
-    int x=-1,y=-1;
-    assert(ai.choose_tactical_rally(c,27,30,x,y));
-    assert(home.get_height(x,y)<0);
-    assert(game.map.isWater(x,y));
-    assert(game.map.warpDistSquare(x,y,10,10)<=144);
-    // An isolated third islet is also unsuitable even though non-swimmers
-    // from home cannot reach it: it has no land route to the target either.
-    for(int yy=0;yy<64;++yy) {
-        game.map.setTerrain(18,yy,256);
-        game.map.setTerrain(19,yy,256);
-    }
-    game.map.setTerrain(19,30,0);
-    c.gradients.invalidate();
-    assert(ai.choose_tactical_rally(c,27,30,x,y));
-    assert(game.map.isWater(x,y));
-    assert(game.map.warpDistSquare(x,y,10,10)<=144);
-    // If only home-island tiles are visible, decline the mission rather than
-    // letting an ineligible cohort assemble there.
-    game.map.unsetMapDiscovered();
-    game.map.switchFogOfWar();
-    game.map.switchFogOfWar();
-    for(int yy=5;yy<=55;++yy) for(int xx=5;xx<=19;++xx)
-        game.map.setMapDiscovered(xx,yy,player.team->me);
-    assert(!ai.choose_tactical_rally(c,27,30,x,y));
-    // Ordinary land missions use open space near the home supply building.
-    assert(ai.choose_tactical_rally(c,17,30,x,y));
-    assert(!game.map.isWater(x,y) && game.map.getBuilding(x,y)==NOGBID);
-    assert(game.map.warpDistSquare(x,y,10,10)<=144);
+    ai.plan_offense(c);
+    assert(ai.budget.tactical_kind==AIMaxima::Tactics::MissionSiege);
+    assert(ai.budget.tactical_target_gid==across->gid);
 
     // Shoreline contracts are covered through actual farming output in
     // MaximaFarmingIntegrationTest, including every direction and map seams.
-    std::cout << "allied placement and amphibious rally regressions passed\n";
+    std::cout << "allied placement and amphibious offense regressions passed\n";
 }
 
 // The director must count troops committed to the mission it is continuing.
@@ -546,71 +495,35 @@ static void missionForceRegressions()
     ai.budget.defense_reserve=0;
     ai.budget.food_emergency=false; ai.budget.colony_emergency=false;
     ai.strategy.tactics.enabled=true; ai.strategy.tactics.siege_enabled=true;
-    ai.strategy.tactics.siege_min_force=4;
-    ai.strategy.teamplay.enabled=true; ai.strategy.teamplay.defense_enabled=true;
-    ai.strategy.teamplay.defense_min_force=4; ai.strategy.raiding.enabled=false;
-    AIMaxima::Tactics::RaidRules rules;
-    rules.width=64; rules.height=64; rules.tick=100;
-    ai.tactics.beginObservation(100);
-    ai.tactics.observeThreat(AIMaxima::Tactics::ThreatSighting(123,2,26,26,100));
-    ai.tactics.finishObservation(rules);
-    ai.tactical_mission.kind=AIMaxima::Tactics::MissionRelief;
-    ai.tactical_mission.phase=AIMaxima::Tactics::PhaseTransit;
-    ai.tactical_mission.flagId=flagId;
-    ai.tactical_mission.targetTeam=0;
-    ai.tactical_mission.targetX=26; ai.tactical_mission.targetY=26;
-    ai.tactical_mission.requestedForce=12; ai.tactical_mission.minimumForce=4;
-    ai.plan_tactical_authorization(c);
-    assert(ai.budget.tactical_contact_visible);
-    for(Unit* unit:army) {
-        unit->attachedBuilding=flag;
-        unit->activity=Unit::ACT_FLAG;
-        flag->unitsWorking.push_back(unit);
-    }
-    ai.plan_tactical_authorization(c);
-    assert(ai.budget.tactical_contact_visible);
-
-    // A destroyed siege target is replaced using the army still on its flag.
-    ai.tactics.reset(); ai.strategy.teamplay.defense_enabled=false;
+    ai.strategy.tactics.min_force=4; ai.strategy.raiding.enabled=false;
     ai.reconnaissance.beginObservation(100,std::vector<int>(1,2));
     ai.reconnaissance.observeBuilding(AIMaxima::Recon::BuildingSighting(
         enemy->gid,2,enemy->type->shortTypeNum,40,40,
         enemy->type->width,enemy->type->height,false,100));
     ai.reconnaissance.finishObservation();
+    // Warriors already on the offensive flag count toward continuing it.
     ai.tactical_mission.kind=AIMaxima::Tactics::MissionSiege;
-    ai.tactical_mission.targetTeam=2; ai.tactical_mission.targetGid=enemy->gid+1;
-    ai.plan_tactical_authorization(c);
+    ai.tactical_mission.phase=AIMaxima::Tactics::PhaseEngage;
+    ai.tactical_mission.flagId=flagId;
+    ai.tactical_mission.targetTeam=2; ai.tactical_mission.targetGid=enemy->gid;
+    for(Unit* unit:army) {
+        unit->attachedBuilding=flag;
+        unit->activity=Unit::ACT_FLAG;
+        flag->unitsWorking.push_back(unit);
+    }
+    ai.plan_offense(c);
     assert(ai.budget.tactical_target_gid==enemy->gid);
-    // Continuing a mission must still respect the defense reserve.
-    ai.budget.defense_reserve=9;
-    ai.plan_tactical_authorization(c);
-    assert(ai.budget.tactical_target_gid==-1);
-    ai.budget.defense_reserve=0;
     // Troops committed elsewhere must not be borrowed by this exception.
     for(Unit* unit:army) unit->attachedBuilding=home;
     flag->unitsWorking.clear();
-    ai.plan_tactical_authorization(c);
-    assert(ai.budget.tactical_target_gid==-1);
+    ai.plan_offense(c);
+    assert(ai.budget.tactical_kind==AIMaxima::Tactics::MissionNone);
     for(Unit* unit:army) {
         unit->attachedBuilding=NULL;
         unit->activity=Unit::ACT_RANDOM;
     }
-    ai.plan_tactical_authorization(c);
+    ai.plan_offense(c);
     assert(ai.budget.tactical_target_gid==enemy->gid);
-
-    // The target's hostile allies defend it just as its own warriors do.
-    player.team->allies=player.team->me;
-    player.team->enemies=game.teams[0]->me|game.teams[2]->me;
-    game.teams[0]->allies=game.teams[0]->me|game.teams[2]->me;
-    game.teams[2]->allies=game.teams[0]->me|game.teams[2]->me;
-    for(int defenderTeam:{0,2}) {
-        ai.tactics.beginObservation(100);
-        ai.tactics.observeThreat(AIMaxima::Tactics::ThreatSighting(
-            99,defenderTeam,41,41,100000));
-        ai.tactics.finishObservation(rules);
-        ai.plan_tactical_authorization(c);
-        assert(ai.budget.tactical_target_gid==-1);
-    }
 }
 
 // Apply emitted geometry/selector orders to the real engine flag, then ask

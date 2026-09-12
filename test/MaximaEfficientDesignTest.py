@@ -10,7 +10,7 @@ import run_maxima_ablation_campaign as c
 class EfficientTest(unittest.TestCase):
  def test_all_flags_routed_and_farming_children_retained(self):
   self.assertEqual(set(e.MODES),set(a.ALL_SWITCHES))
-  self.assertEqual(len(e.route(list(bank.MAJOR),'FS')),7)
+  self.assertEqual(len(e.route(list(bank.MAJOR),'FS')),6)
   self.assertNotIn('tactics.enabled',e.route(list(a.WAVES[1]),'FS'))
   for k in a.ALL_SWITCHES:
    if k.startswith('farming.'):self.assertTrue(e.route([k],'FS') or e.route([k],'CP'))
@@ -22,7 +22,7 @@ class EfficientTest(unittest.TestCase):
    fs=e.route(keys,'FS')
    if wave>1:fs=[k for k in fs if k not in bank.MAJOR]
    total+=sum(k not in bank.TEAM_SWITCHES for k in fs)*140*4*4+len(fs)*70*4
-  self.assertEqual(total,25480)
+  self.assertEqual(total,25200)
  def test_fresh_wave2_freeze_runs_major_screen_without_rerunning_wave1(self):
   with tempfile.TemporaryDirectory() as t:
    control=object.__new__(c.Campaign);control.output=Path(t)
