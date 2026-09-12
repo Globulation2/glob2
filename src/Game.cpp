@@ -184,6 +184,14 @@ void Game::setAlliances(void)
 			}
 		}
 	}
+
+	// Custom-game "peaceful mode" rule: no team ever targets another. Melee,
+	// magic and turret targeting all check owner->enemies before ever
+	// acquiring a target, so this single change blocks all combat without
+	// touching any combat-resolution code.
+	if (gameHeader.isPeacefulModeEnabled())
+		for(int i=0; i<mapHeader.getNumberOfTeams(); ++i)
+			teams[i]->enemies = 0;
 }
 
 void Game::setWaitingOnMask(Uint32 mask)

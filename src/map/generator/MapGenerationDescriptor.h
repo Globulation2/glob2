@@ -99,6 +99,12 @@ public:
 	// Those may not be in data
   Sint32 bootX[Team::MAX_COUNT]{};
   Sint32 bootY[Team::MAX_COUNT]{};
+  //! Custom-game "Veteran/Fast start" rule: the level starting workers spawn
+  //! at (0 = today's level 0). Set directly by CustomGameSetup right before
+  //! generateMap(), like nbWorkers -- not a GameHeader field, since map
+  //! generation runs before GameHeader is assigned, and not serialized into
+  //! DATA_SIZE, which is a fixed-size wire format embedded in .map files.
+  Sint32 startingUnitLevel = 0;
 
 public:
 	enum {DATA_SIZE=100+MAX_NB_RESOURCES*4};

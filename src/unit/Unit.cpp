@@ -50,10 +50,21 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	insideTimeout=0;
 	speed=32;
 
+	// Custom-game "glass cannon" rule: scale HP once here, at the source,
+	// rather than at every downstream read. NOTE: units created during
+	// initial map generation (CustomGameScreen::generateMap) are built
+	// before the real GameHeader is assigned to the game, since team
+	// creation itself happens as part of generation -- those starting units
+	// keep unscaled HP until produced/trained anew during actual play.
+	static constexpr int glassCannonHpMultiplier[] = {1, 2, 3};
+	const int hpMultiplier = glassCannonHpMultiplier[owner->game->gameHeader.getGlassCannonLevel()];
+
 	// quality parameters
 	for (int i=0; i<NB_ABILITY; i++)
 	{
 		this->performance[i]=race->getUnitType(typeNum, level)->performance[i];
+		if (i==HP)
+			this->performance[i]*=hpMultiplier;
 		this->level[i]=level;
 		this->canLearn[i]=(bool)race->getUnitType(typeNum, 3)->performance[i]; //TODO: is is a better way to hack this?
 		// This hack prevent units from unlearning. Units level 3 must have all the abilities of all preceding levels
@@ -101,7 +112,10 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 
 	// NOTE : rewrite hp from level
 	hp = this->performance[HP];
-	trigHP = (hp*UNIT_HP_TRIG_NUM)/UNIT_HP_TRIG_DEN;
+	// Custom-game "fearless" rule: fight to the death instead of retreating
+	// to heal once damaged (reinstates the "warriors fight to death" intent
+	// noted above, which trigHP normally overrides for everyone).
+	trigHP = owner->game->gameHeader.isUnitsFearless() ? 0 : (hp*UNIT_HP_TRIG_NUM)/UNIT_HP_TRIG_DEN;
 
 	attachedBuilding=NULL;
 	targetBuilding=NULL;

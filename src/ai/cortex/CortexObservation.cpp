@@ -284,7 +284,7 @@ namespace Cortex
 			if (b->buildingState == Building::ALIVE
 			 && !bt->isBuildingSite
 			 && bt->nextLevel != BUILDING_LEVEL_NONE
-			 && b->hp == bt->hpMax
+			 && b->hp == b->getEffectiveMaxHp()
 			 && b->constructionResultState == Building::NO_CONSTRUCTION
 			 && maxBuildLevel > bt->level
 			 && b->isHardSpaceForBuildingSite(Building::UPGRADE))

@@ -36,7 +36,7 @@ bool Game::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 		Building *b=addBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, s);
 		assert(b);
 		for (int i=0; i<descriptor.nbWorkers; i++)
-			if (addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, WORKER, 0, 0, 0, 0)==NULL)
+			if (addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, WORKER, descriptor.startingUnitLevel, 0, 0, 0)==NULL)
 			{
 				if (verbose)
 					printf("Failed to add unit %d of team %d\n", i, s);
@@ -73,7 +73,7 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 		Building *b=addBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, s);
 		assert(b);
 		for (int i=0; i<descriptor.nbWorkers; i++)
-			if (addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, WORKER, 0, 0, 0, 0)==NULL)
+			if (addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, WORKER, descriptor.startingUnitLevel, 0, 0, 0)==NULL)
 			{
 				if (verbose)
 					printf("Failed to add unit %d of team %d\n", i, s);

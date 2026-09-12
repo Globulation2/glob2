@@ -108,13 +108,13 @@ void GameGUI::drawBuildingHP(Building* selBuild, BuildingType* buildingType, int
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos, globalContainer->littleFont, Toolkit::getStringTable()->getString("[hp]"));
 	globalContainer->littleFont->popStyle();
 
-	if (selBuild->hp <= buildingType->hpMax/5)
+	if (selBuild->hp <= selBuild->getEffectiveMaxHp()/5)
 		{ r=255; g=0; b=0; }
 	else
 		{ r=0; g=255; b=0; }
 
 	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, r, g, b));
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, FormattableString("%0/%1").arg(selBuild->hp).arg(buildingType->hpMax).c_str());
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, FormattableString("%0/%1").arg(selBuild->hp).arg(selBuild->getEffectiveMaxHp()).c_str());
 	globalContainer->littleFont->popStyle();
 }
 
@@ -479,7 +479,7 @@ void GameGUI::drawBuildingActionButtons(Building* selBuild, BuildingType* buildi
 	}
 	else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE) && !buildingType->isBuildingSite)
 	{
-		if (selBuild->hp<buildingType->hpMax)
+		if (selBuild->hp<selBuild->getEffectiveMaxHp())
 		{
 			// repair
 			if (selBuild->type->regenerationSpeed==0 && selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && localTeam->maxBuildLevel()>=buildingType->level)
@@ -673,7 +673,8 @@ void GameGUI::drawBuildingUpgradePreview(Building* selBuild, BuildingType* build
 	bt=globalContainer->buildingsTypes.get(bt->nextLevel);
 
 	if (bt->hpMax)
-		drawValueAlignedRight(blueYpos+YOFFSET_TEXT_LINE, bt->hpMax);
+		drawValueAlignedRight(blueYpos+YOFFSET_TEXT_LINE,
+			bt->hpMax * selBuild->owner->game->gameHeader.getBuildingHpMultiplier());
 	if (bt->maxUnitInside)
 		drawValueAlignedRight(blueYpos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, bt->maxUnitInside);
 	blueYpos += YOFFSET_ICON+YOFFSET_B_SEP;

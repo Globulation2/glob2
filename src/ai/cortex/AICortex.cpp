@@ -206,7 +206,7 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 	// upgrade gate require:
 	//   - buildingState == ALIVE                          (C++: Construction.cpp:95)
 	//   - !type->isBuildingSite                           (C++: Construction.cpp:95)
-	//   - hp == type->hpMax  (else launchConstruction REPAIRS, not upgrades)
+	//   - hp == getEffectiveMaxHp()  (else launchConstruction REPAIRS, not upgrades)
 	//                                                      (C++: Construction.cpp:97-108)
 	//   - constructionResultState == NO_CONSTRUCTION (not already up/repairing)
 	//   - type->nextLevel != BUILDING_LEVEL_NONE (not already at max level)
@@ -236,7 +236,7 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 			continue;
 		if (b->type->nextLevel == BUILDING_LEVEL_NONE)
 			continue;
-		if (b->hp != b->type->hpMax)
+		if (b->hp != b->getEffectiveMaxHp())
 			continue; // hp < hpMax would launch a REPAIR; > can't happen.
 		if (b->constructionResultState != Building::NO_CONSTRUCTION)
 			continue;

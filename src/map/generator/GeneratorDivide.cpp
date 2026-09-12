@@ -180,7 +180,7 @@ bool MapGenerator::divideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 			chooseRandomPoints(game, unitLocations, descriptor.nbWorkers);
 			for(unsigned int n=0; n<unitLocations.size(); ++n)
 			{
-				game.addUnit(unitLocations[n].x, unitLocations[n].y, i, WORKER, 0, 0, 0, 0);
+				game.addUnit(unitLocations[n].x, unitLocations[n].y, i, WORKER, descriptor.startingUnitLevel, 0, 0, 0);
 			}
 		}
 		else

@@ -90,7 +90,7 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
 	if ((buildingState==ALIVE) && (!type->isBuildingSite))
 	{
-		if (hp<type->hpMax)
+		if (hp<getEffectiveMaxHp())
 		{
 			if ((type->prevLevel==BUILDING_LEVEL_NONE) || !isHardSpaceForBuildingSite(REPAIR))
 				return;
@@ -215,8 +215,8 @@ void Building::cancelConstruction(Sint32 unitWorking)
 	updateUnitsWorking();
 	// no unit harvesting at that point
 
-	if (hp>=type->hpInit)
-		hp=type->hpInit;
+	if (hp>=getEffectiveInitHp())
+		hp=getEffectiveInitHp();
 
 	productionTimeout=type->unitProductionTime;
 

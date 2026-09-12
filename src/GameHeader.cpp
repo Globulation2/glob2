@@ -31,6 +31,12 @@ void GameHeader::reset()
 	allyTeamsFixed=true;
 	winningConditions = WinningCondition::getDefaultWinningConditions();
 	mapDiscovered=false;
+	unitUpgradesDisabled=false;
+	glassCannonLevel=0;
+	unitsFearless=false;
+	permadeathDisabled=false;
+	peacefulMode=false;
+	buildingHpLevel=0;
 }
 
 
@@ -111,6 +117,15 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		seed = stream->readUint32("seed");
 	if(versionMinor >=  FILE_FORMAT_VERSION_MAP_DISCOVERED_FLAG)
 		mapDiscovered = stream->readUint8("mapDiscovered");
+	if(versionMinor >= FILE_FORMAT_VERSION_COMBAT_RULES)
+	{
+		unitUpgradesDisabled = stream->readUint8("unitUpgradesDisabled");
+		glassCannonLevel = stream->readUint8("glassCannonLevel");
+		unitsFearless = stream->readUint8("unitsFearless");
+		permadeathDisabled = stream->readUint8("permadeathDisabled");
+		peacefulMode = stream->readUint8("peacefulMode");
+		buildingHpLevel = stream->readUint8("buildingHpLevel");
+	}
 	stream->readLeaveSection();
 	return true;
 }
@@ -155,6 +170,12 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeLeaveSection();
 	stream->writeUint32(seed, "seed");
 	stream->writeUint8(mapDiscovered, "mapDiscovered");
+	stream->writeUint8(unitUpgradesDisabled, "unitUpgradesDisabled");
+	stream->writeUint8(glassCannonLevel, "glassCannonLevel");
+	stream->writeUint8(unitsFearless, "unitsFearless");
+	stream->writeUint8(permadeathDisabled, "permadeathDisabled");
+	stream->writeUint8(peacefulMode, "peacefulMode");
+	stream->writeUint8(buildingHpLevel, "buildingHpLevel");
 	stream->writeLeaveSection();
 }
 
@@ -184,6 +205,15 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 		seed = stream->readUint32("seed");
 	if(versionMinor >=  FILE_FORMAT_VERSION_MAP_DISCOVERED_FLAG)
 		mapDiscovered = stream->readUint8("mapDiscovered");
+	if(versionMinor >= FILE_FORMAT_VERSION_COMBAT_RULES)
+	{
+		unitUpgradesDisabled = stream->readUint8("unitUpgradesDisabled");
+		glassCannonLevel = stream->readUint8("glassCannonLevel");
+		unitsFearless = stream->readUint8("unitsFearless");
+		permadeathDisabled = stream->readUint8("permadeathDisabled");
+		peacefulMode = stream->readUint8("peacefulMode");
+		buildingHpLevel = stream->readUint8("buildingHpLevel");
+	}
 	stream->readLeaveSection();
 	return true;
 }
@@ -216,6 +246,12 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeLeaveSection();
 	stream->writeUint32(seed, "seed");
 	stream->writeUint8(mapDiscovered, "mapDiscovered");
+	stream->writeUint8(unitUpgradesDisabled, "unitUpgradesDisabled");
+	stream->writeUint8(glassCannonLevel, "glassCannonLevel");
+	stream->writeUint8(unitsFearless, "unitsFearless");
+	stream->writeUint8(permadeathDisabled, "permadeathDisabled");
+	stream->writeUint8(peacefulMode, "peacefulMode");
+	stream->writeUint8(buildingHpLevel, "buildingHpLevel");
 	stream->writeLeaveSection();
 }
 
