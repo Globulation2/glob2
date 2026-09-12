@@ -95,6 +95,30 @@ void testRoundTrip()
 	check(typesMatch, "roundTrip: types preserved in order");
 }
 
+void testSuddenDeathRoundTrip()
+{
+	MemoryStreamBackend* backend = new MemoryStreamBackend;
+	BinaryOutputStream ostream(backend);
+	WinningConditionSuddenDeath original;
+	original.endStepTick = 12345;
+	std::list<std::shared_ptr<WinningCondition> > conditions;
+	conditions.push_back(std::make_shared<WinningConditionSuddenDeath>(original));
+	writeConditionList(&ostream, conditions);
+
+	auto istream = makeInputStream(*backend);
+	std::list<std::shared_ptr<WinningCondition> > loaded;
+	const bool ok = WinningCondition::loadWinningConditions(istream.get(), 100, loaded);
+
+	check(ok, "suddenDeathRoundTrip: loadWinningConditions returns true");
+	const bool typeOk = loaded.size() == 1 && loaded.front()->getType() == WCSuddenDeath;
+	check(typeOk, "suddenDeathRoundTrip: type preserved");
+	if (typeOk)
+	{
+		auto& decoded = static_cast<WinningConditionSuddenDeath&>(*loaded.front());
+		check(decoded.endStepTick == 12345, "suddenDeathRoundTrip: endStepTick preserved");
+	}
+}
+
 void testUnknownTypeTag()
 {
 	MemoryStreamBackend* backend = new MemoryStreamBackend;
@@ -143,6 +167,7 @@ void testTruncatedStream()
 int main(int /*argc*/, char* /*argv*/[])
 {
 	testRoundTrip();
+	testSuddenDeathRoundTrip();
 	testUnknownTypeTag();
 	testTruncatedStream();
 	std::printf(failures == 0 ? "ALL PASS\n" : "FAILURES: %d\n", failures);

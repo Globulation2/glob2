@@ -742,7 +742,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 	}
 	yy += ((4 + columns - 1) / columns) * 54 + 6;
 	std::string category;
-	for (int index = 0; index < 5; ++index)
+	for (int index = 0; index < 6; ++index)
 	{
 		auto definition = CustomGameSetup::ruleDefinitions[index];
 		if (category != definition.category)
@@ -765,6 +765,8 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 				setup.locked = value == 0;
 			if (index == 3)
 				setup.speed = value;
+			if (index == 5)
+				setup.suddenDeathMinutes = value;
 			setup.ruleset = "Custom";
 		};
 		std::string help;
@@ -795,7 +797,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 			ui.dropdown("rule/speed", {fieldX, yy + 5, fieldW, 29}, options, setup.speed, apply);
 			help = tr("Changes the pace of the whole simulation.");
 		}
-		else
+		else if (index == 4)
 		{
 			if (setup.random)
 				ui.stepper(
@@ -816,6 +818,14 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 			help = tr(setup.random ? "More workers jump-start colony growth. Changes the "
 									 "generated map."
 								   : "Premade maps retain their authored starting units.");
+		}
+		else
+		{
+			std::vector<std::string> options =
+				localized({"Off (no timer)", "15 minutes", "30 minutes", "45 minutes", "60 minutes"});
+			ui.dropdown("rule/suddenDeath", {fieldX, yy + 5, fieldW, 29}, options,
+						setup.suddenDeathMinutes / 15, [apply](int v) { apply(v * 15); });
+			help = tr("Match ends at the timer; highest prestige at that instant wins.");
 		}
 		ui.text(x + 10, yy + 39, help, "little", w - 40, true);
 		yy += 65;

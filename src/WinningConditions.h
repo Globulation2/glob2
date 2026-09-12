@@ -6,6 +6,7 @@
 #include <memory>
 #include "SDL_net.h"
 #include <list>
+#include <optional>
 
 
 class Game;
@@ -25,6 +26,7 @@ enum WinningConditionType
 	WCPrestige,
 	WCScript,
 	WCOpponentsDefeated,
+	WCSuddenDeath,
 };
 
 ///This represents a generic winning condition. Each condition may specify which teams have won,
@@ -67,6 +69,15 @@ public:
 	///its default-order position (see getDefaultWinningConditions), not
 	///appended. Enabling when present and disabling when absent are no-ops.
 	static void setPrestigeWinCondition(std::list<std::shared_ptr<WinningCondition> >& conditions, bool enabled);
+	///Enables, retunes or disables the sudden-death timer, editing `conditions`
+	///in place: every other entry is left untouched. Unlike setPrestigeWinCondition,
+	///a newly-enabled instance is appended at the very end of the list rather
+	///than at a fixed rank -- it is meant to fire only as a last resort, after
+	///every other condition has already had its say that tick. Passing a value
+	///retunes an already-present instance in place instead of removing and
+	///re-adding it, so its list position (end, by construction) never moves.
+	///An empty optional disables it; disabling when absent is a no-op.
+	static void setSuddenDeathWinCondition(std::list<std::shared_ptr<WinningCondition> >& conditions, std::optional<Uint32> endStepTick);
 
 };
 
@@ -126,6 +137,24 @@ public:
 	WinningConditionType getType() const override;
 	void encodeData(GAGCore::OutputStream* stream) const override;
 	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor) override;
+};
+
+///Custom-game "sudden-death timer" rule. Before endStepTick, never declares
+///a winner or loser. At or after it, resolves exactly like
+///WinningConditionPrestige (won if tied for the most prestige, lost if
+///strictly below it) but against the game's *current* prestige standing
+///instead of a configured threshold -- so the match simply ends with
+///whoever is ahead at the buzzer.
+class WinningConditionSuddenDeath : public WinningCondition
+{
+public:
+	bool hasTeamWon(int team, const Game* game) const override;
+	bool hasTeamLost(int team, const Game* game) const override;
+	WinningConditionType getType() const override;
+	void encodeData(GAGCore::OutputStream* stream) const override;
+	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor) override;
+
+	Uint32 endStepTick = 0;
 };
 
 

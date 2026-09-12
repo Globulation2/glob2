@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "EngineTiming.h"
 #include "GameHeader.h"
 #include "MapGenerationDescriptor.h"
 #include <array>
@@ -21,12 +22,13 @@ struct CustomGameSetup
 		const char *label;
 		const char *category;
 	};
-	static constexpr std::array<RuleDefinition, 5> ruleDefinitions = {
+	static constexpr std::array<RuleDefinition, 6> ruleDefinitions = {
 		{{"Victory", "Victory"},
 		 {"Map knowledge", "World & diplomacy"},
 		 {"Alliances", "World & diplomacy"},
 		 {"Game speed", "Starting conditions & pace"},
-		 {"Starting workers", "Starting conditions & pace"}}};
+		 {"Starting workers", "Starting conditions & pace"},
+		 {"Sudden-death timer", "Victory"}}};
 	bool ruleChanged(int index) const
 	{
 		switch (index)
@@ -43,6 +45,8 @@ struct CustomGameSetup
 			return random && generator.nbWorkers != MapGenerationDescriptor::control(
 														generator.method, "Starting workers")
 														.defaultValue;
+		case 5:
+			return suddenDeathMinutes != 0;
 		default:
 			return false;
 		}
@@ -59,6 +63,7 @@ struct CustomGameSetup
 	int capacity;
 	bool random = false, prestige = true, revealed = false, locked = true;
 	int speed = 0;
+	int suddenDeathMinutes = 0;
 	std::string format = "FFA", ruleset = "Standard";
 	std::string premadeMap;
 	unsigned mapRevision = 0;
@@ -151,6 +156,7 @@ struct CustomGameSetup
 			generator.nbWorkers = workers;
 			++mapRevision;
 		}
+		suddenDeathMinutes = 0;
 		ruleset = preset == 0	? "Standard"
 				  : preset == 1 ? "Quick clash"
 				  : preset == 2 ? "Open book"
@@ -195,5 +201,9 @@ struct CustomGameSetup
 		header.setAllyTeamsFixed(locked);
 		header.setMapDiscovered(revealed);
 		WinningCondition::setPrestigeWinCondition(header.getWinningConditions(), prestige);
+		std::optional<Uint32> endStepTick;
+		if (suddenDeathMinutes != 0)
+			endStepTick = static_cast<Uint32>(suddenDeathMinutes) * 60 * GAME_TICKS_PER_SECOND;
+		WinningCondition::setSuddenDeathWinCondition(header.getWinningConditions(), endStepTick);
 	}
 };

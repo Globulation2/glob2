@@ -46,6 +46,7 @@ std::shared_ptr<WinningCondition> WinningCondition::getWinningCondition(GAGCore:
 		case WCPrestige:          return decodeAs<WinningConditionPrestige>(stream, versionMinor);
 		case WCScript:            return decodeAs<WinningConditionScript>(stream, versionMinor);
 		case WCOpponentsDefeated: return decodeAs<WinningConditionOpponentsDefeated>(stream, versionMinor);
+		case WCSuddenDeath:       return decodeAs<WinningConditionSuddenDeath>(stream, versionMinor);
 		case WCUnknown:
 		default:
 			// Unrecognized tag: corrupt or truncated input, not a broken
@@ -126,6 +127,35 @@ void WinningCondition::setPrestigeWinCondition(std::list<std::shared_ptr<Winning
 			return defaultRank(condition->getType()) > prestigeRank;
 		});
 	conditions.insert(insertBefore, std::make_shared<WinningConditionPrestige>());
+}
+
+
+
+void WinningCondition::setSuddenDeathWinCondition(std::list<std::shared_ptr<WinningCondition> >& conditions, std::optional<Uint32> endStepTick)
+{
+	const auto isSuddenDeath = [](const std::shared_ptr<WinningCondition>& condition)
+	{
+		return condition->getType() == WCSuddenDeath;
+	};
+	const auto existing = std::find_if(conditions.begin(), conditions.end(), isSuddenDeath);
+
+	if (!endStepTick)
+	{
+		if (existing != conditions.end())
+			conditions.erase(existing);
+		return;
+	}
+	if (existing != conditions.end())
+	{
+		static_cast<WinningConditionSuddenDeath&>(**existing).endStepTick = *endStepTick;
+		return;
+	}
+	// Appended at the very end, unlike setPrestigeWinCondition's fixed rank:
+	// this is meant to fire only as a last resort, after every other
+	// condition has already had its say that tick.
+	auto condition = std::make_shared<WinningConditionSuddenDeath>();
+	condition->endStepTick = *endStepTick;
+	conditions.push_back(condition);
 }
 
 
@@ -341,6 +371,50 @@ void WinningConditionOpponentsDefeated::encodeData(GAGCore::OutputStream* stream
 void WinningConditionOpponentsDefeated::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 {
 	stream->readEnterSection("WinningConditionOpponentsDefeated");
+	stream->readLeaveSection();
+}
+
+
+
+bool WinningConditionSuddenDeath::hasTeamWon(int team, const Game* game) const
+{
+	if (game->stepCounter < endStepTick)
+		return false;
+	return game->teams[team]->prestige == maximumPrestige(game);
+}
+
+
+
+bool WinningConditionSuddenDeath::hasTeamLost(int team, const Game* game) const
+{
+	if (game->stepCounter < endStepTick)
+		return false;
+	return game->teams[team]->prestige < maximumPrestige(game);
+}
+
+
+
+WinningConditionType WinningConditionSuddenDeath::getType() const
+{
+	return WCSuddenDeath;
+}
+
+
+
+void WinningConditionSuddenDeath::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeUint8(getType(), "type");
+	stream->writeEnterSection("WinningConditionSuddenDeath");
+	stream->writeUint32(endStepTick, "endStepTick");
+	stream->writeLeaveSection();
+}
+
+
+
+void WinningConditionSuddenDeath::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
+{
+	stream->readEnterSection("WinningConditionSuddenDeath");
+	endStepTick = stream->readUint32("endStepTick");
 	stream->readLeaveSection();
 }
 
