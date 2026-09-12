@@ -104,6 +104,29 @@ Symmetric arena (generator 15) is the baseline. Its colonies have exactly the sa
 construction, so its wins by start should be uniform, and its wins by team index show the engine's
 own team-index bias with no map effect at all.
 
+## What the starts themselves say
+
+Before blaming the maps for a win-rate skew by colony index, ask whether the placement code hands
+any index a better start. `tools/colony_start_metrics.py` rolls every playable generator over a
+range of seeds with the study tool's `quality` output and averages each colony's measured start by
+its index. On 2026-09-12, at 256x256 with 4 colonies over 40 seeds of every playable generator
+(680 maps), the pooled means were flat to the last digit that matters:
+
+| Colony | Start score | Wheat distance | Wood distance | Room | Isolation | Nearest rival | Build sites |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 0 | 0.673 | 3.9 | 6.6 | 0.811 | 0.996 | 84.3 | 875 |
+| 1 | 0.669 | 3.8 | 6.2 | 0.803 | 0.994 | 86.0 | 890 |
+| 2 | 0.672 | 4.0 | 6.3 | 0.804 | 0.994 | 82.6 | 891 |
+| 3 | 0.669 | 3.8 | 6.3 | 0.798 | 0.994 | 84.5 | 888 |
+
+So the skew a partial tournament run found (colonies 2 and 3 winning about twice as often as 0
+and 1, pooled over two of the four rotations) is not in what colonies are given: not in their
+resources, their room, or how far their nearest rival stands. What remains is how the games
+unfold from equal starts, which only full-rotation tournament games can separate from the team
+index. Per generator the table is noisier, and two of the older generators do show an ordering
+effect in nearest-rival distance (Islands' later colonies and Rugged archipelago's colony 0 sit
+closer to a rival); the script prints the per-generator tables for that.
+
 ## Adjudication
 
 A game ends when one colony has defeated every other, when total prestige reaches the lobby
