@@ -1940,6 +1940,22 @@ Cortex
 Πλάτος ζώνης
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Η ζώνη είναι πολύ κοντή για τόσες αποικίες. Χρησιμοποιήστε μακρύτερο χάρτη ή λιγότερες αποικίες.
+[City states]
+Πόλεις-κράτη
+[Strait width]
+Πλάτος πορθμού
+[Valleys]
+Κοιλάδες
+[Frontier richness]
+Πλούτος των νέων εδαφών
+[City states need at least one colony.]
+Οι πόλεις-κράτη χρειάζονται τουλάχιστον μία αποικία.
+[Stone walls]
+Πέτρινα τείχη
+[Sand patches]
+Αμμώδεις εκτάσεις
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Η κοινή περιοχή και ο πορθμός αφήνουν πολύ λίγο χώρο για τις βάσεις· χρησιμοποιήστε μεγαλύτερο χάρτη, λιγότερες αποικίες, μικρότερη κοινή περιοχή ή στενότερο πορθμό.
 [Wheat amount]
 Ποσότητα σιταριού
 [Wood amount]

@@ -1876,6 +1876,22 @@ Mundo anel
 Largura da faixa
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 A faixa é demasiado curta para tantas colónias; use um mapa mais longo ou menos colónias.
+[City states]
+Cidades-estado
+[Strait width]
+Largura do estreito
+[Valleys]
+Vales
+[Frontier richness]
+Riqueza da fronteira
+[City states need at least one colony.]
+As cidades-estado precisam de pelo menos uma colónia.
+[Stone walls]
+Muralhas de pedra
+[Sand patches]
+Manchas de areia
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+A área comum e o estreito deixam demasiado pouco espaço para as bases; use um mapa maior, menos colónias, uma área comum mais pequena ou um estreito mais estreito.
 [Wheat amount]
 Quantidade de trigo
 [Wood amount]

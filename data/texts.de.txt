@@ -1870,6 +1870,22 @@ Ringwelt
 Gürtelbreite
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Der Gürtel ist zu kurz für so viele Kolonien; verwenden Sie eine längere Karte oder weniger Kolonien.
+[City states]
+Stadtstaaten
+[Strait width]
+Breite der Meerenge
+[Valleys]
+Täler
+[Frontier richness]
+Reichtum der Neuen Welt
+[City states need at least one colony.]
+Stadtstaaten brauchen mindestens eine Kolonie.
+[Stone walls]
+Steinmauern
+[Sand patches]
+Sandflächen
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Gemeinschaftsland und Meerenge lassen zu wenig Platz für die Heimatbasen; verwende eine größere Karte, weniger Kolonien, ein kleineres Gemeinschaftsland oder eine schmalere Meerenge.
 [Wheat amount]
 Weizenmenge
 [Wood amount]

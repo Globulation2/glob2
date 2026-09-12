@@ -1870,6 +1870,22 @@ Obročasti svet
 Širina pasu
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Pas je prekratek za toliko kolonij; uporabite daljši zemljevid ali manj kolonij.
+[City states]
+Mestne države
+[Strait width]
+Širina ožine
+[Valleys]
+Doline
+[Frontier richness]
+Bogastvo obmejnih dežel
+[City states need at least one colony.]
+Mestne države potrebujejo vsaj eno kolonijo.
+[Stone walls]
+Kamniti zidovi
+[Sand patches]
+Peščene zaplate
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Skupno ozemlje in ožina puščata premalo prostora za domače baze; uporabite večji zemljevid, manj kolonij, manjše skupno ozemlje ali ožjo ožino.
 [Wheat amount]
 Količina pšenice
 [Wood amount]

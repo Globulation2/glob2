@@ -41,6 +41,7 @@ reused after a generator is retired.
 | `stone-highlands` | 14 | Stone highlands | Its own — see below |
 | `symmetric-arena` | 15 | Symmetric arena | Its own — see below |
 | `ring-world` | 16 | Ring world | Its own — see below |
+| `city-states` | 17 | City states | Every home's ambient fields, outcrops and grove, everything on the commons (farmland, outcrops, groves, the orchard) and the sea's algae and island prizes; every home's kit and the walls' stone are unscaled | Stone walls (on): off, the causeways are plain roads and the homes' coasts are open |
 | `rugged-archipelago` | 8 | Old islands | Island growth + beach passes, own resource search |
 | `concrete-islands` | 5 | Concrete islands | Point dispersion; islands linked by channels |
 | `crater-lakes` | 4 | Crater lakes | Height-field noise; round lakes in otherwise connected land |
@@ -83,6 +84,7 @@ ambient layer but still leaves every colony a start. Maze keeps its explicit den
 | Stone highlands | The ponds' farmland (wheat and wood) and algae, and how much of the ridgeline is two tiles thick (stone, 0 to 200); kits are unscaled and Fruit still counts groves | Fruit in home valleys (off) |
 | Symmetric arena | The farmland's wheat and wood, stone outcrops and algae, on top of Resource richness; fruit (0 to 100) keeps that share of the orchard's groves nearest the centre, never fewer than three | Moat (on); Stone in the orchard (on) |
 | Ring world | The ambient scatter's wheat, wood, stone and fruit, and the shallows' algae; starter patches and island prizes are unscaled | Winding belt (on); Colonies on both coasts (on) |
+| City states | The commons' fields and grove, and everything in the New World: farmland, stone outcrops, fruit groves, the heart's orchard and the shallows' algae; every home's kit and its wall are unscaled | Bridges shared by pairs (on): off, every gap between neighbouring compounds gets a bridge |
 
 `scaledCount` and `scaledShare` (`shared/Resources.h`) apply a percentage to a count or a share and
 return it unchanged at 100. `setScaledResource` scales one `Map::setResource` square to a share of
@@ -150,11 +152,12 @@ fixed resource pass:
   up whichever resource is still out of range. A colony genuinely isolated on its own small spot
   (nothing reachable even through terrain alone) is left untouched, since there's nothing on the
   other side of a wall that isn't there. `protectedWalls` is an optional width×height mask of
-  resource tiles that belong to the map's design, such as Stone highlands' ridgelines; they are
+  resource tiles that belong to the map's design, such as Stone highlands' ridgelines or City
+  states' walls; they are
   treated like terrain, never cleared and never looked past. It wraps each boot tile onto the map
   first, since the height-field generators' fallback site search can hand over one past the edge.
-  RuggedArchipelago, ShatteredCoast, Fjord, Watershed, Stone highlands and Ring world call this, as
-  do the height-field generators, and Concrete islands and Isles at any wheat or wood amount
+  RuggedArchipelago, ShatteredCoast, Fjord, Watershed, Stone highlands, Ring world and City states
+  call this, as do the height-field generators, and Concrete islands and Isles at any wheat or wood amount
   other than 100.
   Maze doesn't need it: its deposits are placed only along passage shores, leaving a clear lane
   down every passage, and its `validateWorld` confirms every colony can still walk to every
@@ -404,6 +407,62 @@ exactly two land neighbours.
 - **Checked, not assumed.** `validateWorld` floods from colony 0 while counting seam crossings,
   with water, buildings and every resource blocking, and requires every colony reached, a walkable
   loop around the map, and a body of water that wraps beside the belt.
+
+## City states
+
+A large shared commons in the middle of the map, ringed by a strait, and round it one big home for
+every colony: a wedge of the outer land with its own lake, fields and quarry, cut off from its
+neighbours by water channels and from the commons by the strait. The only way off a home on foot is
+its causeway, a road across the strait lined with stone, landing on the commons at the home's own
+angle; a wall of stone round every home's coast keeps anything landing from the sea on the beach.
+The commons is where the game is fought, richer towards its centre, where an orchard of all
+three fruits stands round the central lake; once swimming pools let armies cross water anywhere, the
+causeways stop being the only way in.
+
+- **Geometry.** A pure function of the request (`geometryFor`). The commons' radius is
+  `commons-size` percent of half the shorter side, the strait `strait-width` percent of the shorter
+  side, and the homes reach out to the map's half side less a rim of sea, so opposite homes never
+  meet across the wrap. Both coasts are radial shapes (`coast-roughness`); the strait follows the
+  commons' coast. Every home is the same wedge turned round the centre, so the layout is fair for
+  any colony count. `validateRequest` needs at least 20 tiles of home between the strait and the
+  sea, and at each home's inner coast at least the causeway plus ten tiles of arc beyond its
+  channel.
+- **Causeways and walls.** One causeway per home at the wedge's middle: a `causeway-width` road
+  across the strait with shoulders either side. With `stone-walls` (on), stone stands on every
+  solid-grass shoulder tile and, round every home, on every solid-grass tile that touches the
+  sea's margin (the land whose corners the beach reaches, and any beach joined to it), so every
+  step off a beach lands on stone and the road is the only way in. Grass may never touch water, so the beach pass always
+  leaves a sand lane outside the stone that a unit can land on and walk along but never leave; the
+  causeway as a barrier, and as the ground kept clear of deposits with both its approaches,
+  includes its lanes. Home lakes keep seven tiles from the sea so the two beaches never meet.
+- **Every roll differs.** Both coasts are random harmonic profiles periodic in the wedge
+  (`coast-roughness`): bays and headlands with a finer ripple on the commons' coast, which the
+  strait follows, and bays into the flanks of every home's inner and outer coasts, all held flat
+  around each causeway; every channel bows sideways by the same random amount. One home layout
+  and one heart layout are drawn per map. Homes: Lakeland (one lake), Riverside (a creek from the
+  lake towards one flank with a sand ford), Highland (two stone ridges out to the sea with a pass
+  each), Marsh (four ponds) and Barrens (a band of sand with a corridor through it). Hearts: a
+  lake with the orchard on its shore, a stone crag with a gap towards every landing, an island in
+  the lake reached by a ford from every landing, a delta of rivers from the lake to the strait
+  between the landings with a ford each, and a belt of forest round the orchard. `sand` adds
+  patches of sand (per 64×128 of land) over homes and commons, clear of lakes, landings and
+  coasts. Every home feature is designed in the wedge's frame, arc across it and radius out, and
+  stamped into every home alike, so any roll stays fair by rotation.
+- **Homes.** Each has one lake at six tenths of its depth (held clear of both coasts), the swarm
+  between its causeway and the lake, an identical unscaled kit of 40 wheat and 30 wood beside the lake and a stone deposit beyond
+  it, then its own scaled ambient farmland on fertile ground, outcrops and a grove.
+- **Commons.** A central lake of `kHeartShare` of its radius, `valleys` extra lakes (per 128×128 of
+  commons) likelier towards the centre, farmland on fertile ground weighted by depth inward per
+  `frontier-richness`, outcrops and groves by the same weight, and the orchard of the three fruits
+  on the central lake's shore. `resource-islands` (per 128×128 of sea) raises islets with a prize
+  each out in the sea. Algae seeds every shallows. `guaranteeStartingResources` runs with the
+  walls' stone protected, causeways and approaches are cleared, and a cheapest-walk pass keeps a
+  way open from every swarm to its causeway and from every landing to the heart.
+- **Checked, not assumed.** `validateWorld` rebuilds the design and requires every causeway road
+  and ford walkable and every designed stone tile present (shoulders, walls, ridges and crag), every colony and the heart reachable on foot from
+  colony 0, no colony reachable from any beach with the roads shut, no home able to reach the
+  commons or another home with the causeways shut, and the colonies' walks to their landings within
+  twelve steps of each other. `validateRequest` needs at least 20 tiles of home depth.
 
 ## Compatibility notes
 

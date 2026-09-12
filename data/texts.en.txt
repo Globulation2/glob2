@@ -1858,6 +1858,22 @@ Ring world
 Belt width
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 The belt is too short for this many colonies; use a longer map or fewer colonies.
+[City states]
+City states
+[Strait width]
+Strait width
+[Valleys]
+Valleys
+[Frontier richness]
+Frontier richness
+[City states need at least one colony.]
+City states need at least one colony.
+[Stone walls]
+Stone walls
+[Sand patches]
+Sand patches
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.
 [Wheat amount]
 Wheat amount
 [Wood amount]

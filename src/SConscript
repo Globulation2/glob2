@@ -176,6 +176,7 @@ map/generator/core/GenerationService.cpp
 map/generator/core/GenerationValidation.cpp
 map/generator/core/GeneratorControls.cpp
 map/generator/core/GeneratorRegistry.cpp
+map/generator/generators/CityStatesGenerator.cpp
 map/generator/generators/ConcreteIslandsGenerator.cpp
 map/generator/generators/ContestedCommonsGenerator.cpp
 map/generator/generators/MazeGenerator.cpp

@@ -1866,6 +1866,22 @@ Thế giới hình vòng
 Độ rộng vành đai
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Vành đai quá ngắn cho số thuộc địa này; hãy dùng bản đồ dài hơn hoặc ít thuộc địa hơn.
+[City states]
+Thành bang
+[Strait width]
+Chiều rộng eo biển
+[Valleys]
+Thung lũng
+[Frontier richness]
+Độ trù phú của vùng biên
+[City states need at least one colony.]
+Thành bang cần ít nhất một thuộc địa.
+[Stone walls]
+Tường đá
+[Sand patches]
+Bãi cát
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Vùng đất chung và eo biển để lại quá ít chỗ cho các căn cứ; hãy dùng bản đồ lớn hơn, ít thuộc địa hơn, vùng đất chung nhỏ hơn hoặc eo biển hẹp hơn.
 [Wheat amount]
 Lượng lúa mì
 [Wood amount]

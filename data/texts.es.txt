@@ -1870,6 +1870,22 @@ Mundo anillo
 Anchura del cinturón
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 El cinturón es demasiado corto para tantas colonias; use un mapa más largo o menos colonias.
+[City states]
+Ciudades estado
+[Strait width]
+Anchura del estrecho
+[Valleys]
+Valles
+[Frontier richness]
+Riqueza de la frontera
+[City states need at least one colony.]
+Las ciudades estado necesitan al menos una colonia.
+[Stone walls]
+Muros de piedra
+[Sand patches]
+Parches de arena
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+El área común y el estrecho dejan demasiado poco espacio para las bases; usa un mapa más grande, menos colonias, un área común más pequeña o un estrecho más angosto.
 [Wheat amount]
 Cantidad de trigo
 [Wood amount]

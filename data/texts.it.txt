@@ -1932,6 +1932,22 @@ Mondo ad anello
 Larghezza della fascia
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 La fascia è troppo corta per così tante colonie; usa una mappa più lunga o meno colonie.
+[City states]
+Città-stato
+[Strait width]
+Larghezza dello stretto
+[Valleys]
+Valli
+[Frontier richness]
+Ricchezza della frontiera
+[City states need at least one colony.]
+Le città-stato hanno bisogno di almeno una colonia.
+[Stone walls]
+Mura di pietra
+[Sand patches]
+Chiazze di sabbia
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+L'area comune e lo stretto lasciano troppo poco spazio alle basi; usa una mappa più grande, meno colonie, un'area comune più piccola o uno stretto più stretto.
 [Wheat amount]
 Quantità di frumento
 [Wood amount]

@@ -1866,6 +1866,22 @@ Dunia cincin
 Lebar sabuk
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Sabuk terlalu pendek untuk koloni sebanyak ini; gunakan peta yang lebih panjang atau lebih sedikit koloni.
+[City states]
+Negara kota
+[Strait width]
+Lebar selat
+[Valleys]
+Lembah
+[Frontier richness]
+Kekayaan perbatasan
+[City states need at least one colony.]
+Negara kota membutuhkan setidaknya satu koloni.
+[Stone walls]
+Tembok batu
+[Sand patches]
+Petak pasir
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Tanah bersama dan selat menyisakan terlalu sedikit ruang untuk pangkalan; gunakan peta yang lebih besar, koloni lebih sedikit, tanah bersama lebih kecil, atau selat lebih sempit.
 [Wheat amount]
 Jumlah gandum
 [Wood amount]

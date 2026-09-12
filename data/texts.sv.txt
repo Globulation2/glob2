@@ -1880,6 +1880,22 @@ Ringvärld
 Bältets bredd
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Bältet är för kort för så många kolonier; använd en längre karta eller färre kolonier.
+[City states]
+Stadsstater
+[Strait width]
+Sundets bredd
+[Valleys]
+Dalar
+[Frontier richness]
+Gränslandets rikedom
+[City states need at least one colony.]
+Stadsstater kräver minst en koloni.
+[Stone walls]
+Stenmurar
+[Sand patches]
+Sandfläckar
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Allmänningen och sundet lämnar för lite plats åt hembaserna; använd en större karta, färre kolonier, en mindre allmänning eller ett smalare sund.
 [Wheat amount]
 Mängd vete
 [Wood amount]

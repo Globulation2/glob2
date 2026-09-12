@@ -1942,6 +1942,22 @@ OpenGL 在此版本中不可用。
 環帶寬度
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 環帶太短，容納不下這麼多殖民地；請使用更長的地圖或減少殖民地數量。
+[City states]
+城邦
+[Strait width]
+海峽寬度
+[Valleys]
+山谷
+[Frontier richness]
+邊疆富饒度
+[City states need at least one colony.]
+城邦至少需要一個殖民地。
+[Stone walls]
+石牆
+[Sand patches]
+沙地
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+公地區域與海峽留給基地的空間太少；請使用更大的地圖、更少的殖民地、更小的公地區域或更窄的海峽。
 [Wheat amount]
 小麥數量
 [Wood amount]

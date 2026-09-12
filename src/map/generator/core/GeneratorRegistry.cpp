@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GeneratorRegistry.h"
+#include "CityStatesGenerator.h"
 #include "ConcreteIslandsGenerator.h"
 #include "ContestedCommonsGenerator.h"
 #include "CraterLakesGenerator.h"
@@ -81,7 +82,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins() {
       {contestedCommonsDefinition(), mazeDefinition(), fjordContinentDefinition(),
        shatteredCoastDefinition(), islesDefinition(), watershedDefinition(),
        stoneHighlandsDefinition(), symmetricArenaDefinition(),
-       ringWorldDefinition(), ruggedArchipelagoDefinition(),
+       ringWorldDefinition(), cityStatesDefinition(), ruggedArchipelagoDefinition(),
        concreteIslandsDefinition(), craterLakesDefinition(), islandsDefinition(),
        swampDefinition(), riverDefinition(), uniformDefinition()});
   return registry;

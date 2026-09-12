@@ -1868,6 +1868,22 @@ OpenGL غير متوفر في هذا الإصدار.
 عرض الحزام
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 الحزام أقصر من أن يتسع لهذا العدد من المستعمرات؛ استخدم خريطة أطول أو عددًا أقل من المستعمرات.
+[City states]
+دول المدن
+[Strait width]
+عرض المضيق
+[Valleys]
+الوديان
+[Frontier richness]
+ثراء الأراضي الجديدة
+[City states need at least one colony.]
+تحتاج دول المدن إلى مستعمرة واحدة على الأقل.
+[Stone walls]
+أسوار حجرية
+[Sand patches]
+بقع رملية
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+الأراضي المشاع والمضيق لا يتركان مساحة كافية للقواعد؛ استخدم خريطة أكبر أو مستعمرات أقل أو أراضي مشاع أصغر أو مضيقًا أضيق.
 [Wheat amount]
 كمية القمح
 [Wood amount]

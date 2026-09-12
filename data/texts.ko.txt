@@ -1866,6 +1866,22 @@ Globulation 2 커서를 표시합니다.
 띠 너비
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 이 식민지 수에 비해 띠가 너무 짧습니다. 더 긴 지도를 사용하거나 식민지 수를 줄이세요.
+[City states]
+도시 국가
+[Strait width]
+해협 너비
+[Valleys]
+계곡
+[Frontier richness]
+변경의 풍요로움
+[City states need at least one colony.]
+도시 국가에는 최소 한 개의 식민지가 필요합니다.
+[Stone walls]
+돌 성벽
+[Sand patches]
+모래밭
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+공유지와 해협이 본거지에 남기는 공간이 너무 적습니다. 더 큰 지도, 더 적은 식민지, 더 작은 공유지 또는 더 좁은 해협을 사용하세요.
 [Wheat amount]
 밀 양
 [Wood amount]

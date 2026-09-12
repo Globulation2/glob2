@@ -1868,6 +1868,22 @@ OpenGL недоступен в этой сборке.
 Ширина пояса
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Пояс слишком короткий для такого числа колоний; используйте карту подлиннее или меньше колоний.
+[City states]
+Города-государства
+[Strait width]
+Ширина пролива
+[Valleys]
+Долины
+[Frontier richness]
+Богатство новых земель
+[City states need at least one colony.]
+Городам-государствам нужна хотя бы одна колония.
+[Stone walls]
+Каменные стены
+[Sand patches]
+Песчаные участки
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Общая земля и пролив оставляют слишком мало места для баз; используйте карту побольше, меньше колоний, общую землю поменьше или пролив поуже.
 [Wheat amount]
 Количество пшеницы
 [Wood amount]

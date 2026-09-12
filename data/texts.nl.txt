@@ -1894,6 +1894,22 @@ Ringwereld
 Gordelbreedte
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 De gordel is te kort voor zoveel kolonies; gebruik een langere kaart of minder kolonies.
+[City states]
+Stadstaten
+[Strait width]
+Breedte van de zeestraat
+[Valleys]
+Valleien
+[Frontier richness]
+Rijkdom van de Nieuwe Wereld
+[City states need at least one colony.]
+Stadstaten hebben minstens één kolonie nodig.
+[Stone walls]
+Stenen muren
+[Sand patches]
+Zandvlakken
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Het gemeenschappelijke gebied en de zeestraat laten te weinig ruimte voor de thuisbases; gebruik een grotere kaart, minder kolonies, een kleiner gemeenschappelijk gebied of een smallere zeestraat.
 [Wheat amount]
 Hoeveelheid tarwe
 [Wood amount]

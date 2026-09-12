@@ -1880,6 +1880,22 @@ Monde-anneau
 Largeur de la ceinture
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 La ceinture est trop courte pour autant de colonies ; utilisez une carte plus longue ou moins de colonies.
+[City states]
+Cités-États
+[Strait width]
+Largeur du détroit
+[Valleys]
+Vallées
+[Frontier richness]
+Richesse de la frontière
+[City states need at least one colony.]
+Les cités-États ont besoin d'au moins une colonie.
+[Stone walls]
+Murs de pierre
+[Sand patches]
+Zones de sable
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+La zone commune et le détroit laissent trop peu de place aux bases ; utilisez une carte plus grande, moins de colonies, une zone commune plus petite ou un détroit plus étroit.
 [Wheat amount]
 Quantité de blé
 [Wood amount]

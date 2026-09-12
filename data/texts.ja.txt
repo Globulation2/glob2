@@ -1866,6 +1866,22 @@ Globulation 2 のカーソルを表示します。
 帯の幅
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 このコロニー数に対して帯が短すぎます。より長いマップを使うか、コロニーを減らしてください。
+[City states]
+都市国家
+[Strait width]
+海峡の幅
+[Valleys]
+谷
+[Frontier richness]
+辺境の豊かさ
+[City states need at least one colony.]
+都市国家には少なくとも一つのコロニーが必要です。
+[Stone walls]
+石の城壁
+[Sand patches]
+砂地
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+共有地と海峡が本拠地に残す余地が少なすぎます。より大きなマップ、より少ないコロニー、より小さな共有地、またはより狭い海峡を使ってください。
 [Wheat amount]
 小麦の量
 [Wood amount]

@@ -1868,6 +1868,22 @@ Ringa mondo
 Larĝo de zono
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 La zono estas tro mallonga por tiom da kolonioj; uzu pli longan mapon aŭ malpli da kolonioj.
+[City states]
+Urboŝtatoj
+[Strait width]
+Larĝo de la markolo
+[Valleys]
+Valoj
+[Frontier richness]
+Riĉeco de la limregiono
+[City states need at least one colony.]
+Urboŝtatoj bezonas almenaŭ unu kolonion.
+[Stone walls]
+Ŝtonaj muroj
+[Sand patches]
+Sablaj makuloj
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+La komunareo kaj la markolo lasas tro malmulte da spaco por la hejmaj bazoj; uzu pli grandan mapon, malpli da kolonioj, pli malgrandan komunareon aŭ pli mallarĝan markolon.
 [Wheat amount]
 Kvanto de tritiko
 [Wood amount]
