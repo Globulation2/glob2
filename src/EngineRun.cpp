@@ -5,6 +5,7 @@
 
 #include "AINames.h"
 #include "ChecksumSidecar.h"
+#include "HarvestMetrics.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
 #include "EngineTiming.h"
@@ -272,6 +273,7 @@ void Engine::printAutomaticEndingSummary()
 	int seconds = (time / GAME_TICKS_PER_SECOND) % 60;
 	int minutes = (time / GAME_TICKS_PER_SECOND) / 60;
 	std::cout << "automaticEndingGame ended: " << time << " ticks, " << minutes << " minutes, " << seconds << " seconds" << std::endl;
+	HarvestMetrics::report(gui.game);
 
 	// Machine-parseable summary line for the AI-trainer pipeline (and any
 	// external driver scraping headless output). One line, key=value pairs,
@@ -537,6 +539,9 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 				gui.isRunning = false;
 				automaticGameEndTick = SDL_GetTicks64();
 				printf("nox::gui.game.checkSum() = %08x\n", gui.game.checkSum());
+				// PROTOTYPE: keep the state reached, to open it later in the GUI.
+				if (const char* savePath = getenv("GLOB2_SAVE_AT_END"))
+					saveInitialGameStateOrExit(savePath, "GLOB2_SAVE_AT_END", gui.game.mapHeader.getMapName());
 			}
 		}
 

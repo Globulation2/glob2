@@ -408,3 +408,28 @@ keyboard file formats remain unchanged.
 settings, language, persistence, keyboard, multiplayer eligibility and camera
 cadence regressions without starting the unrelated engine/replay scenarios.
 The full invocation remains available and reports buffered diagnostics on timeout.
+
+## Wheat crowding harness
+
+`WheatCrowdingHarness` builds a fertile checkerboard farm on a peninsula (water
+on three sides, forbidden squares holding protected wheat seeds) next to six
+empty inns of eight workers each, and runs real simulation ticks. It is a
+measurement scenario, not a pass/fail regression: it prints the
+`GLOB2_HARVEST` counters described in
+[docs/headless-replays.md](../docs/headless-replays.md) and a `WHEAT_RESULT`
+line with the checksum.
+
+```sh
+scons -j8 release=1 server=0 wheat-crowding-harness
+GLOB2_HARVEST_METRICS=1 ./build/src/WheatCrowdingHarness 12000 checker 6 8 1 7
+```
+
+Arguments: ticks, seed pattern (`checker`, `dots`, `sparse`), inns, workers per
+inn, sink, and the width of the centred square the seeds are confined to.
+`sink=1` empties the inns and keeps the workers fed every tick, so demand never
+runs out and the workforce stays constant. A seed square of 7 or less keeps the
+farm bare, so every ripe tile is rushed as it appears: all 48 workers head for
+one tile, and most of them then abandon the job. The full 13-wide farm stays
+stocked instead. `WHEAT_SEED=N` gives another deterministic run of the same
+farm, `WHEAT_TIMELINE_EVERY=N` a progress line every `N` ticks, and
+`GLOB2_PROTO_SUPPLY_CAP=1` runs the prototype fetcher cap.

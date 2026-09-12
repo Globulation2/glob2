@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Unit.h"
+#include "HarvestMetrics.h"
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
@@ -207,6 +208,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 						targetBuilding=NULL;
 						owner->map->resourceAvailableUpdate(owner->teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, NULL);
 						validTarget=true;
+						HarvestMetrics::onCommit(this);
 					}
 				}
 				break;

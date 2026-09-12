@@ -125,6 +125,8 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimCl
 
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	assert(globalContainer);
+	const ResourceType *fullType=globalContainer->resourcesTypes.get(resourceType);
+	Uint32 supply=0;
 	for (size_t i=0; i<size; i++)
 	{
 		const Tile& c=tiles[i];
@@ -146,11 +148,16 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimCl
 			if (globalContainer->resourcesTypes.get(resourceType)->visibleToBeCollected && !(fogOfWar[i]&teamMask))
 				gradient[i]=GRADIENT_FORBIDDEN;
 			else
+			{
 				gradient[i]=GRADIENT_AT_GOAL;
+				if (c.resource.amount>0)
+					supply+=fullType->granular ? c.resource.amount : 1;
+			}
 		}
 		else
 			gradient[i]=GRADIENT_FORBIDDEN;
 	}
+	resourceSupply[teamNumber][resourceType][swimClass]=supply;
 
 	propagateGradient(gradient, swimClass);
 }

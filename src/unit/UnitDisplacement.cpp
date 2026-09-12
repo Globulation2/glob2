@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include "Unit.h"
+#include "HarvestMetrics.h"
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
@@ -54,6 +55,7 @@ void Unit::handleDisplacement(void)
 			{
 				// we got the resource.
 				carriedResource=destinationPurpose;
+				HarvestMetrics::onHarvest(this, carriedResource);
 				owner->map->decResource(posX+dx, posY+dy, carriedResource);
 				assert(movement == MOV_HARVESTING);
 				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to additionally decResource() the same resource.
@@ -124,6 +126,7 @@ void Unit::handleDisplacement(void)
 				{
 					if (verbose)
 						printf("guid=(%d) Giving resource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurpose, targetBuilding->gid, targetBuilding->resources[carriedResource]);
+					HarvestMetrics::onDeliver(this, carriedResource);
 					targetBuilding->addResourceIntoBuilding(carriedResource);
 					carriedResource=UNIT_CARRIED_RESOURCE_NONE;
 				}
@@ -161,11 +164,17 @@ void Unit::handleDisplacement(void)
 								if (need>0)
 								{
 									int distToResource;
-									bool available=map->roundTripDistance(attachedBuilding, r, swimClass(), posX, posY, &distToResource);
-									if (available)
-										distToResource=(distToResource+1)/2; // half the round trip: the unit is at the building
-									else
-										available=map->resourceAvailable(teamNumber, r, swimClass(), posX, posY, &distToResource);
+									// With GLOB2_PROTO_SUPPLY_CAP, skip fetching from the map while as many
+									// units already fetch r as the map has left; a market still counts.
+									bool available=false;
+									if (!owner->resourceOversubscribed(r, swimClass()))
+									{
+										available=map->roundTripDistance(attachedBuilding, r, swimClass(), posX, posY, &distToResource);
+										if (available)
+											distToResource=(distToResource+1)/2; // half the round trip: the unit is at the building
+										else
+											available=map->resourceAvailable(teamNumber, r, swimClass(), posX, posY, &distToResource);
+									}
 									if (available)
 									{
 										if ((distToResource<<1)>=timeLeft)
@@ -209,6 +218,8 @@ void Unit::handleDisplacement(void)
 							if (bestResource>=0)
 							{
 								destinationPurpose=bestResource;
+								if (Team::supplyCapEnabled() && !takeInExchangeBuilding && bestResource < MAX_RESOURCES)
+									owner->fetchersGoing[bestResource][swimClass()]++;
 								assert(activity==ACT_FILLING);
 								if (takeInExchangeBuilding)
 								{
@@ -227,11 +238,13 @@ void Unit::handleDisplacement(void)
 										dy = off->dy;
 										displacement=DIS_HARVESTING;
 										validTarget=false;
+										HarvestMetrics::onCommit(this);
 									}
 									else if (map->resourceAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, &dummyDist))
 									{
 										displacement=DIS_GOING_TO_RESOURCE;
 										validTarget=true;
+										HarvestMetrics::onCommit(this);
 									}
 									else
 									{
