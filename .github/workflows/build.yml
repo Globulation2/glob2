@@ -160,6 +160,19 @@ jobs:
           scons -j$(nproc) release=1 server=0 immobile-unit-gradient-test
           ./build/src/ImmobileUnitGradientHarness
 
+      - name: Build and run the guard area balance regression
+        run: |
+          scons -j$(nproc) release=1 server=0 guard-area-balance-test
+          ./build/src/GuardAreaBalanceHarness
+          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/GuardAreaBalanceHarness --screenshots .cache/guard-area-balance
+      - name: Upload the guard area balance frames
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: guard-area-balance-${{ matrix.runner }}
+          path: .cache/guard-area-balance/
+          if-no-files-found: ignore
+
       - name: Build and run the building expulsion regression
         run: |
           scons -j$(nproc) release=1 server=0 building-expel-test

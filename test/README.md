@@ -217,6 +217,30 @@ the initial occupancy explicitly, so failures in painting or occupancy can be
 reproduced independently of the fresh-map initialization bug. Linux CI runs all
 scenarios.
 
+## Guard area balance regression
+
+From the repository root, run `scons -j8 release=1 server=0 guard-area-balance-test`
+and `./build/src/GuardAreaBalanceHarness`. The harness runs the real simulation on a
+blank 64x64 map with one team and 24 warriors and asserts that painted guard areas
+share them: two areas at unequal distances are both taken (`spawn`), a clump that
+already fills one area thins out into a newly painted one without overshooting
+(`drain`), two nearby unconnected patches share as one position (`patches`), a
+larger farther area takes more (`size`), three areas are all guarded (`three`),
+erasing an area releases its warriors (`erase`), a game saved mid-balancing
+continues identically for 1,000 ticks after loading (`saveload`), the crowding box
+sum matches a brute-force count across the torus seam (`crowding`), and it times
+the guard-gradient rebuild on 64x64 and 256x256 maps (`timing`).
+
+`report` prints the tables without asserting, so the same source built against an
+older engine gives before-numbers; `--resource-gradients` and `--slow-cadence` set
+the round-robin refresh cadence a small or a large game would have; `--scenario
+<name>`, `--ticks N` and `--warriors N` narrow a run. `--screenshots DIR` renders
+the spawn and drain stories through the real map renderer to PNG files in DIR
+(needs a display; CI runs it under xvfb and uploads the frames as an artifact).
+See [docs/guard-area-balancing/README.md](../docs/guard-area-balancing/README.md)
+for the design, the recorded numbers and before/after frames. Linux CI runs the
+asserting mode.
+
 ## Building expulsion regression
 
 From the repository root, run `scons -j8 release=1 server=0 building-expel-test`

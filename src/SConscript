@@ -632,6 +632,13 @@ if not env['server']:
     regression_test = local.Program('ResourceFetchTargetHarness', regression_sources)
     local.Alias('resource-fetch-target-test', regression_test)
 
+# Real engine measurement and regression for guard-area balancing, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('GuardAreaBalanceHarness.o', '#test/GuardAreaBalanceHarness.cpp')
+    regression_test = local.Program('GuardAreaBalanceHarness', regression_sources)
+    local.Alias('guard-area-balance-test', regression_test)
+
 # Real engine regression for fetch-job apportionment, built only by its explicit target.
 if not env['server']:
     regression_sources = [source for source in source_files if source != 'Glob2.cpp']

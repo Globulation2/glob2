@@ -44,6 +44,37 @@ constexpr std::uint16_t GRADIENT_UNREACHABLE      = 1;
 constexpr std::uint16_t GRADIENT_AT_GOAL          = 0xFFFF;
 constexpr std::uint16_t GRADIENT_FORBIDDEN_BORDER = GRADIENT_AT_GOAL - GRADIENT_STEP;
 
+// Guard-area crowding (Map::updateGuardAreasGradient, Map::pathfindArea).
+//
+// A painted guard tile is seeded with GUARD_CROWD_COST_PER_WARRIOR for every
+// warrior of the team within GUARD_CROWD_RADIUS tiles of it (Chebyshev), scaled
+// by GUARD_CROWD_REFERENCE_AREA over the painted tiles within the same radius,
+// and capped at GUARD_CROWD_COST_MAX. A crowded area therefore reads as farther
+// away than it is, warriors spread between areas, and the share follows painted
+// size: a 5x5 area costs the full per-warrior amount, one four times as large a
+// quarter of it. In gradient units GRADIENT_STEP is one tile of walking, so the
+// per-warrior cost is 4 tiles: two areas settle where their crowding differs by
+// about their distance apart divided by 4 tiles per warrior.
+//
+// A warrior on a painted tile follows the field out of an over-full area on one
+// action in 2^GUARD_LEAVE_CHANCE_SHIFT: everyone there sees the same field, and
+// without the gate they would all leave together. A leaver still counts toward
+// the area until it is GUARD_CROWD_RADIUS tiles out, which costs more than the
+// one warrior's worth of crowding it freed, so it does not turn back; the
+// static_assert below keeps that ordering.
+//
+// The radius must also be at least the size of a typical area: at radius 3 a
+// 5x5 area has cheaper edge tiles than centre tiles and warriors spread to the
+// edges instead of leaving. Tuning history and measurements are in
+// docs/guard-area-balancing/README.md.
+constexpr int GUARD_CROWD_RADIUS           = 8;
+constexpr int GUARD_CROWD_COST_PER_WARRIOR = 4 * GRADIENT_STEP;
+constexpr int GUARD_CROWD_REFERENCE_AREA   = 25;
+constexpr int GUARD_CROWD_COST_MAX         = 400 * GRADIENT_STEP;
+constexpr int GUARD_LEAVE_CHANCE_SHIFT     = 6;
+static_assert(GUARD_CROWD_COST_MAX < GRADIENT_AT_GOAL - GRADIENT_UNREACHABLE - 1);
+static_assert(GUARD_CROWD_RADIUS * GRADIENT_STEP > GUARD_CROWD_COST_PER_WARRIOR);
+
 // Weighted cost rounded to whole land-step equivalents, for a reachable value.
 // This is not a geometric tile count: water and diagonal steps change the cost.
 inline int gradientTiles(std::uint16_t g)

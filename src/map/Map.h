@@ -645,7 +645,8 @@ public:
 	void propagateGradient(Uint16 *gradient, int swimClass, int maxCost = GRADIENT_COST_LIMIT);
 	//! Step toward the neighbour with the highest value minus step cost. strict requires
 	//! real progress; otherwise a random sidestep to an equal cell is accepted when blocked.
-	bool directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict) const;
+	//! With guardAreaMask, only neighbours painted as a guard area for those teams count.
+	bool directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask = 0) const;
 	void updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass);
 	//! Direction toward a resource of resourceType. With a target building the round-trip
 	//! gradient is descended, so the unit heads for the resource that is nearest for
@@ -686,6 +687,11 @@ public:
 	void updateForbiddenGradient();
 	//! Update the guard area gradient
 	void updateGuardAreasGradient(int teamNumber, int swimClass);
+	//! out[i] = number of the team's warriors within GUARD_CROWD_RADIUS tiles of
+	//! tile i (units inside buildings excluded). Separable box sum, linear in
+	//! map size. Returns false, leaving out untouched, when the team has no such
+	//! warrior. Uses shared scratch storage: calls must be serial.
+	bool computeWarriorCrowding(int teamNumber, Uint16 *out) const;
 	void updateGuardAreasGradient(int teamNumber);
 	void updateGuardAreasGradient();
 	//! Update the clear area gradient
@@ -752,6 +758,9 @@ protected:
 	
 	// Used to attract idle warriors into guard areas
 	Uint16 *guardAreasGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];
+	//! Replace every cell of grid with the sum of the cells within GUARD_CROWD_RADIUS
+	//! of it (Chebyshev, torus): two row-major sliding-window passes. Shared scratch.
+	void boxSumInPlace(Uint16 *grid) const;
 	
 	// Used to attract idle workers into clearing
 	// areas that aren't clear

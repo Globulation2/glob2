@@ -18,6 +18,9 @@ scons -C test                 # rebuild the separate test suite
 (cd test && ./TestsRunner && ./WinningConditionsHarness)
 ```
 
+- Naming only a harness target (`scons ... some-test`) rebuilds the shared objects
+  but does not relink `build/src/glob2`. Add `build/src/glob2` to the target list
+  before measuring or comparing the client, or the binary is stale.
 - Top-level `scons` does not rebuild the separate `test/` suite. Rebuild there
   before trusting its binaries; explicit real-engine harness targets are listed
   in `test/README.md` and CI. Extend an existing relevant harness where practical.

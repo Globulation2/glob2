@@ -66,13 +66,22 @@ void Map::pathfindRandom(Unit *unit)
 	}
 	else
 	{
+		// A warrior standing in a guard area stays in it. A packed area leaves
+		// its warriors no painted tile to wander to, and this random step is
+		// what they fall back on; off the paint a warrior is a free warrior
+		// again to the guard field, which is free to send it to another area.
+		// Before the crowding costs that only cost a walk back; now it is how a
+		// full area would empty all at once.
+		const bool keepInGuardArea = unit->typeNum == WARRIOR && (tiles[x+(y<<wDec)].guardArea & unit->owner->me);
 		bool da[8];
 		int count=0;
 		for (int di=0; di<8; di++)
 		{
 			int tx=(x+tabClose[di][0])&wMask;
 			int ty=(y+tabClose[di][1])&hMask;
-			if (isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me))
+			if (keepInGuardArea && !(tiles[tx+(ty<<wDec)].guardArea & unit->owner->me))
+				da[di]=false;
+			else if (isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me))
 			{
 				da[di]=true;
 				count++;
