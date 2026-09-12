@@ -305,10 +305,10 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 				if ((valid>AI_NUMBI_PLACEMENT_SCORE_MIN)&&(game->checkRoomForBuilding(px, py, bt, player->team->teamNumber)))
 				{
 					int rx, ry, dist;
-					bool nr=map->resourceAvailableUpdate(team->teamNumber, CORN, 0, px, py, &rx, &ry, &dist);
+					bool nr=map->resourceAvailableUpdate(team->teamNumber, WHEAT, 0, px, py, &rx, &ry, &dist);
 					if (nr)
 					{
-						if (((dist<=(AI_NUMBI_CORN_DISTANCE_BIAS+width*height))&&(buildingType<=AI_NUMBI_NEAR_CORN_TYPE_CUTOFF))||((dist>=(AI_NUMBI_CORN_DISTANCE_BIAS+width*height))&&(buildingType>AI_NUMBI_NEAR_CORN_TYPE_CUTOFF)))
+						if (((dist<=(AI_NUMBI_WHEAT_DISTANCE_BIAS+width*height))&&(buildingType<=AI_NUMBI_NEAR_WHEAT_TYPE_CUTOFF))||((dist>=(AI_NUMBI_WHEAT_DISTANCE_BIAS+width*height))&&(buildingType>AI_NUMBI_NEAR_WHEAT_TYPE_CUTOFF)))
 						{
 							//printf("AI: findNewEmplacement d=%d valid=%d.\n", d, valid);
 							if (valid>bestValid)
@@ -321,7 +321,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 							}
 						}
 					}
-					else if (buildingType!=AI_NUMBI_NEAR_CORN_TYPE_CUTOFF)
+					else if (buildingType!=AI_NUMBI_NEAR_WHEAT_TYPE_CUTOFF)
 					{
 						//printf("AI: findNewEmplacement d=%d valid=%d.\n", d, valid);
 						if (valid>bestValid)

@@ -227,7 +227,7 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 					&&
 					b->constructionResultState == Building::NO_CONSTRUCTION
 					&&
-					(b->resources[CORN]) > ((b->wishedResources[CORN]) * AI_WARRUSH_HEAVILY_WORKED_RATIO_NUM / AI_WARRUSH_HEAVILY_WORKED_RATIO_DEN))
+					(b->resources[WHEAT]) > ((b->wishedResources[WHEAT]) * AI_WARRUSH_HEAVILY_WORKED_RATIO_NUM / AI_WARRUSH_HEAVILY_WORKED_RATIO_DEN))
 			{//heavily worked swarms and inns sometimes are full and have no workers
 				++num_worked_buildings;
 				if(verbose)std::cout << "C";
@@ -482,7 +482,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 	{
 		for(int y=0;y<map->h;y++)
 		{
-			if((!map->isResourceTakeable(x, y, WOOD) && !map->isResourceTakeable(x, y, CORN)))
+			if((!map->isResourceTakeable(x, y, WOOD) && !map->isResourceTakeable(x, y, WHEAT)))
 			{
 				if(map->isForbidden(x, y, team->me))
 				{
@@ -526,7 +526,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 					{
 						for(int ymod=-1;ymod<=1;ymod++)
 						{
-							if(map->isResourceTakeable(x+xmod, y+ymod, CORN)
+							if(map->isResourceTakeable(x+xmod, y+ymod, WHEAT)
 									|| (map->getBuilding(x+xmod,y+ymod)!=NOGBID
 									&& (team->me & game->teams[Building::GIDtoTeam(map->getBuilding(x+xmod,y+ymod))]->me)))
 							{
@@ -554,7 +554,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 
 			if(x%2==y%2)
 			{
-				if(map->isResourceTakeable(x, y, CORN))
+				if(map->isResourceTakeable(x, y, WHEAT))
 				{
 					if(!map->isForbidden(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET))
 					{
@@ -703,7 +703,7 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 	DynamicGradientMapArray wood_gradient(map->w,map->h);
 	DynamicGradientMapArray wheat_gradient(map->w,map->h);
 	initializeGradientWithResource(wood_gradient, WOOD);
-	initializeGradientWithResource(wheat_gradient, CORN);
+	initializeGradientWithResource(wheat_gradient, WHEAT);
 	
 	
 	BuildingType *bt=globalContainer->buildingsTypes.getByType(IntBuildingType::typeFromShortNumber(shortTypeNum), 0, true);

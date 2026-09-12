@@ -190,8 +190,8 @@ namespace Cortex
 		{
 			obs.trackedSwarms[i].valid = 0;
 			obs.trackedSwarms[i].gid = -1;
-			obs.trackedSwarms[i].corn = 0;
-			obs.trackedSwarms[i].maxCorn = 0;
+			obs.trackedSwarms[i].wheat = 0;
+			obs.trackedSwarms[i].maxWheat = 0;
 			obs.trackedSwarms[i].maxUnitWorking = 0;
 			obs.trackedSwarms[i].unitsInside = 0;
 			obs.trackedSwarms[i].maxUnitInside = 0;
@@ -204,15 +204,15 @@ namespace Cortex
 		{
 			obs.trackedInns[i].valid = 0;
 			obs.trackedInns[i].gid = -1;
-			obs.trackedInns[i].corn = 0;
-			obs.trackedInns[i].maxCorn = 0;
+			obs.trackedInns[i].wheat = 0;
+			obs.trackedInns[i].maxWheat = 0;
 			obs.trackedInns[i].maxUnitWorking = 0;
 			obs.trackedInns[i].unitsInside = 0;
 			obs.trackedInns[i].maxUnitInside = 0;
 			obs.trackedInns[i].nearestWheatDist = -1;
 			obs.trackedInns[i].harvestableWheatNearby = -1;
 			obs.trackedInns[i].restockTripsNeeded = -1;
-			obs.trackedInns[i].diagBlindCornNearby = -1;
+			obs.trackedInns[i].diagBlindWheatNearby = -1;
 			obs.trackedInns[i].priority = 0;
 		}
 		obs.siteCount = 0;

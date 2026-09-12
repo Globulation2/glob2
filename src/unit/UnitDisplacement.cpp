@@ -463,7 +463,7 @@ void Unit::applyPartialInsideBenefit()
 		return;
 	if (destinationPurpose==FEED)
 	{
-		if (attachedBuilding->resources[CORN]<=0)
+		if (attachedBuilding->resources[WHEAT]<=0)
 			return;
 		hungry+=((HUNGRY_MAX-hungry)*elapsed)/total;
 		fruitCount=attachedBuilding->eatOnce(&fruitMask);

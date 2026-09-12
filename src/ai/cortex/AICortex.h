@@ -519,7 +519,7 @@ private:
 	/// cycle appends one CSV row per valid tracked INN to <prefix>.team<N>.csv — the
 	/// inn-side companion to the swarm worker trace, for debugging worker allocation
 	/// to inns (restock demand, wheat gate, the production-mix tiers). Each row is the
-	/// inn's observed state this cycle (corn buffer, restockTripsNeeded, wheat
+	/// inn's observed state this cycle (wheat buffer, restockTripsNeeded, wheat
 	/// diagnostics), the worker cap the tune action chose (or the current one when it
 	/// left the inn unchanged), and the colony-level context + tier facts (recomputed
 	/// via the pure CortexPolicy::computeFacts, since getOrder() has no DecideFacts to

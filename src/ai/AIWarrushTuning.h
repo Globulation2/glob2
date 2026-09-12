@@ -123,7 +123,7 @@ static constexpr int AI_WARRUSH_GRADIENT_MAX        = 255;
 static constexpr int AI_WARRUSH_WATER_NEAR_OFFSET   = 15;
 
 // ---------------------------------------------------------------------------
-// "Heavily worked" swarm/inn fudge: a swarm or inn whose stored CORN exceeds
+// "Heavily worked" swarm/inn fudge: a swarm or inn whose stored WHEAT exceeds
 // (wished * 2/3) is counted as fully-worked even if its worker slot is empty.
 // Numerator and denominator kept separate to preserve the literal `*2/3`.
 // ---------------------------------------------------------------------------

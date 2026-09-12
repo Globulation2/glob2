@@ -64,8 +64,8 @@ bool MapEdit::performBuildingAction(const std::string& action, int relMouseX, in
 			buildingHPLabel->setValues(&b->hp, &b->type->hpMax);
 			buildingHPScrollBox->setValues(&b->hp, &b->type->hpMax);
 			bool foodLabel=false;
-			buildingFoodQuantityLabel->setValues(&b->resources[CORN], &b->type->maxResource[CORN]);
-			buildingFoodQuantityScrollBox->setValues(&b->resources[CORN], &b->type->maxResource[CORN]);
+			buildingFoodQuantityLabel->setValues(&b->resources[WHEAT], &b->type->maxResource[WHEAT]);
+			buildingFoodQuantityScrollBox->setValues(&b->resources[WHEAT], &b->type->maxResource[WHEAT]);
 			bool assignedLabel=false;
 			buildingAssignedLabel->setValues(&b->maxUnitWorking);
 			buildingAssignedScrollBox->setValues(&b->maxUnitWorking);

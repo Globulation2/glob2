@@ -227,55 +227,55 @@ namespace Cortex
 		h  = maxY - minY;
 	}
 
-	bool anyCornWithin(const Map& map, int x, int y, int w, int h, int dist)
+	bool anyWheatWithin(const Map& map, int x, int y, int w, int h, int dist)
 	{
 		// The footprint expanded by `dist` in Chebyshev distance is exactly the
 		// rectangle [x-dist, x+w+dist) x [y-dist, y+h+dist). The footprint interior
-		// cannot hold CORN (it passed isHardSpaceForBuilding), so scanning it too is
+		// cannot hold WHEAT (it passed isHardSpaceForBuilding), so scanning it too is
 		// harmless. Early-out on the first wheat tile.
 		for (int dy = -dist; dy < h + dist; dy++)
 			for (int dx = -dist; dx < w + dist; dx++)
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type == CORN)
+				if (map.getResource(nx, ny).type == WHEAT)
 					return true;
 			}
 		return false;
 	}
 
-	int countCornWithin(const Map& map, int x, int y, int w, int h, int dist)
+	int countWheatWithin(const Map& map, int x, int y, int w, int h, int dist)
 	{
-		// Forbidden-BLIND companion to countHarvestableCornWithin: counts every CORN
+		// Forbidden-BLIND companion to countHarvestableWheatWithin: counts every WHEAT
 		// tile in the expanded footprint regardless of the forbidden mask. The gap
 		// between this and the harvestable count is exactly the forbidden-but-present
-		// corn — the discriminator between checkerboard-forbidding and field depletion.
+		// wheat — the discriminator between checkerboard-forbidding and field depletion.
 		int count = 0;
 		for (int dy = -dist; dy < h + dist; dy++)
 			for (int dx = -dist; dx < w + dist; dx++)
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type == CORN)
+				if (map.getResource(nx, ny).type == WHEAT)
 					count++;
 			}
 		return count;
 	}
 
-	int countSurvivingCornWithin(const Map& map, int x, int y, int w, int h, int dist)
+	int countSurvivingWheatWithin(const Map& map, int x, int y, int w, int h, int dist)
 	{
-		// Parity-aware count of the CORN tiles that SURVIVE Cortex's wheat-protection
-		// checkerboard — the open half the paint leaves harvestable: CORN tiles whose
+		// Parity-aware count of the WHEAT tiles that SURVIVE Cortex's wheat-protection
+		// checkerboard — the open half the paint leaves harvestable: WHEAT tiles whose
 		// (x+y) parity is NOT the protected WHEAT_PARITY half (CortexWheat.cpp:179).
 		//
-		// Why not countHarvestableCornWithin (CORN AND !forbidden)? That reads the LIVE
+		// Why not countHarvestableWheatWithin (WHEAT AND !forbidden)? That reads the LIVE
 		// forbidden mask, so it answers "harvestable RIGHT NOW" — which swings with the
 		// paint's drain/repaint timing and reads ~zero on a freshly-revealed field the
 		// checkerboard reconcile has not yet covered. This counts the SUSTAINED set: the
 		// tiles that remain open once protection settles, independent of paint timing.
 		// That is the durable signal placement and feedCapacity want — "will this field
 		// keep an inn fed", not "is every open tile painted this exact tick". Depleted
-		// tiles are no longer CORN, so genuine field exhaustion still zeroes it; only our
+		// tiles are no longer WHEAT, so genuine field exhaustion still zeroes it; only our
 		// own (recoverable) checkerboard no longer does.
 		int count = 0;
 		for (int dy = -dist; dy < h + dist; dy++)
@@ -283,7 +283,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type != CORN)
+				if (map.getResource(nx, ny).type != WHEAT)
 					continue;
 				if (((nx + ny) & 1) == WHEAT_PARITY)
 					continue; // the checkerboard-forbidden half: not sustained.
@@ -292,13 +292,13 @@ namespace Cortex
 		return count;
 	}
 
-	int countHarvestableCornWithin(const Map& map, Uint32 teamMask,
+	int countHarvestableWheatWithin(const Map& map, Uint32 teamMask,
 	                               int x, int y, int w, int h, int dist)
 	{
-		// Same expanded-footprint scan box as anyCornWithin ([x-dist, x+w+dist) x
-		// [y-dist, y+h+dist)), but COUNTS the CORN tiles this team may actually
-		// harvest: a tile counts only when it is CORN AND not forbidden for teamMask.
-		// Depleted field tiles are no longer CORN, and the checkerboard wheat-
+		// Same expanded-footprint scan box as anyWheatWithin ([x-dist, x+w+dist) x
+		// [y-dist, y+h+dist)), but COUNTS the WHEAT tiles this team may actually
+		// harvest: a tile counts only when it is WHEAT AND not forbidden for teamMask.
+		// Depleted field tiles are no longer WHEAT, and the checkerboard wheat-
 		// protection paint sets `forbidden` on the protected half (which blocks
 		// harvest but not regrowth), so both are excluded — leaving the live,
 		// harvestable wheat the caller's MIN_TILES threshold is measured against.
@@ -308,7 +308,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type != CORN)
+				if (map.getResource(nx, ny).type != WHEAT)
 					continue;
 				if (map.isForbidden(nx, ny, teamMask))
 					continue;

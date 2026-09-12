@@ -233,7 +233,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				//if the map is ascending at x+w/2,y set wheat. else set wood
 				if(hm((x+wHeightMap/2)%wHeightMap+wHeightMap*y)<hm((x+wHeightMap/2+1)%wHeightMap+wHeightMap*y))
 				{
-					tmpResource=CORN;
+					tmpResource=WHEAT;
 				}
 				else
 				{

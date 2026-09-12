@@ -68,7 +68,7 @@ void Map::smoothResources(int times)
 						int nx=x+dx;
 						int ny=y+dy;
 						if (getGroundUnit(nx, ny)==NOGUID)
-							if (((r==WOOD||r==CORN||r==STONE)&&isGrass(nx, ny))||((r==ALGA)&&isWater(nx, ny)))
+							if (((r==WOOD||r==WHEAT||r==STONE)&&isGrass(nx, ny))||((r==ALGA)&&isWater(nx, ny)))
 								setTerrain(nx, ny, 272+(r*10)+((syncRand()&1)*5));
 					}
 				}

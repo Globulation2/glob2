@@ -142,7 +142,7 @@ static void destroyedInnExpelsEveryone()
 	for (Unit* u : units)
 		u->hungry = 0;
 	units[3]->displacement = Unit::DIS_EXITING_BUILDING;  // waiting for a free exit
-	inn->resources[CORN] = 10;
+	inn->resources[WHEAT] = 10;
 	require(world.game.integrity(), "scenario setup is consistent");
 
 	const Uint16 innGid = inn->gid;
@@ -161,7 +161,7 @@ static void destroyedInnExpelsEveryone()
 	}
 	for (int i = 0; i < 3; ++i)
 		require(units[i]->hungry == (Unit::HUNGRY_MAX * (total / 2)) / total, "half a meal is kept");
-	require(inn->resources[CORN] == 7, "each started meal cost one wheat, nothing else did");
+	require(inn->resources[WHEAT] == 7, "each started meal cost one wheat, nothing else did");
 	require(units[3]->hungry == 0, "a unit already on its way out gets nothing more");
 	require(units[4]->posX == bx - 1 && units[4]->posY == by && units[4]->dx == -1 && units[4]->dy == 0,
 	        "entering unit steps back onto the tile it came from");

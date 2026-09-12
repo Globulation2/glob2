@@ -220,13 +220,13 @@ static constexpr int AI_NUMBI_PHASE10_UPGRADE_PTRIGGER = 16;
 static constexpr int AI_NUMBI_PHASE10_UPGRADE_NTRIGGER = 4;
 
 // ----------------------------------------------------------------------------
-// Corn scan (estimateFood)
+// Wheat scan (estimateFood)
 // ----------------------------------------------------------------------------
 
-// Tolerated gap-cells when scanning a CORN patch row/column for size.
-static constexpr int AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE = 2;
-// Maximum scan radius along each direction when measuring a CORN patch.
-static constexpr int AI_NUMBI_CORN_SCAN_MAX_RADIUS = 32;
+// Tolerated gap-cells when scanning a WHEAT patch row/column for size.
+static constexpr int AI_NUMBI_WHEAT_SCAN_HOLE_TOLERANCE = 2;
+// Maximum scan radius along each direction when measuring a WHEAT patch.
+static constexpr int AI_NUMBI_WHEAT_SCAN_MAX_RADIUS = 32;
 
 // ----------------------------------------------------------------------------
 // Food-per-unit thresholds (swarmsForWorkers)
@@ -262,7 +262,7 @@ static constexpr int AI_NUMBI_INNER_EDGE_PENALTY = 12;
 static constexpr int AI_NUMBI_FREE_REGION_SCAN_RANGE = 8;
 
 // ----------------------------------------------------------------------------
-// findNewEmplacement: scan + scoring + corn proximity
+// findNewEmplacement: scan + scoring + wheat proximity
 // ----------------------------------------------------------------------------
 
 // Minimum acceptable placement score (used for both pre-check and per-cell test).
@@ -282,11 +282,11 @@ static constexpr int AI_NUMBI_SWARM_MARGIN = 2;
 // constants above; used as a literal in the original code.
 static constexpr int AI_NUMBI_SCAN_ITERATIONS = 4096;
 
-// Distance bias added to width*height when checking corn proximity.
-static constexpr int AI_NUMBI_CORN_DISTANCE_BIAS = 64;
-// Building-type cutoff for "must be near corn" heuristic.
+// Distance bias added to width*height when checking wheat proximity.
+static constexpr int AI_NUMBI_WHEAT_DISTANCE_BIAS = 64;
+// Building-type cutoff for "must be near wheat" heuristic.
 // (FOOD_BUILDING and SWARM_BUILDING short-type-num indices fall in [0..1].)
-static constexpr int AI_NUMBI_NEAR_CORN_TYPE_CUTOFF = 1;
+static constexpr int AI_NUMBI_NEAR_WHEAT_TYPE_CUTOFF = 1;
 
 // ----------------------------------------------------------------------------
 // mayAttack

@@ -34,7 +34,7 @@ void NewNicowar::update_farming(Echo& echo)
 				const int wheat_dist = AI_NICOWAR_FARM_WHEAT_WATER_DIST;
 
 				bool is_wood = mi.is_resource(x, y, WOOD);
-				bool is_wheat = mi.is_resource(x, y, CORN);
+				bool is_wheat = mi.is_resource(x, y, WHEAT);
 
 				bool is_in_wheat_zone = water_gradient.within_dist(x, y, wheat_dist);
 				bool is_in_wood_zone = water_gradient.within_dist(x, y, wood_dist);
@@ -57,7 +57,7 @@ void NewNicowar::update_farming(Echo& echo)
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_resource(x-1, y, CORN) && !mi.is_resource(x+1,y) && water_gradient.within_dist(x+1, y, wheat_dist) && mi.is_grass(x+1,y))
+					else if(is_wheat && mi.is_resource(x-1, y, WHEAT) && !mi.is_resource(x+1,y) && water_gradient.within_dist(x+1, y, wheat_dist) && mi.is_grass(x+1,y))
 					{
 						farm_spot = true;
 					}
@@ -65,7 +65,7 @@ void NewNicowar::update_farming(Echo& echo)
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_resource(x+1, y, CORN) && !mi.is_resource(x-1,y) && water_gradient.within_dist(x-1, y, wheat_dist) && mi.is_grass(x-1,y))
+					else if(is_wheat && mi.is_resource(x+1, y, WHEAT) && !mi.is_resource(x-1,y) && water_gradient.within_dist(x-1, y, wheat_dist) && mi.is_grass(x-1,y))
 					{
 						farm_spot = true;
 					}
@@ -78,7 +78,7 @@ void NewNicowar::update_farming(Echo& echo)
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_resource(x, y-1, CORN) && !mi.is_resource(x,y+1) && water_gradient.within_dist(x, y+1, wheat_dist) && mi.is_grass(x,y+1))
+					else if(is_wheat && mi.is_resource(x, y-1, WHEAT) && !mi.is_resource(x,y+1) && water_gradient.within_dist(x, y+1, wheat_dist) && mi.is_grass(x,y+1))
 					{
 						farm_spot = true;
 					}
@@ -86,7 +86,7 @@ void NewNicowar::update_farming(Echo& echo)
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_resource(x, y+1, CORN) && !mi.is_resource(x,y-1) && water_gradient.within_dist(x, y-1, wheat_dist) && mi.is_grass(x,y-1))
+					else if(is_wheat && mi.is_resource(x, y+1, WHEAT) && !mi.is_resource(x,y-1) && water_gradient.within_dist(x, y-1, wheat_dist) && mi.is_grass(x,y-1))
 					{
 						farm_spot = true;
 					}

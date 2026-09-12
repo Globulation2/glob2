@@ -51,7 +51,7 @@ namespace
 		return kernel;
 	}
 
-	/// 8-connected BFS from every takeable corn/wood tile, traversing only grass
+	/// 8-connected BFS from every takeable wheat/wood tile, traversing only grass
 	/// cells. Cells that are unreachable (or non-grass and not seeded) stay nullopt.
 	DistanceMap computeResourceDistance(const Map& map)
 	{
@@ -62,7 +62,7 @@ namespace
 		{
 			for (int y = 0; y < map.getH(); ++y)
 			{
-				if (map.isResourceTakeable(x, y, CORN)
+				if (map.isResourceTakeable(x, y, WHEAT)
 				    || map.isResourceTakeable(x, y, WOOD))
 				{
 					distance[map.coordToIndex(x, y)] = 0;
