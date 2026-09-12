@@ -228,7 +228,6 @@ class MaximaOptimizerContractTest(unittest.TestCase):
         )
         selected = {parameter.name for parameter in self.optimizer.PARAMETERS}
         for key in (
-            "farming.coastal_porosity_enabled",
             "farming.resource_preserving_circulation_enabled",
             "farming.wheat_invasion_clearing_enabled",
             "farming.wood_firebreak_enabled",

@@ -54,17 +54,13 @@ namespace
 		INT_SPEC(model, inn_capacity_level2, "model.inn_capacity_level2", 1, 1000, "units", "model", "Estimated level-two inn feeding capacity", StrategyImpactHigh),
 		INT_SPEC(model, inn_capacity_level3, "model.inn_capacity_level3", 1, 1000, "units", "model", "Estimated level-three inn feeding capacity", StrategyImpactHigh),
 
-		BOOL_SPEC(staffing, inn_adaptive_staffing_enabled, "staffing.inn_adaptive_staffing_enabled", "enabled", "staffing", "Enable corn-aware and emergency inn staffing adjustments", StrategyImpactHigh),
-		INT_SPEC(staffing, inn_level1_low_corn_threshold, "staffing.inn_level1_low_corn_threshold", 0, 1000, "resource_units", "staffing", "Level-one inn low-corn trigger", StrategyImpactHigh),
-		INT_SPEC(staffing, inn_level2_low_corn_threshold, "staffing.inn_level2_low_corn_threshold", 0, 1000, "resource_units", "staffing", "Level-two inn low-corn trigger", StrategyImpactHigh),
-		INT_SPEC(staffing, inn_level3_low_corn_threshold, "staffing.inn_level3_low_corn_threshold", 0, 1000, "resource_units", "staffing", "Level-three inn low-corn trigger", StrategyImpactHigh),
-		INT_SPEC(staffing, inn_level1_normal_workers, "staffing.inn_level1_normal_workers", 0, 100, "workers", "staffing", "Level-one inn normal worker assignment", StrategyImpactHigh),
-		INT_SPEC(staffing, inn_level2_normal_workers, "staffing.inn_level2_normal_workers", 0, 100, "workers", "staffing", "Level-two inn normal worker assignment", StrategyImpactHigh),
-		INT_SPEC(staffing, inn_level3_normal_workers, "staffing.inn_level3_normal_workers", 0, 100, "workers", "staffing", "Level-three inn normal worker assignment", StrategyImpactHigh),
-		INT_SPEC(staffing, inn_level1_low_corn_workers, "staffing.inn_level1_low_corn_workers", 0, 100, "workers", "staffing", "Level-one inn low-corn worker assignment", StrategyImpactHigh),
-		INT_SPEC(staffing, inn_level2_low_corn_workers, "staffing.inn_level2_low_corn_workers", 0, 100, "workers", "staffing", "Level-two inn low-corn worker assignment", StrategyImpactHigh),
-		INT_SPEC(staffing, inn_level3_low_corn_workers, "staffing.inn_level3_low_corn_workers", 0, 100, "workers", "staffing", "Level-three inn low-corn worker assignment", StrategyImpactHigh),
-		INT_SPEC(staffing, resource_tracker_samples, "staffing.resource_tracker_samples", 1, 1000, "samples", "staffing", "Resource-tracker window used by inn and swarm staffing decisions", StrategyImpactMedium),
+		INT_SPEC(staffing, control_window_samples, "staffing.control_window_samples", 1, 1000, "samples", "staffing", "Length of each building's rolling stock and staffing averages, in control passes", StrategyImpactHigh),
+		INT_SPEC(staffing, control_low_permille, "staffing.control_low_permille", 0, 1000, "permille", "staffing", "Stock below this share of a building's own capacity earns another carrier", StrategyImpactHigh),
+		INT_SPEC(staffing, control_high_permille, "staffing.control_high_permille", 0, 1000, "permille", "staffing", "Stock above this share of a building's own capacity returns a carrier", StrategyImpactHigh),
+		INT_SPEC(staffing, control_slack, "staffing.control_slack", 0, 20, "workers", "staffing", "How far below its request a building may run and still count as staffed", StrategyImpactHigh),
+		INT_SPEC(staffing, control_minimum_workers, "staffing.control_minimum_workers", 0, 20, "workers", "staffing", "Workers every inn and swarm keeps regardless of its stock", StrategyImpactHigh),
+		INT_SPEC(staffing, control_maximum_workers, "staffing.control_maximum_workers", 1, 20, "workers", "staffing", "Ceiling on one building's worker request", StrategyImpactHigh),
+		INT_SPEC(staffing, control_cooldown_passes, "staffing.control_cooldown_passes", 0, 1000, "passes", "staffing", "Passes a building waits after changing its request before it may change again", StrategyImpactHigh),
 		INT_SPEC(staffing, swarm_supply_radius, "staffing.swarm_supply_radius", 1, 64, "tiles", "staffing", "Maximum harvesting-route distance used to weight nearby fertile corn for swarm staffing", StrategyImpactHigh),
 		INT_SPEC(staffing, construction_inn_workers, "staffing.construction_inn_workers", 0, 32, "workers", "staffing", "Workers assigned to a new inn construction site", StrategyImpactHigh),
 		INT_SPEC(staffing, construction_swarm_workers, "staffing.construction_swarm_workers", 0, 32, "workers", "staffing", "Workers assigned to a new swarm construction site", StrategyImpactHigh),
@@ -403,7 +399,6 @@ namespace
 		INT_SPEC(military, preemptive_defense_max_cross_section, "military.preemptive_cross_section_max", 1, 256, "tiles", "military", "Maximum accepted choke cross-section", StrategyImpactHigh),
 		INT_SPEC(military, preemptive_defense_zone_radius, "military.preemptive_zone_radius", 0, 64, "tiles", "military", "Radius of each preemptive guard zone", StrategyImpactHigh),
 		INT_SPEC(military, preemptive_defense_max_zones, "military.preemptive_zone_max", 0, 64, "zones", "military", "Maximum simultaneous preemptive zones", StrategyImpactHigh),
-		INT_SPEC(military, tower_barrier_bonus, "military.tower_barrier_bonus", 0, 100, "weight", "military", "Placement bonus near barrier-defense points", StrategyImpactHigh),
 
 		BOOL_SPEC(postures, recover_enabled, "postures.recover_enabled", "enabled", "postures", "Allow selection of the recovery posture", StrategyImpactCritical),
 		BOOL_SPEC(postures, defend_enabled, "postures.defend_enabled", "enabled", "postures", "Allow selection of the defense posture", StrategyImpactCritical),
@@ -515,8 +510,6 @@ namespace
 		INT_SPEC(placement, route_fertility_cost, "placement.route_fertility_cost", 0, 1000, "cost", "placement", "Route-search penalty for crossing any fertile tile", StrategyImpactLow),
 		INT_SPEC(placement, guard_area_protectedness, "placement.guard_area_protectedness", 0, 100, "score", "placement", "Base protection score inside an active guard area", StrategyImpactMedium),
 		INT_SPEC(placement, baseline_protectedness, "placement.baseline_protectedness", 0, 100, "score", "placement", "Base protection score outside active guard areas", StrategyImpactMedium),
-		INT_SPEC(placement, barrier_protection_radius, "placement.barrier_protection_radius", 0, 64, "tiles", "placement", "Radius over which planned barrier points protect building sites", StrategyImpactMedium),
-		INT_SPEC(placement, barrier_protectedness, "placement.barrier_protectedness", 0, 100, "score", "placement", "Protection score supplied by planned barrier points", StrategyImpactMedium),
 		INT_SPEC(placement, enemy_threat_radius, "placement.enemy_threat_radius", 0, 64, "tiles", "placement", "Radius over which a visible enemy building raises placement threat", StrategyImpactMedium),
 		INT_SPEC(placement, enemy_threat_base, "placement.enemy_threat_base", 0, 500, "score", "placement", "Threat score at a visible enemy building", StrategyImpactMedium),
 		INT_SPEC(placement, enemy_threat_falloff, "placement.enemy_threat_falloff", 0, 100, "score_per_tile", "placement", "Enemy-building threat removed per tile of distance", StrategyImpactLow),
@@ -669,9 +662,6 @@ namespace
 
 		BOOL_SPEC(farming, enabled, "farming.enabled", "enabled", "farming", "Enable all strategic farming and land-clearing behavior", StrategyImpactCritical),
 		BOOL_SPEC(farming, farm_protection_enabled, "farming.farm_protection_enabled", "enabled", "farming", "Protect selected wheat and wood growth cells", StrategyImpactHigh),
-		BOOL_SPEC(farming, barrier_topology_enabled, "farming.barrier_topology_enabled", "enabled", "farming", "Analyze and maintain strategic farming barriers and gates", StrategyImpactHigh),
-		BOOL_SPEC(farming, coastal_porosity_enabled, "farming.coastal_porosity_enabled", "enabled", "farming", "Open alternating passive cells when a coastal farm envelope seals an island", StrategyImpactHigh),
-		BOOL_SPEC(farming, gate_clearing_enabled, "farming.gate_clearing_enabled", "enabled", "farming", "Clear resources blocking strategic gates", StrategyImpactHigh),
 		BOOL_SPEC(farming, maintenance_clearing_enabled, "farming.maintenance_clearing_enabled", "enabled", "farming", "Maintain clearing areas for parcels, gates, and firebreaks", StrategyImpactHigh),
 		BOOL_SPEC(farming, resource_preserving_circulation_enabled, "farming.resource_preserving_circulation_enabled", "enabled", "farming", "Grandfather existing wheat and wood in new building circulation zones", StrategyImpactHigh),
 		BOOL_SPEC(farming, wheat_invasion_clearing_enabled, "farming.wheat_invasion_clearing_enabled", "enabled", "farming", "Clear wood that invades protected wheat boundaries", StrategyImpactMedium),
@@ -701,9 +691,6 @@ namespace
 		INT_SPEC(farming, proactive_failure_threshold, "farming.proactive_failure_threshold", 0, 100, "failures", "farming", "Recent placement failures that create clearing pressure", StrategyImpactMedium),
 		INT_SPEC(farming, proactive_building_threshold, "farming.proactive_building_threshold", 0, 1000, "buildings", "farming", "Buildings required before recurring wood-pressure clearing", StrategyImpactMedium),
 		INT_SPEC(farming, proactive_start_tick, "farming.proactive_start_tick", 0, 1000000, "ticks", "farming", "Earliest tick for proactive land clearing", StrategyImpactMedium),
-		INT_SPEC(farming, gate_clearing_radius, "farming.gate_clearing_radius", 1, 8, "tiles", "farming", "Radius of a strategic-gate clearing flag", StrategyImpactHigh),
-		INT_SPEC(farming, gate_clearing_workers_min, "farming.gate_clearing_workers_min", 0, 1000, "workers", "farming", "Workers required before clearing costly resources from a non-emergency strategic gate", StrategyImpactHigh),
-		INT_SPEC(farming, gate_relocation_penalty_cap, "farming.gate_relocation_penalty_cap", 0, 100, "resource_units", "farming", "Maximum resource-burden-equivalent penalty for moving strategic gates away from their previous positions", StrategyImpactMedium),
 		INT_SPEC(farming, urgent_space_threshold, "farming.urgent_space_threshold", 0, 100, "score", "farming", "Space capacity below which farming review becomes urgent", StrategyImpactMedium),
 
 		BOOL_SPEC(food, enabled, "food.enabled", "enabled", "food", "Account protected farm capacity against inn and swarm demand before placing, upgrading or retiring them", StrategyImpactCritical),
@@ -748,7 +735,6 @@ namespace
 		INT_SPEC(scheduling, campaign_stall_ticks, "scheduling.campaign_stall_ticks", 1, 1000000, "ticks", "scheduling", "Campaign progress stall timeout", StrategyImpactHigh),
 		INT_SPEC(scheduling, campaign_retreat_cooldown_ticks, "scheduling.campaign_retreat_cooldown_ticks", 0, 1000000, "ticks", "scheduling", "Cooldown after campaign retreat", StrategyImpactHigh),
 		INT_SPEC(scheduling, preemptive_defense_recompute_ticks, "scheduling.preemptive_defense_recompute_ticks", 1, 1000000, "ticks", "scheduling", "Preemptive topology recompute interval", StrategyImpactMedium),
-		INT_SPEC(scheduling, barrier_topology_interval_ticks, "scheduling.barrier_topology_interval_ticks", 1, 1000000, "ticks", "scheduling", "Barrier topology recompute interval", StrategyImpactMedium),
 		INT_SPEC(scheduling, strategy_interval_ticks, "scheduling.strategy_interval_ticks", 1, 1000000, "ticks", "scheduling", "Interval between strategic director evaluations", StrategyImpactMedium),
 		INT_SPEC(scheduling, strategy_phase_offset_ticks, "scheduling.strategy_phase_offset_ticks", 0, 1000000, "ticks", "scheduling", "Phase offset for strategic director evaluations", StrategyImpactLow),
 		INT_SPEC(scheduling, building_interval_ticks, "scheduling.building_interval_ticks", 1, 1000000, "ticks", "scheduling", "Interval between building-management passes", StrategyImpactMedium),
@@ -1090,10 +1076,8 @@ namespace
 		else if(value.trends.history_weight>=value.trends.total_weight)
 			error="trends.history_weight must be < trends.total_weight";
 		else if(value.placement.guard_area_protectedness<
-			value.placement.baseline_protectedness
-			|| value.placement.barrier_protectedness<
-				value.placement.baseline_protectedness)
-			error="placement guard and barrier protection must be >= baseline "
+			value.placement.baseline_protectedness)
+			error="placement guard protection must be >= baseline "
 				"protectedness";
 		else if(value.placement.enemy_threat_base<
 			value.placement.enemy_threat_radius

@@ -4,7 +4,9 @@ import sys
 sys.path.append( os.path.abspath("../scons") )
 import ccache
 
-env = Environment()
+# Inherit the caller's PATH so ParseConfig can find pkg-config in a
+# non-default prefix (for example Homebrew on /opt/homebrew/bin).
+env = Environment(ENV=os.environ)
 
 # Compiler cache, shared with the top-level build. Set before the Clone()s
 # below so every harness environment inherits it.

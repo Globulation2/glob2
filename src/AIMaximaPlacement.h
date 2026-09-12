@@ -194,11 +194,6 @@ struct WorldTile
 	bool clearableResource;
 	bool occupied;
 	bool ownOccupied;
-	/// Passage ownership is separate from occupancy: workers may use it,
-	/// while construction must never consume its footprint.
-	bool gateCorridor;
-	/// 0/50/100: no uncovered gate / one gate / two gates covered from here.
-	int gateDefense;
 	int resourceType;
 	int resourceAmount;
 	uint32_t fertility;
@@ -353,7 +348,6 @@ struct PlacementPolicy
 	int towerSpacingWeight;
 	int towerThreatTarget;
 	int towerThreatWeight;
-	int towerGateWeight;
 	int laborScale;
 	int downtimeWorkerScale;
 	int arteryLengthScale;

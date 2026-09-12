@@ -79,16 +79,10 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
             ("void Maxima::control_attacks", "void Maxima::clear_preemptive_defense"),
             ("void Maxima::update_preemptive_defense", "void Maxima::compute_defense_flag_positioning"),
             ("void Maxima::compute_defense_flag_positioning", "void Maxima::modify_points"),
-            ("void Maxima::update_barrier_topology", "void Maxima::update_fruit_flags"),
             ("void Maxima::update_fruit_flags", "void Maxima::update_fruit_alliances"),
         )
         for start, end in ranges:
-            if start == "void Maxima::update_barrier_topology":
-                executor = self.farming_policy[
-                    self.farming_policy.index(start):
-                ]
-            else:
-                executor = function(self.source, start, end)
+            executor = function(self.source, start, end)
             self.assertNotIn("strategy.", executor, start)
             if start == "void Maxima::development_cycle":
                 self.assertIn("collect_development_intents(world)", executor)

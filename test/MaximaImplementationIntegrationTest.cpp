@@ -633,55 +633,6 @@ static void applyClearingGeometry(Context& c, ::Building* flag)
     c.orders.clear();
 }
 
-static void gateClearingGeometryRegressions()
-{
-    for(bool diagonal:{false,true}) for(int center:{20,0}) {
-        Game game(NULL);
-        game.map.setSize(6,6,GRASS); game.map.setGame(&game);
-        game.addTeam(); game.teams[0]->race.loadDefault();
-        Player player; player.setTeam(game.teams[0]);
-        AIMaxima::Maxima ai(&player); Context& c=ai.context;
-        c.initialize();
-        const int blockerX=game.map.normalizeX(center-1);
-        const int blockerY=game.map.normalizeY(center-(diagonal?1:0));
-        const std::vector<int> gate={center*64+center,
-            blockerY*64+blockerX,game.map.normalizeY(center-1)*64+center};
-        ai.strategic_gates.push_back(gate);
-        ai.strategic_gates.push_back({40*64+40,40*64+39,39*64+40});
-        game.map.setResource(blockerX,blockerY,WOOD,1);
-        game.map.setResource(40,40,WOOD,1);
-        ai.budget.farming_enabled=true;
-        ai.budget.farming_gate_clearing_enabled=true;
-        ai.budget.farming_gate_clearing_radius=1;
-        assert(ai.barrier_gate_is_resource_clearable(c,gate));
-        ai.manage_land_clearing(c);
-        const int id=ai.proactive_clearing_flag;
-        assert(id>=0);
-        c.update_building_orders();
-        std::shared_ptr<OrderCreate> create;
-        for(auto order:c.orders)
-            if(auto candidate=std::dynamic_pointer_cast<OrderCreate>(order)) create=candidate;
-        assert(create && create->posX==center && create->posY==center);
-        ::Building* flag=game.addBuilding(create->posX,create->posY,create->typeNum,0);
-        assert(flag); c.buildings.tick();
-        applyClearingGeometry(c,flag);
-        assert(flag->unitStayRange==(diagonal?2:1));
-        // Covers already existing flags and a one-tile relocation too.
-        flag->posX=game.map.normalizeX(center+1);
-        flag->unitStayRange=1;
-        ai.manage_land_clearing(c);
-        applyClearingGeometry(c,flag);
-        assert(flag->posX==center && flag->posY==center);
-        assert(flag->unitStayRange==(diagonal?2:1));
-        for(int r=0; r<BASIC_COUNT; ++r)
-            assert(flag->clearingResources[r]==(r==WOOD));
-        assert(game.map.buildingGradient(flag,0));
-        for(int tile:gate)
-            assert(game.map.warpDistSquare(flag->posX,flag->posY,
-                tile%64,tile/64)<=flag->unitStayRange*flag->unitStayRange);
-    }
-}
-
 // Director decisions must survive arbitration and the final engine handoff.
 static void directorExecutionRegressions()
 {
@@ -926,8 +877,6 @@ static void innCompletionStaffingRegressions()
     AIMaxima::Maxima ai(&player); Context& c=ai.context;
     c.initialize(); c.activeAI=&ai;
     game.map.setMapDiscovered(19,19,2,2,player.team->me);
-    ai.budget.inn_low_corn_threshold[0]=5;
-    ai.budget.inn_normal_workers[0]=1; ai.budget.inn_low_corn_workers[0]=2;
     AIMaximaPlacement::DevelopmentAction action;
     action.type=AIMaximaPlacement::BuildStandalone;
     action.buildingType=IntBuildingType::FOOD_BUILDING;
@@ -938,7 +887,6 @@ static void innCompletionStaffingRegressions()
     const int siteType=globalContainer->buildingsTypes.getTypeNum("inn",0,true);
     Building* inn=game.addBuilding(19,19,siteType,0,1,1); assert(inn);
     c.orders.clear(); c.buildings.tick(); c.update_management_orders();
-    assert(!c.get_resource_tracker(id));
     c.orders.clear();
     // Finish through the engine so its one-worker post-construction default
     // is in place before the completion callback runs.
@@ -948,13 +896,14 @@ static void innCompletionStaffingRegressions()
     assert(inn->constructionResultState==Building::NO_CONSTRUCTION);
     assert(inn->maxUnitWorking==1);
     c.buildings.tick(); c.update_management_orders();
-    assert(c.get_resource_tracker(id));
-    bool assigned=false;
     for(auto order:c.orders)
         if(auto a=std::dynamic_pointer_cast<OrderModifyBuilding>(order))
-            // The current adaptive policy releases staff when there is no food supply.
-            assigned|=a->gid==inn->gid && a->numberRequested==0;
-    assert(assigned);
+            if(a->gid==inn->gid)
+                // Staffing is a closed loop on the inn's own stock and every
+                // building keeps at least one carrier. The old policy released
+                // them outright when no wheat grew nearby.
+                assert(a->numberRequested>=1);
+    (void)id;
 }
 
 static void directorUpgradePriorityRegressions()
@@ -1214,7 +1163,7 @@ static void explorerSwarmStaffingRegressions()
     TeamStat* stat=player.team->stats.getLatestStat(); stat->totalUnit=100;
     ai.budget.desired_explorers=5; ai.budget.explorer_ratio=1;
     ai.budget.worker_ratio=1;
-    ai.budget.resource_tracker_samples=25; ai.budget.swarm_supply_radius=6;
+    ai.budget.swarm_supply_radius=6;
     for(int y=0;y<64;++y) for(int x=0;x<64;++x)
         game.map.setMapDiscovered(x,y,player.team->me);
     for(int position:{30,50})
@@ -1222,35 +1171,52 @@ static void explorerSwarmStaffingRegressions()
         game.map.setResource(position+6,position+1,CORN,1);
         game.map.getTile(position+6,position+3).terrain=256;
     }
+    // Swarm 0 runs empty; swarms 1 and 2 stay full. Staffing is each swarm's
+    // own closed loop now, so there is no colony total to divide and no
+    // apportionment to check: what matters is that the empty one ends up with
+    // more carriers than the full ones.
     for(int id=0;id<3;++id)
-    {
-        c.add_resource_tracker(new Management::ResourceTracker(c,id,25,CORN),id);
         c.buildings.get_building(id)->resources[CORN]=id ? 20 : 0;
-    }
-    for(int tick=0;tick<250;++tick) c.update_trackers();
+    ai.budget.staffing_window_samples=2;
+    ai.budget.staffing_cooldown_passes=0;
+    ai.budget.staffing_minimum_workers=1;
+    ai.budget.staffing_maximum_workers=20;
     for(int prestige:{0,1})
     for(int budget:{0,2,3})
     {
         ai.snapshot.prestige=prestige;
         ai.budget.swarm_workers=budget;
-        int total=0, producers=0;
+        int workers[3]={0,0,0}, producers=0;
         for(int id=0;id<3;++id)
         {
-            c.managementOrders.clear(); ai.manage_swarm(c,id);
-            int workers=c.buildings.get_assigned(id), explorers=-1;
-            for(auto order:c.managementOrders)
+            int explorers=-1;
+            for(int pass=0;pass<8;++pass)
             {
-                if(auto a=dynamic_cast<Management::AssignWorkers*>(order.get())) workers=a->workers;
-                if(auto r=dynamic_cast<Management::ChangeSwarm*>(order.get())) explorers=r->explorer;
+                c.managementOrders.clear(); ai.manage_swarm(c,id);
+                workers[id]=c.buildings.get_assigned(id);
+                for(auto order:c.managementOrders)
+                {
+                    if(auto a=dynamic_cast<Management::AssignWorkers*>(order.get()))
+                    {
+                        workers[id]=a->workers;
+                        c.buildings.get_building(id)->maxUnitWorking=a->workers;
+                    }
+                    if(auto r=dynamic_cast<Management::ChangeSwarm*>(order.get()))
+                        explorers=r->explorer;
+                }
             }
-            total+=workers;
             if(explorers>0)
             {
                 ++producers;
                 assert(explorers==ai.budget.explorer_ratio);
             }
+            // Every building keeps at least one carrier, whatever its stock.
+            assert(workers[id]>=1);
         }
-        assert(total==budget && producers==(budget>0 ? 3 : 0));
+        // The starving swarm asks for more than the ones that are already full.
+        assert(workers[0]>workers[1] && workers[0]>workers[2]);
+        // Birth funding stays a colony decision even though staffing is local.
+        assert(producers==(budget>0 ? 3 : 0));
     }
     // Reaching demand still disables the stream at every swarm.
     stat->numberUnitPerType[EXPLORER]=ai.budget.desired_explorers;
@@ -1449,7 +1415,6 @@ int main(int argc,char** argv)
     executionRegressions();
     reviewBugRegressions();
     missionForceRegressions();
-    gateClearingGeometryRegressions();
     economyStaffingRegressions();
     explorerSwarmStaffingRegressions();
     completedSwarmBudgetRegressions();

@@ -203,16 +203,27 @@ void growingFoodFundsCapacity()
     assert(ai.budget.desired_swarms>1);
 }
 
-void soleSwarmKeepsBirthBudget()
+void soleSwarmStaffsFromItsOwnStock()
 {
     Fixture f;Building* swarm=f.swarm(10,10,0);
     auto& ai=*f.ai;auto& c=ai.context;c.initialize();
     assert(ai.nearby_farm_capacity(c,0)==0);
+    ai.budget.staffing_window_samples=2;
+    ai.budget.staffing_cooldown_passes=0;
+    ai.budget.staffing_minimum_workers=1;
+    ai.budget.staffing_maximum_workers=20;
+    // Carriers no longer come from the colony birth budget: the swarm reads
+    // its own wheat stock. A full swarm holds the minimum whatever the budget
+    // says, and an empty one asks for more.
+    swarm->resources[CORN]=swarm->type->maxResource[CORN];
     for(int budget:{10,0,2}) {
         ai.budget.swarm_workers=budget;
-        ai.manage_swarm(c,0);f.applyStaffing();
-        assert(swarm->maxUnitWorking==budget);
+        for(int pass=0;pass<6;++pass){ai.manage_swarm(c,0);f.applyStaffing();}
+        assert(swarm->maxUnitWorking==1);
     }
+    swarm->resources[CORN]=0;
+    for(int pass=0;pass<6;++pass){ai.manage_swarm(c,0);f.applyStaffing();}
+    assert(swarm->maxUnitWorking>1);
 }
 
 void nearbyCornDeterminesStaffing()
@@ -242,9 +253,21 @@ void nearbyCornDeterminesStaffing()
     assert(world.tile(16,11).foodOpportunity==0);
     assert(world.tile(16,11).farmCapacity==0);
     f.game.map.setResource(16,11,CORN,1);
-    for(int id=0;id<2;++id) ai.manage_swarm(c,id);
-    f.applyStaffing();
-    assert(first->maxUnitWorking+second->maxUnitWorking==10);
+    ai.budget.staffing_window_samples=2;
+    ai.budget.staffing_cooldown_passes=0;
+    ai.budget.staffing_minimum_workers=1;
+    ai.budget.staffing_maximum_workers=20;
+    // Staffing no longer divides a colony total between swarms by nearby corn.
+    // Each reads its own stock, so the empty one outgrows the full one and
+    // neither drops below the minimum.
+    first->resources[CORN]=0;
+    second->resources[CORN]=second->type->maxResource[CORN];
+    for(int pass=0;pass<6;++pass)
+    {
+        for(int id=0;id<2;++id) ai.manage_swarm(c,id);
+        f.applyStaffing();
+    }
+    assert(first->maxUnitWorking>second->maxUnitWorking);
     assert(first->maxUnitWorking>0 && second->maxUnitWorking>0);
     std::set<int> shared;
     assert(ai.nearby_farm_capacity(c,0,&shared)==before);
@@ -272,16 +295,22 @@ void cornPileInteriorIsSupply()
     assert(withoutCenter<planted);
     f.game.map.setNoResource(38,10,1);
     assert(ai.nearby_farm_capacity(c,0)==withoutCenter);
-    ai.budget.inn_adaptive_staffing_enabled=true;
-    ai.budget.inn_normal_workers[0]=1; ai.budget.inn_low_corn_workers[0]=2;
-    ai.manage_inn(c,1); f.applyStaffing();
-    const int workers=inn->maxUnitWorking;
-    assert(workers>0);
-    for(int y=0;y<64;++y) for(int x=0;x<64;++x)
-        if(f.game.map.getResource(x,y).type==CORN)
-            f.game.map.setNoResource(x,y,1);
-    ai.manage_inn(c,1); f.applyStaffing();
-    assert(inn->maxUnitWorking==0);
+    // Staffing is a closed loop on the inn's own stock: an empty inn asks for
+    // another carrier, a full one hands them back, and it never falls below the
+    // minimum. Wheat growing nearby does not enter into the decision.
+    ai.budget.staffing_window_samples=2;
+    ai.budget.staffing_cooldown_passes=0;
+    ai.budget.staffing_low_permille=333;
+    ai.budget.staffing_high_permille=667;
+    ai.budget.staffing_slack=1;
+    ai.budget.staffing_minimum_workers=1;
+    ai.budget.staffing_maximum_workers=20;
+    inn->resources[CORN]=0;
+    for(int pass=0;pass<6;++pass){ai.manage_inn(c,1); f.applyStaffing();}
+    assert(inn->maxUnitWorking>=2);
+    inn->resources[CORN]=inn->type->maxResource[CORN];
+    for(int pass=0;pass<12;++pass){ai.manage_inn(c,1); f.applyStaffing();}
+    assert(inn->maxUnitWorking==1);
 }
 
 void explorerTargetAlwaysGetsProduction()
@@ -338,7 +367,9 @@ void crisisProductionPause()
         ai.arbitrate_policy_bids();
         assert(ai.budget.swarm_workers==0);
         ai.manage_swarm(c,0); f.applyStaffing();
-        assert(swarm->maxUnitWorking==0);
+        // A zero birth budget pauses production through the ratios. Carriers
+        // are the building's own business now and keep their minimum.
+        assert(swarm->maxUnitWorking>=1);
         for(int type=0;type<NB_UNIT_TYPE;++type) assert(swarm->ratio[type]==0);
         swarm->resources[CORN]=20;
         swarm->productionTimeout=expiredTimer;
@@ -372,7 +403,6 @@ void completionReallocatesColony()
 
     ai.budget.worker_ratio=4;
     ai.budget.explorer_ratio=1; ai.budget.desired_explorers=5;
-    ai.budget.resource_tracker_samples=25;
     AIMaximaPlacement::DevelopmentAction action;
     action.type=AIMaximaPlacement::BuildStandalone;
     action.buildingType=IntBuildingType::SWARM_BUILDING;
@@ -384,14 +414,26 @@ void completionReallocatesColony()
         globalContainer->buildingsTypes.getTypeNum("swarm",0,true),0,1,1);
     assert(fresh);
     c.orders.clear(); c.buildings.tick(); f.applyStaffing();
-    assert(old->maxUnitWorking==6 && fresh->maxUnitWorking==2);
+    // The construction site carries the workers the placement action asked for.
+    assert(fresh->maxUnitWorking==2);
     for(int resource=0;resource<MAX_RESOURCES;++resource)
         fresh->resources[resource]=fresh->type->maxResource[resource];
     fresh->updateBuildingSite();
     assert(fresh->maxUnitWorking==1);
-    c.buildings.tick(); f.applyStaffing();
-    assert(c.get_resource_tracker(id));
-    assert(old->maxUnitWorking==3 && fresh->maxUnitWorking==3);
+    // Completion no longer redistributes a colony total. Each swarm runs its
+    // own loop, so both stay staffed and both share the explorer stream.
+    ai.budget.staffing_window_samples=2;
+    ai.budget.staffing_cooldown_passes=0;
+    ai.budget.staffing_minimum_workers=1;
+    old->resources[CORN]=0; fresh->resources[CORN]=0;
+    for(int pass=0;pass<6;++pass)
+    {
+        // The pre-existing swarm is the first building the fixture created.
+        ai.manage_swarm(c,0);
+        ai.manage_swarm(c,id);
+        f.applyStaffing();
+    }
+    assert(old->maxUnitWorking>=1 && fresh->maxUnitWorking>=1);
     assert(old->ratio[EXPLORER]==1 && fresh->ratio[EXPLORER]==1);
 }
 
@@ -486,7 +528,7 @@ int main()
     birthBudgetScalesBeyondTwenty();
     growingFoodFundsCapacity();
     colonyStartupAndAffordability();
-    soleSwarmKeepsBirthBudget();
+    soleSwarmStaffsFromItsOwnStock();
     nearbyCornDeterminesStaffing();
     cornPileInteriorIsSupply();
     explorerTargetAlwaysGetsProduction();

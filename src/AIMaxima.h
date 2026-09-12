@@ -24,6 +24,7 @@
 #include "AIMaximaFarming.h"
 #include "AIMaximaPlacement.h"
 #include "AIMaximaRecon.h"
+#include "AIMaximaStaffingControl.h"
 #include "AIMaximaStrategy.h"
 #include "AIMaximaTactics.h"
 #include <map>
@@ -186,12 +187,17 @@ private:
 		int first_prestige_trained_workers;
 		int second_prestige_trained_workers;
 		int second_prestige_population_min;
-		bool inn_adaptive_staffing_enabled;
 		bool swarm_retirement_enabled;
-		int inn_low_corn_threshold[3];
-		int inn_normal_workers[3];
-		int inn_low_corn_workers[3];
-		int resource_tracker_samples;
+		///Per-building staffing control. Every inn and swarm regulates its own
+		///worker request from its own wheat stock and its actual staffing;
+		///there is no colony budget and no apportionment between buildings.
+		int staffing_window_samples;
+		int staffing_low_permille;
+		int staffing_high_permille;
+		int staffing_slack;
+		int staffing_minimum_workers;
+		int staffing_maximum_workers;
+		int staffing_cooldown_passes;
 		int swarm_supply_radius;
 		int attack_clearing_workers;
 		bool can_swim;
@@ -219,7 +225,6 @@ private:
 		int campaign_stall_ticks;
 		int campaign_retreat_cooldown_ticks;
 		int target_switch_margin;
-		int tower_barrier_bonus;
 		int preemptive_recompute_ticks;
 		int preemptive_inner_distance;
 		int preemptive_band_width;
@@ -237,9 +242,6 @@ private:
 		int farming_urgent_interval;
 		bool farming_enabled;
 		bool farming_protection_enabled;
-		bool farming_barrier_enabled;
-		bool farming_coastal_porosity_enabled;
-		bool farming_gate_clearing_enabled;
 		bool farming_maintenance_clearing_enabled;
 		bool farming_resource_preserving_circulation_enabled;
 		bool farming_wheat_invasion_clearing_enabled;
@@ -254,7 +256,6 @@ private:
 		int farming_clearing_cooldown;
 		int farming_clearing_duration;
 		int farming_clearing_quota;
-		int farming_gate_clearing_radius;
 		int farming_management_radius;
 		int farming_wheat_fertility_min;
 		int farming_wood_fertility_base_percent;
@@ -265,8 +266,6 @@ private:
 		int farming_wood_pressure_construction_divisor;
 		int farming_wood_pressure_growth_divisor;
 		int farming_economic_envelope_radius;
-		int barrier_topology_interval;
-		int farming_gate_relocation_penalty_cap;
 		int priority_inns;
 		int priority_swarms;
 		int priority_barracks;
@@ -698,6 +697,11 @@ private:
 	bool development_planner_initialized;
 	std::map<int, AIMaximaPlacement::ActionLifecycleState>
 		development_reported_states;
+	///One independent controller per inn and swarm, keyed by building id. This
+	///is the controller's integral state, so it is carried across saves.
+	std::map<int, StaffingControl::State> staffing_control;
+	///Runs one control pass and issues the order when the request changes.
+	int staff_building(AIMaximaRuntime::Context& echo, int id);
 	std::map<int, int> remote_swarm_since;
 	std::set<int> remote_swarms_ready;
 	std::set<int> remote_swarm_deletion_issued;
@@ -730,19 +734,15 @@ private:
 	int proactive_clearing_initial_wood;
 	int proactive_clearing_campaigns;
 	int last_proactive_clearing_tick;
-	struct GateClearingIntent;
-	GateClearingIntent select_gate_clearing_intent(
-		AIMaximaRuntime::Context& echo) const;
 	void manage_land_clearing(AIMaximaRuntime::Context& echo);
-	bool continue_clearing_campaign(AIMaximaRuntime::Context& echo,
-		const GateClearingIntent& intent);
+	bool continue_clearing_campaign(AIMaximaRuntime::Context& echo);
 	void retire_clearing_campaign(AIMaximaRuntime::Context& echo,
 		const char* reason, const std::string& details=std::string());
 	struct WoodClearingTarget;
 	WoodClearingTarget select_wood_clearing_target(
 		AIMaximaRuntime::Context& echo) const;
-	///Keeps planner parcels, circulation routes, gates and their inner escape lanes
-	///under durable clearing orders. Only cells owned by this subsystem are removed.
+	///Keeps planner parcels and circulation routes under durable clearing
+	///orders. Only cells owned by this subsystem are removed.
 	void update_maintenance_clearing_areas(AIMaximaRuntime::Context& echo);
 	std::vector<Uint8> worker_reachable_circulation(
 		AIMaximaRuntime::Context& echo) const;
@@ -755,19 +755,6 @@ private:
 	void apply_maintenance_clearing_plan(AIMaximaRuntime::Context& echo,
 		const MaintenanceClearingPlan& plan);
 	void initialize_farming_cache(AIMaximaRuntime::Context& echo);
-	Uint32 compute_farming_topology_signature(
-		AIMaximaRuntime::Context& echo) const;
-	void update_barrier_topology(AIMaximaRuntime::Context& echo);
-	const std::vector<int>& barrier_gate_route(const std::vector<int>& gate) const;
-	std::vector<int> gate_clearing_target(AIMaximaRuntime::Context& echo,
-		const std::vector<int>& gate, bool complete_route=false) const;
-	struct GateRouteStatus;
-	GateRouteStatus inspect_gate_route(AIMaximaRuntime::Context& echo,
-		const std::vector<int>& gate) const;
-	bool barrier_gate_is_clear(AIMaximaRuntime::Context& echo,
-		const std::vector<int>& gate) const;
-	bool barrier_gate_is_resource_clearable(AIMaximaRuntime::Context& echo,
-		const std::vector<int>& gate) const;
 	int available_expansion_neighbors(AIMaximaRuntime::Context& echo,
 		int x, int y) const;
 
@@ -872,34 +859,10 @@ private:
 	std::vector<Uint8> applied_maintenance_clearing_mask;
 	std::vector<Uint8> maintenance_circulation_mask;
 	std::vector<Uint8> wood_firebreak_mask;
-	std::vector<Uint8> strategic_barrier_mask;
-	std::vector<Uint8> strategic_gate_mask;
-	std::vector<Uint8> emergency_escape_mask;
 	std::vector<Uint8> farm_protection_mask;
 	/// Protected wheat pattern only, used to detect adjacent wood invasion.
 	std::vector<Uint8> wheat_farm_protection_mask;
-	std::vector<std::vector<int> > strategic_gates;
-	///Derived complete gate/channel contracts, keyed by the gate's center tile.
-	std::map<int, std::vector<int> > strategic_gate_routes;
-	std::vector<int> barrier_defense_points;
-	/// Gate planning is structural. Regrowth schedules clearing, never relocation.
-	Uint32 barrier_geometry_signature=0;
-	/// The short interior firing lane, separate from the complete access route.
-	std::map<int,std::vector<int> > strategic_gate_approaches;
-	/// Legal tower centres: 0/50/100 for covering zero/one/two uncovered mouths.
-	std::vector<Uint8> barrier_tower_quality;
-	/// Uncovered mouths with a legal firing pad, not a count of desired towers.
-	int gate_defense_demand=0;
-	void refresh_gate_defense(AIMaximaRuntime::Context& echo);
-	/// Interior connections to the gate network are standing obligations too.
-	/// Version 95 preserves these paths and their scheduled refresh.
-	std::vector<std::vector<int> > settlement_access_routes;
-	/// Returns the number of buildings for which no legal access repair exists.
-	int connect_settlements_to_gates(AIMaximaRuntime::Context& echo,
-		FarmProtectionPlan& plan);
-	Uint32 farming_topology_signature;
 	int last_farming_tick;
-	int last_barrier_topology_tick;
 	bool farming_urgent;
 	///Map-area orders produced by farming and placement are intentionally applied
 	///on later ticks so their scans cannot extend the calculation that created

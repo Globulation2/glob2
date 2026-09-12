@@ -42,8 +42,6 @@ template<class A> void fields(A& a, WorldTile& value)
 	a("clearableResource",value.clearableResource);
 	a("occupied",value.occupied);
 	a("ownOccupied",value.ownOccupied);
-	a("gateCorridor",value.gateCorridor);
-	a("gateDefense",value.gateDefense);
 	a("resourceType",value.resourceType);
 	a("resourceAmount",value.resourceAmount);
 	a("fertility",value.fertility);

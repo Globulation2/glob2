@@ -140,7 +140,6 @@ class MaximaStrategyConfigTest(unittest.TestCase):
 
     def test_tactic_switches_default_on_and_accept_false(self) -> None:
         expected = {
-            "staffing.inn_adaptive_staffing_enabled",
             "economy.swarm_retirement_enabled",
             "economy.large_economy_adaptation_enabled",
             "economy.amphibious_network_maintenance_enabled",
@@ -179,9 +178,6 @@ class MaximaStrategyConfigTest(unittest.TestCase):
             "recon.force_memory_enabled",
             "farming.enabled",
             "farming.farm_protection_enabled",
-            "farming.barrier_topology_enabled",
-            "farming.coastal_porosity_enabled",
-            "farming.gate_clearing_enabled",
             "farming.maintenance_clearing_enabled",
             "farming.resource_preserving_circulation_enabled",
             "farming.wheat_invasion_clearing_enabled",

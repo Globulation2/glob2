@@ -280,13 +280,11 @@ static void proactiveProtection() {
     for(int y=0;y<64;++y)f.game.map.setTerrain(0,y,256);
     f.game.map.setResource(3,11,WOOD,5);f.game.map.setResource(4,11,WOOD,5);f.game.map.setResource(5,11,WOOD,5);
     a.timer=5000;a.budget.farming_enabled=true;a.budget.farming_protection_enabled=true;
-    a.budget.farming_barrier_enabled=false;a.budget.farming_coastal_porosity_enabled=false;
-    a.budget.farming_gate_clearing_enabled=false;a.budget.farming_minimum_wood_fertility=0;
+    a.budget.farming_minimum_wood_fertility=0;
     a.budget.farming_wood_firebreak_enabled=false;
     a.budget.farming_proactive_clearing_enabled=true;a.budget.farming_allow_proactive_clearing=true;
     a.budget.farming_min_workers_for_clearing=0;a.budget.farming_clearing_cooldown=0;
     a.budget.farming_clearing_duration=1500;a.budget.farming_clearing_quota=8;
-    a.budget.barrier_topology_interval=500;
     a.update_farming(c);
     for(auto o:c.managementOrders) if(auto p=dynamic_cast<Management::AddArea*>(o.get()))
         if(p->areaType==ForbiddenArea) for(auto xy:p->locations) f.game.map.setForbidden(xy.x,xy.y,f.player.team->me);

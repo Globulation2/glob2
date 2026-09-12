@@ -188,7 +188,6 @@ comparison; **END** extend terminal-sensitive branches to game end.
 
 | Switch | Mode | Opportunity or stratum | Primary outcome |
 |---|---|---|---|
-| `staffing.inn_adaptive_staffing_enabled` | CP | recommendation differs under food pressure | food-security/growth AUC, 10k |
 | `economy.large_economy_adaptation_enabled` | FS+CP | size threshold crossed before adaptation | economy, 20k-30k |
 | `economy.amphibious_network_maintenance_enabled` | CP | amphibious economy lacks pool capacity | economy/route value, 20k |
 | `economy.worker_birth_throttle_enabled` | CP | excess free labor before birth decision | growth/utilization, 10k |
@@ -206,11 +205,8 @@ comparison; **END** extend terminal-sensitive branches to game end.
 | `recon.scouting_missions_enabled` | CP | contact/frontier mission before flag | information regret/economy |
 | `recon.force_memory_enabled` | CP | observed force has just gone under fog | estimate error/downstream value |
 | `farming.farm_protection_enabled` | SH+CP | protected cells alter build/clear choice | food/economic AUC |
-| `farming.barrier_topology_enabled` | CP | barrier/gate detected before maintenance | access/food minus maintenance cost |
-| `farming.coastal_porosity_enabled` | FS+CP | coastal farm envelope can seal a land component | shore access/food/economy |
 | `farming.resource_preserving_circulation_enabled` | FS+CP | new building circulation intersects existing wheat or wood | access/food/economy |
-| `farming.gate_clearing_enabled` | CP | strategic gate blocked before clear order | access time/economy |
-| `farming.maintenance_clearing_enabled` | CP | parcel/gate/firebreak needs maintenance | obstruction time/economy |
+| `farming.maintenance_clearing_enabled` | CP | parcel or firebreak needs maintenance | obstruction time/economy |
 | `farming.proactive_clearing_enabled` | CP | proactive clearing candidate before action | space/economy minus labor cost |
 
 ### Wave 3: narrow or highly conditional heuristics

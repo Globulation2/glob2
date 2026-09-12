@@ -6,10 +6,9 @@ static void protectionSwitches()
 {
     for(bool master:{false,true})for(bool protection:{false,true})for(bool crop:{false,true}) {
         Fixture f;auto& a=*f.ai;auto& c=a.context;auto& map=f.game.map;
-        for(int y=0;y<64;++y)map.getCase(10,y).terrain=256;
+        for(int y=0;y<64;++y)map.getTile(10,y).terrain=256;
         if(crop)map.setResource(11,21,CORN,1);
         a.strategy.farming.enabled=master;a.strategy.farming.farm_protection_enabled=protection;
-        a.strategy.farming.barrier_topology_enabled=false;a.strategy.farming.coastal_porosity_enabled=false;
         a.finalize_director_plan(c);a.budget.farming_management_radius=0;
         a.update_farming(c);applyAreaContracts(f);
         assert(bool(a.farm_protection_mask[21*64+11])==(master&&protection&&crop));
@@ -35,10 +34,10 @@ static void invasionSwitch()
 {
     for(bool enabled:{false,true})for(bool maintenance:{false,true})for(bool wheat:{false,true}) {
         Fixture f;auto& a=*f.ai;auto& c=a.context;auto& map=f.game.map;
-        for(int y=0;y<64;++y)for(int x=0;x<12;++x)map.getCase(x,y).terrain=256;
+        for(int y=0;y<64;++y)for(int x=0;x<12;++x)map.getTile(x,y).terrain=256;
         if(wheat)map.setResource(18,21,CORN,1);map.setResource(18,22,WOOD,1);
         a.strategy.farming.wheat_invasion_clearing_enabled=enabled;a.strategy.farming.maintenance_clearing_enabled=maintenance;
-        a.strategy.farming.wood_firebreak_enabled=false;a.strategy.farming.barrier_topology_enabled=false;a.strategy.farming.coastal_porosity_enabled=false;
+        a.strategy.farming.wood_firebreak_enabled=false;
         a.finalize_director_plan(c);a.budget.farming_management_radius=0;a.budget.farming_minimum_wood_fertility=3276;
         a.update_farming(c);applyAreaContracts(f);a.update_maintenance_clearing_areas(c);applyAreaContracts(f);
         assert(bool(a.maintenance_circulation_mask[22*64+18])==(enabled&&maintenance&&wheat));

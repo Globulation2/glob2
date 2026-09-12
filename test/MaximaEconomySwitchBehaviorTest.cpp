@@ -3,27 +3,6 @@
 #include "MaximaCombatIntegrationTest.cpp"
 #undef main
 
-static void innStaffingSwitch()
-{
-    for(int level=0;level<3;++level)for(bool enabled:{false,true})for(bool completed:{false,true}) {
-        combat_regressions::Fixture f;
-        auto* inn=f.game.addBuilding(20,20,globalContainer->buildingsTypes.getTypeNum("inn",level,!completed),0,1,1);
-        assert(inn);auto& a=*f.ai;auto& c=a.context;c.initialize();
-        a.strategy.staffing.inn_adaptive_staffing_enabled=enabled;
-        a.finalize_director_plan(c);
-        for(int i=0;i<3;++i){a.budget.inn_normal_workers[i]=3;a.budget.inn_low_corn_workers[i]=4;}
-        // Dry grass has no renewable corn supply. Adaptive staffing must release
-        // carriers; the disabled policy retains its fixed staffing allocation.
-        assert(a.nearby_farm_capacity(c,f.id(inn))==0);
-        a.manage_buildings(c);c.update_management_orders();
-        int count=0;
-        for(auto order:c.orders)if(auto o=std::dynamic_pointer_cast<OrderModifyBuilding>(order)) {
-            assert(o->gid==inn->gid);assert(o->numberRequested==(enabled?0:3));++count;
-        }
-        assert(count==(completed?1:0));
-    }
-}
-
 static void retirementSwitch()
 {
     for(bool enabled:{false,true})for(bool safe:{false,true})for(bool mature:{false,true}) {
@@ -79,6 +58,6 @@ int main()
 {
     GlobalContainer container;globalContainer=&container;container.runNoX=true;
     container.buildingsTypes.init();IntBuildingType::init();
-    innStaffingSwitch();retirementSwitch();birthThrottleSwitch();largeEconomySwitch();
+    retirementSwitch();birthThrottleSwitch();largeEconomySwitch();
     std::cout<<"Four economy/staffing switches: 36 paired eligibility and runtime-order cases PASS\n";
 }

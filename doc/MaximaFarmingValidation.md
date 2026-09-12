@@ -14,11 +14,11 @@ continued to request protection.
 - The starting base's continuous grass region is identified from terrain alone.
   Ordinary mainland farms do not enter island access repair. Sand separates
   growing regions even though workers can traverse it.
-- Continuous coastal protection remains part of the normal classifier.
+- Coastal growth keeps its fertility exemption, but protection stays on the
+  expansion lattice, so a shoreline run is porous by construction.
 - Exceptional island repair cannot cut fixed odd/odd seeds. Its tiny-patch
   fallback cannot sacrifice singleton regrowth seeds.
-- Passive repair does not mutate the strategic barrier proposal for future passes.
-- Explicit building, circulation and gate contracts may override protection;
+- Explicit building and circulation contracts may override protection;
   ordinary growth/harvesting may not revoke the fixed seed reserve.
 - A seed-only patch awaiting regrowth is distinct from inaccessible harvestable
   wheat. Protecting those seeds is intentional.
@@ -29,7 +29,7 @@ The farming integration test exercises 12 adversarial harvest/regrowth rounds
 on each of eight maps. Every available wheat tile is removed between rounds,
 then adjacent growth changes farm boundaries. Fixed protected seeds must survive
 all rounds. Additional cases cover discovery invariance, wrapping, inland sand,
-gate overrides, coastal access and repeated Archipelago growth/harvest changes.
+coastal access and repeated Archipelago growth/harvest changes.
 The farming, economy and director native suites and 25 farming policy checks pass.
 
 ## Live game matrix

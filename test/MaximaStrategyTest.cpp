@@ -25,9 +25,9 @@ int main()
         MaximaStrategy restored{};
         assert(StrategyResolver::restoreValues(text,restored,error));
         assert(StrategyResolver::canonicalValues(restored)==text);
-        assert(!StrategyResolver::restoreValues("staffing.inn_level1_normal_workers=3",restored,error));
+        assert(!StrategyResolver::restoreValues("staffing.control_minimum_workers=3",restored,error));
         assert(!StrategyResolver::restoreValues(text+",unknown.key=1",restored,error));
-        assert(!StrategyResolver::restoreValues(text+",staffing.inn_level1_normal_workers=3",restored,error));
+        assert(!StrategyResolver::restoreValues(text+",staffing.control_minimum_workers=3",restored,error));
     }
     const auto directory=std::filesystem::temp_directory_path()/"glob2-maxima-strategy-test";
     std::filesystem::create_directories(directory);
@@ -38,14 +38,14 @@ int main()
         {std::ofstream output(layer); output<<content;}
         ResolvedStrategy resolved;std::string error;
         assert(StrategyResolver::resolveForFormat(options,MatchFormatDuel,resolved,error)==expected);
-        if(expected) assert(resolved.values.staffing.inn_level1_normal_workers==3);
+        if(expected) assert(resolved.values.staffing.control_minimum_workers==3);
         else assert(!error.empty());
     };
-    check("staffing.inn_level1_normal_workers = 3\n",true);
+    check("staffing.control_minimum_workers = 3\n",true);
     check("unknown.key = 3\n",false);
-    check("staffing.inn_level1_normal_workers = -1\n",false);
-    check("staffing.inn_level1_normal_workers = three\n",false);
-    check("staffing.inn_level1_normal_workers = 3\nstaffing.inn_level1_normal_workers = 4\n",false);
+    check("staffing.control_minimum_workers = -1\n",false);
+    check("staffing.control_minimum_workers = three\n",false);
+    check("staffing.control_minimum_workers = 3\nstaffing.control_minimum_workers = 4\n",false);
     std::filesystem::remove(layer);std::filesystem::remove(directory);
     std::cout<<"strategy defaults, round trips and invalid layers passed\n";
 }

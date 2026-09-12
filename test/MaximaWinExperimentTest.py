@@ -100,8 +100,8 @@ class Protocol(unittest.TestCase):
     def setUp(self):
         self.protocol={'protocol_id':'frozen','maps':{f:[{'path':'fixture.map','teams':5 if f=='ffa5' else 4,
                        'sha256':'map'}] for f in exp.FORMATS},
-                       'defaults':{f:{'farming.enabled':False,'farming.gate_clearing_enabled':True} for f in exp.FORMATS},
-                       'switches':['farming.enabled','farming.gate_clearing_enabled']}
+                       'defaults':{f:{'farming.enabled':False,'farming.wood_firebreak_enabled':True} for f in exp.FORMATS},
+                       'switches':['farming.enabled','farming.wood_firebreak_enabled']}
     def test_balanced_controls_and_weak_first(self):
         from collections import Counter
         rows=[exp.scenario(self.protocol,'controls',i,True) for i in range(200)]
@@ -139,8 +139,8 @@ class Protocol(unittest.TestCase):
             s=exp.scenario(self.protocol,'pilot',i)
             if s['format']!='2v2': continue
             arrangements.add(tuple(p['player'] for p in s['players'] if p['focal']))
-            on=exp.arm_settings(self.protocol,s,'farming.gate_clearing_enabled',True)
-            off=exp.arm_settings(self.protocol,s,'farming.gate_clearing_enabled',False)
+            on=exp.arm_settings(self.protocol,s,'farming.wood_firebreak_enabled',True)
+            off=exp.arm_settings(self.protocol,s,'farming.wood_firebreak_enabled',False)
             self.assertEqual(sum(on[k]!=off[k] for k in on),2)
             self.assertTrue(all(v['farming.enabled'] for v in off.values()))
             for p in s['players']:

@@ -45,17 +45,13 @@ struct MaximaStrategy
 
 	struct Staffing
 	{
-		bool inn_adaptive_staffing_enabled;
-		int inn_level1_low_corn_threshold;
-		int inn_level2_low_corn_threshold;
-		int inn_level3_low_corn_threshold;
-		int inn_level1_normal_workers;
-		int inn_level2_normal_workers;
-		int inn_level3_normal_workers;
-		int inn_level1_low_corn_workers;
-		int inn_level2_low_corn_workers;
-		int inn_level3_low_corn_workers;
-		int resource_tracker_samples;
+		int control_window_samples;
+		int control_low_permille;
+		int control_high_permille;
+		int control_slack;
+		int control_minimum_workers;
+		int control_maximum_workers;
+		int control_cooldown_passes;
 		int swarm_supply_radius;
 		int construction_inn_workers;
 		int construction_swarm_workers;
@@ -420,7 +416,6 @@ struct MaximaStrategy
 		int preemptive_defense_max_cross_section;
 		int preemptive_defense_zone_radius;
 		int preemptive_defense_max_zones;
-		int tower_barrier_bonus;
 	} military;
 
 	struct Postures
@@ -538,8 +533,6 @@ struct MaximaStrategy
 		int route_fertility_cost;
 		int guard_area_protectedness;
 		int baseline_protectedness;
-		int barrier_protection_radius;
-		int barrier_protectedness;
 		int enemy_threat_radius;
 		int enemy_threat_base;
 		int enemy_threat_falloff;
@@ -718,9 +711,6 @@ struct MaximaStrategy
 	{
 		bool enabled;
 		bool farm_protection_enabled;
-		bool barrier_topology_enabled;
-		bool coastal_porosity_enabled;
-		bool gate_clearing_enabled;
 		bool maintenance_clearing_enabled;
 		bool resource_preserving_circulation_enabled;
 		bool wheat_invasion_clearing_enabled;
@@ -750,9 +740,6 @@ struct MaximaStrategy
 		int proactive_failure_threshold;
 		int proactive_building_threshold;
 		int proactive_start_tick;
-		int gate_clearing_radius;
-		int gate_clearing_workers_min;
-		int gate_relocation_penalty_cap;
 		int urgent_space_threshold;
 	} farming;
 
@@ -809,7 +796,6 @@ struct MaximaStrategy
 		int campaign_stall_ticks;
 		int campaign_retreat_cooldown_ticks;
 		int preemptive_defense_recompute_ticks;
-		int barrier_topology_interval_ticks;
 		int strategy_interval_ticks;
 		int strategy_phase_offset_ticks;
 		int building_interval_ticks;

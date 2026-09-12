@@ -11,10 +11,8 @@ from pathlib import Path
 
 SCENARIOS = (
     ("mixed_coastal_resources", "maps/Isles.map", 0x4D495845),
-    ("damaged_barrier_regrowth", "maps/Migration.map", 0x44414D47),
     ("dense_midgame_wood", "maps/Garden_3.map", 0x574F4F44),
     ("narrow_islands", "maps/Holiday_Island_2.map", 0x49534C45),
-    ("blocked_gates", "maps/Isles.map", 2718281828),
 )
 
 FIELD = re.compile(r"(?:^|\t)([a-z_]+)=([^\t]+)")
@@ -43,29 +41,14 @@ def main() -> int:
         result = subprocess.run(command, cwd=root, text=True, capture_output=True)
         output = result.stdout + result.stderr
         policy = [line for line in output.splitlines() if "\tfarming_policy\t" in line]
-        topology = [line for line in output.splitlines() if "\tfarming_barrier_topology\t" in line]
         cache = [line for line in output.splitlines() if "\tfarming_fertility_cache\t" in line]
-        if result.returncode or not policy or not topology or len(cache) != 1:
+        if result.returncode or not policy or len(cache) != 1:
             failures.append(f"{name}: incomplete run (exit={result.returncode})")
             continue
         maximum_policy_us = max(int(fields(line)["microseconds"]) for line in policy)
         if maximum_policy_us >= 5000:
             failures.append(f"{name}: policy refresh {maximum_policy_us}us >= 5000us")
-        for line in topology:
-            value = fields(line)
-            if int(value["gates"]) != int(value["components"]) * 2:
-                failures.append(f"{name}: component does not have exactly two gates")
-                break
-        started = sum(output.count(f"reason={reason}") for reason in (
-            "boxed_in_gate", "mature_costly_gate", "wood_gate"))
-        reopened = output.count("reason=gate_reopened")
-        if name == "blocked_gates" and started and reopened < started - 1:
-            failures.append(f"{name}: blocked gate clearing did not converge")
-        print(
-            f"{name}: passes={len(policy)} max_policy_us={maximum_policy_us} "
-            f"barrier_components={max(int(fields(line)['components']) for line in topology)} "
-            f"gate_clears={started}/{reopened}"
-        )
+        print(f"{name}: passes={len(policy)} max_policy_us={maximum_policy_us}")
     if failures:
         for failure in failures:
             print(f"FAIL: {failure}")

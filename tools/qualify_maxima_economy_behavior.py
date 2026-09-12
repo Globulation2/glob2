@@ -48,7 +48,7 @@ def main():
     exp.verify_freeze(protocol)
     exp.atomic(args.output/'PASS.json', {
         'protocol_id': protocol['protocol_id'], 'passed': True,
-        'validated_switches': ['staffing.inn_adaptive_staffing_enabled','economy.swarm_retirement_enabled','economy.worker_birth_throttle_enabled','economy.large_economy_adaptation_enabled'], 'cases': 36,
+        'validated_switches': ['economy.swarm_retirement_enabled','economy.worker_birth_throttle_enabled','economy.large_economy_adaptation_enabled'], 'cases': 27,
         'checks': ['paired on/off', 'completed inns at all levels, retirement safety/probation, labor surplus and birth funding, fertile/food-safe terrain', 'inactive-world silence',
                    'concrete carrier assignment, building deletion and birth-ratio orders; arbiter priority change'],
         'parent_disabled': 'not applicable: independent economy/staffing switches',

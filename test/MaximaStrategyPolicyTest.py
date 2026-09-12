@@ -48,7 +48,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
 
     def test_current_save_omits_configuration_plans_and_phases(self) -> None:
         version = (ROOT / "src/Version.h").read_text()
-        self.assertIn("#define VERSION_MINOR 93", version)
+        self.assertIn("#define VERSION_MINOR 94", version)
         save = self.maxima[self.maxima.index("void Maxima::save(") :]
         self.assertNotIn('writeText(strategy.getStrategyName()', save)
         self.assertNotIn('writeText(tuning', save)
@@ -151,7 +151,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
             for line in specifications
         ]
         # 689 before the food ledger, plus its fifteen food.* parameters.
-        self.assertEqual(704, len(specifications))
+        self.assertEqual(690, len(specifications))
         self.assertTrue(all(len(impact) == 1 for impact in impacts))
         self.assertEqual(
             {"Critical", "High", "Medium", "Low"},
@@ -207,7 +207,12 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
     def test_swarm_executor_does_not_override_controller(self) -> None:
         staffing = self.maxima[self.maxima.index("void Maxima::manage_swarm"):
                                self.maxima.index("int Maxima::choose_building_to_attack")]
-        self.assertIn("int total_to_assign=budget.swarm_workers;", staffing)
+        # Staffing is the building's own closed loop, but birth funding stays a
+        # colony decision: the executor may consult the budget to pause
+        # production and must never derive its own.
+        self.assertIn("staff_building(echo, id);", staffing)
+        self.assertIn("if(budget.swarm_workers<=0)", staffing)
+        self.assertNotIn("SwarmController::plan(", staffing)
         self.assertNotIn("needFood", staffing)
         self.assertNotIn("recovery_active", staffing)
         self.assertIn("SwarmController::plan(", self.maxima)

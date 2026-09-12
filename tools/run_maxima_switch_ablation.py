@@ -46,7 +46,6 @@ WAVES = {
         "postures.finish_enabled",
     ),
     2: (
-        "staffing.inn_adaptive_staffing_enabled",
         "economy.large_economy_adaptation_enabled",
         "economy.amphibious_network_maintenance_enabled",
         "economy.worker_birth_throttle_enabled", "repairs.enabled",
@@ -58,8 +57,6 @@ WAVES = {
         "teamplay.defense_enabled", "explorer_campaign.enabled",
         "recon.scouting_missions_enabled", "recon.force_memory_enabled",
         "farming.farm_protection_enabled",
-        "farming.barrier_topology_enabled", "farming.gate_clearing_enabled",
-        "farming.coastal_porosity_enabled",
         "farming.resource_preserving_circulation_enabled",
         "farming.maintenance_clearing_enabled",
         "farming.proactive_clearing_enabled",

@@ -158,7 +158,7 @@ int BuildingProfile::maximumLevel() const
 WorldTile::WorldTile()
 	: discovered(false), foodTraversable(true), grass(false), water(false), sand(false),
 	  permanentResource(false), clearableResource(false), occupied(false),
-	  ownOccupied(false), gateCorridor(false), gateDefense(0), resourceType(-1), resourceAmount(0), fertility(0),
+	  ownOccupied(false), resourceType(-1), resourceAmount(0), fertility(0),
 	  farmCapacity(0), foodOpportunity(0), protectedYield(0), threat(0),
 	  protectedness(50), conqueredOpportunity(0) {}
 WorldBuilding::WorldBuilding()
@@ -207,10 +207,8 @@ uint32_t WorldState::computeSignature() const
 		const WorldTile& t=tiles[i];
 		uint32_t flags=(t.discovered?1u:0u)|(t.grass?2u:0u)|(t.water?4u:0u)
 			|(t.sand?8u:0u)|(t.permanentResource?16u:0u)
-			|(t.clearableResource?32u:0u)|(t.occupied?64u:0u)|(t.foodTraversable?128u:0u)
-			|(t.gateCorridor?256u:0u);
+			|(t.clearableResource?32u:0u)|(t.occupied?64u:0u)|(t.foodTraversable?128u:0u);
 		hashValue(result, flags); hashValue(result, uint32_t(t.resourceType+1));
-		hashValue(result,uint32_t(t.gateDefense));
 	}
 	for(size_t i=0; i<buildings.size(); ++i)
 	{
@@ -257,7 +255,7 @@ PlacementPolicy::PlacementPolicy()
 	  foodZoneRadius(2), innerFoodZoneMultiplier(100),
 	  hospitalFoodZoneMultiplier(50), towerFoodZoneMultiplier(25),
 	  towerCriticalDistanceWeight(10), towerSpacingTarget(8), towerSpacingWeight(12),
-	  towerThreatTarget(35), towerThreatWeight(2), towerGateWeight(0), laborScale(10),
+	  towerThreatTarget(35), towerThreatWeight(2), laborScale(10),
 	  downtimeWorkerScale(2), arteryLengthScale(5), repairBaseDemand(20),
 	  actionTimeoutTicks(300), routeClearableResourceCost(25), routeFarmCost(12),
 	  routeFertilityCost(2), colonyMinimumAnchorDistance(24),
@@ -640,7 +638,6 @@ bool Planner::legalTiles(const WorldState& world, const std::vector<int>& tiles,
 		if(!t.discovered){reason=RejectedUndiscovered;return false;}
 		if(!t.grass){reason=RejectedTerrain;return false;}
 		if(t.occupied && ignored.count(index)==0){reason=RejectedBuilding;return false;}
-		if(t.gateCorridor && ignored.count(index)==0){reason=RejectedCirculation;return false;}
 		if(t.permanentResource){reason=RejectedPermanentResource;return false;}
 		if(t.clearableResource && !allowClearable){reason=RejectedClearableResource;return false;}
 		const bool ownFootprint=existing!=reservationMap.end()
@@ -1512,7 +1509,6 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 				if(!tile.discovered){reason=RejectedUndiscovered;legal=false;break;}
 				if(!tile.grass){reason=RejectedTerrain;legal=false;break;}
 				if(tile.occupied){reason=RejectedBuilding;legal=false;break;}
-				if(tile.gateCorridor){reason=RejectedCirculation;legal=false;break;}
 				if(tile.permanentResource){reason=RejectedPermanentResource;legal=false;break;}
 				bool conflict=false;
 				for(std::map<int,Reservation>::const_iterator reservation=
@@ -1576,8 +1572,6 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 						{reason=RejectedTerrain;parcelLegal=false;break;}
 						if(tile.occupied)
 						{reason=RejectedBuilding;parcelLegal=false;break;}
-						if(tile.gateCorridor)
-						{reason=RejectedCirculation;parcelLegal=false;break;}
 						if(tile.permanentResource)
 						{reason=RejectedPermanentResource;parcelLegal=false;break;}
 						if(isFootprintReserved(index))
@@ -1988,13 +1982,8 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 		const int threatFacing=clamp100(100
 			-std::abs(threat-placementPolicy.towerThreatTarget)
 				*placementPolicy.towerThreatWeight);
-		// Reward a real firing arc over an uncovered entrance. A generic
-		// protectedness field also attracts inns and schools, so it cannot
-		// express this tower-specific defensive purpose.
-		const int gateQuality=world.tile(action.centerX,action.centerY).gateDefense;
 		u.roleLocationQuality=clamp100((criticalQuality*4+resourceQuality(3)*2
-			+threatFacing*2+spacingQuality+protection
-			+gateQuality*placementPolicy.towerGateWeight)/(10+placementPolicy.towerGateWeight));
+			+threatFacing*2+spacingQuality+protection)/10);
 	}
 	else
 		// Training institutions stay inside the settlement while favoring the
@@ -2218,7 +2207,6 @@ void Planner::prepareRetrySignature(const WorldState& world)
 	hashValue(signature,placementPolicy.towerSpacingWeight);
 	hashValue(signature,placementPolicy.towerThreatTarget);
 	hashValue(signature,placementPolicy.towerThreatWeight);
-	hashValue(signature,placementPolicy.towerGateWeight);
 	hashValue(signature,placementPolicy.laborScale);
 	hashValue(signature,placementPolicy.downtimeWorkerScale);
 	hashValue(signature,placementPolicy.arteryLengthScale);
@@ -2643,8 +2631,6 @@ bool Planner::revalidate(const WorldState& world,const DevelopmentAction& action
 				   ||(tile.occupied&&!contains(own,promised[i]))
 				   ||!tile.discovered||!tile.grass||tile.permanentResource)
 				{reason=RejectedUpgradeContract;if(rejected)*rejected=reason;return false;}
-				if(tile.gateCorridor&&!contains(own,promised[i]))
-				{if(rejected)*rejected=RejectedCirculation;return false;}
 				if(tile.clearableResource&&beforeIssue)
 				{if(rejected)*rejected=RejectedClearableResource;return false;}
 			}
@@ -2683,7 +2669,6 @@ bool Planner::revalidate(const WorldState& world,const DevelopmentAction& action
 		if(!t.discovered){reason=RejectedUndiscovered;valid=false;break;}
 		if(!t.grass){reason=RejectedTerrain;valid=false;break;}
 		if(t.occupied){reason=RejectedBuilding;valid=false;break;}
-		if(t.gateCorridor){reason=RejectedCirculation;valid=false;break;}
 		if(t.permanentResource){reason=RejectedPermanentResource;valid=false;break;}
 		if(t.clearableResource&&beforeIssue){reason=RejectedClearableResource;valid=false;break;}
 		bool conflict=false;
@@ -2705,7 +2690,6 @@ bool Planner::revalidate(const WorldState& world,const DevelopmentAction& action
 		for(size_t i=0;i<action.parcelTiles.size();++i)
 		{
 			const WorldTile& t=world.tiles[action.parcelTiles[i]];
-			if(t.gateCorridor){if(rejected)*rejected=RejectedCirculation;return false;}
 			if(!t.discovered||!t.grass||t.occupied||t.permanentResource)
 			{reason=t.occupied?RejectedBuilding:RejectedTerrain;if(rejected)*rejected=reason;return false;}
 		}

@@ -12,17 +12,21 @@ model.inn_capacity_level3 = 34
 
 # Staffing: direct worker reservations for completed buildings, active
 # construction, and resource-clearing flags.
-staffing.inn_adaptive_staffing_enabled = true
-staffing.inn_level1_low_corn_threshold = 5
-staffing.inn_level2_low_corn_threshold = 8
-staffing.inn_level3_low_corn_threshold = 17
-staffing.inn_level1_normal_workers = 1
-staffing.inn_level2_normal_workers = 3
-staffing.inn_level3_normal_workers = 5
-staffing.inn_level1_low_corn_workers = 2
-staffing.inn_level2_low_corn_workers = 5
-staffing.inn_level3_low_corn_workers = 7
-staffing.resource_tracker_samples = 25
+# Staffing control: each inn and swarm keeps its own wheat stock inside a band
+# by adding or returning one carrier at a time. It never asks for more while it
+# is not receiving what it already asked for, because then the workforce, not
+# the request, is the constraint.
+# The cooldown, not a long window, is what keeps this from oscillating: a
+# carrier needs a few passes to show up in the stock, so corrections are spaced
+# rather than averaged into sluggishness. At the 200-tick building cadence the
+# window spans about 1600 ticks and changes are at least 600 ticks apart.
+staffing.control_window_samples = 8
+staffing.control_low_permille = 333
+staffing.control_high_permille = 667
+staffing.control_slack = 1
+staffing.control_minimum_workers = 1
+staffing.control_maximum_workers = 20
+staffing.control_cooldown_passes = 3
 staffing.swarm_supply_radius = 12
 staffing.construction_inn_workers = 2
 staffing.construction_swarm_workers = 2
@@ -373,7 +377,6 @@ military.preemptive_probe_radius = 5
 military.preemptive_cross_section_max = 10
 military.preemptive_zone_radius = 3
 military.preemptive_zone_max = 6
-military.tower_barrier_bonus = 6
 
 # Posture policy: readiness gates and utility weights deciding when Maxima
 # recovers, defends, expands, develops, mobilizes, campaigns, or finishes.
@@ -490,8 +493,6 @@ placement.route_farm_cost = 12
 placement.route_fertility_cost = 2
 placement.guard_area_protectedness = 80
 placement.baseline_protectedness = 35
-placement.barrier_protection_radius = 8
-placement.barrier_protectedness = 65
 placement.enemy_threat_radius = 19
 placement.enemy_threat_base = 100
 placement.enemy_threat_falloff = 5
@@ -653,9 +654,6 @@ recon.mission_population_divisor = 30
 # and proactive resource clearing.
 farming.enabled = true
 farming.farm_protection_enabled = true
-farming.barrier_topology_enabled = true
-farming.coastal_porosity_enabled = true
-farming.gate_clearing_enabled = true
 farming.maintenance_clearing_enabled = true
 farming.resource_preserving_circulation_enabled = true
 farming.wheat_invasion_clearing_enabled = true
@@ -685,9 +683,6 @@ farming.proactive_quota = 8
 farming.proactive_failure_threshold = 3
 farming.proactive_building_threshold = 10
 farming.proactive_start_tick = 4000
-farming.gate_clearing_radius = 1
-farming.gate_clearing_workers_min = 50
-farming.gate_relocation_penalty_cap = 4
 farming.urgent_space_threshold = 35
 
 # Food ledger: protected farm capacity claimed by inns and swarms. Supply counts
@@ -741,7 +736,6 @@ scheduling.posture_commitment_ticks = 3204
 scheduling.campaign_stall_ticks = 7034
 scheduling.campaign_retreat_cooldown_ticks = 1000
 scheduling.preemptive_defense_recompute_ticks = 500
-scheduling.barrier_topology_interval_ticks = 500
 scheduling.strategy_interval_ticks = 200
 scheduling.strategy_phase_offset_ticks = 17
 scheduling.building_interval_ticks = 200

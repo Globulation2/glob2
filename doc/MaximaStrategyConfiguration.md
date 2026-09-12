@@ -35,7 +35,7 @@ layers easy to review:
 | Group | What changing it affects |
 | --- | --- |
 | `model` | Engine-capacity estimates used by the director. |
-| `staffing` | Workers assigned to completed buildings, construction, upgrades, and clearing flags. |
+| `staffing` | The per-building staffing control loop, plus worker counts for construction, upgrades, towers, and clearing flags. |
 | `environment` | Translation of terrain, resources, food service, topology, momentum, and attacks into normalized observations. |
 | `trends` | Responsiveness of population, labor, army, food-pressure, and colony-pressure direction estimates. |
 | `demands` | Translation of observations into survival, growth, access, technology, military, and aggression demand. |
@@ -146,7 +146,6 @@ The complete switch inventory is:
 
 | Policy area | Switches |
 | --- | --- |
-| Adaptive staffing | `staffing.inn_adaptive_staffing_enabled`, `staffing.swarm_adaptive_staffing_enabled` |
 | Economy adaptations | `economy.swarm_retirement_enabled`, `economy.large_economy_adaptation_enabled`, `economy.amphibious_network_maintenance_enabled`, `economy.food_service_safeguards_enabled`, `economy.worker_birth_throttle_enabled` |
 | Development actions | `upgrades.enabled`, `repairs.enabled` |
 | Military responses | `military.counterattack_enabled`, `military.explorer_defense_enabled`, `military.warrior_training_backlog_throttle_enabled`, `military.preemptive_defense_enabled`, `military.preemptive_amphibious_enabled` |
@@ -157,7 +156,7 @@ The complete switch inventory is:
 | Team coordination | `teamplay.enabled`, `teamplay.pressure_coordination_enabled`, `teamplay.defense_enabled` |
 | Explorer work | `explorer_campaign.enabled`, `fruit.enabled` |
 | Reconnaissance | `recon.enabled`, `recon.scouting_missions_enabled`, `recon.economic_watch_enabled`, `recon.force_memory_enabled` |
-| Farming and clearing | `farming.enabled`, `farming.farm_protection_enabled`, `farming.barrier_topology_enabled`, `farming.gate_clearing_enabled`, `farming.maintenance_clearing_enabled`, `farming.proactive_clearing_enabled` |
+| Farming and clearing | `farming.enabled`, `farming.farm_protection_enabled`, `farming.maintenance_clearing_enabled`, `farming.proactive_clearing_enabled` |
 | Emergency overrides | `emergencies.food_enabled`, `emergencies.colony_enabled` |
 
 At least one `postures.*_enabled` value must remain true. The resolver rejects a

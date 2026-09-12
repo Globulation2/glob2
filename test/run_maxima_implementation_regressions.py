@@ -25,10 +25,10 @@ def main():
     parser.add_argument("--build-dir", type=Path, default=Path("build"))
     parser.add_argument("--test", action="append", choices=[
         "MaximaCombatIntegrationTest", "MaximaImplementationIntegrationTest",
-        "MaximaFarmingIntegrationTest", "MaximaBarrierScenarioTest",
+        "MaximaFarmingIntegrationTest",
         "MaximaEconomyRegressionTest", "MaximaDirectorRegressionTest",
         "MaximaTacticsStandaloneTest", "MaximaPlacementStandaloneTest",
-        "MaximaFarmingStandaloneTest", "MaximaFoodLedgerStandaloneTest", "MaximaDefenseStandaloneTest", "MaximaReconStandaloneTest", "MaximaStaffingStandaloneTest", "MaximaStrategyTest", "MaximaLifecycleTest", "MaximaDiagnosticsTest"], help="Run only the named test (repeatable)")
+        "MaximaFarmingStandaloneTest", "MaximaFoodLedgerStandaloneTest", "MaximaStaffingControlStandaloneTest", "MaximaDefenseStandaloneTest", "MaximaReconStandaloneTest", "MaximaStrategyTest", "MaximaLifecycleTest", "MaximaDiagnosticsTest"], help="Run only the named test (repeatable)")
     parser.add_argument("--placement-only", action="store_true",
                         help="Run placement/farming units and placement engine integration")
     parser.add_argument("--production-only", action="store_true",
@@ -80,12 +80,11 @@ def main():
             ("MaximaCombatIntegrationTest", objects),
             ("MaximaImplementationIntegrationTest", objects),
             ("MaximaFarmingIntegrationTest", objects),
-            ("MaximaBarrierScenarioTest", objects),
             ("MaximaEconomyRegressionTest", objects),
             ("MaximaDirectorRegressionTest", objects),
             ("MaximaDefenseStandaloneTest", [temporary / "AIMaximaDefense.o"]),
             ("MaximaReconStandaloneTest", [temporary / "AIMaximaRecon.o"]),
-            ("MaximaStaffingStandaloneTest", []),
+            ("MaximaStaffingControlStandaloneTest", []),
             ("MaximaStrategyTest", objects),
             ("MaximaLifecycleTest", objects),
             ("MaximaDiagnosticsTest", objects),

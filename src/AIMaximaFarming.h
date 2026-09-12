@@ -108,45 +108,11 @@ ReservationClearingSelection selectResourcePreservingCirculation(
 	const std::vector<int>& resourceBurden,
 	const std::vector<uint8_t>& reachable);
 
-struct CoastalBarrierPorosityResult
-{
-	// Counts refer to enclosed open pockets, not entire connected landmasses.
-	int sealedComponents;
-	int restoredComponents;
-	int openedTiles;
-	CoastalBarrierPorosityResult(): sealedComponents(0),
-		restoredComponents(0), openedTiles(0) {}
-};
-
-/// Checks each open interior pocket independently. Opens fixed cross-parity
-/// cells on enclosing coastal contours, then connects each still-unreachable
-/// pocket to shore with a minimum-cost channel restricted to the envelope.
-/// These passive openings are not strategic gates or clearing contracts.
-CoastalBarrierPorosityResult makeSealedCoastalFarmBarriersPorous(
-	int width, int height, const std::vector<uint8_t>& land,
-	const std::vector<uint8_t>& shore, const std::vector<uint8_t>& interior,
-	const std::vector<uint8_t>& coastalFarm,
-	const std::vector<uint8_t>& porosityEnvelope,
-	std::vector<uint8_t>& protectedTiles,
-	std::vector<uint8_t>& protectedWheat);
-
 /// Construction-space clearing is warranted by either live space scarcity or
 /// a recent run of placements obstructed by clearable resources.
 bool openingSpaceConstrained(int spaceCapacity, int urgentSpaceThreshold,
 	int recentConstructionFailures, int failureThreshold,
 	int ticksSinceConstructionFailure, int failureWindowTicks);
-
-/// Shortest toroidal distance from a candidate to either previous gate.
-/// Returns zero when there is no complete previous pair.
-int gateRelocationDistance(
-	const std::vector<std::vector<int> >& previousGates,
-	const std::vector<int>& gate, int width, int height);
-/// Sum of the shortest matched toroidal distances between an old and new
-/// two-gate pair. Returns zero when there is no complete previous pair.
-int gatePairRelocationDistance(
-	const std::vector<std::vector<int> >& previousGates,
-	const std::vector<int>& firstGate, const std::vector<int>& secondGate,
-	int width, int height);
 
 }
 }

@@ -79,10 +79,6 @@ class MaximaCampaignTest(unittest.TestCase):
         self.assertEqual(score.call_args.args[1:], ({0, 2}, {1, 3}, 1))
 
     def test_farming_events_require_actual_evidence(self):
-        self.assertNotIn("farming.coastal_porosity_enabled",
-                         bank.event_switches("farming_policy", {"porous_components": "0"}))
-        self.assertIn("farming.coastal_porosity_enabled",
-                      bank.event_switches("farming_policy", {"porous_components": "1"}))
         self.assertIn("farming.wheat_invasion_clearing_enabled",
                       bank.event_switches("maintenance_clearing", {"wheat_invasion_wood": "3"}))
 

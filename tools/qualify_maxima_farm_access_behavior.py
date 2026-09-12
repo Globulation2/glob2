@@ -48,16 +48,16 @@ def main():
     exp.verify_freeze(protocol)
     exp.atomic(args.output/'PASS.json', {
         'protocol_id': protocol['protocol_id'], 'passed': True,
-        'validated_switches': ['farming.barrier_topology_enabled','farming.coastal_porosity_enabled','farming.gate_clearing_enabled','farming.proactive_clearing_enabled','farming.resource_preserving_circulation_enabled'], 'cases': 48,
-        'checks': ['paired ON/OFF', 'strategic gates and barrier masks', 'passive island openings and starting-land exclusion', 'real gate and proactive clearing flag creation', 'resource-preserving circulation around an actual reserved hospital'],
-        'parent_disabled': 'barrier, gate and proactive controls tested with farming disabled; porosity with protection disabled; circulation with maintenance disabled',
+        'validated_switches': ['farming.proactive_clearing_enabled','farming.resource_preserving_circulation_enabled'], 'cases': 24,
+        'checks': ['paired ON/OFF', 'real proactive clearing flag creation', 'resource-preserving circulation around an actual reserved hospital'],
+        'parent_disabled': 'proactive controls tested with farming disabled; circulation with maintenance disabled',
         'source_sha256': exp.sha(source), 'script_sha256': exp.sha(__file__),
         'command_sha256': exp.sha(args.output/'command.json'),
         'objects': {str(p): exp.sha(p) for p in objects},
         'fixture_binary_sha256': exp.sha(args.output/'fixture-binary'),
         'native_log_sha256': exp.sha(args.output/'native.log'), 'cpu': args.cpu,
         'purpose': 'behavioral qualification only; never inferential samples'})
-    print('Five farming access switches: 48 behavioral cases PASS')
+    print('Two farming access switches: 24 behavioral cases PASS')
 
 
 if __name__ == '__main__':

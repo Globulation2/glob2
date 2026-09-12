@@ -11,7 +11,6 @@ class MaximaFarmingTest : public CppUnit::TestFixture
 	CPPUNIT_TEST(testExpansionCapacity);
 	CPPUNIT_TEST(testWoodPressureIsMonotone);
 	CPPUNIT_TEST(testProtectedWheatAdjacencyWraps);
-	CPPUNIT_TEST(testSealedCoastalBarrierPorosity);
 	CPPUNIT_TEST_SUITE_END();
 public:
 	void testExactFertilityTargetedCases();
@@ -19,7 +18,6 @@ public:
 	void testExpansionCapacity();
 	void testWoodPressureIsMonotone();
 	void testProtectedWheatAdjacencyWraps();
-	void testSealedCoastalBarrierPorosity();
 };
 
 #endif

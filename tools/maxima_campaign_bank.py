@@ -36,9 +36,6 @@ def event_switches(event: str, values: dict[str, str]) -> set[str]:
     if event == "farming_policy":
         for key, evidence in (
             ("farm_protection_enabled", "protected_seeds"),
-            ("barrier_topology_enabled", "barriers"),
-            ("coastal_porosity_enabled", "porous_components"),
-            ("gate_clearing_enabled", "blocked_gates"),
         ):
             if positive(evidence):
                 keys.add("farming." + key)
@@ -53,8 +50,6 @@ def event_switches(event: str, values: dict[str, str]) -> set[str]:
                 keys.add("farming." + key)
     if event == "land_clearing_started":
         keys.add("farming.proactive_clearing_enabled")
-    if event == "farming_barrier_topology" and positive("gate_resource_burden"):
-        keys.add("farming.gate_clearing_enabled")
     if event == "placement_planner":
         for key, evidence in (
             ("food_preservation_enabled", "u_farm_loss"),

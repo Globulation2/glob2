@@ -19,7 +19,6 @@
  */
 
 #include "AIMaxima.h"
-#include "AIMaximaStaffing.h"
 #include "AIMaximaSwarmController.h"
 #include "AIMaximaFoodSupply.h"
 #include "GlobalContainer.h"
@@ -606,9 +605,9 @@ Maxima::DirectorPlan::DirectorPlan()
 	  upgrade_level2_hospital_weight(0), upgrade_level2_racetrack_weight(0),
 	  upgrade_level2_pool_weight(0), upgrade_level2_barracks_weight(0),
 	  first_prestige_trained_workers(0), second_prestige_trained_workers(0),
-	  second_prestige_population_min(0), inn_adaptive_staffing_enabled(true),
+	  second_prestige_population_min(0),
 	  swarm_retirement_enabled(true),
-	  resource_tracker_samples(1), swarm_supply_radius(12),
+	  swarm_supply_radius(12),
 	  attack_clearing_workers(0),
 	  can_swim(false), recovery_active(false), food_emergency(false),
 	  colony_emergency(false), colony_swarm_requested(false),
@@ -622,7 +621,7 @@ Maxima::DirectorPlan::DirectorPlan()
 	  reactive_defense_advantage_percent(0), preemptive_defense_active(false),
 	  preemptive_amphibious_active(false), preemptive_effective_zone_max(0),
 	  campaign_stall_ticks(1), campaign_retreat_cooldown_ticks(1),
-	  target_switch_margin(0), tower_barrier_bonus(0),
+	  target_switch_margin(0),
 	  preemptive_recompute_ticks(1), preemptive_inner_distance(0),
 	  preemptive_band_width(0), preemptive_path_slack(0),
 	  preemptive_probe_radius(0), preemptive_cross_section_max(0),
@@ -631,8 +630,7 @@ Maxima::DirectorPlan::DirectorPlan()
 	  reconnaissance_review_interval(1), reconnaissance_economic_watch_revisit(1),
 	  farming_normal_interval(1), farming_urgent_interval(1),
 	  farming_enabled(true), farming_protection_enabled(true),
-	  farming_barrier_enabled(true), farming_coastal_porosity_enabled(true),
-	  farming_gate_clearing_enabled(true), farming_maintenance_clearing_enabled(true),
+	  farming_maintenance_clearing_enabled(true),
 	  farming_resource_preserving_circulation_enabled(true),
 	  farming_wheat_invasion_clearing_enabled(true),
 	  farming_wood_firebreak_enabled(true),
@@ -642,13 +640,12 @@ Maxima::DirectorPlan::DirectorPlan()
 	  farming_clearing_for_placement(false),
 	  farming_min_workers_for_clearing(0),
 	  farming_clearing_cooldown(1), farming_clearing_duration(1),
-	  farming_clearing_quota(0), farming_gate_clearing_radius(1),
+	  farming_clearing_quota(0),
 	  farming_management_radius(0), farming_wheat_fertility_min(0), farming_wood_fertility_base_percent(0),
 	  farming_wood_fertility_pressure_percent(0), farming_wood_pressure_base(0),
 	  farming_wood_pressure_space_divisor(1), farming_wood_pressure_supply_divisor(1),
 	  farming_wood_pressure_construction_divisor(1),
 	  farming_wood_pressure_growth_divisor(1), farming_economic_envelope_radius(0),
-	  barrier_topology_interval(1), farming_gate_relocation_penalty_cap(0),
 	  priority_inns(50), priority_swarms(40), priority_barracks(30), priority_schools(25),
 	  priority_pools(25), priority_racetracks(20), priority_hospitals(30),
 	  priority_towers(20), tactics_enabled(true), raid_enabled(true),
@@ -674,12 +671,14 @@ Maxima::DirectorPlan::DirectorPlan()
 	  relief_max_engagement(2400), relief_cooldown(1000),
 	  relief_follow_radius(6), relief_retarget_margin(60)
 {
-	for(int level=0; level<3; ++level)
-	{
-		inn_low_corn_threshold[level]=0;
-		inn_normal_workers[level]=0;
-		inn_low_corn_workers[level]=0;
-	}
+	const StaffingControl::Policy defaults;
+	staffing_window_samples=defaults.windowSamples;
+	staffing_low_permille=defaults.lowPermille;
+	staffing_high_permille=defaults.highPermille;
+	staffing_slack=defaults.slack;
+	staffing_minimum_workers=defaults.minimumWorkers;
+	staffing_maximum_workers=defaults.maximumWorkers;
+	staffing_cooldown_passes=defaults.cooldownPasses;
 }
 
 
@@ -3388,21 +3387,6 @@ void Maxima::build_policy_bids()
 	const int emergency_towers=active_towers+strategy.military.tower_emergency_increment;
 	const int bomb_towers=emergency_towers+strategy.military.tower_bomb_increment;
 	defense.desired_towers=explorer_defense_active() ? active_towers : 0;
-	// Gate geometry previously never requested a tower against ground armies.
-	// Require a mature workforce and a local threat: early experiments spent
-	// food/construction labour on towers merely because a remote army was seen.
-	// Cap at the active target plus one (normally two); emergency demands win.
-	// The shared-coverage placement reward favours defending two mouths with
-	// one tower. Lack of a legal firing pad must not generate a futile demand.
-	if(strategy.military.preemptive_defense_enabled && strategy.farming.enabled
-	   && strategy.farming.barrier_topology_enabled && gate_defense_demand>0
-	   && snapshot.workers>=strategy.farming.gate_clearing_workers_min
-	   && snapshot.visible_colony_threat>=strategy.military.emergency_barracks_threat_min
-	   && snapshot.hungry==0
-	   && snapshot.critical_food==0
-	   && environment.food_headroom>=strategy.economy.mature_food_headroom_min)
-		defense.desired_towers=std::max(defense.desired_towers,
-			std::min(active_towers+1,snapshot.towers+(gate_defense_demand+1)/2));
 	if(strategy.military.explorer_defense_enabled
 	   && large_economy_established() && snapshot.enemy_prestige>0)
 		defense.desired_towers=std::max(defense.desired_towers,
@@ -3634,21 +3618,16 @@ void Maxima::finalize_director_plan(Context& echo)
 		strategy.upgrades.second_prestige_trained_workers;
 	budget.second_prestige_population_min=
 		strategy.upgrades.second_prestige_population_min;
-	budget.inn_adaptive_staffing_enabled=
-		strategy.staffing.inn_adaptive_staffing_enabled;
 	budget.swarm_retirement_enabled=
 		strategy.economy.swarm_retirement_enabled;
 
-	budget.inn_low_corn_threshold[0]=strategy.staffing.inn_level1_low_corn_threshold;
-	budget.inn_low_corn_threshold[1]=strategy.staffing.inn_level2_low_corn_threshold;
-	budget.inn_low_corn_threshold[2]=strategy.staffing.inn_level3_low_corn_threshold;
-	budget.inn_normal_workers[0]=strategy.staffing.inn_level1_normal_workers;
-	budget.inn_normal_workers[1]=strategy.staffing.inn_level2_normal_workers;
-	budget.inn_normal_workers[2]=strategy.staffing.inn_level3_normal_workers;
-	budget.inn_low_corn_workers[0]=strategy.staffing.inn_level1_low_corn_workers;
-	budget.inn_low_corn_workers[1]=strategy.staffing.inn_level2_low_corn_workers;
-	budget.inn_low_corn_workers[2]=strategy.staffing.inn_level3_low_corn_workers;
-	budget.resource_tracker_samples=strategy.staffing.resource_tracker_samples;
+	budget.staffing_window_samples=strategy.staffing.control_window_samples;
+	budget.staffing_low_permille=strategy.staffing.control_low_permille;
+	budget.staffing_high_permille=strategy.staffing.control_high_permille;
+	budget.staffing_slack=strategy.staffing.control_slack;
+	budget.staffing_minimum_workers=strategy.staffing.control_minimum_workers;
+	budget.staffing_maximum_workers=strategy.staffing.control_maximum_workers;
+	budget.staffing_cooldown_passes=strategy.staffing.control_cooldown_passes;
 	budget.swarm_supply_radius=
 		strategy.staffing.swarm_supply_radius;
 	budget.attack_clearing_workers=strategy.staffing.attack_clearing_workers;
@@ -3772,7 +3751,6 @@ void Maxima::finalize_director_plan(Context& echo)
 	budget.campaign_retreat_cooldown_ticks=
 		strategy.scheduling.campaign_retreat_cooldown_ticks;
 	budget.target_switch_margin=strategy.scoring.target_switch_margin;
-	budget.tower_barrier_bonus=strategy.military.tower_barrier_bonus;
 	budget.preemptive_recompute_ticks=
 		strategy.scheduling.preemptive_defense_recompute_ticks;
 	budget.preemptive_inner_distance=
@@ -3805,10 +3783,6 @@ void Maxima::finalize_director_plan(Context& echo)
 	budget.farming_urgent_interval=strategy.farming.urgent_interval_ticks;
 	budget.farming_enabled=strategy.farming.enabled;
 	budget.farming_protection_enabled=strategy.farming.farm_protection_enabled;
-	budget.farming_barrier_enabled=strategy.farming.barrier_topology_enabled;
-	budget.farming_coastal_porosity_enabled=
-		strategy.farming.coastal_porosity_enabled;
-	budget.farming_gate_clearing_enabled=strategy.farming.gate_clearing_enabled;
 	budget.farming_maintenance_clearing_enabled=
 		strategy.farming.maintenance_clearing_enabled;
 	budget.farming_resource_preserving_circulation_enabled=
@@ -3836,10 +3810,6 @@ void Maxima::finalize_director_plan(Context& echo)
 		strategy.farming.wood_pressure_growth_divisor;
 	budget.farming_economic_envelope_radius=
 		strategy.farming.economic_envelope_radius_tiles;
-	budget.barrier_topology_interval=
-		strategy.scheduling.barrier_topology_interval_ticks;
-	budget.farming_gate_relocation_penalty_cap=
-		strategy.farming.gate_relocation_penalty_cap;
 	const int wood_supply=Farming::woodSupplyScore(environment.accessible_wood,
 		snapshot.population, strategy.farming.wood_supply_scale,
 		strategy.farming.wood_supply_population_offset);
@@ -3858,7 +3828,6 @@ void Maxima::finalize_director_plan(Context& echo)
 	budget.farming_clearing_cooldown=strategy.farming.proactive_cooldown_ticks;
 	budget.farming_clearing_duration=strategy.farming.proactive_duration_ticks;
 	budget.farming_clearing_quota=strategy.farming.proactive_quota;
-	budget.farming_gate_clearing_radius=strategy.farming.gate_clearing_radius;
 	const bool placement_pressure=recent_construction_failures
 		>=strategy.farming.proactive_failure_threshold
 		&& timer-last_construction_failure_tick<=budget.farming_clearing_duration;
@@ -5111,7 +5080,6 @@ Maxima::Maxima(Player *player)
 	const ResolvedStrategy& resolved=player->game->resolveMaximaStrategy(
 		player->number);
 	strategy=resolved.values;
-	budget.resource_tracker_samples=strategy.staffing.resource_tracker_samples;
 	budget.swarm_supply_radius=
 		strategy.staffing.swarm_supply_radius;
 	budget.attack_clearing_workers=strategy.staffing.attack_clearing_workers;
@@ -5205,7 +5173,6 @@ Maxima::Maxima(Player *player)
 	last_preemptive_effective_zone_max=-1;
 	last_preemptive_amphibious_active=false;
 	preemptive_diagnostics=AITopologyDiagnosticSnapshot();
-	farming_topology_signature=0;
 	applied_maintenance_clearing_mask.clear();
 	maintenance_circulation_mask.clear();
 	wood_firebreak_mask.clear();
@@ -5213,7 +5180,6 @@ Maxima::Maxima(Player *player)
 	farming_shoreline_mask.clear();
 	farming_cardinal_shoreline_mask.clear();
 	last_farming_tick=-1000000;
-	last_barrier_topology_tick=-1000000;
 	farming_urgent=false;
 	land_clearing_pending=false;
 	maintenance_clearing_pending=false;
@@ -5282,12 +5248,18 @@ template<class Archive> void Maxima::executionState(Archive& a)
 	a("budget.first_prestige_trained_workers",budget.first_prestige_trained_workers);
 	a("budget.second_prestige_trained_workers",budget.second_prestige_trained_workers);
 	a("budget.second_prestige_population_min",budget.second_prestige_population_min);
-	a("budget.inn_adaptive_staffing_enabled",budget.inn_adaptive_staffing_enabled);
 	a("budget.swarm_retirement_enabled",budget.swarm_retirement_enabled);
-	a("budget.inn_low_corn_threshold",budget.inn_low_corn_threshold);
-	a("budget.inn_normal_workers",budget.inn_normal_workers);
-	a("budget.inn_low_corn_workers",budget.inn_low_corn_workers);
-	a("budget.resource_tracker_samples",budget.resource_tracker_samples);
+	a("budget.staffing_window_samples",budget.staffing_window_samples);
+	a("budget.staffing_low_permille",budget.staffing_low_permille);
+	a("budget.staffing_high_permille",budget.staffing_high_permille);
+	a("budget.staffing_slack",budget.staffing_slack);
+	a("budget.staffing_minimum_workers",budget.staffing_minimum_workers);
+	a("budget.staffing_maximum_workers",budget.staffing_maximum_workers);
+	a("budget.staffing_cooldown_passes",budget.staffing_cooldown_passes);
+	// Each building's control loop is integral state: a save that dropped it
+	// would restart every building from the minimum.
+	if(a.version()>=StaffingControl::SaveVersion)
+		a("staffing_control",staffing_control);
 	a("budget.swarm_supply_radius",budget.swarm_supply_radius);
 	a("budget.attack_clearing_workers",budget.attack_clearing_workers);
 	a("budget.can_swim",budget.can_swim);
@@ -5315,7 +5287,6 @@ template<class Archive> void Maxima::executionState(Archive& a)
 	a("budget.campaign_stall_ticks",budget.campaign_stall_ticks);
 	a("budget.campaign_retreat_cooldown_ticks",budget.campaign_retreat_cooldown_ticks);
 	a("budget.target_switch_margin",budget.target_switch_margin);
-	a("budget.tower_barrier_bonus",budget.tower_barrier_bonus);
 	a("budget.preemptive_recompute_ticks",budget.preemptive_recompute_ticks);
 	a("budget.preemptive_inner_distance",budget.preemptive_inner_distance);
 	a("budget.preemptive_band_width",budget.preemptive_band_width);
@@ -5333,9 +5304,6 @@ template<class Archive> void Maxima::executionState(Archive& a)
 	a("budget.farming_urgent_interval",budget.farming_urgent_interval);
 	a("budget.farming_enabled",budget.farming_enabled);
 	a("budget.farming_protection_enabled",budget.farming_protection_enabled);
-	a("budget.farming_barrier_enabled",budget.farming_barrier_enabled);
-	a("budget.farming_coastal_porosity_enabled",budget.farming_coastal_porosity_enabled);
-	a("budget.farming_gate_clearing_enabled",budget.farming_gate_clearing_enabled);
 	a("budget.farming_maintenance_clearing_enabled",budget.farming_maintenance_clearing_enabled);
 	a("budget.farming_resource_preserving_circulation_enabled",budget.farming_resource_preserving_circulation_enabled);
 	a("budget.farming_wheat_invasion_clearing_enabled",budget.farming_wheat_invasion_clearing_enabled);
@@ -5350,7 +5318,6 @@ template<class Archive> void Maxima::executionState(Archive& a)
 	a("budget.farming_clearing_cooldown",budget.farming_clearing_cooldown);
 	a("budget.farming_clearing_duration",budget.farming_clearing_duration);
 	a("budget.farming_clearing_quota",budget.farming_clearing_quota);
-	a("budget.farming_gate_clearing_radius",budget.farming_gate_clearing_radius);
 	a("budget.farming_management_radius",budget.farming_management_radius);
 	a("budget.farming_wheat_fertility_min",budget.farming_wheat_fertility_min);
 	a("budget.farming_wood_fertility_base_percent",budget.farming_wood_fertility_base_percent);
@@ -5361,8 +5328,6 @@ template<class Archive> void Maxima::executionState(Archive& a)
 	a("budget.farming_wood_pressure_construction_divisor",budget.farming_wood_pressure_construction_divisor);
 	a("budget.farming_wood_pressure_growth_divisor",budget.farming_wood_pressure_growth_divisor);
 	a("budget.farming_economic_envelope_radius",budget.farming_economic_envelope_radius);
-	a("budget.barrier_topology_interval",budget.barrier_topology_interval);
-	a("budget.farming_gate_relocation_penalty_cap",budget.farming_gate_relocation_penalty_cap);
 	a("budget.priority_inns",budget.priority_inns);
 	a("budget.priority_swarms",budget.priority_swarms);
 	a("budget.priority_barracks",budget.priority_barracks);
@@ -5445,22 +5410,9 @@ template<class Archive> void Maxima::executionState(Archive& a)
 	a("applied_maintenance_clearing_mask",applied_maintenance_clearing_mask);
 	a("maintenance_circulation_mask",maintenance_circulation_mask);
 	a("wood_firebreak_mask",wood_firebreak_mask);
-	a("strategic_barrier_mask",strategic_barrier_mask);
-	a("strategic_gate_mask",strategic_gate_mask);
-	a("emergency_escape_mask",emergency_escape_mask);
 	a("farm_protection_mask",farm_protection_mask);
 	a("wheat_farm_protection_mask",wheat_farm_protection_mask);
-	a("strategic_gates",strategic_gates);
-	a("strategic_gate_routes",strategic_gate_routes);
-	a("barrier_defense_points",barrier_defense_points);
-	a("barrier_geometry_signature",barrier_geometry_signature);
-	a("strategic_gate_approaches",strategic_gate_approaches);
-	a("barrier_tower_quality",barrier_tower_quality);
-	a("gate_defense_demand",gate_defense_demand);
-	a("settlement_access_routes",settlement_access_routes);
-	a("farming_topology_signature",farming_topology_signature);
 	a("last_farming_tick",last_farming_tick);
-	a("last_barrier_topology_tick",last_barrier_topology_tick);
 	a("farming_urgent",farming_urgent);
 	a("land_clearing_pending",land_clearing_pending);
 	a("maintenance_clearing_pending",maintenance_clearing_pending);
@@ -5711,24 +5663,11 @@ bool Maxima::loadLegacyState(GAGCore::InputStream *stream, Player *player,
 	applied_maintenance_clearing_mask.clear();
 	maintenance_circulation_mask.clear();
 	wood_firebreak_mask.clear();
-	strategic_barrier_mask.clear();
-	strategic_gate_mask.clear();
-	emergency_escape_mask.clear();
 	farm_protection_mask.clear();
 	wheat_farm_protection_mask.clear();
 	farming_shoreline_mask.clear();
 	farming_cardinal_shoreline_mask.clear();
-	strategic_gates.clear();
-	strategic_gate_routes.clear();
-	strategic_gate_approaches.clear();
-	settlement_access_routes.clear();
-	barrier_tower_quality.clear();
-	barrier_geometry_signature=0;
-	gate_defense_demand=0;
-	barrier_defense_points.clear();
-	farming_topology_signature=0;
 	last_farming_tick=-1000000;
-	last_barrier_topology_tick=-1000000;
 	farming_urgent=false;
 	land_clearing_pending=false;
 	maintenance_clearing_pending=false;
@@ -5926,24 +5865,11 @@ bool Maxima::loadState(GAGCore::InputStream *stream, Player *player,
 	applied_maintenance_clearing_mask.clear();
 	maintenance_circulation_mask.clear();
 	wood_firebreak_mask.clear();
-	strategic_barrier_mask.clear();
-	strategic_gate_mask.clear();
-	emergency_escape_mask.clear();
 	farm_protection_mask.clear();
 	wheat_farm_protection_mask.clear();
 	farming_shoreline_mask.clear();
 	farming_cardinal_shoreline_mask.clear();
-	strategic_gates.clear();
-	strategic_gate_routes.clear();
-	strategic_gate_approaches.clear();
-	settlement_access_routes.clear();
-	barrier_tower_quality.clear();
-	barrier_geometry_signature=0;
-	gate_defense_demand=0;
-	barrier_defense_points.clear();
-	farming_topology_signature=0;
 	last_farming_tick=-1000000;
-	last_barrier_topology_tick=-1000000;
 	farming_urgent=false;
 	land_clearing_pending=false;
 	maintenance_clearing_pending=false;
@@ -6345,20 +6271,6 @@ void Maxima::initialize(Context& echo)
 	BuildingSearch bs(echo);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 	{	
-		if(echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
-		{
-			ManagementOrder* mo_tracker=new AddResourceTracker(
-				strategy.staffing.resource_tracker_samples, CORN, *i);
-			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
-			echo.add_management_order(mo_tracker);
-		}
-		if(echo.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
-		{
-			ManagementOrder* mo_tracker=new AddResourceTracker(
-				strategy.staffing.resource_tracker_samples, CORN, *i);
-			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
-			echo.add_management_order(mo_tracker);
-		}
 	}
 	
 	manage_buildings(echo);
@@ -6500,8 +6412,6 @@ void Maxima::configure_development_planner()
 	policy.towerSpacingTarget=strategy.placement.tower_spacing_target;
 	policy.towerSpacingWeight=strategy.placement.spacing_compactness_enabled
 		? strategy.placement.tower_spacing_weight : 0;
-	policy.towerGateWeight=strategy.placement.defensive_siting_enabled
-		? strategy.military.tower_barrier_bonus : 0;
 	policy.towerThreatTarget=strategy.placement.tower_threat_target;
 	policy.towerThreatWeight=strategy.placement.defensive_siting_enabled
 		? strategy.placement.tower_threat_weight : 0;
@@ -6577,9 +6487,6 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		tile.grass=cell.terrain<16;tile.occupied=cell.building!=NOGBID;
 		tile.foodTraversable=!(cell.forbidden&echo.player->team->me)
 			|| applied_farm_protection_mask[index];
-		tile.gateCorridor=index<int(emergency_escape_mask.size())
-			&&(emergency_escape_mask[index]||strategic_gate_mask[index]);
-		tile.gateDefense=index<int(barrier_tower_quality.size())?barrier_tower_quality[index]:0;
 		tile.ownOccupied=tile.occupied
 			&&Building::GIDtoTeam(cell.building)==echo.player->team->teamNumber;
 		if(cell.resource.type!=NO_RES_TYPE)
@@ -6592,10 +6499,8 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		const Uint32 flags=(tile.discovered?1u:0u)|(tile.grass?2u:0u)
 			|(tile.water?4u:0u)|(tile.sand?8u:0u)
 			|(tile.permanentResource?16u:0u)
-			|(tile.clearableResource?32u:0u)|(tile.occupied?64u:0u)|(tile.foodTraversable?128u:0u)
-			|(tile.gateCorridor?256u:0u);
+			|(tile.clearableResource?32u:0u)|(tile.occupied?64u:0u)|(tile.foodTraversable?128u:0u);
 		add_preemptive_hash(worldSignature,flags);
-		add_preemptive_hash(worldSignature,Uint32(tile.gateDefense));
 		add_preemptive_hash(worldSignature,Uint32(tile.resourceType+1));
 		// Resource amounts fluctuate on virtually every harvest. Placement routes,
 		// legality and blocked intents depend on resource presence, not stack size;
@@ -6631,9 +6536,6 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 			? strategy.placement.guard_area_protectedness
 			: strategy.placement.baseline_protectedness;
 	}
-	// Gate coverage is represented by tile.gateDefense above. Do not mark
-	// ordinary economic buildings as safe merely because they sit in an
-	// enemy's intended approach corridor.
 
 	for(int team=0;team<Team::MAX_COUNT;++team)
 	{
@@ -6841,11 +6743,6 @@ bool Maxima::issue_development_action(Context& echo,
 		if(buildingId<0)return false;
 		if(action.buildingType==IntBuildingType::FOOD_BUILDING)
 		{
-			// The completion callback needs the tracker on its first invocation.
-			ManagementOrder* tracker=new AddResourceTracker(
-				strategy.staffing.resource_tracker_samples,CORN,buildingId);
-			tracker->add_condition(new ParticularBuilding(new NotUnderConstruction,buildingId));
-			echo.add_management_order(tracker);
 			ManagementOrder* update=new Notify(RuntimeEvent(RuntimeEvent::UpdateInn,buildingId));
 			update->add_condition(new ParticularBuilding(new NotUnderConstruction,buildingId));
 			echo.add_management_order(update);
@@ -6855,10 +6752,6 @@ bool Maxima::issue_development_action(Context& echo,
 			ManagementOrder* update=new Notify(RuntimeEvent(RuntimeEvent::UpdateSwarm,buildingId));
 			update->add_condition(new ParticularBuilding(new NotUnderConstruction,buildingId));
 			echo.add_management_order(update);
-			ManagementOrder* tracker=new AddResourceTracker(
-				strategy.staffing.resource_tracker_samples,CORN,buildingId);
-			tracker->add_condition(new ParticularBuilding(new NotUnderConstruction,buildingId));
-			echo.add_management_order(tracker);
 		}
 	}
 	else
@@ -7479,36 +7372,57 @@ void Maxima::manage_buildings(Context& echo)
 				: strategy.staffing.completed_tower_workers, *i));
 		}
 	}
+	// A destroyed building must not leave its control loop behind, or a later
+	// building reusing the id would inherit a stranger's integral state.
+	for(std::map<int,StaffingControl::State>::iterator entry=staffing_control.begin();
+		entry!=staffing_control.end();)
+	{
+		if(!echo.get_building_register().get_building(entry->first))
+			staffing_control.erase(entry++);
+		else ++entry;
+	}
+}
+
+
+int Maxima::staff_building(Context& echo, int id)
+{
+	Building* building=echo.get_building_register().get_building(id);
+	if(!building || !building->type) return 0;
+	StaffingControl::Policy policy;
+	policy.windowSamples=budget.staffing_window_samples;
+	policy.lowPermille=budget.staffing_low_permille;
+	policy.highPermille=budget.staffing_high_permille;
+	policy.slack=budget.staffing_slack;
+	policy.minimumWorkers=budget.staffing_minimum_workers;
+	policy.maximumWorkers=std::min(int(Building::MAX_UNIT_WORKING),
+		budget.staffing_maximum_workers);
+	policy.cooldownPasses=budget.staffing_cooldown_passes;
+	StaffingControl::State& state=staffing_control[id];
+	const int previous=state.request;
+	// The building's own stock and its own actual staffing are the only inputs.
+	const int request=StaffingControl::update(state, policy,
+		building->resources[CORN], building->type->maxResource[CORN],
+		echo.get_building_register().get_enrolled(id));
+	if(request!=echo.get_building_register().get_assigned(id))
+		echo.add_management_order(new AssignWorkers(request, id));
+	if(request!=previous)
+	{
+		std::ostringstream fields;
+		fields<<"\tbuilding_id="<<id<<"\tworkers="<<request
+			<<"\tprevious="<<previous
+			<<"\tcorn="<<building->resources[CORN]
+			<<"\tcapacity="<<building->type->maxResource[CORN]
+			<<"\tfill_average="<<state.cornAverage
+			<<"\tenrolled_average="<<state.enrolledAverage;
+		emit_telemetry(echo,"staffing_control",fields.str());
+	}
+	return request;
 }
 
 
 void Maxima::manage_inn(Context& echo, int id)
 {
-	int level=echo.get_building_register().get_level(id);
-	int assigned=echo.get_building_register().get_assigned(id);
-
-	const long long capacity=nearby_farm_capacity(echo,id);
-
-	int to_assign = 0;
-	if(level>=1 && level<=3)
-	{
-		const int index=level-1;
-		const int maximum=std::max(budget.inn_normal_workers[index],
-			budget.inn_low_corn_workers[index]);
-		// Fertility uses 65536 units per fully productive tile. Staffing rises
-		// smoothly toward the level's service envelope as nearby capacity grows.
-		const long long scale=65536LL*std::max(1,budget.inn_normal_workers[index]);
-		to_assign=!budget.inn_adaptive_staffing_enabled
-			? budget.inn_normal_workers[index]
-			: int((maximum*capacity+capacity+scale-1)/(capacity+scale));
-	}
-	
-	///The number of units assigned to an Inn depends entirely on its level
-	if(to_assign != assigned)
-	{
-		ManagementOrder* mo_assign=new AssignWorkers(to_assign, id);
-		echo.add_management_order(mo_assign);
-	}
+	staff_building(echo, id);
 }
 
 
@@ -7533,75 +7447,24 @@ void Maxima::manage_swarm(Context& echo, int id)
 	if(stat->totalUnit == 0)
 		return;
 
-	int assigned=echo.get_building_register().get_assigned(id);
-	int to_assign=0;
+	// Staffing is the building's own business: it regulates its carriers from
+	// its own wheat stock, so there is no colony budget to apportion here.
+	staff_building(echo, id);
 
-	int worker_ratio=0;
-	int explorer_ratio=0;
-	int warrior_ratio=0;
-
-	// The director's swarm-worker figure is a colony-wide birth budget. Applying
-	// it independently to every swarm multiplies growth as new swarms complete,
-	// drains the productive workforce and creates a self-induced starvation
-	// cycle. Distribute it deterministically across all completed swarms.
-	BuildingSearch swarms(echo);
-	swarms.add_condition(new SpecificBuildingType(IntBuildingType::SWARM_BUILDING));
-	swarms.add_condition(new NotUnderConstruction);
-	std::vector<int> completed_swarms;
-	for(building_search_iterator swarm=swarms.begin(); swarm!=swarms.end(); ++swarm)
-		completed_swarms.push_back(*swarm);
-	std::sort(completed_swarms.begin(), completed_swarms.end());
-	std::vector<SwarmStaffing::Candidate> staffing_candidates;
-	long long local_supply=0;
-	for(std::vector<int>::const_iterator swarm=completed_swarms.begin();
-		swarm!=completed_swarms.end(); ++swarm)
-	{
-		const long long supply=nearby_farm_capacity(echo,*swarm);
-		staffing_candidates.push_back(SwarmStaffing::Candidate(*swarm,supply));
-		if(*swarm==id) local_supply=supply;
-
-	}
-	int total_to_assign=budget.swarm_workers;
-
-	const std::vector<SwarmStaffing::Assignment> staffing_assignments=
-		SwarmStaffing::distribute(staffing_candidates, total_to_assign,
-			Building::MAX_UNIT_WORKING);
-	for(std::vector<SwarmStaffing::Assignment>::const_iterator assignment=
-		staffing_assignments.begin(); assignment!=staffing_assignments.end();
-		++assignment)
-	{
-		if(assignment->id==id)
-			to_assign=assignment->workers;
-	}
-
-
-	worker_ratio=budget.worker_ratio;
+	int worker_ratio=budget.worker_ratio;
 
 	// Every swarm shares the explorer mix until the colony-wide target is met.
-	if(total_explorers<budget.desired_explorers)
-		explorer_ratio=budget.explorer_ratio;
+	int explorer_ratio=total_explorers<budget.desired_explorers
+		? budget.explorer_ratio : 0;
 
 	///Warriors are constructed during the war preperation phase
-	warrior_ratio=stat->numberUnitPerType[WARRIOR]<budget.desired_warriors
+	int warrior_ratio=stat->numberUnitPerType[WARRIOR]<budget.desired_warriors
 		? budget.warrior_ratio : 0;
 
-	// Removing carriers alone still permits births from stored corn. A zero
-	// colony birth budget pauses production too; the next funded plan restores
-	// the normal ratios. Individual zero-worker shares do not change the mix.
-	if(total_to_assign<=0)
+	// Birth funding remains a colony decision even though staffing is local: a
+	// zero budget pauses production, which carriers alone would not do.
+	if(budget.swarm_workers<=0)
 		worker_ratio=explorer_ratio=warrior_ratio=0;
-
-	if(assigned != to_assign)
-	{
-		ManagementOrder* mo_assign=new AssignWorkers(to_assign, id);
-		echo.add_management_order(mo_assign);
-		Building* building=echo.get_building_register().get_building(id);
-		std::ostringstream fields;
-		fields<<"\tbuilding_id="<<id<<"\tx="<<building->posX
-			<<"\ty="<<building->posY<<"\tworkers="<<to_assign
-			<<"\tcolony_budget="<<total_to_assign<<"\tfarm_capacity="<<local_supply;
-		emit_telemetry(echo,"swarm_staffing",fields.str());
-	}
 
 	//Change the ratio of the swarm when its finished
 	ManagementOrder* mo_ratios=new ChangeSwarm(worker_ratio, explorer_ratio, warrior_ratio, id);
@@ -9006,12 +8869,6 @@ void Maxima::update_preemptive_defense(Context& echo)
 	for(int index=0; index<map_size; ++index)
 		if(index<int(plan.desired.size()) && plan.desired[index])
 			desired.insert(index);
-
-	// Warriors already assigned to preemptive defence hold the inner end of
-	// maintained gates. Interior staging supports the planned firing lane
-	// without requiring a beach advance. No extra units are requested here.
-	for(int tile:barrier_defense_points)
-		if(tile>=0&&tile<map_size&&land_walkable[tile])desired.insert(tile);
 
 	std::vector<int> removals;
 	std::vector<int> additions;
