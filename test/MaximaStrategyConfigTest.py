@@ -272,58 +272,14 @@ class MaximaStrategyConfigTest(unittest.TestCase):
             self.assertEqual(payload["format"], format_name)
             self.assertEqual(payload["sources"][1], f"data/maxima/{format_name}.strategy")
 
-    def test_match_format_inference_and_explicit_override(self) -> None:
-        scenarios = (
-            ("duel", "maps/FourSquares1.map", 2),
-            ("ffa3", "maps/FourSquares1.map", 3),
-            ("ffa4", "maps/FourSquares1.map", 4),
-            ("ffa5plus", "maps/Archipelago.map", 5),
-        )
-        for expected, map_file, players in scenarios:
-            result = self.run_binary(
-                "-nicowar-scenario-match-nox",
-                map_file,
-                "123",
-                str(players),
-                "7",
-                "5",
-                "0",
-                "0",
-                "1",
-            )
-            self.assertIn(f"Maxima strategy: format={expected} ", result.stderr)
-
-        result = self.run_binary(
-            "-nicowar-2v2-match-nox",
-            "maps/FourSquares1.map",
-            "123",
-            "7",
-            "5",
-            "0",
-            "0",
-            "1",
-        )
-        self.assertIn("Maxima strategy: format=2v2 ", result.stderr)
-        # Per-player policy resolution is intentional: checkpoint experiments
-        # may override one allied Maxima without changing its teammate.
-        self.assertEqual(result.stderr.count("Maxima strategy:"), 2)
-        self.assertIn("player=0 team=0", result.stderr)
-        self.assertIn("player=1 team=1", result.stderr)
-
-        explicit = self.run_binary(
-            "--maxima-format",
-            "duel",
-            "-nicowar-scenario-match-nox",
-            "maps/FourSquares1.map",
-            "123",
-            "4",
-            "7",
-            "5",
-            "0",
-            "0",
-            "1",
-        )
-        self.assertIn("Maxima strategy: format=duel ", explicit.stderr)
+    def test_explicit_format_overrides_inference(self) -> None:
+        # The player count picks the format; naming one takes precedence. The
+        # inference rule itself is covered in MaximaStrategyTest.
+        for name in ("duel", "ffa3", "ffa4", "ffa5plus", "2v2"):
+            payload = json.loads(self.run_binary(
+                "--dump-maxima-strategy", "--maxima-format", name).stdout)
+            self.assertEqual(name, payload["format"])
+            self.assertEqual(f"data/maxima/{name}.strategy", payload["sources"][1])
 
     def test_precedence_and_per_key_provenance(self) -> None:
         key = "economy.inn_population_offset"

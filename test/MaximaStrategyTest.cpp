@@ -3,6 +3,7 @@
 #include "../src/GlobalContainer.h"
 #include "../src/AIMaximaStrategy.h"
 #include "../src/GameHeader.h"
+#include "../src/BasePlayer.h"
 #include "../src/ai/AI.h"
 #include <cassert>
 #include <fstream>
@@ -48,8 +49,8 @@ int main()
         assert(!StrategyResolver::restoreValues(text+",unknown.key=1",restored,error,VERSION_MINOR));
         assert(!StrategyResolver::restoreValues(text+",staffing.control_minimum_workers=3",restored,error,VERSION_MINOR));
 
-        // Version 97 retired the muster/relief keys and added the offense's
-        // own. A pre-97 save therefore names keys this build dropped and omits
+        // Version 98 retired the muster/relief keys and added the offense's
+        // own. An older save therefore names keys this build dropped and omits
         // keys it gained; it must still load, taking every value it recorded
         // and defaulting only what it never held.
         MaximaStrategy legacy=resolved.values;
@@ -61,7 +62,7 @@ int main()
                 olderText+=(olderText.empty() ? "" : ",")+assignment;
         olderText+=",teamplay.defense_enabled=true,military.counterattack_enabled=false";
         MaximaStrategy older=resolved.values;
-        assert(StrategyResolver::restoreValues(olderText,older,error,96));
+        assert(StrategyResolver::restoreValues(olderText,older,error,97));
         // Recorded values win; the keys the save never had keep this build's.
         assert(older.tactics.retarget_margin==legacy.tactics.retarget_margin);
         assert(older.tactics.min_force==resolved.values.tactics.min_force);
@@ -69,6 +70,28 @@ int main()
         // Retired keys are tolerated only for a save, never for a live source.
         assert(!StrategyResolver::restoreValues(olderText,older,error,VERSION_MINOR));
     }
+    {
+        // The player count picks the match format, and four players split into
+        // two pairs are a 2v2 rather than a free-for-all.
+        const auto header=[](int players, const std::vector<int>& allyTeams) {
+            GameHeader made;
+            made.setNumberOfPlayers(players);
+            for(int seat=0; seat<players; ++seat)
+            {
+                made.getBasePlayer(seat)=BasePlayer(seat,"Maxima",seat,
+                    BasePlayer::playerTypeFromImplementationID(AI::MAXIMA));
+                made.setAllyTeamNumber(seat, allyTeams.at(seat));
+            }
+            return made;
+        };
+        assert(StrategyResolver::inferFormat(header(2,{1,2}))==MatchFormatDuel);
+        assert(StrategyResolver::inferFormat(header(3,{1,2,3}))==MatchFormatFfa3);
+        assert(StrategyResolver::inferFormat(header(4,{1,2,3,4}))==MatchFormatFfa4);
+        assert(StrategyResolver::inferFormat(header(4,{1,1,2,2}))==MatchFormat2v2);
+        assert(StrategyResolver::inferFormat(header(5,{1,2,3,4,5}))==MatchFormatFfa5Plus);
+        assert(StrategyResolver::inferFormat(header(6,{1,1,2,2,3,3}))==MatchFormatFfa5Plus);
+    }
+
     const auto directory=std::filesystem::temp_directory_path()/"glob2-maxima-strategy-test";
     std::filesystem::create_directories(directory);
     const auto layer=directory/"layer.strategy";

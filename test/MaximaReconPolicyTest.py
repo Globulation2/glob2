@@ -58,10 +58,12 @@ class MaximaReconPolicyTest(unittest.TestCase):
 
     def test_save_version_and_legacy_recon_gates(self):
         version = (ROOT / "src/Version.h").read_text()
-        self.assertIn("#define VERSION_MINOR 92", version)
+        self.assertIn("#define VERSION_MINOR 98", version)
         loader = self.source[self.source.index("bool Maxima::loadDirector"):]
         loader = loader[:loader.index("bool Maxima::load(")]
-        self.assertIn("if(versionMinor>=87)", loader)
+        # The mission section is the one part of the director state that is
+        # version gated; reconnaissance is always rebuilt from the save.
+        self.assertIn("if(versionMinor>=98)", loader)
         self.assertIn("stream->readEnterSection(\"Recon\")", loader)
         self.assertIn("reconnaissance.reset()", loader)
 

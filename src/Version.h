@@ -6,17 +6,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 97
-// version 96 adds Maxima's staffable-construction-site condition. Version 95
-// saves contain no such condition and load unchanged.
-// version 95 adds Maxima's building-priority management order. Version 94
-// saves contain no such order and load unchanged; older binaries skip it.
-// version 94 adds Maxima's per-building staffing controller state. Version 93
-// saves load without it and each building restarts its control loop.
-// version 93 adds Maxima's protected-wheat food ledger supply to its saved
-// placement snapshot. Version 92 saves load without it and rebuild supply on
-// their next planning pass.
-// version 92 adds the standalone Maxima AI and its saved execution state.
+#define VERSION_MINOR 98
+// version 98 adds the standalone Maxima AI and its saved execution state,
+// and changes simulation results, so earlier clients and replays are refused.
 // version 91 saves the live RNG and routing state for deterministic continuation.
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.

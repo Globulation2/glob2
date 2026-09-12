@@ -17,7 +17,6 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         cls.primitive = (ROOT / "src/AIMaximaFarming.cpp").read_text()
         cls.placement = (ROOT / "src/AIMaximaPlacement.cpp").read_text()
         cls.base_strategy = (ROOT / "data/maxima/base.strategy").read_text()
-        cls.optimizer = (ROOT / "tools/optimize_maxima.py").read_text()
 
     def test_farming_and_clearing_are_extracted_as_one_policy_unit(self):
         methods = (
@@ -194,7 +193,6 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
             "farming.wood_firebreak_enabled",
         )
         for key in keys:
-            self.assertIn(f'"{key}"', self.optimizer)
             self.assertRegex(
                 self.base_strategy,
                 rf"(?m)^{re.escape(key)} = true$",

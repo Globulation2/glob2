@@ -4037,13 +4037,13 @@ bool Maxima::loadDirector(GAGCore::InputStream* stream,
 	stream->readEnterSection("campaign");campaign.state=static_cast<CampaignState>(stream->readSint32("state"));campaign.target_team=stream->readSint32("target_team");campaign.started_tick=stream->readSint32("started_tick");campaign.last_progress_tick=stream->readSint32("last_progress_tick");campaign.last_target_buildings=stream->readSint32("last_target_buildings");campaign.buildings_destroyed=stream->readSint32("buildings_destroyed");campaign.cooldown_until=stream->readSint32("cooldown_until");stream->readLeaveSection();
 	{
 		stream->readEnterSection("Tactics");
-		if(versionMinor>=97)
+		if(versionMinor>=98)
 		{
 			tactical_mission.kind=static_cast<Tactics::MissionKind>(stream->readSint32("kind"));tactical_mission.phase=static_cast<Tactics::MissionPhase>(stream->readSint32("phase"));tactical_mission.flagId=stream->readSint32("flag_id");tactical_mission.targetTeam=stream->readSint32("target_team");tactical_mission.targetGid=stream->readSint32("target_gid");tactical_mission.targetX=stream->readSint32("target_x");tactical_mission.targetY=stream->readSint32("target_y");tactical_mission.requestedForce=stream->readSint32("requested_force");tactical_mission.startedTick=stream->readSint32("started_tick");tactical_mission.phaseSinceTick=stream->readSint32("phase_since_tick");tactical_mission.lastProgressTick=stream->readSint32("last_progress_tick");tactical_mission.candidateScore=stream->readSint32("candidate_score");tactical_mission.lastTargetHp=stream->readSint32("last_target_hp");
 		}
 		else
 		{
-			// A pre-97 save carries a muster-and-withdraw mission whose phases
+			// An older save carries a muster-and-withdraw mission whose phases
 			// and force contract no longer exist. Read its shape, then discard
 			// it: the planner picks a target on its next review and the
 			// executor sweeps the inherited war flag away.
@@ -4066,7 +4066,7 @@ bool Maxima::loadDirector(GAGCore::InputStream* stream,
 
 	large_economy_committed=stream->readUint8("large_economy_committed");topology_initialized=stream->readUint8("topology_initialized");opening_space_constrained=stream->readUint8("opening_space_constrained");preemptive_building_signature=stream->readUint32("preemptive_building_signature");
 	auto readIntMap=[stream](const char* name,std::map<int,int>& values){values.clear();stream->readEnterSection(name);const Uint32 size=stream->readUint32("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);const int key=stream->readSint32("key");values[key]=stream->readSint32("value");stream->readLeaveSection();}stream->readLeaveSection();};
-	readIntMap("attack_flag_targets",attack_flag_targets);readIntMap("attack_flag_started_ticks",attack_flag_started_ticks);if(versionMinor<97){std::map<int,int> retired;readIntMap("attack_flag_last_hp",retired);readIntMap("attack_flag_last_progress",retired);}readIntMap("attack_target_quarantine_until",attack_target_quarantine_until);
+	readIntMap("attack_flag_targets",attack_flag_targets);readIntMap("attack_flag_started_ticks",attack_flag_started_ticks);if(versionMinor<98){std::map<int,int> retired;readIntMap("attack_flag_last_hp",retired);readIntMap("attack_flag_last_progress",retired);}readIntMap("attack_target_quarantine_until",attack_target_quarantine_until);
 	attack_flag_end_reasons.clear();stream->readEnterSection("attack_flag_end_reasons");Uint32 size=stream->readUint32("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);const int key=stream->readSint32("key");attack_flag_end_reasons[key]=stream->readText("value");stream->readLeaveSection();}stream->readLeaveSection();
 	{
 		stream->readEnterSection("ColonizationState");

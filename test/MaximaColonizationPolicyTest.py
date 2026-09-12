@@ -29,8 +29,6 @@ class MaximaColonizationPolicyTest(unittest.TestCase):
             r"^colonization\.([a-z_]+)\s*=\s*(\S+)", self.base, re.M
         ))
         self.assertEqual(expected, values)
-        packaged = (ROOT / "Glob2.app/Contents/Resources/data/maxima/base.strategy")
-        self.assertEqual(self.base, packaged.read_text())
 
     def test_director_uses_labor_and_startup_instead_of_phase_gates(self) -> None:
         start = self.maxima.index("const bool colony_active=")

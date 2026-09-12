@@ -1348,13 +1348,13 @@ namespace AIMaxima {
 bool StrategyResolver::restoreValues(const std::string& text, MaximaStrategy& values,
     std::string& error, int versionMinor)
 {
-    // A save records every key the schema held when it was written. Version 97
+    // A save records every key the schema held when it was written. Version 98
     // retired the muster, relief and teamplay keys and added the offense's own,
     // so an older save is restored key by key: what it recorded wins, what it
     // never held keeps this build's resolved value, and what this build retired
     // is ignored. Saves at the current version must still be exact, so a
     // truncated one is refused rather than silently half-applied.
-    const bool exact=versionMinor>=97;
+    const bool exact=versionMinor>=98;
     MaximaStrategy restored=exact ? MaximaStrategy{} : values;
     std::map<std::string, std::string> provenance;
     if(!applyInline("saved strategy", text, restored, provenance, error, !exact))
