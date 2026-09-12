@@ -594,7 +594,8 @@ if not env['server']:
 
 # Map analysis and UI contract tests use production generators and widgets.
 if not env['server']:
-    for alias, target in [('map-generator-study', 'MapGeneratorStudy'), ('map-generator-defaults-test', 'MapGeneratorDefaultsTest')]:
+    for alias, target in [('map-generator-study', 'MapGeneratorStudy'), ('map-generator-defaults-test', 'MapGeneratorDefaultsTest'),
+                          ('map-generator-golden-test', 'MapGeneratorGoldenTest')]:
         sources = [source for source in source_files if source != 'Glob2.cpp']
         sources += local.Object(target + '.o', '#test/' + target + '.cpp')
         local.Alias(alias, local.Program(target, sources))

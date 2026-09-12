@@ -8,13 +8,171 @@
 #include <algorithm>
 #include <cstdio>
 #include "GenerationValidation.h"
+#include "Distances.h"
 #include "Geometry.h"
+#include "Regions.h"
 #include "Settlements.h"
 #include "Topology.h"
 #include <cmath>
+#include <cstdint>
+#include <set>
 
-static void frameworkChecks()
+/// Everything a generator decides that a player can see: terrain, resources and where each
+/// colony starts. Two maps with the same fingerprint are the same map for golden comparisons.
+inline std::uint64_t mapFingerprint(const Game &game)
 {
+	std::uint64_t hash = 14695981039346656037ull;
+	auto add = [&](unsigned v)
+	{
+		hash ^= v;
+		hash *= 1099511628211ull;
+	};
+	add(game.map.getW());
+	add(game.map.getH());
+	for (int y = 0; y < game.map.getH(); ++y)
+		for (int x = 0; x < game.map.getW(); ++x)
+		{
+			add(game.map.getUMTerrain(x, y));
+			add(game.map.getTerrain(x, y));
+			add(game.map.getResource(x, y).type);
+			add(game.map.getResource(x, y).amount);
+		}
+	add(game.teamsCount());
+	for (int i = 0; i < game.teamsCount(); ++i)
+	{
+		add(game.teams[i]->startPosX);
+		add(game.teams[i]->startPosY);
+	}
+	return hash;
+}
+
+// The whole-region dispersion ends where no point can improve its own score, the smallest
+// weighted squared distance to any other point, by moving anywhere in the region; the local
+// search, anywhere within its 7x7 window. Checked against a brute-force score, so the
+// incremental nearest-pair bookkeeping behind the whole-region search has an oracle.
+inline void dispersionChecks()
+{
+	using namespace MapGeneration;
+	for (int variant = 0; variant < 4; ++variant)
+	{
+		const bool whole = variant % 2 == 0;
+		const int count = variant < 2 ? 5 : 3;
+		Game game(nullptr);
+		game.map.setSize(5, 5);
+		Map &map = game.map;
+		const int w = map.getW(), h = map.getH();
+		std::vector<int> grid(size_t(w) * h, 0);
+		// Two blocked bands make the region ragged, so "anywhere in the region" is a real test.
+		for (int y = 0; y < h; ++y)
+			for (int x = 0; x < w; ++x)
+				if ((x >= 10 && x < 14 && y < 20) || (y >= 24 && y < 27 && x >= 6))
+					grid[y * w + x] = 1;
+		auto run = [&](std::uint32_t seed, std::vector<MapGeneratorPoint> &points,
+					   std::vector<int> &weights)
+		{
+			GenerationRequest request;
+			request.seed = seed;
+			GenerationContext context(request);
+			points.assign(count, MapGeneratorPoint(0, 0));
+			weights.assign(count, 2);
+			weights.back() = 1;
+			return splitUpPoints(map, context, grid, 0, points, weights,
+								 whole ? PointSearch::WholeRegion : PointSearch::Local);
+		};
+		std::vector<MapGeneratorPoint> points, again;
+		std::vector<int> weights, weightsAgain;
+		const int spread = run(1234 + variant, points, weights);
+		run(1234 + variant, again, weightsAgain);
+		assert(spread > 0);
+		for (int i = 0; i < count; ++i)
+			assert(points[i].x == again[i].x && points[i].y == again[i].y &&
+				   weights[i] == weightsAgain[i]);
+		auto score = [&](int i, int x, int y)
+		{
+			std::int64_t best = std::numeric_limits<int>::max();
+			for (int j = 0; j < count; ++j)
+				if (j != i)
+					best = std::min(best, std::int64_t(map.warpDistSquare(x, y, points[j].x,
+																			points[j].y)) *
+											  weights[j]);
+			return best;
+		};
+		std::set<std::pair<int, int>> occupied;
+		for (int i = 0; i < count; ++i)
+		{
+			assert(grid[points[i].y * w + points[i].x] == 0);
+			assert(occupied.insert({points[i].x, points[i].y}).second);
+		}
+		for (int i = 0; i < count; ++i)
+		{
+			const std::int64_t own = score(i, points[i].x, points[i].y);
+			auto consider = [&](int x, int y)
+			{
+				if (grid[y * w + x] != 0 || occupied.count({x, y}))
+					return;
+				assert(score(i, x, y) <= own);
+			};
+			if (whole)
+			{
+				for (int y = 0; y < h; ++y)
+					for (int x = 0; x < w; ++x)
+						consider(x, y);
+			}
+			else
+				for (int dx = -3; dx <= 3; ++dx)
+					for (int dy = -3; dy <= 3; ++dy)
+						consider(map.normalizeX(points[i].x + dx), map.normalizeY(points[i].y + dy));
+		}
+	}
+}
+
+// computeDistances floods eight-connected over the torus: a source reads 1, each ring one
+// more, obstacles -1 and never crossed, unreached tiles 0.
+inline void distanceChecks()
+{
+	using namespace MapGeneration;
+	Game game(nullptr);
+	game.map.setSize(5, 4);
+	Map &map = game.map;
+	const int w = map.getW(), h = map.getH();
+	std::vector<MapGeneratorPoint> sources{{3, 3}, {30, 12}}, none, wall;
+	std::vector<int> heights;
+	computeDistances(map, sources, none, heights);
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+		{
+			int nearest = std::numeric_limits<int>::max();
+			for (const auto &s : sources)
+			{
+				const int dx = std::min(std::abs(x - s.x), w - std::abs(x - s.x));
+				const int dy = std::min(std::abs(y - s.y), h - std::abs(y - s.y));
+				nearest = std::min(nearest, std::max(dx, dy));
+			}
+			assert(heights[y * w + x] == nearest + 1);
+		}
+	// A ring of obstacles around the first source holds its flood; the second still spreads.
+	std::vector<MapGeneratorPoint> one{{3, 3}};
+	for (int dx = -1; dx <= 1; ++dx)
+		for (int dy = -1; dy <= 1; ++dy)
+			if (dx || dy)
+				wall.push_back({3 + dx, 3 + dy});
+	computeDistances(map, one, wall, heights);
+	assert(heights[3 * w + 3] == 1);
+	for (const auto &o : wall)
+		assert(heights[o.y * w + o.x] == -1);
+	assert(heights[0] == 0 && heights[10 * w + 10] == 0);
+	// Repeated sources are tolerated and change nothing.
+	std::vector<MapGeneratorPoint> twice{{3, 3}, {3, 3}, {30, 12}};
+	std::vector<int> repeated;
+	computeDistances(map, twice, none, repeated);
+	computeDistances(map, sources, none, heights);
+	assert(repeated == heights);
+}
+
+inline void frameworkChecks()
+{
+	dispersionChecks();
+	distanceChecks();
 	using namespace MapGeneration;
 	GeneratorControl cells{"cell", "Cell", 4,		  16, 1, 8, ControlGroup::Layout,
 						   false,  false,  {4, 8, 16}};

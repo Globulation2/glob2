@@ -99,6 +99,10 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
 - A new regression harness only protects the codebase once
   `.github/workflows/build.yml` actually builds and runs it; one that only runs by
   hand, once, is not a regression test.
+- A map generator's `revision` is enforced by `MapGeneratorGoldenTest`: a seed's map changing
+  while the revision stays fails the check, so bump the revision and run `--update` together
+  (see the framework reference). `--sweep` there is the first thing to run after touching
+  colony placement; a cell it fails is a "Generation failed" a player would see.
 - When fixing a bug, confirm the regression actually fails against the unpatched
   code before trusting that it passes against the fix. A test that passes either way
   is not testing the bug.

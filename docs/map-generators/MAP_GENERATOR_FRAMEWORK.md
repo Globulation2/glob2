@@ -531,10 +531,26 @@ on its island's edge, and expansion means taking another island whole.
   controls as JSON, with each control's `kind` (`range` or `toggle`).
 - `test/MapGeneratorDefaultsTest.cpp` builds to `MapGeneratorDefaultsTest`, asserting the
   registry's and every control's contract: discrete domains, shape bounds, topology, home
-  footprints, exact worker counts, seed repeatability and RNG stream isolation, and the
-  lobby/editor UI's own control-editing behavior.
+  footprints, exact worker counts, seed repeatability and RNG stream isolation, the
+  lobby/editor UI's own control-editing behavior, and the shared toolkit's own guarantees:
+  the point dispersion ends at a mutual best response checked against a brute-force score,
+  and the distance flood matches a Chebyshev oracle on the torus, with obstacles and repeated
+  sources.
+- `test/MapGeneratorGoldenTest.cpp` builds to `MapGeneratorGoldenTest` and keeps the revision
+  rule honest. `test/map-generator-golden.txt` records, per platform, the fingerprint (terrain,
+  resources and colony starts) every registered generator produces for three seeds at 256, one
+  at 128 and 512, and one each with two and eight colonies, keyed by the generator's revision.
+  `MapGeneratorGoldenTest <profile>` regenerates this platform's rows and fails on any map that
+  changed at an unchanged revision or any generator whose revision moved without the table
+  following; `--update` rewrites this platform's rows and refuses (without `--force`) to record
+  a changed map under an unchanged revision; `--print` writes the rows to stdout, which is how
+  a platform's rows are first bootstrapped from a CI log. Generation is deterministic per
+  platform, not across platforms, so rows carry the platform they were made on. `--sweep` rolls
+  every playable landscape at the colony counts and sizes the lobby offers, five seeds at 128
+  and 256 and three at 512, prints the success rate per cell and fails any valid cell where no
+  seed generated: that is what a player would see as a failed generation. CI runs all three.
 - The cppunit suite under `test/` (`scons && ./TestsRunner`) covers the rest of the engine and
-  must stay green alongside both of the above.
+  must stay green alongside all of the above.
 
 Generators validate their own construction results rather than trusting the geometry to always
 succeed: a moat must connect to land at both bridge ends, jagged outlines must leave legal

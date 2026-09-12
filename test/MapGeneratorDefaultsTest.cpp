@@ -81,36 +81,6 @@ class MapGeneratorDefaultsTest
 			s.dispatchEvents(&event);
 		}
 	}
-	static std::uint64_t fingerprint(const Game &game)
-	{
-		std::uint64_t hash = 14695981039346656037ull;
-		auto add = [&](unsigned v)
-		{
-			hash ^= v;
-			hash *= 1099511628211ull;
-		};
-		for (int y = 0; y < game.map.getH(); ++y)
-			for (int x = 0; x < game.map.getW(); ++x)
-			{
-				add(game.map.getUMTerrain(x, y));
-				add(game.map.getTerrain(x, y));
-				add(game.map.getResource(x, y).type);
-				add(game.map.getResource(x, y).amount);
-			}
-		for (int i = 0; i < game.teamsCount(); ++i)
-		{
-			add(game.teams[i]->startPosX);
-			add(game.teams[i]->startPosY);
-			for (int j = 0; j < Unit::MAX_COUNT; ++j)
-				if (auto *unit = game.teams[i]->myUnits[j])
-				{
-					add(j);
-					add(unit->posX);
-					add(unit->posY);
-				}
-		}
-		return hash;
-	}
 	static void generationContracts()
 	{
 		globalsInit();
@@ -126,7 +96,7 @@ class MapGeneratorDefaultsTest
 			Game first(nullptr);
 			auto a = service.generate(first, request);
 			assert(randomGenerator == surrounding);
-			auto hash = fingerprint(first);
+			auto hash = mapFingerprint(first);
 			auto checksum = first.checkSum(nullptr, nullptr, nullptr, true);
 			D intervening;
 			intervening.setMethodDefaults(D::eISLANDS);
@@ -135,17 +105,17 @@ class MapGeneratorDefaultsTest
 			service.generate(other, intervening);
 			Game repeat(nullptr);
 			auto b = service.generate(repeat, request);
-			if (bool(a) != bool(b) || a.stage != b.stage || hash != fingerprint(repeat))
+			if (bool(a) != bool(b) || a.stage != b.stage || hash != mapFingerprint(repeat))
 				std::fprintf(stderr, "Not repeatable after an intervening map: generator %d (%s, %s)\n",
 							 method, a.diagnostic().c_str(), b.diagnostic().c_str());
-			assert(bool(a) == bool(b) && a.stage == b.stage && hash == fingerprint(repeat));
+			assert(bool(a) == bool(b) && a.stage == b.stage && hash == mapFingerprint(repeat));
 			assert(checksum == repeat.checkSum(nullptr, nullptr, nullptr, true));
 			assert(request.seed == 22001 && request.options == DWithDefaults(method).options);
 			if (a)
 			{
 				auto rejected = service.generate(first, request);
 				assert(rejected.error == GenerationError::NonEmptyTarget);
-				assert(fingerprint(first) == hash);
+				assert(mapFingerprint(first) == hash);
 			}
 			if (method != D::eUNIFORM)
 				for (auto dimensions : {std::pair{9, 7}, std::pair{7, 9}})

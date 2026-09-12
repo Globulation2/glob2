@@ -41,6 +41,15 @@ resource types, all three base terrains, overlapping strokes, and all four
 wrapped map corners. A whole-map oracle checks both removal and preservation.
 These are headless map-operation tests; they do not drive editor mouse events.
 
+## Map generator golden maps and colony sweep
+
+From the repository root, `scons -j8 release=1 server=0 map-generator-golden-test` builds
+`build/src/MapGeneratorGoldenTest`. Run it as `./build/src/MapGeneratorGoldenTest <profile>`
+to compare this platform's rows of `test/map-generator-golden.txt` against fresh rolls, with
+`--update` after a revision bump, `--print` to bootstrap a platform's rows from a log, and
+`--sweep` to roll every playable landscape at the lobby's colony counts and sizes. The
+framework reference under `docs/map-generators/` describes the rules it enforces.
+
 ## Map subclass test pattern
 
 Pattern used by `MapQueryTest.cpp` (commit `2d42c340`). Lets you write tests against `Map`'s predicates with a minimal link surface — no `globalContainer`, no real `Sector` array, no transitive pull of `Bullet` / `Team` / `Building` / `Unit` into the test binary.
