@@ -4,8 +4,11 @@
 #include "GenerationContext.h"
 #include "Grid.h"
 #include "Geometry.h"
+#include "Pipeline.h"
+#include "Planting.h"
 #include "Resources.h"
 #include "Settlements.h"
+#include "Sketch.h"
 #include "Unit.h"
 #include <algorithm>
 #include <climits>
@@ -30,8 +33,6 @@ using namespace MapGeneration;
 namespace
 {
 
-constexpr double pi = 3.14159265358979323846;
-
 // Belt tiles along the ring each colony needs; validateRequest rejects crowding below this.
 constexpr int kBeltPerColony = 24;
 // A dry spine this many tiles either side of the centre line is never coast or lake, so the belt
@@ -55,7 +56,6 @@ constexpr int kHomeShore = 6;
 constexpr int kHomeWheat = 16;
 constexpr int kHomeWood = 16;
 constexpr int kHomeStone = 10;
-constexpr int kSwarmClearance = 2;
 
 constexpr int kUnreached = INT_MIN;
 
@@ -82,14 +82,6 @@ Axes axesFor(int width, int height)
 	return {width, height, width >= height};
 }
 
-int wrapSquare(int width, int height, int ax, int ay, int bx, int by)
-{
-	int dx = std::abs(ax - bx), dy = std::abs(ay - by);
-	dx = std::min(dx, width - dx);
-	dy = std::min(dy, height - dy);
-	return dx * dx + dy * dy;
-}
-
 // A smooth closed curve along the belt, one sample per tile. Its harmonics are whole numbers of
 // cycles per map length, so it meets itself exactly at the seam. Normalised to [-1, 1]; `slope`
 // receives its steepest step between neighbouring samples.
@@ -100,14 +92,14 @@ std::vector<double> closedCurve(int length, double falloff, std::mt19937 &rng, d
 	for (int k = 0; k < harmonics; ++k)
 	{
 		amplitude[k] = (0.3 + 0.7 * unitDraw(rng)) / std::pow(k + 1.0, falloff);
-		phase[k] = 2 * pi * unitDraw(rng);
+		phase[k] = 2 * kPi * unitDraw(rng);
 	}
 	std::vector<double> curve(length, 0.0);
 	double peak = 0;
 	for (int u = 0; u < length; ++u)
 	{
 		for (int k = 0; k < harmonics; ++k)
-			curve[u] += amplitude[k] * std::sin(2 * pi * (k + 1) * u / length + phase[k]);
+			curve[u] += amplitude[k] * std::sin(2 * kPi * (k + 1) * u / length + phase[k]);
 		peak = std::max(peak, std::abs(curve[u]));
 	}
 	slope = 0;
@@ -263,7 +255,7 @@ void carveLakes(std::vector<unsigned char> &terrain, const Belt &belt, Generatio
 		for (const Lake &other : lakes)
 		{
 			const double gap = reach + other.reach + kLakeGap;
-			clear = clear && wrapSquare(width, height, x, y, other.x, other.y) >= gap * gap;
+			clear = clear && Torus{width, height}.dist2(x, y, other.x, other.y) >= gap * gap;
 		}
 		if (!clear)
 			continue;
@@ -276,92 +268,6 @@ void carveLakes(std::vector<unsigned char> &terrain, const Belt &belt, Generatio
 						WATER;
 		lakes.push_back({x, y, reach});
 	}
-}
-
-struct Island
-{
-	int x, y;
-	double reach;
-	std::vector<int> tiles;
-};
-
-// Small islands out in the open ocean, each well clear of the belt and of each other so they are
-// only ever reached by swimming. The control counts islands per 128x128 of map.
-std::vector<Island> raiseIslands(std::vector<unsigned char> &terrain, int width, int height,
-								 GenerationContext &context, int perStandardMap)
-{
-	std::vector<Island> islands;
-	if (perStandardMap <= 0)
-		return islands;
-	const size_t area = size_t(width) * height;
-	std::vector<unsigned char> water(area), land(area);
-	std::vector<int> sea;
-	for (size_t i = 0; i < area; ++i)
-	{
-		water[i] = terrain[i] == WATER;
-		land[i] = !water[i];
-		if (water[i])
-			sea.push_back(int(i));
-	}
-	if (sea.empty())
-		return islands;
-	const std::vector<int> offshore = stepsFrom(Torus{width, height}, land, water);
-	const int wanted = std::max(1, int(std::lround(perStandardMap * double(area) / 16384.0)));
-	// Never smaller than on a 128-tile map: any smaller and the beach leaves no grass for a prize.
-	const double scale = std::clamp(std::sqrt(std::min(width, height) / 128.0), 1.0, 1.6);
-	for (int attempt = 0; int(islands.size()) < wanted && attempt < wanted * 40; ++attempt)
-	{
-		const int at = sea[context.bounded("islands", sea.size())];
-		const int x = at % width, y = at / width;
-		const RadialShape shape((4 + context.bounded("islands", 3)) * scale, 0.3, context,
-								"islands");
-		const double reach = shape.maximumRadius();
-		if (offshore[at] < reach + kIslandMoat)
-			continue;
-		bool clear = true;
-		for (const Island &other : islands)
-		{
-			const double gap = reach + other.reach + kIslandMoat;
-			clear = clear && wrapSquare(width, height, x, y, other.x, other.y) >= gap * gap;
-		}
-		if (!clear)
-			continue;
-		Island island{x, y, reach, {}};
-		const int r = int(std::ceil(reach));
-		for (int dy = -r; dy <= r; ++dy)
-			for (int dx = -r; dx <= r; ++dx)
-				if (std::hypot(double(dx), double(dy)) <
-					shape.radiusAt(std::atan2(double(dy), double(dx))))
-				{
-					const int i = (y + dy + height) % height * width + (x + dx + width) % width;
-					terrain[i] = GRASS;
-					island.tiles.push_back(i);
-				}
-		islands.push_back(std::move(island));
-	}
-	return islands;
-}
-
-// Grass may never touch water (Map::regenerateMap reads each tile from its four undermap corners),
-// so every land corner beside water becomes sand. Unlike Map::controlSand() this reads only the
-// original terrain, so the result doesn't depend on scan order and water is never eaten away.
-void layBeaches(std::vector<unsigned char> &terrain, int width, int height)
-{
-	const std::vector<unsigned char> original(terrain);
-	for (int y = 0; y < height; ++y)
-		for (int x = 0; x < width; ++x)
-		{
-			const size_t i = size_t(y) * width + x;
-			if (original[i] == WATER)
-				continue;
-			bool shore = false;
-			for (int dy = -1; dy <= 1 && !shore; ++dy)
-				for (int dx = -1; dx <= 1 && !shore; ++dx)
-					shore = original[size_t((y + dy + height) % height) * width +
-									 (x + dx + width) % width] == WATER;
-			if (shore)
-				terrain[i] = SAND;
-		}
 }
 
 // A swarm anchored at (x, y) needs pure grass under its 4x4 footprint and dry, unoccupied ground in
@@ -435,7 +341,7 @@ bool placeColonies(Game &game, GenerationContext &context, const Belt &belt, boo
 						continue;
 					bool crowded = false;
 					for (const MapGeneratorPoint &other : placed)
-						crowded = crowded || wrapSquare(width, height, x, y, other.x, other.y) <
+						crowded = crowded || Torus{width, height}.dist2(x, y, other.x, other.y) <
 												 spacing * spacing;
 					if (crowded)
 						continue;
@@ -478,63 +384,25 @@ bool placeColonies(Game &game, GenerationContext &context, const Belt &belt, boo
 	return true;
 }
 
-// Grows a compact patch of one resource outward from a seed tile, breadth-first over the four
-// cardinal neighbours, onto tiles the predicate allows. Returns how many tiles it placed.
-template <typename Eligible>
-int growPatch(Map &map, int seed, int type, int count, Eligible eligible)
-{
-	const int width = map.getW(), height = map.getH();
-	std::vector<unsigned char> queued(size_t(width) * height, 0);
-	std::vector<int> frontier{seed};
-	queued[seed] = 1;
-	int placed = 0;
-	const auto &steps = kCardinalSteps;
-	for (size_t head = 0; head < frontier.size() && placed < count; ++head)
-	{
-		const int i = frontier[head], x = i % width, y = i / width;
-		if (!eligible(i) || !map.isResourceAllowed(x, y, type))
-			continue;
-		map.setResource(x, y, type, 1);
-		++placed;
-		for (const auto &step : steps)
-		{
-			const int n = map.normalizeY(y + step[1]) * width + map.normalizeX(x + step[0]);
-			if (!queued[n])
-			{
-				queued[n] = 1;
-				frontier.push_back(n);
-			}
-		}
-	}
-	return placed;
-}
-
 // Every home's starter kit: a wheat and a wood patch on the most fertile ground a short walk from
 // the swarm, and a little stone further inland.
 void furnishHomes(Game &game, GenerationContext &context)
 {
 	Map &map = game.map;
 	const int width = map.getW(), height = map.getH(), teams = context.request.nbTeams;
+	const Torus t{width, height};
 	const size_t area = size_t(width) * height;
-	std::vector<unsigned char> water(area), dry(area), reserved(area, 0);
+	std::vector<unsigned char> water(area), dry(area);
 	for (int y = 0; y < height; ++y)
 		for (int x = 0; x < width; ++x)
 		{
 			water[size_t(y) * width + x] = map.isWater(x, y);
 			dry[size_t(y) * width + x] = !map.isWater(x, y);
 		}
-	for (int team = 0; team < teams; ++team)
-		for (int dy = -kSwarmClearance; dy < 4 + kSwarmClearance; ++dy)
-			for (int dx = -kSwarmClearance; dx < 4 + kSwarmClearance; ++dx)
-				reserved[size_t(map.normalizeY(context.bootY[team] + dy)) * width +
-						 map.normalizeX(context.bootX[team] + dx)] = 1;
-	const std::vector<int> shore = stepsFrom(Torus{width, height}, water, dry);
+	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
+	const std::vector<int> shore = stepsFrom(t, water, dry);
 	const auto eligible = [&](int i)
-	{
-		const int x = i % width, y = i / width;
-		return !reserved[i] && map.isGrass(x, y) && !map.isResource(x, y) &&
-			   map.getBuilding(x, y) == NOGBID && map.getGroundUnit(x, y) == NOGUID;
-	};
+	{ return !reserved[i] && clearGround(map, i % width, i / width); };
 	for (int team = 0; team < teams; ++team)
 	{
 		std::vector<unsigned char> footprint(area, 0);
@@ -551,8 +419,7 @@ void furnishHomes(Game &game, GenerationContext &context)
 			{
 				if (walk[i] < nearest || walk[i] > farthest || !eligible(i))
 					continue;
-				if (avoid >= 0 && wrapSquare(width, height, i % width, i / width, avoid % width,
-											 avoid / width) < 36)
+				if (avoid >= 0 && t.dist2(i % width, i / width, avoid % width, avoid / width) < 36)
 					continue;
 				const bool better = best < 0 ||
 									(wet ? shore[i] < shore[best] : shore[i] > shore[best]) ||
@@ -564,83 +431,14 @@ void furnishHomes(Game &game, GenerationContext &context)
 		};
 		const int wheat = pick(5, 9, true, -1);
 		if (wheat >= 0)
-			growPatch(map, wheat, CORN, kHomeWheat, eligible);
+			growPatch(map, t, wheat, CORN, kHomeWheat, eligible);
 		const int wood = pick(5, 9, true, wheat);
 		if (wood >= 0)
-			growPatch(map, wood, WOOD, kHomeWood, eligible);
+			growPatch(map, t, wood, WOOD, kHomeWood, eligible);
 		const int stone = pick(7, 12, false, -1);
 		if (stone >= 0)
-			growPatch(map, stone, STONE, kHomeStone, eligible);
+			growPatch(map, t, stone, STONE, kHomeStone, eligible);
 	}
-}
-
-// Each island carries one themed prize, as on Fjord continent's outliers.
-void stockIslands(Map &map, GenerationContext &context, const std::vector<Island> &islands)
-{
-	const int width = map.getW();
-	for (const Island &island : islands)
-	{
-		std::vector<MapGeneratorPoint> grass;
-		for (int i : island.tiles)
-			if (map.isGrass(i % width, i / width))
-				grass.emplace_back(i % width, i / width);
-		if (grass.empty())
-			continue;
-		MapGeneratorPoint centre(island.x, island.y);
-		if (!map.isGrass(centre.x, centre.y))
-			centre = grass[context.bounded("islands", grass.size())];
-		switch (context.bounded("islands", 3))
-		{
-		case 0:
-			placeResourceClump(map, context, centre, STONE, 2);
-			break;
-		case 1:
-			placeResourceClump(map, context, centre, CHERRY + int(context.bounded("islands", 3)),
-							   2);
-			break;
-		default:
-			placeResourceClump(map, context, centre, CORN, 2);
-			break;
-		}
-	}
-}
-
-// Algae in the shallows along every coast, the ocean's and the lakes' alike: close enough to shore
-// to regrow and to be harvested.
-void seedAlgae(Map &map, GenerationContext &context, int algaePercent)
-{
-	const int width = map.getW(), height = map.getH();
-	const size_t area = size_t(width) * height;
-	std::vector<unsigned char> water(area), dry(area);
-	for (int y = 0; y < height; ++y)
-		for (int x = 0; x < width; ++x)
-		{
-			water[size_t(y) * width + x] = map.isWater(x, y);
-			dry[size_t(y) * width + x] = !map.isWater(x, y);
-		}
-	const std::vector<int> offshore = stepsFrom(Torus{width, height}, dry, water);
-	std::vector<MapGeneratorPoint> shallows;
-	for (int i = 0; i < int(area); ++i)
-		if (offshore[i] >= 2 && offshore[i] <= 5)
-			shallows.emplace_back(i % width, i / width);
-	if (shallows.empty())
-		return;
-	for (int clump = 0; clump < scaledCount(int(shallows.size()) / 90, algaePercent); ++clump)
-		placeResourceClump(map, context, shallows[context.bounded("resources", shallows.size())],
-						   ALGA, 1);
-}
-
-void clearAroundSwarms(Map &map, const GenerationContext &context)
-{
-	for (int team = 0; team < context.request.nbTeams; ++team)
-		for (int dy = -kSwarmClearance; dy < 4 + kSwarmClearance; ++dy)
-			for (int dx = -kSwarmClearance; dx < 4 + kSwarmClearance; ++dx)
-			{
-				const int x = map.normalizeX(context.bootX[team] + dx);
-				const int y = map.normalizeY(context.bootY[team] + dy);
-				if (map.isResource(x, y))
-					map.setNoResource(x, y, 1);
-			}
 }
 
 // Deposits may land anywhere, and stone is never cleared in play, so a band of them could wall
@@ -765,20 +563,23 @@ bool generate(Game &game, GenerationContext &context)
 	}
 
 	context.stage = "ring terrain";
+	const Torus t{width, height};
 	const Belt belt = shapeBelt(axes, context, options);
-	std::vector<unsigned char> terrain(size_t(width) * height, WATER);
+	TerrainSketch terrain(size_t(width) * height, WATER);
 	for (int y = 0; y < height; ++y)
 		for (int x = 0; x < width; ++x)
 			if (belt.land(x, y))
 				terrain[size_t(y) * width + x] = GRASS;
 	carveLakes(terrain, belt, context, options.lakeDensity);
+	// The control counts islands per 128x128 of map, never fewer than one when it is on at all.
+	const int wantedIslands =
+		options.resourceIslands > 0
+			? std::max(1, int(std::lround(options.resourceIslands * double(t.size()) / 16384.0)))
+			: 0;
 	const std::vector<Island> islands =
-		raiseIslands(terrain, width, height, context, options.resourceIslands);
-	layBeaches(terrain, width, height);
-	for (int y = 0; y < height; ++y)
-		for (int x = 0; x < width; ++x)
-			map.setUMTerrain(x, y, TerrainType(terrain[size_t(y) * width + x]));
-	map.rebuildTerrain();
+		raiseIslands(terrain, t, context, {"islands", wantedIslands, 40, kIslandMoat});
+	layBeaches(terrain, t);
+	writeUndermap(map, terrain);
 
 	context.stage = "ring colonies";
 	if (!placeColonies(game, context, belt, options.bothCoasts))
@@ -786,7 +587,7 @@ bool generate(Game &game, GenerationContext &context)
 
 	context.stage = "ring resources";
 	furnishHomes(game, context);
-	stockIslands(map, context, islands);
+	stockIslands(map, context, islands, "islands");
 	// The same ambient layer as Fjord continent: corn:wood 2:1, some stone, rare fruit. Algae is
 	// seeded along the shallows below instead, since the shared band only scatters over land.
 	scatterResources(game, context,
@@ -794,22 +595,17 @@ bool generate(Game &game, GenerationContext &context)
 					  /*wood=*/int(scaledCount(12, options.wood)),
 					  /*stone=*/int(scaledCount(10, options.stone)), /*algae=*/0,
 					  /*fruit=*/int(scaledCount(3, options.fruit))});
-	seedAlgae(map, context, options.algae);
-	clearAroundSwarms(map, context);
+	seedAlgae(map, context, t, "resources", options.algae, AlgaeBand::shallows(2, 5));
+	clearAroundSwarms(map, context, t);
 	guaranteeStartingResources(game, context, 24, 32, 6);
-	clearAroundSwarms(map, context);
-
+	clearAroundSwarms(map, context, t);
 	// The scatter above is sized by the resource amounts, and at the top of their range it can wall
-	// a colony into its own clearing with nowhere to build — which the guarantee doesn't address,
-	// since a colony buried in wheat has wheat at its feet. At any non-default amount, open such a
-	// colony back up, then guarantee and clear again as above. At the defaults none of this runs.
-	if (options.wheat != 100 || options.wood != 100 || options.stone != 100 ||
-		options.algae != 100 || options.fruit != 100)
-	{
-		openCrampedStarts(game, context);
-		guaranteeStartingResources(game, context, 24, 32, 6);
-		clearAroundSwarms(map, context);
-	}
+	// a colony into its own clearing with nowhere to build; the reopened colony is cleared again.
+	if (reopenCrampedStarts(game, context,
+							{options.wheat, options.wood, options.stone, options.algae,
+							 options.fruit},
+							24, 32, 6))
+		clearAroundSwarms(map, context, t);
 
 	context.stage = "ring road";
 	return openBeltRoad(game, context, axes);

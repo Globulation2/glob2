@@ -6,9 +6,14 @@
 #include "Grid.h"
 #include "Geometry.h"
 #include "HeightMap.h"
+#include "Pipeline.h"
+#include "Planting.h"
 #include "Resources.h"
+#include "Roads.h"
 #include "Settlements.h"
+#include "Sketch.h"
 #include "Unit.h"
+#include "Wedge.h"
 #include <algorithm>
 #include <array>
 #include <climits>
@@ -45,8 +50,6 @@ using namespace MapGeneration;
 namespace
 {
 
-constexpr double pi = 3.14159265358979323846;
-
 // Sea kept between the homes' outer coast and the map's wrap, as a share of the half side.
 constexpr double kRimShare = 0.05;
 constexpr int kRimMinimum = 4;
@@ -77,7 +80,6 @@ constexpr int kLakeSeaGap = 7;
 // unscaled, outside a clear ring round the swarm.
 constexpr int kHomeWheat = 40;
 constexpr int kHomeWood = 30;
-constexpr int kSwarmClearance = 2;
 // Land kept between a lake and any coast, landing or other lake.
 constexpr int kLakeShore = 6;
 // The commons' heart: its central lake's radius as a share of the commons' radius, and how far
@@ -120,7 +122,7 @@ struct Profile
 	{
 		double v = 0;
 		for (int h = 0; h < count; ++h)
-			v += amplitude[h] * std::cos(2 * pi * (first + h) * u + phase[h]);
+			v += amplitude[h] * std::cos(2 * kPi * (first + h) * u + phase[h]);
 		return v;
 	}
 };
@@ -135,7 +137,7 @@ Profile rollProfile(GenerationContext &context, const char *stream, int first, i
 	{
 		p.amplitude[h] = (0.4 + 0.6 * context.bounded(stream, 1000) / 1000.0) /
 						 std::pow(double(first + h), falloff);
-		p.phase[h] = 2 * pi * context.bounded(stream, 3600) / 3600.0;
+		p.phase[h] = 2 * kPi * context.bounded(stream, 3600) / 3600.0;
 	}
 	double peak = 0;
 	for (int i = 0; i < 720; ++i)
@@ -165,10 +167,10 @@ struct Geometry
 	// Arc of a home's inner coast beyond its channel, at the nominal radius.
 	double innerArc() const
 	{
-		return teams < 2 ? 2 * pi * innerRadius() : 2 * pi * innerRadius() / teams - strait;
+		return teams < 2 ? 2 * kPi * innerRadius() : 2 * kPi * innerRadius() / teams - strait;
 	}
 	// Half the arc a wedge spans at radius d, less half the channel.
-	double arcHalf(double d) const { return teams < 2 ? pi * d : pi * d / teams - strait / 2.0; }
+	double arcHalf(double d) const { return teams < 2 ? kPi * d : kPi * d / teams - strait / 2.0; }
 };
 
 Geometry geometryFor(const GenerationRequest &r)
@@ -198,17 +200,6 @@ double lakeOffset(const Geometry &g, double lakeRadius)
 	const double high = g.depth() - reach - 2.0;
 	return std::clamp(0.6 * g.depth(), low, std::max(low, high));
 }
-
-// A round feature in a wedge's frame: arc offset from the middle, radius from the centre.
-struct Blob
-{
-	double s, r;
-	RadialShape shape;
-	bool holds(double ds, double dr) const
-	{
-		return std::hypot(ds, dr) < shape.radiusAt(std::atan2(dr, ds));
-	}
-};
 
 struct Home
 {
@@ -258,7 +249,7 @@ struct Coasts
 	// begin only beyond the lake and its clearance.
 	double lakeRadius, lakeReach, flatArc, bayArc;
 	Coasts(const Geometry &g, GenerationContext &context)
-		: g(g), wedge(2 * pi / g.teams), inner(g.innerRadius()), depth(g.depth()),
+		: g(g), wedge(2 * kPi / g.teams), inner(g.innerRadius()), depth(g.depth()),
 		  coast(rollProfile(context, "city-coast", 1, 4, 1.2)),
 		  ripple(rollProfile(context, "city-coast", 6, 6, 0.6)),
 		  innerBays(rollProfile(context, "city-coast", 1, 3, 1.0)),
@@ -293,7 +284,7 @@ struct Coasts
 	double bendAt(double d) const
 	{
 		const double x = (d - inner) / std::max(1.0, depth);
-		return x <= 0 || x >= 1 ? 0.0 : bend * std::sin(pi * x);
+		return x <= 0 || x >= 1 ? 0.0 : bend * std::sin(kPi * x);
 	}
 };
 
@@ -348,7 +339,7 @@ static Features rollFeatures(const GenerationRequest &request, GenerationContext
 	// of the causeway's approach and of other features.
 	f.mainLakeR = inner + lakeOffset(g, c.lakeRadius);
 	f.lakes.push_back(
-		{0.0, f.mainLakeR, RadialShape(c.lakeRadius, 0.3, context, "city-home-lakes")});
+		{0.0, f.mainLakeR, 1.0, 0.0, RadialShape(c.lakeRadius, 0.3, context, "city-home-lakes")});
 	const auto fits =
 		[&](double s0, double r0, double reach, double gap, const std::vector<Blob> &others)
 	{
@@ -374,7 +365,7 @@ static Features rollFeatures(const GenerationRequest &request, GenerationContext
 			RadialShape shape(2.0 + context.bounded("city-home-lakes", 1000) / 1000.0 * 2.0, 0.3,
 							  context, "city-home-lakes");
 			if (fits(s0, r0, shape.maximumRadius(), kLakeSeaGap, f.lakes))
-				f.lakes.push_back({s0, r0, shape});
+				f.lakes.push_back({s0, r0, 1.0, 0.0, shape});
 		}
 	// Riverside: a f.creek from the main lake towards one flank of the inner coast, with a ford.
 	if (L.homeKind == Riverside)
@@ -405,21 +396,21 @@ static Features rollFeatures(const GenerationRequest &request, GenerationContext
 		std::vector<Blob> avoid = f.lakes;
 		avoid.insert(avoid.end(), f.sandBlobs.begin(), f.sandBlobs.end());
 		if (fits(s0, r0, shape.maximumRadius(), 5, avoid))
-			f.sandBlobs.push_back({s0, r0, shape});
+			f.sandBlobs.push_back({s0, r0, 1.0, 0.0, shape});
 	}
 
 	// Sand on the commons: anywhere between the f.heart and the shore, off the landings.
-	const double commonsArea = pi * g.commonsRadius * g.commonsRadius;
+	const double commonsArea = kPi * g.commonsRadius * g.commonsRadius;
 	const int wantedSand = int(std::lround(o.sand * commonsArea / 8192.0));
 	for (int attempt = 0; attempt < 400 && int(f.commonsSand.size()) < wantedSand; ++attempt)
 	{
-		const double a = context.bounded("city-sand", 3600) / 3600.0 * 2 * pi;
+		const double a = context.bounded("city-sand", 3600) / 3600.0 * 2 * kPi;
 		const double r0 = 0.45 * g.commonsRadius + context.bounded("city-sand", 1000) / 1000.0 *
 													   (0.55 * g.commonsRadius - 12);
 		RadialShape shape(3.0 + context.bounded("city-sand", 1000) / 1000.0 * 5.0, 0.5, context,
 						  "city-sand");
 		const double reach = shape.maximumRadius();
-		const double turn = std::fmod(a - L.phase + 4 * pi, 2 * pi);
+		const double turn = std::fmod(a - L.phase + 4 * kPi, 2 * kPi);
 		const double u = turn / wedge - std::floor(turn / wedge);
 		if (r0 * std::abs(u - 0.5) * wedge < reach + g.causeway + 4 &&
 			r0 > g.commonsRadius - kLanding - reach - 4)
@@ -459,22 +450,20 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 	const double roadHalf = g.causeway / 2.0;
 	const double stripHalf = roadHalf + kShoulder;
 	std::vector<double> landingAlong(teams, -1.0), shoreAlong(teams, 1e9);
+	const WedgeFrame frame(t, L.phase, teams);
 	for (int y = 0; y < t.h; ++y)
 		for (int x = 0; x < t.w; ++x)
 		{
 			const int i = y * t.w + x;
-			const int dx = t.offsetX(L.cx, x), dy = t.offsetY(L.cy, y);
-			const double d = std::hypot(double(dx), double(dy));
-			const double theta = std::atan2(double(dy), double(dx));
+			// The wedge frame: which home, how far across it and how far along the arc from its middle,
+			// with the channels between homes bowed by this roll's bend.
+			WedgeFrame::Cell cell = frame.cell(x, y);
+			if (teams >= 2)
+				frame.bend(cell, coasts.bendAt(cell.d));
+			const double d = cell.d, theta = cell.theta, u = cell.u, s = cell.s;
+			const int k = cell.k;
 			L.radius[i] = d;
 			L.angle[i] = theta;
-			// The wedge frame: which home, how far across it and how far along the arc from its middle.
-			double turn = std::fmod(theta - L.phase + 4 * pi, 2 * pi);
-			if (teams >= 2)
-				turn = std::fmod(turn - coasts.bendAt(d) / std::max(1.0, d) + 4 * pi, 2 * pi);
-			const int k = std::min(teams - 1, int(turn / wedge));
-			const double u = turn / wedge - k;
-			const double s = d * (u - 0.5) * wedge;
 			const double toBoundary = teams < 2 ? 1e9 : d * std::min(u, 1 - u) * wedge;
 			const double toLanding = d * std::abs(u - 0.5) * wedge;
 			const double c = coasts.coastAt(u, d);
@@ -657,8 +646,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const CityStatesOptions o(request);
 	L.cx = t.w / 2;
 	L.cy = t.h / 2;
-	L.phase = context.bounded("city-layout", 3600) / 3600.0 * 2 * pi;
-	const double wedge = 2 * pi / teams;
+	L.phase = context.bounded("city-layout", 3600) / 3600.0 * 2 * kPi;
+	const double wedge = 2 * kPi / teams;
 	const double depth = g.depth();
 
 	// What this map is made of.
@@ -695,27 +684,6 @@ std::vector<unsigned char> heartTiles(const Map &map, const Layout &L)
 	for (int i = 0; i < n; ++i)
 		heart[i] = L.region[i] == Commons && L.radius[i] < reach && !map.isWater(i % t.w, i / t.w);
 	return heart;
-}
-
-// Grass may never touch water (Map::regenerateMap reads each tile from its four undermap corners),
-// so every land corner beside water becomes sand. Unlike Map::controlSand() this reads only the
-// original terrain, so the result doesn't depend on scan order and water is never eaten away.
-void layBeaches(std::vector<unsigned char> &terrain, const Torus &t)
-{
-	const std::vector<unsigned char> original(terrain);
-	for (int y = 0; y < t.h; ++y)
-		for (int x = 0; x < t.w; ++x)
-		{
-			const int i = y * t.w + x;
-			if (original[i] == WATER)
-				continue;
-			bool shore = false;
-			for (int dy = -1; dy <= 1 && !shore; ++dy)
-				for (int dx = -1; dx <= 1 && !shore; ++dx)
-					shore = original[t.at(x + dx, y + dy)] == WATER;
-			if (shore)
-				terrain[i] = SAND;
-		}
 }
 
 // The ground a unit landing from the sea can reach without crossing solid grass: every land tile
@@ -822,7 +790,7 @@ void carveValleys(std::vector<unsigned char> &terrain, const Layout &L, Generati
 			continue;
 		const int x = at % t.w, y = at / t.w;
 		const double stretch = 1.2 + context.bounded("city-valleys", 81) / 100.0;
-		const double turn = context.bounded("city-valleys", 3600) / 3600.0 * pi;
+		const double turn = context.bounded("city-valleys", 3600) / 3600.0 * kPi;
 		const RadialShape shape((3 + context.bounded("city-valleys", 4)) * scale, 0.35, context,
 								"city-valleys");
 		const double reach = shape.maximumRadius() * stretch;
@@ -850,106 +818,6 @@ void carveValleys(std::vector<unsigned char> &terrain, const Layout &L, Generati
 	}
 }
 
-struct Island
-{
-	int x, y;
-	std::vector<int> tiles;
-};
-
-// Small islands out in the open sea, each well clear of every coast and of each other, so they are
-// only ever reached by swimming. Counted per 128x128 of sea.
-std::vector<Island> raiseIslands(std::vector<unsigned char> &terrain, const Layout &L,
-								 GenerationContext &context, int perStandardMap)
-{
-	const Torus &t = L.t;
-	const int n = t.w * t.h;
-	std::vector<Island> islands;
-	if (perStandardMap <= 0)
-		return islands;
-	std::vector<unsigned char> water(n), land(n);
-	std::vector<int> sea;
-	for (int i = 0; i < n; ++i)
-	{
-		water[i] = terrain[i] == WATER;
-		land[i] = !water[i];
-		if (water[i])
-			sea.push_back(i);
-	}
-	if (sea.empty())
-		return islands;
-	const std::vector<int> offshore = stepsFrom(t, land, water);
-	const int wanted = int(std::lround(perStandardMap * double(sea.size()) / 16384.0));
-	const double scale = std::clamp(std::sqrt(std::min(t.w, t.h) / 128.0), 1.0, 1.6);
-	for (int attempt = 0; int(islands.size()) < wanted && attempt < wanted * 60; ++attempt)
-	{
-		const int at = sea[context.bounded("city-islands", sea.size())];
-		const int x = at % t.w, y = at / t.w;
-		const RadialShape shape((4 + context.bounded("city-islands", 3)) * scale, 0.3, context,
-								"city-islands");
-		const double reach = shape.maximumRadius();
-		if (offshore[at] < reach + kLakeShore + 1)
-			continue;
-		bool open = true;
-		for (const Island &other : islands)
-		{
-			const double gap = 2 * reach + kLakeShore + 1;
-			const double dx = t.offsetX(x, other.x), dy = t.offsetY(y, other.y);
-			open = open && dx * dx + dy * dy >= gap * gap;
-		}
-		if (!open)
-			continue;
-		Island island{x, y, {}};
-		const int r = int(std::ceil(reach));
-		for (int dy = -r; dy <= r; ++dy)
-			for (int dx = -r; dx <= r; ++dx)
-				if (std::hypot(double(dx), double(dy)) <
-					shape.radiusAt(std::atan2(double(dy), double(dx))))
-				{
-					const int i = t.at(x + dx, y + dy);
-					terrain[i] = GRASS;
-					island.tiles.push_back(i);
-				}
-		islands.push_back(std::move(island));
-	}
-	return islands;
-}
-
-// Grows a compact patch of one resource outward from a seed tile, breadth-first over the four
-// cardinal neighbours, onto tiles the predicate allows. Returns how many tiles it placed.
-template <typename Eligible>
-int growPatch(Map &map, const Torus &t, int seed, int type, int count, Eligible eligible)
-{
-	std::vector<unsigned char> queued(size_t(t.w) * t.h, 0);
-	std::vector<int> frontier{seed};
-	queued[seed] = 1;
-	int placed = 0;
-	const auto &steps = kCardinalSteps;
-	for (size_t head = 0; head < frontier.size() && placed < count; ++head)
-	{
-		const int i = frontier[head], x = i % t.w, y = i / t.w;
-		if (!eligible(i) || !map.isResourceAllowed(x, y, type))
-			continue;
-		map.setResource(x, y, type, 1);
-		++placed;
-		for (const auto &step : steps)
-		{
-			const int n = t.at(x + step[0], y + step[1]);
-			if (!queued[n])
-			{
-				queued[n] = 1;
-				frontier.push_back(n);
-			}
-		}
-	}
-	return placed;
-}
-
-bool clearGround(const Map &map, int x, int y)
-{
-	return map.isGrass(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID &&
-		   map.getGroundUnit(x, y) == NOGUID;
-}
-
 // Splits a set of tiles into wheat and wood by an unrelated noise field, so the two crops form
 // separate patches rather than rings sorted by fertility.
 void plantFields(Map &map, const Torus &t, std::vector<int> tiles, int wheat, int wood,
@@ -974,11 +842,8 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 {
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
-	std::vector<unsigned char> reserved(n, 0), water(n), dry(n);
-	for (int team = 0; team < L.g.teams; ++team)
-		for (int dy = -kSwarmClearance; dy < 4 + kSwarmClearance; ++dy)
-			for (int dx = -kSwarmClearance; dx < 4 + kSwarmClearance; ++dx)
-				reserved[t.at(context.bootX[team] + dx, context.bootY[team] + dy)] = 1;
+	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
+	std::vector<unsigned char> water(n), dry(n);
 	for (int i = 0; i < n; ++i)
 	{
 		water[i] = map.isWater(i % t.w, i / t.w);
@@ -1179,10 +1044,10 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 						   : L.heartKind == Crag        ? 0.6 * L.ringR
 						   : L.heartKind == ForestHeart ? L.lakeR + 3
 														: L.lakeR + kOrchardReach;
-		const double spin = context.bounded("city-fruit", 3600) / 3600.0 * 2 * pi;
+		const double spin = context.bounded("city-fruit", 3600) / 3600.0 * 2 * kPi;
 		for (int f = 0; f < 3; ++f)
 		{
-			const double a = spin + 2 * pi * f / 3;
+			const double a = spin + 2 * kPi * f / 3;
 			const int ax = L.cx + int(std::lround(rho * std::cos(a))),
 					  ay = L.cy + int(std::lround(rho * std::sin(a)));
 			int seed = -1, nearest = INT_MAX;
@@ -1208,74 +1073,6 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 				map.setResource(i % t.w, i / t.w, WOOD, 1);
 }
 
-// Each island carries one themed prize, as on Ring world.
-void stockIslands(Map &map, GenerationContext &context, const std::vector<Island> &islands)
-{
-	const int width = map.getW();
-	for (const Island &island : islands)
-	{
-		std::vector<MapGeneratorPoint> grass;
-		for (int i : island.tiles)
-			if (map.isGrass(i % width, i / width))
-				grass.emplace_back(i % width, i / width);
-		if (grass.empty())
-			continue;
-		MapGeneratorPoint centre(island.x, island.y);
-		if (!map.isGrass(centre.x, centre.y))
-			centre = grass[context.bounded("city-islands", grass.size())];
-		switch (context.bounded("city-islands", 3))
-		{
-		case 0:
-			placeResourceClump(map, context, centre, STONE, 2);
-			break;
-		case 1:
-			placeResourceClump(map, context, centre,
-							   CHERRY + int(context.bounded("city-islands", 3)), 2);
-			break;
-		default:
-			placeResourceClump(map, context, centre, CORN, 2);
-			break;
-		}
-	}
-}
-
-// Algae in the shallows along every coast, the strait's, the sea's and the lakes' alike.
-void seedAlgae(Map &map, GenerationContext &context, const Torus &t, int algaePercent)
-{
-	const int n = t.w * t.h;
-	std::vector<unsigned char> water(n), dry(n);
-	for (int y = 0; y < t.h; ++y)
-		for (int x = 0; x < t.w; ++x)
-		{
-			water[y * t.w + x] = map.isWater(x, y);
-			dry[y * t.w + x] = !map.isWater(x, y);
-		}
-	const std::vector<int> offshore = stepsFrom(t, dry, water);
-	std::vector<MapGeneratorPoint> shallows;
-	for (int i = 0; i < n; ++i)
-		if (offshore[i] >= 2 && offshore[i] <= 4)
-			shallows.emplace_back(i % t.w, i / t.w);
-	if (shallows.empty())
-		return;
-	for (int clump = 0; clump < scaledCount(int(shallows.size()) / 90, algaePercent); ++clump)
-		placeResourceClump(map, context, shallows[context.bounded("city-algae", shallows.size())],
-						   ALGA, 1);
-}
-
-// Clears the ring the swarm's workers walk out through; a causeway's stone beside it stays.
-void clearAroundSwarms(Map &map, const GenerationContext &context, const Torus &t,
-					   const std::vector<unsigned char> &line)
-{
-	for (int team = 0; team < context.request.nbTeams; ++team)
-		for (int dy = -kSwarmClearance; dy < 4 + kSwarmClearance; ++dy)
-			for (int dx = -kSwarmClearance; dx < 4 + kSwarmClearance; ++dx)
-			{
-				const int x = t.x(context.bootX[team] + dx), y = t.y(context.bootY[team] + dy);
-				if (map.isResource(x, y) && !line[y * t.w + x])
-					map.setNoResource(x, y, 1);
-			}
-}
-
 // Causeways and their approaches hold nothing but the causeways' own stone lines.
 void clearRoads(Map &map, const Layout &L, const std::vector<unsigned char> &line)
 {
@@ -1283,63 +1080,6 @@ void clearRoads(Map &map, const Layout &L, const std::vector<unsigned char> &lin
 	for (int i = 0; i < t.w * t.h; ++i)
 		if ((L.causeway[i] || L.clear[i]) && !line[i] && map.isResource(i % t.w, i / t.w))
 			map.setNoResource(i % t.w, i / t.w, 1);
-}
-
-// The cheapest walk from any source tile to any goal tile (deposits cost one, open ground nothing;
-// water, buildings and the stone lines are impassable), with only the deposits on it cleared.
-bool openRoad(Map &map, const Layout &L, const std::vector<unsigned char> &line,
-			  const std::vector<int> &sources, const std::vector<unsigned char> &goal)
-{
-	const Torus &t = L.t;
-	const int n = t.w * t.h;
-	std::vector<int> cost(n, INT_MAX), parent(n, -1);
-	std::vector<unsigned char> done(n, 0);
-	std::deque<int> queue;
-	for (int i : sources)
-	{
-		cost[i] = 0;
-		queue.push_back(i);
-	}
-	int reached = -1;
-	while (!queue.empty() && reached < 0)
-	{
-		const int i = queue.front();
-		queue.pop_front();
-		if (done[i])
-			continue;
-		done[i] = 1;
-		if (goal[i])
-		{
-			reached = i;
-			break;
-		}
-		const int x = i % t.w, y = i / t.w;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				if (!dx && !dy)
-					continue;
-				const int nx = t.x(x + dx), ny = t.y(y + dy), next = ny * t.w + nx;
-				if (map.isWater(nx, ny) || map.getBuilding(nx, ny) != NOGBID || line[next])
-					continue;
-				const int nextCost = cost[i] + (map.isResource(nx, ny) ? 1 : 0);
-				if (nextCost < cost[next])
-				{
-					cost[next] = nextCost;
-					parent[next] = i;
-					if (nextCost == cost[i])
-						queue.push_front(next);
-					else
-						queue.push_back(next);
-				}
-			}
-	}
-	if (reached < 0)
-		return false;
-	for (int i = reached; i >= 0; i = parent[i])
-		if (map.isResource(i % t.w, i / t.w))
-			map.setNoResource(i % t.w, i / t.w, 1);
-	return true;
 }
 
 // Deposits may land anywhere, and a band of them could close a home's swarm off from its causeway
@@ -1351,23 +1091,17 @@ bool openRoads(Map &map, const Layout &L, const std::vector<unsigned char> &line
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
 	const std::vector<unsigned char> heart = heartTiles(map, L);
+	const auto workers = unitTilesByTeam(map, L.g.teams);
 	for (int k = 0; k < L.g.teams; ++k)
 	{
-		std::vector<int> workers;
-		for (int i = 0; i < n; ++i)
-		{
-			const Uint16 gid = map.getGroundUnit(i % t.w, i / t.w);
-			if (gid != NOGUID && Unit::GIDtoTeam(gid) == k)
-				workers.push_back(i);
-		}
 		std::vector<unsigned char> shore(n, 0);
 		shore[L.homes[k].shore] = 1;
-		if (!openRoad(map, L, line, workers, shore))
+		if (!openRoad(map, t, workers[k], shore, &line))
 		{
 			context.detail = "colony " + std::to_string(k) + " has no way to its causeway";
 			return false;
 		}
-		if (!openRoad(map, L, line, {L.homes[k].landing}, heart))
+		if (!openRoad(map, t, {L.homes[k].landing}, heart, &line))
 		{
 			context.detail = "causeway " + std::to_string(k) + " has no way into the commons";
 			return false;
@@ -1395,7 +1129,7 @@ bool generate(Game &game, GenerationContext &context)
 	const int n = t.w * t.h;
 
 	context.stage = "city terrain";
-	std::vector<unsigned char> terrain(n, GRASS);
+	TerrainSketch terrain(n, GRASS);
 	for (int i = 0; i < n; ++i)
 	{
 		if (L.region[i] == Sea || L.lake[i] || L.river[i])
@@ -1406,48 +1140,54 @@ bool generate(Game &game, GenerationContext &context)
 			terrain[i] = SAND;
 	}
 	carveValleys(terrain, L, context, o.valleys);
-	const std::vector<Island> islands = raiseIslands(terrain, L, context, o.resourceIslands);
+	// Resource islands are counted per 128x128 of sea.
+	const std::vector<Island> islands = raiseIslands(
+		terrain, t, context,
+		{"city-islands",
+		 int(std::lround(o.resourceIslands * double(countTiles(terrain, WATER)) / 16384.0)), 60,
+		 kLakeShore + 1, /*gapFromBothReaches=*/false});
 	layBeaches(terrain, t);
-	for (int y = 0; y < t.h; ++y)
-		for (int x = 0; x < t.w; ++x)
-			map.setUMTerrain(x, y, TerrainType(terrain[y * t.w + x]));
-	map.rebuildTerrain();
+	writeUndermap(map, terrain);
 	const std::vector<unsigned char> line = stoneTiles(map, L);
 	for (int i = 0; i < n; ++i)
 		if (line[i])
 			map.setResource(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "city colonies";
-	for (int team = 0; team < teams; ++team)
+	const auto home = [&](int team)
+	{
+		std::vector<unsigned char> ground(n, 0);
+		for (int i = 0; i < n; ++i)
+			ground[i] =
+				L.homeOf[i] == team && !L.strip[i] && !L.clear[i] && map.isGrass(i % t.w, i / t.w);
+		return ground;
+	};
+	// The swarm stands between the causeway's home end and the lake, a short walk from the lake's
+	// fields whatever the home's depth; placeSettlement measures from the footprint's top-left
+	// tile, so the anchor is offset to centre the 4x4 there.
+	const auto anchor = [&](int team)
 	{
 		const Home &h = L.homes[team];
-		std::vector<unsigned char> home(n, 0);
-		for (int i = 0; i < n; ++i)
-			home[i] =
-				L.homeOf[i] == team && !L.strip[i] && !L.clear[i] && map.isGrass(i % t.w, i / t.w);
-		// The swarm stands between the causeway's home end and the lake, a short walk from the lake's
-		// fields whatever the home's depth; placeSettlement measures from the footprint's top-left
-		// tile, so the anchor is offset to centre the 4x4 there.
 		const double lakeRadius = std::clamp(0.1 * L.g.depth(), 2.0, 6.0);
 		const double rho =
 			std::max(h.coast + L.g.strait + 8.0,
 					 h.coast + L.g.strait + lakeOffset(L.g, lakeRadius) - lakeRadius - 9.0);
-		const MapGeneratorPoint anchor(L.cx + int(std::lround(rho * std::cos(h.angle))) - 2,
-									   L.cy + int(std::lround(rho * std::sin(h.angle))) - 2);
-		if (!placeSettlement(game, context, team, home, anchor, "city-starts"))
-			return false;
-	}
+		return MapGeneratorPoint(L.cx + int(std::lround(rho * std::cos(h.angle))) - 2,
+								 L.cy + int(std::lround(rho * std::sin(h.angle))) - 2);
+	};
+	if (!settleColonies(game, context, "city-starts", home, anchor))
+		return false;
 
 	context.stage = "city resources";
 	furnishHomes(map, L, context, o);
 	stockCommons(map, L, context, o);
-	stockIslands(map, context, islands);
-	seedAlgae(map, context, t, o.algae);
-	clearAroundSwarms(map, context, t, line);
+	stockIslands(map, context, islands, "city-islands");
+	seedAlgae(map, context, t, "city-algae", o.algae, AlgaeBand::shallows(2, 4));
+	clearAroundSwarms(map, context, t, &line);
 	// The kits already put wheat and wood a short walk from every swarm; this is only the backstop,
 	// and the walls and the causeways' stone are designed and must never be cleared.
 	guaranteeStartingResources(game, context, 24, 32, 0, &line);
-	clearAroundSwarms(map, context, t, line);
+	clearAroundSwarms(map, context, t, &line);
 	clearRoads(map, L, line);
 	context.stage = "city roads";
 	return openRoads(map, L, line, context);
@@ -1474,13 +1214,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	if (!L.failure.empty())
-		return "The city design could not be rebuilt: " + L.failure;
 	const Map &map = game.map;
+	if (const std::string mismatch = designMismatch(L, map, "city"); !mismatch.empty())
+		return mismatch;
 	const Torus &t = L.t;
 	const int n = t.w * t.h, teams = context.request.nbTeams;
-	if (map.getW() != t.w || map.getH() != t.h)
-		return "The city design does not match the map size.";
 	const auto where = [&](int i)
 	{ return "(" + std::to_string(i % t.w) + ", " + std::to_string(i / t.w) + ")"; };
 	const auto walkable = [&](int i)
@@ -1498,15 +1236,12 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		if (L.ford[i] && !walkable(i))
 			return "The ford at " + where(i) + " is blocked.";
 	}
-	const auto workers = unitTilesByTeam(map, teams);
-	if (teams < 1 || workers[0].empty())
-		return "Colony 0 has no workers to walk the map.";
-	std::vector<unsigned char> open(n, 0), source(n, 0);
-	for (int i = 0; i < n; ++i)
-		open[i] = walkable(i);
-	const std::vector<int> fromFirst = stepsFrom(t, tileMask(t, workers[0]), open);
-	if (const int cut = firstColonyCutOff(fromFirst, workers); cut >= 0)
-		return "Colony " + std::to_string(cut) + " cannot walk to colony 0.";
+	const ColonyWalk walk = walkFromFirstColony(map, teams, "the map", "");
+	if (!walk.error.empty())
+		return walk.error;
+	const std::vector<std::vector<int>> &workers = walk.workers;
+	const std::vector<int> &fromFirst = walk.steps;
+	const std::vector<unsigned char> open = walkableTiles(map);
 	const std::vector<unsigned char> heart = heartTiles(map, L);
 	bool heartReached = false;
 	for (int i = 0; i < n && !heartReached; ++i)

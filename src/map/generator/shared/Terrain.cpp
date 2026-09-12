@@ -9,6 +9,7 @@
 #include "GlobalContainer.h"
 #include "HeightMap.h"
 #include "Map.h"
+#include "Pipeline.h"
 #include "Regions.h"
 #include "Resources.h"
 #include "StartingPositions.h"
@@ -37,16 +38,12 @@ void MapGeneration::readResourceControls(HeightFieldOptions &options,
 void MapGeneration::openStartsBuriedByAmounts(Game &game, GenerationContext &context,
 											  const HeightFieldOptions &options)
 {
-	if (options.wheat == 100 && options.wood == 100 && options.stone == 100 && options.algae == 100)
-		return;
 	// The resource bands are painted from map-wide noise levels with no awareness of where any team
-	// starts, so an amount well above the default widens them until they can wall a colony in with
-	// nowhere left to build — which the wheat/wood guarantee inside generateHeightField doesn't
-	// address, since a colony buried in wheat has wheat at its feet. placeStarts has already carved
-	// out the swarm's own rectangle by now, so nothing needs to be kept clear for it, and the
-	// guarantee runs once more in case the clearing took the colony's nearest crop with the wall.
-	openCrampedStarts(game, context);
-	guaranteeStartingResources(game, context, 24, 32);
+	// starts, so an amount well above the default widens them until they can wall a colony in.
+	// placeStarts has already carved out the swarm's own rectangle by now, so nothing needs to be
+	// kept clear for it.
+	reopenCrampedStarts(game, context,
+						{options.wheat, options.wood, options.stone, options.algae});
 }
 bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 										const HeightFieldOptions &options,

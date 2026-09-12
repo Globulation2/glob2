@@ -4,9 +4,13 @@
 #include "Game.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
+#include "Grid.h"
 #include "HeightMap.h"
+#include "Pipeline.h"
+#include "Planting.h"
 #include "Resources.h"
 #include "Settlements.h"
+#include "Sketch.h"
 #include "Unit.h"
 #include <algorithm>
 #include <array>
@@ -36,8 +40,6 @@ using namespace MapGeneration;
 namespace
 {
 
-constexpr double pi = 3.14159265358979323846;
-
 // The clearings sit near a ring at this share of the half side, evenly spaced from a random start,
 // each nudged by up to these shares of a wedge and of the ring's radius.
 constexpr double kHomeRing = 0.58;
@@ -60,7 +62,6 @@ constexpr int kLeveeSectors = 36;
 // Every home starts identical: wheat and wood beside its pond, a quarry, all unscaled.
 constexpr int kHomeWheat = 40;
 constexpr int kHomeWood = 30;
-constexpr int kSwarmClearance = 2;
 // The kit keeps this far from the swarm beyond the clearance, so there is room to build beside it.
 constexpr int kBuildRoom = 4;
 // The swamp's standing wood and wheat, as shares of the grass off the clearings, at 100.
@@ -79,53 +80,6 @@ constexpr double kMaximumCoverage = 0.6;
 // will be cleared, onto stone or fruit, and onto water that becomes a ford.
 constexpr int kStepOpen = 1, kStepDeposit = 3, kStepEternal = 8, kStepFord = 25;
 
-struct Torus
-{
-	int w, h;
-	int x(int v) const { return ((v % w) + w) % w; }
-	int y(int v) const { return ((v % h) + h) % h; }
-	int at(int px, int py) const { return y(py) * w + x(px); }
-	int offsetX(int from, int to) const
-	{
-		const int d = x(to - from);
-		return d > w / 2 ? d - w : d;
-	}
-	int offsetY(int from, int to) const
-	{
-		const int d = y(to - from);
-		return d > h / 2 ? d - h : d;
-	}
-};
-
-std::vector<int> stepsFrom(const Torus &t, const std::vector<unsigned char> &source,
-						   const std::vector<unsigned char> &open)
-{
-	std::vector<int> dist(size_t(t.w) * t.h, -1);
-	std::vector<int> queue;
-	queue.reserve(dist.size());
-	for (size_t i = 0; i < dist.size(); ++i)
-		if (source[i])
-		{
-			dist[i] = 0;
-			queue.push_back(int(i));
-		}
-	for (size_t head = 0; head < queue.size(); ++head)
-	{
-		const int x = queue[head] % t.w, y = queue[head] / t.w;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				const int n = t.at(x + dx, y + dy);
-				if (dist[n] < 0 && open[n])
-				{
-					dist[n] = dist[queue[head]] + 1;
-					queue.push_back(n);
-				}
-			}
-	}
-	return dist;
-}
-
 struct Geometry
 {
 	int teams, half, clearing, buildRoom;
@@ -141,7 +95,7 @@ double expectedCoverage(const Geometry &g)
 {
 	const double meanScale = (kDryScale + kWetScale) / 2;
 	const double radius2 = g.poolRadius * g.poolRadius * meanScale * meanScale * 1.1;
-	const double pool = pi * radius2 * 1.2;
+	const double pool = kPi * radius2 * 1.2;
 	const double slough = pool * kSloughGrowth * kSloughGrowth * kSloughStretch / 1.2;
 	const double nominal = ((1 - g.sloughs) * pool + g.sloughs * slough) / (g.spacing * g.spacing);
 	return 1 - std::exp(-nominal);
@@ -152,7 +106,7 @@ double expectedCoverage(const Geometry &g)
 bool clearingsFit(const Geometry &g)
 {
 	const double nearest =
-		2 * g.homeRing * (1 - g.jitterRadius) * std::sin(pi * (1 - 2 * g.jitterTurn) / g.teams);
+		2 * g.homeRing * (1 - g.jitterRadius) * std::sin(kPi * (1 - 2 * g.jitterTurn) / g.teams);
 	const bool fitsRing = g.teams < 2 || nearest >= 2 * g.reach;
 	const bool fitsWrap = g.homeRing * (1 + g.jitterRadius) + g.reach <= g.half - 1;
 	return fitsRing && fitsWrap;
@@ -257,8 +211,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	{ return context.bounded(stream, 2001) / 1000.0 - 1; };
 
 	// The homes: near a ring, evenly spaced from a random start, each nudged a little.
-	const double phase = context.bounded("glades-layout", 3600) / 3600.0 * 2 * pi;
-	const double wedge = 2 * pi / teams;
+	const double phase = context.bounded("glades-layout", 3600) / 3600.0 * 2 * kPi;
+	const double wedge = 2 * kPi / teams;
 	for (int k = 0; k < teams; ++k)
 	{
 		const double a = phase + wedge * (k + 0.5 + g.jitterTurn * unit("glades-layout"));
@@ -302,7 +256,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			RadialShape shape(radius, 0.45, context, "glades-pools");
 			const double aspect =
 				slough ? kSloughStretch : 1 + context.bounded("glades-pools", 401) / 1000.0;
-			const double spin = context.bounded("glades-pools", 3600) / 3600.0 * pi;
+			const double spin = context.bounded("glades-pools", 3600) / 3600.0 * kPi;
 			L.pools.push_back({px, py, aspect, spin, shape.maximumRadius() * aspect + 1, shape});
 		}
 
@@ -339,7 +293,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				else if (d < edge + kLeveeWidth)
 				{
 					const int sector =
-						int(std::fmod(a + 2 * pi, 2 * pi) / (2 * pi) * kLeveeSectors) %
+						int(std::fmod(a + 2 * kPi, 2 * kPi) / (2 * kPi) * kLeveeSectors) %
 						kLeveeSectors;
 					L.water[i] = 0;
 					L.sand[i] = home.standing[sector];
@@ -353,89 +307,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	return L;
 }
 
-// Grass may never touch water (Map::regenerateMap reads each tile from its four undermap corners),
-// so every land corner beside water becomes sand.
-void layBeaches(std::vector<unsigned char> &terrain, const Torus &t)
-{
-	const std::vector<unsigned char> original(terrain);
-	for (int y = 0; y < t.h; ++y)
-		for (int x = 0; x < t.w; ++x)
-		{
-			const int i = y * t.w + x;
-			if (original[i] == WATER)
-				continue;
-			bool shore = false;
-			for (int dy = -1; dy <= 1 && !shore; ++dy)
-				for (int dx = -1; dx <= 1 && !shore; ++dx)
-					shore = original[t.at(x + dx, y + dy)] == WATER;
-			if (shore)
-				terrain[i] = SAND;
-		}
-}
-
-template <typename Eligible>
-int growPatch(Map &map, const Torus &t, int seed, int type, int count, Eligible eligible)
-{
-	std::vector<unsigned char> queued(size_t(t.w) * t.h, 0);
-	std::vector<int> frontier{seed};
-	queued[seed] = 1;
-	int placed = 0;
-	static const int steps[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-	for (size_t head = 0; head < frontier.size() && placed < count; ++head)
-	{
-		const int i = frontier[head], x = i % t.w, y = i / t.w;
-		if (!eligible(i) || !map.isResourceAllowed(x, y, type))
-			continue;
-		map.setResource(x, y, type, 1);
-		++placed;
-		for (const auto &step : steps)
-		{
-			const int m = t.at(x + step[0], y + step[1]);
-			if (!queued[m])
-			{
-				queued[m] = 1;
-				frontier.push_back(m);
-			}
-		}
-	}
-	return placed;
-}
-
-bool clearGround(const Map &map, int x, int y)
-{
-	return map.isGrass(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID &&
-		   map.getGroundUnit(x, y) == NOGUID;
-}
-
-template <typename Eligible>
-int seedNear(const Torus &t, int ax, int ay, int within, Eligible eligible)
-{
-	int seed = -1, nearest = INT_MAX;
-	for (int dy = -within; dy <= within; ++dy)
-		for (int dx = -within; dx <= within; ++dx)
-		{
-			const int i = t.at(ax + dx, ay + dy);
-			if (eligible(i) && dx * dx + dy * dy < nearest)
-			{
-				nearest = dx * dx + dy * dy;
-				seed = i;
-			}
-		}
-	return seed;
-}
-
 // Every home's kit, identical and unscaled: wheat and wood beside the pond on the sides, a quarry
 // on the near side towards the map's centre. The rest of the clearing starts clear.
 void furnishHomes(Map &map, const Layout &L, GenerationContext &context)
 {
 	const Torus &t = L.t;
-	const int n = t.w * t.h;
-	std::vector<unsigned char> reserved(n, 0);
-	const int room = kSwarmClearance + L.g.buildRoom;
-	for (int team = 0; team < L.g.teams; ++team)
-		for (int dy = -room; dy < 4 + room; ++dy)
-			for (int dx = -room; dx < 4 + room; ++dx)
-				reserved[t.at(context.bootX[team] + dx, context.bootY[team] + dy)] = 1;
+	const std::vector<unsigned char> reserved =
+		swarmSurroundings(t, context, kSwarmClearance + L.g.buildRoom);
 	for (int team = 0; team < L.g.teams; ++team)
 	{
 		const Home &home = L.homes[team];
@@ -524,32 +402,6 @@ void stockSwamp(Map &map, const Layout &L, GenerationContext &context, const Eve
 		}
 }
 
-// Algae in the pools.
-void seedAlgae(Map &map, GenerationContext &context, const Torus &t, int algaePercent)
-{
-	std::vector<MapGeneratorPoint> water;
-	for (int i = 0; i < t.w * t.h; ++i)
-		if (map.isWater(i % t.w, i / t.w))
-			water.emplace_back(i % t.w, i / t.w);
-	if (water.empty())
-		return;
-	for (int clump = 0; clump < scaledCount(int(water.size()) / 40, algaePercent); ++clump)
-		placeResourceClump(map, context, water[context.bounded("glades-algae", water.size())], ALGA,
-						   1);
-}
-
-void clearAroundSwarms(Map &map, const GenerationContext &context, const Torus &t)
-{
-	for (int team = 0; team < context.request.nbTeams; ++team)
-		for (int dy = -kSwarmClearance; dy < 4 + kSwarmClearance; ++dy)
-			for (int dx = -kSwarmClearance; dx < 4 + kSwarmClearance; ++dx)
-			{
-				const int x = t.x(context.bootX[team] + dx), y = t.y(context.bootY[team] + dy);
-				if (map.isResource(x, y))
-					map.setNoResource(x, y, 1);
-			}
-}
-
 // Every colony must be able to walk to colony 0 at the start. Where the swamp or the sloughs box
 // one in, the cheapest way through is opened: deposits on it are cleared and water on it becomes a
 // sand ford. The map may look odd there; it does not fail.
@@ -594,7 +446,7 @@ void openRoutes(Game &game, const Layout &L, GenerationContext &context)
 				}
 		return tiles;
 	};
-	static const int steps[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+	const auto &steps = kCardinalSteps;
 	bool changed = false;
 	for (int team = 1; team < teams; ++team)
 	{
@@ -689,7 +541,7 @@ bool generate(Game &game, GenerationContext &context)
 	const int n = t.w * t.h;
 
 	context.stage = "glades terrain";
-	std::vector<unsigned char> terrain(n, GRASS);
+	TerrainSketch terrain(n, GRASS);
 	for (int i = 0; i < n; ++i)
 	{
 		if (L.water[i])
@@ -698,33 +550,34 @@ bool generate(Game &game, GenerationContext &context)
 			terrain[i] = SAND;
 	}
 	layBeaches(terrain, t);
-	for (int y = 0; y < t.h; ++y)
-		for (int x = 0; x < t.w; ++x)
-			map.setUMTerrain(x, y, TerrainType(terrain[y * t.w + x]));
-	map.rebuildTerrain();
+	writeUndermap(map, terrain);
 
 	context.stage = "glades colonies";
-	for (int team = 0; team < teams; ++team)
+	const auto clearing = [&](int team)
 	{
-		const Home &home = L.homes[team];
 		std::vector<unsigned char> ground(n, 0);
 		for (int i = 0; i < n; ++i)
 			ground[i] = L.clearingOf[i] == team && map.isGrass(i % t.w, i / t.w);
-		// The swarm stands just past the pond's beach on the far side from the map's centre, leaving
-		// the rest of that side to build on; in a clearing too small for a pond it takes the middle.
+		return ground;
+	};
+	// The swarm stands just past the pond's beach on the far side from the map's centre, leaving
+	// the rest of that side to build on; in a clearing too small for a pond it takes the middle.
+	const auto anchor = [&](int team)
+	{
+		const Home &home = L.homes[team];
 		const double a =
 			std::atan2(double(t.offsetY(L.cy, home.y)), double(t.offsetX(L.cx, home.x)));
 		const double back = L.g.pond > 0 ? L.g.pond * 1.3 + 4 : 0;
-		const MapGeneratorPoint anchor(home.x + int(std::lround(back * std::cos(a))) - 2,
-									   home.y + int(std::lround(back * std::sin(a))) - 2);
-		if (!placeSettlement(game, context, team, ground, anchor, "glades-starts"))
-			return false;
-	}
+		return MapGeneratorPoint(home.x + int(std::lround(back * std::cos(a))) - 2,
+								 home.y + int(std::lround(back * std::sin(a))) - 2);
+	};
+	if (!settleColonies(game, context, "glades-starts", clearing, anchor))
+		return false;
 
 	context.stage = "glades resources";
 	furnishHomes(map, L, context);
 	stockSwamp(map, L, context, o);
-	seedAlgae(map, context, t, o.algae);
+	seedAlgae(map, context, t, "glades-algae", o.algae, AlgaeBand::anyWater());
 	clearAroundSwarms(map, context, t);
 	guaranteeStartingResources(game, context, 24, 32, 0);
 	clearAroundSwarms(map, context, t);
@@ -749,13 +602,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	if (!L.failure.empty())
-		return "The glades design could not be rebuilt: " + L.failure;
 	const Map &map = game.map;
+	if (const std::string mismatch = designMismatch(L, map, "glades"); !mismatch.empty())
+		return mismatch;
 	const Torus &t = L.t;
 	const int n = t.w * t.h, teams = context.request.nbTeams;
-	if (map.getW() != t.w || map.getH() != t.h)
-		return "The glades design does not match the map size.";
 	for (int k = 0; k < teams && L.g.pond > 0; ++k)
 	{
 		bool pond = false;
@@ -769,34 +620,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		if (L.sand[i] && map.isResource(i % t.w, i / t.w))
 			return "A deposit stands on the levee at (" + std::to_string(i % t.w) + ", " +
 				   std::to_string(i / t.w) + ").";
-	std::vector<std::vector<int>> workers(std::max(teams, 1));
-	for (int i = 0; i < n; ++i)
-	{
-		const Uint16 gid = map.getGroundUnit(i % t.w, i / t.w);
-		if (gid != NOGUID && Unit::GIDtoTeam(gid) < teams)
-			workers[Unit::GIDtoTeam(gid)].push_back(i);
-	}
-	if (teams < 1 || workers[0].empty())
-		return "Colony 0 has no workers to walk the glades.";
-	std::vector<unsigned char> open(n, 0), source(n, 0);
-	for (int i = 0; i < n; ++i)
-	{
-		const int x = i % t.w, y = i / t.w;
-		open[i] = !map.isWater(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
-	}
-	for (int i : workers[0])
-		source[i] = 1;
-	const std::vector<int> steps = stepsFrom(t, source, open);
-	for (int team = 1; team < teams; ++team)
-	{
-		bool arrived = false;
-		for (int i : workers[team])
-			arrived = arrived || steps[i] >= 0;
-		if (!arrived)
-			return "Colony " + std::to_string(team) +
-				   " cannot walk to colony 0 through the glades.";
-	}
-	return "";
+	return walkFromFirstColony(map, teams, "the glades", "through the glades").error;
 }
 } // namespace
 

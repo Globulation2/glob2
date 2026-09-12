@@ -5,6 +5,7 @@
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "GlobalContainer.h"
+#include "Grid.h"
 #include "Regions.h"
 #include "Resources.h"
 #include "Settlements.h"
@@ -16,16 +17,6 @@
 using namespace MapGeneration;
 namespace
 {
-constexpr double pi = 3.14159265358979323846;
-int wrapDelta(int a, int b, int size)
-{
-	int d = a - b;
-	if (d > size / 2)
-		d -= size;
-	else if (d < -size / 2)
-		d += size;
-	return d;
-}
 void createJaggedIsland(Map &map, GenerationContext &context, std::vector<int> &grid, int area,
 						int x, int y, int radius, double roughness)
 {
@@ -167,7 +158,7 @@ static void sizeIslands(Game &game, GenerationContext &context,
 	L.areaNumber += 1;
 	for (unsigned int b = 0; b < bridgeAngles.size() && options.moatBridges; ++b)
 	{
-		double theta = bridgeAngles[b] * pi / 180.0;
+		double theta = bridgeAngles[b] * kPi / 180.0;
 		for (int r = L.commonsRadius - 2; r <= L.commonsRadius + L.moatWidth + 2; ++r)
 		{
 			int cx = L.commonsCenter.x + (int)round(r * cos(theta));
@@ -228,9 +219,7 @@ static void paintTerrain(Game &game, GenerationContext &context,
 		{
 			if (L.grid[y * W + x] == L.commonsAreaNumber || L.grid[y * W + x] == L.bridgeAreaNumber)
 				continue;
-			int dx = wrapDelta(x, L.commonsCenter.x, W);
-			int dy = wrapDelta(y, L.commonsCenter.y, H);
-			double r = sqrt((double)(dx * dx + dy * dy));
+			double r = sqrt((double)Torus{W, H}.dist2(x, y, L.commonsCenter.x, L.commonsCenter.y));
 			if (r >= L.commonsRadius - 1 && r < L.commonsRadius + L.moatWidth)
 			{
 				game.map.setUMatPos(x, y, WATER, 1);

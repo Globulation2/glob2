@@ -6,9 +6,13 @@
 #include "Grid.h"
 #include "Geometry.h"
 #include "HeightMap.h"
+#include "Pipeline.h"
+#include "Planting.h"
 #include "Resources.h"
 #include "Settlements.h"
+#include "Sketch.h"
 #include "Unit.h"
+#include "Wedge.h"
 #include <algorithm>
 #include <array>
 #include <climits>
@@ -36,8 +40,6 @@ using namespace MapGeneration;
 namespace
 {
 
-constexpr double pi = 3.14159265358979323846;
-
 // The home islands' centres lie this far out, as a share of the half side, and keep this much sand
 // from each other, from the map's wrap and from every other island.
 constexpr double kHomeRing = 0.58;
@@ -45,7 +47,6 @@ constexpr int kIslandGap = 8;
 // Every home starts identical: wheat and wood beside its pond, a quarry, all unscaled.
 constexpr int kHomeWheat = 40;
 constexpr int kHomeWood = 30;
-constexpr int kSwarmClearance = 2;
 // Neutral islands' radii as shares of the home islands' (never below a size that holds a pond and
 // a field), and the central island's as a share of the half side.
 constexpr double kNeutralLow = 0.45, kNeutralHigh = 0.6;
@@ -78,7 +79,7 @@ Geometry geometryFor(const GenerationRequest &r)
 	const double reach = 1 + g.amplitude;
 	if (g.teams >= 2)
 		radius =
-			std::min(radius, (2 * g.homeRing * std::sin(pi / g.teams) - kIslandGap) / (2 * reach));
+			std::min(radius, (2 * g.homeRing * std::sin(kPi / g.teams) - kIslandGap) / (2 * reach));
 	radius = std::min(radius, (g.half - kIslandGap / 2.0 - g.homeRing) / reach);
 	if (g.centralRadius > 0)
 		radius = std::min(radius, (g.homeRing - g.centralRadius * 1.3 - kIslandGap) / reach);
@@ -86,8 +87,8 @@ Geometry geometryFor(const GenerationRequest &r)
 	return g;
 }
 
-// A round feature in a wedge's frame: arc offset from the wedge's middle, radius from the centre,
-// and what it is. Shapes are evaluated in the wedge's frame too, so every wedge gets the same.
+// A feature in a wedge's frame (Blob) and what it is. Shapes are evaluated in the wedge's frame
+// too, so every wedge gets the same.
 enum Kind
 {
 	HomeIsland = 0,
@@ -97,19 +98,11 @@ enum Kind
 	Pool,
 	Lagoon
 };
-struct Blob
+struct Feature : Blob
 {
 	Kind kind;
-	double s, r, reach, stretch, turn;
-	int prize; // neutral islands: 0 fruit, 1 stone, 2 wheat
-	RadialShape shape;
-	bool holds(double ds, double dr) const
-	{
-		// Rotate into the shape's own frame and undo its stretch.
-		const double c = std::cos(turn), sn = std::sin(turn);
-		const double px = (ds * c + dr * sn) / stretch, py = (-ds * sn + dr * c) * stretch;
-		return std::hypot(px, py) < shape.radiusAt(std::atan2(py, px));
-	}
+	double reach; // the blob's fullest extent, stretched
+	int prize;    // neutral islands: 0 fruit, 1 stone, 2 wheat
 };
 
 struct Layout
@@ -118,7 +111,7 @@ struct Layout
 	Geometry g{};
 	int cx = 0, cy = 0;
 	double phase = 0;
-	std::vector<Blob> blobs;                         // in the wedge's frame
+	std::vector<Feature> blobs;                      // in the wedge's frame
 	std::vector<int> homeX, homeY;                   // every home island's centre
 	std::vector<int> pondX, pondY;                   // and its pond's
 	std::vector<unsigned char> grass, water, island; // per tile; island: which home, else -1 below
@@ -139,16 +132,19 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const TidalFlatsOptions o(request);
 	L.cx = t.w / 2;
 	L.cy = t.h / 2;
-	L.phase = context.bounded("flats-layout", 3600) / 3600.0 * 2 * pi;
-	const double wedge = 2 * pi / teams;
-	const double arcHalfAt = [&](double d) { return teams < 2 ? pi * d : pi * d / teams; }(1.0);
+	L.phase = context.bounded("flats-layout", 3600) / 3600.0 * 2 * kPi;
+	const double wedge = 2 * kPi / teams;
+	const double arcHalfAt = [&](double d) { return teams < 2 ? kPi * d : kPi * d / teams; }(1.0);
 
 	// Everything in one wedge, then stamped into every wedge: the home island in the middle of the
 	// ring, then neutral islands, sandbars, lagoons and pools that keep clear of each other, of the
 	// central island and of the map's wrap.
-	std::vector<Blob> &blobs = L.blobs;
-	blobs.push_back({HomeIsland, 0.0, g.homeRing, 0, 1.0, 0.0, -1,
-					 RadialShape(g.homeRadius, g.amplitude, context, "flats-coast")});
+	std::vector<Feature> &blobs = L.blobs;
+	blobs.push_back({{0.0, g.homeRing, 1.0, 0.0,
+					  RadialShape(g.homeRadius, g.amplitude, context, "flats-coast")},
+					 HomeIsland,
+					 0,
+					 -1});
 	blobs.back().reach = blobs.back().shape.maximumRadius();
 	const auto fits = [&](double s0, double r0, double reach, double gap)
 	{
@@ -158,7 +154,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			return false;
 		if (teams >= 2 && std::abs(s0) + reach + gap / 2 > arcHalfAt * r0)
 			return false;
-		for (const Blob &b : blobs)
+		for (const Feature &b : blobs)
 		{
 			const double need =
 				reach + b.reach + std::max(gap, b.kind == HomeIsland ? double(kIslandGap) : gap);
@@ -176,12 +172,12 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			const double s0 = (context.bounded(stream, 2001) / 1000.0 - 1) * arcHalfAt * r0;
 			const double radius = low + context.bounded(stream, 1000) / 1000.0 * (high - low);
 			const double stretch = stretched ? 1.2 + context.bounded(stream, 81) / 100.0 : 1.0;
-			const double turn = stretched ? context.bounded(stream, 3600) / 3600.0 * pi : 0.0;
+			const double turn = stretched ? context.bounded(stream, 3600) / 3600.0 * kPi : 0.0;
 			RadialShape shape(radius, roughness, context, stream);
 			const double reach = shape.maximumRadius() * stretch;
 			if (!fits(s0, r0, reach, gap))
 				continue;
-			blobs.push_back({kind, s0, r0, reach, stretch, turn, placed % 2, shape});
+			blobs.push_back({{s0, r0, stretch, turn, shape}, kind, reach, placed % 2});
 			++placed;
 		}
 	};
@@ -217,13 +213,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const double pondRadius = std::clamp(0.2 * g.homeRadius, 3.0, 6.0);
 	const RadialShape pond(pondRadius, 0.3, context, "flats-ponds");
 	const RadialShape oasis(2.5, 0.3, context, "flats-ponds");
+	const WedgeFrame frame(t, L.phase, teams);
 	for (int y = 0; y < t.h; ++y)
 		for (int x = 0; x < t.w; ++x)
 		{
 			const int i = y * t.w + x;
-			const int dx = t.offsetX(L.cx, x), dy = t.offsetY(L.cy, y);
-			const double d = std::hypot(double(dx), double(dy));
-			const double theta = std::atan2(double(dy), double(dx));
+			const WedgeFrame::Cell cell = frame.cell(x, y);
+			const double d = cell.d, theta = cell.theta;
 			L.radius[i] = d;
 			L.angle[i] = theta;
 			if (g.centralRadius > 0 && d < central.radiusAt(theta))
@@ -234,11 +230,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 					L.water[i] = 1;
 				continue;
 			}
-			const double turn = std::fmod(theta - L.phase + 4 * pi, 2 * pi);
-			const int k = std::min(teams - 1, int(turn / wedge));
-			const double u = turn / wedge - k;
-			const double s = d * (u - 0.5) * wedge;
-			for (const Blob &b : blobs)
+			const int k = cell.k;
+			const double s = cell.s;
+			for (const Feature &b : blobs)
 			{
 				if (!b.holds(s - b.s, d - b.r))
 					continue;
@@ -266,78 +260,6 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	return L;
 }
 
-// Grass may never touch water (Map::regenerateMap reads each tile from its four undermap corners),
-// so every land corner beside water becomes sand.
-void layBeaches(std::vector<unsigned char> &terrain, const Torus &t)
-{
-	const std::vector<unsigned char> original(terrain);
-	for (int y = 0; y < t.h; ++y)
-		for (int x = 0; x < t.w; ++x)
-		{
-			const int i = y * t.w + x;
-			if (original[i] == WATER)
-				continue;
-			bool shore = false;
-			for (int dy = -1; dy <= 1 && !shore; ++dy)
-				for (int dx = -1; dx <= 1 && !shore; ++dx)
-					shore = original[t.at(x + dx, y + dy)] == WATER;
-			if (shore)
-				terrain[i] = SAND;
-		}
-}
-
-template <typename Eligible>
-int growPatch(Map &map, const Torus &t, int seed, int type, int count, Eligible eligible)
-{
-	std::vector<unsigned char> queued(size_t(t.w) * t.h, 0);
-	std::vector<int> frontier{seed};
-	queued[seed] = 1;
-	int placed = 0;
-	const auto &steps = kCardinalSteps;
-	for (size_t head = 0; head < frontier.size() && placed < count; ++head)
-	{
-		const int i = frontier[head], x = i % t.w, y = i / t.w;
-		if (!eligible(i) || !map.isResourceAllowed(x, y, type))
-			continue;
-		map.setResource(x, y, type, 1);
-		++placed;
-		for (const auto &step : steps)
-		{
-			const int m = t.at(x + step[0], y + step[1]);
-			if (!queued[m])
-			{
-				queued[m] = 1;
-				frontier.push_back(m);
-			}
-		}
-	}
-	return placed;
-}
-
-bool clearGround(const Map &map, int x, int y)
-{
-	return map.isGrass(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID &&
-		   map.getGroundUnit(x, y) == NOGUID;
-}
-
-// The nearest eligible tile to a point, within a box.
-template <typename Eligible>
-int seedNear(const Torus &t, int ax, int ay, int within, Eligible eligible)
-{
-	int seed = -1, nearest = INT_MAX;
-	for (int dy = -within; dy <= within; ++dy)
-		for (int dx = -within; dx <= within; ++dx)
-		{
-			const int i = t.at(ax + dx, ay + dy);
-			if (eligible(i) && dx * dx + dy * dy < nearest)
-			{
-				nearest = dx * dx + dy * dy;
-				seed = i;
-			}
-		}
-	return seed;
-}
-
 // Every home's kit, identical and unscaled: wheat and wood beside the pond on the side away from
 // the swarm, a quarry on the island's rim towards the centre of the map; then its own scaled
 // ambient farmland and outcrops.
@@ -345,11 +267,7 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const T
 {
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
-	std::vector<unsigned char> reserved(n, 0);
-	for (int team = 0; team < L.g.teams; ++team)
-		for (int dy = -kSwarmClearance; dy < 4 + kSwarmClearance; ++dy)
-			for (int dx = -kSwarmClearance; dx < 4 + kSwarmClearance; ++dx)
-				reserved[t.at(context.bootX[team] + dx, context.bootY[team] + dy)] = 1;
+	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	HeightMap split(t.w, t.h, context.stream("flats-home-split"));
 	split.makePlain(6);
@@ -484,11 +402,11 @@ void stockIslands(Map &map, const Layout &L, GenerationContext &context, const T
 		const auto eligible = [&](int i)
 		{ return L.islandOf[i] == -2 && clearGround(map, i % t.w, i / t.w); };
 		const double rho = std::max(1.5, 0.22 * L.g.centralRadius) + 4;
-		const double spin = context.bounded("flats-prizes", 3600) / 3600.0 * 2 * pi;
+		const double spin = context.bounded("flats-prizes", 3600) / 3600.0 * 2 * kPi;
 		if (scaledCount(1, o.fruit) > 0)
 			for (int f = 0; f < 3; ++f)
 			{
-				const double a = spin + 2 * pi * f / 3;
+				const double a = spin + 2 * kPi * f / 3;
 				const int seed = seedNear(t, L.cx + int(std::lround(rho * std::cos(a))),
 										  L.cy + int(std::lround(rho * std::sin(a))), 8, eligible);
 				if (seed >= 0)
@@ -496,39 +414,12 @@ void stockIslands(Map &map, const Layout &L, GenerationContext &context, const T
 			}
 		if (scaledCount(1, o.stone) > 0)
 			if (const int seed = seedNear(
-					t, L.cx + int(std::lround((L.g.centralRadius - 4) * std::cos(spin + pi / 3))),
-					L.cy + int(std::lround((L.g.centralRadius - 4) * std::sin(spin + pi / 3))), 8,
+					t, L.cx + int(std::lround((L.g.centralRadius - 4) * std::cos(spin + kPi / 3))),
+					L.cy + int(std::lround((L.g.centralRadius - 4) * std::sin(spin + kPi / 3))), 8,
 					eligible);
 				seed >= 0)
 				placeResourceClump(map, context, {seed % t.w, seed / t.w}, STONE, 2);
 	}
-}
-
-// Algae in every pool and lagoon: water beside sand is exactly where it regrows.
-void seedAlgae(Map &map, GenerationContext &context, const Torus &t, int algaePercent)
-{
-	const int n = t.w * t.h;
-	std::vector<MapGeneratorPoint> water;
-	for (int i = 0; i < n; ++i)
-		if (map.isWater(i % t.w, i / t.w))
-			water.emplace_back(i % t.w, i / t.w);
-	if (water.empty())
-		return;
-	for (int clump = 0; clump < scaledCount(int(water.size()) / 40, algaePercent); ++clump)
-		placeResourceClump(map, context, water[context.bounded("flats-algae", water.size())], ALGA,
-						   1);
-}
-
-void clearAroundSwarms(Map &map, const GenerationContext &context, const Torus &t)
-{
-	for (int team = 0; team < context.request.nbTeams; ++team)
-		for (int dy = -kSwarmClearance; dy < 4 + kSwarmClearance; ++dy)
-			for (int dx = -kSwarmClearance; dx < 4 + kSwarmClearance; ++dx)
-			{
-				const int x = t.x(context.bootX[team] + dx), y = t.y(context.bootY[team] + dy);
-				if (map.isResource(x, y))
-					map.setNoResource(x, y, 1);
-			}
 }
 
 bool generate(Game &game, GenerationContext &context)
@@ -550,7 +441,7 @@ bool generate(Game &game, GenerationContext &context)
 	const int n = t.w * t.h;
 
 	context.stage = "flats terrain";
-	std::vector<unsigned char> terrain(n, SAND);
+	TerrainSketch terrain(n, SAND);
 	for (int i = 0; i < n; ++i)
 	{
 		if (L.grass[i])
@@ -559,32 +450,33 @@ bool generate(Game &game, GenerationContext &context)
 			terrain[i] = WATER;
 	}
 	layBeaches(terrain, t);
-	for (int y = 0; y < t.h; ++y)
-		for (int x = 0; x < t.w; ++x)
-			map.setUMTerrain(x, y, TerrainType(terrain[y * t.w + x]));
-	map.rebuildTerrain();
+	writeUndermap(map, terrain);
 
 	context.stage = "flats colonies";
-	for (int team = 0; team < teams; ++team)
+	const auto island = [&](int team)
 	{
 		std::vector<unsigned char> home(n, 0);
 		for (int i = 0; i < n; ++i)
 			home[i] = L.islandOf[i] == team && map.isGrass(i % t.w, i / t.w);
-		// The swarm stands on the far side of the pond from the map's centre, a short walk from the
-		// fields; placeSettlement measures from the footprint's top-left tile.
+		return home;
+	};
+	// The swarm stands on the far side of the pond from the map's centre, a short walk from the
+	// fields; placeSettlement measures from the footprint's top-left tile.
+	const auto anchor = [&](int team)
+	{
 		const double a = std::atan2(double(t.offsetY(L.cy, L.homeY[team])),
 									double(t.offsetX(L.cx, L.homeX[team])));
 		const double back = std::clamp(0.2 * L.g.homeRadius, 3.0, 6.0) * 1.3 + 6;
-		const MapGeneratorPoint anchor(L.pondX[team] + int(std::lround(back * std::cos(a))) - 2,
-									   L.pondY[team] + int(std::lround(back * std::sin(a))) - 2);
-		if (!placeSettlement(game, context, team, home, anchor, "flats-starts"))
-			return false;
-	}
+		return MapGeneratorPoint(L.pondX[team] + int(std::lround(back * std::cos(a))) - 2,
+								 L.pondY[team] + int(std::lround(back * std::sin(a))) - 2);
+	};
+	if (!settleColonies(game, context, "flats-starts", island, anchor))
+		return false;
 
 	context.stage = "flats resources";
 	furnishHomes(map, L, context, o);
 	stockIslands(map, L, context, o);
-	seedAlgae(map, context, t, o.algae);
+	seedAlgae(map, context, t, "flats-algae", o.algae, AlgaeBand::anyWater());
 	clearAroundSwarms(map, context, t);
 	guaranteeStartingResources(game, context, 24, 32, 0);
 	clearAroundSwarms(map, context, t);
@@ -609,13 +501,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	if (!L.failure.empty())
-		return "The flats design could not be rebuilt: " + L.failure;
 	const Map &map = game.map;
+	if (const std::string mismatch = designMismatch(L, map, "flats"); !mismatch.empty())
+		return mismatch;
 	const Torus &t = L.t;
 	const int n = t.w * t.h, teams = context.request.nbTeams;
-	if (map.getW() != t.w || map.getH() != t.h)
-		return "The flats design does not match the map size.";
 	for (int k = 0; k < teams; ++k)
 	{
 		bool pond = false;
@@ -625,17 +515,14 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		if (!pond)
 			return "Colony " + std::to_string(k) + "'s island has lost its pond.";
 	}
-	const auto workers = unitTilesByTeam(map, teams);
-	if (teams < 1 || workers[0].empty())
-		return "Colony 0 has no workers to walk the flats.";
-	const std::vector<int> steps = stepsFrom(t, tileMask(t, workers[0]), walkableTiles(map));
-	if (const int cut = firstColonyCutOff(steps, workers); cut >= 0)
-		return "Colony " + std::to_string(cut) + " cannot walk to colony 0 over the flats.";
+	const ColonyWalk walk = walkFromFirstColony(map, teams, "the flats", "over the flats");
+	if (!walk.error.empty())
+		return walk.error;
 	if (L.g.centralRadius > 0)
 	{
 		bool arrived = false;
 		for (int i = 0; i < n && !arrived; ++i)
-			arrived = L.islandOf[i] == -2 && steps[i] >= 0;
+			arrived = L.islandOf[i] == -2 && walk.steps[i] >= 0;
 		if (!arrived)
 			return "The central island cannot be reached over the flats.";
 	}

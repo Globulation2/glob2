@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "GenerationContext.h"
 #include "Grid.h"
+#include "Pipeline.h"
 #include "Resources.h"
 #include "Settlements.h"
 #include "Unit.h"
@@ -680,7 +681,7 @@ bool generate(Game &game, GenerationContext &context)
 				map.setResource(nx, ny, STONE, 1);
 			}
 
-	for (int team = 0; team < teams; ++team)
+	const auto chamber = [&](int team)
 	{
 		const int cell = homes[team], c = g.column(cell), r = g.row(cell);
 		std::vector<unsigned char> home(size_t(map.getW()) * map.getH(), 0);
@@ -688,11 +689,13 @@ bool generate(Game &game, GenerationContext &context)
 			for (int x = g.xs[c]; x < g.xs[c + 1]; ++x)
 				if (!map.isWater(x, y))
 					home[size_t(y) * map.getW() + x] = 1;
-		// placeSettlement measures from the footprint's top-left tile; this centres the 4x4 swarm.
-		if (!placeSettlement(game, context, team, home, {g.centerX(cell) - 2, g.centerY(cell) - 2},
-							 "starts"))
-			return false;
-	}
+		return home;
+	};
+	// placeSettlement measures from the footprint's top-left tile; this centres the 4x4 swarm.
+	const auto centre = [&](int team)
+	{ return MapGeneratorPoint(g.centerX(homes[team]) - 2, g.centerY(homes[team]) - 2); };
+	if (!settleColonies(game, context, "starts", chamber, centre))
+		return false;
 
 	context.stage = "maze resources";
 	for (int home : homes)
@@ -721,15 +724,8 @@ bool generate(Game &game, GenerationContext &context)
 // spines) block the flood; units don't, since they move.
 std::string validateWorld(const Game &game, const GenerationContext &context)
 {
-	const Map &map = game.map;
-	const int teams = context.request.nbTeams;
-	const Torus t(map);
-	const auto units = unitTilesByTeam(map, teams);
-	const std::vector<int> reached =
-		stepsFrom(t, tileMask(t, teams > 0 ? units[0] : std::vector<int>{}), walkableTiles(map));
-	if (const int cut = firstColonyCutOff(reached, units, 0); cut >= 0)
-		return "Colony " + std::to_string(cut) + " cannot walk to colony 0 through the maze.";
-	return "";
+	return walkFromFirstColony(game.map, context.request.nbTeams, "the maze", "through the maze")
+		.error;
 }
 } // namespace
 

@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "GenerationContext.h"
 #include "Grid.h"
+#include "Pipeline.h"
 #include "Resources.h"
 #include "Settlements.h"
 #include "Topology.h"
@@ -1158,7 +1159,7 @@ bool generate(Game &game, GenerationContext &context)
 
 	context.stage = "highland colonies";
 	const std::vector<int> pondDistance = chebyshevDistance(t, L.pond);
-	for (int team = 0; team < teams; ++team)
+	const auto valleyFloor = [&](int team)
 	{
 		const Home &h = L.homes[team];
 		std::vector<unsigned char> home(n, 0);
@@ -1170,10 +1171,13 @@ bool generate(Game &game, GenerationContext &context)
 					pondDistance[i] >= 3)
 					home[i] = 1;
 			}
-		// placeSettlement measures from the footprint's top-left tile; this centres the 4x4 swarm.
-		if (!placeSettlement(game, context, team, home, {h.x - 2, h.y - 2}, "highlands-starts"))
-			return false;
-	}
+		return home;
+	};
+	// placeSettlement measures from the footprint's top-left tile; this centres the 4x4 swarm.
+	const auto centre = [&](int team)
+	{ return MapGeneratorPoint(L.homes[team].x - 2, L.homes[team].y - 2); };
+	if (!settleColonies(game, context, "highlands-starts", valleyFloor, centre))
+		return false;
 	context.stage = "highland resources";
 	std::vector<unsigned char> keepClear(n, 0), homeValley(L.valleys, 0);
 	for (const Pass &p : L.passes)
@@ -1223,13 +1227,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	if (!L.failure.empty())
-		return "The highland design could not be rebuilt: " + L.failure;
 	const Map &map = game.map;
+	if (const std::string mismatch = designMismatch(L, map, "highland"); !mismatch.empty())
+		return mismatch;
 	const Torus &t = L.t;
 	const int n = t.w * t.h, teams = context.request.nbTeams;
-	if (map.getW() != t.w || map.getH() != t.h)
-		return "The highland design does not match the map size.";
 	for (int i = 0; i < n; ++i)
 		if (L.ridge[i] && map.getResource(i % t.w, i / t.w).type != STONE)
 			return "The ridge at (" + std::to_string(i % t.w) + ", " + std::to_string(i / t.w) +
@@ -1245,11 +1247,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 					return "Pass " + std::to_string(k) + " at (" + std::to_string(p.x) + ", " +
 						   std::to_string(p.y) + ") is blocked.";
 	}
-	const auto units = unitTilesByTeam(map, teams);
-	const std::vector<int> reached =
-		stepsFrom(t, tileMask(t, teams > 0 ? units[0] : std::vector<int>{}), walkableTiles(map));
-	if (const int cut = firstColonyCutOff(reached, units, 0); cut >= 0)
-		return "Colony " + std::to_string(cut) + " cannot walk to colony 0 over the highlands.";
+	const ColonyWalk walk = walkFromFirstColony(map, teams, "the highlands", "over the highlands");
+	if (!walk.error.empty())
+		return walk.error;
+	const std::vector<int> &reached = walk.steps;
 	// Each pass must be on the colonies' walkable network and lead straight through: walking out
 	// of its box, without going far, reaches both valleys it joins.
 	for (size_t k = 0; k < L.passes.size(); ++k)

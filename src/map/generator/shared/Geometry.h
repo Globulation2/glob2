@@ -6,6 +6,7 @@
 struct GenerationContext;
 namespace MapGeneration
 {
+constexpr double kPi = 3.14159265358979323846;
 struct ShapePoint
 {
 	double x, y;

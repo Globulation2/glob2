@@ -5,10 +5,6 @@
 #include <stdexcept>
 namespace MapGeneration
 {
-namespace
-{
-constexpr double pi = 3.14159265358979323846;
-}
 ShapeTransform::ShapeTransform(ShapePoint c, double angle, double scale)
 	: center(c), cosine(std::cos(angle)), sine(std::sin(angle)), stretch(scale)
 {
@@ -40,7 +36,7 @@ RadialShape::RadialShape(double r, double roughness, GenerationContext &context,
 	{
 		const auto choices = std::uint32_t((amplitudeMaximum - 0.6) * 1000) + 1;
 		amplitude[i] = roughness * falloff[i] * (0.6 + context.bounded(stream, choices) / 1000.0);
-		phase[i] = 2 * pi * context.bounded(stream, 65536) / 65536.0;
+		phase[i] = 2 * kPi * context.bounded(stream, 65536) / 65536.0;
 	}
 }
 double RadialShape::radiusAt(double theta) const

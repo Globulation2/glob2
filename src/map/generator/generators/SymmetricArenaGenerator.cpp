@@ -4,6 +4,7 @@
 #include "BuildingType.h"
 #include "Game.h"
 #include "GenerationContext.h"
+#include "Geometry.h"
 #include "Grid.h"
 #include "GlobalContainer.h"
 #include "HeightMap.h"
@@ -20,6 +21,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+using MapGeneration::kPi;
 using MapGeneration::scaledCount;
 using MapGeneration::scaledShare;
 
@@ -35,8 +37,6 @@ using MapGeneration::scaledShare;
 // equalised over its orbit. validateWorld then checks the invariance on the finished world.
 namespace
 {
-
-constexpr double kPi = 3.14159265358979323846;
 
 // Clear grass round every swarm; nothing is planted or dug inside it.
 constexpr double kHomeRadius = 6.5;

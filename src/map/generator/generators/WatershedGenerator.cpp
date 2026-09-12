@@ -3,16 +3,18 @@
 #include "FertilityField.h"
 #include "Game.h"
 #include "GenerationContext.h"
-#include "Topology.h"
+#include "Geometry.h"
 #include "Grid.h"
+#include "Pipeline.h"
 #include "Resources.h"
+#include "Roads.h"
 #include "Settlements.h"
+#include "Topology.h"
 #include "Unit.h"
 #include <algorithm>
 #include <array>
 #include <cmath>
 #include <cstdint>
-#include <deque>
 #include <limits>
 #include <random>
 #include <string>
@@ -37,7 +39,6 @@ using namespace MapGeneration;
 namespace
 {
 
-constexpr double kPi = 3.14159265358979323846;
 constexpr const char *kLayoutStream = "watershed-layout";
 constexpr const char *kRiverStream = "watershed-rivers";
 constexpr const char *kStartStream = "watershed-starts";
@@ -1728,71 +1729,25 @@ void placeAlgae(Game &game, GenerationContext &context, const Layout &layout, co
 	}
 }
 
-// Clears the fewest resource tiles that let every colony walk to colony 0: a 0-1 search where
-// stepping onto a resource costs one and open ground nothing.
+// Clears the fewest resource tiles that let every colony walk to colony 0.
 bool connectColonies(Game &game, int teams, std::string &detail)
 {
 	Map &map = game.map;
-	const int w = map.getW(), h = map.getH();
+	const Torus t(map);
 	const auto workers = unitTilesByTeam(map, teams);
 	for (int team = 1; team < teams; ++team)
 	{
-		std::vector<int> reach =
-			stepsFrom(Torus(map), tileMask(Torus(map), workers[0]), walkableTiles(map));
+		const std::vector<int> reach = stepsFrom(t, tileMask(t, workers[0]), walkableTiles(map));
 		bool connected = false;
 		for (int p : workers[team])
 			connected = connected || reach[p] >= 0;
 		if (connected)
 			continue;
-		std::vector<int> cost(size_t(w) * h, std::numeric_limits<int>::max()),
-			from(size_t(w) * h, -1);
-		std::vector<unsigned char> target(size_t(w) * h, 0);
-		for (int p : workers[team])
-			target[p] = 1;
-		std::deque<int> queue;
-		for (int p : workers[0])
-		{
-			cost[p] = 0;
-			queue.push_back(p);
-		}
-		int reached = -1;
-		while (!queue.empty() && reached < 0)
-		{
-			const int p = queue.front();
-			queue.pop_front();
-			if (target[p])
-			{
-				reached = p;
-				break;
-			}
-			const int x = p % w, y = p / w;
-			for (int dy = -1; dy <= 1; ++dy)
-				for (int dx = -1; dx <= 1; ++dx)
-				{
-					const int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
-					const int q = ny * w + nx;
-					if (map.isWater(nx, ny) || map.getBuilding(nx, ny) != NOGBID)
-						continue;
-					const int step = map.isResource(nx, ny) ? 1 : 0;
-					if (cost[p] + step < cost[q])
-					{
-						cost[q] = cost[p] + step;
-						from[q] = p;
-						if (step)
-							queue.push_back(q);
-						else
-							queue.push_front(q);
-					}
-				}
-		}
-		if (reached < 0)
+		if (!openRoad(map, t, workers[0], tileMask(t, workers[team])))
 		{
 			detail = "colony " + std::to_string(team) + " has no land route to colony 0";
 			return false;
 		}
-		for (int p = reached; p >= 0; p = from[p])
-			if (map.isResource(p % w, p / w))
-				map.setNoResource(p % w, p / w, 1);
 	}
 	return true;
 }
@@ -1836,7 +1791,7 @@ bool generate(Game &game, GenerationContext &context)
 		return false;
 	for (int team = 0; team < teams; ++team)
 		game.addTeam();
-	for (int team = 0; team < teams; ++team)
+	const auto floodplain = [&](int team)
 	{
 		std::vector<unsigned char> home(size_t(w) * h, 0);
 		for (int dy = -6; dy <= 9; ++dy)
@@ -1846,9 +1801,10 @@ bool generate(Game &game, GenerationContext &context)
 						  y = wrapIndex(sites[team].y + dy, h);
 				home[size_t(y) * w + x] = !tiles.water[size_t(y) * w + x];
 			}
-		if (!placeSettlement(game, context, team, home, sites[team], "starts"))
-			return false;
-	}
+		return home;
+	};
+	if (!settleColonies(game, context, "starts", floodplain, [&](int team) { return sites[team]; }))
+		return false;
 
 	context.stage = "watershed resources";
 	std::vector<unsigned char> keepClear(size_t(w) * h, 0);

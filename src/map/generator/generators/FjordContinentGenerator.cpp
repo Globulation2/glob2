@@ -5,6 +5,7 @@
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "GlobalContainer.h"
+#include "Pipeline.h"
 #include "Regions.h"
 #include "Resources.h"
 #include "Settlements.h"
@@ -16,10 +17,9 @@
 using namespace MapGeneration;
 namespace
 {
-constexpr double pi = 3.14159265358979323846;
 double randomAngle(GenerationContext &context)
 {
-	return context.bounded("layout", 3600) / 3600.0 * 2 * pi;
+	return context.bounded("layout", 3600) / 3600.0 * 2 * kPi;
 }
 void createJaggedIsland(Map &map, GenerationContext &context, std::vector<int> &grid, int area,
 						int x, int y, int radius, double roughness)
@@ -120,7 +120,7 @@ FjordLayout computeLayout(Game &game, GenerationContext &context,
 	std::vector<double> teamTheta(nbTeams);
 	{
 		double baseRotation = randomAngle(context);
-		double slot = 2 * pi / nbTeams;
+		double slot = 2 * kPi / nbTeams;
 		for (int i = 0; i < nbTeams; ++i)
 		{
 			double jitter = ((context.bounded("layout", 2001)) / 1000.0 - 1.0) * 0.2 * slot;
@@ -169,9 +169,9 @@ std::vector<std::vector<MapGeneratorPoint>> carveFjords(Game &game, GenerationCo
 		int j = (k + 1) % layout.nbTeams;
 		double ti = layout.teamTheta[i];
 		double tj = layout.teamTheta[j];
-		double d = fmod(tj - ti, 2 * pi);
+		double d = fmod(tj - ti, 2 * kPi);
 		if (d < 0)
-			d += 2 * pi;
+			d += 2 * kPi;
 		double midTheta = ti + d / 2.0;
 
 		double mouthR = layout.coast.radiusAt(midTheta) + 3.0;
@@ -179,7 +179,7 @@ std::vector<std::vector<MapGeneratorPoint>> carveFjords(Game &game, GenerationCo
 		double tipU = layout.fjordInnerR * cos(midTheta), tipV = layout.fjordInnerR * sin(midTheta);
 		double perpU = -sin(midTheta), perpV = cos(midTheta);
 
-		double gap = std::min(d, 2 * pi - d);
+		double gap = std::min(d, 2 * kPi - d);
 		double amplitude = gap * mouthR * 0.17;
 		double phase = randomAngle(context);
 		double mouthWidth = options.fjordWidth + 0.6 + context.bounded("layout", 1400) / 1000.0;
@@ -198,8 +198,8 @@ std::vector<std::vector<MapGeneratorPoint>> carveFjords(Game &game, GenerationCo
 			double t = double(s) / steps;
 			double baseU = mouthU + t * (tipU - mouthU);
 			double baseV = mouthV + t * (tipV - mouthV);
-			double envelope = sin(pi * t);
-			double lateral = amplitude * sin(2 * pi * t + phase) * envelope;
+			double envelope = sin(kPi * t);
+			double lateral = amplitude * sin(2 * kPi * t + phase) * envelope;
 			double u = baseU + lateral * perpU;
 			double v = baseV + lateral * perpV;
 			double width = mouthWidth * (1 - t) + tipWidth * t;
@@ -731,20 +731,10 @@ static bool generate(Game &game, GenerationContext &context)
 	// sealing it before topping up whichever resource is still out of range - the same backstop
 	// RuggedArchipelago and ShatteredCoast already rely on for the same class of problem.
 	guaranteeStartingResources(game, context, 24, 32);
-
 	// The scatter and bank clumps above are sized by the resource amounts, and the ambient scatter
-	// covers up to two thirds of the continent's grass at the top of their range. That can leave a
-	// colony walled into its own clearing with nowhere to build, which the guarantee above doesn't
-	// address: a colony buried in wheat has wheat at its feet, so it counts as served. At any
-	// non-default amount, open such a colony back up and re-run the guarantee in case the clearing
-	// took its nearest crop with the wall. At the defaults none of this runs.
-	if (options.wheat != 100 || options.wood != 100 || options.stone != 100 ||
-		options.algae != 100 || options.fruit != 100)
-	{
-		openCrampedStarts(game, context);
-		guaranteeStartingResources(game, context, 24, 32);
-	}
-
+	// covers up to two thirds of the continent's grass at the top of their range.
+	reopenCrampedStarts(game, context, {options.wheat, options.wood, options.stone, options.algae,
+										options.fruit});
 	return true;
 }
 
