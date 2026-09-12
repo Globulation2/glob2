@@ -8,55 +8,23 @@ Color failureShapeColor()
 	return Color(230, 30, 30);
 }
 
-static void outline(GraphicContext* gfx, int cx, int cy, int r, Building::UnitCantWorkReason reason, const Color& color)
+static void outline(GraphicContext* gfx, int cx, int cy, int r, Building::UnitCantWorkReason /*reason*/, const Color& color)
 {
-	switch (reason)
-	{
-		case Building::UnitNotAvailable:
-			// square
-			gfx->drawRect(cx-r, cy-r, 2*r, 2*r, color);
-			break;
-		case Building::UnitTooLowLevel:
-			// triangle, point up
-			gfx->drawLine(cx-r, cy+r, cx+r, cy+r, color);
-			gfx->drawLine(cx-r, cy+r, cx, cy-r, color);
-			gfx->drawLine(cx+r, cy+r, cx, cy-r, color);
-			break;
-		case Building::UnitCantAccessBuilding:
-			// cross
-			gfx->drawLine(cx-r, cy-r, cx+r, cy+r, color);
-			gfx->drawLine(cx-r, cy+r, cx+r, cy-r, color);
-			break;
-		case Building::UnitTooFarFromBuilding:
-			// circle
-			gfx->drawCircle(cx, cy, r, color);
-			break;
-		case Building::UnitCantAccessResource:
-			// diamond
-			gfx->drawLine(cx, cy-r, cx+r, cy, color);
-			gfx->drawLine(cx+r, cy, cx, cy+r, color);
-			gfx->drawLine(cx, cy+r, cx-r, cy, color);
-			gfx->drawLine(cx-r, cy, cx, cy-r, color);
-			break;
-		case Building::UnitCantAccessFruit:
-			// triangle, point down
-			gfx->drawLine(cx-r, cy-r, cx+r, cy-r, color);
-			gfx->drawLine(cx-r, cy-r, cx, cy+r, color);
-			gfx->drawLine(cx+r, cy-r, cx, cy+r, color);
-			break;
-		case Building::UnitTooFarFromResource:
-			// two rings
-			gfx->drawCircle(cx, cy, r, color);
-			gfx->drawCircle(cx, cy, r/2, color);
-			break;
-		case Building::UnitTooFarFromFruit:
-			// plus
-			gfx->drawLine(cx-r, cy, cx+r, cy, color);
-			gfx->drawLine(cx, cy-r, cx, cy+r, color);
-			break;
-		default:
-			break;
-	}
+	// Every reason wears the same badge: a mini stop sign, octagon outline
+	// with the bar of a "no entry" sign through the middle, no lettering
+	// (there isn't a pixel to spare for "STOP" at this size anyway). Which
+	// reason applies is spelled out as text next to the shape in the
+	// building panel; the tiny map badge only needs to say "blocked".
+	const int c = r/2; // corner cut that turns the square into an octagon
+	gfx->drawLine(cx-c, cy-r, cx+c, cy-r, color); // top
+	gfx->drawLine(cx+c, cy-r, cx+r, cy-c, color); // top-right
+	gfx->drawLine(cx+r, cy-c, cx+r, cy+c, color); // right
+	gfx->drawLine(cx+r, cy+c, cx+c, cy+r, color); // bottom-right
+	gfx->drawLine(cx+c, cy+r, cx-c, cy+r, color); // bottom
+	gfx->drawLine(cx-c, cy+r, cx-r, cy+c, color); // bottom-left
+	gfx->drawLine(cx-r, cy+c, cx-r, cy-c, color); // left
+	gfx->drawLine(cx-r, cy-c, cx-c, cy-r, color); // top-left
+	gfx->drawLine(cx-r, cy, cx+r, cy, color);     // bar
 }
 
 void drawFailureShape(GraphicContext* gfx, int cx, int cy, int r, Building::UnitCantWorkReason reason, const Color& color)
