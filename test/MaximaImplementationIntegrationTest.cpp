@@ -810,7 +810,6 @@ static void foodRelocationExecutorRegression()
     Player player; player.setTeam(game.teams[0]);
     const int innType=globalContainer->buildingsTypes.getTypeNum("inn",0,false);
     assert(game.addBuilding(10,10,innType,0)); assert(game.addBuilding(30,30,innType,0));
-    assert(game.addBuilding(50,50,innType,0)); // the last inn of a settlement is never nominated
     AIMaxima::Maxima ai(&player); Context& c=ai.context; c.initialize();
     for(int y=0;y<64;++y)for(int x=0;x<64;++x)game.map.setMapDiscovered(x,y,player.team->me);
     ai.initialize_farming_cache(c); ai.configure_development_planner();
@@ -821,15 +820,7 @@ static void foodRelocationExecutorRegression()
     ai.snapshot.critical_food=0; ai.snapshot.own_buildings_under_attack=0;
     ai.snapshot.own_units_under_attack=0; ai.snapshot.population=0;
     WorldState world=ai.collect_development_world(c);
-    assert(world.building(0)&&world.building(1)&&world.building(2));
-    {
-        // A lone inn is never nominated, however far its wheat.
-        WorldState lone=world;
-        lone.buildings.erase(lone.buildings.begin()+1,lone.buildings.end());
-        ai.timer=100; ai.update_food_relocation(c,lone);
-        ai.timer=5000; ai.update_food_relocation(c,lone);
-        assert(ai.relocation_target_building==-1&&ai.relocation_since.empty());
-    }
+    assert(world.building(0)&&world.building(1));
 
     // No protected wheat anywhere: both inns sit at the unreachable penalty, so
     // both start their confirmation and the lowest id is nominated once it ends.

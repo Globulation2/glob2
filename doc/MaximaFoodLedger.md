@@ -146,12 +146,11 @@ between.
 completed, retirable inn or swarm whose ledger quality stays at or above
 `food.relocation_min_quality_tiles` for `food.relocation_confirm_ticks` is a
 candidate; quality already charges unreachable demand at the penalty distance,
-so a starving building looks far even when its wheat is close. The last inn and
-the last swarm are exempt, as in retirement: early on it is the settlement's
-only one, starving while its first farm grows in. Establishing colony swarms
-are exempt, and so is anything that could not clear a gain floor even at a
-perfect site: a swarm with coverage above 75% earns no distance credit and has
-nothing left to gain. When nothing is under attack, nobody is critically
+so a starving building looks far even when its wheat is close. Establishing
+colony swarms are exempt, and so is anything that could not clear a gain floor
+even at a perfect site. There is deliberately no exemption for the first or the
+only building of a kind: the opening swarm and inn are often the ones worth
+moving, and with the replacement built first there is no capacity to protect. When nothing is under attack, nobody is critically
 hungry, no recovery posture is active and `food.relocation_cooldown_ticks` have
 passed since the last relocation ended, the worst candidate is nominated. One
 nomination is live at a time; the nominated building is exempt from burden
@@ -185,12 +184,12 @@ candidate's come from the residual the excluded ledger leaves
 (`Ledger::residualQuality`, `reachableResidual`), i.e. what it would get among
 the current claimants. Coverage shortfall is priced at the ledger's own
 convention for unreachable demand: a trip to the supply radius plus the
-penalty. Distance savings are realised per kind
-(`food.relocation_inn_distance_realisation_percent`, default 155, and
-`..._swarm_...`, default 0), because the [calibration](#carrier-cost-calibration)
-showed inn carriers walk less when quality improves and swarm carriers do not;
-a swarm therefore relocates only for coverage. Every level the old building has
-is charged again, so an upgraded inn must save proportionally more. A candidate
+penalty. Distance savings are scaled by
+`food.relocation_distance_realisation_percent` (default 155), the share of a
+quality improvement that carriers realise as shorter trips in the
+[calibration](#carrier-cost-calibration); it applies to inns and swarms alike.
+Every level the old building has is charged again, so an upgraded inn must save
+proportionally more. A candidate
 that fails is reported as `negative_utility`.
 
 **Completion.** The replacement is an ordinary planner action: reserved,
@@ -222,8 +221,7 @@ last case) and the cooldown restarts. Telemetry: `food_relocation_nominated`, `_
 | `food.carrier_ticks_per_tile` | 23 | measured |
 | `food.carrier_fixed_ticks_per_trip` | 105 | measured |
 | `food.builder_ticks_per_step` | 32 | one build action |
-| `food.relocation_inn_distance_realisation_percent` | 155 | measured |
-| `food.relocation_swarm_distance_realisation_percent` | 0 | measured |
+| `food.relocation_distance_realisation_percent` | 155 | measured on inns; applies to both kinds |
 
 The horizon only binds for expensive buildings. At the defaults a level-1 inn
 (three wood) pays back within about two tiles of improvement, so the gain
@@ -308,10 +306,10 @@ gradient finds nearest, mostly the spread around the farms.
 | swarm | 6.6 + 0.02 x | 0.00 | 5.5 (2-4), 7.4 (4-6), 6.6 (6-8), 5.4 (8-10), 8.5 (10-12) |
 
 For inns quality is a usable proxy: each tile of quality is about 1.5 tiles of
-real walking, monotonically. For swarms it predicts nothing. A swarm's twenty-odd
-carriers strip the nearby spread and walk 5-8 tiles wherever the protected
-stacks are, so moving a swarm closer to protected wheat does not shorten its
-trips; what a swarm gains from a better site is *coverage*, i.e. enough supply
-to keep those carriers delivering at all. The relocation policy therefore
-realises distance savings per kind (`food.relocation_distance_realisation_percent`,
-155 for inns, 0 for swarms) and prices coverage shortfall separately.
+real walking, monotonically. For swarms these seven games showed no relation: a
+swarm's twenty-odd carriers strip the nearby spread and walked 5-8 tiles
+wherever the protected stacks were. That sample is small and its swarms were
+mostly starving, so the relocation policy does not treat the kinds differently:
+`food.relocation_distance_realisation_percent` (155) applies to both, and
+coverage shortfall is priced separately. If a larger swarm sample confirms the
+flat relation, lowering the realisation for swarms is a one-parameter change.

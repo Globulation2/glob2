@@ -267,8 +267,7 @@ PlacementPolicy::PlacementPolicy()
 	  relocationMinCoverageGainPercent(25), relocationPaybackHorizonTicks(15000),
 	  relocationCostMarginPercent(125), carrierTicksPerTile(23),
 	  carrierFixedTicksPerTrip(105), builderTicksPerStep(32),
-	  relocationInnDistanceRealisationPercent(155),
-	  relocationSwarmDistanceRealisationPercent(0)
+	  relocationDistanceRealisationPercent(155)
 { std::fill(foodInnDemand, foodInnDemand+3, 0); }
 Planner::RelocationAppraisal::RelocationAppraisal()
 	: viable(false), oldQuality(0), newQuality(0), oldCoverage(0), newCoverage(0),
@@ -1260,11 +1259,9 @@ Planner::RelocationAppraisal Planner::appraiseRelocation(const WorldState& world
 	// Savings per tick, in worker-ticks scaled by the ledger's RateScale.
 	// Distance saves a shorter round trip on every unit that keeps flowing;
 	// coverage stops paying the unreachable penalty on units that did not.
-	const int realisation=action.buildingType==configuredSwarmType
-		? p.relocationSwarmDistanceRealisationPercent
-		: p.relocationInnDistanceRealisationPercent;
 	const long long qualityGain=static_cast<long long>(
-		appraisal.oldQuality-appraisal.newQuality)*realisation/100;
+		appraisal.oldQuality-appraisal.newQuality)
+		*p.relocationDistanceRealisationPercent/100;
 	const long long flowing=std::min(claimed,newClaimed);
 	const long long distanceSaving=flowing*2*p.carrierTicksPerTile*qualityGain/100;
 	const long long penaltyTicks=p.carrierFixedTicksPerTrip
@@ -2364,8 +2361,7 @@ void Planner::prepareRetrySignature(const WorldState& world)
 	hashValue(signature,placementPolicy.carrierTicksPerTile);
 	hashValue(signature,placementPolicy.carrierFixedTicksPerTrip);
 	hashValue(signature,placementPolicy.builderTicksPerStep);
-	hashValue(signature,placementPolicy.relocationInnDistanceRealisationPercent);
-	hashValue(signature,placementPolicy.relocationSwarmDistanceRealisationPercent);
+	hashValue(signature,placementPolicy.relocationDistanceRealisationPercent);
 	retryInputSignature=signature;
 }
 

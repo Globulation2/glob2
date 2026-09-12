@@ -671,8 +671,7 @@ food.relocation_cost_margin_percent = 125
 food.carrier_ticks_per_tile = 23
 food.carrier_fixed_ticks_per_trip = 105
 food.builder_ticks_per_step = 32
-food.relocation_inn_distance_realisation_percent = 155
-food.relocation_swarm_distance_realisation_percent = 0
+food.relocation_distance_realisation_percent = 155
 
 # Scoring: hysteresis and cross-policy construction priority adjustments.
 scoring.posture_switch_margin = 14

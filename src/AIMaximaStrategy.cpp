@@ -675,8 +675,7 @@ namespace
 		INT_SPEC(food, carrier_ticks_per_tile, "food.carrier_ticks_per_tile", 1, 1000, "ticks", "food", "Measured one-way carrier cost per tile of harvesting route", StrategyImpactHigh),
 		INT_SPEC(food, carrier_fixed_ticks_per_trip, "food.carrier_fixed_ticks_per_trip", 0, 10000, "ticks", "food", "Measured fixed cost of one harvest and delivery regardless of distance", StrategyImpactMedium),
 		INT_SPEC(food, builder_ticks_per_step, "food.builder_ticks_per_step", 1, 1000, "ticks", "food", "Builder time charged per construction step, one per delivered unit", StrategyImpactMedium),
-		INT_SPEC(food, relocation_inn_distance_realisation_percent, "food.relocation_inn_distance_realisation_percent", 0, 1000, "percent", "food", "Share of a quality improvement that inn carriers realise as shorter trips, from calibration", StrategyImpactHigh),
-		INT_SPEC(food, relocation_swarm_distance_realisation_percent, "food.relocation_swarm_distance_realisation_percent", 0, 1000, "percent", "food", "Share of a quality improvement that swarm carriers realise as shorter trips, from calibration", StrategyImpactHigh),
+		INT_SPEC(food, relocation_distance_realisation_percent, "food.relocation_distance_realisation_percent", 0, 1000, "percent", "food", "Share of a ledger quality improvement that carriers realise as shorter trips, from calibration", StrategyImpactHigh),
 
 		INT_SPEC(scoring, posture_switch_margin, "scoring.posture_switch_margin", 0, 200, "score", "scoring", "Utility margin required to switch posture", StrategyImpactHigh),
 		INT_SPEC(scoring, target_switch_margin, "scoring.target_switch_margin", 0, 1000, "score", "scoring", "Score margin required to switch targets", StrategyImpactHigh),

@@ -154,7 +154,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         ]
         # 689 with the gated tactical layer; the relentless offense removed 50
         # muster, casualty, relief and teamplay keys and added three.
-        self.assertEqual(657, len(specifications))
+        self.assertEqual(656, len(specifications))
         self.assertTrue(all(len(impact) == 1 for impact in impacts))
         self.assertEqual(
             {"Critical", "High", "Medium", "Low"},
