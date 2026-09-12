@@ -1890,6 +1890,20 @@ As cidades-estado precisam de pelo menos uma colónia.
 Muralhas de pedra
 [Sand patches]
 Manchas de areia
+[Tidal flats]
+Planícies de maré
+[Sandbars]
+Bancos de areia
+[Tide pools]
+Poças de maré
+[Lagoons]
+Lagoas
+[Central island]
+Ilha central
+[Tidal flats need at least one colony.]
+As planícies de maré precisam de pelo menos uma colónia.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+As ilhas natais não cabem neste mapa; use um mapa maior, menos colónias ou ilhas mais pequenas.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 A área comum e o estreito deixam demasiado pouco espaço para as bases; use um mapa maior, menos colónias, uma área comum mais pequena ou um estreito mais estreito.
 [Wheat amount]

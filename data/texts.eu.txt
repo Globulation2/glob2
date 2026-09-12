@@ -1894,6 +1894,20 @@ Hiri-estatuek gutxienez kolonia bat behar dute.
 Harrizko hormak
 [Sand patches]
 Harea-guneak
+[Tidal flats]
+Marea-lautadak
+[Sandbars]
+Hondar-bankuak
+[Tide pools]
+Marea-putzuak
+[Lagoons]
+Aintzirak
+[Central island]
+Erdiko uhartea
+[Tidal flats need at least one colony.]
+Marea-lautadek gutxienez kolonia bat behar dute.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Jatorrizko uharteak ez dira mapa honetan sartzen; erabili mapa handiagoa, kolonia gutxiago edo uharte txikiagoak.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 Eremu komunak eta itsasarteak leku gutxiegi uzten diete oinarriei; erabili mapa handiagoa, kolonia gutxiago, eremu komun txikiagoa edo itsasarte estuagoa.
 [Wheat amount]

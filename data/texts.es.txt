@@ -1884,6 +1884,20 @@ Las ciudades estado necesitan al menos una colonia.
 Muros de piedra
 [Sand patches]
 Parches de arena
+[Tidal flats]
+Marismas
+[Sandbars]
+Bancos de arena
+[Tide pools]
+Charcas de marea
+[Lagoons]
+Lagunas
+[Central island]
+Isla central
+[Tidal flats need at least one colony.]
+Las marismas necesitan al menos una colonia.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Las islas natales no caben en este mapa; usa un mapa más grande, menos colonias o islas más pequeñas.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 El área común y el estrecho dejan demasiado poco espacio para las bases; usa un mapa más grande, menos colonias, un área común más pequeña o un estrecho más angosto.
 [Wheat amount]

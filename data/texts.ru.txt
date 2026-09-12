@@ -1882,6 +1882,20 @@ OpenGL недоступен в этой сборке.
 Каменные стены
 [Sand patches]
 Песчаные участки
+[Tidal flats]
+Приливные отмели
+[Sandbars]
+Песчаные банки
+[Tide pools]
+Приливные заводи
+[Lagoons]
+Лагуны
+[Central island]
+Центральный остров
+[Tidal flats need at least one colony.]
+Приливным отмелям нужна хотя бы одна колония.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Родные острова не помещаются на этой карте; используйте карту побольше, меньше колоний или острова поменьше.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 Общая земля и пролив оставляют слишком мало места для баз; используйте карту побольше, меньше колоний, общую землю поменьше или пролив поуже.
 [Wheat amount]

@@ -1884,6 +1884,20 @@ Mestne države potrebujejo vsaj eno kolonijo.
 Kamniti zidovi
 [Sand patches]
 Peščene zaplate
+[Tidal flats]
+Plimske ravnice
+[Sandbars]
+Peščene sipine
+[Tide pools]
+Plimski tolmuni
+[Lagoons]
+Lagune
+[Central island]
+Osrednji otok
+[Tidal flats need at least one colony.]
+Plimske ravnice potrebujejo vsaj eno kolonijo.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Domači otoki ne gredo na ta zemljevid; uporabite večji zemljevid, manj kolonij ali manjše otoke.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 Skupno ozemlje in ožina puščata premalo prostora za domače baze; uporabite večji zemljevid, manj kolonij, manjše skupno ozemlje ali ožjo ožino.
 [Wheat amount]

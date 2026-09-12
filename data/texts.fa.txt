@@ -1882,6 +1882,20 @@ OpenGL در این بیلد موجود نیست.
 دیوارهای سنگی
 [Sand patches]
 لکه‌های شنی
+[Tidal flats]
+پهنه‌های جزر و مدی
+[Sandbars]
+پشته‌های شنی
+[Tide pools]
+حوضچه‌های جزر و مدی
+[Lagoons]
+مرداب‌ها
+[Central island]
+جزیرهٔ مرکزی
+[Tidal flats need at least one colony.]
+پهنه‌های جزر و مدی دست‌کم به یک مستعمره نیاز دارند.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+جزیره‌های اصلی در این نقشه جا نمی‌شوند؛ از نقشهٔ بزرگ‌تر، مستعمرات کمتر یا جزیره‌های کوچک‌تر استفاده کنید.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 سرزمین مشترک و تنگه فضای کافی برای پایگاه‌ها باقی نمی‌گذارند؛ از نقشهٔ بزرگ‌تر، مستعمرات کمتر، سرزمین مشترک کوچک‌تر یا تنگهٔ باریک‌تر استفاده کنید.
 [Wheat amount]

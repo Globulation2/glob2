@@ -1956,6 +1956,20 @@ OpenGL 在此版本中不可用。
 石牆
 [Sand patches]
 沙地
+[Tidal flats]
+潮間帶
+[Sandbars]
+沙洲
+[Tide pools]
+潮池
+[Lagoons]
+潟湖
+[Central island]
+中央島
+[Tidal flats need at least one colony.]
+潮間帶至少需要一個殖民地。
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+母島無法容納在這張地圖上；請使用更大的地圖、更少的殖民地或更小的島嶼。
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 公地區域與海峽留給基地的空間太少；請使用更大的地圖、更少的殖民地、更小的公地區域或更窄的海峽。
 [Wheat amount]

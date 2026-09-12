@@ -15,6 +15,7 @@
 #include "StoneHighlandsGenerator.h"
 #include "SwampGenerator.h"
 #include "SymmetricArenaGenerator.h"
+#include "TidalFlatsGenerator.h"
 #include "UniformGenerator.h"
 #include "WatershedGenerator.h"
 #include <algorithm>
@@ -82,7 +83,8 @@ const GeneratorRegistry &GeneratorRegistry::builtins() {
       {contestedCommonsDefinition(), mazeDefinition(), fjordContinentDefinition(),
        shatteredCoastDefinition(), islesDefinition(), watershedDefinition(),
        stoneHighlandsDefinition(), symmetricArenaDefinition(),
-       ringWorldDefinition(), cityStatesDefinition(), ruggedArchipelagoDefinition(),
+       ringWorldDefinition(), cityStatesDefinition(), tidalFlatsDefinition(),
+       ruggedArchipelagoDefinition(),
        concreteIslandsDefinition(), craterLakesDefinition(), islandsDefinition(),
        swampDefinition(), riverDefinition(), uniformDefinition()});
   return registry;

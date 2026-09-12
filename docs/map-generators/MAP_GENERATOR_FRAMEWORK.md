@@ -41,7 +41,8 @@ reused after a generator is retired.
 | `stone-highlands` | 14 | Stone highlands | Its own — see below |
 | `symmetric-arena` | 15 | Symmetric arena | Its own — see below |
 | `ring-world` | 16 | Ring world | Its own — see below |
-| `city-states` | 17 | City states | Every home's ambient fields, outcrops and grove, everything on the commons (farmland, outcrops, groves, the orchard) and the sea's algae and island prizes; every home's kit and the walls' stone are unscaled | Stone walls (on): off, the causeways are plain roads and the homes' coasts are open |
+| `city-states` | 17 | City states | Its own — see below |
+| `tidal-flats` | 18 | Tidal flats | Its own — see below |
 | `rugged-archipelago` | 8 | Old islands | Island growth + beach passes, own resource search |
 | `concrete-islands` | 5 | Concrete islands | Point dispersion; islands linked by channels |
 | `crater-lakes` | 4 | Crater lakes | Height-field noise; round lakes in otherwise connected land |
@@ -84,7 +85,8 @@ ambient layer but still leaves every colony a start. Maze keeps its explicit den
 | Stone highlands | The ponds' farmland (wheat and wood) and algae, and how much of the ridgeline is two tiles thick (stone, 0 to 200); kits are unscaled and Fruit still counts groves | Fruit in home valleys (off) |
 | Symmetric arena | The farmland's wheat and wood, stone outcrops and algae, on top of Resource richness; fruit (0 to 100) keeps that share of the orchard's groves nearest the centre, never fewer than three | Moat (on); Stone in the orchard (on) |
 | Ring world | The ambient scatter's wheat, wood, stone and fruit, and the shallows' algae; starter patches and island prizes are unscaled | Winding belt (on); Colonies on both coasts (on) |
-| City states | The commons' fields and grove, and everything in the New World: farmland, stone outcrops, fruit groves, the heart's orchard and the shallows' algae; every home's kit and its wall are unscaled | Bridges shared by pairs (on): off, every gap between neighbouring compounds gets a bridge |
+| City states | Every home's ambient fields, outcrops and grove, everything on the commons (farmland, outcrops, groves, the orchard) and the sea's algae and island prizes; every home's kit and the walls' stone are unscaled | Stone walls (on): off, the causeways are plain roads and the homes' coasts are open |
+| Tidal flats | Every island's ambient fields and outcrops and every island's prize; each home's kit is unscaled | Central island (on): off, the middle of the map is flats and there is no orchard |
 
 `scaledCount` and `scaledShare` (`shared/Resources.h`) apply a percentage to a count or a share and
 return it unchanged at 100. `setScaledResource` scales one `Map::setResource` square to a share of
@@ -156,8 +158,8 @@ fixed resource pass:
   states' walls; they are
   treated like terrain, never cleared and never looked past. It wraps each boot tile onto the map
   first, since the height-field generators' fallback site search can hand over one past the edge.
-  RuggedArchipelago, ShatteredCoast, Fjord, Watershed, Stone highlands, Ring world and City states
-  call this, as do the height-field generators, and Concrete islands and Isles at any wheat or wood amount
+  RuggedArchipelago, ShatteredCoast, Fjord, Watershed, Stone highlands, Ring world, City states and
+  Tidal flats call this, as do the height-field generators, and Concrete islands and Isles at any wheat or wood amount
   other than 100.
   Maze doesn't need it: its deposits are placed only along passage shores, leaving a clear lane
   down every passage, and its `validateWorld` confirms every colony can still walk to every
@@ -463,6 +465,33 @@ causeways stop being the only way in.
   colony 0, no colony reachable from any beach with the roads shut, no home able to reach the
   commons or another home with the causeways shut, and the colonies' walks to their landings within
   twelve steps of each other. `validateRequest` needs at least 20 tiles of home depth.
+
+## Tidal flats
+
+Grass islands standing on a wide expanse of walkable sand, with tide pools and lagoons over the
+flats and the odd grassy sandbar. Sand carries units freely but holds no building and no deposit,
+and nothing regrows beside it, so there are open-field battles from the first minute and no forward
+bases: an army on the flats fights far from any inn or tower while a defender holds a rim of towers
+on its island's edge, and expansion means taking another island whole.
+
+- **Layout.** Every home island sits on a ring at 58% of the half side, one per colony evenly
+  spaced from a random start, with a radius of `home-island-size` percent of the half side or as
+  much as the ring, the wrap and the central island leave room for. Everything else -
+  `extra-islands` neutral islands, `sandbars` and `lagoons` per colony and `tide-pools` per
+  128×128 of flats - is placed in one wedge's frame, keeping clear of the home island, the wrap, the
+  central island and each other, and stamped into every wedge alike, so the layout is fair for any
+  colony count. `coast-roughness` shapes every island. `validateRequest` refuses a map whose home
+  islands would shrink below nine tiles of radius.
+- **Islands.** Each home has a pond at its middle, an unscaled kit of 40 wheat and 30 wood on the
+  pond's two sides and a quarry towards the map's centre, then scaled ambient farmland on its
+  fertile ground and an outcrop. Every neutral island is an oasis: a pond, and every other tile
+  of it under unscaled wheat, so taking one means clearing it first, with one prize inside, a
+  fruit grove or a stone deposit in turn. With `central-island` (on) an island at the centre carries a pond,
+  the orchard of all three fruits and a quarry. Algae seeds every pool and lagoon, which is exactly
+  where it regrows. Nothing is kept clear because the flats hold nothing.
+- **Checked, not assumed.** `validateWorld` rebuilds the design and requires every home's pond
+  present and every colony and the central island reachable on foot from colony 0, with water,
+  buildings and every resource blocking.
 
 ## Compatibility notes
 

@@ -1884,6 +1884,20 @@ Miasta-państwa potrzebują co najmniej jednej kolonii.
 Kamienne mury
 [Sand patches]
 Płaty piasku
+[Tidal flats]
+Równiny pływowe
+[Sandbars]
+Łachy piaskowe
+[Tide pools]
+Rozlewiska pływowe
+[Lagoons]
+Laguny
+[Central island]
+Wyspa środkowa
+[Tidal flats need at least one colony.]
+Równiny pływowe potrzebują co najmniej jednej kolonii.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Wyspy macierzyste nie mieszczą się na tej mapie; użyj większej mapy, mniejszej liczby kolonii lub mniejszych wysp.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 Teren wspólny i cieśnina zostawiają zbyt mało miejsca na bazy; użyj większej mapy, mniejszej liczby kolonii, mniejszego terenu wspólnego lub węższej cieśniny.
 [Wheat amount]

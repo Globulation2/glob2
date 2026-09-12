@@ -1884,6 +1884,20 @@ Orașele-stat au nevoie de cel puțin o colonie.
 Ziduri de piatră
 [Sand patches]
 Petice de nisip
+[Tidal flats]
+Câmpii de maree
+[Sandbars]
+Bancuri de nisip
+[Tide pools]
+Bălți de maree
+[Lagoons]
+Lagune
+[Central island]
+Insula centrală
+[Tidal flats need at least one colony.]
+Câmpiile de maree au nevoie de cel puțin o colonie.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Insulele natale nu încap pe această hartă; folosește o hartă mai mare, mai puține colonii sau insule mai mici.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 Teritoriul comun și strâmtoarea lasă prea puțin loc pentru baze; folosește o hartă mai mare, mai puține colonii, un teritoriu comun mai mic sau o strâmtoare mai îngustă.
 [Wheat amount]

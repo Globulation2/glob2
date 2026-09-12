@@ -1884,6 +1884,20 @@ Stadtstaaten brauchen mindestens eine Kolonie.
 Steinmauern
 [Sand patches]
 Sandflächen
+[Tidal flats]
+Wattenmeer
+[Sandbars]
+Sandbänke
+[Tide pools]
+Gezeitentümpel
+[Lagoons]
+Lagunen
+[Central island]
+Zentrale Insel
+[Tidal flats need at least one colony.]
+Das Wattenmeer braucht mindestens eine Kolonie.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Die Heimatinseln passen nicht auf diese Karte; verwende eine größere Karte, weniger Kolonien oder kleinere Inseln.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 Gemeinschaftsland und Meerenge lassen zu wenig Platz für die Heimatbasen; verwende eine größere Karte, weniger Kolonien, ein kleineres Gemeinschaftsland oder eine schmalere Meerenge.
 [Wheat amount]

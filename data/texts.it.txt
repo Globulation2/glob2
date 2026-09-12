@@ -1946,6 +1946,20 @@ Le città-stato hanno bisogno di almeno una colonia.
 Mura di pietra
 [Sand patches]
 Chiazze di sabbia
+[Tidal flats]
+Piane di marea
+[Sandbars]
+Banchi di sabbia
+[Tide pools]
+Pozze di marea
+[Lagoons]
+Lagune
+[Central island]
+Isola centrale
+[Tidal flats need at least one colony.]
+Le piane di marea hanno bisogno di almeno una colonia.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Le isole natali non entrano in questa mappa; usa una mappa più grande, meno colonie o isole più piccole.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 L'area comune e lo stretto lasciano troppo poco spazio alle basi; usa una mappa più grande, meno colonie, un'area comune più piccola o uno stretto più stretto.
 [Wheat amount]

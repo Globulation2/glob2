@@ -1880,6 +1880,20 @@ OpenGL недоступний у цій збірці.
 Кам'яні стіни
 [Sand patches]
 Піщані ділянки
+[Tidal flats]
+Припливні мілини
+[Sandbars]
+Піщані банки
+[Tide pools]
+Припливні заводі
+[Lagoons]
+Лагуни
+[Central island]
+Центральний острів
+[Tidal flats need at least one colony.]
+Припливним мілинам потрібна хоча б одна колонія.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Рідні острови не вміщаються на цій карті; використайте більшу карту, менше колоній або менші острови.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 Спільна земля і протока залишають замало місця для баз; використайте більшу карту, менше колоній, меншу спільну землю або вужчу протоку.
 [Wheat amount]

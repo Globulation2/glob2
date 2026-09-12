@@ -1954,6 +1954,20 @@ Cortex
 Πέτρινα τείχη
 [Sand patches]
 Αμμώδεις εκτάσεις
+[Tidal flats]
+Παλιρροιακές πεδιάδες
+[Sandbars]
+Αμμοσύρτεις
+[Tide pools]
+Παλιρροιακές λίμνες
+[Lagoons]
+Λιμνοθάλασσες
+[Central island]
+Κεντρικό νησί
+[Tidal flats need at least one colony.]
+Οι παλιρροιακές πεδιάδες χρειάζονται τουλάχιστον μία αποικία.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Τα νησιά-πατρίδες δεν χωρούν σε αυτόν τον χάρτη· χρησιμοποιήστε μεγαλύτερο χάρτη, λιγότερες αποικίες ή μικρότερα νησιά.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 Η κοινή περιοχή και ο πορθμός αφήνουν πολύ λίγο χώρο για τις βάσεις· χρησιμοποιήστε μεγαλύτερο χάρτη, λιγότερες αποικίες, μικρότερη κοινή περιοχή ή στενότερο πορθμό.
 [Wheat amount]

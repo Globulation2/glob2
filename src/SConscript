@@ -191,6 +191,7 @@ map/generator/generators/ShatteredCoastGenerator.cpp
 map/generator/generators/StoneHighlandsGenerator.cpp
 map/generator/generators/SwampGenerator.cpp
 map/generator/generators/SymmetricArenaGenerator.cpp
+map/generator/generators/TidalFlatsGenerator.cpp
 map/generator/generators/UniformGenerator.cpp
 map/generator/generators/WatershedGenerator.cpp
 map/generator/shared/Distances.cpp

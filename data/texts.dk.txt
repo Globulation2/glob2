@@ -1960,6 +1960,20 @@ Bystater kræver mindst én koloni.
 Stenmure
 [Sand patches]
 Sandpletter
+[Tidal flats]
+Vadehav
+[Sandbars]
+Sandbanker
+[Tide pools]
+Tidevandspøle
+[Lagoons]
+Laguner
+[Central island]
+Central ø
+[Tidal flats need at least one colony.]
+Vadehavet kræver mindst én koloni.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Hjemøerne passer ikke på dette kort; brug et større kort, færre kolonier eller mindre øer.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 Fællesområdet og strædet efterlader for lidt plads til hjembaserne; brug et større kort, færre kolonier, et mindre fællesområde eller et smallere stræde.
 [Wheat amount]

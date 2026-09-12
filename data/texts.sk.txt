@@ -1892,6 +1892,20 @@ Mestské štáty potrebujú aspoň jednu kolóniu.
 Kamenné hradby
 [Sand patches]
 Piesčiny
+[Tidal flats]
+Prílivové pláne
+[Sandbars]
+Piesočné lavice
+[Tide pools]
+Prílivové mláky
+[Lagoons]
+Lagúny
+[Central island]
+Stredný ostrov
+[Tidal flats need at least one colony.]
+Prílivové pláne potrebujú aspoň jednu kolóniu.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Domovské ostrovy sa na túto mapu nezmestia; použite väčšiu mapu, menej kolónií alebo menšie ostrovy.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 Spoločné územie a prieliv ponechávajú príliš málo miesta pre domovské základne; použite väčšiu mapu, menej kolónií, menšie spoločné územie alebo užší prieliv.
 [Wheat amount]

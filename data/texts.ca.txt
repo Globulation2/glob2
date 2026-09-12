@@ -1892,6 +1892,20 @@ Les ciutats estat necessiten almenys una colònia.
 Murs de pedra
 [Sand patches]
 Clapes de sorra
+[Tidal flats]
+Planes de marea
+[Sandbars]
+Bancs de sorra
+[Tide pools]
+Basses de marea
+[Lagoons]
+Llacunes
+[Central island]
+Illa central
+[Tidal flats need at least one colony.]
+Les planes de marea necessiten almenys una colònia.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Les illes natals no caben en aquest mapa; fes servir un mapa més gran, menys colònies o illes més petites.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 L'àrea comuna i l'estret deixen massa poc espai per a les bases; fes servir un mapa més gran, menys colònies, una àrea comuna més petita o un estret més estret.
 [Wheat amount]

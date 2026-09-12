@@ -1872,6 +1872,20 @@ City states need at least one colony.
 Stone walls
 [Sand patches]
 Sand patches
+[Tidal flats]
+Tidal flats
+[Sandbars]
+Sandbars
+[Tide pools]
+Tide pools
+[Lagoons]
+Lagoons
+[Central island]
+Central island
+[Tidal flats need at least one colony.]
+Tidal flats need at least one colony.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.
 [Wheat amount]

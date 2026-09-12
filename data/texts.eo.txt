@@ -1882,6 +1882,20 @@ Urboŝtatoj bezonas almenaŭ unu kolonion.
 Ŝtonaj muroj
 [Sand patches]
 Sablaj makuloj
+[Tidal flats]
+Tajdaj ebenaĵoj
+[Sandbars]
+Sablobenkoj
+[Tide pools]
+Tajdaj flakoj
+[Lagoons]
+Lagunoj
+[Central island]
+Centra insulo
+[Tidal flats need at least one colony.]
+Tajdaj ebenaĵoj bezonas almenaŭ unu kolonion.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+La hejmaj insuloj ne taŭgas en ĉi tiu mapo; uzu pli grandan mapon, malpli da kolonioj aŭ pli malgrandajn insulojn.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 La komunareo kaj la markolo lasas tro malmulte da spaco por la hejmaj bazoj; uzu pli grandan mapon, malpli da kolonioj, pli malgrandan komunareon aŭ pli mallarĝan markolon.
 [Wheat amount]

@@ -1884,6 +1884,20 @@ Kaupunkivaltiot tarvitsevat vähintään yhden siirtokunnan.
 Kivimuurit
 [Sand patches]
 Hiekkaläikät
+[Tidal flats]
+Vuorovesitasangot
+[Sandbars]
+Hiekkasärkät
+[Tide pools]
+Vuorovesilammikot
+[Lagoons]
+Laguunit
+[Central island]
+Keskussaari
+[Tidal flats need at least one colony.]
+Vuorovesitasangot tarvitsevat vähintään yhden siirtokunnan.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Kotisaaret eivät mahdu tälle kartalle; käytä suurempaa karttaa, vähemmän siirtokuntia tai pienempiä saaria.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 Yhteisalue ja salmi jättävät liian vähän tilaa kotitukikohdille; käytä suurempaa karttaa, vähemmän siirtokuntia, pienempää yhteisaluetta tai kapeampaa salmea.
 [Wheat amount]

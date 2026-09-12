@@ -1892,6 +1892,20 @@ Sınır bölgesinin zenginliği
 Taş duvarlar
 [Sand patches]
 Kum lekeleri
+[Tidal flats]
+Gelgit düzlükleri
+[Sandbars]
+Kum tepecikleri
+[Tide pools]
+Gelgit gölcükleri
+[Lagoons]
+Lagünler
+[Central island]
+Merkez ada
+[Tidal flats need at least one colony.]
+Gelgit düzlükleri için en az bir koloni gerekir.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Ana adalar bu haritaya sığmıyor; daha büyük bir harita, daha az koloni ya da daha küçük adalar kullanın.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 Ortak alan ve boğaz üslere çok az yer bırakıyor; daha büyük bir harita, daha az koloni, daha küçük bir ortak alan ya da daha dar bir boğaz kullanın.
 [Wheat amount]

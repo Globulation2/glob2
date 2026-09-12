@@ -1880,6 +1880,20 @@ Thành bang cần ít nhất một thuộc địa.
 Tường đá
 [Sand patches]
 Bãi cát
+[Tidal flats]
+Bãi triều
+[Sandbars]
+Cồn cát
+[Tide pools]
+Vũng triều
+[Lagoons]
+Đầm phá
+[Central island]
+Đảo trung tâm
+[Tidal flats need at least one colony.]
+Bãi triều cần ít nhất một thuộc địa.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Các đảo quê hương không vừa với bản đồ này; hãy dùng bản đồ lớn hơn, ít thuộc địa hơn hoặc đảo nhỏ hơn.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 Vùng đất chung và eo biển để lại quá ít chỗ cho các căn cứ; hãy dùng bản đồ lớn hơn, ít thuộc địa hơn, vùng đất chung nhỏ hơn hoặc eo biển hẹp hơn.
 [Wheat amount]

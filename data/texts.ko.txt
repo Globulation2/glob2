@@ -1880,6 +1880,20 @@ Globulation 2 커서를 표시합니다.
 돌 성벽
 [Sand patches]
 모래밭
+[Tidal flats]
+갯벌
+[Sandbars]
+모래톱
+[Tide pools]
+조수 웅덩이
+[Lagoons]
+석호
+[Central island]
+중앙 섬
+[Tidal flats need at least one colony.]
+갯벌에는 최소 한 개의 식민지가 필요합니다.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+본섬이 이 지도에 들어가지 않습니다. 더 큰 지도, 더 적은 식민지 또는 더 작은 섬을 사용하세요.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 공유지와 해협이 본거지에 남기는 공간이 너무 적습니다. 더 큰 지도, 더 적은 식민지, 더 작은 공유지 또는 더 좁은 해협을 사용하세요.
 [Wheat amount]

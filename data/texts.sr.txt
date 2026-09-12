@@ -1884,6 +1884,20 @@ OpenGL није доступан у овој верзији.
 Камени зидови
 [Sand patches]
 Пешчане површине
+[Tidal flats]
+Плимске равнице
+[Sandbars]
+Пешчани спрудови
+[Tide pools]
+Плимске баре
+[Lagoons]
+Лагуне
+[Central island]
+Средишње острво
+[Tidal flats need at least one colony.]
+Плимским равницама треба бар једна колонија.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Матична острва не стају на ову мапу; користите већу мапу, мање колонија или мања острва.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 Заједничко подручје и мореуз остављају премало места за базе; користите већу мапу, мање колонија, мање заједничко подручје или ужи мореуз.
 [Wheat amount]

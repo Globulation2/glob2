@@ -1884,6 +1884,20 @@ A városállamokhoz legalább egy kolónia kell.
 Kőfalak
 [Sand patches]
 Homokfoltok
+[Tidal flats]
+Árapálysíkság
+[Sandbars]
+Homokpadok
+[Tide pools]
+Árapálytavak
+[Lagoons]
+Lagúnák
+[Central island]
+Középső sziget
+[Tidal flats need at least one colony.]
+Az árapálysíksághoz legalább egy kolónia kell.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Az otthoni szigetek nem férnek el ezen a térképen; használj nagyobb térképet, kevesebb kolóniát vagy kisebb szigeteket.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 A közös terület és a szoros túl kevés helyet hagy a bázisoknak; használj nagyobb térképet, kevesebb kolóniát, kisebb közös területet vagy keskenyebb szorost.
 [Wheat amount]
