@@ -8,6 +8,7 @@
 #include "IntBuildingType.h"
 #include "LegacyGenerationDescriptor.h"
 #include "MapGeneratorFrameworkChecks.h"
+#include "MapGeneratorToolkitChecks.h"
 #include "NewMapScreen.h"
 #include "Race.h"
 #include "Resources.h"
@@ -86,6 +87,7 @@ class MapGeneratorDefaultsTest
 	{
 		globalsInit();
 		frameworkChecks();
+		ToolkitChecks::toolkitChecks();
 		GenerationService service;
 		for (int method : GeneratorRegistry::builtins().methods())
 		{

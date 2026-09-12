@@ -5,25 +5,66 @@ alongside its metadata in a `GeneratorDefinition` (id, stable legacy numeric id,
 revision, its `GeneratorControl`s, and optional `validateRequest`/`validateWorld` callbacks).
 `GeneratorRegistry::builtins()` holds the fixed list; `GenerationService` drives the actual
 lifecycle (validate the request, sample candidate seeds, run `generate`, score the result,
-validate the finished world). There is no generator superclass, pipeline dispatcher or terrain
-repair policy — a generator is free to build its terrain and resources however it likes, and
-leans on the shared modules below only where doing so is actually less work than not.
+validate the finished world). There is no generator superclass or pipeline dispatcher: a
+generator is a function that calls the shared stages below in whatever order its map needs, and
+a designed generator's body is a short sequence of them. What a generator keeps to itself is its
+design — the layout as a pure function of the request — and the few routines that only make sense
+for its map.
 
-## Shared building blocks
+## The shared toolkit
 
-| Concern | Lives in | What it gives a generator |
-|---|---|---|
-| Discrete/stepped/power-of-two option domains, one shared UI and catalog export | `GeneratorControls` | Declares options once; normalization, display and validation are centralized |
-| Cross-control and dimension constraints | `GeneratorDefinition::validateRequest` | A pure check run before generation; no silent settings rewrites |
-| Jagged islands, stretched/rotated continents, coastline shape | `shared/Geometry` (`ShapeTransform`, `RadialShape`, `stampShape`) | An invertible shape transform and a seeded radial shape with a per-angle `radiusAt()` query — checking a specific candidate against its own angle is exact, where a single global "furthest possible" bound is only ever a conservative overestimate |
-| Distances through corridors, connected components, resource-role adjacency | `shared/Topology`, `shared/Distances` | Graph distances and grid-component labelling with explicit wrapping/neighbor policy |
-| Torus grid arithmetic, breadth-first steps, walkable tiles, units by team and the colony reachability check (every torus generator and validator) | `shared/Grid` | One `Torus` with wrap and offset arithmetic, one eight-connected flood, one walkable mask and one "each colony reaches colony 0" check, in place of the copies each generator carried |
-| Whole-region or local point dispersion (Contested Commons, Concrete Islands, Isles) | `shared/Regions` | Paired weight/point shuffling, a bounded local search and an opt-in whole-region search that scores every tile from its two nearest weighted distances, kept current as points move, under an explicit pass budget rather than silently treating an unfinished search as converged |
-| Settlements restricted to a home island or room | `shared/Settlements` | Whole-footprint mask, nearest legal anchor, exact worker count, per-colony diagnostics |
-| Generator-specific connectivity guarantees | `GeneratorDefinition::validateWorld` | Runs after structural checks, against the actual finished terrain/movement mask |
+One header per concern under `src/map/generator/shared/`. Everything down to Roads operates on
+plain dimensions, masks and a `Map`, independent of `Game`; Settlements, BalancedStarts, Pipeline
+and Terrain take a `Game` because placing buildings and units needs its mutation APIs.
 
-Geometry, Topology, Distances and Regions operate on plain dimensions and grids, independent of
-`Game`. Settlements needs `Game` because placing buildings and units requires its mutation APIs.
+| Module | What it gives a generator |
+|---|---|
+| `Grid` | `Torus` wrap and offset arithmetic; `floodFrom`/`stepsFrom`, the one eight-connected breadth-first flood (with a step limit and the visit order for callers that need it); `walkableTiles` and `groundUnitTiles` passability masks; `unitTilesByTeam` and `firstColonyCutOff` |
+| `Topology` | `connectedRegions` component labelling with explicit wrap and neighbour policy; `regionAdjacency` and `graphDistances` over sparse labels |
+| `Geometry` | `kPi`; `ShapeTransform` (invertible stretch and rotation); `RadialShape`, a seeded rough outline with a per-angle `radiusAt()`; `stampShape` and `stampRoughDisc` into a label grid |
+| `Wedge` | `WedgeFrame`: the map as one equal wedge per colony round the centre, so a feature designed once in a wedge's frame is stamped into every wedge alike; `Blob`, a stretched, turned rough disc in that frame |
+| `Sketch` | `TerrainSketch`, the undermap designed in memory; `layBeaches`, the order-independent beach pass; `raiseIslands`; `writeUndermap` |
+| `LatticeNoise` | Value noise that tiles the torus exactly, in three flavours (`PeriodicNoise` sampled anywhere; `periodicNoise`/`fractalNoise` integer fields; `torusNoise`), plus `percentile` |
+| `HeightMap`, `Noise` | Perlin noise faded across the wrap, and the stamped height fields the height-field generators shape |
+| `Planting` | The deposits a generator places by hand: `clearGround`, `growPatch`, `seedNear`, `swarmSurroundings`, `clearAroundSwarms`, `seedAlgae` (any water or a shallows band), `stockIslands` |
+| `Resources` | The ambient layer and its fairness guards: `scaledCount`/`scaledShare`, `placeResourceClump`, `setScaledResource`, `scatterResources`, `guaranteeStartingResources`, `openCrampedStarts` |
+| `Roads` | `cheapestRoute` and `openRoad`: the walk that crosses the fewest deposits, with only those cleared |
+| `Settlements` | `placeSettlement`: whole-footprint home mask, nearest legal anchor, exact worker count, per-colony diagnostics |
+| `BalancedStarts` | `chooseBalancedStarts`: boot tiles whose walks to wheat and wood are as nearly equal as the finished map allows |
+| `Pipeline` | The stages round the others: `settleColonies`, `reopenCrampedStarts`, `designMismatch` and `walkFromFirstColony` for validators, `ResourceAmounts` |
+| `Terrain` | The height-field pipeline as stages: `heightFieldTiling`, `classifyHeightField`, `paintHeightFieldTerrain`, `paintHeightFieldResources`, `chooseHeightFieldStarts`, `plantHeightFieldGroves`, composed by `generateHeightField` |
+| `StartQuality` | `scoreStarts`, the finished map's colony quality and fairness the service ranks candidates by |
+| `GenerationContext` | Named `std::mt19937` streams, `bounded` draws and `shuffle` |
+| `legacy/Regions`, `legacy/Distances`, `legacy/StartingPositions` | The older area-grid toolkit: point dispersion (`splitUpPoints`, `splitUpArea`, `divideUpArea`), the legacy distance encoding, `divideUpPlayerLands` and the boot-tile placers `placeStarts`/`placeArchipelagoStarts`. Concrete islands, Isles, Contested commons and the height-field generators still build on it; nothing new should |
+
+Controls and validation live in `core/`: `GeneratorControls` declares discrete, stepped and
+power-of-two option domains once for the UI and the catalog; `GeneratorDefinition::validateRequest`
+is a pure check run before generation, and `validateWorld` runs after the structural checks
+against the finished terrain.
+
+## The designed generator
+
+Nine generators (Maze, Fjord continent, Watershed, Stone highlands, Symmetric arena, Ring world,
+City states, Tidal flats, Everglades) follow one shape, and the four newest of them are little
+more than a sequence of shared stages:
+
+1. `design(request, context)` computes the whole layout from the request and the context's
+   named streams without touching the map, and returns it with a `failure` string when the
+   request leaves no room.
+2. `generate` stamps the layout into a `TerrainSketch`, calls `layBeaches` and `writeUndermap`,
+   then `settleColonies` with a home mask and an anchor per colony.
+3. The kits go down with `growPatch` from `seedNear` seeds, then the ambient layers
+   (`scatterResources` or the generator's own, `seedAlgae`, `stockIslands`), then
+   `clearAroundSwarms`, `guaranteeStartingResources` and `clearAroundSwarms` again.
+4. `openRoad` (or the generator's own cheapest-walk variant) keeps every walk the map promises
+   open, clearing only the deposits in the way; `reopenCrampedStarts` runs at non-default amounts.
+5. `validateWorld` calls `design` again on a fresh context, checks it with `designMismatch`,
+   walks every colony from colony 0 with `walkFromFirstColony`, and then checks whatever the
+   design promised: ponds present, walls standing, fords open, symmetry exact.
+
+A generator with a different order calls the same stages in its own order; a generator with a
+different need (Ring world's belt-wide road, Everglades' fords, Symmetric arena's orbit
+stamping) writes that one piece itself and says why in its header comment.
 
 ## The generator catalog
 
@@ -33,7 +74,7 @@ reused after a generator is retired.
 
 | id | legacy id | Display name | Family |
 |---|---|---|---|
-| `contested-commons` | 9 | Contested commons | Point dispersion (`shared/Regions`) |
+| `contested-commons` | 9 | Contested commons | Point dispersion (`shared/legacy/Regions`) |
 | `maze` | 11 | Maze | Its own — see below |
 | `fjord-continent` | 12 | Fjord continent | Its own — see below |
 | `shattered-coast` | 7 | Old random | Iterative water/sand/grass balancer, own resource search |
@@ -54,10 +95,11 @@ reused after a generator is retired.
 | `uniform` | 0 | uniform terrain | Editor-only; one terrain type, unstructured |
 
 Swamp, River, Islands and Crater Lakes ("the height-field generators") shape their terrain and
-paint their resource bands from the same Perlin noise field via `generateHeightField`, and use
-`chooseBalancedStarts` (below) for colony placement. Contested Commons, Concrete Islands and
-Isles build on the older Voronoi-style point-dispersion machinery in `shared/Regions` and
-`shared/Distances`; Contested Commons additionally paints solid, sharply-bordered resource zones
+paint their resource bands from the same Perlin noise field via `generateHeightField`'s stages
+(`shared/Terrain`), and use `chooseBalancedStarts` (below) for colony placement. Contested
+Commons, Concrete Islands and Isles build on the older Voronoi-style point-dispersion machinery in
+`shared/legacy/Regions` and `shared/legacy/Distances`; Contested Commons additionally paints solid,
+sharply-bordered resource zones
 as a deliberate design choice rather than a noise scatter. Shattered Coast and Rugged
 Archipelago predate the shared resource/placement machinery and still place resources relative
 to each boot tile with their own compass-direction search, rather than through
@@ -189,7 +231,7 @@ evaluate a candidate's growth potential without needing a finished map.
 Two further shared pieces score and choose where colonies actually start, beyond a generator's
 own terrain and resources:
 
-- `shared/StartingPositions::chooseBalancedStarts` (used by the four height-field generators)
+- `shared/BalancedStarts::chooseBalancedStarts` (used by the four height-field generators)
   scores every legal site by its *worse* primary resource — a colony beside wood but far from
   wheat is not a good start — using the finished, as-built state: the swarm's clearing already
   cleared, its footprint impassable, the flood starting from where workers actually stand. It
@@ -586,8 +628,13 @@ as an arena. Fairness is statistical; the lobby keeps the best-scoring of severa
   footprints, exact worker counts, seed repeatability and RNG stream isolation, the
   lobby/editor UI's own control-editing behavior, and the shared toolkit's own guarantees:
   the point dispersion ends at a mutual best response checked against a brute-force score,
-  and the distance flood matches a Chebyshev oracle on the torus, with obstacles and repeated
-  sources.
+  the distance flood matches a Chebyshev oracle on the torus, with obstacles and repeated
+  sources, and `test/MapGeneratorToolkitChecks.h` checks every module of `shared/` on a map
+  built by hand — floods and their limits, beaches and islands, patches and algae bands, the
+  cheapest route, settlements and the colony walk, the crop guarantee through and around a
+  wall, a buried colony's room, balanced starts, per-landmass scatter, lattice noise, the
+  wedge frame and the context's shuffle — so a change to a module fails there before it shows
+  up as a changed golden fingerprint downstream.
 - `test/MapGeneratorGoldenTest.cpp` builds to `MapGeneratorGoldenTest` and keeps the revision
   rule honest. `test/map-generator-golden.txt` records, per platform, the fingerprint (terrain,
   resources and colony starts) every registered generator produces for three seeds at 256, one
