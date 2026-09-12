@@ -134,6 +134,11 @@ jobs:
           ./build/src/EnteringUnitSaveHarness
           ./build/src/EnteringUnitSaveHarness --load test/fixtures/entering-explorer/reproducer.game
 
+      - name: Test hunger and defeat detection
+        run: |
+          scons -j$(nproc) release=1 server=0 hungry-defeat-test
+          python3 test/run-hungry-defeat-tests.py build/src/HungryDefeatHarness
+
       - name: Test trapped colony elimination
         run: |
           scons -j$(nproc) release=1 server=0 trapped-unit-test
@@ -331,6 +336,11 @@ jobs:
 
       - name: Build glob2
         run: scons -j$(nproc) release=1 mingw=1
+
+      - name: Test hunger and defeat detection
+        run: |
+          scons -j$(nproc) release=1 mingw=1 server=0 hungry-defeat-test
+          python3 test/run-hungry-defeat-tests.py build/src/HungryDefeatHarness.exe
 
       - name: Test trapped colony elimination
         run: |
