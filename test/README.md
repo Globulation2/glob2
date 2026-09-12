@@ -217,6 +217,39 @@ the initial occupancy explicitly, so failures in painting or occupancy can be
 reproduced independently of the fresh-map initialization bug. Linux CI runs all
 scenarios.
 
+## Building gradient invalidation regression
+
+From the repository root, run `scons -j8 release=1 server=0 building-gradient-invalidation-test`
+and `./build/src/BuildingGradientInvalidationHarness`. The harness links the real
+engine and places every building through `OrderCreate` / `OrderDelete`, so it
+exercises `Game::addBuilding` and `Team::syncStep` rather than a test double. On a
+fresh 64x64 grass map with two teams, it checks that a cached route field notices
+the ground moving under it: a ring of inn sites closed around a site whose field is
+already cached stops offering that site to a unit outside, a site placed inside a
+standing ring is never offered, and clearing the ring restores it.
+
+Pass `ring-before`, `ring-after`, `ring-other-team` or `ring-flag` to run one
+scenario; the default is all four. Linux CI runs all of them.
+
+The last two cover what the proximity walk this replaced structurally could not
+reach. `ring-other-team` builds the ring as team 1 around team 0's site: the old
+invalidation only dirtied the buildings of the team that made the change. It also
+pins that the owner's field comes back on the next rebuild the interval allows
+rather than on the next lookup, because `Team::syncStep` frees only the demolishing
+team's fields. `ring-flag` puts an exploration flag, with its goal disc kept inside
+the ring, at the centre: a flag is never written into the building tile grid, so
+walking the changed footprint could not discover its field at any distance.
+
+Each scenario has to let `GRADIENT_DIRTY_REBUILD_TICKS` (`src/EngineTiming.h`)
+elapse before it can judge a field, and takes the constant from that header rather
+than copying it — when the interval was raised from 25 to 100, a local copy here
+silently stopped covering it and the regression passed stale fields.
+
+To see the harness fail, drop `gradientGeneration[swimClass] != topologyGeneration`
+from `Map::buildingGradient`: `ring-after`, `ring-other-team` and `ring-flag` all
+fail. `ring-before` passes either way by construction — nothing is cached before
+the ring exists — which is why it is not on its own sufficient.
+
 ## Building expulsion regression
 
 From the repository root, run `scons -j8 release=1 server=0 building-expel-test`
@@ -322,6 +355,36 @@ python3 test/run-savegame-safety-tests.py --check-preferences build/src/HiringBu
 ```
 
 The harness runs headlessly in disposable profile directories in Linux and Windows CI.
+
+## Echo building-order id save compatibility
+
+`EchoBuildingOrderSaveLoadTest` covers `AIEcho::Construction::BuildingOrder::id`,
+the `BuildingRegister` key handed out at runtime by `Echo::add_building_order`.
+`save()` and `load()` never moved the field and the member had no initialiser, so
+every pending building order restored from a save carried an uninitialised heap
+value into `BuildingRegister::issue_order` and `AssignWorkers`: an AI game resumed
+from a save was not reproducible run to run, and a resumed multiplayer game could
+desync without packet loss or a version mismatch. Version 96 serialises the field.
+Older saves do not carry it and load leaves the member at `-1`, the sentinel
+`Echo::load` replaces with a fresh `register_building()` key.
+
+The fixture checks the version-96 round trip, that an unregistered order's `-1`
+survives the `Uint32` on the wire rather than returning as a huge positive key,
+and that a pre-96 stream leaves the sentinel with every following field still
+decoding from the right offset. `BuildingOrder.cpp` is linked against
+`EchoBuildingOrderTestStubs.cpp`, which satisfies the `find_location` /
+`passes_conditions` link surface (`globalContainer`, `BuildingsTypes`, `Map`,
+`FlagMap`, `GradientManager`, and the `Constraint` / `Condition` factories) that
+a constraint-free order never reaches at runtime. It needs no profile or display:
+
+```sh
+cd test
+scons -j8 EchoBuildingOrderSaveLoadTest
+./EchoBuildingOrderSaveLoadTest
+```
+
+Linux CI runs it through this directory's "Build and run the tests" step, which
+executes `./TestsRunner` and then every `./*Harness` and `./*Test` binary.
 
 ### Native main Settings redesign
 

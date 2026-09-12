@@ -105,3 +105,19 @@ static constexpr int AUTOSAVE_INTERVAL_TICKS = 256;
 //! A session's first autosave lands on this tick modulo the interval.
 static constexpr int AUTOSAVE_PHASE_TICKS = 79;
 
+//! A building's route field, once invalidated by a map change, is rebuilt on
+//! its next use at most this often (~4 s). The map's topology generation
+//! invalidates every field of every team on any structural change, so this
+//! interval, not the invalidation, is what bounds the rebuild load.
+//! Measured on gd-bigarena-long (Oazis, 11 teams) over 8000 ticks: at 25 the
+//! topology generation costs +42.6% simulation time over a build without it;
+//! at 100 that falls to +10.3% while the symptom it exists to fix stays fully
+//! suppressed (0 stuck-unit forced rebuilds, against 195 without it). The fix
+//! erodes past ~200 (57 stuck at 200, 76 at 400, converging on 195), so 100
+//! sits inside the safe range rather than at its edge. Same shape on
+//! gd-large-4ai and at 4000 ticks. Shared with
+//! test/BuildingGradientInvalidationHarness.cpp, which has to let this
+//! interval elapse before it can judge a field. See
+//! MapPathfindBuilding.cpp.
+static constexpr unsigned int GRADIENT_DIRTY_REBUILD_TICKS = 100;
+

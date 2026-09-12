@@ -92,6 +92,10 @@ static constexpr int FILE_FORMAT_VERSION_CONTINUATION_STATE = 91;
 //! A building's round-trip fields and gradient use stamps join the cached routing fields.
 static constexpr int FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS = 95;
 
+//! The map's topology generation and each cached field's generation stamp
+//! (MapIO.cpp:350, 410, 451, 514).
+static constexpr int FILE_FORMAT_VERSION_TOPOLOGY_GENERATION = 97;
+
 // === Save-file section signatures (4-byte ASCII tags) ===
 // Embedded as four chars at the start of each save section so a corrupted
 // stream fails fast. NEVER change these values — old saves on disk depend

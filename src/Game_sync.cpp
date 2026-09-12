@@ -43,16 +43,14 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 		int h=bt->height;
 		if (!map.isHardSpaceForBuilding(posX, posY, w, h))
 		{
-			Uint32 notTeamMask=~Team::teamNumberToMask(teamNumber);
 			for (int y=posY; y<posY+h; y++)
 				for (int x=posX; x<posX+w; x++)
 				{
-					size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
 					// Update real map
-					map.tiles[index].forbidden&=notTeamMask;
+					map.removeForbidden(x, y, teamNumber);
 					// Update local map
 					if (teamNumber == localTeam)
-						map.displayedForbiddenView.set(index, false);
+						map.displayedForbiddenView.set(map.coordToIndex(x, y), false);
 				}
 			map.updateForbiddenGradient(teamNumber);
 			std::list<BuildProject>::iterator to_erase=bpi;
@@ -65,16 +63,14 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 			Building *b=addBuilding(posX, posY, typeNum, teamNumber, bpi->unitWorking, bpi->unitWorkingFuture);
 			if (b)
 			{
-				Uint32 notTeamMask=~Team::teamNumberToMask(teamNumber);
 				for (int y=posY; y<posY+h; y++)
 					for (int x=posX; x<posX+w; x++)
 					{
-						size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
 						// Update real map
-						map.tiles[index].forbidden&=notTeamMask;
+						map.removeForbidden(x, y, teamNumber);
 						// Update local map
 						if (teamNumber == localTeam)
-							map.displayedForbiddenView.set(index, false);
+							map.displayedForbiddenView.set(map.coordToIndex(x, y), false);
 					}
 				map.updateForbiddenGradient(teamNumber);
 				b->owner->addToStaticAbilitiesLists(b);

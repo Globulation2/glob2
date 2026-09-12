@@ -124,6 +124,7 @@ gui/GameGUIDrawChoice.cpp
 gui/GameGUIDrawUnitInfos.cpp
 gui/GameGUIDrawBuildingInfos.cpp
 gui/GameGUIDrawBuildingHelpers.cpp
+gui/FailureShapes.cpp
 gui/GameGUIDrawMiscPanels.cpp
 gui/GameGUIGhostBuildingManager.cpp
 gui/GameGUIInput.cpp
@@ -624,6 +625,13 @@ if not env['server']:
     regression_test = local.Program('ImmobileUnitGradientHarness', regression_sources)
     local.Alias('immobile-unit-gradient-test', regression_test)
 
+# Real engine regression for building placement and removal refreshing neighbouring route fields, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('BuildingGradientInvalidationHarness.o', '#test/BuildingGradientInvalidationHarness.cpp')
+    regression_test = local.Program('BuildingGradientInvalidationHarness', regression_sources)
+    local.Alias('building-gradient-invalidation-test', regression_test)
+
 # Real engine regression for resource-fetch target staleness, built only by its explicit target.
 if not env['server']:
     regression_sources = [source for source in source_files if source != 'Glob2.cpp']
@@ -637,6 +645,11 @@ if not env['server']:
     regression_sources += local.Object('FetchApportionmentHarness.o', '#test/FetchApportionmentHarness.cpp')
     regression_test = local.Program('FetchApportionmentHarness', regression_sources)
     local.Alias('fetch-apportionment-test', regression_test)
+# Units a selected building could not hire wear the reason's shape in the map view.
+if not env['server'] and 'failing-unit-markers-test' in COMMAND_LINE_TARGETS:
+    markers_sources = [source for source in source_files if source != 'Glob2.cpp']
+    markers_sources += local.Object('FailingUnitMarkersHarness.o', '#test/FailingUnitMarkersHarness.cpp')
+    local.Alias('failing-unit-markers-test', local.Program('FailingUnitMarkersHarness', markers_sources))
 if not env['server'] and 'entering-unit-draw-test' in COMMAND_LINE_TARGETS:
     entering_draw_sources = [source for source in source_files if source != 'Glob2.cpp']
     entering_draw_sources += local.Object('EnteringUnitDrawHarness.o', '#test/EnteringUnitDrawHarness.cpp')

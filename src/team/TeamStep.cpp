@@ -381,8 +381,6 @@ void Team::syncStep(void)
 				if (!building->type->isVirtual)
 				{
 					map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
-					// One tile narrower than the Game_orders.cpp rects; part of the replay-verified behaviour.
-					map->dirtyBuildingGradients(building->posX-GRADIENT_DIRTY_BORDER_TILES, building->posY-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES-1+building->type->width, 2*GRADIENT_DIRTY_BORDER_TILES-1+building->type->height, teamNumber);
 					isDirtyGlobalGradient=true;
 				}
 				building->buildingState=Building::DEAD;

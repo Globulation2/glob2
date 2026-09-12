@@ -101,6 +101,13 @@ public:
 			"Window manager constrained test dimensions; use a desktop at least 1100x850");
 	}
 	void applyResize() { updateWindowSize(); }
+	// Like resize(), but without requiring the window to land on the size asked
+	// for: with an interface scale the whole point is that SDL clamps it up to
+	// the scaled minimum.
+	void shrinkTo(int w, int h)
+	{
+		SDL_SetWindowSize(window, w, h); SDL_Delay(60); SDL_PumpEvents();
+	}
 	void expose(bool otherWindow = false)
 	{
 		SDL_Event event{}; event.type = SDL_WINDOWEVENT;
@@ -231,6 +238,27 @@ int main(int argc, char **argv)
 		}
 		gfx.resize(300, 200); gfx.applyResize();
 		require(gfx.getW() >= 640 && gfx.getH() >= 480, "Minimum size not enforced");
+		{
+			// The same floor, but with an interface scale in play. The logical
+			// surface is the window divided by the scale, so the floor only holds
+			// if the window's own minimum is the scaled one. The check above misses
+			// this because its context is built at 640x480, where setRes() reduces
+			// the scale back to 1 and nothing is ever stretched. Before this was
+			// fixed, dragging the window down at scale 1.75 gave a 366x274 logical
+			// surface -- narrower than the 368px main menu panel.
+			SDL_setenv("GLOB2_UI_SCALE", "", 1); // an inherited override would win
+			const Uint32 windowed = GraphicContext::RESIZABLE | (gpu ? GraphicContext::USEGPU : 0);
+			GraphicContext::setRequestedUiScale(1.75f);
+			gfx.setRes(1280, 960, windowed);
+			require(gfx.getUiScale() > 1.7f, "Interface scale not applied in a window with room for it");
+			require(gfx.getW() >= 640 && gfx.getH() >= 480, "Scaled logical surface starts below the layout floor");
+			gfx.shrinkTo(640, 480);
+			gfx.applyResize();
+			require(gfx.getW() >= 640 && gfx.getH() >= 480, "Interface scale lets a resize break the layout floor");
+			GraphicContext::setRequestedUiScale(0.0f);
+			gfx.setRes(640, 480, windowed);
+			require(gfx.getUiScale() == 1.0f, "Interface scale not cleared");
+		}
 		gfx.setRes(800, 600, gpu ? GraphicContext::USEGPU : 0);
 		require(!gfx.cached(), "Window recreation retained old frame cache");
 		gfx.expose();

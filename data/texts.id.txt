@@ -1616,6 +1616,8 @@ Menampilkan kursor Globulation 2.
 Selesai
 [settings Edit shortcut]
 Edit pintasan keyboard
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Memperbesar menu, teks, dan bilah sisi pada layar beresolusi tinggi.
 [settings Flags]
 Bendera
 [settings Full]
@@ -1630,6 +1632,8 @@ Kecepatan permainan
 Permainan
 [settings Graphics detail]
 Detail grafis
+[settings Interface scale]
+Skala antarmuka
 [settings Keep]
 Pertahankan perubahan
 [settings Keep this display mode?]
@@ -1652,6 +1656,8 @@ Bahasa yang digunakan di seluruh antarmuka.
 Tingkat
 [settings Map editor]
 Editor peta
+[settings Match the desktop]
+Ikuti desktop
 [settings Missing font]
 Font tidak ditemukan
 [settings Music volume]

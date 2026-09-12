@@ -1618,6 +1618,8 @@ Cortex
 تم
 [settings Edit shortcut]
 تحرير اختصار لوحة المفاتيح
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+تكبير القوائم والنص والشريط الجانبي على شاشة عالية الدقة.
 [settings Flags]
 أعلام
 [settings Full]
@@ -1632,6 +1634,8 @@ Cortex
 أسلوب اللعب
 [settings Graphics detail]
 تفاصيل الرسومات
+[settings Interface scale]
+مقياس الواجهة
 [settings Keep]
 احتفظ بالتغييرات
 [settings Keep this display mode?]
@@ -1654,6 +1658,8 @@ Cortex
 ﺍﻟﻤﺴﺘﻮﻯ
 [settings Map editor]
 محرر الخرائط
+[settings Match the desktop]
+مطابقة سطح المكتب
 [settings Missing font]
 الخط مفقود
 [settings Music volume]

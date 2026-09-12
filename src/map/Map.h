@@ -344,20 +344,26 @@ public:
 		tiles[coordToIndex(x, y)].terrain = terrain;
 	}
 	
-	void setForbidden(int x, int y, Uint32 forbidden)
-	{
-		tiles[coordToIndex(x, y)].forbidden = forbidden;
-	}
-	
+	//! A bump throws away every cached route field in the game, so only paint
+	//! a tile that is not already in the state being asked for.
 	void addForbidden(int x, int y, Uint32 teamNum)
 	{
-		tiles[coordToIndex(x, y)].forbidden |=  Team::teamNumberToMask(teamNum);
+		Tile& c=tiles[coordToIndex(x, y)];
+		const Uint32 mask=Team::teamNumberToMask(teamNum);
+		if ((c.forbidden & mask)==mask)
+			return;
+		c.forbidden |= mask;
+		bumpTopologyGeneration();
 	}
 
 	void removeForbidden(int x, int y, Uint32 teamNum)
 	{
 		Tile& c=tiles[coordToIndex(x, y)];
-		c.forbidden ^= c.forbidden &  Team::teamNumberToMask(teamNum);
+		const Uint32 mask=Team::teamNumberToMask(teamNum);
+		if ((c.forbidden & mask)==0)
+			return;
+		c.forbidden ^= c.forbidden & mask;
+		bumpTopologyGeneration();
 	}
 	
 	void addClearArea(int x, int y, Uint32 teamNum)
@@ -518,6 +524,7 @@ public:
 		for (int yi=y; yi<y+h; yi++)
 			for (int xi=x; xi<x+w; xi++)
 				tiles[coordToIndex(xi, yi)].building = gbid;
+		bumpTopologyGeneration();
 	}
 	
 	//! Return the sector index of the sector containing tile (x,y). The
@@ -673,9 +680,14 @@ public:
 	bool buildingAvailable(Building *building, int swimClass, int x, int y, int *dist);
 	//!requests the next step (dx, dy) to take to get to the building from (x,y)
 	bool pathfindBuilding(Building *building, int swimClass, int x, int y, int *dx, int *dy);
-	
-	//! Mark the gradients of this team's buildings in the area for a rebuild. Wrap-safe on x,y
-	void dirtyBuildingGradients(int x, int y, int wl, int hl, int teamNumber);
+
+	//! Bumped whenever a footprint or a forbidden mask changes. A route field
+	//! spans the map, so any such change may cross it: each field records the
+	//! value it was built at and is rebuilt on use once it differs. Resources
+	//! and immobile units are left out on purpose; they change far too often
+	//! and a unit blocked by one forces its own rebuild in pathfindBuilding.
+	Uint32 topologyGeneration;
+	void bumpTopologyGeneration() { topologyGeneration++; }
 	bool pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
 	enum class AreaKind { Guard, Clear };
 	//! Find the best direction toward a guard or clear area; return true if one has been found.

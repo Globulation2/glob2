@@ -156,6 +156,7 @@ void GlobalContainer::loadClient(void)
 	if (!runNoX)
 	{
 		// create graphic context
+		GraphicContext::setRequestedUiScale(settings.uiScale / 100.0f);
 		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
 		gfx->setMinRes(640, 480);
 		

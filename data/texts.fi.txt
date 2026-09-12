@@ -1620,6 +1620,8 @@ Näytä Globulation 2 -kursori.
 Valmis
 [settings Edit shortcut]
 Muokkaa pikanäppäintä
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Suurentaa valikot, tekstin ja sivupalkin tarkkaresoluutioisella näytöllä.
 [settings Flags]
 Liput
 [settings Full]
@@ -1634,6 +1636,8 @@ Pelinopeus
 Pelaaminen
 [settings Graphics detail]
 Graafiset yksityiskohdat
+[settings Interface scale]
+Käyttöliittymän koko
 [settings Keep]
 Säilytä muutokset
 [settings Keep this display mode?]
@@ -1656,6 +1660,8 @@ Koko käyttöliittymässä käytetty kieli.
 Taso
 [settings Map editor]
 Karttaeditori
+[settings Match the desktop]
+Työpöydän mukaan
 [settings Missing font]
 Fontti puuttuu
 [settings Music volume]

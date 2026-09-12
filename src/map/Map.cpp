@@ -38,6 +38,7 @@ const int tabClose[8][2]={
 
 Map::Map()
 {
+	topologyGeneration=1;
 	game=NULL;
 
 	arraysBuilt=false;
@@ -93,6 +94,7 @@ Map::~Map(void)
 
 void Map::clear()
 {
+	topologyGeneration=1;
 	// A failed load can own only a subset of these arrays.
 	for (int t=0; t<Team::MAX_COUNT; ++t)
 	{

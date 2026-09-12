@@ -1620,6 +1620,8 @@ Afișați cursorul Globulation 2.
 Gata
 [settings Edit shortcut]
 Editează scurtătura
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Mărește meniurile, textul și bara laterală pe un ecran de înaltă rezoluție.
 [settings Flags]
 Steaguri
 [settings Full]
@@ -1634,6 +1636,8 @@ Viteza jocului
 Mod de joc
 [settings Graphics detail]
 Detalii grafice
+[settings Interface scale]
+Scara interfeței
 [settings Keep]
 Păstrează modificările
 [settings Keep this display mode?]
@@ -1656,6 +1660,8 @@ Limba folosită în întreaga interfață.
 Nivel
 [settings Map editor]
 Editor de hărți
+[settings Match the desktop]
+La fel ca desktopul
 [settings Missing font]
 Lipsește fontul
 [settings Music volume]

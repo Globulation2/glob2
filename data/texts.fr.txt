@@ -1630,6 +1630,8 @@ Affichez le curseur Globulation 2.
 Terminé
 [settings Edit shortcut]
 Modifier le raccourci clavier
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Agrandit les menus, le texte et la barre latérale sur un écran haute résolution.
 [settings Flags]
 Drapeaux
 [settings Full]
@@ -1644,6 +1646,8 @@ Vitesse du jeu
 Jouabilité
 [settings Graphics detail]
 Détails graphiques
+[settings Interface scale]
+Échelle de l'interface
 [settings Keep]
 Conserver
 [settings Keep this display mode?]
@@ -1666,6 +1670,8 @@ Langue utilisée dans toute l'interface.
 Niveau
 [settings Map editor]
 Éditeur de cartes
+[settings Match the desktop]
+Comme le bureau
 [settings Missing font]
 Police manquante
 [settings Music volume]
