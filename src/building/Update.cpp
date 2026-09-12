@@ -22,11 +22,19 @@ void Building::updateBuildingSite(void)
 {
 	assert(type->isBuildingSite);
 
-	if (isResourceFull() && (buildingState!=WAITING_FOR_DESTRUCTION))
+	// Custom-game "instant construction" rule: skip waiting for resource
+	// delivery. When it's the rule (not real delivered resources) completing
+	// the site, also skip debiting resources[] -- nothing was actually
+	// delivered, so there's nothing to consume, and subtracting the full
+	// cost from an unfilled resources[] would leave a negative balance that
+	// makes the *next* level demand extra resources to pay it off.
+	const bool instantComplete = !isResourceFull() && owner->game->gameHeader.isInstantConstructionEnabled();
+	if ((isResourceFull() || instantComplete) && (buildingState!=WAITING_FOR_DESTRUCTION))
 	{
 		// we really uses the resources of the building site:
-		for(int i=0; i<MAX_RESOURCES; i++)
-			resources[i]-=type->maxResource[i];
+		if (!instantComplete)
+			for(int i=0; i<MAX_RESOURCES; i++)
+				resources[i]-=type->maxResource[i];
 
 		owner->prestige-=type->prestige;
 		typeNum=type->nextLevel;

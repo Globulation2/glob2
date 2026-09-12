@@ -188,9 +188,13 @@ void Unit::handleMedical(void)
 
 	if (verbose)
 		printf("guid=(%d) handleMedical...\n", gid);
-	hungry -= hungriness;
-	if (hungry<=0)
-		hp--;
+	// Custom-game "no hunger" rule: units never grow hungry or starve.
+	if (!owner->game->gameHeader.isHungerDisabled())
+	{
+		hungry -= hungriness;
+		if (hungry<=0)
+			hp--;
+	}
 
 	medical=MED_FREE;
 	if (isUnitHungry())
