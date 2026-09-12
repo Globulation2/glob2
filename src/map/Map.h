@@ -678,8 +678,6 @@ public:
 	//!requests the next step (dx, dy) to take to get to the building from (x,y)
 	bool pathfindBuilding(Building *building, int swimClass, int x, int y, int *dx, int *dy);
 	
-	//! Mark the gradients of this team's buildings in the area for a rebuild. Wrap-safe on x,y
-	void dirtyBuildingGradients(int x, int y, int wl, int hl, int teamNumber);
 
 	//! Bumped whenever a footprint or a forbidden mask changes. A route field
 	//! spans the map, so any such change may cross it: each field records the

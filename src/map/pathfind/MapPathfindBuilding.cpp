@@ -12,7 +12,7 @@
 
 
 // Building pathfinding (buildingGradient, buildingAvailable, roundTripGradient,
-// roundTripDistance, pathfindBuilding, dirtyBuildingGradients)
+// roundTripDistance, pathfindBuilding)
 
 namespace {
 
@@ -139,24 +139,4 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 	if (directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, true))
 		return true;
 	return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, false);
-}
-
-
-void Map::dirtyBuildingGradients(int x, int y, int wl, int hl, int teamNumber)
-{
-	y &= hMask;
-	x &= wMask;
-	for (int hi=0; hi<hl; hi++)
-	{
-		for (int wi=0; wi<wl; wi++)
-		{
-			int bgid=tiles[coordToIndex(x + wi, y + hi)].building;
-			if (bgid!=NOGBID)
-				if (Building::GIDtoTeam(bgid)==teamNumber)
-				{
-					Building *b=game->teams[teamNumber]->myBuildings[Building::GIDtoID(bgid)];
-					b->dirtyGradients();
-				}
-		}
-	}
 }
