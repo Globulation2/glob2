@@ -43,6 +43,26 @@ namespace GAGCore
 			SHA1Update(&sha1Context, (const Uint8*)v, size);
 		backend->write(v, size);
 	}
+
+	// Same bytes and hash as writeUint16 per value: sections are not stored.
+	void BinaryOutputStream::writeUint16Sections(const Uint16 *values, size_t count, const std::string name)
+	{
+		Uint8 bytes[16384];
+		while (count > 0)
+		{
+			const size_t chunk = count < sizeof(bytes) / 2 ? count : sizeof(bytes) / 2;
+			for (size_t i = 0; i < chunk; ++i)
+			{
+				bytes[2*i] = static_cast<Uint8>(values[i] >> 8);
+				bytes[2*i+1] = static_cast<Uint8>(values[i]);
+			}
+			if(doingSHA1)
+				SHA1Update(&sha1Context, bytes, chunk * 2);
+			backend->write(bytes, chunk * 2);
+			values += chunk;
+			count -= chunk;
+		}
+	}
 	
 	void BinaryOutputStream::writeText(const std::string &v, const std::string name)
 	{

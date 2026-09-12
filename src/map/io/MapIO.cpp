@@ -315,12 +315,8 @@ bool loadFlag(GAGCore::InputStream *stream, const char *name)
 void saveGradient(GAGCore::OutputStream *stream, const Uint16 *field, size_t size)
 {
 	stream->writeUint8(field != nullptr, "present");
-	if (field) for (size_t i=0; i<size; ++i)
-	{
-		stream->writeEnterSection(i);
-		stream->writeUint16(field[i], "value");
-		stream->writeLeaveSection();
-	}
+	if (field)
+		stream->writeUint16Sections(field, size, "value");
 }
 void loadGradient(GAGCore::InputStream *stream, Uint16 *&field, size_t size)
 {

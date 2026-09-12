@@ -1844,6 +1844,10 @@ OpenGL 在此版本中不可用。
 自動環面視圖
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 在地圖上移動時自動顯示圓環形狀的地圖概覽 (OpenGL)。
+[settings Autosave]
+自動儲存
+[settings Save the game automatically about every 10 seconds.]
+大約每10秒自動儲存遊戲。
 [Channel width]
 水道寬度
 [Land bridge width]

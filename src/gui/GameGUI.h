@@ -30,6 +30,7 @@
 
 namespace GAGCore
 {
+	class BackgroundFileWriter;
 	class Font;
 }
 using namespace GAGCore;
@@ -95,12 +96,14 @@ public:
 	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false, const std::string& sourceFileName=std::string());
 	//!
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
-	void save(GAGCore::OutputStream *stream, const std::string name);
+	void save(GAGCore::OutputStream *stream, const std::string name, bool computeSHA1 = true);
 
 	void processEvent(SDL_Event *event);
 
 	// Engine has to call this every "real" steps. (or game steps)
 	void syncStep(void);
+	//! Returns once a pending autosave has reached the disk.
+	void waitForAutosave();
 	//! return the local team of the player who is running glob2
 	Team *getLocalTeam(void) { return localTeam; }
 
@@ -238,6 +241,15 @@ private:
 	friend class GameGUISelectionHarness;
 	friend class TorusRenderIntegrationTest;
 	friend class TorusRenderBenchmark;
+
+	//! Serializes the game and hands the bytes to autosaveWriter.
+	void autosave();
+	//! Tick of this session's latest autosave, or -1 before the first.
+	Sint64 lastAutosaveStep;
+	//! Size of the previous autosave, reserved up front for the next one.
+	size_t lastAutosaveSize = 0;
+	//! Writes autosaves off the game thread; created by the first autosave.
+	std::unique_ptr<GAGCore::BackgroundFileWriter> autosaveWriter;
 
 	// Helper function for key and menu
 	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);

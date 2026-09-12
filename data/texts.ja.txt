@@ -1768,6 +1768,10 @@ Globulation 2 のカーソルを表示します。
 自動トーラス表示
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 マップ内を移動するときに、トーラス（ドーナツ）形状のマップ全体図を自動的に表示します (OpenGL)。
+[settings Autosave]
+自動保存
+[settings Save the game automatically about every 10 seconds.]
+約10秒ごとにゲームを自動保存します。
 [Channel width]
 水路の幅
 [Land bridge width]

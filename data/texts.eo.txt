@@ -1770,6 +1770,10 @@ La bildoj estos aplikitaj ĉe la sekva ŝargo de ludo aŭ mapredaktilo (OpenGL).
 Aŭtomata tora vido
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Aŭtomate montru la torforman superrigardon de la mapo dum moviĝado tra la mapo (OpenGL).
+[settings Autosave]
+Aŭtomata konservado
+[settings Save the game automatically about every 10 seconds.]
+Aŭtomate konservas la ludon proksimume ĉiujn 10 sekundojn.
 [Channel width]
 Larĝo de kanalo
 [Land bridge width]

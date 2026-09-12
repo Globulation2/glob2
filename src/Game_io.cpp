@@ -443,11 +443,13 @@ bool Game::integrity(void)
 	return true;
 }
 
-void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name)
+void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name, bool computeSHA1)
 {
 	assert(stream);
 	stream->writeEnterSection("Game");
-	if(dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+	// Without a hash the header keeps a zero SHA1, which Engine::haveMap never trusts.
+	const bool hashing = computeSHA1 && dynamic_cast<GAGCore::BinaryOutputStream*>(stream);
+	if (hashing)
 	{
 		dynamic_cast<GAGCore::BinaryOutputStream*>(stream)->enableSHA1();
 	}
@@ -458,8 +460,8 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	/// We mutate mapHeader briefly to shape the on-disk record (mapName,
 	/// isSavedGame), then restore it on scope exit via the RAII guard
 	/// below. Without the restore, every in-game save (the ReplayWriter's
-	/// initial state dump with name="replayHeader" and the GameGUI auto-save
-	/// every 256 ticks with name="Auto save") would permanently overwrite
+	/// initial state dump with name="replayHeader" and the periodic GameGUI
+	/// auto-save with name="Auto save") would permanently overwrite
 	/// the live mapHeader.mapName — observable later in things like the
 	/// GLOB2_GAME_END "map=" field, which would read "Auto save" instead
 	/// of the actual map. Map-editor "Save As" still wants the new name
@@ -570,7 +572,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	Uint8 sha1[SHA1_BYTE_LEN];
 	for(int i=0; i<SHA1_BYTE_LEN; ++i)
 		sha1[i]=0;
-	if(dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+	if (hashing)
 	{
 		dynamic_cast<GAGCore::BinaryOutputStream*>(stream)->finishSHA1(sha1);
 	}

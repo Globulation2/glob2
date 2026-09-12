@@ -1848,6 +1848,10 @@ Anvend grafikken, næste gang et spil eller korteditoren indlæses (OpenGL).
 Automatisk torusvisning
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Vis automatisk den torusformede kortoversigt, mens du bevæger dig rundt på kortet (OpenGL).
+[settings Autosave]
+Automatisk gemning
+[settings Save the game automatically about every 10 seconds.]
+Gemmer spillet automatisk cirka hvert 10. sekund.
 [Channel width]
 Kanalbredde
 [Land bridge width]

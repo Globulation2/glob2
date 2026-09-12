@@ -18,9 +18,13 @@ namespace GAGCore
 	void MemoryStreamBackend::write(const void *data, const size_t size)
 	{
 		const char *_data = static_cast<const char *>(data);
-		if ((index + size) > buffer.size())
-			buffer.resize(index + size);
-		std::copy(_data, _data+size, buffer.begin()+index);
+		// A seek past the end leaves a zero-filled gap. From the end on, append
+		// rather than resize, so growing never zero-fills bytes about to be written.
+		if (index > buffer.size())
+			buffer.resize(index);
+		const size_t overwrite = std::min(size, buffer.size() - index);
+		std::copy(_data, _data+overwrite, buffer.begin()+index);
+		buffer.append(_data+overwrite, size-overwrite);
 		index += size;
 	}
 	

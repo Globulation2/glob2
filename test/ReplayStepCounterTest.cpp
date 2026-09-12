@@ -50,12 +50,12 @@ public:
 	GameGUI();
 	~GameGUI();
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
-	void save(GAGCore::OutputStream *stream, const std::string name);
+	void save(GAGCore::OutputStream *stream, const std::string name, bool computeSHA1 = true);
 };
 GameGUI::GameGUI() {}
 GameGUI::~GameGUI() {}
 bool GameGUI::load(GAGCore::InputStream*, bool) { return false; }
-void GameGUI::save(GAGCore::OutputStream*, const std::string) {}
+void GameGUI::save(GAGCore::OutputStream*, const std::string, bool) {}
 
 // Linking the real Order.cpp would drag in every OrderCreate / OrderDelete /
 // OrderModify… deserialize symbol through the switch in Order::getOrder. The

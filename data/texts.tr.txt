@@ -1780,6 +1780,10 @@ Seçilen grafikler, oyun veya harita düzenleyici bir sonraki yüklendiğinde uy
 Otomatik torus görünümü
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Haritada dolaşırken torus şeklindeki haritaya genel bakışı otomatik olarak gösterin (OpenGL).
+[settings Autosave]
+Otomatik kaydetme
+[settings Save the game automatically about every 10 seconds.]
+Oyunu yaklaşık 10 saniyede bir otomatik olarak kaydeder.
 [Channel width]
 Kanal genişliği
 [Land bridge width]

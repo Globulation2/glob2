@@ -45,6 +45,18 @@ namespace GAGCore
 		virtual void writeEnterSection(const std::string name) = 0;
 		virtual void writeEnterSection(unsigned id) = 0;
 		virtual void writeLeaveSection(size_t count = 1) = 0;
+
+		//! Writes count values, each in its own numbered section, as
+		//! writeUint16 would. Streams that store no sections may batch them.
+		virtual void writeUint16Sections(const Uint16 *values, size_t count, const std::string name)
+		{
+			for (size_t i = 0; i < count; ++i)
+			{
+				writeEnterSection(static_cast<unsigned>(i));
+				writeUint16(values[i], name);
+				writeLeaveSection();
+			}
+		}
 	};
 	
 	//! The stream that can be read from

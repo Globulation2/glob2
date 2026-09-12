@@ -137,7 +137,7 @@ public:
 	bool integrity(void);
 
 	///Saves data to a stream
-	void save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name);
+	void save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name, bool computeSHA1 = true);
 	void saveBuildProjects(GAGCore::OutputStream* stream) const;
 	void loadBuildProjects(GAGCore::InputStream* stream);
 

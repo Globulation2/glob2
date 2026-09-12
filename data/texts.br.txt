@@ -1768,6 +1768,10 @@ Aplicar os gráficos ao carregar a próxima partida ou o editor de mapas (OpenGL
 Visão toroidal automática
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostrar automaticamente a visão geral toroidal enquanto você se desloca pelo mapa (OpenGL).
+[settings Autosave]
+Salvamento automático
+[settings Save the game automatically about every 10 seconds.]
+Salva o jogo automaticamente a cada 10 segundos, aproximadamente.
 [Channel width]
 Largura do canal
 [Land bridge width]

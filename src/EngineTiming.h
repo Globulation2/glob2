@@ -96,6 +96,15 @@ static constexpr int MINIMAP_REFRESH_TICKS = 25;
 //! TypeSteps.cpp.
 static constexpr int CLEARING_FLAG_REFRESH_TICKS = 125;
 
+// === Autosave cadence (in ticks) ===
+
+//! Ticks between autosaves at normal speed (~10 s). Faster speed presets
+//! scale it up to keep about the same real-time spacing. See GameGUIStep.cpp.
+static constexpr int AUTOSAVE_INTERVAL_TICKS = 256;
+
+//! A session's first autosave lands on this tick modulo the interval.
+static constexpr int AUTOSAVE_PHASE_TICKS = 79;
+
 //! A building's route field, once invalidated by a map change, is rebuilt on
 //! its next use at most this often (~4 s). The map's topology generation
 //! invalidates every field of every team on any structural change, so this
