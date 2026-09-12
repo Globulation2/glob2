@@ -1376,6 +1376,14 @@ Người chơi & Đội
 Bản đồ được tạo sẵn
 [Preview ready. Start plays this exact map.]
 Xem trước đã sẵn sàng. Bắt đầu trò chơi sử dụng bản đồ chính xác này.
+[Regenerate all]
+Tạo lại tất cả
+[Generating preview...]
+Đang tạo bản xem trước...
+[Preview unavailable]
+Không có bản xem trước
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Mỗi địa hình được hiển thị như một bản đồ thật với kích thước và số thuộc địa hiện tại của bạn. Chọn một để chơi bản đồ được hiển thị.
 [Purple]
 Màu tím
 [Quick clash]

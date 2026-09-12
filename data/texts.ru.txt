@@ -1378,6 +1378,14 @@ Cortex
 Готовые карты
 [Preview ready. Start plays this exact map.]
 Предварительный просмотр готов. В начале игры используется именно эта карта.
+[Regenerate all]
+Сгенерировать всё заново
+[Generating preview...]
+Создание предварительного просмотра...
+[Preview unavailable]
+Предварительный просмотр недоступен
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Каждый ландшафт показан как настоящая карта с вашим текущим размером и числом колоний. Выберите один, чтобы сыграть на показанной карте.
 [Purple]
 Фиолетовый
 [Quick clash]

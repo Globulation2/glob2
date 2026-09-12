@@ -1380,6 +1380,14 @@ Spieler & Teams
 Vorgefertigte Karten
 [Preview ready. Start plays this exact map.]
 Vorschau bereit. Beim Starten des Spiels wird genau diese Karte verwendet.
+[Regenerate all]
+Alle neu generieren
+[Generating preview...]
+Vorschau wird erstellt...
+[Preview unavailable]
+Keine Vorschau verfügbar
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Jede Landschaft wird als echte Karte in deiner aktuellen Größe und Kolonienzahl gezeigt. Wähle eine, um die gezeigte Karte zu spielen.
 [Purple]
 Lila
 [Quick clash]

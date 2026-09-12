@@ -1390,6 +1390,14 @@ Joueurs et équipes
 Cartes prédéfinies
 [Preview ready. Start plays this exact map.]
 Aperçu prêt. Le démarrage du jeu utilise cette carte exacte.
+[Regenerate all]
+Tout régénérer
+[Generating preview...]
+Génération de l'aperçu...
+[Preview unavailable]
+Aperçu indisponible
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Chaque paysage est présenté comme une vraie carte à votre taille et votre nombre de colonies actuels. Choisissez-en un pour jouer la carte affichée.
 [Purple]
 Violet
 [Quick clash]

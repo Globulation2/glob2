@@ -1380,6 +1380,14 @@ Hráči a týmy
 Předpřipravené mapy
 [Preview ready. Start plays this exact map.]
 Náhled připraven. Při spuštění hry se používá přesně tato mapa.
+[Regenerate all]
+Znovu vygenerovat vše
+[Generating preview...]
+Generuje se náhled...
+[Preview unavailable]
+Náhled není k dispozici
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Každá krajina je zobrazena jako skutečná mapa ve vaší aktuální velikosti a počtu kolonií. Vyberte jednu a zahrajte si zobrazenou mapu.
 [Purple]
 Fialová
 [Quick clash]

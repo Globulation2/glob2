@@ -1376,6 +1376,14 @@ AI 명령 없음
 미리 만들어진 지도
 [Preview ready. Start plays this exact map.]
 미리보기가 준비되었습니다. 게임을 시작할 때 이 정확한 지도를 사용합니다.
+[Regenerate all]
+모두 다시 생성
+[Generating preview...]
+미리보기 생성 중...
+[Preview unavailable]
+미리보기를 사용할 수 없음
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+각 지형은 현재 크기와 식민지 수로 실제 생성된 지도로 표시됩니다. 하나를 선택하면 표시된 지도로 플레이합니다.
 [Purple]
 보라색
 [Quick clash]

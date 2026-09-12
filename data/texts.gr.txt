@@ -1450,6 +1450,14 @@ Cortex
 Προκατασκευασμένοι χάρτες
 [Preview ready. Start plays this exact map.]
 Έτοιμη η προεπισκόπηση. Η έναρξη του παιχνιδιού χρησιμοποιεί αυτόν ακριβώς τον χάρτη.
+[Regenerate all]
+Αναδημιουργία όλων
+[Generating preview...]
+Δημιουργία προεπισκόπησης...
+[Preview unavailable]
+Η προεπισκόπηση δεν είναι διαθέσιμη
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Κάθε τοπίο εμφανίζεται ως πραγματικός χάρτης στο τρέχον μέγεθος και αριθμό αποικιών σας. Επιλέξτε ένα για να παίξετε τον χάρτη που εμφανίζεται.
 [Purple]
 Μωβ
 [Quick clash]

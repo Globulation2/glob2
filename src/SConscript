@@ -168,6 +168,8 @@ KeyboardManager.cpp
 LANFindScreen.cpp
 LANGameInformation.cpp
 LANMenuScreen.cpp
+LandscapePickerScreen.cpp
+LandscapePreviewer.cpp
 MainMenuScreen.cpp
 map/Map.cpp
 map/generator/compatibility/LegacyGenerationDescriptor.cpp

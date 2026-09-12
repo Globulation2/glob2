@@ -1376,6 +1376,14 @@ AI策略与对抗
 预制地图
 [Preview ready. Start plays this exact map.]
 预览准备就绪。开始游戏时使用这张精确的地图。
+[Regenerate all]
+全部重新生成
+[Generating preview...]
+正在生成预览...
+[Preview unavailable]
+预览不可用
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+每种地貌都以当前大小和殖民地数量实际生成的地图显示。选择一个即可游玩所显示的地图。
 [Purple]
 紫色
 [Quick clash]

@@ -7,6 +7,7 @@
 #include "Engine.h"
 #include "FrontendTheme.h"
 #include "GlobalContainer.h"
+#include "LandscapePickerScreen.h"
 #include "LobbyControls.h"
 #include "LobbyMapCatalog.h"
 #include "LobbyMapPreview.h"
@@ -23,6 +24,7 @@
 #include <filesystem>
 #include <functional>
 #include <iostream>
+#include <set>
 #include <unistd.h>
 
 GlobalContainer *globalContainer = nullptr;
@@ -688,15 +690,11 @@ struct CustomGameSetupHarness
     screen.onTimer(screen.previewDue);
     assert(screen.validMap);
 
-    // Drive the same dropdown/steppers used by players, including measured
-    // five-unit steps.
+    // Apply a landscape the way the picker's result does, then drive the same steppers used
+    // by players, including measured five-unit steps. The picker itself is exercised below.
     auto landscape = [&](int method) {
-      clickControl("generator/landscape");
-      for (size_t i = 0; i < GeneratorRegistry::builtins().methods(false).size(); ++i)
-        keyEvent(SDLK_UP);
-      for (int i = 0; i < GeneratorRegistry::builtins().selectionIndex(method, false); ++i)
-        keyEvent(SDLK_DOWN);
-      keyEvent(SDLK_RETURN);
+      screen.applyLandscape(method, std::nullopt);
+      paint();
       assert(screen.setup.generator.method == method);
     };
     landscape(MapGenerationDescriptor::eCONCRETEISLANDS);
@@ -818,6 +816,158 @@ struct CustomGameSetupHarness
       SDL_FreeSurface(rgba);
     }
     puts("PASS rectangular aspect ratios, cropped terrain and colony marker pixels");
+    // The landscape picker: every playable landscape previewed on background threads,
+    // selection by click and keys, regeneration with fresh seeds, and the lobby then
+    // playing exactly the map that was shown.
+    {
+      screen.setup.generatorHistory.select(screen.setup.generator,
+                                           GenerationRequest::eCONTESTEDCOMMONS);
+      screen.setup.generator.wDec = screen.setup.generator.hDec = 8;
+      screen.setup.setCapacity(4);
+      screen.invalidate();
+      paint();
+      assert(std::any_of(screen.controls->hits.begin(), screen.controls->hits.end(),
+                         [](const auto &h) { return h.id == "generator/landscape"; }));
+      const auto entries = screen.landscapeEntries();
+      assert(entries.size() == GeneratorRegistry::builtins().methods(false).size());
+      for (const auto &[method, request] : entries)
+        assert(request.method == method && request.nbTeams == 4 && request.wDec == 8 &&
+               request.hDec == 8);
+      std::vector<LandscapePickerScreen::Entry> shown;
+      for (const auto &[method, request] : entries)
+        shown.push_back({GenerationRequest::methodName(method), request});
+      const int current =
+          GeneratorRegistry::builtins().selectionIndex(screen.setup.generator.method, false);
+      LandscapePickerScreen picker("Landscape", shown, current);
+      picker.dispatchInit();
+      assert(picker.previewer.threadCount() >= 1 && picker.busy());
+      picker.dispatchPaint(false); // placeholders while every tile is still pending
+      globalContainer->gfx->printScreen(output + "/landscape-picker-pending.bmp");
+      auto settle = [&] {
+        const Uint32 deadline = SDL_GetTicks() + 120000;
+        while (picker.busy()) {
+          assert(Sint32(SDL_GetTicks() - deadline) < 0);
+          SDL_Delay(10);
+          picker.dispatchTimer(SDL_GetTicks());
+        }
+        picker.dispatchTimer(SDL_GetTicks());
+        picker.dispatchPaint(false);
+      };
+      auto pick = [&](const std::string &id) {
+        picker.dispatchPaint(false);
+        auto find = [&] {
+          return std::find_if(picker.controls->hits.begin(), picker.controls->hits.end(),
+                              [&](const auto &h) { return h.id == id; });
+        };
+        auto hit = find();
+        assert(hit != picker.controls->hits.end());
+        if (hit->region >= 0) {
+          // Tiles below the fold are clipped, so bring one into view before clicking it.
+          auto &region = picker.controls->regions[hit->region];
+          if (hit->box.y < region.box.y)
+            picker.controls->scroll(hit->region, hit->box.y - region.box.y);
+          else if (hit->box.y + hit->box.h > region.box.y + region.box.h)
+            picker.controls->scroll(hit->region,
+                                    hit->box.y + hit->box.h - region.box.y - region.box.h);
+          picker.dispatchPaint(false);
+          hit = find();
+        }
+        const auto r = hit->box;
+        for (auto type : {SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP}) {
+          SDL_Event e = {};
+          e.type = type;
+          e.button.button = SDL_BUTTON_LEFT;
+          e.button.x = r.x + r.w / 2;
+          e.button.y = r.y + r.h / 2;
+          picker.dispatchEvents(&e);
+        }
+        picker.dispatchPaint(false);
+      };
+      auto pickerKey = [&](SDL_Keycode key) {
+        SDL_Event e = {};
+        e.type = SDL_KEYDOWN;
+        e.key.keysym.sym = key;
+        picker.dispatchEvents(&e);
+        picker.dispatchPaint(false);
+      };
+      settle();
+      globalContainer->gfx->printScreen(output + "/landscape-picker.bmp");
+      auto seedsShown = [&] {
+        std::vector<std::uint32_t> seeds;
+        for (const auto &tile : picker.tiles) {
+          assert(tile.preview.state == LandscapePreviewer::State::Ready && tile.surface &&
+                 tile.preview.width == 256 && tile.preview.height == 256 &&
+                 tile.preview.starts.size() == 4);
+          seeds.push_back(tile.preview.seed);
+        }
+        assert(std::set<std::uint32_t>(seeds.begin(), seeds.end()).size() == seeds.size());
+        return seeds;
+      };
+      const auto first = seedsShown();
+      assert(picker.selection() == current && picker.chosenSeed() == first[current]);
+      // A click selects; arrows move by one tile or one row; Escape cancels.
+      const int other = (current + 1) % int(shown.size());
+      pick("landscape/" + std::to_string(other));
+      assert(picker.selection() == other && picker.returnCode == 0);
+      pickerKey(SDLK_LEFT);
+      assert(picker.selection() == std::max(0, other - 1));
+      pickerKey(SDLK_DOWN);
+      assert(picker.selection() ==
+             std::min(int(shown.size()) - 1, std::max(0, other - 1) + picker.columns));
+      pickerKey(SDLK_ESCAPE);
+      assert(picker.returnCode == LandscapePickerScreen::CANCEL);
+      // Regenerate all rolls every landscape again with fresh seeds.
+      pick("landscape/regenerate");
+      assert(picker.busy());
+      settle();
+      const auto second = seedsShown();
+      for (size_t i = 0; i < first.size(); ++i)
+        assert(first[i] != second[i]);
+      // Return confirms the selection, as does clicking the selected tile.
+      pick("landscape/" + std::to_string(other));
+      pickerKey(SDLK_RETURN);
+      assert(picker.returnCode == other);
+      pick("landscape/" + std::to_string(other));
+      assert(picker.returnCode == other);
+      pick("landscape/use");
+      assert(picker.returnCode == other);
+      globalContainer->gfx->printScreen(output + "/landscape-picker-selected.bmp");
+      // The lobby then rolls the very seed the picker showed: same starts, same map header.
+      const auto seed = *picker.chosenSeed();
+      const auto starts = picker.tiles[other].preview.starts;
+      screen.applyLandscape(entries[other].first, seed);
+      assert(screen.previewPending && screen.chosenSeed == seed &&
+             screen.setup.generator.method == entries[other].first);
+      screen.onTimer(screen.previewDue);
+      assert(screen.validMap && !screen.chosenSeed);
+      assert(screen.preview->starts.size() == starts.size());
+      for (size_t i = 0; i < starts.size(); ++i)
+        assert(screen.preview->starts[i].x == starts[i].x &&
+               screen.preview->starts[i].y == starts[i].y &&
+               screen.preview->starts[i].color.r == starts[i].color.r &&
+               screen.preview->starts[i].color.g == starts[i].color.g &&
+               screen.preview->starts[i].color.b == starts[i].color.b);
+      {
+        Game shownMap(nullptr);
+        GAGCore::BinaryInputStream in(
+            Toolkit::getFileManager()->openInputStreamBackend(screen.snapshot));
+        assert(shownMap.load(&in) && shownMap.gameHeader.getRandomSeed() == seed);
+      }
+      capture("landscape-applied");
+      // An edit after the pick drops the shown seed: the next preview samples candidates again.
+      screen.applyLandscape(entries[other].first, seed);
+      assert(screen.chosenSeed == seed);
+      clickControl("generator/width");
+      assert(screen.controls->popup.open);
+      keyEvent(SDLK_UP);
+      keyEvent(SDLK_RETURN);
+      assert(!screen.chosenSeed && screen.previewPending);
+      screen.onTimer(screen.previewDue);
+      assert(screen.validMap);
+      std::cout << "PASS landscape picker: " << shown.size() << " previews on "
+                << picker.previewer.threadCount()
+                << " threads, selection, regeneration and the shown map played\n";
+    }
     screen.setup.generatorHistory.select(screen.setup.generator, MapGenerationDescriptor::eRIVER);
     screen.setup.setCapacity(12);
     screen.setup.generator.wDec = screen.setup.generator.hDec = 8;

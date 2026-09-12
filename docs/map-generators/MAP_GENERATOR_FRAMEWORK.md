@@ -211,6 +211,18 @@ used by the map editor's regeneration action. Generation is deterministic and th
 pure function of the finished map (asserted in `map-generator-defaults-test`), which is what
 makes "roll several, keep the best" and "regenerate the winning seed later" both sound.
 
+The lobby's Landscape field opens `LandscapePickerScreen`, a full-window modal that shows every
+playable landscape as a freshly generated map at the draft's current size and colony count, with
+a Regenerate all button. `LandscapePreviewer` rolls those previews on background threads (one
+roll per landscape, up to three seeds before a tile reports no preview) and hands back the seed
+each shown map came from; the lobby then rolls that one seed instead of sampling five, so the map
+a player picked by sight is the map the preview shows and the match starts on. Any later edit to
+the draft drops the remembered seed and returns to candidate sampling. The picker takes only a
+list of localized names and requests, so the editor or a multiplayer lobby can run it too.
+Background rolls are safe because `syncRand()`'s state is per thread: a worker seeds its own
+stream inside `GenerationService::generate` and never touches the menu's live colony on the UI
+thread.
+
 ## Fjord continent
 
 The richest generator, and the one most of this framework's resource work was proven against:

@@ -7,6 +7,7 @@
 #include <string>
 #include "SDL_net.h"
 
+class Map;
 namespace GAGCore
 {
 	class DrawableSurface;
@@ -23,6 +24,9 @@ public:
 	
 	///Loads the thumbnail from the map with the given map name
 	void loadFromMap(const std::string& map);
+
+	///Renders the thumbnail from a map already in memory
+	void loadFromMap(const Map& map);
 	
 	///Encodes this thumbnail into a stream
 	void encodeData(GAGCore::OutputStream* stream) const;

@@ -1442,6 +1442,14 @@ Giocatori e squadre
 Mappe predefinite
 [Preview ready. Start plays this exact map.]
 Anteprima pronta. L'avvio del gioco utilizza questa mappa esatta.
+[Regenerate all]
+Rigenera tutto
+[Generating preview...]
+Generazione dell'anteprima...
+[Preview unavailable]
+Anteprima non disponibile
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Ogni paesaggio è mostrato come una mappa reale con le dimensioni e il numero di colonie attuali. Scegline uno per giocare la mappa mostrata.
 [Purple]
 Viola
 [Quick clash]

@@ -1388,6 +1388,14 @@ Oyuncular ve Takımlar
 Hazır haritalar
 [Preview ready. Start plays this exact map.]
 Önizleme hazır. Oyunun başlatılması tam olarak bu haritayı kullanır.
+[Regenerate all]
+Tümünü yeniden oluştur
+[Generating preview...]
+Önizleme oluşturuluyor...
+[Preview unavailable]
+Önizleme kullanılamıyor
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Her arazi, mevcut boyutunuz ve koloni sayınızla gerçek bir harita olarak gösterilir. Gösterilen haritayı oynamak için birini seçin.
 [Purple]
 Mor
 [Quick clash]

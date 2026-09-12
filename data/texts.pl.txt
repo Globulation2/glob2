@@ -1380,6 +1380,14 @@ Gracze i drużyny
 Gotowe mapy
 [Preview ready. Start plays this exact map.]
 Podgląd gotowy. Rozpoczęcie gry korzysta z dokładnie tej mapy.
+[Regenerate all]
+Wygeneruj wszystko ponownie
+[Generating preview...]
+Generowanie podglądu...
+[Preview unavailable]
+Podgląd niedostępny
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Każdy krajobraz jest pokazany jako prawdziwa mapa w twoim bieżącym rozmiarze i liczbie kolonii. Wybierz jeden, aby zagrać na pokazanej mapie.
 [Purple]
 Fioletowy
 [Quick clash]

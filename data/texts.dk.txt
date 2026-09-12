@@ -1456,6 +1456,14 @@ Spillere og hold
 Forudarbejdede kort
 [Preview ready. Start plays this exact map.]
 Forhåndsvisning klar. Start af spillet bruger dette nøjagtige kort.
+[Regenerate all]
+Generer alle igen
+[Generating preview...]
+Genererer forhåndsvisning...
+[Preview unavailable]
+Forhåndsvisning ikke tilgængelig
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Hvert landskab vises som et rigtigt kort med din nuværende størrelse og dit antal kolonier. Vælg et for at spille det viste kort.
 [Purple]
 Lilla
 [Quick clash]

@@ -1380,6 +1380,14 @@ Jucători și echipe
 Hărți prefabricate
 [Preview ready. Start plays this exact map.]
 Previzualizare gata. Pornirea jocului folosește exact această hartă.
+[Regenerate all]
+Regenerează tot
+[Generating preview...]
+Se generează previzualizarea...
+[Preview unavailable]
+Previzualizare indisponibilă
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Fiecare peisaj este afișat ca o hartă reală la dimensiunea și numărul de colonii curente. Alegeți unul pentru a juca harta afișată.
 [Purple]
 Violet
 [Quick clash]

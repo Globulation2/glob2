@@ -18,8 +18,10 @@ namespace GAGCore
 	class OutputStream;
 }
 
-//Mersenne twister implementation
-extern boost::mt19937 randomGenerator;
+// The synchronized gameplay stream. One state per thread: the simulation only ever runs on
+// one thread, so its sequence is unchanged, while a background map generation (which seeds
+// this stream itself) neither disturbs nor races the menu's live colony on the UI thread.
+extern thread_local boost::mt19937 randomGenerator;
 
 inline Uint32 syncRand(void)
 {

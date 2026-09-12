@@ -26,8 +26,7 @@ using ssize_t = SSIZE_T;
 #endif
 
 
-//Mersenne twister implementation
-boost::mt19937 randomGenerator;
+thread_local boost::mt19937 randomGenerator;
 
 int distSquare(int x1, int y1, int x2, int y2)
 {

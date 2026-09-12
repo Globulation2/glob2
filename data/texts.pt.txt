@@ -1386,6 +1386,14 @@ Jogadores e equipas
 Mapas prontos
 [Preview ready. Start plays this exact map.]
 Visualização pronta. Iniciar o jogo usa exatamente este mapa.
+[Regenerate all]
+Regenerar tudo
+[Generating preview...]
+A gerar a pré-visualização...
+[Preview unavailable]
+Pré-visualização indisponível
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Cada paisagem é mostrada como um mapa real com o seu tamanho e número de colónias atuais. Use uma para jogar o mapa mostrado.
 [Purple]
 Roxo
 [Quick clash]

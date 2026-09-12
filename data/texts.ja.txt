@@ -1376,6 +1376,14 @@ AIの命令なし
 既製のマップ
 [Preview ready. Start plays this exact map.]
 プレビューの準備ができました。ゲームを開始すると、この正確なマップが使用されます。
+[Regenerate all]
+すべて再生成
+[Generating preview...]
+プレビューを生成しています...
+[Preview unavailable]
+プレビューを利用できません
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+各地形は、現在のサイズとコロニー数で実際に生成したマップとして表示されます。1 つ選ぶと、表示されたマップでプレイできます。
 [Purple]
 紫
 [Quick clash]

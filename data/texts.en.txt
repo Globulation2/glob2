@@ -1378,6 +1378,14 @@ Players & Teams
 Premade maps
 [Preview ready. Start plays this exact map.]
 Preview ready. Start plays this exact map.
+[Regenerate all]
+Regenerate all
+[Generating preview...]
+Generating preview...
+[Preview unavailable]
+Preview unavailable
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.
 [Purple]
 Purple
 [Quick clash]

@@ -1380,6 +1380,14 @@ Igralci in ekipe
 Pripravljeni zemljevidi
 [Preview ready. Start plays this exact map.]
 Predogled pripravljen. Začetek igre uporablja točno ta zemljevid.
+[Regenerate all]
+Znova ustvari vse
+[Generating preview...]
+Ustvarjanje predogleda ...
+[Preview unavailable]
+Predogled ni na voljo
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Vsaka pokrajina je prikazana kot pravi zemljevid v vaši trenutni velikosti in številu kolonij. Izberite eno, da igrate prikazani zemljevid.
 [Purple]
 Vijolična
 [Quick clash]

@@ -1380,6 +1380,14 @@ Játékosok és csapatok
 Előre elkészített térképek
 [Preview ready. Start plays this exact map.]
 Az előnézet készen áll. A játék elindítása pontosan ezt a térképet használja.
+[Regenerate all]
+Összes újragenerálása
+[Generating preview...]
+Előnézet készítése...
+[Preview unavailable]
+Az előnézet nem érhető el
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Minden táj valódi térképként jelenik meg a jelenlegi mérettel és kolóniaszámmal. Válassz egyet a megjelenített térkép játszásához.
 [Purple]
 Lila
 [Quick clash]

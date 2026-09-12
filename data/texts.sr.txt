@@ -1380,6 +1380,14 @@ Cortex
 Унапред припремљене карте
 [Preview ready. Start plays this exact map.]
 Преглед спреман. Покретање игре користи ову тачну мапу.
+[Regenerate all]
+Поново генериши све
+[Generating preview...]
+Прављење прегледа...
+[Preview unavailable]
+Преглед није доступан
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Сваки предео је приказан као права мапа у вашој тренутној величини и броју колонија. Изаберите један да бисте играли приказану мапу.
 [Purple]
 Љубичаста
 [Quick clash]

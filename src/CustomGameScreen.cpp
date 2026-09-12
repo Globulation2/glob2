@@ -6,6 +6,7 @@
 #include "AINames.h"
 #include "CustomGameScreen.h"
 #include "LobbyMapPreview.h"
+#include "LandscapePickerScreen.h"
 #include "Game.h"
 #include "GenerationService.h"
 #include "GlobalContainer.h"
@@ -25,13 +26,6 @@ namespace
 {
 std::string tr(const std::string &s) { return Toolkit::getStringTable()->getString("[" + s + "]"); }
 const Uint32 A = ALIGN_SCREEN_CENTERED;
-const std::vector<std::string> methods = []
-{
-	std::vector<std::string> result;
-	for (int m : GeneratorRegistry::builtins().methods(false))
-		result.emplace_back(GenerationRequest::methodName(m));
-	return result;
-}();
 std::vector<std::string> localized(std::vector<std::string> v)
 {
 	for (auto &s : v)
@@ -288,6 +282,47 @@ int CustomGameScreen::choose(const std::string &title, const std::vector<std::st
 	return result;
 }
 void CustomGameScreen::onGroupActivated(int group) { currentTab = group; }
+// One request per playable landscape, exactly as picking it would leave the draft: the
+// settings last used with it, or its defaults, at the current size and colony count.
+std::vector<std::pair<int, GenerationRequest>> CustomGameScreen::landscapeEntries() const
+{
+	std::vector<std::pair<int, GenerationRequest>> entries;
+	for (int method : GeneratorRegistry::builtins().methods(false))
+	{
+		auto draft = setup;
+		draft.generatorHistory.select(draft.generator, method);
+		draft.generator.nbTeams = setup.capacity;
+		entries.emplace_back(method, draft.generator);
+	}
+	return entries;
+}
+void CustomGameScreen::chooseLandscape()
+{
+	const auto entries = landscapeEntries();
+	std::vector<LandscapePickerScreen::Entry> shown;
+	int selected = 0;
+	for (const auto &[method, request] : entries)
+	{
+		if (method == setup.generator.method)
+			selected = int(shown.size());
+		shown.push_back({tr(GenerationRequest::methodName(method)), request});
+	}
+	LandscapePickerScreen picker(tr("Landscape"), std::move(shown), selected);
+	const int result = picker.execute(globalContainer->gfx, 40);
+	if (result == QUIT_APPLICATION)
+		endExecute(QUIT_APPLICATION);
+	else if (result >= 0 && result < int(entries.size()))
+		applyLandscape(entries[result].first, picker.chosenSeed());
+}
+void CustomGameScreen::applyLandscape(int method, std::optional<std::uint32_t> seed)
+{
+	setup.generatorHistory.select(setup.generator, method);
+	chosenSeed = seed;
+	++setup.mapRevision;
+	invalidate();
+	// An explicit choice, not an edit in progress: preview it now rather than after the debounce.
+	previewDue = SDL_GetTicks();
+}
 void CustomGameScreen::invalidate()
 {
 	validMap = false;
@@ -396,16 +431,21 @@ bool CustomGameScreen::generateMap()
 		const auto rootSeed = GenerationContext::randomSeed();
 		GenerationResult generationResult;
 		setup.generator.nbTeams = setup.capacity;
-		// Some rolls cannot fit every starting colony, and among those that can, some hand
-		// one colony far better ground than another. Roll the whole budget either way and
-		// keep the best-scoring world rather than the first that fits.
+		// A map the landscape picker showed is rolled once, exactly as shown. Otherwise some
+		// rolls cannot fit every starting colony, and among those that can, some hand one
+		// colony far better ground than another: roll the whole budget either way and keep the
+		// best-scoring world rather than the first that fits.
+		const auto shown = chosenSeed;
+		chosenSeed.reset();
 		double bestScore = -1.0;
-		for (int attempt = 0; attempt < GenerationService::kSampledCandidates; ++attempt)
+		const int candidates = shown ? 1 : GenerationService::kSampledCandidates;
+		for (int attempt = 0; attempt < candidates; ++attempt)
 		{
 			auto roll = std::make_unique<Game>(nullptr);
 			auto request = setup.generator;
 			request.seed =
-				GenerationContext::deriveSeed(rootSeed, "attempt/" + std::to_string(attempt));
+				shown ? *shown
+					  : GenerationContext::deriveSeed(rootSeed, "attempt/" + std::to_string(attempt));
 			const auto rollResult = generator.generate(*roll, request);
 			std::cout << "Map generation: " << rollResult.diagnostic() << std::endl;
 			if (!rollResult || roll->teamsCount() != setup.capacity)
@@ -869,20 +909,14 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 		auto &g = setup.generator;
 		auto changed = [this]
 		{
+			chosenSeed.reset();
 			++setup.mapRevision;
 			invalidate();
 		};
 		ui.text(x + 4, yy, tr("Landscape"), "little", leftW - 20, true);
 		yy += 18;
-		ui.dropdown("generator/landscape", {x, yy, leftW - 16, 30}, localized(methods),
-					GeneratorRegistry::builtins().selectionIndex(g.method, false),
-					[this, changed](int value)
-					{
-						setup.generatorHistory.select(
-							setup.generator,
-							GeneratorRegistry::builtins().methods(false).at(value));
-						changed();
-					});
+		ui.chooser("generator/landscape", {x, yy, leftW - 16, 30},
+				   tr(GenerationRequest::methodName(g.method)), [this] { chooseLandscape(); });
 		yy += 40;
 		auto discrete = [&](const GenerationRequest::Control &c, const std::string &id)
 		{
@@ -990,6 +1024,7 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 				reset.seed = setup.generator.seed;
 				setup.generator = reset;
 				setup.setCapacity(reset.nbTeams);
+				chosenSeed.reset();
 				++setup.mapRevision;
 				invalidate();
 			},

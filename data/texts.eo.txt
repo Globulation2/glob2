@@ -1378,6 +1378,14 @@ Ludantoj kaj Teamoj
 Antaŭfaritaj mapoj
 [Preview ready. Start plays this exact map.]
 Antaŭrigardo preta. Komenci la ludon uzas ĉi tiun precizan mapon.
+[Regenerate all]
+Regeneri ĉion
+[Generating preview...]
+Kreante antaŭprezenton...
+[Preview unavailable]
+Antaŭprezento ne disponebla
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Ĉiu pejzaĝo estas montrata kiel vera mapo laŭ via nuna grandeco kaj nombro de kolonioj. Elektu unu por ludi la montritan mapon.
 [Purple]
 Purpura
 [Quick clash]

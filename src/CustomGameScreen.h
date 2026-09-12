@@ -3,9 +3,12 @@
 #include "CustomGameSetup.h"
 #include "Glob2Screen.h"
 #include "MapHeader.h"
+#include <cstdint>
 #include <memory>
+#include <optional>
 #include <vector>
 class LobbyControls;
+class LandscapePickerScreen;
 class CustomGameChoiceScreen : public Glob2Screen
 {
 	friend struct CustomGameSetupHarness;
@@ -61,6 +64,8 @@ class CustomGameScreen : public Glob2TabScreen
 	unsigned previewRevision = ~0u;
 	bool previewPending = false;
 	Uint32 previewDue = 0;
+	// A seed the landscape picker showed a map for: the next preview reproduces that map.
+	std::optional<std::uint32_t> chosenSeed;
 	bool validMap = false, userMaps = false;
 	bool separateMapLibraries = true;
 	int currentTab = 0;
@@ -79,6 +84,9 @@ class CustomGameScreen : public Glob2TabScreen
 	void listMaps();
 	bool loadMap(const std::string &path);
 	bool generateMap();
+	std::vector<std::pair<int, GenerationRequest>> landscapeEntries() const;
+	void chooseLandscape();
+	void applyLandscape(int method, std::optional<std::uint32_t> seed);
 	int choose(const std::string &, const std::vector<std::string> &, int, bool profiles = false,
 			   const std::vector<bool> &enabled = {});
 	void invalidate();

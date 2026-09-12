@@ -1390,6 +1390,14 @@ Spelare och lag
 Färdiga kartor
 [Preview ready. Start plays this exact map.]
 Förhandsvisning klar. Starta spelet använder denna exakta karta.
+[Regenerate all]
+Generera om alla
+[Generating preview...]
+Skapar förhandsvisning...
+[Preview unavailable]
+Förhandsvisning saknas
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Varje landskap visas som en riktig karta med din nuvarande storlek och ditt antal kolonier. Välj ett för att spela den visade kartan.
 [Purple]
 Lila
 [Quick clash]

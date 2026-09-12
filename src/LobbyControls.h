@@ -175,6 +175,18 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		box({r.x + r.w - 18, r.y + 4, 14, r.h - 8}, panel, 2);
 		text(r.x + r.w - 15, r.y + (r.h - 12) / 2, "v", "little", 12, true);
 	}
+	// A field whose choice is made in a fuller view elsewhere (a modal): shows the current
+	// value and, in the dropdown's chevron slot, an ellipsis.
+	void chooser(const std::string &id, SDL_Rect r, const std::string &label, Callback action,
+				 bool enabled = true)
+	{
+		button(id, r, "", std::move(action), false, enabled);
+		int fh = GAGCore::Toolkit::getFont("standard")->getStringHeight("Ag");
+		text(r.x + 9, r.y + (r.h - fh) / 2, label, "standard", r.w - 44, !enabled);
+		surface()->drawRect(r.x, r.y, r.w, r.h, line);
+		box({r.x + r.w - 26, r.y + 4, 22, r.h - 8}, panel, 2);
+		text(r.x + r.w - 21, r.y + (r.h - 12) / 2 - 3, "...", "little", 18, true);
+	}
 	void segments(const std::string &id, SDL_Rect r, const std::vector<std::string> &options,
 				  int selected, std::function<void(int)> apply,
 				  const std::vector<bool> &enabled = {}, const char *font = "standard")

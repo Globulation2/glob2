@@ -1380,6 +1380,14 @@ Pelaajat & Joukkueet
 Valmiit kartat
 [Preview ready. Start plays this exact map.]
 Esikatselu valmis. Pelin aloittaminen käyttää tätä tarkkaa karttaa.
+[Regenerate all]
+Luo kaikki uudelleen
+[Generating preview...]
+Luodaan esikatselua...
+[Preview unavailable]
+Esikatselu ei ole saatavilla
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Jokainen maisema näytetään oikeana karttana nykyisellä koolla ja siirtokuntien määrällä. Valitse yksi pelataksesi näytetyn kartan.
 [Purple]
 Violetti
 [Quick clash]

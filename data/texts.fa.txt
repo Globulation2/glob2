@@ -1378,6 +1378,14 @@ Cortex
 نقشه های از پیش ساخته شده
 [Preview ready. Start plays this exact map.]
 پیش نمایش آماده است. شروع بازی دقیقاً از این نقشه استفاده می کند.
+[Regenerate all]
+ایجاد دوباره همه
+[Generating preview...]
+در حال ایجاد پیش‌نمایش...
+[Preview unavailable]
+پیش‌نمایش در دسترس نیست
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+هر چشم‌انداز به صورت یک نقشه واقعی با اندازه و تعداد مستعمرات فعلی شما نشان داده می‌شود. یکی را انتخاب کنید تا نقشه نشان داده شده را بازی کنید.
 [Purple]
 بنفش
 [Quick clash]

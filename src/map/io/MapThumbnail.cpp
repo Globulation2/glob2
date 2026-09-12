@@ -60,12 +60,17 @@ void MapThumbnail::loadFromMap(const std::string& map)
 		delete stream;
 		if (!good)
 			return;
-		
-		// set values
+		loadFromMap(map);
+	}
+}
+
+void MapThumbnail::loadFromMap(const Map& map)
+{
+	loaded = true;
+	{
 		lastW = map.getW();
 		lastH = map.getH();
 
-		// TODO : put this thumbnail code in a function
 		int H[3]= { 0, 90, 0 };
 		int E[3]= { 0, 40, 120 };
 		int S[3]= { 170, 170, 0 };
