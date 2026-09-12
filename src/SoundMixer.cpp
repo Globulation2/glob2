@@ -170,7 +170,17 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		{
 			mixer->fadePos = 0;
 			mixer->actTrack = mixer->nextTrack;
-			mixer->mode = SoundMixer::MODE_NORMAL;
+			if (mixer->pendingTrack >= 0)
+			{
+				// a change asked for while this fade was running: cross into it
+				// from the track that just landed, so the mix stays continuous.
+				// Staying in MODE_EARLY_CHANGE with fadePos == 0 re-aligns the
+				// incoming track on the next callback.
+				mixer->nextTrack = mixer->pendingTrack;
+				mixer->pendingTrack = -1;
+			}
+			else
+				mixer->mode = SoundMixer::MODE_NORMAL;
 		}
 	}
 	else
@@ -293,6 +303,7 @@ SoundMixer::SoundMixer(unsigned musicvol, unsigned voicevol, bool mute)
 	this->voiceVolume = voicevol;
 	mode = MODE_STOPPED;
 	fadePos = 0;
+	pendingTrack = -1;
 	soundEnabled = false;
 	speexDecoderState = NULL;
 	
@@ -377,8 +388,22 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 
 	SDL_LockAudio();
 
-	// Select next tracks
-	if (actTrack >= 0)
+	// A fade now spans many callbacks, so a track change can be asked for while
+	// one is still running — GameMusicController can emit on consecutive 40 ms
+	// ticks. Restarting the fade would cut the incoming track off mid-mix, so
+	// queue the request and let mixaudio() start it when this fade lands.
+	if (soundEnabled && mode == MODE_EARLY_CHANGE)
+	{
+		pendingTrack = static_cast<int>(i);
+		SDL_UnlockAudio();
+		return;
+	}
+
+	// Select next tracks. While the device is closed nothing is playing, so the
+	// selection is both the current and the next track: leaving actTrack at the
+	// first track ever selected would make setVolume() resume that one on
+	// unmute, whatever was asked for since.
+	if (soundEnabled && actTrack >= 0)
 		nextTrack = i;
 	else
 		nextTrack = actTrack = i;
@@ -389,12 +414,14 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 		if (mode == MODE_STOPPED)
 		{
 			fadePos = 0;
+			pendingTrack = -1;
 			SDL_PauseAudio(0);
 			mode = MODE_START;
 		}
 		else if (earlyChange)
 		{
 			fadePos = 0;
+			pendingTrack = -1;
 			mode = MODE_EARLY_CHANGE;
 		}
 	}
@@ -451,6 +478,7 @@ void SoundMixer::stopMusic(void)
 {
 	SDL_LockAudio();
 	fadePos = 0;
+	pendingTrack = -1;
 	mode = MODE_STOP;
 	SDL_UnlockAudio();
 }

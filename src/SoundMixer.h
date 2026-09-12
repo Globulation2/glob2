@@ -34,6 +34,11 @@ public:
 	//! across callbacks so a fade lasts the same time whatever the device
 	//! buffer size. Read and written on the audio thread.
 	unsigned fadePos;
+	//! Track asked for while a fade was already running, or -1 for none. A
+	//! fade spans many callbacks, so the request is held here and started by
+	//! mixaudio() once the fade lands, rather than cutting it off mid-mix.
+	//! Guarded by SDL_LockAudio, like mode and fadePos.
+	int pendingTrack;
 	bool soundEnabled;
 	unsigned musicVolume;
 	unsigned voiceVolume;
