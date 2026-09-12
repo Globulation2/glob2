@@ -40,6 +40,32 @@ static void supplyIsClaimedNearestFirst()
 	assert(result.consumers[0].available==200);
 }
 
+/// A relocated building is judged against what is left once everyone else has
+/// claimed: wheat another claimant already holds does not shorten its routes,
+/// and demand nobody can cover is charged as unreachable, exactly as evaluate
+/// charges it.
+static void residualQualityFollowsUnclaimedSupply()
+{
+	Input input=makeInput();
+	input.policy.supplyRadius=6;input.policy.unreachablePenaltyTiles=4;
+	input.yield[input.index(8,8)]=100;
+	input.yield[input.index(11,8)]=100;
+	Ledger ledger;Result result;
+	// Nothing claimed: the adjacent cell covers the whole demand from the door,
+	// which the walk counts as distance zero like evaluate does.
+	ledger.evaluate(input,result);
+	assert(ledger.residualQuality(input,result,7,8,0,0,1,1,100)==0);
+	// A neighbour takes the near cell; the candidate must walk to the far one.
+	input.consumers.push_back(makeConsumer(1,InnConsumer,9,8,100));
+	ledger.evaluate(input,result);
+	assert(result.consumers[0].claimed==100);
+	assert(result.residual[input.index(8,8)]==0);
+	assert(ledger.residualQuality(input,result,7,8,0,0,1,1,100)==300);
+	// Demand beyond the residual is charged at radius plus penalty (10 tiles).
+	assert(ledger.residualQuality(input,result,7,8,0,0,1,1,150)==(300*100+50*10*100)/150);
+	assert(ledger.residualQuality(input,result,7,8,0,0,1,1,0)==0);
+}
+
 /// Placement quality decides who keeps the wheat. An early building in a poor
 /// position must lose its claim to a later one that is genuinely better sited.
 static void qualityOutranksBuildingAge()
@@ -197,6 +223,7 @@ int main()
 	untraversableGroundBlocksSupply();
 	supplyBeyondTheRadiusIsNotCounted();
 	demandAndYieldMatchEngineRates();
+	residualQualityFollowsUnclaimedSupply();
 	std::cout<<"MaximaFoodLedgerStandaloneTest: PASS"<<std::endl;
 	return 0;
 }

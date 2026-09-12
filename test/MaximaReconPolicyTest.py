@@ -58,7 +58,7 @@ class MaximaReconPolicyTest(unittest.TestCase):
 
     def test_save_version_and_legacy_recon_gates(self):
         version = (ROOT / "src/Version.h").read_text()
-        self.assertIn("#define VERSION_MINOR 99", version)
+        self.assertIn("#define VERSION_MINOR 100", version)
         loader = self.source[self.source.index("bool Maxima::loadDirector"):]
         loader = loader[:loader.index("bool Maxima::load(")]
         # The mission section is the one part of the director state that is

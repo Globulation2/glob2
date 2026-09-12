@@ -195,6 +195,15 @@ private:
 		int food_recovered_percent;
 		int food_burden_confirm_ticks;
 		int food_retirement_cooldown_ticks;
+		///Relocation authority: whether the executor may nominate a far or
+		///starved inn or swarm for rebuilding elsewhere, how far counts as far,
+		///and the cadence. The economics of a candidate site belong to the
+		///placement policy, which prices and accepts or refuses the rebuild.
+		bool food_relocation_enabled;
+		int food_relocation_min_quality_tiles;
+		int food_relocation_confirm_ticks;
+		int food_relocation_cooldown_ticks;
+		int food_relocation_offer_ticks;
 		///Reliable seats a completed inn of each level actually serves, already
 		///discounted, so the executor never needs the economic model itself.
 		int food_inn_seats_level1;
@@ -649,6 +658,23 @@ private:
 	std::map<int, int> food_burden_since;
 	std::set<int> food_retirement_issued;
 	int last_food_retirement_tick;
+	///Food ledger relocation. A building whose ledger quality stays above the
+	///threshold for the confirmation window is nominated; the planner sites
+	///and prices its replacement as a Relocation action, and the old building
+	///is destroyed once the replacement stands. One nomination at a time.
+	std::map<int, int> relocation_since;
+	int relocation_target_building;
+	int relocation_target_since;
+	///Tick the replacement was first seen completed, so a destroy that keeps
+	///being deferred is eventually given up rather than blocking the slot.
+	int relocation_completed_tick;
+	int last_food_relocation_tick;
+	std::set<int> relocation_destroy_issued;
+	void update_food_relocation(AIMaximaRuntime::Context& echo,
+		const AIMaximaPlacement::WorldState& world);
+	///Colony swarms whose settlement is not yet running: exempt from both
+	///retirement and relocation until their own farm exists.
+	std::set<int> establishing_colony_buildings() const;
 	///Targets the ledger can actually supply, carried across saves so a loaded
 	///game plans from the same numbers as the run that saved it.
 	int food_supported_inns;

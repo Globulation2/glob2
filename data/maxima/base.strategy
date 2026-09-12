@@ -659,6 +659,20 @@ food.swarm_burden_coverage_percent = 60
 food.recovered_coverage_percent = 85
 food.burden_confirm_ticks = 3000
 food.retirement_cooldown_ticks = 3000
+food.relocation_enabled = true
+food.relocation_min_quality_tiles = 5
+food.relocation_min_gain_tiles = 3
+food.relocation_min_coverage_gain_percent = 25
+food.relocation_confirm_ticks = 3000
+food.relocation_cooldown_ticks = 6000
+food.relocation_offer_ticks = 3000
+food.relocation_payback_horizon_ticks = 15000
+food.relocation_cost_margin_percent = 125
+food.carrier_ticks_per_tile = 23
+food.carrier_fixed_ticks_per_trip = 105
+food.builder_ticks_per_step = 32
+food.relocation_inn_distance_realisation_percent = 155
+food.relocation_swarm_distance_realisation_percent = 0
 
 # Scoring: hysteresis and cross-policy construction priority adjustments.
 scoring.posture_switch_margin = 14

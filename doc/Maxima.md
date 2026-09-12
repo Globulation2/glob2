@@ -16,8 +16,9 @@ new building that reuses a previous building's slot or address.
 The farming module protects sustainable food sources and reserves access routes.
 The [food ledger](MaximaFoodLedger.md) accounts that protected farm capacity
 against what inns and swarms actually consume, so they are only placed and
-upgraded where wheat can back them, and buildings that stay under-supplied are
-retired. [Staffing](MaximaStaffing.md) is then each building's own business: an
+upgraded where wheat can back them, and buildings that stay far from their
+wheat or under-supplied are rebuilt at a better site when that pays back, or
+retired when no such site exists. [Staffing](MaximaStaffing.md) is then each building's own business: an
 inn or swarm adds or returns one carrier at a time to keep its own wheat stock
 inside a band, and never asks for more while it is not receiving what it
 already asked for. The placement planner evaluates construction and upgrades

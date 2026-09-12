@@ -714,6 +714,20 @@ struct MaximaStrategy
 		int recovered_coverage_percent;
 		int burden_confirm_ticks;
 		int retirement_cooldown_ticks;
+		bool relocation_enabled;
+		int relocation_min_quality_tiles;
+		int relocation_min_gain_tiles;
+		int relocation_min_coverage_gain_percent;
+		int relocation_confirm_ticks;
+		int relocation_cooldown_ticks;
+		int relocation_offer_ticks;
+		int relocation_payback_horizon_ticks;
+		int relocation_cost_margin_percent;
+		int carrier_ticks_per_tile;
+		int carrier_fixed_ticks_per_trip;
+		int builder_ticks_per_step;
+		int relocation_inn_distance_realisation_percent;
+		int relocation_swarm_distance_realisation_percent;
 	} food;
 
 	struct Scoring

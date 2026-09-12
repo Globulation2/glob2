@@ -37,7 +37,10 @@ enum DevelopmentActionType
 enum DevelopmentPurpose
 {
 	CoreCapacity,
-	ColonySeed
+	ColonySeed,
+	/// Build a replacement for an existing inn or swarm at a better site; the
+	/// executor destroys the old one once the replacement is completed.
+	Relocation
 };
 
 enum TemplateId
@@ -258,6 +261,8 @@ struct DevelopmentIntent
 	int workers;
 	int requiredResourceType;
 	bool emergency;
+	/// Relocation only: the building this intent replaces.
+	int replacesBuildingId;
 };
 
 struct DevelopmentLimits
@@ -374,6 +379,22 @@ struct PlacementPolicy
 	/// tick, as derived from the engine's own building rates.
 	int foodInnDemand[3];
 	int foodSwarmDemand;
+	/// Relocation economics, all in worker-ticks. A relocated building saves
+	/// its carriers a shorter round trip per unit of wheat and stops paying the
+	/// unreachable penalty for wheat it could not get; it costs every level it
+	/// must rebuild, one hauled unit and one build step at a time. Distance
+	/// savings are realised per kind because calibration showed ledger quality
+	/// tracks the trips of inn carriers but not those of swarm carriers.
+	bool relocationEnabled;
+	int relocationMinGainTiles;
+	int relocationMinCoverageGainPercent;
+	int relocationPaybackHorizonTicks;
+	int relocationCostMarginPercent;
+	int carrierTicksPerTile;
+	int carrierFixedTicksPerTrip;
+	int builderTicksPerStep;
+	int relocationInnDistanceRealisationPercent;
+	int relocationSwarmDistanceRealisationPercent;
 	int score(const UtilityComponents& components,
 		DevelopmentPurpose purpose=CoreCapacity,
 		int spacingQuality=100) const;
@@ -407,6 +428,8 @@ struct DevelopmentAction
 	std::vector<int> accessTiles;
 	std::vector<int> arteryTiles;
 	UtilityComponents utility;
+	/// Relocation only: the building this action replaces.
+	int replacesBuildingId;
 };
 
 struct PlacementDiagnostics
@@ -517,6 +540,14 @@ public:
 	const std::map<int, DevelopmentAction>& actions() const { return actionMap; }
 	int committedBuildingCount(const WorldState& world, int buildingType) const;
 	int activeBuildCount(int buildingType, DevelopmentPurpose purpose) const;
+	/// True once a Relocation intent for this building has been scanned to the
+	/// end without a single acceptable site, so the executor can stop offering
+	/// it instead of waiting out the offer window. Cleared when a replacement
+	/// is reserved or the executor nominates the building again.
+	bool relocationRefused(int replacesBuildingId) const
+	{ return refusedRelocations.count(replacesBuildingId)>0; }
+	void clearRelocationRefusal(int replacesBuildingId)
+	{ refusedRelocations.erase(replacesBuildingId); }
 	const std::vector<unsigned short>& footprintReferences() const { return footprintRefs; }
 	const std::vector<unsigned short>& circulationReferences() const { return circulationRefs; }
 	bool isFootprintReserved(int index) const;
@@ -525,6 +556,24 @@ public:
 		DevelopmentPurpose purpose=CoreCapacity) const;
 	/// Rebuilds and returns the food ledger for this snapshot. Retirement and
 	/// the director's targets read the same result the placement checks use.
+	/// Economics of replacing `replacesBuildingId` with a building at `action`,
+	/// judged with the old building removed from the ledger.
+	struct RelocationAppraisal
+	{
+		RelocationAppraisal();
+		bool viable;
+		int oldQuality;
+		int newQuality;
+		int oldCoverage;
+		int newCoverage;
+		/// Worker-ticks saved per tick, scaled by the ledger's RateScale.
+		long long savingPerTick;
+		/// Worker-ticks to rebuild, already including the cost margin.
+		long long cost;
+		long long paybackTicks;
+	};
+	RelocationAppraisal appraiseRelocation(const WorldState& world,
+		const DevelopmentAction& action, int replacesBuildingId) const;
 	const AIMaximaFoodLedger::Result& evaluateFoodLedger(
 		const WorldState& world) const;
 
@@ -566,7 +615,11 @@ private:
 	/// Rebuilds the whole food ledger from the snapshot. Nothing about claims is
 	/// retained between passes, so destruction, upgrades and farm changes need
 	/// no incremental bookkeeping.
-	void prepareFoodLedger(const WorldState& world, int excludeAction=-1) const;
+	void prepareFoodLedger(const WorldState& world, int excludeAction=-1,
+		int excludeBuilding=-1) const;
+	bool relocationCandidatePasses(const WorldState& world,
+		const DevelopmentIntent& intent, const DevelopmentAction& action,
+		RejectionReason& reason) const;
 	bool foodManagedType(int buildingType) const;
 	int foodDemandFor(int buildingType, int level) const;
 	/// A new inn or swarm must reach its full demand plus the configured margin
@@ -584,7 +637,13 @@ private:
 	mutable AIMaximaFoodLedger::Input foodInput;
 	mutable AIMaximaFoodLedger::Result foodResult;
 	mutable int foodLedgerExcludedAction;
+	mutable int foodLedgerExcludedBuilding;
 	mutable bool foodLedgerPrepared;
+	/// Consumer results of the last ledger that excluded nothing, so an
+	/// appraisal can read the old building's standing while the prepared
+	/// ledger already excludes it.
+	mutable std::vector<AIMaximaFoodLedger::ConsumerResult> foodBaselineConsumers;
+	mutable bool foodBaselineValid;
 	std::vector<int> colonyFoodTiles(const WorldState& world, int x, int y,
 		const Footprint& footprint) const;
 	int colonyAnchorDistance(const WorldState& world, int x, int y) const;
@@ -658,6 +717,7 @@ private:
 	std::map<int, Reservation> reservationMap;
 	std::map<int, DevelopmentAction> actionMap;
 	std::map<std::pair<int, int>, uint32_t> blockedIntentSignatures;
+	std::set<int> refusedRelocations;
 	std::map<int, uint32_t> coordinateQuarantines;
 	std::vector<unsigned short> footprintRefs;
 	std::vector<unsigned short> circulationRefs;

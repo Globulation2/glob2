@@ -156,6 +156,7 @@ The complete switch inventory is:
 | Reconnaissance | `recon.enabled`, `recon.scouting_missions_enabled`, `recon.economic_watch_enabled`, `recon.force_memory_enabled` |
 | Farming and clearing | `farming.enabled`, `farming.farm_protection_enabled`, `farming.maintenance_clearing_enabled`, `farming.proactive_clearing_enabled` |
 | Emergency overrides | `emergencies.food_enabled`, `emergencies.colony_enabled` |
+| Food ledger | `food.enabled`, `food.retirement_enabled`, `food.target_capping_enabled`, `food.relocation_enabled` |
 
 At least one `postures.*_enabled` value must remain true. The resolver rejects a
 strategy that disables all seven postures because the director would otherwise
@@ -333,8 +334,8 @@ count is not an input, so constructing another swarm cannot manufacture its own
 staffing demand. Colonization has independent construction permission for genuinely
 new food territory; completed colonies still count toward this production target. The existing supply-weighted
 allocator distributes the budget over completed swarms. Construction scheduling,
-inn policy, unit production mix, and food-ledger retirement remain separate
-responsibilities.
+inn policy, unit production mix, and food-ledger relocation and retirement
+remain separate responsibilities.
 
 The old global caps, committed swarm target, per-headroom staffing tiers, birth
 survival thresholds, and their unused bonuses have been removed from the schema.

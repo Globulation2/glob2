@@ -3,8 +3,8 @@
   "algorithm": "sorted-comment-string-stripped-numeric-token-sha256",
   "sources": {
     "src/AIMaxima.cpp": {
-      "tokens": 1705,
-      "sha256": "d8de80172ae4231a43e0b98804b95b4cbc2742390ac33e7f4361e667c7dba317",
+      "tokens": 1760,
+      "sha256": "5b47ae44e54db2f470ea581281b0fe4e10971d2eac1653606c07c1ec62a9d31e",
       "classifications": [
         "live selection authorization, swimming-builder counts, and shared reactive-defense reserve",
         "schema-backed strategy member use",
@@ -89,8 +89,8 @@
       ]
     },
     "src/AIMaximaPlacement.cpp": {
-      "tokens": 1089,
-      "sha256": "8a95c134f1a2fb0bfb841863f29c7c2eaf74ace1d5251298e7c8c12262162dde",
+      "tokens": 1133,
+      "sha256": "f670dc92826ed49ba140560cf3ec7d4b0f361c46f490a3c524ff0acb140f5881",
       "classifications": [
         "live authorization checks using existing construction caps and level contracts",
         "version-92 purpose-aware placement serialization fields",
@@ -140,8 +140,8 @@
       ]
     },
     "src/AIMaximaFoodLedger.cpp": {
-      "tokens": 134,
-      "sha256": "aec2d20141bcdf67b3c96f0ca90fd5b5841f4abf9b27844e7fbb0bee3fde72a1",
+      "tokens": 141,
+      "sha256": "a0cab574f662538d8ecceeb13815e3ba6274582296256b80285e414d9b4e4f45",
       "classifications": [
         "engine fertility denominator and growth direction count",
         "micro-wheat rate scale and percentage scale",
