@@ -162,3 +162,60 @@ land.
 outranking age, inn/swarm interleaving, claim release on removal, the upgrade
 check, the soundness of the summed-area bound, blocked ground, the supply
 radius, and the engine-derived rates.
+
+## Carrier cost calibration
+
+Relocating an inn or swarm is worth its rebuild only if the carriers it saves
+repay the cost, so distance has to be priced in worker-ticks. Rather than derive
+that from unit speed tables, the engine times real round trips: when a carrier
+leaves a building after a delivery it stamps `Unit::fetchStartTick`, remembers
+the cell it harvests, and on the next delivery `Building::recordDeliveryTrip`
+adds the trip's ticks and its wrap-safe Chebyshev distance from the harvested
+cell to the footprint edge. Those counters are diagnostics only: never saved,
+never checksummed, and read solely by Maxima's `food_delivery` telemetry, which
+publishes them cumulatively on every building pass next to the ledger's
+per-building `food_consumer` quality.
+
+`tools/calibrate_maxima_carrier_cost.py` joins the two streams per building and
+fits the windows between ledger samples:
+
+```bash
+build/src/glob2 -test-games-nox 2 --map Garden_3 \
+    --matchup maxima,maxima,maxima,maxima -maxima-telemetry > garden3.log
+python3 tools/calibrate_maxima_carrier_cost.py garden3.log triangle.log ...
+```
+
+Seven all-Maxima headless games (Garden 3 x2, Triangle x2, balanced_for_2 x2,
+Isles), 19 896 timed round trips in 1 663 windows, measured on 2026-09-12:
+
+| Fit | Intercept | Slope | Weighted R^2 |
+| --- | --- | --- | --- |
+| trip ticks vs harvest tiles, all | 105 | 46.2 per tile | 0.66 |
+| trip ticks vs harvest tiles, inns | 42 | 44.9 per tile | 0.72 |
+| trip ticks vs harvest tiles, swarms | 107 | 51.4 per tile | 0.55 |
+
+The binned medians rise monotonically from ~95 ticks at 0-2 tiles to ~860 at
+14-16, so the line is not an artefact of outliers. That gives
+**`carrier_ticks_per_tile` = 23** (half the round-trip slope) and
+**`carrier_fixed_ticks_per_trip` = 105** (42 for inns; a busy swarm's carriers
+queue at the door). Median carrier utilisation was 0.76, so idle time is not
+inflating the trips.
+
+The same data tests the proxy the relocation policy prices with. Ledger
+`quality` is the route distance to the *protected* wheat that would cover full
+demand, and carriers do not harvest protected cells; they harvest whatever the
+gradient finds nearest, mostly the spread around the farms.
+
+| Kind | harvest tiles vs quality tiles | Weighted R^2 | Median harvest tiles by quality band |
+| --- | --- | --- | --- |
+| inn | 1.9 + 1.55 x | 0.12 | 5.3 (0-2), 8.0 (2-4), 9.9 (4-6), 12.2 (6-8), 14.8 (8-10) |
+| swarm | 6.6 + 0.02 x | 0.00 | 5.5 (2-4), 7.4 (4-6), 6.6 (6-8), 5.4 (8-10), 8.5 (10-12) |
+
+For inns quality is a usable proxy: each tile of quality is about 1.5 tiles of
+real walking, monotonically. For swarms it predicts nothing. A swarm's twenty-odd
+carriers strip the nearby spread and walk 5-8 tiles wherever the protected
+stacks are, so moving a swarm closer to protected wheat does not shorten its
+trips; what a swarm gains from a better site is *coverage*, i.e. enough supply
+to keep those carriers delivering at all. The relocation policy therefore
+realises distance savings per kind (`food.relocation_distance_realisation_percent`,
+155 for inns, 0 for swarms) and prices coverage shortfall separately.

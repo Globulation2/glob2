@@ -477,6 +477,28 @@ void trackerLogicalCadence()
     }
 }
 
+// The engine's delivery diagnostics measure each round trip from the harvested
+// cell to the building's footprint edge, wrap-safe, and start at zero.
+void deliveryTripRecordsFootprintDistance()
+{
+    Fixture f;
+    Building* b=f.swarm(10,10);
+    assert(b->deliveryTripSamples==0 && b->deliveryTripTicks==0 && b->deliveryTripTiles==0);
+    const int w=b->type->width, h=b->type->height;
+    b->recordDeliveryTrip(100, b->posX, b->posY);            // inside: 0 tiles
+    b->recordDeliveryTrip(100, b->posX+w-1, b->posY+h-1);    // far corner: 0 tiles
+    assert(b->deliveryTripSamples==2 && b->deliveryTripTicks==200 && b->deliveryTripTiles==0);
+    b->recordDeliveryTrip(50, b->posX-1, b->posY+1);         // adjacent west: 1
+    b->recordDeliveryTrip(50, b->posX+w+2, b->posY);         // three east: 3
+    b->recordDeliveryTrip(50, b->posX+1, b->posY+h+4);       // five south: 5
+    assert(b->deliveryTripSamples==5 && b->deliveryTripTicks==350 && b->deliveryTripTiles==9);
+    // Wrapping around the map edge is the short way round, and a clock that
+    // ran backwards cannot subtract time.
+    const int mapW=f.game.map.getW();
+    b->recordDeliveryTrip(-7, (b->posX-2+mapW)%mapW, b->posY);
+    assert(b->deliveryTripSamples==6 && b->deliveryTripTicks==350 && b->deliveryTripTiles==11);
+}
+
 void holidayHarvestCapacity()
 {
     Game game(NULL);
@@ -553,5 +575,6 @@ int main()
     completionReallocatesColony();
     trackerLogicalCadence();
     holidayHarvestCapacity();
+    deliveryTripRecordsFootprintDistance();
     std::cout<<"Maxima economy regression tests passed\n";
 }

@@ -97,7 +97,11 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 
 	// building specific :
 	for(int i=0; i<MAX_NB_RESOURCES; i++)
+	{
 		localResource[i]=0;
+		resourceDeliveries[i]=0;
+	}
+	deliveryTripSamples=deliveryTripTicks=deliveryTripTiles=0;
 	updateResourcesPointer();
 
 	// quality parameters
@@ -279,7 +283,9 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		std::ostringstream oss;
 		oss << "localRessource[" << i << "]";
 		localResource[i] = stream->readSint32(oss.str().c_str());
+		resourceDeliveries[i] = 0;
 	}
+	deliveryTripSamples=deliveryTripTicks=deliveryTripTiles=0;
 
 	// quality parameters
 	hp = stream->readSint32("hp");
