@@ -22,6 +22,7 @@
 #include <filesystem>
 #include <functional>
 #include <iostream>
+#include <memory>
 #include <unistd.h>
 
 GlobalContainer *globalContainer = nullptr;
@@ -826,13 +827,33 @@ int main(int argc, char **argv)
 	std::filesystem::create_directory(dir);
 	const auto map = (dir / "generated.map").string(), save = (dir / "match.game").string();
 	{
-		Game g(nullptr);
-		MapGenerator generator;
-		MapGenerationDescriptor d;
-		d.setMethodDefaults(MapGenerationDescriptor::eRIVER);
-		d.nbTeams = 4;
-		assert(generator.generateMap(g, d));
-		assert(g.teamsCount() == 4);
+		// A river roll that cannot seat four starting colonies is normal, not a
+		// bug: Map::makeRandomMap gives up when no grass patch is left far
+		// enough from the teams already placed, and Game::makeRandomMap gives up
+		// when the swarm or its workers will not fit. The game re-rolls rather
+		// than reporting failure (CustomGameScreen::generateMap), and so does
+		// the eight-landscape loop above. This call did neither, and a single
+		// roll fails often enough -- measured at 1 in 25 on an untouched tree --
+		// to have made this harness flake in CI.
+		//
+		// Re-rolling rather than pinning a seed is deliberate: the terrain comes
+		// from HeightMap, which draws on rand() rather than syncRand, so a seed
+		// would not reproduce the same map across platforms anyway -- and a seed
+		// that happens to seat four colonies under glibc could fail every single
+		// time under mingw or macOS libc.
+		std::unique_ptr<Game> generated;
+		for (int attempt = 0; attempt < 5 && !generated; ++attempt)
+		{
+			auto candidate = std::make_unique<Game>(nullptr);
+			MapGenerator generator;
+			MapGenerationDescriptor d;
+			d.setMethodDefaults(MapGenerationDescriptor::eRIVER);
+			d.nbTeams = 4;
+			if (generator.generateMap(*candidate, d) && candidate->teamsCount() == 4)
+				generated = std::move(candidate);
+		}
+		assert(generated);
+		Game &g = *generated;
 		CustomGameSetup setup;
 		GameHeader header;
 		setup.writeHeader(header, "test");
