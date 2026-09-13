@@ -27,7 +27,8 @@ namespace HarvestMetrics
 	//! The resource gradient gave no step. abandoned: the unit gave up the job.
 	//! ghost: it stands on a tile the gradient still takes for the resource.
 	void onLost(const Unit *unit, bool abandoned, bool ghost);
-	void onHarvest(const Unit *unit, int resource);
+	//! phantom: the tile was already empty when the harvest completed (grain created from nothing).
+	void onHarvest(const Unit *unit, int resource, bool phantom);
 	void onDeliver(const Unit *unit, int resource);
 	//! Once per simulated tick, before the step counter advances.
 	void sample(const Game &game);

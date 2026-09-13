@@ -55,7 +55,7 @@ void Unit::handleDisplacement(void)
 			{
 				// we got the resource.
 				carriedResource=destinationPurpose;
-				HarvestMetrics::onHarvest(this, carriedResource);
+				HarvestMetrics::onHarvest(this, carriedResource, !owner->map->isResourceTakeable(posX+dx, posY+dy, carriedResource));
 				owner->map->decResource(posX+dx, posY+dy, carriedResource);
 				assert(movement == MOV_HARVESTING);
 				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to additionally decResource() the same resource.

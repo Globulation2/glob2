@@ -25,6 +25,7 @@ namespace
 	{
 		Uint64 commits = 0;     // fetches started
 		Uint64 harvests = 0;    // resources taken from the map
+		Uint64 phantoms = 0;    // of harvests: tile already empty, grain created from nothing
 		Uint64 deliveries = 0;  // resources put into a building
 		Uint64 steps = 0;       // steps walked towards a resource
 		Uint64 reversals = 0;   // steps turning more than 90 degrees from the previous one
@@ -149,12 +150,14 @@ namespace HarvestMetrics
 		}
 	}
 
-	void onHarvest(const Unit *unit, int resource)
+	void onHarvest(const Unit *unit, int resource, bool phantom)
 	{
 		if (!enabled || !trackable(unit, resource))
 			return;
 		Counters &c = counters[unit->owner->teamNumber][resource];
 		c.harvests++;
+		if (phantom)
+			c.phantoms++;
 		UnitTrack &track = trackOf(unit);
 		if (track.committed)
 		{
@@ -250,11 +253,11 @@ namespace HarvestMetrics
 				const Counters &c = counters[t][r];
 				if (c.commits == 0 && c.harvests == 0 && c.deliveries == 0)
 					continue;
-				std::printf("GLOB2_HARVEST tick=%u team=%d res=%s commits=%llu harvests=%llu deliveries=%llu"
+				std::printf("GLOB2_HARVEST tick=%u team=%d res=%s commits=%llu harvests=%llu phantoms=%llu deliveries=%llu"
 					" steps=%llu reversals=%llu retargets=%llu lost=%llu ghosts=%llu abandoned=%llu trips=%llu tripTicks=%llu"
 					" goingTicks=%llu doomedTicks=%llu maxCrowd=%u\n",
 					game.stepCounter, t, kResourceNames[r],
-					(unsigned long long)c.commits, (unsigned long long)c.harvests, (unsigned long long)c.deliveries,
+					(unsigned long long)c.commits, (unsigned long long)c.harvests, (unsigned long long)c.phantoms, (unsigned long long)c.deliveries,
 					(unsigned long long)c.steps, (unsigned long long)c.reversals, (unsigned long long)c.retargets,
 					(unsigned long long)c.lost, (unsigned long long)c.ghosts,
 					(unsigned long long)c.abandoned, (unsigned long long)c.trips, (unsigned long long)c.tripTicks,
