@@ -467,20 +467,6 @@ std::vector<unsigned char> openCorners(const Torus &t, const MazeDesign &d)
 	return ponds;
 }
 
-// The undermap corners of every tile in `tiles`.
-std::vector<unsigned char> cornersOf(const Torus &t, const std::vector<unsigned char> &tiles)
-{
-	std::vector<unsigned char> corners(tiles.size(), 0);
-	for (int i = 0; i < t.size(); ++i)
-		if (tiles[i])
-		{
-			const int x = i % t.w, y = i / t.w;
-			corners[i] = corners[t.at(x + 1, y)] = corners[t.at(x, y + 1)] =
-				corners[t.at(x + 1, y + 1)] = 1;
-		}
-	return corners;
-}
-
 // A sand road down every open edge, from each cell's centre through the edge's middle to the
 // next centre: undermap sand on the corners of every tile a sealed line passes, so each road tile is
 // pure sand and consecutive ones share a side. At a home it stops against the swarm's 4x4
@@ -500,7 +486,7 @@ std::vector<unsigned char> layRoads(TerrainSketch &sketch, const Torus &t, const
 									  (ends.first.y + ends.second.y) / 2};
 			traceSealedPath(path, t, {g.cells[a].centre, middle, g.centreAcross(edge, a)});
 		}
-	std::vector<unsigned char> road = cornersOf(t, path);
+	std::vector<unsigned char> road = tileCorners(t, path);
 	for (int cell = 0; cell < g.cellCount(); ++cell)
 		if (d.isHome[cell])
 			for (int dy = -2; dy <= 2; ++dy)
@@ -539,8 +525,8 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "maze terrain";
 	const Torus t(map);
 	const std::vector<unsigned char> spine = wallSpines(t, d);
-	const std::vector<int> fromWall = stepsFrom(t, cornersOf(t, spine));
-	const std::vector<int> fromPond = stepsFrom(t, cornersOf(t, openCorners(t, d)));
+	const std::vector<int> fromWall = stepsFrom(t, tileCorners(t, spine));
+	const std::vector<int> fromPond = stepsFrom(t, tileCorners(t, openCorners(t, d)));
 	const int channelEdge = kFlankSteps + 1 + o.channelWidth;
 	TerrainSketch sketch(size_t(t.size()), GRASS);
 	for (int i = 0; i < t.size(); ++i)

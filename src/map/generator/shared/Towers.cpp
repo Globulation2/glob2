@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Towers.h"
+#include "Morphology.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "Settlements.h"
@@ -209,14 +210,8 @@ int evenTowerPlan(TowerPlan &plan)
 std::vector<unsigned char> roomyGround(const Torus &t, const std::vector<unsigned char> &open,
 									   int room)
 {
-	std::vector<unsigned char> closed(t.size(), 0);
-	for (int i = 0; i < t.size(); ++i)
-		closed[i] = !open[i];
-	const std::vector<int> fromClosed = stepsFrom(t, closed);
-	std::vector<unsigned char> roomy(t.size(), 0);
-	for (int i = 0; i < t.size(); ++i)
-		roomy[i] = open[i] && (fromClosed[i] < 0 || fromClosed[i] >= room);
-	return roomy;
+	// `room` steps from anything closed is a whole square of radius room - 1 open round the tile.
+	return erode(t, open, room - 1);
 }
 
 bool settleStartingTowers(Game &game, GenerationContext &context, TowerPlan &plan, int level,

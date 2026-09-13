@@ -7,14 +7,16 @@
 #include "Grid.h"
 #include "Planting.h"
 #include "Resources.h"
+#include "Territories.h"
 #include <algorithm>
 #include <cstdint>
 #include <utility>
 #include <vector>
 namespace MapGeneration
 {
-// Round homes: a home that stands alone as a round patch of ground turned to face out from the map's
-// middle, its door on the inner side. The swarm stands in from the middle towards the door, and the
+// Round homes: a home that stands alone as a round patch of ground turned to face along `axis`, its door
+// on the side opposite: out from the map's middle on a ring of homes (Carousel, Switchbacks), or away
+// from the way in on a map with no middle. The swarm stands in from the middle towards the door, and the
 // home's starter kit lies within a short walk of it. A round home may carry ponds of its own - one out
 // behind the swarm and a second on a flank - for a map that gives its homes no other water; every pond
 // keeps a gap of land to the home's edge, so where the home is a coast its beach never meets the sea's.
@@ -46,7 +48,7 @@ inline bool homeHasRoom(double homeRadius)
 }
 
 /// Stamps a round home: `visit(tile)` for every tile of the `home` outline centred at `centre` and
-/// turned to `axis` (the heading out from the map's middle), and `ponds` (0 to 2) of the `pond` outline
+/// turned to `axis` (the heading away from its door; out from the map's middle on a ring), and `ponds` (0 to 2) of the `pond` outline
 /// into `pondMask`, turned the same way; `pond` may be null when there are none. Returns where the kit
 /// goes: the first pond's centre, or the home's middle without ponds.
 template <typename Visit>
@@ -102,6 +104,54 @@ void plantHomeKit(Map &map, const Torus &t, GenerationContext &context, ShapePoi
 				  wood,
 				  -1};
 	plantKit(map, t, context, kit, eligible);
+}
+
+/// A home in ground of any shape: a Voronoi cell, a chamber, a town block, a territory. The swarm stands
+/// the same walk from the home's way in as every other colony's (siteAtDepth over walking steps from the
+/// `door` tiles through `region`), on the roomiest such tile; `axis` points from the door towards the
+/// swarm, so plantHomeKit and homeSwarmSite read it as they read a round home's. -1 site when no tile is
+/// `depth` (give or take `spread`) steps in with at least `minimumRoom` steps to the region's edge or to
+/// `keepClear`.
+struct RegionHome
+{
+	int site = -1;                 // the swarm's centre tile
+	MapGeneratorPoint swarm{0, 0}; // its footprint's top-left tile, as placeSettlement measures
+	double axis = 0;               // from the door towards the swarm
+	ShapePoint kitCentre{0, 0};    // kHomeSwarmReach further along the axis: where the kit goes
+};
+inline RegionHome regionHome(const Torus &t, const std::vector<unsigned char> &region,
+							 const std::vector<int> &door, int depth, int spread, int minimumRoom,
+							 const std::vector<unsigned char> *keepClear = nullptr)
+{
+	RegionHome home;
+	if (door.empty())
+		return home;
+	const std::vector<int> steps = stepsFrom(t, tileMask(t, door), region);
+	std::vector<unsigned char> blocked(region.size(), 0);
+	for (size_t i = 0; i < region.size(); ++i)
+		blocked[i] = !region[i] || (keepClear && (*keepClear)[i]);
+	std::vector<int> room = stepsFrom(t, blocked);
+	std::vector<int> depthIn(steps);
+	for (size_t i = 0; i < region.size(); ++i)
+		if (!region[i])
+			depthIn[i] = -1;
+	home.site = siteAtDepth(depthIn, room, depth, minimumRoom, spread);
+	if (home.site < 0)
+		return home;
+	const int sx = home.site % t.w, sy = home.site / t.w;
+	// The door's middle, the short way round from the site.
+	double ox = 0, oy = 0;
+	for (int d : door)
+	{
+		ox += t.offsetX(sx, d % t.w);
+		oy += t.offsetY(sy, d / t.w);
+	}
+	ox /= double(door.size());
+	oy /= double(door.size());
+	home.axis = (ox == 0 && oy == 0) ? 0 : std::atan2(-oy, -ox);
+	home.swarm = MapGeneratorPoint(sx - 2, sy - 2);
+	home.kitCentre = polarPoint(sx, sy, kHomeSwarmReach, home.axis);
+	return home;
 }
 
 /// What a stretch of ground carries (a home beyond its starter kit, a commons, a plaza), given how many

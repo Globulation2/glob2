@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "Contact.h"
 #include "Grid.h"
 #include "Topology.h"
 #include <climits>
@@ -8,6 +9,7 @@
 #include <utility>
 #include <vector>
 class Map;
+struct GenerationContext;
 namespace MapGeneration
 {
 /// The cheapest walk on the torus by any step cost: from any source tile (at cost 0) to any
@@ -84,4 +86,11 @@ std::vector<int> cheapestRoute(const Torus &, const std::vector<int> &sources,
 bool openRoad(Map &, const Torus &, const std::vector<int> &sources,
 			  const std::vector<unsigned char> &goal,
 			  const std::vector<unsigned char> *alsoBlocked = nullptr);
+/// Every colony must be able to walk to colony 0 at the start. Where a map's growth, water or walls box
+/// one in, the cheapest way from anything colony 0's doorstep reaches to that colony's doorstep (the
+/// open ring round its swarm) is opened under `costs`, four-connected: deposits on it are cleared, and
+/// water on it becomes a sand ford (one sand corner per water tile, clearing deposits on the four tiles
+/// it spoils). The map may look odd there; it does not fail. Returns whether anything changed; the
+/// terrain is rebuilt when a ford was laid. Everglades' backstop, and any map whose design can close.
+bool openColonyRoutes(Map &, const GenerationContext &, const Torus &, const StepCosts &costs);
 } // namespace MapGeneration

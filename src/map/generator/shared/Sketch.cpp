@@ -39,6 +39,31 @@ int countTiles(const TerrainSketch &terrain, TerrainType type)
 	return int(std::count(terrain.begin(), terrain.end(), (unsigned char)type));
 }
 
+std::vector<unsigned char> tileCorners(const Torus &t, const std::vector<unsigned char> &tiles)
+{
+	std::vector<unsigned char> corners(tiles.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+		if (tiles[i])
+		{
+			const int x = i % t.w, y = i / t.w;
+			corners[i] = corners[t.at(x + 1, y)] = corners[t.at(x, y + 1)] =
+				corners[t.at(x + 1, y + 1)] = 1;
+		}
+	return corners;
+}
+
+std::vector<unsigned char> pureTiles(const TerrainSketch &terrain, const Torus &t, TerrainType type)
+{
+	std::vector<unsigned char> pure(terrain.size(), 0);
+	const unsigned char want = (unsigned char)type;
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+			pure[size_t(y) * t.w + x] =
+				terrain[t.at(x, y)] == want && terrain[t.at(x + 1, y)] == want &&
+				terrain[t.at(x, y + 1)] == want && terrain[t.at(x + 1, y + 1)] == want;
+	return pure;
+}
+
 std::vector<Island> raiseIslands(TerrainSketch &terrain, const Torus &t, GenerationContext &context,
 								 const IslandPlacement &placement)
 {

@@ -155,6 +155,58 @@ std::vector<StrokePoint> bentPath(ShapePoint from, double heading, double length
 	return bezierPath(from, control, to, fromHalfWidth, toHalfWidth, segments);
 }
 
+std::vector<StrokePoint> wanderingPath(const Torus &t, ShapePoint from, ShapePoint to,
+									   double halfWidth, double wander, double widthJitter,
+									   std::mt19937 &random)
+{
+	const auto nearest = [](double d, int period)
+	{
+		d = std::fmod(d, double(period));
+		if (d > period / 2.0)
+			d -= period;
+		else if (d < -period / 2.0)
+			d += period;
+		return d;
+	};
+	const double dx = nearest(to.x - from.x, t.w), dy = nearest(to.y - from.y, t.h);
+	const double length = std::hypot(dx, dy);
+	// A draw in [-1, 1) straight from the generator's bits: std::uniform_real_distribution differs
+	// between standard libraries.
+	const auto unit = [](std::mt19937 &r) { return (double(r()) - 2147483648.0) / 2147483648.0; };
+	// Three harmonics of a sine that vanishes at both ends for the sideways push (weaker as they get
+	// finer), and three phases for the width.
+	double bend[3], phase[3];
+	for (double &b : bend)
+		b = unit(random);
+	for (double &p : phase)
+		p = unit(random) * kPi;
+	const int segments = std::max(1, int(std::ceil(length)));
+	const double nx = length > 0 ? -dy / length : 0, ny = length > 0 ? dx / length : 0;
+	std::vector<StrokePoint> path;
+	path.reserve(size_t(segments) + 1);
+	for (int i = 0; i <= segments; ++i)
+	{
+		const double s = double(i) / segments;
+		double side = 0, swell = 0;
+		for (int h = 0; h < 3; ++h)
+		{
+			side += bend[h] * std::sin(kPi * (h + 1) * s) / (h + 1);
+			swell += std::sin(2 * kPi * (h + 1) * s + phase[h]) / 3;
+		}
+		const double offset = wander * side / (1 + 1 / 2.0 + 1 / 3.0);
+		path.push_back({from.x + dx * s + nx * offset, from.y + dy * s + ny * offset,
+						std::max(0.5, halfWidth * (1 + widthJitter * swell))});
+	}
+	return path;
+}
+
+void carveCorridor(std::vector<unsigned char> &mask, const Torus &t, ShapePoint from, ShapePoint to,
+				   double halfWidth, double wander, double widthJitter, std::mt19937 &random,
+				   unsigned char value)
+{
+	strokePath(mask, t, wanderingPath(t, from, to, halfWidth, wander, widthJitter, random), value);
+}
+
 namespace
 {
 // The distance from a point to a path's centre line, less the path's half width at the nearest

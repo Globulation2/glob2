@@ -9,6 +9,8 @@ Normal lobby generation rolls a fresh random map; the preview snapshot is the ma
 Build the study executable with `scons release=1 map-generator-study`.
 `build/src/MapGeneratorStudy --catalog` exports the current control definitions.
 Use `python3 tools/map_generator_study.py --help` for seeded generation studies.
+Use `python3 tools/render_map.py sheet <generators...>` to render maps side by side at several sizes,
+and `python3 tools/new_map_generator.py <id> "<Display name>"` to scaffold a new generator.
 Use `python3 tools/map_fairness_tournament.py run smoke` to measure whether generated maps favour
 some start positions in real games; see [Map fairness tournament](FAIRNESS_TOURNAMENT.md).
 Study results and screenshots belong in ignored `artifacts/`, not in this directory.

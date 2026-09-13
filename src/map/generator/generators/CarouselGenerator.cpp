@@ -656,22 +656,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 // neither carries the margin inland.
 std::vector<unsigned char> seaMargin(const Map &map, const Layout &L)
 {
-	std::vector<unsigned char> notBeach = L.roadTile;
-	const std::vector<unsigned char> farmSand = roadTiles(L.t, L.farmSand);
-	for (int i = 0; i < L.t.size(); ++i)
-		notBeach[i] = notBeach[i] || farmSand[i];
-	return MapGeneration::seaMargin(map, L.t, seaVertices(map, L.t, L.pond), notBeach);
+	return islandSeaMargin(map, L.t, L.pond, L.roadTile, L.farmSand);
 }
 
 // The design's stone, once the terrain is laid: every coast of the remaining sea sealed, and every wall.
 std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
 {
-	std::vector<unsigned char> stone = sealCoasts(map, L.t, seaMargin(map, L), L.land);
-	const DesignedStone wall = designedStone(map, L.t, L.wall);
-	for (int i = 0; i < L.t.size(); ++i)
-		if (wall.stone[i])
-			stone[i] = 1;
-	return stone;
+	return sealedIslandStone(map, L.t, seaMargin(map, L), L.land, L.wall);
 }
 
 // The resources: every home's kit and scattered farmland, a fruit grove in every court, the plaza's

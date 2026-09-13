@@ -8,6 +8,7 @@
 #include "IntBuildingType.h"
 #include "LegacyGenerationDescriptor.h"
 #include "MapGeneratorFrameworkChecks.h"
+#include "MapGeneratorLandscapeChecks.h"
 #include "MapGeneratorToolkitChecks.h"
 #include "NewMapScreen.h"
 #include "Race.h"
@@ -88,6 +89,7 @@ class MapGeneratorDefaultsTest
 		globalsInit();
 		frameworkChecks();
 		ToolkitChecks::toolkitChecks();
+		LandscapeChecks::landscapeChecks();
 		GenerationService service;
 		for (int method : GeneratorRegistry::builtins().methods())
 		{
@@ -301,7 +303,7 @@ class MapGeneratorDefaultsTest
 			   screen.descriptor.option("test-shape") == 1 &&
 			   screen.descriptor.option("test-switch") == 1);
 		edit(screen, "Smoothing", 8);
-		assert(registry.selectionIndex(101) == 24);
+		assert(registry.selectionIndex(101) == int(GeneratorRegistry::builtins().methods().size()));
 		const auto playable = registry.methods(false);
 		assert(std::find(playable.begin(), playable.end(), 101) != playable.end());
 		Game generated(nullptr);

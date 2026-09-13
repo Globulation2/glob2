@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Walls.h"
 #include "Map.h"
+#include "Sketch.h"
 #include "TerrainType.h"
 #include <algorithm>
 namespace MapGeneration
@@ -230,5 +231,29 @@ WalkSpread walkSpread(const Map &map, const Torus &t, const std::vector<std::vec
 		spread.longest = std::max(spread.longest, walk);
 	}
 	return spread;
+}
+std::vector<unsigned char> islandSeaMargin(const Map &map, const Torus &t,
+										   const std::vector<unsigned char> &ponds,
+										   const std::vector<unsigned char> &roadTile,
+										   const std::vector<unsigned char> &otherSand)
+{
+	std::vector<unsigned char> notBeach = roadTile;
+	const std::vector<unsigned char> sandTiles = roadTiles(t, otherSand);
+	for (int i = 0; i < t.size(); ++i)
+		notBeach[i] = notBeach[i] || sandTiles[i];
+	return seaMargin(map, t, seaVertices(map, t, ponds), notBeach);
+}
+
+std::vector<unsigned char> sealedIslandStone(const Map &map, const Torus &t,
+											 const std::vector<unsigned char> &margin,
+											 const std::vector<unsigned char> &land,
+											 const std::vector<unsigned char> &designed)
+{
+	std::vector<unsigned char> stone = sealCoasts(map, t, margin, land);
+	const DesignedStone wall = designedStone(map, t, designed);
+	for (int i = 0; i < t.size(); ++i)
+		if (wall.stone[i])
+			stone[i] = 1;
+	return stone;
 }
 } // namespace MapGeneration

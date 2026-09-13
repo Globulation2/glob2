@@ -139,6 +139,27 @@ void plantFields(Map &map, const Torus &t, std::vector<int> tiles, int wheat, in
 		map.setResource(tiles[k] % t.w, tiles[k] / t.w, k < wheatShare ? CORN : WOOD, 1);
 }
 
+/// Dense cover: one tile of `type` on every tile of `region` that `eligible(tile)` allows and the engine
+/// accepts, in index order. A forest that fills a continent, a wheat plain, the undergrowth of a
+/// swamp; what stays open is whatever `eligible` refuses (roads, clearings, a pattern's gaps). Every
+/// deposit is a clearable wall until workers cut it, so a map built on cover should say what keeps
+/// its colonies connected (openColonyRoutes, Roads.h). Returns how many tiles it planted.
+template <typename Eligible>
+int plantCover(Map &map, const Torus &t, const std::vector<unsigned char> &region, int type,
+			   Eligible eligible)
+{
+	int planted = 0;
+	for (int i = 0; i < t.w * t.h; ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		if (!region[i] || !eligible(i) || !map.isResourceAllowed(x, y, type))
+			continue;
+		map.setResource(x, y, type, 1);
+		++planted;
+	}
+	return planted;
+}
+
 /// Clumps round a circle, the same at every angle: at each of `angles` (radians) round (cx, cy), a
 /// clump of `type` and `clumpRadius` grown from the eligible tile nearest the point on the circle of
 /// `radius`, searched within `within` tiles. A prize or an outcrop designed once per colony lands the

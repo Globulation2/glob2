@@ -35,6 +35,10 @@ comments can say "because grass may not touch water" and a reader can check it h
   to its range, 5, 7 or 9 tiles beyond every side by level, with no line of sight
   (`Building::findBestTarget`, `BuildingUtils::turretScanTile`, `BuildingTypesDefence.cpp`). A wall stops walking but not shooting, so
   a wall's thickness decides whether towers on either side can reach each other (`towerReach`).
+- **Towers shoot over water too.** A straight channel w undermap corners wide spoils w + 3 tiles of
+  grass and puts the banks' nearest grass w + 4 tiles apart, so a level-1 tower on one bank covers the
+  other across a single water corner and a level-3 tower across five (`shared/Channels`). A canal can
+  start a tower duel long before either side can swim.
 - **Players can plug gaps.** Players build stone walls, so a narrow gate, ramp or trail can be sealed
   by whoever holds it. How wide a map's doors are decides whether a colony can shut itself in.
 
@@ -88,7 +92,8 @@ The shared tools encode a few measurable promises every generator is expected to
   depth, room and isolation from rivals; fairness is the weakest start divided by the strongest,
   and the lobby keeps the best-scoring of several seeds. Designed generators get fairness by
   construction instead: they design one colony's share and turn or mirror it onto every other
-  colony (`WedgeFrame`), so every colony's ground is the same.
+  colony (`WedgeFrame`), or slide it across a lattice of colonies with no centre at all
+  (`translationSymmetry`, `shared/Orbits`), so every colony's ground is the same.
 
 ## What makes a good game
 

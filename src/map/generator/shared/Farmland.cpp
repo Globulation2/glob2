@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Farmland.h"
+#include "Morphology.h"
 #include "Map.h"
 #include "Resources.h"
 #include "Drawing.h"
@@ -256,16 +257,12 @@ std::vector<int> growFarmFields(const Torus &t, const std::vector<unsigned char>
 	// within itself), which removes such strips and keeps the rest.
 	for (size_t s = 0; s < seeds.size(); ++s)
 	{
-		std::vector<unsigned char> outside(n, 0);
+		std::vector<unsigned char> inside(n, 0);
 		for (int i = 0; i < n; ++i)
-			outside[i] = labels[i] != int(s) && homeOf[i] != owners[s];
-		const std::vector<int> fromOutside = stepsFrom(t, outside);
-		std::vector<unsigned char> core(n, 0);
+			inside[i] = labels[i] == int(s) || homeOf[i] == owners[s];
+		const std::vector<unsigned char> opened = openMask(t, inside, kOpening);
 		for (int i = 0; i < n; ++i)
-			core[i] = !outside[i] && fromOutside[i] > kOpening;
-		const std::vector<int> fromCore = stepsFrom(t, core);
-		for (int i = 0; i < n; ++i)
-			if (labels[i] == int(s) && (fromCore[i] < 0 || fromCore[i] > kOpening))
+			if (labels[i] == int(s) && !opened[i])
 				labels[i] = -1;
 	}
 	// Trimming a field to its gaps can leave slivers cut off from the rest; a field keeps only the

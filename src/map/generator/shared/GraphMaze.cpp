@@ -1,10 +1,40 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GraphMaze.h"
 #include "GenerationContext.h"
+#include <utility>
 #include <algorithm>
 namespace MapGeneration
 {
-bool pocketsFit(const Tessellation &g, const std::vector<unsigned char> &pocket)
+CellGraph cellGraph(const Tessellation &tiling)
+{
+	CellGraph g;
+	for (const auto &cell : tiling.cells)
+		g.cellEdges.push_back(cell.edges);
+	for (const auto &edge : tiling.edges)
+		g.edgeCells.push_back({edge.cells[0], edge.cells[1]});
+	g.distance2 = [&tiling](int a, int b) { return tiling.distance2(a, b); };
+	return g;
+}
+
+CellGraph cellGraph(const Torus &t, const std::vector<Site> &sites,
+					const std::vector<std::vector<int>> &neighbours)
+{
+	CellGraph g;
+	g.cellEdges.assign(sites.size(), {});
+	for (int a = 0; a < int(neighbours.size()); ++a)
+		for (int b : neighbours[a])
+			if (a < b)
+			{
+				g.cellEdges[a].push_back(int(g.edgeCells.size()));
+				g.cellEdges[b].push_back(int(g.edgeCells.size()));
+				g.edgeCells.push_back({a, b});
+			}
+	g.distance2 = [t, sites](int a, int b)
+	{ return (long long)t.dist2(sites[a].x, sites[a].y, sites[b].x, sites[b].y); };
+	return g;
+}
+
+bool pocketsFit(const CellGraph &g, const std::vector<unsigned char> &pocket)
 {
 	int start = -1, freeCells = 0;
 	for (int cell = 0; cell < g.cellCount(); ++cell)
@@ -16,14 +46,14 @@ bool pocketsFit(const Tessellation &g, const std::vector<unsigned char> &pocket)
 			continue;
 		}
 		bool door = false;
-		for (int edge : g.cells[cell].edges)
+		for (int edge : g.cellEdges[cell])
 			door = door || !pocket[g.other(edge, cell)];
 		if (!door)
 			return false;
 	}
 	if (!freeCells)
 		return false;
-	std::vector<unsigned char> seen(g.cells.size(), 0);
+	std::vector<unsigned char> seen(size_t(g.cellCount()), 0);
 	std::vector<int> stack{start};
 	seen[start] = 1;
 	int reached = 1;
@@ -31,7 +61,7 @@ bool pocketsFit(const Tessellation &g, const std::vector<unsigned char> &pocket)
 	{
 		const int cell = stack.back();
 		stack.pop_back();
-		for (int edge : g.cells[cell].edges)
+		for (int edge : g.cellEdges[cell])
 		{
 			const int next = g.other(edge, cell);
 			if (!pocket[next] && !seen[next])
@@ -45,11 +75,11 @@ bool pocketsFit(const Tessellation &g, const std::vector<unsigned char> &pocket)
 	return reached == freeCells;
 }
 
-std::vector<int> spreadPockets(const Tessellation &g, int count)
+std::vector<int> spreadPockets(const CellGraph &g, int count)
 {
-	std::vector<unsigned char> isPocket(g.cells.size(), 0);
+	std::vector<unsigned char> isPocket(size_t(g.cellCount()), 0);
 	std::vector<int> pockets;
-	std::vector<long long> nearest(g.cells.size(), 0);
+	std::vector<long long> nearest(size_t(g.cellCount()), 0);
 	for (int k = 0; k < count; ++k)
 	{
 		std::vector<int> order;
@@ -79,9 +109,8 @@ std::vector<int> spreadPockets(const Tessellation &g, int count)
 	return pockets;
 }
 
-bool carveSpanningTree(const Tessellation &g, GenerationContext &context,
-					   const std::string &stream, const std::vector<unsigned char> &blocked,
-					   std::vector<unsigned char> &open)
+bool carveSpanningTree(const CellGraph &g, GenerationContext &context, const std::string &stream,
+					   const std::vector<unsigned char> &blocked, std::vector<unsigned char> &open)
 {
 	std::vector<int> free;
 	for (int cell = 0; cell < g.cellCount(); ++cell)
@@ -97,7 +126,7 @@ bool carveSpanningTree(const Tessellation &g, GenerationContext &context,
 	{
 		const int cell = stack.back();
 		choices.clear();
-		for (int edge : g.cells[cell].edges)
+		for (int edge : g.cellEdges[cell])
 			if (!visited[g.other(edge, cell)])
 				choices.push_back(edge);
 		if (choices.empty())
@@ -114,7 +143,7 @@ bool carveSpanningTree(const Tessellation &g, GenerationContext &context,
 	return std::all_of(visited.begin(), visited.end(), [](unsigned char v) { return v != 0; });
 }
 
-std::vector<int> openPocketDoors(const Tessellation &g, GenerationContext &context,
+std::vector<int> openPocketDoors(const CellGraph &g, GenerationContext &context,
 								 const std::string &stream, const std::vector<int> &pockets,
 								 const std::vector<unsigned char> &isPocket,
 								 std::vector<unsigned char> &open)
@@ -124,7 +153,7 @@ std::vector<int> openPocketDoors(const Tessellation &g, GenerationContext &conte
 	for (int pocket : pockets)
 	{
 		choices.clear();
-		for (int edge : g.cells[pocket].edges)
+		for (int edge : g.cellEdges[pocket])
 			if (!isPocket[g.other(edge, pocket)])
 				choices.push_back(edge);
 		if (choices.empty())
@@ -139,7 +168,7 @@ std::vector<int> openPocketDoors(const Tessellation &g, GenerationContext &conte
 	return doors;
 }
 
-void openLoops(const Tessellation &g, GenerationContext &context, const std::string &stream,
+void openLoops(const CellGraph &g, GenerationContext &context, const std::string &stream,
 			   const std::vector<unsigned char> &blocked, int percent,
 			   std::vector<unsigned char> &open)
 {
@@ -150,8 +179,8 @@ void openLoops(const Tessellation &g, GenerationContext &context, const std::str
 		if (blocked[cell])
 			continue;
 		++freeCells;
-		for (int edge : g.cells[cell].edges)
-			if (g.edges[edge].cells[0] == cell && !open[edge] && !blocked[g.other(edge, cell)])
+		for (int edge : g.cellEdges[cell])
+			if (g.edgeCells[edge][0] == cell && !open[edge] && !blocked[g.other(edge, cell)])
 				closed.push_back(edge);
 	}
 	context.shuffle(closed.begin(), closed.end(), stream);
@@ -160,17 +189,17 @@ void openLoops(const Tessellation &g, GenerationContext &context, const std::str
 		open[closed[i]] = 1;
 }
 
-std::vector<int> deadEnds(const Tessellation &g, const std::vector<unsigned char> &open,
+std::vector<int> deadEnds(const CellGraph &g, const std::vector<unsigned char> &open,
 						  const std::vector<unsigned char> &blocked, std::vector<int> &exitEdge)
 {
 	std::vector<int> ends;
-	exitEdge.assign(g.cells.size(), -1);
+	exitEdge.assign(size_t(g.cellCount()), -1);
 	for (int cell = 0; cell < g.cellCount(); ++cell)
 	{
 		if (blocked[cell])
 			continue;
 		int degree = 0, exit = -1;
-		for (int edge : g.cells[cell].edges)
+		for (int edge : g.cellEdges[cell])
 			if (open[edge])
 			{
 				++degree;
@@ -183,5 +212,41 @@ std::vector<int> deadEnds(const Tessellation &g, const std::vector<unsigned char
 		}
 	}
 	return ends;
+}
+bool pocketsFit(const Tessellation &g, const std::vector<unsigned char> &pocket)
+{
+	return pocketsFit(cellGraph(g), pocket);
+}
+
+std::vector<int> spreadPockets(const Tessellation &g, int count)
+{
+	return spreadPockets(cellGraph(g), count);
+}
+
+bool carveSpanningTree(const Tessellation &g, GenerationContext &context, const std::string &stream,
+					   const std::vector<unsigned char> &blocked, std::vector<unsigned char> &open)
+{
+	return carveSpanningTree(cellGraph(g), context, stream, blocked, open);
+}
+
+std::vector<int> openPocketDoors(const Tessellation &g, GenerationContext &context,
+								 const std::string &stream, const std::vector<int> &pockets,
+								 const std::vector<unsigned char> &isPocket,
+								 std::vector<unsigned char> &open)
+{
+	return openPocketDoors(cellGraph(g), context, stream, pockets, isPocket, open);
+}
+
+void openLoops(const Tessellation &g, GenerationContext &context, const std::string &stream,
+			   const std::vector<unsigned char> &blocked, int percent,
+			   std::vector<unsigned char> &open)
+{
+	openLoops(cellGraph(g), context, stream, blocked, percent, open);
+}
+
+std::vector<int> deadEnds(const Tessellation &g, const std::vector<unsigned char> &open,
+						  const std::vector<unsigned char> &blocked, std::vector<int> &exitEdge)
+{
+	return deadEnds(cellGraph(g), open, blocked, exitEdge);
 }
 } // namespace MapGeneration

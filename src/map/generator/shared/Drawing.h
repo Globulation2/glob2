@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cmath>
 #include <utility>
+#include <random>
 #include <vector>
 namespace MapGeneration
 {
@@ -49,6 +50,21 @@ std::vector<StrokePoint> bezierPath(ShapePoint from, ShapePoint control, ShapePo
 /// a twig or a root. A quadratic Bezier whose control point sits off the chord's middle.
 std::vector<StrokePoint> bentPath(ShapePoint from, double heading, double length, double bend,
 								  double fromHalfWidth, double toHalfWidth, int segments);
+
+/// A path that wanders from `from` to `to` the short way round the torus: points about a tile apart,
+/// pushed sideways by up to `wander` tiles (three harmonics with random amplitudes, zero at both ends,
+/// so it leaves and arrives exactly where asked), and a half width of `halfWidth` swelling and
+/// narrowing by up to `widthJitter` of itself. `to` is placed beside `from` (its nearest copy), so
+/// points may run past the seam, as strokePath expects. Six draws from `random`. A tunnel between two
+/// chambers, a lane between two plazas, a trail that doesn't look ruled.
+std::vector<StrokePoint> wanderingPath(const Torus &, ShapePoint from, ShapePoint to,
+									   double halfWidth, double wander, double widthJitter,
+									   std::mt19937 &random);
+
+/// Strokes a wanderingPath into `mask` with `value`: a corridor carved from one point to another.
+void carveCorridor(std::vector<unsigned char> &mask, const Torus &, ShapePoint from, ShapePoint to,
+				   double halfWidth, double wander, double widthJitter, std::mt19937 &random,
+				   unsigned char value = 1);
 
 /// The narrowest gap between two stroked paths: the least distance from any point of either to
 /// the other's centre line, less both half widths there. Negative where they overlap. Points of

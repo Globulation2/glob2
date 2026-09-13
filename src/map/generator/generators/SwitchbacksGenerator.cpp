@@ -462,23 +462,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 // The sea: every water vertex but the ponds'.
 std::vector<unsigned char> seaMargin(const Map &map, const Layout &L)
 {
-	// Neither a sand road nor a farm plot's sand ring is beach: neither may carry the sea's margin inland.
-	std::vector<unsigned char> notBeach = L.roadTile;
-	const std::vector<unsigned char> plotSand = roadTiles(L.t, L.farmSand);
-	for (int i = 0; i < L.t.size(); ++i)
-		notBeach[i] = notBeach[i] || plotSand[i];
-	return MapGeneration::seaMargin(map, L.t, seaVertices(map, L.t, L.pond), notBeach);
+	return islandSeaMargin(map, L.t, L.pond, L.roadTile, L.farmSand);
 }
 
 // The design's stone once the terrain is laid: every coast sealed, and every mountain's rock.
 std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
 {
-	std::vector<unsigned char> stone = sealCoasts(map, L.t, seaMargin(map, L), L.land);
-	const DesignedStone rock = designedStone(map, L.t, L.stone);
-	for (int i = 0; i < L.t.size(); ++i)
-		if (rock.stone[i])
-			stone[i] = 1;
-	return stone;
+	return sealedIslandStone(map, L.t, seaMargin(map, L), L.land, L.stone);
 }
 
 void furnish(Map &map, const Layout &L, GenerationContext &context, const SwitchbacksOptions &o,

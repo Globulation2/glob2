@@ -5,7 +5,9 @@
 #include "GenerationContext.h"
 #include "Grid.h"
 #include "LatticeNoise.h"
+#include "Morphology.h"
 #include "Pipeline.h"
+#include "Points.h"
 #include "Resources.h"
 #include "Settlements.h"
 #include "Sketch.h"
@@ -98,132 +100,6 @@ std::vector<int> chebyshevDistance(const Torus &t, const std::vector<unsigned ch
 		if (d < 0)
 			d = kFar;
 	return distance;
-}
-
-struct Site
-{
-	int x, y;
-};
-
-// Bucket rows or columns to search around bucket c: all of them when a window would wrap onto
-// itself.
-std::vector<int> bucketWindow(int c, int count, int radius)
-{
-	std::vector<int> result;
-	if (count <= 2 * radius + 1)
-	{
-		for (int i = 0; i < count; ++i)
-			result.push_back(i);
-	}
-	else
-	{
-		for (int d = -radius; d <= radius; ++d)
-			result.push_back(((c + d) % count + count) % count);
-	}
-	return result;
-}
-
-// Basin sites by dart throwing on the torus. Sites keep 0.83 of the requested spacing apart,
-// which, once the map is saturated, leaves one site per spacing-squared tiles on average.
-std::vector<Site> scatterSites(const Torus &t, int spacing, GenerationContext &context)
-{
-	const int minimum = std::max(4, spacing * 83 / 100);
-	const std::int64_t expected =
-		std::max<std::int64_t>(2, std::int64_t(t.w) * t.h / (std::int64_t(spacing) * spacing));
-	const int gx = std::max(1, t.w / minimum), gy = std::max(1, t.h / minimum);
-	std::vector<std::vector<int>> columns(gx), rows(gy);
-	for (int c = 0; c < gx; ++c)
-		columns[c] = bucketWindow(c, gx, 1);
-	for (int r = 0; r < gy; ++r)
-		rows[r] = bucketWindow(r, gy, 1);
-	std::vector<std::vector<int>> buckets(size_t(gx) * gy);
-	std::vector<Site> sites;
-	// 60 darts per expected site: enough to saturate the map, after which nearly every dart lands
-	// too close to an existing site.
-	for (std::int64_t attempt = 0; attempt < expected * 60; ++attempt)
-	{
-		const int x = int(context.bounded("highlands-sites", t.w));
-		const int y = int(context.bounded("highlands-sites", t.h));
-		const int bx = x * gx / t.w, by = y * gy / t.h;
-		bool clear = true;
-		for (int row : rows[by])
-		{
-			for (int column : columns[bx])
-			{
-				for (int s : buckets[size_t(row) * gx + column])
-					if (t.dist2(x, y, sites[s].x, sites[s].y) < minimum * minimum)
-					{
-						clear = false;
-						break;
-					}
-				if (!clear)
-					break;
-			}
-			if (!clear)
-				break;
-		}
-		if (!clear)
-			continue;
-		buckets[size_t(by) * gx + bx].push_back(int(sites.size()));
-		sites.push_back({x, y});
-	}
-	return sites;
-}
-
-// Every tile's nearest site, measured from a warped copy of the tile so cell borders wander
-// instead of running straight. Positions are in sixteenths of a tile.
-std::vector<int> labelCells(const Torus &t, const std::vector<Site> &sites, int spacing,
-							GenerationContext &context)
-{
-	// The warp's noise has features one and a half valleys across and moves positions by up to 30%
-	// of the spacing: enough to bend the straight edges of nearest-site cells into wandering
-	// ridgelines, not enough to tear a cell into scraps (which the pocket rule would then have to
-	// fill with stone).
-	const int period = spacing * 3 / 2;
-	const std::vector<int> warpX =
-		fractalNoise(t.w, t.h, period, 3, context.stream("highlands-warp"));
-	const std::vector<int> warpY =
-		fractalNoise(t.w, t.h, period, 3, context.stream("highlands-warp"));
-	const std::int64_t amplitude = std::int64_t(spacing) * 16 * 30 / 100;
-	const int W = t.w * 16, H = t.h * 16;
-	const int gx = std::max(1, t.w / spacing), gy = std::max(1, t.h / spacing);
-	std::vector<std::vector<int>> buckets(size_t(gx) * gy), columns(gx), rows(gy);
-	for (size_t s = 0; s < sites.size(); ++s)
-		buckets[size_t(sites[s].y * gy / t.h) * gx + sites[s].x * gx / t.w].push_back(int(s));
-	for (int c = 0; c < gx; ++c)
-		columns[c] = bucketWindow(c, gx, 2);
-	for (int r = 0; r < gy; ++r)
-		rows[r] = bucketWindow(r, gy, 2);
-	std::vector<int> label(size_t(t.w) * t.h, 0);
-	for (int y = 0; y < t.h; ++y)
-		for (int x = 0; x < t.w; ++x)
-		{
-			const size_t i = size_t(y) * t.w + x;
-			int px = x * 16 + 8 + int((warpX[i] - 32768) * amplitude / 32768);
-			int py = y * 16 + 8 + int((warpY[i] - 32768) * amplitude / 32768);
-			px = ((px % W) + W) % W;
-			py = ((py % H) + H) % H;
-			const int bx = int(std::int64_t(px) * gx / W), by = int(std::int64_t(py) * gy / H);
-			std::int64_t best = INT64_MAX;
-			int nearest = 0;
-			for (int row : rows[by])
-				for (int column : columns[bx])
-					for (int s : buckets[size_t(row) * gx + column])
-					{
-						int dx = std::abs(px - (sites[s].x * 16 + 8)),
-							dy = std::abs(py - (sites[s].y * 16 + 8));
-						dx = std::min(dx, W - dx);
-						dy = std::min(dy, H - dy);
-						const std::int64_t d = std::int64_t(dx) * dx + std::int64_t(dy) * dy;
-						if (d < best || (d == best && s < nearest))
-						{
-							best = d;
-							nearest = s;
-						}
-					}
-			label[i] = nearest;
-		}
-	return label;
 }
 
 struct Pass
@@ -675,8 +551,15 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
 
-	const std::vector<Site> sites = scatterSites(t, o.valleySize, context);
-	const std::vector<int> label = labelCells(t, sites, o.valleySize, context);
+	// Basin sites by dart throwing, kept 0.83 of the requested spacing apart, which once the map is
+	// saturated leaves one site per spacing-squared tiles on average. The warp's noise has features one
+	// and a half valleys across and moves positions by up to 30% of the spacing: enough to bend the
+	// straight edges of nearest-site cells into wandering ridgelines, not enough to tear a cell into
+	// scraps (which the pocket rule would then have to fill with stone).
+	const std::vector<Site> sites =
+		spreadPoints(t, o.valleySize, context, "highlands-sites", 83, 60);
+	const std::vector<int> label =
+		nearestSiteLabels(t, sites, o.valleySize, context, "highlands-warp", 150, 30);
 
 	// A tile is ridge when any of its eight neighbours has a lower label (labelBorders), so no unit
 	// can step, even diagonally, from one cell into another.
@@ -707,26 +590,14 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	std::vector<unsigned char> open(n);
 	for (int i = 0; i < n; ++i)
 		open[i] = !L.ridge[i];
-	const std::vector<int> region = connectedRegions(open, t.w, t.h, true, GridNeighbors::Eight);
-	int regions = 0;
-	for (int r : region)
-		regions = std::max(regions, r + 1);
-	std::vector<int> size(regions, 0), id(regions, -1);
-	for (int r : region)
-		if (r >= 0)
-			++size[r];
-	for (int r = 0; r < regions; ++r)
-		if (size[r] >= kPocketTiles)
-			id[r] = L.valleys++;
-	L.valley.assign(n, -1);
+	const std::vector<unsigned char> roomy =
+		dropSmallRegions(t, open, kPocketTiles, GridNeighbors::Eight);
+	L.valley = connectedRegions(roomy, t.w, t.h, true, GridNeighbors::Eight);
 	for (int i = 0; i < n; ++i)
-		if (region[i] >= 0)
-		{
-			if (id[region[i]] < 0)
-				L.ridge[i] = 1;
-			else
-				L.valley[i] = id[region[i]];
-		}
+	{
+		L.ridge[i] = L.ridge[i] || !roomy[i];
+		L.valleys = std::max(L.valleys, L.valley[i] + 1);
+	}
 	if (L.valleys < 1)
 	{
 		L.failure = "the ridges left no valley to live in";

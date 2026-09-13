@@ -10,6 +10,7 @@
 #include "Resources.h"
 #include "Roads.h"
 #include "Settlements.h"
+#include "Sketch.h"
 #include "Topology.h"
 #include "Unit.h"
 #include <algorithm>
@@ -1181,13 +1182,6 @@ std::vector<unsigned char> stampTerrain(const Layout &layout, const WatershedOpt
 	return terrain;
 }
 
-bool vertexTileWater(const std::vector<unsigned char> &t, int w, int h, int x, int y)
-{
-	const int x1 = (x + 1) % w, y1 = (y + 1) % h;
-	return t[size_t(y) * w + x] == WATER && t[size_t(y) * w + x1] == WATER &&
-		   t[size_t(y1) * w + x] == WATER && t[size_t(y1) * w + x1] == WATER;
-}
-
 // Every ford interrupts a real channel - open water runs on in line just upstream and downstream
 // of it - is open from bank to bank along three parallel lines, and reaches dry land at both
 // ends. `water(x, y)` answers for a tile.
@@ -1295,18 +1289,8 @@ Tiles tileView(const std::vector<unsigned char> &terrain, int w, int h)
 	t.w = w;
 	t.h = h;
 	const size_t n = size_t(w) * h;
-	t.water.assign(n, 0);
-	t.grass.assign(n, 0);
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-		{
-			const size_t i = size_t(y) * w + x;
-			const int x1 = (x + 1) % w, y1 = (y + 1) % h;
-			const unsigned char a = terrain[i], b = terrain[size_t(y) * w + x1];
-			const unsigned char c = terrain[size_t(y1) * w + x], d = terrain[size_t(y1) * w + x1];
-			t.water[i] = a == WATER && b == WATER && c == WATER && d == WATER;
-			t.grass[i] = a == GRASS && b == GRASS && c == GRASS && d == GRASS;
-		}
+	t.water = pureTiles(terrain, Torus{w, h}, WATER);
+	t.grass = pureTiles(terrain, Torus{w, h}, GRASS);
 	t.waterSteps = stepsFrom(Torus{w, h}, t.water);
 	std::vector<unsigned char> land(n), notGrass(n);
 	for (size_t i = 0; i < n; ++i)
@@ -1855,7 +1839,8 @@ bool generate(Game &game, GenerationContext &context)
 
 	context.stage = "watershed terrain";
 	const std::vector<unsigned char> terrain = stampTerrain(layout, o, context);
-	const auto stampedWater = [&](int x, int y) { return vertexTileWater(terrain, w, h, x, y); };
+	const std::vector<unsigned char> stampedTiles = pureTiles(terrain, Torus{w, h}, WATER);
+	const auto stampedWater = [&](int x, int y) { return stampedTiles[size_t(y) * w + x] != 0; };
 	context.detail = checkFords(layout, stampedWater);
 	if (context.detail.empty())
 		context.detail = checkChannels(layout, stampedWater);

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Grid.h"
+#include "Morphology.h"
 #include "Sketch.h"
 #include "Topology.h"
 #include <algorithm>
@@ -195,10 +196,10 @@ inline void separateTerritories(const Torus &t, std::vector<int> &labels, int ga
 				}
 			}
 	}
-	const std::vector<int> fromBorder = stepsFrom(t, border);
-	const int half = (gap + 1) / 2;
+	// Every tile fewer than half the gap from the border goes.
+	const std::vector<unsigned char> band = dilate(t, border, (gap + 1) / 2 - 1);
 	for (int i = 0; i < t.size(); ++i)
-		if (labels[i] >= 0 && fromBorder[i] >= 0 && fromBorder[i] < half)
+		if (labels[i] >= 0 && band[i] && (gap + 1) / 2 > 0)
 			labels[i] = -1;
 }
 

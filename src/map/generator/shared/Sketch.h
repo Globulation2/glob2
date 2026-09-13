@@ -28,6 +28,16 @@ void writeUndermap(Map &, const TerrainSketch &);
 
 int countTiles(const TerrainSketch &, TerrainType);
 
+/// The undermap corners of every tile in `tiles`: the reverse of pureTiles, the vertices a design must
+/// set for those tiles to take a terrain of their own.
+std::vector<unsigned char> tileCorners(const Torus &, const std::vector<unsigned char> &tiles);
+
+/// The tiles whose four undermap corners all hold `type` (Map::regenerateMap reads tile (x, y) from
+/// corners (x, y), (x + 1, y), (x, y + 1) and (x + 1, y + 1)): what the sketch will draw as pure grass,
+/// sand or water. Buildings and deposits need pure grass, and the engine's growth tests read pure
+/// water and pure sand, so this is the sketch as the game will see it.
+std::vector<unsigned char> pureTiles(const TerrainSketch &, const Torus &, TerrainType type);
+
 /// Decorative patches of sand inside the land, away from any shore: of the grass tiles `eligible`
 /// allows that lie at least `inland` steps from water, the `share` (0 to 1) with the highest
 /// `noiseAt(tile)` turn to sand. Sampling smooth noise gives a few rounded patches rather than

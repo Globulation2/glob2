@@ -39,6 +39,22 @@ std::vector<unsigned char> sealCoasts(const Map &, const Torus &,
 									  const std::vector<unsigned char> &margin,
 									  const std::vector<unsigned char> &wallable);
 
+/// The sea's margin for a design of walled land in the sea with inland ponds and sand roads (Carousel,
+/// Switchbacks): the sea is every water vertex but the `ponds`', and neither a road's spoiled tiles
+/// (`roadTile`) nor those of any other designed sand line (`otherSand`, as vertices, such as a farm plot's
+/// ring) count as beach, so none of them carries the margin inland.
+std::vector<unsigned char> islandSeaMargin(const Map &, const Torus &,
+										   const std::vector<unsigned char> &ponds,
+										   const std::vector<unsigned char> &roadTile,
+										   const std::vector<unsigned char> &otherSand);
+
+/// Such a design's stone once the terrain is laid: every coast of `land` on the margin sealed
+/// (sealCoasts), and every tile of the `designed` walls that the beaches left grass (designedStone).
+std::vector<unsigned char> sealedIslandStone(const Map &, const Torus &,
+											 const std::vector<unsigned char> &margin,
+											 const std::vector<unsigned char> &land,
+											 const std::vector<unsigned char> &designed);
+
 /// A wall between labelled regions: a tile is wall when any of its eight neighbours has a lower
 /// label. A tile left off the wall then touches only its own label or wall, so no unit can step,
 /// even diagonally, from one region into another, and the wall is one tile thick. Negative labels

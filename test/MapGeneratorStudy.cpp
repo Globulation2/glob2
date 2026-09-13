@@ -9,6 +9,10 @@
 #include "MapGenerator.h"
 #include "Race.h"
 #include "Unit.h"
+#include "Contact.h"
+#include "FertilityField.h"
+#include "Grid.h"
+#include "Room.h"
 #include "StartQuality.h"
 #include "Utilities.h"
 #include <BinaryStream.h>
@@ -325,6 +329,57 @@ int saveRotatedMaps(Game &game, const GenerationResult &result, const Generation
 	return consistent && placed && roundTrip && idempotent ? 0 : 6;
 }
 } // namespace
+// Writes one of the study's overlays (see the dump option) as "w h" then a row of integers per line.
+static bool writeOverlay(Game &game, int teams, const std::string &kind, const std::string &path)
+{
+	using namespace MapGeneration;
+	const Map &map = game.map;
+	const Torus t(map);
+	std::vector<int> value(size_t(t.size()), 0);
+	if (kind == "growth")
+	{
+		const Fertility::Field field = Fertility::forMap(map, false);
+		for (int i = 0; i < t.size(); ++i)
+			value[i] = int(std::min<std::uint32_t>(255, field.at(i % t.w, i / t.w) * 255 / 8000));
+	}
+	else if (kind == "sites")
+	{
+		const std::vector<unsigned char> anchors = buildAnchors(t, buildableTiles(map));
+		for (int i = 0; i < t.size(); ++i)
+			value[i] = anchors[i];
+	}
+	else if (kind == "chop" || kind == "owner")
+	{
+		const auto units = unitTilesByTeam(map, teams);
+		std::vector<int> best(size_t(t.size()), -1), owner(size_t(t.size()), -1);
+		for (int team = 0; team < teams; ++team)
+		{
+			const std::vector<int> cost = costsFrom(map, t, units[team], StepCosts::chopping(4));
+			for (int i = 0; i < t.size(); ++i)
+				if (cost[i] >= 0 && (best[i] < 0 || cost[i] < best[i]))
+				{
+					best[i] = cost[i];
+					owner[i] = team;
+				}
+		}
+		value = kind == "chop" ? best : owner;
+	}
+	else
+		return false;
+	FILE *f = std::fopen(path.c_str(), "w");
+	if (!f)
+		return false;
+	std::fprintf(f, "%d %d\n", t.w, t.h);
+	for (int y = 0; y < t.h; ++y)
+	{
+		for (int x = 0; x < t.w; ++x)
+			std::fprintf(f, "%d ", value[size_t(y) * t.w + x]);
+		std::fprintf(f, "\n");
+	}
+	std::fclose(f);
+	return true;
+}
+
 int main(int argc, char **argv)
 {
 	if (argc == 2 && std::string(argv[1]) == "--catalog")
@@ -395,7 +450,7 @@ int main(int argc, char **argv)
 	bool tuning = false;
 	bool headroom = false;
 	bool quality = false;
-	std::string dump, savePrefix, mapName;
+	std::string dump, savePrefix, mapName, overlay;
 	int candidates = 0, rotations = 1;
 	std::map<std::string, std::string> aliases = {{"smooth", "smoothing"},
 												  {"craters", "lake-density"},
@@ -426,9 +481,12 @@ int main(int argc, char **argv)
 			if (eq == std::string::npos)
 				return 2;
 			std::string id = arg.substr(0, eq);
-			if (id == "dump" || id == "save" || id == "name")
+			if (id == "dump" || id == "save" || id == "name" || id == "overlay")
 			{
-				(id == "dump" ? dump : id == "save" ? savePrefix : mapName) = arg.substr(eq + 1);
+				(id == "dump"   ? dump
+				 : id == "save" ? savePrefix
+				 : id == "name" ? mapName
+								: overlay) = arg.substr(eq + 1);
 				continue;
 			}
 			if (id == "candidates" || id == "rotations")
@@ -787,6 +845,12 @@ int main(int argc, char **argv)
 			std::fprintf(f, "\n");
 		}
 		std::fclose(f);
+		// An overlay beside the dump, one integer per tile, for tools/render_map.py to tint the map
+		// by: growth (the crop growth chance, 0-255), sites (1 where a 4x4 building fits today),
+		// chop (every tile's cheapest cost from the nearest colony, clearing wheat and wood as it
+		// goes; -1 unreachable) or owner (which colony that is; -1 unreachable).
+		if (!overlay.empty() && !writeOverlay(game, descriptor.nbTeams, overlay, dump + ".overlay"))
+			return 3;
 	}
 	if (!savePrefix.empty())
 		return saveRotatedMaps(game, result, descriptor, savePrefix,

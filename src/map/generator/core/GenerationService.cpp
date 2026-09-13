@@ -84,7 +84,8 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 			return result;
 		}
 	}
-	result.quality = MapGeneration::scoreStarts(game, request.nbTeams);
+	result.quality = MapGeneration::scoreStarts(game, request.nbTeams, definition->qualityWeights,
+												definition->qualityScale);
 	result.stage = "script";
 	const auto script = game.sgslScript.compileScript(&game);
 	if (script.type != ErrorReport::ET_OK)

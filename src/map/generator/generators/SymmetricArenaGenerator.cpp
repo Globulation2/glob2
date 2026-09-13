@@ -8,6 +8,7 @@
 #include "Grid.h"
 #include "GlobalContainer.h"
 #include "HeightMap.h"
+#include "Orbits.h"
 #include "Resources.h"
 #include "Roads.h"
 #include "Topology.h"
@@ -23,9 +24,14 @@
 #include <string>
 #include <utility>
 #include <vector>
+using MapGeneration::Isometry;
 using MapGeneration::kPi;
+using MapGeneration::orbitNoise;
 using MapGeneration::scaledCount;
 using MapGeneration::scaledShare;
+using MapGeneration::stampOrbits;
+using MapGeneration::Symmetry;
+using MapGeneration::topShare;
 
 // A symmetric arena: an orchard of all three fruits and some stone on an island behind a moat,
 // crossed by causeways, with the colonies spaced round it so that every colony's ground, route
@@ -67,73 +73,6 @@ int wrap(int v, int n)
 {
 	v %= n;
 	return v < 0 ? v + n : v;
-}
-
-// A symmetry of the map about its centre, as a signed permutation matrix acting on doubled
-// centred coordinates: tile (x, y) is (2x + 1 - W, 2y + 1 - H) and undermap corner (u, v) is
-// (2u - W, 2v - H). A tile's terrain comes from its four corners (Map::regenerateMap), and the
-// same matrix maps a tile's corners onto its image's corners, so the tile rotation
-// (x, y) -> (W-1-y, x) is the corner rotation (u, v) -> (W-v, u).
-struct Isometry
-{
-	int a, b, c, d;
-};
-
-struct Symmetry
-{
-	int width = 0, height = 0;
-	// elements[0] is the identity; colony k starts on elements[k]'s image of colony 0's home.
-	std::vector<Isometry> elements;
-
-	int order() const { return int(elements.size()); }
-	int tile(int e, int x, int y) const
-	{
-		const Isometry &g = elements[e];
-		const int X = 2 * x + 1 - width, Y = 2 * y + 1 - height;
-		return wrap((g.c * X + g.d * Y + height - 1) / 2, height) * width +
-			   wrap((g.a * X + g.b * Y + width - 1) / 2, width);
-	}
-	int corner(int e, int u, int v) const
-	{
-		const Isometry &g = elements[e];
-		const int U = 2 * u - width, V = 2 * v - height;
-		return wrap((g.c * U + g.d * V + height) / 2, height) * width +
-			   wrap((g.a * U + g.b * V + width) / 2, width);
-	}
-	// The top-left tile of the image of a w x h footprint anchored at (x, y): the image of a
-	// rectangle is a rectangle, so it is the image's lowest corner on each axis.
-	std::pair<int, int> anchor(int e, int x, int y, int w, int h) const
-	{
-		const Isometry &g = elements[e];
-		const int U0 = 2 * x - width, V0 = 2 * y - height;
-		const int U1 = 2 * (x + w) - width, V1 = 2 * (y + h) - height;
-		const int X = std::min(g.a * U0 + g.b * V0, g.a * U1 + g.b * V1);
-		const int Y = std::min(g.c * U0 + g.d * V0, g.c * U1 + g.d * V1);
-		return {wrap((X + width) / 2, width), wrap((Y + height) / 2, height)};
-	}
-};
-
-// The symmetry that gives every colony identical ground: a half turn for two colonies, a
-// quarter turn for four on a square map, the two mirrors for four on a rectangular map (where a
-// quarter turn doesn't map the map onto itself), and all eight symmetries of a square for
-// eight. Elements are listed in order round the centre, so neighbouring colonies are
-// neighbouring team numbers. Empty for colony counts no symmetry serves.
-Symmetry symmetryFor(int width, int height, int teams)
-{
-	Symmetry s;
-	s.width = width;
-	s.height = height;
-	const bool square = width == height;
-	if (teams == 2)
-		s.elements = {{1, 0, 0, 1}, {-1, 0, 0, -1}};
-	else if (teams == 4 && square)
-		s.elements = {{1, 0, 0, 1}, {0, -1, 1, 0}, {-1, 0, 0, -1}, {0, 1, -1, 0}};
-	else if (teams == 4)
-		s.elements = {{1, 0, 0, 1}, {-1, 0, 0, 1}, {-1, 0, 0, -1}, {1, 0, 0, -1}};
-	else if (teams == 8 && square)
-		s.elements = {{1, 0, 0, 1},   {0, 1, 1, 0},   {0, -1, 1, 0}, {-1, 0, 0, 1},
-					  {-1, 0, 0, -1}, {0, -1, -1, 0}, {0, 1, -1, 0}, {1, 0, 0, -1}};
-	return s;
 }
 
 // Continuous positions relative to the map centre, in tiles. The centre is an undermap corner,
@@ -205,7 +144,7 @@ Arena arenaFor(const GenerationRequest &r)
 	a.centre = 4.0 + o.centreSize / 100.0 * 0.75 * std::min(a.width, a.height);
 	a.moat = o.moatWidth;
 	a.causewayWidth = o.causewayWidth;
-	a.symmetry = symmetryFor(a.width, a.height, a.teams);
+	a.symmetry = MapGeneration::pointSymmetry(a.width, a.height, a.teams);
 	return a;
 }
 
@@ -358,68 +297,6 @@ struct Layout
 	int orchardPhase, orchardPattern;
 };
 
-// Colony 0's feature stamped onto every image of it: an entry is set when any image of its
-// tile (or corner) lies in the feature. A union doesn't depend on the order an orbit is
-// visited in, so the result is exactly symmetric.
-std::vector<unsigned char> stamp(const Symmetry &s, const std::vector<unsigned char> &feature,
-								 bool corners)
-{
-	std::vector<unsigned char> result(feature.size(), 0);
-	for (int y = 0; y < s.height; ++y)
-		for (int x = 0; x < s.width; ++x)
-			for (int e = 0; e < s.order(); ++e)
-				if (feature[size_t(corners ? s.corner(e, x, y) : s.tile(e, x, y))])
-				{
-					result[size_t(y) * s.width + x] = 1;
-					break;
-				}
-	return result;
-}
-
-// Plain noise summed over every orbit, as integers so the sum is exact in any order.
-std::vector<int> orbitNoise(GenerationContext &context, const Symmetry &s,
-							const std::string &stream, float smoothing, bool corners)
-{
-	const int w = s.width, h = s.height;
-	HeightMap noise(w, h, context.stream(stream));
-	noise.makePlain(smoothing);
-	std::vector<int> raw(size_t(w) * h), summed(size_t(w) * h, 0);
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-			// Noise as integers (12 bits) so the sum over an orbit is exact: floating-point sums in
-			// different orders could differ in the last bit and break the symmetry.
-			raw[size_t(y) * w + x] = int(noise(x, y) * 4096);
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-			for (int e = 0; e < s.order(); ++e)
-				summed[size_t(y) * w + x] +=
-					raw[size_t(corners ? s.corner(e, x, y) : s.tile(e, x, y))];
-	return summed;
-}
-
-// The share (0 to 1) of eligible entries with the highest (or lowest) values, as a mask. Ties
-// at the cut-off are all kept, so the members of an orbit, which have equal values, are never
-// split.
-std::vector<unsigned char> topShare(const std::vector<int> &value,
-									const std::vector<unsigned char> &eligible, double share,
-									bool highest)
-{
-	std::vector<int> pool;
-	for (size_t i = 0; i < value.size(); ++i)
-		if (eligible[i])
-			pool.push_back(value[i]);
-	std::vector<unsigned char> mask(value.size(), 0);
-	const size_t count =
-		std::min(pool.size(), size_t(std::lround(std::max(0.0, share) * pool.size())));
-	if (!count)
-		return mask;
-	std::sort(pool.begin(), pool.end());
-	const int threshold = highest ? pool[pool.size() - count] : pool[count - 1];
-	for (size_t i = 0; i < value.size(); ++i)
-		mask[i] = eligible[i] && (highest ? value[i] >= threshold : value[i] <= threshold);
-	return mask;
-}
-
 // Whether a point lies on one of colony 0's causeways, extended past the island's shore by
 // `inner` and past the outer shore by `outer`.
 bool onCauseway(const Arena &a, const Layout &l, Point p, double inner, double outer,
@@ -475,7 +352,7 @@ bool carvePaths(const Arena &a, const Layout &l, Terrain &t)
 		for (int i : walk)
 			route[size_t(i)] = 1;
 	}
-	t.paths = stamp(a.symmetry, route, true);
+	t.paths = stampOrbits(a.symmetry, route, true);
 	for (int v = 0; v < h; ++v)
 		for (int u = 0; u < w; ++u)
 		{
@@ -534,12 +411,12 @@ bool buildTerrain(Map &map, GenerationContext &context, const Arena &a, const La
 			pond[i] = toPond <= kPondRadius;
 			gate[i] = onCauseway(a, l, p, 1.5, 1.5, a.causewayWidth / 2);
 		}
-	homeDisc = stamp(s, homeDisc, true);
-	homeZone = stamp(s, homeZone, true);
-	t.ponds = stamp(s, pond, true);
+	homeDisc = stampOrbits(s, homeDisc, true);
+	homeZone = stampOrbits(s, homeZone, true);
+	t.ponds = stampOrbits(s, pond, true);
 	// Without a moat the orchard island joins the land round it, and no causeway is needed; the
 	// moat's width still spaces the homes.
-	t.causeways = o.moat ? stamp(s, gate, true) : std::vector<unsigned char>(n, 0);
+	t.causeways = o.moat ? stampOrbits(s, gate, true) : std::vector<unsigned char>(n, 0);
 
 	t.moat.assign(n, 0);
 	std::vector<unsigned char> lakeEligible(n, 0);
@@ -707,8 +584,8 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 			homeClear[i] = torusDistance(w, h, p, l.home) <= kHomeRadius + 1.5;
 			landing[i] = onCauseway(a, l, p, 3.0, 4.0, a.causewayWidth / 2 + 2);
 		}
-	homeClear = stamp(s, homeClear, false);
-	landing = stamp(s, landing, false);
+	homeClear = stampOrbits(s, homeClear, false);
+	landing = stampOrbits(s, landing, false);
 	const auto onPath = [&](int u, int v)
 	{ return t.paths[size_t(wrap(v, h)) * w + wrap(u, w)] != 0; };
 	for (int y = 0; y < h; ++y)
@@ -959,27 +836,10 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 		for (int x = 0; x < w; ++x)
 			if (plan[size_t(y) * w + x] >= 0)
 				map.setResource(x, y, plan[size_t(y) * w + x], 1);
-	// The engine draws each deposit's amount and look from the gameplay RNG. Every orbit takes
-	// its lowest-indexed tile's, so deposits are symmetric in size as well as type.
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-		{
-			const int i = y * w + x;
-			int first = i;
-			for (int e = 1; e < s.order(); ++e)
-				first = std::min(first, s.tile(e, x, y));
-			if (first == i)
-				continue;
-			const Resource source = map.getResource(size_t(first));
-			Resource &target = map.getResource(size_t(i));
-			if (source.type != target.type)
-			{
-				context.detail = "deposits differ across the orbit of (" + std::to_string(x) +
-								 ", " + std::to_string(y) + ")";
-				return false;
-			}
-			target = source;
-		}
+	// The engine draws each deposit's amount and look from the gameplay RNG; equalising gives every
+	// orbit its lowest-indexed tile's, so deposits are symmetric in size as well as type.
+	if (!MapGeneration::equaliseDeposits(map, s, context.detail))
+		return false;
 	return true;
 }
 
@@ -1022,19 +882,6 @@ bool generate(Game &game, GenerationContext &context)
 		   furnish(game, context, a, l, o, t);
 }
 
-// The class of a tile's graphic (Map::lookup): grass, grass and sand, sand, sand and water,
-// water. It depends only on which terrains a tile's corners hold, not on which corner holds
-// which, so it is unchanged by any symmetry.
-int terrainClass(Uint16 terrain)
-{
-	return terrain < 16 ? 0 : terrain < 128 ? 1 : terrain < 144 ? 2 : terrain < 256 ? 3 : 4;
-}
-
-std::string at(int x, int y)
-{
-	return " at (" + std::to_string(x) + ", " + std::to_string(y) + ")";
-}
-
 // The arena's guarantees, checked on the finished world rather than trusted: every symmetry of
 // the request maps undermap corners, tile terrain, deposits (type and amount), buildings and
 // units onto themselves with the colonies permuted one to one; those permutations carry any
@@ -1047,78 +894,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const int w = map.getW(), h = map.getH(), teams = context.request.nbTeams;
 	const Arena a = arenaFor(context.request);
 	const Symmetry &s = a.symmetry;
-	if (s.order() != teams)
-		return "No symmetry gives " + std::to_string(teams) + " colonies the same ground.";
-	std::vector<std::vector<int>> permutations;
-	for (int e = 1; e < s.order(); ++e)
-	{
-		const std::string under = " is not symmetric under symmetry " + std::to_string(e) + ".";
-		std::vector<int> image(size_t(teams), -1);
-		const auto relate = [&](int from, int to)
-		{
-			if (from < 0 || from >= teams || to < 0 || to >= teams)
-				return false;
-			if (image[size_t(from)] < 0)
-				image[size_t(from)] = to;
-			return image[size_t(from)] == to;
-		};
-		for (int v = 0; v < h; ++v)
-			for (int u = 0; u < w; ++u)
-			{
-				const int c = s.corner(e, u, v);
-				if (map.getUMTerrain(u, v) != map.getUMTerrain(c % w, c / w))
-					return "Undermap corner" + at(u, v) + under;
-			}
-		for (int y = 0; y < h; ++y)
-			for (int x = 0; x < w; ++x)
-			{
-				const int q = s.tile(e, x, y), qx = q % w, qy = q / w;
-				if (terrainClass(map.getTerrain(x, y)) != terrainClass(map.getTerrain(qx, qy)))
-					return "Terrain" + at(x, y) + under;
-				const Resource &ra = map.getResource(x, y), &rb = map.getResource(qx, qy);
-				if (ra.type != rb.type || ra.amount != rb.amount)
-					return "Deposit" + at(x, y) + under;
-				const Uint16 ba = map.getBuilding(x, y), bb = map.getBuilding(qx, qy);
-				if ((ba == NOGBID) != (bb == NOGBID))
-					return "Building" + at(x, y) + under;
-				if (ba != NOGBID && (!relate(Building::GIDtoTeam(ba), Building::GIDtoTeam(bb)) ||
-									 game.teams[Building::GIDtoTeam(ba)]
-											 ->myBuildings[Building::GIDtoID(ba)]
-											 ->type != game.teams[Building::GIDtoTeam(bb)]
-														   ->myBuildings[Building::GIDtoID(bb)]
-														   ->type))
-					return "Building" + at(x, y) + under;
-				const Uint16 ua = map.getGroundUnit(x, y), ub = map.getGroundUnit(qx, qy);
-				if ((ua == NOGUID) != (ub == NOGUID))
-					return "Unit" + at(x, y) + under;
-				if (ua != NOGUID &&
-					(!relate(Unit::GIDtoTeam(ua), Unit::GIDtoTeam(ub)) ||
-					 game.teams[Unit::GIDtoTeam(ua)]->myUnits[Unit::GIDtoID(ua)]->typeNum !=
-						 game.teams[Unit::GIDtoTeam(ub)]->myUnits[Unit::GIDtoID(ub)]->typeNum))
-					return "Unit" + at(x, y) + under;
-			}
-		std::vector<unsigned char> hit(size_t(teams), 0);
-		for (int team = 0; team < teams; ++team)
-		{
-			const int to = image[size_t(team)];
-			if (to < 0 || hit[size_t(to)])
-				return "Symmetry " + std::to_string(e) + " does not map colonies one to one.";
-			hit[size_t(to)] = 1;
-		}
-		permutations.push_back(image);
-	}
-	std::vector<int> carried{0};
-	std::vector<unsigned char> seen(size_t(teams), 0);
-	seen[0] = 1;
-	for (size_t head = 0; head < carried.size(); ++head)
-		for (const auto &image : permutations)
-			if (!seen[size_t(image[size_t(carried[head])])])
-			{
-				seen[size_t(image[size_t(carried[head])])] = 1;
-				carried.push_back(image[size_t(carried[head])]);
-			}
-	if (int(carried.size()) != teams)
-		return "The symmetries do not carry colony 0 onto every other colony.";
+	if (const std::string broken = MapGeneration::orbitMismatch(game, s, teams); !broken.empty())
+		return broken;
 
 	static const char *const targets[] = {"wheat",   "wood",   "cherries",
 										  "oranges", "prunes", "the orchard"};
