@@ -88,6 +88,13 @@ Farm layFarm(TerrainSketch &sketch, const Torus &, const std::vector<unsigned ch
 			 double angle, ShapePoint origin, int rim, const FarmRows &rows,
 			 const FarmPlot *plot = nullptr, int bridgeSpacing = 0, bool caps = true);
 
+/// Stamps one building plot with its top-left grass tile at (x0, y0) into a laid farm: the plot's
+/// grass tiles win over any water row, bridge or cap running through them, and its ring of sand
+/// closes them off from the crops. layFarm places one plot at a region's most inland point; a map that
+/// wants plots all over its fields (Old town's farm hubs) stamps them itself, after checking the
+/// fit it needs. Marks the plot's tiles in `farm.plot` and its sand in `farm.sand`.
+void stampFarmPlot(TerrainSketch &sketch, const Torus &, Farm &farm, int x0, int y0, const FarmPlot &);
+
 /// Farm fields grown into open ground straight out of the homes they belong to. `occupied` marks all the
 /// designed land and `homeOf` its owner where it is a home (0 or more; -1 elsewhere). Field `s` belongs
 /// to home `owners[s]` and starts from the open tile near `seeds[s]` (searched 16 tiles round it) in the

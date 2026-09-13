@@ -5,6 +5,7 @@
 struct AnthillOptions
 {
 	int chamberSpacing, chamberSize, queenRoom, tunnelWidth, loops;
+	bool sandRoads;
 	int wheat, wood, algae, fruit; // percentages of the default amounts
 	explicit AnthillOptions(const GenerationRequest &r);
 };

@@ -40,6 +40,35 @@ double farmYield(double angle)
 	return yields[below] + (yields[below + 1] - yields[below]) * along;
 }
 
+void stampFarmPlot(TerrainSketch &sketch, const Torus &t, Farm &farm, int x0, int y0,
+				   const FarmPlot &plot)
+{
+	const int margin = plot.ring + 1;
+	for (int dy = -margin; dy <= plot.height + margin; ++dy)
+		for (int dx = -margin; dx <= plot.width + margin; ++dx)
+		{
+			const int i = t.at(x0 + dx, y0 + dy);
+			const bool grass = dx >= 0 && dx <= plot.width && dy >= 0 && dy <= plot.height;
+			const bool ring = !grass && dx >= -plot.ring && dx <= plot.width + plot.ring &&
+							  dy >= -plot.ring && dy <= plot.height + plot.ring;
+			// The clearing trumps the rows and bridges alike: its grass is grass.
+			if (farm.water[i] || (grass && farm.sand[i]))
+			{
+				farm.water[i] = 0;
+				farm.sand[i] = 0;
+				sketch[i] = GRASS;
+			}
+			if (ring)
+			{
+				farm.sand[i] = 1;
+				sketch[i] = SAND;
+			}
+		}
+	for (int dy = 0; dy < plot.height; ++dy)
+		for (int dx = 0; dx < plot.width; ++dx)
+			farm.plot[t.at(x0 + dx, y0 + dy)] = 1;
+}
+
 Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned char> &region,
 			 double angle, ShapePoint origin, int rim, const FarmRows &rows, const FarmPlot *plot,
 			 int bridgeSpacing, bool caps)
@@ -139,31 +168,7 @@ Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned c
 		{
 			farm.plotX = t.x(x0);
 			farm.plotY = t.y(y0);
-			for (int dy = -margin; dy <= plot->height + margin; ++dy)
-				for (int dx = -margin; dx <= plot->width + margin; ++dx)
-				{
-					const int i = t.at(x0 + dx, y0 + dy);
-					const bool grass =
-						dx >= 0 && dx <= plot->width && dy >= 0 && dy <= plot->height;
-					const bool ring = !grass && dx >= -plot->ring &&
-									  dx <= plot->width + plot->ring && dy >= -plot->ring &&
-									  dy <= plot->height + plot->ring;
-					// The clearing trumps the rows and bridges alike: its grass is grass.
-					if (farm.water[i] || (grass && farm.sand[i]))
-					{
-						farm.water[i] = 0;
-						farm.sand[i] = 0;
-						sketch[i] = GRASS;
-					}
-					if (ring)
-					{
-						farm.sand[i] = 1;
-						sketch[i] = SAND;
-					}
-				}
-			for (int dy = 0; dy < plot->height; ++dy)
-				for (int dx = 0; dx < plot->width; ++dx)
-					farm.plot[t.at(x0 + dx, y0 + dy)] = 1;
+			stampFarmPlot(sketch, t, farm, x0, y0, *plot);
 			seen.assign(seen.size(), 0);
 			for (int i = 0; i < n; ++i)
 				if (farm.water[i])

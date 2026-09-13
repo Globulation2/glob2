@@ -4,7 +4,7 @@
 #include "GeneratorDefinition.h"
 struct OldTownOptions
 {
-	int citySize, blockSize, streetWidth, warp, plazas, gates;
+	int citySize, blockSize, streetWidth, warp, plazas, farmPlots;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit OldTownOptions(const GenerationRequest &r);
 };

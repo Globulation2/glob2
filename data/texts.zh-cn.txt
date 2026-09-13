@@ -2162,3 +2162,7 @@ Queen room
 Tunnel width
 [Loops]
 Loops
+[Home pools]
+Home pools
+[Farm plots]
+Farm plots

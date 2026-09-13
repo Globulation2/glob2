@@ -4,7 +4,7 @@
 #include "GeneratorDefinition.h"
 struct OldGrowthOptions
 {
-	int forestDensity, lakes, lakeSize, homeSize;
+	int forestDensity, lakes, lakeSize, homeSize, homePools;
 	bool hiddenGroves, trails;
 	int wheat, stone, algae, fruit; // percentages of the default amounts
 	explicit OldGrowthOptions(const GenerationRequest &r);

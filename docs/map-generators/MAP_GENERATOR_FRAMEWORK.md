@@ -1002,11 +1002,18 @@ at intervals staggered from ridge to ridge, so moving along a valley is easy and
 
 ## Old growth
 
-A dry continent under unbroken forest: every colony starts in a clearing with its own pond and kit,
-and beyond the clearing stands wood in every direction. There is no other water but a few lakes far from
+A dry continent under unbroken forest: every colony starts in a big clearing with a pond, a ring of
+pools, wheat on every shore and a ring of sand round it, and beyond the sand stands wood in every
+direction. There is no other water but a few lakes far from
 every home, so almost none of the forest ever grows back: what a colony cuts stays cut, the map opens as
 the game goes on, and contact happens only where someone has cut through.
 
+- **Homes.** Radius `home-size` (12-24, 20) with `home-pools` (0-8, 5) pools of radius 2.5 on a ring
+  at 60% of it, so the whole clearing is within the growth probe's reach of water; two wheat patches
+  and a quarry by the central pond and 12 wheat on every pool's shore, and no wood inside (first play:
+  "clearing the wood hurts workers"; the forest edge is the woodlot, within the crop guarantee's 32
+  steps). A two-tile ring of sand round the clearing keeps the forest from spreading in, since crops
+  spread only onto grass.
 - **Forest.** Wood on `forest-density` percent (60-100, 90) of the forest ground, the gaps drawn from a
   noise field so they are small openings; below the 8-connected site percolation threshold (about 41%
   open) the openings never join into a way through, so at any density offered the forest is a wall
@@ -1076,30 +1083,36 @@ until someone can swim.
 
 ## Old town
 
-A walled city of stone blocks and narrow grass streets, farmland outside the wall. Streets are buildable
-and buildings block walking, so every building a player puts up closes a street: the players build the
-city's fortifications themselves, and a tower on a street fires over the block into the next.
+A city of stone blocks and narrow grass streets with farmland all round it, open on every side.
+Streets are buildable and buildings block walking, so every building a player puts up closes a street:
+the players build the city's fortifications themselves, and a tower on a street fires over the block
+into the next.
 
 - **City.** A disc of `city-size` percent of the half side (40-90, 70), tiled into blocks of
   `block-size` (10-20, 14) warped by `warp` (0-100, 50); the band `street-width` (3-7, 4) along every
-  cell border is street, everything else in a city cell is a stone block. A wall two thick with `gates`
-  (2-8, 4) evenly spaced from a random start rings the city (`ringWithGates`), a ring road inside it.
-- **Plazas.** Blocks left open, with a fountain pond. A home plaza is two adjoining blocks (a single block
+  cell border is street, everything else in a city cell is a stone block. There is no wall: the first
+  play found a walled city unfair to whoever started far from a gate.
+- **Plazas.** Blocks left open, each filled by a fountain pond to a tile short of its streets (radius
+  4.0 at the default block and street, two and a half times the first build's), with a grove of one
+  fruit in turn beside every plaza's pool. A home plaza is two adjoining blocks (a single block
   of 14 less its streets, with a fountain in it, has no room for a 4x4 swarm; measured: every settlement
   failed), the fountain in one and the swarm in the other, the pairs as far apart as the city allows;
   `plazas` (0-4, 2) more per colony farthest from those, given up first when the city is small; and the
   cathedral square at the cell holding the centre, with an orchard of the three fruits round its fountain.
-- **Fields.** Outside the wall, farm rows along the map's axis (`layFarm` at `bestFarmRows`, bridged
-  every 16), half their fertile ground under wheat and a sixth under wood; the plazas inside get a light
-  share so they stay open. Every kit has no quarry: the blocks are stone.
-- **Checked, not assumed.** Every fountain present, the wall unbroken but for its gates, every colony
-  walkable from the first through the streets.
+- **Fields.** Outside the city, farm rows along the map's axis (`layFarm` at `bestFarmRows`, bridged
+  every 16) with `farm-plots` (0-6, 3) 10x4 building plots per colony spread through them
+  (`stampFarmPlot`, each the farthest a plot can stand from the city and the plots before it), half
+  their fertile ground under wheat and a twentieth under wood, no outcrops; the plazas inside get a
+  light share so they stay open. Every kit has no quarry: the blocks are stone.
+- **Checked, not assumed.** Every fountain present, every colony walkable from the first through the
+  streets.
 
 ## Anthill
 
-Solid stone carved into chambers joined by winding tunnels. Every colony starts in a queen chamber, a
-cul-de-sac with one door and a pond; the other chambers are farm chambers with a pond and a field, or
-dead-end treasure chambers with fruit and wheat. Stone is everywhere and never runs out, but it cannot be
+Solid stone carved into chambers joined by winding tunnels, every chamber with a pond at its middle
+and a sand road down every tunnel to the pond at each end. Every colony starts in a queen chamber, a
+cul-de-sac with one door; the other chambers are farm chambers with a ring of wheat round the pond,
+plain chambers with a wheat or wood patch in turn, or dead-end treasure chambers with fruit and wheat. Stone is everywhere and never runs out, but it cannot be
 built on or cleared, so room is the one scarce thing: a chamber holds a few buildings, and growing means
 taking the next chamber down the tunnel.
 
@@ -1107,11 +1120,15 @@ taking the next chamber down the tunnel.
   cells the graph (`cellGraph` over `siteNeighbours`); a spanning tree through every chamber but the
   queens' (`carveSpanningTree`), one door into each queen chamber, and `loops` percent (0-60, 20) of
   the chambers' count in extra tunnels. Every open edge is a wandering tunnel `tunnel-width` wide (2-4,
-  3) between its chambers' middles (`carveCorridor`); every chamber a rough disc of `chamber-size`
-  (4-8, 5), farm chambers two bigger, each turned by the golden angle so one outline reads as many.
+  3) between its chambers' middles (`wanderingPath`), with a sand road traced down its middle that
+  stops on the pond's beach at each end (`sand-roads`, on: a sand corner spoils the tiles round it, so
+  nothing can be built across a tunnel; first play had AIs walling themselves in); every chamber a
+  rough disc of `chamber-size` (5-10, 7), farm chambers two bigger, queen chambers three, each turned
+  by the golden angle so one outline reads as many. Every chamber's pond is 40% of the chamber's
+  radius (a tile more for a farm, half a tile for a queen).
 - **Kinds.** Dead ends other than the queens' are treasure chambers; of the rest every other one is a
-  farm chamber with a pond and a field. A queen chamber's pond lies on the far side from its door and
-  its swarm towards the door, and it is grown until it holds `queen-room` building sites (20-120, 40:
+  farm chamber. A queen chamber's swarm stands between its pond and its door, and the chamber is grown
+  until it holds `queen-room` building sites (20-160, 60:
   overlapping 4x4 footprints, the start scorer's measure) with `growUntilSites`, within its own cell
   and never onto a pond's beach, so no colony starts with more room than another.
 - **Rock.** Stone on every uncarved tile the beaches left pure grass; `openColonyRoutes` clears crops

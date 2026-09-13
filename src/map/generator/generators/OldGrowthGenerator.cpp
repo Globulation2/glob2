@@ -48,15 +48,37 @@ using namespace MapGeneration;
 // from water never regrows, so every cut is permanent and the map's history is written in it; wood
 // near the home pond does regrow, so a colony never runs out. The lakes' orchards are the only
 // fruit not hidden.
+//
+// FEEDBACK 2026-09-13 (first play): "clearing the wood hurts workers. so to have so little water for
+// food, and then on top of it have to battle through this old growth forest to reach your opponent,
+// its a huge lift. Each player's home base needs to be larger by default and have a lot more pools
+// of water. There should be no wood spawned in the player's home area and instead only wheat spawned
+// around all the player's various pools and lakes. Second, the player's base should be surrounded
+// by a ring of sand to protect the old growth from starting to grow inwards into the wheat. It's
+// almost like how humans would clear a settlement within the woods." So: homes default to radius
+// 20 (was 13), carry a ring of pools besides the central pond, grow wheat round every pool and no
+// wood at all inside (wood is cut from the forest edge just past the sand, within the crop
+// guarantee's 32 steps), and a two-tile sand ring round the clearing stops the forest spreading in
+// (wheat and wood spread only onto grass, and the growth probe refuses beside sand).
 namespace
 {
 
-// Every home's starting kit, unscaled whatever the amounts say: wheat and wood beside the pond
-// (the wood regrows there, being beside water), and a quarry.
-constexpr int kHomeWheat = 14, kHomeWood = 12, kHomeQuarry = 2;
+// Every home's starting kit, unscaled whatever the amounts say: two wheat patches beside the central
+// pond and a quarry. No wood (FEEDBACK 2026-09-13): the forest edge is the woodlot.
+constexpr int kHomeWheat = 14, kHomeQuarry = 2;
+// The ring of pools round a home (FEEDBACK 2026-09-13, "a lot more pools of water"): `homePools`
+// pools of this radius on a ring at this share of the home's radius, each with this much wheat on its
+// shore. At the default radius 20 the ring is 12 tiles out, so every pool waters the ground between
+// itself and the central pond and the whole clearing is fertile.
+constexpr double kPoolRadius = 2.5, kPoolRingShare = 0.6;
+constexpr int kPoolWheat = 12;
 // The forest starts this far beyond a home's rough disc, so the clearing's edge is open ground to
-// build against and the pond's beach never meets a tree.
+// build against and the pond's beach never meets a tree; then a ring of sand this wide keeps the
+// forest from spreading into the clearing (FEEDBACK 2026-09-13). Two tiles: crops spread only onto
+// an adjacent grass tile, so a single tile of sand corners already stops them, and the second tile
+// keeps the beach arithmetic from ever leaving a grass corner between forest and clearing.
 constexpr double kClearingMargin = 3.0;
+constexpr int kSandRing = 2;
 // Lakes keep this far from every clearing and from each other's shores, so a lake's regrowth never
 // reaches a home's forest edge (the growth probe reaches 15 tiles) and two lakes read as two.
 constexpr int kLakeGap = 20;
@@ -76,7 +98,8 @@ struct Layout
 	double homeRadius = 0, spacing = 0;
 	std::vector<ShapePoint> homes, kits;
 	std::vector<int> homeOf;
-	std::vector<unsigned char> water, clearing, forest, lake;
+	std::vector<unsigned char> water, clearing, sand, forest, lake;
+	std::vector<std::vector<ShapePoint>> pools; // each home's ring of pools
 	std::vector<int> lakeCentres;
 	std::string failure;
 };
@@ -100,23 +123,48 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			L.spacing =
 				std::min(L.spacing, std::hypot(t.offsetX(int(L.homes[a].x), int(L.homes[b].x)),
 											   t.offsetY(int(L.homes[a].y), int(L.homes[b].y))));
-	L.homeRadius = std::min<double>(o.homeSize, std::floor(L.spacing / 3 - kClearingMargin));
+	L.homeRadius =
+		std::min<double>(o.homeSize, std::floor(L.spacing / 3 - kClearingMargin - kSandRing));
 	if (!homeHasRoom(L.homeRadius))
 	{
 		L.failure = "Too many colonies for this map; use a bigger map or fewer colonies.";
 		return L;
 	}
 	L.clearing.assign(n, 0);
+	L.sand.assign(n, 0);
 	for (const ShapePoint &home : L.homes)
 		for (int i = 0; i < n; ++i)
-			if (std::hypot(t.offsetX(int(home.x), i % t.w), t.offsetY(int(home.y), i / t.w)) <=
-				L.homeRadius + kClearingMargin)
+		{
+			const double d =
+				std::hypot(t.offsetX(int(home.x), i % t.w), t.offsetY(int(home.y), i / t.w));
+			if (d <= L.homeRadius + kClearingMargin)
 				L.clearing[i] = 1;
+			else if (d <= L.homeRadius + kClearingMargin + kSandRing)
+				L.sand[i] = 1;
+		}
+	for (int i = 0; i < n; ++i)
+		if (L.clearing[i])
+			L.sand[i] = 0;
 	L.homeOf.assign(n, -1);
 	L.water.assign(n, 0);
 	const RadialShape home(L.homeRadius, 0.15, context, "growth-home");
 	const RadialShape pond(homePondRadius(L.homeRadius), 0.3, context, "growth-pond");
 	L.kits = stampRoundHomes(t, L.homes, 0.0, home, L.homeRadius, 1, &pond, L.water, L.homeOf);
+	// The ring of pools (FEEDBACK 2026-09-13), evenly spaced from a random phase per home.
+	const RadialShape pool(kPoolRadius, 0.3, context, "growth-pools");
+	for (const ShapePoint &home : L.homes)
+	{
+		std::vector<ShapePoint> ring;
+		const double phase = context.bounded("growth-pools", 3600) / 3600.0 * 2 * kPi;
+		for (int p = 0; p < o.homePools; ++p)
+		{
+			const ShapePoint at = polarPoint(home.x, home.y, kPoolRingShare * L.homeRadius,
+											 phase + 2 * kPi * p / o.homePools);
+			ring.push_back(at);
+			fillShape(L.water, t, at.x, at.y, pool, 0.0);
+		}
+		L.pools.push_back(ring);
+	}
 
 	// Lakes: each at the tile farthest from every clearing and every lake so far (the exact
 	// distance transform, Morphology.h), grown to `lakeSize` tiles by distance from its seed with a
@@ -124,7 +172,10 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// 128x128 of map, so a 256 map gets four times as many as a 128.
 	L.lake.assign(n, 0);
 	const int lakes = int(std::lround(o.lakes * double(n) / (128.0 * 128.0)));
-	std::vector<unsigned char> keepClear = dilate(t, L.clearing, kLakeGap);
+	std::vector<unsigned char> settled(n, 0);
+	for (int i = 0; i < n; ++i)
+		settled[i] = L.clearing[i] || L.sand[i];
+	std::vector<unsigned char> keepClear = dilate(t, settled, kLakeGap);
 	const std::vector<int> ripple = periodicNoise(t.w, t.h, 6, context.stream("growth-lakes"));
 	std::vector<int> queued(n, 0);
 	for (int lake = 0; lake < lakes; ++lake)
@@ -151,7 +202,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		for (int i = 0; i < n; ++i)
 			if (L.water[i] && !L.clearing[i])
 				L.lake[i] = 1;
-		keepClear = dilate(t, L.clearing, kLakeGap);
+		keepClear = dilate(t, settled, kLakeGap);
 		const std::vector<unsigned char> shores = dilate(t, L.lake, kLakeGap);
 		for (int i = 0; i < n; ++i)
 			keepClear[i] = keepClear[i] || shores[i];
@@ -159,7 +210,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// The forest: everything that is not a clearing or water.
 	L.forest.assign(n, 0);
 	for (int i = 0; i < n; ++i)
-		L.forest[i] = !L.clearing[i] && !L.water[i];
+		L.forest[i] = !L.clearing[i] && !L.sand[i] && !L.water[i];
 	return L;
 }
 
@@ -248,8 +299,7 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "old growth terrain";
 	TerrainSketch terrain(n, GRASS);
 	for (int i = 0; i < n; ++i)
-		if (L.water[i])
-			terrain[i] = WATER;
+		terrain[i] = L.water[i] ? WATER : L.sand[i] ? SAND : GRASS;
 	layBeaches(terrain, t);
 	writeUndermap(map, terrain);
 
@@ -267,11 +317,30 @@ bool generate(Game &game, GenerationContext &context)
 
 	context.stage = "old growth resources";
 	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
+	// The kit (FEEDBACK 2026-09-13: no wood in the home): two wheat patches beside the central pond
+	// and a quarry beyond it, then wheat on the shore of every pool of the ring.
 	for (int k = 0; k < teams; ++k)
-		plantOpenHomeKit(
-			map, t, context, L.kits[k], 0.0, L.homeRadius, kHomeWheat, kHomeWood, kHomeQuarry,
-			[&](int i)
-			{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, i % t.w, i / t.w); });
+	{
+		const auto eligible = [&](int i)
+		{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+		const KitFrame frame{int(std::lround(L.kits[k].x)), int(std::lround(L.kits[k].y)), 0.0};
+		const double reach = homePondRadius(L.homeRadius) * 1.2 + 3;
+		plantKit(map, t, context,
+				 {frame.at(-0.4 * reach, -reach, 12), frame.at(-0.4 * reach, reach, 12),
+				  frame.at(reach + 3, 0, 10), kHomeWheat, 0, kHomeQuarry},
+				 eligible);
+		for (const ShapePoint &pool : L.pools[k])
+		{
+			const int px = int(std::lround(pool.x)), py = int(std::lround(pool.y));
+			const auto shore = [&](int i)
+			{
+				return eligible(i) &&
+					   t.dist2(px, py, i % t.w, i / t.w) <= (kPoolRadius + 4) * (kPoolRadius + 4);
+			};
+			if (const int seed = seedNear(t, px, py, int(kPoolRadius) + 4, shore); seed >= 0)
+				growPatch(map, t, seed, CORN, kPoolWheat, shore);
+		}
+	}
 	// The lakes' prizes go down before the forest, so they stand in the open on the shore: wheat all
 	// round the water and an orchard of the three fruits a few tiles out.
 	for (int centre : L.lakeCentres)
@@ -358,9 +427,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 OldGrowthOptions::OldGrowthOptions(const GenerationRequest &r)
 	: forestDensity(r.option("forest-density")), lakes(r.option("lakes")),
 	  lakeSize(r.option("lake-size")), homeSize(r.option("home-size")),
-	  hiddenGroves(r.option("hidden-groves") != 0), trails(r.option("trails") != 0),
-	  wheat(r.option("wheat-amount")), stone(r.option("stone-amount")),
-	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
+	  homePools(r.option("home-pools")), hiddenGroves(r.option("hidden-groves") != 0),
+	  trails(r.option("trails") != 0), wheat(r.option("wheat-amount")),
+	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
+	  fruit(r.option("fruit-amount"))
 {
 }
 
@@ -370,7 +440,7 @@ GeneratorDefinition oldGrowthDefinition()
 		"old-growth",
 		28,
 		"Old growth",
-		1,
+		2,
 		false,
 		// 90% cover reads as unbroken forest with the odd glade; one lake per 128x128 of 90
 		// tiles (four on a 256 map, each a few days' cutting from any home) keeps them rare enough
@@ -378,7 +448,10 @@ GeneratorDefinition oldGrowthDefinition()
 		{{"forest-density", "Forest density", 60, 100, 5, 90, ControlGroup::Terrain},
 		 {"lakes", "Lakes", 0, 4, 1, 1, ControlGroup::Terrain},
 		 {"lake-size", "Lake size", 40, 160, 10, 90, ControlGroup::Terrain},
-		 {"home-size", "Home size", 10, 20, 1, 13, ControlGroup::Layout},
+		 // FEEDBACK 2026-09-13: homes of radius 20 with five pools (was 13 with one pond); the
+		 // whole clearing is then within the growth probe's reach of water.
+		 {"home-size", "Home size", 12, 24, 1, 20, ControlGroup::Layout},
+		 {"home-pools", "Home pools", 0, 8, 1, 5, ControlGroup::Layout},
 		 GeneratorControl::toggle("hidden-groves", "Hidden groves", true, ControlGroup::Layout),
 		 // On, a trail is cut from every colony to the first before the game starts.
 		 GeneratorControl::toggle("trails", "Starting trails", false, ControlGroup::Layout),

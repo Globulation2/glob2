@@ -22,13 +22,13 @@
 #include <vector>
 using namespace MapGeneration;
 
-// Old town: a walled city of stone blocks and narrow grass streets, with farmland outside the wall.
+// Old town: a city of stone blocks and narrow grass streets, with farmland all round it.
 // The city is a warped grid of irregular blocks (Tessellation.h); every block is solid stone, every
 // street between blocks is grass, so the streets form a dense grid with a flanking route round every
 // corner, unlike a maze's single ways. Some blocks are plazas instead: open grass with a fountain
 // pond, and every colony starts in a plaza of its own; the plaza at the city's centre is the
-// cathedral square, with an orchard of all three fruits round its fountain. A wall of stone with a
-// few gates rings the city, and outside it the land is laid out in farm rows.
+// cathedral square, with an orchard of all three fruits round its fountain. Outside the city the land
+// is laid out in farm rows, with building plots dotted through them.
 //
 // Streets are buildable and buildings block walking, so every building a player puts up closes a
 // street: the players build the city's fortifications and chokepoints themselves, and a tower on a
@@ -38,21 +38,40 @@ using namespace MapGeneration;
 // WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Stone blocks are permanent
 // and unbuildable, so the city's shape is fixed and only the streets can change hands; crops regrow
 // near water, and the only water inside the wall is the fountains, so a colony that wants to eat
-// must farm the plazas or go out through a gate. A wall stops walking but not shooting, so the
+// must farm the plazas or go out to the fields. A block stops walking but not shooting, so the
 // blocks are also cover for towers.
+//
+// FEEDBACK 2026-09-13 (first play): "the biggest problem is the unfair accessibility for accessing
+// the outlying farm lands. delete the stone ring that surrounds the entire main base so that there
+// is just free access to farm lands no matter where you are located. and otherwise make sure that we
+// stamp tons of those 10x4 little 'farm hubs' all over these farm lands, sporadically, maybe like
+// 2.5x the number of players. and remove all the stone from the outer farm lands and reduce the
+// amount of wood by like 2/3. The little 'pools' that occasionally replace the 'old city' grid in
+// the center need to be like 2x bigger, and more of them need to contain fruits - not just the one
+// at the center. the pools should really be big enough that they push up close against their
+// surrounding grid cells' stone. same with the pools associated with each user's home base." So:
+// no wall and no gates; farm plots (layFarm's 10x4 clearings, stampFarmPlot) spread over the fields
+// at three per colony (the control is whole plots per colony; 2.5 was asked for); no outcrops in the
+// fields and a third of the wood; every plaza's pool sized to its block, a tile short of the streets
+// round it; a fruit grove beside every plaza's pool, the cathedral keeping the full orchard.
 namespace
 {
 
 // Every home's starting kit, unscaled whatever the amounts say: wheat and wood beside the fountain.
 // No quarry: the blocks are stone, the nearest of them a few steps from every door.
 constexpr int kHomeWheat = 14, kHomeWood = 12;
-// The wall is this thick (stone, sealed against diagonal steps) and stands this far outside the
-// outermost blocks, leaving a ring road inside it; gates are this wide.
-constexpr int kWallThickness = 2, kRingRoad = 4, kGateHalfWidth = 3;
-// Outside the wall the farm rows keep this margin of grass from it and run along the map's axis.
-constexpr int kFarmMargin = 4, kFarmRim = 2, kFarmBridges = 16;
-// A fountain's radius: a small pond with a beach, the width of a street to walk round.
-constexpr double kFountainRadius = 2.5;
+// Outside the city the farm rows keep this margin of grass from the outermost blocks and run along
+// the map's axis; a farm plot's middle keeps this far inside the fields, so its ring of sand and the
+// margin round it (10 wide, 4 high, a ring of 2 and a vertex more) never meet the city.
+constexpr int kFarmMargin = 4, kFarmRim = 2, kFarmBridges = 16, kPlotMargin = 9;
+// A fountain fills its plaza to this far short of the streets round it (FEEDBACK 2026-09-13: pools
+// "big enough that they push up close against their surrounding grid cells' stone"): the block's
+// half width less the street's, less a tile for the beach. 4.0 at the default block and street, an
+// area two and a half times the old 2.5.
+double fountainRadiusFor(int blockSize, int streetWidth)
+{
+	return std::max(2.5, blockSize / 2.0 - streetWidth / 2.0 - 1.0);
+}
 
 struct Layout
 {
@@ -65,7 +84,9 @@ struct Layout
 	std::vector<double> axes; // each home's facing: from the fountain to the swarm
 	int cathedral = -1;
 	std::vector<int> homeOf;
-	std::vector<unsigned char> city, block, street, wall, water, farmSand, farmRegion;
+	std::vector<unsigned char> city, block, street, water, farmRegion;
+	Farm farm; // the fields' rows, sand and plots
+	double fountainRadius = 0;
 	std::vector<ShapePoint> homes, kits;
 	std::string failure;
 };
@@ -106,7 +127,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	{
 		const ShapePoint c = tilePoint(L.g.cells[cell].centre);
 		const double d = std::hypot(t.offsetX(int(L.cx), int(c.x)), t.offsetY(int(L.cy), int(c.y)));
-		inCity[cell] = d + o.blockSize / 2.0 < L.cityRadius - kWallThickness - kRingRoad;
+		inCity[cell] = d + o.blockSize / 2.0 < L.cityRadius;
 		cityCells += inCity[cell];
 	}
 	// Plazas: the colonies' plazas as far apart among the city's cells as the city allows
@@ -177,26 +198,19 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	}
 
 	// Streets: the band along every cell border inside the city; blocks: the rest of the city's
-	// cells, except the plazas; the wall: a ring with gates; the ring road between them.
+	// cells, except the plazas. No wall (FEEDBACK 2026-09-13): the fields are open on every side.
 	L.city.assign(n, 0);
-	L.wall.assign(n, 0);
 	std::vector<unsigned char> border(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
 		const int x = i % t.w, y = i / t.w;
 		const double d = std::hypot(t.offsetX(int(L.cx), x), t.offsetY(int(L.cy), y));
-		L.city[i] = d < L.cityRadius - kWallThickness;
+		L.city[i] = d < L.cityRadius;
 		for (const auto &s : kCardinalSteps)
 			if (L.cell[t.at(x + s[0], y + s[1])] != L.cell[i])
 				border[i] = 1;
 	}
 	L.street = dilateRound(t, border, o.streetWidth / 2.0);
-	const double gateSpin = context.bounded("town-gates", 3600) / 3600.0 * 2 * kPi;
-	std::vector<double> gates;
-	for (int gate = 0; gate < o.gates; ++gate)
-		gates.push_back(gateSpin + 2 * kPi * gate / o.gates);
-	ringWithGates(t, L.cx, L.cy, L.cityRadius - kWallThickness / 2.0, kWallThickness / 2.0, gates,
-				  kGateHalfWidth, [&](int i, int gate) { L.wall[i] = gate < 0; });
 	std::vector<unsigned char> plaza(L.g.cellCount(), 0);
 	plaza[L.cathedral] = 1;
 	for (int cell : L.homeCell)
@@ -207,13 +221,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		plaza[cell] = 1;
 	L.block.assign(n, 0);
 	for (int i = 0; i < n; ++i)
-		L.block[i] =
-			L.city[i] && inCity[L.cell[i]] && !L.street[i] && !plaza[L.cell[i]] && !L.wall[i];
+		L.block[i] = L.city[i] && inCity[L.cell[i]] && !L.street[i] && !plaza[L.cell[i]];
 	// Fountains: a pond at the middle of every plaza; the colonies' kits round theirs.
 	L.water.assign(n, 0);
 	L.homeOf.assign(n, -1);
 	L.homeRadius = std::max(6.0, o.blockSize / 2.0 - o.streetWidth / 2.0 - 1);
-	const RadialShape fountain(kFountainRadius, 0.3, context, "town-fountain");
+	L.fountainRadius = fountainRadiusFor(o.blockSize, o.streetWidth);
+	const RadialShape fountain(L.fountainRadius, 0.25, context, "town-fountain");
 	for (int k = 0; k < teams; ++k)
 	{
 		const ShapePoint fountainAt = tilePoint(L.g.cells[L.homeCell[k]].centre);
@@ -243,8 +257,10 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		const ShapePoint c = tilePoint(L.g.cells[L.cathedral].centre);
 		fillShape(L.water, t, c.x, c.y, fountain, 0.0);
 	}
-	// Outside the wall: farm rows over everything beyond the wall's margin, along the map's axis
-	// with the row through the centre a crop row, bridged every kFarmBridges tiles.
+	// Outside the city: farm rows over everything beyond the outermost blocks' margin, along the map's
+	// axis with the row through the centre a crop row, bridged every kFarmBridges tiles; then farm
+	// plots (FEEDBACK 2026-09-13) spread through the fields, each the farthest a plot can stand from
+	// the city and from every plot before it, so they are evenly dotted about.
 	L.farmRegion.assign(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
@@ -252,11 +268,30 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.farmRegion[i] = d > L.cityRadius + kFarmMargin;
 	}
 	TerrainSketch rows(n, GRASS);
-	const Farm farm = layFarm(rows, t, L.farmRegion, 0.0, {L.cx, L.cy}, kFarmRim, bestFarmRows(0.0),
-							  nullptr, kFarmBridges, true);
-	L.farmSand = farm.sand;
+	L.farm = layFarm(rows, t, L.farmRegion, 0.0, {L.cx, L.cy}, kFarmRim, bestFarmRows(0.0), nullptr,
+					 kFarmBridges, true);
+	const FarmPlot plot;
+	const std::vector<unsigned char> roomy = erode(t, L.farmRegion, kPlotMargin);
+	std::vector<unsigned char> keepClear(n, 0);
 	for (int i = 0; i < n; ++i)
-		if (farm.water[i])
+		keepClear[i] = !L.farmRegion[i];
+	for (int p = 0; p < o.farmPlots * teams; ++p)
+	{
+		const std::vector<std::int64_t> far = distanceSquaredTo(t, keepClear);
+		int site = -1;
+		for (int i = 0; i < n; ++i)
+			if (roomy[i] && (site < 0 || far[i] > far[site]))
+				site = i;
+		if (site < 0)
+			break;
+		const int x0 = site % t.w - plot.width / 2, y0 = site / t.w - plot.height / 2;
+		stampFarmPlot(rows, t, L.farm, x0, y0, plot);
+		for (int dy = -kPlotMargin; dy <= kPlotMargin; ++dy)
+			for (int dx = -kPlotMargin; dx <= kPlotMargin; ++dx)
+				keepClear[t.at(site % t.w + dx, site / t.w + dy)] = 1;
+	}
+	for (int i = 0; i < n; ++i)
+		if (L.farm.water[i])
 			L.water[i] = 1;
 	return L;
 }
@@ -280,12 +315,12 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "old town terrain";
 	TerrainSketch terrain(n, GRASS);
 	for (int i = 0; i < n; ++i)
-		terrain[i] = L.water[i] ? WATER : L.farmSand[i] ? SAND : GRASS;
+		terrain[i] = L.water[i] ? WATER : L.farm.sand[i] ? SAND : GRASS;
 	layBeaches(terrain, t);
 	writeUndermap(map, terrain);
-	// The blocks and the wall are stone, wherever the beaches left pure grass.
+	// The blocks are stone, wherever the beaches left pure grass.
 	for (int i = 0; i < n; ++i)
-		if ((L.block[i] || L.wall[i]) && map.isResourceAllowed(i % t.w, i / t.w, STONE))
+		if (L.block[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))
 			map.setResource(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "old town colonies";
@@ -310,26 +345,47 @@ bool generate(Game &game, GenerationContext &context)
 		plantHomeKit(
 			map, t, context, L.kits[k], L.axes[k], L.homeRadius, kHomeWheat, kHomeWood, [&](int i)
 			{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, i % t.w, i / t.w); });
-	// The cathedral square's orchard, round its fountain.
+	// The cathedral square's orchard round its fountain, and a grove of one fruit in turn beside every
+	// other plaza's pool (FEEDBACK 2026-09-13: "more of them need to contain fruits"). A pool fills its
+	// plaza to a tile short of the streets, so the fruit stands on the ground round it.
+	const auto roundPlaza = [&](int cell)
+	{
+		const ShapePoint c = tilePoint(L.g.cells[cell].centre);
+		return [&, c](int i)
+		{
+			return !L.block[i] && L.homeOf[i] < 0 &&
+				   std::hypot(t.offsetX(int(c.x), i % t.w), t.offsetY(int(c.y), i / t.w)) <=
+					   o.blockSize / 2.0 + 2 &&
+				   clearGround(map, i % t.w, i / t.w);
+		};
+	};
 	if (scaledCount(1, o.fruit) > 0)
 	{
 		const ShapePoint c = tilePoint(L.g.cells[L.cathedral].centre);
 		const double spin = context.bounded("town-fruit", 3600) / 3600.0 * 2 * kPi;
-		plantOrchard(map, t, context, c.x, c.y, kFountainRadius + 3.5, {spin}, 4.5, 4, 1,
-					 [&](int i)
-					 {
-						 return L.cell[i] == L.cathedral && !L.street[i] &&
-								clearGround(map, i % t.w, i / t.w);
-					 });
+		plantOrchard(map, t, context, c.x, c.y, L.fountainRadius + 2.5, {spin}, 4.5, 5, 1,
+					 roundPlaza(L.cathedral));
+		int fruit = 0;
+		for (int cell : L.plazaCell)
+		{
+			const ShapePoint c = tilePoint(L.g.cells[cell].centre);
+			const double at = context.bounded("town-fruit", 3600) / 3600.0 * 2 * kPi;
+			plantRound(map, t, context, c.x, c.y, L.fountainRadius + 2.5, {at},
+					   CHERRY + fruit++ % 3, 1, 5, roundPlaza(cell));
+		}
 	}
-	// The fields outside: half the fertile row ground under wheat and a sixth under wood, in patches;
+	// The fields outside: half the fertile row ground under wheat and a twentieth under wood (a third
+	// of the sixth it was, FEEDBACK 2026-09-13), no outcrops, in patches, the farm plots kept clear;
 	// inside the city only the plazas are fertile (their fountains), and get a light share so they
 	// stay open to build on.
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	const std::vector<int> patch = periodicNoise(t.w, t.h, 8, context.stream("town-patch"));
 	const std::vector<int> split = periodicNoise(t.w, t.h, 4, context.stream("town-split"));
 	const auto fields = [&](int i)
-	{ return L.farmRegion[i] && !L.farmSand[i] && clearGround(map, i % t.w, i / t.w); };
+	{
+		return L.farmRegion[i] && !L.farm.sand[i] && !L.farm.plot[i] &&
+			   clearGround(map, i % t.w, i / t.w);
+	};
 	int fertile = 0;
 	for (int i = 0; i < n; ++i)
 		fertile += fields(i) && fertility.at(i % t.w, i / t.w) > 0;
@@ -339,14 +395,13 @@ bool generate(Game &game, GenerationContext &context)
 		[&](int area)
 		{
 			return GroundAmounts{int(scaledCount(fertile * 50 / 100, o.wheat)),
-								 int(scaledCount(fertile * 16 / 100, o.wood)),
-								 int(scaledCount(area / 2000, o.stone)),
+								 int(scaledCount(fertile * 5 / 100, o.wood)), 0,
 								 int(scaledCount(area / 3000, o.fruit))};
 		},
 		"town-stone", "town-fruit");
 	const auto plazas = [&](int i)
 	{
-		return L.city[i] && !L.block[i] && !L.wall[i] && !L.street[i] && L.homeOf[i] < 0 &&
+		return L.city[i] && !L.block[i] && !L.street[i] && L.homeOf[i] < 0 &&
 			   clearGround(map, i % t.w, i / t.w);
 	};
 	int plazaFertile = 0;
@@ -362,14 +417,13 @@ bool generate(Game &game, GenerationContext &context)
 		},
 		"town-stone", "town-fruit");
 	seedAlgae(map, context, t, "town-algae", o.algae, AlgaeBand::anyWater(50));
-	std::vector<unsigned char> stone(n, 0);
-	for (int i = 0; i < n; ++i)
-		stone[i] = L.block[i] || L.wall[i];
+	const std::vector<unsigned char> &stone = L.block;
 	secureStartingCrops(game, context, t, 24, 32, 0, &stone);
 	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, o.algae, o.fruit}, 24, 32, 0,
 						&stone);
-	// The streets join every plaza and the gates join the city to the fields; only crops could close
-	// a street, so only crops are cleared.
+	clearFarmPlots(map, t, {L.farm});
+	// The streets join every plaza and open onto the fields on every side; only crops could close a
+	// street, so only crops are cleared.
 	context.stage = "old town routes";
 	openColonyRoutes(map, context, t, StepCosts{1, 3, -1, -1, -1});
 	return true;
@@ -392,11 +446,6 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		if (!pond)
 			return "Colony " + std::to_string(k) + "'s plaza has lost its fountain.";
 	}
-	for (int i = 0; i < t.size(); ++i)
-		if (L.wall[i] && map.isGrass(i % t.w, i / t.w) &&
-			map.getResource(i % t.w, i / t.w).type != STONE)
-			return "The city wall has a gap at (" + std::to_string(i % t.w) + ", " +
-				   std::to_string(i / t.w) + ").";
 	return walkFromFirstColony(map, context.request.nbTeams, "the city", "through the streets")
 		.error;
 }
@@ -405,9 +454,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 OldTownOptions::OldTownOptions(const GenerationRequest &r)
 	: citySize(r.option("city-size")), blockSize(r.option("block-size")),
 	  streetWidth(r.option("street-width")), warp(r.option("warp")), plazas(r.option("plazas")),
-	  gates(r.option("gates")), wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
-	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
-	  fruit(r.option("fruit-amount"))
+	  farmPlots(r.option("farm-plots")), wheat(r.option("wheat-amount")),
+	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
+	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
 {
 }
 
@@ -416,17 +465,18 @@ GeneratorDefinition oldTownDefinition()
 	return {"old-town",
 			31,
 			"Old town",
-			1,
+			2,
 			false,
 			// A city of 70% of the half side leaves a belt of fields round it; blocks of 14 with
 			// streets of 4 give a 256 map about a hundred blocks and streets a column of units wide
-			// that one building closes; four gates, one to a side.
+			// that one building closes; three farm plots per colony through the fields (FEEDBACK
+			// 2026-09-13 asked for about two and a half).
 			{{"city-size", "City size", 40, 90, 5, 70, ControlGroup::Layout},
 			 {"block-size", "Block size", 10, 20, 1, 14, ControlGroup::Layout},
 			 {"street-width", "Street width", 3, 7, 1, 4, ControlGroup::Terrain},
 			 {"warp", "Warp", 0, 100, 10, 50, ControlGroup::Terrain},
 			 {"plazas", "Plazas", 0, 4, 1, 2, ControlGroup::Layout},
-			 {"gates", "Gates", 2, 8, 1, 4, ControlGroup::Layout},
+			 {"farm-plots", "Farm plots", 0, 6, 1, 3, ControlGroup::Layout},
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),
