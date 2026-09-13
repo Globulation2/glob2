@@ -54,6 +54,13 @@ using namespace MapGeneration;
 // at three per colony (the control is whole plots per colony; 2.5 was asked for); no outcrops in the
 // fields and a third of the wood; every plaza's pool sized to its block, a tile short of the streets
 // round it; a fruit grove beside every plaza's pool, the cathedral keeping the full orchard.
+//
+// FEEDBACK 2026-09-13 (second play): "close to good, but it might play nicer if the outer ring had
+// little 'tendril' sand roads extending inwards towards the cities and settlements." So: from the
+// fields' sand cap a tendril of sand runs in to every home plaza and to the cathedral square, along
+// the streets (the cheapest walk over street ground, never through a block), so those streets stay
+// open however the city is built up (a sand corner spoils the tiles round it for building) and every
+// colony has a marked way to its fields (`tendrils`, on).
 namespace
 {
 
@@ -84,7 +91,7 @@ struct Layout
 	std::vector<double> axes; // each home's facing: from the fountain to the swarm
 	int cathedral = -1;
 	std::vector<int> homeOf;
-	std::vector<unsigned char> city, block, street, water, farmRegion;
+	std::vector<unsigned char> city, block, street, water, road, farmRegion;
 	Farm farm; // the fields' rows, sand and plots
 	double fountainRadius = 0;
 	std::vector<ShapePoint> homes, kits;
@@ -293,6 +300,45 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		if (L.farm.water[i])
 			L.water[i] = 1;
+	// Tendrils (FEEDBACK 2026-09-13, second play): from every home plaza and the cathedral square, the
+	// cheapest walk over ground that is not a block, to the band just outside the city's margin where
+	// the fields' sand cap runs, traced as a line of sand corners.
+	L.road.assign(n, 0);
+	if (o.tendrils)
+	{
+		std::vector<unsigned char> goal(n, 0), blocked(n, 0), none(n, 0);
+		for (int i = 0; i < n; ++i)
+		{
+			const double d =
+				std::hypot(t.offsetX(int(L.cx), i % t.w), t.offsetY(int(L.cy), i / t.w));
+			goal[i] = d >= L.cityRadius + kFarmMargin + 0.5 && d < L.cityRadius + kFarmMargin + 2.5;
+			blocked[i] = L.block[i] || L.water[i];
+		}
+		std::vector<int> starts(L.homeCell);
+		starts.push_back(L.cathedral);
+		for (int cell : starts)
+		{
+			std::vector<int> sources;
+			for (int i = 0; i < n; ++i)
+				if (L.cell[i] == cell && !blocked[i])
+					sources.push_back(i);
+			const std::vector<int> route = cheapestRoute(t, sources, goal, blocked, none);
+			std::vector<StrokePoint> line;
+			for (int i : route)
+				line.push_back({double(i % t.w), double(i / t.w), 0.5});
+			// The route is a chain of neighbouring tiles, which may step across the seam; tracePath
+			// joins consecutive points the short way, so it is traced a segment at a time.
+			for (size_t p = 0; p + 1 < line.size(); ++p)
+			{
+				const int dx = t.offsetX(int(line[p].x), int(line[p + 1].x));
+				const int dy = t.offsetY(int(line[p].y), int(line[p + 1].y));
+				tracePath(L.road, t, {line[p], {line[p].x + dx, line[p].y + dy, 0.5}});
+			}
+		}
+		for (int i = 0; i < n; ++i)
+			if (L.water[i])
+				L.road[i] = 0;
+	}
 	return L;
 }
 
@@ -315,7 +361,7 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "old town terrain";
 	TerrainSketch terrain(n, GRASS);
 	for (int i = 0; i < n; ++i)
-		terrain[i] = L.water[i] ? WATER : L.farm.sand[i] ? SAND : GRASS;
+		terrain[i] = L.water[i] ? WATER : (L.farm.sand[i] || L.road[i]) ? SAND : GRASS;
 	layBeaches(terrain, t);
 	writeUndermap(map, terrain);
 	// The blocks are stone, wherever the beaches left pure grass.
@@ -454,9 +500,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 OldTownOptions::OldTownOptions(const GenerationRequest &r)
 	: citySize(r.option("city-size")), blockSize(r.option("block-size")),
 	  streetWidth(r.option("street-width")), warp(r.option("warp")), plazas(r.option("plazas")),
-	  farmPlots(r.option("farm-plots")), wheat(r.option("wheat-amount")),
-	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
-	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
+	  farmPlots(r.option("farm-plots")), tendrils(r.option("tendrils") != 0),
+	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
+	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
+	  fruit(r.option("fruit-amount"))
 {
 }
 
@@ -465,7 +512,7 @@ GeneratorDefinition oldTownDefinition()
 	return {"old-town",
 			31,
 			"Old town",
-			2,
+			3,
 			false,
 			// A city of 70% of the half side leaves a belt of fields round it; blocks of 14 with
 			// streets of 4 give a 256 map about a hundred blocks and streets a column of units wide
@@ -477,6 +524,7 @@ GeneratorDefinition oldTownDefinition()
 			 {"warp", "Warp", 0, 100, 10, 50, ControlGroup::Terrain},
 			 {"plazas", "Plazas", 0, 4, 1, 2, ControlGroup::Layout},
 			 {"farm-plots", "Farm plots", 0, 6, 1, 3, ControlGroup::Layout},
+			 GeneratorControl::toggle("tendrils", "Tendril roads", true, ControlGroup::Terrain),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),

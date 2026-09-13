@@ -55,28 +55,46 @@ using namespace MapGeneration;
 // and on to the shore of the pond at each end (a sand corner spoils the tiles round it for building,
 // so nothing can be built across a tunnel); a farm chamber's pond is ringed with wheat; every other
 // chamber alternates a wheat and a wood patch; queen chambers grow to 60 sites (was 40).
+//
+// FEEDBACK 2026-09-13 (second play): "wheat and wood are only ever seeded on one side of the chamber,
+// and because of the sand roads it never expands to the other sides. We want to make sure all the
+// chambers that have wheat or wood have it seeded on all sides of their pond. also I think anthill
+// will play nicer if there is NO water in your home base. you can still have some starting resources
+// but if you're forced to expand down the ant zones, that makes it play a lot closer to the intended
+// design: one 'queen ant' chamber that's special and then farming chambers that the ants expand
+// into." So: a chamber's crops are grown from eight seeds spaced round its pond, so a road through
+// the chamber never cuts them off from the rest of it; and the queen chamber has no pond at all, just
+// a bigger starting kit that never regrows, so growing means taking a farm chamber.
 namespace
 {
 
 // Every chamber's pond sits at its middle (FEEDBACK 2026-09-13), its radius this share of the
 // chamber's: 2.8 at the default size 7, about 25 corners of water, which the growth probe finds from
-// the whole chamber. A farm chamber's pond is a tile bigger, a queen chamber's half a tile.
-constexpr double kPondShare = 0.4, kFarmPondExtra = 1.0, kQueenPondExtra = 0.5;
+// the whole chamber. A farm chamber's pond is a tile bigger. A queen chamber has none (FEEDBACK
+// 2026-09-13, second play): its middle is kept clear to kQueenCore for the swarm, and the roads stop
+// there.
+constexpr double kPondShare = 0.4, kFarmPondExtra = 1.0, kQueenCore = 3.5;
 double pondRadiusFor(int chamberSize)
 {
 	return std::max(2.0, kPondShare * chamberSize);
 }
-// The queen chamber's kit, unscaled whatever the amounts say: wheat and wood either side of the pond.
-// No quarry: the walls are stone.
-constexpr int kHomeWheat = 14, kHomeWood = 10;
+// The queen chamber's kit, unscaled whatever the amounts say: wheat and wood on the flanks behind the
+// swarm and a second wheat patch straight behind it. Bigger than a watered home's, since none of it
+// regrows (second play: no water in the home, "you can still have some starting resources"). No
+// quarry: the walls are stone.
+constexpr int kHomeWheat = 24, kHomeWood = 16, kHomeWheatBehind = 16;
+// Crops in a chamber are grown from this many seeds spaced evenly round its pond, each given its
+// share of the count (FEEDBACK 2026-09-13, second play: crops on one side never spread past the sand
+// road to the other).
+constexpr int kRingSeeds = 8;
 // A farm chamber is this much bigger than an ordinary chamber, to hold its pond and field; its field
 // is a ring of wheat round the whole pond (FEEDBACK 2026-09-13, "no sections empty of growth": the
-// ring two to four tiles out from a pond of radius 4 is about 60 tiles) and a wood patch beyond.
-constexpr int kFarmExtra = 2, kFarmWheat = 40, kFarmWood = 12;
-// Every other chamber holds a wheat patch or a wood patch in turn (FEEDBACK 2026-09-13, "every
+// ring two to four tiles out from a pond of radius 4 is about 60 tiles) and a ring of wood beyond.
+constexpr int kFarmExtra = 2, kFarmWheat = 48, kFarmWood = 16;
+// Every other chamber holds a wheat ring or a wood ring in turn (FEEDBACK 2026-09-13, "every
 // chamber actually has something"); a treasure chamber holds a fruit grove of radius 1 (5 tiles) and
 // this much wheat.
-constexpr int kPlainWheat = 16, kPlainWood = 12, kTreasureWheat = 12;
+constexpr int kPlainWheat = 24, kPlainWood = 16, kTreasureWheat = 16;
 // A tunnel's sand road stops this far past the pond's radius at each end: on the pond's beach, so it
 // joins the water without cutting into it.
 constexpr double kRoadStop = 1.5;
@@ -156,7 +174,10 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	for (int site : L.farmSite)
 		L.pondRadius[site] += kFarmPondExtra;
 	for (int site : L.homeSite)
-		L.pondRadius[site] += kQueenPondExtra;
+		L.pondRadius[site] = 0; // no water in a queen chamber (second play)
+	// Where a road stops at each end: on a pond's beach, or short of a queen chamber's clear middle.
+	const auto roadStop = [&](int site)
+	{ return (kind[site] == 2 ? kQueenCore : L.pondRadius[site]) + kRoadStop; };
 
 	// Carving: every open edge a wandering tunnel between its two chambers' middles, with a sand road
 	// down its middle that stops on the shore of the pond at each end (FEEDBACK 2026-09-13); then
@@ -180,10 +201,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		// The road: the path's points beyond each end's pond and beach.
 		std::vector<StrokePoint> road;
 		for (const StrokePoint &p : path)
-			if (std::hypot(p.x - path.front().x, p.y - path.front().y) >
-					L.pondRadius[siteA] + kRoadStop &&
-				std::hypot(p.x - path.back().x, p.y - path.back().y) >
-					L.pondRadius[siteB] + kRoadStop)
+			if (std::hypot(p.x - path.front().x, p.y - path.front().y) > roadStop(siteA) &&
+				std::hypot(p.x - path.back().x, p.y - path.back().y) > roadStop(siteB))
 				road.push_back(p);
 		if (road.size() >= 2)
 			tracePath(L.road, t, road);
@@ -198,20 +217,16 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		const RadialShape &shape = kind[site] == 2 ? queen : kind[site] == 1 ? farm : chamber;
 		fillShape(L.open, t, L.sites[site].x + 0.5, L.sites[site].y + 0.5, shape, turn);
 	}
-	// A pond at the middle of every chamber (FEEDBACK 2026-09-13). In a queen chamber the swarm
-	// stands between the pond and the door, so the kit round the pond lies behind it and the way out
-	// is clear.
+	// A pond at the middle of every chamber but the queens' (FEEDBACK 2026-09-13, both plays): a
+	// queen chamber is dry, its swarm at its middle and its kit behind, so the colony must take a farm
+	// chamber for anything to regrow.
 	const RadialShape pondPlain(pondRadiusFor(o.chamberSize), 0.3, context, "anthill-ponds");
 	const RadialShape pondFarm(pondRadiusFor(o.chamberSize) + kFarmPondExtra, 0.3, context,
 							   "anthill-ponds");
-	const RadialShape pondQueen(pondRadiusFor(o.chamberSize) + kQueenPondExtra, 0.3, context,
-								"anthill-ponds");
 	for (int site = 0; site < int(L.sites.size()); ++site)
-		fillShape(L.water, t, L.sites[site].x + 0.5, L.sites[site].y + 0.5,
-				  kind[site] == 2   ? pondQueen
-				  : kind[site] == 1 ? pondFarm
-									: pondPlain,
-				  0.0);
+		if (kind[site] != 2)
+			fillShape(L.water, t, L.sites[site].x + 0.5, L.sites[site].y + 0.5,
+					  kind[site] == 1 ? pondFarm : pondPlain, 0.0);
 	for (int i = 0; i < n; ++i)
 		if (L.water[i])
 			L.road[i] = 0;
@@ -300,12 +315,10 @@ bool generate(Game &game, GenerationContext &context)
 			ground[i] = L.homeOf[i] == team && map.isGrass(i % t.w, i / t.w) && !rock[i];
 		return ground;
 	};
-	// The swarm stands between the pond and the door: past the pond's beach (a tile), a lane, and half
-	// its own footprint.
+	// The swarm stands at the chamber's middle, a tile towards the door.
 	const auto anchor = [&](int team)
 	{
-		const ShapePoint p = polarPoint(L.homes[team].x, L.homes[team].y,
-										L.pondRadius[L.homeSite[team]] + 4.5, L.axes[team] + kPi);
+		const ShapePoint p = polarPoint(L.homes[team].x, L.homes[team].y, 1.0, L.axes[team] + kPi);
 		return MapGeneratorPoint(int(std::lround(p.x)) - 2, int(std::lround(p.y)) - 2);
 	};
 	if (!settleColonies(game, context, "anthill-starts", homeMask, anchor))
@@ -317,19 +330,24 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		const auto eligible = [&](int i)
 		{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
-		// Wheat and wood either side of the pond, on the flanks of the way to the door.
-		const double pr = L.pondRadius[L.homeSite[k]];
+		// Wheat and wood on the flanks behind the swarm (the axis points away from the door), and a
+		// second wheat patch straight behind it.
 		const KitFrame frame{int(std::lround(L.kits[k].x)), int(std::lround(L.kits[k].y)),
 							 L.axes[k]};
-		plantKit(map, t, context,
-				 {frame.at(-1, -(pr + 3), 6), frame.at(-1, pr + 3, 6), frame.at(0, 0, 0),
-				  kHomeWheat, kHomeWood, -1},
-				 eligible);
+		plantKit(
+			map, t, context,
+			{frame.at(3, -5, 6), frame.at(3, 5, 6), frame.at(0, 0, 0), kHomeWheat, kHomeWood, -1},
+			eligible);
+		const KitSeed behind = frame.at(7, 0, 6);
+		if (const int seed = seedNear(t, behind.x, behind.y, behind.within, eligible); seed >= 0)
+			growPatch(map, t, seed, CORN, kHomeWheatBehind, eligible);
 	}
-	// Farm chambers: a ring of wheat round the whole pond (grown from its shore, breadth first, so it
-	// fills the ring before it reaches further out) and a wood patch beyond; every other chamber a
-	// wheat patch or a wood patch in turn; treasure chambers a fruit grove and a wheat patch
-	// (FEEDBACK 2026-09-13: every chamber has something, and the ground round a pond is never empty).
+	// Every chamber with crops has them on every side of its pond (FEEDBACK 2026-09-13, second play):
+	// a patch is grown from kRingSeeds seeds spaced evenly round the pond's shore, each given its
+	// share of the count, so no road through the chamber can cut its crops off from the rest of it.
+	// Farm chambers ring the pond with wheat and a wider ring of wood beyond ("no sections empty of
+	// growth"); every other chamber a wheat or a wood ring in turn; treasure chambers a fruit grove
+	// and a wheat ring.
 	std::vector<int> kind(L.sites.size(), 0);
 	for (int site : L.farmSite)
 		kind[site] = 1;
@@ -337,10 +355,22 @@ bool generate(Game &game, GenerationContext &context)
 		kind[site] = 2;
 	for (int site : L.treasureSite)
 		kind[site] = 3;
+	const auto ringPlant = [&](int site, double radius, int type, int count, const auto &here)
+	{
+		const Site s = L.sites[site];
+		for (int k = 0; k < kRingSeeds; ++k)
+		{
+			const double a = 2 * kPi * k / kRingSeeds;
+			const int seed = seedNear(t, int(std::lround(s.x + 0.5 + radius * std::cos(a))),
+									  int(std::lround(s.y + 0.5 + radius * std::sin(a))), 2, here);
+			if (seed >= 0)
+				growPatch(map, t, seed, type, (count + kRingSeeds - 1 - k) / kRingSeeds, here);
+		}
+	};
 	for (int site = 0; site < int(L.sites.size()); ++site)
 	{
 		const Site s = L.sites[site];
-		const int reach = int(L.pondRadius[site]) + 2;
+		const double shore = L.pondRadius[site] + 2;
 		const auto here = [&](int i)
 		{
 			return L.open[i] && L.label[i] == site && !reserved[i] &&
@@ -350,27 +380,21 @@ bool generate(Game &game, GenerationContext &context)
 			continue;
 		if (kind[site] == 1)
 		{
-			if (const int seed = seedNear(t, s.x, s.y, reach, here); seed >= 0)
-				growPatch(map, t, seed, CORN, int(scaledCount(kFarmWheat, o.wheat)), here);
-			if (const int seed = seedNear(t, s.x + reach + 3, s.y, 4, here); seed >= 0)
-				growPatch(map, t, seed, WOOD, int(scaledCount(kFarmWood, o.wood)), here);
+			ringPlant(site, shore, CORN, int(scaledCount(kFarmWheat, o.wheat)), here);
+			ringPlant(site, shore + 3, WOOD, int(scaledCount(kFarmWood, o.wood)), here);
 		}
 		else if (kind[site] == 3)
 		{
 			if (scaledCount(1, o.fruit) > 0)
-				if (const int seed = seedNear(t, s.x - reach - 1, s.y, 3, here); seed >= 0)
+				if (const int seed = seedNear(t, s.x - int(shore) - 2, s.y, 3, here); seed >= 0)
 					placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w),
 									   CHERRY + int(context.bounded("anthill-fruit", 3)), 1);
-			if (const int seed = seedNear(t, s.x + reach, s.y, 3, here); seed >= 0)
-				growPatch(map, t, seed, CORN, int(scaledCount(kTreasureWheat, o.wheat)), here);
+			ringPlant(site, shore, CORN, int(scaledCount(kTreasureWheat, o.wheat)), here);
 		}
 		else if ((site / 2) % 2 == 0)
-		{
-			if (const int seed = seedNear(t, s.x, s.y, reach, here); seed >= 0)
-				growPatch(map, t, seed, CORN, int(scaledCount(kPlainWheat, o.wheat)), here);
-		}
-		else if (const int seed = seedNear(t, s.x, s.y, reach, here); seed >= 0)
-			growPatch(map, t, seed, WOOD, int(scaledCount(kPlainWood, o.wood)), here);
+			ringPlant(site, shore, CORN, int(scaledCount(kPlainWheat, o.wheat)), here);
+		else
+			ringPlant(site, shore, WOOD, int(scaledCount(kPlainWood, o.wood)), here);
 	}
 	seedAlgae(map, context, t, "anthill-algae", o.algae, AlgaeBand::anyWater(12));
 	secureStartingCrops(game, context, t, 24, 32, 0, &rock);
@@ -390,15 +414,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (const std::string mismatch = designMismatch(L, map, "anthill"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;
-	for (int k = 0; k < context.request.nbTeams; ++k)
-	{
-		bool pond = false;
-		for (int dy = -2; dy <= 2 && !pond; ++dy)
-			for (int dx = -2; dx <= 2 && !pond; ++dx)
-				pond = map.isWater(t.x(int(L.kits[k].x) + dx), t.y(int(L.kits[k].y) + dy));
-		if (!pond)
-			return "Colony " + std::to_string(k) + "'s queen chamber has lost its pond.";
-	}
+	// A queen chamber is dry by design (second play); the farm chambers keep the water.
+	for (int site : L.farmSite)
+		if (!map.isWater(L.sites[site].x, L.sites[site].y))
+			return "A farm chamber has lost its pond at (" + std::to_string(L.sites[site].x) +
+				   ", " + std::to_string(L.sites[site].y) + ").";
 	return walkFromFirstColony(map, context.request.nbTeams, "the anthill", "through the tunnels")
 		.error;
 }
@@ -419,7 +439,7 @@ GeneratorDefinition anthillDefinition()
 		"anthill",
 		32,
 		"Anthill",
-		2,
+		3,
 		false,
 		// Chambers 28 apart give a 256 map about a hundred of them; a chamber of radius 5 holds
 		// three or four buildings; a queen chamber grown to 40 building sites (overlapping 4x4

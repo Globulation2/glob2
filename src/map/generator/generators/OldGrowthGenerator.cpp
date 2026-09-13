@@ -60,18 +60,23 @@ using namespace MapGeneration;
 // wood at all inside (wood is cut from the forest edge just past the sand, within the crop
 // guarantee's 32 steps), and a two-tile sand ring round the clearing stops the forest spreading in
 // (wheat and wood spread only onto grass, and the growth probe refuses beside sand).
+//
+// FEEDBACK 2026-09-13 (second play): "default base size still needs to be just a bit bigger than
+// this, and we also need to preseed a ton more wheat around these pools in the player's home base."
+// So: radius 24 by default (was 20), the kit's two patches 24 each (was 14), and every pool ringed
+// with 32 wheat (was 12) grown from four seeds spaced round its shore so the ring is whole.
 namespace
 {
 
 // Every home's starting kit, unscaled whatever the amounts say: two wheat patches beside the central
 // pond and a quarry. No wood (FEEDBACK 2026-09-13): the forest edge is the woodlot.
-constexpr int kHomeWheat = 14, kHomeQuarry = 2;
+constexpr int kHomeWheat = 24, kHomeQuarry = 2;
 // The ring of pools round a home (FEEDBACK 2026-09-13, "a lot more pools of water"): `homePools`
 // pools of this radius on a ring at this share of the home's radius, each with this much wheat on its
 // shore. At the default radius 20 the ring is 12 tiles out, so every pool waters the ground between
 // itself and the central pond and the whole clearing is fertile.
 constexpr double kPoolRadius = 2.5, kPoolRingShare = 0.6;
-constexpr int kPoolWheat = 12;
+constexpr int kPoolWheat = 32, kPoolSeeds = 4;
 // The forest starts this far beyond a home's rough disc, so the clearing's edge is open ground to
 // build against and the pond's beach never meets a tree; then a ring of sand this wide keeps the
 // forest from spreading into the clearing (FEEDBACK 2026-09-13). Two tiles: crops spread only onto
@@ -329,16 +334,25 @@ bool generate(Game &game, GenerationContext &context)
 				 {frame.at(-0.4 * reach, -reach, 12), frame.at(-0.4 * reach, reach, 12),
 				  frame.at(reach + 3, 0, 10), kHomeWheat, 0, kHomeQuarry},
 				 eligible);
+		// Wheat all round every pool (second play: "a ton more wheat around these pools"): grown
+		// from kPoolSeeds seeds spaced round the shore, each with its share, so the ring is whole.
 		for (const ShapePoint &pool : L.pools[k])
 		{
 			const int px = int(std::lround(pool.x)), py = int(std::lround(pool.y));
 			const auto shore = [&](int i)
 			{
 				return eligible(i) &&
-					   t.dist2(px, py, i % t.w, i / t.w) <= (kPoolRadius + 4) * (kPoolRadius + 4);
+					   t.dist2(px, py, i % t.w, i / t.w) <= (kPoolRadius + 5) * (kPoolRadius + 5);
 			};
-			if (const int seed = seedNear(t, px, py, int(kPoolRadius) + 4, shore); seed >= 0)
-				growPatch(map, t, seed, CORN, kPoolWheat, shore);
+			for (int q = 0; q < kPoolSeeds; ++q)
+			{
+				const double a = 2 * kPi * q / kPoolSeeds;
+				const int seed =
+					seedNear(t, int(std::lround(pool.x + (kPoolRadius + 2) * std::cos(a))),
+							 int(std::lround(pool.y + (kPoolRadius + 2) * std::sin(a))), 2, shore);
+				if (seed >= 0)
+					growPatch(map, t, seed, CORN, kPoolWheat / kPoolSeeds, shore);
+			}
 		}
 	}
 	// The lakes' prizes go down before the forest, so they stand in the open on the shore: wheat all
@@ -440,7 +454,7 @@ GeneratorDefinition oldGrowthDefinition()
 		"old-growth",
 		28,
 		"Old growth",
-		2,
+		3,
 		false,
 		// 90% cover reads as unbroken forest with the odd glade; one lake per 128x128 of 90
 		// tiles (four on a 256 map, each a few days' cutting from any home) keeps them rare enough
@@ -448,9 +462,10 @@ GeneratorDefinition oldGrowthDefinition()
 		{{"forest-density", "Forest density", 60, 100, 5, 90, ControlGroup::Terrain},
 		 {"lakes", "Lakes", 0, 4, 1, 1, ControlGroup::Terrain},
 		 {"lake-size", "Lake size", 40, 160, 10, 90, ControlGroup::Terrain},
-		 // FEEDBACK 2026-09-13: homes of radius 20 with five pools (was 13 with one pond); the
-		 // whole clearing is then within the growth probe's reach of water.
-		 {"home-size", "Home size", 12, 24, 1, 20, ControlGroup::Layout},
+		 // FEEDBACK 2026-09-13: homes of radius 24 with five pools (first 13 with one pond, then
+		 // 20; the second play wanted "just a bit bigger"); the whole clearing is within the growth
+		 // probe's reach of water.
+		 {"home-size", "Home size", 12, 30, 1, 24, ControlGroup::Layout},
 		 {"home-pools", "Home pools", 0, 8, 1, 5, ControlGroup::Layout},
 		 GeneratorControl::toggle("hidden-groves", "Hidden groves", true, ControlGroup::Layout),
 		 // On, a trail is cut from every colony to the first before the game starts.
