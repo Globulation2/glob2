@@ -102,6 +102,9 @@ jobs:
           mkdir -p /tmp/glob2-render-profile
           GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
             xvfb-run -a build/src/torus-render-test -g -F -m -s 1120x720
+          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
+            GLOB2_UI_SCALE=3 xvfb-run -a -s '-screen 0 1920x1440x24' \
+            build/src/torus-render-test -g -F -m -s 1920x1440
           GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
             build/src/torus-render-test -G -F -m -s 1120x720
 
