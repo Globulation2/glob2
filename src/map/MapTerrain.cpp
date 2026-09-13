@@ -244,7 +244,9 @@ Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const
 #include <vector>
 
 //also the Perlin Noise stuff uses random that is not based on syncRand
+#include "GlobalContainer.h"
 #include "Map.h"
+#include "MapInternal.h"
 #include "Unit.h"
 #include "Utilities.h"
 
@@ -284,29 +286,45 @@ void Map::controlSand(void)
 		}
 }
 
+// The random generators' closing pass (nuage, 2002): the resource growth step run over the whole map
+// `times` times, without its water test, to fray the square deposits setResource stamps into
+// natural fields. Each wood, wheat, stone or algae tile, half the time, either grows (the smaller
+// it is, the likelier) or, once it is large, sprouts a small tile of its kind on a random free
+// neighbour of the right terrain. Tiles are visited in row order and updated in place, as the
+// original did, so a sprout can grow again later in the same pass.
+//
+// When resources moved out of the terrain values in 2003 this kept reading the old encoding
+// (terrain values of 272 and up) and silently stopped doing anything; this is the same rule over
+// the Resource struct.
 void Map::smoothResources(int times)
 {
 	for (int s=0; s<times; s++)
 		for (int y=0; y<h; y++)
 			for (int x=0; x<w; x++)
 			{
-				int d=getTerrain(x, y)-272;
-				int r=d/10;
-				int l=d%5;
-				if ((d>=0)&&(d<40)&&(syncRand()&4))
+				Resource &r=tiles[coordToIndex(x, y)].resource;
+				if (r.type!=WOOD && r.type!=CORN && r.type!=STONE && r.type!=ALGA)
+					continue;
+				if (!(syncRand()&4))
+					continue;
+				const ResourceType *rt=globalContainer->resourcesTypes.get(r.type);
+				if (int(r.amount)-RESOURCE_INITIAL_AMOUNT<=int(syncRand()&3))
 				{
-					if (l<=(int)(syncRand()&3))
-						setTerrain(x, y, d+273);
-					else
+					if (r.amount<rt->sizesCount)
+						r.amount++;
+				}
+				else
+				{
+					int dx, dy;
+					Unit::dxDyFromDirection(syncRand()&7, &dx, &dy);
+					const int nx=normalizeX(x+dx), ny=normalizeY(y+dy);
+					if (getResource(nx, ny).type==NO_RES_TYPE && isResourceAllowed(nx, ny, r.type))
 					{
-						// we extend resource:
-						int dx, dy;
-						Unit::dxDyFromDirection(syncRand()&7, &dx, &dy);
-						int nx=x+dx;
-						int ny=y+dy;
-						if (getGroundUnit(nx, ny)==NOGUID)
-							if (((r==WOOD||r==CORN||r==STONE)&&isGrass(nx, ny))||((r==ALGA)&&isWater(nx, ny)))
-								setTerrain(nx, ny, 272+(r*10)+((syncRand()&1)*5));
+						Resource &sprout=tiles[coordToIndex(nx, ny)].resource;
+						sprout.type=r.type;
+						sprout.variety=syncRand()%rt->varietiesCount;
+						sprout.amount=RESOURCE_INITIAL_AMOUNT;
+						sprout.animation=0;
 					}
 				}
 			}

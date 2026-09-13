@@ -321,8 +321,9 @@ namespace MapGeneration
 // Builds each colony's swarm and workers on its boot tile for Old islands, first stamping two
 // overlapping grass squares of 5 + islandSize / 10 tiles (11 at the default island size 65) so the
 // swarm and a first few buildings fit whatever the island's ragged outline. Workers stand in a row
-// of four above the swarm. Like Old random's, its closing Map::smoothResources does nothing today
-// (resources left the terrain layer it reads in 2003), so no deposit is frayed.
+// of four above the swarm. Its closing Map::smoothResources runs islandSize / 10 rounds of
+// deposit fraying before the island's own deposits exist, so it only touches what is already on
+// the map; Old islands frays its deposits again after placing them.
 bool placeArchipelagoStarts(Game &game, GenerationContext &context, int islandSize)
 {
 	for (int s = 0; s < context.request.nbTeams; s++)

@@ -314,11 +314,12 @@ static void resources(Game &game, GenerationContext &context,
 			setScaledResource(map, bootX[s] + p, bootY[s], ALGA, amount, options.algae);
 	}
 
-	// Let's smooth resources...
-	// Meant to fray the squares into fields; a no-op today. Map::smoothResources still looks for
-	// resources in the terrain layer, where they have not lived since 2003, so no tile matches and
-	// no random number is drawn (removing it leaves maps byte-identical). Kept as the design's
-	// intent; the deposits stay visible squares.
+	// Let's smooth resources... Frays the squares into fields: each of the smoothResources * 2
+	// rounds grows small deposit tiles and sprouts large ones onto a free neighbour. This is why
+	// each deposit above is smoothResources tiles smaller than its run of grass: the rounds grow it
+	// back out. From 2003 until revision 2 Map::smoothResources read the old resource encoding and
+	// did nothing, leaving the deposits as squares; working, it adds about a quarter more wheat and
+	// wood.
 	map.smoothResources(smoothResources * 2);
 }
 
@@ -349,7 +350,7 @@ GeneratorDefinition ruggedArchipelagoDefinition()
 		"rugged-archipelago",
 		8,
 		"Old islands",
-		1,
+		2,
 		false,
 		// Island size scales the growth passes (see plantBootstraps for why its range is narrow);
 		// beach size is the number of beach-widening passes.
