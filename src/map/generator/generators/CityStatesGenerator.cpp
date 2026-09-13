@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "GenerationContext.h"
 #include "Grid.h"
+#include "Drawing.h"
 #include "Geometry.h"
 #include "HeightMap.h"
 #include "Pipeline.h"
@@ -108,6 +109,20 @@ constexpr int kOrchardReach = 5;
 constexpr int kLandingSpread = 12;
 // A home needs this much depth for a creek, ridges or a band of sand to fit round its lake.
 constexpr int kFeatureDepth = 30;
+// Sand roads (see planSandRoads). The ring road runs at this share of the commons' radius, halfway
+// from the landings to the centre, and keeps this much ground from the heart's outer edge and
+// from the landings' clear approaches. In a home, roads keep this far from any water, so they never
+// reach a wall on its shore, and in the commons this far; the branches reach
+// at most this share of the home's depth in from the strait, leaving the rest to build on.
+constexpr double kRingShare = 0.5;
+constexpr double kRingHeartGap = 5.0;
+constexpr int kRoadSeaGap = 5;
+constexpr int kRoadWaterGap = 2;
+constexpr int kRoadSandGap = 3;
+constexpr double kRoadDepthShare = 0.5;
+constexpr double kStreetInset = 7.0;
+// Sand vertices across a road.
+constexpr int kRoadWidth = 2;
 
 // What a home is made of, and what the heart of the commons is. One of each per map.
 enum HomeKind
@@ -238,6 +253,15 @@ enum Region : signed char
 	HomeLand = 2
 };
 
+// Where the swarm stands along its home's axis, from the centre: 9 tiles short of the lake's near
+// shore, and never within 8 tiles of the strait, between causeway and lake.
+double swarmRadius(const Geometry &g, double coast)
+{
+	const double lakeRadius = std::clamp(0.1 * g.depth(), 2.0, 6.0);
+	return std::max(coast + g.strait + 8.0,
+					coast + g.strait + lakeOffset(g, lakeRadius) - lakeRadius - 9.0);
+}
+
 // The terrain design: a pure function of the request, rebuilt by validateWorld.
 struct Layout
 {
@@ -253,6 +277,8 @@ struct Layout
 	std::vector<signed char> region;
 	std::vector<int> homeOf; // HomeLand tiles: which home, else -1
 	std::vector<unsigned char> lake, river, ford, sand, ridge, strip, causeway, road, clear;
+	// The sand roads: undermap vertices turned to sand, and the tiles with a corner on one.
+	std::vector<unsigned char> sandRoad, roadTile;
 	std::vector<double> radius, angle;
 	std::string failure;
 };
@@ -700,6 +726,155 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 	}
 }
 
+// The sand roads: a line of sand two vertices thick (tracePath, widened) that no deposit can grow over and
+// nothing can be built on, like a real road that growth closes in on from both sides. It makes
+// the causeways and the commons' main routes stay walkable however the fields spread, while the
+// fields right beside a road turn it into a chokepoint.
+//
+// Every home gets the same road, drawn in its own frame (along its axis from the map's centre,
+// and across it): from the heart of the commons out along the axis, over the causeway, to a fork
+// a few tiles inside the gate; two arms swing out round either side of the swarm's square and
+// each forks again, one twig turning in behind the swarm towards the lake and one out towards the
+// flank. Nothing reaches more than half the home's depth in from the strait, so most of the home
+// stays open for buildings. A ring road at half the commons' radius joins every home's road; with
+// a river delta at the heart it runs at the delta's fords instead, so it crosses the rivers where
+// they can be walked.
+//
+// A vertex is only turned to sand where that cannot break the design: on land, off every ridge
+// and causeway shoulder (stone stands only on grass, so sand there would open a gap in a wall),
+// at least kRoadSeaGap from any water inside a home (off the coast wall) and kRoadWaterGap from
+// water in the commons, and clear of the swarm's square. Where a road meets water or a wall it simply
+// breaks off, as a road stops at a lake shore.
+void planSandRoads(Layout &L, const Features &f)
+{
+	const Torus &t = L.t;
+	const Geometry &g = L.g;
+	const int n = t.w * t.h, teams = g.teams;
+	L.sandRoad.assign(n, 0);
+	L.roadTile.assign(n, 0);
+	std::vector<unsigned char> water(n, 0), forbidden(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		water[i] = L.region[i] == Sea || L.lake[i] || L.river[i];
+		forbidden[i] = L.ridge[i] || (L.strip[i] && !L.road[i]);
+	}
+	const std::vector<int> fromWater = stepsFrom(t, water), fromSand = stepsFrom(t, L.sand);
+
+	std::vector<unsigned char> line(n, 0);
+	const auto trace = [&](const std::vector<StrokePoint> &path) { tracePath(line, t, path); };
+	std::vector<std::pair<int, int>> swarms; // each home's swarm footprint, top-left
+	const double arcHalf = g.arcHalf(g.innerRadius());
+	for (int k = 0; k < teams; ++k)
+	{
+		const Home &h = L.homes[k];
+		const double ca = std::cos(h.angle), sa = std::sin(h.angle);
+		// A point `along` tiles out from the centre on the home's axis and `across` to one side.
+		const auto at = [&](double along, double across) -> ShapePoint
+		{ return {L.cx + along * ca - across * sa, L.cy + along * sa + across * ca}; };
+		const double gate = h.coast + g.strait, swarm = swarmRadius(g, h.coast) - gate;
+		// The main street crosses the axis kStreetInset tiles in from the gate, following the
+		// strait at that distance out to either flank; side streets turn inland from it past both
+		// sides of the swarm and at its ends, and stop a few tiles behind the swarm, short of the
+		// lake and the kit's fields beside it.
+		// Between the coast wall and the swarm's square: never inside the square, and never nearer
+		// the strait than the wall allows.
+		const double street = std::clamp(swarm - 5, double(kRoadSeaGap), kStreetInset);
+		const double side = std::clamp(0.35 * arcHalf, 6.0, 11.0);
+		const double reach = std::min(std::max(side + 8.0, 0.55 * arcHalf), 24.0);
+		const double deep = std::min(swarm + 4, kRoadDepthShare * g.depth());
+		trace({{at(0, 0).x, at(0, 0).y, 0}, {at(gate + street, 0).x, at(gate + street, 0).y, 0}});
+		for (double sign : {-1.0, 1.0})
+		{
+			std::vector<StrokePoint> main;
+			const double radius = gate + street;
+			for (int step = 0; step <= 12; ++step)
+			{
+				const double across = sign * reach * step / 12;
+				const double a = across / radius;
+				const ShapePoint p = at(radius * std::cos(a), radius * std::sin(a));
+				main.push_back({p.x, p.y, 0});
+			}
+			trace(main);
+			const auto inland = [&](double across, double to)
+			{
+				const double a = across / radius;
+				const ShapePoint from = at(radius * std::cos(a), radius * std::sin(a));
+				const ShapePoint end = at((gate + to) * std::cos(a), (gate + to) * std::sin(a));
+				trace({{from.x, from.y, 0}, {end.x, end.y, 0}});
+			};
+			inland(sign * side, deep);
+			if (reach > side + 6)
+				inland(sign * reach, std::max(street + 4, deep - 4));
+		}
+		swarms.push_back({int(std::lround(L.cx + (gate + swarm) * ca)) - 2,
+						  int(std::lround(L.cy + (gate + swarm) * sa)) - 2});
+	}
+	if (teams >= 1)
+	{
+		const double heartEdge = L.heartKind == IslandHeart   ? L.lakeR * 1.3
+								 : L.heartKind == Crag        ? L.ringR + 2
+								 : L.heartKind == ForestHeart ? std::max(L.forestR, L.lakeR * 1.3)
+															  : L.lakeR * 1.3 + kOrchardReach + 2;
+		double ring = L.heartKind == Delta ? f.deltaFordR : kRingShare * g.commonsRadius;
+		ring = std::max(ring, heartEdge + kRingHeartGap);
+		if (ring <= g.commonsRadius - kLanding - 4)
+		{
+			const int segments = std::max(24, int(2 * kPi * ring / 3));
+			std::vector<StrokePoint> circle;
+			for (int s = 0; s <= segments; ++s)
+			{
+				const double a = L.phase + 2 * kPi * s / segments;
+				circle.push_back({L.cx + ring * std::cos(a), L.cy + ring * std::sin(a), 0});
+			}
+			trace(circle);
+		}
+	}
+
+	// Two vertices wide: every traced vertex also marks the vertices right, below and diagonally
+	// below-right of it, a square brush that is two thick whatever way the road runs. A road then
+	// spoils three tiles across, wide enough to read as a road and still a chokepoint between
+	// fields.
+	std::vector<unsigned char> wide(n, 0);
+	for (int i = 0; i < n; ++i)
+		if (line[i])
+			for (int dy = 0; dy < kRoadWidth; ++dy)
+				for (int dx = 0; dx < kRoadWidth; ++dx)
+					wide[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+	for (int i = 0; i < n; ++i)
+	{
+		if (!wide[i] || water[i] || fromWater[i] < kRoadWaterGap)
+			continue;
+		const int x = i % t.w, y = i / t.w;
+		// A home's lakes can be walled too, where their beach joins the sea's, so inside a home a
+		// road keeps the wall's distance from every water.
+		// A sand patch that touches a beach is walled as part of the shore, so a home's roads also
+		// keep off sand patches by a wall's width.
+		if (L.homeOf[i] >= 0 && !L.strip[i] &&
+			(fromWater[i] < kRoadSeaGap || (fromSand[i] >= 0 && fromSand[i] < kRoadSandGap)))
+			continue;
+		// The four tiles sharing this corner: none may be stone-bearing design.
+		bool clear = true;
+		for (int dy = -1; dy <= 0 && clear; ++dy)
+			for (int dx = -1; dx <= 0; ++dx)
+				if (forbidden[t.at(x + dx, y + dy)])
+				{
+					clear = false;
+					break;
+				}
+		// Nor inside the swarm's square with two tiles to spare round its 4x4 footprint.
+		for (const auto &sw : swarms)
+			if (clear && std::abs(t.offsetX(sw.first + 2, x)) <= 4 &&
+				std::abs(t.offsetY(sw.second + 2, y)) <= 4)
+				clear = false;
+		if (!clear)
+			continue;
+		L.sandRoad[i] = 1;
+		for (int dy = -1; dy <= 0; ++dy)
+			for (int dx = -1; dx <= 0; ++dx)
+				L.roadTile[t.at(x + dx, y + dy)] = 1;
+	}
+}
+
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
 	Layout L;
@@ -733,6 +908,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 
 	const Features f = rollFeatures(request, context, g, c, L);
 	rasterize(L, g, c, f);
+	if (L.failure.empty() && o.sandRoads)
+		planSandRoads(L, f);
+	else
+	{
+		L.sandRoad.assign(size_t(t.w) * t.h, 0);
+		L.roadTile.assign(size_t(t.w) * t.h, 0);
+	}
 	return L;
 }
 
@@ -767,7 +949,8 @@ std::vector<unsigned char> seaMargin(const Map &map, const Layout &L)
 		const int x = i % t.w, y = i / t.w;
 		if (map.isWater(x, y))
 			continue;
-		beach[i] = map.getTerrainType(x, y) != GRASS;
+		// A sand road is not a beach: it must not carry the sea's margin inland.
+		beach[i] = map.getTerrainType(x, y) != GRASS && !L.roadTile[i];
 		for (int dy = -1; dy <= 2 && !margin[i]; ++dy)
 			for (int dx = -1; dx <= 2; ++dx)
 				if (sea[t.at(x + dx, y + dy)])
@@ -830,7 +1013,7 @@ void carveValleys(std::vector<unsigned char> &terrain, const Layout &L, Generati
 	{
 		water[i] = terrain[i] == WATER;
 		land[i] = !water[i];
-		keep[i] = L.clear[i] || L.causeway[i];
+		keep[i] = L.clear[i] || L.causeway[i] || L.sandRoad[i];
 		if (L.region[i] == Commons && land[i])
 			ground.push_back(i);
 	}
@@ -1165,7 +1348,7 @@ bool generate(Game &game, GenerationContext &context)
 			terrain[i] = WATER;
 		if (L.ford[i])
 			terrain[i] = SAND;
-		if (L.sand[i] && terrain[i] == GRASS)
+		if ((L.sand[i] || L.sandRoad[i]) && terrain[i] == GRASS)
 			terrain[i] = SAND;
 	}
 	carveValleys(terrain, L, context, o.valleys);
@@ -1197,12 +1380,7 @@ bool generate(Game &game, GenerationContext &context)
 	const auto anchor = [&](int team)
 	{
 		const Home &h = L.homes[team];
-		const double lakeRadius = std::clamp(0.1 * L.g.depth(), 2.0, 6.0);
-		// The swarm stands 9 tiles short of the lake's near shore, and never within 8 tiles of the
-		// strait: between causeway and lake, a short walk from both.
-		const double rho =
-			std::max(h.coast + L.g.strait + 8.0,
-					 h.coast + L.g.strait + lakeOffset(L.g, lakeRadius) - lakeRadius - 9.0);
+		const double rho = swarmRadius(L.g, h.coast);
 		return MapGeneratorPoint(L.cx + int(std::lround(rho * std::cos(h.angle))) - 2,
 								 L.cy + int(std::lround(rho * std::sin(h.angle))) - 2);
 	};
@@ -1331,9 +1509,10 @@ CityStatesOptions::CityStatesOptions(const GenerationRequest &r)
 	  causewayWidth(r.option("causeway-width")), coastRoughness(r.option("coast-roughness")),
 	  valleys(r.option("valleys")), resourceIslands(r.option("resource-islands")),
 	  sand(r.option("sand")), frontier(r.option("frontier-richness")),
-	  stoneWalls(r.option("stone-walls") != 0), wheat(r.option("wheat-amount")),
-	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
-	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
+	  stoneWalls(r.option("stone-walls") != 0), sandRoads(r.option("sand-roads") != 0),
+	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
+	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
+	  fruit(r.option("fruit-amount"))
 {
 }
 
@@ -1343,7 +1522,7 @@ GeneratorDefinition cityStatesDefinition()
 		"city-states",
 		17,
 		"City states",
-		5,
+		7,
 		false,
 		// The commons' radius as a share of half the shorter side, the strait's width as a
 		// share of the shorter side, the causeway's road in tiles; valleys per 128x128 of
@@ -1361,6 +1540,8 @@ GeneratorDefinition cityStatesDefinition()
 		 {"frontier-richness", "Frontier richness", 0, 100, 10, 60, ControlGroup::Resources},
 		 // Off, no stone: the causeways are plain roads and the homes' coasts are open.
 		 GeneratorControl::toggle("stone-walls", "Stone walls", true, ControlGroup::Layout),
+		 // Off, no sand roads: the causeways and the commons are grass from shore to shore.
+		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
 		 // Every home's ambient fields, outcrops and grove, the commons and the islands' prizes;
 		 // every home's kit and the causeways' stone stay as they are.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),

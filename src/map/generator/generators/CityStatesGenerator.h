@@ -6,7 +6,7 @@ struct CityStatesOptions
 {
 	int commonsSize, straitWidth, causewayWidth, coastRoughness, valleys, resourceIslands, sand,
 		frontier;
-	bool stoneWalls;
+	bool stoneWalls, sandRoads;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit CityStatesOptions(const GenerationRequest &r);
 };

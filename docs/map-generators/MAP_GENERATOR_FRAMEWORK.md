@@ -511,6 +511,17 @@ shape.
   leaves a sand lane outside the stone that a unit can land on and walk along but never leave; the
   causeway as a barrier, and as the ground kept clear of deposits with both its approaches,
   includes its lanes. Home lakes keep seven tiles from the sea so the two beaches never meet.
+- **Sand roads.** With `sand-roads` (on), a line of sand two undermap vertices thick, which nothing
+  can grow over or be built on, runs from the heart of the commons along every home's axis, over
+  its causeway, to a main street seven tiles inside the gate that follows the strait out to both
+  flanks. Side streets turn inland from it past both sides of the swarm and at its ends, stopping a
+  few tiles behind the swarm and at most half the home's depth in, short of the lake and the kit's
+  fields. A ring road at half the commons' radius, or at the fords when the heart is a delta, joins
+  every home's road. A vertex only turns to sand on land, off ridges and causeway shoulders, at
+  least five tiles from any water and three from any sand patch inside a home, and two from water on
+  the commons, and clear of the swarm's square. Sand there could open a gap in a wall, since stone
+  stands only on grass. Where a road would break a rule it simply stops. The sea's margin never
+  spreads along a road, and valley lakes keep clear of roads.
 - **Every roll differs.** Both coasts are random harmonic profiles periodic in the wedge
   (`coast-roughness`): bays and headlands with a finer ripple on the commons' coast, which the
   strait follows, and bays into the flanks of every home's inner and outer coasts, all held flat
