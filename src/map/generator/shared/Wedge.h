@@ -17,30 +17,35 @@ struct WedgeFrame
 	double phase; // where wedge 0 begins, in radians
 	int teams;
 	double wedge; // each wedge's angle
+	// How the round design is stretched to fill the map; cells are measured unstretched.
+	Stretch stretch;
 
-	WedgeFrame(const Torus &torus, double phase, int teams)
+	WedgeFrame(const Torus &torus, double phase, int teams, Stretch stretch = {})
 		: t(torus), cx(torus.w / 2), cy(torus.h / 2), phase(phase), teams(teams),
-		  wedge(2 * kPi / teams)
+		  wedge(2 * kPi / teams), stretch(stretch)
 	{
 	}
 
 	/// A tile seen from the frame.
 	struct Cell
 	{
-		int dx, dy;          // offset from the centre, the short way round
-		double d, theta;     // distance and angle from the centre
-		double turn;         // angle past the phase, in [0, 2 pi)
-		int k;               // which wedge
-		double u;            // how far round the wedge, 0 at one edge and 1 at the other
-		double s;            // arc offset from the wedge's middle, in tiles
+		int dx, dy;      // offset from the centre on the map, the short way round
+		double d, theta; // distance and angle from the centre, unstretched
+		double turn;     // angle past the phase, in [0, 2 pi)
+		int k;           // which wedge
+		double u;        // how far round the wedge, 0 at one edge and 1 at the other
+		double s;        // arc offset from the wedge's middle, in tiles
 	};
 	Cell cell(int x, int y) const
 	{
 		Cell c;
 		c.dx = t.offsetX(cx, x);
 		c.dy = t.offsetY(cy, y);
-		c.d = std::hypot(double(c.dx), double(c.dy));
-		c.theta = std::atan2(double(c.dy), double(c.dx));
+		// Distance and angle are taken in the design's round frame, so a feature designed at a
+		// radius lands on the stretched ellipse; on a square map this divides by exactly 1.
+		const ShapePoint round = stretch.undo(c.dx, c.dy);
+		c.d = std::hypot(round.x, round.y);
+		c.theta = std::atan2(round.y, round.x);
 		c.turn = std::fmod(c.theta - phase + 4 * kPi, 2 * kPi);
 		place(c);
 		return c;

@@ -194,6 +194,7 @@ map/generator/generators/RuggedArchipelagoGenerator.cpp
 map/generator/generators/ShatteredCoastGenerator.cpp
 map/generator/generators/StoneHighlandsGenerator.cpp
 map/generator/generators/SpiderWebGenerator.cpp
+map/generator/generators/CoralGenerator.cpp
 map/generator/generators/SwampGenerator.cpp
 map/generator/generators/SymmetricArenaGenerator.cpp
 map/generator/generators/TidalFlatsGenerator.cpp

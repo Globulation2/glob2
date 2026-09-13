@@ -1912,6 +1912,24 @@ OpenGL 在此版本中不可用。
 沼泽地至少需要一个殖民地。
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 此地图的殖民地太多；请使用更大的地图或减少殖民地。
+[Coral]
+珊瑚
+[Fork angle]
+分枝角度
+[Lean]
+倾斜
+[Home size]
+基地大小
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+珊瑚无法放入此地图；请使用更大的地图、更窄的海峡或更少的殖民地。
+[Branching]
+分枝
+[Branch width]
+枝宽
+[Coral needs at least one colony.]
+珊瑚至少需要一个殖民地。
+[Coral needs a map at least 128 tiles across.]
+珊瑚需要宽度至少为 128 格的地图。
 [Spider web]
 蜘蛛网
 [Spokes per colony]

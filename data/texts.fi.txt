@@ -1916,6 +1916,24 @@ Rimmet
 Suomaat tarvitsevat vähintään yhden siirtokunnan.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Liikaa siirtokuntia tälle kartalle; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[Coral]
+Koralli
+[Fork angle]
+Haarautumiskulma
+[Lean]
+Kallistus
+[Home size]
+Kotialueen koko
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Koralli ei mahdu tälle kartalle; käytä suurempaa karttaa, kapeampia salmia tai vähemmän siirtokuntia.
+[Branching]
+Haarautuminen
+[Branch width]
+Oksien leveys
+[Coral needs at least one colony.]
+Koralli tarvitsee vähintään yhden siirtokunnan.
+[Coral needs a map at least 128 tiles across.]
+Koralli tarvitsee vähintään 128 ruutua leveän kartan.
 [Spider web]
 Hämähäkinseitti
 [Spokes per colony]

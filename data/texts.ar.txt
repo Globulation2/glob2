@@ -1914,6 +1914,24 @@ OpenGL غير متوفر في هذا الإصدار.
 تحتاج المستنقعات إلى مستعمرة واحدة على الأقل.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 عدد المستعمرات كبير جدًا لهذه الخريطة؛ استخدم خريطة أكبر أو مستعمرات أقل.
+[Coral]
+المرجان
+[Fork angle]
+زاوية التفرّع
+[Lean]
+الميل
+[Home size]
+حجم الموطن
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+المرجان لا يتسع لهذه الخريطة؛ استخدم خريطة أكبر أو مضائق أضيق أو مستعمرات أقل.
+[Branching]
+التفرّع
+[Branch width]
+عرض الفروع
+[Coral needs at least one colony.]
+يحتاج المرجان إلى مستعمرة واحدة على الأقل.
+[Coral needs a map at least 128 tiles across.]
+يحتاج المرجان إلى خريطة بعرض 128 مربعًا على الأقل.
 [Spider web]
 شبكة العنكبوت
 [Spokes per colony]

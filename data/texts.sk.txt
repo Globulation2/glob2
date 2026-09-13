@@ -1924,6 +1924,24 @@ Mŕtve ramená
 Močiare potrebujú aspoň jednu kolóniu.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Príliš veľa kolónií pre túto mapu; použite väčšiu mapu alebo menej kolónií.
+[Coral]
+Koral
+[Fork angle]
+Uhol vetvenia
+[Lean]
+Náklon
+[Home size]
+Veľkosť domova
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Koral sa na túto mapu nezmestí; použite väčšiu mapu, užšie prielivy alebo menej kolónií.
+[Branching]
+Vetvenie
+[Branch width]
+Šírka vetiev
+[Coral needs at least one colony.]
+Koral potrebuje aspoň jednu kolóniu.
+[Coral needs a map at least 128 tiles across.]
+Koral potrebuje mapu širokú aspoň 128 polí.
 [Spider web]
 Pavučina
 [Spokes per colony]

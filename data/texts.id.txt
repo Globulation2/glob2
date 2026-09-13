@@ -1912,6 +1912,24 @@ Rawa-rawa
 Rawa-rawa membutuhkan setidaknya satu koloni.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Terlalu banyak koloni untuk peta ini; gunakan peta lebih besar atau lebih sedikit koloni.
+[Coral]
+Karang
+[Fork angle]
+Sudut percabangan
+[Lean]
+Kemiringan
+[Home size]
+Ukuran markas
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Karang tidak muat di peta ini; gunakan peta yang lebih besar, selat yang lebih sempit, atau lebih sedikit koloni.
+[Branching]
+Percabangan
+[Branch width]
+Lebar cabang
+[Coral needs at least one colony.]
+Karang memerlukan setidaknya satu koloni.
+[Coral needs a map at least 128 tiles across.]
+Karang memerlukan peta dengan lebar setidaknya 128 petak.
 [Spider web]
 Jaring laba-laba
 [Spokes per colony]

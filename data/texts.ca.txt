@@ -1924,6 +1924,24 @@ Aiguamolls
 Els aiguamolls necessiten almenys una colònia.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Massa colònies per a aquest mapa; useu un mapa més gran o menys colònies.
+[Coral]
+Corall
+[Fork angle]
+Angle de ramificació
+[Lean]
+Inclinació
+[Home size]
+Mida de la base
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+El corall no cap en aquest mapa; utilitzeu un mapa més gran, estrets més estrets o menys colònies.
+[Branching]
+Ramificació
+[Branch width]
+Amplada de les branques
+[Coral needs at least one colony.]
+El corall necessita almenys una colònia.
+[Coral needs a map at least 128 tiles across.]
+El corall necessita un mapa d'almenys 128 caselles d'amplada.
 [Spider web]
 Teranyina
 [Spokes per colony]

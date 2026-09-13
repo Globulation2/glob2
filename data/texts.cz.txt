@@ -1916,6 +1916,24 @@ Slepá ramena
 Mokřady potřebují alespoň jednu kolonii.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Příliš mnoho kolonií pro tuto mapu; použijte větší mapu nebo méně kolonií.
+[Coral]
+Korál
+[Fork angle]
+Úhel větvení
+[Lean]
+Náklon
+[Home size]
+Velikost domova
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Korál se na tuto mapu nevejde; použijte větší mapu, užší průlivy nebo méně kolonií.
+[Branching]
+Větvení
+[Branch width]
+Šířka větví
+[Coral needs at least one colony.]
+Korál potřebuje alespoň jednu kolonii.
+[Coral needs a map at least 128 tiles across.]
+Korál potřebuje mapu širokou alespoň 128 polí.
 [Spider web]
 Pavučina
 [Spokes per colony]

@@ -1926,6 +1926,24 @@ Sumpkanaler
 Sumpmarker kräver minst en koloni.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 För många kolonier för den här kartan; använd en större karta eller färre kolonier.
+[Coral]
+Korall
+[Fork angle]
+Förgreningsvinkel
+[Lean]
+Lutning
+[Home size]
+Hemmets storlek
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Korallen får inte plats på den här kartan; använd en större karta, smalare sund eller färre kolonier.
+[Branching]
+Förgrening
+[Branch width]
+Grenbredd
+[Coral needs at least one colony.]
+Korall behöver minst en koloni.
+[Coral needs a map at least 128 tiles across.]
+Korall behöver en karta som är minst 128 rutor bred.
 [Spider web]
 Spindelnät
 [Spokes per colony]

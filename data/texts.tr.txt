@@ -1924,6 +1924,24 @@ Bataklıklar
 Bataklıklar için en az bir koloni gerekir.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Bu harita için çok fazla koloni var; daha büyük bir harita kullanın veya koloni sayısını azaltın.
+[Coral]
+Mercan
+[Fork angle]
+Dallanma açısı
+[Lean]
+Eğim
+[Home size]
+Üs boyutu
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Mercan bu haritaya sığmıyor; daha büyük bir harita, daha dar boğazlar ya da daha az koloni kullanın.
+[Branching]
+Dallanma
+[Branch width]
+Dal genişliği
+[Coral needs at least one colony.]
+Mercan en az bir koloni gerektirir.
+[Coral needs a map at least 128 tiles across.]
+Mercan en az 128 kare genişliğinde bir harita gerektirir.
 [Spider web]
 Örümcek ağı
 [Spokes per colony]

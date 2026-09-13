@@ -21,13 +21,13 @@ and Terrain take a `Game` because placing buildings and units needs its mutation
 |---|---|
 | `Grid` | `Torus` wrap and offset arithmetic; `floodFrom`/`stepsFrom`, the one eight-connected breadth-first flood (with a step limit and the visit order for callers that need it); `walkableTiles` and `groundUnitTiles` passability masks; `unitTilesByTeam` and `firstColonyCutOff` |
 | `Topology` | `connectedRegions` component labelling with explicit wrap and neighbour policy; `regionAdjacency` and `graphDistances` over sparse labels |
-| `Geometry` | `kPi`; `ShapeTransform` (invertible stretch and rotation); `RadialShape`, a seeded rough outline with a per-angle `radiusAt()`; `stampShape` and `stampRoughDisc` into a label grid |
-| `Drawing` | Drawing on the torus: `strokePath`, a thick path of points each with its own half width, rasterized through the wrap; `bezierPath`, a quadratic curve as such a path; `polarPoint`; `forEachTileInShape` and `fillShape`, a `RadialShape` filled at any centre and turned to any heading within its bounding box |
-| `Wedge` | `WedgeFrame`: the map as one equal wedge per colony round the centre, so a feature designed once in a wedge's frame is stamped into every wedge alike; `Blob`, a stretched, turned rough disc in that frame |
-| `Sketch` | `TerrainSketch`, the undermap designed in memory; `layBeaches`, the order-independent beach pass; `raiseIslands`; `writeUndermap` |
+| `Geometry` | `kPi`; `ShapeTransform` (invertible stretch and rotation); `Stretch`, which places a layout designed in a circle on a map's shorter side onto a rectangular map as an ellipse touching all four sides (`toFill`, `apply`, `undo`, `heading`), exactly the identity on a square map; `RadialShape`, a seeded rough outline with a per-angle `radiusAt()`; `stampShape` and `stampRoughDisc` into a label grid |
+| `Drawing` | Drawing on the torus: `strokePath`, a thick path of points each with its own half width, rasterized through the wrap; `tracePath`, a path traced one tile thick with no gaps (a sand road); `bezierPath`, a quadratic curve as such a path; `polarPoint`; `forEachTileInShape` and `fillShape`, a `RadialShape` filled at any centre and turned to any heading within its bounding box, optionally stretched into an oval; `stretchPath`, a designed path placed on the map by a `Stretch` with its half widths kept in tiles; `bentPath`, a tapered path leaving a point along a heading and bowing sideways; `pathClearance` and `pathBounds`, the water between two stroked paths (optionally ignoring a branch's root) and a cheap bounding circle; `growBranches`, a tree grown level by level by forking in two at every tip to a `ForkStyle`, every branch offered to a caller's `accept` before it is kept and a refused one retried once at half length |
+| `Wedge` | `WedgeFrame`: the map as one equal wedge per colony round the centre, so a feature designed once in a wedge's frame is stamped into every wedge alike; given a `Stretch` it measures every cell in the round design frame, so the same design fills a rectangular map; `Blob`, a stretched, turned rough disc in that frame |
+| `Sketch` | `TerrainSketch`, the undermap designed in memory; `layBeaches`, the order-independent beach pass; `raiseIslands`; `sprinkleSand`, decorative sand patches on inland grass following a caller's noise, kept a strip of grass away from every beach; `writeUndermap` |
 | `LatticeNoise` | `PeriodicNoise`, value noise that tiles the torus exactly and samples anywhere, with `periodicNoise`/`fractalNoise` (integer fields per tile, octaves) and `torusNoise` (four octaves in [-1, 1]) sampled from it, plus `percentile` |
 | `HeightMap`, `Noise` | Perlin noise faded across the wrap, and the stamped height fields the height-field generators shape |
-| `Planting` | The deposits a generator places by hand: `clearGround`, `growPatch`, `seedNear`, `plantKit` (a home's wheat, wood and stone from three seeds), `KitFrame` (a home's origin and facing, so one kit design lands the same way round every home), `swarmSurroundings`, `clearAroundSwarms`, `seedAlgae` (any water or a shallows band), `stockIslands`, `plantFields` (the preferred tiles dealt into wheat and wood patches by an unrelated split key), `scatterClumps` (clumps dropped on random eligible tiles of a region) |
+| `Planting` | The deposits a generator places by hand: `clearGround`, `growPatch`, `seedNear`, `plantKit` (a home's wheat, wood and stone from three seeds), `KitFrame` (a home's origin and facing, so one kit design lands the same way round every home), `swarmSurroundings`, `clearAroundSwarms`, `seedAlgae` (any water or a shallows band; optionally only its best-growing share, shared out equally between the colonies' wedges), `algaeGrowthChance` (each water tile's chance of passing the engine's algae growth test, which needs water within 15 tiles and solid sand within 30 at a reflected offset), `stockIslands`, `plantFields` (the preferred tiles dealt into wheat and wood patches by an unrelated split key), `scatterClumps` (clumps dropped on random eligible tiles of a region) |
 | `Resources` | The ambient layer and its fairness guards: `scaledCount`/`scaledShare`, `placeResourceClump`, `setScaledResource`, `scatterResources`, `guaranteeStartingResources`, `openCrampedStarts` |
 | `Roads` | `cheapestRoute` and `openRoad`: the walk that crosses the fewest deposits, with only those cleared; `cheapestWalk`, the same search by any step cost (Everglades' fords, Symmetric arena's causeway routes) |
 | `Settlements` | `placeSettlement`: whole-footprint home mask, nearest legal anchor, exact worker count, per-colony diagnostics |
@@ -45,8 +45,8 @@ against the finished terrain.
 
 ## The designed generator
 
-Ten generators (Maze, Fjord continent, Watershed, Stone highlands, Symmetric arena, Ring world,
-City states, Tidal flats, Everglades, Spider web) follow one shape, and the five newest of them
+Eleven generators (Maze, Fjord continent, Watershed, Stone highlands, Symmetric arena, Ring world,
+City states, Tidal flats, Everglades, Spider web, Coral) follow one shape, and the six newest of them
 are little more than a sequence of shared stages:
 
 1. `design(request, context)` computes the whole layout from the request and the context's
@@ -90,6 +90,7 @@ reused after a generator is retired.
 | `tidal-flats` | 18 | Tidal flats | Its own — see below |
 | `everglades` | 19 | Everglades | Its own — see below |
 | `spider-web` | 20 | Spider web | Its own — see below |
+| `coral` | 21 | Coral | Its own — see below |
 | `rugged-archipelago` | 8 | Old islands | Island growth + beach passes, own resource search |
 | `concrete-islands` | 5 | Concrete islands | Point dispersion; islands linked by channels |
 | `crater-lakes` | 4 | Crater lakes | Height-field noise; round lakes in otherwise connected land |
@@ -136,7 +137,8 @@ ambient layer but still leaves every colony a start. Maze keeps its explicit den
 | City states | Every home's ambient fields, outcrops and grove, everything on the commons (farmland, outcrops, groves, the orchard) and the sea's algae and island prizes; every home's kit and the walls' stone are unscaled | Stone walls (on): off, the causeways are plain roads and the homes' coasts are open |
 | Tidal flats | Every island's ambient fields and outcrops and every island's prize; each home's kit is unscaled | Central island (on): off, the middle of the map is flats and there is no orchard |
 | Everglades | The swamp's standing wood and wheat, its outcrops and groves, and the pools' algae; every home's kit is unscaled | None |
-| Spider web | The threads' standing wheat and wood, the share of knots carrying stone, whether the dew drops and the hub carry fruit and stone, and the shallows' algae; every pad's kit is unscaled | Spiral (on): off, the capture threads are closed rings |
+| Spider web | The threads' standing wheat and wood, the share of knots carrying stone, whether the dew drops and the hub carry fruit and stone, and the shallows' algae; every pad's kit is unscaled | Spiral (on): off, the capture threads are closed rings; Sand roads (on): off, the threads are grass from shore to shore |
+| Coral | The branches' standing wheat and wood, the share of forks carrying stone, the tips' fruit groves and the shallows' algae; every pad's kit is unscaled | Sand roads (on): off, the branches are grass from shore to shore |
 
 `scaledCount` and `scaledShare` (`shared/Resources.h`) apply a percentage to a count or a share and
 return it unchanged at 100. `setScaledResource` scales one `Map::setResource` square to a share of
@@ -209,7 +211,7 @@ fixed resource pass:
   treated like terrain, never cleared and never looked past. It wraps each boot tile onto the map
   first, since the height-field generators' fallback site search can hand over one past the edge.
   RuggedArchipelago, ShatteredCoast, Fjord, Watershed, Stone highlands, Ring world, City states,
-  Tidal flats, Everglades and Spider web call this, as do the height-field generators, and Concrete islands and Isles at any wheat or wood amount
+  Tidal flats, Everglades, Spider web and Coral call this, as do the height-field generators, and Concrete islands and Isles at any wheat or wood amount
   other than 100.
   Maze doesn't need it: its deposits are placed only along passage shores, leaving a clear lane
   down every passage, and its `validateWorld` confirms every colony can still walk to every
@@ -284,7 +286,9 @@ The richest generator, and the one most of this framework's resource work was pr
   (`coreR`, currently 0.23x the continent radius) that every fjord stops short of, so it always
   stays connected land regardless of coastline roughness. A fjord is carved between every pair of
   angularly-neighboring teams as a smooth S-curve centerline from just outside the coast in to
-  `coreR` (or, in lake-connected mode, well inside the lake — see below).
+  `coreR` (or, in lake-connected mode, well inside the lake — see below). On a rectangular map
+  the continent is stretched along the longer side by `Stretch` on top of its own transform, so it
+  fills the map as an oval; square maps are unchanged.
 - **Central lake.** `lake-size` (0–90%, of `coreR`; 0 disables it) carves a lake at the exact
   center, ringed by a sandy no-man's-land wider than `Map::controlSand()`'s own coastal fringe
   (`sandy-lake-shore`, on by default; off, the lake has an ordinary beach).
@@ -486,6 +490,11 @@ The commons is where the game is fought, richer towards its centre, where an orc
 three fruits stands round the central lake; once swimming pools let armies cross water anywhere, the
 causeways stop being the only way in.
 
+City states stays round on a rectangular map, in a circle on the shorter side: stretching it gives
+the homes different shapes (deep and narrow along the long axis, wide and shallow across it), and
+fairness falls from about 0.97 to 0.65–0.8, because a home's fields and fertility depend on its
+shape.
+
 - **Geometry.** A pure function of the request (`geometryFor`). The commons' radius is
   `commons-size` percent of half the shorter side, the strait `strait-width` percent of the shorter
   side, and the homes reach out to the map's half side less a rim of sea, so opposite homes never
@@ -557,6 +566,9 @@ on its island's edge, and expansion means taking another island whole.
 - **Checked, not assumed.** `validateWorld` rebuilds the design and requires every home's pond
   present and every colony and the central island reachable on foot from colony 0, with water,
   buildings and every resource blocking.
+- **Rectangular maps.** The layout is designed in a circle on the map's shorter side and placed on
+  the map through a stretched `WedgeFrame`, so on a rectangular map it fills the map as an ellipse,
+  its islands, pools and lagoons stretched with it. Square maps are unchanged.
 
 ## Everglades
 
@@ -617,7 +629,7 @@ orchard is the prize, and the water between is crossed only once colonies can sw
   each bowing sideways by a random amount that is greatest at mid-length. The frame joins the
   spoke ends. Capture threads are drawn with `bezierPath` and `strokePath`, `ring-spacing` tiles
   apart (squeezed on a small map to keep a whole turn between the hub and the frame) and
-  `thread-width` wide, spokes and frame two tiles wider. Each sags towards the hub by `sag` and a
+  `thread-width` wide (the width on a 256-tile map; a smaller map thins its threads with the square root of its size, to no less than 75%, so a 128-tile web still reads as threads), spokes and frame two tiles wider. Each sags towards the hub by `sag` and a
   random share of it; `torn-strands` percent of the distinct strands of a wedge tear, keeping a
   stub hanging from each spoke. With `spiral` (on) the capture threads are a spiral with one arm
   per colony that climbs one spacing per wedge; off, they are closed rings.
@@ -626,20 +638,94 @@ orchard is the prize, and the water between is crossed only once colonies can sw
   thread — torn, sag, bow, stone at its knot — is a stateless roll of that key from the seed, and
   dew drops are chosen in one wedge and turned round the centre into every other, so every colony
   gets the same web.
-- **Pads and hub.** Pads sit as far out as the wrap allows and shrink (from 13 tiles of radius
-  down to 7) until neighbouring pads keep six tiles of sea between them; only then is the request
-  refused. The hub is `hub-size` percent of the half side, with a pond once it is nine tiles across.
+- **Pads and hub.** Pads sit as far out as the wrap allows, `home-size` percent (60–200, 130 by
+  default) of a standard pad of 13 tiles of radius, never more than 16% of the half side times that
+  percentage so a small map's pads leave room for the web, and shrink down to 7 until neighbouring
+  pads keep six tiles of sea between them; only then is the request refused. The hub is `hub-size` percent of the half side, with a pond once it is nine tiles across.
 - **Resources.** Each pad has an unscaled kit of 40 wheat and 30 wood on the hub side of the swarm
   and a quarry beyond it. About 28% of knots carry a small stone deposit, `dew-drops` islets per
   colony carry a fruit grove or stone each, and the hub carries the orchard of all three fruits
   and a quarry. The threads' own wheat and wood are ranked and split by `PeriodicNoise` sampled in
-  the wedge frame, so every colony's stretch of web is farmed alike. Algae seeds the shallows.
+  the wedge frame, so every colony's stretch of web is farmed alike: 20% of their grass under wheat
+  and 13% under wood, so any stretch of thread passes a field or a copse. A few dry sand patches
+  (7% of the threads' inland grass, three or more tiles from water) decorate the threads, sampled in
+  the wedge frame too. Algae is counted over the shallows up to ten tiles out, one clump per 30
+  tiles, and seeded on each colony's best-growing 30% of that water, the same number of clumps in
+  every wedge.
 - **Routes opened, not hoped for.** Beaches keep the threads walkable, but a small hub can be
   stocked shut, so after `secureStartingCrops` an `openRoad` from colony 0 onto the hub and to
   every other colony clears any deposits in the way.
 - **Checked, not assumed.** `validateWorld` rebuilds the design and requires every spoke's centre
   line to be land, every colony reachable on foot from colony 0 and the hub reachable too, with
   water, buildings and every resource blocking.
+- **Sand roads.** With `sand-roads` (on), a line of sand one tile thick (`tracePath`) runs down the
+  middle of every spoke and whole thread, off the pads and dew drops; torn stubs, which are dead
+  ends, get none. Every tile touching the sand loses the pure grass a deposit or a building needs,
+  so nothing can grow or be built across a thread and close it. Threads thin on small maps to no
+  less than 75% of the control, so grass remains either side of the road.
+- **Rectangular maps.** The web is designed in a circle on the map's shorter side and placed on the
+  map by `Stretch`, so on a rectangular map it fills the map as an ellipse; widths stay in tiles.
+  Square maps are unchanged.
+
+## Coral
+
+Every colony is a sea fan of land. A single trunk leaves the colony's pad on the rim and forks, and
+forks again, as it grows in towards the middle, so each colony's coral is a triangle opening
+inwards: narrow and solid at home, wide and fingery at the far end. The water between sibling
+branches is a triangle opening inwards too, the far ends of neighbouring fans reach into each
+other's gaps, and all the fans meet in a tangle in the middle. Land gets thinner and richer the
+further it is from home.
+
+- **Grown, not drawn.** The trunk leaves the pad heading for the map centre, turned off it by `lean`
+  degrees (every colony alike, so the map turns like a pinwheel); everything else is `growBranches`,
+  which splits every tip in two, each child turned `fork-angle` degrees (with jitter) from its
+  parent (the angle on a 256-tile map; smaller maps fork wider and bigger maps narrower with the
+  square root of the long side, between 0.7 and 1.45 times, since a small fan needs wide forks to
+  fill its wedge and a big fan's many levels curl into rings at a wide angle), a level at a time so both sides of every fork compete equally. `branching` sets the
+  levels on a 256-tile map, one more per doubling of the map and one fewer per halving; the trunk is
+  sized so the lengths of every level reach just past the centre, and where that trunk would be
+  longer than 30 tiles each level keeps more of its parent's length (up to all of it) instead, so
+  the fan fills out rather than hanging off a long bare trunk. On a small map levels are given up
+  until the trunk clears its pad, so on 128-tile maps branching above 4 changes nothing.
+  `branch-width` is the trunk's width; branches taper to about eight tiles.
+- **Checked against every colony.** The fan is grown once, for colony 0, and turned round the map
+  centre for every other colony, so it is fair however random the growth. Every branch and bud must
+  keep `strait-width` tiles of water from all land already grown, from that land's copies in every
+  other wedge and from its own copies; a refused branch is retried at half length, then dropped
+  with its subtree. This refusal is what makes neighbouring tips interleave, and it keeps the land
+  from ever reading as spokes and rings.
+- **Bridges.** `land-bridges` per pair of neighbours join the narrowest straits between a fan and
+  its neighbour's copy, 30 tiles apart, preferring straits away from the rim (where a bridge would
+  join two trunks just below their pads); the search widens until every boundary has a bridge.
+  With none, colonies meet only by swimming.
+- **Pads.** Pads sit as far out as the wrap allows, `home-size` percent (60–200, 130 by default) of
+  a standard pad of 12 tiles of radius (less on a small map, at most 15% of the half side), and
+  shrink down to 7 until neighbouring pads keep six tiles of sea. A bigger pad is more room for the
+  first economy; it also brings the trunk's root in, so at large sizes the fan has less room. Maps
+  under 128 tiles across are refused, as are layouts whose trunk cannot clear its pad.
+- **Resources.** Each pad has an unscaled kit of 40 wheat and 30 wood in front of the swarm and a
+  quarry behind it. Remoteness is the walk along the coral from the nearest pad: 40% of forks
+  carry stone growing from 3 to 9 tiles with it, and every tip a fruit grove from 3 to 12 tiles. The
+  branches' wheat and wood are ranked by `PeriodicNoise` sampled in the wedge frame, leaning
+  towards home: 30% of their grass under wheat and 21% under wood, since the branches are all the
+  land there is. A few dry sand patches (8% of the branches' inland grass, three or more tiles from
+  water, never on a pad, bud or bridge) decorate the wider branches. Algae is counted over the
+  shallows up to ten tiles out, one clump per 35 tiles, and seeded on each colony's best-growing 30%
+  of that water, the same number of clumps in every wedge.
+- **Routes opened and checked.** After `secureStartingCrops`, an `openRoad` from every colony to
+  its trunk's first fork, and with bridges from colony 0 to every colony, clears any deposits in
+  the way. `validateWorld` rebuilds the design and requires every trunk's centre line to be land,
+  every colony able to walk to its first fork and, with bridges, every colony reachable on foot
+  from colony 0.
+- **Sand roads.** With `sand-roads` (on), a line of sand one tile thick (`tracePath`) runs down the
+  middle of every branch that forks on and every bridge, off the pads and buds; dead-end tips get
+  none, since they carry no traffic and their narrow land would be left without fields. Every tile
+  touching the sand loses the pure grass a deposit or a building needs, so nothing can grow or be
+  built across the road. Branches never taper below about eight tiles (`branch-width` 7–17, 11 by
+  default, is the trunk's), so grass remains either side of the road.
+- **Rectangular maps.** The fan is designed in a circle on the map's shorter side and placed on the
+  map by `Stretch`, so on a rectangular map it fills the map as an ellipse; widths stay in tiles.
+  Square maps are unchanged.
 
 ## Compatibility notes
 

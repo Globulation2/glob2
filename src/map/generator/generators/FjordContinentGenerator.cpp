@@ -77,6 +77,20 @@ struct FjordLayout
 	double coreR, lakeR, fjordInnerR, maxStretch;
 	bool hasLake, lakeConnected;
 	std::vector<double> teamTheta;
+	// The continent is sized on the map's shorter side; on a rectangular map it is stretched along
+	// the longer side as well, so it fills the map as an oval rather than a disc in the middle.
+	Stretch fill;
+
+	/// A map point in the continent's own round frame, and back: xf's rotation and elongation, with
+	/// the fill stretch undone first and applied last.
+	ShapePoint toShape(ShapePoint p) const
+	{
+		if (fill.sx == 1 && fill.sy == 1)
+			return xf.toShape(p);
+		const ShapePoint round = fill.undo(p.x - W / 2.0, p.y - H / 2.0);
+		return xf.toShape({W / 2.0 + round.x, H / 2.0 + round.y});
+	}
+	ShapePoint toMap(ShapePoint q) const { return fill.apply(W / 2.0, H / 2.0, xf.toMap(q)); }
 };
 
 FjordLayout computeLayout(Game &game, GenerationContext &context,
@@ -127,8 +141,10 @@ FjordLayout computeLayout(Game &game, GenerationContext &context,
 		}
 	}
 
-	return FjordLayout{W,     H,           nbTeams,    xf,      coast,         coreR,
-					   lakeR, fjordInnerR, maxStretch, hasLake, lakeConnected, teamTheta};
+	return FjordLayout{W,           H,          nbTeams, xf,
+					   coast,       coreR,      lakeR,   fjordInnerR,
+					   maxStretch,  hasLake,    lakeConnected, teamTheta,
+					   Stretch::toFill(W, H)};
 }
 
 // 1) Stamp the continent.
@@ -138,7 +154,7 @@ void stampContinent(Game &game, const FjordLayout &layout)
 	{
 		for (int x = 0; x < layout.W; ++x)
 		{
-			const auto shaped = layout.xf.toShape({double(x), double(y)});
+			const auto shaped = layout.toShape({double(x), double(y)});
 			double u = shaped.x, v = shaped.y;
 			double theta = atan2(v, u);
 			double r = sqrt(u * u + v * v);
@@ -203,9 +219,9 @@ std::vector<std::vector<MapGeneratorPoint>> carveFjords(Game &game, GenerationCo
 			double v = baseV + lateral * perpV;
 			double width = mouthWidth * (1 - t) + tipWidth * t;
 
-			const auto mapped = layout.xf.toMap({u, v});
+			const auto mapped = layout.toMap({u, v});
 			double mx = mapped.x, my = mapped.y;
-			int rad = (int)ceil(width * layout.maxStretch) + 1;
+			int rad = (int)ceil(width * layout.maxStretch * layout.fill.longest()) + 1;
 			int ix = (int)lround(mx), iy = (int)lround(my);
 			fjordCenterlines[k].push_back(
 				MapGeneratorPoint(game.map.normalizeX(ix), game.map.normalizeY(iy)));
@@ -215,7 +231,7 @@ std::vector<std::vector<MapGeneratorPoint>> carveFjords(Game &game, GenerationCo
 				{
 					int nx = game.map.normalizeX(ix + dx);
 					int ny = game.map.normalizeY(iy + dy);
-					const auto shaped = layout.xf.toShape({double(nx), double(ny)});
+					const auto shaped = layout.toShape({double(nx), double(ny)});
 					double u2 = shaped.x, v2 = shaped.y;
 					double dd = (u2 - u) * (u2 - u) + (v2 - v) * (v2 - v);
 					if (dd <= width * width)
@@ -244,7 +260,7 @@ void carveLake(Game &game, const FjordLayout &layout, bool sandyShore)
 	{
 		for (int x = 0; x < layout.W; ++x)
 		{
-			const auto shaped = layout.xf.toShape({double(x), double(y)});
+			const auto shaped = layout.toShape({double(x), double(y)});
 			double u = shaped.x, v = shaped.y;
 			if (u * u + v * v <= layout.lakeR * layout.lakeR)
 				game.map.setUMatPos(x, y, WATER, 1);
@@ -265,7 +281,7 @@ void carveLake(Game &game, const FjordLayout &layout, bool sandyShore)
 		{
 			if (game.map.isWater(x, y))
 				continue;
-			const auto shaped = layout.xf.toShape({double(x), double(y)});
+			const auto shaped = layout.toShape({double(x), double(y)});
 			double u = shaped.x, v = shaped.y;
 			if (u * u + v * v <= sandOuterR * sandOuterR)
 				game.map.setUMatPos(x, y, SAND, 1);
@@ -306,10 +322,12 @@ void placeOutlierIslands(Game &game, GenerationContext &context, const FjordLayo
 		{
 			double theta = randomAngle(context);
 			double r = (context.bounded("layout", 1000)) / 1000.0 * halfMapMargin;
-			int cx = game.map.normalizeX((int)lround(layout.W / 2.0 + r * cos(theta)));
-			int cy = game.map.normalizeY((int)lround(layout.H / 2.0 + r * sin(theta)));
+			int cx =
+				game.map.normalizeX((int)lround(layout.W / 2.0 + r * cos(theta) * layout.fill.sx));
+			int cy =
+				game.map.normalizeY((int)lround(layout.H / 2.0 + r * sin(theta) * layout.fill.sy));
 
-			const auto shaped = layout.xf.toShape({double(cx), double(cy)});
+			const auto shaped = layout.toShape({double(cx), double(cy)});
 			const double shapeR = std::hypot(shaped.x, shaped.y);
 			const double shapeTheta = atan2(shaped.y, shaped.x);
 			if (shapeR < layout.coast.radiusAt(shapeTheta) + islandRadius + 8.0)
@@ -384,7 +402,7 @@ std::vector<MapGeneratorPoint> anchorTeams(Game &game, const FjordLayout &layout
 		int fx = -1, fy = -1;
 		for (int tries = 0; tries < 30; ++tries)
 		{
-			const auto mapped = layout.xf.toMap({r * cos(theta), r * sin(theta)});
+			const auto mapped = layout.toMap({r * cos(theta), r * sin(theta)});
 			double mx = mapped.x, my = mapped.y;
 			int ix = game.map.normalizeX((int)lround(mx));
 			int iy = game.map.normalizeY((int)lround(my));
@@ -398,7 +416,7 @@ std::vector<MapGeneratorPoint> anchorTeams(Game &game, const FjordLayout &layout
 		}
 		if (fx < 0)
 		{
-			const auto mapped = layout.xf.toMap(
+			const auto mapped = layout.toMap(
 				{(layout.coreR + 6.0) * cos(theta), (layout.coreR + 6.0) * sin(theta)});
 			double mx = mapped.x, my = mapped.y;
 			fx = game.map.normalizeX((int)lround(mx));
@@ -472,7 +490,7 @@ void placeCoreResources(Game &game, GenerationContext &context, const FjordLayou
 			// landing on sand could miss every grass tile within its own radius and place nothing.
 			if (!game.map.isGrass(x, y) || grid[y * layout.W + x] != 0)
 				continue;
-			const auto shaped = layout.xf.toShape({double(x), double(y)});
+			const auto shaped = layout.toShape({double(x), double(y)});
 			double u = shaped.x, v = shaped.y;
 			if (u * u + v * v <= (layout.coreR + 4.0) * (layout.coreR + 4.0))
 			{
@@ -514,7 +532,7 @@ void placeCoreResources(Game &game, GenerationContext &context, const FjordLayou
 			{
 				if (!game.map.isWater(x, y))
 					continue;
-				const auto shaped = layout.xf.toShape({double(x), double(y)});
+				const auto shaped = layout.toShape({double(x), double(y)});
 				double u = shaped.x, v = shaped.y;
 				if (u * u + v * v <= innerLakeR * innerLakeR)
 					lakeWater.push_back(MapGeneratorPoint(x, y));
@@ -542,7 +560,7 @@ void placeOpenSeaAlgae(Game &game, GenerationContext &context, const FjordLayout
 		{
 			if (!game.map.isWater(x, y))
 				continue;
-			const auto shaped = layout.xf.toShape({double(x), double(y)});
+			const auto shaped = layout.toShape({double(x), double(y)});
 			double u = shaped.x, v = shaped.y;
 			double theta = atan2(v, u);
 			double r = sqrt(u * u + v * v);
@@ -755,7 +773,7 @@ GeneratorDefinition fjordContinentDefinition()
 	return {"fjord-continent",
 			12,
 			"Fjord continent",
-			10,
+			11,
 			false,
 			{{"continent-size", "Continent size", 28, 40, 2, 34, ControlGroup::Terrain},
 			 {"coast-roughness", "Coast roughness", 10, 35, 1, 22, ControlGroup::Terrain},

@@ -1914,6 +1914,24 @@ Marĉkanaloj
 Marĉoj bezonas almenaŭ unu kolonion.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Tro da kolonioj por ĉi tiu mapo; uzu pli grandan mapon aŭ malpli da kolonioj.
+[Coral]
+Koralo
+[Fork angle]
+Angulo de branĉiĝo
+[Lean]
+Kliniĝo
+[Home size]
+Grando de la hejmo
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+La koralo ne konvenas al ĉi tiu mapo; uzu pli grandan mapon, pli mallarĝajn markolojn aŭ malpli da kolonioj.
+[Branching]
+Branĉiĝo
+[Branch width]
+Larĝo de branĉoj
+[Coral needs at least one colony.]
+Koralo bezonas almenaŭ unu kolonion.
+[Coral needs a map at least 128 tiles across.]
+Koralo bezonas mapon almenaŭ 128 kahelojn larĝan.
 [Spider web]
 Araneaĵo
 [Spokes per colony]

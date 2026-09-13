@@ -1992,6 +1992,24 @@ Sumpkanaler
 Sumplandet kræver mindst én koloni.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 For mange kolonier til dette kort; brug et større kort eller færre kolonier.
+[Coral]
+Koral
+[Fork angle]
+Forgreningsvinkel
+[Lean]
+Hældning
+[Home size]
+Hjemmets størrelse
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Koralen passer ikke på dette kort; brug et større kort, smallere stræder eller færre kolonier.
+[Branching]
+Forgrening
+[Branch width]
+Grenbredde
+[Coral needs at least one colony.]
+Koral kræver mindst én koloni.
+[Coral needs a map at least 128 tiles across.]
+Koral kræver et kort på mindst 128 felter i bredden.
 [Spider web]
 Spindelvæv
 [Spokes per colony]

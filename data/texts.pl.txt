@@ -1916,6 +1916,24 @@ Starorzecza
 Mokradła potrzebują co najmniej jednej kolonii.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Za dużo kolonii jak na tę mapę; użyj większej mapy lub mniejszej liczby kolonii.
+[Coral]
+Koralowiec
+[Fork angle]
+Kąt rozgałęzienia
+[Lean]
+Pochylenie
+[Home size]
+Rozmiar bazy
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Koralowiec nie mieści się na tej mapie; użyj większej mapy, węższych cieśnin albo mniejszej liczby kolonii.
+[Branching]
+Rozgałęzienie
+[Branch width]
+Szerokość gałęzi
+[Coral needs at least one colony.]
+Koralowiec wymaga co najmniej jednej kolonii.
+[Coral needs a map at least 128 tiles across.]
+Koralowiec wymaga mapy o szerokości co najmniej 128 pól.
 [Spider web]
 Pajęczyna
 [Spokes per colony]

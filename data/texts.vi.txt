@@ -1912,6 +1912,24 @@ Kích thước khoảng trống
 Đầm lầy cần ít nhất một thuộc địa.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Quá nhiều thuộc địa cho bản đồ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[Coral]
+San hô
+[Fork angle]
+Góc phân nhánh
+[Lean]
+Độ nghiêng
+[Home size]
+Kích thước căn cứ
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+San hô không vừa bản đồ này; hãy dùng bản đồ lớn hơn, eo biển hẹp hơn hoặc ít thuộc địa hơn.
+[Branching]
+Phân nhánh
+[Branch width]
+Độ rộng nhánh
+[Coral needs at least one colony.]
+San hô cần ít nhất một thuộc địa.
+[Coral needs a map at least 128 tiles across.]
+San hô cần bản đồ rộng ít nhất 128 ô.
 [Spider web]
 Mạng nhện
 [Spokes per colony]

@@ -112,6 +112,9 @@ struct Layout
 	Geometry g{};
 	int cx = 0, cy = 0;
 	double phase = 0;
+	// The flats are designed round the centre in a circle on the map's shorter side; this places
+	// them on the map, stretched along the longer side so the islands fill a rectangular map.
+	Stretch stretch;
 	std::vector<Feature> blobs;                      // in the wedge's frame
 	std::vector<int> homeX, homeY;                   // every home island's centre
 	std::vector<int> pondX, pondY;                   // and its pond's
@@ -133,6 +136,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const TidalFlatsOptions o(request);
 	L.cx = t.w / 2;
 	L.cy = t.h / 2;
+	L.stretch = Stretch::toFill(t.w, t.h);
 	L.phase = context.bounded("flats-layout", 3600) / 3600.0 * 2 * kPi;
 	const double wedge = 2 * kPi / teams;
 	const double arcHalfAt = [&](double d) { return teams < 2 ? kPi * d : kPi * d / teams; }(1.0);
@@ -206,15 +210,15 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 	{
 		const double a = L.phase + wedge * (k + 0.5);
-		L.homeX[k] = t.x(L.cx + int(std::lround(g.homeRing * std::cos(a))));
-		L.homeY[k] = t.y(L.cy + int(std::lround(g.homeRing * std::sin(a))));
+		L.homeX[k] = t.x(L.cx + int(std::lround(g.homeRing * std::cos(a) * L.stretch.sx)));
+		L.homeY[k] = t.y(L.cy + int(std::lround(g.homeRing * std::sin(a) * L.stretch.sy)));
 		L.pondX[k] = L.homeX[k];
 		L.pondY[k] = L.homeY[k];
 	}
 	const double pondRadius = std::clamp(0.2 * g.homeRadius, 3.0, 6.0);
 	const RadialShape pond(pondRadius, 0.3, context, "flats-ponds");
 	const RadialShape oasis(2.5, 0.3, context, "flats-ponds");
-	const WedgeFrame frame(t, L.phase, teams);
+	const WedgeFrame frame(t, L.phase, teams, L.stretch);
 	for (int y = 0; y < t.h; ++y)
 		for (int x = 0; x < t.w; ++x)
 		{
@@ -375,16 +379,21 @@ void stockIslands(Map &map, const Layout &L, GenerationContext &context, const T
 			for (int f = 0; f < 3; ++f)
 			{
 				const double a = spin + 2 * kPi * f / 3;
-				const int seed = seedNear(t, L.cx + int(std::lround(rho * std::cos(a))),
-										  L.cy + int(std::lround(rho * std::sin(a))), 8, eligible);
+				const int seed =
+					seedNear(t, L.cx + int(std::lround(rho * std::cos(a) * L.stretch.sx)),
+							 L.cy + int(std::lround(rho * std::sin(a) * L.stretch.sy)), 8,
+							 eligible);
 				if (seed >= 0)
 					placeResourceClump(map, context, {seed % t.w, seed / t.w}, CHERRY + f, 2);
 			}
 		if (scaledCount(1, o.stone) > 0)
 			if (const int seed = seedNear(
-					t, L.cx + int(std::lround((L.g.centralRadius - 4) * std::cos(spin + kPi / 3))),
-					L.cy + int(std::lround((L.g.centralRadius - 4) * std::sin(spin + kPi / 3))), 8,
-					eligible);
+					t,
+					L.cx + int(std::lround((L.g.centralRadius - 4) * std::cos(spin + kPi / 3) *
+										   L.stretch.sx)),
+					L.cy + int(std::lround((L.g.centralRadius - 4) * std::sin(spin + kPi / 3) *
+										   L.stretch.sy)),
+					8, eligible);
 				seed >= 0)
 				placeResourceClump(map, context, {seed % t.w, seed / t.w}, STONE, 2);
 	}
@@ -512,7 +521,7 @@ GeneratorDefinition tidalFlatsDefinition()
 		"tidal-flats",
 		18,
 		"Tidal flats",
-		4,
+		5,
 		false,
 		// The home islands' radius as a share of the half side; extra islands, sandbars and
 		// lagoons per colony; tide pools per 128x128 of flats.

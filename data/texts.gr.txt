@@ -1986,6 +1986,24 @@ Cortex
 Οι βαλτότοποι χρειάζονται τουλάχιστον μία αποικία.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Πάρα πολλές αποικίες για αυτόν τον χάρτη· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
+[Coral]
+Κοράλλι
+[Fork angle]
+Γωνία διακλάδωσης
+[Lean]
+Κλίση
+[Home size]
+Μέγεθος βάσης
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Το κοράλλι δεν χωράει σε αυτόν τον χάρτη· χρησιμοποιήστε μεγαλύτερο χάρτη, στενότερα στενά ή λιγότερες αποικίες.
+[Branching]
+Διακλάδωση
+[Branch width]
+Πλάτος κλαδιών
+[Coral needs at least one colony.]
+Το κοράλλι χρειάζεται τουλάχιστον μία αποικία.
+[Coral needs a map at least 128 tiles across.]
+Το κοράλλι χρειάζεται χάρτη πλάτους τουλάχιστον 128 τετραγώνων.
 [Spider web]
 Ιστός αράχνης
 [Spokes per colony]

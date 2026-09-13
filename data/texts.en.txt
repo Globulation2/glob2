@@ -1904,6 +1904,24 @@ Sloughs
 Everglades need at least one colony.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Too many colonies for this map; use a bigger map or fewer colonies.
+[Coral]
+Coral
+[Fork angle]
+Fork angle
+[Lean]
+Lean
+[Home size]
+Home size
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.
+[Branching]
+Branching
+[Branch width]
+Branch width
+[Coral needs at least one colony.]
+Coral needs at least one colony.
+[Coral needs a map at least 128 tiles across.]
+Coral needs a map at least 128 tiles across.
 [Spider webs need at least one colony.]
 Spider webs need at least one colony.
 [Spiral]

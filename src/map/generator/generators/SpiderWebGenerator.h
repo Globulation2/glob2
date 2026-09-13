@@ -4,8 +4,8 @@
 #include "GeneratorDefinition.h"
 struct SpiderWebOptions
 {
-	int spokes, ringSpacing, threadWidth, sag, tornStrands, hubSize, dewDrops;
-	bool spiral;
+	int spokes, ringSpacing, threadWidth, sag, tornStrands, hubSize, dewDrops, homeSize;
+	bool spiral, sandRoads;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit SpiderWebOptions(const GenerationRequest &r);
 };

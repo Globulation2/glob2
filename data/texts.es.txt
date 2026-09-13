@@ -1916,6 +1916,24 @@ Ciénagas
 El pantanal necesita al menos una colonia.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Demasiadas colonias para este mapa; usa un mapa más grande o menos colonias.
+[Coral]
+Coral
+[Fork angle]
+Ángulo de ramificación
+[Lean]
+Inclinación
+[Home size]
+Tamaño de la base
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+El coral no cabe en este mapa; usa un mapa más grande, estrechos más estrechos o menos colonias.
+[Branching]
+Ramificación
+[Branch width]
+Ancho de las ramas
+[Coral needs at least one colony.]
+El coral necesita al menos una colonia.
+[Coral needs a map at least 128 tiles across.]
+El coral necesita un mapa de al menos 128 casillas de ancho.
 [Spider web]
 Telaraña
 [Spokes per colony]

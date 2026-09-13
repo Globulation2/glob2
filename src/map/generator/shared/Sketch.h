@@ -2,6 +2,9 @@
 #pragma once
 #include "Grid.h"
 #include "TerrainType.h"
+#include <algorithm>
+#include <cmath>
+#include <utility>
 #include <vector>
 class Map;
 struct GenerationContext;
@@ -22,6 +25,31 @@ void layBeaches(TerrainSketch &, const Torus &);
 void writeUndermap(Map &, const TerrainSketch &);
 
 int countTiles(const TerrainSketch &, TerrainType);
+
+/// Decorative patches of sand inside the land, away from any shore: of the grass tiles `eligible`
+/// allows that lie at least `inland` steps from water, the `share` (0 to 1) with the highest
+/// `noiseAt(tile)` turn to sand. Sampling smooth noise gives a few rounded patches rather than
+/// speckle, and `inland` keeps a strip of grass between every patch and its beach, so the land
+/// still reads as grass with the odd dry clearing. A generator that stamps one design into every
+/// colony's wedge samples its noise in the wedge frame, so every colony gets the same patches.
+/// Sand holds no deposit and no building, so patches are laid before resources and kept small.
+template <typename NoiseAt>
+void sprinkleSand(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned char> &eligible,
+				  double share, int inland, NoiseAt noiseAt)
+{
+	std::vector<unsigned char> water(sketch.size(), 0);
+	for (size_t i = 0; i < sketch.size(); ++i)
+		water[i] = sketch[i] == WATER;
+	const std::vector<int> steps = stepsFrom(t, water);
+	std::vector<std::pair<double, int>> ranked;
+	for (int i = 0; i < t.size(); ++i)
+		if (eligible[i] && sketch[i] == GRASS && steps[i] >= inland)
+			ranked.push_back({-noiseAt(i), i});
+	std::stable_sort(ranked.begin(), ranked.end());
+	const size_t patches = size_t(std::lround(ranked.size() * std::clamp(share, 0.0, 1.0)));
+	for (size_t k = 0; k < patches; ++k)
+		sketch[ranked[k].second] = SAND;
+}
 
 /// A small island raised out in open water: its centre, how far its outline can reach, and
 /// every tile it covers.

@@ -1916,6 +1916,24 @@ Mrtvice
 Močvirja potrebujejo vsaj eno kolonijo.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Preveč kolonij za ta zemljevid; uporabite večji zemljevid ali manj kolonij.
+[Coral]
+Korala
+[Fork angle]
+Kot razvejanja
+[Lean]
+Nagib
+[Home size]
+Velikost doma
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Korala ne gre na ta zemljevid; uporabite večji zemljevid, ožje ožine ali manj kolonij.
+[Branching]
+Razvejanost
+[Branch width]
+Širina vej
+[Coral needs at least one colony.]
+Korala potrebuje vsaj eno kolonijo.
+[Coral needs a map at least 128 tiles across.]
+Korala potrebuje zemljevid, širok vsaj 128 polj.
 [Spider web]
 Pajčevina
 [Spokes per colony]

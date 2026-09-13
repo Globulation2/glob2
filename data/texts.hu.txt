@@ -1916,6 +1916,24 @@ Holtágak
 A mocsárvidékhez legalább egy kolónia kell.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Túl sok kolónia ehhez a térképhez; használj nagyobb térképet vagy kevesebb kolóniát.
+[Coral]
+Korall
+[Fork angle]
+Elágazási szög
+[Lean]
+Dőlés
+[Home size]
+Otthon mérete
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+A korall nem fér el ezen a térképen; használj nagyobb térképet, keskenyebb szorosokat vagy kevesebb kolóniát.
+[Branching]
+Elágazás
+[Branch width]
+Ágszélesség
+[Coral needs at least one colony.]
+A korallhoz legalább egy kolónia kell.
+[Coral needs a map at least 128 tiles across.]
+A korallhoz legalább 128 mező széles térkép kell.
 [Spider web]
 Pókháló
 [Spokes per colony]

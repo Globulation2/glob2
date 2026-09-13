@@ -1912,6 +1912,24 @@ OpenGL недоступний у цій збірці.
 Болотам потрібна хоча б одна колонія.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Забагато колоній для цієї мапи; використайте більшу мапу або менше колоній.
+[Coral]
+Корал
+[Fork angle]
+Кут галуження
+[Lean]
+Нахил
+[Home size]
+Розмір бази
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Корал не вміщується на цю мапу; візьміть більшу мапу, вужчі протоки або менше колоній.
+[Branching]
+Галуження
+[Branch width]
+Ширина гілок
+[Coral needs at least one colony.]
+Для корала потрібна принаймні одна колонія.
+[Coral needs a map at least 128 tiles across.]
+Для корала потрібна мапа завширшки щонайменше 128 клітинок.
 [Spider web]
 Павутина
 [Spokes per colony]

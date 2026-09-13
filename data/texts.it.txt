@@ -1978,6 +1978,24 @@ Lanche
 Le paludi hanno bisogno di almeno una colonia.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Troppe colonie per questa mappa; usa una mappa più grande o meno colonie.
+[Coral]
+Corallo
+[Fork angle]
+Angolo di ramificazione
+[Lean]
+Inclinazione
+[Home size]
+Dimensione della base
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Il corallo non entra in questa mappa; usa una mappa più grande, stretti più sottili o meno colonie.
+[Branching]
+Ramificazione
+[Branch width]
+Larghezza dei rami
+[Coral needs at least one colony.]
+Il corallo richiede almeno una colonia.
+[Coral needs a map at least 128 tiles across.]
+Il corallo richiede una mappa larga almeno 128 caselle.
 [Spider web]
 Ragnatela
 [Spokes per colony]

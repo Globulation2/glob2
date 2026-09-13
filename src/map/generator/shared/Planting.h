@@ -13,6 +13,7 @@
 struct GenerationContext;
 namespace MapGeneration
 {
+struct WedgeFrame;
 // Deposits placed by hand: starter kits, prizes, algae. These are the primitives a generator's
 // own resource layout is built from; scatterResources (Resources.h) is the ambient layer that
 // fills in between them.
@@ -168,6 +169,13 @@ std::vector<unsigned char> swarmSurroundings(const Torus &, const GenerationCont
 void clearAroundSwarms(Map &, const GenerationContext &, const Torus &,
 					   const std::vector<unsigned char> *keep = nullptr);
 
+/// The chance, per water tile, that algae there passes Map::growResources' test to grow or spread
+/// when the engine visits it. The engine draws an offset of up to 15 tiles each way (the difference
+/// of two draws of 0 to 15) and grows the algae only if the tile at that offset is water and the
+/// tile at the offset turned a quarter and doubled is sand. So algae thrives in water near beaches
+/// and sand, and algae with no sand within 30 tiles never grows at all. Land tiles get 0.
+std::vector<double> algaeGrowthChance(const Map &, const Torus &);
+
 /// Where algae goes: any water, or only water this many steps offshore.
 struct AlgaeBand
 {
@@ -175,6 +183,16 @@ struct AlgaeBand
 	/// One clump per this many eligible water tiles at an amount of 100, each this big.
 	int tilesPerClump = 40;
 	int clumpRadius = 1;
+	/// Above 0, the clumps counted over the whole band all go on this share of it where
+	/// algaeGrowthChance is highest, so they sit where algae can regrow.
+	double bestShare = 0;
+	/// The same band, with its clumps placed on its best-growing `share` of water.
+	AlgaeBand thriving(double share) const
+	{
+		AlgaeBand band = *this;
+		band.bestShare = share;
+		return band;
+	}
 	static AlgaeBand anyWater(int tilesPerClump = 40) { return {-1, -1, tilesPerClump, 1}; }
 	static AlgaeBand shallows(int nearest, int farthest, int tilesPerClump = 90)
 	{
@@ -182,9 +200,12 @@ struct AlgaeBand
 	}
 };
 
-/// Algae clumps over the band, scaled by the amount.
+/// Algae clumps over the band, scaled by the amount. With a wedge frame the clumps are shared out
+/// equally between the colonies' wedges, each wedge's placed on its own best-growing water: the
+/// engine's growth test is not symmetric under rotation (it turns its offset by reflecting it), so
+/// one best share taken over the whole map would favour some wedges' water over others'.
 void seedAlgae(Map &, GenerationContext &, const Torus &, const char *stream, int algaePercent,
-			   const AlgaeBand &);
+			   const AlgaeBand &, const WedgeFrame *wedges = nullptr);
 
 /// Each island carries one themed prize at its middle: stone, a fruit or wheat, so finding one
 /// feels like a distinct find rather than an interchangeable resource dump.

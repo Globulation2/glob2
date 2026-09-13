@@ -1914,6 +1914,24 @@ OpenGL در این بیلد موجود نیست.
 باتلاق‌ها دست‌کم به یک مستعمره نیاز دارند.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 تعداد مستعمره‌ها برای این نقشه زیاد است؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
+[Coral]
+مرجان
+[Fork angle]
+زاویه انشعاب
+[Lean]
+شیب
+[Home size]
+اندازه پایگاه
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+مرجان در این نقشه جا نمی‌شود؛ از نقشه‌ای بزرگ‌تر، تنگه‌های باریک‌تر یا مستعمره‌های کمتر استفاده کنید.
+[Branching]
+انشعاب
+[Branch width]
+پهنای شاخه‌ها
+[Coral needs at least one colony.]
+مرجان دست‌کم به یک مستعمره نیاز دارد.
+[Coral needs a map at least 128 tiles across.]
+مرجان به نقشه‌ای با پهنای دست‌کم ۱۲۸ خانه نیاز دارد.
 [Spider web]
 تار عنکبوت
 [Spokes per colony]

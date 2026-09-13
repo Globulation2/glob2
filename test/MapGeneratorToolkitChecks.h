@@ -655,6 +655,161 @@ inline void drawingChecks()
 	assert(upright != turned);
 }
 
+// bentPath runs its length along its heading and bows to the left; tracePath is one tile thick and
+// unbroken; pathClearance measures the water
+// between two strokes and skips a branch's root; growBranches forks level by level to its depth,
+// offers every branch to accept, retries a refused one at half length and grows the same tree from
+// the same rolls.
+inline void branchChecks()
+{
+	const std::vector<StrokePoint> straight = bentPath({0, 0}, 0, 20, 0, 3, 1, 10);
+	assert(straight.size() == 11 && std::abs(straight.back().x - 20) < 1e-9 &&
+		   std::abs(straight.back().y) < 1e-9 && std::abs(straight.back().halfWidth - 1) < 1e-9);
+	const std::vector<StrokePoint> bowed = bentPath({0, 0}, 0, 20, 0.1, 1, 1, 10);
+	assert(std::abs(bowed[5].y - 2) < 1e-9 && std::abs(bowed.back().x - 20) < 1e-9);
+
+	const std::vector<StrokePoint> a{{0, 0, 1}, {20, 0, 1}}, b{{0, 6, 1}, {20, 6, 1}};
+	assert(std::abs(pathClearance(a, b) - 4) < 1e-9 && std::abs(pathClearance(b, a) - 4) < 1e-9);
+	const std::vector<StrokePoint> crossing{{10, -5, 1}, {10, 5, 1}};
+	assert(pathClearance(a, crossing) < 0);
+	const std::vector<StrokePoint> leaving{{10, 0, 1}, {10, 20, 1}};
+	assert(pathClearance(leaving, a) < 0 && pathClearance(leaving, a, 4) > 1.9);
+	const std::vector<StrokePoint> dot{{10, 4, 1}};
+	assert(std::abs(pathClearance(dot, a) - 2) < 1e-9);
+	// tracePath: one tile thick and unbroken, even along a shallow diagonal and across the wrap.
+	{
+		const Torus small(32, 16);
+		std::vector<unsigned char> line(small.size(), 0);
+		tracePath(line, small, {{2, 3, 5}, {29, 11, 5}, {35, 12, 5}});
+		for (int x = 2; x <= 29; ++x)
+		{
+			int column = 0;
+			for (int y = 0; y < small.h; ++y)
+				column += line[small.at(x, y)];
+			assert(column >= 1 && column <= 2);
+		}
+		assert(line[small.at(2, 3)] && line[small.at(29, 11)] && line[small.at(3, 12)]);
+		assert(!line[small.at(15, 14)] && !line[small.at(10, 0)]);
+	}
+	const PathBounds bounds = pathBounds(a);
+	assert(std::abs(bounds.x - 10) < 1e-9 && std::abs(bounds.radius - 11) < 1e-9);
+
+	ForkStyle style;
+	style.spreadJitter = 0;
+	style.lengthJitter = 0;
+	style.bend = 0;
+	style.minimumLength = 1;
+	const auto grow = [&](std::uint32_t seed, int forks, bool refuseSecond)
+	{
+		std::mt19937 random(seed);
+		const auto roll = [&] { return random() / 4294967296.0; };
+		int offered = 0;
+		const auto accept = [&](const std::vector<StrokePoint> &, int)
+		{ return !(refuseSecond && ++offered == 2); };
+		std::vector<Branch> tree;
+		growBranches(tree, -1, {0, 0}, 0, 16, 2, forks, style, roll, accept);
+		return tree;
+	};
+	const std::vector<Branch> full = grow(3, 2, false);
+	// Level by level: the root, its two children, then their four.
+	assert(full.size() == 7 && full[0].parent < 0 && !full[0].leaf && full[2].depth == 1 &&
+		   !full[2].leaf && full[3].depth == 2 && full[6].parent == 2 && full[6].leaf);
+	const std::vector<Branch> again = grow(3, 2, false);
+	for (size_t i = 0; i < full.size(); ++i)
+		assert(full[i].path.back().x == again[i].path.back().x &&
+			   full[i].path.back().y == again[i].path.back().y);
+	// The first child is refused once and kept at half length, so its subtree is shorter too.
+	const std::vector<Branch> retried = grow(3, 2, true);
+	assert(retried.size() == 7);
+	const auto length = [](const Branch &branch)
+	{
+		return std::hypot(branch.path.back().x - branch.path.front().x,
+						  branch.path.back().y - branch.path.front().y);
+	};
+	assert(std::abs(length(retried[1]) - length(full[1]) / 2) < 1e-6);
+}
+
+// Stretch is exactly the identity on a square map and fills a rectangle as an ellipse; a stretched
+// WedgeFrame measures cells in the round design frame; a stretched shape fill becomes an oval.
+inline void stretchChecks()
+{
+	const Stretch square = Stretch::toFill(64, 64);
+	assert(square.sx == 1 && square.sy == 1 && square.heading(1.234) == 1.234);
+	const ShapePoint same = square.apply(32, 32, {10.1, 3.7});
+	assert(same.x == 10.1 && same.y == 3.7);
+	const Stretch wide = Stretch::toFill(64, 16);
+	assert(wide.sx == 4 && wide.sy == 1 && wide.longest() == 4);
+	const ShapePoint far = wide.apply(32, 8, {40, 8});
+	assert(far.x == 64 && far.y == 8);
+	assert(std::abs(wide.heading(kPi / 4) - std::atan2(1.0, 4.0)) < 1e-12);
+
+	const Torus t(64, 16);
+	const WedgeFrame round(t, 0, 4, wide);
+	assert(std::abs(round.cell(32 + 20, 8).d - 5) < 1e-9);
+	assert(std::abs(round.cell(32, 8 + 5).d - 5) < 1e-9);
+
+	GenerationRequest request;
+	request.seed = 3;
+	GenerationContext context(request);
+	const RadialShape disc(4, 0, context, "stretch");
+	std::vector<unsigned char> plain(t.size(), 0), oval(t.size(), 0);
+	fillShape(plain, t, 32, 8, disc);
+	fillShape(oval, t, 32, 8, disc, 0, 1, wide);
+	assert(plain[t.at(35, 8)] && !plain[t.at(40, 8)] && oval[t.at(45, 8)] && !oval[t.at(32, 12)]);
+	assert(std::count(oval.begin(), oval.end(), 1) > 3 * std::count(plain.begin(), plain.end(), 1));
+}
+
+// sprinkleSand turns only eligible inland grass, the noisiest share of it, and keeps a strip of
+// grass by the shore; algaeGrowthChance is zero on land and far from sand, higher near sand, and
+// matches the engine's offset weights exactly.
+inline void dressingChecks()
+{
+	const Torus t(32, 32);
+	TerrainSketch sketch(t.size(), WATER);
+	for (int y = 4; y < 28; ++y)
+		for (int x = 4; x < 28; ++x)
+			sketch[t.at(x, y)] = GRASS;
+	std::vector<unsigned char> eligible(t.size(), 1);
+	eligible[t.at(16, 16)] = 0;
+	sprinkleSand(sketch, t, eligible, 0.25, 3, [&](int i) { return double(i % t.w); });
+	int sand = 0;
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+			if (sketch[t.at(x, y)] == SAND)
+			{
+				++sand;
+				assert(x >= 21 && x <= 25 && y >= 6 && y <= 25 && !(x == 16 && y == 16));
+			}
+	// Steps are Chebyshev: 20 by 20 tiles lie three or more from the water, less the one refused,
+	// and the quarter of them turned are the five highest columns.
+	assert(sand == int(std::lround((20 * 20 - 1) * 0.25)) && sketch[t.at(24, 12)] == SAND &&
+		   sketch[t.at(7, 12)] == GRASS);
+
+	Game game(nullptr);
+	grassMap(game, 6, 6);
+	Map &map = game.map;
+	const Torus m(map);
+	for (int y = 0; y < m.h; ++y)
+		for (int x = 0; x < m.w; ++x)
+			map.setUMTerrain(x, y, x >= 40 && x < 48 ? SAND : WATER);
+	map.rebuildTerrain();
+	const std::vector<double> chance = algaeGrowthChance(map, m);
+	assert(chance[m.at(44, 10)] == 0);                   // sand, not water
+	assert(chance[m.at(36, 10)] > chance[m.at(20, 10)]); // nearer the sand grows faster
+	// A probability: the weights of all offsets sum to 1.
+	assert(chance[m.at(36, 10)] > 0 && chance[m.at(36, 10)] <= 1);
+	// Every tile of the sea sees the strip within 30 tiles, but no offset can reach sand from a
+	// map that has none.
+	for (int x = 0; x < m.w; ++x)
+		map.setUMTerrain(x, 5, WATER);
+	for (int y = 0; y < m.h; ++y)
+		for (int x = 40; x < 48; ++x)
+			map.setUMTerrain(x, y, WATER);
+	map.rebuildTerrain();
+	const std::vector<double> dry = algaeGrowthChance(map, m);
+	assert(std::count(dry.begin(), dry.end(), 0.0) == long(dry.size()));
+}
+
 // plantFields deals the preferred tiles, wheat first by the split key, in proportion; KitFrame
 // turns its offsets with its facing; scatterClumps stops after its attempts on ineligible ground.
 inline void layerChecks()
@@ -706,8 +861,12 @@ inline void toolkitChecks()
 	wedgeChecks();
 	shuffleChecks();
 	drawingChecks();
+	branchChecks();
+	stretchChecks();
+	dressingChecks();
 	layerChecks();
 	puts("PASS shared toolkit: floods, sketch, planting, roads, settlements, balanced starts, "
-		 "scatter, lattice noise, wedge frame, shuffle, drawing, fields and clumps");
+		 "scatter, lattice noise, wedge frame, shuffle, drawing, branches, stretch, sand patches, "
+		 "algae growth, fields and clumps");
 }
 } // namespace ToolkitChecks

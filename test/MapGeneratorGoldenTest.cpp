@@ -139,7 +139,7 @@ Row roll(int id, int wDec, int hDec, int teams, std::uint32_t seed)
 }
 
 // The rows this platform keeps: every registered generator at its own defaults on the three
-// lobby sizes, and at 256 with two and with eight colonies.
+// lobby sizes and on a 512x256 rectangle, and at 256 with two and with eight colonies.
 std::vector<Row> goldenRows()
 {
 	std::vector<Row> rows;
@@ -151,6 +151,7 @@ std::vector<Row> goldenRows()
 			rows.push_back(roll(id, 8, 8, defaults.nbTeams, seed));
 		rows.push_back(roll(id, 7, 7, defaults.nbTeams, 1));
 		rows.push_back(roll(id, 9, 9, defaults.nbTeams, 1));
+		rows.push_back(roll(id, 9, 8, defaults.nbTeams, 1));
 		rows.push_back(roll(id, 8, 8, 2, 1));
 		rows.push_back(roll(id, 8, 8, 8, 1));
 	}

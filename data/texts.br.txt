@@ -1912,6 +1912,24 @@ Geunioù
 Os pântanos precisam de pelo menos uma colônia.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Re a drevadennoù evit ar gartenn-mañ; implijit ur gartenn vrasoc'h pe nebeutoc'h a drevadennoù.
+[Coral]
+Koural
+[Fork angle]
+Korn ar skourradur
+[Lean]
+Stouadur
+[Home size]
+Ment an diazez
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Ne zeu ket ar c'houral war ar gartenn-mañ; implijit ur gartenn vrasoc'h, kanolioù moanoc'h pe nebeutoc'h a drevadennoù.
+[Branching]
+Skourradurioù
+[Branch width]
+Ledander ar skourroù
+[Coral needs at least one colony.]
+Ezhomm en deus ar c'houral eus un drevadenn da vihanañ.
+[Coral needs a map at least 128 tiles across.]
+Ezhomm en deus ar c'houral eus ur gartenn 128 karrezenn ledan da vihanañ.
 [Spider web]
 Gwiad-kevnid
 [Spokes per colony]

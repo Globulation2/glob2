@@ -1916,6 +1916,24 @@ OpenGL није доступан у овој верзији.
 Мочварама треба бар једна колонија.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Превише колонија за ову мапу; користите већу мапу или мање колонија.
+[Coral]
+Корал
+[Fork angle]
+Угао гранања
+[Lean]
+Нагиб
+[Home size]
+Величина базе
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Корал не стаје на ову мапу; користите већу мапу, уже мореузе или мање колонија.
+[Branching]
+Гранање
+[Branch width]
+Ширина грана
+[Coral needs at least one colony.]
+Коралу је потребна бар једна колонија.
+[Coral needs a map at least 128 tiles across.]
+Коралу је потребна мапа широка бар 128 поља.
 [Spider web]
 Паукова мрежа
 [Spokes per colony]

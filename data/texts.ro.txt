@@ -1916,6 +1916,24 @@ Mlaștini
 Mlaștinile au nevoie de cel puțin o colonie.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Prea multe colonii pentru această hartă; folosește o hartă mai mare sau mai puține colonii.
+[Coral]
+Coral
+[Fork angle]
+Unghi de ramificare
+[Lean]
+Înclinare
+[Home size]
+Mărimea bazei
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Coralul nu încape pe această hartă; folosiți o hartă mai mare, strâmtori mai înguste sau mai puține colonii.
+[Branching]
+Ramificare
+[Branch width]
+Lățimea ramurilor
+[Coral needs at least one colony.]
+Coralul are nevoie de cel puțin o colonie.
+[Coral needs a map at least 128 tiles across.]
+Coralul are nevoie de o hartă lată de cel puțin 128 de pătrate.
 [Spider web]
 Pânză de păianjen
 [Spokes per colony]

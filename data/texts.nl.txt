@@ -1940,6 +1940,24 @@ Moerassloten
 Het moerasland heeft minstens één kolonie nodig.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Te veel kolonies voor deze kaart; gebruik een grotere kaart of minder kolonies.
+[Coral]
+Koraal
+[Fork angle]
+Vertakkingshoek
+[Lean]
+Helling
+[Home size]
+Grootte van de thuisbasis
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Het koraal past niet op deze kaart; gebruik een grotere kaart, smallere zeestraten of minder kolonies.
+[Branching]
+Vertakking
+[Branch width]
+Takbreedte
+[Coral needs at least one colony.]
+Koraal heeft minstens één kolonie nodig.
+[Coral needs a map at least 128 tiles across.]
+Koraal heeft een kaart van minstens 128 tegels breed nodig.
 [Spider web]
 Spinnenweb
 [Spokes per colony]

@@ -1926,6 +1926,24 @@ Zingirak
 Zingirek gutxienez kolonia bat behar dute.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Kolonia gehiegi mapa honetarako; erabili mapa handiagoa edo kolonia gutxiago.
+[Coral]
+Koralea
+[Fork angle]
+Adarkatze-angelua
+[Lean]
+Makurdura
+[Home size]
+Etxearen tamaina
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Koralea ez da mapa honetan sartzen; erabili mapa handiagoa, itsasarte estuagoak edo kolonia gutxiago.
+[Branching]
+Adarkadura
+[Branch width]
+Adarren zabalera
+[Coral needs at least one colony.]
+Koraleak gutxienez kolonia bat behar du.
+[Coral needs a map at least 128 tiles across.]
+Koraleak gutxienez 128 lauki zabaleko mapa behar du.
 [Spider web]
 Armiarma-sarea
 [Spokes per colony]

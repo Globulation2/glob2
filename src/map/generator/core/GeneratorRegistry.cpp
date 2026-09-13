@@ -3,6 +3,7 @@
 #include "CityStatesGenerator.h"
 #include "ConcreteIslandsGenerator.h"
 #include "ContestedCommonsGenerator.h"
+#include "CoralGenerator.h"
 #include "CraterLakesGenerator.h"
 #include "EvergladesGenerator.h"
 #include "FjordContinentGenerator.h"
@@ -95,7 +96,8 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 		 shatteredCoastDefinition(), islesDefinition(), watershedDefinition(),
 		 stoneHighlandsDefinition(), symmetricArenaDefinition(), ringWorldDefinition(),
 		 cityStatesDefinition(), tidalFlatsDefinition(), evergladesDefinition(), spiderWebDefinition(),
-		 ruggedArchipelagoDefinition(), concreteIslandsDefinition(), craterLakesDefinition(),
-		 islandsDefinition(), swampDefinition(), riverDefinition(), uniformDefinition()});
+		 coralDefinition(), ruggedArchipelagoDefinition(), concreteIslandsDefinition(),
+		 craterLakesDefinition(), islandsDefinition(), swampDefinition(), riverDefinition(),
+		 uniformDefinition()});
 	return registry;
 }

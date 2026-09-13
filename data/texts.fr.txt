@@ -1926,6 +1926,24 @@ Marigots
 Les marécages ont besoin d'au moins une colonie.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Trop de colonies pour cette carte ; utilisez une carte plus grande ou moins de colonies.
+[Coral]
+Corail
+[Fork angle]
+Angle de ramification
+[Lean]
+Inclinaison
+[Home size]
+Taille de la base
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Le corail ne tient pas sur cette carte ; utilisez une carte plus grande, des détroits plus étroits ou moins de colonies.
+[Branching]
+Ramification
+[Branch width]
+Largeur des branches
+[Coral needs at least one colony.]
+Le corail nécessite au moins une colonie.
+[Coral needs a map at least 128 tiles across.]
+Le corail nécessite une carte d'au moins 128 cases de large.
 [Spider web]
 Toile d'araignée
 [Spokes per colony]

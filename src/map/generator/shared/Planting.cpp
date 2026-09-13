@@ -2,6 +2,9 @@
 #include "Planting.h"
 #include "GenerationContext.h"
 #include "Resources.h"
+#include "Wedge.h"
+#include <algorithm>
+#include <cstdlib>
 namespace MapGeneration
 {
 bool clearGround(const Map &map, int x, int y)
@@ -34,8 +37,65 @@ void clearAroundSwarms(Map &map, const GenerationContext &context, const Torus &
 			}
 }
 
+namespace
+{
+// Map::growResources' algae test, evaluated exactly for chosen tiles. Each offset is the difference
+// of two independent draws of 0 to 15: -15 to 15, weighted 16 - |d| out of 256.
+class AlgaeGrowth
+{
+  public:
+	AlgaeGrowth(const Map &map, const Torus &t) : t(t), water(t.size(), 0), sand(t.size(), 0)
+	{
+		for (int y = 0; y < t.h; ++y)
+			for (int x = 0; x < t.w; ++x)
+			{
+				water[y * t.w + x] = map.isWater(x, y);
+				sand[y * t.w + x] = map.isSand(x, y);
+			}
+		for (int d = -15; d <= 15; ++d)
+			weight[d + 15] = (16 - std::abs(d)) / 256.0;
+		// The sand the test looks for lies within 30 tiles; beyond that the chance is 0.
+		toSand = stepsFrom(t, sand);
+	}
+	double at(int i) const
+	{
+		if (!water[i] || toSand[i] < 0 || toSand[i] > 30)
+			return 0;
+		// Map sizes are powers of two, so wrapping is a mask; this loop runs 961 times a tile.
+		const int x = i % t.w, y = i / t.w, wm = t.w - 1, hm = t.h - 1;
+		double sum = 0;
+		for (int dy = -15; dy <= 15; ++dy)
+		{
+			const int waterRow = ((y + dy) & hm) * t.w, sandColumn = (x + 2 * dy) & wm;
+			double row = 0;
+			for (int dx = -15; dx <= 15; ++dx)
+				if (water[waterRow + ((x + dx) & wm)] &&
+					sand[((y + 2 * dx) & hm) * t.w + sandColumn])
+					row += weight[dx + 15];
+			sum += row * weight[dy + 15];
+		}
+		return sum;
+	}
+
+  private:
+	const Torus &t;
+	std::vector<unsigned char> water, sand;
+	std::vector<int> toSand;
+	double weight[31];
+};
+} // namespace
+
+std::vector<double> algaeGrowthChance(const Map &map, const Torus &t)
+{
+	const AlgaeGrowth growth(map, t);
+	std::vector<double> chance(t.size(), 0.0);
+	for (int i = 0; i < t.size(); ++i)
+		chance[i] = growth.at(i);
+	return chance;
+}
+
 void seedAlgae(Map &map, GenerationContext &context, const Torus &t, const char *stream,
-			   int algaePercent, const AlgaeBand &band)
+			   int algaePercent, const AlgaeBand &band, const WedgeFrame *wedges)
 {
 	const int n = t.w * t.h;
 	std::vector<MapGeneratorPoint> water;
@@ -61,10 +121,39 @@ void seedAlgae(Map &map, GenerationContext &context, const Torus &t, const char 
 	}
 	if (water.empty())
 		return;
-	for (int clump = 0; clump < scaledCount(int(water.size()) / band.tilesPerClump, algaePercent);
-		 ++clump)
-		placeResourceClump(map, context, water[context.bounded(stream, water.size())], ALGA,
-						   band.clumpRadius);
+	// The count follows the whole band. With a best share, the clumps then go only on the water
+	// in it where algae regrows most readily, so the same amount of algae sits where it lasts.
+	const int clumps = scaledCount(int(water.size()) / band.tilesPerClump, algaePercent);
+	if (band.bestShare <= 0 && !wedges)
+	{
+		for (int clump = 0; clump < clumps; ++clump)
+			placeResourceClump(map, context, water[context.bounded(stream, water.size())], ALGA,
+							   band.clumpRadius);
+		return;
+	}
+	// Only the band's own tiles are measured: the test costs 961 lookups a tile.
+	const AlgaeGrowth growth(map, t);
+	const int groups = wedges ? wedges->teams : 1;
+	std::vector<std::vector<std::pair<double, int>>> byGroup(groups);
+	for (const MapGeneratorPoint &p : water)
+	{
+		const int i = p.y * t.w + p.x;
+		byGroup[wedges ? wedges->cell(p.x, p.y).k : 0].push_back(
+			{band.bestShare > 0 ? -growth.at(i) : 0.0, i});
+	}
+	for (auto &group : byGroup)
+	{
+		if (group.empty())
+			continue;
+		std::stable_sort(group.begin(), group.end());
+		if (band.bestShare > 0)
+			group.resize(std::max<size_t>(1, size_t(std::lround(group.size() * band.bestShare))));
+		for (int clump = 0; clump < clumps / groups; ++clump)
+		{
+			const int i = group[context.bounded(stream, group.size())].second;
+			placeResourceClump(map, context, {i % t.w, i / t.w}, ALGA, band.clumpRadius);
+		}
+	}
 }
 
 void stockIslands(Map &map, GenerationContext &context, const std::vector<Island> &islands,

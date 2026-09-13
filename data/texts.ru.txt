@@ -1914,6 +1914,24 @@ OpenGL недоступен в этой сборке.
 Болотам нужна хотя бы одна колония.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Слишком много колоний для этой карты; используйте карту побольше или меньше колоний.
+[Coral]
+Коралл
+[Fork angle]
+Угол ветвления
+[Lean]
+Наклон
+[Home size]
+Размер базы
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Коралл не помещается на эту карту; возьмите карту побольше, проливы поуже или меньше колоний.
+[Branching]
+Ветвление
+[Branch width]
+Ширина ветвей
+[Coral needs at least one colony.]
+Для коралла нужна хотя бы одна колония.
+[Coral needs a map at least 128 tiles across.]
+Для коралла нужна карта шириной не менее 128 клеток.
 [Spider web]
 Паутина
 [Spokes per colony]

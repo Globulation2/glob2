@@ -1922,6 +1922,24 @@ Charcos
 Os pântanos precisam de pelo menos uma colónia.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Colónias a mais para este mapa; use um mapa maior ou menos colónias.
+[Coral]
+Coral
+[Fork angle]
+Ângulo de ramificação
+[Lean]
+Inclinação
+[Home size]
+Tamanho da base
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+O coral não cabe neste mapa; use um mapa maior, estreitos mais estreitos ou menos colónias.
+[Branching]
+Ramificação
+[Branch width]
+Largura dos ramos
+[Coral needs at least one colony.]
+O coral precisa de pelo menos uma colónia.
+[Coral needs a map at least 128 tiles across.]
+O coral precisa de um mapa com pelo menos 128 casas de largura.
 [Spider web]
 Teia de aranha
 [Spokes per colony]

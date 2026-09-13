@@ -41,6 +41,9 @@ namespace
 // outline wobbles by up to this share of its radius.
 constexpr int kPadRadius = 13;
 constexpr int kMinimumPad = 7;
+// ...and never more than this share of the half side (times the home size control), so a small
+// map's pads leave room for the web.
+constexpr double kPadShare = 0.16;
 constexpr double kPadRoughness = 0.2;
 // Sea kept between the pads and their images across the wrap, and between neighbouring pads.
 constexpr double kWrapGap = 6;
@@ -65,9 +68,25 @@ constexpr int kHomeWood = 30;
 // Knots carrying stone, in tenths of a percent at 100, and each one's size in tiles.
 constexpr int kKnotStone = 280;
 constexpr int kKnotStoneTiles = 5;
-// The threads' standing wheat and wood, as shares of their grass at 100.
-constexpr int kWheatShare = 8;
-constexpr int kWoodShare = 5;
+// The threads' standing wheat and wood, as shares of their grass at 100: enough that walking any
+// stretch of thread passes a field or a copse, since the threads are all the land there is.
+constexpr int kWheatShare = 20;
+constexpr int kWoodShare = 13;
+// Dry patches of sand inside the threads, as a share of their inland grass, at least this many
+// steps from water so a strip of grass always lies between patch and beach; and the size of the
+// noise the patches follow, in tiles.
+constexpr double kSandShare = 0.07;
+constexpr int kSandInland = 3;
+constexpr double kSandCell = 10;
+// One algae clump per this many tiles of shallows at 100, all on the share of each colony's
+// shallows where algae regrows most readily.
+constexpr int kAlgaeTilesPerClump = 30;
+constexpr double kAlgaeBestShare = 0.3;
+// The thread width control is the width on a 256-tile map. A smaller map thins its threads with
+// the square root of its size, down to this share, so a 128-tile web still reads as threads rather
+// than one blob of land, while its threads keep grass either side of their sand road; bigger maps
+// keep the control's width, which already reads as a web.
+constexpr double kMinimumThreadScale = 0.75;
 // Dew drops and the water kept round them.
 constexpr double kDewRadius = 3;
 constexpr double kDewMoat = 3;
@@ -87,7 +106,9 @@ Geometry geometryFor(const GenerationRequest &r)
 	Geometry g;
 	g.teams = std::max(1, r.nbTeams);
 	g.half = std::min(1 << r.wDec, 1 << r.hDec) / 2;
-	g.threadHalf = o.threadWidth / 2.0;
+	const double threadWidth =
+		o.threadWidth * std::clamp(std::sqrt(g.half / 128.0), kMinimumThreadScale, 1.0);
+	g.threadHalf = threadWidth / 2.0;
 	g.spokeHalf = g.threadHalf + 1;
 	g.hubRadius = std::max(6.0, o.hubSize / 100.0 * g.half);
 	g.pondRadius = g.hubRadius >= 9 ? std::max(2.0, 0.3 * g.hubRadius) : 0.0;
@@ -95,7 +116,14 @@ Geometry geometryFor(const GenerationRequest &r)
 	g.sag = o.sag / 100.0 * kMaximumSag;
 	g.spiral = o.spiral;
 	// The pads sit as far out as the wrap allows, and shrink on a crowded ring until they fit.
-	for (int pad = kPadRadius; pad >= kMinimumPad; --pad)
+	// The home size control scales the pad, 100 being kPadRadius: a bigger pad is more room to
+	// build the first economy before the colony has to push out along the threads. It is a size to
+	// aim for; a crowded ring shrinks it as ever.
+	const double homeScale = o.homeSize / 100.0;
+	const int largestPad =
+		std::max(kMinimumPad, int(std::lround(std::min(kPadRadius * homeScale,
+													   kPadShare * homeScale * g.half))));
+	for (int pad = largestPad; pad >= kMinimumPad; --pad)
 	{
 		g.padRadius = pad;
 		g.padReach = pad * (1 + kPadRoughness);
@@ -110,7 +138,7 @@ Geometry geometryFor(const GenerationRequest &r)
 	// the spokes never crowd into one mass round the hub: halfway out, neighbouring spokes keep
 	// well over a thread's width of water between them.
 	const double middle = (g.hubRadius + g.frameRadius) / 2;
-	const int room = int(2 * kPi * middle / (kSpokeRoom * o.threadWidth));
+	const int room = int(2 * kPi * middle / (kSpokeRoom * threadWidth));
 	g.perColony = std::max({1, std::min(o.spokes, room / g.teams),
 							std::min((kMinimumSpokes + g.teams - 1) / g.teams, room / g.teams)});
 	g.spokes = g.perColony * g.teams;
@@ -121,7 +149,7 @@ Geometry geometryFor(const GenerationRequest &r)
 	// keeps at least one whole turn between the hub and the frame.
 	const double span = g.frameRadius - 0.8 * g.padReach - g.hubRadius;
 	g.spacing = std::min(g.spacing,
-						 std::max(2.0 * o.threadWidth, span / (1 + kFreeZone + kOuterZone)));
+						 std::max(2.0 * threadWidth, span / (1 + kFreeZone + kOuterZone)));
 	g.firstRing = g.hubRadius + kFreeZone * g.spacing;
 	g.lastRing = g.frameRadius - std::max(kOuterZone * g.spacing, 0.8 * g.padReach);
 	return g;
@@ -158,6 +186,9 @@ struct Layout
 	Geometry g{};
 	int cx = 0, cy = 0;
 	double phase = 0;
+	// The web is designed round the centre in a circle on the map's shorter side; this places it on
+	// the map, stretched along the longer side so the web fills a rectangular map.
+	Stretch stretch;
 	std::vector<double> bow;                 // per spoke of a wedge, in radians
 	std::vector<unsigned char> land, water;  // per tile
 	std::vector<unsigned char> hub, thread;  // per tile
@@ -167,6 +198,7 @@ struct Layout
 	std::vector<double> padAngle;            // each pad's heading out from the hub
 	std::vector<Drop> drops;
 	std::vector<std::vector<ShapePoint>> spokeLines; // every spoke's centre line
+	std::vector<std::vector<StrokePoint>> roads;     // every thread's centre line, on the map
 	std::string failure;
 
 	/// Where spoke j crosses radius r: it bows sideways most at mid-length and not at all at the
@@ -215,21 +247,30 @@ struct Layout
 	}
 };
 
-void strokeThread(std::vector<unsigned char> &mask, const Torus &t, const Thread &thread,
+// Strokes a thread onto the mask, and records its centre line as road unless it is torn.
+void strokeThread(std::vector<unsigned char> &mask, const Torus &t, Layout &L, const Thread &thread,
 				  double halfWidth)
 {
-	const double length = std::hypot(thread.to.x - thread.from.x, thread.to.y - thread.from.y);
-	const int segments = std::max(4, int(length / 3));
-	const std::vector<StrokePoint> path =
-		bezierPath(thread.from, thread.control, thread.to, halfWidth, halfWidth, segments);
-	if (!thread.torn)
+	// A torn strand's stubs are dead ends and carry no traffic, so only whole threads get a road.
+	const auto stroke = [&](std::vector<StrokePoint> path, bool road)
 	{
 		strokePath(mask, t, path);
+		if (road)
+			L.roads.push_back(std::move(path));
+	};
+	const double length = std::hypot(thread.to.x - thread.from.x, thread.to.y - thread.from.y);
+	const int segments = std::max(4, int(length / 3));
+	const std::vector<StrokePoint> path = stretchPath(
+		bezierPath(thread.from, thread.control, thread.to, halfWidth, halfWidth, segments), L.cx,
+		L.cy, L.stretch);
+	if (!thread.torn)
+	{
+		stroke(path, true);
 		return;
 	}
 	const int stub = std::max(1, int(std::lround(kTornStub * segments)));
-	strokePath(mask, t, std::vector<StrokePoint>(path.begin(), path.begin() + stub + 1));
-	strokePath(mask, t, std::vector<StrokePoint>(path.end() - stub - 1, path.end()));
+	stroke(std::vector<StrokePoint>(path.begin(), path.begin() + stub + 1), false);
+	stroke(std::vector<StrokePoint>(path.end() - stub - 1, path.end()), false);
 }
 
 Layout design(const GenerationRequest &request, GenerationContext &context)
@@ -248,6 +289,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	}
 	L.cx = t.w / 2;
 	L.cy = t.h / 2;
+	L.stretch = Stretch::toFill(t.w, t.h);
 	L.phase = context.bounded("web-layout", 3600) / 3600.0 * 2 * kPi;
 	for (int j = 0; j < m; ++j)
 		L.bow.push_back((roll(request, "web-bow/", j) / 500.0 - 1) * kSpokeBow * g.spokeAngle);
@@ -266,11 +308,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			const ShapePoint p = L.onSpoke(j, r);
 			const double along = (r - g.hubRadius / 2) / (g.frameRadius - g.hubRadius / 2);
 			path.push_back({p.x, p.y, g.spokeHalf - along * (g.spokeHalf - g.threadHalf - 0.5)});
-			line.push_back(p);
+			line.push_back(L.stretch.apply(L.cx, L.cy, p));
 			if (r >= g.frameRadius)
 				break;
 		}
-		strokePath(L.land, t, path);
+		std::vector<StrokePoint> placed = stretchPath(path, L.cx, L.cy, L.stretch);
+		strokePath(L.land, t, placed);
+		L.roads.push_back(std::move(placed));
 		L.spokeLines.push_back(std::move(line));
 	}
 	// The frame: a thread between every two neighbouring spoke ends, sagging inwards.
@@ -280,7 +324,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		const double mx = (from.x + to.x) / 2, my = (from.y + to.y) / 2;
 		const double inward = std::max(1e-9, std::hypot(L.cx - mx, L.cy - my));
 		const double pull = 0.5 * g.sag * std::hypot(to.x - from.x, to.y - from.y);
-		strokeThread(L.land, t,
+		strokeThread(L.land, t, L,
 					 {from,
 					  {mx + (L.cx - mx) / inward * 2 * pull, my + (L.cy - my) / inward * 2 * pull},
 					  to,
@@ -309,30 +353,32 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				continue;
 			const long long id = L.key(k, j);
 			thread.torn = std::find(torn.begin(), torn.end(), id) != torn.end();
-			strokeThread(L.land, t, thread, g.threadHalf);
+			strokeThread(L.land, t, L, thread, g.threadHalf);
 			if (roll(request, "web-knot/", id) <
 				std::min<std::int64_t>(1000, scaledCount(kKnotStone, o.stone)))
-				L.knots.push_back(thread.from);
+				L.knots.push_back(L.stretch.apply(L.cx, L.cy, thread.from));
 		}
 
 	// The hub, with a pond at its heart, and a pad for every colony where its spoke meets the frame.
 	const RadialShape hubShape(g.hubRadius, 0.2, context, "web-hub");
-	fillShape(L.land, t, L.cx, L.cy, hubShape);
-	fillShape(L.hub, t, L.cx, L.cy, hubShape);
+	fillShape(L.land, t, L.cx, L.cy, hubShape, 0, 1, L.stretch);
+	fillShape(L.hub, t, L.cx, L.cy, hubShape, 0, 1, L.stretch);
 	const RadialShape padShape(g.padRadius, kPadRoughness, context, "web-pads");
 	for (int k = 0; k < teams; ++k)
 	{
 		const long long spoke = (long long)k * m + m / 2;
-		const ShapePoint centre = L.onSpoke(spoke, g.frameRadius);
+		const ShapePoint centre = L.stretch.apply(L.cx, L.cy, L.onSpoke(spoke, g.frameRadius));
 		const double heading = L.phase + (double(spoke) + g.offset) * g.spokeAngle;
 		L.pads.push_back(centre);
-		L.padAngle.push_back(heading);
-		forEachTileInShape(t, centre.x, centre.y, padShape, heading,
-						   [&](int i, double, double)
-						   {
-							   L.land[i] = 1;
-							   L.padOf[i] = k;
-						   });
+		L.padAngle.push_back(L.stretch.heading(heading));
+		forEachTileInShape(
+			t, centre.x, centre.y, padShape, heading,
+			[&](int i, double, double)
+			{
+				L.land[i] = 1;
+				L.padOf[i] = k;
+			},
+			L.stretch);
 	}
 
 	// Dew drops: islets hanging in the web's cells, chosen in one wedge where the water is widest
@@ -342,7 +388,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		const std::vector<int> fromLand = stepsFrom(t, L.land);
 		const RadialShape dewShape(kDewRadius, 0.25, context, "web-dew");
 		const int need = int(std::ceil(dewShape.maximumRadius() + kDewMoat));
-		const WedgeFrame wedges(t, L.phase, teams);
+		const WedgeFrame wedges(t, L.phase, teams, L.stretch);
 		// Inside the frame's sagging chords, not out at sea between them.
 		const double enclosed =
 			g.frameRadius * std::cos(g.spokeAngle / 2) * (1 - g.sag) - g.spokeHalf - need;
@@ -372,20 +418,26 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				continue;
 			const int prize = int(chosen.size()) % 4;
 			chosen.push_back(i);
-			const double dx = t.offsetX(L.cx, i % t.w), dy = t.offsetY(L.cy, i / t.w);
+			// Turned round the centre in the round design frame, then stretched back onto the map.
+			const ShapePoint round =
+				L.stretch.undo(t.offsetX(L.cx, i % t.w), t.offsetY(L.cy, i / t.w));
 			for (int w = 0; w < teams; ++w)
 			{
 				const double turn = w * 2 * kPi / teams;
-				const double x = L.cx + dx * std::cos(turn) - dy * std::sin(turn);
-				const double y = L.cy + dx * std::sin(turn) + dy * std::cos(turn);
+				const ShapePoint at =
+					L.stretch.apply(L.cx, L.cy,
+									{L.cx + round.x * std::cos(turn) - round.y * std::sin(turn),
+									 L.cy + round.x * std::sin(turn) + round.y * std::cos(turn)});
 				const int drop = int(L.drops.size());
-				L.drops.push_back({x, y, turn, prize});
-				forEachTileInShape(t, x, y, dewShape, turn,
-								   [&](int tile, double, double)
-								   {
-									   L.land[tile] = 1;
-									   L.dewOf[tile] = drop;
-								   });
+				L.drops.push_back({at.x, at.y, turn, prize});
+				forEachTileInShape(
+					t, at.x, at.y, dewShape, turn,
+					[&](int tile, double, double)
+					{
+						L.land[tile] = 1;
+						L.dewOf[tile] = drop;
+					},
+					L.stretch);
 			}
 		}
 	}
@@ -395,7 +447,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	if (g.pondRadius > 0)
 	{
 		const RadialShape pond(g.pondRadius, 0.25, context, "web-hub");
-		fillShape(L.water, t, L.cx, L.cy, pond);
+		fillShape(L.water, t, L.cx, L.cy, pond, 0, 1, L.stretch);
 	}
 	for (int i = 0; i < n; ++i)
 	{
@@ -417,10 +469,10 @@ void furnishPads(Map &map, const Layout &L, GenerationContext &context)
 		{ return L.padOf[i] == team && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
 		const KitFrame frame{int(std::lround(L.pads[team].x)), int(std::lround(L.pads[team].y)),
 							 L.padAngle[team]};
-		plantKit(map, t, context,
-				 {frame.at(-5, -6, 8), frame.at(-5, 6, 8), frame.at(8, 0, 6), kHomeWheat,
-				  kHomeWood, 2},
-				 eligible);
+		plantKit(
+			map, t, context,
+			{frame.at(-5, -6, 8), frame.at(-5, 6, 8), frame.at(8, 0, 6), kHomeWheat, kHomeWood, 2},
+			eligible);
 	}
 }
 
@@ -433,8 +485,8 @@ void stockWeb(Map &map, const Layout &L, GenerationContext &context, const Spide
 	const int n = t.size();
 	const auto onThread = [&](int i) { return L.thread[i] && clearGround(map, i % t.w, i / t.w); };
 	for (const ShapePoint &knot : L.knots)
-		if (const int seed = seedNear(t, int(std::lround(knot.x)), int(std::lround(knot.y)), 3,
-									  onThread);
+		if (const int seed =
+				seedNear(t, int(std::lround(knot.x)), int(std::lround(knot.y)), 3, onThread);
 			seed >= 0)
 			growPatch(map, t, seed, STONE, kKnotStoneTiles, onThread);
 
@@ -457,20 +509,23 @@ void stockWeb(Map &map, const Layout &L, GenerationContext &context, const Spide
 	if (scaledCount(1, o.fruit) > 0)
 		for (int f = 0; f < 3; ++f)
 		{
-			const ShapePoint p = polarPoint(L.cx, L.cy, rho, spin + 2 * kPi * f / 3);
-			if (const int seed = seedNear(t, int(std::lround(p.x)), int(std::lround(p.y)), 6, onHub);
+			const ShapePoint p =
+				L.stretch.apply(L.cx, L.cy, polarPoint(L.cx, L.cy, rho, spin + 2 * kPi * f / 3));
+			if (const int seed =
+					seedNear(t, int(std::lround(p.x)), int(std::lround(p.y)), 6, onHub);
 				seed >= 0)
 				placeResourceClump(map, context, {seed % t.w, seed / t.w}, CHERRY + f, 2);
 		}
 	if (scaledCount(1, o.stone) > 0)
 	{
-		const ShapePoint p = polarPoint(L.cx, L.cy, rho + 2, spin + kPi / 3);
+		const ShapePoint p =
+			L.stretch.apply(L.cx, L.cy, polarPoint(L.cx, L.cy, rho + 2, spin + kPi / 3));
 		if (const int seed = seedNear(t, int(std::lround(p.x)), int(std::lround(p.y)), 6, onHub);
 			seed >= 0)
 			placeResourceClump(map, context, {seed % t.w, seed / t.w}, STONE, 2);
 	}
 
-	const WedgeFrame wedges(t, L.phase, L.g.teams);
+	const WedgeFrame wedges(t, L.phase, L.g.teams, L.stretch);
 	const PeriodicNoise patch(t.w, t.h, 12, context.stream("web-patch"));
 	const PeriodicNoise split(t.w, t.h, 7, context.stream("web-split"));
 	std::vector<std::pair<double, int>> ranked;
@@ -515,6 +570,31 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		if (L.water[i])
 			terrain[i] = WATER;
+	// A few dry patches along the threads, sampled in the wedge frame so every colony's stretch of
+	// web gets the same ones; never on the pads, the hub or the dew drops.
+	{
+		const WedgeFrame wedges(t, L.phase, L.g.teams, L.stretch);
+		const PeriodicNoise dry(t.w, t.h, kSandCell, context.stream("web-sand"));
+		sprinkleSand(terrain, t, L.thread, kSandShare, kSandInland,
+					 [&](int i)
+					 {
+						 const WedgeFrame::Cell cell = wedges.cell(i % t.w, i / t.w);
+						 return dry.at(cell.s, cell.d);
+					 });
+	}
+	// The sand roads: a line of sand one tile thick (tracePath, the thinnest there is) down the
+	// middle of every spoke and whole thread, off the pads and the dew drops, so the homes keep
+	// their building room. Every tile touching a sand corner loses the pure grass a deposit or a
+	// building needs, so nothing can grow or be built across a thread and close it.
+	if (o.sandRoads)
+	{
+		std::vector<unsigned char> road(n, 0);
+		for (const std::vector<StrokePoint> &line : L.roads)
+			tracePath(road, t, line);
+		for (int i = 0; i < n; ++i)
+			if (road[i] && terrain[i] == GRASS && L.padOf[i] < 0 && L.dewOf[i] < 0)
+				terrain[i] = SAND;
+	}
 	layBeaches(terrain, t);
 	writeUndermap(map, terrain);
 
@@ -539,7 +619,13 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "web resources";
 	furnishPads(map, L, context);
 	stockWeb(map, L, context, o);
-	seedAlgae(map, context, t, "web-algae", o.algae, AlgaeBand::shallows(2, 6, 45));
+	// Algae only grows in water with solid sand within reach (see algaeGrowthChance), so it is
+	// counted over the shallows but seeded on each colony's best-growing water, the same number of
+	// clumps in every wedge.
+	const WedgeFrame algaeWedges(t, L.phase, L.g.teams, L.stretch);
+	seedAlgae(map, context, t, "web-algae", o.algae,
+			  AlgaeBand::shallows(1, 10, kAlgaeTilesPerClump).thriving(kAlgaeBestShare),
+			  &algaeWedges);
 	secureStartingCrops(game, context, t);
 
 	// Beaches keep the threads walkable, but a small hub can be stocked shut: keep a way open from
@@ -601,7 +687,9 @@ SpiderWebOptions::SpiderWebOptions(const GenerationRequest &r)
 	: spokes(r.option("spokes")), ringSpacing(r.option("ring-spacing")),
 	  threadWidth(r.option("thread-width")), sag(r.option("sag")),
 	  tornStrands(r.option("torn-strands")), hubSize(r.option("hub-size")),
-	  dewDrops(r.option("dew-drops")), spiral(r.option("spiral") != 0),
+	  dewDrops(r.option("dew-drops")), homeSize(r.option("home-size")),
+	  spiral(r.option("spiral") != 0),
+	  sandRoads(r.option("sand-roads") != 0),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))
@@ -614,7 +702,7 @@ GeneratorDefinition spiderWebDefinition()
 		"spider-web",
 		20,
 		"Spider web",
-		1,
+		2,
 		false,
 		// Spokes per colony (more on a web with few colonies); the spacing between capture threads
 		// and every thread's width in tiles; how far the capture threads sag and the share of them
@@ -626,8 +714,12 @@ GeneratorDefinition spiderWebDefinition()
 		 {"torn-strands", "Torn strands", 0, 60, 5, 15, ControlGroup::Terrain},
 		 {"hub-size", "Hub size", 8, 24, 1, 14, ControlGroup::Terrain},
 		 {"dew-drops", "Dew drops", 0, 4, 1, 2, ControlGroup::Layout},
+		 // Each home pad's radius as a percentage of the standard pad.
+		 {"home-size", "Home size", 60, 200, 10, 130, ControlGroup::Layout},
 		 // Off, the capture threads are closed rings rather than a spiral.
 		 GeneratorControl::toggle("spiral", "Spiral", true, ControlGroup::Layout),
+		 // Off, the threads are grass from shore to shore, with no sand road down the middle.
+		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
 		 // The threads' standing wheat and wood, the knots' stone and the drops' and hub's prizes;
 		 // every pad's kit is unscaled.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),

@@ -1912,6 +1912,24 @@ Globulation 2 のカーソルを表示します。
 湿地帯には少なくとも一つのコロニーが必要です。
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 この地図にはコロニーが多すぎます。より大きな地図にするか、コロニーを減らしてください。
+[Coral]
+サンゴ
+[Fork angle]
+分岐角度
+[Lean]
+傾き
+[Home size]
+本拠地の大きさ
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+サンゴがこのマップに収まりません。より大きなマップ、より狭い海峡、またはより少ないコロニーにしてください。
+[Branching]
+枝分かれ
+[Branch width]
+枝の幅
+[Coral needs at least one colony.]
+サンゴには少なくとも1つのコロニーが必要です。
+[Coral needs a map at least 128 tiles across.]
+サンゴには幅128マス以上のマップが必要です。
 [Spider web]
 クモの巣
 [Spokes per colony]
