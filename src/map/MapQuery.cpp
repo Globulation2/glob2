@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include <cstdlib>
 #include "Game.h"
 #include "Utilities.h"
 #include "BuildingType.h"
@@ -139,7 +140,7 @@ std::optional<Offset> Map::doesUnitTouchResource(Unit *unit, int resourceType) c
 	Uint32 me=unit->owner->me;
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
-			if (isResourceTakeable(x+tdx, y+tdy, resourceType) && ((getForbidden(x+tdx, y+tdy)&me)==0))
+			if (isResourceRipe(x+tdx, y+tdy, resourceType) && ((getForbidden(x+tdx, y+tdy)&me)==0))
 				return Offset{tdx, tdy};
 	return std::nullopt;
 }
@@ -148,7 +149,7 @@ std::optional<Offset> Map::doesPosTouchResource(int x, int y, int resourceType) 
 {
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
-			if (isResourceTakeable(x+tdx, y+tdy, resourceType))
+			if (isResourceRipe(x+tdx, y+tdy, resourceType))
 				return Offset{tdx, tdy};
 	return std::nullopt;
 }
@@ -291,3 +292,9 @@ Uint8 Map::getImmobileUnit(int x, int y) const
 
 
 
+
+int Map::ripeMin()
+{
+	static const int value = [] { const char *v = getenv("GLOB2_PROTO_RIPE_MIN"); return v ? atoi(v) : 1; }();
+	return value;
+}

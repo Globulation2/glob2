@@ -49,7 +49,7 @@ namespace
 
 	constexpr int FARM_CX = (FARM_X0 + FARM_X1) / 2, FARM_CY = (FARM_Y0 + FARM_Y1) / 2;
 
-	enum class Pattern { Checker, Dots, Sparse };
+	enum class Pattern { Checker, Dots, Sparse, Open };
 
 	int seedSpan = FARM_X1 - FARM_X0 - 1;
 
@@ -62,7 +62,7 @@ namespace
 			return false;
 		switch (pattern)
 		{
-			case Pattern::Checker: return (x + y) % 2 == 0;
+			case Pattern::Checker: case Pattern::Open: return (x + y) % 2 == 0;
 			case Pattern::Dots: return x % 2 == 0 && y % 2 == 0;
 			case Pattern::Sparse: return x % 4 == 0 && y % 4 == 0;
 		}
@@ -86,8 +86,8 @@ int main(int argc, char** argv)
 	const bool sink = argc > 5 ? std::atoi(argv[5]) != 0 : true;
 	if (argc > 6)
 		seedSpan = std::atoi(argv[6]);
-	require(patternName == "checker" || patternName == "dots" || patternName == "sparse", "pattern is checker, dots or sparse");
-	const Pattern pattern = patternName == "checker" ? Pattern::Checker : patternName == "dots" ? Pattern::Dots : Pattern::Sparse;
+	require(patternName == "checker" || patternName == "dots" || patternName == "sparse" || patternName == "open", "pattern is checker, dots, sparse or open");
+	const Pattern pattern = patternName == "checker" ? Pattern::Checker : patternName == "dots" ? Pattern::Dots : patternName == "open" ? Pattern::Open : Pattern::Sparse;
 	require(ticks > 0 && innCount > 0 && innCount <= 6 && workersPerInn > 0 && seedSpan > 0,
 		"usage: [ticks] [checker|dots|sparse] [inns<=6] [workersPerInn] [sink] [seedSpan]");
 
@@ -121,7 +121,8 @@ int main(int argc, char** argv)
 		for (int x = FARM_X0; x <= FARM_X1; ++x)
 			if (isSeed(x, y, pattern))
 			{
-				game.map.addForbidden(x, y, 0);
+				if (pattern != Pattern::Open)
+					game.map.addForbidden(x, y, 0);
 				require(game.map.incResource(x, y, CORN, 0), "plant a wheat seed");
 				for (int grow = 0; grow < 4; ++grow)
 					game.map.incResource(x, y, CORN, 0);

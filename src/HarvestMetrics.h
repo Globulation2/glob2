@@ -29,6 +29,8 @@ namespace HarvestMetrics
 	void onLost(const Unit *unit, bool abandoned, bool ghost);
 	//! phantom: the tile was already empty when the harvest completed (grain created from nothing).
 	void onHarvest(const Unit *unit, int resource, bool phantom);
+	//! GLOB2_PROTO_NO_PHANTOM refused a grain from an empty tile.
+	void onPhantomRefused(const Unit *unit, int resource);
 	void onDeliver(const Unit *unit, int resource);
 	//! Once per simulated tick, before the step counter advances.
 	void sample(const Game &game);

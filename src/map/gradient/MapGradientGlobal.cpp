@@ -147,6 +147,8 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimCl
 		{
 			if (globalContainer->resourcesTypes.get(resourceType)->visibleToBeCollected && !(fogOfWar[i]&teamMask))
 				gradient[i]=GRADIENT_FORBIDDEN;
+			else if (resourceType == CORN && c.resource.amount < ripeMin())
+				gradient[i]=GRADIENT_FORBIDDEN;
 			else
 			{
 				gradient[i]=GRADIENT_AT_GOAL;

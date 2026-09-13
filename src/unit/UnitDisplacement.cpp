@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <algorithm>
+#include <cstdlib>
 #include "Unit.h"
 #include "HarvestMetrics.h"
 #include "Race.h"
@@ -53,9 +54,35 @@ void Unit::handleDisplacement(void)
 			}
 			else if (displacement==DIS_HARVESTING)
 			{
+				static const bool noPhantom = getenv("GLOB2_PROTO_NO_PHANTOM") != NULL;
+				const bool phantom = !owner->map->isResourceTakeable(posX+dx, posY+dy, destinationPurpose);
+				if (noPhantom && phantom)
+				{
+					// Prototype: the tile emptied under us; no grain, look for the resource again.
+					HarvestMetrics::onPhantomRefused(this, destinationPurpose);
+					movement = MOV_RANDOM_GROUND;
+					int dummyDist;
+					if (auto off = owner->map->doesUnitTouchResource(this, destinationPurpose))
+					{
+						dx = off->dx;
+						dy = off->dy;
+						displacement=DIS_HARVESTING;
+						validTarget=false;
+					}
+					else if (owner->map->resourceAvailableUpdate(owner->teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, &dummyDist))
+					{
+						displacement=DIS_GOING_TO_RESOURCE;
+						validTarget=true;
+					}
+					else
+					{
+						stopAttachedForBuilding(false);
+					}
+					return;
+				}
 				// we got the resource.
 				carriedResource=destinationPurpose;
-				HarvestMetrics::onHarvest(this, carriedResource, !owner->map->isResourceTakeable(posX+dx, posY+dy, carriedResource));
+				HarvestMetrics::onHarvest(this, carriedResource, phantom);
 				owner->map->decResource(posX+dx, posY+dy, carriedResource);
 				assert(movement == MOV_HARVESTING);
 				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to additionally decResource() the same resource.

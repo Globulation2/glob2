@@ -421,6 +421,14 @@ public:
 		const Resource &resource = getTile(x, y).resource;
 		return (resource.type == resourceType && resource.amount > 0);
 	}
+	//! Prototype (GLOB2_PROTO_RIPE_MIN=N): wheat is a fetch target only with at least N grains.
+	static int ripeMin();
+	bool isResourceRipe(int x, int y, int resourceType) const
+	{
+		const Resource &resource = getTile(x, y).resource;
+		return resource.type == resourceType && resource.amount > 0
+			&& (resourceType != CORN || resource.amount >= ripeMin());
+	}
 
 	bool isResourceTakeable(int x, int y, bool resourceTypes[BASIC_COUNT]) const
 	{
