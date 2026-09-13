@@ -56,11 +56,13 @@ using namespace MapGeneration;
 // round it; a fruit grove beside every plaza's pool, the cathedral keeping the full orchard.
 //
 // FEEDBACK 2026-09-13 (second play): "close to good, but it might play nicer if the outer ring had
-// little 'tendril' sand roads extending inwards towards the cities and settlements." So: from the
-// fields' sand cap a tendril of sand runs in to every home plaza and to the cathedral square, along
-// the streets (the cheapest walk over street ground, never through a block), so those streets stay
-// open however the city is built up (a sand corner spoils the tiles round it for building) and every
-// colony has a marked way to its fields (`tendrils`, on).
+// little 'tendril' sand roads extending inwards towards the cities and settlements." A first reading
+// ran a road from the ring along the streets to every plaza; the user meant something else (third
+// play): "small roads but way more frequent, extending from the outer perimeter of the circle,
+// inwards like 10 or 12 squares, maybe with a bit of meandering or waviness." So: from the fields'
+// sand cap, every kTendrilSpacing tiles round it, a wandering line of sand ten to twelve tiles long
+// runs straight in towards the city's middle (`tendrils`, on). Where one meets an outer block it
+// carves a notch of sand into it (stone stands only on pure grass), so the city frays into the fields.
 namespace
 {
 
@@ -71,6 +73,13 @@ constexpr int kHomeWheat = 14, kHomeWood = 12;
 // the map's axis; a farm plot's middle keeps this far inside the fields, so its ring of sand and the
 // margin round it (10 wide, 4 high, a ring of 2 and a vertex more) never meet the city.
 constexpr int kFarmMargin = 4, kFarmRim = 2, kFarmBridges = 16, kPlotMargin = 9;
+// Tendrils (third play: "dozens of them, all the way around the perimeter, roughly evenly spaced ...
+// a default width of 2 cells of sand"): one every this many tiles round the fields' sand cap, this
+// long (plus up to kTendrilExtra), wandering sideways by up to this many tiles, stroked
+// kTendrilHalfWidth either side of its line: three corners across, which is two whole tiles of sand.
+// Eight tiles apart on a ring of about 600 tiles is some seventy tendrils on a 256 map.
+constexpr int kTendrilSpacing = 8, kTendrilLength = 10, kTendrilExtra = 3;
+constexpr double kTendrilWander = 2.0, kTendrilHalfWidth = 1.5;
 // A fountain fills its plaza to this far short of the streets round it (FEEDBACK 2026-09-13: pools
 // "big enough that they push up close against their surrounding grid cells' stone"): the block's
 // half width less the street's, less a tile for the beach. 4.0 at the default block and street, an
@@ -300,40 +309,26 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		if (L.farm.water[i])
 			L.water[i] = 1;
-	// Tendrils (FEEDBACK 2026-09-13, second play): from every home plaza and the cathedral square, the
-	// cheapest walk over ground that is not a block, to the band just outside the city's margin where
-	// the fields' sand cap runs, traced as a line of sand corners.
+	// Tendrils (FEEDBACK 2026-09-13, third play): short wavy sand roads from the fields' cap ring in
+	// towards the city, one every kTendrilSpacing tiles round the ring, kTendrilLength to
+	// kTendrilLength + kTendrilExtra tiles long, each a wanderingPath stroked two tiles of sand wide.
+	// They cross the margin and run into the outer streets and blocks; the pools are left alone.
 	L.road.assign(n, 0);
 	if (o.tendrils)
 	{
-		std::vector<unsigned char> goal(n, 0), blocked(n, 0), none(n, 0);
-		for (int i = 0; i < n; ++i)
+		const double ring = L.cityRadius + kFarmMargin + 1;
+		const int count = std::max(1, int(std::lround(2 * kPi * ring / kTendrilSpacing)));
+		const double phase = context.bounded("town-tendrils", 3600) / 3600.0 * 2 * kPi;
+		std::mt19937 &wobble = context.stream("town-tendrils");
+		for (int k = 0; k < count; ++k)
 		{
-			const double d =
-				std::hypot(t.offsetX(int(L.cx), i % t.w), t.offsetY(int(L.cy), i / t.w));
-			goal[i] = d >= L.cityRadius + kFarmMargin + 0.5 && d < L.cityRadius + kFarmMargin + 2.5;
-			blocked[i] = L.block[i] || L.water[i];
-		}
-		std::vector<int> starts(L.homeCell);
-		starts.push_back(L.cathedral);
-		for (int cell : starts)
-		{
-			std::vector<int> sources;
-			for (int i = 0; i < n; ++i)
-				if (L.cell[i] == cell && !blocked[i])
-					sources.push_back(i);
-			const std::vector<int> route = cheapestRoute(t, sources, goal, blocked, none);
-			std::vector<StrokePoint> line;
-			for (int i : route)
-				line.push_back({double(i % t.w), double(i / t.w), 0.5});
-			// The route is a chain of neighbouring tiles, which may step across the seam; tracePath
-			// joins consecutive points the short way, so it is traced a segment at a time.
-			for (size_t p = 0; p + 1 < line.size(); ++p)
-			{
-				const int dx = t.offsetX(int(line[p].x), int(line[p + 1].x));
-				const int dy = t.offsetY(int(line[p].y), int(line[p + 1].y));
-				tracePath(L.road, t, {line[p], {line[p].x + dx, line[p].y + dy, 0.5}});
-			}
+			const double a = phase + 2 * kPi * k / count;
+			const double length =
+				kTendrilLength + context.bounded("town-tendrils", kTendrilExtra + 1);
+			const ShapePoint from = polarPoint(L.cx, L.cy, ring, a);
+			const ShapePoint to = polarPoint(L.cx, L.cy, ring - length, a);
+			strokePath(L.road, t,
+					   wanderingPath(t, from, to, kTendrilHalfWidth, kTendrilWander, 0.0, wobble));
 		}
 		for (int i = 0; i < n; ++i)
 			if (L.water[i])
@@ -512,7 +507,7 @@ GeneratorDefinition oldTownDefinition()
 	return {"old-town",
 			31,
 			"Old town",
-			3,
+			4,
 			false,
 			// A city of 70% of the half side leaves a belt of fields round it; blocks of 14 with
 			// streets of 4 give a 256 map about a hundred blocks and streets a column of units wide
