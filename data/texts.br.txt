@@ -2012,3 +2012,11 @@ Pedra no pomar
 Colônias em ambas as costas
 [Winding belt]
 Faixa sinuosa
+[Cell shape]
+Stumm ar c'hellig
+[Squares]
+Karrezioù
+[Hexagons]
+C'hwec'hkornegoù
+[Warp]
+Distummañ

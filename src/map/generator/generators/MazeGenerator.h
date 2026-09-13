@@ -4,7 +4,7 @@
 #include "GeneratorDefinition.h"
 struct MazeOptions
 {
-	int cellSize, channelWidth, loopiness;
+	int cellShape, cellSize, channelWidth, loopiness, warp;
 	int corn, wood, stone, algae, fruit;
 	bool sandRoads, treasure;
 	explicit MazeOptions(const GenerationRequest &r);

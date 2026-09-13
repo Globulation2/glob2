@@ -75,6 +75,60 @@ void tracePath(std::vector<unsigned char> &mask, const Torus &t,
 	}
 }
 
+std::vector<std::pair<long long, long long>> sealedSegmentTiles(SubtilePoint a, SubtilePoint b)
+{
+	// A grid walk (Amanatides and Woo) in integers: from the tile holding `a`, step into whichever
+	// neighbouring column or row the segment reaches first, comparing the distances to the next
+	// boundaries by cross-multiplication. A tie is a corner, where both tiles beside it are taken.
+	long long x = subtileTile(a.x), y = subtileTile(a.y);
+	const long long endX = subtileTile(b.x), endY = subtileTile(b.y);
+	const long long dx = b.x - a.x, dy = b.y - a.y;
+	const int sx = dx > 0 ? 1 : -1, sy = dy > 0 ? 1 : -1;
+	const long long adx = dx < 0 ? -dx : dx, ady = dy < 0 ? -dy : dy;
+	std::vector<std::pair<long long, long long>> tiles{{x, y}};
+	const long long limit = (endX > x ? endX - x : x - endX) + (endY > y ? endY - y : y - endY);
+	for (long long step = 0; step < limit && (x != endX || y != endY); ++step)
+	{
+		// Distance along each axis to the boundary the segment crosses next, in subtile units.
+		const long long toX = adx ? (sx > 0 ? (x + 1) * kSubtile - a.x : a.x - x * kSubtile) : 0;
+		const long long toY = ady ? (sy > 0 ? (y + 1) * kSubtile - a.y : a.y - y * kSubtile) : 0;
+		// Parameters toX / adx and toY / ady; an axis the segment never moves along never wins.
+		const bool xFirst = x != endX && (y == endY || !ady || (adx && toX * ady < toY * adx));
+		const bool yFirst = y != endY && (x == endX || !adx || (ady && toY * adx < toX * ady));
+		if (xFirst)
+			x += sx;
+		else if (yFirst)
+			y += sy;
+		else
+		{
+			tiles.push_back({x + sx, y});
+			tiles.push_back({x, y + sy});
+			x += sx;
+			y += sy;
+			++step;
+		}
+		tiles.push_back({x, y});
+	}
+	return tiles;
+}
+
+void traceSealedPath(std::vector<unsigned char> &mask, const Torus &t,
+					 const std::vector<SubtilePoint> &points, unsigned char value, bool closed)
+{
+	const size_t n = points.size();
+	if (n == 1)
+		mask[t.at(int(subtileTile(points[0].x)), int(subtileTile(points[0].y)))] = value;
+	for (size_t k = 0; k + 1 < n || (closed && n > 2 && k < n); ++k)
+		for (const auto &tile : sealedSegmentTiles(points[k], points[(k + 1) % n]))
+			mask[t.at(int(tile.first), int(tile.second))] = value;
+}
+
+void fillPolygon(std::vector<unsigned char> &mask, const Torus &t,
+				 const std::vector<SubtilePoint> &outline, unsigned char value)
+{
+	forEachTileInPolygon(t, outline, [&](int tile) { mask[tile] = value; });
+}
+
 std::vector<StrokePoint> bezierPath(ShapePoint from, ShapePoint control, ShapePoint to,
 									double fromHalfWidth, double toHalfWidth, int segments)
 {
@@ -181,5 +235,31 @@ PathBounds pathBounds(const std::vector<StrokePoint> &path)
 		bounds.radius =
 			std::max(bounds.radius, std::hypot(p.x - bounds.x, p.y - bounds.y) + p.halfWidth);
 	return bounds;
+}
+
+Zigzag zigzagPath(const AxisFrame &frame, double start, double firstLeg, double pitch, int legs,
+				  double span, double finish, double halfWidth)
+{
+	Zigzag zigzag;
+	double side = span;
+	const auto point = [&](double along, double across)
+	{
+		const ShapePoint p = frame.at(along, across);
+		zigzag.path.push_back({p.x, p.y, halfWidth});
+	};
+	point(start, side);
+	for (int j = 0; j < legs; ++j)
+	{
+		const double along = firstLeg - j * pitch;
+		point(along, side);
+		const ShapePoint a = frame.at(along, side - (side > 0 ? halfWidth : -halfWidth));
+		side = -side;
+		point(along, side);
+		const ShapePoint b = frame.at(along, side - (side > 0 ? halfWidth : -halfWidth));
+		zigzag.legs.push_back({{a.x, a.y, halfWidth}, {b.x, b.y, halfWidth}});
+	}
+	point(finish, side);
+	zigzag.finishAcross = side;
+	return zigzag;
 }
 } // namespace MapGeneration

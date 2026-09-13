@@ -2,6 +2,7 @@
 #pragma once
 #include "Geometry.h"
 #include "Grid.h"
+#include "LatticeNoise.h"
 #include <algorithm>
 #include <cmath>
 namespace MapGeneration
@@ -81,6 +82,19 @@ struct Blob
 		const double c = std::cos(turn), sn = std::sin(turn);
 		const double px = (ds * c + dr * sn) / stretch, py = (-ds * sn + dr * c) * stretch;
 		return std::hypot(px, py) < shape.radiusAt(std::atan2(py, px));
+	}
+};
+/// A noise field every wedge sees alike: periodic noise sampled at a tile's arc offset and radius in
+/// the wedge frame rather than at its map position, so a layer planted by it (fields in patches, a
+/// wheat/wood split) comes out the same in every colony's wedge.
+struct WedgeField
+{
+	WedgeFrame frame;
+	PeriodicNoise noise;
+	double operator()(int tile) const
+	{
+		const WedgeFrame::Cell c = frame.cell(tile % frame.t.w, tile / frame.t.w);
+		return noise.at(c.s, c.d);
 	}
 };
 } // namespace MapGeneration

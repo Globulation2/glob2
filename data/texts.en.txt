@@ -2004,3 +2004,11 @@ Stone in the orchard
 Colonies on both coasts
 [Winding belt]
 Winding belt
+[Cell shape]
+Cell shape
+[Squares]
+Squares
+[Hexagons]
+Hexagons
+[Warp]
+Warp

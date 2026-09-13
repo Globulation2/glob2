@@ -2022,3 +2022,11 @@ Pedra no pomar
 Colónias em ambas as costas
 [Winding belt]
 Faixa sinuosa
+[Cell shape]
+Forma das células
+[Squares]
+Quadrados
+[Hexagons]
+Hexágonos
+[Warp]
+Deformação

@@ -2088,3 +2088,11 @@ OpenGL 在此版本中不可用。
 兩岸都有殖民地
 [Winding belt]
 蜿蜒的環帶
+[Cell shape]
+格子形狀
+[Squares]
+正方形
+[Hexagons]
+六邊形
+[Warp]
+扭曲

@@ -5,6 +5,7 @@
 #include "GenerationContext.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
+#include <cmath>
 #include <limits>
 namespace MapGeneration
 {
@@ -122,5 +123,48 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 	context.bootY[team] = building->posY;
 	game.teams[team]->createLists();
 	return true;
+}
+
+int placeTower(Game &game, int team, int level, double x, double y, int within,
+			   const std::vector<unsigned char> &allowed)
+{
+	const int type = globalContainer->buildingsTypes.getTypeNum("defencetower", level, false);
+	const BuildingType *tower = globalContainer->buildingsTypes.get(type);
+	if (!tower || team < 0 || team >= game.teamsCount() || !game.teams[team])
+		return -1;
+	const Map &map = game.map;
+	const int w = map.getW(), h = map.getH();
+	const int cx = int(std::lround(x)), cy = int(std::lround(y));
+	int best = -1;
+	double nearest = std::numeric_limits<double>::max();
+	for (int dy = -within; dy <= within; ++dy)
+		for (int dx = -within; dx <= within; ++dx)
+		{
+			const int px = map.normalizeX(cx + dx), py = map.normalizeY(cy + dy);
+			bool fits = true;
+			for (int fy = 0; fy < tower->height && fits; ++fy)
+				for (int fx = 0; fx < tower->width && fits; ++fx)
+					fits = allowed[map.normalizeY(py + fy) * w + map.normalizeX(px + fx)] != 0;
+			if (!fits || !game.checkRoomForBuilding(px, py, tower, team, false))
+				continue;
+			const double mx = cx + dx + tower->width / 2.0 - x, my = cy + dy + tower->height / 2.0 - y;
+			const double d = mx * mx + my * my;
+			if (d < nearest)
+			{
+				nearest = d;
+				best = py * w + px;
+			}
+		}
+	(void)h;
+	if (best < 0)
+		return -1;
+	Building *building = game.addBuilding(best % w, best / w, type, team, 1, 0);
+	if (!building)
+		return -1;
+	building->bullets = tower->maxBullets;
+	// The colony's lists were built when its swarm went down; the tower joins its turrets the way
+	// Team::createLists would have taken it in.
+	game.teams[team]->turrets.push_back(building);
+	return best;
 }
 } // namespace MapGeneration

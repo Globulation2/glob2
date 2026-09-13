@@ -16,6 +16,21 @@ GeneratorControl GeneratorControl::percentage(std::string id, const char *label,
 {
 	return {std::move(id), label, 0, maximum, 25, 100, ControlGroup::Resources};
 }
+GeneratorControl GeneratorControl::choice(std::string id, const char *label,
+										  std::vector<const char *> names, int defaultIndex,
+										  ControlGroup group)
+{
+	const int last = int(names.size()) - 1;
+	GeneratorControl c{std::move(id), label, 0, last, 1, defaultIndex, group};
+	for (int i = 0; i <= last; ++i)
+		c.allowedValues.push_back(i);
+	c.valueLabels = std::move(names);
+	return c;
+}
+const char *GeneratorControl::valueLabel(int value) const
+{
+	return value >= 0 && value < int(valueLabels.size()) ? valueLabels[value] : nullptr;
+}
 int GeneratorControl::normalize(int v) const
 {
 	if (!allowedValues.empty())

@@ -2014,3 +2014,11 @@ Fosaĵo
 Kolonioj ĉe ambaŭ marbordoj
 [Winding belt]
 Serpentuma zono
+[Cell shape]
+Formo de ĉeloj
+[Squares]
+Kvadratoj
+[Hexagons]
+Sesanguloj
+[Warp]
+Deformado

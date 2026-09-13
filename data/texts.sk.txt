@@ -2024,3 +2024,11 @@ Kameň v sade
 Kolónie na oboch pobrežiach
 [Winding belt]
 Zvlnený pás
+[Cell shape]
+Tvar buniek
+[Squares]
+Štvorce
+[Hexagons]
+Šesťuholníky
+[Warp]
+Deformácia

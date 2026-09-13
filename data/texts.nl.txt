@@ -2040,3 +2040,11 @@ Steen in de boomgaard
 Kolonies aan beide kusten
 [Winding belt]
 Kronkelende gordel
+[Cell shape]
+Celvorm
+[Squares]
+Vierkanten
+[Hexagons]
+Zeshoeken
+[Warp]
+Vervorming

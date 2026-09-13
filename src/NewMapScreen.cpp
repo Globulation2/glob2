@@ -52,7 +52,10 @@ NewMapScreen::NewMapScreen(const GeneratorRegistry &registry) : registry(registr
 		{
 			number = new Number(x, y, 114, 18, A, A, 18, "menu");
 			for (int value : c.values())
-				number->add(c.displayValue(value));
+				if (c.isChoice())
+					number->add(value, tr(c.valueLabel(value)));
+				else
+					number->add(c.displayValue(value));
 			addWidget(number);
 		}
 		auto *label = new Text(x + 120, y, A, A, "standard", tr(c.label));

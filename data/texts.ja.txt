@@ -2012,3 +2012,11 @@ Globulation 2 のカーソルを表示します。
 両岸のコロニー
 [Winding belt]
 曲がりくねった帯
+[Cell shape]
+セルの形
+[Squares]
+正方形
+[Hexagons]
+六角形
+[Warp]
+ゆがみ

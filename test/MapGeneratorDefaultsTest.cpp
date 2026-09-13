@@ -220,6 +220,7 @@ class MapGeneratorDefaultsTest
 			   false,
 			   {4, 8, 16}},
 			  {"test-gap", "Channel width", 1, 5, 2, 3, ControlGroup::Layout},
+			  GeneratorControl::choice("test-shape", "Cell shape", {"Squares", "Hexagons"}, 0),
 			  GeneratorControl::toggle("test-switch", "Lake connects to fjords", false)},
 			 [](Game &game, GenerationContext &context)
 			 {
@@ -261,6 +262,18 @@ class MapGeneratorDefaultsTest
 			assert(!rejected(on));
 			const auto amount = GeneratorControl::percentage("amount", "Fruit");
 			assert(!amount.isToggle() && amount.defaultValue == 100 && !rejected(amount));
+			// A choice stores the index of its named option and is shown by name.
+			const auto shape = GeneratorControl::choice("shape", "Cell shape",
+														{"Squares", "Hexagons"}, 1);
+			assert(shape.isChoice() && !shape.isToggle() && shape.defaultValue == 1 &&
+				   shape.values() == std::vector<int>({0, 1}) &&
+				   std::string(shape.valueLabel(1)) == "Hexagons" && !shape.valueLabel(2) &&
+				   shape.normalize(5) == 1 && !rejected(shape));
+			auto unnamed = shape;
+			unnamed.valueLabels.pop_back();
+			auto blank = shape;
+			blank.valueLabels[0] = "";
+			assert(rejected(unnamed) && rejected(blank) && !on.isChoice() && !on.valueLabel(0));
 			std::vector<GeneratorControl> broken(6, on);
 			broken[0].maximum = 2;
 			broken[1].minimum = broken[1].defaultValue = 1;
@@ -279,10 +292,13 @@ class MapGeneratorDefaultsTest
 		edit(screen, "Island size", 16);
 		edit(screen, "Channel width", 5);
 		edit(screen, "Lake connects to fjords", 1);
+		assert(screen.descriptor.option("test-shape") == 0);
+		edit(screen, "Cell shape", 1);
 		select(screen, D::eRIVER);
 		select(screen, 101);
 		assert(screen.descriptor.option("test-cell") == 16 &&
 			   screen.descriptor.option("test-gap") == 5 &&
+			   screen.descriptor.option("test-shape") == 1 &&
 			   screen.descriptor.option("test-switch") == 1);
 		edit(screen, "Smoothing", 8);
 		assert(registry.selectionIndex(101) == 21);

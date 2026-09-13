@@ -2026,3 +2026,11 @@ Pierre dans le verger
 Colonies sur les deux côtes
 [Winding belt]
 Ceinture sinueuse
+[Cell shape]
+Forme des cellules
+[Squares]
+Carrés
+[Hexagons]
+Hexagones
+[Warp]
+Déformation

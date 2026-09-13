@@ -137,6 +137,46 @@ void plantFields(Map &map, const Torus &t, std::vector<int> tiles, int wheat, in
 		map.setResource(tiles[k] % t.w, tiles[k] / t.w, k < wheatShare ? CORN : WOOD, 1);
 }
 
+/// Clumps round a circle, the same at every angle: at each of `angles` (radians) round (cx, cy), a
+/// clump of `type` and `clumpRadius` grown from the eligible tile nearest the point on the circle of
+/// `radius`, searched within `within` tiles. A prize or an outcrop designed once per colony lands the
+/// same way at every colony's angle. Returns how many were placed.
+template <typename Eligible>
+int plantRound(Map &map, const Torus &t, GenerationContext &context, double cx, double cy, double radius,
+			   const std::vector<double> &angles, int type, int clumpRadius, int within, Eligible eligible)
+{
+	int planted = 0;
+	for (const double a : angles)
+	{
+		const int seed = seedNear(t, int(std::lround(cx + radius * std::cos(a))),
+								  int(std::lround(cy + radius * std::sin(a))), within, eligible);
+		if (seed < 0)
+			continue;
+		placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), type, clumpRadius);
+		++planted;
+	}
+	return planted;
+}
+
+/// An orchard of the three fruits round a circle: at each of `angles` (radians) round (cx, cy), a grove
+/// of cherries, one of oranges and one of prunes, `spacing` tiles apart along the circle of `radius`,
+/// each a clump of `clumpRadius` grown from the eligible tile nearest its point within `within`. Every
+/// colony finds the same three fruits at its own angle, which is how a shared prize stays fair.
+/// Returns how many groves were planted.
+template <typename Eligible>
+int plantOrchard(Map &map, const Torus &t, GenerationContext &context, double cx, double cy,
+				 double radius, const std::vector<double> &angles, double spacing, int within,
+				 int clumpRadius, Eligible eligible)
+{
+	int planted = 0;
+	for (const double angle : angles)
+		for (int fruit = 0; fruit < 3; ++fruit)
+			planted += plantRound(map, t, context, cx, cy, radius,
+								  {angle + (fruit - 1) * spacing / std::max(1.0, radius)}, CHERRY + fruit,
+								  clumpRadius, within, eligible);
+	return planted;
+}
+
 /// `count` clumps dropped on random tiles of `ground`: for each, up to `attempts` tiles are drawn
 /// from `stream` and the first `eligible` one gets `place(point)`, which places the clump and may
 /// draw its type and size from the same stream. Returns how many were placed.
@@ -206,6 +246,11 @@ struct AlgaeBand
 /// one best share taken over the whole map would favour some wedges' water over others'.
 void seedAlgae(Map &, GenerationContext &, const Torus &, const char *stream, int algaePercent,
 			   const AlgaeBand &, const WedgeFrame *wedges = nullptr);
+/// The same, with the clumps shared out equally between labelled groups of water that are not wedges
+/// (every colony's own bay, say): `groupOf` gives each tile's group, 0 to `groups` - 1, or -1 for
+/// water that belongs to none and takes no clump.
+void seedAlgae(Map &, GenerationContext &, const Torus &, const char *stream, int algaePercent,
+			   const AlgaeBand &, const std::vector<int> &groupOf, int groups);
 
 /// Each island carries one themed prize at its middle: stone, a fruit or wheat, so finding one
 /// feels like a distinct find rather than an interchangeable resource dump.

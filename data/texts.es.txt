@@ -2016,3 +2016,11 @@ Piedra en el huerto
 Colonias en ambas costas
 [Winding belt]
 Cinturón sinuoso
+[Cell shape]
+Forma de las celdas
+[Squares]
+Cuadrados
+[Hexagons]
+Hexágonos
+[Warp]
+Deformación

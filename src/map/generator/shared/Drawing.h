@@ -4,6 +4,7 @@
 #include "Grid.h"
 #include <algorithm>
 #include <cmath>
+#include <utility>
 #include <vector>
 namespace MapGeneration
 {
@@ -204,6 +205,68 @@ inline void fillShape(std::vector<unsigned char> &mask, const Torus &t, double c
 		t, cx, cy, shape, turn, [&](int i, double, double) { mask[i] = value; }, stretch);
 }
 
+/// Points along the arc `radius` tiles round (cx, cy) from angle `from` to angle `to` (radians,
+/// either way round), about `step` tiles apart along the arc, all with the same half width: a
+/// corridor that follows a circle, or a ring drawn a piece at a time.
+inline std::vector<StrokePoint> arcPath(double cx, double cy, double radius, double from, double to,
+										double halfWidth, double step = 3)
+{
+	const int segments =
+		std::max(1, int(std::ceil(std::abs(to - from) * radius / std::max(0.5, step))));
+	std::vector<StrokePoint> path;
+	path.reserve(segments + 1);
+	for (int i = 0; i <= segments; ++i)
+	{
+		const double a = from + (to - from) * i / segments;
+		path.push_back({cx + radius * std::cos(a), cy + radius * std::sin(a), halfWidth});
+	}
+	return path;
+}
+
+/// A zigzag in a frame, the trail a switchback climbs: it starts at `start` along the frame on the
+/// left side (`span` across), runs down that side to the first leg at `firstLeg`, crosses to the
+/// other side, turns down that side by `pitch`, crosses back, and so on for `legs` legs, then runs
+/// along whichever side it finished on to `finish`. `legs` holds each leg's straight run on its own,
+/// short of the turns at its ends by the path's half width, so a caller can tell leg from turn.
+/// `pitch` is signed: positive steps the legs back towards the frame's origin.
+struct Zigzag
+{
+	std::vector<StrokePoint> path;
+	std::vector<std::vector<StrokePoint>> legs;
+	double finishAcross = 0; // the side the path finishes on
+};
+Zigzag zigzagPath(const AxisFrame &, double start, double firstLeg, double pitch, int legs, double span,
+				  double finish, double halfWidth);
+
+/// Visits every tile within `halfWidth` of the circle of `radius` round (cx, cy), through the wrap:
+/// `visit(tile, gate)` with the index into `gates` of the gate the tile lies in - a gap reaching
+/// `gateHalfWidth` tiles either side of the ring's point at that angle (radians), measured along the
+/// ring - or -1 for the ring itself. A wall of stone round an arena with ramps through it, or a moat
+/// with bridges over it.
+template <typename Visit>
+void ringWithGates(const Torus &t, double cx, double cy, double radius, double halfWidth,
+				   const std::vector<double> &gates, double gateHalfWidth, Visit visit)
+{
+	const int reach = int(std::ceil(radius + halfWidth)) + 1;
+	const int x0 = int(std::lround(cx)), y0 = int(std::lround(cy));
+	for (int y = y0 - reach; y <= y0 + reach; ++y)
+		for (int x = x0 - reach; x <= x0 + reach; ++x)
+		{
+			const double dx = x - cx, dy = y - cy, r = std::hypot(dx, dy);
+			if (std::abs(r - radius) >= halfWidth)
+				continue;
+			const double angle = std::atan2(dy, dx);
+			int gate = -1;
+			for (size_t g = 0; g < gates.size() && gate < 0; ++g)
+			{
+				const double turn = std::remainder(angle - gates[g], 2 * kPi);
+				if (std::abs(turn) * r <= gateHalfWidth)
+					gate = int(g);
+			}
+			visit(t.at(x, y), gate);
+		}
+}
+
 /// A path laid out round (cx, cy) placed on the map by `stretch`: its points move, its half widths
 /// stay in tiles.
 inline std::vector<StrokePoint> stretchPath(const std::vector<StrokePoint> &path, double cx,
@@ -217,5 +280,104 @@ inline std::vector<StrokePoint> stretchPath(const std::vector<StrokePoint> &path
 		placed.push_back({q.x, q.y, p.halfWidth});
 	}
 	return placed;
+}
+
+/// Exact geometry for designs whose rasterization must agree with itself to the tile: lines and
+/// polygons on a fixed-point grid of kSubtile units per tile, computed in integers, so two polygons
+/// that share an edge split its tiles between them the same way on every platform and on both
+/// sides of the wrap. A tile (x, y) spans [x, x + 1) * kSubtile on each axis; subtileCentre is the
+/// point in its middle.
+constexpr int kSubtile = 16;
+struct SubtilePoint
+{
+	long long x = 0, y = 0;
+	bool operator==(const SubtilePoint &o) const { return x == o.x && y == o.y; }
+};
+inline SubtilePoint subtileCentre(int tileX, int tileY)
+{
+	return {tileX * (long long)kSubtile + kSubtile / 2, tileY * (long long)kSubtile + kSubtile / 2};
+}
+/// The tile a fixed-point position lies in, before wrapping.
+inline long long subtileTile(long long v)
+{
+	return v >= 0 ? v / kSubtile : -((-v + kSubtile - 1) / kSubtile);
+}
+
+/// Every tile the segment from `a` to `b` passes through, end tiles included, as unwrapped tile
+/// coordinates in order from `a`. Where the segment crosses a tile corner exactly, both tiles beside
+/// the corner are listed as well, so wherever two tiles of the line touch only at a corner, the two
+/// tiles across that corner are on the line too: no unit can step across it, even diagonally,
+/// however the segment slants.
+std::vector<std::pair<long long, long long>> sealedSegmentTiles(SubtilePoint a, SubtilePoint b);
+
+/// Sets `value` on every tile of sealedSegmentTiles along each segment of `points`, through the
+/// wrap: a wall line that seals at any angle. A closed path joins its last point back to its first.
+void traceSealedPath(std::vector<unsigned char> &mask, const Torus &,
+					 const std::vector<SubtilePoint> &points, unsigned char value = 1,
+					 bool closed = false);
+
+/// Visits each tile whose centre lies inside the polygon `outline` (any simple polygon, either
+/// winding, coordinates unwrapped) with its wrapped tile index. A centre exactly on an edge
+/// belongs to the side to its right, or below for a horizontal edge, so polygons that tile the
+/// plane with shared corners cover every tile exactly once between them.
+template <typename Visit>
+void forEachTileInPolygon(const Torus &t, const std::vector<SubtilePoint> &outline, Visit visit);
+
+/// Sets `value` on every tile forEachTileInPolygon visits.
+void fillPolygon(std::vector<unsigned char> &mask, const Torus &,
+				 const std::vector<SubtilePoint> &outline, unsigned char value = 1);
+
+template <typename Visit>
+void forEachTileInPolygon(const Torus &t, const std::vector<SubtilePoint> &outline, Visit visit)
+{
+	const size_t n = outline.size();
+	if (n < 3)
+		return;
+	long long top = outline[0].y, bottom = outline[0].y;
+	for (const SubtilePoint &p : outline)
+	{
+		top = std::min(top, p.y);
+		bottom = std::max(bottom, p.y);
+	}
+	// A row's centre line y = row * kSubtile + kSubtile / 2 meets an edge when it lies in the edge's
+	// half-open span [lower y, upper y); the crossing's x is kept as a fraction, num / den.
+	struct Crossing
+	{
+		long long num, den;
+	};
+	std::vector<Crossing> crossings;
+	for (long long row = subtileTile(top); row <= subtileTile(bottom); ++row)
+	{
+		const long long yc = row * kSubtile + kSubtile / 2;
+		crossings.clear();
+		for (size_t k = 0; k < n; ++k)
+		{
+			SubtilePoint a = outline[k], b = outline[(k + 1) % n];
+			if (a.y == b.y)
+				continue;
+			if (a.y > b.y)
+				std::swap(a, b);
+			if (yc < a.y || yc >= b.y)
+				continue;
+			crossings.push_back({a.x * (b.y - a.y) + (yc - a.y) * (b.x - a.x), b.y - a.y});
+		}
+		std::sort(crossings.begin(), crossings.end(), [](const Crossing &p, const Crossing &q)
+				  { return p.num * q.den < q.num * p.den; });
+		for (size_t k = 0; k + 1 < crossings.size(); k += 2)
+		{
+			// Tiles whose centre xc satisfies left <= xc < right, compared exactly.
+			const Crossing &left = crossings[k], &right = crossings[k + 1];
+			auto firstCentreAtOrAfter = [](const Crossing &c)
+			{
+				// Smallest column whose centre column * kSubtile + kSubtile / 2 >= num / den.
+				const long long shifted = c.num - (long long)(kSubtile / 2) * c.den;
+				const long long span = (long long)kSubtile * c.den;
+				return shifted >= 0 ? (shifted + span - 1) / span : -((-shifted) / span);
+			};
+			const long long from = firstCentreAtOrAfter(left), to = firstCentreAtOrAfter(right);
+			for (long long column = from; column < to; ++column)
+				visit(t.at(int(column), int(row)));
+		}
+	}
 }
 } // namespace MapGeneration

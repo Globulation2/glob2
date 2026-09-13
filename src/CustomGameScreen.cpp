@@ -986,7 +986,8 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 			ui.text(x + 4, yy + 7, tr(c.label), "little", 110, true);
 			std::vector<std::string> options;
 			for (int v : c.values())
-				options.push_back(std::to_string(c.displayValue(v)));
+				options.push_back(c.isChoice() ? tr(c.valueLabel(v))
+											   : std::to_string(c.displayValue(v)));
 			ui.dropdown(id, {x + 112, yy, leftW - 128, 28}, options, c.indexOf(c.get(g)),
 						[this, c, changed](int i)
 						{

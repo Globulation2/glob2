@@ -2016,3 +2016,11 @@ Kő a gyümölcsösben
 Kolóniák mindkét parton
 [Winding belt]
 Kanyargó öv
+[Cell shape]
+Cellák alakja
+[Squares]
+Négyzetek
+[Hexagons]
+Hatszögek
+[Warp]
+Torzítás

@@ -21,16 +21,21 @@ and Terrain take a `Game` because placing buildings and units needs its mutation
 |---|---|
 | `Grid` | `Torus` wrap and offset arithmetic; `floodFrom`/`stepsFrom`, the one eight-connected breadth-first flood (with a step limit and the visit order for callers that need it); `walkableTiles` and `groundUnitTiles` passability masks; `unitTilesByTeam` and `firstColonyCutOff` |
 | `Topology` | `connectedRegions` component labelling with explicit wrap and neighbour policy; `regionAdjacency` and `graphDistances` over sparse labels |
-| `Geometry` | `kPi`; `ShapeTransform` (invertible stretch and rotation); `Stretch`, which places a layout designed in a circle on a map's shorter side onto a rectangular map as an ellipse touching all four sides (`toFill`, `apply`, `undo`, `heading`), exactly the identity on a square map; `RadialShape`, a seeded rough outline with a per-angle `radiusAt()`; `stampShape` and `stampRoughDisc` into a label grid |
-| `Drawing` | Drawing on the torus: `strokePath`, a thick path of points each with its own half width, rasterized through the wrap; `tracePath`, a path traced one tile thick with no gaps (a sand road); `bezierPath`, a quadratic curve as such a path; `polarPoint`; `forEachTileInShape` and `fillShape`, a `RadialShape` filled at any centre and turned to any heading within its bounding box, optionally stretched into an oval; `stretchPath`, a designed path placed on the map by a `Stretch` with its half widths kept in tiles; `bentPath`, a tapered path leaving a point along a heading and bowing sideways; `pathClearance` and `pathBounds`, the water between two stroked paths (optionally ignoring a branch's root) and a cheap bounding circle; `growBranches`, a tree grown level by level by forking in two at every tip to a `ForkStyle`, every branch offered to a caller's `accept` before it is kept and a refused one retried once at half length |
-| `Wedge` | `WedgeFrame`: the map as one equal wedge per colony round the centre, so a feature designed once in a wedge's frame is stamped into every wedge alike; given a `Stretch` it measures every cell in the round design frame, so the same design fills a rectangular map; `Blob`, a stretched, turned rough disc in that frame |
-| `Sketch` | `TerrainSketch`, the undermap designed in memory; `layBeaches`, the order-independent beach pass; `raiseIslands`; `sprinkleSand`, decorative sand patches on inland grass following a caller's noise, kept a strip of grass away from every beach; `writeUndermap` |
+| `Geometry` | `kPi`; `ShapeTransform` (invertible stretch and rotation); `Stretch`, which places a layout designed in a circle on a map's shorter side onto a rectangular map as an ellipse touching all four sides (`toFill`, `apply`, `undo`, `heading`), exactly the identity on a square map; `RadialShape`, a seeded rough outline with a per-angle `radiusAt()`; `stampShape` and `stampRoughDisc` into a label grid; `AxisFrame`, a frame along a heading from an origin (`at(along, across)` and `project`), in which a colony's trail, gates or towers are designed once |
+| `Drawing` | Drawing on the torus: `strokePath`, a thick path of points each with its own half width, rasterized through the wrap; `tracePath`, a path traced one tile thick with no gaps (a sand road); `bezierPath`, a quadratic curve as such a path; `polarPoint`; `forEachTileInShape` and `fillShape`, a `RadialShape` filled at any centre and turned to any heading within its bounding box, optionally stretched into an oval; `stretchPath`, a designed path placed on the map by a `Stretch` with its half widths kept in tiles; `bentPath`, a tapered path leaving a point along a heading and bowing sideways; `pathClearance` and `pathBounds`, the water between two stroked paths (optionally ignoring a branch's root) and a cheap bounding circle; `growBranches`, a tree grown level by level by forking in two at every tip to a `ForkStyle`, every branch offered to a caller's `accept` before it is kept and a refused one retried once at half length; `arcPath`, a circular arc as a stroke; `zigzagPath`, a switchback trail in an `AxisFrame` with each leg's straight run returned apart from its turns; `ringWithGates`, every tile of a ring visited with the gate it lies in (a wall with ramps, a moat with bridges); exact fixed-point geometry for designs that must rasterize the same everywhere: `SubtilePoint` (16 units a tile), `sealedSegmentTiles` and `traceSealedPath` (a line no unit can cross even diagonally, at any slant), `forEachTileInPolygon` and `fillPolygon` (tile centres inside a polygon, shared edges split exactly, through the wrap) |
+| `Wedge` | `WedgeFrame`: the map as one equal wedge per colony round the centre, so a feature designed once in a wedge's frame is stamped into every wedge alike; given a `Stretch` it measures every cell in the round design frame, so the same design fills a rectangular map; `Blob`, a stretched, turned rough disc in that frame; `WedgeField`, periodic noise sampled in the wedge frame so a layer planted by it comes out the same in every wedge |
+| `Sketch` | `TerrainSketch`, the undermap designed in memory; `layBeaches`, the order-independent beach pass; `raiseIslands`; `sprinkleSand`, decorative sand patches on inland grass following a caller's noise, kept a strip of grass away from every beach; `writeUndermap`; `growWater`, one body of water grown to an exact tile count by a caller's key (Stone highlands' ponds, Amphitheatre's bays); `keepRoadInland` and `roadTiles`, a sand road kept off every beach and the tiles its vertices spoil |
 | `LatticeNoise` | `PeriodicNoise`, value noise that tiles the torus exactly and samples anywhere, with `periodicNoise`/`fractalNoise` (integer fields per tile, octaves) and `torusNoise` (four octaves in [-1, 1]) sampled from it, plus `percentile` |
 | `HeightMap`, `Noise` | Perlin noise faded across the wrap, and the stamped height fields the height-field generators shape |
-| `Planting` | The deposits a generator places by hand: `clearGround`, `growPatch`, `seedNear`, `plantKit` (a home's wheat, wood and stone from three seeds), `KitFrame` (a home's origin and facing, so one kit design lands the same way round every home), `swarmSurroundings`, `clearAroundSwarms`, `seedAlgae` (any water or a shallows band; optionally only its best-growing share, shared out equally between the colonies' wedges), `algaeGrowthChance` (each water tile's chance of passing the engine's algae growth test, which needs water within 15 tiles and solid sand within 30 at a reflected offset), `stockIslands`, `plantFields` (the preferred tiles dealt into wheat and wood patches by an unrelated split key), `scatterClumps` (clumps dropped on random eligible tiles of a region) |
+| `Planting` | The deposits a generator places by hand: `clearGround`, `growPatch`, `seedNear`, `plantKit` (a home's wheat, wood and stone from three seeds), `KitFrame` (a home's origin and facing, so one kit design lands the same way round every home), `swarmSurroundings`, `clearAroundSwarms`, `seedAlgae` (any water or a shallows band; optionally only its best-growing share, shared out equally between the colonies' wedges), `algaeGrowthChance` (each water tile's chance of passing the engine's algae growth test, which needs water within 15 tiles and solid sand within 30 at a reflected offset), `stockIslands`, `plantFields` (the preferred tiles dealt into wheat and wood patches by an unrelated split key), `scatterClumps` (clumps dropped on random eligible tiles of a region), `plantRound` and `plantOrchard` (a clump, or groves of the three fruits, at the same point round a circle at every colony's angle); `seedAlgae` can also share its clumps between labelled groups of water such as private bays |
 | `Resources` | The ambient layer and its fairness guards: `scaledCount`/`scaledShare`, `placeResourceClump`, `setScaledResource`, `scatterResources`, `guaranteeStartingResources`, `openCrampedStarts` |
 | `Roads` | `cheapestRoute` and `openRoad`: the walk that crosses the fewest deposits, with only those cleared; `cheapestWalk`, the same search by any step cost (Everglades' fords, Symmetric arena's causeway routes) |
-| `Settlements` | `placeSettlement`: whole-footprint home mask, nearest legal anchor, exact worker count, per-colony diagnostics |
+| `Settlements` | `placeSettlement`: whole-footprint home mask, nearest legal anchor, exact worker count, per-colony diagnostics; `placeTower`, a completed, stocked defence tower of a chosen level at the allowed footprint nearest a designed point |
+| `Walls` | Walls a design builds and the checks that prove they hold: `seaVertices` and `seaMargin` (the land a swimmer can stand on), `sealCoasts` (stone on every grass tile touching that margin, so a coast is sealed; City states, Carousel, Switchbacks), `labelBorders` (a wall between labelled regions no unit can cross even diagonally, one to three tiles thick; Stone highlands' ridges, Amphitheatre's borders), `designedStone` (a designed band's stone and any gaps the beach pass left), `reachesWithShut`, `pieceLeak` and `seaEntry` (with the doors shut, does any part reach another, or the sea reach inside), `towerReach` (how close a tower on some ground comes to shooting at a target: towers scan square rings with no line of sight), `walkSpread` (every colony's walk to its own target, and how uneven they are) and `firstRegionLeak` (reachable ground where two labelled regions meet that a design says must not; Maze's walls) |
+| `Tessellation` | Polygon tilings of the torus with no terrain attached: `squareTessellation` and `hexTessellation` (cells, the corners they share and edges as identities, exact across the wrap even two cells wide), `edgeEnds`, `centreAcross`, `outline`, `transform` (the lattice's translations and mirrors), `labelTiles` (every tile's cell), `shortestEdgeSteps` and `centreClearance`; `warpLimit` and `warpCorners`, corners moved at random into irregular polygons that still tile, never closing the gap between walls that share no corner below a minimum (Maze) |
+| `GraphMaze` | A maze carved through a tessellation's cell graph: `pocketsFit` and `spreadPockets` (cul-de-sac cells spread as far apart as still leaves a maze), `carveSpanningTree` (recursive backtracker), `openPocketDoors`, `openLoops`, `deadEnds` (Maze) |
+| `Territories` | Ground shared out where wedges cannot be fair (a square map's corners, the wrap, odd colony counts): `growTerritories`, equal-area regions grown together from seed tiles, the smallest always taking the next cheapest tile, connected and deterministic; `smoothLabels`, a majority filter that trims spurs off borders; `strandedGround`, land a flood cannot reach; `growFarLake`, a lake of an exact size at the roomy far end of a region; `siteAtDepth`, the roomiest site a given number of steps from a region's way in |
+| `Homes` | Homes built alike: `stampPondHome`, `pondHomeAnchor` and `plantPondHomeKit` (a round home island facing out from the middle, its swarm towards its door, one or two ponds kept clear of the coast, and a kit round the first pond; Carousel, Switchbacks), and `furnishGround` (farmland in patches on a ground's fertile tiles, outcrops and groves; City states, Carousel, Switchbacks, Amphitheatre) |
 | `BalancedStarts` | `chooseBalancedStarts`: boot tiles whose walks to wheat and wood are as nearly equal as the finished map allows |
 | `Pipeline` | The stages round the others: `settleColonies`, `secureStartingCrops` (clear round the swarms, guarantee the crops, clear again), `reopenCrampedStarts`, `designMismatch` and `walkFromFirstColony` for validators, `ResourceAmounts` |
 | `Terrain` | The height-field pipeline as stages: `heightFieldTiling`, `classifyHeightField`, `paintHeightFieldTerrain`, `paintHeightFieldResources`, `chooseHeightFieldStarts`, `plantHeightFieldGroves`, composed by `generateHeightField` |
@@ -38,8 +43,8 @@ and Terrain take a `Game` because placing buildings and units needs its mutation
 | `GenerationContext` | Named `std::mt19937` streams, `bounded` draws and `shuffle` |
 | `legacy/Regions`, `legacy/Distances`, `legacy/StartingPositions` | The older area-grid toolkit: point dispersion (`splitUpPoints`, `splitUpArea`, `divideUpArea`), the legacy distance encoding, `divideUpPlayerLands` and the boot-tile placers `placeStarts`/`placeArchipelagoStarts`. Concrete islands, Isles, Contested commons and the height-field generators still build on it; nothing new should |
 
-Controls and validation live in `core/`: `GeneratorControls` declares discrete, stepped and
-power-of-two option domains once for the UI and the catalog; `GeneratorDefinition::validateRequest`
+Controls and validation live in `core/`: `GeneratorControls` declares discrete, stepped,
+power-of-two and named-choice option domains once for the UI and the catalog; `GeneratorDefinition::validateRequest`
 is a pure check run before generation, and `validateWorld` runs after the structural checks
 against the finished terrain.
 
@@ -322,50 +327,66 @@ A maze in the pen-and-paper sense, built to be lived in: grass passages that col
 build out into, separated by thin stone-and-water walls, with every colony in its own
 cul-de-sac.
 
-- **Grid.** The map is tiled into cells of about `cell-size` tiles on the map's own torus.
-  Boundaries are chosen so the cells tile the map exactly (neighbouring cells differ in pitch by
-  at most one tile), so the maze wraps across the seam like any other boundary. At least two
-  cells are needed in each direction.
-- **Maze and homes.** Homes are chosen first, by farthest-point spreading on the torus that only
-  accepts a cell if every home still has a non-home neighbour and the non-home cells stay
-  connected. The pattern depends only on the grid, so `validateRequest` checks exactly how many
-  colonies fit; each map then places it at a random offset and mirror image. A recursive
-  backtracker carves a spanning tree of passages over the non-home cells, and each home is
-  attached by exactly one passage, so every colony starts in a genuine dead end. `loopiness` knocks through extra walls between non-home cells only, so homes
+- **Cells.** The map is tiled into cells on its own torus (`Tessellation`). With `cell-shape`
+  Squares (the default), cells are about `cell-size` tiles across, with boundaries chosen so the
+  cells tile the map exactly (neighbouring cells differ in pitch by at most one tile). With
+  Hexagons, pointy-topped hexagons in offset rows sit about one and a half `cell-size` apart
+  (`kHexPitchPercent`), stretched a little so an even number of rows wraps; a hexagon's slanted
+  doorways are shorter than a square's, so they need the extra room. Either way the maze wraps
+  across the seam like any other boundary, and at least two cells are needed in each direction.
+- **Warp.** `warp` (0 by default) moves every corner of the tiling at random, up to that share of
+  what keeps every cell whole (`warpCorners`), so squares and hexagons become irregular polygons
+  that still tile. It runs after the maze is carved, so it knows which edges are walls: walls that
+  share no corner (and the ponds below) never come closer than the narrowest passage allows, and
+  no wall comes closer to a cell's centre than half that, so a warped maze keeps every guarantee
+  of an unwarped one. At small cells there is less room to spare and warp is gentler.
+- **Maze and homes.** Homes are chosen first, by farthest-point spreading between cell centres
+  that only accepts a cell if every home still has a non-home neighbour and the non-home cells
+  stay connected (`spreadPockets`). The pattern depends only on the tiling, so `validateRequest`
+  checks exactly how many colonies fit; each map then places it at a random translation and mirror
+  image of the lattice. A recursive backtracker carves a spanning tree of passages over the
+  non-home cells, and each home is attached by exactly one passage, so every colony starts in a
+  genuine dead end. `loopiness` knocks through extra walls between non-home cells only, so homes
   stay cul-de-sacs.
-- **Passages.** Every cell is a grass chamber and every open boundary a band of the same width
-  joining two chambers, so a run of passage reads as one continuous strip of buildable,
-  farmable grass. Passage width isn't a control of its own: passages fill whatever the narrowest
-  cell leaves once its walls and channels are taken out, and stay odd so they centre on a tile.
-- **Roads.** A three-tile sand road runs down the middle of every open passage, centre to centre,
-  so every cell is linked to the rest of the maze by ground that can never be closed:
-  `Map::incResource` only seeds a resource on its own terrain and buildings need pure grass, so
-  nothing grows over a road or is built on one. At a home the road stops against the swarm's
-  footprint. Shore distances for the resource scatter ignore the road. With `sand-roads` off
-  (on by default), passages are grass from shore to shore, open to farmland and buildings.
-- **Walls.** Every closed boundary has a stone spine covering the whole boundary line from corner
-  to corner, with `channel-width` all-water tiles on either side (default 2). Perpendicular walls
-  share their corner tile, so a boundary can only be crossed — on foot or swimming — where it's
-  open. STONE only places on a pure-grass tile, which needs grass at all four undermap corners
-  (`Map::regenerateMap`), so each spine sits on a two-wide grass core inside a sand ring. Terrain
-  is stamped directly rather than through `Map::controlSand()`, whose in-place raster pass shifts
-  shorelines unevenly.
+- **Terrain from one distance field.** Only walls are drawn. Every closed edge gets a stone spine,
+  a sealed line (`traceSealedPath`) from its corner tile to the next, so walls meeting at a corner
+  share its tile and none can be slipped between at any angle. The undermap is then designed from
+  the steps to the nearest spine corner: one step out stays land, the next `channel-width` + 1 are
+  water, and everything further out is grass, which `layBeaches` edges with sand. In tiles that
+  is the spine, two sandy flank tiles, `channel-width` all-water tiles (default 2), a two-tile
+  shore and then passage; STONE only places on a pure-grass tile, and the spine's own corners are
+  grass. A corner where every edge is open gets a pond as wide as a wall's water instead, so a
+  junction of passages still reads as one. Passages are simply the ground no wall comes near, so
+  every cell is a grass chamber and every doorway as wide as its walls allow.
 - **No walking along a wall.** A wall's sandy flanks are walkable land, so they are always kept at
   least one all-water tile from every passage's shore — a unit can't step across a tile it can't
-  stand on. From a cell's centre, a passage's grass therefore reaches
-  `floor(pitch / 2) - 5 - channelWidth` tiles; `validateRequest` rejects settings that would
-  leave a passage narrower than 9 tiles.
-- **Resources.** Every home starts identical: fixed 1:1 wheat and wood banking the dead end's side
-  shores, a compact stone deposit at its back wall, and a clear square around the swarm. Outside
-  the homes, clumps of wheat, wood and stone (densities per 256 shore tiles) are scattered along
-  every passage's shores, never more than three tiles in, so each passage keeps a clear lane down
-  its middle however the maze turns. Fruit is treasure: every dead end that isn't a home gets one
-  compact patch of `fruit` tiles near its far end, with fruit types dealt round-robin so every
-  kind is somewhere in the maze. With `dead-end-treasure` off (on by default) the same fruit is
-  scattered along the passages' shores instead. Algae is seeded along the channels.
+  stand on. A doorway between two walls is therefore `shortest edge / 2 - 5 - channelWidth` tiles
+  either side of its middle; `validateRequest` rejects settings that would leave a passage
+  narrower than 9 tiles.
+- **Roads.** A three-tile sand road runs down every open passage, from each cell's centre through
+  the doorway's middle to the next centre, traced as a sealed line so its pure-sand tiles always
+  share a side. Every cell is linked to the rest of the maze by ground that can never be closed:
+  `Map::incResource` only seeds a resource on its own terrain and buildings need pure grass, so
+  nothing grows over a road or is built on one. Roads only turn grass to sand, never water, and
+  at a home the road stops against the swarm's footprint. Shore distances for the resource
+  scatter ignore the road. With `sand-roads` off (on by default), passages are grass from shore
+  to shore, open to farmland and buildings.
+- **Resources.** Every home starts identical: fixed 1:1 wheat and wood on the tiles within three
+  of the shore to the left and right of the home's door, growing forward from its back wall; a
+  compact stone deposit at the back wall's centre; and a clear square around the swarm. Positions
+  in a cell are measured along and across its exit in eighths of a tile, so any cell shape sorts
+  its tiles the same way on every platform. Outside the homes, clumps of wheat, wood and stone
+  (densities per 256 shore tiles) are scattered along every passage's shores, never more than
+  three tiles in, so each passage keeps a clear lane down its middle however the maze turns.
+  Fruit is treasure: every dead end that isn't a home gets one compact patch of `fruit` tiles near
+  its far end, with fruit types dealt round-robin so every kind is somewhere in the maze. With
+  `dead-end-treasure` off (on by default) the same fruit is scattered along the passages' shores
+  instead. Algae is seeded along the channels.
 - **Checked, not assumed.** `validateWorld` floods walkable tiles (water, buildings and every
-  resource, including wall spines, block it) from colony 0's workers, and fails the candidate if
-  any colony isn't reached.
+  resource, including wall spines, block it) from colony 0's workers and fails the candidate if
+  any colony isn't reached. It then rebuilds the maze from the request and checks the walls hold
+  (`firstRegionLeak`): no ground the colonies can reach joins two cells except where the open
+  edges round a shared corner connect them.
 
 ## Watershed
 

@@ -94,8 +94,13 @@ std::vector<double> algaeGrowthChance(const Map &map, const Torus &t)
 	return chance;
 }
 
-void seedAlgae(Map &map, GenerationContext &context, const Torus &t, const char *stream,
-			   int algaePercent, const AlgaeBand &band, const WedgeFrame *wedges)
+namespace
+{
+// seedAlgae's work, with the clumps shared out between `groups` groups of water (one group when
+// `groupAt` is null); a tile whose group is negative takes no clump.
+template <typename GroupAt>
+void seedAlgaeIn(Map &map, GenerationContext &context, const Torus &t, const char *stream,
+				 int algaePercent, const AlgaeBand &band, int groups, const GroupAt *groupAt)
 {
 	const int n = t.w * t.h;
 	std::vector<MapGeneratorPoint> water;
@@ -124,7 +129,7 @@ void seedAlgae(Map &map, GenerationContext &context, const Torus &t, const char 
 	// The count follows the whole band. With a best share, the clumps then go only on the water
 	// in it where algae regrows most readily, so the same amount of algae sits where it lasts.
 	const int clumps = scaledCount(int(water.size()) / band.tilesPerClump, algaePercent);
-	if (band.bestShare <= 0 && !wedges)
+	if (band.bestShare <= 0 && !groupAt)
 	{
 		for (int clump = 0; clump < clumps; ++clump)
 			placeResourceClump(map, context, water[context.bounded(stream, water.size())], ALGA,
@@ -133,13 +138,13 @@ void seedAlgae(Map &map, GenerationContext &context, const Torus &t, const char 
 	}
 	// Only the band's own tiles are measured: the test costs 961 lookups a tile.
 	const AlgaeGrowth growth(map, t);
-	const int groups = wedges ? wedges->teams : 1;
 	std::vector<std::vector<std::pair<double, int>>> byGroup(groups);
 	for (const MapGeneratorPoint &p : water)
 	{
 		const int i = p.y * t.w + p.x;
-		byGroup[wedges ? wedges->cell(p.x, p.y).k : 0].push_back(
-			{band.bestShare > 0 ? -growth.at(i) : 0.0, i});
+		const int group = groupAt ? (*groupAt)(p.x, p.y) : 0;
+		if (group >= 0 && group < groups)
+			byGroup[group].push_back({band.bestShare > 0 ? -growth.at(i) : 0.0, i});
 	}
 	for (auto &group : byGroup)
 	{
@@ -154,6 +159,28 @@ void seedAlgae(Map &map, GenerationContext &context, const Torus &t, const char 
 			placeResourceClump(map, context, {i % t.w, i / t.w}, ALGA, band.clumpRadius);
 		}
 	}
+}
+} // namespace
+
+void seedAlgae(Map &map, GenerationContext &context, const Torus &t, const char *stream,
+			   int algaePercent, const AlgaeBand &band, const WedgeFrame *wedges)
+{
+	if (!wedges)
+	{
+		const auto none = [](int, int) { return 0; };
+		seedAlgaeIn(map, context, t, stream, algaePercent, band, 1,
+					band.bestShare > 0 ? &none : nullptr);
+		return;
+	}
+	const auto wedgeOf = [&](int x, int y) { return wedges->cell(x, y).k; };
+	seedAlgaeIn(map, context, t, stream, algaePercent, band, wedges->teams, &wedgeOf);
+}
+
+void seedAlgae(Map &map, GenerationContext &context, const Torus &t, const char *stream,
+			   int algaePercent, const AlgaeBand &band, const std::vector<int> &groupOf, int groups)
+{
+	const auto groupAt = [&](int x, int y) { return groupOf[y * t.w + x]; };
+	seedAlgaeIn(map, context, t, stream, algaePercent, band, std::max(1, groups), &groupAt);
 }
 
 void stockIslands(Map &map, GenerationContext &context, const std::vector<Island> &islands,

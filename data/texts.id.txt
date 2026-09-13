@@ -2012,3 +2012,11 @@ Batu di kebun buah
 Koloni di kedua pantai
 [Winding belt]
 Sabuk berkelok
+[Cell shape]
+Bentuk sel
+[Squares]
+Persegi
+[Hexagons]
+Segi enam
+[Warp]
+Distorsi

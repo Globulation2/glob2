@@ -2016,3 +2016,11 @@ Kamenje v sadovnjaku
 Kolonije na obeh obalah
 [Winding belt]
 Vijugast pas
+[Cell shape]
+Oblika celic
+[Squares]
+Kvadrati
+[Hexagons]
+Šestkotniki
+[Warp]
+Popačenje

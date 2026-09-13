@@ -1000,3 +1000,7 @@
 [Stone in the orchard]
 [Colonies on both coasts]
 [Winding belt]
+[Cell shape]
+[Squares]
+[Hexagons]
+[Warp]

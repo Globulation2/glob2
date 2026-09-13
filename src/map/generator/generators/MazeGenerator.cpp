@@ -1,29 +1,41 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MazeGenerator.h"
+#include "Drawing.h"
 #include "Game.h"
 #include "GenerationContext.h"
+#include "GraphMaze.h"
 #include "Grid.h"
 #include "Pipeline.h"
 #include "Resources.h"
 #include "Settlements.h"
+#include "Sketch.h"
+#include "Tessellation.h"
 #include "Unit.h"
+#include "Walls.h"
 #include <algorithm>
+#include <cmath>
 #include <cstdlib>
+#include <numeric>
 #include <string>
 #include <utility>
 #include <vector>
 using namespace MapGeneration;
 
-// A maze in the pen-and-paper sense, built to be lived in. The world is tiled into square cells
-// on the map's own torus; a recursive backtracker carves a spanning tree of passages between
-// them; every boundary the tree leaves closed becomes a wall - a line of stone in a narrow water
-// channel. Passages fill their cells with grass, so colonies farm and build their way out into
-// the maze, and every colony starts in its own cul-de-sac.
+// A maze in the pen-and-paper sense, built to be lived in. The world is tiled into cells on the
+// map's own torus - squares or hexagons, their corners optionally warped into irregular polygons
+// (Tessellation.h) - and a recursive backtracker carves a spanning tree of passages between them
+// (GraphMaze.h). Every edge the tree leaves closed becomes a wall: a line of stone in a narrow water
+// channel. Passages fill their cells with grass, so colonies farm and build their way out into the
+// maze, and every colony starts in its own cul-de-sac.
 //
-// Terrain is stamped directly rather than through Map::controlSand(), whose in-place raster pass
-// shifts shorelines unevenly. Each tile's terrain comes from its four undermap corners
-// (Map::regenerateMap), so a pure-grass tile needs grass at all four, and grass must never touch
-// water; every grass area here is therefore stamped inside a one-tile sand ring.
+// Terrain is designed in a TerrainSketch, one undermap corner at a time. Each tile's terrain comes
+// from its four undermap corners (Map::regenerateMap), so the whole map is drawn from one distance
+// field: steps from the corners of every wall's stone line. Walking out from a wall, the corners one
+// step out stay land, the next channel-width + 1 are water and everything further is land again;
+// layBeaches turns the land beside that water to sand. In tiles, that is the stone spine, two sandy
+// flank tiles, channel-width all-water tiles, a two-tile shore and then grass. A corner no wall
+// reaches gets a pond as wide as a wall's water instead. Nothing else is ever drawn, so a passage
+// is simply ground no wall comes near, and its shape follows the cells'.
 //
 // WHY A MAZE PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Walls are stone,
 // which can never be cleared, flanked by water, which ground units cannot cross until they swim,
@@ -33,32 +45,32 @@ using namespace MapGeneration;
 // defended door can be flanked. Farmland lines the passages' shores, next to channel water where
 // wheat and wood regrow, and sand roads keep that growth from ever sealing a passage. Fruit
 // sits at the ends of dead ends, off every through route, so fetching it is a deliberate raid.
+// Hexagons give every junction three ways on instead of two or three, so their mazes wind more.
 //
-// THE SIZES AT THE DEFAULTS (256x256, cell size 32, channel width 2): an 8x8 grid of 64 cells;
-// each half-cell of 16 tiles is 9 of passage, 5 of sand ring, flank and spine, and 2 of channel,
-// so passages are 19 tiles wide and two passages are 14 tiles apart across a wall.
+// THE SIZES AT THE DEFAULTS (256x256, square cells of 32, channel width 2): an 8x8 grid of 64
+// cells; each half-cell of 16 tiles is 9 of passage, 5 of shore, flank and spine, and 2 of channel,
+// so passages are 19 tiles wide and two passages are 14 tiles apart across a wall. Hexagons at cell
+// size 32 are about 48 tiles apart (kHexPitchPercent), which keeps their slanted doorways as wide as
+// a small base.
 namespace
 {
 
-enum Direction
-{
-	East,
-	South,
-	West,
-	North
-};
+// The undermap corners one step from a wall's stone line stay land (its flank); the channel's
+// water starts one step further out.
+constexpr int kFlankSteps = 1;
 
-// Walking out from a cell's centre towards a wall: the passage's grass, then two walkable tiles of
-// its sand ring, then channel-width all-water tiles, then the wall - two walkable tiles of flank
-// and the stone spine on the boundary itself. Any tile with a non-water corner is walkable, so
-// without that water a unit could step onto a wall's flank and follow the wall around the maze; a
-// single water tile is enough, since a unit can't step across a tile it can't stand on. The ring,
-// flank and spine account for this many tiles of every half-cell.
+// Half a doorway's width is taken by the wall at each end: the spine, two tiles of flank,
+// channel-width tiles of water and two tiles of shore, measured in tiles along the edge. The spine,
+// flank and shore account for this many tiles of every half-edge.
 constexpr int kWallFootprint = 5;
 
-// Half the width of the narrowest passage allowed: a 9-wide chamber still seats the 4x4 swarm
-// with room for its workers.
+// Half the width of the narrowest passage allowed: a 9-wide doorway still passes a column of
+// workers and seats the 4x4 swarm with room to spare.
 constexpr int kMinimumPassageHalf = 4;
+
+// Hexagons sit this share of the cell size apart. A hexagon's edge is only about 0.58 of its pitch,
+// so at the square's spacing its doorways would come out too narrow to pass the size check.
+constexpr int kHexPitchPercent = 150;
 
 // Every home starts identical: fixed tile counts rather than densities, so the start doesn't
 // depend on the resource controls, with wheat and wood 1:1 as for any guaranteed placement.
@@ -69,289 +81,168 @@ constexpr int kHomeStone = 12;
 // the middle of every passage however the maze turns, so no deposit can seal a route.
 constexpr int kShoreBand = 3;
 
-// The cell lattice. Boundaries are integer tile coordinates chosen so the cells tile the map
-// exactly, which lets the maze wrap across the torus seam like any other boundary; when
-// cell-size doesn't divide the map, neighbouring cells differ in pitch by at most one tile.
-struct MazeGrid
+// Positions inside a cell are measured along its exit and across it in eighths of a tile, so ties
+// between tiles are broken exactly the same way on every platform.
+constexpr int kFrame = 8;
+
+Tessellation latticeFor(const MazeOptions &o, int width, int height)
 {
-	int width, height, columns, rows;
-	std::vector<int> xs, ys;
+	if (o.cellShape == int(Tessellation::Shape::Hexagon))
+		return hexTessellation(width, height, o.cellSize * kHexPitchPercent / 100);
+	return squareTessellation(width, height, o.cellSize);
+}
 
-	int cells() const { return columns * rows; }
-	int column(int cell) const { return cell % columns; }
-	int row(int cell) const { return cell / columns; }
-	int centerX(int cell) const { return (xs[column(cell)] + xs[column(cell) + 1]) / 2; }
-	int centerY(int cell) const { return (ys[row(cell)] + ys[row(cell) + 1]) / 2; }
-	int minimumPitch() const { return std::min(width / columns, height / rows); }
-	int cellAt(int x, int y) const
-	{
-		const int c = int(std::upper_bound(xs.begin(), xs.end(), x) - xs.begin()) - 1;
-		const int r = int(std::upper_bound(ys.begin(), ys.end(), y) - ys.begin()) - 1;
-		return std::min(r, rows - 1) * columns + std::min(c, columns - 1);
-	}
+// The walls at both ends of the shortest edge leave this much doorway between them.
+int passageHalf(const Tessellation &g, int channelWidth)
+{
+	return shortestEdgeSteps(g) / 2 - kWallFootprint - channelWidth;
+}
 
-	int neighbour(int cell, int direction) const
-	{
-		const int c = column(cell), r = row(cell);
-		switch (direction)
-		{
-		case East:
-			return r * columns + (c + 1) % columns;
-		case South:
-			return ((r + 1) % rows) * columns + c;
-		case West:
-			return r * columns + (c + columns - 1) % columns;
-		default:
-			return ((r + rows - 1) % rows) * columns + c;
-		}
-	}
-	// Each undirected edge is stored once, owned by its west or north cell.
-	int edgeId(int cell, int direction) const
-	{
-		switch (direction)
-		{
-		case East:
-			return 2 * cell;
-		case South:
-			return 2 * cell + 1;
-		case West:
-			return 2 * neighbour(cell, West);
-		default:
-			return 2 * neighbour(cell, North) + 1;
-		}
-	}
+// What the settings alone decide, before anything random: the tiling and where the homes go.
+struct MazeLayout
+{
+	Tessellation g;
+	int half = 0;
+	std::vector<int> homes;
+	std::string failure;
 };
 
-MazeGrid mazeGrid(int width, int height, int cellSize)
+MazeLayout mazeLayout(const MazeOptions &o, int width, int height, int teams)
 {
-	MazeGrid g{width, height, width / cellSize, height / cellSize, {}, {}};
-	for (int i = 0; i <= g.columns; ++i)
-		g.xs.push_back(i * width / std::max(1, g.columns));
-	for (int i = 0; i <= g.rows; ++i)
-		g.ys.push_back(i * height / std::max(1, g.rows));
-	return g;
-}
-
-// Passages are as wide as the narrowest cell allows once the wall and its channels are taken
-// out, and odd so they centre on a tile.
-int passageHalf(const MazeGrid &g, int channelWidth)
-{
-	return g.minimumPitch() / 2 - kWallFootprint - channelWidth;
-}
-
-// Whether a set of home cells leaves a valid layout: every home has a non-home neighbour to open
-// its one passage into, and the non-home cells form a single connected region for the maze to
-// span.
-bool homesFit(const MazeGrid &g, const std::vector<unsigned char> &isHome)
-{
-	int start = -1, freeCells = 0;
-	for (int cell = 0; cell < g.cells(); ++cell)
-	{
-		if (!isHome[cell])
-		{
-			++freeCells;
-			start = cell;
-			continue;
-		}
-		bool opening = false;
-		for (int d = 0; d < 4; ++d)
-			opening |= !isHome[g.neighbour(cell, d)];
-		if (!opening)
-			return false;
-	}
-	if (!freeCells)
-		return false;
-	std::vector<unsigned char> seen(g.cells(), 0);
-	std::vector<int> stack{start};
-	seen[start] = 1;
-	int reached = 1;
-	while (!stack.empty())
-	{
-		const int cell = stack.back();
-		stack.pop_back();
-		for (int d = 0; d < 4; ++d)
-		{
-			const int next = g.neighbour(cell, d);
-			if (!isHome[next] && !seen[next])
-			{
-				seen[next] = 1;
-				++reached;
-				stack.push_back(next);
-			}
-		}
-	}
-	return reached == freeCells;
-}
-
-// The home cells as a pattern fixed by the grid alone, so validation checks exactly what
-// generation will do: farthest-point spreading on the torus, taking at each step the farthest
-// cell that still leaves a valid layout. Empty if the grid can't hold every colony.
-std::vector<int> homePattern(const MazeGrid &g, int teams)
-{
-	auto distance = [&](int a, int b)
-	{
-		int dx = std::abs(g.column(a) - g.column(b)), dy = std::abs(g.row(a) - g.row(b));
-		dx = std::min(dx, g.columns - dx);
-		dy = std::min(dy, g.rows - dy);
-		return dx * dx + dy * dy;
-	};
-	std::vector<unsigned char> isHome(g.cells(), 0);
-	std::vector<int> homes, nearest(g.cells(), 0);
-	for (int team = 0; team < teams; ++team)
-	{
-		std::vector<int> order;
-		for (int cell = 0; cell < g.cells(); ++cell)
-			if (!isHome[cell])
-				order.push_back(cell);
-		std::stable_sort(order.begin(), order.end(),
-						 [&](int a, int b) { return nearest[a] > nearest[b]; });
-		int chosen = -1;
-		for (int cell : order)
-		{
-			isHome[cell] = 1;
-			if (homesFit(g, isHome))
-			{
-				chosen = cell;
-				break;
-			}
-			isHome[cell] = 0;
-		}
-		if (chosen < 0)
-			return {};
-		homes.push_back(chosen);
-		for (int cell = 0; cell < g.cells(); ++cell)
-			nearest[cell] = homes.size() == 1 ? distance(cell, chosen)
-											  : std::min(nearest[cell], distance(cell, chosen));
-	}
-	return homes;
+	MazeLayout L;
+	L.g = latticeFor(o, width, height);
+	L.half = passageHalf(L.g, o.channelWidth);
+	if (L.g.columns < 2 || L.g.rows < 2)
+		L.failure = "The maze needs at least two cells across and down; use a bigger map or smaller "
+					"cells.";
+	else if (L.half < kMinimumPassageHalf)
+		L.failure = "Channels this wide leave too little grass in each cell; use narrower channels "
+					"or bigger cells.";
+	else if (int((L.homes = spreadPockets(L.g, teams)).size()) != teams)
+		L.failure = "The maze has too few cul-de-sacs for this many colonies; use a bigger map or "
+					"smaller cells.";
+	return L;
 }
 
 std::string validate(const GenerationRequest &r)
 {
-	const MazeOptions o(r);
-	const MazeGrid g = mazeGrid(1 << r.wDec, 1 << r.hDec, o.cellSize);
-	if (g.columns < 2 || g.rows < 2)
-		return "The maze needs at least two cells across and down; use a bigger map or smaller "
-			   "cells.";
-	if (passageHalf(g, o.channelWidth) < kMinimumPassageHalf)
-		return "Channels this wide leave too little grass in each cell; use narrower channels or "
-			   "bigger cells.";
-	if (int(homePattern(g, r.nbTeams).size()) != r.nbTeams)
-		return "The maze has too few cul-de-sacs for this many colonies; use a bigger map or "
-			   "smaller "
-			   "cells.";
-	return "";
+	return mazeLayout(MazeOptions(r), 1 << r.wDec, 1 << r.hDec, r.nbTeams).failure;
 }
 
-// The home pattern at a random offset and mirror image on the torus - a translation or reflection
-// of a valid layout is still valid - dealt to the colonies in random order.
-std::vector<int> chooseHomes(const MazeGrid &g, GenerationContext &context, int teams)
+// The whole maze as drawn from the seed: the layout's home pattern at a random symmetry of the
+// tiling, dealt to the colonies in random order; the carved passages; and the warped cells with
+// every tile's cell. A pure function of the request, so validateWorld can build it again.
+struct MazeDesign
 {
-	std::vector<int> homes = homePattern(g, teams);
-	const int offsetX = context.bounded("maze", g.columns);
-	const int offsetY = context.bounded("maze", g.rows);
-	const bool mirrorX = context.bounded("maze", 2), mirrorY = context.bounded("maze", 2);
-	for (int &home : homes)
-	{
-		const int c = mirrorX ? (g.columns - g.column(home)) % g.columns : g.column(home);
-		const int r = mirrorY ? (g.rows - g.row(home)) % g.rows : g.row(home);
-		home = ((r + offsetY) % g.rows) * g.columns + (c + offsetX) % g.columns;
-	}
-	context.shuffle(homes.begin(), homes.end(), "maze");
-	return homes;
-}
-
-// Recursive backtracker (iterative, explicit stack) over the non-home cells: long winding
-// passages with comparatively few, deep dead ends - the classic hand-drawn maze texture.
-bool carveSpanningTree(const MazeGrid &g, GenerationContext &context,
-					   const std::vector<unsigned char> &isHome, std::vector<unsigned char> &open)
-{
-	std::vector<int> free;
-	for (int cell = 0; cell < g.cells(); ++cell)
-		if (!isHome[cell])
-			free.push_back(cell);
-	if (free.empty())
-		return false;
-	std::vector<unsigned char> visited(isHome);
-	std::vector<int> stack{free[context.bounded("maze", free.size())]};
-	visited[stack.back()] = 1;
-	while (!stack.empty())
-	{
-		const int cell = stack.back();
-		int choices[4], count = 0;
-		for (int d = 0; d < 4; ++d)
-			if (!visited[g.neighbour(cell, d)])
-				choices[count++] = d;
-		if (!count)
-		{
-			stack.pop_back();
-			continue;
-		}
-		const int d = choices[context.bounded("maze", count)];
-		const int next = g.neighbour(cell, d);
-		open[g.edgeId(cell, d)] = 1;
-		visited[next] = 1;
-		stack.push_back(next);
-	}
-	return std::all_of(visited.begin(), visited.end(), [](unsigned char v) { return v != 0; });
-}
-
-// Loopiness knocks through extra walls between non-home cells, giving routes to flank along;
-// a home is never touched, so it stays a cul-de-sac.
-void addLoops(const MazeGrid &g, GenerationContext &context,
-			  const std::vector<unsigned char> &isHome, int loopiness,
-			  std::vector<unsigned char> &open)
-{
-	std::vector<int> closed;
-	int freeCells = 0;
-	for (int cell = 0; cell < g.cells(); ++cell)
-	{
-		if (isHome[cell])
-			continue;
-		++freeCells;
-		for (int d : {East, South})
-			if (!open[g.edgeId(cell, d)] && !isHome[g.neighbour(cell, d)])
-				closed.push_back(g.edgeId(cell, d));
-	}
-	context.shuffle(closed.begin(), closed.end(), "maze");
-	const size_t extra = std::min(closed.size(), size_t(freeCells * loopiness / 100));
-	for (size_t i = 0; i < extra; ++i)
-		open[closed[i]] = 1;
-}
-
-void fillUndermap(Map &map, int x0, int y0, int w, int h, TerrainType t)
-{
-	for (int dy = 0; dy < h; ++dy)
-		for (int dx = 0; dx < w; ++dx)
-			map.setUMTerrain(map.normalizeX(x0 + dx), map.normalizeY(y0 + dy), t);
-}
-
-// An inclusive rectangle of pure-grass tiles. Stamping one takes undermap grass on
-// [x0, x1 + 1] x [y0, y1 + 1] inside undermap sand one line further out.
-struct TileRect
-{
-	int x0, y0, x1, y1;
+	MazeLayout layout;
+	std::vector<unsigned char> isHome, open;
+	std::vector<int> exitEdge, deadEnds, labels;
+	std::string failure;
 };
 
-void stampRing(Map &map, const TileRect &r)
+MazeDesign designMaze(const GenerationRequest &request, GenerationContext &context)
 {
-	fillUndermap(map, r.x0 - 1, r.y0 - 1, r.x1 - r.x0 + 4, r.y1 - r.y0 + 4, SAND);
-}
-void stampCore(Map &map, const TileRect &r)
-{
-	fillUndermap(map, r.x0, r.y0, r.x1 - r.x0 + 2, r.y1 - r.y0 + 2, GRASS);
+	const MazeOptions o(request);
+	MazeDesign d;
+	d.layout = mazeLayout(o, 1 << request.wDec, 1 << request.hDec, request.nbTeams);
+	MazeLayout &L = d.layout;
+	Tessellation &g = L.g;
+	if (!L.failure.empty())
+	{
+		d.failure = L.failure;
+		return d;
+	}
+	// A translation or reflection of a valid layout is still valid.
+	const int dColumns = int(context.bounded("maze", g.columns));
+	const int dRows = int(context.bounded("maze", g.rows));
+	const bool mirrorColumns = context.bounded("maze", 2), mirrorRows = context.bounded("maze", 2);
+	for (int &home : L.homes)
+		home = g.transform(home, dColumns, dRows, mirrorColumns, mirrorRows);
+	context.shuffle(L.homes.begin(), L.homes.end(), "maze");
+
+	d.isHome.assign(g.cells.size(), 0);
+	for (int home : L.homes)
+		d.isHome[home] = 1;
+	d.open.assign(g.edges.size(), 0);
+	if (!carveSpanningTree(g, context, "maze", d.isHome, d.open))
+	{
+		d.failure = "the non-home cells did not form one connected maze";
+		return d;
+	}
+	const std::vector<int> doors = openPocketDoors(g, context, "maze", L.homes, d.isHome, d.open);
+	openLoops(g, context, "maze", d.isHome, o.loopiness, d.open);
+	d.deadEnds = deadEnds(g, d.open, d.isHome, d.exitEdge);
+	for (size_t k = 0; k < L.homes.size(); ++k)
+		d.exitEdge[L.homes[k]] = doors[k];
+
+	// Warping never brings two walls (or ponds) that share no corner closer than the narrowest
+	// passage allows, nor a wall closer to a cell's centre than half that, so the validation above
+	// still holds for the warped cells: walls meeting at a corner may close up, passages may not.
+	const int passageSteps = 2 * (kWallFootprint + o.channelWidth + kMinimumPassageHalf);
+	std::vector<unsigned char> walls(g.edges.size(), 0);
+	for (size_t edge = 0; edge < g.edges.size(); ++edge)
+		walls[edge] = !d.open[edge];
+	warpCorners(g, warpLimit(g) * o.warp / 100, walls, passageSteps, passageSteps / 2, context,
+				"maze-warp");
+	d.labels = labelTiles(g);
+	if (d.labels.empty())
+		d.failure = "the maze's cells did not tile the map";
+	return d;
 }
 
-// One wall per closed boundary: a stone spine covering every tile of the boundary line from
-// corner to corner inclusive, so perpendicular walls share their corner tile and nothing can slip
-// between them. As a tile rectangle one tile wide, its pure-grass core is exactly the spine,
-// which is what lets STONE be placed on every tile of it.
-TileRect wallFor(const MazeGrid &g, int cell, int direction)
+// Measurements of a cell's tiles from its centre, along its exit (u, positive towards the door)
+// and across it (v, positive to the door's right), in kFrame units.
+struct CellTile
 {
-	const int c = g.column(cell), r = g.row(cell);
-	if (direction == East)
-		return {g.xs[c + 1], g.ys[r], g.xs[c + 1], g.ys[r + 1]};
-	return {g.xs[c], g.ys[r + 1], g.xs[c + 1], g.ys[r + 1]};
+	int x, y, u, v;
+};
+struct CellFrame
+{
+	double fx, fy;
+	int cx, cy;
+	CellTile measure(const Torus &t, int x, int y) const
+	{
+		const int ox = t.offsetX(cx, x), oy = t.offsetY(cy, y);
+		return {x, y, int(std::lround((ox * fx + oy * fy) * kFrame)),
+				int(std::lround((ox * -fy + oy * fx) * kFrame))};
+	}
+};
+CellFrame frameFor(const Tessellation &g, int cell, int exitEdge)
+{
+	const SubtilePoint centre = g.cells[cell].centre;
+	const auto ends = g.edgeEnds(exitEdge, cell);
+	const double dx = double(ends.first.x + ends.second.x) / 2 - centre.x;
+	const double dy = double(ends.first.y + ends.second.y) / 2 - centre.y;
+	const double length = std::hypot(dx, dy);
+	return {dx / length, dy / length, g.centreTileX(cell), g.centreTileY(cell)};
+}
+
+// Places the first `count` tiles of a region in the order `before` ranks them.
+template <typename Order>
+void fillInOrder(Map &map, std::vector<CellTile> region, int count, int resourceType, Order before)
+{
+	std::stable_sort(region.begin(), region.end(), before);
+	for (int i = 0; i < count && i < int(region.size()); ++i)
+		map.setResource(region[i].x, region[i].y, resourceType, 1);
+}
+
+// A cell's free grass tiles - no deposit on them, which also leaves out the walls' stone - in row
+// order, measured in its exit's frame; `back` is how far they reach behind the centre and `side`
+// how far across, both in kFrame units.
+std::vector<CellTile> grassOfCell(const Map &map, const Torus &t, const MazeDesign &d, int cell,
+								  const CellFrame &frame, int &back, int &side)
+{
+	std::vector<CellTile> tiles;
+	back = side = 0;
+	for (int i = 0; i < t.size(); ++i)
+		if (d.labels[i] == cell && map.isGrass(i % t.w, i / t.w) &&
+			!map.isResource(i % t.w, i / t.w))
+		{
+			tiles.push_back(frame.measure(t, i % t.w, i / t.w));
+			back = std::max(back, -tiles.back().u);
+			side = std::max(side, std::abs(tiles.back().v));
+		}
+	return tiles;
 }
 
 // Distance in 8-neighbour steps from every tile to the nearest shore - a tile that isn't pure
@@ -366,57 +257,47 @@ std::vector<int> shoreDepth(const Map &map, const std::vector<unsigned char> &on
 	return stepsFrom(t, shore);
 }
 
-struct CellTile
-{
-	int x, y, u, v; // u: towards the cell's exit; v: to the exit's right
-};
-
-// Places the first `count` tiles of a region in the order `before` ranks them.
-template <typename Order>
-void fillInOrder(Map &map, std::vector<CellTile> region, int count, int resourceType, Order before)
-{
-	std::stable_sort(region.begin(), region.end(), before);
-	for (int i = 0; i < count && i < int(region.size()); ++i)
-		map.setResource(region[i].x, region[i].y, resourceType, 1);
-}
-
 // A home's own cell, seen from inside looking out through its exit: wheat banks the left shore
 // and wood the right, both growing forward from the dead end's back wall; stone is a compact
-// deposit at the back wall's centre (a line along it would read as a second wall). The middle of
-// the passage and a square around the swarm stay clear, so workers always walk straight out.
-void furnishHome(Map &map, const MazeGrid &g, int cell, int exit, int half)
+// deposit at the back wall's centre (a line along it would read as a second wall). Only tiles
+// within kShoreBand of a shore take anything (`depth`, from shoreDepth), so the middle of the
+// passage stays clear whatever the cell's shape, and so does a square around the swarm, so workers
+// always walk straight out. The back wall is the shore behind the centre: its three rows of tiles,
+// less the side shores at their ends.
+void furnishHome(Map &map, const Torus &t, const MazeDesign &d, const std::vector<int> &depth,
+				 int cell)
 {
-	static const int forward[4][2] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
-	const int fx = forward[exit][0], fy = forward[exit][1], rx = -fy, ry = fx;
-	const int cx = g.centerX(cell), cy = g.centerY(cell);
-	const int lane = std::max(1, half - kShoreBand);
-	std::vector<CellTile> left, right, back;
-	const int c = g.column(cell), r = g.row(cell);
-	for (int y = g.ys[r]; y < g.ys[r + 1]; ++y)
-		for (int x = g.xs[c]; x < g.xs[c + 1]; ++x)
-		{
-			if (!map.isGrass(x, y) || map.isResource(x, y) || map.getBuilding(x, y) != NOGBID ||
-				map.getGroundUnit(x, y) != NOGUID)
-				continue;
-			const int ox = x - cx, oy = y - cy;
-			const int u = ox * fx + oy * fy, v = ox * rx + oy * ry;
-			// A 9x9 square round the swarm stays clear: its 4x4 footprint plus the ring its first
-			// workers step out into.
-			if (std::abs(u) <= 4 && std::abs(v) <= 4)
-				continue;
-			if (v < -lane)
-				left.push_back({x, y, u, v});
-			else if (v > lane)
-				right.push_back({x, y, u, v});
-			else if (u <= -half + 2)
-				back.push_back({x, y, u, v});
-		}
+	const CellFrame frame = frameFor(d.layout.g, cell, d.exitEdge[cell]);
+	int back, side;
+	const std::vector<CellTile> grass = grassOfCell(map, t, d, cell, frame, back, side);
+	int backWidth = 0;
+	for (const CellTile &c : grass)
+		if (c.u <= -back + 2 * kFrame)
+			backWidth = std::max(backWidth, std::abs(c.v));
+	const int lane = std::max(1 * kFrame, backWidth - kShoreBand * kFrame);
+	std::vector<CellTile> left, right, rear;
+	for (const CellTile &c : grass)
+	{
+		const int reach = depth[t.at(c.x, c.y)];
+		if (reach < 1 || reach > kShoreBand || map.getBuilding(c.x, c.y) != NOGBID ||
+			map.getGroundUnit(c.x, c.y) != NOGUID)
+			continue;
+		// A 9x9 square round the swarm stays clear: its 4x4 footprint plus the ring its first
+		// workers step out into.
+		if (std::abs(c.u) <= 4 * kFrame && std::abs(c.v) <= 4 * kFrame)
+			continue;
+		if (c.u <= -back + 2 * kFrame && std::abs(c.v) <= lane)
+			rear.push_back(c);
+		else if (c.v < 0)
+			left.push_back(c);
+		else if (c.v > 0)
+			right.push_back(c);
+	}
 	const auto shoreFromBack = [](const CellTile &a, const CellTile &b)
 	{ return a.u != b.u ? a.u < b.u : std::abs(a.v) > std::abs(b.v); };
-	const auto nearBackCentre = [half](const CellTile &a, const CellTile &b)
+	const auto nearBackCentre = [back](const CellTile &a, const CellTile &b)
 	{
-		const int da = std::max(a.u + half, std::abs(a.v)),
-				  db = std::max(b.u + half, std::abs(b.v));
+		const int da = std::max(a.u + back, std::abs(a.v)), db = std::max(b.u + back, std::abs(b.v));
 		if (da != db)
 			return da < db;
 		if (std::abs(a.v) != std::abs(b.v))
@@ -425,27 +306,18 @@ void furnishHome(Map &map, const MazeGrid &g, int cell, int exit, int half)
 	};
 	fillInOrder(map, left, kHomeFarmland, CORN, shoreFromBack);
 	fillInOrder(map, right, kHomeFarmland, WOOD, shoreFromBack);
-	fillInOrder(map, back, kHomeStone, STONE, nearBackCentre);
+	fillInOrder(map, rear, kHomeStone, STONE, nearBackCentre);
 }
 
 // A treasure: a compact patch of one fruit at the far end of a dead end, so colonies have to
 // go and take it rather than passing it on the way somewhere else. It sits a few tiles back
 // from the end wall, so its front always faces the passage's clear lane.
-void placeTreasure(Map &map, const MazeGrid &g, int cell, int exit, int half, int size,
-				   int fruitType)
+void placeTreasure(Map &map, const Torus &t, const MazeDesign &d, int cell, int size, int fruitType)
 {
-	static const int forward[4][2] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
-	const int fx = forward[exit][0], fy = forward[exit][1], rx = -fy, ry = fx;
-	const int cx = g.centerX(cell), cy = g.centerY(cell), anchor = -half + 3;
-	std::vector<CellTile> tiles;
-	const int c = g.column(cell), r = g.row(cell);
-	for (int y = g.ys[r]; y < g.ys[r + 1]; ++y)
-		for (int x = g.xs[c]; x < g.xs[c + 1]; ++x)
-			if (map.isGrass(x, y) && !map.isResource(x, y))
-			{
-				const int ox = x - cx, oy = y - cy;
-				tiles.push_back({x, y, ox * fx + oy * fy, ox * rx + oy * ry});
-			}
+	const CellFrame frame = frameFor(d.layout.g, cell, d.exitEdge[cell]);
+	int back, side;
+	std::vector<CellTile> tiles = grassOfCell(map, t, d, cell, frame, back, side);
+	const int anchor = -back + 3 * kFrame;
 	fillInOrder(map, tiles, size, fruitType,
 				[anchor](const CellTile &a, const CellTile &b)
 				{
@@ -463,21 +335,20 @@ void placeTreasure(Map &map, const MazeGrid &g, int cell, int exit, int half, in
 // grown over free shore tiles. Only tiles within kShoreBand of a shore are eligible, which is
 // what keeps each passage's middle clear. Densities are per 256 shore tiles; fruitTiles of fruit,
 // when the dead ends hold no treasure, follow in small clumps of each kind in turn.
-void scatterThroughMaze(Map &map, GenerationContext &context, const MazeGrid &g,
-						const std::vector<unsigned char> &isHome,
-						const std::vector<unsigned char> &onRoad, int half, const MazeOptions &o,
+void scatterThroughMaze(Map &map, GenerationContext &context, const MazeDesign &d,
+						const std::vector<unsigned char> &onRoad, const MazeOptions &o,
 						int fruitTiles)
 {
 	const int w = map.getW(), h = map.getH();
 	const std::vector<int> depth = shoreDepth(map, onRoad);
-	const int band = std::min(kShoreBand, half - 1);
+	const int band = std::min(kShoreBand, d.layout.half - 1);
 	std::vector<unsigned char> free(size_t(w) * h, 0);
 	std::vector<int> pool;
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
 		{
 			const size_t i = size_t(y) * w + x;
-			if (depth[i] >= 1 && depth[i] <= band && !isHome[g.cellAt(x, y)] &&
+			if (depth[i] >= 1 && depth[i] <= band && !d.isHome[d.labels[i]] &&
 				!map.isResource(x, y) && map.getBuilding(x, y) == NOGBID &&
 				map.getGroundUnit(x, y) == NOGUID)
 			{
@@ -564,194 +435,239 @@ void seedAlgae(Map &map, GenerationContext &context, int algae)
 										water[context.bounded("resources", water.size())], ALGA, 1);
 }
 
+// Each closed edge's stone line, from corner tile to corner tile inclusive, so walls meeting at a
+// corner share its tile and nothing can slip between them at any angle.
+std::vector<unsigned char> wallSpines(const Torus &t, const MazeDesign &d)
+{
+	const Tessellation &g = d.layout.g;
+	std::vector<unsigned char> spine(size_t(t.size()), 0);
+	for (int edge = 0; edge < int(g.edges.size()); ++edge)
+		if (!d.open[edge])
+		{
+			const auto ends = g.edgeEnds(edge, g.edges[edge].cells[0]);
+			traceSealedPath(spine, t, {ends.first, ends.second});
+		}
+	return spine;
+}
+
+// The tile of every corner where all the edges meeting are open. No wall reaches it, but the
+// passages round it stay apart all the same: its pond keeps the corner's chambers from merging into
+// one open plaza, so a junction of passages still reads as one.
+std::vector<unsigned char> openCorners(const Torus &t, const MazeDesign &d)
+{
+	const Tessellation &g = d.layout.g;
+	std::vector<unsigned char> walled(g.corners.size(), 0), ponds(size_t(t.size()), 0);
+	for (int edge = 0; edge < int(g.edges.size()); ++edge)
+		if (!d.open[edge])
+			walled[g.edges[edge].corners[0]] = walled[g.edges[edge].corners[1]] = 1;
+	for (size_t corner = 0; corner < g.corners.size(); ++corner)
+		if (!walled[corner])
+			ponds[t.at(int(subtileTile(g.corners[corner].x)), int(subtileTile(g.corners[corner].y)))] =
+				1;
+	return ponds;
+}
+
+// The undermap corners of every tile in `tiles`.
+std::vector<unsigned char> cornersOf(const Torus &t, const std::vector<unsigned char> &tiles)
+{
+	std::vector<unsigned char> corners(tiles.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+		if (tiles[i])
+		{
+			const int x = i % t.w, y = i / t.w;
+			corners[i] = corners[t.at(x + 1, y)] = corners[t.at(x, y + 1)] =
+				corners[t.at(x + 1, y + 1)] = 1;
+		}
+	return corners;
+}
+
+// A sand road down every open edge, from each cell's centre through the edge's middle to the
+// next centre: undermap sand on the corners of every tile a sealed line passes, so each road tile is
+// pure sand and consecutive ones share a side. At a home it stops against the swarm's 4x4
+// footprint (the settlement is anchored on the centre), so the swarm still stands on grass. Only
+// grass corners take sand, so a road can never reach into a channel. Returns the tiles the road
+// touches, which the shore scatter doesn't count as shore.
+std::vector<unsigned char> layRoads(TerrainSketch &sketch, const Torus &t, const MazeDesign &d)
+{
+	const Tessellation &g = d.layout.g;
+	std::vector<unsigned char> path(size_t(t.size()), 0);
+	for (int edge = 0; edge < int(g.edges.size()); ++edge)
+		if (d.open[edge])
+		{
+			const int a = g.edges[edge].cells[0];
+			const auto ends = g.edgeEnds(edge, a);
+			const SubtilePoint middle{(ends.first.x + ends.second.x) / 2,
+									  (ends.first.y + ends.second.y) / 2};
+			traceSealedPath(path, t, {g.cells[a].centre, middle, g.centreAcross(edge, a)});
+		}
+	std::vector<unsigned char> road = cornersOf(t, path);
+	for (int cell = 0; cell < g.cellCount(); ++cell)
+		if (d.isHome[cell])
+			for (int dy = -2; dy <= 2; ++dy)
+				for (int dx = -2; dx <= 2; ++dx)
+					road[t.at(g.centreTileX(cell) + dx, g.centreTileY(cell) + dy)] = 0;
+	std::vector<unsigned char> onRoad(size_t(t.size()), 0);
+	for (int i = 0; i < t.size(); ++i)
+		if (road[i] && sketch[i] == GRASS)
+		{
+			sketch[i] = SAND;
+			const int x = i % t.w, y = i / t.w;
+			onRoad[i] = onRoad[t.at(x - 1, y)] = onRoad[t.at(x, y - 1)] =
+				onRoad[t.at(x - 1, y - 1)] = 1;
+		}
+	return onRoad;
+}
+
 bool generate(Game &game, GenerationContext &context)
 {
 	context.stage = "maze layout";
 	const MazeOptions o(context.request);
 	Map &map = game.map;
-	const MazeGrid g = mazeGrid(map.getW(), map.getH(), o.cellSize);
 	const int teams = context.request.nbTeams;
-	const int half = passageHalf(g, o.channelWidth);
 	map.makeHomogenMap(WATER);
 	for (int i = 0; i < teams; ++i)
 		game.addTeam();
-	if (g.columns < 2 || g.rows < 2 || half < kMinimumPassageHalf)
+	const MazeDesign d = designMaze(context.request, context);
+	if (!d.failure.empty())
 	{
-		context.detail = "the maze grid is too small for these settings";
+		context.detail = d.failure;
 		return false;
 	}
+	const Tessellation &g = d.layout.g;
+	const std::vector<int> &homes = d.layout.homes;
 
-	const std::vector<int> homes = chooseHomes(g, context, teams);
-	if (int(homes.size()) != teams)
-	{
-		context.detail = "the maze grid has too few cul-de-sacs for every colony";
-		return false;
-	}
-	std::vector<unsigned char> isHome(g.cells(), 0);
-	for (int home : homes)
-		isHome[home] = 1;
-	std::vector<unsigned char> open(2 * g.cells(), 0);
-	if (!carveSpanningTree(g, context, isHome, open))
-	{
-		context.detail = "the non-home cells did not form one connected maze";
-		return false;
-	}
-	std::vector<int> exitOf(g.cells(), -1);
-	for (int home : homes)
-	{
-		int choices[4], count = 0;
-		for (int d = 0; d < 4; ++d)
-			if (!isHome[g.neighbour(home, d)])
-				choices[count++] = d;
-		const int d = choices[context.bounded("maze", count)];
-		open[g.edgeId(home, d)] = 1;
-		exitOf[home] = d;
-	}
-	addLoops(g, context, isHome, o.loopiness, open);
-	std::vector<int> deadEnds;
-	for (int cell = 0; cell < g.cells(); ++cell)
-	{
-		if (isHome[cell])
-			continue;
-		int degree = 0, exit = -1;
-		for (int d = 0; d < 4; ++d)
-			if (open[g.edgeId(cell, d)])
-			{
-				++degree;
-				exit = d;
-			}
-		if (degree == 1)
-		{
-			deadEnds.push_back(cell);
-			exitOf[cell] = exit;
-		}
-	}
-
-	// Every cell is a chamber as wide as a passage, and every open boundary a band of that width
-	// joining two chambers, so a run of passage reads as one continuous strip of grass.
 	context.stage = "maze terrain";
-	std::vector<TileRect> passages, walls, roads;
-	for (int cell = 0; cell < g.cells(); ++cell)
+	const Torus t(map);
+	const std::vector<unsigned char> spine = wallSpines(t, d);
+	const std::vector<int> fromWall = stepsFrom(t, cornersOf(t, spine));
+	const std::vector<int> fromPond = stepsFrom(t, cornersOf(t, openCorners(t, d)));
+	const int channelEdge = kFlankSteps + 1 + o.channelWidth;
+	TerrainSketch sketch(size_t(t.size()), GRASS);
+	for (int i = 0; i < t.size(); ++i)
+		if ((fromWall[i] > kFlankSteps && fromWall[i] <= channelEdge) ||
+			(fromPond[i] >= 0 && fromPond[i] <= channelEdge))
+			sketch[i] = WATER;
+	layBeaches(sketch, t);
+	// Without roads, passages are grass from shore to shore. Map::incResource only seeds a resource
+	// on its own terrain and buildings need pure grass, so nothing can grow over a road tile or be
+	// built on one: a road links every cell to the maze and can never be closed.
+	const std::vector<unsigned char> onRoad =
+		o.sandRoads ? layRoads(sketch, t, d) : std::vector<unsigned char>(size_t(t.size()), 0);
+	writeUndermap(map, sketch);
+	const DesignedStone stone = designedStone(map, t, spine);
+	if (stone.gaps)
 	{
-		const int cx = g.centerX(cell), cy = g.centerY(cell);
-		passages.push_back({cx - half, cy - half, cx + half, cy + half});
-		for (int d : {East, South})
-		{
-			if (!open[g.edgeId(cell, d)])
-			{
-				walls.push_back(wallFor(g, cell, d));
-				continue;
-			}
-			// A road runs centre to centre, three tiles wide and one tile past each centre so roads
-			// meeting at a cell overlap. At a home it stops against the swarm's 4x4 footprint (the
-			// settlement is anchored on the centre), so the swarm still stands on grass.
-			const int next = g.neighbour(cell, d);
-			if (d == East)
-			{
-				const int farX = g.centerX(next) < cx ? g.centerX(next) + g.width : g.centerX(next);
-				passages.push_back({cx - half, cy - half, farX + half, cy + half});
-				roads.push_back({isHome[cell] ? cx + 2 : cx - 1, cy - 1,
-								 isHome[next] ? farX - 3 : farX + 1, cy + 1});
-			}
-			else
-			{
-				const int farY =
-					g.centerY(next) < cy ? g.centerY(next) + g.height : g.centerY(next);
-				passages.push_back({cx - half, cy - half, cx + half, farY + half});
-				roads.push_back({cx - 1, isHome[cell] ? cy + 2 : cy - 1, cx + 1,
-								 isHome[next] ? farY - 3 : farY + 1});
-			}
-		}
+		context.detail = "a wall spine tile is not solid grass";
+		return false;
 	}
-	// All sand before any grass, so a grass core is never overwritten by a neighbouring ring.
-	for (const TileRect &r : passages)
-		stampRing(map, r);
-	for (const TileRect &r : walls)
-		stampRing(map, r);
-	for (const TileRect &r : passages)
-		stampCore(map, r);
-	for (const TileRect &r : walls)
-		stampCore(map, r);
-	// Then the roads, cut through the passages' grass: a sand road links every cell to the maze
-	// and can never be closed. Map::incResource only seeds a resource on its own terrain and
-	// buildings need pure grass, so nothing can grow over a road tile or be built on one. A road's
-	// tile rectangle takes undermap sand on (x0, x1] x (y0, y1], giving each of its tiles at least
-	// one sand corner and leaving every tile around it untouched.
-	// Without roads, passages are grass from shore to shore.
-	std::vector<unsigned char> onRoad(size_t(map.getW()) * map.getH(), 0);
-	for (const TileRect &r : roads)
-	{
-		if (!o.sandRoads)
-			break;
-		fillUndermap(map, r.x0 + 1, r.y0 + 1, r.x1 - r.x0, r.y1 - r.y0, SAND);
-		for (int y = r.y0; y <= r.y1; ++y)
-			for (int x = r.x0; x <= r.x1; ++x)
-				onRoad[size_t(map.normalizeY(y)) * map.getW() + map.normalizeX(x)] = 1;
-	}
-	map.rebuildTerrain();
-	for (const TileRect &r : walls)
-		for (int y = r.y0; y <= r.y1; ++y)
-			for (int x = r.x0; x <= r.x1; ++x)
-			{
-				const int nx = map.normalizeX(x), ny = map.normalizeY(y);
-				if (map.getTerrainType(nx, ny) != GRASS)
-				{
-					context.detail = "a wall spine tile is not solid grass";
-					return false;
-				}
-				map.setResource(nx, ny, STONE, 1);
-			}
+	for (int i = 0; i < t.size(); ++i)
+		if (stone.stone[i])
+			map.setResource(i % t.w, i / t.w, STONE, 1);
 
 	const auto chamber = [&](int team)
 	{
-		const int cell = homes[team], c = g.column(cell), r = g.row(cell);
-		std::vector<unsigned char> home(size_t(map.getW()) * map.getH(), 0);
-		for (int y = g.ys[r]; y < g.ys[r + 1]; ++y)
-			for (int x = g.xs[c]; x < g.xs[c + 1]; ++x)
-				if (!map.isWater(x, y))
-					home[size_t(y) * map.getW() + x] = 1;
+		std::vector<unsigned char> home(size_t(t.size()), 0);
+		for (int i = 0; i < t.size(); ++i)
+			home[i] = d.labels[i] == homes[team] && !map.isWater(i % t.w, i / t.w);
 		return home;
 	};
 	// placeSettlement measures from the footprint's top-left tile; this centres the 4x4 swarm.
 	const auto centre = [&](int team)
-	{ return MapGeneratorPoint(g.centerX(homes[team]) - 2, g.centerY(homes[team]) - 2); };
+	{ return MapGeneratorPoint(g.centreTileX(homes[team]) - 2, g.centreTileY(homes[team]) - 2); };
 	if (!settleColonies(game, context, "starts", chamber, centre))
 		return false;
 
 	context.stage = "maze resources";
+	const std::vector<int> depth = shoreDepth(map, onRoad);
 	for (int home : homes)
-		furnishHome(map, g, home, exitOf[home], half);
+		furnishHome(map, t, d, depth, home);
 	// Fruit is treasure: one patch at the far end of every dead end that isn't a home, with fruit
 	// types dealt round-robin so every kind is somewhere in the maze and a colony has to go and
 	// fight for the ones it lacks. Placed before the shore scatter, which works around them.
 	// Without treasure the same fruit is scattered along the passages' shores instead.
+	std::vector<int> deadEnds = d.deadEnds;
 	if (o.fruit > 0 && o.treasure)
 	{
 		context.shuffle(deadEnds.begin(), deadEnds.end(), "resources");
 		const int firstType = context.bounded("resources", 3);
 		for (size_t i = 0; i < deadEnds.size(); ++i)
-			placeTreasure(map, g, deadEnds[i], exitOf[deadEnds[i]], half, o.fruit,
-						  CHERRY + int((firstType + i) % 3));
+			placeTreasure(map, t, d, deadEnds[i], o.fruit, CHERRY + int((firstType + i) % 3));
 	}
-	scatterThroughMaze(map, context, g, isHome, onRoad, half, o,
+	scatterThroughMaze(map, context, d, onRoad, o,
 					   o.treasure ? 0 : int(deadEnds.size()) * o.fruit);
 	seedAlgae(map, context, o.algae);
 	return true;
 }
 
-// The maze's defining guarantee, checked on the finished world rather than trusted: every
-// colony can walk to every other one. Water, buildings and every resource (including the wall
-// spines) block the flood; units don't, since they move.
+// Which cells may share ground: two cells round a corner are joined when the open edges at that
+// corner connect them, which includes any two cells across an open edge.
+std::vector<unsigned char> joinedCells(const MazeDesign &d)
+{
+	const Tessellation &g = d.layout.g;
+	const int n = g.cellCount();
+	std::vector<std::vector<int>> cornerCells(g.corners.size());
+	for (int cell = 0; cell < n; ++cell)
+		for (int corner : g.cells[cell].corners)
+			cornerCells[corner].push_back(cell);
+	std::vector<unsigned char> joined(size_t(n) * n, 0);
+	std::vector<int> parent(n);
+	std::iota(parent.begin(), parent.end(), 0);
+	const auto find = [&](int c)
+	{
+		while (parent[c] != c)
+			c = parent[c] = parent[parent[c]];
+		return c;
+	};
+	for (size_t corner = 0; corner < g.corners.size(); ++corner)
+	{
+		for (int cell : cornerCells[corner])
+			parent[cell] = cell;
+		for (int cell : cornerCells[corner])
+			for (int edge : g.cells[cell].edges)
+				if (d.open[edge] && (g.edges[edge].corners[0] == int(corner) ||
+									 g.edges[edge].corners[1] == int(corner)))
+					parent[find(cell)] = find(g.other(edge, cell));
+		for (int a : cornerCells[corner])
+			for (int b : cornerCells[corner])
+				if (find(a) == find(b))
+					joined[size_t(a) * n + b] = 1;
+	}
+	return joined;
+}
+
+// The maze's defining guarantees, checked on the finished world rather than trusted: every
+// colony can walk to every other one, and the walls hold - no ground a colony can reach joins two
+// cells except through the passages the maze opened. Water, buildings and every resource
+// (including the wall spines) block the walk; units don't, since they move.
 std::string validateWorld(const Game &game, const GenerationContext &context)
 {
-	return walkFromFirstColony(game.map, context.request.nbTeams, "the maze", "through the maze")
-		.error;
+	const ColonyWalk walk =
+		walkFromFirstColony(game.map, context.request.nbTeams, "the maze", "through the maze");
+	if (!walk.error.empty())
+		return walk.error;
+	GenerationContext replay(context.request);
+	const MazeDesign d = designMaze(context.request, replay);
+	if (!d.failure.empty())
+		return "The maze could not be rebuilt: " + d.failure;
+	const Torus t(game.map);
+	std::vector<unsigned char> reached(size_t(t.size()), 0);
+	for (int i = 0; i < t.size(); ++i)
+		reached[i] = walk.steps[i] >= 0;
+	const std::vector<unsigned char> joined = joinedCells(d);
+	const int n = d.layout.g.cellCount();
+	const RegionLeak leak = firstRegionLeak(t, reached, d.labels, [&](int a, int b)
+											{ return joined[size_t(a) * n + b] != 0; });
+	if (leak.tile >= 0)
+		return "A maze wall leaks at (" + std::to_string(leak.tile % t.w) + ", " +
+			   std::to_string(leak.tile / t.w) + ").";
+	return "";
 }
 } // namespace
 
 MazeOptions::MazeOptions(const GenerationRequest &r)
-	: cellSize(r.option("cell-size")), channelWidth(r.option("channel-width")),
-	  loopiness(r.option("loopiness")), corn(r.option("wheat")), wood(r.option("wood")),
+	: cellShape(r.option("cell-shape")), cellSize(r.option("cell-size")),
+	  channelWidth(r.option("channel-width")), loopiness(r.option("loopiness")),
+	  warp(r.option("warp")), corn(r.option("wheat")), wood(r.option("wood")),
 	  stone(r.option("stone")), algae(r.option("algae")), fruit(r.option("fruit")),
 	  sandRoads(r.option("sand-roads") != 0), treasure(r.option("dead-end-treasure") != 0)
 {
@@ -762,9 +678,10 @@ GeneratorDefinition mazeDefinition()
 	return {"maze",
 			11,
 			"Maze",
-			11,
+			12,
 			false,
-			{{"cell-size",
+			{GeneratorControl::choice("cell-shape", "Cell shape", {"Squares", "Hexagons"}, 0),
+			 {"cell-size",
 			  "Cell size",
 			  24,
 			  48,
@@ -774,8 +691,13 @@ GeneratorDefinition mazeDefinition()
 			  false,
 			  false,
 			  {24, 32, 40, 48}},
-			 // Cells snap to 24, 32, 40 or 48 tiles; the default 32 gives 64 cells on a 256 map,
-			 // enough corridors to feel like a maze without passages narrower than a small base.
+			 // Cells snap to 24, 32, 40 or 48 tiles; the default 32 gives 64 square cells on a 256
+			 // map, enough corridors to feel like a maze without passages narrower than a small base.
+			 // Hexagons sit half as far apart again (kHexPitchPercent).
+			 // Warp moves the cells' corners by up to this share of what keeps every cell whole, so
+			 // squares and hexagons become irregular polygons; doorways never narrow past the
+			 // smallest a passage may be, so at small cells warp is gentler.
+			 {"warp", "Warp", 0, 100, 25, 0, ControlGroup::Layout},
 			 // Open water on each side of a wall's stone line; passages widen to fill the rest.
 			 {"channel-width", "Channel width", 1, 6, 1, 2, ControlGroup::Layout},
 			 {"loopiness",

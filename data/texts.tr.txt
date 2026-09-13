@@ -2024,3 +2024,11 @@ Meyve bahçesinde taş
 Her iki kıyıda koloniler
 [Winding belt]
 Kıvrımlı kuşak
+[Cell shape]
+Hücre şekli
+[Squares]
+Kareler
+[Hexagons]
+Altıgenler
+[Warp]
+Bükülme

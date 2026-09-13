@@ -4,6 +4,8 @@
 #include "TerrainType.h"
 #include <algorithm>
 #include <cmath>
+#include <functional>
+#include <queue>
 #include <utility>
 #include <vector>
 class Map;
@@ -49,6 +51,54 @@ void sprinkleSand(TerrainSketch &sketch, const Torus &t, const std::vector<unsig
 	const size_t patches = size_t(std::lround(ranked.size() * std::clamp(share, 0.0, 1.0)));
 	for (size_t k = 0; k < patches; ++k)
 		sketch[ranked[k].second] = SAND;
+}
+
+/// A sand road kept inland: clears every road vertex fewer than `gap` steps from `water`. Sand that
+/// touches a beach carries the sea's margin along it, and stone only stands on grass, so a road that
+/// reached a walled coast would open a gap in the wall.
+void keepRoadInland(std::vector<unsigned char> &road, const Torus &, const std::vector<unsigned char> &water,
+					int gap);
+
+/// The tiles a sand road spoils for building and deposits: a tile takes its terrain from its four
+/// corners, so every tile touching one of the road's vertices is no longer pure grass.
+std::vector<unsigned char> roadTiles(const Torus &, const std::vector<unsigned char> &road);
+
+/// Grows one body of water to exactly `target` tiles from its seed, always taking the frontier tile
+/// with the lowest `key(tile)` next, so it fills a hollow the way water would: a key of depth plus
+/// distance from the seed keeps the outline round while the depth shapes it. The frontier moves
+/// over the four cardinal neighbours onto tiles `eligible(tile)` allows, and never onto a tile
+/// already in `water`; the seed itself is taken whatever `eligible` says. `queued` is scratch the
+/// caller owns and `stamp` a value no earlier call used, so many bodies can share one buffer
+/// without clearing it. Returns how many tiles it added; fewer than `target` only when the
+/// eligible ground ran out.
+template <typename Eligible, typename Key>
+int growWater(const Torus &t, std::vector<unsigned char> &water, int seed, int target,
+			  Eligible eligible, Key key, std::vector<int> &queued, int stamp)
+{
+	using Entry = std::pair<long long, int>;
+	std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> frontier;
+	frontier.push({key(seed), seed});
+	queued[seed] = stamp;
+	int grown = 0;
+	while (!frontier.empty() && grown < target)
+	{
+		const int tile = frontier.top().second;
+		frontier.pop();
+		if (water[tile])
+			continue;
+		water[tile] = 1;
+		++grown;
+		for (const auto &s : kCardinalSteps)
+		{
+			const int next = t.at(tile % t.w + s[0], tile / t.w + s[1]);
+			if (eligible(next) && !water[next] && queued[next] != stamp)
+			{
+				queued[next] = stamp;
+				frontier.push({key(next), next});
+			}
+		}
+	}
+	return grown;
 }
 
 /// A small island raised out in open water: its centre, how far its outline can reach, and

@@ -2024,3 +2024,11 @@ Pedra a l'hort
 Colònies a les dues costes
 [Winding belt]
 Cinturó sinuós
+[Cell shape]
+Forma de les cel·les
+[Squares]
+Quadrats
+[Hexagons]
+Hexàgons
+[Warp]
+Deformació

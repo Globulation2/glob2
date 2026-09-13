@@ -2012,3 +2012,11 @@ Hào nước
 Thuộc địa ở cả hai bờ
 [Winding belt]
 Vành đai uốn lượn
+[Cell shape]
+Hình dạng ô
+[Squares]
+Hình vuông
+[Hexagons]
+Lục giác
+[Warp]
+Biến dạng

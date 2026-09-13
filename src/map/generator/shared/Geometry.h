@@ -49,6 +49,23 @@ struct Stretch
 	/// The larger of the two scales: how much farther any design distance may reach on the map.
 	double longest() const { return std::max(sx, sy); }
 };
+/// A frame laid along a heading from an origin: `at(along, across)` is the point `along` tiles down
+/// the heading (radians) and `across` tiles to its left, and `project` turns a map offset from the
+/// origin back into (along, across). A colony's axis out from the map's middle is the usual frame:
+/// a trail, a gate or a tower designed once in it lands the same way round every colony.
+struct AxisFrame
+{
+	double x, y, angle;
+	ShapePoint at(double along, double across) const
+	{
+		return {x + along * std::cos(angle) - across * std::sin(angle),
+				y + along * std::sin(angle) + across * std::cos(angle)};
+	}
+	ShapePoint project(double dx, double dy) const
+	{
+		return {dx * std::cos(angle) + dy * std::sin(angle), -dx * std::sin(angle) + dy * std::cos(angle)};
+	}
+};
 // Area-preserving stretch and rotation. Geometry stays independent of terrain and wrapping.
 class ShapeTransform
 {

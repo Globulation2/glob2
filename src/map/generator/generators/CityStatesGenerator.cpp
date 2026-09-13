@@ -7,6 +7,7 @@
 #include "Drawing.h"
 #include "Geometry.h"
 #include "HeightMap.h"
+#include "Homes.h"
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Resources.h"
@@ -14,6 +15,7 @@
 #include "Settlements.h"
 #include "Sketch.h"
 #include "Unit.h"
+#include "Walls.h"
 #include "Wedge.h"
 #include <algorithm>
 #include <array>
@@ -869,10 +871,8 @@ void planSandRoads(Layout &L, const Features &f)
 		if (!clear)
 			continue;
 		L.sandRoad[i] = 1;
-		for (int dy = -1; dy <= 0; ++dy)
-			for (int dx = -1; dx <= 0; ++dx)
-				L.roadTile[t.at(x + dx, y + dy)] = 1;
 	}
+	L.roadTile = roadTiles(t, L.sandRoad);
 }
 
 Layout design(const GenerationRequest &request, GenerationContext &context)
@@ -933,43 +933,24 @@ std::vector<unsigned char> heartTiles(const Map &map, const Layout &L)
 	return heart;
 }
 
-// The ground a unit landing from the sea can reach without crossing solid grass: every land tile
-// with a sea vertex in the box its four corners touch, and every beach joined to those - a lake's
-// beach too, where it meets the sea's. Stone cannot stand on any of it.
+// The ground a unit landing from the sea can reach without crossing solid grass (seaMargin): the
+// sea is every water vertex outside the homes' lakes and the commons' own water, and a sand road is
+// not a beach, so it must not carry the margin inland.
 std::vector<unsigned char> seaMargin(const Map &map, const Layout &L)
 {
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
-	std::vector<unsigned char> sea(n, 0), margin(n, 0), beach(n, 0);
+	std::vector<unsigned char> sea(n, 0);
 	for (int i = 0; i < n; ++i)
 		sea[i] =
 			map.getUMTerrain(i % t.w, i / t.w) == WATER && !L.lake[i] && L.region[i] != Commons;
-	for (int i = 0; i < n; ++i)
-	{
-		const int x = i % t.w, y = i / t.w;
-		if (map.isWater(x, y))
-			continue;
-		// A sand road is not a beach: it must not carry the sea's margin inland.
-		beach[i] = map.getTerrainType(x, y) != GRASS && !L.roadTile[i];
-		for (int dy = -1; dy <= 2 && !margin[i]; ++dy)
-			for (int dx = -1; dx <= 2; ++dx)
-				if (sea[t.at(x + dx, y + dy)])
-				{
-					margin[i] = 1;
-					break;
-				}
-	}
-	const std::vector<int> joined = stepsFrom(t, margin, beach);
-	for (int i = 0; i < n; ++i)
-		if (joined[i] >= 0)
-			margin[i] = 1;
-	return margin;
+	return MapGeneration::seaMargin(map, t, sea, L.roadTile);
 }
 
 // The design's stone, once the terrain is laid: every solid-grass tile of a causeway's shoulders
 // outside its road, the ridges and the crag, and round every home a wall on the solid-grass tiles
-// that touch the sea's margin. Every step off the beach lands on the wall, so a home is sealed but
-// for its road. Rebuilt the same way by validateWorld.
+// that touch the sea's margin (sealCoasts). Every step off the beach lands on the wall, so a home
+// is sealed but for its road. Rebuilt the same way by validateWorld.
 std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
 {
 	const Torus &t = L.t;
@@ -977,26 +958,13 @@ std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
 	std::vector<unsigned char> stone(n, 0);
 	if (!L.g.walls)
 		return stone;
-	const std::vector<unsigned char> margin = seaMargin(map, L);
+	std::vector<unsigned char> wallable(n, 0);
 	for (int i = 0; i < n; ++i)
-	{
-		if (L.road[i] || map.getTerrainType(i % t.w, i / t.w) != GRASS)
-			continue;
-		if (L.strip[i] || L.ridge[i])
-		{
+		wallable[i] = L.homeOf[i] >= 0 && !L.road[i];
+	stone = sealCoasts(map, t, seaMargin(map, L), wallable);
+	for (int i = 0; i < n; ++i)
+		if ((L.strip[i] || L.ridge[i]) && !L.road[i] && map.getTerrainType(i % t.w, i / t.w) == GRASS)
 			stone[i] = 1;
-			continue;
-		}
-		if (L.homeOf[i] < 0)
-			continue;
-		for (int dy = -1; dy <= 1 && !stone[i]; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-				if (margin[t.at(i % t.w + dx, i / t.w + dy)])
-				{
-					stone[i] = 1;
-					break;
-				}
-	}
 	return stone;
 }
 
@@ -1114,53 +1082,22 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 								  frame.at(0.6 * reach, flank * (reach + 1), 14),
 								  frame.at(reach + 8, 0, 12), kHomeWheat, kHomeWood, 2};
 		plantKit(map, t, context, kit, eligible);
-		// Ambient farmland on the home's fertile ground, in patches, then outcrops and a grove.
-		std::vector<int> ground;
-		std::vector<std::pair<double, int>> farm;
-		std::vector<float> levels;
-		for (int i = 0; i < n; ++i)
-			if (eligible(i))
+		// Ambient farmland on the home's fertile ground, in patches, then outcrops and a grove: 4% of
+		// its ground ambient wheat and 2% wood on top of the kit, one outcrop per 2500 tiles and a
+		// single grove - self-sufficient but not rich, so the commons is worth the trip. The patch
+		// field has 12-tile cells.
+		furnishGround(
+			map, t, context, fertility, eligible,
+			[&](int i) { return patch(i % t.w, i / t.w); },
+			[&](int i) { return split.uiLevel(i % t.w, i / t.w, 2048); },
+			[&](int area)
 			{
-				ground.push_back(i);
-				if (fertility.at(i % t.w, i / t.w) > 0)
-					levels.push_back(patch(i % t.w, i / t.w));
-			}
-		float cut = 0;
-		if (!levels.empty())
-		{
-			// The patch field (12-tile cells) cut at its 45th percentile keeps 55% of the fertile
-			// ground as candidate farmland, in patches with gaps to walk and build in.
-			std::nth_element(levels.begin(), levels.begin() + levels.size() * 45 / 100,
-							 levels.end());
-			cut = levels[levels.size() * 45 / 100];
-		}
-		for (int i : ground)
-		{
-			const std::uint32_t f = fertility.at(i % t.w, i / t.w);
-			if (f > 0 && patch(i % t.w, i / t.w) >= cut)
-				farm.push_back({-double(f), i});
-		}
-		std::stable_sort(farm.begin(), farm.end());
-		std::vector<int> chosen;
-		for (const auto &entry : farm)
-			chosen.push_back(entry.second);
-		const int area = int(ground.size());
-		const auto bySplit = [&](int i) { return split.uiLevel(i % t.w, i / t.w, 2048); };
-		// A home: 4% of its ground ambient wheat and 2% wood on top of the kit, one outcrop per
-		// 2500 tiles and a single grove: self-sufficient but not rich, so the commons is worth the
-		// trip.
-		plantFields(map, t, chosen, int(scaledCount(area * 4 / 100, o.wheat)),
-					int(scaledCount(area * 2 / 100, o.wood)), bySplit);
-		scatterClumps(context, t, ground, int(scaledCount(std::max(1, area / 2500), o.stone)),
-					  "city-home-stone", eligible,
-					  [&](MapGeneratorPoint p) { placeResourceClump(map, context, p, STONE, 1); });
-		scatterClumps(context, t, ground, int(scaledCount(1, o.fruit)), "city-home-fruit",
-					  eligible,
-					  [&](MapGeneratorPoint p) {
-						  placeResourceClump(map, context, p,
-											 CHERRY + int(context.bounded("city-home-fruit", 3)),
-											 1);
-					  });
+				return GroundAmounts{int(scaledCount(area * 4 / 100, o.wheat)),
+										 int(scaledCount(area * 2 / 100, o.wood)),
+										 int(scaledCount(std::max(1, area / 2500), o.stone)),
+										 int(scaledCount(1, o.fruit))};
+			},
+			"city-home-stone", "city-home-fruit");
 	}
 }
 
@@ -1448,7 +1385,6 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		return walk.error;
 	const std::vector<std::vector<int>> &workers = walk.workers;
 	const std::vector<int> &fromFirst = walk.steps;
-	const std::vector<unsigned char> open = walkableTiles(map);
 	const std::vector<unsigned char> heart = heartTiles(map, L);
 	bool heartReached = false;
 	for (int i = 0; i < n && !heartReached; ++i)
@@ -1460,13 +1396,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (L.g.walls)
 	{
 		const std::vector<unsigned char> margin = seaMargin(map, L);
-		std::vector<unsigned char> beach(n, 0), inland(n, 0);
+		std::vector<unsigned char> beach(n, 0);
 		for (int i = 0; i < n; ++i)
-		{
-			inland[i] = walkable(i) && !L.road[i];
-			beach[i] = inland[i] && margin[i];
-		}
-		const std::vector<int> landed = stepsFrom(t, beach, inland);
+			beach[i] = walkable(i) && !L.road[i] && margin[i];
+		const std::vector<int> landed = reachesWithShut(map, t, beach, L.road);
 		for (int team = 0; team < teams; ++team)
 			for (int i : workers[team])
 				if (landed[i] >= 0)
@@ -1474,32 +1407,25 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 						   "'s home can be entered from the sea.";
 	}
 	// Shut every causeway: no home may reach the commons or another home any other way.
-	std::vector<unsigned char> shut(n, 0);
-	for (int i = 0; i < n; ++i)
-		shut[i] = walkable(i) && !L.causeway[i];
-	int shortest = INT_MAX, longest = 0;
 	for (int team = 0; team < teams; ++team)
 	{
-		std::vector<unsigned char> from(n, 0);
-		for (int i : workers[team])
-			from[i] = 1;
-		const std::vector<int> inside = stepsFrom(t, from, shut);
+		const std::vector<int> inside = reachesWithShut(map, t, tileMask(t, workers[team]), L.causeway);
 		for (int i = 0; i < n; ++i)
 			if (inside[i] >= 0 &&
 				(L.region[i] == Commons || (L.homeOf[i] >= 0 && L.homeOf[i] != team)))
 				return "Colony " + std::to_string(team) +
 					   " can leave its home without its causeway, at " + where(i) + ".";
-		// And every colony's walk to its landing on the commons, over its own causeway.
-		const std::vector<int> steps = stepsFrom(t, from, open);
-		const int landing = steps[L.homes[team].landing];
-		if (landing < 0)
-			return "Colony " + std::to_string(team) + " cannot reach its causeway landing.";
-		shortest = std::min(shortest, landing);
-		longest = std::max(longest, landing);
 	}
-	if (longest - shortest > std::max(kLandingSpread, longest / 3))
+	// And every colony's walk to its landing on the commons, over its own causeway.
+	std::vector<int> landings;
+	for (int team = 0; team < teams; ++team)
+		landings.push_back(L.homes[team].landing);
+	const WalkSpread spread = walkSpread(map, t, workers, landings);
+	if (spread.unreached >= 0)
+		return "Colony " + std::to_string(spread.unreached) + " cannot reach its causeway landing.";
+	if (spread.tooUneven(kLandingSpread))
 		return "The colonies' walks to their landings differ by " +
-			   std::to_string(longest - shortest) + " steps.";
+			   std::to_string(spread.longest - spread.shortest) + " steps.";
 	return "";
 }
 } // namespace

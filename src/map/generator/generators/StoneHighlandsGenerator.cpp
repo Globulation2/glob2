@@ -8,8 +8,10 @@
 #include "Pipeline.h"
 #include "Resources.h"
 #include "Settlements.h"
+#include "Sketch.h"
 #include "Topology.h"
 #include "Unit.h"
+#include "Walls.h"
 #include <algorithm>
 #include <climits>
 #include <cmath>
@@ -507,13 +509,12 @@ bool chooseHomes(Layout &L, GenerationContext &context, int teams)
 	return true;
 }
 
-// Grows one pond from its seed, always taking the lowest point of the depth field next, so it
-// fills its hollow the way water would. Distance from the seed counts as depth too, which keeps
-// the outline round rather than following the noise lattice into points.
+// Grows one pond from its seed (growWater), always taking the lowest point of the depth field next,
+// so it fills its hollow the way water would. Distance from the seed counts as depth too, which
+// keeps the outline round rather than following the noise lattice into points.
 void growPond(Layout &L, const std::vector<int> &depth, const std::vector<int> &eligible,
 			  int eligibleStamp, std::vector<int> &queued, int queuedStamp, int seed, int target)
 {
-	using Entry = std::pair<int, int>;
 	const int sx = seed % L.t.w, sy = seed / L.t.w;
 	const auto key = [&](int tile)
 	{
@@ -523,29 +524,9 @@ void growPond(Layout &L, const std::vector<int> &depth, const std::vector<int> &
 		// distance only stops it running off along a trough.
 		return depth[tile] + int(std::lround(d * 1500));
 	};
-	std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> frontier;
-	frontier.push({key(seed), seed});
-	queued[seed] = queuedStamp;
-	const auto &steps = kCardinalSteps;
-	int grown = 0;
-	while (!frontier.empty() && grown < target)
-	{
-		const int tile = frontier.top().second;
-		frontier.pop();
-		if (L.pond[tile])
-			continue;
-		L.pond[tile] = 1;
-		++grown;
-		for (const auto &s : steps)
-		{
-			const int next = L.t.at(tile % L.t.w + s[0], tile / L.t.w + s[1]);
-			if (eligible[next] == eligibleStamp && !L.pond[next] && queued[next] != queuedStamp)
-			{
-				queued[next] = queuedStamp;
-				frontier.push({key(next), next});
-			}
-		}
-	}
+	growWater(
+		L.t, L.pond, seed, target, [&](int tile) { return eligible[tile] == eligibleStamp; }, key,
+		queued, queuedStamp);
 }
 
 void placePonds(Layout &L, GenerationContext &context, int spacing, int pondSize)
@@ -697,22 +678,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const std::vector<Site> sites = scatterSites(t, o.valleySize, context);
 	const std::vector<int> label = labelCells(t, sites, o.valleySize, context);
 
-	// A tile is ridge when any of its eight neighbours has a lower label. A tile no ridge was
-	// painted on then touches only its own label or ridge, so no unit can step, even diagonally,
-	// from one cell into another.
-	L.ridge.assign(n, 0);
-	for (int y = 0; y < t.h; ++y)
-		for (int x = 0; x < t.w; ++x)
-		{
-			const int i = y * t.w + x;
-			for (int dy = -1; dy <= 1 && !L.ridge[i]; ++dy)
-				for (int dx = -1; dx <= 1; ++dx)
-					if (label[t.at(x + dx, y + dy)] < label[i])
-					{
-						L.ridge[i] = 1;
-						break;
-					}
-		}
+	// A tile is ridge when any of its eight neighbours has a lower label (labelBorders), so no unit
+	// can step, even diagonally, from one cell into another.
+	L.ridge = labelBorders(t, label);
 	// Stretches of ridgeline two tiles thick, where a noise field says so: 45% of the ridge at the
 	// default stone amount, which scales that share. More stone never opens a gap.
 	const std::vector<int> thickness =

@@ -32,11 +32,21 @@ struct GeneratorControl
 	// Optional ordered domain, e.g. {4, 8, 16}; values are stored literally.
 	std::vector<int> allowedValues;
 	Kind kind = Kind::Range;
+	// A choice's name for each of its values 0, 1, 2... in order, translated where shown. Empty for
+	// a number.
+	std::vector<const char *> valueLabels;
 	static GeneratorControl toggle(std::string id, const char *label, bool on,
 								   ControlGroup group = ControlGroup::Layout);
 	// A resource amount as a percentage of the generator's own default, which is 100.
 	static GeneratorControl percentage(std::string id, const char *label, int maximum = 300);
+	// One of several named options, stored as its index: a cell shape, say, rather than a number.
+	static GeneratorControl choice(std::string id, const char *label,
+								   std::vector<const char *> names, int defaultIndex,
+								   ControlGroup group = ControlGroup::Layout);
 	bool isToggle() const { return kind == Kind::Toggle; }
+	bool isChoice() const { return !valueLabels.empty(); }
+	// The untranslated name a choice shows for `value`, or nullptr for a number.
+	const char *valueLabel(int value) const;
 	std::vector<int> values() const;
 	int indexOf(int value) const;
 	int valueAt(int index) const;

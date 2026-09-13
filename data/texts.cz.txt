@@ -2016,3 +2016,11 @@ Kamení v sadu
 Kolonie na obou pobřežích
 [Winding belt]
 Zvlněný pás
+[Cell shape]
+Tvar buněk
+[Squares]
+Čtverce
+[Hexagons]
+Šestiúhelníky
+[Warp]
+Deformace

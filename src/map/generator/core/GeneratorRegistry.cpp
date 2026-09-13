@@ -24,6 +24,21 @@
 #include <algorithm>
 #include <set>
 #include <stdexcept>
+namespace
+{
+// A choice names each of its values 0, 1, 2... in order, shown as a dropdown rather than a number.
+bool validChoice(const GeneratorControl &c)
+{
+	if (c.isToggle() || c.powerOfTwo || c.terrainWeight || c.minimum != 0 || c.step != 1 ||
+		c.allowedValues.size() != c.valueLabels.size() ||
+		c.maximum != int(c.valueLabels.size()) - 1)
+		return false;
+	for (size_t i = 0; i < c.valueLabels.size(); ++i)
+		if (c.allowedValues[i] != int(i) || !c.valueLabels[i] || !*c.valueLabels[i])
+			return false;
+	return true;
+}
+} // namespace
 GeneratorRegistry::GeneratorRegistry(std::vector<GeneratorDefinition> values)
 	: definitions(std::move(values))
 {
@@ -48,6 +63,7 @@ GeneratorRegistry::GeneratorRegistry(std::vector<GeneratorDefinition> values)
 				(c.powerOfTwo && (c.minimum < 0 || c.maximum > 30)) ||
 				(c.isToggle() && (c.minimum != 0 || c.maximum != 1 || c.step != 1 || c.powerOfTwo ||
 								  c.terrainWeight || !c.allowedValues.empty())) ||
+				(c.isChoice() && !validChoice(c)) ||
 				c.normalize(c.defaultValue) != c.defaultValue || !controls.insert(c.id).second)
 				throw std::invalid_argument("Invalid generator control");
 	}

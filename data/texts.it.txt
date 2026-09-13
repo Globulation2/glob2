@@ -2078,3 +2078,11 @@ Roccia nel frutteto
 Colonie su entrambe le coste
 [Winding belt]
 Fascia sinuosa
+[Cell shape]
+Forma delle celle
+[Squares]
+Quadrati
+[Hexagons]
+Esagoni
+[Warp]
+Deformazione

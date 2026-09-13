@@ -351,13 +351,22 @@ int main(int argc, char **argv)
 					"%s{\"id\":\"%s\",\"label\":\"%s\",\"kind\":\"%s\",\"min\":%d,\"max\":%d,"
 					"\"step\":%d,\"default\":%d,"
 					"\"group\":%d,\"powerOfTwo\":%s,\"values\":[",
-					i ? "," : "", c.id.c_str(), c.label, c.isToggle() ? "toggle" : "range",
+					i ? "," : "", c.id.c_str(), c.label,
+					c.isToggle() ? "toggle" : c.isChoice() ? "choice" : "range",
 					c.minimum, c.maximum, c.step, c.defaultValue, int(c.group),
 					c.powerOfTwo ? "true" : "false");
 				const auto domain = c.values();
 				for (size_t j = 0; j < domain.size(); ++j)
 					std::printf("%s%d", j ? "," : "", domain[j]);
-				std::printf("]}");
+				std::printf("]");
+				if (c.isChoice())
+				{
+					std::printf(",\"labels\":[");
+					for (size_t j = 0; j < domain.size(); ++j)
+						std::printf("%s\"%s\"", j ? "," : "", c.valueLabel(domain[j]));
+					std::printf("]");
+				}
+				std::printf("}");
 			}
 			std::printf("]}%s\n", m == methods.back() ? "" : ",");
 		}

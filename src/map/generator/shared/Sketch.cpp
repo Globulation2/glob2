@@ -94,4 +94,24 @@ std::vector<Island> raiseIslands(TerrainSketch &terrain, const Torus &t, Generat
 	}
 	return islands;
 }
+
+void keepRoadInland(std::vector<unsigned char> &road, const Torus &t, const std::vector<unsigned char> &water,
+					int gap)
+{
+	const std::vector<int> shore = stepsFrom(t, water);
+	for (int i = 0; i < t.size(); ++i)
+		if (road[i] && shore[i] >= 0 && shore[i] < gap)
+			road[i] = 0;
+}
+
+std::vector<unsigned char> roadTiles(const Torus &t, const std::vector<unsigned char> &road)
+{
+	std::vector<unsigned char> tiles(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+		if (road[i])
+			for (int dy = -1; dy <= 0; ++dy)
+				for (int dx = -1; dx <= 0; ++dx)
+					tiles[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+	return tiles;
+}
 } // namespace MapGeneration

@@ -2016,3 +2016,11 @@ Kiveä hedelmätarhassa
 Siirtokuntia molemmilla rannikoilla
 [Winding belt]
 Mutkitteleva vyöhyke
+[Cell shape]
+Solujen muoto
+[Squares]
+Neliöt
+[Hexagons]
+Kuusikulmiot
+[Warp]
+Vääristymä

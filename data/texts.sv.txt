@@ -2026,3 +2026,11 @@ Sten i fruktträdgården
 Kolonier på båda kusterna
 [Winding belt]
 Slingrande bälte
+[Cell shape]
+Cellform
+[Squares]
+Kvadrater
+[Hexagons]
+Hexagoner
+[Warp]
+Förvrängning

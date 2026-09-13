@@ -2092,3 +2092,11 @@ Sten i frugtplantagen
 Kolonier på begge kyster
 [Winding belt]
 Bugtet bælte
+[Cell shape]
+Celleform
+[Squares]
+Kvadrater
+[Hexagons]
+Sekskanter
+[Warp]
+Forvrængning

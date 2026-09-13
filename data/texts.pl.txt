@@ -2016,3 +2016,11 @@ Kamień w sadzie
 Kolonie na obu wybrzeżach
 [Winding belt]
 Kręty pas
+[Cell shape]
+Kształt komórek
+[Squares]
+Kwadraty
+[Hexagons]
+Sześciokąty
+[Warp]
+Zniekształcenie

@@ -2016,3 +2016,11 @@ Piatră în livadă
 Colonii pe ambele coaste
 [Winding belt]
 Centură șerpuită
+[Cell shape]
+Forma celulelor
+[Squares]
+Pătrate
+[Hexagons]
+Hexagoane
+[Warp]
+Deformare

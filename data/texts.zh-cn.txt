@@ -2012,3 +2012,11 @@ OpenGL 在此版本中不可用。
 两岸都有殖民地
 [Winding belt]
 蜿蜒的环带
+[Cell shape]
+格子形状
+[Squares]
+正方形
+[Hexagons]
+六边形
+[Warp]
+扭曲

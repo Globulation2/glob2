@@ -2016,3 +2016,11 @@ Stein im Obstgarten
 Kolonien an beiden Küsten
 [Winding belt]
 Gewundener Gürtel
+[Cell shape]
+Zellenform
+[Squares]
+Quadrate
+[Hexagons]
+Sechsecke
+[Warp]
+Verzerrung

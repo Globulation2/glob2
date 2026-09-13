@@ -2026,3 +2026,11 @@ Harria fruta-baratzean
 Koloniak bi kostaldeetan
 [Winding belt]
 Gerriko bihurgunetsua
+[Cell shape]
+Gelaxken forma
+[Squares]
+Karratuak
+[Hexagons]
+Hexagonoak
+[Warp]
+Deformazioa
