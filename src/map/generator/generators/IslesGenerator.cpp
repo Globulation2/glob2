@@ -18,6 +18,35 @@
 #include <algorithm>
 #include <cmath>
 using namespace MapGeneration;
+
+// Isles (id "isles", legacy id 6): an oval island for every colony, joined to its neighbours by
+// narrow land bridges.
+//
+// HISTORY. Bradley Arsenault added it in July 2008, two days after Concrete islands, "based on the
+// Isles map" - a hand-made map of the time - using the same area-grid toolkit, and improved its
+// algae and swarm placement that week. On this branch its 213-line generate was split into the
+// stages below without changing its output, a queue overrun in computeDistances (crossing bridge
+// lines repeat tiles) was fixed, and it gained resource amounts and Land bridges and Sandy beaches
+// switches.
+//
+// WHAT THE MAP IS. Colonies start on islands of equal size spread evenly over the map. Where the
+// straight line between two islands crosses no third island, a bridge a few tiles wide joins them,
+// so the bridges are the only ground routes and fighting concentrates on them; everything else is
+// open sea until swimming. With bridges off it is a pure islands map like Old islands, but with
+// even spacing and equal island sizes.
+//
+// HOW THE TERRAIN IS MADE. Everything is a height field read at the end as water (below 90), beach
+// (96 to 104) or grass (the rest). The sea starts at 50; islands and bridges are raised by distance
+// from their shapes; noise of up to 45 either way roughens every coast. Because 45 is almost the
+// whole gap between the sea (50) and the water line (90), coasts wander several tiles in and out.
+//
+// GAME RULES IT LEANS ON (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
+// - Water blocks walking until a colony can swim, so bridges are the only early routes.
+// - Resources block movement: divideUpPlayerLands keeps fields on the coast zones and stone in the
+//   interior, and the algae patch is kept off the bridges so it cannot choke one.
+// - Wheat and wood regrow near water; every colony's fields are its coastal zones.
+// - Grass may not touch water: controlSand after painting rings every coast and bridge in sand.
+//
 // What the stages of a roll hand each other: the area grid and the next free area number, each
 // colony's seed point, weight and area, the spacing the dispersion found, the height field the
 // islands and bridges are raised in, the last distance field, and the bridges' tiles and area.
@@ -38,6 +67,13 @@ struct Layout
 };
 
 // Spread the colonies apart and give each an oval island of its own.
+//
+// splitUpPoints spreads one point per colony as far apart as the map allows and returns the least
+// distance between any two (minDist). Each island is a circle of island-size percent of that
+// distance across, so with the default 60 there is always at least 40% of the spacing of open sea
+// between two islands before the noise raises their coasts. The control's range (45 to 65) keeps it
+// an islands map: the coast noise pushes shores out by several tiles, so much above 65 neighbouring
+// islands start to touch, and much below 45 an island is too small for a colony's fields and base.
 static void layoutIslands(Game &game, GenerationContext &context, const IslesOptions &options,
 						  Layout &L)
 {
@@ -61,6 +97,12 @@ static void layoutIslands(Game &game, GenerationContext &context, const IslesOpt
 }
 
 // Raise the islands in the height field, by distance from their edges.
+//
+// Island tiles (distance 1) rise by 100, to 150: far above the water line whatever the noise does.
+// Outside, the rise falls by 10 a step, from 90 at the first step to nothing 11 steps out, so every
+// island sits on a sloping shelf. A shelf tile d steps out stands at 50 + (11 - d) * 10 and is land
+// when the noise lifts it to 90, which the noise (-45 to +44) can do from 2 steps out to 11: the
+// coast wanders over that whole shelf, which is what makes the ovals read as natural islands.
 static void raiseIslands(Game &game, Layout &L)
 {
 	// Construct a L.heightmap
@@ -85,6 +127,13 @@ static void raiseIslands(Game &game, Layout &L)
 }
 
 // Join every pair of islands whose straight line crosses no third island with a land bridge.
+//
+// For every pair, one random tile of each island is drawn and the line between them tested: if any
+// tile within bridgeWidth - 2 of the line belongs to a third island, there is no bridge (it would
+// run over that island and give it a shortcut). A bridge's tiles are only claimed where they are
+// more than bridgeWidth + 1 steps from any island, so the bridge does not widen the islands'
+// shores. Random endpoints make bridges leave islands at varied angles rather than centre to
+// centre.
 static void buildBridges(Game &game, GenerationContext &context, const IslesOptions &options,
 						 Layout &L)
 {
@@ -159,7 +208,10 @@ static void paintTerrain(Game &game, GenerationContext &context, const IslesOpti
 						 Layout &L)
 {
 	const int bridgeWidth = options.bridge_width;
-	// Stamp out the connectors
+	// Stamp out the connectors: the bridge's centre line (distance 1) rises by 100 like an island,
+	// and its sides fall off linearly to nothing at bridgeWidth steps, so a bridge is a ridge the
+	// noise erodes into a causeway a few tiles wide with ragged edges. A narrow bridge can be
+	// broken by the noise in places: the narrower the bridge, the more often it is cut.
 	for (int x = 0; x < game.map.getW(); ++x)
 	{
 		for (int y = 0; y < game.map.getH(); ++y)
@@ -174,6 +226,12 @@ static void paintTerrain(Game &game, GenerationContext &context, const IslesOpti
 	}
 
 	// Use the L.heightmap to put in water, grass, and sand
+	//
+	// Noise of -45 to +44. The thresholds read: water under 90, beach from 96 to 104, grass
+	// otherwise - including the narrow 90 to 95 band, which is grass right at the water's edge; it
+	// becomes beach anyway when controlSand rings the coast. Open sea (50) can reach 94 at the
+	// noise's very top, so a rare single grass speck can appear offshore; controlSand turns it to
+	// sand.
 	adjustHeightmapFromPerlinNoise(game.map, context, L.heightmap, 45);
 	for (int x = 0; x < game.map.getW(); ++x)
 	{
@@ -192,6 +250,12 @@ static void paintTerrain(Game &game, GenerationContext &context, const IslesOpti
 }
 
 // Re-divide the land between the colonies and give each an algae patch just off its coast.
+//
+// The land is split again over grass only, so each colony's area is its island's real buildable
+// ground (the bridges keep their own area). The algae patch goes on a random tile exactly 8 steps
+// from that ground: out past the beach in open water, near enough that the sand is within the
+// 30-tile reach algae needs to regrow, and, with bridges, kept more than a bridge width from any
+// bridge so it can never grow over the route.
 static bool placeAlgae(Game &game, GenerationContext &context, const IslesOptions &options,
 					   Layout &L)
 {
@@ -279,6 +343,9 @@ GeneratorDefinition islesDefinition()
 		"Isles",
 		2,
 		false,
+		// Island size is each island's diameter as a percentage of the least distance between
+		// colonies (see layoutIslands for its range); bridge width is how many steps a bridge's
+		// ridge spreads.
 		{{"island-size", "Island size", 45, 65, 5, 60, ControlGroup::Terrain, false},
 		 {"bridge-width", "Land bridge width", 3, 6, 1, 4, ControlGroup::Terrain, false},
 		 // Off, every colony's island stands alone in the sea.

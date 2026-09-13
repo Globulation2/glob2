@@ -20,6 +20,50 @@
 #include <cmath>
 using namespace MapGeneration;
 
+// Old random (id "shattered-coast", legacy id 7): the game's original random map generator.
+//
+// HISTORY. Luc-Olivier de Charrière ("nuage") wrote it in August 2002 as the RandomMapGenerator
+// that first let network games start without exchanging a map file: paint every tile water, sand or
+// grass at random in the requested shares, smooth the noise into blobs, seat colonies on the widest
+// grass, and hand each colony a few square deposits found by looking along the eight compass
+// directions. When Leo Wandersleb's height-field generators (Islands, Swamp, River, Crater lakes)
+// replaced it in January 2006, giszmo brought it back "marked as old" so players kept the look. On
+// this branch it moved into the generator framework, was split into the stages below without
+// changing a byte of its output, gained resource amounts and a Colony meadows switch, stopped
+// refusing crowded maps (see placeColonies) and lost a bias that made every colony wood-poor (see
+// resources).
+//
+// WHAT THE MAP IS. A shattered coastline: grass, sand and water interleaved at every scale, with no
+// large-scale structure at all. That is its charm and its weakness. Nothing guarantees a colony
+// water for its fields, room to build, or a fair share of anything; fairness comes only from the
+// lobby keeping the best-scoring of several seeds and from the shared backstops at the end of
+// generate(). Newer generators design structure first and texture second; this one is all texture.
+//
+// GAME RULES IT LEANS ON (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
+// - Grass may not touch water, so Map::controlSand turns every grass corner beside water into sand
+//   after painting. Heavy smoothing leaves long coasts and so a lot of that forced sand.
+// - Wheat and wood only regrow near water. The fine patchwork keeps water close to almost every
+//   grass tile, which is why this map's farmland regrows well despite its randomness.
+// - Buildings need pure grass: the widest grass patches become homes (placeColonies), and each home
+//   is stamped a patch of grass big enough for the 4x4 swarm and its first buildings.
+//
+// Every draw here comes from named streams ("simulation", "terrain"), so a seed reproduces the map.
+// Several odd-looking details (the scratch map's offsets, the algae search's comparison) are
+// original behaviour kept on purpose: changing them changes every map this generator makes.
+
+// A dry run of the paint-and-smooth process on a small scratch map, used only to learn what shares
+// of water, sand and grass a painting ends up with after `smooth` passes (fitTerrainMix below).
+// It reports the shares through the three out-parameters and never touches the real map.
+//
+// The scratch map is square and a power of two, so wrapping is a bit mask (`& m`): 32 tiles a side
+// for 0 to 3 smoothing passes, 64 for 4 to 7 and 128 for 8, big enough that the blobs smoothing
+// grows are small against the map and the measured shares settle. Its smoothing is a simplified
+// copy of smoothPatchwork's, without the over-share brake. Its first two pairs of neighbours match
+// the real pass (across and down, then the two diagonals), but its last two pairs were mistyped in
+// the original index arithmetic (`h << 1` is two rows, not two columns): they look one row and two
+// columns away, straight up and down, two columns and three rows away, and two columns and one row
+// away, where the real pass looks two tiles across, down and along each diagonal. The simulation
+// only feeds an estimate that fitTerrainMix corrects, so it is kept as it was.
 static void simulateRandomMap(GenerationContext &context, int smooth, double baseWater,
 							  double baseSand, double baseGrass, double *finalWater,
 							  double *finalSand, double *finalGrass)
@@ -36,12 +80,16 @@ static void simulateRandomMap(GenerationContext &context, int smooth, double bas
 	// callers passing a literal) per tile per draw instead of changing which numbers come out.
 	std::mt19937 &rng = context.stream("simulation");
 
+	// The shares become integer weights out of 0x7FFF (32767), fine enough that a share of a
+	// fraction of a percent still paints some tiles, and small enough that `rng() % totalRatio`
+	// has no noticeable bias.
 	int totalRatio = 0x7FFF;
 	int waterRatio = (int)(baseWater * ((double)totalRatio));
 	int sandRatio = (int)(baseSand * ((double)totalRatio));
 	int grassRatio = (int)(baseGrass * ((double)totalRatio));
 	totalRatio = waterRatio + sandRatio + grassRatio;
 
+	// All three shares zero: paint the three terrains equally rather than divide by zero.
 	if (totalRatio == 0)
 	{
 		waterRatio = 1;
@@ -76,6 +124,9 @@ static void simulateRandomMap(GenerationContext &context, int smooth, double bas
 			assert(false); // Want's to sing ?
 		}
 
+	// Each pass: a tile takes the terrain its two opposite neighbours share, trying one of each
+	// pair of directions in turn (horizontal or vertical, then the two diagonals, then two steps
+	// out). `rng() & 4` tests one bit of a draw: a coin flip for which of each pair to look along.
 	for (int i = 0; i < smooth; i++)
 		for (int y = 0; y < h; y++)
 			for (int x = 0; x < w; x++)
@@ -214,9 +265,19 @@ static void countTerrain(const Map &map, int &waterCount, int &sandCount, int &g
 		}
 }
 
-// Smoothing eats into whichever terrain is rarest, so the shares the patchwork is painted with
-// are not the shares the map should end up with. There is no closed form; this searches for
-// painting shares whose simulated result lands on the requested ones.
+// Smoothing eats into whichever terrain is rarest, so the shares the patchwork is painted with are
+// not the shares the map should end up with. There is no closed form; this searches for painting
+// shares whose simulated result lands on the requested ones.
+//
+// The search is a crude secant-style method on the three shares, run once per smoothing level from
+// 1 up to the requested one so each level starts from the previous level's answer:
+// - alpha is the current guess. Simulating it gives an error against the requested shares.
+// - beta is a proportional correction: each share scaled by requested / achieved, renormalised.
+//   Simulating beta gives a second error.
+// - The two errors' projection says how far along the alpha-to-beta line the answer lies; gamma
+//   tries eleven points on that line (cf from 0 to proj in tenths) and keeps the one whose
+//   simulated error is smallest as the next alpha. Each simulation is a full scratch map, so this
+//   search, not the real map, is most of this generator's running time at high smoothing.
 static TerrainMix fitTerrainMix(GenerationContext &context, const TerrainMix &base, int smooth)
 {
 	const double baseWater = base.water, baseSand = base.sand, baseGrass = base.grass;
@@ -323,7 +384,8 @@ static TerrainMix fitTerrainMix(GenerationContext &context, const TerrainMix &ba
 	return {alphaWater, alphaSand, alphaGrass};
 }
 
-// Every tile draws its terrain independently, in the fitted shares.
+// Every tile draws its terrain independently, in the fitted shares: pure white noise, which the
+// smoothing passes then grow into blobs.
 static void paintPatchwork(Map &map, std::mt19937 &rng, const TerrainMix &mix)
 {
 	int totalRatio = 0x7FFF;
@@ -369,9 +431,19 @@ static void paintPatchwork(Map &map, std::mt19937 &rng, const TerrainMix &mix)
 static const int kSmoothingDirections[8][2] = {{1, 0}, {0, 1}, {1, 1}, {1, -1},
 											   {2, 0}, {0, 2}, {2, 2}, {2, -2}};
 
-// Each pass makes a tile take the terrain of two matching opposite neighbours, one direction
-// after another, but a terrain already over its requested share is allowed to spread only
-// rarely, the more so the further over it is.
+// Each pass makes a tile take the terrain of two matching opposite neighbours, one direction after
+// another, but a terrain already over its requested share is allowed to spread only rarely, the
+// more so the further over it is.
+//
+// The brake: a terrain over its share by `err` (a fraction of the map) may spread into a tile only
+// when a fresh 32-bit draw is at least err^(1/8) of the range. The eighth root makes the brake very
+// strong for tiny overshoots: 1% over blocks 56% of spreads, 10% over blocks 75%. Measured on
+// 256x256 maps with the default weights (40 water, 4 sand, 60 grass) and 3 passes, six seeds: pure
+// water tiles come to 18% of the map with this brake, against 26% with a linear brake (err^1) or
+// none at all, because water that cannot spread stays broken into many small pools with long
+// shores. That fragmentation is the "shattered" look; at 8 passes the difference mostly disappears,
+// since by then the blobs are large anyway. The first pass has no brake (allowed is zeroed), so the
+// initial noise always gets one free round of clumping before the shares are policed.
 static void smoothPatchwork(Map &map, std::mt19937 &rng, int smooth, const TerrainMix &base)
 {
 	const int w = map.getW(), h = map.getH();
@@ -426,9 +498,14 @@ static void smoothPatchwork(Map &map, std::mt19937 &rng, int smooth, const Terra
 	}
 }
 
-// Seat every colony on grass, each a colony's share of the grass from the others, and give
-// each a meadow unless the colonies are to start in the shattered terrain itself. The counts
-// are the map's before sand control ran.
+// Seat every colony on grass, each a colony's share of the grass from the others, and give each a
+// meadow unless the colonies are to start in the shattered terrain itself. The counts are the map's
+// before sand control ran.
+//
+// Spacing: minDistSquare = width * height * grassShare / colonies is the area of one colony's share
+// of the grass, used as a squared distance, so colonies sit about the side of a square of that much
+// grass apart - further apart on grassy maps and with few colonies, closer on watery or crowded
+// ones.
 static bool placeColonies(Map &map, GenerationContext &context,
 						  const ShatteredCoastOptions &options, int grassCount, double totalCount)
 {
@@ -447,6 +524,10 @@ static bool placeColonies(Map &map, GenerationContext &context,
 	// find every remaining patch too close; rather than refuse the map, such a colony accepts a
 	// nearer patch, down to half the spacing, then a quarter. A map that seats every colony at
 	// full spacing never reaches the relaxation, so its starts are as they always were.
+	// A patch is measured cheaply, not exactly: every horizontal run of more than 7 grass tiles (a
+	// run that could hold the 4x4 swarm with room either side) is measured vertically through its
+	// middle, and the run's width times that height stands in for its area. The largest such
+	// rectangle that keeps its spacing from the colonies already placed wins.
 	auto widestPatch = [&](int team, int spacingSquare, int &maxX, int &maxY)
 	{
 		int maxSurface = 0;
@@ -520,11 +601,18 @@ static bool placeColonies(Map &map, GenerationContext &context,
 		bootX[team] = maxX;
 		bootY[team] = maxY;
 
+		// A 7x6 block of grass corners under the boot tile: the 4x4 swarm with a ring for its
+		// workers, so the swarm always fits whatever the patch's real outline.
 		for (int dx = -1; dx < 6; dx++)
 			for (int dy = 0; dy < 6; dy++)
 				map.setUMTerrain(maxX + dx, maxY + dy, GRASS);
 	}
 
+	// The meadow: two overlapping grass squares, 5 tiles plus a fraction of the colony spacing a
+	// side (about 25 on a 256x256 map with 4 colonies and the default weights), so a home has clear
+	// building room that grows with the ground each colony is meant to have. The 4.5 divisor keeps
+	// a meadow to about a quarter of the spacing, so meadows of colonies seated at full spacing
+	// stay apart; colonies seated at relaxed spacing (below) can have meadows that touch.
 	int squareSize = 5 + (int)(sqrt((double)minDistSquare) / 4.5);
 	for (int team = 0; team < nbTeams && options.colony_meadows; team++)
 	{
@@ -552,6 +640,9 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 	countTerrain(map, waterCount, sandCount, grassCount);
 	const double totalCount = (double)(waterCount + sandCount + grassCount);
 
+	// Sand control twice: once so the patches colonies are measured on are real grass (grass beside
+	// water has just become beach), and again because the grass stamped for each swarm and meadow
+	// may itself touch water.
 	map.controlSand();
 	if (!placeColonies(map, context, options, grassCount, totalCount))
 		return false;
@@ -568,9 +659,21 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 	int *bootX = context.bootX.data();
 	int *bootY = context.bootY.data();
 	int nbTeams = context.request.nbTeams;
+	// How far along a compass direction a colony looks for ground to put a deposit on: the mean
+	// side of the map shared out between the colonies, so deposits stay in a colony's own half of
+	// the way to its neighbours.
 	int limitDist = (w + h) / (2 * nbTeams);
 
-	// let's add resources to old map generator
+	// Each colony gets its deposits along compass directions from its swarm, one direction per
+	// deposit, so they spread round the home rather than piling up on one side. For each deposit,
+	// every unused direction is walked out from 5 tiles (clear of the swarm) to limitDist, tracking
+	// the current run of grass: a gap after a run of 4 or more ends the walk, a gap after a shorter
+	// run restarts the count (so a sliver of grass between water does not count as a field). The
+	// direction scoring best on distance + run width wins, and a square deposit is centred on the
+	// middle of that run. `amount` is the deposit's side in tiles (the request's legacy
+	// per-resource amounts, 7 by default), scaled in area by the amount controls. Map::setResource
+	// draws each tile's starting amount from the gameplay RNG, so the order below is part of the
+	// map.
 	for (int team = 0; team < nbTeams; team++)
 	{
 		int smallestWidth = limitDist;
@@ -595,6 +698,8 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 		resOrder[3] = CORN;
 		int primaryWidth[2] = {0, 0};
 
+		// The fourth, reinforcing deposit scores distance and width double: it goes to the
+		// furthest, widest run left, where there is room for a second field of the scarcer crop.
 		int distWeight[4];
 		distWeight[0] = 1;
 		distWeight[1] = 1;
@@ -654,13 +759,17 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 			dx *= d;
 			dy *= d;
 
-			// Every deposit is a square of `amount` tiles a side; the amount controls scale its area.
+			// Every deposit is a square of `amount` tiles a side; the amount controls scale its
+			// area.
 			int amount = context.request.resourceAmounts[res];
 			if (amount > 0)
 				setScaledResource(map, bootX[team] + dx, bootY[team] + dy, res, amount,
 								  options.percent(res));
 		}
 
+		// One more deposit of whichever resource landed on the narrowest run, looking up to twice
+		// as far: a colony whose wheat or wood field is squeezed gets a second field somewhere
+		// roomier.
 		if (smallestWidth < limitDist)
 		{
 			int maxDir = 0;
@@ -701,6 +810,11 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 								  options.percent(smallestResource));
 		}
 
+		// Algae: the same walk over water in all eight directions. Its comparison reads
+		// `dist + width > width + maxWidth`, which reduces to dist > maxWidth rather than the grass
+		// searches' dist + width > maxDist + maxWidth: a slip in the original that biases algae
+		// towards whichever direction first runs further than the widest water run so far. It is
+		// kept, since fixing it moves every colony's algae on every map this generator has made.
 		int maxDir = 0;
 		int maxWidth = 0;
 		int maxDist = 0;
@@ -736,7 +850,13 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 			setScaledResource(map, bootX[team] + dx, bootY[team] + dy, ALGA, amount, options.algae);
 	}
 
-	// Let's smooth resources...
+	// Map::smoothResources was meant to fray the square deposits into natural fields, three rounds
+	// per tile of the largest deposit side. It does nothing today: it still looks for resources
+	// encoded in the terrain layer (terrain values 272 and up), and resources have lived in their
+	// own layer since the 2003 resource rework, so no tile ever matches and no random number is
+	// drawn. Removing the call leaves every map byte-identical (checked on seeds of this generator
+	// and Old islands). That is why this generator's deposits are visible squares. The call is kept
+	// so the code still says what the design intended; making it work would change every map.
 	int maxAmount = 0;
 	for (int r = 0; r < 4; r++)
 		if (maxAmount < context.request.resourceAmounts[r])
@@ -774,6 +894,9 @@ GeneratorDefinition shatteredCoastDefinition()
 		"Old random",
 		2,
 		false,
+		// The three terrain weights are relative (40/4/60 asks for 38% water, 4% sand, 58% grass
+		// before sand control adds the beaches); smoothing is the number of passes, which sets the
+		// scale of the blobs from speckle (1) to broad coasts (8).
 		{{"water", "Water weight", 0, 100, 1, 40, ControlGroup::Terrain, false, true},
 		 {"sand", "Sand weight", 0, 100, 1, 4, ControlGroup::Terrain, false, true},
 		 {"grass", "Grass weight", 0, 100, 1, 60, ControlGroup::Terrain, false, true},

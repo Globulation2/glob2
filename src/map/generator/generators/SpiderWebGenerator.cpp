@@ -34,6 +34,14 @@ using namespace MapGeneration;
 // per wedge, keyed by a thread's place in the wedge, so every colony gets the same web turned round
 // the centre and the layout is fair for any colony count. The design is a pure function of the
 // request, so validateWorld rebuilds it and checks the finished world.
+//
+// GAME RULES BEHIND IT (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md): every thread is land in
+// water, so wheat and wood regrow along its whole length, which is why threads carry fields, and
+// why a sand road runs down their middle: growth refuses where its probe finds sand, and nothing
+// grows on sand itself, so the road stays a lane and a thread never grows shut. Buildings need pure
+// grass, so a thread must be wide enough to keep grass either side of that road. Fruit lets an inn
+// pull hungry enemy units across, which makes the hub's orchard the prize at the one place every
+// spoke leads.
 namespace
 {
 
@@ -110,6 +118,9 @@ Geometry geometryFor(const GenerationRequest &r)
 		o.threadWidth * std::clamp(std::sqrt(g.half / 128.0), kMinimumThreadScale, 1.0);
 	g.threadHalf = threadWidth / 2.0;
 	g.spokeHalf = g.threadHalf + 1;
+	// The hub is a share of the half side, at least 6 tiles; from 9 tiles up it holds a pond 30% of
+	// its radius (at least 2), so the orchard round it stands beside water with room for its
+	// groves.
 	g.hubRadius = std::max(6.0, o.hubSize / 100.0 * g.half);
 	g.pondRadius = g.hubRadius >= 9 ? std::max(2.0, 0.3 * g.hubRadius) : 0.0;
 	g.spacing = o.ringSpacing;
@@ -237,6 +248,9 @@ struct Layout
 		const ShapePoint from = onSpoke(j, a), to = onSpoke(j + 1, b);
 		const double mx = (from.x + to.x) / 2, my = (from.y + to.y) / 2;
 		const double inward = std::max(1e-9, std::hypot(cx - mx, cy - my));
+		// Each strand sags by 60% to 140% of the sag share of its length. The curve's middle
+		// control point is set at twice the pull, since a quadratic curve passes only halfway to
+		// its control point.
 		const double pull = g.sag * std::hypot(to.x - from.x, to.y - from.y) *
 							(0.6 + 0.8 * roll(r, "web-sag/", id) / 1000.0);
 		out = {from,
@@ -333,7 +347,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	}
 	// The capture threads: every turn of the spiral, or every ring, from spoke to spoke. A torn
 	// strand keeps its two ends hanging from the spokes. Where a thread leaves a spoke is a knot.
-	// The torn share is exact: of the distinct strands of a wedge, those with the lowest rolls tear.
+	// The torn share is exact: of the distinct strands of a wedge, those with the lowest rolls
+	// tear.
 	const long long turns = (long long)std::ceil((g.lastRing - g.firstRing) / g.spacing) + 1;
 	std::vector<std::pair<int, long long>> strands;
 	for (long long k = -teams - 1; k <= turns; ++k)
@@ -359,7 +374,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				L.knots.push_back(L.stretch.apply(L.cx, L.cy, thread.from));
 		}
 
-	// The hub, with a pond at its heart, and a pad for every colony where its spoke meets the frame.
+	// The hub, with a pond at its heart, and a pad for every colony where its spoke meets the
+	// frame.
 	const RadialShape hubShape(g.hubRadius, 0.2, context, "web-hub");
 	fillShape(L.land, t, L.cx, L.cy, hubShape, 0, 1, L.stretch);
 	fillShape(L.hub, t, L.cx, L.cy, hubShape, 0, 1, L.stretch);
@@ -469,6 +485,9 @@ void furnishPads(Map &map, const Layout &L, GenerationContext &context)
 		{ return L.padOf[i] == team && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
 		const KitFrame frame{int(std::lround(L.pads[team].x)), int(std::lround(L.pads[team].y)),
 							 L.padAngle[team]};
+		// Wheat and wood 6 tiles to either side of the pad's centre and 5 back from it, stone 8
+		// tiles the other way along the pad's axis: the three far enough apart that no patch grows
+		// over another, all inside the pad.
 		plantKit(
 			map, t, context,
 			{frame.at(-5, -6, 8), frame.at(-5, 6, 8), frame.at(8, 0, 6), kHomeWheat, kHomeWood, 2},
@@ -500,10 +519,14 @@ void stockWeb(Map &map, const Layout &L, GenerationContext &context, const Spide
 			continue;
 		const bool stone = drop.prize == 3;
 		if (scaledCount(1, stone ? o.stone : o.fruit) > 0)
+			// A dew drop's prize is a patch of 9 tiles of fruit or stone: a reason to swim out, not an
+			// economy.
 			growPatch(map, t, seed, stone ? STONE : CHERRY + drop.prize, 9, onDrop);
 	}
 
 	const auto onHub = [&](int i) { return L.hub[i] && clearGround(map, i % t.w, i / t.w); };
+	// The orchard's groves stand 4 tiles past the pond's fullest outline (1.25), clear of its
+	// beach, or halfway out on a hub without a pond.
 	const double rho = L.g.pondRadius > 0 ? L.g.pondRadius * 1.25 + 4 : 0.5 * L.g.hubRadius;
 	const double spin = context.bounded("web-hub", 3600) / 3600.0 * 2 * kPi;
 	if (scaledCount(1, o.fruit) > 0)
@@ -526,6 +549,10 @@ void stockWeb(Map &map, const Layout &L, GenerationContext &context, const Spide
 	}
 
 	const WedgeFrame wedges(t, L.phase, L.g.teams, L.stretch);
+	// patch (12-tile cells) ranks where on the threads the fields go, so they come in runs with
+	// bare thread between; split (7-tile cells) picks wheat or wood, so a run of fields changes
+	// crop now and then. Both are read in the wedge's frame, so every colony's threads are farmed
+	// alike.
 	const PeriodicNoise patch(t.w, t.h, 12, context.stream("web-patch"));
 	const PeriodicNoise split(t.w, t.h, 7, context.stream("web-split"));
 	std::vector<std::pair<double, int>> ranked;

@@ -37,6 +37,15 @@ using MapGeneration::scaledShare;
 // row-order pass is replaced by the same rule applied to every corner at once, per-tile random
 // clumps by deterministic growth, and the amounts the engine RNG gives each resource tile are
 // equalised over its orbit. validateWorld then checks the invariance on the finished world.
+//
+// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). It is the tournament map:
+// no colony can blame its start, because every colony's ground is an exact image of every other's.
+// The prize in the middle is the strongest a map can offer, an orchard of all three fruits (an inn
+// stocked with all three pulls hungry enemy units across) with stone among it, and the moat, which
+// ground units cannot cross until they swim, funnels every early attack onto the causeways, the
+// chokepoints worth holding. Each home has its own pond, because wheat and wood regrow only near
+// water, so no colony has to leave home to keep its farmland alive. Only 2, 4 and 8 colonies are
+// offered, because those are the counts the square's symmetries can serve exactly.
 namespace
 {
 
@@ -170,6 +179,8 @@ std::int64_t tileRadius2(int width, int height, int x, int y)
 }
 bool within(std::int64_t radius2, double radius)
 {
+	// radius2 is in doubled coordinates, so the radius is doubled (squared, times 4) to compare:
+	// all integer arithmetic on the squared side, so every tile in an orbit gets the same answer.
 	return double(radius2) < 4.0 * radius * radius;
 }
 
@@ -258,6 +269,10 @@ std::vector<Home> homeCandidates(const Arena &a, Fit &fit)
 {
 	const int w = a.width, h = a.height, shortSide = std::min(w, h);
 	const int step = std::max(1, shortSide / 128);
+	// Homes lie at least 4 tiles outside the moat plus their own clear disc, so a swarm never
+	// stands on the moat's shore, and within 45% of the shorter side from the centre, so the way to
+	// the centre is unambiguous on the torus (beyond half the side it would be shorter the other
+	// way round).
 	const double inner = a.centre + a.moat + kHomeRadius + 4, outer = 0.45 * shortSide;
 	std::vector<Home> homes;
 	bool spaced = false;
@@ -278,6 +293,9 @@ std::vector<Home> homeCandidates(const Arena &a, Fit &fit)
 			if (spacing < kMinimumSpacing)
 				continue;
 			spaced = true;
+			// Neighbouring causeways must leave at least 5 tiles of shore between them where they
+			// land, or two colonies' causeways would merge into one wide bridge and the chokepoints
+			// would be lost.
 			if (gateSeparation(a, gateAngles(a, p)) * a.centre < a.causewayWidth + 5)
 				continue;
 			homes.push_back({u, v, spacing, radius});
@@ -292,6 +310,10 @@ Home chooseHome(const std::vector<Home> &homes, GenerationContext &context, int 
 	double best = 0;
 	for (const Home &home : homes)
 		best = std::max(best, home.spacing);
+	// Keep only homes within 10% (at least 2 tiles) of the widest spacing, then of those the ones
+	// within 15% of the shorter side of the nearest to the centre: colonies as far apart as the map
+	// allows, but not pushed out to the far corners, so the orchard stays a reachable prize. The
+	// random pick among them varies maps without giving up either.
 	const double floor = best - std::max(2.0, 0.1 * best);
 	double nearest = 1e9;
 	for (const Home &home : homes)
@@ -364,6 +386,8 @@ std::vector<int> orbitNoise(GenerationContext &context, const Symmetry &s,
 	std::vector<int> raw(size_t(w) * h), summed(size_t(w) * h, 0);
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
+			// Noise as integers (12 bits) so the sum over an orbit is exact: floating-point sums in
+			// different orders could differ in the last bit and break the symmetry.
 			raw[size_t(y) * w + x] = int(noise(x, y) * 4096);
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
@@ -430,6 +454,8 @@ bool carvePaths(const Arena &a, const Layout &l, Terrain &t)
 	std::vector<unsigned char> route(n, 0);
 	for (double angle : l.gates)
 	{
+		// The route to each causeway aims 3.5 tiles past the moat's outer edge, on the causeway's
+		// landing, so the path ends on dry ground at the bridge rather than in the water.
 		const double reach = a.centre + a.moat + 3.5;
 		const int target = wrap(int(std::lround(h / 2.0 + reach * std::sin(angle))), h) * w +
 						   wrap(int(std::lround(w / 2.0 + reach * std::cos(angle))), w);
@@ -502,6 +528,8 @@ bool buildTerrain(Map &map, GenerationContext &context, const Arena &a, const La
 			const double toHome = torusDistance(w, h, p, l.home);
 			const double toPond = torusDistance(w, h, p, l.pond);
 			homeDisc[i] = toHome <= kHomeRadius;
+			// Lakes keep out of a zone 4 tiles round the home disc and 7 round its pond, so the
+			// pond's farmland and the swarm's workers have land to use.
 			homeZone[i] = toHome <= kHomeRadius + 4 || toPond <= kPondRadius + 7;
 			pond[i] = toPond <= kPondRadius;
 			gate[i] = onCauseway(a, l, p, 1.5, 1.5, a.causewayWidth / 2);
@@ -673,6 +701,9 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 			water[i] = map.isWater(x, y);
 			land[i] = !water[i];
 			const Point p = tilePoint(w, h, x, y);
+			// Nothing is planted within 1.5 tiles past the home's clear disc, nor within 3 to 4
+			// tiles of where a causeway lands (2 tiles to each side beyond its width), so neither
+			// the swarm nor a bridge can be walled in by deposits.
 			homeClear[i] = torusDistance(w, h, p, l.home) <= kHomeRadius + 1.5;
 			landing[i] = onCauseway(a, l, p, 3.0, 4.0, a.causewayWidth / 2 + 2);
 		}
@@ -701,6 +732,9 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 			const size_t i = size_t(y) * w + x;
 			const bool open = grass[i] && !blocked[i] &&
 							  !within(tileRadius2(w, h, x, y), a.centre + a.moat + kApron + 2);
+			// Farmland 2 to 7 steps from water, where it regrows and off the beach; stone at least
+			// 3 steps from water, where it takes no farmland; algae at least 2 steps out from land,
+			// off the shore.
 			farm[i] = open && waterSteps[i] >= 2 && waterSteps[i] <= 7;
 			rock[i] = open && waterSteps[i] >= 3;
 			alga[i] = water[i] && landSteps[i] >= 2;
@@ -708,6 +742,9 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 	// The amount controls scale each layer on top of richness: wheat and wood their shares of the
 	// farmland (2:1 at the defaults, which use the shares exactly as they were).
 	const bool farmDefault = o.wheat == 100 && o.wood == 100;
+	// At richness 1 farmland takes 30% of its eligible ground, two thirds wheat and a third wood;
+	// stone 1.2% of its ground (a few outcrops, since stone never runs out) and algae 10% of its
+	// water. Farmland is capped at 90% so a very rich map still leaves room to walk.
 	const double wheatShare = scaledShare(0.3 * richness * 2 / 3, o.wheat);
 	const double woodShare = scaledShare(0.3 * richness / 3, o.wood);
 	const double farmShare =
@@ -798,14 +835,17 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 				  { return p->value != q->value ? p->value > q->value : p->key < q->key; });
 		const size_t stones =
 			o.orchardStone
+				// A fifth of the orchard's orbits become stone, taking the highest noise values,
+				// but never so many that fewer than three orbits are left for fruit: the orchard
+				// must hold every kind.
 				? std::min(ranked.size() - 3, size_t(std::lround(0.2 * double(ranked.size()))))
 				: 0;
 		for (size_t k = 0; k < stones; ++k)
 			ranked[k]->stone = true;
 		std::sort(ranked.begin(), ranked.end(), [](const Orbit *p, const Orbit *q)
 				  { return p->radius2 != q->radius2 ? p->radius2 < q->radius2 : p->key < q->key; });
-		// The fruit amount keeps that share of the fruit orbits nearest the centre, never fewer than
-		// three so every fruit stays; the rest are left as open grass.
+		// The fruit amount keeps that share of the fruit orbits nearest the centre, never fewer
+		// than three so every fruit stays; the rest are left as open grass.
 		const size_t fruitOrbits = ranked.size() - stones;
 		const size_t keptFruit =
 			std::clamp<size_t>(size_t(scaledCount(std::int64_t(fruitOrbits), o.fruit)),
@@ -837,6 +877,8 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 		for (int x = 0; x < w; ++x)
 		{
 			const size_t i = size_t(y) * w + x;
+			// The kit may use ground up to 12 tiles past the home's clear disc and at least 2 steps
+			// from water.
 			kitGround[i] = grass[i] && !blocked[i] && waterSteps[i] >= 2 &&
 						   torusDistance(w, h, tilePoint(w, h, x, y), l.home) <= kHomeRadius + 12;
 		}
@@ -879,6 +921,9 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 		return placed;
 	};
 	const Point side{-std::sin(l.pondAngle), std::cos(l.pondAngle)};
+	// Wheat and wood 4.5 tiles to either side of the pond, where they regrow and the way from swarm
+	// to pond stays open; stone a third of a turn round from the pond, just outside the clear disc,
+	// away from the farmland.
 	const double stoneAngle = l.pondAngle + 2 * kPi / 3;
 	const int wheatKit =
 		grow({l.pond.x + 4.5 * side.x, l.pond.y + 4.5 * side.y}, CORN, kKitFarmland);

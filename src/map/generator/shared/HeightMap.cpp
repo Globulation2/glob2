@@ -49,6 +49,9 @@ void HeightMap::init(unsigned int width, unsigned int height)
 	_stamp.clear();
 }
 
+// The stamp: a round bowl, 0 at its centre rising as (1 - cos(pi * d / r)) / 2 to 1 at radius r,
+// and .9999 outside. lower() presses it into the field (keeping the lower value) to dig a crater or
+// a river bed; differenceStamp() uses its complement, a hill of height 1, to raise an island.
 void HeightMap::makeStamp(unsigned int radius)
 {
 	_r = std::max(1u, radius);
@@ -111,6 +114,11 @@ inline void HeightMap::differenceStamp(unsigned int coordX, unsigned int coordY)
 	}
 }
 
+// Blends the field with noise: field * (1 - weight) + noise * weight. The noise is four copies of
+// Perlin noise read at different offsets and cross-faded with the fader functions above, so it
+// wraps seamlessly at every edge: the map is a torus and a coast must not break at the border.
+// The weight is each shape's balance between design and chaos: .1 for the river (the bed must
+// survive), .7 islands, .8 craters, .99 swamp and plain (all noise).
 inline void HeightMap::addNoise(float weight, float smoothingFactor)
 {
 	assert((weight > 0) && (weight <= 1.0));
@@ -137,6 +145,14 @@ inline void HeightMap::addNoise(float weight, float smoothingFactor)
 	}
 }
 
+// Islands: `count` hills, then noise. Hill centres are drawn at random and rejected while any
+// earlier centre lies within `mindist` on both axes, where mindist is half the side of each
+// island's share of the map. Each hill has radius 2 * mindist, the whole side of that share, so
+// neighbouring hills overlap heavily. differenceStamp takes |hill - field|, so where two hills
+// overlap they cancel into a valley rather than add up: the overlaps become the channels between
+// islands. Noise at weight 0.7 then roughens the coasts; the histogram decides how much is above
+// water. Islands asks for (colonies + extra islands) / 2^repeat hills, one or more per colony per
+// patch.
 void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 {
 	assert(count);
@@ -187,6 +203,20 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 	normalize();
 }
 
+// River: a river bed pressed along a straight line from a random point to that point moved a whole
+// map width, height or both, so on the torus the line ends where it began and the river is one
+// closed loop across the map, with no source and no mouth. On a rectangle it runs along the long
+// side. River width is a percentage of the mean side (the stamp's diameter).
+//
+// The meander constants (winding river): the bed is moved sideways by two octaves of 1D noise,
+// feature lengths about 153 and 13 steps with weights 300 and 50. This noise stays within about
+// +-0.5, so the two swing by up to +-175, and the -175 turns that into a one-sided offset of 0 to
+// -350: the river only ever bends to one side of its line, which on a torus is just a shift. The
+// meander is computed twice, forwards from the start and backwards from the end, and cross-faded
+// with (1 -+ cos) weights that sum to 2, so the offset is the same at both ends and the loop closes
+// without a jump. Divided by 4, the river could in theory wander up to 175 tiles off its line; in
+// practice the noise stays well inside its range and the river is a gentle wave. Only 0.1 of noise
+// is added afterwards, so the bed dominates: the water is the river, not scattered ponds.
 void HeightMap::makeRiver(unsigned int maxDiameter, float smoothingFactor, bool winding)
 {
 	/// riverRadius refers to the distance between center of the river and the maximum distance that
@@ -250,6 +280,12 @@ void HeightMap::makeRiver(unsigned int maxDiameter, float smoothingFactor, bool 
 	normalize();
 }
 
+// Crater lakes: `craterCount` bowls of radius `craterRadius` pressed at random into high ground,
+// then noise at weight 0.8. lower() keeps the minimum, so overlapping bowls merge into one lake.
+// The generator asks for width * height * density / 30000 craters, about 54 on a 256x256 map at the
+// default density of 25, which is one crater per 1200 tiles: with radius 25 each bowl covers about
+// 2000, so the bowls would cover the map more than once over; but only their deepest parts fall
+// under the water share, so the lakes come out as round ponds much smaller than the bowls.
 void HeightMap::makeCraters(unsigned int craterCount, unsigned int craterRadius,
 							float smoothingFactor)
 {

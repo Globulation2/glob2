@@ -54,6 +54,10 @@ void collectPointsColumnOrder(int w, int h, Pred pred, std::vector<MapGeneratorP
 }
 } // namespace
 
+// Cuts area areaN into weights.size() parts: spreads that many seed points evenly over it
+// (splitUpPoints, all at equal weight), then grows the parts from them at the given weights
+// (splitUpArea), relabelling the area's tiles with areaNumbers. Fails when the area has fewer tiles
+// than parts. divideUpPlayerLands uses it to cut a colony's land into twelve equal zones.
 bool divideUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, int areaN,
 				  std::vector<int> &weights, std::vector<int> &areaNumbers)
 {
@@ -72,6 +76,9 @@ bool divideUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, 
 	return true;
 }
 
+// Labels every tile inside the axis-aligned ellipse of the given width and height centred on
+// (x, y) with areaN, through the wrap. The test is x^2 * h^2 + y^2 * w^2 < w^2 * h^2 in integers
+// (on half-axes), so it has no rounding drift across platforms.
 void createOval(Map &map, std::vector<int> &grid, int areaN, int x, int y, int width, int height)
 {
 	std::int64_t h2 = std::int64_t(height / 2) * (height / 2);
@@ -93,6 +100,25 @@ void createOval(Map &map, std::vector<int> &grid, int areaN, int x, int y, int w
 	}
 }
 
+// Places one point per entry of `points` inside area areaN, as far apart as it can, and returns the
+// least distance between any two (half the smaller map side for a single point, 0 on failure). This
+// is how the 2008 toolkit spreads colonies evenly without any geometry: it only needs a grid of
+// area labels, so it works on any shape of land, wrapped round the torus.
+//
+// Stage 1, farthest-point sampling: a random tile of the area seeds a walking-distance flood (other
+// areas block it); the first point is a random tile at the flood's greatest distance, and each next
+// point a random tile farthest from all points placed so far. This gives a good spread in one pass.
+//
+// Stage 2, relaxation: repeatedly move each point to the tile that maximises its smallest weighted
+// squared straight-line distance to the other points, until no point moves (or maxPasses runs out).
+// Local searches only the 7x7 around the point, so points creep; WholeRegion searches every free
+// tile of the area, so points jump. A weight scales the distances measured *to* that point, so a
+// light point is the one whose distance binds: Contested commons gives its commons seed half a
+// colony's weight, and every colony then keeps its distance from the commons first. With equal
+// weights, as every other caller passes, this is plain maximin spacing.
+//
+// Last, the points (and weights with them) are shuffled, so which colony lands on which point is
+// random rather than decided by the order the sampling happened to find them in.
 int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, int areaN,
 				  std::vector<MapGeneratorPoint> &points, std::vector<int> &weights,
 				  PointSearch search, int maxPasses)
@@ -372,6 +398,14 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 	return int(std::sqrt(double(minDist)));
 }
 
+// Grows a region from each point over area areaN until the area is used up, and labels each tile
+// with its region's area number. A multi-source flood where every source advances at its own rate:
+// each round a region earns `weights[p]` tiles of credit and spends one per tile it claims, so a
+// region of weight 10 grows ten times as fast as one of weight 1 and ends up with about ten times
+// the ground where they compete. Frontier tiles are kept in a list with each new tile inserted at a
+// random position, so growth picks its next tile at random from the frontier: regions come out as
+// organic blobs rather than the diamonds a breadth-first flood makes. Claims go 8-way. With
+// grassOnly, regions only claim grass, so a region covers only its buildable land.
 void splitUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, int areaN,
 				 std::vector<MapGeneratorPoint> &points, std::vector<int> &weights,
 				 std::vector<int> &areaNumbers, bool grassOnly)
@@ -492,6 +526,9 @@ void getAllOtherPoints(Map &map, std::vector<int> &grid, int areaN,
 		w, map.getH(), [&](int x, int y) { return grid[y * w + x] != areaN; }, points);
 }
 
+// The tiles of a straight line from (x1, y1) towards (x2, y2), the short way round the torus, as a
+// 4-connected staircase (a diagonal step adds both tiles of the corner), so a stroke along it has
+// no diagonal gaps a unit could not walk across. The end tile itself is not included.
 void getAllPointsLine(Map &map, int x1, int y1, int x2, int y2,
 					  std::vector<MapGeneratorPoint> &points)
 {
@@ -554,6 +591,8 @@ void getAllPointsLine(Map &map, int x1, int y1, int x2, int y2,
 	}
 }
 
+// Every tile with a differently labelled tile among its eight neighbours: the boundaries between
+// areas, which Concrete islands digs its channels along.
 void findBorderPoints(Map &map, std::vector<int> &grid, std::vector<MapGeneratorPoint> &points)
 {
 	const int w = map.getW();
@@ -571,6 +610,8 @@ void findBorderPoints(Map &map, std::vector<int> &grid, std::vector<MapGenerator
 		points);
 }
 
+// Keeps a random n of the points (all of them when there are fewer), by a partial Fisher-Yates
+// shuffle drawing from the "regions" stream.
 void chooseRandomPoints(Map &map, GenerationContext &context,
 						std::vector<MapGeneratorPoint> &points, int n)
 {

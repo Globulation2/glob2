@@ -233,7 +233,8 @@ void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &spl
 			if (map.getResource(x, y).type != NO_RES_TYPE)
 				continue;
 			// Wood and corn share the same terrain requirement (grass), so either stands in for
-			// eligibility here - which of the two a tile ends up with is decided below, by the split.
+			// eligibility here - which of the two a tile ends up with is decided below, by the
+			// split.
 			if (!map.isResourceAllowed(x, y, CORN))
 				continue;
 			const std::uint32_t f = fertility.at(x, y);
@@ -333,6 +334,9 @@ void scatterResources(Game &game, GenerationContext &context, const ResourceDens
 	int numComponents = 0;
 	const std::vector<int> landComponent = computeComponents(map, false, numComponents);
 
+	// Densities are tiles per 1600 tiles of map for wheat and wood (a 40x40 square, about one
+	// colony's working area), per 3000 for stone and per 800 for algae: the default 24 wheat covers
+	// 1.5% of the map. Being per area, the scatter looks the same on every map size.
 	scatterFarmland(map, fertility, splitNoise, density.corn * area / 1600,
 					density.wood * area / 1600, landComponent, numComponents);
 	scatterBand(map, noise, STONE, density.stone * area / 3000, landComponent, numComponents);
@@ -487,6 +491,9 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 	Map &map = game.map;
 	if (protectedWalls && protectedWalls->size() != size_t(map.getW()) * map.getH())
 		throw GenerationFailure("Protected wall mask does not match the map size");
+	// Floods reach two and a half times the farthest range, so a deposit just out of range can
+	// still be found and a wall beyond it measured; closeRange, half the wheat range, marks the
+	// grass a topped-up deposit is tried on first, so it lands clearly within reach.
 	const int exploreLimit = std::max(wheatRange, woodRange) * 5 / 2;
 	const int closeRange = wheatRange / 2;
 	// Below this many reached tiles a team is badly boxed in, but that has two very different
@@ -514,6 +521,9 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 		};
 		bool underServed = reach.wheatDist < 0 || reach.wheatDist > wheatRange ||
 						   reach.woodDist < 0 || reach.woodDist > woodRange;
+		// Up to six rounds of wall clearing per colony, flooding again after each: a cap on the
+		// work for a pocket that stays small, which is then taken to be genuinely small land rather
+		// than a wall.
 		for (int attempt = 0; underServed && pocketSize() < minPocketTiles && attempt < 6;
 			 ++attempt)
 		{
@@ -576,8 +586,8 @@ void openCrampedStarts(Game &game, GenerationContext &context, int sites, int ra
 		WorkerReach reach = reachFromWorkers(map, team, range);
 		if (reach.sites >= sites)
 			continue;
-		// Rings measured with resources ignored, so they walk out through the wall itself instead of
-		// stopping at its inner face the way the colony's own flood does.
+		// Rings measured with resources ignored, so they walk out through the wall itself instead
+		// of stopping at its inner face the way the colony's own flood does.
 		const int bootX = map.normalizeX(context.bootX[team]),
 				  bootY = map.normalizeY(context.bootY[team]);
 		const std::vector<int> open = terrainOnlyReach(map, bootX, bootY, range, protectedWalls);
@@ -586,9 +596,10 @@ void openCrampedStarts(Game &game, GenerationContext &context, int sites, int ra
 			if (open[p] >= 1 && open[p] <= range && map.isResource(p % w, p / w) &&
 				!(protectedWalls && (*protectedWalls)[p]))
 				rings[open[p]].push_back(p);
-		// One ring at a time, nearest first, re-measuring after each: the ring that finally gives the
-		// colony its room is the last one cleared, so nothing further out is touched. A colony on a
-		// genuinely small spot — a real islet, with nothing to open up — just runs out of rings.
+		// One ring at a time, nearest first, re-measuring after each: the ring that finally gives
+		// the colony its room is the last one cleared, so nothing further out is touched. A colony
+		// on a genuinely small spot — a real islet, with nothing to open up — just runs out of
+		// rings.
 		for (int ring = 1; ring <= range && reach.sites < sites; ++ring)
 		{
 			if (rings[ring].empty())

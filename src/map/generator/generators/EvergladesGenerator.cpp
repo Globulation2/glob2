@@ -95,6 +95,10 @@ double expectedCoverage(const Geometry &g)
 {
 	const double meanScale = (kDryScale + kWetScale) / 2;
 	const double radius2 = g.poolRadius * g.poolRadius * meanScale * meanScale * 1.1;
+	// The 1.1 above is the rough outline's extra area and the 1.2 here the mean stretch of an
+	// ordinary pool (1 to 1.4); a slough is grown and stretched further instead, so its own 1.2
+	// comes out. 1 - exp(-nominal) is the share covered by randomly overlapping shapes of that
+	// total area, since two pools on one tile cover it only once.
 	const double pool = kPi * radius2 * 1.2;
 	const double slough = pool * kSloughGrowth * kSloughGrowth * kSloughStretch / 1.2;
 	const double nominal = ((1 - g.sloughs) * pool + g.sloughs * slough) / (g.spacing * g.spacing);
@@ -145,11 +149,14 @@ Geometry geometryFor(const GenerationRequest &r)
 			--g.clearing;
 		else if (g.clearance > 0 || margin > 0)
 			g.clearance = margin = 0;
+		// Widen the ring 2% of the half side at a time: the least change that makes room.
 		else if (g.homeRing + 0.02 * g.half <= kHomeRingMax * g.half)
 			g.homeRing += 0.02 * g.half;
 		else
 			break;
 	}
+	// The pond is about a quarter of the clearing's radius (2 to 3 tiles): enough water for the
+	// kit's fields to regrow beside, and small enough to leave the clearing its building room.
 	g.pond = g.clearing >= kPondClearing ? std::clamp(g.clearing * 0.23, 2.0, kPondRadius) : 0.0;
 	g.buildRoom = std::clamp(g.clearing - 5, 0, kBuildRoom);
 	// Pools that would drown the map are scaled down to the wettest playable coverage.
@@ -234,9 +241,12 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.homes.push_back(home);
 	}
 
-	// The pools: one per cell of a lattice that tiles the torus exactly, jittered, sized by a smooth
-	// wetness field so the country has wet reaches and dry ones, some grown and stretched into sloughs.
+	// The pools: one per cell of a lattice that tiles the torus exactly, jittered, sized by a
+	// smooth wetness field so the country has wet reaches and dry ones, some grown and stretched
+	// into sloughs.
 	HeightMap wet(t.w, t.h, context.stream("glades-wet"));
+	// The wetness field's noise has cells 12 tiles across and its reaches span several of them, so
+	// wet and dry country runs across several pools rather than changing from one pool to the next.
 	wet.makePlain(12);
 	const int nx = std::max(1, int(std::lround(t.w / g.spacing)));
 	const int ny = std::max(1, int(std::lround(t.h / g.spacing)));
@@ -244,11 +254,15 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	for (int j = 0; j < ny; ++j)
 		for (int i = 0; i < nx; ++i)
 		{
+			// Each pool is nudged up to a third of a cell from the cell's centre: enough to hide
+			// the lattice, not enough for two pools to pile into one spot and leave a dry gap.
 			const double px = (i + 0.5) * cellW + unit("glades-pools") * cellW / 3;
 			const double py = (j + 0.5) * cellH + unit("glades-pools") * cellH / 3;
 			const float wetness =
 				std::clamp(wet(unsigned(t.x(int(px))), unsigned(t.y(int(py)))), 0.0f, 1.0f);
 			const bool slough = context.bounded("glades-pools", 1000) < g.sloughs * 1000;
+			// Radius 70% to 130% of the pool size, scaled by wetness; outlines wobble by up to 45%
+			// of it, and ordinary pools are stretched up to 1.4 times, so no two pools look alike.
 			const double radius =
 				g.poolRadius * (0.7 + context.bounded("glades-pools", 601) / 1000.0) *
 				(kDryScale + (kWetScale - kDryScale) * wetness) * (slough ? kSloughGrowth : 1);
@@ -321,6 +335,9 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context)
 		const double a =
 			std::atan2(double(t.offsetY(L.cy, home.y)), double(t.offsetX(L.cx, home.x)));
 		const KitFrame frame{home.x, home.y, a};
+		// Wheat and wood start either side of the pond, just past its fullest outline (1.3) and
+		// beach (3 tiles), where they regrow; the quarry at the clearing's edge 4 tiles in, toward
+		// the map's centre, off the farmland.
 		const double beside = L.g.pond * 1.3 + 3;
 		plantKit(map, t, context,
 				 {frame.at(0, -beside, 10), frame.at(0, beside, 10),
@@ -336,6 +353,10 @@ void stockSwamp(Map &map, const Layout &L, GenerationContext &context, const Eve
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
 	HeightMap patch(t.w, t.h, context.stream("glades-patch"));
+	// patch (noise cells 10 tiles across) decides where the swamp stands thickest, and split (cells
+	// 5 across, finer) whether a stretch is wood or wheat. Wood is most of the swamp (55% of its
+	// grass against 15% wheat): a thicket to cut through, which is also the building material an
+	// expanding colony needs.
 	patch.makePlain(10);
 	HeightMap split(t.w, t.h, context.stream("glades-split"));
 	split.makePlain(5);
@@ -360,6 +381,9 @@ void stockSwamp(Map &map, const Layout &L, GenerationContext &context, const Eve
 		byDensity.push_back(entry.second);
 	plantFields(map, t, byDensity, wheat, wood,
 				[&](int i) { return split.uiLevel(i % t.w, i / t.w, 2048); });
+	// One stone outcrop per 1000 tiles of swamp and one fruit grove per 1500, each of a random
+	// kind: stone lasts forever, so small scattered quarries are plenty; fruit is a prize to find
+	// in the thicket, not something to farm.
 	scatterClumps(context, t, ground, int(scaledCount(std::max(2, area / 1000), o.stone)),
 				  "glades-stone", eligible,
 				  [&](MapGeneratorPoint p) {
@@ -512,6 +536,8 @@ bool generate(Game &game, GenerationContext &context)
 		const Home &home = L.homes[team];
 		const double a =
 			std::atan2(double(t.offsetY(L.cy, home.y)), double(t.offsetX(L.cx, home.x)));
+		// 4 tiles past the pond's fullest outline: beyond its beach, on grass the swarm can stand
+		// on.
 		const double back = L.g.pond > 0 ? L.g.pond * 1.3 + 4 : 0;
 		return MapGeneratorPoint(home.x + int(std::lround(back * std::cos(a))) - 2,
 								 home.y + int(std::lround(back * std::sin(a))) - 2);

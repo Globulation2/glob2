@@ -38,6 +38,17 @@ using namespace MapGeneration;
 // colony gets the same neighbourhood turned round the centre, and the layout is fair for any
 // colony count. The whole design is a pure function of the request, so validateWorld rebuilds
 // it and checks the finished world.
+//
+// GAME RULES BEHIND IT (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md): buildings need pure
+// grass, so the islands are the only building ground; growth refuses when its probe finds sand,
+// so the flats stay bare; and farmland needs water, so every island's pond is what keeps its
+// fields alive. Neutral islands arrive already under wheat, which blocks building until cleared,
+// so taking one is a visible commitment. The central orchard of all three fruits is the prize:
+// an inn stocked with them pulls hungry enemy units across.
+//
+// THE SIZES AT THE DEFAULTS (256x256, 4 colonies, island size 20): home islands about 25 tiles in
+// radius on a ring 74 tiles from the centre, a central island about 17 in radius, and a pond of
+// radius 5 on each home island.
 namespace
 {
 
@@ -71,6 +82,10 @@ Geometry geometryFor(const GenerationRequest &r)
 	g.teams = std::max(1, r.nbTeams);
 	g.half = std::min(1 << r.wDec, 1 << r.hDec) / 2;
 	g.homeRing = kHomeRing * g.half;
+	// The central island is 13% of the half side (at least 8 tiles, enough for its pond and the
+	// orchard round it). Roughness 100 lets a coast wobble up to 35% of its radius: rough enough to
+	// read as a natural island, while two neighbouring islands, spaced for their fullest extent,
+	// still keep kIslandGap of sand between them.
 	g.centralRadius = o.centralIsland ? std::max(8.0, kCentralShare * g.half) : 0.0;
 	g.amplitude = o.coastRoughness / 100.0 * 0.35;
 	// The control is the islands' radius as a share of the half side; with many colonies on the
@@ -83,6 +98,8 @@ Geometry geometryFor(const GenerationRequest &r)
 			std::min(radius, (2 * g.homeRing * std::sin(kPi / g.teams) - kIslandGap) / (2 * reach));
 	radius = std::min(radius, (g.half - kIslandGap / 2.0 - g.homeRing) / reach);
 	if (g.centralRadius > 0)
+		// 1.3 covers the central island's own wobble (its roughness is 60% of the others', at most
+		// 21%), so a home island never runs into it.
 		radius = std::min(radius, (g.homeRing - g.centralRadius * 1.3 - kIslandGap) / reach);
 	g.homeRadius = std::floor(radius);
 	return g;
@@ -153,6 +170,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	blobs.back().reach = blobs.back().shape.maximumRadius();
 	const auto fits = [&](double s0, double r0, double reach, double gap)
 	{
+		// A feature keeps 6 tiles from the very centre (plus the central island and a gap when
+		// there is one) and 4 from the edge of the design circle, stays inside its wedge by half a
+		// gap, and keeps its gap from every feature already placed (kIslandGap from a home island).
 		if (r0 - reach < 6 + g.centralRadius * 1.3 + (g.centralRadius > 0 ? gap : 0))
 			return false;
 		if (r0 + reach > g.half - 4)
@@ -171,6 +191,10 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const auto scatter = [&](Kind kind, int wanted, double low, double high, double roughness,
 							 double gap, const char *stream, bool stretched)
 	{
+		// Features are drawn at random across the wedge, from 8 tiles out from the centre to 8
+		// tiles short of the design circle, with 80 tries each; one that fits nowhere is left out,
+		// the same for every wedge. Lagoons are stretched 1.2 to 2 times and turned, so they read
+		// as long tidal channels rather than round pools.
 		for (int attempt = 0, placed = 0; attempt < wanted * 80 && placed < wanted; ++attempt)
 		{
 			const double r0 = 8 + context.bounded(stream, 1000) / 1000.0 * (g.half - 16);
@@ -189,6 +213,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	scatter(Neutral, o.extraIslands, std::max(kNeutralMinimum, kNeutralLow * g.homeRadius),
 			std::max(kNeutralMinimum + 2, kNeutralHigh * g.homeRadius), 0.35, kIslandGap,
 			"flats-islands", false);
+	// Sandbars and lagoons keep 6 tiles of sand round them, tide pools 4: small water keeps the
+	// flats walkable round it. Lagoons are 8 to 14 tiles in radius; tide pools 1.5 to 4, counted
+	// per 16384 tiles of wedge so their density is the same on every map size.
 	scatter(Sandbar, o.sandbars, kSandbarLow, kSandbarHigh, 0.3, 6, "flats-sandbars", false);
 	scatter(Lagoon, o.lagoons, 8.0, 14.0, 0.35, 6, "flats-lagoons", true);
 	const double wedgeArea = wedge * g.half * g.half / 2;
@@ -215,6 +242,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.pondX[k] = L.homeX[k];
 		L.pondY[k] = L.homeY[k];
 	}
+	// A home's pond is a fifth of its island's radius, 3 to 6 tiles: wide enough to stay water
+	// inside its own beach, and small enough to leave the island its building room. Oasis ponds are
+	// 2.5.
 	const double pondRadius = std::clamp(0.2 * g.homeRadius, 3.0, 6.0);
 	const RadialShape pond(pondRadius, 0.3, context, "flats-ponds");
 	const RadialShape oasis(2.5, 0.3, context, "flats-ponds");
@@ -231,6 +261,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			{
 				L.grass[i] = 1;
 				L.islandOf[i] = -2;
+				// The central island's pond: 22% of its radius, at least 1.5 tiles.
 				if (d < std::max(1.5, 0.22 * g.centralRadius))
 					L.water[i] = 1;
 				continue;
@@ -276,6 +307,9 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const T
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	HeightMap split(t.w, t.h, context.stream("flats-home-split"));
 	split.makePlain(6);
+	// The kit's distance from the pond's centre: its fullest radius (1.3 for the wobble) plus a
+	// 3-tile beach, so wheat and wood start on the first grass past the sand, as near the water as
+	// they can grow.
 	const double pondRadius = std::clamp(0.2 * L.g.homeRadius, 3.0, 6.0) * 1.3 + 3;
 	for (int team = 0; team < L.g.teams; ++team)
 	{
@@ -304,6 +338,9 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const T
 		for (const auto &entry : farm)
 			byFertility.push_back(entry.second);
 		const int area = int(ground.size());
+		// 4% of the island under ambient wheat and 2% under wood, on its most fertile ground
+		// (nearest the pond), on top of the kit: an island is a home, so most of it stays free to
+		// build on.
 		plantFields(map, t, byFertility, int(scaledCount(area * 4 / 100, o.wheat)),
 					int(scaledCount(area * 2 / 100, o.wood)),
 					[&](int i) { return split.uiLevel(i % t.w, i / t.w, 2048); });
@@ -373,6 +410,8 @@ void stockIslands(Map &map, const Layout &L, GenerationContext &context, const T
 	{
 		const auto eligible = [&](int i)
 		{ return L.islandOf[i] == -2 && clearGround(map, i % t.w, i / t.w); };
+		// The orchard's three groves sit a third of a turn apart, 4 tiles out from the central
+		// pond's edge, where fruit is beside water; the quarry near the island's rim.
 		const double rho = std::max(1.5, 0.22 * L.g.centralRadius) + 4;
 		const double spin = context.bounded("flats-prizes", 3600) / 3600.0 * 2 * kPi;
 		if (scaledCount(1, o.fruit) > 0)
@@ -443,6 +482,8 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		const double a = std::atan2(double(t.offsetY(L.cy, L.homeY[team])),
 									double(t.offsetX(L.cx, L.homeX[team])));
+		// The swarm stands 6 tiles past the pond's fullest edge, on the side away from the centre:
+		// its fields between it and the pond, and the rest of the island between it and the flats.
 		const double back = std::clamp(0.2 * L.g.homeRadius, 3.0, 6.0) * 1.3 + 6;
 		return MapGeneratorPoint(L.pondX[team] + int(std::lround(back * std::cos(a))) - 2,
 								 L.pondY[team] + int(std::lround(back * std::sin(a))) - 2);
@@ -463,6 +504,7 @@ std::string validateRequest(const GenerationRequest &r)
 	if (r.nbTeams < 1)
 		return "Tidal flats need at least one colony.";
 	const Geometry g = geometryFor(r);
+	// Below radius 9 an island cannot hold a pond, its kit and room for a base.
 	if (g.homeRadius < 9)
 		return "The home islands do not fit on this map; use a bigger map, fewer colonies or "
 			   "smaller islands.";

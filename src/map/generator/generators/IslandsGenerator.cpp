@@ -6,6 +6,19 @@
 #include "Terrain.h"
 #include <algorithm>
 using namespace MapGeneration;
+// Islands (id 3): Leo Wandersleb's island map from January 2006, one of the four maps built on the
+// shared height-field pipeline (see Terrain.cpp for how a field becomes terrain and resources, and
+// makeIslands in HeightMap.cpp for the shape).
+//
+// The field gets one hill per colony plus the extra islands, divided among the repeat patches, and
+// the water weight sinks it until the requested share is sea. At the defaults (water 55, sand 3,
+// grass 75, fruit 4) that is about 40% water, 55% grass and a few percent desert on the peaks.
+// Nothing forces one island per colony: hills that overlap cancel into channels, noise breaks
+// coasts, and the balanced start search picks the sites. So two colonies can share an island.
+//
+// Game rules: water blocks ground units until a colony trains swimmers, so the channels are a
+// timer on first contact rather than a wall (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md).
+// Wheat and wood lie on the grass just above the shore, where they can regrow.
 static bool generate(Game &game, GenerationContext &context)
 {
 	const IslandsOptions options(context.request);

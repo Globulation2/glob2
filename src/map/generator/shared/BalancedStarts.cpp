@@ -193,6 +193,8 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 		exact.reserve(sites.size());
 		for (const auto &s : sites)
 		{
+			// 32 steps: the wood range of the start guarantee, the farthest a start's resources are
+			// allowed to be.
 			const int built = scoreAsBuilt(s.second % w, s.second / w, 32);
 			if (built >= 0)
 				exact.push_back({built, s.second});

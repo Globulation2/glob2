@@ -12,6 +12,8 @@ bool reopenCrampedStarts(Game &game, GenerationContext &context, const ResourceA
 {
 	if (!amounts.scaled())
 		return false;
+	// At least 16 free 4x4 building sites within 24 steps of every swarm: room for a first base
+	// (inns, huts, a school) without clearing anything.
 	openCrampedStarts(game, context, 16, 24, protectedWalls);
 	guaranteeStartingResources(game, context, wheatRange, woodRange, clearRadius, protectedWalls);
 	return true;

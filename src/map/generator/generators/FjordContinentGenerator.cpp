@@ -15,6 +15,28 @@
 #include <cmath>
 #include <limits>
 using namespace MapGeneration;
+// Fjord continent (id 12): one big continent in the middle of an ocean, cut by a fjord between
+// every pair of neighbouring colonies, so each colony gets a peninsula of its own that hangs off a
+// shared core. Written on this branch in September 2026 with the modular generator work; later
+// passes added the ambient scatter and bank deposits, after playtesters found the map had lost
+// personality with only counted deposits, and then the central lake and the lake-connected switch.
+//
+// THE DESIGN, IN GAME TERMS (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
+// - Home is the peninsula's tip, as far from the core as the peninsula allows. Neighbours are a
+//   fjord apart: close as the crow flies, but ground units must walk the long way round through
+//   the core until they can swim. A map where everyone is near everyone becomes one where
+//   contact is a choice of route.
+// - The fjords are the economy. Wheat and wood regrow only near water, and every fjord bank gets
+//   both, so each peninsula is fed from the two fjords that flank it: the same count per colony,
+//   whatever the jitter did to the shapes.
+// - The core is the prize: several stone clumps and groves of all three fruits (an inn holding all
+//   three pulls hungry enemy units across), round a lake with algae. In the default mode it is the
+//   one place every colony can reach by land, so it is where fights happen.
+// - Resource islands out at sea are a bonus for the first colony to swim.
+//
+// STAGES: stamp the continent, carve the fjords, carve the lake, raise the outlier islands, lay
+// beaches, anchor the colonies, check the land links, then place resources (core, sea, starter
+// kits, ambient scatter, fjord banks) and run the start guarantees last.
 namespace
 {
 double randomAngle(GenerationContext &context)
@@ -53,6 +75,8 @@ bool placeBankClump(Map &map, GenerationContext &context,
 		if (length < 0.5)
 			continue;
 		const double nx = -ty / length * side, ny = tx / length * side;
+		// Walk out from the fjord's centre line: the first steps are still water, and 16 is past
+		// the widest fjord's bank (radius up to 12) and its beach.
 		for (int distance = 2; distance <= 16; ++distance)
 		{
 			MapGeneratorPoint anchor(
@@ -99,15 +123,24 @@ FjordLayout computeLayout(Game &game, GenerationContext &context,
 	const int W = game.map.getW();
 	const int H = game.map.getH();
 
+	// An oval looks the same turned half a circle, so half a turn covers every orientation. The
+	// stretch, 1 to 1.3, keeps the continent from looking stamped from a circle without letting
+	// peninsulas on the long axis grow much longer than those on the short one.
 	const double rotation = randomAngle(context) * 0.5;
 	const double elongation = 1.0 + context.bounded("layout", 1000) / 1000.0 * 0.3;
 	ShapeTransform xf({W / 2.0, H / 2.0}, rotation, elongation);
 
+	// Continent size is the radius as a percentage of the shorter side: the default 34 gives a
+	// continent 68% of the map across (174 tiles on a 256 map). The coast wobbles by four harmonics
+	// (2, 3, 5 and 7 lobes) whose amplitudes add up to at most roughness x 1.4, so at the default
+	// roughness 22 the coast can bulge 31% past the base radius in its worst direction. That is why
+	// the size range stops at 40 and why the outlier islands below test the coast point by point.
 	const double baseR = options.continentSize / 100.0 * std::min(W, H);
 	RadialShape coast(baseR, options.roughness / 100.0, context, "coast", 1.4);
-	// Widened from 0.19 to make room for the central lake and its resource ring below without
-	// starving the fjords of length - coreR is still where every fjord stops short, just a little
-	// further out than before.
+	// The core: the disc every fjord stops short of, so it always stays one piece of land. 0.23 of
+	// the radius (20 tiles on the default 256 map) leaves the fjords three quarters of the radius
+	// to run, which is the length of each peninsula, while making room for the lake, its sand ring
+	// and the core's deposits (it was 0.19 before the lake existed).
 	const double coreR = baseR * 0.23;
 	// lake-size is a percentage of coreR; 0 disables the lake entirely. lake-connected decides
 	// whether the fjords actually cut through to it (every peninsula then water-isolated from its
@@ -194,9 +227,16 @@ std::vector<std::vector<MapGeneratorPoint>> carveFjords(Game &game, GenerationCo
 		double tipU = layout.fjordInnerR * cos(midTheta), tipV = layout.fjordInnerR * sin(midTheta);
 		double perpU = -sin(midTheta), perpV = cos(midTheta);
 
+		// The S-curve's sideways swing: 17% of the arc between the two colonies' tips at the coast.
+		// It peaks at mid-length, where the arc is only about 60% as long, so two fjords swinging
+		// toward each other can narrow the peninsula between them to under half its width, but not
+		// cut it; much more and a peninsula could be pinched to a strip too thin to build on.
 		double gap = std::min(d, 2 * kPi - d);
 		double amplitude = gap * mouthR * 0.17;
 		double phase = randomAngle(context);
+		// The mouth's radius: fjord width plus 0.6 to 2.0, so fjords differ a little from each
+		// other (the default 4 gives mouths 9 to 12 tiles across). Water that wide survives
+		// controlSand, and ground units cannot cross it until the colony can swim.
 		double mouthWidth = options.fjordWidth + 0.6 + context.bounded("layout", 1400) / 1000.0;
 		// Map::controlSand (MapTerrain.cpp) converts any water tile with a grass neighbor in its
 		// own 3x3 neighborhood to sand - not just a coastal decoration, it can erase a channel
@@ -207,6 +247,8 @@ std::vector<std::vector<MapGeneratorPoint>> carveFjords(Game &game, GenerationCo
 		// ~1.5; this targets comfortably above that floor.
 		double tipWidth = layout.lakeConnected ? std::max(2.5, mouthWidth * 0.6) : 0.65;
 
+		// About one disc per tile of the fjord's straight length (at least 24), so consecutive
+		// discs overlap into one channel even where the tip is narrow and the curve swings.
 		int steps = std::max(24, (int)(mouthR - layout.fjordInnerR));
 		for (int s = 0; s <= steps; ++s)
 		{
@@ -221,6 +263,8 @@ std::vector<std::vector<MapGeneratorPoint>> carveFjords(Game &game, GenerationCo
 
 			const auto mapped = layout.toMap({u, v});
 			double mx = mapped.x, my = mapped.y;
+			// The square scanned round each disc: the disc's radius in shape space, widened by the
+			// most any stretch could enlarge it on the map, plus a tile of margin.
 			int rad = (int)ceil(width * layout.maxStretch * layout.fill.longest()) + 1;
 			int ix = (int)lround(mx), iy = (int)lround(my);
 			fjordCenterlines[k].push_back(
@@ -274,6 +318,8 @@ void carveLake(Game &game, const FjordLayout &layout, bool sandyShore)
 	// beach and grass to build and farm on right up to it.
 	if (!sandyShore)
 		return;
+	// Out to one and a half lake radii: at the defaults a lake about 9 tiles in radius gets sand
+	// out to about 14, and the core's grass beyond it (to coreR + 4, about 24) holds its deposits.
 	const double sandOuterR = layout.lakeR + layout.lakeR * 0.5;
 	for (int y = 0; y < layout.H; ++y)
 	{
@@ -307,6 +353,8 @@ void placeOutlierIslands(Game &game, GenerationContext &context, const FjordLayo
 	// via the same xf.toShape transform) replaces the pessimistic global bound with an exact
 	// local one, so an island can land close to a narrow stretch of coast even while the
 	// coastline bulges out far away in some other direction.
+	// Island centres are drawn out to half the shorter side, less 6 tiles (stretched on a
+	// rectangle): the ocean between the continent and its own wrapped image across the map edge.
 	double halfMapMargin = std::min(layout.W, layout.H) / 2.0 - 6.0;
 	// No cap beyond the control's own range here - resource-islands now goes up to 20 for
 	// players who want an island-heavy map, and each one is still an independent best-effort
@@ -316,6 +364,9 @@ void placeOutlierIslands(Game &game, GenerationContext &context, const FjordLayo
 	std::vector<int> outlierRadii;
 	for (int oi = 0; oi < outlierCount; ++oi)
 	{
+		// Radius 5 to 8: room for one themed deposit and a small outpost. Each island keeps 8 tiles
+		// of open water from the coast and from other islands, more than beaches could bridge, so
+		// it is only reachable by swimming.
 		int islandRadius = 5 + context.bounded("layout", 4);
 		bool placed = false;
 		for (int attempt = 0; attempt < 60 && !placed; ++attempt)
@@ -394,6 +445,9 @@ std::vector<MapGeneratorPoint> anchorTeams(Game &game, const FjordLayout &layout
 	{
 		double theta = layout.teamTheta[i];
 		double maxR = layout.coast.radiusAt(theta);
+		// 8 tiles in from the coast: room for the swarm and its clear ring with the sea at its
+		// back. Stepping inward (at most 30 steps, stopping 2 tiles outside the core) is only for
+		// when that tile turned out to be water.
 		double r = std::max(layout.coreR + 6.0, maxR - 8.0);
 		double stepIn = (maxR - (layout.coreR + 2.0)) / 30.0;
 		if (stepIn <= 0.0)
@@ -492,6 +546,7 @@ void placeCoreResources(Game &game, GenerationContext &context, const FjordLayou
 				continue;
 			const auto shaped = layout.toShape({double(x), double(y)});
 			double u = shaped.x, v = shaped.y;
+			// The core plus 4 tiles, so deposits also land where the peninsulas join it.
 			if (u * u + v * v <= (layout.coreR + 4.0) * (layout.coreR + 4.0))
 			{
 				grid[y * layout.W + x] = coreArea;
@@ -539,6 +594,8 @@ void placeCoreResources(Game &game, GenerationContext &context, const FjordLayou
 			}
 		// The center clump above already guarantees at least one, so this is purely bonus
 		// coverage for a lake big enough to have real interior room left over - no forced minimum.
+		// One more clump per 40 tiles of the lake's interior: algae spreads round a clump where it
+		// can grow, so a sparse seeding is enough.
 		if (!lakeWater.empty())
 			for (int i = 0; i < scaledCount(int(lakeWater.size()) / 40, options.algae); ++i)
 				placeResourceClump(game.map, context,
@@ -565,11 +622,16 @@ void placeOpenSeaAlgae(Game &game, GenerationContext &context, const FjordLayout
 			double theta = atan2(v, u);
 			double r = sqrt(u * u + v * v);
 			double shoreR = layout.coast.radiusAt(theta);
+			// 2 to 14 tiles off the coast: past the beach, yet near enough that algae's growth
+			// probe (water within 15 tiles, sand at the doubled offset within 30) can find the
+			// beach, so patches regrow rather than being mined out for good.
 			if (r > shoreR + 2.0 && r < shoreR + 14.0)
 				algaeWater.emplace_back(x, y);
 		}
 	}
 	if (!algaeWater.empty())
+		// One clump per 180 tiles of the band, at least one: a few patches along each stretch of
+		// coast, since algae is for upgrades, not everyday food.
 		for (int i = 0; i < scaledCount(std::max(1, int(algaeWater.size()) / 180), algaePercent);
 			 ++i)
 			placeResourceClump(game.map, context,
@@ -579,7 +641,8 @@ void placeOpenSeaAlgae(Game &game, GenerationContext &context, const FjordLayout
 
 // 9) A light per-team starter kit so nobody is stuck waiting to reach the
 // fjord banks before they can build anything; the banks and the core are the
-// map's real economy.
+// map's real economy. The kit is a small clump of wheat, a small clump of wood and one stone, on
+// land within 10 steps of the swarm (walking round water, not across it).
 bool placeStarterKits(Game &game, GenerationContext &context, const FjordLayout &layout,
 					  const std::vector<MapGeneratorPoint> &teamPts)
 {
@@ -625,7 +688,10 @@ bool placeStarterKits(Game &game, GenerationContext &context, const FjordLayout 
 
 // 11) Place bank resources last so settlement and regional deposits cannot
 // overwrite the guarantee. Every side of every fjord receives both resources
-// at distinct points along its length.
+// at distinct points along its length. Progress runs from the mouth (0) to the inner tip (1):
+// wheat a third of the way in, nearer the colony at its peninsula's outer end, and wood two thirds
+// in, toward the core. Each peninsula is flanked by two fjords, so every colony gets two wheat and
+// two wood deposits on its own banks.
 bool placeBankResources(Game &game, GenerationContext &context, const FjordLayout &layout,
 						const std::vector<std::vector<MapGeneratorPoint>> &fjordCenterlines,
 						const FjordContinentOptions &options)
@@ -648,18 +714,21 @@ bool placeBankResources(Game &game, GenerationContext &context, const FjordLayou
 		// on any single one of these existing, so a spot that doesn't pan out is simply
 		// skipped rather than failing generation. A small jitter on each progress value
 		// keeps the spacing from reading as mechanically regular.
+		// Two points in each stretch between the mouth, the wheat at 0.35, the wood at 0.68 and the
+		// tip, so the extras never land on the guaranteed deposits.
 		static const double bankScatterProgress[] = {0.10, 0.22, 0.48, 0.58, 0.80, 0.92};
 		for (double progress : bankScatterProgress)
 		{
 			const double jitter = (context.bounded("resources", 41) - 20) / 1000.0; // +/-0.02
 			for (int side : {-1, 1})
 			{
-				// corn:wood at 2:1 (4:2 of 8) rather than even (3:3), stone's own 2/8 share
-				// unchanged - the same rebalance as the ambient scatter above, for consistency.
+				// wheat:wood at 2:1 (4 and 2 of 8) with stone 2 of 8, the same ratio as the ambient
+				// scatter in generate: in playtesting an even split read as too much wood.
 				const int roll = context.bounded("resources", 8);
 				const int resourceType = roll < 4 ? CORN : roll < 6 ? WOOD : STONE;
 				// The amount controls place each rolled clump that many hundredths of a time: whole
-				// copies, and one more by chance from a stream of its own, so the rolls stay the same.
+				// copies, and one more by chance from a stream of its own, so the rolls stay the
+				// same.
 				const int percent = resourceType == CORN   ? options.wheat
 									: resourceType == WOOD ? options.wood
 														   : options.stone;
@@ -728,8 +797,9 @@ static bool generate(Game &game, GenerationContext &context)
 	// makes. Algae is left at zero: the shoreline band in placeOpenSeaAlgae already places it
 	// with a shape tuned to the coastline, and scattering more over open water would just
 	// fight that.
-	// corn:wood at 2:1 rather than even - wood was reading as overrepresented in practice, and
-	// total density is held constant (was 18+18=36) rather than just adding more corn on top.
+	// wheat:wood at 2:1: in playtesting an even split (18 and 18) read as too much wood, so the
+	// same total of 36 was reshared rather than more wheat added on top. The numbers are densities
+	// that scatterResources scales by map area (wheat and wood per 1600 tiles, stone per 3000).
 	scatterResources(game, context,
 					 {/*corn=*/int(scaledCount(24, options.wheat)),
 					  /*wood=*/int(scaledCount(12, options.wood)),

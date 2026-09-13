@@ -6,6 +6,17 @@
 #include "Terrain.h"
 #include <algorithm>
 using namespace MapGeneration;
+// Swamp (id 1): Leo Wandersleb's swamp from January 2006, on the shared height-field pipeline (see
+// Terrain.cpp). The field is almost pure noise (makeSwamp), so the water is scattered ponds and
+// sloughs everywhere rather than one shape.
+//
+// Swamp has no sand or desert weight: water is water / (1 + water + grass) of the map, 36% at the
+// defaults, and the rest is grass (the 1 only guards against both weights at 0). Its only sand is
+// the beaches controlSand has to lay, because grass may not touch water, so every pond is ringed
+// in sand. With water everywhere, wheat and wood can regrow almost anywhere, and a swamp's economy
+// is rich; the cost is that movement and building room are broken up by ponds a colony must walk
+// round until it can swim. Smoothing defaults to 6 (features about 30 tiles) so ponds are big
+// enough to read, and grass between them wide enough to build on.
 static bool generate(Game &game, GenerationContext &context)
 {
 	const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(context.request, true);

@@ -16,6 +16,7 @@ using namespace MapGeneration;
 
 namespace MapGeneration
 {
+// Raises the height of every listed tile by `value` (a tile listed twice is raised twice).
 void adjustHeightmapFromPoints(Map &map, std::vector<MapGeneratorPoint> &points,
 							   std::vector<int> &heightmap, int value)
 {
@@ -25,6 +26,11 @@ void adjustHeightmapFromPoints(Map &map, std::vector<MapGeneratorPoint> &points,
 	}
 }
 
+// Adds smooth noise of -spread to spread - 1 to every tile: a plain HeightMap (makePlain(4))
+// quantised to 2 * spread levels. The field is real Perlin gradient noise (GenerationNoise) with
+// one noise cell every 4 tiles, made seamless across the map's wrap by
+// cross-fading four offset copies (HeightMap::addNoise), then stretched to fill 0 to 1. Used to
+// roughen coasts.
 void adjustHeightmapFromPerlinNoise(Map &map, GenerationContext &context, std::vector<int> &heights,
 									int spread)
 {
@@ -43,6 +49,9 @@ void adjustHeightmapFromPerlinNoise(Map &map, GenerationContext &context, std::v
 	}
 }
 
+// Walking distance (8-way steps, through the wrap) from the nearest source to every tile, in the
+// 2008 toolkit's encoding: sources read 1, each step out one more, obstacle tiles -1, tiles the
+// flood cannot reach 0. Callers subtract 1 for a plain step count.
 void computeDistances(Map &map, std::vector<MapGeneratorPoint> &sources,
 					  std::vector<MapGeneratorPoint> &obstacles, std::vector<int> &heightmap)
 {
@@ -61,6 +70,8 @@ void computeDistances(Map &map, std::vector<MapGeneratorPoint> &sources,
 		heightmap[i] = !open[i] ? -1 : steps[i] < 0 ? 0 : steps[i] + 1;
 }
 
+// The mean of a distance field over one area's tiles (0 for an empty area). divideUpPlayerLands
+// uses it to sort a colony's zones from nearest the water to farthest.
 int computeAverageDistance(Map &map, std::vector<int> &grid, int areaN,
 						   const std::vector<int> &heightmap)
 {

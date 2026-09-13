@@ -56,6 +56,9 @@ std::vector<Island> raiseIslands(TerrainSketch &terrain, const Torus &t, Generat
 	if (placement.wanted <= 0 || sea.empty())
 		return islands;
 	const std::vector<int> offshore = stepsFrom(t, land, water);
+	// Islands are radius 4 to 6, grown with the square root of the map's shorter side over 128 (1
+	// to 1.6 times): big enough on every map to hold a beach and a prize, and not a continent on a
+	// 512 map.
 	const double scale = std::clamp(std::sqrt(std::min(t.w, t.h) / 128.0), 1.0, 1.6);
 	for (int attempt = 0; int(islands.size()) < placement.wanted &&
 						  attempt < placement.wanted * placement.attemptsPerIsland;

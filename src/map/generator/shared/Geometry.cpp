@@ -31,6 +31,11 @@ RadialShape::RadialShape(double r, double roughness, GenerationContext &context,
 		roughness >= 1 || !std::isfinite(amplitudeMaximum) || amplitudeMaximum < 0.6 ||
 		roughness * amplitudeMaximum >= 1)
 		throw std::invalid_argument("Invalid radial shape");
+	// Four harmonics of 2, 3, 5 and 7 lobes round the shape. Prime lobe counts never line up with
+	// each other, so the outline has no repeating symmetry, and the weights, falling and summing to
+	// one, keep the 2-lobe stretch dominant with finer bays on top. Each is drawn at 60% of its
+	// weight up to amplitudeMaximum times it, so roughness x amplitudeMaximum is the most the
+	// radius can move, which is why the product must stay under 1 (a radius that could reach zero).
 	constexpr double falloff[] = {0.42, 0.28, 0.18, 0.12};
 	for (size_t i = 0; i < amplitude.size(); ++i)
 	{

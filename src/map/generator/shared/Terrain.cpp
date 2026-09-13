@@ -14,6 +14,30 @@
 #include <cassert>
 #include <cmath>
 #include <cstring>
+// The height-field pipeline behind Islands, Swamp, River and Crater lakes.
+//
+// HISTORY. Leo Wandersleb wrote these generators in January 2006 (merged by nct), replacing the
+// original random generators (Old random, Old islands), which giszmo brought back as "old" a week
+// later. donkyhotay added automatic fruit groves in March 2006 and giszmo cut that code down and
+// commented it; giszmo also added "repeative landscapes" (the repeat control) in 2006-07. On this
+// branch the pipeline was split into the stages below, colony sites came to be chosen after the
+// resources exist and for equality (BalancedStarts), and resource amounts and a hilltop stone
+// switch were added; the default maps still come out of Leo's thresholds unchanged.
+//
+// THE IDEA. One smooth height field decides everything, by rank rather than by value. The lobby's
+// terrain weights are turned into tile counts, and a histogram of the field finds the heights below
+// which exactly that many tiles lie: the lowest tiles are water, the next beach, the next grass,
+// and anything higher is desert. Resources are bands of the same ranking: algae in the deepest
+// water, stone just above the beach, wheat and wood on the low grass above the stone. So a
+// generator only has to shape the field (islands, craters, a river), and the map always comes out
+// in the shares the player asked for, whatever the shape.
+//
+// GAME RULES IT LEANS ON (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
+// - Wheat and wood regrow only near water, so farmland is the band of grass just above the
+//   waterline, and its thickness is capped by whichever of water and grass is scarcer.
+// - Algae needs water with sand in reach, which the shallow rim of the deepest water gives; stone
+//   right above the beach is the first land a colony walks onto.
+// - Grass may not touch water: controlSand after painting rings every shore.
 namespace MapGeneration
 {
 std::vector<GeneratorControl> heightFieldResourceControls()
@@ -51,6 +75,11 @@ void openStartsBuriedByAmounts(Game &game, GenerationContext &context,
 						{options.wheat, options.wood, options.stone, options.algae});
 }
 
+// Repeat landscape: the field is built at a fraction of the map's size and stamped several times,
+// so every colony can get the same patch of terrain. Each of `repeat` halvings goes to the longer
+// remaining side, so 1 halves the long side, 2 makes a 2x2 tiling on a square map, and so on up to
+// 32 copies. With a patch per colony this is giszmo's fair-by-repetition answer from 2006, long
+// before the designed generators' rotation trick.
 HeightFieldTiling heightFieldTiling(int w, int h, int repeat)
 {
 	/// respect symmetry-requirements
@@ -76,6 +105,10 @@ HeightFieldLevels classifyHeightField(HeightMap &hm, const HeightFieldTiling &ti
 	/// undermap.
 	unsigned int waterTiles, sandTiles, grassTiles, wheatWoodTiles, algaeTiles;
 	/// grass + sand + water + desert as from the gui
+	// The fruit control (a grove count, 4 by default) is added to the total too, as if it were a
+	// terrain weight: a slip in the original that shrinks every terrain's share a little and hands
+	// that share to desert (the part of the field above the grass). At the defaults it is a few
+	// percent of the map; it is kept because removing it changes every height-field map.
 	unsigned int totalGSWFromUI =
 		options.water + options.sand + options.grass + options.desert + options.fruit;
 	if (options.swamp)
@@ -91,6 +124,8 @@ HeightFieldLevels classifyHeightField(HeightMap &hm, const HeightFieldTiling &ti
 		grassTiles = static_cast<float>(options.grass) / totalGSWFromUI * wHeightMap * hHeightMap;
 	}
 	/// wheat/wood needs ground to stand on and water. So:
+	// half the scarcer of water and grass: a watery map has little land to farm, a dry map little
+	// shore for fields to regrow against. Algae takes the deepest sixth of the water.
 	wheatWoodTiles = waterTiles < grassTiles ? waterTiles / 2 : grassTiles / 2;
 	algaeTiles = scaledCount(waterTiles / 6, options.algae);
 	// A third of that share is stone, right above the beach, and the rest farmland above the stone;
@@ -110,6 +145,8 @@ HeightFieldLevels classifyHeightField(HeightMap &hm, const HeightFieldTiling &ti
 		unsigned(std::min<std::int64_t>(landTop, farmStart + scaledCount(farmTiles, options.wood)));
 
 	/// histogram[i] collects the count of all terrain levels == i
+	// 2048 bins over the normalised 0..1 field; each threshold snaps to a bin edge, so the shares
+	// come out close to, not exactly, what was asked.
 	int histogram[2048];
 	memset(histogram, 0, 2048 * sizeof(int));
 
@@ -167,7 +204,7 @@ void paintHeightFieldTerrain(Map &map, HeightMap &hm, const HeightFieldTiling &t
 			else if (hm(y * wHeightMap + x) < levels.grass)
 				tmpUndermap = GRASS;
 			else
-				tmpUndermap = SAND;
+				tmpUndermap = SAND; // desert: the highest ground dries out
 			for (int yRepeat = 0; yRepeat < tiling.hRepeat; yRepeat++)
 				for (int xRepeat = 0; xRepeat < tiling.wRepeat; xRepeat++)
 					map.setUMTerrain(
@@ -206,6 +243,11 @@ void paintHeightFieldResources(Map &map, HeightMap &hm, const HeightFieldTiling 
 			}
 			// patch to get smooth areas of wheat and wood:
 			// if the map is ascending at x+w/2,y set wheat. else set wood
+			//
+			// The slope is read half the field away, not at the tile itself: on the tile's own
+			// slope, every hill would come out wheat on one side and wood on the other, in rings
+			// round it. Read far away it is an unrelated smooth pattern, so the two crops form
+			// blobs across the farmland band instead.
 			else if (hm((x + wHeightMap / 2) % wHeightMap + wHeightMap * y) <
 					 hm((x + wHeightMap / 2 + 1) % wHeightMap + wHeightMap * y))
 			{
@@ -241,6 +283,10 @@ bool chooseHeightFieldStarts(Game &game, GenerationContext &context)
 	// rectangle first, and everyone after it takes what is left — stays as a fallback for maps
 	// where no set of sites can reach both resources at all.
 	int nbTeams = context.request.nbTeams;
+	// A fifth of each colony's share of the map, as a squared distance: colonies at least the side
+	// of a square of that area apart (about 57 tiles on a 256x256 map with 4 colonies). Looser than
+	// Old random's full share, because the balanced search below then prefers equal sites over
+	// distant ones; the fifth leaves it enough candidate sets to choose from.
 	int minDistSquare = (int)((double)w * h / (double)nbTeams / 5);
 	if (minDistSquare <= 0)
 	{
@@ -315,6 +361,12 @@ bool chooseHeightFieldStarts(Game &game, GenerationContext &context)
 	return true;
 }
 
+// donkyhotay's fruit groves (2006): each grove picks a kind of fruit and a random free grass tile,
+// then walks to free grass neighbours planting 1 to 10 trees, so a grove is a small winding cluster
+// of one kind, copied into every repeat patch. The count is fixed, not scaled by map size (see the
+// TODO below). Groves land anywhere, near a colony or not, so which colony can stock all three
+// fruits in its inns (and so convert hungry enemy units) is luck of the draw on these maps, unless
+// repeat gives each colony its own patch.
 bool plantHeightFieldGroves(Map &map, GenerationContext &context, const HeightFieldTiling &tiling,
 							int count)
 {
@@ -380,6 +432,9 @@ bool generateHeightField(Game &game, GenerationContext &context, const HeightFie
 {
 	Map &map = game.map;
 	/// to influence the roughness
+	// The noise's feature size in tiles: 15 at smoothing 1 up to 36 at smoothing 8 (the defaults, 4
+	// or 6, give 24 or 30). The +4 keeps even the roughest setting's features several swarms wide,
+	// so land stays in pieces big enough to build on.
 	const float smoothingFactor = (float)(options.smoothing + 4) * 3;
 	const HeightFieldTiling tiling = heightFieldTiling(map.getW(), map.getH(), options.repeat);
 	/// lets generate a patch of perlin noise. That's a smooth mapping R^2 to ]0;1[

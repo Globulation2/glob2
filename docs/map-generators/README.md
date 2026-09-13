@@ -17,3 +17,5 @@ Record investigation findings and validation results in the relevant pull reques
 See [Map generator framework](MAP_GENERATOR_FRAMEWORK.md) for the shared toolkit a generator is
 built from, the designed-generator pipeline, the generator catalog, resource placement and colony
 fairness, and [Adding a generator](ADDING_A_GENERATOR.md) for the registry and module interfaces.
+[Game rules for map design](GAME_RULES_FOR_MAP_DESIGN.md) collects the engine rules and play
+principles every generator designs for, which the generators' comments refer to.

@@ -47,6 +47,23 @@ using namespace MapGeneration;
 // The whole design is a pure function of the request, so validateWorld rebuilds it and checks the
 // finished world. Terrain is written straight to the undermap with an order-independent beach
 // pass, as Ring world does.
+//
+// GAME RULES BEHIND IT (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md): stone can never be
+// cleared, so a stone wall is permanent, which is what makes the causeway the only door; water
+// stops ground units until they swim, which makes the strait a timer rather than a wall forever;
+// wheat and wood regrow only near water, which is why every home has its lake and its fields
+// beside it; and fruit lets an inn pull hungry enemy units across, which makes the commons'
+// orchard the prize worth leaving home for. The commons' frontier richness (60% by default)
+// puts more of its resources toward the centre, so the farther a colony pushes, the more it gains.
+//
+// RECTANGULAR MAPS. Unlike the other ring-shaped generators, City states stays a circle on the
+// shorter side and does not stretch to fill a rectangle. Stretching was tried: the homes then
+// have different shapes at different angles, and the fairness score fell from 0.97 to between
+// 0.65 and 0.8. Equal homes matter more here than filling the map.
+//
+// THE SIZES AT THE DEFAULTS (256x256, 4 colonies): a commons 70 tiles in radius, a strait 10 wide,
+// homes 42 tiles deep from the strait out to a 6-tile rim of sea at the wrap, and a home lake about
+// 4 tiles in radius.
 namespace
 {
 
@@ -135,6 +152,9 @@ Profile rollProfile(GenerationContext &context, const char *stream, int first, i
 	p.count = count;
 	for (int h = 0; h < count; ++h)
 	{
+		// Each harmonic weighted 40% to 100% at random and divided by its number to the falloff, so
+		// higher harmonics are smaller; the peak is then found by sampling at 720 points and the
+		// curve scaled so its peak is exactly one, so the amplitude constants mean what they say.
 		p.amplitude[h] = (0.4 + 0.6 * context.bounded(stream, 1000) / 1000.0) /
 						 std::pow(double(first + h), falloff);
 		p.phase[h] = 2 * kPi * context.bounded(stream, 3600) / 3600.0;
@@ -198,6 +218,8 @@ double lakeOffset(const Geometry &g, double lakeRadius)
 	const double reach = 1.3 * lakeRadius + kLakeSeaGap;
 	const double low = reach + 2.0;
 	const double high = g.depth() - reach - 2.0;
+	// Six tenths of the way out: nearer the strait than the sea, so the swarm, between causeway and
+	// lake, is a short walk from both, and the land behind the lake is the home's own back country.
 	return std::clamp(0.6 * g.depth(), low, std::max(low, high));
 }
 
@@ -248,6 +270,12 @@ struct Coasts
 	// arc so the stretch is the same however many homes share the ring, and the flanks' bays
 	// begin only beyond the lake and its clearance.
 	double lakeRadius, lakeReach, flatArc, bayArc;
+	// The commons' coast: harmonics 1 to 4 per wedge for bays and headlands, and 6 to 11 at a
+	// smaller amplitude for a finer ripple. Profiles are periodic in the wedge, so every wedge gets
+	// the same coast. A home's lake is a tenth of its depth, 2 to 6 tiles: water for its fields,
+	// not a sea that eats its building room. The coasts hold flat for 4 tiles beyond the causeway
+	// and its shoulders and lanes, so the causeway lands square on a straight shore, and bays start
+	// only 6 tiles beyond the lake's clearance from the sea.
 	Coasts(const Geometry &g, GenerationContext &context)
 		: g(g), wedge(2 * kPi / g.teams), inner(g.innerRadius()), depth(g.depth()),
 		  coast(rollProfile(context, "city-coast", 1, 4, 1.2)),
@@ -265,6 +293,8 @@ struct Coasts
 	}
 	double coastAt(double u, double d) const
 	{
+		// The bays fade in over 12 tiles of arc past the flat stretch (10 for the home coasts), so
+		// the shore curves into them rather than stepping.
 		const double away = awayFromMiddle(d * std::abs(u - 0.5) * wedge, flatArc, 12);
 		return g.commonsRadius + (coastAmp * coast.at(u) + rippleAmp * ripple.at(u)) * away;
 	}
@@ -303,6 +333,9 @@ struct Features
 	std::vector<Blob> lakes, sandBlobs;
 	std::vector<std::pair<double, double>> creek;
 	int fordSegment = -1;
+	// Highland ridges run at 28% and 72% across the wedge, splitting the home into a middle valley
+	// with the lake and two side valleys; Barrens leave the middle 45% of the half arc as grass and
+	// put sand beyond it.
 	double ridgeU[2] = {0.28, 0.72};
 	double passR = 0;
 	double barrenShare = 0.45;
@@ -321,6 +354,10 @@ static Features rollFeatures(const GenerationRequest &request, GenerationContext
 	const Torus &t = L.t;
 	const double wedge = c.wedge, inner = c.inner, depth = c.depth;
 	// The heart of the commons.
+	// The heart's shapes as shares of the commons' radius: a lake 22% (15 tiles at the defaults); a
+	// crag a small 6% tarn inside a ring of stone at 22%; an island heart a 30% lake round a 12%
+	// island; a forest reaching 4 tiles plus 9% beyond the lake. Each is small enough to leave the
+	// commons most of its land.
 	L.lakeR = std::max(3.0, kHeartShare * g.commonsRadius);
 	L.ringR = std::max(8.0, kHeartShare * g.commonsRadius);
 	L.islandR = 0;
@@ -332,6 +369,8 @@ static Features rollFeatures(const GenerationRequest &request, GenerationContext
 		L.islandR = std::max(5.0, 0.12 * g.commonsRadius);
 	}
 	L.forestR = L.lakeR + 4 + 0.09 * g.commonsRadius;
+	// A delta heart's rivers are forded 60% of the way out from the centre, between the heart and
+	// the landings.
 	Features f(RadialShape(L.lakeR, L.heartKind == IslandHeart ? 0.2 : 0.3, context, "city-heart"),
 			   0.6 * g.commonsRadius);
 	// The home's features in the wedge's frame: f.lakes first (the main one first), then whatever
@@ -356,6 +395,8 @@ static Features rollFeatures(const GenerationRequest &request, GenerationContext
 		return true;
 	};
 	if (L.homeKind == Marsh)
+		// A marsh adds up to 3 small lakes (radius 2 to 4) within 60% of the home's half arc and 8
+		// tiles in from its inner and outer edges: more shore to farm, more ground to walk round.
 		for (int attempt = 0; attempt < 400 && f.lakes.size() < 4; ++attempt)
 		{
 			const double r0 =
@@ -372,6 +413,9 @@ static Features rollFeatures(const GenerationRequest &request, GenerationContext
 	{
 		const double side = context.bounded("city-features", 2) ? 1.0 : -1.0;
 		L.creekSide = side;
+		// The creek bends out a third of the half arc to one flank, through two control points, and
+		// ends 6 tiles past the lake's sea gap from the strait; its ford is the middle segment, so
+		// the flank beyond the creek is a second field reached through one crossing.
 		const double reachArc = 0.32 * g.arcHalf(f.mainLakeR);
 		const double endR = inner + kLakeSeaGap + 6.0;
 		f.creek = {{0.0, f.mainLakeR},
@@ -386,6 +430,9 @@ static Features rollFeatures(const GenerationRequest &request, GenerationContext
 	// causeway past the lake; the sand keeps clear of every coast so the wall stays on the shore.
 	// Sand patches, in every kind of home.
 	const double homeArea = wedge * (g.outerRadius * g.outerRadius - inner * inner) / 2;
+	// Sand patches per 8192 tiles (the default 3 gives about 2 per home and 6 on the commons at
+	// 256x256), radius 3 to 7 with rough outlines, 5 tiles from every lake and patch in a home:
+	// they decorate, and slow growth near them, without walling anything off.
 	const int homeSand = int(std::lround(o.sand * homeArea / 8192.0));
 	for (int attempt = 0; attempt < 400 && int(f.sandBlobs.size()) < homeSand; ++attempt)
 	{
@@ -405,6 +452,8 @@ static Features rollFeatures(const GenerationRequest &request, GenerationContext
 	for (int attempt = 0; attempt < 400 && int(f.commonsSand.size()) < wantedSand; ++attempt)
 	{
 		const double a = context.bounded("city-sand", 3600) / 3600.0 * 2 * kPi;
+		// Commons sand goes from 45% of the radius out to 12 tiles short of its edge, off the heart
+		// and the landings, patches 3 to 8 in radius and 4 tiles apart.
 		const double r0 = 0.45 * g.commonsRadius + context.bounded("city-sand", 1000) / 1000.0 *
 													   (0.55 * g.commonsRadius - 12);
 		RadialShape shape(3.0 + context.bounded("city-sand", 1000) / 1000.0 * 5.0, 0.5, context,
@@ -455,8 +504,8 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 		for (int x = 0; x < t.w; ++x)
 		{
 			const int i = y * t.w + x;
-			// The wedge frame: which home, how far across it and how far along the arc from its middle,
-			// with the channels between homes bowed by this roll's bend.
+			// The wedge frame: which home, how far across it and how far along the arc from its
+			// middle, with the channels between homes bowed by this roll's bend.
 			WedgeFrame::Cell cell = frame.cell(x, y);
 			if (teams >= 2)
 				frame.bend(cell, coasts.bendAt(cell.d));
@@ -531,6 +580,9 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 												 0.0, 1.0);
 					const double dist =
 						std::hypot(s - (ax + tt * (bx - ax)), d - (ay + tt * (by - ay)));
+					// The creek is water within 1.6 tiles of its line, a channel just wide enough
+					// to stay water inside its own beaches; its ford is 5 tiles of that channel
+					// (2.5 each way), with a clear margin to 3.5.
 					if (dist < 1.6)
 					{
 						if (int(seg) == f.fordSegment && std::abs(tt - 0.5) * std::sqrt(len2) < 2.5)
@@ -553,6 +605,9 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 					for (double ur : f.ridgeU)
 					{
 						const double sr = (ur - 0.5) * wedge * d;
+						// A ridge is stone 2.5 tiles across; its pass is 5 tiles along the ridge,
+						// with 3.5 and 4.5 tiles of clear ground round it so the pass stays
+						// walkable after deposits.
 						if (std::abs(s - sr) < 1.25)
 						{
 							if (std::abs(d - f.passR) < 2.5)
@@ -565,6 +620,8 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 							L.clear[i] = 1;
 						}
 					}
+				// Barrens' sand keeps 8 tiles from both coasts and the channels, so the home's wall
+				// still stands on grass.
 				if (L.homeKind == Barrens && d >= in + 8 && d <= out - 8 &&
 					std::abs(s) > f.barrenShare * g.arcHalf(d) && std::abs(s) < g.arcHalf(d) - 8)
 					L.sand[i] = 1;
@@ -580,6 +637,9 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 				{
 					if (inHeart && d >= L.islandR)
 						L.lake[i] = 1;
+					// An island heart's fords run 4 tiles wide (2 each way) along each causeway's
+					// line from the lake shore to the island, so each colony's road leads onto it;
+					// 3.5 each way stays clear.
 					if (inHeart && d >= L.islandR - 1 && d <= L.lakeR + 2.5 && toLanding < 2)
 					{
 						L.ford[i] = 1;
@@ -594,6 +654,8 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 				}
 				if (L.heartKind == Crag)
 				{
+					// The crag is a ring of stone 1.5 tiles thick, broken by a 5-tile gap on each
+					// causeway's line.
 					if (d >= L.ringR && d < L.ringR + 1.5 && toLanding >= 2.5)
 						L.ridge[i] = 1;
 					if (d >= L.ringR - 2 && d < L.ringR + 3.5 && toLanding < 4)
@@ -603,6 +665,9 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 				{
 					if (toBoundary < 2)
 					{
+						// A delta's rivers run out along the wedge boundaries 4 tiles wide, cutting
+						// the commons into one sector per colony, each river forded 5 tiles long,
+						// so neighbours meet at a shared crossing.
 						if (std::abs(d - f.deltaFordR) < 2.5)
 							L.ford[i] = 1;
 						else
@@ -786,6 +851,10 @@ void carveValleys(std::vector<unsigned char> &terrain, const Layout &L, Generati
 	{
 		const int at = ground[context.bounded("city-valleys", ground.size())];
 		const double inward = 1 - L.radius[at] / std::max(1.0, L.g.commonsRadius);
+		// Valley lakes are kept with a chance from 25% at the commons' edge to 100% at its centre:
+		// the frontier gets more water, and with it more farmland, the farther in it lies. Valleys
+		// per 16384 tiles of commons, radius 3 to 6 (grown with the map), stretched 1.2 to 2 times
+		// into long valleys.
 		if (int(context.bounded("city-valleys", 100)) >= 25 + int(75 * inward))
 			continue;
 		const int x = at % t.w, y = at / t.w;
@@ -848,6 +917,9 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 		};
 		// The kit: wheat and wood beside the lake on the swarm's side, on the flank away from any
 		// creek, and the quarry behind the lake.
+		// The kit sits just past the lake's fullest outline (1.3) and its 3-tile beach, where wheat
+		// and wood regrow; the quarry 8 tiles further out behind the lake. With a creek, both crops
+		// go to the flank away from it, so a colony never has to cross the ford for its own food.
 		const double reach = std::clamp(0.1 * L.g.depth(), 2.0, 6.0) * 1.3 + 3;
 		const double flank = L.creekSide != 0 ? -L.creekSide : -1.0;
 		const KitFrame frame{h.lakeX, h.lakeY, h.angle};
@@ -873,6 +945,8 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 		float cut = 0;
 		if (!levels.empty())
 		{
+			// The patch field (12-tile cells) cut at its 45th percentile keeps 55% of the fertile
+			// ground as candidate farmland, in patches with gaps to walk and build in.
 			std::nth_element(levels.begin(), levels.begin() + levels.size() * 45 / 100,
 							 levels.end());
 			cut = levels[levels.size() * 45 / 100];
@@ -889,6 +963,9 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 			chosen.push_back(entry.second);
 		const int area = int(ground.size());
 		const auto bySplit = [&](int i) { return split.uiLevel(i % t.w, i / t.w, 2048); };
+		// A home: 4% of its ground ambient wheat and 2% wood on top of the kit, one outcrop per
+		// 2500 tiles and a single grove: self-sufficient but not rich, so the commons is worth the
+		// trip.
 		plantFields(map, t, chosen, int(scaledCount(area * 4 / 100, o.wheat)),
 					int(scaledCount(area * 2 / 100, o.wood)), bySplit);
 		scatterClumps(context, t, ground, int(scaledCount(std::max(1, area / 2500), o.stone)),
@@ -957,12 +1034,16 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 	for (const auto &entry : farm)
 		chosen.push_back(entry.second);
 	const int area = int(ground.size());
+	// The commons: 7% wheat and 4% wood, nearly twice a home's density, weighted toward the centre;
+	// one outcrop per 2000 tiles and one grove per 2500, sampled by the same weight.
 	plantFields(map, t, chosen, int(scaledCount(area * 7 / 100, o.wheat)),
 				int(scaledCount(area * 4 / 100, o.wood)),
 				[&](int i) { return split.uiLevel(i % t.w, i / t.w, 2048); });
 
 	const auto pick = [&](const char *stream)
 	{
+		// Rejection sampling by the frontier weight: 200 draws finds a spot unless almost nothing
+		// is eligible.
 		for (int attempt = 0; attempt < 200; ++attempt)
 		{
 			const int at = ground[context.bounded(stream, ground.size())];
@@ -997,6 +1078,8 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 			const int ax = L.cx + int(std::lround(rho * std::cos(a))),
 					  ay = L.cy + int(std::lround(rho * std::sin(a)));
 			int seed = -1, nearest = INT_MAX;
+			// The orchard's three groves sit a third of a turn apart round the heart; each grows
+			// from the eligible tile nearest its point within 8 tiles.
 			for (int dy = -8; dy <= 8; ++dy)
 				for (int dx = -8; dx <= 8; ++dx)
 				{
@@ -1115,6 +1198,8 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		const Home &h = L.homes[team];
 		const double lakeRadius = std::clamp(0.1 * L.g.depth(), 2.0, 6.0);
+		// The swarm stands 9 tiles short of the lake's near shore, and never within 8 tiles of the
+		// strait: between causeway and lake, a short walk from both.
 		const double rho =
 			std::max(h.coast + L.g.strait + 8.0,
 					 h.coast + L.g.strait + lakeOffset(L.g, lakeRadius) - lakeRadius - 9.0);

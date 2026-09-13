@@ -92,14 +92,14 @@ constexpr double kSpreadJitter = 0.35;
 constexpr double kBend = 0.12;
 // The lengths of every level add up to this share of the distance from the pad to the map centre: a
 // little over, so the far tips reach the middle and have to compete there rather than stopping
-// short in open water. The trunk is kept to kMaximumTrunk where it can be by letting each level keep
-// more of its parent's length, up to all of it, so the fan fills out rather than hanging off a long
-// bare trunk.
+// short in open water. The trunk is kept to kMaximumTrunk where it can be by letting each level
+// keep more of its parent's length, up to all of it, so the fan fills out rather than hanging off a
+// long bare trunk.
 constexpr double kReachShare = 1.15;
 constexpr double kMaximumTrunk = 30;
 constexpr double kMaximumLengthRatio = 1.0;
-// The branching control counts levels on a 256-tile map; each doubling of the map adds one, so a fan
-// forks about as densely, tile for tile, whatever the map size.
+// The branching control counts levels on a 256-tile map; each doubling of the map adds one, so a
+// fan forks about as densely, tile for tile, whatever the map size.
 constexpr int kReferenceHalf = 128;
 // The fork angle control is the angle on a 256-tile map. Smaller maps open their forks wider and
 // bigger maps narrower, with the square root of the size, within these shares: a small fan has
@@ -189,9 +189,9 @@ Geometry geometryFor(const GenerationRequest &r)
 	// The lengths of the trunk and every level below it form a geometric series; its sum, shortened
 	// by how far the branches turn off the line in, should reach just past the centre. With
 	// kLengthRatio the trunk is whatever length does that; where that is longer than kMaximumTrunk,
-	// each level keeps more of its parent's length until the trunk is short enough or every level is
-	// as long as the trunk. The number of levels is the control's, adjusted for map size only, so
-	// branching always changes the map.
+	// each level keeps more of its parent's length until the trunk is short enough or every level
+	// is as long as the trunk. The number of levels is the control's, adjusted for map size only,
+	// so branching always changes the map.
 	const double target = kReachShare * g.rootRadius;
 	const auto series = [&](int levels, double ratio)
 	{
@@ -200,8 +200,8 @@ Geometry geometryFor(const GenerationRequest &r)
 			sum += scale * std::cos(std::min(kPi / 3, level * g.spread / 2));
 		return sum;
 	};
-	// Levels follow the longer side: on a rectangular map the fan is stretched along it, so it needs
-	// the forks of the longer side to stay as dense there as on a square map of that size.
+	// Levels follow the longer side: on a rectangular map the fan is stretched along it, so it
+	// needs the forks of the longer side to stay as dense there as on a square map of that size.
 	const int longHalf = std::max(1 << r.wDec, 1 << r.hDec) / 2;
 	int sizeLevels = 0;
 	for (int half = longHalf; half > kReferenceHalf; half /= 2)
@@ -212,6 +212,8 @@ Geometry geometryFor(const GenerationRequest &r)
 	g.lengthRatio = kLengthRatio;
 	while (g.lengthRatio < kMaximumLengthRatio &&
 		   target / series(g.levels, g.lengthRatio) > kMaximumTrunk)
+		// Raise the ratio a hundredth at a time: fine enough that the trunk lands just under its
+		// maximum.
 		g.lengthRatio = std::min(kMaximumLengthRatio, g.lengthRatio + 0.01);
 	g.trunkLength = target / series(g.levels, g.lengthRatio);
 	// A trunk must clear its pad by a strait before it forks, or its first fork is refused against
@@ -488,6 +490,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	style.lengthJitter = kLengthJitter;
 	style.widthRatio = kWidthRatio;
 	style.bend = kBend;
+	// A branch shorter than a strait plus the narrowest half width would be a stub that does not
+	// clear its parent's water, so forks stop there (at least 5 tiles).
 	style.minimumLength = std::max(5.0, kMinimumHalfWidth + g.strait);
 	style.minimumHalfWidth = kMinimumHalfWidth;
 	const auto accept = [&](const std::vector<StrokePoint> &path, int parent)
@@ -614,6 +618,9 @@ void furnishPads(Map &map, const Layout &L, GenerationContext &context)
 		// Facing in, towards the trunk.
 		const KitFrame frame{int(std::lround(L.pads[team].x)), int(std::lround(L.pads[team].y)),
 							 L.padAngle[team] + kPi};
+		// Wheat and wood 6 tiles to either side, 3 toward the trunk; stone 8 tiles back toward the
+		// rim: the crops sit on the way out to the coral, the quarry behind the swarm, and no patch
+		// grows over another.
 		plantKit(
 			map, t, context,
 			{frame.at(3, -6, 8), frame.at(3, 6, 8), frame.at(-8, 0, 6), kHomeWheat, kHomeWood, 2},
@@ -684,6 +691,9 @@ void stockCoral(Map &map, const Layout &L, GenerationContext &context, const Cor
 		}
 
 	const WedgeFrame wedges(t, L.phase, L.g.wedges, L.stretch);
+	// patch (10-tile cells) ranks where on the branches the fields go, with kHomeLean tilting them
+	// toward home; split (7-tile cells) picks wheat or wood. Both are read in the wedge's frame, so
+	// every fan is farmed alike.
 	const PeriodicNoise patch(t.w, t.h, 10, context.stream("coral-patch"));
 	const PeriodicNoise split(t.w, t.h, 7, context.stream("coral-split"));
 	std::vector<std::pair<double, int>> ranked;
@@ -828,8 +838,8 @@ std::string validateRequest(const GenerationRequest &r)
 		return "Too many colonies for this map; use a bigger map or fewer colonies.";
 	// A trunk can clear its pad and still not fit: with many colonies and wide trunks or straits,
 	// neighbouring trunks crowd each other before they fork. That only happens on maps smaller than
-	// 256 tiles, where the design is quick to rebuild, so there it is rebuilt and the request refused
-	// with advice rather than failing every roll during generation.
+	// 256 tiles, where the design is quick to rebuild, so there it is rebuilt and the request
+	// refused with advice rather than failing every roll during generation.
 	const auto crowded = [&]
 	{
 		GenerationContext trial(r);

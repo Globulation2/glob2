@@ -24,6 +24,19 @@ using namespace MapGeneration;
 // shifts shorelines unevenly. Each tile's terrain comes from its four undermap corners
 // (Map::regenerateMap), so a pure-grass tile needs grass at all four, and grass must never touch
 // water; every grass area here is therefore stamped inside a one-tile sand ring.
+//
+// WHY A MAZE PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Walls are stone,
+// which can never be cleared, flanked by water, which ground units cannot cross until they swim,
+// so the maze's routes are permanent for the whole early game. A spanning tree means exactly one
+// route between any two cells, so every junction is a chokepoint worth holding, and each home is a
+// cul-de-sac with a single door that is easy to defend. Loopiness adds a few second routes so a
+// defended door can be flanked. Farmland lines the passages' shores, next to channel water where
+// wheat and wood regrow, and sand roads keep that growth from ever sealing a passage. Fruit
+// sits at the ends of dead ends, off every through route, so fetching it is a deliberate raid.
+//
+// THE SIZES AT THE DEFAULTS (256x256, cell size 32, channel width 2): an 8x8 grid of 64 cells;
+// each half-cell of 16 tiles is 9 of passage, 5 of sand ring, flank and spine, and 2 of channel,
+// so passages are 19 tiles wide and two passages are 14 tiles apart across a wall.
 namespace
 {
 
@@ -36,11 +49,11 @@ enum Direction
 };
 
 // Walking out from a cell's centre towards a wall: the passage's grass, then two walkable tiles of
-// its sand ring, then channel-width all-water tiles, then the wall - two walkable tiles of flank and
-// the stone spine on the boundary itself. Any tile with a non-water corner is walkable, so without
-// that water a unit could step onto a wall's flank and follow the wall around the maze; a single
-// water tile is enough, since a unit can't step across a tile it can't stand on. The ring, flank
-// and spine account for this many tiles of every half-cell.
+// its sand ring, then channel-width all-water tiles, then the wall - two walkable tiles of flank
+// and the stone spine on the boundary itself. Any tile with a non-water corner is walkable, so
+// without that water a unit could step onto a wall's flank and follow the wall around the maze; a
+// single water tile is enough, since a unit can't step across a tile it can't stand on. The ring,
+// flank and spine account for this many tiles of every half-cell.
 constexpr int kWallFootprint = 5;
 
 // Half the width of the narrowest passage allowed: a 9-wide chamber still seats the 4x4 swarm
@@ -387,6 +400,8 @@ void furnishHome(Map &map, const MazeGrid &g, int cell, int exit, int half)
 				continue;
 			const int ox = x - cx, oy = y - cy;
 			const int u = ox * fx + oy * fy, v = ox * rx + oy * ry;
+			// A 9x9 square round the swarm stays clear: its 4x4 footprint plus the ring its first
+			// workers step out into.
 			if (std::abs(u) <= 4 && std::abs(v) <= 4)
 				continue;
 			if (v < -lane)
@@ -476,6 +491,8 @@ void scatterThroughMaze(Map &map, GenerationContext &context, const MazeGrid &g,
 	auto clump = [&](int resourceType, int size)
 	{
 		int seed = -1;
+		// A few tries for a free seed tile; late in the scatter most of the pool is taken and a
+		// clump is simply skipped.
 		for (int attempt = 0; attempt < 32 && seed < 0; ++attempt)
 		{
 			const int candidate = pool[context.bounded("resources", pool.size())];
@@ -511,6 +528,10 @@ void scatterThroughMaze(Map &map, GenerationContext &context, const MazeGrid &g,
 	for (const auto &layer : {std::pair<int, int>{CORN, o.corn}, std::pair<int, int>{WOOD, o.wood},
 							  std::pair<int, int>{STONE, o.stone}})
 	{
+		// Density per 256 shore tiles, so the defaults (wheat 48, wood 24, stone 16) cover about
+		// 19%, 9% and 6% of the shore band, in clumps of 4 to 12 tiles: big enough to be worth a
+		// trip, small enough to leave room between them. Wheat is twice wood, the ratio that read
+		// right in playtesting on the other generators.
 		int remaining = shore * layer.second / 256;
 		for (int attempt = 0; remaining > 0 && attempt < shore; ++attempt)
 			remaining -=
@@ -535,6 +556,8 @@ void seedAlgae(Map &map, GenerationContext &context, int algae)
 				water.emplace_back(x, y);
 	if (water.empty())
 		return;
+	// Density per 400 water tiles (the default 24 seeds about 6% of the channels), in clumps of up
+	// to 5 tiles. The attempt cap only ends the loop on a map with almost no free water.
 	int remaining = int(water.size()) * algae / 400;
 	for (int attempt = 0; remaining > 0 && attempt < int(water.size()) / 4 + 16; ++attempt)
 		remaining -= placeResourceClump(map, context,
@@ -751,6 +774,8 @@ GeneratorDefinition mazeDefinition()
 			  false,
 			  false,
 			  {24, 32, 40, 48}},
+			 // Cells snap to 24, 32, 40 or 48 tiles; the default 32 gives 64 cells on a 256 map,
+			 // enough corridors to feel like a maze without passages narrower than a small base.
 			 // Open water on each side of a wall's stone line; passages widen to fill the rest.
 			 {"channel-width", "Channel width", 1, 6, 1, 2, ControlGroup::Layout},
 			 {"loopiness",
@@ -763,9 +788,11 @@ GeneratorDefinition mazeDefinition()
 			  false,
 			  false,
 			  {0, 5, 10, 20, 35, 50}},
-			 // Densities for the deposits scattered along the passages (per 256 shore tiles);
-			 // homes always get the same fixed amounts. Fruit is the size, in tiles, of the
-			 // treasure at every dead end that isn't a home.
+			 // Loopiness is the share of non-home cells that get one extra opening: the default 5
+			 // opens about 3 walls on a 256 map, a few flanking routes without dissolving the maze.
+			 // Densities for the deposits scattered along the passages (per 256 shore tiles); homes
+			 // always get the same fixed amounts. Fruit is the size, in tiles, of the treasure at
+			 // every dead end that isn't a home.
 			 {"wheat", "Wheat", 0, 64, 1, 48, ControlGroup::Resources},
 			 {"wood", "Wood", 0, 64, 1, 24, ControlGroup::Resources},
 			 {"stone", "Stone", 0, 64, 1, 16, ControlGroup::Resources},

@@ -33,6 +33,16 @@ using namespace MapGeneration;
 // all, and loopiness opens extra passes for routes to flank along. Colonies take the roomiest
 // valleys, one each while they last, and ponds fill the basins around them. The whole design is a
 // pure function of the request, so validateWorld rebuilds it and checks the finished world.
+//
+// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Stone blocks movement and
+// can never be cleared, so ridges are permanent walls, and the passes are the only doors: a valley
+// is a room whose passes are worth holding, and loopiness (30% of spare ridgelines by default)
+// makes sure a held pass can be flanked. Stone is also the upgrade resource, so every colony's
+// quarry is simply the nearest ridge; stone is everywhere and never runs out, and the fight is
+// over passes and fertile ground instead. Wheat and wood regrow only near water, so each valley's
+// ponds decide how much farmland it can carry; colonies take the roomiest valleys. The ring road
+// along every ridge (nothing placed within 3 tiles of it) keeps every pass reachable however much
+// grows.
 namespace
 {
 
@@ -126,6 +136,8 @@ std::vector<Site> scatterSites(const Torus &t, int spacing, GenerationContext &c
 		rows[r] = bucketWindow(r, gy, 1);
 	std::vector<std::vector<int>> buckets(size_t(gx) * gy);
 	std::vector<Site> sites;
+	// 60 darts per expected site: enough to saturate the map, after which nearly every dart lands
+	// too close to an existing site.
 	for (std::int64_t attempt = 0; attempt < expected * 60; ++attempt)
 	{
 		const int x = int(context.bounded("highlands-sites", t.w));
@@ -161,6 +173,10 @@ std::vector<Site> scatterSites(const Torus &t, int spacing, GenerationContext &c
 std::vector<int> labelCells(const Torus &t, const std::vector<Site> &sites, int spacing,
 							GenerationContext &context)
 {
+	// The warp's noise has features one and a half valleys across and moves positions by up to 30%
+	// of the spacing: enough to bend the straight edges of nearest-site cells into wandering
+	// ridgelines, not enough to tear a cell into scraps (which the pocket rule would then have to
+	// fill with stone).
 	const int period = spacing * 3 / 2;
 	const std::vector<int> warpX =
 		fractalNoise(t.w, t.h, period, 3, context.stream("highlands-warp"));
@@ -350,6 +366,8 @@ bool carvePass(Layout &L, GenerationContext &context, int a, int b, std::vector<
 	band = std::max<size_t>(1, band);
 	const size_t first = context.bounded("highlands-passes", std::uint32_t(band));
 	const int lo = -(width - 1) / 2, hi = width / 2;
+	// Up to 12 tries, starting at a random point among the candidates within a quarter of the best
+	// one's distance from the ridge's ends, so passes are central but not all at the exact middle.
 	for (size_t k = 0; k < candidates.size() && k < 12; ++k)
 	{
 		const int c = candidates[k < band ? (first + k) % band : k];
@@ -404,6 +422,9 @@ bool chooseHomes(Layout &L, GenerationContext &context, int teams)
 			if (L.ridgeDistance[i] < depth)
 				continue;
 			const double d = std::sqrt(double(t.dist2(i % t.w, i / t.w, pole % t.w, pole / t.w)));
+			// Closeness to the wanted offset from the valley's deepest point weighs 64 times a tile
+			// of extra distance from the ridge: the offset decides, and room from the ridge only
+			// breaks ties.
 			const int key = std::abs(int(std::lround(d)) - offset) * 64 - L.ridgeDistance[i];
 			if (key < bestKey)
 			{
@@ -497,6 +518,9 @@ void growPond(Layout &L, const std::vector<int> &depth, const std::vector<int> &
 	const auto key = [&](int tile)
 	{
 		const double d = std::sqrt(double(L.t.dist2(sx, sy, tile % L.t.w, tile / L.t.w)));
+		// A tile of distance weighs 1500 of the noise's 0..65535, so the noise's full swing is
+		// worth about 44 tiles: across a pond's few-tile radius the noise shapes the outline, and
+		// distance only stops it running off along a trough.
 		return depth[tile] + int(std::lround(d * 1500));
 	};
 	std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> frontier;
@@ -528,6 +552,8 @@ void placePonds(Layout &L, GenerationContext &context, int spacing, int pondSize
 {
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
+	// The depth field's features are half a valley across (at least 8 tiles), so a pond fills one
+	// hollow rather than several.
 	const std::vector<int> depth =
 		fractalNoise(t.w, t.h, std::max(8, spacing / 2), 2, context.stream("highlands-ponds"));
 	L.pond.assign(n, 0);
@@ -751,8 +777,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			const int i = y * t.w + x;
 			if (!L.ridge[i])
 				continue;
-			// Not near/far: both are legacy macros in Windows' windef.h that expand to nothing, which
-			// turns `int near[3]` into a structured binding declaration and fails to compile on mingw.
+			// Not near/far: both are legacy macros in Windows' windef.h that expand to nothing,
+			// which turns `int near[3]` into a structured binding declaration and fails to compile
+			// on mingw.
 			int nearIds[3], farIds[3];
 			const int count = nearbyValleys(L, x, y, 2, nearIds, 3);
 			if (count >= 3)
@@ -809,6 +836,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			"passes could not join every valley (" + std::to_string(groups) + " groups remain)";
 		return L;
 	}
+	// Rounded to the nearest pass: loopiness is the share of ridgelines left closed by the spanning
+	// tree that get a pass too.
 	const int extra = int((std::int64_t(spare.size()) * o.loopiness + 50) / 100);
 	for (size_t k = 0, added = 0; k < spare.size() && int(added) < extra; ++k)
 		if (carvePass(L, context, spare[k].first, spare[k].second, exclusive[spare[k]], alongRidge,
@@ -889,6 +918,8 @@ void furnishHome(Map &map, const Layout &L, int bootX, int bootY, int homeValley
 	const Torus &t = L.t;
 	const int cx = bootX + 2, cy = bootY + 2;
 	int ox = 0, oy = 1, nearest = INT_MAX;
+	// The nearest pond within 24 tiles gives the direction down to the water; a colony's first pond
+	// is centred about 11 tiles away (kHomePondReach), so one is always found.
 	for (int dy = -24; dy <= 24; ++dy)
 		for (int dx = -24; dx <= 24; ++dx)
 			if (L.pond[t.at(cx + dx, cy + dy)] && dx * dx + dy * dy < nearest)
@@ -899,6 +930,9 @@ void furnishHome(Map &map, const Layout &L, int bootX, int bootY, int homeValley
 			}
 	const double length = std::max(1.0, std::sqrt(double(ox * ox + oy * oy)));
 	const double ux = ox / length, uy = oy / length;
+	// The wheat and wood patches are anchored 7 tiles out, 50 degrees to either side of the way
+	// down to the pond: both near the water they regrow by, with the direct path from swarm to pond
+	// open between them.
 	const double cosine = std::cos(50.0 * 3.14159265358979 / 180.0);
 	const double sine = std::sin(50.0 * 3.14159265358979 / 180.0);
 	for (int side : {1, -1})
@@ -947,6 +981,10 @@ void scatterFarmland(Map &map, GenerationContext &context, const Layout &L,
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
 	const Fertility::Field fertility = Fertility::forMap(map, false);
+	// split (8-tile features) chooses wheat or wood, so the crops alternate in patches; patch
+	// (16-tile features, cut at its 45th percentile) keeps 55% of the eligible ground, leaving
+	// walkable gaps between fields. Farmland goes 2 to 9 steps from a pond: past its sand beach,
+	// and near enough to regrow.
 	const std::vector<int> split = periodicNoise(t.w, t.h, 8, context.stream("highlands-farmland"));
 	const std::vector<int> patch =
 		fractalNoise(t.w, t.h, 16, 2, context.stream("highlands-farmland"));
@@ -975,6 +1013,9 @@ void scatterFarmland(Map &map, GenerationContext &context, const Layout &L,
 	for (int v = 0; v < L.valleys; ++v)
 	{
 		std::vector<int> &tiles = pool[v];
+		// Farmland in proportion to the valley's pond water (110 tiles per 100), since water is
+		// what it grows by, but never more than two thirds of the eligible ground, so a valley with
+		// big ponds is not paved with fields.
 		const int wanted = std::min(int(std::int64_t(pondTiles[v]) * kFarmlandPercent / 100),
 									int(tiles.size()) * 2 / 3);
 		// Two thirds wheat and the rest wood, each scaled by its amount; more than the default may
@@ -1050,6 +1091,10 @@ void plantFruit(Map &map, GenerationContext &context, const Layout &L,
 	if (valleys.empty())
 		return;
 	context.shuffle(valleys.begin(), valleys.end(), "highlands-fruit");
+	// Groves per 128x128 tiles (the default 4 gives 16 on a 256 map), each 6 trees within about 3
+	// tiles of its anchor, 3 to 8 steps from a pond. Kinds are dealt in turn and, by default,
+	// groves avoid home valleys: fruit lets an inn pull hungry enemy units across, so it is a prize
+	// to take from a neutral valley, not something a colony starts next to.
 	const int groves = std::max(1, int(std::int64_t(fruit) * n / 16384));
 	const int firstType = int(context.bounded("highlands-fruit", 3));
 	for (int g = 0; g < groves; ++g)
@@ -1099,6 +1144,8 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		const Home &h = L.homes[team];
 		std::vector<unsigned char> home(n, 0);
+		// The settlement's ground: the 21x21 square round the home that lies in its valley, off the
+		// ring road, and 3 steps clear of ponds.
 		for (int dy = -10; dy <= 10; ++dy)
 			for (int dx = -10; dx <= 10; ++dx)
 			{

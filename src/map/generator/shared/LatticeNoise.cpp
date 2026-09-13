@@ -64,6 +64,8 @@ std::vector<int> fractalNoise(int w, int h, int period, int octaves, std::mt1993
 
 std::vector<float> torusNoise(int width, int height, std::mt19937 &rng)
 {
+	// Octaves from 32 tiles down to 4, weights falling 0.4 to 0.1: the broad swings of a coastline
+	// dominate, with detail down to a few tiles, about the size of a building.
 	static const std::pair<int, double> octaves[] = {{32, 0.4}, {16, 0.3}, {8, 0.2}, {4, 0.1}};
 	std::vector<double> field(size_t(width) * height, 0.0);
 	for (const auto &octave : octaves)

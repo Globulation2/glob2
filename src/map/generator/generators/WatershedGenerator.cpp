@@ -37,6 +37,20 @@ using namespace MapGeneration;
 // Terrain is stamped on the undermap with a symmetric version of Map::controlSand's shoreline
 // rule, then controlSand itself is run and must change nothing: the shores are already what it
 // would make of them, without its row-order raster pass silting narrow channels unevenly.
+//
+// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Rivers are the map's
+// walls and its wealth at once: wheat and wood regrow only near water, so the best land is right
+// against the channels a colony cannot cross, and fords are the few places armies can. Colonies
+// start on the floodplain (5 to 11 steps from water), preferably on different banks, so a
+// neighbour is usually across a river and contact runs through the fords. Stone lies out at the
+// dry edge of the uplands and fruit at confluences, so both mean leaving the river you live on.
+// Every guarantee (fords that really cross, channels no one can step over, a land route between
+// all colonies) is checked on the finished world by validateWorld, not assumed.
+//
+// THE SIZES AT THE DEFAULTS (256x256, density 5, width 2, dryness 5, fords 3): a sea band 44
+// tiles deep; about 41 tributaries joining a trunk, springs about 25 tiles apart; channels 3.6
+// tiles in radius at a spring, widening to about 6.6 on the trunk; a ford every 44 tiles of river;
+// uplands turning to sand from 12 to 24 tiles away from water.
 namespace
 {
 
@@ -148,6 +162,10 @@ struct Ripple
 
 Ripple makeRipple(GenerationContext &context, double base, double amplitude, int period)
 {
+	// Whole numbers of cycles along the coast, so it joins itself across the seam: one long swell
+	// and three shorter ripples with falling weights. scale adds cycles on longer coasts so the
+	// ripples keep about the same length in tiles on every map size, and each amplitude is drawn at
+	// 50% to 100% of its weight.
 	static const double harmonics[4] = {1, 3, 5, 9}, weights[4] = {0.35, 0.3, 0.2, 0.15};
 	Ripple ripple;
 	ripple.base = base;
@@ -243,6 +261,9 @@ struct Layout
 class ChannelIndex
 {
   public:
+	// 16-tile buckets: a lookup cell a bit wider than the widest channel plus its margin, so
+	// checking the 3x3 cells round a point finds every channel that could touch it. Only speed
+	// depends on this.
 	explicit ChannelIndex(const Layout &layout)
 		: layout(layout), w(layout.frame.width), h(layout.frame.height),
 		  columns(std::max(1, w / 16)), rows(std::max(1, h / 16)), cells(size_t(columns) * rows)
@@ -335,6 +356,8 @@ class RiverPlanner
 		: along(frame.along), across(frame.across), north(north), south(south),
 		  clearance(clearance), northMargin(northMargin), southMargin(southMargin)
 	{
+		// 24-tile buckets, about two clearances, so the 3x3 cells round a point hold every river
+		// point within the clearance. Only speed depends on this.
 		columns = std::max(1, along / 24);
 		rows = std::max(1, across / 24);
 		cellW = double(along) / columns;
@@ -447,6 +470,10 @@ class RiverPlanner
 		const Vec delta{centred(to.x - from.x, along), to.y - from.y};
 		const Vec end = from + delta;
 		const double span = std::max(1.0, length(delta));
+		// The curve arrives leaning 40% into the parent river's direction of flow, so tributaries
+		// join at the acute, downstream-pointing angle of real rivers rather than head-on. The
+		// control points a third of the way along each end are the usual choice for a smooth cubic;
+		// 3 samples per tile are resampled to kSpacing afterwards.
 		const Vec blend = normalized(endDirection * 0.4 + normalized(delta) * 0.6);
 		const Vec c1 = from + delta * 0.33, c2 = end - blend * (0.33 * span);
 		const int steps = std::max(16, int(span * 3));
@@ -459,6 +486,11 @@ class RiverPlanner
 						  end * (t * t * t));
 		}
 		const std::vector<Vec> base = resample(raw);
+		// The meander swings a tenth of the path's length to each side, at most 6.5 tiles: enough
+		// to read as a winding river, while staying inside the clearance (about 13 tiles at the
+		// default width) so a meander never bends into a neighbouring river. One wave per 34 tiles,
+		// plus a quarter-weight wave 2.3 times as fast (not a whole multiple, so the pattern does
+		// not visibly repeat).
 		const double amplitude = std::min(6.5, 0.1 * span) * meander * meanderScale;
 		const double waves = std::max(1.0, span / 34.0);
 		const double phase1 = between(context, kRiverStream, 0, 2 * kPi);
@@ -486,6 +518,8 @@ class RiverPlanner
 		if (reach.distributary)
 			return false;
 		const double s = i * kSpacing;
+		// Not within 8 tiles of either end: a junction right at a spring or mouth would read as two
+		// rivers touching, not one joining the other.
 		if (s < 8 || reach.length() - s < 8)
 			return false;
 		// Junctions on the same bank well apart leave straight stretches between them to ford, and
@@ -533,6 +567,7 @@ class RiverPlanner
 	{
 		Verdict verdict;
 		const size_t n = points.size();
+		// A river under 12 tiles long is a pond, not a tributary, and cannot hold a ford.
 		if ((n - 1) * kSpacing < 12)
 			return verdict;
 		const double joinZone = clearance + 4;
@@ -587,8 +622,8 @@ class RiverPlanner
 				alive[pick] = 0;
 				continue;
 			}
-			// A cached distance can only be optimistic (junctions since added rule points out), so a
-			// spring whose real best is further than cached waits its proper turn.
+			// A cached distance can only be optimistic (junctions since added rule points out), so
+			// a spring whose real best is further than cached waits its proper turn.
 			if (list.front().distance2 > cached[pick] + 1e-9)
 			{
 				cached[pick] = list.front().distance2;
@@ -599,6 +634,9 @@ class RiverPlanner
 			int added = -1;
 			for (const Attachment &a : list)
 			{
+				// Up to 12 join points, skipping any within 6 tiles (squared 36) of one already
+				// tried, since nearby points fail for the same reason; a spring that fits none is
+				// dropped and a fresh one sampled next round.
 				if (tried.size() >= 12 || added >= 0)
 					break;
 				const Vec p = reaches[a.reach].points[a.index];
@@ -608,9 +646,12 @@ class RiverPlanner
 				if (repeat)
 					continue;
 				tried.push_back(p);
-				// A full meander first, then a gentler one. A river joins whatever river it runs into:
-				// a path refused for passing too near another river is tried again as its tributary.
+				// A full meander first, then a gentler one. A river joins whatever river it runs
+				// into: a path refused for passing too near another river is tried again as its
+				// tributary.
 				int target = a.reach, index = a.index;
+				// A refused path may hop to the river that blocked it, up to 3 times; the gentler
+				// meander (0.35) is tried when the full one bends into something.
 				for (int hop = 0; hop < 3 && added < 0; ++hop)
 				{
 					Verdict last;
@@ -631,7 +672,8 @@ class RiverPlanner
 					}
 					if (added >= 0 || last.blocking < 0)
 						break;
-					// Nothing joins the delta itself: a path that runs into it joins the trunk above it.
+					// Nothing joins the delta itself: a path that runs into it joins the trunk
+					// above it.
 					const int blocking =
 						reaches[last.blocking].distributary ? trunk : last.blocking;
 					const int next =
@@ -693,22 +735,32 @@ void chooseFords(Layout &layout, const WatershedOptions &o)
 		const Reach &reach = layout.reaches[r];
 		const int n = int(reach.points.size());
 		const double len = reach.length();
+		// A reach shorter than 20 tiles, or than half the ford spacing, gets no ford: it is short
+		// enough to walk round, through its spring.
 		if (len < std::max(20.0, spacing / 2))
 			continue;
 		auto valid = [&](int i)
 		{
+			// 16 points is 8 tiles: a ford needs straight channel on both sides of it, so not at
+			// the very ends.
 			if (i < 16 || i >= n - 16)
 				return false;
 			const double radius = reach.radius[i], span = radius + kFordReach;
+			// Not within 6 tiles of the coast beyond its own span, where the ford would run into
+			// the beach.
 			if (reach.coastGap[i] < span + 6)
 				return false;
 			for (int j : layout.joins[r])
+				// Not within 8 tiles past the channel's radius of a junction, where a crossing
+				// would touch two rivers.
 				if (std::abs(i - j) * kSpacing < radius + 8)
 					return false;
 			// Only on a straight stretch, eight tiles either way, where the channel runs on in line
 			// beyond both sides of the ford and is no wider across than its radius.
 			const Vec before = reach.points[i] - reach.points[i - 16];
 			const Vec after = reach.points[i + 16] - reach.points[i];
+			// At most a 25 degree bend across the 16 tiles centred on the ford: on a sharper bend
+			// the sand strip would cut the channel obliquely and could leave water round one end.
 			if (dot(normalized(before), normalized(after)) < std::cos(25 * kPi / 180))
 				return false;
 			// The crossing, and dry ground a little past both of its ends, touch no other channel:
@@ -756,6 +808,9 @@ void chooseFords(Layout &layout, const WatershedOptions &o)
 			const double span = reach.radius[spot.index] + kFordReach;
 			bool apart = true;
 			for (int c : chosen)
+				// Fords on one reach at least three quarters of the spacing apart, and 10 tiles
+				// clear of any other ford, so each crossing is its own chokepoint rather than a
+				// wide shared one.
 				apart = apart && std::abs(c - spot.index) * kSpacing >= 0.75 * spacing;
 			for (const Ford &f : layout.fords)
 				apart = apart &&
@@ -789,11 +844,19 @@ Layout planLayout(int width, int height, const WatershedOptions &o, GenerationCo
 
 	// One band of sea along the map's edge: deep off the delta, and a narrow strait along the
 	// uplands on the far side of the torus seam.
+	// The sea band grows with the map but stays between 16 and 64 tiles: 44 on a 256 map. It is a
+	// band on the torus, so a third of it (the north ripple, 0.35 of it) lies past the seam as a
+	// narrow strait off the uplands and two thirds as the deep water off the delta. The delta coast
+	// ripples more (0.2 of the band) than the strait (0.08, plus a tile).
 	const double sea = std::clamp(std::round(8 + 0.14 * across), 16.0, 64.0);
 	layout.north = makeRipple(context, 0.35 * sea, 0.08 * sea + 1.0, frame.along);
 	layout.south = makeRipple(context, across - 0.65 * sea, 0.2 * sea, frame.along);
 
 	const double minimumRadius = channelRadius(o.riverWidth);
+	// How fast rivers widen downstream, more for wider settings. The clearance keeps two channels
+	// of the estimated width apart by 5 tiles of floodplain between their banks; the margins keep
+	// every river's banks 8 tiles from the strait and 6 from the delta coast, so no river spills
+	// into the sea along its side.
 	const double gain = 0.35 + 0.1 * o.riverWidth;
 	const double estimate = minimumRadius + 0.5;
 	const double clearance = 2 * estimate + 5;
@@ -804,15 +867,22 @@ Layout planLayout(int width, int height, const WatershedOptions &o, GenerationCo
 	// The delta: one to three distributaries fanning out from an apex to the coast. Without a
 	// delta there is no lobe and only the middle mouth is kept; the others are still planned, so
 	// every later draw is the one it would have been.
+	// The apex sits 12 to 44 tiles inland (37 on a 256 map) and mouths are spread 18 to 44 tiles
+	// apart along the coast (41): wide enough that the land between two distributaries holds a
+	// colony's fields, and no more mouths than fit in 70% of the coast.
 	const double deltaLength = std::clamp(0.12 * across + 6, 12.0, 44.0);
 	const double spread = std::clamp(0.16 * along, 18.0, 44.0);
 	const int mouthLimit = std::max(1, int(0.7 * along / spread) + 1);
 	const int mouthCount = std::min(mouthLimit, 1 + int(context.bounded(kLayoutStream, 3)));
 	const double u0 = between(context, kLayoutStream, 0, along);
 	layout.south.lobeCentre = u0;
+	// The delta pushes the coast out by 30% of the sea band in a bump somewhat wider than the
+	// mouths' spread, the land a real delta builds from silt.
 	layout.south.lobeHeight = o.delta ? 0.3 * sea : 0.0;
 	layout.south.lobeWidth = 1.1 * spread + 6;
 	const Vec apex{u0, layout.south.at(u0) - deltaLength};
+	// How the trunk's flow divides among 1, 2 or 3 distributaries, the middle one a little larger,
+	// so each mouth's width follows its share.
 	static const double shares[3][3] = {{1, 0, 0}, {0.5, 0.5, 0}, {0.32, 0.36, 0.32}};
 	std::vector<Vec> mouths;
 	for (int m = 0; m < mouthCount; ++m)
@@ -830,6 +900,9 @@ Layout planLayout(int width, int height, const WatershedOptions &o, GenerationCo
 	}
 
 	// The trunk rises well up in the uplands; every other spring joins the network it starts.
+	// The trunk's head lies within 15% of the coast's length to either side of the delta, and 10%
+	// to 30% of the way down from the uplands' margin toward the apex: high enough that the trunk
+	// crosses most of the land and every later spring has a river to run down to.
 	const double headU = u0 + between(context, kLayoutStream, -0.15, 0.15) * along;
 	const double top = layout.north.at(headU) + northMargin;
 	const Vec head{headU,
@@ -843,10 +916,16 @@ Layout planLayout(int width, int height, const WatershedOptions &o, GenerationCo
 	const int trunk = layout.trunk;
 
 	const double landArea = along * (across - sea);
+	// One spring per 6700 tiles of land at density 1, per 1300 at the default 5 (about 41
+	// tributaries on a 256 map). Springs are spread by 70% of the spacing their share of land would
+	// give, loose enough that the tree still gets its branches and tight enough that no stretch of
+	// upland is left without a river.
 	const int wanted = int(std::lround(landArea * o.riverDensity * 1.5e-4));
 	const double sourceSpacing = 0.7 * std::sqrt(landArea / (wanted + 1.0));
 	// A spring that finds no way onto the network is dropped, so springs are sampled again wherever
-	// there is still room until enough have joined it.
+	// there is still room until enough have joined it. Up to six rounds of resampling, each with up
+	// to 60 tries per missing spring: a cap on the work, not a promise; when the land is too
+	// crowded by rivers for another spring to join, the map simply has fewer tributaries.
 	for (int round = 0; round < 6; ++round)
 	{
 		const int missing = wanted - (int(planner.reaches.size()) - trunk - 1);
@@ -856,7 +935,8 @@ Layout planLayout(int width, int height, const WatershedOptions &o, GenerationCo
 		for (int attempt = 0; attempt < 60 * missing && int(sources.size()) < missing; ++attempt)
 		{
 			const double u = between(context, kRiverStream, 0, along);
-			// Upstream of the delta's apex: nearer the sea than that, there is no river to run down to.
+			// Upstream of the delta's apex: nearer the sea than that, there is no river to run down
+			// to.
 			const double lo = layout.north.at(u) + northMargin;
 			const double hi =
 				std::min(layout.south.at(u) - (deltaLength + southMargin), apex.y - 6);
@@ -886,6 +966,9 @@ Layout planLayout(int width, int height, const WatershedOptions &o, GenerationCo
 		children[planner.reaches[r].parent].push_back(r);
 	}
 	auto radiusFor = [&](double flow)
+	// Width grows with the square root of the springs upstream, as a river's width grows with the
+	// square root of its discharge, and is capped 3.5 tiles above the spring's width so the trunk
+	// stays crossable at fords and does not swallow its floodplain.
 	{ return std::min(minimumRadius + 3.5, minimumRadius + gain * (std::sqrt(flow) - 1)); };
 	for (int r = trunk; r < count; ++r)
 	{
@@ -913,6 +996,7 @@ Layout planLayout(int width, int height, const WatershedOptions &o, GenerationCo
 		const double last = double(reach.points.size() - 1);
 		reach.radius.resize(reach.points.size());
 		for (size_t i = 0; i < reach.points.size(); ++i)
+			// Distributaries widen by 0.8 tiles toward the sea, so the mouths flare.
 			reach.radius[i] = radius + 0.8 * (i / last);
 	}
 
@@ -1064,6 +1148,10 @@ std::vector<unsigned char> stampTerrain(const Layout &layout, const WatershedOpt
 				if (terrain[i] != GRASS)
 					continue;
 				const double n = 0.7 * coarse.at(x, y) + 0.3 * fine.at(x, y);
+				// Distance is in fifths of a tile. Ground dries to sand from `reach` tiles out
+				// (22.7 at dryness 1, 17.5 at 5 and 11 at 10; 0 skips drying), pushed 6 tiles
+				// either way by the noise so the desert edge is ragged, and never within 11 tiles
+				// of water: the floodplain where fields regrow and colonies build.
 				if (distance[i] > 5 * std::max(11.0, reach + 12.0 * (n - 0.5)))
 					terrain[i] = SAND;
 			}
@@ -1126,6 +1214,8 @@ template <typename Water> std::string checkFords(const Layout &layout, Water wat
 	for (const Ford &f : layout.fords)
 	{
 		for (int side : {-1, 1})
+			// 2.5 tiles past the ford's edge up- and downstream there must be open water, so the
+			// ford really interrupts a channel.
 			if (!wetNear(f.center + f.along * (side * (kFordHalfWidth + 2.5))))
 				return "A ford" + where(f) + " does not cross a channel.";
 		for (int a = -1; a <= 1; ++a)
@@ -1290,6 +1380,8 @@ std::vector<MapGeneratorPoint> chooseSites(const Layout &layout, const Tiles &t,
 				t.waterSteps[c] < kColonyWaterNear || t.waterSteps[c] > kColonyWaterFar)
 				continue;
 			bool open = true;
+			// An 8x8 square of grass round the 4x4 swarm, so it has pure grass to stand on and a
+			// ring for its workers.
 			for (int dy = -2; dy <= 5 && open; ++dy)
 				for (int dx = -2; dx <= 5 && open; ++dx)
 					open = t.grass[size_t(wrapIndex(y + dy, h)) * w + wrapIndex(x + dx, w)] != 0;
@@ -1297,6 +1389,8 @@ std::vector<MapGeneratorPoint> chooseSites(const Layout &layout, const Tiles &t,
 			for (size_t k = 0; open && k < layout.fords.size(); ++k)
 			{
 				const Ford &f = layout.fords[k];
+				// Colonies start 12 tiles clear of every ford, so no swarm sits on a crossing and
+				// blocks it.
 				open =
 					sq(centred(centre.x - f.center.x, w)) + sq(centred(centre.y - f.center.y, h)) >=
 					sq(f.span + 12);
@@ -1306,6 +1400,8 @@ std::vector<MapGeneratorPoint> chooseSites(const Layout &layout, const Tiles &t,
 			// How fertile the ground a young colony works is, around the swarm.
 			double sum = 0;
 			int samples = 0;
+			// Fertility sampled on a 3-tile grid over the 24x24 square round the swarm: the ground
+			// its first workers will farm.
 			for (int dy = -10; dy <= 13; dy += 3)
 				for (int dx = -10; dx <= 13; dx += 3, ++samples)
 					sum += fertility.at(wrapIndex(x + dx, w), wrapIndex(y + dy, h));
@@ -1330,6 +1426,7 @@ std::vector<MapGeneratorPoint> chooseSites(const Layout &layout, const Tiles &t,
 	std::vector<int> best;
 	double bestScore = -1;
 	std::vector<double> nearest(candidates.size());
+	// 32 greedy spreads from random first sites, keeping the best; 16 on the fertile half first.
 	for (int trial = 0; trial < 32; ++trial)
 	{
 		// Half the trials in the fertile half; if no spacing fits there, the rest use every site.
@@ -1359,6 +1456,8 @@ std::vector<MapGeneratorPoint> chooseSites(const Layout &layout, const Tiles &t,
 				bool shared = false;
 				for (int k : chosen)
 					shared = shared || candidates[k].region == candidates[c].region;
+				// A site on a bank that already holds a colony counts as 30% as far away: colonies
+				// spread across banks first, so neighbours face each other over a river.
 				const double score = nearest[c] * (shared ? 0.3 : 1.0);
 				if (score > pickScore)
 				{
@@ -1455,6 +1554,9 @@ void placeStarterKits(Game &game, GenerationContext &context, int teams, const T
 			for (int x = 0; x < w; ++x)
 			{
 				const int steps = distance[size_t(y) * w + x];
+				// Kits go 6 to 22 steps from the colony's workers and outside the 15-tile square
+				// round the swarm (7.5 each way), so they neither crowd the swarm nor lie beyond an
+				// early worker's walk.
 				if (steps < 6 || steps > 22 || !map.isGrass(x, y) ||
 					!map.isResourceAllowed(x, y, CORN))
 					continue;
@@ -1499,6 +1601,10 @@ void placeStarterKits(Game &game, GenerationContext &context, int teams, const T
 								std::pair<int, int>{STONE, 1}})
 		{
 			const bool stone = kit.first == STONE;
+			// Wheat and wood 6 to 10 steps out on the most fertile ground, where they regrow, and
+			// at least 100 degrees apart round the swarm so one never walls off the other; stone 10
+			// to 14 steps out on the least fertile ground, where it takes nothing from farming, at
+			// least 60 degrees from both.
 			const auto [spot, size] =
 				pick(stone ? 10 : 6, stone ? 14 : 10, !stone, used, stone ? 60 : 100, kit.second);
 			if (!spot)
@@ -1519,6 +1625,8 @@ void placeFarmland(Game &game, GenerationContext &context, const Tiles &t,
 	Map &map = game.map;
 	const int w = t.w, h = t.h;
 	std::mt19937 &random = context.stream("watershed-farmland");
+	// patch (6-tile features) breaks the ribbons into clumps with bare bank between them; crop
+	// (20-tile features) picks the crop, so a stretch of bank tends to one of them.
 	const PeriodicNoise patch(w, h, 6, random), crop(w, h, 20, random);
 	struct Candidate
 	{
@@ -1526,6 +1634,7 @@ void placeFarmland(Game &game, GenerationContext &context, const Tiles &t,
 		int index;
 	};
 	std::vector<Candidate> order;
+	// Ground under 5% fertility never gets farmland: crops there would never regrow once harvested.
 	const std::uint32_t floor = Fertility::kScale / 20;
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
@@ -1539,6 +1648,9 @@ void placeFarmland(Game &game, GenerationContext &context, const Tiles &t,
 		}
 	std::sort(order.begin(), order.end(), [](const Candidate &a, const Candidate &b)
 			  { return a.score != b.score ? a.score > b.score : a.index < b.index; });
+	// Farmland covers a fifth of the eligible ground: dense ribbons along the banks, with room left
+	// to walk and build between them. crop below 0.62 is wheat, the threshold that gives about two
+	// wheat clumps for each wood.
 	int budget = int(order.size()) / 5;
 	// Other wheat or wood amounts than the default give each crop a budget of its own: its share
 	// of the candidates the crop field gives it, scaled.
@@ -1558,6 +1670,7 @@ void placeFarmland(Game &game, GenerationContext &context, const Tiles &t,
 		if (shared ? budget <= 0 : cornBudget <= 0 && woodBudget <= 0)
 			break;
 		const int x = c.index % w, y = c.index / w;
+		// Two clumps in five are the larger radius 3 where the grass is deep enough to hold one.
 		const int radius = context.bounded("resources", 5) < 2 && t.grassDepth[c.index] > 3 ? 3 : 2;
 		if (!reservations.free(x, y, radius))
 			continue;
@@ -1582,6 +1695,9 @@ void placeStone(Game &game, GenerationContext &context, const Tiles &t,
 		for (int x = 0; x < w; ++x)
 		{
 			const size_t i = size_t(y) * w + x;
+			// Stone goes on ground at least 9 steps from water, off the farmland, either where the
+			// grass meets the dry sand (within 2 tiles of it) or deep in the uplands (14 steps or
+			// more): a trip away from the river.
 			if (!t.grass[i] || keepClear[i] || t.waterSteps[i] < 9)
 				continue;
 			bool edge = false;
@@ -1591,6 +1707,9 @@ void placeStone(Game &game, GenerationContext &context, const Tiles &t,
 			if (edge || t.waterSteps[i] >= 14)
 				candidates.push_back(int(i));
 		}
+	// One outcrop per 3000 tiles (21 on a 256 map), each 20 tiles from the next, radius 1 or 2:
+	// stone never runs out, so a scattering of small quarries is enough and spreading them makes
+	// colonies travel.
 	const int outcrops = int(scaledCount(std::max(2, w * h / 3000), stonePercent));
 	std::vector<MapGeneratorPoint> placed;
 	for (int attempt = 0;
@@ -1619,6 +1738,9 @@ void placeFruit(Game &game, GenerationContext &context, const Layout &layout, co
 	const int w = t.w, h = t.h;
 	std::vector<Vec> junctions = layout.junctions;
 	context.shuffle(junctions.begin(), junctions.end(), "resources");
+	// One grove per 6000 tiles (10 on a 256 map, at least 3), each a small clump 5 to 12 tiles from
+	// a confluence on its most fertile ground, the kinds dealt in turn so all three are on the map
+	// and a colony must travel for the ones it lacks.
 	const int groves = int(scaledCount(std::max(3, w * h / 6000), fruitPercent));
 	int type = int(context.bounded("resources", 3)), placed = 0;
 	for (size_t j = 0; j < junctions.size() && placed < groves; ++j)
@@ -1668,6 +1790,7 @@ void placeAlgae(Game &game, GenerationContext &context, const Layout &layout, co
 				if (dx * dx + dy * dy <= 100 && t.water[i] && t.waterSteps[i] == 0)
 					water.push_back(int(i));
 			}
+		// Three clumps within 10 tiles of each mouth, where river and sea meet beside sand.
 		for (int clump = 0; clump < scaledCount(3, algaePercent) && !water.empty(); ++clump)
 		{
 			const int i = water[context.bounded("resources", water.size())];
@@ -1691,6 +1814,7 @@ void placeAlgae(Game &game, GenerationContext &context, const Layout &layout, co
 			if (c.y < layout.north.at(c.x) - 1 || c.y > layout.south.at(c.x) + 1)
 				shallows.push_back(int(i));
 		}
+	// One small clump per 60 tiles of sea within 3 tiles of a shore: near sand, so it regrows.
 	for (int clump = 0; clump < scaledCount(int(shallows.size()) / 60, algaePercent); ++clump)
 	{
 		const int i = shallows[context.bounded("resources", shallows.size())];

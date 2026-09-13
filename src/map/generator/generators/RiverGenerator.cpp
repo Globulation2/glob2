@@ -6,6 +6,23 @@
 #include "Terrain.h"
 #include <algorithm>
 using namespace MapGeneration;
+// River (id 2): Leo Wandersleb's river map from January 2006 (nct fixed it on merge, giszmo patched
+// gaps in the river bed a week later), on the shared height-field pipeline (see Terrain.cpp). The
+// shape is one river bed that loops across the whole torus (makeRiver in HeightMap.cpp).
+//
+// River width is the bed's diameter as a percentage of the mean side: 35% is about 90 tiles on a
+// 256x256 map. The water weight, not the width, sets how much of the map floods (35% at the
+// defaults), so the two trade off. Renders at 256x256, seed 3: at width 20 the bed holds a fraction
+// of the water and the rest floods the noise's hollows as ponds all over both banks; at 35 it is
+// one river with a few ponds; at 65 the whole share fits in the bed, whose gentle slopes turn the
+// resource bands into long parallel stripes of stone, wheat and wood along each bank, with dry,
+// resource-less grass beyond. The default sits where the river reads as a river yet ponds still
+// bring water, and so regrowing farmland, inland. The winding switch only removes the meander;
+// everything else stays the same.
+//
+// Game rules: the river splits the map into banks that meet only across water, so colonies on
+// opposite banks cannot fight until they swim, and the banks are the best farmland on the map
+// (wheat and wood regrow only near water).
 static bool generate(Game &game, GenerationContext &context)
 {
 	const RiverOptions options(context.request);

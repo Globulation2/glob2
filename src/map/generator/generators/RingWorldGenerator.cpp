@@ -31,6 +31,20 @@ using namespace MapGeneration;
 // seam can't be seen. Terrain is written straight to the undermap with an order-independent beach
 // pass rather than Map::controlSand(), whose in-place raster scan makes shorelines depend on scan
 // order.
+//
+// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Every colony has the same
+// situation: one neighbour each way along the belt, sea behind it, and colonies alternating between
+// the two coasts by default so neighbours are not simply lined up on one shore. Contact is along
+// one axis, so a colony can concentrate its defence on two fronts, and the sea at its back is a
+// timer rather than a wall: once it can swim, a colony can raid across the ocean or take the
+// resource islands, which ground units can never reach. Every home stands 6 tiles from the water,
+// so each start has the same fertile shore within reach (wheat and wood regrow only near water).
+// Lakes break up the interior with more shoreline to farm, and the last step clears a walkable
+// route all the way round the ring, so deposits never start the game cutting the belt in two.
+//
+// THE SIZES AT THE DEFAULTS (256x256, belt 45%, roughness 50): the belt averages 115 tiles across,
+// its centre line winds up to 28 tiles either way, its width swings up to 13 tiles and its coast
+// wanders up to 26 more; the ocean between the coasts is at least 31 tiles.
 namespace
 {
 
@@ -88,6 +102,9 @@ Axes axesFor(int width, int height)
 // receives its steepest step between neighbouring samples.
 std::vector<double> closedCurve(int length, double falloff, std::mt19937 &rng, double &slope)
 {
+	// One harmonic per 40 tiles of ring (2 to 10), each weighted 30% to 100% at random and divided
+	// by (k + 1) to the falloff: the centre line uses falloff 1.6, so it is dominated by a few long
+	// bends, and the width uses 1.2, so it varies on shorter stretches too.
 	const int harmonics = std::clamp(length / 40, 2, 10);
 	std::vector<double> amplitude(harmonics), phase(harmonics);
 	for (int k = 0; k < harmonics; ++k)
@@ -145,6 +162,10 @@ Belt shapeBelt(const Axes &axes, GenerationContext &context, const RingWorldOpti
 	const double oceanHalf = std::max(kOceanHalf, 0.06 * breadth);
 	const double budget =
 		std::max(0.0, std::min(breadth / 2 - oceanHalf - meanHalf, meanHalf - kSpineHalf - 1));
+	// The width swings by 22% of the half-width and the coast's roughness adds up to 90% of it at
+	// roughness 100. If the two together would push a coast past the spine or into the opposite
+	// coast's ocean, both shrink in proportion, which is what lets every control be pushed to its
+	// end without breaking the ring.
 	double swing = 0.22 * meanHalf;
 	double roughness = options.coastRoughness / 100.0 * 0.9 * meanHalf;
 	if (swing + roughness > budget)
@@ -157,6 +178,8 @@ Belt shapeBelt(const Axes &axes, GenerationContext &context, const RingWorldOpti
 	const std::vector<double> bend = closedCurve(length, 1.6, rng, bendSlope);
 	const std::vector<double> widthCurve = closedCurve(length, 1.2, rng, swingSlope);
 	// A belt that doesn't wind still draws its curve, so the rest of the belt is unchanged.
+	// The centre line winds up to 11% of the breadth either way, capped so it never leans more than
+	// kMaxBendSlope per tile: a steeper lean would pinch the belt where it turns.
 	double bendAmplitude = options.windingBelt ? 0.11 * breadth : 0.0;
 	if (bendSlope > 0)
 		bendAmplitude = std::min(bendAmplitude, kMaxBendSlope / bendSlope);
@@ -193,6 +216,10 @@ void carveLakes(std::vector<unsigned char> &terrain, const Belt &belt, Generatio
 	if (density <= 0 || dry.empty())
 		return;
 	const std::vector<int> shore = stepsFrom(Torus{width, height}, water, land);
+	// Lakes per 4096 tiles of belt: the default 2 gives about 14 on a 256 map. Each is 4 to 8 tiles
+	// in radius, grown with the square root of the map's breadth over 128 (0.8 to 1.6 times), so
+	// lakes stay in proportion on bigger maps without becoming seas; 40 tries each, and a lake that
+	// fits nowhere is skipped.
 	const int wanted = int(std::lround(density * double(dry.size()) / 4096.0));
 	const double scale = std::clamp(std::sqrt(belt.axes.breadth() / 128.0), 0.8, 1.6);
 	struct Lake
@@ -207,8 +234,8 @@ void carveLakes(std::vector<unsigned char> &terrain, const Belt &belt, Generatio
 		const int x = at % width, y = at / width;
 		const RadialShape shape((4 + context.bounded("lakes", 5)) * scale, 0.35, context, "lakes");
 		const double reach = shape.maximumRadius();
-		// The centre line leans at most kMaxBendSlope per tile, so a lake's far side can sit that much
-		// nearer the spine than its centre.
+		// The centre line leans at most kMaxBendSlope per tile, so a lake's far side can sit that
+		// much nearer the spine than its centre.
 		if (shore[at] < reach + kLakeShore ||
 			std::abs(belt.across(x, y)) < kSpineHalf + (1 + kMaxBendSlope) * reach + 1)
 			continue;
@@ -282,6 +309,8 @@ bool placeColonies(Game &game, GenerationContext &context, const Belt &belt, boo
 	std::vector<MapGeneratorPoint> placed;
 	for (int team = 0; team < teams; ++team)
 	{
+		// Colonies are spaced evenly round the ring with up to 8% of a slot of jitter, so the
+		// layout is fair without looking ruled.
 		const double jitter =
 			(int(context.bounded("colonies", 2001)) - 1000) / 1000.0 * 0.08 * slot;
 		const double target = first + team * slot + jitter;
@@ -289,6 +318,11 @@ bool placeColonies(Game &game, GenerationContext &context, const Belt &belt, boo
 		const double spacing = 0.5 * slot;
 		int bestX = -1, bestY = -1;
 		double bestScore = std::numeric_limits<double>::max();
+		// Search within 12% of a slot of the colony's target first, widening to 25% and 50% only
+		// when nothing fits, so the spacing stays as even as the terrain allows. A site scores 3
+		// per tile away from the ideal 6-tile distance to water, 1 per window of distance from its
+		// target, and 6 for being on the wrong coast: shore distance matters most, since that is
+		// what makes the starts equal.
 		for (double reach : {0.12, 0.25, 0.5})
 		{
 			const double window = std::max(3.0, reach * slot);
@@ -331,6 +365,7 @@ bool placeColonies(Game &game, GenerationContext &context, const Belt &belt, boo
 			return false;
 		}
 		std::vector<unsigned char> home(area, 0);
+		// The settlement's ground: the 10x10 square round the 4x4 swarm, 3 tiles each way.
 		for (int dy = -3; dy <= 6; ++dy)
 			for (int dx = -3; dx <= 6; ++dx)
 			{
@@ -390,6 +425,9 @@ void furnishHomes(Game &game, GenerationContext &context)
 			}
 			return best;
 		};
+		// Wheat and wood 5 to 9 steps out on the ground nearest water, where they regrow, at least
+		// 6 tiles apart so one never grows over the other; stone 7 to 12 steps out on the ground
+		// farthest from water, where it takes nothing from farming.
 		const int wheat = pick(5, 9, true, -1);
 		if (wheat >= 0)
 			growPatch(map, t, wheat, CORN, kHomeWheat, eligible);
@@ -537,6 +575,8 @@ bool generate(Game &game, GenerationContext &context)
 		options.resourceIslands > 0
 			? std::max(1, int(std::lround(options.resourceIslands * double(t.size()) / 16384.0)))
 			: 0;
+	// 40 candidate draws per island; each keeps 7 tiles of open water from every coast, too wide
+	// for any beach to bridge, so islands are reached only by swimming.
 	const std::vector<Island> islands =
 		raiseIslands(terrain, t, context, {"islands", wantedIslands, 40, kIslandMoat});
 	layBeaches(terrain, t);
@@ -556,7 +596,11 @@ bool generate(Game &game, GenerationContext &context)
 					  /*wood=*/int(scaledCount(12, options.wood)),
 					  /*stone=*/int(scaledCount(10, options.stone)), /*algae=*/0,
 					  /*fruit=*/int(scaledCount(3, options.fruit))});
+	// Algae 2 to 5 tiles off the shore, one clump per 90 tiles of that band: beside the beaches it
+	// needs in order to regrow.
 	seedAlgae(map, context, t, "resources", options.algae, AlgaeBand::shallows(2, 5));
+	// The branch-wide start promises: wheat within 24 steps and wood within 32 of every swarm, with
+	// 6 tiles clear round it.
 	secureStartingCrops(game, context, t, 24, 32, 6);
 	// The scatter above is sized by the resource amounts, and at the top of their range it can wall
 	// a colony into its own clearing with nowhere to build; the reopened colony is cleared again.
@@ -595,7 +639,8 @@ bool floodAround(const Map &map, const Axes &axes, const std::vector<int> &sourc
 	{
 		if (winding[i] != kUnreached)
 			continue;
-		// Each source starts at its image nearest the first, so a colony astride the seam is consistent.
+		// Each source starts at its image nearest the first, so a colony astride the seam is
+		// consistent.
 		winding[i] = int(std::lround(double(anchor - axes.u(i % width, i / width)) / length));
 		reached.push_back(i);
 	}

@@ -15,6 +15,36 @@
 #include <cmath>
 #include <limits>
 using namespace MapGeneration;
+
+// Contested commons (id "contested-commons", legacy id 9): small home islands round one large rich
+// island in the middle, the commons, behind a moat crossed by a few bridges.
+//
+// HISTORY. Written at the start of this branch (September 2026) on the 2008 area-grid toolkit, and
+// made the lobby's first and default landscape. Its point spreading first ran into a fixed
+// evaluation budget that refused more than four colonies at 256x256 and any colony count at 512;
+// the whole-region search was rewritten to keep each tile's nearest two weighted distances, which
+// generates every map it used to and the ones it refused. It gained resource amounts and switches
+// later, and its generate was split into the five stages below.
+//
+// WHAT THE MAP IS, AND WHY. Every colony has a home island big enough to start an economy on but
+// too small to win on: a wheat field, a treeline, a small quarry and room for a base. The commons
+// holds everything worth fighting over - many fields and groves, a big quarry, and fruit of all
+// three kinds - behind a forced ring of water with a few bridges. So the whole game is about the
+// commons: who gets onto it first, who holds the bridges, and later who swims round them.
+//
+// GAME RULES IT LEANS ON (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
+// - Water blocks walking until a colony can swim: the moat makes the bridges chokepoints, and the
+//   moat is forced to water so no colony's peninsula can reach the commons on foot unfairly.
+// - Fruit is a weapon: fruit groves exist only on the commons, so holding it is how a colony wins
+//   hungry enemy units to its inns.
+// - Stone never runs out: one big quarry on the commons is a permanent strategic site.
+// - Resources block movement: the commons' fields are small patches bordered by open zones, so the
+//   island stays walkable and no single forest walls off part of it.
+// - Grass may not touch water: controlSand rings every coast after painting.
+//
+// Fairness: every home island is the same size and every colony is kept the same distance from the
+// commons by the joint spread in disperseSeeds, but island shapes, zone layouts and bridge angles
+// are random, so it is fair statistically; the lobby keeps the best-scoring of several seeds.
 namespace
 {
 void createJaggedIsland(Map &map, GenerationContext &context, std::vector<int> &grid, int area,
@@ -101,6 +131,13 @@ static void sizeIslands(Game &game, GenerationContext &context,
 		minDist = (int)std::sqrt((double)game.map.warpDistSquare(
 			L.teamPoints[0].x, L.teamPoints[0].y, L.commonsCenter.x, L.commonsCenter.y));
 
+	// Jaggedness is RadialShape's roughness: harmonics whose amplitudes add up to at most roughness
+	// times stampRoughDisc's amplitude cap of 1.4, so a shape of radius r reaches at most
+	// r * (1 + roughness * 1.4) - hence the 1.4 below. 0.35 and 0.32 give coasts with clear
+	// headlands and bays (up to about 50% and 45% past the radius) without spikes thin enough to be
+	// pure sand; the commons is a touch smoother because it is much larger, and the same roughness
+	// on a big radius makes bigger bays.
+	//
 	// Both islands are jagged, which means both can reach noticeably past their nominal
 	// radius in a lucky direction -- comfortably more than a flat few-tile fudge factor once
 	// the commons radius is large. Size everything off the worst case each jaggedness value
@@ -109,6 +146,9 @@ static void sizeIslands(Game &game, GenerationContext &context,
 	const double teamJaggedness = options.jaggedCoasts ? 0.35 : 0.0;
 	const double commonsJaggedness = options.jaggedCoasts ? 0.32 : 0.0;
 
+	// Home size is a share of the closest colony-to-colony distance (25% by default), so homes
+	// scale with how far apart the spread could put the colonies; never under 10 tiles of radius, a
+	// floor that keeps homes usable on a small or crowded map.
 	L.homeRadius = std::max(10, minDist * options.homeSize / 100);
 	for (unsigned int i = 0; i < L.teamPoints.size(); ++i)
 		createJaggedIsland(game.map, context, L.grid, L.teamAreaNumbers[i], L.teamPoints[i].x,
@@ -126,6 +166,8 @@ static void sizeIslands(Game &game, GenerationContext &context,
 	// Budget the gap as: nearest team's worst-case reach, a real moat, the commons' own
 	// worst-case reach, and a small flat buffer on top of all that jaggedness math.
 	const int teamReach = (int)std::ceil(L.homeRadius * (1.0 + teamJaggedness * 1.4));
+	// The moat is a share of the home radius (35% by default) but never under 4 tiles, so after the
+	// beaches controlSand adds on both shores a clear band of open water remains.
 	L.moatWidth = std::max(4, L.homeRadius * options.moatWidth / 100);
 	const int roomAvailable = std::max(0, centerGap - teamReach - L.moatWidth - 3);
 	const int roomLimitedRadius =
@@ -154,6 +196,10 @@ static void sizeIslands(Game &game, GenerationContext &context,
 	// split further down only ever touches the round island, never a narrow connecting strip.
 	L.bridgeAreaNumber = L.areaNumber;
 	L.areaNumber += 1;
+	// Each bridge is a strip 3 tiles wide along a random angle, from 2 tiles inside the commons'
+	// radius to 2 tiles past the moat, so it always joins solid land at both ends whatever the
+	// coast's jaggedness does. Random angles mean bridges need not face any particular colony, so a
+	// colony may be far from its nearest bridge: part of the contest.
 	for (unsigned int b = 0; b < bridgeAngles.size() && options.moatBridges; ++b)
 	{
 		double theta = bridgeAngles[b] * kPi / 180.0;
@@ -181,8 +227,14 @@ static void paintTerrain(Game &game, GenerationContext &context,
 {
 	const int W = game.map.getW();
 	const int H = game.map.getH();
-	// Base heightmap: noise everywhere, boosted wherever land has been carved out, so
-	// every island (and every bridge strip) comes out dry and everything else stays ocean.
+	// Base heightmap: noise everywhere, boosted wherever land has been carved out, so every island
+	// (and every bridge strip) comes out dry and everything else stays ocean.
+	//
+	// Sea is 40 plus noise of -20 to +19, at most 59: always under the water line (70). Claimed
+	// land rises by 60 to 80..119: land everywhere, sand where the noise dips it under 85 and grass
+	// above, so island edges get patches of wider beach, and elsewhere the one-tile sand ring
+	// controlSand adds. The 60 rise is what guarantees an island's shape: no claimed tile can ever
+	// be water, and no unclaimed one can ever be land.
 	std::vector<int> heights(W * H, 40);
 	adjustHeightmapFromPerlinNoise(game.map, context, heights, 20);
 	for (int y = 0; y < H; ++y)
@@ -251,6 +303,10 @@ static void stockCommons(Game &game, GenerationContext &context,
 	{
 		double areaRatio =
 			(double)(L.commonsRadius * L.commonsRadius) / (double)(L.homeRadius * L.homeRadius);
+		// Seven zones per home island's worth of radius (the square root of the area ratio): a
+		// commons four home radii across gets 28, capped at 24 so each zone keeps enough tiles to
+		// be a real field, and never under 7, the fewest that still hold two wood, two wheat, a
+		// quarry, a grove and an open zone.
 		int zoneCount = (int)std::round(7.0 * std::sqrt(std::max(1.0, areaRatio)));
 		zoneCount = std::max(7, std::min(24, zoneCount));
 
@@ -350,9 +406,11 @@ static void stockCommons(Game &game, GenerationContext &context,
 				getAllPoints(game.map, L.grid, zoneAreas[z], pts);
 				if (role[z] == ROLE_QUARRY)
 				{
-					// One compact quarry, not a scatter: a single setResource call already
-					// grows a solid square footprint from its center, which reads as an actual
-					// deposit and leaves the rest of its zone clear to build on.
+					// One compact quarry, not a scatter: a single setResource call already grows a
+					// solid square footprint from its center, which reads as an actual deposit and
+					// leaves the rest of its zone clear to build on. Map::setResource's size n
+					// covers a square of (n / 2) * 2 + 1 tiles a side, so 5 is a 5x5 quarry: nearly
+					// three times the area of a home's 3x3 quarry, the commons' permanent stone.
 					if (!pts.empty())
 					{
 						MapGeneratorPoint quarry = pts[context.bounded("layout", pts.size())];
@@ -365,6 +423,9 @@ static void stockCommons(Game &game, GenerationContext &context,
 					fillInResource(game.map, context, pts, CORN, 2);
 				else if (role[z] == ROLE_FRUIT)
 				{
+					// One fruit tree per 8 tiles of the zone, of random kinds: a grove open enough
+					// to walk through, since fruit can never be cleared, and with several zones
+					// likely to hold all three kinds between them.
 					std::vector<MapGeneratorPoint> fruitPts = pts;
 					chooseRandomPoints(game.map, context, fruitPts,
 									   std::max(2, (int)pts.size() / 8));
@@ -388,9 +449,13 @@ static bool settleHomes(Game &game, GenerationContext &context,
 	// other generators do it: enough to bootstrap, not enough to make the commons optional.
 	for (int i = 0; i < context.request.nbTeams; ++i)
 	{
-		// Split the island into zones and fill most of them solid, instead of scattering a
-		// handful of individual tiles across the whole island: a real wheat field and a real
-		// treeline, not a light dusting. Two zones are left clear for the swarm and its workers.
+		// Split the island into zones and fill most of them solid, instead of scattering a handful
+		// of individual tiles across the whole island: a real wheat field and a real treeline, not
+		// a light dusting. Two zones are left clear for the swarm and its workers. Five equal
+		// zones: a treeline, a wheat field, a zone with one 3x3 quarry, and two left open for the
+		// swarm, its workers and the first buildings. fillInResource drops a 1x1 or 3x3 square on
+		// every tile of a zone, so a field zone is filled solid - a real field rather than a
+		// scatter.
 		std::vector<int> zoneWeights(5, 1);
 		std::vector<int> zoneAreas;
 		for (int z = 0; z < 5; ++z)
@@ -489,6 +554,9 @@ GeneratorDefinition contestedCommonsDefinition()
 			"Contested commons",
 			2,
 			false,
+			// Home island size is a percentage of the closest colony spacing; commons size a
+			// percentage of the home radius (limited by the room the spread leaves); moat width a
+			// percentage of the home radius.
 			{{"home-island-size", "Home island size", 20, 35, 5, 25, ControlGroup::Terrain},
 			 {"commons-size", "Commons size", 250, 500, 50, 400, ControlGroup::Terrain},
 			 {"moat-width", "Moat width", 20, 50, 5, 35, ControlGroup::Terrain},

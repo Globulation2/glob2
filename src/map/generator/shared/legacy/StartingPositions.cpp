@@ -21,6 +21,23 @@ using namespace MapGeneration;
 
 namespace MapGeneration
 {
+// Lays out every colony's own land for the point-dispersion generators (Concrete islands, Isles):
+// fields, stone, the swarm and its workers, all inside the colony's area of `grid` (area 0 is
+// everything that is not a colony's buildable land, which the distances below are measured from).
+//
+// The layout, written in 2008, follows the growth rules: wheat and wood only regrow near water, so
+// the fields go where the land is closest to the sea, and the base, which needs no water, goes in
+// the interior. Each colony's area is cut into twelve equal zones (divideUpArea) and the zones
+// sorted by their mean distance from area 0:
+// - the three nearest the water become wheat,
+// - the next three wood,
+// - the six farthest are the base: stone, and the swarm's candidate sites. Within a field zone, a
+//   tile gets its resource where a height field clears 50. That field is 50, plus noise of up to 5
+//   either way, minus the tile's distance from the water, plus a rise of 10 for the zone (scaled by
+//   the amount control). So at the default amount a field covers its zone's tiles up to about 10
+//   steps from the water, give or take the noise: a coastal band with a soft inner edge, never the
+//   whole zone on a large island. The swarm goes on a free 4x4 footprint 1 or 2 steps from where
+//   the default wheat field lies, so the first workers reach food at once.
 bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int> &grid,
 						 std::vector<int> &teamAreaNumbers, int &areaNumber,
 						 const PlayerLandResources &resources)
@@ -51,7 +68,8 @@ bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int
 
 	for (int i = 0; i < context.request.nbTeams; ++i)
 	{
-		// Initialize
+		// Initialize: twelve zones of equal weight, so twelve roughly equal parts of the colony's
+		// land (three wheat, three wood, six base).
 		std::vector<int> areaWeights;
 		std::vector<int> areaNumbers;
 		for (int j = 0; j < 12; ++j)
@@ -125,7 +143,9 @@ bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int
 			getAllPoints(game.map, grid, areaNumbers[10], baseLocations);
 			getAllPoints(game.map, grid, areaNumbers[11], baseLocations);
 
-			// Place stone
+			// Place stone: six single tiles at random in the base zones at the default amount.
+			// Stone never runs out, so six scattered tiles are six permanent quarries for upgrades,
+			// and being inland they never block the coastal fields.
 			int numberOfStone = int(scaledCount(6, resources.stone));
 			std::vector<MapGeneratorPoint> stoneLocations = baseLocations;
 			chooseRandomPoints(game.map, context, stoneLocations, numberOfStone);
@@ -298,6 +318,11 @@ Building *addBuilding(Game &game, int x, int y, int team, int type, int level,
 
 namespace MapGeneration
 {
+// Builds each colony's swarm and workers on its boot tile for Old islands, first stamping two
+// overlapping grass squares of 5 + islandSize / 10 tiles (11 at the default island size 65) so the
+// swarm and a first few buildings fit whatever the island's ragged outline. Workers stand in a row
+// of four above the swarm. Like Old random's, its closing Map::smoothResources does nothing today
+// (resources left the terrain layer it reads in 2003), so no deposit is frayed.
 bool placeArchipelagoStarts(Game &game, GenerationContext &context, int islandSize)
 {
 	for (int s = 0; s < context.request.nbTeams; s++)
@@ -337,6 +362,9 @@ bool placeArchipelagoStarts(Game &game, GenerationContext &context, int islandSi
 	return true;
 }
 
+// Builds each colony's swarm and workers on its boot tile for Old random and the height-field
+// generators, after stamping two overlapping 5x5 squares of grass with no resource on them: a clear
+// 7x7 home for the 4x4 swarm and the workers, who stand in rows of four just above it.
 bool placeStarts(Game &game, GenerationContext &context)
 {
 	for (int s = 0; s < context.request.nbTeams; s++)
@@ -349,6 +377,10 @@ bool placeStarts(Game &game, GenerationContext &context)
 		if (game.mapHeader.getNumberOfTeams() <= s)
 			game.addTeam();
 
+		// Two overlapping 5x5 stamps (setUMatPos fills a square of side 5 round its point) turn
+		// corners x+0..x+4, y-2..y+4 to grass and clear their resources: exactly the corners the
+		// 4x4 swarm's tiles need to be pure grass, plus the rows above where its workers appear.
+		// This is the five by seven box BalancedStarts scores sites as they will be built.
 		game.map.setUMatPos(context.bootX[s] + 2, context.bootY[s] + 0, GRASS, 5);
 		game.map.setUMatPos(context.bootX[s] + 2, context.bootY[s] + 2, GRASS, 5);
 		game.map.setNoResource(context.bootX[s] + 2, context.bootY[s] + 0, 5);
