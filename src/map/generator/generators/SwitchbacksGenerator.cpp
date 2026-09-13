@@ -28,37 +28,40 @@
 using namespace MapGeneration;
 
 // Switchbacks: a plateau in the middle of the sea, and round it a ring of homes, each joined to the
-// plateau by a mountain of solid stone with one trail cut through it. The trail zigzags: out of the
-// home it runs along one side of the mountain, across to the other, back, and across again, one leg
-// after another, before it climbs out onto the plateau. Walking from a home to the plateau takes
-// several times the distance as the crow flies, but the walls between the legs are only a few tiles
-// thick, and a defence tower shoots over stone (Building::findBestTarget scans square rings with no
-// line of sight). So a colony that holds the plateau can build towers at the trail heads that reach
-// back down the last legs, and a colony at home can cover its own first legs the same way: every
-// attack walks the whole trail under fire from towers that ignore the zigzag.
+// plateau by a mountain of solid stone with one trail cut through it.
 //
-// Every coast is sealed, as City states' homes are: stone stands on every solid-grass tile that
-// touches the sea's margin, so a swimmer can land on a beach but never get inside. The trails are the
-// only way anywhere for the whole game. Each home's farms are its water (a map too small for farms gives it two ponds), inland and clear
-// of the sea, for algae and for fields that regrow; the plateau has a pond and an orchard of all
-// three fruits, the prize every trail climbs to.
+// THE SHAPE. The trail zigzags: out of the home it runs along one side of the mountain, across to the
+// other, back, and across again, one leg after another, before it climbs out onto the plateau. Walking
+// from a home to the plateau takes several times the distance as the crow flies, but the walls between
+// the legs are only `leg-wall` tiles thick (2 by default), and a defence tower shoots over stone. So the
+// trail is a fortification: every colony's towers stand on its own trail, against the inner side of each
+// wall (the side towards the middle of the map), and shoot across it at the next leg up, where
+// attackers coming down from the plateau must pass. Every attack walks the whole zigzag under fire from
+// towers that ignore it.
 //
-// Everything is designed once in the wedge's frame, along the colony's axis and across it, and
-// turned round the centre for every colony, so every colony's ground and trail are the same and the
-// layout is fair for any colony count. The map stays round, in a circle on the shorter side, with sea
-// filling a rectangle's ends. The design is a pure function of the request, so validateWorld rebuilds
-// it and checks the finished world.
+// THE WATER. Every coast is sealed: stone stands on every grass tile touching the sea's margin, so a
+// swimmer can land on a beach but never get inside, and the trails are the only way anywhere for the
+// whole game. On maps big enough, each home reaches two walled wheat farms, one on either flank, laid in
+// rows that regrow best and shared out by equal yield (Farmland); they are the homes' water. A map too
+// small for farms gives every home two ponds instead. The plateau has a pond and only fruit, the prize
+// every trail climbs to, with no wheat or wood to smother it.
+//
+// HOW IT IS BUILT. Everything is designed once in the wedge's frame, along the colony's axis and across
+// it, and turned round the centre for every colony, so every colony's ground and trail are the same and
+// the layout is fair for any colony count. The map stays round, in a circle on the shorter side, with sea
+// filling a rectangle's ends. The design is a pure function of the request, so validateWorld rebuilds it
+// and checks the finished world.
 //
 // GAME RULES BEHIND IT (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md): stone can never be cleared,
-// so a mountain's walls are permanent and its trail is the only door; a tower scans round its
-// footprint with no line of sight, which is what makes a thin wall between two legs a firing line;
-// grass may never touch water, so a coast wall always stands a tile in from its sand lane; wheat and
-// wood regrow only near water, which is why every home has its ponds and the plateau its pond; and
-// fruit lets an inn pull hungry enemy units across, which makes the plateau's orchard worth the climb.
+// so a mountain's walls are permanent and its trail is the only door; a tower scans round its footprint
+// with no line of sight (BuildingUtils::turretScanTile), which is what makes a thin wall between two legs
+// a firing line; grass may never touch water, so a coast wall always stands a tile in from its sand lane;
+// wheat and wood regrow only near water, which is why every home has farms or ponds; and fruit lets an
+// inn pull hungry enemy units across, which makes the plateau's orchard worth the climb.
 //
-// THE SIZES AT THE DEFAULTS (256x256, 4 colonies): a plateau 28 tiles in radius; mountains 40 tiles
-// wide and 40 deep, each with a trail 7 wide making three legs 26 tiles long, 10 tiles apart with 3
-// tiles of stone between them; homes 24 tiles in radius on the rim.
+// THE SIZES AT THE DEFAULTS (256x256, 4 colonies): a plateau 28 tiles in radius; mountains about 40
+// tiles wide, each with a trail of several legs about 26 tiles long and 2 tiles of stone between them;
+// homes 24 tiles in radius on the rim, each with a farm on either flank; three towers per colony.
 namespace
 {
 
@@ -72,14 +75,9 @@ constexpr double kHomeShare = 0.2;
 constexpr double kMinimumHome = 14;
 constexpr double kHomeArcShare = 0.2;
 constexpr double kHomeRoughness = 0.12;
-// A home needs room for its ponds, their gap to the sea and this much more for the swarm.
-constexpr double kSwarmRoom = 4;
-// A pond keeps this much land between its water and the coast, so its beach never meets the sea's.
-constexpr double kLakeSeaGap = 5;
-constexpr double kPondShare = 0.18;
-constexpr double kMinimumPond = 2.5;
-constexpr double kMaximumPond = 7;
+// The plateau's pond as a share of the plateau's radius, and the land kept round it.
 constexpr double kPlateauPondShare = 0.25;
+constexpr double kPlateauPondShore = 5;
 // How far a small map narrows its trail and walls (see geometryFor), and the narrowest of each.
 constexpr double kMinimumScale = 0.72;
 constexpr int kMinimumTrail = 5;
@@ -93,10 +91,11 @@ constexpr double kSideWall = 3;
 constexpr double kSpanShare = 0.1;
 // Water kept between two mountains: enough for a beach and a coast wall on each.
 constexpr double kPieceGap = 4;
-// Every home starts identical: fixed wheat and wood beside its first pond, stone behind it, unscaled.
+// Every home's starter kit: this much wheat and wood beside the swarm, unscaled; no stone, since the
+// mountains are stone.
 constexpr int kHomeWheat = 30;
 constexpr int kHomeWood = 30;
-// Ambient farmland on a home's ground, as percentages of their tiles at 100.
+// A home's scattered farmland, as percentages of its tiles at 100% wheat and wood.
 constexpr int kHomeWheatShare = 4;
 constexpr int kHomeWoodShare = 2;
 // Deposits keep this many steps from every trail, so no field grows across a trail's mouth.
@@ -105,16 +104,17 @@ constexpr int kTrailClearance = 6;
 constexpr int kRoadSeaGap = 5;
 // The most the colonies' walks to the plateau may differ.
 constexpr int kWalkSpread = 12;
-// The farms: water kept between a farm and any other land, the neck joining it to its home, the land
-// a farm keeps between its water rows and its coast, the smallest farm worth having as a share of the
-// home's area, and the crops planted on its crop rows at 100.
+// The farms: water kept between a farm and any other land, and the neck joining it to its home.
 constexpr int kFarmGap = 3;
-// The smallest half side that has farms.
-constexpr int kFarmMinimumHalf = 100;
 constexpr double kNeckHalf = 8;
+// The smallest half side that has farms: below it the sea between the mountains is too narrow for farms
+// that stay joined to their homes, and every home gets ponds instead.
+constexpr int kFarmMinimumHalf = 100;
 // The least share of a farm's crop land its colony must be able to walk to.
 constexpr double kFarmReach = 0.95;
-// How far apart, along a farm's rows, the sand bridges across its water rows stand.
+// How far apart, along a farm's rows, the sand bridges across its water rows stand; the land a farm keeps
+// between its water rows and its coast (a beach, a coast wall and the sand cap); and the smallest farm
+// worth having, as a share of the home's area.
 constexpr int kFarmBridgeSpacing = 16;
 constexpr int kFarmRim = 6;
 constexpr double kMinimumFarmShare = 0.5;
@@ -125,7 +125,6 @@ constexpr int kFarmWoodShare = 3;
 // Open 2x2 pads beside every colony's `tower-count` towers, and the spacing between sites.
 constexpr int kTowerPads = 4;
 constexpr int kTowerSpacing = 4;
-// A tower keeps this many steps from water and stone on every side, so it never closes a passage.
 // Tiles either side of a trail's centre line kept free of towers, the walkway attackers and workers use.
 constexpr int kWalkway = 1;
 // A tower hugs a wall: rock within this many tiles of its footprint towards the middle of the map.
@@ -136,12 +135,12 @@ constexpr int kCoverTower = 1;
 
 struct Geometry
 {
-	int teams = 0, half = 0, legs = 0, ponds = 1;
+	int teams = 0, half = 0, legs = 0, ponds = 0;
 	double wedge = 0, outer = 0;
 	double trailHalf = 0, narrowestHalf = 0, legWall = 0, pitch = 0, span = 0, blockHalf = 0;
 	double plateauR = 0, plateauPondR = 0;
 	double innerLeg = 0, outerLeg = 0, blockOut = 0; // along the axis from the centre
-	double homeR = 0, homeReach = 0, homeRadius = 0, pondR = 0;
+	double homeR = 0, homeReach = 0, homeRadius = 0;
 	bool roads = true;
 	std::string failure;
 };
@@ -176,7 +175,8 @@ Geometry geometryFor(const GenerationRequest &r)
 	// square root of its size, down to a trail still wide enough for its road and a wall two tiles
 	// thick, so a 128-tile map still fits a zigzag.
 	const double narrow = std::clamp(std::sqrt(g.half / 128.0), kMinimumScale, 1.0);
-	const int trailWidth = std::max(kMinimumTrail, 2 * int(std::lround((o.trailWidth * narrow - 1) / 2)) + 1);
+	const int trailWidth =
+		std::max(kMinimumTrail, 2 * int(std::lround((o.trailWidth * narrow - 1) / 2)) + 1);
 	g.trailHalf = trailWidth / 2.0;
 	g.narrowestHalf = g.trailHalf;
 	g.legWall = std::max(kMinimumWall, int(std::lround(o.legWall * narrow)));
@@ -185,9 +185,10 @@ Geometry geometryFor(const GenerationRequest &r)
 	// The plateau is a share of the half side, but on a crowded ring it grows until the mountains
 	// fit round it with water between them at their innermost legs.
 	const double halfAngle = std::min(g.wedge / 2, 1.5);
-	g.plateauR = std::max(g.half * o.plateauSize / 100.0,
-						  (g.blockHalf + kPieceGap) / std::tan(halfAngle) - (g.trailHalf + g.legWall + 1));
-	g.plateauPondR = std::max(kMinimumPond, kPlateauPondShare * g.plateauR);
+	g.plateauR =
+		std::max(g.half * o.plateauSize / 100.0,
+				 (g.blockHalf + kPieceGap) / std::tan(halfAngle) - (g.trailHalf + g.legWall + 1));
+	g.plateauPondR = std::max(kHomeSmallestPond, kPlateauPondShare * g.plateauR);
 	// Homes stand on the rim, as big as their share of the ring allows. The mountain fills the ground
 	// between the plateau and the homes with as many legs as fit a pitch apart, the innermost a wall's
 	// thickness of stone from the plateau and the outermost the same from the home, so a bigger map
@@ -197,28 +198,30 @@ Geometry geometryFor(const GenerationRequest &r)
 	const double end = g.trailHalf + g.legWall + 1;
 	// However its rough outline falls, a home reaches in no further than its wobbled reach.
 	const double mountain = (g.outer - g.plateauR - 2 * end - (2 * g.trailHalf + g.legWall)) / 2;
-	const double reach = std::min({std::max(kMinimumHome, kHomeShare * g.half) * (1 + kHomeRoughness),
-								   ringShare * g.outer / (1 + ringShare), mountain});
+	const double reach =
+		std::min({std::max(kMinimumHome, kHomeShare * g.half) * (1 + kHomeRoughness),
+				  ringShare * g.outer / (1 + ringShare), mountain});
 	g.homeReach = reach * o.homeSize / 100.0;
 	g.homeR = g.homeReach / (1 + kHomeRoughness);
 	g.homeRadius = g.outer - g.homeReach;
 	layLegs(g, g.homeRadius - g.homeR);
 	g.blockOut = g.homeRadius;
-	g.pondR = std::clamp(kPondShare * g.homeR, kMinimumPond, kMaximumPond);
 	// A home's farms are its water; a map too small for farms gives every home two ponds instead.
 	g.ponds = g.half >= kFarmMinimumHalf ? 0 : 2;
 	g.roads = o.sandRoads;
-	// A home must hold its swarm, its kit and any ponds: at least what a home with a pond needs.
-	if (g.homeR < g.pondR + kLakeSeaGap + kSwarmRoom)
+	if (!homeHasRoom(g.homeR))
 		g.failure = "Too many colonies for this map: the homes are too small.";
 	else if (g.legs < kMinimumLegs)
-		g.failure = "No room for a trail on this map: use a bigger map, a smaller plateau or a narrower trail.";
-	else if (g.plateauR - g.plateauPondR < kLakeSeaGap + 3)
+		g.failure = "No room for a trail on this map: use a bigger map, a smaller plateau or a "
+					"narrower trail.";
+	else if (g.plateauR - g.plateauPondR < kPlateauPondShore + 3)
 		g.failure = "The plateau is too small for its pond on this map.";
 	// Measured at the trail's narrowest width, as the plateau was sized: trails widened to use up a
 	// mountain's depth are trimmed to their wedges near the plateau, and the validator checks the rest.
-	else if (g.innerLeg * std::tan(std::min(g.wedge / 2, 1.5)) < g.span + g.narrowestHalf + kSideWall + kPieceGap)
-		g.failure = "Too many colonies for this map: the mountains crowd each other at the plateau.";
+	else if (g.innerLeg * std::tan(std::min(g.wedge / 2, 1.5)) <
+			 g.span + g.narrowestHalf + kSideWall + kPieceGap)
+		g.failure =
+			"Too many colonies for this map: the mountains crowd each other at the plateau.";
 	return g;
 }
 
@@ -227,15 +230,18 @@ struct Layout
 	Torus t{1, 1};
 	Geometry g;
 	double phase = 0, cx = 0, cy = 0;
-	std::vector<int> homeOf, blockOf, trailOf, legOf; // legOf: which leg (0 first) a trail tile is on
+	std::vector<int> homeOf, blockOf, trailOf,
+		legOf; // legOf: which leg (0 first) a trail tile is on
 	std::vector<int> farmOf, farmColony;
 	std::vector<Farm> farms;
-	std::vector<unsigned char> farmSand, farmPlot; // the farms' building plots: sand rings, grass
+	std::vector<unsigned char> farmSand; // all the farms' sand: plot rings, bridges and caps
 	std::vector<unsigned char> plateau, land, pond, stone, road, roadTile;
 	std::vector<double> axis;
-	std::vector<AxisFrame> frames;
-	std::vector<std::vector<StrokePoint>> trails; // every colony's trail as drawn // every colony's frame: along its axis from the centre, and across
-	std::vector<ShapePoint> homes, firstPond, summit; // summit: where each trail reaches the plateau
+	std::vector<AxisFrame>
+		frames; // every colony's frame: along its axis from the centre, and across
+	std::vector<std::vector<StrokePoint>> trails; // every colony's trail as drawn
+	std::vector<ShapePoint> homes, kitCentre,
+		summit; // kitCentre: stampRoundHome's; summit: where each trail reaches the plateau
 	std::string failure;
 };
 
@@ -279,17 +285,19 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	layLegs(L.g, g.homeRadius - homeShape.radiusAt(kPi));
 	if (L.g.legs < kMinimumLegs)
 	{
-		L.failure = "No room for a trail on this map: use a bigger map, a smaller plateau or a narrower trail.";
+		L.failure = "No room for a trail on this map: use a bigger map, a smaller plateau or a "
+					"narrower trail.";
 		return L;
 	}
-	const RadialShape pondShape(g.pondR, 0.2, context, "switchbacks-pond");
+	const RadialShape pondShape(homePondRadius(g.homeR), 0.2, context, "switchbacks-pond");
 	const RadialShape plateauShape(g.plateauR, 0.0001, context, "switchbacks-plateau");
 	const RadialShape plateauPondShape(g.plateauPondR, 0.0001, context, "switchbacks-plateau-pond");
 
 	// The mountains: a straight block along each axis from inside the plateau to inside the home. The
 	// plateau is round and the block square, so the block starts where the plateau's edge meets the
 	// block's sides, and no strip of sea is left at its corners.
-	const double blockIn = std::sqrt(std::max(0.0, g.plateauR * g.plateauR - g.blockHalf * g.blockHalf)) - 2;
+	const double blockIn =
+		std::sqrt(std::max(0.0, g.plateauR * g.plateauR - g.blockHalf * g.blockHalf)) - 2;
 	const WedgeFrame wedges(t, L.phase - g.wedge / 2, teams);
 	const double halfAngle = std::min(g.wedge / 2, 1.5);
 	for (int i = 0; i < n; ++i)
@@ -334,9 +342,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.homes.push_back(polarPoint(L.cx, L.cy, g.homeRadius, L.axis[k]));
 	}
 	for (int k = 0; k < teams; ++k)
-		L.firstPond.push_back(stampPondHome(t, L.homes[k], L.axis[k], homeShape, pondShape,
-											{g.homeR, g.pondR, kLakeSeaGap, g.ponds}, L.pond,
-											[&](int i) { L.homeOf[i] = k; }));
+		L.kitCentre.push_back(stampRoundHome(t, L.homes[k], L.axis[k], homeShape, g.homeR, g.ponds,
+											 &pondShape, L.pond, [&](int i) { L.homeOf[i] = k; }));
 	fillShape(L.plateau, t, L.cx, L.cy, plateauShape);
 	fillShape(L.pond, t, L.cx, L.cy, plateauPondShape);
 	for (int i = 0; i < n; ++i)
@@ -378,12 +385,11 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		}
 	}
 	// The farms (growFarmFields): every home reaches out sideways, across its axis, to a farm on either
-	// flank, and the farms share the open sea between the mountains and round the rim equally. Their
-	// rows run across the axis at the widths that yield most (bestFarmRows), and every farm's coast is
-	// sealed like the rest.
+	// flank, and the farms share the open sea between the mountains and round the rim by equal yield. Their
+	// rows run across the axis at the widths that yield most (bestFarmRows), with sand caps, bridges and a
+	// building plot (layFarm), and every farm's coast is sealed like the rest.
 	L.farmOf.assign(n, -1);
 	L.farmSand.assign(n, 0);
-	L.farmPlot.assign(n, 0);
 	// A map under kFarmMinimumHalf across its shorter half has no room between its mountains for farms
 	// that stay joined to their homes; it has none.
 	if (g.half >= kFarmMinimumHalf)
@@ -406,8 +412,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			owners.push_back(int(f) / 2);
 			angles.push_back(L.axis[f / 2] + kPi / 2);
 		}
-		const std::vector<int> fields =
-			growFarmFields(t, L.land, L.homeOf, everywhere, seeds, owners, anchors, kFarmGap, kNeckHalf, angles);
+		const std::vector<int> fields = growFarmFields(
+			t, L.land, L.homeOf, everywhere, seeds, owners, anchors, kFarmGap, kNeckHalf, angles);
 		const double homeArea = kPi * g.homeR * g.homeR;
 		for (int f = 0; f < 2 * teams; ++f)
 		{
@@ -422,12 +428,15 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				}
 			if (size < kMinimumFarmShare * homeArea)
 			{
-				L.failure = "Too many colonies for this map: there is no room for every colony's farms.";
+				L.failure =
+					"Too many colonies for this map: there is no room for every colony's farms.";
 				return L;
 			}
 			const double across = L.axis[k] + kPi / 2;
 			TerrainSketch rows(n, GRASS);
-			L.farms.push_back(layFarm(rows, t, region, across, seeds[f], kFarmRim, bestFarmRows(across), o.farmPlots ? &plot : nullptr, kFarmBridgeSpacing));
+			L.farms.push_back(layFarm(rows, t, region, across, seeds[f], kFarmRim,
+									  bestFarmRows(across), o.farmPlots ? &plot : nullptr,
+									  kFarmBridgeSpacing));
 			L.farmColony.push_back(k);
 			for (int i = 0; i < n; ++i)
 				if (region[i] && L.homeOf[i] < 0)
@@ -438,8 +447,6 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 						L.pond[i] = 1;
 					if (L.farms.back().sand[i])
 						L.farmSand[i] = 1;
-						if (L.farms.back().plot[i])
-							L.farmPlot[i] = 1;
 				}
 		}
 	}
@@ -483,7 +490,8 @@ void furnish(Map &map, const Layout &L, GenerationContext &context, const Switch
 	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	const WedgeFrame wedges(t, L.phase - g.wedge / 2, g.teams);
-	const WedgeField patch{wedges, PeriodicNoise(t.w, t.h, 12, context.stream("switchbacks-patch"))};
+	const WedgeField patch{wedges,
+						   PeriodicNoise(t.w, t.h, 12, context.stream("switchbacks-patch"))};
 	const WedgeField split{wedges, PeriodicNoise(t.w, t.h, 6, context.stream("switchbacks-split"))};
 	std::vector<unsigned char> trails(n, 0);
 	for (int i = 0; i < n; ++i)
@@ -497,15 +505,15 @@ void furnish(Map &map, const Layout &L, GenerationContext &context, const Switch
 	for (int k = 0; k < g.teams; ++k)
 	{
 		const auto eligible = [&](int i) { return L.homeOf[i] == k && free(i); };
-		plantPondHomeKit(map, t, context, L.firstPond[k], L.axis[k], g.pondR, kHomeWheat, kHomeWood,
-						 eligible);
+		plantHomeKit(map, t, context, L.kitCentre[k], L.axis[k], g.homeR, kHomeWheat, kHomeWood,
+					 eligible);
 		furnishGround(
 			map, t, context, fertility, eligible, patch, split,
 			[&](int area)
 			{
 				return GroundAmounts{int(scaledCount(area * kHomeWheatShare / 100, o.wheat)),
-										 int(scaledCount(area * kHomeWoodShare / 100, o.wood)), 0,
-										 int(scaledCount(1, o.fruit))};
+									 int(scaledCount(area * kHomeWoodShare / 100, o.wood)), 0,
+									 int(scaledCount(1, o.fruit))};
 			},
 			"switchbacks-home-stone", "switchbacks-home-fruit");
 	}
@@ -517,7 +525,8 @@ void furnish(Map &map, const Layout &L, GenerationContext &context, const Switch
 		std::vector<double> between;
 		for (int k = 0; k < g.teams; ++k)
 			between.push_back(L.axis[k] + g.wedge / 2);
-		plantOrchard(map, t, context, L.cx, L.cy, g.plateauPondR + 4, between, 5, 5, 1, plateauFree);
+		plantOrchard(map, t, context, L.cx, L.cy, g.plateauPondR + 4, between, 5, 5, 1,
+					 plateauFree);
 	}
 	// The farms: wheat along the water on every crop row and a small woodlot on one (plantFarm).
 	for (size_t f = 0; f < L.farms.size(); ++f)
@@ -558,7 +567,8 @@ TowerPlan planTowers(const Map &map, const Layout &L, const GenerationContext &c
 		const double dx = t.offsetX(i % t.w, int(L.cx)), dy = t.offsetY(i / t.w, int(L.cy));
 		const double d = std::max(1.0, std::hypot(dx, dy));
 		for (int step = 1; step <= kWallHug; ++step)
-			if (L.stone[t.at(int(std::lround(i % t.w + dx / d * step)), int(std::lround(i / t.w + dy / d * step)))])
+			if (L.stone[t.at(int(std::lround(i % t.w + dx / d * step)),
+							 int(std::lround(i / t.w + dy / d * step)))])
 				return true;
 		return false;
 	};
@@ -568,19 +578,17 @@ TowerPlan planTowers(const Map &map, const Layout &L, const GenerationContext &c
 	{
 		const int x = i % t.w, y = i / t.w;
 		owner[i] = L.homeOf[i] >= 0 ? L.homeOf[i] : L.farmOf[i] >= 0 ? L.farmOf[i] : L.trailOf[i];
-		buildable[i] = L.trailOf[i] >= 0 && map.isGrass(x, y) && !stone[i] && !L.roadTile[i] && !reserved[i] &&
-					   (fromCentre[i] < 0 || fromCentre[i] > kWalkway) && !map.isResource(x, y) && facesInwardWall(i);
+		buildable[i] = L.trailOf[i] >= 0 && map.isGrass(x, y) && !stone[i] && !L.roadTile[i] &&
+					   !reserved[i] && (fromCentre[i] < 0 || fromCentre[i] > kWalkway) &&
+					   !map.isResource(x, y) && facesInwardWall(i);
 		target[i] = L.trailOf[i] >= 0 && !map.isWater(x, y) && !stone[i];
 	}
-	TowerRequest request;
-	request.range = kTowerRange[std::clamp(o.towers - 1, 0, 2)];
-	request.towers = o.towers > 0 ? o.towerCount : 0;
-	request.pads = o.towers > 0 ? kTowerPads : o.towerCount + kTowerPads;
-	request.spacing = kTowerSpacing;
+	TowerRequest request = startingTowerRequest(o.towers, o.towerCount, kTowerPads, kTowerSpacing);
 	request.otherWeight = 0;
 	request.ownWeight = 1;
 	request.against = &stone;
-	return chooseTowerSites(t, owner, buildable, target, swarmSurroundings(t, context, 0), L.g.teams, request);
+	return chooseTowerSites(t, owner, buildable, target, swarmSurroundings(t, context, 0),
+							L.g.teams, request);
 }
 
 bool generate(Game &game, GenerationContext &context)
@@ -622,51 +630,36 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> ground(n, 0);
 		for (int i = 0; i < n; ++i)
-			ground[i] = L.homeOf[i] == team && !stone[i] && !L.roadTile[i] &&
-						map.isGrass(i % t.w, i / t.w);
+			ground[i] =
+				L.homeOf[i] == team && !stone[i] && !L.roadTile[i] && map.isGrass(i % t.w, i / t.w);
 		return ground;
 	};
-	const auto anchor = [&](int team) { return pondHomeAnchor(L.homes[team], L.axis[team], L.g.homeR); };
+	const auto anchor = [&](int team)
+	{ return homeSwarmSite(L.homes[team], L.axis[team], L.g.homeR); };
 	if (!settleColonies(game, context, "switchbacks-starts", home, anchor))
 		return false;
 
 	context.stage = "switchbacks towers";
 	TowerPlan towers = planTowers(map, L, context, o, stone);
-	// No site may close a colony's trail to the plateau (dropBlockingSites); a trail may not seat every
-	// tower either, so every colony then keeps as many as the fewest got, and a trail too narrow for any
-	// gets none.
-	{
-		std::vector<unsigned char> open(n, 0), heart(n, 0);
-		for (int i = 0; i < n; ++i)
-		{
-			const int x = i % t.w, y = i / t.w;
-			open[i] = !map.isWater(x, y) && !stone[i] && map.getBuilding(x, y) == NOGBID;
-			heart[i] = L.plateau[i] && open[i] &&
-					   std::hypot(t.offsetX(int(L.cx), x), t.offsetY(int(L.cy), y)) < L.g.plateauPondR + 3;
-		}
-		std::vector<std::vector<int>> sources(teams);
-		const std::vector<std::vector<unsigned char>> goals(teams, heart);
-		for (int k = 0; k < teams; ++k)
-			for (int dy = -1; dy <= 4; ++dy)
-				for (int dx = -1; dx <= 4; ++dx)
-					if (dx < 0 || dy < 0 || dx > 3 || dy > 3)
-						sources[k].push_back(t.at(context.bootX[k] + dx, context.bootY[k] + dy));
-		dropBlockingSites(t, towers, open, sources, goals);
-	}
-	evenTowerPlan(towers);
-	if (!raiseTowers(game, towers, std::clamp(o.towers - 1, 0, 2)))
-	{
-		context.detail = "a tower site no longer fits";
+	// No tower or pad may close a colony's trail to the plateau's heart; every colony keeps as many as the
+	// fewest got, and a trail too narrow for any tower simply has none.
+	std::vector<unsigned char> plateauHeart(n, 0);
+	for (int i = 0; i < n; ++i)
+		plateauHeart[i] = L.plateau[i] &&
+						  std::hypot(t.offsetX(int(L.cx), i % t.w), t.offsetY(int(L.cy), i / t.w)) <
+							  L.g.plateauPondR + 3;
+	if (!settleStartingTowers(game, context, towers, o.towers, false, &plateauHeart))
 		return false;
-	}
 	const std::vector<unsigned char> pads = towerFootprints(t, towers);
 
 	context.stage = "switchbacks resources";
 	furnish(map, L, context, o, pads);
 	const WedgeFrame algaeWedges(t, L.phase - L.g.wedge / 2, L.g.teams);
-	seedAlgae(map, context, t, "switchbacks-algae", o.algae, AlgaeBand::shallows(1, 4), &algaeWedges);
+	seedAlgae(map, context, t, "switchbacks-algae", o.algae, AlgaeBand::shallows(1, 4),
+			  &algaeWedges);
 	secureStartingCrops(game, context, t, 24, 32, 0, &stone);
-	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, o.algae, o.fruit}, 24, 32, 0, &stone);
+	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, o.algae, o.fruit}, 24, 32, 0,
+						&stone);
 	clearFarmPlots(map, t, L.farms);
 
 	// Keep every trail open, clearing only deposits on it, from each home to the plateau's pond shore.
@@ -691,7 +684,10 @@ std::string validateRequest(const GenerationRequest &r)
 		return "Switchbacks need at least two colonies.";
 	// The geometry's own reason stays in the candidate's diagnostics; the player sees one message
 	// that says what to change.
-	return geometryFor(r).failure.empty() ? "" : "The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.";
+	return geometryFor(r).failure.empty()
+			   ? ""
+			   : "The switchbacks do not fit this map; use a bigger map, a smaller plateau, "
+				 "narrower trails or fewer colonies.";
 }
 
 // Checked on the finished world against the rebuilt design: every designed stone stands; every colony
@@ -729,7 +725,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 	{
 		if (!margin[i])
-			piece[i] = L.homeOf[i] >= 0 ? L.homeOf[i] : L.farmOf[i] >= 0 ? L.farmOf[i] : L.plateau[i] ? teams : -1;
+			piece[i] = L.homeOf[i] >= 0   ? L.homeOf[i]
+					   : L.farmOf[i] >= 0 ? L.farmOf[i]
+					   : L.plateau[i]     ? teams
+										  : -1;
 		trails[i] = L.trailOf[i] >= 0;
 		middle[i] = L.legOf[i] == g.legs / 2;
 	}
@@ -737,11 +736,14 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// its colony's workers.
 	for (size_t f = 0; f < L.farms.size(); ++f)
 		if (farmReachable(map, t, L.farms[f], walk.workers[L.farmColony[f]]) < kFarmReach)
-			return "Colony " + std::to_string(L.farmColony[f]) + " cannot walk into one of its farms.";
+			return "Colony " + std::to_string(L.farmColony[f]) +
+				   " cannot walk into one of its farms.";
 	if (const int leak = pieceLeak(map, t, piece, trails); leak >= 0)
-		return "With the trails shut, " + where(leak) + " can still be reached from another part of the map.";
+		return "With the trails shut, " + where(leak) +
+			   " can still be reached from another part of the map.";
 	if (const int leak = pieceLeak(map, t, piece, middle); leak >= 0)
-		return "With the middle legs shut, " + where(leak) + " can still be reached: a wall between legs has a gap.";
+		return "With the middle legs shut, " + where(leak) +
+			   " can still be reached: a wall between legs has a gap.";
 
 	for (int k = 0; k < teams; ++k)
 	{
@@ -791,36 +793,37 @@ SwitchbacksOptions::SwitchbacksOptions(const GenerationRequest &r)
 
 GeneratorDefinition switchbacksDefinition()
 {
-	return {"switchbacks",
-			24,
-			"Switchbacks",
-			1,
-			false,
-			// The trail's width and the stone between its legs in tiles; the plateau's radius as a
-			// share of the half side (the mountains fill the rest with as many legs as fit); each home's
-			// radius as a percentage of the standard.
-			{{"trail-width", "Trail width", 5, 9, 2, 7, ControlGroup::Terrain},
-			 {"leg-wall", "Wall between legs", 2, 6, 1, 2, ControlGroup::Terrain},
-			 {"plateau-size", "Plateau size", 14, 34, 2, 22, ControlGroup::Layout},
-			 {"home-size", "Home size", 60, 160, 10, 100, ControlGroup::Layout},
-			 // The towers every colony starts with, all against its walls: their level (0 for none, just
-			 // open pads) and how many.
-			 {"starting-towers", "Starting tower level", 0, 3, 1, 2, ControlGroup::Layout},
-			 {"tower-count", "Towers per colony", 0, 12, 1, 3, ControlGroup::Layout},
-			 // Off, the trails are grass from wall to wall.
-			 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
-			 // On, every farm has a 10x4 clearing of grass ringed with sand in its middle, for a
-			 // swarm or an inn.
-			 GeneratorControl::toggle("farm-plots", "Farm building plots", true, ControlGroup::Layout),
-			 // Every home's ambient fields and grove, the plateau's farmland and orchard, and the
-			 // algae; every home's kit and the mountains' stone are unscaled.
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			validateRequest,
-			validateWorld};
+	return {
+		"switchbacks",
+		24,
+		"Switchbacks",
+		1,
+		false,
+		// The trail's width and the stone between its legs in tiles; the plateau's radius as a
+		// share of the half side (the mountains fill the rest with as many legs as fit); each home's
+		// radius as a percentage of the standard.
+		{{"trail-width", "Trail width", 5, 9, 2, 7, ControlGroup::Terrain},
+		 {"leg-wall", "Wall between legs", 2, 6, 1, 2, ControlGroup::Terrain},
+		 {"plateau-size", "Plateau size", 14, 34, 2, 22, ControlGroup::Layout},
+		 {"home-size", "Home size", 60, 160, 10, 100, ControlGroup::Layout},
+		 // The towers every colony starts with, all against its walls: their level (0 for none, just
+		 // open pads) and how many.
+		 {"starting-towers", "Starting tower level", 0, 3, 1, 2, ControlGroup::Layout},
+		 {"tower-count", "Towers per colony", 0, 12, 1, 3, ControlGroup::Layout},
+		 // Off, the trails are grass from wall to wall.
+		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
+		 // On, every farm has a 10x4 clearing of grass ringed with sand in its middle, for a
+		 // swarm or an inn.
+		 GeneratorControl::toggle("farm-plots", "Farm building plots", true, ControlGroup::Layout),
+		 // Every home's scattered fields and grove, the farms' wheat and woodlots, the plateau's
+		 // orchard, and the algae; every home's kit, the mountains' stone and the towers are unscaled.
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		validateRequest,
+		validateWorld};
 }

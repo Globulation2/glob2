@@ -142,9 +142,11 @@ Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned c
 				for (int dx = -margin; dx <= plot->width + margin; ++dx)
 				{
 					const int i = t.at(x0 + dx, y0 + dy);
-					const bool grass = dx >= 0 && dx <= plot->width && dy >= 0 && dy <= plot->height;
-					const bool ring = !grass && dx >= -plot->ring && dx <= plot->width + plot->ring &&
-									  dy >= -plot->ring && dy <= plot->height + plot->ring;
+					const bool grass =
+						dx >= 0 && dx <= plot->width && dy >= 0 && dy <= plot->height;
+					const bool ring = !grass && dx >= -plot->ring &&
+									  dx <= plot->width + plot->ring && dy >= -plot->ring &&
+									  dy <= plot->height + plot->ring;
 					// The clearing trumps the rows and bridges alike: its grass is grass.
 					if (farm.water[i] || (grass && farm.sand[i]))
 					{
@@ -172,10 +174,12 @@ Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned c
 }
 
 std::vector<int> growFarmFields(const Torus &t, const std::vector<unsigned char> &occupied,
-								const std::vector<int> &homeOf, const std::vector<unsigned char> &area,
-								const std::vector<ShapePoint> &seeds, const std::vector<int> &owners,
-								const std::vector<ShapePoint> &anchors, int gap, double neckHalfWidth,
-								const std::vector<double> &rowAngles)
+								const std::vector<int> &homeOf,
+								const std::vector<unsigned char> &area,
+								const std::vector<ShapePoint> &seeds,
+								const std::vector<int> &owners,
+								const std::vector<ShapePoint> &anchors, int gap,
+								double neckHalfWidth, const std::vector<double> &rowAngles)
 {
 	const int n = t.size();
 	// Open ground: not designed, allowed, and clear of all land that is no home by the gap. Homes'
@@ -220,14 +224,16 @@ std::vector<int> growFarmFields(const Torus &t, const std::vector<unsigned char>
 			}
 		if (best < 0)
 			continue;
-		snapped[s] = {double(sx + t.offsetX(sx, best % t.w)), double(sy + t.offsetY(sy, best / t.w))};
+		snapped[s] = {double(sx + t.offsetX(sx, best % t.w)),
+					  double(sy + t.offsetY(sy, best / t.w))};
 		starts[s].push_back(best);
 	}
 	std::vector<double> worth;
 	for (double angle : rowAngles)
 		worth.push_back(farmYield(angle));
 	std::vector<int> labels =
-		growTerritories(t, free, starts, [](int) { return 0; }, worth.size() == seeds.size() ? &worth : nullptr)
+		growTerritories(
+			t, free, starts, [](int) { return 0; }, worth.size() == seeds.size() ? &worth : nullptr)
 			.labels;
 	// Every field keeps the gap from every home but its own.
 	int colonies = 0;
@@ -240,7 +246,8 @@ std::vector<int> growFarmFields(const Torus &t, const std::vector<unsigned char>
 			others[i] = homeOf[i] >= 0 && homeOf[i] != k;
 		const std::vector<int> fromOthers = stepsFrom(t, others);
 		for (int i = 0; i < n; ++i)
-			if (labels[i] >= 0 && owners[labels[i]] == k && fromOthers[i] >= 0 && fromOthers[i] < gap)
+			if (labels[i] >= 0 && owners[labels[i]] == k && fromOthers[i] >= 0 &&
+				fromOthers[i] < gap)
 				labels[i] = -1;
 	}
 	separateTerritories(t, labels, gap);
@@ -304,14 +311,16 @@ std::vector<int> growFarmFields(const Torus &t, const std::vector<unsigned char>
 		for (int i = 0; i < n; ++i)
 			// The neck keeps the same gap from land that is no home, and from every other field, as the
 			// field does, so it never runs round the end of a wall or into someone else's farm.
-			if (neck[i] && !occupied[i] && labels[i] < 0 && (fromForeign[i] < 0 || fromForeign[i] >= gap) &&
+			if (neck[i] && !occupied[i] && labels[i] < 0 &&
+				(fromForeign[i] < 0 || fromForeign[i] >= gap) &&
 				(fromOtherFields[i] < 0 || fromOtherFields[i] >= gap))
 				labels[i] = int(s);
 	}
 	return labels;
 }
 
-double farmReachable(const Map &map, const Torus &t, const Farm &farm, const std::vector<int> &sources)
+double farmReachable(const Map &map, const Torus &t, const Farm &farm,
+					 const std::vector<int> &sources)
 {
 	const int n = t.size();
 	std::vector<unsigned char> open(n, 0);
@@ -319,8 +328,9 @@ double farmReachable(const Map &map, const Torus &t, const Farm &farm, const std
 	{
 		const int x = i % t.w, y = i / t.w;
 		const bool deposit = map.isResource(x, y);
-		open[i] = !map.isWater(x, y) && map.getBuilding(x, y) == NOGBID &&
-				  (!deposit || map.getResource(x, y).type == CORN || map.getResource(x, y).type == WOOD);
+		open[i] =
+			!map.isWater(x, y) && map.getBuilding(x, y) == NOGBID &&
+			(!deposit || map.getResource(x, y).type == CORN || map.getResource(x, y).type == WOOD);
 	}
 	const std::vector<int> steps = stepsFrom(t, tileMask(t, sources), open);
 	int land = 0, reached = 0;
@@ -334,7 +344,6 @@ double farmReachable(const Map &map, const Torus &t, const Farm &farm, const std
 		++land;
 		reached += steps[i] >= 0;
 	}
-	if (getenv("TMP_FARM") && reached < land) fprintf(stderr, "farm land %d reached %d\n", land, reached); // TMP
 	return land ? double(reached) / land : 0;
 }
 

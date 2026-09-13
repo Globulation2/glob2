@@ -3,6 +3,7 @@
 #include "Grid.h"
 #include <vector>
 class Game;
+struct GenerationContext;
 namespace MapGeneration
 {
 // Where colonies' towers go. A defence tower is 2x2 and scans square rings out to its range beyond
@@ -33,6 +34,12 @@ struct TowerRequest
 	// footprint, diagonals included, so the tower shoots over the wall rather than from inland.
 	const std::vector<unsigned char> *against = nullptr;
 };
+
+/// The request for the towers a colony starts with, from a map's two controls: `level` (0 for none, when
+/// every site is an open pad, otherwise 1 to 3, which sets the range the sites are scored at) and `count`
+/// towers per colony, with `pads` open pads beside them `spacing` apart. The caller adds the weights and
+/// any wall the sites must stand against.
+TowerRequest startingTowerRequest(int level, int count, int pads, int spacing);
 
 /// Chooses tower sites for every colony. `owner` gives each tile's colony (-1 for none); a site is a
 /// 2x2 footprint wholly on one colony's `buildable` ground, scored by the `target` tiles within its
@@ -67,7 +74,16 @@ int evenTowerPlan(TowerPlan &);
 /// Ground roomy enough for a tower that blocks nothing: the tiles of `open` (land a unit walks on) at
 /// least `room` steps from any tile that is not. A 2x2 tower on a strip narrower than that could close
 /// the strip; a generator ands this into the buildable ground it hands chooseTowerSites.
-std::vector<unsigned char> roomyGround(const Torus &, const std::vector<unsigned char> &open, int room);
+std::vector<unsigned char> roomyGround(const Torus &, const std::vector<unsigned char> &open,
+									   int room);
+
+/// Settles a plan into the world, the way every arena map does it: when `goal` is given, drops any site
+/// that would close a colony's walk from its swarm to that ground (dropBlockingSites, walking round
+/// water, stone and buildings); evens the plan so every colony has as many sites as the fewest got
+/// (evenTowerPlan); and raises the towers (a plan at level 0 has none). False, with `context.detail` set,
+/// when a site no longer fits or, with `everyColonyNeedsOne`, when some colony was left without a tower.
+bool settleStartingTowers(Game &, GenerationContext &, TowerPlan &, int level,
+						  bool everyColonyNeedsOne, const std::vector<unsigned char> *goal);
 
 /// Builds a plan's towers: every colony's tower sites get a completed tower of `level` (placeTower),
 /// stocked where the plan says. Pads stay open. False, and nothing more built, at the first site that no longer

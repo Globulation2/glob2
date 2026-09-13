@@ -13,69 +13,94 @@
 #include <vector>
 namespace MapGeneration
 {
-// Homes that stand alone in the sea, as a round island turned to face out from the map's middle
-// with its door on the inner side: the swarm stands in from the middle towards the door, one pond
-// lies out behind it and a second, if any, on one flank. Every pond keeps a gap of land to the home's
-// coast, so its beach never meets the sea's. Carousel and Switchbacks both build their homes this way.
+// Round homes: a home that stands alone as a round patch of ground turned to face out from the map's
+// middle, its door on the inner side. The swarm stands in from the middle towards the door, and the
+// home's starter kit lies within a short walk of it. A round home may carry ponds of its own - one out
+// behind the swarm and a second on a flank - for a map that gives its homes no other water; every pond
+// keeps a gap of land to the home's edge, so where the home is a coast its beach never meets the sea's.
+// Carousel's homes have no ponds (their farms are their water); Switchbacks' have two only on a map too
+// small for farms.
 
-/// The farthest a pond home's first pond lies from its middle beyond its own radius, and the swarm from
-/// its middle: a short walk apart however big the home, so the kit round the pond is near the swarm.
-constexpr double kPondHomeReach = 8;
+/// How far a round home's first pond lies from its middle beyond its own radius, and its swarm from its
+/// middle: a short walk apart however big the home, so the kit planted round the pond is near the swarm.
+constexpr double kHomeSwarmReach = 8;
+/// A pond's radius as a share of its home's, clamped; the land a pond keeps from the home's edge; and
+/// the room a home needs beyond those for its swarm.
+constexpr double kHomePondShare = 0.18;
+constexpr double kHomeSmallestPond = 2.5;
+constexpr double kHomeLargestPond = 7;
+constexpr double kHomePondGap = 5;
+constexpr double kHomeSwarmRoom = 4;
 
-/// How a pond home is proportioned: its radius, its ponds' radius, the land kept between a pond and
-/// the coast, and how many ponds (0 to 2).
-struct PondHomeStyle
+/// The radius of a round home's ponds, and of the circle its kit is planted round.
+inline double homePondRadius(double homeRadius)
 {
-	double radius, pondRadius, lakeSeaGap;
-	int ponds;
-};
+	return std::clamp(kHomePondShare * homeRadius, kHomeSmallestPond, kHomeLargestPond);
+}
 
-/// Stamps a pond home: `visit(tile)` for every tile of the `home` outline centred at `centre` and
-/// turned to `axis` (the heading out from the map's middle), and its ponds' outlines into `pondMask`,
-/// turned the same way. Returns the first pond's centre, where the kit is planted.
+/// Whether a round home is big enough for its swarm, its kit and a pond with its gap to the edge. The
+/// same floor holds whether or not the home has ponds, so a design refuses the same crowded maps.
+inline bool homeHasRoom(double homeRadius)
+{
+	return homeRadius >= homePondRadius(homeRadius) + kHomePondGap + kHomeSwarmRoom;
+}
+
+/// Stamps a round home: `visit(tile)` for every tile of the `home` outline centred at `centre` and
+/// turned to `axis` (the heading out from the map's middle), and `ponds` (0 to 2) of the `pond` outline
+/// into `pondMask`, turned the same way; `pond` may be null when there are none. Returns where the kit
+/// goes: the first pond's centre, or the home's middle without ponds.
 template <typename Visit>
-ShapePoint stampPondHome(const Torus &t, ShapePoint centre, double axis, const RadialShape &home,
-						 const RadialShape &pond, const PondHomeStyle &style,
-						 std::vector<unsigned char> &pondMask, Visit visit)
+ShapePoint stampRoundHome(const Torus &t, ShapePoint centre, double axis, const RadialShape &home,
+						  double radius, int ponds, const RadialShape *pond,
+						  std::vector<unsigned char> &pondMask, Visit visit)
 {
 	forEachTileInShape(t, centre.x, centre.y, home, axis, [&](int i, double, double) { visit(i); });
-	// The first pond lies out from the middle, as far out as the coast gap allows but never more than
-	// a short walk from the swarm, so a big home's kit still grows beside water; a second on the flank,
+	// The first pond lies out from the middle, as far out as the edge gap allows but never more than a
+	// short walk from the swarm, so a big home's kit still grows beside water; a second on the flank,
 	// as close.
-	const double along = std::min({0.4 * style.radius, style.radius - style.pondRadius - style.lakeSeaGap - 1,
-								   style.pondRadius + kPondHomeReach});
-	const double flank = std::min(0.55 * style.radius, style.pondRadius + kPondHomeReach + 4);
-	const double offsets[2][2] = {{along, 0}, {-0.05 * style.radius, -flank}};
+	const double pondRadius = homePondRadius(radius);
+	const double along = std::min(
+		{0.4 * radius, radius - pondRadius - kHomePondGap - 1, pondRadius + kHomeSwarmReach});
+	const double flank = std::min(0.55 * radius, pondRadius + kHomeSwarmReach + 4);
+	const double offsets[2][2] = {{along, 0}, {-0.05 * radius, -flank}};
 	ShapePoint first = centre;
-	for (int p = 0; p < std::clamp(style.ponds, 0, 2); ++p)
+	for (int p = 0; p < std::clamp(ponds, 0, 2) && pond; ++p)
 	{
-		const double px = centre.x + offsets[p][0] * std::cos(axis) - offsets[p][1] * std::sin(axis);
-		const double py = centre.y + offsets[p][0] * std::sin(axis) + offsets[p][1] * std::cos(axis);
+		const double px =
+			centre.x + offsets[p][0] * std::cos(axis) - offsets[p][1] * std::sin(axis);
+		const double py =
+			centre.y + offsets[p][0] * std::sin(axis) + offsets[p][1] * std::cos(axis);
 		if (p == 0)
 			first = {px, py};
-		fillShape(pondMask, t, px, py, pond, axis);
+		fillShape(pondMask, t, px, py, *pond, axis);
 	}
 	return first;
 }
 
-/// Where a pond home's swarm goes: in from the middle towards the door, as the top-left tile of its
+/// Where a round home's swarm goes: in from the middle towards the door, as the top-left tile of its
 /// 4x4 footprint, which is what placeSettlement measures from.
-inline MapGeneratorPoint pondHomeAnchor(ShapePoint centre, double axis, double radius)
+inline MapGeneratorPoint homeSwarmSite(ShapePoint centre, double axis, double radius)
 {
-	const ShapePoint p = polarPoint(centre.x, centre.y, std::min(0.3 * radius, kPondHomeReach), axis + kPi);
+	const ShapePoint p =
+		polarPoint(centre.x, centre.y, std::min(0.3 * radius, kHomeSwarmReach), axis + kPi);
 	return MapGeneratorPoint(int(std::lround(p.x)) - 2, int(std::lround(p.y)) - 2);
 }
 
-/// A pond home's starter kit: wheat and wood either side of its first pond on the swarm's side, where
-/// they regrow. No stone: a pond home is walled in stone already, so a clump would only take room.
+/// A round home's starter kit, round `kitCentre` (stampRoundHome's result): a wheat patch and a wood
+/// patch on either side, towards the swarm, where a pond's water would regrow them. No stone: these
+/// homes are walled in stone already, so a clump would only take room.
 template <typename Eligible>
-void plantPondHomeKit(Map &map, const Torus &t, GenerationContext &context, ShapePoint firstPond,
-					  double axis, double pondRadius, int wheat, int wood, Eligible eligible)
+void plantHomeKit(Map &map, const Torus &t, GenerationContext &context, ShapePoint kitCentre,
+				  double axis, double homeRadius, int wheat, int wood, Eligible eligible)
 {
-	const KitFrame frame{int(std::lround(firstPond.x)), int(std::lround(firstPond.y)), axis};
-	const double reach = pondRadius * 1.2 + 3;
-	const Kit kit{frame.at(-0.4 * reach, -reach, 12), frame.at(-0.4 * reach, reach, 12),
-				  frame.at(reach + 3, 0, 10), wheat, wood, -1};
+	const KitFrame frame{int(std::lround(kitCentre.x)), int(std::lround(kitCentre.y)), axis};
+	const double reach = homePondRadius(homeRadius) * 1.2 + 3;
+	const Kit kit{frame.at(-0.4 * reach, -reach, 12),
+				  frame.at(-0.4 * reach, reach, 12),
+				  frame.at(reach + 3, 0, 10),
+				  wheat,
+				  wood,
+				  -1};
 	plantKit(map, t, context, kit, eligible);
 }
 
@@ -97,9 +122,9 @@ struct GroundAmounts
 /// samples `patchAt` and `splitAt` in the wedge frame, so every home gets the same patches.
 template <typename Eligible, typename PatchAt, typename SplitAt, typename AmountsFor>
 void furnishGround(Map &map, const Torus &t, GenerationContext &context,
-					   const Fertility::Field &fertility, Eligible eligible, PatchAt patchAt,
-					   SplitAt splitAt, AmountsFor amountsFor, const char *stoneStream,
-					   const char *fruitStream)
+				   const Fertility::Field &fertility, Eligible eligible, PatchAt patchAt,
+				   SplitAt splitAt, AmountsFor amountsFor, const char *stoneStream,
+				   const char *fruitStream)
 {
 	const int n = t.w * t.h;
 	std::vector<int> ground;
@@ -132,11 +157,8 @@ void furnishGround(Map &map, const Torus &t, GenerationContext &context,
 	plantFields(map, t, chosen, amounts.wheat, amounts.wood, splitAt);
 	scatterClumps(context, t, ground, amounts.outcrops, stoneStream, eligible,
 				  [&](MapGeneratorPoint p) { placeResourceClump(map, context, p, STONE, 1); });
-	scatterClumps(context, t, ground, amounts.groves, fruitStream, eligible,
-				  [&](MapGeneratorPoint p)
-				  {
-					  placeResourceClump(map, context, p,
-										 CHERRY + int(context.bounded(fruitStream, 3)), 1);
-				  });
+	scatterClumps(
+		context, t, ground, amounts.groves, fruitStream, eligible, [&](MapGeneratorPoint p)
+		{ placeResourceClump(map, context, p, CHERRY + int(context.bounded(fruitStream, 3)), 1); });
 }
 } // namespace MapGeneration

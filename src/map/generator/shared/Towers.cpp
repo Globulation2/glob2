@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Towers.h"
 #include "Game.h"
+#include "GenerationContext.h"
 #include "Settlements.h"
+#include "Walls.h"
 #include <algorithm>
 #include <cstdlib>
 #include <utility>
@@ -19,6 +21,16 @@ bool footprintsInRange(const Torus &t, int a, int b, int range)
 	return gap(dx) <= range && gap(dy) <= range;
 }
 } // namespace
+
+TowerRequest startingTowerRequest(int level, int count, int pads, int spacing)
+{
+	TowerRequest request;
+	request.range = kTowerRange[std::clamp(level - 1, 0, 2)];
+	request.towers = level > 0 ? count : 0;
+	request.pads = level > 0 ? pads : count + pads;
+	request.spacing = spacing;
+	return request;
+}
 
 TowerPlan chooseTowerSites(const Torus &t, const std::vector<int> &owner,
 						   const std::vector<unsigned char> &buildable,
@@ -52,7 +64,8 @@ TowerPlan chooseTowerSites(const Torus &t, const std::vector<int> &owner,
 				bool touches = false;
 				for (int fy = -1; fy <= 2 && !touches; ++fy)
 					for (int fx = -1; fx <= 2 && !touches; ++fx)
-						touches = (fx < 0 || fx > 1 || fy < 0 || fy > 1) && (*request.against)[t.at(x + fx, y + fy)];
+						touches = (fx < 0 || fx > 1 || fy < 0 || fy > 1) &&
+								  (*request.against)[t.at(x + fx, y + fy)];
 				fits = touches;
 			}
 			if (!fits)
@@ -97,7 +110,8 @@ TowerPlan chooseTowerSites(const Torus &t, const std::vector<int> &owner,
 				while (next[k] < ranked[k].size())
 				{
 					const auto [negative, i] = ranked[k][next[k]++];
-					if ((pass == 0 && negative >= 0) || protectedInRange[i] || !spaced(plan.towers[k], i))
+					if ((pass == 0 && negative >= 0) || protectedInRange[i] ||
+						!spaced(plan.towers[k], i))
 						continue;
 					plan.towers[k].push_back(i);
 					progress = true;
@@ -192,7 +206,8 @@ int evenTowerPlan(TowerPlan &plan)
 	return int(towers);
 }
 
-std::vector<unsigned char> roomyGround(const Torus &t, const std::vector<unsigned char> &open, int room)
+std::vector<unsigned char> roomyGround(const Torus &t, const std::vector<unsigned char> &open,
+									   int room)
 {
 	std::vector<unsigned char> closed(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
@@ -202,6 +217,50 @@ std::vector<unsigned char> roomyGround(const Torus &t, const std::vector<unsigne
 	for (int i = 0; i < t.size(); ++i)
 		roomy[i] = open[i] && (fromClosed[i] < 0 || fromClosed[i] >= room);
 	return roomy;
+}
+
+bool settleStartingTowers(Game &game, GenerationContext &context, TowerPlan &plan, int level,
+						  bool everyColonyNeedsOne, const std::vector<unsigned char> *goal)
+{
+	const Map &map = game.map;
+	const Torus t(map);
+	if (goal)
+	{
+		// Every colony walks out from the ring of tiles round its swarm's 4x4 footprint.
+		const int teams = int(plan.towers.size());
+		std::vector<unsigned char> open(t.size(), 0);
+		for (int i = 0; i < t.size(); ++i)
+		{
+			const int x = i % t.w, y = i / t.w;
+			open[i] =
+				!map.isWater(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
+		}
+		std::vector<std::vector<int>> sources(teams);
+		for (int k = 0; k < teams; ++k)
+			for (int dy = -1; dy <= 4; ++dy)
+				for (int dx = -1; dx <= 4; ++dx)
+					if (dx < 0 || dy < 0 || dx > 3 || dy > 3)
+						sources[k].push_back(t.at(context.bootX[k] + dx, context.bootY[k] + dy));
+		std::vector<std::vector<unsigned char>> goals(teams);
+		for (auto &g : goals)
+		{
+			g = *goal;
+			for (int i = 0; i < t.size(); ++i)
+				g[i] = g[i] && open[i];
+		}
+		dropBlockingSites(t, plan, open, sources, goals);
+	}
+	if (evenTowerPlan(plan) < (everyColonyNeedsOne ? 1 : 0))
+	{
+		context.detail = "a colony has no room for its towers";
+		return false;
+	}
+	if (!raiseTowers(game, plan, std::clamp(level - 1, 0, 2)))
+	{
+		context.detail = "a tower site no longer fits";
+		return false;
+	}
+	return true;
 }
 
 bool raiseTowers(Game &game, const TowerPlan &plan, int level)
