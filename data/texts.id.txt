@@ -1376,6 +1376,14 @@ Pemain & Tim
 Peta yang sudah jadi
 [Preview ready. Start plays this exact map.]
 Pratinjau siap. Memulai permainan menggunakan peta persis ini.
+[Regenerate all]
+Buat ulang semua
+[Generating preview...]
+Membuat pratinjau...
+[Preview unavailable]
+Pratinjau tidak tersedia
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Setiap lanskap ditampilkan sebagai peta sungguhan dengan ukuran dan jumlah koloni Anda saat ini. Pilih satu untuk memainkan peta yang ditampilkan.
 [Purple]
 Ungu
 [Quick clash]
@@ -1538,6 +1546,10 @@ Tidak ada pratinjau saat ini
 Pertarungan cepat: kecepatan ganda; peta yang dihasilkan dimulai dengan 8 pekerja.
 [Reroll]
 Hasilkan peta lain
+[Randomize]
+Hasilkan secara acak
+[Reset to defaults]
+Pulihkan nilai baku
 [Ruleset]
 Aturan
 [Select a map from the library.]
@@ -1774,3 +1786,229 @@ Lebar kanal
 Lebar jembatan darat
 [Lake size]
 Ukuran danau
+[Contested commons]
+Tanah bersama yang diperebutkan
+[Lattice]
+Kisi-kisi
+[Maze]
+Labirin
+[Fjord continent]
+Benua fjord
+[Islet size]
+Ukuran pulau kecil
+[Home radius]
+Radius markas
+[Cell size]
+Ukuran sel
+[Room size]
+Ukuran ruangan
+[Corridor width]
+Lebar koridor
+[Loopiness]
+Kepadatan jalur melingkar
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labirin memerlukan setidaknya dua sel secara horizontal dan vertikal; gunakan peta yang lebih besar atau sel yang lebih kecil.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Kanal selebar ini menyisakan terlalu sedikit rumput di setiap sel; gunakan kanal yang lebih sempit atau sel yang lebih besar.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labirin memiliki terlalu sedikit jalan buntu untuk koloni sebanyak ini; gunakan peta yang lebih besar atau sel yang lebih kecil.
+[Home island size]
+Ukuran pulau awal
+[Commons size]
+Ukuran tanah bersama
+[Moat width]
+Lebar parit air
+[Bridge count]
+Jumlah jembatan
+[Continent size]
+Ukuran benua
+[Coast roughness]
+Ketidakteraturan pantai
+[Fjord width]
+Lebar fjord
+[Lake connects to fjords]
+Danau terhubung ke fjord
+[Resource islands]
+Pulau sumber daya
+[Watershed]
+Daerah aliran sungai
+[River density]
+Kepadatan sungai
+[Dryness]
+Kekeringan
+[Fords]
+Penyeberangan dangkal
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Daerah aliran sungai memiliki terlalu sedikit dataran banjir untuk koloni sebanyak ini; gunakan peta yang lebih besar atau lebih sedikit koloni.
+[Stone highlands]
+Dataran tinggi batu
+[Valley size]
+Ukuran lembah
+[Pass width]
+Lebar celah gunung
+[Pond size]
+Ukuran kolam
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Lembah-lembah ini terlalu besar untuk peta; gunakan peta yang lebih besar atau lembah yang lebih kecil.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Dataran tinggi terlalu sempit untuk koloni sebanyak ini; gunakan peta yang lebih besar atau lebih sedikit koloni.
+[Symmetric arena]
+Arena simetris
+[Centre size]
+Ukuran pusat
+[Causeway width]
+Lebar jalan tambak
+[Causeways]
+Jalan tambak
+[Lakes]
+Danau
+[Resource richness]
+Kelimpahan sumber daya
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Arena simetris memerlukan 2, 4, atau 8 koloni.
+[Eight colonies need a square map in the symmetric arena.]
+Delapan koloni memerlukan peta persegi di arena simetris.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Pusat terlalu kecil untuk kebun buah di peta ini; gunakan pusat yang lebih besar atau peta yang lebih besar.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arena menyisakan terlalu sedikit ruang untuk setiap koloni; gunakan peta yang lebih besar, pusat yang lebih kecil, atau parit air yang lebih sempit.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Jalan tambak terlalu berdekatan; gunakan lebih sedikit jalan tambak atau yang lebih sempit, atau pusat yang lebih besar.
+[Ring world]
+Dunia cincin
+[Belt width]
+Lebar sabuk
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Sabuk terlalu pendek untuk koloni sebanyak ini; gunakan peta yang lebih panjang atau lebih sedikit koloni.
+[City states]
+Negara kota
+[Strait width]
+Lebar selat
+[Valleys]
+Lembah
+[Frontier richness]
+Kekayaan perbatasan
+[City states need at least one colony.]
+Negara kota membutuhkan setidaknya satu koloni.
+[Stone walls]
+Tembok batu
+[Sand patches]
+Petak pasir
+[Tidal flats]
+Dataran pasang surut
+[Everglades]
+Rawa-rawa
+[Pool spacing]
+Jarak antar kolam
+[Pool size]
+Ukuran kolam
+[Clearing size]
+Ukuran tanah lapang
+[Levee]
+Tanggul
+[Sloughs]
+Rawa-rawa
+[Everglades need at least one colony.]
+Rawa-rawa membutuhkan setidaknya satu koloni.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Terlalu banyak koloni untuk peta ini; gunakan peta lebih besar atau lebih sedikit koloni.
+[Coral]
+Karang
+[Fork angle]
+Sudut percabangan
+[Lean]
+Kemiringan
+[Home size]
+Ukuran markas
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Karang tidak muat di peta ini; gunakan peta yang lebih besar, selat yang lebih sempit, atau lebih sedikit koloni.
+[Branching]
+Percabangan
+[Branch width]
+Lebar cabang
+[Coral needs at least one colony.]
+Karang memerlukan setidaknya satu koloni.
+[Coral needs a map at least 128 tiles across.]
+Karang memerlukan peta dengan lebar setidaknya 128 petak.
+[Spider web]
+Jaring laba-laba
+[Spokes per colony]
+Jari-jari per koloni
+[Ring spacing]
+Jarak cincin
+[Thread width]
+Lebar benang
+[Sag]
+Kelenturan
+[Torn strands]
+Benang putus
+[Hub size]
+Ukuran pusat
+[Dew drops]
+Tetes embun
+[Spiral]
+Spiral
+[Spider webs need at least one colony.]
+Jaring laba-laba memerlukan setidaknya satu koloni.
+[Sandbars]
+Gosong pasir
+[Tide pools]
+Kolam pasang surut
+[Lagoons]
+Laguna
+[Central island]
+Pulau tengah
+[Tidal flats need at least one colony.]
+Dataran pasang surut membutuhkan setidaknya satu koloni.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Pulau-pulau asal tidak muat di peta ini; gunakan peta yang lebih besar, koloni lebih sedikit, atau pulau lebih kecil.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Tanah bersama dan selat menyisakan terlalu sedikit ruang untuk pangkalan; gunakan peta yang lebih besar, koloni lebih sedikit, tanah bersama lebih kecil, atau selat lebih sempit.
+[Wheat amount]
+Jumlah gandum
+[Wood amount]
+Jumlah kayu
+[Stone amount]
+Jumlah batu
+[Algae amount]
+Jumlah ganggang
+[Fruit amount]
+Jumlah buah
+[Stone on hilltops]
+Batu di puncak bukit
+[Winding river]
+Sungai berkelok
+[Sandy beaches]
+Pantai berpasir
+[Land bridges]
+Jembatan darat
+[Colony meadows]
+Padang rumput di sekitar koloni
+[Extra starting deposit]
+Sumber daya awal tambahan
+[Moat bridges]
+Jembatan di atas parit air
+[Jagged coastlines]
+Pantai bergerigi
+[Sand roads]
+Jalan pasir
+[Treasure in dead ends]
+Harta di jalan buntu
+[Fjord bank deposits]
+Sumber daya di tepi fjord
+[Sandy lake shore]
+Tepi danau berpasir
+[River delta]
+Delta sungai
+[Meandering rivers]
+Sungai berliku-liku
+[Fruit in home valleys]
+Buah di lembah awal
+[Moat]
+Parit air
+[Stone in the orchard]
+Batu di kebun buah
+[Colonies on both coasts]
+Koloni di kedua pantai
+[Winding belt]
+Sabuk berkelok

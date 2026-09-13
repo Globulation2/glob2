@@ -1380,6 +1380,14 @@ Igralci in ekipe
 Pripravljeni zemljevidi
 [Preview ready. Start plays this exact map.]
 Predogled pripravljen. Začetek igre uporablja točno ta zemljevid.
+[Regenerate all]
+Znova ustvari vse
+[Generating preview...]
+Ustvarjanje predogleda ...
+[Preview unavailable]
+Predogled ni na voljo
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Vsaka pokrajina je prikazana kot pravi zemljevid v vaši trenutni velikosti in številu kolonij. Izberite eno, da igrate prikazani zemljevid.
 [Purple]
 Vijolična
 [Quick clash]
@@ -1542,6 +1550,10 @@ Ni trenutnega predogleda
 Hitra bitka: dvojna hitrost; generirani zemljevidi se začnejo z 8 delavci.
 [Reroll]
 Ustvarite drug zemljevid
+[Randomize]
+Naključno ustvari
+[Reset to defaults]
+Obnovi privzete vrednosti
 [Ruleset]
 Nabor pravil
 [Select a map from the library.]
@@ -1778,3 +1790,229 @@ Samodejno prikaži pregled zemljevida v obliki torusa med premikanjem po zemljev
 Širina kopenskega mostu
 [Lake size]
 Velikost jezera
+[Contested commons]
+Sporno skupno ozemlje
+[Lattice]
+Mreža
+[Maze]
+Labirint
+[Fjord continent]
+Fjordska celina
+[Islet size]
+Velikost otočka
+[Home radius]
+Polmer baze
+[Cell size]
+Velikost celice
+[Room size]
+Velikost sobe
+[Corridor width]
+Širina hodnika
+[Loopiness]
+Gostota zank
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labirint potrebuje vsaj dve celici v širino in v višino; uporabite večji zemljevid ali manjše celice.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Tako široki kanali v vsaki celici pustijo premalo trave; uporabite ožje kanale ali večje celice.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labirint ima premalo slepih ulic za toliko kolonij; uporabite večji zemljevid ali manjše celice.
+[Home island size]
+Velikost začetnega otoka
+[Commons size]
+Velikost skupnega ozemlja
+[Moat width]
+Širina vodnega jarka
+[Bridge count]
+Število mostov
+[Continent size]
+Velikost celine
+[Coast roughness]
+Razgibanost obale
+[Fjord width]
+Širina fjorda
+[Lake connects to fjords]
+Jezero povezano s fjordi
+[Resource islands]
+Otoki z viri
+[Watershed]
+Porečje
+[River density]
+Gostota rek
+[Dryness]
+Sušnost
+[Fords]
+Brodi
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Porečje ima premalo poplavne ravnice za toliko kolonij; uporabite večji zemljevid ali manj kolonij.
+[Stone highlands]
+Kamnito višavje
+[Valley size]
+Velikost doline
+[Pass width]
+Širina prelaza
+[Pond size]
+Velikost mlake
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Te doline so prevelike za zemljevid; uporabite večji zemljevid ali manjše doline.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Višavje ima premalo prostora za toliko kolonij; uporabite večji zemljevid ali manj kolonij.
+[Symmetric arena]
+Simetrična arena
+[Centre size]
+Velikost središča
+[Causeway width]
+Širina nasipa
+[Causeways]
+Nasipi
+[Lakes]
+Jezera
+[Resource richness]
+Bogastvo virov
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Simetrična arena potrebuje 2, 4 ali 8 kolonij.
+[Eight colonies need a square map in the symmetric arena.]
+Osem kolonij potrebuje v simetrični areni kvadraten zemljevid.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Središče je na tem zemljevidu premajhno za sadovnjak; uporabite večje središče ali večji zemljevid.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arena pušča premalo prostora za vsako kolonijo; uporabite večji zemljevid, manjše središče ali ožji vodni jarek.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Nasipi so preblizu skupaj; uporabite manj nasipov, ožje nasipe ali večje središče.
+[Ring world]
+Obročasti svet
+[Belt width]
+Širina pasu
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Pas je prekratek za toliko kolonij; uporabite daljši zemljevid ali manj kolonij.
+[City states]
+Mestne države
+[Strait width]
+Širina ožine
+[Valleys]
+Doline
+[Frontier richness]
+Bogastvo obmejnih dežel
+[City states need at least one colony.]
+Mestne države potrebujejo vsaj eno kolonijo.
+[Stone walls]
+Kamniti zidovi
+[Sand patches]
+Peščene zaplate
+[Tidal flats]
+Plimske ravnice
+[Everglades]
+Močvirja
+[Pool spacing]
+Razmik med mlakami
+[Pool size]
+Velikost mlak
+[Clearing size]
+Velikost jase
+[Levee]
+Nasip
+[Sloughs]
+Mrtvice
+[Everglades need at least one colony.]
+Močvirja potrebujejo vsaj eno kolonijo.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Preveč kolonij za ta zemljevid; uporabite večji zemljevid ali manj kolonij.
+[Coral]
+Korala
+[Fork angle]
+Kot razvejanja
+[Lean]
+Nagib
+[Home size]
+Velikost doma
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Korala ne gre na ta zemljevid; uporabite večji zemljevid, ožje ožine ali manj kolonij.
+[Branching]
+Razvejanost
+[Branch width]
+Širina vej
+[Coral needs at least one colony.]
+Korala potrebuje vsaj eno kolonijo.
+[Coral needs a map at least 128 tiles across.]
+Korala potrebuje zemljevid, širok vsaj 128 polj.
+[Spider web]
+Pajčevina
+[Spokes per colony]
+Žarki na kolonijo
+[Ring spacing]
+Razmik obročev
+[Thread width]
+Širina niti
+[Sag]
+Povešenost
+[Torn strands]
+Pretrgane niti
+[Hub size]
+Velikost središča
+[Dew drops]
+Kapljice rose
+[Spiral]
+Spirala
+[Spider webs need at least one colony.]
+Pajčevina potrebuje vsaj eno kolonijo.
+[Sandbars]
+Peščene sipine
+[Tide pools]
+Plimski tolmuni
+[Lagoons]
+Lagune
+[Central island]
+Osrednji otok
+[Tidal flats need at least one colony.]
+Plimske ravnice potrebujejo vsaj eno kolonijo.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Domači otoki ne gredo na ta zemljevid; uporabite večji zemljevid, manj kolonij ali manjše otoke.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Skupno ozemlje in ožina puščata premalo prostora za domače baze; uporabite večji zemljevid, manj kolonij, manjše skupno ozemlje ali ožjo ožino.
+[Wheat amount]
+Količina pšenice
+[Wood amount]
+Količina lesa
+[Stone amount]
+Količina kamenja
+[Algae amount]
+Količina alg
+[Fruit amount]
+Količina sadja
+[Stone on hilltops]
+Kamenje na vrhovih gričev
+[Winding river]
+Vijugasta reka
+[Sandy beaches]
+Peščene plaže
+[Land bridges]
+Kopenski mostovi
+[Colony meadows]
+Travniki okoli kolonij
+[Extra starting deposit]
+Dodatno začetno nahajališče
+[Moat bridges]
+Mostovi čez vodni jarek
+[Jagged coastlines]
+Razčlenjene obale
+[Sand roads]
+Peščene poti
+[Treasure in dead ends]
+Zakladi v slepih ulicah
+[Fjord bank deposits]
+Nahajališča na bregovih fjordov
+[Sandy lake shore]
+Peščena obala jezera
+[River delta]
+Rečna delta
+[Meandering rivers]
+Vijugaste reke
+[Fruit in home valleys]
+Sadje v začetnih dolinah
+[Moat]
+Vodni jarek
+[Stone in the orchard]
+Kamenje v sadovnjaku
+[Colonies on both coasts]
+Kolonije na obeh obalah
+[Winding belt]
+Vijugast pas

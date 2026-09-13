@@ -1404,6 +1404,14 @@ Spelers & Teams
 Vooraf gemaakte kaarten
 [Preview ready. Start plays this exact map.]
 Voorbeeld klaar. Bij het starten van het spel wordt deze exacte kaart gebruikt.
+[Regenerate all]
+Alles opnieuw genereren
+[Generating preview...]
+Voorbeeld wordt gemaakt...
+[Preview unavailable]
+Geen voorbeeld beschikbaar
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Elk landschap wordt getoond als een echte kaart met je huidige grootte en aantal kolonies. Kies er een om de getoonde kaart te spelen.
 [Purple]
 Paars
 [Quick clash]
@@ -1566,6 +1574,10 @@ Geen actueel voorbeeld
 Snelle strijd: dubbele snelheid; gegenereerde kaarten beginnen met 8 werkers.
 [Reroll]
 Genereer nog een kaart
+[Randomize]
+Willekeurig genereren
+[Reset to defaults]
+Standaardwaarden herstellen
 [Ruleset]
 Regelset
 [Select a map from the library.]
@@ -1802,3 +1814,229 @@ Kanaalbreedte
 Breedte van de landbrug
 [Lake size]
 Meergrootte
+[Contested commons]
+Betwist gemeenschappelijk gebied
+[Lattice]
+Raster
+[Maze]
+Doolhof
+[Fjord continent]
+Fjordencontinent
+[Islet size]
+Grootte van het eilandje
+[Home radius]
+Straal van het startgebied
+[Cell size]
+Celgrootte
+[Room size]
+Kamergrootte
+[Corridor width]
+Gangbreedte
+[Loopiness]
+Aantal lussen
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Het doolhof heeft minstens twee cellen in de breedte en de hoogte nodig; gebruik een grotere kaart of kleinere cellen.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Zulke brede kanalen laten te weinig gras in elke cel over; gebruik smallere kanalen of grotere cellen.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Het doolhof heeft te weinig doodlopende gangen voor zoveel kolonies; gebruik een grotere kaart of kleinere cellen.
+[Home island size]
+Grootte van het starteiland
+[Commons size]
+Grootte van het gemeenschappelijke gebied
+[Moat width]
+Slotgrachtbreedte
+[Bridge count]
+Aantal bruggen
+[Continent size]
+Continentgrootte
+[Coast roughness]
+Grilligheid van de kust
+[Fjord width]
+Fjordbreedte
+[Lake connects to fjords]
+Meer verbonden met fjorden
+[Resource islands]
+Grondstofeilanden
+[Watershed]
+Stroomgebied
+[River density]
+Rivierdichtheid
+[Dryness]
+Droogte
+[Fords]
+Doorwaadplaatsen
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Het stroomgebied heeft te weinig overstromingsvlakte voor zoveel kolonies; gebruik een grotere kaart of minder kolonies.
+[Stone highlands]
+Stenen hooglanden
+[Valley size]
+Dalgrootte
+[Pass width]
+Pasbreedte
+[Pond size]
+Vijvergrootte
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Deze dalen zijn te groot voor de kaart; gebruik een grotere kaart of kleinere dalen.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+De hooglanden hebben te weinig ruimte voor zoveel kolonies; gebruik een grotere kaart of minder kolonies.
+[Symmetric arena]
+Symmetrische arena
+[Centre size]
+Grootte van het centrum
+[Causeway width]
+Dijkwegbreedte
+[Causeways]
+Dijkwegen
+[Lakes]
+Meren
+[Resource richness]
+Rijkdom aan grondstoffen
+[Symmetric arena needs 2, 4 or 8 colonies.]
+De symmetrische arena heeft 2, 4 of 8 kolonies nodig.
+[Eight colonies need a square map in the symmetric arena.]
+Acht kolonies hebben in de symmetrische arena een vierkante kaart nodig.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Het centrum is te klein voor een boomgaard op deze kaart; gebruik een groter centrum of een grotere kaart.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+De arena laat te weinig ruimte voor elke kolonie; gebruik een grotere kaart, een kleiner centrum of een smallere slotgracht.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+De dijkwegen liggen te dicht bij elkaar; gebruik minder of smallere dijkwegen, of een groter centrum.
+[Ring world]
+Ringwereld
+[Belt width]
+Gordelbreedte
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+De gordel is te kort voor zoveel kolonies; gebruik een langere kaart of minder kolonies.
+[City states]
+Stadstaten
+[Strait width]
+Breedte van de zeestraat
+[Valleys]
+Valleien
+[Frontier richness]
+Rijkdom van de Nieuwe Wereld
+[City states need at least one colony.]
+Stadstaten hebben minstens één kolonie nodig.
+[Stone walls]
+Stenen muren
+[Sand patches]
+Zandvlakken
+[Tidal flats]
+Wadden
+[Everglades]
+Moerasland
+[Pool spacing]
+Afstand tussen poelen
+[Pool size]
+Grootte van de poelen
+[Clearing size]
+Grootte van de open plek
+[Levee]
+Dijk
+[Sloughs]
+Moerassloten
+[Everglades need at least one colony.]
+Het moerasland heeft minstens één kolonie nodig.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Te veel kolonies voor deze kaart; gebruik een grotere kaart of minder kolonies.
+[Coral]
+Koraal
+[Fork angle]
+Vertakkingshoek
+[Lean]
+Helling
+[Home size]
+Grootte van de thuisbasis
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Het koraal past niet op deze kaart; gebruik een grotere kaart, smallere zeestraten of minder kolonies.
+[Branching]
+Vertakking
+[Branch width]
+Takbreedte
+[Coral needs at least one colony.]
+Koraal heeft minstens één kolonie nodig.
+[Coral needs a map at least 128 tiles across.]
+Koraal heeft een kaart van minstens 128 tegels breed nodig.
+[Spider web]
+Spinnenweb
+[Spokes per colony]
+Spaken per kolonie
+[Ring spacing]
+Ringafstand
+[Thread width]
+Draadbreedte
+[Sag]
+Doorhang
+[Torn strands]
+Gescheurde draden
+[Hub size]
+Grootte van het midden
+[Dew drops]
+Dauwdruppels
+[Spiral]
+Spiraal
+[Spider webs need at least one colony.]
+Een spinnenweb heeft minstens één kolonie nodig.
+[Sandbars]
+Zandbanken
+[Tide pools]
+Getijdenpoelen
+[Lagoons]
+Lagunes
+[Central island]
+Centraal eiland
+[Tidal flats need at least one colony.]
+De wadden hebben minstens één kolonie nodig.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+De thuiseilanden passen niet op deze kaart; gebruik een grotere kaart, minder kolonies of kleinere eilanden.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Het gemeenschappelijke gebied en de zeestraat laten te weinig ruimte voor de thuisbases; gebruik een grotere kaart, minder kolonies, een kleiner gemeenschappelijk gebied of een smallere zeestraat.
+[Wheat amount]
+Hoeveelheid tarwe
+[Wood amount]
+Hoeveelheid hout
+[Stone amount]
+Hoeveelheid steen
+[Algae amount]
+Hoeveelheid zeewier
+[Fruit amount]
+Hoeveelheid vruchten
+[Stone on hilltops]
+Steen op heuveltoppen
+[Winding river]
+Kronkelende rivier
+[Sandy beaches]
+Zandstranden
+[Land bridges]
+Landbruggen
+[Colony meadows]
+Weiden rond de kolonies
+[Extra starting deposit]
+Extra startvoorraad
+[Moat bridges]
+Bruggen over de gracht
+[Jagged coastlines]
+Grillige kusten
+[Sand roads]
+Zandwegen
+[Treasure in dead ends]
+Schatten in doodlopende gangen
+[Fjord bank deposits]
+Voorraden langs de fjordoevers
+[Sandy lake shore]
+Zandige meeroever
+[River delta]
+Rivierdelta
+[Meandering rivers]
+Meanderende rivieren
+[Fruit in home valleys]
+Vruchten in de startdalen
+[Moat]
+Slotgracht
+[Stone in the orchard]
+Steen in de boomgaard
+[Colonies on both coasts]
+Kolonies aan beide kusten
+[Winding belt]
+Kronkelende gordel

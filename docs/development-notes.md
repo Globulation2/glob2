@@ -55,6 +55,10 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
 - Use `Utilities::syncRand()` for simulation randomness. Keep iteration and tie
   breaking deterministic; never depend on pointer ordering, hash-table iteration,
   thread scheduling or wall-clock budgets for simulation decisions.
+- `syncRand()`'s generator is `thread_local`: the simulation runs on one thread, so its
+  sequence is unchanged, and a background thread that generates maps (the lobby's
+  landscape previews) seeds its own stream without racing the UI thread's menu colony.
+  A new thread starts from the default seed; seed it before relying on its sequence.
 - For behavior-preserving refactors and optimizations, compare base and changed
   builds using identical saves/maps, seeds, settings and orders. Compare per-tick
   state/checksums as well as replay bytes: matching orders alone do not prove that
@@ -95,6 +99,10 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
 - A new regression harness only protects the codebase once
   `.github/workflows/build.yml` actually builds and runs it; one that only runs by
   hand, once, is not a regression test.
+- A map generator's `revision` is enforced by `MapGeneratorGoldenTest`: a seed's map changing
+  while the revision stays fails the check, so bump the revision and run `--update` together
+  (see the framework reference). `--sweep` there is the first thing to run after touching
+  colony placement; a cell it fails is a "Generation failed" a player would see.
 - When fixing a bug, confirm the regression actually fails against the unpatched
   code before trusting that it passes against the fix. A test that passes either way
   is not testing the bug.
@@ -113,11 +121,18 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
 ## Local conventions
 
 Preserve other contributors' work; use an isolated checkout when work overlaps.
-Use PascalCase C++ filenames (not snake_case) and `#pragma once`. Case-only renames
+Use PascalCase C++ filenames (not snake_case) and `#pragma once`. The map generator tree
+(`src/map/generator/`, its tests and the lobby's landscape picker) is kept in the style
+`.clang-format` at the repository root describes: tabs, Allman braces, 100 columns. Run
+`clang-format -i` on the files you touch there (`pip install clang-format` gives a current
+binary), and `clang-format --dry-run -Werror` over the tree to check it. Case-only renames
 on macOS need an intermediate filename, e.g. `git mv Foo.cpp temp.cpp` then
 `git mv temp.cpp foo.cpp`. Keep comments terse and about the current code; put change
 history and rationale in commit messages; omit tombstone or “moved to” comments.
 Diagnostics use `std::cerr`; there is no logging facility to target.
+Windows headers define `near`, `far` and `small` as macros, so never name an identifier
+after one: mingw expands `int near[3]` to `int [3]`, which then fails as a structured
+binding declaration, and the error points at the syntax rather than at the macro.
 
 For unused-include cleanup, generate `compile_commands.json` and use
 `tools/remove-unused-includes.py`; do not apply blind bulk fixes. Rebuild client,

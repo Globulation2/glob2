@@ -1,3 +1,5 @@
+#include "GeneratorRegistry.h"
+#include "GenerationContext.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -15,7 +17,7 @@
 #include "Game.h"
 #include "LANMenuScreen.h"
 #include "MainMenuScreen.h"
-#include "MapGenerator.h"
+#include "GenerationService.h"
 #include "SettingsScreen.h"
 #include <StringTable.h>
 #include "Utilities.h"
@@ -129,7 +131,12 @@ int Glob2::runNoX()
 
 int Glob2::runTestGames()
 {
-	globalContainer->automaticEndingSteps=90000;
+	// GLOB2_TEST_MAX_TICKS overrides the 90,000-tick cap for tooling that
+	// trades game length for throughput (tools/map_fairness_tournament.py).
+	// The cap only decides when the driver stops the game; it never changes
+	// how a tick is simulated.
+	const char* envMaxTicks = getenv("GLOB2_TEST_MAX_TICKS");
+	globalContainer->automaticEndingSteps = (envMaxTicks && atoi(envMaxTicks) > 0) ? atoi(envMaxTicks) : 90000;
 	int maxRuns = globalContainer->runTestGamesCount;
 	int run = 0;
 	while(maxRuns == 0 || run < maxRuns)
@@ -166,10 +173,11 @@ int Glob2::runTestMapGeneration()
 	setSyncRandSeed(t);
 	while(true)
 	{
-		MapGenerationDescriptor descriptor;
+		GenerationRequest descriptor;
 		
-		using D = MapGenerationDescriptor;
-		auto method = static_cast<D::Method>(D::eSWAMP + syncRand() % (D::METHOD_COUNT - 1));
+		using D = GenerationRequest;
+		const auto methods=GeneratorRegistry::builtins().methods(false);
+        auto method=methods[syncRand()%methods.size()];
 		descriptor.setMethodDefaults(method);
 		auto controls = D::sharedControls();
 		const auto& specific = D::controls(method);
@@ -183,9 +191,11 @@ int Glob2::runTestMapGeneration()
 			continue;
 
 		std::cout<<"Generating Map"<<std::endl;		
-		MapGenerator generator;
+		GenerationService generator;
 		Game game(NULL);
-		generator.generateMap(game, descriptor);
+		descriptor.seed=syncRand();
+        auto result=generator.generate(game, descriptor);
+        if(!result) std::cerr << result.diagnostic() << std::endl;
 	}
 	return 0;
 }

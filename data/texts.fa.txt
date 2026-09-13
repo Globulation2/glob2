@@ -1378,6 +1378,14 @@ Cortex
 نقشه های از پیش ساخته شده
 [Preview ready. Start plays this exact map.]
 پیش نمایش آماده است. شروع بازی دقیقاً از این نقشه استفاده می کند.
+[Regenerate all]
+ایجاد دوباره همه
+[Generating preview...]
+در حال ایجاد پیش‌نمایش...
+[Preview unavailable]
+پیش‌نمایش در دسترس نیست
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+هر چشم‌انداز به صورت یک نقشه واقعی با اندازه و تعداد مستعمرات فعلی شما نشان داده می‌شود. یکی را انتخاب کنید تا نقشه نشان داده شده را بازی کنید.
 [Purple]
 بنفش
 [Quick clash]
@@ -1540,6 +1548,10 @@ Cortex
 نبرد سریع: سرعت دو برابر. نقشه های تولید شده با 8 کارگر شروع می شود.
 [Reroll]
 نقشه دیگری ایجاد کنید
+[Randomize]
+ایجاد تصادفی
+[Reset to defaults]
+بازگرداندن مقادیر پیش‌فرض
 [Ruleset]
 مجموعه قوانین
 [Select a map from the library.]
@@ -1776,3 +1788,229 @@ OpenGL در این بیلد موجود نیست.
 پهنای پل خشکی
 [Lake size]
 اندازهٔ دریاچه
+[Contested commons]
+سرزمین مشترک مورد مناقشه
+[Lattice]
+شبکه
+[Maze]
+هزارتو
+[Fjord continent]
+قارهٔ آبدره‌ای
+[Islet size]
+اندازهٔ جزیرهٔ کوچک
+[Home radius]
+شعاع پایگاه
+[Cell size]
+اندازهٔ سلول
+[Room size]
+اندازهٔ اتاق
+[Corridor width]
+پهنای راهرو
+[Loopiness]
+میزان حلقه‌دار بودن
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+هزارتو دست‌کم به دو سلول در عرض و در طول نیاز دارد؛ از نقشهٔ بزرگ‌تر یا سلول‌های کوچک‌تر استفاده کنید.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+آبراه‌هایی با این پهنا در هر سلول چمن بسیار کمی باقی می‌گذارند؛ از آبراه‌های باریک‌تر یا سلول‌های بزرگ‌تر استفاده کنید.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+هزارتو برای این تعداد مستعمره بن‌بست‌های بسیار کمی دارد؛ از نقشهٔ بزرگ‌تر یا سلول‌های کوچک‌تر استفاده کنید.
+[Home island size]
+اندازهٔ جزیرهٔ آغازین
+[Commons size]
+اندازهٔ سرزمین مشترک
+[Moat width]
+پهنای خندق آبی
+[Bridge count]
+تعداد پل‌ها
+[Continent size]
+اندازهٔ قاره
+[Coast roughness]
+ناهمواری ساحل
+[Fjord width]
+پهنای آبدره
+[Lake connects to fjords]
+اتصال دریاچه به آبدره‌ها
+[Resource islands]
+جزایر منابع
+[Watershed]
+حوضهٔ آبریز
+[River density]
+تراکم رودخانه‌ها
+[Dryness]
+خشکی
+[Fords]
+گدارها
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+حوضهٔ آبریز برای این تعداد مستعمره دشت سیلابی بسیار کمی دارد؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
+[Stone highlands]
+ارتفاعات سنگی
+[Valley size]
+اندازهٔ دره
+[Pass width]
+پهنای گردنه
+[Pond size]
+اندازهٔ برکه
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+این دره‌ها برای نقشه بیش از حد بزرگ‌اند؛ از نقشهٔ بزرگ‌تر یا دره‌های کوچک‌تر استفاده کنید.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+ارتفاعات برای این تعداد مستعمره جای بسیار کمی دارند؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
+[Symmetric arena]
+میدان متقارن
+[Centre size]
+اندازهٔ مرکز
+[Causeway width]
+پهنای گذرگاه مرتفع
+[Causeways]
+گذرگاه‌های مرتفع
+[Lakes]
+دریاچه‌ها
+[Resource richness]
+فراوانی منابع
+[Symmetric arena needs 2, 4 or 8 colonies.]
+میدان متقارن به 2، 4 یا 8 مستعمره نیاز دارد.
+[Eight colonies need a square map in the symmetric arena.]
+هشت مستعمره در میدان متقارن به نقشهٔ مربعی نیاز دارند.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+مرکز در این نقشه برای یک باغ میوه بیش از حد کوچک است؛ از مرکز بزرگ‌تر یا نقشهٔ بزرگ‌تر استفاده کنید.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+میدان برای هر مستعمره جای بسیار کمی باقی می‌گذارد؛ از نقشهٔ بزرگ‌تر، مرکز کوچک‌تر یا خندق آبی باریک‌تر استفاده کنید.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+گذرگاه‌های مرتفع بیش از حد به هم نزدیک‌اند؛ از گذرگاه‌های مرتفع کمتر یا باریک‌تر، یا مرکز بزرگ‌تر استفاده کنید.
+[Ring world]
+جهان حلقه‌ای
+[Belt width]
+پهنای کمربند
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+کمربند برای این تعداد مستعمره بیش از حد کوتاه است؛ از نقشهٔ بلندتر یا مستعمره‌های کمتر استفاده کنید.
+[City states]
+دولت‌شهرها
+[Strait width]
+پهنای تنگه
+[Valleys]
+دره‌ها
+[Frontier richness]
+ثروت سرزمین‌های مرزی
+[City states need at least one colony.]
+دولت‌شهرها دست‌کم به یک مستعمره نیاز دارند.
+[Stone walls]
+دیوارهای سنگی
+[Sand patches]
+لکه‌های شنی
+[Tidal flats]
+پهنه‌های جزر و مدی
+[Everglades]
+باتلاق‌ها
+[Pool spacing]
+فاصلهٔ حوضچه‌ها
+[Pool size]
+اندازهٔ حوضچه‌ها
+[Clearing size]
+اندازهٔ محوطهٔ باز
+[Levee]
+خاکریز
+[Sloughs]
+مرداب‌ها
+[Everglades need at least one colony.]
+باتلاق‌ها دست‌کم به یک مستعمره نیاز دارند.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+تعداد مستعمره‌ها برای این نقشه زیاد است؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
+[Coral]
+مرجان
+[Fork angle]
+زاویه انشعاب
+[Lean]
+شیب
+[Home size]
+اندازه پایگاه
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+مرجان در این نقشه جا نمی‌شود؛ از نقشه‌ای بزرگ‌تر، تنگه‌های باریک‌تر یا مستعمره‌های کمتر استفاده کنید.
+[Branching]
+انشعاب
+[Branch width]
+پهنای شاخه‌ها
+[Coral needs at least one colony.]
+مرجان دست‌کم به یک مستعمره نیاز دارد.
+[Coral needs a map at least 128 tiles across.]
+مرجان به نقشه‌ای با پهنای دست‌کم ۱۲۸ خانه نیاز دارد.
+[Spider web]
+تار عنکبوت
+[Spokes per colony]
+پره برای هر مستعمره
+[Ring spacing]
+فاصله حلقه‌ها
+[Thread width]
+پهنای رشته‌ها
+[Sag]
+افتادگی
+[Torn strands]
+رشته‌های پاره
+[Hub size]
+اندازه مرکز
+[Dew drops]
+قطره‌های شبنم
+[Spiral]
+مارپیچ
+[Spider webs need at least one colony.]
+تار عنکبوت دست‌کم به یک مستعمره نیاز دارد.
+[Sandbars]
+پشته‌های شنی
+[Tide pools]
+حوضچه‌های جزر و مدی
+[Lagoons]
+مرداب‌ها
+[Central island]
+جزیرهٔ مرکزی
+[Tidal flats need at least one colony.]
+پهنه‌های جزر و مدی دست‌کم به یک مستعمره نیاز دارند.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+جزیره‌های اصلی در این نقشه جا نمی‌شوند؛ از نقشهٔ بزرگ‌تر، مستعمرات کمتر یا جزیره‌های کوچک‌تر استفاده کنید.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+سرزمین مشترک و تنگه فضای کافی برای پایگاه‌ها باقی نمی‌گذارند؛ از نقشهٔ بزرگ‌تر، مستعمرات کمتر، سرزمین مشترک کوچک‌تر یا تنگهٔ باریک‌تر استفاده کنید.
+[Wheat amount]
+مقدار گندم
+[Wood amount]
+مقدار چوب
+[Stone amount]
+مقدار سنگ
+[Algae amount]
+میزان جلبک
+[Fruit amount]
+مقدار میوه
+[Stone on hilltops]
+سنگ روی قلهٔ تپه‌ها
+[Winding river]
+رودخانهٔ پرپیچ‌وخم
+[Sandy beaches]
+ساحل‌های شنی
+[Land bridges]
+پل‌های خشکی
+[Colony meadows]
+چمنزار پیرامون مستعمره‌ها
+[Extra starting deposit]
+ذخیرهٔ آغازین اضافی
+[Moat bridges]
+پل‌های روی خندق آبی
+[Jagged coastlines]
+ساحل‌های دندانه‌دار
+[Sand roads]
+جاده‌های شنی
+[Treasure in dead ends]
+گنج در بن‌بست‌ها
+[Fjord bank deposits]
+ذخایر کرانهٔ آبدره‌ها
+[Sandy lake shore]
+کرانهٔ شنی دریاچه
+[River delta]
+دلتای رودخانه
+[Meandering rivers]
+رودخانه‌های مارپیچ
+[Fruit in home valleys]
+میوه در دره‌های آغازین
+[Moat]
+خندق آبی
+[Stone in the orchard]
+سنگ در باغ میوه
+[Colonies on both coasts]
+مستعمره‌ها در هر دو ساحل
+[Winding belt]
+کمربند پرپیچ‌وخم

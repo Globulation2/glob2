@@ -1380,6 +1380,14 @@ Jucători și echipe
 Hărți prefabricate
 [Preview ready. Start plays this exact map.]
 Previzualizare gata. Pornirea jocului folosește exact această hartă.
+[Regenerate all]
+Regenerează tot
+[Generating preview...]
+Se generează previzualizarea...
+[Preview unavailable]
+Previzualizare indisponibilă
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Fiecare peisaj este afișat ca o hartă reală la dimensiunea și numărul de colonii curente. Alegeți unul pentru a juca harta afișată.
 [Purple]
 Violet
 [Quick clash]
@@ -1542,6 +1550,10 @@ Nicio previzualizare curentă
 Luptă rapidă: viteză dublă; hărțile generate încep cu 8 lucrători.
 [Reroll]
 Generați o altă hartă
+[Randomize]
+Generați aleatoriu
+[Reset to defaults]
+Restabilește valorile implicite
 [Ruleset]
 Set de reguli
 [Select a map from the library.]
@@ -1778,3 +1790,229 @@ Lățimea canalului
 Lățimea punții de uscat
 [Lake size]
 Mărimea lacului
+[Contested commons]
+Teritoriu comun disputat
+[Lattice]
+Grilă
+[Maze]
+Labirint
+[Fjord continent]
+Continent cu fiorduri
+[Islet size]
+Mărimea insuliței
+[Home radius]
+Raza bazei
+[Cell size]
+Mărimea celulei
+[Room size]
+Mărimea camerei
+[Corridor width]
+Lățimea coridorului
+[Loopiness]
+Densitatea buclelor
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labirintul are nevoie de cel puțin două celule pe orizontală și pe verticală; folosiți o hartă mai mare sau celule mai mici.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Canalele atât de late lasă prea puțină iarbă în fiecare celulă; folosiți canale mai înguste sau celule mai mari.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labirintul are prea puține fundături pentru atâtea colonii; folosiți o hartă mai mare sau celule mai mici.
+[Home island size]
+Mărimea insulei de pornire
+[Commons size]
+Mărimea teritoriului comun
+[Moat width]
+Lățimea șanțului cu apă
+[Bridge count]
+Numărul de poduri
+[Continent size]
+Mărimea continentului
+[Coast roughness]
+Neregularitatea coastei
+[Fjord width]
+Lățimea fiordului
+[Lake connects to fjords]
+Lac conectat la fiorduri
+[Resource islands]
+Insule cu resurse
+[Watershed]
+Bazin hidrografic
+[River density]
+Densitatea râurilor
+[Dryness]
+Ariditate
+[Fords]
+Vaduri
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Bazinul hidrografic are prea puțină luncă pentru atâtea colonii; folosiți o hartă mai mare sau mai puține colonii.
+[Stone highlands]
+Podișuri de piatră
+[Valley size]
+Mărimea văii
+[Pass width]
+Lățimea trecătorii
+[Pond size]
+Mărimea iazului
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Aceste văi sunt prea mari pentru hartă; folosiți o hartă mai mare sau văi mai mici.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Podișurile au prea puțin spațiu pentru atâtea colonii; folosiți o hartă mai mare sau mai puține colonii.
+[Symmetric arena]
+Arenă simetrică
+[Centre size]
+Mărimea centrului
+[Causeway width]
+Lățimea digului
+[Causeways]
+Diguri
+[Lakes]
+Lacuri
+[Resource richness]
+Bogăția resurselor
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Arena simetrică necesită 2, 4 sau 8 colonii.
+[Eight colonies need a square map in the symmetric arena.]
+Opt colonii necesită o hartă pătrată în arena simetrică.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Centrul este prea mic pentru o livadă pe această hartă; folosiți un centru mai mare sau o hartă mai mare.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arena lasă prea puțin spațiu pentru fiecare colonie; folosiți o hartă mai mare, un centru mai mic sau un șanț cu apă mai îngust.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Digurile sunt prea apropiate; folosiți mai puține diguri sau diguri mai înguste, ori un centru mai mare.
+[Ring world]
+Lume inelară
+[Belt width]
+Lățimea centurii
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Centura este prea scurtă pentru atâtea colonii; folosiți o hartă mai lungă sau mai puține colonii.
+[City states]
+Orașe-stat
+[Strait width]
+Lățimea strâmtorii
+[Valleys]
+Văi
+[Frontier richness]
+Bogăția frontierei
+[City states need at least one colony.]
+Orașele-stat au nevoie de cel puțin o colonie.
+[Stone walls]
+Ziduri de piatră
+[Sand patches]
+Petice de nisip
+[Tidal flats]
+Câmpii de maree
+[Everglades]
+Mlaștini
+[Pool spacing]
+Distanța dintre bălți
+[Pool size]
+Mărimea bălților
+[Clearing size]
+Mărimea poienii
+[Levee]
+Dig
+[Sloughs]
+Mlaștini
+[Everglades need at least one colony.]
+Mlaștinile au nevoie de cel puțin o colonie.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Prea multe colonii pentru această hartă; folosește o hartă mai mare sau mai puține colonii.
+[Coral]
+Coral
+[Fork angle]
+Unghi de ramificare
+[Lean]
+Înclinare
+[Home size]
+Mărimea bazei
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Coralul nu încape pe această hartă; folosiți o hartă mai mare, strâmtori mai înguste sau mai puține colonii.
+[Branching]
+Ramificare
+[Branch width]
+Lățimea ramurilor
+[Coral needs at least one colony.]
+Coralul are nevoie de cel puțin o colonie.
+[Coral needs a map at least 128 tiles across.]
+Coralul are nevoie de o hartă lată de cel puțin 128 de pătrate.
+[Spider web]
+Pânză de păianjen
+[Spokes per colony]
+Raze per colonie
+[Ring spacing]
+Distanța dintre inele
+[Thread width]
+Lățimea firelor
+[Sag]
+Lăsare
+[Torn strands]
+Fire rupte
+[Hub size]
+Mărimea centrului
+[Dew drops]
+Picături de rouă
+[Spiral]
+Spirală
+[Spider webs need at least one colony.]
+Pânza de păianjen are nevoie de cel puțin o colonie.
+[Sandbars]
+Bancuri de nisip
+[Tide pools]
+Bălți de maree
+[Lagoons]
+Lagune
+[Central island]
+Insula centrală
+[Tidal flats need at least one colony.]
+Câmpiile de maree au nevoie de cel puțin o colonie.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Insulele natale nu încap pe această hartă; folosește o hartă mai mare, mai puține colonii sau insule mai mici.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Teritoriul comun și strâmtoarea lasă prea puțin loc pentru baze; folosește o hartă mai mare, mai puține colonii, un teritoriu comun mai mic sau o strâmtoare mai îngustă.
+[Wheat amount]
+Cantitatea de grâu
+[Wood amount]
+Cantitatea de lemn
+[Stone amount]
+Cantitatea de piatră
+[Algae amount]
+Cantitatea de alge
+[Fruit amount]
+Cantitatea de fructe
+[Stone on hilltops]
+Piatră pe vârfurile dealurilor
+[Winding river]
+Râu șerpuit
+[Sandy beaches]
+Plaje nisipoase
+[Land bridges]
+Punți de uscat
+[Colony meadows]
+Pajiști în jurul coloniilor
+[Extra starting deposit]
+Zăcământ inițial suplimentar
+[Moat bridges]
+Poduri peste șanțul cu apă
+[Jagged coastlines]
+Coaste crestate
+[Sand roads]
+Drumuri de nisip
+[Treasure in dead ends]
+Comori în fundături
+[Fjord bank deposits]
+Zăcăminte pe malurile fiordurilor
+[Sandy lake shore]
+Mal nisipos al lacului
+[River delta]
+Delta râului
+[Meandering rivers]
+Râuri cu meandre
+[Fruit in home valleys]
+Fructe în văile de pornire
+[Moat]
+Șanț cu apă
+[Stone in the orchard]
+Piatră în livadă
+[Colonies on both coasts]
+Colonii pe ambele coaste
+[Winding belt]
+Centură șerpuită

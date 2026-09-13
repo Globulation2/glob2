@@ -1380,6 +1380,14 @@ Gracze i drużyny
 Gotowe mapy
 [Preview ready. Start plays this exact map.]
 Podgląd gotowy. Rozpoczęcie gry korzysta z dokładnie tej mapy.
+[Regenerate all]
+Wygeneruj wszystko ponownie
+[Generating preview...]
+Generowanie podglądu...
+[Preview unavailable]
+Podgląd niedostępny
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Każdy krajobraz jest pokazany jako prawdziwa mapa w twoim bieżącym rozmiarze i liczbie kolonii. Wybierz jeden, aby zagrać na pokazanej mapie.
 [Purple]
 Fioletowy
 [Quick clash]
@@ -1542,6 +1550,10 @@ Brak aktualnego podglądu
 Szybka bitwa: podwójna prędkość; wygenerowane mapy zaczynają się od 8 pracowników.
 [Reroll]
 Wygeneruj kolejną mapę
+[Randomize]
+Wygeneruj losowo
+[Reset to defaults]
+Przywróć ustawienia domyślne
 [Ruleset]
 Zestaw reguł
 [Select a map from the library.]
@@ -1778,3 +1790,229 @@ Szerokość kanału
 Szerokość mostu lądowego
 [Lake size]
 Wielkość jeziora
+[Contested commons]
+Sporny teren wspólny
+[Lattice]
+Siatka
+[Maze]
+Labirynt
+[Fjord continent]
+Kontynent fiordowy
+[Islet size]
+Rozmiar wysepki
+[Home radius]
+Promień obszaru startowego
+[Cell size]
+Rozmiar komórki
+[Room size]
+Rozmiar pomieszczenia
+[Corridor width]
+Szerokość korytarza
+[Loopiness]
+Liczba pętli
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labirynt wymaga co najmniej dwóch komórek w poziomie i w pionie; użyj większej mapy lub mniejszych komórek.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Tak szerokie kanały zostawiają w każdej komórce za mało trawy; użyj węższych kanałów lub większych komórek.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labirynt ma za mało ślepych zaułków dla tylu kolonii; użyj większej mapy lub mniejszych komórek.
+[Home island size]
+Rozmiar wyspy startowej
+[Commons size]
+Rozmiar terenu wspólnego
+[Moat width]
+Szerokość fosy
+[Bridge count]
+Liczba mostów
+[Continent size]
+Rozmiar kontynentu
+[Coast roughness]
+Urozmaicenie wybrzeża
+[Fjord width]
+Szerokość fiordu
+[Lake connects to fjords]
+Jezioro połączone z fiordami
+[Resource islands]
+Wyspy z surowcami
+[Watershed]
+Dorzecze
+[River density]
+Gęstość rzek
+[Dryness]
+Suchość
+[Fords]
+Brody
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Dorzecze ma za mało terenów zalewowych dla tylu kolonii; użyj większej mapy lub mniejszej liczby kolonii.
+[Stone highlands]
+Kamienne wyżyny
+[Valley size]
+Rozmiar doliny
+[Pass width]
+Szerokość przełęczy
+[Pond size]
+Rozmiar stawu
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Te doliny są za duże na tę mapę; użyj większej mapy lub mniejszych dolin.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Wyżyny mają za mało miejsca dla tylu kolonii; użyj większej mapy lub mniejszej liczby kolonii.
+[Symmetric arena]
+Symetryczna arena
+[Centre size]
+Rozmiar centrum
+[Causeway width]
+Szerokość grobli
+[Causeways]
+Groble
+[Lakes]
+Jeziora
+[Resource richness]
+Zasobność surowców
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Symetryczna arena wymaga 2, 4 lub 8 kolonii.
+[Eight colonies need a square map in the symmetric arena.]
+Osiem kolonii wymaga kwadratowej mapy na symetrycznej arenie.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Centrum jest za małe na sad na tej mapie; użyj większego centrum lub większej mapy.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arena zostawia za mało miejsca dla każdej kolonii; użyj większej mapy, mniejszego centrum lub węższej fosy.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Groble są zbyt blisko siebie; użyj mniej licznych lub węższych grobli albo większego centrum.
+[Ring world]
+Świat pierścieniowy
+[Belt width]
+Szerokość pasa
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Pas jest za krótki dla tylu kolonii; użyj dłuższej mapy lub mniejszej liczby kolonii.
+[City states]
+Miasta-państwa
+[Strait width]
+Szerokość cieśniny
+[Valleys]
+Doliny
+[Frontier richness]
+Bogactwo pogranicza
+[City states need at least one colony.]
+Miasta-państwa potrzebują co najmniej jednej kolonii.
+[Stone walls]
+Kamienne mury
+[Sand patches]
+Płaty piasku
+[Tidal flats]
+Równiny pływowe
+[Everglades]
+Mokradła
+[Pool spacing]
+Odstęp między rozlewiskami
+[Pool size]
+Rozmiar rozlewisk
+[Clearing size]
+Rozmiar polany
+[Levee]
+Grobla
+[Sloughs]
+Starorzecza
+[Everglades need at least one colony.]
+Mokradła potrzebują co najmniej jednej kolonii.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Za dużo kolonii jak na tę mapę; użyj większej mapy lub mniejszej liczby kolonii.
+[Coral]
+Koralowiec
+[Fork angle]
+Kąt rozgałęzienia
+[Lean]
+Pochylenie
+[Home size]
+Rozmiar bazy
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Koralowiec nie mieści się na tej mapie; użyj większej mapy, węższych cieśnin albo mniejszej liczby kolonii.
+[Branching]
+Rozgałęzienie
+[Branch width]
+Szerokość gałęzi
+[Coral needs at least one colony.]
+Koralowiec wymaga co najmniej jednej kolonii.
+[Coral needs a map at least 128 tiles across.]
+Koralowiec wymaga mapy o szerokości co najmniej 128 pól.
+[Spider web]
+Pajęczyna
+[Spokes per colony]
+Promienie na kolonię
+[Ring spacing]
+Odstęp pierścieni
+[Thread width]
+Szerokość nici
+[Sag]
+Zwis
+[Torn strands]
+Zerwane nici
+[Hub size]
+Rozmiar środka
+[Dew drops]
+Krople rosy
+[Spiral]
+Spirala
+[Spider webs need at least one colony.]
+Pajęczyna wymaga co najmniej jednej kolonii.
+[Sandbars]
+Łachy piaskowe
+[Tide pools]
+Rozlewiska pływowe
+[Lagoons]
+Laguny
+[Central island]
+Wyspa środkowa
+[Tidal flats need at least one colony.]
+Równiny pływowe potrzebują co najmniej jednej kolonii.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Wyspy macierzyste nie mieszczą się na tej mapie; użyj większej mapy, mniejszej liczby kolonii lub mniejszych wysp.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Teren wspólny i cieśnina zostawiają zbyt mało miejsca na bazy; użyj większej mapy, mniejszej liczby kolonii, mniejszego terenu wspólnego lub węższej cieśniny.
+[Wheat amount]
+Ilość pszenicy
+[Wood amount]
+Ilość drewna
+[Stone amount]
+Ilość kamienia
+[Algae amount]
+Ilość alg
+[Fruit amount]
+Ilość owoców
+[Stone on hilltops]
+Kamień na szczytach wzgórz
+[Winding river]
+Kręta rzeka
+[Sandy beaches]
+Piaszczyste plaże
+[Land bridges]
+Mosty lądowe
+[Colony meadows]
+Łąki wokół kolonii
+[Extra starting deposit]
+Dodatkowe złoże startowe
+[Moat bridges]
+Mosty nad fosą
+[Jagged coastlines]
+Postrzępione wybrzeża
+[Sand roads]
+Piaszczyste drogi
+[Treasure in dead ends]
+Skarby w ślepych zaułkach
+[Fjord bank deposits]
+Złoża na brzegach fiordów
+[Sandy lake shore]
+Piaszczysty brzeg jeziora
+[River delta]
+Delta rzeki
+[Meandering rivers]
+Meandrujące rzeki
+[Fruit in home valleys]
+Owoce w dolinach startowych
+[Moat]
+Fosa
+[Stone in the orchard]
+Kamień w sadzie
+[Colonies on both coasts]
+Kolonie na obu wybrzeżach
+[Winding belt]
+Kręty pas

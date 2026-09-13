@@ -1380,6 +1380,14 @@ Hráči a týmy
 Předpřipravené mapy
 [Preview ready. Start plays this exact map.]
 Náhled připraven. Při spuštění hry se používá přesně tato mapa.
+[Regenerate all]
+Znovu vygenerovat vše
+[Generating preview...]
+Generuje se náhled...
+[Preview unavailable]
+Náhled není k dispozici
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Každá krajina je zobrazena jako skutečná mapa ve vaší aktuální velikosti a počtu kolonií. Vyberte jednu a zahrajte si zobrazenou mapu.
 [Purple]
 Fialová
 [Quick clash]
@@ -1542,6 +1550,10 @@ Formát hry
 Rychlá bitva: dvojnásobná rychlost; generované mapy začínají s 8 pracovníky.
 [Reroll]
 Vygenerujte další mapu
+[Randomize]
+Vygenerovat náhodně
+[Reset to defaults]
+Obnovit výchozí hodnoty
 [Ruleset]
 Pravidla
 [Select a map from the library.]
@@ -1778,3 +1790,229 @@ Automaticky zobrazovat přehled mapy ve tvaru torusu při pohybu po mapě (OpenG
 Šířka pevninského mostu
 [Lake size]
 Velikost jezera
+[Contested commons]
+Sporné společné území
+[Lattice]
+Mřížka
+[Maze]
+Bludiště
+[Fjord continent]
+Fjordový kontinent
+[Islet size]
+Velikost ostrůvku
+[Home radius]
+Poloměr domovské oblasti
+[Cell size]
+Velikost buňky
+[Room size]
+Velikost místnosti
+[Corridor width]
+Šířka chodby
+[Loopiness]
+Propojenost
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Bludiště potřebuje alespoň dvě buňky na šířku i na výšku; použijte větší mapu nebo menší buňky.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Takto široké průlivy nechávají v každé buňce příliš málo trávy; použijte užší průlivy nebo větší buňky.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Bludiště má pro tolik kolonií příliš málo slepých uliček; použijte větší mapu nebo menší buňky.
+[Home island size]
+Velikost domovského ostrova
+[Commons size]
+Velikost společného území
+[Moat width]
+Šířka příkopu
+[Bridge count]
+Počet mostů
+[Continent size]
+Velikost kontinentu
+[Coast roughness]
+Členitost pobřeží
+[Fjord width]
+Šířka fjordu
+[Lake connects to fjords]
+Jezero spojené s fjordy
+[Resource islands]
+Surovinové ostrovy
+[Watershed]
+Povodí
+[River density]
+Hustota řek
+[Dryness]
+Vyprahlost
+[Fords]
+Brody
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Povodí má pro tolik kolonií příliš málo záplavové nivy; použijte větší mapu nebo méně kolonií.
+[Stone highlands]
+Kamenná vysočina
+[Valley size]
+Velikost údolí
+[Pass width]
+Šířka průsmyku
+[Pond size]
+Velikost tůně
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Tato údolí jsou pro mapu příliš velká; použijte větší mapu nebo menší údolí.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Vysočina má pro tolik kolonií příliš málo místa; použijte větší mapu nebo méně kolonií.
+[Symmetric arena]
+Symetrická aréna
+[Centre size]
+Velikost středu
+[Causeway width]
+Šířka hráze
+[Causeways]
+Hráze
+[Lakes]
+Jezera
+[Resource richness]
+Bohatost surovin
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Symetrická aréna vyžaduje 2, 4 nebo 8 kolonií.
+[Eight colonies need a square map in the symmetric arena.]
+Osm kolonií vyžaduje v symetrické aréně čtvercovou mapu.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Střed je na této mapě příliš malý pro ovocný sad; použijte větší střed nebo větší mapu.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Aréna nechává příliš málo místa pro každou kolonii; použijte větší mapu, menší střed nebo užší příkop.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Hráze jsou příliš blízko sebe; použijte méně nebo užší hráze, případně větší střed.
+[Ring world]
+Prstencový svět
+[Belt width]
+Šířka pásu
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Pás je pro tolik kolonií příliš krátký; použijte delší mapu nebo méně kolonií.
+[City states]
+Městské státy
+[Strait width]
+Šířka průlivu
+[Valleys]
+Údolí
+[Frontier richness]
+Bohatství pohraničí
+[City states need at least one colony.]
+Městské státy potřebují alespoň jednu kolonii.
+[Stone walls]
+Kamenné hradby
+[Sand patches]
+Písčiny
+[Tidal flats]
+Přílivové pláně
+[Everglades]
+Mokřady
+[Pool spacing]
+Rozestup tůní
+[Pool size]
+Velikost tůní
+[Clearing size]
+Velikost mýtiny
+[Levee]
+Hráz
+[Sloughs]
+Slepá ramena
+[Everglades need at least one colony.]
+Mokřady potřebují alespoň jednu kolonii.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Příliš mnoho kolonií pro tuto mapu; použijte větší mapu nebo méně kolonií.
+[Coral]
+Korál
+[Fork angle]
+Úhel větvení
+[Lean]
+Náklon
+[Home size]
+Velikost domova
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Korál se na tuto mapu nevejde; použijte větší mapu, užší průlivy nebo méně kolonií.
+[Branching]
+Větvení
+[Branch width]
+Šířka větví
+[Coral needs at least one colony.]
+Korál potřebuje alespoň jednu kolonii.
+[Coral needs a map at least 128 tiles across.]
+Korál potřebuje mapu širokou alespoň 128 polí.
+[Spider web]
+Pavučina
+[Spokes per colony]
+Paprsků na kolonii
+[Ring spacing]
+Rozestup kruhů
+[Thread width]
+Šířka vláken
+[Sag]
+Průvěs
+[Torn strands]
+Přetržená vlákna
+[Hub size]
+Velikost středu
+[Dew drops]
+Kapky rosy
+[Spiral]
+Spirála
+[Spider webs need at least one colony.]
+Pavučina potřebuje alespoň jednu kolonii.
+[Sandbars]
+Písečné lavice
+[Tide pools]
+Přílivové tůně
+[Lagoons]
+Laguny
+[Central island]
+Střední ostrov
+[Tidal flats need at least one colony.]
+Přílivové pláně potřebují alespoň jednu kolonii.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Domovské ostrovy se na tuto mapu nevejdou; použijte větší mapu, méně kolonií nebo menší ostrovy.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Společné území a průliv ponechávají příliš málo místa pro domovské základny; použijte větší mapu, méně kolonií, menší společné území nebo užší průliv.
+[Wheat amount]
+Množství pšenice
+[Wood amount]
+Množství dřeva
+[Stone amount]
+Množství kamení
+[Algae amount]
+Množství řas
+[Fruit amount]
+Množství ovoce
+[Stone on hilltops]
+Kamení na vrcholcích kopců
+[Winding river]
+Klikatá řeka
+[Sandy beaches]
+Písečné pláže
+[Land bridges]
+Pevninské mosty
+[Colony meadows]
+Louky kolem kolonií
+[Extra starting deposit]
+Ložisko navíc na začátku
+[Moat bridges]
+Mosty přes příkop
+[Jagged coastlines]
+Členité pobřeží
+[Sand roads]
+Písečné cesty
+[Treasure in dead ends]
+Poklady ve slepých uličkách
+[Fjord bank deposits]
+Ložiska na březích fjordů
+[Sandy lake shore]
+Písečný břeh jezera
+[River delta]
+Říční delta
+[Meandering rivers]
+Meandrující řeky
+[Fruit in home valleys]
+Ovoce v domovských údolích
+[Moat]
+Vodní příkop
+[Stone in the orchard]
+Kamení v sadu
+[Colonies on both coasts]
+Kolonie na obou pobřežích
+[Winding belt]
+Zvlněný pás

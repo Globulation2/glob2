@@ -1390,6 +1390,14 @@ Spelare och lag
 Färdiga kartor
 [Preview ready. Start plays this exact map.]
 Förhandsvisning klar. Starta spelet använder denna exakta karta.
+[Regenerate all]
+Generera om alla
+[Generating preview...]
+Skapar förhandsvisning...
+[Preview unavailable]
+Förhandsvisning saknas
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Varje landskap visas som en riktig karta med din nuvarande storlek och ditt antal kolonier. Välj ett för att spela den visade kartan.
 [Purple]
 Lila
 [Quick clash]
@@ -1552,6 +1560,10 @@ Ingen aktuell förhandsvisning
 Snabb strid: dubbel hastighet; genererade kartor börjar med 8 arbetare.
 [Reroll]
 Skapa en annan karta
+[Randomize]
+Slumpa
+[Reset to defaults]
+Återställ standardvärden
 [Ruleset]
 Regeluppsättning
 [Select a map from the library.]
@@ -1788,3 +1800,229 @@ Kanalbredd
 Landbrons bredd
 [Lake size]
 Sjöstorlek
+[Contested commons]
+Omtvistad allmänning
+[Lattice]
+Rutnät
+[Maze]
+Labyrint
+[Fjord continent]
+Fjordkontinent
+[Islet size]
+Småöns storlek
+[Home radius]
+Basradie
+[Cell size]
+Cellstorlek
+[Room size]
+Rumsstorlek
+[Corridor width]
+Korridorbredd
+[Loopiness]
+Antal slingor
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labyrinten behöver minst två celler på bredden och på höjden; använd en större karta eller mindre celler.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Så breda kanaler lämnar för lite gräs i varje cell; använd smalare kanaler eller större celler.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labyrinten har för få återvändsgränder för så många kolonier; använd en större karta eller mindre celler.
+[Home island size]
+Startöns storlek
+[Commons size]
+Allmänningens storlek
+[Moat width]
+Vallgravens bredd
+[Bridge count]
+Antal broar
+[Continent size]
+Kontinentstorlek
+[Coast roughness]
+Kustlinjens oregelbundenhet
+[Fjord width]
+Fjordbredd
+[Lake connects to fjords]
+Sjön ansluter till fjordarna
+[Resource islands]
+Resursöar
+[Watershed]
+Avrinningsområde
+[River density]
+Flodtäthet
+[Dryness]
+Torrhet
+[Fords]
+Vadställen
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Avrinningsområdet har för lite flodslätt för så många kolonier; använd en större karta eller färre kolonier.
+[Stone highlands]
+Stenhögland
+[Valley size]
+Dalstorlek
+[Pass width]
+Passbredd
+[Pond size]
+Dammstorlek
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+De här dalarna är för stora för kartan; använd en större karta eller mindre dalar.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Höglandet har för lite utrymme för så många kolonier; använd en större karta eller färre kolonier.
+[Symmetric arena]
+Symmetrisk arena
+[Centre size]
+Centrumstorlek
+[Causeway width]
+Vägbankarnas bredd
+[Causeways]
+Vägbankar
+[Lakes]
+Sjöar
+[Resource richness]
+Resursrikedom
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Symmetrisk arena kräver 2, 4 eller 8 kolonier.
+[Eight colonies need a square map in the symmetric arena.]
+Åtta kolonier kräver en kvadratisk karta i den symmetriska arenan.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Centrum är för litet för en fruktträdgård på den här kartan; använd ett större centrum eller en större karta.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arenan lämnar för lite utrymme för varje koloni; använd en större karta, ett mindre centrum eller en smalare vallgrav.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Vägbankarna ligger för tätt; använd färre eller smalare vägbankar, eller ett större centrum.
+[Ring world]
+Ringvärld
+[Belt width]
+Bältets bredd
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Bältet är för kort för så många kolonier; använd en längre karta eller färre kolonier.
+[City states]
+Stadsstater
+[Strait width]
+Sundets bredd
+[Valleys]
+Dalar
+[Frontier richness]
+Gränslandets rikedom
+[City states need at least one colony.]
+Stadsstater kräver minst en koloni.
+[Stone walls]
+Stenmurar
+[Sand patches]
+Sandfläckar
+[Tidal flats]
+Tidvattenslätter
+[Everglades]
+Sumpmarker
+[Pool spacing]
+Avstånd mellan pölar
+[Pool size]
+Pölarnas storlek
+[Clearing size]
+Gläntans storlek
+[Levee]
+Vall
+[Sloughs]
+Sumpkanaler
+[Everglades need at least one colony.]
+Sumpmarker kräver minst en koloni.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+För många kolonier för den här kartan; använd en större karta eller färre kolonier.
+[Coral]
+Korall
+[Fork angle]
+Förgreningsvinkel
+[Lean]
+Lutning
+[Home size]
+Hemmets storlek
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Korallen får inte plats på den här kartan; använd en större karta, smalare sund eller färre kolonier.
+[Branching]
+Förgrening
+[Branch width]
+Grenbredd
+[Coral needs at least one colony.]
+Korall behöver minst en koloni.
+[Coral needs a map at least 128 tiles across.]
+Korall behöver en karta som är minst 128 rutor bred.
+[Spider web]
+Spindelnät
+[Spokes per colony]
+Ekrar per koloni
+[Ring spacing]
+Ringavstånd
+[Thread width]
+Trådbredd
+[Sag]
+Nedhäng
+[Torn strands]
+Trasiga trådar
+[Hub size]
+Navstorlek
+[Dew drops]
+Daggdroppar
+[Spiral]
+Spiral
+[Spider webs need at least one colony.]
+Spindelnät behöver minst en koloni.
+[Sandbars]
+Sandbankar
+[Tide pools]
+Tidvattenpölar
+[Lagoons]
+Laguner
+[Central island]
+Central ö
+[Tidal flats need at least one colony.]
+Tidvattenslätter kräver minst en koloni.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Hemöarna får inte plats på den här kartan; använd en större karta, färre kolonier eller mindre öar.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Allmänningen och sundet lämnar för lite plats åt hembaserna; använd en större karta, färre kolonier, en mindre allmänning eller ett smalare sund.
+[Wheat amount]
+Mängd vete
+[Wood amount]
+Mängd trä
+[Stone amount]
+Mängd sten
+[Algae amount]
+Mängd alger
+[Fruit amount]
+Mängd frukt
+[Stone on hilltops]
+Sten på kullarnas toppar
+[Winding river]
+Slingrande flod
+[Sandy beaches]
+Sandstränder
+[Land bridges]
+Landbroar
+[Colony meadows]
+Ängar runt kolonierna
+[Extra starting deposit]
+Extra startfyndighet
+[Moat bridges]
+Broar över vallgraven
+[Jagged coastlines]
+Taggiga kuster
+[Sand roads]
+Sandvägar
+[Treasure in dead ends]
+Skatter i återvändsgränder
+[Fjord bank deposits]
+Fyndigheter längs fjordstränderna
+[Sandy lake shore]
+Sandig sjöstrand
+[River delta]
+Flodens delta
+[Meandering rivers]
+Meandrande floder
+[Fruit in home valleys]
+Frukt i startdalarna
+[Moat]
+Vallgrav
+[Stone in the orchard]
+Sten i fruktträdgården
+[Colonies on both coasts]
+Kolonier på båda kusterna
+[Winding belt]
+Slingrande bälte

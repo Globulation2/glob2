@@ -1376,6 +1376,14 @@ Người chơi & Đội
 Bản đồ được tạo sẵn
 [Preview ready. Start plays this exact map.]
 Xem trước đã sẵn sàng. Bắt đầu trò chơi sử dụng bản đồ chính xác này.
+[Regenerate all]
+Tạo lại tất cả
+[Generating preview...]
+Đang tạo bản xem trước...
+[Preview unavailable]
+Không có bản xem trước
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Mỗi địa hình được hiển thị như một bản đồ thật với kích thước và số thuộc địa hiện tại của bạn. Chọn một để chơi bản đồ được hiển thị.
 [Purple]
 Màu tím
 [Quick clash]
@@ -1538,6 +1546,10 @@ Không có bản xem trước hiện tại
 Trận chiến nhanh: tốc độ gấp đôi; bản đồ được tạo bắt đầu với 8 công nhân.
 [Reroll]
 Tạo một bản đồ khác
+[Randomize]
+Tạo ngẫu nhiên
+[Reset to defaults]
+Khôi phục mặc định
 [Ruleset]
 Bộ quy tắc
 [Select a map from the library.]
@@ -1774,3 +1786,229 @@ Tự động hiển thị tổng quan bản đồ hình xuyến khi di chuyển 
 Độ rộng cầu đất
 [Lake size]
 Kích thước hồ
+[Contested commons]
+Vùng đất chung tranh chấp
+[Lattice]
+Mạng lưới
+[Maze]
+Mê cung
+[Fjord continent]
+Lục địa vịnh hẹp
+[Islet size]
+Kích thước đảo nhỏ
+[Home radius]
+Bán kính căn cứ
+[Cell size]
+Kích thước ô
+[Room size]
+Kích thước phòng
+[Corridor width]
+Độ rộng hành lang
+[Loopiness]
+Mật độ vòng lặp
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Mê cung cần ít nhất hai ô theo chiều ngang và chiều dọc; hãy dùng bản đồ lớn hơn hoặc ô nhỏ hơn.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Kênh rộng như vậy để lại quá ít cỏ trong mỗi ô; hãy dùng kênh hẹp hơn hoặc ô lớn hơn.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Mê cung có quá ít ngõ cụt cho số thuộc địa này; hãy dùng bản đồ lớn hơn hoặc ô nhỏ hơn.
+[Home island size]
+Kích thước đảo khởi đầu
+[Commons size]
+Kích thước vùng đất chung
+[Moat width]
+Độ rộng hào nước
+[Bridge count]
+Số lượng cầu
+[Continent size]
+Kích thước lục địa
+[Coast roughness]
+Độ khúc khuỷu của bờ biển
+[Fjord width]
+Độ rộng vịnh hẹp
+[Lake connects to fjords]
+Hồ nối với vịnh hẹp
+[Resource islands]
+Đảo tài nguyên
+[Watershed]
+Lưu vực sông
+[River density]
+Mật độ sông
+[Dryness]
+Độ khô hạn
+[Fords]
+Bãi cạn
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Lưu vực sông có quá ít đồng bằng ngập lũ cho số thuộc địa này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[Stone highlands]
+Cao nguyên đá
+[Valley size]
+Kích thước thung lũng
+[Pass width]
+Độ rộng đèo
+[Pond size]
+Kích thước ao
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Các thung lũng này quá lớn so với bản đồ; hãy dùng bản đồ lớn hơn hoặc thung lũng nhỏ hơn.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Cao nguyên có quá ít chỗ cho số thuộc địa này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[Symmetric arena]
+Đấu trường đối xứng
+[Centre size]
+Kích thước trung tâm
+[Causeway width]
+Độ rộng đường đắp cao
+[Causeways]
+Đường đắp cao
+[Lakes]
+Hồ
+[Resource richness]
+Độ phong phú tài nguyên
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Đấu trường đối xứng cần 2, 4 hoặc 8 thuộc địa.
+[Eight colonies need a square map in the symmetric arena.]
+Tám thuộc địa cần bản đồ hình vuông trong đấu trường đối xứng.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Trung tâm quá nhỏ để có vườn cây ăn quả trên bản đồ này; hãy dùng trung tâm lớn hơn hoặc bản đồ lớn hơn.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Đấu trường để lại quá ít chỗ cho mỗi thuộc địa; hãy dùng bản đồ lớn hơn, trung tâm nhỏ hơn hoặc hào nước hẹp hơn.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Các đường đắp cao quá gần nhau; hãy dùng ít đường đắp cao hơn hoặc hẹp hơn, hoặc trung tâm lớn hơn.
+[Ring world]
+Thế giới hình vòng
+[Belt width]
+Độ rộng vành đai
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Vành đai quá ngắn cho số thuộc địa này; hãy dùng bản đồ dài hơn hoặc ít thuộc địa hơn.
+[City states]
+Thành bang
+[Strait width]
+Chiều rộng eo biển
+[Valleys]
+Thung lũng
+[Frontier richness]
+Độ trù phú của vùng biên
+[City states need at least one colony.]
+Thành bang cần ít nhất một thuộc địa.
+[Stone walls]
+Tường đá
+[Sand patches]
+Bãi cát
+[Tidal flats]
+Bãi triều
+[Everglades]
+Đầm lầy
+[Pool spacing]
+Khoảng cách các ao
+[Pool size]
+Kích thước ao
+[Clearing size]
+Kích thước khoảng trống
+[Levee]
+Đê
+[Sloughs]
+Đầm lầy
+[Everglades need at least one colony.]
+Đầm lầy cần ít nhất một thuộc địa.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Quá nhiều thuộc địa cho bản đồ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[Coral]
+San hô
+[Fork angle]
+Góc phân nhánh
+[Lean]
+Độ nghiêng
+[Home size]
+Kích thước căn cứ
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+San hô không vừa bản đồ này; hãy dùng bản đồ lớn hơn, eo biển hẹp hơn hoặc ít thuộc địa hơn.
+[Branching]
+Phân nhánh
+[Branch width]
+Độ rộng nhánh
+[Coral needs at least one colony.]
+San hô cần ít nhất một thuộc địa.
+[Coral needs a map at least 128 tiles across.]
+San hô cần bản đồ rộng ít nhất 128 ô.
+[Spider web]
+Mạng nhện
+[Spokes per colony]
+Nan mỗi thuộc địa
+[Ring spacing]
+Khoảng cách vòng
+[Thread width]
+Độ rộng sợi
+[Sag]
+Độ võng
+[Torn strands]
+Sợi đứt
+[Hub size]
+Kích thước tâm
+[Dew drops]
+Giọt sương
+[Spiral]
+Xoắn ốc
+[Spider webs need at least one colony.]
+Mạng nhện cần ít nhất một thuộc địa.
+[Sandbars]
+Cồn cát
+[Tide pools]
+Vũng triều
+[Lagoons]
+Đầm phá
+[Central island]
+Đảo trung tâm
+[Tidal flats need at least one colony.]
+Bãi triều cần ít nhất một thuộc địa.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Các đảo quê hương không vừa với bản đồ này; hãy dùng bản đồ lớn hơn, ít thuộc địa hơn hoặc đảo nhỏ hơn.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Vùng đất chung và eo biển để lại quá ít chỗ cho các căn cứ; hãy dùng bản đồ lớn hơn, ít thuộc địa hơn, vùng đất chung nhỏ hơn hoặc eo biển hẹp hơn.
+[Wheat amount]
+Lượng lúa mì
+[Wood amount]
+Lượng gỗ
+[Stone amount]
+Lượng đá
+[Algae amount]
+Lượng tảo
+[Fruit amount]
+Lượng trái cây
+[Stone on hilltops]
+Đá trên đỉnh đồi
+[Winding river]
+Sông uốn khúc
+[Sandy beaches]
+Bãi cát
+[Land bridges]
+Cầu đất
+[Colony meadows]
+Đồng cỏ quanh thuộc địa
+[Extra starting deposit]
+Mỏ tài nguyên khởi đầu bổ sung
+[Moat bridges]
+Cầu qua hào nước
+[Jagged coastlines]
+Bờ biển lởm chởm
+[Sand roads]
+Đường cát
+[Treasure in dead ends]
+Kho báu ở ngõ cụt
+[Fjord bank deposits]
+Mỏ tài nguyên ven vịnh hẹp
+[Sandy lake shore]
+Bờ hồ đầy cát
+[River delta]
+Châu thổ sông
+[Meandering rivers]
+Sông quanh co
+[Fruit in home valleys]
+Trái cây ở thung lũng khởi đầu
+[Moat]
+Hào nước
+[Stone in the orchard]
+Đá trong vườn cây ăn quả
+[Colonies on both coasts]
+Thuộc địa ở cả hai bờ
+[Winding belt]
+Vành đai uốn lượn

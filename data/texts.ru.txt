@@ -1378,6 +1378,14 @@ Cortex
 Готовые карты
 [Preview ready. Start plays this exact map.]
 Предварительный просмотр готов. В начале игры используется именно эта карта.
+[Regenerate all]
+Сгенерировать всё заново
+[Generating preview...]
+Создание предварительного просмотра...
+[Preview unavailable]
+Предварительный просмотр недоступен
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Каждый ландшафт показан как настоящая карта с вашим текущим размером и числом колоний. Выберите один, чтобы сыграть на показанной карте.
 [Purple]
 Фиолетовый
 [Quick clash]
@@ -1540,6 +1548,10 @@ Cortex
 Быстрый бой: двойная скорость; сгенерированные карты начинаются с 8 рабочих.
 [Reroll]
 Создать еще одну карту
+[Randomize]
+Случайная генерация
+[Reset to defaults]
+Восстановить значения по умолчанию
 [Ruleset]
 Набор правил
 [Select a map from the library.]
@@ -1776,3 +1788,229 @@ OpenGL недоступен в этой сборке.
 Ширина перешейка
 [Lake size]
 Размер озера
+[Contested commons]
+Спорные общие земли
+[Lattice]
+Решётка
+[Maze]
+Лабиринт
+[Fjord continent]
+Материк с фьордами
+[Islet size]
+Размер островка
+[Home radius]
+Радиус базы
+[Cell size]
+Размер ячейки
+[Room size]
+Размер комнаты
+[Corridor width]
+Ширина коридора
+[Loopiness]
+Количество петель
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Лабиринту нужно не меньше двух ячеек по горизонтали и по вертикали; используйте карту побольше или ячейки поменьше.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+При такой ширине проливов в каждой ячейке остаётся слишком мало травы; используйте проливы поуже или ячейки побольше.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+В лабиринте слишком мало тупиков для такого числа колоний; используйте карту побольше или ячейки поменьше.
+[Home island size]
+Размер стартового острова
+[Commons size]
+Размер общей земли
+[Moat width]
+Ширина рва
+[Bridge count]
+Количество мостов
+[Continent size]
+Размер материка
+[Coast roughness]
+Изрезанность побережья
+[Fjord width]
+Ширина фьорда
+[Lake connects to fjords]
+Озеро соединено с фьордами
+[Resource islands]
+Острова с ресурсами
+[Watershed]
+Речной бассейн
+[River density]
+Плотность рек
+[Dryness]
+Засушливость
+[Fords]
+Броды
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+В речном бассейне слишком мало пойменных земель для такого числа колоний; используйте карту побольше или меньше колоний.
+[Stone highlands]
+Каменное нагорье
+[Valley size]
+Размер долины
+[Pass width]
+Ширина перевала
+[Pond size]
+Размер пруда
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Эти долины слишком велики для карты; используйте карту побольше или долины поменьше.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+На нагорье слишком мало места для такого числа колоний; используйте карту побольше или меньше колоний.
+[Symmetric arena]
+Симметричная арена
+[Centre size]
+Размер центра
+[Causeway width]
+Ширина дамбы
+[Causeways]
+Дамбы
+[Lakes]
+Озёра
+[Resource richness]
+Богатство ресурсов
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Симметричной арене нужно 2, 4 или 8 колоний.
+[Eight colonies need a square map in the symmetric arena.]
+Для восьми колоний симметричной арене нужна квадратная карта.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Центр слишком мал для фруктового сада на этой карте; используйте центр побольше или карту побольше.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+На арене слишком мало места для каждой колонии; используйте карту побольше, центр поменьше или ров поуже.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Дамбы расположены слишком близко друг к другу; используйте меньше дамб, более узкие дамбы или центр побольше.
+[Ring world]
+Кольцевой мир
+[Belt width]
+Ширина пояса
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Пояс слишком короткий для такого числа колоний; используйте карту подлиннее или меньше колоний.
+[City states]
+Города-государства
+[Strait width]
+Ширина пролива
+[Valleys]
+Долины
+[Frontier richness]
+Богатство новых земель
+[City states need at least one colony.]
+Городам-государствам нужна хотя бы одна колония.
+[Stone walls]
+Каменные стены
+[Sand patches]
+Песчаные участки
+[Tidal flats]
+Приливные отмели
+[Everglades]
+Болота
+[Pool spacing]
+Расстояние между заводями
+[Pool size]
+Размер заводей
+[Clearing size]
+Размер поляны
+[Levee]
+Дамба
+[Sloughs]
+Старицы
+[Everglades need at least one colony.]
+Болотам нужна хотя бы одна колония.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Слишком много колоний для этой карты; используйте карту побольше или меньше колоний.
+[Coral]
+Коралл
+[Fork angle]
+Угол ветвления
+[Lean]
+Наклон
+[Home size]
+Размер базы
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Коралл не помещается на эту карту; возьмите карту побольше, проливы поуже или меньше колоний.
+[Branching]
+Ветвление
+[Branch width]
+Ширина ветвей
+[Coral needs at least one colony.]
+Для коралла нужна хотя бы одна колония.
+[Coral needs a map at least 128 tiles across.]
+Для коралла нужна карта шириной не менее 128 клеток.
+[Spider web]
+Паутина
+[Spokes per colony]
+Радиусов на колонию
+[Ring spacing]
+Шаг колец
+[Thread width]
+Ширина нитей
+[Sag]
+Провисание
+[Torn strands]
+Порванные нити
+[Hub size]
+Размер центра
+[Dew drops]
+Капли росы
+[Spiral]
+Спираль
+[Spider webs need at least one colony.]
+Для паутины нужна хотя бы одна колония.
+[Sandbars]
+Песчаные банки
+[Tide pools]
+Приливные заводи
+[Lagoons]
+Лагуны
+[Central island]
+Центральный остров
+[Tidal flats need at least one colony.]
+Приливным отмелям нужна хотя бы одна колония.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Родные острова не помещаются на этой карте; используйте карту побольше, меньше колоний или острова поменьше.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Общая земля и пролив оставляют слишком мало места для баз; используйте карту побольше, меньше колоний, общую землю поменьше или пролив поуже.
+[Wheat amount]
+Количество пшеницы
+[Wood amount]
+Количество дерева
+[Stone amount]
+Количество камня
+[Algae amount]
+Количество водорослей
+[Fruit amount]
+Количество фруктов
+[Stone on hilltops]
+Камень на вершинах холмов
+[Winding river]
+Извилистая река
+[Sandy beaches]
+Песчаные пляжи
+[Land bridges]
+Перешейки
+[Colony meadows]
+Луга вокруг колоний
+[Extra starting deposit]
+Дополнительная стартовая залежь
+[Moat bridges]
+Мосты через ров
+[Jagged coastlines]
+Изрезанные берега
+[Sand roads]
+Песчаные дороги
+[Treasure in dead ends]
+Сокровища в тупиках
+[Fjord bank deposits]
+Залежи на берегах фьордов
+[Sandy lake shore]
+Песчаный берег озера
+[River delta]
+Дельта реки
+[Meandering rivers]
+Петляющие реки
+[Fruit in home valleys]
+Фрукты в стартовых долинах
+[Moat]
+Ров
+[Stone in the orchard]
+Камень в саду
+[Colonies on both coasts]
+Колонии на обоих берегах
+[Winding belt]
+Извилистый пояс

@@ -17,6 +17,7 @@
 #include "team/Team.h"
 #include "TeamStat.h"
 #include "building/IntBuildingType.h"
+#include "unit/Unit.h"
 #include "unit/UnitConsts.h"
 
 #include <iostream>
@@ -60,6 +61,8 @@ void Engine::pollAutomaticEndingConditions()
 {
 	if (!globalContainer->automaticEndingGame)
 		return;
+
+	trackTeamEliminations();
 
 	auto endGame = [this](const char* reason) {
 		printf("nox::%s\n", reason);
@@ -318,6 +321,72 @@ void Engine::printAutomaticEndingSummary()
 	// compared side by side after a single game.
 	if (getenv("GLOB2_TEAM_TIMELINE"))
 		printTeamTimeline();
+
+	// Optional per-team outcome lines for tooling (tools/map_fairness_tournament.py): who won or
+	// lost, when each team was eliminated, where it started and what it had left. Reads state
+	// only, and is gated by GLOB2_TEAM_RESULTS so normal headless output is unchanged.
+	if (getenv("GLOB2_TEAM_RESULTS"))
+		printTeamResults();
+}
+
+void Engine::trackTeamEliminations()
+{
+	const int nbTeams = gui.game.mapHeader.getNumberOfTeams();
+	if ((int)teamEliminatedTick.size() != nbTeams)
+		teamEliminatedTick.assign(nbTeams, -1);
+	for (int t = 0; t < nbTeams; t++)
+	{
+		const Team* team = gui.game.teams[t];
+		// stepCounter already counts the step that cleared isAlive, like GLOB2_GAME_END's ticks.
+		if (team && !team->isAlive && teamEliminatedTick[t] < 0)
+			teamEliminatedTick[t] = (Sint32)gui.game.stepCounter;
+	}
+}
+
+void Engine::printTeamResults()
+{
+	trackTeamEliminations();
+	Game& game = gui.game;
+	for (int t = 0; t < game.mapHeader.getNumberOfTeams(); t++)
+	{
+		const Team* team = game.teams[t];
+		if (!team)
+			continue;
+		int units = 0, workers = 0, explorers = 0, warriors = 0, buildings = 0, sites = 0;
+		for (int i = 0; i < Unit::MAX_COUNT; i++)
+		{
+			const Unit* unit = team->myUnits[i];
+			if (!unit)
+				continue;
+			units++;
+			workers += unit->typeNum == WORKER;
+			explorers += unit->typeNum == EXPLORER;
+			warriors += unit->typeNum == WARRIOR;
+		}
+		for (int i = 0; i < Building::MAX_COUNT; i++)
+		{
+			const Building* building = team->myBuildings[i];
+			if (!building || building->type->isVirtual)
+				continue;
+			if (building->type->isBuildingSite)
+				sites++;
+			else
+				buildings++;
+		}
+		std::cout << "GLOB2_TEAM_RESULT team=" << t
+			<< " result=" << (team->hasWon ? "won" : team->hasLost ? "lost" : "undecided")
+			<< " alive=" << (team->isAlive ? 1 : 0)
+			<< " eliminated_tick=" << teamEliminatedTick[t]
+			<< " start=" << team->startPosX << "," << team->startPosY
+			<< " prestige=" << team->prestige
+			<< " units=" << units
+			<< " workers=" << workers
+			<< " explorers=" << explorers
+			<< " warriors=" << warriors
+			<< " buildings=" << buildings
+			<< " sites=" << sites
+			<< std::endl;
+	}
 }
 
 // Per-team timeline dump (see GLOB2_TEAM_TIMELINE in printAutomaticEndingSummary).
@@ -501,6 +570,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 	st.needToBeTime = 0;
 	st.startTime = SDL_GetTicks64();
 	st.frameNumber = 0;
+	teamEliminatedTick.clear();
 
 	while (gui.isRunning)
 	{

@@ -1376,6 +1376,14 @@ AIの命令なし
 既製のマップ
 [Preview ready. Start plays this exact map.]
 プレビューの準備ができました。ゲームを開始すると、この正確なマップが使用されます。
+[Regenerate all]
+すべて再生成
+[Generating preview...]
+プレビューを生成しています...
+[Preview unavailable]
+プレビューを利用できません
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+各地形は、現在のサイズとコロニー数で実際に生成したマップとして表示されます。1 つ選ぶと、表示されたマップでプレイできます。
 [Purple]
 紫
 [Quick clash]
@@ -1538,6 +1546,10 @@ AIの命令なし
 クイックバトル:2倍速。生成されたマップは 8 人のワーカーから始まります。
 [Reroll]
 別のマップを生成する
+[Randomize]
+ランダム生成
+[Reset to defaults]
+デフォルトに戻す
 [Ruleset]
 ルールセット
 [Select a map from the library.]
@@ -1774,3 +1786,229 @@ Globulation 2 のカーソルを表示します。
 陸橋の幅
 [Lake size]
 湖の大きさ
+[Contested commons]
+争奪共有地
+[Lattice]
+格子
+[Maze]
+迷路
+[Fjord continent]
+フィヨルド大陸
+[Islet size]
+小島の大きさ
+[Home radius]
+拠点の半径
+[Cell size]
+マスの大きさ
+[Room size]
+部屋の大きさ
+[Corridor width]
+通路の幅
+[Loopiness]
+ループの多さ
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+迷路には縦横それぞれ2マス以上が必要です。より大きなマップを使うか、マスを小さくしてください。
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+水路がこの幅だと各マスに残る草地が少なすぎます。水路を狭くするか、マスを大きくしてください。
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+このコロニー数に対して迷路の行き止まりが少なすぎます。より大きなマップを使うか、マスを小さくしてください。
+[Home island size]
+開始地点の島の大きさ
+[Commons size]
+共有地の大きさ
+[Moat width]
+堀の幅
+[Bridge count]
+橋の数
+[Continent size]
+大陸の大きさ
+[Coast roughness]
+海岸線の複雑さ
+[Fjord width]
+フィヨルドの幅
+[Lake connects to fjords]
+湖をフィヨルドにつなげる
+[Resource islands]
+資源島
+[Watershed]
+流域
+[River density]
+川の密度
+[Dryness]
+乾燥度
+[Fords]
+浅瀬
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+このコロニー数に対して流域の氾濫原が少なすぎます。より大きなマップを使うか、コロニーを減らしてください。
+[Stone highlands]
+岩の高地
+[Valley size]
+谷の大きさ
+[Pass width]
+峠の幅
+[Pond size]
+池の大きさ
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+谷がマップに対して大きすぎます。より大きなマップを使うか、谷を小さくしてください。
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+このコロニー数に対して高地の広さが足りません。より大きなマップを使うか、コロニーを減らしてください。
+[Symmetric arena]
+対称アリーナ
+[Centre size]
+中央の大きさ
+[Causeway width]
+土手道の幅
+[Causeways]
+土手道
+[Lakes]
+湖
+[Resource richness]
+資源の豊富さ
+[Symmetric arena needs 2, 4 or 8 colonies.]
+対称アリーナにはコロニーが2つ、4つ、または8つ必要です。
+[Eight colonies need a square map in the symmetric arena.]
+対称アリーナでコロニーを8つにするには、正方形のマップが必要です。
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+このマップでは中央が狭すぎて果樹園を置けません。中央を大きくするか、より大きなマップを使ってください。
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+アリーナに各コロニー分の十分な広さがありません。より大きなマップを使うか、中央を小さくするか、堀を狭くしてください。
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+土手道同士が近すぎます。土手道を減らすか狭くするか、中央を大きくしてください。
+[Ring world]
+環状世界
+[Belt width]
+帯の幅
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+このコロニー数に対して帯が短すぎます。より長いマップを使うか、コロニーを減らしてください。
+[City states]
+都市国家
+[Strait width]
+海峡の幅
+[Valleys]
+谷
+[Frontier richness]
+辺境の豊かさ
+[City states need at least one colony.]
+都市国家には少なくとも一つのコロニーが必要です。
+[Stone walls]
+石の城壁
+[Sand patches]
+砂地
+[Tidal flats]
+干潟
+[Everglades]
+湿地帯
+[Pool spacing]
+池の間隔
+[Pool size]
+池の大きさ
+[Clearing size]
+空き地の大きさ
+[Levee]
+堤防
+[Sloughs]
+沼沢
+[Everglades need at least one colony.]
+湿地帯には少なくとも一つのコロニーが必要です。
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+この地図にはコロニーが多すぎます。より大きな地図にするか、コロニーを減らしてください。
+[Coral]
+サンゴ
+[Fork angle]
+分岐角度
+[Lean]
+傾き
+[Home size]
+本拠地の大きさ
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+サンゴがこのマップに収まりません。より大きなマップ、より狭い海峡、またはより少ないコロニーにしてください。
+[Branching]
+枝分かれ
+[Branch width]
+枝の幅
+[Coral needs at least one colony.]
+サンゴには少なくとも1つのコロニーが必要です。
+[Coral needs a map at least 128 tiles across.]
+サンゴには幅128マス以上のマップが必要です。
+[Spider web]
+クモの巣
+[Spokes per colony]
+コロニーごとの放射糸
+[Ring spacing]
+輪の間隔
+[Thread width]
+糸の幅
+[Sag]
+たるみ
+[Torn strands]
+切れた糸
+[Hub size]
+中心の大きさ
+[Dew drops]
+露のしずく
+[Spiral]
+らせん
+[Spider webs need at least one colony.]
+クモの巣には少なくとも1つのコロニーが必要です。
+[Sandbars]
+砂州
+[Tide pools]
+潮だまり
+[Lagoons]
+潟湖
+[Central island]
+中央の島
+[Tidal flats need at least one colony.]
+干潟には少なくとも一つのコロニーが必要です。
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+母島がこのマップに収まりません。より大きなマップ、より少ないコロニー、またはより小さな島を使ってください。
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+共有地と海峡が本拠地に残す余地が少なすぎます。より大きなマップ、より少ないコロニー、より小さな共有地、またはより狭い海峡を使ってください。
+[Wheat amount]
+小麦の量
+[Wood amount]
+木材の量
+[Stone amount]
+石の量
+[Algae amount]
+藻の量
+[Fruit amount]
+フルーツの量
+[Stone on hilltops]
+丘の上の石
+[Winding river]
+蛇行する川
+[Sandy beaches]
+砂浜
+[Land bridges]
+陸橋
+[Colony meadows]
+コロニー周辺の草地
+[Extra starting deposit]
+追加の初期資源
+[Moat bridges]
+堀に架かる橋
+[Jagged coastlines]
+入り組んだ海岸線
+[Sand roads]
+砂の道
+[Treasure in dead ends]
+行き止まりの宝
+[Fjord bank deposits]
+フィヨルド岸の資源
+[Sandy lake shore]
+湖の砂浜
+[River delta]
+河口の三角州
+[Meandering rivers]
+蛇行する川筋
+[Fruit in home valleys]
+開始地点の谷のフルーツ
+[Moat]
+堀
+[Stone in the orchard]
+果樹園の石
+[Colonies on both coasts]
+両岸のコロニー
+[Winding belt]
+曲がりくねった帯

@@ -1388,6 +1388,14 @@ Oyuncular ve Takımlar
 Hazır haritalar
 [Preview ready. Start plays this exact map.]
 Önizleme hazır. Oyunun başlatılması tam olarak bu haritayı kullanır.
+[Regenerate all]
+Tümünü yeniden oluştur
+[Generating preview...]
+Önizleme oluşturuluyor...
+[Preview unavailable]
+Önizleme kullanılamıyor
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Her arazi, mevcut boyutunuz ve koloni sayınızla gerçek bir harita olarak gösterilir. Gösterilen haritayı oynamak için birini seçin.
 [Purple]
 Mor
 [Quick clash]
@@ -1550,6 +1558,10 @@ Geçerli önizleme yok
 Hızlı savaş: iki kat hız; oluşturulan haritalar 8 işçiyle başlar.
 [Reroll]
 Başka bir harita oluştur
+[Randomize]
+Rastgele oluştur
+[Reset to defaults]
+Varsayılanları geri yükle
 [Ruleset]
 Kural seti
 [Select a map from the library.]
@@ -1786,3 +1798,229 @@ Kanal genişliği
 Kara köprüsü genişliği
 [Lake size]
 Göl boyutu
+[Contested commons]
+Çekişmeli ortak alan
+[Lattice]
+Kafes
+[Maze]
+Labirent
+[Fjord continent]
+Fiyort kıtası
+[Islet size]
+Adacık boyutu
+[Home radius]
+Üs yarıçapı
+[Cell size]
+Hücre boyutu
+[Room size]
+Oda boyutu
+[Corridor width]
+Koridor genişliği
+[Loopiness]
+Döngü yoğunluğu
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labirent yatayda ve dikeyde en az iki hücre gerektirir; daha büyük bir harita veya daha küçük hücreler kullanın.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Bu kadar geniş kanallar her hücrede çok az çimen bırakır; daha dar kanallar veya daha büyük hücreler kullanın.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labirentte bu kadar koloni için çok az çıkmaz sokak var; daha büyük bir harita veya daha küçük hücreler kullanın.
+[Home island size]
+Başlangıç adası boyutu
+[Commons size]
+Ortak alan boyutu
+[Moat width]
+Su hendeği genişliği
+[Bridge count]
+Köprü sayısı
+[Continent size]
+Kıta boyutu
+[Coast roughness]
+Kıyı girintiliği
+[Fjord width]
+Fiyort genişliği
+[Lake connects to fjords]
+Göl fiyortlara bağlı
+[Resource islands]
+Kaynak adaları
+[Watershed]
+Havza
+[River density]
+Nehir yoğunluğu
+[Dryness]
+Kuraklık
+[Fords]
+Sığ geçitler
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Havzada bu kadar koloni için çok az taşkın ovası var; daha büyük bir harita veya daha az koloni kullanın.
+[Stone highlands]
+Taşlı yaylalar
+[Valley size]
+Vadi boyutu
+[Pass width]
+Geçit genişliği
+[Pond size]
+Gölet boyutu
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Bu vadiler harita için çok büyük; daha büyük bir harita veya daha küçük vadiler kullanın.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Yaylalarda bu kadar koloni için çok az yer var; daha büyük bir harita veya daha az koloni kullanın.
+[Symmetric arena]
+Simetrik arena
+[Centre size]
+Merkez boyutu
+[Causeway width]
+Set yolu genişliği
+[Causeways]
+Set yolları
+[Lakes]
+Göller
+[Resource richness]
+Kaynak zenginliği
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Simetrik arena 2, 4 veya 8 koloni gerektirir.
+[Eight colonies need a square map in the symmetric arena.]
+Simetrik arenada sekiz koloni için kare bir harita gerekir.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Merkez bu haritada bir meyve bahçesi için çok küçük; daha büyük bir merkez veya daha büyük bir harita kullanın.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arena her koloniye çok az yer bırakıyor; daha büyük bir harita, daha küçük bir merkez veya daha dar bir su hendeği kullanın.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Set yolları birbirine çok yakın; daha az veya daha dar set yolları ya da daha büyük bir merkez kullanın.
+[Ring world]
+Halka dünya
+[Belt width]
+Kuşak genişliği
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Kuşak bu kadar koloni için çok kısa; daha uzun bir harita veya daha az koloni kullanın.
+[City states]
+Şehir devletleri
+[Strait width]
+Boğaz genişliği
+[Valleys]
+Vadiler
+[Frontier richness]
+Sınır bölgesinin zenginliği
+[City states need at least one colony.]
+Şehir devletleri için en az bir koloni gerekir.
+[Stone walls]
+Taş duvarlar
+[Sand patches]
+Kum lekeleri
+[Tidal flats]
+Gelgit düzlükleri
+[Everglades]
+Bataklıklar
+[Pool spacing]
+Gölcük aralığı
+[Pool size]
+Gölcük boyutu
+[Clearing size]
+Açıklık boyutu
+[Levee]
+Set
+[Sloughs]
+Bataklıklar
+[Everglades need at least one colony.]
+Bataklıklar için en az bir koloni gerekir.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Bu harita için çok fazla koloni var; daha büyük bir harita kullanın veya koloni sayısını azaltın.
+[Coral]
+Mercan
+[Fork angle]
+Dallanma açısı
+[Lean]
+Eğim
+[Home size]
+Üs boyutu
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Mercan bu haritaya sığmıyor; daha büyük bir harita, daha dar boğazlar ya da daha az koloni kullanın.
+[Branching]
+Dallanma
+[Branch width]
+Dal genişliği
+[Coral needs at least one colony.]
+Mercan en az bir koloni gerektirir.
+[Coral needs a map at least 128 tiles across.]
+Mercan en az 128 kare genişliğinde bir harita gerektirir.
+[Spider web]
+Örümcek ağı
+[Spokes per colony]
+Koloni başına ışın
+[Ring spacing]
+Halka aralığı
+[Thread width]
+İplik genişliği
+[Sag]
+Sarkma
+[Torn strands]
+Kopuk iplikler
+[Hub size]
+Merkez boyutu
+[Dew drops]
+Çiy damlaları
+[Spiral]
+Spiral
+[Spider webs need at least one colony.]
+Örümcek ağı en az bir koloni gerektirir.
+[Sandbars]
+Kum tepecikleri
+[Tide pools]
+Gelgit gölcükleri
+[Lagoons]
+Lagünler
+[Central island]
+Merkez ada
+[Tidal flats need at least one colony.]
+Gelgit düzlükleri için en az bir koloni gerekir.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Ana adalar bu haritaya sığmıyor; daha büyük bir harita, daha az koloni ya da daha küçük adalar kullanın.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Ortak alan ve boğaz üslere çok az yer bırakıyor; daha büyük bir harita, daha az koloni, daha küçük bir ortak alan ya da daha dar bir boğaz kullanın.
+[Wheat amount]
+Buğday miktarı
+[Wood amount]
+Odun miktarı
+[Stone amount]
+Taş miktarı
+[Algae amount]
+Yosun miktarı
+[Fruit amount]
+Meyve miktarı
+[Stone on hilltops]
+Tepelerin üstünde taş
+[Winding river]
+Kıvrımlı nehir
+[Sandy beaches]
+Kumsallar
+[Land bridges]
+Kara köprüleri
+[Colony meadows]
+Koloni çevresinde çayırlar
+[Extra starting deposit]
+Ek başlangıç kaynağı
+[Moat bridges]
+Su hendeği köprüleri
+[Jagged coastlines]
+Girintili kıyılar
+[Sand roads]
+Kum yollar
+[Treasure in dead ends]
+Çıkmaz yollarda hazine
+[Fjord bank deposits]
+Fiyort kıyılarında kaynaklar
+[Sandy lake shore]
+Kumlu göl kıyısı
+[River delta]
+Nehir deltası
+[Meandering rivers]
+Menderesli nehirler
+[Fruit in home valleys]
+Başlangıç vadilerinde meyve
+[Moat]
+Su hendeği
+[Stone in the orchard]
+Meyve bahçesinde taş
+[Colonies on both coasts]
+Her iki kıyıda koloniler
+[Winding belt]
+Kıvrımlı kuşak

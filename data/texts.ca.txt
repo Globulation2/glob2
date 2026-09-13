@@ -1388,6 +1388,14 @@ Jugadors i equips
 Mapes predissenyats
 [Preview ready. Start plays this exact map.]
 Vista prèvia a punt. Per començar el joc s'utilitza aquest mapa exacte.
+[Regenerate all]
+Regenera-ho tot
+[Generating preview...]
+S'està generant la vista prèvia...
+[Preview unavailable]
+Vista prèvia no disponible
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Cada paisatge es mostra com un mapa real amb la mida i el nombre de colònies actuals. Tria'n un per jugar el mapa mostrat.
 [Purple]
 Lila
 [Quick clash]
@@ -1550,6 +1558,10 @@ No hi ha previsualització actual
 Batalla ràpida: velocitat doble; els mapes generats comencen amb 8 treballadors.
 [Reroll]
 Genera un altre mapa
+[Randomize]
+Genera aleatòriament
+[Reset to defaults]
+Restaura els valors per defecte
 [Ruleset]
 Conjunt de regles
 [Select a map from the library.]
@@ -1786,3 +1798,229 @@ Amplada del canal
 Amplada del pont de terra
 [Lake size]
 Mida del llac
+[Contested commons]
+Terres comunals disputades
+[Lattice]
+Retícula
+[Maze]
+Laberint
+[Fjord continent]
+Continent de fiords
+[Islet size]
+Mida de l'illot
+[Home radius]
+Radi de l'àrea inicial
+[Cell size]
+Mida de la cel·la
+[Room size]
+Mida de la sala
+[Corridor width]
+Amplada del passadís
+[Loopiness]
+Densitat de bucles
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+El laberint necessita almenys dues cel·les d'amplada i d'alçada; feu servir un mapa més gran o cel·les més petites.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Uns canals tan amples deixen massa poca herba a cada cel·la; feu servir canals més estrets o cel·les més grans.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+El laberint té massa pocs atzucacs per a tantes colònies; feu servir un mapa més gran o cel·les més petites.
+[Home island size]
+Mida de l'illa inicial
+[Commons size]
+Mida de l'àrea comuna
+[Moat width]
+Amplada del fossat
+[Bridge count]
+Nombre de ponts
+[Continent size]
+Mida del continent
+[Coast roughness]
+Irregularitat de la costa
+[Fjord width]
+Amplada del fiord
+[Lake connects to fjords]
+Llac connectat als fiords
+[Resource islands]
+Illes de recursos
+[Watershed]
+Conca hidrogràfica
+[River density]
+Densitat de rius
+[Dryness]
+Aridesa
+[Fords]
+Guals
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+La conca té massa poca plana al·luvial per a tantes colònies; feu servir un mapa més gran o menys colònies.
+[Stone highlands]
+Terres altes de pedra
+[Valley size]
+Mida de la vall
+[Pass width]
+Amplada del pas
+[Pond size]
+Mida de la bassa
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Aquestes valls són massa grans per al mapa; feu servir un mapa més gran o valls més petites.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Les terres altes tenen massa poc espai per a tantes colònies; feu servir un mapa més gran o menys colònies.
+[Symmetric arena]
+Arena simètrica
+[Centre size]
+Mida del centre
+[Causeway width]
+Amplada de la calçada
+[Causeways]
+Calçades
+[Lakes]
+Llacs
+[Resource richness]
+Riquesa de recursos
+[Symmetric arena needs 2, 4 or 8 colonies.]
+L'arena simètrica necessita 2, 4 o 8 colònies.
+[Eight colonies need a square map in the symmetric arena.]
+Vuit colònies necessiten un mapa quadrat a l'arena simètrica.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+El centre és massa petit per a un fruiterar en aquest mapa; feu servir un centre més gran o un mapa més gran.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+L'arena deixa massa poc espai per a cada colònia; feu servir un mapa més gran, un centre més petit o un fossat més estret.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Les calçades són massa a prop entre elles; feu servir menys calçades o més estretes, o un centre més gran.
+[Ring world]
+Món anell
+[Belt width]
+Amplada del cinturó
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+El cinturó és massa curt per a tantes colònies; feu servir un mapa més llarg o menys colònies.
+[City states]
+Ciutats estat
+[Strait width]
+Amplada de l'estret
+[Valleys]
+Valls
+[Frontier richness]
+Riquesa de la frontera
+[City states need at least one colony.]
+Les ciutats estat necessiten almenys una colònia.
+[Stone walls]
+Murs de pedra
+[Sand patches]
+Clapes de sorra
+[Tidal flats]
+Planes de marea
+[Everglades]
+Aiguamolls
+[Pool spacing]
+Separació de les basses
+[Pool size]
+Mida de les basses
+[Clearing size]
+Mida de la clariana
+[Levee]
+Dic
+[Sloughs]
+Aiguamolls
+[Everglades need at least one colony.]
+Els aiguamolls necessiten almenys una colònia.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Massa colònies per a aquest mapa; useu un mapa més gran o menys colònies.
+[Coral]
+Corall
+[Fork angle]
+Angle de ramificació
+[Lean]
+Inclinació
+[Home size]
+Mida de la base
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+El corall no cap en aquest mapa; utilitzeu un mapa més gran, estrets més estrets o menys colònies.
+[Branching]
+Ramificació
+[Branch width]
+Amplada de les branques
+[Coral needs at least one colony.]
+El corall necessita almenys una colònia.
+[Coral needs a map at least 128 tiles across.]
+El corall necessita un mapa d'almenys 128 caselles d'amplada.
+[Spider web]
+Teranyina
+[Spokes per colony]
+Radis per colònia
+[Ring spacing]
+Separació dels anells
+[Thread width]
+Amplada dels fils
+[Sag]
+Caiguda
+[Torn strands]
+Fils trencats
+[Hub size]
+Mida del centre
+[Dew drops]
+Gotes de rosada
+[Spiral]
+Espiral
+[Spider webs need at least one colony.]
+Les teranyines necessiten almenys una colònia.
+[Sandbars]
+Bancs de sorra
+[Tide pools]
+Basses de marea
+[Lagoons]
+Llacunes
+[Central island]
+Illa central
+[Tidal flats need at least one colony.]
+Les planes de marea necessiten almenys una colònia.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Les illes natals no caben en aquest mapa; fes servir un mapa més gran, menys colònies o illes més petites.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+L'àrea comuna i l'estret deixen massa poc espai per a les bases; fes servir un mapa més gran, menys colònies, una àrea comuna més petita o un estret més estret.
+[Wheat amount]
+Quantitat de blat
+[Wood amount]
+Quantitat de fusta
+[Stone amount]
+Quantitat de pedra
+[Algae amount]
+Quantitat d'algues
+[Fruit amount]
+Quantitat de fruita
+[Stone on hilltops]
+Pedra als cims dels turons
+[Winding river]
+Riu sinuós
+[Sandy beaches]
+Platges de sorra
+[Land bridges]
+Ponts de terra
+[Colony meadows]
+Prats al voltant de les colònies
+[Extra starting deposit]
+Dipòsit inicial addicional
+[Moat bridges]
+Ponts sobre el fossat
+[Jagged coastlines]
+Costes retallades
+[Sand roads]
+Camins de sorra
+[Treasure in dead ends]
+Tresors als atzucacs
+[Fjord bank deposits]
+Dipòsits a les ribes dels fiords
+[Sandy lake shore]
+Riba sorrenca del llac
+[River delta]
+Delta del riu
+[Meandering rivers]
+Rius amb meandres
+[Fruit in home valleys]
+Fruita a les valls inicials
+[Moat]
+Fossat
+[Stone in the orchard]
+Pedra a l'hort
+[Colonies on both coasts]
+Colònies a les dues costes
+[Winding belt]
+Cinturó sinuós

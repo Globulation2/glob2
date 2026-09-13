@@ -1390,6 +1390,14 @@ Jokalariak eta taldeak
 Aurrez egindako mapak
 [Preview ready. Start plays this exact map.]
 Aurrebista prest. Jokoa hastean mapa zehatz hau erabiltzen da.
+[Regenerate all]
+Sortu berriro guztiak
+[Generating preview...]
+Aurrebista sortzen...
+[Preview unavailable]
+Aurrebista ez dago erabilgarri
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Paisaia bakoitza benetako mapa gisa erakusten da zure uneko tamaina eta kolonia kopuruarekin. Aukeratu bat erakutsitako mapa jokatzeko.
 [Purple]
 Morea
 [Quick clash]
@@ -1552,6 +1560,10 @@ Ez dago oraingo aurrebistarik
 Borroka azkarra: abiadura bikoitza; sortutako mapak 8 langilerekin hasten dira.
 [Reroll]
 Sortu beste mapa bat
+[Randomize]
+Sortu ausaz
+[Reset to defaults]
+Leheneratu balio lehenetsiak
 [Ruleset]
 Arau multzoa
 [Select a map from the library.]
@@ -1788,3 +1800,229 @@ Kanalaren zabalera
 Lur-zubiaren zabalera
 [Lake size]
 Aintziraren tamaina
+[Contested commons]
+Lur komun lehiatuak
+[Lattice]
+Sareta
+[Maze]
+Labirintoa
+[Fjord continent]
+Fiordoen kontinentea
+[Islet size]
+Uharte txikiaren tamaina
+[Home radius]
+Hasierako eremuaren erradioa
+[Cell size]
+Gelaxkaren tamaina
+[Room size]
+Gelaren tamaina
+[Corridor width]
+Korridorearen zabalera
+[Loopiness]
+Begizta-maila
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labirintoak gutxienez bi gelaxka behar ditu zabaleran eta altueran; erabili mapa handiagoa edo gelaxka txikiagoak.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Hain kanal zabalek belar gutxiegi uzten dute gelaxka bakoitzean; erabili kanal estuagoak edo gelaxka handiagoak.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labirintoak kale itsu gutxiegi ditu hainbeste koloniarentzat; erabili mapa handiagoa edo gelaxka txikiagoak.
+[Home island size]
+Hasierako uhartearen tamaina
+[Commons size]
+Eremu komunaren tamaina
+[Moat width]
+Lubanarroaren zabalera
+[Bridge count]
+Zubi kopurua
+[Continent size]
+Kontinentearen tamaina
+[Coast roughness]
+Kostaldearen irregulartasuna
+[Fjord width]
+Fiordoaren zabalera
+[Lake connects to fjords]
+Aintzira fiordoekin lotuta
+[Resource islands]
+Baliabide-uharteak
+[Watershed]
+Ibai-arroa
+[River density]
+Ibaien dentsitatea
+[Dryness]
+Lehortasuna
+[Fords]
+Ibiak
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Ibai-arroak uholde-lautada gutxiegi du hainbeste koloniarentzat; erabili mapa handiagoa edo kolonia gutxiago.
+[Stone highlands]
+Harrizko goi-lurrak
+[Valley size]
+Haranaren tamaina
+[Pass width]
+Mendatearen zabalera
+[Pond size]
+Urmaelaren tamaina
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Haran hauek handiegiak dira maparako; erabili mapa handiagoa edo haran txikiagoak.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Goi-lurrek leku gutxiegi dute hainbeste koloniarentzat; erabili mapa handiagoa edo kolonia gutxiago.
+[Symmetric arena]
+Arena simetrikoa
+[Centre size]
+Erdigunearen tamaina
+[Causeway width]
+Galtzadaren zabalera
+[Causeways]
+Galtzadak
+[Lakes]
+Aintzirak
+[Resource richness]
+Baliabideen ugaritasuna
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Arena simetrikoak 2, 4 edo 8 kolonia behar ditu.
+[Eight colonies need a square map in the symmetric arena.]
+Zortzi koloniarentzat mapa karratua behar da arena simetrikoan.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Erdigunea txikiegia da mapa honetan fruta-baratze baterako; erabili erdigune handiagoa edo mapa handiagoa.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arenak leku gutxiegi uzten du kolonia bakoitzarentzat; erabili mapa handiagoa, erdigune txikiagoa edo lubanarro estuagoa.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Galtzadak elkarrengandik hurbilegi daude; erabili galtzada gutxiago edo estuagoak, edo erdigune handiagoa.
+[Ring world]
+Eraztun-mundua
+[Belt width]
+Gerrikoaren zabalera
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Gerrikoa laburregia da hainbeste koloniarentzat; erabili mapa luzeagoa edo kolonia gutxiago.
+[City states]
+Hiri-estatuak
+[Strait width]
+Itsasartearen zabalera
+[Valleys]
+Haranak
+[Frontier richness]
+Mugaldeko aberastasuna
+[City states need at least one colony.]
+Hiri-estatuek gutxienez kolonia bat behar dute.
+[Stone walls]
+Harrizko hormak
+[Sand patches]
+Harea-guneak
+[Tidal flats]
+Marea-lautadak
+[Everglades]
+Zingirak
+[Pool spacing]
+Putzuen arteko tartea
+[Pool size]
+Putzuen tamaina
+[Clearing size]
+Soilgunearen tamaina
+[Levee]
+Dikea
+[Sloughs]
+Zingirak
+[Everglades need at least one colony.]
+Zingirek gutxienez kolonia bat behar dute.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Kolonia gehiegi mapa honetarako; erabili mapa handiagoa edo kolonia gutxiago.
+[Coral]
+Koralea
+[Fork angle]
+Adarkatze-angelua
+[Lean]
+Makurdura
+[Home size]
+Etxearen tamaina
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Koralea ez da mapa honetan sartzen; erabili mapa handiagoa, itsasarte estuagoak edo kolonia gutxiago.
+[Branching]
+Adarkadura
+[Branch width]
+Adarren zabalera
+[Coral needs at least one colony.]
+Koraleak gutxienez kolonia bat behar du.
+[Coral needs a map at least 128 tiles across.]
+Koraleak gutxienez 128 lauki zabaleko mapa behar du.
+[Spider web]
+Armiarma-sarea
+[Spokes per colony]
+Erradioak koloniako
+[Ring spacing]
+Eraztunen arteko tartea
+[Thread width]
+Harien zabalera
+[Sag]
+Makurdura
+[Torn strands]
+Hari hautsiak
+[Hub size]
+Erdiko gunearen tamaina
+[Dew drops]
+Ihintz-tantak
+[Spiral]
+Espirala
+[Spider webs need at least one colony.]
+Armiarma-sareak gutxienez kolonia bat behar du.
+[Sandbars]
+Hondar-bankuak
+[Tide pools]
+Marea-putzuak
+[Lagoons]
+Aintzirak
+[Central island]
+Erdiko uhartea
+[Tidal flats need at least one colony.]
+Marea-lautadek gutxienez kolonia bat behar dute.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Jatorrizko uharteak ez dira mapa honetan sartzen; erabili mapa handiagoa, kolonia gutxiago edo uharte txikiagoak.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Eremu komunak eta itsasarteak leku gutxiegi uzten diete oinarriei; erabili mapa handiagoa, kolonia gutxiago, eremu komun txikiagoa edo itsasarte estuagoa.
+[Wheat amount]
+Gari kopurua
+[Wood amount]
+Egur kopurua
+[Stone amount]
+Harri kopurua
+[Algae amount]
+Alga kopurua
+[Fruit amount]
+Fruta kopurua
+[Stone on hilltops]
+Harria muinoen gailurretan
+[Winding river]
+Ibai bihurgunetsua
+[Sandy beaches]
+Harea-hondartzak
+[Land bridges]
+Lur-zubiak
+[Colony meadows]
+Belardiak kolonien inguruan
+[Extra starting deposit]
+Hasierako baliabide gehigarria
+[Moat bridges]
+Lubanarroko zubiak
+[Jagged coastlines]
+Kostalde malkarrak
+[Sand roads]
+Harea-bideak
+[Treasure in dead ends]
+Altxorrak kale itsuetan
+[Fjord bank deposits]
+Fiordoen ertzetako baliabideak
+[Sandy lake shore]
+Aintziraren ertz hareatsua
+[River delta]
+Ibai-delta
+[Meandering rivers]
+Ibai meandrodunak
+[Fruit in home valleys]
+Fruta hasierako haranetan
+[Moat]
+Lubanarroa
+[Stone in the orchard]
+Harria fruta-baratzean
+[Colonies on both coasts]
+Koloniak bi kostaldeetan
+[Winding belt]
+Gerriko bihurgunetsua

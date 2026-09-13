@@ -1380,6 +1380,14 @@ Pelaajat & Joukkueet
 Valmiit kartat
 [Preview ready. Start plays this exact map.]
 Esikatselu valmis. Pelin aloittaminen käyttää tätä tarkkaa karttaa.
+[Regenerate all]
+Luo kaikki uudelleen
+[Generating preview...]
+Luodaan esikatselua...
+[Preview unavailable]
+Esikatselu ei ole saatavilla
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Jokainen maisema näytetään oikeana karttana nykyisellä koolla ja siirtokuntien määrällä. Valitse yksi pelataksesi näytetyn kartan.
 [Purple]
 Violetti
 [Quick clash]
@@ -1542,6 +1550,10 @@ Ei nykyistä esikatselua
 Nopea taistelu: kaksinkertainen nopeus; luodut kartat alkavat 8 työntekijällä.
 [Reroll]
 Luo toinen kartta
+[Randomize]
+Satunnaista
+[Reset to defaults]
+Palauta oletusarvot
 [Ruleset]
 Säännöstö
 [Select a map from the library.]
@@ -1778,3 +1790,229 @@ Kanavan leveys
 Maasillan leveys
 [Lake size]
 Järven koko
+[Contested commons]
+Kiistelty yhteisalue
+[Lattice]
+Ruudukko
+[Maze]
+Sokkelo
+[Fjord continent]
+Vuonomainen manner
+[Islet size]
+Luodon koko
+[Home radius]
+Kotialueen säde
+[Cell size]
+Solun koko
+[Room size]
+Huoneen koko
+[Corridor width]
+Käytävän leveys
+[Loopiness]
+Silmukoiden määrä
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Sokkelo tarvitsee vähintään kaksi solua sekä vaaka- että pystysuunnassa; käytä suurempaa karttaa tai pienempiä soluja.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Näin leveät kanavat jättävät jokaiseen soluun liian vähän ruohoa; käytä kapeampia kanavia tai suurempia soluja.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Sokkelossa on liian vähän umpikujia näin monelle siirtokunnalle; käytä suurempaa karttaa tai pienempiä soluja.
+[Home island size]
+Kotisaaren koko
+[Commons size]
+Yhteisalueen koko
+[Moat width]
+Vallihaudan leveys
+[Bridge count]
+Siltojen määrä
+[Continent size]
+Mantereen koko
+[Coast roughness]
+Rannikon rikkonaisuus
+[Fjord width]
+Vuonon leveys
+[Lake connects to fjords]
+Järvi yhdistyy vuonoihin
+[Resource islands]
+Luonnonvarasaaret
+[Watershed]
+Valuma-alue
+[River density]
+Jokien tiheys
+[Dryness]
+Kuivuus
+[Fords]
+Kahlaamot
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Valuma-alueella on liian vähän tulvatasankoa näin monelle siirtokunnalle; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[Stone highlands]
+Kiviylänkö
+[Valley size]
+Laakson koko
+[Pass width]
+Solan leveys
+[Pond size]
+Lammen koko
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Nämä laaksot ovat liian suuria kartalle; käytä suurempaa karttaa tai pienempiä laaksoja.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Ylängöllä on liian vähän tilaa näin monelle siirtokunnalle; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[Symmetric arena]
+Symmetrinen areena
+[Centre size]
+Keskialueen koko
+[Causeway width]
+Pengertien leveys
+[Causeways]
+Pengertiet
+[Lakes]
+Järvet
+[Resource richness]
+Luonnonvarojen runsaus
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Symmetrinen areena vaatii 2, 4 tai 8 siirtokuntaa.
+[Eight colonies need a square map in the symmetric arena.]
+Kahdeksan siirtokuntaa vaatii symmetrisessä areenassa neliönmuotoisen kartan.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Keskialue on tällä kartalla liian pieni hedelmätarhalle; käytä suurempaa keskialuetta tai suurempaa karttaa.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Areenalle ei jää tarpeeksi tilaa jokaiselle siirtokunnalle; käytä suurempaa karttaa, pienempää keskialuetta tai kapeampaa vallihautaa.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Pengertiet ovat liian lähellä toisiaan; käytä vähemmän tai kapeampia pengerteitä tai suurempaa keskialuetta.
+[Ring world]
+Rengasmaailma
+[Belt width]
+Vyöhykkeen leveys
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Vyöhyke on liian lyhyt näin monelle siirtokunnalle; käytä pidempää karttaa tai vähemmän siirtokuntia.
+[City states]
+Kaupunkivaltiot
+[Strait width]
+Salmen leveys
+[Valleys]
+Laaksot
+[Frontier richness]
+Rajamaan rikkaus
+[City states need at least one colony.]
+Kaupunkivaltiot tarvitsevat vähintään yhden siirtokunnan.
+[Stone walls]
+Kivimuurit
+[Sand patches]
+Hiekkaläikät
+[Tidal flats]
+Vuorovesitasangot
+[Everglades]
+Suomaat
+[Pool spacing]
+Lammikoiden väli
+[Pool size]
+Lammikoiden koko
+[Clearing size]
+Aukion koko
+[Levee]
+Pato
+[Sloughs]
+Rimmet
+[Everglades need at least one colony.]
+Suomaat tarvitsevat vähintään yhden siirtokunnan.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Liikaa siirtokuntia tälle kartalle; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[Coral]
+Koralli
+[Fork angle]
+Haarautumiskulma
+[Lean]
+Kallistus
+[Home size]
+Kotialueen koko
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Koralli ei mahdu tälle kartalle; käytä suurempaa karttaa, kapeampia salmia tai vähemmän siirtokuntia.
+[Branching]
+Haarautuminen
+[Branch width]
+Oksien leveys
+[Coral needs at least one colony.]
+Koralli tarvitsee vähintään yhden siirtokunnan.
+[Coral needs a map at least 128 tiles across.]
+Koralli tarvitsee vähintään 128 ruutua leveän kartan.
+[Spider web]
+Hämähäkinseitti
+[Spokes per colony]
+Puolia siirtokuntaa kohden
+[Ring spacing]
+Renkaiden väli
+[Thread width]
+Lankojen leveys
+[Sag]
+Riippuma
+[Torn strands]
+Katkenneet langat
+[Hub size]
+Keskustan koko
+[Dew drops]
+Kastepisarat
+[Spiral]
+Spiraali
+[Spider webs need at least one colony.]
+Hämähäkinseitti tarvitsee vähintään yhden siirtokunnan.
+[Sandbars]
+Hiekkasärkät
+[Tide pools]
+Vuorovesilammikot
+[Lagoons]
+Laguunit
+[Central island]
+Keskussaari
+[Tidal flats need at least one colony.]
+Vuorovesitasangot tarvitsevat vähintään yhden siirtokunnan.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Kotisaaret eivät mahdu tälle kartalle; käytä suurempaa karttaa, vähemmän siirtokuntia tai pienempiä saaria.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Yhteisalue ja salmi jättävät liian vähän tilaa kotitukikohdille; käytä suurempaa karttaa, vähemmän siirtokuntia, pienempää yhteisaluetta tai kapeampaa salmea.
+[Wheat amount]
+Viljan määrä
+[Wood amount]
+Puun määrä
+[Stone amount]
+Kiven määrä
+[Algae amount]
+Levän määrä
+[Fruit amount]
+Hedelmien määrä
+[Stone on hilltops]
+Kiveä kukkuloiden laella
+[Winding river]
+Mutkitteleva joki
+[Sandy beaches]
+Hiekkarannat
+[Land bridges]
+Maasillat
+[Colony meadows]
+Niityt siirtokuntien ympärillä
+[Extra starting deposit]
+Ylimääräinen aloitusesiintymä
+[Moat bridges]
+Sillat vallihaudan yli
+[Jagged coastlines]
+Rikkonaiset rannikot
+[Sand roads]
+Hiekkatiet
+[Treasure in dead ends]
+Aarteita umpikujissa
+[Fjord bank deposits]
+Esiintymiä vuonojen rannoilla
+[Sandy lake shore]
+Hiekkainen järvenranta
+[River delta]
+Jokisuisto
+[Meandering rivers]
+Meanderoivat joet
+[Fruit in home valleys]
+Hedelmiä kotilaaksoissa
+[Moat]
+Vallihauta
+[Stone in the orchard]
+Kiveä hedelmätarhassa
+[Colonies on both coasts]
+Siirtokuntia molemmilla rannikoilla
+[Winding belt]
+Mutkitteleva vyöhyke

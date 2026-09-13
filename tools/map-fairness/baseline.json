@@ -1,0 +1,15 @@
+{
+  "name": "baseline",
+  "description": "Engine baseline: Symmetric arena only, six 128x128 maps with map seeds disjoint from the smoke preset's, every rotation played by four engine seeds (96 games, about 25 minutes at 3 jobs). Its colonies are identical by construction, so wins by start should be uniform and wins by team index show the engine's own processing-order bias with no map effect.",
+  "generators": [15],
+  "map_seeds": "1101-1106",
+  "games_per_rotation": 4,
+  "rotations": "all",
+  "size": 128,
+  "colonies": 4,
+  "candidates": 5,
+  "ai": "nicowar",
+  "tick_cap": 90000,
+  "jobs": 3,
+  "verify_games": 2
+}

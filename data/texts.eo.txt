@@ -1378,6 +1378,14 @@ Ludantoj kaj Teamoj
 Antaŭfaritaj mapoj
 [Preview ready. Start plays this exact map.]
 Antaŭrigardo preta. Komenci la ludon uzas ĉi tiun precizan mapon.
+[Regenerate all]
+Regeneri ĉion
+[Generating preview...]
+Kreante antaŭprezenton...
+[Preview unavailable]
+Antaŭprezento ne disponebla
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Ĉiu pejzaĝo estas montrata kiel vera mapo laŭ via nuna grandeco kaj nombro de kolonioj. Elektu unu por ludi la montritan mapon.
 [Purple]
 Purpura
 [Quick clash]
@@ -1540,6 +1548,10 @@ Neniu aktuala antaŭvido
 Rapida batalo: duobla rapido; generitaj mapoj komenciĝas per 8 laboristoj.
 [Reroll]
 Generu alian mapon
+[Randomize]
+Generu hazarde
+[Reset to defaults]
+Restarigi defaŭltajn valorojn
 [Ruleset]
 Regularo
 [Select a map from the library.]
@@ -1776,3 +1788,229 @@ Larĝo de kanalo
 Larĝo de terponto
 [Lake size]
 Grandeco de lago
+[Contested commons]
+Pridisputata komunareo
+[Lattice]
+Krado
+[Maze]
+Labirinto
+[Fjord continent]
+Fjorda kontinento
+[Islet size]
+Grandeco de insuleto
+[Home radius]
+Radiuso de hejmareo
+[Cell size]
+Grandeco de ĉelo
+[Room size]
+Grandeco de ĉambro
+[Corridor width]
+Larĝo de koridoro
+[Loopiness]
+Bukleco
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+La labirinto bezonas almenaŭ du ĉelojn laŭlarĝe kaj laŭalte; uzu pli grandan mapon aŭ pli malgrandajn ĉelojn.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Tiel larĝaj kanaloj lasas tro malmulte da herbo en ĉiu ĉelo; uzu pli mallarĝajn kanalojn aŭ pli grandajn ĉelojn.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+La labirinto havas tro malmultajn sakstratojn por tiom da kolonioj; uzu pli grandan mapon aŭ pli malgrandajn ĉelojn.
+[Home island size]
+Grandeco de hejminsulo
+[Commons size]
+Grandeco de komunareo
+[Moat width]
+Larĝo de fosaĵo
+[Bridge count]
+Nombro de pontoj
+[Continent size]
+Grandeco de kontinento
+[Coast roughness]
+Malglateco de marbordo
+[Fjord width]
+Larĝo de fjordo
+[Lake connects to fjords]
+Lago ligita al fjordoj
+[Resource islands]
+Rimedinsuloj
+[Watershed]
+Riverbaseno
+[River density]
+Denseco de riveroj
+[Dryness]
+Sekeco
+[Fords]
+Travadejoj
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+La riverbaseno havas tro malmulte da inundebenaĵo por tiom da kolonioj; uzu pli grandan mapon aŭ malpli da kolonioj.
+[Stone highlands]
+Ŝtonaj altebenaĵoj
+[Valley size]
+Grandeco de valo
+[Pass width]
+Larĝo de montpasejo
+[Pond size]
+Grandeco de lageto
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Ĉi tiuj valoj estas tro grandaj por la mapo; uzu pli grandan mapon aŭ pli malgrandajn valojn.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+La altebenaĵoj havas tro malmulte da spaco por tiom da kolonioj; uzu pli grandan mapon aŭ malpli da kolonioj.
+[Symmetric arena]
+Simetria areno
+[Centre size]
+Grandeco de centro
+[Causeway width]
+Larĝo de digvojo
+[Causeways]
+Digvojoj
+[Lakes]
+Lagoj
+[Resource richness]
+Riĉeco de rimedoj
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Simetria areno bezonas 2, 4 aŭ 8 koloniojn.
+[Eight colonies need a square map in the symmetric arena.]
+Ok kolonioj bezonas kvadratan mapon en la simetria areno.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+La centro estas tro malgranda por fruktoĝardeno sur ĉi tiu mapo; uzu pli grandan centron aŭ pli grandan mapon.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+La areno lasas tro malmulte da spaco por ĉiu kolonio; uzu pli grandan mapon, pli malgrandan centron aŭ pli mallarĝan fosaĵon.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+La digvojoj estas tro proksimaj unu al la alia; uzu malpli multajn aŭ pli mallarĝajn digvojojn, aŭ pli grandan centron.
+[Ring world]
+Ringa mondo
+[Belt width]
+Larĝo de zono
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+La zono estas tro mallonga por tiom da kolonioj; uzu pli longan mapon aŭ malpli da kolonioj.
+[City states]
+Urboŝtatoj
+[Strait width]
+Larĝo de la markolo
+[Valleys]
+Valoj
+[Frontier richness]
+Riĉeco de la limregiono
+[City states need at least one colony.]
+Urboŝtatoj bezonas almenaŭ unu kolonion.
+[Stone walls]
+Ŝtonaj muroj
+[Sand patches]
+Sablaj makuloj
+[Tidal flats]
+Tajdaj ebenaĵoj
+[Everglades]
+Marĉoj
+[Pool spacing]
+Interspaco de flakoj
+[Pool size]
+Grandeco de flakoj
+[Clearing size]
+Grandeco de maldensejo
+[Levee]
+Digo
+[Sloughs]
+Marĉkanaloj
+[Everglades need at least one colony.]
+Marĉoj bezonas almenaŭ unu kolonion.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Tro da kolonioj por ĉi tiu mapo; uzu pli grandan mapon aŭ malpli da kolonioj.
+[Coral]
+Koralo
+[Fork angle]
+Angulo de branĉiĝo
+[Lean]
+Kliniĝo
+[Home size]
+Grando de la hejmo
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+La koralo ne konvenas al ĉi tiu mapo; uzu pli grandan mapon, pli mallarĝajn markolojn aŭ malpli da kolonioj.
+[Branching]
+Branĉiĝo
+[Branch width]
+Larĝo de branĉoj
+[Coral needs at least one colony.]
+Koralo bezonas almenaŭ unu kolonion.
+[Coral needs a map at least 128 tiles across.]
+Koralo bezonas mapon almenaŭ 128 kahelojn larĝan.
+[Spider web]
+Araneaĵo
+[Spokes per colony]
+Radioj po kolonio
+[Ring spacing]
+Interspaco de ringoj
+[Thread width]
+Larĝo de fadenoj
+[Sag]
+Pendiĝo
+[Torn strands]
+Ŝiritaj fadenoj
+[Hub size]
+Grando de la centro
+[Dew drops]
+Rosoguttoj
+[Spiral]
+Spiralo
+[Spider webs need at least one colony.]
+Araneaĵo bezonas almenaŭ unu kolonion.
+[Sandbars]
+Sablobenkoj
+[Tide pools]
+Tajdaj flakoj
+[Lagoons]
+Lagunoj
+[Central island]
+Centra insulo
+[Tidal flats need at least one colony.]
+Tajdaj ebenaĵoj bezonas almenaŭ unu kolonion.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+La hejmaj insuloj ne taŭgas en ĉi tiu mapo; uzu pli grandan mapon, malpli da kolonioj aŭ pli malgrandajn insulojn.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+La komunareo kaj la markolo lasas tro malmulte da spaco por la hejmaj bazoj; uzu pli grandan mapon, malpli da kolonioj, pli malgrandan komunareon aŭ pli mallarĝan markolon.
+[Wheat amount]
+Kvanto de tritiko
+[Wood amount]
+Kvanto de ligno
+[Stone amount]
+Kvanto de ŝtono
+[Algae amount]
+Kvanto de algoj
+[Fruit amount]
+Kvanto de fruktoj
+[Stone on hilltops]
+Ŝtono sur montetopintoj
+[Winding river]
+Serpentuma rivero
+[Sandy beaches]
+Sablaj plaĝoj
+[Land bridges]
+Terpontoj
+[Colony meadows]
+Herbejoj ĉirkaŭ kolonioj
+[Extra starting deposit]
+Kroma komenca kuŝejo
+[Moat bridges]
+Pontoj super la fosaĵo
+[Jagged coastlines]
+Dentitaj marbordoj
+[Sand roads]
+Sablaj vojoj
+[Treasure in dead ends]
+Trezoroj en senelirejoj
+[Fjord bank deposits]
+Kuŝejoj ĉe fjordaj bordoj
+[Sandy lake shore]
+Sabla lagbordo
+[River delta]
+Riverdelto
+[Meandering rivers]
+Meandrantaj riveroj
+[Fruit in home valleys]
+Fruktoj en hejmvaloj
+[Moat]
+Fosaĵo
+[Stone in the orchard]
+Ŝtono en la fruktoĝardeno
+[Colonies on both coasts]
+Kolonioj ĉe ambaŭ marbordoj
+[Winding belt]
+Serpentuma zono

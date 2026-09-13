@@ -1376,6 +1376,14 @@ AI 명령 없음
 미리 만들어진 지도
 [Preview ready. Start plays this exact map.]
 미리보기가 준비되었습니다. 게임을 시작할 때 이 정확한 지도를 사용합니다.
+[Regenerate all]
+모두 다시 생성
+[Generating preview...]
+미리보기 생성 중...
+[Preview unavailable]
+미리보기를 사용할 수 없음
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+각 지형은 현재 크기와 식민지 수로 실제 생성된 지도로 표시됩니다. 하나를 선택하면 표시된 지도로 플레이합니다.
 [Purple]
 보라색
 [Quick clash]
@@ -1538,6 +1546,10 @@ AI 명령 없음
 빠른 전투: 속도 2배; 생성된 맵은 8명의 작업자로 시작합니다.
 [Reroll]
 다른 지도 생성
+[Randomize]
+무작위 생성
+[Reset to defaults]
+기본값 복원
 [Ruleset]
 규칙 세트
 [Select a map from the library.]
@@ -1774,3 +1786,229 @@ Globulation 2 커서를 표시합니다.
 육교 너비
 [Lake size]
 호수 크기
+[Contested commons]
+쟁탈 공유지
+[Lattice]
+격자
+[Maze]
+미로
+[Fjord continent]
+피오르 대륙
+[Islet size]
+작은 섬 크기
+[Home radius]
+기지 반경
+[Cell size]
+칸 크기
+[Room size]
+방 크기
+[Corridor width]
+통로 너비
+[Loopiness]
+순환로 밀도
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+미로에는 가로와 세로로 각각 칸이 2개 이상 필요합니다. 더 큰 지도를 사용하거나 칸을 더 작게 하세요.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+수로가 이렇게 넓으면 각 칸에 남는 초지가 너무 적습니다. 수로를 더 좁게 하거나 칸을 더 크게 하세요.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+이 식민지 수에 비해 미로의 막다른 길이 너무 적습니다. 더 큰 지도를 사용하거나 칸을 더 작게 하세요.
+[Home island size]
+시작 섬 크기
+[Commons size]
+공유지 크기
+[Moat width]
+해자 너비
+[Bridge count]
+다리 수
+[Continent size]
+대륙 크기
+[Coast roughness]
+해안선 굴곡도
+[Fjord width]
+피오르 너비
+[Lake connects to fjords]
+호수와 피오르 연결
+[Resource islands]
+자원 섬
+[Watershed]
+유역
+[River density]
+강 밀도
+[Dryness]
+건조도
+[Fords]
+여울
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+이 식민지 수에 비해 유역의 범람원이 너무 적습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[Stone highlands]
+바위 고원
+[Valley size]
+골짜기 크기
+[Pass width]
+고갯길 너비
+[Pond size]
+연못 크기
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+골짜기가 지도에 비해 너무 큽니다. 더 큰 지도를 사용하거나 골짜기를 더 작게 하세요.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+이 식민지 수에 비해 고원의 공간이 너무 부족합니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[Symmetric arena]
+대칭 경기장
+[Centre size]
+중앙 크기
+[Causeway width]
+둑길 너비
+[Causeways]
+둑길
+[Lakes]
+호수
+[Resource richness]
+자원 풍부도
+[Symmetric arena needs 2, 4 or 8 colonies.]
+대칭 경기장에는 식민지가 2개, 4개 또는 8개 필요합니다.
+[Eight colonies need a square map in the symmetric arena.]
+대칭 경기장에서 식민지를 8개로 하려면 정사각형 지도가 필요합니다.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+이 지도에서는 중앙이 너무 작아 과수원을 둘 수 없습니다. 중앙을 더 크게 하거나 더 큰 지도를 사용하세요.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+경기장에 식민지마다 둘 공간이 너무 부족합니다. 더 큰 지도를 사용하거나, 중앙을 더 작게 하거나, 해자를 더 좁게 하세요.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+둑길끼리 너무 가깝습니다. 둑길 수를 줄이거나 더 좁게 하거나, 중앙을 더 크게 하세요.
+[Ring world]
+고리 세계
+[Belt width]
+띠 너비
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+이 식민지 수에 비해 띠가 너무 짧습니다. 더 긴 지도를 사용하거나 식민지 수를 줄이세요.
+[City states]
+도시 국가
+[Strait width]
+해협 너비
+[Valleys]
+계곡
+[Frontier richness]
+변경의 풍요로움
+[City states need at least one colony.]
+도시 국가에는 최소 한 개의 식민지가 필요합니다.
+[Stone walls]
+돌 성벽
+[Sand patches]
+모래밭
+[Tidal flats]
+갯벌
+[Everglades]
+습지대
+[Pool spacing]
+웅덩이 간격
+[Pool size]
+웅덩이 크기
+[Clearing size]
+공터 크기
+[Levee]
+제방
+[Sloughs]
+늪지
+[Everglades need at least one colony.]
+습지대에는 최소 한 개의 식민지가 필요합니다.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+이 지도에는 식민지가 너무 많습니다. 더 큰 지도를 사용하거나 식민지를 줄이세요.
+[Coral]
+산호
+[Fork angle]
+분기 각도
+[Lean]
+기울기
+[Home size]
+본거지 크기
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+산호가 이 지도에 맞지 않습니다. 더 큰 지도, 더 좁은 해협 또는 더 적은 식민지를 사용하세요.
+[Branching]
+가지치기
+[Branch width]
+가지 너비
+[Coral needs at least one colony.]
+산호에는 식민지가 하나 이상 필요합니다.
+[Coral needs a map at least 128 tiles across.]
+산호에는 너비가 128칸 이상인 지도가 필요합니다.
+[Spider web]
+거미줄
+[Spokes per colony]
+식민지당 방사줄
+[Ring spacing]
+고리 간격
+[Thread width]
+실 너비
+[Sag]
+처짐
+[Torn strands]
+끊어진 실
+[Hub size]
+중심 크기
+[Dew drops]
+이슬방울
+[Spiral]
+나선
+[Spider webs need at least one colony.]
+거미줄에는 식민지가 하나 이상 필요합니다.
+[Sandbars]
+모래톱
+[Tide pools]
+조수 웅덩이
+[Lagoons]
+석호
+[Central island]
+중앙 섬
+[Tidal flats need at least one colony.]
+갯벌에는 최소 한 개의 식민지가 필요합니다.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+본섬이 이 지도에 들어가지 않습니다. 더 큰 지도, 더 적은 식민지 또는 더 작은 섬을 사용하세요.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+공유지와 해협이 본거지에 남기는 공간이 너무 적습니다. 더 큰 지도, 더 적은 식민지, 더 작은 공유지 또는 더 좁은 해협을 사용하세요.
+[Wheat amount]
+밀 양
+[Wood amount]
+나무 양
+[Stone amount]
+돌 양
+[Algae amount]
+해조류 양
+[Fruit amount]
+과일 양
+[Stone on hilltops]
+언덕 꼭대기의 돌
+[Winding river]
+구불구불한 강
+[Sandy beaches]
+모래 해변
+[Land bridges]
+육교
+[Colony meadows]
+식민지 주변 초원
+[Extra starting deposit]
+추가 시작 자원
+[Moat bridges]
+해자 위의 다리
+[Jagged coastlines]
+들쭉날쭉한 해안선
+[Sand roads]
+모래길
+[Treasure in dead ends]
+막다른 길의 보물
+[Fjord bank deposits]
+피오르 기슭의 자원
+[Sandy lake shore]
+모래 호숫가
+[River delta]
+강 삼각주
+[Meandering rivers]
+굽이치는 강
+[Fruit in home valleys]
+시작 골짜기의 과일
+[Moat]
+해자
+[Stone in the orchard]
+과수원의 돌
+[Colonies on both coasts]
+양쪽 해안의 식민지
+[Winding belt]
+구불구불한 띠

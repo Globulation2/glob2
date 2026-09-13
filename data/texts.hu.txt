@@ -1380,6 +1380,14 @@ Játékosok és csapatok
 Előre elkészített térképek
 [Preview ready. Start plays this exact map.]
 Az előnézet készen áll. A játék elindítása pontosan ezt a térképet használja.
+[Regenerate all]
+Összes újragenerálása
+[Generating preview...]
+Előnézet készítése...
+[Preview unavailable]
+Az előnézet nem érhető el
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Minden táj valódi térképként jelenik meg a jelenlegi mérettel és kolóniaszámmal. Válassz egyet a megjelenített térkép játszásához.
 [Purple]
 Lila
 [Quick clash]
@@ -1542,6 +1550,10 @@ Nincs aktuális előnézet
 Gyors csata: dupla sebesség; A generált térképek 8 munkással kezdődnek.
 [Reroll]
 Hozzon létre egy másik térképet
+[Randomize]
+Véletlenszerű generálás
+[Reset to defaults]
+Alapértelmezett értékek visszaállítása
 [Ruleset]
 Szabálykészlet
 [Select a map from the library.]
@@ -1778,3 +1790,229 @@ Csatorna szélessége
 Földhíd szélessége
 [Lake size]
 Tó mérete
+[Contested commons]
+Vitatott közös terület
+[Lattice]
+Rácsozat
+[Maze]
+Labirintus
+[Fjord continent]
+Fjordos kontinens
+[Islet size]
+Szigetecske mérete
+[Home radius]
+Kezdőterület sugara
+[Cell size]
+Cella mérete
+[Room size]
+Szoba mérete
+[Corridor width]
+Folyosó szélessége
+[Loopiness]
+Huroksűrűség
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+A labirintusnak szélességben és magasságban is legalább két cellára van szüksége; használjon nagyobb térképet vagy kisebb cellákat.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Ilyen széles csatornák mellett minden cellában túl kevés fű marad; használjon keskenyebb csatornákat vagy nagyobb cellákat.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+A labirintusban túl kevés a zsákutca ennyi kolóniához; használjon nagyobb térképet vagy kisebb cellákat.
+[Home island size]
+Kezdősziget mérete
+[Commons size]
+Közös terület mérete
+[Moat width]
+Várárok szélessége
+[Bridge count]
+Hidak száma
+[Continent size]
+Kontinens mérete
+[Coast roughness]
+Partvonal tagoltsága
+[Fjord width]
+Fjord szélessége
+[Lake connects to fjords]
+A tó kapcsolódik a fjordokhoz
+[Resource islands]
+Nyersanyagszigetek
+[Watershed]
+Vízgyűjtő
+[River density]
+Folyók sűrűsége
+[Dryness]
+Szárazság
+[Fords]
+Gázlók
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+A vízgyűjtőn túl kevés az ártér ennyi kolóniához; használjon nagyobb térképet vagy kevesebb kolóniát.
+[Stone highlands]
+Köves felföld
+[Valley size]
+Völgy mérete
+[Pass width]
+Hágó szélessége
+[Pond size]
+Tavacska mérete
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Ezek a völgyek túl nagyok a térképhez; használjon nagyobb térképet vagy kisebb völgyeket.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+A felföldön túl kevés a hely ennyi kolóniához; használjon nagyobb térképet vagy kevesebb kolóniát.
+[Symmetric arena]
+Szimmetrikus aréna
+[Centre size]
+Középrész mérete
+[Causeway width]
+Töltésút szélessége
+[Causeways]
+Töltésutak
+[Lakes]
+Tavak
+[Resource richness]
+Nyersanyagbőség
+[Symmetric arena needs 2, 4 or 8 colonies.]
+A szimmetrikus arénához 2, 4 vagy 8 kolónia kell.
+[Eight colonies need a square map in the symmetric arena.]
+Nyolc kolóniához négyzet alakú térkép kell a szimmetrikus arénában.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+A középrész túl kicsi egy gyümölcsöshöz ezen a térképen; használjon nagyobb középrészt vagy nagyobb térképet.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Az aréna túl kevés helyet hagy minden kolóniának; használjon nagyobb térképet, kisebb középrészt vagy keskenyebb várárkot.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+A töltésutak túl közel vannak egymáshoz; használjon kevesebb vagy keskenyebb töltésutat, vagy nagyobb középrészt.
+[Ring world]
+Gyűrűvilág
+[Belt width]
+Öv szélessége
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Az öv túl rövid ennyi kolóniához; használjon hosszabb térképet vagy kevesebb kolóniát.
+[City states]
+Városállamok
+[Strait width]
+Szoros szélessége
+[Valleys]
+Völgyek
+[Frontier richness]
+A határvidék gazdagsága
+[City states need at least one colony.]
+A városállamokhoz legalább egy kolónia kell.
+[Stone walls]
+Kőfalak
+[Sand patches]
+Homokfoltok
+[Tidal flats]
+Árapálysíkság
+[Everglades]
+Mocsárvidék
+[Pool spacing]
+Tavacskák távolsága
+[Pool size]
+Tavacskák mérete
+[Clearing size]
+Tisztás mérete
+[Levee]
+Gát
+[Sloughs]
+Holtágak
+[Everglades need at least one colony.]
+A mocsárvidékhez legalább egy kolónia kell.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Túl sok kolónia ehhez a térképhez; használj nagyobb térképet vagy kevesebb kolóniát.
+[Coral]
+Korall
+[Fork angle]
+Elágazási szög
+[Lean]
+Dőlés
+[Home size]
+Otthon mérete
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+A korall nem fér el ezen a térképen; használj nagyobb térképet, keskenyebb szorosokat vagy kevesebb kolóniát.
+[Branching]
+Elágazás
+[Branch width]
+Ágszélesség
+[Coral needs at least one colony.]
+A korallhoz legalább egy kolónia kell.
+[Coral needs a map at least 128 tiles across.]
+A korallhoz legalább 128 mező széles térkép kell.
+[Spider web]
+Pókháló
+[Spokes per colony]
+Küllők kolóniánként
+[Ring spacing]
+Gyűrűk távolsága
+[Thread width]
+Szálszélesség
+[Sag]
+Belógás
+[Torn strands]
+Szakadt szálak
+[Hub size]
+Középpont mérete
+[Dew drops]
+Harmatcseppek
+[Spiral]
+Spirál
+[Spider webs need at least one colony.]
+A pókhálóhoz legalább egy kolónia kell.
+[Sandbars]
+Homokpadok
+[Tide pools]
+Árapálytavak
+[Lagoons]
+Lagúnák
+[Central island]
+Középső sziget
+[Tidal flats need at least one colony.]
+Az árapálysíksághoz legalább egy kolónia kell.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Az otthoni szigetek nem férnek el ezen a térképen; használj nagyobb térképet, kevesebb kolóniát vagy kisebb szigeteket.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+A közös terület és a szoros túl kevés helyet hagy a bázisoknak; használj nagyobb térképet, kevesebb kolóniát, kisebb közös területet vagy keskenyebb szorost.
+[Wheat amount]
+Búza mennyisége
+[Wood amount]
+Fa mennyisége
+[Stone amount]
+Kő mennyisége
+[Algae amount]
+Alga mennyisége
+[Fruit amount]
+Gyümölcs mennyisége
+[Stone on hilltops]
+Kő a dombtetőkön
+[Winding river]
+Kanyargó folyó
+[Sandy beaches]
+Homokos strandok
+[Land bridges]
+Földhidak
+[Colony meadows]
+Rétek a kolóniák körül
+[Extra starting deposit]
+Extra kezdő lelőhely
+[Moat bridges]
+Hidak a várárkon
+[Jagged coastlines]
+Tagolt partok
+[Sand roads]
+Homokutak
+[Treasure in dead ends]
+Kincsek a zsákutcákban
+[Fjord bank deposits]
+Lelőhelyek a fjordok partján
+[Sandy lake shore]
+Homokos tópart
+[River delta]
+Folyódelta
+[Meandering rivers]
+Kanyargó folyók
+[Fruit in home valleys]
+Gyümölcs a kezdővölgyekben
+[Moat]
+Várárok
+[Stone in the orchard]
+Kő a gyümölcsösben
+[Colonies on both coasts]
+Kolóniák mindkét parton
+[Winding belt]
+Kanyargó öv

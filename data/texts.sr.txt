@@ -1380,6 +1380,14 @@ Cortex
 Унапред припремљене карте
 [Preview ready. Start plays this exact map.]
 Преглед спреман. Покретање игре користи ову тачну мапу.
+[Regenerate all]
+Поново генериши све
+[Generating preview...]
+Прављење прегледа...
+[Preview unavailable]
+Преглед није доступан
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Сваки предео је приказан као права мапа у вашој тренутној величини и броју колонија. Изаберите један да бисте играли приказану мапу.
 [Purple]
 Љубичаста
 [Quick clash]
@@ -1542,6 +1550,10 @@ Cortex
 Брза битка: двострука брзина; генерисане карте почињу са 8 радника.
 [Reroll]
 Генеришите другу мапу
+[Randomize]
+Генеришите насумично
+[Reset to defaults]
+Врати подразумеване вредности
 [Ruleset]
 Скуп правила
 [Select a map from the library.]
@@ -1778,3 +1790,229 @@ OpenGL није доступан у овој верзији.
 Ширина копненог моста
 [Lake size]
 Величина језера
+[Contested commons]
+Спорно заједничко подручје
+[Lattice]
+Мрежа
+[Maze]
+Лавиринт
+[Fjord continent]
+Континент са фјордовима
+[Islet size]
+Величина острвцета
+[Home radius]
+Полупречник базе
+[Cell size]
+Величина ћелије
+[Room size]
+Величина собе
+[Corridor width]
+Ширина ходника
+[Loopiness]
+Учесталост петљи
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Лавиринту су потребне најмање две ћелије по ширини и по висини; користите већу мапу или мање ћелије.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Овако широки канали остављају премало траве у свакој ћелији; користите уже канале или веће ћелије.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Лавиринт има премало ћорсокака за толико колонија; користите већу мапу или мање ћелије.
+[Home island size]
+Величина почетног острва
+[Commons size]
+Величина заједничког подручја
+[Moat width]
+Ширина воденог рова
+[Bridge count]
+Број мостова
+[Continent size]
+Величина континента
+[Coast roughness]
+Разуђеност обале
+[Fjord width]
+Ширина фјорда
+[Lake connects to fjords]
+Језеро повезано са фјордовима
+[Resource islands]
+Острва са ресурсима
+[Watershed]
+Речни слив
+[River density]
+Густина река
+[Dryness]
+Сушност
+[Fords]
+Газови
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Речни слив има премало плавне равнице за толико колонија; користите већу мапу или мање колонија.
+[Stone highlands]
+Камене висоравни
+[Valley size]
+Величина долине
+[Pass width]
+Ширина превоја
+[Pond size]
+Величина баре
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Ове долине су превелике за мапу; користите већу мапу или мање долине.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+На висоравнима има премало места за толико колонија; користите већу мапу или мање колонија.
+[Symmetric arena]
+Симетрична арена
+[Centre size]
+Величина средишта
+[Causeway width]
+Ширина насипа
+[Causeways]
+Насипи
+[Lakes]
+Језера
+[Resource richness]
+Богатство ресурса
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Симетричној арени су потребне 2, 4 или 8 колонија.
+[Eight colonies need a square map in the symmetric arena.]
+За осам колонија симетричној арени је потребна квадратна мапа.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Средиште је премало за воћњак на овој мапи; користите веће средиште или већу мапу.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Арена оставља премало места за сваку колонију; користите већу мапу, мање средиште или ужи водени ров.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Насипи су преблизу један другом; користите мање насипа, уже насипе или веће средиште.
+[Ring world]
+Прстенасти свет
+[Belt width]
+Ширина појаса
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Појас је прекратак за толико колонија; користите дужу мапу или мање колонија.
+[City states]
+Градови-државе
+[Strait width]
+Ширина мореуза
+[Valleys]
+Долине
+[Frontier richness]
+Богатство нових земаља
+[City states need at least one colony.]
+Градовима-државама треба бар једна колонија.
+[Stone walls]
+Камени зидови
+[Sand patches]
+Пешчане површине
+[Tidal flats]
+Плимске равнице
+[Everglades]
+Мочваре
+[Pool spacing]
+Размак између бара
+[Pool size]
+Величина бара
+[Clearing size]
+Величина чистине
+[Levee]
+Насип
+[Sloughs]
+Мртваје
+[Everglades need at least one colony.]
+Мочварама треба бар једна колонија.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Превише колонија за ову мапу; користите већу мапу или мање колонија.
+[Coral]
+Корал
+[Fork angle]
+Угао гранања
+[Lean]
+Нагиб
+[Home size]
+Величина базе
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Корал не стаје на ову мапу; користите већу мапу, уже мореузе или мање колонија.
+[Branching]
+Гранање
+[Branch width]
+Ширина грана
+[Coral needs at least one colony.]
+Коралу је потребна бар једна колонија.
+[Coral needs a map at least 128 tiles across.]
+Коралу је потребна мапа широка бар 128 поља.
+[Spider web]
+Паукова мрежа
+[Spokes per colony]
+Жбица по колонији
+[Ring spacing]
+Размак прстенова
+[Thread width]
+Ширина нити
+[Sag]
+Угиб
+[Torn strands]
+Покидане нити
+[Hub size]
+Величина средишта
+[Dew drops]
+Капи росе
+[Spiral]
+Спирала
+[Spider webs need at least one colony.]
+Паукова мрежа захтева бар једну колонију.
+[Sandbars]
+Пешчани спрудови
+[Tide pools]
+Плимске баре
+[Lagoons]
+Лагуне
+[Central island]
+Средишње острво
+[Tidal flats need at least one colony.]
+Плимским равницама треба бар једна колонија.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Матична острва не стају на ову мапу; користите већу мапу, мање колонија или мања острва.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Заједничко подручје и мореуз остављају премало места за базе; користите већу мапу, мање колонија, мање заједничко подручје или ужи мореуз.
+[Wheat amount]
+Количина жита
+[Wood amount]
+Количина дрвета
+[Stone amount]
+Количина камена
+[Algae amount]
+Количина алги
+[Fruit amount]
+Количина воћа
+[Stone on hilltops]
+Камен на врховима брда
+[Winding river]
+Кривудава река
+[Sandy beaches]
+Пешчане плаже
+[Land bridges]
+Копнени мостови
+[Colony meadows]
+Ливаде око колонија
+[Extra starting deposit]
+Додатно почетно налазиште
+[Moat bridges]
+Мостови преко воденог рова
+[Jagged coastlines]
+Разуђене обале
+[Sand roads]
+Пешчани путеви
+[Treasure in dead ends]
+Благо у ћорсокацима
+[Fjord bank deposits]
+Налазишта на обалама фјордова
+[Sandy lake shore]
+Пешчана обала језера
+[River delta]
+Делта реке
+[Meandering rivers]
+Меандрирајуће реке
+[Fruit in home valleys]
+Воће у почетним долинама
+[Moat]
+Водени ров
+[Stone in the orchard]
+Камен у воћњаку
+[Colonies on both coasts]
+Колоније на обе обале
+[Winding belt]
+Кривудав појас

@@ -133,6 +133,32 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		int fh = GAGCore::Toolkit::getFont(font)->getStringHeight("Ag");
 		text(r.x + 9, r.y + (r.h - fh) / 2, label, font, r.w - 18, !enabled || quiet);
 	}
+	// A whole-row toggle: clicking anywhere on the row, or Space or Return while it has focus,
+	// flips it.
+	void checkbox(const std::string &id, SDL_Rect r, const std::string &label, bool checked,
+				  std::function<void(bool)> apply, bool enabled = true,
+				  const char *font = "standard")
+	{
+		SDL_Rect clipping = clip();
+		hits.push_back({id, r, clipping, [=] { apply(!checked); }, enabled, activeRegion});
+		const int side = std::min(18, r.h - 6);
+		SDL_Rect mark{r.x + 5, r.y + (r.h - side) / 2, side, side};
+		box(mark, checked ? gold : enabled ? panel : GAGCore::Color(222, 226, 212), 3);
+		surface()->drawRect(mark.x, mark.y, mark.w, mark.h, enabled ? ink : muted);
+		if (checked)
+			for (int t = 0; t < 2; ++t)
+			{
+				surface()->drawLine(mark.x + 4, mark.y + side / 2 + t, mark.x + side / 2 - 1,
+									mark.y + side - 5 + t, ink);
+				surface()->drawLine(mark.x + side / 2 - 1, mark.y + side - 5 + t, mark.x + side - 4,
+									mark.y + 4 + t, ink);
+			}
+		if (focus == id ||
+			(!popup.open && inside(r, hoverX, hoverY) && inside(clipping, hoverX, hoverY)))
+			surface()->drawRect(r.x, r.y, r.w, r.h, focus == id ? ink : line);
+		int fh = GAGCore::Toolkit::getFont(font)->getStringHeight("Ag");
+		text(mark.x + side + 9, r.y + (r.h - fh) / 2, label, font, r.w - side - 22, !enabled);
+	}
 	void dropdown(const std::string &id, SDL_Rect r, const std::vector<std::string> &options,
 				  int selected, std::function<void(int)> apply,
 				  const std::vector<bool> &enabled = {}, const std::string &help = "")
@@ -148,6 +174,18 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		// The right edge is reserved for the disclosure chevron.
 		box({r.x + r.w - 18, r.y + 4, 14, r.h - 8}, panel, 2);
 		text(r.x + r.w - 15, r.y + (r.h - 12) / 2, "v", "little", 12, true);
+	}
+	// A field whose choice is made in a fuller view elsewhere (a modal): shows the current
+	// value and, in the dropdown's chevron slot, an ellipsis.
+	void chooser(const std::string &id, SDL_Rect r, const std::string &label, Callback action,
+				 bool enabled = true)
+	{
+		button(id, r, "", std::move(action), false, enabled);
+		int fh = GAGCore::Toolkit::getFont("standard")->getStringHeight("Ag");
+		text(r.x + 9, r.y + (r.h - fh) / 2, label, "standard", r.w - 44, !enabled);
+		surface()->drawRect(r.x, r.y, r.w, r.h, line);
+		box({r.x + r.w - 26, r.y + 4, 22, r.h - 8}, panel, 2);
+		text(r.x + r.w - 21, r.y + (r.h - 12) / 2 - 3, "...", "little", 18, true);
 	}
 	void segments(const std::string &id, SDL_Rect r, const std::vector<std::string> &options,
 				  int selected, std::function<void(int)> apply,

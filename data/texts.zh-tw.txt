@@ -1452,6 +1452,14 @@ AI策略與對抗
 預製地圖
 [Preview ready. Start plays this exact map.]
 預覽準備就緒。開始遊戲時使用這張精確的地圖。
+[Regenerate all]
+全部重新生成
+[Generating preview...]
+正在產生預覽...
+[Preview unavailable]
+預覽無法使用
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+每種地貌都以目前大小和殖民地數量實際產生的地圖顯示。選擇一個即可遊玩所顯示的地圖。
 [Purple]
 紫色
 [Quick clash]
@@ -1614,6 +1622,10 @@ AI策略與對抗
 快速戰鬥:雙倍速度；生成的地圖以 8 個工人開始。
 [Reroll]
 生成另一張地圖
+[Randomize]
+隨機生成
+[Reset to defaults]
+還原預設值
 [Ruleset]
 規則集
 [Select a map from the library.]
@@ -1850,3 +1862,229 @@ OpenGL 在此版本中不可用。
 陸橋寬度
 [Lake size]
 湖泊大小
+[Contested commons]
+爭奪公地
+[Lattice]
+網格
+[Maze]
+迷宮
+[Fjord continent]
+峽灣大陸
+[Islet size]
+小島大小
+[Home radius]
+基地半徑
+[Cell size]
+單元格大小
+[Room size]
+房間大小
+[Corridor width]
+通道寬度
+[Loopiness]
+迴路密度
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+迷宮在橫向和縱向上都至少需要兩個單元格；請使用更大的地圖或更小的單元格。
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+水道這麼寬，每個單元格裡剩下的草地太少；請使用更窄的水道或更大的單元格。
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+迷宮中的死路太少，不足以容納這麼多殖民地；請使用更大的地圖或更小的單元格。
+[Home island size]
+起始島嶼大小
+[Commons size]
+公地區域大小
+[Moat width]
+護城河寬度
+[Bridge count]
+橋樑數量
+[Continent size]
+大陸大小
+[Coast roughness]
+海岸線曲折度
+[Fjord width]
+峽灣寬度
+[Lake connects to fjords]
+湖泊連通峽灣
+[Resource islands]
+資源島嶼
+[Watershed]
+流域
+[River density]
+河流密度
+[Dryness]
+乾旱程度
+[Fords]
+淺灘
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+流域中的氾濫平原太少，容納不下這麼多殖民地；請使用更大的地圖或減少殖民地數量。
+[Stone highlands]
+石質高地
+[Valley size]
+山谷大小
+[Pass width]
+隘口寬度
+[Pond size]
+池塘大小
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+這些山谷對於地圖來說太大；請使用更大的地圖或更小的山谷。
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+高地空間太少，容納不下這麼多殖民地；請使用更大的地圖或減少殖民地數量。
+[Symmetric arena]
+對稱競技場
+[Centre size]
+中心大小
+[Causeway width]
+堤道寬度
+[Causeways]
+堤道
+[Lakes]
+湖泊
+[Resource richness]
+資源豐富度
+[Symmetric arena needs 2, 4 or 8 colonies.]
+對稱競技場需要2、4或8個殖民地。
+[Eight colonies need a square map in the symmetric arena.]
+在對稱競技場中，八個殖民地需要正方形地圖。
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+在這張地圖上，中心太小，放不下果園；請使用更大的中心或更大的地圖。
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+競技場留給每個殖民地的空間太少；請使用更大的地圖、更小的中心或更窄的護城河。
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+堤道之間靠得太近；請減少堤道數量或使用更窄的堤道，或者使用更大的中心。
+[Ring world]
+環形世界
+[Belt width]
+環帶寬度
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+環帶太短，容納不下這麼多殖民地；請使用更長的地圖或減少殖民地數量。
+[City states]
+城邦
+[Strait width]
+海峽寬度
+[Valleys]
+山谷
+[Frontier richness]
+邊疆富饒度
+[City states need at least one colony.]
+城邦至少需要一個殖民地。
+[Stone walls]
+石牆
+[Sand patches]
+沙地
+[Tidal flats]
+潮間帶
+[Everglades]
+沼澤地
+[Pool spacing]
+水塘間距
+[Pool size]
+水塘大小
+[Clearing size]
+空地大小
+[Levee]
+堤壩
+[Sloughs]
+沼澤水道
+[Everglades need at least one colony.]
+沼澤地至少需要一個殖民地。
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+此地圖的殖民地太多；請使用更大的地圖或減少殖民地。
+[Coral]
+珊瑚
+[Fork angle]
+分枝角度
+[Lean]
+傾斜
+[Home size]
+基地大小
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+珊瑚無法放入此地圖；請使用更大的地圖、更窄的海峽或更少的殖民地。
+[Branching]
+分枝
+[Branch width]
+枝寬
+[Coral needs at least one colony.]
+珊瑚至少需要一個殖民地。
+[Coral needs a map at least 128 tiles across.]
+珊瑚需要寬度至少為 128 格的地圖。
+[Spider web]
+蜘蛛網
+[Spokes per colony]
+每個殖民地的輻射線
+[Ring spacing]
+環間距
+[Thread width]
+絲線寬度
+[Sag]
+下垂
+[Torn strands]
+斷絲
+[Hub size]
+中心大小
+[Dew drops]
+露珠
+[Spiral]
+螺旋
+[Spider webs need at least one colony.]
+蜘蛛網至少需要一個殖民地。
+[Sandbars]
+沙洲
+[Tide pools]
+潮池
+[Lagoons]
+潟湖
+[Central island]
+中央島
+[Tidal flats need at least one colony.]
+潮間帶至少需要一個殖民地。
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+母島無法容納在這張地圖上；請使用更大的地圖、更少的殖民地或更小的島嶼。
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+公地區域與海峽留給基地的空間太少；請使用更大的地圖、更少的殖民地、更小的公地區域或更窄的海峽。
+[Wheat amount]
+小麥數量
+[Wood amount]
+木材數量
+[Stone amount]
+石頭數量
+[Algae amount]
+海藻數量
+[Fruit amount]
+水果數量
+[Stone on hilltops]
+山頂的石頭
+[Winding river]
+蜿蜒的河流
+[Sandy beaches]
+沙灘
+[Land bridges]
+陸橋
+[Colony meadows]
+殖民地周圍的草地
+[Extra starting deposit]
+額外的起始資源
+[Moat bridges]
+護城河上的橋樑
+[Jagged coastlines]
+曲折的海岸線
+[Sand roads]
+沙土路
+[Treasure in dead ends]
+死路盡頭的寶藏
+[Fjord bank deposits]
+峽灣岸邊的資源
+[Sandy lake shore]
+沙質湖岸
+[River delta]
+河口三角洲
+[Meandering rivers]
+曲流河道
+[Fruit in home valleys]
+起始山谷中的水果
+[Moat]
+護城河
+[Stone in the orchard]
+果園中的石頭
+[Colonies on both coasts]
+兩岸都有殖民地
+[Winding belt]
+蜿蜒的環帶
