@@ -298,3 +298,32 @@ int Map::ripeMin()
 	static const int value = [] { const char *v = getenv("GLOB2_PROTO_RIPE_MIN"); return v ? atoi(v) : 1; }();
 	return value;
 }
+
+int Map::seedNeighbours()
+{
+	static const int value = [] { const char *v = getenv("GLOB2_PROTO_SEED_NEIGHBOURS"); return v ? atoi(v) : 0; }();
+	return value;
+}
+
+bool Map::isResourceRipe(int x, int y, int resourceType) const
+{
+	const Resource &resource = getTile(x, y).resource;
+	if (resource.type != resourceType || resource.amount == 0)
+		return false;
+	if (resourceType != CORN || resource.amount >= ripeMin())
+		return true;
+	const int k = seedNeighbours();
+	if (k <= 0)
+		return false;
+	int seeds = 0;
+	for (int dy = -1; dy <= 1; dy++)
+		for (int dx = -1; dx <= 1; dx++)
+		{
+			if (!dx && !dy)
+				continue;
+			const Resource &n = getTile(x+dx, y+dy).resource;
+			if (n.type == CORN && n.amount >= 2)
+				seeds++;
+		}
+	return seeds >= k;
+}
