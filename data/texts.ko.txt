@@ -2072,3 +2072,93 @@ Globulation 2 커서를 표시합니다.
 육각형
 [Warp]
 뒤틀림
+[Marches]
+Marches
+[The homes are too small; use a bigger home size.]
+The homes are too small; use a bigger home size.
+[March width]
+March width
+[Orchards]
+Orchards
+[Fingerprint]
+Fingerprint
+[Wavelength]
+Wavelength
+[Pattern]
+Pattern
+[Labyrinth]
+Labyrinth
+[Channels]
+Channels
+[Barrier]
+Barrier
+[Water]
+Water
+[Grain]
+Grain
+[Rain shadow]
+Rain shadow
+[Ridges]
+Ridges
+[Slant]
+Slant
+[Ridge thickness]
+Ridge thickness
+[Pass spacing]
+Pass spacing
+[Lee width]
+Lee width
+[Old growth]
+Old growth
+[Canals]
+Canals
+[Forest density]
+Forest density
+[Hidden groves]
+Hidden groves
+[Starting trails]
+Starting trails
+[Block size]
+Block size
+[Canal width]
+Canal width
+[Extra bridges]
+Extra bridges
+[Polder]
+Polder
+[Old town]
+Old town
+[Anthill]
+Anthill
+[Patchwork]
+Patchwork
+[Row angle]
+Row angle
+[Straight]
+Straight
+[Diagonal]
+Diagonal
+[Dyke spacing]
+Dyke spacing
+[Village size]
+Village size
+[Hamlets]
+Hamlets
+[City size]
+City size
+[Street width]
+Street width
+[Plazas]
+Plazas
+[Gates]
+Gates
+[Chamber spacing]
+Chamber spacing
+[Chamber size]
+Chamber size
+[Queen room]
+Queen room
+[Tunnel width]
+Tunnel width
+[Loops]
+Loops

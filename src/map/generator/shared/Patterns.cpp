@@ -126,6 +126,23 @@ std::vector<int> stripePhase(const Torus &t, const StripeStyle &style, std::mt19
 	return phase;
 }
 
+StripeStyle alongStripes(const Torus &t, const StripeStyle &across)
+{
+	StripeStyle along;
+	along.warpPercent = 0;
+	if (t.w >= t.h)
+	{
+		along.acrossX = across.acrossY * (t.w / t.h);
+		along.acrossY = -across.acrossX;
+	}
+	else
+	{
+		along.acrossX = across.acrossY;
+		along.acrossY = -across.acrossX * (t.h / t.w);
+	}
+	return along;
+}
+
 double stripeSpacing(const Torus &t, const StripeStyle &style)
 {
 	const double kx = double(style.acrossX) / t.w, ky = double(style.acrossY) / t.h;

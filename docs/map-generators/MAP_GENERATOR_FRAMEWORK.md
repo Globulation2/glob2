@@ -63,9 +63,10 @@ them so the ranking rewards what it is meant to be.
 
 ## The designed generator
 
-Fourteen generators (Maze, Fjord continent, Watershed, Stone highlands, Symmetric arena, Ring world,
-City states, Tidal flats, Everglades, Spider web, Coral, Carousel, Amphitheatre, Switchbacks) follow one shape, and the nine newest of them
-are little more than a sequence of shared stages:
+Twenty-three generators (Maze, Fjord continent, Watershed, Stone highlands, Symmetric arena, Ring world,
+City states, Tidal flats, Everglades, Spider web, Coral, Carousel, Amphitheatre, Switchbacks, and the nine
+landscape generators Marches, Fingerprint, Rain shadow, Old growth, Canals, Polder, Old town, Anthill and
+Patchwork) follow one shape, and the newest of them are little more than a sequence of shared stages:
 
 1. `design(request, context)` computes the whole layout from the request and the context's
    named streams without touching the map, and returns it with a `failure` string when the
@@ -112,6 +113,15 @@ reused after a generator is retired.
 | `carousel` | 22 | Carousel | Its own — see below |
 | `amphitheatre` | 23 | Amphitheatre | Its own — see below |
 | `switchbacks` | 24 | Switchbacks | Its own — see below |
+| `marches` | 25 | Marches | Its own — see below |
+| `fingerprint` | 26 | Fingerprint | Its own — see below |
+| `rain-shadow` | 27 | Rain shadow | Its own — see below |
+| `old-growth` | 28 | Old growth | Its own — see below |
+| `canals` | 29 | Canals | Its own — see below |
+| `polder` | 30 | Polder | Its own — see below |
+| `old-town` | 31 | Old town | Its own — see below |
+| `anthill` | 32 | Anthill | Its own — see below |
+| `patchwork` | 33 | Patchwork | Its own — see below |
 | `rugged-archipelago` | 8 | Old islands | Island growth + beach passes, own resource search |
 | `concrete-islands` | 5 | Concrete islands | Point dispersion; islands linked by channels |
 | `crater-lakes` | 4 | Crater lakes | Height-field noise; round lakes in otherwise connected land |
@@ -909,6 +919,223 @@ next leg up. Every home reaches a walled wheat farm on either flank.
   (`farmReachable`), no land reachable from the sea, homes and their farms and the plateau apart with the
   trails shut and with only the middle legs shut (so no leg can be skipped), a level-1 tower at home
   reaching the first leg and one on the plateau reaching the last, and even walks to the plateau.
+
+## Marches
+
+Homelands on a lattice across the whole torus, with no centre and no prize in the middle. Every colony's
+home lies in its own territory, and between every two neighbouring territories runs a band of wild
+border country, the marches: wooded, with a watering hole on every stretch of border and an orchard of
+all three fruits wherever three or four territories meet. A colony has a frontier with every neighbour,
+and its choice is which border to push.
+
+- **Lattice.** Homes on the roomiest translation lattice the torus holds (`latticeSites`, `Orbits`):
+  exact copies of one another for 2, 4, 8 or 16 colonies, evenly staggered rows otherwise. Nothing is
+  designed round a middle, so a rectangular map is served as well as a square one.
+- **Homelands.** Every tile's nearest home after a warp (`nearestSiteLabels`). On an exact lattice the
+  warp noise is laid on cells the lattice's moves are whole multiples of (`latticePeriod`), so the
+  homelands are exact copies too; summing plain noise over the orbits instead averaged the roughness
+  away and left the borders ruled straight. `border-roughness` (0-100, 40) bends a border by up to 30%
+  of the home spacing at full; `march-width` (6-24, 12) is the band either side of the border.
+- **Fit.** A home disc must stay inside its homeland however far the warp bends the border: on a crowded
+  map the homes shrink (`home-size`, 10-24, 14) to what is left, then the marches narrow (never below 4),
+  and only then is the map refused.
+- **Prizes.** One watering hole (a pool of radius 3 and 24 tiles of wheat) at the middle of every
+  separate stretch of border between two homelands, found as the 8-connected groups of border tiles per
+  pair of neighbours; an orchard of the three fruits with a quarry at every junction of three or more
+  homelands, junctions within three tiles merged (`orchards`, on). The marches carry wood over 55% of
+  their ground in noise patches (the gaps are the natural ways through) and never regrow it, being far
+  from water.
+- **Kits and fields.** A wheat and wood kit with a quarry at every home's pond (`plantOpenHomeKit`);
+  ambient farmland as a share of each homeland's *fertile* ground, the ring round its pond, not of its
+  area (4% of the area buried the home under six hundred tiles of crops). Where the woods close a
+  colony in, `openColonyRoutes` cuts the cheapest way, never a ford.
+- **Checked, not assumed.** The design rebuilt, every home's pond present, every colony walkable from
+  the first.
+
+## Fingerprint
+
+An organic labyrinth: a Turing pattern grown over the whole torus (`turingPattern`, `Patterns`)
+draws long curving bands that fork, merge and dead-end the way a fingerprint's ridges do, and the bands
+become the barriers.
+
+- **Pattern.** `wavelength` (12-40, 20) is the crest-to-crest width, so about half of it is corridor;
+  `grain` (0-100, 0) stretches the blur along one axis so the bands run rather than wander. `pattern`
+  chooses the barrier's share of the map: Labyrinth 42% (bands and corridors read alike once a water
+  band's beach has taken a tile of each side), Islands 60%, Channels 28%.
+- **Barrier.** Water, so every corridor is beside water and all the land is farmland (a share of the
+  fertile ground under crops in patches); or Stone, permanent walls with pools in the corridors, the
+  only fertile ground. The pools lie at the bottoms of the field's troughs: every local minimum with
+  nothing lower within two wavelengths (`windowMinimum`), grown to 40 tiles along its trough; a
+  percentile of the field instead gave a hundred tiny pools whose beaches cut the stone into blobs.
+- **Homes.** Clearings on a lattice (`latticeSites`), each a rough disc with a pond (`stampRoundHomes`)
+  and a margin of three tiles of pattern cleared beyond it, shrunk so a band's width of pattern always
+  runs between neighbours. Fairness is statistical, like Everglades'.
+- **Routes.** The pattern owes nobody a way through: `openColonyRoutes` opens the cheapest way from the
+  first colony to any it cannot walk to, a sand ford across water or a gap cut in the stone.
+
+## Rain shadow
+
+A map with a grain: long stone ridges run across the torus, parallel and a valley apart, and the wind
+blows across them. The windward foot of every ridge catches the rain (a chain of pools, and the
+farmland), the lee side is a band of dry sand where nothing grows or builds, and passes cut every ridge
+at intervals staggered from ridge to ridge, so moving along a valley is easy and crossing is slow.
+
+- **Ridges.** `ridges` (2-8, 4) crossings of the map, tilted by `slant` (0-3, 1) so following one across
+  the width climbs that many ridges: stripes that wrap the torus exactly (`stripePhase`), so with a slant
+  every ridge is one spiral, which is what staggers its own passes from one crossing to the next
+  (straight ridges stagger by parity instead). On a small map ridges are taken away until a valley
+  holds a home with its margins, the pools and the sand (four suit a 256 map, a 128 map gets two).
+  `ridge-thickness` (2-6, 3): three tiles is sealed against diagonal steps and within a level-1 tower's
+  reach across (`towerReach`).
+- **Passes.** Every `pass-spacing` tiles (24-96, 48) along the ridge, `pass-width` (3-9, 5) wide,
+  laid out by the phase along the ridges (`alongStripes`), so they repeat seamlessly.
+- **Wind.** Pools run along the windward foot, 12 tiles long every 24, four tiles out from the stone
+  (three took the ridge's windward row with them: a pool's beach spoils the tiles round it and stone
+  stands only on pure grass); the lee sand starts two tiles behind the ridge for the same reason and
+  runs `lee-width` (2-12, 6) tiles, measured downwind from the stone itself (`upwindSteps`) so it stops
+  where a pass lets the rain through.
+- **Homes.** On a lattice, each slid along the wind to the middle of its valley, so every home has the
+  same ridge behind it and the same foot before it. Crops go on the fertile ground, which the pools make
+  the windward side of every valley: a third of it under wheat and a fifth under wood.
+- **Checked, not assumed.** Every ridge tile that could hold stone does, every pond present, every
+  colony walkable from the first through the passes.
+
+## Old growth
+
+A dry continent under unbroken forest: every colony starts in a clearing with its own pond and kit,
+and beyond the clearing stands wood in every direction. There is no other water but a few lakes far from
+every home, so almost none of the forest ever grows back: what a colony cuts stays cut, the map opens as
+the game goes on, and contact happens only where someone has cut through.
+
+- **Forest.** Wood on `forest-density` percent (60-100, 90) of the forest ground, the gaps drawn from a
+  noise field so they are small openings; below the 8-connected site percolation threshold (about 41%
+  open) the openings never join into a way through, so at any density offered the forest is a wall
+  that has to be cut (`plantCover`).
+- **Lakes.** `lakes` per 128x128 of map (0-4, 1) of `lake-size` tiles (40-160, 90), each at the tile
+  farthest from every clearing and every lake so far (`distanceSquaredTo`) and grown by distance with a
+  little noise; ringed with wheat and an orchard of the three fruits, the only ground where wood
+  regrows and the only fruit not hidden.
+- **Hidden groves.** One per colony (`hidden-groves`, on): a pocket cut in the forest at 65% of the
+  cutting cost half way to the nearest rival, on its own side (`equalCostSites` over
+  `StepCosts::chopping`), holding a fruit grove, a wheat patch and a stone clump. Costs are measured on
+  the planted forest, so the groves lie at the same worker-hours from every home.
+- **Trails.** `trails` (off) cuts a trail from every colony to the first before the game starts
+  (`openColonyRoutes`). Without it the colonies start entirely apart, and the validator checks the map by
+  cutting cost (`contactMatrix`) rather than by walking.
+- **Checked, not assumed.** Every pond present; the forest dry beyond the reach of any water (no growth
+  chance on the finished map's own field where nothing waters it); every colony reachable from the
+  first, by walking with trails, by cutting without.
+
+## Canals
+
+A lagoon city: the map cut into blocks by a grid of narrow canals, every canal just wide enough to stop
+a unit and just narrow enough for a tower on one bank to shoot the other, and only a handful of sand
+bridges. Towers reach across from the first minute and armies cannot, so where the first towers go is the
+opening; once swimming pools are built every canal is a road.
+
+- **Blocks.** A square tiling of `block-size` (16-40, 24) warped by `warp` (0-100, 40), every edge an
+  obstacle the warp keeps apart (`warpCorners`), every edge stroked `canal-width` corners of water
+  (3-5, 3). A canal's water is a corner narrower than the stroke and a diagonal canal is sealed against a
+  diagonal step only when its water is two tiles thick, which is why the narrowest offered is 3; a
+  straight canal w corners wide puts the banks' grass w + 4 apart (`Channels`), so 3 is reached by a
+  level-2 tower and not a level-1.
+- **Homes and markets.** The colonies' blocks are the ones farthest apart on the block graph
+  (`spreadPockets`), each with a pond and a kit; a market block per colony, farthest from every home,
+  carries an orchard of the three fruits. Fairness is statistical.
+- **Bridges.** A tree of shortest block-to-block paths from the first colony's block to every other
+  colony's, so every colony can be walked to, then `extra-bridges` percent of the blocks' count more at
+  random (`openLoops`), so most blocks stay islands until someone swims. A bridge is a line of sand
+  corners across the canal (a tile with a sand corner is no longer pure water) reaching onto both banks.
+- **Towers.** `tower-count` towers at `starting-towers` level (default 2 of level 2) and two pads per
+  colony, on its own bank against the beach (`chooseTowerSites` with `against`), covering the most of
+  other blocks' land across the canal; none may close the colony's walk to a bridge
+  (`settleStartingTowers`).
+- **Fields.** Every block is fertile (its canal is within the growth probe's reach of all of it), so a
+  modest share of every block goes under crops in patches, the bridges' landings kept clear; algae in
+  every canal, sand being everywhere.
+
+## Polder
+
+Reclaimed land, all of it: the whole torus laid out in rows of crops with a ditch of water between every
+two, sand dykes across the ditches at intervals, small grass villages for the colonies and hamlets
+between them. Food is effectively unlimited; the game is logistics, on the dykes and the ditches' beaches,
+until someone can swim.
+
+- **Rows.** Stripes that wrap the torus exactly (`stripePhase`): straight rows 10 of crops and 6 of water
+  (a period of 16 divides every map side; the yield fit's 10 and 8 would give 18, which does not, for
+  under 3% of yield), or diagonal rows (`row-angle`) 11 and 6 on a spacing the map sets. Dykes every
+  `dyke-spacing` tiles (12-48, 24) along the rows, two corners of sand wide, laid by the phase along the
+  rows (`alongStripes`).
+- **Villages.** Grass discs of `village-size` (8-16, 11) on a lattice, shrunk so a whole row and ditch
+  lie between two; each holds a swarm, its kit and a few buildings and no more. `hamlets` (on) puts a
+  grass disc of radius 5 half way between neighbouring villages, room for a forward inn and a tower, with
+  a fruit grove.
+- **Fields.** 55% of the fertile row ground under wheat and 15% under wood, in patches; every row tile is
+  a few tiles from water, so it all regrows. Only crops could close a lane, so `openColonyRoutes` clears
+  only crops.
+
+## Old town
+
+A walled city of stone blocks and narrow grass streets, farmland outside the wall. Streets are buildable
+and buildings block walking, so every building a player puts up closes a street: the players build the
+city's fortifications themselves, and a tower on a street fires over the block into the next.
+
+- **City.** A disc of `city-size` percent of the half side (40-90, 70), tiled into blocks of
+  `block-size` (10-20, 14) warped by `warp` (0-100, 50); the band `street-width` (3-7, 4) along every
+  cell border is street, everything else in a city cell is a stone block. A wall two thick with `gates`
+  (2-8, 4) evenly spaced from a random start rings the city (`ringWithGates`), a ring road inside it.
+- **Plazas.** Blocks left open, with a fountain pond. A home plaza is two adjoining blocks (a single block
+  of 14 less its streets, with a fountain in it, has no room for a 4x4 swarm; measured: every settlement
+  failed), the fountain in one and the swarm in the other, the pairs as far apart as the city allows;
+  `plazas` (0-4, 2) more per colony farthest from those, given up first when the city is small; and the
+  cathedral square at the cell holding the centre, with an orchard of the three fruits round its fountain.
+- **Fields.** Outside the wall, farm rows along the map's axis (`layFarm` at `bestFarmRows`, bridged
+  every 16), half their fertile ground under wheat and a sixth under wood; the plazas inside get a light
+  share so they stay open. Every kit has no quarry: the blocks are stone.
+- **Checked, not assumed.** Every fountain present, the wall unbroken but for its gates, every colony
+  walkable from the first through the streets.
+
+## Anthill
+
+Solid stone carved into chambers joined by winding tunnels. Every colony starts in a queen chamber, a
+cul-de-sac with one door and a pond; the other chambers are farm chambers with a pond and a field, or
+dead-end treasure chambers with fruit and wheat. Stone is everywhere and never runs out, but it cannot be
+built on or cleared, so room is the one scarce thing: a chamber holds a few buildings, and growing means
+taking the next chamber down the tunnel.
+
+- **Chambers and tunnels.** Sites `chamber-spacing` apart (20-40, 28; `spreadPoints`), their nearest-site
+  cells the graph (`cellGraph` over `siteNeighbours`); a spanning tree through every chamber but the
+  queens' (`carveSpanningTree`), one door into each queen chamber, and `loops` percent (0-60, 20) of
+  the chambers' count in extra tunnels. Every open edge is a wandering tunnel `tunnel-width` wide (2-4,
+  3) between its chambers' middles (`carveCorridor`); every chamber a rough disc of `chamber-size`
+  (4-8, 5), farm chambers two bigger, each turned by the golden angle so one outline reads as many.
+- **Kinds.** Dead ends other than the queens' are treasure chambers; of the rest every other one is a
+  farm chamber with a pond and a field. A queen chamber's pond lies on the far side from its door and
+  its swarm towards the door, and it is grown until it holds `queen-room` building sites (20-120, 40:
+  overlapping 4x4 footprints, the start scorer's measure) with `growUntilSites`, within its own cell
+  and never onto a pond's beach, so no colony starts with more room than another.
+- **Rock.** Stone on every uncarved tile the beaches left pure grass; `openColonyRoutes` clears crops
+  in a tunnel and cuts stone only as a last resort, at a cost that keeps it to a tile or two.
+
+## Patchwork
+
+Every colony starts on a different kind of land: the map is shared out into one territory per colony
+and each is dealt a kit from `Biomes` in turn, a fertile plain, a stone fortress, an orchard island or a
+forest, so every player plays a different opening. The one map in the catalog that gives up fairness by
+construction.
+
+- **Territories.** Homes on a lattice; `growTerritories` by worth, so a territory dealt a poorer kit gets
+  proportionally more tiles (`biomeWorth`, an estimate from the start scorer's weights); noise in the
+  cost bends the borders by `border-roughness` (0-100, 40) and `smoothing` passes (0-4, 2) at radius 3
+  straighten them into curves. Whatever was left unclaimed goes to the nearest home.
+- **Kits.** Each kit's terrain over its whole territory (`sketchBiome`: ponds, an orchard island, a
+  fortress ring with a gate towards every neighbouring territory at the rim tile nearest the line between
+  the two homes), the home's own clearing and pond kept; then its deposits (`furnishBiome`), the amounts
+  scaling each kit's own shares. Every home gets the same unscaled kit with a quarry, so every opening is
+  at least viable.
+- **Tuning.** `biomeWorth` is not a measurement: run the fairness tournament
+  ([FAIRNESS_TOURNAMENT.md](FAIRNESS_TOURNAMENT.md)) before trusting the deal. `openColonyRoutes` opens
+  the cheapest way through crops, and through a ring only where a gate failed.
 
 ## Compatibility notes
 

@@ -67,6 +67,13 @@ Symmetry pointSymmetry(int width, int height, int teams);
 /// receives the squared distance between the nearest two copies.
 Symmetry translationSymmetry(int width, int height, int teams, long long *spacing2 = nullptr);
 
+/// The coarsest noise cell (in tiles) that every element of a translation group leaves unchanged: the
+/// greatest common divisor of the map's sides and every element's move. Periodic noise on cells of this
+/// size (LatticeNoise.h) is the same at every image of a tile, so a design that warps its borders with
+/// it stays an exact copy of itself at every colony without summing anything over orbits (which would
+/// average the noise away). For a point symmetry, or an empty group, the shorter side.
+int latticePeriod(const Symmetry &);
+
 /// Where `teams` colonies go on a lattice across the torus, one per site, starting from (x0, y0).
 /// `exact` when translationSymmetry serves the count, and then site k is element k's image of site 0;
 /// otherwise equal rows of evenly spaced sites, as many rows as brings the spacing between rows

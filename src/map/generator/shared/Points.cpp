@@ -79,6 +79,13 @@ std::vector<int> nearestSiteLabels(const Torus &t, const std::vector<Site> &site
 	const int period = std::max(1, spacing * warpPeriodPercent / 100);
 	const std::vector<int> warpX = fractalNoise(t.w, t.h, period, 3, context.stream(stream));
 	const std::vector<int> warpY = fractalNoise(t.w, t.h, period, 3, context.stream(stream));
+	return nearestSiteLabels(t, sites, spacing, warpX, warpY, warpPercent);
+}
+
+std::vector<int> nearestSiteLabels(const Torus &t, const std::vector<Site> &sites, int spacing,
+								   const std::vector<int> &warpX, const std::vector<int> &warpY,
+								   int warpPercent)
+{
 	const std::int64_t amplitude = std::int64_t(spacing) * 16 * warpPercent / 100;
 	const int W = t.w * 16, H = t.h * 16;
 	const int gx = std::max(1, t.w / spacing), gy = std::max(1, t.h / spacing);

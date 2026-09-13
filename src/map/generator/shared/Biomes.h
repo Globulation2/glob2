@@ -22,7 +22,7 @@ namespace MapGeneration
 struct BiomeKit
 {
 	std::string name;
-	int pondsPer1000 = 0;       // ponds per 1000 tiles of ground (at least one when above 0)
+	int pondsPer10000 = 0;      // ponds per 10000 tiles of ground (at least one when above 0)
 	int pondTiles = 0;          // each pond's size in tiles
 	int wallThickness = 0;      // a ring of stone round the ground this thick; 0 for none
 	int farmPerMille = 0;       // of the ground's fertile tiles, the share under wheat and wood
@@ -34,7 +34,7 @@ struct BiomeKit
 };
 
 /// The kits a map can start from.
-BiomeKit fertilePlain();  // big ponds, wide farmland, open ground
+BiomeKit fertilePlain();  // a few big ponds, wide farmland, open ground
 BiomeKit stoneFortress(); // a thick stone ring and outcrops, poor water
 BiomeKit orchardIsland(); // a lake with an island of all three fruits, little farmland
 BiomeKit forest();        // most of the ground under wood, ponds to keep it growing

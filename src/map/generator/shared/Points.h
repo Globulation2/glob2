@@ -34,6 +34,13 @@ std::vector<int> nearestSiteLabels(const Torus &, const std::vector<Site> &sites
 								   GenerationContext &, const std::string &stream,
 								   int warpPeriodPercent = 150, int warpPercent = 30);
 
+/// The same labelling with the caller's own warp fields (two fields of 0..65535 per tile, as
+/// periodicNoise or fractalNoise give them, or an orbitSum of one so a symmetric map gets symmetric
+/// cells), each tile moved by up to `warpPercent` of the spacing.
+std::vector<int> nearestSiteLabels(const Torus &, const std::vector<Site> &sites, int spacing,
+								   const std::vector<int> &warpX, const std::vector<int> &warpY,
+								   int warpPercent);
+
 /// Lloyd relaxation on the torus: each site moves to the centroid of the tiles nearest it (measured the
 /// short way round from the site), `iterations` times, so cells grow more even in size. Cheap enough for
 /// a few dozen sites; the search is exhaustive.

@@ -106,6 +106,42 @@ void plantHomeKit(Map &map, const Torus &t, GenerationContext &context, ShapePoi
 	plantKit(map, t, context, kit, eligible);
 }
 
+/// Round homes at given sites, all turned to `axis`: each stamped with stampRoundHome (its tiles marked
+/// with the home's index in `homeOf`, its `ponds` ponds into `pondMask`), and the point its kit goes
+/// returned per home. Homes on a lattice with no centre (Orbits.h's latticeSites) use axis 0, so exact
+/// copies of one another stay exact.
+inline std::vector<ShapePoint> stampRoundHomes(const Torus &t, const std::vector<ShapePoint> &sites,
+											   double axis, const RadialShape &home, double radius,
+											   int ponds, const RadialShape *pond,
+											   std::vector<unsigned char> &pondMask,
+											   std::vector<int> &homeOf)
+{
+	std::vector<ShapePoint> kits;
+	for (size_t k = 0; k < sites.size(); ++k)
+		kits.push_back(stampRoundHome(t, sites[k], axis, home, radius, ponds, pond, pondMask,
+									  [&](int i) { homeOf[i] = int(k); }));
+	return kits;
+}
+
+/// A round home's starter kit with a quarry, for a home that is not walled in stone: wheat and wood
+/// either side of `kitCentre` as plantHomeKit lays them, and a stone clump of `quarry` radius beyond
+/// the pond on the far side from the swarm.
+template <typename Eligible>
+void plantOpenHomeKit(Map &map, const Torus &t, GenerationContext &context, ShapePoint kitCentre,
+					  double axis, double homeRadius, int wheat, int wood, int quarry,
+					  Eligible eligible)
+{
+	const KitFrame frame{int(std::lround(kitCentre.x)), int(std::lround(kitCentre.y)), axis};
+	const double reach = homePondRadius(homeRadius) * 1.2 + 3;
+	const Kit kit{frame.at(-0.4 * reach, -reach, 12),
+				  frame.at(-0.4 * reach, reach, 12),
+				  frame.at(reach + 3, 0, 10),
+				  wheat,
+				  wood,
+				  quarry};
+	plantKit(map, t, context, kit, eligible);
+}
+
 /// A home in ground of any shape: a Voronoi cell, a chamber, a town block, a territory. The swarm stands
 /// the same walk from the home's way in as every other colony's (siteAtDepth over walking steps from the
 /// `door` tiles through `region`), on the roomiest such tile; `axis` points from the door towards the

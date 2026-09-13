@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Morphology.h"
 #include <algorithm>
+#include <deque>
 #include <queue>
 namespace MapGeneration
 {
@@ -77,6 +78,35 @@ void distanceLine(const std::vector<std::int64_t> &f, std::vector<std::int64_t> 
 			++j;
 		const std::int64_t d = q - v[j];
 		out[q - n] = d * d + value(v[j]);
+	}
+}
+// The minimum over the 2r + 1 entries centred on each position of a cyclic line: a monotonic deque
+// of candidates, each entry pushed and popped once.
+void slideMin(const std::vector<int> &line, int radius, std::vector<int> &out)
+{
+	const int n = int(line.size());
+	out.assign(line.size(), 0);
+	if (2 * radius + 1 >= n)
+	{
+		std::fill(out.begin(), out.end(), *std::min_element(line.begin(), line.end()));
+		return;
+	}
+	std::deque<int> candidates; // positions (unwrapped), values nondecreasing front to back
+	const auto push = [&](int position)
+	{
+		const int v = line[((position % n) + n) % n];
+		while (!candidates.empty() && line[((candidates.back() % n) + n) % n] >= v)
+			candidates.pop_back();
+		candidates.push_back(position);
+	};
+	for (int d = -radius; d <= radius; ++d)
+		push(d);
+	for (int i = 0; i < n; ++i)
+	{
+		out[i] = line[((candidates.front() % n) + n) % n];
+		if (candidates.front() == i - radius)
+			candidates.pop_front();
+		push(i + radius + 1);
 	}
 }
 } // namespace
@@ -253,5 +283,29 @@ std::vector<unsigned char> slivers(const Torus &t, const std::vector<unsigned ch
 	for (size_t i = 0; i < mask.size(); ++i)
 		thin[i] = mask[i] && !kept[i];
 	return thin;
+}
+
+std::vector<int> windowMinimum(const Torus &t, const std::vector<int> &field, int radius)
+{
+	std::vector<int> rows(field.size()), result(field.size()), line, out;
+	line.resize(t.w);
+	for (int y = 0; y < t.h; ++y)
+	{
+		for (int x = 0; x < t.w; ++x)
+			line[x] = field[size_t(y) * t.w + x];
+		slideMin(line, radius, out);
+		for (int x = 0; x < t.w; ++x)
+			rows[size_t(y) * t.w + x] = out[x];
+	}
+	line.resize(t.h);
+	for (int x = 0; x < t.w; ++x)
+	{
+		for (int y = 0; y < t.h; ++y)
+			line[y] = rows[size_t(y) * t.w + x];
+		slideMin(line, radius, out);
+		for (int y = 0; y < t.h; ++y)
+			result[size_t(y) * t.w + x] = out[y];
+	}
+	return result;
 }
 } // namespace MapGeneration

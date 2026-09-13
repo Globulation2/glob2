@@ -203,6 +203,15 @@ map/generator/generators/SymmetricArenaGenerator.cpp
 map/generator/generators/TidalFlatsGenerator.cpp
 map/generator/generators/UniformGenerator.cpp
 map/generator/generators/WatershedGenerator.cpp
+map/generator/generators/PatchworkGenerator.cpp
+map/generator/generators/AnthillGenerator.cpp
+map/generator/generators/OldTownGenerator.cpp
+map/generator/generators/PolderGenerator.cpp
+map/generator/generators/CanalsGenerator.cpp
+map/generator/generators/OldGrowthGenerator.cpp
+map/generator/generators/RainShadowGenerator.cpp
+map/generator/generators/FingerprintGenerator.cpp
+map/generator/generators/MarchesGenerator.cpp
 map/generator/shared/legacy/Distances.cpp
 map/generator/shared/HeightMap.cpp
 map/generator/shared/Noise.cpp

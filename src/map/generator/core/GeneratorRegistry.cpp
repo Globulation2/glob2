@@ -24,6 +24,15 @@
 #include "TidalFlatsGenerator.h"
 #include "UniformGenerator.h"
 #include "WatershedGenerator.h"
+#include "MarchesGenerator.h"
+#include "FingerprintGenerator.h"
+#include "RainShadowGenerator.h"
+#include "OldGrowthGenerator.h"
+#include "CanalsGenerator.h"
+#include "PolderGenerator.h"
+#include "OldTownGenerator.h"
+#include "AnthillGenerator.h"
+#include "PatchworkGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -110,13 +119,38 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 	// This is also the product-facing catalog order. Keep the most polished and
 	// distinctive playable maps first; numeric IDs remain stable compatibility
 	// identifiers and do not determine presentation order.
-	static const GeneratorRegistry registry(
-		{contestedCommonsDefinition(), mazeDefinition(), fjordContinentDefinition(),
-		 shatteredCoastDefinition(), islesDefinition(), watershedDefinition(),
-		 stoneHighlandsDefinition(), symmetricArenaDefinition(), ringWorldDefinition(),
-		 cityStatesDefinition(), tidalFlatsDefinition(), evergladesDefinition(), spiderWebDefinition(),
-		 coralDefinition(), carouselDefinition(), amphitheatreDefinition(), switchbacksDefinition(), ruggedArchipelagoDefinition(), concreteIslandsDefinition(),
-		 craterLakesDefinition(), islandsDefinition(), swampDefinition(), riverDefinition(),
-		 uniformDefinition()});
+	static const GeneratorRegistry registry({contestedCommonsDefinition(),
+											 mazeDefinition(),
+											 fjordContinentDefinition(),
+											 shatteredCoastDefinition(),
+											 islesDefinition(),
+											 watershedDefinition(),
+											 stoneHighlandsDefinition(),
+											 symmetricArenaDefinition(),
+											 ringWorldDefinition(),
+											 cityStatesDefinition(),
+											 tidalFlatsDefinition(),
+											 evergladesDefinition(),
+											 spiderWebDefinition(),
+											 coralDefinition(),
+											 carouselDefinition(),
+											 amphitheatreDefinition(),
+											 switchbacksDefinition(),
+											 marchesDefinition(),
+											 fingerprintDefinition(),
+											 rainShadowDefinition(),
+											 oldGrowthDefinition(),
+											 canalsDefinition(),
+											 polderDefinition(),
+											 oldTownDefinition(),
+											 anthillDefinition(),
+											 patchworkDefinition(),
+											 ruggedArchipelagoDefinition(),
+											 concreteIslandsDefinition(),
+											 craterLakesDefinition(),
+											 islandsDefinition(),
+											 swampDefinition(),
+											 riverDefinition(),
+											 uniformDefinition()});
 	return registry;
 }

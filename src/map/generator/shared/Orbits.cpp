@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <climits>
 #include <cmath>
+#include <numeric>
 namespace MapGeneration
 {
 namespace
@@ -132,6 +133,18 @@ Symmetry translationSymmetry(int width, int height, int teams, long long *spacin
 	if (spacing2)
 		*spacing2 = bestSpacing;
 	return best;
+}
+
+int latticePeriod(const Symmetry &s)
+{
+	int period = std::min(s.width, s.height);
+	for (const Isometry &g : s.elements)
+	{
+		if (g.a != 1 || g.b != 0 || g.c != 0 || g.d != 1)
+			return std::min(s.width, s.height);
+		period = std::gcd(period, std::gcd(std::abs(g.tx), std::abs(g.ty)));
+	}
+	return std::max(1, period);
 }
 
 LatticeSites latticeSites(int width, int height, int teams, double x0, double y0)

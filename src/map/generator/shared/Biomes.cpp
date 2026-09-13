@@ -15,8 +15,10 @@ BiomeKit fertilePlain()
 {
 	BiomeKit kit;
 	kit.name = "fertile plain";
-	kit.pondsPer1000 = 2;
-	kit.pondTiles = 70;
+	// Four ponds of ninety tiles per 10000 (six on a quarter of a 256 map): a plain with a few big
+	// ponds, not a marsh; each pond waters a thirty-tile square round it.
+	kit.pondsPer10000 = 4;
+	kit.pondTiles = 90;
 	kit.farmPerMille = 450;
 	kit.outcropsPer1000 = 2;
 	kit.grovesPer1000 = 1;
@@ -27,7 +29,7 @@ BiomeKit stoneFortress()
 {
 	BiomeKit kit;
 	kit.name = "stone fortress";
-	kit.pondsPer1000 = 1;
+	kit.pondsPer10000 = 2;
 	kit.pondTiles = 40;
 	kit.wallThickness = 2;
 	kit.farmPerMille = 300;
@@ -40,7 +42,7 @@ BiomeKit orchardIsland()
 {
 	BiomeKit kit;
 	kit.name = "orchard island";
-	kit.pondsPer1000 = 1;
+	kit.pondsPer10000 = 1;
 	kit.pondTiles = 260;
 	kit.farmPerMille = 250;
 	kit.outcropsPer1000 = 2;
@@ -52,8 +54,8 @@ BiomeKit forest()
 {
 	BiomeKit kit;
 	kit.name = "forest";
-	kit.pondsPer1000 = 2;
-	kit.pondTiles = 50;
+	kit.pondsPer10000 = 3;
+	kit.pondTiles = 60;
 	kit.farmPerMille = 250;
 	kit.woodPercent = 60;
 	kit.outcropsPer1000 = 2;
@@ -65,14 +67,14 @@ BiomeKit forest()
 namespace
 {
 // A kit's worth per tile before normalising, from the start scorer's weights: fertility (0.25) from
-// how much of the ground its ponds water (a pond waters about thirty tiles square), wheat, wood and
+// how much of the ground its ponds water (a pond waters about thirty tiles square, 900 tiles), wheat, wood and
 // their depth (0.56) from the farmland on that watered ground, room (0.10) from the open ground left,
 // stone (0.09) for having any, and a judgement for fruit, which the scorer doesn't measure but which
 // pulls enemy units across (GAME_RULES_FOR_MAP_DESIGN.md).
 double rawWorth(const BiomeKit &kit)
 {
-	const double pondShare = kit.pondsPer1000 * kit.pondTiles / 1000.0;
-	const double watered = std::min(1.0, kit.pondsPer1000 * 900 / 1000.0);
+	const double pondShare = kit.pondsPer10000 * kit.pondTiles / 10000.0;
+	const double watered = std::min(1.0, kit.pondsPer10000 * 900 / 10000.0);
 	const double farm = kit.farmPerMille / 1000.0 * watered;
 	const double open = std::max(0.0, 1 - pondShare - farm - kit.coverPercent / 100.0 * (1 - farm));
 	const double stone = kit.wallThickness > 0 || kit.outcropsPer1000 > 0 ? 1 : 0;
@@ -105,7 +107,7 @@ BiomeTerrain sketchBiome(TerrainSketch &sketch, const Torus &t,
 	for (int i = 0; i < n; ++i)
 		if (inner[i])
 			candidates.push_back(i);
-	const int ponds = kit.pondsPer1000 > 0 ? std::max(1, tiles * kit.pondsPer1000 / 1000) : 0;
+	const int ponds = kit.pondsPer10000 > 0 ? std::max(1, tiles * kit.pondsPer10000 / 10000) : 0;
 	const double pondRadius = std::sqrt(std::max(1, kit.pondTiles) / kPi);
 	const int spacing2 = int(std::lround(9 * pondRadius * pondRadius));
 	std::vector<int> seeds;

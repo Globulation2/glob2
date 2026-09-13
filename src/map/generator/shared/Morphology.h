@@ -64,4 +64,10 @@ int narrowestPassage(const Torus &, const std::vector<unsigned char> &mask,
 /// up.
 std::vector<unsigned char> slivers(const Torus &, const std::vector<unsigned char> &mask,
 								   int minimumClearance);
+
+/// The least value of an integer field within `radius` Chebyshev steps (a square) of every tile,
+/// across the wrap: a running minimum along rows then columns, so the cost does not grow with the
+/// radius. A tile equal to its window's minimum is a local minimum with nothing lower within the
+/// radius: pools at the bottoms of a field's troughs, spaced at least the radius apart.
+std::vector<int> windowMinimum(const Torus &, const std::vector<int> &field, int radius);
 } // namespace MapGeneration

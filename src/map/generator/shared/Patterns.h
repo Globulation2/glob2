@@ -41,6 +41,13 @@ struct StripeStyle
 };
 std::vector<int> stripePhase(const Torus &, const StripeStyle &, std::mt19937 &);
 
+/// The phase along the stripes: a second stripe field whose gradient runs perpendicular to the
+/// first's, also exactly periodic on the torus, so anything laid out along the stripes by it (gaps,
+/// pools, dykes) repeats seamlessly. The first field's normal is (a / w, b / h); a vector along its
+/// stripes is (b / h, -a / w), scaled by whichever of w and h is larger to keep the turn counts whole.
+/// Unwarped: the warp belongs to the field it was drawn for.
+StripeStyle alongStripes(const Torus &, const StripeStyle &across);
+
 /// The distance between neighbouring stripes, in tiles.
 double stripeSpacing(const Torus &, const StripeStyle &);
 
