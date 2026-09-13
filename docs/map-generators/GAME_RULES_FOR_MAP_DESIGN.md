@@ -31,9 +31,9 @@ comments can say "because grass may not touch water" and a reader can check it h
   closes it until it is cleared, which is why generators keep lanes and roads clear and run
   `openRoad` after placing deposits.
 
-- **Towers shoot over walls.** A defence tower is 2x2 and scans square rings round its footprint's
-  top-left tile out to its range, 5, 7 or 9 tiles by level, with no line of sight
-  (`Building::findBestTarget`, `BuildingTypesDefence.cpp`). A wall stops walking but not shooting, so
+- **Towers shoot over walls.** A defence tower is 2x2 and scans square rings round its footprint out
+  to its range, 5, 7 or 9 tiles beyond every side by level, with no line of sight
+  (`Building::findBestTarget`, `BuildingUtils::turretScanTile`, `BuildingTypesDefence.cpp`). A wall stops walking but not shooting, so
   a wall's thickness decides whether towers on either side can reach each other (`towerReach`).
 - **Players can plug gaps.** Players build stone walls, so a narrow gate, ramp or trail can be sealed
   by whoever holds it. How wide a map's doors are decides whether a colony can shut itself in.
@@ -53,6 +53,10 @@ The growth test lives in `Map::growResources` (`src/map/MapStep.cpp`), the resou
 
 Consequences a generator has to design around:
 
+- **Farmland follows water, in rows.** A crop regrows when a probe up to 15 tiles away finds pure water
+  and the opposite probe finds no pure sand, so rows of crops between rows of water yield most at about
+  10 tiles of crops and 8 of water along an axis, 12 and 9 on the diagonal, where stepped edges lose
+  more to the beach (`bestFarmRows`, `tools/farm_row_fit.py`).
 - **Farmland follows water.** Wheat and wood planted far from water never regrow; planted near
   water they spread until cleared, harvested or blocked. Land far from any water is a desert for
   the economy even when it is grass.

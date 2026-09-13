@@ -1818,6 +1818,8 @@ Taille des cellules
 Taille des salles
 [Corridor width]
 Largeur des couloirs
+[Spoke width]
+Largeur des rayons
 [Loopiness]
 Taux de boucles
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1944,6 +1946,56 @@ Largeur des branches
 Le corail nécessite au moins une colonie.
 [Coral needs a map at least 128 tiles across.]
 Le corail nécessite une carte d'au moins 128 cases de large.
+[Carousel]
+Carrousel
+[Amphitheatre]
+Amphithéâtre
+[Switchbacks]
+Lacets
+[Court size]
+Taille des cours
+[Court wall]
+Mur des cours
+[Plaza size]
+Taille de la place
+[Starting tower level]
+Niveau des tours de départ
+[Towers per colony]
+Tours par colonie
+[Rings]
+Anneaux
+[Ramp width]
+Largeur des rampes
+[Pit size]
+Taille de l'arène
+[Terrace width]
+Largeur des gradins
+[Border roughness]
+Irrégularité des frontières
+[Bay size]
+Taille des baies
+[Border wall]
+Mur des frontières
+[Plateau size]
+Taille du plateau
+[Trail width]
+Largeur du sentier
+[Wall between legs]
+Mur entre les lacets
+[Farm building plots]
+Parcelles à bâtir dans les fermes
+[Carousels need at least two colonies.]
+Le carrousel nécessite au moins deux colonies.
+[Switchbacks need at least two colonies.]
+Les lacets nécessitent au moins deux colonies.
+[An amphitheatre needs at least two colonies.]
+L'amphithéâtre nécessite au moins deux colonies.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Le carrousel ne tient pas sur cette carte ; utilisez une carte plus grande, des bases plus petites ou moins de colonies.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Les lacets ne tiennent pas sur cette carte ; utilisez une carte plus grande, un plateau plus petit, des sentiers plus étroits ou moins de colonies.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+L'amphithéâtre ne tient pas sur cette carte ; utilisez une carte plus grande, moins d'anneaux, des gradins plus étroits ou moins de colonies.
 [Spider web]
 Toile d'araignée
 [Spokes per colony]

@@ -301,7 +301,7 @@ class MapGeneratorDefaultsTest
 			   screen.descriptor.option("test-shape") == 1 &&
 			   screen.descriptor.option("test-switch") == 1);
 		edit(screen, "Smoothing", 8);
-		assert(registry.selectionIndex(101) == 21);
+		assert(registry.selectionIndex(101) == 24);
 		const auto playable = registry.methods(false);
 		assert(std::find(playable.begin(), playable.end(), 101) != playable.end());
 		Game generated(nullptr);

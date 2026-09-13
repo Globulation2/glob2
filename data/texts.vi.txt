@@ -1804,6 +1804,8 @@ Kích thước ô
 Kích thước phòng
 [Corridor width]
 Độ rộng hành lang
+[Spoke width]
+Độ rộng nan hoa
 [Loopiness]
 Mật độ vòng lặp
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1930,6 +1932,56 @@ Phân nhánh
 San hô cần ít nhất một thuộc địa.
 [Coral needs a map at least 128 tiles across.]
 San hô cần bản đồ rộng ít nhất 128 ô.
+[Carousel]
+Vòng quay ngựa gỗ
+[Amphitheatre]
+Đấu trường
+[Switchbacks]
+Đường đèo
+[Court size]
+Kích thước sân
+[Court wall]
+Tường sân
+[Plaza size]
+Kích thước quảng trường
+[Starting tower level]
+Cấp tháp ban đầu
+[Towers per colony]
+Số tháp mỗi thuộc địa
+[Rings]
+Số vòng
+[Ramp width]
+Độ rộng dốc
+[Pit size]
+Kích thước hố
+[Terrace width]
+Độ rộng bậc
+[Border roughness]
+Độ gồ ghề của biên giới
+[Bay size]
+Kích thước vịnh
+[Border wall]
+Tường biên giới
+[Plateau size]
+Kích thước cao nguyên
+[Trail width]
+Độ rộng lối mòn
+[Wall between legs]
+Tường giữa các khúc
+[Farm building plots]
+Ô đất xây dựng trong nông trại
+[Carousels need at least two colonies.]
+Vòng quay ngựa gỗ cần ít nhất hai thuộc địa.
+[Switchbacks need at least two colonies.]
+Đường đèo cần ít nhất hai thuộc địa.
+[An amphitheatre needs at least two colonies.]
+Đấu trường cần ít nhất hai thuộc địa.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Vòng quay ngựa gỗ không vừa bản đồ này; hãy dùng bản đồ lớn hơn, căn cứ nhỏ hơn hoặc ít thuộc địa hơn.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Đường đèo không vừa bản đồ này; hãy dùng bản đồ lớn hơn, cao nguyên nhỏ hơn, lối mòn hẹp hơn hoặc ít thuộc địa hơn.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Đấu trường không vừa bản đồ này; hãy dùng bản đồ lớn hơn, ít vòng hơn, bậc hẹp hơn hoặc ít thuộc địa hơn.
 [Spider web]
 Mạng nhện
 [Spokes per colony]

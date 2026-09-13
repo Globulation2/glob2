@@ -1808,6 +1808,8 @@ Tamaño de la celda
 Tamaño de la sala
 [Corridor width]
 Anchura del pasillo
+[Spoke width]
+Ancho de los radios
 [Loopiness]
 Densidad de bucles
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1934,6 +1936,56 @@ Ancho de las ramas
 El coral necesita al menos una colonia.
 [Coral needs a map at least 128 tiles across.]
 El coral necesita un mapa de al menos 128 casillas de ancho.
+[Carousel]
+Carrusel
+[Amphitheatre]
+Anfiteatro
+[Switchbacks]
+Zigzags
+[Court size]
+Tamaño de los patios
+[Court wall]
+Muro de los patios
+[Plaza size]
+Tamaño de la plaza
+[Starting tower level]
+Nivel de las torres iniciales
+[Towers per colony]
+Torres por colonia
+[Rings]
+Anillos
+[Ramp width]
+Ancho de las rampas
+[Pit size]
+Tamaño del foso
+[Terrace width]
+Ancho de las gradas
+[Border roughness]
+Irregularidad de las fronteras
+[Bay size]
+Tamaño de las bahías
+[Border wall]
+Muro fronterizo
+[Plateau size]
+Tamaño de la meseta
+[Trail width]
+Ancho del sendero
+[Wall between legs]
+Muro entre tramos
+[Farm building plots]
+Solares en las granjas
+[Carousels need at least two colonies.]
+El carrusel necesita al menos dos colonias.
+[Switchbacks need at least two colonies.]
+Los zigzags necesitan al menos dos colonias.
+[An amphitheatre needs at least two colonies.]
+El anfiteatro necesita al menos dos colonias.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+El carrusel no cabe en este mapa; usa un mapa más grande, bases más pequeñas o menos colonias.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Los zigzags no caben en este mapa; usa un mapa más grande, una meseta más pequeña, senderos más estrechos o menos colonias.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+El anfiteatro no cabe en este mapa; usa un mapa más grande, menos anillos, gradas más estrechas o menos colonias.
 [Spider web]
 Telaraña
 [Spokes per colony]

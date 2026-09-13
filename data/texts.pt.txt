@@ -1814,6 +1814,8 @@ Tamanho da célula
 Tamanho da sala
 [Corridor width]
 Largura do corredor
+[Spoke width]
+Largura dos raios
 [Loopiness]
 Densidade de ciclos
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1940,6 +1942,56 @@ Largura dos ramos
 O coral precisa de pelo menos uma colónia.
 [Coral needs a map at least 128 tiles across.]
 O coral precisa de um mapa com pelo menos 128 casas de largura.
+[Carousel]
+Carrossel
+[Amphitheatre]
+Anfiteatro
+[Switchbacks]
+Ziguezagues
+[Court size]
+Tamanho dos pátios
+[Court wall]
+Muro dos pátios
+[Plaza size]
+Tamanho da praça
+[Starting tower level]
+Nível das torres iniciais
+[Towers per colony]
+Torres por colónia
+[Rings]
+Anéis
+[Ramp width]
+Largura das rampas
+[Pit size]
+Tamanho da arena
+[Terrace width]
+Largura das bancadas
+[Border roughness]
+Irregularidade das fronteiras
+[Bay size]
+Tamanho das baías
+[Border wall]
+Muro de fronteira
+[Plateau size]
+Tamanho do planalto
+[Trail width]
+Largura do trilho
+[Wall between legs]
+Muro entre troços
+[Farm building plots]
+Lotes para construir nas quintas
+[Carousels need at least two colonies.]
+O carrossel precisa de pelo menos duas colónias.
+[Switchbacks need at least two colonies.]
+Os ziguezagues precisam de pelo menos duas colónias.
+[An amphitheatre needs at least two colonies.]
+O anfiteatro precisa de pelo menos duas colónias.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+O carrossel não cabe neste mapa; use um mapa maior, bases menores ou menos colónias.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Os ziguezagues não cabem neste mapa; use um mapa maior, um planalto menor, trilhos mais estreitos ou menos colónias.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+O anfiteatro não cabe neste mapa; use um mapa maior, menos anéis, bancadas mais estreitas ou menos colónias.
 [Spider web]
 Teia de aranha
 [Spokes per colony]

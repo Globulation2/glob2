@@ -3,6 +3,9 @@
 #include "CityStatesGenerator.h"
 #include "ConcreteIslandsGenerator.h"
 #include "ContestedCommonsGenerator.h"
+#include "AmphitheatreGenerator.h"
+#include "CarouselGenerator.h"
+#include "SwitchbacksGenerator.h"
 #include "CoralGenerator.h"
 #include "CraterLakesGenerator.h"
 #include "EvergladesGenerator.h"
@@ -112,7 +115,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 		 shatteredCoastDefinition(), islesDefinition(), watershedDefinition(),
 		 stoneHighlandsDefinition(), symmetricArenaDefinition(), ringWorldDefinition(),
 		 cityStatesDefinition(), tidalFlatsDefinition(), evergladesDefinition(), spiderWebDefinition(),
-		 coralDefinition(), ruggedArchipelagoDefinition(), concreteIslandsDefinition(),
+		 coralDefinition(), carouselDefinition(), amphitheatreDefinition(), switchbacksDefinition(), ruggedArchipelagoDefinition(), concreteIslandsDefinition(),
 		 craterLakesDefinition(), islandsDefinition(), swampDefinition(), riverDefinition(),
 		 uniformDefinition()});
 	return registry;

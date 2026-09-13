@@ -1808,6 +1808,8 @@ OpenGL није доступан у овој верзији.
 Величина собе
 [Corridor width]
 Ширина ходника
+[Spoke width]
+Ширина жбица
 [Loopiness]
 Учесталост петљи
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1934,6 +1936,56 @@ OpenGL није доступан у овој верзији.
 Коралу је потребна бар једна колонија.
 [Coral needs a map at least 128 tiles across.]
 Коралу је потребна мапа широка бар 128 поља.
+[Carousel]
+Вртешка
+[Amphitheatre]
+Амфитеатар
+[Switchbacks]
+Серпентине
+[Court size]
+Величина дворишта
+[Court wall]
+Зид дворишта
+[Plaza size]
+Величина трга
+[Starting tower level]
+Ниво почетних кула
+[Towers per colony]
+Куле по колонији
+[Rings]
+Прстенови
+[Ramp width]
+Ширина рампи
+[Pit size]
+Величина јаме
+[Terrace width]
+Ширина тераса
+[Border roughness]
+Разуђеност граница
+[Bay size]
+Величина залива
+[Border wall]
+Гранични зид
+[Plateau size]
+Величина висоравни
+[Trail width]
+Ширина стазе
+[Wall between legs]
+Зид између кривина
+[Farm building plots]
+Грађевинске парцеле на фармама
+[Carousels need at least two colonies.]
+Вртешци су потребне бар две колоније.
+[Switchbacks need at least two colonies.]
+Серпентинама су потребне бар две колоније.
+[An amphitheatre needs at least two colonies.]
+Амфитеатру су потребне бар две колоније.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Вртешка не стаје на ову мапу; користите већу мапу, мање базе или мање колонија.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Серпентине не стају на ову мапу; користите већу мапу, мању висораван, уже стазе или мање колонија.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Амфитеатар не стаје на ову мапу; користите већу мапу, мање прстенова, уже терасе или мање колонија.
 [Spider web]
 Паукова мрежа
 [Spokes per colony]

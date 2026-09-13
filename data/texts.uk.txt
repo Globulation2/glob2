@@ -1804,6 +1804,8 @@ OpenGL недоступний у цій збірці.
 Розмір кімнати
 [Corridor width]
 Ширина коридору
+[Spoke width]
+Ширина спиць
 [Loopiness]
 Кількість петель
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1930,6 +1932,56 @@ OpenGL недоступний у цій збірці.
 Для корала потрібна принаймні одна колонія.
 [Coral needs a map at least 128 tiles across.]
 Для корала потрібна мапа завширшки щонайменше 128 клітинок.
+[Carousel]
+Карусель
+[Amphitheatre]
+Амфітеатр
+[Switchbacks]
+Серпантин
+[Court size]
+Розмір дворів
+[Court wall]
+Стіна дворів
+[Plaza size]
+Розмір площі
+[Starting tower level]
+Рівень початкових веж
+[Towers per colony]
+Веж на колонію
+[Rings]
+Кільця
+[Ramp width]
+Ширина пандусів
+[Pit size]
+Розмір арени
+[Terrace width]
+Ширина терас
+[Border roughness]
+Порізаність кордонів
+[Bay size]
+Розмір заток
+[Border wall]
+Прикордонна стіна
+[Plateau size]
+Розмір плато
+[Trail width]
+Ширина стежки
+[Wall between legs]
+Стіна між витками
+[Farm building plots]
+Ділянки під забудову на фермах
+[Carousels need at least two colonies.]
+Для каруселі потрібні принаймні дві колонії.
+[Switchbacks need at least two colonies.]
+Для серпантину потрібні принаймні дві колонії.
+[An amphitheatre needs at least two colonies.]
+Для амфітеатру потрібні принаймні дві колонії.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Карусель не вміщується на цій мапі; використайте більшу мапу, менші бази або менше колоній.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Серпантин не вміщується на цій мапі; використайте більшу мапу, менше плато, вужчі стежки або менше колоній.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Амфітеатр не вміщується на цій мапі; використайте більшу мапу, менше кілець, вужчі тераси або менше колоній.
 [Spider web]
 Павутина
 [Spokes per colony]

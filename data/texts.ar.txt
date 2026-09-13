@@ -1806,6 +1806,8 @@ OpenGL غير متوفر في هذا الإصدار.
 حجم الغرفة
 [Corridor width]
 عرض الممر
+[Spoke width]
+عرض الأشعة
 [Loopiness]
 كثافة الحلقات
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1932,6 +1934,56 @@ OpenGL غير متوفر في هذا الإصدار.
 يحتاج المرجان إلى مستعمرة واحدة على الأقل.
 [Coral needs a map at least 128 tiles across.]
 يحتاج المرجان إلى خريطة بعرض 128 مربعًا على الأقل.
+[Carousel]
+الدوّامة
+[Amphitheatre]
+المدرج
+[Switchbacks]
+الطرق المتعرجة
+[Court size]
+حجم الساحات
+[Court wall]
+جدار الساحات
+[Plaza size]
+حجم الميدان
+[Starting tower level]
+مستوى الأبراج الأولية
+[Towers per colony]
+الأبراج لكل مستعمرة
+[Rings]
+الحلقات
+[Ramp width]
+عرض المنحدرات
+[Pit size]
+حجم الحفرة
+[Terrace width]
+عرض المدرجات
+[Border roughness]
+تعرّج الحدود
+[Bay size]
+حجم الخلجان
+[Border wall]
+الجدار الحدودي
+[Plateau size]
+حجم الهضبة
+[Trail width]
+عرض الدرب
+[Wall between legs]
+الجدار بين المنعطفات
+[Farm building plots]
+قطع بناء في المزارع
+[Carousels need at least two colonies.]
+تحتاج الدوّامة إلى مستعمرتين على الأقل.
+[Switchbacks need at least two colonies.]
+تحتاج الطرق المتعرجة إلى مستعمرتين على الأقل.
+[An amphitheatre needs at least two colonies.]
+يحتاج المدرج إلى مستعمرتين على الأقل.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+لا تتسع هذه الخريطة للدوّامة؛ استخدم خريطة أكبر أو مواطن أصغر أو مستعمرات أقل.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+لا تتسع هذه الخريطة للطرق المتعرجة؛ استخدم خريطة أكبر أو هضبة أصغر أو دروبًا أضيق أو مستعمرات أقل.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+لا تتسع هذه الخريطة للمدرج؛ استخدم خريطة أكبر أو حلقات أقل أو مدرجات أضيق أو مستعمرات أقل.
 [Spider web]
 شبكة العنكبوت
 [Spokes per colony]

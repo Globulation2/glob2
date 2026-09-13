@@ -1870,6 +1870,8 @@ Dimensione delle celle
 Dimensione delle stanze
 [Corridor width]
 Larghezza dei corridoi
+[Spoke width]
+Larghezza dei raggi
 [Loopiness]
 Densità dei cicli
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1996,6 +1998,56 @@ Larghezza dei rami
 Il corallo richiede almeno una colonia.
 [Coral needs a map at least 128 tiles across.]
 Il corallo richiede una mappa larga almeno 128 caselle.
+[Carousel]
+Giostra
+[Amphitheatre]
+Anfiteatro
+[Switchbacks]
+Tornanti
+[Court size]
+Dimensione dei cortili
+[Court wall]
+Muro dei cortili
+[Plaza size]
+Dimensione della piazza
+[Starting tower level]
+Livello delle torri iniziali
+[Towers per colony]
+Torri per colonia
+[Rings]
+Anelli
+[Ramp width]
+Larghezza delle rampe
+[Pit size]
+Dimensione della fossa
+[Terrace width]
+Larghezza delle gradinate
+[Border roughness]
+Irregolarità dei confini
+[Bay size]
+Dimensione delle baie
+[Border wall]
+Muro di confine
+[Plateau size]
+Dimensione dell'altopiano
+[Trail width]
+Larghezza del sentiero
+[Wall between legs]
+Muro tra i tornanti
+[Farm building plots]
+Lotti edificabili nelle fattorie
+[Carousels need at least two colonies.]
+La giostra richiede almeno due colonie.
+[Switchbacks need at least two colonies.]
+I tornanti richiedono almeno due colonie.
+[An amphitheatre needs at least two colonies.]
+L'anfiteatro richiede almeno due colonie.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+La giostra non entra in questa mappa; usa una mappa più grande, basi più piccole o meno colonie.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+I tornanti non entrano in questa mappa; usa una mappa più grande, un altopiano più piccolo, sentieri più stretti o meno colonie.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+L'anfiteatro non entra in questa mappa; usa una mappa più grande, meno anelli, gradinate più strette o meno colonie.
 [Spider web]
 Ragnatela
 [Spokes per colony]

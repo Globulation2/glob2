@@ -1832,6 +1832,8 @@ Celgrootte
 Kamergrootte
 [Corridor width]
 Gangbreedte
+[Spoke width]
+Spaakbreedte
 [Loopiness]
 Aantal lussen
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1958,6 +1960,56 @@ Takbreedte
 Koraal heeft minstens één kolonie nodig.
 [Coral needs a map at least 128 tiles across.]
 Koraal heeft een kaart van minstens 128 tegels breed nodig.
+[Carousel]
+Draaimolen
+[Amphitheatre]
+Amfitheater
+[Switchbacks]
+Haarspeldbochten
+[Court size]
+Grootte van de binnenplaatsen
+[Court wall]
+Muur van de binnenplaatsen
+[Plaza size]
+Grootte van het plein
+[Starting tower level]
+Niveau van de starttorens
+[Towers per colony]
+Torens per kolonie
+[Rings]
+Ringen
+[Ramp width]
+Hellingbreedte
+[Pit size]
+Grootte van de arena
+[Terrace width]
+Terrasbreedte
+[Border roughness]
+Grillige grenzen
+[Bay size]
+Grootte van de baaien
+[Border wall]
+Grensmuur
+[Plateau size]
+Grootte van het plateau
+[Trail width]
+Padbreedte
+[Wall between legs]
+Muur tussen bochten
+[Farm building plots]
+Bouwkavels in de boerderijen
+[Carousels need at least two colonies.]
+Een draaimolen heeft minstens twee kolonies nodig.
+[Switchbacks need at least two colonies.]
+Haarspeldbochten hebben minstens twee kolonies nodig.
+[An amphitheatre needs at least two colonies.]
+Een amfitheater heeft minstens twee kolonies nodig.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+De draaimolen past niet op deze kaart; gebruik een grotere kaart, kleinere thuisbases of minder kolonies.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+De haarspeldbochten passen niet op deze kaart; gebruik een grotere kaart, een kleiner plateau, smallere paden of minder kolonies.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Het amfitheater past niet op deze kaart; gebruik een grotere kaart, minder ringen, smallere terrassen of minder kolonies.
 [Spider web]
 Spinnenweb
 [Spokes per colony]

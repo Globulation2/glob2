@@ -1880,6 +1880,8 @@ OpenGL 在此版本中不可用。
 房間大小
 [Corridor width]
 通道寬度
+[Spoke width]
+輻條寬度
 [Loopiness]
 迴路密度
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -2006,6 +2008,56 @@ OpenGL 在此版本中不可用。
 珊瑚至少需要一個殖民地。
 [Coral needs a map at least 128 tiles across.]
 珊瑚需要寬度至少為 128 格的地圖。
+[Carousel]
+旋轉木馬
+[Amphitheatre]
+圓形劇場
+[Switchbacks]
+之字山路
+[Court size]
+庭院大小
+[Court wall]
+庭院圍牆
+[Plaza size]
+廣場大小
+[Starting tower level]
+初始塔等級
+[Towers per colony]
+每個殖民地的塔數
+[Rings]
+環數
+[Ramp width]
+坡道寬度
+[Pit size]
+競技場大小
+[Terrace width]
+台階寬度
+[Border roughness]
+邊界起伏
+[Bay size]
+海灣大小
+[Border wall]
+邊界圍牆
+[Plateau size]
+高原大小
+[Trail width]
+山路寬度
+[Wall between legs]
+彎道之間的牆
+[Farm building plots]
+農場建築用地
+[Carousels need at least two colonies.]
+旋轉木馬至少需要兩個殖民地。
+[Switchbacks need at least two colonies.]
+之字山路至少需要兩個殖民地。
+[An amphitheatre needs at least two colonies.]
+圓形劇場至少需要兩個殖民地。
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+此地圖放不下旋轉木馬；請使用更大的地圖、更小的基地或更少的殖民地。
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+此地圖放不下之字山路；請使用更大的地圖、更小的高原、更窄的山路或更少的殖民地。
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+此地圖放不下圓形劇場；請使用更大的地圖、更少的環、更窄的台階或更少的殖民地。
 [Spider web]
 蜘蛛網
 [Spokes per colony]

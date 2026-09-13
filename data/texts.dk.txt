@@ -1884,6 +1884,8 @@ Cellestørrelse
 Rumstørrelse
 [Corridor width]
 Korridorbredde
+[Spoke width]
+Egernes bredde
 [Loopiness]
 Løkketæthed
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -2010,6 +2012,56 @@ Grenbredde
 Koral kræver mindst én koloni.
 [Coral needs a map at least 128 tiles across.]
 Koral kræver et kort på mindst 128 felter i bredden.
+[Carousel]
+Karrusel
+[Amphitheatre]
+Amfiteater
+[Switchbacks]
+Hårnålesving
+[Court size]
+Gårdenes størrelse
+[Court wall]
+Gårdmur
+[Plaza size]
+Pladsens størrelse
+[Starting tower level]
+Niveau for starttårne
+[Towers per colony]
+Tårne pr. koloni
+[Rings]
+Ringe
+[Ramp width]
+Rampebredde
+[Pit size]
+Arenaens størrelse
+[Terrace width]
+Terrassebredde
+[Border roughness]
+Grænsernes ujævnhed
+[Bay size]
+Bugternes størrelse
+[Border wall]
+Grænsemur
+[Plateau size]
+Plateauets størrelse
+[Trail width]
+Stibredde
+[Wall between legs]
+Mur mellem sving
+[Farm building plots]
+Byggegrunde på gårdene
+[Carousels need at least two colonies.]
+En karrusel kræver mindst to kolonier.
+[Switchbacks need at least two colonies.]
+Hårnålesving kræver mindst to kolonier.
+[An amphitheatre needs at least two colonies.]
+Et amfiteater kræver mindst to kolonier.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Karrusellen passer ikke til dette kort; brug et større kort, mindre hjem eller færre kolonier.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Hårnålesvingene passer ikke til dette kort; brug et større kort, et mindre plateau, smallere stier eller færre kolonier.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Amfiteatret passer ikke til dette kort; brug et større kort, færre ringe, smallere terrasser eller færre kolonier.
 [Spider web]
 Spindelvæv
 [Spokes per colony]

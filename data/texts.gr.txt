@@ -1878,6 +1878,8 @@ Cortex
 Μέγεθος δωματίου
 [Corridor width]
 Πλάτος διαδρόμου
+[Spoke width]
+Πλάτος ακτίνων
 [Loopiness]
 Βαθμός διασύνδεσης
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -2004,6 +2006,56 @@ Cortex
 Το κοράλλι χρειάζεται τουλάχιστον μία αποικία.
 [Coral needs a map at least 128 tiles across.]
 Το κοράλλι χρειάζεται χάρτη πλάτους τουλάχιστον 128 τετραγώνων.
+[Carousel]
+Καρουζέλ
+[Amphitheatre]
+Αμφιθέατρο
+[Switchbacks]
+Φουρκέτες
+[Court size]
+Μέγεθος αυλών
+[Court wall]
+Τείχος αυλών
+[Plaza size]
+Μέγεθος πλατείας
+[Starting tower level]
+Επίπεδο αρχικών πύργων
+[Towers per colony]
+Πύργοι ανά αποικία
+[Rings]
+Δακτύλιοι
+[Ramp width]
+Πλάτος ραμπών
+[Pit size]
+Μέγεθος αρένας
+[Terrace width]
+Πλάτος κερκίδων
+[Border roughness]
+Ανωμαλία συνόρων
+[Bay size]
+Μέγεθος κόλπων
+[Border wall]
+Συνοριακό τείχος
+[Plateau size]
+Μέγεθος οροπεδίου
+[Trail width]
+Πλάτος μονοπατιού
+[Wall between legs]
+Τείχος ανάμεσα στις στροφές
+[Farm building plots]
+Οικόπεδα στα αγροκτήματα
+[Carousels need at least two colonies.]
+Το καρουζέλ χρειάζεται τουλάχιστον δύο αποικίες.
+[Switchbacks need at least two colonies.]
+Οι φουρκέτες χρειάζονται τουλάχιστον δύο αποικίες.
+[An amphitheatre needs at least two colonies.]
+Το αμφιθέατρο χρειάζεται τουλάχιστον δύο αποικίες.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Το καρουζέλ δεν χωρά σε αυτόν τον χάρτη· χρησιμοποιήστε μεγαλύτερο χάρτη, μικρότερες βάσεις ή λιγότερες αποικίες.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Οι φουρκέτες δεν χωρούν σε αυτόν τον χάρτη· χρησιμοποιήστε μεγαλύτερο χάρτη, μικρότερο οροπέδιο, στενότερα μονοπάτια ή λιγότερες αποικίες.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Το αμφιθέατρο δεν χωρά σε αυτόν τον χάρτη· χρησιμοποιήστε μεγαλύτερο χάρτη, λιγότερους δακτυλίους, στενότερες κερκίδες ή λιγότερες αποικίες.
 [Spider web]
 Ιστός αράχνης
 [Spokes per colony]

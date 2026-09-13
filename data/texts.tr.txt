@@ -1816,6 +1816,8 @@ Hücre boyutu
 Oda boyutu
 [Corridor width]
 Koridor genişliği
+[Spoke width]
+Tel genişliği
 [Loopiness]
 Döngü yoğunluğu
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1942,6 +1944,56 @@ Dal genişliği
 Mercan en az bir koloni gerektirir.
 [Coral needs a map at least 128 tiles across.]
 Mercan en az 128 kare genişliğinde bir harita gerektirir.
+[Carousel]
+Atlıkarınca
+[Amphitheatre]
+Amfiteatr
+[Switchbacks]
+Virajlar
+[Court size]
+Avlu boyutu
+[Court wall]
+Avlu duvarı
+[Plaza size]
+Meydan boyutu
+[Starting tower level]
+Başlangıç kulelerinin seviyesi
+[Towers per colony]
+Koloni başına kule
+[Rings]
+Halkalar
+[Ramp width]
+Rampa genişliği
+[Pit size]
+Arena boyutu
+[Terrace width]
+Teras genişliği
+[Border roughness]
+Sınır düzensizliği
+[Bay size]
+Koy boyutu
+[Border wall]
+Sınır duvarı
+[Plateau size]
+Plato boyutu
+[Trail width]
+Patika genişliği
+[Wall between legs]
+Virajlar arası duvar
+[Farm building plots]
+Çiftliklerde yapı arsaları
+[Carousels need at least two colonies.]
+Atlıkarınca en az iki koloni gerektirir.
+[Switchbacks need at least two colonies.]
+Virajlar en az iki koloni gerektirir.
+[An amphitheatre needs at least two colonies.]
+Amfiteatr en az iki koloni gerektirir.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Atlıkarınca bu haritaya sığmıyor; daha büyük bir harita, daha küçük üsler veya daha az koloni kullanın.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Virajlar bu haritaya sığmıyor; daha büyük bir harita, daha küçük bir plato, daha dar patikalar veya daha az koloni kullanın.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Amfiteatr bu haritaya sığmıyor; daha büyük bir harita, daha az halka, daha dar teraslar veya daha az koloni kullanın.
 [Spider web]
 Örümcek ağı
 [Spokes per colony]

@@ -1818,6 +1818,8 @@ Gelaxkaren tamaina
 Gelaren tamaina
 [Corridor width]
 Korridorearen zabalera
+[Spoke width]
+Erradioen zabalera
 [Loopiness]
 Begizta-maila
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1944,6 +1946,56 @@ Adarren zabalera
 Koraleak gutxienez kolonia bat behar du.
 [Coral needs a map at least 128 tiles across.]
 Koraleak gutxienez 128 lauki zabaleko mapa behar du.
+[Carousel]
+Karrusela
+[Amphitheatre]
+Anfiteatroa
+[Switchbacks]
+Sigi-sagak
+[Court size]
+Patioen tamaina
+[Court wall]
+Patioko horma
+[Plaza size]
+Plazaren tamaina
+[Starting tower level]
+Hasierako dorreen maila
+[Towers per colony]
+Dorreak koloniako
+[Rings]
+Eraztunak
+[Ramp width]
+Arrapalen zabalera
+[Pit size]
+Zuloaren tamaina
+[Terrace width]
+Harmailen zabalera
+[Border roughness]
+Mugen zimurtasuna
+[Bay size]
+Badien tamaina
+[Border wall]
+Mugako horma
+[Plateau size]
+Goi-lautadaren tamaina
+[Trail width]
+Bidearen zabalera
+[Wall between legs]
+Bihurguneen arteko horma
+[Farm building plots]
+Eraikitzeko lursailak baserrietan
+[Carousels need at least two colonies.]
+Karruselak gutxienez bi kolonia behar ditu.
+[Switchbacks need at least two colonies.]
+Sigi-sagek gutxienez bi kolonia behar dituzte.
+[An amphitheatre needs at least two colonies.]
+Anfiteatroak gutxienez bi kolonia behar ditu.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Karrusela ez da mapa honetan sartzen; erabili mapa handiagoa, etxe txikiagoak edo kolonia gutxiago.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Sigi-sagak ez dira mapa honetan sartzen; erabili mapa handiagoa, goi-lautada txikiagoa, bide estuagoak edo kolonia gutxiago.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Anfiteatroa ez da mapa honetan sartzen; erabili mapa handiagoa, eraztun gutxiago, harmaila estuagoak edo kolonia gutxiago.
 [Spider web]
 Armiarma-sarea
 [Spokes per colony]

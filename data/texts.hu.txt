@@ -1808,6 +1808,8 @@ Cella mérete
 Szoba mérete
 [Corridor width]
 Folyosó szélessége
+[Spoke width]
+Küllők szélessége
 [Loopiness]
 Huroksűrűség
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1934,6 +1936,56 @@ Elágazás
 A korallhoz legalább egy kolónia kell.
 [Coral needs a map at least 128 tiles across.]
 A korallhoz legalább 128 mező széles térkép kell.
+[Carousel]
+Körhinta
+[Amphitheatre]
+Amfiteátrum
+[Switchbacks]
+Szerpentinek
+[Court size]
+Udvarok mérete
+[Court wall]
+Udvarfal
+[Plaza size]
+Tér mérete
+[Starting tower level]
+Kezdő tornyok szintje
+[Towers per colony]
+Tornyok kolóniánként
+[Rings]
+Gyűrűk
+[Ramp width]
+Rámpák szélessége
+[Pit size]
+Aréna mérete
+[Terrace width]
+Teraszok szélessége
+[Border roughness]
+Határok szabálytalansága
+[Bay size]
+Öblök mérete
+[Border wall]
+Határfal
+[Plateau size]
+Fennsík mérete
+[Trail width]
+Ösvény szélessége
+[Wall between legs]
+Fal a kanyarok között
+[Farm building plots]
+Építési telkek a farmokon
+[Carousels need at least two colonies.]
+A körhintához legalább két kolónia kell.
+[Switchbacks need at least two colonies.]
+A szerpentinekhez legalább két kolónia kell.
+[An amphitheatre needs at least two colonies.]
+Az amfiteátrumhoz legalább két kolónia kell.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+A körhinta nem fér el ezen a térképen; használj nagyobb térképet, kisebb otthonokat vagy kevesebb kolóniát.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+A szerpentinek nem férnek el ezen a térképen; használj nagyobb térképet, kisebb fennsíkot, keskenyebb ösvényeket vagy kevesebb kolóniát.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Az amfiteátrum nem fér el ezen a térképen; használj nagyobb térképet, kevesebb gyűrűt, keskenyebb teraszokat vagy kevesebb kolóniát.
 [Spider web]
 Pókháló
 [Spokes per colony]

@@ -1804,6 +1804,8 @@ Globulation 2 のカーソルを表示します。
 部屋の大きさ
 [Corridor width]
 通路の幅
+[Spoke width]
+スポークの幅
 [Loopiness]
 ループの多さ
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1930,6 +1932,56 @@ Globulation 2 のカーソルを表示します。
 サンゴには少なくとも1つのコロニーが必要です。
 [Coral needs a map at least 128 tiles across.]
 サンゴには幅128マス以上のマップが必要です。
+[Carousel]
+回転木馬
+[Amphitheatre]
+円形闘技場
+[Switchbacks]
+つづら折り
+[Court size]
+中庭の大きさ
+[Court wall]
+中庭の壁
+[Plaza size]
+広場の大きさ
+[Starting tower level]
+初期タワーのレベル
+[Towers per colony]
+コロニーごとのタワー数
+[Rings]
+環の数
+[Ramp width]
+斜路の幅
+[Pit size]
+闘技場の大きさ
+[Terrace width]
+段の幅
+[Border roughness]
+境界の起伏
+[Bay size]
+入り江の大きさ
+[Border wall]
+境界の壁
+[Plateau size]
+台地の大きさ
+[Trail width]
+山道の幅
+[Wall between legs]
+折り返しの間の壁
+[Farm building plots]
+農場の建設用地
+[Carousels need at least two colonies.]
+回転木馬には少なくとも2つのコロニーが必要です。
+[Switchbacks need at least two colonies.]
+つづら折りには少なくとも2つのコロニーが必要です。
+[An amphitheatre needs at least two colonies.]
+円形闘技場には少なくとも2つのコロニーが必要です。
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+回転木馬はこの地図に収まりません。より大きな地図、より小さな本拠地、またはより少ないコロニーにしてください。
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+つづら折りはこの地図に収まりません。より大きな地図、より小さな台地、より狭い山道、またはより少ないコロニーにしてください。
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+円形闘技場はこの地図に収まりません。より大きな地図、より少ない環、より狭い段、またはより少ないコロニーにしてください。
 [Spider web]
 クモの巣
 [Spokes per colony]

@@ -48,6 +48,33 @@ std::vector<unsigned char> labelBorders(const Torus &, const std::vector<int> &l
 /// border, the third back on the first's.
 std::vector<unsigned char> labelBorders(const Torus &, const std::vector<int> &labels, int thickness);
 
+/// labelBorders with doors: the border between a tile and its lower-labelled neighbour is walled
+/// unless `open(tile, neighbour)` leaves it open, as where a home meets its own corridor. A tile is
+/// wall when any such closed border touches it, so the wall still stands on the higher label's side.
+template <typename Open>
+std::vector<unsigned char> labelBorders(const Torus &t, const std::vector<int> &labels, Open open)
+{
+	std::vector<unsigned char> wall(t.size(), 0);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+		{
+			const int i = y * t.w + x;
+			if (labels[i] < 0)
+				continue;
+			for (int dy = -1; dy <= 1 && !wall[i]; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+				{
+					const int j = t.at(x + dx, y + dy);
+					if (labels[j] >= 0 && labels[j] < labels[i] && !open(i, j))
+					{
+						wall[i] = 1;
+						break;
+					}
+				}
+		}
+	return wall;
+}
+
 /// A designed band of stone, once the terrain is laid: the tiles of `wall` that are pure grass and
 /// so can take stone, and how many were not (the beach pass reached them, or the design put water or
 /// sand there) - any such tile is a gap in the wall, which a design should refuse rather than ship.
@@ -66,20 +93,23 @@ std::vector<int> reachesWithShut(const Map &, const Torus &, const std::vector<u
 								 const std::vector<unsigned char> &shut);
 
 /// The check that a map's parts stay apart with their doors shut: floods each part's walkable tiles
-/// (a `piece` label of 0 or more) over walkable land with the `shut` tiles closed, and returns the
+/// (a `piece` label of 0 or more) over land that is not stone, crops and buildings counted as the ground they
+/// will leave, with the `shut` tiles closed, and returns the
 /// first tile of a different part any flood reaches, or -1 when every part keeps to itself.
 int pieceLeak(const Map &, const Torus &, const std::vector<int> &piece,
 			  const std::vector<unsigned char> &shut);
 
 /// The size of a defence tower's footprint, and the range of each of its three levels
 /// (BuildingTypesDefence.cpp). A tower scans square rings round its footprint's top-left tile with
-/// no line of sight (Building::findBestTarget), so a wall stops walking but not shooting.
+/// no line of sight (Building::findBestTarget, BuildingUtils::turretScanTile), reaching its range in
+/// tiles beyond every side of its footprint, so a wall stops walking but not shooting.
 constexpr int kTowerFootprint = 2;
 constexpr int kTowerRange[3] = {5, 7, 9};
 
 /// How close a tower built on `buildable` can come to shooting at `target`: the least Chebyshev
-/// distance, across the wrap, from the top-left tile of any 2x2 footprint wholly on `buildable` to
-/// any tile of `target`. INT_MAX when no footprint fits or there is no target.
+/// distance, across the wrap, from any tile of a 2x2 footprint wholly on `buildable` to any tile of
+/// `target`. A tower of range r hits a target this far away or nearer. INT_MAX when no footprint fits
+/// or there is no target.
 int towerReach(const Torus &, const std::vector<unsigned char> &buildable,
 			   const std::vector<unsigned char> &target);
 

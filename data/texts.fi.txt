@@ -1808,6 +1808,8 @@ Solun koko
 Huoneen koko
 [Corridor width]
 Käytävän leveys
+[Spoke width]
+Säteiden leveys
 [Loopiness]
 Silmukoiden määrä
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1934,6 +1936,56 @@ Oksien leveys
 Koralli tarvitsee vähintään yhden siirtokunnan.
 [Coral needs a map at least 128 tiles across.]
 Koralli tarvitsee vähintään 128 ruutua leveän kartan.
+[Carousel]
+Karuselli
+[Amphitheatre]
+Amfiteatteri
+[Switchbacks]
+Serpentiinit
+[Court size]
+Pihojen koko
+[Court wall]
+Pihan muuri
+[Plaza size]
+Aukion koko
+[Starting tower level]
+Aloitustornien taso
+[Towers per colony]
+Torneja siirtokuntaa kohden
+[Rings]
+Renkaat
+[Ramp width]
+Ramppien leveys
+[Pit size]
+Areenan koko
+[Terrace width]
+Terassien leveys
+[Border roughness]
+Rajojen rosoisuus
+[Bay size]
+Lahtien koko
+[Border wall]
+Rajamuuri
+[Plateau size]
+Ylätasangon koko
+[Trail width]
+Polun leveys
+[Wall between legs]
+Muuri mutkien välissä
+[Farm building plots]
+Rakennuspaikat tiloilla
+[Carousels need at least two colonies.]
+Karuselli tarvitsee vähintään kaksi siirtokuntaa.
+[Switchbacks need at least two colonies.]
+Serpentiinit tarvitsevat vähintään kaksi siirtokuntaa.
+[An amphitheatre needs at least two colonies.]
+Amfiteatteri tarvitsee vähintään kaksi siirtokuntaa.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Karuselli ei mahdu tälle kartalle; käytä suurempaa karttaa, pienempiä kotialueita tai vähemmän siirtokuntia.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Serpentiinit eivät mahdu tälle kartalle; käytä suurempaa karttaa, pienempää ylätasankoa, kapeampia polkuja tai vähemmän siirtokuntia.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Amfiteatteri ei mahdu tälle kartalle; käytä suurempaa karttaa, vähemmän renkaita, kapeampia terasseja tai vähemmän siirtokuntia.
 [Spider web]
 Hämähäkinseitti
 [Spokes per colony]

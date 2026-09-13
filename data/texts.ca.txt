@@ -1816,6 +1816,8 @@ Mida de la cel·la
 Mida de la sala
 [Corridor width]
 Amplada del passadís
+[Spoke width]
+Amplada dels radis
 [Loopiness]
 Densitat de bucles
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1942,6 +1944,56 @@ Amplada de les branques
 El corall necessita almenys una colònia.
 [Coral needs a map at least 128 tiles across.]
 El corall necessita un mapa d'almenys 128 caselles d'amplada.
+[Carousel]
+Carrusel
+[Amphitheatre]
+Amfiteatre
+[Switchbacks]
+Ziga-zagues
+[Court size]
+Mida dels patis
+[Court wall]
+Mur dels patis
+[Plaza size]
+Mida de la plaça
+[Starting tower level]
+Nivell de les torres inicials
+[Towers per colony]
+Torres per colònia
+[Rings]
+Anells
+[Ramp width]
+Amplada de les rampes
+[Pit size]
+Mida del fossat
+[Terrace width]
+Amplada de les graderies
+[Border roughness]
+Irregularitat de les fronteres
+[Bay size]
+Mida de les badies
+[Border wall]
+Mur fronterer
+[Plateau size]
+Mida de l'altiplà
+[Trail width]
+Amplada del camí
+[Wall between legs]
+Mur entre trams
+[Farm building plots]
+Solars a les granges
+[Carousels need at least two colonies.]
+El carrusel necessita almenys dues colònies.
+[Switchbacks need at least two colonies.]
+Els ziga-zagues necessiten almenys dues colònies.
+[An amphitheatre needs at least two colonies.]
+L'amfiteatre necessita almenys dues colònies.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+El carrusel no cap en aquest mapa; useu un mapa més gran, bases més petites o menys colònies.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Els ziga-zagues no caben en aquest mapa; useu un mapa més gran, un altiplà més petit, camins més estrets o menys colònies.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+L'amfiteatre no cap en aquest mapa; useu un mapa més gran, menys anells, graderies més estretes o menys colònies.
 [Spider web]
 Teranyina
 [Spokes per colony]

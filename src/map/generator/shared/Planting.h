@@ -83,9 +83,9 @@ struct Kit
 {
 	KitSeed wheat, wood, stone;
 	int wheatTiles, woodTiles; // patch sizes
-	int stoneRadius;           // a clump
+	int stoneRadius;           // a clump; below 0 for none
 };
-/// A home's starter kit: a wheat patch, a wood patch and a stone clump, each from the nearest
+/// A home's starter kit: a wheat patch, a wood patch and a stone clump (none with a negative radius), each from the nearest
 /// eligible tile to its seed, in that order. A deposit whose seed finds no eligible tile is left
 /// out, since the guarantee that follows tops a colony up.
 template <typename Eligible>
@@ -97,6 +97,8 @@ void plantKit(Map &map, const Torus &t, GenerationContext &context, const Kit &k
 		growPatch(map, t, seed, CORN, kit.wheatTiles, eligible);
 	if (const int seed = seedNear(t, kit.wood.x, kit.wood.y, kit.wood.within, eligible); seed >= 0)
 		growPatch(map, t, seed, WOOD, kit.woodTiles, eligible);
+	if (kit.stoneRadius < 0)
+		return;
 	if (const int seed = seedNear(t, kit.stone.x, kit.stone.y, kit.stone.within, eligible);
 		seed >= 0)
 		placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), STONE,

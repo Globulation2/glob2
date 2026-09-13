@@ -126,7 +126,7 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 }
 
 int placeTower(Game &game, int team, int level, double x, double y, int within,
-			   const std::vector<unsigned char> &allowed)
+			   const std::vector<unsigned char> &allowed, bool stocked)
 {
 	const int type = globalContainer->buildingsTypes.getTypeNum("defencetower", level, false);
 	const BuildingType *tower = globalContainer->buildingsTypes.get(type);
@@ -161,7 +161,7 @@ int placeTower(Game &game, int team, int level, double x, double y, int within,
 	Building *building = game.addBuilding(best % w, best / w, type, team, 1, 0);
 	if (!building)
 		return -1;
-	building->bullets = tower->maxBullets;
+	building->bullets = stocked ? tower->maxBullets : 0;
 	// The colony's lists were built when its swarm went down; the tower joins its turrets the way
 	// Team::createLists would have taken it in.
 	game.teams[team]->turrets.push_back(building);

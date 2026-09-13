@@ -1,0 +1,164 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#pragma once
+#include "Geometry.h"
+#include "Grid.h"
+#include "Sketch.h"
+#include <vector>
+class Map;
+struct GenerationContext;
+namespace MapGeneration
+{
+// Farmland: ground laid out like a real farm, in long rows of crops with a strip of water between
+// every two rows and only the beach the engine insists on in between. Wheat and wood regrow on a tile
+// only when a random probe up to 15 tiles away lands on water and the opposite probe does not land
+// on sand (Map::growResources), so a crop row next to water yields steadily, and a farm's yield is
+// set by how wide its crop and water rows are.
+
+/// The widths of a farm's crop rows and water rows, measured across the rows in tiles.
+struct FarmRows
+{
+	double crops, water;
+	double period() const { return crops + water; }
+};
+
+/// The row widths that make a farm yield most for its area, for rows running at `angle` (radians).
+/// Wider rows hold more crops but more of them sit far from water; narrower ones lose a larger share
+/// of their ground to beaches. tools/farm_row_fit.py sums every crop tile's exact chance of regrowing
+/// for every width pair: rows along an axis do best at 10 tiles of crops and 8 of water, and diagonal
+/// rows, whose stepped edges lose more tiles to the beach, at 12 and 9. The optimum is flat (the next
+/// best pairs are within 2%), so this is a rough line between the two through the sine of twice the
+/// angle, which the fit follows closely by 22 degrees.
+FarmRows bestFarmRows(double angle);
+
+/// How much a farm yields per tile of its area, laid at bestFarmRows for rows running at `angle`: every
+/// crop tile's chance of regrowing each time the engine visits it, summed and divided by the area, as
+/// tools/farm_row_fit.py measures it at 0, 11.25, 22.5, 33.75 and 45 degrees from an axis (0.149 down
+/// to 0.113) and interpolated between. Rows along an axis yield about a third more per tile than
+/// diagonal rows, whose stepped edges lose more tiles to the beach, so two farms given the same yield
+/// need areas in the inverse ratio.
+double farmYield(double angle);
+
+/// A farm laid over a region: which undermap vertices are water, and for every vertex of the region
+/// the row it lies in (even rows are crops, odd rows water; -1 outside the region).
+struct Farm
+{
+	std::vector<unsigned char> water;
+	std::vector<int> row;
+	int rows = 0; // how many water rows the region holds
+	// The building plot, when one was asked for and fits: its sand ring (undermap vertices), its
+	// pure-grass tiles, and the top-left of those tiles (-1 without a plot).
+	std::vector<unsigned char> sand, plot;
+	int plotX = -1, plotY = -1;
+};
+
+/// A clearing in the middle of a farm for buildings: `width` by `height` tiles of pure grass with a
+/// ring of sand `ring` undermap vertices wide round it (two vertices make a full tile of sand), so
+/// no crop grows onto it and nothing but the clearing is buildable. 10 by 4 seats a swarm or an inn
+/// with room to walk round it.
+struct FarmPlot
+{
+	int width = 10, height = 4, ring = 2;
+};
+
+/// Lays rows over `region` running at `angle` (radians), with the row at `origin` a crop row centred
+/// on it, and no water within `rim` steps of the region's edge, so the region's own coast (or wall)
+/// keeps a margin of land and every crop row joins the rim at both ends. With a `plot`, a building
+/// clearing is stamped at the region's most inland point (farthest from its edge), clear of every
+/// water row by its sand ring and a vertex more and at least `rim` from the edge; a region too small
+/// for it gets none. With a `bridgeSpacing`, a sand bridge crosses every water row each that many tiles
+/// along the rows, so workers cross a long farm instead of walking round its rows. With `caps` (on), a
+/// ring of sand just inside the rim closes the crop rows, so their wheat and wood never spread beyond
+/// the rows into the ground round the farm. Keep the plot's and
+/// bridges' sand (`Farm::sand`) out of any beach flood, as a sand road is. Stamps the water and the sand
+/// into `sketch`; lay beaches afterwards as usual.
+/// Half the width, in vertices along the rows, of a bridge's sand line: wide enough that a diagonal line
+/// stays unbroken.
+constexpr double kBridgeHalfWidth = 0.75;
+Farm layFarm(TerrainSketch &sketch, const Torus &, const std::vector<unsigned char> &region,
+			 double angle, ShapePoint origin, int rim, const FarmRows &rows,
+			 const FarmPlot *plot = nullptr, int bridgeSpacing = 0, bool caps = true);
+
+/// Farm fields grown into open ground straight out of the homes they belong to. `homeOf` gives the
+/// designed land's owner where it is a home (0 or more) and -1 elsewhere, and `occupied` marks all the
+/// designed land. Field `s` belongs to home `owners[s]` and starts from the open tile near `seeds[s]`
+/// in the biggest stretch of open ground (searched 16 tiles round the point). Every open tile that
+/// `area` allows is shared out between the fields by growth (growTerritories): by equal area, or, given
+/// every field's `rowAngles`, by equal yield (farmYield), so a field whose rows run on the diagonal gets
+/// more ground than one whose rows run along an axis; then every
+/// field keeps `gap` tiles of water from all designed land but its own home, and from every other
+/// field (separateTerritories). A field may run right up to its own home, so the two are one piece of
+/// land with no coast between. Strips too narrow to survive their beaches and walls and slivers cut off
+/// from the home are dropped, and then every field is joined to its home by a neck `neckHalfWidth` wide
+/// from the home's middle to the field's nearest ground, so the opening is always broad. Returns every tile's field, the seed's index, or -1. A seed with no open ground near
+/// it gets no field, so a caller checks every field's size before using them.
+std::vector<int> growFarmFields(const Torus &, const std::vector<unsigned char> &occupied,
+								const std::vector<int> &homeOf, const std::vector<unsigned char> &area,
+								const std::vector<ShapePoint> &seeds, const std::vector<int> &owners,
+								const std::vector<ShapePoint> &anchors, int gap, double neckHalfWidth,
+								const std::vector<double> &rowAngles = {});
+
+/// How much of a farm a colony can work: the share of the farm's crop-row grass (and the whole of its
+/// plot, if any, or 0 is returned) that a unit from `sources` can walk to once crops are cleared -
+/// water, stone and buildings block, wheat and wood do not. A validator's proof that a farm is joined
+/// to its home.
+double farmReachable(const Map &, const Torus &, const Farm &, const std::vector<int> &sources);
+
+/// Clears any deposit a later layer left on a farm's building plot, so every plot stays buildable. Run
+/// it after the last deposits go down.
+void clearFarmPlots(Map &, const Torus &, const std::vector<Farm> &);
+
+/// Plants a laid farm, once the terrain is written. A farm is a wheat farm: `wheat` tiles go on the
+/// crop rows' pure grass that `eligible` allows, nearest the water first (where it regrows best), and
+/// `wood` tiles make one small woodlot along a single crop row, the one with the most room, nearest its
+/// water. Returns how many tiles were planted.
+template <typename Eligible>
+int plantFarm(Map &map, const Torus &t, const Farm &farm, int wheat, int wood, Eligible eligible);
+} // namespace MapGeneration
+
+#include "Map.h"
+#include "Resources.h"
+#include <algorithm>
+#include <utility>
+template <typename Eligible>
+int MapGeneration::plantFarm(Map &map, const Torus &t, const Farm &farm, int wheat, int wood,
+							 Eligible eligible)
+{
+	const std::vector<int> fromWater = stepsFrom(t, farm.water);
+	std::vector<std::pair<int, int>> crops;
+	std::vector<int> rowRoom;
+	for (int i = 0; i < t.size(); ++i)
+		if (farm.row[i] >= 0 && farm.row[i] % 2 == 0 && fromWater[i] >= 0 && !farm.plot[i] && eligible(i) &&
+			map.isGrass(i % t.w, i / t.w))
+		{
+			crops.push_back({fromWater[i], i});
+			if (farm.row[i] >= int(rowRoom.size()))
+				rowRoom.resize(farm.row[i] + 1, 0);
+			++rowRoom[farm.row[i]];
+		}
+	std::stable_sort(crops.begin(), crops.end());
+	// The woodlot's row: the crop row with the most room, the first on a tie.
+	const int woodRow = rowRoom.empty() ? -1 : int(std::max_element(rowRoom.begin(), rowRoom.end()) - rowRoom.begin());
+	int planted = 0, woods = 0, wheats = 0;
+	for (const auto &entry : crops)
+	{
+		const int i = entry.second;
+		if (woods < wood && farm.row[i] == woodRow)
+		{
+			map.setResource(i % t.w, i / t.w, WOOD, 1);
+			++woods;
+			++planted;
+		}
+	}
+	for (const auto &entry : crops)
+	{
+		const int i = entry.second;
+		if (wheats >= wheat)
+			break;
+		if (map.isResource(i % t.w, i / t.w))
+			continue;
+		map.setResource(i % t.w, i / t.w, CORN, 1);
+		++wheats;
+		++planted;
+	}
+	return planted;
+}

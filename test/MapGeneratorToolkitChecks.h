@@ -23,6 +23,8 @@
 #include "Territories.h"
 #include "Walls.h"
 #include "Homes.h"
+#include "Farmland.h"
+#include "Towers.h"
 #include "Wedge.h"
 #include <algorithm>
 #include <cassert>
@@ -928,7 +930,7 @@ inline void wallChecks()
 			buildable[strip.at(x, y)] = 1;
 		target[strip.at(9, y)] = 1;
 	}
-	assert(towerReach(strip, buildable, target) == 7);
+	assert(towerReach(strip, buildable, target) == 6);
 	std::fill(buildable.begin(), buildable.end(), 0);
 	for (int y = 0; y < strip.h; ++y)
 		buildable[strip.at(2, y)] = 1;
@@ -1371,6 +1373,196 @@ inline void graphMazeChecks()
 	assert(firstRegionLeak(t, reached, labels, [](int, int) { return false; }).tile < 0);
 }
 
+// Farms and towers: bestFarmRows follows the fit; layFarm lays alternating rows clear of the rim and
+// plantFarm fills crop rows with wheat nearest the water and keeps its wood to one row; growFarmFields shares open water equally and parts the
+// fields; separateTerritories opens a gap, fillToNearest closes it and labelBorders walls it but for a door;
+// growLakeBeside keeps to its side; chooseTowerSites covers
+// the other colony, starts towers facing each other empty and gives every colony its count.
+inline void farmAndTowerChecks()
+{
+	const FarmRows straight = bestFarmRows(0), diagonal = bestFarmRows(kPi / 4), turned = bestFarmRows(kPi / 2);
+	assert(straight.crops == 10 && straight.water == 8 && diagonal.crops == 12 && diagonal.water == 9);
+	assert(turned.crops == straight.crops && bestFarmRows(-kPi / 4).crops == diagonal.crops);
+	assert(std::abs(farmYield(0) - 0.1489) < 1e-9 && std::abs(farmYield(kPi / 4) - 0.1126) < 1e-9);
+	assert(std::abs(farmYield(kPi / 8) - 0.1225) < 1e-9 && farmYield(kPi / 2) == farmYield(0));
+	assert(farmYield(0.1) < farmYield(0) && farmYield(0.1) > farmYield(kPi / 16));
+	{
+		// Shared out by worth: a claimant worth half per tile ends with about twice the area.
+		const Torus open(40, 40);
+		const std::vector<unsigned char> all(open.size(), 1);
+		const std::vector<double> worth = {1.0, 0.5};
+		const Territories byWorth =
+			growTerritories(open, all, {{open.at(5, 20)}, {open.at(25, 20)}}, [](int) { return 0; }, &worth);
+		assert(std::abs(byWorth.areas[1] - 2 * byWorth.areas[0]) <= 2);
+	}
+
+	Game game(nullptr);
+	grassMap(game, 6, 6);
+	Map &map = game.map;
+	const Torus t(map);
+	std::vector<unsigned char> region(t.size(), 0);
+	for (int y = 10; y < 54; ++y)
+		for (int x = 10; x < 54; ++x)
+			region[t.at(x, y)] = 1;
+	TerrainSketch sketch(t.size(), GRASS);
+	const Farm farm = layFarm(sketch, t, region, 0, {32, 32}, 4, {6, 4});
+	assert(farm.rows >= 3 && !farm.water[t.at(32, 32)] && farm.row[t.at(32, 32)] % 2 == 0);
+	for (int i = 0; i < t.size(); ++i)
+	{
+		if (!region[i])
+			assert(farm.row[i] == -1 && !farm.water[i]);
+		if (farm.water[i])
+		{
+			assert(farm.row[i] % 2 == 1 && sketch[i] == WATER);
+			const int x = i % t.w, y = i / t.w;
+			assert(x >= 13 && x < 51 && y >= 13 && y < 51);
+		}
+	}
+	assert(farm.water[t.at(32, 36)] && !farm.water[t.at(32, 34)]);
+	{
+		// Bridges: every 8 tiles along the rows from the origin, a line of sand across each water row.
+		TerrainSketch bridged(t.size(), GRASS);
+		const Farm crossed = layFarm(bridged, t, region, 0, {32, 32}, 4, {6, 4}, nullptr, 8);
+		assert(!crossed.water[t.at(32, 36)] && crossed.sand[t.at(32, 36)] && bridged[t.at(32, 36)] == SAND);
+		assert(crossed.sand[t.at(24, 36)] && crossed.water[t.at(33, 36)] && crossed.water[t.at(28, 36)]);
+		assert(!crossed.sand[t.at(32, 32)] && crossed.rows == farm.rows);
+		// A building plot's grass trumps a bridge through it.
+		TerrainSketch plotted(t.size(), GRASS);
+		const FarmPlot clearing;
+		const Farm both = layFarm(plotted, t, region, 0, {32, 32}, 4, {6, 4}, &clearing, 4);
+		assert(both.plotX >= 0);
+		for (int dy = 0; dy <= clearing.height; ++dy)
+			for (int dx = 0; dx <= clearing.width; ++dx)
+			{
+				const int i = t.at(both.plotX + dx, both.plotY + dy);
+				assert(!both.sand[i] && !both.water[i] && plotted[i] == GRASS);
+			}
+	}
+	layBeaches(sketch, t);
+	writeUndermap(map, sketch);
+	const int planted = plantFarm(map, t, farm, 10, 10, [](int) { return true; });
+	assert(planted == 20 && countResource(map, CORN) == 10 && countResource(map, WOOD) == 10);
+	int woodRow = -1;
+	for (int i = 0; i < t.size(); ++i)
+		if (map.getResource(i % t.w, i / t.w).type == WOOD)
+		{
+			assert(woodRow < 0 || farm.row[i] == woodRow);
+			woodRow = farm.row[i];
+		}
+
+	const Torus sea(64, 64);
+	std::vector<unsigned char> land(sea.size(), 0), everywhere(sea.size(), 1);
+	for (int y = 28; y < 36; ++y)
+		for (int x = 0; x < 64; ++x)
+			land[sea.at(x, y)] = 1;
+	// The strip is two homes, colony 0's to the west and colony 1's to the east.
+	std::vector<int> homeOf(sea.size(), -1);
+	for (int i = 0; i < sea.size(); ++i)
+		if (land[i])
+			homeOf[i] = i % sea.w < 32 ? 0 : 1;
+	const std::vector<int> fields = growFarmFields(sea, land, homeOf, everywhere, {{16, 26}, {48, 26}}, {0, 1},
+												   {{16, 32}, {48, 32}}, 4, 2);
+	int sizes[2] = {0, 0};
+	bool touches[2] = {false, false};
+	for (int i = 0; i < sea.size(); ++i)
+		if (fields[i] >= 0 && !land[i])
+		{
+			++sizes[fields[i]];
+			for (const auto &step : kCardinalSteps)
+				touches[fields[i]] = touches[fields[i]] || homeOf[sea.at(i % 64 + step[0], i / 64 + step[1])] == fields[i];
+		}
+	assert(sizes[0] > 400 && std::abs(sizes[0] - sizes[1]) < sizes[0] / 5 && touches[0] && touches[1]);
+	std::vector<unsigned char> first(sea.size(), 0), eastHome(sea.size(), 0);
+	for (int i = 0; i < sea.size(); ++i)
+	{
+		first[i] = fields[i] == 0 && !land[i];
+		eastHome[i] = homeOf[i] == 1;
+	}
+	const std::vector<int> fromFirst = stepsFrom(sea, first), fromEast = stepsFrom(sea, eastHome);
+	for (int i = 0; i < sea.size(); ++i)
+	{
+		if (fields[i] == 1 && !land[i])
+			assert(fromFirst[i] >= 4);
+		if (first[i])
+			assert(fromEast[i] >= 4);
+	}
+
+	std::vector<int> halves(sea.size(), 0);
+	for (int i = 0; i < sea.size(); ++i)
+		halves[i] = i % sea.w < 32 ? 0 : 1;
+	separateTerritories(sea, halves, 4);
+	assert(halves[sea.at(31, 5)] == -1 && halves[sea.at(32, 5)] == -1 && halves[sea.at(29, 5)] == 0);
+
+	// fillToNearest closes the gap again, each tile to its nearer side, and labelBorders with a door
+	// walls the border everywhere but where the door leaves it open.
+	{
+		std::vector<unsigned char> gap(sea.size(), 0);
+		for (int i = 0; i < sea.size(); ++i)
+			gap[i] = halves[i] < 0;
+		std::vector<int> near = halves;
+		assert(fillToNearest(sea, near, gap, 1)[sea.at(30, 5)] && near[sea.at(30, 5)] == 0 && near[sea.at(31, 5)] == -1);
+		const std::vector<unsigned char> filled = fillToNearest(sea, halves, gap, 4);
+		assert(filled[sea.at(31, 5)] && halves[sea.at(31, 5)] == 0 && halves[sea.at(32, 5)] == 1);
+		for (int i = 0; i < sea.size(); ++i)
+			assert(halves[i] >= 0);
+		const auto door = [&](int i, int) { return i / sea.w >= 10 && i / sea.w < 14; };
+		const std::vector<unsigned char> walls = labelBorders(sea, halves, door);
+		assert(walls[sea.at(32, 5)] && !walls[sea.at(31, 5)] && !walls[sea.at(32, 11)]);
+		std::vector<unsigned char> reached(sea.size(), 0);
+		for (int i = 0; i < sea.size(); ++i)
+			reached[i] = !walls[i];
+		assert(firstRegionLeak(sea, reached, halves, [](int, int) { return false; }).tile >= 0);
+		// Through the door the sides meet; with the door's rows shut, nothing leaks, across the wrap too.
+		for (int i = 0; i < sea.size(); ++i)
+			if (i / sea.w >= 9 && i / sea.w < 15)
+				reached[i] = 0;
+		assert(firstRegionLeak(sea, reached, halves, [](int, int) { return false; }).tile < 0);
+	}
+
+	std::vector<unsigned char> lake(sea.size(), 0);
+	std::vector<int> queued(sea.size(), 0), depth(sea.size(), 0), room(sea.size(), 20);
+	const int site = sea.at(32, 32);
+	assert(growLakeBeside(sea, lake, depth, room, 2, 40, site, 0, 1, 6, 20, [](int) { return 0.0; }, queued, 1) == 40);
+	assert(growLakeBeside(sea, lake, depth, room, 2, 40, site, 0, -1, 6, 20, [](int) { return 0.0; }, queued, 2) == 40);
+	for (int i = 0; i < sea.size(); ++i)
+		if (lake[i])
+			assert(std::abs(sea.offsetY(32, i / sea.w)) >= 6);
+
+	std::vector<int> owner(sea.size(), -1);
+	std::vector<unsigned char> buildable(sea.size(), 0), target(sea.size(), 0), keep(sea.size(), 0);
+	for (int y = 0; y < 64; ++y)
+		for (int x = 0; x < 64; ++x)
+		{
+			const int i = sea.at(x, y);
+			if (x >= 4 && x < 28)
+				owner[i] = 0;
+			if (x >= 32 && x < 60)
+				owner[i] = 1;
+			buildable[i] = owner[i] >= 0;
+			target[i] = owner[i] >= 0;
+		}
+	TowerRequest request;
+	request.range = 7;
+	request.towers = 3;
+	request.pads = 2;
+	request.spacing = 4;
+	const TowerPlan plan = chooseTowerSites(sea, owner, buildable, target, keep, 2, request);
+	assert(plan.towers[0].size() == 3 && plan.towers[1].size() == 3 && plan.pads[0].size() == 2);
+	assert(plan.stocked[0].size() == 3 && plan.stocked[1].size() == 3);
+	for (size_t a = 0; a < 3; ++a)
+	{
+		// A tower with the other colony's tower in range starts empty; one without starts stocked.
+		bool facing = false;
+		const int s = plan.towers[0][a];
+		for (int o : plan.towers[1])
+			facing = facing || std::max(std::abs(sea.offsetX(s % 64, o % 64)), std::abs(sea.offsetY(s / 64, o / 64))) - 1 <= request.range;
+		assert(bool(plan.stocked[0][a]) == !facing);
+		assert(s % 64 >= 19); // beside the four-tile gap, the only border within range
+	}
+	const std::vector<unsigned char> footprints = towerFootprints(sea, plan);
+	assert(std::count(footprints.begin(), footprints.end(), 1) == 4 * 10);
+}
+
 inline void toolkitChecks()
 {
 	floodChecks();
@@ -1391,6 +1583,7 @@ inline void toolkitChecks()
 	wallChecks();
 	territoryChecks();
 	arenaChecks();
+	farmAndTowerChecks();
 	subtileRasterChecks();
 	tessellationChecks();
 	graphMazeChecks();

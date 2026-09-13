@@ -1804,6 +1804,8 @@ Tamanho da célula
 Tamanho da sala
 [Corridor width]
 Largura do corredor
+[Spoke width]
+Ledander ar skinoù
 [Loopiness]
 Densidade de ciclos
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1930,6 +1932,56 @@ Ledander ar skourroù
 Ezhomm en deus ar c'houral eus un drevadenn da vihanañ.
 [Coral needs a map at least 128 tiles across.]
 Ezhomm en deus ar c'houral eus ur gartenn 128 karrezenn ledan da vihanañ.
+[Carousel]
+Karrousel
+[Amphitheatre]
+Amfiteatr
+[Switchbacks]
+Troioù-kamm
+[Court size]
+Ment ar porzhioù
+[Court wall]
+Moger ar porzhioù
+[Plaza size]
+Ment ar blasenn
+[Starting tower level]
+Live an tourioù kentañ
+[Towers per colony]
+Tourioù dre drevadenn
+[Rings]
+Kelc'hioù
+[Ramp width]
+Ledander ar pantennoù
+[Pit size]
+Ment ar poull
+[Terrace width]
+Ledander ar bazennoù
+[Border roughness]
+Direizhder an harzoù
+[Bay size]
+Ment ar baeoù
+[Border wall]
+Moger an harzoù
+[Plateau size]
+Ment ar plaen uhel
+[Trail width]
+Ledander an hent
+[Wall between legs]
+Moger etre an troioù
+[Farm building plots]
+Leurioù-savadur er fermoù
+[Carousels need at least two colonies.]
+Ezhomm en deus ar c'harrousel eus div drevadenn da vihanañ.
+[Switchbacks need at least two colonies.]
+Ezhomm o deus an troioù-kamm eus div drevadenn da vihanañ.
+[An amphitheatre needs at least two colonies.]
+Ezhomm en deus an amfiteatr eus div drevadenn da vihanañ.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+N'eo ket mat ar c'harrousel evit ar gartenn-mañ; implijit ur gartenn vrasoc'h, diazezoù bihanoc'h pe nebeutoc'h a drevadennoù.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+N'eo ket mat an troioù-kamm evit ar gartenn-mañ; implijit ur gartenn vrasoc'h, ur plaen uhel bihanoc'h, hentoù strishoc'h pe nebeutoc'h a drevadennoù.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+N'eo ket mat an amfiteatr evit ar gartenn-mañ; implijit ur gartenn vrasoc'h, nebeutoc'h a gelc'hioù, pazennoù strishoc'h pe nebeutoc'h a drevadennoù.
 [Spider web]
 Gwiad-kevnid
 [Spokes per colony]

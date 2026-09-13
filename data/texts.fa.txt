@@ -1806,6 +1806,8 @@ OpenGL در این بیلد موجود نیست.
 اندازهٔ اتاق
 [Corridor width]
 پهنای راهرو
+[Spoke width]
+پهنای پره‌ها
 [Loopiness]
 میزان حلقه‌دار بودن
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1932,6 +1934,56 @@ OpenGL در این بیلد موجود نیست.
 مرجان دست‌کم به یک مستعمره نیاز دارد.
 [Coral needs a map at least 128 tiles across.]
 مرجان به نقشه‌ای با پهنای دست‌کم ۱۲۸ خانه نیاز دارد.
+[Carousel]
+چرخ‌وفلک
+[Amphitheatre]
+آمفی‌تئاتر
+[Switchbacks]
+پیچ‌وتاب‌ها
+[Court size]
+اندازه حیاط‌ها
+[Court wall]
+دیوار حیاط‌ها
+[Plaza size]
+اندازه میدان
+[Starting tower level]
+سطح برج‌های آغازین
+[Towers per colony]
+برج برای هر مستعمره
+[Rings]
+حلقه‌ها
+[Ramp width]
+پهنای سطح‌های شیب‌دار
+[Pit size]
+اندازه گودال
+[Terrace width]
+پهنای سکوها
+[Border roughness]
+ناهمواری مرزها
+[Bay size]
+اندازه خلیج‌ها
+[Border wall]
+دیوار مرزی
+[Plateau size]
+اندازه فلات
+[Trail width]
+پهنای کوره‌راه
+[Wall between legs]
+دیوار میان پیچ‌ها
+[Farm building plots]
+قطعه‌های ساخت در مزرعه‌ها
+[Carousels need at least two colonies.]
+چرخ‌وفلک دست‌کم به دو مستعمره نیاز دارد.
+[Switchbacks need at least two colonies.]
+پیچ‌وتاب‌ها دست‌کم به دو مستعمره نیاز دارند.
+[An amphitheatre needs at least two colonies.]
+آمفی‌تئاتر دست‌کم به دو مستعمره نیاز دارد.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+چرخ‌وفلک در این نقشه جا نمی‌شود؛ از نقشهٔ بزرگ‌تر، پایگاه‌های کوچک‌تر یا مستعمره‌های کمتر استفاده کنید.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+پیچ‌وتاب‌ها در این نقشه جا نمی‌شوند؛ از نقشهٔ بزرگ‌تر، فلات کوچک‌تر، کوره‌راه‌های باریک‌تر یا مستعمره‌های کمتر استفاده کنید.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+آمفی‌تئاتر در این نقشه جا نمی‌شود؛ از نقشهٔ بزرگ‌تر، حلقه‌های کمتر، سکوهای باریک‌تر یا مستعمره‌های کمتر استفاده کنید.
 [Spider web]
 تار عنکبوت
 [Spokes per colony]

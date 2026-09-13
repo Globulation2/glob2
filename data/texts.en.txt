@@ -1922,6 +1922,60 @@ Branch width
 Coral needs at least one colony.
 [Coral needs a map at least 128 tiles across.]
 Coral needs a map at least 128 tiles across.
+[Carousel]
+Carousel
+[Amphitheatre]
+Amphitheatre
+[Switchbacks]
+Switchbacks
+[Corridor width]
+Corridor width
+[Spoke width]
+Spoke width
+[Court size]
+Court size
+[Court wall]
+Court wall
+[Plaza size]
+Plaza size
+[Starting tower level]
+Starting tower level
+[Towers per colony]
+Towers per colony
+[Rings]
+Rings
+[Ramp width]
+Ramp width
+[Pit size]
+Pit size
+[Terrace width]
+Terrace width
+[Border roughness]
+Border roughness
+[Bay size]
+Bay size
+[Border wall]
+Border wall
+[Plateau size]
+Plateau size
+[Trail width]
+Trail width
+[Wall between legs]
+Wall between legs
+[Farm building plots]
+Farm building plots
+[Carousels need at least two colonies.]
+Carousels need at least two colonies.
+[Switchbacks need at least two colonies.]
+Switchbacks need at least two colonies.
+[An amphitheatre needs at least two colonies.]
+An amphitheatre needs at least two colonies.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.
 [Spider webs need at least one colony.]
 Spider webs need at least one colony.
 [Spiral]

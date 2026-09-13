@@ -195,6 +195,9 @@ map/generator/generators/ShatteredCoastGenerator.cpp
 map/generator/generators/StoneHighlandsGenerator.cpp
 map/generator/generators/SpiderWebGenerator.cpp
 map/generator/generators/CoralGenerator.cpp
+map/generator/generators/AmphitheatreGenerator.cpp
+map/generator/generators/CarouselGenerator.cpp
+map/generator/generators/SwitchbacksGenerator.cpp
 map/generator/generators/SwampGenerator.cpp
 map/generator/generators/SymmetricArenaGenerator.cpp
 map/generator/generators/TidalFlatsGenerator.cpp
@@ -208,6 +211,8 @@ map/generator/shared/Drawing.cpp
 map/generator/shared/Geometry.cpp
 map/generator/shared/Grid.cpp
 map/generator/shared/Walls.cpp
+map/generator/shared/Farmland.cpp
+map/generator/shared/Towers.cpp
 map/generator/shared/Tessellation.cpp
 map/generator/shared/GraphMaze.cpp
 map/generator/shared/LatticeNoise.cpp

@@ -67,7 +67,7 @@ inline MapGeneratorPoint pondHomeAnchor(ShapePoint centre, double axis, double r
 }
 
 /// A pond home's starter kit: wheat and wood either side of its first pond on the swarm's side, where
-/// they regrow, and a stone clump out behind the pond.
+/// they regrow. No stone: a pond home is walled in stone already, so a clump would only take room.
 template <typename Eligible>
 void plantPondHomeKit(Map &map, const Torus &t, GenerationContext &context, ShapePoint firstPond,
 					  double axis, double pondRadius, int wheat, int wood, Eligible eligible)
@@ -75,7 +75,7 @@ void plantPondHomeKit(Map &map, const Torus &t, GenerationContext &context, Shap
 	const KitFrame frame{int(std::lround(firstPond.x)), int(std::lround(firstPond.y)), axis};
 	const double reach = pondRadius * 1.2 + 3;
 	const Kit kit{frame.at(-0.4 * reach, -reach, 12), frame.at(-0.4 * reach, reach, 12),
-				  frame.at(reach + 3, 0, 10), wheat, wood, 2};
+				  frame.at(reach + 3, 0, 10), wheat, wood, -1};
 	plantKit(map, t, context, kit, eligible);
 }
 

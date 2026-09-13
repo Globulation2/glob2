@@ -1806,6 +1806,8 @@ Grandeco de ĉelo
 Grandeco de ĉambro
 [Corridor width]
 Larĝo de koridoro
+[Spoke width]
+Larĝo de la radioj
 [Loopiness]
 Bukleco
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1932,6 +1934,56 @@ Larĝo de branĉoj
 Koralo bezonas almenaŭ unu kolonion.
 [Coral needs a map at least 128 tiles across.]
 Koralo bezonas mapon almenaŭ 128 kahelojn larĝan.
+[Carousel]
+Karuselo
+[Amphitheatre]
+Amfiteatro
+[Switchbacks]
+Serpentenoj
+[Court size]
+Grando de kortoj
+[Court wall]
+Muro de kortoj
+[Plaza size]
+Grando de la placo
+[Starting tower level]
+Nivelo de la komencaj turoj
+[Towers per colony]
+Turoj po kolonio
+[Rings]
+Ringoj
+[Ramp width]
+Larĝo de deklivirejoj
+[Pit size]
+Grando de la areno
+[Terrace width]
+Larĝo de terasoj
+[Border roughness]
+Malglateco de limoj
+[Bay size]
+Grando de golfetoj
+[Border wall]
+Lima muro
+[Plateau size]
+Grando de la altebenaĵo
+[Trail width]
+Larĝo de la pado
+[Wall between legs]
+Muro inter kurboj
+[Farm building plots]
+Konstruejoj en la bienoj
+[Carousels need at least two colonies.]
+Karuselo bezonas almenaŭ du koloniojn.
+[Switchbacks need at least two colonies.]
+Serpentenoj bezonas almenaŭ du koloniojn.
+[An amphitheatre needs at least two colonies.]
+Amfiteatro bezonas almenaŭ du koloniojn.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+La karuselo ne konvenas al ĉi tiu mapo; uzu pli grandan mapon, pli malgrandajn hejmojn aŭ malpli da kolonioj.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+La serpentenoj ne konvenas al ĉi tiu mapo; uzu pli grandan mapon, pli malgrandan altebenaĵon, pli mallarĝajn padojn aŭ malpli da kolonioj.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+La amfiteatro ne konvenas al ĉi tiu mapo; uzu pli grandan mapon, malpli da ringoj, pli mallarĝajn terasojn aŭ malpli da kolonioj.
 [Spider web]
 Araneaĵo
 [Spokes per colony]

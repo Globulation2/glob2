@@ -1816,6 +1816,8 @@ Veľkosť bunky
 Veľkosť miestnosti
 [Corridor width]
 Šírka chodby
+[Spoke width]
+Šírka lúčov
 [Loopiness]
 Hustota slučiek
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1942,6 +1944,56 @@ Vetvenie
 Koral potrebuje aspoň jednu kolóniu.
 [Coral needs a map at least 128 tiles across.]
 Koral potrebuje mapu širokú aspoň 128 polí.
+[Carousel]
+Kolotoč
+[Amphitheatre]
+Amfiteáter
+[Switchbacks]
+Serpentíny
+[Court size]
+Veľkosť nádvorí
+[Court wall]
+Múr nádvorí
+[Plaza size]
+Veľkosť námestia
+[Starting tower level]
+Úroveň počiatočných veží
+[Towers per colony]
+Veže na kolóniu
+[Rings]
+Prstence
+[Ramp width]
+Šírka rámp
+[Pit size]
+Veľkosť jamy
+[Terrace width]
+Šírka terás
+[Border roughness]
+Členitosť hraníc
+[Bay size]
+Veľkosť zálivov
+[Border wall]
+Hraničný múr
+[Plateau size]
+Veľkosť náhornej plošiny
+[Trail width]
+Šírka chodníka
+[Wall between legs]
+Múr medzi serpentínami
+[Farm building plots]
+Stavebné pozemky na farmách
+[Carousels need at least two colonies.]
+Kolotoč potrebuje aspoň dve kolónie.
+[Switchbacks need at least two colonies.]
+Serpentíny potrebujú aspoň dve kolónie.
+[An amphitheatre needs at least two colonies.]
+Amfiteáter potrebuje aspoň dve kolónie.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Kolotoč sa na túto mapu nezmestí; použite väčšiu mapu, menšie domovy alebo menej kolónií.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Serpentíny sa na túto mapu nezmestia; použite väčšiu mapu, menšiu náhornú plošinu, užšie chodníky alebo menej kolónií.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Amfiteáter sa na túto mapu nezmestí; použite väčšiu mapu, menej prstencov, užšie terasy alebo menej kolónií.
 [Spider web]
 Pavučina
 [Spokes per colony]

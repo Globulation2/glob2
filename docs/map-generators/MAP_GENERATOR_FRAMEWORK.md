@@ -27,15 +27,17 @@ and Terrain take a `Game` because placing buildings and units needs its mutation
 | `Sketch` | `TerrainSketch`, the undermap designed in memory; `layBeaches`, the order-independent beach pass; `raiseIslands`; `sprinkleSand`, decorative sand patches on inland grass following a caller's noise, kept a strip of grass away from every beach; `writeUndermap`; `growWater`, one body of water grown to an exact tile count by a caller's key (Stone highlands' ponds, Amphitheatre's bays); `keepRoadInland` and `roadTiles`, a sand road kept off every beach and the tiles its vertices spoil |
 | `LatticeNoise` | `PeriodicNoise`, value noise that tiles the torus exactly and samples anywhere, with `periodicNoise`/`fractalNoise` (integer fields per tile, octaves) and `torusNoise` (four octaves in [-1, 1]) sampled from it, plus `percentile` |
 | `HeightMap`, `Noise` | Perlin noise faded across the wrap, and the stamped height fields the height-field generators shape |
-| `Planting` | The deposits a generator places by hand: `clearGround`, `growPatch`, `seedNear`, `plantKit` (a home's wheat, wood and stone from three seeds), `KitFrame` (a home's origin and facing, so one kit design lands the same way round every home), `swarmSurroundings`, `clearAroundSwarms`, `seedAlgae` (any water or a shallows band; optionally only its best-growing share, shared out equally between the colonies' wedges), `algaeGrowthChance` (each water tile's chance of passing the engine's algae growth test, which needs water within 15 tiles and solid sand within 30 at a reflected offset), `stockIslands`, `plantFields` (the preferred tiles dealt into wheat and wood patches by an unrelated split key), `scatterClumps` (clumps dropped on random eligible tiles of a region), `plantRound` and `plantOrchard` (a clump, or groves of the three fruits, at the same point round a circle at every colony's angle); `seedAlgae` can also share its clumps between labelled groups of water such as private bays |
+| `Planting` | The deposits a generator places by hand: `clearGround`, `growPatch`, `seedNear`, `plantKit` (a home's wheat, wood and stone from three seeds, or no stone for a home already walled in it), `KitFrame` (a home's origin and facing, so one kit design lands the same way round every home), `swarmSurroundings`, `clearAroundSwarms`, `seedAlgae` (any water or a shallows band; optionally only its best-growing share, shared out equally between the colonies' wedges), `algaeGrowthChance` (each water tile's chance of passing the engine's algae growth test, which needs water within 15 tiles and solid sand within 30 at a reflected offset), `stockIslands`, `plantFields` (the preferred tiles dealt into wheat and wood patches by an unrelated split key), `scatterClumps` (clumps dropped on random eligible tiles of a region), `plantRound` and `plantOrchard` (a clump, or groves of the three fruits, at the same point round a circle at every colony's angle); `seedAlgae` can also share its clumps between labelled groups of water such as private bays |
 | `Resources` | The ambient layer and its fairness guards: `scaledCount`/`scaledShare`, `placeResourceClump`, `setScaledResource`, `scatterResources`, `guaranteeStartingResources`, `openCrampedStarts` |
 | `Roads` | `cheapestRoute` and `openRoad`: the walk that crosses the fewest deposits, with only those cleared; `cheapestWalk`, the same search by any step cost (Everglades' fords, Symmetric arena's causeway routes) |
 | `Settlements` | `placeSettlement`: whole-footprint home mask, nearest legal anchor, exact worker count, per-colony diagnostics; `placeTower`, a completed, stocked defence tower of a chosen level at the allowed footprint nearest a designed point |
-| `Walls` | Walls a design builds and the checks that prove they hold: `seaVertices` and `seaMargin` (the land a swimmer can stand on), `sealCoasts` (stone on every grass tile touching that margin, so a coast is sealed; City states, Carousel, Switchbacks), `labelBorders` (a wall between labelled regions no unit can cross even diagonally, one to three tiles thick; Stone highlands' ridges, Amphitheatre's borders), `designedStone` (a designed band's stone and any gaps the beach pass left), `reachesWithShut`, `pieceLeak` and `seaEntry` (with the doors shut, does any part reach another, or the sea reach inside), `towerReach` (how close a tower on some ground comes to shooting at a target: towers scan square rings with no line of sight), `walkSpread` (every colony's walk to its own target, and how uneven they are) and `firstRegionLeak` (reachable ground where two labelled regions meet that a design says must not; Maze's walls) |
+| `Walls` | Walls a design builds and the checks that prove they hold: `seaVertices` and `seaMargin` (the land a swimmer can stand on), `sealCoasts` (stone on every grass tile touching that margin, so a coast is sealed; City states, Carousel, Switchbacks), `labelBorders` (a wall between labelled regions no unit can cross even diagonally, one to three tiles thick, or with doors a design leaves open; Stone highlands' ridges, Amphitheatre's borders, Carousel's walls), `designedStone` (a designed band's stone and any gaps the beach pass left), `reachesWithShut`, `pieceLeak` and `seaEntry` (with the doors shut, does any part reach another, or the sea reach inside), `towerReach` (how close a tower on some ground comes to shooting at a target: towers scan square rings with no line of sight), `walkSpread` (every colony's walk to its own target, and how uneven they are) and `firstRegionLeak` (reachable ground where two labelled regions meet that a design says must not; Maze's walls) |
 | `Tessellation` | Polygon tilings of the torus with no terrain attached: `squareTessellation` and `hexTessellation` (cells, the corners they share and edges as identities, exact across the wrap even two cells wide), `edgeEnds`, `centreAcross`, `outline`, `transform` (the lattice's translations and mirrors), `labelTiles` (every tile's cell), `shortestEdgeSteps` and `centreClearance`; `warpLimit` and `warpCorners`, corners moved at random into irregular polygons that still tile, never closing the gap between walls that share no corner below a minimum (Maze) |
 | `GraphMaze` | A maze carved through a tessellation's cell graph: `pocketsFit` and `spreadPockets` (cul-de-sac cells spread as far apart as still leaves a maze), `carveSpanningTree` (recursive backtracker), `openPocketDoors`, `openLoops`, `deadEnds` (Maze) |
-| `Territories` | Ground shared out where wedges cannot be fair (a square map's corners, the wrap, odd colony counts): `growTerritories`, equal-area regions grown together from seed tiles, the smallest always taking the next cheapest tile, connected and deterministic; `smoothLabels`, a majority filter that trims spurs off borders; `strandedGround`, land a flood cannot reach; `growFarLake`, a lake of an exact size at the roomy far end of a region; `siteAtDepth`, the roomiest site a given number of steps from a region's way in |
-| `Homes` | Homes built alike: `stampPondHome`, `pondHomeAnchor` and `plantPondHomeKit` (a round home island facing out from the middle, its swarm towards its door, one or two ponds kept clear of the coast, and a kit round the first pond; Carousel, Switchbacks), and `furnishGround` (farmland in patches on a ground's fertile tiles, outcrops and groves; City states, Carousel, Switchbacks, Amphitheatre) |
+| `Territories` | Ground shared out where wedges cannot be fair (a square map's corners, the wrap, odd colony counts): `growTerritories`, equal-area regions grown together from seed tiles, the smallest always taking the next cheapest tile, connected and deterministic, or shared by value when each claimant's ground has a worth per tile; `smoothLabels`, a majority filter over any radius that trims spurs or, at a radius of 3 or 4, straightens borders into curves; `separateTerritories`, a gap opened between neighbouring territories; `fillToNearest`, the reverse: unclaimed ground near labelled regions given to the nearest, so water between pieces becomes land; `strandedGround`, land a flood cannot reach; `growFarLake`, a lake of an exact size at the roomy far end of a region; `growLakeBeside`, one on either flank of a site, kept wholly to its side of the line from the way in; `siteAtDepth`, the roomiest site a given number of steps from a region's way in |
+| `Farmland` | Farms laid like real ones, in long rows of crops with water between: `bestFarmRows`, the crop and water widths that yield most for rows at an angle (10 and 8 tiles along an axis, 12 and 9 on the diagonal, a rough line through the exact regrowth sums `tools/farm_row_fit.py` computes); `farmYield`, the yield per tile at that angle from the same fit (0.149 along an axis, 0.113 on the diagonal); `layFarm`, rows over a region with a rim of land kept round them and, optionally, a 10x4 building plot of grass ringed with sand at its most inland point and sand bridges across the water rows every so many tiles along them, so workers need not walk round a long row (a plot's grass always wins over a bridge), and a ring of sand closing the crop rows so wheat and wood never spread out of the farm; `plantFarm`, wheat along the water on every crop row and a small woodlot along one; `clearFarmPlots`; `farmReachable`, the share of a farm's crop land a colony can walk to; `growFarmFields`, farm fields grown into open water straight out of their own homes by equal yield for their row angles, held off all other land and each other, opened so no strip too narrow for its beaches survives, and joined to their homes by a broad neck. Walls round a farm are the map's business, not the farm's |
+| `Towers` | Tower sites chosen for the ground they cover over the walls, other colonies' (offence) or their own (defence), each weighted: `chooseTowerSites` (best first, a colony at a time in turn, no stocked tower in range of another colony's tower or swarm, plus open 2x2 pads for players to build more), `raiseTowers`, `towerFootprints`, `evenTowerPlan` (every colony trimmed to the fewest sites any got) and `roomyGround` (no tower on a strip it could close); a tower in range of another colony's tower starts empty; a request can require every site to stand directly against a wall, as all three arena maps do |
+| `Homes` | Homes built alike: `stampPondHome`, `pondHomeAnchor` and `plantPondHomeKit` (a round home island facing out from the middle, its swarm towards its door, any ponds (none, where farms are the water) kept clear of the coast, and a wheat and wood kit round the first pond, with no stone since the home is walled in stone; Carousel, Switchbacks), and `furnishGround` (farmland in patches on a ground's fertile tiles, outcrops and groves; City states, Carousel, Switchbacks, Amphitheatre) |
 | `BalancedStarts` | `chooseBalancedStarts`: boot tiles whose walks to wheat and wood are as nearly equal as the finished map allows |
 | `Pipeline` | The stages round the others: `settleColonies`, `secureStartingCrops` (clear round the swarms, guarantee the crops, clear again), `reopenCrampedStarts`, `designMismatch` and `walkFromFirstColony` for validators, `ResourceAmounts` |
 | `Terrain` | The height-field pipeline as stages: `heightFieldTiling`, `classifyHeightField`, `paintHeightFieldTerrain`, `paintHeightFieldResources`, `chooseHeightFieldStarts`, `plantHeightFieldGroves`, composed by `generateHeightField` |
@@ -50,8 +52,8 @@ against the finished terrain.
 
 ## The designed generator
 
-Eleven generators (Maze, Fjord continent, Watershed, Stone highlands, Symmetric arena, Ring world,
-City states, Tidal flats, Everglades, Spider web, Coral) follow one shape, and the six newest of them
+Fourteen generators (Maze, Fjord continent, Watershed, Stone highlands, Symmetric arena, Ring world,
+City states, Tidal flats, Everglades, Spider web, Coral, Carousel, Amphitheatre, Switchbacks) follow one shape, and the nine newest of them
 are little more than a sequence of shared stages:
 
 1. `design(request, context)` computes the whole layout from the request and the context's
@@ -96,6 +98,9 @@ reused after a generator is retired.
 | `everglades` | 19 | Everglades | Its own — see below |
 | `spider-web` | 20 | Spider web | Its own — see below |
 | `coral` | 21 | Coral | Its own — see below |
+| `carousel` | 22 | Carousel | Its own — see below |
+| `amphitheatre` | 23 | Amphitheatre | Its own — see below |
+| `switchbacks` | 24 | Switchbacks | Its own — see below |
 | `rugged-archipelago` | 8 | Old islands | Island growth + beach passes, own resource search |
 | `concrete-islands` | 5 | Concrete islands | Point dispersion; islands linked by channels |
 | `crater-lakes` | 4 | Crater lakes | Height-field noise; round lakes in otherwise connected land |
@@ -144,6 +149,9 @@ ambient layer but still leaves every colony a start. Maze keeps its explicit den
 | Everglades | The swamp's standing wood and wheat, its outcrops and groves, and the pools' algae; every home's kit is unscaled | None |
 | Spider web | The threads' standing wheat and wood, the share of knots carrying stone, whether the dew drops and the hub carry fruit and stone, and the shallows' algae; every pad's kit is unscaled | Spiral (on): off, the capture threads are closed rings; Sand roads (on): off, the threads are grass from shore to shore |
 | Coral | The branches' standing wheat and wood, the share of forks carrying stone, the tips' fruit groves and the shallows' algae; every pad's kit is unscaled | Sand roads (on): off, the branches are grass from shore to shore |
+| Carousel | Every home's ambient fields, the farms' wheat and woodlots, the courts' and the plaza orchard's fruit, and the algae; every home's kit, the walls' stone and the starting towers are unscaled | Sand roads (on): off, the corridors and spokes are grass from wall to wall |
+| Amphitheatre | Every territory's ambient fields and grove, the arena's groves and terrace outcrops, and the bays' algae; every home's kit, the walls' stone and the starting towers are unscaled | None |
+| Switchbacks | Every home's ambient fields and grove, the farms' wheat and woodlots, the plateau's orchard, and the algae; every home's kit, the mountains' stone and the starting towers are unscaled | Sand roads (on): off, the trails are grass from wall to wall |
 
 `scaledCount` and `scaledShare` (`shared/Resources.h`) apply a percentage to a count or a share and
 return it unchanged at 100. `setScaledResource` scales one `Map::setResource` square to a share of
@@ -758,6 +766,133 @@ further it is from home.
 - **Rectangular maps.** The fan is designed in a circle on the map's shorter side and placed on the
   map by `Stretch`, so on a rectangular map it fills the map as an ellipse; widths stay in tiles.
   Square maps are unchanged.
+
+## Carousel
+
+A ring of walled homes in the sea, each with one door that leads clockwise. A colony's corridor
+sweeps round the ring to a court pressed against the next colony's home, and a spoke runs from every
+court in to the plaza. Court and home are parted by a thin wall of stone that no unit can cross but a
+tower shoots over, so every colony besieges one neighbour from its court while the other besieges it.
+Every home also reaches two walled wheat farms, one in towards the plaza and one out beyond the ring.
+The pieces are parted by single lines of stone with no water beside them, so a siege tower stands
+right against the wall it shoots across.
+
+- **Geometry.** Designed once in the wedge's frame and turned for every colony; round on a
+  rectangular map. The ring's outer coast is `kRingShare` of the half side (a little more on maps
+  under 512), leaving a band of sea round it for the outer farms. A home is `kHomeShare` of the half
+  side but never wider than a fifth of the ring's arc per colony. The court sits on the homes' ring
+  where its edge is `court-wall` tiles from the next home's rough outline, found by solving for the
+  chord; the corridor is an `arcPath` from the home's axis to the court, and the spoke, `spoke-width`
+  tiles wide (default 3, as the corridors' `corridor-width` is, so every lane is a tight laneway and the court at the elbow a small circle, `court-size` 30, about 3 tiles in radius), leans back from the court to the middle
+  of the wedge so it clears the next home.
+- **Farms.** `growFarmFields` shares the sea inside the ring (each cell between a home, its corridor
+  and two spokes) and the sea outside it between the colonies' homes by equal yield for each colony's
+  row angle, so a colony whose rows fall on the diagonal gets more ground. Each farm grows straight
+  out of its home with no coast between, keeps three tiles from all other land (filled in later and walled), and is joined
+  by a broad neck. With `farm-plots` (on), every farm has a 10x4 grass plot ringed with sand in its
+  middle for a swarm or an inn. Once the gaps round it have filled in and
+  its walls stand, `layFarm` lays rows along the colony's axis at `bestFarmRows` widths over the whole
+  field, right up to its walls with three tiles of land kept round the water (six against open sea), with a sand bridge across the water rows every 16 tiles, and `plantFarm` plants wheat along the
+  water with one small woodlot. A set of farms (inner or outer) is laid only where every colony's
+  field has room.
+- **Walls.** No water lies between the pieces. Once the farms are grown, the sea within
+  `kFillReach` (24) tiles of a home or farm fills in from the nearest one (`fillToNearest`), so the
+  lanes, courts and plaza keep exactly the width they were drawn; any sea left keeps a
+  `kSeaMargin` (3) strip of the nearest piece before its sealed coast. A one-tile line of stone then stands wherever two colonies' sides meet
+  (`labelBorders` with doors): a home with its farms is one side, a court with its lanes another,
+  and the plaza a third. The walls stand on the home's or farm's side, so no wall narrows a lane. Two borders stay open: a home's door onto its own corridor, and every spoke's way into the
+  plaza. The wall between a court and the next home is the land no more than `court-wall` tiles
+  (default 2) from both (`designedStone`). Whatever sea is left beyond the outermost pieces has its
+  coast sealed (`sealCoasts`), so nothing landing from the sea gets in; the farms' water rows are
+  inland water, not sea. Sand roads run down the corridors, through the courts, down the spokes and across the plaza to its pond, so the way in never overgrows; they stay
+  `kRoadSeaGap` from water (`keepRoadInland`) and never touch a wall tile.
+- **Homes.** `stampPondHome` with no ponds, since its farms are its water; the swarm stands towards the corridor; wheat and
+  wood kits beside the swarm, with no stone clump since the walls are stone already; ambient fields by `furnishGround` with `WedgeField` noise. Nothing is planted
+  within six steps of a corridor or spoke, or on a tower pad.
+- **Prizes.** One grove of one fruit per court; on the plaza only fruit, so nothing overgrows it: an
+  orchard of the three fruits between every two spokes' arrivals (`plantOrchard`).
+- **Starting towers.** `starting-towers` (0 none, otherwise the level plus one; default 2, level 1)
+  and `tower-count` (0 to 12, default 3): the siege line. The towers and three open pads per colony stand in its own home, packed within six
+  tiles of the thin wall it shares with the previous colony's court, chosen for how much of that
+  colony's elbow - its court and its lanes within twelve tiles - they cover across the wall
+  (`chooseTowerSites` counting other colonies' elbows only). Every colony shells one neighbour's way
+  out while the other neighbour shells its own. Every site stands directly against stone (`TowerRequest::against`). At level 0, every site is an open pad.
+- **Checked, not assumed.** `validateWorld` rebuilds the design and requires every designed stone,
+  every colony reachable, 95% of every farm's crop land and all of its plot a walk from its colony
+  (`farmReachable`), no land reachable from the sea (`seaEntry`), every home with its farms,
+  every court and the plaza apart with the corridors and spokes shut (`pieceLeak`), a level-1 tower
+  in every court within range of the next home (`towerReach`), and even walks to the plaza
+  (`walkSpread`).
+
+## Amphitheatre
+
+A sunken arena in the middle of the map, ringed by walled terraces, and all round it a walled
+territory for every colony with two inland seas beside its home. The outermost wall's ramps face the
+colonies, the next wall's stand between neighbours, and so on down to the pit, so every step inward
+is a meeting at a known place.
+
+- **Arena.** `rings` walls `terrace-width` apart round a pit of `pit-size`, drawn with
+  `ringWithGates`; ramps `ramp-width` wide alternate between each colony's axis and the middle of
+  its wedge.
+- **Territories.** The ground outside the outer wall is shared out by `growTerritories` from every
+  colony's frontage (its wedge's arc just outside the wall), with `territory-roughness` noise in the
+  cost, then smoothed by four passes of `smoothLabels` over a radius of four, so every border runs in
+  a clean curve. This handles a square map's corners, the wrap and odd colony counts, which wedges
+  cannot. Borders become stone (`labelBorders`, `border-wall` thick), and any unclaimed tile becomes
+  stone. The areas come out within a few percent of each other.
+- **Homes.** Every swarm stands the same number of steps from its ramp (`siteAtDepth`), four tenths
+  of the way to the shallowest territory's far end; the wheat and wood kit (no stone clump: the territory is walled in stone) faces the nearest sea;
+  ambient fields by
+  `furnishGround`.
+- **Inland seas.** `bay-size` percent of the smallest territory, split into two seas, one either side
+  of the home (`growLakeBeside`), each wholly on its side of the line from the ramp through the home
+  and ten tiles clear of it, seven from any wall. Where any territory lacks the room, every territory
+  gets one sea of the full size at its far end instead (`growFarLake`). Every colony's seas are the
+  same size; land a sea closes off becomes stone (`strandedGround`). There is no sea shared between
+  territories.
+- **Prizes.** Orchards of the three fruits in the pit and on the innermost terrace, and an outcrop on
+  every terrace, the same at every colony's angle.
+- **Starting towers.** `tower-count` towers (default 3, at `starting-towers` level) and three open
+  pads per colony in its territory, each directly against stone, away from its ramp, covering the most of its neighbours' territories over the border walls (`chooseTowerSites`).
+- **Checked, not assumed.** Every designed stone present, every ramp walkable, territories within
+  `kAreaTolerance` percent, every colony's seas the same size, no territory reaching another or the
+  arena with the outer ramps shut, and even walks to the ramps and to the pit.
+
+## Switchbacks
+
+A plateau in the middle of the sea and a ring of homes on the rim, each joined to the plateau by a
+mountain of stone with one zigzag trail through it. Walking the trail takes several times the
+straight-line distance, but the walls between legs are a few tiles thick, so towers at either end
+cover the nearest legs. Every home reaches a walled wheat farm on either flank.
+
+- **Geometry.** Designed in every colony's `AxisFrame` and turned round the centre; round on a
+  rectangular map. Homes stand on the rim; the mountain fills the ground between the plateau and the
+  home with as many legs as fit (`layLegs`): every wall, between legs and at both ends, exactly
+  `leg-wall` thick (default 2), and the trails widened to use up the rest, so the stone stays thin.
+  On a crowded ring the plateau grows until the mountains fit round it; a smaller map narrows the
+  trail and walls with the square root of its size.
+- **Trail.** `zigzagPath` gives the trail and each leg's straight run; everything else in the
+  mountain is stone. A sand road runs down the trail's middle.
+- **Farms.** On maps at least 200 tiles across their shorter side (a 128-tile side has no room
+  between the mountains), two fields per colony, growing out of either flank of the home, share all the open sea
+  between the colonies by equal yield for their row angles (`growFarmFields`), joined to the home with
+  no coast between, with a 10x4 building plot each under `farm-plots` (on); rows run across the axis at
+  `bestFarmRows` widths (`layFarm`) with a sand bridge across the water every 16 tiles, wheat with one woodlot (`plantFarm`). Neighbouring colonies'
+  farms meet across three tiles of water and two sealed coasts, within a range-7 tower's reach.
+- **Walls.** Every coast sealed, farms included; mountains keep water between each other beyond
+  their innermost legs.
+- **Homes and plateau.** Pond homes as in Carousel, with two ponds only on maps too small for farms; the plateau has a pond and only fruit, an
+  orchard of the three fruits between every two summits, so nothing overgrows it.
+- **Starting towers.** `tower-count` towers (default 3) and four open pads per colony, all on its trail beside the
+  walkway down its middle, each against the inner side of a wall - the side towards the middle of the
+  map - so it shoots across the stone at the next leg up, where attackers coming down from the plateau
+  pass (`chooseTowerSites` counting the colony's own trail). A trail too narrow for a tower beside its
+  walkway gets fewer, the same for every colony (`evenTowerPlan`), and no site may close a trail
+  (`dropBlockingSites`).
+- **Checked, not assumed.** Every designed stone present, every farm walkable from its colony
+  (`farmReachable`), no land reachable from the sea, homes and their farms and the plateau apart with the trails shut and with only the middle legs shut (so no
+  leg can be skipped), a level-1 tower at home reaching the first leg and one on the plateau reaching
+  the last, and even walks to the plateau.
 
 ## Compatibility notes
 

@@ -1808,6 +1808,8 @@ Mărimea celulei
 Mărimea camerei
 [Corridor width]
 Lățimea coridorului
+[Spoke width]
+Lățimea spițelor
 [Loopiness]
 Densitatea buclelor
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1934,6 +1936,56 @@ Lățimea ramurilor
 Coralul are nevoie de cel puțin o colonie.
 [Coral needs a map at least 128 tiles across.]
 Coralul are nevoie de o hartă lată de cel puțin 128 de pătrate.
+[Carousel]
+Carusel
+[Amphitheatre]
+Amfiteatru
+[Switchbacks]
+Serpentine
+[Court size]
+Mărimea curților
+[Court wall]
+Zidul curților
+[Plaza size]
+Mărimea pieței
+[Starting tower level]
+Nivelul turnurilor de start
+[Towers per colony]
+Turnuri per colonie
+[Rings]
+Inele
+[Ramp width]
+Lățimea rampelor
+[Pit size]
+Mărimea arenei
+[Terrace width]
+Lățimea teraselor
+[Border roughness]
+Neregularitatea granițelor
+[Bay size]
+Mărimea golfurilor
+[Border wall]
+Zid de graniță
+[Plateau size]
+Mărimea platoului
+[Trail width]
+Lățimea potecii
+[Wall between legs]
+Zid între serpentine
+[Farm building plots]
+Loturi de construcție în ferme
+[Carousels need at least two colonies.]
+Caruselul are nevoie de cel puțin două colonii.
+[Switchbacks need at least two colonies.]
+Serpentinele au nevoie de cel puțin două colonii.
+[An amphitheatre needs at least two colonies.]
+Amfiteatrul are nevoie de cel puțin două colonii.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Caruselul nu încape pe această hartă; folosește o hartă mai mare, baze mai mici sau mai puține colonii.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Serpentinele nu încap pe această hartă; folosește o hartă mai mare, un platou mai mic, poteci mai înguste sau mai puține colonii.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Amfiteatrul nu încape pe această hartă; folosește o hartă mai mare, mai puține inele, terase mai înguste sau mai puține colonii.
 [Spider web]
 Pânză de păianjen
 [Spokes per colony]

@@ -163,10 +163,11 @@ int pieceLeak(const Map &map, const Torus &t, const std::vector<int> &piece,
 			  const std::vector<unsigned char> &shut)
 {
 	const int n = t.w * t.h;
-	std::vector<unsigned char> open = walkableTiles(map);
+	// Crops, fruit and buildings go in time, so only water and stone part two pieces for good.
+	std::vector<unsigned char> open(n, 0);
 	for (int i = 0; i < n; ++i)
-		if (shut[i])
-			open[i] = 0;
+		open[i] = !shut[i] && !map.isWater(i % t.w, i / t.w) &&
+				  !(map.isResource(i % t.w, i / t.w) && map.getResource(i % t.w, i / t.w).type == STONE);
 	int pieces = 0;
 	for (int p : piece)
 		pieces = std::max(pieces, p + 1);
@@ -186,21 +187,25 @@ int pieceLeak(const Map &map, const Torus &t, const std::vector<int> &piece,
 int towerReach(const Torus &t, const std::vector<unsigned char> &buildable,
 			   const std::vector<unsigned char> &target)
 {
-	// With every tile open, the eight-connected flood counts Chebyshev steps.
+	// With every tile open, the eight-connected flood counts Chebyshev steps. A tower scans rings round
+	// its whole 2x2 footprint (BuildingUtils::turretScanTile), so its reach is the nearest of the four.
 	const std::vector<int> distance = stepsFrom(t, target);
 	int best = INT_MAX;
 	for (int y = 0; y < t.h; ++y)
 		for (int x = 0; x < t.w; ++x)
 		{
-			const int i = y * t.w + x;
-			if (distance[i] < 0 || distance[i] >= best)
-				continue;
 			bool fits = true;
+			int nearest = INT_MAX;
 			for (int dy = 0; dy < kTowerFootprint && fits; ++dy)
 				for (int dx = 0; dx < kTowerFootprint && fits; ++dx)
-					fits = buildable[t.at(x + dx, y + dy)];
+				{
+					const int i = t.at(x + dx, y + dy);
+					fits = buildable[i];
+					if (distance[i] >= 0)
+						nearest = std::min(nearest, distance[i]);
+				}
 			if (fits)
-				best = distance[i];
+				best = std::min(best, nearest);
 		}
 	return best;
 }

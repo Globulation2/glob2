@@ -1818,6 +1818,8 @@ Cellstorlek
 Rumsstorlek
 [Corridor width]
 Korridorbredd
+[Spoke width]
+Ekrarnas bredd
 [Loopiness]
 Antal slingor
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1944,6 +1946,56 @@ Grenbredd
 Korall behöver minst en koloni.
 [Coral needs a map at least 128 tiles across.]
 Korall behöver en karta som är minst 128 rutor bred.
+[Carousel]
+Karusell
+[Amphitheatre]
+Amfiteater
+[Switchbacks]
+Serpentiner
+[Court size]
+Gårdarnas storlek
+[Court wall]
+Gårdsmur
+[Plaza size]
+Torgets storlek
+[Starting tower level]
+Starttornens nivå
+[Towers per colony]
+Torn per koloni
+[Rings]
+Ringar
+[Ramp width]
+Rampbredd
+[Pit size]
+Arenans storlek
+[Terrace width]
+Terrassbredd
+[Border roughness]
+Gränsernas ojämnhet
+[Bay size]
+Vikarnas storlek
+[Border wall]
+Gränsmur
+[Plateau size]
+Platåns storlek
+[Trail width]
+Stigbredd
+[Wall between legs]
+Mur mellan kurvor
+[Farm building plots]
+Byggtomter på gårdarna
+[Carousels need at least two colonies.]
+En karusell behöver minst två kolonier.
+[Switchbacks need at least two colonies.]
+Serpentiner behöver minst två kolonier.
+[An amphitheatre needs at least two colonies.]
+En amfiteater behöver minst två kolonier.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Karusellen får inte plats på den här kartan; använd en större karta, mindre hem eller färre kolonier.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Serpentinerna får inte plats på den här kartan; använd en större karta, en mindre platå, smalare stigar eller färre kolonier.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Amfiteatern får inte plats på den här kartan; använd en större karta, färre ringar, smalare terrasser eller färre kolonier.
 [Spider web]
 Spindelnät
 [Spokes per colony]

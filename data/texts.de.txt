@@ -1808,6 +1808,8 @@ Zellengröße
 Raumgröße
 [Corridor width]
 Korridorbreite
+[Spoke width]
+Speichenbreite
 [Loopiness]
 Vernetzungsgrad
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1934,6 +1936,56 @@ Astbreite
 Korallen brauchen mindestens eine Kolonie.
 [Coral needs a map at least 128 tiles across.]
 Korallen brauchen eine Karte von mindestens 128 Feldern Breite.
+[Carousel]
+Karussell
+[Amphitheatre]
+Amphitheater
+[Switchbacks]
+Serpentinen
+[Court size]
+Hofgröße
+[Court wall]
+Hofmauer
+[Plaza size]
+Platzgröße
+[Starting tower level]
+Stufe der Starttürme
+[Towers per colony]
+Türme pro Kolonie
+[Rings]
+Ringe
+[Ramp width]
+Rampenbreite
+[Pit size]
+Arenagröße
+[Terrace width]
+Terrassenbreite
+[Border roughness]
+Grenzverlauf
+[Bay size]
+Buchtgröße
+[Border wall]
+Grenzmauer
+[Plateau size]
+Plateaugröße
+[Trail width]
+Pfadbreite
+[Wall between legs]
+Mauer zwischen Kehren
+[Farm building plots]
+Bauplätze in den Farmen
+[Carousels need at least two colonies.]
+Ein Karussell braucht mindestens zwei Kolonien.
+[Switchbacks need at least two colonies.]
+Serpentinen brauchen mindestens zwei Kolonien.
+[An amphitheatre needs at least two colonies.]
+Ein Amphitheater braucht mindestens zwei Kolonien.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Das Karussell passt nicht auf diese Karte; wähle eine größere Karte, kleinere Heimaten oder weniger Kolonien.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Die Serpentinen passen nicht auf diese Karte; wähle eine größere Karte, ein kleineres Plateau, schmalere Pfade oder weniger Kolonien.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Das Amphitheater passt nicht auf diese Karte; wähle eine größere Karte, weniger Ringe, schmalere Terrassen oder weniger Kolonien.
 [Spider web]
 Spinnennetz
 [Spokes per colony]

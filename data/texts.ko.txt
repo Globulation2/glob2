@@ -1804,6 +1804,8 @@ Globulation 2 커서를 표시합니다.
 방 크기
 [Corridor width]
 통로 너비
+[Spoke width]
+바큇살 너비
 [Loopiness]
 순환로 밀도
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1930,6 +1932,56 @@ Globulation 2 커서를 표시합니다.
 산호에는 식민지가 하나 이상 필요합니다.
 [Coral needs a map at least 128 tiles across.]
 산호에는 너비가 128칸 이상인 지도가 필요합니다.
+[Carousel]
+회전목마
+[Amphitheatre]
+원형 경기장
+[Switchbacks]
+굽잇길
+[Court size]
+안뜰 크기
+[Court wall]
+안뜰 벽
+[Plaza size]
+광장 크기
+[Starting tower level]
+시작 탑 레벨
+[Towers per colony]
+식민지당 탑 수
+[Rings]
+고리 수
+[Ramp width]
+경사로 너비
+[Pit size]
+경기장 크기
+[Terrace width]
+계단식 단 너비
+[Border roughness]
+경계의 굴곡
+[Bay size]
+만 크기
+[Border wall]
+경계 벽
+[Plateau size]
+고원 크기
+[Trail width]
+산길 너비
+[Wall between legs]
+굽이 사이 벽
+[Farm building plots]
+농장 건설 부지
+[Carousels need at least two colonies.]
+회전목마에는 식민지가 두 개 이상 필요합니다.
+[Switchbacks need at least two colonies.]
+굽잇길에는 식민지가 두 개 이상 필요합니다.
+[An amphitheatre needs at least two colonies.]
+원형 경기장에는 식민지가 두 개 이상 필요합니다.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+회전목마가 이 지도에 맞지 않습니다. 더 큰 지도, 더 작은 본거지 또는 더 적은 식민지를 사용하세요.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+굽잇길이 이 지도에 맞지 않습니다. 더 큰 지도, 더 작은 고원, 더 좁은 산길 또는 더 적은 식민지를 사용하세요.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+원형 경기장이 이 지도에 맞지 않습니다. 더 큰 지도, 더 적은 고리, 더 좁은 단 또는 더 적은 식민지를 사용하세요.
 [Spider web]
 거미줄
 [Spokes per colony]

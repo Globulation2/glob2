@@ -1804,6 +1804,8 @@ Ukuran sel
 Ukuran ruangan
 [Corridor width]
 Lebar koridor
+[Spoke width]
+Lebar jari-jari
 [Loopiness]
 Kepadatan jalur melingkar
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1930,6 +1932,56 @@ Lebar cabang
 Karang memerlukan setidaknya satu koloni.
 [Coral needs a map at least 128 tiles across.]
 Karang memerlukan peta dengan lebar setidaknya 128 petak.
+[Carousel]
+Komidi putar
+[Amphitheatre]
+Amfiteater
+[Switchbacks]
+Jalan berkelok
+[Court size]
+Ukuran halaman
+[Court wall]
+Tembok halaman
+[Plaza size]
+Ukuran alun-alun
+[Starting tower level]
+Tingkat menara awal
+[Towers per colony]
+Menara per koloni
+[Rings]
+Cincin
+[Ramp width]
+Lebar tanjakan
+[Pit size]
+Ukuran arena
+[Terrace width]
+Lebar teras
+[Border roughness]
+Kekasaran batas
+[Bay size]
+Ukuran teluk
+[Border wall]
+Tembok batas
+[Plateau size]
+Ukuran dataran tinggi
+[Trail width]
+Lebar jalan setapak
+[Wall between legs]
+Tembok antar tikungan
+[Farm building plots]
+Petak bangunan di ladang
+[Carousels need at least two colonies.]
+Komidi putar memerlukan setidaknya dua koloni.
+[Switchbacks need at least two colonies.]
+Jalan berkelok memerlukan setidaknya dua koloni.
+[An amphitheatre needs at least two colonies.]
+Amfiteater memerlukan setidaknya dua koloni.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Komidi putar tidak muat di peta ini; gunakan peta lebih besar, markas lebih kecil, atau lebih sedikit koloni.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Jalan berkelok tidak muat di peta ini; gunakan peta lebih besar, dataran tinggi lebih kecil, jalan setapak lebih sempit, atau lebih sedikit koloni.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Amfiteater tidak muat di peta ini; gunakan peta lebih besar, lebih sedikit cincin, teras lebih sempit, atau lebih sedikit koloni.
 [Spider web]
 Jaring laba-laba
 [Spokes per colony]
