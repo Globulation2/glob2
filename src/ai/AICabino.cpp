@@ -1929,7 +1929,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 						ai.orders.push(std::shared_ptr<Order>(new OrderModifyFlag(b->gid, radius)));
 						ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, j->assigned_units)));
 						ai.orders.push(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(b->gid, j->assigned_level)));
-						ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, j->assigned_level, j->assigned_units, j->flag);
+						ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, j->assigned_level+1, j->assigned_units, j->flag);
 						break;
 					}
 				}
@@ -1951,7 +1951,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 			{
 				if(AICabino_DEBUG)
 					std::cout<<"AICabino: updateAttackFlags: Stopping attack on a building, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<std::endl;
-				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, j->assigned_level, 0, j->flag);
+				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, j->assigned_level+1, 0, j->flag);
 				ai.orders.push(std::shared_ptr<Order>(new OrderDelete(j->flag)));
 				j=attacks.erase(j);
 				continue;
@@ -2027,7 +2027,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 				j->assigned_units=new_assigned;
 				ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(j->flag, new_assigned)));
 				available_units-=new_assigned;
-				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, strength_level, new_assigned, j->flag);
+				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, strength_level+1, new_assigned, j->flag);
 			}
 
 			//If the maximum barracks level has changed, then update the flag
@@ -3376,6 +3376,7 @@ unsigned int DistributedUnitManager::available(std::string module_name, unsigned
 
 bool DistributedUnitManager::request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number,  int building)
 {
+	assert(unit_type<NB_UNIT_TYPE && ability<NB_ABILITY && minimum_level>=1 && minimum_level<=NB_UNIT_LEVELS);
 	minimum_level-=1;
 	usageRecord ur;
 	Building* b=getBuildingFromGid(ai.game, building);
@@ -3413,6 +3414,7 @@ bool DistributedUnitManager::request(std::string module_name, unsigned int unit_
 
 void DistributedUnitManager::reserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number)
 {
+	assert(unit_type<NB_UNIT_TYPE && ability<NB_ABILITY && minimum_level>=1 && minimum_level<=NB_UNIT_LEVELS);
 	module_records[module_name].reservedUnits[unit_type][ability][minimum_level-1]+=number;
 }
 
@@ -3421,6 +3423,7 @@ void DistributedUnitManager::reserve(std::string module_name, unsigned int unit_
 
 void DistributedUnitManager::unreserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number)
 {
+	assert(unit_type<NB_UNIT_TYPE && ability<NB_ABILITY && minimum_level>=1 && minimum_level<=NB_UNIT_LEVELS);
 	module_records[module_name].reservedUnits[unit_type][ability][minimum_level-1]-=number;
 }
 
