@@ -45,7 +45,7 @@ over `numbi, castor, warrush, econo, nicowar`.
 ./glob2 -test-games-nox 50 --ai-types nicowar
 ```
 
-Valid names: `numbi`, `castor`, `warrush`, `econo`, `nicowar`.
+Valid names: `numbi`, `castor`, `warrush`, `econo`, `nicowar`, `cortex`, `cabino`.
 Unknown names are reported on stderr and skipped (an empty
 remaining pool falls back to default behavior).
 
@@ -207,6 +207,8 @@ The `ReplayWriter` records live during gameplay:
 | 3 | Warrush | `AI::WARRUSH` | Aggressive rush strategy |
 | 4 | Econo | `AI::ECONO` | Expansionist (Echo wrapper) |
 | 5 | Nicowar | `AI::NICOWAR` | Strongest economy-focused AI (Echo wrapper) |
+| 6 | Cortex | `AI::CORTEX` | Food-aware growth and supported attack waves (experimental) |
+| 8 | Cabino | `AI::CABINO` | Resurrected 2005-2007 Nicowar: independent cooperating modules, not Echo-based. (7 intentionally skipped, reserved by the in-progress Maxima branch) |
 
 Player types that trigger AI loading: any `BasePlayer::type >= P_AI (5)`. The player type encodes which AI: `P_AI + implementationID` maps to the enum above.
 
