@@ -1340,6 +1340,14 @@ bool SimpleBuildingDefense::updateFlags()
 	{
 		if(i->flag!=NOGBID)
 		{
+			Building* flag=getBuildingFromGid(ai.game, i->flag);
+			if(!flag)
+			{
+				// The flag is gone: release its units and drop the record.
+				ai.getUnitModule()->request("SimpleBuildingDefense", WARRIOR, ATTACK_STRENGTH, 1, 0, i->flag);
+				i=defending_zones.erase(i);
+				continue;
+			}
 			unsigned int score = gps.pollArea(i->zonex, i->zoney, i->width, i->height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_WARRIORS);
 			if(score==0)
 			{
@@ -1354,7 +1362,7 @@ bool SimpleBuildingDefense::updateFlags()
 			{
 				score=score*2;
 				i->assigned=std::min(20u, score);
-				if(static_cast<int>(score)!=getBuildingFromGid(ai.game, i->flag)->maxUnitWorking)
+				if(static_cast<int>(score)!=flag->maxUnitWorking)
 				{
 					ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(i->flag, std::min(20u, score))));
 					ai.getUnitModule()->request("SimpleBuildingDefense", WARRIOR, ATTACK_STRENGTH, 1, std::min(20u, score), i->flag);
@@ -1796,7 +1804,8 @@ bool PrioritizedBuildingAttack::attack()
 			if(i->flag!=NOGBID)
 			{
 				Building* b = getBuildingFromGid(ai.game, i->flag);
-				needed=i->assigned_units-b->unitsWorking.size();
+				if(b && b->unitsWorking.size()<i->assigned_units)
+					needed=i->assigned_units-b->unitsWorking.size();
 			}
 			else
 			{
