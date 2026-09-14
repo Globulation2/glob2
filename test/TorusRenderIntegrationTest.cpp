@@ -259,6 +259,9 @@ static int run(int argc, char **argv)
                 auto capture = [&]()
                 {
                     draw(1);
+                    // Software GL renders on worker threads, and the readback below has been
+                    // seen to return the previous frame's atlas: wait for the frame first.
+                    glFinish();
                     atlas.assign(size_t(view.atlasW) * view.atlasH * 4, 0);
                     glBindTexture(GL_TEXTURE_2D, view.texture);
                     glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlas.data());
