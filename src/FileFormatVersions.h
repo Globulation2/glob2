@@ -99,7 +99,7 @@ static constexpr int FILE_FORMAT_VERSION_TOPOLOGY_GENERATION = 97;
 //! Harvest and build became one worker level. Saves before this could hold the
 //! two apart — the map editor offered a box for each — so the loader evens a
 //! worker out to the higher of the two (UnitSerialization.cpp:90).
-static constexpr int FILE_FORMAT_VERSION_ONE_WORKER_LEVEL = 98;
+static constexpr int FILE_FORMAT_VERSION_ONE_WORKER_LEVEL = 99;
 
 // === Save-file section signatures (4-byte ASCII tags) ===
 // Embedded as four chars at the start of each save section so a corrupted

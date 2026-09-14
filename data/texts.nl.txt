@@ -74,6 +74,10 @@ Econo
 Warrush is snel en onverbiddelijk. Voor je het weet staan zijn legers aan jouw deur en moet je verdedigen alsof je leven er van afhangt, want dat is ook zo. Moeilijkheidsgraad: Gemiddeld.
 [AIWarrush]
 Warrush
+[AICabino-Description]
+Cabino bestuurt verdediging, aanval en bouw als onafhankelijke afdelingen die toch naar één plan toewerken: snel groeien en machtige legers op zijn vijanden afsturen. Moeilijkheidsgraad: Moeilijk.
+[AICabino]
+Cabino
 [Alga]
 Zeewier
 [algae]
@@ -1284,6 +1288,10 @@ Enorme bases en conversie in plaats van aanvallen.
 Strategie: Valt vroeg en krachtig aan, voordat de tegenstanders klaar zijn met voorbereiden.\n\nSterke punten: maakt gebruik van onverdedigde expansie en trage militaire voorbereiding.\n\nVoorgesteld tegenspel: overleef de eerste aanval met behoud van je economie, en voer dan een tegenaanval uit.
 [AIWarrush-Summary]
 Snelle aanvallen die je vroege verdediging op de proef stellen.
+[AICabino-Profile]
+Kernstrategie: een kabinet van onafhankelijke gespecialiseerde afdelingen (verdediging, aanval, bouw, upgrades, eenheidsbeheer) die elk op eigen initiatief handelen maar naar één plan toewerken: snel groeien en daarna machtige legers op de vijand afsturen.\n\nSterke punten: snelle expansie ondersteunt agressieve militaire druk; de onafhankelijke afdelingen reageren snel op lokale dreigingen zonder op een centraal plan te wachten.\n\nTegenzet om te proberen: bestrijd zijn expansie vroeg en gebruik het terrein om te beperken hoeveel van zijn troepen tegelijk kunnen vechten.
+[AICabino-Summary]
+Onafhankelijke afdelingen die samenwerken aan snelle groei en enorme legers.
 [Algae]
 zeewier
 [Alliances]

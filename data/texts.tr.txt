@@ -74,6 +74,10 @@ Econo
 Warrush hızlı ve sert saldırır, savunmadaki oyuncuyu sıklıkla yenilginin eşiğine getirir. Orta zorluk.
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+Cabino savunma, saldırı ve inşayı bağımsız departmanlar olarak yönetir, ama hepsi tek bir plana yönelir: hızla büyür ve rakiplerine dev ordular gönderir. Zor.
+[AICabino]
+Cabino
 [Alga]
 Su yosunu
 [algae]
@@ -1268,6 +1272,10 @@ Saldırmak yerine dev üsler kurar ve düşman birimlerini tarafına çeker.
 Strateji: Rakipler hazırlıklarını bitirmeden önce erken ve güçlü saldırılar.\n\nGüçlü Yönler: Savunmasız genişlemeden ve yavaş askeri hazırlıktan yararlanır.\n\nKarşı taktik önerisi: İlk saldırıda ekonominizi koruyarak hayatta kalın, ardından karşı saldırı yapın.
 [AIWarrush-Summary]
 Erken savunmanızı test eden hızlı saldırılar.
+[AICabino-Profile]
+Temel strateji: her biri kendi inisiyatifiyle hareket eden ama tek bir plana yönelen bağımsız uzman departmanlardan (savunma, saldırı, inşa, yükseltmeler, birim yönetimi) oluşan bir kabine: hızlı büyüme, ardından rakiplere dev ordular gönderme.\n\nGüçlü yönler: hızlı yayılma saldırgan askeri baskıyı destekler; bağımsız departmanlar merkezi bir planı beklemeden yerel tehditlere hızla tepki verir.\n\nDenenecek karşı oyun: yayılmasına erken karşı çıkın ve aynı anda çarpışabilecek birlik sayısını sınırlamak için araziyi kullanın.
+[AICabino-Summary]
+Hızlı büyüme ve devasa ordular için iş birliği yapan bağımsız departmanlar.
 [Algae]
 Yosun
 [Alliances]

@@ -78,6 +78,10 @@ AIToubib
 Warrush angriber hurtigt og hårdt og presser ofte den forsvarende spiller til det yderste. Middel sværhedsgrad.
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+Cabino styrer forsvar, angreb og opbygning som uafhængige afdelinger, der arbejder mod én plan: vokser hurtigt og sender enorme hære mod sine modstandere. Høj sværhedsgrad.
+[AICabino]
+Cabino
 [Alga]
 Alger
 [algae]
@@ -1336,6 +1340,10 @@ Kæmpe baser og konvertering i stedet for angreb.
 Strategi: Angriber tidligt og kraftigt, før modstanderne er færdige med at forberede sig.\n\nStyrker: Udnytter uforsvaret ekspansion og langsom militær forberedelse.\n\nForeslået modspil: Overlev det første angreb, mens du bevarer din økonomi, og gå derefter til modangreb.
 [AIWarrush-Summary]
 Hurtige angreb, der tester dit tidlige forsvar.
+[AICabino-Profile]
+Grundstrategi: Et kabinet af uafhængige specialistafdelinger (forsvar, angreb, opbygning, opgraderinger, enhedsstyring), der hver handler på eget initiativ, men arbejder mod én plan: vokse hurtigt og derefter sende enorme hære mod modstanderne.\n\nStyrker: Hurtig ekspansion understøtter aggressivt militært pres; de uafhængige afdelinger reagerer hurtigt på lokale trusler uden at vente på en central plan.\n\nModtræk at prøve: Bekæmp dets ekspansion tidligt, og brug terrænet til at begrænse, hvor mange af dets tropper der kan kæmpe på én gang.
+[AICabino-Summary]
+Uafhængige afdelinger, der samarbejder om hurtig vækst og enorme hære.
 [Algae]
 Alger
 [Alliances]

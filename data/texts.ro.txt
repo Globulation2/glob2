@@ -74,6 +74,10 @@ Econo
 Warrush atacă rapid și necruțător, aducând adesea jucătorul care se apără la limita înfrângerii. Dificultate medie.
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+Cabino conduce apărarea, atacul și construcția ca departamente independente care converg spre un singur plan: se dezvoltă rapid și trimite armate uriașe împotriva adversarilor. Dificultate ridicată.
+[AICabino]
+Cabino
 [Alga]
 Alge
 [algae]
@@ -1260,6 +1264,10 @@ Baze uriașe și conversie în loc de atacuri.
 Strategie: atacă devreme și cu forță, înainte ca adversarii să termine pregătirea.\n\nPuncte forte: exploatează extinderea lipsită de apărare și pregătirea militară lentă.\n\nTactici de încercat: Supraviețuiește primului atac menținându-ți economia, apoi contraatacă.
 [AIWarrush-Summary]
 Atacuri rapide care vă testează apărarea timpurie.
+[AICabino-Profile]
+Strategie de bază: un cabinet de departamente specializate independente (apărare, atac, construcție, îmbunătățiri, gestionarea unităților), fiecare acționând din proprie inițiativă, dar convergând spre un singur plan: creștere rapidă, apoi armate uriașe trimise împotriva adversarilor.\n\nPuncte forte: expansiunea rapidă susține o presiune militară agresivă; departamentele independente reacționează rapid la amenințările locale fără să aștepte un plan central.\n\nContraatac de încercat: contestă-i expansiunea devreme și folosește terenul pentru a limita câte trupe poate angaja simultan.
+[AICabino-Summary]
+Departamente independente care cooperează pentru o creștere rapidă și armate uriașe.
 [Algae]
 Alge
 [Alliances]
