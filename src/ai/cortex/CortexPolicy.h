@@ -62,8 +62,8 @@ namespace Cortex
 
 		// Second swarm — GRADED, computed in scoreSecondSwarm as
 		// SCORE_SECOND_SWARM_BASE + severity*SCORE_SECOND_SWARM_STEP where severity
-		// is the worst wheat-bottlenecked swarm's CORN deficit (1..5). It fires only
-		// when an existing swarm is pinned at the worker cap with a draining CORN
+		// is the worst wheat-bottlenecked swarm's WHEAT deficit (1..5). It fires only
+		// when an existing swarm is pinned at the worker cap with a draining WHEAT
 		// buffer — the wheat catchment is the bottleneck, and a fresh swarm on a new
 		// patch is the cure. Lands at 6200..6600: ABOVE the whole tech/upgrade band
 		// (more valuable than another upgrade when wheat is the binding constraint)
@@ -155,7 +155,7 @@ namespace Cortex
 		GATE_BOOTSTRAP = 1u << 0,
 		/// Spare labour exists (obs.freeWorkers >= 1), so a gated build/upgrade
 		/// crew comes off idle hands rather than off the hauling that keeps the
-		/// swarm + inn CORN buffers full. Deliberately WEAKER than f.canExpand
+		/// swarm + inn WHEAT buffers full. Deliberately WEAKER than f.canExpand
 		/// (which folds in the !starving/!hungry food-trouble terms): scorers
 		/// whose spare-labour requirement is entangled in canExpand keep it there.
 		GATE_LABOR     = 1u << 1,

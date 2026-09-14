@@ -395,8 +395,8 @@ int Building::getLongLevel(void)
 
 Uint32 Building::eatOnce(Uint32 *mask)
 {
-	resources[CORN]--;
-	assert(resources[CORN]>=0);
+	resources[WHEAT]--;
+	assert(resources[WHEAT]>=0);
 	Uint32 fruitMask=0;
 	Uint32 fruitCount=0;
 	for (int i=0; i<HAPPINESS_COUNT; i++)
@@ -417,7 +417,7 @@ Uint32 Building::eatOnce(Uint32 *mask)
 int Building::availableHappynessLevel()
 {
 	int inside = (int)unitsInside.size();
-	if (resources[CORN] <= inside)
+	if (resources[WHEAT] <= inside)
 		return 0;
 	int happyness = 1;
 	for (int i = 0; i < HAPPINESS_COUNT; i++)
@@ -431,7 +431,7 @@ bool Building::canConvertUnit(void)
 	assert(type->canFeedUnit);
 	return
 			canNotConvertUnitTimer<=0 &&
-			((int)unitsInside.size()<resources[CORN]) && 
+			((int)unitsInside.size()<resources[WHEAT]) && 
 			((int)unitsInside.size()<maxUnitInside);
 }
 

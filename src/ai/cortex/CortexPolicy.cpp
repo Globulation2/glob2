@@ -35,7 +35,7 @@ namespace Cortex
 	// never zeroed, and idle labour is continuously turned into capacity (more
 	// inns to stay ahead of population) and tech (school → racetrack → hospital)
 	// rather than parked at an artificial population ceiling. The only real size
-	// governor is physical: a swarm stalls when its CORN buffer runs below 5
+	// governor is physical: a swarm stalls when its WHEAT buffer runs below 5
 	// (engine), and feeding is kept ahead of the population by inn-led growth.
 
 	/// Reactive thresholds that suppress *expansion spending* (never swarm
@@ -145,7 +145,7 @@ namespace Cortex
 		// Cortex is still bootstrapping (workers only); at or above it the colony both
 		// techs up AND folds warriors into the production mix. There is NO population
 		// ceiling and NO production halt — feeding is kept ahead of population by
-		// inn-led expansion (Priority 2), and the engine's CORN-buffer stall is the
+		// inn-led expansion (Priority 2), and the engine's WHEAT-buffer stall is the
 		// real supply governor.
 		//
 		// The inn requirement is "feeding is established", not "the first inn has
@@ -171,7 +171,7 @@ namespace Cortex
 		f.foodSaturated = f.economyEstablished &&  f.starving;
 
 		// Spare labour: idle workers exist, so a tech/expansion build can be started
-		// without stealing the haulers that keep the swarm + inn CORN buffers full.
+		// without stealing the haulers that keep the swarm + inn WHEAT buffers full.
 		// The economy expands whenever this holds — there is never an idle
 		// "surplus, do nothing" state. Feeding (the inn, Priority 2) is exempt: it is
 		// built on the capacity trigger regardless of spare labour, because feeding
@@ -211,7 +211,7 @@ namespace Cortex
 		//   base  = Σ(swarm + inn hauler requests) + WORKER_TARGET_BUFFER — the hauler
 		//           floor: enough workers to staff every swarm + inn hauling job plus a
 		//           small buffer. Each building's CURRENT maxUnitWorking is its live
-		//           hauler request (tuneWorkers converges it to the level the corn
+		//           hauler request (tuneWorkers converges it to the level the wheat
 		//           buffer / restock deficit calls for), so summing them is the live
 		//           "how many haulers does the economy want" figure.
 		//   needs = obs.workers + fillableNeeded — the full STAFFABLE worker demand:

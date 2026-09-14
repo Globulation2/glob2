@@ -135,9 +135,9 @@ public:
 		require(scene.inn != nullptr, "place the inn");
 		game.map.setBuilding(9, 8, scene.inn->type->width, scene.inn->type->height, scene.inn->gid);
 		scene.inn->maxUnitWorking = 2;
-		scene.inn->resources[CORN] = 0;
+		scene.inn->resources[WHEAT] = 0;
 		scene.inn->updateCallLists();
-		require(game.map.incResource(2, 10, CORN, 0), "seed a wheat tile");
+		require(game.map.incResource(2, 10, WHEAT, 0), "seed a wheat tile");
 		for (int i = 0; i < LOW_COUNT; ++i)
 			scene.low[i] = worker(game, scene.team, scene.lowX[i], scene.lowY[i], 0);
 		scene.schooled = worker(game, scene.team, 3, 10, 1);
