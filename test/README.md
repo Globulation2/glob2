@@ -117,6 +117,14 @@ source (`maps/FourSquares1.map`). The host verifies readiness, roster size, uniq
 player IDs, slot masks, and both departures. The map's current size is not hardcoded
 in the test. Linux CI runs this automatically with SDL's dummy video/audio drivers.
 
+With `--tiled` (and `tiled` as a fifth argument to the harness), the host instead offers
+`FourSquares1` repeated 2 x 2 for four colonies. `MapTiling::writeTiledMap` puts that map in
+the temp directory behind `MapHeader`'s file name override, never in a maps folder, so the
+guest can only get it by transfer; the guest compares its download,
+`maps/FourSquares1_2x2_4t1c.map`, with the copy the host leaves as `tiled-source.map` in the
+output directory. The 256 x 256 map is about 3 MB, so each cycle gives the transfer 80 seconds
+before leaving. CI runs both modes.
+
 For two physical machines, run these from each machine's repository root, using
 absolute capture prefixes whose parent directories already exist:
 

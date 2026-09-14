@@ -11,6 +11,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("binary", type=Path)
     parser.add_argument("--output", type=Path, default=Path("output/lan-session-test"))
+    parser.add_argument("--tiled", action="store_true",
+                        help="host a map repeated 2 x 2 that lives only in the temp directory")
     args = parser.parse_args()
     binary = args.binary.resolve()
     output = args.output.resolve()
@@ -18,11 +20,12 @@ def main():
     env = os.environ.copy()
     env.setdefault("SDL_VIDEODRIVER", "dummy")
     env.setdefault("SDL_AUDIODRIVER", "dummy")
+    extra = ["tiled"] if args.tiled else []
     host_log = output / "host.log"
     join_log = output / "join.log"
     with host_log.open("w") as host_out, join_log.open("w") as join_out:
         host = subprocess.Popen(
-            [str(binary), "host", "127.0.0.1", "2", str(output / "host")],
+            [str(binary), "host", "127.0.0.1", "2", str(output / "host")] + extra,
             stdout=host_out, stderr=subprocess.STDOUT, env=env,
         )
         try:
@@ -32,8 +35,8 @@ def main():
                     raise RuntimeError("Host did not publish a lobby")
                 time.sleep(0.1)
             joined = subprocess.run(
-                [str(binary), "join", "127.0.0.1", "2", str(output / "join")],
-                stdout=join_out, stderr=subprocess.STDOUT, env=env, timeout=100,
+                [str(binary), "join", "127.0.0.1", "2", str(output / "join")] + extra,
+                stdout=join_out, stderr=subprocess.STDOUT, env=env, timeout=250 if args.tiled else 100,
             )
             if joined.returncode != 0:
                 raise RuntimeError(f"Join/transfer/leave test exited {joined.returncode}")
@@ -54,7 +57,8 @@ def main():
                     host.wait()
     print(host_log.read_text())
     print(join_log.read_text())
-    print("LAN session regression PASS: two ready/join/leave cycles and exact map downloads")
+    kind = "tiled map" if args.tiled else "map"
+    print(f"LAN session regression PASS: two ready/join/leave cycles and exact {kind} downloads")
     return 0
 
 
