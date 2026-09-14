@@ -42,8 +42,8 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 	// This synchronous, scoped bridge is not a concurrency API.
 	struct EngineRandomScope
 	{
-		boost::mt19937 saved = randomGenerator;
-		~EngineRandomScope() { randomGenerator = saved; }
+		boost::mt19937 saved = syncRandEngine();
+		~EngineRandomScope() { syncRandEngine() = saved; }
 	} rngScope;
 	setSyncRandSeed(GenerationContext::deriveSeed(request.seed, "engine"));
 	GenerationContext context(request);

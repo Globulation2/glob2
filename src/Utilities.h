@@ -21,11 +21,16 @@ namespace GAGCore
 // The synchronized gameplay stream. One state per thread: the simulation only ever runs on
 // one thread, so its sequence is unchanged, while a background map generation (which seeds
 // this stream itself) neither disturbs nor races the menu's live colony on the UI thread.
-extern thread_local boost::mt19937 randomGenerator;
+// Reached through a function rather than an `extern thread_local` object: a thread_local
+// with a constructor that other translation units name directly is initialised through a
+// weak per-unit wrapper, which mingw's emulated TLS does not get right, and the savegame
+// harness saw the engine stream change state under it on Windows. A function-local
+// thread_local is initialised in one place, in this unit.
+boost::mt19937 &syncRandEngine();
 
 inline Uint32 syncRand(void)
 {
-	return randomGenerator();
+	return syncRandEngine()();
 }
 
 // 32-bit right-rotate by 1 bit. Used to mix per-section checksums into the

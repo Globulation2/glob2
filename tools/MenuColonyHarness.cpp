@@ -53,7 +53,7 @@ GlobalContainer* globalContainer=nullptr;
 using namespace GAGCore;
 std::string replayFilenameToName(const std::string&);
 
-std::string getSyncRandState() { std::ostringstream out; out << randomGenerator; return out.str(); }
+std::string getSyncRandState() { std::ostringstream out; out << syncRandEngine(); return out.str(); }
 
 void require(bool condition, const char* message)
 {
@@ -393,7 +393,7 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 			GameGUI gui;
 			BinaryInputStream in(Toolkit::getFileManager()->openInputStreamBackend(argv[2]));
 			in.readText("format"); require(gui.game.load(&in),"load real-game fixture");
-			std::istringstream state(in.readText("rng")+" "); state >> randomGenerator;
+			std::istringstream state(in.readText("rng")+" "); state >> syncRandEngine();
 			gui.game.map.getResourceGradient(0,WHEAT,0);
 			gui.localTeamNo=0; gui.localPlayer=0; gui.adjustLocalTeam();
 			globals.replayWriter=std::make_unique<ReplayWriter>();

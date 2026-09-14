@@ -252,7 +252,7 @@ inline void frameworkChecks()
 	GenerationService service(registry);
 	request.setMethodDefaults(305, registry);
 	request.nbTeams = 1;
-	auto surrounding = randomGenerator;
+	auto surrounding = syncRandEngine();
 	{
 		Game game(nullptr);
 		assert(service.generate(game, request));
@@ -280,7 +280,7 @@ inline void frameworkChecks()
 		assert(failure.error == GenerationError::InvalidWorld &&
 			   failure.stage == "generator validation");
 	}
-	assert(randomGenerator == surrounding);
+	assert(syncRandEngine() == surrounding);
 	// Invalid weighted inputs fail explicitly; weighted metadata follows the shuffle.
 	Game game(nullptr);
 	game.map.setSize(6, 6);

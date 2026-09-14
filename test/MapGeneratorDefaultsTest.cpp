@@ -97,10 +97,10 @@ class MapGeneratorDefaultsTest
 			request.setMethodDefaults(method);
 			request.seed = 22001;
 			setSyncRandSeed(177);
-			auto surrounding = randomGenerator;
+			auto surrounding = syncRandEngine();
 			Game first(nullptr);
 			auto a = service.generate(first, request);
-			assert(randomGenerator == surrounding);
+			assert(syncRandEngine() == surrounding);
 			auto hash = mapFingerprint(first);
 			auto checksum = first.checkSum(nullptr, nullptr, nullptr, true);
 			D intervening;
@@ -169,7 +169,7 @@ class MapGeneratorDefaultsTest
 			}
 		// Scoped RNG restoration must also hold when placement fails.
 		setSyncRandSeed(711);
-		auto savedFailureRng = randomGenerator;
+		auto savedFailureRng = syncRandEngine();
 		D invalid;
 		invalid.method = 99999;
 		Game fresh(nullptr);
@@ -186,7 +186,7 @@ class MapGeneratorDefaultsTest
 		auto failed = service.generate(fresh, invalid);
 		assert(!failed && failed.error == GenerationError::PlacementFailed &&
 			   !failed.stage.empty());
-		assert(randomGenerator == savedFailureRng);
+		assert(syncRandEngine() == savedFailureRng);
 		// Legacy sentinel conversion belongs exclusively to the adapter.
 		for (auto pair : {std::pair{D::eCRATERLAKES, 30}, std::pair{D::eCONCRETEISLANDS, 6},
 						  std::pair{D::eISLES, 4}})

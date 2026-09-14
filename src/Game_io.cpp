@@ -305,7 +305,7 @@ bool Game::load(GAGCore::InputStream *stream)
 
 	if (versionMinor >= FILE_FORMAT_VERSION_CONTINUATION_STATE && mapHeader.getIsSavedGame())
 	{
-		randomGenerator = savedRandom;
+		syncRandEngine() = savedRandom;
 		hasSavedRandomState = true;
 	}
 
@@ -550,7 +550,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	{
 		std::ostringstream randomState;
 		randomState.imbue(std::locale::classic());
-		randomState << randomGenerator;
+		randomState << syncRandEngine();
 		std::istringstream state(randomState.str());
 		state.imbue(std::locale::classic());
 		stream->writeEnterSection("randomState");

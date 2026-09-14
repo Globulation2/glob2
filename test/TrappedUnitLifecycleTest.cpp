@@ -127,7 +127,7 @@ Trace eliminationAndSave(int resource, int purpose) {
     GAGCore::BinaryOutputStream output(backend);
     f.game.save(&output, false, "trapped unit fixture");
     std::string bytes(backend->getBuffer(), backend->getPosition());
-    const auto checkpointRng = randomGenerator;
+    const auto checkpointRng = syncRandEngine();
     const auto before = state(f.game, f.id);
     const Trace original = finish(f.game, f.id);
     GameGUI restored;
@@ -135,7 +135,7 @@ Trace eliminationAndSave(int resource, int purpose) {
     input.seekFromStart(0);
     assert(restored.game.load(&input));
     restored.game.setWaitingOnMask(0);
-    randomGenerator = checkpointRng;
+    syncRandEngine() = checkpointRng;
     const auto after = state(restored.game, f.id);
     for (size_t i = 0; i < before.size(); ++i)
         if (after.at(i) != before[i]) std::cerr << "state[" << i << "] " << before[i] << " -> " << after[i] << std::endl;
