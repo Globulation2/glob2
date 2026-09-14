@@ -277,6 +277,15 @@ replacement tests cover callback/open/rename failures and temporary-file cleanup
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
 
+## Clearing flag resource bounds
+
+Build `scons release=1 server=0 clearing-gradient-test` and run
+`python3 test/run-savegame-safety-tests.py --check-preferences build/src/ClearingFlagGradientTest`
+(add `.exe` on Windows). The shared runner isolates the working directory and
+profile and verifies that preferences remain unchanged. The regression covers
+weighted building gradients, basic-resource switches, fruit, empty tiles,
+allocation padding and every swimming class. CI executes it on Linux and Windows.
+
 ### Trapped colony elimination
 
 Build `scons release=1 server=0 trapped-unit-test`, then run
