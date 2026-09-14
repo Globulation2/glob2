@@ -10,6 +10,7 @@
 #include "GlobalContainer.h"
 #include "Map.h"
 #include "Team.h"
+#include "Utilities.h"
 
 #include <cassert>
 #include <cstdio>
@@ -215,6 +216,73 @@ namespace
 		check(map.getResource(5, 5).amount == 1, "the touched alga tile survives");
 	}
 
+	//! Growth must not know a farm area is painted. A plant has no opinion about
+	//! the farmer's intentions: the same map, run for the same ticks from the
+	//! same random seed, has to end identical whether or not a farm covers it.
+	//! Only harvesting may reach into the field.
+	void growthIgnoresTheFarmMask()
+	{
+		// Wheat only expands where growResources' probe finds water within +-15
+		// and no sand within +-30, so the fixture needs a little water.
+		auto seedField = [](Map& map) {
+			map.setSize(4, 4, GRASS);
+			// A single water tile renders as a transition, not as water, and
+			// growResources' probe tests the rendered terrain. Paint a body wide
+			// enough to have pure-water tiles in the middle.
+			for (int y = 0; y < map.getH(); y++)
+				for (int x = 0; x < 4; x++)
+					map.setUMatPos(x, y, WATER, 1);
+			for (int y = 5; y <= 9; y++)
+				for (int x = 5; x <= 9; x++)
+					setWheat(map, x, y, 1 + ((x + y) % 4));
+		};
+
+		Map bare;
+		seedField(bare);
+		Map farmed;
+		seedField(farmed);
+		paintFarm(farmed, 0, 0, farmed.getW() - 1, farmed.getH() - 1);
+
+		const int ticks = 20000;
+		setSyncRandSeed(20260914);
+		for (int i = 0; i < ticks; i++)
+			bare.growResources();
+		setSyncRandSeed(20260914);
+		for (int i = 0; i < ticks; i++)
+			farmed.growResources();
+
+		int occupied = 0, grains = 0;
+		for (int y = 0; y < bare.getH(); y++)
+			for (int x = 0; x < bare.getW(); x++)
+			{
+				check(bare.getResource(x, y).getUint32() == farmed.getResource(x, y).getUint32(),
+					"a painted farm area must not change how the field grows");
+				occupied += bare.getResource(x, y).type != NO_RES_TYPE;
+				grains += wheatAt(bare, x, y);
+			}
+		// A fixture that grew nothing would pass the comparison vacuously.
+		printf("  growth over %d ticks: 25 tiles/63 grains -> %d tiles/%d grains, identical with and without the farm\n",
+			ticks, occupied, grains);
+		check(occupied > 25 && grains > 25, "the growth fixture must actually grow");
+	}
+
+	//! Clearing is not harvesting. A worker clearing resources takes the tile it
+	//! is touching, farm area or not -- the clearing paths call decResource
+	//! directly and never go through takeHarvest.
+	void clearingStaysOnTheTouchedTile()
+	{
+		Map map;
+		buildMap(map);
+		paintFarm(map, 0, 0, 15, 15);
+		setWheat(map, 5, 5, 1);
+		setWheat(map, 7, 5, 5);
+		// The call Unit::handleMovementClearingResources and
+		// tryClaimClearingAreaForHarvesting make, verbatim.
+		map.decResource(5, 5);
+		check(wheatAt(map, 5, 5) == 0, "clearing empties the tile it is aimed at");
+		check(wheatAt(map, 7, 5) == 5, "clearing must not reach into the field");
+	}
+
 	//! Repeating the same harvest from one spot flattens the field from the top,
 	//! and stops when the one tile the worker can touch is finally spent -- the
 	//! rest of the field is still there, and the worker has to walk to it.
@@ -258,7 +326,9 @@ int main()
 	woodIsNotFarmed();
 	algaeAreFarmed();
 	standingStillOnlyDrainsWhatItTouches();
+	growthIgnoresTheFarmMask();
+	clearingStaysOnTheTouchedTile();
 
-	printf("FarmAreaHarvestHarness: 10 cases passed\n");
+	printf("FarmAreaHarvestHarness: 12 cases passed\n");
 	return 0;
 }
