@@ -803,8 +803,9 @@ namespace Cabino
 			///(either repair or upgrade.)
 			struct constructionRecord
 			{
-				///The building that this record is for
-				Building* building;
+				///The gid of the building that this record is for. A gid, not a Building*:
+				///the building can be destroyed while the record is still held.
+				unsigned int building;
 				///The number of units assigned to the building (or requested if its still pending)
 				unsigned int assigned;
 				///The number of units that where working the building before the construction

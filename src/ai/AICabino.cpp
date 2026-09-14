@@ -1821,7 +1821,7 @@ bool PrioritizedBuildingAttack::attack()
 			{
 				if(std::find(IGNORED_BUILDINGS, IGNORED_BUILDINGS+3, b->type->shortTypeNum)==IGNORED_BUILDINGS+3)
 				{
-					unsigned int pos=std::find(ATTACK_PRIORITY, ATTACK_PRIORITY+IntBuildingType::NB_BUILDING-3, b->type->shortTypeNum)-ATTACK_PRIORITY;
+					unsigned int pos=std::find(ATTACK_PRIORITY, ATTACK_PRIORITY+(IntBuildingType::NB_BUILDING-3), b->type->shortTypeNum)-ATTACK_PRIORITY;
 					buildings[pos].push_back(b);
 				}
 			}
@@ -2779,7 +2779,7 @@ bool RandomUpgradeRepairModule::load(GAGCore::InputStream *stream, Player *playe
 	{
 		stream->readEnterSection(constructionRecordIndex);
 		constructionRecord cr;
-		cr.building=getBuildingFromGid(ai.game, stream->readUint32("gid"));
+		cr.building=stream->readUint32("gid");
 		cr.assigned=stream->readUint32("assigned");
 		cr.original=stream->readUint32("original");
 		cr.is_repair=stream->readUint8("is_repair");
@@ -2795,7 +2795,7 @@ bool RandomUpgradeRepairModule::load(GAGCore::InputStream *stream, Player *playe
 	{
 		stream->readEnterSection(constructionRecordIndex);
 		constructionRecord cr;
-		cr.building=getBuildingFromGid(ai.game, stream->readUint32("gid"));
+		cr.building=stream->readUint32("gid");
 		cr.assigned=stream->readUint32("assigned");
 		cr.original=stream->readUint32("original");
 		cr.is_repair=stream->readUint8("is_repair");
@@ -2820,7 +2820,7 @@ void RandomUpgradeRepairModule::save(GAGCore::OutputStream *stream) const
 	for(std::list<constructionRecord>::const_iterator i = active_construction.begin(); i!=active_construction.end(); ++i)
 	{
 		stream->writeEnterSection(constructionRecordIndex++);
-		stream->writeUint32(i->building->gid, "gid");
+		stream->writeUint32(i->building, "gid");
 		stream->writeUint32(i->assigned, "assigned");
 		stream->writeUint32(i->original, "original");
 		stream->writeUint8(i->is_repair, "is_repair");
@@ -2834,7 +2834,7 @@ void RandomUpgradeRepairModule::save(GAGCore::OutputStream *stream) const
 	for(std::list<constructionRecord>::const_iterator i = pending_construction.begin(); i!=pending_construction.end(); ++i)
 	{
 		stream->writeEnterSection(constructionRecordIndex++);
-		stream->writeUint32(i->building->gid, "gid");
+		stream->writeUint32(i->building, "gid");
 		stream->writeUint32(i->assigned, "assigned");
 		stream->writeUint32(i->original, "original");
 		stream->writeUint8(i->is_repair, "is_repair");
@@ -2851,8 +2851,8 @@ bool RandomUpgradeRepairModule::removeOldConstruction(void)
 {
 	for (std::list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end();)
 	{
-		Building *b=i->building;
-		if(!buildingStillExists(ai.game, b))
+		Building *b=getBuildingFromGid(ai.game, i->building);
+		if(!b)
 		{
 			i=active_construction.erase(i);
 			continue;
@@ -2880,8 +2880,8 @@ bool RandomUpgradeRepairModule::updatePendingConstruction(void)
 {
 	for (std::list<constructionRecord>::iterator i = pending_construction.begin(); i!=pending_construction.end();)
 	{
-		Building *b=i->building;
-		if(!buildingStillExists(ai.game, b))
+		Building *b=getBuildingFromGid(ai.game, i->building);
+		if(!b)
 		{
 			// i belongs to pending_construction (this loop's own container),
 			// not active_construction: erasing it there instead used i, an
@@ -2922,8 +2922,8 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 	//Finally, iterate through the shuffled list of records changing the number of units allocated to upgrade the buildings.
 	for (std::list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
 	{
-		Building *b=i->building;
-		if(!buildingStillExists(ai.game, b))
+		Building *b=getBuildingFromGid(ai.game, i->building);
+		if(!b)
 			continue;
 		if(b->constructionResultState!=Building::UPGRADE && b->constructionResultState!=Building::REPAIR)
 			continue;
@@ -3020,8 +3020,8 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 
 	for (std::list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
 	{
-		Building *b=i->building;
-		if(buildingStillExists(ai.game, b))
+		Building *b=getBuildingFromGid(ai.game, i->building);
+		if(b)
 		{
 			ratios[b->type->level]+=1;
 			construction_counts[b->type->shortTypeNum]+=1;
@@ -3030,8 +3030,8 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 
 	for (std::list<constructionRecord>::iterator i = pending_construction.begin(); i!=pending_construction.end(); i++)
 	{
-		Building *b=i->building;
-		if(buildingStillExists(ai.game, b))
+		Building *b=getBuildingFromGid(ai.game, i->building);
+		if(b)
 		{
 			ratios[b->type->level]+=1;
 			construction_counts[b->type->shortTypeNum]+=1;
@@ -3142,7 +3142,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 				if(AICabino_DEBUG)
 					std::cout<<"AICabino: startNewConstruction: Found "<<available_repair<<" available workers, assigning "<<num_to_assign<<" workers to repair the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" with "<<b->maxUnitWorking<<" units already working on it."<<std::endl;
 				constructionRecord u;
-				u.building=b;
+				u.building=b->gid;
 				u.assigned=num_to_assign;
 				u.original=b->maxUnitWorking;
 				u.is_repair=true;
@@ -3164,7 +3164,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 				if(AICabino_DEBUG)
 					std::cout<<"AICabino: startNewConstruction: Found "<<available_upgrade<<" available workers, assigning "<<num_to_assign<<" workers to upgrade the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" with "<<b->maxUnitWorking<<" units already working on it."<<std::endl;
 				constructionRecord u;
-				u.building=b;
+				u.building=b->gid;
 				u.assigned=num_to_assign;
 				u.original=b->maxUnitWorking;
 				u.is_repair=false;
