@@ -4,6 +4,8 @@
 #include "MainMenuScreen.h"
 #include "FrontendTheme.h"
 #include "GlobalContainer.h"
+#include "MenuColony.h"
+#include "render/UnitSkin.h"
 #include <GUIButton.h>
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -25,12 +27,10 @@ using namespace GAGCore;
 
 namespace
 {
-const Color gold(227, 192, 119);
-const Color ink(17, 35, 32);
-const Color textColor(36, 69, 49);
-const Color muted(92, 114, 91);
-
+using namespace FrontendPalette;
 const auto fillRounded = FrontendTheme::rounded;
+// The front page still lets the colony read through, but less than before.
+const int frontPageAlpha = 210;
 }
 
 // Front-page layout and primary-action emphasis; shared drawing comes from the theme.
@@ -53,21 +53,25 @@ public:
 		auto* target = parent->getSurface();
 		const unsigned hover = focused ? 255 : getNextHighlightValue();
 		const int radius = primary ? 8 : 4;
-		if (focused) fillRounded(target, x - 3, y - 3, w + 6, h + 6, radius + 3, Color(67, 116, 75));
+		// Jelly: swell under the cursor, squash while pressed; fade in with the panel.
+		const float inflate = pressed ? -1.0f : hover * 2.0f / 255.0f;
+		const Uint8 entry = Uint8(255 * std::min(10, parent->animationFrame) / 10);
+		auto withAlpha = [entry](Color c) { return Color(c.r, c.g, c.b, Uint8(int(c.a) * entry / 255)); };
+		if (focused) fillRounded(target, x - 4, y - 4, w + 8, h + 8, radius + 4, withAlpha(violet));
 		if (primary)
 		{
-			fillRounded(target, x, y, w, h, radius, pressed ? Color(208, 172, 99) : gold);
-			if (hover) fillRounded(target, x, y, w, h, radius, Color(255, 245, 211, hover / 5));
+			FrontendTheme::swell(target, x, y, w, h, radius, withAlpha(pressed ? goldPressed : gold), withAlpha(ink), 1, inflate);
+			if (hover) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(255, 235, 170, hover / 4));
 		}
 		else
 		{
-			fillRounded(target, x, y, w, h, radius, Color(234, 240, 228));
-			if (hover) fillRounded(target, x, y, w, h, radius, Color(169, 196, 157, hover / 2));
-			if (pressed) fillRounded(target, x, y, w, h, radius, Color(92, 130, 71, 55));
+			FrontendTheme::swell(target, x, y, w, h, radius, withAlpha(gel), withAlpha(ink), 1, inflate);
+			if (hover) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(gold.r, gold.g, gold.b, hover / 2));
+			if (pressed) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(180, 140, 50, 70));
 		}
 		Font* labelFont=fontPtr;
 		if(labelFont->getStringWidth(text)>w-(primary?44:28)) labelFont=Toolkit::getFont("front-small");
-		labelFont->pushStyle(Font::Style(Font::STYLE_NORMAL, primary ? ink : textColor));
+		labelFont->pushStyle(Font::Style(Font::STYLE_NORMAL, withAlpha(ink)));
 		const int textY = y + (h - labelFont->getStringHeight(text)) / 2;
 		int cx, cy, cw, ch;
 		target->getClipRect(&cx, &cy, &cw, &ch);
@@ -138,7 +142,7 @@ MainMenuScreen::MainMenuScreen()
 						double coverage = goldInk ? (int(green) - int(blue) - 20) / 65.0 : (232 - int(red)) / 200.0;
 						coverage = coverage < 0.03 ? 0.0 : std::min(1.0, coverage);
 						pixels[col] = SDL_MapRGBA(fitted->format,
-							goldInk ? 227 : 36, goldInk ? 192 : 69, goldInk ? 119 : 49,
+							goldInk ? gold.r : ink.r, goldInk ? gold.g : ink.g, goldInk ? gold.b : ink.b,
 							static_cast<Uint8>(std::lround(255 * coverage)));
 					}
 				}
@@ -151,6 +155,7 @@ MainMenuScreen::MainMenuScreen()
 
 
 	const int x = panelX + 24, w = panelW - 48;
+	glob.x = x + 8;
 	int y = panelY + (compact ? 74 : 110);
 	auto add = [&](const char* label, int action, int h, const char* font, bool primary = false)
 	{
@@ -193,19 +198,85 @@ MainMenuScreen::~MainMenuScreen()
 void MainMenuScreen::paint()
 {
 	if (FrontendTheme::current) FrontendTheme::current->background(gfx, false);
-	fillRounded(gfx, panelX + 2, panelY + 3, panelW, panelH, 10, Color(15, 39, 25, 35));
-	fillRounded(gfx, panelX, panelY, panelW, panelH, 10, Color(230, 231, 210, 248));
-	fillRounded(gfx, panelX + 24, panelY + 12, 36, 4, 2, gold);
-	if (wordmark) gfx->drawSurface(panelX + 24, panelY + 24, wordmark.get());
+	// The front page fades in over the screen's first ten frames.
+	const int entry = std::min(10, animationFrame);
+	auto withAlpha = [entry](Color c) { return Color(c.r, c.g, c.b, Uint8(int(c.a) * entry / 10)); };
+	fillRounded(gfx, panelX + 3, panelY + 5, panelW, panelH, 12, withAlpha(Color(12, 28, 16, 70)));
+	FrontendTheme::blob(gfx, panelX, panelY, panelW, panelH, 12,
+		withAlpha(Color(membrane.r, membrane.g, membrane.b, FrontendTheme::panelAlpha(frontPageAlpha))), withAlpha(ink), 2);
+	fillRounded(gfx, panelX + 24, panelY + 12, 36, 4, 2, withAlpha(gold));
+	if (wordmark) gfx->drawSurface(panelX + 24, panelY + 24, wordmark.get(), Uint8(255 * entry / 10));
 	else
 	{
 		auto* title = Toolkit::getFont("front-title");
-		title->setStyle(Font::Style(Font::STYLE_NORMAL, textColor));
+		title->setStyle(Font::Style(Font::STYLE_NORMAL, ink));
 		gfx->drawString(panelX + 24, panelY + 24, title, "Globulation 2");
 	}
 	auto* caption = Toolkit::getFont("front-caption");
 	caption->setStyle(Font::Style(Font::STYLE_NORMAL, muted));
 	gfx->drawString(panelX + 24, panelY + panelH - 30, caption, PACKAGE_VERSION);
+
+	// The glob: the colony's own worker sprite, in its team colour, walking the
+	// otherwise empty band above the version caption. Direction 3 faces east,
+	// 7 west; eight walk frames per direction.
+	if (globFrames.empty() && FrontendTheme::current && FrontendTheme::current->colony->ready()) buildGlobFrames();
+	if (!globFrames.empty())
+	{
+		const int frame = glob.walking ? int(glob.phase / 80) % 8 : 0;
+		auto* image = globFrames[(glob.dir > 0 ? 0 : 8) + frame].get();
+		const int gx = int(glob.x) - (image->getW() - 32) / 2, gy = panelY + panelH - 92 - (image->getH() - 32) / 2;
+		gfx->drawSurface(gx, gy, image, Uint8(255 * entry / 10));
+	}
+}
+
+void MainMenuScreen::buildGlobFrames()
+{
+	const auto& skin = g_unitSkins[WORKER];
+	if (!skin.sprite) return;
+	skin.sprite->setBaseColor(FrontendTheme::current->colony->teamColor());
+	for (int direction : {3, 7})
+		for (int frame = 0; frame < 8; ++frame)
+		{
+			const int index = int(skin.startImage[WALK]) + 8 * direction + frame;
+			const int w = skin.sprite->getW(index), h = skin.sprite->getH(index);
+			DrawableSurface canvas(w, h);
+			SDL_Surface* pixels = canvas.getSDLSurface();
+			SDL_FillRect(pixels, nullptr, 0);
+			canvas.drawSprite(0, 0, skin.sprite, index);
+			for (int row = 0; row < h; ++row)
+			{
+				auto* line = reinterpret_cast<Uint32*>(static_cast<Uint8*>(pixels->pixels) + row * pixels->pitch);
+				for (int col = 0; col < w; ++col)
+				{
+					Uint8 red, green, blue, alpha;
+					SDL_GetRGBA(line[col], pixels->format, &red, &green, &blue, &alpha);
+					if (alpha < 32) line[col] = SDL_MapRGBA(pixels->format, 0, 0, 0, 0);
+				}
+			}
+			SDL_SetSurfaceBlendMode(pixels, SDL_BLENDMODE_BLEND);
+			globFrames.push_back(std::make_unique<DrawableSurface>(pixels));
+		}
+}
+
+void MainMenuScreen::onTimer(Uint32 tick)
+{
+	if (glob.lastTick == 0) { glob.lastTick = tick; return; }
+	const Uint32 elapsed = std::min<Uint32>(tick - glob.lastTick, 100);
+	glob.lastTick = tick;
+	glob.walking = tick >= glob.idleUntil;
+	if (!glob.walking) return;
+	const int left = panelX + 32, right = panelX + panelW - 64;
+	glob.x += glob.dir * 24.0 * elapsed / 1000.0;
+	glob.phase += elapsed;
+	glob.seed = glob.seed * 1664525u + 1013904223u;
+	const bool atEdge = glob.x <= left || glob.x >= right;
+	// Turn at the edges; otherwise pause now and then, about once every six seconds.
+	if (atEdge || (glob.seed >> 8) % 6000 < elapsed)
+	{
+		glob.x = std::clamp(glob.x, double(left), double(right));
+		if (atEdge) glob.dir = -glob.dir;
+		glob.idleUntil = tick + 1000 + (glob.seed >> 16) % 2000;
+	}
 }
 
 void MainMenuScreen::onSDLEvent(SDL_Event* event)

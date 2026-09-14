@@ -36,6 +36,8 @@ namespace GAGGUI
 		virtual ~Style() { }
 		// Optional presentation tick; default styles have no background work.
 		virtual void onFrame() { }
+		// Optional pass over the finished frame, after every widget has painted.
+		virtual void afterPaint(GAGCore::DrawableSurface*) { }
 		virtual void drawButtonSelection(GAGCore::DrawableSurface*, int, int, int, int) { }
 		virtual bool usesThemeTextColor() const { return false; }
 		virtual void drawFieldBackground(GAGCore::DrawableSurface*, int, int, int, int) { }

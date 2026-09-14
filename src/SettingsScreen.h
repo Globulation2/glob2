@@ -97,6 +97,9 @@ private:
     void layout();
     void paintRow(const Row& row);
     void drawText(int x,int y,const std::string& text, bool muted=false, bool heading=false);
+    void fill(const Rect& r,GAGCore::Color color,int radius=4);
+    void control(const Rect& r,GAGCore::Color fill,bool focused,int radius=5);
+    void rule(int x,int y,int w);
     int wrappedHeight(const std::string& text,int width,bool heading=false) const;
     void drawWrapped(int x,int y,int width,const std::string& text,bool muted=false,bool heading=false);
     std::vector<std::string> wrap(const std::string& text,int width,bool heading=false) const;
