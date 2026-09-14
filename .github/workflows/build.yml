@@ -6,6 +6,12 @@ on:
   pull_request:
   workflow_dispatch:
 
+# A new push to a pull request supersedes its running checks. Master runs are
+# never cancelled: each one saves the compiler caches the next PRs restore.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   linux:
     name: linux (${{ matrix.image }})
@@ -20,7 +26,9 @@ jobs:
       # and time_macros would let it cache the __DATE__/__TIME__ build banner in
       # GlobalContainerArgs.cpp.
       CCACHE_COMPILERCHECK: content
-      CCACHE_MAXSIZE: 1G
+      # A ceiling, not a working size: each saved cache is pruned to the entries
+      # its run used, so no build evicts what another is about to read.
+      CCACHE_MAXSIZE: 5G
     strategy:
       fail-fast: false
       matrix:
@@ -75,19 +83,55 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: ccache-${{ matrix.runner }}-
+          key: ccache-main-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: ccache-main-${{ matrix.runner }}-
 
       - name: Reset the cache statistics
         id: cache_ready
-        run: ccache -z
+        run: |
+          ccache -z
+          echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
 
-      - name: Build glob2
-        run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1
+      - name: Build glob2 and the regression harnesses
+        run: |
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 build/src/glob2 \
+            map-report-test \
+            torus-render-test \
+            map-preview-test \
+            custom-setup-test \
+            map-generator-defaults-test \
+            map-generator-golden-test \
+            point-bar-render-test \
+            selection-test \
+            building-footprint-test \
+            entering-unit-save-test \
+            clearing-gradient-test \
+            trapped-unit-test \
+            failing-unit-markers-test \
+            entering-unit-draw-test \
+            immobile-unit-gradient-test \
+            building-expel-test \
+            building-gradient-invalidation-test \
+            hiring-bucket-test \
+            level-gate-test \
+            resource-fetch-target-test \
+            round-trip-hunger-gate-test \
+            inn-swap-test \
+            savegame-safety-test \
+            buffered-file-test \
+            team-stats-save-test \
+            terrain-test \
+            global-gradient-test \
+            lan-test \
+            aspect-test \
+            resize-test \
+            text-raster-test \
+            map-render-resize-test \
+            menu-colony-harness \
+            speed-tests
 
       - name: Test map JSON reports
         run: |
-          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 map-report-test
           python3 test/test_map_report.py build/src/glob2 build/src/MapReportHarness
       - name: Upload map JSON reports and command log
         if: always()
@@ -120,7 +164,6 @@ jobs:
 
       - name: Exercise GPU and software game rendering
         run: |
-          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 torus-render-test
           mkdir -p /tmp/glob2-render-profile
           GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
             xvfb-run -a build/src/torus-render-test -g -F -m -s 1120x720
@@ -132,7 +175,6 @@ jobs:
 
       - name: Build and run pre-game map preview regressions
         run: |
-          scons -j$(nproc) release=1 server=0 map-preview-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapPreviewHarness
           mkdir -p artifacts/map-preview
           timeout 180s xvfb-run -a ./build/src/MapPreviewHarness glob2-map-preview-tests --visual artifacts/map-preview
@@ -147,14 +189,7 @@ jobs:
 
       - name: Build and run custom-game setup regressions
         run: |
-          scons -j$(nproc) release=1 server=0 custom-setup-test map-generator-defaults-test map-generator-golden-test
           timeout 60s ./build/src/MapGeneratorDefaultsTest glob2-map-defaults-ci
-          # Golden maps: rows exist per platform and this platform must have them. --print first,
-          # so the rows a new platform would record are in the log even when the check that
-          # follows fails and can be committed from there.
-          timeout 300s ./build/src/MapGeneratorGoldenTest glob2-golden-ci --print
-          timeout 300s ./build/src/MapGeneratorGoldenTest glob2-golden-ci --require-rows
-          timeout 600s ./build/src/MapGeneratorGoldenTest glob2-golden-ci --sweep
           timeout 180s ./build/src/CustomGameSetupHarness
           mkdir -p artifacts/custom-game-ci
           timeout 180s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/CustomGameSetupHarness artifacts/custom-game-ci 2>&1 | grep -v '^Map generation\|^Landscape preview\|^Settings::load' | tee artifacts/custom-game-ci/ui.log
@@ -165,7 +200,6 @@ jobs:
 
       - name: Test status-bar bounds in GPU and software rendering
         run: |
-          scons -j$(nproc) release=1 server=0 point-bar-render-test
           SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
             xvfb-run -a ./build/src/point-bar-render-test gl
           SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
@@ -173,34 +207,28 @@ jobs:
 
       - name: Build and run the selection lifetime regression
         run: |
-          scons -j$(nproc) release=1 server=0 selection-test
           ./build/src/GameGUISelectionHarness
 
       - name: Build and run the wrapped building footprint regression
         run: |
-          scons -j$(nproc) release=1 server=0 building-footprint-test
           ./build/src/BuildingFootprintHarness
           ./build/src/BuildingFootprintHarness --load test/fixtures/wrapped-building/reproducer.game
 
       - name: Build and run the entering unit save regression
         run: |
-          scons -j$(nproc) release=1 server=0 entering-unit-save-test
           ./build/src/EnteringUnitSaveHarness
           ./build/src/EnteringUnitSaveHarness --load test/fixtures/entering-explorer/reproducer.game
 
       - name: Test clearing flag resource bounds
         run: |
-          scons -j$(nproc) release=1 server=0 clearing-gradient-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/ClearingFlagGradientTest
 
       - name: Test trapped colony elimination
         run: |
-          scons -j$(nproc) release=1 server=0 trapped-unit-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/TrappedUnitLifecycleTest
 
       - name: Build and run the failing-unit markers regression
         run: |
-          scons -j$(nproc) release=1 server=0 failing-unit-markers-test
           timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/FailingUnitMarkersHarness
       - name: Upload the failing-unit markers scene
         if: always()
@@ -211,84 +239,66 @@ jobs:
           if-no-files-found: ignore
       - name: Build and run the entering unit draw regression
         run: |
-          scons -j$(nproc) release=1 server=0 entering-unit-draw-test
           timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/EnteringUnitDrawHarness
 
       - name: Build and run the immobile unit gradient regression
         run: |
-          scons -j$(nproc) release=1 server=0 immobile-unit-gradient-test
           ./build/src/ImmobileUnitGradientHarness
 
       - name: Build and run the building expulsion regression
         run: |
-          scons -j$(nproc) release=1 server=0 building-expel-test
           timeout 300s ./build/src/BuildingExpelHarness
 
       - name: Build and run the building gradient invalidation regression
         run: |
-          scons -j$(nproc) release=1 server=0 building-gradient-invalidation-test
           ./build/src/BuildingGradientInvalidationHarness
 
       - name: Build and run the hiring bucket regression
         run: |
-          scons -j$(nproc) release=1 server=0 hiring-bucket-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/HiringBucketHarness .
 
       - name: Build and run the hiring level-gate regression
         run: |
-          scons -j$(nproc) release=1 server=0 level-gate-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/LevelGateHarness .
       - name: Build and run the resource-fetch target regression
         run: |
-          scons -j$(nproc) release=1 server=0 resource-fetch-target-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/ResourceFetchTargetHarness .
 
       - name: Build and run the round-trip hunger gate regression
         run: |
-          scons -j$(nproc) release=1 server=0 round-trip-hunger-gate-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/RoundTripHungerGateHarness .
 
       - name: Build and run the inn swap regression
         run: |
-          scons -j$(nproc) release=1 server=0 inn-swap-test
           timeout 120s ./build/src/InnSwapHarness
 
       - name: Test savegame loading and atomic autosaves
         run: |
-          scons -j$(nproc) release=1 server=0 savegame-safety-test buffered-file-test
           python3 test/run-savegame-safety-tests.py build/src/SavegameSafetyHarness
           ./build/src/BufferedFileStreamHarness
 
       - name: Test team statistics save compatibility
         run: |
-          scons -j$(nproc) release=1 server=0 team-stats-save-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/TeamStatsSaveHarness .
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness . --legacy test/fixtures/team-stats/version88.game
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness . --legacy games/gd-small-2ai.game
 
-      - name: Build the YOG server
-        run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=1 --build=build-server
-
       - name: Build and run the terrain resource regression
         run: |
-          scons -j$(nproc) release=1 server=0 terrain-test
           ./build/src/TerrainResourcesHarness
 
       - name: Build and run the global gradient regression
         run: |
-          scons -j$(nproc) release=1 server=0 global-gradient-test
           ./build/src/GlobalGradientHarness
 
       - name: Build and run the LAN session regression
         run: |
-          scons -j$(nproc) release=1 server=0 lan-test
           python3 test/run_lan_session_test.py build/src/LANSessionHarness
 
       - name: Build and run the aspect-ratio regression
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         run: |
-          scons -j$(nproc) release=1 server=0 aspect-test
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/FullscreenAspectHarness gl
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/FullscreenAspectHarness software
 
@@ -296,7 +306,6 @@ jobs:
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         run: |
-          scons -j$(nproc) release=1 server=0 resize-test
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/WindowResizeHarness gl
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/WindowResizeHarness software
 
@@ -304,7 +313,6 @@ jobs:
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         run: |
-          scons -j$(nproc) release=1 server=0 text-raster-test
           mkdir -p artifacts/text-raster
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/TextRasterHarness artifacts/text-raster
 
@@ -313,47 +321,32 @@ jobs:
           SDL_VIDEODRIVER: dummy
           SDL_AUDIODRIVER: dummy
         run: |
-          scons -j$(nproc) release=1 server=0 map-render-resize-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderResizeHarness
           SDL_VIDEODRIVER=x11 LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1920x1200x24' python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderResizeHarness --gl
-
-      - name: Build and run the tests
-        working-directory: test
-        run: |
-          scons CXX=${{ matrix.compiler }} -j$(nproc)
-          ./TestsRunner
-          for harness in ./*Harness ./*Test; do
-            echo "== $harness"
-            "$harness"
-          done
 
       - name: Test front-end colony isolation and menu navigation
         env:
           SDL_VIDEODRIVER: dummy
           SDL_AUDIODRIVER: dummy
         run: |
-          scons -j$(nproc) release=1 server=0 menu-colony-harness
           ./build/src/MenuColonyHarness check data/menu/colony.bin
           ./build/src/MenuColonyHarness navigation unused
 
       - name: Test game speed controls and playback
         run: |
-          scons -j$(nproc) release=1 server=0 speed-tests
           xvfb-run -a python3 test/run-game-speed-tests.py
-
-      - name: Build without OpenGL
-        run: |
-          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 --build=build-software
-          python3 test/SoftwareStartupTest.py build-software/src/glob2
-          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 --build=build-software torus-render-test
-          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
-            build-software/src/torus-render-test -g -F -m -s 1120x720
 
       # A run that touched a widely included header and still shows near-total
       # direct hits means the cache is not seeing the change.
       - name: Report the cache statistics
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
         run: ccache -s -v
+
+      # Keep only what this run compiled or reused (a hit refreshes an entry's
+      # timestamp), so a save never carries older commits' objects forward.
+      - name: Drop cache entries this run did not use
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
+        run: ccache --evict-older-than "$(( $(date +%s) - CCACHE_RUN_START + 60 ))s"
 
       # Only master writes. PR branches cannot read each other's caches anyway,
       # and letting every PR save would churn the repository's cache quota and
@@ -365,11 +358,220 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
+          key: ccache-main-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+  linux-variants:
+    name: linux variants (${{ matrix.image }})
+    runs-on: ${{ matrix.runner }}
+    env:
+      CCACHE: 1
+      CCACHE_DIR: /tmp/glob2-ccache
+      # Hash the compiler binary instead of trusting its mtime, so a g++ point
+      # release landing inside the base image cannot reuse the old one's
+      # entries. CCACHE_SLOPPINESS is deliberately left unset: include_file_mtime
+      # and include_file_ctime would make ccache trust timestamps over content,
+      # and time_macros would let it cache the __DATE__/__TIME__ build banner in
+      # GlobalContainerArgs.cpp.
+      CCACHE_COMPILERCHECK: content
+      # A ceiling, not a working size: each saved cache is pruned to the entries
+      # its run used, so no build evicts what another is about to read.
+      CCACHE_MAXSIZE: 5G
+    strategy:
+      fail-fast: false
+      matrix:
+        # Both ends of the supported toolchain range: 22.04 is g++ 11 / Boost
+        # 1.74 (catches C++20 features the oldest supported compiler lacks),
+        # 24.04 is g++ 13 / Boost 1.83 (catches new diagnostics and headers
+        # that no longer come in transitively).
+        include:
+          - image: ubuntu:22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+          - image: ubuntu:24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
+    steps:
+      - name: Install dependencies
+        timeout-minutes: 15
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          # Fetch immutable package indexes to avoid mirror-sync mismatches,
+          # and bound network stalls without weakening signature verification.
+          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
+          Acquire::By-Hash "force";
+          Acquire::Retries "3";
+          Acquire::http::Timeout "30";
+          Acquire::https::Timeout "30";
+          EOF
+          sudo apt-get update -qq
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config ccache \
+            libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
+            libvorbis-dev libogg-dev libspeex-dev \
+            libboost-date-time-dev libboost-thread-dev libboost-system-dev \
+            zlib1g-dev libfribidi-dev libpcre3-dev \
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
+            libcppunit-dev
+
+      - uses: actions/checkout@v4
+
+      - name: Restore the compiler cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-variants-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: ccache-variants-${{ matrix.runner }}-
+
+      - name: Reset the cache statistics
+        id: cache_ready
+        run: |
+          ccache -z
+          echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
+
+      - name: Build and run the tests
+        working-directory: test
+        run: |
+          # test/ reads the root config.h a client configure writes; the server and
+          # software builds below rewrite it. build/data has nothing to build.
+          (cd .. && scons release=1 server=0 build/data)
+          scons CXX=${{ matrix.compiler }} -j$(nproc)
+          ./TestsRunner
+          for harness in ./*Harness ./*Test; do
+            echo "== $harness"
+            "$harness"
+          done
+
+      - name: Build the YOG server
+        run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=1 --build=build-server
+
+      - name: Build without OpenGL
+        run: |
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 --build=build-software build-software/src/glob2 torus-render-test
+          python3 test/SoftwareStartupTest.py build-software/src/glob2
+          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
+            build-software/src/torus-render-test -g -F -m -s 1120x720
+
+      # A run that touched a widely included header and still shows near-total
+      # direct hits means the cache is not seeing the change.
+      - name: Report the cache statistics
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
+        run: ccache -s -v
+
+      # Keep only what this run compiled or reused (a hit refreshes an entry's
+      # timestamp), so a save never carries older commits' objects forward.
+      - name: Drop cache entries this run did not use
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
+        run: ccache --evict-older-than "$(( $(date +%s) - CCACHE_RUN_START + 60 ))s"
+
+      # Only master writes. PR branches cannot read each other's caches anyway,
+      # and letting every PR save would churn the repository's cache quota and
+      # evict the entries PRs restore from. Saved even when a step failed: the
+      # entries are content-addressed, so objects compiled during a run whose
+      # tests failed are still the right objects.
+      - name: Save the compiler cache
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-variants-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+  linux-map-generators:
+    name: linux map generators (${{ matrix.image }})
+    runs-on: ${{ matrix.runner }}
+    env:
+      CCACHE: 1
+      CCACHE_DIR: /tmp/glob2-ccache
+      # Hash the compiler binary instead of trusting its mtime, so a g++ point
+      # release landing inside the base image cannot reuse the old one's
+      # entries. CCACHE_SLOPPINESS is deliberately left unset: include_file_mtime
+      # and include_file_ctime would make ccache trust timestamps over content,
+      # and time_macros would let it cache the __DATE__/__TIME__ build banner in
+      # GlobalContainerArgs.cpp.
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 1G
+    strategy:
+      fail-fast: false
+      matrix:
+        # Both ends of the supported toolchain range: 22.04 is g++ 11 / Boost
+        # 1.74 (catches C++20 features the oldest supported compiler lacks),
+        # 24.04 is g++ 13 / Boost 1.83 (catches new diagnostics and headers
+        # that no longer come in transitively).
+        include:
+          - image: ubuntu:22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+          - image: ubuntu:24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
+    steps:
+      - name: Install dependencies
+        timeout-minutes: 15
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          # Fetch immutable package indexes to avoid mirror-sync mismatches,
+          # and bound network stalls without weakening signature verification.
+          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
+          Acquire::By-Hash "force";
+          Acquire::Retries "3";
+          Acquire::http::Timeout "30";
+          Acquire::https::Timeout "30";
+          EOF
+          sudo apt-get update -qq
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config ccache \
+            libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
+            libvorbis-dev libogg-dev libspeex-dev \
+            libboost-date-time-dev libboost-thread-dev libboost-system-dev \
+            zlib1g-dev libfribidi-dev libpcre3-dev \
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
+            libcppunit-dev
+
+      - uses: actions/checkout@v4
+
+      # Reads the main job's cache and never saves: it compiles a subset of the
+      # same objects with the same flags.
+      - name: Restore the compiler cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-main-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: ccache-main-${{ matrix.runner }}-
+
+      - name: Build the map generator golden test
+        run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 map-generator-golden-test
+
+      - name: Check golden maps and sweep colony counts
+        run: |
+          # Golden maps: rows exist per platform and this platform must have them. The check and
+          # the sweep's shards share nothing, so they run side by side with separate
+          # profiles; logs are replayed in order. A failing check then prints the rows this
+          # platform produces, so a new platform's rows can be committed from the log.
+          golden() { log=$1; shift; timeout 600s ./build/src/MapGeneratorGoldenTest "$@" > "$log" 2>&1; }
+          golden /tmp/golden-rows.log glob2-golden-rows --require-rows & rows=$!
+          sweeps=()
+          for shard in 0 1 2 3; do
+            golden /tmp/golden-sweep-$shard.log glob2-golden-sweep-$shard --sweep $shard/4 & sweeps+=($!)
+          done
+          status=0
+          if ! wait $rows; then
+            status=1
+            golden /tmp/golden-print.log glob2-golden-print --print || true
+            cat /tmp/golden-print.log
+          fi
+          cat /tmp/golden-rows.log
+          for i in 0 1 2 3; do wait ${sweeps[$i]} || status=1; cat /tmp/golden-sweep-$i.log; done
+          [ $status = 0 ]
 
   windows:
     name: windows (mingw-w64)
     runs-on: windows-latest
+    env:
+      CCACHE: 1
+      CCACHE_DIR: ${{ github.workspace }}\.ccache
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 5G
     defaults:
       run:
         shell: msys2 {0}
@@ -397,15 +599,38 @@ jobs:
             mingw-w64-x86_64-boost
             mingw-w64-x86_64-libepoxy
             mingw-w64-x86_64-libsystre
+            mingw-w64-x86_64-ccache
 
       - uses: actions/checkout@v4
 
-      - name: Build glob2
-        run: scons -j$(nproc) release=1 mingw=1
+      - name: Restore the compiler cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-windows-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: ccache-windows-
+
+      - name: Reset the cache statistics
+        id: cache_ready
+        run: |
+          ccache -z
+          echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
+
+      - name: Build glob2 and the regression harnesses
+        run: |
+          scons -j$(nproc) release=1 mingw=1 server=0 build/src/glob2.exe \
+            map-report-test \
+            clearing-gradient-test \
+            point-bar-render-test \
+            trapped-unit-test \
+            hiring-bucket-test \
+            map-render-resize-test \
+            map-preview-test \
+            savegame-safety-test \
+            team-stats-save-test
 
       - name: Test map JSON reports
         run: |
-          scons -j$(nproc) release=1 mingw=1 server=0 map-report-test
           python3 test/test_map_report.py build/src/glob2.exe build/src/MapReportHarness.exe
       - name: Upload map JSON reports and command log
         if: always()
@@ -425,17 +650,14 @@ jobs:
 
       - name: Test clearing flag resource bounds
         run: |
-          scons -j$(nproc) release=1 mingw=1 server=0 clearing-gradient-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/ClearingFlagGradientTest.exe
       - name: Test status-bar bounds in software rendering
         run: |
-          scons -j$(nproc) release=1 mingw=1 server=0 point-bar-render-test
           SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
             ./build/src/point-bar-render-test.exe software
 
       - name: Test trapped colony elimination
         run: |
-          scons -j$(nproc) release=1 mingw=1 server=0 trapped-unit-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/TrappedUnitLifecycleTest.exe
 
       - name: Test torus geometry, picking and cloud coordinates
@@ -451,7 +673,6 @@ jobs:
 
       - name: Build and run the hiring bucket regression
         run: |
-          scons -j$(nproc) release=1 mingw=1 server=0 hiring-bucket-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/HiringBucketHarness.exe .
 
       - name: Check game rendering across repeated map copies
@@ -459,25 +680,38 @@ jobs:
           SDL_VIDEODRIVER: dummy
           SDL_AUDIODRIVER: dummy
         run: |
-          scons -j$(nproc) release=1 mingw=1 server=0 map-render-resize-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderResizeHarness.exe
 
       - name: Build and run pre-game map preview regressions
         run: |
-          scons -j2 release=1 server=0 map-preview-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapPreviewHarness.exe
 
       - name: Test savegame loading and atomic autosaves
         run: |
-          scons -j$(nproc) release=1 mingw=1 server=0 savegame-safety-test
           python3 test/run-savegame-safety-tests.py build/src/SavegameSafetyHarness.exe
 
       - name: Test team statistics save compatibility
         run: |
-          scons -j$(nproc) release=1 mingw=1 server=0 team-stats-save-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/TeamStatsSaveHarness.exe .
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness.exe . --legacy test/fixtures/team-stats/version88.game
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness.exe . --legacy games/gd-small-2ai.game
 
       - name: Build the YOG server
         run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
+
+      - name: Report the cache statistics
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
+        run: ccache -s -v
+
+      # Keep only what this run compiled or reused (a hit refreshes an entry's
+      # timestamp), so a save never carries older commits' objects forward.
+      - name: Drop cache entries this run did not use
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
+        run: ccache --evict-older-than "$(( $(date +%s) - CCACHE_RUN_START + 60 ))s"
+
+      - name: Save the compiler cache
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-windows-${{ github.run_id }}-${{ github.run_attempt }}
