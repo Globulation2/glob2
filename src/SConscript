@@ -174,6 +174,7 @@ LandscapePreviewer.cpp
 MainMenuScreen.cpp
 map/Map.cpp
 map/generator/compatibility/LegacyGenerationDescriptor.cpp
+map/generator/MapHomogen.cpp
 map/generator/core/GenerationContext.cpp
 map/generator/core/GenerationService.cpp
 map/generator/core/GenerationValidation.cpp

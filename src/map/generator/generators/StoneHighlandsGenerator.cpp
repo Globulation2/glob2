@@ -159,22 +159,43 @@ struct Disjoint
 	}
 };
 
-// Distinct valley ids within Chebyshev radius r of a tile, sorted, at most `limit` of them.
-int nearbyValleys(const Layout &L, int x, int y, int r, int ids[], int limit)
+// Up to three distinct valley ids, in ascending order, so a pair of valleys keys the same map entry
+// whichever of the two a scan met first.
+struct ValleyIds
 {
+	int id[3] = {-1, -1, -1};
 	int count = 0;
+	bool has(int v) const
+	{
+		return (count > 0 && id[0] == v) || (count > 1 && id[1] == v) || (count > 2 && id[2] == v);
+	}
+	// Insertion into the sorted prefix; the set holds at most three ids, so this is the whole sort
+	// and the compiler can see every index stays inside the array.
+	void add(int v)
+	{
+		int i = count++;
+		for (; i > 0 && id[i - 1] > v; --i)
+			id[i] = id[i - 1];
+		id[i] = v;
+	}
+};
+
+// The distinct valley ids within Chebyshev radius r of a tile, sorted, stopping at three: the
+// callers only ask whether a tile sees two valleys or a junction of three or more.
+ValleyIds nearbyValleys(const Layout &L, int x, int y, int r)
+{
+	ValleyIds ids;
 	for (int dy = -r; dy <= r; ++dy)
 		for (int dx = -r; dx <= r; ++dx)
 		{
 			const int v = L.valley[L.t.at(x + dx, y + dy)];
-			if (v < 0 || std::find(ids, ids + count, v) != ids + count)
+			if (v < 0 || ids.has(v))
 				continue;
-			if (count == limit)
-				return count;
-			ids[count++] = v;
+			if (ids.count == 3)
+				return ids;
+			ids.add(v);
 		}
-	std::sort(ids, ids + count);
-	return count;
+	return ids;
 }
 
 // Whether valleys a and b meet inside the window around (cx, cy), walking through non-ridge
@@ -619,15 +640,14 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			// Not near/far: both are legacy macros in Windows' windef.h that expand to nothing,
 			// which turns `int near[3]` into a structured binding declaration and fails to compile
 			// on mingw.
-			int nearIds[3], farIds[3];
-			const int count = nearbyValleys(L, x, y, 2, nearIds, 3);
-			if (count >= 3)
+			const ValleyIds close = nearbyValleys(L, x, y, 2);
+			if (close.count >= 3)
 				junction[i] = 1;
-			for (int p = 0; p < count; ++p)
-				for (int q = p + 1; q < count; ++q)
-					anyPair[{nearIds[p], nearIds[q]}].push_back(i);
-			if (count == 2 && nearbyValleys(L, x, y, reach, farIds, 3) == 2)
-				exclusive[{nearIds[0], nearIds[1]}].push_back(i);
+			for (int p = 0; p < close.count; ++p)
+				for (int q = p + 1; q < close.count; ++q)
+					anyPair[{close.id[p], close.id[q]}].push_back(i);
+			if (close.count == 2 && nearbyValleys(L, x, y, reach).count == 2)
+				exclusive[{close.id[0], close.id[1]}].push_back(i);
 		}
 	const std::vector<int> alongRidge = stepsFrom(t, junction, L.ridge);
 
@@ -1132,7 +1152,7 @@ GeneratorDefinition stoneHighlandsDefinition()
 	return {"stone-highlands",
 			14,
 			"Stone highlands",
-			2,
+			3,
 			false,
 			{// Average spacing between valley centres, in tiles.
 			 {"valley-size", "Valley size", 20, 44, 4, 32, ControlGroup::Layout},

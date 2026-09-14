@@ -337,7 +337,7 @@ void warpCorners(Tessellation &g, int reach, const std::vector<unsigned char> &w
 	// Pairs that could come within minimumGap once both move, and the gap each must keep: its
 	// unwarped gap, or minimumGap if that is less. Obstacles sharing a corner meet there by design.
 	const int drift = 2 * (reach / kSubtile + 2);
-	std::vector<std::vector<std::pair<int, int>>> near(obstacles.size());
+	std::vector<std::vector<std::pair<int, int>>> nearby(obstacles.size());
 	for (size_t a = 0; a < obstacles.size(); ++a)
 		for (size_t b = a + 1; b < obstacles.size(); ++b)
 		{
@@ -351,8 +351,8 @@ void warpCorners(Tessellation &g, int reach, const std::vector<unsigned char> &w
 			if (apart >= minimumGap + drift)
 				continue;
 			const int floor = std::min(apart, minimumGap);
-			near[a].push_back({int(b), floor});
-			near[b].push_back({int(a), floor});
+			nearby[a].push_back({int(b), floor});
+			nearby[b].push_back({int(a), floor});
 		}
 
 	const auto clearanceOf = [&](int cell)
@@ -384,7 +384,7 @@ void warpCorners(Tessellation &g, int reach, const std::vector<unsigned char> &w
 			for (size_t k = 0; fits && k < cornerObstacles[corner].size(); ++k)
 			{
 				const int o = cornerObstacles[corner][k];
-				for (const auto &pair : near[o])
+				for (const auto &pair : nearby[o])
 					if (gap(obstacles[o], obstacles[pair.first], pair.second) < pair.second)
 					{
 						fits = false;
