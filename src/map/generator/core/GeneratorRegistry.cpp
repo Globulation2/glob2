@@ -24,7 +24,6 @@
 #include "TidalFlatsGenerator.h"
 #include "UniformGenerator.h"
 #include "WatershedGenerator.h"
-#include "MarchesGenerator.h"
 #include "FingerprintGenerator.h"
 #include "RainShadowGenerator.h"
 #include "OldGrowthGenerator.h"
@@ -32,7 +31,6 @@
 #include "PolderGenerator.h"
 #include "OldTownGenerator.h"
 #include "AnthillGenerator.h"
-#include "PatchworkGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -136,7 +134,6 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 carouselDefinition(),
 											 amphitheatreDefinition(),
 											 switchbacksDefinition(),
-											 marchesDefinition(),
 											 fingerprintDefinition(),
 											 rainShadowDefinition(),
 											 oldGrowthDefinition(),
@@ -144,7 +141,6 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 polderDefinition(),
 											 oldTownDefinition(),
 											 anthillDefinition(),
-											 patchworkDefinition(),
 											 ruggedArchipelagoDefinition(),
 											 concreteIslandsDefinition(),
 											 craterLakesDefinition(),

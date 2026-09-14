@@ -11,6 +11,7 @@
 #include "Orbits.h"
 #include "Patterns.h"
 #include "Pipeline.h"
+#include "Points.h"
 #include "Planting.h"
 #include "Resources.h"
 #include "Roads.h"
@@ -43,6 +44,18 @@ using namespace MapGeneration;
 // pools decide where the fields are and the lee sand is a desert even though it is walkable: an
 // army on it is far from any inn. Sand also carries no building, so a forward base has to wait for
 // the next valley.
+//
+// FEEDBACK 2026-09-13 (first play): "default amount of water is not enough. the ponds need to be
+// deeper and more connected to each other. also, for the passes that connect between the ridges, we
+// need sand roadways leading inland to prevent those chasms from being overgrown because they get
+// clogged up too easily. also in the valleys between the mountains it just feels too empty; toss in
+// a few rivers connected to some inland lakes connecting from the rain shadows, and some inland
+// desert or sporadic sand patches to break up the texture." So: the windward foot is a chain of
+// streams 5 deep and 20 long every 24 (was 3 deep, 12 long: nearly continuous water now, with a
+// four-tile beach gap between streams); a sand road runs through every pass and kPassRoad tiles into
+// the valley on both sides; inland lakes lie scattered along the middle of every valley, each joined
+// by a wandering river to the nearest windward stream; and sand patches are sprinkled over the
+// valleys' grass (`sand-patches` percent).
 namespace
 {
 
@@ -64,12 +77,23 @@ constexpr int kRidgeWarpPeriod = 40;
 // one out from its water, and a corner spoils the four tiles round it, so a pool three tiles out
 // would take the ridge's windward row with it (measured: the ridge came out one row thick); four
 // tiles leaves all three rows standing.
-constexpr int kFootGap = 4, kFootDepth = 3;
+constexpr int kFootGap = 4, kFootDepth = 5;
 // Pools along the foot: each this long along the ridge, every this many tiles. A pool 12 long and 3
 // deep is about 36 corners of water, enough for the engine's growth probe to find from a good part
 // of the valley; the 12-tile gaps between pools are where the valley's beach lets units walk along
 // the foot.
-constexpr int kPoolLength = 12, kPoolSpacing = 24;
+constexpr int kPoolLength = 20, kPoolSpacing = 24;
+// A sand road through every pass, running this far into the valley on either side of the stone
+// (first play: the passes "get clogged up too easily"): a line of single sand corners, which nothing
+// grows onto and nothing is built across. No stream lies within kPassClear tiles along the ridge of a
+// pass, so the road never runs into water.
+constexpr int kPassRoad = 12, kPassClear = 4;
+// Inland lakes (first play: "a few rivers connected to some inland lakes"): sites at least this far
+// apart along the middle of each valley (the band within kLakeBand of the valley's middle phase), each
+// a rough disc of this radius, joined to the nearest windward stream by a river this many corners
+// wide (one tile of water, with the fords a wandering line leaves) wandering by up to kRiverWander.
+constexpr int kLakeSpacing = 56;
+constexpr double kLakeBand = 0.18, kLakeRadius = 5.0, kRiverHalfWidth = 1.0, kRiverWander = 4.0;
 
 struct Layout
 {
@@ -81,7 +105,8 @@ struct Layout
 	int windX = 0, windY = 0; // the wind's direction in whole steps
 	std::vector<ShapePoint> homes, kits;
 	std::vector<int> homeOf;
-	std::vector<unsigned char> stone, water, sand, clearing;
+	std::vector<unsigned char> stone, water, sand, road, clearing;
+	std::vector<Site> lakes;
 	std::string failure;
 };
 
@@ -168,24 +193,73 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// sand stops where a pass lets the rain through.
 	L.water.assign(n, 0);
 	L.sand.assign(n, 0);
+	L.road.assign(n, 0);
 	const int footNear = ridgeHalf + acrossUnits(kFootGap),
 			  footFar = footNear + acrossUnits(kFootDepth);
 	const int poolPeriod = alongUnits(kPoolSpacing), poolHalf = alongUnits(kPoolLength / 2.0);
+	const int passClear = passHalf + alongUnits(kPassClear);
+	// Where a pass's line runs along the ridge, given the along phase and the row's pass shift (the
+	// same shift the stone uses).
+	const auto passOffset = [&](int i)
+	{
+		const int y = i / t.w;
+		const int shift = o.slant == 0 ? ((L.ridges * y / t.h) % 2) * passPeriod / 2 : 0;
+		const int offset = ((along[i] + shift) % passPeriod + passPeriod) % passPeriod;
+		return std::min(offset, passPeriod - offset);
+	};
 	for (int i = 0; i < n; ++i)
 	{
 		const int below = 65536 - phase[i]; // how far below the next ridge's crest
-		if (below >= footNear && below < footFar)
+		if (below >= footNear && below < footFar && passOffset(i) > passClear)
 		{
 			const int offset = along[i] % std::max(1, poolPeriod);
 			if (offset < poolHalf || poolPeriod - offset < poolHalf)
 				L.water[i] = 1;
 		}
+		// The pass road: the pass's centre line, from kPassRoad tiles before the ridge to as far past.
+		if (passOffset(i) <= alongUnits(0.5) &&
+			stripeDistance(phase[i]) < ridgeHalf + acrossUnits(kPassRoad))
+			L.road[i] = 1;
 	}
 	// The sand starts two tiles behind the stone, not one: a sand corner spoils the tiles round it
 	// and stone stands only on pure grass, so sand touching the ridge would strip its lee row.
 	const std::vector<int> shadow = upwindSteps(t, L.stone, L.windX, L.windY, o.leeWidth + 1);
 	for (int i = 0; i < n; ++i)
 		L.sand[i] = shadow[i] >= 2;
+	// Inland lakes along the middle of every valley (first play: the valleys "feel too empty"): sites
+	// thrown at least kLakeSpacing apart over the map and kept where the across phase is within
+	// kLakeBand of the valley's middle, each a rough disc, joined to the nearest stream tile by a
+	// wandering river. Rivers leave the lee sand alone but cross the valley's grass.
+	if (o.inlandLakes)
+	{
+		const RadialShape lake(kLakeRadius, 0.35, context, "rain-lakes");
+		std::mt19937 &rivers = context.stream("rain-rivers");
+		std::vector<unsigned char> streams = L.water;
+		for (const Site &site : spreadPoints(t, kLakeSpacing, context, "rain-lakes"))
+		{
+			const int at = t.at(site.x, site.y);
+			if (std::abs(phase[at] - 32768) > kLakeBand * 65536)
+				continue;
+			L.lakes.push_back(site);
+			fillShape(L.water, t, site.x + 0.5, site.y + 0.5, lake, 0.0);
+			int nearest = -1;
+			for (int i = 0; i < n; ++i)
+				if (streams[i] &&
+					(nearest < 0 || t.dist2(site.x, site.y, i % t.w, i / t.w) <
+										t.dist2(site.x, site.y, nearest % t.w, nearest / t.w)))
+					nearest = i;
+			if (nearest < 0)
+				continue;
+			const ShapePoint mouth{site.x + 0.5 + t.offsetX(site.x, nearest % t.w),
+								   site.y + 0.5 + t.offsetY(site.y, nearest / t.w)};
+			strokePath(L.water, t,
+					   wanderingPath(t, {site.x + 0.5, site.y + 0.5}, mouth, kRiverHalfWidth,
+									 kRiverWander, 0.0, rivers));
+		}
+	}
+	for (int i = 0; i < n; ++i)
+		if (L.water[i])
+			L.road[i] = L.sand[i] = 0;
 
 	// Homes: on a lattice, each slid across its valley to the middle of it (phase half a turn), so
 	// every home has the same ridge behind it and the same foot before it. The clearing round a home
@@ -222,7 +296,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	}
 	for (int i = 0; i < n; ++i)
 		if (L.clearing[i])
-			L.water[i] = L.sand[i] = L.stone[i] = 0;
+			L.water[i] = L.sand[i] = L.stone[i] = L.road[i] = 0;
 	L.homeOf.assign(n, -1);
 	const RadialShape home(L.homeRadius, 0.15, context, "rain-home");
 	const RadialShape pond(homePondRadius(L.homeRadius), 0.3, context, "rain-pond");
@@ -249,7 +323,19 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "rain shadow terrain";
 	TerrainSketch terrain(n, GRASS);
 	for (int i = 0; i < n; ++i)
-		terrain[i] = L.water[i] ? WATER : L.sand[i] ? SAND : GRASS;
+		terrain[i] = L.water[i] ? WATER : (L.sand[i] || L.road[i]) ? SAND : GRASS;
+	// Sand patches over the valleys' grass (first play: "some inland desert or sporadic sand patches
+	// to break up the texture"): `sand-patches` percent of the grass at least three tiles from any
+	// water, in patches from a noise field, kept off the homes, the stone and the roads.
+	{
+		std::vector<unsigned char> valley(n, 0);
+		for (int i = 0; i < n; ++i)
+			valley[i] = !L.stone[i] && !L.road[i] && !L.sand[i] && L.homeOf[i] < 0;
+		const std::vector<int> patches =
+			periodicNoise(t.w, t.h, 14, context.stream("rain-patches"));
+		sprinkleSand(terrain, t, valley, o.sandPatches / 100.0, 3,
+					 [&](int i) { return patches[i]; });
+	}
 	layBeaches(terrain, t);
 	writeUndermap(map, terrain);
 	// Stone stands only on pure grass; a ridge tile the beaches or the lee sand spoiled is left out,
@@ -346,7 +432,8 @@ RainShadowOptions::RainShadowOptions(const GenerationRequest &r)
 	: ridges(r.option("ridges")), slant(r.option("slant")),
 	  ridgeThickness(r.option("ridge-thickness")), passSpacing(r.option("pass-spacing")),
 	  passWidth(r.option("pass-width")), leeWidth(r.option("lee-width")),
-	  homeSize(r.option("home-size")), wheat(r.option("wheat-amount")),
+	  homeSize(r.option("home-size")), sandPatches(r.option("sand-patches")),
+	  inlandLakes(r.option("inland-lakes") != 0), wheat(r.option("wheat-amount")),
 	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
 	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
 {
@@ -354,34 +441,39 @@ RainShadowOptions::RainShadowOptions(const GenerationRequest &r)
 
 GeneratorDefinition rainShadowDefinition()
 {
-	return {"rain-shadow",
-			27,
-			"Rain shadow",
-			1,
-			false,
-			// Four ridges on a 256 map give 64-tile valleys: a 12-tile home, a pass every 48 tiles
-			// and a lee band of 6 leave a valley wide enough to farm and to fight in. Ridges three
-			// thick are sealed against diagonal steps and thin enough for a level-1 tower to shoot
-			// across (Walls.h's towerReach); passes five wide take a column of units and can be
-			// walled shut by whoever holds them.
-			{{"ridges", "Ridges", 2, 8, 1, 4, ControlGroup::Terrain},
-			 {"slant", "Slant", 0, 3, 1, 1, ControlGroup::Terrain},
-			 {"ridge-thickness", "Ridge thickness", 2, 6, 1, 3, ControlGroup::Terrain},
-			 {"pass-spacing", "Pass spacing", 24, 96, 8, 48, ControlGroup::Terrain},
-			 {"pass-width", "Pass width", 3, 9, 1, 5, ControlGroup::Terrain},
-			 {"lee-width", "Lee width", 2, 12, 1, 6, ControlGroup::Terrain},
-			 {"home-size", "Home size", 10, 20, 1, 12, ControlGroup::Layout},
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			[](const GenerationRequest &r) -> std::string
-			{
-				GenerationContext probe(r);
-				return design(r, probe).failure;
-			},
-			validateWorld};
+	return {
+		"rain-shadow",
+		27,
+		"Rain shadow",
+		2,
+		false,
+		// Four ridges on a 256 map give 64-tile valleys: a 12-tile home, a pass every 48 tiles
+		// and a lee band of 6 leave a valley wide enough to farm and to fight in. Ridges three
+		// thick are sealed against diagonal steps and thin enough for a level-1 tower to shoot
+		// across (Walls.h's towerReach); passes five wide take a column of units and can be
+		// walled shut by whoever holds them.
+		{{"ridges", "Ridges", 2, 8, 1, 4, ControlGroup::Terrain},
+		 {"slant", "Slant", 0, 3, 1, 1, ControlGroup::Terrain},
+		 {"ridge-thickness", "Ridge thickness", 2, 6, 1, 3, ControlGroup::Terrain},
+		 {"pass-spacing", "Pass spacing", 24, 96, 8, 48, ControlGroup::Terrain},
+		 {"pass-width", "Pass width", 3, 9, 1, 5, ControlGroup::Terrain},
+		 {"lee-width", "Lee width", 2, 12, 1, 6, ControlGroup::Terrain},
+		 {"home-size", "Home size", 10, 20, 1, 12, ControlGroup::Layout},
+		 // FEEDBACK 2026-09-13: lakes with rivers in every valley, and 6% of the valleys' grass in
+		 // sand patches.
+		 GeneratorControl::toggle("inland-lakes", "Inland lakes", true, ControlGroup::Terrain),
+		 {"sand-patches", "Sand patches", 0, 20, 2, 6, ControlGroup::Terrain},
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		[](const GenerationRequest &r) -> std::string
+		{
+			GenerationContext probe(r);
+			return design(r, probe).failure;
+		},
+		validateWorld};
 }

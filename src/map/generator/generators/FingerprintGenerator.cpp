@@ -41,6 +41,14 @@ using namespace MapGeneration;
 // the fields; a stone fingerprint is the opposite, its pools the only fertile ground. Corridors that
 // fork and dead-end give ambushes and cul-de-sacs no grid has, and reads as country rather than as
 // a maze.
+//
+// FEEDBACK 2026-09-13 (first play): "looks very similar to everglades right now, but if we raise the
+// default wavelength it has a nicer feel. but also needs a lot more resources scattered throughout by
+// default; right now it feels very empty. default home size needs to be larger." So: wavelength 30
+// by default (was 20: corridors twice as wide read as country rather than as a swamp of pools), home
+// clearings of radius 18 (was 12), and the ambient layer more than doubled (22% of the fertile ground
+// under wheat and 12% under wood, was 9% and 6%; an outcrop per 600 tiles and a grove per 1000, were
+// 1000 and 1800).
 namespace
 {
 
@@ -218,10 +226,10 @@ bool generate(Game &game, GenerationContext &context)
 		[&](int i) { return split[i]; },
 		[&](int area)
 		{
-			return GroundAmounts{int(scaledCount(fertile * 9 / 100, o.wheat)),
-								 int(scaledCount(fertile * 6 / 100, o.wood)),
-								 int(scaledCount(area / 1000, o.stone)),
-								 int(scaledCount(area / 1800, o.fruit))};
+			return GroundAmounts{int(scaledCount(fertile * 22 / 100, o.wheat)),
+								 int(scaledCount(fertile * 12 / 100, o.wood)),
+								 int(scaledCount(area / 600, o.stone)),
+								 int(scaledCount(area / 1000, o.fruit))};
 		},
 		"fingerprint-stone", "fingerprint-fruit");
 	seedAlgae(map, context, t, "fingerprint-algae", o.algae, AlgaeBand::shallows(1, 6, 60));
@@ -272,15 +280,16 @@ GeneratorDefinition fingerprintDefinition()
 	return {"fingerprint",
 			26,
 			"Fingerprint",
-			1,
+			2,
 			false,
-			{{"wavelength", "Wavelength", 12, 40, 2, 20, ControlGroup::Terrain},
+			{// FEEDBACK 2026-09-13: wavelength 30 and homes of 18 (were 20 and 12).
+			 {"wavelength", "Wavelength", 12, 48, 2, 30, ControlGroup::Terrain},
 			 GeneratorControl::choice("pattern", "Pattern", {"Labyrinth", "Islands", "Channels"}, 0,
 									  ControlGroup::Terrain),
 			 GeneratorControl::choice("barrier", "Barrier", {"Water", "Stone"}, 0,
 									  ControlGroup::Terrain),
 			 {"grain", "Grain", 0, 100, 10, 0, ControlGroup::Terrain},
-			 {"home-size", "Home size", 10, 20, 1, 12, ControlGroup::Layout},
+			 {"home-size", "Home size", 10, 24, 1, 18, ControlGroup::Layout},
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),

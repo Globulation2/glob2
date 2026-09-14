@@ -44,6 +44,18 @@ using namespace MapGeneration;
 // so the default canal of 3 is reached by a level-2 tower (range 7) and not by a level-1 (range 5).
 // Every bank has sand beside water within reach of every tile, so algae grows everywhere and crops
 // regrow everywhere; the fight is over bridges and banks, not fields.
+//
+// FEEDBACK 2026-09-13 (first play): "remove the pond from the user's starting base. increase the
+// default rate of bridges across the squares 1.5x, and the default amount of warping 2x. it's also a
+// little boring right now: can every grid cell have one of N types? I see some of them occasionally
+// have a lake in the center; let's have a few different types - the fruit type, the lake type. I
+// want a couple of types that have a sand patch protecting a 4x4 spot on the square, with no
+// resources, which can be used as a building spot. maybe a few of them have a sand patch. come up
+// with a few more cool ideas; each cell has its own little surprise." So: home blocks have no pond
+// (their canal waters them), extra bridges default to 30% (was 20) and warp to 80 (was 40), and
+// every other block is dealt one of nine kinds (BlockKind) from a weighted draw: plain fields, a
+// lake, an orchard round a pond, a 4x4 building pad in a ring of sand, two such pads, a quarry, a
+// woodlot, a wheatfield, or a dune of bare sand.
 namespace
 {
 
@@ -53,8 +65,28 @@ constexpr int kHomeWheat = 14, kHomeWood = 12, kHomeQuarry = 2;
 // carries units two tiles wide, since a tile with a sand corner is no longer pure water), reaching
 // this far past the canal's edge onto each bank so it lands on grass, not beach.
 constexpr double kBridgeLanding = 2.5;
-// Market blocks, per home block: blocks farthest from every home carry an orchard of all three fruits.
-constexpr int kMarketsPerHome = 1;
+// What a block holds (first play: "each cell has its own little surprise"), and the weight each kind
+// is dealt with, out of 100. Plain blocks carry the ambient fields; the rest carry one thing each.
+enum BlockKind
+{
+	Home = -1,
+	Plain = 0,
+	Lake,       // a pond at the middle, the fields round it
+	Orchard,    // a small pond with the three fruits round it
+	Pad,        // a 4x4 pad of grass in a ring of sand: a building spot nothing grows onto
+	TwoPads,    // two such pads
+	Quarry,     // a stone clump of radius 3
+	Woodlot,    // wood over most of the block
+	Wheatfield, // wheat over most of the block
+	Dune        // a disc of bare sand: walkable, unbuildable, and nothing grows on it
+};
+constexpr int kKinds = 9;
+constexpr int kKindWeight[kKinds] = {24, 12, 9, 15, 8, 8, 8, 8, 8};
+// The kinds' features: the lake's and the orchard pond's radii, the pad (4 tiles square in a ring
+// one corner wide; stampFarmPlot), how far apart two pads stand, the quarry's radius, the dune's
+// radius, and the share of a woodlot or wheatfield under its crop.
+constexpr double kLakeRadius = 3.5, kOrchardPond = 2.5, kDuneRadius = 4.0;
+constexpr int kPadSize = 4, kPadRing = 1, kPadsApart = 10, kQuarryRadius = 3, kCoverPercent = 60;
 // Tower pads beside each colony's starting towers, and the spacing between a colony's sites.
 constexpr int kTowerPads = 2, kTowerSpacing = 6;
 
@@ -63,9 +95,12 @@ struct Layout
 	Torus t{1, 1};
 	Tessellation g;
 	std::vector<int> cell; // every tile's block
-	std::vector<int> homeCell, marketCell;
+	std::vector<int> homeCell;
+	std::vector<int> kind;   // every block's BlockKind
 	std::vector<int> homeOf; // the home block a tile is in, or -1
-	std::vector<unsigned char> canal, bridge, water, land;
+	std::vector<unsigned char> canal, bridge, water, sand, land;
+	Farm pads; // the building pads, stamped as farm plots
+	TerrainSketch sketch;
 	std::vector<ShapePoint> homes, kits;
 	double homeRadius = 0;
 	std::string failure;
@@ -116,33 +151,19 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 					"fewer colonies.";
 		return L;
 	}
-	std::vector<unsigned char> taken(L.g.cellCount(), 0);
+	// Every other block's kind, dealt from a weighted draw in block order (first play: "each cell
+	// has its own little surprise").
+	L.kind.assign(L.g.cellCount(), Plain);
 	for (int cell : L.homeCell)
-		taken[cell] = 1;
-	for (int market = 0; market < kMarketsPerHome * teams; ++market)
+		L.kind[cell] = Home;
+	for (int cell = 0; cell < L.g.cellCount(); ++cell)
 	{
-		int best = -1;
-		long long bestGap = -1;
-		for (int cell = 0; cell < L.g.cellCount(); ++cell)
-		{
-			if (taken[cell])
-				continue;
-			long long gap = -1;
-			for (int other : L.homeCell)
-				gap = gap < 0 ? L.g.distance2(cell, other)
-							  : std::min(gap, L.g.distance2(cell, other));
-			for (int other : L.marketCell)
-				gap = std::min(gap, L.g.distance2(cell, other));
-			if (gap > bestGap)
-			{
-				bestGap = gap;
-				best = cell;
-			}
-		}
-		if (best < 0)
-			break;
-		taken[best] = 1;
-		L.marketCell.push_back(best);
+		if (L.kind[cell] == Home)
+			continue;
+		int roll = int(context.bounded("canals-kinds", 100)), kind = 0;
+		while (kind + 1 < kKinds && roll >= kKindWeight[kind])
+			roll -= kKindWeight[kind++];
+		L.kind[cell] = kind;
 	}
 
 	// The canals: every edge stroked canalWidth corners wide. A canal's water is canalWidth - 1 tiles
@@ -205,25 +226,64 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			 {middle.x + dx / length * reach, middle.y + dy / length * reach, kBridgeHalfWidth}});
 	}
 
-	// Homes: a pond at the middle of every home block, and a kit round it. The block's "radius" for
-	// the kit is what is left between its centre and its canal.
+	// Homes: the kit round the middle of every home block, with no pond (first play; the block's canal
+	// is within the growth probe's reach of all of it). The block's "radius" for the kit is what is
+	// left between its centre and its canal.
 	L.homeRadius = std::max(6.0, o.blockSize / 2.0 - o.canalWidth / 2.0 - 3);
 	L.water = L.canal;
+	L.sand.assign(n, 0);
 	L.homeOf.assign(n, -1);
 	L.land.assign(n, 0);
 	for (int i = 0; i < n; ++i)
 		L.land[i] = !L.canal[i];
 	for (int k = 0; k < teams; ++k)
-		L.homes.push_back(tilePoint(L.g.cells[L.homeCell[k]].centre));
-	const RadialShape pond(homePondRadius(L.homeRadius), 0.3, context, "canals-pond");
-	for (int k = 0; k < teams; ++k)
 	{
-		L.kits.push_back(
-			stampRoundHome(t, L.homes[k], 0.0, pond, L.homeRadius, 1, &pond, L.water, [](int) {}));
+		L.homes.push_back(tilePoint(L.g.cells[L.homeCell[k]].centre));
+		L.kits.push_back(L.homes[k]);
 		for (int i = 0; i < n; ++i)
 			if (L.cell[i] == L.homeCell[k] && L.land[i])
 				L.homeOf[i] = k;
 	}
+	// Every block's terrain feature, at its middle: a lake, an orchard's pond, a pad or two of grass
+	// in a ring of sand (stamped as farm plots into the sketch), or a dune.
+	const RadialShape lake(kLakeRadius, 0.3, context, "canals-lakes");
+	const RadialShape orchardPond(kOrchardPond, 0.3, context, "canals-lakes");
+	const RadialShape dune(kDuneRadius, 0.3, context, "canals-dunes");
+	const FarmPlot pad{kPadSize, kPadSize, kPadRing};
+	for (int cell = 0; cell < L.g.cellCount(); ++cell)
+	{
+		const ShapePoint c = tilePoint(L.g.cells[cell].centre);
+		if (L.kind[cell] == Lake)
+			fillShape(L.water, t, c.x, c.y, lake, 0.0);
+		else if (L.kind[cell] == Orchard)
+			fillShape(L.water, t, c.x, c.y, orchardPond, 0.0);
+		else if (L.kind[cell] == Dune)
+			fillShape(L.sand, t, c.x, c.y, dune, 0.0);
+	}
+	L.sketch.assign(n, GRASS);
+	for (int i = 0; i < n; ++i)
+		L.sketch[i] = L.water[i]                                   ? WATER
+					  : (L.sand[i] || (L.bridge[i] && L.canal[i])) ? SAND
+																   : GRASS;
+	L.pads.water = L.water;
+	L.pads.sand.assign(n, 0);
+	L.pads.plot.assign(n, 0);
+	L.pads.row.assign(n, -1);
+	for (int cell = 0; cell < L.g.cellCount(); ++cell)
+	{
+		const ShapePoint c = tilePoint(L.g.cells[cell].centre);
+		const int cx = int(std::lround(c.x)), cy = int(std::lround(c.y));
+		if (L.kind[cell] == Pad)
+			stampFarmPlot(L.sketch, t, L.pads, cx - kPadSize / 2, cy - kPadSize / 2, pad);
+		else if (L.kind[cell] == TwoPads)
+		{
+			stampFarmPlot(L.sketch, t, L.pads, cx - kPadsApart / 2 - kPadSize / 2,
+						  cy - kPadSize / 2, pad);
+			stampFarmPlot(L.sketch, t, L.pads, cx + kPadsApart / 2 - kPadSize / 2,
+						  cy - kPadSize / 2, pad);
+		}
+	}
+	L.water = L.pads.water;
 	return L;
 }
 
@@ -274,10 +334,7 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "canals terrain";
-	TerrainSketch terrain(n, GRASS);
-	for (int i = 0; i < n; ++i)
-		if (L.water[i])
-			terrain[i] = WATER;
+	TerrainSketch terrain = L.sketch;
 	layBeaches(terrain, t);
 	for (int i = 0; i < n; ++i)
 		if (L.bridge[i] && L.canal[i])
@@ -322,16 +379,22 @@ bool generate(Game &game, GenerationContext &context)
 									clearGround(map, i % t.w, i / t.w);
 						 });
 	// Every block is fertile (its canal is within the growth probe's reach of all of it), so the
-	// ambient farmland is a modest share of every block, in patches, the home blocks included; the
-	// bridges' landings stay clear so no field closes a bridge.
+	// ambient farmland is a modest share of the plain, lake and home blocks, in patches; the other
+	// kinds carry their own thing instead, and the bridges' landings stay clear so no field closes
+	// a bridge.
 	const std::vector<unsigned char> landings = dilate(t, bridges, 2);
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	const std::vector<int> patch = periodicNoise(t.w, t.h, 8, context.stream("canals-patch"));
 	const std::vector<int> split = periodicNoise(t.w, t.h, 5, context.stream("canals-split"));
+	const auto open = [&](int i)
+	{
+		return L.land[i] && !reserved[i] && !pads[i] && !landings[i] && !L.pads.plot[i] &&
+			   clearGround(map, i % t.w, i / t.w);
+	};
 	const auto eligible = [&](int i)
 	{
-		return L.land[i] && !reserved[i] && !pads[i] && !landings[i] &&
-			   clearGround(map, i % t.w, i / t.w);
+		const int kind = L.kind[L.cell[i]];
+		return open(i) && (kind == Plain || kind == Lake || kind == Home);
 	};
 	int fertile = 0;
 	for (int i = 0; i < n; ++i)
@@ -346,16 +409,53 @@ bool generate(Game &game, GenerationContext &context)
 								 int(scaledCount(area / 900, o.stone)), 0};
 		},
 		"canals-stone", "canals-fruit");
-	// The markets: an orchard of all three fruits round each market block's middle.
-	if (scaledCount(1, o.fruit) > 0)
-		for (int cell : L.marketCell)
+	// Every block's own thing (first play): the three fruits round an orchard's pond, a quarry's
+	// stone, a woodlot's or wheatfield's cover on the block's most-noise share of ground.
+	const std::vector<int> cover = periodicNoise(t.w, t.h, 6, context.stream("canals-cover"));
+	for (int cell = 0; cell < L.g.cellCount(); ++cell)
+	{
+		const ShapePoint centre = tilePoint(L.g.cells[cell].centre);
+		const auto inBlock = [&](int i) { return L.cell[i] == cell && open(i); };
+		switch (L.kind[cell])
 		{
-			const ShapePoint centre = tilePoint(L.g.cells[cell].centre);
-			const double spin = context.bounded("canals-fruit", 3600) / 3600.0 * 2 * kPi;
-			plantOrchard(map, t, context, centre.x, centre.y, 3.5, {spin}, 4.5, 6, 1,
-						 [&](int i) { return L.cell[i] == cell && eligible(i); });
+		case Orchard:
+			if (scaledCount(1, o.fruit) > 0)
+			{
+				const double spin = context.bounded("canals-fruit", 3600) / 3600.0 * 2 * kPi;
+				plantOrchard(map, t, context, centre.x, centre.y, kOrchardPond + 2.5, {spin}, 4.5,
+							 6, 1, inBlock);
+			}
+			break;
+		case Quarry:
+			if (scaledCount(1, o.stone) > 0)
+				if (const int seed = seedNear(t, int(centre.x), int(centre.y), 3, inBlock);
+					seed >= 0)
+					placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w),
+									   STONE, kQuarryRadius);
+			break;
+		case Woodlot:
+		case Wheatfield:
+		{
+			std::vector<int> levels;
+			for (int i = 0; i < n; ++i)
+				if (inBlock(i))
+					levels.push_back(cover[i]);
+			if (levels.empty())
+				break;
+			const int share = std::clamp(
+				int(scaledCount(kCoverPercent, L.kind[cell] == Woodlot ? o.wood : o.wheat)), 0,
+				100);
+			const int level = percentile(levels, 100 - share);
+			plantCover(map, t, L.land, L.kind[cell] == Woodlot ? WOOD : CORN,
+					   [&](int i) { return inBlock(i) && cover[i] >= level; });
+			break;
 		}
+		default:
+			break;
+		}
+	}
 	seedAlgae(map, context, t, "canals-algae", o.algae, AlgaeBand::anyWater(25));
+	clearFarmPlots(map, t, {L.pads});
 	secureStartingCrops(game, context, t);
 	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, o.algae, o.fruit});
 	// The bridges join every colony to the first; only deposits could close the way, so only those
@@ -373,15 +473,15 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (const std::string mismatch = designMismatch(L, map, "canals"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;
-	for (int k = 0; k < context.request.nbTeams; ++k)
-	{
-		bool pond = false;
-		for (int dy = -2; dy <= 2 && !pond; ++dy)
-			for (int dx = -2; dx <= 2 && !pond; ++dx)
-				pond = map.isWater(t.x(int(L.kits[k].x) + dx), t.y(int(L.kits[k].y) + dy));
-		if (!pond)
-			return "Colony " + std::to_string(k) + "'s block has lost its pond.";
-	}
+	// Home blocks are dry by design (first play); every lake block keeps its lake.
+	for (int cell = 0; cell < L.g.cellCount(); ++cell)
+		if (L.kind[cell] == Lake)
+		{
+			const ShapePoint c = tilePoint(L.g.cells[cell].centre);
+			if (!map.isWater(t.x(int(c.x)), t.y(int(c.y))))
+				return "A lake block has lost its lake at (" + std::to_string(int(c.x)) + ", " +
+					   std::to_string(int(c.y)) + ").";
+		}
 	return walkFromFirstColony(map, context.request.nbTeams, "the city", "over the bridges").error;
 }
 } // namespace
@@ -402,15 +502,16 @@ GeneratorDefinition canalsDefinition()
 		"canals",
 		29,
 		"Canals",
-		1,
+		2,
 		false,
 		// Blocks of 24 give a 256 map about a hundred blocks; a canal of 3 corners (two tiles of
 		// water) is sealed against diagonal steps and is reached by a level-2 tower, which is what
 		// the colonies start with; a fifth again in extra bridges keeps most blocks islands.
 		{{"block-size", "Block size", 16, 40, 2, 24, ControlGroup::Layout},
 		 {"canal-width", "Canal width", 3, 5, 1, 3, ControlGroup::Terrain},
-		 {"warp", "Warp", 0, 100, 10, 40, ControlGroup::Terrain},
-		 {"extra-bridges", "Extra bridges", 0, 100, 10, 20, ControlGroup::Layout},
+		 // FEEDBACK 2026-09-13: warp 80 and extra bridges 30 (were 40 and 20).
+		 {"warp", "Warp", 0, 100, 10, 80, ControlGroup::Terrain},
+		 {"extra-bridges", "Extra bridges", 0, 100, 10, 30, ControlGroup::Layout},
 		 {"starting-towers", "Starting tower level", 0, 3, 1, 2, ControlGroup::Layout},
 		 {"tower-count", "Towers per colony", 1, 4, 1, 2, ControlGroup::Layout},
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),

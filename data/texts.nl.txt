@@ -2196,3 +2196,11 @@ Home pools
 Farm plots
 [Tendril roads]
 Tendril roads
+[Random]
+Random
+[Vertical]
+Vertical
+[Horizontal]
+Horizontal
+[Inland lakes]
+Inland lakes
