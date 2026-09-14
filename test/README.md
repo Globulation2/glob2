@@ -32,6 +32,25 @@ the harness command with `DYLD_LIBRARY_PATH=/opt/homebrew/lib`.
 SCons caches compiler/linker flags; pass `CXXFLAGS=-g LINKFLAGS=-g` to return to a
 normal build. This is a direct method regression, not an interactive replay test.
 
+## Farm area pooled harvest
+
+`FarmAreaHarvestHarness.cpp` links the real client objects and exercises
+`Map::takeHarvest` directly: that a harvest inside a farm area draws from the
+ripest tile of the connected field rather than the touched one, that an empty
+gap ends the field so nothing teleports across it, that a worker out of reach of
+any wheat gets nothing, that wood and other teams' areas are unaffected, and
+that off a farm the old behaviour — phantom grain included — is byte for byte
+what it was.
+
+```sh
+scons -j8 release=1 server=0 farm-test
+./build/src/FarmAreaHarvestHarness
+```
+
+Neutrality of the whole feature is a separate check: with no farm area painted
+the simulation must be identical to master, which is what the checksum sidecar
+verifies (see [docs/headless-replays.md](../docs/headless-replays.md)).
+
 ## Terrain resource regression
 
 From the repository root, run `scons -j8 release=1 server=0 terrain-test`

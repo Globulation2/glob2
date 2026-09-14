@@ -52,26 +52,44 @@ void Unit::handleDisplacement(void)
 			}
 			else if (displacement==DIS_HARVESTING)
 			{
-				// we got the resource.
-				carriedResource=destinationPurpose;
-				owner->map->decResource(posX+dx, posY+dy, carriedResource);
+				// Inside a farm area the grain comes off the ripest tile of the
+				// connected field rather than off the tile under the animation,
+				// and an exhausted field hands out nothing. Everywhere else this
+				// is the old unconditional grant.
+				const bool gotResource = owner->map->takeHarvest(posX, posY, dx, dy,
+					destinationPurpose, owner->me);
 				assert(movement == MOV_HARVESTING);
 				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to additionally decResource() the same resource.
 
-				setTargetBuilding(attachedBuilding);
-				if (auto off = owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid))
+				if (!gotResource)
 				{
-					dx = off->dx;
-					dy = off->dy;
-					displacement=DIS_FILLING_BUILDING;
+					// The field ran out under the animation. Go back to looking
+					// rather than walking home empty-handed: the touch test in
+					// DIS_GOING_TO_RESOURCE needs a tile that really holds the
+					// resource, so this either harvests again next step or
+					// resumes the gradient walk, and cannot spin here.
+					displacement=DIS_GOING_TO_RESOURCE;
 					validTarget=false;
 				}
 				else
 				{
-					displacement=DIS_GOING_TO_BUILDING;
-					targetX=targetBuilding->getMidX();
-					targetY=targetBuilding->getMidY();
-					validTarget=true;
+					carriedResource=destinationPurpose;
+
+					setTargetBuilding(attachedBuilding);
+					if (auto off = owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid))
+					{
+						dx = off->dx;
+						dy = off->dy;
+						displacement=DIS_FILLING_BUILDING;
+						validTarget=false;
+					}
+					else
+					{
+						displacement=DIS_GOING_TO_BUILDING;
+						targetX=targetBuilding->getMidX();
+						targetY=targetBuilding->getMidY();
+						validTarget=true;
+					}
 				}
 			}
 			else if (displacement==DIS_GOING_TO_BUILDING)
