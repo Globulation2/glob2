@@ -2200,6 +2200,20 @@ Prostor
 Odloučení
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Start každé kolonie se měří na hotové mapě: cesta k obilí a ke dřevu, jak dobře její půda dorůstá, zásoby a stavební místa v dosahu a vzdálenost od soupeřů. Každý činitel dostane skóre od 0 do 1 vůči pevné laťce, celek je váží, spravedlnost je celek nejhorší kolonie dělený celkem nejlepší a skóre je nejhorší celek násobený spravedlností.
+[Map preview controls]
+Tažením posouvejte přes okraje. Kolečkem přibližujte. Pravým nebo dvojitým kliknutím obnovte pohled.
+[Map preview drag help]
+Tažením posouvejte; kolečkem přibližujte.
+[Map preview loading]
+Načítání...
+[Map preview failed]
+Náhled selhal
+[Map preview retry]
+Kliknutím zkuste znovu
+[Map preview please wait]
+Čekejte prosím
+[Map preview choose another]
+Vyberte mapu
 [repeat map horizontally]
 Opakovat mapu vodorovně
 [repeat map vertically]

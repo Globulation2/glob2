@@ -2196,6 +2196,20 @@ Espaço
 Isolamento
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 O início de cada colônia é medido no mapa pronto: o caminho até o trigo e a madeira, quão bem seu terreno volta a crescer, os depósitos e locais de construção ao alcance, e a distância até os rivais. Cada fator pontua de 0 a 1 contra uma barra fixa, o total os pondera, a equidade é o total da pior colônia dividido pelo da melhor, e a pontuação é o pior total multiplicado pela equidade.
+[Map preview controls]
+Sachit evit kelc'hiñ. Rod evit zoumañ. Klik dehou pe daouglik evit adderaouekaat.
+[Map preview drag help]
+Sachit evit kelc'hiñ; rod evit zoumañ.
+[Map preview loading]
+O kargañ...
+[Map preview failed]
+C'hwitet ar rakwel
+[Map preview retry]
+Klikit evit klask en-dro
+[Map preview please wait]
+Gortozit mar plij
+[Map preview choose another]
+Dibabit ur gartenn
 [repeat map horizontally]
 Repetir o mapa na horizontal
 [repeat map vertically]

@@ -84,14 +84,16 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		surface()->drawString(x, y, f, value);
 		f->popStyle();
 	}
-	int paragraph(int x, int y, int width, const std::string &value, const char *font = "little")
+	int paragraph(int x, int y, int width, const std::string &value, const char *font = "little",
+				  bool centered = false)
 	{
 		auto f = GAGCore::Toolkit::getFont(font);
 		int row = f->getStringHeight("Ag") + 3, start = y;
 		std::string lineText, word;
 		auto flush = [&]
 		{
-			text(x, y, lineText, font, width, true);
+			const int offset = centered ? std::max(0, (width - f->getStringWidth(lineText)) / 2) : 0;
+			text(x + offset, y, lineText, font, width - offset, true);
 			y += row;
 			lineText.clear();
 		};

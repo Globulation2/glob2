@@ -2196,6 +2196,20 @@ Không gian
 Cách biệt
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Khởi đầu của mỗi thuộc địa được đo trên bản đồ hoàn chỉnh: đường đi tới lúa mì và tới gỗ, đất của nó mọc lại tốt đến đâu, trữ lượng và vị trí xây dựng trong tầm với, cùng khoảng cách tới các đối thủ. Mỗi yếu tố được chấm từ 0 đến 1 so với một mức cố định, tổng điểm cân nhắc chúng theo trọng số, công bằng là tổng của thuộc địa kém nhất chia cho tổng của thuộc địa tốt nhất, và điểm là tổng kém nhất nhân với công bằng.
+[Map preview controls]
+Kéo để đi qua các cạnh. Cuộn để thu phóng. Nhấp phải hoặc nhấp đúp để đặt lại.
+[Map preview drag help]
+Kéo để di chuyển; cuộn để thu phóng.
+[Map preview loading]
+Đang tải...
+[Map preview failed]
+Xem trước thất bại
+[Map preview retry]
+Nhấp để thử lại
+[Map preview please wait]
+Vui lòng đợi
+[Map preview choose another]
+Chọn bản đồ
 [repeat map horizontally]
 Lặp bản đồ theo chiều ngang
 [repeat map vertically]

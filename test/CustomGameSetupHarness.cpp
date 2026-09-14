@@ -594,6 +594,11 @@ struct CustomGameSetupHarness
                  "controls, popup cancel, focus preservation and rules\n";
     auto capture = [&](const std::string &name) {
       screen.dispatchPaint(false);
+      if (screen.preview->transitioning) {
+        screen.preview->transitionPending = false;
+        screen.preview->transitionStarted = SDL_GetTicks() - MapPreview::TransitionDurationMs - 1;
+        screen.dispatchPaint(false);
+      }
       globalContainer->gfx->printScreen(output + "/" + name + ".bmp");
     };
     capture("map-640");
@@ -771,10 +776,13 @@ struct CustomGameSetupHarness
         breakdown.dispatchEvents(&e);
         assert(breakdown.returnCode == StartQualityScreen::BACK);
       }
+      const auto retainedQuality = screen.quality;
       clickControl("generator/reset");
       GenerationRequest expected;
       expected.setMethodDefaults(before.method);
-      assert(screen.setup.generator.options == expected.options && !screen.quality.measured);
+      assert(screen.setup.generator.options == expected.options && screen.quality.measured &&
+             screen.quality.fairness == retainedQuality.fairness &&
+             screen.quality.score == retainedQuality.score);
       preview();
       assert(screen.validMap);
     }
@@ -892,24 +900,27 @@ struct CustomGameSetupHarness
       };
       const auto corner = pixel(rect.x + 1, rect.y + 1);
       assert(corner[0] || corner[1] || corner[2]); // no thumbnail letterbox inside the map
-      // LobbyMapPreview clamps a marker's top-left corner so the whole 16x16 square stays inside
-      // the preview, which on a narrow one squeezes a whole edge of the map onto one row or column:
-      // a 128x512 map is 34 pixels wide in the compact window, so every start past about x=60
-      // lands on the same column. Markers then overlap, and each one paints a 20x20 dark backing
-      // two pixels outside its 16x16 fill before filling it, so a later marker legitimately covers
-      // an earlier one's sampled pixel whenever it lands anywhere near it, not only exactly on top
-      // of it. Only a start that nothing is drawn over afterwards can be checked.
+      // Markers stay centered on terrain and repeat across the torus seams.
       std::vector<int> markerX, markerY;
       for (const auto &start : expectedStarts) {
-        markerX.push_back(rect.x + std::clamp(start.x * rect.w / mapW, 2, std::max(2, rect.w - 18)));
-        markerY.push_back(rect.y + std::clamp(start.y * rect.h / mapH, 2, std::max(2, rect.h - 18)));
+        markerX.push_back(rect.x + start.x * rect.w / mapW);
+        markerY.push_back(rect.y + start.y * rect.h / mapH);
       }
       for (size_t i = 0; i < expectedStarts.size(); ++i) {
-        const int sampleX = markerX[i] + 1, sampleY = markerY[i] + 1;
+        const int sampleX = rect.x + (markerX[i] - rect.x - 7 + rect.w) % rect.w;
+        const int sampleY = rect.y + (markerY[i] - rect.y - 7 + rect.h) % rect.h;
+        // The frame is painted over the outermost terrain pixels.
+        if (sampleX == rect.x || sampleX == rect.x + rect.w - 1 ||
+            sampleY == rect.y || sampleY == rect.y + rect.h - 1)
+          continue;
         bool covered = false;
-        for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
-          covered = sampleX >= markerX[j] - 2 && sampleX <= markerX[j] + 17 &&
-                    sampleY >= markerY[j] - 2 && sampleY <= markerY[j] + 17;
+for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
+  for (int dy = -1; dy <= 1; ++dy)
+    for (int dx = -1; dx <= 1; ++dx) {
+      const int cx = markerX[j] + dx * rect.w, cy = markerY[j] + dy * rect.h;
+      covered = covered || (sampleX >= cx - 10 && sampleX < cx + 10 &&
+                            sampleY >= cy - 10 && sampleY < cy + 10);
+    }
         if (covered)
           continue;
         const auto &start = expectedStarts[i];
@@ -960,6 +971,13 @@ struct CustomGameSetupHarness
         }
         picker.dispatchTimer(SDL_GetTicks());
         picker.dispatchPaint(false);
+        for (auto &tile : picker.tiles) {
+          if (tile.widget && tile.widget->transitioning) {
+            tile.widget->transitionPending = false;
+            tile.widget->transitionStarted = SDL_GetTicks() - MapPreview::TransitionDurationMs - 1;
+          }
+        }
+        picker.dispatchPaint(false);
       };
       auto pick = [&](const std::string &id) {
         picker.dispatchPaint(false);
@@ -986,7 +1004,7 @@ struct CustomGameSetupHarness
           e.type = type;
           e.button.button = SDL_BUTTON_LEFT;
           e.button.x = r.x + r.w / 2;
-          e.button.y = r.y + r.h / 2;
+          e.button.y = hit->region == 30 ? r.y + r.h - 24 : r.y + r.h / 2;
           picker.dispatchEvents(&e);
         }
         picker.dispatchPaint(false);
@@ -1003,7 +1021,7 @@ struct CustomGameSetupHarness
       auto seedsShown = [&] {
         std::vector<std::uint32_t> seeds;
         for (const auto &tile : picker.tiles) {
-          assert(tile.preview.state == LandscapePreviewer::State::Ready && tile.surface &&
+          assert(tile.preview.state == LandscapePreviewer::State::Ready && tile.widget && tile.widget->isThumbnailLoaded() &&
                  tile.preview.width == 256 && tile.preview.height == 256 &&
                  tile.preview.starts.size() == 4);
           seeds.push_back(tile.preview.seed);
@@ -1017,6 +1035,33 @@ struct CustomGameSetupHarness
       const int other = (current + 1) % int(shown.size());
       pick("landscape/" + std::to_string(other));
       assert(picker.selection() == other && picker.returnCode == 0);
+      // Native image gestures inspect without confirming the selected landscape.
+      {
+        auto *widget = picker.tiles[other].widget;
+        const auto area = widget->mapArea();
+        SDL_Event e = {};
+        e.type = SDL_MOUSEBUTTONDOWN; e.button.button = SDL_BUTTON_LEFT;
+        e.button.x = area.x + area.w / 3; e.button.y = area.y + area.h / 3;
+        picker.dispatchEvents(&e);
+        e = {}; e.type = SDL_MOUSEMOTION; e.motion.state = SDL_BUTTON_LMASK;
+        e.motion.x = area.x + 2 * area.w / 3; e.motion.y = area.y + 2 * area.h / 3;
+        picker.dispatchEvents(&e);
+        assert(widget->dragging && widget->view.offsetX > 0 && picker.returnCode == 0);
+        e = {}; e.type = SDL_MOUSEBUTTONUP; e.button.button = SDL_BUTTON_LEFT;
+        e.button.x = -20; e.button.y = -20;
+        picker.dispatchEvents(&e);
+        assert(!widget->dragging && picker.activePreview == -1 && picker.returnCode == 0);
+        const auto before = widget->worldArea();
+        const double anchor = MapPreviewGeometry::wrap(double(widget->mouseX - before.x) / before.w - widget->view.offsetX);
+        e = {}; e.type = SDL_MOUSEWHEEL; e.wheel.y = 1;
+        picker.dispatchEvents(&e);
+        const auto after = widget->worldArea();
+        assert(widget->zoom > 1 && std::abs(anchor - MapPreviewGeometry::wrap(double(widget->mouseX - after.x) / after.w - widget->view.offsetX)) < 1e-12);
+        e = {}; e.type = SDL_MOUSEBUTTONDOWN; e.button.button = SDL_BUTTON_RIGHT;
+        e.button.x = area.x + area.w / 2; e.button.y = area.y + area.h / 2;
+        picker.dispatchEvents(&e);
+        assert(widget->zoom == 1 && widget->view.offsetX == 0 && picker.returnCode == 0);
+      }
       pickerKey(SDLK_LEFT);
       assert(picker.selection() == std::max(0, other - 1));
       pickerKey(SDLK_DOWN);
@@ -1027,6 +1072,10 @@ struct CustomGameSetupHarness
       // Regenerate all rolls every landscape again with fresh seeds.
       pick("landscape/regenerate");
       assert(picker.busy());
+      assert(!picker.chosenSeed());
+      const int pendingReturnCode = picker.returnCode;
+      picker.confirm();
+      assert(picker.returnCode == pendingReturnCode);
       settle();
       const auto second = seedsShown();
       for (size_t i = 0; i < first.size(); ++i)
@@ -1117,7 +1166,8 @@ struct CustomGameSetupHarness
       assert(screen.chosenSeed == seed);
       clickControl("generator/width");
       assert(screen.controls->popup.open);
-      keyEvent(SDLK_UP);
+      // Enlarge it: shrinking can violate the selected landscape's minimum home spacing.
+      keyEvent(SDLK_DOWN);
       keyEvent(SDLK_RETURN);
       assert(!screen.chosenSeed && screen.previewPending);
       preview();

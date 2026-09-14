@@ -2208,6 +2208,20 @@ Priestor
 Odlúčenosť
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Štart každej kolónie sa meria na hotovej mape: cesta k obiliu a k drevu, ako dobre jej pôda dorastá, zásoby a stavebné miesta v dosahu a vzdialenosť od súperov. Každý činiteľ dostane od 0 do 1 voči pevnej latke, celok ich váži, spravodlivosť je celok najhoršej kolónie delený celkom najlepšej a skóre je najhorší celok násobený spravodlivosťou.
+[Map preview controls]
+Ťahaním posúvajte cez okraje. Kolieskom približujte. Pravým alebo dvojitým kliknutím obnovte pohľad.
+[Map preview drag help]
+Ťahaním posúvajte; kolieskom približujte.
+[Map preview loading]
+Načítavanie...
+[Map preview failed]
+Náhľad zlyhal
+[Map preview retry]
+Kliknutím skúste znova
+[Map preview please wait]
+Čakajte, prosím
+[Map preview choose another]
+Vyberte mapu
 [repeat map horizontally]
 Opakovať mapu vodorovne
 [repeat map vertically]

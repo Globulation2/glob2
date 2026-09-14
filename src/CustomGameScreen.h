@@ -55,6 +55,7 @@ class CustomGameScreen : public Glob2TabScreen
 	int selectedSpeed() const { return setup.speed; }
 
   private:
+	friend struct MapPreviewHarness;
 	friend struct CustomGameSetupHarness;
 	CustomGameSetup setup;
 	MapHeader mapHeader;

@@ -2208,6 +2208,20 @@ Espai
 Aïllament
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 L'inici de cada colònia es mesura sobre el mapa acabat: el camí fins al blat i fins a la fusta, com de bé rebrota el seu terreny, els dipòsits i els llocs de construcció a l'abast, i la distància als rivals. Cada factor puntua de 0 a 1 respecte a un llindar fix, el total els pondera, l'equitat és el total de la pitjor colònia dividit pel de la millor, i la puntuació és el pitjor total multiplicat per l'equitat.
+[Map preview controls]
+Arrossega per veure la continuïtat. Roda per ampliar. Clic dret o doble clic per restablir.
+[Map preview drag help]
+Arrossega per desplaçar; roda per ampliar.
+[Map preview loading]
+S'està carregant...
+[Map preview failed]
+Ha fallat la previsualització
+[Map preview retry]
+Fes clic per tornar-ho a provar
+[Map preview please wait]
+Espera un moment
+[Map preview choose another]
+Tria un mapa
 [repeat map horizontally]
 Repeteix el mapa horitzontalment
 [repeat map vertically]

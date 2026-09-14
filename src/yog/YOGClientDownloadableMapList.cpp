@@ -4,6 +4,8 @@
 #include "YOGClientDownloadableMapList.h"
 #include "YOGClient.h"
 #include "MapDatabaseMessages.h"
+#include <SDL.h>
+#include <algorithm>
 
 using std::static_pointer_cast;
 
@@ -24,8 +26,7 @@ bool YOGClientDownloadableMapList::waitingForListFromServer()
 
 void YOGClientDownloadableMapList::requestMapListUpdate()
 {
-	maps.clear();
-	thumbnails.clear();
+	if (waitingForList) return;
 	std::shared_ptr<NetRequestDownloadableMapList> request(new NetRequestDownloadableMapList);
 	client->sendNetMessage(request);
 	waitingForList=true;
@@ -40,9 +41,8 @@ void YOGClientDownloadableMapList::receiveMessage(std::shared_ptr<NetMessage> me
 	{
 		std::shared_ptr<NetDownloadableMapInfos> info = static_pointer_cast<NetDownloadableMapInfos>(message);
 		maps = info->getMaps();
-		thumbnails.resize(maps.size());
-		sendUpdateToListeners();
 		waitingForList=false;
+		sendUpdateToListeners();
 	}
 	if(type == MNetSendMapThumbnail)
 	{
@@ -51,7 +51,11 @@ void YOGClientDownloadableMapList::receiveMessage(std::shared_ptr<NetMessage> me
 		{
 			if(maps[i].getMapID() == info->getMapID())
 			{
-				thumbnails[i] = info->getThumbnail();
+				auto& entry = thumbnailEntry(maps[i]);
+				if (!entry.requested) continue;
+				entry.image = info->getThumbnail();
+				entry.failed = !entry.image.isLoaded();
+				entry.requested = false;
 			}
 		}
 		sendThumbnailToListeners();
@@ -82,14 +86,48 @@ YOGDownloadableMapInfo YOGClientDownloadableMapList::getMap(const std::string& n
 
 
 
-void YOGClientDownloadableMapList::requestThumbnail(const std::string& name)
+YOGClientDownloadableMapList::ThumbnailEntry& YOGClientDownloadableMapList::thumbnailEntry(const YOGDownloadableMapInfo& info)
+{
+	auto header = info.getMapHeader();
+	std::string revision(reinterpret_cast<const char*>(header.getGameSHA1()), 20);
+	revision += header.getMapName() + ":" + std::to_string(info.getWidth()) + ":" +
+		std::to_string(info.getHeight()) + ":" + std::to_string(info.getSize());
+	if (!thumbnailCache.count(info.getMapID()) && thumbnailCache.size() >= 32)
+	{
+		auto oldest = std::min_element(thumbnailCache.begin(), thumbnailCache.end(),
+			[](const auto& a, const auto& b) { return a.second.used < b.second.used; });
+		thumbnailCache.erase(oldest);
+	}
+	auto& entry = thumbnailCache[info.getMapID()];
+	if (entry.revision != revision) { entry = ThumbnailEntry(); entry.revision = revision; }
+	entry.used = ++useCounter;
+	return entry;
+}
+
+YOGClientDownloadableMapList::ThumbnailState YOGClientDownloadableMapList::getThumbnailState(const std::string& name)
+{
+	auto& entry = thumbnailEntry(getMap(name));
+	if (entry.image.isLoaded()) return ThumbnailState::Ready;
+	if (entry.requested && Uint32(SDL_GetTicks() - entry.requestedAt) >= 8000)
+		entry.failed = true;
+	if (entry.failed) return ThumbnailState::Failed;
+	return entry.requested ? ThumbnailState::Loading : ThumbnailState::Empty;
+}
+
+void YOGClientDownloadableMapList::requestThumbnail(const std::string& name, bool retry)
 {
 	for(std::vector<YOGDownloadableMapInfo>::iterator i = maps.begin(); i!=maps.end(); ++i)
 	{
 		if(i->getMapHeader().getMapName() == name)
 		{
+			auto& entry = thumbnailEntry(*i);
+			if (entry.image.isLoaded() || (!retry && (entry.requested || entry.failed))) return;
+			// Even manual retries cannot flood a still-outstanding request.
+			if (entry.requested && Uint32(SDL_GetTicks() - entry.requestedAt) < 8000) return;
+			entry.requested = true; entry.failed = false; entry.requestedAt = SDL_GetTicks();
 			std::shared_ptr<NetRequestMapThumbnail> request(new NetRequestMapThumbnail(i->getMapID()));
 			client->sendNetMessage(request);
+			return;
 		}
 	}
 }
@@ -102,7 +140,7 @@ MapThumbnail& YOGClientDownloadableMapList::getMapThumbnail(const std::string& n
 	{
 		if(i->getMapHeader().getMapName() == name)
 		{
-			return thumbnails[i - maps.begin()];
+			return thumbnailEntry(*i).image;
 		}
 	}
 	assert(false);
@@ -151,4 +189,3 @@ void YOGClientDownloadableMapList::sendThumbnailToListeners()
 {
 	listeners.notify(&YOGClientDownloadableMapListener::mapThumbnailsUpdated);
 }
-

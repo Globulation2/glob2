@@ -164,6 +164,8 @@ GameHints.cpp
 GameObjectives.cpp
 GameUtilities.cpp
 Glob2.cpp
+MapCommand.cpp
+MapReport.cpp
 Glob2Screen.cpp
 Glob2Style.cpp
 FrontendTheme.cpp
@@ -787,6 +789,11 @@ if not env['server'] and 'custom-setup-test' in COMMAND_LINE_TARGETS:
     custom_test = local.Program('CustomGameSetupHarness', custom_sources)
     local.Alias('custom-setup-test', custom_test)
 
+if not env['server'] and 'map-preview-test' in COMMAND_LINE_TARGETS:
+    preview_sources = [source for source in source_files if source != 'Glob2.cpp']
+    preview_sources += local.Object('MapPreviewHarness.o', '#test/MapPreviewHarness.cpp')
+    local.Alias('map-preview-test', local.Program('MapPreviewHarness', preview_sources))
+
 # Real engine regression for units surviving building destruction, built only by its explicit target.
 if not env['server']:
     regression_sources = [source for source in source_files if source != 'Glob2.cpp']
@@ -807,3 +814,10 @@ if not env['server']:
     regression_sources += local.Object('RoundTripHungerGateHarness.o', '#test/RoundTripHungerGateHarness.cpp')
     regression_test = local.Program('RoundTripHungerGateHarness', regression_sources)
     local.Alias('round-trip-hunger-gate-test', regression_test)
+
+# Map-report fixtures exercise analytic route lengths and read-only scoring.
+if not env['server']:
+    report_sources = [source for source in source_files if source != 'Glob2.cpp']
+    report_sources += local.Object('MapReportHarness.o', '#test/MapReportHarness.cpp')
+    report_test = local.Program('MapReportHarness', report_sources)
+    local.Alias('map-report-test', report_test)

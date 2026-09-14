@@ -459,3 +459,42 @@ keyboard file formats remain unchanged.
 settings, language, persistence, keyboard, multiplayer eligibility and camera
 cadence regressions without starting the unrelated engine/replay scenarios.
 The full invocation remains available and reports buffered diagnostics on timeout.
+
+## Pre-game map preview regression
+
+Build `scons -j6 release=1 server=0 map-preview-test`, then run
+`python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapPreviewHarness`.
+For native software captures, run
+`./build/src/MapPreviewHarness glob2-map-preview-tests --visual artifacts/map-preview` (under `xvfb-run -a` on
+headless Linux). Linux CI builds and runs both modes. Fixtures exercise rectangular
+placement, toroidal dragging, legacy/new codecs, malformed input, network frame
+bounds, thumbnail request deduplication, timeout/retry and bounded cache reuse.
+See [pre-game preview behavior and compatibility](../docs/pre-game-map-preview.md).
+
+## Map CLI
+
+Build the normal client with `scons release=1 server=0`, then run
+`python3 test/test_map_cli.py build/src/glob2` (use `.exe` on Windows).
+The test uses a disposable profile and the shared `MapPreview` software renderer
+with an invalid video driver, proving PNG export requires no display.
+It compares explicit CLI settings against a config with CLI overrides,
+generated versus loaded map pixels, default/explicit 2×, 4× and 8× scales and preview sizes, loads a premade map and
+three checked-in saves, checks invalid arguments and output failures, and verifies
+inputs/preferences are unchanged. PNGs, command logs and hashes are retained in
+`artifacts/map-cli/` and uploaded by Linux CI. Windows CI also runs the full suite without a display. The optional
+`--generation-only` subset compares serialized maps from config/CLI settings
+and checks invalid settings and preferences.
+See [map CLI documentation](../docs/map-generators/CLI.md).
+
+### Map JSON reports
+
+Build `scons release=1 server=0 map-report-test`, then run
+`python3 test/test_map_report.py build/src/glob2 build/src/MapReportHarness`
+(add `.exe` to both binaries on Windows). The suite runs without graphics, checks
+the [published report contract](../docs/map-generators/REPORT.md), recomputes fairness
+formulas, and uses analytic maps to check wraparound, disconnected islands, algae
+blocking swimming, resource amounts and construction space. It verifies unchanged
+serialized state and simulation RNG, deterministic reports, config provenance,
+older saves, and output errors. Reports and commands are retained in
+`artifacts/map-report/` and uploaded by CI. The PNG CLI suite also exercises all
+three outputs together.

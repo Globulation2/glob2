@@ -27,7 +27,10 @@
 
 namespace
 {
-std::string tr(const std::string &s) { return Toolkit::getStringTable()->getString("[" + s + "]"); }
+std::string tr(const std::string &s)
+{
+	return Toolkit::getStringTable()->getString("[" + s + "]");
+}
 const Uint32 A = ALIGN_SCREEN_CENTERED;
 std::vector<std::string> localized(std::vector<std::string> v)
 {
@@ -84,7 +87,8 @@ CustomGameChoiceScreen::CustomGameChoiceScreen(const std::string &title,
 		int start = yy;
 		ui.text(right, yy, this->choices[this->selected], "standard", rightW - 15);
 		yy += 32;
-		std::string content = this->profiles ? AINames::getAIProfile(AINames::selectionOrder()[this->selected]) : "";
+		std::string content =
+			this->profiles ? AINames::getAIProfile(AINames::selectionOrder()[this->selected]) : "";
 		auto first = content.find("\n\n");
 		if (first != std::string::npos)
 			content = content.substr(first + 2);
@@ -150,7 +154,6 @@ void CustomGameChoiceScreen::onAction(Widget *, Action action, int code, int)
 	}
 }
 
-
 namespace
 {
 std::string colorName(Color c)
@@ -161,11 +164,11 @@ std::string colorName(Color c)
 		int r, g, b;
 	};
 	static const Named colors[] = {
-		{"Red", 255, 0, 0},		 {"Yellow", 255, 255, 0}, {"Lime", 128, 255, 0},
-		{"Teal", 0, 255, 128},	 {"Azure", 0, 128, 255},  {"Green", 0, 255, 0},
-		{"Cyan", 0, 255, 255},	 {"Blue", 0, 0, 255},	  {"Magenta", 255, 0, 255},
+		{"Red", 255, 0, 0},      {"Yellow", 255, 255, 0}, {"Lime", 128, 255, 0},
+		{"Teal", 0, 255, 128},   {"Azure", 0, 128, 255},  {"Green", 0, 255, 0},
+		{"Cyan", 0, 255, 255},   {"Blue", 0, 0, 255},     {"Magenta", 255, 0, 255},
 		{"Orange", 255, 128, 0}, {"Purple", 128, 0, 255}, {"White", 255, 255, 255},
-		{"Gray", 128, 128, 128}, {"Brown", 128, 64, 0},	  {"Pink", 255, 128, 192}};
+		{"Gray", 128, 128, 128}, {"Brown", 128, 64, 0},   {"Pink", 255, 128, 192}};
 	int best = 1000000;
 	std::string name;
 	for (const auto &n : colors)
@@ -216,7 +219,8 @@ CustomGameScreen::CustomGameScreen() : Glob2TabScreen(false, true)
 		else
 			loadMap(setup.premadeMap);
 		// The visible library may differ from the selected map (e.g. an empty library).
-		std::copy(std::begin(preferences.librarySelection), std::end(preferences.librarySelection), librarySelection);
+		std::copy(std::begin(preferences.librarySelection), std::end(preferences.librarySelection),
+				  librarySelection);
 	}
 	else
 	{
@@ -258,7 +262,8 @@ void CustomGameScreen::savePreferences()
 	CustomGamePreferences preferences;
 	preferences.setup = setup;
 	preferences.userMaps = userMaps;
-	std::copy(std::begin(librarySelection), std::end(librarySelection), preferences.librarySelection);
+	std::copy(std::begin(librarySelection), std::end(librarySelection),
+			  preferences.librarySelection);
 	std::copy(std::begin(expanded), std::end(expanded), preferences.expanded);
 	const auto text = preferences.encode();
 	if (text == lastSavedPreferences)
@@ -277,7 +282,11 @@ int CustomGameScreen::choose(const std::string &title, const std::vector<std::st
 		endExecute(QUIT_APPLICATION);
 	return result;
 }
-void CustomGameScreen::onGroupActivated(int group) { currentTab = group; }
+void CustomGameScreen::onGroupActivated(int group)
+{
+	currentTab = group;
+	preview->cancelDrag();
+}
 // One request per playable landscape, exactly as picking it would leave the draft: the
 // settings last used with it, or its defaults, at the current size and colony count.
 std::vector<std::pair<int, GenerationRequest>> CustomGameScreen::landscapeEntries() const
@@ -390,12 +399,16 @@ void CustomGameScreen::showStartQuality()
 }
 void CustomGameScreen::invalidate()
 {
+	preview->cancelDrag();
 	validMap = false;
-	quality = {};
+	// Keep the scores belonging to the retained generated preview during a reroll.
+	// A premade map must not inherit scores from an older generated snapshot.
+	if (source != snapshot)
+		quality = {};
 	previewRevision = ~0u;
 	previewPending = setup.random;
 	previewDue = SDL_GetTicks() + 500;
-	message = tr("Updating map preview...");
+	message.clear();
 }
 std::string CustomGameScreen::colonyLabel(int i) const
 {
@@ -425,25 +438,48 @@ bool CustomGameScreen::loadMap(const std::string &requestedPath)
 	const std::string path = (pathError || setup.random) ? requestedPath : canonical.string();
 	try
 	{
-		BinaryInputStream stream(Toolkit::getFileManager()->openInputStreamBackend(path));
-		MapHeader header;
-		if (!stream.isValid() || !header.load(&stream) ||
-			(header.getNumberOfTeams() < 1 || header.getNumberOfTeams() > Team::MAX_COUNT))
-			throw std::runtime_error("map header");
+		const auto stamp = std::filesystem::last_write_time(path);
+		const auto bytes = std::filesystem::file_size(path);
+		auto cached = std::find_if(
+			preview->cache.begin(), preview->cache.end(), [&](const auto &entry)
+			{ return entry.path == path && entry.time == stamp && entry.bytes == bytes; });
+		LobbyMapPreview::CachedMap entry;
+		if (cached != preview->cache.end())
+		{
+			entry = *cached;
+			preview->cache.erase(cached);
+		}
+		else
+		{
+			auto world = std::make_unique<Game>(nullptr);
+			BinaryInputStream body(Toolkit::getFileManager()->openInputStreamBackend(path));
+			if (!body.isValid() || !world->load(&body) || world->teamsCount() < 1 ||
+				world->teamsCount() > Team::MAX_COUNT)
+				throw std::runtime_error("map body");
+			entry.path = path;
+			entry.time = stamp;
+			entry.bytes = bytes;
+			entry.header = world->mapHeader;
+			entry.terrain.loadFromMap(world->map);
+			if (!entry.terrain.isLoaded())
+				throw std::runtime_error("map terrain");
+			for (int i = 0; i < world->teamsCount(); ++i)
+				entry.starts.push_back({world->teams[i]->startPosX, world->teams[i]->startPosY,
+										world->teams[i]->color});
+		}
 		int old = setup.capacity;
-		auto world = std::make_unique<Game>(nullptr);
-		BinaryInputStream body(Toolkit::getFileManager()->openInputStreamBackend(path));
-		if (!world->load(&body))
-			throw std::runtime_error("map body");
-		mapHeader = header;
-		setup.setCapacity(header.getNumberOfTeams());
+		mapHeader = entry.header;
+		setup.setCapacity(mapHeader.getNumberOfTeams());
 		source = path;
 		validMap = true;
-		preview->setMapThumbnail(path);
-		preview->starts.clear();
-		for (int i = 0; i < world->teamsCount(); ++i)
-			preview->starts.push_back(
-				{world->teams[i]->startPosX, world->teams[i]->startPosY, world->teams[i]->color});
+		preview->setMapThumbnail(entry.terrain);
+		preview->starts = entry.starts;
+		preview->cache.erase(std::remove_if(preview->cache.begin(), preview->cache.end(),
+											[&](const auto &item) { return item.path == path; }),
+							 preview->cache.end());
+		preview->cache.insert(preview->cache.begin(), std::move(entry));
+		if (preview->cache.size() > 8)
+			preview->cache.pop_back();
 		if (!setup.random)
 		{
 			setup.premadeMap = path;
@@ -459,6 +495,7 @@ bool CustomGameScreen::loadMap(const std::string &requestedPath)
 	}
 	catch (const std::exception &)
 	{
+		preview->setState(MapPreview::State::Failed);
 		validMap = false;
 		message = tr("Could not load this map. Choose another map or retry.");
 		return false;
@@ -510,8 +547,9 @@ bool CustomGameScreen::generateMap()
 			auto roll = std::make_unique<Game>(nullptr);
 			auto request = setup.generator;
 			request.seed =
-				shown ? *shown
-					  : GenerationContext::deriveSeed(rootSeed, "attempt/" + std::to_string(attempt));
+				shown
+					? *shown
+					: GenerationContext::deriveSeed(rootSeed, "attempt/" + std::to_string(attempt));
 			const auto rollResult = generator.generate(*roll, request);
 			std::cout << "Map generation: " << rollResult.diagnostic() << std::endl;
 			if (!rollResult || roll->teamsCount() != setup.capacity)
@@ -540,15 +578,30 @@ bool CustomGameScreen::generateMap()
 			game->save(&stream, true, "Random map");
 			stream.flush();
 		}
-		if (!loadMap(candidate))
-			throw std::runtime_error("snapshot load");
+		// Keep the actual generated world for rasterization. Only read back its
+		// finalized header (offset and SHA1), not a second whole Game and Map.
+		BinaryInputStream headerStream(
+			Toolkit::getFileManager()->openInputStreamBackend(candidate));
+		if (!headerStream.isValid() || !mapHeader.load(&headerStream))
+			throw std::runtime_error("snapshot header");
+		MapThumbnail terrain;
+		terrain.loadFromMap(game->map);
+		if (!terrain.isLoaded())
+			throw std::runtime_error("snapshot preview");
+		preview->setMapThumbnail(terrain);
+		preview->starts.clear();
+		for (int i = 0; i < game->teamsCount(); ++i)
+			preview->starts.push_back(
+				{game->teams[i]->startPosX, game->teams[i]->startPosY, game->teams[i]->color});
+		source = candidate;
+		validMap = true;
 		if (!snapshot.empty())
 			std::filesystem::remove_all(std::filesystem::path(snapshot).parent_path());
 		snapshot = candidate;
 		previewRevision = setup.mapRevision;
 		quality = generationResult.quality;
 		randomAttempts = 0;
-		message = tr("Preview ready. Start plays this exact map.");
+		message.clear();
 		return true;
 	}
 	catch (const std::exception &error)
@@ -571,6 +624,9 @@ void CustomGameScreen::updateLayout()
 }
 void CustomGameScreen::onSDLEvent(SDL_Event *event)
 {
+	if (currentTab == groups[0] && validMap && !controls->popup.open && controls->pressed.empty() &&
+		preview->handlePreviewEvent(event))
+		return;
 	if (controls->handle(event))
 		return;
 	if (event->type == SDL_KEYDOWN && currentTab == groups[0] && !setup.random &&
@@ -630,7 +686,8 @@ void CustomGameScreen::onAction(Widget *widget, Action action, int code, int val
 }
 void CustomGameScreen::onTimer(Uint32 tick)
 {
-	if (controls->pressed.empty() && !controls->popup.open && Sint32(tick - preferencesRetryAt) >= 0)
+	if (controls->pressed.empty() && !controls->popup.open &&
+		Sint32(tick - preferencesRetryAt) >= 0)
 		savePreferences();
 	// Wait until the last edit settles and a dragged control/menu is released.
 	if (previewPending && setup.random && Sint32(tick - previewDue) >= 0 &&
@@ -656,7 +713,7 @@ void CustomGameScreen::startCandidates()
 	else
 		candidates = std::make_unique<LandscapePreviewer>(std::move(requests));
 	candidateRevision = setup.mapRevision;
-	message = tr("Updating map preview...");
+	message.clear();
 }
 // The candidates are in: keep the best-scoring one by rolling its seed for the snapshot, or
 // report that none seated every colony. Returns whether a map came of it.
@@ -820,8 +877,8 @@ void CustomGameScreen::renderPlayers(int x, int y, int w, int h)
 {
 	auto &ui = *controls;
 	std::vector<std::string> formats = localized({"FFA", "2 vs 2", "You vs all"});
-	int selected = setup.format == "FFA"		  ? 0
-				   : setup.format == "2 vs 2"	  ? 1
+	int selected = setup.format == "FFA"          ? 0
+				   : setup.format == "2 vs 2"     ? 1
 				   : setup.format == "You vs all" ? 2
 												  : -1;
 	ui.segments("format", {x, y, std::min(w, 450), 30}, formats, selected,
@@ -873,8 +930,10 @@ void CustomGameScreen::renderPlayers(int x, int y, int w, int h)
 			std::vector<std::string> names;
 			for (int j : AINames::selectionOrder())
 				names.push_back(AINames::getAISelectorText(j));
-			ui.dropdown(id + "/ai", {ax, ry + 8, aw, 30}, names, AINames::selectionIndex(c.ai), [this, i](int value)
-						{ setup.colonies[i].ai = (AI::ImplementationID)AINames::selectionOrder()[value]; });
+			ui.dropdown(
+				id + "/ai", {ax, ry + 8, aw, 30}, names, AINames::selectionIndex(c.ai),
+				[this, i](int value)
+				{ setup.colonies[i].ai = (AI::ImplementationID)AINames::selectionOrder()[value]; });
 			ui.button(
 				id + "/info", {x + w - 66, ry + 38, 44, 18}, tr("Info"),
 				[this, i] { showAIProfile(i); }, false, true, true, "little");
@@ -965,11 +1024,11 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 		std::string help;
 		if (index < 3)
 		{
-			auto options = index == 0	? localized({"Conquest or prestige", "Conquest only"})
+			auto options = index == 0   ? localized({"Conquest or prestige", "Conquest only"})
 						   : index == 1 ? localized({"Explore as you play", "Terrain revealed"})
 										: localized({"Locked teams", "Can change in game"});
 			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
-						index == 0	 ? !setup.prestige
+						index == 0   ? !setup.prestige
 						: index == 1 ? setup.revealed
 									 : !setup.locked,
 						apply, {}, w < 800 ? "little" : "standard");
@@ -1095,7 +1154,7 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 			const auto fitting = [half](const std::string &label)
 			{
 				return Toolkit::getFont("standard")->getStringWidth(label) + 16 <= half ? "standard"
-																					   : "little";
+																						: "little";
 			};
 			const std::string reset = tr("Reset to defaults"), random = tr("Random parameters");
 			ui.button(
@@ -1128,7 +1187,7 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 			{
 				if (c.id == "teams")
 					g.nbTeams = setup.capacity;
-				const char *id = c.id == "width"	? "generator/width"
+				const char *id = c.id == "width"    ? "generator/width"
 								 : c.id == "height" ? "generator/height"
 													: "generator/colonies";
 				discrete(c, id);
@@ -1202,7 +1261,7 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 			setup.random ? tr(GenerationRequest::methodName(setup.generator.method))
 						 : mapHeader.getMapName(),
 			w < 800 ? "standard" : "menu", rightW);
-	std::string dimensions = validMap		? std::to_string(preview->getLastWidth()) + " x " +
+	std::string dimensions = validMap       ? std::to_string(preview->getLastWidth()) + " x " +
 												  std::to_string(preview->getLastHeight())
 							 : setup.random ? std::to_string(1 << setup.generator.wDec) + " x " +
 												  std::to_string(1 << setup.generator.hDec)
@@ -1212,7 +1271,7 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 			rightW, true);
 	// The generated map's start quality (FEEDBACK 2026-09-14): the fairness the lobby ranked its
 	// candidate rolls by, and a small (i) that opens the breakdown behind it.
-	if (setup.random && validMap && quality.measured)
+	if (setup.random && (validMap || previewBusy()) && quality.measured)
 	{
 		char summary[96];
 		std::snprintf(summary, sizeof summary, "%s %.2f  /  %s %.2f", tr("Fairness").c_str(),
@@ -1224,41 +1283,50 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 			[this] { showStartQuality(); }, false, true, false, "little");
 	}
 	// A random map keeps a row under its preview for the Randomize button.
-	const int previewLimit = h - (setup.random ? 162 : 126);
+	const int previewLimit = std::max(1, h - (setup.random ? 210 : 174));
 	int size = std::min(rightW, previewLimit);
 	int previewW = size, previewH = size;
-	if (validMap)
+	// A reroll invalidates the launch snapshot, not the image being displayed.
+	// Keep its geometry, terrain and instructions until the replacement is ready.
+	const bool displayPreview = validMap || (previewBusy() && preview->isThumbnailLoaded());
+	const int mapW = displayPreview ? preview->getLastWidth()
+					 : setup.random ? (1 << setup.generator.wDec)
+									: 0;
+	const int mapH = displayPreview ? preview->getLastHeight()
+					 : setup.random ? (1 << setup.generator.hDec)
+									: 0;
+	if (mapW > 0 && mapH > 0)
 	{
-		previewW = rightW;
-		previewH = previewW * preview->getLastHeight() / preview->getLastWidth();
-		if (previewH > previewLimit)
-		{
-			previewH = previewLimit;
-			previewW = previewH * preview->getLastWidth() / preview->getLastHeight();
-		}
+		const auto fitted = MapPreviewGeometry::fit({0, 0, rightW, previewLimit}, mapW, mapH);
+		previewW = fitted.w;
+		previewH = fitted.h;
 	}
 	int px = rightX + (rightW - previewW) / 2, py = top + 51;
+	int helpHeight = 0;
 	ui.box({px - 3, py - 3, previewW + 6, previewH + 6}, ui.line);
-	if (validMap)
+	if (displayPreview)
 	{
 		preview->setScreenPosition(px - (gfx->getW() - 640) / 2, py - (gfx->getH() - 480) / 2);
 		preview->setDimensions(previewW, previewH);
 		preview->paint();
+		helpHeight = ui.paragraph(rightX, py + previewH + 7, rightW, tr("Map preview controls"),
+								  "little", true);
 	}
 	else
 	{
-		ui.box({px, py, size, size}, Color(211, 223, 197));
-		ui.paragraph(px + 16, py + size / 2 - 20, size - 32,
-					 tr(previewBusy()
-							? "Updating map preview..."
-							: "Preview unavailable. Adjust settings or start to retry."));
+		ui.box({px, py, previewW, previewH}, Color(211, 223, 197));
+		helpHeight = ui.paragraph(
+			rightX, py + previewH + 7, rightW,
+			tr(previewBusy() ? "Map preview controls"
+							 : "Preview unavailable. Adjust settings or start to retry."),
+			"little", true);
 	}
 	if (setup.random)
 	{
 		const int buttonW = std::min(rightW, 160);
 		ui.button(
 			"map/randomize",
-			{rightX + (rightW - buttonW) / 2, py + (validMap ? previewH : size) + 10, buttonW, 30},
+			{rightX + (rightW - buttonW) / 2, py + previewH + helpHeight + 17, buttonW, 30},
 			tr("Randomize"),
 			[this]
 			{

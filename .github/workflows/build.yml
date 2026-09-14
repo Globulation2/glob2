@@ -85,6 +85,28 @@ jobs:
       - name: Build glob2
         run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1
 
+      - name: Test map JSON reports
+        run: |
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 map-report-test
+          python3 test/test_map_report.py build/src/glob2 build/src/MapReportHarness
+      - name: Upload map JSON reports and command log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-report-${{ matrix.runner }}
+          path: artifacts/map-report/
+
+      - name: Test headless map CLI with the shared preview renderer
+        run: |
+          python3 test/test_map_cli.py build/src/glob2 --generation-only
+          python3 test/test_map_cli.py build/src/glob2
+      - name: Upload map CLI previews and command log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-cli-${{ matrix.runner }}
+          path: artifacts/map-cli/
+
       - name: Test torus geometry, picking and cloud coordinates
         run: |
           ${{ matrix.compiler }} -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
@@ -107,6 +129,21 @@ jobs:
             build/src/torus-render-test -g -F -m -s 1920x1440
           GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
             build/src/torus-render-test -G -F -m -s 1120x720
+
+      - name: Build and run pre-game map preview regressions
+        run: |
+          scons -j$(nproc) release=1 server=0 map-preview-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapPreviewHarness
+          mkdir -p artifacts/map-preview
+          timeout 180s xvfb-run -a ./build/src/MapPreviewHarness glob2-map-preview-tests --visual artifacts/map-preview
+
+      - name: Retain pre-game map preview evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-preview-${{ matrix.runner }}-${{ matrix.compiler }}
+          path: artifacts/map-preview/
+          if-no-files-found: ignore
 
       - name: Build and run custom-game setup regressions
         run: |
@@ -372,6 +409,26 @@ jobs:
       - name: Build glob2
         run: scons -j$(nproc) release=1 mingw=1
 
+      - name: Test map JSON reports
+        run: |
+          scons -j$(nproc) release=1 mingw=1 server=0 map-report-test
+          python3 test/test_map_report.py build/src/glob2.exe build/src/MapReportHarness.exe
+      - name: Upload map JSON reports and command log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-report-windows
+          path: artifacts/map-report/
+
+      - name: Test headless map CLI
+        run: python3 test/test_map_cli.py build/src/glob2.exe
+      - name: Upload map CLI previews and command log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-cli-windows
+          path: artifacts/map-cli/
+
       - name: Test clearing flag resource bounds
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 clearing-gradient-test
@@ -410,6 +467,11 @@ jobs:
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 map-render-resize-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderResizeHarness.exe
+
+      - name: Build and run pre-game map preview regressions
+        run: |
+          scons -j2 release=1 server=0 map-preview-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapPreviewHarness.exe
 
       - name: Test savegame loading and atomic autosaves
         run: |

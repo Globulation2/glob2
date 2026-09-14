@@ -2262,6 +2262,20 @@ Spazio
 Isolamento
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 La partenza di ogni colonia è misurata sulla mappa finita: il cammino fino al grano e al legno, quanto bene ricresce il suo terreno, i giacimenti e i siti edificabili a portata, e la distanza dai rivali. Ogni fattore ottiene un punteggio da 0 a 1 rispetto a un'asticella fissa, il totale li pondera, l'equità è il totale della colonia peggiore diviso per quello della migliore, e il punteggio è il totale peggiore moltiplicato per l'equità.
+[Map preview controls]
+Trascina per attraversare i bordi. Rotella per ingrandire. Clic destro o doppio clic per ripristinare.
+[Map preview drag help]
+Trascina per spostare; rotella per ingrandire.
+[Map preview loading]
+Caricamento...
+[Map preview failed]
+Anteprima non riuscita
+[Map preview retry]
+Fai clic per riprovare
+[Map preview please wait]
+Attendi
+[Map preview choose another]
+Scegli una mappa
 [repeat map horizontally]
 Ripeti la mappa in orizzontale
 [repeat map vertically]

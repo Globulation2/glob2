@@ -2198,6 +2198,20 @@ OpenGL در این بیلد موجود نیست.
 انزوا
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 شروع هر مستعمره روی نقشهٔ نهایی سنجیده می‌شود: مسیر تا گندم و تا چوب، اینکه زمینش چقدر خوب دوباره می‌روید، ذخایر و جای ساخت‌وساز در دسترس، و فاصله‌اش از رقیبان. هر عامل از ۰ تا ۱ در برابر معیاری ثابت امتیاز می‌گیرد، مجموع آن‌ها را وزن می‌دهد، انصاف مجموع بدترین مستعمره تقسیم بر بهترین است، و امتیاز بدترین مجموع ضرب در انصاف است.
+[Map preview controls]
+برای عبور از لبه‌ها بکشید. با چرخ ماوس بزرگ‌نمایی کنید. برای بازنشانی راست‌کلیک یا دوبار کلیک کنید.
+[Map preview drag help]
+برای جابه‌جایی بکشید؛ چرخ ماوس برای بزرگ‌نمایی.
+[Map preview loading]
+در حال بارگذاری...
+[Map preview failed]
+پیش‌نمایش ناموفق بود
+[Map preview retry]
+برای تلاش دوباره کلیک کنید
+[Map preview please wait]
+لطفاً صبر کنید
+[Map preview choose another]
+یک نقشه انتخاب کنید
 [repeat map horizontally]
 تکرار نقشه به صورت افقی
 [repeat map vertically]
