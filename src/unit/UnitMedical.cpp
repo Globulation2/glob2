@@ -136,10 +136,10 @@ void Unit::handleMagic(void)
 						Sint32 targetTeam = Unit::GIDtoTeam(targetGUID);
 						Uint16 targetID = Unit::GIDtoID(targetGUID);
 						Uint32 targetTeamMask = 1<<targetTeam;
-						if (owner->enemies & targetTeamMask)
+						if (owner->attackableTeams() & targetTeamMask)
 						{
 							Unit *enemyUnit = teams[targetTeam]->myUnits[targetID];
-							Sint32 damage = attackForce + experienceLevel - enemyUnit->getRealArmor(true);
+							Sint32 damage = (attackForce + experienceLevel) * owner->game->gameHeader.getGlassCannonScale() - enemyUnit->getRealArmor(true);
 							if (damage > 0)
 							{
 								enemyUnit->hp -= damage;
@@ -201,6 +201,11 @@ void Unit::handleMedical(void)
 		medical=MED_HUNGRY;
 	else if (hp<=trigHP)
 		medical=MED_DAMAGED;
+
+	// Custom-game "no permadeath" rule: clamp back up instead of letting the
+	// unit cross the death threshold; like the rule's description, HP stops at 1.
+	if (owner->game->gameHeader.isPermadeathDisabled() && hp<UNIT_HP_DEATH_THRESHOLD+1)
+		hp = UNIT_HP_DEATH_THRESHOLD+1;
 
 	if (hp<UNIT_HP_DEATH_THRESHOLD)
 	{

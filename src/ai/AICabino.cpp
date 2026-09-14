@@ -1323,7 +1323,7 @@ bool SimpleBuildingDefense::findDefense()
 				b->type->shortTypeNum!=IntBuildingType::WAR_FLAG &&
 				b->type->shortTypeNum!=IntBuildingType::CLEARING_FLAG)
 			{
-				building_health[b->gid]=std::min(b->type->hpMax, b->hp);
+				building_health[b->gid]=std::min(b->getEffectiveMaxHp(), b->hp);
 			}
 		}
 	}
@@ -3068,7 +3068,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 					b->type->shortTypeNum!=IntBuildingType::EXPLORATION_FLAG       &&
 					b->type->shortTypeNum!=IntBuildingType::WAR_FLAG               &&
 					b->type->shortTypeNum!=IntBuildingType::CLEARING_FLAG          &&
-					b->hp  <  b->type->hpMax)
+					b->hp  <  b->getEffectiveMaxHp())
 				{
 					buildings.push_back(b);
 					ratios[b->type->level]+=1;
@@ -3147,7 +3147,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 			//See if the building needs repair. Note the code for initializing a repair and the code for initializing an upgrade are very similiar.
 			if (b->type->shortTypeNum!=IntBuildingType::CLEARING_FLAG          &&
 				available_repair>=MINIMUM_TO_REPAIR                            &&
-				b->hp  <  b->type->hpMax)
+				b->hp  <  b->getEffectiveMaxHp())
 			{
 				unsigned int num_to_assign=available_repair;
 				if( num_to_assign > MAXIMUM_TO_REPAIR)

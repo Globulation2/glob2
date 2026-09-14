@@ -65,6 +65,12 @@ GameHeader makeFixtureHeader()
 	header.setInstantConstructionEnabled(true);
 	header.setStockpileStartLevel(3);
 	header.setHungerDisabled(true);
+	header.setUnitUpgradesDisabled(true);
+	header.setGlassCannonLevel(2);
+	header.setUnitsFearless(true);
+	header.setPermadeathDisabled(true);
+	header.setPeacefulModeEnabled(true);
+	header.setBuildingHpLevel(1);
 	for (int i = 0; i < 4; ++i)
 	{
 		char name[32];
@@ -122,6 +128,12 @@ void testFullRoundTrip()
 	check(loaded.isInstantConstructionEnabled(), "full: instantConstruction preserved");
 	check(loaded.getStockpileStartLevel() == 3, "full: stockpileStartLevel preserved");
 	check(loaded.isHungerDisabled(), "full: hungerDisabled preserved");
+	check(loaded.isUnitUpgradesDisabled(), "full: unitUpgradesDisabled preserved");
+	check(loaded.getGlassCannonLevel() == 2, "full: glassCannonLevel preserved");
+	check(loaded.isUnitsFearless(), "full: unitsFearless preserved");
+	check(loaded.isPermadeathDisabled(), "full: permadeathDisabled preserved");
+	check(loaded.isPeacefulModeEnabled(), "full: peacefulMode preserved");
+	check(loaded.getBuildingHpLevel() == 1, "full: buildingHpLevel preserved");
 	check(playersMatch(original, loaded, 4), "full: players preserved");
 	// allyTeamNumbers values are NOT asserted: save() writes all 32 entries
 	// under the single repeated key "allyTeamNumber" (no per-index section),
@@ -177,7 +189,7 @@ void testBinaryHeaderFormsAndLegacy()
 		for(int p=0;p<Team::MAX_COUNT;++p) extension+=4+original.getAIConfig(p).size();
 		// The custom-game rule bytes (version 102 on) follow it in the full and
 		// player-less forms.
-		const size_t ruleBytes=5;
+		const size_t ruleBytes=5+6; // economy (102), combat (103)
 		if (form!=1) extension+=ruleBytes;
 		memory->seekFromEnd(0);
 		const size_t legacySize=memory->getPosition()-extension;

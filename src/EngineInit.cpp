@@ -191,6 +191,12 @@ namespace
 			{"instantConstruction", 1, [](GameHeader& h, int v) { h.setInstantConstructionEnabled(v); }},
 			{"stockpile", 3, [](GameHeader& h, int v) { h.setStockpileStartLevel(v); }},
 			{"noHunger", 1, [](GameHeader& h, int v) { h.setHungerDisabled(v); }},
+			{"noUpgrades", 1, [](GameHeader& h, int v) { h.setUnitUpgradesDisabled(v); }},
+			{"glassCannon", 2, [](GameHeader& h, int v) { h.setGlassCannonLevel(v); }},
+			{"fearless", 1, [](GameHeader& h, int v) { h.setUnitsFearless(v); }},
+			{"noPermadeath", 1, [](GameHeader& h, int v) { h.setPermadeathDisabled(v); }},
+			{"peaceful", 1, [](GameHeader& h, int v) { h.setPeacefulModeEnabled(v); }},
+			{"fortress", 2, [](GameHeader& h, int v) { h.setBuildingHpLevel(v); }},
 		};
 		std::stringstream list(environment);
 		std::string item;

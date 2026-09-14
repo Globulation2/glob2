@@ -2262,3 +2262,59 @@ Niukat resurssit
 Välitön rakentaminen
 [Stockpile start]
 Aloitusvarasto
+[Units still visit schools but never gain a level.]
+Yksiköt käyvät yhä koulua, mutta eivät koskaan nouse tasolle.
+[Units fight to the death instead of retreating to heal.]
+Yksiköt taistelevat kuolemaan asti sen sijaan, että vetäytyisivät parantumaan.
+[Units are never permanently lost -- HP just stops at 1.]
+Yksiköitä ei koskaan menetetä pysyvästi -- HP pysähtyy vain lukemaan 1.
+[Disables all combat between every team.]
+Poistaa käytöstä kaiken taistelun kaikkien joukkueiden välillä.
+[Higher tiers deal more damage but have less HP and armor.]
+Korkeammat tasot aiheuttavat enemmän vahinkoa, mutta niillä on vähemmän HP:ta ja panssaria.
+[Higher tiers give every building much more HP.]
+Korkeammat tasot antavat jokaiselle rakennukselle paljon lisää HP:ta.
+[Starting units spawn already leveled up. Changes the generated map.]
+Aloitusyksiköt ilmestyvät jo ylemmällä tasolla. Muuttaa luotua karttaa.
+[Trains normally]
+Harjoittelee normaalisti
+[No upgrades]
+Ei päivityksiä
+[Retreats when damaged]
+Vetäytyy vahingoittuessaan
+[Fearless]
+Peloton
+[Can die permanently]
+Voi kuolla pysyvästi
+[No permadeath]
+Ei pysyvää kuolemaa
+[Normal combat]
+Normaali taistelu
+[Peaceful mode]
+Rauhanomainen tila
+[Off (today's balance)]
+Pois (nykyinen tasapaino)
+[Glass cannon x2]
+Lasitykki x2
+[Glass cannon x3]
+Lasitykki x3
+[Off (today's HP)]
+Pois (nykyinen HP)
+[Fortress x5]
+Linnoitus x5
+[Fortress x10]
+Linnoitus x10
+[Veteran]
+Veteraani
+[Elite]
+Eliitti
+[Legendary]
+Legendaarinen
+[Combat]
+Taistelu
+[Glass cannon]
+Lasitykki
+[Fortress buildings]
+Linnoitetut rakennukset
+[Veteran/Fast start]
+Veteraani/Nopea aloitus

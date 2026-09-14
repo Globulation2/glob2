@@ -81,8 +81,8 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 		// hpMax+1 (not hpMax) so that at full HP the integer division stays strictly
 		// below gameSpriteCount, leaving damageImgShift == 0 (pristine sprite). Using
 		// plain hpMax would yield shift == -1 at hp == hpMax and trip the assert below.
-		assert(building->hp <= type->hpMax);
-		int damageImgShift = type->gameSpriteCount - ((building->hp * type->gameSpriteCount) / (type->hpMax+1)) - 1;
+		assert(building->hp <= building->getEffectiveMaxHp());
+		int damageImgShift = type->gameSpriteCount - ((building->hp * type->gameSpriteCount) / (building->getEffectiveMaxHp()+1)) - 1;
 		assert(damageImgShift >= 0);
 		imgid = type->gameSpriteImage + damageImgShift;
 	}
@@ -123,7 +123,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 		if (type->hpMax)
 		{
 			int maxWidth, actWidth, addDec;
-			float hpRatio=(float)building->hp/(float)type->hpMax;
+			float hpRatio=(float)building->hp/(float)building->getEffectiveMaxHp();
 			if (type->width==1)
 			{
 				maxWidth=8;
@@ -139,7 +139,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 			int decy=(type->height*32);
 			int healDecx=(type->width-(maxWidth>>3))*16+addDec;
 
-			if (building->hp!=type->hpMax || !building->type->crossConnectMultiImage)
+			if (building->hp!=building->getEffectiveMaxHp() || !building->type->crossConnectMultiImage)
 				drawHealthBar(x+healDecx, y+decy-4, maxWidth, actWidth, hpRatio);
 		}
 

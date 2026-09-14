@@ -265,6 +265,9 @@ public:
 	//! may raise, so they are kept equal and read through here.
 	Sint32 workerLevel() const { return level[BUILD]; }
 	//! Set both halves of the worker level, and their performance, together.
+	//! Re-creates a freshly placed unit at `newLevel` in every ability, keeping its place,
+	//! identity and team (the lobby's Veteran/Fast start rule, before the map is saved).
+	void resetAtLevel(Sint32 newLevel);
 	void setWorkerLevel(Sint32 newLevel);
 	bool canLearn[NB_ABILITY];
 	Sint32 experience;

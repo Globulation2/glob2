@@ -327,7 +327,10 @@ void Unit::handleDisplacement(void)
 						hp=performance[HP];
 						needToRecheckMedical=true;
 					}
-					else
+					// Custom-game "no upgrades" rule: the unit still visits the
+					// building and exits normally above, it just never gains
+					// the level.
+					else if (!owner->game->gameHeader.isUnitUpgradesDisabled())
 					{
 						if (attachedBuilding->type->upgradeInParallel)
 						{

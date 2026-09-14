@@ -14,6 +14,7 @@
 #include "LobbyControls.h"
 #include "LobbyMapCatalog.h"
 #include "Player.h"
+#include "Unit.h"
 #include "StartQualityScreen.h"
 #include <BinaryStream.h>
 #include <FileManager.h>
@@ -566,6 +567,13 @@ bool CustomGameScreen::generateMap()
 		}
 		if (!game)
 			throw std::runtime_error(generationResult.diagnostic());
+		// Veteran/Fast start: the generators place level-0 workers; raise the chosen world's
+		// before it is saved, so the snapshot every client loads carries them.
+		if (setup.startingUnitLevel != 0)
+			for (int team = 0; team < game->teamsCount(); ++team)
+				for (int i = 0; i < Unit::MAX_COUNT; ++i)
+					if (Unit *unit = game->teams[team]->myUnits[i])
+						unit->resetAtLevel(setup.startingUnitLevel);
 		GameHeader initial;
 		initial.setRandomSeed(generationResult.seed);
 		setup.writeHeader(initial, username);
@@ -1044,6 +1052,17 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 				setup.stockpileStart = value;
 			if (index == 9)
 				setup.noHunger = value;
+				setup.unitUpgradesDisabled = value;
+			if (index == 11)
+				setup.glassCannonLevel = value;
+			if (index == 12)
+				setup.unitsFearless = value;
+			if (index == 13)
+				setup.permadeathDisabled = value;
+			if (index == 14)
+				setup.peacefulMode = value;
+			if (index == 15)
+				setup.buildingHpLevel = value;
 			setup.ruleset = "Custom";
 		};
 		std::string help;
@@ -1107,7 +1126,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 					  : index == 7 ? "Building sites complete immediately, skipping delivery."
 								   : "Units never grow hungry and never starve.");
 		}
-		else
+		else if (index == 6 || index == 8)
 		{
 			std::vector<std::string> options =
 				index == 6 ? localized({"Off (today's growth)", "Scarce (2x slower)",
@@ -1120,6 +1139,55 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 			help = tr(index == 6 ? "Slows how often resources grow or spread across the map."
 								  : "Seeds each team's shared market/exchange resource pool at "
 									"game start.");
+		}
+		else if (index == 10 || index == 12 || index == 13 || index == 14)
+		{
+			auto options = index == 10	 ? localized({"Trains normally", "No upgrades"})
+						   : index == 12 ? localized({"Retreats when damaged", "Fearless"})
+						   : index == 13 ? localized({"Can die permanently", "No permadeath"})
+										: localized({"Normal combat", "Peaceful mode"});
+			bool current = index == 10	 ? setup.unitUpgradesDisabled
+						   : index == 12 ? setup.unitsFearless
+						   : index == 13 ? setup.permadeathDisabled
+										: setup.peacefulMode;
+			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
+						current, apply, {}, w < 800 ? "little" : "standard");
+			help = tr(index == 10	? "Units still visit schools but never gain a level."
+					  : index == 12 ? "Units fight to the death instead of retreating to heal."
+					  : index == 13 ? "Units are never permanently lost -- HP just stops at 1."
+									: "Disables all combat between every team.");
+		}
+		else if (index == 11 || index == 15)
+		{
+			std::vector<std::string> options =
+				index == 11 ? localized({"Off (today's balance)", "Glass cannon x2", "Glass cannon x3"})
+						   : localized({"Off (today's HP)", "Fortress x5", "Fortress x10"});
+			int current = index == 11 ? setup.glassCannonLevel : setup.buildingHpLevel;
+			ui.dropdown("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
+						current, apply);
+			help = tr(index == 11 ? "Higher tiers deal more damage but have less HP and armor."
+								  : "Higher tiers give every building much more HP.");
+		}
+		else
+		{
+			if (setup.random)
+			{
+				std::vector<std::string> options = localized({"Standard", "Veteran", "Elite", "Legendary"});
+				ui.dropdown("rule/startingLevel", {fieldX, yy + 5, fieldW, 29}, options,
+					setup.startingUnitLevel,
+					[this](int v)
+					{
+						setup.startingUnitLevel = v;
+						++setup.mapRevision;
+						setup.ruleset = "Custom";
+						invalidate();
+					});
+			}
+			else
+				ui.text(fieldX + 9, yy + 12, tr("Map-defined starting units"), "standard", fieldW);
+			help = tr(setup.random ? "Starting units spawn already leveled up. Changes the "
+									 "generated map."
+								   : "Premade maps retain their authored starting units.");
 		}
 		ui.text(x + 10, yy + 39, help, "little", w - 40, true);
 		yy += 65;

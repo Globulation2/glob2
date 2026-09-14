@@ -56,7 +56,12 @@ bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool
 	// one sent across the network: the network header is in the latest format
 	// version, whereas the actual map may be an older file version.
 	if(setGameHeader)
+	{
 		game.setGameHeader(gameHeader, saveAI);
+		// A saved game already carries its units and buildings under the rules.
+		if (!game.mapHeader.getIsSavedGame())
+			game.applyStartingRules();
+	}
 
 	return true;
 }

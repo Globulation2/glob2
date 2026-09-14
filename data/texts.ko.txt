@@ -2258,3 +2258,59 @@ Globulation 2 커서를 표시합니다.
 즉시 건설
 [Stockpile start]
 시작 비축량
+[Units still visit schools but never gain a level.]
+유닛은 계속 학교에 다니지만 절대 레벨업하지 않습니다.
+[Units fight to the death instead of retreating to heal.]
+유닛은 치료를 위해 후퇴하는 대신 죽을 때까지 싸웁니다.
+[Units are never permanently lost -- HP just stops at 1.]
+유닛은 절대 영구적으로 사라지지 않습니다 -- 체력이 1에서 멈출 뿐입니다.
+[Disables all combat between every team.]
+모든 팀 간의 전투를 비활성화합니다.
+[Higher tiers deal more damage but have less HP and armor.]
+상위 등급은 더 많은 피해를 주지만 체력과 방어력이 낮습니다.
+[Higher tiers give every building much more HP.]
+상위 등급은 모든 건물에 훨씬 더 많은 체력을 부여합니다.
+[Starting units spawn already leveled up. Changes the generated map.]
+시작 유닛이 이미 레벨업된 상태로 등장합니다. 생성되는 지도가 바뀝니다.
+[Trains normally]
+정상적으로 훈련함
+[No upgrades]
+업그레이드 없음
+[Retreats when damaged]
+피해를 입으면 후퇴함
+[Fearless]
+두려움 없음
+[Can die permanently]
+영구적으로 죽을 수 있음
+[No permadeath]
+영구 사망 없음
+[Normal combat]
+일반 전투
+[Peaceful mode]
+평화 모드
+[Off (today's balance)]
+꺼짐 (현재 밸런스)
+[Glass cannon x2]
+유리 대포 x2
+[Glass cannon x3]
+유리 대포 x3
+[Off (today's HP)]
+꺼짐 (현재 체력)
+[Fortress x5]
+요새 x5
+[Fortress x10]
+요새 x10
+[Veteran]
+베테랑
+[Elite]
+엘리트
+[Legendary]
+전설
+[Combat]
+전투
+[Glass cannon]
+유리 대포
+[Fortress buildings]
+요새화된 건물
+[Veteran/Fast start]
+베테랑/빠른 시작

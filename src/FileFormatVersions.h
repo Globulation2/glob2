@@ -105,6 +105,11 @@ static constexpr int FILE_FORMAT_VERSION_ONE_WORKER_LEVEL = 99;
 //! instantConstruction, stockpileStartLevel, hungerDisabled (GameHeader.cpp).
 static constexpr int FILE_FORMAT_VERSION_ECONOMY_RULES = 102;
 
+//! Custom-game combat rules: unitUpgradesDisabled, glassCannonLevel,
+//! unitsFearless, permadeathDisabled, peacefulMode, buildingHpLevel
+//! (GameHeader.cpp).
+static constexpr int FILE_FORMAT_VERSION_COMBAT_RULES = 103;
+
 // === Save-file section signatures (4-byte ASCII tags) ===
 // Embedded as four chars at the start of each save section so a corrupted
 // stream fails fast. NEVER change these values — old saves on disk depend

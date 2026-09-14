@@ -297,17 +297,17 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 	{
 		if (b->type->type == "defencetower")
 		{
-			if (b->hp*AI_CASTOR_REPAIR_HP_RATIO_DIV<b->type->hpMax*AI_CASTOR_REPAIR_HP_RATIO_DEFENCE_NUM)
+			if (b->hp*AI_CASTOR_REPAIR_HP_RATIO_DIV<b->getEffectiveMaxHp()*AI_CASTOR_REPAIR_HP_RATIO_DEFENCE_NUM)
 				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_CASTOR_CONSTRUCTION_ORDER_UNITS, AI_CASTOR_CONSTRUCTION_ORDER_UNITS));
 		}
 		else if (b->type->maxUnitInside)
 		{
-			if (b->hp*AI_CASTOR_REPAIR_HP_RATIO_DIV<b->type->hpMax*AI_CASTOR_REPAIR_HP_RATIO_INSIDE_NUM)
+			if (b->hp*AI_CASTOR_REPAIR_HP_RATIO_DIV<b->getEffectiveMaxHp()*AI_CASTOR_REPAIR_HP_RATIO_INSIDE_NUM)
 				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_CASTOR_CONSTRUCTION_ORDER_UNITS, AI_CASTOR_CONSTRUCTION_ORDER_UNITS));
 		}
 		else
 		{
-			if (b->hp*AI_CASTOR_REPAIR_HP_RATIO_DIV<b->type->hpMax*AI_CASTOR_REPAIR_HP_RATIO_OTHER_NUM)
+			if (b->hp*AI_CASTOR_REPAIR_HP_RATIO_DIV<b->getEffectiveMaxHp()*AI_CASTOR_REPAIR_HP_RATIO_OTHER_NUM)
 				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_CASTOR_CONSTRUCTION_ORDER_UNITS, AI_CASTOR_CONSTRUCTION_ORDER_UNITS));
 		}
 	}

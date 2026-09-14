@@ -2286,3 +2286,59 @@ Schaarse grondstoffen
 Directe bouw
 [Stockpile start]
 Startvoorraad
+[Units still visit schools but never gain a level.]
+Eenheden gaan nog steeds naar school, maar stijgen nooit in niveau.
+[Units fight to the death instead of retreating to heal.]
+Eenheden vechten tot de dood in plaats van zich terug te trekken om te genezen.
+[Units are never permanently lost -- HP just stops at 1.]
+Eenheden gaan nooit permanent verloren -- hun sterkte stopt gewoon bij 1.
+[Disables all combat between every team.]
+Schakelt alle gevechten tussen alle teams uit.
+[Higher tiers deal more damage but have less HP and armor.]
+Hogere niveaus doen meer schade, maar hebben minder sterkte en pantser.
+[Higher tiers give every building much more HP.]
+Hogere niveaus geven elk gebouw veel meer sterkte.
+[Starting units spawn already leveled up. Changes the generated map.]
+Startende eenheden verschijnen al met een hoger niveau. Verandert de gegenereerde kaart.
+[Trains normally]
+Traint normaal
+[No upgrades]
+Geen upgrades
+[Retreats when damaged]
+Trekt zich terug bij schade
+[Fearless]
+Onbevreesd
+[Can die permanently]
+Kan permanent sterven
+[No permadeath]
+Geen permanente dood
+[Normal combat]
+Normaal gevecht
+[Peaceful mode]
+Vreedzame modus
+[Off (today's balance)]
+Uit (huidige balans)
+[Glass cannon x2]
+Glazen kanon x2
+[Glass cannon x3]
+Glazen kanon x3
+[Off (today's HP)]
+Uit (huidige sterkte)
+[Fortress x5]
+Fort x5
+[Fortress x10]
+Fort x10
+[Veteran]
+Veteraan
+[Elite]
+Elite
+[Legendary]
+Legendarisch
+[Combat]
+Gevecht
+[Glass cannon]
+Glazen kanon
+[Fortress buildings]
+Versterkte gebouwen
+[Veteran/Fast start]
+Veteraan/Snelle start

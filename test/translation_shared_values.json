@@ -61,6 +61,7 @@
     "texts.br.txt": [
       "Coral",
       "Editor",
+      "Elite",
       "Hospital",
       "Magenta",
       "Total",
@@ -69,6 +70,7 @@
     "texts.ca.txt": [
       "Audio",
       "Canals",
+      "Combat",
       "Editor",
       "Hospital",
       "Magenta",
@@ -90,6 +92,7 @@
       "Cyan",
       "Diagonal",
       "Editor",
+      "Elite",
       "Hunger",
       "Layout",
       "Magenta",
@@ -102,11 +105,13 @@
       "Standard",
       "Start",
       "Team",
-      "Version"
+      "Version",
+      "Veteran"
     ],
     "texts.dk.txt": [
       "Alliance",
       "Cyan",
+      "Elite",
       "Flag",
       "Hospital",
       "Info",
@@ -124,7 +129,8 @@
       "Start",
       "Team",
       "Total",
-      "Version"
+      "Version",
+      "Veteran"
     ],
     "texts.eo.txt": [
       "Info",
@@ -154,6 +160,7 @@
       "Alliances",
       "Audio",
       "Colonies",
+      "Combat",
       "Construction",
       "Cyan",
       "Grain",
@@ -181,11 +188,13 @@
       "Audio",
       "Diagonal",
       "Editor",
+      "Elite",
       "Polder",
       "Radius",
       "Spiral",
       "Total",
-      "Tutorial"
+      "Tutorial",
+      "Veteran"
     ],
     "texts.it.txt": [
       "Audio",
@@ -203,6 +212,7 @@
       " teams",
       "%0 teams",
       "Briefing",
+      "Elite",
       "Info",
       "Lobby",
       "Magenta",
@@ -221,6 +231,7 @@
     "texts.pt.txt": [
       "Coral",
       "Editor",
+      "Elite",
       "Hospital",
       "Magenta",
       "Total",
@@ -237,13 +248,15 @@
       "Polder",
       "Standard",
       "Total",
-      "Tutorial"
+      "Tutorial",
+      "Veteran"
     ],
     "texts.ru.txt": [],
     "texts.si.txt": [
       "Cyan",
       "Magenta",
-      "Polder"
+      "Polder",
+      "Veteran"
     ],
     "texts.sk.txt": [
       "Editor",
@@ -267,7 +280,8 @@
       "Spiral",
       "Standard",
       "Team",
-      "Version"
+      "Version",
+      "Veteran"
     ],
     "texts.tr.txt": [
       "Polder",

@@ -2260,3 +2260,59 @@ OpenGL در این بیلد موجود نیست.
 ساخت‌وساز آنی
 [Stockpile start]
 ذخیره اولیه
+[Units still visit schools but never gain a level.]
+واحدها همچنان به مدرسه می‌روند، اما هرگز ارتقای رتبه نمی‌یابند.
+[Units fight to the death instead of retreating to heal.]
+واحدها به‌جای عقب‌نشینی برای درمان، تا پای مرگ می‌جنگند.
+[Units are never permanently lost -- HP just stops at 1.]
+واحدها هرگز برای همیشه از دست نمی‌روند -- سلامتی آن‌ها فقط روی 1 متوقف می‌شود.
+[Disables all combat between every team.]
+تمام نبردها بین همه تیم‌ها را غیرفعال می‌کند.
+[Higher tiers deal more damage but have less HP and armor.]
+رتبه‌های بالاتر آسیب بیشتری وارد می‌کنند اما سلامتی و قدرت دفاع کمتری دارند.
+[Higher tiers give every building much more HP.]
+رتبه‌های بالاتر به هر ساختمان سلامتی بسیار بیشتری می‌دهند.
+[Starting units spawn already leveled up. Changes the generated map.]
+واحدهای اولیه از قبل با رتبه بالا ظاهر می‌شوند. نقشهٔ تولیدشده را تغییر می‌دهد.
+[Trains normally]
+به‌طور عادی آموزش می‌بیند
+[No upgrades]
+بدون ارتقا
+[Retreats when damaged]
+هنگام آسیب دیدن عقب‌نشینی می‌کند
+[Fearless]
+بی‌باک
+[Can die permanently]
+می‌تواند برای همیشه بمیرد
+[No permadeath]
+بدون مرگ همیشگی
+[Normal combat]
+نبرد عادی
+[Peaceful mode]
+حالت مسالمت‌آمیز
+[Off (today's balance)]
+خاموش (تعادل امروزی)
+[Glass cannon x2]
+توپ شیشه‌ای x2
+[Glass cannon x3]
+توپ شیشه‌ای x3
+[Off (today's HP)]
+خاموش (سلامتی امروزی)
+[Fortress x5]
+دژ x5
+[Fortress x10]
+دژ x10
+[Veteran]
+کهنه‌کار
+[Elite]
+نخبه
+[Legendary]
+افسانه‌ای
+[Combat]
+نبرد
+[Glass cannon]
+توپ شیشه‌ای
+[Fortress buildings]
+ساختمان‌های مستحکم
+[Veteran/Fast start]
+کهنه‌کار/شروع سریع
