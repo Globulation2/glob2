@@ -77,9 +77,9 @@ int main(int argc, char** argv)
 
 	Uint32 tooLow = 0;
 	// The gate compares the building's tier with the worker level.
-	require(hiringPass("inn", 0, false, CORN, 0, &tooLow) && tooLow == 0, "unschooled worker stocks a level-1 inn");
-	require(!hiringPass("inn", 1, false, CORN, 0, &tooLow) && tooLow == 1, "unschooled worker refused by a level-2 inn");
-	require(hiringPass("inn", 1, false, CORN, 1, &tooLow) && tooLow == 0, "level-1 worker stocks a level-2 inn");
+	require(hiringPass("inn", 0, false, WHEAT, 0, &tooLow) && tooLow == 0, "unschooled worker stocks a level-1 inn");
+	require(!hiringPass("inn", 1, false, WHEAT, 0, &tooLow) && tooLow == 1, "unschooled worker refused by a level-2 inn");
+	require(hiringPass("inn", 1, false, WHEAT, 1, &tooLow) && tooLow == 0, "level-1 worker stocks a level-2 inn");
 	require(!hiringPass("inn", 1, true, WOOD, 0, &tooLow) && tooLow == 1, "unschooled worker refused by a level-2 inn site");
 	require(hiringPass("inn", 1, true, WOOD, 1, &tooLow) && tooLow == 0, "level-1 worker builds a level-2 inn site");
 	require(hiringPass("inn", 2, true, WOOD, 2, &tooLow) && tooLow == 0, "level-2 worker builds a level-3 inn site");
