@@ -72,8 +72,16 @@ nothing. Stone and the fruits are eternal and never need protecting.
 - **The resource gradient.** Workers still walk to the nearest tile holding the
   resource, by the same field, with the same goals. Only the moment the harvest
   completes is different.
-- **Growth.** `Map::growResources` does not read the farm mask.
-- **Clearing.** A clearing-area harvest still takes the tile it is aimed at.
+- **Growth.** A plant has no opinion about the farmer's intentions:
+  `Map::growResources` does not read the farm mask, so a field grows and expands
+  by exactly the same rules whether or not an area is painted over it. Pinned
+  down by `growthIgnoresTheFarmMask` in the harness, which runs 20,000 ticks on
+  two copies of the same map from the same seed and compares every tile.
+- **Clearing.** Clearing is not harvesting. `handleMovementClearingResources`
+  and `tryClaimClearingAreaForHarvesting` call `Map::decResource` on the tile
+  they are touching and never go through `takeHarvest`, so a clearing worker
+  inside a farm empties the tile it is aimed at and cannot reach into the
+  field.
 - **The AIs.** Nicowar still paints forbidden checkerboards near water in its
   farming phase; nothing yet paints a farm area.
 
