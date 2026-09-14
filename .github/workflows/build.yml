@@ -96,6 +96,7 @@ jobs:
         run: |
           scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 build/src/glob2 \
             map-report-test \
+            maxima-food-ledger-test \
             tournament-compatibility-test \
             torus-render-test \
             map-preview-test \
@@ -130,6 +131,9 @@ jobs:
             map-render-resize-test \
             menu-colony-harness \
             speed-tests
+
+      - name: Test Maxima food ledger
+        run: build/src/MaximaFoodLedgerStandaloneTest
 
       - name: Test map JSON reports
         run: |

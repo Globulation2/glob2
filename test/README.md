@@ -2,6 +2,19 @@
 
 CppUnit-based test fixtures and standalone harnesses for the C++ codebase. Most use this directory's `SConstruct`: run `scons -j16` here, then the in-tree `./TestsRunner` and `./WinningConditionsHarness` binaries. Rebuild these tests here before trusting a result; the top-level build does not build them. The exceptions are `GameGUISelectionHarness` and `TerrainResourcesHarness`, which use the top-level `selection-test` and `terrain-test` targets described below.
 
+## Maxima food ledger
+
+From the repository root, build with `scons release=1 server=0 maxima-food-ledger-test`
+and run `build/src/MaximaFoodLedgerStandaloneTest`. Linux CI runs this existing
+standalone suite through the top-level alias. It checks claim allocation, route
+bounds against a wrapped cell-by-cell oracle, equal-total supply relocation,
+result copies and reset/resize behavior.
+
+Pass `--benchmark` to measure process CPU time for evaluation and a full-map pass
+of bound queries at 128², 256² and 512². The output includes deterministic result
+digests; timing is informational and is never a CI assertion. Compile the same
+driver against both revisions when comparing performance.
+
 ## Selection lifetime regression
 
 `GameGUISelectionHarness.cpp` links the real client objects with a test entry

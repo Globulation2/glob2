@@ -21,7 +21,7 @@ static void require(bool value,const char* label)
 	if(!value) throw std::runtime_error(label);
 	std::cout << "PASS " << label << '\n';
 }
-int main()
+int main(int, char**)
 {
 	GlobalContainer globals("glob2-tournament-compatibility");globalContainer=&globals;
 	globals.runNoX=true;globals.load();

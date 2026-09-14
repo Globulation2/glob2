@@ -1,6 +1,9 @@
-#include "../src/AIMaximaFoodLedger.h"
+#include "AIMaximaFoodLedger.h"
 
+#include <algorithm>
 #include <cassert>
+#include <cstring>
+#include <ctime>
 #include <iostream>
 
 using namespace AIMaximaFoodLedger;
@@ -212,8 +215,102 @@ static void demandAndYieldMatchEngineRates()
 	assert(cellYield(65536,0,186)==0);
 }
 
-int main()
+// Independent cell-by-cell oracle for the wrapped square prefilter, including
+// rectangular maps and windows that cover an entire map dimension.
+static long long bruteBound(const Input& input,const Result& result,
+	int x,int y,int left,int top,int width,int height)
 {
+	const int reach=input.policy.supplyRadius+1;
+	long long total=0;
+	for(int cy=0;cy<input.height;++cy)
+		for(int cx=0;cx<input.width;++cx)
+			if(input.normalizeX(cx-(x+left-reach))<std::min(input.width,width+2*reach)
+			   &&input.normalizeY(cy-(y+top-reach))<std::min(input.height,height+2*reach))
+				total+=result.residual[input.index(cx,cy)];
+	return total;
+}
+
+static void preparedBoundsMatchWrappedOracle()
+{
+	for(int radius : {0,2,12,40})
+	{
+		Input input=makeInput(32,16);input.policy.supplyRadius=radius;
+		for(size_t i=0;i<input.yield.size();++i)input.yield[i]=(i*37)%101;
+		input.consumers.push_back(makeConsumer(1,InnConsumer,0,15,300));
+		Ledger ledger;Result result;ledger.evaluate(input,result);
+		long long best=0;
+		for(int y=0;y<input.height;++y)for(int x=0;x<input.width;++x)
+		{
+			best=std::max(best,bruteBound(input,result,x,y,0,0,1,1));
+			assert(ledger.residualUpperBound(input,result,x,y,-2,-1,4,3)
+				==bruteBound(input,result,x,y,-2,-1,4,3));
+		}
+		assert(result.bestSiteResidual==best);
+	}
+}
+
+static void equalTotalChangesRefreshTheSnapshot()
+{
+	Input input=makeInput(32,16);input.policy.supplyRadius=1;
+	input.yield[input.index(3,3)]=100;
+	Ledger ledger;Result result;ledger.evaluate(input,result);
+	assert(ledger.residualUpperBound(input,result,3,3,0,0,1,1)==100);
+	Result original=result;
+	// Reuse the same result address and total while moving all the supply.
+	input.yield[input.index(3,3)]=0;input.yield[input.index(20,10)]=100;
+	ledger.evaluate(input,result);
+	assert(result.totalResidual==original.totalResidual);
+	assert(ledger.residualUpperBound(input,result,3,3,0,0,1,1)==0);
+	assert(ledger.residualUpperBound(input,result,20,10,0,0,1,1)==100);
+	// Copies retain their own prepared tables, even after another evaluation
+	// and when queried through a different ledger instance.
+	Ledger other;
+	assert(other.residualUpperBound(input,original,3,3,0,0,1,1)==100);
+	assert(ledger.residualUpperBound(input,result,3,3,0,0,1,1)==0);
+	result=original;
+	assert(ledger.residualUpperBound(input,result,3,3,0,0,1,1)==100);
+	Input resized=makeInput(16,32);resized.policy.supplyRadius=1;
+	resized.yield[resized.index(0,0)]=50;
+	ledger.evaluate(resized,result);
+	assert(ledger.residualUpperBound(resized,result,0,0,0,0,1,1)==50);
+	const size_t capacity=result.residual.capacity();
+	ledger.evaluate(Input(),result);
+	assert(result.residual.empty()&&result.consumers.empty());
+	assert(result.totalSupply==0&&result.totalResidual==0&&result.bestSiteResidual==0);
+	assert(result.residual.capacity()==capacity);
+	assert(ledger.residualUpperBound(resized,result,0,0,0,0,1,1)==0);
+	assert(other.residualUpperBound(input,original,3,3,0,0,1,1)==100);
+}
+
+// Opt-in measurement, never a timing assertion in CI. Compare the same driver
+// against before/after sources; the digest makes output changes visible.
+static void benchmark()
+{
+	std::cout<<"side,evaluate_cpu_ms,queries_cpu_ms,digest\n";
+	for(int side : {128,256,512})
+	{
+		Input input=makeInput(side,side);
+		for(size_t i=0;i<input.yield.size();++i)input.yield[i]=(i*37)%101;
+		Ledger ledger;Result result;
+		const std::clock_t start=std::clock();
+		ledger.evaluate(input,result);
+		const std::clock_t evaluated=std::clock();
+		uint64_t digest=uint64_t(result.bestSiteResidual);
+		for(int y=0;y<side;++y)for(int x=0;x<side;++x)
+			digest=digest*1099511628211ULL+uint64_t(
+				ledger.residualUpperBound(input,result,x,y,-2,-1,4,3));
+		const std::clock_t queried=std::clock();
+		std::cout<<side<<','<<1000.0*(evaluated-start)/CLOCKS_PER_SEC<<','
+			<<1000.0*(queried-evaluated)/CLOCKS_PER_SEC<<','<<digest<<std::endl;
+	}
+}
+
+int main(int argc,char** argv)
+{
+	if(argc==2&&std::strcmp(argv[1],"--benchmark")==0)
+	{
+		benchmark();return 0;
+	}
 	supplyIsClaimedNearestFirst();
 	qualityOutranksBuildingAge();
 	innsAndSwarmsInterleave();
@@ -224,6 +321,8 @@ int main()
 	supplyBeyondTheRadiusIsNotCounted();
 	demandAndYieldMatchEngineRates();
 	residualQualityFollowsUnclaimedSupply();
+	preparedBoundsMatchWrappedOracle();
+	equalTotalChangesRefreshTheSnapshot();
 	std::cout<<"MaximaFoodLedgerStandaloneTest: PASS"<<std::endl;
 	return 0;
 }
