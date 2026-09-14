@@ -2925,6 +2925,10 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		Building *b=getBuildingFromGid(ai.game, i->building);
 		if(!b)
 			continue;
+		// A dying building is still in myBuildings, and cancelling construction on it
+		// trips Building::cancelConstruction's ALIVE assertion.
+		if(b->buildingState!=Building::ALIVE)
+			continue;
 		if(b->constructionResultState!=Building::UPGRADE && b->constructionResultState!=Building::REPAIR)
 			continue;
 
