@@ -463,3 +463,16 @@ serialized maps from config/CLI settings with an invalid video driver and checks
 invalid settings and preferences; it does not verify OpenGL PNG export. Run the
 full test on Windows with a working OpenGL desktop for that coverage.
 See [map CLI documentation](../docs/map-generators/CLI.md).
+
+### Map JSON reports
+
+Build `scons release=1 server=0 map-report-test`, then run
+`python3 test/test_map_report.py build/src/glob2 build/src/MapReportHarness`
+(add `.exe` to both binaries on Windows). The suite runs without graphics, checks
+the [published report contract](../docs/map-generators/REPORT.md), recomputes fairness
+formulas, and uses analytic maps to check wraparound, disconnected islands, algae
+blocking swimming, resource amounts and construction space. It verifies unchanged
+serialized state and simulation RNG, deterministic reports, config provenance,
+older saves, and output errors. Reports and commands are retained in
+`artifacts/map-report/` and uploaded by CI. The PNG CLI suite also exercises all
+three outputs together.

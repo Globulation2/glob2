@@ -85,6 +85,17 @@ jobs:
       - name: Build glob2
         run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1
 
+      - name: Test map JSON reports
+        run: |
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 map-report-test
+          python3 test/test_map_report.py build/src/glob2 build/src/MapReportHarness
+      - name: Upload map JSON reports and command log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-report-${{ matrix.runner }}
+          path: artifacts/map-report/
+
       - name: Test map CLI with the shared OpenGL renderer
         run: |
           python3 test/test_map_cli.py build/src/glob2 --generation-only
@@ -391,6 +402,17 @@ jobs:
 
       - name: Build glob2
         run: scons -j$(nproc) release=1 mingw=1
+
+      - name: Test map JSON reports
+        run: |
+          scons -j$(nproc) release=1 mingw=1 server=0 map-report-test
+          python3 test/test_map_report.py build/src/glob2.exe build/src/MapReportHarness.exe
+      - name: Upload map JSON reports and command log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-report-windows
+          path: artifacts/map-report/
 
       - name: Test headless map generation CLI
         run: python3 test/test_map_cli.py build/src/glob2.exe --generation-only

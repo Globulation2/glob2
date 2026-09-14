@@ -98,7 +98,8 @@ def main():
             print('PASS headless map generation, serialized config/CLI equivalence, invalid settings, preferences')
             return
         run('--generate-map','maze','--seed','7','--width','128','--height','128',
-            '--teams','4','--set','cell-shape=0','--preview',first,'--output',saved)
+            '--teams','4','--set','cell-shape=0','--preview',first,'--output',saved,'--json',OUT/'maze.json')
+        assert json.loads((OUT/'maze.json').read_text())['map']['width'] == 128
         run('--generate-map','maze','--seed','7','--width','128','--set','cell-shape=0',
             '--config',config,'--preview',second)
         width, height, pixels = png(first)

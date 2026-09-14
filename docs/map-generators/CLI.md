@@ -1,4 +1,4 @@
-# Map generation and PNG previews
+# Map generation, PNG previews, and JSON reports
 
 The normal **client executable** includes map tools. Build with
 `scons release=1 server=0`, then run the examples from the repository root.
@@ -7,7 +7,7 @@ An installed client can use the same flags. Previews use the game's existing
 picker. PNG export needs **OpenGL and a display server**; on headless Linux, use
 `LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a` before the command to render through Mesa.
 It briefly creates a graphics context, hides its window, exports, and exits.
-Generating a `.map` without `--preview`, listing generators, and validating
+Generating maps or JSON reports without PNGs, listing generators, and validating
 settings need no display. No Python or study executable is needed. The normal
 game data directory (including its font for PNGs) must be available. Put the
 launch mode first; these modes do not combine with game, replay, or server launch modes.
@@ -21,7 +21,9 @@ build/src/glob2 --generate-map coral --seed 7 \
 ```
 
 `--output` writes a playable `.map` using the normal engine serializer.
-`--preview` writes a PNG. Supply either or both. Generation uses the production
+`--preview` writes a PNG. `--json FILE` writes a detailed map report. Supply any
+combination of these three outputs. See the [JSON format and metric definitions](REPORT.md)
+for units, fairness formulas, terrain/resource percentages, and travel distances. Generation uses the production
 `GenerationService`, at registered defaults with seed **1** unless specified.
 It makes one attempt with exactly that seed; a failed layout returns an error
 instead of silently retrying with another seed. The diagnostic includes the
@@ -34,6 +36,8 @@ as the existing generators; a seed alone is not a cross-platform guarantee.
 build/src/glob2 --preview-map maps/SomeMap.map --output artifacts/map.png
 build/src/glob2 --preview-map /path/to/colony.game --output artifacts/save.png
 ```
+
+`--json artifacts/report.json` also works here, alone or alongside the PNG.
 
 The file is read through `Game::load`, including its existing save-version checks.
 No simulation ticks run and the input is never saved back. Pass a filesystem path,
@@ -100,7 +104,7 @@ The software drawing backend currently lacks the cropped scaling operation; PNG
 export does not substitute a different renderer or modify that backend.
 
 Parent output directories are created. Existing output files are replaced;
-input/config paths and the two output paths must be distinct. Use `-d directory`
+input/config paths and all output paths must be distinct. Use `-d directory`
 (repeatable) to add an asset search directory. Normal profile selection applies (`GLOB2_USER_DIR` on Unix; the working directory
 on Windows); these modes do not save preferences or create replays.
 `--generate-map --help` and `--preview-map --help` print command usage.

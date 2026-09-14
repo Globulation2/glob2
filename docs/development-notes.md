@@ -48,10 +48,11 @@ See `test/README.md` for the Map-subclass test pattern that avoids linking the
 full simulation for map-predicate tests.
 
 The client also offers `--generate-map`, `--preview-map`, and
-`--list-map-generators` modes; see [map CLI](map-generators/CLI.md) for config files,
+`--list-map-generators` modes (including optional `--json` reports;
+[format and metric meanings](map-generators/REPORT.md)); see [map CLI](map-generators/CLI.md) for config files,
 settings, PNG output, and previews of existing maps and saves. PNG export uses
-the existing OpenGL renderer and needs a display context; map-only generation
-can run headlessly.
+the existing OpenGL renderer and needs a display context; map generation and JSON
+analysis can run headlessly.
 
 ## Simulation verification and diagnostics
 

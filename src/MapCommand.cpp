@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapCommand.h"
+#include "MapReport.h"
 #include "LobbyMapPreview.h"
 #include <SDL_image.h>
 #ifdef HAVE_CONFIG_H
@@ -197,16 +198,19 @@ void printMapCommandHelp()
 {
 	std::cout
 		<< "Map launch modes (put the mode first; PNG export requires OpenGL):\n"
-		   "  --generate-map <generator> [--output file.map] [--preview file.png]\n"
+		   "  --generate-map <generator> [--output file.map] [--preview file.png] [--json "
+		   "report.json]\n"
 		   "    [--config file] [--set key=value ...] [--seed N]\n"
 		   "    [--width tiles] [--height tiles] [--teams N] [--workers N]\n"
-		   "  --preview-map <file.map|file.game> --output file.png\n"
+		   "  --preview-map <file.map|file.game> [--output file.png] [--json report.json]\n"
 		   "  --list-map-generators [generator]  List IDs, or settings and allowed values\n"
 		   "Preview size: --preview-size 128..4096 (longest side in pixels, default 512).\n"
 		   "Asset search: -d directory (repeatable).\n"
-		   "Generation requires --output and/or --preview. Defaults: seed=1, registered settings.\n"
+		   "Supply at least one output: --output, --preview, or --json. Defaults: seed=1, "
+		   "registered settings.\n"
 		   "Config: key=value lines; blank lines and # comments allowed. CLI overrides config.\n"
-		   "Width/height are tile counts, not exponents. See docs/map-generators/CLI.md.\n";
+		   "Width/height are tile counts, not exponents. See docs/map-generators/CLI.md.\n"
+		   "JSON fields, units and formulas: docs/map-generators/REPORT.md.\n";
 }
 int runMapCommand(int argc, char **argv)
 {
@@ -228,7 +232,7 @@ int runMapCommand(int argc, char **argv)
 		if (argc < 3 || std::string(argv[2]).rfind("--", 0) == 0)
 			throw std::runtime_error("Missing generator or input path; use " + mode + " --help");
 		const bool generate = mode == "--generate-map";
-		std::string output, preview, config;
+		std::string output, preview, config, json;
 		MapSettings overrides, settings;
 		std::vector<std::string> directories;
 		int previewSize = 512;
@@ -248,6 +252,8 @@ int runMapCommand(int argc, char **argv)
 				throw std::runtime_error("Missing value for " + arg);
 			if (arg == "--output")
 				output = value;
+			else if (arg == "--json")
+				json = value;
 			else if (arg == "--preview" && generate)
 				preview = value;
 			else if (arg == "--config" && generate)
@@ -272,13 +278,15 @@ int runMapCommand(int argc, char **argv)
 		}
 		if (!generate)
 			preview = output;
-		if (output.empty() && preview.empty())
+		if (output.empty() && preview.empty() && json.empty())
 			throw std::runtime_error("Specify an output path; use " + mode + " --help");
 		if (sizeSpecified && preview.empty())
 			throw std::runtime_error("Preview size requires --preview");
 		if ((generate && samePath(output, preview)) || (!generate && samePath(argv[2], preview)) ||
-			samePath(config, output) || samePath(config, preview))
-			throw std::runtime_error("Input, config, map and PNG paths must be distinct");
+			samePath(config, output) || samePath(config, preview) || samePath(json, config) ||
+			samePath(json, output) || samePath(json, preview) ||
+			(!generate && samePath(json, argv[2])))
+			throw std::runtime_error("Input, config, map, PNG and JSON paths must be distinct");
 		GenerationRequest request;
 		if (generate)
 		{
@@ -328,9 +336,10 @@ int runMapCommand(int argc, char **argv)
 		IntBuildingType::init();
 		Race::loadDefault();
 		Game game(nullptr);
+		GenerationResult result;
 		if (generate)
 		{
-			const auto result = GenerationService().generate(game, request);
+			result = GenerationService().generate(game, request);
 			if (!result)
 				throw std::runtime_error(result.diagnostic());
 			std::cout << result.diagnostic() << "\n";
@@ -343,6 +352,10 @@ int runMapCommand(int argc, char **argv)
 			if (stream.isEndOfStream() || !game.load(&stream))
 				throw std::runtime_error("Cannot load map/save: " + std::string(argv[2]));
 		}
+		// Analyze the original snapshot before any serializer updates its header metadata.
+		const std::string report = json.empty() ? ""
+												: describeMap(game, generate ? &request : nullptr,
+															  generate ? &result : nullptr);
 		if (!preview.empty())
 		{
 			parentDirectory(preview);
@@ -352,6 +365,16 @@ int runMapCommand(int argc, char **argv)
 		}
 		if (generate && !output.empty())
 			saveMap(game, output, std::filesystem::path(output).stem().string());
+		if (!json.empty())
+		{
+			parentDirectory(json);
+			std::ofstream file(json, std::ios::binary);
+			file << report;
+			file.close();
+			if (!file)
+				throw std::runtime_error("Cannot write JSON: " + json);
+			std::cout << "Map report: " << json << "\n";
+		}
 		return 0;
 	}
 	catch (const std::exception &e)
