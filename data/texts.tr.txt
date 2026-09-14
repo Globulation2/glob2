@@ -2164,3 +2164,31 @@ Dikey
 Yatay
 [Inland lakes]
 İç göller
+[Block shape]
+Blok şekli
+[Random parameters]
+Rastgele parametreler
+[Randomize parameters]
+Parametreleri rastgele seç
+[Start quality]
+Başlangıç kalitesi
+[Fairness]
+Adalet
+[Score]
+Puan
+[Weight]
+Ağırlık
+[Worst]
+En kötü
+[Best]
+En iyi
+[Fertility]
+Verimlilik
+[Deposits]
+Yataklar
+[Room]
+Alan
+[Isolation]
+Uzaklık
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Her koloninin başlangıcı bitmiş haritada ölçülür: buğdaya ve oduna yürüme mesafesi, toprağının ne kadar iyi yeniden yeşerdiği, erişilebilir yataklar ve inşaat alanları ile rakiplere olan uzaklığı. Her etken sabit bir ölçüte göre 0 ile 1 arasında puanlanır, toplam bunları ağırlıklandırır, adalet en kötü koloninin toplamının en iyisine bölümüdür ve puan en kötü toplam çarpı adalettir.

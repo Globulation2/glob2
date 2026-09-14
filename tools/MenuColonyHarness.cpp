@@ -451,6 +451,9 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 			key.key.keysym.sym=SDLK_ESCAPE; dialog.dispatchEvents(&key);
 			require(dialog.endValue==LoadSaveScreen::CANCEL,"replay dialog cancellation");
 			Preview<CustomGameScreen> custom; custom.selectFirstListItem(); custom.render();
+			// The lobby opens on a random map (2026-09-14) and previews it on worker threads; drive
+			// its timer as the event loop would until the preview's map is loaded.
+			for(Uint32 start=SDL_GetTicks(); custom.getMapHeader().getNumberOfTeams()==0 && SDL_GetTicks()-start<120000;) { SDL_Delay(10); custom.dispatchTimer(SDL_GetTicks()); }
 			require(custom.getMapHeader().getNumberOfTeams()>0,"map selection loads teams");
 			key.key.keysym.sym=SDLK_ESCAPE; custom.dispatchEvents(&key);
 			require(custom.result()==CustomGameScreen::CANCEL,"custom game cancellation");

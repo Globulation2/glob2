@@ -51,6 +51,11 @@ class LandscapePreviewer
 	/// Replaces the requests and rolls them with fresh seeds, on the same workers; rolls of the
 	/// old requests already under way finish, then are dropped.
 	void restart(std::vector<GenerationRequest> requests);
+	/// Replaces one slot's request and rolls that slot again with a fresh seed, leaving the others
+	/// as they are: how a picker redraws a randomised landscape whose parameters the world refused.
+	void reroll(std::size_t index, GenerationRequest request);
+	/// The request a slot is currently showing (or rolling).
+	GenerationRequest request(std::size_t index) const;
 	std::size_t size() const { return requests.size(); }
 	unsigned revision(std::size_t index) const;
 	Preview preview(std::size_t index) const;
@@ -68,8 +73,11 @@ class LandscapePreviewer
 	std::vector<GenerationRequest> requests;
 	std::vector<Preview> slots;
 	std::vector<std::uint32_t> seeds;
+	/// Per slot, the pass its pending roll belongs to: a roll finished for an older pass is dropped.
+	std::vector<unsigned> passes;
 	unsigned pass = 0;
-	std::size_t next = 0;
+	/// Slots waiting for a worker, in order.
+	std::vector<std::size_t> queue;
 	bool stopping = false;
 	mutable std::mutex mutex;
 	std::condition_variable wake;

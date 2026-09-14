@@ -12,7 +12,9 @@ class LobbyControls;
 
 /// A full-window modal showing every landscape as a freshly generated map, for picking one by
 /// sight. execute() returns the chosen entry's index, CANCEL, or QUIT_APPLICATION; chosenSeed()
-/// then reproduces the map that was shown for it. Entries are just a localized name and the
+/// then reproduces the map that was shown for it, and chosenRequest() carries the parameters it
+/// was rolled with - the entry's own, or a random set when "Randomize parameters" was used, so
+/// the lobby can take over exactly what was shown. Entries are just a localized name and the
 /// request to preview, so any screen that selects a landscape can run it.
 class LandscapePickerScreen : public Glob2Screen
 {
@@ -36,6 +38,13 @@ class LandscapePickerScreen : public Glob2Screen
 	int selection() const { return selected; }
 	/// The seed behind the preview shown for the selection, once that preview is ready.
 	std::optional<std::uint32_t> chosenSeed() const;
+	/// The request the selection's preview was rolled with (see randomizeParameters).
+	GenerationRequest chosenRequest() const;
+	/// Draws every landscape's own controls at random (GenerationRequest::randomizeControls) and
+	/// rolls them all again. A random set the world then refuses is drawn again, up to
+	/// kRandomDraws times per landscape, so the sheet fills with maps that exist.
+	void randomizeParameters();
+	static constexpr int kRandomDraws = 6;
 	bool busy() const { return previewer.busy(); }
 
   private:
@@ -53,6 +62,9 @@ class LandscapePickerScreen : public Glob2Screen
 	std::string title;
 	std::vector<Entry> entries;
 	std::vector<Tile> tiles;
+	/// Per entry, random draws still allowed after a refused set (0 when the parameters are the
+	/// entry's own or the draws are spent).
+	std::vector<int> redraws;
 	int selected, columns = 1;
 	bool reveal = true;
 	LobbyControls *controls;

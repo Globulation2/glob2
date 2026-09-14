@@ -2226,3 +2226,31 @@ Cortex
 Οριζόντια
 [Inland lakes]
 Εσωτερικές λίμνες
+[Block shape]
+Σχήμα οικοδομικών τετραγώνων
+[Random parameters]
+Τυχαίες παράμετροι
+[Randomize parameters]
+Τυχαία επιλογή παραμέτρων
+[Start quality]
+Ποιότητα εκκίνησης
+[Fairness]
+Δικαιοσύνη
+[Score]
+Βαθμολογία
+[Weight]
+Βάρος
+[Worst]
+Χειρότερο
+[Best]
+Καλύτερο
+[Fertility]
+Γονιμότητα
+[Deposits]
+Αποθέματα
+[Room]
+Χώρος
+[Isolation]
+Απομόνωση
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Η εκκίνηση κάθε αποικίας μετριέται στον τελικό χάρτη: η διαδρομή ως το σιτάρι και ως το ξύλο, πόσο καλά ξαναφυτρώνει το έδαφός της, τα αποθέματα και οι θέσεις δόμησης σε εμβέλεια, και η απόστασή της από τους αντιπάλους. Κάθε παράγοντας βαθμολογείται από 0 έως 1 απέναντι σε σταθερό όριο, το σύνολο τους σταθμίζει, η δικαιοσύνη είναι το σύνολο της χειρότερης αποικίας προς εκείνο της καλύτερης, και η βαθμολογία είναι το χειρότερο σύνολο επί τη δικαιοσύνη.

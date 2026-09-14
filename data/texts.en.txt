@@ -2154,3 +2154,31 @@ Vertical
 Horizontal
 [Inland lakes]
 Inland lakes
+[Block shape]
+Block shape
+[Random parameters]
+Random parameters
+[Randomize parameters]
+Randomize parameters
+[Start quality]
+Start quality
+[Fairness]
+Fairness
+[Score]
+Score
+[Weight]
+Weight
+[Worst]
+Worst
+[Best]
+Best
+[Fertility]
+Fertility
+[Deposits]
+Deposits
+[Room]
+Room
+[Isolation]
+Isolation
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.

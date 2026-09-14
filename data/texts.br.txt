@@ -2152,3 +2152,31 @@ Verticais
 Horizontais
 [Inland lakes]
 Lagos interiores
+[Block shape]
+Forma dos quarteirões
+[Random parameters]
+Parâmetros aleatórios
+[Randomize parameters]
+Sortear parâmetros
+[Start quality]
+Qualidade do início
+[Fairness]
+Equidade
+[Score]
+Pontuação
+[Weight]
+Peso
+[Worst]
+Pior
+[Best]
+Melhor
+[Fertility]
+Fertilidade
+[Deposits]
+Depósitos
+[Room]
+Espaço
+[Isolation]
+Isolamento
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+O início de cada colônia é medido no mapa pronto: o caminho até o trigo e a madeira, quão bem seu terreno volta a crescer, os depósitos e locais de construção ao alcance, e a distância até os rivais. Cada fator pontua de 0 a 1 contra uma barra fixa, o total os pondera, a equidade é o total da pior colônia dividido pelo da melhor, e a pontuação é o pior total multiplicado pela equidade.

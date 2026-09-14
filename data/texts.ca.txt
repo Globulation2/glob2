@@ -2164,3 +2164,31 @@ Verticals
 Horitzontals
 [Inland lakes]
 Llacs interiors
+[Block shape]
+Forma de les illes de cases
+[Random parameters]
+Paràmetres aleatoris
+[Randomize parameters]
+Aleatoritzar paràmetres
+[Start quality]
+Qualitat de l'inici
+[Fairness]
+Equitat
+[Score]
+Puntuació
+[Weight]
+Pes
+[Worst]
+Pitjor
+[Best]
+Millor
+[Fertility]
+Fertilitat
+[Deposits]
+Dipòsits
+[Room]
+Espai
+[Isolation]
+Aïllament
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+L'inici de cada colònia es mesura sobre el mapa acabat: el camí fins al blat i fins a la fusta, com de bé rebrota el seu terreny, els dipòsits i els llocs de construcció a l'abast, i la distància als rivals. Cada factor puntua de 0 a 1 respecte a un llindar fix, el total els pondera, l'equitat és el total de la pitjor colònia dividit pel de la millor, i la puntuació és el pitjor total multiplicat per l'equitat.

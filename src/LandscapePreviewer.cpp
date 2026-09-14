@@ -11,6 +11,7 @@ LandscapePreviewer::LandscapePreviewer(std::vector<GenerationRequest> requests, 
 {
 	slots.resize(this->requests.size());
 	seeds.resize(this->requests.size());
+	passes.resize(this->requests.size());
 	if (threads <= 0)
 	{
 		const unsigned cores = std::thread::hardware_concurrency();
@@ -37,13 +38,15 @@ LandscapePreviewer::~LandscapePreviewer()
 void LandscapePreviewer::beginPass()
 {
 	++pass;
-	next = 0;
+	queue.clear();
 	const auto root = GenerationContext::randomSeed();
 	for (std::size_t i = 0; i < slots.size(); ++i)
 	{
 		seeds[i] = GenerationContext::deriveSeed(root, "landscape/" + std::to_string(i));
+		passes[i] = pass;
 		slots[i].state = State::Pending;
 		++slots[i].revision;
+		queue.push_back(i);
 	}
 }
 
@@ -63,9 +66,36 @@ void LandscapePreviewer::restart(std::vector<GenerationRequest> fresh)
 		requests = std::move(fresh);
 		slots.resize(requests.size());
 		seeds.resize(requests.size());
+		passes.resize(requests.size());
 		beginPass();
 	}
 	wake.notify_all();
+}
+
+void LandscapePreviewer::reroll(std::size_t index, GenerationRequest request)
+{
+	{
+		std::lock_guard<std::mutex> lock(mutex);
+		if (index >= slots.size())
+			return;
+		// A pass of its own, so a roll of this slot still under way is dropped when it lands.
+		++pass;
+		requests[index] = std::move(request);
+		seeds[index] = GenerationContext::deriveSeed(GenerationContext::randomSeed(),
+													  "landscape/" + std::to_string(index));
+		passes[index] = pass;
+		slots[index].state = State::Pending;
+		++slots[index].revision;
+		queue.erase(std::remove(queue.begin(), queue.end(), index), queue.end());
+		queue.push_back(index);
+	}
+	wake.notify_all();
+}
+
+GenerationRequest LandscapePreviewer::request(std::size_t index) const
+{
+	std::lock_guard<std::mutex> lock(mutex);
+	return requests.at(index);
 }
 
 unsigned LandscapePreviewer::revision(std::size_t index) const
@@ -135,11 +165,12 @@ void LandscapePreviewer::work()
 	std::unique_lock<std::mutex> lock(mutex);
 	for (;;)
 	{
-		wake.wait(lock, [this] { return stopping || next < requests.size(); });
+		wake.wait(lock, [this] { return stopping || !queue.empty(); });
 		if (stopping)
 			return;
-		const std::size_t index = next++;
-		const unsigned myPass = pass;
+		const std::size_t index = queue.front();
+		queue.erase(queue.begin());
+		const unsigned myPass = passes[index];
 		slots[index].state = State::Generating;
 		++slots[index].revision;
 		const GenerationRequest request = requests[index];
@@ -147,8 +178,8 @@ void LandscapePreviewer::work()
 		lock.unlock();
 		Preview result = roll(request, seed);
 		lock.lock();
-		if (pass != myPass)
-			continue; // regenerate() superseded this roll while it ran
+		if (passes[index] != myPass)
+			continue; // regenerate(), restart() or reroll() superseded this roll while it ran
 		result.revision = slots[index].revision + 1;
 		slots[index] = std::move(result);
 	}

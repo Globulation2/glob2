@@ -2152,3 +2152,31 @@ Tegak
 Mendatar
 [Inland lakes]
 Danau pedalaman
+[Block shape]
+Bentuk blok
+[Random parameters]
+Parameter acak
+[Randomize parameters]
+Acak parameter
+[Start quality]
+Kualitas awal
+[Fairness]
+Keadilan
+[Score]
+Skor
+[Weight]
+Bobot
+[Worst]
+Terburuk
+[Best]
+Terbaik
+[Fertility]
+Kesuburan
+[Deposits]
+Cadangan
+[Room]
+Ruang
+[Isolation]
+Keterpencilan
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Awal setiap koloni diukur pada peta yang sudah jadi: jarak tempuh ke gandum dan ke kayu, seberapa baik tanahnya tumbuh kembali, cadangan dan lokasi bangunan yang terjangkau, serta jaraknya dari pesaing. Setiap faktor dinilai dari 0 sampai 1 terhadap patokan tetap, totalnya membobotinya, keadilan adalah total koloni terburuk dibagi total yang terbaik, dan skor adalah total terburuk dikali keadilan.

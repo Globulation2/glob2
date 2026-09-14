@@ -2152,3 +2152,31 @@ OpenGL недоступний у цій збірці.
 Горизонтально
 [Inland lakes]
 Внутрішні озера
+[Block shape]
+Форма кварталів
+[Random parameters]
+Випадкові параметри
+[Randomize parameters]
+Випадково обрати параметри
+[Start quality]
+Якість старту
+[Fairness]
+Справедливість
+[Score]
+Оцінка
+[Weight]
+Вага
+[Worst]
+Найгірший
+[Best]
+Найкращий
+[Fertility]
+Родючість
+[Deposits]
+Запаси
+[Room]
+Простір
+[Isolation]
+Віддаленість
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Старт кожної колонії вимірюється на готовій карті: шлях до пшениці та до лісу, наскільки добре відновлюється її земля, запаси та місця для будівництва в межах досяжності й відстань до суперників. Кожен чинник оцінюється від 0 до 1 відносно сталої планки, підсумок їх зважує, справедливість — це підсумок найгіршої колонії, поділений на підсумок найкращої, а оцінка — найгірший підсумок, помножений на справедливість.

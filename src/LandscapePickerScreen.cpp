@@ -2,6 +2,7 @@
 #include "LandscapePickerScreen.h"
 #include "GlobalContainer.h"
 #include "LobbyControls.h"
+#include "GenerationContext.h"
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
@@ -25,6 +26,7 @@ std::vector<GenerationRequest> LandscapePickerScreen::requestsOf(const std::vect
 LandscapePickerScreen::LandscapePickerScreen(const std::string &title, std::vector<Entry> entries,
 											 int selected)
 	: title(title), entries(std::move(entries)), tiles(this->entries.size()),
+	  redraws(this->entries.size(), 0),
 	  selected(std::clamp(selected, 0, std::max(0, int(this->entries.size()) - 1))),
 	  previewer(requestsOf(this->entries))
 {
@@ -47,6 +49,30 @@ std::optional<std::uint32_t> LandscapePickerScreen::chosenSeed() const
 	if (preview.state != LandscapePreviewer::State::Ready)
 		return {};
 	return preview.seed;
+}
+
+GenerationRequest LandscapePickerScreen::chosenRequest() const
+{
+	if (selected < 0 || selected >= int(entries.size()))
+		return GenerationRequest();
+	return previewer.request(std::size_t(selected));
+}
+
+void LandscapePickerScreen::randomizeParameters()
+{
+	std::vector<GenerationRequest> requests;
+	for (std::size_t i = 0; i < entries.size(); ++i)
+	{
+		GenerationRequest request = entries[i].request;
+		// Each landscape draws from its own stream; a draw the generator refuses up front is
+		// redrawn inside randomizeControls, so what goes to the workers is at least a valid
+		// request. Should no draw at all be accepted, the entry keeps its own parameters.
+		request.randomizeControls(
+			GenerationContext::deriveSeed(GenerationContext::randomSeed(), "random/" + std::to_string(i)));
+		redraws[i] = kRandomDraws;
+		requests.push_back(request);
+	}
+	previewer.restart(std::move(requests));
 }
 
 void LandscapePickerScreen::select(int index)
@@ -80,6 +106,17 @@ void LandscapePickerScreen::refresh()
 		tile.revision = revision;
 		tile.preview = previewer.preview(i);
 		tile.surface.reset();
+		// A random set of parameters the world refused (every seed failed) is drawn again while
+		// draws remain: the sheet should show maps, not failures, and the user asked for variety.
+		if (tile.preview.state == LandscapePreviewer::State::Failed && redraws[i] > 0)
+		{
+			--redraws[i];
+			GenerationRequest request = entries[i].request;
+			request.randomizeControls(GenerationContext::deriveSeed(
+				GenerationContext::randomSeed(), "redraw/" + std::to_string(i)));
+			previewer.reroll(i, request);
+			continue;
+		}
 		if (tile.preview.state == LandscapePreviewer::State::Ready)
 		{
 			// Surfaces belong to the UI thread; the worker only hands over pixels.
@@ -219,10 +256,25 @@ void LandscapePickerScreen::render()
 	ui.button(
 		"landscape/back", {x, height - 55, 100, 34}, tr("Back"), [this] { endExecute(CANCEL); },
 		false, true, true);
-	const int regenerateW = compact ? 150 : 190;
-	ui.button("landscape/regenerate", {x + 110, height - 55, regenerateW, 34}, tr("Regenerate all"),
-			  [this] { previewer.regenerate(); });
-	const int useX = x + 110 + regenerateW + 10;
+	// A label the standard font cannot fit in its button on a compact screen takes the small one
+	// rather than being cut off.
+	const auto fitting = [](const std::string &label, int width)
+	{
+		return Toolkit::getFont("standard")->getStringWidth(label) + 16 <= width ? "standard"
+																				 : "little";
+	};
+	const int regenerateW = compact ? 130 : 170;
+	const std::string regenerate = tr("Regenerate all"), randomize = tr("Randomize parameters");
+	ui.button(
+		"landscape/regenerate", {x + 110, height - 55, regenerateW, 34}, regenerate,
+		[this] { previewer.regenerate(); }, false, true, false, fitting(regenerate, regenerateW));
+	// Beside it, the same sheet with every landscape's parameters drawn at random (the size and
+	// colony count stay), for an even wider spread of maps to pick from.
+	const int randomW = compact ? 150 : 190;
+	ui.button(
+		"landscape/randomize", {x + 110 + regenerateW + 10, height - 55, randomW, 34}, randomize,
+		[this] { randomizeParameters(); }, false, true, false, fitting(randomize, randomW));
+	const int useX = x + 110 + regenerateW + 10 + randomW + 10;
 	const bool valid = selected >= 0 && selected < int(entries.size());
 	ui.button(
 		"landscape/use", {useX, height - 55, x + w - useX, 34},

@@ -2154,3 +2154,31 @@ OpenGL غير متوفر في هذا الإصدار.
 أفقي
 [Inland lakes]
 بحيرات داخلية
+[Block shape]
+شكل الكتل
+[Random parameters]
+معلمات عشوائية
+[Randomize parameters]
+اختر معلمات عشوائية
+[Start quality]
+جودة البداية
+[Fairness]
+الإنصاف
+[Score]
+النتيجة
+[Weight]
+الوزن
+[Worst]
+الأدنى
+[Best]
+الأعلى
+[Fertility]
+الخصوبة
+[Deposits]
+المخزون
+[Room]
+المساحة
+[Isolation]
+العزلة
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+يُقاس موقع بداية كل مستعمرة على الخريطة النهائية: المسافة إلى القمح وإلى الخشب، ومدى تجدد نمو أرضها، والمخزون ومواقع البناء في متناولها، وبُعدها عن المنافسين. يُقيَّم كل عامل من 0 إلى 1 مقابل حد ثابت، ويجمعها المجموع بأوزانها، والإنصاف هو مجموع أضعف مستعمرة مقسوماً على مجموع أفضلها، والنتيجة هي أضعف مجموع مضروباً في الإنصاف.

@@ -2152,3 +2152,31 @@ OpenGL 在此版本中不可用。
 横向
 [Inland lakes]
 内陆湖
+[Block shape]
+街区形状
+[Random parameters]
+随机参数
+[Randomize parameters]
+随机选取参数
+[Start quality]
+开局质量
+[Fairness]
+公平度
+[Score]
+评分
+[Weight]
+权重
+[Worst]
+最低
+[Best]
+最高
+[Fertility]
+肥沃度
+[Deposits]
+储量
+[Room]
+空间
+[Isolation]
+隔离度
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+每个殖民地的开局都在完成的地图上测量：到小麦和木材的路程、土地的再生能力、可及范围内的储量和建筑用地，以及与对手的距离。每项因素按固定标准计 0 到 1 分，总分对其加权，公平度是最低殖民地的总分除以最高者，评分是最低总分乘以公平度。

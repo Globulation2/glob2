@@ -9,6 +9,7 @@
 #include "FrontendTheme.h"
 #include "GlobalContainer.h"
 #include "LandscapePickerScreen.h"
+#include "StartQualityScreen.h"
 #include "LobbyControls.h"
 #include "LobbyMapCatalog.h"
 #include "LobbyMapPreview.h"
@@ -137,7 +138,12 @@ struct CustomGameSetupHarness
 		// Every control's whole range survives, whether it lives in a legacy field or not.
 		for (int method : GeneratorRegistry::builtins().methods(false))
 			for (const auto &c : GenerationRequest::controls(method))
+			{
+				if (!roundTrip(method, {{c.id, c.minimum}}) || !roundTrip(method, {{c.id, c.maximum}}))
+					std::cerr << "control " << c.id << " of " << GeneratorRegistry::builtins().at(method).id
+							  << " does not survive its range " << c.minimum << ".." << c.maximum << "\n";
 				assert(roundTrip(method, {{c.id, c.minimum}}) && roundTrip(method, {{c.id, c.maximum}}));
+			}
 
 		CustomGamePreferences original;
 		original.setup.random = true;
@@ -186,7 +192,11 @@ struct CustomGameSetupHarness
 		if (write)
 		{
 			CustomGameScreen screen;
-			assert(screen.validMap && screen.setup.capacity == 4);
+			// Nothing saved: a random map (FEEDBACK 2026-09-14). The premade library is what this
+			// file is written with, so switch to it first.
+			assert(screen.setup.random && screen.previewPending && screen.setup.capacity == 4);
+			screen.setMapMode(false);
+			assert(!screen.setup.random && screen.validMap);
 			assert(screen.setup.setController(2, CustomGameSetup::Shared));
 			screen.setup.colonies[2].ai = AI::CORTEX;
 			screen.setup.colonies[0].alliance = 2;
@@ -250,8 +260,11 @@ struct CustomGameSetupHarness
 				out.write(truncated.data(), truncated.size(), "broken preferences");
 			});
 			{
+				// A file the lobby cannot read is the same as none: a random map at four colonies,
+				// its preview pending (FEEDBACK 2026-09-14: random maps are the default tab).
 				CustomGameScreen screen;
-				assert(screen.validMap && screen.setup.capacity == 4 && screen.setup.speed == 0);
+				assert(screen.setup.random && screen.previewPending && !screen.validMap &&
+					   screen.setup.capacity == 4 && screen.setup.speed == 0);
 			}
 			files->remove(CustomGamePreferences::filename);
 		}
@@ -433,7 +446,14 @@ struct CustomGameSetupHarness
     CustomGameScreen screen;
     screen.gfx = globalContainer->gfx;
     screen.dispatchInit();
-    assert(screen.validMap && screen.setup.capacity == 4);
+    // With nothing saved the lobby opens on a random map (FEEDBACK 2026-09-14); the premade
+    // library is a click away and is what the catalog checks below exercise.
+    assert(screen.setup.random && screen.previewPending && !screen.validMap &&
+           screen.setup.capacity == 4);
+    // The first visit to the library preselects FourSquares1, the old opening map.
+    screen.setMapMode(false);
+    assert(!screen.setup.random && screen.validMap && !screen.previewPending &&
+           std::filesystem::path(screen.setup.premadeMap).filename() == "FourSquares1.map");
     screen.separateMapLibraries = false;
     screen.listMaps();
     assert(std::any_of(
@@ -574,10 +594,11 @@ struct CustomGameSetupHarness
       globalContainer->gfx->printScreen(output + "/" + name + ".bmp");
     };
     capture("map-640");
-    // Randomize and Reset to defaults only apply to random maps.
+    // Randomize, Reset to defaults and Random parameters only apply to random maps.
     assert(std::none_of(screen.controls->hits.begin(), screen.controls->hits.end(),
                         [](const auto &h) {
-                          return h.id == "map/randomize" || h.id == "generator/reset";
+                          return h.id == "map/randomize" || h.id == "generator/reset" ||
+                                 h.id == "generator/random" || h.id == "quality/info";
                         }));
     screen.activateGroup(screen.groups[1]);
     capture("players-640");
@@ -673,9 +694,77 @@ struct CustomGameSetupHarness
           screen.controls->hits.begin(), screen.controls->hits.end(),
           [](const auto &h) { return h.id == "generator/reset"; });
       assert(reset != screen.controls->hits.end() && !reset->enabled);
+      // Reset to defaults sits at the top of the column, right under the landscape chooser,
+      // with Random parameters beside it (FEEDBACK 2026-09-14).
+      const auto landscape = std::find_if(
+          screen.controls->hits.begin(), screen.controls->hits.end(),
+          [](const auto &h) { return h.id == "generator/landscape"; });
+      const auto random = std::find_if(
+          screen.controls->hits.begin(), screen.controls->hits.end(),
+          [](const auto &h) { return h.id == "generator/random"; });
+      assert(landscape != screen.controls->hits.end() && random != screen.controls->hits.end());
+      assert(reset->box.y > landscape->box.y && reset->box.y < landscape->box.y + 80 &&
+             random->box.y == reset->box.y && random->box.x > reset->box.x && random->enabled);
+      for (const auto &h : screen.controls->hits)
+        if (h.id.rfind("generator/", 0) == 0 && h.id != "generator/landscape" &&
+            h.id != "generator/reset" && h.id != "generator/random")
+          assert(h.box.y >= reset->box.y);
       preview();
       assert(screen.validMap);
       capture("reset-640");
+    }
+    // Random parameters draws every one of the landscape's controls at random, keeping the size,
+    // colony count and workers, and yields a request the generator accepts; the preview then
+    // shows a map for it. Reset returns to the defaults from there.
+    {
+      const auto before = screen.setup.generator;
+      const int capacity = screen.setup.capacity;
+      const GeneratorDefinition &definition =
+          GeneratorRegistry::builtins().at(before.method);
+      bool changed = false;
+      for (int attempt = 0; attempt < 4 && !changed; ++attempt) {
+        clickControl("generator/random");
+        changed = screen.setup.generator.options != before.options;
+      }
+      assert(changed && !screen.validMap && screen.previewPending && !screen.chosenSeed);
+      assert(screen.setup.generator.method == before.method &&
+             screen.setup.generator.nbWorkers == before.nbWorkers &&
+             screen.setup.generator.wDec == before.wDec &&
+             screen.setup.generator.hDec == before.hDec && screen.setup.capacity == capacity);
+      assert(validateGenerationRequest(screen.setup.generator, definition).empty());
+      preview();
+      assert(screen.validMap && screen.quality.measured &&
+             screen.quality.colonies.size() == size_t(capacity));
+      paint();
+      // The start quality line under the preview: fairness and score, and its (i).
+      assert(std::any_of(screen.controls->hits.begin(), screen.controls->hits.end(),
+                         [](const auto &h) { return h.id == "quality/info" && h.enabled; }));
+      capture("random-parameters-640");
+      {
+        std::vector<std::string> labels;
+        std::vector<Color> colors;
+        for (size_t i = 0; i < screen.quality.colonies.size(); ++i) {
+          labels.push_back(screen.colonyLabel(int(i)));
+          colors.push_back(screen.preview->starts[i].color);
+        }
+        StartQualityScreen breakdown(screen.quality, labels, colors);
+        breakdown.dispatchInit();
+        breakdown.dispatchPaint(false);
+        globalContainer->gfx->printScreen(output + "/start-quality.bmp");
+        assert(std::any_of(breakdown.controls->hits.begin(), breakdown.controls->hits.end(),
+                           [](const auto &h) { return h.id == "quality/back"; }));
+        SDL_Event e = {};
+        e.type = SDL_KEYDOWN;
+        e.key.keysym.sym = SDLK_ESCAPE;
+        breakdown.dispatchEvents(&e);
+        assert(breakdown.returnCode == StartQualityScreen::BACK);
+      }
+      clickControl("generator/reset");
+      GenerationRequest expected;
+      expected.setMethodDefaults(before.method);
+      assert(screen.setup.generator.options == expected.options && !screen.quality.measured);
+      preview();
+      assert(screen.validMap);
     }
     screen.setup.presetRules(1);
     screen.invalidate();
@@ -930,6 +1019,40 @@ struct CustomGameSetupHarness
       const auto second = seedsShown();
       for (size_t i = 0; i < first.size(); ++i)
         assert(first[i] != second[i]);
+      // Randomize parameters rolls every landscape with its controls drawn at random: the sheet
+      // still fills with maps (a refused set is redrawn), and each tile's request is one its
+      // generator accepts, at the lobby's size and colony count.
+      pick("landscape/randomize");
+      assert(picker.busy());
+      settle();
+      seedsShown();
+      {
+        bool anyDiffer = false;
+        for (size_t i = 0; i < shown.size(); ++i) {
+          const GenerationRequest rolled = picker.previewer.request(i);
+          assert(rolled.method == shown[i].request.method && rolled.nbTeams == 4 &&
+                 rolled.wDec == 8 && rolled.hDec == 8);
+          assert(validateGenerationRequest(rolled, GeneratorRegistry::builtins().at(rolled.method))
+                     .empty());
+          anyDiffer = anyDiffer || rolled.options != shown[i].request.options;
+        }
+        assert(anyDiffer);
+      }
+      globalContainer->gfx->printScreen(output + "/landscape-picker-randomized.bmp");
+      // Using a randomized landscape hands the lobby the parameters it was shown with.
+      {
+        pick("landscape/" + std::to_string(other));
+        const GenerationRequest rolled = picker.chosenRequest();
+        assert(rolled.method == entries[other].first);
+        screen.applyLandscape(entries[other].first, picker.chosenSeed(), &rolled);
+        assert(screen.setup.generator.method == entries[other].first &&
+               screen.setup.generator.options == rolled.options &&
+               screen.setup.generator.nbTeams == 4);
+        // Back to the landscapes' own parameters for the checks below.
+        pick("landscape/regenerate");
+        settle();
+        seedsShown();
+      }
       // Return confirms the selection, as does clicking the selected tile.
       pick("landscape/" + std::to_string(other));
       pickerKey(SDLK_RETURN);
