@@ -20,6 +20,7 @@ namespace
 		Uint32 receiveResourceMask, sendResourceMask;
 		Sint32 resources[MAX_NB_RESOURCES];
 		Sint32 ratio[NB_UNIT_TYPE];
+		bool clearingResources[BASIC_COUNT];
 	};
 
 	struct UnitTemplate
@@ -98,6 +99,8 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 				bt.resources[r] = b->resources[r];
 			for (int u = 0; u < NB_UNIT_TYPE; u++)
 				bt.ratio[u] = b->ratio[u];
+			for (int r = 0; r < BASIC_COUNT; r++)
+				bt.clearingResources[r] = b->clearingResources[r];
 			colonies[t].buildings.push_back(bt);
 		}
 		for (int i = 0; i < Unit::MAX_COUNT; i++)
@@ -114,6 +117,24 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 			colonies[t].units.push_back(ut);
 		}
 	}
+
+	// the areas each colony's team painted, by tile of the map as loaded; Map::tile drops the
+	// per-team masks, and every copy paints them again for the team its colony is dealt to
+	struct PaintedTile
+	{
+		int x, y;
+		bool forbidden, guard, clear;
+	};
+	std::vector<std::vector<PaintedTile>> painted(mapTeams);
+	for (int y = 0; y < h0; y++)
+		for (int x = 0; x < w0; x++)
+			for (int t = 0; t < mapTeams; t++)
+			{
+				const Uint32 mask = Team::teamNumberToMask(t);
+				const bool forbidden = map.isForbidden(x, y, mask), guard = map.isGuardArea(x, y, mask), clear = map.isClearArea(x, y, mask);
+				if (forbidden || guard || clear)
+					painted[t].push_back({x, y, forbidden, guard, clear});
+			}
 
 	while (mapHeader.getNumberOfTeams() > 0)
 		removeTeam(TEAM_POS_END);
@@ -161,12 +182,24 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 						b->resources[r] = bt.resources[r];
 					for (int u = 0; u < NB_UNIT_TYPE; u++)
 						b->ratio[u] = bt.ratio[u];
+					for (int r = 0; r < BASIC_COUNT; r++)
+						b->clearingResources[r] = bt.clearingResources[r];
 					if (!teams[k]->startPosSet && b->type->unitProductionTime)
 					{
 						teams[k]->startPosX = b->posX;
 						teams[k]->startPosY = b->posY;
 						teams[k]->startPosSet = 1;
 					}
+				}
+				for (const PaintedTile& p : painted[t])
+				{
+					const int x = p.x + i * w0, y = p.y + j * h0;
+					if (p.forbidden)
+						map.addForbidden(x, y, k);
+					if (p.guard)
+						map.addGuardArea(x, y, k);
+					if (p.clear)
+						map.addClearArea(x, y, k);
 				}
 				for (const UnitTemplate& ut : colonies[t].units)
 				{

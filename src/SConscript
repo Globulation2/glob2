@@ -775,6 +775,12 @@ if not env['server'] and 'level-gate-test' in COMMAND_LINE_TARGETS:
     level_gate_sources += local.Object('LevelGateHarness.o', '#test/LevelGateHarness.cpp')
     local.Alias('level-gate-test', local.Program('LevelGateHarness', level_gate_sources))
 
+# Repeating a map deals every colony, its areas and flag settings to one team.
+if not env['server'] and 'map-tiling-test' in COMMAND_LINE_TARGETS:
+    tiling_sources = [source for source in source_files if source != 'Glob2.cpp']
+    tiling_sources += local.Object('MapTilingHarness.o', '#test/MapTilingHarness.cpp')
+    local.Alias('map-tiling-test', local.Program('MapTilingHarness', tiling_sources))
+
 if not env['server'] and 'custom-setup-test' in COMMAND_LINE_TARGETS:
     custom_sources = [source for source in source_files if source != 'Glob2.cpp']
     custom_sources += local.Object('CustomGameSetupHarness.o', '#test/CustomGameSetupHarness.cpp')

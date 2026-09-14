@@ -100,6 +100,19 @@ To poke `cases[i].terrain` directly (`regenerateMap` is protected): grass < 16, 
 - Adding regression tests around any Map state mutator before refactoring it.
 - **Don't use** for behaviors that genuinely need real `Game` / `Team` / `Unit` / `Building` wiring (e.g. `doesUnitTouchEnemy` reaches into `game->teams[]->myBuildings[]`) — those need either a different stub set or a refactor to decouple first.
 
+## Map tiling regression
+
+```sh
+scons -j2 release=1 server=0 map-tiling-test
+python3 test/run-savegame-safety-tests.py build/src/MapTilingHarness
+```
+
+Loads `maps/balanced_for_2.map`, paints a forbidden, guard and clearing area for one colony
+and a forbidden tile for the other, adds a clearing flag that leaves wood alone, then repeats
+the map 2 x 2 for eight teams with `Game::tileForPlay`. Each copy's team, as
+`MapTiling::teamForColony` deals it, must hold its colony's buildings and units, exactly its
+own bit on every painted tile, and a clearing flag with the same resource choice.
+
 ## Real LAN session regression
 
 From the repository root:
