@@ -28,7 +28,7 @@ std::string getResourceName(int type);
 #define MAX_RESOURCES 8
 #define NO_RES -1
 #define WOOD 0
-#define CORN 1
+#define WHEAT 1
 #define PAPYRUS 2
 #define STONE 3
 #define ALGA 4

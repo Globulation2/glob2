@@ -24,10 +24,10 @@ void Map::oldAddResourcesRandomMap(MapGenerationDescriptor &descriptor)
 		for (int i=0; i<8; i++)
 			dirUsed[i]=false;
 		int resOrder[4];
-		resOrder[0]=CORN;
+		resOrder[0]=WHEAT;
 		resOrder[1]=WOOD;
 		resOrder[2]=STONE;
-		resOrder[3]=CORN;
+		resOrder[3]=WHEAT;
 
 		int distWeight[4];
 		distWeight[0]=1;

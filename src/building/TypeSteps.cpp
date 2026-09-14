@@ -24,7 +24,7 @@ void Building::swarmStep(void)
 	if (hp<type->hpMax)
 		hp++;
 	assert(NB_UNIT_TYPE==3);
-	if ((resources[CORN]>=type->resourceForOneUnit)&&(ratio[0]|ratio[1]|ratio[2]))
+	if ((resources[WHEAT]>=type->resourceForOneUnit)&&(ratio[0]|ratio[1]|ratio[2]))
 		productionTimeout--;
 
 	if (productionTimeout<0)
@@ -66,7 +66,7 @@ void Building::swarmStep(void)
 			Unit * u=owner->game->addUnit(posX, posY, owner->teamNumber, minType, 0, 0, dx, dy);
 			if (u)
 			{
-				resources[CORN]-=type->resourceForOneUnit;
+				resources[WHEAT]-=type->resourceForOneUnit;
 				updateCallLists();
 
 				u->activity=Unit::ACT_RANDOM;
