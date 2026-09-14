@@ -136,8 +136,7 @@ columns, update schema descriptions when adding fields, and test save/load and
 unchanged order/checksum execution. Do not use a telemetry field as AI input.
 
 The existing `team-stats-save-test` target includes AI schema, numeric persistence,
-identity, generation, replay-availability and corruption regressions. Validation
-artifacts for this change are retained under `output/ai-telemetry/`.
+identity, generation, replay-availability and corruption regressions.
 
 ### Existing AI load behavior
 

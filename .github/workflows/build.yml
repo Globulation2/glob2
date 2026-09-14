@@ -122,6 +122,7 @@ jobs:
             savegame-safety-test \
             buffered-file-test \
             team-stats-save-test \
+            performance-telemetry-test \
             terrain-test \
             global-gradient-test \
             lan-test \
@@ -161,6 +162,7 @@ jobs:
         run: |
           python3 test/test_tournaments.py
           python3 test/test_distributed_map_telemetry.py
+          python3 test/test_distributed_game_telemetry.py
           python3 test/test_map_fairness_tournament.py
           ./build/src/TournamentCompatibilityTest
           python3 test/tournament_cli_integration.py --output artifacts/tournament-cli
@@ -306,6 +308,7 @@ jobs:
 
       - name: Test team statistics save compatibility
         run: |
+          build/libgag/src/PerformanceTelemetryHarness
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/TeamStatsSaveHarness .
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness . --legacy test/fixtures/team-stats/version88.game
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness . --legacy games/gd-small-2ai.game
@@ -658,7 +661,8 @@ jobs:
             map-render-resize-test \
             map-preview-test \
             savegame-safety-test \
-            team-stats-save-test
+            team-stats-save-test \
+            performance-telemetry-test
 
       - name: Test map JSON reports
         run: |
@@ -724,6 +728,7 @@ jobs:
 
       - name: Test team statistics save compatibility
         run: |
+          build/libgag/src/PerformanceTelemetryHarness.exe
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/TeamStatsSaveHarness.exe .
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness.exe . --legacy test/fixtures/team-stats/version88.game
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness.exe . --legacy games/gd-small-2ai.game

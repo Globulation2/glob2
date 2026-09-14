@@ -475,6 +475,4 @@ See [gameplay metric definitions](gameplay-statistics.md),
 [performance scope definitions](performance-telemetry.md).
 The rebased save formats are 105 (gameplay) and 106 (AI), above master's 104;
 released save support still starts at 58. Master's network/YOG gate 33 and replay
-floor 99 are preserved. Pre-rebase development fixtures numbered 101/102 collide
-with master's released fields and should be regenerated; the backup branch retains
-the original development reader. Existing exported logs need no conversion.
+floor 99 are preserved. Existing exported logs need no conversion.
