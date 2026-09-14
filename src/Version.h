@@ -6,7 +6,7 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 98
+#define VERSION_MINOR 99
 // version 91 saves the live RNG and routing state for deterministic continuation.
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
@@ -113,6 +113,8 @@
 //            construction, upgrades, unit/swarm management) that cooperate rather
 //            than a phase-driven strategy. Purely additive: older clients simply
 //            can't load a save that names this AI (see AI::load's default case).
+// version 99 reads one worker level (build) where hiring used to read harvest and
+//            the upgrade menu build, and evens the two out on load
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above

@@ -140,8 +140,7 @@ bool Building::canUnitWorkHere(Unit* unit)
 	}
 	else if(unit->typeNum ==  WORKER)
 	{
-		int actLevel=unit->level[HARVEST];
-		if(type->level <= actLevel)
+		if(type->level <= unit->workerLevel())
 			return true;
 	}
 	return false;
