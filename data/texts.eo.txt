@@ -2064,107 +2064,93 @@ Kvadratoj
 Sesanguloj
 [Warp]
 Deformado
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Fingrospuro
 [Wavelength]
-Wavelength
+Ondolongo
 [Pattern]
-Pattern
+Motivo
 [Labyrinth]
-Labyrinth
+Labirinto
 [Channels]
-Channels
+Sulkoj
 [Barrier]
-Barrier
+Baro
 [Water]
-Water
+Akvo
 [Grain]
-Grain
+Grajneco
 [Rain shadow]
-Rain shadow
+Pluvombro
 [Ridges]
-Ridges
+Krestoj
 [Slant]
-Slant
+Oblikveco
 [Ridge thickness]
-Ridge thickness
+Dikeco de krestoj
 [Pass spacing]
-Pass spacing
+Interspaco de montpasejoj
 [Lee width]
-Lee width
+Larĝo de la ŝirmflanko
 [Old growth]
-Old growth
+Praarbaro
 [Canals]
-Canals
+Kanaloj
 [Forest density]
-Forest density
+Denseco de arbaro
 [Hidden groves]
-Hidden groves
+Kaŝitaj boskoj
 [Starting trails]
-Starting trails
+Komencaj padoj
 [Block size]
-Block size
+Grando de kvartaloj
 [Canal width]
-Canal width
+Larĝo de kanaloj
 [Extra bridges]
-Extra bridges
+Kromaj pontoj
 [Polder]
-Polder
+Poldero
 [Old town]
-Old town
+Malnova urbo
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Formikejo
 [Row angle]
-Row angle
-[Straight]
-Straight
+Angulo de vicoj
 [Diagonal]
-Diagonal
+Diagonala
 [Dyke spacing]
-Dyke spacing
+Interspaco de digoj
 [Village size]
-Village size
+Grando de vilaĝoj
 [Hamlets]
-Hamlets
+Vilaĝetoj
 [City size]
-City size
+Grando de la urbo
 [Street width]
-Street width
+Larĝo de stratoj
 [Plazas]
-Plazas
-[Gates]
-Gates
+Placoj
 [Chamber spacing]
-Chamber spacing
+Interspaco de ĉambroj
 [Chamber size]
-Chamber size
+Grando de ĉambroj
 [Queen room]
-Queen room
+Ĉambro de la reĝino
 [Tunnel width]
-Tunnel width
+Larĝo de tuneloj
 [Loops]
-Loops
+Bukloj
 [Home pools]
-Home pools
+Lagetoj de la hejmo
 [Farm plots]
-Farm plots
+Kampparceloj
 [Tendril roads]
-Tendril roads
+Ĉiraj vojoj
 [Random]
-Random
+Hazarda
 [Vertical]
-Vertical
+Vertikala
 [Horizontal]
-Horizontal
+Horizontala
 [Inland lakes]
-Inland lakes
+Enlandaj lagoj

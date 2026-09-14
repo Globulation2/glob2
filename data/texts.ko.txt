@@ -2062,107 +2062,93 @@ Globulation 2 커서를 표시합니다.
 육각형
 [Warp]
 뒤틀림
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+지문
 [Wavelength]
-Wavelength
+파장
 [Pattern]
-Pattern
+패턴
 [Labyrinth]
-Labyrinth
+미궁
 [Channels]
-Channels
+고랑
 [Barrier]
-Barrier
+장벽
 [Water]
-Water
+물
 [Grain]
-Grain
+입자
 [Rain shadow]
-Rain shadow
+비 그늘
 [Ridges]
-Ridges
+산등성이
 [Slant]
-Slant
+비스듬함
 [Ridge thickness]
-Ridge thickness
+산등성이 두께
 [Pass spacing]
-Pass spacing
+고갯길 간격
 [Lee width]
-Lee width
+바람그늘 너비
 [Old growth]
-Old growth
+원시림
 [Canals]
-Canals
+운하
 [Forest density]
-Forest density
+숲 밀도
 [Hidden groves]
-Hidden groves
+숨겨진 숲
 [Starting trails]
-Starting trails
+시작 산길
 [Block size]
-Block size
+블록 크기
 [Canal width]
-Canal width
+운하 너비
 [Extra bridges]
-Extra bridges
+추가 다리
 [Polder]
-Polder
+간척지
 [Old town]
-Old town
+옛 도시
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+개미집
 [Row angle]
-Row angle
-[Straight]
-Straight
+열 각도
 [Diagonal]
-Diagonal
+대각선
 [Dyke spacing]
-Dyke spacing
+제방 간격
 [Village size]
-Village size
+마을 크기
 [Hamlets]
-Hamlets
+작은 마을
 [City size]
-City size
+도시 크기
 [Street width]
-Street width
+거리 너비
 [Plazas]
-Plazas
-[Gates]
-Gates
+광장
 [Chamber spacing]
-Chamber spacing
+방 간격
 [Chamber size]
-Chamber size
+방 크기
 [Queen room]
-Queen room
+여왕 방
 [Tunnel width]
-Tunnel width
+터널 너비
 [Loops]
-Loops
+순환로
 [Home pools]
-Home pools
+본거지 연못
 [Farm plots]
-Farm plots
+농경지
 [Tendril roads]
-Tendril roads
+덩굴길
 [Random]
-Random
+무작위
 [Vertical]
-Vertical
+세로
 [Horizontal]
-Horizontal
+가로
 [Inland lakes]
-Inland lakes
+내륙 호수

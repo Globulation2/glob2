@@ -2064,107 +2064,93 @@ OpenGL غير متوفر في هذا الإصدار.
 سداسيات
 [Warp]
 التواء
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+بصمة الإصبع
 [Wavelength]
-Wavelength
+الطول الموجي
 [Pattern]
-Pattern
+النمط
 [Labyrinth]
-Labyrinth
+متاهة
 [Channels]
-Channels
+الأخاديد
 [Barrier]
-Barrier
+الحاجز
 [Water]
-Water
+ماء
 [Grain]
-Grain
+التحبب
 [Rain shadow]
-Rain shadow
+ظل المطر
 [Ridges]
-Ridges
+الحواف الصخرية
 [Slant]
-Slant
+الانحراف
 [Ridge thickness]
-Ridge thickness
+سماكة الحواف الصخرية
 [Pass spacing]
-Pass spacing
+تباعد الممرات الجبلية
 [Lee width]
-Lee width
+عرض جانب الظل
 [Old growth]
-Old growth
+الغابة القديمة
 [Canals]
-Canals
+القنوات
 [Forest density]
-Forest density
+كثافة الغابة
 [Hidden groves]
-Hidden groves
+بساتين مخفية
 [Starting trails]
-Starting trails
+دروب البداية
 [Block size]
-Block size
+حجم الكتلة السكنية
 [Canal width]
-Canal width
+عرض القناة
 [Extra bridges]
-Extra bridges
+جسور إضافية
 [Polder]
-Polder
+بولدر
 [Old town]
-Old town
+المدينة القديمة
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+عش النمل
 [Row angle]
-Row angle
-[Straight]
-Straight
+زاوية الصفوف
 [Diagonal]
-Diagonal
+قطري
 [Dyke spacing]
-Dyke spacing
+تباعد السدود
 [Village size]
-Village size
+حجم القرية
 [Hamlets]
-Hamlets
+القرى الصغيرة
 [City size]
-City size
+حجم المدينة
 [Street width]
-Street width
+عرض الشوارع
 [Plazas]
-Plazas
-[Gates]
-Gates
+الميادين
 [Chamber spacing]
-Chamber spacing
+تباعد الحجرات
 [Chamber size]
-Chamber size
+حجم الحجرات
 [Queen room]
-Queen room
+حجرة الملكة
 [Tunnel width]
-Tunnel width
+عرض الأنفاق
 [Loops]
-Loops
+مسارات دائرية
 [Home pools]
-Home pools
+برك الموطن
 [Farm plots]
-Farm plots
+قطع المزارع
 [Tendril roads]
-Tendril roads
+طرق متفرعة
 [Random]
-Random
+عشوائي
 [Vertical]
-Vertical
+عمودي
 [Horizontal]
-Horizontal
+أفقي
 [Inland lakes]
-Inland lakes
+بحيرات داخلية

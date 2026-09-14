@@ -2064,107 +2064,93 @@ OpenGL در این بیلد موجود نیست.
 شش‌ضلعی‌ها
 [Warp]
 پیچش
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+اثر انگشت
 [Wavelength]
-Wavelength
+طول موج
 [Pattern]
-Pattern
+الگو
 [Labyrinth]
-Labyrinth
+هزارتو
 [Channels]
-Channels
+شیارها
 [Barrier]
-Barrier
+مانع
 [Water]
-Water
+آب
 [Grain]
-Grain
+دانه‌بندی
 [Rain shadow]
-Rain shadow
+سایه بارانی
 [Ridges]
-Ridges
+ستیغ‌ها
 [Slant]
-Slant
+کجی
 [Ridge thickness]
-Ridge thickness
+ضخامت ستیغ‌ها
 [Pass spacing]
-Pass spacing
+فاصله گردنه‌ها
 [Lee width]
-Lee width
+پهنای پناهگاه باد
 [Old growth]
-Old growth
+جنگل کهن
 [Canals]
-Canals
+کانال‌ها
 [Forest density]
-Forest density
+تراکم جنگل
 [Hidden groves]
-Hidden groves
+بیشه‌های پنهان
 [Starting trails]
-Starting trails
+کوره‌راه‌های آغازین
 [Block size]
-Block size
+اندازه بلوک
 [Canal width]
-Canal width
+پهنای کانال
 [Extra bridges]
-Extra bridges
+پل‌های اضافی
 [Polder]
-Polder
+پولدر
 [Old town]
-Old town
+شهر قدیمی
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+لانه مورچه
 [Row angle]
-Row angle
-[Straight]
-Straight
+زاویه ردیف‌ها
 [Diagonal]
-Diagonal
+قطری
 [Dyke spacing]
-Dyke spacing
+فاصله خاکریزها
 [Village size]
-Village size
+اندازه روستاها
 [Hamlets]
-Hamlets
+آبادی‌های کوچک
 [City size]
-City size
+اندازه شهر
 [Street width]
-Street width
+پهنای خیابان‌ها
 [Plazas]
-Plazas
-[Gates]
-Gates
+میدان‌ها
 [Chamber spacing]
-Chamber spacing
+فاصله حفره‌ها
 [Chamber size]
-Chamber size
+اندازه حفره‌ها
 [Queen room]
-Queen room
+حفره ملکه
 [Tunnel width]
-Tunnel width
+پهنای تونل‌ها
 [Loops]
-Loops
+مسیرهای حلقوی
 [Home pools]
-Home pools
+آبگیرهای پایگاه
 [Farm plots]
-Farm plots
+قطعه‌های زراعی
 [Tendril roads]
-Tendril roads
+جاده‌های پیچک‌وار
 [Random]
-Random
+تصادفی
 [Vertical]
-Vertical
+عمودی
 [Horizontal]
-Horizontal
+افقی
 [Inland lakes]
-Inland lakes
+دریاچه‌های داخلی

@@ -2076,107 +2076,93 @@ Kvadrater
 Hexagoner
 [Warp]
 Förvrängning
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Fingeravtryck
 [Wavelength]
-Wavelength
+Våglängd
 [Pattern]
-Pattern
+Mönster
 [Labyrinth]
-Labyrinth
+Labyrint
 [Channels]
-Channels
+Rännor
 [Barrier]
-Barrier
+Barriär
 [Water]
-Water
+Vatten
 [Grain]
-Grain
+Kornighet
 [Rain shadow]
-Rain shadow
+Regnskugga
 [Ridges]
-Ridges
+Åsar
 [Slant]
-Slant
+Snedhet
 [Ridge thickness]
-Ridge thickness
+Åsarnas tjocklek
 [Pass spacing]
-Pass spacing
+Passavstånd
 [Lee width]
-Lee width
+Läsidans bredd
 [Old growth]
-Old growth
+Urskog
 [Canals]
-Canals
+Kanaler
 [Forest density]
-Forest density
+Skogstäthet
 [Hidden groves]
-Hidden groves
+Dolda dungar
 [Starting trails]
-Starting trails
+Startstigar
 [Block size]
-Block size
+Kvartersstorlek
 [Canal width]
-Canal width
+Kanalbredd
 [Extra bridges]
-Extra bridges
+Extra broar
 [Polder]
 Polder
 [Old town]
-Old town
+Gamla stan
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Myrstack
 [Row angle]
-Row angle
-[Straight]
-Straight
+Radernas vinkel
 [Diagonal]
-Diagonal
+Diagonalt
 [Dyke spacing]
-Dyke spacing
+Vallavstånd
 [Village size]
-Village size
+Bystorlek
 [Hamlets]
-Hamlets
+Småbyar
 [City size]
-City size
+Stadens storlek
 [Street width]
-Street width
+Gatubredd
 [Plazas]
-Plazas
-[Gates]
-Gates
+Torg
 [Chamber spacing]
-Chamber spacing
+Kammaravstånd
 [Chamber size]
-Chamber size
+Kammarstorlek
 [Queen room]
-Queen room
+Drottningens kammare
 [Tunnel width]
-Tunnel width
+Tunnelbredd
 [Loops]
-Loops
+Slingor
 [Home pools]
-Home pools
+Hemmets gölar
 [Farm plots]
-Farm plots
+Åkerlotter
 [Tendril roads]
-Tendril roads
+Slingervägar
 [Random]
-Random
+Slumpmässig
 [Vertical]
-Vertical
+Lodrätt
 [Horizontal]
-Horizontal
+Vågrätt
 [Inland lakes]
-Inland lakes
+Insjöar

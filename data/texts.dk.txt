@@ -2142,107 +2142,93 @@ Kvadrater
 Sekskanter
 [Warp]
 Forvrængning
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Fingeraftryk
 [Wavelength]
-Wavelength
+Bølgelængde
 [Pattern]
-Pattern
+Mønster
 [Labyrinth]
-Labyrinth
+Labyrint
 [Channels]
-Channels
+Render
 [Barrier]
-Barrier
+Barriere
 [Water]
-Water
+Vand
 [Grain]
-Grain
+Kornethed
 [Rain shadow]
-Rain shadow
+Regnskygge
 [Ridges]
-Ridges
+Højderygge
 [Slant]
-Slant
+Skråstilling
 [Ridge thickness]
-Ridge thickness
+Højderyggenes tykkelse
 [Pass spacing]
-Pass spacing
+Afstand mellem pas
 [Lee width]
-Lee width
+Læsidens bredde
 [Old growth]
-Old growth
+Urskov
 [Canals]
-Canals
+Kanaler
 [Forest density]
-Forest density
+Skovtæthed
 [Hidden groves]
-Hidden groves
+Skjulte lunde
 [Starting trails]
-Starting trails
+Startstier
 [Block size]
-Block size
+Karréstørrelse
 [Canal width]
-Canal width
+Kanalbredde
 [Extra bridges]
-Extra bridges
+Ekstra broer
 [Polder]
 Polder
 [Old town]
-Old town
+Gamle bydel
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Myretue
 [Row angle]
-Row angle
-[Straight]
-Straight
+Rækkernes vinkel
 [Diagonal]
-Diagonal
+Diagonalt
 [Dyke spacing]
-Dyke spacing
+Afstand mellem diger
 [Village size]
-Village size
+Landsbystørrelse
 [Hamlets]
-Hamlets
+Småbyer
 [City size]
-City size
+Byens størrelse
 [Street width]
-Street width
+Gadebredde
 [Plazas]
-Plazas
-[Gates]
-Gates
+Pladser
 [Chamber spacing]
-Chamber spacing
+Afstand mellem kamre
 [Chamber size]
-Chamber size
+Kammerstørrelse
 [Queen room]
-Queen room
+Dronningens kammer
 [Tunnel width]
-Tunnel width
+Tunnelbredde
 [Loops]
-Loops
+Løkker
 [Home pools]
-Home pools
+Hjemmets vandhuller
 [Farm plots]
-Farm plots
+Marklodder
 [Tendril roads]
-Tendril roads
+Slyngveje
 [Random]
-Random
+Tilfældig
 [Vertical]
-Vertical
+Lodret
 [Horizontal]
-Horizontal
+Vandret
 [Inland lakes]
-Inland lakes
+Indsøer

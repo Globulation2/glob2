@@ -2064,14 +2064,6 @@ Squares
 Hexagons
 [Warp]
 Warp
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
 Fingerprint
 [Wavelength]
@@ -2122,12 +2114,8 @@ Polder
 Old town
 [Anthill]
 Anthill
-[Patchwork]
-Patchwork
 [Row angle]
 Row angle
-[Straight]
-Straight
 [Diagonal]
 Diagonal
 [Dyke spacing]
@@ -2142,8 +2130,6 @@ City size
 Street width
 [Plazas]
 Plazas
-[Gates]
-Gates
 [Chamber spacing]
 Chamber spacing
 [Chamber size]

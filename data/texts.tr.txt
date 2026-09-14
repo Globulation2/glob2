@@ -2074,107 +2074,93 @@ Kareler
 Altıgenler
 [Warp]
 Bükülme
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Parmak izi
 [Wavelength]
-Wavelength
+Dalga boyu
 [Pattern]
-Pattern
+Desen
 [Labyrinth]
-Labyrinth
+Labirent
 [Channels]
-Channels
+Oluklar
 [Barrier]
-Barrier
+Engel
 [Water]
-Water
+Su
 [Grain]
-Grain
+Pürüzlülük
 [Rain shadow]
-Rain shadow
+Yağmur gölgesi
 [Ridges]
-Ridges
+Sırtlar
 [Slant]
-Slant
+Yatıklık
 [Ridge thickness]
-Ridge thickness
+Sırt kalınlığı
 [Pass spacing]
-Pass spacing
+Geçit aralığı
 [Lee width]
-Lee width
+Rüzgâraltı genişliği
 [Old growth]
-Old growth
+Yaşlı orman
 [Canals]
-Canals
+Kanallar
 [Forest density]
-Forest density
+Orman yoğunluğu
 [Hidden groves]
-Hidden groves
+Gizli korular
 [Starting trails]
-Starting trails
+Başlangıç patikaları
 [Block size]
-Block size
+Blok boyutu
 [Canal width]
-Canal width
+Kanal genişliği
 [Extra bridges]
-Extra bridges
+Ek köprüler
 [Polder]
 Polder
 [Old town]
-Old town
+Eski şehir
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Karınca yuvası
 [Row angle]
-Row angle
-[Straight]
-Straight
+Sıra açısı
 [Diagonal]
-Diagonal
+Çapraz
 [Dyke spacing]
-Dyke spacing
+Set aralığı
 [Village size]
-Village size
+Köy boyutu
 [Hamlets]
-Hamlets
+Mezralar
 [City size]
-City size
+Şehir boyutu
 [Street width]
-Street width
+Sokak genişliği
 [Plazas]
-Plazas
-[Gates]
-Gates
+Meydanlar
 [Chamber spacing]
-Chamber spacing
+Oda aralığı
 [Chamber size]
-Chamber size
+Oda boyutu
 [Queen room]
-Queen room
+Kraliçe odası
 [Tunnel width]
-Tunnel width
+Tünel genişliği
 [Loops]
-Loops
+Döngüler
 [Home pools]
-Home pools
+Üs gölcükleri
 [Farm plots]
-Farm plots
+Tarla parselleri
 [Tendril roads]
-Tendril roads
+Sarmaşık yollar
 [Random]
-Random
+Rastgele
 [Vertical]
-Vertical
+Dikey
 [Horizontal]
-Horizontal
+Yatay
 [Inland lakes]
-Inland lakes
+İç göller

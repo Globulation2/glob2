@@ -2066,107 +2066,93 @@ Négyzetek
 Hatszögek
 [Warp]
 Torzítás
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Ujjlenyomat
 [Wavelength]
-Wavelength
+Hullámhossz
 [Pattern]
-Pattern
+Minta
 [Labyrinth]
-Labyrinth
+Labirintus
 [Channels]
-Channels
+Barázdák
 [Barrier]
-Barrier
+Akadály
 [Water]
-Water
+Víz
 [Grain]
-Grain
+Szemcsésség
 [Rain shadow]
-Rain shadow
+Esőárnyék
 [Ridges]
-Ridges
+Gerincek
 [Slant]
-Slant
+Ferdeség
 [Ridge thickness]
-Ridge thickness
+Gerincek vastagsága
 [Pass spacing]
-Pass spacing
+Hágók távolsága
 [Lee width]
-Lee width
+Szélárnyék szélessége
 [Old growth]
-Old growth
+Őserdő
 [Canals]
-Canals
+Csatornák
 [Forest density]
-Forest density
+Erdő sűrűsége
 [Hidden groves]
-Hidden groves
+Rejtett ligetek
 [Starting trails]
-Starting trails
+Kezdő ösvények
 [Block size]
-Block size
+Háztömb mérete
 [Canal width]
-Canal width
+Csatorna szélessége
 [Extra bridges]
-Extra bridges
+További hidak
 [Polder]
 Polder
 [Old town]
-Old town
+Óváros
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Hangyaboly
 [Row angle]
-Row angle
-[Straight]
-Straight
+Sorok szöge
 [Diagonal]
-Diagonal
+Átlós
 [Dyke spacing]
-Dyke spacing
+Gátak távolsága
 [Village size]
-Village size
+Falvak mérete
 [Hamlets]
-Hamlets
+Tanyák
 [City size]
-City size
+Város mérete
 [Street width]
-Street width
+Utcák szélessége
 [Plazas]
-Plazas
-[Gates]
-Gates
+Terek
 [Chamber spacing]
-Chamber spacing
+Kamrák távolsága
 [Chamber size]
-Chamber size
+Kamrák mérete
 [Queen room]
-Queen room
+Királynő kamrája
 [Tunnel width]
-Tunnel width
+Járatok szélessége
 [Loops]
-Loops
+Hurkok
 [Home pools]
-Home pools
+Otthoni tavacskák
 [Farm plots]
-Farm plots
+Szántóparcellák
 [Tendril roads]
-Tendril roads
+Kacsutak
 [Random]
-Random
+Véletlenszerű
 [Vertical]
-Vertical
+Függőleges
 [Horizontal]
-Horizontal
+Vízszintes
 [Inland lakes]
-Inland lakes
+Belső tavak

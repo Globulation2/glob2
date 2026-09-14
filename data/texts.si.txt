@@ -2066,107 +2066,93 @@ Kvadrati
 Šestkotniki
 [Warp]
 Popačenje
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Prstni odtis
 [Wavelength]
-Wavelength
+Valovna dolžina
 [Pattern]
-Pattern
+Vzorec
 [Labyrinth]
-Labyrinth
+Labirint
 [Channels]
-Channels
+Brazde
 [Barrier]
-Barrier
+Pregrada
 [Water]
-Water
+Voda
 [Grain]
-Grain
+Zrnatost
 [Rain shadow]
-Rain shadow
+Padavinska senca
 [Ridges]
-Ridges
+Grebeni
 [Slant]
-Slant
+Poševnost
 [Ridge thickness]
-Ridge thickness
+Debelina grebenov
 [Pass spacing]
-Pass spacing
+Razmik prelazov
 [Lee width]
-Lee width
+Širina zavetrne strani
 [Old growth]
-Old growth
+Pragozd
 [Canals]
-Canals
+Kanali
 [Forest density]
-Forest density
+Gostota gozda
 [Hidden groves]
-Hidden groves
+Skriti gaji
 [Starting trails]
-Starting trails
+Začetne poti
 [Block size]
-Block size
+Velikost blokov
 [Canal width]
-Canal width
+Širina kanalov
 [Extra bridges]
-Extra bridges
+Dodatni mostovi
 [Polder]
 Polder
 [Old town]
-Old town
+Staro mesto
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Mravljišče
 [Row angle]
-Row angle
-[Straight]
-Straight
+Kot vrst
 [Diagonal]
-Diagonal
+Diagonalno
 [Dyke spacing]
-Dyke spacing
+Razmik nasipov
 [Village size]
-Village size
+Velikost vasi
 [Hamlets]
-Hamlets
+Zaselki
 [City size]
-City size
+Velikost mesta
 [Street width]
-Street width
+Širina ulic
 [Plazas]
-Plazas
-[Gates]
-Gates
+Trgi
 [Chamber spacing]
-Chamber spacing
+Razmik komor
 [Chamber size]
-Chamber size
+Velikost komor
 [Queen room]
-Queen room
+Kraljičina komora
 [Tunnel width]
-Tunnel width
+Širina rovov
 [Loops]
-Loops
+Zanke
 [Home pools]
-Home pools
+Mlake ob domu
 [Farm plots]
-Farm plots
+Njivske parcele
 [Tendril roads]
-Tendril roads
+Vitičaste poti
 [Random]
-Random
+Naključno
 [Vertical]
-Vertical
+Navpično
 [Horizontal]
-Horizontal
+Vodoravno
 [Inland lakes]
-Inland lakes
+Celinska jezera

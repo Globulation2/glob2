@@ -2074,107 +2074,93 @@ Tvar buniek
 Šesťuholníky
 [Warp]
 Deformácia
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Odtlačok prsta
 [Wavelength]
-Wavelength
+Vlnová dĺžka
 [Pattern]
-Pattern
+Vzor
 [Labyrinth]
-Labyrinth
+Labyrint
 [Channels]
-Channels
+Brázdy
 [Barrier]
-Barrier
+Bariéra
 [Water]
-Water
+Voda
 [Grain]
-Grain
+Zrnitosť
 [Rain shadow]
-Rain shadow
+Zrážkový tieň
 [Ridges]
-Ridges
+Hrebene
 [Slant]
-Slant
+Skosenie
 [Ridge thickness]
-Ridge thickness
+Hrúbka hrebeňov
 [Pass spacing]
-Pass spacing
+Rozostup priesmykov
 [Lee width]
-Lee width
+Šírka záveternej strany
 [Old growth]
-Old growth
+Prales
 [Canals]
-Canals
+Kanály
 [Forest density]
-Forest density
+Hustota lesa
 [Hidden groves]
-Hidden groves
+Skryté háje
 [Starting trails]
-Starting trails
+Počiatočné chodníky
 [Block size]
-Block size
+Veľkosť blokov
 [Canal width]
-Canal width
+Šírka kanálov
 [Extra bridges]
-Extra bridges
+Ďalšie mosty
 [Polder]
 Polder
 [Old town]
-Old town
+Staré mesto
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Mravenisko
 [Row angle]
-Row angle
-[Straight]
-Straight
+Uhol radov
 [Diagonal]
-Diagonal
+Šikmo
 [Dyke spacing]
-Dyke spacing
+Rozostup hrádzí
 [Village size]
-Village size
+Veľkosť dedín
 [Hamlets]
-Hamlets
+Osady
 [City size]
-City size
+Veľkosť mesta
 [Street width]
-Street width
+Šírka ulíc
 [Plazas]
-Plazas
-[Gates]
-Gates
+Námestia
 [Chamber spacing]
-Chamber spacing
+Rozostup komôr
 [Chamber size]
-Chamber size
+Veľkosť komôr
 [Queen room]
-Queen room
+Kráľovnina komora
 [Tunnel width]
-Tunnel width
+Šírka tunelov
 [Loops]
-Loops
+Slučky
 [Home pools]
-Home pools
+Jazierka pri domove
 [Farm plots]
-Farm plots
+Poľné parcely
 [Tendril roads]
-Tendril roads
+Úponkové cesty
 [Random]
-Random
+Náhodne
 [Vertical]
-Vertical
+Zvisle
 [Horizontal]
-Horizontal
+Vodorovne
 [Inland lakes]
-Inland lakes
+Vnútrozemské jazerá

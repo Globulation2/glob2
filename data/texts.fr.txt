@@ -2076,107 +2076,93 @@ Carrés
 Hexagones
 [Warp]
 Déformation
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Empreinte digitale
 [Wavelength]
-Wavelength
+Longueur d'onde
 [Pattern]
-Pattern
+Motif
 [Labyrinth]
-Labyrinth
+Labyrinthe
 [Channels]
-Channels
+Sillons
 [Barrier]
-Barrier
+Barrière
 [Water]
-Water
+Eau
 [Grain]
 Grain
 [Rain shadow]
-Rain shadow
+Ombre pluviométrique
 [Ridges]
-Ridges
+Crêtes
 [Slant]
-Slant
+Obliquité
 [Ridge thickness]
-Ridge thickness
+Épaisseur des crêtes
 [Pass spacing]
-Pass spacing
+Espacement des cols
 [Lee width]
-Lee width
+Largeur sous le vent
 [Old growth]
-Old growth
+Forêt primaire
 [Canals]
-Canals
+Canaux
 [Forest density]
-Forest density
+Densité de la forêt
 [Hidden groves]
-Hidden groves
+Bosquets cachés
 [Starting trails]
-Starting trails
+Sentiers de départ
 [Block size]
-Block size
+Taille des pâtés de maisons
 [Canal width]
-Canal width
+Largeur des canaux
 [Extra bridges]
-Extra bridges
+Ponts supplémentaires
 [Polder]
 Polder
 [Old town]
-Old town
+Vieille ville
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Fourmilière
 [Row angle]
-Row angle
-[Straight]
-Straight
+Angle des rangées
 [Diagonal]
-Diagonal
+Diagonales
 [Dyke spacing]
-Dyke spacing
+Espacement des digues
 [Village size]
-Village size
+Taille des villages
 [Hamlets]
-Hamlets
+Hameaux
 [City size]
-City size
+Taille de la ville
 [Street width]
-Street width
+Largeur des rues
 [Plazas]
-Plazas
-[Gates]
-Gates
+Places
 [Chamber spacing]
-Chamber spacing
+Espacement des chambres
 [Chamber size]
-Chamber size
+Taille des chambres
 [Queen room]
-Queen room
+Chambre de la reine
 [Tunnel width]
-Tunnel width
+Largeur des tunnels
 [Loops]
-Loops
+Boucles
 [Home pools]
-Home pools
+Mares de la base
 [Farm plots]
-Farm plots
+Parcelles agricoles
 [Tendril roads]
-Tendril roads
+Chemins en vrilles
 [Random]
-Random
+Aléatoire
 [Vertical]
-Vertical
+Verticales
 [Horizontal]
-Horizontal
+Horizontales
 [Inland lakes]
-Inland lakes
+Lacs intérieurs

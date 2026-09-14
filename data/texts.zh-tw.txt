@@ -2138,107 +2138,93 @@ OpenGL 在此版本中不可用。
 六邊形
 [Warp]
 扭曲
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+指紋
 [Wavelength]
-Wavelength
+波長
 [Pattern]
-Pattern
+圖案
 [Labyrinth]
-Labyrinth
+迷宮
 [Channels]
-Channels
+溝槽
 [Barrier]
-Barrier
+屏障
 [Water]
-Water
+水
 [Grain]
-Grain
+顆粒度
 [Rain shadow]
-Rain shadow
+雨影
 [Ridges]
-Ridges
+山脊
 [Slant]
-Slant
+傾斜度
 [Ridge thickness]
-Ridge thickness
+山脊厚度
 [Pass spacing]
-Pass spacing
+隘口間距
 [Lee width]
-Lee width
+背風帶寬度
 [Old growth]
-Old growth
+原始森林
 [Canals]
-Canals
+運河
 [Forest density]
-Forest density
+森林密度
 [Hidden groves]
-Hidden groves
+隱蔽林地
 [Starting trails]
-Starting trails
+初始小徑
 [Block size]
-Block size
+街區大小
 [Canal width]
-Canal width
+運河寬度
 [Extra bridges]
-Extra bridges
+額外橋樑
 [Polder]
-Polder
+圩田
 [Old town]
-Old town
+老城
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+蟻丘
 [Row angle]
-Row angle
-[Straight]
-Straight
+行列角度
 [Diagonal]
-Diagonal
+斜向
 [Dyke spacing]
-Dyke spacing
+堤壩間距
 [Village size]
-Village size
+村莊大小
 [Hamlets]
-Hamlets
+小村落
 [City size]
-City size
+城市大小
 [Street width]
-Street width
+街道寬度
 [Plazas]
-Plazas
-[Gates]
-Gates
+廣場
 [Chamber spacing]
-Chamber spacing
+巢室間距
 [Chamber size]
-Chamber size
+巢室大小
 [Queen room]
-Queen room
+蟻后室
 [Tunnel width]
-Tunnel width
+隧道寬度
 [Loops]
-Loops
+環路
 [Home pools]
-Home pools
+基地水池
 [Farm plots]
-Farm plots
+農田地塊
 [Tendril roads]
-Tendril roads
+藤蔓狀道路
 [Random]
-Random
+隨機
 [Vertical]
-Vertical
+縱向
 [Horizontal]
-Horizontal
+橫向
 [Inland lakes]
-Inland lakes
+內陸湖

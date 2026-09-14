@@ -2066,107 +2066,93 @@ Quadrate
 Sechsecke
 [Warp]
 Verzerrung
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Fingerabdruck
 [Wavelength]
-Wavelength
+Wellenlänge
 [Pattern]
-Pattern
+Muster
 [Labyrinth]
-Labyrinth
+Irrgarten
 [Channels]
-Channels
+Rinnen
 [Barrier]
-Barrier
+Barriere
 [Water]
-Water
+Wasser
 [Grain]
-Grain
+Körnung
 [Rain shadow]
-Rain shadow
+Regenschatten
 [Ridges]
-Ridges
+Grate
 [Slant]
-Slant
+Schräge
 [Ridge thickness]
-Ridge thickness
+Gratdicke
 [Pass spacing]
-Pass spacing
+Passabstand
 [Lee width]
-Lee width
+Leebreite
 [Old growth]
-Old growth
+Urwald
 [Canals]
-Canals
+Kanäle
 [Forest density]
-Forest density
+Walddichte
 [Hidden groves]
-Hidden groves
+Versteckte Haine
 [Starting trails]
-Starting trails
+Startpfade
 [Block size]
-Block size
+Blockgröße
 [Canal width]
-Canal width
+Kanalbreite
 [Extra bridges]
-Extra bridges
+Zusätzliche Brücken
 [Polder]
 Polder
 [Old town]
-Old town
+Altstadt
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Ameisenhügel
 [Row angle]
-Row angle
-[Straight]
-Straight
+Reihenwinkel
 [Diagonal]
 Diagonal
 [Dyke spacing]
-Dyke spacing
+Deichabstand
 [Village size]
-Village size
+Dorfgröße
 [Hamlets]
-Hamlets
+Weiler
 [City size]
-City size
+Stadtgröße
 [Street width]
-Street width
+Straßenbreite
 [Plazas]
-Plazas
-[Gates]
-Gates
+Plätze
 [Chamber spacing]
-Chamber spacing
+Kammerabstand
 [Chamber size]
-Chamber size
+Kammergröße
 [Queen room]
-Queen room
+Königinnenkammer
 [Tunnel width]
-Tunnel width
+Tunnelbreite
 [Loops]
-Loops
+Schleifen
 [Home pools]
-Home pools
+Heimatteiche
 [Farm plots]
-Farm plots
+Ackerparzellen
 [Tendril roads]
-Tendril roads
+Rankenwege
 [Random]
-Random
+Zufällig
 [Vertical]
-Vertical
+Senkrecht
 [Horizontal]
-Horizontal
+Waagerecht
 [Inland lakes]
-Inland lakes
+Binnenseen

@@ -1797,7 +1797,7 @@ Tamanho da célula
 [Corridor width]
 Largura do corredor
 [Spoke width]
-Ledander ar skinoù
+Largura dos raios
 [Loopiness]
 Densidade de ciclos
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
@@ -1901,97 +1901,97 @@ Tamanho da clareira
 [Levee]
 Dique
 [Sloughs]
-Geunioù
+Charcos
 [Everglades need at least one colony.]
 Os pântanos precisam de pelo menos uma colônia.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
-Re a drevadennoù evit ar gartenn-mañ; implijit ur gartenn vrasoc'h pe nebeutoc'h a drevadennoù.
+Colônias demais para este mapa; use um mapa maior ou menos colônias.
 [Coral]
-Koural
+Coral
 [Fork angle]
-Korn ar skourradur
+Ângulo de ramificação
 [Lean]
-Stouadur
+Inclinação
 [Home size]
-Ment an diazez
+Tamanho da base
 [The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
-Ne zeu ket ar c'houral war ar gartenn-mañ; implijit ur gartenn vrasoc'h, kanolioù moanoc'h pe nebeutoc'h a drevadennoù.
+O coral não cabe neste mapa; use um mapa maior, estreitos mais estreitos ou menos colônias.
 [Branching]
-Skourradurioù
+Ramificação
 [Branch width]
-Ledander ar skourroù
+Largura dos ramos
 [Coral needs at least one colony.]
-Ezhomm en deus ar c'houral eus un drevadenn da vihanañ.
+O coral precisa de pelo menos uma colônia.
 [Coral needs a map at least 128 tiles across.]
-Ezhomm en deus ar c'houral eus ur gartenn 128 karrezenn ledan da vihanañ.
+O coral precisa de um mapa com pelo menos 128 casas de largura.
 [Carousel]
-Karrousel
+Carrossel
 [Amphitheatre]
-Amfiteatr
+Anfiteatro
 [Switchbacks]
-Troioù-kamm
+Ziguezagues
 [Court size]
-Ment ar porzhioù
+Tamanho dos pátios
 [Court wall]
-Moger ar porzhioù
+Muro dos pátios
 [Plaza size]
-Ment ar blasenn
+Tamanho da praça
 [Starting tower level]
-Live an tourioù kentañ
+Nível das torres iniciais
 [Towers per colony]
-Tourioù dre drevadenn
+Torres por colônia
 [Rings]
-Kelc'hioù
+Anéis
 [Ramp width]
-Ledander ar pantennoù
+Largura das rampas
 [Pit size]
-Ment ar poull
+Tamanho da arena
 [Terrace width]
-Ledander ar bazennoù
+Largura das bancadas
 [Bay size]
-Ment ar baeoù
+Tamanho das baías
 [Border wall]
-Moger an harzoù
+Muro de fronteira
 [Plateau size]
-Ment ar plaen uhel
+Tamanho do planalto
 [Trail width]
-Ledander an hent
+Largura da trilha
 [Wall between legs]
-Moger etre an troioù
+Muro entre trechos
 [Farm building plots]
-Leurioù-savadur er fermoù
+Lotes para construir nas fazendas
 [Carousels need at least two colonies.]
-Ezhomm en deus ar c'harrousel eus div drevadenn da vihanañ.
+O carrossel precisa de pelo menos duas colônias.
 [Switchbacks need at least two colonies.]
-Ezhomm o deus an troioù-kamm eus div drevadenn da vihanañ.
+Os ziguezagues precisam de pelo menos duas colônias.
 [An amphitheatre needs at least two colonies.]
-Ezhomm en deus an amfiteatr eus div drevadenn da vihanañ.
+O anfiteatro precisa de pelo menos duas colônias.
 [The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
-N'eo ket mat ar c'harrousel evit ar gartenn-mañ; implijit ur gartenn vrasoc'h, diazezoù bihanoc'h pe nebeutoc'h a drevadennoù.
+O carrossel não cabe neste mapa; use um mapa maior, bases menores ou menos colônias.
 [The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
-N'eo ket mat an troioù-kamm evit ar gartenn-mañ; implijit ur gartenn vrasoc'h, ur plaen uhel bihanoc'h, hentoù strishoc'h pe nebeutoc'h a drevadennoù.
+Os ziguezagues não cabem neste mapa; use um mapa maior, um planalto menor, trilhas mais estreitas ou menos colônias.
 [The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
-N'eo ket mat an amfiteatr evit ar gartenn-mañ; implijit ur gartenn vrasoc'h, nebeutoc'h a gelc'hioù, pazennoù strishoc'h pe nebeutoc'h a drevadennoù.
+O anfiteatro não cabe neste mapa; use um mapa maior, menos anéis, bancadas mais estreitas ou menos colônias.
 [Spider web]
-Gwiad-kevnid
+Teia de aranha
 [Spokes per colony]
-Skinoù dre drevadenn
+Raios por colônia
 [Ring spacing]
-Esaouenn etre ar c'helc'hioù
+Espaçamento dos anéis
 [Thread width]
-Ledander an neudennoù
+Largura dos fios
 [Sag]
-Distegnadur
+Flacidez
 [Torn strands]
-Neudennoù freget
+Fios rompidos
 [Hub size]
-Ment ar c'hreiz
+Tamanho do centro
 [Dew drops]
-Takennoù glizh
+Gotas de orvalho
 [Spiral]
-Troellenn
+Espiral
 [Spider webs need at least one colony.]
-Ezhomm en deus ur gwiad-kevnid eus un drevadenn da vihanañ.
+As teias de aranha precisam de pelo menos uma colônia.
 [Sandbars]
 Bancos de areia
 [Tide pools]
@@ -2055,114 +2055,100 @@ Colônias em ambas as costas
 [Winding belt]
 Faixa sinuosa
 [Cell shape]
-Stumm ar c'hellig
+Forma das células
 [Squares]
-Karrezioù
+Quadrados
 [Hexagons]
-C'hwec'hkornegoù
+Hexágonos
 [Warp]
-Distummañ
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
+Deformação
 [Fingerprint]
-Fingerprint
+Impressão digital
 [Wavelength]
-Wavelength
+Comprimento de onda
 [Pattern]
-Pattern
+Padrão
 [Labyrinth]
-Labyrinth
+Labirinto
 [Channels]
-Channels
+Sulcos
 [Barrier]
-Barrier
+Barreira
 [Water]
-Water
+Água
 [Grain]
-Grain
+Granulação
 [Rain shadow]
-Rain shadow
+Sombra de chuva
 [Ridges]
-Ridges
+Cristas
 [Slant]
-Slant
+Obliquidade
 [Ridge thickness]
-Ridge thickness
+Espessura das cristas
 [Pass spacing]
-Pass spacing
+Espaçamento das passagens
 [Lee width]
-Lee width
+Largura do sotavento
 [Old growth]
-Old growth
+Floresta primária
 [Canals]
-Canals
+Canais
 [Forest density]
-Forest density
+Densidade da floresta
 [Hidden groves]
-Hidden groves
+Bosques escondidos
 [Starting trails]
-Starting trails
+Trilhas iniciais
 [Block size]
-Block size
+Tamanho do quarteirão
 [Canal width]
-Canal width
+Largura dos canais
 [Extra bridges]
-Extra bridges
+Pontes extras
 [Polder]
-Polder
+Pôlder
 [Old town]
-Old town
+Cidade velha
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Formigueiro
 [Row angle]
-Row angle
-[Straight]
-Straight
+Ângulo das fileiras
 [Diagonal]
-Diagonal
+Diagonais
 [Dyke spacing]
-Dyke spacing
+Espaçamento dos diques
 [Village size]
-Village size
+Tamanho dos vilarejos
 [Hamlets]
-Hamlets
+Lugarejos
 [City size]
-City size
+Tamanho da cidade
 [Street width]
-Street width
+Largura das ruas
 [Plazas]
-Plazas
-[Gates]
-Gates
+Praças
 [Chamber spacing]
-Chamber spacing
+Espaçamento das câmaras
 [Chamber size]
-Chamber size
+Tamanho das câmaras
 [Queen room]
-Queen room
+Câmara da rainha
 [Tunnel width]
-Tunnel width
+Largura dos túneis
 [Loops]
-Loops
+Circuitos
 [Home pools]
-Home pools
+Poças da base
 [Farm plots]
-Farm plots
+Lotes agrícolas
 [Tendril roads]
-Tendril roads
+Estradas em gavinha
 [Random]
-Random
+Aleatório
 [Vertical]
-Vertical
+Verticais
 [Horizontal]
-Horizontal
+Horizontais
 [Inland lakes]
-Inland lakes
+Lagos interiores

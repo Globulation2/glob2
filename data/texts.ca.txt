@@ -2074,107 +2074,93 @@ Quadrats
 Hexàgons
 [Warp]
 Deformació
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Empremta digital
 [Wavelength]
-Wavelength
+Longitud d'onda
 [Pattern]
-Pattern
+Patró
 [Labyrinth]
-Labyrinth
+Laberint
 [Channels]
-Channels
+Solcs
 [Barrier]
-Barrier
+Barrera
 [Water]
-Water
+Aigua
 [Grain]
-Grain
+Gra
 [Rain shadow]
-Rain shadow
+Ombra pluviomètrica
 [Ridges]
-Ridges
+Crestes
 [Slant]
-Slant
+Obliqüitat
 [Ridge thickness]
-Ridge thickness
+Gruix de les crestes
 [Pass spacing]
-Pass spacing
+Separació dels passos
 [Lee width]
-Lee width
+Amplada del sotavent
 [Old growth]
-Old growth
+Bosc primari
 [Canals]
 Canals
 [Forest density]
-Forest density
+Densitat del bosc
 [Hidden groves]
-Hidden groves
+Boscatges amagats
 [Starting trails]
-Starting trails
+Corriols inicials
 [Block size]
-Block size
+Mida de les illes de cases
 [Canal width]
-Canal width
+Amplada dels canals
 [Extra bridges]
-Extra bridges
+Ponts addicionals
 [Polder]
-Polder
+Pòlder
 [Old town]
-Old town
+Ciutat vella
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Formiguer
 [Row angle]
-Row angle
-[Straight]
-Straight
+Angle de les fileres
 [Diagonal]
-Diagonal
+Diagonals
 [Dyke spacing]
-Dyke spacing
+Separació dels dics
 [Village size]
-Village size
+Mida dels pobles
 [Hamlets]
-Hamlets
+Llogarets
 [City size]
-City size
+Mida de la ciutat
 [Street width]
-Street width
+Amplada dels carrers
 [Plazas]
-Plazas
-[Gates]
-Gates
+Places
 [Chamber spacing]
-Chamber spacing
+Separació de les cambres
 [Chamber size]
-Chamber size
+Mida de les cambres
 [Queen room]
-Queen room
+Cambra de la reina
 [Tunnel width]
-Tunnel width
+Amplada dels túnels
 [Loops]
-Loops
+Bucles
 [Home pools]
-Home pools
+Basses de la base
 [Farm plots]
-Farm plots
+Parcel·les de conreu
 [Tendril roads]
-Tendril roads
+Camins en circell
 [Random]
-Random
+Aleatori
 [Vertical]
-Vertical
+Verticals
 [Horizontal]
-Horizontal
+Horitzontals
 [Inland lakes]
-Inland lakes
+Llacs interiors

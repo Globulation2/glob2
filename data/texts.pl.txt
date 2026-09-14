@@ -2066,107 +2066,93 @@ Kwadraty
 Sześciokąty
 [Warp]
 Zniekształcenie
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Odcisk palca
 [Wavelength]
-Wavelength
+Długość fali
 [Pattern]
-Pattern
+Wzór
 [Labyrinth]
-Labyrinth
+Labirynt
 [Channels]
-Channels
+Bruzdy
 [Barrier]
-Barrier
+Bariera
 [Water]
-Water
+Woda
 [Grain]
-Grain
+Ziarnistość
 [Rain shadow]
-Rain shadow
+Cień opadowy
 [Ridges]
-Ridges
+Grzbiety
 [Slant]
-Slant
+Skos
 [Ridge thickness]
-Ridge thickness
+Grubość grzbietów
 [Pass spacing]
-Pass spacing
+Odstęp przełęczy
 [Lee width]
-Lee width
+Szerokość strony zawietrznej
 [Old growth]
-Old growth
+Puszcza
 [Canals]
-Canals
+Kanały
 [Forest density]
-Forest density
+Gęstość lasu
 [Hidden groves]
-Hidden groves
+Ukryte gaje
 [Starting trails]
-Starting trails
+Ścieżki startowe
 [Block size]
-Block size
+Rozmiar kwartałów
 [Canal width]
-Canal width
+Szerokość kanałów
 [Extra bridges]
-Extra bridges
+Dodatkowe mosty
 [Polder]
 Polder
 [Old town]
-Old town
+Stare miasto
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Mrowisko
 [Row angle]
-Row angle
-[Straight]
-Straight
+Kąt rzędów
 [Diagonal]
-Diagonal
+Ukośne
 [Dyke spacing]
-Dyke spacing
+Odstęp grobli
 [Village size]
-Village size
+Rozmiar wiosek
 [Hamlets]
-Hamlets
+Przysiółki
 [City size]
-City size
+Rozmiar miasta
 [Street width]
-Street width
+Szerokość ulic
 [Plazas]
-Plazas
-[Gates]
-Gates
+Place
 [Chamber spacing]
-Chamber spacing
+Odstęp komór
 [Chamber size]
-Chamber size
+Rozmiar komór
 [Queen room]
-Queen room
+Komora królowej
 [Tunnel width]
-Tunnel width
+Szerokość tuneli
 [Loops]
-Loops
+Pętle
 [Home pools]
-Home pools
+Stawy bazy
 [Farm plots]
-Farm plots
+Działki rolne
 [Tendril roads]
-Tendril roads
+Drogi wąsowe
 [Random]
-Random
+Losowo
 [Vertical]
-Vertical
+Pionowe
 [Horizontal]
-Horizontal
+Poziome
 [Inland lakes]
-Inland lakes
+Jeziora śródlądowe

@@ -2128,107 +2128,93 @@ Quadrati
 Esagoni
 [Warp]
 Deformazione
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Impronta digitale
 [Wavelength]
-Wavelength
+Lunghezza d'onda
 [Pattern]
-Pattern
+Motivo
 [Labyrinth]
-Labyrinth
+Labirinto
 [Channels]
-Channels
+Solchi
 [Barrier]
-Barrier
+Barriera
 [Water]
-Water
+Acqua
 [Grain]
-Grain
+Grana
 [Rain shadow]
-Rain shadow
+Ombra pluviometrica
 [Ridges]
-Ridges
+Creste
 [Slant]
-Slant
+Obliquità
 [Ridge thickness]
-Ridge thickness
+Spessore delle creste
 [Pass spacing]
-Pass spacing
+Distanza tra i passi
 [Lee width]
-Lee width
+Larghezza del sottovento
 [Old growth]
-Old growth
+Foresta primaria
 [Canals]
-Canals
+Canali
 [Forest density]
-Forest density
+Densità della foresta
 [Hidden groves]
-Hidden groves
+Boschetti nascosti
 [Starting trails]
-Starting trails
+Sentieri iniziali
 [Block size]
-Block size
+Dimensione degli isolati
 [Canal width]
-Canal width
+Larghezza dei canali
 [Extra bridges]
-Extra bridges
+Ponti aggiuntivi
 [Polder]
 Polder
 [Old town]
-Old town
+Città vecchia
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Formicaio
 [Row angle]
-Row angle
-[Straight]
-Straight
+Angolo delle file
 [Diagonal]
-Diagonal
+Diagonali
 [Dyke spacing]
-Dyke spacing
+Distanza tra gli argini
 [Village size]
-Village size
+Dimensione dei villaggi
 [Hamlets]
-Hamlets
+Borghi
 [City size]
-City size
+Dimensione della città
 [Street width]
-Street width
+Larghezza delle strade
 [Plazas]
-Plazas
-[Gates]
-Gates
+Piazze
 [Chamber spacing]
-Chamber spacing
+Distanza tra le camere
 [Chamber size]
-Chamber size
+Dimensione delle camere
 [Queen room]
-Queen room
+Camera della regina
 [Tunnel width]
-Tunnel width
+Larghezza dei tunnel
 [Loops]
-Loops
+Circuiti
 [Home pools]
-Home pools
+Stagni della base
 [Farm plots]
-Farm plots
+Appezzamenti agricoli
 [Tendril roads]
-Tendril roads
+Strade a viticcio
 [Random]
-Random
+Casuale
 [Vertical]
-Vertical
+Verticali
 [Horizontal]
-Horizontal
+Orizzontali
 [Inland lakes]
-Inland lakes
+Laghi interni

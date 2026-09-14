@@ -2066,107 +2066,93 @@ OpenGL није доступан у овој верзији.
 Шестоуглови
 [Warp]
 Изобличење
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Отисак прста
 [Wavelength]
-Wavelength
+Таласна дужина
 [Pattern]
-Pattern
+Шаблон
 [Labyrinth]
-Labyrinth
+Лавиринт
 [Channels]
-Channels
+Бразде
 [Barrier]
-Barrier
+Препрека
 [Water]
-Water
+Вода
 [Grain]
-Grain
+Зрнавост
 [Rain shadow]
-Rain shadow
+Кишна сенка
 [Ridges]
-Ridges
+Гребени
 [Slant]
-Slant
+Косина
 [Ridge thickness]
-Ridge thickness
+Дебљина гребена
 [Pass spacing]
-Pass spacing
+Размак превоја
 [Lee width]
-Lee width
+Ширина заветрине
 [Old growth]
-Old growth
+Прашума
 [Canals]
-Canals
+Канали
 [Forest density]
-Forest density
+Густина шуме
 [Hidden groves]
-Hidden groves
+Скривени гајеви
 [Starting trails]
-Starting trails
+Почетне стазе
 [Block size]
-Block size
+Величина блокова
 [Canal width]
-Canal width
+Ширина канала
 [Extra bridges]
-Extra bridges
+Додатни мостови
 [Polder]
-Polder
+Полдер
 [Old town]
-Old town
+Стари град
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Мравињак
 [Row angle]
-Row angle
-[Straight]
-Straight
+Угао редова
 [Diagonal]
-Diagonal
+Дијагонално
 [Dyke spacing]
-Dyke spacing
+Размак насипа
 [Village size]
-Village size
+Величина села
 [Hamlets]
-Hamlets
+Засеоци
 [City size]
-City size
+Величина града
 [Street width]
-Street width
+Ширина улица
 [Plazas]
-Plazas
-[Gates]
-Gates
+Тргови
 [Chamber spacing]
-Chamber spacing
+Размак комора
 [Chamber size]
-Chamber size
+Величина комора
 [Queen room]
-Queen room
+Краљичина комора
 [Tunnel width]
-Tunnel width
+Ширина тунела
 [Loops]
-Loops
+Петље
 [Home pools]
-Home pools
+Баре код базе
 [Farm plots]
-Farm plots
+Пољопривредне парцеле
 [Tendril roads]
-Tendril roads
+Путеви-витице
 [Random]
-Random
+Насумично
 [Vertical]
-Vertical
+Усправно
 [Horizontal]
-Horizontal
+Водоравно
 [Inland lakes]
-Inland lakes
+Унутрашња језера

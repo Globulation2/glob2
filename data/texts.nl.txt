@@ -2090,107 +2090,93 @@ Vierkanten
 Zeshoeken
 [Warp]
 Vervorming
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Vingerafdruk
 [Wavelength]
-Wavelength
+Golflengte
 [Pattern]
-Pattern
+Patroon
 [Labyrinth]
-Labyrinth
+Labyrint
 [Channels]
-Channels
+Geulen
 [Barrier]
-Barrier
+Barrière
 [Water]
 Water
 [Grain]
-Grain
+Korrel
 [Rain shadow]
-Rain shadow
+Regenschaduw
 [Ridges]
-Ridges
+Ruggen
 [Slant]
-Slant
+Scheefstand
 [Ridge thickness]
-Ridge thickness
+Dikte van de ruggen
 [Pass spacing]
-Pass spacing
+Pasafstand
 [Lee width]
-Lee width
+Breedte van de lijzijde
 [Old growth]
-Old growth
+Oerbos
 [Canals]
-Canals
+Grachten
 [Forest density]
-Forest density
+Bosdichtheid
 [Hidden groves]
-Hidden groves
+Verborgen bosjes
 [Starting trails]
-Starting trails
+Startpaden
 [Block size]
-Block size
+Grootte van de bouwblokken
 [Canal width]
-Canal width
+Grachtbreedte
 [Extra bridges]
-Extra bridges
+Extra bruggen
 [Polder]
 Polder
 [Old town]
-Old town
+Oude stad
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Mierenhoop
 [Row angle]
-Row angle
-[Straight]
-Straight
+Rijhoek
 [Diagonal]
-Diagonal
+Diagonaal
 [Dyke spacing]
-Dyke spacing
+Dijkafstand
 [Village size]
-Village size
+Dorpsgrootte
 [Hamlets]
-Hamlets
+Gehuchten
 [City size]
-City size
+Grootte van de stad
 [Street width]
-Street width
+Straatbreedte
 [Plazas]
-Plazas
-[Gates]
-Gates
+Pleinen
 [Chamber spacing]
-Chamber spacing
+Kamerafstand
 [Chamber size]
-Chamber size
+Kamergrootte
 [Queen room]
-Queen room
+Koninginnekamer
 [Tunnel width]
-Tunnel width
+Tunnelbreedte
 [Loops]
-Loops
+Lussen
 [Home pools]
-Home pools
+Poelen bij de thuisbasis
 [Farm plots]
-Farm plots
+Akkerpercelen
 [Tendril roads]
-Tendril roads
+Rankwegen
 [Random]
-Random
+Willekeurig
 [Vertical]
-Vertical
+Verticaal
 [Horizontal]
-Horizontal
+Horizontaal
 [Inland lakes]
-Inland lakes
+Binnenmeren

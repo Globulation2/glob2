@@ -2062,107 +2062,93 @@ OpenGL недоступний у цій збірці.
 Шестикутники
 [Warp]
 Викривлення
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Відбиток пальця
 [Wavelength]
-Wavelength
+Довжина хвилі
 [Pattern]
-Pattern
+Візерунок
 [Labyrinth]
-Labyrinth
+Лабіринт
 [Channels]
-Channels
+Борозни
 [Barrier]
-Barrier
+Перешкода
 [Water]
-Water
+Вода
 [Grain]
-Grain
+Зернистість
 [Rain shadow]
-Rain shadow
+Дощова тінь
 [Ridges]
-Ridges
+Хребти
 [Slant]
-Slant
+Скіс
 [Ridge thickness]
-Ridge thickness
+Товщина хребтів
 [Pass spacing]
-Pass spacing
+Крок перевалів
 [Lee width]
-Lee width
+Ширина підвітряної смуги
 [Old growth]
-Old growth
+Праліс
 [Canals]
-Canals
+Канали
 [Forest density]
-Forest density
+Густота лісу
 [Hidden groves]
-Hidden groves
+Приховані гаї
 [Starting trails]
-Starting trails
+Початкові стежки
 [Block size]
-Block size
+Розмір кварталів
 [Canal width]
-Canal width
+Ширина каналів
 [Extra bridges]
-Extra bridges
+Додаткові мости
 [Polder]
-Polder
+Польдер
 [Old town]
-Old town
+Старе місто
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Мурашник
 [Row angle]
-Row angle
-[Straight]
-Straight
+Кут рядів
 [Diagonal]
-Diagonal
+По діагоналі
 [Dyke spacing]
-Dyke spacing
+Крок дамб
 [Village size]
-Village size
+Розмір сіл
 [Hamlets]
-Hamlets
+Хутори
 [City size]
-City size
+Розмір міста
 [Street width]
-Street width
+Ширина вулиць
 [Plazas]
-Plazas
-[Gates]
-Gates
+Площі
 [Chamber spacing]
-Chamber spacing
+Крок камер
 [Chamber size]
-Chamber size
+Розмір камер
 [Queen room]
-Queen room
+Камера королеви
 [Tunnel width]
-Tunnel width
+Ширина тунелів
 [Loops]
-Loops
+Петлі
 [Home pools]
-Home pools
+Ставки біля бази
 [Farm plots]
-Farm plots
+Земельні наділи
 [Tendril roads]
-Tendril roads
+Дороги-вусики
 [Random]
-Random
+Випадково
 [Vertical]
-Vertical
+Вертикально
 [Horizontal]
-Horizontal
+Горизонтально
 [Inland lakes]
-Inland lakes
+Внутрішні озера

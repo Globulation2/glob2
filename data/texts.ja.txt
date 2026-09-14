@@ -2062,107 +2062,93 @@ Globulation 2 のカーソルを表示します。
 六角形
 [Warp]
 ゆがみ
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+指紋
 [Wavelength]
-Wavelength
+波長
 [Pattern]
-Pattern
+パターン
 [Labyrinth]
-Labyrinth
+迷宮
 [Channels]
-Channels
+溝
 [Barrier]
-Barrier
+障壁
 [Water]
-Water
+水
 [Grain]
-Grain
+粒状感
 [Rain shadow]
-Rain shadow
+雨陰
 [Ridges]
-Ridges
+尾根
 [Slant]
-Slant
+傾斜
 [Ridge thickness]
-Ridge thickness
+尾根の厚さ
 [Pass spacing]
-Pass spacing
+峠の間隔
 [Lee width]
-Lee width
+風下側の幅
 [Old growth]
-Old growth
+原生林
 [Canals]
-Canals
+運河
 [Forest density]
-Forest density
+森の密度
 [Hidden groves]
-Hidden groves
+隠れた木立
 [Starting trails]
-Starting trails
+初期の小道
 [Block size]
-Block size
+街区の大きさ
 [Canal width]
-Canal width
+運河の幅
 [Extra bridges]
-Extra bridges
+追加の橋
 [Polder]
-Polder
+ポルダー
 [Old town]
-Old town
+旧市街
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+アリの巣
 [Row angle]
-Row angle
-[Straight]
-Straight
+列の角度
 [Diagonal]
-Diagonal
+斜め
 [Dyke spacing]
-Dyke spacing
+堤防の間隔
 [Village size]
-Village size
+村の大きさ
 [Hamlets]
-Hamlets
+集落
 [City size]
-City size
+街の大きさ
 [Street width]
-Street width
+通りの幅
 [Plazas]
-Plazas
-[Gates]
-Gates
+広場
 [Chamber spacing]
-Chamber spacing
+部屋の間隔
 [Chamber size]
-Chamber size
+部屋の大きさ
 [Queen room]
-Queen room
+女王の部屋
 [Tunnel width]
-Tunnel width
+トンネルの幅
 [Loops]
-Loops
+環状路
 [Home pools]
-Home pools
+本拠地の池
 [Farm plots]
-Farm plots
+農地の区画
 [Tendril roads]
-Tendril roads
+つる状の道
 [Random]
-Random
+ランダム
 [Vertical]
-Vertical
+縦
 [Horizontal]
-Horizontal
+横
 [Inland lakes]
-Inland lakes
+内陸の湖

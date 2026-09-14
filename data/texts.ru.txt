@@ -2064,107 +2064,93 @@ OpenGL недоступен в этой сборке.
 Шестиугольники
 [Warp]
 Искажение
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Отпечаток пальца
 [Wavelength]
-Wavelength
+Длина волны
 [Pattern]
-Pattern
+Узор
 [Labyrinth]
-Labyrinth
+Лабиринт
 [Channels]
-Channels
+Борозды
 [Barrier]
-Barrier
+Преграда
 [Water]
-Water
+Вода
 [Grain]
-Grain
+Зернистость
 [Rain shadow]
-Rain shadow
+Дождевая тень
 [Ridges]
-Ridges
+Хребты
 [Slant]
-Slant
+Скос
 [Ridge thickness]
-Ridge thickness
+Толщина хребтов
 [Pass spacing]
-Pass spacing
+Шаг перевалов
 [Lee width]
-Lee width
+Ширина подветренной полосы
 [Old growth]
-Old growth
+Старый лес
 [Canals]
-Canals
+Каналы
 [Forest density]
-Forest density
+Густота леса
 [Hidden groves]
-Hidden groves
+Скрытые рощи
 [Starting trails]
-Starting trails
+Начальные тропы
 [Block size]
-Block size
+Размер кварталов
 [Canal width]
-Canal width
+Ширина каналов
 [Extra bridges]
-Extra bridges
+Дополнительные мосты
 [Polder]
-Polder
+Польдер
 [Old town]
-Old town
+Старый город
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Муравейник
 [Row angle]
-Row angle
-[Straight]
-Straight
+Угол рядов
 [Diagonal]
-Diagonal
+По диагонали
 [Dyke spacing]
-Dyke spacing
+Шаг дамб
 [Village size]
-Village size
+Размер деревень
 [Hamlets]
-Hamlets
+Хутора
 [City size]
-City size
+Размер города
 [Street width]
-Street width
+Ширина улиц
 [Plazas]
-Plazas
-[Gates]
-Gates
+Площади
 [Chamber spacing]
-Chamber spacing
+Шаг камер
 [Chamber size]
-Chamber size
+Размер камер
 [Queen room]
-Queen room
+Камера королевы
 [Tunnel width]
-Tunnel width
+Ширина туннелей
 [Loops]
-Loops
+Петли
 [Home pools]
-Home pools
+Пруды у базы
 [Farm plots]
-Farm plots
+Земельные наделы
 [Tendril roads]
-Tendril roads
+Дороги-усики
 [Random]
-Random
+Случайно
 [Vertical]
-Vertical
+Вертикально
 [Horizontal]
-Horizontal
+Горизонтально
 [Inland lakes]
-Inland lakes
+Внутренние озёра

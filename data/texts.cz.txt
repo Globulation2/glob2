@@ -2066,107 +2066,93 @@ Tvar buněk
 Šestiúhelníky
 [Warp]
 Deformace
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Otisk prstu
 [Wavelength]
-Wavelength
+Vlnová délka
 [Pattern]
-Pattern
+Vzor
 [Labyrinth]
-Labyrinth
+Labyrint
 [Channels]
-Channels
+Brázdy
 [Barrier]
-Barrier
+Bariéra
 [Water]
-Water
+Voda
 [Grain]
-Grain
+Zrnitost
 [Rain shadow]
-Rain shadow
+Srážkový stín
 [Ridges]
-Ridges
+Hřebeny
 [Slant]
-Slant
+Zkosení
 [Ridge thickness]
-Ridge thickness
+Tloušťka hřebenů
 [Pass spacing]
-Pass spacing
+Rozestup průsmyků
 [Lee width]
-Lee width
+Šířka závětří
 [Old growth]
-Old growth
+Prales
 [Canals]
-Canals
+Kanály
 [Forest density]
-Forest density
+Hustota lesa
 [Hidden groves]
-Hidden groves
+Skryté háje
 [Starting trails]
-Starting trails
+Počáteční stezky
 [Block size]
-Block size
+Velikost bloku
 [Canal width]
-Canal width
+Šířka kanálů
 [Extra bridges]
-Extra bridges
+Další mosty
 [Polder]
-Polder
+Poldr
 [Old town]
-Old town
+Staré město
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Mraveniště
 [Row angle]
-Row angle
-[Straight]
-Straight
+Úhel řad
 [Diagonal]
-Diagonal
+Šikmo
 [Dyke spacing]
-Dyke spacing
+Rozestup hrází
 [Village size]
-Village size
+Velikost vesnic
 [Hamlets]
-Hamlets
+Osady
 [City size]
-City size
+Velikost města
 [Street width]
-Street width
+Šířka ulic
 [Plazas]
-Plazas
-[Gates]
-Gates
+Náměstí
 [Chamber spacing]
-Chamber spacing
+Rozestup komor
 [Chamber size]
-Chamber size
+Velikost komor
 [Queen room]
-Queen room
+Královnina komora
 [Tunnel width]
-Tunnel width
+Šířka tunelů
 [Loops]
-Loops
+Smyčky
 [Home pools]
-Home pools
+Tůně u domova
 [Farm plots]
-Farm plots
+Zemědělské parcely
 [Tendril roads]
-Tendril roads
+Úponkové cesty
 [Random]
-Random
+Náhodně
 [Vertical]
-Vertical
+Svisle
 [Horizontal]
-Horizontal
+Vodorovně
 [Inland lakes]
-Inland lakes
+Vnitrozemská jezera

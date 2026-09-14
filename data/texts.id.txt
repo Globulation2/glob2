@@ -2062,107 +2062,93 @@ Persegi
 Segi enam
 [Warp]
 Distorsi
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Sidik jari
 [Wavelength]
-Wavelength
+Panjang gelombang
 [Pattern]
-Pattern
+Pola
 [Labyrinth]
-Labyrinth
+Labirin
 [Channels]
-Channels
+Alur
 [Barrier]
-Barrier
+Penghalang
 [Water]
-Water
+Air
 [Grain]
-Grain
+Butiran
 [Rain shadow]
-Rain shadow
+Bayangan hujan
 [Ridges]
-Ridges
+Punggung bukit
 [Slant]
-Slant
+Kecondongan
 [Ridge thickness]
-Ridge thickness
+Ketebalan punggung bukit
 [Pass spacing]
-Pass spacing
+Jarak celah gunung
 [Lee width]
-Lee width
+Lebar sisi teduh
 [Old growth]
-Old growth
+Hutan purba
 [Canals]
-Canals
+Kanal
 [Forest density]
-Forest density
+Kerapatan hutan
 [Hidden groves]
-Hidden groves
+Rumpun tersembunyi
 [Starting trails]
-Starting trails
+Jalan setapak awal
 [Block size]
-Block size
+Ukuran blok
 [Canal width]
-Canal width
+Lebar kanal
 [Extra bridges]
-Extra bridges
+Jembatan tambahan
 [Polder]
 Polder
 [Old town]
-Old town
+Kota tua
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Sarang semut
 [Row angle]
-Row angle
-[Straight]
-Straight
+Sudut baris
 [Diagonal]
 Diagonal
 [Dyke spacing]
-Dyke spacing
+Jarak tanggul
 [Village size]
-Village size
+Ukuran desa
 [Hamlets]
-Hamlets
+Dusun
 [City size]
-City size
+Ukuran kota
 [Street width]
-Street width
+Lebar jalan
 [Plazas]
-Plazas
-[Gates]
-Gates
+Alun-alun
 [Chamber spacing]
-Chamber spacing
+Jarak ruang
 [Chamber size]
-Chamber size
+Ukuran ruang
 [Queen room]
-Queen room
+Ruang ratu
 [Tunnel width]
-Tunnel width
+Lebar terowongan
 [Loops]
-Loops
+Jalur melingkar
 [Home pools]
-Home pools
+Kolam markas
 [Farm plots]
-Farm plots
+Petak ladang
 [Tendril roads]
-Tendril roads
+Jalan sulur
 [Random]
-Random
+Acak
 [Vertical]
-Vertical
+Tegak
 [Horizontal]
-Horizontal
+Mendatar
 [Inland lakes]
-Inland lakes
+Danau pedalaman

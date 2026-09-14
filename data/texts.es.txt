@@ -2066,107 +2066,93 @@ Cuadrados
 Hexágonos
 [Warp]
 Deformación
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Huella dactilar
 [Wavelength]
-Wavelength
+Longitud de onda
 [Pattern]
-Pattern
+Patrón
 [Labyrinth]
-Labyrinth
+Laberinto
 [Channels]
-Channels
+Surcos
 [Barrier]
-Barrier
+Barrera
 [Water]
-Water
+Agua
 [Grain]
-Grain
+Granulado
 [Rain shadow]
-Rain shadow
+Sombra pluviométrica
 [Ridges]
-Ridges
+Crestas
 [Slant]
-Slant
+Oblicuidad
 [Ridge thickness]
-Ridge thickness
+Grosor de las crestas
 [Pass spacing]
-Pass spacing
+Separación de los pasos
 [Lee width]
-Lee width
+Anchura del sotavento
 [Old growth]
-Old growth
+Bosque primario
 [Canals]
-Canals
+Canales
 [Forest density]
-Forest density
+Densidad del bosque
 [Hidden groves]
-Hidden groves
+Arboledas ocultas
 [Starting trails]
-Starting trails
+Senderos iniciales
 [Block size]
-Block size
+Tamaño de las manzanas
 [Canal width]
-Canal width
+Anchura de los canales
 [Extra bridges]
-Extra bridges
+Puentes adicionales
 [Polder]
-Polder
+Pólder
 [Old town]
-Old town
+Ciudad vieja
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Hormiguero
 [Row angle]
-Row angle
-[Straight]
-Straight
+Ángulo de las hileras
 [Diagonal]
-Diagonal
+Diagonales
 [Dyke spacing]
-Dyke spacing
+Separación de los diques
 [Village size]
-Village size
+Tamaño de los pueblos
 [Hamlets]
-Hamlets
+Aldeas
 [City size]
-City size
+Tamaño de la ciudad
 [Street width]
-Street width
+Anchura de las calles
 [Plazas]
 Plazas
-[Gates]
-Gates
 [Chamber spacing]
-Chamber spacing
+Separación de las cámaras
 [Chamber size]
-Chamber size
+Tamaño de las cámaras
 [Queen room]
-Queen room
+Cámara de la reina
 [Tunnel width]
-Tunnel width
+Anchura de los túneles
 [Loops]
-Loops
+Bucles
 [Home pools]
-Home pools
+Charcas de la base
 [Farm plots]
-Farm plots
+Parcelas de cultivo
 [Tendril roads]
-Tendril roads
+Caminos en zarcillo
 [Random]
-Random
+Aleatorio
 [Vertical]
-Vertical
+Verticales
 [Horizontal]
-Horizontal
+Horizontales
 [Inland lakes]
-Inland lakes
+Lagos interiores

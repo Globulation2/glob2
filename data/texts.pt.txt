@@ -2072,107 +2072,93 @@ Quadrados
 Hexágonos
 [Warp]
 Deformação
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Impressão digital
 [Wavelength]
-Wavelength
+Comprimento de onda
 [Pattern]
-Pattern
+Padrão
 [Labyrinth]
-Labyrinth
+Labirinto
 [Channels]
-Channels
+Sulcos
 [Barrier]
-Barrier
+Barreira
 [Water]
-Water
+Água
 [Grain]
-Grain
+Granulação
 [Rain shadow]
-Rain shadow
+Sombra de chuva
 [Ridges]
-Ridges
+Cristas
 [Slant]
-Slant
+Obliquidade
 [Ridge thickness]
-Ridge thickness
+Espessura das cristas
 [Pass spacing]
-Pass spacing
+Espaçamento das passagens
 [Lee width]
-Lee width
+Largura do sotavento
 [Old growth]
-Old growth
+Floresta primária
 [Canals]
-Canals
+Canais
 [Forest density]
-Forest density
+Densidade da floresta
 [Hidden groves]
-Hidden groves
+Bosques escondidos
 [Starting trails]
-Starting trails
+Trilhos iniciais
 [Block size]
-Block size
+Tamanho dos quarteirões
 [Canal width]
-Canal width
+Largura dos canais
 [Extra bridges]
-Extra bridges
+Pontes extra
 [Polder]
-Polder
+Pôlder
 [Old town]
-Old town
+Cidade velha
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Formigueiro
 [Row angle]
-Row angle
-[Straight]
-Straight
+Ângulo das filas
 [Diagonal]
-Diagonal
+Diagonais
 [Dyke spacing]
-Dyke spacing
+Espaçamento dos diques
 [Village size]
-Village size
+Tamanho das aldeias
 [Hamlets]
-Hamlets
+Lugarejos
 [City size]
-City size
+Tamanho da cidade
 [Street width]
-Street width
+Largura das ruas
 [Plazas]
-Plazas
-[Gates]
-Gates
+Praças
 [Chamber spacing]
-Chamber spacing
+Espaçamento das câmaras
 [Chamber size]
-Chamber size
+Tamanho das câmaras
 [Queen room]
-Queen room
+Câmara da rainha
 [Tunnel width]
-Tunnel width
+Largura dos túneis
 [Loops]
-Loops
+Circuitos
 [Home pools]
-Home pools
+Poças da base
 [Farm plots]
-Farm plots
+Parcelas agrícolas
 [Tendril roads]
-Tendril roads
+Estradas em gavinha
 [Random]
-Random
+Aleatório
 [Vertical]
-Vertical
+Verticais
 [Horizontal]
-Horizontal
+Horizontais
 [Inland lakes]
-Inland lakes
+Lagos interiores

@@ -2066,107 +2066,93 @@ Neliöt
 Kuusikulmiot
 [Warp]
 Vääristymä
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Sormenjälki
 [Wavelength]
-Wavelength
+Aallonpituus
 [Pattern]
-Pattern
+Kuvio
 [Labyrinth]
-Labyrinth
+Labyrintti
 [Channels]
-Channels
+Uurteet
 [Barrier]
-Barrier
+Este
 [Water]
-Water
+Vesi
 [Grain]
-Grain
+Rakeisuus
 [Rain shadow]
-Rain shadow
+Sadevarjo
 [Ridges]
-Ridges
+Harjanteet
 [Slant]
-Slant
+Vinous
 [Ridge thickness]
-Ridge thickness
+Harjanteiden paksuus
 [Pass spacing]
-Pass spacing
+Solien väli
 [Lee width]
-Lee width
+Suojanpuolen leveys
 [Old growth]
-Old growth
+Aarniometsä
 [Canals]
-Canals
+Kanaalit
 [Forest density]
-Forest density
+Metsän tiheys
 [Hidden groves]
-Hidden groves
+Piilotetut lehdot
 [Starting trails]
-Starting trails
+Aloituspolut
 [Block size]
-Block size
+Korttelin koko
 [Canal width]
-Canal width
+Kanaalin leveys
 [Extra bridges]
-Extra bridges
+Lisäsillat
 [Polder]
-Polder
+Polderi
 [Old town]
-Old town
+Vanha kaupunki
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Muurahaiskeko
 [Row angle]
-Row angle
-[Straight]
-Straight
+Rivien kulma
 [Diagonal]
-Diagonal
+Vinottain
 [Dyke spacing]
-Dyke spacing
+Patojen väli
 [Village size]
-Village size
+Kylän koko
 [Hamlets]
-Hamlets
+Pikkukylät
 [City size]
-City size
+Kaupungin koko
 [Street width]
-Street width
+Katujen leveys
 [Plazas]
-Plazas
-[Gates]
-Gates
+Aukiot
 [Chamber spacing]
-Chamber spacing
+Kammioiden väli
 [Chamber size]
-Chamber size
+Kammioiden koko
 [Queen room]
-Queen room
+Kuningattaren kammio
 [Tunnel width]
-Tunnel width
+Tunnelien leveys
 [Loops]
-Loops
+Silmukat
 [Home pools]
-Home pools
+Kotialueen lammikot
 [Farm plots]
-Farm plots
+Peltopalstat
 [Tendril roads]
-Tendril roads
+Rönsytiet
 [Random]
-Random
+Satunnainen
 [Vertical]
-Vertical
+Pystysuoraan
 [Horizontal]
-Horizontal
+Vaakasuoraan
 [Inland lakes]
-Inland lakes
+Sisämaan järvet

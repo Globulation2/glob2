@@ -2066,107 +2066,93 @@ Pătrate
 Hexagoane
 [Warp]
 Deformare
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Amprentă
 [Wavelength]
-Wavelength
+Lungime de undă
 [Pattern]
-Pattern
+Model
 [Labyrinth]
-Labyrinth
+Labirint
 [Channels]
-Channels
+Brazde
 [Barrier]
-Barrier
+Barieră
 [Water]
-Water
+Apă
 [Grain]
-Grain
+Granulație
 [Rain shadow]
-Rain shadow
+Umbră de ploaie
 [Ridges]
-Ridges
+Creste
 [Slant]
-Slant
+Oblicitate
 [Ridge thickness]
-Ridge thickness
+Grosimea crestelor
 [Pass spacing]
-Pass spacing
+Distanța dintre trecători
 [Lee width]
-Lee width
+Lățimea zonei adăpostite
 [Old growth]
-Old growth
+Pădure seculară
 [Canals]
-Canals
+Canale
 [Forest density]
-Forest density
+Densitatea pădurii
 [Hidden groves]
-Hidden groves
+Crânguri ascunse
 [Starting trails]
-Starting trails
+Poteci de start
 [Block size]
-Block size
+Mărimea cvartalelor
 [Canal width]
-Canal width
+Lățimea canalelor
 [Extra bridges]
-Extra bridges
+Poduri suplimentare
 [Polder]
 Polder
 [Old town]
-Old town
+Orașul vechi
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Furnicar
 [Row angle]
-Row angle
-[Straight]
-Straight
+Unghiul rândurilor
 [Diagonal]
-Diagonal
+Diagonale
 [Dyke spacing]
-Dyke spacing
+Distanța dintre diguri
 [Village size]
-Village size
+Mărimea satelor
 [Hamlets]
-Hamlets
+Cătune
 [City size]
-City size
+Mărimea orașului
 [Street width]
-Street width
+Lățimea străzilor
 [Plazas]
-Plazas
-[Gates]
-Gates
+Piețe
 [Chamber spacing]
-Chamber spacing
+Distanța dintre camere
 [Chamber size]
-Chamber size
+Mărimea camerelor
 [Queen room]
-Queen room
+Camera reginei
 [Tunnel width]
-Tunnel width
+Lățimea tunelurilor
 [Loops]
-Loops
+Bucle
 [Home pools]
-Home pools
+Iazuri la bază
 [Farm plots]
-Farm plots
+Parcele agricole
 [Tendril roads]
-Tendril roads
+Drumuri-cârcei
 [Random]
-Random
+Aleatoriu
 [Vertical]
-Vertical
+Verticale
 [Horizontal]
-Horizontal
+Orizontale
 [Inland lakes]
-Inland lakes
+Lacuri interioare

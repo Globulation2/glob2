@@ -2136,107 +2136,93 @@ Cortex
 Εξάγωνα
 [Warp]
 Παραμόρφωση
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Δακτυλικό αποτύπωμα
 [Wavelength]
-Wavelength
+Μήκος κύματος
 [Pattern]
-Pattern
+Μοτίβο
 [Labyrinth]
-Labyrinth
+Λαβύρινθος
 [Channels]
-Channels
+Αυλάκια
 [Barrier]
-Barrier
+Φράγμα
 [Water]
-Water
+Νερό
 [Grain]
-Grain
+Κοκκίωση
 [Rain shadow]
-Rain shadow
+Ομβροσκιά
 [Ridges]
-Ridges
+Κορυφογραμμές
 [Slant]
-Slant
+Λοξότητα
 [Ridge thickness]
-Ridge thickness
+Πάχος κορυφογραμμών
 [Pass spacing]
-Pass spacing
+Απόσταση διάσελων
 [Lee width]
-Lee width
+Πλάτος υπήνεμης πλευράς
 [Old growth]
-Old growth
+Πρωτογενές δάσος
 [Canals]
-Canals
+Κανάλια
 [Forest density]
-Forest density
+Πυκνότητα δάσους
 [Hidden groves]
-Hidden groves
+Κρυφά άλση
 [Starting trails]
-Starting trails
+Αρχικά μονοπάτια
 [Block size]
-Block size
+Μέγεθος οικοδομικού τετραγώνου
 [Canal width]
-Canal width
+Πλάτος καναλιών
 [Extra bridges]
-Extra bridges
+Επιπλέον γέφυρες
 [Polder]
-Polder
+Πόλντερ
 [Old town]
-Old town
+Παλιά πόλη
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Μυρμηγκοφωλιά
 [Row angle]
-Row angle
-[Straight]
-Straight
+Γωνία σειρών
 [Diagonal]
-Diagonal
+Διαγώνια
 [Dyke spacing]
-Dyke spacing
+Απόσταση αναχωμάτων
 [Village size]
-Village size
+Μέγεθος χωριών
 [Hamlets]
-Hamlets
+Οικισμοί
 [City size]
-City size
+Μέγεθος πόλης
 [Street width]
-Street width
+Πλάτος δρόμων
 [Plazas]
-Plazas
-[Gates]
-Gates
+Πλατείες
 [Chamber spacing]
-Chamber spacing
+Απόσταση θαλάμων
 [Chamber size]
-Chamber size
+Μέγεθος θαλάμων
 [Queen room]
-Queen room
+Θάλαμος βασίλισσας
 [Tunnel width]
-Tunnel width
+Πλάτος σηράγγων
 [Loops]
-Loops
+Βρόχοι
 [Home pools]
-Home pools
+Λιμνούλες βάσης
 [Farm plots]
-Farm plots
+Αγροτεμάχια
 [Tendril roads]
-Tendril roads
+Δρόμοι-έλικες
 [Random]
-Random
+Τυχαία
 [Vertical]
-Vertical
+Κάθετα
 [Horizontal]
-Horizontal
+Οριζόντια
 [Inland lakes]
-Inland lakes
+Εσωτερικές λίμνες

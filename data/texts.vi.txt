@@ -2062,107 +2062,93 @@ Hình vuông
 Lục giác
 [Warp]
 Biến dạng
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Dấu vân tay
 [Wavelength]
-Wavelength
+Bước sóng
 [Pattern]
-Pattern
+Kiểu mẫu
 [Labyrinth]
-Labyrinth
+Mê cung
 [Channels]
-Channels
+Rãnh
 [Barrier]
-Barrier
+Rào cản
 [Water]
-Water
+Nước
 [Grain]
-Grain
+Độ hạt
 [Rain shadow]
-Rain shadow
+Bóng mưa
 [Ridges]
-Ridges
+Dãy núi
 [Slant]
-Slant
+Độ xiên
 [Ridge thickness]
-Ridge thickness
+Độ dày dãy núi
 [Pass spacing]
-Pass spacing
+Khoảng cách đèo
 [Lee width]
-Lee width
+Độ rộng khuất gió
 [Old growth]
-Old growth
+Rừng già
 [Canals]
-Canals
+Kênh đào
 [Forest density]
-Forest density
+Mật độ rừng
 [Hidden groves]
-Hidden groves
+Lùm cây ẩn
 [Starting trails]
-Starting trails
+Lối mòn ban đầu
 [Block size]
-Block size
+Kích thước khu phố
 [Canal width]
-Canal width
+Độ rộng kênh
 [Extra bridges]
-Extra bridges
+Cầu bổ sung
 [Polder]
-Polder
+Đất lấn biển
 [Old town]
-Old town
+Phố cổ
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Tổ kiến
 [Row angle]
-Row angle
-[Straight]
-Straight
+Góc hàng
 [Diagonal]
-Diagonal
+Chéo
 [Dyke spacing]
-Dyke spacing
+Khoảng cách đê
 [Village size]
-Village size
+Kích thước làng
 [Hamlets]
-Hamlets
+Xóm
 [City size]
-City size
+Kích thước thành phố
 [Street width]
-Street width
+Độ rộng đường phố
 [Plazas]
-Plazas
-[Gates]
-Gates
+Quảng trường
 [Chamber spacing]
-Chamber spacing
+Khoảng cách khoang
 [Chamber size]
-Chamber size
+Kích thước khoang
 [Queen room]
-Queen room
+Phòng kiến chúa
 [Tunnel width]
-Tunnel width
+Độ rộng đường hầm
 [Loops]
-Loops
+Vòng lặp
 [Home pools]
-Home pools
+Ao căn cứ
 [Farm plots]
-Farm plots
+Lô đất canh tác
 [Tendril roads]
-Tendril roads
+Đường dây leo
 [Random]
-Random
+Ngẫu nhiên
 [Vertical]
-Vertical
+Dọc
 [Horizontal]
-Horizontal
+Ngang
 [Inland lakes]
-Inland lakes
+Hồ nội địa

@@ -2076,107 +2076,93 @@ Karratuak
 Hexagonoak
 [Warp]
 Deformazioa
-[Marches]
-Marches
-[The homes are too small; use a bigger home size.]
-The homes are too small; use a bigger home size.
-[March width]
-March width
-[Orchards]
-Orchards
 [Fingerprint]
-Fingerprint
+Hatz-marka
 [Wavelength]
-Wavelength
+Uhin-luzera
 [Pattern]
-Pattern
+Eredua
 [Labyrinth]
-Labyrinth
+Labirintoa
 [Channels]
-Channels
+Ildoak
 [Barrier]
-Barrier
+Hesia
 [Water]
-Water
+Ura
 [Grain]
-Grain
+Pikortadura
 [Rain shadow]
-Rain shadow
+Euri-itzala
 [Ridges]
-Ridges
+Gailurrak
 [Slant]
-Slant
+Zeihartasuna
 [Ridge thickness]
-Ridge thickness
+Gailurren lodiera
 [Pass spacing]
-Pass spacing
+Mendateen arteko tartea
 [Lee width]
-Lee width
+Haizebearen zabalera
 [Old growth]
-Old growth
+Oihan zaharra
 [Canals]
-Canals
+Kanalak
 [Forest density]
-Forest density
+Basoaren dentsitatea
 [Hidden groves]
-Hidden groves
+Baso txiki ezkutuak
 [Starting trails]
-Starting trails
+Hasierako bideak
 [Block size]
-Block size
+Etxadien tamaina
 [Canal width]
-Canal width
+Kanalen zabalera
 [Extra bridges]
-Extra bridges
+Zubi gehigarriak
 [Polder]
-Polder
+Polderra
 [Old town]
-Old town
+Hiri zaharra
 [Anthill]
-Anthill
-[Patchwork]
-Patchwork
+Inurritegia
 [Row angle]
-Row angle
-[Straight]
-Straight
+Ilaren angelua
 [Diagonal]
-Diagonal
+Diagonala
 [Dyke spacing]
-Dyke spacing
+Dikeen arteko tartea
 [Village size]
-Village size
+Herrixken tamaina
 [Hamlets]
-Hamlets
+Auzoak
 [City size]
-City size
+Hiriaren tamaina
 [Street width]
-Street width
+Kaleen zabalera
 [Plazas]
-Plazas
-[Gates]
-Gates
+Plazak
 [Chamber spacing]
-Chamber spacing
+Ganberen arteko tartea
 [Chamber size]
-Chamber size
+Ganberen tamaina
 [Queen room]
-Queen room
+Erreginaren ganbera
 [Tunnel width]
-Tunnel width
+Tunelen zabalera
 [Loops]
-Loops
+Begiztak
 [Home pools]
-Home pools
+Etxeko putzuak
 [Farm plots]
-Farm plots
+Soro-lursailak
 [Tendril roads]
-Tendril roads
+Kiribil-bideak
 [Random]
-Random
+Ausazkoa
 [Vertical]
-Vertical
+Bertikala
 [Horizontal]
-Horizontal
+Horizontala
 [Inland lakes]
-Inland lakes
+Barnealdeko aintzirak
