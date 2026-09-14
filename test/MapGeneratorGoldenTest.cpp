@@ -1,18 +1,21 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Golden maps and a colony-count sweep for every registered generator.
 //
-//   MapGeneratorGoldenTest <profile-dir>              check this platform's rows of the table
-//   MapGeneratorGoldenTest <profile-dir> --update     regenerate this platform's rows
-//   MapGeneratorGoldenTest <profile-dir> --print      print this platform's rows to stdout
-//   MapGeneratorGoldenTest <profile-dir> --sweep      every playable landscape at the colony
-//                                                    counts and sizes the lobby offers
+//   MapGeneratorGoldenTest <profile-dir>                check this platform's rows of the table
+//   MapGeneratorGoldenTest <profile-dir> --require-rows the same, failing when this platform
+//                                                      has no rows at all (what CI runs)
+//   MapGeneratorGoldenTest <profile-dir> --update       regenerate this platform's rows
+//   MapGeneratorGoldenTest <profile-dir> --print        print this platform's rows to stdout
+//   MapGeneratorGoldenTest <profile-dir> --sweep        every playable landscape at the colony
+//                                                      counts and sizes the lobby offers
 //
 // The table (test/map-generator-golden.txt) records, per platform, the fingerprint of the map
 // each generator produces for a few seeds, sizes and colony counts, keyed by the generator's
 // revision. A generator whose output changes without its revision moving fails the check; a
 // revision bump makes --update accept the new maps. Generation is deterministic per platform,
-// not across platforms, so rows carry the platform they were made on and a platform without
-// rows is reported, not failed.
+// not across platforms, so rows carry the platform they were made on. A platform without rows
+// is reported and passes by default, so a new machine can run the check before its rows exist;
+// CI passes --require-rows so that the platforms it runs on cannot pass vacuously.
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GenerationService.h"
@@ -158,7 +161,7 @@ std::vector<Row> goldenRows()
 	return rows;
 }
 
-int check(const std::string &path)
+int check(const std::string &path, bool requireRows)
 {
 	const auto table = readTable(path);
 	const auto platform = platformTag();
@@ -191,9 +194,10 @@ int check(const std::string &path)
 	if (expected.empty())
 	{
 		std::printf("No golden rows for %s; nothing to compare. Run --update on this platform"
-					" and commit its rows.\n",
-					platform.c_str());
-		return failures ? 1 : 0;
+					" and commit its rows%s.\n",
+					platform.c_str(),
+					requireRows ? " (--require-rows: this counts as a failure)" : "");
+		return failures || requireRows ? 1 : 0;
 	}
 	int compared = 0;
 	for (const auto &[key, row] : expected)
@@ -343,7 +347,8 @@ int main(int argc, char **argv)
 {
 	if (argc < 2)
 	{
-		std::fprintf(stderr, "usage: %s <profile-dir> [--update [--force]|--print|--sweep]\n",
+		std::fprintf(stderr,
+					 "usage: %s <profile-dir> [--require-rows|--update [--force]|--print|--sweep]\n",
 					 argv[0]);
 		return 2;
 	}
@@ -361,5 +366,5 @@ int main(int argc, char **argv)
 		return update(kTablePath, false, force);
 	if (mode == "--print")
 		return update(kTablePath, true, false);
-	return check(kTablePath);
+	return check(kTablePath, mode == "--require-rows");
 }

@@ -109,10 +109,11 @@ jobs:
         run: |
           scons -j$(nproc) release=1 server=0 custom-setup-test map-generator-defaults-test map-generator-golden-test
           timeout 60s ./build/src/MapGeneratorDefaultsTest glob2-map-defaults-ci
-          # Golden maps: rows exist per platform; a platform without rows reports and passes,
-          # and --print shows the rows it would record so they can be committed from the log.
-          timeout 300s ./build/src/MapGeneratorGoldenTest glob2-golden-ci
+          # Golden maps: rows exist per platform. --print first, so the rows this platform would
+          # record are in the log even when the check that follows fails and can be committed
+          # from there.
           timeout 300s ./build/src/MapGeneratorGoldenTest glob2-golden-ci --print
+          timeout 300s ./build/src/MapGeneratorGoldenTest glob2-golden-ci
           timeout 600s ./build/src/MapGeneratorGoldenTest glob2-golden-ci --sweep
           timeout 180s ./build/src/CustomGameSetupHarness
           mkdir -p artifacts/custom-game-ci
