@@ -2314,3 +2314,17 @@ Giao chiến
 Công trình kiên cố
 [Veteran/Fast start]
 Cựu binh/Khởi đầu nhanh
+[Match ends at the timer; highest prestige at that instant wins.]
+Trận đấu kết thúc khi hết giờ; ai có uy danh cao nhất vào thời điểm đó sẽ thắng.
+[Off (no timer)]
+Tắt (không có bộ đếm giờ)
+[90 minutes]
+90 phút
+[30 minutes]
+30 phút
+[45 minutes]
+45 phút
+[60 minutes]
+60 phút
+[Sudden-death timer]
+Bộ đếm giờ đột tử

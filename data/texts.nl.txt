@@ -2342,3 +2342,17 @@ Glazen kanon
 Versterkte gebouwen
 [Veteran/Fast start]
 Veteraan/Snelle start
+[Match ends at the timer; highest prestige at that instant wins.]
+De partij eindigt bij de timer; wie op dat moment de meeste roem heeft, wint.
+[Off (no timer)]
+Uit (geen timer)
+[90 minutes]
+90 minuten
+[30 minutes]
+30 minuten
+[45 minutes]
+45 minuten
+[60 minutes]
+60 minuten
+[Sudden-death timer]
+Sudden-death-timer

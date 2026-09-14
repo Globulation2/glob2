@@ -2316,3 +2316,17 @@ Glass cannon
 Fortress buildings
 [Veteran/Fast start]
 Veteran/Fast start
+[Match ends at the timer; highest prestige at that instant wins.]
+Match ends at the timer; highest prestige at that instant wins.
+[Off (no timer)]
+Off (no timer)
+[90 minutes]
+90 minutes
+[30 minutes]
+30 minutes
+[45 minutes]
+45 minutes
+[60 minutes]
+60 minutes
+[Sudden-death timer]
+Sudden-death timer

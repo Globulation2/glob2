@@ -1063,6 +1063,8 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 				setup.peacefulMode = value;
 			if (index == 15)
 				setup.buildingHpLevel = value;
+			if (index == 17)
+				setup.suddenDeathMinutes = value;
 			setup.ruleset = "Custom";
 		};
 		std::string help;
@@ -1168,7 +1170,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 			help = tr(index == 11 ? "Higher tiers deal more damage but have less HP and armor."
 								  : "Higher tiers give every building much more HP.");
 		}
-		else
+		else if (index == 16)
 		{
 			if (setup.random)
 			{
@@ -1188,6 +1190,18 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 			help = tr(setup.random ? "Starting units spawn already leveled up. Changes the "
 									 "generated map."
 								   : "Premade maps retain their authored starting units.");
+		}
+		else
+		{
+			std::vector<std::string> options =
+				localized({"Off (no timer)", "30 minutes", "45 minutes", "60 minutes", "90 minutes"});
+			const auto &minutes = CustomGameSetup::suddenDeathMinuteChoices;
+			const int current = int(std::find(minutes.begin(), minutes.end(), setup.suddenDeathMinutes) -
+									minutes.begin());
+			ui.dropdown("rule/suddenDeath", {fieldX, yy + 5, fieldW, 29}, options,
+						current < int(minutes.size()) ? current : 0,
+						[apply, minutes](int v) { apply(minutes[v]); });
+			help = tr("Match ends at the timer; highest prestige at that instant wins.");
 		}
 		ui.text(x + 10, yy + 39, help, "little", w - 40, true);
 		yy += 65;

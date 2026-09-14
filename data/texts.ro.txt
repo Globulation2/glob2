@@ -2318,3 +2318,17 @@ Tun de sticlă
 Clădiri fortificate
 [Veteran/Fast start]
 Veteran/Start rapid
+[Match ends at the timer; highest prestige at that instant wins.]
+Meciul se încheie la temporizator; câștigă cel cu cel mai mare prestigiu în acel moment.
+[Off (no timer)]
+Dezactivat (fără temporizator)
+[90 minutes]
+90 minute
+[30 minutes]
+30 minute
+[45 minutes]
+45 minute
+[60 minutes]
+60 minute
+[Sudden-death timer]
+Temporizator de moarte subită

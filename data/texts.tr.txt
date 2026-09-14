@@ -2326,3 +2326,17 @@ Cam top
 Tahkim edilmiş binalar
 [Veteran/Fast start]
 Veteran/Hızlı başlangıç
+[Match ends at the timer; highest prestige at that instant wins.]
+Maç zamanlayıcıyla sona erer; o anda en yüksek prestije sahip olan kazanır.
+[Off (no timer)]
+Kapalı (zamanlayıcı yok)
+[90 minutes]
+90 dakika
+[30 minutes]
+30 dakika
+[45 minutes]
+45 dakika
+[60 minutes]
+60 dakika
+[Sudden-death timer]
+Ani ölüm zamanlayıcısı

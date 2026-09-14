@@ -2328,3 +2328,17 @@ Canon de verre
 Bâtiments fortifiés
 [Veteran/Fast start]
 Vétéran/Départ rapide
+[Match ends at the timer; highest prestige at that instant wins.]
+La partie se termine au chronomètre ; celui qui a le plus de prestige à cet instant gagne.
+[Off (no timer)]
+Désactivé (pas de chronomètre)
+[90 minutes]
+90 minutes
+[30 minutes]
+30 minutes
+[45 minutes]
+45 minutes
+[60 minutes]
+60 minutes
+[Sudden-death timer]
+Chronomètre de mort subite

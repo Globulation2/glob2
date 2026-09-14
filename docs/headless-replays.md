@@ -52,6 +52,7 @@ Turns custom-game rules on for `-test-games` and `-test-games-nox` matches, as c
 | `noPermadeath` | 0-1 | No permadeath |
 | `peaceful` | 0-1 | Peaceful mode |
 | `fortress` | 0-2 | Fortress buildings (x5, x10 building HP) |
+| `suddenDeathTick` | 0-100000000 | Sudden-death timer at this tick (0 = off; the lobby offers 30-90 minutes, 45,000-135,000 ticks) |
 
 ```bash
 GLOB2_TEST_RULES=scarcity=2,instantConstruction=1 ./glob2 -test-games-nox 1 --map Playground --matchup castor,warrush

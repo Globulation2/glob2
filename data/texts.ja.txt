@@ -2314,3 +2314,17 @@ Globulation 2 のカーソルを表示します。
 要塞化された建物
 [Veteran/Fast start]
 ベテラン/早期スタート
+[Match ends at the timer; highest prestige at that instant wins.]
+試合はタイマーで終了し、その瞬間に名声が最も高いプレイヤーが勝利する。
+[Off (no timer)]
+オフ（タイマーなし）
+[90 minutes]
+90分
+[30 minutes]
+30分
+[45 minutes]
+45分
+[60 minutes]
+60分
+[Sudden-death timer]
+サドンデスタイマー

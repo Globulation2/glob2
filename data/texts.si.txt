@@ -2318,3 +2318,17 @@ Stekleni top
 Utrjene zgradbe
 [Veteran/Fast start]
 Veteran/Hiter začetek
+[Match ends at the timer; highest prestige at that instant wins.]
+Tekma se konča z odštevalnikom; zmaga tisti, ki ima v tistem trenutku največ ugleda.
+[Off (no timer)]
+Izklopljeno (brez odštevalnika)
+[90 minutes]
+90 minut
+[30 minutes]
+30 minut
+[45 minutes]
+45 minut
+[60 minutes]
+60 minut
+[Sudden-death timer]
+Odštevalnik nenadne smrti

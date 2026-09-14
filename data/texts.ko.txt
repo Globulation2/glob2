@@ -2314,3 +2314,17 @@ Globulation 2 커서를 표시합니다.
 요새화된 건물
 [Veteran/Fast start]
 베테랑/빠른 시작
+[Match ends at the timer; highest prestige at that instant wins.]
+경기는 타이머가 끝나면 종료되며, 그 순간 명성이 가장 높은 쪽이 승리합니다.
+[Off (no timer)]
+꺼짐 (타이머 없음)
+[90 minutes]
+90분
+[30 minutes]
+30분
+[45 minutes]
+45분
+[60 minutes]
+60분
+[Sudden-death timer]
+서든데스 타이머

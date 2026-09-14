@@ -2388,3 +2388,17 @@ Cortex
 Οχυρωμένα κτίρια
 [Veteran/Fast start]
 Βετεράνος/Γρήγορο ξεκίνημα
+[Match ends at the timer; highest prestige at that instant wins.]
+Ο αγώνας τελειώνει με το χρονόμετρο· όποιος έχει το μεγαλύτερο κύρος εκείνη τη στιγμή κερδίζει.
+[Off (no timer)]
+Ανενεργό (χωρίς χρονόμετρο)
+[90 minutes]
+90 λεπτά
+[30 minutes]
+30 λεπτά
+[45 minutes]
+45 λεπτά
+[60 minutes]
+60 λεπτά
+[Sudden-death timer]
+Χρονόμετρο ξαφνικού θανάτου

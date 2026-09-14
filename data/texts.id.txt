@@ -2314,3 +2314,17 @@ Meriam kaca
 Bangunan berbenteng
 [Veteran/Fast start]
 Veteran/Awal cepat
+[Match ends at the timer; highest prestige at that instant wins.]
+Pertandingan berakhir saat waktu habis; yang memiliki prestise tertinggi saat itu menang.
+[Off (no timer)]
+Nonaktif (tanpa pengatur waktu)
+[90 minutes]
+90 menit
+[30 minutes]
+30 menit
+[45 minutes]
+45 menit
+[60 minutes]
+60 menit
+[Sudden-death timer]
+Pengatur waktu kematian mendadak

@@ -2318,3 +2318,17 @@ OpenGL није доступан у овој верзији.
 Утврђене зграде
 [Veteran/Fast start]
 Ветеран/Брзи почетак
+[Match ends at the timer; highest prestige at that instant wins.]
+Меч се завршава истеком тајмера; побеђује онај ко у том тренутку има највећи престиж.
+[Off (no timer)]
+Искључено (без тајмера)
+[90 minutes]
+90 минута
+[30 minutes]
+30 минута
+[45 minutes]
+45 минута
+[60 minutes]
+60 минута
+[Sudden-death timer]
+Тајмер изненадне смрти

@@ -2318,3 +2318,17 @@ Glaskanone
 Befestigte Gebäude
 [Veteran/Fast start]
 Veteran/Schnellstart
+[Match ends at the timer; highest prestige at that instant wins.]
+Das Spiel endet mit dem Timer; wer zu diesem Zeitpunkt das höchste Prestige hat, gewinnt.
+[Off (no timer)]
+Aus (kein Timer)
+[90 minutes]
+90 Minuten
+[30 minutes]
+30 Minuten
+[45 minutes]
+45 Minuten
+[60 minutes]
+60 Minuten
+[Sudden-death timer]
+Sudden-Death-Timer

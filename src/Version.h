@@ -6,7 +6,7 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 103
+#define VERSION_MINOR 104
 // version 101 persists resolved per-player runtime AI configuration in all header forms
 //             and Cortex queued orders, settle clocks and policy debounce for continuation.
 // version 91 saves the live RNG and routing state for deterministic continuation.
@@ -126,12 +126,14 @@
 //             instant construction, stockpile start and no hunger
 // version 103 adds the custom-game combat rules: no upgrades, glass cannon, fearless,
 //             no permadeath, peaceful mode and fortress buildings
+// version 104 adds the custom-game sudden-death timer win condition (a new winning-condition
+//             type in the existing list; no new GameHeader field)
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
-#define NET_PROTOCOL_VERSION 32
+#define NET_PROTOCOL_VERSION 33
 //Clients with older versions than this will be rejected
-#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 32
+#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 33
 // version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag
 // version 22 added ConfigCheckSum to check if all use has the same file config.
 // version 23 updated to allow custom prestige settings
@@ -144,4 +146,5 @@
 // version 30 GameHeader carries resolved per-player runtime AI configuration
 // version 31 GameHeader carries the custom-game economy rules; older clients would misread it
 // version 32 GameHeader carries the custom-game combat rules; older clients would misread it
+// version 33 GameHeader can carry the sudden-death winning condition, which older clients can't decode
 

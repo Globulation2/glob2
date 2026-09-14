@@ -197,6 +197,11 @@ namespace
 			{"noPermadeath", 1, [](GameHeader& h, int v) { h.setPermadeathDisabled(v); }},
 			{"peaceful", 1, [](GameHeader& h, int v) { h.setPeacefulModeEnabled(v); }},
 			{"fortress", 2, [](GameHeader& h, int v) { h.setBuildingHpLevel(v); }},
+			{"suddenDeathTick", 100000000, [](GameHeader& h, int v)
+				{
+					WinningCondition::setSuddenDeathWinCondition(h.getWinningConditions(),
+						v ? std::optional<Uint32>(v) : std::nullopt);
+				}},
 		};
 		std::stringstream list(environment);
 		std::string item;
