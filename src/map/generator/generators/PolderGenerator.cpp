@@ -215,12 +215,12 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const int plots = (teams * kPlotsPerTwoColonies + 1) / 2;
 	for (int p = 0; p < plots; ++p)
 	{
-		const std::vector<std::int64_t> far = distanceSquaredTo(t, keepClear);
+		const std::vector<std::int64_t> clearance = distanceSquaredTo(t, keepClear);
 		int site = -1;
 		for (int i = 0; i < n; ++i)
-			if (!keepClear[i] && (site < 0 || far[i] > far[site]))
+			if (!keepClear[i] && (site < 0 || clearance[i] > clearance[site]))
 				site = i;
-		if (site < 0 || far[site] < std::int64_t(kPlotMargin) * kPlotMargin)
+		if (site < 0 || clearance[site] < std::int64_t(kPlotMargin) * kPlotMargin)
 			break;
 		const int x0 = site % t.w - plot.width / 2, y0 = site / t.w - plot.height / 2;
 		stampFarmPlot(L.sketch, t, L.farm, x0, y0, plot);

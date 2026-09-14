@@ -181,10 +181,10 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	std::vector<int> queued(n, 0);
 	for (int lake = 0; lake < lakes; ++lake)
 	{
-		const std::vector<std::int64_t> far = distanceSquaredTo(t, keepClear);
+		const std::vector<std::int64_t> clearance = distanceSquaredTo(t, keepClear);
 		int seed = -1;
 		for (int i = 0; i < n; ++i)
-			if (!keepClear[i] && (seed < 0 || far[i] > far[seed]))
+			if (!keepClear[i] && (seed < 0 || clearance[i] > clearance[seed]))
 				seed = i;
 		if (seed < 0)
 			break;

@@ -168,12 +168,12 @@ inline void growthChecks()
 	layBeaches(sketch, t);
 	Fertility::Field field = cropGrowthField(sketch, t);
 	assert(field.at(26, 31) > 0 && field.at(0, 0) == 0);
-	std::vector<unsigned char> far(t.size(), 0), near(t.size(), 0);
-	far[t.at(0, 0)] = far[t.at(63, 63)] = 1;
-	near[t.at(25, 31)] = 1;
-	assert(wetTiles(field, far) == 0 && wetTiles(field, near) == 1);
-	assert(wateredShare(field, near) == 1.0 && wateredShare(field, far) == 0.0);
-	assert(dryZone(t, near)[t.at(40, 31)] && !dryZone(t, near)[t.at(41, 31)]);
+	std::vector<unsigned char> distant(t.size(), 0), nearby(t.size(), 0);
+	distant[t.at(0, 0)] = distant[t.at(63, 63)] = 1;
+	nearby[t.at(25, 31)] = 1;
+	assert(wetTiles(field, distant) == 0 && wetTiles(field, nearby) == 1);
+	assert(wateredShare(field, nearby) == 1.0 && wateredShare(field, distant) == 0.0);
+	assert(dryZone(t, nearby)[t.at(40, 31)] && !dryZone(t, nearby)[t.at(41, 31)]);
 	std::vector<unsigned char> region(t.size(), 0);
 	region[t.at(24, 31)] = 1;
 	TerrainSketch drained(t.size(), GRASS);
@@ -403,11 +403,11 @@ inline void channelChecks()
 	for (int x = 20; x < 26; ++x)
 		bridge[t.at(x, 4)] = 1;
 	// The wrap joins the banks round the far side too, so only the bridge's own row is checked.
-	std::vector<unsigned char> near(t.size(), 0);
+	std::vector<unsigned char> nearby(t.size(), 0);
 	for (int y = 0; y < t.h; ++y)
 		for (int x = 16; x < 30; ++x)
-			near[t.at(x, y)] = open[t.at(x, y)];
-	assert(stepsFrom(t, tileMask(t, {t.at(17, 4)}), near)[t.at(28, 4)] > 0);
+			nearby[t.at(x, y)] = open[t.at(x, y)];
+	assert(stepsFrom(t, tileMask(t, {t.at(17, 4)}), nearby)[t.at(28, 4)] > 0);
 	std::vector<int> sides(t.size(), -1);
 	for (int y = 0; y < t.h; ++y)
 		for (int x = 0; x < t.w; ++x)

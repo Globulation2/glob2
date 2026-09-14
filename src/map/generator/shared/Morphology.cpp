@@ -208,9 +208,9 @@ std::vector<int> clearance(const Torus &t, const std::vector<unsigned char> &mas
 	for (size_t i = 0; i < mask.size(); ++i)
 		outside[i] = !mask[i];
 	std::vector<int> steps = stepsFrom(t, outside);
-	const int far = std::max(t.w, t.h) / 2;
+	const int farthest = std::max(t.w, t.h) / 2;
 	for (size_t i = 0; i < mask.size(); ++i)
-		steps[i] = !mask[i] ? 0 : steps[i] < 0 ? far : steps[i];
+		steps[i] = !mask[i] ? 0 : steps[i] < 0 ? farthest : steps[i];
 	return steps;
 }
 

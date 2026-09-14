@@ -304,10 +304,10 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		keepClear[i] = !L.farmRegion[i];
 	for (int p = 0; p < o.farmPlots * teams; ++p)
 	{
-		const std::vector<std::int64_t> far = distanceSquaredTo(t, keepClear);
+		const std::vector<std::int64_t> clearance = distanceSquaredTo(t, keepClear);
 		int site = -1;
 		for (int i = 0; i < n; ++i)
-			if (roomy[i] && (site < 0 || far[i] > far[site]))
+			if (roomy[i] && (site < 0 || clearance[i] > clearance[site]))
 				site = i;
 		if (site < 0)
 			break;

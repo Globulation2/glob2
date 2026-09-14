@@ -176,12 +176,12 @@ inline void plantingChecks()
 		}
 	assert(reached.size() == 12);
 	const auto clear = [&](int i) { return clearGround(map, i % t.w, i / t.w); };
-	const int near = seedNear(t, 20, 20, 6, clear);
-	assert(near >= 0 && clear(near));
+	const int nearby = seedNear(t, 20, 20, 6, clear);
+	assert(nearby >= 0 && clear(nearby));
 	for (int dy = -6; dy <= 6; ++dy)
 		for (int dx = -6; dx <= 6; ++dx)
 			if (clear(t.at(20 + dx, 20 + dy)))
-				assert(dx * dx + dy * dy >= t.dist2(20, 20, near % t.w, near / t.w));
+				assert(dx * dx + dy * dy >= t.dist2(20, 20, nearby % t.w, nearby / t.w));
 	assert(seedNear(t, 20, 20, 2, [](int) { return false; }) == -1);
 	// Only eligible tiles are planted, and the count stops where eligibility does: a 2 by 4 box.
 	const auto box = [&](int i)
@@ -746,8 +746,8 @@ inline void stretchChecks()
 	assert(same.x == 10.1 && same.y == 3.7);
 	const Stretch wide = Stretch::toFill(64, 16);
 	assert(wide.sx == 4 && wide.sy == 1 && wide.longest() == 4);
-	const ShapePoint far = wide.apply(32, 8, {40, 8});
-	assert(far.x == 64 && far.y == 8);
+	const ShapePoint distant = wide.apply(32, 8, {40, 8});
+	assert(distant.x == 64 && distant.y == 8);
 	assert(std::abs(wide.heading(kPi / 4) - std::atan2(1.0, 4.0)) < 1e-12);
 
 	const Torus t(64, 16);
@@ -1078,14 +1078,14 @@ inline void arenaChecks()
 			edge[t.at(x, y)] = 0;
 	const std::vector<int> stripRoom = stepsFrom(t, edge);
 	assert(growFarLake(t, lake, stripDepth, stripRoom, 3, 60, [](int) { return 0.0; }, queued, 1) == 60);
-	int far = 0, near = 0;
+	int distant = 0, nearby = 0;
 	for (int i = 0; i < t.size(); ++i)
 		if (lake[i])
 		{
 			assert(stripRoom[i] >= 3);
-			(i % t.w > 30 ? far : near)++;
+			(i % t.w > 30 ? distant : nearby)++;
 		}
-	assert(far == 60 && near == 0);
+	assert(distant == 60 && nearby == 0);
 	assert(growFarLake(t, lake, stripDepth, stripRoom, 12, 60, [](int) { return 0.0; }, queued, 2) == 0);
 
 	std::vector<int> jagged(t.size(), 0);
@@ -1499,8 +1499,8 @@ inline void farmAndTowerChecks()
 		std::vector<unsigned char> gap(sea.size(), 0);
 		for (int i = 0; i < sea.size(); ++i)
 			gap[i] = halves[i] < 0;
-		std::vector<int> near = halves;
-		assert(fillToNearest(sea, near, gap, 1)[sea.at(30, 5)] && near[sea.at(30, 5)] == 0 && near[sea.at(31, 5)] == -1);
+		std::vector<int> nearby = halves;
+		assert(fillToNearest(sea, nearby, gap, 1)[sea.at(30, 5)] && nearby[sea.at(30, 5)] == 0 && nearby[sea.at(31, 5)] == -1);
 		const std::vector<unsigned char> filled = fillToNearest(sea, halves, gap, 4);
 		assert(filled[sea.at(31, 5)] && halves[sea.at(31, 5)] == 0 && halves[sea.at(32, 5)] == 1);
 		for (int i = 0; i < sea.size(); ++i)

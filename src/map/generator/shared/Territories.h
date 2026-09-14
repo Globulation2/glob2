@@ -407,13 +407,14 @@ int growFarLake(const Torus &t, std::vector<unsigned char> &water, const std::ve
 			seed = i;
 	if (seed < 0)
 		return 0;
-	const int far = depth[seed];
+	// Not `far`: like `near`, a legacy macro in Windows' windef.h that expands to nothing.
+	const int farthest = depth[seed];
 	return growWater(
 		t, water, seed, target, [&](int i) { return roomy[i] != 0; },
 		[&](int i)
 		{
 			const double d = std::sqrt(double(t.dist2(seed % t.w, seed / t.w, i % t.w, i / t.w)));
-			return std::int64_t(d * 1000) + (far - depth[i]) * 250LL +
+			return std::int64_t(d * 1000) + (farthest - depth[i]) * 250LL +
 				   std::int64_t(noiseAt(i) * 2500);
 		},
 		queued, stamp);
