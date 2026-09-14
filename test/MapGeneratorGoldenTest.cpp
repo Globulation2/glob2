@@ -8,6 +8,8 @@
 //   MapGeneratorGoldenTest <profile-dir> --print        print this platform's rows to stdout
 //   MapGeneratorGoldenTest <profile-dir> --sweep        every playable landscape at the colony
 //                                                      counts and sizes the lobby offers
+//   MapGeneratorGoldenTest <profile-dir> --sweep K/N    only every Nth landscape from the Kth,
+//                                                      so N processes can share the sweep
 //
 // The table (test/map-generator-golden.txt) records, per platform, the fingerprint of the map
 // each generator produces for a few seeds, sizes and colony counts, keyed by the generator's
@@ -292,7 +294,7 @@ int update(const std::string &path, bool toStdout, bool force)
 // least one of five seeds; the small and large sizes are checked at the counts a player is
 // likely to ask for. The per-cell rates are printed so a landscape that only just scrapes by
 // is visible before it starts failing.
-int sweep()
+int sweep(int shard, int shards)
 {
 	struct Cell
 	{
@@ -305,8 +307,12 @@ int sweep()
 		{8, 6, five}, {8, 8, five}, {8, 12, five}, {9, 4, three}, {9, 12, three},
 	};
 	int failures = 0;
-	for (int id : GeneratorRegistry::builtins().methods(false))
+	const auto methods = GeneratorRegistry::builtins().methods(false);
+	for (std::size_t index = 0; index < methods.size(); ++index)
 	{
+		if (int(index % shards) != shard)
+			continue;
+		const int id = methods[index];
 		const auto &definition = GeneratorRegistry::builtins().at(id);
 		std::string line;
 		for (const auto &cell : cells)
@@ -347,9 +353,10 @@ int main(int argc, char **argv)
 {
 	if (argc < 2)
 	{
-		std::fprintf(stderr,
-					 "usage: %s <profile-dir> [--require-rows|--update [--force]|--print|--sweep]\n",
-					 argv[0]);
+		std::fprintf(
+			stderr,
+			"usage: %s <profile-dir> [--require-rows|--update [--force]|--print|--sweep [K/N]]\n",
+			argv[0]);
 		return 2;
 	}
 	SDL_SetMainReady();
@@ -361,7 +368,16 @@ int main(int argc, char **argv)
 	std::string mode = argc > 2 ? argv[2] : "";
 	const bool force = argc > 3 && std::strcmp(argv[3], "--force") == 0;
 	if (mode == "--sweep")
-		return sweep();
+	{
+		int shard = 0, shards = 1;
+		if (argc > 3 && (std::sscanf(argv[3], "%d/%d", &shard, &shards) != 2 || shards < 1 ||
+						 shard < 0 || shard >= shards))
+		{
+			std::fprintf(stderr, "--sweep takes K/N with 0 <= K < N, not %s\n", argv[3]);
+			return 2;
+		}
+		return sweep(shard, shards);
+	}
 	if (mode == "--update")
 		return update(kTablePath, false, force);
 	if (mode == "--print")

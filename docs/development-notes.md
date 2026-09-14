@@ -36,7 +36,11 @@ scons -C test                 # rebuild the separate test suite
   `compile_commands.json`; do not add `CCACHE_SLOPPINESS` settings that weaken
   content or time-macro validation (`include_file_mtime`, `include_file_ctime`,
   `time_macros`). `scons/ccache.py` is used by both build entry points; the environment
-  opt-in is not persisted in `options_cache.py`.
+  opt-in is not persisted in `options_cache.py`. CI keeps one cache per job and, before
+  master saves it, drops every entry that run did not use, so the saved cache is the
+  working set rather than an accumulation bounded only by `CCACHE_MAXSIZE`.
+- `release=1` outside macOS strips binaries (`-s`), so it also drops `-g`: debug
+  information there only slowed compilation and multiplied object and cache sizes.
 - Keep harness runs out of personal profiles: use the existing disposable-profile
   runners and retain fixtures, seeds, logs and checksums needed to reproduce a result.
 
@@ -105,7 +109,12 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   do identical work. Use a fixed count of ticks, steps or comparisons instead.
 - A new regression harness only protects the codebase once
   `.github/workflows/build.yml` actually builds and runs it; one that only runs by
-  hand, once, is not a regression test.
+  hand, once, is not a regression test. Add its SCons alias to the job's single
+  "Build glob2 and the regression harnesses" command and give it a step that only runs
+  it: a separate `scons` call per step re-reads the whole build and compiles one file at
+  a time. Builds that need other options (`server=1`, `opengl=0`, `test/`) belong in
+  the `linux variants` job, and long CPU-bound checks in a job of their own, as the
+  golden-map sweep does; jobs run in parallel.
 - A map generator's `revision` is enforced by `MapGeneratorGoldenTest`: a seed's map changing
   while the revision stays fails the check, so bump the revision and run `--update` together
   (see the framework reference). `--sweep` there is the first thing to run after touching

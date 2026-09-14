@@ -266,6 +266,12 @@ def main():
         env['ENV']['SOURCE_DATE_EPOCH'] = os.environ['SOURCE_DATE_EPOCH']
     env["VERSION"] = "0.9.5.0"
     establish_options(env)
+    # Release builds outside macOS link with -s, which strips debug information
+    # from every binary, so compiling it in only slows the build and multiplies
+    # the size of object files and compiler caches. -g never changes codegen.
+    if env['release'] and not isDarwinPlatform:
+        for flags in ('CXXFLAGS', 'LINKFLAGS'):
+            env[flags] = [flag for flag in env.Split(env[flags]) if flag != '-g']
 
     # Emit compile_commands.json for clangd / IDE LSPs.
     env.Tool('compilation_db')
