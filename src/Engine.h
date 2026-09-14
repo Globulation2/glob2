@@ -9,6 +9,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <vector>
 #include "Campaign.h"
 #include "MapHeader.h"
 #include "GameHeader.h"
@@ -186,6 +187,14 @@ private:
 	/// AIs' trajectories after a single headless game.
 	void printTeamTimeline();
 
+	/// Remember the tick at which each team was eliminated (Team::isAlive cleared). Called from
+	/// pollAutomaticEndingConditions under automaticEndingGame; only reads game state.
+	void trackTeamEliminations();
+
+	/// One GLOB2_TEAM_RESULT line per team: outcome, elimination tick, start position and final
+	/// prestige and forces. Gated by GLOB2_TEAM_RESULTS; tools/map_fairness_tournament.py scrapes it.
+	void printTeamResults();
+
 	/// Tell the YOG multiplayer session how this match ended (won, lost,
 	/// quit). Caller checks `multiplayer` is non-null.
 	void reportMultiplayerResult();
@@ -212,6 +221,8 @@ private:
 	shared_ptr<MultiplayerGame> multiplayer;
 
 	Uint64 automaticGameStartTick, automaticGameEndTick;
+	//! Tick at which each team was eliminated, -1 while alive (see trackTeamEliminations).
+	std::vector<Sint32> teamEliminatedTick;
 
 	static const bool verbose = false;
 };

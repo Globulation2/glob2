@@ -15,6 +15,7 @@
 #include "EditorMainMenu.h"
 #include "CreditScreen.h"
 #include "MapGenerationDescriptor.h"
+#include "MapGenerator.h"
 #include "FertilityCalculator.h"
 #include "Order.h"
 #include "Player.h"
@@ -52,7 +53,7 @@ GlobalContainer* globalContainer=nullptr;
 using namespace GAGCore;
 std::string replayFilenameToName(const std::string&);
 
-std::string getSyncRandState() { std::ostringstream out; out << randomGenerator; return out.str(); }
+std::string getSyncRandState() { std::ostringstream out; out << syncRandEngine(); return out.str(); }
 
 void require(bool condition, const char* message)
 {
@@ -119,14 +120,17 @@ void generate(const char* path)
 	std::srand(481516);
 	Game game(nullptr);
 	MapGenerationDescriptor d;
-	d.method=MapGenerationDescriptor::eOLDISLANDS;
-	d.oldIslandSize=35;
+	// Start from the generator's own current defaults (valid control ranges
+	// move as generators are tuned) and override only what this decorative
+	// colony actually needs to differ.
+	d.setMethodDefaults(MapGenerationDescriptor::eOLDISLANDS);
 	d.wDec=d.hDec=7;
-	d.nbTeams=1; d.nbWorkers=48;
+	d.nbTeams=1; d.nbWorkers=8;
 	d.waterRatio=25; d.grassRatio=65; d.sandRatio=10;
-	game.map.setSize(d.wDec,d.hDec);
-	game.map.setGame(&game);
-	require(game.map.oldMakeIslandsMap(d) && game.oldMakeIslandsMap(d),"generate terrain");
+	// The registry-driven generator owns map sizing and the game association;
+	// pass the fixed seed explicitly since it no longer follows the global
+	// sync-rand state seeded above.
+	require(MapGenerator().generateMap(game, d, 481516u),"generate terrain");
 	// The legacy island generator supplies terrain only. Seed small groves
 	// and grain fields with the existing resource API, leaving walking lanes.
 	const int bx=d.bootX[0], by=d.bootY[0];
@@ -389,7 +393,7 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 			GameGUI gui;
 			BinaryInputStream in(Toolkit::getFileManager()->openInputStreamBackend(argv[2]));
 			in.readText("format"); require(gui.game.load(&in),"load real-game fixture");
-			std::istringstream state(in.readText("rng")+" "); state >> randomGenerator;
+			std::istringstream state(in.readText("rng")+" "); state >> syncRandEngine();
 			gui.game.map.getResourceGradient(0,WHEAT,0);
 			gui.localTeamNo=0; gui.localPlayer=0; gui.adjustLocalTeam();
 			globals.replayWriter=std::make_unique<ReplayWriter>();
@@ -447,6 +451,9 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 			key.key.keysym.sym=SDLK_ESCAPE; dialog.dispatchEvents(&key);
 			require(dialog.endValue==LoadSaveScreen::CANCEL,"replay dialog cancellation");
 			Preview<CustomGameScreen> custom; custom.selectFirstListItem(); custom.render();
+			// The lobby opens on a random map (2026-09-14) and previews it on worker threads; drive
+			// its timer as the event loop would until the preview's map is loaded.
+			for(Uint32 start=SDL_GetTicks(); custom.getMapHeader().getNumberOfTeams()==0 && SDL_GetTicks()-start<120000;) { SDL_Delay(10); custom.dispatchTimer(SDL_GetTicks()); }
 			require(custom.getMapHeader().getNumberOfTeams()>0,"map selection loads teams");
 			key.key.keysym.sym=SDLK_ESCAPE; custom.dispatchEvents(&key);
 			require(custom.result()==CustomGameScreen::CANCEL,"custom game cancellation");

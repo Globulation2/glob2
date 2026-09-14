@@ -20,12 +20,13 @@ To create a `.game` file with specific AI players: start the game with GUI, set 
 
 ### `-test-games-nox [count]`
 
-Runs random AI-vs-AI games headlessly. Each game auto-ends at 90,000 ticks (~60 minutes of game time at 25 ticks/sec). An optional `count` parameter controls how many games to run (default: infinite).
+Runs random AI-vs-AI games headlessly. Each game auto-ends at 90,000 ticks (~60 minutes of game time at 25 ticks/sec), or after `GLOB2_TEST_MAX_TICKS` ticks when that environment variable is a positive integer; a game stopped at the cap reports `winner_team=-1`. The cap only decides when the driver stops the game, not how ticks are simulated. An optional `count` parameter controls how many games to run (default: infinite).
 
 ```bash
 ./glob2 -test-games-nox 1    # run one game and exit
 ./glob2 -test-games-nox 5    # run five games and exit
 ./glob2 -test-games-nox      # run forever (kill with Ctrl+C)
+GLOB2_TEST_MAX_TICKS=30000 ./glob2 -test-games-nox 1   # stop at 30,000 ticks
 ```
 
 The random game setup (`Engine::createRandomGame`) creates one local player + N AI players with randomly chosen AI types from the map's team count.
@@ -170,6 +171,29 @@ GLOB2_GAME_END ticks=2483 winner_team=1 seed=1777219846 map="Playground" orders=
 
 The format is intended for grep/regex consumption — fields are
 space-separated key=value, with `map` quoted.
+
+### Per-team results (`GLOB2_TEAM_RESULTS`)
+
+With `GLOB2_TEAM_RESULTS` set, the engine also prints one line per team
+after `GLOB2_GAME_END`:
+
+```
+GLOB2_TEAM_RESULT team=0 result=undecided alive=1 eliminated_tick=-1 start=17,29 prestige=0 units=4 workers=4 explorers=0 warriors=0 buildings=1 sites=1
+```
+
+- `result` — `won`, `lost` or `undecided`: the team's win-condition
+  state when the game stopped (`undecided` at a tick cap)
+- `alive` — `Team::isAlive` at the end
+- `eliminated_tick` — the tick at which `isAlive` was cleared, counted
+  like `ticks`; `-1` for a team still alive
+- `start` — the team's start position from the map
+- `prestige` — final prestige; `units`, `workers`, `explorers` and
+  `warriors` count live units; `buildings` counts finished buildings and
+  `sites` building sites (virtual flags excluded)
+
+The lines only read game state. `tools/map_fairness_tournament.py` uses
+them together with `GLOB2_TEST_MAX_TICKS`; see
+[Map fairness tournament](map-generators/FAIRNESS_TOURNAMENT.md).
 
 For cross-codebase testing, the canonical baselines live in `glob2/tests/baselines/`. See [`docs/replay-verification.md`](../../docs/replay-verification.md) at the workspace root for the full verification workflows and the regeneration procedure.
 

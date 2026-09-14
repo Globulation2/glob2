@@ -25,10 +25,10 @@ struct ColonyContext
 	explicit ColonyContext(boost::mt19937& state) : rng(state),
 		replay(std::move(globalContainer->replayWriter)),
 		dataset(std::move(globalContainer->datasetWriter))
-	{ std::swap(randomGenerator, rng); }
+	{ std::swap(syncRandEngine(), rng); }
 	~ColonyContext()
 	{
-		std::swap(randomGenerator, rng);
+		std::swap(syncRandEngine(), rng);
 		globalContainer->replayWriter = std::move(replay);
 		globalContainer->datasetWriter = std::move(dataset);
 	}
@@ -51,7 +51,7 @@ bool MenuColony::load(const std::string& path)
 			!loaded->players[0]->ai || loaded->players[0]->ai->implementationID != AI::ECONO)
 			throw std::runtime_error("incompatible menu colony");
 		std::istringstream state(input.readText("rng") + " ");
-		if (!(state >> randomGenerator)) throw std::runtime_error("invalid colony RNG");
+		if (!(state >> syncRandEngine())) throw std::runtime_error("invalid colony RNG");
 		loaded->setWaitingOnMask(0);
 		// The map round-robin updater expects at least one lazy gradient.
 		loaded->map.getResourceGradient(0, WHEAT, 0);

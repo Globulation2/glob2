@@ -22,6 +22,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <memory>
 #include <stdexcept>
 #ifdef WIN32
@@ -227,7 +228,7 @@ static void checkRandomContinuation(bool text, bool ai)
 		game.syncStep(0);
 	};
 	for (int i=0; i<100; ++i) step(gui.game);
-	const auto savedRandom = randomGenerator;
+	const auto savedRandom = syncRandEngine();
 	auto *backend = new MemoryStreamBackend();
 	class CheckpointOutput : public BinaryOutputStream
 	{
@@ -252,7 +253,15 @@ static void checkRandomContinuation(bool text, bool ai)
 		runtimeText.assign(storage->getBuffer(),storage->getPosition());
 	}
 
-	assert(randomGenerator == savedRandom);
+	if (!(syncRandEngine() == savedRandom))
+	{
+		std::ostringstream now, was;
+		now << syncRandEngine();
+		was << savedRandom;
+		std::cerr << "sync RNG changed across save:\n  was " << was.str().substr(0, 96)
+				  << "\n  now " << now.str().substr(0, 96) << std::endl;
+		assert(false);
+	}
 	auto simulationState = [](Game &game) {
 		std::vector<Uint32> result, buildings, units;
 		game.checkSum(&result, &buildings, &units, true);
@@ -302,7 +311,7 @@ static void checkRandomContinuation(bool text, bool ai)
 	restored.game.setGameHeader(header, true);
 	auto expected = savedRandom;
 	for (int i=0; i<2000; ++i) assert(syncRand() == expected());
-	randomGenerator = savedRandom;
+	syncRandEngine() = savedRandom;
 	for (int i=0; i<300; ++i)
 	{
 		step(restored.game);

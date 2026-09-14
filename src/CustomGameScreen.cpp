@@ -1,19 +1,26 @@
+#include "GenerationContext.h"
+#include "GeneratorRegistry.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CustomGameScreen.h"
 #include "CustomGamePreferences.h"
 #include "AINames.h"
-#include "GUIMapPreview.h"
+#include "CustomGameScreen.h"
+#include "LobbyMapPreview.h"
+#include "LandscapePickerScreen.h"
+#include "LandscapePreviewer.h"
 #include "Game.h"
+#include "GenerationService.h"
 #include "GlobalContainer.h"
 #include "LobbyControls.h"
 #include "LobbyMapCatalog.h"
-#include "MapGenerator.h"
 #include "Player.h"
+#include "StartQualityScreen.h"
 #include <BinaryStream.h>
 #include <FileManager.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
+#include <cstdio>
 #include <filesystem>
 #include <fstream>
 #include <random>
@@ -22,14 +29,6 @@ namespace
 {
 std::string tr(const std::string &s) { return Toolkit::getStringTable()->getString("[" + s + "]"); }
 const Uint32 A = ALIGN_SCREEN_CENTERED;
-const std::vector<std::string> methods = []
-{
-	std::vector<std::string> result;
-	for (int m = MapGenerationDescriptor::eSWAMP; m <= MapGenerationDescriptor::eOLDISLANDS; ++m)
-		result.emplace_back(
-			MapGenerationDescriptor::methodName(static_cast<MapGenerationDescriptor::Method>(m)));
-	return result;
-}();
 std::vector<std::string> localized(std::vector<std::string> v)
 {
 	for (auto &s : v)
@@ -151,37 +150,7 @@ void CustomGameChoiceScreen::onAction(Widget *, Action action, int code, int)
 	}
 }
 
-class LobbyMapPreview : public MapPreview
-{
-  public:
-	struct Start
-	{
-		int x, y;
-		Color color;
-	};
-	std::vector<Start> starts;
-	LobbyMapPreview() : MapPreview(430, 115, A, A) { w = h = 180; }
-	void paint() override
-	{
-		if (!surface)
-			return;
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-		auto target = parent->getSurface();
-		target->drawSurface(x, y, w, h, surface);
-		auto font = Toolkit::getFont("standard");
-		for (size_t i = 0; i < starts.size(); ++i)
-		{
-			int px = x + std::clamp(starts[i].x * w / std::max(1, getLastWidth()), 10, w - 18);
-			int py = y + std::clamp(starts[i].y * h / std::max(1, getLastHeight()), 10, h - 18);
-			target->drawFilledRect(px - 2, py - 2, 20, 20, 20, 30, 20);
-			target->drawFilledRect(px, py, 16, 16, starts[i].color);
-			font->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(0, 0, 0)));
-			target->drawString(px + 3, py, font, std::to_string(i + 1));
-			font->popStyle();
-		}
-	}
-};
+
 namespace
 {
 std::string colorName(Color c)
@@ -251,21 +220,14 @@ CustomGameScreen::CustomGameScreen() : Glob2TabScreen(false, true)
 	}
 	else
 	{
+		// No saved lobby: a random map at four colonies (FEEDBACK 2026-09-14: random maps are the
+		// default, not the premade library).
 		listMaps();
-		for (const auto &p : mapPaths)
-			if (std::filesystem::path(p).filename() == "FourSquares1.map")
-			{
-				loadMap(p);
-				break;
-			}
-		if (!validMap || setup.capacity != 4)
-		{
-			setup.random = true;
-			setup.setCapacity(4);
-			validMap = false;
-			source.clear();
-			invalidate();
-		}
+		setup.random = true;
+		setup.setCapacity(4);
+		validMap = false;
+		source.clear();
+		invalidate();
 	}
 
 	activateGroup(groups[0]);
@@ -316,9 +278,120 @@ int CustomGameScreen::choose(const std::string &title, const std::vector<std::st
 	return result;
 }
 void CustomGameScreen::onGroupActivated(int group) { currentTab = group; }
+// One request per playable landscape, exactly as picking it would leave the draft: the
+// settings last used with it, or its defaults, at the current size and colony count.
+std::vector<std::pair<int, GenerationRequest>> CustomGameScreen::landscapeEntries() const
+{
+	std::vector<std::pair<int, GenerationRequest>> entries;
+	for (int method : GeneratorRegistry::builtins().methods(false))
+	{
+		auto draft = setup;
+		draft.generatorHistory.select(draft.generator, method);
+		draft.generator.nbTeams = setup.capacity;
+		entries.emplace_back(method, draft.generator);
+	}
+	return entries;
+}
+void CustomGameScreen::chooseLandscape()
+{
+	const auto entries = landscapeEntries();
+	std::vector<LandscapePickerScreen::Entry> shown;
+	int selected = 0;
+	for (const auto &[method, request] : entries)
+	{
+		if (method == setup.generator.method)
+			selected = int(shown.size());
+		shown.push_back({tr(GenerationRequest::methodName(method)), request});
+	}
+	LandscapePickerScreen picker(tr("Landscape"), std::move(shown), selected);
+	const int result = picker.execute(globalContainer->gfx, 40);
+	if (result == QUIT_APPLICATION)
+		endExecute(QUIT_APPLICATION);
+	else if (result >= 0 && result < int(entries.size()))
+	{
+		const GenerationRequest request = picker.chosenRequest();
+		applyLandscape(entries[result].first, picker.chosenSeed(), &request);
+	}
+}
+void CustomGameScreen::applyLandscape(int method, std::optional<std::uint32_t> seed,
+									  const GenerationRequest *shown)
+{
+	setup.generatorHistory.select(setup.generator, method);
+	// The parameters the picker rolled the map with come along, so the lobby shows the map it
+	// showed: the landscape's own, or a random set from "Randomize parameters".
+	if (shown && shown->method == method)
+		setup.generator.options = shown->options;
+	chosenSeed = seed;
+	randomAttempts = 0;
+	++setup.mapRevision;
+	invalidate();
+	// An explicit choice, not an edit in progress: preview it now rather than after the debounce.
+	previewDue = SDL_GetTicks();
+}
+// Reset keeps the chosen landscape and the Game Rules tab's starting workers, and returns every
+// other field in the map column to the landscape's registered defaults.
+void CustomGameScreen::resetParameters()
+{
+	GenerationRequest reset;
+	reset.setMethodDefaults(setup.generator.method);
+	reset.nbWorkers = setup.generator.nbWorkers;
+	reset.terrainType = setup.generator.terrainType;
+	reset.seed = setup.generator.seed;
+	setup.generator = reset;
+	setup.setCapacity(reset.nbTeams);
+	chosenSeed.reset();
+	randomAttempts = 0;
+	++setup.mapRevision;
+	invalidate();
+}
+// Random parameters (FEEDBACK 2026-09-14): every one of the landscape's own controls drawn at
+// random, keeping the size, colony count and workers the player chose. Some combinations make no
+// map: a draw the generator refuses up front is redrawn on the spot (randomizeControls), and one
+// the world refuses is redrawn when the preview's candidates come back empty (collectCandidates),
+// up to kRandomAttempts times, so the first set that generates a valid map is the one kept.
+void CustomGameScreen::randomizeParameters()
+{
+	randomAttempts = kRandomAttempts;
+	if (!drawRandomParameters())
+	{
+		randomAttempts = 0;
+		message = tr("Generation failed. Adjust settings or press Start to retry.");
+		return;
+	}
+	chosenSeed.reset();
+	++setup.mapRevision;
+	invalidate();
+	previewDue = SDL_GetTicks();
+}
+bool CustomGameScreen::drawRandomParameters()
+{
+	auto draft = setup.generator;
+	draft.nbTeams = setup.capacity;
+	if (!draft.randomizeControls(GenerationContext::randomSeed()))
+		return false;
+	setup.generator = draft;
+	return true;
+}
+void CustomGameScreen::showStartQuality()
+{
+	if (!quality.measured)
+		return;
+	std::vector<std::string> labels;
+	std::vector<Color> colors;
+	for (size_t i = 0; i < quality.colonies.size(); ++i)
+	{
+		labels.push_back(colonyLabel(int(i)));
+		colors.push_back(i < preview->starts.size() ? preview->starts[i].color
+													: Color(160, 172, 149));
+	}
+	StartQualityScreen screen(quality, labels, colors);
+	if (screen.execute(globalContainer->gfx, 40) == QUIT_APPLICATION)
+		endExecute(QUIT_APPLICATION);
+}
 void CustomGameScreen::invalidate()
 {
 	validMap = false;
+	quality = {};
 	previewRevision = ~0u;
 	previewPending = setup.random;
 	previewDue = SDL_GetTicks() + 500;
@@ -420,21 +493,43 @@ bool CustomGameScreen::generateMap()
 			throw std::runtime_error("snapshot directory");
 		candidate = (directory / "preview.map").string();
 		std::unique_ptr<Game> game;
-		MapGenerator generator;
+		GenerationService generator;
+		const auto rootSeed = GenerationContext::randomSeed();
+		GenerationResult generationResult;
 		setup.generator.nbTeams = setup.capacity;
-		// Some rolls cannot fit every starting colony. Retry those rolls before
-		// reporting failure; only the successful world becomes the preview.
-		for (int attempt = 0; attempt < 5; ++attempt)
+		// A map the landscape picker showed is rolled once, exactly as shown. Otherwise some
+		// rolls cannot fit every starting colony, and among those that can, some hand one
+		// colony far better ground than another: roll the whole budget either way and keep the
+		// best-scoring world rather than the first that fits.
+		const auto shown = chosenSeed;
+		chosenSeed.reset();
+		double bestScore = -1.0;
+		const int candidates = shown ? 1 : GenerationService::kSampledCandidates;
+		for (int attempt = 0; attempt < candidates; ++attempt)
 		{
-			game = std::make_unique<Game>(nullptr);
-			if (generator.generateMap(*game, setup.generator) &&
-				game->teamsCount() == setup.capacity)
-				break;
-			game.reset();
+			auto roll = std::make_unique<Game>(nullptr);
+			auto request = setup.generator;
+			request.seed =
+				shown ? *shown
+					  : GenerationContext::deriveSeed(rootSeed, "attempt/" + std::to_string(attempt));
+			const auto rollResult = generator.generate(*roll, request);
+			std::cout << "Map generation: " << rollResult.diagnostic() << std::endl;
+			if (!rollResult || roll->teamsCount() != setup.capacity)
+			{
+				if (!game)
+					generationResult = rollResult; // keep a failure worth reporting
+				continue;
+			}
+			if (rollResult.quality.score <= bestScore)
+				continue;
+			bestScore = rollResult.quality.score;
+			game = std::move(roll);
+			generationResult = rollResult;
 		}
 		if (!game)
-			throw std::runtime_error("generation");
+			throw std::runtime_error(generationResult.diagnostic());
 		GameHeader initial;
+		initial.setRandomSeed(generationResult.seed);
 		setup.writeHeader(initial, username);
 		game->setGameHeader(initial);
 		{
@@ -451,11 +546,14 @@ bool CustomGameScreen::generateMap()
 			std::filesystem::remove_all(std::filesystem::path(snapshot).parent_path());
 		snapshot = candidate;
 		previewRevision = setup.mapRevision;
+		quality = generationResult.quality;
+		randomAttempts = 0;
 		message = tr("Preview ready. Start plays this exact map.");
 		return true;
 	}
-	catch (const std::exception &)
+	catch (const std::exception &error)
 	{
+		std::cerr << "Map preview: " << error.what() << std::endl;
 		if (!candidate.empty())
 			std::filesystem::remove_all(std::filesystem::path(candidate).parent_path());
 		validMap = false;
@@ -518,6 +616,8 @@ void CustomGameScreen::onAction(Widget *widget, Action action, int code, int val
 		endExecute(CANCEL);
 	if (code == OK && setup.validation().empty())
 	{
+		if (setup.random && candidates)
+			finishPreview();
 		if (setup.random && (!validMap || previewRevision != setup.mapRevision))
 			if (!generateMap())
 				return;
@@ -535,7 +635,82 @@ void CustomGameScreen::onTimer(Uint32 tick)
 	// Wait until the last edit settles and a dragged control/menu is released.
 	if (previewPending && setup.random && Sint32(tick - previewDue) >= 0 &&
 		controls->pressed.empty() && !controls->popup.open)
-		generateMap();
+	{
+		// A map the picker showed, or a draft that fails validation, resolves at once; anything
+		// else rolls its candidates off this thread first.
+		if (chosenSeed || !setup.validation().empty())
+			generateMap();
+		else
+			startCandidates();
+	}
+	if (candidates && !candidates->busy())
+		collectCandidates();
+}
+void CustomGameScreen::startCandidates()
+{
+	previewPending = false;
+	setup.generator.nbTeams = setup.capacity;
+	std::vector<GenerationRequest> requests(GenerationService::kSampledCandidates, setup.generator);
+	if (candidates)
+		candidates->restart(std::move(requests));
+	else
+		candidates = std::make_unique<LandscapePreviewer>(std::move(requests));
+	candidateRevision = setup.mapRevision;
+	message = tr("Updating map preview...");
+}
+// The candidates are in: keep the best-scoring one by rolling its seed for the snapshot, or
+// report that none seated every colony. Returns whether a map came of it.
+bool CustomGameScreen::collectCandidates()
+{
+	if (!candidates)
+		return false;
+	std::optional<std::uint32_t> best;
+	double bestScore = -1.0;
+	for (std::size_t i = 0; i < candidates->size(); ++i)
+	{
+		const auto preview = candidates->preview(i);
+		if (preview.state == LandscapePreviewer::State::Ready && preview.score > bestScore)
+		{
+			bestScore = preview.score;
+			best = preview.seed;
+		}
+	}
+	const bool stale = candidateRevision != setup.mapRevision;
+	candidates.reset();
+	if (stale)
+		return false; // an edit meanwhile already asked for a new preview
+	if (!best)
+	{
+		// A random set of parameters the world refused on every seed: draw another while the
+		// draws last (randomizeParameters), rather than leave the player a failure to fix by hand.
+		if (randomAttempts > 0)
+		{
+			--randomAttempts;
+			if (drawRandomParameters())
+			{
+				chosenSeed.reset();
+				++setup.mapRevision;
+				invalidate();
+				previewDue = SDL_GetTicks();
+				return false;
+			}
+		}
+		randomAttempts = 0;
+		validMap = false;
+		message = tr("Generation failed. Adjust settings or press Start to retry.");
+		return false;
+	}
+	chosenSeed = best;
+	return generateMap();
+}
+// Wait for candidates in flight and apply them: for a launch that cannot wait for the timer,
+// and for tests that drive the timer by hand.
+void CustomGameScreen::finishPreview()
+{
+	while (candidates && candidates->busy())
+		SDL_Delay(5);
+	if (candidates)
+		collectCandidates();
 }
 void CustomGameScreen::setMapMode(bool random)
 {
@@ -544,6 +719,10 @@ void CustomGameScreen::setMapMode(bool random)
 	setup.random = random;
 	previewPending = false;
 	validMap = false;
+	// Candidates still rolling for the random map are dropped with it, or they would come back
+	// and replace the premade choice (the lobby now opens on a random map, so a player can reach
+	// the library while its first preview is still rolling).
+	candidates.reset();
 	if (random)
 	{
 		setup.setCapacity(setup.generator.nbTeams);
@@ -551,6 +730,21 @@ void CustomGameScreen::setMapMode(bool random)
 	}
 	else if (!setup.premadeMap.empty())
 		loadMap(setup.premadeMap);
+	else
+	{
+		// The first visit to the library with nothing chosen yet (the lobby now opens on a random
+		// map): FourSquares1, the lobby's old opening map, or failing that the first map listed.
+		listMaps();
+		std::string first = mapPaths.empty() ? "" : mapPaths.front();
+		for (const auto &p : mapPaths)
+			if (std::filesystem::path(p).filename() == "FourSquares1.map")
+			{
+				first = p;
+				break;
+			}
+		if (!first.empty())
+			loadMap(first);
+	}
 }
 void CustomGameScreen::showAIProfile(int colony)
 {
@@ -573,7 +767,8 @@ void CustomGameScreen::renderLobby()
 	speed.gameSpeed = setup.speed;
 	std::vector<std::string> titles = localized({"Map", "Players & Teams", "Game Rules"});
 	std::vector<std::string> details = {
-		setup.random ? tr(methods[setup.generator.method - 1]) : mapHeader.getMapName(),
+		setup.random ? tr(GenerationRequest::methodName(setup.generator.method))
+					 : mapHeader.getMapName(),
 		std::to_string(setup.activeColonies()) + " " + tr("colonies") + " / " + tr(setup.format),
 		tr(setup.ruleset)};
 	for (int i = 0; i < 3; ++i)
@@ -798,19 +993,16 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 		else
 		{
 			if (setup.random)
-				ui.stepper(
-					"rule/workers", {fieldX, yy + 5, 130, 29}, setup.generator.nbWorkers,
-					MapGenerationDescriptor::control(setup.generator.method, "Starting workers")
-						.minimum,
-					MapGenerationDescriptor::control(setup.generator.method, "Starting workers")
-						.maximum,
-					[this](int v)
-					{
-						setup.generator.nbWorkers = v;
-						++setup.mapRevision;
-						setup.ruleset = "Custom";
-						invalidate();
-					});
+				ui.stepper("rule/workers", {fieldX, yy + 5, 130, 29}, setup.generator.nbWorkers,
+						   GenerationRequest::control(setup.generator.method, "workers").minimum,
+						   GenerationRequest::control(setup.generator.method, "workers").maximum,
+						   [this](int v)
+						   {
+							   setup.generator.nbWorkers = v;
+							   ++setup.mapRevision;
+							   setup.ruleset = "Custom";
+							   invalidate();
+						   });
 			else
 				ui.text(fieldX + 9, yy + 12, tr("Map-defined starting units"), "standard", fieldW);
 			help = tr(setup.random ? "More workers jump-start colony growth. Changes the "
@@ -881,45 +1073,64 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 		auto &g = setup.generator;
 		auto changed = [this]
 		{
+			chosenSeed.reset();
 			++setup.mapRevision;
 			invalidate();
 		};
 		ui.text(x + 4, yy, tr("Landscape"), "little", leftW - 20, true);
 		yy += 18;
-		ui.dropdown(
-			"generator/landscape", {x, yy, leftW - 16, 30}, localized(methods), g.method - 1,
-			[this, changed](int value)
+		ui.chooser("generator/landscape", {x, yy, leftW - 16, 30},
+				   tr(GenerationRequest::methodName(g.method)), [this] { chooseLandscape(); });
+		yy += 36;
+		// Right under the landscape, before its controls (FEEDBACK 2026-09-14): Reset to defaults,
+		// and beside it Random parameters, which draws every control below at random.
+		{
+			GenerationRequest defaults;
+			defaults.setMethodDefaults(g.method);
+			const bool atDefaults = g.options == defaults.options && g.wDec == defaults.wDec &&
+									g.hDec == defaults.hDec && setup.capacity == defaults.nbTeams;
+			const int half = (leftW - 16 - 6) / 2;
+			// The narrow column of the compact layout: a label the standard font cannot fit in
+			// its half takes the small one rather than being cut off.
+			const auto fitting = [half](const std::string &label)
 			{
-				setup.generatorHistory.select(
-					setup.generator, static_cast<MapGenerationDescriptor::Method>(value + 1));
-				changed();
-			});
-		yy += 40;
-		auto discrete = [&](const MapGenerationDescriptor::Control &c, const std::string &id)
+				return Toolkit::getFont("standard")->getStringWidth(label) + 16 <= half ? "standard"
+																					   : "little";
+			};
+			const std::string reset = tr("Reset to defaults"), random = tr("Random parameters");
+			ui.button(
+				"generator/reset", {x, yy, half, 30}, reset, [this] { resetParameters(); }, false,
+				!atDefaults, true, fitting(reset));
+			ui.button(
+				"generator/random", {x + half + 6, yy, half, 30}, random,
+				[this] { randomizeParameters(); }, false, true, true, fitting(random));
+			yy += 38;
+		}
+		auto discrete = [&](const GenerationRequest::Control &c, const std::string &id)
 		{
 			ui.text(x + 4, yy + 7, tr(c.label), "little", 110, true);
 			std::vector<std::string> options;
-			for (int v = c.minimum; v <= c.maximum; v += c.step)
-				options.push_back(std::to_string(c.powerOfTwo ? (1 << v) : v));
-			ui.dropdown(id, {x + 112, yy, leftW - 128, 28}, options,
-						(c.get(g) - c.minimum) / c.step,
+			for (int v : c.values())
+				options.push_back(c.isChoice() ? tr(c.valueLabel(v))
+											   : std::to_string(c.displayValue(v)));
+			ui.dropdown(id, {x + 112, yy, leftW - 128, 28}, options, c.indexOf(c.get(g)),
 						[this, c, changed](int i)
 						{
-							c.set(setup.generator, c.minimum + i * c.step);
-							if (c.field == &MapGenerationDescriptor::nbTeams)
+							c.set(setup.generator, c.valueAt(i));
+							if (c.id == "teams")
 								setup.setCapacity(setup.generator.nbTeams);
 							changed();
 						});
 			yy += 36;
 		};
-		for (const auto &c : MapGenerationDescriptor::sharedControls())
-			if (c.field != &MapGenerationDescriptor::nbWorkers)
+		for (const auto &c : GenerationRequest::sharedControls())
+			if (c.id != "workers")
 			{
-				if (c.field == &MapGenerationDescriptor::nbTeams)
+				if (c.id == "teams")
 					g.nbTeams = setup.capacity;
-				const char *id = c.field == &MapGenerationDescriptor::wDec	 ? "generator/width"
-								 : c.field == &MapGenerationDescriptor::hDec ? "generator/height"
-																			 : "generator/colonies";
+				const char *id = c.id == "width"	? "generator/width"
+								 : c.id == "height" ? "generator/height"
+													: "generator/colonies";
 				discrete(c, id);
 			}
 
@@ -936,15 +1147,26 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 			if (!expanded[section])
 				continue;
 			bool any = false;
-			for (const auto &c : MapGenerationDescriptor::controls(g.method))
+			for (const auto &c : GenerationRequest::controls(g.method))
 			{
 				if (static_cast<int>(c.group) != section)
 					continue;
 				any = true;
-				std::string id = "generator/" + std::string(c.label);
-				if (c.powerOfTwo)
+				std::string id = "generator/" + c.id;
+				if (c.isToggle())
 				{
-					discrete(c, "generator/repeat");
+					ui.checkbox(id, {x, yy, leftW - 16, 28}, tr(c.label), c.get(g) != 0,
+								[this, c, changed](bool on)
+								{
+									c.set(setup.generator, on ? 1 : 0);
+									changed();
+								});
+					yy += 34;
+					continue;
+				}
+				if (c.powerOfTwo || !c.allowedValues.empty())
+				{
+					discrete(c, id);
 					continue;
 				}
 				ui.text(x + 5, yy, tr(c.label), "little", leftW - 55, true);
@@ -977,31 +1199,74 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 		ui.endRegion(yy - startY + 8);
 	}
 	ui.text(rightX, top,
-			setup.random ? tr(methods[setup.generator.method - 1]) : mapHeader.getMapName(),
+			setup.random ? tr(GenerationRequest::methodName(setup.generator.method))
+						 : mapHeader.getMapName(),
 			w < 800 ? "standard" : "menu", rightW);
-	std::string dimensions = validMap ? std::to_string(preview->getLastWidth()) + " x " +
-											std::to_string(preview->getLastHeight())
+	std::string dimensions = validMap		? std::to_string(preview->getLastWidth()) + " x " +
+												  std::to_string(preview->getLastHeight())
 							 : setup.random ? std::to_string(1 << setup.generator.wDec) + " x " +
 												  std::to_string(1 << setup.generator.hDec)
 											: "";
 	ui.text(rightX, top + 29,
 			dimensions + "  /  " + std::to_string(setup.capacity) + " " + tr("colonies"), "little",
 			rightW, true);
-	int size = std::min(rightW, h - 126);
-	int px = rightX + (rightW - size) / 2, py = top + 51;
-	ui.box({px - 3, py - 3, size + 6, size + 6}, ui.line);
+	// The generated map's start quality (FEEDBACK 2026-09-14): the fairness the lobby ranked its
+	// candidate rolls by, and a small (i) that opens the breakdown behind it.
+	if (setup.random && validMap && quality.measured)
+	{
+		char summary[96];
+		std::snprintf(summary, sizeof summary, "%s %.2f  /  %s %.2f", tr("Fairness").c_str(),
+					  quality.fairness, tr("Score").c_str(), quality.score);
+		const int sw = Toolkit::getFont("little")->getStringWidth(summary);
+		ui.text(rightX + rightW - sw - 30, top + 29, summary, "little", sw + 2, true);
+		ui.button(
+			"quality/info", {rightX + rightW - 24, top + 26, 22, 20}, "i",
+			[this] { showStartQuality(); }, false, true, false, "little");
+	}
+	// A random map keeps a row under its preview for the Randomize button.
+	const int previewLimit = h - (setup.random ? 162 : 126);
+	int size = std::min(rightW, previewLimit);
+	int previewW = size, previewH = size;
+	if (validMap)
+	{
+		previewW = rightW;
+		previewH = previewW * preview->getLastHeight() / preview->getLastWidth();
+		if (previewH > previewLimit)
+		{
+			previewH = previewLimit;
+			previewW = previewH * preview->getLastWidth() / preview->getLastHeight();
+		}
+	}
+	int px = rightX + (rightW - previewW) / 2, py = top + 51;
+	ui.box({px - 3, py - 3, previewW + 6, previewH + 6}, ui.line);
 	if (validMap)
 	{
 		preview->setScreenPosition(px - (gfx->getW() - 640) / 2, py - (gfx->getH() - 480) / 2);
-		preview->setDimensions(size, size);
+		preview->setDimensions(previewW, previewH);
 		preview->paint();
 	}
 	else
 	{
 		ui.box({px, py, size, size}, Color(211, 223, 197));
 		ui.paragraph(px + 16, py + size / 2 - 20, size - 32,
-					 tr(previewPending
+					 tr(previewBusy()
 							? "Updating map preview..."
 							: "Preview unavailable. Adjust settings or start to retry."));
+	}
+	if (setup.random)
+	{
+		const int buttonW = std::min(rightW, 160);
+		ui.button(
+			"map/randomize",
+			{rightX + (rightW - buttonW) / 2, py + (validMap ? previewH : size) + 10, buttonW, 30},
+			tr("Randomize"),
+			[this]
+			{
+				// Same settings, new seed: generateMap draws a fresh root seed on every run, so this
+				// only has to ask for the preview now instead of after the edit debounce.
+				invalidate();
+				previewDue = SDL_GetTicks();
+			},
+			false, setup.validation().empty() && !previewBusy());
 	}
 }

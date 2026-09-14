@@ -5,6 +5,7 @@
 #include "code.h"
 #include "types.h"
 
+#include <mutex>
 #include <sstream>
 #include <boost/function.hpp>
 #include <boost/type_traits/function_traits.hpp>
@@ -48,6 +49,16 @@ private:
 	}
 };
 
+/// Every heap shares one static prototype per native type, and each NativeValue points it at
+/// its own heap and re-adds its methods there. Two games constructed on different threads
+/// would allocate those methods into each other's heaps, so that update is serialized.
+/// Recursive, since a prototype's methods may themselves construct native values.
+inline std::recursive_mutex& nativePrototypeMutex()
+{
+	static std::recursive_mutex mutex;
+	return mutex;
+}
+
 template<typename This>
 struct NativeValue: Value
 {
@@ -57,6 +68,7 @@ struct NativeValue: Value
 		Value(heap, &prototype),
 		value(value)
 	{
+		std::lock_guard<std::recursive_mutex> lock(nativePrototypeMutex());
 		prototype.heap = heap;
 		prototype.initialize();
 	}
