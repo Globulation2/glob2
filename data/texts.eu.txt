@@ -2328,3 +2328,17 @@ Beirazko kanoia
 Eraikin gotortuak
 [Veteran/Fast start]
 Beterano/Hasiera azkarra
+[Match ends at the timer; highest prestige at that instant wins.]
+Partida tenporizadorean amaitzen da; unetxo horretan ospe handiena duenak irabazten du.
+[Off (no timer)]
+Desaktibatuta (tenporizadorerik gabe)
+[90 minutes]
+90 minutu
+[30 minutes]
+30 minutu
+[45 minutes]
+45 minutu
+[60 minutes]
+60 minutu
+[Sudden-death timer]
+Bat-bateko heriotzaren tenporizadorea

@@ -2318,3 +2318,17 @@ Harc
 Megerősített épületek
 [Veteran/Fast start]
 Veterán/Gyors kezdés
+[Match ends at the timer; highest prestige at that instant wins.]
+A mérkőzés az időzítő lejártával ér véget; ekkor a legnagyobb presztízzsel rendelkező nyer.
+[Off (no timer)]
+Kikapcsolva (nincs időzítő)
+[90 minutes]
+90 perc
+[30 minutes]
+30 perc
+[45 minutes]
+45 perc
+[60 minutes]
+60 perc
+[Sudden-death timer]
+Hirtelen halál időzítő

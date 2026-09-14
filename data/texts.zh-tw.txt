@@ -2390,3 +2390,17 @@ OpenGL 在此版本中不可用。
 堡壘化建築
 [Veteran/Fast start]
 老兵/快速開局
+[Match ends at the timer; highest prestige at that instant wins.]
+比賽在計時器歸零時結束；那一刻聲望最高者獲勝。
+[Off (no timer)]
+關閉（無計時器）
+[90 minutes]
+90 分鐘
+[30 minutes]
+30 分鐘
+[45 minutes]
+45 分鐘
+[60 minutes]
+60 分鐘
+[Sudden-death timer]
+驟死計時器

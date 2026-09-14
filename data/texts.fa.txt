@@ -2316,3 +2316,17 @@ OpenGL در این بیلد موجود نیست.
 ساختمان‌های مستحکم
 [Veteran/Fast start]
 کهنه‌کار/شروع سریع
+[Match ends at the timer; highest prestige at that instant wins.]
+بازی با پایان زمان‌سنج تمام می‌شود؛ کسی که در آن لحظه بیشترین اعتبار را داشته باشد برنده می‌شود.
+[Off (no timer)]
+خاموش (بدون زمان‌سنج)
+[90 minutes]
+90 دقیقه
+[30 minutes]
+30 دقیقه
+[45 minutes]
+45 دقیقه
+[60 minutes]
+60 دقیقه
+[Sudden-death timer]
+زمان‌سنج مرگ ناگهانی

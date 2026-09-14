@@ -2318,3 +2318,17 @@ Skleněné dělo
 Opevněné budovy
 [Veteran/Fast start]
 Veterán/Rychlý start
+[Match ends at the timer; highest prestige at that instant wins.]
+Zápas končí časovačem; vyhrává ten, kdo má v tu chvíli nejvyšší prestiž.
+[Off (no timer)]
+Vypnuto (bez časovače)
+[90 minutes]
+90 minut
+[30 minutes]
+30 minut
+[45 minutes]
+45 minut
+[60 minutes]
+60 minut
+[Sudden-death timer]
+Časovač náhlé smrti

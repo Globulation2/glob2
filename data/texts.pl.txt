@@ -2318,3 +2318,17 @@ Szklane działo
 Ufortyfikowane budynki
 [Veteran/Fast start]
 Weteran/Szybki start
+[Match ends at the timer; highest prestige at that instant wins.]
+Mecz kończy się wraz z zegarem; wygrywa gracz z najwyższym prestiżem w tym momencie.
+[Off (no timer)]
+Wyłączone (bez zegara)
+[90 minutes]
+90 minut
+[30 minutes]
+30 minut
+[45 minutes]
+45 minut
+[60 minutes]
+60 minut
+[Sudden-death timer]
+Zegar nagłej śmierci

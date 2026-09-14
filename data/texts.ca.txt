@@ -2326,3 +2326,17 @@ Canó de vidre
 Edificis fortificats
 [Veteran/Fast start]
 Veterà/Inici ràpid
+[Match ends at the timer; highest prestige at that instant wins.]
+La partida acaba al temporitzador; guanya qui tingui més prestigi en aquell instant.
+[Off (no timer)]
+Desactivat (sense temporitzador)
+[90 minutes]
+90 minuts
+[30 minutes]
+30 minuts
+[45 minutes]
+45 minuts
+[60 minutes]
+60 minuts
+[Sudden-death timer]
+Temporitzador de mort sobtada

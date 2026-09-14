@@ -2316,3 +2316,17 @@ Vitra kanono
 Fortikigitaj konstruaĵoj
 [Veteran/Fast start]
 Veterano/Rapida komenco
+[Match ends at the timer; highest prestige at that instant wins.]
+La ludo finiĝas ĉe la kronometro; venkas tiu, kiu havas la plej altan prestiĝon je tiu momento.
+[Off (no timer)]
+Malŝaltita (neniu kronometro)
+[90 minutes]
+90 minutoj
+[30 minutes]
+30 minutoj
+[45 minutes]
+45 minutoj
+[60 minutes]
+60 minutoj
+[Sudden-death timer]
+Kronometro de subita morto

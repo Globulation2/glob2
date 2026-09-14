@@ -2316,3 +2316,17 @@ OpenGL غير متوفر في هذا الإصدار.
 مبانٍ محصّنة
 [Veteran/Fast start]
 مخضرم/بداية سريعة
+[Match ends at the timer; highest prestige at that instant wins.]
+تنتهي الجولة عند انتهاء المؤقت؛ ويفوز صاحب أعلى هيبة في تلك اللحظة.
+[Off (no timer)]
+معطّل (بدون مؤقت)
+[90 minutes]
+90 دقيقة
+[30 minutes]
+30 دقيقة
+[45 minutes]
+45 دقيقة
+[60 minutes]
+60 دقيقة
+[Sudden-death timer]
+مؤقت الموت المفاجئ

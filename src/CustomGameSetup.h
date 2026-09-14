@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "EngineTiming.h"
 #include "GameHeader.h"
 #include "GenerationRequest.h"
 #include "GenerationValidation.h"
@@ -23,7 +24,7 @@ struct CustomGameSetup
 		const char *label;
 		const char *category;
 	};
-	static constexpr std::array<RuleDefinition, 17> ruleDefinitions = {
+	static constexpr std::array<RuleDefinition, 18> ruleDefinitions = {
 		{{"Victory", "Victory"},
 		 {"Map knowledge", "World & diplomacy"},
 		 {"Alliances", "World & diplomacy"},
@@ -40,7 +41,8 @@ struct CustomGameSetup
 		 {"No permadeath", "Combat"},
 		 {"Peaceful mode", "Combat"},
 		 {"Fortress buildings", "Combat"},
-		 {"Veteran/Fast start", "Starting conditions & pace"}}};
+		 {"Veteran/Fast start", "Starting conditions & pace"},
+		 {"Sudden-death timer", "Victory"}}};
 	bool ruleChanged(int index) const
 	{
 		switch (index)
@@ -81,6 +83,8 @@ struct CustomGameSetup
 			return buildingHpLevel != 0;
 		case 16:
 			return random && startingUnitLevel != 0;
+		case 17:
+			return suddenDeathMinutes != 0;
 		default:
 			return false;
 		}
@@ -104,6 +108,11 @@ struct CustomGameSetup
 	// Level the generated map's starting workers spawn at; applied to the generated map, so
 	// changing it regenerates the preview (mapRevision).
 	int startingUnitLevel = 0;
+	// Sudden-death timer choices in game minutes (0 = off). Prestige comes only from top-level
+	// schools, so an earlier buzzer almost always finds every colony tied at zero; in default AI
+	// matches the first sole prestige leader appeared 13-28 minutes in.
+	static constexpr std::array<int, 5> suddenDeathMinuteChoices = {0, 30, 45, 60, 90};
+	int suddenDeathMinutes = 0;
 	std::string format = "FFA", ruleset = "Standard";
 	std::string premadeMap;
 	unsigned mapRevision = 0;
@@ -211,6 +220,7 @@ struct CustomGameSetup
 			startingUnitLevel = 0;
 			++mapRevision;
 		}
+		suddenDeathMinutes = 0;
 		ruleset = preset == 0	? "Standard"
 				  : preset == 1 ? "Quick clash"
 				  : preset == 2 ? "Open book"
@@ -275,5 +285,9 @@ struct CustomGameSetup
 		header.setPermadeathDisabled(permadeathDisabled);
 		header.setPeacefulModeEnabled(peacefulMode);
 		header.setBuildingHpLevel(static_cast<Uint8>(buildingHpLevel));
+		std::optional<Uint32> endStepTick;
+		if (suddenDeathMinutes != 0)
+			endStepTick = static_cast<Uint32>(suddenDeathMinutes) * 60 * GAME_TICKS_PER_SECOND;
+		WinningCondition::setSuddenDeathWinCondition(header.getWinningConditions(), endStepTick);
 	}
 };

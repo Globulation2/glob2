@@ -2324,3 +2324,17 @@ Canhão de vidro
 Edifícios fortificados
 [Veteran/Fast start]
 Veterano/Início rápido
+[Match ends at the timer; highest prestige at that instant wins.]
+A partida termina no temporizador; vence quem tiver mais prestígio nesse instante.
+[Off (no timer)]
+Desativado (sem temporizador)
+[90 minutes]
+90 minutos
+[30 minutes]
+30 minutos
+[45 minutes]
+45 minutos
+[60 minutes]
+60 minutos
+[Sudden-death timer]
+Temporizador de morte súbita

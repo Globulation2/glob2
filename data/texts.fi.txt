@@ -2318,3 +2318,17 @@ Lasitykki
 Linnoitetut rakennukset
 [Veteran/Fast start]
 Veteraani/Nopea aloitus
+[Match ends at the timer; highest prestige at that instant wins.]
+Ottelu päättyy ajastimeen; eniten mainetta sillä hetkellä omaava voittaa.
+[Off (no timer)]
+Pois (ei ajastinta)
+[90 minutes]
+90 minuuttia
+[30 minutes]
+30 minuuttia
+[45 minutes]
+45 minuuttia
+[60 minutes]
+60 minuuttia
+[Sudden-death timer]
+Äkkikuoleman ajastin

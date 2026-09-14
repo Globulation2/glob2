@@ -2316,3 +2316,17 @@ OpenGL недоступен в этой сборке.
 Укреплённые здания
 [Veteran/Fast start]
 Ветеран/Быстрый старт
+[Match ends at the timer; highest prestige at that instant wins.]
+Матч заканчивается по таймеру; побеждает тот, у кого в этот момент больше всего престижа.
+[Off (no timer)]
+Выкл. (без таймера)
+[90 minutes]
+90 минут
+[30 minutes]
+30 минут
+[45 minutes]
+45 минут
+[60 minutes]
+60 минут
+[Sudden-death timer]
+Таймер внезапной смерти

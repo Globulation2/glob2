@@ -2328,3 +2328,17 @@ Glaskanon
 Befästa byggnader
 [Veteran/Fast start]
 Veteran/Snabb start
+[Match ends at the timer; highest prestige at that instant wins.]
+Matchen slutar vid timern; den med högst prestige vid den tidpunkten vinner.
+[Off (no timer)]
+Av (ingen timer)
+[90 minutes]
+90 minuter
+[30 minutes]
+30 minuter
+[45 minutes]
+45 minuter
+[60 minutes]
+60 minuter
+[Sudden-death timer]
+Sudden death-timer

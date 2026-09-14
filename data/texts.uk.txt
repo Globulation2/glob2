@@ -2314,3 +2314,17 @@ OpenGL недоступний у цій збірці.
 Укріплені будівлі
 [Veteran/Fast start]
 Ветеран/Швидкий старт
+[Match ends at the timer; highest prestige at that instant wins.]
+Матч завершується за таймером; перемагає той, у кого на цю мить найбільший престиж.
+[Off (no timer)]
+Вимкнено (без таймера)
+[90 minutes]
+90 хвилин
+[30 minutes]
+30 хвилин
+[45 minutes]
+45 хвилин
+[60 minutes]
+60 хвилин
+[Sudden-death timer]
+Таймер раптової смерті

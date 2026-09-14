@@ -2318,3 +2318,17 @@ Cañón de cristal
 Edificios fortificados
 [Veteran/Fast start]
 Veterano/Inicio rápido
+[Match ends at the timer; highest prestige at that instant wins.]
+La partida termina con el temporizador; gana quien tenga más prestigio en ese instante.
+[Off (no timer)]
+Desactivado (sin temporizador)
+[90 minutes]
+90 minutos
+[30 minutes]
+30 minutos
+[45 minutes]
+45 minutos
+[60 minutes]
+60 minutos
+[Sudden-death timer]
+Temporizador de muerte súbita
