@@ -35,6 +35,22 @@ GLOB2_TEST_MAX_TICKS=30000 ./glob2 -test-games-nox 1   # stop at 30,000 ticks
 
 The random game setup (`Engine::createRandomGame`) creates one local player + N AI players with randomly chosen AI types from the map's team count.
 
+### `GLOB2_TEST_RULES`
+
+Turns custom-game rules on for `-test-games` and `-test-games-nox` matches, as comma-separated `name=value` pairs. An unknown name or a value outside its range stops the run.
+
+| Name | Values | Rule |
+| --- | --- | --- |
+| `noGrowth` | 0-1 | No resource growth |
+| `scarcity` | 0-3 | Scarce resources (growth 2x, 4x, 8x slower) |
+| `instantConstruction` | 0-1 | Instant construction |
+| `stockpile` | 0-3 | Stockpile start (+50, +150, +300 of each resource) |
+| `noHunger` | 0-1 | No hunger |
+
+```bash
+GLOB2_TEST_RULES=scarcity=2,instantConstruction=1 ./glob2 -test-games-nox 1 --map Playground --matchup castor,warrush
+```
+
 ### `--ai-types <list>`
 
 Constrains the AI pool that `createRandomGame` draws from when generating

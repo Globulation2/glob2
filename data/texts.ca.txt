@@ -2222,3 +2222,51 @@ Fes clic per tornar-ho a provar
 Espera un moment
 [Map preview choose another]
 Tria un mapa
+[Resources never grow or spread across the map.]
+Els recursos mai no creixen ni s'escampen pel mapa.
+[Building sites complete immediately, skipping delivery.]
+Les obres es completen immediatament, sense fase de repartiment.
+[Units never grow hungry and never starve.]
+Les unitats mai no passen gana ni moren de fam.
+[Slows how often resources grow or spread across the map.]
+Alenteix la freqüència amb què els recursos creixen o s'escampen pel mapa.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Estableix la reserva inicial del mercat/intercanvi compartit de cada equip a l'inici de la partida.
+[Grow normally]
+Creixement normal
+[No growth]
+Sense creixement
+[Normal construction]
+Construcció normal
+[Instant]
+Instantània
+[Units get hungry]
+Les unitats passen gana
+[No hunger]
+Sense gana
+[Off (today's growth)]
+Desactivat (creixement actual)
+[Scarce (2x slower)]
+Escàs (2x més lent)
+[Very scarce (4x slower)]
+Molt escàs (4x més lent)
+[Extremely scarce (8x slower)]
+Extremament escàs (8x més lent)
+[None (today's default)]
+Cap (per defecte actual)
+[Small (+50 each)]
+Petit (+50 cadascun)
+[Medium (+150 each)]
+Mitjà (+150 cadascun)
+[Large (+300 each)]
+Gran (+300 cadascun)
+[No resource growth]
+Sense creixement de recursos
+[Economy]
+Economia
+[Scarce resources]
+Recursos escassos
+[Instant construction]
+Construcció instantània
+[Stockpile start]
+Reserva inicial

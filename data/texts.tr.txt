@@ -2222,3 +2222,51 @@ Yeniden denemek için tıklayın
 Lütfen bekleyin
 [Map preview choose another]
 Bir harita seçin
+[Resources never grow or spread across the map.]
+Kaynaklar haritada asla büyümez veya yayılmaz.
+[Building sites complete immediately, skipping delivery.]
+İnşaat alanları, teslimat aşaması atlanarak hemen tamamlanır.
+[Units never grow hungry and never starve.]
+Birimler asla acıkmaz ve asla açlıktan ölmez.
+[Slows how often resources grow or spread across the map.]
+Kaynakların haritada ne sıklıkla büyüyüp yayılacağını yavaşlatır.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Oyun başlangıcında her takımın ortak pazar/takas kaynak havuzunu doldurur.
+[Grow normally]
+Normal büyüme
+[No growth]
+Büyüme yok
+[Normal construction]
+Normal inşaat
+[Instant]
+Anında
+[Units get hungry]
+Birimler acıkır
+[No hunger]
+Açlık yok
+[Off (today's growth)]
+Kapalı (bugünkü büyüme)
+[Scarce (2x slower)]
+Kıt (2x daha yavaş)
+[Very scarce (4x slower)]
+Çok kıt (4x daha yavaş)
+[Extremely scarce (8x slower)]
+Aşırı kıt (8x daha yavaş)
+[None (today's default)]
+Yok (bugünkü varsayılan)
+[Small (+50 each)]
+Küçük (her biri +50)
+[Medium (+150 each)]
+Orta (her biri +150)
+[Large (+300 each)]
+Büyük (her biri +300)
+[No resource growth]
+Kaynak büyümesi yok
+[Economy]
+Ekonomi
+[Scarce resources]
+Kıt kaynaklar
+[Instant construction]
+Anında inşaat
+[Stockpile start]
+Başlangıç stoğu

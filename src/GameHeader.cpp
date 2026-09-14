@@ -5,6 +5,7 @@
 
 #include "FileFormatVersions.h"
 
+#include <algorithm>
 #include <ctime>
 
 GameHeader::GameHeader()
@@ -32,6 +33,11 @@ void GameHeader::reset()
 	allyTeamsFixed=true;
 	winningConditions = WinningCondition::getDefaultWinningConditions();
 	mapDiscovered=false;
+	resourceGrowthDisabled=false;
+	resourceScarcityLevel=0;
+	instantConstruction=false;
+	stockpileStartLevel=0;
+	hungerDisabled=false;
 }
 
 
@@ -113,6 +119,18 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	if(versionMinor >=  FILE_FORMAT_VERSION_MAP_DISCOVERED_FLAG)
 		mapDiscovered = stream->readUint8("mapDiscovered");
 	if (!loadAIConfig(stream, versionMinor)) return false;
+	if(versionMinor >= FILE_FORMAT_VERSION_ECONOMY_RULES)
+	{
+		resourceGrowthDisabled = stream->readUint8("resourceGrowthDisabled");
+		// Clamped to the tier lookup tables' range (Game.cpp's stockpileAmount[],
+		// Map::growResources's scarcityDivisor[]): a corrupted save or a
+		// malicious network peer could otherwise supply any Uint8 (0-255) and
+		// trigger an out-of-bounds array read wherever these are used to index.
+		resourceScarcityLevel = std::min<Uint8>(stream->readUint8("resourceScarcityLevel"), 3);
+		instantConstruction = stream->readUint8("instantConstruction");
+		stockpileStartLevel = std::min<Uint8>(stream->readUint8("stockpileStartLevel"), 3);
+		hungerDisabled = stream->readUint8("hungerDisabled");
+	}
 	stream->readLeaveSection();
 	return true;
 }
@@ -158,6 +176,11 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeUint32(seed, "seed");
 	stream->writeUint8(mapDiscovered, "mapDiscovered");
 	saveAIConfig(stream);
+	stream->writeUint8(resourceGrowthDisabled, "resourceGrowthDisabled");
+	stream->writeUint8(resourceScarcityLevel, "resourceScarcityLevel");
+	stream->writeUint8(instantConstruction, "instantConstruction");
+	stream->writeUint8(stockpileStartLevel, "stockpileStartLevel");
+	stream->writeUint8(hungerDisabled, "hungerDisabled");
 	stream->writeLeaveSection();
 }
 
@@ -188,6 +211,14 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 	if(versionMinor >=  FILE_FORMAT_VERSION_MAP_DISCOVERED_FLAG)
 		mapDiscovered = stream->readUint8("mapDiscovered");
 	if (!loadAIConfig(stream, versionMinor)) return false;
+	if(versionMinor >= FILE_FORMAT_VERSION_ECONOMY_RULES)
+	{
+		resourceGrowthDisabled = stream->readUint8("resourceGrowthDisabled");
+		resourceScarcityLevel = std::min<Uint8>(stream->readUint8("resourceScarcityLevel"), 3);
+		instantConstruction = stream->readUint8("instantConstruction");
+		stockpileStartLevel = std::min<Uint8>(stream->readUint8("stockpileStartLevel"), 3);
+		hungerDisabled = stream->readUint8("hungerDisabled");
+	}
 	stream->readLeaveSection();
 	return true;
 }
@@ -221,6 +252,11 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeUint32(seed, "seed");
 	stream->writeUint8(mapDiscovered, "mapDiscovered");
 	saveAIConfig(stream);
+	stream->writeUint8(resourceGrowthDisabled, "resourceGrowthDisabled");
+	stream->writeUint8(resourceScarcityLevel, "resourceScarcityLevel");
+	stream->writeUint8(instantConstruction, "instantConstruction");
+	stream->writeUint8(stockpileStartLevel, "stockpileStartLevel");
+	stream->writeUint8(hungerDisabled, "hungerDisabled");
 	stream->writeLeaveSection();
 }
 

@@ -2224,3 +2224,51 @@ Egin klik berriro saiatzeko
 Itxaron mesedez
 [Map preview choose another]
 Aukeratu mapa bat
+[Resources never grow or spread across the map.]
+Baliabideak ez dira inoiz hazten ez eta mapan zehar zabaltzen ere.
+[Building sites complete immediately, skipping delivery.]
+Eraikuntza-guneak berehala amaitzen dira, banaketa saltatuz.
+[Units never grow hungry and never starve.]
+Unitateak ez dira inoiz gose izaten eta ez dira inoiz gosez hiltzen.
+[Slows how often resources grow or spread across the map.]
+Baliabideak mapan zehar hazi edo zabaltzeko maiztasuna moteltzen du.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Talde bakoitzaren merkatu/truke baliabide-erreserba partekatua hasieratzen du jokoaren hasieran.
+[Grow normally]
+Hazkunde normala
+[No growth]
+Hazkunderik ez
+[Normal construction]
+Eraikuntza normala
+[Instant]
+Berehalakoa
+[Units get hungry]
+Unitateak gose dira
+[No hunger]
+Gose gabe
+[Off (today's growth)]
+Desaktibatuta (gaurko hazkundea)
+[Scarce (2x slower)]
+Urria (2x motelagoa)
+[Very scarce (4x slower)]
+Oso urria (4x motelagoa)
+[Extremely scarce (8x slower)]
+Izugarri urria (8x motelagoa)
+[None (today's default)]
+Bat ere ez (gaurko lehenetsia)
+[Small (+50 each)]
+Txikia (+50 bakoitzeko)
+[Medium (+150 each)]
+Ertaina (+150 bakoitzeko)
+[Large (+300 each)]
+Handia (+300 bakoitzeko)
+[No resource growth]
+Baliabide-hazkunderik ez
+[Economy]
+Ekonomia
+[Scarce resources]
+Baliabide urriak
+[Instant construction]
+Berehalako eraikuntza
+[Stockpile start]
+Hasierako erreserba

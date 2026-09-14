@@ -2210,3 +2210,51 @@ Globulation 2 のカーソルを表示します。
 お待ちください
 [Map preview choose another]
 マップを選択
+[Resources never grow or spread across the map.]
+資源はマップ上で決して成長せず、広がることもありません。
+[Building sites complete immediately, skipping delivery.]
+建設現場は配送段階を省略し、即座に完成します。
+[Units never grow hungry and never starve.]
+ユニットが空腹になることも、餓死することも決してありません。
+[Slows how often resources grow or spread across the map.]
+マップ上で資源が成長・拡散する頻度を遅くします。
+[Seeds each team's shared market/exchange resource pool at game start.]
+ゲーム開始時に、各チームの共有市場/交換資源プールを補充します。
+[Grow normally]
+通常の成長
+[No growth]
+成長なし
+[Normal construction]
+通常の建設
+[Instant]
+即時
+[Units get hungry]
+ユニットが空腹になる
+[No hunger]
+空腹なし
+[Off (today's growth)]
+オフ（現在の成長速度）
+[Scarce (2x slower)]
+希少（2x遅い）
+[Very scarce (4x slower)]
+非常に希少（4x遅い）
+[Extremely scarce (8x slower)]
+極めて希少（8x遅い）
+[None (today's default)]
+なし（現在のデフォルト）
+[Small (+50 each)]
+小（各+50）
+[Medium (+150 each)]
+中（各+150）
+[Large (+300 each)]
+大（各+300）
+[No resource growth]
+資源の成長なし
+[Economy]
+経済
+[Scarce resources]
+希少資源
+[Instant construction]
+即時建設
+[Stockpile start]
+開始時の備蓄

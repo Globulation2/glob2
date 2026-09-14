@@ -21,7 +21,11 @@
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 
+#include <cerrno>
+#include <cstdlib>
+#include <functional>
 #include <iostream>
+#include <sstream>
 
 
 int Engine::initCampaign(const std::string &mapName, Campaign& campaign, const std::string& missionName)
@@ -165,6 +169,54 @@ int Engine::initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, st
 
 
 
+namespace
+{
+	// GLOB2_TEST_RULES turns custom-game rules on for -test-games(-nox) matches, as
+	// comma-separated name=value pairs (docs/headless-replays.md), so AI matches can exercise
+	// the rules without the lobby. An unknown name or out-of-range value stops the run.
+	void applyTestRules(GameHeader& header)
+	{
+		const char* environment = getenv("GLOB2_TEST_RULES");
+		if (!environment || !*environment)
+			return;
+		struct Rule
+		{
+			const char* name;
+			long maximum;
+			std::function<void(GameHeader&, int)> apply;
+		};
+		const Rule rules[] = {
+			{"noGrowth", 1, [](GameHeader& h, int v) { h.setResourceGrowthDisabled(v); }},
+			{"scarcity", 3, [](GameHeader& h, int v) { h.setResourceScarcityLevel(v); }},
+			{"instantConstruction", 1, [](GameHeader& h, int v) { h.setInstantConstructionEnabled(v); }},
+			{"stockpile", 3, [](GameHeader& h, int v) { h.setStockpileStartLevel(v); }},
+			{"noHunger", 1, [](GameHeader& h, int v) { h.setHungerDisabled(v); }},
+		};
+		std::stringstream list(environment);
+		std::string item;
+		while (std::getline(list, item, ','))
+		{
+			const size_t equals = item.find('=');
+			const std::string name = item.substr(0, equals);
+			const Rule* rule = nullptr;
+			for (const Rule& candidate : rules)
+				if (name == candidate.name)
+					rule = &candidate;
+			char* end = nullptr;
+			errno = 0;
+			const long value = equals == std::string::npos ? -1 : strtol(item.c_str() + equals + 1, &end, 10);
+			if (!rule || equals == std::string::npos || errno || *end || end == item.c_str() + equals + 1
+				|| value < 0 || value > rule->maximum)
+			{
+				std::cerr << "GLOB2_TEST_RULES: invalid entry \"" << item << "\"" << std::endl;
+				exit(1);
+			}
+			rule->apply(header, static_cast<int>(value));
+			std::cout << "GLOB2_TEST_RULES: " << name << "=" << value << std::endl;
+		}
+	}
+}
+
 void Engine::createRandomGame()
 {
 	MapHeader map;
@@ -257,6 +309,7 @@ void Engine::createRandomGame()
 	{
 		game.setRandomSeed(globalContainer->testGamesSeed);
 	}
+	applyTestRules(game);
 	std::cout<<"Random Seed gameheader: "<<game.getRandomSeed();
 	for (int p=0; p<game.getNumberOfPlayers(); p++)
 	{

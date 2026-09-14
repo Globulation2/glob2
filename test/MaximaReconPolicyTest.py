@@ -2,6 +2,7 @@
 """Structural acceptance checks for Maxima reconnaissance integration."""
 
 from pathlib import Path
+import re
 import unittest
 
 
@@ -58,7 +59,9 @@ class MaximaReconPolicyTest(unittest.TestCase):
 
     def test_save_version_and_legacy_recon_gates(self):
         version = (ROOT / "src/Version.h").read_text()
-        self.assertIn("#define VERSION_MINOR 100", version)
+        minor = int(re.search(r"#define VERSION_MINOR (\d+)", version).group(1))
+        # Maxima's save gates need at least version 100; later formats keep them.
+        self.assertGreaterEqual(minor, 100)
         loader = self.source[self.source.index("bool Maxima::loadDirector"):]
         loader = loader[:loader.index("bool Maxima::load(")]
         # The mission section is the one part of the director state that is

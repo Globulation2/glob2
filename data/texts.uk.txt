@@ -2210,3 +2210,51 @@ OpenGL недоступний у цій збірці.
 Зачекайте
 [Map preview choose another]
 Виберіть мапу
+[Resources never grow or spread across the map.]
+Ресурси ніколи не ростуть і не поширюються по карті.
+[Building sites complete immediately, skipping delivery.]
+Будмайданчики завершуються одразу, без етапу доставки.
+[Units never grow hungry and never starve.]
+Істоти ніколи не голодують і не вмирають від голоду.
+[Slows how often resources grow or spread across the map.]
+Уповільнює те, як часто ресурси ростуть або поширюються по карті.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Наповнює спільний запас ринку/обміну кожної команди на початку гри.
+[Grow normally]
+Звичайний ріст
+[No growth]
+Без росту
+[Normal construction]
+Звичайне будівництво
+[Instant]
+Миттєве
+[Units get hungry]
+Істоти голодують
+[No hunger]
+Без голоду
+[Off (today's growth)]
+Вимкнено (сьогоднішній ріст)
+[Scarce (2x slower)]
+Мізерні (у 2x повільніше)
+[Very scarce (4x slower)]
+Дуже мізерні (у 4x повільніше)
+[Extremely scarce (8x slower)]
+Надзвичайно мізерні (у 8x повільніше)
+[None (today's default)]
+Немає (поточне значення за замовчуванням)
+[Small (+50 each)]
+Малий (+50 кожен)
+[Medium (+150 each)]
+Середній (+150 кожен)
+[Large (+300 each)]
+Великий (+300 кожен)
+[No resource growth]
+Без росту ресурсів
+[Economy]
+Економіка
+[Scarce resources]
+Мізерні ресурси
+[Instant construction]
+Миттєве будівництво
+[Stockpile start]
+Початковий запас

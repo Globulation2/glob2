@@ -2212,3 +2212,51 @@ Click to retry
 Please wait
 [Map preview choose another]
 Choose a map
+[Resources never grow or spread across the map.]
+Resources never grow or spread across the map.
+[Building sites complete immediately, skipping delivery.]
+Building sites complete immediately, skipping delivery.
+[Units never grow hungry and never starve.]
+Units never grow hungry and never starve.
+[Slows how often resources grow or spread across the map.]
+Slows how often resources grow or spread across the map.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Seeds each team's shared market/exchange resource pool at game start.
+[Grow normally]
+Grow normally
+[No growth]
+No growth
+[Normal construction]
+Normal construction
+[Instant]
+Instant
+[Units get hungry]
+Units get hungry
+[No hunger]
+No hunger
+[Off (today's growth)]
+Off (today's growth)
+[Scarce (2x slower)]
+Scarce (2x slower)
+[Very scarce (4x slower)]
+Very scarce (4x slower)
+[Extremely scarce (8x slower)]
+Extremely scarce (8x slower)
+[None (today's default)]
+None (today's default)
+[Small (+50 each)]
+Small (+50 each)
+[Medium (+150 each)]
+Medium (+150 each)
+[Large (+300 each)]
+Large (+300 each)
+[No resource growth]
+No resource growth
+[Economy]
+Economy
+[Scarce resources]
+Scarce resources
+[Instant construction]
+Instant construction
+[Stockpile start]
+Stockpile start

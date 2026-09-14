@@ -2238,3 +2238,51 @@ Klik om opnieuw te proberen
 Even geduld
 [Map preview choose another]
 Kies een kaart
+[Resources never grow or spread across the map.]
+Grondstoffen groeien of verspreiden zich nooit over de kaart.
+[Building sites complete immediately, skipping delivery.]
+Bouwplaatsen worden onmiddellijk voltooid, zonder bezorgfase.
+[Units never grow hungry and never starve.]
+Eenheden krijgen nooit honger en verhongeren nooit.
+[Slows how often resources grow or spread across the map.]
+Vertraagt hoe vaak grondstoffen over de kaart groeien of zich verspreiden.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Vult bij de start van het spel de gedeelde markt-/ruilvoorraad van elk team.
+[Grow normally]
+Normale groei
+[No growth]
+Geen groei
+[Normal construction]
+Normale bouw
+[Instant]
+Direct
+[Units get hungry]
+Eenheden krijgen honger
+[No hunger]
+Geen honger
+[Off (today's growth)]
+Uit (huidige groei)
+[Scarce (2x slower)]
+Schaars (2x langzamer)
+[Very scarce (4x slower)]
+Zeer schaars (4x langzamer)
+[Extremely scarce (8x slower)]
+Extreem schaars (8x langzamer)
+[None (today's default)]
+Geen (huidige standaard)
+[Small (+50 each)]
+Klein (+50 per stuk)
+[Medium (+150 each)]
+Middelgroot (+150 per stuk)
+[Large (+300 each)]
+Groot (+300 per stuk)
+[No resource growth]
+Geen grondstoffengroei
+[Economy]
+Economie
+[Scarce resources]
+Schaarse grondstoffen
+[Instant construction]
+Directe bouw
+[Stockpile start]
+Startvoorraad

@@ -2212,3 +2212,51 @@ OpenGL در این بیلد موجود نیست.
 لطفاً صبر کنید
 [Map preview choose another]
 یک نقشه انتخاب کنید
+[Resources never grow or spread across the map.]
+منابع هرگز روی نقشه رشد نمی‌کنند یا گسترش نمی‌یابند.
+[Building sites complete immediately, skipping delivery.]
+محل‌های ساخت بلافاصله تکمیل می‌شوند و مرحله تحویل را نادیده می‌گیرند.
+[Units never grow hungry and never starve.]
+واحدها هرگز گرسنه نمی‌شوند و هرگز از گرسنگی تلف نمی‌شوند.
+[Slows how often resources grow or spread across the map.]
+سرعت رشد یا گسترش منابع روی نقشه را کاهش می‌دهد.
+[Seeds each team's shared market/exchange resource pool at game start.]
+در آغاز بازی، ذخیره مشترک بازار/مبادله هر تیم را پر می‌کند.
+[Grow normally]
+رشد عادی
+[No growth]
+بدون رشد
+[Normal construction]
+ساخت‌وساز عادی
+[Instant]
+آنی
+[Units get hungry]
+واحدها گرسنه می‌شوند
+[No hunger]
+بدون گرسنگی
+[Off (today's growth)]
+خاموش (رشد امروزی)
+[Scarce (2x slower)]
+کمیاب (2x کندتر)
+[Very scarce (4x slower)]
+بسیار کمیاب (4x کندتر)
+[Extremely scarce (8x slower)]
+فوق‌العاده کمیاب (8x کندتر)
+[None (today's default)]
+هیچ‌کدام (پیش‌فرض امروزی)
+[Small (+50 each)]
+کوچک (+50 برای هرکدام)
+[Medium (+150 each)]
+متوسط (+150 برای هرکدام)
+[Large (+300 each)]
+بزرگ (+300 برای هرکدام)
+[No resource growth]
+بدون رشد منابع
+[Economy]
+اقتصاد
+[Scarce resources]
+منابع کمیاب
+[Instant construction]
+ساخت‌وساز آنی
+[Stockpile start]
+ذخیره اولیه

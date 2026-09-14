@@ -2214,3 +2214,51 @@ Haz clic para reintentar
 Espera un momento
 [Map preview choose another]
 Elige un mapa
+[Resources never grow or spread across the map.]
+Los recursos nunca crecen ni se expanden por el mapa.
+[Building sites complete immediately, skipping delivery.]
+Los sitios de construcción se completan de inmediato, sin fase de entrega.
+[Units never grow hungry and never starve.]
+Las unidades nunca pasan hambre ni mueren de hambre.
+[Slows how often resources grow or spread across the map.]
+Ralentiza la frecuencia con la que los recursos crecen o se expanden por el mapa.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Establece la reserva inicial compartida de mercado/intercambio de cada equipo al inicio de la partida.
+[Grow normally]
+Crecimiento normal
+[No growth]
+Sin crecimiento
+[Normal construction]
+Construcción normal
+[Instant]
+Instantánea
+[Units get hungry]
+Las unidades pasan hambre
+[No hunger]
+Sin hambre
+[Off (today's growth)]
+Desactivado (crecimiento actual)
+[Scarce (2x slower)]
+Escaso (2x más lento)
+[Very scarce (4x slower)]
+Muy escaso (4x más lento)
+[Extremely scarce (8x slower)]
+Extremadamente escaso (8x más lento)
+[None (today's default)]
+Ninguno (valor actual)
+[Small (+50 each)]
+Pequeño (+50 cada uno)
+[Medium (+150 each)]
+Mediano (+150 cada uno)
+[Large (+300 each)]
+Grande (+300 cada uno)
+[No resource growth]
+Sin crecimiento de recursos
+[Economy]
+Economía
+[Scarce resources]
+Recursos escasos
+[Instant construction]
+Construcción instantánea
+[Stockpile start]
+Reserva inicial

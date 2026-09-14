@@ -2214,3 +2214,51 @@ OpenGL није доступан у овој верзији.
 Сачекајте
 [Map preview choose another]
 Изаберите мапу
+[Resources never grow or spread across the map.]
+Ресурси никада не расту нити се шире по мапи.
+[Building sites complete immediately, skipping delivery.]
+Градилишта се завршавају одмах, без фазе испоруке.
+[Units never grow hungry and never starve.]
+Јединице никада не гладују нити умиру од глади.
+[Slows how often resources grow or spread across the map.]
+Успорава колико често ресурси расту или се шире по мапи.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Пуни заједничку резерву пијаце/размене сваког тима на почетку игре.
+[Grow normally]
+Нормалан раст
+[No growth]
+Без раста
+[Normal construction]
+Нормална градња
+[Instant]
+Тренутна
+[Units get hungry]
+Јединице гладују
+[No hunger]
+Без глади
+[Off (today's growth)]
+Искључено (данашњи раст)
+[Scarce (2x slower)]
+Оскудни (2x спорије)
+[Very scarce (4x slower)]
+Врло оскудни (4x спорије)
+[Extremely scarce (8x slower)]
+Изузетно оскудни (8x спорије)
+[None (today's default)]
+Ниједан (данашња подразумевана вредност)
+[Small (+50 each)]
+Мали (+50 сваки)
+[Medium (+150 each)]
+Средњи (+150 сваки)
+[Large (+300 each)]
+Велики (+300 сваки)
+[No resource growth]
+Без раста ресурса
+[Economy]
+Привреда
+[Scarce resources]
+Оскудни ресурси
+[Instant construction]
+Тренутна градња
+[Stockpile start]
+Почетна залиха

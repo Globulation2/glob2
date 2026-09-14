@@ -2290,3 +2290,51 @@ Klik for at prøve igen
 Vent venligst
 [Map preview choose another]
 Vælg et kort
+[Resources never grow or spread across the map.]
+Ressourcer vokser eller spreder sig aldrig på kortet.
+[Building sites complete immediately, skipping delivery.]
+Byggepladser færdiggøres med det samme uden leveringsfase.
+[Units never grow hungry and never starve.]
+Enheder bliver aldrig sultne og dør aldrig af sult.
+[Slows how often resources grow or spread across the map.]
+Sænker hvor ofte ressourcer vokser eller spreder sig på kortet.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Fylder hvert holds fælles marked/byttehandel-ressourcepulje op ved spilstart.
+[Grow normally]
+Vokser normalt
+[No growth]
+Ingen vækst
+[Normal construction]
+Normal opførelse
+[Instant]
+Øjeblikkelig
+[Units get hungry]
+Enheder bliver sultne
+[No hunger]
+Ingen sult
+[Off (today's growth)]
+Fra (dagens vækst)
+[Scarce (2x slower)]
+Sparsomt (2x langsommere)
+[Very scarce (4x slower)]
+Meget sparsomt (4x langsommere)
+[Extremely scarce (8x slower)]
+Ekstremt sparsomt (8x langsommere)
+[None (today's default)]
+Ingen (dagens standard)
+[Small (+50 each)]
+Lille (+50 pr. stk.)
+[Medium (+150 each)]
+Mellem (+150 pr. stk.)
+[Large (+300 each)]
+Stor (+300 pr. stk.)
+[No resource growth]
+Ingen ressourcevækst
+[Economy]
+Økonomi
+[Scarce resources]
+Sparsomme ressourcer
+[Instant construction]
+Øjeblikkelig opførelse
+[Stockpile start]
+Startbeholdning
