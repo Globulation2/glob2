@@ -56,6 +56,10 @@ Castor plays a conservative game and does very well on maps with few resources. 
 Castor
 [AICortex-Description]
 Cortex expands toward fresh wheat and sends supported warrior waves, using forward inns and hospitals. Medium difficulty. Experimental.
+[AIMaxima-Description]
+Maxima grows a well-fed colony, scouts constantly and attacks without pause, sending every warrior it can spare. Hard Difficulty.
+[AIMaxima]
+Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]
@@ -78,6 +82,10 @@ Econo
 Warrush - Attacks quickly and punishingly, often pushing a defending player to the edge of its game. Medium Difficulty.
 [AIWarrush]
 Warrush
+[AICabino-Description]
+Cabino runs its defense, offense and construction as independent departments that each act on their own initiative, but together they pursue one plan: grow large fast and throw huge armies at its opponents. Hard Difficulty.
+[AICabino]
+Cabino
 [Alga]
 Algae
 [algae]
@@ -1258,6 +1266,10 @@ Huge bases and conversion instead of attacks.
 Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
 [AIWarrush-Summary]
 Fast attacks that test your early defenses.
+[AICabino-Profile]
+Core strategy: A cabinet of independent specialist departments — defense, offense, construction, upgrades, unit management — that each act on their own initiative but converge on one plan: grow large fast, then throw huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure; independent departments react quickly to local threats without waiting on a central plan.\n\nCounterplay to try: Contest its expansion early and use terrain to limit how much of its army can engage at once.
+[AICabino-Summary]
+Independent departments that cooperate toward rapid growth and overwhelming armies.
 [Algae]
 Algae
 [Alliances]
@@ -1378,6 +1390,14 @@ Players & Teams
 Premade maps
 [Preview ready. Start plays this exact map.]
 Preview ready. Start plays this exact map.
+[Regenerate all]
+Regenerate all
+[Generating preview...]
+Generating preview...
+[Preview unavailable]
+Preview unavailable
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.
 [Purple]
 Purple
 [Quick clash]
@@ -1540,6 +1560,10 @@ No current preview
 Quick clash: 2x speed; generated maps start with 8 workers.
 [Reroll]
 Reroll
+[Randomize]
+Randomize
+[Reset to defaults]
+Reset to defaults
 [Ruleset]
 Ruleset
 [Select a map from the library.]
@@ -1618,6 +1642,8 @@ Display the Globulation 2 cursor.
 Done
 [settings Edit shortcut]
 Edit shortcut
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Enlarge menus, text and the sidebar on a high-resolution screen.
 [settings Flags]
 Flags
 [settings Full]
@@ -1632,6 +1658,8 @@ Game speed
 Gameplay
 [settings Graphics detail]
 Graphics detail
+[settings Interface scale]
+Interface scale
 [settings Keep]
 Keep
 [settings Keep this display mode?]
@@ -1654,6 +1682,8 @@ Language used throughout the interface.
 Level
 [settings Map editor]
 Map editor
+[settings Match the desktop]
+Match the desktop
 [settings Missing font]
 Missing font
 [settings Music volume]
@@ -1764,12 +1794,410 @@ Apply artwork on the next game or editor load (OpenGL).
 Automatic torus view
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automatically show the torus overview while moving around the map (OpenGL).
+[settings Autosave]
+Autosave
+[settings Save the game automatically about every 10 seconds.]
+Save the game automatically about every 10 seconds.
 [Channel width]
 Channel width
 [Land bridge width]
 Land bridge width
 [Lake size]
 Lake size
+[Contested commons]
+Contested commons
+[Maze]
+Maze
+[Fjord continent]
+Fjord continent
+[Cell size]
+Cell size
+[Loopiness]
+Loopiness
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+The maze needs at least two cells across and down; use a bigger map or smaller cells.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.
+[Home island size]
+Home island size
+[Commons size]
+Commons size
+[Moat width]
+Moat width
+[Bridge count]
+Bridge count
+[Continent size]
+Continent size
+[Coast roughness]
+Coast roughness
+[Fjord width]
+Fjord width
+[Lake connects to fjords]
+Lake connects to fjords
+[Resource islands]
+Resource islands
+[Watershed]
+Watershed
+[River density]
+River density
+[Dryness]
+Dryness
+[Fords]
+Fords
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.
+[Stone highlands]
+Stone highlands
+[Valley size]
+Valley size
+[Pass width]
+Pass width
+[Pond size]
+Pond size
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+These valleys are too big for the map; use a bigger map or smaller valleys.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+The highlands have too little room for this many colonies; use a bigger map or fewer colonies.
+[Symmetric arena]
+Symmetric arena
+[Centre size]
+Centre size
+[Causeway width]
+Causeway width
+[Causeways]
+Causeways
+[Lakes]
+Lakes
+[Resource richness]
+Resource richness
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Symmetric arena needs 2, 4 or 8 colonies.
+[Eight colonies need a square map in the symmetric arena.]
+Eight colonies need a square map in the symmetric arena.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+The centre is too small for an orchard on this map; use a bigger centre or a bigger map.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+The causeways are too close together; use fewer or narrower causeways, or a bigger centre.
+[Ring world]
+Ring world
+[Belt width]
+Belt width
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+The belt is too short for this many colonies; use a longer map or fewer colonies.
+[City states]
+City states
+[Strait width]
+Strait width
+[Valleys]
+Valleys
+[Frontier richness]
+Frontier richness
+[City states need at least one colony.]
+City states need at least one colony.
+[Stone walls]
+Stone walls
+[Sand patches]
+Sand patches
+[Tidal flats]
+Tidal flats
+[Everglades]
+Everglades
+[Pool spacing]
+Pool spacing
+[Pool size]
+Pool size
+[Clearing size]
+Clearing size
+[Levee]
+Levee
+[Sloughs]
+Sloughs
+[Everglades need at least one colony.]
+Everglades need at least one colony.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Too many colonies for this map; use a bigger map or fewer colonies.
+[Coral]
+Coral
+[Fork angle]
+Fork angle
+[Lean]
+Lean
+[Home size]
+Home size
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.
+[Branching]
+Branching
+[Branch width]
+Branch width
+[Coral needs at least one colony.]
+Coral needs at least one colony.
+[Coral needs a map at least 128 tiles across.]
+Coral needs a map at least 128 tiles across.
+[Carousel]
+Carousel
+[Amphitheatre]
+Amphitheatre
+[Switchbacks]
+Switchbacks
+[Corridor width]
+Corridor width
+[Spoke width]
+Spoke width
+[Court size]
+Court size
+[Court wall]
+Court wall
+[Plaza size]
+Plaza size
+[Starting tower level]
+Starting tower level
+[Towers per colony]
+Towers per colony
+[Rings]
+Rings
+[Ramp width]
+Ramp width
+[Pit size]
+Pit size
+[Terrace width]
+Terrace width
+[Bay size]
+Bay size
+[Border wall]
+Border wall
+[Plateau size]
+Plateau size
+[Trail width]
+Trail width
+[Wall between legs]
+Wall between legs
+[Farm building plots]
+Farm building plots
+[Carousels need at least two colonies.]
+Carousels need at least two colonies.
+[Switchbacks need at least two colonies.]
+Switchbacks need at least two colonies.
+[An amphitheatre needs at least two colonies.]
+An amphitheatre needs at least two colonies.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.
+[Spider webs need at least one colony.]
+Spider webs need at least one colony.
+[Spiral]
+Spiral
+[Dew drops]
+Dew drops
+[Hub size]
+Hub size
+[Torn strands]
+Torn strands
+[Sag]
+Sag
+[Thread width]
+Thread width
+[Ring spacing]
+Ring spacing
+[Spokes per colony]
+Spokes per colony
+[Spider web]
+Spider web
+[Sandbars]
+Sandbars
+[Tide pools]
+Tide pools
+[Lagoons]
+Lagoons
+[Central island]
+Central island
+[Tidal flats need at least one colony.]
+Tidal flats need at least one colony.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.
+[Wheat amount]
+Wheat amount
+[Wood amount]
+Wood amount
+[Stone amount]
+Stone amount
+[Algae amount]
+Algae amount
+[Fruit amount]
+Fruit amount
+[Stone on hilltops]
+Stone on hilltops
+[Winding river]
+Winding river
+[Sandy beaches]
+Sandy beaches
+[Land bridges]
+Land bridges
+[Colony meadows]
+Colony meadows
+[Extra starting deposit]
+Extra starting deposit
+[Moat bridges]
+Moat bridges
+[Jagged coastlines]
+Jagged coastlines
+[Sand roads]
+Sand roads
+[Treasure in dead ends]
+Treasure in dead ends
+[Fjord bank deposits]
+Fjord bank deposits
+[Sandy lake shore]
+Sandy lake shore
+[River delta]
+River delta
+[Meandering rivers]
+Meandering rivers
+[Fruit in home valleys]
+Fruit in home valleys
+[Moat]
+Moat
+[Stone in the orchard]
+Stone in the orchard
+[Colonies on both coasts]
+Colonies on both coasts
+[Winding belt]
+Winding belt
+[Cell shape]
+Cell shape
+[Squares]
+Squares
+[Hexagons]
+Hexagons
+[Warp]
+Warp
+[Fingerprint]
+Fingerprint
+[Wavelength]
+Wavelength
+[Pattern]
+Pattern
+[Labyrinth]
+Labyrinth
+[Channels]
+Channels
+[Barrier]
+Barrier
+[Water]
+Water
+[Grain]
+Grain
+[Rain shadow]
+Rain shadow
+[Ridges]
+Ridges
+[Slant]
+Slant
+[Ridge thickness]
+Ridge thickness
+[Pass spacing]
+Pass spacing
+[Lee width]
+Lee width
+[Old growth]
+Old growth
+[Canals]
+Canals
+[Forest density]
+Forest density
+[Hidden groves]
+Hidden groves
+[Starting trails]
+Starting trails
+[Block size]
+Block size
+[Canal width]
+Canal width
+[Extra bridges]
+Extra bridges
+[Polder]
+Polder
+[Old town]
+Old town
+[Anthill]
+Anthill
+[Row angle]
+Row angle
+[Diagonal]
+Diagonal
+[Dyke spacing]
+Dyke spacing
+[Village size]
+Village size
+[Hamlets]
+Hamlets
+[City size]
+City size
+[Street width]
+Street width
+[Plazas]
+Plazas
+[Chamber spacing]
+Chamber spacing
+[Chamber size]
+Chamber size
+[Queen room]
+Queen room
+[Tunnel width]
+Tunnel width
+[Loops]
+Loops
+[Home pools]
+Home pools
+[Farm plots]
+Farm plots
+[Tendril roads]
+Tendril roads
+[Random]
+Random
+[Vertical]
+Vertical
+[Horizontal]
+Horizontal
+[Inland lakes]
+Inland lakes
+[Block shape]
+Block shape
+[Random parameters]
+Random parameters
+[Randomize parameters]
+Randomize parameters
+[Start quality]
+Start quality
+[Fairness]
+Fairness
+[Score]
+Score
+[Weight]
+Weight
+[Worst]
+Worst
+[Best]
+Best
+[Fertility]
+Fertility
+[Deposits]
+Deposits
+[Room]
+Room
+[Isolation]
+Isolation
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.
 [repeat map horizontally]
 Repeat map horizontally
 [repeat map vertically]

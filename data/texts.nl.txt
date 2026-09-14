@@ -74,6 +74,10 @@ Econo
 Warrush is snel en onverbiddelijk. Voor je het weet staan zijn legers aan jouw deur en moet je verdedigen alsof je leven er van afhangt, want dat is ook zo. Moeilijkheidsgraad: Gemiddeld.
 [AIWarrush]
 Warrush
+[AICabino-Description]
+Cabino bestuurt verdediging, aanval en bouw als onafhankelijke afdelingen die toch naar één plan toewerken: snel groeien en machtige legers op zijn vijanden afsturen. Moeilijkheidsgraad: Moeilijk.
+[AICabino]
+Cabino
 [Alga]
 Zeewier
 [algae]
@@ -1244,6 +1248,10 @@ Snelheid: 1x (multiplayer)
 Alleen voor één speler en herhalingen. Multiplayer draait op 1x.
 [AICortex-Description]
 Cortex breidt zich uit naar nieuwe tarwevelden en stuurt groepen krijgers de strijd in, ondersteund door herbergen en ziekenhuizen nabij de frontlinie. Gemiddelde moeilijkheidsgraad. Experimenteel.
+[AIMaxima-Description]
+Maxima laat een goed gevoede kolonie groeien, verkent voortdurend en valt zonder pauze aan met elke krijger die het kan missen. Hoge moeilijkheidsgraad.
+[AIMaxima]
+Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
 De campagne kon niet worden opgeslagen. Controleer of de doelmap bestaat, beschrijfbaar is en voldoende vrije ruimte heeft.
 [AICortex]
@@ -1284,6 +1292,10 @@ Enorme bases en conversie in plaats van aanvallen.
 Strategie: Valt vroeg en krachtig aan, voordat de tegenstanders klaar zijn met voorbereiden.\n\nSterke punten: maakt gebruik van onverdedigde expansie en trage militaire voorbereiding.\n\nVoorgesteld tegenspel: overleef de eerste aanval met behoud van je economie, en voer dan een tegenaanval uit.
 [AIWarrush-Summary]
 Snelle aanvallen die je vroege verdediging op de proef stellen.
+[AICabino-Profile]
+Kernstrategie: een kabinet van onafhankelijke gespecialiseerde afdelingen (verdediging, aanval, bouw, upgrades, eenheidsbeheer) die elk op eigen initiatief handelen maar naar één plan toewerken: snel groeien en daarna machtige legers op de vijand afsturen.\n\nSterke punten: snelle expansie ondersteunt agressieve militaire druk; de onafhankelijke afdelingen reageren snel op lokale dreigingen zonder op een centraal plan te wachten.\n\nTegenzet om te proberen: bestrijd zijn expansie vroeg en gebruik het terrein om te beperken hoeveel van zijn troepen tegelijk kunnen vechten.
+[AICabino-Summary]
+Onafhankelijke afdelingen die samenwerken aan snelle groei en enorme legers.
 [Algae]
 zeewier
 [Alliances]
@@ -1404,6 +1416,14 @@ Spelers & Teams
 Vooraf gemaakte kaarten
 [Preview ready. Start plays this exact map.]
 Voorbeeld klaar. Bij het starten van het spel wordt deze exacte kaart gebruikt.
+[Regenerate all]
+Alles opnieuw genereren
+[Generating preview...]
+Voorbeeld wordt gemaakt...
+[Preview unavailable]
+Geen voorbeeld beschikbaar
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Elk landschap wordt getoond als een echte kaart met je huidige grootte en aantal kolonies. Kies er een om de getoonde kaart te spelen.
 [Purple]
 Paars
 [Quick clash]
@@ -1566,6 +1586,10 @@ Geen actueel voorbeeld
 Snelle strijd: dubbele snelheid; gegenereerde kaarten beginnen met 8 werkers.
 [Reroll]
 Genereer nog een kaart
+[Randomize]
+Willekeurig genereren
+[Reset to defaults]
+Standaardwaarden herstellen
 [Ruleset]
 Regelset
 [Select a map from the library.]
@@ -1644,6 +1668,8 @@ Geef de Globulation 2-cursor weer.
 Klaar
 [settings Edit shortcut]
 Sneltoets bewerken
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Vergroot menu's, tekst en de zijbalk op een scherm met hoge resolutie.
 [settings Flags]
 Vlaggen
 [settings Full]
@@ -1658,6 +1684,8 @@ Spelsnelheid
 Spelverloop
 [settings Graphics detail]
 Grafische details
+[settings Interface scale]
+Schaal van de interface
 [settings Keep]
 Behouden
 [settings Keep this display mode?]
@@ -1680,6 +1708,8 @@ Taal die in de hele interface wordt gebruikt.
 Niveau
 [settings Map editor]
 Kaarteditor
+[settings Match the desktop]
+Zoals het bureaublad
 [settings Missing font]
 Ontbrekend lettertype
 [settings Music volume]
@@ -1790,23 +1820,421 @@ Pas de grafische beelden toe wanneer een volgende partij of de kaarteditor wordt
 Automatische torusweergave
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Toon automatisch het torusvormige kaartoverzicht terwijl u over de kaart beweegt (OpenGL).
+[settings Autosave]
+Automatisch opslaan
+[settings Save the game automatically about every 10 seconds.]
+Slaat het spel ongeveer elke 10 seconden automatisch op.
 [Channel width]
 Kanaalbreedte
 [Land bridge width]
 Breedte van de landbrug
 [Lake size]
 Meergrootte
+[Contested commons]
+Betwist gemeenschappelijk gebied
+[Maze]
+Doolhof
+[Fjord continent]
+Fjordencontinent
+[Cell size]
+Celgrootte
+[Corridor width]
+Gangbreedte
+[Spoke width]
+Spaakbreedte
+[Loopiness]
+Aantal lussen
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Het doolhof heeft minstens twee cellen in de breedte en de hoogte nodig; gebruik een grotere kaart of kleinere cellen.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Zulke brede kanalen laten te weinig gras in elke cel over; gebruik smallere kanalen of grotere cellen.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Het doolhof heeft te weinig doodlopende gangen voor zoveel kolonies; gebruik een grotere kaart of kleinere cellen.
+[Home island size]
+Grootte van het starteiland
+[Commons size]
+Grootte van het gemeenschappelijke gebied
+[Moat width]
+Slotgrachtbreedte
+[Bridge count]
+Aantal bruggen
+[Continent size]
+Continentgrootte
+[Coast roughness]
+Grilligheid van de kust
+[Fjord width]
+Fjordbreedte
+[Lake connects to fjords]
+Meer verbonden met fjorden
+[Resource islands]
+Grondstofeilanden
+[Watershed]
+Stroomgebied
+[River density]
+Rivierdichtheid
+[Dryness]
+Droogte
+[Fords]
+Doorwaadplaatsen
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Het stroomgebied heeft te weinig overstromingsvlakte voor zoveel kolonies; gebruik een grotere kaart of minder kolonies.
+[Stone highlands]
+Stenen hooglanden
+[Valley size]
+Dalgrootte
+[Pass width]
+Pasbreedte
+[Pond size]
+Vijvergrootte
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Deze dalen zijn te groot voor de kaart; gebruik een grotere kaart of kleinere dalen.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+De hooglanden hebben te weinig ruimte voor zoveel kolonies; gebruik een grotere kaart of minder kolonies.
+[Symmetric arena]
+Symmetrische arena
+[Centre size]
+Grootte van het centrum
+[Causeway width]
+Dijkwegbreedte
+[Causeways]
+Dijkwegen
+[Lakes]
+Meren
+[Resource richness]
+Rijkdom aan grondstoffen
+[Symmetric arena needs 2, 4 or 8 colonies.]
+De symmetrische arena heeft 2, 4 of 8 kolonies nodig.
+[Eight colonies need a square map in the symmetric arena.]
+Acht kolonies hebben in de symmetrische arena een vierkante kaart nodig.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Het centrum is te klein voor een boomgaard op deze kaart; gebruik een groter centrum of een grotere kaart.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+De arena laat te weinig ruimte voor elke kolonie; gebruik een grotere kaart, een kleiner centrum of een smallere slotgracht.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+De dijkwegen liggen te dicht bij elkaar; gebruik minder of smallere dijkwegen, of een groter centrum.
+[Ring world]
+Ringwereld
+[Belt width]
+Gordelbreedte
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+De gordel is te kort voor zoveel kolonies; gebruik een langere kaart of minder kolonies.
+[City states]
+Stadstaten
+[Strait width]
+Breedte van de zeestraat
+[Valleys]
+Valleien
+[Frontier richness]
+Rijkdom van de Nieuwe Wereld
+[City states need at least one colony.]
+Stadstaten hebben minstens één kolonie nodig.
+[Stone walls]
+Stenen muren
+[Sand patches]
+Zandvlakken
+[Tidal flats]
+Wadden
+[Everglades]
+Moerasland
+[Pool spacing]
+Afstand tussen poelen
+[Pool size]
+Grootte van de poelen
+[Clearing size]
+Grootte van de open plek
+[Levee]
+Dijk
+[Sloughs]
+Moerassloten
+[Everglades need at least one colony.]
+Het moerasland heeft minstens één kolonie nodig.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Te veel kolonies voor deze kaart; gebruik een grotere kaart of minder kolonies.
+[Coral]
+Koraal
+[Fork angle]
+Vertakkingshoek
+[Lean]
+Helling
+[Home size]
+Grootte van de thuisbasis
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Het koraal past niet op deze kaart; gebruik een grotere kaart, smallere zeestraten of minder kolonies.
+[Branching]
+Vertakking
+[Branch width]
+Takbreedte
+[Coral needs at least one colony.]
+Koraal heeft minstens één kolonie nodig.
+[Coral needs a map at least 128 tiles across.]
+Koraal heeft een kaart van minstens 128 tegels breed nodig.
+[Carousel]
+Draaimolen
+[Amphitheatre]
+Amfitheater
+[Switchbacks]
+Haarspeldbochten
+[Court size]
+Grootte van de binnenplaatsen
+[Court wall]
+Muur van de binnenplaatsen
+[Plaza size]
+Grootte van het plein
+[Starting tower level]
+Niveau van de starttorens
+[Towers per colony]
+Torens per kolonie
+[Rings]
+Ringen
+[Ramp width]
+Hellingbreedte
+[Pit size]
+Grootte van de arena
+[Terrace width]
+Terrasbreedte
+[Bay size]
+Grootte van de baaien
+[Border wall]
+Grensmuur
+[Plateau size]
+Grootte van het plateau
+[Trail width]
+Padbreedte
+[Wall between legs]
+Muur tussen bochten
+[Farm building plots]
+Bouwkavels in de boerderijen
+[Carousels need at least two colonies.]
+Een draaimolen heeft minstens twee kolonies nodig.
+[Switchbacks need at least two colonies.]
+Haarspeldbochten hebben minstens twee kolonies nodig.
+[An amphitheatre needs at least two colonies.]
+Een amfitheater heeft minstens twee kolonies nodig.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+De draaimolen past niet op deze kaart; gebruik een grotere kaart, kleinere thuisbases of minder kolonies.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+De haarspeldbochten passen niet op deze kaart; gebruik een grotere kaart, een kleiner plateau, smallere paden of minder kolonies.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Het amfitheater past niet op deze kaart; gebruik een grotere kaart, minder ringen, smallere terrassen of minder kolonies.
+[Spider web]
+Spinnenweb
+[Spokes per colony]
+Spaken per kolonie
+[Ring spacing]
+Ringafstand
+[Thread width]
+Draadbreedte
+[Sag]
+Doorhang
+[Torn strands]
+Gescheurde draden
+[Hub size]
+Grootte van het midden
+[Dew drops]
+Dauwdruppels
+[Spiral]
+Spiraal
+[Spider webs need at least one colony.]
+Een spinnenweb heeft minstens één kolonie nodig.
+[Sandbars]
+Zandbanken
+[Tide pools]
+Getijdenpoelen
+[Lagoons]
+Lagunes
+[Central island]
+Centraal eiland
+[Tidal flats need at least one colony.]
+De wadden hebben minstens één kolonie nodig.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+De thuiseilanden passen niet op deze kaart; gebruik een grotere kaart, minder kolonies of kleinere eilanden.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Het gemeenschappelijke gebied en de zeestraat laten te weinig ruimte voor de thuisbases; gebruik een grotere kaart, minder kolonies, een kleiner gemeenschappelijk gebied of een smallere zeestraat.
+[Wheat amount]
+Hoeveelheid tarwe
+[Wood amount]
+Hoeveelheid hout
+[Stone amount]
+Hoeveelheid steen
+[Algae amount]
+Hoeveelheid zeewier
+[Fruit amount]
+Hoeveelheid vruchten
+[Stone on hilltops]
+Steen op heuveltoppen
+[Winding river]
+Kronkelende rivier
+[Sandy beaches]
+Zandstranden
+[Land bridges]
+Landbruggen
+[Colony meadows]
+Weiden rond de kolonies
+[Extra starting deposit]
+Extra startvoorraad
+[Moat bridges]
+Bruggen over de gracht
+[Jagged coastlines]
+Grillige kusten
+[Sand roads]
+Zandwegen
+[Treasure in dead ends]
+Schatten in doodlopende gangen
+[Fjord bank deposits]
+Voorraden langs de fjordoevers
+[Sandy lake shore]
+Zandige meeroever
+[River delta]
+Rivierdelta
+[Meandering rivers]
+Meanderende rivieren
+[Fruit in home valleys]
+Vruchten in de startdalen
+[Moat]
+Slotgracht
+[Stone in the orchard]
+Steen in de boomgaard
+[Colonies on both coasts]
+Kolonies aan beide kusten
+[Winding belt]
+Kronkelende gordel
+[Cell shape]
+Celvorm
+[Squares]
+Vierkanten
+[Hexagons]
+Zeshoeken
+[Warp]
+Vervorming
+[Fingerprint]
+Vingerafdruk
+[Wavelength]
+Golflengte
+[Pattern]
+Patroon
+[Labyrinth]
+Labyrint
+[Channels]
+Geulen
+[Barrier]
+Barrière
+[Water]
+Water
+[Grain]
+Korrel
+[Rain shadow]
+Regenschaduw
+[Ridges]
+Ruggen
+[Slant]
+Scheefstand
+[Ridge thickness]
+Dikte van de ruggen
+[Pass spacing]
+Pasafstand
+[Lee width]
+Breedte van de lijzijde
+[Old growth]
+Oerbos
+[Canals]
+Grachten
+[Forest density]
+Bosdichtheid
+[Hidden groves]
+Verborgen bosjes
+[Starting trails]
+Startpaden
+[Block size]
+Grootte van de bouwblokken
+[Canal width]
+Grachtbreedte
+[Extra bridges]
+Extra bruggen
+[Polder]
+Polder
+[Old town]
+Oude stad
+[Anthill]
+Mierenhoop
+[Row angle]
+Rijhoek
+[Diagonal]
+Diagonaal
+[Dyke spacing]
+Dijkafstand
+[Village size]
+Dorpsgrootte
+[Hamlets]
+Gehuchten
+[City size]
+Grootte van de stad
+[Street width]
+Straatbreedte
+[Plazas]
+Pleinen
+[Chamber spacing]
+Kamerafstand
+[Chamber size]
+Kamergrootte
+[Queen room]
+Koninginnekamer
+[Tunnel width]
+Tunnelbreedte
+[Loops]
+Lussen
+[Home pools]
+Poelen bij de thuisbasis
+[Farm plots]
+Akkerpercelen
+[Tendril roads]
+Rankwegen
+[Random]
+Willekeurig
+[Vertical]
+Verticaal
+[Horizontal]
+Horizontaal
+[Inland lakes]
+Binnenmeren
+[Block shape]
+Vorm van de bouwblokken
+[Random parameters]
+Willekeurige parameters
+[Randomize parameters]
+Parameters willekeurig kiezen
+[Start quality]
+Startkwaliteit
+[Fairness]
+Eerlijkheid
+[Score]
+Waardering
+[Weight]
+Gewicht
+[Worst]
+Slechtste
+[Best]
+Beste
+[Fertility]
+Vruchtbaarheid
+[Deposits]
+Voorraden
+[Room]
+Ruimte
+[Isolation]
+Afzondering
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+De start van elke kolonie wordt gemeten op de voltooide kaart: de loop naar tarwe en naar hout, hoe goed haar grond teruggroeit, de voorraden en bouwplaatsen binnen bereik, en haar afstand tot rivalen. Elke factor scoort van 0 tot 1 tegen een vaste maatstaf, het totaal weegt ze, de eerlijkheid is het totaal van de slechtste kolonie gedeeld door dat van de beste, en de waardering is het slechtste totaal maal de eerlijkheid.
 [repeat map horizontally]
-Repeat map horizontally
+Kaart horizontaal herhalen
 [repeat map vertically]
-Repeat map vertically
+Kaart verticaal herhalen
 [tile x]
-tile x
+herhaling x
 [tile y]
-tile y
+herhaling y
 [bases]
 bases
 [number of colonies]
-Number of colonies, one per player; raising it repeats the map until they fit
+Aantal kolonies, één per speler; verhogen herhaalt de kaart tot ze passen
 [bases per colony]
-Bases per colony; a base is one team of the map as drawn, its buildings and units
+Bases per kolonie; een basis is één team van de kaart zoals getekend, met zijn gebouwen en eenheden

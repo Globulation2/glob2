@@ -324,3 +324,12 @@ void Unit::syncStep(void)
 	if (magicActionAnimation > 0)
 		magicActionAnimation--;
 }
+
+void Unit::setWorkerLevel(Sint32 newLevel)
+{
+	for (int ability : {(int)BUILD, (int)HARVEST})
+	{
+		level[ability] = newLevel;
+		performance[ability] = race->getUnitType(typeNum, newLevel)->performance[ability];
+	}
+}

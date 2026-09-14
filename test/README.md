@@ -41,6 +41,20 @@ resource types, all three base terrains, overlapping strokes, and all four
 wrapped map corners. A whole-map oracle checks both removal and preservation.
 These are headless map-operation tests; they do not drive editor mouse events.
 
+## Map generator golden maps and colony sweep
+
+From the repository root, `scons -j8 release=1 server=0 map-generator-golden-test` builds
+`build/src/MapGeneratorGoldenTest`. Run it as `./build/src/MapGeneratorGoldenTest <profile>`
+to compare this platform's rows of `test/map-generator-golden.txt` against fresh rolls, with
+`--update` after a revision bump, `--print` to bootstrap a platform's rows from a log, and
+`--sweep` to roll every playable landscape at the lobby's colony counts and sizes. A platform
+with no rows reports and passes, so a new machine can run the check before its rows exist;
+`--require-rows` makes that a failure instead, which is what CI runs, so the table must carry
+rows for every platform CI builds on (`linux-x86_64` today, next to the maintainers'
+`macos-arm64`). Rows for a platform you cannot build on come from the `--print` output in its
+CI log, which the workflow prints before the check. The framework reference under
+`docs/map-generators/` describes the rules it enforces.
+
 ## Map subclass test pattern
 
 Pattern used by `MapQueryTest.cpp` (commit `2d42c340`). Lets you write tests against `Map`'s predicates with a minimal link surface — no `globalContainer`, no real `Sector` array, no transitive pull of `Bullet` / `Team` / `Building` / `Unit` into the test binary.
@@ -217,6 +231,39 @@ the initial occupancy explicitly, so failures in painting or occupancy can be
 reproduced independently of the fresh-map initialization bug. Linux CI runs all
 scenarios.
 
+## Building gradient invalidation regression
+
+From the repository root, run `scons -j8 release=1 server=0 building-gradient-invalidation-test`
+and `./build/src/BuildingGradientInvalidationHarness`. The harness links the real
+engine and places every building through `OrderCreate` / `OrderDelete`, so it
+exercises `Game::addBuilding` and `Team::syncStep` rather than a test double. On a
+fresh 64x64 grass map with two teams, it checks that a cached route field notices
+the ground moving under it: a ring of inn sites closed around a site whose field is
+already cached stops offering that site to a unit outside, a site placed inside a
+standing ring is never offered, and clearing the ring restores it.
+
+Pass `ring-before`, `ring-after`, `ring-other-team` or `ring-flag` to run one
+scenario; the default is all four. Linux CI runs all of them.
+
+The last two cover what the proximity walk this replaced structurally could not
+reach. `ring-other-team` builds the ring as team 1 around team 0's site: the old
+invalidation only dirtied the buildings of the team that made the change. It also
+pins that the owner's field comes back on the next rebuild the interval allows
+rather than on the next lookup, because `Team::syncStep` frees only the demolishing
+team's fields. `ring-flag` puts an exploration flag, with its goal disc kept inside
+the ring, at the centre: a flag is never written into the building tile grid, so
+walking the changed footprint could not discover its field at any distance.
+
+Each scenario has to let `GRADIENT_DIRTY_REBUILD_TICKS` (`src/EngineTiming.h`)
+elapse before it can judge a field, and takes the constant from that header rather
+than copying it — when the interval was raised from 25 to 100, a local copy here
+silently stopped covering it and the regression passed stale fields.
+
+To see the harness fail, drop `gradientGeneration[swimClass] != topologyGeneration`
+from `Map::buildingGradient`: `ring-after`, `ring-other-team` and `ring-flag` all
+fail. `ring-before` passes either way by construction — nothing is cached before
+the ring exists — which is why it is not on its own sufficient.
+
 ## Building expulsion regression
 
 From the repository root, run `scons -j8 release=1 server=0 building-expel-test`
@@ -238,11 +285,25 @@ profile and working directory; an optional final argument supplies a truncated
 save that must be rejected.
 
 The harness checks the production autosave path, byte equivalence with direct
-serialization, successful reload, truncated map data from file and memory
-streams, recovery after failed loads, and oversized map-area strings. Atomic
-replacement tests cover callback/open/rename failures and temporary-file cleanup.
+serialization to a file, successful reload, disabled autosave, truncated map data
+from file and memory streams, recovery after failed loads, and oversized map-area
+strings. Atomic replacement tests cover callback/open/rename failures and
+temporary-file cleanup; background writes cover superseded snapshots and their
+finish steps, completion on destruction and failed writes. Autosave bytes, SHA1
+included, must match an inline-hashed save, including when the header backpatch
+changes hashed bytes, and `Engine::haveMap` must trust a local save only when its
+SHA1 matches the host's header.
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
+
+## Clearing flag resource bounds
+
+Build `scons release=1 server=0 clearing-gradient-test` and run
+`python3 test/run-savegame-safety-tests.py --check-preferences build/src/ClearingFlagGradientTest`
+(add `.exe` on Windows). The shared runner isolates the working directory and
+profile and verifies that preferences remain unchanged. The regression covers
+weighted building gradients, basic-resource switches, fruit, empty tiles,
+allocation padding and every swimming class. CI executes it on Linux and Windows.
 
 ### Trapped colony elimination
 

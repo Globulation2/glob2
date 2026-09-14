@@ -74,6 +74,10 @@ Econo
 Warrush hızlı ve sert saldırır, savunmadaki oyuncuyu sıklıkla yenilginin eşiğine getirir. Orta zorluk.
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+Cabino savunma, saldırı ve inşayı bağımsız departmanlar olarak yönetir, ama hepsi tek bir plana yönelir: hızla büyür ve rakiplerine dev ordular gönderir. Zor.
+[AICabino]
+Cabino
 [Alga]
 Su yosunu
 [algae]
@@ -1226,6 +1230,10 @@ Hız: 1x (çok oyunculu)
 Yalnızca tek oyunculu oyunlar ve tekrarlar için. Çok oyunculu oyunlar 1x hızında çalışır.
 [AICortex-Description]
 Cortex yeni buğday tarlalarına doğru genişliyor ve ön cepheye yakın hanlar ve hastaneler tarafından desteklenen savaşçı gruplarını savaşa gönderiyor. Orta zorluk. Deneysel.
+[AIMaxima-Description]
+Maxima iyi beslenen bir koloni büyütür, sürekli keşif yapar ve ayırabildiği her savaşçıyla durmaksızın saldırır. Yüksek zorluk.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 Harita yüklenemedi: dosya bozuk veya sürümü uyumsuz.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1268,6 +1276,10 @@ Saldırmak yerine dev üsler kurar ve düşman birimlerini tarafına çeker.
 Strateji: Rakipler hazırlıklarını bitirmeden önce erken ve güçlü saldırılar.\n\nGüçlü Yönler: Savunmasız genişlemeden ve yavaş askeri hazırlıktan yararlanır.\n\nKarşı taktik önerisi: İlk saldırıda ekonominizi koruyarak hayatta kalın, ardından karşı saldırı yapın.
 [AIWarrush-Summary]
 Erken savunmanızı test eden hızlı saldırılar.
+[AICabino-Profile]
+Temel strateji: her biri kendi inisiyatifiyle hareket eden ama tek bir plana yönelen bağımsız uzman departmanlardan (savunma, saldırı, inşa, yükseltmeler, birim yönetimi) oluşan bir kabine: hızlı büyüme, ardından rakiplere dev ordular gönderme.\n\nGüçlü yönler: hızlı yayılma saldırgan askeri baskıyı destekler; bağımsız departmanlar merkezi bir planı beklemeden yerel tehditlere hızla tepki verir.\n\nDenenecek karşı oyun: yayılmasına erken karşı çıkın ve aynı anda çarpışabilecek birlik sayısını sınırlamak için araziyi kullanın.
+[AICabino-Summary]
+Hızlı büyüme ve devasa ordular için iş birliği yapan bağımsız departmanlar.
 [Algae]
 Yosun
 [Alliances]
@@ -1388,6 +1400,14 @@ Oyuncular ve Takımlar
 Hazır haritalar
 [Preview ready. Start plays this exact map.]
 Önizleme hazır. Oyunun başlatılması tam olarak bu haritayı kullanır.
+[Regenerate all]
+Tümünü yeniden oluştur
+[Generating preview...]
+Önizleme oluşturuluyor...
+[Preview unavailable]
+Önizleme kullanılamıyor
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Her arazi, mevcut boyutunuz ve koloni sayınızla gerçek bir harita olarak gösterilir. Gösterilen haritayı oynamak için birini seçin.
 [Purple]
 Mor
 [Quick clash]
@@ -1550,6 +1570,10 @@ Geçerli önizleme yok
 Hızlı savaş: iki kat hız; oluşturulan haritalar 8 işçiyle başlar.
 [Reroll]
 Başka bir harita oluştur
+[Randomize]
+Rastgele oluştur
+[Reset to defaults]
+Varsayılanları geri yükle
 [Ruleset]
 Kural seti
 [Select a map from the library.]
@@ -1628,6 +1652,8 @@ Globulation 2 imlecini görüntüleyin.
 Bitti
 [settings Edit shortcut]
 Klavye kısayolunu düzenle
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Yüksek çözünürlüklü ekranda menüleri, metni ve yan çubuğu büyütür.
 [settings Flags]
 Bayraklar
 [settings Full]
@@ -1642,6 +1668,8 @@ Oyun hızı
 Oynanış
 [settings Graphics detail]
 Grafik ayrıntıları
+[settings Interface scale]
+Arayüz ölçeği
 [settings Keep]
 Değişiklikleri koru
 [settings Keep this display mode?]
@@ -1664,6 +1692,8 @@ Arayüz boyunca kullanılan dil.
 Seviye
 [settings Map editor]
 Harita düzenleyici
+[settings Match the desktop]
+Masaüstüyle aynı
 [settings Missing font]
 Eksik yazı tipi
 [settings Music volume]
@@ -1774,23 +1804,421 @@ Seçilen grafikler, oyun veya harita düzenleyici bir sonraki yüklendiğinde uy
 Otomatik torus görünümü
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Haritada dolaşırken torus şeklindeki haritaya genel bakışı otomatik olarak gösterin (OpenGL).
+[settings Autosave]
+Otomatik kaydetme
+[settings Save the game automatically about every 10 seconds.]
+Oyunu yaklaşık 10 saniyede bir otomatik olarak kaydeder.
 [Channel width]
 Kanal genişliği
 [Land bridge width]
 Kara köprüsü genişliği
 [Lake size]
 Göl boyutu
+[Contested commons]
+Çekişmeli ortak alan
+[Maze]
+Labirent
+[Fjord continent]
+Fiyort kıtası
+[Cell size]
+Hücre boyutu
+[Corridor width]
+Koridor genişliği
+[Spoke width]
+Tel genişliği
+[Loopiness]
+Döngü yoğunluğu
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labirent yatayda ve dikeyde en az iki hücre gerektirir; daha büyük bir harita veya daha küçük hücreler kullanın.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Bu kadar geniş kanallar her hücrede çok az çimen bırakır; daha dar kanallar veya daha büyük hücreler kullanın.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labirentte bu kadar koloni için çok az çıkmaz sokak var; daha büyük bir harita veya daha küçük hücreler kullanın.
+[Home island size]
+Başlangıç adası boyutu
+[Commons size]
+Ortak alan boyutu
+[Moat width]
+Su hendeği genişliği
+[Bridge count]
+Köprü sayısı
+[Continent size]
+Kıta boyutu
+[Coast roughness]
+Kıyı girintiliği
+[Fjord width]
+Fiyort genişliği
+[Lake connects to fjords]
+Göl fiyortlara bağlı
+[Resource islands]
+Kaynak adaları
+[Watershed]
+Havza
+[River density]
+Nehir yoğunluğu
+[Dryness]
+Kuraklık
+[Fords]
+Sığ geçitler
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Havzada bu kadar koloni için çok az taşkın ovası var; daha büyük bir harita veya daha az koloni kullanın.
+[Stone highlands]
+Taşlı yaylalar
+[Valley size]
+Vadi boyutu
+[Pass width]
+Geçit genişliği
+[Pond size]
+Gölet boyutu
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Bu vadiler harita için çok büyük; daha büyük bir harita veya daha küçük vadiler kullanın.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Yaylalarda bu kadar koloni için çok az yer var; daha büyük bir harita veya daha az koloni kullanın.
+[Symmetric arena]
+Simetrik arena
+[Centre size]
+Merkez boyutu
+[Causeway width]
+Set yolu genişliği
+[Causeways]
+Set yolları
+[Lakes]
+Göller
+[Resource richness]
+Kaynak zenginliği
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Simetrik arena 2, 4 veya 8 koloni gerektirir.
+[Eight colonies need a square map in the symmetric arena.]
+Simetrik arenada sekiz koloni için kare bir harita gerekir.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Merkez bu haritada bir meyve bahçesi için çok küçük; daha büyük bir merkez veya daha büyük bir harita kullanın.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arena her koloniye çok az yer bırakıyor; daha büyük bir harita, daha küçük bir merkez veya daha dar bir su hendeği kullanın.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Set yolları birbirine çok yakın; daha az veya daha dar set yolları ya da daha büyük bir merkez kullanın.
+[Ring world]
+Halka dünya
+[Belt width]
+Kuşak genişliği
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Kuşak bu kadar koloni için çok kısa; daha uzun bir harita veya daha az koloni kullanın.
+[City states]
+Şehir devletleri
+[Strait width]
+Boğaz genişliği
+[Valleys]
+Vadiler
+[Frontier richness]
+Sınır bölgesinin zenginliği
+[City states need at least one colony.]
+Şehir devletleri için en az bir koloni gerekir.
+[Stone walls]
+Taş duvarlar
+[Sand patches]
+Kum lekeleri
+[Tidal flats]
+Gelgit düzlükleri
+[Everglades]
+Bataklıklar
+[Pool spacing]
+Gölcük aralığı
+[Pool size]
+Gölcük boyutu
+[Clearing size]
+Açıklık boyutu
+[Levee]
+Set
+[Sloughs]
+Bataklıklar
+[Everglades need at least one colony.]
+Bataklıklar için en az bir koloni gerekir.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Bu harita için çok fazla koloni var; daha büyük bir harita kullanın veya koloni sayısını azaltın.
+[Coral]
+Mercan
+[Fork angle]
+Dallanma açısı
+[Lean]
+Eğim
+[Home size]
+Üs boyutu
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Mercan bu haritaya sığmıyor; daha büyük bir harita, daha dar boğazlar ya da daha az koloni kullanın.
+[Branching]
+Dallanma
+[Branch width]
+Dal genişliği
+[Coral needs at least one colony.]
+Mercan en az bir koloni gerektirir.
+[Coral needs a map at least 128 tiles across.]
+Mercan en az 128 kare genişliğinde bir harita gerektirir.
+[Carousel]
+Atlıkarınca
+[Amphitheatre]
+Amfiteatr
+[Switchbacks]
+Virajlar
+[Court size]
+Avlu boyutu
+[Court wall]
+Avlu duvarı
+[Plaza size]
+Meydan boyutu
+[Starting tower level]
+Başlangıç kulelerinin seviyesi
+[Towers per colony]
+Koloni başına kule
+[Rings]
+Halkalar
+[Ramp width]
+Rampa genişliği
+[Pit size]
+Arena boyutu
+[Terrace width]
+Teras genişliği
+[Bay size]
+Koy boyutu
+[Border wall]
+Sınır duvarı
+[Plateau size]
+Plato boyutu
+[Trail width]
+Patika genişliği
+[Wall between legs]
+Virajlar arası duvar
+[Farm building plots]
+Çiftliklerde yapı arsaları
+[Carousels need at least two colonies.]
+Atlıkarınca en az iki koloni gerektirir.
+[Switchbacks need at least two colonies.]
+Virajlar en az iki koloni gerektirir.
+[An amphitheatre needs at least two colonies.]
+Amfiteatr en az iki koloni gerektirir.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Atlıkarınca bu haritaya sığmıyor; daha büyük bir harita, daha küçük üsler veya daha az koloni kullanın.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Virajlar bu haritaya sığmıyor; daha büyük bir harita, daha küçük bir plato, daha dar patikalar veya daha az koloni kullanın.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Amfiteatr bu haritaya sığmıyor; daha büyük bir harita, daha az halka, daha dar teraslar veya daha az koloni kullanın.
+[Spider web]
+Örümcek ağı
+[Spokes per colony]
+Koloni başına ışın
+[Ring spacing]
+Halka aralığı
+[Thread width]
+İplik genişliği
+[Sag]
+Sarkma
+[Torn strands]
+Kopuk iplikler
+[Hub size]
+Merkez boyutu
+[Dew drops]
+Çiy damlaları
+[Spiral]
+Spiral
+[Spider webs need at least one colony.]
+Örümcek ağı en az bir koloni gerektirir.
+[Sandbars]
+Kum tepecikleri
+[Tide pools]
+Gelgit gölcükleri
+[Lagoons]
+Lagünler
+[Central island]
+Merkez ada
+[Tidal flats need at least one colony.]
+Gelgit düzlükleri için en az bir koloni gerekir.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Ana adalar bu haritaya sığmıyor; daha büyük bir harita, daha az koloni ya da daha küçük adalar kullanın.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Ortak alan ve boğaz üslere çok az yer bırakıyor; daha büyük bir harita, daha az koloni, daha küçük bir ortak alan ya da daha dar bir boğaz kullanın.
+[Wheat amount]
+Buğday miktarı
+[Wood amount]
+Odun miktarı
+[Stone amount]
+Taş miktarı
+[Algae amount]
+Yosun miktarı
+[Fruit amount]
+Meyve miktarı
+[Stone on hilltops]
+Tepelerin üstünde taş
+[Winding river]
+Kıvrımlı nehir
+[Sandy beaches]
+Kumsallar
+[Land bridges]
+Kara köprüleri
+[Colony meadows]
+Koloni çevresinde çayırlar
+[Extra starting deposit]
+Ek başlangıç kaynağı
+[Moat bridges]
+Su hendeği köprüleri
+[Jagged coastlines]
+Girintili kıyılar
+[Sand roads]
+Kum yollar
+[Treasure in dead ends]
+Çıkmaz yollarda hazine
+[Fjord bank deposits]
+Fiyort kıyılarında kaynaklar
+[Sandy lake shore]
+Kumlu göl kıyısı
+[River delta]
+Nehir deltası
+[Meandering rivers]
+Menderesli nehirler
+[Fruit in home valleys]
+Başlangıç vadilerinde meyve
+[Moat]
+Su hendeği
+[Stone in the orchard]
+Meyve bahçesinde taş
+[Colonies on both coasts]
+Her iki kıyıda koloniler
+[Winding belt]
+Kıvrımlı kuşak
+[Cell shape]
+Hücre şekli
+[Squares]
+Kareler
+[Hexagons]
+Altıgenler
+[Warp]
+Bükülme
+[Fingerprint]
+Parmak izi
+[Wavelength]
+Dalga boyu
+[Pattern]
+Desen
+[Labyrinth]
+Labirent
+[Channels]
+Oluklar
+[Barrier]
+Engel
+[Water]
+Su
+[Grain]
+Pürüzlülük
+[Rain shadow]
+Yağmur gölgesi
+[Ridges]
+Sırtlar
+[Slant]
+Yatıklık
+[Ridge thickness]
+Sırt kalınlığı
+[Pass spacing]
+Geçit aralığı
+[Lee width]
+Rüzgâraltı genişliği
+[Old growth]
+Yaşlı orman
+[Canals]
+Kanallar
+[Forest density]
+Orman yoğunluğu
+[Hidden groves]
+Gizli korular
+[Starting trails]
+Başlangıç patikaları
+[Block size]
+Blok boyutu
+[Canal width]
+Kanal genişliği
+[Extra bridges]
+Ek köprüler
+[Polder]
+Polder
+[Old town]
+Eski şehir
+[Anthill]
+Karınca yuvası
+[Row angle]
+Sıra açısı
+[Diagonal]
+Çapraz
+[Dyke spacing]
+Set aralığı
+[Village size]
+Köy boyutu
+[Hamlets]
+Mezralar
+[City size]
+Şehir boyutu
+[Street width]
+Sokak genişliği
+[Plazas]
+Meydanlar
+[Chamber spacing]
+Oda aralığı
+[Chamber size]
+Oda boyutu
+[Queen room]
+Kraliçe odası
+[Tunnel width]
+Tünel genişliği
+[Loops]
+Döngüler
+[Home pools]
+Üs gölcükleri
+[Farm plots]
+Tarla parselleri
+[Tendril roads]
+Sarmaşık yollar
+[Random]
+Rastgele
+[Vertical]
+Dikey
+[Horizontal]
+Yatay
+[Inland lakes]
+İç göller
+[Block shape]
+Blok şekli
+[Random parameters]
+Rastgele parametreler
+[Randomize parameters]
+Parametreleri rastgele seç
+[Start quality]
+Başlangıç kalitesi
+[Fairness]
+Adalet
+[Score]
+Puan
+[Weight]
+Ağırlık
+[Worst]
+En kötü
+[Best]
+En iyi
+[Fertility]
+Verimlilik
+[Deposits]
+Yataklar
+[Room]
+Alan
+[Isolation]
+Uzaklık
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Her koloninin başlangıcı bitmiş haritada ölçülür: buğdaya ve oduna yürüme mesafesi, toprağının ne kadar iyi yeniden yeşerdiği, erişilebilir yataklar ve inşaat alanları ile rakiplere olan uzaklığı. Her etken sabit bir ölçüte göre 0 ile 1 arasında puanlanır, toplam bunları ağırlıklandırır, adalet en kötü koloninin toplamının en iyisine bölümüdür ve puan en kötü toplam çarpı adalettir.
 [repeat map horizontally]
-Repeat map horizontally
+Haritayı yatay olarak tekrarla
 [repeat map vertically]
-Repeat map vertically
+Haritayı dikey olarak tekrarla
 [tile x]
-tile x
+tekrar x
 [tile y]
-tile y
+tekrar y
 [bases]
-bases
+üs
 [number of colonies]
-Number of colonies, one per player; raising it repeats the map until they fit
+Koloni sayısı, oyuncu başına bir; artırmak, hepsi sığana kadar haritayı tekrarlar
 [bases per colony]
-Bases per colony; a base is one team of the map as drawn, its buildings and units
+Koloni başına üs; üs, haritanın çizildiği hâliyle bir takımı, binaları ve birimleriyle birlikte

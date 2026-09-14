@@ -51,7 +51,7 @@ bool allRemainingUnitsTrapped(Team& team)
 	if (freeUnitSlot)
 		for (Building* swarm : team.swarms)
 		{
-			if (swarm->resources[CORN] < swarm->type->resourceForOneUnit
+			if (swarm->resources[WHEAT] < swarm->type->resourceForOneUnit
 				&& swarm->productionTimeout >= 0)
 				continue;
 			// Ratios can still be changed by the player, including from zero.
@@ -381,8 +381,6 @@ void Team::syncStep(void)
 				if (!building->type->isVirtual)
 				{
 					map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
-					// One tile narrower than the Game_orders.cpp rects; part of the replay-verified behaviour.
-					map->dirtyBuildingGradients(building->posX-GRADIENT_DIRTY_BORDER_TILES, building->posY-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES-1+building->type->width, 2*GRADIENT_DIRTY_BORDER_TILES-1+building->type->height, teamNumber);
 					isDirtyGlobalGradient=true;
 				}
 				building->buildingState=Building::DEAD;
@@ -455,7 +453,7 @@ void Team::syncStep(void)
 
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 		{
-			if (!(*it)->locked[SWIM_VARIANT_CAN_SWIM] && (*it)->resources[CORN]>(*it)->type->resourceForOneUnit)
+			if (!(*it)->locked[SWIM_VARIANT_CAN_SWIM] && (*it)->resources[WHEAT]>(*it)->type->resourceForOneUnit)
 				isEnoughFoodInSwarm=true;
 			(*it)->swarmStep();
 		}

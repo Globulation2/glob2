@@ -31,6 +31,7 @@ Settings::Settings()
 	screenFlags = GraphicContext::RESIZABLE | GraphicContext::CUSTOMCURSOR;
 	screenWidth = 800;
 	screenHeight = 600;
+	uiScale = 0;
 	optionFlags = 0;
 	automaticTorus = false;
 	language = "en";
@@ -45,6 +46,7 @@ Settings::Settings()
 	
 	scrollWheelEnabled=true;
 	highResolutionArtwork=true;
+	autosaveGames=true;
 	resetDefaultUnitsAssigned();
 	resetDefaultFlagRadius();
 	
@@ -109,6 +111,7 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(screenWidth);
 		READ_PARSED_INT(screenHeight);
 		READ_PARSED_INT(screenFlags);
+		READ_PARSED_INT(uiScale);
 		READ_PARSED_INT(optionFlags);
 		READ_PARSED_INT(automaticTorus);
 		READ_PARSED_STRING(language);
@@ -118,6 +121,7 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(rememberUnit);
 		READ_PARSED_INT(scrollWheelEnabled);
 		READ_PARSED_INT(highResolutionArtwork);
+		READ_PARSED_INT(autosaveGames);
 		READ_PARSED_INT(gameSpeed);
 		gameSpeed=std::max(static_cast<int>(GAME_SPEED_NORMAL),
 			std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed));
@@ -176,6 +180,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "screenWidth=%d\n", screenWidth);
 		Utilities::streamprintf(stream, "screenHeight=%d\n", screenHeight);
 		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);
+		Utilities::streamprintf(stream, "uiScale=%d\n", uiScale);
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
 		Utilities::streamprintf(stream, "automaticTorus=%d\n", automaticTorus);
 		Utilities::streamprintf(stream, "language=%s\n", language.c_str());
@@ -185,6 +190,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
 		Utilities::streamprintf(stream, "highResolutionArtwork=%d\n", highResolutionArtwork);
+		Utilities::streamprintf(stream, "autosaveGames=%d\n", autosaveGames);
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)

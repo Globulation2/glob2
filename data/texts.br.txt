@@ -74,6 +74,10 @@ Econo
 Warrush - Ataca rápido e com força, costuma fazer com que o jogador defensor seja levado ao limite. Dificuldade Média.
 [AIWarrush]
 Warrush
+[AICabino-Description]
+Cabino administra a defesa, o ataque e a construção como departamentos independentes que cooperam em um único plano: cresce muito e rápido e lança enormes exércitos contra os adversários. Dificuldade Difícil.
+[AICabino]
+Cabino
 [Alga]
 Alga
 [algae]
@@ -1214,6 +1218,10 @@ Velocidade: 1x (multijogador)
 Apenas para um jogador e replays. Partidas multijogador funcionam a 1x.
 [AICortex-Description]
 Cortex se expande em direção a novos campos de trigo e envia grupos de guerreiros para a batalha, apoiados por tavernas e hospitais próximos à linha de frente. Dificuldade média. Experimental.
+[AIMaxima-Description]
+Maxima desenvolve uma colônia bem alimentada, explora o mapa constantemente e ataca sem pausa, enviando todos os guerreiros que puder dispensar. Dificuldade alta.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 Não foi possível carregar o mapa: o arquivo está danificado ou sua versão é incompatível.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1256,6 +1264,10 @@ Enormes bases e conversão em vez de ataques.
 Estratégia: Ataca cedo e com força, antes que os oponentes terminem de se preparar.\n\nPontos fortes: Explora a expansão sem defesa e a lenta preparação militar.\n\nTáticas a experimentar: Sobreviva ao primeiro ataque enquanto mantém sua economia e depois contra-ataque.
 [AIWarrush-Summary]
 Ataques rápidos que testam suas defesas iniciais.
+[AICabino-Profile]
+Estratégia principal: um gabinete de departamentos especialistas independentes (defesa, ataque, construção, melhorias, gestão de unidades) que agem por conta própria mas convergem para um único plano: crescer rápido e depois lançar exércitos enormes contra os adversários.\n\nPontos fortes: a expansão rápida sustenta uma pressão militar agressiva; os departamentos independentes reagem depressa a ameaças locais sem esperar por um plano central.\n\nComo contra-atacar: dispute sua expansão cedo e use o terreno para limitar quantas tropas ele consegue engajar de uma vez.
+[AICabino-Summary]
+Departamentos independentes que cooperam para um crescimento rápido e exércitos enormes.
 [Algae]
 alga
 [Alliances]
@@ -1376,6 +1388,14 @@ Jogadores e equipes
 Mapas prontos
 [Preview ready. Start plays this exact map.]
 Visualização pronta. Iniciar o jogo usa exatamente este mapa.
+[Regenerate all]
+Gerar tudo novamente
+[Generating preview...]
+Gerando visualização...
+[Preview unavailable]
+Visualização indisponível
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Cada paisagem é mostrada como um mapa real com seu tamanho e número de colônias atuais. Use uma para jogar o mapa mostrado.
 [Purple]
 Roxo
 [Quick clash]
@@ -1538,6 +1558,10 @@ Nenhuma visualização atual
 Batalha rápida: velocidade dupla; os mapas gerados começam com 8 trabalhadores.
 [Reroll]
 Gere outro mapa
+[Randomize]
+Gerar aleatoriamente
+[Reset to defaults]
+Restaurar padrões
 [Ruleset]
 Conjunto de regras
 [Select a map from the library.]
@@ -1616,6 +1640,8 @@ Exibe o cursor do Globulation 2.
 Concluído
 [settings Edit shortcut]
 Editar atalho de teclado
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Amplia menus, texto e a barra lateral em telas de alta resolução.
 [settings Flags]
 Bandeiras
 [settings Full]
@@ -1630,6 +1656,8 @@ Velocidade do jogo
 Jogabilidade
 [settings Graphics detail]
 Detalhe gráfico
+[settings Interface scale]
+Escala da interface
 [settings Keep]
 Manter alterações
 [settings Keep this display mode?]
@@ -1652,6 +1680,8 @@ Idioma usado em toda a interface.
 Nível
 [settings Map editor]
 Editor de mapas
+[settings Match the desktop]
+Acompanhar a área de trabalho
 [settings Missing font]
 Fonte ausente
 [settings Music volume]
@@ -1762,23 +1792,421 @@ Aplicar os gráficos ao carregar a próxima partida ou o editor de mapas (OpenGL
 Visão toroidal automática
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostrar automaticamente a visão geral toroidal enquanto você se desloca pelo mapa (OpenGL).
+[settings Autosave]
+Salvamento automático
+[settings Save the game automatically about every 10 seconds.]
+Salva o jogo automaticamente a cada 10 segundos, aproximadamente.
 [Channel width]
 Largura do canal
 [Land bridge width]
 Largura da ponte de terra
 [Lake size]
 Tamanho do lago
+[Contested commons]
+Terras comuns disputadas
+[Maze]
+Labirinto
+[Fjord continent]
+Continente de fiordes
+[Cell size]
+Tamanho da célula
+[Corridor width]
+Largura do corredor
+[Spoke width]
+Largura dos raios
+[Loopiness]
+Densidade de ciclos
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+O labirinto precisa de pelo menos duas células na horizontal e na vertical; use um mapa maior ou células menores.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Canais tão largos deixam pouca grama em cada célula; use canais mais estreitos ou células maiores.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+O labirinto tem poucos becos sem saída para tantas colônias; use um mapa maior ou células menores.
+[Home island size]
+Tamanho da ilha inicial
+[Commons size]
+Tamanho da área comum
+[Moat width]
+Largura do fosso
+[Bridge count]
+Número de pontes
+[Continent size]
+Tamanho do continente
+[Coast roughness]
+Irregularidade da costa
+[Fjord width]
+Largura do fiorde
+[Lake connects to fjords]
+Lago ligado aos fiordes
+[Resource islands]
+Ilhas de recursos
+[Watershed]
+Bacia hidrográfica
+[River density]
+Densidade de rios
+[Dryness]
+Aridez
+[Fords]
+Vaus
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+A bacia hidrográfica tem pouca planície aluvial para tantas colônias; use um mapa maior ou menos colônias.
+[Stone highlands]
+Planaltos de pedra
+[Valley size]
+Tamanho do vale
+[Pass width]
+Largura da passagem
+[Pond size]
+Tamanho da lagoa
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Estes vales são grandes demais para o mapa; use um mapa maior ou vales menores.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Os planaltos têm pouco espaço para tantas colônias; use um mapa maior ou menos colônias.
+[Symmetric arena]
+Arena simétrica
+[Centre size]
+Tamanho do centro
+[Causeway width]
+Largura dos caminhos elevados
+[Causeways]
+Caminhos elevados
+[Lakes]
+Lagos
+[Resource richness]
+Riqueza de recursos
+[Symmetric arena needs 2, 4 or 8 colonies.]
+A arena simétrica precisa de 2, 4 ou 8 colônias.
+[Eight colonies need a square map in the symmetric arena.]
+Oito colônias precisam de um mapa quadrado na arena simétrica.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+O centro é pequeno demais para um pomar neste mapa; use um centro maior ou um mapa maior.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+A arena deixa pouco espaço para cada colônia; use um mapa maior, um centro menor ou um fosso mais estreito.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Os caminhos elevados estão próximos demais; use menos caminhos elevados ou mais estreitos, ou um centro maior.
+[Ring world]
+Mundo anel
+[Belt width]
+Largura da faixa
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+A faixa é curta demais para tantas colônias; use um mapa mais longo ou menos colônias.
+[City states]
+Cidades-estado
+[Strait width]
+Largura do estreito
+[Valleys]
+Vales
+[Frontier richness]
+Riqueza da fronteira
+[City states need at least one colony.]
+Cidades-estado precisam de pelo menos uma colônia.
+[Stone walls]
+Muralhas de pedra
+[Sand patches]
+Manchas de areia
+[Tidal flats]
+Planícies de maré
+[Everglades]
+Pântanos
+[Pool spacing]
+Espaçamento das poças
+[Pool size]
+Tamanho das poças
+[Clearing size]
+Tamanho da clareira
+[Levee]
+Dique
+[Sloughs]
+Charcos
+[Everglades need at least one colony.]
+Os pântanos precisam de pelo menos uma colônia.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Colônias demais para este mapa; use um mapa maior ou menos colônias.
+[Coral]
+Coral
+[Fork angle]
+Ângulo de ramificação
+[Lean]
+Inclinação
+[Home size]
+Tamanho da base
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+O coral não cabe neste mapa; use um mapa maior, estreitos mais estreitos ou menos colônias.
+[Branching]
+Ramificação
+[Branch width]
+Largura dos ramos
+[Coral needs at least one colony.]
+O coral precisa de pelo menos uma colônia.
+[Coral needs a map at least 128 tiles across.]
+O coral precisa de um mapa com pelo menos 128 casas de largura.
+[Carousel]
+Carrossel
+[Amphitheatre]
+Anfiteatro
+[Switchbacks]
+Ziguezagues
+[Court size]
+Tamanho dos pátios
+[Court wall]
+Muro dos pátios
+[Plaza size]
+Tamanho da praça
+[Starting tower level]
+Nível das torres iniciais
+[Towers per colony]
+Torres por colônia
+[Rings]
+Anéis
+[Ramp width]
+Largura das rampas
+[Pit size]
+Tamanho da arena
+[Terrace width]
+Largura das bancadas
+[Bay size]
+Tamanho das baías
+[Border wall]
+Muro de fronteira
+[Plateau size]
+Tamanho do planalto
+[Trail width]
+Largura da trilha
+[Wall between legs]
+Muro entre trechos
+[Farm building plots]
+Lotes para construir nas fazendas
+[Carousels need at least two colonies.]
+O carrossel precisa de pelo menos duas colônias.
+[Switchbacks need at least two colonies.]
+Os ziguezagues precisam de pelo menos duas colônias.
+[An amphitheatre needs at least two colonies.]
+O anfiteatro precisa de pelo menos duas colônias.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+O carrossel não cabe neste mapa; use um mapa maior, bases menores ou menos colônias.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Os ziguezagues não cabem neste mapa; use um mapa maior, um planalto menor, trilhas mais estreitas ou menos colônias.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+O anfiteatro não cabe neste mapa; use um mapa maior, menos anéis, bancadas mais estreitas ou menos colônias.
+[Spider web]
+Teia de aranha
+[Spokes per colony]
+Raios por colônia
+[Ring spacing]
+Espaçamento dos anéis
+[Thread width]
+Largura dos fios
+[Sag]
+Flacidez
+[Torn strands]
+Fios rompidos
+[Hub size]
+Tamanho do centro
+[Dew drops]
+Gotas de orvalho
+[Spiral]
+Espiral
+[Spider webs need at least one colony.]
+As teias de aranha precisam de pelo menos uma colônia.
+[Sandbars]
+Bancos de areia
+[Tide pools]
+Poças de maré
+[Lagoons]
+Lagoas
+[Central island]
+Ilha central
+[Tidal flats need at least one colony.]
+As planícies de maré precisam de pelo menos uma colônia.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+As ilhas natais não cabem neste mapa; use um mapa maior, menos colônias ou ilhas menores.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+A área comum e o estreito deixam pouco espaço para as bases; use um mapa maior, menos colônias, uma área comum menor ou um estreito mais estreito.
+[Wheat amount]
+Quantidade de trigo
+[Wood amount]
+Quantidade de madeira
+[Stone amount]
+Quantidade de pedra
+[Algae amount]
+Quantidade de algas
+[Fruit amount]
+Quantidade de frutas
+[Stone on hilltops]
+Pedra no topo das colinas
+[Winding river]
+Rio sinuoso
+[Sandy beaches]
+Praias de areia
+[Land bridges]
+Pontes de terra
+[Colony meadows]
+Campos ao redor das colônias
+[Extra starting deposit]
+Depósito inicial extra
+[Moat bridges]
+Pontes sobre o fosso
+[Jagged coastlines]
+Costas recortadas
+[Sand roads]
+Estradas de areia
+[Treasure in dead ends]
+Tesouros em becos sem saída
+[Fjord bank deposits]
+Depósitos nas margens dos fiordes
+[Sandy lake shore]
+Margem arenosa do lago
+[River delta]
+Delta do rio
+[Meandering rivers]
+Rios com meandros
+[Fruit in home valleys]
+Frutas nos vales iniciais
+[Moat]
+Fosso
+[Stone in the orchard]
+Pedra no pomar
+[Colonies on both coasts]
+Colônias em ambas as costas
+[Winding belt]
+Faixa sinuosa
+[Cell shape]
+Forma das células
+[Squares]
+Quadrados
+[Hexagons]
+Hexágonos
+[Warp]
+Deformação
+[Fingerprint]
+Impressão digital
+[Wavelength]
+Comprimento de onda
+[Pattern]
+Padrão
+[Labyrinth]
+Labirinto
+[Channels]
+Sulcos
+[Barrier]
+Barreira
+[Water]
+Água
+[Grain]
+Granulação
+[Rain shadow]
+Sombra de chuva
+[Ridges]
+Cristas
+[Slant]
+Obliquidade
+[Ridge thickness]
+Espessura das cristas
+[Pass spacing]
+Espaçamento das passagens
+[Lee width]
+Largura do sotavento
+[Old growth]
+Floresta primária
+[Canals]
+Canais
+[Forest density]
+Densidade da floresta
+[Hidden groves]
+Bosques escondidos
+[Starting trails]
+Trilhas iniciais
+[Block size]
+Tamanho do quarteirão
+[Canal width]
+Largura dos canais
+[Extra bridges]
+Pontes extras
+[Polder]
+Pôlder
+[Old town]
+Cidade velha
+[Anthill]
+Formigueiro
+[Row angle]
+Ângulo das fileiras
+[Diagonal]
+Diagonais
+[Dyke spacing]
+Espaçamento dos diques
+[Village size]
+Tamanho dos vilarejos
+[Hamlets]
+Lugarejos
+[City size]
+Tamanho da cidade
+[Street width]
+Largura das ruas
+[Plazas]
+Praças
+[Chamber spacing]
+Espaçamento das câmaras
+[Chamber size]
+Tamanho das câmaras
+[Queen room]
+Câmara da rainha
+[Tunnel width]
+Largura dos túneis
+[Loops]
+Circuitos
+[Home pools]
+Poças da base
+[Farm plots]
+Lotes agrícolas
+[Tendril roads]
+Estradas em gavinha
+[Random]
+Aleatório
+[Vertical]
+Verticais
+[Horizontal]
+Horizontais
+[Inland lakes]
+Lagos interiores
+[Block shape]
+Forma dos quarteirões
+[Random parameters]
+Parâmetros aleatórios
+[Randomize parameters]
+Sortear parâmetros
+[Start quality]
+Qualidade do início
+[Fairness]
+Equidade
+[Score]
+Pontuação
+[Weight]
+Peso
+[Worst]
+Pior
+[Best]
+Melhor
+[Fertility]
+Fertilidade
+[Deposits]
+Depósitos
+[Room]
+Espaço
+[Isolation]
+Isolamento
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+O início de cada colônia é medido no mapa pronto: o caminho até o trigo e a madeira, quão bem seu terreno volta a crescer, os depósitos e locais de construção ao alcance, e a distância até os rivais. Cada fator pontua de 0 a 1 contra uma barra fixa, o total os pondera, a equidade é o total da pior colônia dividido pelo da melhor, e a pontuação é o pior total multiplicado pela equidade.
 [repeat map horizontally]
-Repeat map horizontally
+Repetir o mapa na horizontal
 [repeat map vertically]
-Repeat map vertically
+Repetir o mapa na vertical
 [tile x]
-tile x
+repetição x
 [tile y]
-tile y
+repetição y
 [bases]
 bases
 [number of colonies]
-Number of colonies, one per player; raising it repeats the map until they fit
+Número de colônias, uma por jogador; aumentá-lo repete o mapa até que caibam
 [bases per colony]
-Bases per colony; a base is one team of the map as drawn, its buildings and units
+Bases por colônia; uma base é um time do mapa como foi desenhado, com seus prédios e unidades

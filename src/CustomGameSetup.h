@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "GameHeader.h"
-#include "MapGenerationDescriptor.h"
+#include "GenerationRequest.h"
+#include "GenerationValidation.h"
+#include "GeneratorRegistry.h"
 #include <array>
 #include <optional>
 #include <string>
@@ -40,9 +42,9 @@ struct CustomGameSetup
 		case 3:
 			return speed != 0;
 		case 4:
-			return random && generator.nbWorkers != MapGenerationDescriptor::control(
-														generator.method, "Starting workers")
-														.defaultValue;
+			return random &&
+				   generator.nbWorkers !=
+					   GenerationRequest::control(generator.method, "workers").defaultValue;
 		default:
 			return false;
 		}
@@ -54,8 +56,8 @@ struct CustomGameSetup
 		int alliance = 0;
 	};
 	std::array<Colony, Team::MAX_COUNT> colonies;
-	MapGenerationDescriptor generator;
-	MapGenerationHistory generatorHistory;
+	GenerationRequest generator;
+	GenerationHistory generatorHistory;
 	int capacity;
 	bool random = false, prestige = true, revealed = false, locked = true;
 	int speed = 0;
@@ -64,7 +66,7 @@ struct CustomGameSetup
 	unsigned mapRevision = 0;
 	CustomGameSetup()
 	{
-		generator.setMethodDefaults(MapGenerationDescriptor::eRIVER);
+		generator.setMethodDefaults(GeneratorRegistry::builtins().methods(false).front());
 		capacity = generator.nbTeams;
 		for (int i = 0; i < Team::MAX_COUNT; ++i)
 			colonies[i].alliance = i;
@@ -143,8 +145,7 @@ struct CustomGameSetup
 		revealed = preset == 2;
 		locked = true;
 		speed = preset == 1 ? 3 : 0;
-		const auto &workerControl =
-			MapGenerationDescriptor::control(generator.method, "Starting workers");
+		const auto &workerControl = GenerationRequest::control(generator.method, "workers");
 		int workers = preset == 1 ? workerControl.maximum : workerControl.defaultValue;
 		if (generator.nbWorkers != workers)
 		{
@@ -160,8 +161,17 @@ struct CustomGameSetup
 	{
 		if (capacity < 1 || capacity > Team::MAX_COUNT)
 			return "Invalid colony count.";
-		if (random && !generator.hasTerrainWeight())
-			return "Give at least one terrain type a nonzero weight.";
+		if (random)
+		{
+			const auto *definition = GeneratorRegistry::builtins().find(generator.method);
+			if (!definition)
+				return "Unknown generator";
+			auto request = generator;
+			request.nbTeams = capacity;
+			const auto error = validateGenerationRequest(request, *definition);
+			if (!error.empty())
+				return error;
+		}
 		if (controllerCount() > Team::MAX_COUNT)
 			return "Shared control needs a free controller slot (maximum 12).";
 		if (activeColonies() < 1)

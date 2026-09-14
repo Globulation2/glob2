@@ -27,6 +27,9 @@ public:
 	///Loads the thumbnail from the map with the given map name
 	void loadFromMap(const std::string& map);
 
+	///Renders the thumbnail from a map already in memory
+	void loadFromMap(const Map& map);
+
 	///Renders the thumbnail of a loaded map; buildings and units take the colour of their team in header
 	void loadFromMap(const Map& map, const MapHeader& header);
 	
@@ -49,6 +52,8 @@ public:
 	bool isLoaded();
 
 private:
+	///Draws map into buffer; with a header, buildings and units take their team colour
+	void render(const Map& map, const MapHeader* header);
 	Uint8 buffer[128 * 128 * 3];
 	bool loaded;
 	int lastW;

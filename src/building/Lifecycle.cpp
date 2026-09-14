@@ -156,6 +156,7 @@ void Building::resetPathfindGradients()
 	{
 		delete[] globalGradient[i];
 		globalGradient[i] = NULL;
+		gradientGeneration[i] = 0;
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
 		{
 			delete[] roundTripGradient[r][i];

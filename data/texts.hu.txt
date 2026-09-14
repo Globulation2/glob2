@@ -74,6 +74,10 @@ Econo
 Warrush gyorsan és kíméletlenül támad, gyakran a végsőkig szorítva a védekező játékost. Közepes nehézség.
 [AIWarrush]
 MIWarrush
+[AICabino-Description]
+A Cabino önálló osztályokként irányítja a védelmet, a támadást és az építkezést, amelyek egyetlen terv felé haladnak: gyorsan terjeszkedik, és hatalmas seregeket küld ellenfeleire. Nehéz.
+[AICabino]
+Cabino
 [Alga]
 Alga
 [algae]
@@ -1218,6 +1222,10 @@ Sebesség: 1x (többjátékos)
 Csak egyjátékos módban és visszajátszáskor. A többjátékos mód sebessége 1x.
 [AICortex-Description]
 A Cortex új búzamezők felé terjeszkedik, és harcba küldi a harcosok csoportjait, akiket étkezdék és kórházak támogatnak a frontvonal közelében. Közepes nehézségű. Kísérleti.
+[AIMaxima-Description]
+A Maxima jól ellátott kolóniát épít, folyamatosan felderít, és szünet nélkül támad minden harcossal, akit el tud engedni. Nehéz.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 A térkép nem tölthető be: a fájl sérült vagy nem kompatibilis verziójú.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1260,6 +1268,10 @@ Hatalmas bázisok és átalakítások támadások helyett.
 Stratégia: Korán és erőteljesen támad, mielőtt az ellenfél befejezné a felkészülést.\n\nErősségek: Kiaknázza a védtelen terjeszkedést és a lassú katonai felkészülést.\n\nJavasolt ellenjáték: Vészeld át az első támadást a gazdaságod fenntartásával, majd indíts ellentámadást.
 [AIWarrush-Summary]
 Gyors támadások, amelyek tesztelik a korai védekezést.
+[AICabino-Profile]
+Alapstratégia: önálló szakosztályok kabinetje (védelem, támadás, építkezés, fejlesztések, egységkezelés), amelyek saját kezdeményezésre cselekszenek, de egyetlen terv felé haladnak: gyors növekedés, majd hatalmas seregek küldése az ellenfelekre.\n\nErősségek: a gyors terjeszkedés agresszív katonai nyomást tesz lehetővé; az önálló osztályok gyorsan reagálnak a helyi fenyegetésekre, központi terv nélkül.\n\nEllenjáték: támadd meg korán a terjeszkedését, és használd a terepet, hogy korlátozd, hány egysége tud egyszerre harcolni.
+[AICabino-Summary]
+Önálló osztályok, amelyek együttműködnek a gyors növekedés és hatalmas seregek érdekében.
 [Algae]
 Alga
 [Alliances]
@@ -1380,6 +1392,14 @@ Játékosok és csapatok
 Előre elkészített térképek
 [Preview ready. Start plays this exact map.]
 Az előnézet készen áll. A játék elindítása pontosan ezt a térképet használja.
+[Regenerate all]
+Összes újragenerálása
+[Generating preview...]
+Előnézet készítése...
+[Preview unavailable]
+Az előnézet nem érhető el
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Minden táj valódi térképként jelenik meg a jelenlegi mérettel és kolóniaszámmal. Válassz egyet a megjelenített térkép játszásához.
 [Purple]
 Lila
 [Quick clash]
@@ -1542,6 +1562,10 @@ Nincs aktuális előnézet
 Gyors csata: dupla sebesség; A generált térképek 8 munkással kezdődnek.
 [Reroll]
 Hozzon létre egy másik térképet
+[Randomize]
+Véletlenszerű generálás
+[Reset to defaults]
+Alapértelmezett értékek visszaállítása
 [Ruleset]
 Szabálykészlet
 [Select a map from the library.]
@@ -1620,6 +1644,8 @@ Jelenítse meg a Globulation 2 kurzort.
 Kész
 [settings Edit shortcut]
 Billentyűparancs szerkesztése
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Nagyítja a menüket, a szöveget és az oldalsávot nagy felbontású képernyőn.
 [settings Flags]
 Zászlók
 [settings Full]
@@ -1634,6 +1660,8 @@ Játéksebesség
 Játékmenet
 [settings Graphics detail]
 Grafikai részletesség
+[settings Interface scale]
+Felület mérete
 [settings Keep]
 Megtartás
 [settings Keep this display mode?]
@@ -1656,6 +1684,8 @@ Az egész felületen használt nyelv.
 Szint
 [settings Map editor]
 Térképszerkesztő
+[settings Match the desktop]
+Az asztalhoz igazítva
 [settings Missing font]
 Hiányzó betűtípus
 [settings Music volume]
@@ -1766,23 +1796,421 @@ A kiválasztott grafika a játék vagy a térképszerkesztő következő betölt
 Automatikus tórusznézet
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 A tórusz alakú térkép áttekintésének automatikus megjelenítése a térképen való mozgás közben (OpenGL).
+[settings Autosave]
+Automatikus mentés
+[settings Save the game automatically about every 10 seconds.]
+Körülbelül 10 másodpercenként automatikusan menti a játékot.
 [Channel width]
 Csatorna szélessége
 [Land bridge width]
 Földhíd szélessége
 [Lake size]
 Tó mérete
+[Contested commons]
+Vitatott közös terület
+[Maze]
+Labirintus
+[Fjord continent]
+Fjordos kontinens
+[Cell size]
+Cella mérete
+[Corridor width]
+Folyosó szélessége
+[Spoke width]
+Küllők szélessége
+[Loopiness]
+Huroksűrűség
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+A labirintusnak szélességben és magasságban is legalább két cellára van szüksége; használjon nagyobb térképet vagy kisebb cellákat.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Ilyen széles csatornák mellett minden cellában túl kevés fű marad; használjon keskenyebb csatornákat vagy nagyobb cellákat.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+A labirintusban túl kevés a zsákutca ennyi kolóniához; használjon nagyobb térképet vagy kisebb cellákat.
+[Home island size]
+Kezdősziget mérete
+[Commons size]
+Közös terület mérete
+[Moat width]
+Várárok szélessége
+[Bridge count]
+Hidak száma
+[Continent size]
+Kontinens mérete
+[Coast roughness]
+Partvonal tagoltsága
+[Fjord width]
+Fjord szélessége
+[Lake connects to fjords]
+A tó kapcsolódik a fjordokhoz
+[Resource islands]
+Nyersanyagszigetek
+[Watershed]
+Vízgyűjtő
+[River density]
+Folyók sűrűsége
+[Dryness]
+Szárazság
+[Fords]
+Gázlók
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+A vízgyűjtőn túl kevés az ártér ennyi kolóniához; használjon nagyobb térképet vagy kevesebb kolóniát.
+[Stone highlands]
+Köves felföld
+[Valley size]
+Völgy mérete
+[Pass width]
+Hágó szélessége
+[Pond size]
+Tavacska mérete
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Ezek a völgyek túl nagyok a térképhez; használjon nagyobb térképet vagy kisebb völgyeket.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+A felföldön túl kevés a hely ennyi kolóniához; használjon nagyobb térképet vagy kevesebb kolóniát.
+[Symmetric arena]
+Szimmetrikus aréna
+[Centre size]
+Középrész mérete
+[Causeway width]
+Töltésút szélessége
+[Causeways]
+Töltésutak
+[Lakes]
+Tavak
+[Resource richness]
+Nyersanyagbőség
+[Symmetric arena needs 2, 4 or 8 colonies.]
+A szimmetrikus arénához 2, 4 vagy 8 kolónia kell.
+[Eight colonies need a square map in the symmetric arena.]
+Nyolc kolóniához négyzet alakú térkép kell a szimmetrikus arénában.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+A középrész túl kicsi egy gyümölcsöshöz ezen a térképen; használjon nagyobb középrészt vagy nagyobb térképet.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Az aréna túl kevés helyet hagy minden kolóniának; használjon nagyobb térképet, kisebb középrészt vagy keskenyebb várárkot.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+A töltésutak túl közel vannak egymáshoz; használjon kevesebb vagy keskenyebb töltésutat, vagy nagyobb középrészt.
+[Ring world]
+Gyűrűvilág
+[Belt width]
+Öv szélessége
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Az öv túl rövid ennyi kolóniához; használjon hosszabb térképet vagy kevesebb kolóniát.
+[City states]
+Városállamok
+[Strait width]
+Szoros szélessége
+[Valleys]
+Völgyek
+[Frontier richness]
+A határvidék gazdagsága
+[City states need at least one colony.]
+A városállamokhoz legalább egy kolónia kell.
+[Stone walls]
+Kőfalak
+[Sand patches]
+Homokfoltok
+[Tidal flats]
+Árapálysíkság
+[Everglades]
+Mocsárvidék
+[Pool spacing]
+Tavacskák távolsága
+[Pool size]
+Tavacskák mérete
+[Clearing size]
+Tisztás mérete
+[Levee]
+Gát
+[Sloughs]
+Holtágak
+[Everglades need at least one colony.]
+A mocsárvidékhez legalább egy kolónia kell.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Túl sok kolónia ehhez a térképhez; használj nagyobb térképet vagy kevesebb kolóniát.
+[Coral]
+Korall
+[Fork angle]
+Elágazási szög
+[Lean]
+Dőlés
+[Home size]
+Otthon mérete
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+A korall nem fér el ezen a térképen; használj nagyobb térképet, keskenyebb szorosokat vagy kevesebb kolóniát.
+[Branching]
+Elágazás
+[Branch width]
+Ágszélesség
+[Coral needs at least one colony.]
+A korallhoz legalább egy kolónia kell.
+[Coral needs a map at least 128 tiles across.]
+A korallhoz legalább 128 mező széles térkép kell.
+[Carousel]
+Körhinta
+[Amphitheatre]
+Amfiteátrum
+[Switchbacks]
+Szerpentinek
+[Court size]
+Udvarok mérete
+[Court wall]
+Udvarfal
+[Plaza size]
+Tér mérete
+[Starting tower level]
+Kezdő tornyok szintje
+[Towers per colony]
+Tornyok kolóniánként
+[Rings]
+Gyűrűk
+[Ramp width]
+Rámpák szélessége
+[Pit size]
+Aréna mérete
+[Terrace width]
+Teraszok szélessége
+[Bay size]
+Öblök mérete
+[Border wall]
+Határfal
+[Plateau size]
+Fennsík mérete
+[Trail width]
+Ösvény szélessége
+[Wall between legs]
+Fal a kanyarok között
+[Farm building plots]
+Építési telkek a farmokon
+[Carousels need at least two colonies.]
+A körhintához legalább két kolónia kell.
+[Switchbacks need at least two colonies.]
+A szerpentinekhez legalább két kolónia kell.
+[An amphitheatre needs at least two colonies.]
+Az amfiteátrumhoz legalább két kolónia kell.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+A körhinta nem fér el ezen a térképen; használj nagyobb térképet, kisebb otthonokat vagy kevesebb kolóniát.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+A szerpentinek nem férnek el ezen a térképen; használj nagyobb térképet, kisebb fennsíkot, keskenyebb ösvényeket vagy kevesebb kolóniát.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Az amfiteátrum nem fér el ezen a térképen; használj nagyobb térképet, kevesebb gyűrűt, keskenyebb teraszokat vagy kevesebb kolóniát.
+[Spider web]
+Pókháló
+[Spokes per colony]
+Küllők kolóniánként
+[Ring spacing]
+Gyűrűk távolsága
+[Thread width]
+Szálszélesség
+[Sag]
+Belógás
+[Torn strands]
+Szakadt szálak
+[Hub size]
+Középpont mérete
+[Dew drops]
+Harmatcseppek
+[Spiral]
+Spirál
+[Spider webs need at least one colony.]
+A pókhálóhoz legalább egy kolónia kell.
+[Sandbars]
+Homokpadok
+[Tide pools]
+Árapálytavak
+[Lagoons]
+Lagúnák
+[Central island]
+Középső sziget
+[Tidal flats need at least one colony.]
+Az árapálysíksághoz legalább egy kolónia kell.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Az otthoni szigetek nem férnek el ezen a térképen; használj nagyobb térképet, kevesebb kolóniát vagy kisebb szigeteket.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+A közös terület és a szoros túl kevés helyet hagy a bázisoknak; használj nagyobb térképet, kevesebb kolóniát, kisebb közös területet vagy keskenyebb szorost.
+[Wheat amount]
+Búza mennyisége
+[Wood amount]
+Fa mennyisége
+[Stone amount]
+Kő mennyisége
+[Algae amount]
+Alga mennyisége
+[Fruit amount]
+Gyümölcs mennyisége
+[Stone on hilltops]
+Kő a dombtetőkön
+[Winding river]
+Kanyargó folyó
+[Sandy beaches]
+Homokos strandok
+[Land bridges]
+Földhidak
+[Colony meadows]
+Rétek a kolóniák körül
+[Extra starting deposit]
+Extra kezdő lelőhely
+[Moat bridges]
+Hidak a várárkon
+[Jagged coastlines]
+Tagolt partok
+[Sand roads]
+Homokutak
+[Treasure in dead ends]
+Kincsek a zsákutcákban
+[Fjord bank deposits]
+Lelőhelyek a fjordok partján
+[Sandy lake shore]
+Homokos tópart
+[River delta]
+Folyódelta
+[Meandering rivers]
+Kanyargó folyók
+[Fruit in home valleys]
+Gyümölcs a kezdővölgyekben
+[Moat]
+Várárok
+[Stone in the orchard]
+Kő a gyümölcsösben
+[Colonies on both coasts]
+Kolóniák mindkét parton
+[Winding belt]
+Kanyargó öv
+[Cell shape]
+Cellák alakja
+[Squares]
+Négyzetek
+[Hexagons]
+Hatszögek
+[Warp]
+Torzítás
+[Fingerprint]
+Ujjlenyomat
+[Wavelength]
+Hullámhossz
+[Pattern]
+Minta
+[Labyrinth]
+Labirintus
+[Channels]
+Barázdák
+[Barrier]
+Akadály
+[Water]
+Víz
+[Grain]
+Szemcsésség
+[Rain shadow]
+Esőárnyék
+[Ridges]
+Gerincek
+[Slant]
+Ferdeség
+[Ridge thickness]
+Gerincek vastagsága
+[Pass spacing]
+Hágók távolsága
+[Lee width]
+Szélárnyék szélessége
+[Old growth]
+Őserdő
+[Canals]
+Csatornák
+[Forest density]
+Erdő sűrűsége
+[Hidden groves]
+Rejtett ligetek
+[Starting trails]
+Kezdő ösvények
+[Block size]
+Háztömb mérete
+[Canal width]
+Csatorna szélessége
+[Extra bridges]
+További hidak
+[Polder]
+Polder
+[Old town]
+Óváros
+[Anthill]
+Hangyaboly
+[Row angle]
+Sorok szöge
+[Diagonal]
+Átlós
+[Dyke spacing]
+Gátak távolsága
+[Village size]
+Falvak mérete
+[Hamlets]
+Tanyák
+[City size]
+Város mérete
+[Street width]
+Utcák szélessége
+[Plazas]
+Terek
+[Chamber spacing]
+Kamrák távolsága
+[Chamber size]
+Kamrák mérete
+[Queen room]
+Királynő kamrája
+[Tunnel width]
+Járatok szélessége
+[Loops]
+Hurkok
+[Home pools]
+Otthoni tavacskák
+[Farm plots]
+Szántóparcellák
+[Tendril roads]
+Kacsutak
+[Random]
+Véletlenszerű
+[Vertical]
+Függőleges
+[Horizontal]
+Vízszintes
+[Inland lakes]
+Belső tavak
+[Block shape]
+Háztömbök alakja
+[Random parameters]
+Véletlen paraméterek
+[Randomize parameters]
+Paraméterek véletlenszerűen
+[Start quality]
+Kezdés minősége
+[Fairness]
+Méltányosság
+[Score]
+Pontszám
+[Weight]
+Súly
+[Worst]
+Leggyengébb
+[Best]
+Legjobb
+[Fertility]
+Termékenység
+[Deposits]
+Készletek
+[Room]
+Hely
+[Isolation]
+Elszigeteltség
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Minden kolónia kezdését a kész térképen mérjük: az út a búzáig és a fáig, mennyire nő vissza a talaja, az elérhető készletek és építési helyek, valamint a távolság a riválisoktól. Minden tényező 0-tól 1-ig pontoz egy rögzített mércéhez képest, az összeg súlyozza őket, a méltányosság a leggyengébb kolónia összege osztva a legjobbéval, a pontszám pedig a leggyengébb összeg szorozva a méltányossággal.
 [repeat map horizontally]
-Repeat map horizontally
+Térkép ismétlése vízszintesen
 [repeat map vertically]
-Repeat map vertically
+Térkép ismétlése függőlegesen
 [tile x]
-tile x
+ismétlés x
 [tile y]
-tile y
+ismétlés y
 [bases]
-bases
+bázis
 [number of colonies]
-Number of colonies, one per player; raising it repeats the map until they fit
+Kolóniák száma, játékosonként egy; növelése addig ismétli a térképet, amíg elférnek
 [bases per colony]
-Bases per colony; a base is one team of the map as drawn, its buildings and units
+Bázisok kolóniánként; egy bázis a megrajzolt térkép egy csapata, épületeivel és egységeivel

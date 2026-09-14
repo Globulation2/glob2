@@ -56,6 +56,8 @@ private:
 public:
 	int screenWidth;
 	int screenHeight;
+	//! interface scale in percent; 0 follows the desktop
+	int uiScale;
 	Uint32 screenFlags;
 	Uint32 optionFlags;
 	bool automaticTorus; // Opt-in movement-triggered overview; local presentation only.
@@ -67,6 +69,8 @@ public:
 	bool rememberUnit;
 	bool scrollWheelEnabled;
 	bool highResolutionArtwork;
+	/// Periodically saves the game in progress as "Auto save".
+	bool autosaveGames;
 	/// Simulation speed preset. Zero is the original 25 ticks/second;
 	/// higher values progressively reduce delays and then skip rendered frames.
 	int gameSpeed;

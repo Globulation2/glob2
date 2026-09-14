@@ -171,6 +171,8 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					else
 					{
 						defaultGameSaveName=((LoadSaveScreen *)gameMenuScreen.get())->getName();
+						// The player may be saving over the autosave: let a pending one land first.
+						waitForAutosave();
 						OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(locationName));
 						if (stream->isEndOfStream())
 						{

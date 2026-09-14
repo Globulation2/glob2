@@ -41,6 +41,7 @@ namespace GAGCore
 		virtual void writeEnterSection(const std::string name) { }
 		virtual void writeEnterSection(unsigned id) { }
 		virtual void writeLeaveSection(size_t count = 1) { }
+		virtual void writeUint16Sections(const Uint16 *values, size_t count, const std::string name);
 		
 		void enableSHA1();
 		void finishSHA1(Uint8 sha1[20]);

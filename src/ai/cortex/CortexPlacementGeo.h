@@ -60,35 +60,35 @@ namespace Cortex
 	int innOccupiedSides(const Map& map, int innX, int innY, int innW, int innH,
 	                     int candX, int candY, int candW, int candH);
 
-	/// True if any CORN (wheat) tile lies within `dist` Chebyshev tiles of the
+	/// True if any wheat tile lies within `dist` Chebyshev tiles of the
 	/// footprint (innX, innY, w x h). Used to keep non-wheat-fed buildings off the
-	/// wheat lanes. Early-outs on the first CORN found.
-	bool anyCornWithin(const Map& map, int x, int y, int w, int h, int dist);
+	/// wheat lanes. Early-outs on the first WHEAT found.
+	bool anyWheatWithin(const Map& map, int x, int y, int w, int h, int dist);
 
 	/// Counts the HARVESTABLE wheat tiles within `dist` Chebyshev tiles of the
-	/// footprint (x, y, w x h): tiles that are CORN AND not forbidden for `teamMask`.
-	/// Depleted tiles (no longer CORN) and the team's own checkerboard-protected
+	/// footprint (x, y, w x h): tiles that are WHEAT AND not forbidden for `teamMask`.
+	/// Depleted tiles (no longer WHEAT) and the team's own checkerboard-protected
 	/// (forbidden) half of a field are excluded, so the result is the live wheat the
 	/// team's workers can actually take. Used by placeCandidates to require a real
 	/// cluster of harvestable wheat (CORTEX_WHEAT_MIN_TILES) around a new swarm/inn.
-	int countHarvestableCornWithin(const Map& map, Uint32 teamMask,
+	int countHarvestableWheatWithin(const Map& map, Uint32 teamMask,
 	                               int x, int y, int w, int h, int dist);
 
-	/// Forbidden-BLIND corn-tile count within `dist` Chebyshev tiles of the footprint:
-	/// every CORN tile regardless of the forbidden mask. (countHarvestableCornWithin
-	/// minus this is the forbidden-but-present corn.) Diagnostic discriminator between
+	/// Forbidden-BLIND wheat-tile count within `dist` Chebyshev tiles of the footprint:
+	/// every WHEAT tile regardless of the forbidden mask. (countHarvestableWheatWithin
+	/// minus this is the forbidden-but-present wheat.) Diagnostic discriminator between
 	/// checkerboard-forbidding and field depletion; no policy reads it.
-	int countCornWithin(const Map& map, int x, int y, int w, int h, int dist);
+	int countWheatWithin(const Map& map, int x, int y, int w, int h, int dist);
 
-	/// Count of the CORN tiles within `dist` Chebyshev tiles of the footprint that
+	/// Count of the WHEAT tiles within `dist` Chebyshev tiles of the footprint that
 	/// SURVIVE Cortex's wheat-protection checkerboard — the open-parity half the paint
-	/// leaves harvestable (((x+y)&1) != WHEAT_PARITY). Unlike countHarvestableCornWithin
+	/// leaves harvestable (((x+y)&1) != WHEAT_PARITY). Unlike countHarvestableWheatWithin
 	/// (which reads the LIVE forbidden mask and so swings with paint timing and reads ~0
 	/// on freshly-revealed wheat the reconcile has not yet covered), this is the SUSTAINED
 	/// harvestable set — paint-timing independent. The durable wheat signal both inn/swarm
-	/// placement and feedCapacity want: depleted tiles drop out (no longer CORN), but our
+	/// placement and feedCapacity want: depleted tiles drop out (no longer WHEAT), but our
 	/// own recoverable checkerboard does not zero it.
-	int countSurvivingCornWithin(const Map& map, int x, int y, int w, int h, int dist);
+	int countSurvivingWheatWithin(const Map& map, int x, int y, int w, int h, int dist);
 
 	/// Fills (w, h) with the LARGEST footprint a building of type `bt` can grow into
 	/// by walking its upgrade chain (BuildingType::nextLevel). For an inn this yields

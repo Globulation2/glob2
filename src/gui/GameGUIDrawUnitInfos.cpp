@@ -176,10 +176,6 @@ void GameGUI::drawUnitInfos(void)
 		drawAbilityRow(rowX, ypos, "[Build]", 1 + selUnit->level[BUILD], selUnit->performance[BUILD]);
 	ypos += YOFFSET_TEXT_LINE;
 
-	if (selUnit->performance[HARVEST])
-		drawAbilityRow(rowX, ypos, "[Harvest]", 1 + selUnit->level[HARVEST], selUnit->performance[HARVEST]);
-	ypos += YOFFSET_TEXT_LINE;
-
 	if (selUnit->performance[ATTACK_SPEED])
 		drawAbilityRow(rowX, ypos, "[At. speed]", 1 + selUnit->level[ATTACK_SPEED], selUnit->performance[ATTACK_SPEED]);
 	ypos += YOFFSET_TEXT_LINE;

@@ -26,8 +26,11 @@ using ssize_t = SSIZE_T;
 #endif
 
 
-//Mersenne twister implementation
-boost::mt19937 randomGenerator;
+boost::mt19937 &syncRandEngine()
+{
+	thread_local boost::mt19937 engine;
+	return engine;
+}
 
 int distSquare(int x1, int y1, int x2, int y2)
 {
@@ -39,16 +42,16 @@ int distSquare(int x1, int y1, int x2, int y2)
 void setSyncRandSeed()
 {
 	///Sets the default seed
-	randomGenerator.seed();
+	syncRandEngine().seed();
 }
 void setSyncRandSeed(Uint32 seed)
 {
-	randomGenerator.seed(seed);
+	syncRandEngine().seed(seed);
 }
 
 void setRandomSyncRandSeed()
 {
-	randomGenerator.seed(std::random_device{}());
+	syncRandEngine().seed(std::random_device{}());
 }
 
 namespace Utilities

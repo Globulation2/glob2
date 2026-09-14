@@ -5,14 +5,39 @@ keeps the match summary and launch action available while dense content scrolls.
 
 ## Behavior
 
-- Start with FourSquares1 and four-player FFA: you plus three Numbi AIs.
+- Start on a random map with four colonies in a free-for-all: you plus three Numbi AIs
+  (since 2026-09-14; the premade library, a tab away, preselects FourSquares1 the first time
+  it is opened). A saved lobby restores whichever mode it was left in.
 - Unix map libraries separate installed and user roots. Windows/shared-root
   installations show one combined library so shipped maps remain accessible.
-- Select a premade map or generate a random world. Random previews appear
+- Select a premade map or generate a random world. Random maps start at
+  256×256 unless saved settings say otherwise. Random previews appear
   automatically after a 500 ms edit debounce, with generation deferred during a
   drag or open choice menu. The displayed snapshot is the map that launches.
+  Randomize, under the preview, rolls the same settings again with a new seed.
+- Landscape, at the top of the map column, opens a sheet showing every landscape as
+  a real map at the current size and colony count. Regenerate all rolls the sheet
+  again with fresh seeds; Randomize parameters rolls it with every landscape's own
+  controls drawn at random, redrawing any set the world refuses; Reset to defaults
+  puts every landscape back on its registered controls. Use plays exactly the map
+  shown: its seed, and the parameters it was rolled with, come back to the lobby.
+- Right under the landscape chooser, Reset to defaults returns width, height, colony
+  count and the landscape's own controls to their defaults, keeping the landscape
+  itself; Random parameters beside it draws every one of the landscape's controls at
+  random (size, colony count and workers stay). Some combinations make no map: a
+  draw the generator refuses is redrawn on the spot, and one the world refuses is
+  redrawn when the preview fails, up to six times, so the first set that generates a
+  valid map is the one shown.
 - Expand Terrain, Resources and Layout to tune the applicable generator controls.
-  Starting workers belong to Game Rules; premade maps retain authored units.
+  Resource amounts are percentages of the landscape's own default (100). On/off
+  switches are checkbox rows: click one, or press Space or Return while it has
+  focus. Starting workers belong to Game Rules; premade maps retain authored units.
+- Under a generated map's preview the lobby shows its start quality: the fairness
+  (the worst colony's start over the best) and the score it ranked its candidate
+  rolls by, with an (i) that opens the breakdown, one row per colony with what was
+  measured (the walk to wheat and to wood, the ground's fertility, deposits and
+  building sites within reach, distance from rivals), each factor's score and the
+  weights.
 - Each colony has a numbered color swatch, controller, AI/difficulty and team.
   You, AI, shared You + AI, and Closed are explicit choices. Shared control uses
   two of the twelve controller records; the UI explains unavailable combinations.
@@ -33,9 +58,14 @@ match. Returning to the lobby or restarting the app restores map mode and librar
 premade selection, all generator controls, controller/AI/team assignments
 (including hidden colonies), rules and expanded generator sections. Random mode
 creates a fresh preview using the saved parameters; temporary maps and seeds are
-not stored as preferences. Missing premade maps retain the draft and show the
-existing load error. Malformed or unsupported settings files fall back to the
-normal four-player setup. Writes replace the old file atomically.
+not stored as preferences. Generator controls that have a field in the legacy
+map descriptor are saved there; every other control, including every switch and
+resource amount, is saved in an `options` section after it. Files written before
+that section existed still load, with those controls at their defaults, and an
+option the game no longer has is ignored. Missing premade maps retain the draft
+and show the existing load error. Malformed or unsupported settings files, or an
+option value outside its control's range, fall back to the normal four-player
+setup. Writes replace the old file atomically.
 
 Save/replay encodings are unchanged. Generated maps use owned temporary snapshots
 outside the map library; saves and replays remain self-contained after cleanup.

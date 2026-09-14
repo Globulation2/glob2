@@ -315,12 +315,8 @@ bool loadFlag(GAGCore::InputStream *stream, const char *name)
 void saveGradient(GAGCore::OutputStream *stream, const Uint16 *field, size_t size)
 {
 	stream->writeUint8(field != nullptr, "present");
-	if (field) for (size_t i=0; i<size; ++i)
-	{
-		stream->writeEnterSection(i);
-		stream->writeUint16(field[i], "value");
-		stream->writeLeaveSection();
-	}
+	if (field)
+		stream->writeUint16Sections(field, size, "value");
 }
 void loadGradient(GAGCore::InputStream *stream, Uint16 *&field, size_t size)
 {
@@ -347,6 +343,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("mapRuntime");
 	stream->writeUint8(fogOfWar == fogOfWarA.data(), "fogIsA");
+	stream->writeUint32(topologyGeneration, "topologyGeneration");
 	stream->writeEnterSection("cells");
 	for (size_t i=0; i<size; ++i)
 	{
@@ -406,6 +403,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				saveGradient(stream, building->globalGradient[sw], size);
 				stream->writeUint8(building->dirtyGradient[sw], "dirty");
 				stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[sw], "lastUpdate");
+				stream->writeUint32(building->gradientGeneration[sw], "generation");
 				stream->writeLeaveSection();
 			}
 			stream->writeEnterSection("roundTrip");
@@ -446,6 +444,8 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	stream->readEnterSection("mapRuntime");
 	const bool fogIsA=loadFlag(stream,"fogIsA");
+	if (versionMinor>=FILE_FORMAT_VERSION_TOPOLOGY_GENERATION)
+		topologyGeneration=stream->readUint32("topologyGeneration");
 	fogOfWar=fogIsA ? fogOfWarA.data() : fogOfWarB.data();
 	stream->readEnterSection("cells");
 	for (size_t i=0; i<size; ++i)
@@ -506,6 +506,9 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 				loadGradient(stream, building->globalGradient[sw], size);
 				building->dirtyGradient[sw]=loadFlag(stream,"dirty");
 				building->lastGlobalGradientUpdateStepCounter[sw]=stream->readUint32("lastUpdate");
+				// An older save restored its fields as current; keep them so.
+				building->gradientGeneration[sw]=versionMinor>=FILE_FORMAT_VERSION_TOPOLOGY_GENERATION
+					? stream->readUint32("generation") : topologyGeneration;
 				stream->readLeaveSection();
 			}
 			if (versionMinor >= FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS)

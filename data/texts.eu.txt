@@ -74,6 +74,10 @@ Econo
 Warrushek azkar eta gogor erasotzen du, eta sarritan mugara eramaten du defendatzailea. Zailtasun ertaina.
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+Cabinok defentsa, erasoa eta eraikuntza sail independente gisa kudeatzen ditu, plan bakar baterantz elkarlanean: azkar hazten da eta armada erraldoiak bidaltzen ditu aurkarien aurka. Zailtasun handia.
+[AICabino]
+Cabino
 [Alga]
 Algak
 [algae]
@@ -1228,6 +1232,10 @@ Abiadura: 1x (hainbat jokalari)
 Jokalari bakarreko jokoetarako eta errepikapenetarako soilik. Jokalari anitzeko jokoak 1x abiaduran doaz.
 [AICortex-Description]
 Cortex gari-soro berrietara hedatzen da eta gudari taldeak borrokara bidaltzen ditu, frontetik gertu dauden ostatu eta ospitaleek lagunduta. Zailtasun ertaina. Esperimentala.
+[AIMaxima-Description]
+Maxima ongi elikatutako kolonia bat hazten du, etengabe esploratzen du eta atsedenik gabe erasotzen du, libre duen gudari oro bidaliz. Zailtasun handia.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 Ezin izan da mapa kargatu: fitxategia hondatuta dago edo bertsioa bateraezina da.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1270,6 +1278,10 @@ Oinarri erraldoiak eta erasoen ordez bihurketa.
 Estrategia: goiz eta gogor erasotzen du, aurkariek prestaketak amaitu aurretik.\n\nIndarguneak: defentsarik gabeko hedapena eta prestaketa militar motela aprobetxatzen ditu.\n\nProbatzeko taktikak: eutsi lehen erasoari ekonomia mantenduz, eta gero kontraerasoa egin.
 [AIWarrush-Summary]
 Zure hasierako defentsak probatzen dituzten eraso azkarrak.
+[AICabino-Profile]
+Oinarrizko estrategia: sail espezialista independenteen kabinete bat (defentsa, erasoa, eraikuntza, hobekuntzak, unitateen kudeaketa), bakoitza bere ekimenez jarduten duena baina plan bakar baterantz: azkar hazi eta gero armada erraldoiak bidali aurkarien aurka.\n\nIndarguneak: hedapen azkarrak presio militar erasokorra sostengatzen du; sail independenteek arin erantzuten diete tokiko mehatxuei, plan zentral baten zain egon gabe.\n\nAurkako jokoa: aurre egin bere hedapenari goiz eta erabili lurraldea aldi berean zenbat tropa engaia daitezkeen mugatzeko.
+[AICabino-Summary]
+Sail independenteak elkarlanean, hazkunde azkarra eta armada erraldoiak lortzeko.
 [Algae]
 algak
 [Alliances]
@@ -1390,6 +1402,14 @@ Jokalariak eta taldeak
 Aurrez egindako mapak
 [Preview ready. Start plays this exact map.]
 Aurrebista prest. Jokoa hastean mapa zehatz hau erabiltzen da.
+[Regenerate all]
+Sortu berriro guztiak
+[Generating preview...]
+Aurrebista sortzen...
+[Preview unavailable]
+Aurrebista ez dago erabilgarri
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Paisaia bakoitza benetako mapa gisa erakusten da zure uneko tamaina eta kolonia kopuruarekin. Aukeratu bat erakutsitako mapa jokatzeko.
 [Purple]
 Morea
 [Quick clash]
@@ -1552,6 +1572,10 @@ Ez dago oraingo aurrebistarik
 Borroka azkarra: abiadura bikoitza; sortutako mapak 8 langilerekin hasten dira.
 [Reroll]
 Sortu beste mapa bat
+[Randomize]
+Sortu ausaz
+[Reset to defaults]
+Leheneratu balio lehenetsiak
 [Ruleset]
 Arau multzoa
 [Select a map from the library.]
@@ -1630,6 +1654,8 @@ Bistaratu Globulation 2 jokoaren kurtsorea.
 Eginda
 [settings Edit shortcut]
 Editatu teklatuko lasterbidea
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Handitu menuak, testua eta alboko barra bereizmen handiko pantailan.
 [settings Flags]
 Banderak
 [settings Full]
@@ -1644,6 +1670,8 @@ Jokoaren abiadura
 Jokagarritasuna
 [settings Graphics detail]
 Xehetasun grafikoa
+[settings Interface scale]
+Interfazearen eskala
 [settings Keep]
 Mantendu aldaketak
 [settings Keep this display mode?]
@@ -1666,6 +1694,8 @@ Interfaze osoan erabiltzen den hizkuntza.
 Maila
 [settings Map editor]
 Mapa-editorea
+[settings Match the desktop]
+Mahaigainaren arabera
 [settings Missing font]
 Letra-tipoa falta da
 [settings Music volume]
@@ -1776,23 +1806,421 @@ Erabili hautatutako artelana joko bat edo mapa-editorea kargatzen den hurrengoan
 Toroide-ikuspegi automatikoa
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Erakutsi automatikoki toroide formako maparen ikuspegi orokorra mapan mugitzen zaren bitartean (OpenGL).
+[settings Autosave]
+Gordetze automatikoa
+[settings Save the game automatically about every 10 seconds.]
+Jokoa automatikoki gordetzen du, gutxi gorabehera 10 segundoro.
 [Channel width]
 Kanalaren zabalera
 [Land bridge width]
 Lur-zubiaren zabalera
 [Lake size]
 Aintziraren tamaina
+[Contested commons]
+Lur komun lehiatuak
+[Maze]
+Labirintoa
+[Fjord continent]
+Fiordoen kontinentea
+[Cell size]
+Gelaxkaren tamaina
+[Corridor width]
+Korridorearen zabalera
+[Spoke width]
+Erradioen zabalera
+[Loopiness]
+Begizta-maila
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labirintoak gutxienez bi gelaxka behar ditu zabaleran eta altueran; erabili mapa handiagoa edo gelaxka txikiagoak.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Hain kanal zabalek belar gutxiegi uzten dute gelaxka bakoitzean; erabili kanal estuagoak edo gelaxka handiagoak.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labirintoak kale itsu gutxiegi ditu hainbeste koloniarentzat; erabili mapa handiagoa edo gelaxka txikiagoak.
+[Home island size]
+Hasierako uhartearen tamaina
+[Commons size]
+Eremu komunaren tamaina
+[Moat width]
+Lubanarroaren zabalera
+[Bridge count]
+Zubi kopurua
+[Continent size]
+Kontinentearen tamaina
+[Coast roughness]
+Kostaldearen irregulartasuna
+[Fjord width]
+Fiordoaren zabalera
+[Lake connects to fjords]
+Aintzira fiordoekin lotuta
+[Resource islands]
+Baliabide-uharteak
+[Watershed]
+Ibai-arroa
+[River density]
+Ibaien dentsitatea
+[Dryness]
+Lehortasuna
+[Fords]
+Ibiak
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Ibai-arroak uholde-lautada gutxiegi du hainbeste koloniarentzat; erabili mapa handiagoa edo kolonia gutxiago.
+[Stone highlands]
+Harrizko goi-lurrak
+[Valley size]
+Haranaren tamaina
+[Pass width]
+Mendatearen zabalera
+[Pond size]
+Urmaelaren tamaina
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Haran hauek handiegiak dira maparako; erabili mapa handiagoa edo haran txikiagoak.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Goi-lurrek leku gutxiegi dute hainbeste koloniarentzat; erabili mapa handiagoa edo kolonia gutxiago.
+[Symmetric arena]
+Arena simetrikoa
+[Centre size]
+Erdigunearen tamaina
+[Causeway width]
+Galtzadaren zabalera
+[Causeways]
+Galtzadak
+[Lakes]
+Aintzirak
+[Resource richness]
+Baliabideen ugaritasuna
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Arena simetrikoak 2, 4 edo 8 kolonia behar ditu.
+[Eight colonies need a square map in the symmetric arena.]
+Zortzi koloniarentzat mapa karratua behar da arena simetrikoan.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Erdigunea txikiegia da mapa honetan fruta-baratze baterako; erabili erdigune handiagoa edo mapa handiagoa.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arenak leku gutxiegi uzten du kolonia bakoitzarentzat; erabili mapa handiagoa, erdigune txikiagoa edo lubanarro estuagoa.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Galtzadak elkarrengandik hurbilegi daude; erabili galtzada gutxiago edo estuagoak, edo erdigune handiagoa.
+[Ring world]
+Eraztun-mundua
+[Belt width]
+Gerrikoaren zabalera
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Gerrikoa laburregia da hainbeste koloniarentzat; erabili mapa luzeagoa edo kolonia gutxiago.
+[City states]
+Hiri-estatuak
+[Strait width]
+Itsasartearen zabalera
+[Valleys]
+Haranak
+[Frontier richness]
+Mugaldeko aberastasuna
+[City states need at least one colony.]
+Hiri-estatuek gutxienez kolonia bat behar dute.
+[Stone walls]
+Harrizko hormak
+[Sand patches]
+Harea-guneak
+[Tidal flats]
+Marea-lautadak
+[Everglades]
+Zingirak
+[Pool spacing]
+Putzuen arteko tartea
+[Pool size]
+Putzuen tamaina
+[Clearing size]
+Soilgunearen tamaina
+[Levee]
+Dikea
+[Sloughs]
+Zingirak
+[Everglades need at least one colony.]
+Zingirek gutxienez kolonia bat behar dute.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Kolonia gehiegi mapa honetarako; erabili mapa handiagoa edo kolonia gutxiago.
+[Coral]
+Koralea
+[Fork angle]
+Adarkatze-angelua
+[Lean]
+Makurdura
+[Home size]
+Etxearen tamaina
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Koralea ez da mapa honetan sartzen; erabili mapa handiagoa, itsasarte estuagoak edo kolonia gutxiago.
+[Branching]
+Adarkadura
+[Branch width]
+Adarren zabalera
+[Coral needs at least one colony.]
+Koraleak gutxienez kolonia bat behar du.
+[Coral needs a map at least 128 tiles across.]
+Koraleak gutxienez 128 lauki zabaleko mapa behar du.
+[Carousel]
+Karrusela
+[Amphitheatre]
+Anfiteatroa
+[Switchbacks]
+Sigi-sagak
+[Court size]
+Patioen tamaina
+[Court wall]
+Patioko horma
+[Plaza size]
+Plazaren tamaina
+[Starting tower level]
+Hasierako dorreen maila
+[Towers per colony]
+Dorreak koloniako
+[Rings]
+Eraztunak
+[Ramp width]
+Arrapalen zabalera
+[Pit size]
+Zuloaren tamaina
+[Terrace width]
+Harmailen zabalera
+[Bay size]
+Badien tamaina
+[Border wall]
+Mugako horma
+[Plateau size]
+Goi-lautadaren tamaina
+[Trail width]
+Bidearen zabalera
+[Wall between legs]
+Bihurguneen arteko horma
+[Farm building plots]
+Eraikitzeko lursailak baserrietan
+[Carousels need at least two colonies.]
+Karruselak gutxienez bi kolonia behar ditu.
+[Switchbacks need at least two colonies.]
+Sigi-sagek gutxienez bi kolonia behar dituzte.
+[An amphitheatre needs at least two colonies.]
+Anfiteatroak gutxienez bi kolonia behar ditu.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Karrusela ez da mapa honetan sartzen; erabili mapa handiagoa, etxe txikiagoak edo kolonia gutxiago.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Sigi-sagak ez dira mapa honetan sartzen; erabili mapa handiagoa, goi-lautada txikiagoa, bide estuagoak edo kolonia gutxiago.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Anfiteatroa ez da mapa honetan sartzen; erabili mapa handiagoa, eraztun gutxiago, harmaila estuagoak edo kolonia gutxiago.
+[Spider web]
+Armiarma-sarea
+[Spokes per colony]
+Erradioak koloniako
+[Ring spacing]
+Eraztunen arteko tartea
+[Thread width]
+Harien zabalera
+[Sag]
+Makurdura
+[Torn strands]
+Hari hautsiak
+[Hub size]
+Erdiko gunearen tamaina
+[Dew drops]
+Ihintz-tantak
+[Spiral]
+Espirala
+[Spider webs need at least one colony.]
+Armiarma-sareak gutxienez kolonia bat behar du.
+[Sandbars]
+Hondar-bankuak
+[Tide pools]
+Marea-putzuak
+[Lagoons]
+Aintzirak
+[Central island]
+Erdiko uhartea
+[Tidal flats need at least one colony.]
+Marea-lautadek gutxienez kolonia bat behar dute.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Jatorrizko uharteak ez dira mapa honetan sartzen; erabili mapa handiagoa, kolonia gutxiago edo uharte txikiagoak.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Eremu komunak eta itsasarteak leku gutxiegi uzten diete oinarriei; erabili mapa handiagoa, kolonia gutxiago, eremu komun txikiagoa edo itsasarte estuagoa.
+[Wheat amount]
+Gari kopurua
+[Wood amount]
+Egur kopurua
+[Stone amount]
+Harri kopurua
+[Algae amount]
+Alga kopurua
+[Fruit amount]
+Fruta kopurua
+[Stone on hilltops]
+Harria muinoen gailurretan
+[Winding river]
+Ibai bihurgunetsua
+[Sandy beaches]
+Harea-hondartzak
+[Land bridges]
+Lur-zubiak
+[Colony meadows]
+Belardiak kolonien inguruan
+[Extra starting deposit]
+Hasierako baliabide gehigarria
+[Moat bridges]
+Lubanarroko zubiak
+[Jagged coastlines]
+Kostalde malkarrak
+[Sand roads]
+Harea-bideak
+[Treasure in dead ends]
+Altxorrak kale itsuetan
+[Fjord bank deposits]
+Fiordoen ertzetako baliabideak
+[Sandy lake shore]
+Aintziraren ertz hareatsua
+[River delta]
+Ibai-delta
+[Meandering rivers]
+Ibai meandrodunak
+[Fruit in home valleys]
+Fruta hasierako haranetan
+[Moat]
+Lubanarroa
+[Stone in the orchard]
+Harria fruta-baratzean
+[Colonies on both coasts]
+Koloniak bi kostaldeetan
+[Winding belt]
+Gerriko bihurgunetsua
+[Cell shape]
+Gelaxken forma
+[Squares]
+Karratuak
+[Hexagons]
+Hexagonoak
+[Warp]
+Deformazioa
+[Fingerprint]
+Hatz-marka
+[Wavelength]
+Uhin-luzera
+[Pattern]
+Eredua
+[Labyrinth]
+Labirintoa
+[Channels]
+Ildoak
+[Barrier]
+Hesia
+[Water]
+Ura
+[Grain]
+Pikortadura
+[Rain shadow]
+Euri-itzala
+[Ridges]
+Gailurrak
+[Slant]
+Zeihartasuna
+[Ridge thickness]
+Gailurren lodiera
+[Pass spacing]
+Mendateen arteko tartea
+[Lee width]
+Haizebearen zabalera
+[Old growth]
+Oihan zaharra
+[Canals]
+Kanalak
+[Forest density]
+Basoaren dentsitatea
+[Hidden groves]
+Baso txiki ezkutuak
+[Starting trails]
+Hasierako bideak
+[Block size]
+Etxadien tamaina
+[Canal width]
+Kanalen zabalera
+[Extra bridges]
+Zubi gehigarriak
+[Polder]
+Polderra
+[Old town]
+Hiri zaharra
+[Anthill]
+Inurritegia
+[Row angle]
+Ilaren angelua
+[Diagonal]
+Diagonala
+[Dyke spacing]
+Dikeen arteko tartea
+[Village size]
+Herrixken tamaina
+[Hamlets]
+Auzoak
+[City size]
+Hiriaren tamaina
+[Street width]
+Kaleen zabalera
+[Plazas]
+Plazak
+[Chamber spacing]
+Ganberen arteko tartea
+[Chamber size]
+Ganberen tamaina
+[Queen room]
+Erreginaren ganbera
+[Tunnel width]
+Tunelen zabalera
+[Loops]
+Begiztak
+[Home pools]
+Etxeko putzuak
+[Farm plots]
+Soro-lursailak
+[Tendril roads]
+Kiribil-bideak
+[Random]
+Ausazkoa
+[Vertical]
+Bertikala
+[Horizontal]
+Horizontala
+[Inland lakes]
+Barnealdeko aintzirak
+[Block shape]
+Etxadien forma
+[Random parameters]
+Ausazko parametroak
+[Randomize parameters]
+Parametroak ausaz aukeratu
+[Start quality]
+Hasieraren kalitatea
+[Fairness]
+Zuzentasuna
+[Score]
+Puntuazioa
+[Weight]
+Pisua
+[Worst]
+Okerrena
+[Best]
+Onena
+[Fertility]
+Emankortasuna
+[Deposits]
+Hobiak
+[Room]
+Lekua
+[Isolation]
+Isolamendua
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Kolonia bakoitzaren hasiera amaitutako mapan neurtzen da: gariraino eta egurreraino dagoen bidea, bere lurra zein ondo berritzen den, eskura dituen hobiak eta eraikitzeko lekuak, eta aurkariekiko distantzia. Faktore bakoitzak 0tik 1era puntuatzen du neurri finko baten aurrean, guztizkoak haztatzen ditu, zuzentasuna koloniarik okerrenaren guztizkoa onenarenaz zatituta da, eta puntuazioa guztizko okerrena zuzentasunaz biderkatuta.
 [repeat map horizontally]
-Repeat map horizontally
+Errepikatu mapa horizontalki
 [repeat map vertically]
-Repeat map vertically
+Errepikatu mapa bertikalki
 [tile x]
-tile x
+errepikapena x
 [tile y]
-tile y
+errepikapena y
 [bases]
-bases
+baseak
 [number of colonies]
-Number of colonies, one per player; raising it repeats the map until they fit
+Kolonia kopurua, bat jokalari bakoitzeko; handitzean mapa errepikatzen da denak sartu arte
 [bases per colony]
-Bases per colony; a base is one team of the map as drawn, its buildings and units
+Oinarriak koloniako; oinarria marraztutako maparen talde bat da, bere eraikin eta unitateekin

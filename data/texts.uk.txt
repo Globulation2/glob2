@@ -56,6 +56,10 @@ Castor грає обережно й добре дає собі раду на м�
 Castor
 [AICortex-Description]
 Кортекс розширюється до нових пшеничних полів і посилає групи воїнів у бій за підтримки їдалень і лікарень поблизу лінії фронту. Середня складність. Експериментальний.
+[AIMaxima-Description]
+Максима розвиває добре нагодовану колонію, постійно веде розвідку й атакує без перерви кожним воїном, якого може виділити. Висока складність.
+[AIMaxima]
+Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]
@@ -78,6 +82,10 @@ Econo
 Warrush — атакує рано й потужно, часто змушуючи гравця оборонятися з останніх сил. Середня складність.
 [AIWarrush]
 Warrush
+[AICabino-Description]
+Cabino керує обороною, атакою та будівництвом як незалежними відділами, що прямують до єдиного плану: швидко розростається й кидає на супротивників величезні армії. Висока складність.
+[AICabino]
+Cabino
 [Alga]
 Водорості
 [algae]
@@ -1256,6 +1264,10 @@ Ysagoon Online Gaming
 Стратегія: атакує рано і сильно, перш ніж супротивники закінчать підготовку.\n\nСильні сторони: використовує незахищене розширення та повільну військову підготовку.\n\nРекомендована контргра: переживіть першу атаку, зберігаючи свою економіку, а потім контратакуйте.
 [AIWarrush-Summary]
 Швидкі атаки, які перевіряють ваш ранній захист.
+[AICabino-Profile]
+Основна стратегія: кабінет незалежних спеціалізованих відділів (оборона, атака, будівництво, покращення, керування підрозділами), кожен з яких діє за власною ініціативою, але прямує до єдиного плану: швидке зростання, а потім величезні армії проти супротивників.\n\nСильні сторони: швидка експансія підтримує агресивний військовий тиск; незалежні відділи швидко реагують на локальні загрози, не чекаючи на центральний план.\n\nЯк протидіяти: оскаржуйте його експансію рано і використовуйте місцевість, щоб обмежити кількість військ, які можуть вступити в бій одночасно.
+[AICabino-Summary]
+Незалежні відділи, що співпрацюють заради швидкого зростання та величезних армій.
 [Algae]
 Водорості
 [Alliances]
@@ -1376,6 +1388,14 @@ Ysagoon Online Gaming
 Готові карти
 [Preview ready. Start plays this exact map.]
 Попередній перегляд готовий. Початок гри використовує саме цю карту.
+[Regenerate all]
+Згенерувати все заново
+[Generating preview...]
+Створення попереднього перегляду...
+[Preview unavailable]
+Попередній перегляд недоступний
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Кожен ландшафт показано як справжню карту з вашим поточним розміром і кількістю колоній. Виберіть один, щоб зіграти на показаній карті.
 [Purple]
 Фіолетовий
 [Quick clash]
@@ -1538,6 +1558,10 @@ Ysagoon Online Gaming
 Швидкий бій: подвійна швидкість; створені карти починаються з 8 робітників.
 [Reroll]
 Створіть іншу карту
+[Randomize]
+Випадкова генерація
+[Reset to defaults]
+Відновити типові значення
 [Ruleset]
 Набір правил
 [Select a map from the library.]
@@ -1616,6 +1640,8 @@ Ysagoon Online Gaming
 Готово
 [settings Edit shortcut]
 Редагувати комбінацію клавіш
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Збільшує меню, текст і бічну панель на екрані з високою роздільною здатністю.
 [settings Flags]
 Прапори
 [settings Full]
@@ -1630,6 +1656,8 @@ Ysagoon Online Gaming
 Ігровий процес
 [settings Graphics detail]
 Деталізація графіки
+[settings Interface scale]
+Масштаб інтерфейсу
 [settings Keep]
 Зберегти зміни
 [settings Keep this display mode?]
@@ -1652,6 +1680,8 @@ Ysagoon Online Gaming
 Рівень
 [settings Map editor]
 Редактор карт
+[settings Match the desktop]
+Як у системі
 [settings Missing font]
 Відсутній шрифт
 [settings Music volume]
@@ -1762,23 +1792,421 @@ OpenGL недоступний у цій збірці.
 Автоматичний вигляд тора
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Автоматично показувати огляд карти у формі тора під час переміщення по карті (OpenGL).
+[settings Autosave]
+Автозбереження
+[settings Save the game automatically about every 10 seconds.]
+Автоматично зберігає гру приблизно кожні 10 секунд.
 [Channel width]
 Ширина протоки
 [Land bridge width]
 Ширина перешийка
 [Lake size]
 Розмір озера
+[Contested commons]
+Спірні спільні землі
+[Maze]
+Лабіринт
+[Fjord continent]
+Материк із фіордами
+[Cell size]
+Розмір комірки
+[Corridor width]
+Ширина коридору
+[Spoke width]
+Ширина спиць
+[Loopiness]
+Кількість петель
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Лабіринту потрібно щонайменше дві комірки по горизонталі й вертикалі; використайте більшу карту або менші комірки.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+За такої ширини проток у кожній комірці лишається замало трави; використайте вужчі протоки або більші комірки.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+У лабіринті замало тупиків для такої кількості колоній; використайте більшу карту або менші комірки.
+[Home island size]
+Розмір стартового острова
+[Commons size]
+Розмір спільної землі
+[Moat width]
+Ширина рову
+[Bridge count]
+Кількість мостів
+[Continent size]
+Розмір материка
+[Coast roughness]
+Порізаність узбережжя
+[Fjord width]
+Ширина фіорду
+[Lake connects to fjords]
+Озеро з’єднане з фіордами
+[Resource islands]
+Острови з ресурсами
+[Watershed]
+Річковий басейн
+[River density]
+Щільність річок
+[Dryness]
+Посушливість
+[Fords]
+Броди
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+У річковому басейні замало заплавних земель для такої кількості колоній; використайте більшу карту або менше колоній.
+[Stone highlands]
+Кам’яне нагір’я
+[Valley size]
+Розмір долини
+[Pass width]
+Ширина перевалу
+[Pond size]
+Розмір ставка
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Ці долини завеликі для карти; використайте більшу карту або менші долини.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+На нагір’ї замало місця для такої кількості колоній; використайте більшу карту або менше колоній.
+[Symmetric arena]
+Симетрична арена
+[Centre size]
+Розмір центру
+[Causeway width]
+Ширина дамби
+[Causeways]
+Дамби
+[Lakes]
+Озера
+[Resource richness]
+Багатство ресурсів
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Симетричній арені потрібно 2, 4 або 8 колоній.
+[Eight colonies need a square map in the symmetric arena.]
+Для восьми колоній симетрична арена потребує квадратної карти.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Центр замалий для фруктового саду на цій карті; використайте більший центр або більшу карту.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Арена залишає замало місця для кожної колонії; використайте більшу карту, менший центр або вужчий рів.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Дамби розташовані надто близько одна до одної; використайте менше дамб, вужчі дамби або більший центр.
+[Ring world]
+Кільцевий світ
+[Belt width]
+Ширина поясу
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Пояс закороткий для такої кількості колоній; використайте довшу карту або менше колоній.
+[City states]
+Міста-держави
+[Strait width]
+Ширина протоки
+[Valleys]
+Долини
+[Frontier richness]
+Багатство нових земель
+[City states need at least one colony.]
+Містам-державам потрібна хоча б одна колонія.
+[Stone walls]
+Кам'яні стіни
+[Sand patches]
+Піщані ділянки
+[Tidal flats]
+Припливні мілини
+[Everglades]
+Болота
+[Pool spacing]
+Відстань між заводями
+[Pool size]
+Розмір заводей
+[Clearing size]
+Розмір галявини
+[Levee]
+Дамба
+[Sloughs]
+Стариці
+[Everglades need at least one colony.]
+Болотам потрібна хоча б одна колонія.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Забагато колоній для цієї мапи; використайте більшу мапу або менше колоній.
+[Coral]
+Корал
+[Fork angle]
+Кут галуження
+[Lean]
+Нахил
+[Home size]
+Розмір бази
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Корал не вміщується на цю мапу; візьміть більшу мапу, вужчі протоки або менше колоній.
+[Branching]
+Галуження
+[Branch width]
+Ширина гілок
+[Coral needs at least one colony.]
+Для корала потрібна принаймні одна колонія.
+[Coral needs a map at least 128 tiles across.]
+Для корала потрібна мапа завширшки щонайменше 128 клітинок.
+[Carousel]
+Карусель
+[Amphitheatre]
+Амфітеатр
+[Switchbacks]
+Серпантин
+[Court size]
+Розмір дворів
+[Court wall]
+Стіна дворів
+[Plaza size]
+Розмір площі
+[Starting tower level]
+Рівень початкових веж
+[Towers per colony]
+Веж на колонію
+[Rings]
+Кільця
+[Ramp width]
+Ширина пандусів
+[Pit size]
+Розмір арени
+[Terrace width]
+Ширина терас
+[Bay size]
+Розмір заток
+[Border wall]
+Прикордонна стіна
+[Plateau size]
+Розмір плато
+[Trail width]
+Ширина стежки
+[Wall between legs]
+Стіна між витками
+[Farm building plots]
+Ділянки під забудову на фермах
+[Carousels need at least two colonies.]
+Для каруселі потрібні принаймні дві колонії.
+[Switchbacks need at least two colonies.]
+Для серпантину потрібні принаймні дві колонії.
+[An amphitheatre needs at least two colonies.]
+Для амфітеатру потрібні принаймні дві колонії.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Карусель не вміщується на цій мапі; використайте більшу мапу, менші бази або менше колоній.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Серпантин не вміщується на цій мапі; використайте більшу мапу, менше плато, вужчі стежки або менше колоній.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Амфітеатр не вміщується на цій мапі; використайте більшу мапу, менше кілець, вужчі тераси або менше колоній.
+[Spider web]
+Павутина
+[Spokes per colony]
+Променів на колонію
+[Ring spacing]
+Крок кілець
+[Thread width]
+Ширина ниток
+[Sag]
+Провисання
+[Torn strands]
+Розірвані нитки
+[Hub size]
+Розмір центру
+[Dew drops]
+Краплі роси
+[Spiral]
+Спіраль
+[Spider webs need at least one colony.]
+Для павутини потрібна принаймні одна колонія.
+[Sandbars]
+Піщані банки
+[Tide pools]
+Припливні заводі
+[Lagoons]
+Лагуни
+[Central island]
+Центральний острів
+[Tidal flats need at least one colony.]
+Припливним мілинам потрібна хоча б одна колонія.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Рідні острови не вміщаються на цій карті; використайте більшу карту, менше колоній або менші острови.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Спільна земля і протока залишають замало місця для баз; використайте більшу карту, менше колоній, меншу спільну землю або вужчу протоку.
+[Wheat amount]
+Кількість пшениці
+[Wood amount]
+Кількість деревини
+[Stone amount]
+Кількість каменю
+[Algae amount]
+Кількість водоростей
+[Fruit amount]
+Кількість фруктів
+[Stone on hilltops]
+Камінь на вершинах пагорбів
+[Winding river]
+Звивиста річка
+[Sandy beaches]
+Піщані пляжі
+[Land bridges]
+Перешийки
+[Colony meadows]
+Луки навколо колоній
+[Extra starting deposit]
+Додатковий стартовий поклад
+[Moat bridges]
+Мости через рів
+[Jagged coastlines]
+Порізані береги
+[Sand roads]
+Піщані дороги
+[Treasure in dead ends]
+Скарби в глухих кутах
+[Fjord bank deposits]
+Поклади на берегах фіордів
+[Sandy lake shore]
+Піщаний берег озера
+[River delta]
+Дельта річки
+[Meandering rivers]
+Звивисті річки
+[Fruit in home valleys]
+Фрукти в стартових долинах
+[Moat]
+Рів
+[Stone in the orchard]
+Камінь у саду
+[Colonies on both coasts]
+Колонії на обох узбережжях
+[Winding belt]
+Звивистий пояс
+[Cell shape]
+Форма клітинок
+[Squares]
+Квадрати
+[Hexagons]
+Шестикутники
+[Warp]
+Викривлення
+[Fingerprint]
+Відбиток пальця
+[Wavelength]
+Довжина хвилі
+[Pattern]
+Візерунок
+[Labyrinth]
+Лабіринт
+[Channels]
+Борозни
+[Barrier]
+Перешкода
+[Water]
+Вода
+[Grain]
+Зернистість
+[Rain shadow]
+Дощова тінь
+[Ridges]
+Хребти
+[Slant]
+Скіс
+[Ridge thickness]
+Товщина хребтів
+[Pass spacing]
+Крок перевалів
+[Lee width]
+Ширина підвітряної смуги
+[Old growth]
+Праліс
+[Canals]
+Канали
+[Forest density]
+Густота лісу
+[Hidden groves]
+Приховані гаї
+[Starting trails]
+Початкові стежки
+[Block size]
+Розмір кварталів
+[Canal width]
+Ширина каналів
+[Extra bridges]
+Додаткові мости
+[Polder]
+Польдер
+[Old town]
+Старе місто
+[Anthill]
+Мурашник
+[Row angle]
+Кут рядів
+[Diagonal]
+По діагоналі
+[Dyke spacing]
+Крок дамб
+[Village size]
+Розмір сіл
+[Hamlets]
+Хутори
+[City size]
+Розмір міста
+[Street width]
+Ширина вулиць
+[Plazas]
+Площі
+[Chamber spacing]
+Крок камер
+[Chamber size]
+Розмір камер
+[Queen room]
+Камера королеви
+[Tunnel width]
+Ширина тунелів
+[Loops]
+Петлі
+[Home pools]
+Ставки біля бази
+[Farm plots]
+Земельні наділи
+[Tendril roads]
+Дороги-вусики
+[Random]
+Випадково
+[Vertical]
+Вертикально
+[Horizontal]
+Горизонтально
+[Inland lakes]
+Внутрішні озера
+[Block shape]
+Форма кварталів
+[Random parameters]
+Випадкові параметри
+[Randomize parameters]
+Випадково обрати параметри
+[Start quality]
+Якість старту
+[Fairness]
+Справедливість
+[Score]
+Оцінка
+[Weight]
+Вага
+[Worst]
+Найгірший
+[Best]
+Найкращий
+[Fertility]
+Родючість
+[Deposits]
+Запаси
+[Room]
+Простір
+[Isolation]
+Віддаленість
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Старт кожної колонії вимірюється на готовій карті: шлях до пшениці та до лісу, наскільки добре відновлюється її земля, запаси та місця для будівництва в межах досяжності й відстань до суперників. Кожен чинник оцінюється від 0 до 1 відносно сталої планки, підсумок їх зважує, справедливість — це підсумок найгіршої колонії, поділений на підсумок найкращої, а оцінка — найгірший підсумок, помножений на справедливість.
 [repeat map horizontally]
-Repeat map horizontally
+Повторити мапу по горизонталі
 [repeat map vertically]
-Repeat map vertically
+Повторити мапу по вертикалі
 [tile x]
-tile x
+повтор x
 [tile y]
-tile y
+повтор y
 [bases]
-bases
+бази
 [number of colonies]
-Number of colonies, one per player; raising it repeats the map until they fit
+Кількість колоній, по одній на гравця; збільшення повторює мапу, доки всі не вмістяться
 [bases per colony]
-Bases per colony; a base is one team of the map as drawn, its buildings and units
+Баз на колонію; база — це одна команда мапи в намальованому вигляді, з її будівлями та юнітами

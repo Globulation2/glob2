@@ -21,7 +21,7 @@ namespace
 	//                                  walk, swim, fly, build, harvest,
 	//                                  attackSpeed, attackForce,
 	//                                  magicAttackAir, magicAttackGround,
-	//                                  magicCreateWood, magicCreateCorn,
+	//                                  magicCreateWood, magicCreateWheat,
 	//                                  magicCreateAlga, armor, hpMax }
 	const UnitType kDefaultUnitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS] = {
 		// WORKER (baseWorker)

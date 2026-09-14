@@ -6,6 +6,7 @@
     "Castor",
     "Cortex",
     "HP",
+    "Maxima",
     "Nicowar",
     "Numbi",
     "Ok",
@@ -52,26 +53,31 @@
     "shift-%0",
     "sys req",
     "tab",
-    "test"
+    "test",
+    "Cabino"
   ],
   "shared_vocabulary": {
     "texts.ar.txt": [],
     "texts.br.txt": [
+      "Coral",
       "Editor",
       "Hospital",
       "Magenta",
       "Total",
-      "Tutorial"
+      "Tutorial",
+      "bases"
     ],
     "texts.ca.txt": [
       "Audio",
+      "Canals",
       "Editor",
       "Hospital",
       "Magenta",
       "No",
       "Total",
       "Tutorial",
-      "desert"
+      "desert",
+      "bases"
     ],
     "texts.cz.txt": [
       "Audio",
@@ -84,12 +90,14 @@
       "Audio",
       "Briefing",
       "Cyan",
+      "Diagonal",
       "Editor",
       "Hunger",
       "Layout",
       "Magenta",
       "Maximum",
       "Name",
+      "Polder",
       "Prestige",
       "Radius",
       "Sand",
@@ -109,9 +117,11 @@
       "Magenta",
       "Medium",
       "Pink",
+      "Polder",
       "Prestige",
       "Radius",
       "Sand",
+      "Spiral",
       "Standard",
       "Start",
       "Team",
@@ -123,12 +133,15 @@
       "Magenta"
     ],
     "texts.es.txt": [
+      "Coral",
       "Editor",
       "Hospital",
       "Magenta",
       "No",
+      "Plazas",
       "Total",
-      "Tutorial"
+      "Tutorial",
+      "bases"
     ],
     "texts.eu.txt": [
       "Info",
@@ -146,9 +159,11 @@
       "Colonies",
       "Construction",
       "Cyan",
+      "Grain",
       "Magenta",
       "Options",
       "Orange",
+      "Polder",
       "Prestige",
       "Proportions",
       "Standard",
@@ -156,18 +171,23 @@
       "Total",
       "Version",
       "colonies",
-      "options"
+      "options",
+      "bases"
     ],
     "texts.gr.txt": [],
     "texts.hu.txt": [
       "Editor",
       "Info",
-      "Magenta"
+      "Magenta",
+      "Polder"
     ],
     "texts.id.txt": [
       "Audio",
+      "Diagonal",
       "Editor",
+      "Polder",
       "Radius",
+      "Spiral",
       "Total",
       "Tutorial"
     ],
@@ -177,6 +197,7 @@
       "Editor",
       "Magenta",
       "No",
+      "Polder",
       "Standard",
       "Start"
     ],
@@ -189,30 +210,37 @@
       "Info",
       "Lobby",
       "Magenta",
+      "Polder",
       "School",
       "Team",
       "Tutorial",
       "Water",
-      "element"
+      "element",
+      "bases"
     ],
     "texts.pl.txt": [
       "Audio",
-      "Magenta"
+      "Magenta",
+      "Polder"
     ],
     "texts.pt.txt": [
+      "Coral",
       "Editor",
       "Hospital",
       "Magenta",
       "Total",
-      "Tutorial"
+      "Tutorial",
+      "bases"
     ],
     "texts.ro.txt": [
       "Audio",
       "Control",
+      "Coral",
       "Cyan",
       "Editor",
       "Info",
       "Magenta",
+      "Polder",
       "Standard",
       "Total",
       "Tutorial"
@@ -220,11 +248,13 @@
     "texts.ru.txt": [],
     "texts.si.txt": [
       "Cyan",
-      "Magenta"
+      "Magenta",
+      "Polder"
     ],
     "texts.sk.txt": [
       "Editor",
-      "Info"
+      "Info",
+      "Polder"
     ],
     "texts.sr.txt": [],
     "texts.sv.txt": [
@@ -237,13 +267,18 @@
       "Lobby",
       "Magenta",
       "Medium",
+      "Polder",
       "Prestige",
       "Sand",
+      "Spiral",
       "Standard",
       "Team",
       "Version"
     ],
-    "texts.tr.txt": [],
+    "texts.tr.txt": [
+      "Polder",
+      "Spiral"
+    ],
     "texts.uk.txt": [],
     "texts.vi.txt": [],
     "texts.zh-cn.txt": [],

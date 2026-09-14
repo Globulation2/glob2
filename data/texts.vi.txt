@@ -56,6 +56,10 @@ Castor chơi thận trọng và rất giỏi trên các bản đồ ít tài ngu
 Castor
 [AICortex-Description]
 Cortex mở rộng tới những cánh đồng lúa mì mới và gửi các nhóm chiến binh vào trận chiến, được hỗ trợ bởi các nhà trọ và bệnh viện gần tiền tuyến. Độ khó trung bình. Thực nghiệm.
+[AIMaxima-Description]
+Maxima phát triển một thuộc địa được cung cấp đủ lương thực, liên tục trinh sát và tấn công không ngừng bằng mọi chiến binh có thể điều động. Độ khó cao.
+[AIMaxima]
+Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]
@@ -78,6 +82,10 @@ Econo
 Warrush - Tấn công nhanh và dữ dội, thường khiến người phòng thủ phải chống đỡ hết sức. Độ khó trung bình.
 [AIWarrush]
 Warrush
+[AICabino-Description]
+Cabino điều hành phòng thủ, tấn công và xây dựng như những bộ phận độc lập nhưng cùng hướng đến một kế hoạch: phát triển nhanh và tung những đạo quân lớn vào đối thủ. Độ khó cao.
+[AICabino]
+Cabino
 [Alga]
 Tảo
 [algae]
@@ -1256,6 +1264,10 @@ Xây căn cứ lớn và chiêu dụ quân địch thay vì tấn công.
 Chiến lược: Tấn công nhanh và mạnh trước khi đối thủ xây dựng lực lượng xong.\n\nĐiểm mạnh: Trừng phạt việc mở rộng thiếu phòng thủ và chuẩn bị quân sự chậm.\n\nGợi ý đối phó: Duy trì kinh tế, chống đỡ đợt tấn công đầu rồi phản công.
 [AIWarrush-Summary]
 Các cuộc tấn công nhanh kiểm tra khả năng phòng thủ sớm của bạn.
+[AICabino-Profile]
+Chiến lược cốt lõi: một nội các gồm các bộ phận chuyên trách độc lập (phòng thủ, tấn công, xây dựng, nâng cấp, quản lý đơn vị), mỗi bộ phận tự hành động theo sáng kiến riêng nhưng cùng hướng đến một kế hoạch: phát triển nhanh rồi tung những đạo quân lớn vào đối thủ.\n\nĐiểm mạnh: mở rộng nhanh hỗ trợ áp lực quân sự mạnh mẽ; các bộ phận độc lập phản ứng nhanh với các mối đe dọa cục bộ mà không cần chờ một kế hoạch trung tâm.\n\nCách đối phó: ngăn chặn sự mở rộng của nó sớm và dùng địa hình để hạn chế số quân nó có thể huy động cùng lúc.
+[AICabino-Summary]
+Các bộ phận độc lập hợp tác để phát triển nhanh và tạo ra những đạo quân khổng lồ.
 [Algae]
 Tảo
 [Alliances]
@@ -1376,6 +1388,14 @@ Người chơi & Đội
 Bản đồ được tạo sẵn
 [Preview ready. Start plays this exact map.]
 Xem trước đã sẵn sàng. Bắt đầu trò chơi sử dụng bản đồ chính xác này.
+[Regenerate all]
+Tạo lại tất cả
+[Generating preview...]
+Đang tạo bản xem trước...
+[Preview unavailable]
+Không có bản xem trước
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Mỗi địa hình được hiển thị như một bản đồ thật với kích thước và số thuộc địa hiện tại của bạn. Chọn một để chơi bản đồ được hiển thị.
 [Purple]
 Màu tím
 [Quick clash]
@@ -1538,6 +1558,10 @@ Không có bản xem trước hiện tại
 Trận chiến nhanh: tốc độ gấp đôi; bản đồ được tạo bắt đầu với 8 công nhân.
 [Reroll]
 Tạo một bản đồ khác
+[Randomize]
+Tạo ngẫu nhiên
+[Reset to defaults]
+Khôi phục mặc định
 [Ruleset]
 Bộ quy tắc
 [Select a map from the library.]
@@ -1616,6 +1640,8 @@ Hiển thị con trỏ Globulation 2.
 Xong
 [settings Edit shortcut]
 Chỉnh sửa phím tắt
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Phóng to menu, văn bản và thanh bên trên màn hình độ phân giải cao.
 [settings Flags]
 Cờ
 [settings Full]
@@ -1630,6 +1656,8 @@ Tốc độ trò chơi
 Lối chơi
 [settings Graphics detail]
 Chi tiết đồ họa
+[settings Interface scale]
+Tỷ lệ giao diện
 [settings Keep]
 Giữ các thay đổi
 [settings Keep this display mode?]
@@ -1652,6 +1680,8 @@ Ngôn ngữ được sử dụng xuyên suốt giao diện.
 Cấp
 [settings Map editor]
 Trình chỉnh sửa bản đồ
+[settings Match the desktop]
+Theo màn hình nền
 [settings Missing font]
 Thiếu phông chữ
 [settings Music volume]
@@ -1762,23 +1792,421 @@ Hình ảnh được áp dụng khi tải ván chơi hoặc trình chỉnh sửa
 Chế độ xem hình xuyến tự động
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Tự động hiển thị tổng quan bản đồ hình xuyến khi di chuyển xung quanh bản đồ (OpenGL).
+[settings Autosave]
+Tự động lưu
+[settings Save the game automatically about every 10 seconds.]
+Tự động lưu trò chơi khoảng mỗi 10 giây.
 [Channel width]
 Độ rộng kênh
 [Land bridge width]
 Độ rộng cầu đất
 [Lake size]
 Kích thước hồ
+[Contested commons]
+Vùng đất chung tranh chấp
+[Maze]
+Mê cung
+[Fjord continent]
+Lục địa vịnh hẹp
+[Cell size]
+Kích thước ô
+[Corridor width]
+Độ rộng hành lang
+[Spoke width]
+Độ rộng nan hoa
+[Loopiness]
+Mật độ vòng lặp
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Mê cung cần ít nhất hai ô theo chiều ngang và chiều dọc; hãy dùng bản đồ lớn hơn hoặc ô nhỏ hơn.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Kênh rộng như vậy để lại quá ít cỏ trong mỗi ô; hãy dùng kênh hẹp hơn hoặc ô lớn hơn.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Mê cung có quá ít ngõ cụt cho số thuộc địa này; hãy dùng bản đồ lớn hơn hoặc ô nhỏ hơn.
+[Home island size]
+Kích thước đảo khởi đầu
+[Commons size]
+Kích thước vùng đất chung
+[Moat width]
+Độ rộng hào nước
+[Bridge count]
+Số lượng cầu
+[Continent size]
+Kích thước lục địa
+[Coast roughness]
+Độ khúc khuỷu của bờ biển
+[Fjord width]
+Độ rộng vịnh hẹp
+[Lake connects to fjords]
+Hồ nối với vịnh hẹp
+[Resource islands]
+Đảo tài nguyên
+[Watershed]
+Lưu vực sông
+[River density]
+Mật độ sông
+[Dryness]
+Độ khô hạn
+[Fords]
+Bãi cạn
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Lưu vực sông có quá ít đồng bằng ngập lũ cho số thuộc địa này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[Stone highlands]
+Cao nguyên đá
+[Valley size]
+Kích thước thung lũng
+[Pass width]
+Độ rộng đèo
+[Pond size]
+Kích thước ao
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Các thung lũng này quá lớn so với bản đồ; hãy dùng bản đồ lớn hơn hoặc thung lũng nhỏ hơn.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Cao nguyên có quá ít chỗ cho số thuộc địa này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[Symmetric arena]
+Đấu trường đối xứng
+[Centre size]
+Kích thước trung tâm
+[Causeway width]
+Độ rộng đường đắp cao
+[Causeways]
+Đường đắp cao
+[Lakes]
+Hồ
+[Resource richness]
+Độ phong phú tài nguyên
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Đấu trường đối xứng cần 2, 4 hoặc 8 thuộc địa.
+[Eight colonies need a square map in the symmetric arena.]
+Tám thuộc địa cần bản đồ hình vuông trong đấu trường đối xứng.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Trung tâm quá nhỏ để có vườn cây ăn quả trên bản đồ này; hãy dùng trung tâm lớn hơn hoặc bản đồ lớn hơn.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Đấu trường để lại quá ít chỗ cho mỗi thuộc địa; hãy dùng bản đồ lớn hơn, trung tâm nhỏ hơn hoặc hào nước hẹp hơn.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Các đường đắp cao quá gần nhau; hãy dùng ít đường đắp cao hơn hoặc hẹp hơn, hoặc trung tâm lớn hơn.
+[Ring world]
+Thế giới hình vòng
+[Belt width]
+Độ rộng vành đai
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Vành đai quá ngắn cho số thuộc địa này; hãy dùng bản đồ dài hơn hoặc ít thuộc địa hơn.
+[City states]
+Thành bang
+[Strait width]
+Chiều rộng eo biển
+[Valleys]
+Thung lũng
+[Frontier richness]
+Độ trù phú của vùng biên
+[City states need at least one colony.]
+Thành bang cần ít nhất một thuộc địa.
+[Stone walls]
+Tường đá
+[Sand patches]
+Bãi cát
+[Tidal flats]
+Bãi triều
+[Everglades]
+Đầm lầy
+[Pool spacing]
+Khoảng cách các ao
+[Pool size]
+Kích thước ao
+[Clearing size]
+Kích thước khoảng trống
+[Levee]
+Đê
+[Sloughs]
+Đầm lầy
+[Everglades need at least one colony.]
+Đầm lầy cần ít nhất một thuộc địa.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Quá nhiều thuộc địa cho bản đồ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[Coral]
+San hô
+[Fork angle]
+Góc phân nhánh
+[Lean]
+Độ nghiêng
+[Home size]
+Kích thước căn cứ
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+San hô không vừa bản đồ này; hãy dùng bản đồ lớn hơn, eo biển hẹp hơn hoặc ít thuộc địa hơn.
+[Branching]
+Phân nhánh
+[Branch width]
+Độ rộng nhánh
+[Coral needs at least one colony.]
+San hô cần ít nhất một thuộc địa.
+[Coral needs a map at least 128 tiles across.]
+San hô cần bản đồ rộng ít nhất 128 ô.
+[Carousel]
+Vòng quay ngựa gỗ
+[Amphitheatre]
+Đấu trường
+[Switchbacks]
+Đường đèo
+[Court size]
+Kích thước sân
+[Court wall]
+Tường sân
+[Plaza size]
+Kích thước quảng trường
+[Starting tower level]
+Cấp tháp ban đầu
+[Towers per colony]
+Số tháp mỗi thuộc địa
+[Rings]
+Số vòng
+[Ramp width]
+Độ rộng dốc
+[Pit size]
+Kích thước hố
+[Terrace width]
+Độ rộng bậc
+[Bay size]
+Kích thước vịnh
+[Border wall]
+Tường biên giới
+[Plateau size]
+Kích thước cao nguyên
+[Trail width]
+Độ rộng lối mòn
+[Wall between legs]
+Tường giữa các khúc
+[Farm building plots]
+Ô đất xây dựng trong nông trại
+[Carousels need at least two colonies.]
+Vòng quay ngựa gỗ cần ít nhất hai thuộc địa.
+[Switchbacks need at least two colonies.]
+Đường đèo cần ít nhất hai thuộc địa.
+[An amphitheatre needs at least two colonies.]
+Đấu trường cần ít nhất hai thuộc địa.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Vòng quay ngựa gỗ không vừa bản đồ này; hãy dùng bản đồ lớn hơn, căn cứ nhỏ hơn hoặc ít thuộc địa hơn.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Đường đèo không vừa bản đồ này; hãy dùng bản đồ lớn hơn, cao nguyên nhỏ hơn, lối mòn hẹp hơn hoặc ít thuộc địa hơn.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Đấu trường không vừa bản đồ này; hãy dùng bản đồ lớn hơn, ít vòng hơn, bậc hẹp hơn hoặc ít thuộc địa hơn.
+[Spider web]
+Mạng nhện
+[Spokes per colony]
+Nan mỗi thuộc địa
+[Ring spacing]
+Khoảng cách vòng
+[Thread width]
+Độ rộng sợi
+[Sag]
+Độ võng
+[Torn strands]
+Sợi đứt
+[Hub size]
+Kích thước tâm
+[Dew drops]
+Giọt sương
+[Spiral]
+Xoắn ốc
+[Spider webs need at least one colony.]
+Mạng nhện cần ít nhất một thuộc địa.
+[Sandbars]
+Cồn cát
+[Tide pools]
+Vũng triều
+[Lagoons]
+Đầm phá
+[Central island]
+Đảo trung tâm
+[Tidal flats need at least one colony.]
+Bãi triều cần ít nhất một thuộc địa.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Các đảo quê hương không vừa với bản đồ này; hãy dùng bản đồ lớn hơn, ít thuộc địa hơn hoặc đảo nhỏ hơn.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Vùng đất chung và eo biển để lại quá ít chỗ cho các căn cứ; hãy dùng bản đồ lớn hơn, ít thuộc địa hơn, vùng đất chung nhỏ hơn hoặc eo biển hẹp hơn.
+[Wheat amount]
+Lượng lúa mì
+[Wood amount]
+Lượng gỗ
+[Stone amount]
+Lượng đá
+[Algae amount]
+Lượng tảo
+[Fruit amount]
+Lượng trái cây
+[Stone on hilltops]
+Đá trên đỉnh đồi
+[Winding river]
+Sông uốn khúc
+[Sandy beaches]
+Bãi cát
+[Land bridges]
+Cầu đất
+[Colony meadows]
+Đồng cỏ quanh thuộc địa
+[Extra starting deposit]
+Mỏ tài nguyên khởi đầu bổ sung
+[Moat bridges]
+Cầu qua hào nước
+[Jagged coastlines]
+Bờ biển lởm chởm
+[Sand roads]
+Đường cát
+[Treasure in dead ends]
+Kho báu ở ngõ cụt
+[Fjord bank deposits]
+Mỏ tài nguyên ven vịnh hẹp
+[Sandy lake shore]
+Bờ hồ đầy cát
+[River delta]
+Châu thổ sông
+[Meandering rivers]
+Sông quanh co
+[Fruit in home valleys]
+Trái cây ở thung lũng khởi đầu
+[Moat]
+Hào nước
+[Stone in the orchard]
+Đá trong vườn cây ăn quả
+[Colonies on both coasts]
+Thuộc địa ở cả hai bờ
+[Winding belt]
+Vành đai uốn lượn
+[Cell shape]
+Hình dạng ô
+[Squares]
+Hình vuông
+[Hexagons]
+Lục giác
+[Warp]
+Biến dạng
+[Fingerprint]
+Dấu vân tay
+[Wavelength]
+Bước sóng
+[Pattern]
+Kiểu mẫu
+[Labyrinth]
+Mê cung
+[Channels]
+Rãnh
+[Barrier]
+Rào cản
+[Water]
+Nước
+[Grain]
+Độ hạt
+[Rain shadow]
+Bóng mưa
+[Ridges]
+Dãy núi
+[Slant]
+Độ xiên
+[Ridge thickness]
+Độ dày dãy núi
+[Pass spacing]
+Khoảng cách đèo
+[Lee width]
+Độ rộng khuất gió
+[Old growth]
+Rừng già
+[Canals]
+Kênh đào
+[Forest density]
+Mật độ rừng
+[Hidden groves]
+Lùm cây ẩn
+[Starting trails]
+Lối mòn ban đầu
+[Block size]
+Kích thước khu phố
+[Canal width]
+Độ rộng kênh
+[Extra bridges]
+Cầu bổ sung
+[Polder]
+Đất lấn biển
+[Old town]
+Phố cổ
+[Anthill]
+Tổ kiến
+[Row angle]
+Góc hàng
+[Diagonal]
+Chéo
+[Dyke spacing]
+Khoảng cách đê
+[Village size]
+Kích thước làng
+[Hamlets]
+Xóm
+[City size]
+Kích thước thành phố
+[Street width]
+Độ rộng đường phố
+[Plazas]
+Quảng trường
+[Chamber spacing]
+Khoảng cách khoang
+[Chamber size]
+Kích thước khoang
+[Queen room]
+Phòng kiến chúa
+[Tunnel width]
+Độ rộng đường hầm
+[Loops]
+Vòng lặp
+[Home pools]
+Ao căn cứ
+[Farm plots]
+Lô đất canh tác
+[Tendril roads]
+Đường dây leo
+[Random]
+Ngẫu nhiên
+[Vertical]
+Dọc
+[Horizontal]
+Ngang
+[Inland lakes]
+Hồ nội địa
+[Block shape]
+Hình dạng khu phố
+[Random parameters]
+Tham số ngẫu nhiên
+[Randomize parameters]
+Chọn tham số ngẫu nhiên
+[Start quality]
+Chất lượng khởi đầu
+[Fairness]
+Công bằng
+[Score]
+Điểm
+[Weight]
+Trọng số
+[Worst]
+Kém nhất
+[Best]
+Tốt nhất
+[Fertility]
+Độ phì nhiêu
+[Deposits]
+Trữ lượng
+[Room]
+Không gian
+[Isolation]
+Cách biệt
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Khởi đầu của mỗi thuộc địa được đo trên bản đồ hoàn chỉnh: đường đi tới lúa mì và tới gỗ, đất của nó mọc lại tốt đến đâu, trữ lượng và vị trí xây dựng trong tầm với, cùng khoảng cách tới các đối thủ. Mỗi yếu tố được chấm từ 0 đến 1 so với một mức cố định, tổng điểm cân nhắc chúng theo trọng số, công bằng là tổng của thuộc địa kém nhất chia cho tổng của thuộc địa tốt nhất, và điểm là tổng kém nhất nhân với công bằng.
 [repeat map horizontally]
-Repeat map horizontally
+Lặp bản đồ theo chiều ngang
 [repeat map vertically]
-Repeat map vertically
+Lặp bản đồ theo chiều dọc
 [tile x]
-tile x
+lặp x
 [tile y]
-tile y
+lặp y
 [bases]
-bases
+căn cứ
 [number of colonies]
-Number of colonies, one per player; raising it repeats the map until they fit
+Số thuộc địa, mỗi người chơi một; tăng lên sẽ lặp bản đồ cho đến khi đủ chỗ
 [bases per colony]
-Bases per colony; a base is one team of the map as drawn, its buildings and units
+Căn cứ mỗi thuộc địa; một căn cứ là một đội của bản đồ như đã vẽ, cùng các công trình và đơn vị của nó
