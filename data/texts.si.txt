@@ -1772,6 +1772,10 @@ Izbrana grafika se uporabi ob naslednjem nalaganju igre ali urejevalnika zemljev
 Samodejni torusni pogled
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Samodejno prikaži pregled zemljevida v obliki torusa med premikanjem po zemljevidu (OpenGL).
+[settings Autosave]
+Samodejno shranjevanje
+[settings Save the game automatically about every 10 seconds.]
+Samodejno shrani igro približno vsakih 10 sekund.
 [Channel width]
 Širina kanala
 [Land bridge width]

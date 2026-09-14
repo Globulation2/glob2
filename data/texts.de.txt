@@ -1772,6 +1772,10 @@ Grafik beim nächsten Laden einer Partie oder des Karteneditors anwenden (OpenGL
 Automatische Torusansicht
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Zeigt automatisch die torusförmige Kartenübersicht an, während Sie sich auf der Karte bewegen (OpenGL).
+[settings Autosave]
+Automatisch speichern
+[settings Save the game automatically about every 10 seconds.]
+Speichert das Spiel etwa alle 10 Sekunden automatisch.
 [Channel width]
 Kanalbreite
 [Land bridge width]

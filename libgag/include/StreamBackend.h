@@ -91,5 +91,9 @@ namespace GAGCore
 		virtual bool isEndOfStream(void);
 		virtual bool isValid(void) { return true; }
 		virtual const char* getBuffer() { return buffer.c_str(); }
+		//! Preallocates room for size bytes; the contents are unchanged.
+		void reserve(size_t size) { buffer.reserve(size); }
+		//! Moves the contents out and leaves the stream empty.
+		std::string takeContents() { std::string contents; contents.swap(buffer); index = 0; return contents; }
 	};
 }

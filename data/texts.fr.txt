@@ -1782,6 +1782,10 @@ Appliquer les graphismes au prochain chargement d’une partie ou de l’éditeu
 Vue torique automatique
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Afficher automatiquement l'aperçu de la carte en forme de tore tout en vous déplaçant sur la carte (OpenGL).
+[settings Autosave]
+Sauvegarde automatique
+[settings Save the game automatically about every 10 seconds.]
+Sauvegarde la partie automatiquement environ toutes les 10 secondes.
 [Channel width]
 Largeur du chenal
 [Land bridge width]
