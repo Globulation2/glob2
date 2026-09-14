@@ -9,6 +9,10 @@
 class MapCamera
 {
 public:
+    //! Zoom range. At MIN_ZOOM one screen pixel shows four map pixels, so a
+    //! tile is 8 px across and the view holds four times the map it does at 1.
+    static constexpr double MIN_ZOOM = .25, MAX_ZOOM = 3.0;
+
     double zoom = 1, originX = 0, originY = 0;
     double width = 0, height = 0, mapWidth = 0, mapHeight = 0;
     double offsetX = 0, offsetY = 0;
@@ -57,7 +61,7 @@ public:
     void setZoom(double value, double x, double y)
     {
         auto anchor = screenToWorld(x, y);
-        zoom = std::clamp(value, .5, 3.0);
+        zoom = std::clamp(value, MIN_ZOOM, MAX_ZOOM);
         offsetX = 0;
         offsetY = 0;
         originX = anchor.first - (x - offsetX) / zoom;
