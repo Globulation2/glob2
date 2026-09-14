@@ -6,6 +6,7 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
+#include <functional>
 
 namespace
 {
@@ -70,6 +71,28 @@ void LandscapePickerScreen::randomizeParameters()
 		request.randomizeControls(
 			GenerationContext::deriveSeed(GenerationContext::randomSeed(), "random/" + std::to_string(i)));
 		redraws[i] = kRandomDraws;
+		requests.push_back(request);
+	}
+	previewer.restart(std::move(requests));
+}
+
+void LandscapePickerScreen::resetParameters()
+{
+	// FEEDBACK 2026-09-14: "we will also need a 'reset to defaults' button beside the 'randomize
+	// parameters'". Every landscape on its registered controls at the sheet's size, colony count
+	// and workers; nothing to redraw, since the defaults are known to make maps.
+	std::vector<GenerationRequest> requests;
+	for (std::size_t i = 0; i < entries.size(); ++i)
+	{
+		const GenerationRequest &shown = entries[i].request;
+		GenerationRequest request;
+		request.setMethodDefaults(shown.method);
+		request.wDec = shown.wDec;
+		request.hDec = shown.hDec;
+		request.nbTeams = shown.nbTeams;
+		request.nbWorkers = shown.nbWorkers;
+		request.terrainType = shown.terrainType;
+		redraws[i] = 0;
 		requests.push_back(request);
 	}
 	previewer.restart(std::move(requests));
@@ -253,9 +276,6 @@ void LandscapePickerScreen::render()
 		ui.text(r.x + 8, r.y + 8 + image + 8 + nameH + 4, note, "little", tileW - 16, true);
 	}
 	ui.endRegion(rows * stride - gap + 4);
-	ui.button(
-		"landscape/back", {x, height - 55, 100, 34}, tr("Back"), [this] { endExecute(CANCEL); },
-		false, true, true);
 	// A label the standard font cannot fit in its button on a compact screen takes the small one
 	// rather than being cut off.
 	const auto fitting = [](const std::string &label, int width)
@@ -263,18 +283,25 @@ void LandscapePickerScreen::render()
 		return Toolkit::getFont("standard")->getStringWidth(label) + 16 <= width ? "standard"
 																				 : "little";
 	};
-	const int regenerateW = compact ? 130 : 170;
-	const std::string regenerate = tr("Regenerate all"), randomize = tr("Randomize parameters");
-	ui.button(
-		"landscape/regenerate", {x + 110, height - 55, regenerateW, 34}, regenerate,
-		[this] { previewer.regenerate(); }, false, true, false, fitting(regenerate, regenerateW));
-	// Beside it, the same sheet with every landscape's parameters drawn at random (the size and
-	// colony count stay), for an even wider spread of maps to pick from.
-	const int randomW = compact ? 150 : 190;
-	ui.button(
-		"landscape/randomize", {x + 110 + regenerateW + 10, height - 55, randomW, 34}, randomize,
-		[this] { randomizeParameters(); }, false, true, false, fitting(randomize, randomW));
-	const int useX = x + 110 + regenerateW + 10 + randomW + 10;
+	// The row: Back; Regenerate all; beside it Randomize parameters, the same sheet with every
+	// landscape's parameters drawn at random (the size and colony count stay), for an even wider
+	// spread of maps to pick from; Reset to defaults, the way back; and Use, taking what is left.
+	int bx = x;
+	const auto place = [&](const std::string &id, int width, const std::string &label,
+						   std::function<void()> action)
+	{
+		ui.button(id, {bx, height - 55, width, 34}, label, std::move(action), false, true, false,
+				  fitting(label, width));
+		bx += width + 10;
+	};
+	place("landscape/back", compact ? 80 : 100, tr("Back"), [this] { endExecute(CANCEL); });
+	place("landscape/regenerate", compact ? 110 : 170, tr("Regenerate all"),
+		  [this] { previewer.regenerate(); });
+	place("landscape/randomize", compact ? 130 : 190, tr("Randomize parameters"),
+		  [this] { randomizeParameters(); });
+	place("landscape/reset", compact ? 110 : 150, tr("Reset to defaults"),
+		  [this] { resetParameters(); });
+	const int useX = bx;
 	const bool valid = selected >= 0 && selected < int(entries.size());
 	ui.button(
 		"landscape/use", {useX, height - 55, x + w - useX, 34},

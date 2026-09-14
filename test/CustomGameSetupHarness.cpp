@@ -337,6 +337,9 @@ struct CustomGameSetupHarness
 									},
 									220});
 		};
+		// The lobby opens on a random map (2026-09-14); the flow was written from the premade
+		// library, so start there and let the later Random mode click switch as it always did.
+		click("Premade maps", 90, 100);
 		click("Players tab", 320, 30);
 		click("Inline controller", 170, 143);
 		key(SDLK_DOWN);
@@ -732,7 +735,16 @@ struct CustomGameSetupHarness
              screen.setup.generator.wDec == before.wDec &&
              screen.setup.generator.hDec == before.hDec && screen.setup.capacity == capacity);
       assert(validateGenerationRequest(screen.setup.generator, definition).empty());
-      preview();
+      // A random set the world refuses on every seed is redrawn by the preview itself, one
+      // more round of candidates per draw; give it those rounds, and a fresh click should even
+      // the last draw fail, so the check does not hang on one unlucky stream.
+      for (int click = 0; click < 6 && !screen.validMap; ++click) {
+        if (click > 0)
+          clickControl("generator/random");
+        for (int round = 0; round < CustomGameScreen::kRandomAttempts + 1 && !screen.validMap;
+             ++round)
+          preview();
+      }
       assert(screen.validMap && screen.quality.measured &&
              screen.quality.colonies.size() == size_t(capacity));
       paint();
@@ -1039,6 +1051,22 @@ struct CustomGameSetupHarness
         assert(anyDiffer);
       }
       globalContainer->gfx->printScreen(output + "/landscape-picker-randomized.bmp");
+      // Reset to defaults puts every landscape back on its registered controls at the sheet's
+      // size and colony count, and rolls the sheet again.
+      pick("landscape/reset");
+      assert(picker.busy());
+      settle();
+      seedsShown();
+      for (size_t i = 0; i < shown.size(); ++i) {
+        const GenerationRequest rolled = picker.previewer.request(i);
+        GenerationRequest expected;
+        expected.setMethodDefaults(shown[i].request.method);
+        assert(rolled.options == expected.options && rolled.nbTeams == 4 && rolled.wDec == 8 &&
+               rolled.hDec == 8);
+      }
+      pick("landscape/randomize");
+      settle();
+      seedsShown();
       // Using a randomized landscape hands the lobby the parameters it was shown with.
       {
         pick("landscape/" + std::to_string(other));

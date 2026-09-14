@@ -44,6 +44,9 @@ class LandscapePickerScreen : public Glob2Screen
 	/// rolls them all again. A random set the world then refuses is drawn again, up to
 	/// kRandomDraws times per landscape, so the sheet fills with maps that exist.
 	void randomizeParameters();
+	/// Puts every landscape back on its registered controls, at the sheet's size and colony
+	/// count, and rolls them all again (the way back from randomizeParameters).
+	void resetParameters();
 	static constexpr int kRandomDraws = 6;
 	bool busy() const { return previewer.busy(); }
 

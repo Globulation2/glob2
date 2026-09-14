@@ -18,9 +18,9 @@ keeps the match summary and launch action available while dense content scrolls.
 - Landscape, at the top of the map column, opens a sheet showing every landscape as
   a real map at the current size and colony count. Regenerate all rolls the sheet
   again with fresh seeds; Randomize parameters rolls it with every landscape's own
-  controls drawn at random, redrawing any set the world refuses. Use plays exactly
-  the map shown: its seed, and the parameters it was rolled with, come back to the
-  lobby.
+  controls drawn at random, redrawing any set the world refuses; Reset to defaults
+  puts every landscape back on its registered controls. Use plays exactly the map
+  shown: its seed, and the parameters it was rolled with, come back to the lobby.
 - Right under the landscape chooser, Reset to defaults returns width, height, colony
   count and the landscape's own controls to their defaults, keeping the landscape
   itself; Random parameters beside it draws every one of the landscape's controls at

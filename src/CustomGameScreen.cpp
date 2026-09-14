@@ -719,6 +719,10 @@ void CustomGameScreen::setMapMode(bool random)
 	setup.random = random;
 	previewPending = false;
 	validMap = false;
+	// Candidates still rolling for the random map are dropped with it, or they would come back
+	// and replace the premade choice (the lobby now opens on a random map, so a player can reach
+	// the library while its first preview is still rolling).
+	candidates.reset();
 	if (random)
 	{
 		setup.setCapacity(setup.generator.nbTeams);

@@ -566,9 +566,9 @@ fairness falls from about 0.97 to 0.65–0.8, because a home's fields and fertil
 shape.
 
 - **Geometry.** A pure function of the request (`geometryFor`). The commons' radius is
-  `commons-size` percent of half the shorter side (45 since 2026-09-14, from 55), the strait
-  `strait-width` percent of the shorter side (11, from 4: room for the islets), and the homes reach
-  out to the map's half side less a rim of sea, so opposite homes never meet across the wrap. Both coasts are radial shapes (`coast-roughness`); the strait follows the
+  `commons-size` percent of half the shorter side, the strait `strait-width` percent of the shorter
+  side, and the homes reach out to the map's half side less a rim of sea, so opposite homes never
+  meet across the wrap. Both coasts are radial shapes (`coast-roughness`); the strait follows the
   commons' coast. Every home is the same wedge turned round the centre, so the layout is fair for
   any colony count. `validateRequest` needs at least 20 tiles of home between the strait and the
   sea, and at each home's inner coast at least the causeway plus ten tiles of arc beyond its
@@ -616,19 +616,23 @@ shape.
   walls' stone protected, causeways and approaches are cleared, and a cheapest-walk pass keeps a
   way open from every swarm to its causeway and from every landing to the heart.
 - **The archipelago** (2026-09-14: "WAY more islands out filling the no mans land", each with "the
-  10x4 little sand building plots"). Round islets of radius 9 dot the strait and the channels:
-  `islands` (0-4, 2) either side of every causeway on a four-colony 256 map's arc, proportionally
-  more on a longer arc (a two-colony map gets four a side) and never more than fit at three tiles
-  apart, spread evenly along the strait's midline between the causeway's clear stretch and the
-  channel, and one in every channel between two homes, half way along it. Their middles are designed in the wedge frame, so every colony has the same islets
-  at the same distances, and each is drawn as a round disc on the map about its middle, so a bowed
-  channel does not shear it. Every islet carries the farms' 10x4 building plot (`stampFarmPlot`, a
-  clearing of grass in a two-vertex ring of sand) at its middle, kept clear of everything, and a
-  small prize on its grass beyond the ring, stone, fruit and wheat in turn round the wedge. An islet
-  keeps three tiles of water from every coast, causeway and other islet, so it is only ever reached
-  by swimming: a forward post, not a stepping stone. An islet whose moat the strait's bulge at a
-  causeway or a channel's bow would break is left out of every wedge alike. A 128 map's strait is
-  too narrow for any.
+  10x4 little sand building plots", "in the area outside the circle ... where the torus wraps", and
+  bigger, since the plot "is taking up too much of the space"). The design circle sits on the
+  shorter side, so the sea outside it - a square's four corners, which the torus joins into one
+  ocean round the point across the map from the centre, and a rectangle's bands - held nothing.
+  Round islets of radius 11 now dot it: one on the wrap point, then `islands` (0-4, 2) rings of
+  eight, sixteen and so on at equal angles round it, at least two radii plus the moat apart, so the
+  set has the map's own four-fold symmetry with mirrors; on a rectangle the two points across the
+  wrap on each axis get the same rings. An islet whose disc and three tiles of water round it do not
+  lie wholly in the sea - too near a home's outer coast, or another islet - is left out with its
+  mirror images, so the symmetry holds. Every islet carries the farms' 10x4 building plot
+  (`stampFarmPlot`, a clearing of grass in a two-vertex ring of sand) at its middle, kept clear of
+  everything, and a small prize on its grass beyond the ring, stone, fruit and wheat in turn. An
+  islet is only ever reached by swimming: a forward post, not a stepping stone. The archipelago
+  cannot be turned round the centre for every colony like the rest of the design, so with three,
+  five or six colonies it lies nearer some homes than others, which the lobby's best-of-five rolls
+  cover, as on Canals. A 128 map's corners hold only the islet on the wrap point; a 256 map holds
+  thirteen at the defaults.
 - **Checked, not assumed.** `validateWorld` rebuilds the design and requires every causeway road
   and ford walkable and every designed stone tile present (shoulders, walls, ridges and crag), every colony and the heart reachable on foot from
   colony 0, every islet's plot buildable and no islet reachable on foot, no colony reachable from any beach with the roads shut, no home able to reach the
