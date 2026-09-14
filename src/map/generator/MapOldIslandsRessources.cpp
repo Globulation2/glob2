@@ -40,17 +40,17 @@ void Map::oldAddResourcesIslandsMap(MapGenerationDescriptor &descriptor)
 		for (d=0; d<islandsSize; d++)
 			if (!isGrass(bootX[s]-d, bootY[s]))
 				break;
-		amount=descriptor.resource[CORN];
+		amount=descriptor.resource[WHEAT];
 		amount=d-smoothResources-0;
 		if (amount<1)
 			amount=1;
 		p=d-1-amount/2;
 		if (amount>0)
-			setResource(bootX[s]-p, bootY[s], CORN, amount);
+			setResource(bootX[s]-p, bootY[s], WHEAT, amount);
 		if (amount<smallestAmount)
 		{
 			smallestAmount=amount;
-			smallestResource=CORN;
+			smallestResource=WHEAT;
 		}
 
 		//STONE

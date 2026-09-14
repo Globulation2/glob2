@@ -312,6 +312,16 @@ bool Game::load(GAGCore::InputStream *stream)
 	return true;
 }
 
+// Known gap, deliberately out of scope here: this writes into the building tile
+// grid directly rather than through Map::setBuilding, so it does not bump
+// Map::topologyGeneration, and moving the bump here would not help - integrity()
+// runs before Map::loadRuntimeState, which then restores the saved generation and
+// the per-field stamps over anything set while healing. A save whose grid was
+// already inconsistent therefore gets healed and its restored fields treated as
+// current against a map the heal changed. It predates the generation (fields were
+// restored after the heal without being dirtied before it too) and only fires for
+// saves that were already inconsistent. A fix has to record that the heal touched
+// a cell and bump after loadRuntimeState.
 bool Game::checkBuildingsDoNotOverlapAndHealMissing() {
 	std::vector<Uint16> buildings(map.getW()*map.getH(), NOGBID);
 	for (int ti=0; ti<mapHeader.getNumberOfTeams(); ti++)
