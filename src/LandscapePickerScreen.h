@@ -54,8 +54,8 @@ class LandscapePickerScreen : public Glob2Screen
 	struct Tile
 	{
 		LandscapePreviewer::Preview preview;
-		std::unique_ptr<DrawableSurface> surface;
-		std::unique_ptr<DrawableSurface> raster;
+		// Screen-owned shared preview widget, retained while its replacement rolls.
+		MapPreview *widget = nullptr;
 		unsigned revision = ~0u;
 	};
 	static std::vector<GenerationRequest> requestsOf(const std::vector<Entry> &);
@@ -70,6 +70,7 @@ class LandscapePickerScreen : public Glob2Screen
 	/// entry's own or the draws are spent).
 	std::vector<int> redraws;
 	int selected, columns = 1;
+	int activePreview = -1, pointerX = 0, pointerY = 0;
 	bool reveal = true;
 	LobbyControls *controls;
 	LandscapePreviewer previewer;

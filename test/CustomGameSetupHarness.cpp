@@ -594,6 +594,11 @@ struct CustomGameSetupHarness
                  "controls, popup cancel, focus preservation and rules\n";
     auto capture = [&](const std::string &name) {
       screen.dispatchPaint(false);
+      if (screen.preview->transitioning) {
+        screen.preview->transitionPending = false;
+        screen.preview->transitionStarted = SDL_GetTicks() - MapPreview::TransitionDurationMs - 1;
+        screen.dispatchPaint(false);
+      }
       globalContainer->gfx->printScreen(output + "/" + name + ".bmp");
     };
     capture("map-640");
@@ -771,10 +776,13 @@ struct CustomGameSetupHarness
         breakdown.dispatchEvents(&e);
         assert(breakdown.returnCode == StartQualityScreen::BACK);
       }
+      const auto retainedQuality = screen.quality;
       clickControl("generator/reset");
       GenerationRequest expected;
       expected.setMethodDefaults(before.method);
-      assert(screen.setup.generator.options == expected.options && !screen.quality.measured);
+      assert(screen.setup.generator.options == expected.options && screen.quality.measured &&
+             screen.quality.fairness == retainedQuality.fairness &&
+             screen.quality.score == retainedQuality.score);
       preview();
       assert(screen.validMap);
     }
@@ -963,6 +971,13 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
         }
         picker.dispatchTimer(SDL_GetTicks());
         picker.dispatchPaint(false);
+        for (auto &tile : picker.tiles) {
+          if (tile.widget && tile.widget->transitioning) {
+            tile.widget->transitionPending = false;
+            tile.widget->transitionStarted = SDL_GetTicks() - MapPreview::TransitionDurationMs - 1;
+          }
+        }
+        picker.dispatchPaint(false);
       };
       auto pick = [&](const std::string &id) {
         picker.dispatchPaint(false);
@@ -989,7 +1004,7 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
           e.type = type;
           e.button.button = SDL_BUTTON_LEFT;
           e.button.x = r.x + r.w / 2;
-          e.button.y = r.y + r.h / 2;
+          e.button.y = hit->region == 30 ? r.y + r.h - 24 : r.y + r.h / 2;
           picker.dispatchEvents(&e);
         }
         picker.dispatchPaint(false);
@@ -1006,7 +1021,7 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
       auto seedsShown = [&] {
         std::vector<std::uint32_t> seeds;
         for (const auto &tile : picker.tiles) {
-          assert(tile.preview.state == LandscapePreviewer::State::Ready && tile.surface &&
+          assert(tile.preview.state == LandscapePreviewer::State::Ready && tile.widget && tile.widget->isThumbnailLoaded() &&
                  tile.preview.width == 256 && tile.preview.height == 256 &&
                  tile.preview.starts.size() == 4);
           seeds.push_back(tile.preview.seed);
@@ -1020,6 +1035,33 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
       const int other = (current + 1) % int(shown.size());
       pick("landscape/" + std::to_string(other));
       assert(picker.selection() == other && picker.returnCode == 0);
+      // Native image gestures inspect without confirming the selected landscape.
+      {
+        auto *widget = picker.tiles[other].widget;
+        const auto area = widget->mapArea();
+        SDL_Event e = {};
+        e.type = SDL_MOUSEBUTTONDOWN; e.button.button = SDL_BUTTON_LEFT;
+        e.button.x = area.x + area.w / 3; e.button.y = area.y + area.h / 3;
+        picker.dispatchEvents(&e);
+        e = {}; e.type = SDL_MOUSEMOTION; e.motion.state = SDL_BUTTON_LMASK;
+        e.motion.x = area.x + 2 * area.w / 3; e.motion.y = area.y + 2 * area.h / 3;
+        picker.dispatchEvents(&e);
+        assert(widget->dragging && widget->view.offsetX > 0 && picker.returnCode == 0);
+        e = {}; e.type = SDL_MOUSEBUTTONUP; e.button.button = SDL_BUTTON_LEFT;
+        e.button.x = -20; e.button.y = -20;
+        picker.dispatchEvents(&e);
+        assert(!widget->dragging && picker.activePreview == -1 && picker.returnCode == 0);
+        const auto before = widget->worldArea();
+        const double anchor = MapPreviewGeometry::wrap(double(widget->mouseX - before.x) / before.w - widget->view.offsetX);
+        e = {}; e.type = SDL_MOUSEWHEEL; e.wheel.y = 1;
+        picker.dispatchEvents(&e);
+        const auto after = widget->worldArea();
+        assert(widget->zoom > 1 && std::abs(anchor - MapPreviewGeometry::wrap(double(widget->mouseX - after.x) / after.w - widget->view.offsetX)) < 1e-12);
+        e = {}; e.type = SDL_MOUSEBUTTONDOWN; e.button.button = SDL_BUTTON_RIGHT;
+        e.button.x = area.x + area.w / 2; e.button.y = area.y + area.h / 2;
+        picker.dispatchEvents(&e);
+        assert(widget->zoom == 1 && widget->view.offsetX == 0 && picker.returnCode == 0);
+      }
       pickerKey(SDLK_LEFT);
       assert(picker.selection() == std::max(0, other - 1));
       pickerKey(SDLK_DOWN);
@@ -1030,6 +1072,10 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
       // Regenerate all rolls every landscape again with fresh seeds.
       pick("landscape/regenerate");
       assert(picker.busy());
+      assert(!picker.chosenSeed());
+      const int pendingReturnCode = picker.returnCode;
+      picker.confirm();
+      assert(picker.returnCode == pendingReturnCode);
       settle();
       const auto second = seedsShown();
       for (size_t i = 0; i < first.size(); ++i)

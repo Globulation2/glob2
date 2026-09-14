@@ -30,6 +30,24 @@ check that the map coordinate under the pointer remains unchanged on zoom.
 
 ## Look and interaction
 
+The final cleanup adds shared 200 ms terrain/marker transitions and retains the
+previous image, proportions, and quality scores while rerolling. Normal loading
+and ready messages no longer flash in the lobby. The landscape grid uses the same
+widget, with drag/zoom/reset gestures and a readiness guard on confirmation.
+
+`fade-in-start.png` and `fade-in-half.png` capture the first-image transition.
+`cross-fade-start.png`, `cross-fade-half.png`, and `cross-fade-complete.png` capture
+replacement terrain and markers; the regression also replaces an image mid-fade
+and checks that the old frame is released afterward. `custom-reroll-retained.png`
+shows the previous map and scores retained during loading. These tests advance
+the animation timestamps directly rather than relying on wall-clock sleeps.
+
+The final macOS runs cover software rendering at 800x600 and 1600x1000 and the
+OpenGL lobby/picker at 640x480 and 1000x700. The picker checks include native drag,
+release outside the image, pointer-anchored zoom, reset, and refusal to confirm an
+out-of-date retained result. The Windows harness entry point now explicitly
+returns success, including when SDL renames `main` to `SDL_main`.
+
 ![Rectangular map and colony positions](custom-wide-colonies.png)
 
 ![The same map after dragging half a period on both axes](custom-wide-wrapped.png)

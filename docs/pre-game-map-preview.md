@@ -52,6 +52,24 @@ old cache files remain untouched. Unreadable caches are regenerated.
 
 ## Responsiveness and online states
 
+Randomize keeps the previous preview, frame, and instructions visible while the
+replacement is generated, without flashing a loading message. The old preview
+retains its fairness and score until the replacement map and scores are ready. It
+is not interactive during generation and is not considered a ready launch
+snapshot. Terrain and colony markers cross-fade together over 200 ms when the
+replacement arrives; the first image fades in from the placeholder. When no
+previous image exists, the placeholder follows the requested map proportions.
+Generation failures still display their error message.
+
+The landscape-selection grid uses the same `MapPreview` widget as the lobby and
+online screens, including terrain, centered colony markers, aspect fitting,
+toroidal dragging, cursor-anchored zoom, and transitions. Its old images and map
+metadata remain visible during regeneration, without loading-text flashes; the
+first images fade in as they arrive. Only ready results can supply a chosen seed.
+Click or drag an image to select and inspect it; use its label, Enter, or the Use
+button to confirm. The wheel zooms over the selected map and scrolls the grid
+elsewhere. Right-click or double-click an image resets its view.
+
 Local thumbnail lookup retains at most 16 images (at most 12 MiB of RGB pixels),
 keyed by resolved path, mtime and size. Custom setup retains eight map summaries
 (at most 6 MiB of terrain pixels), including header and starting colonies. It

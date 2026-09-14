@@ -12,11 +12,13 @@ Map thumbnail decode: Invalid map preview pixels
 Map thumbnail decode: Invalid map preview pixels
 PASS sharp terrain, legacy/new codecs, frame limit, malformed/short/oversized inputs and missing files
 PASS online deduplication, timeout/retry, failure, refresh cache, revision invalidation and eviction
-Map generation: swamp revision 2 seed 843569912 [complete]:
-Map generation: swamp revision 2 seed 99576796 [complete]:
-Map generation: swamp revision 2 seed 2311701542 [complete]:
-Map generation: swamp revision 2 seed 1411467431 [complete]:
-Map generation: swamp revision 2 seed 1894869499 [complete]:
+PASS first-image fade, terrain/marker cross-fade, rapid replacement and frame release
+Map generation: swamp revision 2 seed 1190706592 [complete]:
+Map generation: swamp revision 2 seed 540007722 [complete]:
+Map generation: swamp revision 2 seed 614829730 [complete]:
+Map generation: swamp revision 2 seed 2074778680 [complete]:
+Map generation: swamp revision 2 seed 833153585 [complete]:
+PASS reroll preserves image, rectangle and scores without status-text flashes
 Map thumbnail load: String mapName length > 1048576: unspecified iostream_category error
-PASS native widget events and custom lobby captures: artifacts/map-preview-rebased-large
+PASS native widget events and custom lobby captures: artifacts/map-preview-final-large
 ALL PRE-GAME MAP PREVIEW TESTS PASSED

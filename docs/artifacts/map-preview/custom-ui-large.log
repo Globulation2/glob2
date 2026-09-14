@@ -1,47 +1,48 @@
 PASS preferences round trip, hidden slots, bounds and corrupt-file recovery
 PASS preferences keep every generator option, and older files still load
 PASS canonical map catalog, selection stability, inline controls, popup cancel, focus preservation and rules
-Map generation: river revision 2 seed 1280129400 [complete]:
-Map generation: river revision 2 seed 3081267355 [complete]:
-Map generation: river revision 2 seed 1257382040 [complete]:
-Map generation: river revision 2 seed 1876762450 [complete]:
-Map generation: river revision 2 seed 1547368188 [complete]:
-Map generation: river revision 2 seed 356592530 [complete]:
-Map generation: river revision 2 seed 2832357507 [complete]:
-Map generation: river revision 2 seed 1181446175 [complete]:
-Map generation: river revision 2 seed 585320436 [complete]:
-Map generation: river revision 2 seed 924631810 [complete]:
-Map generation: river revision 2 seed 4219926103 [complete]:
-Map generation: fjord-continent revision 11 seed 3958176817 [complete]:
-Map generation: fjord-continent revision 11 seed 74280407 [complete]:
-Map generation: contested-commons revision 2 seed 1063282918 [complete]:
-Map generation: contested-commons revision 2 seed 134595051 [complete]:
-Map generation: contested-commons revision 2 seed 1505863470 [complete]:
-Map generation: contested-commons revision 2 seed 1005859930 [complete]:
-Map generation: contested-commons revision 2 seed 908050512 [complete]:
-Map generation: contested-commons revision 2 seed 2396729960 [complete]:
-Map generation: contested-commons revision 2 seed 3746561902 [complete]:
-Map generation: contested-commons revision 2 seed 2949646686 [complete]:
-Map generation: contested-commons revision 2 seed 1541445693 [complete]:
-Map generation: contested-commons revision 2 seed 3984281085 [complete]:
-Map generation: contested-commons revision 2 seed 2333482483 [complete]:
-Map generation: contested-commons revision 2 seed 123281014 [complete]:
-Map generation: contested-commons revision 2 seed 3356689204 [complete]:
-Map generation: contested-commons revision 2 seed 3930072572 [complete]:
-Map generation: contested-commons revision 2 seed 1384336031 [complete]:
-Map generation: contested-commons revision 2 seed 1649744103 [complete]:
-Map generation: contested-commons revision 2 seed 2704123131 [complete]:
-Map generation: contested-commons revision 2 seed 2924913521 [complete]:
-Map generation: contested-commons revision 2 seed 1878140805 [complete]:
-Map generation: contested-commons revision 2 seed 1698535106 [complete]:
+Map generation: river revision 2 seed 568443609 [complete]:
+Map generation: river revision 2 seed 2554979997 [complete]:
+Map generation: river revision 2 seed 3810219250 [complete]:
+Map generation: river revision 2 seed 2315164107 [complete]:
+Map generation: river revision 2 seed 2536917585 [complete]:
+Map generation: river revision 2 seed 2272766227 [complete]:
+Map generation: river revision 2 seed 1022202456 [complete]:
+Map generation: river revision 2 seed 2968480811 [complete]:
+Map generation: river revision 2 seed 3323588533 [complete]:
+Map generation: river revision 2 seed 1846803659 [complete]:
+Map generation: river revision 2 seed 232259494 [complete]:
+Map generation: fjord-continent revision 11 seed 2991436917 [complete]:
+Map generation: fjord-continent revision 11 seed 2148443406 [complete]:
+Map generation: contested-commons revision 2 seed 3121346011 [complete]:
+Map generation: contested-commons revision 2 seed 549933527 [complete]:
+Map generation: contested-commons revision 2 seed 1423884554 [complete]:
+Map generation: contested-commons revision 2 seed 4187728676 [complete]:
+Map generation: contested-commons revision 2 seed 2830688752 [complete]:
+Map generation: contested-commons revision 2 seed 3712865363 [complete]:
+Map generation: contested-commons revision 2 seed 1366348720 [complete]:
+Map generation: contested-commons revision 2 seed 1970711056 [complete]:
+Map generation: contested-commons revision 2 seed 1937241231 [complete]:
+Map generation: contested-commons revision 2 seed 4281238490 [complete]:
+Map generation: contested-commons revision 2 seed 3629955100 [complete]:
+Map generation: contested-commons revision 2 seed 496475916 [complete]:
+Map generation: contested-commons revision 2 seed 165744494 [complete]:
+Map generation: contested-commons revision 2 seed 2816020531 [complete]:
+Map generation: contested-commons revision 2 seed 2652468494 [complete]:
+Map generation: contested-commons revision 2 seed 1593375950 [complete]:
+Map generation: contested-commons revision 2 seed 2452607008 [complete]:
+Map generation: contested-commons revision 2 seed 1449952420 [complete]:
+Map generation: contested-commons revision 2 seed 990705864 [complete]:
+Map generation: contested-commons revision 2 seed 4008066228 [complete]:
 PASS rectangular aspect ratios, cropped terrain and colony marker pixels
-Landscape preview: switchbacks revision 4 seed 604486653 [generator validation]: With the middle legs shut, (1, 0) can still be reached: a wall between legs has a gap.
-Map generation: rain-shadow revision 4 seed 1284486480 [complete]:
-Map generation: rain-shadow revision 4 seed 2279288610 [complete]:
+Landscape preview: shattered-coast revision 3 seed 2776766182 [starting locations]: Cannot space every colony on grass
+Landscape preview: carousel revision 2 seed 2618149352 [carousel layout]: Too many colonies for this map: a spoke or corridor passes too close to a home.
+Map generation: rain-shadow revision 4 seed 3555232488 [complete]:
+Map generation: rain-shadow revision 4 seed 2532804843 [complete]:
 PASS landscape picker: 30 previews on 4 threads, selection, regeneration and the shown map played
-Map generation: river revision 2 seed 2194665212 [complete]:
-Map generation: river revision 2 seed 4252842680 [complete]:
-Map generation: river revision 2 seed 2128602250 [complete]:
-Map generation: river revision 2 seed 2269674426 [complete]:
-Map generation: river revision 2 seed 2343787535 [complete]:
+Map generation: river revision 2 seed 2197680737 [complete]:
+Map generation: river revision 2 seed 689240476 [complete]:
+Map generation: river revision 2 seed 3322431757 [complete]:
+Map generation: river revision 2 seed 3767185465 [complete]:
+Map generation: river revision 2 seed 1201032896 [complete]:
 PASS native rendering, snapshot reroll ownership, invalidation, failure recovery, preserved alliances

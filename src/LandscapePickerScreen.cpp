@@ -47,7 +47,9 @@ std::optional<std::uint32_t> LandscapePickerScreen::chosenSeed() const
 	if (selected < 0 || selected >= int(tiles.size()))
 		return {};
 	const auto &preview = tiles[selected].preview;
-	if (preview.state != LandscapePreviewer::State::Ready)
+	// A retained old image is not a result for the request now being generated.
+	if (preview.state != LandscapePreviewer::State::Ready ||
+		previewer.revision(selected) != tiles[selected].revision)
 		return {};
 	return preview.seed;
 }
@@ -68,8 +70,8 @@ void LandscapePickerScreen::randomizeParameters()
 		// Each landscape draws from its own stream; a draw the generator refuses up front is
 		// redrawn inside randomizeControls, so what goes to the workers is at least a valid
 		// request. Should no draw at all be accepted, the entry keeps its own parameters.
-		request.randomizeControls(
-			GenerationContext::deriveSeed(GenerationContext::randomSeed(), "random/" + std::to_string(i)));
+		request.randomizeControls(GenerationContext::deriveSeed(GenerationContext::randomSeed(),
+																"random/" + std::to_string(i)));
 		redraws[i] = kRandomDraws;
 		requests.push_back(request);
 	}
@@ -109,7 +111,7 @@ void LandscapePickerScreen::select(int index)
 
 void LandscapePickerScreen::confirm()
 {
-	if (selected >= 0 && selected < int(entries.size()))
+	if (chosenSeed().has_value())
 		endExecute(selected);
 }
 
@@ -128,31 +130,107 @@ void LandscapePickerScreen::refresh()
 			continue;
 		tile.revision = revision;
 		tile.preview = previewer.preview(i);
-		tile.surface.reset();
-		tile.raster.reset();
+		if (tile.widget)
+			tile.widget->cancelDrag();
+		if (activePreview == int(i))
+			activePreview = -1;
 		// A random set of parameters the world refused (every seed failed) is drawn again while
 		// draws remain: the sheet should show maps, not failures, and the user asked for variety.
 		if (tile.preview.state == LandscapePreviewer::State::Failed && redraws[i] > 0)
 		{
 			--redraws[i];
 			GenerationRequest request = entries[i].request;
-			request.randomizeControls(GenerationContext::deriveSeed(
-				GenerationContext::randomSeed(), "redraw/" + std::to_string(i)));
+			request.randomizeControls(GenerationContext::deriveSeed(GenerationContext::randomSeed(),
+																	"redraw/" + std::to_string(i)));
 			previewer.reroll(i, request);
 			continue;
 		}
 		if (tile.preview.state == LandscapePreviewer::State::Ready)
 		{
 			// Surfaces belong to the UI thread; the worker only hands over pixels.
-			tile.surface =
-				std::make_unique<DrawableSurface>(tile.preview.thumbnail.pixels()->width, tile.preview.thumbnail.pixels()->height);
-			tile.preview.thumbnail.loadIntoSurface(tile.surface.get());
+			if (!tile.widget)
+			{
+				tile.widget = new MapPreview(0, 0, ALIGN_LEFT, ALIGN_TOP);
+				tile.widget->visible = false;
+				addWidget(tile.widget);
+			}
+			tile.widget->setMapThumbnail(tile.preview.thumbnail);
+			tile.widget->starts = tile.preview.starts;
 		}
+		else if (tile.preview.state == LandscapePreviewer::State::Failed && tile.widget)
+			tile.widget->setState(MapPreview::State::Failed);
 	}
 }
 
 void LandscapePickerScreen::onSDLEvent(SDL_Event *event)
 {
+	if (event->type == SDL_WINDOWEVENT && (event->window.event == SDL_WINDOWEVENT_FOCUS_LOST ||
+										   event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED))
+	{
+		for (auto &tile : tiles)
+			if (tile.widget)
+				tile.widget->cancelDrag();
+		activePreview = -1;
+	}
+	if (event->type == SDL_MOUSEMOTION)
+	{
+		pointerX = event->motion.x;
+		pointerY = event->motion.y;
+		for (auto &tile : tiles)
+			if (tile.widget)
+				tile.widget->handlePreviewEvent(event);
+		if (activePreview >= 0)
+		{
+			if (!(event->motion.state & SDL_BUTTON_LMASK))
+				activePreview = -1;
+			return;
+		}
+	}
+	if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT &&
+		activePreview >= 0)
+	{
+		tiles[activePreview].widget->handlePreviewEvent(event);
+		activePreview = -1;
+		return;
+	}
+	if (!controls->popup.open && controls->pressed.empty())
+	{
+		const auto clip = controls->regions[30].box;
+		if (event->type == SDL_MOUSEBUTTONDOWN &&
+			(event->button.button == SDL_BUTTON_LEFT || event->button.button == SDL_BUTTON_RIGHT) &&
+			LobbyControls::inside(clip, event->button.x, event->button.y))
+		{
+			for (std::size_t i = 0; i < tiles.size(); ++i)
+			{
+				auto &tile = tiles[i];
+				if (!tile.widget || tile.preview.state != LandscapePreviewer::State::Ready)
+					continue;
+				const auto area = tile.widget->mapArea();
+				if (!LobbyControls::inside({area.x, area.y, area.w, area.h}, event->button.x,
+										   event->button.y))
+					continue;
+				// Image clicks select; labels and Use confirm. A drag must never launch a choice.
+				if (event->button.button == SDL_BUTTON_LEFT)
+				{
+					selected = int(i);
+					reveal = false;
+					controls->focus = "landscape/" + std::to_string(i);
+					activePreview = int(i);
+				}
+				tile.widget->handlePreviewEvent(event);
+				return;
+			}
+		}
+		// Keep normal grid scrolling outside the selected map image.
+		if (event->type == SDL_MOUSEWHEEL && selected >= 0 && selected < int(tiles.size()) &&
+			LobbyControls::inside(clip, pointerX, pointerY))
+		{
+			auto &tile = tiles[selected];
+			if (tile.widget && tile.preview.state == LandscapePreviewer::State::Ready &&
+				tile.widget->handlePreviewEvent(event))
+				return;
+		}
+	}
 	if (event->type == SDL_KEYDOWN && !controls->popup.open)
 	{
 		const auto key = event->key.keysym.sym;
@@ -192,14 +270,6 @@ void LandscapePickerScreen::render()
 	ui.setDimensions(width, height);
 	ui.box({x - 8, 8, w + 16, height - 16}, Color(232, 237, 218), 8);
 	ui.text(x + 8, 20, title, compact ? "standard" : "menu", w - 16);
-	if (previewer.busy())
-	{
-		const std::string status = tr("Generating preview...") + "  " +
-								   std::to_string(previewer.finished()) + " / " +
-								   std::to_string(previewer.size());
-		const int sw = Toolkit::getFont("little")->getStringWidth(status);
-		ui.text(x + w - 8 - sw, compact ? 26 : 30, status, "little", sw + 2, true);
-	}
 	const int subtitleY = compact ? 46 : 56;
 	const int top = subtitleY + 6 +
 					ui.paragraph(x + 8, subtitleY, w - 16,
@@ -248,30 +318,27 @@ void LandscapePickerScreen::render()
 			},
 			current);
 		const SDL_Rect frame{r.x + 8, r.y + 8, image, image};
-		ui.box(frame, Color(211, 223, 197), 3);
 		auto &tile = tiles[i];
 		std::string note;
-		if (tile.preview.state == LandscapePreviewer::State::Ready && tile.surface)
+		if (tile.widget && tile.widget->isThumbnailLoaded())
 		{
-			SDL_Rect map = frame;
-			if (tile.preview.width >= tile.preview.height)
-				map.h = std::max(1, image * tile.preview.height / tile.preview.width);
-			else
-				map.w = std::max(1, image * tile.preview.width / tile.preview.height);
-			map.x += (image - map.w) / 2;
-			map.y += (image - map.h) / 2;
-			drawMapThumbnail(ui.surface(), map, tile.surface.get(), tile.preview.width,
-							 tile.preview.height, tile.preview.starts, tile.raster, compact ? 12 : 14);
-			note = std::to_string(tile.preview.width) + " x " +
-				   std::to_string(tile.preview.height) + "  /  " +
-				   std::to_string(tile.preview.starts.size()) + " " + tr("colonies");
+			tile.widget->setScreenPosition(frame.x, frame.y);
+			tile.widget->setDimensions(frame.w, frame.h);
+			tile.widget->markerSize = compact ? 12 : 14;
+			if (frame.y < bottom && frame.y + frame.h > top)
+				tile.widget->paint();
+			note = std::to_string(tile.widget->getLastWidth()) + " x " +
+				   std::to_string(tile.widget->getLastHeight()) + "  /  " +
+				   std::to_string(tile.widget->starts.size()) + " " + tr("colonies");
 		}
 		else
 		{
-			note = tr(tile.preview.state == LandscapePreviewer::State::Failed
-						  ? "Preview unavailable"
-						  : "Generating preview...");
-			ui.paragraph(frame.x + 12, frame.y + image / 2 - noteH, image - 24, note);
+			const auto &request = entries[i].request;
+			const auto area = MapPreviewGeometry::fit({frame.x, frame.y, frame.w, frame.h},
+													  1 << request.wDec, 1 << request.hDec);
+			ui.box({area.x, area.y, area.w, area.h}, Color(211, 223, 197), 3);
+			if (tile.preview.state == LandscapePreviewer::State::Failed)
+				note = tr("Preview unavailable");
 		}
 		ui.text(r.x + 8, r.y + 8 + image + 8, entries[i].name, "standard", tileW - 16);
 		ui.text(r.x + 8, r.y + 8 + image + 8 + nameH + 4, note, "little", tileW - 16, true);
@@ -307,5 +374,5 @@ void LandscapePickerScreen::render()
 	ui.button(
 		"landscape/use", {useX, height - 55, x + w - useX, 34},
 		tr("Use") + (valid ? " " + entries[selected].name : ""), [this] { confirm(); }, true,
-		valid);
+		valid && chosenSeed().has_value());
 }
