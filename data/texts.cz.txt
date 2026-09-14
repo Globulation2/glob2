@@ -2262,3 +2262,59 @@ Vzácné zdroje
 Okamžitá stavba
 [Stockpile start]
 Počáteční zásoba
+[Units still visit schools but never gain a level.]
+Jednotky stále navštěvují školu, ale nikdy nezískávají úroveň.
+[Units fight to the death instead of retreating to heal.]
+Jednotky bojují až do smrti, místo aby se stáhly a léčily se.
+[Units are never permanently lost -- HP just stops at 1.]
+Jednotky nikdy nejsou trvale ztraceny -- životy se prostě zastaví na 1.
+[Disables all combat between every team.]
+Vypíná veškerý boj mezi všemi týmy.
+[Higher tiers deal more damage but have less HP and armor.]
+Vyšší úrovně způsobují více poškození, ale mají méně životů a brnění.
+[Higher tiers give every building much more HP.]
+Vyšší úrovně dávají každé budově mnohem více životů.
+[Starting units spawn already leveled up. Changes the generated map.]
+Počáteční jednotky se objeví už s vyšší úrovní. Mění vygenerovanou mapu.
+[Trains normally]
+Trénuje normálně
+[No upgrades]
+Žádná vylepšení
+[Retreats when damaged]
+Stáhne se při zranění
+[Fearless]
+Nebojácná
+[Can die permanently]
+Může trvale zemřít
+[No permadeath]
+Žádná trvalá smrt
+[Normal combat]
+Normální boj
+[Peaceful mode]
+Mírový režim
+[Off (today's balance)]
+Vypnuto (dnešní vyváženost)
+[Glass cannon x2]
+Skleněné dělo x2
+[Glass cannon x3]
+Skleněné dělo x3
+[Off (today's HP)]
+Vypnuto (dnešní životy)
+[Fortress x5]
+Pevnost x5
+[Fortress x10]
+Pevnost x10
+[Veteran]
+Veterán
+[Elite]
+Elita
+[Legendary]
+Legendární
+[Combat]
+Boj
+[Glass cannon]
+Skleněné dělo
+[Fortress buildings]
+Opevněné budovy
+[Veteran/Fast start]
+Veterán/Rychlý start

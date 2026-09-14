@@ -1126,12 +1126,12 @@ bool Context::issue_upgrade_repair(int id,bool repair)
 		return false;
 	if(repair)
 	{
-		if(building->hp>=building->type->hpMax
+		if(building->hp>=building->getEffectiveMaxHp()
 		   || !building->isHardSpaceForBuildingSite(::Building::REPAIR))return false;
 	}
 	else
 	{
-		if(building->hp<building->type->hpMax || building->type->nextLevel<0
+		if(building->hp<building->getEffectiveMaxHp() || building->type->nextLevel<0
 		   || !building->isHardSpaceForBuildingSite(::Building::UPGRADE))return false;
 	}
 	push_order(shared_ptr<Order>(new OrderConstruction(building->gid,1,1)));

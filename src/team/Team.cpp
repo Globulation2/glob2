@@ -13,6 +13,11 @@
 #include "Integrity.h"
 #include <stdexcept>
 
+Uint32 Team::attackableTeams() const
+{
+	return game->gameHeader.isPeacefulModeEnabled() ? 0 : enemies;
+}
+
 Team::Team(Game *game)
 :BaseTeam()
 {

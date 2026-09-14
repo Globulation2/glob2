@@ -2258,3 +2258,59 @@ OpenGL 在此版本中不可用。
 立即建造
 [Stockpile start]
 起始储备
+[Units still visit schools but never gain a level.]
+单位仍然会去学校上课，但永远不会升级。
+[Units fight to the death instead of retreating to heal.]
+单位会战斗至死，而不是撤退治疗。
+[Units are never permanently lost -- HP just stops at 1.]
+单位永远不会永久消失——生命值只会停在1。
+[Disables all combat between every team.]
+停用所有队伍之间的战斗。
+[Higher tiers deal more damage but have less HP and armor.]
+更高的等级会造成更多伤害，但生命值和护甲较低。
+[Higher tiers give every building much more HP.]
+更高的等级会让每座建筑物获得更多生命值。
+[Starting units spawn already leveled up. Changes the generated map.]
+初始单位一开始就已经升级。会改变生成的地图。
+[Trains normally]
+正常训练
+[No upgrades]
+不升级
+[Retreats when damaged]
+受伤时撤退
+[Fearless]
+无畏
+[Can die permanently]
+可能永久死亡
+[No permadeath]
+不会永久死亡
+[Normal combat]
+正常战斗
+[Peaceful mode]
+和平模式
+[Off (today's balance)]
+关闭（目前的平衡）
+[Glass cannon x2]
+玻璃大炮 x2
+[Glass cannon x3]
+玻璃大炮 x3
+[Off (today's HP)]
+关闭（目前的生命值）
+[Fortress x5]
+堡垒 x5
+[Fortress x10]
+堡垒 x10
+[Veteran]
+老兵
+[Elite]
+精英
+[Legendary]
+传奇
+[Combat]
+战斗
+[Glass cannon]
+玻璃大炮
+[Fortress buildings]
+堡垒化建筑
+[Veteran/Fast start]
+老兵/快速开局

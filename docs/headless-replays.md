@@ -46,6 +46,12 @@ Turns custom-game rules on for `-test-games` and `-test-games-nox` matches, as c
 | `instantConstruction` | 0-1 | Instant construction |
 | `stockpile` | 0-3 | Stockpile start (+50, +150, +300 of each resource) |
 | `noHunger` | 0-1 | No hunger |
+| `noUpgrades` | 0-1 | No upgrades |
+| `glassCannon` | 0-2 | Glass cannon (x2, x3 damage; HP and armor divided alike) |
+| `fearless` | 0-1 | Fearless |
+| `noPermadeath` | 0-1 | No permadeath |
+| `peaceful` | 0-1 | Peaceful mode |
+| `fortress` | 0-2 | Fortress buildings (x5, x10 building HP) |
 
 ```bash
 GLOB2_TEST_RULES=scarcity=2,instantConstruction=1 ./glob2 -test-games-nox 1 --map Playground --matchup castor,warrush

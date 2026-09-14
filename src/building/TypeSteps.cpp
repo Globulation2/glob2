@@ -21,7 +21,7 @@
 void Building::swarmStep(void)
 {
 	// increase HP
-	if (hp<type->hpMax)
+	if (hp<getEffectiveMaxHp())
 		hp++;
 	assert(NB_UNIT_TYPE==3);
 	if ((resources[WHEAT]>=type->resourceForOneUnit)&&(ratio[0]|ratio[1]|ratio[2]))
@@ -274,7 +274,7 @@ Building::TurretTarget Building::findBestTarget() const
 {
 	int range = type->shootingRange;
 
-	Uint32 enemies = owner->enemies;
+	Uint32 enemies = owner->attackableTeams();
 	Map *map = owner->map;
 	assert(map);
 

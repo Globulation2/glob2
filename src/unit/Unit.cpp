@@ -50,10 +50,17 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	insideTimeout=0;
 	speed=32;
 
+	// Custom-game "glass cannon" rule: cut HP once here, at the source,
+	// rather than at every downstream read. A map's starting units predate
+	// the match's header; Game::applyStartingRules cuts theirs.
+	const int hpDivisor = owner->game->gameHeader.getGlassCannonScale();
+
 	// quality parameters
 	for (int i=0; i<NB_ABILITY; i++)
 	{
 		this->performance[i]=race->getUnitType(typeNum, level)->performance[i];
+		if (i==HP)
+			this->performance[i]=std::max(1, this->performance[i]/hpDivisor);
 		this->level[i]=level;
 		this->canLearn[i]=(bool)race->getUnitType(typeNum, 3)->performance[i]; //TODO: is is a better way to hack this?
 		// This hack prevent units from unlearning. Units level 3 must have all the abilities of all preceding levels
@@ -101,7 +108,10 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 
 	// NOTE : rewrite hp from level
 	hp = this->performance[HP];
-	trigHP = (hp*UNIT_HP_TRIG_NUM)/UNIT_HP_TRIG_DEN;
+	// Custom-game "fearless" rule: fight to the death instead of retreating
+	// to heal once damaged (reinstates the "warriors fight to death" intent
+	// noted above, which trigHP normally overrides for everyone).
+	trigHP = owner->game->gameHeader.isUnitsFearless() ? 0 : (hp*UNIT_HP_TRIG_NUM)/UNIT_HP_TRIG_DEN;
 
 	attachedBuilding=NULL;
 	targetBuilding=NULL;
@@ -323,6 +333,11 @@ void Unit::syncStep(void)
 		levelUpAnimation--;
 	if (magicActionAnimation > 0)
 		magicActionAnimation--;
+}
+
+void Unit::resetAtLevel(Sint32 newLevel)
+{
+	init(posX, posY, gid, typeNum, owner, newLevel);
 }
 
 void Unit::setWorkerLevel(Sint32 newLevel)

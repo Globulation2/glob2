@@ -2258,3 +2258,59 @@ Sumber daya langka
 Konstruksi instan
 [Stockpile start]
 Cadangan awal
+[Units still visit schools but never gain a level.]
+Unit tetap pergi ke sekolah, tetapi tidak pernah naik tingkat.
+[Units fight to the death instead of retreating to heal.]
+Unit bertarung sampai mati alih-alih mundur untuk menyembuhkan diri.
+[Units are never permanently lost -- HP just stops at 1.]
+Unit tidak pernah hilang secara permanen -- HP-nya hanya berhenti di 1.
+[Disables all combat between every team.]
+Menonaktifkan semua pertarungan antar semua tim.
+[Higher tiers deal more damage but have less HP and armor.]
+Tingkat yang lebih tinggi memberikan lebih banyak kerusakan tetapi memiliki lebih sedikit HP dan zirah.
+[Higher tiers give every building much more HP.]
+Tingkat yang lebih tinggi memberikan HP jauh lebih banyak pada setiap bangunan.
+[Starting units spawn already leveled up. Changes the generated map.]
+Unit awal muncul dengan tingkat yang sudah dinaikkan. Mengubah peta yang dihasilkan.
+[Trains normally]
+Berlatih secara normal
+[No upgrades]
+Tanpa peningkatan
+[Retreats when damaged]
+Mundur saat terluka
+[Fearless]
+Tak kenal takut
+[Can die permanently]
+Bisa mati secara permanen
+[No permadeath]
+Tanpa kematian permanen
+[Normal combat]
+Pertarungan normal
+[Peaceful mode]
+Mode damai
+[Off (today's balance)]
+Nonaktif (keseimbangan saat ini)
+[Glass cannon x2]
+Meriam kaca x2
+[Glass cannon x3]
+Meriam kaca x3
+[Off (today's HP)]
+Nonaktif (HP saat ini)
+[Fortress x5]
+Benteng x5
+[Fortress x10]
+Benteng x10
+[Veteran]
+Veteran
+[Elite]
+Elite
+[Legendary]
+Legendaris
+[Combat]
+Pertarungan
+[Glass cannon]
+Meriam kaca
+[Fortress buildings]
+Bangunan berbenteng
+[Veteran/Fast start]
+Veteran/Awal cepat

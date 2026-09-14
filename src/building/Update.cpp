@@ -69,11 +69,12 @@ void Building::updateBuildingSite(void)
 
 		// An instant completion skipped the deliveries that would have raised
 		// hp (hpInc per resource for new/upgrade sites, a share of hpMax per
-		// resource for repairs), so grant the finished level's full hpInit;
+		// resource for repairs), so grant the finished level's full hpInit
+		// (scaled by the fortress-buildings rule);
 		// otherwise a new building would finish at the site's 1 HP and a
 		// repair would finish no less damaged than it started.
-		if (instantComplete || hp>=type->hpInit)
-			hp=type->hpInit;
+		if (instantComplete || hp>=getEffectiveInitHp())
+			hp=getEffectiveInitHp();
 
 		productionTimeout=type->unitProductionTime;
 		if (type->unitProductionTime)
@@ -245,7 +246,7 @@ void Building::getResourceCountToRepair(int resources[BASIC_COUNT])
 	int repairLevelTypeNum=type->prevLevel;
 	BuildingType *repairBt=globalContainer->buildingsTypes.get(repairLevelTypeNum);
 	assert(repairBt);
-	Sint32 fDestructionRatio=(hp<<FIXED_POINT_SHIFT_16)/type->hpMax;
+	Sint32 fDestructionRatio=(hp<<FIXED_POINT_SHIFT_16)/getEffectiveMaxHp();
 	Sint32 fTotErr=0;
 	for (int i=0; i<BASIC_COUNT; i++)
 	{
@@ -293,7 +294,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		// OK, we have found enough room to expand our building-site, then we set-up the building-site.
 		if (constructionResultState==REPAIR)
 		{
-			Sint32 fDestructionRatio=(hp<<FIXED_POINT_SHIFT_16)/type->hpMax;
+			Sint32 fDestructionRatio=(hp<<FIXED_POINT_SHIFT_16)/getEffectiveMaxHp();
 			Sint32 fTotErr=0;
 			for (int i=0; i<MAX_RESOURCES; i++)
 			{
@@ -338,9 +339,9 @@ bool Building::tryToBuildingSiteRoom(void)
 					if (res>resMax)
 						res=resMax;
 					if (verbose)
-						printf("using %d resources[%d] for fast constr (hp+=%d)\n", res, i, res*type->hpInc);
-					hp+=res*type->hpInc;
-					hp = std::min(hp, type->hpMax);
+						printf("using %d resources[%d] for fast constr (hp+=%d)\n", res, i, res*getEffectiveHpInc());
+					hp+=res*getEffectiveHpInc();
+					hp = std::min(hp, getEffectiveMaxHp());
 				}
 			}
 

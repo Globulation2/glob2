@@ -2262,3 +2262,59 @@ OpenGL није доступан у овој верзији.
 Тренутна градња
 [Stockpile start]
 Почетна залиха
+[Units still visit schools but never gain a level.]
+Јединице и даље похађају школу, али никада не достижу виши ниво.
+[Units fight to the death instead of retreating to heal.]
+Јединице се боре до смрти уместо да се повуку да би се излечиле.
+[Units are never permanently lost -- HP just stops at 1.]
+Јединице никада нису трајно изгубљене -- здравље само стане на 1.
+[Disables all combat between every team.]
+Онемогућава сваку борбу између свих тимова.
+[Higher tiers deal more damage but have less HP and armor.]
+Виши нивои задају више штете, али имају мање здравља и оклопа.
+[Higher tiers give every building much more HP.]
+Виши нивои дају свакој згради много више здравља.
+[Starting units spawn already leveled up. Changes the generated map.]
+Почетне јединице се појављују већ на вишем нивоу. Мења генерисану мапу.
+[Trains normally]
+Тренира се нормално
+[No upgrades]
+Без надоградњи
+[Retreats when damaged]
+Повлачи се када је повређена
+[Fearless]
+Неустрашива
+[Can die permanently]
+Може трајно да умре
+[No permadeath]
+Без трајне смрти
+[Normal combat]
+Нормална борба
+[Peaceful mode]
+Мирољубиви режим
+[Off (today's balance)]
+Искључено (данашња равнотежа)
+[Glass cannon x2]
+Стаклени топ x2
+[Glass cannon x3]
+Стаклени топ x3
+[Off (today's HP)]
+Искључено (данашње здравље)
+[Fortress x5]
+Тврђава x5
+[Fortress x10]
+Тврђава x10
+[Veteran]
+Ветеран
+[Elite]
+Елита
+[Legendary]
+Легендарна
+[Combat]
+Борба
+[Glass cannon]
+Стаклени топ
+[Fortress buildings]
+Утврђене зграде
+[Veteran/Fast start]
+Ветеран/Брзи почетак

@@ -359,6 +359,11 @@ public:
 
 	/// Sets the alliances from the GameHeader alliance teams
 	void setAlliances(void);
+	///Applies the custom-game rules that change stored unit and building stats (glass cannon
+	///HP, fearless, fortress buildings) to the units and buildings a map starts with, which
+	///were created before this match's header existed. Call once, when a map (not a saved
+	///game) starts; anything created later picks the rules up on creation.
+	void applyStartingRules(void);
 
 public:
 	///This is a static header for a map. It remains the same in between games on the same map.

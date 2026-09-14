@@ -2260,3 +2260,59 @@ OpenGL недоступен в этой сборке.
 Мгновенное строительство
 [Stockpile start]
 Начальный запас
+[Units still visit schools but never gain a level.]
+Юниты по-прежнему посещают школу, но никогда не получают новый уровень.
+[Units fight to the death instead of retreating to heal.]
+Юниты сражаются насмерть, вместо того чтобы отступить и вылечиться.
+[Units are never permanently lost -- HP just stops at 1.]
+Юниты никогда не теряются навсегда -- их здоровье просто останавливается на 1.
+[Disables all combat between every team.]
+Отключает любой бой между всеми командами.
+[Higher tiers deal more damage but have less HP and armor.]
+Более высокие уровни наносят больше урона, но имеют меньше здоровья и брони.
+[Higher tiers give every building much more HP.]
+Более высокие уровни дают каждому зданию гораздо больше здоровья.
+[Starting units spawn already leveled up. Changes the generated map.]
+Стартовые юниты появляются уже прокачанными. Меняет сгенерированную карту.
+[Trains normally]
+Обучается как обычно
+[No upgrades]
+Без улучшений
+[Retreats when damaged]
+Отступает при ранении
+[Fearless]
+Бесстрашный
+[Can die permanently]
+Может погибнуть навсегда
+[No permadeath]
+Без окончательной смерти
+[Normal combat]
+Обычный бой
+[Peaceful mode]
+Мирный режим
+[Off (today's balance)]
+Выкл. (текущий баланс)
+[Glass cannon x2]
+Стеклянная пушка x2
+[Glass cannon x3]
+Стеклянная пушка x3
+[Off (today's HP)]
+Выкл. (текущее здоровье)
+[Fortress x5]
+Крепость x5
+[Fortress x10]
+Крепость x10
+[Veteran]
+Ветеран
+[Elite]
+Элита
+[Legendary]
+Легендарный
+[Combat]
+Бой
+[Glass cannon]
+Стеклянная пушка
+[Fortress buildings]
+Укреплённые здания
+[Veteran/Fast start]
+Ветеран/Быстрый старт

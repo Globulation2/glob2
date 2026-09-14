@@ -168,11 +168,18 @@ void AICastor::computeWarLevel()
 
 	int warPowerSum=0;
 	Unit **myUnits=team->myUnits;
+	// Custom-game "glass cannon" rule: scale the same way
+	// Unit::getRealAttackStrength() does, so this self-assessment of army
+	// strength doesn't ignore a rule that's actively changing how hard these
+	// units actually hit. (experienceLevel is deliberately left out, matching
+	// getRealAttackStrength() -- this is scoped to the new rule, not a
+	// broader change to how this heuristic already approximates strength.)
+	const int glassCannonScale = team->game->gameHeader.getGlassCannonScale();
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=myUnits[i];
 		if (u && u->medical==Unit::MED_FREE && u->typeNum==WARRIOR)
-			warPowerSum+=u->performance[ATTACK_SPEED]*u->performance[ATTACK_STRENGTH];
+			warPowerSum+=u->performance[ATTACK_SPEED]*u->performance[ATTACK_STRENGTH]*glassCannonScale;
 	}
 	static int oldWarPowerSum=AI_CASTOR_WAR_POWER_UNSET;
 	if (oldWarPowerSum!=warPowerSum)

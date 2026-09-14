@@ -2258,3 +2258,59 @@ Recursos escassos
 Construção instantânea
 [Stockpile start]
 Estoque inicial
+[Units still visit schools but never gain a level.]
+As unidades continuam frequentando a escola, mas nunca sobem de nível.
+[Units fight to the death instead of retreating to heal.]
+As unidades lutam até a morte em vez de recuar para se curar.
+[Units are never permanently lost -- HP just stops at 1.]
+As unidades nunca são perdidas permanentemente -- a vida simplesmente para em 1.
+[Disables all combat between every team.]
+Desativa todo o combate entre todas as equipes.
+[Higher tiers deal more damage but have less HP and armor.]
+Níveis mais altos causam mais dano, mas têm menos vida e armadura.
+[Higher tiers give every building much more HP.]
+Níveis mais altos dão muito mais vida a cada construção.
+[Starting units spawn already leveled up. Changes the generated map.]
+As unidades iniciais aparecem já em nível avançado. Muda o mapa gerado.
+[Trains normally]
+Treina normalmente
+[No upgrades]
+Sem melhorias
+[Retreats when damaged]
+Recua quando está ferida
+[Fearless]
+Destemida
+[Can die permanently]
+Pode morrer permanentemente
+[No permadeath]
+Sem morte permanente
+[Normal combat]
+Combate normal
+[Peaceful mode]
+Modo pacífico
+[Off (today's balance)]
+Desativado (equilíbrio atual)
+[Glass cannon x2]
+Canhão de vidro x2
+[Glass cannon x3]
+Canhão de vidro x3
+[Off (today's HP)]
+Desativado (vida atual)
+[Fortress x5]
+Fortaleza x5
+[Fortress x10]
+Fortaleza x10
+[Veteran]
+Veterano
+[Elite]
+Elite
+[Legendary]
+Lendário
+[Combat]
+Combate
+[Glass cannon]
+Canhão de vidro
+[Fortress buildings]
+Construções fortificadas
+[Veteran/Fast start]
+Veterano/Início rápido

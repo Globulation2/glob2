@@ -136,6 +136,15 @@ public:
 	void saveCrossRef(GAGCore::OutputStream *stream);
 
 	bool isResourceFull(void);
+	///Custom-game "fortress buildings" rule: type->hpMax scaled by the
+	///configured multiplier. Use this instead of reading type->hpMax
+	///directly anywhere the result affects simulation or display.
+	int getEffectiveMaxHp(void) const;
+	///Same rule, for type->hpInit.
+	int getEffectiveInitHp(void) const;
+	///Same rule, for type->hpInc: a site delivered in full must still reach
+	///the scaled hpInit, or every new building would finish badly damaged.
+	int getEffectiveHpInc(void) const;
 	int neededResource(void);
 	/**
 	 * calls neededResource(int res) for all possible resources.

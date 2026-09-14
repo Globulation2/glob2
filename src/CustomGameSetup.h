@@ -23,7 +23,7 @@ struct CustomGameSetup
 		const char *label;
 		const char *category;
 	};
-	static constexpr std::array<RuleDefinition, 10> ruleDefinitions = {
+	static constexpr std::array<RuleDefinition, 17> ruleDefinitions = {
 		{{"Victory", "Victory"},
 		 {"Map knowledge", "World & diplomacy"},
 		 {"Alliances", "World & diplomacy"},
@@ -33,7 +33,14 @@ struct CustomGameSetup
 		 {"Scarce resources", "Economy"},
 		 {"Instant construction", "Economy"},
 		 {"Stockpile start", "Economy"},
-		 {"No hunger", "Economy"}}};
+		 {"No hunger", "Economy"},
+		 {"No upgrades", "Combat"},
+		 {"Glass cannon", "Combat"},
+		 {"Fearless", "Combat"},
+		 {"No permadeath", "Combat"},
+		 {"Peaceful mode", "Combat"},
+		 {"Fortress buildings", "Combat"},
+		 {"Veteran/Fast start", "Starting conditions & pace"}}};
 	bool ruleChanged(int index) const
 	{
 		switch (index)
@@ -60,6 +67,20 @@ struct CustomGameSetup
 			return stockpileStart != 0;
 		case 9:
 			return noHunger;
+		case 10:
+			return unitUpgradesDisabled;
+		case 11:
+			return glassCannonLevel != 0;
+		case 12:
+			return unitsFearless;
+		case 13:
+			return permadeathDisabled;
+		case 14:
+			return peacefulMode;
+		case 15:
+			return buildingHpLevel != 0;
+		case 16:
+			return random && startingUnitLevel != 0;
 		default:
 			return false;
 		}
@@ -78,6 +99,11 @@ struct CustomGameSetup
 	int speed = 0;
 	bool noResourceGrowth = false, instantConstruction = false, noHunger = false;
 	int resourceScarcity = 0, stockpileStart = 0;
+	bool unitUpgradesDisabled = false, unitsFearless = false, permadeathDisabled = false, peacefulMode = false;
+	int glassCannonLevel = 0, buildingHpLevel = 0;
+	// Level the generated map's starting workers spawn at; applied to the generated map, so
+	// changing it regenerates the preview (mapRevision).
+	int startingUnitLevel = 0;
 	std::string format = "FFA", ruleset = "Standard";
 	std::string premadeMap;
 	unsigned mapRevision = 0;
@@ -174,6 +200,17 @@ struct CustomGameSetup
 		instantConstruction = false;
 		stockpileStart = 0;
 		noHunger = false;
+		unitUpgradesDisabled = false;
+		glassCannonLevel = 0;
+		unitsFearless = false;
+		permadeathDisabled = false;
+		peacefulMode = false;
+		buildingHpLevel = 0;
+		if (startingUnitLevel != 0)
+		{
+			startingUnitLevel = 0;
+			++mapRevision;
+		}
 		ruleset = preset == 0	? "Standard"
 				  : preset == 1 ? "Quick clash"
 				  : preset == 2 ? "Open book"
@@ -232,5 +269,11 @@ struct CustomGameSetup
 		header.setInstantConstructionEnabled(instantConstruction);
 		header.setStockpileStartLevel(static_cast<Uint8>(stockpileStart));
 		header.setHungerDisabled(noHunger);
+		header.setUnitUpgradesDisabled(unitUpgradesDisabled);
+		header.setGlassCannonLevel(static_cast<Uint8>(glassCannonLevel));
+		header.setUnitsFearless(unitsFearless);
+		header.setPermadeathDisabled(permadeathDisabled);
+		header.setPeacefulModeEnabled(peacefulMode);
+		header.setBuildingHpLevel(static_cast<Uint8>(buildingHpLevel));
 	}
 };

@@ -5146,7 +5146,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		value.level=building->type->level+1;
 		value.centerX=map->normalizeX(building->posX-building->type->decLeft);
 		value.centerY=map->normalizeY(building->posY-building->type->decTop);
-		value.hp=building->hp;value.hpMax=building->type->hpMax;
+		value.hp=building->hp;value.hpMax=building->getEffectiveMaxHp();
 		value.age=i->second.age;value.site=building->type->isBuildingSite;
 		value.upgrading=echo.get_building_register().is_building_upgrading(i->first);
 		world.buildings.push_back(value);

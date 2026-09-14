@@ -243,7 +243,7 @@ void Unit::handleMovementAttackingAround()
 					if (gid!=NOGBID)
 					{
 						int team=Building::GIDtoTeam(gid);
-						if (owner->enemies & (1<<team))
+						if (owner->attackableTeams() & (1<<team))
 						{
 							int id=Building::GIDtoID(gid);
 							int newQuality=((x*x+y*y)<<Q8_FIXED_POINT_SHIFT);
@@ -259,7 +259,7 @@ void Unit::handleMovementAttackingAround()
 					{
 						int team=Unit::GIDtoTeam(gid);
 						Uint32 tm=(1<<team);
-						if (owner->enemies & tm)
+						if (owner->attackableTeams() & tm)
 						{
 							int id=Building::GIDtoID(gid);
 							Unit *u=owner->game->teams[team]->myUnits[id];

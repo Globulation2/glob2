@@ -2260,3 +2260,59 @@ OpenGL غير متوفر في هذا الإصدار.
 بناء فوري
 [Stockpile start]
 مخزون البداية
+[Units still visit schools but never gain a level.]
+لا تزال الوحدات تذهب إلى المدرسة، لكنها لا ترتقي أبدًا بمستوى.
+[Units fight to the death instead of retreating to heal.]
+تقاتل الوحدات حتى الموت بدلاً من التراجع للتعافي.
+[Units are never permanently lost -- HP just stops at 1.]
+لا تُفقد الوحدات نهائيًا أبدًا -- تتوقف نقاط صحتها ببساطة عند 1.
+[Disables all combat between every team.]
+يعطل كل قتال بين جميع الفرق.
+[Higher tiers deal more damage but have less HP and armor.]
+المستويات الأعلى تُلحق ضررًا أكبر لكنها تملك نقاط صحة ودرعًا أقل.
+[Higher tiers give every building much more HP.]
+المستويات الأعلى تمنح كل مبنى نقاط صحة أكبر بكثير.
+[Starting units spawn already leveled up. Changes the generated map.]
+تظهر الوحدات الأولية وهي بالفعل في مستوى أعلى. يغيّر الخريطة المولَّدة.
+[Trains normally]
+تتدرب بشكل طبيعي
+[No upgrades]
+بلا ترقيات
+[Retreats when damaged]
+تتراجع عند الإصابة
+[Fearless]
+بلا خوف
+[Can die permanently]
+يمكن أن تموت نهائيًا
+[No permadeath]
+بلا موت نهائي
+[Normal combat]
+قتال عادي
+[Peaceful mode]
+وضع سلمي
+[Off (today's balance)]
+معطّل (التوازن الحالي)
+[Glass cannon x2]
+مدفع زجاجي x2
+[Glass cannon x3]
+مدفع زجاجي x3
+[Off (today's HP)]
+معطّل (نقاط الصحة الحالية)
+[Fortress x5]
+قلعة x5
+[Fortress x10]
+قلعة x10
+[Veteran]
+مخضرم
+[Elite]
+نخبة
+[Legendary]
+أسطوري
+[Combat]
+قتال
+[Glass cannon]
+مدفع زجاجي
+[Fortress buildings]
+مبانٍ محصّنة
+[Veteran/Fast start]
+مخضرم/بداية سريعة

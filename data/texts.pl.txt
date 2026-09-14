@@ -2262,3 +2262,59 @@ Skąpe zasoby
 Natychmiastowa budowa
 [Stockpile start]
 Zapas początkowy
+[Units still visit schools but never gain a level.]
+Jednostki nadal chodzą do szkoły, ale nigdy nie awansują na wyższy poziom.
+[Units fight to the death instead of retreating to heal.]
+Jednostki walczą na śmierć i życie zamiast wycofywać się, by się leczyć.
+[Units are never permanently lost -- HP just stops at 1.]
+Jednostki nigdy nie są tracone na stałe -- ich punkty życia po prostu zatrzymują się na 1.
+[Disables all combat between every team.]
+Wyłącza wszystkie walki między wszystkimi drużynami.
+[Higher tiers deal more damage but have less HP and armor.]
+Wyższe poziomy zadają więcej obrażeń, ale mają mniej punktów życia i zbroi.
+[Higher tiers give every building much more HP.]
+Wyższe poziomy dają każdemu budynkowi znacznie więcej punktów życia.
+[Starting units spawn already leveled up. Changes the generated map.]
+Jednostki startowe pojawiają się już na wyższym poziomie. Zmienia wygenerowaną mapę.
+[Trains normally]
+Trenuje normalnie
+[No upgrades]
+Brak ulepszeń
+[Retreats when damaged]
+Wycofuje się, gdy jest ranna
+[Fearless]
+Nieustraszona
+[Can die permanently]
+Może zginąć na stałe
+[No permadeath]
+Bez trwałej śmierci
+[Normal combat]
+Normalna walka
+[Peaceful mode]
+Tryb pokojowy
+[Off (today's balance)]
+Wyłączone (dzisiejszy balans)
+[Glass cannon x2]
+Szklane działo x2
+[Glass cannon x3]
+Szklane działo x3
+[Off (today's HP)]
+Wyłączone (dzisiejsze punkty życia)
+[Fortress x5]
+Forteca x5
+[Fortress x10]
+Forteca x10
+[Veteran]
+Weteran
+[Elite]
+Elita
+[Legendary]
+Legendarny
+[Combat]
+Walka
+[Glass cannon]
+Szklane działo
+[Fortress buildings]
+Ufortyfikowane budynki
+[Veteran/Fast start]
+Weteran/Szybki start

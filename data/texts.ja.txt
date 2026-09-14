@@ -2258,3 +2258,59 @@ Globulation 2 のカーソルを表示します。
 即時建設
 [Stockpile start]
 開始時の備蓄
+[Units still visit schools but never gain a level.]
+ユニットは引き続き学校に通いますが、レベルアップすることはありません。
+[Units fight to the death instead of retreating to heal.]
+ユニットは回復のために撤退する代わりに、死ぬまで戦います。
+[Units are never permanently lost -- HP just stops at 1.]
+ユニットは永久に失われることはありません――体力はただ1で止まります。
+[Disables all combat between every team.]
+すべてのチーム間の戦闘を無効にします。
+[Higher tiers deal more damage but have less HP and armor.]
+上位のティアはより多くのダメージを与えますが、体力と装甲が低くなります。
+[Higher tiers give every building much more HP.]
+上位のティアはすべての建物の体力を大幅に増加させます。
+[Starting units spawn already leveled up. Changes the generated map.]
+開始時のユニットは最初からレベルが上がった状態で出現します。生成されるマップが変わります。
+[Trains normally]
+通常どおり訓練する
+[No upgrades]
+レベルアップなし
+[Retreats when damaged]
+ダメージを受けると撤退する
+[Fearless]
+恐れ知らず
+[Can die permanently]
+永久に死亡することがある
+[No permadeath]
+永久死亡なし
+[Normal combat]
+通常の戦闘
+[Peaceful mode]
+平和モード
+[Off (today's balance)]
+オフ（現在のバランス）
+[Glass cannon x2]
+ガラスの大砲 x2
+[Glass cannon x3]
+ガラスの大砲 x3
+[Off (today's HP)]
+オフ（現在の体力）
+[Fortress x5]
+要塞 x5
+[Fortress x10]
+要塞 x10
+[Veteran]
+ベテラン
+[Elite]
+エリート
+[Legendary]
+伝説
+[Combat]
+戦闘
+[Glass cannon]
+ガラスの大砲
+[Fortress buildings]
+要塞化された建物
+[Veteran/Fast start]
+ベテラン/早期スタート

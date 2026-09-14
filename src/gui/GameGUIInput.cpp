@@ -445,7 +445,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 	int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
 	int repairUnitWorking = defaultAssign.getDefaultAssignedUnits(building->typeNum - 1);
 	int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(typeNum+1);
-	if ((building->hp < buildingType->hpMax) && repair)
+	if ((building->hp < building->getEffectiveMaxHp()) && repair)
 	{
 		// repair
 		if ((building->type->regenerationSpeed == 0) &&

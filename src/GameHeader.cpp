@@ -38,6 +38,12 @@ void GameHeader::reset()
 	instantConstruction=false;
 	stockpileStartLevel=0;
 	hungerDisabled=false;
+	unitUpgradesDisabled=false;
+	glassCannonLevel=0;
+	unitsFearless=false;
+	permadeathDisabled=false;
+	peacefulMode=false;
+	buildingHpLevel=0;
 }
 
 
@@ -131,6 +137,20 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		stockpileStartLevel = std::min<Uint8>(stream->readUint8("stockpileStartLevel"), 3);
 		hungerDisabled = stream->readUint8("hungerDisabled");
 	}
+	if(versionMinor >= FILE_FORMAT_VERSION_COMBAT_RULES)
+	{
+		unitUpgradesDisabled = stream->readUint8("unitUpgradesDisabled");
+		// Clamped to the tier lookup tables' range (this class's own
+		// getGlassCannonScale()/getBuildingHpMultiplier()): a corrupted save
+		// or a malicious network peer could otherwise supply any Uint8
+		// (0-255) and trigger an out-of-bounds array read wherever these are
+		// used to index.
+		glassCannonLevel = std::min<Uint8>(stream->readUint8("glassCannonLevel"), 2);
+		unitsFearless = stream->readUint8("unitsFearless");
+		permadeathDisabled = stream->readUint8("permadeathDisabled");
+		peacefulMode = stream->readUint8("peacefulMode");
+		buildingHpLevel = std::min<Uint8>(stream->readUint8("buildingHpLevel"), 2);
+	}
 	stream->readLeaveSection();
 	return true;
 }
@@ -181,6 +201,12 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeUint8(instantConstruction, "instantConstruction");
 	stream->writeUint8(stockpileStartLevel, "stockpileStartLevel");
 	stream->writeUint8(hungerDisabled, "hungerDisabled");
+	stream->writeUint8(unitUpgradesDisabled, "unitUpgradesDisabled");
+	stream->writeUint8(glassCannonLevel, "glassCannonLevel");
+	stream->writeUint8(unitsFearless, "unitsFearless");
+	stream->writeUint8(permadeathDisabled, "permadeathDisabled");
+	stream->writeUint8(peacefulMode, "peacefulMode");
+	stream->writeUint8(buildingHpLevel, "buildingHpLevel");
 	stream->writeLeaveSection();
 }
 
@@ -218,6 +244,20 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 		instantConstruction = stream->readUint8("instantConstruction");
 		stockpileStartLevel = std::min<Uint8>(stream->readUint8("stockpileStartLevel"), 3);
 		hungerDisabled = stream->readUint8("hungerDisabled");
+	}
+	if(versionMinor >= FILE_FORMAT_VERSION_COMBAT_RULES)
+	{
+		unitUpgradesDisabled = stream->readUint8("unitUpgradesDisabled");
+		// Clamped to the tier lookup tables' range (this class's own
+		// getGlassCannonScale()/getBuildingHpMultiplier()): a corrupted save
+		// or a malicious network peer could otherwise supply any Uint8
+		// (0-255) and trigger an out-of-bounds array read wherever these are
+		// used to index.
+		glassCannonLevel = std::min<Uint8>(stream->readUint8("glassCannonLevel"), 2);
+		unitsFearless = stream->readUint8("unitsFearless");
+		permadeathDisabled = stream->readUint8("permadeathDisabled");
+		peacefulMode = stream->readUint8("peacefulMode");
+		buildingHpLevel = std::min<Uint8>(stream->readUint8("buildingHpLevel"), 2);
 	}
 	stream->readLeaveSection();
 	return true;
@@ -257,6 +297,12 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeUint8(instantConstruction, "instantConstruction");
 	stream->writeUint8(stockpileStartLevel, "stockpileStartLevel");
 	stream->writeUint8(hungerDisabled, "hungerDisabled");
+	stream->writeUint8(unitUpgradesDisabled, "unitUpgradesDisabled");
+	stream->writeUint8(glassCannonLevel, "glassCannonLevel");
+	stream->writeUint8(unitsFearless, "unitsFearless");
+	stream->writeUint8(permadeathDisabled, "permadeathDisabled");
+	stream->writeUint8(peacefulMode, "peacefulMode");
+	stream->writeUint8(buildingHpLevel, "buildingHpLevel");
 	stream->writeLeaveSection();
 }
 

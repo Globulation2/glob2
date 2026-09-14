@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <algorithm>
 #include <iostream>
 
 #include "AICastor.h"
@@ -217,6 +218,34 @@ void Game::setAlliances(void)
 				teams[i]->enemies |= teams[j]->me;
 			}
 		}
+	}
+}
+
+void Game::applyStartingRules(void)
+{
+	const int hpDivisor = gameHeader.getGlassCannonScale();
+	const bool fearless = gameHeader.isUnitsFearless();
+	const int buildingHpMultiplier = gameHeader.getBuildingHpMultiplier();
+	for (int t=0; t<mapHeader.getNumberOfTeams(); ++t)
+	{
+		for (int i=0; i<Unit::MAX_COUNT; ++i)
+		{
+			Unit *unit = teams[t]->myUnits[i];
+			if (!unit)
+				continue;
+			if (hpDivisor != 1)
+			{
+				unit->performance[HP] = std::max(1, unit->performance[HP] / hpDivisor);
+				unit->hp = std::max(1, unit->hp / hpDivisor);
+				unit->trigHP /= hpDivisor;
+			}
+			if (fearless)
+				unit->trigHP = 0;
+		}
+		if (buildingHpMultiplier != 1)
+			for (int i=0; i<Building::MAX_COUNT; ++i)
+				if (teams[t]->myBuildings[i])
+					teams[t]->myBuildings[i]->hp *= buildingHpMultiplier;
 	}
 }
 

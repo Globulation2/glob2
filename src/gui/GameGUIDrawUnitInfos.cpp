@@ -148,7 +148,11 @@ void GameGUI::drawUnitInfos(void)
 	if (selUnit->performance[ARMOR])
 	{
 		int armorReductionPerHappyness = selUnit->race->getUnitType(selUnit->typeNum, selUnit->level[ARMOR])->armorReductionPerHappyness;
-		int realArmor = selUnit->performance[ARMOR] - selUnit->fruitCount * armorReductionPerHappyness;
+		// Custom-game "glass cannon" rule: show the actual armor combat uses
+		// (getRealArmor()), not just the pre-scale breakdown below -- at the
+		// rule's default (scale 1), this is identical to the old
+		// performance[ARMOR]-fruitCount*reduction computation.
+		int realArmor = selUnit->getRealArmor(false);
 		if (realArmor < 0)
 			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0));
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 : %1 = %2 - %3 * %4").arg(Toolkit::getStringTable()->getString("[armor]")).arg(realArmor).arg(selUnit->performance[ARMOR]).arg(selUnit->fruitCount).arg(armorReductionPerHappyness).c_str());
@@ -182,7 +186,15 @@ void GameGUI::drawUnitInfos(void)
 
 	if (selUnit->performance[ATTACK_STRENGTH])
 	{
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 (%1+%2) : %3+%4").arg(Toolkit::getStringTable()->getString("[At. strength]")).arg(1+selUnit->level[ATTACK_STRENGTH]).arg(selUnit->experienceLevel).arg(selUnit->performance[ATTACK_STRENGTH]).arg(selUnit->experienceLevel).c_str());
+		std::string attackLine = FormattableString("%0 (%1+%2) : %3+%4").arg(Toolkit::getStringTable()->getString("[At. strength]")).arg(1+selUnit->level[ATTACK_STRENGTH]).arg(selUnit->experienceLevel).arg(selUnit->performance[ATTACK_STRENGTH]).arg(selUnit->experienceLevel).c_str();
+		// Custom-game "glass cannon" rule: the breakdown above shows the base
+		// stat and experience bonus exactly as it always has, so append the
+		// scale actual combat applies on top -- at the rule's default (scale
+		// 1) this appends nothing, leaving the line unchanged.
+		const int glassCannonScale = selUnit->owner->game->gameHeader.getGlassCannonScale();
+		if (glassCannonScale != 1)
+			attackLine += FormattableString(" x%0").arg(glassCannonScale).c_str();
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, attackLine.c_str());
 
 		ypos += YOFFSET_TEXT_PARA + 2;
 	}
