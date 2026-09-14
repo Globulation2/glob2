@@ -13,9 +13,7 @@ result copies and reset/resize behavior.
 Pass `--benchmark` to measure process CPU time for evaluation and a full-map pass
 of bound queries at 128², 256² and 512². The output includes deterministic result
 digests; timing is informational and is never a CI assertion. Compile the same
-driver against both revisions when comparing performance. See the
-[performance validation](../docs/maxima-food-ledger-performance.md) for retained
-before/after evidence and full-match limitations.
+driver against both revisions when comparing performance.
 
 ## Selection lifetime regression
 
