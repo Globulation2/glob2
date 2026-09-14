@@ -271,6 +271,12 @@ void GlobalContainer::loadClient(void)
 
 void GlobalContainer::load(void)
 {
+	// Automated runs use explicitly requested checkpoints/final saves. Keep
+	// this override in memory; a headless run must not change GUI preferences.
+	// Harnesses exercising autosave can opt in after loading.
+	if (runNoX || runTestGames || structuredHeadless)
+		settings.autosaveGames = false;
+
 	// load texts
 	if (!Toolkit::getStringTable()->load("data/texts.list.txt"))
 	{

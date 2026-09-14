@@ -304,7 +304,8 @@ Build `scons release=1 server=0 savegame-safety-test`, then run
 profile and working directory; an optional final argument supplies a truncated
 save that must be rejected.
 
-The harness checks the production autosave path, byte equivalence with direct
+The harness checks the headless autosave-off default, explicit opt-in, autosave
+cadence, the production autosave path, byte equivalence with direct
 serialization to a file, successful reload, disabled autosave, truncated map data
 from file and memory streams, recovery after failed loads, and oversized map-area
 strings. Atomic replacement tests cover callback/open/rename failures and
@@ -529,3 +530,11 @@ reports, including generation-failure telemetry. The opt-in
 checks complete result/artifact roundtrips and offline record counts on every host;
 add an absolute registered `bundle` path to each host entry. It stops its workers
 after collection. Retained validation is linked in the tournament validation guide.
+
+## Maxima continuation serialization
+
+Build `scons release=1 server=0 maxima-continuation-test`, then run
+`build/src/MaximaContinuationTest` (`.exe` on Windows). It compares the buffered
+binary archive with the scalar path, including SHA1, nested records, signed
+limits, 64-bit ordering, strings, buffer boundaries and interleaved direct writes.
+Text output is also checked. Linux and Windows CI run it.
