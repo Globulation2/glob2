@@ -2272,3 +2272,17 @@ OpenGL 在此版本中不可用。
 隔離度
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 每個殖民地的開局都在完成的地圖上測量：到小麥和木材的路程、土地的再生能力、可及範圍內的儲量和建築用地，以及與對手的距離。每項因素按固定標準計 0 到 1 分，總分對其加權，公平度是最低殖民地的總分除以最高者，評分是最低總分乘以公平度。
+[Map preview controls]
+拖曳以跨越邊界，滾輪縮放。按右鍵或連按兩下重設。
+[Map preview drag help]
+拖曳移動；滾輪縮放。
+[Map preview loading]
+載入中...
+[Map preview failed]
+預覽失敗
+[Map preview retry]
+按一下重試
+[Map preview please wait]
+請稍候
+[Map preview choose another]
+選擇地圖

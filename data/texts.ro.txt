@@ -2200,3 +2200,17 @@ Spațiu
 Izolare
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Startul fiecărei colonii se măsoară pe harta terminată: drumul până la grâu și la lemn, cât de bine își reface terenul, zăcămintele și locurile de construcție la îndemână și distanța față de rivali. Fiecare factor primește de la 0 la 1 față de un prag fix, totalul îi ponderează, echitatea este totalul celei mai slabe colonii împărțit la cel al celei mai bune, iar scorul este cel mai slab total înmulțit cu echitatea.
+[Map preview controls]
+Trage pentru a trece peste margini. Rotița mărește. Clic dreapta sau dublu clic pentru resetare.
+[Map preview drag help]
+Trage pentru deplasare; rotița mărește.
+[Map preview loading]
+Se încarcă...
+[Map preview failed]
+Previzualizare eșuată
+[Map preview retry]
+Clic pentru a reîncerca
+[Map preview please wait]
+Așteaptă
+[Map preview choose another]
+Alege o hartă

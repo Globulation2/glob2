@@ -2196,3 +2196,17 @@ Ruang
 Keterpencilan
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Awal setiap koloni diukur pada peta yang sudah jadi: jarak tempuh ke gandum dan ke kayu, seberapa baik tanahnya tumbuh kembali, cadangan dan lokasi bangunan yang terjangkau, serta jaraknya dari pesaing. Setiap faktor dinilai dari 0 sampai 1 terhadap patokan tetap, totalnya membobotinya, keadilan adalah total koloni terburuk dibagi total yang terbaik, dan skor adalah total terburuk dikali keadilan.
+[Map preview controls]
+Seret untuk melintasi tepi. Gulir untuk memperbesar. Klik kanan atau klik ganda untuk mengatur ulang.
+[Map preview drag help]
+Seret untuk menggeser; gulir untuk memperbesar.
+[Map preview loading]
+Memuat...
+[Map preview failed]
+Pratinjau gagal
+[Map preview retry]
+Klik untuk mencoba lagi
+[Map preview please wait]
+Harap tunggu
+[Map preview choose another]
+Pilih peta

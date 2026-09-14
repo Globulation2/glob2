@@ -108,6 +108,21 @@ jobs:
           GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
             build/src/torus-render-test -G -F -m -s 1120x720
 
+      - name: Build and run pre-game map preview regressions
+        run: |
+          scons -j$(nproc) release=1 server=0 map-preview-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapPreviewHarness
+          mkdir -p artifacts/map-preview
+          timeout 180s xvfb-run -a ./build/src/MapPreviewHarness glob2-map-preview-tests --visual artifacts/map-preview
+
+      - name: Retain pre-game map preview evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-preview-${{ matrix.runner }}-${{ matrix.compiler }}
+          path: artifacts/map-preview/
+          if-no-files-found: ignore
+
       - name: Build and run custom-game setup regressions
         run: |
           scons -j$(nproc) release=1 server=0 custom-setup-test map-generator-defaults-test map-generator-golden-test
@@ -404,6 +419,11 @@ jobs:
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 map-render-resize-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderResizeHarness.exe
+
+      - name: Build and run pre-game map preview regressions
+        run: |
+          scons -j2 release=1 server=0 map-preview-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapPreviewHarness.exe
 
       - name: Test savegame loading and atomic autosaves
         run: |

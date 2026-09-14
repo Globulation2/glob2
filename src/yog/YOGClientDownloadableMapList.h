@@ -6,6 +6,7 @@
 #include <memory>
 #include "YOGDownloadableMapInfo.h"
 #include <vector>
+#include <map>
 #include "YOGClientDownloadableMapListener.h"
 #include "MapThumbnail.h"
 #include "ListenerList.h"
@@ -36,7 +37,9 @@ public:
 	YOGDownloadableMapInfo getMap(const std::string& name);
 	
 	///Requests a thumbnail for the given map name
-	void requestThumbnail(const std::string& name);
+	void requestThumbnail(const std::string& name, bool retry = false);
+	enum class ThumbnailState { Empty, Loading, Ready, Failed };
+	ThumbnailState getThumbnailState(const std::string& name);
 	
 	///Retrieves the thumbnail for the given map name
 	MapThumbnail& getMapThumbnail(const std::string& name);
@@ -50,15 +53,25 @@ public:
 	///Removes a listener from receiving events
 	void removeListener(YOGClientDownloadableMapListener* listener);
 private:
+	friend struct MapPreviewHarness;
 	///Sends a map list update to the listeners
 	void sendUpdateToListeners();
 	///Sends a map thumbnail update to the listeners
 	void sendThumbnailToListeners();
 
 	std::vector<YOGDownloadableMapInfo> maps;
-	std::vector<MapThumbnail> thumbnails;
+	struct ThumbnailEntry
+	{
+		std::string revision;
+		MapThumbnail image;
+		Uint32 requestedAt = 0;
+		unsigned long used = 0;
+		bool requested = false, failed = false;
+	};
+	std::map<Uint16, ThumbnailEntry> thumbnailCache;
+	unsigned long useCounter = 0;
+	ThumbnailEntry& thumbnailEntry(const YOGDownloadableMapInfo& info);
 	YOGClient* client;
 	ListenerList<YOGClientDownloadableMapListener> listeners;
 	bool waitingForList;
 };
-

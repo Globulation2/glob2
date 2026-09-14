@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "GenerationRequest.h"
-#include "LobbyMapPreview.h"
+#include "GUIMapPreview.h"
 #include "MapThumbnail.h"
 #include <condition_variable>
 #include <cstdint>

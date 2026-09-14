@@ -2200,3 +2200,17 @@ Platz
 Abgeschiedenheit
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Der Start jeder Kolonie wird auf der fertigen Karte gemessen: der Weg zu Weizen und zu Holz, wie gut ihr Boden nachwächst, die Vorkommen und Bauplätze in Reichweite und ihr Abstand zu Rivalen. Jeder Faktor erhält 0 bis 1 gegenüber einer festen Messlatte, die Summe gewichtet sie, die Ausgeglichenheit ist die Summe der schlechtesten Kolonie geteilt durch die der besten, und die Wertung ist die schlechteste Summe mal der Ausgeglichenheit.
+[Map preview controls]
+Ziehen zum Verschieben über die Ränder. Mausrad zum Zoomen. Rechts- oder Doppelklick zum Zurücksetzen.
+[Map preview drag help]
+Ziehen zum Verschieben; Mausrad zum Zoomen.
+[Map preview loading]
+Wird geladen...
+[Map preview failed]
+Vorschau fehlgeschlagen
+[Map preview retry]
+Zum Wiederholen klicken
+[Map preview please wait]
+Bitte warten
+[Map preview choose another]
+Karte auswählen

@@ -26,6 +26,12 @@ YOGClientDownloadingMapScreen::YOGClientDownloadingMapScreen(std::shared_ptr<YOG
 	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 	preview = new MapPreview(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
 	addWidget(preview);
+	preview->setState(MapPreview::State::Loading);
+	preview->retry = [this]
+	{
+		this->client->getDownloadableMapList()->requestThumbnail(this->info.getMapHeader().getMapName(), true);
+	};
+	client->getDownloadableMapList()->requestThumbnail(info.getMapHeader().getMapName());
 	
 	mapName=new Text(173, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(mapName);
@@ -46,7 +52,7 @@ YOGClientDownloadingMapScreen::YOGClientDownloadingMapScreen(std::shared_ptr<YOG
 	std::string textTemp;
 	textTemp = FormattableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
 	mapInfo->setText(textTemp);
-	textTemp = FormattableString("%0 x %1").arg(preview->getLastWidth()).arg(preview->getLastHeight());
+	textTemp = FormattableString("%0 x %1").arg(info.getWidth()).arg(info.getHeight());
 	mapSize->setText(textTemp);
 	authorName->setText(info.getAuthorName());
 	
@@ -105,6 +111,11 @@ void YOGClientDownloadingMapScreen::onTimer(Uint32 tick)
 			textTemp = FormattableString("%0 x %1").arg(preview->getLastWidth()).arg(preview->getLastHeight());
 			mapSize->setText(textTemp);
 		}
+		else
+		{
+			auto state = client->getDownloadableMapList()->getThumbnailState(info.getMapHeader().getMapName());
+			preview->setState(state == YOGClientDownloadableMapList::ThumbnailState::Failed
+				? MapPreview::State::Failed : MapPreview::State::Loading);
+		}
 	}
 }
-

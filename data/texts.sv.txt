@@ -2210,3 +2210,17 @@ Utrymme
 Avskildhet
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Varje kolonis start mäts på den färdiga kartan: vägen till vete och till trä, hur väl dess mark växer tillbaka, fyndigheterna och byggplatserna inom räckhåll samt avståndet till rivalerna. Varje faktor får 0 till 1 mot ett fast riktmärke, totalen väger dem, rättvisan är den sämsta kolonins total delad med den bästas, och poängen är den sämsta totalen gånger rättvisan.
+[Map preview controls]
+Dra för att flytta över kanterna. Zooma med hjulet. Höger- eller dubbelklicka för att återställa.
+[Map preview drag help]
+Dra för att flytta; zooma med hjulet.
+[Map preview loading]
+Läser in...
+[Map preview failed]
+Förhandsvisningen misslyckades
+[Map preview retry]
+Klicka för att försöka igen
+[Map preview please wait]
+Vänta
+[Map preview choose another]
+Välj en karta

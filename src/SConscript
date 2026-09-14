@@ -778,6 +778,11 @@ if not env['server'] and 'custom-setup-test' in COMMAND_LINE_TARGETS:
     custom_test = local.Program('CustomGameSetupHarness', custom_sources)
     local.Alias('custom-setup-test', custom_test)
 
+if not env['server'] and 'map-preview-test' in COMMAND_LINE_TARGETS:
+    preview_sources = [source for source in source_files if source != 'Glob2.cpp']
+    preview_sources += local.Object('MapPreviewHarness.o', '#test/MapPreviewHarness.cpp')
+    local.Alias('map-preview-test', local.Program('MapPreviewHarness', preview_sources))
+
 # Real engine regression for units surviving building destruction, built only by its explicit target.
 if not env['server']:
     regression_sources = [source for source in source_files if source != 'Glob2.cpp']

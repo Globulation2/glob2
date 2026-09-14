@@ -2200,3 +2200,17 @@ Miejsce
 Odosobnienie
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Start każdej kolonii mierzony jest na gotowej mapie: droga do zboża i do drewna, jak dobrze odrasta jej grunt, zasoby i miejsca pod budowę w zasięgu oraz odległość od rywali. Każdy czynnik otrzymuje od 0 do 1 względem stałej miary, suma je waży, sprawiedliwość to suma najgorszej kolonii podzielona przez sumę najlepszej, a wynik to najgorsza suma pomnożona przez sprawiedliwość.
+[Map preview controls]
+Przeciągaj przez krawędzie. Kółko zmienia powiększenie. Prawy lub podwójny klik resetuje widok.
+[Map preview drag help]
+Przeciągaj, aby przesuwać; kółko przybliża.
+[Map preview loading]
+Wczytywanie...
+[Map preview failed]
+Błąd podglądu
+[Map preview retry]
+Kliknij, aby ponowić
+[Map preview please wait]
+Proszę czekać
+[Map preview choose another]
+Wybierz mapę
