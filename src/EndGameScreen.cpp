@@ -20,6 +20,43 @@
 #include "SDLCompat.h"
 #include "Utilities.h"
 
+namespace
+{
+class StatSelectorButton : public TextButton
+{
+	std::string lastTooltip;
+
+  public:
+	using TextButton::TextButton;
+	void paint() override
+	{
+		if (lastTooltip != text)
+		{
+			setTooltip(text, "standard");
+			lastTooltip = text;
+		}
+		Font *originalFont = fontPtr;
+		const std::string originalText = text;
+		if (fontPtr->getStringWidth(text) > w - 8)
+			fontPtr = Toolkit::getFont("little");
+		if (fontPtr->getStringWidth(text) > w - 8)
+		{
+			while (!text.empty() && fontPtr->getStringWidth(text + "...") > w - 8)
+			{
+				size_t last = text.size() - 1;
+				while (last > 0 && (static_cast<unsigned char>(text[last]) & 0xc0) == 0x80)
+					--last;
+				text.resize(last);
+			}
+			text += "...";
+		}
+		TextButton::paint();
+		text = originalText;
+		fontPtr = originalFont;
+	}
+};
+} // namespace
+
 EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game)
 {
 	this->x=x;
@@ -46,7 +83,7 @@ EndGameStat::~EndGameStat()
 	delete[] isTeamEnabled;
 }
 
-void EndGameStat::setStatType(EndOfGameStat::Type type)
+void EndGameStat::setStatType(int type)
 {
 	this->type=type;
 }
@@ -58,6 +95,11 @@ void EndGameStat::setEnabledState(int teamNum, bool isEnabled)
 
 void EndGameStat::paint(void)
 {
+	if (type >= 6)
+	{
+		paintMeasurements();
+		return;
+	}
 	int x, y, w, h;
 	getScreenPos(&x, &y, &w, &h);
 		
@@ -276,7 +318,7 @@ void EndGameStat::onSDLMouseMotion(SDL_Event* event)
 //! This function is used to sort the player array
 struct MoreScore
 {
-	EndOfGameStat::Type type;
+	int type;
 	bool operator()(const TeamEntry& t1, const TeamEntry& t2)
 	{
 		if(t1.endVal[type] == t2.endVal[type])
@@ -344,14 +386,20 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	const int statButtonColumns = 3;
 	for (int i = 0; i < EndOfGameStat::TYPE_NB_STATS; i++)
 	{
-		EndOfGameStat::Type type = (EndOfGameStat::Type)i;
+		int type = (int)i;
 		int column = i % statButtonColumns;
 		int row = i / statButtonColumns;
-		addWidget(new TextButton(statButtonX + column * statButtonColumnStep, statButtonY - row * statButtonRowStep,
+		auto *statButton = new StatSelectorButton(
+			statButtonX + column * statButtonColumnStep, statButtonY - row * statButtonRowStep,
 			statButtonWidth, statButtonHeight, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard",
-			statTypeName(type), STAT_BUTTON_FIRST + type, '1' + i));
+			statTypeName(type), STAT_BUTTON_FIRST + type, '1' + i);
+		statButtons.push_back(statButton);
+		addWidget(statButton);
 	}
 
+	addWidget(new TextButton(15, 15, 110, 20, ALIGN_LEFT, ALIGN_BOTTOM, "standard",
+							 Toolkit::getStringTable()->getString("[Stats next page]"), STAT_PAGE,
+							 'p'));
 	if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 	{
 		addWidget(new TextButton(15, 65, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[save replay]"), SAVE_REPLAY, 's'));
@@ -376,8 +424,14 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		int endIndex=gui->game.teams[entry.teamNum]->stats.endOfGameStats.size()-1;
 		for (int j=0; j<EndOfGameStat::TYPE_NB_STATS; j++)
 		{
-			entry.endVal[j]=gui->game.teams[entry.teamNum]->stats.endOfGameStats[endIndex].value[(EndOfGameStat::Type)j];
+			entry.endVal[j] =
+				endIndex >= 0
+					? gui->game.teams[entry.teamNum]->stats.endOfGameStats[endIndex].value[j]
+					: 0;
 		}
+		for (int j = 0; j < 12; ++j)
+			entry.endVal[j + 6] =
+				TeamStats::graphValue(gui->game.teams[entry.teamNum]->stats.measurements, j);
 		teams.push_back(entry);
 	}
 
@@ -416,10 +470,19 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			endExecute(par1);
 		}
+		else if (par1 == STAT_PAGE)
+		{
+			statPage = (statPage + 1) % 3;
+			for (int i = 0; i < 6; ++i)
+				statButtons[i]->setText(statTypeName(statPage * 6 + i));
+			statWidget->setStatType(statPage * 6);
+			sortAndSet(statPage * 6);
+			graphLabel->setText(statTypeName(statPage * 6));
+		}
 		///This is a change in the graph type
 		else if (par1 >= STAT_BUTTON_FIRST && par1 < STAT_BUTTON_FIRST + EndOfGameStat::TYPE_NB_STATS)
 		{
-			EndOfGameStat::Type type = (EndOfGameStat::Type)(par1 - STAT_BUTTON_FIRST);
+			int type = statPage * 6 + par1 - STAT_BUTTON_FIRST;
 			statWidget->setStatType(type);
 			sortAndSet(type);
 			graphLabel->setText(statTypeName(type));
@@ -446,9 +509,10 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 }
 
-
-std::string EndGameScreen::statTypeName(EndOfGameStat::Type type)
+std::string EndGameScreen::statTypeName(int type)
 {
+	if (type >= 6)
+		return Toolkit::getStringTable()->getString(TeamStats::measurementLabel(type - 6));
 	switch(type)
 	{
 		case EndOfGameStat::TYPE_UNITS:
@@ -469,8 +533,12 @@ std::string EndGameScreen::statTypeName(EndOfGameStat::Type type)
 	}
 }
 
-void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
+void EndGameScreen::sortAndSet(int type)
 {
+	bool enabled[Team::MAX_COUNT];
+	std::fill(std::begin(enabled), std::end(enabled), true);
+	for (unsigned i = 0; i < teams.size(); ++i)
+		enabled[teams[i].teamNum] = team_enabled_buttons[i]->getState();
 	// Resort the names on the side of the graph based on their respective scores
 	MoreScore moreScore;
 	moreScore.type=type;
@@ -493,13 +561,27 @@ void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 			str<<"#"<<i+1<<": "<<teams[i].name;
 			prev_num=i+1;
 		}
-	
-		names[i]->setText(str.str().c_str());
+
+		std::string label = str.str();
+		names[i]->setTooltip(label, "standard");
+		if (globalContainer->standardFont->getStringWidth(label) > 140)
+		{
+			while (!label.empty() &&
+				   globalContainer->standardFont->getStringWidth(label + "...") > 140)
+			{
+				size_t last = label.size() - 1;
+				while (last > 0 && (static_cast<unsigned char>(label[last]) & 0xc0) == 0x80)
+					--last;
+				label.resize(last);
+			}
+			label += "...";
+		}
+		names[i]->setText(label);
 		names[i]->setStyle(Font::Style(Font::STYLE_NORMAL, teams[i].color));
 		if(team_enabled_buttons[i])
-			team_enabled_buttons[i]->returnCode=6+i;
-		
-		
+			team_enabled_buttons[i]->returnCode = TEAM_TOGGLE_FIRST + i;
+		team_enabled_buttons[i]->setState(enabled[teams[i].teamNum]);
+
 		if((i>0 && teams[i-1].teamNum != teams[i].teamNum) || i==0)
 		{
 			team_enabled_buttons[i]->visible=true;
@@ -568,4 +650,82 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 	
 	// destroy temporary surface
 	delete background;
+}
+
+void EndGameStat::paintMeasurements()
+{
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+	auto *surface = parent->getSurface();
+	auto *font = globalContainer->littleFont;
+	Uint64 maximum = 1;
+	for (int t = 0; t < game->mapHeader.getNumberOfTeams(); ++t)
+		if (isTeamEnabled[t])
+			for (const auto &m : game->teams[t]->stats.measurementHistory)
+				maximum = std::max(maximum, TeamStats::graphValue(m, type - 6));
+	const std::string scale = std::to_string(maximum);
+	const int ew = std::max(1, w - font->getStringWidth(scale) - 12), eh = std::max(1, h - 24);
+	surface->drawRect(x, y, ew, eh, Style::style->frameColor);
+	surface->drawString(x + ew + 4, y, font, scale);
+	surface->drawString(x + ew + 4, y + eh - 12, font, "0");
+	const Uint32 end = std::max(Uint32(1), game->stepCounter);
+	for (int i = 0; i <= 4; ++i)
+		surface->drawString(x + ew * i / 4, y + eh + 6, font,
+							getTimeText(static_cast<Uint64>(end) * i / 100));
+	int closest = 1601;
+	Uint64 hover = 0;
+	int hoverX = -1, hoverY = -1;
+	for (int t = 0; t < game->mapHeader.getNumberOfTeams(); ++t)
+	{
+		if (!isTeamEnabled[t])
+			continue;
+		const auto &stats = game->teams[t]->stats;
+		int prevX = -1, prevY = -1;
+		for (const auto &m : stats.measurementHistory)
+		{
+			const Uint64 value = TeamStats::graphValue(m, type - 6);
+			const int px = static_cast<Uint64>(m.tick) * ew / end;
+			const int py = eh - static_cast<long double>(value) * eh / maximum;
+			if (prevX >= 0)
+				surface->drawLine(x + prevX, y + prevY, x + px, y + py, game->teams[t]->color);
+			else
+				surface->drawCircle(x + px, y + py, 2, game->teams[t]->color);
+			const int dist = (mouse_x - px) * (mouse_x - px) + (mouse_y - py) * (mouse_y - py);
+			if (mouse_x >= 0 && mouse_y >= 0 && dist < closest)
+			{
+				closest = dist;
+				hover = value;
+				hoverX = x + px;
+				hoverY = y + py;
+			}
+			prevX = px;
+			prevY = py;
+		}
+	}
+	Uint32 earliest = end, latest = 0;
+	bool missing = false, anySamples = false;
+	for (int t = 0; t < game->mapHeader.getNumberOfTeams(); ++t)
+	{
+		if (!isTeamEnabled[t])
+			continue;
+		const auto &stats = game->teams[t]->stats;
+		earliest = std::min(earliest, stats.coverageStartTick);
+		latest = std::max(latest, stats.coverageStartTick);
+		missing |= stats.coverageStartTick > 0;
+		anySamples |= !stats.measurementHistory.empty();
+	}
+	if (missing || !anySamples)
+	{
+		std::string label = Toolkit::getStringTable()->getString(
+			anySamples ? "[Stats since tick]" : "[Stats unavailable]");
+		if (anySamples)
+			label += " " + std::to_string(earliest) +
+					 (latest != earliest ? " - " + std::to_string(latest) : "");
+		surface->drawString(x + 5, y + 25, font, label);
+	}
+	if (hoverX >= 0)
+	{
+		surface->drawCircle(hoverX, hoverY, 5, Color::white);
+		surface->drawString(hoverX + 5, hoverY + 5, font, std::to_string(hover));
+	}
 }

@@ -109,6 +109,8 @@ static constexpr int FILE_FORMAT_VERSION_ECONOMY_RULES = 102;
 //! unitsFearless, permadeathDisabled, peacefulMode, buildingHpLevel
 //! (GameHeader.cpp).
 static constexpr int FILE_FORMAT_VERSION_COMBAT_RULES = 103;
+//! Diagnostic gameplay measurements; no simulation or protocol change.
+static constexpr int FILE_FORMAT_VERSION_GAMEPLAY_STATS = 105;
 
 // === Save-file section signatures (4-byte ASCII tags) ===
 // Embedded as four chars at the start of each save section so a corrupted

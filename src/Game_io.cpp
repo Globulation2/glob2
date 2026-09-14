@@ -287,6 +287,12 @@ bool Game::load(GAGCore::InputStream *stream)
 		if (!(input >> savedRandom)) return false;
 		map.loadRuntimeState(stream, versionMinor);
 	}
+	for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
+		if (teams[t]->stats.needsMeasurementInitialization)
+		{
+			teams[t]->stats.initializeMeasurements(stepCounter);
+			teams[t]->stats.refreshMeasurements(teams[t]);
+		}
 	gameSection.commit();
 
 	///versions less than 63 did not have fertility computed with the map, but computed it live.

@@ -109,6 +109,12 @@ void Sector::step(void)
 				int damage = bullet->shootDamage - game->teams[team]->myUnits[id]->getRealArmor(false);
 				if (damage <= 0)
 					damage = BULLET_MIN_DAMAGE;
+				Unit *victim = game->teams[team]->myUnits[id];
+				TeamStats::recordDamage(bullet->sourceTeam >= 0 ? game->teams[bullet->sourceTeam]
+																: nullptr,
+										victim->owner, GameplayMeasurements::TOWER,
+										GameplayMeasurements::UNIT, victim->hp, damage);
+				victim->recordLethalDamage(damage, GameplayMeasurements::COMBAT);
 				game->teams[team]->myUnits[id]->hp -= damage;
 			}
 			else
@@ -128,12 +134,17 @@ void Sector::step(void)
 
 					game->teams[team]->pushGameEvent(GameEvent::buildingUnderAttack(game->stepCounter, bullet->targetX, bullet->targetY, building->shortTypeNum));
 
+					TeamStats::recordDamage(
+						bullet->sourceTeam >= 0 ? game->teams[bullet->sourceTeam] : nullptr,
+						building->owner, GameplayMeasurements::TOWER,
+						GameplayMeasurements::BUILDING, building->hp,
+						damage > 0 ? damage : BULLET_MIN_DAMAGE);
 					if (damage > 0)
 						building->hp -= damage;
 					else
 						building->hp -= BULLET_MIN_DAMAGE;
 					if (building->hp <= 0)
-						building->kill();
+						building->kill(GameplayMeasurements::DESTROYED);
 				}
 			}
 

@@ -2208,6 +2208,56 @@ Xem trước thất bại
 Nhấp để thử lại
 [Map preview please wait]
 Vui lòng đợi
+[Stats births]
+
+[Stats deaths]
+
+[Stats starvation]
+
+[Stats wheat stock]
+
+[Stats wheat loads]
+
+[Stats meals]
+
+[Stats new buildings]
+
+[Stats upgrades]
+
+[Stats training]
+
+[Stats damage dealt]
+
+[Stats damage received]
+
+[Stats HP restored]
+
+[Stats since tick]
+
+[Stats combat deaths]
+
+[Stats clearing deaths]
+
+[Stats trapped deaths]
+
+[Stats unknown deaths]
+
+[Stats conversions]
+
+[Stats unavailable]
+
+[Stats wheat per minute]
+
+[Stats meals per minute]
+
+[Stats occupancy]
+
+[Stats page one]
+
+[Stats page two]
+
+[Stats next page]
+
 [Map preview choose another]
 Chọn bản đồ
 [Resources never grow or spread across the map.]

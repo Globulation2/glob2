@@ -66,6 +66,9 @@ void Building::swarmStep(void)
 			Unit * u=owner->game->addUnit(posX, posY, owner->teamNumber, minType, 0, 0, dx, dy);
 			if (u)
 			{
+				++owner->stats.measurements.births[minType];
+				owner->stats.measurements.consumed[GameplayMeasurements::SPAWNING][WHEAT] +=
+					type->resourceForOneUnit;
 				resources[WHEAT]-=type->resourceForOneUnit;
 				updateCallLists();
 
@@ -117,6 +120,7 @@ void Building::convertStoneToBullet()
 	if (resources[STONE]>0 && (bullets<=(type->maxBullets-type->multiplierStoneToBullets)))
 	{
 		resources[STONE]--;
+		++owner->stats.measurements.consumed[GameplayMeasurements::AMMUNITION][STONE];
 		bullets += type->multiplierStoneToBullets;
 
 		// we need to be stone-fed
@@ -363,6 +367,8 @@ void Building::fireBullet(const TurretTarget& target, Uint32 stepCounter)
 	if (sol.ticksLeft < target.ticks)
 	{
 		Bullet *b = new Bullet(sol.originX, sol.originY, sol.speedX, sol.speedY, sol.ticksLeft, type->shootDamage, target.x, target.y, posX-1, posY-1, type->width+2, type->height+2);
+		b->sourceTeam = owner->teamNumber;
+		++owner->stats.measurements.shots[GameplayMeasurements::TOWER];
 		s->bullets.push_front(b);
 		bullets--;
 		shootingCooldown = SHOOTING_COOLDOWN_MAX;

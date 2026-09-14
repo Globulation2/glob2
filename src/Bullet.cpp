@@ -2,6 +2,10 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Bullet.h"
+#include "FileFormatVersions.h"
+#include "Team.h"
+#include <BinaryStream.h>
+#include <stdexcept>
 #include <assert.h>
 #include <Stream.h>
 
@@ -47,6 +51,14 @@ bool Bullet::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	revealY = stream->readSint32("revealY");
 	revealW = stream->readSint32("revealW");
 	revealH = stream->readSint32("revealH");
+	sourceTeam = -1;
+	if (versionMinor >= FILE_FORMAT_VERSION_GAMEPLAY_STATS)
+	{
+		GAGCore::BinaryInputStream::CheckedReads checked(stream);
+		sourceTeam = stream->readSint32("sourceTeam");
+		if (sourceTeam < -1 || sourceTeam >= Team::MAX_COUNT)
+			throw std::runtime_error("Invalid bullet source team");
+	}
 	return true;
 }
 
@@ -65,6 +77,7 @@ void Bullet::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(revealY, "revealY");
 	stream->writeSint32(revealW, "revealW");
 	stream->writeSint32(revealH, "revealH");
+	stream->writeSint32(sourceTeam, "sourceTeam");
 }
 
 void Bullet::step(void)

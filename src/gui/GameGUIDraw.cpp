@@ -189,7 +189,7 @@ void GameGUI::dispatchDisplayModePanel(void)
 		drawFlagView();
 		break;
 	case STAT_TEXT_VIEW:
-		teamStats->drawText(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
+		drawStatisticsPage(YPOS_BASE_STAT);
 		break;
 	case STAT_GRAPH_VIEW:
 		teamStats->drawStat(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
@@ -213,7 +213,7 @@ void GameGUI::dispatchReplayDisplayModePanel(void)
 		break;
 	case RDM_STAT_TEXT_VIEW:
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+15, YPOS_BASE_STAT+5, globalContainer->littleFont, FormattableString("%0 %1").arg(Toolkit::getStringTable()->getString("[watching:]")).arg(displayPlayerName(*localTeam)).c_str());
-		teamStats->drawText(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT+15);
+		drawStatisticsPage(YPOS_BASE_STAT + 15);
 		break;
 	case RDM_STAT_GRAPH_VIEW:
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+15, YPOS_BASE_STAT+5, globalContainer->littleFont, FormattableString("%0 %1").arg(Toolkit::getStringTable()->getString("[watching:]")).arg(displayPlayerName(*localTeam)).c_str());
@@ -806,4 +806,17 @@ void GameGUI::drawXPProgressBar(int x, int y, int act, int max)
 	globalContainer->gfx->drawSprite(x+18, y+4, globalContainer->gamegui, 11);
 
 	globalContainer->gfx->setClipRect();
+}
+
+void GameGUI::drawStatisticsPage(int y)
+{
+	const int x = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH + RIGHT_MENU_OFFSET;
+	globalContainer->gfx->drawString(
+		x + 4, y, globalContainer->littleFont,
+		Toolkit::getStringTable()->getString(measurementPage ? "[Stats page two]"
+															 : "[Stats page one]"));
+	if (measurementPage)
+		teamStats->drawMeasurements(x, y + 16);
+	else
+		teamStats->drawText(x, y);
 }

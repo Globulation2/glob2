@@ -529,6 +529,8 @@ private:
 	bool showUnitWorkingToBuilding;
 
 	TeamStats *teamStats;
+	bool measurementPage = false;
+	void drawStatisticsPage(int y);
 	Team *localTeam;
 
 	Uint32 chatMask;

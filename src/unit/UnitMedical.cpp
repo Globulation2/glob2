@@ -142,6 +142,10 @@ void Unit::handleMagic(void)
 							Sint32 damage = (attackForce + experienceLevel) * owner->game->gameHeader.getGlassCannonScale() - enemyUnit->getRealArmor(true);
 							if (damage > 0)
 							{
+								TeamStats::recordDamage(
+									owner, enemyUnit->owner, GameplayMeasurements::MAGIC,
+									GameplayMeasurements::UNIT, enemyUnit->hp, damage);
+								enemyUnit->recordLethalDamage(damage, GameplayMeasurements::COMBAT);
 								enemyUnit->hp -= damage;
 
 								enemyUnit->owner->pushGameEvent(GameEvent::unitUnderAttack(owner->game->stepCounter, xi, yi, enemyUnit->typeNum));
@@ -159,7 +163,10 @@ void Unit::handleMagic(void)
 
 		Sint32 magicLevel = std::max(level[MAGIC_ATTACK_AIR], level[MAGIC_ATTACK_GROUND]);
 		if (hasUsedMagicAction)
+		{
+			++owner->stats.measurements.shots[GameplayMeasurements::MAGIC];
 			magicActionTimeout = race->getUnitType(typeNum, level[magicLevel])->magicActionCooldown;
+		}
 	}
 }
 
@@ -193,7 +200,10 @@ void Unit::handleMedical(void)
 	{
 		hungry -= hungriness;
 		if (hungry<=0)
+		{
+			recordLethalDamage(1, GameplayMeasurements::STARVATION);
 			hp--;
+		}
 	}
 
 	medical=MED_FREE;
@@ -211,6 +221,7 @@ void Unit::handleMedical(void)
 	{
 		if (!isDead)
 		{
+			++owner->stats.measurements.deaths[typeNum][diagnosticDeathCause];
 			// disconnect from building
 			if (attachedBuilding)
 			{

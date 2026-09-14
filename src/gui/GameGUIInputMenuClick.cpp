@@ -111,6 +111,14 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				setSelection(TOOL_SELECTION, (void*)flagsChoiceName[*id].c_str());
 		}
 	}
+	else if (selectionMode == NO_SELECTION &&
+			 ((!globalContainer->isViewingGame() && displayMode == STAT_TEXT_VIEW) ||
+			  (globalContainer->isViewingGame() && replayDisplayMode == RDM_STAT_TEXT_VIEW)))
+	{
+		const int y = YPOS_BASE_STAT + (globalContainer->isViewingGame() ? 15 : 0);
+		if (my >= y && my < y + 16)
+			measurementPage = !measurementPage;
+	}
 	else if ((displayMode==STAT_GRAPH_VIEW && !globalContainer->isViewingGame()) || (replayDisplayMode==RDM_STAT_GRAPH_VIEW && globalContainer->isViewingGame()))
 	{
 		if(mx > 8 && mx < 24)

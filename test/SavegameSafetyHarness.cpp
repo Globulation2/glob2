@@ -271,10 +271,14 @@ static void checkRandomContinuation(bool text, bool ai)
 		return result;
 	};
 	std::vector<std::vector<Uint32>> continuation;
-	for (int i=0; i<300; ++i)
+	std::vector<std::vector<GameplayMeasurements>> measurementContinuation;
+	for (int i=0; i<700; ++i)
 	{
 		step(gui.game);
 		continuation.push_back(simulationState(gui.game));
+		std::vector<GameplayMeasurements> measurements;
+		for (int t=0; t<gui.game.teamsCount(); ++t) measurements.push_back(gui.game.teams[t]->stats.measurements);
+		measurementContinuation.push_back(measurements);
 	}
 	for (int i=0; i<37; ++i) syncRand();
 	GameGUI restored;
@@ -312,10 +316,12 @@ static void checkRandomContinuation(bool text, bool ai)
 	auto expected = savedRandom;
 	for (int i=0; i<2000; ++i) assert(syncRand() == expected());
 	syncRandEngine() = savedRandom;
-	for (int i=0; i<300; ++i)
+	for (int i=0; i<700; ++i)
 	{
 		step(restored.game);
 		const auto actual = simulationState(restored.game);
+		for (int t=0; t<restored.game.teamsCount(); ++t)
+			assert(restored.game.teams[t]->stats.measurements == measurementContinuation[i][t]);
 		if (actual != continuation[i])
 		{
 			std::cerr << "Continuation mismatch at step " << i << " sizes " << actual.size() << '/' << continuation[i].size() << std::endl;
@@ -324,7 +330,9 @@ static void checkRandomContinuation(bool text, bool ai)
 			assert(false);
 		}
 	}
-	std::cout << "PASS " << (text ? "binary + text routing" : "binary") << (ai ? " AI" : " human") << " saved game continues RNG and 300 simulation steps across header replacement" << std::endl;
+	for (int t=0; t<restored.game.teamsCount(); ++t)
+		assert(restored.game.teams[t]->stats.measurementHistory == gui.game.teams[t]->stats.measurementHistory);
+	std::cout << "PASS " << (text ? "binary + text routing" : "binary") << (ai ? " AI" : " human") << " saved game continues RNG and 700 simulation steps and measurements across header replacement" << std::endl;
 }
 
 int main(int argc, char **argv)

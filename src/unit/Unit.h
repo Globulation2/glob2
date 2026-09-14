@@ -30,6 +30,7 @@ namespace GAGCore
 // a unit
 class Unit : public UnitUtils
 {
+	friend struct TeamStatsMeasurementFixture;
 	void init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 public:
 	Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
@@ -217,6 +218,8 @@ public:
 	// identity
 	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
 	Team *owner;
+	int diagnosticDeathCause = 4; // GameplayMeasurements::UNKNOWN; never checksum this field.
+	void recordLethalDamage(int damage, int cause);
 	Sint32 isDead; // (bool) if true is dead, will be garbage collected next turn
 
 	// position

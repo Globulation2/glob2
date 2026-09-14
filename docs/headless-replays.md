@@ -273,3 +273,7 @@ Player types that trigger AI loading: any `BasePlayer::type >= P_AI (5)`. The pl
 - `src/Glob2.cpp` — `runNoX()` and `runTestGames()` entry points
 - `src/Game.cpp` — `executeOrder()` pushes orders to `ReplayWriter`
 - `src/AI.cpp` — `AI::save()`/`AI::load()` with implementation dispatch
+
+The existing `GLOB2_TEAM_TIMELINE` option also exports timestamped
+[gameplay measurements](gameplay-statistics.md), retained measurement history and
+an exact final snapshot. Legacy timeline records keep their existing formats.

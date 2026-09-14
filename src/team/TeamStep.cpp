@@ -380,6 +380,9 @@ void Team::syncStep(void)
 			{
 				if (!building->type->isVirtual)
 				{
+					++stats.measurements
+						  .removed[GameplayMeasurements::DEMOLISHED][building->type->shortTypeNum]
+								  [building->getLongLevel()];
 					map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
 					isDirtyGlobalGradient=true;
 				}

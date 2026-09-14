@@ -365,6 +365,19 @@ save traces against outputs from the original loader. Linux and Windows CI run
 it in disposable profiles and check that preferences remain unchanged.
 See [fixtures and reproduction steps](fixtures/team-stats/README.md).
 
+The harness also covers [gameplay measurements](../docs/gameplay-statistics.md):
+real production, resource, damage, death, treatment, construction and training
+paths; 64-bit totals; timestamped coverage; pending projectile/death attribution;
+and malformed new fields. `SavegameSafetyHarness` compares measurement totals
+through 700 engine ticks after reload, crossing a history sample.
+
+Optional UI artifacts (requires a graphical SDL driver):
+
+```sh
+python3 test/run-savegame-safety-tests.py build/src/TeamStatsSaveHarness . --screenshots output/gameplay-statistics-ui
+```
+
+
 ## AI helper gradient regression
 
 `Map::updateGlobalGradient(Uint8*)` supplies the Castor/Warrush helper maps.
