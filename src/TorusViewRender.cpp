@@ -397,6 +397,11 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glViewport(0, 0, atlasW, atlasH);
         glOrtho(0, game.map.getW() * 32, game.map.getH() * 32, 0, -1, 1);
         glClear(GL_COLOR_BUFFER_BIT);
+        // Lines rasterise in the pixels of whatever is being drawn into. Here
+        // that is the atlas, at its own texels per world pixel, not the factor
+        // the window stretches the interface by.
+        gfx->setRenderTargetScale(std::min(float(atlasW) / (game.map.getW() * 32),
+                                           float(atlasH) / (game.map.getH() * 32)));
         // Capture the normal map and cloud shadows,
         // respecting the same graphics-quality setting as the 2D view.
         if (game.gui)
@@ -409,6 +414,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
                          nullptr, nullptr, false, cloudGridLimit);
         }
         Sprite::flushBatches(gfx);
+        gfx->setRenderTargetScale(0);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     const bool drawClouds =

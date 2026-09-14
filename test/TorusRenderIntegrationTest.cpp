@@ -233,6 +233,83 @@ static int run(int argc, char **argv)
             gui.gamePaused = false;
             draw(1);
             assert(gui.game.mapAnimationTime > pausedTime);
+            // Selection markers are painted into the atlas, which is measured in
+            // world pixels. The factor the window stretches the interface by must
+            // not reach their line width, and every marker the flat view paints
+            // over the map has to be on the ring too.
+            {
+                const float windowScale = globalContainer->gfx->getRasterScale();
+                Building *selected = nullptr;
+                for (int i = 0; i < 1024 && !selected; ++i)
+                    selected = gui.game.teams[0]->myBuildings[i];
+                assert(selected);
+                gui.showUnitWorkingToBuilding = true;
+                gui.setSelection(GameGUI::BUILDING_SELECTION, selected);
+                assert(gui.view.selectedBuilding == selected);
+                const int worldW = gui.game.map.getW() * 32, worldH = gui.game.map.getH() * 32;
+                std::vector<unsigned char> atlas;
+                // The atlas holds one upright copy of the world; GL hands rows back bottom-up.
+                auto texel = [&](int worldX, int worldY)
+                {
+                    const int col = ((worldX % worldW) + worldW) % worldW * view.atlasW / worldW;
+                    const int row = view.atlasH - 1 -
+                        ((worldY % worldH) + worldH) % worldH * view.atlasH / worldH;
+                    return &atlas[(size_t(row) * view.atlasW + col) * 4];
+                };
+                auto capture = [&]()
+                {
+                    draw(1);
+                    atlas.assign(size_t(view.atlasW) * view.atlasH * 4, 0);
+                    glBindTexture(GL_TEXTURE_2D, view.texture);
+                    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlas.data());
+                    assert(glGetError() == GL_NO_ERROR);
+                };
+                // A worker circle is white over whatever it covers, so count the
+                // bright pixels its own tile gains rather than trusting a threshold.
+                int ux, uy;
+                gui.game.map.mapCaseToDisplayable(explorer->posX, explorer->posY, &ux, &uy,
+                    view.originX, view.originY);
+                auto brightAroundWorker = [&]()
+                {
+                    int bright = 0;
+                    for (int dy = -40; dy <= 72; ++dy)
+                        for (int dx = -40; dx <= 72; ++dx)
+                        {
+                            const unsigned char *p = texel(ux + dx, uy + dy);
+                            if (p[0] > 150 && p[1] > 150 && p[2] > 150)
+                                ++bright;
+                        }
+                    return bright;
+                };
+                capture();
+                const int withoutWorker = brightAroundWorker();
+                selected->unitsWorking.push_back(explorer);
+                capture();
+                const int withWorker = brightAroundWorker();
+                selected->unitsWorking.clear();
+                std::cout << "Torus worker marker bright pixels: " << withoutWorker << " -> "
+                          << withWorker << "\n";
+                assert(withWorker > withoutWorker + 16);
+                // Walk outwards from the ring's left edge: at one texel per world
+                // pixel the selection circle is the two pixels drawCircle asks for.
+                int cx, cy;
+                gui.game.map.buildingPosToCursor(selected->posX, selected->posY, selected->type->width,
+                    selected->type->height, &cx, &cy, view.originX, view.originY);
+                int stroke = 0;
+                for (int d = -8; d <= 8; ++d)
+                {
+                    const unsigned char *p = texel(cx - selected->type->width * 16 + d, cy);
+                    if (p[2] > 110 && p[0] < 90 && p[1] < 90)
+                        ++stroke;
+                }
+                std::cout << "Torus selection circle: " << stroke << " atlas texels wide at interface scale "
+                          << windowScale << "\n";
+                assert(stroke > 0 && stroke <= 3);
+                // The window is the drawable again once the atlas pass is over.
+                assert(globalContainer->gfx->getRasterScale() == windowScale);
+                gui.clearSelection();
+                std::cout << "Torus selection markers passed\n";
+            }
             // Test navigation separately from the expensive cloud layer.
             globalContainer->settings.optionFlags |= GlobalContainer::OPTION_LOW_SPEED_GFX;
             for (int i = 0; i < 20; ++i)
