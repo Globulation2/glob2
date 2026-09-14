@@ -127,10 +127,10 @@ bool GameGUI::load(GAGCore::InputStream *stream, bool ignoreGUIData)
 	return true;
 }
 
-void GameGUI::save(GAGCore::OutputStream *stream, const std::string name, bool computeSHA1)
+void GameGUI::save(GAGCore::OutputStream *stream, const std::string name, DeferredGameSHA1* deferredSHA1)
 {
 	// Game is can't be no more automatically generated
-	game.save(stream, false, name, computeSHA1);
+	game.save(stream, false, name, deferredSHA1);
 
 	stream->writeEnterSection("GameGUI");
 	stream->writeUint32(chatMask, "chatMask");

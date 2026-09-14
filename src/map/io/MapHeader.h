@@ -27,8 +27,9 @@ public:
 	/// Loads map header information from the stream
 	bool load(GAGCore::InputStream *stream);
 	
-	/// Saves map header information to the stream.
-	void save(GAGCore::OutputStream *stream) const;
+	/// Saves map header information to the stream. sha1Position, when given,
+	/// receives the stream position the game SHA1 is written at.
+	void save(GAGCore::OutputStream *stream, size_t *sha1Position = nullptr) const;
 
 	/// Returns the version major
 	Sint32 getVersionMajor() const;
@@ -82,9 +83,6 @@ public:
 	
 	/// Returns the complete game checksum
 	void resetGameSHA1();
-
-	/// False when the file was saved without a hash (autosaves)
-	bool hasGameSHA1() const;
 
 	/// Returns a checksum of the map header information
 	Uint32 checkSum() const;

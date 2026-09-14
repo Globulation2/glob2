@@ -363,17 +363,18 @@ void GameGUI::autosave()
 {
 	const std::string name = Toolkit::getStringTable()->getString("[auto save]");
 	// Serialize between ticks into memory sized from the previous autosave;
-	// autosaveWriter's thread does the disk write.
+	// autosaveWriter's thread hashes the snapshot and does the disk write.
 	auto *memory = new MemoryStreamBackend();
 	memory->reserve(lastAutosaveSize + lastAutosaveSize / 8);
 	BinaryOutputStream stream(memory);
-	// No file hash: nothing verifies an autosave, and hashing it is a large share of the stall.
-	save(&stream, name, false);
+	DeferredGameSHA1 sha1;
+	save(&stream, name, &sha1);
 	std::string contents = memory->takeContents();
 	lastAutosaveSize = contents.size();
 	if (!autosaveWriter)
 		autosaveWriter = std::make_unique<BackgroundFileWriter>(Toolkit::getFileManager());
-	autosaveWriter->write(glob2NameToFilename("games", name, "game"), std::move(contents));
+	autosaveWriter->write(glob2NameToFilename("games", name, "game"), std::move(contents),
+		[sha1 = std::move(sha1)](std::string& bytes) { sha1.apply(bytes); });
 }
 
 void GameGUI::waitForAutosave()

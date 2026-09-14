@@ -303,11 +303,10 @@ void Engine::saveInitialGameStateOrExit(const std::string& path, const std::stri
 
 bool Engine::haveMap(const MapHeader& mapHeader)
 {
-	// Only hashed files can be matched; for an unhashed one (an autosave), fetch the host's copy.
-	if (!mapHeader.hasGameSHA1() || !Toolkit::getFileManager()->exists(mapHeader.getFileName()))
+	if (!Toolkit::getFileManager()->exists(mapHeader.getFileName()))
 		return false;
 	MapHeader mh = loadMapHeader(mapHeader.getFileName());
-	return mh.hasGameSHA1() && mh == mapHeader;
+	return mh == mapHeader;
 }
 
 

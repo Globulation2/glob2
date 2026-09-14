@@ -17,11 +17,12 @@ namespace GAGCore
 		waitUntilIdle();
 	}
 
-	void BackgroundFileWriter::write(const std::string &filename, std::string contents)
+	void BackgroundFileWriter::write(const std::string &filename, std::string contents, std::function<void(std::string &)> finish)
 	{
 		std::unique_lock<std::mutex> lock(mutex);
 		pendingName = filename;
 		pendingContents = std::move(contents);
+		pendingFinish = std::move(finish);
 		pending = true;
 		if (writing)
 			return; // the running worker takes the newest snapshot next
@@ -55,9 +56,13 @@ namespace GAGCore
 		while (pending)
 		{
 			const std::string name = std::move(pendingName);
-			const std::string contents = std::move(pendingContents);
+			std::string contents = std::move(pendingContents);
+			const std::function<void(std::string &)> finish = std::move(pendingFinish);
+			pendingFinish = nullptr;
 			pending = false;
 			lock.unlock();
+			if (finish)
+				finish(contents);
 			const bool written = fileManager->writeAtomically(name, [&contents](OutputStream &stream) {
 				stream.write(contents.data(), contents.size(), "contents");
 			});

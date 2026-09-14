@@ -3,6 +3,7 @@
 #pragma once
 
 #include <condition_variable>
+#include <functional>
 #include <mutex>
 #include <string>
 #include <thread>
@@ -14,7 +15,8 @@ namespace GAGCore
 	//! Replaces whole files through FileManager::writeAtomically on a worker
 	//! thread, so the caller hands over a finished snapshot instead of waiting
 	//! for the disk. A queued snapshot that has not started writing is replaced
-	//! by a newer one. Use it from one thread; destruction finishes any write.
+	//! by a newer one, along with its finish step. Use it from one thread;
+	//! destruction finishes any write.
 	class BackgroundFileWriter
 	{
 	public:
@@ -23,8 +25,9 @@ namespace GAGCore
 		BackgroundFileWriter(const BackgroundFileWriter &) = delete;
 		BackgroundFileWriter &operator=(const BackgroundFileWriter &) = delete;
 
-		//! Queues contents to become the whole of filename.
-		void write(const std::string &filename, std::string contents);
+		//! Queues contents to become the whole of filename. finish, when given,
+		//! runs on the worker just before the write and may change the contents.
+		void write(const std::string &filename, std::string contents, std::function<void(std::string &)> finish = {});
 		//! Returns once nothing is queued or being written; no worker thread remains.
 		void waitUntilIdle();
 
@@ -36,6 +39,7 @@ namespace GAGCore
 		std::condition_variable idle;
 		std::string pendingName;
 		std::string pendingContents;
+		std::function<void(std::string &)> pendingFinish;
 		bool pending = false;
 		bool writing = false;
 		std::thread worker;

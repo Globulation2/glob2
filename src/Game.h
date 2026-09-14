@@ -111,6 +111,20 @@ static constexpr int SLOT_INDEX_NONE = -1;
 //! See Game_editor.cpp:113, 139.
 static constexpr float TEAM_COLOR_HUE_DEGREES = 360.0f;
 
+//! A binary game save whose SHA1 is left for later, so that hashing can run
+//! off the game thread. The hash covers [start, end) as first written: the
+//! header bytes there were since backpatched, so initialHeader keeps them.
+struct DeferredGameSHA1
+{
+	size_t start = 0;
+	size_t end = 0;
+	size_t headerOffset = 0;
+	std::string initialHeader;
+	size_t sha1Offset = 0;
+	//! Stores the hash in contents, giving the bytes an inline-hashed save writes.
+	void apply(std::string& contents) const;
+};
+
 class Game
 {
 	friend class PointBarRenderTest;
@@ -137,8 +151,9 @@ public:
 	//! Check some available integrity constraints
 	bool integrity(void);
 
-	///Saves data to a stream
-	void save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name, bool computeSHA1 = true);
+	///Saves data to a stream. With deferredSHA1, a binary stream gets a zero
+	///SHA1 and deferredSHA1 receives what apply() needs to fill it in.
+	void save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name, DeferredGameSHA1* deferredSHA1 = nullptr);
 	void saveBuildProjects(GAGCore::OutputStream* stream) const;
 	void loadBuildProjects(GAGCore::InputStream* stream);
 

@@ -96,7 +96,7 @@ public:
 	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false, const std::string& sourceFileName=std::string());
 	//!
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
-	void save(GAGCore::OutputStream *stream, const std::string name, bool computeSHA1 = true);
+	void save(GAGCore::OutputStream *stream, const std::string name, DeferredGameSHA1* deferredSHA1 = nullptr);
 
 	void processEvent(SDL_Event *event);
 

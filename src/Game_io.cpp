@@ -16,6 +16,7 @@
 #include <algorithm>
 
 #include <BinaryStream.h>
+#include <StreamBackend.h>
 
 #include "BuildingType.h"
 #include "DatasetWriter.h"
@@ -443,16 +444,35 @@ bool Game::integrity(void)
 	return true;
 }
 
-void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name, bool computeSHA1)
+void DeferredGameSHA1::apply(std::string& contents) const
+{
+	assert(start <= headerOffset && headerOffset + initialHeader.size() <= end && end <= contents.size());
+	assert(sha1Offset + SHA1_BYTE_LEN <= headerOffset + initialHeader.size());
+	const unsigned char* bytes = reinterpret_cast<const unsigned char*>(contents.data());
+	const size_t afterHeader = headerOffset + initialHeader.size();
+	SHA1_CTX context;
+	SHA1Init(&context);
+	SHA1Update(&context, bytes + start, headerOffset - start);
+	SHA1Update(&context, reinterpret_cast<const unsigned char*>(initialHeader.data()), initialHeader.size());
+	SHA1Update(&context, bytes + afterHeader, end - afterHeader);
+	unsigned char sha1[SHA1_BYTE_LEN];
+	SHA1Final(sha1, &context);
+	std::copy(sha1, sha1 + SHA1_BYTE_LEN, contents.begin() + sha1Offset);
+}
+
+void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name, DeferredGameSHA1* deferredSHA1)
 {
 	assert(stream);
 	stream->writeEnterSection("Game");
-	// Without a hash the header keeps a zero SHA1, which Engine::haveMap never trusts.
-	const bool hashing = computeSHA1 && dynamic_cast<GAGCore::BinaryOutputStream*>(stream);
+	const bool binary = dynamic_cast<GAGCore::BinaryOutputStream*>(stream) != nullptr;
+	assert(!deferredSHA1 || (binary && stream->canSeek()));
+	const bool hashing = binary && !deferredSHA1;
 	if (hashing)
 	{
 		dynamic_cast<GAGCore::BinaryOutputStream*>(stream)->enableSHA1();
 	}
+	if (deferredSHA1)
+		deferredSHA1->start = stream->getPosition();
 
 	///Save the two headers, record the position in the file because mapHeader will
 	///will need to be overwritten with the mapOffset known.
@@ -499,7 +519,20 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 		gameHeader.getBasePlayer(i).disableRecursiveDestruction=true;
 	}
 
-	mapHeader.save(stream);
+	if (deferredSHA1)
+	{
+		// The backpatch below rewrites these bytes, but the hash covers them as written now.
+		auto* header = new GAGCore::MemoryStreamBackend();
+		GAGCore::BinaryOutputStream headerStream(header);
+		size_t sha1Position = 0;
+		mapHeader.save(&headerStream, &sha1Position);
+		deferredSHA1->headerOffset = mapHeaderOffset;
+		deferredSHA1->sha1Offset = mapHeaderOffset + sha1Position;
+		deferredSHA1->initialHeader = header->takeContents();
+		stream->write(deferredSHA1->initialHeader.data(), deferredSHA1->initialHeader.size(), "MapHeader");
+	}
+	else
+		mapHeader.save(stream);
 	gameHeader.save(stream);
 
 	///Save basic informations
@@ -576,6 +609,8 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	{
 		dynamic_cast<GAGCore::BinaryOutputStream*>(stream)->finishSHA1(sha1);
 	}
+	if (deferredSHA1)
+		deferredSHA1->end = stream->getPosition();
 	mapHeader.setGameSHA1(sha1);
 
 	///Overwrite the MapHeader. This is done after the map
