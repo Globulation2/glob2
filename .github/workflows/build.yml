@@ -117,7 +117,7 @@ jobs:
           timeout 600s ./build/src/MapGeneratorGoldenTest glob2-golden-ci --sweep
           timeout 180s ./build/src/CustomGameSetupHarness
           mkdir -p artifacts/custom-game-ci
-          timeout 180s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/CustomGameSetupHarness artifacts/custom-game-ci > artifacts/custom-game-ci/ui.log 2>&1
+          timeout 180s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/CustomGameSetupHarness artifacts/custom-game-ci 2>&1 | grep -v '^Map generation\|^Landscape preview\|^Settings::load' | tee artifacts/custom-game-ci/ui.log
           timeout 60s xvfb-run -a ./build/src/CustomGameSetupHarness preferences-write
           timeout 60s xvfb-run -a ./build/src/CustomGameSetupHarness preferences-read
           cat artifacts/custom-game-ci/ui.log
