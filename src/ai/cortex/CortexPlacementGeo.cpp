@@ -417,6 +417,7 @@ namespace Cortex
 			buildings.push_back({b->posX, b->posY, 0, 0});
 			if (!b->type) continue;
 			const int type = b->type->shortTypeNum;
+			typedBuildings.push_back({{b->posX, b->posY, b->type->width, b->type->height}, type});
 			if (type == IntBuildingType::FOOD_BUILDING)
 			{
 				int w, h;
@@ -441,6 +442,30 @@ namespace Cortex
 		for (const Box& b : buildings)
 		{
 			const int distance = map.warpDistMax(x, y, b.x, b.y);
+			if (best < 0 || distance < best) best = distance;
+		}
+		return best;
+	}
+
+	int PlacementGeometry::distanceToNearestBuildingType(int x, int y, int type) const
+	{
+		int best = -1;
+		for (const BuildingBox& b : typedBuildings)
+		{
+			if (b.type != type) continue;
+			const int distance = map.warpDistMax(x, y, b.box.x, b.box.y);
+			if (best < 0 || distance < best) best = distance;
+		}
+		return best;
+	}
+
+	int PlacementGeometry::nearestBuildingEdgeDist(int x, int y, int w, int h) const
+	{
+		int best = -1;
+		for (const BuildingBox& b : typedBuildings)
+		{
+			const int distance = rectEdgeChebyshev(x, w, y, h,
+				b.box.x, b.box.w, b.box.y, b.box.h, map.getW(), map.getH());
 			if (best < 0 || distance < best) best = distance;
 		}
 		return best;

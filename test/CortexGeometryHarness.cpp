@@ -30,6 +30,21 @@ static unsigned compare(Game& game)
                         Cortex::candidateOverlapsReservedExpansion(&game,team,game.map,x,y,w,h));
                     require(snapshot.distanceToNearestBuilding(x,y) ==
                         Cortex::distanceToNearestBuilding(&game,team,x,y));
+                    int edge = -1, swarm = -1, inn = -1;
+                    for (int i=0;i<Building::MAX_COUNT;++i)
+                    {
+                        const auto* b=team->myBuildings[i];
+                        if (!b || b->buildingState==Building::DEAD || !b->type) continue;
+                        const int gap=Cortex::rectEdgeChebyshev(x,w,y,h,b->posX,b->type->width,
+                            b->posY,b->type->height,game.map.getW(),game.map.getH());
+                        if (edge<0 || gap<edge) edge=gap;
+                        const int distance=game.map.warpDistMax(x,y,b->posX,b->posY);
+                        if (b->type->shortTypeNum==IntBuildingType::SWARM_BUILDING && (swarm<0 || distance<swarm)) swarm=distance;
+                        if (b->type->shortTypeNum==IntBuildingType::FOOD_BUILDING && (inn<0 || distance<inn)) inn=distance;
+                    }
+                    require(snapshot.nearestBuildingEdgeDist(x,y,w,h)==edge);
+                    require(snapshot.distanceToNearestBuildingType(x,y,IntBuildingType::SWARM_BUILDING)==swarm);
+                    require(snapshot.distanceToNearestBuildingType(x,y,IntBuildingType::FOOD_BUILDING)==inn);
                     ++checks;
                 }
     return checks;
@@ -59,6 +74,13 @@ int main()
     auto* pool = add(2,9,IntBuildingType::SWIMSPEED_BUILDING,0,false);
     add(10,2,IntBuildingType::WALKSPEED_BUILDING,1,false);
     checks += compare(game);
+    auto* previousType = pool->type;
+    pool->type = nullptr;
+    checks += compare(game);
+    pool->type = globals.buildingsTypes.get(globals.buildingsTypes.getTypeNum(
+        IntBuildingType::reverseConversionMap[IntBuildingType::SWARM_BUILDING], 0, false));
+    checks += compare(game);
+    pool->type = previousType;
     // Map-only occupants include other teams; corner tiles count on both sides.
     game.map.setBuilding(14,14,1,1,Building::GIDfrom(1,1));
     game.map.setBuilding(3,15,1,1,Building::GIDfrom(2,1));

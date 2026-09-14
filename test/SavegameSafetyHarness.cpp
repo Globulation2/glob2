@@ -10,6 +10,7 @@
 #include "GlobalContainer.h"
 #include "Version.h"
 #include "Engine.h"
+#include "EngineTiming.h"
 #include "FileFormatVersions.h"
 #include "Utilities.h"
 #include "Order.h"
@@ -358,6 +359,7 @@ int main(int argc, char **argv)
 	globalContainer = &globals;
 	globals.runNoX = true;
 	globals.load();
+	assert(!globals.settings.autosaveGames);
 	globals.settings.rememberUnit = false;
 	checkPendingConstruction();
 	for (bool text : {false,true})
@@ -375,15 +377,20 @@ int main(int argc, char **argv)
 		assert(gui.loadFromHeaders(map, header, true, true));
 		gui.localPlayer = gui.localTeamNo = 0;
 		gui.adjustLocalTeam();
-		gui.game.stepCounter = 79;
+		gui.game.stepCounter = AUTOSAVE_PHASE_TICKS;
 		// The engine's initial replay save sets the serialized map offset.
 		{
 			BinaryOutputStream initial(new MemoryStreamBackend());
 			gui.save(&initial, "Auto save");
 		}
+		const fs::path save = directory / "games" / "Auto_save.game";
 		gui.syncStep();
 		gui.waitForAutosave();
-		const fs::path save = directory / "games" / "Auto_save.game";
+		assert(!fs::exists(save));
+		globals.settings.autosaveGames = true;
+		gui.syncStep();
+		gui.waitForAutosave();
+		std::cout << "PASS headless autosave defaults off and can be explicitly enabled" << std::endl;
 		const auto bytes = contents(save);
 		{
 			// Autosave hashes on the writer thread; a direct save hashes as it writes.
@@ -441,6 +448,11 @@ int main(int argc, char **argv)
 			assert(restored.game.stepCounter == gui.game.stepCounter);
 		}
 		std::cout << "PASS production autosave reloads with unchanged simulation checksum components" << std::endl;
+		gui.game.stepCounter = AUTOSAVE_PHASE_TICKS + AUTOSAVE_INTERVAL_TICKS - 1;
+		gui.syncStep();
+		gui.waitForAutosave();
+		assert(contents(save) == bytes);
+		std::cout << "PASS autosave waits for the configured interval" << std::endl;
 #ifndef WIN32
 		const pid_t child = fork();
 		assert(child >= 0);
@@ -449,7 +461,7 @@ int main(int argc, char **argv)
 			std::signal(SIGXFSZ, SIG_IGN);
 			struct rlimit budget = {0, 0};
 			if (setrlimit(RLIMIT_FSIZE, &budget) != 0) _exit(2);
-			gui.game.stepCounter = 335;
+			gui.game.stepCounter = AUTOSAVE_PHASE_TICKS + AUTOSAVE_INTERVAL_TICKS;
 			gui.syncStep();
 			gui.waitForAutosave();
 			_exit(0);
@@ -460,7 +472,7 @@ int main(int argc, char **argv)
 		std::cout << "PASS failed production autosave preserves the previous complete game" << std::endl;
 #endif
 		globals.settings.autosaveGames = false;
-		gui.game.stepCounter = 591;
+		gui.game.stepCounter = AUTOSAVE_PHASE_TICKS + 2 * AUTOSAVE_INTERVAL_TICKS;
 		gui.syncStep();
 		gui.waitForAutosave();
 		assert(contents(save) == bytes);

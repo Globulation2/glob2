@@ -6,6 +6,12 @@ capped-game adjudication belongs in offline analysis.
 
 Run AI games without a GUI to generate `.replay` files for cross-codebase fidelity testing (C++ vs Rust).
 
+Headless runs and scripted `-test-games` runs default autosaving off for that
+process. Normal-play preferences are preserved. Use explicit initial saves or
+the structured `--run-game --save initial/final/every:N` options when snapshots
+are needed. Test harnesses that exercise autosaving can enable
+`settings.autosaveGames` after `GlobalContainer::load()`.
+
 ## CLI Flags
 
 ### `--nox <game-file> <steps> <runs>`

@@ -46,81 +46,6 @@ namespace Cortex
 			return false;
 		}
 
-		// Chebyshev edge-to-edge gap from the candidate footprint (x, y, w x h) to the
-		// nearest live building owned by `team`. Returns -1 when the team has no
-		// buildings (first placement: the cap is meaningless). Warp-safe.
-		//
-		// distanceToNearestBuilding above measures CORNER-to-corner Chebyshev distance,
-		// which inflates with the footprint size; this measures EDGE-to-edge gap (0 when
-		// the boxes touch), the right quantity for the hard "stay clustered" cap so a
-		// large building is not penalised for its own extent.
-		int nearestBuildingEdgeDist(Game* game, Team* team, const Map& map,
-		                            int x, int y, int w, int h)
-		{
-			const int mapW = map.getW();
-			const int mapH = map.getH();
-			int best = -1;
-			for (int i = 0; i < Building::MAX_COUNT; i++)
-			{
-				Building* b = team->myBuildings[i];
-				if (b == NULL || b->buildingState == Building::DEAD)
-					continue;
-				if (b->type == NULL)
-					continue;
-				const int g = rectEdgeChebyshev(x, w, y, h,
-				                                b->posX, b->type->width,
-				                                b->posY, b->type->height, mapW, mapH);
-				if (best < 0 || g < best)
-					best = g;
-			}
-			return best;
-		}
-
-		// Chebyshev distance from tile (x, y) to the nearest live SWARM_BUILDING
-		// owned by `team`. Returns -1 when the team has no swarms yet. Used to
-		// enforce CORTEX_SWARM_MIN_SPACING so two swarms do not share one wheat
-		// catchment. Mirrors distanceToNearestBuilding but filtered to swarms.
-		// C++: shortTypeNum == IntBuildingType::SWARM_BUILDING (same test as
-		// AICortex.cpp:324).
-		int distanceToNearestSwarm(Game* game, Team* team, int x, int y)
-		{
-			int best = -1;
-			for (int i = 0; i < Building::MAX_COUNT; i++)
-			{
-				Building* b = team->myBuildings[i];
-				if (b == NULL || b->buildingState == Building::DEAD)
-					continue;
-				if (b->type == NULL || b->type->shortTypeNum != IntBuildingType::SWARM_BUILDING)
-					continue;
-				int d = game->map.warpDistMax(x, y, b->posX, b->posY);
-				if (best < 0 || d < best)
-					best = d;
-			}
-			return best;
-		}
-
-		// Chebyshev distance from tile (x, y) to the nearest live FOOD_BUILDING (inn)
-		// owned by `team`. Returns -1 when the team has no inns yet. Used to enforce
-		// CORTEX_INN_MIN_SPACING so inns do not pile on top of each other (workers
-		// would contend for the same wheat and the colony loses feed coverage).
-		// Mirrors distanceToNearestSwarm but filtered to inns.
-		int distanceToNearestInn(Game* game, Team* team, int x, int y)
-		{
-			int best = -1;
-			for (int i = 0; i < Building::MAX_COUNT; i++)
-			{
-				Building* b = team->myBuildings[i];
-				if (b == NULL || b->buildingState == Building::DEAD)
-					continue;
-				if (b->type == NULL || b->type->shortTypeNum != IntBuildingType::FOOD_BUILDING)
-					continue;
-				int d = game->map.warpDistMax(x, y, b->posX, b->posY);
-				if (best < 0 || d < best)
-					best = d;
-			}
-			return best;
-		}
-
 		// Insert one candidate into a best-first top-K buffer. Strict-greater
 		// comparison preserves scan order on ties (first-seen wins), keeping the
 		// ranking deterministic. `count` is updated in place.
@@ -266,6 +191,15 @@ namespace Cortex
 						continue;
 				}
 
+				// Fog-of-war: the footprint must be discovered (mirrors AIEcho's
+				// find_location). Check both corners of the grown box, like the
+				// engine path does.
+				if (!map.isMapDiscovered(map.normalizeX(gx), map.normalizeY(gy),
+				                         team->allies) ||
+				    !map.isMapDiscovered(map.normalizeX(gx + ew - 1),
+				                         map.normalizeY(gy + eh - 1), team->allies))
+					continue;
+
 				// Canonical engine validity gate — identical to the predicate
 				// behind Game::checkHardRoomForBuilding for a non-virtual
 				// building, so a resulting OrderCreate will not be rejected. We gate
@@ -290,15 +224,6 @@ namespace Cortex
 				// near-colony path tolerates a one-tick buildProject because it does not use
 				// the same site-position latch.
 				if (forward != NULL && !map.isFreeForBuilding(x, y, w, h))
-					continue;
-
-				// Fog-of-war: the footprint must be discovered (mirrors AIEcho's
-				// find_location). Check both corners of the grown box, like the
-				// engine path does.
-				if (!map.isMapDiscovered(map.normalizeX(gx), map.normalizeY(gy),
-				                         team->allies) ||
-				    !map.isMapDiscovered(map.normalizeX(gx + ew - 1),
-				                         map.normalizeY(gy + eh - 1), team->allies))
 					continue;
 
 				// Geography rejects for wheat-fed buildings.
@@ -364,7 +289,7 @@ namespace Cortex
 				// reject in that case (first swarm goes wherever wheat exists).
 				if (isSwarm)
 				{
-					const int swarmDist = distanceToNearestSwarm(game, team, x, y);
+					const int swarmDist = geometry.distanceToNearestBuildingType(x, y, IntBuildingType::SWARM_BUILDING);
 					if (swarmDist >= 0 && swarmDist < CORTEX_SWARM_MIN_SPACING)
 						continue;
 				}
@@ -375,7 +300,7 @@ namespace Cortex
 				// no inn exists yet; the first inn places freely.
 				if (isInn)
 				{
-					const int innDist = distanceToNearestInn(game, team, x, y);
+					const int innDist = geometry.distanceToNearestBuildingType(x, y, IntBuildingType::FOOD_BUILDING);
 					if (innDist >= 0 && innDist < CORTEX_INN_MIN_SPACING)
 						continue;
 				}
@@ -396,7 +321,7 @@ namespace Cortex
 				// design — the target-distance window above bounds it instead).
 				if (!isInn && !isSwarm && forward == NULL)
 				{
-					const int edgeDist = nearestBuildingEdgeDist(game, team, map, x, y, w, h);
+					const int edgeDist = geometry.nearestBuildingEdgeDist(x, y, w, h);
 					if (edgeDist >= 0 && edgeDist > CORTEX_MAX_BUILD_EDGE_DIST)
 						continue;
 				}
