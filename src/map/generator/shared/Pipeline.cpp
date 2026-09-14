@@ -11,6 +11,7 @@ bool reopenCrampedStarts(Game &game, GenerationContext &context, const ResourceA
 						 int wheatRange, int woodRange, int clearRadius,
 						 const std::vector<unsigned char> *protectedWalls)
 {
+	context.telemetry.measure("pipeline.cramped_relief.enabled", amounts.scaled());
 	if (!amounts.scaled())
 		return false;
 	// At least 16 free 4x4 building sites within 24 steps of every swarm: room for a first base

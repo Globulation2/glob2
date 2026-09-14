@@ -254,7 +254,8 @@ Geometry geometryFor(const GenerationRequest &r)
 	g.outerRadius = g.half - g.rim;
 	// The strait is a share of the side, but never so wide that the homes lose the depth a home needs.
 	g.strait = std::max(4, int(std::lround(o.straitWidth / 100.0 * side)));
-	g.strait = std::max(4, std::min(g.strait, int(g.outerRadius - g.commonsRadius) - kMinimumDepth));
+	g.strait =
+		std::max(4, std::min(g.strait, int(g.outerRadius - g.commonsRadius) - kMinimumDepth));
 	g.causeway = o.causewayWidth;
 	g.walls = o.stoneWalls;
 	g.amplitude = o.coastRoughness / 100.0;
@@ -793,8 +794,8 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 		// A candidate offset from a focus and its images under the square's symmetries, each once.
 		const auto orbit = [&](int fx, int fy, double u, double v)
 		{
-			const std::pair<double, double> images[] = {{u, v},  {-u, v},  {u, -v},  {-u, -v},
-														{v, u},  {-v, u},  {v, -u},  {-v, -u}};
+			const std::pair<double, double> images[] = {{u, v}, {-u, v}, {u, -v}, {-u, -v},
+														{v, u}, {-v, u}, {v, -u}, {-v, -u}};
 			std::vector<std::pair<int, int>> points;
 			for (const auto &[a, b] : images)
 			{
@@ -1013,9 +1014,23 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.homeKind = int(context.bounded("city-kind", kHomeKinds));
 	L.heartKind = int(context.bounded("city-kind", kHeartKinds));
 	if (L.heartKind == Delta && teams < 2)
+	{
+		context.telemetry.fallback("city-states.heart.delta-to-lake",
+								   "A delta requires multiple colonies.");
 		L.heartKind = LakeHeart;
+	}
 	if (depth < kFeatureDepth && (L.homeKind == Riverside || L.homeKind == Highland))
+	{
+		context.telemetry.fallback("city-states.home.to-lakeland",
+								   "The home is too shallow for the chosen creek or ridges.");
 		L.homeKind = Lakeland;
+	}
+	const char *homeKinds[] = {"lakeland", "riverside", "highland", "marsh"};
+	const char *heartKinds[] = {"lake", "crag", "island", "delta", "forest"};
+	context.telemetry.choice("city-states.home.kind", homeKinds[L.homeKind]);
+	context.telemetry.choice("city-states.heart.kind", heartKinds[L.heartKind]);
+	context.telemetry.measure("city-states.home.depth", depth);
+	context.telemetry.measure("city-states.strait.width-fitted", g.strait);
 
 	const Coasts c(g, context);
 	for (int k = 0; k < teams; ++k)
@@ -1033,6 +1048,10 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.sandRoad.assign(size_t(t.w) * t.h, 0);
 		L.roadTile.assign(size_t(t.w) * t.h, 0);
 	}
+	context.telemetry.measure("city-states.islets.actual", L.plots.size());
+	context.telemetry.measure("city-states.home-lakes.actual", f.lakes.size());
+	context.telemetry.measure("city-states.home-sand.actual", f.sandBlobs.size());
+	context.telemetry.measure("city-states.commons-sand.actual", f.commonsSand.size());
 	return L;
 }
 
@@ -1081,7 +1100,8 @@ std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
 		wallable[i] = L.homeOf[i] >= 0 && !L.road[i];
 	stone = sealCoasts(map, t, seaMargin(map, L), wallable);
 	for (int i = 0; i < n; ++i)
-		if ((L.strip[i] || L.ridge[i]) && !L.road[i] && map.getTerrainType(i % t.w, i / t.w) == GRASS)
+		if ((L.strip[i] || L.ridge[i]) && !L.road[i] &&
+			map.getTerrainType(i % t.w, i / t.w) == GRASS)
 			stone[i] = 1;
 	return stone;
 }
@@ -1154,6 +1174,11 @@ void carveValleys(std::vector<unsigned char> &terrain, const Layout &L, Generati
 			}
 		lakes.push_back({x, y, reach});
 	}
+	context.telemetry.measure("city-states.valleys.target", wanted);
+	context.telemetry.measure("city-states.valleys.actual", lakes.size());
+	if (int(lakes.size()) < wanted)
+		context.telemetry.fallback("city-states.valleys.omitted",
+								   "Candidate budget or clearance limited valley lakes.");
 }
 
 // Every home's kit, identical and unscaled: wheat and wood patches beside its lake, where the lake
@@ -1192,28 +1217,32 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 		const double reach = std::clamp(0.1 * L.g.depth(), 2.0, 6.0) * 1.3 + 3;
 		const double flank = L.creekSide != 0 ? -L.creekSide : -1.0;
 		const KitFrame frame{h.lakeX, h.lakeY, h.angle};
-		const Kit kit = L.creekSide == 0
-							? Kit{frame.at(-0.3 * reach, -reach, 14),
-								  frame.at(-0.3 * reach, reach, 14), frame.at(reach + 8, 0, 12),
-								  kHomeWheat, kHomeWood, 2}
-							: Kit{frame.at(-0.5 * reach, flank * reach, 14),
-								  frame.at(0.6 * reach, flank * (reach + 1), 14),
-								  frame.at(reach + 8, 0, 12), kHomeWheat, kHomeWood, 2};
+		const Kit kit = L.creekSide == 0 ? Kit{frame.at(-0.3 * reach, -reach, 14),
+											   frame.at(-0.3 * reach, reach, 14),
+											   frame.at(reach + 8, 0, 12),
+											   kHomeWheat,
+											   kHomeWood,
+											   2}
+										 : Kit{frame.at(-0.5 * reach, flank * reach, 14),
+											   frame.at(0.6 * reach, flank * (reach + 1), 14),
+											   frame.at(reach + 8, 0, 12),
+											   kHomeWheat,
+											   kHomeWood,
+											   2};
 		plantKit(map, t, context, kit, eligible);
 		// Ambient farmland on the home's fertile ground, in patches, then outcrops and a grove: 4% of
 		// its ground ambient wheat and 2% wood on top of the kit, one outcrop per 2500 tiles and a
 		// single grove - self-sufficient but not rich, so the commons is worth the trip. The patch
 		// field has 12-tile cells.
 		furnishGround(
-			map, t, context, fertility, eligible,
-			[&](int i) { return patch(i % t.w, i / t.w); },
+			map, t, context, fertility, eligible, [&](int i) { return patch(i % t.w, i / t.w); },
 			[&](int i) { return split.uiLevel(i % t.w, i / t.w, 2048); },
 			[&](int area)
 			{
 				return GroundAmounts{int(scaledCount(area * 4 / 100, o.wheat)),
-										 int(scaledCount(area * 2 / 100, o.wood)),
-										 int(scaledCount(std::max(1, area / 2500), o.stone)),
-										 int(scaledCount(1, o.fruit))};
+									 int(scaledCount(area * 2 / 100, o.wood)),
+									 int(scaledCount(std::max(1, area / 2500), o.stone)),
+									 int(scaledCount(1, o.fruit))};
 			},
 			"city-home-stone", "city-home-fruit");
 	}
@@ -1550,7 +1579,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			{
 				const int x = t.x(site.x - 5 + dx), y = t.y(site.y - 2 + dy);
 				if (!map.isGrass(x, y) || map.isResource(x, y) || map.getBuilding(x, y) != NOGBID)
-					return "The islet plot at " + where(t.at(site.x, site.y)) + " is not buildable.";
+					return "The islet plot at " + where(t.at(site.x, site.y)) +
+						   " is not buildable.";
 			}
 		if (fromFirst[t.at(site.x, site.y)] >= 0)
 			return "The islet at " + where(t.at(site.x, site.y)) + " can be walked to.";
@@ -1573,7 +1603,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// Shut every causeway: no home may reach the commons or another home any other way.
 	for (int team = 0; team < teams; ++team)
 	{
-		const std::vector<int> inside = reachesWithShut(map, t, tileMask(t, workers[team]), L.causeway);
+		const std::vector<int> inside =
+			reachesWithShut(map, t, tileMask(t, workers[team]), L.causeway);
 		for (int i = 0; i < n; ++i)
 			if (inside[i] >= 0 &&
 				(L.region[i] == Commons || (L.homeOf[i] >= 0 && L.homeOf[i] != team)))
@@ -1598,11 +1629,10 @@ CityStatesOptions::CityStatesOptions(const GenerationRequest &r)
 	: commonsSize(r.option("commons-size")), straitWidth(r.option("strait-width")),
 	  causewayWidth(r.option("causeway-width")), coastRoughness(r.option("coast-roughness")),
 	  valleys(r.option("valleys")), islands(r.option("islands")), sand(r.option("sand")),
-	  frontier(r.option("frontier-richness")),
-	  stoneWalls(r.option("stone-walls") != 0), sandRoads(r.option("sand-roads") != 0),
-	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
-	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
-	  fruit(r.option("fruit-amount"))
+	  frontier(r.option("frontier-richness")), stoneWalls(r.option("stone-walls") != 0),
+	  sandRoads(r.option("sand-roads") != 0), wheat(r.option("wheat-amount")),
+	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
+	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
 {
 }
 

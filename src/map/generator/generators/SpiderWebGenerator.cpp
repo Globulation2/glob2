@@ -131,9 +131,9 @@ Geometry geometryFor(const GenerationRequest &r)
 	// build the first economy before the colony has to push out along the threads. It is a size to
 	// aim for; a crowded ring shrinks it as ever.
 	const double homeScale = o.homeSize / 100.0;
-	const int largestPad =
-		std::max(kMinimumPad, int(std::lround(std::min(kPadRadius * homeScale,
-													   kPadShare * homeScale * g.half))));
+	const int largestPad = std::max(
+		kMinimumPad,
+		int(std::lround(std::min(kPadRadius * homeScale, kPadShare * homeScale * g.half))));
 	for (int pad = largestPad; pad >= kMinimumPad; --pad)
 	{
 		g.padRadius = pad;
@@ -159,8 +159,8 @@ Geometry geometryFor(const GenerationRequest &r)
 	// A small map squeezes its capture threads closer, down to two thread widths apart, so the web
 	// keeps at least one whole turn between the hub and the frame.
 	const double span = g.frameRadius - 0.8 * g.padReach - g.hubRadius;
-	g.spacing = std::min(g.spacing,
-						 std::max(2.0 * threadWidth, span / (1 + kFreeZone + kOuterZone)));
+	g.spacing =
+		std::min(g.spacing, std::max(2.0 * threadWidth, span / (1 + kFreeZone + kOuterZone)));
 	g.firstRing = g.hubRadius + kFreeZone * g.spacing;
 	g.lastRing = g.frameRadius - std::max(kOuterZone * g.spacing, 0.8 * g.padReach);
 	return g;
@@ -200,13 +200,13 @@ struct Layout
 	// The web is designed round the centre in a circle on the map's shorter side; this places it on
 	// the map, stretched along the longer side so the web fills a rectangular map.
 	Stretch stretch;
-	std::vector<double> bow;                 // per spoke of a wedge, in radians
-	std::vector<unsigned char> land, water;  // per tile
-	std::vector<unsigned char> hub, thread;  // per tile
-	std::vector<int> padOf;                  // pad tiles: the colony, else -1
-	std::vector<int> dewOf;                  // dew drop tiles: the drop, else -1
-	std::vector<ShapePoint> pads, knots;     // pad centres by colony; stone knots
-	std::vector<double> padAngle;            // each pad's heading out from the hub
+	std::vector<double> bow;                // per spoke of a wedge, in radians
+	std::vector<unsigned char> land, water; // per tile
+	std::vector<unsigned char> hub, thread; // per tile
+	std::vector<int> padOf;                 // pad tiles: the colony, else -1
+	std::vector<int> dewOf;                 // dew drop tiles: the drop, else -1
+	std::vector<ShapePoint> pads, knots;    // pad centres by colony; stone knots
+	std::vector<double> padAngle;           // each pad's heading out from the hub
 	std::vector<Drop> drops;
 	std::vector<std::vector<ShapePoint>> spokeLines; // every spoke's centre line
 	std::vector<std::vector<StrokePoint>> roads;     // every thread's centre line, on the map
@@ -226,16 +226,14 @@ struct Layout
 	/// spacing per wedge, so it has one arm per colony and meets itself under a turn of a wedge.
 	double level(long long k, long long j) const
 	{
-		return g.firstRing +
-			   g.spacing * (double(k) + (g.spiral ? double(j) / g.perColony : 0.0));
+		return g.firstRing + g.spacing * (double(k) + (g.spiral ? double(j) / g.perColony : 0.0));
 	}
 	/// The key every image of capture thread (k, j) shares: a turn of one wedge takes (k, j) to
 	/// (k - 1, j + perColony) on the spiral and to (k, j + perColony) on rings, and both give the
 	/// same key.
 	long long key(long long k, long long j) const
 	{
-		return g.spiral ? k * g.perColony + j
-						: k * g.perColony + wrapSpoke(j, g.perColony);
+		return g.spiral ? k * g.perColony + j : k * g.perColony + wrapSpoke(j, g.perColony);
 	}
 	/// The capture thread from spoke j to spoke j + 1 on turn k, sagging towards the hub; false
 	/// when it lies outside the rings.
@@ -470,6 +468,17 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.water[i] = L.water[i] || !L.land[i];
 		L.thread[i] = L.land[i] && !L.hub[i] && L.padOf[i] < 0 && L.dewOf[i] < 0;
 	}
+	context.telemetry.measure("spider-web.spokes.actual", g.spokes);
+	context.telemetry.measure("spider-web.home.radius-fitted", g.padRadius);
+	context.telemetry.measure("spider-web.thread.half-width", g.threadHalf);
+	context.telemetry.measure("spider-web.rings.spacing-fitted", g.spacing);
+	context.telemetry.measure("spider-web.strands.distinct", strands.size());
+	context.telemetry.measure("spider-web.strands.torn", torn.size());
+	context.telemetry.measure("spider-web.dew-drops.target", o.dewDrops * teams);
+	context.telemetry.measure("spider-web.dew-drops.actual", L.drops.size());
+	if (int(L.drops.size()) < o.dewDrops * teams)
+		context.telemetry.fallback("spider-web.dew-drops.omitted",
+								   "Too few separated water pockets fit the requested dew drops.");
 	return L;
 }
 
@@ -715,8 +724,7 @@ SpiderWebOptions::SpiderWebOptions(const GenerationRequest &r)
 	  threadWidth(r.option("thread-width")), sag(r.option("sag")),
 	  tornStrands(r.option("torn-strands")), hubSize(r.option("hub-size")),
 	  dewDrops(r.option("dew-drops")), homeSize(r.option("home-size")),
-	  spiral(r.option("spiral") != 0),
-	  sandRoads(r.option("sand-roads") != 0),
+	  spiral(r.option("spiral") != 0), sandRoads(r.option("sand-roads") != 0),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))

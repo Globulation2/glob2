@@ -69,7 +69,7 @@ Each generation sample is its own job, so a failed sample does not discard a bat
 Put the command first. `--headless-catalog` writes schema-version-1 JSON to stdout;
 startup diagnostics go to stderr. It enumerates selectable AIs (excluding None),
 Cortex and Maxima parameter schemas, generators, controls, revisions, telemetry,
-and save/network versions. Other commands require `--output-dir DIR`; an existing
+and save/network versions, plus map-report and generation-telemetry schema versions. Structured commands require `--output-dir DIR`; an existing
 `result.json` is rejected. Values are separate ordinary arguments, not JSON.
 
 ```sh
@@ -384,3 +384,26 @@ Engine compatibility requires actual identical initial states/seeds/orders and
 per-tick checksums across platforms; passing transport tests or builds is insufficient.
 See the retained [validation record](tournaments-validation.md) for measured coverage,
 commands, evidence and remaining limits.
+
+## Map-generation telemetry
+
+Structured generation results now embed `map_report`, the complete native
+[version-2 report](map-generators/REPORT.md), including every final-map measurement
+and the bounded, ordered internal trace. Collection is automatic, independent of
+map-file output. Failures from the generation service retain its failure report;
+argument errors and crashes may only have diagnostics. Root/chosen seeds remain
+explicit, and candidate searches do not expose discarded attempts' traces.
+
+`generator_stress reanalyze` additionally writes `map-telemetry.json`, raw
+`map-telemetry-records.csv`, `map-metrics.csv` and grouped summaries. Numeric
+telemetry uses equal map weight after averaging repeated observations within each
+map. Fallback/choice frequencies count maps. Missing/truncated traces are explicit;
+retries and duplicates never count as additional samples. Seeded bootstrap intervals
+resample maps within configuration/build/revision groups. For paired contrasts,
+resample complete seed blocks across variants in your analysis script.
+
+See the [map-design bulk workflow](../.agents/skills/glob2-map-design/references/distributed-telemetry.md)
+for complete commands, host configuration, dimensional units and statistical limits.
+Native `--generate-map NAME --json FILE` uses tile dimensions; the structured
+`--generate-map --output-dir DIR` interface uses exponent dimensions as documented
+above. Both use the same production report serializer.

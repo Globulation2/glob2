@@ -8,6 +8,10 @@
 //   MapGeneratorGoldenTest <profile-dir> --print        print this platform's rows to stdout
 //   MapGeneratorGoldenTest <profile-dir> --sweep        every playable landscape at the colony
 //                                                      counts and sizes the lobby offers
+//   MapGeneratorGoldenTest <profile-dir> --telemetry    compare telemetry off/on worlds and RNG,
+//                                                      repeat observations, and print timings
+//   MapGeneratorGoldenTest <profile-dir> --sweep K/N    only every Nth landscape from the Kth,
+//                                                      so N processes can share the sweep
 //
 // The table (test/map-generator-golden.txt) records, per platform, the fingerprint of the map
 // each generator produces for a few seeds, sizes and colony counts, keyed by the generator's
@@ -22,9 +26,13 @@
 #include "GeneratorRegistry.h"
 #include "GlobalContainer.h"
 #include "MapGeneratorFrameworkChecks.h"
+#include "Utilities.h"
+#include <BinaryStream.h>
 #include <SDL.h>
+#include <StreamBackend.h>
 #include <Toolkit.h>
 #include <algorithm>
+#include <chrono>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
@@ -292,7 +300,7 @@ int update(const std::string &path, bool toStdout, bool force)
 // least one of five seeds; the small and large sizes are checked at the counts a player is
 // likely to ask for. The per-cell rates are printed so a landscape that only just scrapes by
 // is visible before it starts failing.
-int sweep()
+int sweep(int shard, int shards)
 {
 	struct Cell
 	{
@@ -305,8 +313,12 @@ int sweep()
 		{8, 6, five}, {8, 8, five}, {8, 12, five}, {9, 4, three}, {9, 12, three},
 	};
 	int failures = 0;
-	for (int id : GeneratorRegistry::builtins().methods(false))
+	const auto methods = GeneratorRegistry::builtins().methods(false);
+	for (std::size_t index = 0; index < methods.size(); ++index)
 	{
+		if (int(index % shards) != shard)
+			continue;
+		const int id = methods[index];
 		const auto &definition = GeneratorRegistry::builtins().at(id);
 		std::string line;
 		for (const auto &cell : cells)
@@ -341,6 +353,144 @@ int sweep()
 	std::printf("sweep: %d failing combinations\n", failures);
 	return failures ? 1 : 0;
 }
+
+// Saving once establishes the header offset used by the next save's content hash. Compare the
+// complete second serialization, not just the terrain fingerprint. Serialization is outside the
+// timed interval, as are Game construction and destruction.
+std::string serializedGame(Game &game)
+{
+	auto *memory = new GAGCore::MemoryStreamBackend();
+	GAGCore::BinaryOutputStream stream(memory);
+	game.save(&stream, false, "Generator telemetry comparison");
+	stream.flush();
+	memory->seekFromEnd(0);
+	return std::string(memory->getBuffer(), memory->getPosition());
+}
+
+struct TelemetryRun
+{
+	GenerationResult result;
+	std::string bytes;
+	double milliseconds = 0;
+	bool randomRestored = false;
+};
+
+TelemetryRun telemetryRun(const GenerationRequest &request, bool enabled)
+{
+	const auto randomBefore = syncRandEngine();
+	TelemetryRun run;
+	{
+		Game game(nullptr);
+		const auto begin = std::chrono::steady_clock::now();
+		run.result = GenerationService().generate(game, request, enabled);
+		const auto end = std::chrono::steady_clock::now();
+		run.milliseconds = std::chrono::duration<double, std::milli>(end - begin).count();
+		run.randomRestored = syncRandEngine() == randomBefore;
+		// Request rejection has no initialized world to serialize. Placement/validation failures
+		// do: compare their partial worlds as well so failed generation stays observational.
+		if (run.result.error != GenerationError::InvalidRequest &&
+			run.result.error != GenerationError::NonEmptyTarget)
+		{
+			serializedGame(game);
+			run.bytes = serializedGame(game);
+		}
+	}
+	run.randomRestored = run.randomRestored && syncRandEngine() == randomBefore;
+	return run;
+}
+
+int telemetryCheck()
+{
+	int cases = 0, failures = 0, successful = 0;
+	double offTotal = 0, onTotal = 0;
+	std::puts("generator,seed,off_ms,on_ms,records,status");
+	for (int id : GeneratorRegistry::builtins().methods(true))
+	{
+		const auto &definition = GeneratorRegistry::builtins().at(id);
+		GenerationRequest request;
+		request.setMethodDefaults(id);
+		request.wDec = request.hDec = 8;
+		for (std::uint32_t seed = 1; seed <= 3; ++seed)
+		{
+			request.seed = seed;
+			TelemetryRun off, on;
+			// Alternate the measured order across the entire suite to reduce systematic warm-cache
+			// bias. This is a timing observation, never a platform-dependent pass/fail threshold.
+			if (cases % 2 == 0)
+			{
+				off = telemetryRun(request, false);
+				on = telemetryRun(request, true);
+			}
+			else
+			{
+				on = telemetryRun(request, true);
+				off = telemetryRun(request, false);
+			}
+			const TelemetryRun repeated = telemetryRun(request, true);
+			const auto sameOutcome = [](const GenerationResult &a, const GenerationResult &b)
+			{
+				return a.error == b.error && a.stage == b.stage && a.detail == b.detail &&
+					   a.generatorId == b.generatorId && a.revision == b.revision &&
+					   a.seed == b.seed;
+			};
+			bool ok = true;
+			const auto require = [&](bool condition, const char *message)
+			{
+				if (!condition)
+				{
+					std::fprintf(stderr, "FAIL telemetry %s seed %u: %s\n", definition.id, seed,
+								 message);
+					ok = false;
+				}
+			};
+			require(sameOutcome(off.result, on.result) && sameOutcome(on.result, repeated.result),
+					"status or diagnostic changed");
+			require(off.bytes == on.bytes && on.bytes == repeated.bytes, "serialized game changed");
+			require(off.randomRestored && on.randomRestored && repeated.randomRestored,
+					"surrounding simulation RNG changed");
+			require(off.result.telemetry.records().empty() &&
+						off.result.telemetry.droppedRecords() == 0 &&
+						off.result.telemetry.invalidValues() == 0,
+					"disabled telemetry collected observations");
+			require(on.result.telemetry.records() == repeated.result.telemetry.records(),
+					"telemetry records did not repeat exactly");
+			require(on.result.telemetry.droppedRecords() == 0 &&
+						on.result.telemetry.invalidValues() == 0 &&
+						repeated.result.telemetry.droppedRecords() == 0 &&
+						repeated.result.telemetry.invalidValues() == 0,
+					"telemetry was truncated or rejected an invalid value");
+			if (on.result)
+			{
+				++successful;
+				require(!on.result.telemetry.records().empty(),
+						"successful generator has no telemetry");
+			}
+			else
+			{
+				// Exact record comparison above includes any fallback records preceding this error.
+				const auto &records = on.result.telemetry.records();
+				require(
+					std::any_of(
+						records.begin(), records.end(), [](const auto &record)
+						{ return record.kind == "error" && record.key == "generation.failure"; }),
+					"failed generation lost its error trace");
+			}
+			const char *status = on.result                                            ? "ok"
+								 : on.result.error == GenerationError::InvalidRequest ? "invalid"
+																					  : "failed";
+			std::printf("%s,%u,%.3f,%.3f,%zu,%s\n", definition.id, seed, off.milliseconds,
+						on.milliseconds, on.result.telemetry.records().size(), status);
+			offTotal += off.milliseconds;
+			onTotal += on.milliseconds;
+			++cases;
+			failures += !ok;
+		}
+	}
+	std::printf(
+		"# telemetry: %d cases, %d generated, %d semantic failures, off %.3f ms, on %.3f ms\n",
+		cases, successful, failures, offTotal, onTotal);
+	return failures ? 1 : 0;
+}
 } // namespace
 
 int main(int argc, char **argv)
@@ -348,7 +498,8 @@ int main(int argc, char **argv)
 	if (argc < 2)
 	{
 		std::fprintf(stderr,
-					 "usage: %s <profile-dir> [--require-rows|--update [--force]|--print|--sweep]\n",
+					 "usage: %s <profile-dir> [--require-rows|--update [--force]|--print|--sweep "
+					 "[K/N]|--telemetry]\n",
 					 argv[0]);
 		return 2;
 	}
@@ -361,7 +512,18 @@ int main(int argc, char **argv)
 	std::string mode = argc > 2 ? argv[2] : "";
 	const bool force = argc > 3 && std::strcmp(argv[3], "--force") == 0;
 	if (mode == "--sweep")
-		return sweep();
+	{
+		int shard = 0, shards = 1;
+		if (argc > 3 && (std::sscanf(argv[3], "%d/%d", &shard, &shards) != 2 || shards < 1 ||
+						 shard < 0 || shard >= shards))
+		{
+			std::fprintf(stderr, "--sweep takes K/N with 0 <= K < N, not %s\n", argv[3]);
+			return 2;
+		}
+		return sweep(shard, shards);
+	}
+	if (mode == "--telemetry")
+		return telemetryCheck();
 	if (mode == "--update")
 		return update(kTablePath, false, force);
 	if (mode == "--print")

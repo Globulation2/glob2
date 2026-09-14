@@ -219,6 +219,12 @@ bool settleStartingTowers(Game &game, GenerationContext &context, TowerPlan &pla
 {
 	const Map &map = game.map;
 	const Torus t(map);
+	if (context.telemetry.enabled())
+		for (size_t k = 0; k < plan.towers.size(); ++k)
+		{
+			context.telemetry.measure("towers.planned_towers", int(plan.towers[k].size()), int(k));
+			context.telemetry.measure("towers.planned_pads", int(plan.pads[k].size()), int(k));
+		}
 	if (goal)
 	{
 		// Every colony walks out from the ring of tiles round its swarm's 4x4 footprint.
@@ -243,18 +249,29 @@ bool settleStartingTowers(Game &game, GenerationContext &context, TowerPlan &pla
 			for (int i = 0; i < t.size(); ++i)
 				g[i] = g[i] && open[i];
 		}
-		dropBlockingSites(t, plan, open, sources, goals);
+		const int dropped = dropBlockingSites(t, plan, open, sources, goals);
+		context.telemetry.measure("towers.blocking_sites_dropped", dropped);
+		if (dropped)
+			context.telemetry.fallback("towers.route_clearance", "removed obstructing sites");
 	}
-	if (evenTowerPlan(plan) < (everyColonyNeedsOne ? 1 : 0))
+	const int towersPerColony = evenTowerPlan(plan);
+	context.telemetry.measure("towers.equalized_towers_per_colony", towersPerColony);
+	if (context.telemetry.enabled())
+		for (size_t k = 0; k < plan.pads.size(); ++k)
+			context.telemetry.measure("towers.equalized_pads", int(plan.pads[k].size()), int(k));
+	if (towersPerColony < (everyColonyNeedsOne ? 1 : 0))
 	{
 		context.detail = "a colony has no room for its towers";
+		context.telemetry.choice("towers.outcome", "required tower missing");
 		return false;
 	}
 	if (!raiseTowers(game, plan, std::clamp(level - 1, 0, 2)))
 	{
 		context.detail = "a tower site no longer fits";
+		context.telemetry.choice("towers.outcome", "placement failed");
 		return false;
 	}
+	context.telemetry.choice("towers.outcome", "placed");
 	return true;
 }
 

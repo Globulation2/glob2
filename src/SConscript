@@ -165,6 +165,8 @@ GameHints.cpp
 GameObjectives.cpp
 GameUtilities.cpp
 Glob2.cpp
+MapCommand.cpp
+MapReport.cpp
 Glob2Screen.cpp
 Glob2Style.cpp
 FrontendTheme.cpp
@@ -548,6 +550,12 @@ source_files.append("../libgag/src/libgag.a")
 source_files.append("../libusl/src/libusl.a")
 p1 = local.Program("glob2", source_files)
 
+if not env['server']:
+    geometry_sources = [source for source in source_files if source != 'Glob2.cpp']
+    geometry_sources += local.Object('CortexGeometryHarness.o', '#test/CortexGeometryHarness.cpp')
+    geometry_test = local.Program('CortexGeometryHarness', geometry_sources)
+    local.Alias('cortex-geometry-test', geometry_test)
+
 # Optional integration executable; normal game/server builds do not build it.
 if not env['server']:
     render_test = local.Program("torus-render-test",
@@ -812,3 +820,9 @@ if not env['server']:
     tournament_sources = [source for source in source_files if source != 'Glob2.cpp']
     tournament_sources += tournament_env.Object('TournamentCompatibilityTest.o', '#test/TournamentCompatibilityTest.cpp')
     local.Alias('tournament-compatibility-test', local.Program('TournamentCompatibilityTest', tournament_sources))
+# Map-report fixtures exercise analytic route lengths and read-only scoring.
+if not env['server']:
+    report_sources = [source for source in source_files if source != 'Glob2.cpp']
+    report_sources += local.Object('MapReportHarness.o', '#test/MapReportHarness.cpp')
+    report_test = local.Program('MapReportHarness', report_sources)
+    local.Alias('map-report-test', report_test)

@@ -56,6 +56,7 @@
 
 #ifndef YOG_SERVER_ONLY
 #include "FrontendTheme.h"
+#include "MapCommand.h"
 #endif
 
 using std::shared_ptr;
@@ -411,6 +412,13 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 int Glob2::run(int argc, char *argv[])
 {
 #ifndef YOG_SERVER_ONLY
+	// --generate-map has a native file/report interface and a structured job interface.
+	// The latter is selected explicitly by --output-dir; preserve native CLI parsing.
+	bool structuredMap = false;
+	for (int i = 2; i < argc; ++i)
+		if (std::string(argv[i]) == "--output-dir") structuredMap = true;
+	if (argc > 1 && isMapCommand(argv[1]) && !structuredMap)
+		return runMapCommand(argc, argv);
 	const int headless = runHeadlessCommand(argc, argv);
 	if (headless >= 0) return headless;
 #endif
@@ -649,22 +657,26 @@ int main(int argc, char *argv[])
 	setvbuf(stdout, NULL, _IOLBF, 0);
 
 #if defined(__APPLE__) && !defined(YOG_SERVER_ONLY)
-	/* SDL has this annoying "feature" of setting working directory to parent
-	   of bundle during static initialization.  We want to set it back to the
-	   main bundle directory so we can find our Resources directory. */
-	CFBundleRef mainBundle = CFBundleGetMainBundle();
-	assert(mainBundle);
-	CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
-	assert(mainBundleURL);
-	CFStringRef cfStringRef = CFURLCopyFileSystemPath(mainBundleURL, kCFURLPOSIXPathStyle);
-	assert(cfStringRef);
+	// Map tools resolve input and output paths relative to the caller.
+	if (!(argc > 1 && isMapCommand(argv[1])))
+	{
+		/* SDL has this annoying "feature" of setting working directory to parent
+		   of bundle during static initialization.  We want to set it back to the
+		   main bundle directory so we can find our Resources directory. */
+		CFBundleRef mainBundle = CFBundleGetMainBundle();
+		assert(mainBundle);
+		CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
+		assert(mainBundleURL);
+		CFStringRef cfStringRef = CFURLCopyFileSystemPath(mainBundleURL, kCFURLPOSIXPathStyle);
+		assert(cfStringRef);
 
-	char path[MAXPATHLEN];
-	CFStringGetCString(cfStringRef, path, MAXPATHLEN, kCFStringEncodingASCII);
-	chdir(path);
+		char path[MAXPATHLEN];
+		CFStringGetCString(cfStringRef, path, MAXPATHLEN, kCFStringEncodingASCII);
+		chdir(path);
 
-	CFRelease(mainBundleURL);
-	CFRelease(cfStringRef);
+		CFRelease(mainBundleURL);
+		CFRelease(cfStringRef);
+	}
 #endif
 
 	Glob2 glob2;

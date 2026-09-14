@@ -12,9 +12,18 @@ std::string GenerationResult::diagnostic() const
 	return generatorId + " revision " + std::to_string(revision) + " seed " + std::to_string(seed) +
 		   " [" + stage + "]: " + detail;
 }
-GenerationResult GenerationService::generate(Game &game, const GenerationRequest &request) const
+GenerationResult GenerationService::generate(Game &game, const GenerationRequest &request,
+											 bool collectTelemetry) const
 {
 	GenerationResult result;
+	GenerationContext context(request, collectTelemetry);
+	const auto finish = [&]()
+	{
+		if (result.error != GenerationError::None && context.telemetry.enabled())
+			context.telemetry.error("generation.failure", result.stage + ": " + result.detail);
+		result.telemetry = std::move(context.telemetry);
+		return std::move(result);
+	};
 	result.seed = request.seed;
 	result.stage = "validation";
 	const auto *definition = registry.find(request.method);
@@ -22,7 +31,7 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 	{
 		result.error = GenerationError::InvalidRequest;
 		result.detail = "Unknown generator";
-		return result;
+		return finish();
 	}
 	result.generatorId = definition->id;
 	result.revision = definition->revision;
@@ -30,13 +39,13 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 	if (!result.detail.empty())
 	{
 		result.error = GenerationError::InvalidRequest;
-		return result;
+		return finish();
 	}
 	if (game.mapHeader.getNumberOfTeams() != 0)
 	{
 		result.error = GenerationError::NonEmptyTarget;
 		result.detail = "Generation requires a fresh Game";
-		return result;
+		return finish();
 	}
 	// General engine mutation APIs still use the synchronized gameplay stream.
 	// This synchronous, scoped bridge is not a concurrency API.
@@ -46,7 +55,6 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 		~EngineRandomScope() { syncRandEngine() = saved; }
 	} rngScope;
 	setSyncRandSeed(GenerationContext::deriveSeed(request.seed, "engine"));
-	GenerationContext context(request);
 	game.gameHeader.setRandomSeed(request.seed);
 	game.map.setSize(request.wDec, request.hDec);
 	game.map.setGame(&game);
@@ -65,14 +73,14 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 		result.stage = context.stage;
 		result.detail =
 			context.detail.empty() ? "Could not place the requested map layout" : context.detail;
-		return result;
+		return finish();
 	}
 	result.stage = "validation";
 	result.detail = validateGeneratedWorld(game, request, *definition);
 	if (!result.detail.empty())
 	{
 		result.error = GenerationError::InvalidWorld;
-		return result;
+		return finish();
 	}
 	if (definition->validateWorld)
 	{
@@ -81,7 +89,7 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 		if (!result.detail.empty())
 		{
 			result.error = GenerationError::InvalidWorld;
-			return result;
+			return finish();
 		}
 	}
 	result.quality = MapGeneration::scoreStarts(game, request.nbTeams, definition->qualityWeights,
@@ -92,10 +100,10 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 	{
 		result.error = GenerationError::InvalidWorld;
 		result.detail = script.getErrorString();
-		return result;
+		return finish();
 	}
 	result.stage = "complete";
-	return result;
+	return finish();
 }
 
 std::uint32_t GenerationService::bestSeed(const GenerationRequest &request, std::uint32_t rootSeed,

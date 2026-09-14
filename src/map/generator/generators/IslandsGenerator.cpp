@@ -26,6 +26,10 @@ static bool generate(Game &game, GenerationContext &context)
 	if (!generateHeightField(game, context, terrain,
 							 [&](HeightMap &hm, unsigned w, unsigned h, float smoothing)
 							 {
+								 context.telemetry.measure(
+									 "islands.hills.requested",
+									 std::max(1, (context.request.nbTeams + options.extra_islands) /
+													 (1 << options.repeat)));
 								 hm.makeIslands(
 									 std::max(1, (context.request.nbTeams + options.extra_islands) /
 													 (1 << options.repeat)),

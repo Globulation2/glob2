@@ -15,6 +15,10 @@ static bool generate(Game &game, GenerationContext &context)
 {
 	game.map.makeHomogenMap(context.request.terrainType);
 	game.addTeam();
+	context.telemetry.measure("uniform.terrain.type", int(context.request.terrainType));
+	context.telemetry.measure("uniform.terrain.tiles", game.map.getW() * game.map.getH());
+	context.telemetry.measure("uniform.teams.actual", 1);
+	context.telemetry.measure("uniform.starting-colonies.actual", 0);
 	return true;
 }
 

@@ -88,6 +88,8 @@ static void layoutIslands(Game &game, GenerationContext &context, const IslesOpt
 	}
 	L.minDist = splitUpPoints(game.map, context, L.grid, 0, L.teamPoints, L.teamWeights);
 
+	context.telemetry.measure("isles.colonies.minimum-spacing", L.minDist);
+	context.telemetry.measure("isles.island.diameter", L.minDist * islandSize / 100);
 	// Construct the areas for the teams
 	for (int i = 0; i < context.request.nbTeams; ++i)
 	{
@@ -176,6 +178,12 @@ static void buildBridges(Game &game, GenerationContext &context, const IslesOpti
 					}
 				}
 			}
+			context.telemetry.measure("isles.bridge.accepted", !failed && options.land_bridges,
+									  i * context.request.nbTeams + j);
+			if (failed && options.land_bridges)
+				context.telemetry.fallback("isles.bridge.omitted",
+										   "Bridge corridor would cross a third colony's island.",
+										   i * context.request.nbTeams + j);
 			// Make the connection. Without land bridges the same points are still drawn, so the
 			// rest of the map stays as it was, but the islands are left apart.
 			if (!failed && options.land_bridges)
@@ -200,6 +208,7 @@ static void buildBridges(Game &game, GenerationContext &context, const IslesOpti
 			}
 		}
 	}
+	context.telemetry.measure("isles.bridge.line-entries", L.connectorPoints.size());
 	computeDistances(game.map, L.connectorPoints, obstacles, L.distances);
 }
 
@@ -293,6 +302,7 @@ static bool placeAlgae(Game &game, GenerationContext &context, const IslesOption
 				}
 			}
 		}
+		context.telemetry.measure("isles.algae.candidates", possible.size(), i);
 		if (possible.size() == 0)
 		{
 			return false;

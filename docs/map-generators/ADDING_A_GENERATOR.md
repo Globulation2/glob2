@@ -133,3 +133,15 @@ python3 tools/plot_map_generator_refactor.py \
 For targeted settings, pass a JSON configuration list with `id`, `method` and a `params` object whose keys are stable control IDs. A sample uses registered defaults plus those overrides. Out-of-range values fail explicitly. `--binary` selects a separately built historical executable for comparison.
 
 Before accepting a generator or structural refactor, inspect fixed-seed previews and poor-performing examples, exercise range endpoints and crowded/rectangular maps, and investigate changes beyond the documented statistical thresholds. Keep generated evidence under ignored `artifacts/` and summarize findings in the pull request. The comparison plotter requires an explicitly supplied baseline study summary.
+
+## Instrument internal decisions
+
+Add [telemetry](TELEMETRY.md) alongside every generator's design: selected variants, effective
+sizes, requested/placed optional features, calibration inputs/outputs, omissions and fallbacks.
+Use `context.telemetry.measure`, `choice` and `fallback` with stable namespaced keys and local
+subjects. Collection is disabled unless requested by the service caller (the CLI enables it
+for JSON). Reuse computed values; no additional grid scans, RNG draws or expensive analysis.
+Guard telemetry-only loops and dynamic strings with `telemetry.enabled()`. Validate enabled/off
+output equivalence, trace repeatability and generation cost. Keep useful bounded production
+metrics; remove temporary per-candidate/per-tile debug traces before finalizing. Bulk seed
+analysis of internal telemetry and final-map outcomes is part of tuning a generator.

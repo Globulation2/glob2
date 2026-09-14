@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Shared production map study operations and legacy argument adapter.
 #define SDL_MAIN_HANDLED
+#include "MapReport.h"
 #include "Game.h"
 #include "GenerationService.h"
 #include "GeneratorRegistry.h"
@@ -519,12 +520,26 @@ int runMapStudy(int argc, char **argv)
 		std::printf("SAMPLED,%u,%u,%d\n", seed, descriptor.seed, candidates);
 	}
 	const auto start = std::chrono::steady_clock::now();
-	const auto result = GenerationService().generate(game, descriptor);
+	const auto result = GenerationService().generate(game, descriptor, !resultPath.empty());
 	const bool success = bool(result);
 	if (!success)
 		std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
 	const double seconds =
 		std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+	// Never analyze a failed/partially generated world. Preserve its full service trace.
+	if (!success && !resultPath.empty())
+	{
+		Headless::writeJson(resultPath,
+			"{\"schema_version\":1,\"job_type\":\"generate_map\",\"status\":" +
+			Headless::quote(result.error == GenerationError::InvalidRequest ? "invalid_request" : "generation_failed") +
+			",\"generator\":" + Headless::quote(result.generatorId) +
+			",\"map_seed\":" + std::to_string(seed) + ",\"chosen_seed\":" + std::to_string(result.seed) +
+			",\"seconds\":" + std::to_string(seconds) + ",\"diagnostic\":" + Headless::quote(result.diagnostic()) +
+			",\"map_report\":" + describeGenerationFailure(descriptor, result) + "}");
+		return result.error == GenerationError::InvalidRequest ? 2 : 4;
+	}
+	// Capture before study scorers, save/reload verification or team rotations mutate caches.
+	const std::string mapReport = resultPath.empty() ? "" : describeMap(game, &descriptor, &result);
 	auto &map = game.map;
 	int grass = 0, sand = 0, water = 0, shore = 0, free = 0, fit4 = 0;
 	int umGrass = 0, umSand = 0, umWater = 0;
@@ -850,7 +865,7 @@ int runMapStudy(int argc, char **argv)
 			std::fprintf(f, "\n");
 		}
 		std::fclose(f);
-		// An overlay beside the dump, one integer per tile, for tools/render_map.py to tint the map
+		// An overlay beside the dump, one integer per tile, for analysis tools to tint the map
 		// by: growth (the crop growth chance, 0-255), sites (1 where a 4x4 building fits today),
 		// chop (every tile's cheapest cost from the nearest colony, clearing wheat and wood as it
 		// goes; -1 unreachable) or owner (which colony that is; -1 unreachable).
@@ -896,7 +911,7 @@ int runMapStudy(int argc, char **argv)
 				<< ",\"wood\":" << c.wood << ",\"fertility\":" << c.fertility << ",\"depth\":" << c.depth
 				<< ",\"room\":" << c.room << ",\"isolation\":" << c.isolation << ",\"total\":" << c.total << '}';
 		}
-		out << "]}}";
+		out << "]},\"map_report\":" << mapReport << "}";
 		resultJson = out.str();
 	}
 	int code = 0;

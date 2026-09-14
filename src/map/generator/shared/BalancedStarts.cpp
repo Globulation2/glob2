@@ -62,12 +62,18 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 	Map &map = game.map;
 	const int w = map.getW(), h = map.getH();
 	const int nbTeams = context.request.nbTeams;
-	if (nbTeams <= 0 || minDistSquare <= 0)
+	context.telemetry.measure("starts.balanced.min_distance_squared", minDistSquare);
+	auto fail = [&](const char *reason)
+	{
+		context.telemetry.choice("starts.balanced.outcome", reason);
 		return false;
+	};
+	if (nbTeams <= 0 || minDistSquare <= 0)
+		return fail("invalid search parameters");
 	const int typeNum = globalContainer->buildingsTypes.getTypeNum("swarm", 0, false);
 	const BuildingType *swarm = globalContainer->buildingsTypes.get(typeNum);
 	if (!swarm)
-		return false;
+		return fail("missing swarm type");
 
 	const std::vector<std::uint8_t> hard = buildHardSpaceGrid(map);
 	const std::vector<std::int16_t> woodDist = distanceToResource(map, hard, WOOD);
@@ -171,8 +177,9 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 			// is a sound cheap filter: it shortlists sites worth the exact simulation above.
 			sites.push_back({std::max(woodDist[p], wheatDist[p]), p});
 		}
+	context.telemetry.measure("starts.balanced.candidate_sites", int(sites.size()));
 	if ((int)sites.size() < nbTeams)
-		return false;
+		return fail("insufficient resource reachable sites");
 	std::sort(sites.begin(), sites.end());
 	// Large maps can offer tens of thousands of legal sites. Thinning by stride keeps the
 	// sample spread across the whole score range instead of crowding one end of it, and keeps
@@ -187,6 +194,8 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 		sites.swap(thinned);
 	}
 
+	context.telemetry.measure("starts.balanced.shortlisted_sites", int(sites.size()));
+
 	// Re-score the shortlist as it will actually be built, and re-sort on the honest number.
 	{
 		std::vector<std::pair<int, int>> exact;
@@ -199,8 +208,9 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 			if (built >= 0)
 				exact.push_back({built, s.second});
 		}
+		context.telemetry.measure("starts.balanced.viable_built_sites", int(exact.size()));
 		if ((int)exact.size() < nbTeams)
-			return false;
+			return fail("insufficient sites after colony modeling");
 		std::sort(exact.begin(), exact.end());
 		sites.swap(exact);
 	}
@@ -239,8 +249,11 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 			}
 		}
 	}
+	context.telemetry.measure("starts.balanced.selected_sites", int(best.size()));
+	context.telemetry.measure("starts.balanced.resource_cost_spread", bestSpread);
 	if ((int)best.size() != nbTeams)
-		return false;
+		return fail("no mutually separated set");
+	context.telemetry.choice("starts.balanced.outcome", "selected");
 	for (int team = 0; team < nbTeams; ++team)
 	{
 		context.bootX[team] = best[team] % w;

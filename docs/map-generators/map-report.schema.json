@@ -1,0 +1,1519 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Globulation 2 map report, schema version 2",
+  "description": "Field meanings and formulas: REPORT.md in this directory.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 2
+    },
+    "engine": {
+      "type": "object",
+      "properties": {
+        "version_major": {
+          "type": "integer",
+          "description": ""
+        },
+        "version_minor": {
+          "type": "integer",
+          "description": ""
+        }
+      },
+      "required": [
+        "version_major",
+        "version_minor"
+      ],
+      "additionalProperties": false
+    },
+    "map": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Stored map name; null for an unsaved generated snapshot."
+        },
+        "width": {
+          "type": "integer",
+          "description": ""
+        },
+        "height": {
+          "type": "integer",
+          "description": ""
+        },
+        "tiles": {
+          "type": "integer",
+          "description": ""
+        },
+        "wrap_x": {
+          "type": "boolean",
+          "description": ""
+        },
+        "wrap_y": {
+          "type": "boolean",
+          "description": ""
+        },
+        "player_slots": {
+          "type": "integer",
+          "description": "Actual colony count, not configured controller count."
+        },
+        "controller_count": {
+          "type": "integer",
+          "description": "GameHeader controller slots; often zero in a newly generated map."
+        },
+        "saved_game": {
+          "type": "boolean",
+          "description": ""
+        },
+        "tick": {
+          "type": "integer",
+          "description": "Current simulation tick; no ticks are run by analysis."
+        },
+        "game_seed": {
+          "type": "integer",
+          "description": "Stored game seed, not proof of the original map-generation seed."
+        },
+        "colonies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "team": {
+                "type": "integer",
+                "description": ""
+              },
+              "alive": {
+                "type": "boolean",
+                "description": ""
+              },
+              "start": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": ""
+                  },
+                  "y": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": ""
+                  },
+                  "source": {
+                    "type": "integer",
+                    "description": "0 unset, 1 unit, 2 building, 3 swarm."
+                  }
+                },
+                "required": [
+                  "x",
+                  "y",
+                  "source"
+                ],
+                "additionalProperties": false
+              },
+              "units": {
+                "type": "object",
+                "properties": {
+                  "workers": {
+                    "type": "integer",
+                    "description": ""
+                  },
+                  "explorers": {
+                    "type": "integer",
+                    "description": ""
+                  },
+                  "warriors": {
+                    "type": "integer",
+                    "description": ""
+                  }
+                },
+                "required": [
+                  "workers",
+                  "explorers",
+                  "warriors"
+                ],
+                "additionalProperties": false
+              },
+              "buildings_and_flags": {
+                "type": "integer",
+                "description": ""
+              }
+            },
+            "required": [
+              "team",
+              "alive",
+              "start",
+              "units",
+              "buildings_and_flags"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "controllers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "slot": {
+                "type": "integer",
+                "description": ""
+              },
+              "team": {
+                "type": "integer",
+                "description": ""
+              },
+              "type": {
+                "type": "integer",
+                "description": "0 none, 1 dropping, 2 lost, 3 network, 4 local, 5 + AI implementation ID."
+              }
+            },
+            "required": [
+              "slot",
+              "team",
+              "type"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "name",
+        "width",
+        "height",
+        "tiles",
+        "wrap_x",
+        "wrap_y",
+        "player_slots",
+        "controller_count",
+        "saved_game",
+        "tick",
+        "game_seed",
+        "colonies",
+        "controllers"
+      ],
+      "additionalProperties": false
+    },
+    "generation": {
+      "$ref": "#/$defs/generation"
+    },
+    "definitions": {
+      "type": "object",
+      "properties": {
+        "percent_denominator": {
+          "type": "string",
+          "description": ""
+        },
+        "distance": {
+          "type": "string",
+          "description": ""
+        },
+        "unreachable": {
+          "type": "string",
+          "description": ""
+        },
+        "resource_access": {
+          "type": "string",
+          "description": ""
+        },
+        "catchment_cost": {
+          "type": "integer",
+          "description": ""
+        },
+        "resource_amount": {
+          "type": "string",
+          "description": ""
+        },
+        "components": {
+          "type": "string",
+          "description": ""
+        },
+        "canonical_quality": {
+          "type": "string",
+          "description": ""
+        },
+        "quality_formula": {
+          "type": "string",
+          "description": ""
+        },
+        "percentiles": {
+          "type": "string",
+          "description": ""
+        }
+      },
+      "required": [
+        "percent_denominator",
+        "distance",
+        "unreachable",
+        "resource_access",
+        "catchment_cost",
+        "resource_amount",
+        "components",
+        "canonical_quality",
+        "quality_formula",
+        "percentiles"
+      ],
+      "additionalProperties": false
+    },
+    "terrain": {
+      "type": "object",
+      "properties": {
+        "grass": {
+          "$ref": "#/$defs/coverage"
+        },
+        "grass_sand_border": {
+          "$ref": "#/$defs/coverage"
+        },
+        "sand": {
+          "$ref": "#/$defs/coverage"
+        },
+        "sand_water_border": {
+          "$ref": "#/$defs/coverage"
+        },
+        "water": {
+          "$ref": "#/$defs/coverage"
+        },
+        "unknown": {
+          "$ref": "#/$defs/coverage"
+        }
+      },
+      "required": [
+        "grass",
+        "grass_sand_border",
+        "sand",
+        "sand_water_border",
+        "water",
+        "unknown"
+      ],
+      "additionalProperties": false
+    },
+    "underlying_terrain": {
+      "type": "object",
+      "properties": {
+        "water": {
+          "$ref": "#/$defs/coverage"
+        },
+        "sand": {
+          "$ref": "#/$defs/coverage"
+        },
+        "grass": {
+          "$ref": "#/$defs/coverage"
+        },
+        "unknown": {
+          "$ref": "#/$defs/coverage"
+        }
+      },
+      "required": [
+        "water",
+        "sand",
+        "grass",
+        "unknown"
+      ],
+      "additionalProperties": false
+    },
+    "resources": {
+      "type": "object",
+      "properties": {
+        "occupied": {
+          "$ref": "#/$defs/coverage"
+        },
+        "unknown_type_tiles": {
+          "type": "integer",
+          "description": ""
+        },
+        "types": {
+          "type": "object",
+          "properties": {
+            "wood": {
+              "$ref": "#/$defs/resource"
+            },
+            "wheat": {
+              "$ref": "#/$defs/resource"
+            },
+            "papyrus": {
+              "$ref": "#/$defs/resource"
+            },
+            "stone": {
+              "$ref": "#/$defs/resource"
+            },
+            "algae": {
+              "$ref": "#/$defs/resource"
+            },
+            "cherry": {
+              "$ref": "#/$defs/resource"
+            },
+            "orange": {
+              "$ref": "#/$defs/resource"
+            },
+            "prune": {
+              "$ref": "#/$defs/resource"
+            }
+          },
+          "required": [
+            "wood",
+            "wheat",
+            "papyrus",
+            "stone",
+            "algae",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "occupied",
+        "unknown_type_tiles",
+        "types"
+      ],
+      "additionalProperties": false
+    },
+    "space": {
+      "type": "object",
+      "properties": {
+        "building_footprint": {
+          "$ref": "#/$defs/coverage"
+        },
+        "buildable": {
+          "$ref": "#/$defs/coverage"
+        },
+        "build_sites_4x4": {
+          "type": "integer",
+          "description": "Count of overlapping valid 4x4 top-left anchors; not simultaneous building capacity."
+        },
+        "growth_disabled": {
+          "$ref": "#/$defs/coverage"
+        },
+        "land_regions": {
+          "$ref": "#/$defs/components"
+        },
+        "water_regions": {
+          "$ref": "#/$defs/components"
+        }
+      },
+      "required": [
+        "building_footprint",
+        "buildable",
+        "build_sites_4x4",
+        "growth_disabled",
+        "land_regions",
+        "water_regions"
+      ],
+      "additionalProperties": false
+    },
+    "fertility": {
+      "type": "object",
+      "properties": {
+        "scale": {
+          "type": "integer",
+          "description": "65536 = probability 1 before other growth conditions."
+        },
+        "all_tiles": {
+          "$ref": "#/$defs/distribution"
+        },
+        "grass_tiles": {
+          "$ref": "#/$defs/distribution"
+        },
+        "potential_grass_ignoring_deposit_reachability": {
+          "$ref": "#/$defs/distribution"
+        },
+        "positive_grass": {
+          "$ref": "#/$defs/coverage"
+        }
+      },
+      "required": [
+        "scale",
+        "all_tiles",
+        "grass_tiles",
+        "potential_grass_ignoring_deposit_reachability",
+        "positive_grass"
+      ],
+      "additionalProperties": false
+    },
+    "canonical_quality": {
+      "$ref": "#/$defs/quality"
+    },
+    "start_position_euclidean_distances": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Euclidean distance in tiles between stored starts, shortest route across wrapping; null for unset starts."
+        }
+      }
+    },
+    "movement": {
+      "type": "object",
+      "properties": {
+        "walking": {
+          "$ref": "#/$defs/movement"
+        },
+        "walking_and_swimming": {
+          "$ref": "#/$defs/movement"
+        },
+        "walking_and_clearing": {
+          "$ref": "#/$defs/movement"
+        }
+      },
+      "required": [
+        "walking",
+        "walking_and_swimming",
+        "walking_and_clearing"
+      ],
+      "additionalProperties": false
+    },
+    "report_type": {
+      "enum": [
+        "map",
+        "generation_failure"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "report_type",
+    "engine",
+    "generation"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "tiles": {
+          "type": "integer",
+          "description": "Number of tiles in this category."
+        },
+        "percent": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "100 * tiles / denominator; null for zero denominator. See REPORT.md for each denominator."
+        }
+      },
+      "required": [
+        "tiles",
+        "percent"
+      ],
+      "additionalProperties": false
+    },
+    "distribution": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "description": "Sample count."
+        },
+        "min": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Population statistic; null when count is zero."
+        },
+        "max": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Population statistic; null when count is zero."
+        },
+        "mean": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Population statistic; null when count is zero."
+        },
+        "stddev": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Population statistic; null when count is zero."
+        },
+        "median": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Population statistic; null when count is zero."
+        },
+        "p10": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Population statistic; null when count is zero."
+        },
+        "p90": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Population statistic; null when count is zero."
+        }
+      },
+      "required": [
+        "count",
+        "min",
+        "max",
+        "mean",
+        "stddev",
+        "median",
+        "p10",
+        "p90"
+      ],
+      "additionalProperties": false
+    },
+    "components": {
+      "type": "object",
+      "properties": {
+        "components": {
+          "type": "integer",
+          "description": "Connected components of the supplied tile mask on the torus."
+        },
+        "passable": {
+          "$ref": "#/$defs/coverage"
+        },
+        "largest_component_tiles": {
+          "type": "integer",
+          "description": ""
+        },
+        "largest_component_percent_of_passable": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Percent of the mask in its largest component; null for an empty mask."
+        },
+        "component_sizes": {
+          "$ref": "#/$defs/distribution"
+        }
+      },
+      "required": [
+        "components",
+        "passable",
+        "largest_component_tiles",
+        "largest_component_percent_of_passable",
+        "component_sizes"
+      ],
+      "additionalProperties": false
+    },
+    "weights": {
+      "type": "object",
+      "properties": {
+        "wheat": {
+          "type": "number",
+          "description": "Coefficient in the weighted mean."
+        },
+        "wood": {
+          "type": "number",
+          "description": "Coefficient in the weighted mean."
+        },
+        "fertility": {
+          "type": "number",
+          "description": "Coefficient in the weighted mean."
+        },
+        "depth": {
+          "type": "number",
+          "description": "Coefficient in the weighted mean."
+        },
+        "room": {
+          "type": "number",
+          "description": "Coefficient in the weighted mean."
+        },
+        "isolation": {
+          "type": "number",
+          "description": "Coefficient in the weighted mean."
+        }
+      },
+      "required": [
+        "wheat",
+        "wood",
+        "fertility",
+        "depth",
+        "room",
+        "isolation"
+      ],
+      "additionalProperties": false
+    },
+    "scale": {
+      "type": "object",
+      "properties": {
+        "catchment_steps": {
+          "type": "integer",
+          "description": ""
+        },
+        "wheat_reference": {
+          "type": "integer",
+          "description": ""
+        },
+        "wood_reference": {
+          "type": "integer",
+          "description": ""
+        },
+        "fertility_reference": {
+          "type": "integer",
+          "description": ""
+        },
+        "depth_reference": {
+          "type": "integer",
+          "description": ""
+        },
+        "room_reference": {
+          "type": "integer",
+          "description": ""
+        },
+        "isolation_reference": {
+          "type": "integer",
+          "description": ""
+        },
+        "threat_radius": {
+          "type": "integer",
+          "description": ""
+        },
+        "crowd_penalty": {
+          "type": "number",
+          "description": ""
+        },
+        "fairness_exponent": {
+          "type": "number",
+          "description": ""
+        }
+      },
+      "required": [
+        "catchment_steps",
+        "wheat_reference",
+        "wood_reference",
+        "fertility_reference",
+        "depth_reference",
+        "room_reference",
+        "isolation_reference",
+        "threat_radius",
+        "crowd_penalty",
+        "fairness_exponent"
+      ],
+      "additionalProperties": false
+    },
+    "quality_colony": {
+      "type": "object",
+      "properties": {
+        "team": {
+          "type": "integer",
+          "description": "Zero-based colony index."
+        },
+        "raw": {
+          "type": "object",
+          "properties": {
+            "wheat_distance": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "description": "Minimum gather distance in steps."
+            },
+            "wood_distance": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "description": "Minimum gather distance in steps."
+            },
+            "catchment_tiles": {
+              "type": "integer",
+              "description": ""
+            },
+            "build_sites_4x4": {
+              "type": "integer",
+              "description": ""
+            },
+            "wheat_and_wood_amount": {
+              "type": "integer",
+              "description": ""
+            },
+            "mean_fertility": {
+              "type": "number",
+              "description": "Mean gated fertility in catchment; zero for empty catchment."
+            },
+            "nearest_rival_distance": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "description": "Nearest reachable rival in walking steps."
+            },
+            "rivals_within_threat": {
+              "type": "integer",
+              "description": ""
+            }
+          },
+          "required": [
+            "wheat_distance",
+            "wood_distance",
+            "catchment_tiles",
+            "build_sites_4x4",
+            "wheat_and_wood_amount",
+            "mean_fertility",
+            "nearest_rival_distance",
+            "rivals_within_threat"
+          ],
+          "additionalProperties": false
+        },
+        "normalized": {
+          "type": "object",
+          "properties": {
+            "wheat": {
+              "type": "number",
+              "description": "Dimensionless factor in [0,1]."
+            },
+            "wood": {
+              "type": "number",
+              "description": "Dimensionless factor in [0,1]."
+            },
+            "fertility": {
+              "type": "number",
+              "description": "Dimensionless factor in [0,1]."
+            },
+            "depth": {
+              "type": "number",
+              "description": "Dimensionless factor in [0,1]."
+            },
+            "room": {
+              "type": "number",
+              "description": "Dimensionless factor in [0,1]."
+            },
+            "isolation": {
+              "type": "number",
+              "description": "Dimensionless factor in [0,1]."
+            }
+          },
+          "required": [
+            "wheat",
+            "wood",
+            "fertility",
+            "depth",
+            "room",
+            "isolation"
+          ],
+          "additionalProperties": false
+        },
+        "total": {
+          "type": "number",
+          "description": "Weighted mean, forced to zero if wheat or wood is unreachable."
+        }
+      },
+      "required": [
+        "team",
+        "raw",
+        "normalized",
+        "total"
+      ],
+      "additionalProperties": false
+    },
+    "quality": {
+      "type": "object",
+      "properties": {
+        "measured": {
+          "type": "boolean",
+          "description": ""
+        },
+        "unavailable_reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": ""
+        },
+        "weights": {
+          "$ref": "#/$defs/weights"
+        },
+        "scale": {
+          "$ref": "#/$defs/scale"
+        },
+        "worst": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "See REPORT.md for formula; null if unmeasured."
+        },
+        "best": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "See REPORT.md for formula; null if unmeasured."
+        },
+        "fairness": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "See REPORT.md for formula; null if unmeasured."
+        },
+        "score": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "See REPORT.md for formula; null if unmeasured."
+        },
+        "colony_totals": {
+          "$ref": "#/$defs/distribution"
+        },
+        "colonies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality_colony"
+          }
+        }
+      },
+      "required": [
+        "measured",
+        "unavailable_reason",
+        "weights",
+        "scale",
+        "worst",
+        "best",
+        "fairness",
+        "score",
+        "colony_totals",
+        "colonies"
+      ],
+      "additionalProperties": false
+    },
+    "resource": {
+      "type": "object",
+      "properties": {
+        "coverage": {
+          "$ref": "#/$defs/coverage"
+        },
+        "percent_of_resource_tiles": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Percent of all occupied resource tiles, including unknown types in the denominator."
+        },
+        "stored_amount": {
+          "type": "integer",
+          "description": "Sum of stored amount bytes, not lifetime supply."
+        },
+        "harvestable_tiles": {
+          "type": "integer",
+          "description": "Deposits whose amount is positive."
+        },
+        "eternal": {
+          "type": "boolean",
+          "description": "Resource-type eternal flag."
+        },
+        "clearable": {
+          "type": "boolean",
+          "description": "Resource-type clearable flag."
+        },
+        "amount_per_deposit": {
+          "$ref": "#/$defs/distribution"
+        },
+        "patches": {
+          "$ref": "#/$defs/components"
+        }
+      },
+      "required": [
+        "coverage",
+        "percent_of_resource_tiles",
+        "stored_amount",
+        "harvestable_tiles",
+        "eternal",
+        "clearable",
+        "amount_per_deposit",
+        "patches"
+      ],
+      "additionalProperties": false
+    },
+    "access": {
+      "type": "object",
+      "properties": {
+        "nearest_gather_cost": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Cost to the nearest neighbor of a positive-amount deposit, plus one."
+        },
+        "reachable_deposit_tiles": {
+          "type": "integer",
+          "description": "Deposit counts or stored amounts; zero if none accessible."
+        },
+        "reachable_stored_amount": {
+          "type": "integer",
+          "description": "Deposit counts or stored amounts; zero if none accessible."
+        },
+        "catchment_deposit_tiles": {
+          "type": "integer",
+          "description": "Deposit counts or stored amounts; zero if none accessible."
+        },
+        "catchment_stored_amount": {
+          "type": "integer",
+          "description": "Deposit counts or stored amounts; zero if none accessible."
+        }
+      },
+      "required": [
+        "nearest_gather_cost",
+        "reachable_deposit_tiles",
+        "reachable_stored_amount",
+        "catchment_deposit_tiles",
+        "catchment_stored_amount"
+      ],
+      "additionalProperties": false
+    },
+    "movement_colony": {
+      "type": "object",
+      "properties": {
+        "team": {
+          "type": "integer",
+          "description": ""
+        },
+        "source_tiles": {
+          "type": "integer",
+          "description": "Current ground-unit tiles used as sources."
+        },
+        "reachable": {
+          "$ref": "#/$defs/coverage"
+        },
+        "catchment_tiles": {
+          "type": "integer",
+          "description": ""
+        },
+        "reachable_build_sites_4x4": {
+          "type": "integer",
+          "description": ""
+        },
+        "catchment_build_sites_4x4": {
+          "type": "integer",
+          "description": ""
+        },
+        "exclusive_nearest_territory_tiles": {
+          "type": "integer",
+          "description": ""
+        },
+        "tied_nearest_territory_tiles": {
+          "type": "integer",
+          "description": ""
+        },
+        "resources": {
+          "type": "object",
+          "properties": {
+            "wood": {
+              "$ref": "#/$defs/access"
+            },
+            "wheat": {
+              "$ref": "#/$defs/access"
+            },
+            "papyrus": {
+              "$ref": "#/$defs/access"
+            },
+            "stone": {
+              "$ref": "#/$defs/access"
+            },
+            "algae": {
+              "$ref": "#/$defs/access"
+            },
+            "cherry": {
+              "$ref": "#/$defs/access"
+            },
+            "orange": {
+              "$ref": "#/$defs/access"
+            },
+            "prune": {
+              "$ref": "#/$defs/access"
+            }
+          },
+          "required": [
+            "wood",
+            "wheat",
+            "papyrus",
+            "stone",
+            "algae",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "team",
+        "source_tiles",
+        "reachable",
+        "catchment_tiles",
+        "reachable_build_sites_4x4",
+        "catchment_build_sites_4x4",
+        "exclusive_nearest_territory_tiles",
+        "tied_nearest_territory_tiles",
+        "resources"
+      ],
+      "additionalProperties": false
+    },
+    "movement": {
+      "type": "object",
+      "properties": {
+        "step_costs": {
+          "type": "object",
+          "properties": {
+            "open": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "description": "Cost per entered tile; null means blocked."
+            },
+            "water": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "description": "Cost per entered tile; null means blocked."
+            },
+            "clearable_resource": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "description": "Cost per entered tile; null means blocked."
+            },
+            "eternal_resource": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "description": "Cost per entered tile; null means blocked."
+            },
+            "building": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "description": "Cost per entered tile; null means blocked."
+            }
+          },
+          "required": [
+            "open",
+            "water",
+            "clearable_resource",
+            "eternal_resource",
+            "building"
+          ],
+          "additionalProperties": false
+        },
+        "between_colonies": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "description": "Row = source colony; column = target colony. Null if unreachable; diagonal zero."
+            }
+          }
+        },
+        "nearest_rival": {
+          "type": "array",
+          "items": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": ""
+          }
+        },
+        "nearest_rival_spread": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Largest minus smallest nearest-rival cost; null if any colony has no reachable rival."
+        },
+        "unreachable_directed_pairs": {
+          "type": "integer",
+          "description": "Missing off-diagonal routes, counting each direction."
+        },
+        "directed_pair_costs": {
+          "$ref": "#/$defs/distribution"
+        },
+        "connectivity": {
+          "$ref": "#/$defs/components"
+        },
+        "territory": {
+          "type": "object",
+          "properties": {
+            "unreachable_tiles": {
+              "type": "integer",
+              "description": ""
+            },
+            "tied_tiles": {
+              "type": "integer",
+              "description": "Tiles shared by at least two equal-cost nearest colonies."
+            },
+            "cost_to_closest_colony": {
+              "$ref": "#/$defs/distribution"
+            }
+          },
+          "required": [
+            "unreachable_tiles",
+            "tied_tiles",
+            "cost_to_closest_colony"
+          ],
+          "additionalProperties": false
+        },
+        "colonies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/movement_colony"
+          }
+        }
+      },
+      "required": [
+        "step_costs",
+        "between_colonies",
+        "nearest_rival",
+        "nearest_rival_spread",
+        "unreachable_directed_pairs",
+        "directed_pair_costs",
+        "connectivity",
+        "territory",
+        "colonies"
+      ],
+      "additionalProperties": false
+    },
+    "generation": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "available": {
+              "const": false
+            },
+            "parameters": {
+              "type": "null"
+            },
+            "reason": {
+              "type": "string",
+              "description": ""
+            },
+            "telemetry": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "available",
+            "parameters",
+            "reason",
+            "telemetry"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "available": {
+              "const": true
+            },
+            "generator": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Stable registered string ID."
+            },
+            "legacy_id": {
+              "type": "integer",
+              "description": ""
+            },
+            "revision": {
+              "type": "integer",
+              "description": ""
+            },
+            "seed": {
+              "type": "integer",
+              "description": "Exact unsigned 32-bit generation seed."
+            },
+            "parameters": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "additionalProperties": {
+                "type": "integer",
+                "description": "Resolved CLI control value, with width/height in tiles."
+              }
+            },
+            "legacy_terrain_type": {
+              "type": "integer",
+              "description": "0 water, 1 sand, 2 grass."
+            },
+            "legacy_resource_amounts": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "description": "GenerationRequest resourceAmounts array; indexed by resource ID."
+              }
+            },
+            "selection_quality": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/quality"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "telemetry": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/telemetry"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "outcome": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "stage": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "enum": [
+                        "none",
+                        "invalid_request",
+                        "non_empty_target",
+                        "placement_failed",
+                        "invalid_world"
+                      ]
+                    },
+                    "detail": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "stage",
+                    "error",
+                    "detail"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "raw_request": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "integer"
+                },
+                "width_exponent": {
+                  "type": "integer"
+                },
+                "height_exponent": {
+                  "type": "integer"
+                },
+                "teams": {
+                  "type": "integer"
+                },
+                "workers": {
+                  "type": "integer"
+                },
+                "options": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "required": [
+                "method",
+                "width_exponent",
+                "height_exponent",
+                "teams",
+                "workers",
+                "options"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "available",
+            "generator",
+            "legacy_id",
+            "revision",
+            "seed",
+            "parameters",
+            "legacy_terrain_type",
+            "legacy_resource_amounts",
+            "selection_quality",
+            "telemetry",
+            "outcome",
+            "raw_request"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "telemetry": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "record_limit": {
+          "const": 4096
+        },
+        "dropped_records": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "invalid_values": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "records": {
+          "type": "array",
+          "maxItems": 4096,
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "kind": {
+                "enum": [
+                  "measurement",
+                  "choice",
+                  "fallback",
+                  "error"
+                ]
+              },
+              "subject": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "value": {
+                "type": [
+                  "integer",
+                  "number",
+                  "boolean",
+                  "string"
+                ],
+                "maxLength": 512
+              }
+            },
+            "required": [
+              "key",
+              "kind",
+              "subject",
+              "value"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schema_version",
+        "enabled",
+        "record_limit",
+        "dropped_records",
+        "invalid_values",
+        "records"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "anyOf": [
+    {
+      "properties": {
+        "report_type": {
+          "const": "map"
+        }
+      },
+      "required": [
+        "schema_version",
+        "engine",
+        "map",
+        "generation",
+        "definitions",
+        "terrain",
+        "underlying_terrain",
+        "resources",
+        "space",
+        "fertility",
+        "canonical_quality",
+        "start_position_euclidean_distances",
+        "movement"
+      ]
+    },
+    {
+      "properties": {
+        "schema_version": {
+          "const": 2
+        },
+        "report_type": {
+          "const": "generation_failure"
+        },
+        "engine": {
+          "type": "object",
+          "properties": {
+            "version_major": {
+              "type": "integer",
+              "description": ""
+            },
+            "version_minor": {
+              "type": "integer",
+              "description": ""
+            }
+          },
+          "required": [
+            "version_major",
+            "version_minor"
+          ],
+          "additionalProperties": false
+        },
+        "generation": {
+          "$ref": "#/$defs/generation"
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
+}

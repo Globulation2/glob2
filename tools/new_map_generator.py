@@ -15,9 +15,10 @@ each, the starter kit and the crop guarantee, and three controls to start from. 
 
 What is left is the map itself and the verification the docs ask for:
 
-  scons release=1 -j12 map-generator-golden-test map-generator-defaults-test map-generator-study
+  scons release=1 -j12 map-generator-golden-test map-generator-defaults-test map-generator-study build/src/glob2
   build/src/MapGeneratorGoldenTest <profile> --update     # records its golden rows
-  tools/render_map.py sheet <id> <nearest generators> --out artifacts/<id>
+  build/src/glob2 --generate-map <id> --preview artifacts/<id>.png
+  See docs/map-generators/CLI.md for comparisons with nearest generators.
 """
 import argparse
 import re
@@ -131,6 +132,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		if (water[i])
 			L.terrain[i] = WATER;
 	layBeaches(L.terrain, t);
+	context.telemetry.measure("{id}.home.radius", L.homeRadius);
+	context.telemetry.measure("{id}.homes.actual", L.homes.size());
 	return L;
 }}
 
@@ -282,9 +285,10 @@ def main():
     print(f'Created {header.relative_to(ROOT)} and {source.relative_to(ROOT)} (legacy id {legacy}).')
     print('Registered it, added its source to src/SConscript and its keys to the translation tables')
     print('(English placeholders: translate them). Next:')
-    print('  scons release=1 -j12 map-generator-golden-test map-generator-defaults-test map-generator-study')
+    print('  scons release=1 -j12 map-generator-golden-test map-generator-defaults-test map-generator-study build/src/glob2')
     print('  build/src/MapGeneratorGoldenTest <profile> --update')
-    print(f'  tools/render_map.py sheet {args.id} <nearest generators> --out artifacts/{args.id}')
+    print(f'  build/src/glob2 --generate-map {args.id} --preview artifacts/{args.id}.png')
+    print('  Compare nearest generators at 128, 256, 512: docs/map-generators/CLI.md')
 
 
 if __name__ == '__main__':

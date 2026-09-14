@@ -174,9 +174,25 @@ FjordLayout computeLayout(Game &game, GenerationContext &context,
 		}
 	}
 
-	return FjordLayout{W,           H,          nbTeams, xf,
-					   coast,       coreR,      lakeR,   fjordInnerR,
-					   maxStretch,  hasLake,    lakeConnected, teamTheta,
+	context.telemetry.measure("fjord-continent.coast.rotation-radians", rotation);
+	context.telemetry.measure("fjord-continent.coast.elongation", elongation);
+	context.telemetry.measure("fjord-continent.core.radius", coreR);
+	context.telemetry.measure("fjord-continent.lake.radius", lakeR);
+	context.telemetry.measure("fjord-continent.fjords.inner-radius", fjordInnerR);
+	context.telemetry.choice("fjord-continent.connectivity.mode",
+							 lakeConnected ? "swimming" : "land-core");
+	return FjordLayout{W,
+					   H,
+					   nbTeams,
+					   xf,
+					   coast,
+					   coreR,
+					   lakeR,
+					   fjordInnerR,
+					   maxStretch,
+					   hasLake,
+					   lakeConnected,
+					   teamTheta,
 					   Stretch::toFill(W, H)};
 }
 
@@ -247,6 +263,9 @@ std::vector<std::vector<MapGeneratorPoint>> carveFjords(Game &game, GenerationCo
 		// ~1.5; this targets comfortably above that floor.
 		double tipWidth = layout.lakeConnected ? std::max(2.5, mouthWidth * 0.6) : 0.65;
 
+		context.telemetry.measure("fjord-continent.fjords.mouth-width", mouthWidth, k);
+		context.telemetry.measure("fjord-continent.fjords.tip-width", tipWidth, k);
+		context.telemetry.measure("fjord-continent.fjords.wiggle-amplitude", amplitude, k);
 		// About one disc per tile of the fjord's straight length (at least 24), so consecutive
 		// discs overlap into one channel even where the tip is narrow and the curve swings.
 		int steps = std::max(24, (int)(mouthR - layout.fjordInnerR));
@@ -360,6 +379,7 @@ void placeOutlierIslands(Game &game, GenerationContext &context, const FjordLayo
 	// players who want an island-heavy map, and each one is still an independent best-effort
 	// placement (a request that can't all fit in the margin just places as many as do).
 	int outlierCount = options.resourceIslands + int(context.bounded("layout", 2));
+	context.telemetry.measure("fjord-continent.outliers.requested", outlierCount);
 	std::vector<MapGeneratorPoint> outlierCenters;
 	std::vector<int> outlierRadii;
 	for (int oi = 0; oi < outlierCount; ++oi)
@@ -429,7 +449,11 @@ void placeOutlierIslands(Game &game, GenerationContext &context, const FjordLayo
 			outlierRadii.push_back(islandRadius);
 			placed = true;
 		}
+		if (!placed)
+			context.telemetry.fallback("fjord-continent.outliers.omitted",
+									   "No candidate fit outside the coast with clearance", oi);
 	}
+	context.telemetry.measure("fjord-continent.outliers.actual", outlierCenters.size());
 }
 
 // 5) Anchor each team out at its own tip: start just inland of the coast at
@@ -729,7 +753,7 @@ bool placeBankResources(Game &game, GenerationContext &context, const FjordLayou
 				// The amount controls place each rolled clump that many hundredths of a time: whole
 				// copies, and one more by chance from a stream of its own, so the rolls stay the
 				// same.
-				const int percent = resourceType == WHEAT   ? options.wheat
+				const int percent = resourceType == WHEAT  ? options.wheat
 									: resourceType == WOOD ? options.wood
 														   : options.stone;
 				int copies = percent / 100;
@@ -820,8 +844,8 @@ static bool generate(Game &game, GenerationContext &context)
 	guaranteeStartingResources(game, context, 24, 32);
 	// The scatter and bank clumps above are sized by the resource amounts, and the ambient scatter
 	// covers up to two thirds of the continent's grass at the top of their range.
-	reopenCrampedStarts(game, context, {options.wheat, options.wood, options.stone, options.algae,
-										options.fruit});
+	reopenCrampedStarts(game, context,
+						{options.wheat, options.wood, options.stone, options.algae, options.fruit});
 	return true;
 }
 

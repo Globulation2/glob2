@@ -271,9 +271,15 @@ def reanalyze(directory, policy='prestige', draws=1000, seed=1, k=32, output=Non
               'attempt_counts': dict(Counter(record['category'] for record in attempts)),
               'failure_rates': {category: count/len(attempts) for category,count in Counter(r['category'] for r in attempts).items()} if attempts else {},
               'configurations': [{'id':j['id'],'build':j['build'],'config':j['config'],'seeds':j['seeds'],'labels':j['labels']} for j in source.manifest['jobs']]}
+    from .map_telemetry import summarize
+    report['map_telemetry'] = summarize(records, draws, seed)
     out = Path(output) if output else Path(directory) / 'reports' / policy
     out.mkdir(parents=True,exist_ok=True)
     atomic_json(out/'report.json',report)
+    atomic_json(out/'map-telemetry.json', report['map_telemetry'])
+    write_csv(out/'map-telemetry-records.csv', report['map_telemetry']['records'])
+    write_csv(out/'map-metrics.csv', report['map_telemetry']['maps'])
+    write_csv(out/'map-telemetry-groups.csv', report['map_telemetry']['groups'])
     for name in ('observations','matchups','map_start_breakdown','paired_effects','generators','configurations'):
         write_csv(out/(name+'.csv'),report[name])
     lines = [f'# {source.manifest["id"]}', '', f'Policy: {policy}, version {POLICY_VERSION}. Results: {len(records)}/{len(source.manifest["jobs"])}.',
@@ -284,5 +290,14 @@ def reanalyze(directory, policy='prestige', draws=1000, seed=1, k=32, output=Non
             lines.append(f'| {fmt} | {competitor} | {rating:.1f} |')
     lines += ['', f'Uncertainty uses {report["uncertainty"]["complete_blocks"]} complete map/seed blocks, seed {seed}.',
               'Raw observations, failures, configurations, pairing and distribution summaries are in the adjacent JSON and CSV files.']
+    if report['map_telemetry']['groups']:
+        lines += ['', '## Map telemetry', '',
+                  '| Generator | Revision | Maps | Missing traces | Incomplete traces |',
+                  '| --- | --- | ---: | ---: | ---: |']
+        for group in report['map_telemetry']['groups']:
+            lines.append(f"| {group['generator']} | {group['revision']} | {group['maps']} | {group['missing']} | {group['incomplete']} |")
+        lines += ['', 'Groups retain complete configuration and build identity in map-telemetry.json.',
+                  'Numeric summaries average within each map before pooling maps. Raw sequence and subject are preserved.',
+                  'Observed fallback/choice rates may undercount when traces are missing or incomplete.']
     (out/'report.md').write_text('\n'.join(lines)+'\n')
     return report

@@ -366,7 +366,14 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			}
 		}
 		if (fits)
+		{
+			context.telemetry.choice("amphitheatre.bays.layout", beside ? "paired" : "far");
 			break;
+		}
+		context.telemetry.fallback(
+			"amphitheatre.bays.fit",
+			beside ? "Paired bays did not fit; trying far bays for every colony."
+				   : "Far bays did not fit.");
 		if (!beside)
 		{
 			L.failure = "A territory's bay does not fit; use a smaller bay or fewer colonies.";
@@ -383,6 +390,14 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		for (int i = 0; i < n; ++i)
 			if (stranded[i])
 				L.pocket[i] = 1;
+	}
+	context.telemetry.measure("amphitheatre.phase.radians", L.phase);
+	context.telemetry.measure("amphitheatre.arena.outer-radius", g.outer);
+	context.telemetry.measure("amphitheatre.home.depth-target", home);
+	for (int k = 0; k < teams; ++k)
+	{
+		context.telemetry.measure("amphitheatre.territory.area", L.areas[k], k);
+		context.telemetry.measure("amphitheatre.bay.corners", L.bayTiles[k], k);
 	}
 	L.pitMiddle = t.at(int(L.cx), int(L.cy));
 	return L;

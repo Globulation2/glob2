@@ -67,10 +67,22 @@ def main():
     assert {a['name'] for a in catalog['ais']}=={'numbi','castor','warrush','econo','nicowar','cortex','maxima','cabino'}
     (output/'catalog.json').write_text(json.dumps(catalog,indent=2))
     generated,map_dir=run('map',['--generate-map','--generator','15','--map-seed','42','--param','teams=2','--write-map','true','--rotations','2'])
+    assert catalog['map_report_version']==2 and catalog['generation_telemetry_version']==1
+    report=generated['map_report']
+    assert report['schema_version']==2 and report['report_type']=='map'
+    assert report['generation']['telemetry']['enabled']
+    assert report['generation']['telemetry']['records']
+    native_report=output/'native-map-report.json'
+    subprocess.run([str(binary),'--generate-map','symmetric-arena','--seed','42','--teams','2',
+                    '--json',str(native_report)],cwd=root,check=True,stdout=subprocess.DEVNULL,
+                   env=dict(os.environ,GLOB2_USER_DIR=str(output/'native-profile')))
+    assert json.loads(native_report.read_text())==report, 'native and distributed report contracts diverged'
     assert generated['rotations_verified'] and generated['request']['teams']==2
     assert generated['quality']['colonies'] and 'worst_wheat_distance' in generated['statistics']
     invalid,_=run('invalid-generator',['--generate-map','--generator','15','--map-seed','42','--param','teams=0'],2)
     assert invalid['status']=='invalid_request'
+    assert invalid['map_report']['report_type']=='generation_failure'
+    assert invalid['map_report']['generation']['telemetry']['records']
     base=['--run-game','--map-file',str(map_dir/'map-r0.map'),'--player','cortex','--player','cortex',
           '--game-seed','19','--ticks',str(args.ticks),'--telemetry','checksums']
     params=['--ai-param','0:swarmWorkerCap=4','--ai-param','1:swarmWorkerCap=7',

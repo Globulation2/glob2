@@ -55,6 +55,13 @@ rows for every platform CI builds on (`linux-x86_64` today, next to the maintain
 CI log, which the workflow prints before the check. The framework reference under
 `docs/map-generators/` describes the rules it enforces.
 
+`MapGeneratorGoldenTest <profile> --telemetry` compares telemetry enabled/disabled and repeated
+attempts for all registered generators at three seeds, including complete serialized worlds and
+RNG restoration. It prints generation-only timings and record counts; timing is diagnostic, not a
+flaky performance threshold. `python3 test/test_map_telemetry.py` tests the bulk collector's failure
+retention and aggregation. The existing JSON-report test covers typed telemetry, malformed reports,
+service failures and raw invalid requests. See [telemetry](../docs/map-generators/TELEMETRY.md).
+
 ## Map subclass test pattern
 
 Pattern used by `MapQueryTest.cpp` (commit `2d42c340`). Lets you write tests against `Map`'s predicates with a minimal link surface — no `globalContainer`, no real `Sector` array, no transitive pull of `Bullet` / `Team` / `Building` / `Unit` into the test binary.
@@ -296,6 +303,13 @@ SHA1 matches the host's header.
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
 
+## Cortex placement regression
+
+Build with `scons release=1 cortex-geometry-test` and run
+`./build/src/CortexGeometryHarness`. It compares 57,600 candidates against
+the tile-scan helpers, including wrapped corners, upgrade reservations,
+construction sites, map-only occupants, dead buildings, and empty colonies.
+
 ## Clearing flag resource bounds
 
 Build `scons release=1 server=0 clearing-gradient-test` and run
@@ -463,3 +477,30 @@ directory. `--initial FILE --ticks N` runs a retained initial state on another p
 It requires immutable macOS/Linux bundles and explicitly configured disposable
 worker directories, and kills only processes belonging to that pilot. See
 [the tournament guide](../docs/tournaments.md) for commands and validation policy.
+## Map CLI
+
+Build the normal client with `scons release=1 server=0`, then run
+`python3 test/test_map_cli.py build/src/glob2` (use `.exe` on Windows).
+The test uses a disposable profile and the shared `MapPreview` software renderer
+with an invalid video driver, proving PNG export requires no display.
+It compares explicit CLI settings against a config with CLI overrides,
+generated versus loaded map pixels, default/explicit 2×, 4× and 8× scales and preview sizes, loads a premade map and
+three checked-in saves, checks invalid arguments and output failures, and verifies
+inputs/preferences are unchanged. PNGs, command logs and hashes are retained in
+`artifacts/map-cli/` and uploaded by Linux CI. Windows CI also runs the full suite without a display. The optional
+`--generation-only` subset compares serialized maps from config/CLI settings
+and checks invalid settings and preferences.
+See [map CLI documentation](../docs/map-generators/CLI.md).
+
+### Map JSON reports
+
+Build `scons release=1 server=0 map-report-test`, then run
+`python3 test/test_map_report.py build/src/glob2 build/src/MapReportHarness`
+(add `.exe` to both binaries on Windows). The suite runs without graphics, checks
+the [published report contract](../docs/map-generators/REPORT.md), recomputes fairness
+formulas, and uses analytic maps to check wraparound, disconnected islands, algae
+blocking swimming, resource amounts and construction space. It verifies unchanged
+serialized state and simulation RNG, deterministic reports, config provenance,
+older saves, and output errors. Reports and commands are retained in
+`artifacts/map-report/` and uploaded by CI. The PNG CLI suite also exercises all
+three outputs together.

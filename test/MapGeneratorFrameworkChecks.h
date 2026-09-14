@@ -170,8 +170,40 @@ inline void distanceChecks()
 	assert(repeated == heights);
 }
 
+// Telemetry must be bounded and typed without rejecting otherwise valid generation.
+inline void telemetryChecks()
+{
+	GenerationTelemetry t;
+	t.measure("test.count", 7, 2);
+	t.measure("test.ratio", 0.25);
+	t.measure("test.flag", true);
+	t.choice("test.variant", "quoted \"choice\"\n");
+	t.fallback("test.plot", "omitted", 3);
+	assert(std::get<std::int64_t>(t.records()[0].value) == 7);
+	assert(t.records()[0].subject == 2);
+	assert(std::get<double>(t.records()[1].value) == 0.25);
+	assert(std::get<bool>(t.records()[2].value));
+	assert(t.records()[4].kind == "fallback");
+	t.measure("test.nan", std::numeric_limits<double>::quiet_NaN());
+	t.measure("test.infinity", std::numeric_limits<double>::infinity());
+	t.measure("test.overflow", std::numeric_limits<std::uint64_t>::max());
+	assert(t.invalidValues() == 3 && t.records().size() == 5);
+	t.choice("test.long", std::string(513, 'x'));
+	t.measure(std::string(129, 'x'), 1);
+	assert(t.droppedRecords() == 2);
+	for (size_t i = 5; i < GenerationTelemetry::kMaxRecords; ++i)
+		t.measure("test.count", i);
+	t.measure("test.excess", 1);
+	assert(t.records().size() == GenerationTelemetry::kMaxRecords && t.droppedRecords() == 3);
+	GenerationTelemetry disabled(false);
+	disabled.measure("test.nan", std::numeric_limits<double>::quiet_NaN());
+	disabled.fallback("test.plot", "omitted");
+	assert(disabled.records().empty() && disabled.invalidValues() == 0);
+}
+
 inline void frameworkChecks()
 {
+	telemetryChecks();
 	dispersionChecks();
 	distanceChecks();
 	using namespace MapGeneration;
@@ -238,6 +270,7 @@ inline void frameworkChecks()
 				game.addTeam();
 			std::vector<unsigned char> home(size_t(game.map.getW()) * game.map.getH(), 0);
 			int size = ctx.request.option("room");
+			ctx.telemetry.measure("test.home.tiles", size * size);
 			for (int y = 10; y < 10 + size; ++y)
 				for (int x = 10; x < 10 + size; ++x)
 					home[y * game.map.getW() + x] = 1;
@@ -255,30 +288,42 @@ inline void frameworkChecks()
 	auto surrounding = syncRandEngine();
 	{
 		Game game(nullptr);
-		assert(service.generate(game, request));
+		const auto observed = service.generate(game, request, true);
+		assert(observed && !observed.telemetry.records().empty());
+		assert(std::count_if(observed.telemetry.records().begin(),
+							 observed.telemetry.records().end(),
+							 [](const auto &r) { return r.key == "test.home.tiles"; }) == 1);
+		Game quiet(nullptr);
+		const auto unobserved = service.generate(quiet, request, false);
+		assert(unobserved && unobserved.telemetry.records().empty());
+		assert(mapFingerprint(game) == mapFingerprint(quiet));
 		assert(game.teams[0]->startPosX >= 10 && game.teams[0]->startPosX <= 12);
 	}
 	{
 		Game game(nullptr);
 		request.options["room"] = 4;
-		auto failure = service.generate(game, request);
+		auto failure = service.generate(game, request, true);
 		assert(failure.error == GenerationError::PlacementFailed && failure.stage == "settlement");
 		assert(failure.detail.find("worker tiles") != std::string::npos);
+		assert(failure.telemetry.records().front().key == "test.home.tiles");
+		assert(failure.telemetry.records().back().kind == "error");
 	}
 	{
 		Game game(nullptr);
 		request.options["room"] = 6;
 		request.options["cell"] = 4;
-		auto failure = service.generate(game, request);
+		auto failure = service.generate(game, request, true);
 		assert(failure.error == GenerationError::InvalidRequest && game.teamsCount() == 0);
 	}
 	{
 		Game game(nullptr);
 		request.options["cell"] = 8;
 		request.seed = 999;
-		auto failure = service.generate(game, request);
+		auto failure = service.generate(game, request, true);
 		assert(failure.error == GenerationError::InvalidWorld &&
 			   failure.stage == "generator validation");
+		assert(failure.telemetry.records().back().kind == "error");
+		assert(failure.telemetry.records().front().key == "test.home.tiles");
 	}
 	assert(syncRandEngine() == surrounding);
 	// Invalid weighted inputs fail explicitly; weighted metadata follows the shuffle.

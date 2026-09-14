@@ -666,6 +666,9 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 	bool planted = false;
 	for (int attempt = 0; attempt < 4 && !planted; ++attempt)
 	{
+		if (attempt > 0)
+			context.telemetry.fallback("symmetric-arena.orchard.phase-retry",
+									   "Previous phase did not leave three orchard orbits.");
 		// Phase 1 gives even walkways, 2 an avenue along each axis, 3 a grove on the centre; 0
 		// would join the four groves round the centre into one block with unpickable middle trees.
 		const int phase = attempt == 0 ? l.orchardPhase : attempt;
@@ -737,6 +740,10 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 			for (int i : orbit->tiles)
 				plan[size_t(i)] = type;
 		}
+		context.telemetry.measure("symmetric-arena.orchard.orbits", orbits.size());
+		context.telemetry.measure("symmetric-arena.orchard.stone-orbits", stones);
+		context.telemetry.measure("symmetric-arena.orchard.fruit-orbits", keptFruit);
+		context.telemetry.measure("symmetric-arena.orchard.phase-used", phase);
 		planted = true;
 	}
 	if (!planted)
@@ -864,6 +871,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.detail = "no home position fits these settings";
 		return false;
 	}
+	context.telemetry.measure("symmetric-arena.home.candidates", homes.size());
 	const Home home = chooseHome(homes, context, std::min(a.width, a.height));
 	Layout l;
 	l.homeU = home.u;
@@ -877,6 +885,12 @@ bool generate(Game &game, GenerationContext &context)
 			  l.home.y + kPondDistance * std::sin(l.pondAngle)};
 	l.orchardPhase = 1 + int(context.bounded("layout", 3));
 	l.orchardPattern = int(context.bounded("layout", 3));
+	context.telemetry.measure("symmetric-arena.home.spacing", home.spacing);
+	context.telemetry.measure("symmetric-arena.home.radius", home.radius);
+	context.telemetry.measure("symmetric-arena.pond.angle-radians", l.pondAngle);
+	context.telemetry.measure("symmetric-arena.orchard.phase", l.orchardPhase);
+	context.telemetry.measure("symmetric-arena.orchard.pattern", l.orchardPattern);
+	context.telemetry.measure("symmetric-arena.symmetry.order", a.symmetry.order());
 	Terrain t;
 	return buildTerrain(map, context, a, l, o, t) && placeColonies(game, context, a, l) &&
 		   furnish(game, context, a, l, o, t);
