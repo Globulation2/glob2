@@ -39,7 +39,7 @@ side bias); "vs Nicowar", 80 games unless noted (2026-07 entries: 100 paired see
 
 ### Wheat protection (checkerboard forbidden) — committed `65b95f1b`
 
-Paint a checkerboard forbidden pattern `(x+y)&1` over CORN so workers harvest one half
+Paint a checkerboard forbidden pattern `(x+y)&1` over WHEAT so workers harvest one half
 while the protected half stays full and reseeds it (forbidden blocks harvest but NOT
 growth — `MapStep.cpp` expand branch). Geometry/reconcile core is `CortexWheat.{h,cpp}`
 (no `Player*`, no `Orders`). Depth model: land+wheat BFS from the inn's walkable EXIT
@@ -53,10 +53,10 @@ shared RNG stream, replay-relevant). N capped 0–2 (real starter fields are ~5�
 ### Closed-loop wheat economy + never-halt — committed `dae6bb44`..`82efa919`
 
 - **Worker tuning**: nudge each swarm/inn `maxUnitWorking` ±1 per cycle inside
-  corn-buffer deadbands (`ACTION_TUNE_WORKERS` → `OrderModifyBuilding`, Castor-style
+  wheat-buffer deadbands (`ACTION_TUNE_WORKERS` → `OrderModifyBuilding`, Castor-style
   local write + `update()` + order).
-- **Engine facts driving thresholds**: swarm holds 20 CORN, 5/unit, 1 unit/150t,
-  STALLS at corn<5; extra workers only refill the buffer, they do NOT speed production
+- **Engine facts driving thresholds**: swarm holds 20 WHEAT, 5/unit, 1 unit/150t,
+  STALLS at wheat<5; extra workers only refill the buffer, they do NOT speed production
   → "at worker cap" is the expansion signal. Inn holds 10, feeds ~5× a swarm's draw.
 - **Pre-combat panic defense**: when attacked before combatPhase — swarms to 100%
   warriors, engine HIGH priority (`ACTION_SET_PRIORITY`), panic hospital.
@@ -118,7 +118,7 @@ The "peak 1 warrior / army-size keystone" corpus read was FALSE (Cortex fields 9
 warriors on Muka). **Real root cause: population overshoots wheat → chronic-starvation
 collapse** — win/loss splits cleanly on starving-fraction, not army size. Two coupled
 defects: no population governor (swarms mint workers through famine — the swarm's local
-corn buffer stays full while inns starve), and `combatPhase` conflating "established"
+wheat buffer stays full while inns starve), and `combatPhase` conflating "established"
 with "!starving" (famine → workers-only production → more mouths + no army
 replacement → death spiral). Fix: split into `economyEstablished` / `combatPhase
 (=established && !starving)` / `foodSaturated (=established && starving)`; feeding
@@ -133,8 +133,8 @@ growWarrior over-minting — losing armies are 3× SMALLER, high warrior share i
 symptom; offense-fails — Cortex attacks in 82% of losses). **Loss signature =
 economy SCALE / wheat throughput**: losses black out `feedCapacity==0` in 18% of
 mid-late cycles, stall ~39 units, starve. feedCap==0 is a GATE-ESTIMATE collapse (the
-radius-5 harvestable-corn probe), NOT literally empty inns — 57-96% of blackout inns
-still hold corn hauled from beyond the probe radius.
+radius-5 harvestable-wheat probe), NOT literally empty inns — 57-96% of blackout inns
+still hold wheat hauled from beyond the probe radius.
 
 - Fresh-patch relocation lever and max-swarm-cap removal (`13c2f4c9`, kept as cleanup):
   both FLAT. More swarms = more mouths; a 6-swarm/120-unit colony still starves.
@@ -187,31 +187,31 @@ production outruns the trickle.
 = base+(needs−base)/2; below base → workers only, below mid → 8:1 worker-dominant,
 above → warriors (never-{0,0,0} kept). The old rule flipped workers→warriors the
 instant `base` was met — on wheat-poor Muka that hit at ~13 workers with 16 open jobs →
-warriors during a labour shortage → corn stall → famine. S42 72.5→92.5%, Muka
+warriors during a labour shortage → wheat stall → famine. S42 72.5→92.5%, Muka
 8.8→43.8%. **Confirms worker:warrior production ratio is THE Muka lever.**
 
 ### Inn feedCap==0: checkerboard forbids the inn's own wheat (2026-06-21)
 
 Coordination failure: inn PLACEMENT gates on ≥5 harvestable tiles, then wheat
 PROTECTION forbids that same wheat → feedCap collapses to 0 → the inn-build gate
-degenerates to always-true → inn-spam on dead wheat. Fix: `countSurvivingCornWithin`
-(open-parity corn the checkerboard leaves harvestable — paint-timing-independent) at
+degenerates to always-true → inn-spam on dead wheat. Fix: `countSurvivingWheatWithin`
+(open-parity wheat the checkerboard leaves harvestable — paint-timing-independent) at
 the feedCapacity gate.
 
 ### Inn placement hug-wheat + restock-trips fix (2026-06-22), committed `a697e3b3`
 
 1. Inn worker count was structurally pinned to 1: `restockTripsNeeded` probed
    `Map::ressourceAvailable` on the inn's OWN footprint corner — always
-   `GRADIENT_FORBIDDEN` → trips always 0. Fix: raw CORN deficit in trips + radius-10
+   `GRADIENT_FORBIDDEN` → trips always 0. Fix: raw WHEAT deficit in trips + radius-10
    wheat-starved override.
-2. Inns must have surviving corn within 1 tile of the GROWN footprint edge (was: within
+2. Inns must have surviving wheat within 1 tile of the GROWN footprint edge (was: within
    radius 5).
 
 Muka **36.2→63.7%** (the within-1 placement change drove it), S42 96.2%. This also
 dissolved the earlier side-specific collapse (team1 lost 8/8, reproduced SOLO —
-root cause was inns physically unable to source corn: local wheat depleted/unreachable,
-`cornGrad=GRADIENT_UNREACHABLE` all famine; worker-mix levers cannot save a game with
-no collectable corn to haul).
+root cause was inns physically unable to source wheat: local wheat depleted/unreachable,
+`wheatGrad=GRADIENT_UNREACHABLE` all famine; worker-mix levers cannot save a game with
+no collectable wheat to haul).
 
 ### Muka stuck-site deadlock (2026-07-07) — site-priority-escalation family is DEAD
 
@@ -236,7 +236,7 @@ Artifacts: `.tmp/muka-diag/`, `.tmp/{lever1,lever2,stacked-lever1,stuck-site}.pa
 
 `c9f9d7ad` centralized decide() feasibility gates and moved expansion to ranking (ladder
 gate deleted; user decision KEEP). Seed-1-rev W→L traced: the CAPPED-DRAINING face
-fires on production-cycle corn noise (corn never reaches REM_HI=15 on Muka) while the
+fires on production-cycle wheat noise (wheat never reaches REM_HI=15 on Muka) while the
 patch still holds 47 harvestable tiles → LOW site drags 7.6k ticks → its delivery jobs
 inflate tierMid → worker-dominant mix → warrior ramp ~2k ticks late into Nicowar's
 punish window. Full dissection: `.tmp/rankgate-diag/FINDINGS.md`. **CortexTuning seam +

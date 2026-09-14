@@ -173,7 +173,7 @@ namespace Cortex
 	static const int CORTEX_FORWARD_STAGING_MAX_DIST = 8;
 
 	// --- wheat-protection tuning (all tunable AI design choices) -----------
-	// Cortex paints a checkerboard `forbidden` pattern over its wheat (CORN) so
+	// Cortex paints a checkerboard `forbidden` pattern over its wheat so
 	// workers harvest one half while the protected half stays full and reseeds it
 	// (forbidden blocks harvest, MapGradientGlobal.cpp:135, but NOT growth,
 	// MapStep.cpp:80). See docs/AI/cortex/wheat-protection-plan.md and the
@@ -189,7 +189,7 @@ namespace Cortex
 	/// gate classification.
 	static const int WHEAT_OPEN_MARGIN_MIN = 0;
 	static const int WHEAT_OPEN_MARGIN_MAX = 0;
-	/// Checkerboard parity: a reachable CORN tile with depth > N is painted
+	/// Checkerboard parity: a reachable WHEAT tile with depth > N is painted
 	/// forbidden when (x+y)&1 == WHEAT_PARITY. A fixed constant for determinism
 	/// (0 vs 1 is arbitrary). Used by the geometry core (CortexWheat.cpp).
 	static const int WHEAT_PARITY = 0;
@@ -200,18 +200,18 @@ namespace Cortex
 	static const int WHEAT_REGION_MARGIN = 10;
 
 	// --- closed-loop wheat-economy tuning (v6, all tunable AI design choices) ---
-	// The economy is a closed loop on each wheat-fed building's own CORN buffer.
+	// The economy is a closed loop on each wheat-fed building's own WHEAT buffer.
 	// The lever is per-building maxUnitWorking, set via OrderModifyBuilding (the
 	// same lever AICastor uses, ai/castor/Control.cpp:227-272). Engine facts the
 	// thresholds are derived from (game/entities/BuildingTypesColony.cpp):
-	//   Swarm L0: holds 20 CORN, costs resourceForOneUnit==5 per unit, makes one
+	//   Swarm L0: holds 20 WHEAT, costs resourceForOneUnit==5 per unit, makes one
 	//             unit / unitProductionTime==150 ticks, and STALLS outright when
-	//             resources[CORN] < 5 (building/TypeSteps.cpp:31). Worker count only
+	//             resources[WHEAT] < 5 (building/TypeSteps.cpp:31). Worker count only
 	//             refills the buffer; it does NOT speed production (timeout-gated).
-	//   Inn  L0: holds 10 CORN, feeds maxUnitInside==4 units, 1 CORN per unit per
+	//   Inn  L0: holds 10 WHEAT, feeds maxUnitInside==4 units, 1 WHEAT per unit per
 	//            timeToFeedUnit==24 ticks (~5x a swarm's draw per tick) — hungrier.
 	// The policy nudges maxUnitWorking by ONLY +/-1 per decision cycle and only
-	// outside a deadband, so the chunky 5-CORN production self-damps without an
+	// outside a deadband, so the chunky 5-WHEAT production self-damps without an
 	// explicit per-building timer (the user's "don't adjust too often" constraint).
 
 	/// Max swarms / inns the observation tracks individually (bounded POD arrays).
@@ -239,8 +239,8 @@ namespace Cortex
 	/// Swarm buffer control. Add a hauler at/below ADD_LO (one unit from a stall),
 	/// drop one at/above REM_HI (saturated: 3 units already buffered). The cap is
 	/// the user's early/mid ceiling; it lifts late-game (below).
-	static const int CORTEX_SWARM_CORN_ADD_LO = 5;
-	static const int CORTEX_SWARM_CORN_REM_HI = 15;
+	static const int CORTEX_SWARM_WHEAT_ADD_LO= 5;
+	static const int CORTEX_SWARM_WHEAT_REM_HI= 15;
 	static const int CORTEX_SWARM_WORKER_MIN  = 1;
 	static const int CORTEX_SWARM_WORKER_CAP  = 7;
 	/// Late-game escape hatch for the swarm cap: once the workers' BUILD skill has
@@ -250,8 +250,8 @@ namespace Cortex
 	static const int CORTEX_SWARM_CAP_LIFT_BUILDLEVEL = 3;
 	static const int CORTEX_SWARM_WORKER_CAP_LATE     = 12;
 
-	/// Inn hauler ceiling bounds. The inn's maxUnitWorking is set to its CORN-deficit
-	/// restock demand (TrackedBuilding::restockTripsNeeded — corn deficit in hauler
+	/// Inn hauler ceiling bounds. The inn's maxUnitWorking is set to its WHEAT-deficit
+	/// restock demand (TrackedBuilding::restockTripsNeeded — wheat deficit in hauler
 	/// trips), clamped to [MIN, CAP]. The engine self-regulates the actual hauler
 	/// count below this ceiling each tick (Building::desiredNumberOfWorkers), so these
 	/// are just the floor (always keep one maintaining hauler) and the cap (never pull
@@ -259,18 +259,18 @@ namespace Cortex
 	static const int CORTEX_INN_WORKER_MIN  = 1;
 	static const int CORTEX_INN_WORKER_CAP  = 6;
 
-	/// Inn wheat-starvation throttle. An inn whose nearest CORN tile is farther than
+	/// Inn wheat-starvation throttle. An inn whose nearest WHEAT tile is farther than
 	/// this many Chebyshev tiles (or absent within the scan cap) cannot keep haulers
 	/// usefuly busy — they have nothing to fetch — so its worker count is forced to
-	/// CORTEX_INN_WORKER_MIN regardless of its corn deficit. Mirrors the swarm
+	/// CORTEX_INN_WORKER_MIN regardless of its wheat deficit. Mirrors the swarm
 	/// wheat-starved clamp (CORTEX_SWARM_WHEAT_STARVED_RADIUS). Measured from the
 	/// inn's top-left corner via TrackedBuilding::nearestWheatDist. AI-design rule.
 	static const int CORTEX_INN_WHEAT_STARVED_RADIUS = 10;
 
 	/// Post-build settle window for a freshly finished inn. A new inn finishes with
-	/// an EMPTY corn buffer (0/10) and the engine's default worker count (2 for a
+	/// an EMPTY wheat buffer (0/10) and the engine's default worker count (2 for a
 	/// level-0 inn, Settings.cpp). Left ungated, the worker-tuning loop (Priority
-	/// 1.5) reads corn==0 < ADD_LO the very next decision cycle and spikes the
+	/// 1.5) reads wheat==0 < ADD_LO the very next decision cycle and spikes the
 	/// worker count upward immediately — chasing a buffer that simply has not been
 	/// filled yet. Hold the inn at its as-built worker count for this many ticks
 	/// (25 ticks/s × 60 s = one minute) so its first haulers can fill the buffer
@@ -293,7 +293,7 @@ namespace Cortex
 	///     maxUnitInside × (WORK_TICKS + timeToFeedUnit) / timeToFeedUnit
 	/// units (L0: 4×345/24 ≈ 57; L1: 7×336/15 ≈ 156; L2: 17×330/9 ≈ 623). We then
 	/// take half (SAFETY_NUM/DEN) as the design figure, reserving headroom for walk
-	/// time to/from the inn, slot queueing, and corn-supply lag — so an inn is
+	/// time to/from the inn, slot queueing, and wheat-supply lag — so an inn is
 	/// "good for" ~28 units (L0), ~78 (L1), ~311 (L2), versus the old 4/7/17.
 	static const int CORTEX_UNIT_WORK_TICKS_PER_FEED = 321;
 	static const int CORTEX_INN_CAPACITY_SAFETY_NUM  = 1;
@@ -315,30 +315,30 @@ namespace Cortex
 
 	/// Placement geometry for wheat-fed buildings. A new swarm must sit at least
 	/// MIN_SPACING from any existing swarm (so two swarms don't share one wheat
-	/// catchment) and no farther than WHEAT_MAX_DIST from a CORN tile (beyond that
-	/// the 5-CORN/150-tick haul can't keep the buffer above the stall line). Inns
+	/// catchment) and no farther than WHEAT_MAX_DIST from a WHEAT tile (beyond that
+	/// the 5-WHEAT/150-tick haul can't keep the buffer above the stall line). Inns
 	/// honour WHEAT_MAX_DIST too (same haul logic, hungrier). Chebyshev tiles.
 	static const int CORTEX_SWARM_MIN_SPACING = 6;
 	static const int CORTEX_WHEAT_MAX_DIST    = 5;
-	/// A swarm's footprint edge must sit within this many Chebyshev tiles of a CORN
+	/// A swarm's footprint edge must sit within this many Chebyshev tiles of a WHEAT
 	/// tile so haulers reach wheat in one short trip. Stricter than the shared
 	/// CORTEX_WHEAT_MAX_DIST corner check (which still gates inns); measured from the
-	/// footprint EDGE via anyCornWithin, not the top-left corner. AI-design rule.
+	/// footprint EDGE via anyWheatWithin, not the top-left corner. AI-design rule.
 	static const int CORTEX_SWARM_WHEAT_EDGE_DIST = 2;
 	/// An inn's GROWN (expansion-inclusive) footprint edge must sit within this many
-	/// Chebyshev tiles of a HARVESTABLE (surviving-parity, non-forbidden) CORN tile.
-	/// Measured from the grown 3x3 box via countSurvivingCornWithin so the inn — and
+	/// Chebyshev tiles of a HARVESTABLE (surviving-parity, non-forbidden) WHEAT tile.
+	/// Measured from the grown 3x3 box via countSurvivingWheatWithin so the inn — and
 	/// the tiles it will expand into — hugs the wheat and never opens a multi-tile gap
 	/// to the field its haulers feed from. Stricter and grown-footprint-aware compared
 	/// to the swarm edge check (placed footprint, forbidden-blind). AI-design rule.
 	static const int CORTEX_INN_WHEAT_EDGE_DIST = 1;
 	/// A new swarm or inn must have at least CORTEX_WHEAT_MIN_TILES HARVESTABLE wheat
-	/// (CORN) tiles within CORTEX_WHEAT_MIN_TILES_RADIUS Chebyshev tiles of its
-	/// footprint edge. "Harvestable" == CORN AND not forbidden for this team: the
+	/// (WHEAT) tiles within CORTEX_WHEAT_MIN_TILES_RADIUS Chebyshev tiles of its
+	/// footprint edge. "Harvestable" == WHEAT AND not forbidden for this team: the
 	/// checkerboard wheat-protection paint forbids half the field (forbidden blocks
-	/// harvest, MapGradientGlobal.cpp:135), and depleted tiles are no longer CORN at
-	/// all. The other wheat gates (nearestCornDist / anyCornWithin) only require ONE
-	/// CORN tile in reach and count forbidden tiles, which let a swarm land next to a
+	/// harvest, MapGradientGlobal.cpp:135), and depleted tiles are no longer WHEAT at
+	/// all. The other wheat gates (nearestWheatDist / anyWheatWithin) only require ONE
+	/// WHEAT tile in reach and count forbidden tiles, which let a swarm land next to a
 	/// nearly-exhausted patch and an inn land on a field whose harvestable half was
 	/// already gone. Requiring a real cluster of harvestable wheat keeps wheat-fed
 	/// buildings on a field that can actually sustain them. AI-design rule, no engine
@@ -347,7 +347,7 @@ namespace Cortex
 	static const int CORTEX_WHEAT_MIN_TILES_RADIUS = 5;
 	/// Runtime wheat-starvation throttle for an EXISTING swarm (the worker-tuning loop,
 	/// CortexPolicy Priority 1.5): while a swarm has fewer than
-	/// CORTEX_SWARM_WHEAT_STARVED_TILES non-forbidden CORN tiles within
+	/// CORTEX_SWARM_WHEAT_STARVED_TILES non-forbidden WHEAT tiles within
 	/// CORTEX_SWARM_WHEAT_STARVED_RADIUS Chebyshev tiles of its footprint, cap its
 	/// worker count at CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP — extra haulers cannot
 	/// find wheat to harvest and just idle or thrash the depleted patch. A wider radius
@@ -356,7 +356,7 @@ namespace Cortex
 	static const int CORTEX_SWARM_WHEAT_STARVED_TILES      = 5;
 	static const int CORTEX_SWARM_WHEAT_STARVED_RADIUS     = 10;
 	static const int CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP = 1;
-	/// Bound on the nearest-CORN radial scan (CortexPlacement::nearestCornDist):
+	/// Bound on the nearest-WHEAT radial scan (CortexPlacement::nearestWheatDist):
 	/// tiles beyond this report "no wheat in reach" (-1). A few past WHEAT_MAX_DIST
 	/// so the supply-distance expansion trigger can still measure "just out of range".
 	static const int CORTEX_WHEAT_SCAN_CAP = 12;
@@ -377,7 +377,7 @@ namespace Cortex
 	/// far from every existing inn (same rationale as CORTEX_SWARM_MIN_SPACING).
 	static const int CORTEX_INN_MIN_SPACING     = 6;
 	/// Wheat-lane clearance: only swarms and inns may sit within this many Chebyshev
-	/// tiles of a CORN tile. Every other building type is pushed back to a distance
+	/// tiles of a WHEAT tile. Every other building type is pushed back to a distance
 	/// > CORTEX_WHEAT_CLEAR_DIST so it does not block workers harvesting the field.
 	/// Inclusive reject (distance == CLEAR_DIST is still "within").
 	static const int CORTEX_WHEAT_CLEAR_DIST    = 4;

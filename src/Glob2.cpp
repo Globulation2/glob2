@@ -193,7 +193,7 @@ int Glob2::runTestMapGeneration()
 
 
 #ifndef YOG_SERVER_ONLY
-// Headless tooling: dump a map's CORN (wheat) layout and team start positions as
+// Headless tooling: dump a map's wheat layout and team start positions as
 // ASCII, to sanity-check AI wheat-protection field geometry. Reuses the real
 // Game::load path so the data matches what the engine sees. Not a gameplay feature.
 static int dumpResources(const std::string& mapName)
@@ -218,28 +218,28 @@ static int dumpResources(const std::string& mapName)
 	Map& map = game.map;
 	const int w = map.getW();
 	const int h = map.getH();
-	int cornCount = 0;
+	int wheatCount = 0;
 	int minX = w, minY = h, maxX = -1, maxY = -1;
 	for (int y = 0; y < h; y++)
 		for (int x = 0; x < w; x++)
-			if (map.getResource(x, y).type == CORN)
+			if (map.getResource(x, y).type == WHEAT)
 			{
-				cornCount++;
+				wheatCount++;
 				if (x < minX) minX = x; if (x > maxX) maxX = x;
 				if (y < minY) minY = y; if (y > maxY) maxY = y;
 			}
 
 	const int teamCount = game.mapHeader.getNumberOfTeams();
 	std::cout << "Map " << mapName << " : " << w << "x" << h
-	          << ", teams=" << teamCount << ", CORN tiles=" << cornCount;
-	if (cornCount > 0)
-		std::cout << ", CORN bbox=(" << minX << "," << minY << ")-(" << maxX << "," << maxY << ")";
+	          << ", teams=" << teamCount << ", WHEAT tiles=" << wheatCount;
+	if (wheatCount > 0)
+		std::cout << ", WHEAT bbox=(" << minX << "," << minY << ")-(" << maxX << "," << maxY << ")";
 	std::cout << std::endl;
 	for (int t = 0; t < teamCount; t++)
 		if (game.teams[t])
 			std::cout << "  team " << t << " start=(" << game.teams[t]->startPosX
 			          << "," << game.teams[t]->startPosY << ")" << std::endl;
-	std::cout << "  legend: C=corn ~=water #=non-walkable .=land  digit=team start" << std::endl;
+	std::cout << "  legend: C=wheat ~=water #=non-walkable .=land  digit=team start" << std::endl;
 
 	for (int y = 0; y < h; y++)
 	{
@@ -247,7 +247,7 @@ static int dumpResources(const std::string& mapName)
 		for (int x = 0; x < w; x++)
 		{
 			char c;
-			if (map.getResource(x, y).type == CORN)      c = 'C';
+			if (map.getResource(x, y).type == WHEAT)      c = 'C';
 			else if (map.isWater(x, y))                    c = '~';
 			else if (!map.isFreeForGroundUnitNoForbidden(x, y, false)) c = '#';
 			else                                           c = '.';
@@ -355,7 +355,7 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 	          << ", consumer seeds=" << seeds.size()
 	          << ", region=(" << boxMinX << "," << boxMinY << ")-(" << boxMaxX << "," << boxMaxY << ")"
 	          << " [fog bypassed]" << std::endl;
-	std::cout << "  legend: ~=water #=blocked .=land c=corn(unreached) o=open-margin"
+	std::cout << "  legend: ~=water #=blocked .=land c=wheat(unreached) o=open-margin"
 	             " +=harvest-half X=forbidden S=seed " << team << "=start" << std::endl;
 
 	for (int N = 0; N <= 2; N++)
@@ -383,7 +383,7 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 				else if (cls == Cortex::WC_OPEN_MARGIN)    c = 'o';
 				else if (cls == Cortex::WC_FORBIDDEN)      c = 'X';
 				else if (cls == Cortex::WC_CHECKER_OPEN)   c = '+';
-				else if (map.getResource(x, y).type == CORN) c = 'c';
+				else if (map.getResource(x, y).type == WHEAT) c = 'c';
 				else if (map.isWater(x, y))                c = '~';
 				else if (!map.isFreeForGroundUnitNoForbidden(x, y, false)) c = '#';
 				else                                       c = '.';

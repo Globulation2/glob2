@@ -209,7 +209,7 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 			// Fill in wheat
 			std::vector<MapGeneratorPoint> points;
 			getAllPoints(game, grid, areaNumbers[0], points);
-			fillInResource(game, points, CORN, 2);
+			fillInResource(game, points, WHEAT, 2);
 			points.clear();
 			
 			// Place some fruit

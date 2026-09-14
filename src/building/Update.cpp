@@ -430,7 +430,7 @@ bool Building::isHardSpaceForBuildingSite(ConstructionResultState requestedState
 
 bool Building::fullInside(void)
 {
-	if ((type->canFeedUnit) && (resources[CORN]<=(int)unitsInside.size()))
+	if ((type->canFeedUnit) && (resources[WHEAT]<=(int)unitsInside.size()))
 		return true;
 	else
 		return ((signed)unitsInside.size()>=maxUnitInside);

@@ -57,8 +57,8 @@ namespace Cortex
 	/// can revert the early-explorer mix cleanly without reading raw swarm ratios).
 	/// v6 (2026-06-05, closed-loop wheat-economy increment) added the per-building
 	/// economy signals: TrackedBuilding arrays for our swarms (trackedSwarms[]) and
-	/// inns (trackedInns[]) carrying each building's gid, CORN buffer, maxCorn,
-	/// maxUnitWorking, occupancy, and nearest-CORN distance — the inputs to the
+	/// inns (trackedInns[]) carrying each building's gid, WHEAT buffer, maxWheat,
+	/// maxUnitWorking, occupancy, and nearest-WHEAT distance — the inputs to the
 	/// worker-tuning control loop and the supply-distance expansion gate — plus
 	/// BuildCandidate.wheatDist (a candidate site's distance to the nearest wheat)
 	/// for the min-swarm-spacing / max-wheat-distance placement constraints.
@@ -94,19 +94,19 @@ namespace Cortex
 	/// policy stop minting workers (warriors-and-scout mix) once idle labour piles
 	/// up and resume once it drains, reading the on/off state without raw ratios.
 	/// v12 (2026-06-06, wheat-starved swarm throttle) added
-	/// TrackedBuilding.harvestableWheatNearby — the count of non-forbidden CORN tiles
+	/// TrackedBuilding.harvestableWheatNearby — the count of non-forbidden WHEAT tiles
 	/// within CORTEX_SWARM_WHEAT_STARVED_RADIUS of a swarm's footprint (filled for
 	/// swarms; -1 for inns / when unknown). The worker-tuning loop caps a swarm at
 	/// CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP workers while this is below
 	/// CORTEX_SWARM_WHEAT_STARVED_TILES — no point staffing more haulers than there is
 	/// reachable wheat to harvest.
-	/// v13 (2026-06-06, inn hauler ceiling = corn-deficit demand) added
-	/// TrackedBuilding.restockTripsNeeded — for inns, the CORN deficit (maxCorn - corn)
-	/// expressed in hauler TRIPS (deficit / multiplierResource[CORN]). Corn is the feed
+	/// v13 (2026-06-06, inn hauler ceiling = wheat-deficit demand) added
+	/// TrackedBuilding.restockTripsNeeded — for inns, the WHEAT deficit (maxWheat - wheat)
+	/// expressed in hauler TRIPS (deficit / multiplierResource[WHEAT]). Wheat is the feed
 	/// resource that limits how many units the inn sustains, so the hauler ceiling tracks
-	/// how empty the corn buffer is; fruit is happiness garnish and is excluded. The
+	/// how empty the wheat buffer is; fruit is happiness garnish and is excluded. The
 	/// worker-tuning loop sets the inn's maxUnitWorking to this (clamped to [MIN, CAP]),
-	/// EXCEPT when nearestWheatDist puts all corn beyond CORTEX_INN_WHEAT_STARVED_RADIUS,
+	/// EXCEPT when nearestWheatDist puts all wheat beyond CORTEX_INN_WHEAT_STARVED_RADIUS,
 	/// which forces the floor (haulers would have nothing to fetch). It does NOT gate on
 	/// Map::resourceAvailable: that probes the inn's own footprint tile, which the
 	/// resource gradient always marks forbidden, so it zeroed the deficit and pinned
@@ -213,7 +213,7 @@ namespace Cortex
 		Sint32 x;     ///< Map tile x of the building's top-left corner. Valid only if valid==1.
 		Sint32 y;     ///< Map tile y.
 		Sint32 score; ///< Relative placement score; higher is better. Ranking only, not normalized.
-		Sint32 wheatDist; ///< Chebyshev distance from this footprint to the nearest CORN tile, or -1 if none within CORTEX_WHEAT_SCAN_CAP. Meaningful for wheat-fed sites (swarm/inn); left -1 for flag targets. Filled by placeCandidates.
+		Sint32 wheatDist; ///< Chebyshev distance from this footprint to the nearest WHEAT tile, or -1 if none within CORTEX_WHEAT_SCAN_CAP. Meaningful for wheat-fed sites (swarm/inn); left -1 for flag targets. Filled by placeCandidates.
 	};
 
 	/// One of our own existing wheat-fed buildings (a swarm or an inn), projected
@@ -224,17 +224,17 @@ namespace Cortex
 	{
 		Sint32 valid;          ///< 0 = empty slot.
 		Sint32 gid;            ///< Building::gid (OrderModifyBuilding target), or -1 when invalid.
-		Sint32 corn;           ///< resources[CORN] — the current wheat buffer driving the control loop.
-		Sint32 maxCorn;        ///< type->maxResource[CORN] — the buffer ceiling.
+		Sint32 wheat;          ///< resources[WHEAT] — the current wheat buffer driving the control loop.
+		Sint32 maxWheat;       ///< type->maxResource[WHEAT] — the buffer ceiling.
 		Sint32 maxUnitWorking; ///< Current maxUnitWorking (worker request); the value the loop nudges +/-1.
 		Sint32 unitsInside;    ///< unitsInside.size() — occupancy (inns: units feeding/queued).
 		Sint32 maxUnitInside;  ///< type->maxUnitInside — occupancy ceiling.
-		Sint32 nearestWheatDist; ///< Chebyshev to the nearest CORN tile (supply-distance expansion signal), or -1 if none within CORTEX_WHEAT_SCAN_CAP.
-		Sint32 harvestableWheatNearby; ///< Swarms only: count of non-forbidden CORN tiles within CORTEX_SWARM_WHEAT_STARVED_RADIUS of the footprint (the wheat-starved worker-throttle signal). -1 for inns / when unknown (game absent).
+		Sint32 nearestWheatDist; ///< Chebyshev to the nearest WHEAT tile (supply-distance expansion signal), or -1 if none within CORTEX_WHEAT_SCAN_CAP.
+		Sint32 harvestableWheatNearby; ///< Swarms only: count of non-forbidden WHEAT tiles within CORTEX_SWARM_WHEAT_STARVED_RADIUS of the footprint (the wheat-starved worker-throttle signal). -1 for inns / when unknown (game absent).
 		Sint32 restockTripsNeeded; ///< Inns only: collectable restock demand in hauler trips (Σ over stocked resources of (cap-stock)/multiplier, counting only resources currently reachable/in-sight via Map::resourceAvailable). The inn-hauler ceiling. -1 for swarms / when unknown (game absent).
 		Sint32 priority;       ///< Building::priority (-1/0/+1) — lets the policy raise/restore swarm priority for the panic defense.
 		Sint32 ticksSinceFinished; ///< Inns only: ticks since Cortex first saw this inn finished (the post-build tune-cooldown clock); -1 = unknown / not tracked. Stamped by AICortex after observe(); swarms leave it -1.
-		Sint32 diagBlindCornNearby; ///< DIAGNOSTIC (inns only): forbidden-BLIND CORN-tile count within CORTEX_WHEAT_MIN_TILES_RADIUS of the footprint. (diagBlindCornNearby - harvestableWheatNearby) is the forbidden-but-present corn — separates checkerboard-forbidding from field depletion at a feedCap blackout. No policy reads it; -1 when unknown. NOT networked (observation is rebuilt each cycle).
+		Sint32 diagBlindWheatNearby; ///< DIAGNOSTIC (inns only): forbidden-BLIND WHEAT-tile count within CORTEX_WHEAT_MIN_TILES_RADIUS of the footprint. (diagBlindWheatNearby - harvestableWheatNearby) is the forbidden-but-present wheat — separates checkerboard-forbidding from field depletion at a feedCap blackout. No policy reads it; -1 when unknown. NOT networked (observation is rebuilt each cycle).
 	};
 
 	/// One of our own CONSTRUCTION SITES (a new build or an in-progress upgrade),
@@ -423,7 +423,7 @@ namespace Cortex
 		// --- closed-loop wheat economy (v6) ---
 		// Our own FINISHED swarms and inns, one TrackedBuilding each (index-scan
 		// order over team->myBuildings, capped at the array bounds). The pure policy
-		// reads each building's CORN buffer + maxUnitWorking to nudge worker counts
+		// reads each building's WHEAT buffer + maxUnitWorking to nudge worker counts
 		// (ACTION_TUNE_WORKERS) and its nearestWheatDist to decide expansion. Reading
 		// our OWN buildings is not a fog cheat. *Count is the number of valid entries.
 		Sint32 swarmCount;

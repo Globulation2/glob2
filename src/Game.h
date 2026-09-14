@@ -113,6 +113,7 @@ static constexpr float TEAM_COLOR_HUE_DEGREES = 360.0f;
 
 class Game
 {
+	friend class PointBarRenderTest;
 	bool hasSavedRandomState = false;
 	friend class HighResolutionIntegrationHarness;
 	friend class EnteringUnitDrawHarness;
