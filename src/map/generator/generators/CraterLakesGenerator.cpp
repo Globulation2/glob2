@@ -26,12 +26,15 @@ static bool generate(Game &game, GenerationContext &context)
 {
 	const CraterLakesOptions options(context.request);
 	const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(context.request, false);
-	if (!generateHeightField(game, context, terrain,
-							 [&](HeightMap &hm, unsigned w, unsigned h, float smoothing)
-							 {
-								 hm.makeCraters(w * h * options.lake_density / 30000,
-												options.lake_size, smoothing);
-							 }))
+	if (!generateHeightField(
+			game, context, terrain,
+			[&](HeightMap &hm, unsigned w, unsigned h, float smoothing)
+			{
+				context.telemetry.measure("crater-lakes.bowls.requested",
+										  w * h * options.lake_density / 30000);
+				context.telemetry.measure("crater-lakes.bowl.radius", options.lake_size);
+				hm.makeCraters(w * h * options.lake_density / 30000, options.lake_size, smoothing);
+			}))
 		return false;
 	context.stage = "starts";
 	if (!placeStarts(game, context))

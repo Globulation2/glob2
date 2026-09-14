@@ -294,34 +294,104 @@ StartQualityReport canonicalQuality(Game &game)
 	} restore(game.map);
 	return scoreStarts(game, game.teamsCount());
 }
+J telemetryJson(const GenerationTelemetry &telemetry)
+{
+	std::vector<J> records;
+	for (const auto &r : telemetry.records())
+		records.push_back(
+			J::object({{"key", r.key},
+					   {"kind", r.kind},
+					   {"subject", r.subject < 0 ? J() : J(r.subject)},
+					   {"value", std::visit([](const auto &v) { return J(v); }, r.value)}}));
+	return J::object({{"schema_version", 1},
+					  {"enabled", telemetry.enabled()},
+					  {"record_limit", GenerationTelemetry::kMaxRecords},
+					  {"dropped_records", telemetry.droppedRecords()},
+					  {"invalid_values", telemetry.invalidValues()},
+					  {"records", J::array(records)}});
+}
+const char *generationErrorName(GenerationError error)
+{
+	switch (error)
+	{
+	case GenerationError::None:
+		return "none";
+	case GenerationError::InvalidRequest:
+		return "invalid_request";
+	case GenerationError::NonEmptyTarget:
+		return "non_empty_target";
+	case GenerationError::PlacementFailed:
+		return "placement_failed";
+	case GenerationError::InvalidWorld:
+		return "invalid_world";
+	}
+	return "unknown";
+}
 J generationJson(const GenerationRequest *request, const GenerationResult *result)
 {
 	if (!request)
 		return J::object(
 			{{"available", false},
 			 {"parameters", J()},
+			 {"telemetry", J()},
 			 {"reason", "Map/save files do not store the complete original generator request"}});
-	const auto &definition = GeneratorRegistry::builtins().at(request->method);
-	std::vector<std::pair<std::string, J>> parameters;
+	const auto *definition = GeneratorRegistry::builtins().find(request->method);
+	std::vector<std::pair<std::string, J>> parameters, rawOptions;
+	for (const auto &entry : request->options)
+		rawOptions.push_back({entry.first, entry.second});
+	bool resolved = definition != nullptr;
+	const auto addControl = [&](const GeneratorControl &c)
+	{
+		const bool shared =
+			c.id == "width" || c.id == "height" || c.id == "teams" || c.id == "workers";
+		if (!shared && request->options.find(c.id) == request->options.end())
+		{
+			resolved = false;
+			return;
+		}
+		const int v = c.get(*request);
+		if (v != c.normalize(v))
+			resolved = false;
+		else
+			parameters.push_back({c.id, c.displayValue(v)});
+	};
 	for (const auto &c : GenerationRequest::sharedControls())
-		parameters.push_back({c.id, c.displayValue(c.get(*request))});
-	for (const auto &c : definition.controls)
-		parameters.push_back({c.id, c.displayValue(c.get(*request))});
+		addControl(c);
+	if (definition)
+		for (const auto &c : definition->controls)
+			addControl(c);
 	std::vector<J> legacyAmounts;
 	for (int n : request->resourceAmounts)
 		legacyAmounts.push_back(n);
 	return J::object(
 		{{"available", true},
-		 {"generator", definition.id},
-		 {"legacy_id", definition.legacyId},
-		 {"revision", definition.revision},
+		 {"generator", result && !result->generatorId.empty() ? J(result->generatorId)
+					   : definition                           ? J(definition->id)
+															  : J()},
+		 {"legacy_id", request->method},
+		 {"revision", result       ? result->revision
+					  : definition ? definition->revision
+								   : 0},
 		 {"seed", request->seed},
-		 {"parameters", J::object(parameters)},
+		 {"parameters", resolved ? J::object(parameters) : J()},
+		 {"raw_request", J::object({{"method", request->method},
+									{"width_exponent", request->wDec},
+									{"height_exponent", request->hDec},
+									{"teams", request->nbTeams},
+									{"workers", request->nbWorkers},
+									{"options", J::object(rawOptions)}})},
 		 {"legacy_terrain_type", int(request->terrainType)},
 		 {"legacy_resource_amounts", J::array(legacyAmounts)},
+		 {"telemetry", result ? telemetryJson(result->telemetry) : J()},
+		 {"outcome", result ? J::object({{"success", bool(*result)},
+										 {"stage", result->stage},
+										 {"error", generationErrorName(result->error)},
+										 {"detail", result->detail}})
+							: J()},
 		 {"selection_quality",
-		  result ? qualityJson(result->quality, definition.qualityWeights, definition.qualityScale)
-				 : J()}});
+		  result && *result && definition
+			  ? qualityJson(result->quality, definition->qualityWeights, definition->qualityScale)
+			  : J()}});
 }
 
 J movementReport(const Game &game, const StepCosts &costs,
@@ -609,7 +679,8 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	const auto quality = canonicalQuality(game);
 	return pretty(
 			   J::object(
-				   {{"schema_version", 1},
+				   {{"schema_version", 2},
+					{"report_type", "map"},
 					{"engine", J::object({{"version_major", VERSION_MAJOR},
 										  {"version_minor", VERSION_MINOR}})},
 					{"map", J::object({{"name", request ? J() : J(game.mapHeader.getMapName())},
@@ -683,5 +754,17 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 								{"walking_and_clearing",
 								 movementReport(game, StepCosts::chopping(), anchors)}})}})
 				   .text) +
+		   "\n";
+}
+
+std::string describeGenerationFailure(const GenerationRequest &request,
+									  const GenerationResult &result)
+{
+	return pretty(J::object({{"schema_version", 2},
+							 {"report_type", "generation_failure"},
+							 {"engine", J::object({{"version_major", VERSION_MAJOR},
+												   {"version_minor", VERSION_MINOR}})},
+							 {"generation", generationJson(&request, &result)}})
+					  .text) +
 		   "\n";
 }

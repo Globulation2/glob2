@@ -22,15 +22,17 @@ def contract(value, schema=SCHEMA, path='$'):
         target = SCHEMA
         for part in schema['$ref'].split('/')[1:]:
             target = target[part]
-        return contract(value,target,path)
+        contract(value,target,path)
     if 'anyOf' in schema:
         for variant in schema['anyOf']:
             try:
                 contract(value,variant,path)
-                return
+                break
             except AssertionError:
                 pass
-        raise AssertionError(f'{path}: no schema variant matches')
+        else:
+            raise AssertionError(f'{path}: no schema variant matches')
+    if 'enum' in schema: assert value in schema['enum'], path
     if 'const' in schema:
         assert type(value) is type(schema['const']) and value == schema['const'], path
     if 'type' in schema:
@@ -49,9 +51,44 @@ def contract(value, schema=SCHEMA, path='$'):
             else:
                 assert extra is not False, (path,key)
                 if isinstance(extra,dict): contract(child,extra,path+'.'+key)
-    if isinstance(value,list) and 'items' in schema:
-        for i, child in enumerate(value): contract(child,schema['items'],f'{path}[{i}]')
-    if type(value) in (int,float): assert math.isfinite(value), path
+    if isinstance(value,list):
+        if 'minItems' in schema: assert len(value) >= schema['minItems'], path
+        if 'maxItems' in schema: assert len(value) <= schema['maxItems'], path
+        if 'items' in schema:
+            for i, child in enumerate(value): contract(child,schema['items'],f'{path}[{i}]')
+    if isinstance(value,str):
+        if 'minLength' in schema: assert len(value) >= schema['minLength'], path
+        if 'maxLength' in schema: assert len(value) <= schema['maxLength'], path
+    if type(value) in (int,float):
+        assert math.isfinite(value), path
+        if 'minimum' in schema: assert value >= schema['minimum'], path
+        if 'maximum' in schema: assert value <= schema['maximum'], path
+
+
+def contract_rejections(report):
+    """Guard both root anyOf sibling validation and the bounded telemetry contract."""
+    def rejected(label, mutate):
+        invalid = json.loads(json.dumps(report))
+        mutate(invalid)
+        try:
+            contract(invalid)
+        except AssertionError:
+            return
+        raise AssertionError('Schema accepted invalid fixture: '+label)
+
+    def telemetry(j):
+        return j['generation']['telemetry']
+
+    rejected('unexpected root property', lambda j: j.update(unexpected=True))
+    rejected('map width type', lambda j: j['map'].update(width='128'))
+    rejected('telemetry kind enum', lambda j: telemetry(j)['records'][0].update(kind='unknown'))
+    rejected('telemetry value type', lambda j: telemetry(j)['records'][0].update(value={}))
+    rejected('negative subject', lambda j: telemetry(j)['records'][0].update(subject=-1))
+    rejected('negative dropped count', lambda j: telemetry(j).update(dropped_records=-1))
+    rejected('empty telemetry key', lambda j: telemetry(j)['records'][0].update(key=''))
+    rejected('long telemetry key', lambda j: telemetry(j)['records'][0].update(key='x'*129))
+    rejected('long telemetry text', lambda j: telemetry(j)['records'][0].update(value='x'*513))
+    rejected('too many records', lambda j: telemetry(j).update(records=[telemetry(j)['records'][0]]*4097))
 
 
 def close(actual, expected):
@@ -119,7 +156,24 @@ def main():
             assert result.returncode == (0 if ok else 1),logs[-1]
         run([OUT/'fixtures'],executable=HARNESS)
         fixtures={p.stem:json.loads(p.read_text(encoding='utf-8')) for p in (OUT/'fixtures').glob('*.json')}
-        for j in fixtures.values(): invariants(j)
+        for j in fixtures.values():
+            if j['report_type'] == 'map': invariants(j)
+            else: contract(j)
+        failure = fixtures['failure']
+        assert 'map' not in failure and failure['generation']['selection_quality'] is None
+        assert not failure['generation']['outcome']['success']
+        records = failure['generation']['telemetry']['records']
+        assert [type(r['value']) for r in records] == [int,float,bool,str,str]
+        assert records[0]['subject'] == 0 and records[1]['subject'] is None
+        assert records[3]['value'] == 'A "quoted" choice\n'
+        assert records[4]['kind'] == 'fallback'
+        for i in range(4):
+            assert fixtures[f'invalid-{i}']['generation']['outcome']['error'] == 'invalid_request'
+        assert fixtures['invalid-0']['generation']['generator'] is None
+        assert fixtures['invalid-1']['generation']['parameters'] is None
+        assert fixtures['invalid-1']['generation']['raw_request']['options'] == {}
+        assert fixtures['invalid-2']['generation']['raw_request']['width_exponent'] == -100
+        assert fixtures['invalid-3']['generation']['raw_request']['options']['unknown-option'] == 7
         grass=fixtures['grass']
         assert grass['map']['name'] == 'A "quoted" map\né'
         assert grass['terrain']['grass'] == {'tiles':4096,'percent':100}
@@ -149,6 +203,11 @@ def main():
         assert generated['generation']['available'] and generated['generation']['seed'] == 7
         assert generated['generation']['parameters']['cell-shape'] == 0
         assert generated['generation']['parameters']['width'] == 128
+        telemetry=generated['generation']['telemetry']
+        assert telemetry['records'] and telemetry['dropped_records'] == 0 and telemetry['invalid_values'] == 0
+        assert any(r['key'].startswith('maze.') for r in telemetry['records'])
+        assert generated['generation']['outcome']['success']
+        contract_rejections(generated)
         run([*args,'--json',OUT/'repeat.json'])
         assert report.read_bytes() == (OUT/'repeat.json').read_bytes(), 'Report is not repeatable'
         (profile/'map.cfg').write_text('seed=99\nwidth=128\nheight=128\ncell-shape=1\n')
@@ -157,7 +216,7 @@ def main():
         run(['--preview-map',saved,'--json',OUT/'loaded.json'])
         loaded=json.loads((OUT/'loaded.json').read_text(encoding='utf-8'))
         invariants(loaded)
-        assert loaded['generation'] == {'available':False,'parameters':None,'reason':'Map/save files do not store the complete original generator request'}
+        assert loaded['generation'] == {'available':False,'parameters':None,'telemetry':None,'reason':'Map/save files do not store the complete original generator request'}
         for key in ['terrain','underlying_terrain','resources','space','fertility','canonical_quality','movement','start_position_euclidean_distances']:
             assert loaded[key] == generated[key], key+' changed on load'
         for fixture in ['team-stats/version88.game','wrapped-building/reproducer.game','entering-explorer/reproducer.game']:
@@ -167,6 +226,15 @@ def main():
             run(['--preview-map',source,'--json',output])
             invariants(json.loads(output.read_text(encoding='utf-8')))
             assert source.read_bytes() == snapshot
+        failed_path = OUT/'failed-request.json'
+        run(['--generate-map','symmetric-arena','--width','128','--height','256','--teams','8',
+             '--json',failed_path,'--output',OUT/'must-not-exist.map'],ok=False)
+        failed=json.loads(failed_path.read_text())
+        contract(failed)
+        assert failed['report_type'] == 'generation_failure' and 'map' not in failed
+        assert failed['generation']['outcome']['error'] == 'invalid_request'
+        assert failed['generation']['telemetry']['records'][-1]['kind'] == 'error'
+        assert not (OUT/'must-not-exist.map').exists()
         for bad in [[*args,'--output',saved,'--json',saved],['--preview-map',saved,'--json',saved],
                     [*args,'--json',OUT],[*args,'--json'],[*args,'--json',report,'--preview-size','256'],
                     ['--generate-map','maze','--config',profile/'map.cfg','--json',profile/'map.cfg']]:

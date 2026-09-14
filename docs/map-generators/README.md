@@ -23,3 +23,7 @@ built from, the designed-generator pipeline, the generator catalog, resource pla
 fairness, and [Adding a generator](ADDING_A_GENERATOR.md) for the registry and module interfaces.
 [Game rules for map design](GAME_RULES_FOR_MAP_DESIGN.md) collects the engine rules and play
 principles every generator designs for, which the generators' comments refer to.
+
+[Generator telemetry](TELEMETRY.md) records internal counts, variants, calibration and fallback
+choices in CLI JSON reports. Use `tools/map_telemetry.py` to collect a bounded seed matrix and
+analyze those observations alongside final-map metrics.

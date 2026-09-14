@@ -27,9 +27,16 @@ static bool generate(Game &game, GenerationContext &context)
 {
 	const RiverOptions options(context.request);
 	const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(context.request, false);
-	if (!generateHeightField(
-			game, context, terrain, [&](HeightMap &hm, unsigned w, unsigned h, float smoothing)
-			{ hm.makeRiver(options.river_width * (w + h) / 2 / 100, smoothing, options.winding); }))
+	if (!generateHeightField(game, context, terrain,
+							 [&](HeightMap &hm, unsigned w, unsigned h, float smoothing)
+							 {
+								 context.telemetry.measure("river.bed.diameter",
+														   options.river_width * (w + h) / 2 / 100);
+								 context.telemetry.choice("river.bed.shape",
+														  options.winding ? "winding" : "straight");
+								 hm.makeRiver(options.river_width * (w + h) / 2 / 100, smoothing,
+											  options.winding);
+							 }))
 		return false;
 	context.stage = "starts";
 	if (!placeStarts(game, context))

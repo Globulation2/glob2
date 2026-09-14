@@ -381,6 +381,9 @@ static TerrainMix fitTerrainMix(GenerationContext &context, const TerrainMix &ba
 		}
 	}
 
+	context.telemetry.measure("shattered-coast.mix.fitted-water", alphaWater);
+	context.telemetry.measure("shattered-coast.mix.fitted-sand", alphaSand);
+	context.telemetry.measure("shattered-coast.mix.fitted-grass", alphaGrass);
 	return {alphaWater, alphaSand, alphaGrass};
 }
 
@@ -589,7 +592,14 @@ static bool placeColonies(Map &map, GenerationContext &context,
 		{
 			maxSurface = widestPatch(team, spacing, maxX, maxY);
 			if (maxSurface > 0)
+			{
+				context.telemetry.measure("shattered-coast.starts.spacing-squared", spacing, team);
+				context.telemetry.measure("shattered-coast.starts.patch-score", maxSurface, team);
+				if (spacing < minDistSquare)
+					context.telemetry.fallback("shattered-coast.starts.spacing-relaxed",
+											   "No wide grass patch at preferred spacing", team);
 				break;
+			}
 		}
 
 		if (maxSurface <= 0)
@@ -638,6 +648,9 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 	smoothPatchwork(map, rng, options.smoothing, base);
 	int waterCount, sandCount, grassCount;
 	countTerrain(map, waterCount, sandCount, grassCount);
+	context.telemetry.measure("shattered-coast.terrain.water-before-beaches", waterCount);
+	context.telemetry.measure("shattered-coast.terrain.sand-before-beaches", sandCount);
+	context.telemetry.measure("shattered-coast.terrain.grass-before-beaches", grassCount);
 	const double totalCount = (double)(waterCount + sandCount + grassCount);
 
 	// Sand control twice: once so the patches colonies are measured on are real grass (grass beside
@@ -860,6 +873,7 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 	for (int r = 0; r < 4; r++)
 		if (maxAmount < context.request.resourceAmounts[r])
 			maxAmount = context.request.resourceAmounts[r];
+	context.telemetry.measure("shattered-coast.resources.smoothing-rounds", maxAmount * 3);
 	map.smoothResources(maxAmount * 3);
 }
 

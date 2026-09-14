@@ -461,8 +461,8 @@ std::vector<FarmSet> claimFarmFields(Layout &L)
 		seeds.push_back(polarPoint(L.cx, L.cy, g.homeRadius + g.homeReach + 2, L.axis[k]));
 		owners.push_back(k);
 	}
-	const std::vector<int> fields =
-		growFarmFields(t, L.land, L.homeOf, outer, seeds, owners, L.homes, kFarmGap, kNeckHalf, L.axis);
+	const std::vector<int> fields = growFarmFields(t, L.land, L.homeOf, outer, seeds, owners,
+												   L.homes, kFarmGap, kNeckHalf, L.axis);
 	const double homeArea = kPi * g.homeR * g.homeR;
 	std::vector<int> size(teams, 0);
 	for (int i = 0; i < n; ++i)
@@ -669,9 +669,31 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		return L;
 	}
 	const std::vector<FarmSet> farmSets = claimFarmFields(L);
+	context.telemetry.measure("carousel.farm-sets.actual", farmSets.size());
+	if (farmSets.empty())
+		context.telemetry.fallback("carousel.farms.omitted",
+								   "Not every colony had enough room for its outer farm.");
 	fillAndWall(L);
 	layFarmRows(L, farmSets, o.farmPlots);
 	finishRoads(L);
+	context.telemetry.measure("carousel.home.radius", g.homeR);
+	context.telemetry.measure("carousel.court.radius", g.courtR);
+	context.telemetry.measure("carousel.corridor.sweep-radians", L.sweep);
+	context.telemetry.measure("carousel.plaza.radius", g.plazaR);
+	if (context.telemetry.enabled())
+	{
+		for (size_t f = 0; f < L.farms.size(); ++f)
+		{
+			const Farm &farm = L.farms[f];
+			context.telemetry.measure("carousel.farm.water-rows", farm.rows, int(f));
+			context.telemetry.measure("carousel.farm.plot-present", farm.plotX >= 0, int(f));
+			if (o.farmPlots && farm.plotX < 0)
+				context.telemetry.fallback("carousel.farm.plot-omitted",
+										   "The fitted farm has no room for a building plot.",
+										   int(f));
+		}
+	}
+	context.telemetry.measure("carousel.farms.actual", L.farms.size());
 	return L;
 }
 
@@ -687,7 +709,8 @@ std::vector<unsigned char> seaMargin(const Map &map, const Layout &L)
 // coast is sealed however it runs.
 std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
 {
-	std::vector<unsigned char> stone = sealedIslandStone(map, L.t, seaMargin(map, L), L.land, L.wall);
+	std::vector<unsigned char> stone =
+		sealedIslandStone(map, L.t, seaMargin(map, L), L.land, L.wall);
 	for (int i = 0; i < L.t.size(); ++i)
 		if (L.laneBand[i] && map.getTerrainType(i % L.t.w, i / L.t.w) == GRASS)
 			stone[i] = 1;

@@ -133,6 +133,7 @@ jobs:
       - name: Test map JSON reports
         run: |
           python3 test/test_map_report.py build/src/glob2 build/src/MapReportHarness
+          python3 test/test_map_telemetry.py
       - name: Upload map JSON reports and command log
         if: always()
         uses: actions/upload-artifact@v4
@@ -569,6 +570,9 @@ jobs:
           for i in 0 1 2 3; do wait ${sweeps[$i]} || status=1; cat /tmp/golden-sweep-$i.log; done
           [ $status = 0 ]
 
+      - name: Check generator telemetry equivalence and cost
+        run: timeout 600s ./build/src/MapGeneratorGoldenTest glob2-telemetry-ci --telemetry
+
   windows:
     name: windows (mingw-w64)
     runs-on: windows-latest
@@ -637,6 +641,7 @@ jobs:
       - name: Test map JSON reports
         run: |
           python3 test/test_map_report.py build/src/glob2.exe build/src/MapReportHarness.exe
+          python3 test/test_map_telemetry.py
       - name: Upload map JSON reports and command log
         if: always()
         uses: actions/upload-artifact@v4

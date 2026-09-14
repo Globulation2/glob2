@@ -101,6 +101,11 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// holds a pond and a kit is the floor.
 	L.homeRadius =
 		std::min(L.homeRadius, std::floor(spacing / 2 - kClearingMargin - o.wavelength / 2.0));
+	context.telemetry.measure("fingerprint.home.radius-fitted", L.homeRadius);
+	context.telemetry.measure("fingerprint.home.spacing", spacing);
+	if (L.homeRadius < o.homeSize)
+		context.telemetry.fallback("fingerprint.home.shrunk",
+								   "Clearings shrank to preserve pattern between neighbours.");
 	if (!homeHasRoom(L.homeRadius))
 	{
 		L.failure = "Too many colonies for this map; use a bigger map or fewer colonies.";
@@ -158,6 +163,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const RadialShape home(L.homeRadius, 0.15, context, "fingerprint-home");
 	const RadialShape pond(homePondRadius(L.homeRadius), 0.3, context, "fingerprint-pond");
 	L.kits = stampRoundHomes(t, L.homes, 0.0, home, L.homeRadius, 1, &pond, L.water, L.homeOf);
+	context.telemetry.measure("fingerprint.pattern.threshold", level);
 	return L;
 }
 

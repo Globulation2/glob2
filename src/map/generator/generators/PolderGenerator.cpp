@@ -132,6 +132,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.crops = kStraightCrops +
 				  std::lround((kDiagonalCrops - kStraightCrops) * std::fabs(std::sin(2 * angle)));
 	}
+	context.telemetry.measure("polder.rows.turns-x", L.rows.acrossX);
+	context.telemetry.measure("polder.rows.turns-y", L.rows.acrossY);
+	context.telemetry.measure("polder.rows.crop-width", L.crops);
 	L.spacing = stripeSpacing(t, L.rows);
 	L.along = alongStripes(t, L.rows);
 	const std::vector<int> phase = stripePhase(t, L.rows, context.stream("polder-rows"));
@@ -145,6 +148,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const double nearest = nearestSiteDistance(t, L.homes);
 	L.villageRadius =
 		std::min<double>(o.villageSize, std::floor((nearest - L.spacing) / 2 - kVillageSand));
+	context.telemetry.measure("polder.villages.actual-radius", L.villageRadius);
+	context.telemetry.measure("polder.villages.nearest-distance", nearest);
+	context.telemetry.measure("polder.rows.spacing", L.spacing);
+	if (L.villageRadius < o.villageSize)
+		context.telemetry.fallback(
+			"polder.villages.shrunk",
+			"Villages shrank to retain a crop row and ditch between neighbours");
 	if (L.villageRadius < 8)
 	{
 		L.failure = "Too many colonies for this map; use a bigger map or fewer colonies.";
@@ -214,6 +224,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		keepClear[i] = L.village[i] || L.ring[i] || L.hamlet[i];
 	keepClear = dilate(t, keepClear, kPlotClear);
 	const int plots = (teams * kPlotsPerTwoColonies + 1) / 2;
+	int plotsPlaced = 0;
 	for (int p = 0; p < plots; ++p)
 	{
 		const std::vector<std::int64_t> clearance = distanceSquaredTo(t, keepClear);
@@ -225,10 +236,15 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			break;
 		const int x0 = site % t.w - plot.width / 2, y0 = site / t.w - plot.height / 2;
 		stampFarmPlot(L.sketch, t, L.farm, x0, y0, plot);
+		++plotsPlaced;
 		for (int dy = -kPlotMargin; dy <= kPlotMargin; ++dy)
 			for (int dx = -kPlotMargin; dx <= kPlotMargin; ++dx)
 				keepClear[t.at(site % t.w + dx, site / t.w + dy)] = 1;
 	}
+	context.telemetry.measure("polder.hamlets.actual", L.hamlets.size());
+	context.telemetry.measure("polder.dykes.actual", dykes);
+	context.telemetry.measure("polder.plots.requested", plots);
+	context.telemetry.measure("polder.plots.actual", plotsPlaced);
 	L.water = L.farm.water;
 	L.dyke = L.farm.sand;
 	return L;
@@ -241,6 +257,7 @@ bool generate(Game &game, GenerationContext &context)
 	const Layout L = design(context.request, context);
 	if (!L.failure.empty())
 	{
+		context.telemetry.fallback("polder.layout.failure", L.failure);
 		context.detail = L.failure;
 		return false;
 	}
@@ -263,8 +280,7 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
 	for (int k = 0; k < teams; ++k)
 		plantOpenHomeKit(
-			map, t, context, L.kits[k], 0.0, L.villageRadius, 0, 0, kHomeQuarry,
-			[&](int i)
+			map, t, context, L.kits[k], 0.0, L.villageRadius, 0, 0, kHomeQuarry, [&](int i)
 			{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, i % t.w, i / t.w); });
 	// The fields: crops on the rows' grass, nearly all of it. Wheat on 55% of the fertile row ground
 	// and wood on 8% (15% until 2026-09-14: "turn down the default amount of wood"), in patches, so

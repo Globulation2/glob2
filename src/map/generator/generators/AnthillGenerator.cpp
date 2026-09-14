@@ -278,8 +278,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			region[i] = L.open[i] && L.label[i] == site;
 			eligible[i] = L.label[i] == site && !shore[i];
 		}
-		growUntilSites(t, region, buildable, eligible, o.queenRoom, kQueenGrowthLimit, [&](int i)
-					   { return t.dist2(L.sites[site].x, L.sites[site].y, i % t.w, i / t.w); });
+		const int sites = growUntilSites(
+			t, region, buildable, eligible, o.queenRoom, kQueenGrowthLimit,
+			[&](int i) { return t.dist2(L.sites[site].x, L.sites[site].y, i % t.w, i / t.w); });
+		context.telemetry.measure("anthill.queen.build-sites", sites, k);
+		if (sites < o.queenRoom)
+			context.telemetry.fallback("anthill.queen.room-shortfall",
+									   "Room growth stopped below the requested anchor count.", k);
 		for (int i = 0; i < n; ++i)
 			if (region[i])
 				L.open[i] = 1;
@@ -291,6 +296,12 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		for (int i = 0; i < n; ++i)
 			if (L.open[i] && L.label[i] == L.homeSite[k])
 				L.homeOf[i] = k;
+	context.telemetry.measure("anthill.chambers.actual", L.sites.size());
+	context.telemetry.measure("anthill.farms.actual", L.farmSite.size());
+	context.telemetry.measure("anthill.treasure-chambers.actual", L.treasureSite.size());
+	if (context.telemetry.enabled())
+		context.telemetry.measure("anthill.tunnels.open",
+								  std::count(openEdge.begin(), openEdge.end(), 1));
 	return L;
 }
 

@@ -22,7 +22,11 @@ static bool generate(Game &game, GenerationContext &context)
 	const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(context.request, true);
 	if (!generateHeightField(game, context, terrain,
 							 [&](HeightMap &hm, unsigned w, unsigned h, float smoothing)
-							 { hm.makeSwamp(smoothing); }))
+							 {
+								 context.telemetry.choice("swamp.field.shape", "noise");
+								 context.telemetry.measure("swamp.field.smoothing", smoothing);
+								 hm.makeSwamp(smoothing);
+							 }))
 		return false;
 	context.stage = "starts";
 	if (!placeStarts(game, context))

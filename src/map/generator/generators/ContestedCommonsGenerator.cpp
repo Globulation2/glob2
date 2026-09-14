@@ -178,6 +178,13 @@ static void sizeIslands(Game &game, GenerationContext &context,
 	// available once teams are pushed off it -- measured, not guessed), and let the min()
 	// below be the real safety net for whatever a given layout can't quite support.
 	const int desiredCommonsRadius = L.homeRadius * options.commonsSize / 100;
+	context.telemetry.measure("contested-commons.commons.radius-target", desiredCommonsRadius);
+	context.telemetry.measure("contested-commons.commons.radius-limit", roomLimitedRadius);
+	context.telemetry.measure("contested-commons.home.radius", L.homeRadius);
+	context.telemetry.measure("contested-commons.moat.width-fitted", L.moatWidth);
+	if (desiredCommonsRadius > roomLimitedRadius)
+		context.telemetry.fallback("contested-commons.commons.shrunk",
+								   "Seed spacing limited the desired commons radius.");
 	L.commonsRadius = std::min(desiredCommonsRadius, roomLimitedRadius);
 	const int bridgeCount = options.bridgeCount;
 
@@ -400,6 +407,13 @@ static void stockCommons(Game &game, GenerationContext &context,
 					fruitCount++;
 			}
 
+			context.telemetry.measure("contested-commons.zones.actual", zoneCount);
+			context.telemetry.measure("contested-commons.wood-zones.target", woodTarget);
+			context.telemetry.measure("contested-commons.wood-zones.actual", woodCount);
+			context.telemetry.measure("contested-commons.wheat-zones.target", wheatTarget);
+			context.telemetry.measure("contested-commons.wheat-zones.actual", wheatCount);
+			context.telemetry.measure("contested-commons.fruit-zones.target", fruitTarget);
+			context.telemetry.measure("contested-commons.fruit-zones.actual", fruitCount);
 			for (int z = 0; z < zoneCount; ++z)
 			{
 				std::vector<MapGeneratorPoint> pts;
@@ -493,6 +507,9 @@ static bool settleHomes(Game &game, GenerationContext &context,
 		}
 		else
 		{
+			context.telemetry.fallback("contested-commons.home.scatter",
+									   "Home subdivision failed; using the light starter scatter.",
+									   i);
 			// The island came out too small to subdivide -- fall back to a light scatter
 			// over the whole thing rather than failing the map.
 			getAllPoints(game.map, L.grid, L.teamAreaNumbers[i], homePoints);

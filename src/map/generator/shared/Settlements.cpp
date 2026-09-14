@@ -17,6 +17,7 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 	auto fail = [&](const std::string &detail)
 	{
 		context.detail = "Colony " + std::to_string(team) + ": " + detail;
+		context.telemetry.choice("settlement.failure", detail, team);
 		return false;
 	};
 	const int w = game.map.getW(), h = game.map.getH();
@@ -58,6 +59,10 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 			if (distance <= nearest)
 				candidates.emplace_back(x, y);
 		}
+	context.telemetry.measure("settlement.eligible_sites", int(eligible.size()), team);
+	context.telemetry.measure("settlement.nearest_ties", int(candidates.size()), team);
+	if (!candidates.empty())
+		context.telemetry.measure("settlement.nearest_distance_squared", nearest, team);
 	if (candidates.empty())
 		return fail("no swarm footprint fits inside the home region");
 	// The workers need room as well as the swarm: a worker tile is a free tile inside the home
@@ -84,7 +89,10 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 		return room;
 	};
 	MapGeneratorPoint p = candidates[context.bounded(stream, candidates.size())];
-	if (workerRoom(p) < context.request.nbWorkers)
+	const int initialWorkerRoom = workerRoom(p);
+	context.telemetry.measure("settlement.requested_workers", context.request.nbWorkers, team);
+	context.telemetry.measure("settlement.initial_worker_room", initialWorkerRoom, team);
+	if (initialWorkerRoom < context.request.nbWorkers)
 	{
 		const MapGeneratorPoint *roomier = nullptr;
 		int roomiestDistance = std::numeric_limits<int>::max();
@@ -94,8 +102,15 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 				roomiestDistance = distance;
 				roomier = &at;
 			}
+		context.telemetry.fallback("settlement.worker_room_search", "nearest site too cramped",
+								   team);
+		context.telemetry.measure("settlement.roomier_site_found", roomier != nullptr, team);
 		if (roomier)
+		{
 			p = *roomier;
+			context.telemetry.measure("settlement.relocated_distance_squared", roomiestDistance,
+									  team);
+		}
 	}
 	Building *building = game.addBuilding(p.x, p.y, type, team, 1, 0);
 	if (!building)
@@ -106,6 +121,7 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 			if (inside(x, y) && game.map.isFreeForGroundUnit(x, y, false, 1u << team) &&
 				game.map.doesPosTouchBuilding(x, y, building->gid))
 				workers.emplace_back(x, y);
+	context.telemetry.measure("settlement.worker_tiles", int(workers.size()), team);
 	if (workers.size() < size_t(context.request.nbWorkers))
 		return fail("need " + std::to_string(context.request.nbWorkers) + " worker tiles; found " +
 					std::to_string(workers.size()));
@@ -122,6 +138,7 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 	context.bootX[team] = building->posX;
 	context.bootY[team] = building->posY;
 	game.teams[team]->createLists();
+	context.telemetry.measure("settlement.placed_workers", context.request.nbWorkers, team);
 	return true;
 }
 
@@ -147,7 +164,8 @@ int placeTower(Game &game, int team, int level, double x, double y, int within,
 					fits = allowed[map.normalizeY(py + fy) * w + map.normalizeX(px + fx)] != 0;
 			if (!fits || !game.checkRoomForBuilding(px, py, tower, team, false))
 				continue;
-			const double mx = cx + dx + tower->width / 2.0 - x, my = cy + dy + tower->height / 2.0 - y;
+			const double mx = cx + dx + tower->width / 2.0 - x,
+						 my = cy + dy + tower->height / 2.0 - y;
 			const double d = mx * mx + my * my;
 			if (d < nearest)
 			{

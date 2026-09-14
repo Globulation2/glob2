@@ -186,6 +186,10 @@ Belt shapeBelt(const Axes &axes, GenerationContext &context, const RingWorldOpti
 	if (swingSlope > 0)
 		swing = std::min(swing, kMaxSwingSlope / swingSlope);
 
+	context.telemetry.measure("ring-world.coast.displacement-budget", budget);
+	context.telemetry.measure("ring-world.coast.roughness-fitted", roughness);
+	context.telemetry.measure("ring-world.width.swing-fitted", swing);
+	context.telemetry.measure("ring-world.bend.amplitude-fitted", bendAmplitude);
 	Belt belt{axes, std::vector<double>(length), std::vector<double>(length),
 			  torusNoise(axes.width, axes.height, rng), roughness};
 	for (int u = 0; u < length; ++u)
@@ -256,6 +260,11 @@ void carveLakes(std::vector<unsigned char> &terrain, const Belt &belt, Generatio
 						WATER;
 		lakes.push_back({x, y, reach});
 	}
+	context.telemetry.measure("ring-world.lakes.target", wanted);
+	context.telemetry.measure("ring-world.lakes.actual", lakes.size());
+	if (int(lakes.size()) < wanted)
+		context.telemetry.fallback("ring-world.lakes.omitted",
+								   "Candidate budget or clearance limited inland lakes.");
 }
 
 // A swarm anchored at (x, y) needs pure grass under its 4x4 footprint and dry, unoccupied ground in
@@ -325,6 +334,9 @@ bool placeColonies(Game &game, GenerationContext &context, const Belt &belt, boo
 		// what makes the starts equal.
 		for (double reach : {0.12, 0.25, 0.5})
 		{
+			if (reach > 0.12)
+				context.telemetry.fallback("ring-world.start.search-widened",
+										   "No suitable site fit the previous slot window.", team);
 			const double window = std::max(3.0, reach * slot);
 			for (int y = 0; y < height; ++y)
 				for (int x = 0; x < width; ++x)
@@ -364,6 +376,7 @@ bool placeColonies(Game &game, GenerationContext &context, const Belt &belt, boo
 							 ": no room for a swarm on the belt near its slot";
 			return false;
 		}
+		context.telemetry.measure("ring-world.start.score", bestScore, team);
 		std::vector<unsigned char> home(area, 0);
 		// The settlement's ground: the 10x10 square round the 4x4 swarm, 3 tiles each way.
 		for (int dy = -3; dy <= 6; ++dy)
@@ -579,6 +592,11 @@ bool generate(Game &game, GenerationContext &context)
 	// for any beach to bridge, so islands are reached only by swimming.
 	const std::vector<Island> islands =
 		raiseIslands(terrain, t, context, {"islands", wantedIslands, 40, kIslandMoat});
+	context.telemetry.measure("ring-world.islands.target", wantedIslands);
+	context.telemetry.measure("ring-world.islands.actual", islands.size());
+	if (int(islands.size()) < wantedIslands)
+		context.telemetry.fallback("ring-world.islands.omitted",
+								   "Candidate budget or water clearance limited islands.");
 	layBeaches(terrain, t);
 	writeUndermap(map, terrain);
 
@@ -604,10 +622,9 @@ bool generate(Game &game, GenerationContext &context)
 	secureStartingCrops(game, context, t, 24, 32, 6);
 	// The scatter above is sized by the resource amounts, and at the top of their range it can wall
 	// a colony into its own clearing with nowhere to build; the reopened colony is cleared again.
-	if (reopenCrampedStarts(game, context,
-							{options.wheat, options.wood, options.stone, options.algae,
-							 options.fruit},
-							24, 32, 6))
+	if (reopenCrampedStarts(
+			game, context,
+			{options.wheat, options.wood, options.stone, options.algae, options.fruit}, 24, 32, 6))
 		clearAroundSwarms(map, context, t);
 
 	context.stage = "ring road";

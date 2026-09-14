@@ -167,6 +167,12 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		for (int cell = 0; cell < L.g.cellCount(); ++cell)
 			nearest[cell] = L.g.distance2(cell, L.cathedral);
 		const int extra = std::min(o.plazas * teams, std::max(0, (cityCells - 1 - 2 * teams) / 2));
+		context.telemetry.measure("old-town.plazas.target", o.plazas * teams);
+		context.telemetry.measure("old-town.plazas.fitted-target", extra);
+		if (extra < o.plazas * teams)
+			context.telemetry.fallback(
+				"old-town.plazas.reduced",
+				"Home pairs take priority over extra plazas in a small city.");
 		for (int k = 0; k < teams + extra; ++k)
 		{
 			int best = -1;
@@ -302,6 +308,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	std::vector<unsigned char> keepClear(n, 0);
 	for (int i = 0; i < n; ++i)
 		keepClear[i] = !L.farmRegion[i];
+	int plotsPlaced = 0;
 	for (int p = 0; p < o.farmPlots * teams; ++p)
 	{
 		const std::vector<std::int64_t> clearance = distanceSquaredTo(t, keepClear);
@@ -313,6 +320,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			break;
 		const int x0 = site % t.w - plot.width / 2, y0 = site / t.w - plot.height / 2;
 		stampFarmPlot(rows, t, L.farm, x0, y0, plot);
+		++plotsPlaced;
 		for (int dy = -kPlotMargin; dy <= kPlotMargin; ++dy)
 			for (int dx = -kPlotMargin; dx <= kPlotMargin; ++dx)
 				keepClear[t.at(site % t.w + dx, site / t.w + dy)] = 1;
@@ -345,6 +353,10 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			if (L.water[i])
 				L.road[i] = 0;
 	}
+	context.telemetry.measure("old-town.farm-plots.actual", plotsPlaced);
+	context.telemetry.measure("old-town.city.cells", cityCells);
+	context.telemetry.measure("old-town.plazas.actual", L.plazaCell.size());
+	context.telemetry.measure("old-town.fountain.radius", L.fountainRadius);
 	return L;
 }
 

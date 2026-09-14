@@ -446,12 +446,18 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// Every field must have grown to a worthwhile size on its own before the fill tops it up.
 	const double homeArea = kPi * g.homeR * g.homeR;
 	for (int f = 0; f < 2 * teams; ++f)
-		if (std::count(fields.begin(), fields.end(), f) < kMinimumFarmShare * homeArea)
+	{
+		const auto fieldTiles = std::count(fields.begin(), fields.end(), f);
+		if (fieldTiles < kMinimumFarmShare * homeArea)
 		{
+			context.telemetry.measure("switchbacks.farm.tiles", fieldTiles, f);
+			context.telemetry.measure("switchbacks.farm.minimum-tiles",
+									  kMinimumFarmShare * homeArea, f);
 			L.failure =
 				"Too many colonies for this map: there is no room for every colony's farms.";
 			return L;
 		}
+	}
 	// The fill: every tile of sea becomes part of the nearest field, however far (the reach is the whole
 	// map), so no water is left but the farms' own rows and the plateau's pond. Homes take no part, so
 	// the ground behind a home becomes rows too, not more home. A field's opening (growFarmFields) can
@@ -519,6 +525,25 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				if (L.wall[t.at(i % t.w + dx, i / t.w + dy)])
 					L.road[i] = 0;
 	L.roadTile = roadTiles(t, L.road);
+	context.telemetry.measure("switchbacks.trail.legs", g.legs);
+	context.telemetry.measure("switchbacks.trail.half-width-fitted", g.trailHalf);
+	context.telemetry.measure("switchbacks.wall.width-fitted", g.legWall);
+	context.telemetry.measure("switchbacks.home.radius-fitted", g.homeR);
+	context.telemetry.measure("switchbacks.plateau.radius-fitted", g.plateauR);
+	if (context.telemetry.enabled())
+	{
+		for (size_t f = 0; f < L.farms.size(); ++f)
+		{
+			const Farm &farm = L.farms[f];
+			context.telemetry.measure("switchbacks.farm.water-rows", farm.rows, int(f));
+			context.telemetry.measure("switchbacks.farm.plot-present", farm.plotX >= 0, int(f));
+			if (o.farmPlots && farm.plotX < 0)
+				context.telemetry.fallback("switchbacks.farm.plot-omitted",
+										   "The fitted farm has no room for a building plot.",
+										   int(f));
+		}
+	}
+	context.telemetry.measure("switchbacks.farms.actual", L.farms.size());
 	return L;
 }
 

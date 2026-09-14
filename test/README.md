@@ -55,6 +55,13 @@ rows for every platform CI builds on (`linux-x86_64` today, next to the maintain
 CI log, which the workflow prints before the check. The framework reference under
 `docs/map-generators/` describes the rules it enforces.
 
+`MapGeneratorGoldenTest <profile> --telemetry` compares telemetry enabled/disabled and repeated
+attempts for all registered generators at three seeds, including complete serialized worlds and
+RNG restoration. It prints generation-only timings and record counts; timing is diagnostic, not a
+flaky performance threshold. `python3 test/test_map_telemetry.py` tests the bulk collector's failure
+retention and aggregation. The existing JSON-report test covers typed telemetry, malformed reports,
+service failures and raw invalid requests. See [telemetry](../docs/map-generators/TELEMETRY.md).
+
 ## Map subclass test pattern
 
 Pattern used by `MapQueryTest.cpp` (commit `2d42c340`). Lets you write tests against `Map`'s predicates with a minimal link surface — no `globalContainer`, no real `Sector` array, no transitive pull of `Bullet` / `Team` / `Building` / `Unit` into the test binary.

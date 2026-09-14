@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapReport.h"
+#include "GenerationRequest.h"
+#include "GenerationResult.h"
+#include "GenerationService.h"
+#include "GeneratorRegistry.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
@@ -104,6 +108,42 @@ int main(int argc, char **argv)
 			game.map.setSize(6, 6, WATER);
 			game.map.setGame(&game);
 			emit(game, std::filesystem::path(argv[1]) / "empty.json");
+		}
+		{
+			GenerationRequest request;
+			request.setMethodDefaults(GeneratorRegistry::builtins().idOf("maze"));
+			GenerationResult result;
+			result.error = GenerationError::PlacementFailed;
+			result.stage = "fixture";
+			result.detail = "No plot\nwith \"room\"";
+			result.telemetry.measure("fixture.count", 7, 0);
+			result.telemetry.measure("fixture.share", 0.5);
+			result.telemetry.measure("fixture.open", false);
+			result.telemetry.choice("fixture.variant", "A \"quoted\" choice\n");
+			result.telemetry.fallback("fixture.plot", "omitted", 0);
+			std::ofstream out(std::filesystem::path(argv[1]) / "failure.json");
+			out << describeGenerationFailure(request, result);
+			require(bool(out), "Cannot write failure fixture");
+		}
+		for (int variant = 0; variant < 4; ++variant)
+		{
+			GenerationRequest request;
+			request.setMethodDefaults(GeneratorRegistry::builtins().idOf("maze"));
+			if (variant == 0)
+				request.method = 100000;
+			if (variant == 1)
+				request.options.clear();
+			if (variant == 2)
+				request.wDec = -100;
+			if (variant == 3)
+				request.options["unknown-option"] = 7;
+			Game game(nullptr);
+			const auto result = GenerationService().generate(game, request, true);
+			require(result.error == GenerationError::InvalidRequest, "Malformed request accepted");
+			std::ofstream out(std::filesystem::path(argv[1]) /
+							  ("invalid-" + std::to_string(variant) + ".json"));
+			out << describeGenerationFailure(request, result);
+			require(bool(out), "Cannot report malformed request");
 		}
 		std::puts("PASS report fixtures: known routes, resource barriers, unchanged serialization "
 				  "and RNG");

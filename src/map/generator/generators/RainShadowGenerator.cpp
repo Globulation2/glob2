@@ -154,6 +154,14 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const auto alongUnits = [&](double tiles) { return int(tiles / alongLength * 65536); };
 	const double valley = L.spacing - o.ridgeThickness;
 	L.homeRadius = std::min<double>(o.homeSize, std::floor((valley - taken) / 2 - kHomeMargin));
+	context.telemetry.measure("rain-shadow.ridges.actual", L.ridges);
+	context.telemetry.measure("rain-shadow.valleys.spacing", L.spacing);
+	context.telemetry.measure("rain-shadow.homes.actual-radius", L.homeRadius);
+	if (L.ridges < o.ridges)
+		context.telemetry.fallback("rain-shadow.ridges.reduced",
+								   "Fewer ridges needed for viable valleys");
+	if (L.homeRadius < o.homeSize)
+		context.telemetry.fallback("rain-shadow.homes.shrunk", "Homes shrank to the valley budget");
 	if (!homeHasRoom(L.homeRadius))
 	{
 		L.failure =
@@ -314,6 +322,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const RadialShape home(L.homeRadius, 0.15, context, "rain-home");
 	const RadialShape pond(homePondRadius(L.homeRadius), 0.3, context, "rain-pond");
 	L.kits = stampRoundHomes(t, L.homes, 0.0, home, L.homeRadius, 1, &pond, L.water, L.homeOf);
+	context.telemetry.measure("rain-shadow.passes.per-turn", passes);
+	context.telemetry.measure("rain-shadow.lakes.actual", L.lakes.size());
 	return L;
 }
 
@@ -324,6 +334,7 @@ bool generate(Game &game, GenerationContext &context)
 	const Layout L = design(context.request, context);
 	if (!L.failure.empty())
 	{
+		context.telemetry.fallback("rain-shadow.layout.failure", L.failure);
 		context.detail = L.failure;
 		return false;
 	}

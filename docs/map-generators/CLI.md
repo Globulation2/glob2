@@ -25,7 +25,10 @@ for units, fairness formulas, terrain/resource percentages, and travel distances
 `GenerationService`, at registered defaults with seed **1** unless specified.
 It makes one attempt with exactly that seed; a failed layout returns an error
 instead of silently retrying with another seed. The diagnostic includes the
-chosen generator, revision, and seed. Determinism has the same platform limits
+chosen generator, revision, and seed. If `--json` is supplied, service-level failures also
+write a `generation_failure` report containing partial telemetry and the error, while still
+returning nonzero. Argument/config parsing failures happen before an attempt and do not
+promise a JSON report. Determinism has the same platform limits
 as the existing generators; a seed alone is not a cross-platform guarantee.
 
 ## Preview an existing map or save
@@ -138,3 +141,11 @@ and analysis tints are not used: exports follow the in-game preview renderer.
 Batch comparison PNGs are separate files; the executable does not generate the old script's HTML sheet.
 The analysis-only `MapGeneratorStudy` remains available for quality measurements,
 text-grid dumps, and fairness studies.
+
+## Internal generator telemetry
+
+Generation with `--json` includes generator-supplied measurements, variants and fallback events
+at `generation.telemetry`. Collection is disabled for ordinary generation without JSON and for
+validation reconstruction. Existing map/save files do not contain this history. The report schema
+is version 2; check `report_type` before reading snapshot fields. See [telemetry](TELEMETRY.md)
+for the efficient instrumentation API, bulk collector and ad-hoc analysis workflow.

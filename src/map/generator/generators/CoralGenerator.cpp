@@ -464,6 +464,14 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const Geometry &g = L.g;
 	const CoralOptions o(request);
 	const int n = t.size(), teams = g.teams;
+	context.telemetry.measure("coral.home.radius", g.padRadius);
+	context.telemetry.measure("coral.home.ring", g.rootRadius);
+	context.telemetry.measure("coral.branch.levels", g.levels);
+	context.telemetry.measure("coral.branch.spread-radians", g.spread);
+	context.telemetry.measure("coral.branch.length-ratio", g.lengthRatio);
+	context.telemetry.measure("coral.trunk.length", g.trunkLength);
+	context.telemetry.measure("coral.layout.pads-fit", g.padsFit);
+	context.telemetry.measure("coral.layout.trunk-fits", g.trunkFits);
 	if (!g.padsFit || !g.trunkFits)
 	{
 		L.failure = "the colonies' corals do not fit on the map";
@@ -601,6 +609,15 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				L.roads.push_back(turned);
 		}
 	}
+	context.telemetry.measure("coral.branches.actual", L.tree.size());
+	context.telemetry.measure("coral.buds.actual", L.buds.size());
+	context.telemetry.measure("coral.bridges.requested-per-boundary", o.landBridges);
+	if (context.telemetry.enabled())
+	{
+		context.telemetry.measure("coral.bridges.actual-per-boundary",
+								  std::count_if(L.pieces.begin(), L.pieces.end(), [](const Piece &p)
+												{ return p.kind == Kind::Bridge; }));
+	}
 	L.water.assign(n, 0);
 	for (int i = 0; i < n; ++i)
 		L.water[i] = !L.land[i];
@@ -728,6 +745,7 @@ bool generate(Game &game, GenerationContext &context)
 	const Layout L = design(context.request, context);
 	if (!L.failure.empty())
 	{
+		context.telemetry.fallback("coral.layout.failure", L.failure);
 		context.detail = L.failure;
 		return false;
 	}

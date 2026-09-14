@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Globulation 2 map report, schema version 1",
+  "title": "Globulation 2 map report, schema version 2",
   "description": "Field meanings and formulas: REPORT.md in this directory.",
   "type": "object",
   "properties": {
     "schema_version": {
-      "const": 1
+      "const": 2
     },
     "engine": {
       "type": "object",
@@ -471,22 +471,19 @@
         "walking_and_clearing"
       ],
       "additionalProperties": false
+    },
+    "report_type": {
+      "enum": [
+        "map",
+        "generation_failure"
+      ]
     }
   },
   "required": [
     "schema_version",
+    "report_type",
     "engine",
-    "map",
-    "generation",
-    "definitions",
-    "terrain",
-    "underlying_terrain",
-    "resources",
-    "space",
-    "fertility",
-    "canonical_quality",
-    "start_position_euclidean_distances",
-    "movement"
+    "generation"
   ],
   "additionalProperties": false,
   "$defs": {
@@ -1216,12 +1213,16 @@
             "reason": {
               "type": "string",
               "description": ""
+            },
+            "telemetry": {
+              "type": "null"
             }
           },
           "required": [
             "available",
             "parameters",
-            "reason"
+            "reason",
+            "telemetry"
           ],
           "additionalProperties": false
         },
@@ -1232,7 +1233,10 @@
               "const": true
             },
             "generator": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Stable registered string ID."
             },
             "legacy_id": {
@@ -1248,7 +1252,10 @@
               "description": "Exact unsigned 32-bit generation seed."
             },
             "parameters": {
-              "type": "object",
+              "type": [
+                "object",
+                "null"
+              ],
               "additionalProperties": {
                 "type": "integer",
                 "description": "Resolved CLI control value, with width/height in tiles."
@@ -1274,6 +1281,88 @@
                   "type": "null"
                 }
               ]
+            },
+            "telemetry": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/telemetry"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "outcome": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "stage": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "enum": [
+                        "none",
+                        "invalid_request",
+                        "non_empty_target",
+                        "placement_failed",
+                        "invalid_world"
+                      ]
+                    },
+                    "detail": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "stage",
+                    "error",
+                    "detail"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "raw_request": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "integer"
+                },
+                "width_exponent": {
+                  "type": "integer"
+                },
+                "height_exponent": {
+                  "type": "integer"
+                },
+                "teams": {
+                  "type": "integer"
+                },
+                "workers": {
+                  "type": "integer"
+                },
+                "options": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "required": [
+                "method",
+                "width_exponent",
+                "height_exponent",
+                "teams",
+                "workers",
+                "options"
+              ],
+              "additionalProperties": false
             }
           },
           "required": [
@@ -1285,11 +1374,146 @@
             "parameters",
             "legacy_terrain_type",
             "legacy_resource_amounts",
-            "selection_quality"
+            "selection_quality",
+            "telemetry",
+            "outcome",
+            "raw_request"
           ],
           "additionalProperties": false
         }
       ]
+    },
+    "telemetry": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "record_limit": {
+          "const": 4096
+        },
+        "dropped_records": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "invalid_values": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "records": {
+          "type": "array",
+          "maxItems": 4096,
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "kind": {
+                "enum": [
+                  "measurement",
+                  "choice",
+                  "fallback",
+                  "error"
+                ]
+              },
+              "subject": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "value": {
+                "type": [
+                  "integer",
+                  "number",
+                  "boolean",
+                  "string"
+                ],
+                "maxLength": 512
+              }
+            },
+            "required": [
+              "key",
+              "kind",
+              "subject",
+              "value"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schema_version",
+        "enabled",
+        "record_limit",
+        "dropped_records",
+        "invalid_values",
+        "records"
+      ],
+      "additionalProperties": false
     }
-  }
+  },
+  "anyOf": [
+    {
+      "properties": {
+        "report_type": {
+          "const": "map"
+        }
+      },
+      "required": [
+        "schema_version",
+        "engine",
+        "map",
+        "generation",
+        "definitions",
+        "terrain",
+        "underlying_terrain",
+        "resources",
+        "space",
+        "fertility",
+        "canonical_quality",
+        "start_position_euclidean_distances",
+        "movement"
+      ]
+    },
+    {
+      "properties": {
+        "schema_version": {
+          "const": 2
+        },
+        "report_type": {
+          "const": "generation_failure"
+        },
+        "engine": {
+          "type": "object",
+          "properties": {
+            "version_major": {
+              "type": "integer",
+              "description": ""
+            },
+            "version_minor": {
+              "type": "integer",
+              "description": ""
+            }
+          },
+          "required": [
+            "version_major",
+            "version_minor"
+          ],
+          "additionalProperties": false
+        },
+        "generation": {
+          "$ref": "#/$defs/generation"
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
 }

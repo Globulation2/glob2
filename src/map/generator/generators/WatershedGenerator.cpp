@@ -865,6 +865,10 @@ Layout planLayout(int width, int height, const WatershedOptions &o, GenerationCo
 	RiverPlanner planner(frame, layout.north, layout.south, clearance, northMargin, southMargin);
 	planner.meanderScale = o.meanders ? 1.0 : 0.0;
 
+	context.telemetry.measure("watershed.frame.orientation", frame.orientation);
+	context.telemetry.measure("watershed.sea.depth", sea);
+	context.telemetry.measure("watershed.channels.minimum-radius", minimumRadius);
+	context.telemetry.measure("watershed.channels.clearance", clearance);
 	// The delta: one to three distributaries fanning out from an apex to the coast. Without a
 	// delta there is no lobe and only the middle mouth is kept; the others are still planned, so
 	// every later draw is the one it would have been.
@@ -923,6 +927,8 @@ Layout planLayout(int width, int height, const WatershedOptions &o, GenerationCo
 	// upland is left without a river.
 	const int wanted = int(std::lround(landArea * o.riverDensity * 1.5e-4));
 	const double sourceSpacing = 0.7 * std::sqrt(landArea / (wanted + 1.0));
+	context.telemetry.measure("watershed.springs.requested", wanted);
+	context.telemetry.measure("watershed.springs.spacing", sourceSpacing);
 	// A spring that finds no way onto the network is dropped, so springs are sampled again wherever
 	// there is still room until enough have joined it. Up to six rounds of resampling, each with up
 	// to 60 tries per missing spring: a cap on the work, not a promise; when the land is too
@@ -954,7 +960,10 @@ Layout planLayout(int width, int height, const WatershedOptions &o, GenerationCo
 			if (clear)
 				sources.push_back(s);
 		}
+		context.telemetry.measure("watershed.springs.sampled", sources.size(), round);
 		planner.attachSources(sources, context);
+		context.telemetry.measure("watershed.tributaries.after-round",
+								  int(planner.reaches.size()) - trunk - 1, round);
 	}
 
 	// Width grows with the number of springs upstream.
@@ -1042,6 +1051,12 @@ Layout planLayout(int width, int height, const WatershedOptions &o, GenerationCo
 		for (const auto &join : planner.joins[r])
 			layout.joins[r].push_back(join.first);
 	chooseFords(layout, o);
+	context.telemetry.measure("watershed.tributaries.actual", count - trunk - 1);
+	context.telemetry.measure("watershed.delta.mouths", layout.mouths.size());
+	context.telemetry.measure("watershed.fords.actual", layout.fords.size());
+	if (count - trunk - 1 < wanted)
+		context.telemetry.fallback("watershed.springs.omitted",
+								   "Bounded resampling could not attach all requested springs");
 	return layout;
 }
 
@@ -1391,6 +1406,7 @@ std::vector<MapGeneratorPoint> chooseSites(const Layout &layout, const Tiles &t,
 					sum += fertility.at(wrapIndex(x + dx, w), wrapIndex(y + dy, h));
 			candidates.push_back({x, y, regions[c], sum / samples});
 		}
+	context.telemetry.measure("watershed.starts.floodplain-candidates", candidates.size());
 	if (int(candidates.size()) < teams)
 	{
 		detail = "only " + std::to_string(candidates.size()) + " floodplain sites for " +
@@ -1418,6 +1434,8 @@ std::vector<MapGeneratorPoint> chooseSites(const Layout &layout, const Tiles &t,
 		{
 			if (!best.empty())
 				break;
+			context.telemetry.fallback("watershed.starts.expanded-pool",
+									   "No complete spread fit the preferred fertile candidates");
 			candidates = all;
 			nearest.assign(candidates.size(), 0);
 		}
@@ -1478,6 +1496,8 @@ std::vector<MapGeneratorPoint> chooseSites(const Layout &layout, const Tiles &t,
 				 " colonies";
 		return {};
 	}
+	context.telemetry.measure("watershed.starts.spread-score", bestScore);
+	context.telemetry.measure("watershed.starts.selected", best.size());
 	std::vector<MapGeneratorPoint> sites;
 	for (int k : best)
 		sites.emplace_back(candidates[k].x, candidates[k].y);

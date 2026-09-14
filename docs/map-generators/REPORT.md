@@ -290,3 +290,22 @@ The walking quality scorer and the movement/access tables reuse production
 helpers but remain distinct measurements: generator-specific quality can use a
 different catchment radius, and the access table explicitly requires positive
 stored amounts. No new pathfinding or simulation behavior is introduced.
+
+## Generator-supplied telemetry (schema version 2)
+
+Reports now have `schema_version: 2` and `report_type: "map"` or `"generation_failure"`.
+A map report retains the snapshot fields above. A failed generation contains only the version,
+report type, engine and generation object; no final-world analysis is attempted. CLI generation
+still exits nonzero on failure, but writes the requested JSON when a service attempt was made.
+
+`generation.telemetry` is an ordered, bounded, typed trace supplied by generators and shared
+primitives, separate from computed snapshot metrics. Collection is opt-in and is enabled by
+`--generate-map ... --json`; it is `null` for loaded files. `generation.outcome` records success,
+stage, error code and detail. `raw_request` preserves numeric method, raw size exponents, colony
+and worker counts, and all option entries, including invalid ones. Resolved `parameters` may be
+`null` on invalid requests; the generator name may be `null` for unknown numeric methods.
+`selection_quality` is `null` for failed attempts.
+
+The [telemetry guide](TELEMETRY.md) defines record kinds, limits, key/subject conventions,
+performance constraints, bulk analysis and permanent versus temporary instrumentation. Check
+both `dropped_records` and `invalid_values` before treating a trace as complete.

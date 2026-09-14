@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "StartQuality.h"
+#include "GenerationTelemetry.h"
 #include <cstdint>
 #include <stdexcept>
 #include <string>
@@ -27,6 +28,8 @@ struct GenerationResult
 	std::string detail;
 	/// How good a start each colony got, and how evenly. Only filled on success.
 	MapGeneration::StartQualityReport quality;
+	/// Generator-supplied observations, including the partial trace when generation fails.
+	GenerationTelemetry telemetry;
 	explicit operator bool() const { return error == GenerationError::None; }
 	std::string diagnostic() const;
 };

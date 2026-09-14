@@ -105,6 +105,10 @@ static bool generate(Game &game, GenerationContext &context)
 	splitUpPoints(game.map, context, grid, 0, teamPoints, weights1);
 	splitUpArea(game.map, context, grid, 0, teamPoints, weights2, areaNumbers);
 
+	context.telemetry.measure("concrete-islands.regions.actual", areaNumbers.size());
+	if (context.telemetry.enabled())
+		for (size_t i = 0; i < areaNumbers.size(); ++i)
+			context.telemetry.measure("concrete-islands.region.weight", weights2[i], int(i));
 	// Create a heightmap that will be used to give the map a rough edge. 75 sits 20 above the
 	// grass line (55) and 30 above the water line (45), and noise of up to 15 either way can never
 	// push an untouched tile into the sea: only the channels below make water.
@@ -234,6 +238,10 @@ static bool generate(Game &game, GenerationContext &context)
 									 CHERRY + context.stream("layout")() % 3, 1);
 			}
 		}
+		else
+			context.telemetry.fallback(
+				"concrete-islands.neutral.resources-omitted",
+				"Neutral island is too small to subdivide into wheat and fruit zones.", i);
 	}
 
 	if (!divideUpPlayerLands(game, context, grid, teamAreaNumbers, areaNumber,
@@ -241,8 +249,8 @@ static bool generate(Game &game, GenerationContext &context)
 		return false;
 	// A colony's own fields are its only starting wheat and wood, and a field or deposit grown well
 	// past its default size can also wall the colony in with nowhere left to build.
-	reopenCrampedStarts(game, context, {options.wheat, options.wood, options.stone, options.algae,
-										options.fruit});
+	reopenCrampedStarts(game, context,
+						{options.wheat, options.wood, options.stone, options.algae, options.fruit});
 
 	// Initialize final team info
 	for (int i = 0; i < context.request.nbTeams; ++i)
