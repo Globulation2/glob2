@@ -641,7 +641,7 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 	for (size_t i = 0; i < n; ++i)
 	{
 		if (farmland[i])
-			plan[i] = wood[i] ? WOOD : CORN;
+			plan[i] = wood[i] ? WOOD : WHEAT;
 		if (outcrops[i])
 			plan[i] = STONE;
 		if (algae[i])
@@ -803,7 +803,7 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 	// away from the farmland.
 	const double stoneAngle = l.pondAngle + 2 * kPi / 3;
 	const int wheatKit =
-		grow({l.pond.x + 4.5 * side.x, l.pond.y + 4.5 * side.y}, CORN, kKitFarmland);
+		grow({l.pond.x + 4.5 * side.x, l.pond.y + 4.5 * side.y}, WHEAT, kKitFarmland);
 	const int woodKit =
 		grow({l.pond.x - 4.5 * side.x, l.pond.y - 4.5 * side.y}, WOOD, kKitFarmland);
 	const int stoneKit = grow({l.home.x + (kHomeRadius + 3) * std::cos(stoneAngle),
@@ -816,7 +816,7 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 	}
 	const auto rank = [](int type)
 	{
-		return type == STONE ? 3 : type == WOOD ? 2 : type == CORN ? 1 : 0;
+		return type == STONE ? 3 : type == WOOD ? 2 : type == WHEAT ? 1 : 0;
 	};
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
@@ -926,7 +926,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 					for (int dx = -1; dx <= 1; ++dx)
 					{
 						const int type = map.getResource(wrap(x + dx, w), wrap(y + dy, h)).type;
-						if (type == CORN)
+						if (type == WHEAT)
 							reach(0, d + 1);
 						else if (type == WOOD)
 							reach(1, d + 1);

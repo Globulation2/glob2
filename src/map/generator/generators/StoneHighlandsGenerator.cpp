@@ -819,7 +819,7 @@ void furnishHome(Map &map, const Layout &L, int bootX, int bootY, int homeValley
 			}
 		std::sort(tiles.begin(), tiles.end());
 		for (int k = 0; k < kHomeKit && k < int(tiles.size()); ++k)
-			map.setResource(tiles[k].second % t.w, tiles[k].second / t.w, side > 0 ? CORN : WOOD,
+			map.setResource(tiles[k].second % t.w, tiles[k].second / t.w, side > 0 ? WHEAT : WOOD,
 							1);
 	}
 }
@@ -895,7 +895,7 @@ void scatterFarmland(Map &map, GenerationContext &context, const Layout &L,
 		std::stable_sort(tiles.begin(), tiles.end(),
 						 [&](int a, int b) { return split[a] < split[b]; });
 		for (int k = 0; k < total; ++k)
-			map.setResource(tiles[k] % t.w, tiles[k] / t.w, k < wheat ? CORN : WOOD, 1);
+			map.setResource(tiles[k] % t.w, tiles[k] / t.w, k < wheat ? WHEAT : WOOD, 1);
 	}
 }
 

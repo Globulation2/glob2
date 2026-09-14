@@ -112,7 +112,7 @@ namespace
 // share of a noise field of its own that covers the requested tile count - the same
 // histogrammed level search generateHeightField uses, just over an explicit candidate list
 // instead of the whole grid. Compact circular clumps at independent random centers are a
-// fundamentally different, and visibly clumpier, shape. Corn and wood go through
+// fundamentally different, and visibly clumpier, shape. Wheat and wood go through
 // scatterFarmland below instead: unlike stone and algae, they also need to prefer farmable
 // ground, and that preference must only pick *where* farmland goes, not *which* of the two
 // crops a given spot gets - see that function for why.
@@ -202,22 +202,22 @@ void scatterBand(Map &map, HeightMap &noise, int resourceType, int targetTiles,
 }
 
 // Map::growResources only regrows a wheat or wood tile near water (the same triangular kernel
-// Fertility::Field evaluates exactly) - a corn or wood tile with none nearby is a one-time find
+// Fertility::Field evaluates exactly) - a wheat or wood tile with none nearby is a one-time find
 // that can never come back, not a farm. But fertility answers only where farmland can be: it
-// says nothing about whether a given fertile spot should become corn or wood, and thresholding
-// corn and wood on the same field back to back (corn takes the highest band, wood the
+// says nothing about whether a given fertile spot should become wheat or wood, and thresholding
+// wheat and wood on the same field back to back (wheat takes the highest band, wood the
 // next-highest) turned that lopsided into two concentric rings sorted by distance from water,
-// with wood pushed entirely behind corn instead of the two sitting side by side the way real
+// with wood pushed entirely behind wheat instead of the two sitting side by side the way real
 // farmland does. So the two questions are answered separately here: fertility selects the
 // region - widened well past the requested tile count so it reaches into lower-but-still-
 // farmable ground instead of a razor-thin ring at the very highest values - and then an
-// unrelated noise field splits that region into corn and wood, so which crop lands where varies
+// unrelated noise field splits that region into wheat and wood, so which crop lands where varies
 // along the coast rather than with distance from it.
 void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &splitNoise,
-					 int cornTarget, int woodTarget, const std::vector<int> &landComponent,
+					 int wheatTarget, int woodTarget, const std::vector<int> &landComponent,
 					 int numComponents)
 {
-	const int totalTarget = cornTarget + woodTarget;
+	const int totalTarget = wheatTarget + woodTarget;
 	if (totalTarget <= 0 || numComponents <= 0)
 		return;
 	const int width = map.getW(), height = map.getH();
@@ -232,10 +232,10 @@ void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &spl
 		{
 			if (map.getResource(x, y).type != NO_RES_TYPE)
 				continue;
-			// Wood and corn share the same terrain requirement (grass), so either stands in for
+			// Wood and wheat share the same terrain requirement (grass), so either stands in for
 			// eligibility here - which of the two a tile ends up with is decided below, by the
 			// split.
-			if (!map.isResourceAllowed(x, y, CORN))
+			if (!map.isResourceAllowed(x, y, WHEAT))
 				continue;
 			const std::uint32_t f = fertility.at(x, y);
 			if (f == 0)
@@ -287,9 +287,9 @@ void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &spl
 		if (region.empty())
 			continue;
 		// Split the region by an independent noise field instead of fertility - sort it into that
-		// field's order and slice off the lowest share for corn, the next share for wood, so the
+		// field's order and slice off the lowest share for wheat, the next share for wood, so the
 		// two form separate patches following the noise field's own organic contours rather than
-		// corn's band always sitting closer to the water than wood's.
+		// wheat's band always sitting closer to the water than wood's.
 		std::vector<size_t> order(region.size());
 		for (size_t i = 0; i < order.size(); ++i)
 			order[i] = i;
@@ -299,17 +299,17 @@ void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &spl
 					  return splitNoise.uiLevel(region[a].x, region[a].y, kBuckets) <
 							 splitNoise.uiLevel(region[b].x, region[b].y, kBuckets);
 				  });
-		const int cornWanted =
+		const int wheatWanted =
 			std::min<int>(region.size(),
-						  std::max(0, int((std::int64_t(cornTarget) * std::int64_t(region.size())) /
+						  std::max(0, int((std::int64_t(wheatTarget) * std::int64_t(region.size())) /
 										  totalTarget)));
 		const int woodWanted =
-			std::min<int>(int(region.size()) - cornWanted,
+			std::min<int>(int(region.size()) - wheatWanted,
 						  std::max(0, int((std::int64_t(woodTarget) * std::int64_t(region.size())) /
 										  totalTarget)));
-		for (int i = 0; i < cornWanted; ++i)
-			map.setResource(region[order[i]].x, region[order[i]].y, CORN, 1);
-		for (int i = cornWanted; i < cornWanted + woodWanted; ++i)
+		for (int i = 0; i < wheatWanted; ++i)
+			map.setResource(region[order[i]].x, region[order[i]].y, WHEAT, 1);
+		for (int i = wheatWanted; i < wheatWanted + woodWanted; ++i)
 			map.setResource(region[order[i]].x, region[order[i]].y, WOOD, 1);
 	}
 }
@@ -326,7 +326,7 @@ void scatterResources(Game &game, GenerationContext &context, const ResourceDens
 	// *adjacent* crops a farmland tile becomes, not where the coastline itself bends, so its
 	// features need to be sized like a player's local working area (tens of tiles), not like a
 	// continent (hundreds). Reusing 24 here first produced patches wide enough that a zoomed-in
-	// view could sit entirely inside one - corn and wood alternated across the whole map, but not
+	// view could sit entirely inside one - wheat and wood alternated across the whole map, but not
 	// within reach of any one colony, so a colony's own farmland still read as a solid wall of one
 	// crop with the other hidden behind it.
 	HeightMap splitNoise(width, height, context.stream("scatter-split"));
@@ -337,7 +337,7 @@ void scatterResources(Game &game, GenerationContext &context, const ResourceDens
 	// Densities are tiles per 1600 tiles of map for wheat and wood (a 40x40 square, about one
 	// colony's working area), per 3000 for stone and per 800 for algae: the default 24 wheat covers
 	// 1.5% of the map. Being per area, the scatter looks the same on every map size.
-	scatterFarmland(map, fertility, splitNoise, density.corn * area / 1600,
+	scatterFarmland(map, fertility, splitNoise, density.wheat * area / 1600,
 					density.wood * area / 1600, landComponent, numComponents);
 	scatterBand(map, noise, STONE, density.stone * area / 3000, landComponent, numComponents);
 	if (density.algae > 0)
@@ -412,7 +412,7 @@ ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int clo
 				if (dx == 0 && dy == 0)
 					continue;
 				const int resType = map.getResource(t.x(x + dx), t.y(y + dy)).type;
-				if (resType == CORN && r.wheatDist < 0)
+				if (resType == WHEAT && r.wheatDist < 0)
 					r.wheatDist = r.dist[p] + 1;
 				if (resType == WOOD && r.woodDist < 0)
 					r.woodDist = r.dist[p] + 1;
@@ -544,7 +544,7 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 				placeResourceClumpInArea(map, context, reach.farGrass, resourceType, 2);
 		};
 		if (reach.wheatDist < 0 || reach.wheatDist > wheatRange)
-			placeReachable(CORN);
+			placeReachable(WHEAT);
 		if (reach.woodDist < 0 || reach.woodDist > woodRange)
 			placeReachable(WOOD);
 	}

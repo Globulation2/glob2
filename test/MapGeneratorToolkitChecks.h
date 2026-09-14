@@ -154,11 +154,11 @@ inline void plantingChecks()
 	const Torus t(map);
 	assert(clearGround(map, 5, 5));
 	const auto anywhere = [](int) { return true; };
-	assert(growPatch(map, t, t.at(20, 20), CORN, 12, anywhere) == 12);
-	assert(countResource(map, CORN) == 12 && !clearGround(map, 20, 20));
-	std::vector<unsigned char> corn(t.size(), 0), seed(t.size(), 0);
+	assert(growPatch(map, t, t.at(20, 20), WHEAT, 12, anywhere) == 12);
+	assert(countResource(map, WHEAT) == 12 && !clearGround(map, 20, 20));
+	std::vector<unsigned char> wheat(t.size(), 0), seed(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		corn[i] = map.getResource(i % t.w, i / t.w).type == CORN;
+		wheat[i] = map.getResource(i % t.w, i / t.w).type == WHEAT;
 	seed[t.at(20, 20)] = 1;
 	// Four-connected: a cardinal flood over the patch from its seed reaches every tile of it.
 	std::vector<int> reached{t.at(20, 20)};
@@ -168,7 +168,7 @@ inline void plantingChecks()
 		for (const auto &step : kCardinalSteps)
 		{
 			const int n = t.at(reached[head] % t.w + step[0], reached[head] / t.w + step[1]);
-			if (corn[n] && !seen[n])
+			if (wheat[n] && !seen[n])
 			{
 				seen[n] = 1;
 				reached.push_back(n);
@@ -329,8 +329,8 @@ inline void settlementChecks()
 			assert(walk.steps[i] > 0);
 		assert(!reopenCrampedStarts(game, context, {}));
 		// Scoring the finished colonies.
-		growPatch(map, t, t.at(12, 26), CORN, 10, [](int) { return true; });
-		growPatch(map, t, t.at(44, 26), CORN, 10, [](int) { return true; });
+		growPatch(map, t, t.at(12, 26), WHEAT, 10, [](int) { return true; });
+		growPatch(map, t, t.at(44, 26), WHEAT, 10, [](int) { return true; });
 		growPatch(map, t, t.at(8, 14), WOOD, 10, [](int) { return true; });
 		growPatch(map, t, t.at(40, 14), WOOD, 10, [](int) { return true; });
 		const StartQualityReport report = scoreStarts(game, 2);
@@ -380,7 +380,7 @@ inline void settlementChecks()
 						}
 			return best;
 		};
-		assert(nearest(CORN) > 0 && nearest(CORN) <= 24 && nearest(WOOD) > 0 &&
+		assert(nearest(WHEAT) > 0 && nearest(WHEAT) <= 24 && nearest(WOOD) > 0 &&
 			   nearest(WOOD) <= 32);
 		// Walled into a pocket by stone with crops outside: the wall is cleared, not added to.
 		Game walled(nullptr);
@@ -394,10 +394,10 @@ inline void settlementChecks()
 					pocket.setResource(20 + dx, 20 + dy, STONE, 1);
 					ring[t.at(20 + dx, 20 + dy)] = 1;
 				}
-		pocket.setResource(28, 20, CORN, 1);
+		pocket.setResource(28, 20, WHEAT, 1);
 		pocket.setResource(12, 20, WOOD, 1);
 		guaranteeStartingResources(walled, context, 24, 32);
-		assert(countResource(pocket, STONE) < 24 && countResource(pocket, CORN) == 1 &&
+		assert(countResource(pocket, STONE) < 24 && countResource(pocket, WHEAT) == 1 &&
 			   countResource(pocket, WOOD) == 1);
 		// The same pocket with the ring protected: the stone stays and crops are placed inside.
 		Game keep(nullptr);
@@ -406,10 +406,10 @@ inline void settlementChecks()
 		for (int i = 0; i < t.size(); ++i)
 			if (ring[i])
 				designed.setResource(i % t.w, i / t.w, STONE, 1);
-		designed.setResource(28, 20, CORN, 1);
+		designed.setResource(28, 20, WHEAT, 1);
 		designed.setResource(12, 20, WOOD, 1);
 		guaranteeStartingResources(keep, context, 24, 32, 0, &ring);
-		assert(countResource(designed, STONE) == 24 && countResource(designed, CORN) > 1 &&
+		assert(countResource(designed, STONE) == 24 && countResource(designed, WHEAT) > 1 &&
 			   countResource(designed, WOOD) > 1);
 	}
 	{
@@ -456,9 +456,9 @@ inline void balancedStartChecks()
 	Map &map = game.map;
 	const Torus t(map);
 	const auto anywhere = [](int) { return true; };
-	growPatch(map, t, t.at(16, 16), CORN, 12, anywhere);
+	growPatch(map, t, t.at(16, 16), WHEAT, 12, anywhere);
 	growPatch(map, t, t.at(22, 16), WOOD, 12, anywhere);
-	growPatch(map, t, t.at(48, 48), CORN, 12, anywhere);
+	growPatch(map, t, t.at(48, 48), WHEAT, 12, anywhere);
 	growPatch(map, t, t.at(42, 48), WOOD, 12, anywhere);
 	GenerationRequest request;
 	request.seed = 4;
@@ -477,7 +477,7 @@ inline void balancedStartChecks()
 	// No wood anywhere: no balanced set exists, and the boot tiles are left alone.
 	Game bare(nullptr);
 	grassMap(bare, 6, 6);
-	growPatch(bare.map, t, t.at(16, 16), CORN, 12, anywhere);
+	growPatch(bare.map, t, t.at(16, 16), WHEAT, 12, anywhere);
 	GenerationContext untouched(request);
 	untouched.bootX[0] = untouched.bootY[0] = 7;
 	assert(!chooseBalancedStarts(bare, untouched, 20 * 20));
@@ -502,7 +502,7 @@ inline void scatterChecks()
 	request.seed = 13;
 	GenerationContext context(request);
 	scatterResources(game, context, {40, 20, 30, 0, 0});
-	int corn[2] = {0, 0}, wood[2] = {0, 0}, stone[2] = {0, 0};
+	int wheat[2] = {0, 0}, wood[2] = {0, 0}, stone[2] = {0, 0};
 	for (int y = 0; y < game.map.getH(); ++y)
 		for (int x = 0; x < game.map.getW(); ++x)
 		{
@@ -511,13 +511,13 @@ inline void scatterChecks()
 				continue;
 			assert(!game.map.isWater(x, y));
 			const int island = x < 30 ? 0 : 1;
-			corn[island] += type == CORN;
+			wheat[island] += type == WHEAT;
 			wood[island] += type == WOOD;
 			stone[island] += type == STONE;
 		}
 	for (int island = 0; island < 2; ++island)
-		assert(corn[island] > 0 && wood[island] > 0 && stone[island] > 0);
-	assert(corn[0] + corn[1] > wood[0] + wood[1]);
+		assert(wheat[island] > 0 && wood[island] > 0 && stone[island] > 0);
+	assert(wheat[0] + wheat[1] > wood[0] + wood[1]);
 }
 
 // Lattice noise tiles the torus, stays in range and is deterministic; percentile is what it says.
@@ -829,8 +829,8 @@ inline void layerChecks()
 	for (int x = 0; x < 20; ++x)
 		tiles.push_back(t.at(x, 5));
 	plantFields(map, t, tiles, 6, 3, [](int i) { return -i; });
-	assert(countResource(map, CORN) == 6 && countResource(map, WOOD) == 3);
-	assert(map.getResource(8, 5).type == CORN && map.getResource(0, 5).type == WOOD);
+	assert(countResource(map, WHEAT) == 6 && countResource(map, WOOD) == 3);
+	assert(map.getResource(8, 5).type == WHEAT && map.getResource(0, 5).type == WOOD);
 	assert(map.getResource(9, 5).type == NO_RES_TYPE);
 
 	const KitFrame east{10, 10, 0}, south{10, 10, kPi / 2};
@@ -1441,7 +1441,7 @@ inline void farmAndTowerChecks()
 	layBeaches(sketch, t);
 	writeUndermap(map, sketch);
 	const int planted = plantFarm(map, t, farm, 10, 10, [](int) { return true; });
-	assert(planted == 20 && countResource(map, CORN) == 10 && countResource(map, WOOD) == 10);
+	assert(planted == 20 && countResource(map, WHEAT) == 10 && countResource(map, WOOD) == 10);
 	int woodRow = -1;
 	for (int i = 0; i < t.size(); ++i)
 		if (map.getResource(i % t.w, i / t.w).type == WOOD)

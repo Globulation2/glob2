@@ -685,30 +685,30 @@ bool generate(Game &game, GenerationContext &context)
 			switch (L.kind[cell])
 			{
 			case Homestead:
-				spots = {{0, -kClumpOut, CORN, kClumpRadius}, {0, kClumpOut, WOOD, small}};
+				spots = {{0, -kClumpOut, WHEAT, kClumpRadius}, {0, kClumpOut, WOOD, small}};
 				break;
 			case Hamlet:
-				spots = {{0, -(kClumpOut - 1), CORN, small}, {0, kClumpOut - 1, WOOD, small}};
+				spots = {{0, -(kClumpOut - 1), WHEAT, small}, {0, kClumpOut - 1, WOOD, small}};
 				break;
 			case Fort:
-				spots = {{0, -(r + 2), CORN, small}, {-(r + 2), 0, WOOD, small}};
+				spots = {{0, -(r + 2), WHEAT, small}, {-(r + 2), 0, WOOD, small}};
 				break;
 			case Bastion:
-				spots = {{-(r + 2), -(r + 2), CORN, small}, {r + 2, r + 2, WOOD, small}};
+				spots = {{-(r + 2), -(r + 2), WHEAT, small}, {r + 2, r + 2, WOOD, small}};
 				break;
 			case Funnel:
-				spots = {{-r, 3, CORN, small}, {r, 3, WOOD, small}};
+				spots = {{-r, 3, WHEAT, small}, {r, 3, WOOD, small}};
 				break;
 			case Chicane:
-				spots = {{0, -kClumpOut, CORN, small}, {0, kClumpOut, WOOD, small}};
+				spots = {{0, -kClumpOut, WHEAT, small}, {0, kClumpOut, WOOD, small}};
 				break;
 			default:
-				spots = {{-m, 0, CORN, small}, {m, 0, WOOD, small}};
+				spots = {{-m, 0, WHEAT, small}, {m, 0, WOOD, small}};
 				break;
 			}
 			for (const Spot &spot : spots)
 			{
-				if (scaledCount(1, spot.type == CORN ? o.wheat : o.wood) <= 0)
+				if (scaledCount(1, spot.type == WHEAT ? o.wheat : o.wood) <= 0)
 					continue;
 				const int at = localTile(L, cell, spot.u, spot.v);
 				if (const int seed = seedNear(t, at % t.w, at / t.w, 3,
@@ -732,7 +732,7 @@ bool generate(Game &game, GenerationContext &context)
 				int(scaledCount(kCoverPercent, L.kind[cell] == Woodlot ? o.wood : o.wheat)), 0,
 				100);
 			const int level = percentile(levels, 100 - share);
-			plantCover(map, t, L.land, L.kind[cell] == Woodlot ? WOOD : CORN,
+			plantCover(map, t, L.land, L.kind[cell] == Woodlot ? WOOD : WHEAT,
 					   [&](int i) { return inBlock(i) && cover[i] >= level; });
 			break;
 		}

@@ -90,7 +90,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 			for (int x = 0; x < w; ++x)
 			{
 				const Resource &resource = map.getResource(x, y);
-				if (resource.type != CORN && resource.type != WOOD)
+				if (resource.type != WHEAT && resource.type != WOOD)
 					continue;
 				int nearest = -1;
 				for (int dy = -1; dy <= 1; ++dy)
@@ -105,7 +105,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 				if (nearest < 0)
 					continue;
 				const int reach = nearest + 1;
-				int &best = resource.type == CORN ? colony.wheatDistance : colony.woodDistance;
+				int &best = resource.type == WHEAT ? colony.wheatDistance : colony.woodDistance;
 				if (best < 0 || reach < best)
 					best = reach;
 				if (nearest <= scale.catchmentSteps)

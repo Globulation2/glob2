@@ -220,7 +220,7 @@ static bool generate(Game &game, GenerationContext &context)
 			std::vector<MapGeneratorPoint> points;
 			getAllPoints(game.map, grid, areaNumbers[0], points);
 			if (options.wheat > 0)
-				fillInResource(game.map, context, points, CORN, 2);
+				fillInResource(game.map, context, points, WHEAT, 2);
 			points.clear();
 
 			// Place some fruit: 1 to 6 trees of random kinds, so a neutral island may hold one, two

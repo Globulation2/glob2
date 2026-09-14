@@ -273,11 +273,11 @@ static void resources(Game &game, GenerationContext &context,
 			amount = 1;
 		p = d - 1 - amount / 2;
 		if (amount > 0)
-			setScaledResource(map, bootX[s] - p, bootY[s], CORN, amount, options.wheat);
+			setScaledResource(map, bootX[s] - p, bootY[s], WHEAT, amount, options.wheat);
 		if (amount < smallestAmount)
 		{
 			smallestAmount = amount;
-			smallestResource = CORN;
+			smallestResource = WHEAT;
 		}
 
 		// STONE
@@ -300,7 +300,7 @@ static void resources(Game &game, GenerationContext &context,
 		p = d - 1 - amount / 2;
 		if (amount > 0 && options.extra_deposit)
 			setScaledResource(map, bootX[s] + p, bootY[s] + p, smallestResource, amount,
-							  smallestResource == CORN ? options.wheat : options.wood);
+							  smallestResource == WHEAT ? options.wheat : options.wood);
 
 		// ALGAE
 		// East to the first water, then out past it by the spreading margin, so the algae sits a

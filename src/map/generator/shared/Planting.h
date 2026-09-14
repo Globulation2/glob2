@@ -94,7 +94,7 @@ void plantKit(Map &map, const Torus &t, GenerationContext &context, const Kit &k
 {
 	if (const int seed = seedNear(t, kit.wheat.x, kit.wheat.y, kit.wheat.within, eligible);
 		seed >= 0)
-		growPatch(map, t, seed, CORN, kit.wheatTiles, eligible);
+		growPatch(map, t, seed, WHEAT, kit.wheatTiles, eligible);
 	if (const int seed = seedNear(t, kit.wood.x, kit.wood.y, kit.wood.within, eligible); seed >= 0)
 		growPatch(map, t, seed, WOOD, kit.woodTiles, eligible);
 	if (kit.stoneRadius < 0)
@@ -136,7 +136,7 @@ void plantFields(Map &map, const Torus &t, std::vector<int> tiles, int wheat, in
 					 [&](int a, int b) { return splitKey(a) < splitKey(b); });
 	const int wheatShare = int(std::int64_t(total) * wheat / std::max(1, wheat + wood));
 	for (int k = 0; k < total; ++k)
-		map.setResource(tiles[k] % t.w, tiles[k] / t.w, k < wheatShare ? CORN : WOOD, 1);
+		map.setResource(tiles[k] % t.w, tiles[k] / t.w, k < wheatShare ? WHEAT : WOOD, 1);
 }
 
 /// Dense cover: one tile of `type` on every tile of `region` that `eligible(tile)` allows and the engine

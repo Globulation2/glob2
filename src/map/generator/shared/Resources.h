@@ -16,7 +16,7 @@ inline double scaledShare(double share, int percent)
 }
 struct ResourceDensities
 {
-	int corn, wood, stone, algae, fruit;
+	int wheat, wood, stone, algae, fruit;
 };
 void fillInResource(Map &map, GenerationContext &context, std::vector<MapGeneratorPoint> &points,
 					int resourceType, int maxFillSize);

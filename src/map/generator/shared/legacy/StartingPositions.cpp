@@ -129,7 +129,7 @@ bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int
 			{
 				int h = heightmap[wheatWoodPoints[j].y * game.map.getW() + wheatWoodPoints[j].x];
 				if (h > 50 && resources.wheat > 0)
-					game.map.setResource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, CORN, 1);
+					game.map.setResource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, WHEAT, 1);
 				if (h - wheatRise + 10 > 50)
 					wheatPoints.push_back(wheatWoodPoints[j]);
 			}

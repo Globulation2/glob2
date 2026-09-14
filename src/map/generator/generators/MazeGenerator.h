@@ -5,7 +5,7 @@
 struct MazeOptions
 {
 	int cellShape, cellSize, channelWidth, loopiness, warp;
-	int corn, wood, stone, algae, fruit;
+	int wheat, wood, stone, algae, fruit;
 	bool sandRoads, treasure;
 	explicit MazeOptions(const GenerationRequest &r);
 };

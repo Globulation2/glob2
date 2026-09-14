@@ -188,7 +188,7 @@ int MapGeneration::plantFarm(Map &map, const Torus &t, const Farm &farm, int whe
 			break;
 		if (map.isResource(i % t.w, i / t.w))
 			continue;
-		map.setResource(i % t.w, i / t.w, CORN, 1);
+		map.setResource(i % t.w, i / t.w, WHEAT, 1);
 		++wheats;
 		++planted;
 	}

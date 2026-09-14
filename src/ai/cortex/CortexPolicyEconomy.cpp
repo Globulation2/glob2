@@ -56,18 +56,18 @@ namespace Cortex
 	}
 
 	/// CAPPED-DRAINING face of the wheat bottleneck: pinned at the worker cap yet
-	/// the CORN buffer is draining below the expansion line — demand outruns supply
+	/// the WHEAT buffer is draining below the expansion line — demand outruns supply
 	/// even at full haulers. Shared by the fresh-patch trigger and its severity
 	/// grade so the two can never disagree. The Muka seed-1 diagnosis
 	/// (.tmp/rankgate-diag/FINDINGS.md) showed this face fires on production-cycle
-	/// corn noise while the patch still holds abundant wheat, so it takes the
+	/// wheat noise while the patch still holds abundant wheat, so it takes the
 	/// optional wheat-abundance veto: with tuning.expandWheatVeto > 0, a swarm that
 	/// can still see that many harvestable tiles is NOT capped-draining, whatever
 	/// its buffer does this cycle (0 = veto off, the committed behavior).
 	static bool swarmCappedDraining(const TrackedBuilding& t)
 	{
 		const CortexTuning& tuning = cortexTuning();
-		if (t.maxUnitWorking < tuning.swarmWorkerCap || t.corn >= tuning.expandCornLo)
+		if (t.maxUnitWorking < tuning.swarmWorkerCap || t.wheat >= tuning.expandWheatLo)
 			return false;
 		if (tuning.expandWheatVeto > 0
 		 && t.harvestableWheatNearby >= tuning.expandWheatVeto)
@@ -78,8 +78,8 @@ namespace Cortex
 	/// A swarm "wants a fresh wheat patch" when its current catchment can no longer
 	/// sustain it. Two faces of the same bottleneck:
 	///   (1) CAPPED-DRAINING: pinned at the worker cap (CORTEX_SWARM_WORKER_CAP) yet
-	///       its CORN buffer is still draining below the add-a-hauler line
-	///       (CORTEX_SWARM_CORN_ADD_LO) — demand outruns supply even at full haulers.
+	///       its WHEAT buffer is still draining below the add-a-hauler line
+	///       (CORTEX_SWARM_WHEAT_ADD_LO) — demand outruns supply even at full haulers.
 	///   (2) FIELD-DEPLETED: see swarmFieldDepleted — (1) can never fire for such a
 	///       swarm again (the throttle holds it below the cap).
 	/// Either way the fix is the same: expand onto a NEW patch with another swarm
@@ -107,7 +107,7 @@ namespace Cortex
 	// Debounce counter for the fresh-patch desire gate: how many CONSECUTIVE
 	// decision cycles (decide() calls, ~25 ticks apart) anySwarmWantsFreshPatch
 	// has held, so scoreSecondSwarm can require it to persist
-	// tuning.expandDebounceCycles cycles before firing — a corn-buffer dip that
+	// tuning.expandDebounceCycles cycles before firing — a wheat-buffer dip that
 	// self-heals next cycle is production noise, not a spent catchment. Called
 	// EXACTLY ONCE per decision cycle, at the top of decide(); decideCombat and
 	// extractDecideFeatures never touch it. RAM-only on purpose (same precedent
@@ -123,10 +123,10 @@ namespace Cortex
 			expandWantStreak_ = 0;
 	}
 
-	/// Severity of the worst swarm that wants a fresh patch, in [1, tuning.expandCornLo];
+	/// Severity of the worst swarm that wants a fresh patch, in [1, tuning.expandWheatLo];
 	/// 0 when none does. The second-swarm score scales with this. A FIELD-DEPLETED
 	/// catchment is the strongest expand signal, so it scores the maximum; a
-	/// CAPPED-DRAINING swarm scales with how far its CORN buffer sits below the line.
+	/// CAPPED-DRAINING swarm scales with how far its WHEAT buffer sits below the line.
 	static int swarmFreshPatchSeverity(const CortexObservation& obs)
 	{
 		const CortexTuning& tuning = cortexTuning();
@@ -138,9 +138,9 @@ namespace Cortex
 				continue;
 			int sev = 0;
 			if (swarmCappedDraining(t))
-				sev = tuning.expandCornLo - t.corn; // corn in [0,expandCornLo-1] -> 1..expandCornLo
+				sev = tuning.expandWheatLo - t.wheat; // wheat in [0,expandWheatLo-1] -> 1..expandWheatLo
 			if (swarmFieldDepleted(t))
-				sev = tuning.expandCornLo; // exhausted catchment: max severity
+				sev = tuning.expandWheatLo; // exhausted catchment: max severity
 			if (sev > worst)
 				worst = sev;
 		}
@@ -247,8 +247,8 @@ namespace Cortex
 		// when anySwarmWantsFreshPatch, so swarm expansion wins) is REMOVED. Its
 		// premise — "an inn beside a depleted field can never be stocked, so the
 		// deficit is wheat-SUPPLY not inn-CAPACITY" — is contradicted by the Muka
-		// inn trace: during the famine the inns sit at 5-10/10 corn with one hauler
-		// (restockReq ~0), full of eaters (inside maxed). They are NOT corn-starved;
+		// inn trace: during the famine the inns sit at 5-10/10 wheat with one hauler
+		// (restockReq ~0), full of eaters (inside maxed). They are NOT wheat-starved;
 		// the shortage is feeding THROUGHPUT (inn eating-slots vs a 120-unit
 		// population), which only MORE inns fix. Discounting inns toward swarms then
 		// added breeding instead of feeding — the wrong lever. Keep the inn at full
@@ -279,7 +279,7 @@ namespace Cortex
 	// invisible to the fresh-patch trigger and hauler tuning). There is no arbitrary
 	// count cap below that: WHEN/WHERE to add a swarm is governed by the placement gate
 	// below, not a fixed number. The placement helper already forces CORTEX_SWARM_MIN_SPACING
-	// between swarms AND CORTEX_WHEAT_MAX_DIST to CORN, so a VALID swarm candidate
+	// between swarms AND CORTEX_WHEAT_MAX_DIST to WHEAT, so a VALID swarm candidate
 	// necessarily sits on a DIFFERENT patch within haul range — i.e. this fires
 	// exactly when "another wheat patch is found in relative proximity to the base".
 	// EXPANSION IS DECIDED BY RANKING, NOT LADDER COMPLETION. There is deliberately
@@ -308,7 +308,7 @@ namespace Cortex
 	// queuing two swarms at once.
 	// FRESH-PATCH GATE: hold until an existing swarm genuinely cannot keep up —
 	// its wheat catchment is the bottleneck, either pinned at the worker cap with a
-	// draining CORN buffer OR its harvestable wheat exhausted (anySwarmWantsFreshPatch).
+	// draining WHEAT buffer OR its harvestable wheat exhausted (anySwarmWantsFreshPatch).
 	// Until then a single swarm + more haulers is the cheaper answer; only a spent
 	// catchment warrants a whole new swarm on a fresh patch.
 	//
@@ -348,7 +348,7 @@ namespace Cortex
 			if (slot >= 0)
 			{
 				// Healthy colony: score scales with how spent the worst catchment is
-				// (severity 1..expandCornLo), landing above the tech/upgrade band so the
+				// (severity 1..expandWheatLo), landing above the tech/upgrade band so the
 				// fresh wheat patch outranks another upgrade when wheat is the binding
 				// constraint. The severity floor (default 1 = any) lets the search
 				// demand a genuinely spent catchment before expansion fires at all;
@@ -371,12 +371,12 @@ namespace Cortex
 
 	// Worker-hauling tuning (closed-loop wheat-economy), run EVERY decision cycle in
 	// PARALLEL with decide()'s single primary action — see the header doc. Each cycle
-	// we nudge each swarm's maxUnitWorking by AT MOST +/-1 based on its corn-buffer
+	// we nudge each swarm's maxUnitWorking by AT MOST +/-1 based on its wheat-buffer
 	// level, set each inn's to its collectable restock demand, and raise construction
-	// sites toward the free-worker pool. This self-damps: when a building's corn level
-	// sits in the deadband (ADD_LO <= corn < REM_HI) no adjustment fires; only when it
+	// sites toward the free-worker pool. This self-damps: when a building's wheat level
+	// sits in the deadband (ADD_LO <= wheat < REM_HI) no adjustment fires; only when it
 	// crosses a threshold does the count move, and the +/-1 step rate prevents the
-	// chunky 5-CORN-per-unit production schedule from driving oscillation (a single
+	// chunky 5-WHEAT-per-unit production schedule from driving oscillation (a single
 	// step per cycle is slower than the buffer responds, so it converges rather than
 	// hunting). In steady state (buffers in the deadband) this returns ACTION_NOOP and
 	// emits no order; the action layer also dedups per-building, so a re-issued
@@ -405,7 +405,7 @@ namespace Cortex
 				// the contract's exact order and use its choice directly. Integer/
 				// I16F16 → deterministic. Inn/site caps below stay hand-coded.
 				const int features[CortexNet::NUM_FEATURES] = {
-					t.corn, t.maxCorn, t.maxUnitWorking, t.unitsInside, t.maxUnitInside,
+					t.wheat, t.maxWheat, t.maxUnitWorking, t.unitsInside, t.maxUnitInside,
 					t.nearestWheatDist, t.harvestableWheatNearby,
 					obs.freeWorkers, obs.totalFree, obs.totalNeeded, obs.workers,
 					obs.swarmCount, obs.feedCapacity, obs.starvingUnits, obs.needFood,
@@ -417,20 +417,20 @@ namespace Cortex
 			// HARVESTABLE wheat cannot use more than a single hauler — extra workers
 			// find no wheat to harvest and just idle or thrash the depleted patch. Cap
 			// it at CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP outright (not the gentle
-			// +/-1 step), regardless of the corn buffer. harvestableWheatNearby is -1
+			// +/-1 step), regardless of the wheat buffer. harvestableWheatNearby is -1
 			// when unknown (game absent); only act on a real count. Takes precedence
 			// over the buffer-driven add/remove below.
 			else if (t.harvestableWheatNearby >= 0
 			 && t.harvestableWheatNearby < cortexTuning().wheatStarvedTiles)
 				desired = CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP;
 			// Buffer draining: bring one more hauler in before the swarm stalls.
-			// CORTEX_SWARM_CORN_ADD_LO is the stall threshold (swarm stops
-			// producing at < 5 corn); catching it early buys a cycle of slack.
-			else if (t.corn < CORTEX_SWARM_CORN_ADD_LO && t.maxUnitWorking < sCap)
+			// CORTEX_SWARM_WHEAT_ADD_LO is the stall threshold (swarm stops
+			// producing at < 5 wheat); catching it early buys a cycle of slack.
+			else if (t.wheat < CORTEX_SWARM_WHEAT_ADD_LO && t.maxUnitWorking < sCap)
 				desired = t.maxUnitWorking + 1;
 			// Buffer saturated: the buffer is full enough that this hauler could
 			// do more useful work elsewhere — release one.
-			else if (t.corn >= cortexTuning().swarmCornRemHi && t.maxUnitWorking > CORTEX_SWARM_WORKER_MIN)
+			else if (t.wheat >= cortexTuning().swarmWheatRemHi && t.maxUnitWorking > CORTEX_SWARM_WORKER_MIN)
 				desired = t.maxUnitWorking - 1;
 			if (desired != t.maxUnitWorking) { tune.swarmWorkers[i] = desired; anyChange = true; }
 		}
@@ -458,20 +458,20 @@ namespace Cortex
 			if (t.ticksSinceFinished >= 0
 			 && t.ticksSinceFinished < CORTEX_INN_TUNE_DELAY_TICKS)
 				continue;
-			// Inn hauler ceiling = the inn's CORN-deficit restock demand.
-			// CortexObservation fills restockTripsNeeded = (maxCorn - corn) in hauler
-			// trips: how empty the corn buffer is. We set maxUnitWorking to that demand,
+			// Inn hauler ceiling = the inn's WHEAT-deficit restock demand.
+			// CortexObservation fills restockTripsNeeded = (maxWheat - wheat) in hauler
+			// trips: how empty the wheat buffer is. We set maxUnitWorking to that demand,
 			// clamped to [MIN, CAP]; the engine self-regulates the actual hauler count
-			// below this ceiling each tick. Scales with inn LEVEL (bigger corn cap means
-			// more trips, more haulers) instead of the old fixed corn thresholds that
+			// below this ceiling each tick. Scales with inn LEVEL (bigger wheat cap means
+			// more trips, more haulers) instead of the old fixed wheat thresholds that
 			// collapsed a level-2 inn to one hauler. restockTripsNeeded == -1 means
 			// unknown (game absent): leave it untouched.
 			int desired = t.maxUnitWorking;
-			// Wheat-starvation override: if the inn has no CORN within
+			// Wheat-starvation override: if the inn has no WHEAT within
 			// CORTEX_INN_WHEAT_STARVED_RADIUS tiles (nearestWheatDist < 0 means none
 			// within the scan cap), its haulers have nothing to fetch — hold it at the
-			// floor regardless of the corn deficit. Mirrors the swarm wheat-starved
-			// clamp; without it a corn-deficit inn beside an exhausted or too-distant
+			// floor regardless of the wheat deficit. Mirrors the swarm wheat-starved
+			// clamp; without it a wheat-deficit inn beside an exhausted or too-distant
 			// field would pull a crowd of haulers that just idle.
 			if (t.nearestWheatDist < 0
 			 || t.nearestWheatDist > CORTEX_INN_WHEAT_STARVED_RADIUS)

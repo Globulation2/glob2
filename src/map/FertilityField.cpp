@@ -210,7 +210,7 @@ namespace
 		std::queue<std::pair<int, int>> frontier;
 		for (int y = 0; y < h; ++y)
 			for (int x = 0; x < w; ++x)
-				if (map.isResourceTakeable(x, y, CORN) || map.isResourceTakeable(x, y, WOOD))
+				if (map.isResourceTakeable(x, y, WHEAT) || map.isResourceTakeable(x, y, WOOD))
 				{
 					reached[size_t(y) * w + x] = 1;
 					frontier.emplace(x, y);
@@ -266,7 +266,7 @@ std::uint32_t usefulExpansionCapacity(std::uint32_t fertility, int amount,
 {
 	amount = std::max(0, std::min(8, amount));
 	availableNeighbors = std::max(0, std::min(8, availableNeighbors));
-	// amount/8 * neighbours/8, and wheat only clears CORN_GROWTH_DIVISOR one time in three.
+	// amount/8 * neighbours/8, and wheat only clears WHEAT_GROWTH_DIVISOR one time in three.
 	const std::uint32_t divisor = wheat ? 192u : 64u;
 	return fertility * std::uint32_t(amount) * std::uint32_t(availableNeighbors) / divisor;
 }

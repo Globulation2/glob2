@@ -204,7 +204,7 @@ void FertilityFieldTest::testForMapZeroesNonGrass()
 	TinyMap map;
 	map.makeWater(4, 4);
 	map.makeSand(6, 6);
-	map.putResource(10, 10, CORN);
+	map.putResource(10, 10, WHEAT);
 	const Fertility::Field field = Fertility::forMap(map);
 	CPPUNIT_ASSERT_EQUAL(std::uint32_t(0), field.at(4, 4));
 	CPPUNIT_ASSERT_EQUAL(std::uint32_t(0), field.at(6, 6));
@@ -222,7 +222,7 @@ void FertilityFieldTest::testForMapZeroesGrassNoDepositReaches()
 		map.makeWater(14 - 2, 14 + d);
 		map.makeWater(14 + 2, 14 + d);
 	}
-	map.putResource(25, 25, CORN);
+	map.putResource(25, 25, WHEAT);
 	const Fertility::Field field = Fertility::forMap(map);
 	CPPUNIT_ASSERT_EQUAL(std::uint32_t(0), field.at(14, 14));
 	CPPUNIT_ASSERT(field.at(25, 25) > 0u);
@@ -240,7 +240,7 @@ void FertilityFieldTest::testForMapUngatedKeepsUnreachableGrass()
 void FertilityFieldTest::testUsefulExpansionCapacityFolds()
 {
 	// Wood: fertility * amount/8 * neighbours/8. Wheat additionally clears
-	// CORN_GROWTH_DIVISOR only one time in three.
+	// WHEAT_GROWTH_DIVISOR only one time in three.
 	CPPUNIT_ASSERT_EQUAL(std::uint32_t(65536), Fertility::usefulExpansionCapacity(65536, 8, 8, false));
 	CPPUNIT_ASSERT_EQUAL(std::uint32_t(65536 / 3), Fertility::usefulExpansionCapacity(65536, 8, 8, true));
 	CPPUNIT_ASSERT_EQUAL(std::uint32_t(0), Fertility::usefulExpansionCapacity(65536, 0, 8, false));

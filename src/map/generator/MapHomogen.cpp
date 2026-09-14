@@ -64,7 +64,7 @@ void Map::smoothResources(int times)
 			for (int x=0; x<w; x++)
 			{
 				Resource &r=tiles[coordToIndex(x, y)].resource;
-				if (r.type!=WOOD && r.type!=CORN && r.type!=STONE && r.type!=ALGA)
+				if (r.type!=WOOD && r.type!=WHEAT && r.type!=STONE && r.type!=ALGA)
 					continue;
 				if (!(syncRand()&4))
 					continue;

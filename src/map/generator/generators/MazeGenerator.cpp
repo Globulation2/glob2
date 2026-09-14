@@ -311,7 +311,7 @@ void furnishHome(Map &map, const Torus &t, const MazeDesign &d, const std::vecto
 			return std::abs(a.v) < std::abs(b.v);
 		return a.u != b.u ? a.u < b.u : a.v < b.v;
 	};
-	fillInOrder(map, left, kHomeFarmland, CORN, shoreFromBack);
+	fillInOrder(map, left, kHomeFarmland, WHEAT, shoreFromBack);
 	fillInOrder(map, right, kHomeFarmland, WOOD, shoreFromBack);
 	fillInOrder(map, rear, kHomeStone, STONE, nearBackCentre);
 }
@@ -403,7 +403,7 @@ void scatterThroughMaze(Map &map, GenerationContext &context, const MazeDesign &
 	};
 
 	const int shore = int(pool.size());
-	for (const auto &layer : {std::pair<int, int>{CORN, o.corn}, std::pair<int, int>{WOOD, o.wood},
+	for (const auto &layer : {std::pair<int, int>{WHEAT, o.wheat}, std::pair<int, int>{WOOD, o.wood},
 							  std::pair<int, int>{STONE, o.stone}})
 	{
 		// Density per 256 shore tiles, so the defaults (wheat 48, wood 24, stone 16) cover about
@@ -659,7 +659,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 MazeOptions::MazeOptions(const GenerationRequest &r)
 	: cellShape(r.option("cell-shape")), cellSize(r.option("cell-size")),
 	  channelWidth(r.option("channel-width")), loopiness(r.option("loopiness")),
-	  warp(r.option("warp")), corn(r.option("wheat")), wood(r.option("wood")),
+	  warp(r.option("warp")), wheat(r.option("wheat")), wood(r.option("wood")),
 	  stone(r.option("stone")), algae(r.option("algae")), fruit(r.option("fruit")),
 	  sandRoads(r.option("sand-roads") != 0), treasure(r.option("dead-end-treasure") != 0)
 {

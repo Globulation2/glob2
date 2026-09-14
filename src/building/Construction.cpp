@@ -337,7 +337,7 @@ void Building::updateCallLists(void)
 		// this is for food handling
 		if (type->canFeedUnit)
 		{
-			if (resources[CORN]>(int)unitsInside.size())
+			if (resources[WHEAT]>(int)unitsInside.size())
 			{
 				if (inCanFeedUnit!=LS_IN)
 				{

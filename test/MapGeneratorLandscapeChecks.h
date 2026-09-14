@@ -101,7 +101,7 @@ inline void orbitChecks()
 	}
 	std::string detail;
 	assert(equaliseDeposits(game.map, lattice, detail) && detail.empty());
-	game.map.setResource(40, 40, CORN, 1);
+	game.map.setResource(40, 40, WHEAT, 1);
 	assert(!equaliseDeposits(game.map, lattice, detail) && !detail.empty());
 	game.map.setNoResource(40, 40, 1);
 	game.map.setResource(40, 40, STONE, 1);

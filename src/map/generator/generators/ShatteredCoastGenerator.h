@@ -16,7 +16,7 @@ struct ShatteredCoastOptions
 	}
 	int percent(int resourceType) const
 	{
-		return resourceType == CORN    ? wheat
+		return resourceType == WHEAT    ? wheat
 			   : resourceType == WOOD  ? wood
 			   : resourceType == STONE ? stone
 									   : algae;

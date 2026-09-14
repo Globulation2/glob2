@@ -273,7 +273,7 @@ void hideGroves(Map &map, const Layout &L, GenerationContext &context, const Old
 			placeResourceClump(map, context, MapGeneratorPoint(gx, gy),
 							   CHERRY + int(context.bounded("growth-fruit", 3)), 1);
 		if (const int seed = seedNear(t, gx - 2, gy - 2, 4, pocket); seed >= 0)
-			growPatch(map, t, seed, CORN, int(scaledCount(kGroveWheat, o.wheat)), pocket);
+			growPatch(map, t, seed, WHEAT, int(scaledCount(kGroveWheat, o.wheat)), pocket);
 		if (scaledCount(1, o.stone) > 0)
 			if (const int seed = seedNear(t, gx + 2, gy + 2, 4, pocket); seed >= 0)
 				placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), STONE,
@@ -339,7 +339,7 @@ bool generate(Game &game, GenerationContext &context)
 					seedNear(t, int(std::lround(pool.x + (kPoolRadius + 2) * std::cos(a))),
 							 int(std::lround(pool.y + (kPoolRadius + 2) * std::sin(a))), 2, shore);
 				if (seed >= 0)
-					growPatch(map, t, seed, CORN, kPoolWheat / kPoolSeeds, shore);
+					growPatch(map, t, seed, WHEAT, kPoolWheat / kPoolSeeds, shore);
 			}
 		}
 	}
@@ -354,7 +354,7 @@ bool generate(Game &game, GenerationContext &context)
 				   clearGround(map, i % t.w, i / t.w);
 		};
 		if (const int seed = seedNear(t, cx, cy, 20, shore); seed >= 0)
-			growPatch(map, t, seed, CORN, int(scaledCount(kLakeWheat, o.wheat)), shore);
+			growPatch(map, t, seed, WHEAT, int(scaledCount(kLakeWheat, o.wheat)), shore);
 		if (scaledCount(1, o.fruit) > 0)
 		{
 			const double spin = context.bounded("growth-fruit", 3600) / 3600.0 * 2 * kPi;

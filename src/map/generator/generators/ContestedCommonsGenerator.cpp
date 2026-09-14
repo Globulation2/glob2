@@ -339,7 +339,7 @@ static void stockCommons(Game &game, GenerationContext &context,
 				}
 			}
 
-			// Roughly 2/7 of the zones become wood, 2/7 corn, one zone (any zone) becomes the
+			// Roughly 2/7 of the zones become wood, 2/7 wheat, one zone (any zone) becomes the
 			// single quarry, ~1/7 get a scattered fruit grove, and the rest are left open. Roles
 			// are assigned zone by zone in random order, each one picking randomly among the
 			// roles that no already-decided *neighboring* zone already has -- so a big forest
@@ -349,13 +349,13 @@ static void stockCommons(Game &game, GenerationContext &context,
 			{
 				ROLE_OPEN = 0,
 				ROLE_WOOD = 1,
-				ROLE_CORN = 2,
+				ROLE_WHEAT = 2,
 				ROLE_FRUIT = 3,
 				ROLE_QUARRY = 4
 			};
 			// The amount controls scale how many zones take each role.
 			int woodTarget = int(scaledCount(std::max(1, zoneCount * 2 / 7), options.wood));
-			int cornTarget = int(scaledCount(std::max(1, zoneCount * 2 / 7), options.wheat));
+			int wheatTarget = int(scaledCount(std::max(1, zoneCount * 2 / 7), options.wheat));
 			int fruitTarget = int(scaledCount(std::max(1, zoneCount / 7), options.fruit));
 
 			std::vector<int> order(zoneCount);
@@ -369,7 +369,7 @@ static void stockCommons(Game &game, GenerationContext &context,
 
 			std::vector<int> role(zoneCount, -1);
 			role[order[0]] = ROLE_QUARRY;
-			int woodCount = 0, cornCount = 0, fruitCount = 0;
+			int woodCount = 0, wheatCount = 0, fruitCount = 0;
 			for (int oi = 1; oi < zoneCount; ++oi)
 			{
 				int z = order[oi];
@@ -381,8 +381,8 @@ static void stockCommons(Game &game, GenerationContext &context,
 				std::vector<int> candidates;
 				if (!blocked[ROLE_WOOD] && woodCount < woodTarget)
 					candidates.push_back(ROLE_WOOD);
-				if (!blocked[ROLE_CORN] && cornCount < cornTarget)
-					candidates.push_back(ROLE_CORN);
+				if (!blocked[ROLE_WHEAT] && wheatCount < wheatTarget)
+					candidates.push_back(ROLE_WHEAT);
 				if (!blocked[ROLE_FRUIT] && fruitCount < fruitTarget)
 					candidates.push_back(ROLE_FRUIT);
 				if (!blocked[ROLE_OPEN])
@@ -394,8 +394,8 @@ static void stockCommons(Game &game, GenerationContext &context,
 				role[z] = chosen;
 				if (chosen == ROLE_WOOD)
 					woodCount++;
-				else if (chosen == ROLE_CORN)
-					cornCount++;
+				else if (chosen == ROLE_WHEAT)
+					wheatCount++;
 				else if (chosen == ROLE_FRUIT)
 					fruitCount++;
 			}
@@ -419,8 +419,8 @@ static void stockCommons(Game &game, GenerationContext &context,
 				}
 				else if (role[z] == ROLE_WOOD)
 					fillInResource(game.map, context, pts, WOOD, 2);
-				else if (role[z] == ROLE_CORN)
-					fillInResource(game.map, context, pts, CORN, 2);
+				else if (role[z] == ROLE_WHEAT)
+					fillInResource(game.map, context, pts, WHEAT, 2);
 				else if (role[z] == ROLE_FRUIT)
 				{
 					// One fruit tree per 8 tiles of the zone, of random kinds: a grove open enough
@@ -470,7 +470,7 @@ static bool settleHomes(Game &game, GenerationContext &context,
 			pts.clear();
 
 			getAllPoints(game.map, L.grid, zoneAreas[1], pts);
-			fillInResource(game.map, context, pts, CORN, 2);
+			fillInResource(game.map, context, pts, WHEAT, 2);
 			homePoints.insert(homePoints.end(), pts.begin(), pts.end());
 			pts.clear();
 
@@ -498,9 +498,9 @@ static bool settleHomes(Game &game, GenerationContext &context,
 			getAllPoints(game.map, L.grid, L.teamAreaNumbers[i], homePoints);
 			if (homePoints.empty())
 				return false;
-			std::vector<MapGeneratorPoint> cornPts = homePoints;
-			chooseRandomPoints(game.map, context, cornPts, 4);
-			fillInResource(game.map, context, cornPts, CORN, 2);
+			std::vector<MapGeneratorPoint> wheatPts = homePoints;
+			chooseRandomPoints(game.map, context, wheatPts, 4);
+			fillInResource(game.map, context, wheatPts, WHEAT, 2);
 			std::vector<MapGeneratorPoint> woodPts = homePoints;
 			chooseRandomPoints(game.map, context, woodPts, 4);
 			fillInResource(game.map, context, woodPts, WOOD, 2);

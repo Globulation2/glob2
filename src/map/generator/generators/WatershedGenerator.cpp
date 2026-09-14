@@ -1542,7 +1542,7 @@ void placeStarterKits(Game &game, GenerationContext &context, int teams, const T
 				// round the swarm (7.5 each way), so they neither crowd the swarm nor lie beyond an
 				// early worker's walk.
 				if (steps < 6 || steps > 22 || !map.isGrass(x, y) ||
-					!map.isResourceAllowed(x, y, CORN))
+					!map.isResourceAllowed(x, y, WHEAT))
 					continue;
 				const Vec offset{centred(x - centre.x, w), centred(y - centre.y, h)};
 				if (std::max(std::abs(offset.x), std::abs(offset.y)) < 7.5)
@@ -1581,7 +1581,7 @@ void placeStarterKits(Game &game, GenerationContext &context, int teams, const T
 			return {nullptr, 0};
 		};
 		std::vector<Vec> used;
-		for (const auto &kit : {std::pair<int, int>{CORN, 2}, std::pair<int, int>{WOOD, 2},
+		for (const auto &kit : {std::pair<int, int>{WHEAT, 2}, std::pair<int, int>{WOOD, 2},
 								std::pair<int, int>{STONE, 1}})
 		{
 			const bool stone = kit.first == STONE;
@@ -1626,7 +1626,7 @@ void placeFarmland(Game &game, GenerationContext &context, const Tiles &t,
 			const size_t i = size_t(y) * w + x;
 			const std::uint32_t f = fertility.at(x, y);
 			if (t.grassDepth[i] < 3 || keepClear[i] || f < floor ||
-				!map.isResourceAllowed(x, y, CORN) || map.isResource(x, y))
+				!map.isResourceAllowed(x, y, WHEAT) || map.isResource(x, y))
 				continue;
 			order.push_back({f * (0.5 + patch.at(x + 0.5, y + 0.5)), int(i)});
 		}
@@ -1639,27 +1639,27 @@ void placeFarmland(Game &game, GenerationContext &context, const Tiles &t,
 	// Other wheat or wood amounts than the default give each crop a budget of its own: its share
 	// of the candidates the crop field gives it, scaled.
 	const bool shared = o.wheat == 100 && o.wood == 100;
-	int cornBudget = 0, woodBudget = 0;
+	int wheatBudget = 0, woodBudget = 0;
 	if (!shared && !order.empty())
 	{
-		std::int64_t cornCandidates = 0;
+		std::int64_t wheatCandidates = 0;
 		for (const Candidate &c : order)
-			cornCandidates += crop.at(c.index % w + 0.5, c.index / w + 0.5) < 0.62;
-		const int cornShare = int(budget * cornCandidates / std::int64_t(order.size()));
-		cornBudget = int(scaledCount(cornShare, o.wheat));
-		woodBudget = int(scaledCount(budget - cornShare, o.wood));
+			wheatCandidates += crop.at(c.index % w + 0.5, c.index / w + 0.5) < 0.62;
+		const int wheatShare = int(budget * wheatCandidates / std::int64_t(order.size()));
+		wheatBudget = int(scaledCount(wheatShare, o.wheat));
+		woodBudget = int(scaledCount(budget - wheatShare, o.wood));
 	}
 	for (const Candidate &c : order)
 	{
-		if (shared ? budget <= 0 : cornBudget <= 0 && woodBudget <= 0)
+		if (shared ? budget <= 0 : wheatBudget <= 0 && woodBudget <= 0)
 			break;
 		const int x = c.index % w, y = c.index / w;
 		// Two clumps in five are the larger radius 3 where the grass is deep enough to hold one.
 		const int radius = context.bounded("resources", 5) < 2 && t.grassDepth[c.index] > 3 ? 3 : 2;
 		if (!reservations.free(x, y, radius))
 			continue;
-		const int type = crop.at(x + 0.5, y + 0.5) < 0.62 ? CORN : WOOD;
-		int &remaining = shared ? budget : type == CORN ? cornBudget : woodBudget;
+		const int type = crop.at(x + 0.5, y + 0.5) < 0.62 ? WHEAT : WOOD;
+		int &remaining = shared ? budget : type == WHEAT ? wheatBudget : woodBudget;
 		if (remaining <= 0)
 			continue;
 		remaining -= placeResourceClump(map, context, MapGeneratorPoint(x, y), type, radius);
@@ -1961,14 +1961,14 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			for (int x = 0; x < w; ++x)
 			{
 				const int type = map.getResource(x, y).type;
-				if (type != CORN && type != WOOD)
+				if (type != WHEAT && type != WOOD)
 					continue;
 				bool beside = false;
 				for (int dy = -1; dy <= 1 && !beside; ++dy)
 					for (int dx = -1; dx <= 1 && !beside; ++dx)
 						beside =
 							reach[size_t(map.normalizeY(y + dy)) * w + map.normalizeX(x + dx)] >= 0;
-				(type == CORN ? wheat : wood) = (type == CORN ? wheat : wood) || beside;
+				(type == WHEAT ? wheat : wood) = (type == WHEAT ? wheat : wood) || beside;
 			}
 		if (!wheat || !wood)
 			return "Colony " + std::to_string(team) + " cannot walk to " +

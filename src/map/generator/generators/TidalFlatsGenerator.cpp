@@ -403,8 +403,8 @@ void stockIslands(Map &map, const Layout &L, GenerationContext &context, const T
 		}
 		// The oasis: every other tile of the island under wheat, unscaled, so it has to be cleared.
 		for (int i : tiles)
-			if (eligible(i) && map.isResourceAllowed(i % t.w, i / t.w, CORN))
-				map.setResource(i % t.w, i / t.w, CORN, 1);
+			if (eligible(i) && map.isResourceAllowed(i % t.w, i / t.w, WHEAT))
+				map.setResource(i % t.w, i / t.w, WHEAT, 1);
 	}
 	if (L.g.centralRadius > 0)
 	{

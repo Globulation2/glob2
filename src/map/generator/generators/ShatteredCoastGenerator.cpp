@@ -685,17 +685,17 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 		// Wheat and wood are a colony's two primary resources; stone is secondary. This search
 		// gives each of the four slots below its own compass direction, so a fixed 4th entry
 		// doesn't just repeat a resource type, it silently starves whichever type isn't chosen
-		// of the extra slot every single time. It used to hardcode CORN here, guaranteeing
+		// of the extra slot every single time. It used to hardcode WHEAT here, guaranteeing
 		// wheat two placement attempts while wood only ever got one — every colony on this
 		// generator was systematically wood-poor relative to wheat. Decide the 4th slot after
-		// seeing how CORN and WOOD actually did (below) and hand it to whichever came out
+		// seeing how WHEAT and WOOD actually did (below) and hand it to whichever came out
 		// narrower, so the reinforcement goes to whichever primary resource needs it that game
 		// instead of the same one every time.
 		int resOrder[4];
-		resOrder[0] = CORN;
+		resOrder[0] = WHEAT;
 		resOrder[1] = WOOD;
 		resOrder[2] = STONE;
-		resOrder[3] = CORN;
+		resOrder[3] = WHEAT;
 		int primaryWidth[2] = {0, 0};
 
 		// The fourth, reinforcing deposit scores distance and width double: it goes to the
@@ -750,7 +750,7 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 			{
 				primaryWidth[resI] = maxWidth;
 				if (resI == 1)
-					resOrder[3] = primaryWidth[0] <= primaryWidth[1] ? CORN : WOOD;
+					resOrder[3] = primaryWidth[0] <= primaryWidth[1] ? WHEAT : WOOD;
 			}
 
 			int dx, dy;

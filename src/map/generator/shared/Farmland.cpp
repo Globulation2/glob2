@@ -333,7 +333,7 @@ double farmReachable(const Map &map, const Torus &t, const Farm &farm,
 		const bool deposit = map.isResource(x, y);
 		open[i] =
 			!map.isWater(x, y) && map.getBuilding(x, y) == NOGBID &&
-			(!deposit || map.getResource(x, y).type == CORN || map.getResource(x, y).type == WOOD);
+			(!deposit || map.getResource(x, y).type == WHEAT || map.getResource(x, y).type == WOOD);
 	}
 	const std::vector<int> steps = stepsFrom(t, tileMask(t, sources), open);
 	int land = 0, reached = 0;

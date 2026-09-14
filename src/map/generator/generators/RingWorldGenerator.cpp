@@ -430,7 +430,7 @@ void furnishHomes(Game &game, GenerationContext &context)
 		// farthest from water, where it takes nothing from farming.
 		const int wheat = pick(5, 9, true, -1);
 		if (wheat >= 0)
-			growPatch(map, t, wheat, CORN, kHomeWheat, eligible);
+			growPatch(map, t, wheat, WHEAT, kHomeWheat, eligible);
 		const int wood = pick(5, 9, true, wheat);
 		if (wood >= 0)
 			growPatch(map, t, wood, WOOD, kHomeWood, eligible);
@@ -589,10 +589,10 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "ring resources";
 	furnishHomes(game, context);
 	stockIslands(map, context, islands, "islands");
-	// The same ambient layer as Fjord continent: corn:wood 2:1, some stone, rare fruit. Algae is
+	// The same ambient layer as Fjord continent: wheat:wood 2:1, some stone, rare fruit. Algae is
 	// seeded along the shallows below instead, since the shared band only scatters over land.
 	scatterResources(game, context,
-					 {/*corn=*/int(scaledCount(24, options.wheat)),
+					 {/*wheat=*/int(scaledCount(24, options.wheat)),
 					  /*wood=*/int(scaledCount(12, options.wood)),
 					  /*stone=*/int(scaledCount(10, options.stone)), /*algae=*/0,
 					  /*fruit=*/int(scaledCount(3, options.fruit))});

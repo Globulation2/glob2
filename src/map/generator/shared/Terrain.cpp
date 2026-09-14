@@ -252,7 +252,7 @@ void paintHeightFieldResources(Map &map, HeightMap &hm, const HeightFieldTiling 
 					 hm((x + wHeightMap / 2 + 1) % wHeightMap + wHeightMap * y))
 			{
 				if (level < levels.wheat)
-					tmpResource = CORN;
+					tmpResource = WHEAT;
 			}
 			else if (level < levels.wood)
 			{

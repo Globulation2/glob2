@@ -207,7 +207,7 @@ void stockIslands(Map &map, GenerationContext &context, const std::vector<Island
 			placeResourceClump(map, context, centre, CHERRY + int(context.bounded(stream, 3)), 2);
 			break;
 		default:
-			placeResourceClump(map, context, centre, CORN, 2);
+			placeResourceClump(map, context, centre, WHEAT, 2);
 			break;
 		}
 	}

@@ -420,7 +420,7 @@ void placeOutlierIslands(Game &game, GenerationContext &context, const FjordLayo
 				break;
 			default:
 				placeResourceClump(game.map, context,
-								   islandPts[context.bounded("resources", islandPts.size())], CORN,
+								   islandPts[context.bounded("resources", islandPts.size())], WHEAT,
 								   3);
 				break;
 			}
@@ -539,7 +539,7 @@ void placeCoreResources(Game &game, GenerationContext &context, const FjordLayou
 	{
 		for (int x = 0; x < layout.W; ++x)
 		{
-			// Corn/stone/fruit all require grass, so the sand ring the lake just grew (when there
+			// Wheat/stone/fruit all require grass, so the sand ring the lake just grew (when there
 			// is one) is deliberately excluded here rather than merely non-water - a clump center
 			// landing on sand could miss every grass tile within its own radius and place nothing.
 			if (!game.map.isGrass(x, y) || grid[y * layout.W + x] != 0)
@@ -668,7 +668,7 @@ bool placeStarterKits(Game &game, GenerationContext &context, const FjordLayout 
 			return false;
 
 		placeResourceClump(game.map, context,
-						   homePoints[context.bounded("resources", homePoints.size())], CORN, 2);
+						   homePoints[context.bounded("resources", homePoints.size())], WHEAT, 2);
 		placeResourceClump(game.map, context,
 						   homePoints[context.bounded("resources", homePoints.size())], WOOD, 2);
 
@@ -701,7 +701,7 @@ bool placeBankResources(Game &game, GenerationContext &context, const FjordLayou
 	for (int k = 0; k < layout.nbTeams; ++k)
 	{
 		for (int side : {-1, 1})
-			if (!placeBankClump(game.map, context, fjordCenterlines[k], 0.35, side, CORN) ||
+			if (!placeBankClump(game.map, context, fjordCenterlines[k], 0.35, side, WHEAT) ||
 				!placeBankClump(game.map, context, fjordCenterlines[k], 0.68, side, WOOD))
 				return false;
 		if (!options.bankDeposits)
@@ -725,11 +725,11 @@ bool placeBankResources(Game &game, GenerationContext &context, const FjordLayou
 				// wheat:wood at 2:1 (4 and 2 of 8) with stone 2 of 8, the same ratio as the ambient
 				// scatter in generate: in playtesting an even split read as too much wood.
 				const int roll = context.bounded("resources", 8);
-				const int resourceType = roll < 4 ? CORN : roll < 6 ? WOOD : STONE;
+				const int resourceType = roll < 4 ? WHEAT : roll < 6 ? WOOD : STONE;
 				// The amount controls place each rolled clump that many hundredths of a time: whole
 				// copies, and one more by chance from a stream of its own, so the rolls stay the
 				// same.
-				const int percent = resourceType == CORN   ? options.wheat
+				const int percent = resourceType == WHEAT   ? options.wheat
 									: resourceType == WOOD ? options.wood
 														   : options.stone;
 				int copies = percent / 100;
@@ -801,7 +801,7 @@ static bool generate(Game &game, GenerationContext &context)
 	// same total of 36 was reshared rather than more wheat added on top. The numbers are densities
 	// that scatterResources scales by map area (wheat and wood per 1600 tiles, stone per 3000).
 	scatterResources(game, context,
-					 {/*corn=*/int(scaledCount(24, options.wheat)),
+					 {/*wheat=*/int(scaledCount(24, options.wheat)),
 					  /*wood=*/int(scaledCount(12, options.wood)),
 					  /*stone=*/int(scaledCount(10, options.stone)), /*algae=*/0,
 					  /*fruit=*/int(scaledCount(3, options.fruit))});

@@ -358,7 +358,7 @@ bool generate(Game &game, GenerationContext &context)
 			eligible);
 		const KitSeed behind = frame.at(7, 0, 6);
 		if (const int seed = seedNear(t, behind.x, behind.y, behind.within, eligible); seed >= 0)
-			growPatch(map, t, seed, CORN, kHomeWheatBehind, eligible);
+			growPatch(map, t, seed, WHEAT, kHomeWheatBehind, eligible);
 	}
 	// Every chamber with crops has them on every side of its pond (FEEDBACK 2026-09-13, second play):
 	// a patch is grown from kRingSeeds seeds spaced evenly round the pond's shore, each given its
@@ -391,7 +391,7 @@ bool generate(Game &game, GenerationContext &context)
 			continue;
 		if (L.kind[site] == FarmChamber)
 		{
-			ringPlant(site, shore, CORN, int(scaledCount(kFarmWheat, o.wheat)), here);
+			ringPlant(site, shore, WHEAT, int(scaledCount(kFarmWheat, o.wheat)), here);
 			ringPlant(site, shore + 3, WOOD, int(scaledCount(kFarmWood, o.wood)), here);
 		}
 		else if (L.kind[site] == TreasureChamber)
@@ -400,10 +400,10 @@ bool generate(Game &game, GenerationContext &context)
 				if (const int seed = seedNear(t, s.x - int(shore) - 2, s.y, 3, here); seed >= 0)
 					placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w),
 									   CHERRY + int(context.bounded("anthill-fruit", 3)), 1);
-			ringPlant(site, shore, CORN, int(scaledCount(kTreasureWheat, o.wheat)), here);
+			ringPlant(site, shore, WHEAT, int(scaledCount(kTreasureWheat, o.wheat)), here);
 		}
 		else if ((site / 2) % 2 == 0)
-			ringPlant(site, shore, CORN, int(scaledCount(kPlainWheat, o.wheat)), here);
+			ringPlant(site, shore, WHEAT, int(scaledCount(kPlainWheat, o.wheat)), here);
 		else
 			ringPlant(site, shore, WOOD, int(scaledCount(kPlainWood, o.wood)), here);
 	}

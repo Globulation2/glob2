@@ -71,7 +71,7 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 
 	const std::vector<std::uint8_t> hard = buildHardSpaceGrid(map);
 	const std::vector<std::int16_t> woodDist = distanceToResource(map, hard, WOOD);
-	const std::vector<std::int16_t> wheatDist = distanceToResource(map, hard, CORN);
+	const std::vector<std::int16_t> wheatDist = distanceToResource(map, hard, WHEAT);
 
 	// A site is worth exactly what its *worse* resource costs to reach: a colony next to wood
 	// but a long walk from wheat is not a good start, however good the wood is.
@@ -146,7 +146,7 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 					{
 						if (type == WOOD && wood < 0)
 							wood = d + 1;
-						if (type == CORN && wheat < 0)
+						if (type == WHEAT && wheat < 0)
 							wheat = d + 1;
 					}
 					if (!blocked(nx, ny) && hard[ny * w + nx])

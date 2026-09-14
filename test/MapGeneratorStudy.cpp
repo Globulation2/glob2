@@ -607,7 +607,7 @@ int main(int argc, char **argv)
 							int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy),
 								np = ny * map.getW() + nx;
 							auto type = map.getResource(nx, ny).type;
-							if (type == CORN)
+							if (type == WHEAT)
 								wheat = std::min(wheat, dist[p] + 1);
 							if (type == WOOD)
 								wood = std::min(wood, dist[p] + 1);
@@ -641,7 +641,7 @@ int main(int argc, char **argv)
 					++viableTeams;
 			}
 		std::printf("TUNE,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", minLocal, minWheat, minWood,
-					viableTeams, resources[CORN], resources[WOOD], resources[STONE],
+					viableTeams, resources[WHEAT], resources[WOOD], resources[STONE],
 					resources[ALGA], bestWheat, bestWood);
 	}
 	if (headroom)
@@ -696,7 +696,7 @@ int main(int argc, char **argv)
 			}
 			return d;
 		};
-		const std::vector<int> woodField = distanceField(WOOD), wheatField = distanceField(CORN);
+		const std::vector<int> woodField = distanceField(WOOD), wheatField = distanceField(WHEAT);
 		// A site's score is its binding constraint: the further of its two primary resources.
 		auto siteScore = [&](int x, int y) -> int
 		{
@@ -827,7 +827,7 @@ int main(int argc, char **argv)
 			for (int x = 0; x < map.getW(); ++x)
 			{
 				int c = map.isGrass(x, y) ? 0 : map.isSand(x, y) ? 1 : map.isWater(x, y) ? 2 : 3;
-				if (map.getResource(x, y).type == CORN)
+				if (map.getResource(x, y).type == WHEAT)
 					c = 4;
 				if (map.getResource(x, y).type == WOOD)
 					c = 5;
