@@ -14,8 +14,6 @@ namespace
 {
 // How far from its point a field's seed may move to find open ground.
 constexpr int kSeedSearch = 16;
-// A field loses any strip narrower than twice this: the beach and wall each side would fill it.
-constexpr int kOpening = 3;
 } // namespace
 
 FarmRows bestFarmRows(double angle)
@@ -179,13 +177,12 @@ Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned c
 	return farm;
 }
 
-std::vector<int> growFarmFields(const Torus &t, const std::vector<unsigned char> &occupied,
-								const std::vector<int> &homeOf,
-								const std::vector<unsigned char> &area,
-								const std::vector<ShapePoint> &seeds,
-								const std::vector<int> &owners,
-								const std::vector<ShapePoint> &anchors, int gap,
-								double neckHalfWidth, const std::vector<double> &rowAngles)
+std::vector<int>
+growFarmFields(const Torus &t, const std::vector<unsigned char> &occupied,
+			   const std::vector<int> &homeOf, const std::vector<unsigned char> &area,
+			   const std::vector<ShapePoint> &seeds, const std::vector<int> &owners,
+			   const std::vector<ShapePoint> &anchors, int gap, double neckHalfWidth,
+			   const std::vector<double> &rowAngles, int opening)
 {
 	const int n = t.size();
 	// Open ground: not designed, allowed, and clear of all land that is no home by the gap. Homes'
@@ -257,32 +254,36 @@ std::vector<int> growFarmFields(const Torus &t, const std::vector<unsigned char>
 				labels[i] = -1;
 	}
 	separateTerritories(t, labels, gap);
-	// A strip of field narrower than a beach and a wall on each side would be all sand and stone, and
-	// cut the ground beyond it off: every field is opened (shrunk by kOpening, then grown back as far
-	// within itself), which removes such strips and keeps the rest.
+	// A strip of field narrower than its rim on each side would be all beach, wall and cap with no crop
+	// row in it, and where such a strip joined the field the walls of the coasts either side would meet
+	// across it and seal it off. So a field keeps only the ground whose core (the field and its home
+	// shrunk by the opening) is joined to the home's core, grown back out over the field; that is the
+	// field opened, with the joining judged on the cores rather than the outlines, since two cores that
+	// do not touch can still overlap once grown back, through a waist their walls would close.
 	for (size_t s = 0; s < seeds.size(); ++s)
 	{
-		std::vector<unsigned char> inside(n, 0);
-		for (int i = 0; i < n; ++i)
-			inside[i] = labels[i] == int(s) || homeOf[i] == owners[s];
-		const std::vector<unsigned char> opened = openMask(t, inside, kOpening);
-		for (int i = 0; i < n; ++i)
-			if (labels[i] == int(s) && !opened[i])
-				labels[i] = -1;
-	}
-	// Trimming a field to its gaps can leave slivers cut off from the rest; a field keeps only the
-	// ground joined to its own home.
-	for (size_t s = 0; s < seeds.size(); ++s)
-	{
-		std::vector<unsigned char> mine(n, 0), home(n, 0);
+		std::vector<unsigned char> inside(n, 0), home(n, 0);
 		for (int i = 0; i < n; ++i)
 		{
-			mine[i] = labels[i] == int(s) || homeOf[i] == owners[s];
+			inside[i] = labels[i] == int(s) || homeOf[i] == owners[s];
 			home[i] = homeOf[i] == owners[s];
 		}
-		const std::vector<int> joined = stepsFrom(t, home, mine);
+		const std::vector<unsigned char> core = erode(t, inside, opening);
+		std::vector<unsigned char> homeCore(n, 0);
+		bool any = false;
 		for (int i = 0; i < n; ++i)
-			if (labels[i] == int(s) && joined[i] < 0)
+		{
+			homeCore[i] = core[i] && home[i];
+			any = any || homeCore[i];
+		}
+		// A home too small to have a core of its own (none of the maps' homes are) joins from its whole.
+		const std::vector<int> joined = stepsFrom(t, any ? homeCore : home, core);
+		std::vector<unsigned char> kept(n, 0);
+		for (int i = 0; i < n; ++i)
+			kept[i] = joined[i] >= 0;
+		kept = dilate(t, kept, opening);
+		for (int i = 0; i < n; ++i)
+			if (labels[i] == int(s) && !kept[i])
 				labels[i] = -1;
 	}
 	// However the trimming left it, every field is joined to its home by a neck the full width from the

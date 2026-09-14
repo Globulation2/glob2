@@ -71,6 +71,10 @@ struct FarmPlot
 /// stays unbroken.
 constexpr double kBridgeHalfWidth = 0.75;
 
+/// The least a field is opened by (growFarmFields): a beach and a wall each side fill any strip narrower
+/// than twice this. A map with a wider rim round its rows passes that rim instead.
+constexpr int kFarmOpening = 3;
+
 /// Lays rows over `region` running at `angle` (radians), with the row at `origin` a crop row centred on
 /// it, and no water within `rim` steps of the region's edge, so the region's own coast (or wall) keeps a
 /// margin of land and every crop row joins the rim at both ends. Then, in order:
@@ -93,7 +97,8 @@ Farm layFarm(TerrainSketch &sketch, const Torus &, const std::vector<unsigned ch
 /// closes them off from the crops. layFarm places one plot at a region's most inland point; a map that
 /// wants plots all over its fields (Old town's farm hubs) stamps them itself, after checking the
 /// fit it needs. Marks the plot's tiles in `farm.plot` and its sand in `farm.sand`.
-void stampFarmPlot(TerrainSketch &sketch, const Torus &, Farm &farm, int x0, int y0, const FarmPlot &);
+void stampFarmPlot(TerrainSketch &sketch, const Torus &, Farm &farm, int x0, int y0,
+				   const FarmPlot &);
 
 /// Farm fields grown into open ground straight out of the homes they belong to. `occupied` marks all the
 /// designed land and `homeOf` its owner where it is a home (0 or more; -1 elsewhere). Field `s` belongs
@@ -104,18 +109,23 @@ void stampFarmPlot(TerrainSketch &sketch, const Torus &, Farm &farm, int x0, int
 ///    rows run on the diagonal gets more ground than one whose rows run along an axis;
 ///  - every field keeps `gap` tiles from all designed land but its own home, and from every other field
 ///    (separateTerritories), while it may run right up to its own home, so the two are one piece of land;
-///  - strips too narrow to survive their beaches and walls, and slivers cut off from the home, go;
+///  - a field keeps only the ground whose core, the field and its home shrunk by `opening` tiles, is
+///    joined to the home's core, grown back out as far as the field went: any strip narrower than
+///    2 * opening + 1, and any part joined to the rest only through such a strip, goes. The opening is
+///    the rim a map keeps between a farm's rows and its coast (a beach, a coast wall and the cap), so
+///    what goes is ground that would have been all rim, with no crop row in it - and where a strip
+///    joins the rest of a field through an isthmus, the walls of the two coasts either side would meet
+///    across it and seal the strip off (Switchbacks at 128x256 lost a fifth of a farm that way);
 ///  - every field is joined to its home by a neck `neckHalfWidth` wide from the home's middle (`anchors`)
 ///    to the field's nearest ground, keeping the same gaps, so the opening is always broad.
 /// Returns every tile's field (the seed's index) or -1. A seed with no open ground near it gets no field,
 /// so a caller checks every field's size before using them.
-std::vector<int> growFarmFields(const Torus &, const std::vector<unsigned char> &occupied,
-								const std::vector<int> &homeOf,
-								const std::vector<unsigned char> &area,
-								const std::vector<ShapePoint> &seeds,
-								const std::vector<int> &owners,
-								const std::vector<ShapePoint> &anchors, int gap,
-								double neckHalfWidth, const std::vector<double> &rowAngles = {});
+std::vector<int>
+growFarmFields(const Torus &, const std::vector<unsigned char> &occupied,
+			   const std::vector<int> &homeOf, const std::vector<unsigned char> &area,
+			   const std::vector<ShapePoint> &seeds, const std::vector<int> &owners,
+			   const std::vector<ShapePoint> &anchors, int gap, double neckHalfWidth,
+			   const std::vector<double> &rowAngles = {}, int opening = kFarmOpening);
 
 /// How much of a farm a colony can work: the share of the farm's crop-row grass (and the whole of its
 /// plot, if any, or 0 is returned) that a unit from `sources` can walk to once crops are cleared -

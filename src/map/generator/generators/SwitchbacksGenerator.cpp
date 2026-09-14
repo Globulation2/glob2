@@ -41,9 +41,9 @@ using namespace MapGeneration;
 //
 // THE WATER. Every coast is sealed: stone stands on every grass tile touching the sea's margin, so a
 // swimmer can land on a beach but never get inside, and the trails are the only way anywhere for the
-// whole game. On maps big enough, each home reaches two walled wheat farms, one on either flank, laid in
-// rows that regrow best and shared out by equal yield (Farmland); they are the homes' water. A map too
-// small for farms gives every home two ponds instead. The plateau has a pond and only fruit, the prize
+// whole game. Each home reaches two walled wheat farms, one on either flank, laid in rows that regrow
+// best and shared out by equal yield (Farmland); they are the homes' water, on every size of map (128
+// maps went without, and had home ponds, until 2026-09-13). The plateau has a pond and only fruit, the prize
 // every trail climbs to, with no wheat or wood to smother it.
 //
 // HOW IT IS BUILT. Everything is designed once in the wedge's frame, along the colony's axis and across
@@ -56,7 +56,7 @@ using namespace MapGeneration;
 // so a mountain's walls are permanent and its trail is the only door; a tower scans round its footprint
 // with no line of sight (BuildingUtils::turretScanTile), which is what makes a thin wall between two legs
 // a firing line; grass may never touch water, so a coast wall always stands a tile in from its sand lane;
-// wheat and wood regrow only near water, which is why every home has farms or ponds; and fruit lets an
+// wheat and wood regrow only near water, which is why every home has farms; and fruit lets an
 // inn pull hungry enemy units across, which makes the plateau's orchard worth the climb.
 //
 // THE SIZES AT THE DEFAULTS (256x256, 4 colonies): a plateau 28 tiles in radius; mountains about 40
@@ -107,9 +107,6 @@ constexpr int kWalkSpread = 12;
 // The farms: water kept between a farm and any other land, and the neck joining it to its home.
 constexpr int kFarmGap = 3;
 constexpr double kNeckHalf = 8;
-// The smallest half side that has farms: below it the sea between the mountains is too narrow for farms
-// that stay joined to their homes, and every home gets ponds instead.
-constexpr int kFarmMinimumHalf = 100;
 // The least share of a farm's crop land its colony must be able to walk to.
 constexpr double kFarmReach = 0.95;
 // How far apart, along a farm's rows, the sand bridges across its water rows stand; the land a farm keeps
@@ -135,7 +132,7 @@ constexpr int kCoverTower = 1;
 
 struct Geometry
 {
-	int teams = 0, half = 0, legs = 0, ponds = 0;
+	int teams = 0, half = 0, legs = 0;
 	double wedge = 0, outer = 0;
 	double trailHalf = 0, narrowestHalf = 0, legWall = 0, pitch = 0, span = 0, blockHalf = 0;
 	double plateauR = 0, plateauPondR = 0;
@@ -206,8 +203,6 @@ Geometry geometryFor(const GenerationRequest &r)
 	g.homeRadius = g.outer - g.homeReach;
 	layLegs(g, g.homeRadius - g.homeR);
 	g.blockOut = g.homeRadius;
-	// A home's farms are its water; a map too small for farms gives every home two ponds instead.
-	g.ponds = g.half >= kFarmMinimumHalf ? 0 : 2;
 	g.roads = o.sandRoads;
 	if (!homeHasRoom(g.homeR))
 		g.failure = "Too many colonies for this map: the homes are too small.";
@@ -342,7 +337,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.homes.push_back(polarPoint(L.cx, L.cy, g.homeRadius, L.axis[k]));
 	}
 	for (int k = 0; k < teams; ++k)
-		L.kitCentre.push_back(stampRoundHome(t, L.homes[k], L.axis[k], homeShape, g.homeR, g.ponds,
+		// No pond in a home: its farms are its water, on every size of map.
+		L.kitCentre.push_back(stampRoundHome(t, L.homes[k], L.axis[k], homeShape, g.homeR, 0,
 											 &pondShape, L.pond, [&](int i) { L.homeOf[i] = k; }));
 	fillShape(L.plateau, t, L.cx, L.cy, plateauShape);
 	fillShape(L.pond, t, L.cx, L.cy, plateauPondShape);
@@ -390,65 +386,69 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// building plot (layFarm), and every farm's coast is sealed like the rest.
 	L.farmOf.assign(n, -1);
 	L.farmSand.assign(n, 0);
-	// A map under kFarmMinimumHalf across its shorter half has no room between its mountains for farms
-	// that stay joined to their homes; it has none.
-	if (g.half >= kFarmMinimumHalf)
+	// Farms on every size of map. They were off below a half side of 100 (128 maps got two home ponds
+	// instead) because a farm squeezed between the mountains kept losing a strip to its own coast walls;
+	// FEEDBACK 2026-09-13: "on 128x128 on switchback, for some reason the farms lands are not
+	// generating" - the fix is in growFarmFields (see the call below), not in going without.
+	std::vector<ShapePoint> seeds, anchors;
+	for (int k = 0; k < teams; ++k)
+		for (const double side : {-1.0, 1.0})
+		{
+			seeds.push_back(L.frames[k].at(g.homeRadius, side * (g.homeReach + 2)));
+			anchors.push_back(L.homes[k]);
+		}
+	const std::vector<unsigned char> everywhere(n, 1);
+	const FarmPlot plot;
+	// Rows run across every colony's axis; fields whose rows fall on the diagonal get more ground,
+	// so every farm yields alike (farmYield).
+	std::vector<int> owners;
+	std::vector<double> angles;
+	for (size_t f = 0; f < seeds.size(); ++f)
 	{
-		std::vector<ShapePoint> seeds, anchors;
-		for (int k = 0; k < teams; ++k)
-			for (const double side : {-1.0, 1.0})
+		owners.push_back(int(f) / 2);
+		angles.push_back(L.axis[f / 2] + kPi / 2);
+	}
+	// A field's strips narrower than a beach and a wall each side go, and only ground whose core joins
+	// the home's core stays (growFarmFields): at 128x256 a strip joined to its field through an isthmus
+	// three tiles wide was sealed off when the walls of the coasts either side met across it, a fifth
+	// of the farm, so the farm-reach check failed and the lobby retried a quarter of its seeds. Opening
+	// by the whole rim (kFarmRim) instead would drop every strip with no crop row in it, but on a 128 map
+	// that is most of a farm squeezed between the mountains, and the size check below then fails.
+	const std::vector<int> fields = growFarmFields(t, L.land, L.homeOf, everywhere, seeds, owners,
+												   anchors, kFarmGap, kNeckHalf, angles);
+	const double homeArea = kPi * g.homeR * g.homeR;
+	for (int f = 0; f < 2 * teams; ++f)
+	{
+		const int k = f / 2;
+		std::vector<unsigned char> region(n, 0);
+		int size = 0;
+		for (int i = 0; i < n; ++i)
+			if (fields[i] == f)
 			{
-				seeds.push_back(L.frames[k].at(g.homeRadius, side * (g.homeReach + 2)));
-				anchors.push_back(L.homes[k]);
+				region[i] = 1;
+				++size;
 			}
-		const std::vector<unsigned char> everywhere(n, 1);
-		const FarmPlot plot;
-		// Rows run across every colony's axis; fields whose rows fall on the diagonal get more ground,
-		// so every farm yields alike (farmYield).
-		std::vector<int> owners;
-		std::vector<double> angles;
-		for (size_t f = 0; f < seeds.size(); ++f)
+		if (size < kMinimumFarmShare * homeArea)
 		{
-			owners.push_back(int(f) / 2);
-			angles.push_back(L.axis[f / 2] + kPi / 2);
+			L.failure =
+				"Too many colonies for this map: there is no room for every colony's farms.";
+			return L;
 		}
-		const std::vector<int> fields = growFarmFields(
-			t, L.land, L.homeOf, everywhere, seeds, owners, anchors, kFarmGap, kNeckHalf, angles);
-		const double homeArea = kPi * g.homeR * g.homeR;
-		for (int f = 0; f < 2 * teams; ++f)
-		{
-			const int k = f / 2;
-			std::vector<unsigned char> region(n, 0);
-			int size = 0;
-			for (int i = 0; i < n; ++i)
-				if (fields[i] == f)
-				{
-					region[i] = 1;
-					++size;
-				}
-			if (size < kMinimumFarmShare * homeArea)
+		const double across = L.axis[k] + kPi / 2;
+		TerrainSketch rows(n, GRASS);
+		L.farms.push_back(layFarm(rows, t, region, across, seeds[f], kFarmRim, bestFarmRows(across),
+								  o.farmPlots ? &plot : nullptr, kFarmBridgeSpacing));
+		L.farmColony.push_back(k);
+		for (int i = 0; i < n; ++i)
+			if (region[i] && L.homeOf[i] < 0)
 			{
-				L.failure =
-					"Too many colonies for this map: there is no room for every colony's farms.";
-				return L;
+				L.farmOf[i] = k;
+				L.land[i] = 1;
+				if (L.farms.back().water[i])
+					L.pond[i] = 1;
+				if (L.farms.back().sand[i])
+					L.farmSand[i] = 1;
 			}
-			const double across = L.axis[k] + kPi / 2;
-			TerrainSketch rows(n, GRASS);
-			L.farms.push_back(layFarm(rows, t, region, across, seeds[f], kFarmRim,
-									  bestFarmRows(across), o.farmPlots ? &plot : nullptr,
-									  kFarmBridgeSpacing));
-			L.farmColony.push_back(k);
-			for (int i = 0; i < n; ++i)
-				if (region[i] && L.homeOf[i] < 0)
-				{
-					L.farmOf[i] = k;
-					L.land[i] = 1;
-					if (L.farms.back().water[i])
-						L.pond[i] = 1;
-					if (L.farms.back().sand[i])
-						L.farmSand[i] = 1;
-				}
-		}
 	}
 	// A road keeps well inside the land, so its sand never meets a beach.
 	std::vector<unsigned char> water(n, 0);
@@ -787,7 +787,7 @@ GeneratorDefinition switchbacksDefinition()
 		"switchbacks",
 		24,
 		"Switchbacks",
-		1,
+		2,
 		false,
 		// The trail's width and the stone between its legs in tiles; the plateau's radius as a
 		// share of the half side (the mountains fill the rest with as many legs as fit); each home's
