@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #define SDL_MAIN_HANDLED
+#ifdef main
+#undef main
+#endif
 #include <memory>
 #include "AIMaximaContinuation.h"
 #include <TextStream.h>
@@ -73,4 +76,5 @@ int main(int, char**) {
   }
  }
  std::cout<<"Binary bytes, SHA1, text fallback, nested records, signed limits, 64-bit low/high order, strings, container boundaries and interleaved direct writes: identical\n";
+ return 0;
 }

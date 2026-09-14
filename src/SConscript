@@ -560,6 +560,7 @@ if not env['server']:
 
 if not env['server']:
     continuation_env = local.Clone()
+    continuation_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
     continuation_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
     continuation_test = continuation_env.Program('MaximaContinuationTest', [
         local.Object('MaximaContinuationTest.o', '#test/MaximaContinuationTest.cpp'),
