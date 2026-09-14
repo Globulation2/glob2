@@ -902,18 +902,22 @@ next leg up. Every home reaches a walled wheat farm on either flank.
   trail and walls with the square root of its size.
 - **Trail.** `zigzagPath` gives the trail and each leg's straight run; everything else in the
   mountain is stone. A sand road runs down the trail's middle.
-- **Farms.** On maps at least 200 tiles across their shorter side (a 128-tile side has no room
-  between the mountains), two fields per colony, growing out of either flank of the home, share all the
-  open sea between the colonies by equal yield for their row angles (`growFarmFields`), joined to the
-  home with no coast between. Rows run across the axis at `bestFarmRows` widths (`layFarm`), with a sand
-  cap, a sand bridge across the water every 16 tiles and a 10x4 building plot under `farm-plots` (on);
-  wheat with one woodlot (`plantFarm`). Neighbouring colonies' farms meet across three tiles of water and
-  two sealed coasts, within a range-7 tower's reach.
-- **Walls.** Every coast sealed, farms included; mountains keep water between each other beyond
-  their innermost legs.
+- **Farms.** Every home reaches out across its axis to a field on either flank, and the fields share all
+  the open sea between the mountains and round the rim by equal yield for their row angles
+  (`growFarmFields` with no gap), joined to the home with no coast between. Then every tile of sea left
+  is filled to its nearest field (`fillToNearest`, the whole map as its reach), so the farms always
+  grow to fill the available space, and a single line of stone stands on every border between one
+  colony's ground and another's (`labelBorders`): nothing but stone parts two colonies, as on Carousel
+  (third play, 2026-09-13; before this the fields kept three tiles of water from each other and the
+  mountains, which on a 256x128 map took over half the sea). Rows run across the axis at `bestFarmRows`
+  widths (`layFarm`, rim 3), with a sand cap, a sand bridge across the water every 16 tiles and a 10x4
+  building plot under `farm-plots` (on); wheat with one woodlot (`plantFarm`).
+- **Walls.** The mountains' rock, the border lines between colonies, and a sealed coast on whatever sea a
+  design leaves (none at the defaults). Sea within a level-3 tower's range of the plateau becomes rock
+  before the fill, so the mountains' inner ends join round the plateau and nothing outside the trails
+  comes near it.
 - **Homes and plateau.** Round homes (`stampRoundHome`) whose farms are their water on every size of
-  map (128 maps had two home ponds instead until the farms' core-joined opening, 2026-09-13); a wheat
-  and wood kit with no stone. The plateau has a pond and only
+  map (128 maps had two home ponds instead until 2026-09-13); a wheat and wood kit with no stone. The plateau has a pond and only
   fruit, an orchard of the three fruits between every two summits, so nothing overgrows it.
 - **Starting towers.** `tower-count` towers (default 3) and four open pads per colony, all on its trail
   beside the walkway down its middle, each directly against stone on the inner side of a wall - the side
