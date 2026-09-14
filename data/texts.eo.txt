@@ -2212,3 +2212,51 @@ Alklaku por reprovi
 Bonvolu atendi
 [Map preview choose another]
 Elektu mapon
+[Resources never grow or spread across the map.]
+Rimedoj neniam kreskas nek disvastiĝas sur la mapo.
+[Building sites complete immediately, skipping delivery.]
+Konstruejoj kompletiĝas tuj, preterlasante la liveradon.
+[Units never grow hungry and never starve.]
+Unuoj neniam malsatiĝas kaj neniam malsatmortas.
+[Slows how often resources grow or spread across the map.]
+Malrapidigas kiom ofte rimedoj kreskas aŭ disvastiĝas sur la mapo.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Provizas la komunan komercejan/interŝanĝan rimedrezervon de ĉiu teamo je la komenco de la ludo.
+[Grow normally]
+Normala kresko
+[No growth]
+Neniu kresko
+[Normal construction]
+Normala konstruado
+[Instant]
+Tuja
+[Units get hungry]
+Unuoj malsatiĝas
+[No hunger]
+Neniu malsato
+[Off (today's growth)]
+Malŝaltita (nuna kresko)
+[Scarce (2x slower)]
+Malabunda (2x pli malrapida)
+[Very scarce (4x slower)]
+Tre malabunda (4x pli malrapida)
+[Extremely scarce (8x slower)]
+Ekstreme malabunda (8x pli malrapida)
+[None (today's default)]
+Neniu (nuna defaŭlto)
+[Small (+50 each)]
+Malgranda (+50 ĉiu)
+[Medium (+150 each)]
+Meza (+150 ĉiu)
+[Large (+300 each)]
+Granda (+300 ĉiu)
+[No resource growth]
+Neniu rimedkresko
+[Economy]
+Ekonomio
+[Scarce resources]
+Malabundaj rimedoj
+[Instant construction]
+Tuja konstruado
+[Stockpile start]
+Komenca rezervo

@@ -2224,3 +2224,51 @@ Klicka för att försöka igen
 Vänta
 [Map preview choose another]
 Välj en karta
+[Resources never grow or spread across the map.]
+Resurser växer eller sprider sig aldrig över kartan.
+[Building sites complete immediately, skipping delivery.]
+Byggarbetsplatser slutförs omedelbart, utan leveranssteg.
+[Units never grow hungry and never starve.]
+Enheter blir aldrig hungriga och svälter aldrig.
+[Slows how often resources grow or spread across the map.]
+Saktar ner hur ofta resurser växer eller sprider sig över kartan.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Fyller på varje lags delade marknads-/bytesresurspool vid spelstart.
+[Grow normally]
+Normal tillväxt
+[No growth]
+Ingen tillväxt
+[Normal construction]
+Normalt byggande
+[Instant]
+Omedelbart
+[Units get hungry]
+Enheter blir hungriga
+[No hunger]
+Ingen hunger
+[Off (today's growth)]
+Av (dagens tillväxt)
+[Scarce (2x slower)]
+Knappa (2x långsammare)
+[Very scarce (4x slower)]
+Mycket knappa (4x långsammare)
+[Extremely scarce (8x slower)]
+Extremt knappa (8x långsammare)
+[None (today's default)]
+Inga (dagens standard)
+[Small (+50 each)]
+Litet (+50 vardera)
+[Medium (+150 each)]
+Mellan (+150 vardera)
+[Large (+300 each)]
+Stort (+300 vardera)
+[No resource growth]
+Ingen resurstillväxt
+[Economy]
+Ekonomi
+[Scarce resources]
+Knappa resurser
+[Instant construction]
+Omedelbart byggande
+[Stockpile start]
+Startlager

@@ -2214,3 +2214,51 @@ Clic pentru a reîncerca
 Așteaptă
 [Map preview choose another]
 Alege o hartă
+[Resources never grow or spread across the map.]
+Resursele nu cresc și nu se răspândesc niciodată pe hartă.
+[Building sites complete immediately, skipping delivery.]
+Șantierele se finalizează imediat, sărind peste livrare.
+[Units never grow hungry and never starve.]
+Unităților nu le este niciodată foame și nu mor niciodată de foame.
+[Slows how often resources grow or spread across the map.]
+Încetinește cât de des cresc sau se răspândesc resursele pe hartă.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Alimentează rezerva comună de piață/schimb a fiecărei echipe la începutul jocului.
+[Grow normally]
+Creștere normală
+[No growth]
+Fără creștere
+[Normal construction]
+Construcție normală
+[Instant]
+Instantanee
+[Units get hungry]
+Unităților le este foame
+[No hunger]
+Fără foame
+[Off (today's growth)]
+Dezactivată (creșterea actuală)
+[Scarce (2x slower)]
+Rare (2x mai lente)
+[Very scarce (4x slower)]
+Foarte rare (4x mai lente)
+[Extremely scarce (8x slower)]
+Extrem de rare (8x mai lente)
+[None (today's default)]
+Nicio (valoarea implicită actuală)
+[Small (+50 each)]
+Mică (+50 fiecare)
+[Medium (+150 each)]
+Medie (+150 fiecare)
+[Large (+300 each)]
+Mare (+300 fiecare)
+[No resource growth]
+Fără creșterea resurselor
+[Economy]
+Economie
+[Scarce resources]
+Resurse rare
+[Instant construction]
+Construcție instantanee
+[Stockpile start]
+Rezervă inițială

@@ -2210,3 +2210,51 @@ Nhấp để thử lại
 Vui lòng đợi
 [Map preview choose another]
 Chọn bản đồ
+[Resources never grow or spread across the map.]
+Tài nguyên không bao giờ mọc hoặc lan rộng trên bản đồ.
+[Building sites complete immediately, skipping delivery.]
+Công trường hoàn thành ngay lập tức, bỏ qua giai đoạn vận chuyển.
+[Units never grow hungry and never starve.]
+Đơn vị không bao giờ bị đói và không bao giờ chết đói.
+[Slows how often resources grow or spread across the map.]
+Làm chậm tần suất tài nguyên mọc hoặc lan rộng trên bản đồ.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Cấp đầy kho tài nguyên chợ/trao đổi chung của mỗi đội khi bắt đầu trận đấu.
+[Grow normally]
+Mọc bình thường
+[No growth]
+Không mọc
+[Normal construction]
+Xây dựng bình thường
+[Instant]
+Tức thì
+[Units get hungry]
+Đơn vị bị đói
+[No hunger]
+Không đói
+[Off (today's growth)]
+Tắt (tốc độ mọc hiện tại)
+[Scarce (2x slower)]
+Khan hiếm (chậm hơn 2x)
+[Very scarce (4x slower)]
+Rất khan hiếm (chậm hơn 4x)
+[Extremely scarce (8x slower)]
+Cực kỳ khan hiếm (chậm hơn 8x)
+[None (today's default)]
+Không có (mặc định hiện tại)
+[Small (+50 each)]
+Nhỏ (+50 mỗi loại)
+[Medium (+150 each)]
+Vừa (+150 mỗi loại)
+[Large (+300 each)]
+Lớn (+300 mỗi loại)
+[No resource growth]
+Tài nguyên không mọc
+[Economy]
+Kinh tế
+[Scarce resources]
+Tài nguyên khan hiếm
+[Instant construction]
+Xây dựng tức thì
+[Stockpile start]
+Kho khởi đầu

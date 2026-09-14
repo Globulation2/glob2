@@ -49,7 +49,9 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
 
     def test_current_save_omits_configuration_plans_and_phases(self) -> None:
         version = (ROOT / "src/Version.h").read_text()
-        self.assertIn("#define VERSION_MINOR 100", version)
+        minor = int(re.search(r"#define VERSION_MINOR (\d+)", version).group(1))
+        # Maxima's save gates need at least version 100; later formats keep them.
+        self.assertGreaterEqual(minor, 100)
         # The relentless offense changes simulation results, so an older client
         # must be refused rather than allowed to desync, and the trimmed Maxima
         # mission state needs its own load gate.

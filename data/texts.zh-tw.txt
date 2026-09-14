@@ -2286,3 +2286,51 @@ OpenGL 在此版本中不可用。
 請稍候
 [Map preview choose another]
 選擇地圖
+[Resources never grow or spread across the map.]
+資源永遠不會在地圖上生長或擴散。
+[Building sites complete immediately, skipping delivery.]
+建築工地會立即完成，跳過運送階段。
+[Units never grow hungry and never starve.]
+單位永遠不會肚子餓，也不會挨餓。
+[Slows how often resources grow or spread across the map.]
+降低資源在地圖上生長或擴散的頻率。
+[Seeds each team's shared market/exchange resource pool at game start.]
+在遊戲開始時，為每支隊伍補滿共用的市場/交易資源儲備。
+[Grow normally]
+正常生長
+[No growth]
+不生長
+[Normal construction]
+正常建造
+[Instant]
+立即
+[Units get hungry]
+單位會肚子餓
+[No hunger]
+沒有飢餓
+[Off (today's growth)]
+關閉（目前的生長速度）
+[Scarce (2x slower)]
+稀少（慢 2x）
+[Very scarce (4x slower)]
+非常稀少（慢 4x）
+[Extremely scarce (8x slower)]
+極度稀少（慢 8x）
+[None (today's default)]
+無（目前預設值）
+[Small (+50 each)]
+小（各 +50）
+[Medium (+150 each)]
+中（各 +150）
+[Large (+300 each)]
+大（各 +300）
+[No resource growth]
+資源不生長
+[Economy]
+經濟
+[Scarce resources]
+資源稀少
+[Instant construction]
+立即建造
+[Stockpile start]
+起始儲備

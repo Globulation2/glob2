@@ -2210,3 +2210,51 @@ Globulation 2 커서를 표시합니다.
 잠시 기다려 주세요
 [Map preview choose another]
 지도 선택
+[Resources never grow or spread across the map.]
+자원은 지도에서 절대 성장하거나 퍼지지 않습니다.
+[Building sites complete immediately, skipping delivery.]
+건설 현장은 배송 단계를 건너뛰고 즉시 완료됩니다.
+[Units never grow hungry and never starve.]
+유닛은 절대 배고파지지 않으며 절대 굶주리지 않습니다.
+[Slows how often resources grow or spread across the map.]
+자원이 지도에서 성장하거나 퍼지는 빈도를 늦춥니다.
+[Seeds each team's shared market/exchange resource pool at game start.]
+게임 시작 시 각 팀의 공유 시장/교환 자원 비축량을 채웁니다.
+[Grow normally]
+정상 성장
+[No growth]
+성장 없음
+[Normal construction]
+일반 건설
+[Instant]
+즉시
+[Units get hungry]
+유닛이 배고파짐
+[No hunger]
+배고픔 없음
+[Off (today's growth)]
+꺼짐 (현재 성장 속도)
+[Scarce (2x slower)]
+희소 (2x 느림)
+[Very scarce (4x slower)]
+매우 희소 (4x 느림)
+[Extremely scarce (8x slower)]
+극도로 희소 (8x 느림)
+[None (today's default)]
+없음 (현재 기본값)
+[Small (+50 each)]
+소 (각 +50)
+[Medium (+150 each)]
+중 (각 +150)
+[Large (+300 each)]
+대 (각 +300)
+[No resource growth]
+자원 성장 없음
+[Economy]
+경제
+[Scarce resources]
+희소 자원
+[Instant construction]
+즉시 건설
+[Stockpile start]
+시작 비축량

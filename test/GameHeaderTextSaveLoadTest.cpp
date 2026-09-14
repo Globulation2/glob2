@@ -60,6 +60,11 @@ GameHeader makeFixtureHeader()
 	header.setRandomSeed(0xCAFEBABE);
 	header.setMapDiscovered(true);
 	header.setAllyTeamsFixed(true);
+	header.setResourceGrowthDisabled(true);
+	header.setResourceScarcityLevel(2);
+	header.setInstantConstructionEnabled(true);
+	header.setStockpileStartLevel(3);
+	header.setHungerDisabled(true);
 	for (int i = 0; i < 4; ++i)
 	{
 		char name[32];
@@ -112,6 +117,11 @@ void testFullRoundTrip()
 	check(loaded.getRandomSeed() == 0xCAFEBABE, "full: seed preserved");
 	check(loaded.isMapDiscovered(), "full: mapDiscovered preserved");
 	check(loaded.areAllyTeamsFixed(), "full: allyTeamsFixed preserved");
+	check(loaded.isResourceGrowthDisabled(), "full: resourceGrowthDisabled preserved");
+	check(loaded.getResourceScarcityLevel() == 2, "full: resourceScarcityLevel preserved");
+	check(loaded.isInstantConstructionEnabled(), "full: instantConstruction preserved");
+	check(loaded.getStockpileStartLevel() == 3, "full: stockpileStartLevel preserved");
+	check(loaded.isHungerDisabled(), "full: hungerDisabled preserved");
 	check(playersMatch(original, loaded, 4), "full: players preserved");
 	// allyTeamNumbers values are NOT asserted: save() writes all 32 entries
 	// under the single repeated key "allyTeamNumber" (no per-index section),
@@ -165,6 +175,10 @@ void testBinaryHeaderFormsAndLegacy()
 		// current binary fixture at that boundary and require an exact old read.
 		size_t extension=4;
 		for(int p=0;p<Team::MAX_COUNT;++p) extension+=4+original.getAIConfig(p).size();
+		// The custom-game rule bytes (version 102 on) follow it in the full and
+		// player-less forms.
+		const size_t ruleBytes=5;
+		if (form!=1) extension+=ruleBytes;
 		memory->seekFromEnd(0);
 		const size_t legacySize=memory->getPosition()-extension;
 		auto *oldBytes=new MemoryStreamBackend(memory->getBuffer(),legacySize);
@@ -175,6 +189,22 @@ void testBinaryHeaderFormsAndLegacy()
 			: form==1 ? loaded.loadPlayerInfo(&old,100) : loaded.loadWithoutPlayerInfo(&old,100);
 		check(legacy && loaded.getAIConfig(0).empty() && oldBytes->getPosition()==legacySize,
 			"version 100 full/partial header loads without reading extension bytes");
+		if (form!=1)
+		{
+			// Version 101 ended before the custom-game rule bytes: its headers load
+			// exactly, with every rule off.
+			const size_t v101Size=memory->getPosition()-ruleBytes;
+			auto *v101Bytes=new MemoryStreamBackend(memory->getBuffer(),v101Size);
+			v101Bytes->seekFromStart(0);
+			BinaryInputStream v101(v101Bytes);
+			GameHeader ruled;
+			const bool read=form==0 ? ruled.load(&v101,101) : ruled.loadWithoutPlayerInfo(&v101,101);
+			check(read && v101Bytes->getPosition()==v101Size && ruled.getAIConfig(0)==original.getAIConfig(0)
+				&& !ruled.isResourceGrowthDisabled() && ruled.getResourceScarcityLevel()==0
+				&& !ruled.isInstantConstructionEnabled() && ruled.getStockpileStartLevel()==0
+				&& !ruled.isHungerDisabled(),
+				"version 101 header loads without rule bytes, rules off");
+		}
 	}
 }
 

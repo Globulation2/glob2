@@ -22,11 +22,23 @@ void Building::updateBuildingSite(void)
 {
 	assert(type->isBuildingSite);
 
-	if (isResourceFull() && (buildingState!=WAITING_FOR_DESTRUCTION))
+	// Custom-game "instant construction" rule: skip waiting for resource
+	// delivery. When it's the rule (not real delivered resources) completing
+	// the site, also skip debiting resources[] -- nothing was actually
+	// delivered, so there's nothing to consume, and subtracting the full
+	// cost from an unfilled resources[] would leave a negative balance that
+	// makes the *next* level demand extra resources to pay it off. Whatever
+	// genuinely was delivered short of a full site carries forward as a head
+	// start on the next level, same as the overflow above a full site
+	// already carries forward today.
+	const bool resourceFull = isResourceFull();
+	const bool instantComplete = !resourceFull && owner->game->gameHeader.isInstantConstructionEnabled();
+	if ((resourceFull || instantComplete) && (buildingState!=WAITING_FOR_DESTRUCTION))
 	{
 		// we really uses the resources of the building site:
-		for(int i=0; i<MAX_RESOURCES; i++)
-			resources[i]-=type->maxResource[i];
+		if (!instantComplete)
+			for(int i=0; i<MAX_RESOURCES; i++)
+				resources[i]-=type->maxResource[i];
 
 		owner->prestige-=type->prestige;
 		typeNum=type->nextLevel;
@@ -55,7 +67,12 @@ void Building::updateBuildingSite(void)
 		assert(unitsInside.size()==0);
 		maxUnitInside=type->maxUnitInside;
 
-		if (hp>=type->hpInit)
+		// An instant completion skipped the deliveries that would have raised
+		// hp (hpInc per resource for new/upgrade sites, a share of hpMax per
+		// resource for repairs), so grant the finished level's full hpInit;
+		// otherwise a new building would finish at the site's 1 HP and a
+		// repair would finish no less damaged than it started.
+		if (instantComplete || hp>=type->hpInit)
 			hp=type->hpInit;
 
 		productionTimeout=type->unitProductionTime;

@@ -2210,3 +2210,51 @@ Klik untuk mencoba lagi
 Harap tunggu
 [Map preview choose another]
 Pilih peta
+[Resources never grow or spread across the map.]
+Sumber daya tidak pernah tumbuh atau menyebar di peta.
+[Building sites complete immediately, skipping delivery.]
+Lokasi pembangunan selesai langsung, tanpa tahap pengiriman.
+[Units never grow hungry and never starve.]
+Unit tidak pernah lapar dan tidak pernah kelaparan.
+[Slows how often resources grow or spread across the map.]
+Memperlambat seberapa sering sumber daya tumbuh atau menyebar di peta.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Mengisi cadangan pasar/pertukaran bersama tiap tim di awal permainan.
+[Grow normally]
+Tumbuh normal
+[No growth]
+Tidak tumbuh
+[Normal construction]
+Konstruksi normal
+[Instant]
+Instan
+[Units get hungry]
+Unit menjadi lapar
+[No hunger]
+Tidak ada rasa lapar
+[Off (today's growth)]
+Nonaktif (pertumbuhan saat ini)
+[Scarce (2x slower)]
+Langka (2x lebih lambat)
+[Very scarce (4x slower)]
+Sangat langka (4x lebih lambat)
+[Extremely scarce (8x slower)]
+Amat langka (8x lebih lambat)
+[None (today's default)]
+Tidak ada (baku saat ini)
+[Small (+50 each)]
+Kecil (+50 masing-masing)
+[Medium (+150 each)]
+Sedang (+150 masing-masing)
+[Large (+300 each)]
+Besar (+300 masing-masing)
+[No resource growth]
+Tidak ada pertumbuhan sumber daya
+[Economy]
+Ekonomi
+[Scarce resources]
+Sumber daya langka
+[Instant construction]
+Konstruksi instan
+[Stockpile start]
+Cadangan awal

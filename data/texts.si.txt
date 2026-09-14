@@ -2214,3 +2214,51 @@ Kliknite za ponovni poskus
 Počakajte
 [Map preview choose another]
 Izberite zemljevid
+[Resources never grow or spread across the map.]
+Viri na zemljevidu nikoli ne rastejo ali se širijo.
+[Building sites complete immediately, skipping delivery.]
+Gradbišča se dokončajo takoj, brez faze dostave.
+[Units never grow hungry and never starve.]
+Enote nikoli ne postanejo lačne in nikoli ne umrejo od lakote.
+[Slows how often resources grow or spread across the map.]
+Upočasni, kako pogosto viri rastejo ali se širijo po zemljevidu.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Ob začetku igre napolni skupno zalogo tržnice/menjave vsake ekipe.
+[Grow normally]
+Običajna rast
+[No growth]
+Brez rasti
+[Normal construction]
+Običajna gradnja
+[Instant]
+Takojšnja
+[Units get hungry]
+Enote postanejo lačne
+[No hunger]
+Brez lakote
+[Off (today's growth)]
+Izklopljeno (današnja rast)
+[Scarce (2x slower)]
+Redki (2x počasneje)
+[Very scarce (4x slower)]
+Zelo redki (4x počasneje)
+[Extremely scarce (8x slower)]
+Izjemno redki (8x počasneje)
+[None (today's default)]
+Brez (današnja privzeta vrednost)
+[Small (+50 each)]
+Majhna (+50 vsak)
+[Medium (+150 each)]
+Srednja (+150 vsak)
+[Large (+300 each)]
+Velika (+300 vsak)
+[No resource growth]
+Brez rasti virov
+[Economy]
+Gospodarstvo
+[Scarce resources]
+Redki viri
+[Instant construction]
+Takojšnja gradnja
+[Stockpile start]
+Začetna zaloga

@@ -2222,3 +2222,51 @@ Kliknutím skúste znova
 Čakajte, prosím
 [Map preview choose another]
 Vyberte mapu
+[Resources never grow or spread across the map.]
+Zdroje na mape nikdy nerastú ani sa nešíria.
+[Building sites complete immediately, skipping delivery.]
+Staveniská sa dokončia okamžite, bez fázy dovozu.
+[Units never grow hungry and never starve.]
+Jednotky nikdy nemajú hlad a nikdy neumierajú od hladu.
+[Slows how often resources grow or spread across the map.]
+Spomaľuje, ako často zdroje na mape rastú alebo sa šíria.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Na začiatku hry naplní spoločnú zásobu trhoviska/výmeny každého tímu.
+[Grow normally]
+Normálny rast
+[No growth]
+Žiadny rast
+[Normal construction]
+Normálna stavba
+[Instant]
+Okamžitá
+[Units get hungry]
+Jednotky majú hlad
+[No hunger]
+Bez hladu
+[Off (today's growth)]
+Vypnuté (dnešný rast)
+[Scarce (2x slower)]
+Vzácne (2x pomalšie)
+[Very scarce (4x slower)]
+Veľmi vzácne (4x pomalšie)
+[Extremely scarce (8x slower)]
+Extrémne vzácne (8x pomalšie)
+[None (today's default)]
+Žiadne (dnešná predvolená hodnota)
+[Small (+50 each)]
+Malé (+50 každý)
+[Medium (+150 each)]
+Stredné (+150 každý)
+[Large (+300 each)]
+Veľké (+300 každý)
+[No resource growth]
+Žiadny rast zdrojov
+[Economy]
+Ekonomika
+[Scarce resources]
+Vzácne zdroje
+[Instant construction]
+Okamžitá stavba
+[Stockpile start]
+Počiatočná zásoba

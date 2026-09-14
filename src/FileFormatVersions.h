@@ -101,6 +101,10 @@ static constexpr int FILE_FORMAT_VERSION_TOPOLOGY_GENERATION = 97;
 //! worker out to the higher of the two (UnitSerialization.cpp:90).
 static constexpr int FILE_FORMAT_VERSION_ONE_WORKER_LEVEL = 99;
 
+//! Custom-game economy rules: resourceGrowthDisabled, resourceScarcityLevel,
+//! instantConstruction, stockpileStartLevel, hungerDisabled (GameHeader.cpp).
+static constexpr int FILE_FORMAT_VERSION_ECONOMY_RULES = 102;
+
 // === Save-file section signatures (4-byte ASCII tags) ===
 // Embedded as four chars at the start of each save section so a corrupted
 // stream fails fast. NEVER change these values — old saves on disk depend

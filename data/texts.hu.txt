@@ -2214,3 +2214,51 @@ Kattintson az újrapróbáláshoz
 Kérem, várjon
 [Map preview choose another]
 Válasszon térképet
+[Resources never grow or spread across the map.]
+Az erőforrások soha nem nőnek és nem terjednek a térképen.
+[Building sites complete immediately, skipping delivery.]
+Az építkezések azonnal befejeződnek, a szállítási szakasz kihagyásával.
+[Units never grow hungry and never starve.]
+Az egységek soha nem éheznek és soha nem halnak éhen.
+[Slows how often resources grow or spread across the map.]
+Lassítja, hogy az erőforrások milyen gyakran nőnek vagy terjednek a térképen.
+[Seeds each team's shared market/exchange resource pool at game start.]
+A játék kezdetén feltölti minden csapat közös piaci/csere-erőforráskészletét.
+[Grow normally]
+Normál növekedés
+[No growth]
+Nincs növekedés
+[Normal construction]
+Normál építkezés
+[Instant]
+Azonnali
+[Units get hungry]
+Az egységek megéheznek
+[No hunger]
+Nincs éhség
+[Off (today's growth)]
+Kikapcsolva (mai növekedés)
+[Scarce (2x slower)]
+Ritka (2x lassabb)
+[Very scarce (4x slower)]
+Nagyon ritka (4x lassabb)
+[Extremely scarce (8x slower)]
+Rendkívül ritka (8x lassabb)
+[None (today's default)]
+Nincs (mai alapértelmezett)
+[Small (+50 each)]
+Kicsi (+50 egyenként)
+[Medium (+150 each)]
+Közepes (+150 egyenként)
+[Large (+300 each)]
+Nagy (+300 egyenként)
+[No resource growth]
+Nincs erőforrás-növekedés
+[Economy]
+Gazdaság
+[Scarce resources]
+Ritka erőforrások
+[Instant construction]
+Azonnali építkezés
+[Stockpile start]
+Kezdő készlet

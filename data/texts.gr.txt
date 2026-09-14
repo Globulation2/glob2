@@ -2284,3 +2284,51 @@ Cortex
 Παρακαλώ περιμένετε
 [Map preview choose another]
 Επιλέξτε χάρτη
+[Resources never grow or spread across the map.]
+Οι πόροι δεν αναπτύσσονται ούτε εξαπλώνονται ποτέ στον χάρτη.
+[Building sites complete immediately, skipping delivery.]
+Τα εργοτάξια ολοκληρώνονται αμέσως, χωρίς στάδιο παράδοσης.
+[Units never grow hungry and never starve.]
+Οι μονάδες δεν πεινούν ποτέ και δεν λιμοκτονούν ποτέ.
+[Slows how often resources grow or spread across the map.]
+Επιβραδύνει πόσο συχνά οι πόροι αναπτύσσονται ή εξαπλώνονται στον χάρτη.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Γεμίζει το κοινό απόθεμα αγοράς/ανταλλαγής κάθε ομάδας στην έναρξη του παιχνιδιού.
+[Grow normally]
+Κανονική ανάπτυξη
+[No growth]
+Καμία ανάπτυξη
+[Normal construction]
+Κανονική κατασκευή
+[Instant]
+Άμεση
+[Units get hungry]
+Οι μονάδες πεινούν
+[No hunger]
+Χωρίς πείνα
+[Off (today's growth)]
+Ανενεργό (σημερινή ανάπτυξη)
+[Scarce (2x slower)]
+Σπάνιοι (2x πιο αργά)
+[Very scarce (4x slower)]
+Πολύ σπάνιοι (4x πιο αργά)
+[Extremely scarce (8x slower)]
+Εξαιρετικά σπάνιοι (8x πιο αργά)
+[None (today's default)]
+Κανένα (σημερινή προεπιλογή)
+[Small (+50 each)]
+Μικρό (+50 έκαστος)
+[Medium (+150 each)]
+Μεσαίο (+150 έκαστος)
+[Large (+300 each)]
+Μεγάλο (+300 έκαστος)
+[No resource growth]
+Καμία ανάπτυξη πόρων
+[Economy]
+Οικονομία
+[Scarce resources]
+Σπάνιοι πόροι
+[Instant construction]
+Άμεση κατασκευή
+[Stockpile start]
+Αρχικό απόθεμα

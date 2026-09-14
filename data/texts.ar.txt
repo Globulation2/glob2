@@ -2212,3 +2212,51 @@ OpenGL غير متوفر في هذا الإصدار.
 يرجى الانتظار
 [Map preview choose another]
 اختر خريطة
+[Resources never grow or spread across the map.]
+الموارد لا تنمو ولا تنتشر أبدًا على الخريطة.
+[Building sites complete immediately, skipping delivery.]
+تكتمل مواقع البناء فورًا، متجاوزةً مرحلة التوصيل.
+[Units never grow hungry and never starve.]
+الوحدات لا تجوع أبدًا ولا تتضور جوعًا أبدًا.
+[Slows how often resources grow or spread across the map.]
+يبطئ معدل نمو الموارد وانتشارها على الخريطة.
+[Seeds each team's shared market/exchange resource pool at game start.]
+يهيئ رصيد مورد السوق/التبادل المشترك لكل فريق عند بداية اللعبة.
+[Grow normally]
+نمو طبيعي
+[No growth]
+بدون نمو
+[Normal construction]
+بناء عادي
+[Instant]
+فوري
+[Units get hungry]
+الوحدات تجوع
+[No hunger]
+بدون جوع
+[Off (today's growth)]
+معطّل (النمو الحالي)
+[Scarce (2x slower)]
+نادر (2x أبطأ)
+[Very scarce (4x slower)]
+نادر جدًا (4x أبطأ)
+[Extremely scarce (8x slower)]
+نادر للغاية (8x أبطأ)
+[None (today's default)]
+بدون (الافتراضي الحالي)
+[Small (+50 each)]
+صغير (+50 لكل نوع)
+[Medium (+150 each)]
+متوسط (+150 لكل نوع)
+[Large (+300 each)]
+كبير (+300 لكل نوع)
+[No resource growth]
+بدون نمو الموارد
+[Economy]
+الاقتصاد
+[Scarce resources]
+موارد نادرة
+[Instant construction]
+بناء فوري
+[Stockpile start]
+مخزون البداية

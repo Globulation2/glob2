@@ -2214,3 +2214,51 @@ Yritä uudelleen napsauttamalla
 Odota hetki
 [Map preview choose another]
 Valitse kartta
+[Resources never grow or spread across the map.]
+Resurssit eivät koskaan kasva tai leviä kartalla.
+[Building sites complete immediately, skipping delivery.]
+Rakennustyömaat valmistuvat heti ilman toimitusvaihetta.
+[Units never grow hungry and never starve.]
+Yksiköt eivät koskaan tunne nälkää eivätkä koskaan näänny nälkään.
+[Slows how often resources grow or spread across the map.]
+Hidastaa, kuinka usein resurssit kasvavat tai leviävät kartalla.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Täyttää jokaisen joukkueen yhteisen markkina-/vaihtoresurssivaraston pelin alussa.
+[Grow normally]
+Normaali kasvu
+[No growth]
+Ei kasvua
+[Normal construction]
+Normaali rakentaminen
+[Instant]
+Välitön
+[Units get hungry]
+Yksiköt tulevat nälkäisiksi
+[No hunger]
+Ei nälkää
+[Off (today's growth)]
+Pois (nykyinen kasvu)
+[Scarce (2x slower)]
+Niukka (2x hitaampi)
+[Very scarce (4x slower)]
+Erittäin niukka (4x hitaampi)
+[Extremely scarce (8x slower)]
+Äärimmäisen niukka (8x hitaampi)
+[None (today's default)]
+Ei mitään (nykyinen oletus)
+[Small (+50 each)]
+Pieni (+50 kutakin)
+[Medium (+150 each)]
+Keskikokoinen (+150 kutakin)
+[Large (+300 each)]
+Suuri (+300 kutakin)
+[No resource growth]
+Ei resurssien kasvua
+[Economy]
+Talous
+[Scarce resources]
+Niukat resurssit
+[Instant construction]
+Välitön rakentaminen
+[Stockpile start]
+Aloitusvarasto

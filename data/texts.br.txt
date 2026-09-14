@@ -2210,3 +2210,51 @@ Klikit evit klask en-dro
 Gortozit mar plij
 [Map preview choose another]
 Dibabit ur gartenn
+[Resources never grow or spread across the map.]
+Os recursos nunca crescem nem se espalham pelo mapa.
+[Building sites complete immediately, skipping delivery.]
+Os canteiros de obras são concluídos imediatamente, sem etapa de entrega.
+[Units never grow hungry and never starve.]
+As unidades nunca ficam com fome e nunca passam fome.
+[Slows how often resources grow or spread across the map.]
+Reduz a frequência com que os recursos crescem ou se espalham pelo mapa.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Define o estoque inicial do mercado/câmbio compartilhado de cada equipe no início da partida.
+[Grow normally]
+Crescimento normal
+[No growth]
+Sem crescimento
+[Normal construction]
+Construção normal
+[Instant]
+Instantânea
+[Units get hungry]
+As unidades sentem fome
+[No hunger]
+Sem fome
+[Off (today's growth)]
+Desativado (crescimento atual)
+[Scarce (2x slower)]
+Escasso (2x mais lento)
+[Very scarce (4x slower)]
+Muito escasso (4x mais lento)
+[Extremely scarce (8x slower)]
+Extremamente escasso (8x mais lento)
+[None (today's default)]
+Nenhum (padrão atual)
+[Small (+50 each)]
+Pequeno (+50 cada)
+[Medium (+150 each)]
+Médio (+150 cada)
+[Large (+300 each)]
+Grande (+300 cada)
+[No resource growth]
+Sem crescimento de recursos
+[Economy]
+Economia
+[Scarce resources]
+Recursos escassos
+[Instant construction]
+Construção instantânea
+[Stockpile start]
+Estoque inicial
