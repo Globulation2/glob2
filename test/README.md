@@ -504,3 +504,15 @@ serialized state and simulation RNG, deterministic reports, config provenance,
 older saves, and output errors. Reports and commands are retained in
 `artifacts/map-report/` and uploaded by CI. The PNG CLI suite also exercises all
 three outputs together.
+
+
+### Distributed map telemetry
+
+`python3 test/test_distributed_map_telemetry.py` checks map-weighted aggregation,
+repeated subjects, typed values, missing/truncated traces and cohort separation.
+The main CLI integration suite also compares complete native and structured map
+reports, including generation-failure telemetry. The opt-in
+`test/distributed_map_telemetry_integration.py --hosts HOSTS.json --output NEW_DIR`
+checks complete result/artifact roundtrips and offline record counts on every host;
+add an absolute registered `bundle` path to each host entry. It stops its workers
+after collection. Retained validation is linked in the tournament validation guide.

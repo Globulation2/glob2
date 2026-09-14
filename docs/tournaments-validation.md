@@ -124,5 +124,49 @@ selection remains a legacy interface; structured per-player Cortex tuning covers
 existing numeric vector. Core/stack extraction is best effort and was tested with
 fixtures, not a real core dump. No claim is made that transfer hashes detect faulty RAM.
 
-These changes have not been merged. Gameplay feel and the new driver’s ordering remain
-matters for maintainer review; automated evidence does not replace that review.
+The user explicitly approved merging this implementation after integrating mainline
+map telemetry and updating the map-design skill. Gameplay feel and the new driver’s
+ordering remain documented review considerations; automated evidence does not replace playtesting.
+
+
+## Mainline telemetry integration (2026-09-14)
+
+Source commit `41302dd3d` merges mainline `91a950a2d` and includes the complete native
+version-2 map report in structured generation results. The retained evidence is
+[`telemetry-merge-20260914.tar.gz`](../test/fixtures/tournaments/telemetry-merge-20260914.tar.gz),
+with a per-file SHA-256 index beside it. Both bundles use `release=1 server=0` and
+`-O3`; macOS retains debug symbols. The immutable manifests record build flags.
+
+- macOS arm64 and Linux x86-64 each passed all 14 tournament CLI cases, including
+  exact equality of the complete native and structured report for the same request.
+- Both platforms passed the 50-command native map CLI suite, the map-report schema,
+  analytic geometry, state/RNG preservation and old-save suite, and the real
+  per-player/network-header compatibility harness.
+- Both platforms passed 93 telemetry-enabled/disabled generator cases: all generated,
+  with no world-state, RNG or trace-repeatability failures. Separate generation times
+  are in `macos-golden.log` and `merge-golden.log`; concurrent workloads make these
+  observations unsuitable as a precise overhead benchmark.
+- Full checksum files match between macOS and Linux for configured Cortex, Maxima,
+  defaults, environment isolation, initial reload and both continuation cases. The
+  2,048-tick configured/default traces also match the pre-merge retained runs.
+- The worker roundtrip test ran seven jobs on localhost and each of the five SSH
+  hosts: six successful maps and one intentional invalid request per host, 42 jobs
+  total. Each host returned all 277 internal records (1,662 total). Complete report
+  payloads matched their checksummed result artifacts, and reanalysis retained every
+  record. All five Linux hosts returned identical reports for matching jobs.
+- All six worker queues were empty and daemons stopped after collection. The shutdown
+  status, immutable manifests, raw results, failure reports and statistical exports
+  are retained. The earlier interruption/lease pilot remains in the original archive.
+- The 20 shared-framework tests and two new statistical fixtures passed. Fixtures
+  cover map weighting, repeated subjects, typed values, fallback denominators,
+  missing/truncated reports, failures, configuration separation and seeded intervals.
+
+Reproduce the multi-host test with `test/distributed_map_telemetry_integration.py
+--hosts HOSTS.json --output NEW_DIRECTORY`; each host entry adds an absolute `bundle`
+path to the ordinary host configuration. This gives every host its own sample set,
+so a faster host cannot consume another host's validation coverage. Run
+`python3 test/test_distributed_map_telemetry.py` for the offline fixtures. The complete
+bulk-analysis workflow is in the repository's map-design skill.
+
+The existing Windows runtime-coverage limitation still applies. These tests validate
+transport and measurement preservation, not statistical fairness or human playability.

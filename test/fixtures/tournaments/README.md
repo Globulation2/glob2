@@ -27,3 +27,17 @@ See [the validation record](../../../docs/tournaments-validation.md) for results
 commands, measured platform coverage, limitations and the initial failures that
 led to the fixes. [The framework guide](../../../docs/tournaments.md) describes
 the operational and data contracts.
+
+
+`telemetry-merge-20260914.tar.gz` and its index contain the subsequent mainline
+integration evidence: native/structured report equality, cross-platform traces,
+93 generator telemetry cases per platform, and 42 localhost/five-host map jobs.
+Extract it into a separate empty directory. Reanalyze a collected host experiment:
+
+```sh
+python3 -m tools.tournaments.generator_stress reanalyze /tmp/telemetry-merge/distributed-linux/devlaptop.local --seed 19 --draws 100
+```
+
+Every archive member was checked against its indexed length and SHA-256. Full binary
+bundles remain in ignored `artifacts/tournaments-telemetry-merge/bundles/`; immutable
+manifests are included in the archive.
