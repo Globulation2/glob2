@@ -633,7 +633,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 				{
 					if(static_cast<int>(y) >= map->getH())
 						y=0;
-					if (map->isResourceTakeable(x, y, CORN))
+					if (map->isResourceTakeable(x, y, WHEAT))
 						score++;
 				}
 			}
@@ -1084,7 +1084,7 @@ bool Gradient::isSource(unsigned x, unsigned y)
 {
 	if(sources&VillageCenter && x==ai->getCenterX() && y==ai->getCenterY())
 		return true;
-	if(sources&Wheat && map->isResourceTakeable(x, y, CORN))
+	if(sources&Wheat && map->isResourceTakeable(x, y, WHEAT))
 		return true;
 	if(sources&Wood && map->isResourceTakeable(x, y, WOOD))
 		return true;
@@ -3201,7 +3201,7 @@ DistributedUnitManager::DistributedUnitManager(AICabino& ai) : ai(ai)
 	ability_names[MAGIC_ATTACK_AIR]="air-air attacking";
 	ability_names[MAGIC_ATTACK_GROUND]="air-ground attacking";
 	ability_names[MAGIC_CREATE_WOOD]="creating wood";
-	ability_names[MAGIC_CREATE_CORN]="creating corn";
+	ability_names[MAGIC_CREATE_WHEAT]="creating wheat";
 	ability_names[MAGIC_CREATE_ALGA]="creating algae";
 	ability_names[ARMOR]="armor";
 	ability_names[HP]="hp";
@@ -3850,9 +3850,9 @@ bool InnManager::recordInns()
 			{
 				innRecord& i = inns[b->gid];
 				if(i.records.size()<INN_RECORD_MAX)
-					i.records.push_back(singleInnRecord(b->resources[CORN]));
+					i.records.push_back(singleInnRecord(b->resources[WHEAT]));
 				else
-					i.records[i.pos].food_amount=b->resources[CORN];
+					i.records[i.pos].food_amount=b->resources[WHEAT];
 				i.pos+=1;
 				if (i.pos==INN_RECORD_MAX)
 				{
@@ -3896,7 +3896,7 @@ bool InnManager::modifyInns()
 		}
 		average/=i->second.records.size();
 
-		unsigned int to_assign=std::max(INN_MINIMUM[inn->type->level], std::min(INN_MAX[inn->type->level], (inn->type->maxResource[CORN]-average)/WHEAT_NEEDED_FOR_UNIT));
+		unsigned int to_assign=std::max(INN_MINIMUM[inn->type->level], std::min(INN_MAX[inn->type->level], (inn->type->maxResource[WHEAT]-average)/WHEAT_NEEDED_FOR_UNIT));
 		total_workers_needed+=to_assign;
 		if(static_cast<int>(to_assign)!=inn->maxUnitWorking)
 		{
@@ -4575,7 +4575,7 @@ bool Farmer::updateFarm()
 				((x%6<4 && y%3==0) && FARMING_METHOD==Row4) ||
 				((x%3==0 && y%6<4) && FARMING_METHOD==Column4))
 			{
-				if((!ai.map->isResourceTakeable(x, y, WOOD) && !ai.map->isResourceTakeable(x, y, CORN)) || ai.map->isClearArea(x, y, ai.team->me))
+				if((!ai.map->isResourceTakeable(x, y, WOOD) && !ai.map->isResourceTakeable(x, y, WHEAT)) || ai.map->isClearArea(x, y, ai.team->me))
 				{
 					if(resources.find(point(x, y))!=resources.end())
 					{
