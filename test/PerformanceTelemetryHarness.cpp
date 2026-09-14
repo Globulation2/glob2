@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#ifdef main
+#undef main
+#endif
 #ifdef NDEBUG
 #undef NDEBUG
 #endif

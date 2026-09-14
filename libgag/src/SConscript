@@ -54,5 +54,9 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     
     PackTar(env["TARFILE"], "SConscript")
 
-perf_test = env.Program("PerformanceTelemetryHarness", [env.Object("PerformanceTelemetryHarness.o", "#test/PerformanceTelemetryHarness.cpp"), l2 if env["server"] else l1])
+# Like the save/statistics harnesses, use a console entry point on Windows.
+perf_env = env.Clone()
+perf_env['LINKFLAGS'] = [flag for flag in env.Split(env['LINKFLAGS']) if flag != '-mwindows']
+perf_env['LIBS'] = [lib for lib in env['LIBS'] if lib != 'SDL2main']
+perf_test = perf_env.Program("PerformanceTelemetryHarness", [env.Object("PerformanceTelemetryHarness.o", "#test/PerformanceTelemetryHarness.cpp"), l2 if env["server"] else l1])
 env.Alias("performance-telemetry-test", perf_test)
