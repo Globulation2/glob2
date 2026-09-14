@@ -53,7 +53,7 @@ void fruitIsNeverAClearingTarget() {
         flag->globalGradient[swim]=new Uint16[64*64];
         for(unsigned char padding:{0,1}) {
             std::fill(bytes+begin,bytes+end,padding);
-            for(int resource:{WOOD,CORN,PAPYRUS,STONE,ALGA,CHERRY,ORANGE,PRUNE,NO_RES_TYPE}) {
+            for(int resource:{WOOD,WHEAT,PAPYRUS,STONE,ALGA,CHERRY,ORANGE,PRUNE,NO_RES_TYPE}) {
                 auto& tile=f.game.map.getResource(21,20);
                 tile.type=resource;tile.amount=resource==NO_RES_TYPE?0:1;
                 for(bool enabled:{false,true}) {
