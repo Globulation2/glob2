@@ -373,6 +373,15 @@ namespace GAGCore
 		return std::min(static_cast<float>(drawableW) / sdlsurface->w, static_cast<float>(drawableH) / sdlsurface->h);
 	}
 
+	float GraphicContext::rasterScale(void)
+	{
+		// An offscreen pass rasterises into its own target, whose pixels have
+		// nothing to do with the window the logical surface is stretched into.
+		if (renderTargetScale > 0.0f)
+			return renderTargetScale;
+		return drawableScale();
+	}
+
 	void GraphicContext::glLetterbox(float &scale, int &offX, int &offY)
 	{
 		scale = drawableScale();
