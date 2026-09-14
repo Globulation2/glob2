@@ -281,3 +281,7 @@ an exact final snapshot. Legacy timeline records keep their existing formats.
 AI controller readouts use the same option; see [AI telemetry](ai-telemetry.md).
 They identify individual players and controller generations. Replay playback does
 not reconstruct internal AI decisions from recorded orders.
+
+The same timeline option also exports [engine performance telemetry](performance-telemetry.md):
+frame/work timing, subsystem costs, sampled pathfinding, per-player AI time, and autosave work.
+Performance records describe this execution session and are not stored in saves.

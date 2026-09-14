@@ -1,3 +1,4 @@
+#include <PerformanceTelemetry.h>
 #include "MapZoomControls.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -133,6 +134,7 @@ void GameGUI::drawRadioButton(int x, int y, bool isSet)
 
 void GameGUI::drawPanel(void)
 {
+	PERF_SCOPE_TIME(Panel);
 	// ensure we have a valid selection and associate pointers
 	checkSelection();
 
@@ -362,6 +364,7 @@ void GameGUI::drawTopScreenBar(void)
 
 void GameGUI::drawOverlayInfos(void)
 {
+	PERF_SCOPE_TIME(Overlay);
 	if (!torusView.active())
 	{
 		updateCamera();
@@ -629,6 +632,7 @@ void GameGUI::drawInGameScrollableText(void)
 
 void GameGUI::drawAll(int team)
 {
+	PERF_SCOPE_TIME(Render);
 	updateCamera();
 	globalContainer->gfx->setClipRect();
 	globalContainer->gfx->drawFilledRect(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH(),0,0,32);

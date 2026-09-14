@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
@@ -37,6 +38,7 @@
 // throttle. On correct code the loop exits in a handful of passes.
 void Map::updateGlobalGradient(Uint8 *gradient)
 {
+	PERF_SCOPE_TIME(Propagation);
 	// Values below 3 cannot raise a free cell above its seed of 1.
 	// Without a stronger source, the initialized buffer is already the final field.
 	if (std::none_of(gradient, gradient + size, [](Uint8 value) { return value >= 3; }))
@@ -119,6 +121,7 @@ Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass
 
 void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass)
 {
+	PERF_SCOPE_TIME(ResourceGradient);
 	Uint16 *gradient=resourcesGradient[teamNumber][resourceType][swimClass];
 	assert(gradient);
 	bool canSwim = swimClass > 0;

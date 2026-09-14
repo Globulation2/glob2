@@ -546,3 +546,20 @@ The team-statistics harness also checks the AI telemetry schema interface for ev
 built-in implementation, shared-team player identities, controller generations,
 reassignment, exact numeric persistence, replay availability, and truncated fields.
 See [AI telemetry](../docs/ai-telemetry.md) for the capture/extension contract.
+
+## Performance telemetry
+
+```sh
+scons -j8 release=1 server=0 performance-telemetry-test
+build/libgag/src/PerformanceTelemetryHarness
+```
+
+The injected-clock harness checks online variance, nested timings, exclusion of sleep and
+presentation from work, budgets, jitter, sampling rotation, actor generations, capture
+boundaries, and the disabled control. SavegameSafetyHarness additionally checks background
+write timing counts and completed/failed/superseded accounting. See
+[metric definitions and export records](../docs/performance-telemetry.md).
+
+`MapGeneratorGoldenTest PROFILE --performance` compares all built-in generators with timing
+off/on (serialized worlds, outcomes, RNG, and generation telemetry) and emits generation
+timing records, including site assignment. Use a disposable HOME and run from the repository.

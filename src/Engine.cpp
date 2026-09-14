@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include <FileManager.h>
 #include <FormatableString.h>
 
@@ -14,11 +15,14 @@
 
 #include <iostream>
 
-
-Engine::Engine() = default;
+Engine::Engine()
+{
+	PerformanceTelemetry::collector().reset();
+}
 
 Engine::~Engine()
 {
+	PerformanceTelemetry::collector().enabled = false;
 	globalContainer->liveSpectating=false;
 	if(previousCustomSpeed>=0) {
         globalContainer->settings.gameSpeed=previousCustomSpeed;

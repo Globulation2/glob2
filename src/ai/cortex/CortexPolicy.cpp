@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include <PerformanceTelemetry.h>
 #include "AITelemetryFields.h"
 #include "CortexPolicy.h"
 #include "CortexTuning.h"
@@ -310,6 +311,7 @@ namespace Cortex
 
 	CortexAction CortexPolicy::decide(const CortexObservation& obs, DecideTrace* trace)
 	{
+		PERF_SCOPE_TIME(AIPlan);
 		if (trace)
 		{
 			trace->eligibleMask = 0;
@@ -570,6 +572,7 @@ namespace Cortex
 
 	CortexAction CortexPolicy::decideCombat(const CortexObservation& obs) const
 	{
+		PERF_SCOPE_TIME(AIPlan);
 		// Same guard decide() uses: reject an unpopulated / wrong-layout observation.
 		if (obs.version != OBSERVATION_VERSION || !obs.valid)
 			return makeNoOpAction();

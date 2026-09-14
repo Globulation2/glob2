@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include <PerformanceTelemetry.h>
 #include "echo/Echo.h"
 #include "Building.h"
 #include <queue>
@@ -205,6 +206,7 @@ GradientInfo make_gradient_info_obstacle(Entities::Entity* source1, Entities::En
 
 void Gradient::recalculate(Map* map)
 {
+	PERF_SCOPE_TIME(AIGradient);
 	width=map->getW();
 	gradient.resize(map->getW()*map->getH());
 	std::fill(gradient.begin(), gradient.end(),0);

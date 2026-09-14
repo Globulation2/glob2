@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include "AITelemetryFields.h"
 #include "AINumbi.h"
 #include "Game.h"
@@ -13,6 +14,7 @@ using std::shared_ptr;
 
 int AINumbi::estimateFood(Building *building)
 {
+	PERF_SCOPE_TIME(AIObserve);
 	telemetry.count(AITrace::AI1::AINumbi_estimateFood_calls);
 	int rx, ry, dist;
 	bool found;

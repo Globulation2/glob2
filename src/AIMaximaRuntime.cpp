@@ -1,3 +1,4 @@
+#include <PerformanceTelemetry.h>
 #include "AITelemetryFields.h"
 #include "AIMaximaRuntime.h"
 #include "AIMaximaContinuation.h"
@@ -326,6 +327,7 @@ bool GradientManager::is_updated(const GradientInfo& info) const
 }
 void GradientManager::update(Uint32 step)
 {
+	PERF_SCOPE_TIME(AIGradient);
 	if(lastWorldStep==step) return;
 	lastWorldStep=step;
 	for(size_t i=0;i<ages.size();++i) ++ages[i];
@@ -409,6 +411,7 @@ BuildingRegister::BuildingRegister(Player* player)
 	buildingIdentities(::Building::MAX_COUNT,0),nextBuildingIdentity(0) {}
 void BuildingRegister::observe_buildings() const
 {
+	PERF_SCOPE_TIME(AIObserve);
 	for(int i=0;i<::Building::MAX_COUNT;++i)
 	{
 		const ::Building* building=player->team->myBuildings[i];
@@ -1178,6 +1181,7 @@ void Context::update_management_orders()
 }
 void Context::update_building_orders()
 {
+	PERF_SCOPE_TIME(AIPlan);
 	for(size_t i=0;i<buildingOrders.size();)
 	{
 		Conditions::Result result=buildingOrders[i]->conditions_pass(*this);

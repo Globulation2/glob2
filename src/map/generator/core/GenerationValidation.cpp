@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <PerformanceTelemetry.h>
 #include "GenerationValidation.h"
 #include "Building.h"
 #include "BuildingType.h"
@@ -38,6 +39,7 @@ std::string validateGenerationRequest(const GenerationRequest &r, const Generato
 std::string validateGeneratedWorld(const Game &g, const GenerationRequest &r,
 								   const GeneratorDefinition &d)
 {
+	PERF_SCOPE_TIME(Validation);
 	if (g.map.getW() != (1 << r.wDec) || g.map.getH() != (1 << r.hDec))
 		return "Incorrect map dimensions";
 	if (g.mapHeader.getNumberOfTeams() != (d.hasStartingColonies ? r.nbTeams : 1))

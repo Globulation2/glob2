@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "BuildingType.h"
 #include "Game.h"
@@ -16,6 +17,7 @@
 
 void Map::updateGlobalGradient(Building *building, int swimClass)
 {
+	PERF_SCOPE_TIME(BuildingGradient);
 	assert(building);
 	assert(building->type);
 	int posX=building->posX;
@@ -133,6 +135,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 
 void Map::updateRoundTripGradient(Building *building, int resourceType, int swimClass)
 {
+	PERF_SCOPE_TIME(RoundTripGradient);
 	Uint16 *gradient=building->roundTripGradient[resourceType][swimClass];
 	assert(gradient);
 	building->roundTripGradientStep[resourceType][swimClass]=game->stepCounter;

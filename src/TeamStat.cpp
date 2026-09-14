@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include <sstream>
 #include <iostream>
 #include <cstdlib>
@@ -253,6 +254,7 @@ TeamStats::~TeamStats()
 
 void TeamStats::step(Team *team, bool reloaded)
 {
+	PERF_SCOPE_TIME(Stats);
 	if (!reloaded && needsMeasurementInitialization)
 		initializeMeasurements(team->game->stepCounter);
 	beginMeasurementSnapshot(team);

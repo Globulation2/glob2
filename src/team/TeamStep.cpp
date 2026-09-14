@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include <algorithm>
 #include <cmath>
 
@@ -144,6 +145,7 @@ void Team::removeBuildingNeedingWork(Building* b, Sint32 priority)
 
 void Team::updateAllBuildingTasks()
 {
+	PERF_SCOPE_TIME(Tasks);
 	for(std::map<int, std::vector<Building*>, std::greater<int> >::iterator i = buildingsNeedingUnits.begin(); i!=buildingsNeedingUnits.end(); ++i)
 	{
 		std::sort(i->second.begin(), i->second.end(), Team::buildingHasHigherPriority);
@@ -347,6 +349,7 @@ void Team::syncStep(void)
 
 	int nbUsefulUnits = 0;
 	int nbUsefulUnitsAlone = 0;
+	PerformanceTelemetry::Scope unitTime(PerformanceTelemetry::Id::Units);
 	for (int i = 0; i < Unit::MAX_COUNT; i++)
 	{
 		Unit *u = myUnits[i];
@@ -370,6 +373,8 @@ void Team::syncStep(void)
 		}
 	}
 
+	unitTime.stop();
+	PerformanceTelemetry::Scope buildingTime(PerformanceTelemetry::Id::Buildings);
 	bool isDirtyGlobalGradient=false;
 	for (std::list<Building *>::iterator it=buildingsWaitingForDestruction.begin(); it!=buildingsWaitingForDestruction.end();)
 	{
@@ -472,6 +477,7 @@ void Team::syncStep(void)
 		isAlive=false;
 	}
 
+	buildingTime.stop();
 	stats.step(this);
 	updateEvents();
 }

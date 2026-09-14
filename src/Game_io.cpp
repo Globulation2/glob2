@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include <iostream>
 #include <sstream>
 #include <locale>
@@ -145,6 +146,7 @@ namespace
 
 bool Game::load(GAGCore::InputStream *stream)
 {
+	PERF_SCOPE_TIME(Load);
 	assert(stream);
 
 	ReadSectionGuard gameSection(stream, "Game");
@@ -478,6 +480,7 @@ void DeferredGameSHA1::apply(std::string& contents) const
 
 void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name, DeferredGameSHA1* deferredSHA1)
 {
+	PERF_SCOPE_TIME(Serialize);
 	assert(stream);
 	for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
 		if (teams[t])

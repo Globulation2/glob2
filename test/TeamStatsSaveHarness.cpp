@@ -850,6 +850,25 @@ static void aiTelemetryScenarios()
 			"AI state and large counters survive game saves between samples");
 	require(loaded->game.players[0]->ai->telemetrySeries == restored[0],
 			"loaded AI rebinds the preserved series");
+	class ScalarAIOutput : public GAGCore::BinaryOutputStream
+	{
+	  public:
+		using BinaryOutputStream::BinaryOutputStream;
+	};
+	const auto saveRecords = [&](bool scalar)
+	{
+		auto *memory = new GAGCore::MemoryStreamBackend();
+		std::unique_ptr<GAGCore::BinaryOutputStream> stream;
+		if (scalar)
+			stream = std::make_unique<ScalarAIOutput>(memory);
+		else
+			stream = std::make_unique<GAGCore::BinaryOutputStream>(memory);
+		AITelemetry::save(stream.get(), restored);
+		stream->flush();
+		return std::string(memory->getBuffer(), memory->getPosition());
+	};
+	require(saveRecords(false) == saveRecords(true),
+			"packed AI samples preserve scalar bytes across chunks and large counters");
 	const auto before = a->current.values;
 	globalContainer->replaying = true;
 	g.stepCounter = 1024;

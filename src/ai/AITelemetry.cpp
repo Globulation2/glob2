@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <PerformanceTelemetry.h>
 #include "AITelemetry.h"
 #include "AI.h"
 #include "Order.h"
@@ -12,6 +13,8 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <typeinfo>
+#include <algorithm>
 #include <stdexcept>
 #include <cmath>
 #include <sstream>
@@ -68,6 +71,28 @@ void writeSample(GAGCore::OutputStream *s, const Sample &a)
 {
 	s->writeUint32(a.tick, "tick");
 	s->writeUint32(a.available, "available");
+	// The binary format has no section bytes. Pack the identical four network-order
+	// words per value, avoiding thousands of tiny virtual writes on every autosave.
+	// Derived streams may observe field boundaries, so retain their scalar path.
+	if (typeid(*s) == typeid(GAGCore::BinaryOutputStream))
+	{
+		Uint8 bytes[4096];
+		for (size_t first = 0; first < a.values.size(); first += sizeof(bytes) / 16)
+		{
+			const auto count = std::min(a.values.size() - first, sizeof(bytes) / 16);
+			for (size_t i = 0; i < count; ++i)
+			{
+				const auto &v = a.values[first + i];
+				const Uint32 words[] = {Uint32(v.bits), Uint32(v.bits >> 32), v.updated,
+										Uint32(v.valid)};
+				for (unsigned w = 0; w < 4; ++w)
+					for (unsigned b = 0; b < 4; ++b)
+						bytes[i * 16 + w * 4 + b] = Uint8(words[w] >> (24 - b * 8));
+			}
+			s->write(bytes, count * 16, "values");
+		}
+		return;
+	}
 	for (unsigned i = 0; i < a.values.size(); ++i)
 	{
 		s->writeEnterSection(i);
@@ -247,6 +272,7 @@ void load(GAGCore::InputStream *s, std::vector<std::shared_ptr<Series>> &records
 }
 void emit(Series &r, int team, bool final, bool describe)
 {
+	PERF_SCOPE_TIME(Output);
 	const auto precision = std::cout.precision();
 	const auto flags = std::cout.flags();
 	if (!r.schemaPrinted)

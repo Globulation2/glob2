@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include "GraphicContextPrivate.h"
 #include <Toolkit.h>
 #include <FileManager.h>
@@ -761,6 +762,7 @@ namespace GAGCore
 
 	void GraphicContext::printScreen(const std::string filename)
 	{
+		PERF_SCOPE_TIME(Screenshot);
 		SDL_Surface *toPrintSurface = NULL;
 
 		// Fetch the surface to print

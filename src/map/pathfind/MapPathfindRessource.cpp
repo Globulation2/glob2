@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "Utilities.h"
 #include "Unit.h"
@@ -13,6 +14,7 @@
 #ifndef YOG_SERVER_ONLY
 bool Map::pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target)
 {
+	PERF_SCOPE_TIME(PathResource);
 	assert(resourceType<MAX_RESOURCES);
 	const Uint16 *gradient=getResourceGradient(teamNumber, resourceType, swimClass);
 	size_t hereIndex=coordToIndex(x, y);

@@ -33,6 +33,7 @@
 #include <Toolkit.h>
 #include <algorithm>
 #include <chrono>
+#include <PerformanceTelemetry.h>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
@@ -493,6 +494,41 @@ int telemetryCheck()
 }
 } // namespace
 
+int performanceCheck()
+{
+	auto &perf = PerformanceTelemetry::collector();
+	perf.reset();
+	perf.output = false;
+	int cases = 0;
+	for (int id : GeneratorRegistry::builtins().methods(true))
+	{
+		GenerationRequest request;
+		request.setMethodDefaults(id);
+		request.wDec = request.hDec = 8;
+		request.seed = 42;
+		perf.enabled = false;
+		auto off = telemetryRun(request, true);
+		perf.enabled = true;
+		auto on = telemetryRun(request, true);
+		if (off.bytes != on.bytes || off.result.error != on.result.error || !off.randomRestored ||
+			!on.randomRestored || off.result.telemetry.records() != on.result.telemetry.records())
+			return 1;
+		std::printf("PERF_GENERATOR name=%s off_ms=%.6f on_ms=%.6f\n",
+					GeneratorRegistry::builtins().at(id).id, off.milliseconds, on.milliseconds);
+		++cases;
+	}
+	if (!perf.window[unsigned(PerformanceTelemetry::Id::Sites)].calls ||
+		!perf.window[unsigned(PerformanceTelemetry::Id::Generation)].calls)
+		return 1;
+	perf.output = true;
+	perf.describe("mode=generation_test");
+	perf.capture(0, true, true);
+	std::printf("PASS %d generators: identical bytes, outcomes, RNG and map telemetry with "
+				"performance off/on\n",
+				cases);
+	return 0;
+}
+
 int main(int argc, char **argv)
 {
 	if (argc < 2)
@@ -522,6 +558,8 @@ int main(int argc, char **argv)
 		}
 		return sweep(shard, shards);
 	}
+	if (mode == "--performance")
+		return performanceCheck();
 	if (mode == "--telemetry")
 		return telemetryCheck();
 	if (mode == "--update")

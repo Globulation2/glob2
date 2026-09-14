@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include "../render/MapCopies.h"
 #include <math.h>
 #include <stdlib.h>
@@ -49,6 +50,7 @@ namespace
 
 void GameGUI::drawParticles(bool advance)
 {
+	PERF_SCOPE_TIME(Particles);
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); )
 	{
 		Particle* p = *it;
@@ -98,6 +100,7 @@ void GameGUI::drawParticles(bool advance)
 
 void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 {
+	PERF_SCOPE_TIME(Particles);
 	if (gamePaused)
 		return;
 

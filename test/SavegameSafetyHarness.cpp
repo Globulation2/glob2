@@ -2,6 +2,7 @@
 #ifdef NDEBUG
 #undef NDEBUG
 #endif
+#include <PerformanceTelemetry.h>
 #define SDL_MAIN_HANDLED
 #ifdef main
 #undef main
@@ -107,6 +108,8 @@ static void checkAtomicWrites(FileManager& files, const fs::path& directory)
 
 static void checkBackgroundWriter(FileManager& files, const fs::path& directory)
 {
+	auto &perf = PerformanceTelemetry::collector();
+	perf.reset();
 	const std::string path = (directory / "background.game").string();
 	{
 		BackgroundFileWriter writer(&files);
@@ -126,6 +129,11 @@ static void checkBackgroundWriter(FileManager& files, const fs::path& directory)
 		writer.write(path, "written after a failure");
 	}
 	assert(contents(path) == "written after a failure");
+	assert(perf.saved + perf.superseded == 52 && perf.failed == 1);
+	assert(perf.window[unsigned(PerformanceTelemetry::Id::SaveWrite)].time.count ==
+		   perf.saved + perf.failed);
+	assert(perf.window[unsigned(PerformanceTelemetry::Id::SaveQueue)].time.count ==
+		   perf.saved + perf.failed);
 	for (const auto& entry : fs::directory_iterator(directory))
 		assert(entry.path().filename().string().find(".tmp-") == std::string::npos);
 	std::cout << "PASS background writes keep the newest snapshot with its finish step, finish on destruction and continue after a failure" << std::endl;

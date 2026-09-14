@@ -1,5 +1,5 @@
 libgag_sources = Split("""
-BackgroundFileWriter.cpp BinaryStream.cpp    CursorManager.cpp     FileManager.cpp FileManagerAtomic.cpp   FormatableString.cpp
+PerformanceTelemetry.cpp BackgroundFileWriter.cpp BinaryStream.cpp    CursorManager.cpp     FileManager.cpp FileManagerAtomic.cpp   FormatableString.cpp
 GraphicContext.cpp GraphicContextResize.cpp GraphicContextDraw.cpp GraphicContextCompound.cpp
 DrawableSurface.cpp DrawableSurfaceDraw.cpp DrawableSurfaceCompound.cpp
 GUIDropdown.cpp     GUIAnimation.cpp    GUIBase.cpp           GUIButton.cpp
@@ -15,7 +15,7 @@ GUITabScreen.cpp    GUITabScreenWindow.cpp  TextSort.cpp    GUICheckList.cpp
 
 libgag_just_server = Split("""
 
-BinaryStream.cpp     Stream.cpp     FileManager.cpp FileManagerAtomic.cpp   FormatableString.cpp
+PerformanceTelemetry.cpp BinaryStream.cpp     Stream.cpp     FileManager.cpp FileManagerAtomic.cpp   FormatableString.cpp
 TextStream.cpp      StreamBackend.cpp StringTable.cpp  Toolkit.cpp
 """)
 
@@ -53,3 +53,6 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
             PackTar(env["TARFILE"], file)
     
     PackTar(env["TARFILE"], "SConscript")
+
+perf_test = env.Program("PerformanceTelemetryHarness", [env.Object("PerformanceTelemetryHarness.o", "#test/PerformanceTelemetryHarness.cpp"), l2 if env["server"] else l1])
+env.Alias("performance-telemetry-test", perf_test)

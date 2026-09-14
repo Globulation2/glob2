@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <PerformanceTelemetry.h>
 #include "Points.h"
 #include "GenerationContext.h"
 #include "LatticeNoise.h"
@@ -76,6 +77,7 @@ std::vector<int> nearestSiteLabels(const Torus &t, const std::vector<Site> &site
 								   GenerationContext &context, const std::string &stream,
 								   int warpPeriodPercent, int warpPercent)
 {
+	PERF_SCOPE_TIME(Sites);
 	const int period = std::max(1, spacing * warpPeriodPercent / 100);
 	const std::vector<int> warpX = fractalNoise(t.w, t.h, period, 3, context.stream(stream));
 	const std::vector<int> warpY = fractalNoise(t.w, t.h, period, 3, context.stream(stream));
@@ -86,6 +88,7 @@ std::vector<int> nearestSiteLabels(const Torus &t, const std::vector<Site> &site
 								   const std::vector<int> &warpX, const std::vector<int> &warpY,
 								   int warpPercent)
 {
+	PERF_SCOPE_TIME(Sites);
 	const std::int64_t amplitude = std::int64_t(spacing) * 16 * warpPercent / 100;
 	const int W = t.w * 16, H = t.h * 16;
 	const int gx = std::max(1, t.w / spacing), gy = std::max(1, t.h / spacing);
@@ -130,6 +133,7 @@ std::vector<int> nearestSiteLabels(const Torus &t, const std::vector<Site> &site
 
 std::vector<Site> relaxPoints(const Torus &t, std::vector<Site> sites, int iterations)
 {
+	PERF_SCOPE_TIME(Relax);
 	const int n = int(sites.size());
 	for (int round = 0; round < iterations && n > 0; ++round)
 	{

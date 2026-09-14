@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include <PerformanceTelemetry.h>
 #include "TorusView.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -291,6 +292,7 @@ void TorusView::updateClouds(int time)
 
 bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, int width, int height, float flatZoom, float fractionX, float fractionY)
 {
+	PERF_SCOPE_TIME(Torus);
 #ifdef HAVE_OPENGL
     if (!active() || !available())
     {

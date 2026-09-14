@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include "AI.h"
 #include "AIMaxima.h"
 #include "Player.h"
@@ -90,7 +91,12 @@ std::shared_ptr<Order> AI::getOrder(bool paused)
 	bindTelemetry();
 	aiImplementation->telemetry.tick = player->game->stepCounter;
 	aiImplementation->telemetry.count(AITelemetry::Polls);
+	PerformanceTelemetry::Scope aiTime(
+		PerformanceTelemetry::Id::AI,
+		PerformanceTelemetry::collector().actor(player->number, player->team->teamNumber,
+												implementationID, telemetrySeries->generation));
 	auto order = aiImplementation->getOrder();
+	aiTime.stop();
 	const auto type = order->getOrderType();
 	aiImplementation->telemetry.count(AITelemetry::OrderTypes + type);
 	aiImplementation->telemetry.count(type == ORDER_NULL ? AITelemetry::NullOrders
