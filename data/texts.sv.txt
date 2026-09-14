@@ -1782,6 +1782,10 @@ Använd grafiken nästa gång ett spel eller kartredigeraren laddas (OpenGL).
 Automatisk torusvy
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Visa automatiskt den torusformade kartöversikten medan du flyttar runt på kartan (OpenGL).
+[settings Autosave]
+Spara automatiskt
+[settings Save the game automatically about every 10 seconds.]
+Sparar spelet automatiskt ungefär var 10:e sekund.
 [Channel width]
 Kanalbredd
 [Land bridge width]

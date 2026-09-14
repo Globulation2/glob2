@@ -1,5 +1,5 @@
 libgag_sources = Split("""
-BinaryStream.cpp    CursorManager.cpp     FileManager.cpp FileManagerAtomic.cpp   FormatableString.cpp
+BackgroundFileWriter.cpp BinaryStream.cpp    CursorManager.cpp     FileManager.cpp FileManagerAtomic.cpp   FormatableString.cpp
 GraphicContext.cpp GraphicContextResize.cpp GraphicContextDraw.cpp GraphicContextCompound.cpp
 DrawableSurface.cpp DrawableSurfaceDraw.cpp DrawableSurfaceCompound.cpp
 GUIDropdown.cpp     GUIAnimation.cpp    GUIBase.cpp           GUIButton.cpp

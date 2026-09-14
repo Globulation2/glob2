@@ -154,6 +154,8 @@ int main(int argc,char** argv)
         }
         screen.selectCategory(SettingsScreen::Category::Gameplay);
         assert(screen.changeSetting("gameplay.speed",4));loaded.load();assert(loaded.gameSpeed==4);
+        assert(s.autosaveGames);assert(screen.changeSetting("gameplay.autosave",0));loaded.load();assert(!loaded.autosaveGames);
+        assert(screen.changeSetting("gameplay.autosave",1));loaded.load();assert(loaded.autosaveGames);
         const auto before=readFile(profile+"/preferences.txt");
         const auto permissions=std::filesystem::status(profile+"/preferences.txt").permissions();
         const auto directoryTarget=profile+"/atomic-directory";
