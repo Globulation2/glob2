@@ -2,6 +2,7 @@
 #include "Pipeline.h"
 #include "Game.h"
 #include "GenerationContext.h"
+#include "Homes.h"
 #include "Planting.h"
 #include "Resources.h"
 namespace MapGeneration
@@ -43,5 +44,39 @@ ColonyWalk walkFromFirstColony(const Map &map, int teams, const std::string &gro
 		walk.error = "Colony " + std::to_string(cut) + " cannot walk to colony 0" +
 					 (route.empty() ? "" : " " + route) + ".";
 	return walk;
+}
+
+std::vector<unsigned char> homeGrassMask(const Map &map, const Torus &t,
+										 const std::vector<int> &homeOf, int team)
+{
+	std::vector<unsigned char> ground(size_t(t.size()), 0);
+	for (int i = 0; i < t.size(); ++i)
+		ground[i] = homeOf[i] == team && map.isGrass(i % t.w, i / t.w);
+	return ground;
+}
+
+bool settleRoundColonies(Game &game, GenerationContext &context, const char *stream,
+						 const std::vector<int> &homeOf, const std::vector<ShapePoint> &homes,
+						 double radius)
+{
+	const Torus t(game.map.getW(), game.map.getH());
+	return settleColonies(
+		game, context, stream, [&](int team) { return homeGrassMask(game.map, t, homeOf, team); },
+		[&](int team) { return homeSwarmSite(homes[team], 0.0, radius); });
+}
+
+std::string homePondMissing(const Map &map, const Torus &t, const std::vector<ShapePoint> &kits,
+							int teams, const char *place, const char *water)
+{
+	for (int k = 0; k < teams; ++k)
+	{
+		bool pond = false;
+		for (int dy = -2; dy <= 2 && !pond; ++dy)
+			for (int dx = -2; dx <= 2 && !pond; ++dx)
+				pond = map.isWater(t.x(int(kits[k].x) + dx), t.y(int(kits[k].y) + dy));
+		if (!pond)
+			return "Colony " + std::to_string(k) + "'s " + place + " has lost its " + water + ".";
+	}
+	return "";
 }
 } // namespace MapGeneration

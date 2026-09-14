@@ -1816,20 +1816,12 @@ Breedte van de landbrug
 Meergrootte
 [Contested commons]
 Betwist gemeenschappelijk gebied
-[Lattice]
-Raster
 [Maze]
 Doolhof
 [Fjord continent]
 Fjordencontinent
-[Islet size]
-Grootte van het eilandje
-[Home radius]
-Straal van het startgebied
 [Cell size]
 Celgrootte
-[Room size]
-Kamergrootte
 [Corridor width]
 Gangbreedte
 [Spoke width]

@@ -1800,20 +1800,12 @@ Kara köprüsü genişliği
 Göl boyutu
 [Contested commons]
 Çekişmeli ortak alan
-[Lattice]
-Kafes
 [Maze]
 Labirent
 [Fjord continent]
 Fiyort kıtası
-[Islet size]
-Adacık boyutu
-[Home radius]
-Üs yarıçapı
 [Cell size]
 Hücre boyutu
-[Room size]
-Oda boyutu
 [Corridor width]
 Koridor genişliği
 [Spoke width]

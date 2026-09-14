@@ -1802,20 +1802,12 @@ Largeur du pont terrestre
 Taille des lacs
 [Contested commons]
 Terres communes disputées
-[Lattice]
-Quadrillage
 [Maze]
 Labyrinthe
 [Fjord continent]
 Continent à fjords
-[Islet size]
-Taille de l'îlot
-[Home radius]
-Rayon de la zone de départ
 [Cell size]
 Taille des cellules
-[Room size]
-Taille des salles
 [Corridor width]
 Largeur des couloirs
 [Spoke width]

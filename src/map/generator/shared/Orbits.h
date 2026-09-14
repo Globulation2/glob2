@@ -2,6 +2,8 @@
 #pragma once
 #include "Geometry.h"
 #include "Grid.h"
+#include <algorithm>
+#include <cmath>
 #include <string>
 #include <utility>
 #include <vector>
@@ -120,4 +122,16 @@ bool equaliseDeposits(Map &, const Symmetry &, std::string &detail);
 /// colony permutation.
 std::string orbitMismatch(const Game &, const Symmetry &, int teams,
 						  std::vector<std::vector<int>> *permutations = nullptr);
+/// The least distance between any two of `sites`, the short way round the wrap, from whole-tile
+/// positions (each site truncated to its tile); the shorter side when there is only one. What a
+/// design shrinks its homes to fit between.
+inline double nearestSiteDistance(const Torus &t, const std::vector<ShapePoint> &sites)
+{
+	double nearest = std::min(t.w, t.h);
+	for (size_t a = 0; a < sites.size(); ++a)
+		for (size_t b = a + 1; b < sites.size(); ++b)
+			nearest = std::min(nearest, std::hypot(t.offsetX(int(sites[a].x), int(sites[b].x)),
+												   t.offsetY(int(sites[a].y), int(sites[b].y))));
+	return nearest;
+}
 } // namespace MapGeneration

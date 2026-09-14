@@ -1798,20 +1798,12 @@ Largura da ponte terrestre
 Tamanho do lago
 [Contested commons]
 Terras comuns disputadas
-[Lattice]
-Grelha
 [Maze]
 Labirinto
 [Fjord continent]
 Continente de fiordes
-[Islet size]
-Tamanho do ilhéu
-[Home radius]
-Raio da área inicial
 [Cell size]
 Tamanho da célula
-[Room size]
-Tamanho da sala
 [Corridor width]
 Largura do corredor
 [Spoke width]

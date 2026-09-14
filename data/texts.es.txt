@@ -1792,20 +1792,12 @@ Anchura del puente terrestre
 Tamaño del lago
 [Contested commons]
 Tierras comunes disputadas
-[Lattice]
-Retícula
 [Maze]
 Laberinto
 [Fjord continent]
 Continente de fiordos
-[Islet size]
-Tamaño del islote
-[Home radius]
-Radio del área inicial
 [Cell size]
 Tamaño de la celda
-[Room size]
-Tamaño de la sala
 [Corridor width]
 Anchura del pasillo
 [Spoke width]

@@ -73,8 +73,8 @@ namespace
 constexpr int kHomeWheat = 24, kHomeQuarry = 2;
 // The ring of pools round a home (FEEDBACK 2026-09-13, "a lot more pools of water"): `homePools`
 // pools of this radius on a ring at this share of the home's radius, each with this much wheat on its
-// shore. At the default radius 20 the ring is 12 tiles out, so every pool waters the ground between
-// itself and the central pond and the whole clearing is fertile.
+// shore. At the default radius 24 the ring is 14 tiles out, so every pool waters the ground between
+// itself and the central pond (the growth probe reaches 15) and the whole clearing is fertile.
 constexpr double kPoolRadius = 2.5, kPoolRingShare = 0.6;
 constexpr int kPoolWheat = 32, kPoolSeeds = 4;
 // The forest starts this far beyond a home's rough disc, so the clearing's edge is open ground to
@@ -123,12 +123,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 						   context.bounded("growth-layout", std::uint32_t(t.h)))
 				  .sites;
 	dealStarts(context, L.homes); // which colony gets which site is a draw, not the order
-	L.spacing = std::min(t.w, t.h);
-	for (size_t a = 0; a < L.homes.size(); ++a)
-		for (size_t b = a + 1; b < L.homes.size(); ++b)
-			L.spacing =
-				std::min(L.spacing, std::hypot(t.offsetX(int(L.homes[a].x), int(L.homes[b].x)),
-											   t.offsetY(int(L.homes[a].y), int(L.homes[b].y))));
+	L.spacing = nearestSiteDistance(t, L.homes);
 	L.homeRadius =
 		std::min<double>(o.homeSize, std::floor(L.spacing / 3 - kClearingMargin - kSandRing));
 	if (!homeHasRoom(L.homeRadius))
@@ -310,15 +305,7 @@ bool generate(Game &game, GenerationContext &context)
 	writeUndermap(map, terrain);
 
 	context.stage = "old growth colonies";
-	const auto homeMask = [&](int team)
-	{
-		std::vector<unsigned char> ground(size_t(n), 0);
-		for (int i = 0; i < n; ++i)
-			ground[i] = L.homeOf[i] == team && map.isGrass(i % t.w, i / t.w);
-		return ground;
-	};
-	const auto anchor = [&](int team) { return homeSwarmSite(L.homes[team], 0.0, L.homeRadius); };
-	if (!settleColonies(game, context, "growth-starts", homeMask, anchor))
+	if (!settleRoundColonies(game, context, "growth-starts", L.homeOf, L.homes, L.homeRadius))
 		return false;
 
 	context.stage = "old growth resources";
@@ -411,15 +398,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		return mismatch;
 	const Torus &t = L.t;
 	const int teams = context.request.nbTeams;
-	for (int k = 0; k < teams; ++k)
-	{
-		bool pond = false;
-		for (int dy = -2; dy <= 2 && !pond; ++dy)
-			for (int dx = -2; dx <= 2 && !pond; ++dx)
-				pond = map.isWater(t.x(int(L.kits[k].x) + dx), t.y(int(L.kits[k].y) + dy));
-		if (!pond)
-			return "Colony " + std::to_string(k) + "'s clearing has lost its pond.";
-	}
+	if (const std::string lost = homePondMissing(map, t, L.kits, teams, "clearing", "pond");
+		!lost.empty())
+		return lost;
 	// The forest is dry: nothing but the home ponds and the lakes waters it, so wood beyond their
 	// reach never regrows. Checked on the finished map's own growth field.
 	const Fertility::Field fertility = Fertility::forMap(map, false);
@@ -477,10 +458,6 @@ GeneratorDefinition oldGrowthDefinition()
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
 		generate,
 		true,
-		[](const GenerationRequest &r) -> std::string
-		{
-			GenerationContext probe(r);
-			return design(r, probe).failure;
-		},
+		designFailure<design>,
 		validateWorld};
 }

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Drawing.h"
+#include "Geometry.h"
 #include "Grid.h"
 #include "Topology.h"
 #include <string>
@@ -120,4 +121,9 @@ void warpCorners(Tessellation &, int reach, const std::vector<unsigned char> &wa
 /// so every tile belongs to exactly one cell. Empty if some tile was left out or taken twice, which a
 /// valid tiling never does.
 std::vector<int> labelTiles(const Tessellation &);
+/// A subtile point (sixteenths of a tile) in tile units: where a cell's centre falls on the map.
+inline ShapePoint tilePoint(SubtilePoint p)
+{
+	return {p.x / 16.0, p.y / 16.0};
+}
 } // namespace MapGeneration

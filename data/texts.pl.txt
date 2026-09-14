@@ -1792,20 +1792,12 @@ Szerokość mostu lądowego
 Wielkość jeziora
 [Contested commons]
 Sporny teren wspólny
-[Lattice]
-Siatka
 [Maze]
 Labirynt
 [Fjord continent]
 Kontynent fiordowy
-[Islet size]
-Rozmiar wysepki
-[Home radius]
-Promień obszaru startowego
 [Cell size]
 Rozmiar komórki
-[Room size]
-Rozmiar pomieszczenia
 [Corridor width]
 Szerokość korytarza
 [Spoke width]

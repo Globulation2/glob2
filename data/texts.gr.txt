@@ -1862,20 +1862,12 @@ Cortex
 Μέγεθος λίμνης
 [Contested commons]
 Διεκδικούμενη κοινή γη
-[Lattice]
-Πλέγμα
 [Maze]
 Λαβύρινθος
 [Fjord continent]
 Ήπειρος με φιόρδ
-[Islet size]
-Μέγεθος νησίδας
-[Home radius]
-Ακτίνα αρχικής περιοχής
 [Cell size]
 Μέγεθος κελιού
-[Room size]
-Μέγεθος δωματίου
 [Corridor width]
 Πλάτος διαδρόμου
 [Spoke width]

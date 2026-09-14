@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "GenerationContext.h"
+#include "Geometry.h"
 #include "Grid.h"
 #include "Regions.h"
 #include "Settlements.h"
@@ -33,6 +34,26 @@ void dealStarts(GenerationContext &context, Sites &sites, const char *stream = "
 {
 	context.shuffle(sites.begin(), sites.end(), stream);
 }
+
+/// The registry's validateRequest for a designed generator: rebuilds the design from the request on
+/// a probe context and reports its failure, so the lobby refuses what the design refuses, with the
+/// design's own message. Pass the generator's design function: designFailure<design>.
+template <auto Design> std::string designFailure(const GenerationRequest &r)
+{
+	GenerationContext probe(r);
+	return Design(r, probe).failure;
+}
+
+/// The ground a colony's swarm and workers may stand on: its own tiles of `homeOf` that are pure
+/// grass on the written map (a beach, a road or a plot's ring has spoiled the rest).
+std::vector<unsigned char> homeGrassMask(const Map &, const Torus &, const std::vector<int> &homeOf,
+										 int team);
+
+/// A validator's check that no colony's home pond was lost to the map's furnishing: water within two
+/// tiles of every kit's centre (`kits`, one per colony). Returns "" or "Colony k's <place> has lost
+/// its <water>." for the first colony without.
+std::string homePondMissing(const Map &, const Torus &, const std::vector<ShapePoint> &kits,
+							int teams, const char *place, const char *water);
 
 /// A swarm and its workers for every colony, each inside its own home mask and as near as the
 /// mask allows to its anchor. Fails the candidate on the first colony that does not fit.
@@ -72,6 +93,12 @@ struct ResourceAmounts
 bool reopenCrampedStarts(Game &, GenerationContext &, const ResourceAmounts &, int wheatRange = 24,
 						 int woodRange = 32, int clearRadius = 0,
 						 const std::vector<unsigned char> *protectedWalls = nullptr);
+
+/// settleColonies for round homes (stampRoundHomes): every colony on its own grass (homeGrassMask),
+/// its swarm where homeSwarmSite puts it in a home of `radius` facing out from the middle.
+bool settleRoundColonies(Game &, GenerationContext &, const char *stream,
+						 const std::vector<int> &homeOf, const std::vector<ShapePoint> &homes,
+						 double radius);
 
 /// validateWorld's first check on a design rebuilt from the request: it rebuilt, and it is the
 /// map's size. `L` needs a `failure` string and a `t` torus.

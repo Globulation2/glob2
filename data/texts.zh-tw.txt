@@ -1864,20 +1864,12 @@ OpenGL 在此版本中不可用。
 湖泊大小
 [Contested commons]
 爭奪公地
-[Lattice]
-網格
 [Maze]
 迷宮
 [Fjord continent]
 峽灣大陸
-[Islet size]
-小島大小
-[Home radius]
-基地半徑
 [Cell size]
 單元格大小
-[Room size]
-房間大小
 [Corridor width]
 通道寬度
 [Spoke width]

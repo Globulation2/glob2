@@ -1792,20 +1792,12 @@ Samodejno prikaži pregled zemljevida v obliki torusa med premikanjem po zemljev
 Velikost jezera
 [Contested commons]
 Sporno skupno ozemlje
-[Lattice]
-Mreža
 [Maze]
 Labirint
 [Fjord continent]
 Fjordska celina
-[Islet size]
-Velikost otočka
-[Home radius]
-Polmer baze
 [Cell size]
 Velikost celice
-[Room size]
-Velikost sobe
 [Corridor width]
 Širina hodnika
 [Spoke width]

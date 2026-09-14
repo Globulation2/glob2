@@ -96,12 +96,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 					 context.bounded("fingerprint-layout", std::uint32_t(t.h)))
 			.sites;
 	dealStarts(context, L.homes); // which colony gets which site is a draw, not the order
-	double spacing = std::min(t.w, t.h);
-	for (size_t a = 0; a < L.homes.size(); ++a)
-		for (size_t b = a + 1; b < L.homes.size(); ++b)
-			spacing =
-				std::min(spacing, std::hypot(t.offsetX(int(L.homes[a].x), int(L.homes[b].x)),
-											 t.offsetY(int(L.homes[a].y), int(L.homes[b].y))));
+	const double spacing = nearestSiteDistance(t, L.homes);
 	// Clearings shrink to keep a band's width of pattern between neighbours; the smallest home that
 	// holds a pond and a kit is the floor.
 	L.homeRadius =
@@ -194,15 +189,7 @@ bool generate(Game &game, GenerationContext &context)
 			map.setResource(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "fingerprint colonies";
-	const auto homeMask = [&](int team)
-	{
-		std::vector<unsigned char> ground(size_t(n), 0);
-		for (int i = 0; i < n; ++i)
-			ground[i] = L.homeOf[i] == team && map.isGrass(i % t.w, i / t.w);
-		return ground;
-	};
-	const auto anchor = [&](int team) { return homeSwarmSite(L.homes[team], 0.0, L.homeRadius); };
-	if (!settleColonies(game, context, "fingerprint-starts", homeMask, anchor))
+	if (!settleRoundColonies(game, context, "fingerprint-starts", L.homeOf, L.homes, L.homeRadius))
 		return false;
 
 	context.stage = "fingerprint resources";
@@ -252,15 +239,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (const std::string mismatch = designMismatch(L, map, "fingerprint"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;
-	for (int k = 0; k < context.request.nbTeams; ++k)
-	{
-		bool pond = false;
-		for (int dy = -2; dy <= 2 && !pond; ++dy)
-			for (int dx = -2; dx <= 2 && !pond; ++dx)
-				pond = map.isWater(t.x(int(L.kits[k].x) + dx), t.y(int(L.kits[k].y) + dy));
-		if (!pond)
-			return "Colony " + std::to_string(k) + "'s clearing has lost its pond.";
-	}
+	if (const std::string lost =
+			homePondMissing(map, t, L.kits, context.request.nbTeams, "clearing", "pond");
+		!lost.empty())
+		return lost;
 	return walkFromFirstColony(map, context.request.nbTeams, "the fingerprint",
 							   "through the pattern")
 		.error;
@@ -298,10 +280,6 @@ GeneratorDefinition fingerprintDefinition()
 			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
 			generate,
 			true,
-			[](const GenerationRequest &r) -> std::string
-			{
-				GenerationContext probe(r);
-				return design(r, probe).failure;
-			},
+			designFailure<design>,
 			validateWorld};
 }

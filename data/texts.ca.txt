@@ -1800,20 +1800,12 @@ Amplada del pont de terra
 Mida del llac
 [Contested commons]
 Terres comunals disputades
-[Lattice]
-Retícula
 [Maze]
 Laberint
 [Fjord continent]
 Continent de fiords
-[Islet size]
-Mida de l'illot
-[Home radius]
-Radi de l'àrea inicial
 [Cell size]
 Mida de la cel·la
-[Room size]
-Mida de la sala
 [Corridor width]
 Amplada del passadís
 [Spoke width]

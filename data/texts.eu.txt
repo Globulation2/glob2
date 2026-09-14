@@ -1802,20 +1802,12 @@ Lur-zubiaren zabalera
 Aintziraren tamaina
 [Contested commons]
 Lur komun lehiatuak
-[Lattice]
-Sareta
 [Maze]
 Labirintoa
 [Fjord continent]
 Fiordoen kontinentea
-[Islet size]
-Uharte txikiaren tamaina
-[Home radius]
-Hasierako eremuaren erradioa
 [Cell size]
 Gelaxkaren tamaina
-[Room size]
-Gelaren tamaina
 [Corridor width]
 Korridorearen zabalera
 [Spoke width]

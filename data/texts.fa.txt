@@ -1790,20 +1790,12 @@ OpenGL در این بیلد موجود نیست.
 اندازهٔ دریاچه
 [Contested commons]
 سرزمین مشترک مورد مناقشه
-[Lattice]
-شبکه
 [Maze]
 هزارتو
 [Fjord continent]
 قارهٔ آبدره‌ای
-[Islet size]
-اندازهٔ جزیرهٔ کوچک
-[Home radius]
-شعاع پایگاه
 [Cell size]
 اندازهٔ سلول
-[Room size]
-اندازهٔ اتاق
 [Corridor width]
 پهنای راهرو
 [Spoke width]

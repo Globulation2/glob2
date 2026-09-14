@@ -1802,20 +1802,12 @@ Landbrons bredd
 Sjöstorlek
 [Contested commons]
 Omtvistad allmänning
-[Lattice]
-Rutnät
 [Maze]
 Labyrint
 [Fjord continent]
 Fjordkontinent
-[Islet size]
-Småöns storlek
-[Home radius]
-Basradie
 [Cell size]
 Cellstorlek
-[Room size]
-Rumsstorlek
 [Corridor width]
 Korridorbredd
 [Spoke width]

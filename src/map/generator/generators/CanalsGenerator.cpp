@@ -37,8 +37,8 @@ using namespace MapGeneration;
 // out.
 //
 // The city has no centre: the colonies' blocks are the ones farthest apart on the block graph
-// (spreadPockets), market blocks with orchards lie farthest from those, and fairness is statistical
-// (the lobby keeps the best-scoring of several seeds).
+// (spreadPockets), every other block is dealt its kind by a weighted draw, and fairness is
+// statistical (the lobby keeps the best-scoring of several seeds).
 //
 // WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Water blocks walking until
 // a colony can swim, so the canals are a timing rule; a tower scans square rings with no line of
@@ -146,12 +146,6 @@ struct Layout
 	std::string failure;
 };
 
-// A subtile point in tile units.
-ShapePoint tilePoint(SubtilePoint p)
-{
-	return {p.x / 16.0, p.y / 16.0};
-}
-
 // A tile at (u, v) in a block's frame: from its middle, turned a quarter turn per facing.
 int localTile(const Layout &L, int cell, int u, int v)
 {
@@ -187,7 +181,8 @@ int wallReach(const CanalsOptions &o)
 // THE WALLS of a built kind, as the tiles of the block they may stand on: on the block, clear of water
 // by two corners all round (so the beaches leave them pure grass and nothing stands on a bridge's
 // landing), and off any pad. The block must stay one piece with them in - its land and its bridges,
-// eight ways, as a unit walks - else the block gets no walls and `fallback` instead.
+// eight ways, as a unit walks - else the block gets no walls and the pad kind instead (a chicane,
+// which has no pad, becomes plain).
 void blockWalls(Layout &L, int cell, int reach)
 {
 	const Torus &t = L.t;
@@ -323,8 +318,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		return L;
 	}
 
-	// The home blocks: as far apart on the block graph as the tiling allows; then the market blocks,
-	// each the farthest block from every home and market so far.
+	// The home blocks: as far apart on the block graph as the tiling allows.
 	const CellGraph graph = cellGraph(L.g);
 	L.homeCell = spreadPockets(graph, teams);
 	if (int(L.homeCell.size()) != teams)
@@ -582,15 +576,7 @@ bool generate(Game &game, GenerationContext &context)
 			map.setResource(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "canals colonies";
-	const auto homeMask = [&](int team)
-	{
-		std::vector<unsigned char> ground(size_t(n), 0);
-		for (int i = 0; i < n; ++i)
-			ground[i] = L.homeOf[i] == team && map.isGrass(i % t.w, i / t.w);
-		return ground;
-	};
-	const auto anchor = [&](int team) { return homeSwarmSite(L.homes[team], 0.0, L.homeRadius); };
-	if (!settleColonies(game, context, "canals-starts", homeMask, anchor))
+	if (!settleRoundColonies(game, context, "canals-starts", L.homeOf, L.homes, L.homeRadius))
 		return false;
 
 	// Towers on the banks. No tower or pad may close a colony's walk to a bridge, and every colony
@@ -836,10 +822,6 @@ GeneratorDefinition canalsDefinition()
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
 		generate,
 		true,
-		[](const GenerationRequest &r) -> std::string
-		{
-			GenerationContext probe(r);
-			return design(r, probe).failure;
-		},
+		designFailure<design>,
 		validateWorld};
 }

@@ -1792,20 +1792,12 @@ OpenGL није доступан у овој верзији.
 Величина језера
 [Contested commons]
 Спорно заједничко подручје
-[Lattice]
-Мрежа
 [Maze]
 Лавиринт
 [Fjord continent]
 Континент са фјордовима
-[Islet size]
-Величина острвцета
-[Home radius]
-Полупречник базе
 [Cell size]
 Величина ћелије
-[Room size]
-Величина собе
 [Corridor width]
 Ширина ходника
 [Spoke width]

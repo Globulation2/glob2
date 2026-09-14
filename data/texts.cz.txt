@@ -1792,20 +1792,12 @@ Automaticky zobrazovat přehled mapy ve tvaru torusu při pohybu po mapě (OpenG
 Velikost jezera
 [Contested commons]
 Sporné společné území
-[Lattice]
-Mřížka
 [Maze]
 Bludiště
 [Fjord continent]
 Fjordový kontinent
-[Islet size]
-Velikost ostrůvku
-[Home radius]
-Poloměr domovské oblasti
 [Cell size]
 Velikost buňky
-[Room size]
-Velikost místnosti
 [Corridor width]
 Šířka chodby
 [Spoke width]

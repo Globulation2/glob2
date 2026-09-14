@@ -38,7 +38,7 @@ using namespace MapGeneration;
 //
 // WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Stone blocks are permanent
 // and unbuildable, so the city's shape is fixed and only the streets can change hands; crops regrow
-// near water, and the only water inside the wall is the fountains, so a colony that wants to eat
+// near water, and the only water inside the city is the fountains, so a colony that wants to eat
 // must farm the plazas or go out to the fields. A block stops walking but not shooting, so the
 // blocks are also cover for towers.
 //
@@ -109,11 +109,6 @@ struct Layout
 	std::string failure;
 };
 
-ShapePoint tilePoint(SubtilePoint p)
-{
-	return {p.x / 16.0, p.y / 16.0};
-}
-
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
 	const OldTownOptions o(request);
@@ -123,7 +118,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const int n = t.size(), teams = std::max(1, request.nbTeams);
 	L.cx = t.w / 2.0;
 	L.cy = t.h / 2.0;
-	// The city is a disc of `citySize` percent of the half side; the wall stands at its edge.
+	// The city is a disc of `citySize` percent of the half side; the fields begin at its edge.
 	L.cityRadius = o.citySize / 100.0 * std::min(t.w, t.h) / 2.0;
 
 	// The blocks: a square tiling warped into irregular polygons. Every edge is a street, and the
@@ -138,7 +133,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.failure = "The blocks could not be labelled.";
 		return L;
 	}
-	// The city's cells: those whose centre lies inside the wall's ring road.
+	// The city's cells: those whose whole block lies inside the city's edge.
 	std::vector<unsigned char> inCity(L.g.cellCount(), 0);
 	int cityCells = 0;
 	for (int cell = 0; cell < L.g.cellCount(); ++cell)
@@ -381,13 +376,8 @@ bool generate(Game &game, GenerationContext &context)
 			map.setResource(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "old town colonies";
-	const auto homeMask = [&](int team)
-	{
-		std::vector<unsigned char> ground(size_t(n), 0);
-		for (int i = 0; i < n; ++i)
-			ground[i] = L.homeOf[i] == team && map.isGrass(i % t.w, i / t.w);
-		return ground;
-	};
+	const auto homeMask = [&](int team) { return homeGrassMask(map, t, L.homeOf, team); };
+	// The swarm on the annex block's middle, as the top-left tile of its 4x4 footprint.
 	const auto anchor = [&](int team)
 	{
 		return MapGeneratorPoint(int(std::lround(L.homes[team].x)) - 2,
@@ -494,15 +484,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (const std::string mismatch = designMismatch(L, map, "old town"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;
-	for (int k = 0; k < context.request.nbTeams; ++k)
-	{
-		bool pond = false;
-		for (int dy = -2; dy <= 2 && !pond; ++dy)
-			for (int dx = -2; dx <= 2 && !pond; ++dx)
-				pond = map.isWater(t.x(int(L.kits[k].x) + dx), t.y(int(L.kits[k].y) + dy));
-		if (!pond)
-			return "Colony " + std::to_string(k) + "'s plaza has lost its fountain.";
-	}
+	if (const std::string lost =
+			homePondMissing(map, t, L.kits, context.request.nbTeams, "plaza", "fountain");
+		!lost.empty())
+		return lost;
 	return walkFromFirstColony(map, context.request.nbTeams, "the city", "through the streets")
 		.error;
 }
@@ -543,10 +528,6 @@ GeneratorDefinition oldTownDefinition()
 			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
 			generate,
 			true,
-			[](const GenerationRequest &r) -> std::string
-			{
-				GenerationContext probe(r);
-				return design(r, probe).failure;
-			},
+			designFailure<design>,
 			validateWorld};
 }

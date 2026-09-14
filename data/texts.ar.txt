@@ -1790,20 +1790,12 @@ OpenGL غير متوفر في هذا الإصدار.
 حجم البحيرة
 [Contested commons]
 الأراضي المشاع المتنازع عليها
-[Lattice]
-الشبكة
 [Maze]
 المتاهة
 [Fjord continent]
 قارة المضائق البحرية
-[Islet size]
-حجم الجزيرة الصغيرة
-[Home radius]
-نصف قطر القاعدة
 [Cell size]
 حجم الخلية
-[Room size]
-حجم الغرفة
 [Corridor width]
 عرض الممر
 [Spoke width]

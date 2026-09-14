@@ -105,12 +105,23 @@ constexpr double kWanderShare = 0.18, kWidthJitter = 0.25;
 // `queenRoom` building sites, never more than this many tiles.
 constexpr int kQueenExtra = 3, kQueenGrowthLimit = 400;
 
+// What a chamber is: the queen chambers are the colonies' homes; farm chambers hold a pond and a
+// field; treasure chambers are the tunnels' dead ends; the rest are plain.
+enum ChamberKind
+{
+	PlainChamber = 0,
+	FarmChamber,
+	QueenChamber,
+	TreasureChamber
+};
+
 struct Layout
 {
 	Torus t{1, 1};
 	std::vector<Site> sites;
 	std::vector<int> label; // every tile's nearest site
 	std::vector<int> homeSite, farmSite, treasureSite;
+	std::vector<int> kind;                        // every chamber's ChamberKind
 	std::vector<unsigned char> open, water, road; // tunnels and chambers; ponds; sand roads
 	std::vector<double> pondRadius;               // every chamber's pond
 	std::vector<int> homeOf;
@@ -166,12 +177,15 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		if (!isPocket[site] && !isEnd[site] && site % 2 == 0)
 			L.farmSite.push_back(site);
 
-	// Every chamber's kind sets its size and its pond: 0 plain, 1 farm, 2 queen.
-	std::vector<int> kind(L.sites.size(), 0);
+	// Every chamber's kind sets its size and its pond (a treasure chamber's are a plain chamber's).
+	L.kind.assign(L.sites.size(), PlainChamber);
+	for (int site : L.treasureSite)
+		L.kind[site] = TreasureChamber;
 	for (int site : L.farmSite)
-		kind[site] = 1;
+		L.kind[site] = FarmChamber;
 	for (int site : L.homeSite)
-		kind[site] = 2;
+		L.kind[site] = QueenChamber;
+	const std::vector<int> &kind = L.kind;
 	L.pondRadius.assign(L.sites.size(), pondRadiusFor(o.chamberSize));
 	for (int site : L.farmSite)
 		L.pondRadius[site] += kFarmPondExtra;
@@ -179,7 +193,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.pondRadius[site] = 0; // no water in a queen chamber (second play)
 	// Where a road stops at each end: on a pond's beach, or short of a queen chamber's clear middle.
 	const auto roadStop = [&](int site)
-	{ return (kind[site] == 2 ? kQueenCore : L.pondRadius[site]) + kRoadStop; };
+	{ return (kind[site] == QueenChamber ? kQueenCore : L.pondRadius[site]) + kRoadStop; };
 
 	// Carving: every open edge a wandering tunnel between its two chambers' middles, with a sand road
 	// down its middle that stops on the shore of the pond at each end (FEEDBACK 2026-09-13); then
@@ -216,7 +230,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	{
 		// Each chamber turned by a different angle, so one outline reads as many.
 		const double turn = site * 2.399963; // the golden angle
-		const RadialShape &shape = kind[site] == 2 ? queen : kind[site] == 1 ? farm : chamber;
+		const RadialShape &shape = kind[site] == QueenChamber  ? queen
+								   : kind[site] == FarmChamber ? farm
+															   : chamber;
 		fillShape(L.open, t, L.sites[site].x + 0.5, L.sites[site].y + 0.5, shape, turn);
 	}
 	// A pond at the middle of every chamber but the queens' (FEEDBACK 2026-09-13, both plays): a
@@ -226,9 +242,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const RadialShape pondFarm(pondRadiusFor(o.chamberSize) + kFarmPondExtra, 0.3, context,
 							   "anthill-ponds");
 	for (int site = 0; site < int(L.sites.size()); ++site)
-		if (kind[site] != 2)
+		if (kind[site] != QueenChamber)
 			fillShape(L.water, t, L.sites[site].x + 0.5, L.sites[site].y + 0.5,
-					  kind[site] == 1 ? pondFarm : pondPlain, 0.0);
+					  kind[site] == FarmChamber ? pondFarm : pondPlain, 0.0);
 	for (int i = 0; i < n; ++i)
 		if (L.water[i])
 			L.road[i] = 0;
@@ -350,13 +366,6 @@ bool generate(Game &game, GenerationContext &context)
 	// Farm chambers ring the pond with wheat and a wider ring of wood beyond ("no sections empty of
 	// growth"); every other chamber a wheat or a wood ring in turn; treasure chambers a fruit grove
 	// and a wheat ring.
-	std::vector<int> kind(L.sites.size(), 0);
-	for (int site : L.farmSite)
-		kind[site] = 1;
-	for (int site : L.homeSite)
-		kind[site] = 2;
-	for (int site : L.treasureSite)
-		kind[site] = 3;
 	const auto ringPlant = [&](int site, double radius, int type, int count, const auto &here)
 	{
 		const Site s = L.sites[site];
@@ -378,14 +387,14 @@ bool generate(Game &game, GenerationContext &context)
 			return L.open[i] && L.label[i] == site && !reserved[i] &&
 				   clearGround(map, i % t.w, i / t.w);
 		};
-		if (kind[site] == 2)
+		if (L.kind[site] == QueenChamber)
 			continue;
-		if (kind[site] == 1)
+		if (L.kind[site] == FarmChamber)
 		{
 			ringPlant(site, shore, CORN, int(scaledCount(kFarmWheat, o.wheat)), here);
 			ringPlant(site, shore + 3, WOOD, int(scaledCount(kFarmWood, o.wood)), here);
 		}
-		else if (kind[site] == 3)
+		else if (L.kind[site] == TreasureChamber)
 		{
 			if (scaledCount(1, o.fruit) > 0)
 				if (const int seed = seedNear(t, s.x - int(shore) - 2, s.y, 3, here); seed >= 0)
@@ -442,9 +451,9 @@ GeneratorDefinition anthillDefinition()
 		"Anthill",
 		4,
 		false,
-		// Chambers 28 apart give a 256 map about a hundred of them; a chamber of radius 5 holds
-		// three or four buildings; a queen chamber grown to 40 building sites (overlapping 4x4
-		// footprints, the start scorer's measure) holds a swarm, an inn and a couple more; tunnels
+		// Chambers 28 apart give a 256 map about a hundred of them; a chamber of radius 7 holds a
+		// pond and a few buildings; a queen chamber grown to 60 building sites (overlapping 4x4
+		// footprints, the start scorer's measure) holds a swarm, an inn and a few more; tunnels
 		// three wide take a column of units and are closed by one tower; a fifth of the chambers'
 		// count in loops keeps a way round most blockades.
 		{{"chamber-spacing", "Chamber spacing", 20, 40, 2, 28, ControlGroup::Layout},
@@ -461,10 +470,6 @@ GeneratorDefinition anthillDefinition()
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
 		generate,
 		true,
-		[](const GenerationRequest &r) -> std::string
-		{
-			GenerationContext probe(r);
-			return design(r, probe).failure;
-		},
+		designFailure<design>,
 		validateWorld};
 }

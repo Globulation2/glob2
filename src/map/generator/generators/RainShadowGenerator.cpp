@@ -78,10 +78,10 @@ constexpr int kRidgeWarpPeriod = 40;
 // would take the ridge's windward row with it (measured: the ridge came out one row thick); four
 // tiles leaves all three rows standing.
 constexpr int kFootGap = 4, kFootDepth = 5;
-// Pools along the foot: each this long along the ridge, every this many tiles. A pool 12 long and 3
-// deep is about 36 corners of water, enough for the engine's growth probe to find from a good part
-// of the valley; the 12-tile gaps between pools are where the valley's beach lets units walk along
-// the foot.
+// Streams along the foot: each this long along the ridge, every this many tiles (first play: 20 every
+// 24, from 12 every 24). A stream 20 long and 5 deep is about 100 corners of water, which the engine's
+// growth probe finds from most of the valley; the four-tile gaps between streams, once their beaches
+// meet, are where the valley's beach lets units walk along the foot.
 constexpr int kPoolLength = 20, kPoolSpacing = 24;
 // A sand road through every pass, running this far into the valley on either side of the stone
 // (first play: the passes "get clogged up too easily"): a line of single sand corners, which nothing
@@ -284,12 +284,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				L.clearing[i] = 1;
 	}
 	dealStarts(context, L.homes); // which colony gets which valley site is a draw, not the order
-	double nearest = std::min(t.w, t.h);
-	for (size_t a = 0; a < L.homes.size(); ++a)
-		for (size_t b = a + 1; b < L.homes.size(); ++b)
-			nearest =
-				std::min(nearest, std::hypot(t.offsetX(int(L.homes[a].x), int(L.homes[b].x)),
-											 t.offsetY(int(L.homes[a].y), int(L.homes[b].y))));
+	const double nearest = nearestSiteDistance(t, L.homes);
 	if (nearest < 2 * (L.homeRadius + kHomeMargin))
 	{
 		L.failure = "Too many colonies for this map; use a bigger map or fewer colonies.";
@@ -346,15 +341,7 @@ bool generate(Game &game, GenerationContext &context)
 			map.setResource(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "rain shadow colonies";
-	const auto homeMask = [&](int team)
-	{
-		std::vector<unsigned char> ground(size_t(n), 0);
-		for (int i = 0; i < n; ++i)
-			ground[i] = L.homeOf[i] == team && map.isGrass(i % t.w, i / t.w);
-		return ground;
-	};
-	const auto anchor = [&](int team) { return homeSwarmSite(L.homes[team], 0.0, L.homeRadius); };
-	if (!settleColonies(game, context, "rain-starts", homeMask, anchor))
+	if (!settleRoundColonies(game, context, "rain-starts", L.homeOf, L.homes, L.homeRadius))
 		return false;
 
 	context.stage = "rain shadow resources";
@@ -409,15 +396,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (const std::string mismatch = designMismatch(L, map, "rain shadow"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;
-	for (int k = 0; k < context.request.nbTeams; ++k)
-	{
-		bool pond = false;
-		for (int dy = -2; dy <= 2 && !pond; ++dy)
-			for (int dx = -2; dx <= 2 && !pond; ++dx)
-				pond = map.isWater(t.x(int(L.kits[k].x) + dx), t.y(int(L.kits[k].y) + dy));
-		if (!pond)
-			return "Colony " + std::to_string(k) + "'s home has lost its pond.";
-	}
+	if (const std::string lost =
+			homePondMissing(map, t, L.kits, context.request.nbTeams, "home", "pond");
+		!lost.empty())
+		return lost;
 	// Every designed ridge tile that could hold stone does: the ridges are the map's walls.
 	for (int i = 0; i < t.size(); ++i)
 		if (L.stone[i] && map.isGrass(i % t.w, i / t.w) &&
@@ -471,10 +453,6 @@ GeneratorDefinition rainShadowDefinition()
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
 		generate,
 		true,
-		[](const GenerationRequest &r) -> std::string
-		{
-			GenerationContext probe(r);
-			return design(r, probe).failure;
-		},
+		designFailure<design>,
 		validateWorld};
 }

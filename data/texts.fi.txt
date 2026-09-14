@@ -1792,20 +1792,12 @@ Maasillan leveys
 Järven koko
 [Contested commons]
 Kiistelty yhteisalue
-[Lattice]
-Ruudukko
 [Maze]
 Sokkelo
 [Fjord continent]
 Vuonomainen manner
-[Islet size]
-Luodon koko
-[Home radius]
-Kotialueen säde
 [Cell size]
 Solun koko
-[Room size]
-Huoneen koko
 [Corridor width]
 Käytävän leveys
 [Spoke width]

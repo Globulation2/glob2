@@ -1854,20 +1854,12 @@ Larghezza del ponte terrestre
 Dimensione del lago
 [Contested commons]
 Territori comuni contesi
-[Lattice]
-Reticolo
 [Maze]
 Labirinto
 [Fjord continent]
 Continente dei fiordi
-[Islet size]
-Dimensione dell'isolotto
-[Home radius]
-Raggio dell'area iniziale
 [Cell size]
 Dimensione delle celle
-[Room size]
-Dimensione delle stanze
 [Corridor width]
 Larghezza dei corridoi
 [Spoke width]

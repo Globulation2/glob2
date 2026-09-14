@@ -141,12 +141,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 						   context.bounded("polder-layout", std::uint32_t(t.h)))
 				  .sites;
 	dealStarts(context, L.homes); // which colony gets which site is a draw, not the order
-	double nearest = std::min(t.w, t.h);
-	for (size_t a = 0; a < L.homes.size(); ++a)
-		for (size_t b = a + 1; b < L.homes.size(); ++b)
-			nearest =
-				std::min(nearest, std::hypot(t.offsetX(int(L.homes[a].x), int(L.homes[b].x)),
-											 t.offsetY(int(L.homes[a].y), int(L.homes[b].y))));
+	const double nearest = nearestSiteDistance(t, L.homes);
 	L.villageRadius =
 		std::min<double>(o.villageSize, std::floor((nearest - L.spacing) / 2 - kVillageSand));
 	if (L.villageRadius < 8)
@@ -260,16 +255,7 @@ bool generate(Game &game, GenerationContext &context)
 	writeUndermap(map, terrain);
 
 	context.stage = "polder colonies";
-	const auto homeMask = [&](int team)
-	{
-		std::vector<unsigned char> ground(size_t(n), 0);
-		for (int i = 0; i < n; ++i)
-			ground[i] = L.homeOf[i] == team && map.isGrass(i % t.w, i / t.w);
-		return ground;
-	};
-	const auto anchor = [&](int team)
-	{ return homeSwarmSite(L.homes[team], 0.0, L.villageRadius); };
-	if (!settleColonies(game, context, "polder-starts", homeMask, anchor))
+	if (!settleRoundColonies(game, context, "polder-starts", L.homeOf, L.homes, L.villageRadius))
 		return false;
 
 	context.stage = "polder resources";
@@ -352,9 +338,10 @@ GeneratorDefinition polderDefinition()
 		"Polder",
 		3,
 		false,
-		// A dyke every 24 tiles is a lane every one and a half rows' walk; villages of radius 11
-		// hold a swarm, its kit and a few more buildings and no more.
-		// FEEDBACK 2026-09-13: a random angle by default; villages of 14 (was 11) in a sand ring.
+		// A dyke every 24 tiles is a lane every one and a half rows' walk; villages of radius 14
+		// hold a swarm, its kit and a few more buildings and no more (11 before the first play, and
+		// the growth crowded them; FEEDBACK 2026-09-13: a random angle by default, and villages of
+		// 14 in a sand ring).
 		{GeneratorControl::choice("row-angle", "Row angle",
 								  {"Random", "Vertical", "Horizontal", "Diagonal"}, 0,
 								  ControlGroup::Terrain),
@@ -368,10 +355,6 @@ GeneratorDefinition polderDefinition()
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
 		generate,
 		true,
-		[](const GenerationRequest &r) -> std::string
-		{
-			GenerationContext probe(r);
-			return design(r, probe).failure;
-		},
+		designFailure<design>,
 		validateWorld};
 }

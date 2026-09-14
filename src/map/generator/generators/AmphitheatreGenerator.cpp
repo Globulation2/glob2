@@ -22,7 +22,6 @@
 #include <algorithm>
 #include <climits>
 #include <cmath>
-#include <cstdio>
 #include <cstdlib>
 #include <string>
 #include <vector>
@@ -120,8 +119,8 @@ constexpr int kTowerPads = 3;
 constexpr int kTowerSpacing = 5;
 // A tower keeps this many steps from water on every side, so it never closes a strip of shore.
 constexpr int kTowerRoom = 4;
-// The most the territories' areas may differ, in percent of the smallest: growth shares the ground
-// out to the tile, and trimming the spurs off the borders moves a little of it.
+// The most the territories' areas may differ, in percent of the smallest: the balance stops within
+// kBalanceTolerance, and the walls and the seas take a little more.
 constexpr int kAreaTolerance = 5;
 // The most the colonies' walks to their ramps and to the pit may differ.
 constexpr int kWalkSpread = 12;
@@ -721,8 +720,8 @@ GeneratorDefinition amphitheatreDefinition()
 		2,
 		false,
 		// Rings of wall; each ramp's width in tiles; the pit's radius and each terrace's width as
-		// shares of the half side; how far the territories' borders wander; every colony's inland seas
-		// together as a percentage of the smallest territory; the borders' thickness in tiles.
+		// shares of the half side; every colony's inland seas together as a percentage of the smallest
+		// territory; the borders' thickness in tiles.
 		{{"rings", "Rings", 2, 4, 1, 3, ControlGroup::Layout},
 		 {"ramp-width", "Ramp width", 5, 11, 2, 7, ControlGroup::Terrain},
 		 {"pit-size", "Pit size", 8, 30, 2, 16, ControlGroup::Layout},

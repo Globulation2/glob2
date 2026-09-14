@@ -1868,20 +1868,12 @@ Landbroens bredde
 Søstørrelse
 [Contested commons]
 Omstridt fællesområde
-[Lattice]
-Gitter
 [Maze]
 Labyrint
 [Fjord continent]
 Fjordkontinent
-[Islet size]
-Holmstørrelse
-[Home radius]
-Radius for startområde
 [Cell size]
 Cellestørrelse
-[Room size]
-Rumstørrelse
 [Corridor width]
 Korridorbredde
 [Spoke width]

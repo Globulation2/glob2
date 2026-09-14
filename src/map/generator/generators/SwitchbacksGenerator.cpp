@@ -51,9 +51,9 @@ using namespace MapGeneration;
 //
 // HOW IT IS BUILT. Everything is designed once in the wedge's frame, along the colony's axis and across
 // it, and turned round the centre for every colony, so every colony's ground and trail are the same and
-// the layout is fair for any colony count. The map stays round, in a circle on the shorter side, with sea
-// filling a rectangle's ends. The design is a pure function of the request, so validateWorld rebuilds it
-// and checks the finished world.
+// the layout is fair for any colony count. The map stays round, in a circle on the shorter side, with
+// farms filling a rectangle's ends. The design is a pure function of the request, so validateWorld
+// rebuilds it and checks the finished world.
 //
 // GAME RULES BEHIND IT (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md): stone can never be cleared,
 // so a mountain's walls are permanent and its trail is the only door; a tower scans round its footprint
@@ -68,7 +68,8 @@ using namespace MapGeneration;
 namespace
 {
 
-// Sea kept between the homes' outer coast and the map's wrap, as a share of the half side.
+// The rim: ground kept between the homes' outer edge and the map's wrap, as a share of the half side
+// (farm, since the fill takes every tile of sea).
 constexpr double kRimShare = 0.04;
 constexpr int kRimMinimum = 4;
 // A home's radius at 100% of home size: a share of the half side, never below this many tiles, never
@@ -92,7 +93,9 @@ constexpr double kSideWall = 3;
 // A leg's centre line runs this far either side of the mountain's axis: a share of the half side,
 // but at least two trail widths.
 constexpr double kSpanShare = 0.1;
-// Water kept between two mountains: enough for a beach and a coast wall on each.
+// The gap kept between two mountains, and between a mountain and another colony's home: once sea
+// with a beach and a coast wall on each side, now the guard's rock near the plateau and farm beyond,
+// still what keeps the mountains from touching.
 constexpr double kPieceGap = 4;
 // Every home's starter kit: this much wheat and wood beside the swarm, unscaled; no stone, since the
 // mountains are stone.
@@ -376,9 +379,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			L.road[i] = 0;
 	}
 
-	// The mountains must keep water between each other and between each and every home but its own,
-	// beyond their innermost legs; inside those the climbs come together at the plateau, and the
-	// validator checks that no climb meets another's trail.
+	// The mountains must keep their gap from each other and from every home but their own, beyond
+	// their innermost legs; inside those the climbs come together at the plateau, and the validator
+	// checks that no climb meets another's trail.
 	for (int k = 0; k < teams && teams > 1; ++k)
 	{
 		std::vector<unsigned char> mine(n, 0);
@@ -390,7 +393,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			const int other = L.blockOf[i] >= 0   ? L.blockOf[i]
 							  : L.trailOf[i] >= 0 ? L.trailOf[i]
 												  : L.homeOf[i];
-			// Chebyshev steps: two tiles of water between is enough for a beach on each side.
+			// Chebyshev steps: two tiles between is the least the gap allows.
 			if (other >= 0 && other != k && !L.plateau[i] && steps[i] < kPieceGap - 1 &&
 				std::hypot(t.offsetX(int(L.cx), i % t.w), t.offsetY(int(L.cy), i / t.w)) >
 					g.innerLeg + g.trailHalf)
@@ -400,10 +403,6 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			}
 		}
 	}
-	// The farms (growFarmFields): every home reaches out sideways, across its axis, to a farm on either
-	// flank, and the farms share the open sea between the mountains and round the rim by equal yield. Their
-	// rows run across the axis at the widths that yield most (bestFarmRows), with sand caps, bridges and a
-	// building plot (layFarm), and every farm's coast is sealed like the rest.
 	L.farmOf.assign(n, -1);
 	L.farmSand.assign(n, 0);
 	// THE FARMS (growFarmFields, then the fill and the walls). Every home reaches out sideways, across

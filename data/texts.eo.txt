@@ -1790,20 +1790,12 @@ Larĝo de terponto
 Grandeco de lago
 [Contested commons]
 Pridisputata komunareo
-[Lattice]
-Krado
 [Maze]
 Labirinto
 [Fjord continent]
 Fjorda kontinento
-[Islet size]
-Grandeco de insuleto
-[Home radius]
-Radiuso de hejmareo
 [Cell size]
 Grandeco de ĉelo
-[Room size]
-Grandeco de ĉambro
 [Corridor width]
 Larĝo de koridoro
 [Spoke width]

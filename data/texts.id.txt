@@ -1788,20 +1788,12 @@ Lebar jembatan darat
 Ukuran danau
 [Contested commons]
 Tanah bersama yang diperebutkan
-[Lattice]
-Kisi-kisi
 [Maze]
 Labirin
 [Fjord continent]
 Benua fjord
-[Islet size]
-Ukuran pulau kecil
-[Home radius]
-Radius markas
 [Cell size]
 Ukuran sel
-[Room size]
-Ukuran ruangan
 [Corridor width]
 Lebar koridor
 [Spoke width]

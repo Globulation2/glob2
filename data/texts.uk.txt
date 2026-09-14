@@ -1788,20 +1788,12 @@ OpenGL недоступний у цій збірці.
 Розмір озера
 [Contested commons]
 Спірні спільні землі
-[Lattice]
-Ґратка
 [Maze]
 Лабіринт
 [Fjord continent]
 Материк із фіордами
-[Islet size]
-Розмір острівця
-[Home radius]
-Радіус бази
 [Cell size]
 Розмір комірки
-[Room size]
-Розмір кімнати
 [Corridor width]
 Ширина коридору
 [Spoke width]

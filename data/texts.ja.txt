@@ -1788,20 +1788,12 @@ Globulation 2 のカーソルを表示します。
 湖の大きさ
 [Contested commons]
 争奪共有地
-[Lattice]
-格子
 [Maze]
 迷路
 [Fjord continent]
 フィヨルド大陸
-[Islet size]
-小島の大きさ
-[Home radius]
-拠点の半径
 [Cell size]
 マスの大きさ
-[Room size]
-部屋の大きさ
 [Corridor width]
 通路の幅
 [Spoke width]

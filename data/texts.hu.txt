@@ -1792,20 +1792,12 @@ Földhíd szélessége
 Tó mérete
 [Contested commons]
 Vitatott közös terület
-[Lattice]
-Rácsozat
 [Maze]
 Labirintus
 [Fjord continent]
 Fjordos kontinens
-[Islet size]
-Szigetecske mérete
-[Home radius]
-Kezdőterület sugara
 [Cell size]
 Cella mérete
-[Room size]
-Szoba mérete
 [Corridor width]
 Folyosó szélessége
 [Spoke width]
