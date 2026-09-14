@@ -12,14 +12,10 @@
 #include "Team.h"
 #include "Unit.h"
 
-namespace {
-
 Sint32 starvationLimitedTravelDistance(const Unit *unit)
 {
 	return std::max(0, unit->hungry) / unit->race->hungriness + unit->hp;
 }
-
-} // namespace
 
 Building *Team::findNearestHeal(Unit *unit)
 {
@@ -256,7 +252,7 @@ int Team::maxBuildLevel(void)
 		Unit *u=myUnits[i];
 		if (u && u->performance[BUILD])
 		{
-			int unitLevel=u->level[BUILD];
+			int unitLevel=u->workerLevel();
 			if (unitLevel>maxLevel)
 				maxLevel=unitLevel;
 		}

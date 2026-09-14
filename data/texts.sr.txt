@@ -74,6 +74,10 @@ Econo
 Warrush напада брзо и жестоко, често доводећи одбрану противника до крајњих граница. Средња тежина.
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+Cabino управља одбраном, нападом и градњом као независним одељењима која теже једном плану: брзо се шири и шаље огромне војске на противнике. Висока тежина.
+[AICabino]
+Cabino
 [Alga]
 Алге
 [algae]
@@ -605,9 +609,9 @@ Num Lock
 [ok]
 У реду
 [old islands terrain]
-насумична острва (старо)
+Кршевити архипелаг
 [old random terrain]
-насумични терен (старо)
+Разуђена обала
 [on press]
 Притисак
 [On the spot]
@@ -1218,6 +1222,10 @@ YOG мета-сервер је одбио везу јер корисничко �
 Само за једног играча и снимке. Игра за више играча ради брзином 1x.
 [AICortex-Description]
 Кортекс се шири ка новим житним пољима и шаље групе ратника у битку, уз подршку гостионица и болница у близини прве линије фронта. Средња тежина. Експериментално.
+[AIMaxima-Description]
+Максима развија добро нахрањену колонију, непрестано извиђа и напада без предаха сваким ратником којег може да одвоји. Висока тежина.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 Мапа се не може учитати: датотека је оштећена или је верзија некомпатибилна.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1260,6 +1268,10 @@ Cortex
 Стратегија: Напада рано и снажно, пре него што противници заврше са припремама.\n\nПредности: Искориштава небрањено ширење и спору војну припрему.\n\nПредложена противигра: Преживите први напад уз очување економије, а затим крените у противнапад.
 [AIWarrush-Summary]
 Брзи напади који тестирају вашу рану одбрану.
+[AICabino-Profile]
+Основна стратегија: кабинет независних специјализованих одељења (одбрана, напад, градња, надоградње, управљање јединицама), од којих свако делује на сопствену иницијативу, али сва теже једном плану: брз раст, а затим огромне војске против противника.\n\nПредности: брза експанзија подржава агресиван војни притисак; независна одељења брзо реагују на локалне претње без чекања централног плана.\n\nПротивпотез: оспоравајте његову експанзију рано и користите терен да ограничите колико јединица може ангажовати истовремено.
+[AICabino-Summary]
+Независна одељења која сарађују ради брзог раста и огромних војски.
 [Algae]
 Алге
 [Alliances]
@@ -1363,9 +1375,9 @@ Cortex
 [No AI orders]
 Без наређења ВИ
 [Old islands]
-Стара острва
+Кршевити архипелаг
 [Old random]
-Стари случајни
+Разуђена обала
 [Open at least one colony to start a match.]
 Отворите бар једну колонију да бисте започели меч.
 [Open book]
@@ -1380,6 +1392,14 @@ Cortex
 Унапред припремљене карте
 [Preview ready. Start plays this exact map.]
 Преглед спреман. Покретање игре користи ову тачну мапу.
+[Regenerate all]
+Поново генериши све
+[Generating preview...]
+Прављење прегледа...
+[Preview unavailable]
+Преглед није доступан
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Сваки предео је приказан као права мапа у вашој тренутној величини и броју колонија. Изаберите један да бисте играли приказану мапу.
 [Purple]
 Љубичаста
 [Quick clash]
@@ -1542,6 +1562,10 @@ Cortex
 Брза битка: двострука брзина; генерисане карте почињу са 8 радника.
 [Reroll]
 Генеришите другу мапу
+[Randomize]
+Генеришите насумично
+[Reset to defaults]
+Врати подразумеване вредности
 [Ruleset]
 Скуп правила
 [Select a map from the library.]
@@ -1620,6 +1644,8 @@ Cortex
 Готово
 [settings Edit shortcut]
 Уреди пречицу
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Увећава меније, текст и бочну траку на екрану високе резолуције.
 [settings Flags]
 Заставе
 [settings Full]
@@ -1634,6 +1660,8 @@ Cortex
 Ток игре
 [settings Graphics detail]
 Детаљи графике
+[settings Interface scale]
+Размера интерфејса
 [settings Keep]
 Задржи промене
 [settings Keep this display mode?]
@@ -1656,6 +1684,8 @@ Cortex
 Ниво
 [settings Map editor]
 Уређивач мапа
+[settings Match the desktop]
+Као радна површина
 [settings Missing font]
 Недостаје фонт
 [settings Music volume]
@@ -1766,3 +1796,421 @@ OpenGL није доступан у овој верзији.
 Аутоматски торусни приказ
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Аутоматски прикажи преглед мапе у облику торуса током кретања по мапи (OpenGL).
+[settings Autosave]
+Аутоматско снимање
+[settings Save the game automatically about every 10 seconds.]
+Аутоматски снима игру отприлике сваких 10 секунди.
+[Channel width]
+Ширина канала
+[Land bridge width]
+Ширина копненог моста
+[Lake size]
+Величина језера
+[Contested commons]
+Спорно заједничко подручје
+[Maze]
+Лавиринт
+[Fjord continent]
+Континент са фјордовима
+[Cell size]
+Величина ћелије
+[Corridor width]
+Ширина ходника
+[Spoke width]
+Ширина жбица
+[Loopiness]
+Учесталост петљи
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Лавиринту су потребне најмање две ћелије по ширини и по висини; користите већу мапу или мање ћелије.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Овако широки канали остављају премало траве у свакој ћелији; користите уже канале или веће ћелије.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Лавиринт има премало ћорсокака за толико колонија; користите већу мапу или мање ћелије.
+[Home island size]
+Величина почетног острва
+[Commons size]
+Величина заједничког подручја
+[Moat width]
+Ширина воденог рова
+[Bridge count]
+Број мостова
+[Continent size]
+Величина континента
+[Coast roughness]
+Разуђеност обале
+[Fjord width]
+Ширина фјорда
+[Lake connects to fjords]
+Језеро повезано са фјордовима
+[Resource islands]
+Острва са ресурсима
+[Watershed]
+Речни слив
+[River density]
+Густина река
+[Dryness]
+Сушност
+[Fords]
+Газови
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Речни слив има премало плавне равнице за толико колонија; користите већу мапу или мање колонија.
+[Stone highlands]
+Камене висоравни
+[Valley size]
+Величина долине
+[Pass width]
+Ширина превоја
+[Pond size]
+Величина баре
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Ове долине су превелике за мапу; користите већу мапу или мање долине.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+На висоравнима има премало места за толико колонија; користите већу мапу или мање колонија.
+[Symmetric arena]
+Симетрична арена
+[Centre size]
+Величина средишта
+[Causeway width]
+Ширина насипа
+[Causeways]
+Насипи
+[Lakes]
+Језера
+[Resource richness]
+Богатство ресурса
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Симетричној арени су потребне 2, 4 или 8 колонија.
+[Eight colonies need a square map in the symmetric arena.]
+За осам колонија симетричној арени је потребна квадратна мапа.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Средиште је премало за воћњак на овој мапи; користите веће средиште или већу мапу.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Арена оставља премало места за сваку колонију; користите већу мапу, мање средиште или ужи водени ров.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Насипи су преблизу један другом; користите мање насипа, уже насипе или веће средиште.
+[Ring world]
+Прстенасти свет
+[Belt width]
+Ширина појаса
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Појас је прекратак за толико колонија; користите дужу мапу или мање колонија.
+[City states]
+Градови-државе
+[Strait width]
+Ширина мореуза
+[Valleys]
+Долине
+[Frontier richness]
+Богатство нових земаља
+[City states need at least one colony.]
+Градовима-државама треба бар једна колонија.
+[Stone walls]
+Камени зидови
+[Sand patches]
+Пешчане површине
+[Tidal flats]
+Плимске равнице
+[Everglades]
+Мочваре
+[Pool spacing]
+Размак између бара
+[Pool size]
+Величина бара
+[Clearing size]
+Величина чистине
+[Levee]
+Насип
+[Sloughs]
+Мртваје
+[Everglades need at least one colony.]
+Мочварама треба бар једна колонија.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Превише колонија за ову мапу; користите већу мапу или мање колонија.
+[Coral]
+Корал
+[Fork angle]
+Угао гранања
+[Lean]
+Нагиб
+[Home size]
+Величина базе
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Корал не стаје на ову мапу; користите већу мапу, уже мореузе или мање колонија.
+[Branching]
+Гранање
+[Branch width]
+Ширина грана
+[Coral needs at least one colony.]
+Коралу је потребна бар једна колонија.
+[Coral needs a map at least 128 tiles across.]
+Коралу је потребна мапа широка бар 128 поља.
+[Carousel]
+Вртешка
+[Amphitheatre]
+Амфитеатар
+[Switchbacks]
+Серпентине
+[Court size]
+Величина дворишта
+[Court wall]
+Зид дворишта
+[Plaza size]
+Величина трга
+[Starting tower level]
+Ниво почетних кула
+[Towers per colony]
+Куле по колонији
+[Rings]
+Прстенови
+[Ramp width]
+Ширина рампи
+[Pit size]
+Величина јаме
+[Terrace width]
+Ширина тераса
+[Bay size]
+Величина залива
+[Border wall]
+Гранични зид
+[Plateau size]
+Величина висоравни
+[Trail width]
+Ширина стазе
+[Wall between legs]
+Зид између кривина
+[Farm building plots]
+Грађевинске парцеле на фармама
+[Carousels need at least two colonies.]
+Вртешци су потребне бар две колоније.
+[Switchbacks need at least two colonies.]
+Серпентинама су потребне бар две колоније.
+[An amphitheatre needs at least two colonies.]
+Амфитеатру су потребне бар две колоније.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Вртешка не стаје на ову мапу; користите већу мапу, мање базе или мање колонија.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Серпентине не стају на ову мапу; користите већу мапу, мању висораван, уже стазе или мање колонија.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Амфитеатар не стаје на ову мапу; користите већу мапу, мање прстенова, уже терасе или мање колонија.
+[Spider web]
+Паукова мрежа
+[Spokes per colony]
+Жбица по колонији
+[Ring spacing]
+Размак прстенова
+[Thread width]
+Ширина нити
+[Sag]
+Угиб
+[Torn strands]
+Покидане нити
+[Hub size]
+Величина средишта
+[Dew drops]
+Капи росе
+[Spiral]
+Спирала
+[Spider webs need at least one colony.]
+Паукова мрежа захтева бар једну колонију.
+[Sandbars]
+Пешчани спрудови
+[Tide pools]
+Плимске баре
+[Lagoons]
+Лагуне
+[Central island]
+Средишње острво
+[Tidal flats need at least one colony.]
+Плимским равницама треба бар једна колонија.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Матична острва не стају на ову мапу; користите већу мапу, мање колонија или мања острва.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Заједничко подручје и мореуз остављају премало места за базе; користите већу мапу, мање колонија, мање заједничко подручје или ужи мореуз.
+[Wheat amount]
+Количина жита
+[Wood amount]
+Количина дрвета
+[Stone amount]
+Количина камена
+[Algae amount]
+Количина алги
+[Fruit amount]
+Количина воћа
+[Stone on hilltops]
+Камен на врховима брда
+[Winding river]
+Кривудава река
+[Sandy beaches]
+Пешчане плаже
+[Land bridges]
+Копнени мостови
+[Colony meadows]
+Ливаде око колонија
+[Extra starting deposit]
+Додатно почетно налазиште
+[Moat bridges]
+Мостови преко воденог рова
+[Jagged coastlines]
+Разуђене обале
+[Sand roads]
+Пешчани путеви
+[Treasure in dead ends]
+Благо у ћорсокацима
+[Fjord bank deposits]
+Налазишта на обалама фјордова
+[Sandy lake shore]
+Пешчана обала језера
+[River delta]
+Делта реке
+[Meandering rivers]
+Меандрирајуће реке
+[Fruit in home valleys]
+Воће у почетним долинама
+[Moat]
+Водени ров
+[Stone in the orchard]
+Камен у воћњаку
+[Colonies on both coasts]
+Колоније на обе обале
+[Winding belt]
+Кривудав појас
+[Cell shape]
+Облик ћелија
+[Squares]
+Квадрати
+[Hexagons]
+Шестоуглови
+[Warp]
+Изобличење
+[Fingerprint]
+Отисак прста
+[Wavelength]
+Таласна дужина
+[Pattern]
+Шаблон
+[Labyrinth]
+Лавиринт
+[Channels]
+Бразде
+[Barrier]
+Препрека
+[Water]
+Вода
+[Grain]
+Зрнавост
+[Rain shadow]
+Кишна сенка
+[Ridges]
+Гребени
+[Slant]
+Косина
+[Ridge thickness]
+Дебљина гребена
+[Pass spacing]
+Размак превоја
+[Lee width]
+Ширина заветрине
+[Old growth]
+Прашума
+[Canals]
+Канали
+[Forest density]
+Густина шуме
+[Hidden groves]
+Скривени гајеви
+[Starting trails]
+Почетне стазе
+[Block size]
+Величина блокова
+[Canal width]
+Ширина канала
+[Extra bridges]
+Додатни мостови
+[Polder]
+Полдер
+[Old town]
+Стари град
+[Anthill]
+Мравињак
+[Row angle]
+Угао редова
+[Diagonal]
+Дијагонално
+[Dyke spacing]
+Размак насипа
+[Village size]
+Величина села
+[Hamlets]
+Засеоци
+[City size]
+Величина града
+[Street width]
+Ширина улица
+[Plazas]
+Тргови
+[Chamber spacing]
+Размак комора
+[Chamber size]
+Величина комора
+[Queen room]
+Краљичина комора
+[Tunnel width]
+Ширина тунела
+[Loops]
+Петље
+[Home pools]
+Баре код базе
+[Farm plots]
+Пољопривредне парцеле
+[Tendril roads]
+Путеви-витице
+[Random]
+Насумично
+[Vertical]
+Усправно
+[Horizontal]
+Водоравно
+[Inland lakes]
+Унутрашња језера
+[Block shape]
+Облик блокова
+[Random parameters]
+Насумични параметри
+[Randomize parameters]
+Насумично изабери параметре
+[Start quality]
+Квалитет почетка
+[Fairness]
+Правичност
+[Score]
+Оцена
+[Weight]
+Тежина
+[Worst]
+Најслабији
+[Best]
+Најбољи
+[Fertility]
+Плодност
+[Deposits]
+Залихе
+[Room]
+Простор
+[Isolation]
+Удаљеност
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Почетак сваке колоније мери се на завршеној мапи: пут до жита и до дрвета, колико добро њено тло поново расте, залихе и места за градњу на дохват руке и удаљеност од супарника. Сваки чинилац добија оцену од 0 до 1 према сталној мери, укупан збир их одмерава, правичност је збир најслабије колоније подељен збиром најбоље, а оцена је најслабији збир помножен правичношћу.
+[Map preview controls]
+Превуците преко ивица. Точкић мења увећање. Десни или двоструки клик враћа приказ.
+[Map preview drag help]
+Превуците за померање; точкић за увећање.
+[Map preview loading]
+Учитавање...
+[Map preview failed]
+Преглед није успео
+[Map preview retry]
+Кликните да покушате поново
+[Map preview please wait]
+Сачекајте
+[Map preview choose another]
+Изаберите мапу

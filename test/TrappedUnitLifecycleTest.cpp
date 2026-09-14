@@ -77,13 +77,11 @@ struct Fixture {
         Building* food = purpose == FEED ? building : game.addBuilding(30, 30,
             globalContainer->buildingsTypes.getTypeNum("inn", 0, false), 0);
         assert(food);
-        food->resources[CORN] = 10;
+        food->resources[WHEAT] = 10;
         food->updateConstructionState();
         int x, y, dx, dy;
         assert(!building->findGroundExit(&x, &y, &dx, &dy, false));
         assert(game.addUnit(40, 40, 1, WORKER, 0, 0, 0, 0));
-        // The gradient scheduler expects an in-use field; allocation is now lazy.
-        game.map.getResourceGradient(0, WOOD, 0);
     }
 };
 using Trace = std::vector<std::vector<Uint32>>;
@@ -129,7 +127,7 @@ Trace eliminationAndSave(int resource, int purpose) {
     GAGCore::BinaryOutputStream output(backend);
     f.game.save(&output, false, "trapped unit fixture");
     std::string bytes(backend->getBuffer(), backend->getPosition());
-    const auto checkpointRng = randomGenerator;
+    const auto checkpointRng = syncRandEngine();
     const auto before = state(f.game, f.id);
     const Trace original = finish(f.game, f.id);
     GameGUI restored;
@@ -137,8 +135,7 @@ Trace eliminationAndSave(int resource, int purpose) {
     input.seekFromStart(0);
     assert(restored.game.load(&input));
     restored.game.setWaitingOnMask(0);
-    restored.game.map.getResourceGradient(0, WOOD, 0);
-    randomGenerator = checkpointRng;
+    syncRandEngine() = checkpointRng;
     const auto after = state(restored.game, f.id);
     for (size_t i = 0; i < before.size(); ++i)
         if (after.at(i) != before[i]) std::cerr << "state[" << i << "] " << before[i] << " -> " << after[i] << std::endl;
@@ -194,7 +191,7 @@ void productionRecovery(bool stocked, bool blocked) {
         globalContainer->buildingsTypes.getTypeNum("swarm", 0, false), 0);
     assert(swarm);
     f.game.teams[0]->addToStaticAbilitiesLists(swarm);
-    swarm->resources[CORN] = stocked ? swarm->type->resourceForOneUnit : 0;
+    swarm->resources[WHEAT] = stocked ? swarm->type->resourceForOneUnit : 0;
     swarm->productionTimeout = 100;
     // A player can enable production even when all sliders are at zero.
     for (int t = 0; t < NB_UNIT_TYPE; ++t) swarm->ratio[t] = 0;
@@ -241,7 +238,7 @@ int main(int argc, char** argv) {
     container.settings.rememberUnit = false;
     container.buildingsTypes.init();
     IntBuildingType::init();
-    for (int resource : {WOOD, CORN})
+    for (int resource : {WOOD, WHEAT})
         for (int purpose : {FEED, WALK}) {
             const auto first = eliminationAndSave(resource, purpose);
             assert(eliminationAndSave(resource, purpose) == first);

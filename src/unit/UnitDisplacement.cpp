@@ -161,7 +161,12 @@ void Unit::handleDisplacement(void)
 								if (need>0)
 								{
 									int distToResource;
-									if (map->resourceAvailable(teamNumber, r, swimClass(), posX, posY, &distToResource))
+									bool available=map->roundTripDistance(attachedBuilding, r, swimClass(), posX, posY, &distToResource);
+									if (available)
+										distToResource=(distToResource+1)/2; // half the round trip: the unit is at the building
+									else
+										available=map->resourceAvailable(teamNumber, r, swimClass(), posX, posY, &distToResource);
+									if (available)
 									{
 										if ((distToResource<<1)>=timeLeft)
 											continue; //We don't choose this resource, because it won't have time to reach the resource and bring it back.
@@ -337,9 +342,14 @@ void Unit::handleDisplacement(void)
 						else
 						{
 							assert(canLearn[destinationPurpose]);
-							level[destinationPurpose] = attachedBuilding->type->level + 1;
-							UnitType *ut = race->getUnitType(typeNum, level[destinationPurpose]);
-							performance[destinationPurpose] = ut->performance[destinationPurpose];
+							if (destinationPurpose == BUILD || destinationPurpose == HARVEST)
+								setWorkerLevel(attachedBuilding->type->level + 1);
+							else
+							{
+								level[destinationPurpose] = attachedBuilding->type->level + 1;
+								UnitType *ut = race->getUnitType(typeNum, level[destinationPurpose]);
+								performance[destinationPurpose] = ut->performance[destinationPurpose];
+							}
 						}
 
 
@@ -458,7 +468,7 @@ void Unit::applyPartialInsideBenefit()
 		return;
 	if (destinationPurpose==FEED)
 	{
-		if (attachedBuilding->resources[CORN]<=0)
+		if (attachedBuilding->resources[WHEAT]<=0)
 			return;
 		hungry+=((HUNGRY_MAX-hungry)*elapsed)/total;
 		fruitCount=attachedBuilding->eatOnce(&fruitMask);

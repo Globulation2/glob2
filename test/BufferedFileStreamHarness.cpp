@@ -69,8 +69,32 @@ static std::vector<unsigned char> serialize(bool buffered, unsigned char digest[
     return bytes;
 }
 
+// Memory streams overwrite in place, append past the end, keep a zero-filled
+// gap after a seek past the end, and hand over their contents.
+static void checkMemoryBackend()
+{
+    GAGCore::MemoryStreamBackend memory;
+    memory.reserve(64);
+    memory.write("abcdef", 6);
+    memory.seekFromStart(2);
+    memory.write("XYZWV", 5);
+    require(memory.getPosition() == 7);
+    memory.seekFromStart(1);
+    memory.write("Q", 1);
+    require(memory.takeContents() == "aQXYZWV");
+    require(memory.getPosition() == 0);
+    memory.write("n", 1);
+    require(memory.takeContents() == "n");
+    GAGCore::MemoryStreamBackend gap;
+    gap.write("ab", 2);
+    gap.seekFromEnd(-2);
+    gap.write("k", 1);
+    require(gap.takeContents() == std::string("ab\0\0k", 5));
+}
+
 int main()
 {
+    checkMemoryBackend();
     unsigned char a[20], b[20];
     require(serialize(false,a) == serialize(true,b));
     require(std::memcmp(a,b,20) == 0);
@@ -85,5 +109,5 @@ int main()
     require(std::fread(bytes, 1, sizeof(bytes), verifier) == sizeof(bytes));
     require(std::memcmp(bytes,"final buffered bytes",20) == 0);
     std::fclose(verifier);
-    std::puts("Buffered file stream: bytes, SHA1, boundaries, seeks, reads, flush and destruction passed");
+    std::puts("Buffered file stream: bytes, SHA1, boundaries, seeks, reads, flush and destruction passed; memory stream writes passed");
 }

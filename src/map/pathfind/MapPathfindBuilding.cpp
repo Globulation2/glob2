@@ -11,14 +11,26 @@
 
 
 
-// Building pathfinding (buildingGradient, buildingAvailable, pathfindBuilding, dirtyBuildingGradients)
+// Building pathfinding (buildingGradient, buildingAvailable, roundTripGradient,
+// roundTripDistance, pathfindBuilding)
 
 namespace {
 
-// A gradient marked dirty by a map change is rebuilt at most this often.
-constexpr Uint32 DIRTY_REBUILD_TICKS = 25;
 // A unit that cannot make progress forces a rebuild at most this often (~5 s).
 constexpr Uint32 STUCK_REBUILD_TICKS = 128;
+// A round-trip gradient follows its two parents with at most this delay (the
+// resource gradient stays authoritative for reachability, so staleness only
+// costs a detour). Building::freeIdleGradients drops unused ones.
+// This timer is the only thing that refreshes the child: a topology generation
+// bump rebuilds the parent walking field on its next use, but does not
+// propagate to the round-trip fields derived from it, so for up to this many
+// ticks a fetcher can be priced against the ground as it was before the
+// change. It still cannot walk into a wall - directionByGradient re-tests live
+// passability on every candidate step - so the cost is a detour, and the
+// alternative (stamping the parent's generation on the child) would rebuild
+// every live child on every structural change, which measured far worse than
+// the detour it removes.
+constexpr Uint32 ROUND_TRIP_REFRESH_TICKS = 120;
 
 bool isClearingFlag(const Building *building)
 {
@@ -33,13 +45,15 @@ const Uint16 *Map::buildingGradient(Building *building, int swimClass)
 	Uint16 *&gradient=building->globalGradient[swimClass];
 	Uint32 lastUpdate=building->lastGlobalGradientUpdateStepCounter[swimClass];
 	Uint32 now=game->stepCounter;
+	building->globalGradientUsedStep[swimClass]=now;
 	bool rebuild=false;
 	if (gradient==NULL)
 	{
 		gradient=new Uint16[size];
 		rebuild=true;
 	}
-	else if (building->dirtyGradient[swimClass] && lastUpdate+DIRTY_REBUILD_TICKS<=now)
+	else if ((building->dirtyGradient[swimClass] || building->gradientGeneration[swimClass]!=topologyGeneration)
+		&& lastUpdate+GRADIENT_DIRTY_REBUILD_TICKS<=now)
 		rebuild=true;
 	// A clearing flag's goals are resources, which grow and get cleared.
 	else if (isClearingFlag(building) && lastUpdate+CLEARING_FLAG_REFRESH_TICKS<=now)
@@ -56,11 +70,47 @@ bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int
 	const Uint16 *gradient=buildingGradient(building, swimClass);
 	if (gradient==NULL)
 		return false;
-	// Probe the cell and its 8 neighbours: the unit may stand on a cell the
-	// gradient treats as an obstacle.
+	// The unit's own cell can be an obstacle in this building's field - it may be
+	// standing on another building, or in a forbidden area - while a cell next to
+	// it is on a route. Take the first of the nine that carries a distance.
 	Uint16 g=gradient[coordToIndex(x, y)];
 	for (int d=0; d<8 && g<=GRADIENT_UNREACHABLE; d++)
 		g=gradient[coordToIndex(x+tabClose[d][0], y+tabClose[d][1])];
+	if (g<=GRADIENT_UNREACHABLE)
+		return false;
+	*dist=gradientTiles(g);
+	return true;
+}
+
+
+const Uint16 *Map::roundTripGradient(Building *building, int resourceType, int swimClass)
+{
+	if (buildingGradient(building, swimClass)==NULL)
+		return NULL;
+	Uint32 now=game->stepCounter;
+	Uint16 *&gradient=building->roundTripGradient[resourceType][swimClass];
+	building->roundTripGradientUsedStep[resourceType][swimClass]=now;
+	if (gradient!=NULL && building->roundTripGradientStep[resourceType][swimClass]+ROUND_TRIP_REFRESH_TICKS>now)
+		return gradient;
+	if (gradient==NULL)
+		gradient=new Uint16[size];
+	updateRoundTripGradient(building, resourceType, swimClass);
+	return gradient;
+}
+
+bool Map::roundTripDistance(Building *building, int resourceType, int swimClass, int x, int y, int *dist)
+{
+	// Only gradients a fetcher keeps alive: hiring looks at every needed
+	// resource of every building, far more than ever get fetched.
+	const Uint16 *gradient=building->roundTripGradient[resourceType][swimClass];
+	if (gradient==NULL)
+		return false;
+	// It may be a few ticks older than the resource gradient the callers walk
+	// by; never report a resource that one says is gone.
+	if (!resourceAvailable(building->owner->teamNumber, resourceType, swimClass, x, y))
+		return false;
+	building->roundTripGradientUsedStep[resourceType][swimClass]=game->stepCounter;
+	Uint16 g=gradient[coordToIndex(x, y)];
 	if (g<=GRADIENT_UNREACHABLE)
 		return false;
 	*dist=gradientTiles(g);
@@ -98,24 +148,4 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 	if (directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, true))
 		return true;
 	return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, false);
-}
-
-
-void Map::dirtyBuildingGradients(int x, int y, int wl, int hl, int teamNumber)
-{
-	y &= hMask;
-	x &= wMask;
-	for (int hi=0; hi<hl; hi++)
-	{
-		for (int wi=0; wi<wl; wi++)
-		{
-			int bgid=tiles[coordToIndex(x + wi, y + hi)].building;
-			if (bgid!=NOGBID)
-				if (Building::GIDtoTeam(bgid)==teamNumber)
-				{
-					Building *b=game->teams[teamNumber]->myBuildings[Building::GIDtoID(bgid)];
-					b->dirtyGradients();
-				}
-		}
-	}
 }

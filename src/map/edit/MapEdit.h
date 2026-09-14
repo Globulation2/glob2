@@ -591,8 +591,6 @@ private:
 	ValueScrollBox* unitWalkLevelScrollBox;
 	FractionValueText* unitSwimLevelLabel;
 	ValueScrollBox* unitSwimLevelScrollBox;
-	FractionValueText* unitHarvestLevelLabel;
-	ValueScrollBox* unitHarvestLevelScrollBox;
 	FractionValueText* unitBuildLevelLabel;
 	ValueScrollBox* unitBuildLevelScrollBox;
 	FractionValueText* unitAttackSpeedLevelLabel;

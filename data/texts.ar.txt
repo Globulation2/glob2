@@ -74,6 +74,10 @@ V: ﺇﺗﺎﺣﺔ ﺍﻟﺮﺅﻳﺔ ﻟﺠﻤﻴﻊ ﺍﻟﻤﺒﺎﻧﻲ
 ﺍﻟﻤﻨﺪﻓﻊ - ﻳﻬﺎﺟﻢ ﺑﺴﺮﻋﺔ ﻭﻗﻮﺓ. ﻏﺎﻟﺒًﺎ ﻣﺎ ﻳﻠﻘﻲ ﺑﺎﻟﻼﻋﺐ ﺍﻟﻤﺪﺍﻓﻊ ﺇﻟﻰ ﻧﻬﺎﻳﺔ ﻟﻌﺒﺘﻪ. ﻣﺘﻮﺳﻂ ﺍﻟﺼﻌﻮﺑﺔ.
 [AIWarrush]
 ﻣﻨﺪﻓﻊ
+[AICabino-Description]
+كابينو يدير الدفاع والهجوم والبناء كأقسام مستقلة لكنها تتعاون على خطة واحدة: ينمو سريعًا ويلقي بجيوش كبيرة على خصومه. شديد الصعوبة.
+[AICabino]
+Cabino
 [Alga]
 ﻃﺤﺎﻟﺐ
 [algae]
@@ -607,9 +611,9 @@ meta-%0
 [ok]
 ﻧﻌﻢ
 [old islands terrain]
-ﺟُﺰﺭ ﻋﺸﻮﺍﺋﻴﺔ ﺑﻨﻤﻂ ﻗﺪﻳﻢ
+الأرخبيل الوعر
 [old random terrain]
-ﺗﻀﺎﺭﻳﺲ ﻋﺸﻮﺍﺋﻴﺔ ﺑﻨﻤﻂ ﻗﺪﻳﻢ
+الساحل المتشظي
 [on press]
 ﻋﻨﺪ ﺍﻟﻀﻐﻂ
 [On the spot]
@@ -1218,6 +1222,10 @@ tab
 ﻟﻠﻌﺐ ﺍﻟﻔﺮﺩﻱ ﻭﺍﻹﻋﺎﺩﺍﺕ ﻓﻘﻂ. ﻳﻌﻤﻞ ﺍﻟﻠﻌﺐ ﺍﻟﺠﻤﺎﻋﻲ ﺑﺴﺮﻋﺔ 1x.
 [AICortex-Description]
 تتوسع Cortex نحو حقول القمح الجديدة وترسل مجموعات من المحاربين إلى المعركة، مدعومين بالنزل والمستشفيات القريبة من خط المواجهة. صعوبة متوسطة. تجريبي.
+[AIMaxima-Description]
+تُنمّي Maxima مستعمرة جيدة التغذية، وتستكشف الخريطة باستمرار، وتهاجم بلا توقف بكل محارب يمكنها الاستغناء عنه. صعوبة عالية.
+[AIMaxima]
+Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
 ﺗﻌﺬﺭ ﺣﻔﻆ ﺍﻟﺤﻤﻠﺔ. ﺗﺤﻘﻖ ﻣﻦ ﻭﺟﻮﺩ ﺍﻟﻤﺠﻠﺪ ﺍﻟﻮﺟﻬﺔ ﻭﺇﻣﻜﺎﻧﻴﺔ ﺍﻟﻜﺘﺎﺑﺔ ﻓﻴﻪ ﻭﺗﻮﻓﺮ ﻣﺴﺎﺣﺔ ﺧﺎﻟﻴﺔ.
 [AICortex]
@@ -1258,6 +1266,10 @@ Cortex
 الاستراتيجية: يهاجم بسرعة وقوة قبل أن يكمل الخصوم استعداداتهم.\n\nنقاط القوة: يستغل التوسع غير المحمي وبطء الاستعداد العسكري.\n\nاقتراح للمواجهة: اصمد أمام الهجوم الأول مع الحفاظ على اقتصادك، ثم شن هجومًا مضادًا.
 [AIWarrush-Summary]
 هجمات سريعة تختبر دفاعاتك المبكرة.
+[AICabino-Profile]
+الاستراتيجية الأساسية: مجلس من الأقسام المستقلة (الدفاع، الهجوم، البناء، الترقيات) يعمل كل منها بمبادرته الخاصة لكنها تتفق على خطة واحدة: النمو السريع ثم إرسال جيوش ضخمة على الخصوم.\n\nنقاط القوة: التوسع السريع يدعم ضغطًا عسكريًا، والأقسام المستقلة تستجيب بسرعة للتهديدات المحلية.\n\nكيفية المواجهة: حاول عرقلة توسعه مبكرًا واستخدم التضاريس للحد من عدد الجنود الذين يمكنه إشراكهم في القتال دفعة واحدة.
+[AICabino-Summary]
+أقسام مستقلة تتعاون لتحقيق نمو سريع وجيوش ضخمة.
 [Algae]
 ﻃﺤﺎﻟﺐ
 [Alliances]
@@ -1361,9 +1373,9 @@ Cortex
 [No AI orders]
 لا توجد أوامر الذكاء الاصطناعي
 [Old islands]
-الجزر القديمة
+الأرخبيل الوعر
 [Old random]
-عشوائية قديمة
+الساحل المتشظي
 [Open at least one colony to start a match.]
 افتح مستعمرة واحدة على الأقل لبدء المباراة.
 [Open book]
@@ -1378,6 +1390,14 @@ Cortex
 خرائط مسبقة الصنع
 [Preview ready. Start plays this exact map.]
 المعاينة جاهزة. بدء اللعبة يستخدم هذه الخريطة الدقيقة.
+[Regenerate all]
+إعادة إنشاء الكل
+[Generating preview...]
+جارٍ إنشاء المعاينة...
+[Preview unavailable]
+المعاينة غير متاحة
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+تُعرض كل تضاريس كخريطة حقيقية بحجمك الحالي وعدد مستعمراتك. اختر واحدة للعب الخريطة المعروضة.
 [Purple]
 بنفسجي
 [Quick clash]
@@ -1540,6 +1560,10 @@ Cortex
 معركة سريعة: سرعة مضاعفة؛ تبدأ الخرائط التي تم إنشاؤها بـ 8 عمال.
 [Reroll]
 إنشاء خريطة أخرى
+[Randomize]
+إنشاء عشوائي
+[Reset to defaults]
+استعادة الإعدادات الافتراضية
 [Ruleset]
 مجموعة القواعد
 [Select a map from the library.]
@@ -1618,6 +1642,8 @@ Cortex
 تم
 [settings Edit shortcut]
 تحرير اختصار لوحة المفاتيح
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+تكبير القوائم والنص والشريط الجانبي على شاشة عالية الدقة.
 [settings Flags]
 أعلام
 [settings Full]
@@ -1632,6 +1658,8 @@ Cortex
 أسلوب اللعب
 [settings Graphics detail]
 تفاصيل الرسومات
+[settings Interface scale]
+مقياس الواجهة
 [settings Keep]
 احتفظ بالتغييرات
 [settings Keep this display mode?]
@@ -1654,6 +1682,8 @@ Cortex
 ﺍﻟﻤﺴﺘﻮﻯ
 [settings Map editor]
 محرر الخرائط
+[settings Match the desktop]
+مطابقة سطح المكتب
 [settings Missing font]
 الخط مفقود
 [settings Music volume]
@@ -1764,3 +1794,421 @@ OpenGL غير متوفر في هذا الإصدار.
 عرض الطارة تلقائيًا
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 إظهار نظرة عامة للخريطة على سطح طارة تلقائيًا أثناء التنقل في الخريطة (OpenGL).
+[settings Autosave]
+ﺍﻟﺤﻔﻆ ﺍﻟﺘﻠﻘﺎﺋﻲ
+[settings Save the game automatically about every 10 seconds.]
+ﺣﻔﻆ ﺍﻟﻠﻌﺒﺔ ﺗﻠﻘﺎﺋﻴﺎ ﻛﻞ 10 ﺛﻮﺍﻥ ﺗﻘﺮﻳﺒﺎ.
+[Channel width]
+عرض القناة
+[Land bridge width]
+عرض الجسر البري
+[Lake size]
+حجم البحيرة
+[Contested commons]
+الأراضي المشاع المتنازع عليها
+[Maze]
+المتاهة
+[Fjord continent]
+قارة المضائق البحرية
+[Cell size]
+حجم الخلية
+[Corridor width]
+عرض الممر
+[Spoke width]
+عرض الأشعة
+[Loopiness]
+كثافة الحلقات
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+تحتاج المتاهة إلى خليتين على الأقل أفقيًا ورأسيًا؛ استخدم خريطة أكبر أو خلايا أصغر.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+القنوات بهذا العرض تترك عشبًا قليلًا جدًا في كل خلية؛ استخدم قنوات أضيق أو خلايا أكبر.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+لا تحتوي المتاهة على طرق مسدودة كافية لهذا العدد من المستعمرات؛ استخدم خريطة أكبر أو خلايا أصغر.
+[Home island size]
+حجم جزيرة البداية
+[Commons size]
+حجم الأراضي المشاع
+[Moat width]
+عرض الخندق المائي
+[Bridge count]
+عدد الجسور
+[Continent size]
+حجم القارة
+[Coast roughness]
+وعورة الساحل
+[Fjord width]
+عرض المضيق البحري
+[Lake connects to fjords]
+البحيرة متصلة بالمضائق البحرية
+[Resource islands]
+جزر الموارد
+[Watershed]
+مستجمع المياه
+[River density]
+كثافة الأنهار
+[Dryness]
+الجفاف
+[Fords]
+المخاضات
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+لا يحتوي مستجمع المياه على سهول فيضية كافية لهذا العدد من المستعمرات؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
+[Stone highlands]
+المرتفعات الحجرية
+[Valley size]
+حجم الوادي
+[Pass width]
+عرض الممر الجبلي
+[Pond size]
+حجم البركة
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+هذه الوديان أكبر من أن تتسع لها الخريطة؛ استخدم خريطة أكبر أو وديانًا أصغر.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+لا تتسع المرتفعات لهذا العدد من المستعمرات؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
+[Symmetric arena]
+الساحة المتناظرة
+[Centre size]
+حجم المركز
+[Causeway width]
+عرض الممر المرتفع
+[Causeways]
+الممرات المرتفعة
+[Lakes]
+البحيرات
+[Resource richness]
+وفرة الموارد
+[Symmetric arena needs 2, 4 or 8 colonies.]
+تحتاج الساحة المتناظرة إلى 2 أو 4 أو 8 مستعمرات.
+[Eight colonies need a square map in the symmetric arena.]
+تحتاج ثماني مستعمرات إلى خريطة مربعة في الساحة المتناظرة.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+المركز أصغر من أن يتسع لبستان في هذه الخريطة؛ استخدم مركزًا أكبر أو خريطة أكبر.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+لا تترك الساحة مساحة كافية لكل مستعمرة؛ استخدم خريطة أكبر أو مركزًا أصغر أو خندقًا مائيًا أضيق.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+الممرات المرتفعة متقاربة جدًا؛ استخدم ممرات مرتفعة أقل أو أضيق، أو مركزًا أكبر.
+[Ring world]
+العالم الحلقي
+[Belt width]
+عرض الحزام
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+الحزام أقصر من أن يتسع لهذا العدد من المستعمرات؛ استخدم خريطة أطول أو عددًا أقل من المستعمرات.
+[City states]
+دول المدن
+[Strait width]
+عرض المضيق
+[Valleys]
+الوديان
+[Frontier richness]
+ثراء الأراضي الجديدة
+[City states need at least one colony.]
+تحتاج دول المدن إلى مستعمرة واحدة على الأقل.
+[Stone walls]
+أسوار حجرية
+[Sand patches]
+بقع رملية
+[Tidal flats]
+السهول المدّية
+[Everglades]
+المستنقعات
+[Pool spacing]
+تباعد البرك
+[Pool size]
+حجم البرك
+[Clearing size]
+حجم الفسحة
+[Levee]
+السد الترابي
+[Sloughs]
+المستنقعات
+[Everglades need at least one colony.]
+تحتاج المستنقعات إلى مستعمرة واحدة على الأقل.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+عدد المستعمرات كبير جدًا لهذه الخريطة؛ استخدم خريطة أكبر أو مستعمرات أقل.
+[Coral]
+المرجان
+[Fork angle]
+زاوية التفرّع
+[Lean]
+الميل
+[Home size]
+حجم الموطن
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+المرجان لا يتسع لهذه الخريطة؛ استخدم خريطة أكبر أو مضائق أضيق أو مستعمرات أقل.
+[Branching]
+التفرّع
+[Branch width]
+عرض الفروع
+[Coral needs at least one colony.]
+يحتاج المرجان إلى مستعمرة واحدة على الأقل.
+[Coral needs a map at least 128 tiles across.]
+يحتاج المرجان إلى خريطة بعرض 128 مربعًا على الأقل.
+[Carousel]
+الدوّامة
+[Amphitheatre]
+المدرج
+[Switchbacks]
+الطرق المتعرجة
+[Court size]
+حجم الساحات
+[Court wall]
+جدار الساحات
+[Plaza size]
+حجم الميدان
+[Starting tower level]
+مستوى الأبراج الأولية
+[Towers per colony]
+الأبراج لكل مستعمرة
+[Rings]
+الحلقات
+[Ramp width]
+عرض المنحدرات
+[Pit size]
+حجم الحفرة
+[Terrace width]
+عرض المدرجات
+[Bay size]
+حجم الخلجان
+[Border wall]
+الجدار الحدودي
+[Plateau size]
+حجم الهضبة
+[Trail width]
+عرض الدرب
+[Wall between legs]
+الجدار بين المنعطفات
+[Farm building plots]
+قطع بناء في المزارع
+[Carousels need at least two colonies.]
+تحتاج الدوّامة إلى مستعمرتين على الأقل.
+[Switchbacks need at least two colonies.]
+تحتاج الطرق المتعرجة إلى مستعمرتين على الأقل.
+[An amphitheatre needs at least two colonies.]
+يحتاج المدرج إلى مستعمرتين على الأقل.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+لا تتسع هذه الخريطة للدوّامة؛ استخدم خريطة أكبر أو مواطن أصغر أو مستعمرات أقل.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+لا تتسع هذه الخريطة للطرق المتعرجة؛ استخدم خريطة أكبر أو هضبة أصغر أو دروبًا أضيق أو مستعمرات أقل.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+لا تتسع هذه الخريطة للمدرج؛ استخدم خريطة أكبر أو حلقات أقل أو مدرجات أضيق أو مستعمرات أقل.
+[Spider web]
+شبكة العنكبوت
+[Spokes per colony]
+أشعة لكل مستعمرة
+[Ring spacing]
+تباعد الحلقات
+[Thread width]
+عرض الخيوط
+[Sag]
+الارتخاء
+[Torn strands]
+خيوط ممزقة
+[Hub size]
+حجم المركز
+[Dew drops]
+قطرات الندى
+[Spiral]
+حلزوني
+[Spider webs need at least one colony.]
+تحتاج شبكة العنكبوت إلى مستعمرة واحدة على الأقل.
+[Sandbars]
+الحواجز الرملية
+[Tide pools]
+برك المد
+[Lagoons]
+البحيرات الشاطئية
+[Central island]
+الجزيرة المركزية
+[Tidal flats need at least one colony.]
+تحتاج السهول المدّية إلى مستعمرة واحدة على الأقل.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+الجزر الأم لا تتسع لهذه الخريطة؛ استخدم خريطة أكبر أو مستعمرات أقل أو جزرًا أصغر.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+الأراضي المشاع والمضيق لا يتركان مساحة كافية للقواعد؛ استخدم خريطة أكبر أو مستعمرات أقل أو أراضي مشاع أصغر أو مضيقًا أضيق.
+[Wheat amount]
+كمية القمح
+[Wood amount]
+كمية الخشب
+[Stone amount]
+كمية الحجر
+[Algae amount]
+كمية الطحالب
+[Fruit amount]
+كمية الفاكهة
+[Stone on hilltops]
+الحجارة على قمم التلال
+[Winding river]
+نهر متعرج
+[Sandy beaches]
+شواطئ رملية
+[Land bridges]
+الجسور البرية
+[Colony meadows]
+مروج حول المستعمرات
+[Extra starting deposit]
+رواسب إضافية عند البداية
+[Moat bridges]
+جسور فوق الخندق المائي
+[Jagged coastlines]
+سواحل متعرجة
+[Sand roads]
+طرق رملية
+[Treasure in dead ends]
+كنوز في الطرق المسدودة
+[Fjord bank deposits]
+رواسب على ضفاف المضائق البحرية
+[Sandy lake shore]
+شاطئ رملي حول البحيرة
+[River delta]
+دلتا النهر
+[Meandering rivers]
+أنهار كثيرة التعرج
+[Fruit in home valleys]
+الفاكهة في وديان البداية
+[Moat]
+الخندق المائي
+[Stone in the orchard]
+حجارة في البستان
+[Colonies on both coasts]
+مستعمرات على الساحلين
+[Winding belt]
+حزام متعرج
+[Cell shape]
+شكل الخلايا
+[Squares]
+مربعات
+[Hexagons]
+سداسيات
+[Warp]
+التواء
+[Fingerprint]
+بصمة الإصبع
+[Wavelength]
+الطول الموجي
+[Pattern]
+النمط
+[Labyrinth]
+متاهة
+[Channels]
+الأخاديد
+[Barrier]
+الحاجز
+[Water]
+ماء
+[Grain]
+التحبب
+[Rain shadow]
+ظل المطر
+[Ridges]
+الحواف الصخرية
+[Slant]
+الانحراف
+[Ridge thickness]
+سماكة الحواف الصخرية
+[Pass spacing]
+تباعد الممرات الجبلية
+[Lee width]
+عرض جانب الظل
+[Old growth]
+الغابة القديمة
+[Canals]
+القنوات
+[Forest density]
+كثافة الغابة
+[Hidden groves]
+بساتين مخفية
+[Starting trails]
+دروب البداية
+[Block size]
+حجم الكتلة السكنية
+[Canal width]
+عرض القناة
+[Extra bridges]
+جسور إضافية
+[Polder]
+بولدر
+[Old town]
+المدينة القديمة
+[Anthill]
+عش النمل
+[Row angle]
+زاوية الصفوف
+[Diagonal]
+قطري
+[Dyke spacing]
+تباعد السدود
+[Village size]
+حجم القرية
+[Hamlets]
+القرى الصغيرة
+[City size]
+حجم المدينة
+[Street width]
+عرض الشوارع
+[Plazas]
+الميادين
+[Chamber spacing]
+تباعد الحجرات
+[Chamber size]
+حجم الحجرات
+[Queen room]
+حجرة الملكة
+[Tunnel width]
+عرض الأنفاق
+[Loops]
+مسارات دائرية
+[Home pools]
+برك الموطن
+[Farm plots]
+قطع المزارع
+[Tendril roads]
+طرق متفرعة
+[Random]
+عشوائي
+[Vertical]
+عمودي
+[Horizontal]
+أفقي
+[Inland lakes]
+بحيرات داخلية
+[Block shape]
+شكل الكتل
+[Random parameters]
+معلمات عشوائية
+[Randomize parameters]
+اختر معلمات عشوائية
+[Start quality]
+جودة البداية
+[Fairness]
+الإنصاف
+[Score]
+النتيجة
+[Weight]
+الوزن
+[Worst]
+الأدنى
+[Best]
+الأعلى
+[Fertility]
+الخصوبة
+[Deposits]
+المخزون
+[Room]
+المساحة
+[Isolation]
+العزلة
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+يُقاس موقع بداية كل مستعمرة على الخريطة النهائية: المسافة إلى القمح وإلى الخشب، ومدى تجدد نمو أرضها، والمخزون ومواقع البناء في متناولها، وبُعدها عن المنافسين. يُقيَّم كل عامل من 0 إلى 1 مقابل حد ثابت، ويجمعها المجموع بأوزانها، والإنصاف هو مجموع أضعف مستعمرة مقسوماً على مجموع أفضلها، والنتيجة هي أضعف مجموع مضروباً في الإنصاف.
+[Map preview controls]
+اسحب للالتفاف. استخدم العجلة للتكبير. انقر باليمين أو مرتين لإعادة الضبط.
+[Map preview drag help]
+اسحب للالتفاف؛ العجلة للتكبير.
+[Map preview loading]
+جارٍ التحميل...
+[Map preview failed]
+فشلت المعاينة
+[Map preview retry]
+انقر للمحاولة مجددًا
+[Map preview please wait]
+يرجى الانتظار
+[Map preview choose another]
+اختر خريطة

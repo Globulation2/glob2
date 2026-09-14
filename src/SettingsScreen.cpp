@@ -134,7 +134,20 @@ bool SettingsScreen::restartRequired() const
     const auto& s=globalContainer->settings;auto* g=globalContainer->gfx;
     const Uint32 mask=GraphicContext::USEGPU|GraphicContext::FULLSCREEN|GraphicContext::CUSTOMCURSOR;
     return (s.screenFlags & mask)!=(g->getOptionFlags() & mask) ||
-           s.screenWidth!=g->getW() || s.screenHeight!=g->getH();
+           s.screenWidth!=g->getRequestedW() || s.screenHeight!=g->getRequestedH() ||
+           // The preference is resolved against the desktop, and the window floor may
+           // have reduced the scale in use, so compare what setRes() was asked for.
+           GraphicContext::effectiveUiScale(s.uiScale/100.0f)!=g->getWantedUiScale();
+}
+void SettingsScreen::changeUiScale(int percent)
+{
+    auto& s=globalContainer->settings;
+    if(percent==s.uiScale)return;
+    s.uiScale=percent;commit();
+    GraphicContext::setRequestedUiScale(percent/100.0f);
+    // A GPU context cannot be rebuilt in place; restartRequired() reports it instead.
+    if(!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU))
+        applyDisplayMode(s.screenWidth,s.screenHeight,s.screenFlags);
 }
 bool SettingsScreen::applyDisplayMode(int width,int height,Uint32 flags)
 {

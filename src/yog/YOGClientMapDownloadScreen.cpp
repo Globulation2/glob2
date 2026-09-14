@@ -32,6 +32,12 @@ YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, std::s
 	addWidget(mapList);
 	mapPreview = new MapPreview(72, 130, ALIGN_RIGHT, ALIGN_TOP);
 	addWidget(mapPreview);
+	mapPreview->retry = [this]
+	{
+		if (!mapValid) return;
+		this->client->getDownloadableMapList()->requestThumbnail(mapList->get(), true);
+		updateMapPreview();
+	};
 	mapName=new Text(72, 268+25, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
 	addWidget(mapName);
 	mapInfo=new Text(72, 268+50, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
@@ -95,6 +101,7 @@ YOGClientMapDownloadScreen::~YOGClientMapDownloadScreen()
 void YOGClientMapDownloadScreen::onTimer(Uint32 tick)
 {
 	updateVisibility();
+	updateMapPreview();
 }
 
 
@@ -299,13 +306,15 @@ void YOGClientMapDownloadScreen::updateMapPreview()
 		}
 		else
 		{
-			mapPreview->setMapThumbnail("");
+			auto state = client->getDownloadableMapList()->getThumbnailState(mapList->get());
+			mapPreview->setState(state == YOGClientDownloadableMapList::ThumbnailState::Failed
+				? MapPreview::State::Failed : MapPreview::State::Loading);
 		}
 	}
 	else
 	{
 	
-		mapPreview->setMapThumbnail("");
+		mapPreview->setState(MapPreview::State::Empty);
 	}
 }
 

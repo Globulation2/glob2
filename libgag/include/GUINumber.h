@@ -20,6 +20,8 @@ namespace GAGGUI
 		Sint32 nth;
 		Sint32 m;
 		std::vector<int> numbers;
+		// Text shown in place of each number; empty to show the number itself.
+		std::vector<std::string> labels;
 		std::string font;
 	
 		// cache, recomputed at least on paint
@@ -37,6 +39,7 @@ namespace GAGGUI
 		virtual void paint(void);
 	
 		void add(int number);
+		void add(int number, const std::string &label);
 		void clear(void);
 		void setNth(int nth);
 		void set(int number);

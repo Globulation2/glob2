@@ -56,6 +56,10 @@ Castor는 신중하게 플레이하며 자원이 적은 지도에서 특히 강�
 Castor
 [AICortex-Description]
 Cortex는 새로운 밀밭으로 확장하고 최전선 근처의 여관과 병원의 지원을 받아 전사 그룹을 전투에 보냅니다. 중간 난이도. 실험적입니다.
+[AIMaxima-Description]
+Maxima는 식량이 넉넉한 정착지를 키우고 끊임없이 정찰하며, 내보낼 수 있는 모든 전사로 쉬지 않고 공격합니다. 높은 난이도.
+[AIMaxima]
+Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]
@@ -78,6 +82,10 @@ Econo
 Warrush - 빠르고 강력한 공격으로 방어하는 플레이어를 극한까지 몰아붙입니다. 난이도: 보통.
 [AIWarrush]
 Warrush
+[AICabino-Description]
+Cabino는 방어, 공격, 건설을 각각 독립된 부서로 운영하지만 모두 하나의 계획으로 모입니다: 빠르게 성장하여 대규모 군대로 상대를 공격합니다. 난이도: 어려움.
+[AICabino]
+Cabino
 [Alga]
 해조류
 [algae]
@@ -617,9 +625,9 @@ Num Lock
 [ok]
 확인
 [old islands terrain]
-기존 무작위 섬
+험준한 군도
 [old random terrain]
-기존 무작위 지형
+갈라진 해안
 [on press]
 누를 때
 [On the spot]
@@ -1256,6 +1264,10 @@ AI 전략 및 대응
 전략: 상대방이 준비를 마치기 전에 조기에 강력하게 공격합니다.\n\n강점: 무방비 확장과 느린 군사 준비를 이용합니다.\n\n대응 제안: 경제를 유지하면서 첫 번째 공격에서 살아남은 후 반격하십시오.
 [AIWarrush-Summary]
 초기 방어력을 테스트하는 빠른 공격입니다.
+[AICabino-Profile]
+핵심 전략: 독립된 전문 부서(방어, 공격, 건설, 업그레이드, 유닛 관리)로 이루어진 내각이 각자 자체적으로 행동하지만 하나의 계획으로 모입니다: 빠르게 성장한 뒤 대규모 군대로 상대를 공격합니다.\n\n강점: 빠른 확장은 공격적인 군사적 압박을 뒷받침하며, 독립된 부서들은 중앙 계획을 기다리지 않고 지역 위협에 신속히 대응합니다.\n\n대응 전략: 초반에 확장을 저지하고 지형을 이용해 한 번에 교전할 수 있는 병력 수를 제한하세요.
+[AICabino-Summary]
+빠른 성장과 거대한 군대를 위해 협력하는 독립된 부서들.
 [Algae]
 해조류
 [Alliances]
@@ -1359,9 +1371,9 @@ AI 전략 및 대응
 [No AI orders]
 AI 명령 없음
 [Old islands]
-구형 섬 생성
+험준한 군도
 [Old random]
-구형 무작위 생성
+갈라진 해안
 [Open at least one colony to start a match.]
 매치를 시작하려면 콜로니를 하나 이상 여세요.
 [Open book]
@@ -1376,6 +1388,14 @@ AI 명령 없음
 미리 만들어진 지도
 [Preview ready. Start plays this exact map.]
 미리보기가 준비되었습니다. 게임을 시작할 때 이 정확한 지도를 사용합니다.
+[Regenerate all]
+모두 다시 생성
+[Generating preview...]
+미리보기 생성 중...
+[Preview unavailable]
+미리보기를 사용할 수 없음
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+각 지형은 현재 크기와 식민지 수로 실제 생성된 지도로 표시됩니다. 하나를 선택하면 표시된 지도로 플레이합니다.
 [Purple]
 보라색
 [Quick clash]
@@ -1538,6 +1558,10 @@ AI 명령 없음
 빠른 전투: 속도 2배; 생성된 맵은 8명의 작업자로 시작합니다.
 [Reroll]
 다른 지도 생성
+[Randomize]
+무작위 생성
+[Reset to defaults]
+기본값 복원
 [Ruleset]
 규칙 세트
 [Select a map from the library.]
@@ -1616,6 +1640,8 @@ Globulation 2 커서를 표시합니다.
 완료
 [settings Edit shortcut]
 키보드 단축키 수정
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+고해상도 화면에서 메뉴, 텍스트, 사이드바를 크게 표시합니다.
 [settings Flags]
 깃발
 [settings Full]
@@ -1630,6 +1656,8 @@ Globulation 2 커서를 표시합니다.
 게임플레이
 [settings Graphics detail]
 그래픽 디테일
+[settings Interface scale]
+인터페이스 배율
 [settings Keep]
 변경사항 유지
 [settings Keep this display mode?]
@@ -1652,6 +1680,8 @@ Globulation 2 커서를 표시합니다.
 레벨
 [settings Map editor]
 지도 편집기
+[settings Match the desktop]
+바탕 화면에 맞춤
 [settings Missing font]
 누락된 글꼴
 [settings Music volume]
@@ -1762,3 +1792,421 @@ Globulation 2 커서를 표시합니다.
 자동 토러스 보기
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 지도 안에서 이동할 때 토러스(도넛) 모양의 지도 전체 보기를 자동으로 표시합니다(OpenGL).
+[settings Autosave]
+자동 저장
+[settings Save the game automatically about every 10 seconds.]
+약 10초마다 게임을 자동으로 저장합니다.
+[Channel width]
+수로 너비
+[Land bridge width]
+육교 너비
+[Lake size]
+호수 크기
+[Contested commons]
+쟁탈 공유지
+[Maze]
+미로
+[Fjord continent]
+피오르 대륙
+[Cell size]
+칸 크기
+[Corridor width]
+통로 너비
+[Spoke width]
+바큇살 너비
+[Loopiness]
+순환로 밀도
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+미로에는 가로와 세로로 각각 칸이 2개 이상 필요합니다. 더 큰 지도를 사용하거나 칸을 더 작게 하세요.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+수로가 이렇게 넓으면 각 칸에 남는 초지가 너무 적습니다. 수로를 더 좁게 하거나 칸을 더 크게 하세요.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+이 식민지 수에 비해 미로의 막다른 길이 너무 적습니다. 더 큰 지도를 사용하거나 칸을 더 작게 하세요.
+[Home island size]
+시작 섬 크기
+[Commons size]
+공유지 크기
+[Moat width]
+해자 너비
+[Bridge count]
+다리 수
+[Continent size]
+대륙 크기
+[Coast roughness]
+해안선 굴곡도
+[Fjord width]
+피오르 너비
+[Lake connects to fjords]
+호수와 피오르 연결
+[Resource islands]
+자원 섬
+[Watershed]
+유역
+[River density]
+강 밀도
+[Dryness]
+건조도
+[Fords]
+여울
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+이 식민지 수에 비해 유역의 범람원이 너무 적습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[Stone highlands]
+바위 고원
+[Valley size]
+골짜기 크기
+[Pass width]
+고갯길 너비
+[Pond size]
+연못 크기
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+골짜기가 지도에 비해 너무 큽니다. 더 큰 지도를 사용하거나 골짜기를 더 작게 하세요.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+이 식민지 수에 비해 고원의 공간이 너무 부족합니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[Symmetric arena]
+대칭 경기장
+[Centre size]
+중앙 크기
+[Causeway width]
+둑길 너비
+[Causeways]
+둑길
+[Lakes]
+호수
+[Resource richness]
+자원 풍부도
+[Symmetric arena needs 2, 4 or 8 colonies.]
+대칭 경기장에는 식민지가 2개, 4개 또는 8개 필요합니다.
+[Eight colonies need a square map in the symmetric arena.]
+대칭 경기장에서 식민지를 8개로 하려면 정사각형 지도가 필요합니다.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+이 지도에서는 중앙이 너무 작아 과수원을 둘 수 없습니다. 중앙을 더 크게 하거나 더 큰 지도를 사용하세요.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+경기장에 식민지마다 둘 공간이 너무 부족합니다. 더 큰 지도를 사용하거나, 중앙을 더 작게 하거나, 해자를 더 좁게 하세요.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+둑길끼리 너무 가깝습니다. 둑길 수를 줄이거나 더 좁게 하거나, 중앙을 더 크게 하세요.
+[Ring world]
+고리 세계
+[Belt width]
+띠 너비
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+이 식민지 수에 비해 띠가 너무 짧습니다. 더 긴 지도를 사용하거나 식민지 수를 줄이세요.
+[City states]
+도시 국가
+[Strait width]
+해협 너비
+[Valleys]
+계곡
+[Frontier richness]
+변경의 풍요로움
+[City states need at least one colony.]
+도시 국가에는 최소 한 개의 식민지가 필요합니다.
+[Stone walls]
+돌 성벽
+[Sand patches]
+모래밭
+[Tidal flats]
+갯벌
+[Everglades]
+습지대
+[Pool spacing]
+웅덩이 간격
+[Pool size]
+웅덩이 크기
+[Clearing size]
+공터 크기
+[Levee]
+제방
+[Sloughs]
+늪지
+[Everglades need at least one colony.]
+습지대에는 최소 한 개의 식민지가 필요합니다.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+이 지도에는 식민지가 너무 많습니다. 더 큰 지도를 사용하거나 식민지를 줄이세요.
+[Coral]
+산호
+[Fork angle]
+분기 각도
+[Lean]
+기울기
+[Home size]
+본거지 크기
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+산호가 이 지도에 맞지 않습니다. 더 큰 지도, 더 좁은 해협 또는 더 적은 식민지를 사용하세요.
+[Branching]
+가지치기
+[Branch width]
+가지 너비
+[Coral needs at least one colony.]
+산호에는 식민지가 하나 이상 필요합니다.
+[Coral needs a map at least 128 tiles across.]
+산호에는 너비가 128칸 이상인 지도가 필요합니다.
+[Carousel]
+회전목마
+[Amphitheatre]
+원형 경기장
+[Switchbacks]
+굽잇길
+[Court size]
+안뜰 크기
+[Court wall]
+안뜰 벽
+[Plaza size]
+광장 크기
+[Starting tower level]
+시작 탑 레벨
+[Towers per colony]
+식민지당 탑 수
+[Rings]
+고리 수
+[Ramp width]
+경사로 너비
+[Pit size]
+경기장 크기
+[Terrace width]
+계단식 단 너비
+[Bay size]
+만 크기
+[Border wall]
+경계 벽
+[Plateau size]
+고원 크기
+[Trail width]
+산길 너비
+[Wall between legs]
+굽이 사이 벽
+[Farm building plots]
+농장 건설 부지
+[Carousels need at least two colonies.]
+회전목마에는 식민지가 두 개 이상 필요합니다.
+[Switchbacks need at least two colonies.]
+굽잇길에는 식민지가 두 개 이상 필요합니다.
+[An amphitheatre needs at least two colonies.]
+원형 경기장에는 식민지가 두 개 이상 필요합니다.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+회전목마가 이 지도에 맞지 않습니다. 더 큰 지도, 더 작은 본거지 또는 더 적은 식민지를 사용하세요.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+굽잇길이 이 지도에 맞지 않습니다. 더 큰 지도, 더 작은 고원, 더 좁은 산길 또는 더 적은 식민지를 사용하세요.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+원형 경기장이 이 지도에 맞지 않습니다. 더 큰 지도, 더 적은 고리, 더 좁은 단 또는 더 적은 식민지를 사용하세요.
+[Spider web]
+거미줄
+[Spokes per colony]
+식민지당 방사줄
+[Ring spacing]
+고리 간격
+[Thread width]
+실 너비
+[Sag]
+처짐
+[Torn strands]
+끊어진 실
+[Hub size]
+중심 크기
+[Dew drops]
+이슬방울
+[Spiral]
+나선
+[Spider webs need at least one colony.]
+거미줄에는 식민지가 하나 이상 필요합니다.
+[Sandbars]
+모래톱
+[Tide pools]
+조수 웅덩이
+[Lagoons]
+석호
+[Central island]
+중앙 섬
+[Tidal flats need at least one colony.]
+갯벌에는 최소 한 개의 식민지가 필요합니다.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+본섬이 이 지도에 들어가지 않습니다. 더 큰 지도, 더 적은 식민지 또는 더 작은 섬을 사용하세요.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+공유지와 해협이 본거지에 남기는 공간이 너무 적습니다. 더 큰 지도, 더 적은 식민지, 더 작은 공유지 또는 더 좁은 해협을 사용하세요.
+[Wheat amount]
+밀 양
+[Wood amount]
+나무 양
+[Stone amount]
+돌 양
+[Algae amount]
+해조류 양
+[Fruit amount]
+과일 양
+[Stone on hilltops]
+언덕 꼭대기의 돌
+[Winding river]
+구불구불한 강
+[Sandy beaches]
+모래 해변
+[Land bridges]
+육교
+[Colony meadows]
+식민지 주변 초원
+[Extra starting deposit]
+추가 시작 자원
+[Moat bridges]
+해자 위의 다리
+[Jagged coastlines]
+들쭉날쭉한 해안선
+[Sand roads]
+모래길
+[Treasure in dead ends]
+막다른 길의 보물
+[Fjord bank deposits]
+피오르 기슭의 자원
+[Sandy lake shore]
+모래 호숫가
+[River delta]
+강 삼각주
+[Meandering rivers]
+굽이치는 강
+[Fruit in home valleys]
+시작 골짜기의 과일
+[Moat]
+해자
+[Stone in the orchard]
+과수원의 돌
+[Colonies on both coasts]
+양쪽 해안의 식민지
+[Winding belt]
+구불구불한 띠
+[Cell shape]
+칸 모양
+[Squares]
+정사각형
+[Hexagons]
+육각형
+[Warp]
+뒤틀림
+[Fingerprint]
+지문
+[Wavelength]
+파장
+[Pattern]
+패턴
+[Labyrinth]
+미궁
+[Channels]
+고랑
+[Barrier]
+장벽
+[Water]
+물
+[Grain]
+입자
+[Rain shadow]
+비 그늘
+[Ridges]
+산등성이
+[Slant]
+비스듬함
+[Ridge thickness]
+산등성이 두께
+[Pass spacing]
+고갯길 간격
+[Lee width]
+바람그늘 너비
+[Old growth]
+원시림
+[Canals]
+운하
+[Forest density]
+숲 밀도
+[Hidden groves]
+숨겨진 숲
+[Starting trails]
+시작 산길
+[Block size]
+블록 크기
+[Canal width]
+운하 너비
+[Extra bridges]
+추가 다리
+[Polder]
+간척지
+[Old town]
+옛 도시
+[Anthill]
+개미집
+[Row angle]
+열 각도
+[Diagonal]
+대각선
+[Dyke spacing]
+제방 간격
+[Village size]
+마을 크기
+[Hamlets]
+작은 마을
+[City size]
+도시 크기
+[Street width]
+거리 너비
+[Plazas]
+광장
+[Chamber spacing]
+방 간격
+[Chamber size]
+방 크기
+[Queen room]
+여왕 방
+[Tunnel width]
+터널 너비
+[Loops]
+순환로
+[Home pools]
+본거지 연못
+[Farm plots]
+농경지
+[Tendril roads]
+덩굴길
+[Random]
+무작위
+[Vertical]
+세로
+[Horizontal]
+가로
+[Inland lakes]
+내륙 호수
+[Block shape]
+블록 모양
+[Random parameters]
+무작위 매개변수
+[Randomize parameters]
+매개변수 무작위화
+[Start quality]
+시작 품질
+[Fairness]
+공정성
+[Score]
+점수
+[Weight]
+가중치
+[Worst]
+최저
+[Best]
+최고
+[Fertility]
+비옥도
+[Deposits]
+매장량
+[Room]
+공간
+[Isolation]
+격리
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+각 식민지의 시작 지점은 완성된 지도에서 측정됩니다: 밀과 목재까지의 거리, 땅이 얼마나 잘 다시 자라는지, 닿을 수 있는 매장량과 건설 부지, 그리고 경쟁자와의 거리입니다. 각 요소는 고정된 기준에 대해 0에서 1로 점수가 매겨지고, 합계는 이를 가중하며, 공정성은 최저 식민지의 합계를 최고 식민지의 합계로 나눈 값이고, 점수는 최저 합계에 공정성을 곱한 값입니다.
+[Map preview controls]
+드래그하여 경계를 넘어 이동합니다. 휠로 확대합니다. 오른쪽 클릭이나 두 번 클릭으로 초기화합니다.
+[Map preview drag help]
+드래그로 이동, 휠로 확대합니다.
+[Map preview loading]
+불러오는 중...
+[Map preview failed]
+미리보기 실패
+[Map preview retry]
+클릭하여 다시 시도
+[Map preview please wait]
+잠시 기다려 주세요
+[Map preview choose another]
+지도 선택

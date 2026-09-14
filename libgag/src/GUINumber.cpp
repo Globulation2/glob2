@@ -185,7 +185,10 @@ namespace GAGGUI
 		{
 			// We center the string
 			std::stringstream s;
-			s << numbers[nth];
+			if (nth < (int)labels.size() && !labels[nth].empty())
+				s << labels[nth];
+			else
+				s << numbers[nth];
 			int tw=fontPtr->getStringWidth(s.str().c_str());
 			parent->getSurface()->drawString(x+m+(w-2*m-tw)/2, y+dy, fontPtr, s.str().c_str());
 
@@ -200,12 +203,20 @@ namespace GAGGUI
 	
 	void Number::add(int number)
 	{
+		add(number, "");
+	}
+
+	void Number::add(int number, const std::string &label)
+	{
 		numbers.push_back(number);
+		labels.resize(numbers.size() - 1);
+		labels.push_back(label);
 	}
 	
 	void Number::clear(void)
 	{
 		numbers.clear();
+		labels.clear();
 	}
 	
 	void Number::setNth(int nth)

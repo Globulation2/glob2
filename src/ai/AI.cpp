@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "AI.h"
+#include "AIMaxima.h"
 #include "Player.h"
 #include "Utilities.h"
 #include "Game.h"
@@ -17,6 +18,7 @@
 #include "AINicowar.h"
 #include "echo/Echo.h"
 #include "cortex/AICortex.h"
+#include "AICabino.h"
 
 using std::shared_ptr;
 
@@ -44,8 +46,14 @@ AI::AI(ImplementationID implementationID, Player *player)
 		case ECONO:
 			aiImplementation=new AIEcho::Echo(new AIEcho::Econo, player);
 		break;
+		case MAXIMA:
+			aiImplementation=new AIMaxima::Maxima(player);
+		break;
 		case CORTEX:
 			aiImplementation=new AICortex(player);
+		break;
+		case CABINO:
+			aiImplementation=new Cabino::AICabino(player);
 		break;
 		default:
 			assert(false);
@@ -130,8 +138,14 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		case WARRUSH:
 			aiImplementation=new AIWarrush(stream, player, versionMinor);
 		break;
+		case MAXIMA:
+			aiImplementation=new AIMaxima::Maxima(stream,player,versionMinor);
+		break;
 		case CORTEX:
 			aiImplementation=new AICortex(stream, player, versionMinor);
+		break;
+		case CABINO:
+			aiImplementation=new Cabino::AICabino(stream, player, versionMinor);
 		break;
 		default:
 			fprintf(stderr, "AI id %d does not exist, you probably try to load a map from a more recent version of glob2.\n", implementationID);

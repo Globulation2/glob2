@@ -74,6 +74,10 @@ Econo
 Warrush útočí rychle a tvrdě a často zatlačí obránce na hranici jeho možností. Střední obtížnost.
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+Cabino řídí obranu, útok i výstavbu jako nezávislá oddělení, která spolupracují na jednom plánu: rychle se rozrůstá a posílá na soupeře obrovské armády. Vysoká obtížnost.
+[AICabino]
+Cabino
 [Alga]
 Řasy
 [algae]
@@ -605,9 +609,9 @@ z toho
 [ok]
 Budiž
 [old islands terrain]
-náhodné ostrovy (staré)
+Členité souostroví
 [old random terrain]
-náhodný terén (starý)
+Roztříštěné pobřeží
 [on press]
 Stisk
 [On the spot]
@@ -1218,6 +1222,10 @@ Rychlost: 1x (více hráčů)
 Pouze pro jednoho hráče a záznamy. Hra více hráčů běží rychlostí 1x.
 [AICortex-Description]
 Cortex expanduje směrem k novým pšeničným polím a posílá skupiny válečníků do bitvy, podporované hospodami a nemocnicemi poblíž frontové linie. Střední obtížnost. Experimentální.
+[AIMaxima-Description]
+Maxima rozvíjí dobře nasycenou kolonii, neustále prozkoumává mapu a útočí bez přestání se všemi bojovníky, které může uvolnit. Vysoká obtížnost.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 Mapu nelze načíst: soubor je poškozený nebo má nekompatibilní verzi.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1260,6 +1268,10 @@ Obrovské základny a konverze místo útoků.
 Strategie: Útočí včas a důrazně, než soupeř dokončí přípravu.\n\nSilné stránky: Využívá nechráněnou expanzi a pomalou vojenskou přípravu.\n\nDoporučená protihra: Přežijte první útok při zachování své ekonomiky a poté zaútočte.
 [AIWarrush-Summary]
 Rychlé útoky, které otestují vaši ranou obranu.
+[AICabino-Profile]
+Základní strategie: kabinet nezávislých specializovaných oddělení (obrana, útok, výstavba, vylepšení, správa jednotek), která jednají na vlastní popud, ale směřují k jednomu plánu: rychle růst a poté poslat na soupeře obrovské armády.\n\nSilné stránky: rychlá expanze podporuje agresivní vojenský tlak; nezávislá oddělení rychle reagují na místní hrozby, aniž by čekala na centrální plán.\n\nJak čelit: napadněte jeho expanzi včas a využijte terén k omezení počtu jednotek, které může nasadit najednou.
+[AICabino-Summary]
+Nezávislá oddělení spolupracující na rychlém růstu a obrovských armádách.
 [Algae]
 Řasy
 [Alliances]
@@ -1363,9 +1375,9 @@ Střední – Experimentální
 [No AI orders]
 Žádné příkazy AI
 [Old islands]
-Staré ostrovy
+Členité souostroví
 [Old random]
-Staré náhodné
+Roztříštěné pobřeží
 [Open at least one colony to start a match.]
 Otevřete alespoň jednu kolonii a začněte zápas.
 [Open book]
@@ -1380,6 +1392,14 @@ Hráči a týmy
 Předpřipravené mapy
 [Preview ready. Start plays this exact map.]
 Náhled připraven. Při spuštění hry se používá přesně tato mapa.
+[Regenerate all]
+Znovu vygenerovat vše
+[Generating preview...]
+Generuje se náhled...
+[Preview unavailable]
+Náhled není k dispozici
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Každá krajina je zobrazena jako skutečná mapa ve vaší aktuální velikosti a počtu kolonií. Vyberte jednu a zahrajte si zobrazenou mapu.
 [Purple]
 Fialová
 [Quick clash]
@@ -1542,6 +1562,10 @@ Formát hry
 Rychlá bitva: dvojnásobná rychlost; generované mapy začínají s 8 pracovníky.
 [Reroll]
 Vygenerujte další mapu
+[Randomize]
+Vygenerovat náhodně
+[Reset to defaults]
+Obnovit výchozí hodnoty
 [Ruleset]
 Pravidla
 [Select a map from the library.]
@@ -1620,6 +1644,8 @@ Zobrazovat kurzor hry Globulation 2.
 Hotovo
 [settings Edit shortcut]
 Upravit klávesovou zkratku
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Zvětší nabídky, text a postranní panel na obrazovce s vysokým rozlišením.
 [settings Flags]
 Vlajky
 [settings Full]
@@ -1634,6 +1660,8 @@ Rychlost hry
 Hratelnost
 [settings Graphics detail]
 Grafické detaily
+[settings Interface scale]
+Měřítko rozhraní
 [settings Keep]
 Ponechat změny
 [settings Keep this display mode?]
@@ -1656,6 +1684,8 @@ Jazyk používaný v celém rozhraní.
 Úroveň
 [settings Map editor]
 Editor map
+[settings Match the desktop]
+Podle plochy
 [settings Missing font]
 Chybí písmo
 [settings Music volume]
@@ -1766,3 +1796,421 @@ Vybraná grafika se použije při příštím načtení hry nebo editoru map (Op
 Automatický toroidní pohled
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automaticky zobrazovat přehled mapy ve tvaru torusu při pohybu po mapě (OpenGL).
+[settings Autosave]
+Automatické ukládání
+[settings Save the game automatically about every 10 seconds.]
+Hru automaticky ukládá přibližně každých 10 sekund.
+[Channel width]
+Šířka průlivu
+[Land bridge width]
+Šířka pevninského mostu
+[Lake size]
+Velikost jezera
+[Contested commons]
+Sporné společné území
+[Maze]
+Bludiště
+[Fjord continent]
+Fjordový kontinent
+[Cell size]
+Velikost buňky
+[Corridor width]
+Šířka chodby
+[Spoke width]
+Šířka paprsků
+[Loopiness]
+Propojenost
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Bludiště potřebuje alespoň dvě buňky na šířku i na výšku; použijte větší mapu nebo menší buňky.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Takto široké průlivy nechávají v každé buňce příliš málo trávy; použijte užší průlivy nebo větší buňky.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Bludiště má pro tolik kolonií příliš málo slepých uliček; použijte větší mapu nebo menší buňky.
+[Home island size]
+Velikost domovského ostrova
+[Commons size]
+Velikost společného území
+[Moat width]
+Šířka příkopu
+[Bridge count]
+Počet mostů
+[Continent size]
+Velikost kontinentu
+[Coast roughness]
+Členitost pobřeží
+[Fjord width]
+Šířka fjordu
+[Lake connects to fjords]
+Jezero spojené s fjordy
+[Resource islands]
+Surovinové ostrovy
+[Watershed]
+Povodí
+[River density]
+Hustota řek
+[Dryness]
+Vyprahlost
+[Fords]
+Brody
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Povodí má pro tolik kolonií příliš málo záplavové nivy; použijte větší mapu nebo méně kolonií.
+[Stone highlands]
+Kamenná vysočina
+[Valley size]
+Velikost údolí
+[Pass width]
+Šířka průsmyku
+[Pond size]
+Velikost tůně
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Tato údolí jsou pro mapu příliš velká; použijte větší mapu nebo menší údolí.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Vysočina má pro tolik kolonií příliš málo místa; použijte větší mapu nebo méně kolonií.
+[Symmetric arena]
+Symetrická aréna
+[Centre size]
+Velikost středu
+[Causeway width]
+Šířka hráze
+[Causeways]
+Hráze
+[Lakes]
+Jezera
+[Resource richness]
+Bohatost surovin
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Symetrická aréna vyžaduje 2, 4 nebo 8 kolonií.
+[Eight colonies need a square map in the symmetric arena.]
+Osm kolonií vyžaduje v symetrické aréně čtvercovou mapu.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Střed je na této mapě příliš malý pro ovocný sad; použijte větší střed nebo větší mapu.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Aréna nechává příliš málo místa pro každou kolonii; použijte větší mapu, menší střed nebo užší příkop.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Hráze jsou příliš blízko sebe; použijte méně nebo užší hráze, případně větší střed.
+[Ring world]
+Prstencový svět
+[Belt width]
+Šířka pásu
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Pás je pro tolik kolonií příliš krátký; použijte delší mapu nebo méně kolonií.
+[City states]
+Městské státy
+[Strait width]
+Šířka průlivu
+[Valleys]
+Údolí
+[Frontier richness]
+Bohatství pohraničí
+[City states need at least one colony.]
+Městské státy potřebují alespoň jednu kolonii.
+[Stone walls]
+Kamenné hradby
+[Sand patches]
+Písčiny
+[Tidal flats]
+Přílivové pláně
+[Everglades]
+Mokřady
+[Pool spacing]
+Rozestup tůní
+[Pool size]
+Velikost tůní
+[Clearing size]
+Velikost mýtiny
+[Levee]
+Hráz
+[Sloughs]
+Slepá ramena
+[Everglades need at least one colony.]
+Mokřady potřebují alespoň jednu kolonii.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Příliš mnoho kolonií pro tuto mapu; použijte větší mapu nebo méně kolonií.
+[Coral]
+Korál
+[Fork angle]
+Úhel větvení
+[Lean]
+Náklon
+[Home size]
+Velikost domova
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Korál se na tuto mapu nevejde; použijte větší mapu, užší průlivy nebo méně kolonií.
+[Branching]
+Větvení
+[Branch width]
+Šířka větví
+[Coral needs at least one colony.]
+Korál potřebuje alespoň jednu kolonii.
+[Coral needs a map at least 128 tiles across.]
+Korál potřebuje mapu širokou alespoň 128 polí.
+[Carousel]
+Kolotoč
+[Amphitheatre]
+Amfiteátr
+[Switchbacks]
+Serpentiny
+[Court size]
+Velikost nádvoří
+[Court wall]
+Zeď nádvoří
+[Plaza size]
+Velikost náměstí
+[Starting tower level]
+Úroveň počátečních věží
+[Towers per colony]
+Věže na kolonii
+[Rings]
+Prstence
+[Ramp width]
+Šířka ramp
+[Pit size]
+Velikost jámy
+[Terrace width]
+Šířka teras
+[Bay size]
+Velikost zátok
+[Border wall]
+Hraniční zeď
+[Plateau size]
+Velikost náhorní plošiny
+[Trail width]
+Šířka stezky
+[Wall between legs]
+Zeď mezi serpentinami
+[Farm building plots]
+Stavební parcely na farmách
+[Carousels need at least two colonies.]
+Kolotoč potřebuje alespoň dvě kolonie.
+[Switchbacks need at least two colonies.]
+Serpentiny potřebují alespoň dvě kolonie.
+[An amphitheatre needs at least two colonies.]
+Amfiteátr potřebuje alespoň dvě kolonie.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Kolotoč se na tuto mapu nevejde; použijte větší mapu, menší domovy nebo méně kolonií.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Serpentiny se na tuto mapu nevejdou; použijte větší mapu, menší náhorní plošinu, užší stezky nebo méně kolonií.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Amfiteátr se na tuto mapu nevejde; použijte větší mapu, méně prstenců, užší terasy nebo méně kolonií.
+[Spider web]
+Pavučina
+[Spokes per colony]
+Paprsků na kolonii
+[Ring spacing]
+Rozestup kruhů
+[Thread width]
+Šířka vláken
+[Sag]
+Průvěs
+[Torn strands]
+Přetržená vlákna
+[Hub size]
+Velikost středu
+[Dew drops]
+Kapky rosy
+[Spiral]
+Spirála
+[Spider webs need at least one colony.]
+Pavučina potřebuje alespoň jednu kolonii.
+[Sandbars]
+Písečné lavice
+[Tide pools]
+Přílivové tůně
+[Lagoons]
+Laguny
+[Central island]
+Střední ostrov
+[Tidal flats need at least one colony.]
+Přílivové pláně potřebují alespoň jednu kolonii.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Domovské ostrovy se na tuto mapu nevejdou; použijte větší mapu, méně kolonií nebo menší ostrovy.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Společné území a průliv ponechávají příliš málo místa pro domovské základny; použijte větší mapu, méně kolonií, menší společné území nebo užší průliv.
+[Wheat amount]
+Množství pšenice
+[Wood amount]
+Množství dřeva
+[Stone amount]
+Množství kamení
+[Algae amount]
+Množství řas
+[Fruit amount]
+Množství ovoce
+[Stone on hilltops]
+Kamení na vrcholcích kopců
+[Winding river]
+Klikatá řeka
+[Sandy beaches]
+Písečné pláže
+[Land bridges]
+Pevninské mosty
+[Colony meadows]
+Louky kolem kolonií
+[Extra starting deposit]
+Ložisko navíc na začátku
+[Moat bridges]
+Mosty přes příkop
+[Jagged coastlines]
+Členité pobřeží
+[Sand roads]
+Písečné cesty
+[Treasure in dead ends]
+Poklady ve slepých uličkách
+[Fjord bank deposits]
+Ložiska na březích fjordů
+[Sandy lake shore]
+Písečný břeh jezera
+[River delta]
+Říční delta
+[Meandering rivers]
+Meandrující řeky
+[Fruit in home valleys]
+Ovoce v domovských údolích
+[Moat]
+Vodní příkop
+[Stone in the orchard]
+Kamení v sadu
+[Colonies on both coasts]
+Kolonie na obou pobřežích
+[Winding belt]
+Zvlněný pás
+[Cell shape]
+Tvar buněk
+[Squares]
+Čtverce
+[Hexagons]
+Šestiúhelníky
+[Warp]
+Deformace
+[Fingerprint]
+Otisk prstu
+[Wavelength]
+Vlnová délka
+[Pattern]
+Vzor
+[Labyrinth]
+Labyrint
+[Channels]
+Brázdy
+[Barrier]
+Bariéra
+[Water]
+Voda
+[Grain]
+Zrnitost
+[Rain shadow]
+Srážkový stín
+[Ridges]
+Hřebeny
+[Slant]
+Zkosení
+[Ridge thickness]
+Tloušťka hřebenů
+[Pass spacing]
+Rozestup průsmyků
+[Lee width]
+Šířka závětří
+[Old growth]
+Prales
+[Canals]
+Kanály
+[Forest density]
+Hustota lesa
+[Hidden groves]
+Skryté háje
+[Starting trails]
+Počáteční stezky
+[Block size]
+Velikost bloku
+[Canal width]
+Šířka kanálů
+[Extra bridges]
+Další mosty
+[Polder]
+Poldr
+[Old town]
+Staré město
+[Anthill]
+Mraveniště
+[Row angle]
+Úhel řad
+[Diagonal]
+Šikmo
+[Dyke spacing]
+Rozestup hrází
+[Village size]
+Velikost vesnic
+[Hamlets]
+Osady
+[City size]
+Velikost města
+[Street width]
+Šířka ulic
+[Plazas]
+Náměstí
+[Chamber spacing]
+Rozestup komor
+[Chamber size]
+Velikost komor
+[Queen room]
+Královnina komora
+[Tunnel width]
+Šířka tunelů
+[Loops]
+Smyčky
+[Home pools]
+Tůně u domova
+[Farm plots]
+Zemědělské parcely
+[Tendril roads]
+Úponkové cesty
+[Random]
+Náhodně
+[Vertical]
+Svisle
+[Horizontal]
+Vodorovně
+[Inland lakes]
+Vnitrozemská jezera
+[Block shape]
+Tvar bloků
+[Random parameters]
+Náhodné parametry
+[Randomize parameters]
+Náhodně zvolit parametry
+[Start quality]
+Kvalita startu
+[Fairness]
+Spravedlnost
+[Score]
+Skóre
+[Weight]
+Váha
+[Worst]
+Nejhorší
+[Best]
+Nejlepší
+[Fertility]
+Úrodnost
+[Deposits]
+Zásoby
+[Room]
+Prostor
+[Isolation]
+Odloučení
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Start každé kolonie se měří na hotové mapě: cesta k obilí a ke dřevu, jak dobře její půda dorůstá, zásoby a stavební místa v dosahu a vzdálenost od soupeřů. Každý činitel dostane skóre od 0 do 1 vůči pevné laťce, celek je váží, spravedlnost je celek nejhorší kolonie dělený celkem nejlepší a skóre je nejhorší celek násobený spravedlností.
+[Map preview controls]
+Tažením posouvejte přes okraje. Kolečkem přibližujte. Pravým nebo dvojitým kliknutím obnovte pohled.
+[Map preview drag help]
+Tažením posouvejte; kolečkem přibližujte.
+[Map preview loading]
+Načítání...
+[Map preview failed]
+Náhled selhal
+[Map preview retry]
+Kliknutím zkuste znovu
+[Map preview please wait]
+Čekejte prosím
+[Map preview choose another]
+Vyberte mapu

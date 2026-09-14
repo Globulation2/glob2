@@ -74,6 +74,10 @@ AIEcono
 AIWarrush-描述
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+Cabino 将防御、进攻和建设作为各自独立的部门来运作，但都汇聚于同一个计划：快速壮大，然后向对手投入庞大的军队。难度：困难。
+[AICabino]
+Cabino
 [Alga]
 海藻
 [algae]
@@ -605,9 +609,9 @@ numlock
 [ok]
 确定
 [old islands terrain]
-古代岛屿地形
+崎岖群岛
 [old random terrain]
-古代随机地形
+破碎海岸
 [on press]
 按下时
 [On the spot]
@@ -1216,6 +1220,10 @@ Ysagoon 线上游戏
 仅限单人游戏和录像回放。多人游戏固定为1x速度。
 [AICortex-Description]
 Cortex向新的麦田扩张，利用前线食堂和医院支援一波又一波的战士进攻。难度中等，仍处于实验阶段。
+[AIMaxima-Description]
+Maxima 发展粮食充足的殖民地，持续侦察，并以每一名可调度的战士不停进攻。难度高。
+[AIMaxima]
+Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
 无法保存战役。请检查目标文件夹是否存在、是否可写，以及是否有可用空间。
 [AICortex]
@@ -1256,6 +1264,10 @@ AI策略与对抗
 核心策略:在对手完成建设前，发动迅速而猛烈的进攻。\n\n优势:善于打击无防备的扩张和缓慢的备战。\n\n可尝试的对策:维持经济，撑过首轮进攻后再反击。
 [AIWarrush-Summary]
 快速攻击考验你的早期防御能力。
+[AICabino-Profile]
+核心策略：由独立的专职部门（防御、进攻、建设、升级、单位管理）组成的内阁，各部门自行其是，却共同汇聚于一个计划：快速壮大，然后向对手投入庞大的军队。\n\n优势：快速扩张支撑起进攻性的军事压力；独立部门无需等待中央计划即可迅速应对当地威胁。\n\n应对策略：尽早遏制其扩张，并利用地形限制其能同时投入交战的部队数量。
+[AICabino-Summary]
+相互协作的独立部门，追求快速壮大和庞大的军队。
 [Algae]
 海藻
 [Alliances]
@@ -1359,9 +1371,9 @@ AI策略与对抗
 [No AI orders]
 没有AI命令
 [Old islands]
-旧版岛屿生成
+崎岖群岛
 [Old random]
-旧版随机生成
+破碎海岸
 [Open at least one colony to start a match.]
 至少启用一个殖民地才能开始对局。
 [Open book]
@@ -1376,6 +1388,14 @@ AI策略与对抗
 预制地图
 [Preview ready. Start plays this exact map.]
 预览准备就绪。开始游戏时使用这张精确的地图。
+[Regenerate all]
+全部重新生成
+[Generating preview...]
+正在生成预览...
+[Preview unavailable]
+预览不可用
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+每种地貌都以当前大小和殖民地数量实际生成的地图显示。选择一个即可游玩所显示的地图。
 [Purple]
 紫色
 [Quick clash]
@@ -1538,6 +1558,10 @@ AI策略与对抗
 快速战斗:双倍速度；生成的地图以 8 个工人开始。
 [Reroll]
 生成另一张地图
+[Randomize]
+随机生成
+[Reset to defaults]
+恢复默认设置
 [Ruleset]
 规则集
 [Select a map from the library.]
@@ -1616,6 +1640,8 @@ AI策略与对抗
 完成
 [settings Edit shortcut]
 编辑键盘快捷键
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+在高分辨率屏幕上放大菜单、文字和侧边栏。
 [settings Flags]
 旗帜
 [settings Full]
@@ -1630,6 +1656,8 @@ AI策略与对抗
 游戏玩法
 [settings Graphics detail]
 图形细节
+[settings Interface scale]
+界面缩放
 [settings Keep]
 保留更改
 [settings Keep this display mode?]
@@ -1652,6 +1680,8 @@ AI策略与对抗
 等级
 [settings Map editor]
 地图编辑器
+[settings Match the desktop]
+与桌面相同
 [settings Missing font]
 缺少字体
 [settings Music volume]
@@ -1762,3 +1792,421 @@ OpenGL 在此版本中不可用。
 自动环面视图
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 在地图上移动时自动显示圆环形状的地图概览 (OpenGL)。
+[settings Autosave]
+自动储存
+[settings Save the game automatically about every 10 seconds.]
+大约每10秒自动储存游戏。
+[Channel width]
+水道宽度
+[Land bridge width]
+陆桥宽度
+[Lake size]
+湖泊大小
+[Contested commons]
+争夺公地
+[Maze]
+迷宫
+[Fjord continent]
+峡湾大陆
+[Cell size]
+单元格大小
+[Corridor width]
+通道宽度
+[Spoke width]
+辐条宽度
+[Loopiness]
+回环程度
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+迷宫在横向和纵向上都至少需要两个单元格；请使用更大的地图或更小的单元格。
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+水道这么宽，每个单元格里剩下的草地太少；请使用更窄的水道或更大的单元格。
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+迷宫中的死胡同太少，不足以容纳这么多殖民地；请使用更大的地图或更小的单元格。
+[Home island size]
+起始岛屿大小
+[Commons size]
+公地区域大小
+[Moat width]
+护城河宽度
+[Bridge count]
+桥梁数量
+[Continent size]
+大陆大小
+[Coast roughness]
+海岸线曲折度
+[Fjord width]
+峡湾宽度
+[Lake connects to fjords]
+湖泊连通峡湾
+[Resource islands]
+资源岛屿
+[Watershed]
+流域
+[River density]
+河流密度
+[Dryness]
+干旱程度
+[Fords]
+浅滩
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+流域中的泛滥平原太少，容纳不下这么多殖民地；请使用更大的地图或减少殖民地数量。
+[Stone highlands]
+石质高地
+[Valley size]
+山谷大小
+[Pass width]
+山口宽度
+[Pond size]
+池塘大小
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+这些山谷对于地图来说太大；请使用更大的地图或更小的山谷。
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+高地空间太少，容纳不下这么多殖民地；请使用更大的地图或减少殖民地数量。
+[Symmetric arena]
+对称竞技场
+[Centre size]
+中心大小
+[Causeway width]
+堤道宽度
+[Causeways]
+堤道
+[Lakes]
+湖泊
+[Resource richness]
+资源丰富度
+[Symmetric arena needs 2, 4 or 8 colonies.]
+对称竞技场需要2、4或8个殖民地。
+[Eight colonies need a square map in the symmetric arena.]
+在对称竞技场中，八个殖民地需要正方形地图。
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+在这张地图上，中心太小，放不下果园；请使用更大的中心或更大的地图。
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+竞技场留给每个殖民地的空间太少；请使用更大的地图、更小的中心或更窄的护城河。
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+堤道之间靠得太近；请减少堤道数量或使用更窄的堤道，或者使用更大的中心。
+[Ring world]
+环形世界
+[Belt width]
+环带宽度
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+环带太短，容纳不下这么多殖民地；请使用更长的地图或减少殖民地数量。
+[City states]
+城邦
+[Strait width]
+海峡宽度
+[Valleys]
+山谷
+[Frontier richness]
+边疆富饶度
+[City states need at least one colony.]
+城邦至少需要一个殖民地。
+[Stone walls]
+石墙
+[Sand patches]
+沙地
+[Tidal flats]
+潮间带
+[Everglades]
+沼泽地
+[Pool spacing]
+水塘间距
+[Pool size]
+水塘大小
+[Clearing size]
+空地大小
+[Levee]
+堤坝
+[Sloughs]
+沼泽水道
+[Everglades need at least one colony.]
+沼泽地至少需要一个殖民地。
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+此地图的殖民地太多；请使用更大的地图或减少殖民地。
+[Coral]
+珊瑚
+[Fork angle]
+分枝角度
+[Lean]
+倾斜
+[Home size]
+基地大小
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+珊瑚无法放入此地图；请使用更大的地图、更窄的海峡或更少的殖民地。
+[Branching]
+分枝
+[Branch width]
+枝宽
+[Coral needs at least one colony.]
+珊瑚至少需要一个殖民地。
+[Coral needs a map at least 128 tiles across.]
+珊瑚需要宽度至少为 128 格的地图。
+[Carousel]
+旋转木马
+[Amphitheatre]
+圆形剧场
+[Switchbacks]
+之字山路
+[Court size]
+庭院大小
+[Court wall]
+庭院围墙
+[Plaza size]
+广场大小
+[Starting tower level]
+初始塔等级
+[Towers per colony]
+每个殖民地的塔数
+[Rings]
+环数
+[Ramp width]
+坡道宽度
+[Pit size]
+竞技场大小
+[Terrace width]
+台阶宽度
+[Bay size]
+海湾大小
+[Border wall]
+边界围墙
+[Plateau size]
+高原大小
+[Trail width]
+山路宽度
+[Wall between legs]
+弯道之间的墙
+[Farm building plots]
+农场建筑用地
+[Carousels need at least two colonies.]
+旋转木马至少需要两个殖民地。
+[Switchbacks need at least two colonies.]
+之字山路至少需要两个殖民地。
+[An amphitheatre needs at least two colonies.]
+圆形剧场至少需要两个殖民地。
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+此地图放不下旋转木马；请使用更大的地图、更小的基地或更少的殖民地。
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+此地图放不下之字山路；请使用更大的地图、更小的高原、更窄的山路或更少的殖民地。
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+此地图放不下圆形剧场；请使用更大的地图、更少的环、更窄的台阶或更少的殖民地。
+[Spider web]
+蜘蛛网
+[Spokes per colony]
+每个殖民地的辐射线
+[Ring spacing]
+环间距
+[Thread width]
+丝线宽度
+[Sag]
+下垂
+[Torn strands]
+断丝
+[Hub size]
+中心大小
+[Dew drops]
+露珠
+[Spiral]
+螺旋
+[Spider webs need at least one colony.]
+蜘蛛网至少需要一个殖民地。
+[Sandbars]
+沙洲
+[Tide pools]
+潮池
+[Lagoons]
+潟湖
+[Central island]
+中央岛
+[Tidal flats need at least one colony.]
+潮间带至少需要一个殖民地。
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+母岛无法容纳在这张地图上；请使用更大的地图、更少的殖民地或更小的岛屿。
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+公地区域与海峡留给基地的空间太少；请使用更大的地图、更少的殖民地、更小的公地区域或更窄的海峡。
+[Wheat amount]
+小麦数量
+[Wood amount]
+木材数量
+[Stone amount]
+石头数量
+[Algae amount]
+海藻数量
+[Fruit amount]
+水果数量
+[Stone on hilltops]
+山顶的石头
+[Winding river]
+蜿蜒的河流
+[Sandy beaches]
+沙滩
+[Land bridges]
+陆桥
+[Colony meadows]
+殖民地周围的草地
+[Extra starting deposit]
+额外的起始资源
+[Moat bridges]
+护城河上的桥梁
+[Jagged coastlines]
+曲折的海岸线
+[Sand roads]
+沙土路
+[Treasure in dead ends]
+死路尽头的宝藏
+[Fjord bank deposits]
+峡湾岸边的资源
+[Sandy lake shore]
+沙质湖岸
+[River delta]
+河口三角洲
+[Meandering rivers]
+曲流河道
+[Fruit in home valleys]
+起始山谷中的水果
+[Moat]
+护城河
+[Stone in the orchard]
+果园中的石头
+[Colonies on both coasts]
+两岸都有殖民地
+[Winding belt]
+蜿蜒的环带
+[Cell shape]
+格子形状
+[Squares]
+正方形
+[Hexagons]
+六边形
+[Warp]
+扭曲
+[Fingerprint]
+指纹
+[Wavelength]
+波长
+[Pattern]
+图案
+[Labyrinth]
+迷宫
+[Channels]
+沟槽
+[Barrier]
+屏障
+[Water]
+水
+[Grain]
+颗粒度
+[Rain shadow]
+雨影
+[Ridges]
+山脊
+[Slant]
+倾斜度
+[Ridge thickness]
+山脊厚度
+[Pass spacing]
+山口间距
+[Lee width]
+背风带宽度
+[Old growth]
+原始森林
+[Canals]
+运河
+[Forest density]
+森林密度
+[Hidden groves]
+隐蔽林地
+[Starting trails]
+初始小径
+[Block size]
+街区大小
+[Canal width]
+运河宽度
+[Extra bridges]
+额外桥梁
+[Polder]
+圩田
+[Old town]
+老城
+[Anthill]
+蚁丘
+[Row angle]
+行列角度
+[Diagonal]
+斜向
+[Dyke spacing]
+堤坝间距
+[Village size]
+村庄大小
+[Hamlets]
+小村落
+[City size]
+城市大小
+[Street width]
+街道宽度
+[Plazas]
+广场
+[Chamber spacing]
+巢室间距
+[Chamber size]
+巢室大小
+[Queen room]
+蚁后室
+[Tunnel width]
+隧道宽度
+[Loops]
+环路
+[Home pools]
+基地水池
+[Farm plots]
+农田地块
+[Tendril roads]
+藤蔓状道路
+[Random]
+随机
+[Vertical]
+纵向
+[Horizontal]
+横向
+[Inland lakes]
+内陆湖
+[Block shape]
+街区形状
+[Random parameters]
+随机参数
+[Randomize parameters]
+随机选取参数
+[Start quality]
+开局质量
+[Fairness]
+公平度
+[Score]
+评分
+[Weight]
+权重
+[Worst]
+最低
+[Best]
+最高
+[Fertility]
+肥沃度
+[Deposits]
+储量
+[Room]
+空间
+[Isolation]
+隔离度
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+每个殖民地的开局都在完成的地图上测量：到小麦和木材的路程、土地的再生能力、可及范围内的储量和建筑用地，以及与对手的距离。每项因素按固定标准计 0 到 1 分，总分对其加权，公平度是最低殖民地的总分除以最高者，评分是最低总分乘以公平度。
+[Map preview controls]
+拖动以跨越边界，滚轮缩放。右键或双击重置。
+[Map preview drag help]
+拖动移动；滚轮缩放。
+[Map preview loading]
+加载中...
+[Map preview failed]
+预览失败
+[Map preview retry]
+点击重试
+[Map preview please wait]
+请稍候
+[Map preview choose another]
+选择地图

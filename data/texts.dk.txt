@@ -78,6 +78,10 @@ AIToubib
 Warrush angriber hurtigt og hårdt og presser ofte den forsvarende spiller til det yderste. Middel sværhedsgrad.
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+Cabino styrer forsvar, angreb og opbygning som uafhængige afdelinger, der arbejder mod én plan: vokser hurtigt og sender enorme hære mod sine modstandere. Høj sværhedsgrad.
+[AICabino]
+Cabino
 [Alga]
 Alger
 [algae]
@@ -677,9 +681,9 @@ heraf
 [ok]
 Ok
 [old islands terrain]
-Gamle tilfældige øer
+Barsk øgruppe
 [old random terrain]
-Gammelt tilfældigt terræn
+Opsplittet kyst
 [on press]
 Ved tryk
 [On the spot]
@@ -1294,6 +1298,10 @@ Hastighed: 1x (flerspiller)
 Kun for én spiller og optagelser. Flerspillerspil kører med 1x hastighed.
 [AICortex-Description]
 Cortex udvider sig mod nye hvedemarker og sender grupper af krigere i kamp, støttet af kroer og hospitaler nær frontlinjen. Middel sværhedsgrad. Eksperimentel.
+[AIMaxima-Description]
+Maxima opbygger en velnæret koloni, spejder konstant og angriber uden pause med hver kriger, den kan undvære. Høj sværhedsgrad.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 Kortet kunne ikke indlæses: filen er beskadiget eller har en inkompatibel version.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1336,6 +1344,10 @@ Kæmpe baser og konvertering i stedet for angreb.
 Strategi: Angriber tidligt og kraftigt, før modstanderne er færdige med at forberede sig.\n\nStyrker: Udnytter uforsvaret ekspansion og langsom militær forberedelse.\n\nForeslået modspil: Overlev det første angreb, mens du bevarer din økonomi, og gå derefter til modangreb.
 [AIWarrush-Summary]
 Hurtige angreb, der tester dit tidlige forsvar.
+[AICabino-Profile]
+Grundstrategi: Et kabinet af uafhængige specialistafdelinger (forsvar, angreb, opbygning, opgraderinger, enhedsstyring), der hver handler på eget initiativ, men arbejder mod én plan: vokse hurtigt og derefter sende enorme hære mod modstanderne.\n\nStyrker: Hurtig ekspansion understøtter aggressivt militært pres; de uafhængige afdelinger reagerer hurtigt på lokale trusler uden at vente på en central plan.\n\nModtræk at prøve: Bekæmp dets ekspansion tidligt, og brug terrænet til at begrænse, hvor mange af dets tropper der kan kæmpe på én gang.
+[AICabino-Summary]
+Uafhængige afdelinger, der samarbejder om hurtig vækst og enorme hære.
 [Algae]
 Alger
 [Alliances]
@@ -1439,9 +1451,9 @@ Medium - Eksperimentel
 [No AI orders]
 Ingen AI-kommandoer
 [Old islands]
-Gamle øer
+Barsk øgruppe
 [Old random]
-Gammel tilfældig
+Opsplittet kyst
 [Open at least one colony to start a match.]
 Åbn mindst én koloni for at starte en kamp.
 [Open book]
@@ -1456,6 +1468,14 @@ Spillere og hold
 Forudarbejdede kort
 [Preview ready. Start plays this exact map.]
 Forhåndsvisning klar. Start af spillet bruger dette nøjagtige kort.
+[Regenerate all]
+Generer alle igen
+[Generating preview...]
+Genererer forhåndsvisning...
+[Preview unavailable]
+Forhåndsvisning ikke tilgængelig
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Hvert landskab vises som et rigtigt kort med din nuværende størrelse og dit antal kolonier. Vælg et for at spille det viste kort.
 [Purple]
 Lilla
 [Quick clash]
@@ -1618,6 +1638,10 @@ Ingen aktuel forhåndsvisning
 Hurtig kamp: dobbelt hastighed; genererede kort starter med 8 arbejdere.
 [Reroll]
 Generer endnu et kort
+[Randomize]
+Generer tilfældigt
+[Reset to defaults]
+Nulstil til standard
 [Ruleset]
 Regelsæt
 [Select a map from the library.]
@@ -1696,6 +1720,8 @@ Vis Globulation 2-markøren.
 Færdig
 [settings Edit shortcut]
 Rediger tastaturgenvej
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Forstør menuer, tekst og sidepanelet på en skærm med høj opløsning.
 [settings Flags]
 Flag
 [settings Full]
@@ -1710,6 +1736,8 @@ Spilhastighed
 Spilforløb
 [settings Graphics detail]
 Grafikdetaljer
+[settings Interface scale]
+Grænsefladeskalering
 [settings Keep]
 Behold ændringer
 [settings Keep this display mode?]
@@ -1732,6 +1760,8 @@ Sprog, der bruges i hele grænsefladen.
 Niveau
 [settings Map editor]
 Korteditor
+[settings Match the desktop]
+Følg skrivebordet
 [settings Missing font]
 Manglende skrifttype
 [settings Music volume]
@@ -1842,3 +1872,421 @@ Anvend grafikken, næste gang et spil eller korteditoren indlæses (OpenGL).
 Automatisk torusvisning
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Vis automatisk den torusformede kortoversigt, mens du bevæger dig rundt på kortet (OpenGL).
+[settings Autosave]
+Automatisk gemning
+[settings Save the game automatically about every 10 seconds.]
+Gemmer spillet automatisk cirka hvert 10. sekund.
+[Channel width]
+Kanalbredde
+[Land bridge width]
+Landbroens bredde
+[Lake size]
+Søstørrelse
+[Contested commons]
+Omstridt fællesområde
+[Maze]
+Labyrint
+[Fjord continent]
+Fjordkontinent
+[Cell size]
+Cellestørrelse
+[Corridor width]
+Korridorbredde
+[Spoke width]
+Egernes bredde
+[Loopiness]
+Løkketæthed
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labyrinten skal have mindst to celler på tværs og på langs; brug et større kort eller mindre celler.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Så brede kanaler efterlader for lidt græs i hver celle; brug smallere kanaler eller større celler.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labyrinten har for få blindgyder til så mange kolonier; brug et større kort eller mindre celler.
+[Home island size]
+Størrelse på startø
+[Commons size]
+Størrelse på fællesområde
+[Moat width]
+Voldgravsbredde
+[Bridge count]
+Antal broer
+[Continent size]
+Kontinentstørrelse
+[Coast roughness]
+Kystens ujævnhed
+[Fjord width]
+Fjordbredde
+[Lake connects to fjords]
+Sø forbundet med fjorde
+[Resource islands]
+Ressourceøer
+[Watershed]
+Afvandingsområde
+[River density]
+Flodtæthed
+[Dryness]
+Tørhed
+[Fords]
+Vadesteder
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Afvandingsområdet har for lidt flodslette til så mange kolonier; brug et større kort eller færre kolonier.
+[Stone highlands]
+Stenhøjland
+[Valley size]
+Dalstørrelse
+[Pass width]
+Pasbredde
+[Pond size]
+Damstørrelse
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Disse dale er for store til kortet; brug et større kort eller mindre dale.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Højlandet har for lidt plads til så mange kolonier; brug et større kort eller færre kolonier.
+[Symmetric arena]
+Symmetrisk arena
+[Centre size]
+Centrets størrelse
+[Causeway width]
+Dæmningsvejsbredde
+[Causeways]
+Dæmningsveje
+[Lakes]
+Søer
+[Resource richness]
+Ressourcerigdom
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Symmetrisk arena kræver 2, 4 eller 8 kolonier.
+[Eight colonies need a square map in the symmetric arena.]
+Otte kolonier kræver et kvadratisk kort i den symmetriske arena.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Centret er for lille til en frugtlund på dette kort; brug et større center eller et større kort.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arenaen giver for lidt plads til hver koloni; brug et større kort, et mindre center eller en smallere voldgrav.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Dæmningsvejene ligger for tæt; brug færre eller smallere dæmningsveje, eller et større center.
+[Ring world]
+Ringverden
+[Belt width]
+Bæltebredde
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Bæltet er for kort til så mange kolonier; brug et længere kort eller færre kolonier.
+[City states]
+Bystater
+[Strait width]
+Strædets bredde
+[Valleys]
+Dale
+[Frontier richness]
+Grænselandets rigdom
+[City states need at least one colony.]
+Bystater kræver mindst én koloni.
+[Stone walls]
+Stenmure
+[Sand patches]
+Sandpletter
+[Tidal flats]
+Vadehav
+[Everglades]
+Sumpland
+[Pool spacing]
+Afstand mellem pøle
+[Pool size]
+Pølestørrelse
+[Clearing size]
+Lysningens størrelse
+[Levee]
+Dige
+[Sloughs]
+Sumpkanaler
+[Everglades need at least one colony.]
+Sumplandet kræver mindst én koloni.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+For mange kolonier til dette kort; brug et større kort eller færre kolonier.
+[Coral]
+Koral
+[Fork angle]
+Forgreningsvinkel
+[Lean]
+Hældning
+[Home size]
+Hjemmets størrelse
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Koralen passer ikke på dette kort; brug et større kort, smallere stræder eller færre kolonier.
+[Branching]
+Forgrening
+[Branch width]
+Grenbredde
+[Coral needs at least one colony.]
+Koral kræver mindst én koloni.
+[Coral needs a map at least 128 tiles across.]
+Koral kræver et kort på mindst 128 felter i bredden.
+[Carousel]
+Karrusel
+[Amphitheatre]
+Amfiteater
+[Switchbacks]
+Hårnålesving
+[Court size]
+Gårdenes størrelse
+[Court wall]
+Gårdmur
+[Plaza size]
+Pladsens størrelse
+[Starting tower level]
+Niveau for starttårne
+[Towers per colony]
+Tårne pr. koloni
+[Rings]
+Ringe
+[Ramp width]
+Rampebredde
+[Pit size]
+Arenaens størrelse
+[Terrace width]
+Terrassebredde
+[Bay size]
+Bugternes størrelse
+[Border wall]
+Grænsemur
+[Plateau size]
+Plateauets størrelse
+[Trail width]
+Stibredde
+[Wall between legs]
+Mur mellem sving
+[Farm building plots]
+Byggegrunde på gårdene
+[Carousels need at least two colonies.]
+En karrusel kræver mindst to kolonier.
+[Switchbacks need at least two colonies.]
+Hårnålesving kræver mindst to kolonier.
+[An amphitheatre needs at least two colonies.]
+Et amfiteater kræver mindst to kolonier.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Karrusellen passer ikke til dette kort; brug et større kort, mindre hjem eller færre kolonier.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Hårnålesvingene passer ikke til dette kort; brug et større kort, et mindre plateau, smallere stier eller færre kolonier.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Amfiteatret passer ikke til dette kort; brug et større kort, færre ringe, smallere terrasser eller færre kolonier.
+[Spider web]
+Spindelvæv
+[Spokes per colony]
+Eger pr. koloni
+[Ring spacing]
+Afstand mellem ringe
+[Thread width]
+Trådbredde
+[Sag]
+Nedhæng
+[Torn strands]
+Revne tråde
+[Hub size]
+Navstørrelse
+[Dew drops]
+Dugdråber
+[Spiral]
+Spiral
+[Spider webs need at least one colony.]
+Spindelvæv kræver mindst én koloni.
+[Sandbars]
+Sandbanker
+[Tide pools]
+Tidevandspøle
+[Lagoons]
+Laguner
+[Central island]
+Central ø
+[Tidal flats need at least one colony.]
+Vadehavet kræver mindst én koloni.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Hjemøerne passer ikke på dette kort; brug et større kort, færre kolonier eller mindre øer.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Fællesområdet og strædet efterlader for lidt plads til hjembaserne; brug et større kort, færre kolonier, et mindre fællesområde eller et smallere stræde.
+[Wheat amount]
+Mængde hvede
+[Wood amount]
+Mængde træ
+[Stone amount]
+Mængde sten
+[Algae amount]
+Mængde alger
+[Fruit amount]
+Mængde frugt
+[Stone on hilltops]
+Sten på bakketoppene
+[Winding river]
+Slyngende flod
+[Sandy beaches]
+Sandstrande
+[Land bridges]
+Landbroer
+[Colony meadows]
+Enge omkring kolonierne
+[Extra starting deposit]
+Ekstra startforekomst
+[Moat bridges]
+Broer over voldgraven
+[Jagged coastlines]
+Takkede kyster
+[Sand roads]
+Sandveje
+[Treasure in dead ends]
+Skatte i blindgyder
+[Fjord bank deposits]
+Forekomster langs fjordbredderne
+[Sandy lake shore]
+Sandet søbred
+[River delta]
+Floddelta
+[Meandering rivers]
+Bugtede floder
+[Fruit in home valleys]
+Frugt i startdalene
+[Moat]
+Voldgrav
+[Stone in the orchard]
+Sten i frugtplantagen
+[Colonies on both coasts]
+Kolonier på begge kyster
+[Winding belt]
+Bugtet bælte
+[Cell shape]
+Celleform
+[Squares]
+Kvadrater
+[Hexagons]
+Sekskanter
+[Warp]
+Forvrængning
+[Fingerprint]
+Fingeraftryk
+[Wavelength]
+Bølgelængde
+[Pattern]
+Mønster
+[Labyrinth]
+Labyrint
+[Channels]
+Render
+[Barrier]
+Barriere
+[Water]
+Vand
+[Grain]
+Kornethed
+[Rain shadow]
+Regnskygge
+[Ridges]
+Højderygge
+[Slant]
+Skråstilling
+[Ridge thickness]
+Højderyggenes tykkelse
+[Pass spacing]
+Afstand mellem pas
+[Lee width]
+Læsidens bredde
+[Old growth]
+Urskov
+[Canals]
+Kanaler
+[Forest density]
+Skovtæthed
+[Hidden groves]
+Skjulte lunde
+[Starting trails]
+Startstier
+[Block size]
+Karréstørrelse
+[Canal width]
+Kanalbredde
+[Extra bridges]
+Ekstra broer
+[Polder]
+Polder
+[Old town]
+Gamle bydel
+[Anthill]
+Myretue
+[Row angle]
+Rækkernes vinkel
+[Diagonal]
+Diagonalt
+[Dyke spacing]
+Afstand mellem diger
+[Village size]
+Landsbystørrelse
+[Hamlets]
+Småbyer
+[City size]
+Byens størrelse
+[Street width]
+Gadebredde
+[Plazas]
+Pladser
+[Chamber spacing]
+Afstand mellem kamre
+[Chamber size]
+Kammerstørrelse
+[Queen room]
+Dronningens kammer
+[Tunnel width]
+Tunnelbredde
+[Loops]
+Løkker
+[Home pools]
+Hjemmets vandhuller
+[Farm plots]
+Marklodder
+[Tendril roads]
+Slyngveje
+[Random]
+Tilfældig
+[Vertical]
+Lodret
+[Horizontal]
+Vandret
+[Inland lakes]
+Indsøer
+[Block shape]
+Karréform
+[Random parameters]
+Tilfældige parametre
+[Randomize parameters]
+Vælg tilfældige parametre
+[Start quality]
+Startkvalitet
+[Fairness]
+Retfærdighed
+[Score]
+Pointtal
+[Weight]
+Vægt
+[Worst]
+Dårligst
+[Best]
+Bedst
+[Fertility]
+Frugtbarhed
+[Deposits]
+Forekomster
+[Room]
+Plads
+[Isolation]
+Afsondring
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Hver kolonis start måles på det færdige kort: vejen til hvede og til træ, hvor godt dens jord vokser igen, forekomsterne og byggepladserne inden for rækkevidde og afstanden til rivalerne. Hver faktor scorer fra 0 til 1 mod en fast målestok, totalen vægter dem, retfærdigheden er den dårligste kolonis total delt med den bedstes, og pointtallet er den dårligste total gange retfærdigheden.
+[Map preview controls]
+Træk for at se over kanterne. Brug hjulet til zoom. Højreklik eller dobbeltklik for at nulstille.
+[Map preview drag help]
+Træk for at flytte; brug hjulet til zoom.
+[Map preview loading]
+Indlæser...
+[Map preview failed]
+Forhåndsvisning mislykkedes
+[Map preview retry]
+Klik for at prøve igen
+[Map preview please wait]
+Vent venligst
+[Map preview choose another]
+Vælg et kort

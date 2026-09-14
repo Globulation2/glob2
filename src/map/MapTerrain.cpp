@@ -132,7 +132,7 @@ Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const
 		The index in the following table is :
 		val[0] + val[1]*k + val[2]*k^2 + val[3]*k^3
 		where k is the number of different possibilities.
-		
+
 		H = grass
 		S = sand
 		E = water
@@ -232,5 +232,3 @@ Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const
 
 	return terrainLookupTable[index][0]+(syncRand()%terrainLookupTable[index][1]);
 }
-
-
