@@ -1960,8 +1960,6 @@ Szerokość ramp
 Rozmiar areny
 [Terrace width]
 Szerokość tarasów
-[Border roughness]
-Nieregularność granic
 [Bay size]
 Rozmiar zatok
 [Border wall]

@@ -1958,8 +1958,6 @@ OpenGL غير متوفر في هذا الإصدار.
 حجم الحفرة
 [Terrace width]
 عرض المدرجات
-[Border roughness]
-تعرّج الحدود
 [Bay size]
 حجم الخلجان
 [Border wall]

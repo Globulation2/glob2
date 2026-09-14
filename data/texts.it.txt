@@ -2022,8 +2022,6 @@ Larghezza delle rampe
 Dimensione della fossa
 [Terrace width]
 Larghezza delle gradinate
-[Border roughness]
-Irregolarità dei confini
 [Bay size]
 Dimensione delle baie
 [Border wall]

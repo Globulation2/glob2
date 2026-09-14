@@ -1956,8 +1956,6 @@ Globulation 2 커서를 표시합니다.
 경기장 크기
 [Terrace width]
 계단식 단 너비
-[Border roughness]
-경계의 굴곡
 [Bay size]
 만 크기
 [Border wall]

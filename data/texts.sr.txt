@@ -1960,8 +1960,6 @@ OpenGL није доступан у овој верзији.
 Величина јаме
 [Terrace width]
 Ширина тераса
-[Border roughness]
-Разуђеност граница
 [Bay size]
 Величина залива
 [Border wall]

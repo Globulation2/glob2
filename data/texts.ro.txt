@@ -1960,8 +1960,6 @@ Lățimea rampelor
 Mărimea arenei
 [Terrace width]
 Lățimea teraselor
-[Border roughness]
-Neregularitatea granițelor
 [Bay size]
 Mărimea golfurilor
 [Border wall]

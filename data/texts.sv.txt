@@ -1970,8 +1970,6 @@ Rampbredd
 Arenans storlek
 [Terrace width]
 Terrassbredd
-[Border roughness]
-Gränsernas ojämnhet
 [Bay size]
 Vikarnas storlek
 [Border wall]

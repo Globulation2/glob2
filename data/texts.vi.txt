@@ -1956,8 +1956,6 @@ Số vòng
 Kích thước hố
 [Terrace width]
 Độ rộng bậc
-[Border roughness]
-Độ gồ ghề của biên giới
 [Bay size]
 Kích thước vịnh
 [Border wall]

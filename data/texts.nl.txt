@@ -1984,8 +1984,6 @@ Hellingbreedte
 Grootte van de arena
 [Terrace width]
 Terrasbreedte
-[Border roughness]
-Grillige grenzen
 [Bay size]
 Grootte van de baaien
 [Border wall]

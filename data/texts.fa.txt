@@ -1958,8 +1958,6 @@ OpenGL در این بیلد موجود نیست.
 اندازه گودال
 [Terrace width]
 پهنای سکوها
-[Border roughness]
-ناهمواری مرزها
 [Bay size]
 اندازه خلیج‌ها
 [Border wall]

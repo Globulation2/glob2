@@ -1958,8 +1958,6 @@ Larĝo de deklivirejoj
 Grando de la areno
 [Terrace width]
 Larĝo de terasoj
-[Border roughness]
-Malglateco de limoj
 [Bay size]
 Grando de golfetoj
 [Border wall]

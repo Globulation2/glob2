@@ -1960,8 +1960,6 @@ Prstence
 Velikost jámy
 [Terrace width]
 Šířka teras
-[Border roughness]
-Členitost hranic
 [Bay size]
 Velikost zátok
 [Border wall]

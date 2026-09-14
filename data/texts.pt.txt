@@ -1966,8 +1966,6 @@ Largura das rampas
 Tamanho da arena
 [Terrace width]
 Largura das bancadas
-[Border roughness]
-Irregularidade das fronteiras
 [Bay size]
 Tamanho das baías
 [Border wall]

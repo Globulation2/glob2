@@ -7,7 +7,9 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <cstdio>
 #include <cstdlib>
+#include <string>
 #include <functional>
 #include <queue>
 #include <utility>
@@ -77,7 +79,8 @@ Territories growTerritories(const Torus &t, const std::vector<unsigned char> &el
 		for (const auto &s : kCardinalSteps)
 		{
 			const int next = t.at(tile % t.w + s[0], tile / t.w + s[1]);
-			if (eligible[next] && result.labels[next] < 0 && !queued[k][next] && steps[k][next] >= 0)
+			if (eligible[next] && result.labels[next] < 0 && !queued[k][next] &&
+				steps[k][next] >= 0)
 			{
 				queued[k][next] = 1;
 				frontier[k].push({std::int64_t(steps[k][next]) * 1000 + cost(next), next});
@@ -130,6 +133,123 @@ Territories growTerritories(const Torus &t, const std::vector<unsigned char> &el
 	}
 	return result;
 }
+/// Territories shared out from one site per claimant with every border a straight line: a tile belongs
+/// to the claimant whose squared straight-line distance from its site (the short way round the wrap)
+/// less that claimant's weight is least, ties to the lowest claimant - a power diagram, whose borders
+/// are lines perpendicular to the segment between two sites, shifted by the weights. The weights are
+/// tuned round by round until every area is within `tolerance` of an equal share, or `rounds` are up:
+/// a claimant with too little ground gains weight and its borders move out, one with too much loses
+/// it, each by the step that would mend the shortfall if its borders moved alone (the shortfall over
+/// the border's length, times twice the distance to the nearest other site, since a border moves one
+/// tile for that much weight), halved, and a round that made the areas less equal is undone and the
+/// step halved. Nothing is random and nothing takes turns, which is what tells it from growTerritories:
+/// there the smallest claimant takes the next tile wherever its frontier is cheapest, so a border grows
+/// fingers that a wall then follows (FEEDBACK 2026-09-13, Amphitheatre: "wildly unsmooth borders ...
+/// something fair but also simple and reliable"). Two other forms were tried first and could not be
+/// balanced: distance in steps, whose Chebyshev "bisector" is a whole band of equidistant tiles, and
+/// distance from a claimant's whole frontage arc, where every tile beyond two touching arcs is nearly
+/// equidistant from both, so either flips thousands of tiles for a weight one tile different. The
+/// distance is straight, not walked: it is for claimants whose sites face their ground with nothing in
+/// between (Amphitheatre's ramp mouths round the arena). Every claimant keeps the eligible ground within
+/// `keep` tiles of its site whatever the weights say, so a border shifted far by the balance (a 2:1
+/// map gives the colonies on its short sides much less ground to start with) never crosses the way in
+/// from a site; the wall then rounds that disc and carries on straight. Eligible ground is all claimed.
+inline Territories balancedTerritories(const Torus &t, const std::vector<unsigned char> &eligible,
+									   const std::vector<int> &sites, double keep = 0,
+									   int rounds = 80, double tolerance = 0.01)
+{
+	const int n = t.w * t.h, claimants = int(sites.size());
+	Territories result;
+	result.labels.assign(n, -1);
+	result.areas.assign(claimants, 0);
+	if (claimants == 0)
+		return result;
+	std::vector<std::vector<std::int64_t>> d2(claimants);
+	std::vector<int> own(n, -1); // the ground kept round each site, the lowest claimant's on a tie
+	for (int k = 0; k < claimants; ++k)
+	{
+		d2[k] = distanceSquaredTo(t, tileMask(t, {sites[k]}));
+		for (int i = 0; i < n; ++i)
+			if (own[i] < 0 && double(d2[k][i]) <= keep * keep)
+				own[i] = k;
+	}
+	// Twice the distance from each site to the nearest other: the weight that moves a border a tile.
+	std::vector<double> reach(claimants, 1.0);
+	for (int k = 0; k < claimants; ++k)
+	{
+		double nearest = -1;
+		for (int j = 0; j < claimants; ++j)
+			if (j != k && (nearest < 0 || d2[j][sites[k]] < nearest))
+				nearest = double(d2[j][sites[k]]);
+		reach[k] = nearest > 0 ? 2 * std::sqrt(nearest) : 1.0;
+	}
+	int total = 0;
+	for (int i = 0; i < n; ++i)
+		total += eligible[i] != 0;
+	const double target = double(total) / claimants;
+	std::vector<double> weight(claimants, 0.0);
+	const auto assign = [&](const std::vector<double> &w)
+	{
+		std::fill(result.areas.begin(), result.areas.end(), 0);
+		for (int i = 0; i < n; ++i)
+		{
+			result.labels[i] = -1;
+			if (!eligible[i])
+				continue;
+			double best = 0;
+			if (own[i] >= 0)
+				result.labels[i] = own[i];
+			else
+				for (int k = 0; k < claimants; ++k)
+				{
+					const double value = double(d2[k][i]) - w[k];
+					if (result.labels[i] < 0 || value < best)
+					{
+						result.labels[i] = k;
+						best = value;
+					}
+				}
+			++result.areas[result.labels[i]];
+		}
+		double error = 0;
+		for (int k = 0; k < claimants; ++k)
+			error = std::max(error, std::abs(result.areas[k] - target));
+		return error;
+	};
+	double error = assign(weight), gain = 0.5;
+	for (int round = 0; round < rounds && error > tolerance * target; ++round)
+	{
+		std::vector<int> border(claimants, 0);
+		for (int y = 0; y < t.h; ++y)
+			for (int x = 0; x < t.w; ++x)
+			{
+				const int k = result.labels[y * t.w + x];
+				if (k < 0)
+					continue;
+				bool edge = false;
+				for (const auto &s : kCardinalSteps)
+				{
+					const int other = result.labels[t.at(x + s[0], y + s[1])];
+					edge = edge || (other >= 0 && other != k);
+				}
+				border[k] += edge;
+			}
+		std::vector<double> tried(weight);
+		for (int k = 0; k < claimants; ++k)
+			tried[k] += gain * (target - result.areas[k]) / std::max(1, border[k]) * reach[k];
+		const double after = assign(tried);
+		if (after < error)
+		{
+			weight = tried;
+			error = after;
+		}
+		else
+			gain *= 0.5;
+	}
+	assign(weight);
+	return result;
+}
+
 /// Smooths territories' borders, which a race for the cheapest tile leaves ragged: for `passes`
 /// passes, every labelled tile whose neighbourhood - the square `radius` tiles round it - is more than
 /// `share` another territory's takes that label, all at once per pass. A radius of 1 trims single-tile
@@ -209,7 +329,8 @@ inline void separateTerritories(const Torus &t, std::vector<int> &labels, int ga
 /// fill that water in and part them with a wall on the border instead (labelBorders). Returns the
 /// tiles filled.
 inline std::vector<unsigned char> fillToNearest(const Torus &t, std::vector<int> &labels,
-												const std::vector<unsigned char> &eligible, int reach)
+												const std::vector<unsigned char> &eligible,
+												int reach)
 {
 	std::vector<unsigned char> filled(t.size(), 0);
 	std::vector<int> steps(t.size(), -1), frontier, next;
@@ -294,7 +415,8 @@ int growFarLake(const Torus &t, std::vector<unsigned char> &water, const std::ve
 		[&](int i)
 		{
 			const double d = std::sqrt(double(t.dist2(seed % t.w, seed / t.w, i % t.w, i / t.w)));
-			return std::int64_t(d * 1000) + (far - depth[i]) * 250LL + std::int64_t(noiseAt(i) * 2500);
+			return std::int64_t(d * 1000) + (far - depth[i]) * 250LL +
+				   std::int64_t(noiseAt(i) * 2500);
 		},
 		queued, stamp);
 }
@@ -311,12 +433,12 @@ int growFarLake(const Torus &t, std::vector<unsigned char> &water, const std::ve
 /// 0 when that side has no room.
 template <typename NoiseAt>
 int growLakeBeside(const Torus &t, std::vector<unsigned char> &water, const std::vector<int> &depth,
-				   const std::vector<int> &room, int gap, int target, int site, double heading, int side,
-				   int siteGap, int reach, NoiseAt noiseAt, std::vector<int> &queued, int stamp)
+				   const std::vector<int> &room, int gap, int target, int site, double heading,
+				   int side, int siteGap, int reach, NoiseAt noiseAt, std::vector<int> &queued,
+				   int stamp)
 {
 	const int n = t.size(), sx = site % t.w, sy = site / t.w;
-	const auto away = [&](int i)
-	{ return std::sqrt(double(t.dist2(sx, sy, i % t.w, i / t.w))); };
+	const auto away = [&](int i) { return std::sqrt(double(t.dist2(sx, sy, i % t.w, i / t.w))); };
 	const double hx = std::cos(heading), hy = std::sin(heading);
 	// How far a tile lies to the left of the line through the site along the heading (right is
 	// negative). The whole lake keeps to its side, clear of the line by half the site gap, so it never

@@ -1968,8 +1968,6 @@ Rampa genişliği
 Arena boyutu
 [Terrace width]
 Teras genişliği
-[Border roughness]
-Sınır düzensizliği
 [Bay size]
 Koy boyutu
 [Border wall]

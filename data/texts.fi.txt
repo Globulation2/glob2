@@ -1960,8 +1960,6 @@ Ramppien leveys
 Areenan koko
 [Terrace width]
 Terassien leveys
-[Border roughness]
-Rajojen rosoisuus
 [Bay size]
 Lahtien koko
 [Border wall]

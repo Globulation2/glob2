@@ -1968,8 +1968,6 @@ Prstence
 Veľkosť jamy
 [Terrace width]
 Šírka terás
-[Border roughness]
-Členitosť hraníc
 [Bay size]
 Veľkosť zálivov
 [Border wall]

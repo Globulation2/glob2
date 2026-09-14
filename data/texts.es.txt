@@ -1960,8 +1960,6 @@ Ancho de las rampas
 Tamaño del foso
 [Terrace width]
 Ancho de las gradas
-[Border roughness]
-Irregularidad de las fronteras
 [Bay size]
 Tamaño de las bahías
 [Border wall]

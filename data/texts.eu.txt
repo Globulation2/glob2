@@ -1970,8 +1970,6 @@ Arrapalen zabalera
 Zuloaren tamaina
 [Terrace width]
 Harmailen zabalera
-[Border roughness]
-Mugen zimurtasuna
 [Bay size]
 Badien tamaina
 [Border wall]

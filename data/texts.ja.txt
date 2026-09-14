@@ -1956,8 +1956,6 @@ Globulation 2 のカーソルを表示します。
 闘技場の大きさ
 [Terrace width]
 段の幅
-[Border roughness]
-境界の起伏
 [Bay size]
 入り江の大きさ
 [Border wall]

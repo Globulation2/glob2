@@ -2036,8 +2036,6 @@ Rampebredde
 Arenaens størrelse
 [Terrace width]
 Terrassebredde
-[Border roughness]
-Grænsernes ujævnhed
 [Bay size]
 Bugternes størrelse
 [Border wall]

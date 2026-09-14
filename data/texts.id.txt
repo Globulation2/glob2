@@ -1956,8 +1956,6 @@ Lebar tanjakan
 Ukuran arena
 [Terrace width]
 Lebar teras
-[Border roughness]
-Kekasaran batas
 [Bay size]
 Ukuran teluk
 [Border wall]

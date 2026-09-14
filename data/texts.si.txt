@@ -1960,8 +1960,6 @@ Obroči
 Velikost jame
 [Terrace width]
 Širina teras
-[Border roughness]
-Razgibanost meja
 [Bay size]
 Velikost zalivov
 [Border wall]

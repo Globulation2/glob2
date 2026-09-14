@@ -1950,8 +1950,6 @@ Ramp width
 Pit size
 [Terrace width]
 Terrace width
-[Border roughness]
-Border roughness
 [Bay size]
 Bay size
 [Border wall]

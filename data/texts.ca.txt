@@ -1968,8 +1968,6 @@ Amplada de les rampes
 Mida del fossat
 [Terrace width]
 Amplada de les graderies
-[Border roughness]
-Irregularitat de les fronteres
 [Bay size]
 Mida de les badies
 [Border wall]

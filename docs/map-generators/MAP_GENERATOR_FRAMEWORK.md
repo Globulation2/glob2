@@ -861,12 +861,12 @@ is a meeting at a known place.
 - **Arena.** `rings` walls `terrace-width` apart round a pit of `pit-size`, drawn with
   `ringWithGates`; ramps `ramp-width` wide alternate between each colony's axis and the middle of
   its wedge.
-- **Territories.** The ground outside the outer wall is shared out by `growTerritories` from every
-  colony's frontage (its wedge's arc just outside the wall), with `territory-roughness` noise in the
-  cost, then smoothed by four passes of `smoothLabels` over a radius of four, so every border runs in
-  a clean curve. This handles a square map's corners, the wrap and odd colony counts, which wedges
-  cannot. Borders become stone (`labelBorders`, `border-wall` thick), and any unclaimed tile becomes
-  stone. The areas come out within a few percent of each other.
+- **Territories.** The ground outside the outer wall is shared out by `balancedTerritories` from every
+  colony's frontage (its wedge's arc just outside the wall): every tile goes to the colony whose frontage
+  is nearest by steps less a weight per colony, and the weights are tuned until the areas are equal, so
+  every border is a smooth curve of equal weighted distance between two frontages. (Until 2026-09-13
+  the territories were grown a tile at a time with `territory-roughness` noise and smoothed by a
+  majority filter, which left every border ragged; the control is gone.)
 - **Homes.** Every swarm stands the same number of steps from its ramp (`siteAtDepth`), four tenths
   of the way to the shallowest territory's far end; the wheat and wood kit (no stone clump: the
   territory is walled in stone) faces the nearest sea; scattered fields by `furnishGround`.

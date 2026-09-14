@@ -1958,8 +1958,6 @@ OpenGL недоступен в этой сборке.
 Размер арены
 [Terrace width]
 Ширина террас
-[Border roughness]
-Изрезанность границ
 [Bay size]
 Размер заливов
 [Border wall]

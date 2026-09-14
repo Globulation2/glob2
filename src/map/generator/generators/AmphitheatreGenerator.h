@@ -4,7 +4,7 @@
 #include "GeneratorDefinition.h"
 struct AmphitheatreOptions
 {
-	int rings, rampWidth, pitSize, terraceWidth, roughness, baySize, borderWall, towers, towerCount;
+	int rings, rampWidth, pitSize, terraceWidth, baySize, borderWall, towers, towerCount;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit AmphitheatreOptions(const GenerationRequest &r);
 };

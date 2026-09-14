@@ -2032,8 +2032,6 @@ OpenGL 在此版本中不可用。
 競技場大小
 [Terrace width]
 台階寬度
-[Border roughness]
-邊界起伏
 [Bay size]
 海灣大小
 [Border wall]

@@ -973,7 +973,6 @@
 [Ramp width]
 [Pit size]
 [Terrace width]
-[Border roughness]
 [Bay size]
 [Border wall]
 [Plateau size]

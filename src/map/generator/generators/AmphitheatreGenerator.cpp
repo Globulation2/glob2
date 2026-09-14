@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <climits>
 #include <cmath>
+#include <cstdio>
 #include <cstdlib>
 #include <string>
 #include <vector>
@@ -46,13 +47,20 @@ using namespace MapGeneration;
 //
 // The arena is designed round the centre and turned for every colony, like a wedge design. The
 // territories cannot be: a square map's corners and the ground across its wrap belong to no wedge,
-// and with an odd number of colonies the corners fall unevenly. So the territories are grown instead
-// (growTerritories): every colony's frontage on the outer wall is its own arc of equal length, and
-// from there the smallest territory always takes the next tile, until the whole of the ground outside
-// the walls is shared out to the tile. Every colony's seas are then grown to the same number of tiles,
-// and every swarm stands the same number of steps from its ramp, so what the growth cannot make identical is
-// measured and held equal instead. The design is a pure function of the request, so validateWorld
-// rebuilds it and checks the finished world.
+// and with an odd number of colonies the corners fall unevenly. So the territories are shared out by
+// distance instead (balancedTerritories): every tile outside belongs to the colony whose ramp mouth is
+// nearest by squared distance less a weight per colony, and the weights are tuned until the areas are
+// equal, so every border is a straight line, perpendicular to the line between two ramps and shifted
+// towards the colony with the more ground to spare. FEEDBACK 2026-09-13 (third play): "we need to
+// find a more reliable mechanism to divide the territory between players for amphitheatre. because
+// whatever our current mechanism is, it is causing wildly unsmooth borders. lets come up with something
+// fair but also simple and reliable." Until then the territories were grown a tile at a time by the
+// smallest first (growTerritories) with noise in the cost for a "border roughness" control, then
+// smoothed by a majority filter: the turn-taking grows fingers along every border, the noise more, and
+// four passes of smoothing left them ragged. Every colony's seas are then grown to the same number of
+// tiles, and every swarm stands the same number of steps from its ramp, so what the division cannot
+// make identical is measured and held equal instead. The design is a pure function of the request, so
+// validateWorld rebuilds it and checks the finished world.
 //
 // GAME RULES BEHIND IT (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md): stone can never be
 // cleared, so the walls and the ramps are permanent; a unit may step diagonally, which is why every
@@ -75,12 +83,15 @@ constexpr double kRingHalf = 1.2;
 constexpr double kMinimumTerrace = 8;
 // Ground kept outside the outer wall before the map's edge, per colony at least this many tiles.
 constexpr int kMinimumTerritory = 2000;
-// The majority filter that smooths the territories' borders into curves: passes, and the radius of the
-// square each tile looks at.
-constexpr int kSmoothingPasses = 4;
-constexpr int kSmoothingRadius = 4;
-// The territory control's noise: a border wanders by up to this many steps at 100.
-constexpr double kRoughSteps = 24;
+// The territories' balance (balancedTerritories): rounds of weight tuning, and how near an equal share
+// every area must come, a fifth of what the validator allows (kAreaTolerance).
+constexpr int kBalanceRounds = 80;
+constexpr double kBalanceTolerance = 0.01;
+// The ground every colony keeps round its ramp mouth whatever the balance says: on a 2:1 map the
+// colonies on the short sides start with half the ground and their borders shift far, and without this
+// a border crossed a neighbour's mouth (colony 0 could not walk to the pit on a third of the seeds).
+// As deep as a swarm stands from its mouth (kHomeRampDepth), so the way in is always the colony's own.
+constexpr double kSiteKeep = 14;
 // An inland sea keeps this many steps from any wall, so its beach never reaches stone and its
 // neighbours' seas are always parted by land.
 constexpr int kBayWallGap = 7;
@@ -236,29 +247,22 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			}
 	}
 
-	// The territories (growTerritories): every colony's frontage is the ground just outside the outer
-	// wall across its own wedge, and from there the ground outside is shared out to the tile, then
-	// smoothed (smoothLabels) so the stone along every border runs in a clean curve.
-	const WedgeFrame wedges(t, L.phase - g.wedge / 2, teams);
-	std::vector<unsigned char> outside(n, 0), frontage(n, 0);
-	std::vector<std::vector<int>> seeds(teams);
+	// The territories (balancedTerritories): the ground outside the outer wall is shared out by weighted
+	// squared distance from every colony's ramp mouth, the weights tuned until the areas are equal, so
+	// every border is a straight line of stone (third play; see the header).
+	std::vector<unsigned char> outside(n, 0);
 	for (int i = 0; i < n; ++i)
-	{
 		outside[i] = L.zone[i] == g.rings;
-		const WedgeFrame::Cell cell = wedges.cell(i % t.w, i / t.w);
-		if (outside[i] && cell.d <= g.outer + kRingHalf + 2)
-		{
-			seeds[cell.k].push_back(i);
-			frontage[i] = 1;
-		}
+	// Every colony's site is the middle of its outer ramp's mouth, just outside the wall, so the border
+	// between two neighbours starts on the wall half way between their ramps and runs straight out.
+	std::vector<int> sites;
+	for (int k = 0; k < teams; ++k)
+	{
+		const ShapePoint p = polarPoint(L.cx, L.cy, g.outer + kRingHalf + 2, L.phase + g.wedge * k);
+		sites.push_back(t.at(int(std::lround(p.x)), int(std::lround(p.y))));
 	}
-	const PeriodicNoise wander(t.w, t.h, std::max(16, g.half / 4),
-							   context.stream("amphitheatre-borders"));
-	const double swing = kRoughSteps * 1000 * o.roughness / 100.0;
-	L.territory = growTerritories(t, outside, seeds,
-								  [&](int i) { return long(wander.at(i % t.w, i / t.w) * swing); })
-					  .labels;
-	smoothLabels(t, L.territory, kSmoothingPasses, frontage, kSmoothingRadius);
+	L.territory =
+		balancedTerritories(t, outside, sites, kSiteKeep, kBalanceRounds, kBalanceTolerance).labels;
 	L.areas.assign(teams, 0);
 	for (int i = 0; i < n; ++i)
 		if (L.territory[i] >= 0)
@@ -665,11 +669,25 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		const int s = seedNear(t, tile % t.w, tile / t.w, 4, [&](int i) { return open[i] != 0; });
 		return s >= 0 ? s : tile;
 	};
+	// Every colony's target in the pit is the open tile of the pit's middle disc (the disc the roads
+	// stage clears a way to, 0.4 of the pit's radius) that its ramp reaches in the fewest steps. The
+	// very middle will not do: the orchard's fruit can ring it until eaten, and targeting it failed
+	// every colony's walk on some seeds (128x128 with four colonies, seed 1) whatever the territories.
+	std::vector<unsigned char> pitDisc(n, 0);
+	for (int i = 0; i < n; ++i)
+		pitDisc[i] =
+			L.zone[i] == 0 && open[i] &&
+			std::hypot(t.offsetX(int(L.cx), i % t.w), t.offsetY(int(L.cy), i / t.w)) < 0.4 * g.pitR;
 	std::vector<int> ramps, pits;
 	for (int k = 0; k < teams; ++k)
 	{
 		ramps.push_back(nearestOpen(L.rampMiddle[k]));
-		pits.push_back(nearestOpen(L.pitMiddle));
+		const std::vector<int> fromRamp = stepsFrom(t, tileMask(t, {ramps.back()}), open);
+		int best = -1;
+		for (int i = 0; i < n; ++i)
+			if (pitDisc[i] && fromRamp[i] >= 0 && (best < 0 || fromRamp[i] < fromRamp[best]))
+				best = i;
+		pits.push_back(best >= 0 ? best : nearestOpen(L.pitMiddle));
 	}
 	for (const auto &[targets, what] : {std::pair{ramps, "ramps"}, std::pair{pits, "the pit"}})
 	{
@@ -686,12 +704,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 
 AmphitheatreOptions::AmphitheatreOptions(const GenerationRequest &r)
 	: rings(r.option("rings")), rampWidth(r.option("ramp-width")), pitSize(r.option("pit-size")),
-	  terraceWidth(r.option("terrace-width")), roughness(r.option("territory-roughness")),
-	  baySize(r.option("bay-size")), borderWall(r.option("border-wall")),
-	  towers(r.option("starting-towers")), towerCount(r.option("tower-count")),
-	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
-	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
-	  fruit(r.option("fruit-amount"))
+	  terraceWidth(r.option("terrace-width")), baySize(r.option("bay-size")),
+	  borderWall(r.option("border-wall")), towers(r.option("starting-towers")),
+	  towerCount(r.option("tower-count")), wheat(r.option("wheat-amount")),
+	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
+	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
 {
 }
 
@@ -701,7 +718,7 @@ GeneratorDefinition amphitheatreDefinition()
 		"amphitheatre",
 		23,
 		"Amphitheatre",
-		1,
+		2,
 		false,
 		// Rings of wall; each ramp's width in tiles; the pit's radius and each terrace's width as
 		// shares of the half side; how far the territories' borders wander; every colony's inland seas
@@ -710,7 +727,6 @@ GeneratorDefinition amphitheatreDefinition()
 		 {"ramp-width", "Ramp width", 5, 11, 2, 7, ControlGroup::Terrain},
 		 {"pit-size", "Pit size", 8, 30, 2, 16, ControlGroup::Layout},
 		 {"terrace-width", "Terrace width", 6, 20, 1, 14, ControlGroup::Layout},
-		 {"territory-roughness", "Border roughness", 0, 100, 10, 50, ControlGroup::Terrain},
 		 {"bay-size", "Bay size", 6, 24, 2, 14, ControlGroup::Terrain},
 		 {"border-wall", "Border wall", 1, 3, 1, 2, ControlGroup::Terrain},
 		 // The towers every colony starts with, all against its walls: their level (0 for none, just

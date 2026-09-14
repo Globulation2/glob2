@@ -1960,8 +1960,6 @@ Rampenbreite
 Arenagröße
 [Terrace width]
 Terrassenbreite
-[Border roughness]
-Grenzverlauf
 [Bay size]
 Buchtgröße
 [Border wall]

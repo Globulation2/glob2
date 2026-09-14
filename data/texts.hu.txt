@@ -1960,8 +1960,6 @@ Rámpák szélessége
 Aréna mérete
 [Terrace width]
 Teraszok szélessége
-[Border roughness]
-Határok szabálytalansága
 [Bay size]
 Öblök mérete
 [Border wall]

@@ -1970,8 +1970,6 @@ Largeur des rampes
 Taille de l'arène
 [Terrace width]
 Largeur des gradins
-[Border roughness]
-Irrégularité des frontières
 [Bay size]
 Taille des baies
 [Border wall]

@@ -1956,8 +1956,6 @@ OpenGL 在此版本中不可用。
 竞技场大小
 [Terrace width]
 台阶宽度
-[Border roughness]
-边界起伏
 [Bay size]
 海湾大小
 [Border wall]

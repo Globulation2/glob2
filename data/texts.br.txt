@@ -1956,8 +1956,6 @@ Ledander ar pantennoù
 Ment ar poull
 [Terrace width]
 Ledander ar bazennoù
-[Border roughness]
-Direizhder an harzoù
 [Bay size]
 Ment ar baeoù
 [Border wall]
