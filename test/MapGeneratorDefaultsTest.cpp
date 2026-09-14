@@ -396,12 +396,16 @@ class MapGeneratorDefaultsTest
 		s.gfx = globalContainer->gfx;
 		s.dispatchInit();
 		CustomGameSetup lobby;
-		D commons;
-		commons.setMethodDefaults(GeneratorRegistry::builtins().idOf("contested-commons"));
-		assert(GeneratorRegistry::builtins().methods(false).front() == GeneratorRegistry::builtins().idOf("contested-commons"));
+		// The catalog's order was shuffled once (FEEDBACK 2026-09-14: no bias towards the landscapes
+		// that happen to be listed first). The editor opens on the catalog's first entry and the
+		// lobby on its first playable one, whatever they are.
+		D editorFirst, lobbyFirst;
+		editorFirst.setMethodDefaults(GeneratorRegistry::builtins().methods().front());
+		lobbyFirst.setMethodDefaults(GeneratorRegistry::builtins().methods(false).front());
+		assert(GeneratorRegistry::builtins().methods(false).front() == GeneratorRegistry::builtins().idOf("fingerprint"));
 		assert(s.methods->getSelectionIndex() == 0);
-		sameControls(s.descriptor, commons);
-		sameControls(lobby.generator, commons);
+		sameControls(s.descriptor, editorFirst);
+		sameControls(lobby.generator, lobbyFirst);
 		for (int m : GeneratorRegistry::builtins().methods())
 		{
 			auto method = static_cast<D::Method>(m);

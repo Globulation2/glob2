@@ -5,6 +5,7 @@
 #include "GenerationContext.h"
 #include "Grid.h"
 #include "Drawing.h"
+#include "Farmland.h"
 #include "Geometry.h"
 #include "HeightMap.h"
 #include "Homes.h"
@@ -40,12 +41,33 @@ using namespace MapGeneration;
 // only way in.
 //
 // Every roll differs: the coasts have bays and headlands, the channels bend, the homes take one of
-// several layouts (a lake, a creek with a ford, stone ridges with passes, a marsh, a band of sand)
-// and the heart of the commons one of several (a lake, a stone crag, an island, a river delta, a
-// forest), and sand lies in patches over the ground. Everything a home is made of is designed in
-// the wedge's own frame - arc across it and radius out from the centre - and stamped into every
-// home alike, so however a roll comes out, every colony gets the same home turned round the
-// centre, and the layout is fair for any colony count.
+// several layouts (a lake, a creek with a ford, stone ridges with passes, a marsh) and the heart of
+// the commons one of several (a lake, a stone crag, an island, a river delta, a forest), and sand
+// lies in patches over the ground. Everything a home is made of is designed in the wedge's own
+// frame - arc across it and radius out from the centre - and stamped into every home alike, so
+// however a roll comes out, every colony gets the same home turned round the centre, and the layout
+// is fair for any colony count.
+//
+// THE ARCHIPELAGO (FEEDBACK 2026-09-14: "WAY more islands out filling the no mans land where there
+// is currently only ocean. it should be like a mini archipelago dotting the landscape. Additionally
+// I want those islands to all contain the 10x4 little sand building plots with no resources in
+// them so that users have a spot to place buildings"). The strait and the channels carry islets:
+// round, kIsletRadius across, each with an axis-aligned 10x4 clearing of grass in a ring of sand
+// at its middle - the same building plot the farms use (Farmland.h) - and a small prize on its
+// grass beyond the ring. Their middles are designed in the wedge frame like everything else:
+// `islands` of them either side of every causeway in the strait, evenly spread over the arc between
+// the causeway's clear stretch and the channel, and one in every channel between two homes, half
+// way along it, so every colony has the same islets at the same distances; each islet is then
+// drawn as a round disc on the map about its middle, so a bowed channel does not shear it. An
+// islet keeps kIsletMoat of water from every coast and every other islet, so it is only ever
+// reached by swimming: a forward post for whoever swims first, not a stepping stone. A slot whose
+// islet would break that moat in any wedge is left out of every wedge (rasterize), so the colonies
+// always match. The strait (11% of the side) and the commons (45% of the half side) are sized so
+// the islets fit on a 256 map; a 128 map's strait is too narrow for any, and has none. The former
+// random "resource islands" went with this.
+//
+// The Barrens home layout - both flanks of the home under sand - went the same day ("that one
+// just feels lame when you receive it"), so a home is one of four kinds.
 //
 // The whole design is a pure function of the request, so validateWorld rebuilds it and checks the
 // finished world. Terrain is written straight to the undermap with an order-independent beach
@@ -64,9 +86,10 @@ using namespace MapGeneration;
 // have different shapes at different angles, and the fairness score fell from 0.97 to between
 // 0.65 and 0.8. Equal homes matter more here than filling the map.
 //
-// THE SIZES AT THE DEFAULTS (256x256, 4 colonies): a commons 70 tiles in radius, a strait 10 wide,
-// homes 42 tiles deep from the strait out to a 6-tile rim of sea at the wrap, and a home lake about
-// 4 tiles in radius.
+// THE SIZES AT THE DEFAULTS (256x256, 4 colonies): a commons 58 tiles in radius, a strait 28 wide,
+// homes 36 tiles deep from the strait out to a 6-tile rim of sea at the wrap, a home lake about 4
+// tiles in radius, and twenty islets of radius 9: two either side of every causeway and one in
+// every channel (a two-colony map's longer strait gets four either side).
 namespace
 {
 
@@ -125,6 +148,13 @@ constexpr double kRoadDepthShare = 0.5;
 constexpr double kStreetInset = 7.0;
 // Sand vertices across a road.
 constexpr int kRoadWidth = 2;
+// The islets (see the header): radius and roughness (nearly round, so an axis-aligned 10x4 plot of
+// grass, whose far corner is 5.4 tiles out, sits well inside the beach: the grass reaches
+// 8.55 - 1 beach = 7.5 at the roughest, and the plot's sand ring may lie on the beach), the water
+// kept between an islet and
+// any coast or other islet, and how far from the middle the prize stands, clear of the ring.
+constexpr double kIsletRadius = 9.0, kIsletRoughness = 0.05;
+constexpr int kIsletMoat = 3, kIsletPrizeOut = 6;
 
 // What a home is made of, and what the heart of the commons is. One of each per map.
 enum HomeKind
@@ -133,7 +163,6 @@ enum HomeKind
 	Riverside,
 	Highland,
 	Marsh,
-	Barrens,
 	kHomeKinds
 };
 enum HeartKind
@@ -218,11 +247,15 @@ Geometry geometryFor(const GenerationRequest &r)
 	const int side = std::min(1 << r.wDec, 1 << r.hDec);
 	g.half = side / 2;
 	g.rim = std::max(kRimMinimum, int(std::lround(kRimShare * g.half)));
-	g.strait = std::max(4, int(std::lround(o.straitWidth / 100.0 * side)));
-	g.causeway = o.causewayWidth;
-	g.walls = o.stoneWalls;
 	g.commonsRadius = std::lround(o.commonsSize / 100.0 * g.half);
 	g.outerRadius = g.half - g.rim;
+	// The strait is a share of the side, but never so wide that the homes lose the depth a home needs:
+	// on a 128 map the default 11% would leave 14 tiles, so the strait shrinks to 8 there (and the
+	// islets, which need 27, are left out).
+	g.strait = std::max(4, int(std::lround(o.straitWidth / 100.0 * side)));
+	g.strait = std::max(4, std::min(g.strait, int(g.outerRadius - g.commonsRadius) - kMinimumDepth));
+	g.causeway = o.causewayWidth;
+	g.walls = o.stoneWalls;
 	g.amplitude = o.coastRoughness / 100.0;
 	return g;
 }
@@ -252,7 +285,8 @@ enum Region : signed char
 {
 	Sea = 0,
 	Commons = 1,
-	HomeLand = 2
+	HomeLand = 2,
+	Islet = 3
 };
 
 // Where the swarm stands along its home's axis, from the centre: 9 tiles short of the lake's near
@@ -282,6 +316,13 @@ struct Layout
 	// The sand roads: undermap vertices turned to sand, and the tiles with a corner on one.
 	std::vector<unsigned char> sandRoad, roadTile;
 	std::vector<double> radius, angle;
+	// The islets' middles, where their 10x4 plots are stamped and their prizes stand, with each
+	// islet's place among its wedge's (the prize kind goes round by it).
+	struct IsletSite
+	{
+		int x, y, place;
+	};
+	std::vector<IsletSite> plots;
 	std::string failure;
 };
 
@@ -362,15 +403,21 @@ struct Features
 	std::vector<std::pair<double, double>> creek;
 	int fordSegment = -1;
 	// Highland ridges run at 28% and 72% across the wedge, splitting the home into a middle valley
-	// with the lake and two side valleys; Barrens leave the middle 45% of the half arc as grass and
-	// put sand beyond it.
+	// with the lake and two side valleys.
 	double ridgeU[2] = {0.28, 0.72};
 	double passR = 0;
-	double barrenShare = 0.45;
 	double deltaFordR = 0;
 	RadialShape heart;
 	std::vector<Patch> commonsSand;
-	Features(RadialShape heart, double deltaFordR) : deltaFordR(deltaFordR), heart(heart) {}
+	// The archipelago: the strait's islets in the wedge frame, all of one outline; and the radius at
+	// which the channel islet sits (0 for none).
+	RadialShape islet;
+	std::vector<Blob> islets;
+	double channelIsletR = 0;
+	Features(RadialShape heart, RadialShape islet, double deltaFordR)
+		: deltaFordR(deltaFordR), heart(heart), islet(islet)
+	{
+	}
 };
 
 // Roll the features. Each kind of feature draws from a stream of its own, so the heart, rolled
@@ -400,6 +447,7 @@ static Features rollFeatures(const GenerationRequest &request, GenerationContext
 	// A delta heart's rivers are forded 60% of the way out from the centre, between the heart and
 	// the landings.
 	Features f(RadialShape(L.lakeR, L.heartKind == IslandHeart ? 0.2 : 0.3, context, "city-heart"),
+			   RadialShape(kIsletRadius, kIsletRoughness, context, "city-islets"),
 			   0.6 * g.commonsRadius);
 	// The home's features in the wedge's frame: f.lakes first (the main one first), then whatever
 	// the kind adds. A feature keeps clear of the coasts as bays can bring them, of the channels,
@@ -454,8 +502,6 @@ static Features rollFeatures(const GenerationRequest &request, GenerationContext
 	}
 	// Highland: two ridges out from the strait to the sea, a pass through each.
 	f.passR = inner + 0.5 * depth;
-	// Barrens: both flanks of the home are sand, leaving a strip of grass down the middle from the
-	// causeway past the lake; the sand keeps clear of every coast so the wall stays on the shore.
 	// Sand patches, in every kind of home.
 	const double homeArea = wedge * (g.outerRadius * g.outerRadius - inner * inner) / 2;
 	// Sand patches per 8192 tiles (the default 3 gives about 2 per home and 6 on the commons at
@@ -507,6 +553,63 @@ static Features rollFeatures(const GenerationRequest &request, GenerationContext
 									 t.y(L.cy + int(std::lround(r0 * std::sin(a)))), shape});
 	}
 
+	// The archipelago (see the header). Strait islets: `islands` of them either side of the causeway,
+	// spread evenly between the causeway's clear stretch and the channel, each on the strait's
+	// midline at its own arc position, and dropped - in every wedge alike, since the coasts are
+	// periodic in the wedge - where the strait there is too narrow for it with its moat on both
+	// sides. The islet's outline is one shape for all, so every islet is the same islet.
+	const double reach = f.islet.maximumRadius();
+	const double room = 2 * reach + 2 * kIsletMoat;
+	if (o.islands > 0)
+	{
+		const double dMid = g.commonsRadius + g.strait / 2.0;
+		const double first = c.flatArc + kIsletMoat + reach;
+		const double last = g.arcHalf(dMid) - kIsletMoat - reach;
+		if (last >= first)
+		{
+			// `islands` is the count either side on a four-colony 256 map's arc; a longer arc
+			// (fewer colonies, a bigger map) gets proportionally more, a shorter one fewer, and
+			// never more than fit at the least spacing.
+			const double spacing = room - kIsletMoat;
+			const int roomFit = 1 + int((last - first) / spacing);
+			const int wanted = std::max(
+				1, int(std::lround(o.islands * (last - first + spacing) / (2 * spacing))));
+			const int fit = std::min(roomFit, wanted);
+			for (int k = 0; k < fit; ++k)
+			{
+				const double s = fit == 1 ? (first + last) / 2 : first + (last - first) * k / (fit - 1);
+				for (const double sign : {-1.0, 1.0})
+				{
+					const double s0 = sign * s;
+					const double u0 = 0.5 + s0 / (wedge * dMid);
+					const double lo = c.coastAt(u0, dMid), hi = c.innerAt(u0, dMid);
+					if (hi - lo < room)
+						continue;
+					// Centred in the strait at its middle, the islet must also clear both coasts
+					// with its moat where its sides lie: the coasts bulge towards the causeway just
+					// where the first islet's near side is, and the strait follows the commons'
+					// coast, so both may lean across the islet's span.
+					const double r0 = (lo + hi) / 2;
+					bool clear = true;
+					for (const double off : {-0.7 * reach, 0.7 * reach})
+					{
+						const double u = 0.5 + (s0 + off) / (wedge * dMid);
+						const double half = std::sqrt(reach * reach - off * off);
+						clear = clear && r0 - half >= c.coastAt(u, dMid) + kIsletMoat &&
+								r0 + half <= c.innerAt(u, dMid) - kIsletMoat;
+					}
+					if (!clear)
+						continue;
+					f.islets.push_back({s0, r0, 1.0, 0.0, f.islet});
+				}
+			}
+		}
+		// The channel islet: on the boundary between two homes, half way from the strait to the outer
+		// sea, when the channel is wide enough and long enough for it.
+		if (g.teams >= 2 && g.strait >= room && depth >= room)
+			f.channelIsletR = inner + depth / 2;
+	}
+
 	return f;
 }
 
@@ -527,6 +630,7 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 	const double roadHalf = g.causeway / 2.0;
 	const double stripHalf = roadHalf + kShoulder;
 	std::vector<double> landingAlong(teams, -1.0), shoreAlong(teams, 1e9);
+	L.plots.clear();
 	const WedgeFrame frame(t, L.phase, teams);
 	for (int y = 0; y < t.h; ++y)
 		for (int x = 0; x < t.w; ++x)
@@ -648,11 +752,6 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 							L.clear[i] = 1;
 						}
 					}
-				// Barrens' sand keeps 8 tiles from both coasts and the channels, so the home's wall
-				// still stands on grass.
-				if (L.homeKind == Barrens && d >= in + 8 && d <= out - 8 &&
-					std::abs(s) > f.barrenShare * g.arcHalf(d) && std::abs(s) < g.arcHalf(d) - 8)
-					L.sand[i] = 1;
 				for (const Blob &b : f.sandBlobs)
 					if (b.holds(s - b.s, d - b.r))
 						L.sand[i] = 1;
@@ -713,6 +812,71 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 					}
 			}
 		}
+	// The archipelago (see the header). Every islet's middle in every wedge - a strait islet's at
+	// the home's angle plus its arc offset, the channel's on the bent boundary clockwise of the home
+	// (the frame bends a tile's angle by bendAt(d) / d, so the boundary sits that far the other way)
+	// - and the islet drawn round that middle on the map itself, not in the frame, so it is a round
+	// islet however the channel bows. A slot whose islet would come within kIsletMoat of a coast or
+	// a causeway in any wedge (the bow narrows a channel beside its islet) is left out of every
+	// wedge, so every colony still has the same islets. Three is the least moat that leaves a tile
+	// of pure water: the beach pass sands the land vertices beside water, and a tile with a sand
+	// corner is no longer water to walk on. The plots and prizes stand at the middles kept; the
+	// prize kind goes round by the islet's place among its wedge's.
+	{
+		struct Centre
+		{
+			int x, y, slot;
+		};
+		std::vector<Centre> centres;
+		const int slots = int(f.islets.size()) + 1, channelSlot = slots - 1;
+		for (int k = 0; k < teams; ++k)
+		{
+			const Home &h = L.homes[k];
+			for (size_t j = 0; j < f.islets.size(); ++j)
+			{
+				const Blob &b = f.islets[j];
+				const double a = h.angle + b.s / b.r;
+				centres.push_back({t.x(L.cx + int(std::lround(b.r * std::cos(a)))),
+								   t.y(L.cy + int(std::lround(b.r * std::sin(a)))), int(j)});
+			}
+			if (f.channelIsletR > 0 && teams >= 2)
+			{
+				const double r = f.channelIsletR;
+				const double a = L.phase + wedge * (k + 1) + coasts.bendAt(r) / r;
+				centres.push_back({t.x(L.cx + int(std::lround(r * std::cos(a)))),
+								   t.y(L.cy + int(std::lround(r * std::sin(a)))), channelSlot});
+			}
+		}
+		const int moat = kIsletMoat;
+		const int span = int(std::ceil(f.islet.maximumRadius())) + moat;
+		std::vector<unsigned char> slotOk(slots, 1);
+		for (const Centre &c : centres)
+			for (int dy = -span; dy <= span && slotOk[c.slot]; ++dy)
+				for (int dx = -span; dx <= span && slotOk[c.slot]; ++dx)
+					if (std::hypot(dx, dy) < f.islet.radiusAt(std::atan2(dy, dx)) + moat &&
+						L.region[t.at(c.x + dx, c.y + dy)] != Sea)
+						slotOk[c.slot] = 0;
+		for (const Centre &c : centres)
+			if (slotOk[c.slot])
+				for (int dy = -span; dy <= span; ++dy)
+					for (int dx = -span; dx <= span; ++dx)
+						if (std::hypot(dx, dy) < f.islet.radiusAt(std::atan2(dy, dx)))
+							L.region[t.at(c.x + dx, c.y + dy)] = Islet;
+		L.plots.clear();
+		int place = 0, wedgeOf = -1;
+		for (size_t index = 0; index < centres.size(); ++index)
+		{
+			const Centre &c = centres[index];
+			const int k = int(index) * teams / int(centres.size());
+			if (k != wedgeOf)
+			{
+				wedgeOf = k;
+				place = 0;
+			}
+			if (slotOk[c.slot])
+				L.plots.push_back({c.x, c.y, place++});
+		}
+	}
 	// The commons-side end is the end nearest the centre; the home-side end the farthest.
 	for (int k = 0; k < teams; ++k)
 	{
@@ -895,8 +1059,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.heartKind = int(context.bounded("city-kind", kHeartKinds));
 	if (L.heartKind == Delta && teams < 2)
 		L.heartKind = LakeHeart;
-	if (depth < kFeatureDepth &&
-		(L.homeKind == Riverside || L.homeKind == Highland || L.homeKind == Barrens))
+	if (depth < kFeatureDepth && (L.homeKind == Riverside || L.homeKind == Highland))
 		L.homeKind = Lakeland;
 
 	const Coasts c(g, context);
@@ -1222,6 +1385,32 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 				map.setResource(i % t.w, i / t.w, WOOD, 1);
 }
 
+// Every islet's prize: one small clump on its grass beyond the plot's ring, kIsletPrizeOut tiles
+// below the middle (the same side on every islet, so every wedge's islets match), of a kind that
+// goes round by the islet's place in its wedge - stone, then a fruit (the three fruits in turn),
+// then wheat - each scaled by its amount. Small, since the islet is a place to build, not a mine.
+void stockIslets(Map &map, const Layout &L, GenerationContext &context, const CityStatesOptions &o,
+				 const Farm &plots)
+{
+	const Torus &t = L.t;
+	for (const Layout::IsletSite &site : L.plots)
+	{
+		const int kind = site.place % 3;
+		const int type = kind == 0 ? STONE : kind == 1 ? CHERRY + (site.place / 3) % 3 : WHEAT;
+		const int amount = kind == 0 ? o.stone : kind == 1 ? o.fruit : o.wheat;
+		if (scaledCount(1, amount) <= 0)
+			continue;
+		const int seed = seedNear(t, site.x, site.y + kIsletPrizeOut, 3,
+								  [&](int i)
+								  {
+									  return L.region[i] == Islet && !plots.plot[i] &&
+											 !plots.sand[i] && clearGround(map, i % t.w, i / t.w);
+								  });
+		if (seed >= 0)
+			placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), type, 1);
+	}
+}
+
 // Causeways and their approaches hold nothing but the causeways' own stone lines.
 void clearRoads(Map &map, const Layout &L, const std::vector<unsigned char> &line)
 {
@@ -1289,12 +1478,18 @@ bool generate(Game &game, GenerationContext &context)
 			terrain[i] = SAND;
 	}
 	carveValleys(terrain, L, context, o.valleys);
-	// Resource islands are counted per 128x128 of sea.
-	const std::vector<Island> islands = raiseIslands(
-		terrain, t, context,
-		{"city-islands",
-		 int(std::lround(o.resourceIslands * double(countTiles(terrain, WATER)) / 16384.0)), 60,
-		 kLakeShore + 1});
+	// The islets' building plots (stampFarmPlot, as the farms lay theirs): a 10x4 clearing of grass
+	// in a two-vertex ring of sand at every islet's middle, which nothing is planted on and the beach
+	// pass leaves alone, so a colony that swims out finds a spot to build on at once.
+	Farm isletPlots;
+	isletPlots.water.assign(n, 0);
+	isletPlots.sand.assign(n, 0);
+	isletPlots.plot.assign(n, 0);
+	isletPlots.row.assign(n, -1);
+	const FarmPlot plot;
+	for (const Layout::IsletSite &site : L.plots)
+		stampFarmPlot(terrain, t, isletPlots, site.x - plot.width / 2, site.y - plot.height / 2,
+					  plot);
 	layBeaches(terrain, t);
 	writeUndermap(map, terrain);
 	const std::vector<unsigned char> line = stoneTiles(map, L);
@@ -1327,12 +1522,13 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "city resources";
 	furnishHomes(map, L, context, o);
 	stockCommons(map, L, context, o);
-	stockIslands(map, context, islands, "city-islands");
+	stockIslets(map, L, context, o, isletPlots);
 	seedAlgae(map, context, t, "city-algae", o.algae, AlgaeBand::shallows(2, 4));
 	// The kits already put wheat and wood a short walk from every swarm; this is only the backstop,
 	// and the walls and the causeways' stone are designed and must never be cleared.
 	secureStartingCrops(game, context, t, 24, 32, 0, &line);
 	clearRoads(map, L, line);
+	clearFarmPlots(map, t, {isletPlots});
 	context.stage = "city roads";
 	return openRoads(map, L, line, context);
 }
@@ -1391,6 +1587,19 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		heartReached = heart[i] && fromFirst[i] >= 0;
 	if (!heartReached)
 		return "The heart of the commons cannot be reached on foot.";
+	// Every islet keeps its plot clear and buildable, and no islet can be walked to: the moat holds.
+	for (const Layout::IsletSite &site : L.plots)
+	{
+		for (int dy = 0; dy < 4; ++dy)
+			for (int dx = 0; dx < 10; ++dx)
+			{
+				const int x = t.x(site.x - 5 + dx), y = t.y(site.y - 2 + dy);
+				if (!map.isGrass(x, y) || map.isResource(x, y) || map.getBuilding(x, y) != NOGBID)
+					return "The islet plot at " + where(t.at(site.x, site.y)) + " is not buildable.";
+			}
+		if (fromFirst[t.at(site.x, site.y)] >= 0)
+			return "The islet at " + where(t.at(site.x, site.y)) + " can be walked to.";
+	}
 
 	// Shut every causeway road: with the walls up, nothing landing from the sea may get in.
 	if (L.g.walls)
@@ -1433,8 +1642,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 CityStatesOptions::CityStatesOptions(const GenerationRequest &r)
 	: commonsSize(r.option("commons-size")), straitWidth(r.option("strait-width")),
 	  causewayWidth(r.option("causeway-width")), coastRoughness(r.option("coast-roughness")),
-	  valleys(r.option("valleys")), resourceIslands(r.option("resource-islands")),
-	  sand(r.option("sand")), frontier(r.option("frontier-richness")),
+	  valleys(r.option("valleys")), islands(r.option("islands")), sand(r.option("sand")),
+	  frontier(r.option("frontier-richness")),
 	  stoneWalls(r.option("stone-walls") != 0), sandRoads(r.option("sand-roads") != 0),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
@@ -1448,27 +1657,29 @@ GeneratorDefinition cityStatesDefinition()
 		"city-states",
 		17,
 		"City states",
-		7,
+		8,
 		false,
-		// The commons' radius as a share of half the shorter side, the strait's width as a
-		// share of the shorter side, the causeway's road in tiles; valleys per 128x128 of
-		// commons; resource islands per 128x128 of sea.
-		{{"commons-size", "Commons size", 30, 65, 5, 55, ControlGroup::Terrain},
-		 {"strait-width", "Strait width", 3, 8, 1, 4, ControlGroup::Terrain},
+		// The commons' radius as a share of half the shorter side (45 since 2026-09-14, from 55),
+		// the strait's width as a share of the shorter side (11, from 4: room for the islets),
+		// the causeway's road in tiles; valleys per 128x128 of commons; islets either side of
+		// every causeway in the strait on a four-colony 256 map, more on a longer arc (the
+		// channels get one each whenever this is above 0).
+		{{"commons-size", "Commons size", 30, 65, 5, 45, ControlGroup::Terrain},
+		 {"strait-width", "Strait width", 3, 14, 1, 11, ControlGroup::Terrain},
 		 {"causeway-width", "Causeway width", 5, 11, 2, 7, ControlGroup::Layout},
 		 // Bays and headlands on every coast and the bow in the channels.
 		 {"coast-roughness", "Coast roughness", 0, 100, 5, 50, ControlGroup::Terrain},
 		 {"valleys", "Valleys", 0, 8, 1, 3, ControlGroup::Terrain},
 		 // Patches of sand over the homes and the commons, per 64x128 tiles of land.
 		 {"sand", "Sand patches", 0, 8, 1, 3, ControlGroup::Terrain},
-		 {"resource-islands", "Resource islands", 0, 6, 1, 2, ControlGroup::Resources},
+		 {"islands", "Islands", 0, 4, 1, 2, ControlGroup::Terrain},
 		 // How much richer the commons' heart is than its shores.
 		 {"frontier-richness", "Frontier richness", 0, 100, 10, 60, ControlGroup::Resources},
 		 // Off, no stone: the causeways are plain roads and the homes' coasts are open.
 		 GeneratorControl::toggle("stone-walls", "Stone walls", true, ControlGroup::Layout),
 		 // Off, no sand roads: the causeways and the commons are grass from shore to shore.
 		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
-		 // Every home's ambient fields, outcrops and grove, the commons and the islands' prizes;
+		 // Every home's ambient fields, outcrops and grove, the commons and the islets' prizes;
 		 // every home's kit and the causeways' stone stay as they are.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),

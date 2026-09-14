@@ -4,9 +4,9 @@
 #include "GeneratorDefinition.h"
 struct StoneHighlandsOptions
 {
-	int valleySize, passWidth, loopiness, pondSize, fruit;
+	int valleySize, passWidth, loopiness, pondSize;
 	bool homeValleyFruit;
-	int wheat, wood, stone, algae; // percentages of the default amounts
+	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit StoneHighlandsOptions(const GenerationRequest &r);
 };
 GeneratorDefinition stoneHighlandsDefinition();

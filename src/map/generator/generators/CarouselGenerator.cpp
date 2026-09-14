@@ -44,19 +44,25 @@ using namespace MapGeneration;
 // in radius, and every wall is a single line of stone with no water beside it, so a tower behind a
 // wall stands as close as possible to the lane it covers.
 //
-// WHY THE FARMS. Each home reaches two walled wheat farms, one in towards the plaza and one out beyond
-// the ring, laid in rows at the widths that regrow best (Farmland). The farms are the homes' water:
-// there are no ponds, which would only take building room. Every set of farms is shared out by equal
-// yield for its rows' angle, so no colony's farms grow less for facing the wrong way. The plaza has
-// only fruit - an orchard for inns to pull hungry enemies across - with no wheat or wood to smother it.
+// WHY THE FARMS. Each home reaches one walled wheat farm, out beyond the ring, laid in rows at the
+// widths that regrow best (Farmland). The farm is the home's water: there are no ponds, which would
+// only take building room, and no starter kit of wheat and wood blocks either (FEEDBACK 2026-09-14:
+// "there's already too much food on this map", and the blocks clutter the base): a home's own
+// scattered fields and its farm feed it. The farms are shared out by equal yield for their rows' angle,
+// so no colony's farm grows less for facing the wrong way. Inside the ring, between the spokes, the sea
+// is left as sea with algae in it (FEEDBACK 2026-09-14: farms reaching in towards the plaza made it
+// "hard to know where you are on the map", and "less beautiful"), so the plaza reads as an island in a
+// lagoon and the ring of homes as its shore. The plaza has only fruit - an orchard for inns to pull
+// hungry enemies across - with no wheat or wood to smother it.
 //
 // HOW IT IS BUILT. Everything is designed once, in the wedge's frame (angle round the centre and
 // distance out from it), and turned round the centre for every colony, so every colony's ground is the
 // same and the layout is fair for any colony count. The pieces - homes, lanes, courts and the plaza -
-// are drawn first, then the farms grown into the sea between them. Then all the sea near a home or farm
-// fills in with that colony's ground, and a line of stone is drawn wherever two colonies' ground meets
-// (see fillAndWall). What sea is left beyond the outermost pieces is sealed off: stone stands on every
-// grass tile touching its beaches, so a swimmer can land but never walk in. The design is a pure
+// are drawn first, then the farms grown into the sea beyond the ring. Then all the sea outside the ring
+// near a home or farm fills in with that colony's ground, and a line of stone is drawn wherever two
+// colonies' ground meets (see fillAndWall). What sea is left - the lagoon inside the ring, and any beyond
+// the outermost pieces - is sealed off: stone stands on every grass tile touching its beaches, so a
+// swimmer can land but never walk in. The design is a pure
 // function of the request, so validateWorld rebuilds it and checks the finished world against it.
 //
 // GAME RULES BEHIND IT (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md): stone can never be cleared, so
@@ -69,7 +75,7 @@ using namespace MapGeneration;
 //
 // THE SIZES AT THE DEFAULTS (256x256, 4 colonies): homes 26 tiles in radius 94 tiles out from the
 // centre, corridors 3 wide sweeping about 50 degrees, courts 3 in radius, a court wall 2 thick, spokes 3
-// wide and a plaza 31 in radius with a pond and an orchard; three towers per colony.
+// wide and a plaza 31 in radius with a pond and an orchard; three level-1 towers per colony.
 namespace
 {
 
@@ -87,10 +93,9 @@ constexpr double kHomeShare = 0.2;
 constexpr double kHomeArcShare = 0.2;
 constexpr double kMinimumHome = 14;
 constexpr double kHomeRoughness = 0.12;
-// Every home's starter kit: this much wheat and wood beside the swarm, unscaled, 1:1.
-constexpr int kHomeWheat = 30;
-constexpr int kHomeWood = 30;
-// A home's scattered farmland, as percentages of its tiles at 100% wheat and wood.
+// A home has no starter kit of wheat and wood blocks (FEEDBACK 2026-09-14; the farm and the scattered
+// fields feed it, and secureStartingCrops is the backstop). Its scattered farmland, as percentages of its
+// tiles at 100% wheat and wood.
 constexpr int kHomeWheatShare = 4;
 constexpr int kHomeWoodShare = 2;
 
@@ -114,8 +119,8 @@ constexpr double kPlazaPondShare = 0.28;
 constexpr double kPlazaPondShore = 5;
 
 // THE FARMS. While they grow, farms keep this many steps from other colonies' ground (the gap fills in
-// afterwards), join their home through a neck this wide, and are laid in a set (every inner farm, or
-// every outer one) only if every colony's field in it is at least this share of a home's area.
+// afterwards), join their home through a neck this wide, and are laid only if every colony's field is
+// at least this share of a home's area.
 constexpr int kFarmGap = 3;
 constexpr double kNeckHalf = 8;
 constexpr double kMinimumFarmShare = 0.5;
@@ -135,6 +140,10 @@ constexpr double kFarmReach = 0.95;
 // beyond it keeps this many tiles of the nearest piece's ground before its coast.
 constexpr int kFillReach = 24;
 constexpr int kSeaMargin = 3;
+// The margin a lane or court keeps from the lagoon instead, all of it stone (laneBand): a beach's
+// mixed tiles reach two tiles in and a sealed coast one more, doubled where the coast runs diagonally,
+// which on the 3-tile margin left a diagonal spoke with no grass down its middle at all.
+constexpr int kLaneMargin = 5;
 // A road's corridor sand keeps this many steps from any water, so it never joins a beach.
 constexpr int kRoadSeaGap = 5;
 // Deposits keep this many steps from every corridor and spoke, so no field ever grows a door shut.
@@ -241,6 +250,8 @@ struct Layout
 	std::vector<Farm> farms;
 	std::vector<int> farmColony;
 	std::vector<unsigned char> farmSand;
+	// The lanes' and courts' margins on the lagoon, kept as stone so the lane stays as drawn (fillAndWall).
+	std::vector<unsigned char> laneBand;
 	std::string failure;
 };
 
@@ -426,64 +437,61 @@ struct FarmSet
 	std::vector<ShapePoint> origins;
 };
 
-// THE FARM FIELDS (growFarmFields): every colony's home reaches one field in towards the plaza, in the
-// sea between its corridor and the spokes, and one out beyond the ring. Each set is shared out by equal
-// yield for every colony's row angle (its axis), so a colony whose rows fall on the diagonal gets more
-// ground. A set is kept only if every colony's field in it has room, so a small or crowded map loses a
-// set for everyone rather than favouring anyone. The rows are laid later, once the fields' walls stand.
+// THE FARM FIELDS (growFarmFields): every colony's home reaches one field out beyond the ring, in the
+// sea between it and the map's wrap. The fields are shared out by equal yield for every colony's row
+// angle (its axis), so a colony whose rows fall on the diagonal gets more ground. The set is kept only
+// if every colony's field has room, so a small or crowded map loses the farms for everyone rather than
+// favouring anyone. Nothing grows inside the ring: the sea between the spokes stays the lagoon (see the
+// header; the inner farms went on 2026-09-14). The set keeps the outer set's index, 1, so the fill
+// labels below read as they always did. The rows are laid later, once the fields' walls stand.
 std::vector<FarmSet> claimFarmFields(Layout &L)
 {
 	const Torus &t = L.t;
 	const Geometry &g = L.g;
 	const int n = t.size(), teams = g.teams;
-	std::vector<unsigned char> inner(n, 0), outer(n, 0);
+	constexpr int kOuterSet = 1;
+	std::vector<unsigned char> outer(n, 0);
 	for (int i = 0; i < n; ++i)
-	{
-		const double d = std::hypot(t.offsetX(int(L.cx), i % t.w), t.offsetY(int(L.cy), i / t.w));
-		inner[i] = d < g.homeRadius;
-		outer[i] = d >= g.homeRadius;
-	}
-	std::vector<ShapePoint> innerSeeds, outerSeeds;
+		outer[i] = std::hypot(t.offsetX(int(L.cx), i % t.w), t.offsetY(int(L.cy), i / t.w)) >=
+				   g.homeRadius;
+	std::vector<ShapePoint> seeds;
 	std::vector<int> owners;
 	for (int k = 0; k < teams; ++k)
 	{
-		innerSeeds.push_back(polarPoint(L.cx, L.cy, g.homeRadius - g.homeReach - 2, L.axis[k]));
-		outerSeeds.push_back(polarPoint(L.cx, L.cy, g.homeRadius + g.homeReach + 2, L.axis[k]));
+		seeds.push_back(polarPoint(L.cx, L.cy, g.homeRadius + g.homeReach + 2, L.axis[k]));
 		owners.push_back(k);
 	}
-	const std::vector<int> fields[2] = {
-		growFarmFields(t, L.land, L.homeOf, inner, innerSeeds, owners, L.homes, kFarmGap, kNeckHalf,
-					   L.axis),
-		growFarmFields(t, L.land, L.homeOf, outer, outerSeeds, owners, L.homes, kFarmGap, kNeckHalf,
-					   L.axis)};
+	const std::vector<int> fields =
+		growFarmFields(t, L.land, L.homeOf, outer, seeds, owners, L.homes, kFarmGap, kNeckHalf, L.axis);
 	const double homeArea = kPi * g.homeR * g.homeR;
+	std::vector<int> size(teams, 0);
+	for (int i = 0; i < n; ++i)
+		if (fields[i] >= 0)
+			++size[fields[i]];
 	std::vector<FarmSet> sets;
-	for (int set = 0; set < 2; ++set)
-	{
-		std::vector<int> size(teams, 0);
-		for (int i = 0; i < n; ++i)
-			if (fields[set][i] >= 0)
-				++size[fields[set][i]];
-		if (*std::min_element(size.begin(), size.end()) < kMinimumFarmShare * homeArea)
-			continue;
-		sets.push_back({set, set == 0 ? innerSeeds : outerSeeds});
-		for (int i = 0; i < n; ++i)
-			if (fields[set][i] >= 0 && L.homeOf[i] < 0)
-			{
-				L.farmOf[i] = fields[set][i];
-				L.farmSet[i] = set;
-				L.land[i] = 1;
-			}
-	}
+	if (*std::min_element(size.begin(), size.end()) < kMinimumFarmShare * homeArea)
+		return sets;
+	sets.push_back({kOuterSet, seeds});
+	for (int i = 0; i < n; ++i)
+		if (fields[i] >= 0 && L.homeOf[i] < 0)
+		{
+			L.farmOf[i] = fields[i];
+			L.farmSet[i] = kOuterSet;
+			L.land[i] = 1;
+		}
 	return sets;
 }
 
 // FILLING IN AND WALLING. Nothing but stone parts two colonies' ground, so every wall stands right beside
 // what it guards:
-//  - The sea within kFillReach of a home or farm becomes that home's or farm's ground, whichever is
-//    nearest (fillToNearest). Lanes, courts and the plaza never grow, so they keep exactly the width they
-//    were drawn. Sea left beyond that keeps a kSeaMargin strip of the nearest piece before its beach, so
-//    a beach and its sealed coast never eat into a lane.
+//  - The sea outside the ring within kFillReach of a home or farm becomes that home's or farm's ground,
+//    whichever is nearest (fillToNearest). The lagoon - every tile of sea inside the ring through the
+//    homes' centres - is never filled, so the middle of the map stays water between the spokes. Lanes,
+//    courts and the plaza never grow, so they keep exactly the width they were drawn. Sea left over,
+//    the lagoon included, keeps a kSeaMargin strip of the nearest piece before its beach, so a beach and
+//    its sealed coast never eat into a piece; a lane or court keeps kLaneMargin instead, and all of that
+//    margin is stone (laneBand, laid by stoneTiles), so a lane crossing the lagoon is the 3 grass tiles
+//    it was drawn between two bands of stone, its beaches and the water, however diagonally it runs.
 //  - Every tile gets a side: the plaza, a colony's lanes and court, or a colony's home and farms. A
 //    single line of stone stands wherever two sides meet (labelBorders), on the higher side - always the
 //    home's or farm's, so no wall narrows a lane. Two borders stay open (borderOpen): each home's door
@@ -496,7 +504,7 @@ void fillAndWall(Layout &L)
 	const int farmLabel = teams, courtLabel = 3 * teams, pathLabel = 4 * teams,
 			  plazaLabel = 5 * teams;
 	std::vector<int> piece(n, -1), grown(n, -1);
-	std::vector<unsigned char> sea(n, 0), home(n, 0);
+	std::vector<unsigned char> sea(n, 0), home(n, 0), fillable(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
 		piece[i] = L.wall[i]           ? -1
@@ -509,15 +517,29 @@ void fillAndWall(Layout &L)
 		grown[i] = piece[i] < courtLabel ? piece[i] : -1;
 		sea[i] = !L.land[i];
 		home[i] = L.homeOf[i] >= 0;
+		// Only the sea outside the ring fills in; inside it is the lagoon.
+		fillable[i] = sea[i] && std::hypot(t.offsetX(int(L.cx), i % t.w),
+										   t.offsetY(int(L.cy), i / t.w)) >= L.g.homeRadius;
 	}
-	std::vector<unsigned char> filled = fillToNearest(t, grown, sea, kFillReach);
+	std::vector<unsigned char> filled = fillToNearest(t, grown, fillable, kFillReach);
 	for (int i = 0; i < n; ++i)
 	{
 		if (filled[i])
 			piece[i] = grown[i];
 		sea[i] = sea[i] && !filled[i];
 	}
-	const std::vector<unsigned char> margin = fillToNearest(t, piece, sea, kSeaMargin);
+	// The margins: kSeaMargin of the nearest piece, or kLaneMargin where that piece is a lane or a court,
+	// the whole of which is the lane's band.
+	std::vector<int> nearest = piece;
+	const std::vector<unsigned char> wide = fillToNearest(t, nearest, sea, kLaneMargin);
+	std::vector<unsigned char> margin = fillToNearest(t, piece, sea, kSeaMargin);
+	for (int i = 0; i < n; ++i)
+		if (wide[i] && nearest[i] >= courtLabel && nearest[i] < plazaLabel)
+		{
+			margin[i] = 1;
+			piece[i] = nearest[i];
+			L.laneBand[i] = 1;
+		}
 	L.homeSteps = stepsFrom(t, home);
 	for (int i = 0; i < n; ++i)
 	{
@@ -632,6 +654,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.wall.assign(n, 0);
 	L.road.assign(n, 0);
 	L.farmSand.assign(n, 0);
+	L.laneBand.assign(n, 0);
 	// One outline for every home, turned to each home's axis; the court and plaza are true circles.
 	const RadialShape homeShape(g.homeR, kHomeRoughness, context, "carousel-home");
 	const RadialShape courtShape(g.courtR, 0.0001, context, "carousel-court");
@@ -659,14 +682,20 @@ std::vector<unsigned char> seaMargin(const Map &map, const Layout &L)
 	return islandSeaMargin(map, L.t, L.pond, L.roadTile, L.farmSand);
 }
 
-// The design's stone, once the terrain is laid: every coast of the remaining sea sealed, and every wall.
+// The design's stone, once the terrain is laid: every coast of the remaining sea sealed, every wall, and
+// every grass tile of a lane's band (fillAndWall), so a lane on the lagoon keeps its drawn width and its
+// coast is sealed however it runs.
 std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
 {
-	return sealedIslandStone(map, L.t, seaMargin(map, L), L.land, L.wall);
+	std::vector<unsigned char> stone = sealedIslandStone(map, L.t, seaMargin(map, L), L.land, L.wall);
+	for (int i = 0; i < L.t.size(); ++i)
+		if (L.laneBand[i] && map.getTerrainType(i % L.t.w, i / L.t.w) == GRASS)
+			stone[i] = 1;
+	return stone;
 }
 
-// The resources: every home's kit and scattered farmland, a fruit grove in every court, the plaza's
-// orchard (fruit only, so nothing smothers it), and the farms' wheat and woodlots.
+// The resources: every home's scattered farmland (no kit: see the header), a fruit grove in every
+// court, the plaza's orchard (fruit only, so nothing smothers it), and the farms' wheat and woodlots.
 void furnish(Map &map, const Layout &L, GenerationContext &context, const CarouselOptions &o,
 			 const std::vector<unsigned char> &pads)
 {
@@ -692,8 +721,6 @@ void furnish(Map &map, const Layout &L, GenerationContext &context, const Carous
 	for (int k = 0; k < g.teams; ++k)
 	{
 		const auto eligible = [&](int i) { return L.homeOf[i] == k && free(i); };
-		plantHomeKit(map, t, context, L.homes[k], L.axis[k], g.homeR, kHomeWheat, kHomeWood,
-					 eligible);
 		furnishGround(
 			map, t, context, fertility, eligible, patch, split,
 			[&](int area)
@@ -1005,7 +1032,7 @@ GeneratorDefinition carouselDefinition()
 		"carousel",
 		22,
 		"Carousel",
-		1,
+		2,
 		false,
 		// Each home's radius and each court's as percentages of the standard; the corridors' and the
 		// spokes' widths and the wall between a court and the next home in tiles; the plaza's radius as
@@ -1017,8 +1044,9 @@ GeneratorDefinition carouselDefinition()
 		 {"court-wall", "Court wall", 1, 5, 1, 2, ControlGroup::Terrain},
 		 {"plaza-size", "Plaza size", 14, 34, 2, 24, ControlGroup::Layout},
 		 // The towers every colony starts with, all against its walls: their level (0 for none, just
-		 // open pads) and how many.
-		 {"starting-towers", "Starting tower level", 0, 3, 1, 2, ControlGroup::Layout},
+		 // open pads; level 1 by default since 2026-09-14, so players upgrade their own towers) and
+		 // how many.
+		 {"starting-towers", "Starting tower level", 0, 3, 1, 1, ControlGroup::Layout},
 		 {"tower-count", "Towers per colony", 0, 12, 1, 3, ControlGroup::Layout},
 		 // Off, the lanes and the plaza are grass from wall to wall.
 		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
@@ -1026,7 +1054,7 @@ GeneratorDefinition carouselDefinition()
 		 // an inn.
 		 GeneratorControl::toggle("farm-plots", "Farm building plots", true, ControlGroup::Layout),
 		 // Every home's scattered fields, the farms' wheat and woodlots, the courts' and the orchard's
-		 // fruit, and the algae; every home's kit, the walls' stone and the towers are unscaled.
+		 // fruit, and the algae; the walls' stone and the towers are unscaled.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),

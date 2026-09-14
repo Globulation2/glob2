@@ -52,6 +52,12 @@ struct GenerationRequest
 	static const std::vector<Control> &sharedControls() { return sharedGeneratorControls(); }
 	static const Control &control(int method, const std::string &id);
 	static const char *methodName(int method);
+	/// Draws every one of this landscape's own controls at random - terrain, resources, switches,
+	/// layout alike - and keeps only a draw the generator accepts up front (validateRequest); the
+	/// shared controls (size, colonies, workers) frame the game the player asked for and are left
+	/// alone. Deterministic for a seed. Up to `attempts` draws; false, and the request unchanged,
+	/// when none was accepted. A draw the world then refuses is the caller's to redraw.
+	bool randomizeControls(std::uint32_t seed, int attempts = 64);
 };
 class GenerationHistory
 {

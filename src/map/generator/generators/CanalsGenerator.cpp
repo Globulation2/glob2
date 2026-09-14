@@ -27,9 +27,10 @@
 #include <vector>
 using namespace MapGeneration;
 
-// Canals: a lagoon city. The map is cut into blocks by a grid of narrow canals, warped so the blocks
-// are irregular, and every canal is just wide enough to stop a unit and just narrow enough for a
-// tower on one bank to shoot the other. Every colony starts on a block of its own with a pond and a
+// Canals: a lagoon city. The map is cut into blocks by a grid of narrow canals - squares, or hexagons
+// (FEEDBACK 2026-09-14: "support a hexagon lattice ... an option similar to the maze generator") -
+// warped so the blocks are irregular, and every canal is just wide enough to stop a unit and just
+// narrow enough for a tower on one bank to shoot the other. Every colony starts on a block of its own with a pond and a
 // kit, and a handful of sand bridges join the blocks: only the bridges a tree needs to connect the
 // colonies' blocks, plus a few more at random, so most blocks are islands until someone can swim.
 // Towers reach across the canals from the first minute and armies cannot, so where the first towers
@@ -64,6 +65,10 @@ namespace
 
 // Every home's starting kit, unscaled whatever the amounts say.
 constexpr int kHomeWheat = 14, kHomeWood = 12, kHomeQuarry = 2;
+// Hexagonal blocks sit this share of the block size apart, as Maze's cells do: a hexagon's edge is only
+// about 0.58 of its pitch, so at the square's spacing its canals would leave blocks too small for their
+// kinds.
+constexpr int kHexPitchPercent = 150;
 // A bridge is a line of sand corners kBridgeHalfWidth wide across the canal (a 1-corner line already
 // carries units two tiles wide, since a tile with a sand corner is no longer pure water), reaching
 // this far past the canal's edge onto each bank so it lands on grass, not beach.
@@ -297,11 +302,15 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const Torus &t = L.t;
 	const int n = t.size(), teams = std::max(1, request.nbTeams);
 
-	// The blocks: a square tiling, warped. Every edge is a canal, so every edge is an obstacle the
-	// warp keeps apart: opposite sides of a block stay at least the canal plus eight tiles apart, so
-	// a block always keeps a few tiles of grass across its narrowest, and a block's centre keeps at
-	// least a fifth of the block from its sides, so a pond fits.
-	L.g = squareTessellation(t.w, t.h, o.blockSize);
+	// The blocks: a square or hexagonal tiling, warped. Every edge is a canal, so every edge is an
+	// obstacle the warp keeps apart: opposite sides of a block stay at least the canal plus eight tiles
+	// apart, so a block always keeps a few tiles of grass across its narrowest, and a block's centre
+	// keeps at least a fifth of the block from its sides, so a pond fits. The built kinds are drawn in
+	// a square frame whatever the block's shape; on a hexagon a wall tile that falls outside the block
+	// is simply left out (blockWalls).
+	L.g = o.blockShape == int(Tessellation::Shape::Hexagon)
+			  ? hexTessellation(t.w, t.h, o.blockSize * kHexPitchPercent / 100)
+			  : squareTessellation(t.w, t.h, o.blockSize);
 	if (L.g.columns < 2 || L.g.rows < 2)
 	{
 		L.failure = "The canals need at least two blocks across and down; use a bigger map or "
@@ -788,7 +797,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 } // namespace
 
 CanalsOptions::CanalsOptions(const GenerationRequest &r)
-	: blockSize(r.option("block-size")), canalWidth(r.option("canal-width")),
+	: blockShape(r.option("block-shape")), blockSize(r.option("block-size")),
+	  canalWidth(r.option("canal-width")),
 	  warp(r.option("warp")), extraBridges(r.option("extra-bridges")),
 	  towers(r.option("starting-towers")), towerCount(r.option("tower-count")),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
@@ -803,17 +813,21 @@ GeneratorDefinition canalsDefinition()
 		"canals",
 		29,
 		"Canals",
-		4,
+		5,
 		false,
 		// Blocks of 24 give a 256 map about a hundred blocks; a canal of 3 corners (two tiles of
-		// water) is sealed against diagonal steps and is reached by a level-2 tower, which is what
-		// the colonies start with; a fifth again in extra bridges keeps most blocks islands.
-		{{"block-size", "Block size", 16, 40, 2, 24, ControlGroup::Layout},
+		// water) is sealed against diagonal steps and is reached by a level-2 tower, one upgrade
+		// from what the colonies start with; a fifth again in extra bridges keeps most blocks
+		// islands. Hexagonal blocks sit kHexPitchPercent of the block size apart.
+		{GeneratorControl::choice("block-shape", "Block shape", {"Squares", "Hexagons"}, 0,
+								  ControlGroup::Layout),
+		 {"block-size", "Block size", 16, 40, 2, 24, ControlGroup::Layout},
 		 {"canal-width", "Canal width", 3, 5, 1, 3, ControlGroup::Terrain},
 		 // FEEDBACK 2026-09-13: warp 80 and extra bridges 30 (were 40 and 20).
 		 {"warp", "Warp", 0, 100, 10, 80, ControlGroup::Terrain},
 		 {"extra-bridges", "Extra bridges", 0, 100, 10, 30, ControlGroup::Layout},
-		 {"starting-towers", "Starting tower level", 0, 3, 1, 2, ControlGroup::Layout},
+		 // Level 1 by default since 2026-09-14, so players upgrade their own towers.
+		 {"starting-towers", "Starting tower level", 0, 3, 1, 1, ControlGroup::Layout},
 		 {"tower-count", "Towers per colony", 1, 4, 1, 2, ControlGroup::Layout},
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),

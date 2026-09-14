@@ -77,6 +77,11 @@ constexpr int kHexPitchPercent = 150;
 constexpr int kHomeFarmland = 32;
 constexpr int kHomeStone = 12;
 
+// The ambient layer at 100%: wheat, wood and stone tiles per 256 shore tiles, fruit tiles in every
+// dead end's treasure, and algae tiles per 400 water tiles. The amount controls are percentages of
+// these, as on every other generator (until 2026-09-14 they were these counts themselves).
+constexpr int kShoreWheat = 48, kShoreWood = 24, kShoreStone = 16, kTreasureFruit = 9, kAlgae = 24;
+
 // Deposits hug each passage's shores, at most this many tiles in. That leaves a clear lane down
 // the middle of every passage however the maze turns, so no deposit can seal a route.
 constexpr int kShoreBand = 3;
@@ -403,8 +408,9 @@ void scatterThroughMaze(Map &map, GenerationContext &context, const MazeDesign &
 	};
 
 	const int shore = int(pool.size());
-	for (const auto &layer : {std::pair<int, int>{WHEAT, o.wheat}, std::pair<int, int>{WOOD, o.wood},
-							  std::pair<int, int>{STONE, o.stone}})
+	for (const auto &layer : {std::pair<int, int>{WHEAT, int(scaledCount(kShoreWheat, o.wheat))},
+							  std::pair<int, int>{WOOD, int(scaledCount(kShoreWood, o.wood))},
+							  std::pair<int, int>{STONE, int(scaledCount(kShoreStone, o.stone))}})
 	{
 		// Density per 256 shore tiles, so the defaults (wheat 48, wood 24, stone 16) cover about
 		// 19%, 9% and 6% of the shore band, in clumps of 4 to 12 tiles: big enough to be worth a
@@ -579,15 +585,16 @@ bool generate(Game &game, GenerationContext &context)
 	// fight for the ones it lacks. Placed before the shore scatter, which works around them.
 	// Without treasure the same fruit is scattered along the passages' shores instead.
 	std::vector<int> deadEnds = d.deadEnds;
-	if (o.fruit > 0 && o.treasure)
+	const int fruit = int(scaledCount(kTreasureFruit, o.fruit));
+	if (fruit > 0 && o.treasure)
 	{
 		context.shuffle(deadEnds.begin(), deadEnds.end(), "resources");
 		const int firstType = context.bounded("resources", 3);
 		for (size_t i = 0; i < deadEnds.size(); ++i)
-			placeTreasure(map, t, d, deadEnds[i], o.fruit, CHERRY + int((firstType + i) % 3));
+			placeTreasure(map, t, d, deadEnds[i], fruit, CHERRY + int((firstType + i) % 3));
 	}
-	scatterThroughMaze(map, context, d, onRoad, o, o.treasure ? 0 : int(deadEnds.size()) * o.fruit);
-	seedAlgae(map, context, o.algae);
+	scatterThroughMaze(map, context, d, onRoad, o, o.treasure ? 0 : int(deadEnds.size()) * fruit);
+	seedAlgae(map, context, int(scaledCount(kAlgae, o.algae)));
 	return true;
 }
 
@@ -659,8 +666,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 MazeOptions::MazeOptions(const GenerationRequest &r)
 	: cellShape(r.option("cell-shape")), cellSize(r.option("cell-size")),
 	  channelWidth(r.option("channel-width")), loopiness(r.option("loopiness")),
-	  warp(r.option("warp")), wheat(r.option("wheat")), wood(r.option("wood")),
-	  stone(r.option("stone")), algae(r.option("algae")), fruit(r.option("fruit")),
+	  warp(r.option("warp")), wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
+	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
+	  fruit(r.option("fruit-amount")),
 	  sandRoads(r.option("sand-roads") != 0), treasure(r.option("dead-end-treasure") != 0)
 {
 }
@@ -671,7 +679,7 @@ GeneratorDefinition mazeDefinition()
 		"maze",
 		11,
 		"Maze",
-		13,
+		14,
 		false,
 		{GeneratorControl::choice("cell-shape", "Cell shape", {"Squares", "Hexagons"}, 0),
 		 {"cell-size",
@@ -708,11 +716,13 @@ GeneratorDefinition mazeDefinition()
 		 // Densities for the deposits scattered along the passages (per 256 shore tiles); homes
 		 // always get the same fixed amounts. Fruit is the size, in tiles, of the treasure at
 		 // every dead end that isn't a home.
-		 {"wheat", "Wheat", 0, 64, 1, 48, ControlGroup::Resources},
-		 {"wood", "Wood", 0, 64, 1, 24, ControlGroup::Resources},
-		 {"stone", "Stone", 0, 64, 1, 16, ControlGroup::Resources},
-		 {"algae", "Algae", 0, 64, 1, 24, ControlGroup::Resources},
-		 {"fruit", "Fruit", 0, 25, 1, 9, ControlGroup::Resources},
+		 // Percentages of the shore scatter, the dead-end treasure and the channel algae (kShoreWheat
+		 // and company); every home's kit is unscaled.
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount"),
 		 // Off, passages are grass from shore to shore, with no sand road down the middle.
 		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
 		 // Off, the treasure's fruit is scattered along the passages' shores instead.

@@ -4,8 +4,7 @@
 #include "GeneratorDefinition.h"
 struct CityStatesOptions
 {
-	int commonsSize, straitWidth, causewayWidth, coastRoughness, valleys, resourceIslands, sand,
-		frontier;
+	int commonsSize, straitWidth, causewayWidth, coastRoughness, valleys, islands, sand, frontier;
 	bool stoneWalls, sandRoads;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit CityStatesOptions(const GenerationRequest &r);

@@ -1420,12 +1420,16 @@ inline void farmAndTowerChecks()
 	}
 	assert(farm.water[t.at(32, 36)] && !farm.water[t.at(32, 34)]);
 	{
-		// Bridges: every 8 tiles along the rows from the origin, a line of sand across each water row.
+		// Bridges: every 8 tiles along the rows from the origin, a line of sand clean across the
+		// farm, through the water rows and the crop rows alike (FEEDBACK 2026-09-14), so a colony
+		// crosses the whole field on one road. Only the rim keeps its crops.
 		TerrainSketch bridged(t.size(), GRASS);
 		const Farm crossed = layFarm(bridged, t, region, 0, {32, 32}, 4, {6, 4}, nullptr, 8);
 		assert(!crossed.water[t.at(32, 36)] && crossed.sand[t.at(32, 36)] && bridged[t.at(32, 36)] == SAND);
 		assert(crossed.sand[t.at(24, 36)] && crossed.water[t.at(33, 36)] && crossed.water[t.at(28, 36)]);
-		assert(!crossed.sand[t.at(32, 32)] && crossed.rows == farm.rows);
+		assert(crossed.sand[t.at(32, 32)] && bridged[t.at(32, 32)] == SAND && crossed.rows == farm.rows);
+		assert(!crossed.sand[t.at(33, 32)] && bridged[t.at(33, 32)] == GRASS);
+		assert(!crossed.sand[t.at(32, 10)] && !crossed.sand[t.at(32, 53)]); // the rim stays grass
 		// A building plot's grass trumps a bridge through it.
 		TerrainSketch plotted(t.size(), GRASS);
 		const FarmPlot clearing;

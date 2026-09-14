@@ -114,39 +114,41 @@ int GeneratorRegistry::selectionIndex(int id, bool editor) const
 }
 const GeneratorRegistry &GeneratorRegistry::builtins()
 {
-	// This is also the product-facing catalog order. Keep the most polished and
-	// distinctive playable maps first; numeric IDs remain stable compatibility
-	// identifiers and do not determine presentation order.
-	static const GeneratorRegistry registry({contestedCommonsDefinition(),
-											 mazeDefinition(),
-											 fjordContinentDefinition(),
-											 shatteredCoastDefinition(),
-											 islesDefinition(),
-											 watershedDefinition(),
-											 stoneHighlandsDefinition(),
-											 symmetricArenaDefinition(),
-											 ringWorldDefinition(),
-											 cityStatesDefinition(),
-											 tidalFlatsDefinition(),
-											 evergladesDefinition(),
-											 spiderWebDefinition(),
-											 coralDefinition(),
-											 carouselDefinition(),
-											 amphitheatreDefinition(),
-											 switchbacksDefinition(),
-											 fingerprintDefinition(),
-											 rainShadowDefinition(),
-											 oldGrowthDefinition(),
-											 canalsDefinition(),
-											 polderDefinition(),
+	// This is also the product-facing catalog order. It was shuffled once, on 2026-09-14
+	// (std::mt19937-free: Python's random.Random(20260914).shuffle over the playable list as it
+	// then stood), so browsing the lobby favours no landscape over another; Uniform, editor-only,
+	// stays last. Numeric IDs remain stable compatibility identifiers and do not determine
+	// presentation order. Add a new landscape wherever you like; do not reorder the rest.
+	static const GeneratorRegistry registry({fingerprintDefinition(),
 											 oldTownDefinition(),
-											 anthillDefinition(),
-											 ruggedArchipelagoDefinition(),
-											 concreteIslandsDefinition(),
-											 craterLakesDefinition(),
-											 islandsDefinition(),
+											 symmetricArenaDefinition(),
 											 swampDefinition(),
+											 tidalFlatsDefinition(),
 											 riverDefinition(),
+											 islesDefinition(),
+											 ringWorldDefinition(),
+											 amphitheatreDefinition(),
+											 shatteredCoastDefinition(),
+											 craterLakesDefinition(),
+											 fjordContinentDefinition(),
+											 spiderWebDefinition(),
+											 concreteIslandsDefinition(),
+											 watershedDefinition(),
+											 mazeDefinition(),
+											 islandsDefinition(),
+											 stoneHighlandsDefinition(),
+											 switchbacksDefinition(),
+											 cityStatesDefinition(),
+											 canalsDefinition(),
+											 ruggedArchipelagoDefinition(),
+											 contestedCommonsDefinition(),
+											 rainShadowDefinition(),
+											 evergladesDefinition(),
+											 polderDefinition(),
+											 carouselDefinition(),
+											 oldGrowthDefinition(),
+											 anthillDefinition(),
+											 coralDefinition(),
 											 uniformDefinition()});
 	return registry;
 }

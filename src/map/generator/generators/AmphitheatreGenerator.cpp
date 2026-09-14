@@ -41,8 +41,9 @@ using namespace MapGeneration;
 // amphitheatre. There is no sea: each territory's water is two inland seas of its own, one on either
 // side of its home (or, where a territory has no room beside its home, one at its far end), enclosed by
 // its own land, so its algae and its regrowing fields are its own and no swimmer can use them to cross
-// into another territory. Every colony's towers stand against its border walls, covering the
-// neighbouring territories over them.
+// into another territory. Every colony's towers stand against the arena's outer wall beside its own
+// ramp, covering the terrace inside and the ramp itself over the stone, so the way in is held from the
+// first minute (FEEDBACK 2026-09-14: towers spread along the border walls "make no sense").
 //
 // The arena is designed round the centre and turned for every colony, like a wedge design. The
 // territories cannot be: a square map's corners and the ground across its wrap belong to no wedge,
@@ -65,14 +66,14 @@ using namespace MapGeneration;
 // cleared, so the walls and the ramps are permanent; a unit may step diagonally, which is why every
 // border is walled where any neighbour has another label (labelBorders); water blocks walking until a
 // colony swims, which is why a sea must lie wholly inside its territory; a defence tower shoots over
-// stone with no line of sight, which is why towers stand against the border walls; wheat and wood regrow
+// stone with no line of sight, which is why the towers stand against the arena wall; wheat and wood regrow
 // only near water, which is why every territory's fields grow round its seas and the terraces are dry; and
 // fruit lets an inn pull hungry enemy units across, which makes the pit's orchard the prize at the
 // bottom of every ramp.
 //
 // THE SIZES AT THE DEFAULTS (256x256, 4 colonies): a pit 15 tiles in radius, three walls 13 tiles
 // apart with ramps 7 wide, so the outer wall stands 41 tiles out; four territories of about 11,000
-// tiles each, each with 1,500 tiles of inland sea; three towers per colony.
+// tiles each, each with 1,500 tiles of inland sea; three level-1 towers per colony by the ramp.
 namespace
 {
 
@@ -117,6 +118,9 @@ constexpr int kRampClearance = 5;
 // Open 2x2 pads beside every colony's `tower-count` towers, and the spacing between sites.
 constexpr int kTowerPads = 3;
 constexpr int kTowerSpacing = 5;
+// Towers stand within this many walking steps of the colony's own ramp mouth, so they cluster at the
+// door rather than along the borders.
+constexpr int kEntranceReach = 18;
 // A tower keeps this many steps from water on every side, so it never closes a strip of shore.
 constexpr int kTowerRoom = 4;
 // The most the territories' areas may differ, in percent of the smallest: the balance stops within
@@ -397,29 +401,51 @@ std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
 	return designed.stone;
 }
 
-// The towers every colony starts with and the open pads beside them (chooseTowerSites): sites in a
-// colony's territory, directly against stone and away from its ramp, that cover the most of
-// neighbouring territories over the border walls, none in range of another colony's swarm.
+// The towers every colony starts with and the open pads beside them (chooseTowerSites): all in the
+// colony's own territory, directly against the arena's outer wall and within kEntranceReach steps of
+// the colony's ramp mouth, chosen for how much of the arena - the terraces, the pit and the ramps,
+// where an attacker comes from - each covers over the stone. Nothing scores for covering the colony's
+// own ground or its neighbours': the starting towers hold the door, and a colony that wants towers on
+// its borders builds them (FEEDBACK 2026-09-14: towers scattered along the border walls "make no
+// sense"; they should be "concentrated around the inner stone wall ... nearby the entrance").
 TowerPlan planTowers(const Map &map, const Layout &L, const GenerationContext &context,
 					 const AmphitheatreOptions &o, const std::vector<unsigned char> &stone)
 {
 	const Torus &t = L.t;
-	const int n = t.size();
-	std::vector<unsigned char> ramps(n, 0);
+	const int n = t.size(), teams = L.g.teams;
+	std::vector<unsigned char> ramps(n, 0), ringStone(n, 0);
 	for (int i = 0; i < n; ++i)
+	{
 		ramps[i] = L.rampOf[i] >= 0 || L.innerRamp[i];
+		ringStone[i] = L.ring[i] && stone[i];
+	}
 	const std::vector<int> fromRamps = stepsFrom(t, ramps);
 	const std::vector<unsigned char> swarms = swarmSurroundings(t, context, 0);
 	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
+	// How far every tile of a territory is from its own ramp mouth, walking the territory.
+	std::vector<int> fromMouth(n, -1);
+	for (int k = 0; k < teams; ++k)
+	{
+		std::vector<unsigned char> ground(n, 0);
+		for (int i = 0; i < n; ++i)
+			ground[i] = L.territory[i] == k;
+		const std::vector<int> steps = stepsFrom(t, tileMask(t, L.mouths[k]), ground);
+		for (int i = 0; i < n; ++i)
+			if (ground[i])
+				fromMouth[i] = steps[i];
+	}
 	std::vector<int> owner(n, -1);
 	std::vector<unsigned char> buildable(n, 0), target(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		owner[i] = L.territory[i];
-		buildable[i] = map.isGrass(x, y) && !stone[i] && !reserved[i] &&
-					   fromRamps[i] > kRampClearance && !map.isResource(x, y);
-		target[i] = !map.isWater(x, y) && !stone[i];
+		// The arena belongs to "everyone else", so every colony's towers score for covering it.
+		const bool arena = ramps[i] || (L.zone[i] >= 0 && L.zone[i] < L.g.rings);
+		owner[i] = arena ? teams : L.territory[i];
+		target[i] = arena && !map.isWater(x, y) && !stone[i];
+		buildable[i] = L.territory[i] >= 0 && map.isGrass(x, y) && !stone[i] && !reserved[i] &&
+					   fromRamps[i] > kRampClearance && fromMouth[i] >= 0 &&
+					   fromMouth[i] <= kEntranceReach && !map.isResource(x, y);
 	}
 	// No tower on a shore strip narrow enough for it to close.
 	std::vector<unsigned char> land(n, 0);
@@ -429,8 +455,10 @@ TowerPlan planTowers(const Map &map, const Layout &L, const GenerationContext &c
 	for (int i = 0; i < n; ++i)
 		buildable[i] = buildable[i] && roomy[i];
 	TowerRequest request = startingTowerRequest(o.towers, o.towerCount, kTowerPads, kTowerSpacing);
-	request.against = &stone;
-	return chooseTowerSites(t, owner, buildable, target, swarms, L.g.teams, request);
+	request.otherWeight = 1;
+	request.ownWeight = 0;
+	request.against = &ringStone;
+	return chooseTowerSites(t, owner, buildable, target, swarms, teams, request);
 }
 
 bool generate(Game &game, GenerationContext &context)
@@ -717,7 +745,7 @@ GeneratorDefinition amphitheatreDefinition()
 		"amphitheatre",
 		23,
 		"Amphitheatre",
-		2,
+		3,
 		false,
 		// Rings of wall; each ramp's width in tiles; the pit's radius and each terrace's width as
 		// shares of the half side; every colony's inland seas together as a percentage of the smallest
@@ -728,9 +756,10 @@ GeneratorDefinition amphitheatreDefinition()
 		 {"terrace-width", "Terrace width", 6, 20, 1, 14, ControlGroup::Layout},
 		 {"bay-size", "Bay size", 6, 24, 2, 14, ControlGroup::Terrain},
 		 {"border-wall", "Border wall", 1, 3, 1, 2, ControlGroup::Terrain},
-		 // The towers every colony starts with, all against its walls: their level (0 for none, just
-		 // open pads) and how many.
-		 {"starting-towers", "Starting tower level", 0, 3, 1, 2, ControlGroup::Layout},
+		 // The towers every colony starts with, all against the arena wall by its ramp: their level
+		 // (0 for none, just open pads; level 1 by default since 2026-09-14, so players upgrade
+		 // their own towers) and how many.
+		 {"starting-towers", "Starting tower level", 0, 3, 1, 1, ControlGroup::Layout},
 		 {"tower-count", "Towers per colony", 0, 12, 1, 3, ControlGroup::Layout},
 		 // Every territory's ambient fields and grove, the arena's fruit and outcrops, and the
 		 // bays' algae; every home's kit and the walls' stone are unscaled.

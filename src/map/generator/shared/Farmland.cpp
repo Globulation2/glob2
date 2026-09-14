@@ -126,15 +126,20 @@ Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned c
 				farm.sand[i] = 1;
 				sketch[i] = SAND;
 			}
-	// Bridges: every `bridgeSpacing` tiles along the rows, a line of sand vertices straight across every
-	// water row. The tiles either side of such a line are no longer pure water, so workers walk across,
-	// two tiles wide, instead of round the end of a long row.
+	// Bridges: every `bridgeSpacing` tiles along the rows, a line of sand vertices straight across the
+	// whole farm inside its cap, water rows and crop rows alike (FEEDBACK 2026-09-14: "extend those
+	// same sand bridges across the grass farm portions as well, so they go clean across the whole
+	// farm"). Across a water row the tiles either side of the line are no longer pure water, so
+	// workers walk across, two tiles wide, instead of round the end of a long row; across a crop row
+	// the line is a lane no crop grows over, so the farm is cut into bays that can be walked round
+	// without cutting through the rows. The cap ring (fromEdge == rim - 1) is sand already; the rim
+	// beyond it is the coast's or the wall's, and is left alone.
 	if (bridgeSpacing > 0)
 	{
 		const double ax = std::cos(angle), ay = std::sin(angle);
 		for (int i = 0; i < n; ++i)
 		{
-			if (!farm.water[i])
+			if (!region[i] || fromEdge[i] < rim - 1)
 				continue;
 			const double along = t.offsetX(ox, i % t.w) * ax + t.offsetY(oy, i / t.w) * ay;
 			const double off = along - bridgeSpacing * std::round(along / bridgeSpacing);

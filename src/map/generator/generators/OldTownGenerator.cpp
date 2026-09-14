@@ -508,7 +508,7 @@ GeneratorDefinition oldTownDefinition()
 	return {"old-town",
 			31,
 			"Old town",
-			6,
+			7,
 			false,
 			// A city of 70% of the half side leaves a belt of fields round it; blocks of 14 with
 			// streets of 4 give a 256 map about a hundred blocks and streets a column of units wide

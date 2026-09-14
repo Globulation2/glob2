@@ -44,10 +44,11 @@ using namespace MapGeneration;
 // yield (Farmland), and the fields grow to fill every tile of sea between the mountains and round the
 // rim, with a single line of stone on every border between colonies, so a defence tower behind it
 // shoots across into the neighbour's rows and no unit walks through. The farms are the homes' water, on
-// every size of map. Whatever sea a design leaves (none at the defaults) keeps a sealed coast, stone on
-// every grass tile touching its margin, so a swimmer can land on a beach but never get inside; the
-// trails are the only way anywhere for the whole game. The plateau has a pond and only fruit, the
-// prize every trail climbs to, with no wheat or wood to smother it.
+// every size of map, and their food: a home has no starter kit of wheat and wood blocks (FEEDBACK
+// 2026-09-14), only its own scattered fields. Whatever sea a design leaves (none at the defaults)
+// keeps a sealed coast, stone on every grass tile touching its margin, so a swimmer can land on a
+// beach but never get inside; the trails are the only way anywhere for the whole game. The plateau
+// has a pond and only fruit, the prize every trail climbs to, with no wheat or wood to smother it.
 //
 // HOW IT IS BUILT. Everything is designed once in the wedge's frame, along the colony's axis and across
 // it, and turned round the centre for every colony, so every colony's ground and trail are the same and
@@ -64,7 +65,7 @@ using namespace MapGeneration;
 //
 // THE SIZES AT THE DEFAULTS (256x256, 4 colonies): a plateau 28 tiles in radius; mountains about 40
 // tiles wide, each with a trail of several legs about 26 tiles long and 2 tiles of stone between them;
-// homes 24 tiles in radius on the rim, each with a farm on either flank; three towers per colony.
+// homes 24 tiles in radius on the rim, each with a farm on either flank; three level-1 towers per colony.
 namespace
 {
 
@@ -97,11 +98,9 @@ constexpr double kSpanShare = 0.1;
 // with a beach and a coast wall on each side, now the guard's rock near the plateau and farm beyond,
 // still what keeps the mountains from touching.
 constexpr double kPieceGap = 4;
-// Every home's starter kit: this much wheat and wood beside the swarm, unscaled; no stone, since the
-// mountains are stone.
-constexpr int kHomeWheat = 30;
-constexpr int kHomeWood = 30;
-// A home's scattered farmland, as percentages of its tiles at 100% wheat and wood.
+// A home has no starter kit of wheat and wood blocks (FEEDBACK 2026-09-14: the farms on either flank
+// feed it, and secureStartingCrops is the backstop), and no stone, since the mountains are stone. Its
+// scattered farmland, as percentages of its tiles at 100% wheat and wood.
 constexpr int kHomeWheatShare = 4;
 constexpr int kHomeWoodShare = 2;
 // Deposits keep this many steps from every trail, so no field grows across a trail's mouth.
@@ -563,8 +562,6 @@ void furnish(Map &map, const Layout &L, GenerationContext &context, const Switch
 	for (int k = 0; k < g.teams; ++k)
 	{
 		const auto eligible = [&](int i) { return L.homeOf[i] == k && free(i); };
-		plantHomeKit(map, t, context, L.kitCentre[k], L.axis[k], g.homeR, kHomeWheat, kHomeWood,
-					 eligible);
 		furnishGround(
 			map, t, context, fertility, eligible, patch, split,
 			[&](int area)
@@ -855,7 +852,7 @@ GeneratorDefinition switchbacksDefinition()
 		"switchbacks",
 		24,
 		"Switchbacks",
-		3,
+		4,
 		false,
 		// The trail's width and the stone between its legs in tiles; the plateau's radius as a
 		// share of the half side (the mountains fill the rest with as many legs as fit); each home's
@@ -865,8 +862,9 @@ GeneratorDefinition switchbacksDefinition()
 		 {"plateau-size", "Plateau size", 14, 34, 2, 22, ControlGroup::Layout},
 		 {"home-size", "Home size", 60, 160, 10, 100, ControlGroup::Layout},
 		 // The towers every colony starts with, all against its walls: their level (0 for none, just
-		 // open pads) and how many.
-		 {"starting-towers", "Starting tower level", 0, 3, 1, 2, ControlGroup::Layout},
+		 // open pads; level 1 by default since 2026-09-14, so players upgrade their own towers) and
+		 // how many.
+		 {"starting-towers", "Starting tower level", 0, 3, 1, 1, ControlGroup::Layout},
 		 {"tower-count", "Towers per colony", 0, 12, 1, 3, ControlGroup::Layout},
 		 // Off, the trails are grass from wall to wall.
 		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
@@ -874,7 +872,7 @@ GeneratorDefinition switchbacksDefinition()
 		 // swarm or an inn.
 		 GeneratorControl::toggle("farm-plots", "Farm building plots", true, ControlGroup::Layout),
 		 // Every home's scattered fields and grove, the farms' wheat and woodlots, the plateau's
-		 // orchard, and the algae; every home's kit, the mountains' stone and the towers are unscaled.
+		 // orchard, and the algae; the mountains' stone and the towers are unscaled.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),

@@ -920,6 +920,9 @@ void seedAlgae(Map &map, GenerationContext &context, const Layout &L, int algaeP
 			map.setResource(i % t.w, i / t.w, ALGA, 1);
 }
 
+// Groves at 100% fruit; the amount control scales this count.
+constexpr int kValleyFruit = 4;
+
 // Fruit is rare: small groves beside the ponds of valleys no colony starts in, a prize for
 // whoever holds the passes to them - or in any valley, colonies' own included, if asked.
 void plantFruit(Map &map, GenerationContext &context, const Layout &L,
@@ -1032,7 +1035,8 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	scatterFarmland(map, context, L, pondDistance, keepClear, o.wheat, o.wood);
 	seedAlgae(map, context, L, o.algae);
-	plantFruit(map, context, L, pondDistance, keepClear, homeValley, o.fruit, o.homeValleyFruit);
+	plantFruit(map, context, L, pondDistance, keepClear, homeValley,
+			   int(scaledCount(kValleyFruit, o.fruit)), o.homeValleyFruit);
 	// The kits above already put wheat and wood a few steps from every swarm; this is only the
 	// backstop, and the ridges are designed walls it must never clear.
 	guaranteeStartingResources(game, context, 24, 32, 0, &L.ridge);
@@ -1140,10 +1144,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 
 StoneHighlandsOptions::StoneHighlandsOptions(const GenerationRequest &r)
 	: valleySize(r.option("valley-size")), passWidth(r.option("pass-width")),
-	  loopiness(r.option("loopiness")), pondSize(r.option("pond-size")), fruit(r.option("fruit")),
+	  loopiness(r.option("loopiness")), pondSize(r.option("pond-size")),
 	  homeValleyFruit(r.option("home-valley-fruit") != 0), wheat(r.option("wheat-amount")),
 	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
-	  algae(r.option("algae-amount"))
+	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
 {
 }
 
@@ -1152,7 +1156,7 @@ GeneratorDefinition stoneHighlandsDefinition()
 	return {"stone-highlands",
 			14,
 			"Stone highlands",
-			3,
+			4,
 			false,
 			{// Average spacing between valley centres, in tiles.
 			 {"valley-size", "Valley size", 20, 44, 4, 32, ControlGroup::Layout},
@@ -1162,7 +1166,9 @@ GeneratorDefinition stoneHighlandsDefinition()
 			 // Pond area as a percentage of each valley's area.
 			 {"pond-size", "Pond size", 4, 16, 2, 8, ControlGroup::Terrain},
 			 // Fruit groves per 128x128 tiles of map.
-			 {"fruit", "Fruit", 0, 12, 1, 4, ControlGroup::Resources},
+			 // Groves per map at 100, as a percentage of kValleyFruit (a count of 0 to 12 until
+			 // 2026-09-14, when every generator's amounts became percentages).
+			 GeneratorControl::percentage("fruit-amount", "Fruit amount"),
 			 // On, fruit groves may grow in the valleys colonies start in too.
 			 GeneratorControl::toggle("home-valley-fruit", "Fruit in home valleys", false,
 									  ControlGroup::Resources),

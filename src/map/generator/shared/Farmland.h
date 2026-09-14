@@ -18,8 +18,9 @@ namespace MapGeneration
 // ground out into fields joined to their homes (by equal yield for their rows' angles), layFarm lays
 // the rows over a field, and plantFarm plants them once the terrain is written. Around a laid farm,
 // sand does three jobs: a cap ring closes the crop rows so wheat and wood never spread into the ground
-// round the farm; bridges cross the water rows so workers need not walk round a long row; and a ring
-// round the building plot keeps crops off it. Walls round a farm are the map's business, not the farm's.
+// round the farm; bridges cross the whole farm, water rows and crop rows alike, so workers need not walk
+// round a long row nor cut through one; and a ring round the building plot keeps crops off it. Walls
+// round a farm are the map's business, not the farm's.
 
 /// The widths of a farm's crop rows and water rows, measured across the rows in tiles.
 struct FarmRows
@@ -80,9 +81,11 @@ constexpr int kFarmOpening = 3;
 /// margin of land and every crop row joins the rim at both ends. Then, in order:
 ///  - with `caps` (on), a ring of sand vertices just inside the rim, where the water rows' beaches begin,
 ///    closes every crop row, so its wheat and wood never spread out of the farm;
-///  - with a `bridgeSpacing`, a line of sand vertices crosses every water row each that many tiles along
-///    the rows, starting at the origin: the tiles either side are no longer pure water, so workers walk
-///    across, two tiles wide;
+///  - with a `bridgeSpacing`, a line of sand vertices crosses the whole farm inside its cap, water rows
+///    and crop rows alike, each that many tiles along the rows, starting at the origin: across a water
+///    row the tiles either side are no longer pure water, so workers walk across, two tiles wide, and
+///    across a crop row the line is a lane no crop grows over, so the farm is cut into bays a worker
+///    walks round without clearing anything;
 ///  - with a `plot`, a building clearing is stamped at the region's most inland point, clear of every
 ///    water row by its sand ring and a vertex more and at least `rim` from the edge (a region too small
 ///    for it gets none); its grass always wins over a cap or bridge running through it.

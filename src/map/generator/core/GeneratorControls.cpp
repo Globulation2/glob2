@@ -2,8 +2,10 @@
 #include "GeneratorControls.h"
 #include "GenerationRequest.h"
 #include "GeneratorRegistry.h"
+#include "GenerationValidation.h"
 #include "Team.h"
 #include <algorithm>
+#include <random>
 #include <stdexcept>
 GeneratorControl GeneratorControl::toggle(std::string id, const char *label, bool on,
 										  ControlGroup group)
@@ -128,6 +130,27 @@ const std::vector<GeneratorControl> &GenerationRequest::controls(int id)
 const char *GenerationRequest::methodName(int id)
 {
 	return GeneratorRegistry::builtins().at(id).nameKey;
+}
+bool GenerationRequest::randomizeControls(std::uint32_t seed, int attempts)
+{
+	// A stream of its own: this is lobby randomness, nothing the simulation ever sees.
+	std::mt19937 rng(seed);
+	const GeneratorDefinition &definition = GeneratorRegistry::builtins().at(method);
+	for (int attempt = 0; attempt < attempts; ++attempt)
+	{
+		GenerationRequest draft = *this;
+		for (const auto &c : definition.controls)
+		{
+			const std::vector<int> domain = c.values();
+			c.set(draft, domain[rng() % domain.size()]);
+		}
+		if (validateGenerationRequest(draft, definition).empty())
+		{
+			*this = draft;
+			return true;
+		}
+	}
+	return false;
 }
 const GeneratorControl &GenerationRequest::control(int method, const std::string &id)
 {

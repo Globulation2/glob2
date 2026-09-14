@@ -48,7 +48,17 @@ using namespace MapGeneration;
 //
 // THE SIZES AT THE DEFAULTS (256x256, 4 colonies, island size 20): home islands about 25 tiles in
 // radius on a ring 74 tiles from the centre, a central island about 17 in radius, and a pond of
-// radius 5 on each home island.
+// radius 5 on each home island; six oasis islands and eight sandbars per wedge.
+//
+// FEEDBACK 2026-09-14: "it needs to have more of those pond + wheat or pond + wood oases, especially on
+// smaller maps with more players ... also want to see a few more of the random 'green patches' within
+// the sandy desert which can provide small building spaces." So the oases default to six per wedge
+// (was three), are drawn smaller and rounder, and keep less sand from each other (kOasisGap) and
+// from the home islands (kOasisHomeGap, where every feature used to keep kIslandGap), so more of
+// them fit a narrow wedge; and the sandbars, which are those green patches, default to eight per
+// wedge (was three), a little bigger, and keep the same smaller gaps. The scatter also tries three
+// times as hard to seat each one. A 128 map with six colonies is the limit: its home islands nearly
+// touch, and only an oasis or two of the smallest size fits between them and the central island.
 namespace
 {
 
@@ -60,14 +70,21 @@ constexpr int kIslandGap = 8;
 constexpr int kHomeWheat = 40;
 constexpr int kHomeWood = 30;
 // Neutral islands' radii as shares of the home islands' (never below a size that holds a pond and
-// a field), and the central island's as a share of the half side.
-constexpr double kNeutralLow = 0.45, kNeutralHigh = 0.6;
-constexpr double kNeutralMinimum = 7.0;
+// a ring of wheat round it; smaller since 2026-09-14 so more fit a crowded wedge), how rough their
+// coasts are (rounder than the home islands, so a small one is not all beach), and the central
+// island's radius as a share of the half side.
+constexpr double kNeutralLow = 0.30, kNeutralHigh = 0.45;
+constexpr double kNeutralMinimum = 3.5, kNeutralRoughness = 0.25;
+// Oases and sandbars keep this much sand from every other feature, and from a home island
+// kOasisHomeGap (water features keep kIslandGap from a home, so its beach stays dry): the less they
+// keep, the more of them a narrow wedge seats, which is what a small map with many colonies needs
+// (2026-09-14).
+constexpr int kOasisGap = 3, kSandbarGap = 3, kOasisHomeGap = 4;
 // Every neutral island is an oasis: a pond, and every other tile of it under wheat, so taking one
 // means clearing it first.
 constexpr double kCentralShare = 0.13;
-// Sandbars are just big enough to hold a tower or an inn.
-constexpr double kSandbarLow = 3.0, kSandbarHigh = 4.5;
+// Sandbars are just big enough to hold an inn and a tower: a green patch a forward post can stand on.
+constexpr double kSandbarLow = 3.5, kSandbarHigh = 5.0;
 
 struct Geometry
 {
@@ -168,11 +185,11 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 					 0,
 					 -1});
 	blobs.back().reach = blobs.back().shape.maximumRadius();
-	const auto fits = [&](double s0, double r0, double reach, double gap)
+	const auto fits = [&](double s0, double r0, double reach, double gap, double homeGap)
 	{
 		// A feature keeps 6 tiles from the very centre (plus the central island and a gap when
 		// there is one) and 4 from the edge of the design circle, stays inside its wedge by half a
-		// gap, and keeps its gap from every feature already placed (kIslandGap from a home island).
+		// gap, and keeps its gap from every feature already placed (homeGap from a home island).
 		if (r0 - reach < 6 + g.centralRadius * 1.3 + (g.centralRadius > 0 ? gap : 0))
 			return false;
 		if (r0 + reach > g.half - 4)
@@ -181,21 +198,21 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			return false;
 		for (const Feature &b : blobs)
 		{
-			const double need =
-				reach + b.reach + std::max(gap, b.kind == HomeIsland ? double(kIslandGap) : gap);
+			const double need = reach + b.reach + std::max(gap, b.kind == HomeIsland ? homeGap : gap);
 			if (std::hypot(s0 - b.s, r0 - b.r) < need)
 				return false;
 		}
 		return true;
 	};
 	const auto scatter = [&](Kind kind, int wanted, double low, double high, double roughness,
-							 double gap, const char *stream, bool stretched)
+							 double gap, double homeGap, const char *stream, bool stretched)
 	{
 		// Features are drawn at random across the wedge, from 8 tiles out from the centre to 8
-		// tiles short of the design circle, with 80 tries each; one that fits nowhere is left out,
-		// the same for every wedge. Lagoons are stretched 1.2 to 2 times and turned, so they read
-		// as long tidal channels rather than round pools.
-		for (int attempt = 0, placed = 0; attempt < wanted * 80 && placed < wanted; ++attempt)
+		// tiles short of the design circle, with 240 tries each (80 until 2026-09-14: a crowded
+		// wedge needs the extra draws to find its last few spots); one that fits nowhere is left
+		// out, the same for every wedge. Lagoons are stretched 1.2 to 2 times and turned, so they
+		// read as long tidal channels rather than round pools.
+		for (int attempt = 0, placed = 0; attempt < wanted * 240 && placed < wanted; ++attempt)
 		{
 			const double r0 = 8 + context.bounded(stream, 1000) / 1000.0 * (g.half - 16);
 			const double s0 = (context.bounded(stream, 2001) / 1000.0 - 1) * arcHalfAt * r0;
@@ -204,22 +221,23 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			const double turn = stretched ? context.bounded(stream, 3600) / 3600.0 * kPi : 0.0;
 			RadialShape shape(radius, roughness, context, stream);
 			const double reach = shape.maximumRadius() * stretch;
-			if (!fits(s0, r0, reach, gap))
+			if (!fits(s0, r0, reach, gap, homeGap))
 				continue;
 			blobs.push_back({{s0, r0, stretch, turn, shape}, kind, reach, placed % 2});
 			++placed;
 		}
 	};
 	scatter(Neutral, o.extraIslands, std::max(kNeutralMinimum, kNeutralLow * g.homeRadius),
-			std::max(kNeutralMinimum + 2, kNeutralHigh * g.homeRadius), 0.35, kIslandGap,
-			"flats-islands", false);
-	// Sandbars and lagoons keep 6 tiles of sand round them, tide pools 4: small water keeps the
-	// flats walkable round it. Lagoons are 8 to 14 tiles in radius; tide pools 1.5 to 4, counted
-	// per 16384 tiles of wedge so their density is the same on every map size.
-	scatter(Sandbar, o.sandbars, kSandbarLow, kSandbarHigh, 0.3, 6, "flats-sandbars", false);
-	scatter(Lagoon, o.lagoons, 8.0, 14.0, 0.35, 6, "flats-lagoons", true);
+			std::max(kNeutralMinimum + 1.5, kNeutralHigh * g.homeRadius), kNeutralRoughness,
+			kOasisGap, kOasisHomeGap, "flats-islands", false);
+	// Sandbars keep kSandbarGap tiles of sand round them and lagoons 6, tide pools 4: small water
+	// keeps the flats walkable round it. Lagoons are 8 to 14 tiles in radius; tide pools 1.5 to 4,
+	// counted per 16384 tiles of wedge so their density is the same on every map size.
+	scatter(Sandbar, o.sandbars, kSandbarLow, kSandbarHigh, 0.3, kSandbarGap, kOasisHomeGap,
+			"flats-sandbars", false);
+	scatter(Lagoon, o.lagoons, 8.0, 14.0, 0.35, 6, kIslandGap, "flats-lagoons", true);
 	const double wedgeArea = wedge * g.half * g.half / 2;
-	scatter(Pool, int(std::lround(o.tidePools * wedgeArea / 16384.0)), 1.5, 4.0, 0.4, 4,
+	scatter(Pool, int(std::lround(o.tidePools * wedgeArea / 16384.0)), 1.5, 4.0, 0.4, 4, kIslandGap,
 			"flats-pools", false);
 	const RadialShape central(std::max(1.0, g.centralRadius), g.amplitude * 0.6, context,
 							  "flats-central");
@@ -244,10 +262,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	}
 	// A home's pond is a fifth of its island's radius, 3 to 6 tiles: wide enough to stay water
 	// inside its own beach, and small enough to leave the island its building room. Oasis ponds are
-	// 2.5.
+	// 2.5, shrunk in step with the island below kOasisPondReach tiles of reach (an island of
+	// radius 5.5 or so) so the smallest oasis, a crowded wedge's, is still a pond in a ring of
+	// wheat rather than a pond with a beach.
 	const double pondRadius = std::clamp(0.2 * g.homeRadius, 3.0, 6.0);
 	const RadialShape pond(pondRadius, 0.3, context, "flats-ponds");
 	const RadialShape oasis(2.5, 0.3, context, "flats-ponds");
+	constexpr double kOasisPondReach = 6.5;
 	const WedgeFrame frame(t, L.phase, teams, L.stretch);
 	for (int y = 0; y < t.h; ++y)
 		for (int x = 0; x < t.w; ++x)
@@ -288,7 +309,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 						std::hypot(s - b.s, d - b.r) < pond.radiusAt(std::atan2(d - b.r, s - b.s)))
 						L.water[i] = 1;
 					if (b.kind == Neutral &&
-						std::hypot(s - b.s, d - b.r) < oasis.radiusAt(std::atan2(d - b.r, s - b.s)))
+						std::hypot(s - b.s, d - b.r) <
+							oasis.radiusAt(std::atan2(d - b.r, s - b.s)) *
+								std::min(1.0, b.reach / kOasisPondReach))
 						L.water[i] = 1;
 				}
 			}
@@ -563,13 +586,14 @@ GeneratorDefinition tidalFlatsDefinition()
 		"tidal-flats",
 		18,
 		"Tidal flats",
-		5,
+		6,
 		false,
-		// The home islands' radius as a share of the half side; extra islands, sandbars and
-		// lagoons per colony; tide pools per 128x128 of flats.
+		// The home islands' radius as a share of the half side; extra islands (the oases) and
+		// sandbars (the green patches) per colony, six and eight since 2026-09-14; lagoons per
+		// colony; tide pools per 128x128 of flats.
 		{{"home-island-size", "Home island size", 14, 26, 1, 20, ControlGroup::Terrain},
-		 {"extra-islands", "Extra islands", 0, 4, 1, 3, ControlGroup::Terrain},
-		 {"sandbars", "Sandbars", 0, 4, 1, 3, ControlGroup::Terrain},
+		 {"extra-islands", "Extra islands", 0, 10, 1, 6, ControlGroup::Terrain},
+		 {"sandbars", "Sandbars", 0, 16, 1, 8, ControlGroup::Terrain},
 		 {"tide-pools", "Tide pools", 0, 12, 1, 8, ControlGroup::Terrain},
 		 {"lagoons", "Lagoons", 0, 4, 1, 3, ControlGroup::Terrain},
 		 {"coast-roughness", "Coast roughness", 0, 100, 5, 50, ControlGroup::Terrain},

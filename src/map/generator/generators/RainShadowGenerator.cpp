@@ -51,11 +51,19 @@ using namespace MapGeneration;
 // clogged up too easily. also in the valleys between the mountains it just feels too empty; toss in
 // a few rivers connected to some inland lakes connecting from the rain shadows, and some inland
 // desert or sporadic sand patches to break up the texture." So: the windward foot is a chain of
-// streams 5 deep and 20 long every 24 (was 3 deep, 12 long: nearly continuous water now, with a
+// streams 7 deep and 20 long every 24 (was 3 deep, 12 long: nearly continuous water now, with a
 // four-tile beach gap between streams); a sand road runs through every pass and kPassRoad tiles into
 // the valley on both sides; inland lakes lie scattered along the middle of every valley, each joined
 // by a wandering river to the nearest windward stream; and sand patches are sprinkled over the
 // valleys' grass (`sand-patches` percent).
+//
+// FEEDBACK 2026-09-14 (second play): "make the default lakes/ponds on the rain side of the mountain a
+// couple tiles larger. still too small right now. Also the sand roads that go between the ridges need
+// to extend further into either side of the base and should connect more smoothly to the beaches
+// around the water instead of being distinct from them." So the streams are 7 deep (was 5), the pass
+// roads run 18 tiles into the valley on both sides (was 12), and on the windward side each road ends
+// in a lane of sand along the middle of the foot, out to the streams either side of the pass, so the
+// road runs into their beaches instead of stopping short of them in the grass.
 namespace
 {
 
@@ -77,17 +85,18 @@ constexpr int kRidgeWarpPeriod = 40;
 // one out from its water, and a corner spoils the four tiles round it, so a pool three tiles out
 // would take the ridge's windward row with it (measured: the ridge came out one row thick); four
 // tiles leaves all three rows standing.
-constexpr int kFootGap = 4, kFootDepth = 5;
+constexpr int kFootGap = 4, kFootDepth = 7;
 // Streams along the foot: each this long along the ridge, every this many tiles (first play: 20 every
-// 24, from 12 every 24). A stream 20 long and 5 deep is about 100 corners of water, which the engine's
-// growth probe finds from most of the valley; the four-tile gaps between streams, once their beaches
-// meet, are where the valley's beach lets units walk along the foot.
+// 24, from 12 every 24; second play: 7 deep, from 5). A stream 20 long and 7 deep is about 140 corners
+// of water, which the engine's growth probe finds from most of the valley; the four-tile gaps between
+// streams, once their beaches meet, are where the valley's beach lets units walk along the foot.
 constexpr int kPoolLength = 20, kPoolSpacing = 24;
 // A sand road through every pass, running this far into the valley on either side of the stone
-// (first play: the passes "get clogged up too easily"): a line of single sand corners, which nothing
-// grows onto and nothing is built across. No stream lies within kPassClear tiles along the ridge of a
-// pass, so the road never runs into water.
-constexpr int kPassRoad = 12, kPassClear = 4;
+// (first play: the passes "get clogged up too easily"; second play: 18, from 12, to reach well into
+// the bases): a line of single sand corners, which nothing grows onto and nothing is built across. No
+// stream lies within kPassClear tiles along the ridge of a pass, so the road never runs into water; on
+// the windward side it ends in a lane along the foot that joins the streams' beaches (second play).
+constexpr int kPassRoad = 18, kPassClear = 4;
 // Inland lakes (first play: "a few rivers connected to some inland lakes"): sites at least this far
 // apart along the middle of each valley (the band within kLakeBand of the valley's middle phase), each
 // a rough disc of this radius, joined to the nearest windward stream by a river this many corners
@@ -207,6 +216,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		const int offset = ((along[i] + shift) % passPeriod + passPeriod) % passPeriod;
 		return std::min(offset, passPeriod - offset);
 	};
+	const int footMiddle = (footNear + footFar) / 2;
 	for (int i = 0; i < n; ++i)
 	{
 		const int below = 65536 - phase[i]; // how far below the next ridge's crest
@@ -219,6 +229,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		// The pass road: the pass's centre line, from kPassRoad tiles before the ridge to as far past.
 		if (passOffset(i) <= alongUnits(0.5) &&
 			stripeDistance(phase[i]) < ridgeHalf + acrossUnits(kPassRoad))
+			L.road[i] = 1;
+		// The road's junction with the foot (second play): a lane of sand two tiles across along the
+		// middle of the foot band, from the pass out to the streams on either side of it, so the road
+		// meets their beaches rather than stopping in the grass a few tiles short. It runs one tile
+		// past kPassClear so it touches the first tile of each stream's beach.
+		if (passOffset(i) <= passClear + alongUnits(1) && below >= footMiddle - acrossUnits(1) &&
+			below < footMiddle + acrossUnits(1) && !L.water[i])
 			L.road[i] = 1;
 	}
 	// The sand starts two tiles behind the stone, not one: a sand corner spoils the tiles round it
@@ -428,7 +445,7 @@ GeneratorDefinition rainShadowDefinition()
 		"rain-shadow",
 		27,
 		"Rain shadow",
-		3,
+		4,
 		false,
 		// Four ridges on a 256 map give 64-tile valleys: a 12-tile home, a pass every 48 tiles
 		// and a lee band of 6 leave a valley wide enough to farm and to fight in. Ridges three

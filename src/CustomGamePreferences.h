@@ -37,7 +37,8 @@ struct CustomGamePreferences
 		// stands in for river width, lake size - Fjord's reaches 0 and 90, Old
 		// growth's 160 - channel width and bridge width; craterDensity also
 		// stands in for Ring world's lake density, which reaches 0; grassRatio
-		// also stands in for Isles' island size). This only needs to be at least as wide
+		// also stands in for Isles' island size; extraIslands also counts Tidal
+		// flats' oases, which reach 10). This only needs to be at least as wide
 		// as what setMethodDefaults() and every registered control can
 		// produce; it is not a tight per-method bound. Controls with no
 		// legacy field are saved in the options section instead.
@@ -49,7 +50,7 @@ struct CustomGamePreferences
 			FIELD(wheatRatio, 0, 64), FIELD(woodRatio, 0, 64),
 			FIELD(fruitRatio, 0, 64), FIELD(algaeRatio, 0, 64),
 			FIELD(stoneRatio, 0, 64), FIELD(riverDiameter, 0, 160),
-			FIELD(craterDensity, 0, 64), FIELD(extraIslands, 0, 8),
+			FIELD(craterDensity, 0, 64), FIELD(extraIslands, 0, 10),
 			FIELD(oldIslandSize, 1, 70), FIELD(oldBeach, 0, 4),
 			FIELD(smooth, 1, 8), FIELD(nbTeams, 2, Team::MAX_COUNT),
 			FIELD(nbWorkers, 1, 8)

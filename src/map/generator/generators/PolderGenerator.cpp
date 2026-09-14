@@ -58,10 +58,11 @@ using namespace MapGeneration;
 namespace
 {
 
-// Every village's starting kit, unscaled whatever the amounts say: wheat and wood at the village's
-// edge (they regrow there, the ditches being a few tiles away) and a quarry, the only stone the
-// polder has besides the odd outcrop.
-constexpr int kHomeWheat = 14, kHomeWood = 12, kHomeQuarry = 2;
+// Every village's starting kit, unscaled whatever the amounts say: a quarry, the only stone the polder
+// has besides the odd outcrop. No wheat or wood blocks (FEEDBACK 2026-09-14): the rows a few tiles from
+// every village are the polder's food, and the village's ground stays open to build on;
+// secureStartingCrops is the backstop should a village ever be cut off from them.
+constexpr int kHomeQuarry = 2;
 // Row widths, across the rows in tiles. Straight rows: 10 of crops and 6 of water, a period of 16 so
 // the pattern divides every map side and wraps without a seam (the yield fit's 10 and 8 would give
 // 18, which does not, and the difference in yield is under 3%). Diagonal rows: 11 of crops and 6 of
@@ -262,13 +263,14 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
 	for (int k = 0; k < teams; ++k)
 		plantOpenHomeKit(
-			map, t, context, L.kits[k], 0.0, L.villageRadius, kHomeWheat, kHomeWood, kHomeQuarry,
+			map, t, context, L.kits[k], 0.0, L.villageRadius, 0, 0, kHomeQuarry,
 			[&](int i)
 			{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, i % t.w, i / t.w); });
 	// The fields: crops on the rows' grass, nearly all of it. Wheat on 55% of the fertile row ground
-	// and wood on 15%, in patches, so the rows are mostly under crop (this is the polder) while the
-	// gaps between patches leave room to build a mill or a tower on a row; the villages and hamlets
-	// stay open. Every row tile is within a few tiles of water, so it all regrows.
+	// and wood on 8% (15% until 2026-09-14: "turn down the default amount of wood"), in patches, so
+	// the rows are mostly under crop (this is the polder) while the gaps between patches leave room to
+	// build a mill or a tower on a row; the villages and hamlets stay open. Every row tile is within a
+	// few tiles of water, so it all regrows.
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	const std::vector<int> patch = periodicNoise(t.w, t.h, 8, context.stream("polder-patch"));
 	const std::vector<int> split = periodicNoise(t.w, t.h, 4, context.stream("polder-split"));
@@ -286,7 +288,7 @@ bool generate(Game &game, GenerationContext &context)
 		[&](int area)
 		{
 			return GroundAmounts{int(scaledCount(fertile * 55 / 100, o.wheat)),
-								 int(scaledCount(fertile * 15 / 100, o.wood)),
+								 int(scaledCount(fertile * 8 / 100, o.wood)),
 								 int(scaledCount(area / 2500, o.stone)), 0};
 		},
 		"polder-stone", "polder-fruit");
@@ -336,7 +338,7 @@ GeneratorDefinition polderDefinition()
 		"polder",
 		30,
 		"Polder",
-		3,
+		4,
 		false,
 		// A dyke every 24 tiles is a lane every one and a half rows' walk; villages of radius 14
 		// hold a swarm, its kit and a few more buildings and no more (11 before the first play, and
