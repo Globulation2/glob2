@@ -120,6 +120,7 @@ jobs:
             round-trip-hunger-gate-test \
             inn-swap-test \
             savegame-safety-test \
+            maxima-continuation-test \
             buffered-file-test \
             team-stats-save-test \
             terrain-test \
@@ -302,6 +303,7 @@ jobs:
       - name: Test savegame loading and atomic autosaves
         run: |
           python3 test/run-savegame-safety-tests.py build/src/SavegameSafetyHarness
+          build/src/MaximaContinuationTest
           ./build/src/BufferedFileStreamHarness
 
       - name: Test team statistics save compatibility
@@ -658,6 +660,7 @@ jobs:
             map-render-resize-test \
             map-preview-test \
             savegame-safety-test \
+            maxima-continuation-test \
             team-stats-save-test
 
       - name: Test map JSON reports
@@ -721,6 +724,7 @@ jobs:
       - name: Test savegame loading and atomic autosaves
         run: |
           python3 test/run-savegame-safety-tests.py build/src/SavegameSafetyHarness.exe
+          build/src/MaximaContinuationTest.exe
 
       - name: Test team statistics save compatibility
         run: |

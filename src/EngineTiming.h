@@ -98,9 +98,9 @@ static constexpr int CLEARING_FLAG_REFRESH_TICKS = 125;
 
 // === Autosave cadence (in ticks) ===
 
-//! Ticks between autosaves at normal speed (~10 s). Faster speed presets
+//! Ticks between autosaves at normal speed (60 s). Faster speed presets
 //! scale it up to keep about the same real-time spacing. See GameGUIStep.cpp.
-static constexpr int AUTOSAVE_INTERVAL_TICKS = 256;
+static constexpr int AUTOSAVE_INTERVAL_TICKS = 1500;
 
 //! A session's first autosave lands on this tick modulo the interval.
 static constexpr int AUTOSAVE_PHASE_TICKS = 79;

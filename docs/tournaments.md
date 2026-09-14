@@ -113,6 +113,10 @@ Game options:
 | `--telemetry NAME` | Repeatable checksums, team-timeline, maxima; default none |
 | `--profile NAME` | Optional isolated profile name |
 
+GUI autosaving defaults off for tournament/headless runs, independently of the
+normal-play preference. Snapshots are produced only when requested through
+`--save`; checkpoint frequency is controlled by `every:N`.
+
 Saved games retain settings and execution state; player, alliance, condition,
 seed and tuning overrides are forbidden on load. Structured commands isolate
 ambient tuning/telemetry/ML environment variables. Numeric Cortex tuning and the

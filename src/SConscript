@@ -559,6 +559,15 @@ if not env['server']:
     local.Alias('maxima-food-ledger-test', ledger_test)
 
 if not env['server']:
+    continuation_env = local.Clone()
+    continuation_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    continuation_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    continuation_test = continuation_env.Program('MaximaContinuationTest', [
+        local.Object('MaximaContinuationTest.o', '#test/MaximaContinuationTest.cpp'),
+        '../libgag/src/libgag.a'])
+    local.Alias('maxima-continuation-test', continuation_test)
+
+if not env['server']:
     geometry_sources = [source for source in source_files if source != 'Glob2.cpp']
     geometry_sources += local.Object('CortexGeometryHarness.o', '#test/CortexGeometryHarness.cpp')
     geometry_test = local.Program('CortexGeometryHarness', geometry_sources)

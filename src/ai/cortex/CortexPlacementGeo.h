@@ -29,13 +29,17 @@ namespace Cortex
 	{
 		struct Box { int x, y, w, h; };
 		struct Inn { Box box; unsigned sides; };
+		struct BuildingBox { Box box; int type; };
 		Map& map;
 		std::vector<Box> buildings;
+		std::vector<BuildingBox> typedBuildings;
 		std::vector<Box> reservations;
 		std::vector<Inn> inns;
 	public:
 		PlacementGeometry(Team* team, Map& map);
 		int distanceToNearestBuilding(int x, int y) const;
+		int distanceToNearestBuildingType(int x, int y, int type) const;
+		int nearestBuildingEdgeDist(int x, int y, int w, int h) const;
 		bool candidateCrowdsInn(int x, int y, int w, int h) const;
 		bool candidateOverlapsReservedExpansion(int x, int y, int w, int h) const;
 	};

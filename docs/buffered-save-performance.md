@@ -13,10 +13,12 @@ unchanged. An autosave leaves its whole-file SHA1 for the writer thread:
 save computes before the file is written. `Engine::haveMap` uses that hash when a
 joining client decides whether its local copy matches the host's file.
 
-Autosave runs every `AUTOSAVE_INTERVAL_TICKS` (256) ticks at normal speed, first
+Autosave runs every `AUTOSAVE_INTERVAL_TICKS` (1500) ticks at normal speed, first
 on tick 79 of a session, and waits proportionally more ticks at faster speed
-presets so saves stay about 10 seconds of real time apart. Players can turn it
-off under Settings → Gameplay. The game is serialized between ticks into a
+presets so saves stay about 60 seconds of real time apart. Players can turn it
+off under Settings → Gameplay. Headless and scripted test runs default it off
+in memory, preserving interactive preferences; explicit structured-run snapshots
+remain controlled by `--save`. The game is serialized between ticks into a
 `MemoryStreamBackend`, and `BackgroundFileWriter` writes the file on a worker
 thread, which hashes the snapshot first; a newer snapshot replaces one that has
 not started writing, and one queued during a write is written right after it. The engine
