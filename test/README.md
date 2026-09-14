@@ -447,3 +447,19 @@ headless Linux). Linux CI builds and runs both modes. Fixtures exercise rectangu
 placement, toroidal dragging, legacy/new codecs, malformed input, network frame
 bounds, thumbnail request deduplication, timeout/retry and bounded cache reuse.
 See [pre-game preview behavior and compatibility](../docs/pre-game-map-preview.md).
+
+## Tournament execution and configuration
+
+`python3 test/test_tournaments.py` exercises leases, duplicates, resumable transfers,
+worker queues, immutable builds and offline statistical policies using stdlib fixtures.
+`python3 test/test_map_fairness_tournament.py` retains the fairness estimator regressions.
+Build `scons -j4 release=1 server=0 tournament-compatibility-test` and run
+`build/src/TournamentCompatibilityTest` for real per-player Cortex/Maxima and partial
+network-header checks. `python3 test/tournament_cli_integration.py --output DIR`
+runs production CLI cases and retains saves, traces and logs. Use a fresh output
+directory. `--initial FILE --ticks N` runs a retained initial state on another platform.
+
+`test/tournament_reliability_pilot.py` is an opt-in localhost/SSH integration pilot.
+It requires immutable macOS/Linux bundles and explicitly configured disposable
+worker directories, and kills only processes belonging to that pilot. See
+[the tournament guide](../docs/tournaments.md) for commands and validation policy.

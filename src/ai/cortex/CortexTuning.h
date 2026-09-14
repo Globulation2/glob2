@@ -4,23 +4,19 @@
 #pragma once
 
 #include "CortexConstants.h"
+#include <string>
 
 namespace Cortex
 {
-	/// Tunable policy knobs for the offline knob search (see
-	/// docs/AI/cortex/DEVLOG.md, rank-gate tuning). Loaded ONCE per process from
-	/// the file named by GLOB2_CORTEX_TUNING (an ABSOLUTE path — glob2 chdir()s at
-	/// startup), before the first decision cycle, so every per-tick decision stays
-	/// a pure, deterministic function of the observation. In lockstep multiplayer
-	/// every client must load the SAME file (same deployment rule as the ML nets);
-	/// for the headless benchmark it is one process. The DEFAULTS REPRODUCE THE
-	/// COMMITTED BEHAVIOR EXACTLY — with the env var unset (or a file that only
-	/// restates defaults) the binary is replay-identical to the untuned build.
+	/// Runtime policy knobs. Each AICortex owns a resolved copy; getOrder scopes
+	/// helper access to that instance. Versioned GameHeaders carry these values
+	/// across saves and network messages. Structured commands validate explicit
+	/// per-player overrides without consuming ambient tuning files.
 	///
-	/// File format: one "key value" pair per line, keys named exactly like the
-	/// fields below; '#' starts a comment. Any unknown key, unparsable/out-of-range
-	/// value, duplicate key, or unreadable file ABORTS the process — a search
-	/// config that fails to apply must fail loudly, not silently run defaults.
+	/// Legacy new-game invocations read GLOB2_CORTEX_TUNING once as their default
+	/// vector. Its format is one "key value" pair per line with '#' comments;
+	/// invalid, duplicate or unreadable entries abort as before. Normal defaults
+	/// preserve the existing policy. Saved resolved values take precedence.
 	struct CortexTuning
 	{
 		// --- second-swarm trigger face (when "wants a fresh patch" fires) -----
@@ -140,7 +136,20 @@ namespace Cortex
 		int workerRatioTier2 = CORTEX_MAX_RATIO / 2;
 	};
 
-	/// The process-wide tuning, loaded from GLOB2_CORTEX_TUNING on first use
-	/// (defaults when unset). Never changes after that first call.
+	std::string tuningValues(const CortexTuning& tuning);
+	bool applyTuning(CortexTuning& tuning, const std::string& values, std::string& error);
+	std::string tuningSchemaJson();
+	/// Scoped access for policy helpers. Each AI owns the immutable values; the
+	/// scope restores the previous pointer, including on exceptions.
+	class TuningScope
+	{
+		const CortexTuning* previous;
+	public:
+		explicit TuningScope(const CortexTuning& tuning);
+		~TuningScope();
+		TuningScope(const TuningScope&) = delete;
+		TuningScope& operator=(const TuningScope&) = delete;
+	};
+	/// The active instance's values, or legacy environment defaults outside a scope.
 	const CortexTuning& cortexTuning();
 }

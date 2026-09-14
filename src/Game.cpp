@@ -126,6 +126,14 @@ void Game::clearGame()
 // header paired with a smaller-team map.
 void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 {
+	GameHeader resolvedHeader = newGameHeader;
+	for (int p=0; p<Team::MAX_COUNT; ++p)
+	{
+		if (saveAI && gameHeader.getBasePlayer(p).type >= BasePlayer::P_AI)
+			resolvedHeader.setAIConfig(p, gameHeader.getAIConfig(p));
+		else
+			gameHeader.setAIConfig(p, newGameHeader.getAIConfig(p));
+	}
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
 		teams[i]->playersMask=0;
@@ -157,7 +165,9 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 	if(newGameHeader.isMapDiscovered())
 		map.setMapDiscovered();
 
-	gameHeader = newGameHeader;
+	for (int p=0; p<Team::MAX_COUNT; ++p)
+		resolvedHeader.setAIConfig(p, gameHeader.getAIConfig(p));
+	gameHeader = resolvedHeader;
 	anyPlayerWaited=false;
 }
 

@@ -359,7 +359,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	// and to allow concurrent headless instances to write to distinct files).
 	const char* envReplayPath = getenv("GLOB2_REPLAY_PATH");
 	std::string replayPath = envReplayPath ? envReplayPath : "replays/last_game.replay";
-	if (!globalContainer->replaying)
+	if (!globalContainer->replaying && (!globalContainer->structuredHeadless || globalContainer->headlessReplay))
 	{
 		assert(globalContainer->replayWriter == nullptr);
 		globalContainer->replayWriter = std::make_unique<ReplayWriter>();

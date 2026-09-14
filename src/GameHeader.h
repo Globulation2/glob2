@@ -134,7 +134,13 @@ public:
 	
 	///Sets whether the map is discovered at game start
 	inline void setMapDiscovered(bool discovered) { mapDiscovered=discovered; }
+	/// Canonical resolved runtime values; empty means legacy/default resolution.
+	const std::string& getAIConfig(int player) const { assert(player >= 0 && player < Team::MAX_COUNT); return aiConfig[player]; }
+	void setAIConfig(int player, const std::string& values) { assert(player >= 0 && player < Team::MAX_COUNT); aiConfig[player] = values; }
 private:
+	std::string aiConfig[Team::MAX_COUNT];
+	bool loadAIConfig(GAGCore::InputStream *stream, Sint32 versionMinor);
+	void saveAIConfig(GAGCore::OutputStream *stream) const;
 	///The number of players in the game
 	Sint32 numberOfPlayers;
 

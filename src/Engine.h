@@ -28,6 +28,9 @@ using std::shared_ptr;
 class Engine
 {
 	friend struct CustomGameSetupHarness;
+	friend struct HeadlessRunner;
+	std::string headlessOutput;
+	int headlessSaveInterval = 0;
 	int previousCustomSpeed = -1;
 	friend class HighResolutionIntegrationHarness;
 public:

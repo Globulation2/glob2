@@ -12,6 +12,7 @@
 #include "CreditScreen.h"
 #include "EditorMainMenu.h"
 #include "Engine.h"
+#include "Headless.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GenerationService.h"
@@ -409,6 +410,10 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 
 int Glob2::run(int argc, char *argv[])
 {
+#ifndef YOG_SERVER_ONLY
+	const int headless = runHeadlessCommand(argc, argv);
+	if (headless >= 0) return headless;
+#endif
 	srand(time(NULL));
 
 	globalContainer=new GlobalContainer();

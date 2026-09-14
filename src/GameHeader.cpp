@@ -26,6 +26,7 @@ void GameHeader::reset()
 	for (Uint8 i=0; i<Team::MAX_COUNT; ++i)
 	{
 		players[i] = BasePlayer();
+		aiConfig[i].clear();
 		allyTeamNumbers[i] = i+1;
 	}
 	allyTeamsFixed=true;
@@ -63,7 +64,7 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	gameLatency = stream->readSint32("gameLatency");
 	orderRate = stream->readUint8("orderRate");
 	numberOfPlayers = stream->readSint32("numberOfPlayers");
-	if (numberOfPlayers > Team::MAX_COUNT)
+	if (numberOfPlayers < 0 || numberOfPlayers > Team::MAX_COUNT)
 	{
 		return false;
 	}
@@ -111,6 +112,7 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		seed = stream->readUint32("seed");
 	if(versionMinor >=  FILE_FORMAT_VERSION_MAP_DISCOVERED_FLAG)
 		mapDiscovered = stream->readUint8("mapDiscovered");
+	if (!loadAIConfig(stream, versionMinor)) return false;
 	stream->readLeaveSection();
 	return true;
 }
@@ -155,6 +157,7 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeLeaveSection();
 	stream->writeUint32(seed, "seed");
 	stream->writeUint8(mapDiscovered, "mapDiscovered");
+	saveAIConfig(stream);
 	stream->writeLeaveSection();
 }
 
@@ -184,6 +187,7 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 		seed = stream->readUint32("seed");
 	if(versionMinor >=  FILE_FORMAT_VERSION_MAP_DISCOVERED_FLAG)
 		mapDiscovered = stream->readUint8("mapDiscovered");
+	if (!loadAIConfig(stream, versionMinor)) return false;
 	stream->readLeaveSection();
 	return true;
 }
@@ -216,6 +220,7 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeLeaveSection();
 	stream->writeUint32(seed, "seed");
 	stream->writeUint8(mapDiscovered, "mapDiscovered");
+	saveAIConfig(stream);
 	stream->writeLeaveSection();
 }
 
@@ -225,6 +230,7 @@ bool GameHeader::loadPlayerInfo(GAGCore::InputStream *stream, Sint32 versionMino
 {
 	stream->readEnterSection("GameHeader");
 	numberOfPlayers = stream->readSint32("numberOfPlayers");
+	if (numberOfPlayers < 0 || numberOfPlayers > Team::MAX_COUNT) return false;
 	stream->readEnterSection("players");
 	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 	{
@@ -250,6 +256,7 @@ bool GameHeader::loadPlayerInfo(GAGCore::InputStream *stream, Sint32 versionMino
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
+	if (!loadAIConfig(stream, versionMinor)) return false;
 	stream->readLeaveSection();
 	return true;
 }
@@ -271,5 +278,38 @@ void GameHeader::savePlayerInfo(GAGCore::OutputStream *stream) const
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
+	saveAIConfig(stream);
+	stream->writeLeaveSection();
+}
+
+
+bool GameHeader::loadAIConfig(GAGCore::InputStream *stream, Sint32 versionMinor)
+{
+	for (auto &values : aiConfig) values.clear();
+	if (versionMinor < 101) return true;
+	stream->readEnterSection("aiConfig");
+	const Uint32 count = stream->readUint32("count");
+	if (count > Team::MAX_COUNT) return false;
+	for (Uint32 i=0; i<count; ++i)
+	{
+		stream->readEnterSection(i);
+		aiConfig[i] = stream->readText("values");
+		if (aiConfig[i].size() > 262144) return false;
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	return true;
+}
+
+void GameHeader::saveAIConfig(GAGCore::OutputStream *stream) const
+{
+	stream->writeEnterSection("aiConfig");
+	stream->writeUint32(Team::MAX_COUNT, "count");
+	for (int i=0; i<Team::MAX_COUNT; ++i)
+	{
+		stream->writeEnterSection(i);
+		stream->writeText(aiConfig[i], "values");
+		stream->writeLeaveSection();
+	}
 	stream->writeLeaveSection();
 }

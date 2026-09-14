@@ -160,3 +160,11 @@ enum YOGMapUploadRefusalReason
 	///This represent an unknown reas
 	YOGMapUploadReasonUnknown,
 };
+
+#include "Version.h"
+
+/// Shared by login and registration acceptance checks.
+inline bool isSupportedYOGClientVersion(unsigned version)
+{
+	return version >= YOG_MIN_CLIENT_NET_PROTOCOL_VERSION;
+}

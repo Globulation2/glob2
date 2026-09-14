@@ -1,0 +1,101 @@
+"""Job-type adapters; scheduling and transport have no experiment-specific logic."""
+from pathlib import Path
+from .common import read_json
+
+_TYPES = {}
+
+
+def register_job_type(name, adapter):
+    if name in _TYPES:
+        raise ValueError('job type already registered: ' + name)
+    _TYPES[name] = adapter
+
+
+def get_job_type(name):
+    try:
+        return _TYPES[name]
+    except KeyError:
+        raise ValueError('unknown job type: ' + name) from None
+
+
+class EngineJob:
+    def __init__(self, kind):
+        self.kind = kind
+
+    def validate(self, job):
+        config, seeds = job['config'], job['seeds']
+        allowed = {'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions'} if self.kind == 'game' else {'generator', 'params', 'candidates', 'rotations'}
+        if set(config) - allowed:
+            raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
+        if self.kind == 'game' and 'save' in job['inputs'] and seeds:
+            raise ValueError('saved games retain their seeds')
+        if self.kind == 'game':
+            if ('map' in job['inputs']) == ('save' in job['inputs']):
+                raise ValueError('game requires exactly one map or saved state input')
+            if 'map' in job['inputs'] and (not config.get('players') or 'game' not in seeds):
+                raise ValueError('new game requires players and game seed')
+            if 'save' in job['inputs'] and any(k in config for k in ('players', 'alliances', 'ai_params', 'winning_conditions')):
+                raise ValueError('cannot override a saved game configuration')
+            if type(config.get('ticks', 90000)) is not int or config.get('ticks', 90000) < 1:
+                raise ValueError('ticks must be a positive integer')
+            if config.get('alliances') and len(config['alliances']) != len(config.get('players', [])):
+                raise ValueError('one alliance required per player')
+        elif 'map' not in seeds or type(config.get('generator')) is not int:
+            raise ValueError('generation requires map seed and integer generator')
+        if set(job['outputs']) - {'replay', 'saves', 'telemetry', 'map', 'reports', 'required', 'core', 'stack'}:
+            raise ValueError('unknown requested output')
+
+    def command(self, job, bundle, attempt_dir, inputs):
+        root = Path(bundle['directory'])
+        out = Path(attempt_dir) / 'output'
+        args = [str(root / bundle['executable']),
+                '--run-game' if self.kind == 'game' else '--generate-map',
+                '--output-dir', str(out), '--profile', 'glob2-tournament-' + Path(attempt_dir).name]
+        config, outputs = job['config'], job['outputs']
+        def add(key, value):
+            args.extend([key, str(value)])
+        if self.kind == 'game':
+            add('--map-file' if 'map' in inputs else '--load-game', inputs.get('map', inputs.get('save')))
+            if 'game' in job['seeds']:
+                add('--game-seed', job['seeds']['game'])
+            add('--ticks', config.get('ticks', 90000))
+            for player in config.get('players', []):
+                add('--player', player)
+            for player, params in sorted(config.get('ai_params', {}).items()):
+                for key, value in sorted(params.items()):
+                    add('--ai-param', f'{player}:{key}={str(value).lower() if isinstance(value, bool) else value}')
+            for group in config.get('alliances', []):
+                add('--alliance', group)
+            for condition in config.get('winning_conditions', []):
+                add('--win-condition', condition)
+            for save in outputs.get('saves', []):
+                add('--save', save)
+            for telemetry in outputs.get('telemetry', []):
+                add('--telemetry', telemetry)
+            add('--replay', str(outputs.get('replay', False)).lower())
+        else:
+            add('--generator', config['generator'])
+            add('--map-seed', job['seeds']['map'])
+            for key, value in sorted(config.get('params', {}).items()):
+                add('--param', f'{key}={value}')
+            add('--candidates', config.get('candidates', 0))
+            add('--rotations', config.get('rotations', 1))
+            add('--write-map', str(outputs.get('map', False)).lower())
+            for report in outputs.get('reports', []):
+                add('--report', report)
+        return args
+
+    def collect(self, job, attempt_dir):
+        path = Path(attempt_dir) / 'output/result.json'
+        if not path.exists():
+            raise ValueError('engine did not produce result.json')
+        result = read_json(path)
+        if result.get('schema_version') != 1:
+            raise ValueError('unsupported engine result schema')
+        if result.get('status') not in ('completed', 'invalid_request', 'generation_failed', 'artifact_failure'):
+            raise ValueError('invalid engine completion status')
+        return result
+
+
+register_job_type('game', EngineJob('game'))
+register_job_type('generate_map', EngineJob('generate_map'))

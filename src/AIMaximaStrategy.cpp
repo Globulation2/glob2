@@ -1330,6 +1330,14 @@ StrategyConfigOptions StrategyResolver::environmentOptions()
 bool StrategyResolver::resolveForPlayer(const GameHeader& gameHeader,
 	int playerNumber, ResolvedStrategy& result, std::string& error)
 {
+	if (playerNumber >= 0 && playerNumber < Team::MAX_COUNT
+		&& !gameHeader.getAIConfig(playerNumber).empty())
+	{
+		result = ResolvedStrategy();
+		result.format = inferFormat(gameHeader);
+		result.sources.push_back("saved player configuration");
+		return restoreValues(gameHeader.getAIConfig(playerNumber), result.values, error, 101);
+	}
 	StrategyConfigOptions options=environmentOptions();
 	int teamNumber=-1;
 	if(playerNumber>=0 && playerNumber<gameHeader.getNumberOfPlayers())

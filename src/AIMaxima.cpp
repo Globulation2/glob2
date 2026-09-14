@@ -3606,6 +3606,10 @@ void Maxima::resolve_strategy(bool announce)
 		std::abort();
 	}
 	strategy=resolved.values;
+	// Legacy construction precedes header installation; resolve format defaults
+	// at ensure_strategy(), then persist them. Explicit configurations are ready now.
+	if (announce || !player->game->gameHeader.getAIConfig(player->number).empty())
+		player->game->gameHeader.setAIConfig(player->number, StrategyResolver::canonicalValues(strategy));
 	budget.swarm_supply_radius=
 		strategy.staffing.swarm_supply_radius;
 	budget.attack_clearing_workers=strategy.staffing.attack_clearing_workers;
@@ -3999,6 +4003,7 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
     std::string error;
     if(!StrategyResolver::restoreValues(savedStrategy,strategy,error,versionMinor))
         throw std::runtime_error(error);
+    context.player->game->gameHeader.setAIConfig(context.player->number, StrategyResolver::canonicalValues(strategy));
     // Reconfigure derived policies before restoring incremental work. Local
     // configuration may have changed since this game was saved.
     configure_development_planner();

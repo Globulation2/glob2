@@ -16,6 +16,7 @@ namespace AINames
 	const std::vector<int>& selectionOrder();
 	int selectionIndex(int id);
 	std::string getAIText(int id);
+	std::string getCLIName(int id);
 	std::string getAIDescription(int id);
 	std::string getAISelectorText(int id);
 	std::string getAISummary(int id);

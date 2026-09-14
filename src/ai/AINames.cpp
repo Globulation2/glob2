@@ -47,6 +47,13 @@ namespace AINames
 		return int(std::find(order.begin(), order.end(), id) - order.begin());
 	}
 
+	std::string getCLIName(int id)
+	{
+		for (const auto& entry : aiTable)
+			if (entry.id == id) return entry.cliName ? entry.cliName : "none";
+		return "unknown";
+	}
+
 	std::string getAIText(int id)
 	{
 		for (const auto& entry : aiTable)

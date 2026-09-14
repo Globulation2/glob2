@@ -1,5 +1,9 @@
 # Headless Mode & Replay Generation
 
+For structured single-game/generation commands and distributed execution, see
+[Distributed tournaments](tournaments.md). These preserve raw engine outcomes;
+capped-game adjudication belongs in offline analysis.
+
 Run AI games without a GUI to generate `.replay` files for cross-codebase fidelity testing (C++ vs Rust).
 
 ## CLI Flags

@@ -21,6 +21,7 @@
 #include "unit/UnitConsts.h"
 
 #include <iostream>
+#include <fstream>
 
 using std::shared_ptr;
 
@@ -611,6 +612,17 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 				automaticGameEndTick = SDL_GetTicks64();
 				printf("nox::gui.game.checkSum() = %08x\n", gui.game.checkSum());
 			}
+		}
+
+		if (!headlessOutput.empty() && readyNow)
+		{
+			const auto tick=gui.game.stepCounter;
+			if (tick % 256 == 0)
+				std::ofstream(headlessOutput + "/progress.jsonl", std::ios::app)
+					<< "{\"schema_version\":1,\"tick\":" << tick << "}\n";
+			if (headlessSaveInterval > 0 && tick % headlessSaveInterval == 0)
+				saveInitialGameStateOrExit(headlessOutput + "/checkpoint-" + std::to_string(tick) + ".game",
+					"checkpoint", gui.game.mapHeader.getMapName());
 		}
 
 		if (!globalContainer->runNoX)

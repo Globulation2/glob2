@@ -10,6 +10,7 @@
 #include <SDL_endian.h>
 #include <iostream>
 #include <valarray>
+#include <vector>
 #include <zlib.h>
 #include "BinaryStream.h"
 #include "TextStream.h"
@@ -91,42 +92,29 @@ namespace GAGCore
 
 		#ifndef WIN32
 		#ifndef __APPLE__
-		/* Find own path
-		 * TODO: Make nicer */
-
-		char link[100];
+		// Immutable bundles can have long paths. readlink does not terminate its
+		// output and signals truncation by filling the entire supplied buffer.
 		#ifdef __FreeBSD__
-		char proc[]="/proc/curproc/file";
+		const char* proc="/proc/curproc/file";
 		#else
-		char proc[]="/proc/self/exe";
+		const char* proc="/proc/self/exe";
 		#endif
-		char * pch;
-
-		int linksize = readlink(proc, link, sizeof(link));
-		if (linksize < 0)
-		{
+		std::vector<char> buffer(256);
+		ssize_t length;
+		while ((length=readlink(proc,buffer.data(),buffer.size())) == static_cast<ssize_t>(buffer.size()))
+			buffer.resize(buffer.size()*2);
+		if (length < 0)
 			perror("readlink() error");
-		}
 		else
 		{
-			assert ((int)sizeof(link) > linksize);
-			link[linksize] = '\0';
-
-			pch = strrchr(link,'/');
-			if ( (pch-link) > 0)
-				link[pch-link] = '\0';
-			else
-				link[1] = '\0';
-
-			pch = strrchr(link,'/');
-			if ( (pch-link) > 0)
-				link[pch-link] = '\0';
-
-			if ((linksize + 13) <= (int)sizeof(link))
+			std::string prefix(buffer.data(),static_cast<size_t>(length));
+			for (int parent=0;parent<2;++parent)
 			{
-				strcat(link, "/share/glob2");
-				addDir(link);
+				const size_t slash=prefix.rfind('/');
+				if (slash==std::string::npos) break;
+				prefix.resize(slash==0 ? 1 : slash);
 			}
+			addDir(prefix+"/share/glob2");
 		}
 		#endif
 		#endif

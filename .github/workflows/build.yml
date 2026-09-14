@@ -85,6 +85,22 @@ jobs:
       - name: Build glob2
         run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1
 
+      - name: Test tournament protocol, AI configuration and main CLI
+        run: |
+          python3 test/test_tournaments.py
+          python3 test/test_map_fairness_tournament.py
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 tournament-compatibility-test
+          ./build/src/TournamentCompatibilityTest
+          python3 test/tournament_cli_integration.py --output artifacts/tournament-cli
+
+      - name: Retain tournament CLI compatibility evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tournament-cli-${{ matrix.runner }}
+          path: artifacts/tournament-cli/
+          if-no-files-found: ignore
+
       - name: Test torus geometry, picking and cloud coordinates
         run: |
           ${{ matrix.compiler }} -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
