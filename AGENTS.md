@@ -66,7 +66,14 @@ independent review.
   strong validation evidence, and either all review feedback on it has been
   addressed or no reviewer raised an objection. When risk is unclear, default to
   independent review.
-- Features and substantive engine, architecture, balance or gameplay changes need
+- Purely additive changes count as low-risk: ones that add something optional (a
+  new AI, map, tool or menu option, say) without changing core game behavior for
+  anyone who doesn't choose it. Existing units, buildings, economy and AIs must
+  play exactly as before, and the compatibility reminders above still apply — for
+  example, a save-format or version bump that comes with the addition must keep
+  existing saves loading.
+- Changes to core game behavior — substantive engine, architecture, balance or
+  gameplay changes, including features that alter how existing games play — need
   explicit approval from a human maintainer other than the author, however well
   validated: preserving the game's feel and weighing design tradeoffs is a human
   judgment call, not something tests establish.
