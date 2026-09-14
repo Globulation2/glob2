@@ -3,13 +3,11 @@
 The normal **client executable** includes map tools. Build with
 `scons release=1 server=0`, then run the examples from the repository root.
 An installed client can use the same flags. Previews use the game's existing
-`MapThumbnail` and `drawMapThumbnail` renderer, shared by the lobby and landscape
-picker. PNG export needs **OpenGL and a display server**; on headless Linux, use
-`LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a` before the command to render through Mesa.
-It briefly creates a graphics context, hides its window, exports, and exits.
-Generating maps or JSON reports without PNGs, listing generators, and validating
-settings need no display. No Python or study executable is needed. The normal
-game data directory (including its font for PNGs) must be available. Put the
+`MapThumbnail` and `MapPreview` widget, shared by the lobby and landscape
+picker. Exports paint that widget into an offscreen software surface with transitions
+disabled. PNGs, maps, and JSON reports need no display or OpenGL. No Python or study
+executable is needed. The normal game data directory (including fonts and the GUI
+theme for PNGs) must be available. Put the
 launch mode first; these modes do not combine with game, replay, or server launch modes.
 
 ## Generate a map and preview
@@ -97,11 +95,25 @@ ID and output paths are supplied on the command line, not in the config file.
 
 ## Preview options and comparisons
 
-Both generation and file previews support `--preview-size N` (128–4096 pixels,
-default 512). This sets the longest side; the image keeps the map's aspect ratio.
-The existing OpenGL renderer scales its thumbnail just as it does in the lobby.
-The software drawing backend currently lacks the cropped scaling operation; PNG
-export does not substitute a different renderer or modify that backend.
+Both generation and file previews support `--preview-scale 2|4|8`, default **2**.
+The scale multiplies the retained thumbnail dimensions: one pixel per map tile up
+to 512 pixels on the longest axis. Thus a 256×128 map exports at 512×256 by default,
+1024×512 at 4×, and 2048×1024 at 8×. A 512×512 map exports at up to 4096×4096.
+Maps larger than 512 tiles retain the shared renderer's box-averaged thumbnail.
+Scaling enlarges those retained pixels; it does not add game-view sprite detail.
+Markers keep the widget's normal pixel size so larger exports reveal more terrain
+around them. The full map remains visible; export scale is not interactive zoom.
+
+```sh
+build/src/glob2 --preview-map maps/SomeMap.map --output artifacts/map-4x.png --preview-scale 4
+build/src/glob2 --generate-map maze --seed 7 --preview artifacts/map-8x.png --preview-scale 8
+```
+
+Alternatively, `--preview-size N` (128–4096 pixels) sets the exact longest side
+and keeps the map's aspect ratio. It overrides the default 2× sizing; explicitly
+combining `--preview-size` and `--preview-scale` is an error. Both options require
+a PNG output. The same shared widget handles terrain, centered/wrapped colony
+markers, and the map frame at every export size.
 
 Parent output directories are created. Existing output files are replaced;
 input/config paths and all output paths must be distinct. Use `-d directory`

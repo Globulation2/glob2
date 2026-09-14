@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapCommand.h"
 #include "MapReport.h"
-#include "LobbyMapPreview.h"
+#include "GUIMapPreview.h"
+#include "Glob2Style.h"
 #include <SDL_image.h>
+#include <Toolkit.h>
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -25,7 +27,6 @@
 #include <iostream>
 #include <limits>
 #include <map>
-#include <memory>
 #include <stdexcept>
 
 namespace
@@ -149,44 +150,62 @@ void saveMap(Game &game, const std::string &path, const std::string &name)
 	if (!out)
 		throw std::runtime_error("Cannot write map: " + path);
 }
-// Use exactly the thumbnail and marker drawing path shared by the lobby and landscape picker.
-// Only the destination surface and PNG encoding belong to the command-line tool.
-void exportPreview(const Game &game, const std::string &path, int size)
+// The same widget paints CLI images and in-game previews. Only its static layout and
+// destination differ: exports have no interaction or transition animation.
+class ExportMapPreview : public MapPreview
 {
-	const int extent = std::max(game.map.getW(), game.map.getH());
-	const int width = std::max(1, size * game.map.getW() / extent);
-	const int height = std::max(1, size * game.map.getH() / extent);
-	SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
-	SDL_setenv("GLOB2_UI_SCALE", "1", 1);
-	auto *target = Toolkit::initGraphic(std::max(640, width), std::max(480, height),
-										GraphicContext::USEGPU, "Map preview", "glob2");
-	globalContainer->gfx = target;
-	if (!(target->getOptionFlags() & GraphicContext::USEGPU))
-		throw std::runtime_error("Map previews require the existing OpenGL renderer");
-	SDL_HideWindow(SDL_GL_GetCurrentWindow());
-	const std::string font = std::string("data/fonts/") + PRIMARY_FONT;
-	Toolkit::loadFont(font, 13, "standard");
+  public:
+	ExportMapPreview(int width, int height)
+		: MapPreview(0, 0, ALIGN_LEFT, ALIGN_TOP, "", "standard")
+	{
+		animateChanges = false;
+		setDimensions(width, height);
+	}
+};
+void exportPreview(const Game &game, const std::string &path, int size, int scale)
+{
 	MapThumbnail thumbnail;
 	thumbnail.loadFromMap(game.map);
-	DrawableSurface source(MapPreview::PreviewSize, MapPreview::PreviewSize);
-	thumbnail.loadIntoSurface(&source);
-	std::vector<MapStart> starts;
+	if (!thumbnail.isLoaded())
+		throw std::runtime_error("Cannot create map thumbnail");
+	const int extent = std::max(game.map.getW(), game.map.getH());
+	const int width =
+		size ? std::max(1, size * game.map.getW() / extent) : thumbnail.pixels()->width * scale;
+	const int height =
+		size ? std::max(1, size * game.map.getH() / extent) : thumbnail.pixels()->height * scale;
+	// GAG surfaces need a context for their pixel format. SDL's dummy driver keeps
+	// this small software context independent of the desktop and export dimensions.
+	SDL_setenv("SDL_VIDEODRIVER", "dummy", 1);
+	SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
+	SDL_setenv("GLOB2_UI_SCALE", "1", 1);
+	globalContainer->gfx = Toolkit::initGraphic(640, 480, 0, "Map preview", "glob2");
+	const std::string font = std::string("data/fonts/") + PRIMARY_FONT;
+	Toolkit::loadFont(font, 13, "standard");
+	DrawableSurface target(width, height);
+	Glob2Style style;
+	struct RestoreStyle
+	{
+		Style *previous = Style::style;
+		~RestoreStyle() { Style::style = previous; }
+	} restore;
+	Style::style = &style;
+	struct ExportScreen : Screen
+	{
+		explicit ExportScreen(DrawableSurface *target) { gfx = target; }
+		void onAction(Widget *, Action, int, int) override {}
+	} screen(&target);
+	auto *preview = new ExportMapPreview(width, height);
+	screen.addWidget(preview);
+	screen.dispatchInit();
+	preview->setMapThumbnail(thumbnail);
 	for (int i = 0; i < game.teamsCount(); ++i)
-		starts.push_back(
+		preview->starts.push_back(
 			{game.teams[i]->startPosX, game.teams[i]->startPosY, game.teams[i]->color});
-	drawMapThumbnail(target, {0, 0, width, height}, &source, game.map.getW(), game.map.getH(),
-					 starts);
-	// Use the normal screenshot readback, then crop the context's minimum-size padding.
-	DrawableSurface capture(target->getW(), target->getH());
-	capture.drawSurface(0, 0, target);
-	std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> output(
-		SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA32),
-		SDL_FreeSurface);
-	SDL_Rect crop{0, 0, width, height};
-	if (!output || SDL_BlitSurface(capture.getSDLSurface(), &crop, output.get(), nullptr) != 0 ||
-		IMG_SavePNG(output.get(), path.c_str()) != 0)
+	preview->paint();
+	if (IMG_SavePNG(target.getSDLSurface(), path.c_str()) != 0)
 		throw std::runtime_error("Cannot write PNG " + path + ": " + SDL_GetError());
 }
+
 } // namespace
 
 bool isMapCommand(const char *arg)
@@ -197,14 +216,16 @@ bool isMapCommand(const char *arg)
 void printMapCommandHelp()
 {
 	std::cout
-		<< "Map launch modes (put the mode first; PNG export requires OpenGL):\n"
+		<< "Map launch modes (put the mode first; no display required):\n"
 		   "  --generate-map <generator> [--output file.map] [--preview file.png] [--json "
 		   "report.json]\n"
 		   "    [--config file] [--set key=value ...] [--seed N]\n"
 		   "    [--width tiles] [--height tiles] [--teams N] [--workers N]\n"
 		   "  --preview-map <file.map|file.game> [--output file.png] [--json report.json]\n"
 		   "  --list-map-generators [generator]  List IDs, or settings and allowed values\n"
-		   "Preview size: --preview-size 128..4096 (longest side in pixels, default 512).\n"
+		   "Preview scale: --preview-scale 2|4|8 (default 2, relative to retained thumbnail "
+		   "pixels).\n"
+		   "Or --preview-size 128..4096 (explicit longest side; cannot combine with scale).\n"
 		   "Asset search: -d directory (repeatable).\n"
 		   "Supply at least one output: --output, --preview, or --json. Defaults: seed=1, "
 		   "registered settings.\n"
@@ -235,8 +256,8 @@ int runMapCommand(int argc, char **argv)
 		std::string output, preview, config, json;
 		MapSettings overrides, settings;
 		std::vector<std::string> directories;
-		int previewSize = 512;
-		bool sizeSpecified = false;
+		int previewSize = 0, previewScale = 2;
+		bool sizeSpecified = false, scaleSpecified = false;
 		for (int i = 3; i < argc; ++i)
 		{
 			const std::string arg = argv[i];
@@ -263,6 +284,14 @@ int runMapCommand(int argc, char **argv)
 			else if (generate && (arg == "--seed" || arg == "--width" || arg == "--height" ||
 								  arg == "--teams" || arg == "--workers"))
 				overrides[arg.substr(2)] = value;
+			else if (arg == "--preview-scale")
+			{
+				const auto n = number(value);
+				if (n != 2 && n != 4 && n != 8)
+					throw std::runtime_error("Preview scale must be 2, 4 or 8");
+				previewScale = int(n);
+				scaleSpecified = true;
+			}
 			else if (arg == "--preview-size")
 			{
 				const auto n = number(value);
@@ -280,8 +309,10 @@ int runMapCommand(int argc, char **argv)
 			preview = output;
 		if (output.empty() && preview.empty() && json.empty())
 			throw std::runtime_error("Specify an output path; use " + mode + " --help");
-		if (sizeSpecified && preview.empty())
-			throw std::runtime_error("Preview size requires --preview");
+		if ((sizeSpecified || scaleSpecified) && preview.empty())
+			throw std::runtime_error("Preview size/scale requires a PNG output");
+		if (sizeSpecified && scaleSpecified)
+			throw std::runtime_error("Choose --preview-size or --preview-scale, not both");
 		if ((generate && samePath(output, preview)) || (!generate && samePath(argv[2], preview)) ||
 			samePath(config, output) || samePath(config, preview) || samePath(json, config) ||
 			samePath(json, output) || samePath(json, preview) ||
@@ -359,7 +390,7 @@ int runMapCommand(int argc, char **argv)
 		if (!preview.empty())
 		{
 			parentDirectory(preview);
-			exportPreview(game, preview, previewSize);
+			exportPreview(game, preview, previewSize, previewScale);
 			std::cout << "Preview: " << preview << " (" << game.map.getW() << "x" << game.map.getH()
 					  << " tiles)\n";
 		}

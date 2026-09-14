@@ -96,10 +96,10 @@ jobs:
           name: map-report-${{ matrix.runner }}
           path: artifacts/map-report/
 
-      - name: Test map CLI with the shared OpenGL renderer
+      - name: Test headless map CLI with the shared preview renderer
         run: |
           python3 test/test_map_cli.py build/src/glob2 --generation-only
-          LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a python3 test/test_map_cli.py build/src/glob2
+          python3 test/test_map_cli.py build/src/glob2
       - name: Upload map CLI previews and command log
         if: always()
         uses: actions/upload-artifact@v4
@@ -414,8 +414,8 @@ jobs:
           name: map-report-windows
           path: artifacts/map-report/
 
-      - name: Test headless map generation CLI
-        run: python3 test/test_map_cli.py build/src/glob2.exe --generation-only
+      - name: Test headless map CLI
+        run: python3 test/test_map_cli.py build/src/glob2.exe
       - name: Upload map CLI previews and command log
         if: always()
         uses: actions/upload-artifact@v4

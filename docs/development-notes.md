@@ -51,8 +51,8 @@ The client also offers `--generate-map`, `--preview-map`, and
 `--list-map-generators` modes (including optional `--json` reports;
 [format and metric meanings](map-generators/REPORT.md)); see [map CLI](map-generators/CLI.md) for config files,
 settings, PNG output, and previews of existing maps and saves. PNG export uses
-the existing OpenGL renderer and needs a display context; map generation and JSON
-analysis can run headlessly.
+the shared `MapPreview` widget on an offscreen software surface; all map CLI
+outputs can run headlessly. Preview scale defaults to 2×; 4× and 8× are available.
 
 ## Simulation verification and diagnostics
 

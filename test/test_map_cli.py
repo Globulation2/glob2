@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise map CLI modes in a disposable profile; PNG checks require OpenGL."""
+"""Exercise map CLI modes in a disposable profile; PNG checks use the shared software renderer without a display."""
 import hashlib
 import json
 import os
@@ -62,7 +62,7 @@ def main():
         preferences = profile / 'preferences.txt'
         preferences.write_text('rememberUnit=1\n')
         before = preferences.read_bytes(), preferences.stat().st_mtime_ns
-        env = dict(os.environ, GLOB2_USER_DIR=str(profile), SDL_AUDIODRIVER='dummy')
+        env = dict(os.environ, GLOB2_USER_DIR=str(profile), SDL_AUDIODRIVER='invalid', SDL_VIDEODRIVER='invalid')
 
         def run(*args, ok=True):
             args = list(map(str,args))
@@ -108,11 +108,20 @@ def main():
         saved_before = saved.read_bytes()
         run('--preview-map',saved,'--output',loaded)
         assert png(first) == png(loaded), 'Generated map preview differs after loading'
-        assert png(first)[:2] == (512,512)
+        assert png(first)[:2] == (256,256)
+        for scale in (2, 4, 8):
+            scaled = OUT / f'scale-{scale}.png'
+            run('--preview-map',saved,'--output',scaled,'--preview-scale',scale)
+            assert png(scaled)[:2] == (128*scale,128*scale)
+            if scale == 2:
+                assert png(scaled) == png(first), 'Default differs from explicit 2x'
+            explicit = OUT / f'size-{128*scale}.png'
+            run('--preview-map',saved,'--output',explicit,'--preview-size',128*scale)
+            assert png(scaled) == png(explicit), 'Scale differs from equivalent explicit size'
         run('--preview-map',saved,'--output',loaded,'--preview-size','128')
         assert png(loaded)[:2] == (128,128)
         run('--preview-map',saved,'--output','relative.png')
-        assert png(profile/'relative.png')[:2] == (512,512), 'CLI changed working directory'
+        assert png(profile/'relative.png')[:2] == (256,256), 'CLI changed working directory'
         assert saved.read_bytes() == saved_before, 'Preview modified input map'
         for fixture in ('team-stats/version88.game','wrapped-building/reproducer.game','entering-explorer/reproducer.game'):
             source = ROOT / 'test/fixtures' / fixture
@@ -123,10 +132,20 @@ def main():
         rectangular = OUT / 'rectangular.png'
         run('--generate-map','maze','--seed','7','--width','256','--height','128','--preview',rectangular)
         assert png(rectangular)[:2] == (512,256), 'Preview lost map aspect ratio'
+        for scale in (4, 8):
+            run('--generate-map','maze','--seed','7','--width','256','--height','128',
+                '--preview',OUT/f'rectangular-{scale}.png','--preview-scale',scale)
+            assert png(OUT/f'rectangular-{scale}.png')[:2] == (256*scale,128*scale)
         premade = next(iter(sorted((ROOT / 'maps').glob('*.map'))))
         run('--preview-map',premade,'--output',OUT / 'premade.png')
         png(OUT / 'premade.png')
         invalid = [
+            ['--preview-map',saved,'--output',first,'--preview-scale','3'],
+            ['--preview-map',saved,'--output',first,'--preview-scale','0'],
+            ['--preview-map',saved,'--output',first,'--preview-scale','16'],
+            ['--preview-map',saved,'--output',first,'--preview-scale','4','--preview-size','512'],
+            ['--generate-map','maze','--json',OUT/'unused.json','--preview-scale','2'],
+            ['--preview-map',saved,'--output',first,'--preview-scale'],
             ['--generate-map'], ['--generate-map','unknown','--preview',first],
             ['--generate-map','maze'], ['--generate-map','maze','--seed'],
             ['--generate-map','maze','--seed','4294967296','--preview',first],

@@ -447,21 +447,20 @@ headless Linux). Linux CI builds and runs both modes. Fixtures exercise rectangu
 placement, toroidal dragging, legacy/new codecs, malformed input, network frame
 bounds, thumbnail request deduplication, timeout/retry and bounded cache reuse.
 See [pre-game preview behavior and compatibility](../docs/pre-game-map-preview.md).
+
 ## Map CLI
 
 Build the normal client with `scons release=1 server=0`, then run
 `python3 test/test_map_cli.py build/src/glob2` (use `.exe` on Windows).
-The test uses a disposable profile and the existing OpenGL preview renderer.
-On headless Linux run it with `LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a`.
+The test uses a disposable profile and the shared `MapPreview` software renderer
+with an invalid video driver, proving PNG export requires no display.
 It compares explicit CLI settings against a config with CLI overrides,
-generated versus loaded map pixels and preview sizes, loads a premade map and
+generated versus loaded map pixels, default/explicit 2×, 4× and 8× scales and preview sizes, loads a premade map and
 three checked-in saves, checks invalid arguments and output failures, and verifies
 inputs/preferences are unchanged. PNGs, command logs and hashes are retained in
-`artifacts/map-cli/` and uploaded by Linux CI. Windows CI runs
-`python3 test/test_map_cli.py build/src/glob2.exe --generation-only`, which compares
-serialized maps from config/CLI settings with an invalid video driver and checks
-invalid settings and preferences; it does not verify OpenGL PNG export. Run the
-full test on Windows with a working OpenGL desktop for that coverage.
+`artifacts/map-cli/` and uploaded by Linux CI. Windows CI also runs the full suite without a display. The optional
+`--generation-only` subset compares serialized maps from config/CLI settings
+and checks invalid settings and preferences.
 See [map CLI documentation](../docs/map-generators/CLI.md).
 
 ### Map JSON reports
