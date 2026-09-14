@@ -66,19 +66,33 @@ void Map::pathfindRandom(Unit *unit)
 	}
 	else
 	{
+		// A warrior standing in a guard area wanders onto its free painted
+		// neighbours first. Off the paint a warrior is a free warrior again to
+		// the guard field, which is free to send it to another area, so
+		// stepping off whenever it could is how a full area would empty all at
+		// once. When no painted neighbour is free, though, it takes the ordinary
+		// random step like any other unit: a packed or sparse area keeps some
+		// warriors beside the paint rather than holding them still, which the
+		// renderer would draw as a unit trapped in place.
+		const bool keepInGuardArea = unit->typeNum == WARRIOR && (tiles[x+(y<<wDec)].guardArea & unit->owner->me);
 		bool da[8];
 		int count=0;
-		for (int di=0; di<8; di++)
+		for (int pass = keepInGuardArea ? 0 : 1; pass < 2 && count == 0; pass++)
 		{
-			int tx=(x+tabClose[di][0])&wMask;
-			int ty=(y+tabClose[di][1])&hMask;
-			if (isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me))
+			for (int di=0; di<8; di++)
 			{
-				da[di]=true;
-				count++;
+				int tx=(x+tabClose[di][0])&wMask;
+				int ty=(y+tabClose[di][1])&hMask;
+				if (pass == 0 && !(tiles[tx+(ty<<wDec)].guardArea & unit->owner->me))
+					da[di]=false;
+				else if (isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me))
+				{
+					da[di]=true;
+					count++;
+				}
+				else
+					da[di]=false;
 			}
-			else
-				da[di]=false;
 		}
 		if (count==0)
 		{

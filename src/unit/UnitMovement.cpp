@@ -276,7 +276,11 @@ void Unit::handleMovementAttackingAround()
 		}
 	}
 
-	// if we haven't found anything satisfactory, follow guard area gradients
+	// No enemy in reach: follow the guard field. Outside an area it leads to the
+	// area that is nearest once crowding is counted; inside one it may lead out
+	// of an over-full area (Map::pathfindArea). Where it gives no move, a
+	// warrior inside an area or in a war flag's range wanders the least
+	// explored painted tiles, and one with no area to go to wanders freely.
 	if (movement == MOV_RANDOM_GROUND)
 	{
 		if (!attachedBuilding && owner->map->pathfindArea(Map::AreaKind::Guard, owner->teamNumber, swimClass(), posX, posY, &dx, &dy))
@@ -287,9 +291,11 @@ void Unit::handleMovementAttackingAround()
 			owner->map->getGlobalGradientDestination(owner->map->getGuardAreasGradient(owner->teamNumber, swimClass()), posX, posY, &targetX, &targetY);
 			validTarget=true;
 		}
-		else if (attachedBuilding || (owner->map->getGuardAreasGradient(owner->teamNumber, swimClass())[owner->map->coordToIndex(posX, posY)] == GRADIENT_AT_GOAL))
+		else if (attachedBuilding || owner->map->isGuardArea(posX, posY, owner->me))
 		{
-			// are we into the guard area or war flag, and we have to go to the least known area.
+			// Inside the guard area or the war flag's range: go toward the least
+			// known tiles of it. "Inside" is the painted bit, not the field's
+			// goal value, since a crowded area's tiles sit below it.
 			int bestExplored = 3*EXPLORED_FRESH;
 			int bestDirection = -1;
 			for (int di = 0; di < 8; di++)
@@ -307,7 +313,7 @@ void Unit::handleMovementAttackingAround()
 				}
 				else
 				{
-					if (owner->map->getGuardAreasGradient(owner->teamNumber, swimClass())[owner->map->coordToIndex(posX + cdx, posY + cdy)] != GRADIENT_AT_GOAL)
+					if (!owner->map->isGuardArea(posX + cdx, posY + cdy, owner->me))
 						continue;
 				}
 				int explored = owner->map->getExplored(posX + 2*cdx, posY + 2*cdy, owner->teamNumber);

@@ -3,6 +3,8 @@
 
 #include "Map.h"
 #include "MapInternal.h"
+#include "Team.h"
+#include "Utilities.h"
 
 #include <queue>
 
@@ -52,11 +54,39 @@ bool Map::pathfindArea(AreaKind kind, int teamNumber, int swimClass, int x, int 
 	const Uint16 *gradient = (kind == AreaKind::Guard)
 		? getGuardAreasGradient(teamNumber, swimClass)
 		: getClearAreasGradient(teamNumber, swimClass);
-	Uint16 here = gradient[coordToIndex(x, y)];
-	if (here == GRADIENT_AT_GOAL)
-		return false; // we already are in an area.
+	const size_t index = coordToIndex(x, y);
+	Uint16 here = gradient[index];
 	if (here <= GRADIENT_UNREACHABLE)
 		return false; // any existing area is too far away.
+	if (kind == AreaKind::Guard)
+	{
+		const Uint32 teamMask = Team::teamNumberToMask(teamNumber);
+		if (tiles[index].guardArea & teamMask)
+		{
+			// A warrior standing in a guard area. Guard seeds carry a crowding
+			// cost, so a painted tile is not necessarily a peak of the field:
+			// when this area is over-full, another area's field runs over its
+			// tiles and an uphill step leads out. Every warrior here sees the
+			// same field, so if all of them followed it at once the whole area
+			// would empty and most would walk back. Instead the way out is
+			// taken on one action in 2^GUARD_LEAVE_CHANCE_SHIFT: a trickle, and
+			// each leaver keeps counting toward this area until it is
+			// GUARD_CROWD_RADIUS tiles out, so the next rebuild sees the count
+			// fall and stops the trickle before it overshoots (MapInternal.h).
+			// A tile at the goal value has nothing higher around it.
+			if (here == GRADIENT_AT_GOAL)
+				return false;
+			if ((syncRand() & ((1 << GUARD_LEAVE_CHANCE_SHIFT) - 1)) == 0)
+				return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, true);
+			// The other actions stay in the area: step onto the highest painted
+			// neighbour, which spreads warriors toward the less crowded side of
+			// a large area, or report no move so the caller's in-area wander
+			// takes over.
+			return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, true, teamMask);
+		}
+	}
+	else if (here == GRADIENT_AT_GOAL)
+		return false; // we already are in a clearing area.
 
 	if (directionByGradient(1<<teamNumber, swimClass, x, y, gradient, dx, dy, true))
 		return true;
