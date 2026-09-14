@@ -47,7 +47,7 @@ struct Metrics
 	std::vector<int> widths, heights;
 };
 
-Metrics measure(Font *font)
+Metrics measure(GAGCore::Font *font)
 {
 	Metrics m;
 	for (const char *sample : SAMPLES)
@@ -87,14 +87,14 @@ void saveFrame(const std::vector<unsigned char> &pixels, int w, int h, const std
 }
 
 // Draw one line of text on a black frame at a position that lands on the block grid.
-std::vector<unsigned char> drawSample(Context &context, Font *font, int logicalX, int logicalY)
+std::vector<unsigned char> drawSample(Context &context, GAGCore::Font *font, int logicalX, int logicalY)
 {
 	// Present once so the window system applies the current backing-buffer size, then draw
 	// into the back buffer and read that back before it is swapped away.
 	context.nextFrame();
 	context.setClipRect();
 	context.drawFilledRect(0, 0, context.surfaceW(), context.surfaceH(), Color::black);
-	font->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 255, 255));
+	font->setStyle(GAGCore::Font::Style(GAGCore::Font::STYLE_NORMAL, 255, 255, 255));
 	context.drawString(logicalX, logicalY, font, SAMPLES[2]);
 	return readFrame(context);
 }
@@ -183,12 +183,12 @@ void checkRasterIsPixelExact(const std::vector<unsigned char> &frame, int frameW
 
 // An overlay dialog composes itself on its own surface, which holds logical pixels and has
 // no scaled blit to resample a finer raster with. Text drawn there has to keep arriving.
-void checkOverlayText(Context &context, Font *font, float scale)
+void checkOverlayText(Context &context, GAGCore::Font *font, float scale)
 {
 	const int x = 100, y = 200, w = 400, h = 60;
 	DrawableSurface overlay(w, h);
 	overlay.drawFilledRect(0, 0, w, h, Color::black);
-	font->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 255, 255));
+	font->setStyle(GAGCore::Font::Style(GAGCore::Font::STYLE_NORMAL, 255, 255, 255));
 	overlay.drawString(4, 4, font, SAMPLES[0]);
 
 	context.nextFrame();
@@ -213,7 +213,7 @@ void run(const std::string &outputDir)
 	require(context.surfaceW() == windowW / 2, "The interface surface did not halve");
 
 	Toolkit::loadFont("data/fonts/sans.ttf", 20, "harness");
-	Font *font = Toolkit::getFont("harness");
+	GAGCore::Font *font = Toolkit::getFont("harness");
 	require(font != NULL, "Could not load data/fonts/sans.ttf");
 
 	const float scale = context.textRenderScale();
