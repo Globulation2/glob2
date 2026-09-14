@@ -58,7 +58,7 @@ void setRandomSyncRandSeed()
 std::string getSyncRandState()
 {
 	std::ostringstream stream;
-	stream<<randomGenerator;
+	stream<<syncRandEngine();
 	return stream.str();
 }
 
@@ -73,7 +73,7 @@ bool setSyncRandState(const std::string& state)
 	stream>>restored;
 	if(stream.fail())
 		return false;
-	randomGenerator=restored;
+	syncRandEngine()=restored;
 	return true;
 }
 

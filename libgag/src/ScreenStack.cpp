@@ -83,12 +83,13 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event>& events)
     if (screens.empty() || stopped) return;
     Screen& screen = *screens.back().screen;
     // Pending child transitions suspend the parent immediately.
-    if (pending.empty()) screen.updateExecution(tick);
     for (const auto& event : events) {
         if (event.type == SDL_QUIT) { stop(); break; }
         if (stopped || !pending.empty() || !screen.isExecutionRunning()) break;
         screen.handleExecutionEvent(event);
     }
+    // Admit queued cancellation before advancing a potentially expensive load.
+    if (!stopped && pending.empty() && screen.isExecutionRunning()) screen.updateExecution(tick);
     if (!stopped) screen.drawExecution();
     if (stopped) boundary();
 }

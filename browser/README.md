@@ -63,8 +63,8 @@ This is a desktop-browser experiment with mouse and keyboard controls.
 The YOG entry uses the WebSocket gateway; LAN remains unavailable in browsers.
 The lobby uses YOG chat; the separate native IRC bridge is unavailable.
 See `docs/browser/gateway.md` for routing. Full matches and recovery remain experimental. Voice chat is a no-op; music uses the
-existing Vorbis mixer. Map fertility calculation runs cooperatively on the
-browser thread. WebGL2 reuses the existing GPU renderer through Emscripten compatibility glue;
+existing Vorbis mixer. Map fertility is staged privately before publication. Landscape previews run
+one candidate per UI timer; an individual generator roll remains synchronous. WebGL2 reuses the existing GPU renderer through Emscripten compatibility glue;
 there is no mobile UI adaptation.
 
 Browser and desktop multiplayer clients and YOG must use the same protocol
@@ -73,16 +73,15 @@ Guests, invitations and coordinated refresh/reconnect recovery remain unfinished
 
 ## Compatibility note
 
-Newly generated map layouts change on every platform. Generation previously
-mixed synchronized randomness with libc randomness, time-based reseeding, and
-shared Perlin tables, so a seed did not reliably identify a layout. Generation
-now isolates that state and makes a seed reproducible on one platform. Existing
-maps, saves, replays, and simulation rules are unchanged.
+Map generation follows the current native `GenerationService`, including its
+landscape picker and start-quality scoring. The browser services preview
+candidates on its UI thread instead of starting native worker threads. An
+individual roll can pause the UI; see [ADR 005](../docs/browser/adr-005-generation-randomness.md).
 
-Bit-exact native/WebAssembly generation from the same seed is not yet promised
-because height-map generation uses floating point. This cannot split an active
-YOG match: the host selects a map file and clients download those exact bytes
-before play. See [ADR 005](../docs/browser/adr-005-generation-randomness.md).
+Saved-game compatibility remains durable. Replays must meet the current
+`REPLAY_MINIMUM_VERSION_MINOR`; browser import tests use a separately recorded
+fixture under `browser/tests/fixtures`, without replacing shared determinism
+baselines. YOG distributes the host-selected map bytes to every player.
 
 ## Automated tests
 
@@ -128,6 +127,10 @@ release testing in actual Safari, nor Chromium for Edge.
 Run the suite with `GLOB2_TEST_RENDERER=webgl2` or `software` to force a renderer
 throughout. Otherwise tests get the default selection, which is software in
 headless browsers that emulate WebGL2.
+On macOS, `GLOB2_CHROMIUM_ANGLE=metal` runs Chromium checks on the actual
+Metal GPU instead of its headless SwiftShader backend. Record which backend was
+used when reporting graphics results; emulated-GPU timings are not desktop
+performance measurements.
 Dedicated renderer tests exercise resize and actual context loss/restoration.
 New multiplayer features, including reconnect recovery, are outside this change.
 

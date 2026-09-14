@@ -10,8 +10,8 @@ const preferences=page=>page.evaluate(()=>glob2Diagnostics.preferences());
 // graphics category, which is selected by default when Settings opens.
 const AUDIO_TAB=(page)=>click(page,208,233); // Sidebar "Audio" entry.
 const MUTE_ROW=(page)=>click(page,700,224); // Anywhere on the "Mute audio" row toggles it.
-const openGraphicsDetail=(page)=>click(page,950,508); // "Graphics detail" choice control.
-const selectFull=(page)=>click(page,950,545); // "Full" option in the opened dropdown.
+const openGraphicsDetail=(page)=>click(page,950,588); // "Graphics detail" choice control.
+const selectFull=(page)=>click(page,950,625); // "Full" option in the opened dropdown.
 
 test('new browser profiles are muted and an explicit unmute survives reload',async({page})=>{
   await page.goto(gameURL());await screen(page,'MainMenuScreen');

@@ -69,7 +69,7 @@ test('an active replay can be loaded again through the scheduled loader',async({
   await clickMainMenu(page,'load');await screen(page,'ChooseMapScreen');await click(page,620,650);
   const chooser=page.waitForEvent('filechooser');await click(page,340,695);
   await (await chooser).setFiles({name:'AAA Replay.replay',mimeType:'application/octet-stream',
-    buffer:await require('node:fs/promises').readFile(path.resolve(__dirname,'../../tests/baselines/cross-replay.replay'))});
+    buffer:await require('node:fs/promises').readFile(path.resolve(__dirname,'fixtures/cross-replay.replay'))});
   await expect.poll(async()=>(await state(page)).import).toBe('succeeded');
   await click(page,380,280);await click(page,810,590);await screen(page,'match');
   const original=(await state(page)).tick;

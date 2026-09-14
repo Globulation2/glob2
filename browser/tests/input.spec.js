@@ -48,3 +48,35 @@ test('click coordinates stay correct when browser motion delivery is missing',as
   await expect.poll(()=>require('./pixels').hasLightText(page,{x:360,y:382,width:280,height:34})).toBe(true);
   await click(page,500,400);await screen(page,'EndGameScreen');
 });
+
+test('desktop right-click cancels a selection and cycles sidebar views without a browser menu',async({page},info)=>{
+  await page.goto(gameURL());await screen(page,'MainMenuScreen');
+  await clickMainMenu(page,'custom');await screen(page,'CustomGameScreen');
+  await clickCustomGameStart(page);
+  await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(25);
+  await page.evaluate(()=>{
+    window.canvasContextMenus=[];
+    document.addEventListener('contextmenu',event=>{
+      if(event.target.id==='canvas')window.canvasContextMenus.push(event.defaultPrevented);
+    });
+  });
+  const panel={x:1042,y:185,width:150,height:240};
+  await page.mouse.move(400,350);
+  const construction=await page.screenshot({clip:panel});
+  await page.mouse.click(400,350,{button:'right',delay:80});
+  await page.waitForTimeout(160);
+  const flags=await page.screenshot({clip:panel});
+  expect(flags.equals(construction)).toBe(false);
+  await info.attach('right-click-flags',{body:flags,contentType:'image/png'});
+  for(let i=0;i<3;i++)await page.mouse.click(400,350,{button:'right',delay:80});
+  await page.waitForTimeout(160);
+  expect((await page.screenshot({clip:panel})).equals(construction)).toBe(true);
+  // Select the first building tool, then cancel it with a secondary click.
+  await click(page,1075,205);
+  await page.mouse.click(400,350,{button:'right',delay:80});
+  await page.waitForTimeout(160);
+  expect((await page.screenshot({clip:panel})).equals(construction)).toBe(true);
+  const menus=await page.evaluate(()=>window.canvasContextMenus);
+  expect(menus.length).toBeGreaterThan(0);
+  expect(menus.every(Boolean)).toBe(true);
+});

@@ -55,7 +55,6 @@ GlobalContainer* globalContainer=nullptr;
 using namespace GAGCore;
 std::string replayFilenameToName(const std::string&);
 
-std::string getSyncRandState() { std::ostringstream out; out << syncRandEngine(); return out.str(); }
 
 void require(bool condition, const char* message)
 {

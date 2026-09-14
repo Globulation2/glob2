@@ -17,7 +17,7 @@ module.exports = defineConfig({
   },
   projects: ['chromium','firefox','webkit'].map(browserName => ({
     name:browserName,
-    use:{browserName, ...(browserName === 'firefox' && process.env.GLOB2_FIREFOX_HEADED === '1' ? {headless:false} : {})},
+    use:{browserName, ...(browserName === 'chromium' && process.env.GLOB2_CHROMIUM_ANGLE ? {launchOptions:{args:['--use-angle=' + process.env.GLOB2_CHROMIUM_ANGLE]}} : {}), ...(browserName === 'firefox' && process.env.GLOB2_FIREFOX_HEADED === '1' ? {headless:false} : {})},
   })),
   webServer: process.env.GLOB2_TEST_URL ? undefined : {
     command: 'python3 -m http.server 8770 --bind 127.0.0.1 --directory build/emscripten/client/release',

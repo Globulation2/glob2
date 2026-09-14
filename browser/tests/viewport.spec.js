@@ -90,3 +90,18 @@ test.describe('high density display', () => {
     await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');
   });
 });
+
+test('interface scale survives resizing and keeps settings controls clickable', async ({page}, info) => {
+  // Software applies scale immediately; WebGL follows master's restart requirement.
+  test.skip((await snapshot(page)).renderer !== 'software');
+  await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');
+  await click(page,950,430);
+  await click(page,950,550); // Interface scale: 125%.
+  await page.setViewportSize({width:1400,height:1000});
+  await expect.poll(async () => (await snapshot(page)).width).toBe(1400);
+  const logicalWidth=1120, logicalHeight=800, scale=1.25;
+  const done=require('./main-menu').settingsFooter(logicalWidth,logicalHeight).done;
+  await page.screenshot({path:info.outputPath('scaled-settings-after-resize.png')});
+  await click(page,done.x*scale,done.y*scale);
+  await screen(page,'MainMenuScreen');
+});

@@ -170,7 +170,8 @@ test('custom match pauses, persists and resumes after reload', async ({page}) =>
   await menu(page, 100, 70);
   await menu(page, 530, 380);
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThanOrEqual(paused.tick);
-  await expect.poll(async () => (await state(page)).audio).toBe('running');
+  // Muted startup now leaves the audio device closed until the player unmutes.
+  expect((await state(page)).audio).toBe('inactive');
   expect(errors).toEqual([]);
 });
 
@@ -383,9 +384,9 @@ test(`map generation can be cancelled before retrying (${terrain.name})`, async 
   await menu(page, 110, 60); // 256 columns.
   await menu(page, 110, 85); // 256 rows.
   await menu(page, 100, 235); // Concrete islands keep substantial work pending.
+  await holdLoader(page, 'EditorGenerateScreen');
   await menu(page, 160, 440);
-  await screen(page, 'EditorGenerateScreen');
-  await page.locator('#canvas').press('Escape', {delay:80});
+  await cancelHeldLoader(page, 'EditorGenerateScreen');
   await screen(page, 'NewMapScreen');
   await menu(page, 100, terrain.y); // Exercise height-map and partition jobs.
   await menu(page, 160, 440);
@@ -399,3 +400,23 @@ test(`map generation can be cancelled before retrying (${terrain.name})`, async 
 });
 
 }
+
+test('landscape picker and start-quality details return to the retained custom setup', async ({page}, info) => {
+  await page.goto(gameURL()); await screen(page,'MainMenuScreen');
+  await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
+  await click(page,260,100); // Random map.
+  await click(page,280,160); await screen(page,'LandscapePickerScreen');
+  await page.screenshot({path:info.outputPath('landscape-picker.png')});
+  await page.locator('#canvas').press('Escape',{delay:80});
+  await screen(page,'CustomGameScreen');
+  // The info button appears once the preview has finished generating.
+  await expect.poll(async () => {
+    await click(page,1146,164);
+    return (await state(page)).screen;
+  }).toContain('StartQualityScreen');
+  await page.screenshot({path:info.outputPath('start-quality.png')});
+  await page.locator('#canvas').press('Escape',{delay:80});
+  await screen(page,'CustomGameScreen');
+  await clickCustomGameStart(page);
+  await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
+});

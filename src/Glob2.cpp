@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#ifdef __APPLE__
+#	include <CoreFoundation/CoreFoundation.h>
+#	include <sys/param.h>
+#endif
+
 #include <ApplicationHost.h>
 #include <cstdlib>
 #include "Glob2.h"
@@ -53,11 +58,6 @@
 #	include <unistd.h>
 #else
 #	include <time.h>
-#endif
-
-#ifdef __APPLE__
-#	include <Carbon/Carbon.h>
-#	include <sys/param.h>
 #endif
 
 #ifndef YOG_SERVER_ONLY

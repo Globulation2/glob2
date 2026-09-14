@@ -307,15 +307,15 @@ void CustomGameScreen::chooseLandscape()
 			selected = int(shown.size());
 		shown.push_back({tr(GenerationRequest::methodName(method)), request});
 	}
-	LandscapePickerScreen picker(tr("Landscape"), std::move(shown), selected);
-	const int result = picker.execute(globalContainer->gfx, 40);
-	if (result == QUIT_APPLICATION)
-		endExecute(QUIT_APPLICATION);
-	else if (result >= 0 && result < int(entries.size()))
-	{
-		const GenerationRequest request = picker.chosenRequest();
-		applyLandscape(entries[result].first, picker.chosenSeed(), &request);
-	}
+	screens.push(std::make_unique<LandscapePickerScreen>(tr("Landscape"), std::move(shown), selected),
+		[this, entries](GAGGUI::Screen& screen, int result) {
+			if (result == QUIT_APPLICATION) endExecute(QUIT_APPLICATION);
+			else if (result >= 0 && result < int(entries.size())) {
+				auto& picker = static_cast<LandscapePickerScreen&>(screen);
+				const auto request = picker.chosenRequest();
+				applyLandscape(entries[result].first, picker.chosenSeed(), &request);
+			}
+		});
 }
 void CustomGameScreen::applyLandscape(int method, std::optional<std::uint32_t> seed,
 									  const GenerationRequest *shown)
@@ -388,9 +388,10 @@ void CustomGameScreen::showStartQuality()
 		colors.push_back(i < preview->starts.size() ? preview->starts[i].color
 													: Color(160, 172, 149));
 	}
-	StartQualityScreen screen(quality, labels, colors);
-	if (screen.execute(globalContainer->gfx, 40) == QUIT_APPLICATION)
-		endExecute(QUIT_APPLICATION);
+	screens.push(std::make_unique<StartQualityScreen>(quality, labels, colors),
+		[this](GAGGUI::Screen&, int result) {
+			if (result == QUIT_APPLICATION) endExecute(QUIT_APPLICATION);
+		});
 }
 void CustomGameScreen::invalidate()
 {
@@ -634,6 +635,7 @@ void CustomGameScreen::onAction(Widget *widget, Action action, int code, int val
 }
 void CustomGameScreen::onTimer(Uint32 tick)
 {
+	if (candidates) candidates->poll();
 	if (controls->pressed.empty() && !controls->popup.open && Sint32(tick - preferencesRetryAt) >= 0)
 		savePreferences();
 	// Wait until the last edit settles and a dragged control/menu is released.
@@ -712,7 +714,10 @@ bool CustomGameScreen::collectCandidates()
 void CustomGameScreen::finishPreview()
 {
 	while (candidates && candidates->busy())
+	{
+		candidates->poll();
 		SDL_Delay(5);
+	}
 	if (candidates)
 		collectCandidates();
 }

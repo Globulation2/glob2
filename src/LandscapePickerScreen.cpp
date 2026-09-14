@@ -115,6 +115,7 @@ void LandscapePickerScreen::confirm()
 
 void LandscapePickerScreen::onTimer(Uint32)
 {
+    previewer.poll();
 	refresh();
 }
 

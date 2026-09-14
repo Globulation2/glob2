@@ -293,7 +293,7 @@ jobs:
         run: |
           scons -j$(nproc) release=1 server=0 text-raster-test
           mkdir -p artifacts/text-raster
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/TextRasterHarness artifacts/text-raster
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/TextRasterHarness artifacts/text-raster
 
       - name: Check game rendering across repeated map copies
         env:

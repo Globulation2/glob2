@@ -17,6 +17,7 @@ FertilityScreen::FertilityScreen(Map& map) : job(map)
 }
 void FertilityScreen::onTimer(Uint32)
 {
+    if (!presented) { presented = true; return; }
     if (job.advance(65536)) { job.commit(); endExecute(1); }
     progress->setValue(static_cast<int>(job.progress() * 1000));
 }

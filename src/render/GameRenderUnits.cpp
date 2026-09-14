@@ -31,7 +31,6 @@
 
 #include "Brush.h"
 #include "UnitSkin.h"
-#include "FertilityCalculatorDialog.h"
 #include "FailureShapes.h"
 #include <algorithm>
 

@@ -133,6 +133,8 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event>& events
     if (GAGCore::ApplicationHost::takeViewportSize(width, height)) {
         const int oldWidth = globalContainer->gfx->getW(), oldHeight = globalContainer->gfx->getH();
         if (globalContainer->gfx->resizeViewport(width, height)) {
+            width = globalContainer->gfx->getW();
+            height = globalContainer->gfx->getH();
             screens.viewportResized(oldWidth, oldHeight, width, height);
             shutdownScreens.viewportResized(oldWidth, oldHeight, width, height);
         }

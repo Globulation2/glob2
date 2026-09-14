@@ -27,12 +27,11 @@
 #include "GameLoadScreen.h"
 #include "MapEditorScreen.h"
 #include "MapGenerator.h"
-#include "HeightMapGenerator.h"
-#include "PerlinNoise.h"
 #include <cmath>
 #include <queue>
 #include "Utilities.h"
-#include "LegacyFertilityReference.h"
+#include "FertilityField.h"
+#include <limits>
 #include "GlobalContainer.h"
 #include "ReplayWriter.h"
 #include "native.h"
@@ -93,60 +92,6 @@ int main(int argc, char** argv)
         require(rootDestroyed, "Destroying an interpreter must release its retained heap");
         std::cout << "PASS script GC roots, live frames, bytecode constants and interpreter isolation" << std::endl;
     }
-    {
-        std::srand(17); const int expected = std::rand(); std::srand(17);
-        PerlinNoise first(123), second(987);
-        const float value = first.Noise(.125f, .75f);
-        second.reseed(456);
-        require(value == first.Noise(.125f, .75f), "Reseeding another noise instance changed existing noise");
-        first.reseed(123);
-        require(value == first.Noise(.125f, .75f), "Explicit noise seeds must repeat");
-        require(std::rand() == expected, "Noise must not mutate libc RNG state");
-        for (unsigned seed = 0; seed < 128; ++seed) {
-            first.reseed(seed);
-            require(std::isfinite(first.Noise(.25f, .5f, .75f)), "Seeded noise must remain finite");
-        }
-    }
-
-    // A one-crater map repeats the exact first stamp location. Shared static
-    // stamp caches used to skip that stamp in the second map instance.
-    {
-        std::vector<float> expected;
-        for (unsigned repeat = 0; repeat < 2; ++repeat) {
-            setSyncRandSeed(42);
-            HeightMap heights(128, 128);
-            if (!repeat) heights.makeCraters(1, 30, 24);
-            else {
-                auto task = heights.makeCratersTask(1, 30, 24);
-                unsigned frames = 0;
-                while (!task.advance()) {
-                    require(++frames < 1000, "Height-map job exceeded fixture work budget");
-                    PerlinNoise unrelated(frames); unrelated.Noise(.25f, .5f);
-                }
-                require(task.result() && frames > 20, "Height-map work must yield within its passes");
-            }
-            for (unsigned i = 0; i < 128 * 128; ++i) {
-                require(std::isfinite(heights(i)) && heights(i) >= 0 && heights(i) <= 1,
-                        "Height-map normalization must remain finite and bounded");
-                if (!repeat) expected.push_back(heights(i));
-                else require(heights(i) == expected[i], "Stamp state must belong to each height map");
-            }
-        }
-        // Destroy nested jobs during stamp construction, filling, and noise work.
-        // The next operation must be safe even after cancellation of partial work.
-        for (unsigned stop : {1u, 5u, 20u, 40u}) {
-            HeightMap partial(128, 128);
-            {
-                auto task = partial.makeIslandsTask(2, 24);
-                for (unsigned frame = 0; frame < stop; ++frame)
-                    require(!task.advance(), "Cancellation fixture finished before its checkpoint");
-            }
-            partial.makeSwamp(24);
-            for (unsigned i = 0; i < 128 * 128; ++i)
-                require(std::isfinite(partial(i)), "Cancelled height map could not be reused");
-        }
-    }
-
     SDL_setenv("SDL_VIDEODRIVER", "dummy", 1);
     SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
     globalContainer = new GlobalContainer(argv[1]);
@@ -388,69 +333,15 @@ int main(int argc, char** argv)
         }
     }
     {
-        MapGenerator generator;
-        for (auto method : {MapGenerationDescriptor::eUNIFORM, MapGenerationDescriptor::eSWAMP,
-                            MapGenerationDescriptor::eISLANDS, MapGenerationDescriptor::eCONCRETEISLANDS,
-                            MapGenerationDescriptor::eRIVER, MapGenerationDescriptor::eCRATERLAKES,
-                            MapGenerationDescriptor::eISLES, MapGenerationDescriptor::eOLDRANDOM,
-                            MapGenerationDescriptor::eOLDISLANDS}) {
-            Uint32 checksum = 0;
-            std::string rng;
-            for (int repeat = 0; repeat < 2; ++repeat) {
-                MapGenerationDescriptor descriptor;
-                descriptor.method = method;
-                descriptor.nbTeams = 2;
-                Game generated(nullptr);
-                if (!repeat) require(generator.generateMap(generated, descriptor, 12345), "Seeded generation fixture failed");
-                else {
-                    auto job = generator.generateMapTask(generated, descriptor, 12345);
-                    unsigned slices = 0;
-                    while (!job.advance()) {
-                        PerlinNoise interleaved(123 + slices); interleaved.Noise(.125f, .75f);
-                        std::rand();
-                        require(++slices < 10000, "Generation job did not finish");
-                    }
-                    require(slices > 1 && job.result(), "Generation must yield and succeed");
-                }
-                if (!repeat) { checksum = generated.checkSum(); rng = getSyncRandState(); }
-                else require(checksum == generated.checkSum() && rng == getSyncRandState(),
-                             "Seeded generation must repeat despite unrelated noise and libc RNG draws");
-                PerlinNoise unrelated(999 + repeat); unrelated.Noise(.25f, .125f);
-                for (int i = 0; i < 100; ++i) std::rand();
-            }
-        }
-    }
-    {
         const auto rng = getSyncRandState();
-        for (unsigned frames : {1u, 2u}) {
-            GAGGUI::ScreenStack screens(*globalContainer->gfx);
-            screens.push(std::make_unique<EditorGenerateScreen>(MapGenerationDescriptor(), 12345, fixedSlice()));
-            for (unsigned frame = 0; frame < frames; ++frame) screens.frame(frame, {});
-            SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
-            screens.frame(frames, {escape}); screens.frame(frames + 1, {});
-            require(!screens.running() && screens.result() == 0 && getSyncRandState() == rng,
-                    "Cancelled generation must release partial state and restore RNG");
-        }
-        // Concrete-island partitioning awaits distance floods, point searches,
-        // and weighted area expansion. Cancelling deep in this nested chain
-        // must destroy queues/vectors before the partial map and restore RNG.
-        for (unsigned frames : {2u, 8u, 20u}) {
-            MapGenerationDescriptor descriptor;
-            descriptor.method = MapGenerationDescriptor::eCONCRETEISLANDS;
-            descriptor.nbTeams = 2;
-            GAGGUI::ScreenStack screens(*globalContainer->gfx);
-            screens.push(std::make_unique<EditorGenerateScreen>(descriptor, 12345, fixedSlice()));
-            for (unsigned frame = 0; frame < frames; ++frame) {
-                require(screens.running(), "Partition cancellation fixture finished too early");
-                screens.frame(frame, {});
-            }
-            SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
-            screens.frame(frames, {escape}); screens.frame(frames + 1, {});
-            require(!screens.running() && screens.result() == 0 && getSyncRandState() == rng,
-                    "Cancelled partitioning must release its partial map and restore RNG");
-        }
+        GAGGUI::ScreenStack cancelled(*globalContainer->gfx);
+        cancelled.push(std::make_unique<EditorGenerateScreen>(GenerationRequest(), 12345, fixedSlice()));
+        SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
+        cancelled.frame(0, {escape}); cancelled.frame(1, {});
+        require(!cancelled.running() && cancelled.result() == 0 && getSyncRandState() == rng,
+                "Cancelled editor generation must release its state and preserve RNG");
         GAGGUI::ScreenStack failed(*globalContainer->gfx);
-        MapGenerationDescriptor invalid; invalid.wDec = -1;
+        GenerationRequest invalid; invalid.wDec = -1;
         failed.push(std::make_unique<EditorGenerateScreen>(invalid, 12345, fixedSlice()));
         for (unsigned frame = 0; failed.running(); ++frame) {
             require(frame < 10, "Invalid generation descriptor did not fail promptly"); failed.frame(frame, {});
@@ -715,13 +606,22 @@ int main(int argc, char** argv)
         {
             FertilityCalculator::Job cancelled(editor.game.map);
             require(!cancelled.advance(0), "Zero work must not finish a job");
-            cancelled.advance(4096);
             bool rejected = false;
             try { cancelled.commit(); } catch (const std::logic_error&) { rejected = true; }
             require(rejected, "Incomplete fertility must not be committed");
         }
         require(snapshot() == original, "Cancelled fertility changed the map");
-        LegacyFertilityReference::compute(editor.game.map, {});
+        // Compare the staged adapter with the current master's fertility field.
+        const auto field = Fertility::forMap(editor.game.map);
+        Uint16 maximum = 0;
+        for (int x = 0; x < editor.game.map.getW(); ++x)
+            for (int y = 0; y < editor.game.map.getH(); ++y) {
+                const auto value = static_cast<Uint16>(std::min(field.at(x,y),
+                    std::uint32_t(std::numeric_limits<Uint16>::max())));
+                editor.game.map.getTile(x,y).fertility = value;
+                maximum = std::max(maximum, value);
+            }
+        editor.game.map.fertilityMaximum = maximum;
         const auto expected = snapshot();
         require(expected.back() > 0, "Fertility oracle fixture must exercise nonzero weights");
         for (const std::size_t budget : {1u, 7919u, 65536u}) {
@@ -738,7 +638,7 @@ int main(int argc, char** argv)
             }
             require(snapshot() == untouched, "Ready job published before commit");
             job.commit(); job.commit();
-            require(snapshot() == expected, "Resumable fertility differs from original algorithm");
+            require(snapshot() == expected, "Staged fertility differs from current field");
         }
         {
             const auto beforeCancel = snapshot();

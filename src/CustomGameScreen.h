@@ -115,8 +115,6 @@ class CustomGameScreen : public Glob2TabScreen
 	void randomizeParameters();
 	bool drawRandomParameters();
 	void showStartQuality();
-	int choose(const std::string &, const std::vector<std::string> &, int, bool profiles = false,
-			   const std::vector<bool> &enabled = {});
 	void invalidate();
 	std::string colonyLabel(int) const;
 };

@@ -1,125 +1,49 @@
-# ADR 005: deterministic randomness for cooperative generation
+# ADR 005: generation ownership and scheduling
 
 Status: accepted.
 
-Generation previously mixed the synchronized generator with libc `rand`,
-time-based reseeding, and shared static Perlin lookup tables. Consequently,
-creating/reseeding a noise helper could change existing noise objects, including
-cloud rendering. A caller's seed alone could not reproduce a generated map.
-Yielding this work would expose it to still more unrelated RNG activity.
+The browser uses master's `GenerationService`, registered generators and
+`GenerationRequest` options. It preserves the current lobby layout, landscape
+picker, start-quality scoring, candidate selection and generated-map snapshot.
+The port does not retain the replaced Perlin/legacy generator implementation.
 
-Each `PerlinNoise` now owns its lookup tables and a standard MT19937 generator.
-Explicit reseeding is repeatable and does not touch libc RNG state or another
-noise object. The zero-length normalization case produces a finite unit vector.
-Height-map generation seeds its own noise objects from the synchronized stream;
-terrain/resource placement uses that stream too, without internal time reseeding.
+`GenerationContext` owns named random streams. `GenerationService` saves and
+restores the calling thread's synchronized engine RNG around each complete roll.
+Native landscape previews retain their worker threads. The single-threaded browser
+calls `LandscapePreviewer::poll()` once per UI timer to complete one queued preview;
+no native thread is started in WebAssembly. The lobby and landscape picker both
+service this queue. Only a completed candidate can become a launch snapshot.
 
-`MapGenerator::generateMap` accepts an explicit seed, applied before generation
-work begins. The existing overload chooses a time-based seed for ordinary user
-requests. `EditorGenerateScreen` retains its chosen seed and restores the prior synchronized
-RNG state on cancellation, just as loading screens do.
+Landscape and start-quality dialogs are owned children of `ScreenStack`. The
+selected request and seed are copied back before the child is destroyed. A
+launched custom game's snapshot owner is transferred to `GameLoadScreen`, so
+closing the lobby cannot delete a map that has not yet loaded.
 
-This intentionally changes newly generated layouts: old generation did not have
-an isolated, reproducible seed-to-map contract. Existing map/save files and their
-simulation rules are unchanged. This does not yet establish bit-exact generation
-across native/Wasm platforms; floating-point height-map calculations still need
-cross-platform qualification. Recorded maps remain the simulation fixtures.
+`EditorGenerateScreen` owns its request and staging editor. It presents the
+progress screen before generating, samples the same candidate budget as native
+master and transfers the editor only on success. The screen stack admits queued
+input before advancing work, so a queued cancellation cannot lose to a completed
+roll. Failure and cancellation destroy the staging editor and restore RNG state.
 
-YOG matches do not ask each client to generate the selected map. The host sends
-the map header and file ID, and clients that do not already have that exact map
-download the map file before starting. Native/browser players therefore consume
-the same map bytes in one match; the floating-point qualification above applies
-to independently generating a new map from the same seed on different platforms.
+## Latency limits
 
-Native tests verify noise-instance independence, explicit reseeding, finite
-noise samples, and no libc RNG mutation. All nine generation methods repeat their game checksum and final synchronized RNG
-state when synchronous execution is compared with scheduled execution interleaved
-with unrelated noise construction and libc RNG draws. Cancellation at several
-checkpoints restores RNG state; invalid dimensions fail without publishing a map.
+A generator roll is synchronous. Browser preview polling yields between complete
+candidates, not inside every terrain algorithm. Large or expensive maps can still
+pause rendering and input until a roll finishes. Cancellation can discard queued
+work but cannot interrupt a roll in progress. Subdividing the new generator
+pipeline is follow-up work; the old port's coroutine checkpoints do not apply to
+master's replacement generators.
 
-## Cooperative ownership and remaining latency work
+## Compatibility and verification
 
-`MapGenerator::generateMapTask` and its terrain/team subtasks yield through the
-shared cooperative-task abstraction. Existing synchronous APIs drain those same
-jobs. Callers must retain the generator, game, and descriptor until completion or
-destruction. `EditorGenerateScreen` owns the descriptor in its coroutine frame and
-the partial editor through the preparation screen; only successful completion
-transfers that editor into an editing session. Cancelling destroys the suspended
-job before the partial editor and restores the prior RNG state. Generation errors
-return to an owned in-game message and the new-map flow.
+Generation behavior follows master. Existing map/save formats and the save-loader
+compatibility floor remain intact. The generator's native golden-map tests remain
+in CI. Native session tests cover cancellation, RNG restoration, invalid requests
+and staged fertility publication against master's `Fertility::Field`.
 
-Checkpoints cover generation stages, selected terrain loops, and terrain sprite
-regeneration columns, preserving traversal and RNG order. Some gradient and allocation helpers run until the next explicit checkpoint, so
-the scheduling contract does not claim a hard maximum callback duration.
-
-Fruit placement now limits random retries, scans for an eligible tile, and fails
-if none remains, avoiding an endless loop. The expanded fixtures also exposed an
-old-islands building-placement call using team ID -1; it now uses the actual team.
-These fixes apply to native and browser execution alike.
-
-## Height-map jobs
-
-Height-map filling, noise, stamp construction/application, island-position
-searches, and normalization now yield after at most 1,024 counted loop iterations
-per pass. The terrain generator awaits these nested jobs. Synchronous entry
-points drain the same jobs. This bounds those loops' work between checkpoints,
-not wall-clock frame duration or every generation helper.
-
-Island coordinates use coroutine-owned vectors so destroying a suspended job
-releases temporary arrays. Height maps cannot be copied implicitly. A task borrows
-its height map; callers must retain that instance and must not run simultaneous
-jobs against it. Cancelling leaves partial private heights, which can be discarded
-or replaced by a fresh generation; they are never published by the editor.
-
-Stamp caches no longer cross instance boundaries. Repeated river lowering uses
-an instance-local cache invalidated when filling or replacing its stamp. Difference
-stamps apply explicitly. A one-crater repeat fixture catches the former cross-map
-skip; native checks also verify finite normalized values and cancellation/reuse
-during nested passes. Crater RNG draws have explicit x-then-y ordering instead of
-relying on compiler argument evaluation order. Newly generated layouts can change;
-existing saves and simulation rules remain unchanged.
-
-## Partition and distance jobs
-
-Concrete-islands and isles generation now await cooperative distance propagation,
-noise adjustment, point spacing, weighted area expansion, and player-land
-partitioning. Their full-map scans, flood queues, relaxation loops, and list walks
-checkpoint every 1,024 counted iterations. Local vectors, queues, and iterators
-remain in their owning coroutine frames. Cancelling the editor's root job destroys
-these nested frames before destroying the partially generated game.
-
-Synchronous helper adapters drain the same implementations. Point spacing returns
-success through the job and, when requested, writes its numeric minimum distance
-to a caller-owned output retained until completion. This preserves the original
-isles calculation without converting a numeric result to a boolean.
-
-Native fixtures compare all nine complete generated-map checksums and final RNG
-states under synchronous and scheduled execution. Additional editor tests cancel
-concrete-island generation after 2, 8, and 20 callbacks and verify RNG recovery.
-Browser tests exercise retry into both swamp and concrete-island generation.
-This remains local scheduling evidence, not native/Wasm simulation parity.
-
-Runtime map gradients, container allocation, and some terrain operations can run
-until the next explicit checkpoint. Large-map fixtures measure the complete job;
-they do not turn the cooperative budget into preemption.
-
-The editor generation screen shares the four-millisecond/64-checkpoint host
-slice with game and editor loading (ADR 004). Timing controls pacing only and does
-not change RNG ordering or generated results. Individual synchronous operations
-can still exceed the slice's time target.
-
-## Point and scoring passes
-
-Point collection, wrapped line tracing, border detection, random selection,
-building/unit candidate filters, resource filling, oval creation, and average-area
-distance scoring now expose cooperative tasks. The concrete-island/isles callers
-await these tasks rather than draining their synchronous adapters. Iteration and
-RNG order are retained; candidate filtering swaps its staged vector into the
-result after the pass instead of copying the full vector.
-
-Like the partition jobs, these tasks borrow their game and vector arguments and
-yield within their loops. Average-distance scoring writes a caller-owned result
-only at completion. Pending vectors and outputs belong to the suspended parent
-job and are discarded with the partial editor on cancellation. Full-map seeded
-fixtures and editor cancellation scenarios cover their integration; per-tick
-cross-platform simulation qualification is still separate work.
+Native/WebAssembly simulation checks use the same retained saved-game bytes and
+compare per-tick checksums. This does not prove that every generator produces
+bit-identical maps across platforms: floating-point terrain generation needs
+separate qualification. YOG distributes the host's selected map file rather than
+asking clients to independently regenerate it, so all clients start with the same
+map bytes.

@@ -532,14 +532,18 @@ namespace GAGCore
     bool GraphicContext::resizeViewport(int w, int h)
     {
         if (!window || !sdlsurface || w <= 0 || h <= 0) return false;
-        if (w == getW() && h == getH()) return true;
+        const int logicalW = std::max(1, static_cast<int>(w / uiScale + 0.5f));
+        const int logicalH = std::max(1, static_cast<int>(h / uiScale + 0.5f));
+        if (w == windowW && h == windowH && logicalW == getW() && logicalH == getH()) return true;
         const auto& format = *sdlsurface->format;
-        SDL_Surface* replacement = SDL_CreateRGBSurface(0, w, h, 32,
+        SDL_Surface* replacement = SDL_CreateRGBSurface(0, logicalW, logicalH, 32,
             format.Rmask, format.Gmask, format.Bmask, format.Amask);
         if (!replacement) return false;
         // SDL may invalidate its borrowed window surface when changing size.
         freeOwnedSurface();
         SDL_SetWindowSize(window, w, h);
+        requestedW = w;
+        requestedH = h;
         sdlsurface = replacement;
         ownsSurface = true;
         SDL_GetWindowSize(window, &windowW, &windowH);
@@ -549,7 +553,7 @@ namespace GAGCore
             SDL_GL_GetDrawableSize(window, &drawableW, &drawableH);
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
-            glOrtho(0, w, h, 0, -1, 1);
+            glOrtho(0, logicalW, logicalH, 0, -1, 1);
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
             applyGLViewport();

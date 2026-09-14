@@ -22,8 +22,8 @@ experience or publish a Play button on the project website.
   are shared by native and web targets; target identities keep generated output
   isolated.
 - `Application` and `ScreenStack` own interactive navigation. The browser host
-  schedules frames; browser-reachable loading and generation use cooperative
-  jobs rather than suspended C++ stacks.
+  schedules frames; loading uses cooperative jobs. Generation uses owned
+  preparation screens and yields between preview candidates (see ADR 005).
 - Game and AI code do not call browser APIs. The browser platform owns frame
   scheduling, viewport and visibility events, file selection, storage, audio
   activation, transport, and read-only diagnostics.

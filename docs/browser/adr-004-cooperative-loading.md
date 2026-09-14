@@ -53,11 +53,13 @@ it cannot assume every gradient array has been constructed. Error messages are
 owned screens rather than modal calls inside the loader.
 
 Current checkpoints cover game stages, teams and players, chunks of 512 terrain
-cells, gradient seeding, individual propagation sweeps, and bounded fertility
-work. A checkpoint count is a scheduling contract rather than a hard real-time
+cells, gradient seeding and individual propagation sweeps. Fertility stages
+master's `Fertility::Field` privately and publishes it only on commit; computing
+that field is one synchronous operation. A checkpoint count is a scheduling contract rather than a hard real-time
 guarantee: decompression, allocation, and other individual operations run until
 the next explicit checkpoint. In-session reload uses the same owned loading flow.
-Map generation also uses owned cooperative jobs (ADR 005). Editor sprites remain
+Map generation uses the current synchronous generator service inside an owned
+preparation screen (ADR 005). Editor sprites remain
 owned by the toolkit cache so destroying a staging editor cannot invalidate
 another editor's sprite.
 

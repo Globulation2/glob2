@@ -90,7 +90,7 @@ test('imports a custom map and starts it through the normal setup screen', async
 });
 
 test('imports a complete replay and rejects a truncated command stream', async ({page}) => {
-  const bytes=await fs.readFile(path.resolve(__dirname,'../../tests/baselines/cross-replay.replay'));
+  const bytes=await fs.readFile(path.resolve(__dirname,'fixtures/cross-replay.replay'));
   await clickMainMenu(page,'load'); await screen(page,'ChooseMapScreen'); await menu(page,340,440);
   await select(page,'Broken.replay',bytes.subarray(0,bytes.length-1));
   await expect.poll(async () => (await state(page)).import).toBe('invalid');

@@ -11,6 +11,7 @@ public:
     void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override;
     Uint32 executionDelay(Uint32, Uint32) override { return 1; }
 private:
+    bool presented = false;
     FertilityCalculator::Job job;
     GAGGUI::ProgressBar* progress;
 };
