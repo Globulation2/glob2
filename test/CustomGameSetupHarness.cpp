@@ -898,14 +898,36 @@ struct CustomGameSetupHarness
         assert(x >= 0 && y >= 0 && x < rgba->w && y < rgba->h);
         return static_cast<const Uint8 *>(rgba->pixels) + y * rgba->pitch + x * 4;
       };
-      const auto corner = pixel(rect.x + 1, rect.y + 1);
-      assert(corner[0] || corner[1] || corner[2]); // no thumbnail letterbox inside the map
       // Markers stay centered on terrain and repeat across the torus seams.
       std::vector<int> markerX, markerY;
       for (const auto &start : expectedStarts) {
         markerX.push_back(rect.x + start.x * rect.w / mapW);
         markerY.push_back(rect.y + start.y * rect.h / mapH);
       }
+      auto underMarker = [&](int x, int y) {
+        for (size_t j = 0; j < expectedStarts.size(); ++j)
+          for (int dy = -1; dy <= 1; ++dy)
+            for (int dx = -1; dx <= 1; ++dx) {
+              const int cx = markerX[j] + dx * rect.w, cy = markerY[j] + dy * rect.h;
+              if (x >= cx - 10 && x < cx + 10 && y >= cy - 10 && y < cy + 10)
+                return true;
+            }
+        return false;
+      };
+      // No thumbnail letterbox inside the map. The terrain palette has no black, but a start
+      // near the map's corner puts its black number label there, so rather than one corner
+      // pixel, check every pixel of the first row and column that no marker covers: a
+      // letterbox band would blacken one of them whole.
+      for (int x = rect.x + 1; x < rect.x + rect.w - 1; ++x)
+        if (!underMarker(x, rect.y + 1)) {
+          const auto p = pixel(x, rect.y + 1);
+          assert(p[0] || p[1] || p[2]);
+        }
+      for (int y = rect.y + 1; y < rect.y + rect.h - 1; ++y)
+        if (!underMarker(rect.x + 1, y)) {
+          const auto p = pixel(rect.x + 1, y);
+          assert(p[0] || p[1] || p[2]);
+        }
       for (size_t i = 0; i < expectedStarts.size(); ++i) {
         const int sampleX = rect.x + (markerX[i] - rect.x - 7 + rect.w) % rect.w;
         const int sampleY = rect.y + (markerY[i] - rect.y - 7 + rect.h) % rect.h;
@@ -1125,8 +1147,10 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
         assert(screen.setup.generator.method == entries[other].first &&
                screen.setup.generator.options == rolled.options &&
                screen.setup.generator.nbTeams == 4);
-        // Back to the landscapes' own parameters for the checks below.
-        pick("landscape/regenerate");
+        // Back to the landscapes' own parameters for the checks below. Reset, not Regenerate:
+        // regenerating keeps the random draw, and a random ridge layout can fail validation
+        // once the map is resized below.
+        pick("landscape/reset");
         settle();
         seedsShown();
       }
@@ -1142,8 +1166,12 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
       // The lobby then rolls the very seed the picker showed: same starts, same map header.
       const auto seed = *picker.chosenSeed();
       const auto starts = picker.tiles[other].preview.starts;
-      screen.applyLandscape(entries[other].first, seed);
+      // As the lobby's Use does: the parameters travel with the seed. Without them the lobby
+      // would keep the random draw it was handed above and roll a different map.
+      const GenerationRequest request = picker.chosenRequest();
+      screen.applyLandscape(entries[other].first, seed, &request);
       assert(screen.previewPending && screen.chosenSeed == seed &&
+             screen.setup.generator.options == request.options &&
              screen.setup.generator.method == entries[other].first);
       preview();
       assert(screen.validMap && !screen.chosenSeed);
