@@ -49,6 +49,11 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	fileManager->addWriteSubdir("scripts");
 	fileManager->addWriteSubdir("videoshots");
 
+#ifdef __EMSCRIPTEN__
+	// Start browser profiles quietly and without clouds. Saved preferences win.
+	settings.optionFlags |= OPTION_LOW_SPEED_GFX;
+	settings.mute = 1;
+#endif
 	// load user preference
 	settings.load();
 

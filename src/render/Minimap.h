@@ -30,6 +30,7 @@ public:
 
 	///Sets the game associated with the minimap
 	void setGame(Game& game);
+    void resizeViewport(int width);
 
 	///Draws the minimap
 	void draw(int localteam, int viewportX, int viewportY, int viewportW, int viewportH);
@@ -79,7 +80,7 @@ private:
 	int mini_offset_y;
 	MinimapMode minimapMode;
 	
-	Game* game;
+	Game* game = nullptr;
 
 	DrawableSurface *surface;
 };

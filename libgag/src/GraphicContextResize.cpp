@@ -62,7 +62,12 @@ namespace GAGCore
 
 	void GraphicContext::cacheFrame()
 	{
-		#ifdef HAVE_OPENGL
+		#ifdef GLOB2_WEBGL2
+		// Browser frames are driven continuously by the application loop, so the
+		// native exposed-window cache is unnecessary for the WebGL renderer.
+		if (optionFlags & USEGPU) return;
+		#endif
+		#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
 		if (optionFlags & USEGPU)
 		{
 			int w, h;
@@ -149,7 +154,7 @@ namespace GAGCore
 	{
 		if (!frameCache.valid || presenting || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return;
 		FlagScope scope(presenting);
-		#ifdef HAVE_OPENGL
+		#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
 		if (optionFlags & USEGPU)
 		{
 			int w, h;

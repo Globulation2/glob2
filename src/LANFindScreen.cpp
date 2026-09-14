@@ -6,19 +6,20 @@
 #include "GlobalContainer.h"
 #include <GUIText.h>
 #include <GUITextInput.h>
-#include <GUIMessageBox.h>
+#include "LANSessionScreen.h"
+#include <ScreenStack.h>
 #include <GUIList.h>
 #include <GUIButton.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include "MultiplayerGameScreen.h"
-#include "YOGClientBringup.h"
+#include "YOGClient.h"
 #include "YOGClientGameListManager.h"
 
 using namespace GAGGUI;
 using std::shared_ptr;
 
-LANFindScreen::LANFindScreen()
+LANFindScreen::LANFindScreen(ScreenStack& screens) : screens(screens)
 {
 	serverName=new TextInput(20, 170, 280, 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "localhost", true);
 	addWidget(serverName);
@@ -82,57 +83,14 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		if (par1==CONNECT)
 		{
-			shared_ptr<YOGClient> client(new YOGClient);
-			client->connect(serverName->getText());
-			while(client->isConnecting())
-			{
-				client->update();
-				SDL_Delay(50);
-			}
-			
-			if(!client->isConnected())
-			{
-				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't connect, can't find host]"), Toolkit::getStringTable()->getString("[ok]"));
-				return;
-			}
-			if(LANBringup::waitForConnectionState(*client, YOGClient::WaitingForLoginInformation) != LANBringup::Result::Reached)
-			{
-				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't connect, can't find host]"), Toolkit::getStringTable()->getString("[ok]"));
-				return;
-			}
-			client->attemptLogin(playerName->getText());
-			if(LANBringup::waitForConnectionState(*client, YOGClient::ClientOnStandby) != LANBringup::Result::Reached)
-			{
-				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't connect, can't find host]"), Toolkit::getStringTable()->getString("[ok]"));
-				return;
-			}
-
-			std::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
-			client->setMultiplayerGame(game);
-
-			if(LANBringup::waitForGameList(*client) != LANBringup::Result::Reached)
-			{
-				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't connect, can't find host]"), Toolkit::getStringTable()->getString("[ok]"));
-				return;
-			}
-
-			if((*client->getGameListManager()->getGameList().begin()).getGameState()==YOGGameInfo::GameRunning)
-			{
-				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't join game, game has started]"), Toolkit::getStringTable()->getString("[ok]"));
-				return;
-			}
-
-			game->joinGame((*client->getGameListManager()->getGameList().begin()).getGameID());
-
-			Glob2TabScreen screen(true);
-			MultiplayerGameScreen lobby(&screen, game, client);
-			
-			listener.disableListening();
-			int rc = screen.execute(globalContainer->gfx, 40);
-			listener.enableListening();
-			client->setMultiplayerGame(std::shared_ptr<MultiplayerGame>());
-			if(rc == -1)
-				endExecute(-1);
+            auto client = std::make_shared<YOGClient>();
+            client->connect(serverName->getText());
+            listener.disableListening();
+            screens.push(std::make_unique<LANSessionScreen>(screens, client, playerName->getText()),
+                [this](Screen&, int result) {
+                    listener.enableListening();
+                    if (result == Screen::QUIT_APPLICATION) endExecute(result);
+                });
 		}
 		else if (par1==QUIT)
 		{

@@ -2198,3 +2198,81 @@ OpenGL غير متوفر في هذا الإصدار.
 العزلة
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 يُقاس موقع بداية كل مستعمرة على الخريطة النهائية: المسافة إلى القمح وإلى الخشب، ومدى تجدد نمو أرضها، والمخزون ومواقع البناء في متناولها، وبُعدها عن المنافسين. يُقيَّم كل عامل من 0 إلى 1 مقابل حد ثابت، ويجمعها المجموع بأوزانها، والإنصاف هو مجموع أضعف مستعمرة مقسوماً على مجموع أفضلها، والنتيجة هي أضعف مجموع مضروباً في الإنصاف.
+[ERROR_CANT_SAVE_MAP]
+تعذر حفظ الخريطة. تحقق من الوجهة والمساحة المتاحة. تعديلاتك لا تزال مفتوحة.
+[Loading headers]
+جارٍ تحميل الترويسات...
+[Loading teams]
+جارٍ تحميل الفرق...
+[Loading terrain]
+جارٍ تحميل التضاريس...
+[Building gradients]
+جارٍ إنشاء التدرجات...
+[Loading players]
+جارٍ تحميل اللاعبين...
+[Loading scripts]
+جارٍ تحميل النصوص البرمجية...
+[Generating map]
+جارٍ إنشاء الخريطة...
+[ERROR_CANT_GENERATE_MAP]
+تعذر إنشاء الخريطة. جرّب إعدادات إنشاء مختلفة.
+[Loading units]
+جارٍ تحميل الوحدات...
+[Loading buildings]
+جارٍ تحميل المباني...
+[Resolving team links]
+جارٍ حل روابط الفرق...
+[saving to storage]
+جارٍ الحفظ...
+[save failed retry]
+فشل الحفظ. أعد المحاولة.
+[export save]
+تصدير الحفظ
+[storage restore failed]
+تعذرت استعادة تخزين المتصفح. البيانات المحفوظة الحالية لم تتغير. يمكنك متابعة هذه الجلسة، لكن التغييرات المحلية لن تُحفظ. صدّر الملفات المهمة من مربع حوار فشل الحفظ. أعد التحميل لمحاولة استعادة التخزين مرة أخرى.
+[continue]
+متابعة
+[export file]
+تصدير الملف
+[export failed]
+فشل تصدير الملف
+[import file]
+استيراد
+[select import file]
+اختر ملفًا للاستيراد
+[validating import]
+جارٍ التحقق من الملف...
+[import succeeded]
+تم استيراد الملف
+[import cancelled]
+تم إلغاء الاستيراد
+[import failed]
+فشل الاستيراد: ملف غير صالح أو غير مدعوم
+[import persistence failed]
+غير محفوظ: اختر استيراد لإعادة المحاولة أو تصدير الملف
+[import progress]
+تقدم الاستيراد
+[export progress]
+تقدم التصدير
+[retry save]
+إعادة محاولة الحفظ
+[campaign save failed]
+لم يتم حفظ تقدم الحملة. أعد المحاولة أو صدّر نسخة احتياطية.
+[leave without saving]
+الخروج دون حفظ
+[campaign import failed]
+ملف تقدم غير صالح أو إصدار حملة مختلف
+[network release mismatch]
+بروتوكولا العميل والخادم مختلفان. ثبّت نفس إصدار Glob2 المثبت على الخادم.
+[settings continue]
+متابعة
+[settings save failed]
+حفظ الإعدادات غير مؤكد. أعد المحاولة أو تابع.
+[shutdown save failed]
+الحفظ النهائي غير مؤكد. أعد المحاولة أو اخرج دون حفظ.
+[quit without saving]
+الخروج دون حفظ
+[game closed]
+تم إغلاق اللعبة. يمكنك إغلاق هذه النافذة أو إعادة التحميل للعب مرة أخرى.
+[campaign editor save failed]
+الحفظ غير مؤكد. موافق يعيد المحاولة؛ إلغاء يعود إلى قائمة المحرر.

@@ -79,13 +79,13 @@ size_t Thread::run()
 	return steps;
 }
 
-void Thread::markForGC()
+void Thread::markForGC() const
 {
 	// mark all frames in stack
 	for_each(frames.begin(), frames.end(), [](auto& frame) {frame.markForGC(); });
 }
 
-void Thread::Frame::markForGC()
+void Thread::Frame::markForGC() const
 {
 	// mark all variables in frame
 	for_each(stack.begin(), stack.end(), [](auto& value) {value->markForGC(); });

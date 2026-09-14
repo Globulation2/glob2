@@ -213,5 +213,9 @@ void SettingsScreen::paint()
     gfx->drawFilledRect(doneRect.x,doneRect.y,doneRect.w,doneRect.h,gold);
     gfx->drawRect(doneRect.x,doneRect.y,doneRect.w,doneRect.h,focus=="done"?ink:line);
     drawText(doneRect.x+12,doneRect.y+10,tr(modal==Modal::None?"Done":modal==Modal::Display?"Revert":"Cancel"));
-    if(failed && modal==Modal::None){gfx->drawRect(doneRect.x-96,doneRect.y,88,40,focus=="retry"?ink:line);drawText(doneRect.x-88,doneRect.y+10,tr("Retry"));}
+    // Always available, and always closes in one click: every change is
+    // already live and auto-saved, so there is nothing left to discard. Done
+    // retries the durable flush on every click while failed; this is the
+    // escape hatch for leaving without insisting that retry succeed first.
+    if(modal==Modal::None){gfx->drawRect(doneRect.x-96,doneRect.y,88,40,focus=="cancel"?ink:line);drawText(doneRect.x-84,doneRect.y+10,tr(failed?"continue":"Cancel"));}
 }

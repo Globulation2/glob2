@@ -13,7 +13,6 @@
 #include "Unit.h"
 #include "UnitType.h"
 #include "Utilities.h"
-#include "FertilityCalculatorDialog.h"
 #include "SDLCompat.h"
 
 void MapEdit::draw(Uint64 frameTick)

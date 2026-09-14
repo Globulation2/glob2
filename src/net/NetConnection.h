@@ -2,74 +2,51 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #pragma once
-
-#include "SDL_net.h"
-#include "NetConnectionThread.h"
+#include "NetTransport.h"
 #include <queue>
-#include <thread>
-#include <memory>
 
 using std::shared_ptr;
 
 class NetListener;
 class NetMessage;
 
-///NetConnection represents a low level wrapper around SDL.
-///It queues Message(s) it receives from the connection.
-class NetConnection
-{
+/// Owns platform transport while keeping message framing and decoding shared.
+class NetConnection {
 public:
-	///Attempts to form a connection with the given address and the given port
-	NetConnection(const std::string& address, Uint16 port);
-
-	///Initiates the NetConnection as blank
-	NetConnection();
-
-	///Closes the NetConnection down.
-	~NetConnection();
-	
-	///Opens a new connection.
-	void openConnection(const std::string& address, Uint16 port);
-
-	///Closes the current connection.
-	void closeConnection();
-
-	///Returns true if this object is connected
-	bool isConnected();
-	
-	///Returns whether this object is in the proccess of connecting
-	bool isConnecting();
-
-	///Updates messages from the thread
-	void update();
-	
-	///Pops the top-most message in the queue of received messages.
-	///When there are no messages, it will poll SDL for more packets.
-	///The caller assumes ownership of the NetMessage.
-	shared_ptr<NetMessage> getMessage();
-	
-	///Sends a message across the connection.
-	void sendMessage(shared_ptr<NetMessage> message);
-	
-	///Returns the IP address
-	const std::string& getIPAddress() const;
+    /// Starts connecting to the given address and port.
+    NetConnection(const std::string& address, Uint16 port);
+    /// Creates a disconnected connection with the default platform transport.
+    NetConnection();
+    /// Creates a connection with an injected transport.
+    explicit NetConnection(std::unique_ptr<NetTransport> transport);
+    /// Closes the transport and releases queued messages.
+    ~NetConnection();
+    /// Replaces any current connection and starts connecting.
+    void openConnection(const std::string& address, Uint16 port);
+    /// Closes the current connection and clears its queues.
+    void closeConnection();
+    /// Returns whether the transport is connected.
+    bool isConnected();
+    /// Returns whether the transport is still connecting.
+    bool isConnecting();
+    /// Transfers available transport bytes into complete messages.
+    void update();
+    /// Returns the next received message, or an empty pointer when none is ready.
+    std::shared_ptr<NetMessage> getMessage();
+    /// Queues one framed message for ordered delivery.
+    void sendMessage(std::shared_ptr<NetMessage> message);
+    /// Returns the configured peer address.
+    const std::string& getIPAddress() const;
 protected:
-	friend class NetListener;
-
-	///This function attempts a connection using the provided TCP server socket.
-	///One can use isConnected to test for success.
-	bool attemptConnection(TCPsocket& serverSocket);
-	
+    friend class NetListener;
+    /// Accepts one connection from the native SDL listener when available.
+    bool attemptConnection(TCPsocket& serverSocket);
 private:
-	NetConnectionThread connect;
-	std::thread connectThread;
-
-	std::queue<std::shared_ptr<NetConnectionThreadMessage> > incoming;
-	std::recursive_mutex incomingMutex;
-	std::queue<shared_ptr<NetMessage> > received;
-	
-	std::string address;
-	bool connecting;
+    std::unique_ptr<NetTransport> transport;
+    std::queue<std::shared_ptr<NetMessage>> received;
+    std::vector<uint8_t> pending;
+    std::string address;
+    std::queue<std::vector<uint8_t>> outgoing;
+    size_t outgoingBytes = 0;
+    void flushOutgoing();
 };
-
-

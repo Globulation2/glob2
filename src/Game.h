@@ -3,6 +3,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #pragma once
+#include <CooperativeTask.h>
 
 #include <iostream>
 #include <memory>
@@ -146,6 +147,7 @@ public:
 
 	///Loads data from a stream
 	bool load(GAGCore::InputStream *stream);
+    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream);
 
 	//! Check some available integrity constraints
 	bool integrity(void);
@@ -215,6 +217,8 @@ public:
 	// Editor stuff
 	// add & remove teams, used by the map editor and the random map generator
 	void addTeam(int pos=TEAM_POS_END);
+    // Preparation only: a cancelled task leaves a partial game to discard.
+    GAGCore::CooperativeTask addTeamTask(int pos=TEAM_POS_END);
 	void removeTeam(int pos=TEAM_POS_END);
 	//! If a team is uncontrolled (playerMask == 0), remove units and buildings from map
 	void clearingUncontrolledTeams(void);

@@ -124,11 +124,16 @@ namespace GAGCore
 					glGetIntegerv(GL_VIEWPORT, viewport);
 					const int fbW = viewport[2], fbH = viewport[3];
 					std::valarray<unsigned char> tempPixels(4*fbW*fbH);
-					#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+					#if SDL_BYTEORDER == SDL_BIG_ENDIAN || defined(GLOB2_WEBGL2)
 					glReadPixels(viewport[0], viewport[1], fbW, fbH, GL_RGBA, GL_UNSIGNED_BYTE, &tempPixels[0]);
 					#else
 					glReadPixels(viewport[0], viewport[1], fbW, fbH, GL_BGRA, GL_UNSIGNED_BYTE, &tempPixels[0]);
 					#endif
+#ifdef GLOB2_WEBGL2
+                    // WebGL readback is RGBA; the retained software surface is BGRA.
+                    for (size_t pixel = 0; pixel < tempPixels.size(); pixel += 4)
+                        std::swap(tempPixels[pixel], tempPixels[pixel + 2]);
+#endif
 					if (fbW == sw && fbH == sh)
 					{
 						// same size: plain row copy, flipping GL's bottom-up rows
@@ -280,7 +285,23 @@ namespace GAGCore
 
 	void DrawableSurface::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha)
 	{
-		// TODO : Implement
+		if ((w <= 0) || (h <= 0) || (sw <= 0) || (sh <= 0))
+			return;
+		if ((w == sw) && (h == sh))
+		{
+			drawSurface(x, y, surface, sx, sy, sw, sh, alpha);
+			return;
+		}
+		// Stretch nearest-neighbour, as the GPU path samples. SDL clips to
+		// clipRect and blends the source's per-pixel alpha, modulated by alpha.
+		SDL_Rect sr = {sx, sy, sw, sh};
+		SDL_Rect dr = {x, y, w, h};
+		if (alpha != Color::ALPHA_OPAQUE)
+			SDL_SetSurfaceAlphaMod(surface->sdlsurface, alpha);
+		SDL_BlitScaled(surface->sdlsurface, &sr, sdlsurface, &dr);
+		if (alpha != Color::ALPHA_OPAQUE)
+			SDL_SetSurfaceAlphaMod(surface->sdlsurface, Color::ALPHA_OPAQUE);
+		dirty = true;
 	}
 
 	void DrawableSurface::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)

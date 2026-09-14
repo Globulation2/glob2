@@ -2200,3 +2200,81 @@ Platz
 Abgeschiedenheit
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Der Start jeder Kolonie wird auf der fertigen Karte gemessen: der Weg zu Weizen und zu Holz, wie gut ihr Boden nachwächst, die Vorkommen und Bauplätze in Reichweite und ihr Abstand zu Rivalen. Jeder Faktor erhält 0 bis 1 gegenüber einer festen Messlatte, die Summe gewichtet sie, die Ausgeglichenheit ist die Summe der schlechtesten Kolonie geteilt durch die der besten, und die Wertung ist die schlechteste Summe mal der Ausgeglichenheit.
+[ERROR_CANT_SAVE_MAP]
+Die Karte konnte nicht gespeichert werden. Prüfen Sie Ziel und verfügbaren Speicherplatz. Ihre Änderungen sind weiterhin offen.
+[Loading headers]
+Kopfdaten werden geladen...
+[Loading teams]
+Teams werden geladen...
+[Loading terrain]
+Gelände wird geladen...
+[Building gradients]
+Verlaufsfelder werden erstellt...
+[Loading players]
+Spieler werden geladen...
+[Loading scripts]
+Skripte werden geladen...
+[Generating map]
+Karte wird generiert...
+[ERROR_CANT_GENERATE_MAP]
+Die Karte konnte nicht generiert werden. Versuchen Sie andere Generierungseinstellungen.
+[Loading units]
+Einheiten werden geladen...
+[Loading buildings]
+Gebäude werden geladen...
+[Resolving team links]
+Team-Verknüpfungen werden aufgelöst...
+[saving to storage]
+Wird gespeichert...
+[save failed retry]
+Speichern fehlgeschlagen. Erneut versuchen.
+[export save]
+Speicherstand exportieren
+[storage restore failed]
+Der Browser-Speicher konnte nicht wiederhergestellt werden. Vorhandene gespeicherte Daten wurden nicht verändert. Sie können diese Sitzung fortsetzen, aber lokale Änderungen können nicht dauerhaft gespeichert werden. Exportieren Sie wichtige Spielstände über den Speicherfehler-Dialog. Laden Sie neu, um die Wiederherstellung erneut zu versuchen.
+[continue]
+Weiter
+[export file]
+Datei exportieren
+[export failed]
+Dateiexport fehlgeschlagen
+[import file]
+Importieren
+[select import file]
+Datei zum Importieren auswählen
+[validating import]
+Datei wird überprüft...
+[import succeeded]
+Datei importiert
+[import cancelled]
+Import abgebrochen
+[import failed]
+Import fehlgeschlagen: ungültige oder nicht unterstützte Datei
+[import persistence failed]
+Nicht gespeichert: Importieren zum erneuten Versuch oder Datei exportieren wählen
+[import progress]
+Importfortschritt
+[export progress]
+Exportfortschritt
+[retry save]
+Speichern erneut versuchen
+[campaign save failed]
+Kampagnenfortschritt nicht gespeichert. Erneut versuchen oder eine Sicherung exportieren.
+[leave without saving]
+Beenden ohne zu speichern
+[campaign import failed]
+Ungültige Fortschrittsdatei oder abweichende Kampagnenversion
+[network release mismatch]
+Client- und Serverprotokoll stimmen nicht überein. Installieren Sie dieselbe Glob2-Version wie der Server.
+[settings continue]
+Weiter
+[settings save failed]
+Einstellungen speichern nicht bestätigt. Erneut versuchen oder fortfahren.
+[shutdown save failed]
+Letztes Speichern nicht bestätigt. Erneut versuchen oder ohne Speichern beenden.
+[quit without saving]
+Beenden ohne zu speichern
+[game closed]
+Spiel beendet. Sie können dieses Fenster schließen oder neu laden, um erneut zu spielen.
+[campaign editor save failed]
+Speichern nicht bestätigt. OK versucht es erneut; Abbrechen kehrt zum Editor-Menü zurück.

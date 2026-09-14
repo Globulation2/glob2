@@ -41,7 +41,7 @@ void NetRegistrationRequest::decodeData(GAGCore::InputStream* stream)
 std::string NetRegistrationRequest::format() const
 {
 	std::ostringstream s;
-	s<<"NetRegistrationRequest(username=\""<<username<<"\"; password=\""<<password<<"\")";
+	s<<"NetRegistrationRequest(username=\""<<username<<"\"; password=\""<<"[redacted]"<<"\")";
 	return s.str();
 }
 

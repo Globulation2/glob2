@@ -36,6 +36,9 @@ private:
 };
 
 // Also used to suspend front-end presentation around gameplay/editor loops.
+// Screens hold scopes for their whole lifetime, and a screen stack creates the
+// next screen before destroying the finished one, so scopes need not end in
+// reverse order: the most recently created live scope decides the presentation.
 class FrontendScope
 {
 public:
@@ -44,7 +47,6 @@ public:
 	FrontendScope(const FrontendScope&) = delete;
 	FrontendScope& operator=(const FrontendScope&) = delete;
 private:
-	GAGGUI::Style* previous;
-	bool previousAllowed;
-	GAGCore::Font::Style fonts[3];
+	static void apply();
+	bool enabled;
 };

@@ -12,6 +12,7 @@
 #include "Toolkit.h"
 #include "Utilities.h"
 #include "zlib.h"
+#include <memory>
 
 using namespace GAGCore;
 
@@ -30,23 +31,16 @@ void MapThumbnail::loadFromMap(const std::string& map)
 		return;
 	}
 	
-	loaded = true;
+	loaded = false;
 
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(map));
-	if (stream->isEndOfStream())
-	{
-		delete stream;
-	}
-	else
+	auto stream = std::make_unique<BinaryInputStream>(Toolkit::getFileManager()->openInputStreamBackend(map));
+	if (!stream->isEndOfStream())
 	{
 		// read header
 		MapHeader header;
-		bool good = header.load(stream);
+		bool good = header.load(stream.get());
 		if (!good)
-		{
-			delete stream;
 			return;
-		}
 		
 		// read map
 		if (stream->canSeek())
@@ -56,8 +50,7 @@ void MapThumbnail::loadFromMap(const std::string& map)
 
 
 		Map map;
-		good = map.load(stream, header);
-		delete stream;
+		good = map.load(stream.get(), header);
 		if (!good)
 			return;
 		loadFromMap(map);
@@ -143,6 +136,7 @@ void MapThumbnail::loadFromMap(const Map& map)
 				buffer[(dx+decX) * 128 * 3 + (dy+decY) * 3 + 2] = b;
 			}
 		}
+		loaded = true;
 	}
 }
 
@@ -222,4 +216,3 @@ bool MapThumbnail::isLoaded()
 {
 	return loaded;
 }
-

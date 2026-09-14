@@ -8,6 +8,9 @@
 #include "Glob2Screen.h"
 #include <GUINumber.h>
 #include <string>
+#include <memory>
+#include <ApplicationHost.h>
+class FileImport;
 
 namespace GAGGUI
 {
@@ -31,6 +34,7 @@ public:
 	//! Destructor
 	virtual ~ChooseMapScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
+    void onTimer(Uint32) override;
 	
 	/// Returns the mapHeader of the map that is currently selected
 	MapHeader& getMapHeader();
@@ -63,6 +67,7 @@ public:
 	LoadableType getSelectedType();
 
 protected:
+    bool importBusy() const;
 	/// Handle called when a valid map has been selected.
 	/// This is to be overwritten by the derived class.
 	virtual void validMapSelectedhandler(void) { }
@@ -92,6 +97,12 @@ private:
 	Button *deleteMap;
 	//! the switch type button
 	TextButton *switchType = nullptr;
+    TextButton *exportButton = nullptr;
+    TextButton *importButton = nullptr;
+    std::unique_ptr<GAGCore::ApplicationHost::FileSelection> fileSelection;
+    std::unique_ptr<FileImport> fileImport;
+    std::string importExtension;
+    void updateImportStatus();
 	//! The list of maps or games
 	Glob2FileList *fileList;
 	//! The alternate list of maps or games

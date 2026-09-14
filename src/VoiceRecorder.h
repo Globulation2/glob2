@@ -9,13 +9,15 @@
 #include <SDL.h>
 #include <SDL_thread.h>
 #include <memory>
-#include "config.h"
+#include <glob2/BuildConfig.h>
 
 #ifdef HAVE_PORTAUDIO
 #include "portaudio.h"
 #endif
 
+#ifndef __EMSCRIPTEN__
 #include <speex/speex.h>
+#endif
 
 class OrderVoiceData;
 
@@ -27,7 +29,9 @@ public:
 	//! pointer to the structure holding the speex encoder
 	void *speexEncoderState;
 	// Bits for speex encoding
+#ifndef __EMSCRIPTEN__
 	SpeexBits bits;
+#endif
 	//! Size of one frame of encoding
 	int frameSize;
 	//! thread used for recording

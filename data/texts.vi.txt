@@ -2196,3 +2196,81 @@ Không gian
 Cách biệt
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Khởi đầu của mỗi thuộc địa được đo trên bản đồ hoàn chỉnh: đường đi tới lúa mì và tới gỗ, đất của nó mọc lại tốt đến đâu, trữ lượng và vị trí xây dựng trong tầm với, cùng khoảng cách tới các đối thủ. Mỗi yếu tố được chấm từ 0 đến 1 so với một mức cố định, tổng điểm cân nhắc chúng theo trọng số, công bằng là tổng của thuộc địa kém nhất chia cho tổng của thuộc địa tốt nhất, và điểm là tổng kém nhất nhân với công bằng.
+[ERROR_CANT_SAVE_MAP]
+Không thể lưu bản đồ. Hãy kiểm tra đích lưu và dung lượng trống. Các chỉnh sửa của bạn vẫn còn mở.
+[Loading headers]
+Đang tải phần đầu...
+[Loading teams]
+Đang tải đội...
+[Loading terrain]
+Đang tải địa hình...
+[Building gradients]
+Đang dựng gradient...
+[Loading players]
+Đang tải người chơi...
+[Loading scripts]
+Đang tải kịch bản...
+[Generating map]
+Đang tạo bản đồ...
+[ERROR_CANT_GENERATE_MAP]
+Không thể tạo bản đồ. Hãy thử các thiết lập tạo khác.
+[Loading units]
+Đang tải đơn vị...
+[Loading buildings]
+Đang tải công trình...
+[Resolving team links]
+Đang phân giải liên kết đội...
+[saving to storage]
+Đang lưu...
+[save failed retry]
+Lưu thất bại. Hãy thử lại.
+[export save]
+Xuất bản lưu
+[storage restore failed]
+Không thể khôi phục bộ nhớ trình duyệt. Dữ liệu đã lưu hiện có không thay đổi. Bạn có thể tiếp tục phiên này, nhưng các thay đổi cục bộ sẽ không được lưu giữ. Hãy xuất các bản lưu quan trọng từ hộp thoại lỗi lưu. Tải lại trang để thử khôi phục bộ nhớ lần nữa.
+[continue]
+Tiếp tục
+[export file]
+Xuất tệp
+[export failed]
+Xuất tệp thất bại
+[import file]
+Nhập
+[select import file]
+Chọn tệp để nhập
+[validating import]
+Đang kiểm tra tệp...
+[import succeeded]
+Đã nhập tệp
+[import cancelled]
+Đã hủy nhập
+[import failed]
+Nhập thất bại: tệp không hợp lệ hoặc không được hỗ trợ
+[import persistence failed]
+Chưa lưu: chọn Nhập để thử lại, hoặc Xuất tệp
+[import progress]
+Tiến trình nhập
+[export progress]
+Tiến trình xuất
+[retry save]
+Thử lưu lại
+[campaign save failed]
+Tiến trình chiến dịch chưa được lưu. Hãy thử lại hoặc xuất bản sao lưu.
+[leave without saving]
+Thoát mà không lưu
+[campaign import failed]
+Tệp tiến trình không hợp lệ hoặc khác phiên bản chiến dịch
+[network release mismatch]
+Giao thức máy khách và máy chủ khác nhau. Hãy cài phiên bản Glob2 giống với máy chủ.
+[settings continue]
+Tiếp tục
+[settings save failed]
+Chưa xác nhận lưu thiết lập. Hãy thử lại, hoặc tiếp tục.
+[shutdown save failed]
+Chưa xác nhận lưu lần cuối. Hãy thử lại, hoặc thoát mà không lưu.
+[quit without saving]
+Thoát mà không lưu
+[game closed]
+Trò chơi đã đóng. Bạn có thể đóng cửa sổ này hoặc tải lại để chơi tiếp.
+[campaign editor save failed]
+Chưa xác nhận lưu. Đồng ý sẽ thử lại; Hủy sẽ quay về menu trình chỉnh sửa.

@@ -72,7 +72,7 @@ public:
 	///Returns the integer action associated with the provided key.
 	Uint32 getAction(const KeyPress& key);
 	
-	///Saves the keyboard layout
+	///Atomically saves the layout locally; returns false without replacing it on failure.
 	bool saveKeyboardLayout() const;
 	
 	///Loads the keyboard layout, returns false in unsuccessful
@@ -94,4 +94,3 @@ private:
 	std::vector<KeyPress> lastPresses;
 	ShortcutMode mode;
 };
-

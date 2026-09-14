@@ -24,7 +24,7 @@
 #include "Player.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
-#include "config.h"
+#include <glob2/BuildConfig.h>
 #include "Order.h"
 
 
@@ -47,7 +47,7 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 	}
 }
 
-GameGUI::GameGUI()
+GameGUI::GameGUI(bool persistPreferences)
 	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign, ghostManager),
 	  minimap(globalContainer->runNoX,
 	         RIGHT_MENU_WIDTH, // width of the menu
@@ -60,6 +60,7 @@ GameGUI::GameGUI()
 
 	  ghostManager(game)
 {
+	this->persistPreferences = persistPreferences;
 }
 
 GameGUI::~GameGUI()
@@ -67,7 +68,7 @@ GameGUI::~GameGUI()
 	if (!globalContainer->runNoX) Sprite::setHighResolution(false);
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
 		delete *it;
-	if (globalContainer->settings.rememberUnit)
+	if (persistPreferences && globalContainer->settings.rememberUnit)
 		globalContainer->settings.save();
 }
 
@@ -294,6 +295,8 @@ void GameGUI::publishMessageHistoryLines(const std::string& text, HistoryList ta
 
 void GameGUI::addMessage(const GAGCore::Color& color, const std::string &msgText, bool chat)
 {
+    // Headless simulations execute the order but have no font or message UI.
+    if (globalContainer->runNoX) return;
 	// Wrap-measure the text in bold so the line breaks match the bold
 	// rendering used by InGameMessage::draw. The font color pushed here is
 	// irrelevant to glyph widths but matches the historical call site.

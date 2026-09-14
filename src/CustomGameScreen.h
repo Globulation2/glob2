@@ -5,6 +5,7 @@
 #include "MapHeader.h"
 #include "StartQuality.h"
 #include <cstdint>
+#include <ScreenStack.h>
 #include <memory>
 #include <optional>
 #include <vector>
@@ -32,12 +33,13 @@ class LobbyControls;
 class CustomGameScreen : public Glob2TabScreen
 {
   public:
+	void paint() override;
 	enum
 	{
 		OK = 1,
 		CANCEL = 2
 	};
-	CustomGameScreen();
+	explicit CustomGameScreen(GAGGUI::ScreenStack& screens);
 	~CustomGameScreen() override;
 	void onAction(Widget *, Action, int, int) override;
 	void onGroupActivated(int) override;
@@ -48,6 +50,9 @@ class CustomGameScreen : public Glob2TabScreen
 	GameHeader &getGameHeader();
 	int getSelectedColor(int) { return setup.humanColony().value_or(0); }
 	const std::string &sourceFile() const { return source; }
+	// Hands over a generated map, which this screen would otherwise delete when
+	// destroyed. Releasing the returned owner removes it.
+	std::shared_ptr<void> releaseSnapshot();
 	void launchFailed()
 	{
 		message = "Could not launch this map. Your setup is retained; try again.";
@@ -56,6 +61,7 @@ class CustomGameScreen : public Glob2TabScreen
 
   private:
 	friend struct CustomGameSetupHarness;
+	GAGGUI::ScreenStack& screens;
 	CustomGameSetup setup;
 	MapHeader mapHeader;
 	GameHeader gameHeader;
@@ -110,8 +116,6 @@ class CustomGameScreen : public Glob2TabScreen
 	void randomizeParameters();
 	bool drawRandomParameters();
 	void showStartQuality();
-	int choose(const std::string &, const std::vector<std::string> &, int, bool profiles = false,
-			   const std::vector<bool> &enabled = {});
 	void invalidate();
 	std::string colonyLabel(int) const;
 };

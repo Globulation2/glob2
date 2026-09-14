@@ -25,16 +25,6 @@ Team::Team(Game *game)
 
 
 
-Team::Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor)
-:Team(game)
-{
-	if (!load(stream, &(globalContainer->buildingsTypes), versionMinor))
-		throw std::runtime_error("Failed to load team");
-}
-
-
-
-
 Team::~Team()
 {
 	if (!disableRecursiveDestruction)

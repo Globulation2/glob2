@@ -137,41 +137,20 @@ bool ReplayWriter::write(const std::string &filename) const
 	// Make sure the buffer is flushed
 	buffer->flush();
 
-	// Open the file as a backend
-	StreamBackend* fileBackend = Toolkit::getFileManager()->openOutputStreamBackend(filename);
-	assert(fileBackend->isValid());
-
-	// Open the file as an OutputStream
-	OutputStream* file = new BinaryOutputStream(fileBackend);
-
-	// Save the current position in the buffer
-	size_t pos = bufferBackend->getPosition();
-
-	// Go back to the beginning of the buffer
-	bufferBackend->seekFromStart(0);
-
-	// Copy the buffer to the file
-	while (!bufferBackend->isEndOfStream())
-	{
-		int c = bufferBackend->getChar();
-		if (bufferBackend->isEndOfStream()) break;
-		fileBackend->putc(c);
-	}
-
-	// Write the number of steps since last order to the end of the replay
-	file->writeUint32(0, "replayStepsSinceLastOrder");
-
-	// Write a NullOrder to the file to make sure it's a NullOrder-terminated replay
-	writeOrder(file, std::shared_ptr<Order>(new NullOrder()), 0);
-
-	// Flush the file
-	file->flush();
-	delete file;
-
-	// Go back to the right position in the buffer
-	buffer->seekFromStart(pos);
-
-	return true;
+    const size_t pos = bufferBackend->getPosition();
+    const bool saved = Toolkit::getFileManager()->writeAtomically(filename, [&](GAGCore::OutputStream& file) {
+        bufferBackend->seekFromStart(0);
+        while (!bufferBackend->isEndOfStream()) {
+            const int c = bufferBackend->getChar();
+            if (bufferBackend->isEndOfStream()) break;
+            file.writeUint8(static_cast<Uint8>(c), "replayByte");
+        }
+        file.writeUint32(0, "replayStepsSinceLastOrder");
+        writeOrder(&file, std::shared_ptr<Order>(new NullOrder()), 0);
+    });
+    // Atomic writer failures must not leave the live recording's cursor moved.
+    bufferBackend->seekFromStart(pos);
+    return saved;
 }
 
 GAGCore::OutputStream* ReplayWriter::getBuffer() const

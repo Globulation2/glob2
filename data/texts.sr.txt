@@ -2200,3 +2200,81 @@ OpenGL није доступан у овој верзији.
 Удаљеност
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Почетак сваке колоније мери се на завршеној мапи: пут до жита и до дрвета, колико добро њено тло поново расте, залихе и места за градњу на дохват руке и удаљеност од супарника. Сваки чинилац добија оцену од 0 до 1 према сталној мери, укупан збир их одмерава, правичност је збир најслабије колоније подељен збиром најбоље, а оцена је најслабији збир помножен правичношћу.
+[ERROR_CANT_SAVE_MAP]
+Мапа није могла бити сачувана. Проверите одредиште и доступан простор. Ваше измене су и даље отворене.
+[Loading headers]
+Учитавање заглавља...
+[Loading teams]
+Учитавање тимова...
+[Loading terrain]
+Учитавање терена...
+[Building gradients]
+Праве се градијенти...
+[Loading players]
+Учитавање играча...
+[Loading scripts]
+Учитавање скрипти...
+[Generating map]
+Генерисање мапе...
+[ERROR_CANT_GENERATE_MAP]
+Мапа није могла бити генерисана. Пробајте друга подешавања генерисања.
+[Loading units]
+Учитавање јединица...
+[Loading buildings]
+Учитавање зграда...
+[Resolving team links]
+Решавање веза тимова...
+[saving to storage]
+Чување...
+[save failed retry]
+Чување није успело. Покушајте поново.
+[export save]
+Извези сачувану игру
+[storage restore failed]
+Складиште прегледача није могло бити обновљено. Постојећи сачувани подаци нису измењени. Можете наставити ову сесију, али локалне измене неће моћи да се сачувају. Извезите важне сачуване игре из дијалога грешке чувања. Поново учитајте страницу да бисте покушали поново да обновите складиште.
+[continue]
+Настави
+[export file]
+Извези датотеку
+[export failed]
+Извоз датотеке није успео
+[import file]
+Увези
+[select import file]
+Изаберите датотеку за увоз
+[validating import]
+Провера датотеке...
+[import succeeded]
+Датотека је увезена
+[import cancelled]
+Увоз отказан
+[import failed]
+Увоз није успео: неважећа или неподржана датотека
+[import persistence failed]
+Није сачувано: изаберите Увези да покушате поново, или Извези датотеку
+[import progress]
+Напредак увоза
+[export progress]
+Напредак извоза
+[retry save]
+Покушај поново да сачуваш
+[campaign save failed]
+Напредак кампање није сачуван. Покушајте поново или извезите резервну копију.
+[leave without saving]
+Излаз без чувања
+[campaign import failed]
+Неважећа датотека напретка или друга верзија кампање
+[network release mismatch]
+Протоколи клијента и сервера се разликују. Инсталирајте исту верзију Glob2 као сервер.
+[settings continue]
+Настави
+[settings save failed]
+Чување подешавања није потврђено. Покушајте поново, или наставите.
+[shutdown save failed]
+Коначно чување није потврђено. Покушајте поново, или изађите без чувања.
+[quit without saving]
+Излаз без чувања
+[game closed]
+Игра је затворена. Можете затворити овај прозор или поново учитати страницу да бисте опет играли.
+[campaign editor save failed]
+Чување није потврђено. У реду поново покушава; Откажи се враћа у мени едитора.

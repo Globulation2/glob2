@@ -49,6 +49,12 @@ void Minimap::setGame(Game& ngame)
 	game = &ngame;
 }
 
+void Minimap::resizeViewport(int width)
+{
+	gameWidth = width;
+	if (!noX && game) computeMinimapPositioning();
+}
+
 
 
 void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, int viewportH)
@@ -420,4 +426,3 @@ void Minimap::computeColors(int row, int localTeam)
 		surface->drawPixel(dx+decX, dy+decY, r, g, b, Color::ALPHA_OPAQUE);
 	}
 }
-

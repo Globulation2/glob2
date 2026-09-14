@@ -48,10 +48,9 @@ bool MapPreview::isThumbnailLoaded()
 
 void MapPreview::setMapThumbnail(const std::string& mapName)
 {
-	MapThumbnail *n = new MapThumbnail();
-	n->loadFromMap(mapName);
-	setMapThumbnail(*n);
-	delete n;
+	MapThumbnail next;
+	next.loadFromMap(mapName);
+	setMapThumbnail(next);
 }
 
 

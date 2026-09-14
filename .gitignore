@@ -27,3 +27,10 @@ Glob2-*.dmg
 /build-server/
 
 /artifacts/
+/tools/browser-emsdk/
+/build-browser/
+/build-browser.log
+/build-*-support.log
+/test/build/
+/build-*.log
+/browser/node_modules

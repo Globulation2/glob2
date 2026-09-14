@@ -13,8 +13,8 @@
 #include "YOGServerPlayer.h"
 #include "SDLCompat.h"
 
-YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
-	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), playerInfos(this), routerManager(*this), router("localhost"), maps(this), scoreCalculator(this)
+YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy, bool embeddedRouter)
+	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), playerInfos(this), routerManager(*this), router(embeddedRouter ? std::make_unique<YOGServerRouter>("localhost") : nullptr), maps(this), scoreCalculator(this)
 {
 	isBroadcasting = false;
 	nl.startListening(YOG_SERVER_PORT);
@@ -99,7 +99,7 @@ void YOGServer::update()
 	bannedIPs.update();
 	gameLog.update();
 	routerManager.update();
-	router.update();
+	if (router) router->update();
 	maps.update();
 	fileDistributionManager.update();
 	
@@ -165,7 +165,7 @@ YOGGamePolicy YOGServer::getGamePolicy() const
 
 YOGLoginState YOGServer::verifyLoginInformation(const std::string& username, const std::string& password, const std::string& ip, Uint16 version)
 {
-	if(version < YOG_MIN_CLIENT_NET_PROTOCOL_VERSION)
+	if(version != NET_PROTOCOL_VERSION)
 		return YOGClientVersionTooOld;
 	if(loginPolicy == YOGAnonymousLogin)
 		return YOGLoginSuccessful;
@@ -199,7 +199,7 @@ YOGLoginState YOGServer::verifyLoginInformation(const std::string& username, con
 
 YOGLoginState YOGServer::registerInformation(const std::string& username, const std::string& password, const std::string& ip, Uint16 version)
 {
-	if(version < YOG_MIN_CLIENT_NET_PROTOCOL_VERSION)
+	if(version != NET_PROTOCOL_VERSION)
 		return YOGClientVersionTooOld;
 	if(loginPolicy == YOGAnonymousLogin)
 		return YOGLoginSuccessful;
@@ -275,8 +275,7 @@ YOGServerChatChannelManager& YOGServer::getChatChannelManager()
 
 YOGServerGameCreateRefusalReason YOGServer::canCreateNewGame(const std::string& game)
 {
-	//not implemented
-	return YOGCreateRefusalUnknown;
+	return routerManager.hasRouter() ? YOGCreateRefusalUnknown : YOGCreateRefusalNoRouter;
 }
 
 
@@ -284,6 +283,8 @@ YOGServerGameCreateRefusalReason YOGServer::canCreateNewGame(const std::string& 
 
 Uint16 YOGServer::createNewGame(const std::string& name)
 {
+	auto selectedRouter = routerManager.chooseYOGRouter();
+	if (!selectedRouter) return 0;
 	//choose the new game ID
 	Uint16 newID=1;
 	while(true)
@@ -303,7 +304,7 @@ Uint16 YOGServer::createNewGame(const std::string& name)
 			break;
 	}
 	Uint32 chatChannel = chatChannelManager.createNewChatChannel();
-	std::string routerip = routerManager.chooseYOGRouter()->getIPAddress();
+	std::string routerip = selectedRouter->getIPAddress();
 	if(routerip == "127.0.0.1")
 		routerip = "YOGIP";
 	

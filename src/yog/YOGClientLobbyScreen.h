@@ -20,6 +20,7 @@ namespace GAGGUI
 	class TextButton;
 	class TabScreen;
 	class Widget;
+	class ScreenStack;
 }
 
 class YOGClient;
@@ -69,7 +70,7 @@ class YOGClientLobbyScreen : public TabScreenWindow, public YOGClientEventListen
 {
 public:
 	///This takes a YOGClient. The client must be logged in when this is called.
-	YOGClientLobbyScreen(TabScreen* parent, std::shared_ptr<YOGClient> client);
+	YOGClientLobbyScreen(TabScreen* parent, ScreenStack& screens, std::shared_ptr<YOGClient> client);
 
 	virtual ~YOGClientLobbyScreen();
 	
@@ -113,6 +114,7 @@ private:
 	void hostGame();
 	///This launches the menu to join a game
 	void joinGame();
+	void showGame(std::shared_ptr<class MultiplayerGame> game);
 	///This updates the list of games
 	void updateGameList();
 	///This updates the list of players
@@ -141,6 +143,7 @@ private:
 	std::shared_ptr<IRCTextMessageHandler> ircChat;
 	
 	int gameScreen;
+	ScreenStack& screens;
+	std::unique_ptr<MultiplayerGameScreen> ownedGameScreen;
 
 };
-
