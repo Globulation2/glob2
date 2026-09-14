@@ -2223,55 +2223,55 @@ Egin klik berriro saiatzeko
 [Map preview please wait]
 Itxaron mesedez
 [Stats births]
-
+Jaiotzak
 [Stats deaths]
-
+Heriotzak
 [Stats starvation]
-
+Gosez hilda
 [Stats wheat stock]
-
+Gari biltegia
 [Stats wheat loads]
-
+Gari zamak
 [Stats meals]
-
+Zerbitzatutako otorduak
 [Stats new buildings]
-
+Eraikin berriak
 [Stats upgrades]
-
+Hobekuntzak
 [Stats training]
-
+Entrenamendu bisitak
 [Stats damage dealt]
-
+Eragindako kaltea
 [Stats damage received]
-
+Jasotako kaltea
 [Stats HP restored]
-
+Berreskuratutako osasuna
 [Stats since tick]
-
+Urrats honetatik
 [Stats combat deaths]
-
+Borroka
 [Stats clearing deaths]
-
+Garbiketa lesioak
 [Stats trapped deaths]
-
+Harrapatuta
 [Stats unknown deaths]
-
+Bestelakoa/ezezaguna
 [Stats conversions]
-
+Sarrera / irteera
 [Stats unavailable]
-
+Ez dago erabilgarri
 [Stats wheat per minute]
-
+Zamak/min
 [Stats meals per minute]
-
+Janaria/min
 [Stats occupancy]
-
+Elikadura / sendaketa
 [Stats page one]
-
+Estatistikak 1/2 >
 [Stats page two]
-
+Estatistikak 2/2 >
 [Stats next page]
-
+Orria (P)
 [Map preview choose another]
 Aukeratu mapa bat
 [Resources never grow or spread across the map.]

@@ -2213,55 +2213,55 @@ Kliknij, aby ponowić
 [Map preview please wait]
 Proszę czekać
 [Stats births]
-
+Narodziny
 [Stats deaths]
-
+Zgony
 [Stats starvation]
-
+Śmierć głodowa
 [Stats wheat stock]
-
+Zapas pszenicy
 [Stats wheat loads]
-
+Ładunki pszenicy
 [Stats meals]
-
+Podane posiłki
 [Stats new buildings]
-
+Nowe budynki
 [Stats upgrades]
-
+Ulepszenia
 [Stats training]
-
+Wizyty szkoleniowe
 [Stats damage dealt]
-
+Zadane obrażenia
 [Stats damage received]
-
+Otrzymane obrażenia
 [Stats HP restored]
-
+Przywrócone zdrowie
 [Stats since tick]
-
+Od kroku
 [Stats combat deaths]
-
+Walka
 [Stats clearing deaths]
-
+Uraz przy oczyszczaniu
 [Stats trapped deaths]
-
+Uwięzieni
 [Stats unknown deaths]
-
+Inne/nieznane
 [Stats conversions]
-
+Przybyli / odeszli
 [Stats unavailable]
-
+Niedostępne
 [Stats wheat per minute]
-
+Ładunki/min
 [Stats meals per minute]
-
+Żywność/min
 [Stats occupancy]
-
+Żywienie / leczenie
 [Stats page one]
-
+Statystyki 1/2 >
 [Stats page two]
-
+Statystyki 2/2 >
 [Stats next page]
-
+Strona (P)
 [Map preview choose another]
 Wybierz mapę
 [Resources never grow or spread across the map.]

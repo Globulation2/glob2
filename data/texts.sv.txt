@@ -2223,55 +2223,55 @@ Klicka för att försöka igen
 [Map preview please wait]
 Vänta
 [Stats births]
-
+Födslar
 [Stats deaths]
-
+Dödsfall
 [Stats starvation]
-
+Svält
 [Stats wheat stock]
-
+Veteförråd
 [Stats wheat loads]
-
+Vetelaster
 [Stats meals]
-
+Serverade måltider
 [Stats new buildings]
-
+Nya byggnader
 [Stats upgrades]
-
+Uppgraderingar
 [Stats training]
-
+Träningsbesök
 [Stats damage dealt]
-
+Orsakad skada
 [Stats damage received]
-
+Mottagen skada
 [Stats HP restored]
-
+Återställd hälsa
 [Stats since tick]
-
+Sedan steg
 [Stats combat deaths]
-
+Strid
 [Stats clearing deaths]
-
+Röjningsskada
 [Stats trapped deaths]
-
+Instängda
 [Stats unknown deaths]
-
+Annat/okänt
 [Stats conversions]
-
+In / ut
 [Stats unavailable]
-
+Ej tillgängligt
 [Stats wheat per minute]
-
+Laster/min
 [Stats meals per minute]
-
+Mat/min
 [Stats occupancy]
-
+Mat / vård
 [Stats page one]
-
+Statistik 1/2 >
 [Stats page two]
-
+Statistik 2/2 >
 [Stats next page]
-
+Sida (P)
 [Map preview choose another]
 Välj en karta
 [Resources never grow or spread across the map.]

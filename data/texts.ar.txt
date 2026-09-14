@@ -2211,55 +2211,55 @@ OpenGL غير متوفر في هذا الإصدار.
 [Map preview please wait]
 يرجى الانتظار
 [Stats births]
-
+الولادات
 [Stats deaths]
-
+الوفيات
 [Stats starvation]
-
+الجوع
 [Stats wheat stock]
-
+مخزون القمح
 [Stats wheat loads]
-
+حمولات القمح
 [Stats meals]
-
+الوجبات المقدمة
 [Stats new buildings]
-
+المباني الجديدة
 [Stats upgrades]
-
+الترقيات
 [Stats training]
-
+زيارات التدريب
 [Stats damage dealt]
-
+الضرر المسبب
 [Stats damage received]
-
+الضرر المتلقى
 [Stats HP restored]
-
+الصحة المستعادة
 [Stats since tick]
-
+منذ الدورة
 [Stats combat deaths]
-
+القتال
 [Stats clearing deaths]
-
+إصابات الإزالة
 [Stats trapped deaths]
-
+محاصرون
 [Stats unknown deaths]
-
+أخرى/غير معروف
 [Stats conversions]
-
+دخول / خروج
 [Stats unavailable]
-
+غير متاح
 [Stats wheat per minute]
-
+حمولات/دقيقة
 [Stats meals per minute]
-
+طعام/دقيقة
 [Stats occupancy]
-
+إطعام / علاج
 [Stats page one]
-
+إحصاءات 1/2 >
 [Stats page two]
-
+إحصاءات 2/2 >
 [Stats next page]
-
+صفحة (P)
 [Map preview choose another]
 اختر خريطة
 [Resources never grow or spread across the map.]

@@ -2213,55 +2213,55 @@ Clic pentru a reîncerca
 [Map preview please wait]
 Așteaptă
 [Stats births]
-
+Nașteri
 [Stats deaths]
-
+Decese
 [Stats starvation]
-
+Foamete
 [Stats wheat stock]
-
+Stoc de grâu
 [Stats wheat loads]
-
+Încărcături de grâu
 [Stats meals]
-
+Mese servite
 [Stats new buildings]
-
+Clădiri noi
 [Stats upgrades]
-
+Îmbunătățiri
 [Stats training]
-
+Vizite de antrenament
 [Stats damage dealt]
-
+Daune provocate
 [Stats damage received]
-
+Daune primite
 [Stats HP restored]
-
+Viață refăcută
 [Stats since tick]
-
+De la pasul
 [Stats combat deaths]
-
+Luptă
 [Stats clearing deaths]
-
+Rănire la curățare
 [Stats trapped deaths]
-
+Prinși
 [Stats unknown deaths]
-
+Altele/necunoscut
 [Stats conversions]
-
+Intrări / ieșiri
 [Stats unavailable]
-
+Indisponibil
 [Stats wheat per minute]
-
+Încărcături/min
 [Stats meals per minute]
-
+Hrană/min
 [Stats occupancy]
-
+Hrănire / vindecare
 [Stats page one]
-
+Statistici 1/2 >
 [Stats page two]
-
+Statistici 2/2 >
 [Stats next page]
-
+Pagina (P)
 [Map preview choose another]
 Alege o hartă
 [Resources never grow or spread across the map.]

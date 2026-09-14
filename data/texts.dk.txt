@@ -2289,55 +2289,55 @@ Klik for at prøve igen
 [Map preview please wait]
 Vent venligst
 [Stats births]
-
+Fødsler
 [Stats deaths]
-
+Dødsfald
 [Stats starvation]
-
+Sult
 [Stats wheat stock]
-
+Hvedelager
 [Stats wheat loads]
-
+Hvedelæs
 [Stats meals]
-
+Serverede måltider
 [Stats new buildings]
-
+Nye bygninger
 [Stats upgrades]
-
+Opgraderinger
 [Stats training]
-
+Træningsbesøg
 [Stats damage dealt]
-
+Skade givet
 [Stats damage received]
-
+Skade modtaget
 [Stats HP restored]
-
+Helbred genoprettet
 [Stats since tick]
-
+Siden trin
 [Stats combat deaths]
-
+Kamp
 [Stats clearing deaths]
-
+Rydningsskade
 [Stats trapped deaths]
-
+Indespærrede
 [Stats unknown deaths]
-
+Andet/ukendt
 [Stats conversions]
-
+Ind / ud
 [Stats unavailable]
-
+Ikke tilgængelig
 [Stats wheat per minute]
-
+Læs/min
 [Stats meals per minute]
-
+Mad/min
 [Stats occupancy]
-
+Mad / heling
 [Stats page one]
-
+Statistik 1/2 >
 [Stats page two]
-
+Statistik 2/2 >
 [Stats next page]
-
+Side (P)
 [Map preview choose another]
 Vælg et kort
 [Resources never grow or spread across the map.]

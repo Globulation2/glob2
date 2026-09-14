@@ -2221,55 +2221,55 @@ Yeniden denemek için tıklayın
 [Map preview please wait]
 Lütfen bekleyin
 [Stats births]
-
+Doğumlar
 [Stats deaths]
-
+Ölümler
 [Stats starvation]
-
+Açlık
 [Stats wheat stock]
-
+Buğday stoku
 [Stats wheat loads]
-
+Buğday yükleri
 [Stats meals]
-
+Sunulan öğünler
 [Stats new buildings]
-
+Yeni binalar
 [Stats upgrades]
-
+Yükseltmeler
 [Stats training]
-
+Eğitim ziyaretleri
 [Stats damage dealt]
-
+Verilen hasar
 [Stats damage received]
-
+Alınan hasar
 [Stats HP restored]
-
+Yenilenen sağlık
 [Stats since tick]
-
+Başlangıç adımı
 [Stats combat deaths]
-
+Savaş
 [Stats clearing deaths]
-
+Temizleme yaralanması
 [Stats trapped deaths]
-
+Mahsur kalanlar
 [Stats unknown deaths]
-
+Diğer/bilinmeyen
 [Stats conversions]
-
+Giren / çıkan
 [Stats unavailable]
-
+Kullanılamıyor
 [Stats wheat per minute]
-
+Yük/dak
 [Stats meals per minute]
-
+Yiyecek/dak
 [Stats occupancy]
-
+Beslenme / tedavi
 [Stats page one]
-
+İstatistikler 1/2 >
 [Stats page two]
-
+İstatistikler 2/2 >
 [Stats next page]
-
+Sayfa (P)
 [Map preview choose another]
 Bir harita seçin
 [Resources never grow or spread across the map.]

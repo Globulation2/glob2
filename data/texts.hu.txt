@@ -2213,55 +2213,55 @@ Kattintson az újrapróbáláshoz
 [Map preview please wait]
 Kérem, várjon
 [Stats births]
-
+Születések
 [Stats deaths]
-
+Halálozások
 [Stats starvation]
-
+Éhhalál
 [Stats wheat stock]
-
+Búzakészlet
 [Stats wheat loads]
-
+Búzarakományok
 [Stats meals]
-
+Felszolgált ételek
 [Stats new buildings]
-
+Új épületek
 [Stats upgrades]
-
+Fejlesztések
 [Stats training]
-
+Képzési látogatások
 [Stats damage dealt]
-
+Okozott sebzés
 [Stats damage received]
-
+Elszenvedett sebzés
 [Stats HP restored]
-
+Visszaállított életerő
 [Stats since tick]
-
+Ettől a lépéstől
 [Stats combat deaths]
-
+Harc
 [Stats clearing deaths]
-
+Tisztítási sérülés
 [Stats trapped deaths]
-
+Csapdába esett
 [Stats unknown deaths]
-
+Egyéb/ismeretlen
 [Stats conversions]
-
+Be / ki
 [Stats unavailable]
-
+Nem elérhető
 [Stats wheat per minute]
-
+Rakomány/perc
 [Stats meals per minute]
-
+Étel/perc
 [Stats occupancy]
-
+Etetés / gyógyítás
 [Stats page one]
-
+Statisztika 1/2 >
 [Stats page two]
-
+Statisztika 2/2 >
 [Stats next page]
-
+Oldal (P)
 [Map preview choose another]
 Válasszon térképet
 [Resources never grow or spread across the map.]

@@ -2209,55 +2209,55 @@ OpenGL недоступний у цій збірці.
 [Map preview please wait]
 Зачекайте
 [Stats births]
-
+Народження
 [Stats deaths]
-
+Смерті
 [Stats starvation]
-
+Голод
 [Stats wheat stock]
-
+Запас пшениці
 [Stats wheat loads]
-
+Вантажі пшениці
 [Stats meals]
-
+Подані страви
 [Stats new buildings]
-
+Нові будівлі
 [Stats upgrades]
-
+Поліпшення
 [Stats training]
-
+Відвідування тренувань
 [Stats damage dealt]
-
+Завдана шкода
 [Stats damage received]
-
+Отримана шкода
 [Stats HP restored]
-
+Відновлене здоров’я
 [Stats since tick]
-
+Від такту
 [Stats combat deaths]
-
+Бій
 [Stats clearing deaths]
-
+Травма під час розчищення
 [Stats trapped deaths]
-
+У пастці
 [Stats unknown deaths]
-
+Інше/невідомо
 [Stats conversions]
-
+Прибули / пішли
 [Stats unavailable]
-
+Недоступно
 [Stats wheat per minute]
-
+Вантажів/хв
 [Stats meals per minute]
-
+Їжі/хв
 [Stats occupancy]
-
+Харчування / лікування
 [Stats page one]
-
+Статистика 1/2 >
 [Stats page two]
-
+Статистика 2/2 >
 [Stats next page]
-
+Сторінка (P)
 [Map preview choose another]
 Виберіть мапу
 [Resources never grow or spread across the map.]

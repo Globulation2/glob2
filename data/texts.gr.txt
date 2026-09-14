@@ -2283,55 +2283,55 @@ Cortex
 [Map preview please wait]
 Παρακαλώ περιμένετε
 [Stats births]
-
+Γεννήσεις
 [Stats deaths]
-
+Θάνατοι
 [Stats starvation]
-
+Ασιτία
 [Stats wheat stock]
-
+Απόθεμα σιταριού
 [Stats wheat loads]
-
+Φορτία σιταριού
 [Stats meals]
-
+Γεύματα
 [Stats new buildings]
-
+Νέα κτίρια
 [Stats upgrades]
-
+Αναβαθμίσεις
 [Stats training]
-
+Επισκέψεις εκπαίδευσης
 [Stats damage dealt]
-
+Ζημιά που προκλήθηκε
 [Stats damage received]
-
+Ζημιά που ελήφθη
 [Stats HP restored]
-
+Αποκατάσταση υγείας
 [Stats since tick]
-
+Από βήμα
 [Stats combat deaths]
-
+Μάχη
 [Stats clearing deaths]
-
+Τραυματισμός εκκαθάρισης
 [Stats trapped deaths]
-
+Παγιδευμένοι
 [Stats unknown deaths]
-
+Άλλο/άγνωστο
 [Stats conversions]
-
+Είσοδος / έξοδος
 [Stats unavailable]
-
+Μη διαθέσιμο
 [Stats wheat per minute]
-
+Φορτία/λεπτό
 [Stats meals per minute]
-
+Τροφή/λεπτό
 [Stats occupancy]
-
+Σίτιση / θεραπεία
 [Stats page one]
-
+Στατιστικά 1/2 >
 [Stats page two]
-
+Στατιστικά 2/2 >
 [Stats next page]
-
+Σελίδα (P)
 [Map preview choose another]
 Επιλέξτε χάρτη
 [Resources never grow or spread across the map.]

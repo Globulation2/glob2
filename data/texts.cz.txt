@@ -2213,55 +2213,55 @@ Kliknutím zkuste znovu
 [Map preview please wait]
 Čekejte prosím
 [Stats births]
-
+Narození
 [Stats deaths]
-
+Úmrtí
 [Stats starvation]
-
+Vyhladovění
 [Stats wheat stock]
-
+Zásoby pšenice
 [Stats wheat loads]
-
+Náklady pšenice
 [Stats meals]
-
+Podaná jídla
 [Stats new buildings]
-
+Nové budovy
 [Stats upgrades]
-
+Vylepšení
 [Stats training]
-
+Návštěvy výcviku
 [Stats damage dealt]
-
+Způsobené poškození
 [Stats damage received]
-
+Utrpěné poškození
 [Stats HP restored]
-
+Obnovené zdraví
 [Stats since tick]
-
+Od kroku
 [Stats combat deaths]
-
+Boj
 [Stats clearing deaths]
-
+Zranění při čištění
 [Stats trapped deaths]
-
+Uvěznění
 [Stats unknown deaths]
-
+Jiné/neznámé
 [Stats conversions]
-
+Příchozí / odchozí
 [Stats unavailable]
-
+Nedostupné
 [Stats wheat per minute]
-
+Náklady/min
 [Stats meals per minute]
-
+Jídlo/min
 [Stats occupancy]
-
+Krmení / léčení
 [Stats page one]
-
+Statistiky 1/2 >
 [Stats page two]
-
+Statistiky 2/2 >
 [Stats next page]
-
+Stránka (P)
 [Map preview choose another]
 Vyberte mapu
 [Resources never grow or spread across the map.]

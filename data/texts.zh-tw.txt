@@ -2285,55 +2285,55 @@ OpenGL 在此版本中不可用。
 [Map preview please wait]
 請稍候
 [Stats births]
-
+出生
 [Stats deaths]
-
+死亡
 [Stats starvation]
-
+餓死
 [Stats wheat stock]
-
+小麥庫存
 [Stats wheat loads]
-
+小麥搬運量
 [Stats meals]
-
+供餐次數
 [Stats new buildings]
-
+新建建築
 [Stats upgrades]
-
+升級
 [Stats training]
-
+訓練次數
 [Stats damage dealt]
-
+造成傷害
 [Stats damage received]
-
+受到傷害
 [Stats HP restored]
-
+恢復生命值
 [Stats since tick]
-
+起始刻
 [Stats combat deaths]
-
+戰鬥
 [Stats clearing deaths]
-
+清理受傷
 [Stats trapped deaths]
-
+受困
 [Stats unknown deaths]
-
+其他/未知
 [Stats conversions]
-
+轉入 / 轉出
 [Stats unavailable]
-
+無資料
 [Stats wheat per minute]
-
+搬運量/分
 [Stats meals per minute]
-
+食物/分
 [Stats occupancy]
-
+進食 / 治療
 [Stats page one]
-
+統計 1/2 >
 [Stats page two]
-
+統計 2/2 >
 [Stats next page]
-
+頁面 (P)
 [Map preview choose another]
 選擇地圖
 [Resources never grow or spread across the map.]

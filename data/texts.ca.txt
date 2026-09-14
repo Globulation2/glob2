@@ -2221,55 +2221,55 @@ Fes clic per tornar-ho a provar
 [Map preview please wait]
 Espera un moment
 [Stats births]
-
+Naixements
 [Stats deaths]
-
+Morts
 [Stats starvation]
-
+Inanició
 [Stats wheat stock]
-
+Reserva de blat
 [Stats wheat loads]
-
+Càrregues de blat
 [Stats meals]
-
+Àpats servits
 [Stats new buildings]
-
+Edificis nous
 [Stats upgrades]
-
+Millores
 [Stats training]
-
+Visites d’entrenament
 [Stats damage dealt]
-
+Dany causat
 [Stats damage received]
-
+Dany rebut
 [Stats HP restored]
-
+Vida recuperada
 [Stats since tick]
-
+Des del pas
 [Stats combat deaths]
-
+Combat
 [Stats clearing deaths]
-
+Lesions de neteja
 [Stats trapped deaths]
-
+Atrapats
 [Stats unknown deaths]
-
+Altres/desconegut
 [Stats conversions]
-
+Entrada / sortida
 [Stats unavailable]
-
+No disponible
 [Stats wheat per minute]
-
+Càrregues/min
 [Stats meals per minute]
-
+Menjar/min
 [Stats occupancy]
-
+Alimentació / cura
 [Stats page one]
-
+Estadístiques 1/2 >
 [Stats page two]
-
+Estadístiques 2/2 >
 [Stats next page]
-
+Pàgina (P)
 [Map preview choose another]
 Tria un mapa
 [Resources never grow or spread across the map.]

@@ -2237,55 +2237,55 @@ Klik om opnieuw te proberen
 [Map preview please wait]
 Even geduld
 [Stats births]
-
+Geboorten
 [Stats deaths]
-
+Sterfgevallen
 [Stats starvation]
-
+Verhongering
 [Stats wheat stock]
-
+Tarwevoorraad
 [Stats wheat loads]
-
+Tarweladingen
 [Stats meals]
-
+Geserveerde maaltijden
 [Stats new buildings]
-
+Nieuwe gebouwen
 [Stats upgrades]
-
+Verbeteringen
 [Stats training]
-
+Trainingsbezoeken
 [Stats damage dealt]
-
+Toegebrachte schade
 [Stats damage received]
-
+Ontvangen schade
 [Stats HP restored]
-
+Herstelde gezondheid
 [Stats since tick]
-
+Sinds stap
 [Stats combat deaths]
-
+Gevecht
 [Stats clearing deaths]
-
+Opruimletsel
 [Stats trapped deaths]
-
+Opgesloten
 [Stats unknown deaths]
-
+Anders/onbekend
 [Stats conversions]
-
+In / uit
 [Stats unavailable]
-
+Niet beschikbaar
 [Stats wheat per minute]
-
+Ladingen/min
 [Stats meals per minute]
-
+Voedsel/min
 [Stats occupancy]
-
+Eten / genezen
 [Stats page one]
-
+Statistieken 1/2 >
 [Stats page two]
-
+Statistieken 2/2 >
 [Stats next page]
-
+Pagina (P)
 [Map preview choose another]
 Kies een kaart
 [Resources never grow or spread across the map.]

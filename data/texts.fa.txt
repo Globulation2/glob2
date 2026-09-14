@@ -2211,55 +2211,55 @@ OpenGL در این بیلد موجود نیست.
 [Map preview please wait]
 لطفاً صبر کنید
 [Stats births]
-
+تولدها
 [Stats deaths]
-
+مرگ‌ها
 [Stats starvation]
-
+گرسنگی
 [Stats wheat stock]
-
+ذخیره گندم
 [Stats wheat loads]
-
+بارهای گندم
 [Stats meals]
-
+وعده‌های غذا
 [Stats new buildings]
-
+ساختمان‌های جدید
 [Stats upgrades]
-
+ارتقاها
 [Stats training]
-
+نوبت‌های آموزش
 [Stats damage dealt]
-
+آسیب واردشده
 [Stats damage received]
-
+آسیب دریافتی
 [Stats HP restored]
-
+سلامت بازیابی‌شده
 [Stats since tick]
-
+از گام
 [Stats combat deaths]
-
+نبرد
 [Stats clearing deaths]
-
+آسیب پاک‌سازی
 [Stats trapped deaths]
-
+گرفتار
 [Stats unknown deaths]
-
+دیگر/نامشخص
 [Stats conversions]
-
+ورودی / خروجی
 [Stats unavailable]
-
+ناموجود
 [Stats wheat per minute]
-
+بار/دقیقه
 [Stats meals per minute]
-
+غذا/دقیقه
 [Stats occupancy]
-
+تغذیه / درمان
 [Stats page one]
-
+آمار 1/2 >
 [Stats page two]
-
+آمار 2/2 >
 [Stats next page]
-
+صفحه (P)
 [Map preview choose another]
 یک نقشه انتخاب کنید
 [Resources never grow or spread across the map.]

@@ -2213,55 +2213,55 @@ Yritä uudelleen napsauttamalla
 [Map preview please wait]
 Odota hetki
 [Stats births]
-
+Syntymät
 [Stats deaths]
-
+Kuolemat
 [Stats starvation]
-
+Nälkäkuolemat
 [Stats wheat stock]
-
+Vehnävarasto
 [Stats wheat loads]
-
+Vehnäkuormat
 [Stats meals]
-
+Tarjoillut ateriat
 [Stats new buildings]
-
+Uudet rakennukset
 [Stats upgrades]
-
+Parannukset
 [Stats training]
-
+Koulutuskäynnit
 [Stats damage dealt]
-
+Aiheutettu vahinko
 [Stats damage received]
-
+Saatu vahinko
 [Stats HP restored]
-
+Palautettu terveys
 [Stats since tick]
-
+Askeleesta alkaen
 [Stats combat deaths]
-
+Taistelu
 [Stats clearing deaths]
-
+Raivausvamma
 [Stats trapped deaths]
-
+Loukussa
 [Stats unknown deaths]
-
+Muu/tuntematon
 [Stats conversions]
-
+Sisään / ulos
 [Stats unavailable]
-
+Ei saatavilla
 [Stats wheat per minute]
-
+Kuormaa/min
 [Stats meals per minute]
-
+Ruokaa/min
 [Stats occupancy]
-
+Ruokailu / hoito
 [Stats page one]
-
+Tilastot 1/2 >
 [Stats page two]
-
+Tilastot 2/2 >
 [Stats next page]
-
+Sivu (P)
 [Map preview choose another]
 Valitse kartta
 [Resources never grow or spread across the map.]

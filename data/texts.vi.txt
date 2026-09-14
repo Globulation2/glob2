@@ -2209,55 +2209,55 @@ Nhấp để thử lại
 [Map preview please wait]
 Vui lòng đợi
 [Stats births]
-
+Sinh ra
 [Stats deaths]
-
+Tử vong
 [Stats starvation]
-
+Chết đói
 [Stats wheat stock]
-
+Kho lúa mì
 [Stats wheat loads]
-
+Lượt chở lúa mì
 [Stats meals]
-
+Bữa ăn đã phục vụ
 [Stats new buildings]
-
+Công trình mới
 [Stats upgrades]
-
+Nâng cấp
 [Stats training]
-
+Lượt huấn luyện
 [Stats damage dealt]
-
+Sát thương gây ra
 [Stats damage received]
-
+Sát thương nhận vào
 [Stats HP restored]
-
+Máu hồi phục
 [Stats since tick]
-
+Từ bước
 [Stats combat deaths]
-
+Chiến đấu
 [Stats clearing deaths]
-
+Bị thương khi dọn
 [Stats trapped deaths]
-
+Mắc kẹt
 [Stats unknown deaths]
-
+Khác/không rõ
 [Stats conversions]
-
+Vào / ra
 [Stats unavailable]
-
+Không có dữ liệu
 [Stats wheat per minute]
-
+Lượt chở/phút
 [Stats meals per minute]
-
+Thức ăn/phút
 [Stats occupancy]
-
+Ăn / chữa trị
 [Stats page one]
-
+Thống kê 1/2 >
 [Stats page two]
-
+Thống kê 2/2 >
 [Stats next page]
-
+Trang (P)
 [Map preview choose another]
 Chọn bản đồ
 [Resources never grow or spread across the map.]

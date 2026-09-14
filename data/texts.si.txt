@@ -2213,55 +2213,55 @@ Kliknite za ponovni poskus
 [Map preview please wait]
 Počakajte
 [Stats births]
-
+Rojstva
 [Stats deaths]
-
+Smrti
 [Stats starvation]
-
+Stradanje
 [Stats wheat stock]
-
+Zaloga pšenice
 [Stats wheat loads]
-
+Tovori pšenice
 [Stats meals]
-
+Postreženi obroki
 [Stats new buildings]
-
+Nove zgradbe
 [Stats upgrades]
-
+Nadgradnje
 [Stats training]
-
+Obiski urjenja
 [Stats damage dealt]
-
+Povzročena škoda
 [Stats damage received]
-
+Prejeta škoda
 [Stats HP restored]
-
+Obnovljeno zdravje
 [Stats since tick]
-
+Od koraka
 [Stats combat deaths]
-
+Boj
 [Stats clearing deaths]
-
+Poškodba pri čiščenju
 [Stats trapped deaths]
-
+Ujeti
 [Stats unknown deaths]
-
+Drugo/neznano
 [Stats conversions]
-
+Prihodi / odhodi
 [Stats unavailable]
-
+Ni na voljo
 [Stats wheat per minute]
-
+Tovori/min
 [Stats meals per minute]
-
+Hrana/min
 [Stats occupancy]
-
+Hranjenje / zdravljenje
 [Stats page one]
-
+Statistika 1/2 >
 [Stats page two]
-
+Statistika 2/2 >
 [Stats next page]
-
+Stran (P)
 [Map preview choose another]
 Izberite zemljevid
 [Resources never grow or spread across the map.]
