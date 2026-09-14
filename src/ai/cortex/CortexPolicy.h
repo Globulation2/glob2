@@ -303,9 +303,8 @@ namespace Cortex
 		/// cycle's observation. Called EXACTLY ONCE per decision cycle at the top
 		/// of decide(); see the implementation note in CortexPolicyEconomy.cpp.
 		void updateExpandStreak(const CortexObservation& obs);
-		/// Consecutive decide() cycles anySwarmWantsFreshPatch has held. RAM-only
-		/// (a save reload restarts it at 0 uniformly on every client — the
-		/// trigger just re-arms, same precedent as the inn settle window).
+		/// Consecutive decide() cycles anySwarmWantsFreshPatch has held.
+		/// Saved by the owning AI so configured debounce survives continuation.
 		int expandWantStreak_;
 
 		// --- decide() decision scorers ----------------------------------------

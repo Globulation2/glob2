@@ -56,8 +56,8 @@ statistics against synthetic engine output and known values. It needs no build a
 
 ## What a run does
 
-1. **Map production.** `MapGeneratorStudy <id> <seed> <profile> w= h= teams= quality candidates=5
-   save=<prefix> rotations=N` generates the map through `GenerationService`, choosing the roll
+1. **Map production.** `glob2 --generate-map --generator ID --map-seed SEED
+   --candidates 5 --write-map true --rotations N --output-dir DIR` generates the map through `GenerationService`, choosing the roll
    exactly as `CustomGameScreen::generateMap()` does, and saves it as a playable `.map`. Next to the
    map files, `map.json` records the generator id and revision, the request (size, colonies,
    workers, every control value), the map seed and chosen roll, the start of every colony, the
@@ -72,12 +72,12 @@ statistics against synthetic engine output and known values. It needs no build a
    loads. It differs from a direct save of the freshly generated `Game` only in the header's
    20-byte content SHA1, which the fresh `Game` computes before the real map offset is patched in.
 3. **Matches.** Each rotation is played `games_per_rotation` times with
-   `glob2 -test-games-nox 1 --map <map> --matchup nicowar,...`, with the engine seed pinned by
-   `GLOB2_TEST_SEED` and nothing else varied. Every game runs in its own `GLOB2_USER_DIR`, which
+   `glob2 --run-game --map-file MAP --player nicowar ... --game-seed SEED`,
+   through the shared durable localhost worker. Every game runs in its own `GLOB2_USER_DIR`, which
    holds the map, so it never touches `~/.glob2`. Winning conditions are the lobby's free-for-all
-   defaults, prestige victory included. `GLOB2_TEAM_RESULTS=1` makes the engine print one
-   `GLOB2_TEAM_RESULT` line per team (outcome, elimination tick, start, prestige, units, buildings),
-   and `GLOB2_TEST_MAX_TICKS` sets the tick cap. See [headless replays](../headless-replays.md).
+   defaults, prestige victory included. Structured results preserve outcomes, elimination
+   ticks, starts, prestige, units and buildings; `--ticks` sets the unresolved engine cap.
+   See [distributed tournaments](../tournaments.md) for the worker/artifact protocol.
 
 Per game, `games.csv` has the winner's start and team, the winning start's coordinates, how the
 game ended (`elimination`, `prestige` or `cap`), elimination order with ticks, placements, wall time
@@ -87,8 +87,9 @@ start-quality factors; `maps.csv` has one row per map.
 ## Separating the start from the team index
 
 In a headless game the team index is not neutral. Teams step in index order, the AIs issue orders
-in player order, and `-test-games-nox` adds a passive local player on team 0, whose AI therefore
-polls last. On a single map, start `t` is always team `t`, so a start that wins more often cannot be
+in player order. The structured interface assigns players directly in team order. The
+legacy `-test-games-nox` interface adds a passive local player on team 0 and polls its AI
+last, so historical legacy-driver games and new structured runs should be separate cohorts. On a single map, start `t` is always team `t`, so a start that wins more often cannot be
 told apart from a team index that does.
 
 Rotations break that link. Over the N rotations every team index plays every start exactly once, so:

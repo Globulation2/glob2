@@ -112,6 +112,8 @@ Engine.cpp
 EngineInit.cpp
 EngineLoaders.cpp
 EngineRun.cpp
+Headless.cpp
+MapStudy.cpp
 FertilityCalculator.cpp
 map/FertilityField.cpp
 FertilityCalculatorDialog.cpp
@@ -812,6 +814,12 @@ if not env['server']:
     regression_test = local.Program('RoundTripHungerGateHarness', regression_sources)
     local.Alias('round-trip-hunger-gate-test', regression_test)
 
+if not env['server']:
+    tournament_env = local.Clone()
+    tournament_env['CXXFLAGS'] = local.Split(local['CXXFLAGS']) + ['-fno-access-control']
+    tournament_sources = [source for source in source_files if source != 'Glob2.cpp']
+    tournament_sources += tournament_env.Object('TournamentCompatibilityTest.o', '#test/TournamentCompatibilityTest.cpp')
+    local.Alias('tournament-compatibility-test', local.Program('TournamentCompatibilityTest', tournament_sources))
 # Map-report fixtures exercise analytic route lengths and read-only scoring.
 if not env['server']:
     report_sources = [source for source in source_files if source != 'Glob2.cpp']

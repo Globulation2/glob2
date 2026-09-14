@@ -8,6 +8,8 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <set>
+#include <limits>
 
 namespace Cortex
 {
@@ -111,11 +113,64 @@ namespace Cortex
 		return tuning;
 	}
 
+	static thread_local const CortexTuning* activeTuning = nullptr;
+	TuningScope::TuningScope(const CortexTuning& tuning) : previous(activeTuning) { activeTuning = &tuning; }
+	TuningScope::~TuningScope() { activeTuning = previous; }
+
+	std::string tuningValues(const CortexTuning& tuning)
+	{
+		std::ostringstream out;
+		for (const auto &field : TUNING_FIELDS)
+			out << field.name << "=" << tuning.*(field.member) << "\n";
+		return out.str();
+	}
+	bool applyTuning(CortexTuning& tuning, const std::string& values, std::string& error)
+	{
+		CortexTuning candidate = tuning;
+		std::set<std::string> seen;
+		std::istringstream in(values);
+		std::string line;
+		while (std::getline(in, line))
+		{
+			if (line.empty()) continue;
+			const auto eq = line.find('=');
+			const std::string key = line.substr(0, eq);
+			bool found = false;
+			for (const auto &field : TUNING_FIELDS)
+				if (key == field.name && eq != std::string::npos && seen.insert(key).second)
+				{
+					std::istringstream value(line.substr(eq+1));
+					int n; std::string trailing;
+					if (!(value >> n) || (value >> trailing) || n < field.minValue)
+					{ error = "invalid Cortex value: " + line; return false; }
+					candidate.*(field.member) = n;
+					found = true;
+					break;
+				}
+			if (!found) { error = "unknown or duplicate Cortex parameter: " + key; return false; }
+		}
+		tuning = candidate;
+		return true;
+	}
+	std::string tuningSchemaJson()
+	{
+		std::ostringstream out;
+		out << '[';
+		CortexTuning defaults;
+		bool comma = false;
+		for (const auto &field : TUNING_FIELDS)
+		{
+			if (comma) out << ',';
+			comma = true;
+			out << "{\"key\":\"" << field.name << "\",\"type\":\"int\",\"min\":"
+				<< field.minValue << ",\"max\":" << std::numeric_limits<int>::max()
+				<< ",\"default\":" << defaults.*(field.member) << '}';
+		}
+		out << ']'; return out.str();
+	}
 	const CortexTuning& cortexTuning()
 	{
-		// Loaded on first use, immutable after — both AI instances in a process
-		// (and every decision cycle) see one constant vector, so determinism and
-		// lockstep are untouched. The engine core is synchronous (no threads).
+		if (activeTuning) return *activeTuning;
 		static const CortexTuning tuning = loadTuning();
 		return tuning;
 	}

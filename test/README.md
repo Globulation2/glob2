@@ -462,6 +462,21 @@ placement, toroidal dragging, legacy/new codecs, malformed input, network frame
 bounds, thumbnail request deduplication, timeout/retry and bounded cache reuse.
 See [pre-game preview behavior and compatibility](../docs/pre-game-map-preview.md).
 
+## Tournament execution and configuration
+
+`python3 test/test_tournaments.py` exercises leases, duplicates, resumable transfers,
+worker queues, immutable builds and offline statistical policies using stdlib fixtures.
+`python3 test/test_map_fairness_tournament.py` retains the fairness estimator regressions.
+Build `scons -j4 release=1 server=0 tournament-compatibility-test` and run
+`build/src/TournamentCompatibilityTest` for real per-player Cortex/Maxima and partial
+network-header checks. `python3 test/tournament_cli_integration.py --output DIR`
+runs production CLI cases and retains saves, traces and logs. Use a fresh output
+directory. `--initial FILE --ticks N` runs a retained initial state on another platform.
+
+`test/tournament_reliability_pilot.py` is an opt-in localhost/SSH integration pilot.
+It requires immutable macOS/Linux bundles and explicitly configured disposable
+worker directories, and kills only processes belonging to that pilot. See
+[the tournament guide](../docs/tournaments.md) for commands and validation policy.
 ## Map CLI
 
 Build the normal client with `scons release=1 server=0`, then run
@@ -489,3 +504,15 @@ serialized state and simulation RNG, deterministic reports, config provenance,
 older saves, and output errors. Reports and commands are retained in
 `artifacts/map-report/` and uploaded by CI. The PNG CLI suite also exercises all
 three outputs together.
+
+
+### Distributed map telemetry
+
+`python3 test/test_distributed_map_telemetry.py` checks map-weighted aggregation,
+repeated subjects, typed values, missing/truncated traces and cohort separation.
+The main CLI integration suite also compares complete native and structured map
+reports, including generation-failure telemetry. The opt-in
+`test/distributed_map_telemetry_integration.py --hosts HOSTS.json --output NEW_DIR`
+checks complete result/artifact roundtrips and offline record counts on every host;
+add an absolute registered `bundle` path to each host entry. It stops its workers
+after collection. Retained validation is linked in the tournament validation guide.

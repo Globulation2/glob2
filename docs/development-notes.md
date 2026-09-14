@@ -5,6 +5,9 @@ Consult the sections relevant to the change; choose tools and workflow appropria
 to the task. Verify implementation details against current code and update these
 notes when the referenced behavior changes.
 
+Tournament CLI, persistent workers, and per-player AI save compatibility are
+documented in [Distributed tournaments](tournaments.md).
+
 ## Build and test entry points
 
 Choose build concurrency for available memory and other running builds; CPU count

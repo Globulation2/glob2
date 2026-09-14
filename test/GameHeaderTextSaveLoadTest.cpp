@@ -20,6 +20,7 @@
 #include <memory>
 #include <SDL.h>
 #include "TextStream.h"
+#include "BinaryStream.h"
 #include "StreamBackend.h"
 #include "GameHeader.h"
 #include "Version.h"
@@ -65,6 +66,7 @@ GameHeader makeFixtureHeader()
 		std::snprintf(name, sizeof(name), "Player %d", i);
 		header.getBasePlayer(i) = BasePlayer(i, name, i % 2, BasePlayer::P_IP);
 		header.getBasePlayer(i).playerID = 1000 + i;
+		header.setAIConfig(i, "swarmWorkerCap=" + std::to_string(i+4) + "\n");
 	}
 	for (int i = 0; i < Team::MAX_COUNT; ++i)
 		header.setAllyTeamNumber(i, (i % 3) + 1);
@@ -78,7 +80,8 @@ bool playersMatch(GameHeader& a, GameHeader& b, int count)
 		BasePlayer& pa = a.getBasePlayer(i);
 		BasePlayer& pb = b.getBasePlayer(i);
 		if (pa.type != pb.type || pa.number != pb.number || pa.name != pb.name
-		    || pa.teamNumber != pb.teamNumber || pa.playerID != pb.playerID)
+		    || pa.teamNumber != pb.teamNumber || pa.playerID != pb.playerID
+		    || a.getAIConfig(i) != b.getAIConfig(i))
 			return false;
 	}
 	return true;
@@ -140,12 +143,48 @@ void testPlayerInfoRoundTrip()
 	check(playersMatch(original, loaded, 4), "playerInfo: players preserved");
 }
 
+void testBinaryHeaderFormsAndLegacy()
+{
+	for (int form=0; form<3; ++form)
+	{
+		GameHeader original=makeFixtureHeader();
+		auto *memory=new MemoryStreamBackend;
+		BinaryOutputStream out(memory);
+		if (form==0) original.save(&out);
+		else if (form==1) original.savePlayerInfo(&out);
+		else original.saveWithoutPlayerInfo(&out);
+		out.flush();
+		memory->seekFromStart(0);
+		BinaryInputStream in(new MemoryStreamBackend(*memory));
+		GameHeader loaded;
+		const bool ok=form==0 ? loaded.load(&in,VERSION_MINOR)
+			: form==1 ? loaded.loadPlayerInfo(&in,VERSION_MINOR) : loaded.loadWithoutPlayerInfo(&in,VERSION_MINOR);
+		check(ok && loaded.getAIConfig(0)==original.getAIConfig(0)
+			&& loaded.getAIConfig(1)==original.getAIConfig(1), "binary full/partial resolved player configuration");
+		// Version 100 ended immediately before the new extension. Truncate a
+		// current binary fixture at that boundary and require an exact old read.
+		size_t extension=4;
+		for(int p=0;p<Team::MAX_COUNT;++p) extension+=4+original.getAIConfig(p).size();
+		memory->seekFromEnd(0);
+		const size_t legacySize=memory->getPosition()-extension;
+		auto *oldBytes=new MemoryStreamBackend(memory->getBuffer(),legacySize);
+		oldBytes->seekFromStart(0);
+		BinaryInputStream old(oldBytes);
+		loaded.setAIConfig(0,"stale");
+		const bool legacy=form==0 ? loaded.load(&old,100)
+			: form==1 ? loaded.loadPlayerInfo(&old,100) : loaded.loadWithoutPlayerInfo(&old,100);
+		check(legacy && loaded.getAIConfig(0).empty() && oldBytes->getPosition()==legacySize,
+			"version 100 full/partial header loads without reading extension bytes");
+	}
+}
+
 }  // namespace
 
 int main(int /*argc*/, char* /*argv*/[])
 {
 	testFullRoundTrip();
 	testPlayerInfoRoundTrip();
+	testBinaryHeaderFormsAndLegacy();
 	std::printf(failures == 0 ? "ALL PASS\n" : "FAILURES: %d\n", failures);
 	return failures == 0 ? 0 : 1;
 }

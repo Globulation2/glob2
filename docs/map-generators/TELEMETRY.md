@@ -78,6 +78,17 @@ A useful investigation asks: “Does increasing canal width make farm plots disa
 
 Tune on one seed range and confirm on another, including parameter extremes and rectangles. Stratify by variant: a rare fallback may be invisible in a global average. Join internal observations with the existing final-map measurements and retained previews to test the causal explanation; telemetry alone does not prove playability or fairness. Follow up with AI games and human play as described in [the game-rules guide](GAME_RULES_FOR_MAP_DESIGN.md).
 
+## Distributed bulk studies
+
+For multi-host or interruption-tolerant runs, use the shared
+[distributed study workflow](../../.agents/skills/glob2-map-design/references/distributed-telemetry.md).
+Structured `--generate-map --output-dir DIR` jobs always collect telemetry and embed
+the complete native version-2 report in `result.json` under `map_report`, including
+service failures. No map file is required. Native `--generate-map NAME --json FILE`
+remains available unchanged. Offline reanalysis preserves raw records and final-map
+numbers and reports map-weighted summaries, missing/incomplete traces and observed
+fallback/variant rates. Candidate sampling retains only the chosen attempt trace.
+
 ## Permanent metrics versus temporary debugging
 
 Keep a permanent metric when it explains a meaningful design outcome across many seeds or exposes a regression: effective variant, intended/actual optional feature count, fit budget, calibration input/output, skipped plot, repaired route, or collapsed feature. Give it a stable key/type, clear subject and bounded cardinality. Include related measurements so a fallback is actionable rather than an unexplained alarm.

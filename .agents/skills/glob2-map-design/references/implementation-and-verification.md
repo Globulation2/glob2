@@ -157,3 +157,7 @@ Temporary hypothesis-specific coordinates, search traces and per-tile dumps belo
 instrumentation and should be removed before finalizing. Promote only a useful bounded summary,
 with stable names/types and documented units. Do not keep noisy debug output merely because the
 collector has a record cap. See the telemetry guide for collection commands and analysis examples.
+
+For larger batches, follow [distributed telemetry studies](distributed-telemetry.md):
+plan individually identified samples, run them through the shared durable workers,
+and reanalyze the complete returned reports with map-level statistical weighting.

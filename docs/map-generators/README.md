@@ -7,7 +7,9 @@ Normal lobby generation rolls a fresh random map; the preview snapshot is the ma
 ## Development tools
 
 Build the study executable with `scons release=1 map-generator-study`.
-`build/src/MapGeneratorStudy --catalog` exports the current control definitions.
+`build/src/glob2 --headless-catalog` exports current control definitions and production
+execution capabilities. Bulk runners use [shared tournament execution](../tournaments.md);
+`MapGeneratorStudy --catalog` remains a regression-compatible entry point.
 Use `python3 tools/map_generator_study.py --help` for seeded generation studies.
 Use the normal executable's [map CLI](CLI.md) to generate maps and PNG previews,
 preview existing maps or saves, and configure generators with CLI settings or a config file.

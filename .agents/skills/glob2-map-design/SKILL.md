@@ -27,6 +27,7 @@ Choose the construction family by the play contract. Recognizable shapes can use
 - Read [gameplay and playability](references/gameplay-and-playability.md) when deciding terrain, resource sustainability, AI access, building room, fighting distances, or playtests. It explains why initially open maps can become unplayable.
 - Read [shaped generators](references/shaped-generators.md) for arenas, cities, canals, repeated modules, rotational/translation symmetry, and variation inside a defined shape.
 - Read [landscape generators](references/landscape-generators.md) for organic terrain, asymmetric starts, hydrology, resource bands, forests, and the older generators' useful lessons and limitations.
+- Read [distributed telemetry studies](references/distributed-telemetry.md) for larger seed/settings matrices, SSH workers, recovery, and aggregate analysis of internal and final-map measurements. Use this workflow as part of generator telemetry validation before choosing defaults.
 - Read [implementation and verification](references/implementation-and-verification.md) when selecting primitives, adding controls, registering code, repairing helpers, or planning evidence. It includes commands and explains what each check does and does not establish.
 
 Use the generator tables to select the closest precedents, then read their current headers, complete implementations, and relevant helper bodies. Compare the intended behavior in comments with what the final validator actually checks. Reuse a mechanism, not an entire generator's accidental constraints.

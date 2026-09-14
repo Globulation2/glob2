@@ -12,6 +12,7 @@
 #include "CreditScreen.h"
 #include "EditorMainMenu.h"
 #include "Engine.h"
+#include "Headless.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GenerationService.h"
@@ -411,8 +412,15 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 int Glob2::run(int argc, char *argv[])
 {
 #ifndef YOG_SERVER_ONLY
-	if (argc > 1 && isMapCommand(argv[1]))
+	// --generate-map has a native file/report interface and a structured job interface.
+	// The latter is selected explicitly by --output-dir; preserve native CLI parsing.
+	bool structuredMap = false;
+	for (int i = 2; i < argc; ++i)
+		if (std::string(argv[i]) == "--output-dir") structuredMap = true;
+	if (argc > 1 && isMapCommand(argv[1]) && !structuredMap)
 		return runMapCommand(argc, argv);
+	const int headless = runHeadlessCommand(argc, argv);
+	if (headless >= 0) return headless;
 #endif
 	srand(time(NULL));
 

@@ -2,7 +2,9 @@
 """cortex-knob-search.py — successive-halving knob search for the Cortex AI.
 
 Searches the CortexTuning knob vector (src/ai/cortex/CortexTuning.h) against
-Nicowar using tools/ai-benchmark.sh as the game runner. Designed around the
+Nicowar using tools/ai-benchmark.sh as the game runner. That entry point now
+delegates execution, retries and artifacts to tools/tournaments; this script
+retains its historical search/selection policy. Designed around the
 anti-overfit rules from the rank-gate tuning handoff:
 
   * fitness = MIN across the training maps' win rates (no map trading);
