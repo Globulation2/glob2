@@ -33,6 +33,7 @@ class LobbyControls;
 class CustomGameScreen : public Glob2TabScreen
 {
   public:
+	void paint() override;
 	enum
 	{
 		OK = 1,

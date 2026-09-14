@@ -105,7 +105,6 @@ public:
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 
 private:
-    FrontendScope theme{true};
     std::unique_ptr<LoadSaveScreen> replaySave;
 	void saveReplay(const char *dir, const char *ext);
 };

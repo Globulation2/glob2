@@ -9,6 +9,11 @@ shares game logic and the GPU renderer with desktop. The browser host schedules 
 The browser ADRs under `docs/browser` describe the implementation boundaries and
 remaining release gates.
 
+The desktop browser uses the system mouse cursor, including when an older profile
+had enabled the game cursor. Menus retain their colony background after leaving
+a match; the custom-game lobby draws its own panel over that background. Mobile
+playability is outside this PR.
+
 ## Build
 
 From the repository root:

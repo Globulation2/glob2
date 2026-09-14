@@ -105,7 +105,7 @@ var Module = {
     }) : null;
     const gpu = Boolean(context);
     Module.renderer = gpu ? 'webgl2' : 'software';
-    Module.callMain(['-s', width + 'x' + height, '-F', gpu ? '-g' : '-G']);
+    Module.callMain(['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G']);
     document.body.classList.add('ready');
     loading.setAttribute('aria-hidden','true');
   },

@@ -560,11 +560,14 @@ void EndGameScreen::handleExecutionEvent(SDL_Event event)
 
 void EndGameScreen::drawExecution()
 {
-    Glob2Screen::drawExecution();
+    if (!isExecutionRunning()) return;
+    // Present the completed composition, including the replay-save dialog.
+    dispatchPaint(false);
     if (replaySave) {
-        replaySave->dispatchPaint();
+        replaySave->dispatchPaint(false);
         gfx->drawSurface(replaySave->decX, replaySave->decY, replaySave->getSurface());
     }
+    gfx->nextFrame();
 }
 
 void EndGameScreen::viewportResized(int oldWidth, int oldHeight, int width, int height)

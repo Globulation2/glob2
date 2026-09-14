@@ -773,6 +773,13 @@ void CustomGameScreen::showAIProfile(int colony)
 				 });
 }
 
+void CustomGameScreen::paint()
+{
+	// The lobby draws its own panel; a full-window widget is not another panel.
+	if (FrontendTheme::current) FrontendTheme::current->background(gfx, false);
+	else Glob2TabScreen::paint();
+}
+
 void CustomGameScreen::renderLobby()
 {
 	auto &ui = *controls;

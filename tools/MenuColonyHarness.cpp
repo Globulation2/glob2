@@ -79,6 +79,18 @@ void checkMenuPainting()
 		void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override {}
 	} screen(&surface);
 	FrontendScope scope;
+	{
+		FrontendScope game(false);
+		{
+			struct Menu : Glob2Screen { void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override {} } menu;
+			require(Style::style == FrontendTheme::current, "menu created during game teardown activates theme");
+		}
+		require(Style::style != FrontendTheme::current, "menu destruction restores game presentation");
+		{
+			struct Menu : Glob2TabScreen { Menu() : Glob2TabScreen(false) {} void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override {} } menu;
+			require(Style::style == FrontendTheme::current, "tab menu created during game teardown activates theme");
+		}
+	}
 	screen.dispatchPaint(false);
 	require(surface.presentations == 0, "modal background is not presented separately");
 	surface.nextFrame();
@@ -181,7 +193,7 @@ template<class T> class Preview : public T
 public:
 	using T::T;
 	void prepare() { if(!prepared) { this->gfx=globalContainer->gfx; this->dispatchInit(); prepared=true; } }
-	void render() { prepare(); this->paint(); for(auto* w:this->widgets) if(w->visible) w->paint(); }
+	void render() { prepare(); this->dispatchPaint(); }
 	void advance(unsigned frames) { prepare(); for(unsigned i=0;i<frames;++i) this->dispatchTimer(i*40); }
 	void checkBounds()
 	{
@@ -454,6 +466,8 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 			key.key.keysym.sym=SDLK_ESCAPE; dialog.dispatchEvents(&key);
 			require(dialog.endValue==LoadSaveScreen::CANCEL,"replay dialog cancellation");
 			Preview<CustomGameScreen> custom(screens); custom.selectFirstListItem(); custom.render();
+			// Premade maps use LobbyControls rather than a GAG List now.
+			key.key.keysym.sym=SDLK_DOWN; custom.onSDLEvent(&key);
 			// The lobby opens on a random map (2026-09-14) and previews it on worker threads; drive
 			// its timer as the event loop would until the preview's map is loaded.
 			for(Uint32 start=SDL_GetTicks(); custom.getMapHeader().getNumberOfTeams()==0 && SDL_GetTicks()-start<120000;) { SDL_Delay(10); custom.dispatchTimer(SDL_GetTicks()); }
