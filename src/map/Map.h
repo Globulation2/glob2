@@ -474,6 +474,29 @@ public:
 	void decResource(int x, int y, int resourceType);
 	bool incResource(int x, int y, int resourceType, int variety);
 
+	//! Whether resourceType could ever grow at (x,y), by the same terrain probe
+	//! Map::growResources makes. Keep the two in step: growResources draws
+	//! offsets dwax, dway in [-15,15] and requires isWater(x+dwax, y+dway) for
+	//! wheat, wood and algae, with algae additionally needing
+	//! isSand(x+dway*2, y+dwax*2). A tile no draw of those offsets can satisfy
+	//! never grows anything, whatever else is true of it.
+	bool canResourceEverGrowHere(int x, int y, int resourceType) const;
+
+	//! Whether a farm area may be painted on (x,y).
+	//!
+	//! Painting where nothing can ever grow is a trap rather than a nuisance:
+	//! the tile would join a field as a connector or a source that never
+	//! refills, so a farm drawn across dead ground would hand out grain the
+	//! ground could not have produced. The brush therefore refuses
+	//!   - tiles the map forbids resources to grow on at all;
+	//!   - terrain that carries no farmable resource. A farm on grass is a
+	//!     wheat farm and a farm on water is an alga farm; sand is neither;
+	//!   - tiles too far from water for the growth probe ever to succeed;
+	//!   - tiles already holding a resource that is not wheat, wood or alga.
+	//!     Stone and the fruits can never be removed, and neither they nor
+	//!     papyrus are ever farmed.
+	bool canPaintFarmArea(int x, int y) const;
+
 	//! True when the farm-area rule can apply to this resource: it accumulates on
 	//! its tile (granular), can be used up (shrinkable) and re-seeds itself
 	//! (expendable). That is wheat and algae. Wood is not granular — one harvest

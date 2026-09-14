@@ -7,6 +7,7 @@
 #include "MapInternal.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <limits>
 #include <vector>
 
@@ -43,6 +44,72 @@ void Map::decResource(int x, int y, int resourceType)
 {
 	if (isResourceTakeable(x, y, resourceType))
 		decResource(x, y);
+}
+
+// Radius of the terrain probe in Map::growResources: it draws dwax and dway as
+// (syncRand()&0xF)-(syncRand()&0xF), so each lands anywhere in [-15,15] and the
+// probe can reach any tile of the 31x31 box around the source.
+static constexpr int GROWTH_PROBE_RADIUS = 15;
+
+bool Map::canResourceEverGrowHere(int x, int y, int resourceType) const
+{
+	if (resourceType == NO_RES_TYPE)
+		return false;
+	const ResourceType *type = globalContainer->resourcesTypes.get(resourceType);
+	if (getTerrainType(x, y) != type->terrain)
+		return false;
+
+	// Every gated resource needs water somewhere in the probe box. Scanning out
+	// from the tile finds it on the first ring for anything near a shore, and
+	// only runs the full box for the tiles that are about to be rejected.
+	bool water = false;
+	for (int r = 0; r <= GROWTH_PROBE_RADIUS && !water; r++)
+		for (int dy = -r; dy <= r && !water; dy++)
+			for (int dx = -r; dx <= r; dx++)
+			{
+				if (std::max(std::abs(dx), std::abs(dy)) != r)
+					continue;
+				if (isWater(x + dx, y + dy))
+				{
+					water = true;
+					break;
+				}
+			}
+	if (!water)
+		return false;
+
+	// Algae also need sand, at twice the offsets, so their box is twice as wide
+	// and only covers even offsets.
+	if (resourceType == ALGA)
+	{
+		for (int dy = -GROWTH_PROBE_RADIUS; dy <= GROWTH_PROBE_RADIUS; dy++)
+			for (int dx = -GROWTH_PROBE_RADIUS; dx <= GROWTH_PROBE_RADIUS; dx++)
+				if (isSand(x + dx * 2, y + dy * 2))
+					return true;
+		return false;
+	}
+	return true;
+}
+
+bool Map::canPaintFarmArea(int x, int y) const
+{
+	if (!canResourcesGrow(x, y))
+		return false;
+
+	const Resource &resource = getTile(x, y).resource;
+	if (resource.type != NO_RES_TYPE
+		&& resource.type != WHEAT && resource.type != WOOD && resource.type != ALGA)
+		return false;
+
+	// Grass means a wheat farm, water means an alga farm; nothing else farms.
+	// Wood shares wheat's terrain, so a forest inside a wheat farm is paintable
+	// and the farm can grow into it as the trees come down.
+	switch (getTerrainType(x, y))
+	{
+		case GRASS: return canResourceEverGrowHere(x, y, WHEAT);
+		case WATER: return canResourceEverGrowHere(x, y, ALGA);
+		default:    return false;
+	}
 }
 
 bool Map::isFarmableResource(int resourceType) const

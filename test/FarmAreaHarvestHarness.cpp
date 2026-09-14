@@ -283,6 +283,94 @@ namespace
 		check(wheatAt(map, 7, 5) == 5, "clearing must not reach into the field");
 	}
 
+	//! The brush refuses ground nothing can grow on. A farm on grass is a wheat
+	//! farm and a farm on water is an alga farm; stone, sand, no-grow tiles and
+	//! anything out of reach of water are not paintable, so they never join a
+	//! field and never hand out grain the ground could not have produced.
+	void paintingRefusesGroundThatCannotGrow()
+	{
+		// Bands of water, sand and grass, each wide enough that the middle tiles
+		// render as the terrain itself rather than as a transition -- the same
+		// trap the growth fixture hits.
+		Map map;
+		map.setSize(5, 5, GRASS);
+		for (int y = 0; y < map.getH(); y++)
+		{
+			for (int x = 0; x < 8; x++)
+				map.setUMatPos(x, y, WATER, 1);
+			for (int x = 8; x < 16; x++)
+				map.setUMatPos(x, y, SAND, 1);
+		}
+
+		const int water = 3, sand = 11, grass = 19;
+		check(map.getTerrainType(water, 10) == WATER, "fixture: expected water");
+		check(map.getTerrainType(sand, 10) == SAND, "fixture: expected sand");
+		check(map.getTerrainType(grass, 10) == GRASS, "fixture: expected grass");
+
+		const int wet = grass;        // grass, close enough to the water body
+		check(map.canPaintFarmArea(wet, 10), "plain grass near water is paintable");
+		check(!map.canPaintFarmArea(sand, 10), "sand carries no farmable resource");
+		check(map.canPaintFarmArea(water, 10), "water near sand is paintable for algae");
+
+		// Stone is eternal and never farmed.
+		Resource &stone = map.getTile(wet, 10).resource;
+		stone.type = STONE; stone.variety = 0; stone.amount = 3; stone.animation = 0;
+		check(!map.canPaintFarmArea(wet, 10), "stone is not paintable");
+		stone.clear();
+		check(map.canPaintFarmArea(wet, 10), "clearing the stone makes it paintable again");
+
+		// Wood shares wheat's terrain: a forest inside a farm is fine.
+		Resource &tree = map.getTile(wet, 10).resource;
+		tree.type = WOOD; tree.variety = 0; tree.amount = 3; tree.animation = 0;
+		check(map.canPaintFarmArea(wet, 10), "a tree inside a wheat farm is paintable");
+		tree.clear();
+
+		// The map's own no-grow flag.
+		map.getTile(wet, 10).canResourcesGrow = 0;
+		check(!map.canPaintFarmArea(wet, 10), "a no-grow tile is not paintable");
+		map.getTile(wet, 10).canResourcesGrow = 1;
+
+		// Too far from water for growResources' probe to ever succeed.
+		Map dry;
+		dry.setSize(6, 6, GRASS);
+		check(!dry.canPaintFarmArea(32, 32), "grass with no water in range is not paintable");
+	}
+
+	//! A refused tile stays out of the field, so wheat standing on it is
+	//! harvested off its own tile and cannot connect two patches.
+	void refusedGroundIsNotAGrainTeleporter()
+	{
+		// Grass beside a water body, so the ground really is paintable, with one
+		// tile marked no-grow in the middle of the wheat.
+		Map map;
+		map.setSize(5, 5, GRASS);
+		for (int y = 0; y < map.getH(); y++)
+			for (int x = 0; x < 8; x++)
+				map.setUMatPos(x, y, WATER, 1);
+		const int gap = 20;
+		map.getTile(gap, 10).canResourcesGrow = 0;
+
+		int painted = 0;
+		for (int y = 0; y < map.getH(); y++)
+			for (int x = 0; x < map.getW(); x++)
+				if (map.canPaintFarmArea(x, y))
+				{
+					map.addFarmArea(x, y, 0);
+					painted++;
+				}
+		check(painted > 300, "fixture: the brush must accept most of this map");
+		check(map.isFarmArea(gap - 1, 10, TEAM_MASK), "fixture: the field is painted");
+		check(!map.isFarmArea(gap, 10, TEAM_MASK), "the no-grow tile must be refused");
+
+		setWheat(map, gap - 1, 10, 1);
+		setWheat(map, gap, 10, 1);
+		setWheat(map, gap + 1, 10, 5);
+		check(harvest(map, gap - 2, 10, 1, 0), "the near patch yields");
+		check(wheatAt(map, gap - 1, 10) == 0, "the near patch is the only reachable field");
+		check(wheatAt(map, gap + 1, 10) == 5, "a refused tile cannot connect two patches");
+		check(wheatAt(map, gap, 10) == 1, "the refused tile is not part of any field");
+	}
+
 	//! Repeating the same harvest from one spot flattens the field from the top,
 	//! and stops when the one tile the worker can touch is finally spent -- the
 	//! rest of the field is still there, and the worker has to walk to it.
@@ -327,8 +415,10 @@ int main()
 	algaeAreFarmed();
 	standingStillOnlyDrainsWhatItTouches();
 	growthIgnoresTheFarmMask();
+	paintingRefusesGroundThatCannotGrow();
+	refusedGroundIsNotAGrainTeleporter();
 	clearingStaysOnTheTouchedTile();
 
-	printf("FarmAreaHarvestHarness: 12 cases passed\n");
+	printf("FarmAreaHarvestHarness: 14 cases passed\n");
 	return 0;
 }

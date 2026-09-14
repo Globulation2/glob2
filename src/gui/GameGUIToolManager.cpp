@@ -269,12 +269,19 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 	{
 		const bool value = (brushMode == BrushTool::MODE_ADD);
 		Utilities::BitArray& view = displayedViewForZone(zoneType);
+		// The farm brush does not paint ground nothing can grow on. The order
+		// refuses those tiles anyway; skipping them here too keeps the overlay
+		// the player sees from disagreeing with what actually lands.
+		const bool honourFarmTerrain = (zoneType == Farm) && value;
 		for (int y=startY; y<startY+height; y++)
 		{
 			for (int x=startX; x<startX+width; x++)
 			{
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
-					view.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), value);
+				if (!BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
+					continue;
+				if (honourFarmTerrain && !game.map.canPaintFarmArea(x, y))
+					continue;
+				view.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), value);
 			}
 		}
 	}

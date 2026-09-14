@@ -418,7 +418,9 @@ void Game::executeAlterClearArea(const OrderAlterClearArea& oaa, int localPlayer
 
 // A farm area only changes what a harvest draws from, so unlike the other three
 // it feeds no gradient and invalidates no cached field. Painting one is pure
-// tile-mask bookkeeping.
+// tile-mask bookkeeping -- except that it refuses ground nothing can grow on,
+// which Map::canPaintFarmArea decides. The refusal has to live here rather than
+// in the brush: this is the path a replay and every remote client take.
 void Game::executeAlterFarmArea(const OrderAlterFarmArea& oaa, int localPlayer)
 {
 	if (oaa.type == BrushTool::MODE_ADD)
@@ -428,7 +430,7 @@ void Game::executeAlterFarmArea(const OrderAlterFarmArea& oaa, int localPlayer)
 		for (int y=oaa.centerY+oaa.minY; y<oaa.centerY+oaa.maxY; y++)
 			for (int x=oaa.centerX+oaa.minX; x<oaa.centerX+oaa.maxX; x++)
 			{
-				if (oaa.mask.get(orderMaskIndex))
+				if (oaa.mask.get(orderMaskIndex) && map.canPaintFarmArea(x, y))
 				{
 					size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 					// Update real map
