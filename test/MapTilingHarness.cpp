@@ -8,6 +8,9 @@
 #include "BuildingType.h"
 #include "FileManager.h"
 #include "Game.h"
+#include "GenerationRequest.h"
+#include "GenerationService.h"
+#include "GeneratorControls.h"
 #include "MapTiling.h"
 #include "Team.h"
 #include "Toolkit.h"
@@ -144,5 +147,21 @@ int main(int argc, char** argv)
 				}
 			}
 	std::puts("PASS a repeated map deals each colony, its areas and its flag settings to one team");
+
+	// The source of a repeat is often a 32 x 32 map: the editor offers that size, the lobby keeps 64.
+	for (const auto& shared : GenerationRequest::sharedControls())
+		if (shared.id == "width" || shared.id == "height")
+		{
+			require(shared.minimum == 6, "the lobby's smallest map is 64 tiles");
+			require(editorSizeControl(shared).minimum == 5, "the editor's smallest map is 32 tiles");
+		}
+	GenerationRequest request;
+	request.setMethodDefaults(GenerationRequest::eUNIFORM);
+	request.wDec = request.hDec = 5;
+	request.seed = 1;
+	Game small(nullptr, nullptr);
+	require(bool(GenerationService().generate(small, request)), "a 32 x 32 map generates");
+	require(small.map.getW() == 32 && small.map.getH() == 32, "the generated map is 32 x 32");
+	std::puts("PASS the editor can make the 32 x 32 map a repeat starts from");
 	return 0;
 }

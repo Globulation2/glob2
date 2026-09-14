@@ -96,11 +96,18 @@ void GeneratorControl::set(GenerationRequest &r, int value) const
 	else
 		r.options[id] = v;
 }
+GeneratorControl editorSizeControl(const GeneratorControl &shared)
+{
+	GeneratorControl c = shared;
+	if (c.id == "width" || c.id == "height")
+		c.minimum = EDITOR_MINIMUM_SIZE_SHIFT;
+	return c;
+}
 const std::vector<GeneratorControl> &sharedGeneratorControls()
 {
 	static const std::vector<GeneratorControl> controls = {
-		{"width", "Width", 5, 9, 1, 8, ControlGroup::Shared, true},
-		{"height", "Height", 5, 9, 1, 8, ControlGroup::Shared, true},
+		{"width", "Width", 6, 9, 1, 8, ControlGroup::Shared, true},
+		{"height", "Height", 6, 9, 1, 8, ControlGroup::Shared, true},
 		{"teams", "Colonies", 1, Team::MAX_COUNT, 1, 4, ControlGroup::Shared},
 		{"workers", "Starting workers", 1, 8, 1, 4, ControlGroup::Shared}};
 	return controls;
@@ -194,8 +201,9 @@ void GenerationHistory::select(GenerationRequest &current, int id,
 		next = it->second;
 	else
 		next.setMethodDefaults(id, registry);
+	// carry the size as is: an editor map of 32 stays 32 when the landscape changes
 	for (const auto &c : sharedGeneratorControls())
-		c.set(next, c.get(current));
+		editorSizeControl(c).set(next, c.get(current));
 	next.terrainType = current.terrainType;
 	next.seed = current.seed;
 	current = next;

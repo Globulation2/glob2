@@ -58,3 +58,8 @@ struct GeneratorControl
 	void set(MapGenerationDescriptor &, int) const;
 };
 const std::vector<GeneratorControl> &sharedGeneratorControls();
+//! The editor also offers 32 x 32 maps, the natural source for repeating a map (MapTiling).
+//! The lobby keeps 64 as its smallest size; many landscapes cannot seat colonies on less.
+static constexpr int EDITOR_MINIMUM_SIZE_SHIFT = 5;
+//! `shared` with the editor's smaller minimum when it is the width or height control.
+GeneratorControl editorSizeControl(const GeneratorControl &shared);

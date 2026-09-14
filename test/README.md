@@ -112,6 +112,8 @@ and a forbidden tile for the other, adds a clearing flag that leaves wood alone,
 the map 2 x 2 for eight teams with `Game::tileForPlay`. Each copy's team, as
 `MapTiling::teamForColony` deals it, must hold its colony's buildings and units, exactly its
 own bit on every painted tile, and a clearing flag with the same resource choice.
+It also checks that the editor's width and height reach 32 while the lobby's stop at 64, and
+that a 32 x 32 map generates.
 
 ## Real LAN session regression
 

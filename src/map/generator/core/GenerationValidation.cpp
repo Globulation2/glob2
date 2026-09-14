@@ -9,9 +9,13 @@
 #include "Unit.h"
 std::string validateGenerationRequest(const GenerationRequest &r, const GeneratorDefinition &d)
 {
-	for (const auto &c : sharedGeneratorControls())
+	// A request is valid at any size either screen offers: the editor's range includes the lobby's.
+	for (const auto &shared : sharedGeneratorControls())
+	{
+		const GeneratorControl c = editorSizeControl(shared);
 		if (c.get(r) != c.normalize(c.get(r)))
 			return "Invalid " + c.id;
+	}
 	if (r.terrainType < WATER || r.terrainType > GRASS)
 		return "Invalid terrain";
 	for (const auto &c : d.controls)

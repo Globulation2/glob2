@@ -44,7 +44,7 @@ struct CustomGamePreferences
 		// legacy field are saved in the options section instead.
 		static const std::vector<Field> values = {
 #define FIELD(name, lo, hi) {#name, &MapGenerationDescriptor::name, lo, hi}
-			FIELD(wDec, 5, 9), FIELD(hDec, 5, 9),
+			FIELD(wDec, 6, 9), FIELD(hDec, 6, 9),
 			FIELD(waterRatio, 0, 100), FIELD(sandRatio, 0, 100),
 			FIELD(grassRatio, 0, 100), FIELD(desertRatio, 0, 100),
 			FIELD(wheatRatio, 0, 64), FIELD(woodRatio, 0, 64),
