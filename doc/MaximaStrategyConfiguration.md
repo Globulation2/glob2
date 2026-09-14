@@ -1,10 +1,17 @@
 # Maxima strategy configuration
 
 Maxima uses the strict schema-v2 contract and resolves a complete immutable
-strategy once per match. Its sources,
-from lowest to highest precedence, are the complete base file, the inferred or
-explicit format file, ordered `--maxima-layer` files, inline
-`--maxima-overrides`, and `GLOB2_MAXIMA_OVERRIDES`.
+strategy once per match, the first time it is asked for an order or a save. Its
+sources, from lowest to highest precedence, are the complete base file
+(`GLOB2_MAXIMA_BASE`, default `data/maxima/base.strategy`), the inferred or
+explicit format file (`GLOB2_MAXIMA_FORMAT`), ordered layer files
+(`GLOB2_MAXIMA_LAYERS`, `;`-separated), inline overrides for the player's team
+and then the player itself, and `GLOB2_MAXIMA_OVERRIDES`.
+
+Team and player overrides are scoped lists:
+`GLOB2_MAXIMA_TEAM_OVERRIDES="0:farming.enabled=false|2:tactics.min_force=6"`
+and `GLOB2_MAXIMA_PLAYER_OVERRIDES` in the same form. A player's entry wins over
+its team's key by key.
 
 Files contain one `section.key = value` assignment per line and use `#` for
 comments. Sparse layers may be empty. Assignments are strict: unknown keys,
@@ -15,11 +22,13 @@ Schema-v1 and Original Nicowar keys have no aliases. Supplying one is an
 unknown-key error; optimizer warm starts must explicitly record strategy schema
 version 2.
 
-The binary is the authoritative optimizer interface:
+`test/MaximaStrategyDump.cpp` is the optimizer interface. The regression runner
+builds it and `test/MaximaStrategyConfigTest.py` drives it:
 
 ```text
-glob2 --dump-maxima-schema
-glob2 --dump-maxima-strategy --maxima-format 2v2
+MaximaStrategyDump --dump-maxima-schema
+MaximaStrategyDump --dump-maxima-strategy --maxima-format 2v2 \
+    [--maxima-base FILE] [--maxima-layer FILE]... [--maxima-overrides ASSIGNMENTS]
 ```
 
 The first command emits types, units, groups, descriptions, hard bounds, and

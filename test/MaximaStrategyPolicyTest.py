@@ -43,8 +43,9 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         )
         for forbidden in ("getenv(", "ifstream", "ConfigVector", "GLOB2_NICOWAR"):
             self.assertNotIn(forbidden, consumers)
-        self.assertIn("resolveMaximaStrategy(", self.maxima)
-        self.assertIn("resolvedMaximaStrategies", self.game)
+        # Maxima resolves its own strategy; the game has no Maxima state.
+        self.assertIn("StrategyResolver::resolveForPlayer(", self.maxima)
+        self.assertNotIn("Maxima", self.game)
 
     def test_current_save_omits_configuration_plans_and_phases(self) -> None:
         version = (ROOT / "src/Version.h").read_text()
@@ -221,22 +222,23 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         self.assertIn("SwarmController::plan(", self.maxima)
 
     def test_maxima_worker_assignments_share_the_engine_limit(self) -> None:
-        building = (ROOT / "src/building/Building.h").read_text()
+        runtime_header = (ROOT / "src/AIMaximaRuntime.h").read_text()
         runtime = (ROOT / "src/AIMaximaRuntime.cpp").read_text()
         gui_header = (ROOT / "src/gui/GameGUI.h").read_text()
         orders = (ROOT / "src/Game_orders.cpp").read_text()
         game_header = (ROOT / "src/Game.h").read_text()
-        self.assertIn("static constexpr int MAX_UNIT_WORKING=20;", building)
+        self.assertIn("constexpr int MAXIMA_MAX_UNIT_WORKING=20;", runtime_header)
         self.assertIn(
-            "workers>Building::MAX_UNIT_WORKING?Building::MAX_UNIT_WORKING:workers",
+            "workers>MAXIMA_MAX_UNIT_WORKING?MAXIMA_MAX_UNIT_WORKING:workers",
             runtime,
         )
-        # The engine enforces the same ceiling when it executes the order, under
-        # its own name. Both constants are 20; keep them pinned to each other.
+        # Maxima keeps its own copy so it needs no engine change. The engine's
+        # GUI limit and the ceiling it enforces when executing the order are
+        # also 20; keep all three pinned to each other.
+        self.assertIn("#define MAX_UNIT_WORKING 20", gui_header)
         self.assertIn(
             "static constexpr int MAX_BUILDING_WORKER_REQUEST = 20;", game_header
         )
         self.assertIn(
             "omb.numberRequested <= MAX_BUILDING_WORKER_REQUEST", orders
         )
-        self.assertNotIn("#define MAX_UNIT_WORKING", gui_header)

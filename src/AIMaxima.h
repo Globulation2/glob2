@@ -580,6 +580,14 @@ private:
 	std::map<int, int> attack_target_quarantine_until;
 	///The immutable, fully resolved strategy used for this match.
 	MaximaStrategy strategy;
+	///False until ensure_strategy() has resolved `strategy` from the final header.
+	bool strategy_resolved;
+	///Resolves the strategy from the game's current header and applies it.
+	void resolve_strategy(bool announce);
+	///Re-resolves once, before the first order or save. A new game constructs
+	///its AIs while Game::setGameHeader is still copying the header in, so the
+	///constructor may have resolved against the previous header.
+	void ensure_strategy();
 
 	// Legacy versions 84-88 serialized phase and construction queues. They are
 	// consumed on load, then replaced by the deterministic development planner.

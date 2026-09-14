@@ -1158,10 +1158,10 @@ namespace
 		}
 		if(!options.inlineOverrides.empty())
 		{
-			if(!applyInline("command-line overrides", options.inlineOverrides,
+			if(!applyInline("inline overrides", options.inlineOverrides,
 				result.values, result.provenance, error))
 				return false;
-			result.sources.push_back("command-line overrides");
+			result.sources.push_back("inline overrides");
 		}
 		const char* environment=std::getenv("GLOB2_MAXIMA_OVERRIDES");
 		if(environment && *environment)
@@ -1238,6 +1238,108 @@ bool StrategyResolver::resolveForFormat(const StrategyConfigOptions& options,
 	return resolveInternal(options, format, result, error);
 }
 
+namespace
+{
+	std::string environmentValue(const char* name)
+	{
+		const char* value=std::getenv(name);
+		return value ? value : "";
+	}
+
+	/// The assignments listed for `number` in "<number>:<assignments>|...".
+	std::string scopedOverrides(const char* variable, int number)
+	{
+		std::istringstream entries(environmentValue(variable));
+		std::string entry;
+		std::string result;
+		while(std::getline(entries, entry, '|'))
+		{
+			const size_t colon=entry.find(':');
+			if(colon==std::string::npos)
+				continue;
+			char* end=NULL;
+			const long scope=std::strtol(entry.substr(0, colon).c_str(), &end, 10);
+			if(end && *end=='\0' && scope==number)
+				result=entry.substr(colon+1);
+		}
+		return result;
+	}
+
+	/// Later sources win key by key; entries keep their original text.
+	std::string mergedOverrides(const std::string& team, const std::string& player)
+	{
+		std::map<std::string, std::string> assignments;
+		const std::string sources[2]={team, player};
+		for(int source=0; source<2; ++source)
+		{
+			std::string normalized=sources[source];
+			std::replace(normalized.begin(), normalized.end(), ';', ',');
+			std::istringstream entries(normalized);
+			std::string entry;
+			while(std::getline(entries, entry, ','))
+			{
+				const size_t equals=entry.find('=');
+				if(equals==std::string::npos)
+				{
+					if(!entry.empty()) assignments[entry]=entry;
+					continue;
+				}
+				std::string key=entry.substr(0, equals);
+				key.erase(0, key.find_first_not_of(" \t\r\n"));
+				const size_t end=key.find_last_not_of(" \t\r\n");
+				if(end!=std::string::npos) key.erase(end+1);
+				assignments[key]=entry;
+			}
+		}
+		std::ostringstream result;
+		for(std::map<std::string, std::string>::const_iterator setting=
+			assignments.begin(); setting!=assignments.end(); ++setting)
+		{
+			if(setting!=assignments.begin()) result<<",";
+			result<<setting->second;
+		}
+		return result.str();
+	}
+}
+
+bool StrategyResolver::telemetryEnabled()
+{
+	static const bool enabled=[]
+	{
+		const std::string value=environmentValue("GLOB2_MAXIMA_TELEMETRY");
+		return !value.empty() && value!="0";
+	}();
+	return enabled;
+}
+
+StrategyConfigOptions StrategyResolver::environmentOptions()
+{
+	StrategyConfigOptions options;
+	const std::string base=environmentValue("GLOB2_MAXIMA_BASE");
+	if(!base.empty())
+		options.baseFile=base;
+	std::istringstream layers(environmentValue("GLOB2_MAXIMA_LAYERS"));
+	std::string layer;
+	while(std::getline(layers, layer, ';'))
+		if(!layer.empty())
+			options.layerFiles.push_back(layer);
+	options.explicitFormat=environmentValue("GLOB2_MAXIMA_FORMAT");
+	return options;
+}
+
+bool StrategyResolver::resolveForPlayer(const GameHeader& gameHeader,
+	int playerNumber, ResolvedStrategy& result, std::string& error)
+{
+	StrategyConfigOptions options=environmentOptions();
+	int teamNumber=-1;
+	if(playerNumber>=0 && playerNumber<gameHeader.getNumberOfPlayers())
+		teamNumber=gameHeader.getBasePlayer(playerNumber).teamNumber;
+	options.inlineOverrides=mergedOverrides(
+		scopedOverrides("GLOB2_MAXIMA_TEAM_OVERRIDES", teamNumber),
+		scopedOverrides("GLOB2_MAXIMA_PLAYER_OVERRIDES", playerNumber));
+	return resolve(options, &gameHeader, result, error);
+}
+
 bool StrategyResolver::parseFormat(const std::string& name, MatchFormat& format)
 {
 	if(name=="duel") format=MatchFormatDuel;
@@ -1259,7 +1361,8 @@ MatchFormat StrategyResolver::inferFormat(const GameHeader& gameHeader)
 	for(int i=0; i<players; ++i)
 	{
 		const int team=gameHeader.getBasePlayer(i).teamNumber;
-		++allianceSizes[gameHeader.getAllyTeamNumber(team)];
+		// getAllyTeamNumber only reads, but GameHeader does not declare it const.
+		++allianceSizes[const_cast<GameHeader&>(gameHeader).getAllyTeamNumber(team)];
 	}
 	if(allianceSizes.size()==2)
 	{

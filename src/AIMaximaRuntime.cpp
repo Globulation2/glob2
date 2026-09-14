@@ -1,5 +1,6 @@
 #include "AIMaximaRuntime.h"
 #include "AIMaximaContinuation.h"
+#include "AIMaximaStrategy.h"
 
 #include "Brush.h"
 #include "Building.h"
@@ -20,6 +21,11 @@ using std::shared_ptr;
 
 namespace AIMaximaRuntime
 {
+
+bool telemetry_enabled()
+{
+	return AIMaxima::StrategyResolver::telemetryEnabled();
+}
 namespace
 {
 	bool is_flag_type(int type)
@@ -397,7 +403,33 @@ namespace Construction
 BuildingRecord::BuildingRecord()
 	: x(-1),y(-1),type(-1),gid(NOGBID),age(-1),runtimeIdentity(0),issued(false),upgrading(false),upgradeSeen(false) {}
 
-BuildingRegister::BuildingRegister(Player* player) : player(player),nextId(0) {}
+BuildingRegister::BuildingRegister(Player* player)
+	: player(player),nextId(0),observedBuildings(::Building::MAX_COUNT,NULL),
+	buildingIdentities(::Building::MAX_COUNT,0),nextBuildingIdentity(0) {}
+void BuildingRegister::observe_buildings() const
+{
+	for(int i=0;i<::Building::MAX_COUNT;++i)
+	{
+		const ::Building* building=player->team->myBuildings[i];
+		if(observedBuildings[i]!=building)
+		{
+			observedBuildings[i]=building;
+			buildingIdentities[i]=building?++nextBuildingIdentity:0;
+		}
+	}
+}
+Uint64 BuildingRegister::identity_of(const ::Building* building) const
+{
+	const int slot=::Building::GIDtoID(building->gid);
+	if(::Building::GIDtoTeam(building->gid)!=player->team->teamNumber)
+		return 0;
+	if(observedBuildings[slot]!=building)
+	{
+		observedBuildings[slot]=building;
+		buildingIdentities[slot]=++nextBuildingIdentity;
+	}
+	return buildingIdentities[slot];
+}
 void BuildingRegister::initiate()
 {
 	pendingBuildings.clear(); foundBuildings.clear(); nextId=0;
@@ -405,7 +437,7 @@ void BuildingRegister::initiate()
 	{
 		::Building* b=player->team->myBuildings[i]; if(!b) continue;
 		BuildingRecord r; r.x=b->posX; r.y=b->posY; r.type=b->type->shortTypeNum; r.gid=b->gid;
-		r.runtimeIdentity=b->getRuntimeIdentity();
+		r.runtimeIdentity=identity_of(b);
 		foundBuildings[nextId++]=r;
 	}
 }
@@ -543,7 +575,7 @@ ManagementOrder* ManagementOrder::load(GAGCore::InputStream* stream)
 }
 
 AssignWorkers::AssignWorkers(int workers,int id)
-	:workers(workers>Building::MAX_UNIT_WORKING?Building::MAX_UNIT_WORKING:workers),id(id){}
+	:workers(workers>MAXIMA_MAX_UNIT_WORKING?MAXIMA_MAX_UNIT_WORKING:workers),id(id){}
 Result AssignWorkers::wait(Context& c) const{return wait_for_building(c,id);}
 void AssignWorkers::modify(Context& c){::Building* b=c.get_building_register().get_building(id);if(b)c.push_order(shared_ptr<Order>(new OrderModifyBuilding(b->gid,workers)));}
 void AssignWorkers::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(workers,"workers");s->writeSint32(id,"id");}
@@ -653,7 +685,7 @@ void BuildingRegister::tick()
 			if(found && Building::GIDtoTeam(gid)==player->team->teamNumber
 			   && found->type->shortTypeNum==r.type)
 			{
-				r.gid=gid; r.runtimeIdentity=found->getRuntimeIdentity();
+				r.gid=gid; r.runtimeIdentity=identity_of(found);
 				foundBuildings[i->first]=r; pendingBuildings.erase(i++); continue;
 			}
 		}
@@ -686,7 +718,7 @@ bool BuildingRegister::is_building_upgrading(unsigned id) const
 	if(i==foundBuildings.end()) return NULL;
 	::Building* building=building_from_gid(player,i->second.gid);
 	return building && building->buildingState!=::Building::DEAD
-		&& building->getRuntimeIdentity()==i->second.runtimeIdentity ? building : NULL;
+		&& identity_of(building)==i->second.runtimeIdentity ? building : NULL;
 }
 ::BuildingType* BuildingRegister::get_building_type(unsigned id) const
 { ::Building* b=get_building(id); return b?b->type:NULL; }
@@ -739,7 +771,7 @@ bool BuildingRegister::load(GAGCore::InputStream* stream)
 	for(auto& record:foundBuildings)
 	{
 		::Building* building=building_from_gid(player,record.second.gid);
-		if(building) record.second.runtimeIdentity=building->getRuntimeIdentity();
+		if(building) record.second.runtimeIdentity=identity_of(building);
 	}
 	stream->readLeaveSection(); return true;
 }
@@ -1196,9 +1228,10 @@ void Context::record_profile(long long totalMicros,long long aiMicros,
 
 shared_ptr<Order> Context::getOrder(RuntimeAI& ai)
 {
-	const bool profiling=globalContainer&&globalContainer->maximaTelemetry;
+	const bool profiling=telemetry_enabled();
 	const std::chrono::steady_clock::time_point totalStarted=profiling
 		?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point();
+	buildings.observe_buildings();
 	activeAI=&ai;if(!initialized)initialize();gradients.update(player->game->stepCounter);
 	if(!orders.empty())
 	{

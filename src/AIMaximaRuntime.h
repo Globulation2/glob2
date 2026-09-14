@@ -30,6 +30,15 @@ class BuildingType;
 namespace AIMaximaRuntime
 {
 
+/// Most units a building accepts. The engine keeps its own copy of this limit
+/// (MAX_UNIT_WORKING in GameGUI.h, a macro, hence the distinct name).
+constexpr int MAXIMA_MAX_UNIT_WORKING=20;
+
+/// True when GLOB2_MAXIMA_TELEMETRY is set to anything but "0": Maxima then
+/// writes its per-decision MAXIMA_TELEMETRY lines to stdout.
+/// See StrategyResolver::telemetryEnabled.
+bool telemetry_enabled();
+
 struct position
 {
 	position() : x(0), y(0) {}
@@ -360,7 +369,7 @@ namespace Construction
 	{
 		BuildingRecord();
 		int x, y, type, gid, age;
-		Uint64 runtimeIdentity; // Rebound on load; not part of the save format.
+		Uint64 runtimeIdentity; // From identity_of; rebound on load, not saved.
 		bool issued, upgrading, upgradeSeen;
 	};
 
@@ -388,12 +397,25 @@ namespace Construction
 		const std::map<int, BuildingRecord>& pending() const { return pendingBuildings; }
 		void save(GAGCore::OutputStream*) const;
 		bool load(GAGCore::InputStream*);
+		///Records which Building object occupies each of the team's slots. Call
+		///once per AI order, before anything reads identities.
+		void observe_buildings() const;
 	private:
         friend class ::AIMaximaRuntime::Context;
+		///An identity for the Building object now in `building`'s slot. A slot
+		///gets a new identity whenever the object in it changes, so a gid reused
+		///by a new building never matches a record made for the old one. Game
+		///deletes buildings at the end of a step and creates them from orders at
+		///the start of the next, and the AI is asked for an order in between, so
+		///observing every order sees each slot empty before it is reused.
+		Uint64 identity_of(const ::Building* building) const;
 		Player* player;
 		std::map<int, BuildingRecord> pendingBuildings;
 		std::map<int, BuildingRecord> foundBuildings;
 		unsigned nextId;
+		mutable std::vector<const ::Building*> observedBuildings;
+		mutable std::vector<Uint64> buildingIdentities;
+		mutable Uint64 nextBuildingIdentity;
 	};
 
 	class Constraint

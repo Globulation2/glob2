@@ -45,9 +45,8 @@ class InGameTextInput;
 class Order;
 class MapMarkOrder;
 
-//! max unit working at a building; the engine owns this limit, so mirror it
-//! rather than defining a second copy that can silently diverge.
-static constexpr int MAX_UNIT_WORKING = Building::MAX_UNIT_WORKING;
+//! max unit working at a building
+#define MAX_UNIT_WORKING 20
 //! range of ratio for swarm
 #define MAX_RATIO_RANGE 16
 
@@ -688,3 +687,5 @@ private:
 	//! Update overview navigation and particle offsets after viewport movement
 	void viewportChanged(int oldViewportX, int viewportX, int oldViewportY, int viewportY);
 };
+
+

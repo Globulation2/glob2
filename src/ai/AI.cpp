@@ -170,12 +170,3 @@ void AI::save(GAGCore::OutputStream *stream)
 	stream->write( "AI e",  4, "signatureEnd");
 	stream->writeLeaveSection();
 }
-
-std::string AI::implementationIdentity() const
-{
-    switch(implementationID) {
-    case NUMBI:return "AINumbi";case CASTOR:return "AICastor";
-    case MAXIMA:return "AIMaxima::Maxima";case NICOWAR:return "AIEcho::Echo/NewNicowar";
-    default:return "unsupported";
-    }
-}

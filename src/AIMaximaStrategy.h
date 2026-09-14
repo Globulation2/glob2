@@ -832,6 +832,19 @@ public:
 		std::string& error);
 	static bool resolveForFormat(const StrategyConfigOptions& options,
 		MatchFormat format, ResolvedStrategy& result, std::string& error);
+	/// Options from the environment: GLOB2_MAXIMA_BASE (a complete base file),
+	/// GLOB2_MAXIMA_LAYERS (';'-separated layer files, applied in order) and
+	/// GLOB2_MAXIMA_FORMAT (duel, 2v2, ffa3, ffa4 or ffa5plus). GLOB2_MAXIMA_OVERRIDES
+	/// is applied last by every resolution.
+	static StrategyConfigOptions environmentOptions();
+	/// True when GLOB2_MAXIMA_TELEMETRY is set to anything but "0". Telemetry
+	/// only prints; it never changes a decision.
+	static bool telemetryEnabled();
+	/// Resolves the strategy for one player of `gameHeader`, adding that player's
+	/// GLOB2_MAXIMA_TEAM_OVERRIDES and GLOB2_MAXIMA_PLAYER_OVERRIDES entries
+	/// ("<number>:<assignments>|<number>:<assignments>") to environmentOptions().
+	static bool resolveForPlayer(const GameHeader& gameHeader, int playerNumber,
+		ResolvedStrategy& result, std::string& error);
 	static bool parseFormat(const std::string& name, MatchFormat& format);
 	static MatchFormat inferFormat(const GameHeader& gameHeader);
 	static const char* formatName(MatchFormat format);

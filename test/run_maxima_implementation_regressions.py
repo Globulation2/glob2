@@ -2,7 +2,7 @@
 """Run native Maxima regressions using an existing game build for engine objects.
 
 Usage: python3 test/run_maxima_implementation_regressions.py --build-dir build
-Recompiles Maxima, its AI factory and building lifetime tracking; leaves the game
+Recompiles Maxima and its AI factory; leaves the game
 binary and existing build objects untouched. Requires the game's pkg-config deps.
 """
 import argparse
@@ -28,7 +28,7 @@ def main():
         "MaximaFarmingIntegrationTest",
         "MaximaEconomyRegressionTest", "MaximaDirectorRegressionTest",
         "MaximaTacticsStandaloneTest", "MaximaPlacementStandaloneTest",
-        "MaximaFarmingStandaloneTest", "MaximaFoodLedgerStandaloneTest", "MaximaStaffingControlStandaloneTest", "MaximaDefenseStandaloneTest", "MaximaReconStandaloneTest", "MaximaStrategyTest", "MaximaLifecycleTest", "MaximaDiagnosticsTest"], help="Run only the named test (repeatable)")
+        "MaximaFarmingStandaloneTest", "MaximaFoodLedgerStandaloneTest", "MaximaStaffingControlStandaloneTest", "MaximaDefenseStandaloneTest", "MaximaReconStandaloneTest", "MaximaStrategyTest", "MaximaLifecycleTest", "MaximaDiagnosticsTest", "MaximaStrategyConfigTest"], help="Run only the named test (repeatable)")
     parser.add_argument("--placement-only", action="store_true",
                         help="Run placement/farming units and placement engine integration")
     parser.add_argument("--production-only", action="store_true",
@@ -57,7 +57,7 @@ def main():
     flags = ["-std=gnu++20", "-O1", "-UNDEBUG", "-I.", "-Isrc",
              "-Ilibgag/include", "-Ilibusl/src", *["-I"+str(p) for p in (ROOT/"src").rglob("*") if p.is_dir()], *cflags]
     sources = (ROOT / "src/SConscript").read_text().split('"""')[1].split()
-    rebuilt = [s for s in sources if s.startswith("AIMaxima") or s in ("ai/AI.cpp", "building/Lifecycle.cpp")]
+    rebuilt = [s for s in sources if s.startswith("AIMaxima") or s == "ai/AI.cpp"]
     objects = [build / "src" / Path(s).with_suffix(".o") for s in sources
                if s not in rebuilt and s != "Glob2.cpp"]
     objects.extend([build/"libgag/src/libgag.a",build/"libusl/src/libusl.a"])
@@ -110,6 +110,13 @@ def main():
                 sys.stderr.write(result.stdout + result.stderr)
                 result.check_returncode()
             print(name + (" (" + arguments[0][2:].replace("-", " ") + ")" if arguments else "") + ": PASS", flush=True)
+        if not args.test or "MaximaStrategyConfigTest" in args.test:
+            dump = temporary / "MaximaStrategyDump"
+            run([*compiler, *flags, "test/MaximaStrategyDump.cpp",
+                 *map(str, objects), *libs, "-o", str(dump)])
+            subprocess.run([sys.executable, "test/MaximaStrategyConfigTest.py"], cwd=ROOT,
+                           env=dict(os.environ, MAXIMA_STRATEGY_DUMP=str(dump)), check=True)
+            print("MaximaStrategyConfigTest: PASS", flush=True)
 
 
 if __name__ == "__main__":

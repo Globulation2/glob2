@@ -8,6 +8,7 @@
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <cassert>
+#include <cstdlib>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -66,12 +67,12 @@ static void run(Uint32 seed)
         ("glob2-maxima-resume-"+std::to_string(seed)+".strategy");
     {std::ofstream file(layer);file<<"placement.unmet_demand_weight = 1\n"
         <<"recon.memory_horizon_ticks = 20000\n";}
-    globalContainer->maximaStrategyOptions.layerFiles.push_back(layer.string());
+    setenv("GLOB2_MAXIMA_LAYERS",layer.string().c_str(),1);
     GameGUI restored;
     BinaryInputStream input(new MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);assert(restored.load(&input));
     restored.game.setGameHeader(header,true);
-    globalContainer->maximaStrategyOptions.layerFiles.clear();
+    unsetenv("GLOB2_MAXIMA_LAYERS");
     std::filesystem::remove(layer);
     for(int tick=0;tick<300;++tick)
     {

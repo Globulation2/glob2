@@ -706,7 +706,7 @@ const char* Maxima::posture_name(StrategicPosture selected) const
 void Maxima::emit_telemetry(Context& echo, const std::string& event,
 	const std::string& fields) const
 {
-	if(!globalContainer || !globalContainer->maximaTelemetry)
+	if(!telemetry_enabled())
 		return;
 	std::cout<<"MAXIMA_TELEMETRY\t"<<timer<<"\t"
 		<<echo.player->team->teamNumber<<"\t"<<event<<fields
@@ -716,7 +716,7 @@ void Maxima::emit_telemetry(Context& echo, const std::string& event,
 
 void Maxima::emit_ablation_opportunities(Context& echo) const
 {
-	if(!globalContainer || !globalContainer->maximaTelemetry)
+	if(!telemetry_enabled())
 		return;
 	Uint32 context=2166136261u;
 	const int values[]={snapshot.population, snapshot.workers,
@@ -3585,12 +3585,26 @@ void Maxima::evaluate_strategy(Context& echo)
 }
 
 
-Maxima::Maxima(Player *player)
-	: context(player)
+void Maxima::ensure_strategy()
 {
-	assert(player && player->game);
-	const ResolvedStrategy& resolved=player->game->resolveMaximaStrategy(
-		player->number);
+	if(strategy_resolved)
+		return;
+	resolve_strategy(true);
+	strategy_resolved=true;
+}
+
+
+void Maxima::resolve_strategy(bool announce)
+{
+	Player* player=context.player;
+	ResolvedStrategy resolved;
+	std::string error;
+	if(!StrategyResolver::resolveForPlayer(player->game->gameHeader,
+		player->number, resolved, error))
+	{
+		std::cerr<<"Maxima strategy error: "<<error<<std::endl;
+		std::abort();
+	}
 	strategy=resolved.values;
 	budget.swarm_supply_radius=
 		strategy.staffing.swarm_supply_radius;
@@ -3599,6 +3613,27 @@ Maxima::Maxima(Player *player)
 		strategy.reconnaissance.force_memory_hold_ticks,
 		strategy.reconnaissance.stale_contact_age_ticks,
 		strategy.reconnaissance.force_memory_enabled);
+	if(!announce)
+		return;
+	std::cerr<<"Maxima strategy: format="
+		<<StrategyResolver::formatName(resolved.format)
+		<<" player="<<player->number<<" team="<<player->teamNumber<<" sources=";
+	for(size_t source=0; source<resolved.sources.size(); ++source)
+	{
+		if(source) std::cerr<<",";
+		std::cerr<<resolved.sources[source];
+	}
+	std::cerr<<" values="<<StrategyResolver::canonicalValues(resolved.values)
+		<<std::endl;
+}
+
+
+Maxima::Maxima(Player *player)
+	: context(player)
+{
+	assert(player && player->game);
+	strategy_resolved=false;
+	resolve_strategy(false);
 	timer=0;
 	posture=PostureExpand;
 	posture_since=0;
@@ -3981,13 +4016,17 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
 
 std::string Maxima::auditStrategyJson() const
 {
-    ResolvedStrategy actual=context.player->game->resolveMaximaStrategy(context.player->number);
+    ResolvedStrategy actual;
+    std::string error;
+    StrategyResolver::resolveForPlayer(context.player->game->gameHeader,
+        context.player->number, actual, error);
     actual.values=strategy;
     return StrategyResolver::resolvedJson(actual);
 }
 
 std::shared_ptr<Order> Maxima::getOrder()
 {
+	ensure_strategy();
 	return context.getOrder(*this);
 }
 
@@ -4150,6 +4189,7 @@ bool Maxima::loadDirector(GAGCore::InputStream* stream,
 
 bool Maxima::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	ensure_strategy();
 	stream->readEnterSection("AIMaxima");
 	context.load(stream, versionMinor);
 	const bool loaded=loadState(stream, player, versionMinor);
@@ -4496,6 +4536,7 @@ bool Maxima::loadState(GAGCore::InputStream *stream, Player *player,
 
 void Maxima::save(GAGCore::OutputStream *stream)
 {
+	ensure_strategy();
 	stream->writeEnterSection("AIMaxima");
 	context.save(stream);
 	stream->writeEnterSection("MaximaState");
@@ -4557,6 +4598,7 @@ void Maxima::save(GAGCore::OutputStream *stream)
 
 void Maxima::tick(Context& echo)
 {
+	ensure_strategy();
 	timer++;
 	const int team=echo.player->team->teamNumber;
 	// A new game and every loaded save start with no executable plan. Likewise,
@@ -5405,7 +5447,7 @@ void Maxima::emit_placement_diagnostics(Context& echo,const char* outcome,
 void Maxima::development_cycle(Context& echo)
 {
 	using namespace AIMaximaPlacement;
-	const bool profile=globalContainer&&globalContainer->maximaTelemetry;
+	const bool profile=telemetry_enabled();
 	const std::chrono::steady_clock::time_point profileStarted=profile
 		?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point();
 	const bool continuingSelection=development_planner.selectionPending();
@@ -6099,7 +6141,7 @@ int Maxima::staff_building(Context& echo, int id)
 	policy.highPermille=budget.staffing_high_permille;
 	policy.slack=budget.staffing_slack;
 	policy.minimumWorkers=budget.staffing_minimum_workers;
-	policy.maximumWorkers=std::min(int(Building::MAX_UNIT_WORKING),
+	policy.maximumWorkers=std::min(MAXIMA_MAX_UNIT_WORKING,
 		budget.staffing_maximum_workers);
 	policy.cooldownPasses=budget.staffing_cooldown_passes;
 	// A building that has just been built starts where it is useful rather
@@ -6128,29 +6170,6 @@ int Maxima::staff_building(Context& echo, int id)
 			<<"\tfill_average="<<state.cornAverage
 			<<"\tenrolled_average="<<state.enrolledAverage;
 		emit_telemetry(echo,"staffing_control",fields.str());
-	}
-	// Calibration sample: deliveries are cumulative, so the analysis can diff
-	// them over any window without the AI holding state that is not saved.
-	if(globalContainer && globalContainer->maximaTelemetry)
-	{
-		long long deliveries=0;
-		for(int resource=0; resource<MAX_NB_RESOURCES; ++resource)
-			deliveries+=building->resourceDeliveries[resource];
-		std::ostringstream fields;
-		fields<<"\tbuilding_id="<<id
-			<<"\tkind="<<(building->type->shortTypeNum==IntBuildingType::SWARM_BUILDING
-				? "swarm" : "inn")
-			<<"\tlevel="<<building->type->level
-			<<"\tenrolled="<<echo.get_building_register().get_enrolled(id)
-			<<"\tassigned="<<request
-			<<"\tcorn="<<building->resources[CORN]
-			<<"\tcapacity="<<building->type->maxResource[CORN]
-			<<"\tcorn_deliveries="<<building->resourceDeliveries[CORN]
-			<<"\tdeliveries="<<deliveries
-			<<"\ttrip_samples="<<building->deliveryTripSamples
-			<<"\ttrip_ticks="<<building->deliveryTripTicks
-			<<"\ttrip_tiles="<<building->deliveryTripTiles;
-		emit_telemetry(echo,"food_delivery",fields.str());
 	}
 	return request;
 }

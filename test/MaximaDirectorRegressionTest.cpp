@@ -244,6 +244,10 @@ static void reusedOwnId() {
         int oldId=f.id(old),oldGid=old->gid;
         old->kill();f.player.team->removeFromAbilitiesLists(old);
         f.player.team->myBuildings[::Building::GIDtoID(oldGid)]=NULL;delete old;
+        // Game deletes buildings at the end of a step and creates them from
+        // orders at the start of the next; Maxima is asked for an order in
+        // between, which observes the emptied slot.
+        c.buildings.observe_buildings();
         auto replacement=f.building(sameLocation?10:40,sameLocation?10:40,0);
         assert(replacement->gid==oldGid);
         // Check before housekeeping, when deferred management work can execute.

@@ -40,9 +40,13 @@ The base must be complete; format files and additional layers can be partial.
 Unknown keys, duplicate assignments within a file, invalid values, and inconsistent
 related bounds are rejected with a source location.
 
-`--maxima-base FILE` chooses another complete base. Repeat `--maxima-layer FILE`
-to apply additional layers in order after the match-format file. All clients
-simulating a new multiplayer match must use the same strategy files and options.
+`GLOB2_MAXIMA_BASE=FILE` chooses another complete base, and
+`GLOB2_MAXIMA_LAYERS=FILE;FILE` applies additional layers in order after the
+match-format file. `GLOB2_MAXIMA_FORMAT` names the format instead of inferring it,
+and `GLOB2_MAXIMA_TELEMETRY=1` prints per-decision `MAXIMA_TELEMETRY` lines on
+stdout. Maxima reads these itself; the game binary has no Maxima options. All
+clients simulating a new multiplayer match must use the same strategy files and
+settings.
 Saved games include the resolved strategy and Maxima execution state, so changing
 a local file does not change the strategy of a resumed game.
 

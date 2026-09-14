@@ -8,69 +8,55 @@
 #include <string.h>
 
 // Useful function for marshalling
-// Wire fields may start at any byte offset; memcpy avoids alignment and aliasing UB.
+// TODO: we have to add another version for all those if we want them to work for spark CPUs.
 
 // 32 bit:
 
 inline void addSint32(const Uint8 *data, Sint32 val, int pos)
 {
-	const Uint32 wire=SDL_SwapBE32(static_cast<Uint32>(val));
-	memcpy(const_cast<Uint8 *>(data)+pos, &wire, sizeof(wire));
+	*((Sint32 *)(data+pos))=SDL_SwapBE32(val);
 }
 
 inline Sint32 getSint32(const Uint8 *data, int pos)
 {
-	Uint32 wire;
-	memcpy(&wire, data+pos, sizeof(wire));
-	return static_cast<Sint32>(SDL_SwapBE32(wire));
+	return (Sint32)SDL_SwapBE32( *((Sint32 *)(data+pos)) );
 }
 
 inline void addUint32(const Uint8 *data, Uint32 val, int pos)
 {
-	const Uint32 wire=SDL_SwapBE32(static_cast<Uint32>(val));
-	memcpy(const_cast<Uint8 *>(data)+pos, &wire, sizeof(wire));
+	*((Uint32 *)(data+pos))=SDL_SwapBE32(val);
 }
 
 inline Uint32 getUint32(const Uint8 *data, int pos)
 {
-	Uint32 wire;
-	memcpy(&wire, data+pos, sizeof(wire));
-	return static_cast<Uint32>(SDL_SwapBE32(wire));
+	return (Uint32)SDL_SwapBE32( *((Uint32 *)(data+pos)) );
 }
 
 inline Uint32 getUint32RAW(const Uint8 *data, int pos)
 {
-	Uint32 value;
-	memcpy(&value, data+pos, sizeof(value));
-	return value;
+	return *(Uint32 *)(((Uint8 *)data) +pos) ;
 }
 
 // 16 bit:
 
 inline void addSint16(const Uint8 *data, Sint16 val, int pos)
 {
-	const Uint16 wire=SDL_SwapBE16(static_cast<Uint16>(val));
-	memcpy(const_cast<Uint8 *>(data)+pos, &wire, sizeof(wire));
+	*((Sint16 *)(data+pos))=SDL_SwapBE16(val);
 }
 
 inline void addUint16(const Uint8 *data, Uint16 val, int pos)
 {
-	const Uint16 wire=SDL_SwapBE16(static_cast<Uint16>(val));
-	memcpy(const_cast<Uint8 *>(data)+pos, &wire, sizeof(wire));
+	*((Sint16 *)(data+pos))=SDL_SwapBE16(val);
 }
 
 inline Sint16 getSint16(const Uint8 *data, int pos)
 {
-	Uint16 wire;
-	memcpy(&wire, data+pos, sizeof(wire));
-	return static_cast<Sint16>(SDL_SwapBE16(wire));
+	return (Sint16)SDL_SwapBE16(*((Sint16 *)(data+pos)));
 }
 
 inline Uint16 getUint16(const Uint8 *data, int pos)
 {
-	Uint16 wire;
-	memcpy(&wire, data+pos, sizeof(wire));
-	return static_cast<Uint16>(SDL_SwapBE16(wire));
+	return (Uint16)SDL_SwapBE16(*((Uint16 *)(data+pos)));
 }
 
 // 8 bit:

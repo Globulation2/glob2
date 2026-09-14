@@ -12,7 +12,7 @@ import unittest
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def find_binary() -> Path | None:
+def find_game_binary() -> Path | None:
     candidates = [candidate for candidate in (
         ROOT / "build-tournament/src/glob2",
         ROOT / "build/src/glob2",
@@ -21,12 +21,20 @@ def find_binary() -> Path | None:
         if candidates else None
 
 
+def find_dump_binary() -> Path | None:
+    # test/run_maxima_implementation_regressions.py builds MaximaStrategyDump
+    # and passes its path here.
+    path = os.environ.get("MAXIMA_STRATEGY_DUMP")
+    return Path(path) if path and Path(path).is_file() else None
+
+
 class MaximaStrategyConfigTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.binary = find_binary()
+        cls.binary = find_dump_binary()
         if cls.binary is None:
-            raise unittest.SkipTest("build glob2 before running strategy integration tests")
+            raise unittest.SkipTest("run through test/run_maxima_implementation_regressions.py")
+        cls.game_binary = find_game_binary()
         schema = cls.run_binary("--dump-maxima-schema")
         cls.schema = json.loads(schema.stdout)
         resolved = cls.run_binary(
@@ -223,19 +231,7 @@ class MaximaStrategyConfigTest(unittest.TestCase):
                 self.resolve("--maxima-overrides", f"{key}=1")
             self.assertIn("unknown Maxima key", raised.exception.stderr)
 
-    def test_old_cli_and_environment_names_report_migration(self) -> None:
-        old_cli = subprocess.run(
-            [str(self.binary), "--dump-nicowar-v3-schema"],
-            cwd=ROOT,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            check=False,
-        )
-        self.assertNotEqual(old_cli.returncode, 0)
-        self.assertIn("renamed for Maxima", old_cli.stderr)
-        self.assertIn("--maxima-", old_cli.stderr)
-
+    def test_old_environment_names_report_migration(self) -> None:
         for variable in (
             "GLOB2_NICOWAR_V3_OVERRIDES",
             "GLOB2_NICOWAR_V3_TUNING",
@@ -301,10 +297,19 @@ class MaximaStrategyConfigTest(unittest.TestCase):
         self.assertEqual(entry["source"], "GLOB2_MAXIMA_OVERRIDES:1")
 
     def test_player_override_changes_only_the_focal_maxima(self) -> None:
-        result = self.run_binary(
-            "-test-games-nox", "1", "--map", "SmallForTwo",
-            "--matchup", "maxima,maxima",
-            "--maxima-player-overrides", "1", "farming.enabled=false",
+        if self.game_binary is None:
+            self.skipTest("build glob2 to run a game with a player override")
+        environment = os.environ.copy()
+        environment["GLOB2_MAXIMA_PLAYER_OVERRIDES"] = "1:farming.enabled=false"
+        result = subprocess.run(
+            [str(self.game_binary), "-test-games-nox", "1", "--map", "SmallForTwo",
+             "--matchup", "maxima,maxima"],
+            cwd=ROOT,
+            env=environment,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=True,
         )
         lines = [line for line in result.stderr.splitlines()
                  if line.startswith("Maxima strategy:")]

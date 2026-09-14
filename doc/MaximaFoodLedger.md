@@ -261,23 +261,14 @@ radius, and the engine-derived rates.
 
 Relocating an inn or swarm is worth its rebuild only if the carriers it saves
 repay the cost, so distance has to be priced in worker-ticks. Rather than derive
-that from unit speed tables, the engine times real round trips: when a carrier
-leaves a building after a delivery it stamps `Unit::fetchStartTick`, remembers
-the cell it harvests, and on the next delivery `Building::recordDeliveryTrip`
-adds the trip's ticks and its wrap-safe Chebyshev distance from the harvested
-cell to the footprint edge. Those counters are diagnostics only: never saved,
-never checksummed, and read solely by Maxima's `food_delivery` telemetry, which
-publishes them cumulatively on every building pass next to the ledger's
-per-building `food_consumer` quality.
-
-`tools/calibrate_maxima_carrier_cost.py` joins the two streams per building and
-fits the windows between ledger samples:
-
-```bash
-build/src/glob2 -test-games-nox 2 --map Garden_3 \
-    --matchup maxima,maxima,maxima,maxima -maxima-telemetry > garden3.log
-python3 tools/calibrate_maxima_carrier_cost.py garden3.log triangle.log ...
-```
+that from unit speed tables, the constants below were measured from real round
+trips. For the measurement, temporary engine instrumentation timed each carrier
+from leaving a building to its next delivery and recorded the wrap-safe
+Chebyshev distance from the harvested cell to the footprint edge; a
+`food_delivery` telemetry event published those counters next to the ledger's
+per-building `food_consumer` quality, and a script fitted the windows between
+ledger samples. That instrumentation changed engine code, so it is not part of
+Maxima; repeating the measurement means adding equivalent timing locally.
 
 Seven all-Maxima headless games (Garden 3 x2, Triangle x2, balanced_for_2 x2,
 Isles), 19 896 timed round trips in 1 663 windows, measured on 2026-09-12:
