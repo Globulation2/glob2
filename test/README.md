@@ -366,6 +366,19 @@ save traces against outputs from the original loader. Linux and Windows CI run
 it in disposable profiles and check that preferences remain unchanged.
 See [fixtures and reproduction steps](fixtures/team-stats/README.md).
 
+The harness also covers [gameplay measurements](../docs/gameplay-statistics.md):
+real production, resource, damage, death, treatment, construction and training
+paths; 64-bit totals; timestamped coverage; pending projectile/death attribution;
+and malformed new fields. `SavegameSafetyHarness` compares measurement totals
+through 700 engine ticks after reload, crossing a history sample.
+
+Optional UI artifacts (requires a graphical SDL driver):
+
+```sh
+python3 test/run-savegame-safety-tests.py build/src/TeamStatsSaveHarness . --screenshots output/gameplay-statistics-ui
+```
+
+
 ## AI helper gradient regression
 
 `Map::updateGlobalGradient(Uint8*)` supplies the Castor/Warrush helper maps.
@@ -530,6 +543,39 @@ reports, including generation-failure telemetry. The opt-in
 checks complete result/artifact roundtrips and offline record counts on every host;
 add an absolute registered `bundle` path to each host entry. It stops its workers
 after collection. Retained validation is linked in the tournament validation guide.
+The team-statistics harness also checks the AI telemetry schema interface for every
+built-in implementation, shared-team player identities, controller generations,
+reassignment, exact numeric persistence, replay availability, and truncated fields.
+See [AI telemetry](../docs/ai-telemetry.md) for the capture/extension contract.
+
+## Performance telemetry
+
+```sh
+scons -j8 release=1 server=0 performance-telemetry-test
+build/libgag/src/PerformanceTelemetryHarness
+```
+
+The injected-clock harness checks online variance, nested timings, exclusion of sleep and
+presentation from work, budgets, jitter, sampling rotation, actor generations, capture
+boundaries, and the disabled control. SavegameSafetyHarness additionally checks background
+write timing counts and completed/failed/superseded accounting. See
+[metric definitions and export records](../docs/performance-telemetry.md).
+
+`MapGeneratorGoldenTest PROFILE --performance` compares all built-in generators with timing
+off/on (serialized worlds, outcomes, RNG, and generation telemetry) and emits generation
+timing records, including site assignment. Use a disposable HOME and run from the repository.
+
+### Distributed gameplay, AI and performance telemetry
+
+`python3 test/test_distributed_game_telemetry.py` tests typed streaming extraction,
+64-bit values, escaped text, dynamic fields, unavailable data, malformed records,
+compressed artifacts, checksum enforcement and JSONL/CSV roundtrips.
+`python3 test/distributed_game_telemetry_integration.py --hosts HOSTS.json --output NEW_DIR`
+runs all eight AIs on supplied registered bundles through real workers and the
+coordinator. It checks log transfer, complete final telemetry, offline record
+counts, export-on/off per-tick checksums, and repeated save/load telemetry
+continuation. Host entries need absolute `bundle` paths; workers are stopped after
+collection. See [tournament telemetry](../docs/tournaments.md#gameplay-ai-and-performance-telemetry).
 
 ## Maxima continuation serialization
 

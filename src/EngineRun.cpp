@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include <FormatableString.h>
 
 #include "AINames.h"
@@ -22,6 +23,10 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <iomanip>
+#include <cstdlib>
+#include "Version.h"
 
 using std::shared_ptr;
 
@@ -88,7 +93,8 @@ void Engine::pollAutomaticEndingConditions()
 // and must not advance.
 void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 {
-    // Viewpoint changes must not move the controller used for order bookkeeping.
+	PERF_SCOPE_TIME(Orders);
+	// Viewpoint changes must not move the controller used for order bookkeeping.
     const int orderPlayer=globalContainer->liveSpectating ? 0 : gui.localPlayer;
 	// But some jobs have to be executed synchronously:
 	if (wasReadyLastTick)
@@ -123,6 +129,7 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 
 	if (wasReadyLastTick)
 	{
+		PERF_SCOPE_TIME(Replay);
 		Uint32 checksum = gui.game.checkSum(NULL, NULL, NULL);
 		net->advanceStep(checksum);
 
@@ -211,7 +218,11 @@ void Engine::drawAndPaceFrame(MainLoopState& st, bool readyNow)
 	if (renderedFrame)
 	{
 		gui.drawAll(gui.localTeamNo);
-		globalContainer->gfx->nextFrame();
+		{
+			PERF_SCOPE_TIME(Present);
+			globalContainer->gfx->nextFrame();
+		}
+		PerformanceTelemetry::collector().presented();
 	}
 
 	// if required, save videoshot
@@ -236,9 +247,16 @@ void Engine::drawAndPaceFrame(MainLoopState& st, bool readyNow)
 	//Any inconsistancies in the delays will be smoothed throughout the following frames,
 	Uint64 delay = std::max<Sint64>(0, st.needToBeTime - currentTime);
 	if (delay > 0)
+	{
+		PerformanceTelemetry::Scope delayTime(readyNow ? PerformanceTelemetry::Id::Sleep
+													   : PerformanceTelemetry::Id::NetworkSleep);
 		SDL_Delay(delay);
+	}
 	else if (!readyNow)
+	{
+		PERF_SCOPE_TIME(NetworkSleep);
 		SDL_Delay(1);
+	}
 
 	// we set CPU stats
 	// Convert slept time into CPU load for one game tick.
@@ -393,6 +411,7 @@ void Engine::printTeamResults()
 // Per-team timeline dump (see GLOB2_TEAM_TIMELINE in printAutomaticEndingSummary).
 void Engine::printTeamTimeline()
 {
+	PERF_SCOPE_TIME(Output);
 	Game& game = gui.game;
 	const int nbTeams = game.mapHeader.getNumberOfTeams();
 
@@ -432,6 +451,9 @@ void Engine::printTeamTimeline()
 				<< std::endl;
 		}
 
+		team->stats.refreshMeasurements(team);
+		team->stats.printMeasurements(t, true);
+		AITelemetry::capture(team, false, true, true);
 		// Final detailed snapshot: composition + food economy + building mix.
 		TeamStat* fin = team->stats.getLatestStat();
 		std::cout << "GLOB2_FINAL team=" << t
@@ -575,11 +597,53 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 	st.startTime = SDL_GetTicks64();
 	st.frameNumber = 0;
 	teamEliminatedTick.clear();
+	auto &perf = PerformanceTelemetry::collector();
+	if (!perf.enabled && !perf.started)
+		perf.reset();
+	if (perf.output)
+	{
+		std::ostringstream metadata;
+		metadata << "version=" << VERSION_MINOR << " platform=" << std::quoted(SDL_GetPlatform())
+				 << " map_w=" << gui.game.map.getW() << " map_h=" << gui.game.map.getH()
+				 << " players=" << gui.game.gameHeader.getNumberOfPlayers()
+				 << " teams=" << gui.game.mapHeader.getNumberOfTeams() << " renderer="
+				 << (globalContainer->runNoX ? "headless"
+					 : (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
+						 ? "opengl"
+						 : "software")
+				 << " width=" << (globalContainer->runNoX ? 0 : globalContainer->gfx->getW())
+				 << " height=" << (globalContainer->runNoX ? 0 : globalContainer->gfx->getH());
+#ifdef __VERSION__
+		metadata << " compiler=" << std::quoted(__VERSION__);
+#else
+		metadata << " compiler=unknown";
+#endif
+		metadata << " pointer_bits=" << sizeof(void *) * 8;
+		if (const char *label = std::getenv("GLOB2_PERF_BUILD_LABEL"))
+			metadata << " build=" << std::quoted(label);
+		perf.describe(metadata.str());
+	}
 
 	while (gui.isRunning)
 	{
 		st.nextGuiStep--;
 		updateTickSpeedAndDrawCadence(st);
+		const bool paused = gui.gamePaused || gui.hardPause;
+		const int renderRatio = paused ? 1
+								: (globalContainer->replaying && globalContainer->replayFastForward)
+									? REPLAY_FAST_FORWARD_DRAW_RATIO
+								: st.adjustableGameSpeed
+									? globalContainer->settings.getGameSpeedRenderInterval()
+									: 1;
+		const auto budget = globalContainer->runNoX ? 0ULL : std::uint64_t(st.speed) * 1000000ULL;
+		perf.configure(gui.game.stepCounter, budget, budget * renderRatio,
+					   paused                       ? "paused"
+					   : globalContainer->runNoX    ? "headless"
+					   : globalContainer->replaying ? "replay"
+					   : !st.wasReadyLastTick       ? "waiting"
+													: "live");
+		PerformanceTelemetry::Scope loopTime(PerformanceTelemetry::Id::Loop);
+		PerformanceTelemetry::Scope workTime(PerformanceTelemetry::Id::Work);
 
 		pollAutomaticEndingConditions();
 
@@ -628,9 +692,12 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 		if (!globalContainer->runNoX)
 			drawAndPaceFrame(st, readyNow);
 
-		if (handleExitRequest())
+		const bool exitRequested = handleExitRequest();
+		workTime.stop();
+		loopTime.stop();
+		perf.capture(gui.game.stepCounter);
+		if (exitRequested)
 			break;
-
 		st.wasReadyLastTick = readyNow;
 	}
 
@@ -641,6 +708,12 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 		reportMultiplayerResult();
 
 	teardownSession();
+	// Structured runs may still write their requested final save after run().
+	if (!globalContainer->structuredHeadless)
+	{
+		perf.capture(gui.game.stepCounter, true, true);
+		perf.reset();
+	}
 
 	prepareNextGameSession(doRunOnceAgain);
 }

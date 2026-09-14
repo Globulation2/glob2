@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include <iostream>
 #include <sstream>
 #include <locale>
 #include <stdexcept>
+#include <set>
 
 #include "AICastor.h"
 #include "AINicowar.h"
@@ -144,6 +146,7 @@ namespace
 
 bool Game::load(GAGCore::InputStream *stream)
 {
+	PERF_SCOPE_TIME(Load);
 	assert(stream);
 
 	ReadSectionGuard gameSection(stream, "Game");
@@ -287,6 +290,21 @@ bool Game::load(GAGCore::InputStream *stream)
 		if (!(input >> savedRandom)) return false;
 		map.loadRuntimeState(stream, versionMinor);
 	}
+	for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
+		if (teams[t]->stats.needsMeasurementInitialization)
+		{
+			teams[t]->stats.initializeMeasurements(stepCounter);
+			teams[t]->stats.refreshMeasurements(teams[t]);
+		}
+	std::set<std::pair<int, Uint32>> diagnosticIdentities;
+	for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
+		for (const auto &record : teams[t]->stats.aiTelemetry)
+			if (record->current.tick > stepCounter || record->coverage > stepCounter ||
+				!diagnosticIdentities.emplace(record->player, record->generation).second)
+				throw std::runtime_error("Invalid AI telemetry identity or game tick");
+	for (int p = 0; p < gameHeader.getNumberOfPlayers(); ++p)
+		if (players[p] && players[p]->ai)
+			players[p]->ai->bindTelemetry();
 	gameSection.commit();
 
 	///versions less than 63 did not have fertility computed with the map, but computed it live.
@@ -462,7 +480,11 @@ void DeferredGameSHA1::apply(std::string& contents) const
 
 void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name, DeferredGameSHA1* deferredSHA1)
 {
+	PERF_SCOPE_TIME(Serialize);
 	assert(stream);
+	for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
+		if (teams[t])
+			AITelemetry::capture(teams[t], false, false);
 	stream->writeEnterSection("Game");
 	const bool binary = dynamic_cast<GAGCore::BinaryOutputStream*>(stream) != nullptr;
 	assert(!deferredSHA1 || (binary && stream->canSeek()));

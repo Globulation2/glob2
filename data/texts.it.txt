@@ -2274,6 +2274,56 @@ Anteprima non riuscita
 Fai clic per riprovare
 [Map preview please wait]
 Attendi
+[Stats births]
+Nascite
+[Stats deaths]
+Morti
+[Stats starvation]
+Inedia
+[Stats wheat stock]
+Scorte di grano
+[Stats wheat loads]
+Carichi di grano
+[Stats meals]
+Pasti serviti
+[Stats new buildings]
+Nuovi edifici
+[Stats upgrades]
+Miglioramenti
+[Stats training]
+Visite di addestramento
+[Stats damage dealt]
+Danni inflitti
+[Stats damage received]
+Danni subiti
+[Stats HP restored]
+Salute ripristinata
+[Stats since tick]
+Dal passo
+[Stats combat deaths]
+Combattimento
+[Stats clearing deaths]
+Ferite da pulizia
+[Stats trapped deaths]
+Intrappolati
+[Stats unknown deaths]
+Altro/sconosciuto
+[Stats conversions]
+Entrate / uscite
+[Stats unavailable]
+Non disponibile
+[Stats wheat per minute]
+Carichi/min
+[Stats meals per minute]
+Cibo/min
+[Stats occupancy]
+Pasti / cure
+[Stats page one]
+Statistiche 1/2 >
+[Stats page two]
+Statistiche 2/2 >
+[Stats next page]
+Pagina (P)
 [Map preview choose another]
 Scegli una mappa
 [Resources never grow or spread across the map.]

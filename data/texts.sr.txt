@@ -2212,6 +2212,56 @@ OpenGL није доступан у овој верзији.
 Кликните да покушате поново
 [Map preview please wait]
 Сачекајте
+[Stats births]
+Рођења
+[Stats deaths]
+Смрти
+[Stats starvation]
+Гладовање
+[Stats wheat stock]
+Залихе пшенице
+[Stats wheat loads]
+Товари пшенице
+[Stats meals]
+Послужени оброци
+[Stats new buildings]
+Нове зграде
+[Stats upgrades]
+Надоградње
+[Stats training]
+Посете обуци
+[Stats damage dealt]
+Нанета штета
+[Stats damage received]
+Примљена штета
+[Stats HP restored]
+Обновљено здравље
+[Stats since tick]
+Од корака
+[Stats combat deaths]
+Борба
+[Stats clearing deaths]
+Повреда при чишћењу
+[Stats trapped deaths]
+Заробљени
+[Stats unknown deaths]
+Друго/непознато
+[Stats conversions]
+Доласци / одласци
+[Stats unavailable]
+Недоступно
+[Stats wheat per minute]
+Товари/мин
+[Stats meals per minute]
+Храна/мин
+[Stats occupancy]
+Храњење / лечење
+[Stats page one]
+Статистика 1/2 >
+[Stats page two]
+Статистика 2/2 >
+[Stats next page]
+Страница (P)
 [Map preview choose another]
 Изаберите мапу
 [Resources never grow or spread across the map.]

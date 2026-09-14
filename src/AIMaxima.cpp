@@ -17,6 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+#include "AITelemetryFields.h"
 #include "AIMaxima.h"
 #include "AIMaximaSwarmController.h"
 #include "AIMaximaFoodSupply.h"
@@ -921,6 +922,7 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& echo)
 
 void Maxima::update_trends()
 {
+	telemetry.count(AITrace::AI7::Maxima_update_trends_calls);
 	// Unserved hunger includes critically hungry units that cannot currently eat.
 	// Use the larger count as the pressure population instead of double-counting
 	// the overlap.
@@ -1182,6 +1184,7 @@ void Maxima::initialize_topology_profile(Context& echo)
 
 void Maxima::update_environment_model(Context& echo)
 {
+	telemetry.count(AITrace::AI7::Maxima_update_environment_model_calls);
 	initialize_topology_profile(echo);
 	const MaximaStrategy::Environment& policy=strategy.environment;
 	EnvironmentModel observed;
@@ -1397,6 +1400,7 @@ void Maxima::update_environment_model(Context& echo)
 
 void Maxima::score_demands()
 {
+	telemetry.count(AITrace::AI7::Maxima_score_demands_calls);
 	const MaximaStrategy::Demands& policy=strategy.demands;
 	int largest_enemy_force=0;
 	bool known_target=false;
@@ -1614,6 +1618,7 @@ void Maxima::sample_reconnaissance_forces(Context& echo)
 
 void Maxima::update_reconnaissance(Context& echo)
 {
+	telemetry.count(AITrace::AI7::Maxima_update_reconnaissance_calls);
 	std::vector<int> living;
 	for(enemy_team_iterator enemy(echo); enemy!=enemy_team_iterator(); ++enemy)
 	{
@@ -1758,6 +1763,7 @@ void Maxima::update_reconnaissance(Context& echo)
 
 void Maxima::update_opponent_models(Context& echo)
 {
+	telemetry.count(AITrace::AI7::Maxima_update_opponent_models_calls);
 	AIMaximaRuntime::Gradients::GradientInfo home_info;
 	home_info.add_source(new Entities::AnyTeamBuilding(
 		echo.player->team->teamNumber, CompletedBuildings));
@@ -1851,6 +1857,7 @@ void Maxima::remove_reconnaissance_missions(Context& echo,
 
 void Maxima::update_reconnaissance_missions(Context& echo)
 {
+	telemetry.count(AITrace::AI7::Maxima_update_reconnaissance_missions_calls);
 	Recon::ReconReport& report=reconnaissance.mutableReport();
 	for(std::vector<Recon::ReconMission>::iterator mission=report.missions.begin();
 		mission!=report.missions.end();)
@@ -2013,6 +2020,7 @@ void Maxima::update_reconnaissance_missions(Context& echo)
 
 void Maxima::plan_reconnaissance_objectives(Context& echo)
 {
+	telemetry.count(AITrace::AI7::Maxima_plan_reconnaissance_objectives_calls);
 	Recon::ReconReport& report=reconnaissance.mutableReport();
 	if(!strategy.reconnaissance.enabled
 	   || !strategy.reconnaissance.scouting_missions_enabled
@@ -2248,6 +2256,7 @@ bool Maxima::large_economy_established() const
 
 void Maxima::score_postures()
 {
+	telemetry.count(AITrace::AI7::Maxima_score_postures_calls);
 	const MaximaStrategy::Postures& policy=strategy.postures;
 	const int population=std::max(1, snapshot.population);
 	const int unserved_percent=snapshot.unserved_food*100/population;
@@ -2398,6 +2407,7 @@ void Maxima::score_postures()
 
 void Maxima::select_posture()
 {
+	telemetry.count(AITrace::AI7::Maxima_select_posture_calls);
 	const bool enabled[PostureCount]={
 		strategy.postures.expand_enabled, strategy.postures.develop_enabled,
 		strategy.postures.mobilize_enabled, strategy.postures.campaign_enabled,
@@ -2459,6 +2469,7 @@ void Maxima::select_posture()
 
 void Maxima::allocate_resources()
 {
+	telemetry.count(AITrace::AI7::Maxima_allocate_resources_calls);
 	budget=DirectorPlan();
 	int largest_enemy_force=0;
 	for(int team=0; team<Team::MAX_COUNT; ++team)
@@ -2506,6 +2517,7 @@ const char* Maxima::policy_name(PolicyKind policy) const
 
 void Maxima::build_policy_bids()
 {
+	telemetry.count(AITrace::AI7::Maxima_build_policy_bids_calls);
 	for(int p=0; p<PolicyCount; ++p)
 		policy_bids[p]=PolicyBid();
 	const bool abundance_surge=abundance_surge_active();
@@ -2807,6 +2819,7 @@ void Maxima::build_policy_bids()
 
 void Maxima::arbitrate_policy_bids()
 {
+	telemetry.count(AITrace::AI7::Maxima_arbitrate_policy_bids_calls);
 	DirectorPlan result;
 	const bool abundance_surge=abundance_surge_active();
 	const PolicyBid& survival=policy_bids[PolicySurvival];
@@ -3484,6 +3497,7 @@ void Maxima::emit_director_snapshot(Context& echo) const
 
 void Maxima::evaluate_strategy(Context& echo)
 {
+	telemetry.count(AITrace::AI7::Maxima_evaluate_strategy_calls);
 	if(strategy.reconnaissance.enabled)
 		update_reconnaissance(echo);
 	else
@@ -3536,6 +3550,8 @@ void Maxima::evaluate_strategy(Context& echo)
 	score_postures();
 	const StrategicPosture previous_posture=posture;
 	select_posture();
+	if (posture != previous_posture)
+		telemetry.count(AITrace::AI7::runtime_posture_changed);
 	allocate_resources();
 	finalize_director_plan(echo);
 	plan_offense(echo);
@@ -4032,6 +4048,7 @@ std::string Maxima::auditStrategyJson() const
 std::shared_ptr<Order> Maxima::getOrder()
 {
 	ensure_strategy();
+	context.telemetry = telemetry;
 	return context.getOrder(*this);
 }
 
@@ -4732,6 +4749,11 @@ void Maxima::tick(Context& echo)
 
 void Maxima::handle_event(Context& echo, const RuntimeEvent& event)
 {
+	telemetry.count(AITrace::AI7::Maxima_handle_event_calls);
+	if(event.type>=RuntimeEvent::BuildingResolved && event.type<=RuntimeEvent::DevelopmentEngineRejected)
+		telemetry.count(AITrace::AI7::runtime_event_BuildingResolved+event.type);
+	telemetry.set(AITrace::AI7::runtime_event_first,event.first);
+	telemetry.set(AITrace::AI7::runtime_event_second,event.second);
 	if(event.type==RuntimeEvent::BuildingResolved
 	   || event.type==RuntimeEvent::BuildingUpdated
 	   || event.type==RuntimeEvent::AttackFinished
@@ -6741,6 +6763,7 @@ void Maxima::control_offense(Context& echo)
 
 void Maxima::choose_enemy_target(Context& echo)
 {
+	telemetry.count(AITrace::AI7::Maxima_choose_enemy_target_calls);
 	int best_target=-1;
 	int best_score=INT_MIN;
 	for(enemy_team_iterator candidate(echo); candidate!=enemy_team_iterator(); ++candidate)

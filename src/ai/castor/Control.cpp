@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-
+#include "AITelemetryFields.h"
 #include "AICastor.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -17,6 +17,7 @@ using std::shared_ptr;
 
 std::shared_ptr<Order>AICastor::controlSwarms()
 {
+	telemetry.count(AITrace::AI2::AICastor_controlSwarms_calls);
 	Sint32 warriorGoal=warLevel;
 	
 	int unitSum[NB_UNIT_TYPE];
@@ -78,11 +79,14 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 							newRatio[rj]=0;
 						}
 						b->update();
-						return shared_ptr<Order>(new OrderModifySwarm(b->gid, newRatio));
+						return telemetry.returnedOrder(
+							AITrace::AI2::AICastor_controlSwarms_result,
+							shared_ptr<Order>(new OrderModifySwarm(b->gid, newRatio)));
 					}
 		}
-		
-		return shared_ptr<Order>();
+
+		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlSwarms_result,
+									   shared_ptr<Order>());
 	}
 	
 	size_t size=map->w*map->h;
@@ -135,21 +139,26 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 				newRatio[WORKER]=workerGoal;
 				newRatio[WARRIOR]=warriorGoal;
 				b->update();
-				return shared_ptr<Order>(new OrderModifySwarm(b->gid, newRatio));
+				return telemetry.returnedOrder(
+					AITrace::AI2::AICastor_controlSwarms_result,
+					shared_ptr<Order>(new OrderModifySwarm(b->gid, newRatio)));
 			}
 		}
 	}
-	
-	return shared_ptr<Order>();
+
+	return telemetry.returnedOrder(AITrace::AI2::AICastor_controlSwarms_result,
+								   shared_ptr<Order>());
 }
 
 std::shared_ptr<Order>AICastor::expandFood()
 {
+	telemetry.count(AITrace::AI2::AICastor_expandFood_calls);
 	if (foodSurplus
 		|| (!foodWarning && !enoughFreeWorkers())
 		|| buildingSum[IntBuildingType::FOOD_BUILDING][1]>buildingSum[IntBuildingType::FOOD_BUILDING][0]+1)
-		return shared_ptr<Order>();
-	
+		return telemetry.returnedOrder(AITrace::AI2::AICastor_expandFood_result,
+									   shared_ptr<Order>());
+
 	Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("inn", 0, true);
 	int bw=globalContainer->buildingsTypes.get(typeNum)->width;
 	int bh=globalContainer->buildingsTypes.get(typeNum)->height;
@@ -165,12 +174,14 @@ std::shared_ptr<Order>AICastor::expandFood()
 	computeWorkPowerMap();
 	computeWorkRangeMap();
 	computeWorkAbilityMap();
-	
-	return findGoodBuilding(typeNum, true, false, false);
+
+	return telemetry.returnedOrder(AITrace::AI2::AICastor_expandFood_result,
+								   findGoodBuilding(typeNum, true, false, false));
 }
 
 std::shared_ptr<Order>AICastor::controlFood()
 {
+	telemetry.count(AITrace::AI2::AICastor_controlFood_calls);
 	int wMask=map->wMask;
 	int hMask=map->hMask;
 	int wDec=map->wDec;
@@ -185,10 +196,12 @@ std::shared_ptr<Order>AICastor::controlFood()
 			b=myBuildings[bi];
 		}
 	if (b==NULL)
-		return shared_ptr<Order>();
+		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlFood_result,
+									   shared_ptr<Order>());
 	if (b->type->shortTypeNum!=IntBuildingType::FOOD_BUILDING && b->type->shortTypeNum!=IntBuildingType::SWARM_BUILDING)
-		return shared_ptr<Order>();
-	
+		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlFood_result,
+									   shared_ptr<Order>());
+
 	int bx=b->posX;
 	int by=b->posY;
 	int bw=b->type->width;
@@ -224,7 +237,8 @@ std::shared_ptr<Order>AICastor::controlFood()
 			b->update();
 			if (verbose)
 				printf("controlFood(), worstCare=%d\n", worstCare);
-			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, 0));
+			return telemetry.returnedOrder(AITrace::AI2::AICastor_controlFood_result,
+										   shared_ptr<Order>(new OrderModifyBuilding(b->gid, 0)));
 		}
 	}
 	else if (worstCare>AI_CASTOR_WHEATCARE_LIMIT_THRESHOLD)
@@ -235,7 +249,8 @@ std::shared_ptr<Order>AICastor::controlFood()
 			b->update();
 			if (verbose)
 				printf("controlFood(), beta, worstCare=%d\n", worstCare);
-			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, 1));
+			return telemetry.returnedOrder(AITrace::AI2::AICastor_controlFood_result,
+										   shared_ptr<Order>(new OrderModifyBuilding(b->gid, 1)));
 		}
 	}
 	else
@@ -249,7 +264,9 @@ std::shared_ptr<Order>AICastor::controlFood()
 				workers=AI_CASTOR_INN_WORKERS_BASE+b->type->level;
 			b->maxUnitWorking=workers;
 			b->update();
-			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, workers));
+			return telemetry.returnedOrder(
+				AITrace::AI2::AICastor_controlFood_result,
+				shared_ptr<Order>(new OrderModifyBuilding(b->gid, workers)));
 		}
 		else if (b->type->shortTypeNum==IntBuildingType::SWARM_BUILDING)
 		{
@@ -260,68 +277,88 @@ std::shared_ptr<Order>AICastor::controlFood()
 				workers=AI_CASTOR_SWARM_WORKERS_NORMAL;
 			b->maxUnitWorking=workers;
 			b->update();
-			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, workers));
+			return telemetry.returnedOrder(
+				AITrace::AI2::AICastor_controlFood_result,
+				shared_ptr<Order>(new OrderModifyBuilding(b->gid, workers)));
 		}
 		else
 			assert(false);
 	}
-	return shared_ptr<Order>();
+	return telemetry.returnedOrder(AITrace::AI2::AICastor_controlFood_result, shared_ptr<Order>());
 }
 
 std::shared_ptr<Order>AICastor::controlUpgrades()
 {
+	telemetry.count(AITrace::AI2::AICastor_controlUpgrades_calls);
 	if (controlUpgradeDelay!=0)
 	{
 		controlUpgradeDelay--;
-		return shared_ptr<Order>();
+		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
+									   shared_ptr<Order>());
 	}
 	if (buildsAmount<1 || !enoughFreeWorkers())
-		return shared_ptr<Order>();
+		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
+									   shared_ptr<Order>());
 	int bi=((controlUpgradeTimer++)&(Building::MAX_COUNT-1));
 	Building **myBuildings=team->myBuildings;
 	Building *b=myBuildings[bi];
 	if (b==NULL)
-		return shared_ptr<Order>();
+		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
+									   shared_ptr<Order>());
 	if (b->type->isVirtual)
-		return shared_ptr<Order>();
+		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
+									   shared_ptr<Order>());
 	if (b->maxUnitWorking<1)
-		return shared_ptr<Order>(new OrderModifyBuilding(b->gid, 1));
+		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
+									   shared_ptr<Order>(new OrderModifyBuilding(b->gid, 1)));
 	int numberOfFreeWorkers = team->stats.getLatestStat()->isFree[WORKER];
 	int numberOfAbleWorkers = team->stats.getLatestStat()->upgradeState[BUILD][b->type->level];
 	if (numberOfAbleWorkers <= AI_CASTOR_UPGRADE_MIN_ABLE_WORKERS
 		|| numberOfFreeWorkers <= AI_CASTOR_UPGRADE_MIN_FREE_WORKERS
 		|| numberOfAbleWorkers <= (numberOfFreeWorkers/AI_CASTOR_UPGRADE_ABLE_FREE_RATIO_DIV))
-		return shared_ptr<Order>();
+		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
+									   shared_ptr<Order>());
 	// Is it any repair:
 	if (!b->type->isBuildingSite)
 	{
 		if (b->type->type == "defencetower")
 		{
 			if (b->hp*AI_CASTOR_REPAIR_HP_RATIO_DIV<b->getEffectiveMaxHp()*AI_CASTOR_REPAIR_HP_RATIO_DEFENCE_NUM)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_CASTOR_CONSTRUCTION_ORDER_UNITS, AI_CASTOR_CONSTRUCTION_ORDER_UNITS));
+				return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
+											   shared_ptr<Order>(new OrderConstruction(
+												   b->gid, AI_CASTOR_CONSTRUCTION_ORDER_UNITS,
+												   AI_CASTOR_CONSTRUCTION_ORDER_UNITS)));
 		}
 		else if (b->type->maxUnitInside)
 		{
 			if (b->hp*AI_CASTOR_REPAIR_HP_RATIO_DIV<b->getEffectiveMaxHp()*AI_CASTOR_REPAIR_HP_RATIO_INSIDE_NUM)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_CASTOR_CONSTRUCTION_ORDER_UNITS, AI_CASTOR_CONSTRUCTION_ORDER_UNITS));
+				return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
+											   shared_ptr<Order>(new OrderConstruction(
+												   b->gid, AI_CASTOR_CONSTRUCTION_ORDER_UNITS,
+												   AI_CASTOR_CONSTRUCTION_ORDER_UNITS)));
 		}
 		else
 		{
 			if (b->hp*AI_CASTOR_REPAIR_HP_RATIO_DIV<b->getEffectiveMaxHp()*AI_CASTOR_REPAIR_HP_RATIO_OTHER_NUM)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_CASTOR_CONSTRUCTION_ORDER_UNITS, AI_CASTOR_CONSTRUCTION_ORDER_UNITS));
+				return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
+											   shared_ptr<Order>(new OrderConstruction(
+												   b->gid, AI_CASTOR_CONSTRUCTION_ORDER_UNITS,
+												   AI_CASTOR_CONSTRUCTION_ORDER_UNITS)));
 		}
 	}
 	// Do we want to upgrade it:
 	// We compute the number of buildings satifying the strategy:
 	int shortTypeNum=b->type->shortTypeNum;
 	if (shortTypeNum>=NB_HARD_BUILDING)
-		return shared_ptr<Order>();
+		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
+									   shared_ptr<Order>());
 	int level=b->type->level;
 	int upgradeLevelGoal=((buildsAmount+AI_CASTOR_UPGRADE_LEVEL_FORMULA_BIAS)>>AI_CASTOR_UPGRADE_LEVEL_FORMULA_SHIFT);
 	if (upgradeLevelGoal>AI_CASTOR_UPGRADE_LEVEL_MAX)
 		upgradeLevelGoal=AI_CASTOR_UPGRADE_LEVEL_MAX;
 	if (level>=upgradeLevelGoal)
-		return shared_ptr<Order>();
+		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
+									   shared_ptr<Order>());
 	int sumOver=0;
 	for (int li=(level+1); li<NB_UNIT_LEVELS; li++)
 		for (int si=0; si<2; si++)
@@ -332,8 +369,9 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 		upgradeAmountGoal+=strategy.build[shortTypeNum].newUpgrade;
 
 	if (sumOver>=upgradeAmountGoal)
-		return shared_ptr<Order>();
-	
+		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
+									   shared_ptr<Order>());
+
 	if (shortTypeNum==IntBuildingType::SCIENCE_BUILDING)
 	{
 		int buildBase=team->stats.getWorkersLevel(0);
@@ -341,17 +379,22 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 		for (int i=0; i<NB_UNIT_LEVELS; i++)
 			buildSum+=team->stats.getWorkersLevel(i);
 		if (buildBase>buildSum)
-			return shared_ptr<Order>();
+			return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
+										   shared_ptr<Order>());
 		int sumEqual=0;
 		for (int li=level; li<NB_UNIT_LEVELS; li++)
 			sumEqual+=buildingLevels[shortTypeNum][0][li];
 		if (sumEqual<AI_CASTOR_SCIENCE_UPGRADE_MIN_COUNT)
 		{
-			return shared_ptr<Order>();
+			return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
+										   shared_ptr<Order>());
 		}
 	}
 	controlUpgradeDelay=AI_CASTOR_UPGRADE_DELAY_TICKS;
-	return shared_ptr<Order>(new OrderConstruction(b->gid, AI_CASTOR_CONSTRUCTION_ORDER_UNITS, AI_CASTOR_CONSTRUCTION_ORDER_UNITS));
+	return telemetry.returnedOrder(
+		AITrace::AI2::AICastor_controlUpgrades_result,
+		shared_ptr<Order>(new OrderConstruction(b->gid, AI_CASTOR_CONSTRUCTION_ORDER_UNITS,
+												AI_CASTOR_CONSTRUCTION_ORDER_UNITS)));
 }
 
 
@@ -359,10 +402,12 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 
 std::shared_ptr<Order>AICastor::controlStrikes()
 {
+	telemetry.count(AITrace::AI2::AICastor_controlStrikes_calls);
 	controlStrikesTimer=timer+AI_CASTOR_CONTROL_STRIKES_INTERVAL;
 
 	if (!onStrike)
-		return shared_ptr<Order>();
+		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlStrikes_result,
+									   shared_ptr<Order>());
 
 	int warriors=team->stats.getTotalUnits(WARRIOR);
 	int warFlagsGoal=(warriors+AI_CASTOR_WARFLAG_FORMULA_BIAS)/AI_CASTOR_WARRIORS_PER_WARFLAG;
@@ -464,7 +509,9 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 		if (warFlagsReal<warFlagsGoal)
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
-			return shared_ptr<Order>(new OrderCreate(team->teamNumber, x, y, typeNum, 1, 1));
+			return telemetry.returnedOrder(
+				AITrace::AI2::AICastor_controlStrikes_result,
+				shared_ptr<Order>(new OrderCreate(team->teamNumber, x, y, typeNum, 1, 1)));
 		}
 		else
 		{
@@ -484,13 +531,17 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 				}
 			if (maxSqDist>AI_CASTOR_FLAG_MOVE_SQ_DIST && maxFlag!=NULL)
 			{
-				return shared_ptr<Order>(new OrderMoveFlag(maxFlag->gid, x, y, true));
+				return telemetry.returnedOrder(
+					AITrace::AI2::AICastor_controlStrikes_result,
+					shared_ptr<Order>(new OrderMoveFlag(maxFlag->gid, x, y, true)));
 			}
 			for (std::list<Building *>::iterator it=virtualBuildings->begin(); it!=virtualBuildings->end(); ++it)
 				if ((*it)->type->shortTypeNum==IntBuildingType::WAR_FLAG
 					&& (*it)->maxUnitWorking<AI_CASTOR_WARFLAG_WORKER_GOAL)
 				{
-					return shared_ptr<Order>(new OrderModifyBuilding((*it)->gid, AI_CASTOR_WARFLAG_WORKER_GOAL));
+					return telemetry.returnedOrder(AITrace::AI2::AICastor_controlStrikes_result,
+												   shared_ptr<Order>(new OrderModifyBuilding(
+													   (*it)->gid, AI_CASTOR_WARFLAG_WORKER_GOAL)));
 				}
 		}
 	}
@@ -499,13 +550,15 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 		for (std::list<Building *>::iterator it=virtualBuildings->begin(); it!=virtualBuildings->end(); ++it)
 			if ((*it)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
 			{
-				return shared_ptr<Order>(new OrderDelete((*it)->gid));
+				return telemetry.returnedOrder(AITrace::AI2::AICastor_controlStrikes_result,
+											   shared_ptr<Order>(new OrderDelete((*it)->gid)));
 			}
 		strikeTeamSelected=false;
 		onStrike=false;
 	}
-	
-	return shared_ptr<Order>();
+
+	return telemetry.returnedOrder(AITrace::AI2::AICastor_controlStrikes_result,
+								   shared_ptr<Order>());
 }
 
 

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include <sstream>
 #include <iostream>
 #include <cstdlib>
@@ -34,8 +35,32 @@ void statValue(GAGCore::InputStream* stream, const char* name, int& value)
     value = stream->readSint32(name);
 }
 
+void statValue(GAGCore::OutputStream *s, const char *n, const Uint32 &v)
+{
+	s->writeUint32(v, n);
+}
+void statValue(GAGCore::InputStream *s, const char *n, Uint32 &v)
+{
+	v = s->readUint32(n);
+}
+void statValue(GAGCore::OutputStream *s, const char *n, const Uint64 &v)
+{
+	s->writeEnterSection(n);
+	s->writeUint32(static_cast<Uint32>(v), "low");
+	s->writeUint32(static_cast<Uint32>(v >> 32), "high");
+	s->writeLeaveSection();
+}
+void statValue(GAGCore::InputStream *s, const char *n, Uint64 &v)
+{
+	s->readEnterSection(n);
+	Uint64 low = s->readUint32("low");
+	v = low | (Uint64(s->readUint32("high")) << 32);
+	s->readLeaveSection();
+}
+
 template<class Name>
 void enterStatSection(GAGCore::OutputStream* stream, Name name) { stream->writeEnterSection(name); }
+
 template<class Name>
 void enterStatSection(GAGCore::InputStream* stream, Name name) { stream->readEnterSection(name); }
 void leaveStatSection(GAGCore::OutputStream* stream) { stream->writeLeaveSection(); }
@@ -52,6 +77,41 @@ void statValue(Stream* stream, const char* name, T (&values)[N])
         leaveStatSection(stream);
     }
     leaveStatSection(stream);
+}
+
+template <class Stream, class Stat> void measurementFields(Stream *stream, Stat &stat)
+{
+	statValue(stream, "tick", stat.tick);
+	statValue(stream, "births", stat.births);
+	statValue(stream, "deaths", stat.deaths);
+	statValue(stream, "conversionsIn", stat.conversionsIn);
+	statValue(stream, "conversionsOut", stat.conversionsOut);
+	statValue(stream, "harvested", stat.harvested);
+	statValue(stream, "cleared", stat.cleared);
+	statValue(stream, "delivered", stat.delivered);
+	statValue(stream, "withdrawn", stat.withdrawn);
+	statValue(stream, "transferredIn", stat.transferredIn);
+	statValue(stream, "transferredOut", stat.transferredOut);
+	statValue(stream, "consumed", stat.consumed);
+	statValue(stream, "repairDelivered", stat.repairDelivered);
+	statValue(stream, "meals", stat.meals);
+	statValue(stream, "healingVisits", stat.healingVisits);
+	statValue(stream, "hpRestored", stat.hpRestored);
+	statValue(stream, "damageDealt", stat.damageDealt);
+	statValue(stream, "damageReceived", stat.damageReceived);
+	statValue(stream, "shots", stat.shots);
+	statValue(stream, "impacts", stat.impacts);
+	statValue(stream, "completed", stat.completed);
+	statValue(stream, "removed", stat.removed);
+	statValue(stream, "trainingVisits", stat.trainingVisits);
+	statValue(stream, "abilityGains", stat.abilityGains);
+	statValue(stream, "stock", stat.stock);
+	statValue(stream, "carried", stat.carried);
+	statValue(stream, "buildings", stat.buildings);
+	statValue(stream, "hungry", stat.hungry);
+	statValue(stream, "critical", stat.critical);
+	statValue(stream, "feeding", stat.feeding);
+	statValue(stream, "healing", stat.healing);
 }
 
 template<class Stream, class Stat>
@@ -194,6 +254,10 @@ TeamStats::~TeamStats()
 
 void TeamStats::step(Team *team, bool reloaded)
 {
+	PERF_SCOPE_TIME(Stats);
+	if (!reloaded && needsMeasurementInitialization)
+		initializeMeasurements(team->game->stepCounter);
+	beginMeasurementSnapshot(team);
 	// handle end of game stat step
 	if (((team->game->stepCounter & END_OF_GAME_STAT_INTERVAL_MASK) == 0) && !reloaded)
 	{
@@ -231,6 +295,7 @@ void TeamStats::step(Team *team, bool reloaded)
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=team->myUnits[i];
+		observeMeasurementUnit(u);
 		if ((u)&&(u->medical==Unit::MED_FREE)&&(u->activity==Unit::ACT_RANDOM))
 		{
 			smoothedStat.isFree[(int)u->typeNum]++;
@@ -243,7 +308,8 @@ void TeamStats::step(Team *team, bool reloaded)
 		Building *b = team->myBuildings[i];
 		if (b)
 		{
-            if(b->type->foodable || b->type->fillable || b->type->zonable[WORKER])
+			observeMeasurementBuilding(b);
+			if(b->type->foodable || b->type->fillable || b->type->zonable[WORKER])
             {
 		        smoothedStat.totalNeeded+=b->desiredMaxUnitWorking-(int)b->unitsWorking.size();
 		        smoothedStat.totalNeededPerLevel[b->type->level]+=b->desiredMaxUnitWorking-(int)b->unitsWorking.size();
@@ -251,7 +317,15 @@ void TeamStats::step(Team *team, bool reloaded)
         }
     }
 
-
+	if (!reloaded && !needsMeasurementInitialization &&
+		(measurements.tick & END_OF_GAME_STAT_INTERVAL_MASK) == 0 &&
+		(measurementHistory.empty() || measurementHistory.back().tick != measurements.tick))
+	{
+		measurementHistory.push_back(measurements);
+		AITelemetry::capture(team, true, getenv("GLOB2_TEAM_TIMELINE") != nullptr);
+		if (getenv("GLOB2_TEAM_TIMELINE"))
+			printMeasurements(team->teamNumber);
+	}
 	smoothedIndex++;
 	smoothedIndex%=STATS_SMOOTH_SIZE;
 	if (smoothedIndex)
@@ -652,6 +726,36 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
         stream->readLeaveSection();
     }
 
+	if (versionMinor >= FILE_FORMAT_VERSION_GAMEPLAY_STATS)
+	{
+		GAGCore::BinaryInputStream::CheckedReads checked(stream);
+		coverageStartTick = stream->readUint32("coverageStartTick");
+		measurementFields(stream, measurements);
+		const Uint32 count = stream->readUint32("measurementCount");
+		if (measurements.tick < coverageStartTick || count > Uint64(measurements.tick) / 512 + 1)
+			throw std::runtime_error("Invalid gameplay statistics coverage");
+		measurementHistory.clear();
+		for (Uint32 i = 0; i < count; ++i)
+		{
+			stream->readEnterSection(i);
+			GameplayMeasurements sample;
+			measurementFields(stream, sample);
+			stream->readLeaveSection();
+			if (sample.tick < coverageStartTick || sample.tick > measurements.tick ||
+				(sample.tick & 511) ||
+				(!measurementHistory.empty() && sample.tick <= measurementHistory.back().tick))
+				throw std::runtime_error("Invalid gameplay statistics timestamp");
+			measurementHistory.push_back(sample);
+		}
+		needsMeasurementInitialization = false;
+	}
+	else
+		needsMeasurementInitialization = true;
+
+	if (versionMinor >= FILE_FORMAT_VERSION_AI_TELEMETRY)
+		AITelemetry::load(stream, aiTelemetry);
+	else
+		aiTelemetry.clear();
 	stream->readLeaveSection();
 	return true;
 }
@@ -690,6 +794,282 @@ void TeamStats::save(GAGCore::OutputStream *stream)
     }
     stream->writeLeaveSection();
 
+	stream->writeUint32(coverageStartTick, "coverageStartTick");
+	measurementFields(stream, measurements);
+	stream->writeUint32(measurementHistory.size(), "measurementCount");
+	for (unsigned i = 0; i < measurementHistory.size(); ++i)
+	{
+		stream->writeEnterSection(i);
+		measurementFields(stream, measurementHistory[i]);
+		stream->writeLeaveSection();
+	}
+
+	AITelemetry::save(stream, aiTelemetry);
 	stream->writeLeaveSection();
 }
 
+void TeamStats::initializeMeasurements(Uint32 tick)
+{
+	measurements = GameplayMeasurements{};
+	measurements.tick = coverageStartTick = tick;
+	measurementHistory.clear();
+	needsMeasurementInitialization = false;
+}
+
+void TeamStats::recordDamage(Team *source, Team *target, int kind, int targetKind, int hp,
+							 int damage)
+{
+	const Uint64 removed = std::max(0, std::min(hp, damage));
+	target->stats.measurements.damageReceived[kind][targetKind] += removed;
+	if (source)
+	{
+		source->stats.measurements.damageDealt[kind][targetKind] += removed;
+		if (removed)
+			++source->stats.measurements.impacts[kind][targetKind];
+	}
+}
+
+namespace
+{
+template <class T> void printMeasurement(const std::string &name, const T &value)
+{
+	std::cout << ' ' << name << '=' << value;
+}
+template <class T, size_t N> void printMeasurement(const std::string &name, const T (&values)[N])
+{
+	for (size_t i = 0; i < N; ++i)
+		printMeasurement(name + "_" + std::to_string(i), values[i]);
+}
+} // namespace
+void TeamStats::printMeasurements(int team, bool final) const
+{
+	auto emit = [&](const GameplayMeasurements& measurements, const char* prefix, bool isFinal)
+	{
+	std::cout << prefix << " team=" << team << " tick=" << measurements.tick
+			  << " coverage_start=" << coverageStartTick << " final=" << isFinal;
+	printMeasurement("births", measurements.births);
+	printMeasurement("deaths", measurements.deaths);
+	printMeasurement("conversionsIn", measurements.conversionsIn);
+	printMeasurement("conversionsOut", measurements.conversionsOut);
+	printMeasurement("harvested", measurements.harvested);
+	printMeasurement("cleared", measurements.cleared);
+	printMeasurement("delivered", measurements.delivered);
+	printMeasurement("withdrawn", measurements.withdrawn);
+	printMeasurement("transferredIn", measurements.transferredIn);
+	printMeasurement("transferredOut", measurements.transferredOut);
+	printMeasurement("consumed", measurements.consumed);
+	printMeasurement("repairDelivered", measurements.repairDelivered);
+	printMeasurement("meals", measurements.meals);
+	printMeasurement("healingVisits", measurements.healingVisits);
+	printMeasurement("hpRestored", measurements.hpRestored);
+	printMeasurement("damageDealt", measurements.damageDealt);
+	printMeasurement("damageReceived", measurements.damageReceived);
+	printMeasurement("shots", measurements.shots);
+	printMeasurement("impacts", measurements.impacts);
+	printMeasurement("completed", measurements.completed);
+	printMeasurement("removed", measurements.removed);
+	printMeasurement("trainingVisits", measurements.trainingVisits);
+	printMeasurement("abilityGains", measurements.abilityGains);
+	printMeasurement("stock", measurements.stock);
+	printMeasurement("carried", measurements.carried);
+	printMeasurement("buildings", measurements.buildings);
+	printMeasurement("hungry", measurements.hungry);
+	printMeasurement("critical", measurements.critical);
+	printMeasurement("feeding", measurements.feeding);
+	printMeasurement("healing", measurements.healing);
+	std::cout << '\n';
+	};
+	if (final)
+		for (const auto& sample : measurementHistory) emit(sample, "GLOB2_MEASURE_HISTORY", false);
+	emit(measurements, "GLOB2_MEASURE", final);
+}
+
+namespace
+{
+template <class T> Uint64 measurementSum(const T &value)
+{
+	return value;
+}
+template <class T, size_t N> Uint64 measurementSum(const T (&values)[N])
+{
+	Uint64 total = 0;
+	for (const auto &v : values)
+		total += measurementSum(v);
+	return total;
+}
+} // namespace
+const char *TeamStats::measurementLabel(int metric)
+{
+	static const char *labels[] = {
+		"[Stats births]",        "[Stats deaths]",          "[Stats starvation]",
+		"[Stats wheat stock]",   "[Stats wheat loads]",     "[Stats meals]",
+		"[Stats new buildings]", "[Stats upgrades]",        "[Stats training]",
+		"[Stats damage dealt]",  "[Stats damage received]", "[Stats HP restored]"};
+	assert(metric >= 0 && metric < 12);
+	return labels[metric];
+}
+Uint64 TeamStats::graphValue(const GameplayMeasurements &m, int metric)
+{
+	switch (metric)
+	{
+	case 0:
+		return measurementSum(m.births);
+	case 1:
+		return measurementSum(m.deaths);
+	case 2:
+	{
+		Uint64 total = 0;
+		for (const auto &row : m.deaths)
+			total += row[GameplayMeasurements::STARVATION];
+		return total;
+	}
+	case 3:
+		return m.stock[WHEAT];
+	case 4:
+		return m.harvested[WHEAT];
+	case 5:
+		return m.meals;
+	case 6:
+		return measurementSum(m.completed[GameplayMeasurements::NEW_BUILDING]);
+	case 7:
+		return measurementSum(m.completed[GameplayMeasurements::UPGRADED]);
+	case 8:
+		return measurementSum(m.trainingVisits);
+	case 9:
+		return measurementSum(m.damageDealt);
+	case 10:
+		return measurementSum(m.damageReceived);
+	case 11:
+		return m.hpRestored;
+	default:
+		return 0;
+	}
+}
+void TeamStats::drawMeasurements(int x, int y)
+{
+	auto *strings = Toolkit::getStringTable();
+	auto compact = [](Uint64 value)
+	{
+		if (value < 1000000) return std::to_string(value);
+		std::ostringstream text;
+		text.setf(std::ios::scientific); text.precision(2);
+		text << static_cast<long double>(value);
+		return text.str();
+	};
+	auto fit = [](std::string text, int width)
+	{
+		while (!text.empty() && globalContainer->littleFont->getStringWidth(text) > width)
+		{
+			size_t last = text.size()-1;
+			while (last>0 && (static_cast<unsigned char>(text[last]) & 0xc0)==0x80) --last;
+			text.resize(last);
+		}
+		return text;
+	};
+	auto line = [&](const char *label, const std::string &value)
+	{
+		const int valueWidth=globalContainer->littleFont->getStringWidth(value);
+		globalContainer->gfx->drawString(x+4,y,globalContainer->littleFont,fit(strings->getString(label),124-valueWidth));
+		globalContainer->gfx->drawString(x+132-valueWidth,y,globalContainer->littleFont,value);
+		y += 12;
+	};
+	auto count = [&](const char *label, Uint64 value) { line(label, compact(value)); };
+	count("[Stats since tick]", coverageStartTick);
+	count("[Stats births]", measurementSum(measurements.births));
+	count("[Stats deaths]", measurementSum(measurements.deaths));
+	const char *causes[] = {"[Stats combat deaths]", "[Stats starvation]",
+							"[Stats clearing deaths]", "[Stats trapped deaths]",
+							"[Stats unknown deaths]"};
+	for (int c = 0; c < GameplayMeasurements::DEATH_CAUSES; ++c)
+	{
+		Uint64 n = 0;
+		for (auto &row : measurements.deaths)
+			n += row[c];
+		count(causes[c], n);
+	}
+	line("[Stats conversions]", compact(measurementSum(measurements.conversionsIn)) + " / " +
+									compact(measurementSum(measurements.conversionsOut)));
+	for (int r = 0; r < MAX_RESOURCES; ++r)
+	{
+		const std::string amount = compact(measurements.stock[r]);
+		const std::string name = fit(getResourceName(r), 60-globalContainer->littleFont->getStringWidth(amount));
+		globalContainer->gfx->drawString(x + 4 + (r % 2) * 66, y, globalContainer->littleFont,
+										 name + " " + amount);
+		if (r % 2)
+			y += 12;
+	}
+	auto rate = [&](bool harvested)
+	{
+		if (measurementHistory.size() < 2)
+			return std::string(strings->getString("[Stats unavailable]"));
+		const auto &a = measurementHistory[measurementHistory.size() - 2];
+		const auto &b = measurementHistory.back();
+		const Uint64 difference = harvested ? b.harvested[WHEAT] - a.harvested[WHEAT]
+											: b.consumed[GameplayMeasurements::MEAL][WHEAT] -
+												  a.consumed[GameplayMeasurements::MEAL][WHEAT];
+		std::ostringstream text;
+		text.setf(std::ios::fixed);
+		text.precision(1);
+		text << static_cast<long double>(difference) * 1500 / (b.tick - a.tick);
+		return text.str();
+	};
+	line("[Stats wheat per minute]", rate(true));
+	line("[Stats meals per minute]", rate(false));
+	line("[Stats occupancy]",
+		 std::to_string(measurements.feeding) + " / " + std::to_string(measurements.healing));
+	count("[Stats HP restored]", measurements.hpRestored);
+	count("[Stats new buildings]", graphValue(measurements, 6));
+	count("[Stats upgrades]", graphValue(measurements, 7));
+	count("[Stats training]", graphValue(measurements, 8));
+}
+
+void TeamStats::beginMeasurementSnapshot(Team *team)
+{
+	measurements.tick = team->game->stepCounter;
+	std::fill(std::begin(measurements.stock), std::end(measurements.stock), 0);
+	std::fill(std::begin(measurements.carried), std::end(measurements.carried), 0);
+	for (auto &row : measurements.buildings)
+		std::fill(std::begin(row), std::end(row), 0);
+	measurements.hungry = measurements.critical = measurements.feeding = measurements.healing = 0;
+	for (int r = 0; r < MAX_NB_RESOURCES; ++r)
+		measurements.stock[r] = std::max(0, team->teamResources[r]);
+}
+void TeamStats::observeMeasurementUnit(Unit *u)
+{
+	if (u && !u->isDead)
+	{
+		if (u->carriedResource >= 0 && u->carriedResource < MAX_NB_RESOURCES)
+			++measurements.carried[u->carriedResource];
+		if (u->isUnitHungry())
+		{
+			++measurements.hungry;
+			if (u->hp < u->performance[HP])
+				++measurements.critical;
+		}
+		if (u->displacement == Unit::DIS_INSIDE)
+		{
+			if (u->destinationPurpose == FEED)
+				++measurements.feeding;
+			if (u->destinationPurpose == HEAL)
+				++measurements.healing;
+		}
+	}
+}
+void TeamStats::observeMeasurementBuilding(Building *b)
+{
+	if (b && !b->type->isVirtual && b->buildingState != Building::DEAD)
+	{
+		++measurements.buildings[b->type->shortTypeNum][b->getLongLevel()];
+		if (!b->type->useTeamResources)
+			for (int r = 0; r < MAX_NB_RESOURCES; ++r)
+				measurements.stock[r] += std::max(0, b->resources[r]);
+	}
+}
+void TeamStats::refreshMeasurements(Team *team)
+{
+	beginMeasurementSnapshot(team);
+	for (int i = 0; i < Unit::MAX_COUNT; ++i)
+		observeMeasurementUnit(team->myUnits[i]);
+	for (int i = 0; i < Building::MAX_COUNT; ++i)
+		observeMeasurementBuilding(team->myBuildings[i]);
+}

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Headless.h"
+#include "PerformanceTelemetry.h"
 #include "Engine.h"
 #include "GlobalContainer.h"
 #include "AINames.h"
@@ -85,6 +86,7 @@ void isolateEnvironment()
 		"GLOB2_NICOWAR_V3_TUNING", "GLOB2_MAXIMA_TELEMETRY", "GLOB2_DATASET_PATH",
 		"GLOB2_CHECKSUM_SIDECAR", "GLOB2_REPLAY_PATH", "GLOB2_TEAM_TIMELINE", "GLOB2_TEAM_RESULTS",
 		"GLOB2_DUMP_GAME", "GLOB2_STUDY_EXPLAIN", "GLOB2_USER_DIR",
+		"GLOB2_PERF_DISABLE", "GLOB2_PERF_BUILD_LABEL",
 		"GLOB2_CORTEX_POLICY", "GLOB2_CORTEX_NET", "GLOB2_CORTEX_DECISION_NET",
 		"GLOB2_CORTEX_TRACE", "GLOB2_CORTEX_DECIDE_TRACE", "GLOB2_CORTEX_INN_TRACE",
 		"GLOB2_CHECKSUM_SIDECAR_MAX_TICKS", "CORTEX_DUMP_PERIODIC", "CORTEX_DUMP_OFFENSE",
@@ -249,6 +251,8 @@ struct HeadlessRunner
 		if(initial) engine.saveInitialGameStateOrExit((output/"initial.game").string(),"initial",engine.gui.game.mapHeader.getMapName());
 		engine.run();
 		if(final) engine.saveInitialGameStateOrExit((output/"final.game").string(),"final",engine.gui.game.mapHeader.getMapName());
+		PerformanceTelemetry::collector().capture(engine.gui.game.stepCounter, true, true);
+		PerformanceTelemetry::collector().reset();
 		Game &game=engine.gui.game;
 		engine.trackTeamEliminations();
 		std::ostringstream result;
@@ -338,7 +342,7 @@ int runHeadlessCommand(int argc,char **argv)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\"],\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
+				<< ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":1,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\"],\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())
 			{

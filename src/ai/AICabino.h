@@ -132,6 +132,11 @@ namespace Cabino
 	class AICabino : public AIImplementation
 	{
 		public:
+		  void captureTelemetry() override;
+		  const std::vector<AITelemetry::Field> &telemetrySchema() const override
+		  {
+			  return AITelemetry::schema(8);
+		  }
 			AICabino(Player *player);
 			AICabino(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			~AICabino();
@@ -437,6 +442,7 @@ namespace Cabino
 		public:
 			///Destructs the module, deconnecting it from the base.
 			virtual ~Module() {};
+			virtual void captureTelemetry(const AITelemetry::Sink &) const {}
 			///Asks the Module to perform something in its timeslice. If this returns true,
 			///The main module will give it another tick, for split calculations. The function
 			///will be called again with the same time_splice_n.
@@ -517,32 +523,31 @@ namespace Cabino
 	///is large (as in more units than we have to defend with), it will tell the swarm controller to make warriors on the double.
 	class SimpleBuildingDefense : public DefenseModule
 	{
-		public:
+	  public:
+		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
-			SimpleBuildingDefense(AICabino& ai);
+	  public:
+		SimpleBuildingDefense(AICabino &ai);
 
-			~SimpleBuildingDefense() {};
-			bool perform(unsigned int time_slice_n);
-			std::string getName() const;
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream) const;
-			unsigned int numberOfTicks() const
-			{
-				return 3;
-			}
+		~SimpleBuildingDefense() {};
+		bool perform(unsigned int time_slice_n);
+		std::string getName() const;
+		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+		void save(GAGCore::OutputStream *stream) const;
+		unsigned int numberOfTicks() const { return 3; }
 
-			struct defenseRecord
-			{
-				unsigned int flag;
-				unsigned int flagx;
-				unsigned int flagy;
-				unsigned int zonex;
-				unsigned int zoney;
-				unsigned int width;
-				unsigned int height;
-				unsigned int assigned;
-				unsigned int building;
-			};
+		struct defenseRecord
+		{
+			unsigned int flag;
+			unsigned int flagx;
+			unsigned int flagy;
+			unsigned int zonex;
+			unsigned int zoney;
+			unsigned int width;
+			unsigned int height;
+			unsigned int assigned;
+			unsigned int building;
+		};
 
 			std::vector<defenseRecord> defending_zones;
 
@@ -575,24 +580,24 @@ namespace Cabino
 	///than capable of combatting several weaker forces.
 	class GeneralsDefense : public DefenseModule
 	{
-		public:
-			GeneralsDefense(AICabino& ai);
-			~GeneralsDefense() {};
-			bool perform(unsigned int time_slice_n);
-			std::string getName() const;
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream) const;
-			unsigned int numberOfTicks() const
-			{
-				return 2;
-			}
+	  public:
+		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
-			///Stores the information nessecary to remeber the combat against one enemy flag.
-			struct defenseRecord
-			{
-				unsigned int flag;
-				unsigned int enemy_flag;
-			};
+	  public:
+		GeneralsDefense(AICabino &ai);
+		~GeneralsDefense() {};
+		bool perform(unsigned int time_slice_n);
+		std::string getName() const;
+		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+		void save(GAGCore::OutputStream *stream) const;
+		unsigned int numberOfTicks() const { return 2; }
+
+		///Stores the information nessecary to remeber the combat against one enemy flag.
+		struct defenseRecord
+		{
+			unsigned int flag;
+			unsigned int enemy_flag;
+		};
 
 			std::vector<defenseRecord> defending_flags;
 
@@ -611,39 +616,38 @@ namespace Cabino
 	///destroying all of one building type before moving onto the next.
 	class PrioritizedBuildingAttack : public AttackModule
 	{
-		public:
-			PrioritizedBuildingAttack(AICabino& ai);
-			~PrioritizedBuildingAttack() {};
-			bool perform(unsigned int time_slice_n);
-			std::string getName() const;
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream) const;
-			unsigned int numberOfTicks() const
-			{
-				return 4;
-			}
+	  public:
+		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
-			///Stores all of the information accociated with a particular attack
-			struct attackRecord
-			{
-				unsigned int target;
-				unsigned int target_x;
-				unsigned int target_y;
-				unsigned int flag;
-				unsigned int flagx;
-				unsigned int flagy;
-				unsigned int zonex;
-				unsigned int zoney;
-				unsigned int width;
-				unsigned int height;
-				unsigned int unitx;
-				unsigned int unity;
-				unsigned int unit_width;
-				unsigned int unit_height;
-				unsigned int assigned_units;
-				unsigned int assigned_level;
+	  public:
+		PrioritizedBuildingAttack(AICabino &ai);
+		~PrioritizedBuildingAttack() {};
+		bool perform(unsigned int time_slice_n);
+		std::string getName() const;
+		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+		void save(GAGCore::OutputStream *stream) const;
+		unsigned int numberOfTicks() const { return 4; }
 
-			};
+		///Stores all of the information accociated with a particular attack
+		struct attackRecord
+		{
+			unsigned int target;
+			unsigned int target_x;
+			unsigned int target_y;
+			unsigned int flag;
+			unsigned int flagx;
+			unsigned int flagy;
+			unsigned int zonex;
+			unsigned int zoney;
+			unsigned int width;
+			unsigned int height;
+			unsigned int unitx;
+			unsigned int unity;
+			unsigned int unit_width;
+			unsigned int unit_height;
+			unsigned int assigned_units;
+			unsigned int assigned_level;
+		};
 
 			///Stores everything about what the ai is attacking
 			std::vector<attackRecord> attacks;
@@ -666,26 +670,26 @@ namespace Cabino
 	///It builds based on what percentage of buildings each type has comapred to how many it wants.
 	class DistributedNewConstructionManager : public NewConstructionModule
 	{
-		public:
-			DistributedNewConstructionManager(AICabino& ai);
-			~DistributedNewConstructionManager() {};
-			bool perform(unsigned int time_slice_n);
-			std::string getName() const;
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream) const;
-			unsigned int numberOfTicks() const
-			{
-				return 3;
-			}
+	  public:
+		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
-			///Stores a single point on the map
-			struct point
-			{
-				point() {}
-				point(unsigned x, unsigned y) : x(x), y(y) {}
-				unsigned int x;
-				unsigned int y;
-			};
+	  public:
+		DistributedNewConstructionManager(AICabino &ai);
+		~DistributedNewConstructionManager() {};
+		bool perform(unsigned int time_slice_n);
+		std::string getName() const;
+		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+		void save(GAGCore::OutputStream *stream) const;
+		unsigned int numberOfTicks() const { return 3; }
+
+		///Stores a single point on the map
+		struct point
+		{
+			point() {}
+			point(unsigned x, unsigned y) : x(x), y(y) {}
+			unsigned int x;
+			unsigned int y;
+		};
 
 			///Stores information about the size and offset the maximum size a particular type of building has.
 			struct upgradeData
@@ -787,32 +791,32 @@ namespace Cabino
 	///It only uses free workers.
 	class RandomUpgradeRepairModule : public UpgradeRepairModule
 	{
-		public:
-			RandomUpgradeRepairModule(AICabino& ai);
-			~RandomUpgradeRepairModule() {};
-			bool perform(unsigned int time_slice_n);
-			std::string getName() const;
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream) const;
-			unsigned int numberOfTicks() const
-			{
-				return 4;
-			}
+	  public:
+		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
-			///A construction record, keeps track of information accociated with buildings that the ai is having construction done on
-			///(either repair or upgrade.)
-			struct constructionRecord
-			{
-				///The gid of the building that this record is for. A gid, not a Building*:
-				///the building can be destroyed while the record is still held.
-				unsigned int building;
-				///The number of units assigned to the building (or requested if its still pending)
-				unsigned int assigned;
-				///The number of units that where working the building before the construction
-				unsigned int original;
-				///True if the construction is repair, false if it is an upgrade.
-				bool is_repair;
-			};
+	  public:
+		RandomUpgradeRepairModule(AICabino &ai);
+		~RandomUpgradeRepairModule() {};
+		bool perform(unsigned int time_slice_n);
+		std::string getName() const;
+		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+		void save(GAGCore::OutputStream *stream) const;
+		unsigned int numberOfTicks() const { return 4; }
+
+		///A construction record, keeps track of information accociated with buildings that the ai is having construction done on
+		///(either repair or upgrade.)
+		struct constructionRecord
+		{
+			///The gid of the building that this record is for. A gid, not a Building*:
+			///the building can be destroyed while the record is still held.
+			unsigned int building;
+			///The number of units assigned to the building (or requested if its still pending)
+			unsigned int assigned;
+			///The number of units that where working the building before the construction
+			unsigned int original;
+			///True if the construction is repair, false if it is an upgrade.
+			bool is_repair;
+		};
 
 			///Removes construction records that are no longer being constructed (either from cancel or finish)
 			bool removeOldConstruction(void);
@@ -880,33 +884,42 @@ namespace Cabino
 	///however, it just dishes out units. It is not a complete module.
 	class DistributedUnitManager : public UnitModule
 	{
-		public:
-			DistributedUnitManager(AICabino& ai);
-			~DistributedUnitManager() {};
-			std::string getName() const;
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream) const;
+	  public:
+		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
-			void changeUnits(std::string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level);
-			unsigned int available(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum);
-			bool request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, int building);
-                        void reserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number);
-                        void unreserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number);
-			void writeDebug();
-		protected:
-			///This stores all of the information needed for maintaining a particular building at its maximum unit consumption
-			struct usageRecord
-			{
-				std::string owner;
-				unsigned int x;
-				unsigned int y;
-				unsigned int type;
-				unsigned int level;
-				unsigned int ability;
-				unsigned int unit_type;
-				unsigned int minimum_level;
-				unsigned int number;
-			};
+	  public:
+		DistributedUnitManager(AICabino &ai);
+		~DistributedUnitManager() {};
+		std::string getName() const;
+		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+		void save(GAGCore::OutputStream *stream) const;
+
+		void changeUnits(std::string moduleName, unsigned int unitType, unsigned int numUnits,
+						 unsigned int ability, unsigned int level);
+		unsigned int available(std::string module_name, unsigned int unit_type,
+							   unsigned int ability, unsigned int level, bool is_minimum);
+		bool request(std::string module_name, unsigned int unit_type, unsigned int ability,
+					 unsigned int minimum_level, unsigned int number, int building);
+		void reserve(std::string module_name, unsigned int unit_type, unsigned int ability,
+					 unsigned int minimum_level, unsigned int number);
+		void unreserve(std::string module_name, unsigned int unit_type, unsigned int ability,
+					   unsigned int minimum_level, unsigned int number);
+		void writeDebug();
+
+	  protected:
+		///This stores all of the information needed for maintaining a particular building at its maximum unit consumption
+		struct usageRecord
+		{
+			std::string owner;
+			unsigned int x;
+			unsigned int y;
+			unsigned int type;
+			unsigned int level;
+			unsigned int ability;
+			unsigned int unit_type;
+			unsigned int minimum_level;
+			unsigned int number;
+		};
 
 			///This stores all of the buildings and how many units they are using. A buildings usage record is both stored
 			///here and in the related modules moduleRecord for effiency.
@@ -978,52 +991,51 @@ namespace Cabino
 	///it will try to launch explorer attacks.
 	class ExplorationManager : public OtherModule
 	{
-		public:
-			ExplorationManager(AICabino& ai);
-			~ExplorationManager() {};
-			bool perform(unsigned int time_slice_n);
-			std::string getName() const;
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream) const;
-			unsigned int numberOfTicks() const
-			{
-				return 1;
-			}
-			///Controls the swarms in order to get the desired numbers of explorers. It puts
-			///the explorers creation at top priority, and if multiple explorers need to be
-			///created, will distribute them between its swarms.
-			bool moderateSwarmsForExplorers(void);
+	  public:
+		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
+	  public:
+		ExplorationManager(AICabino &ai);
+		~ExplorationManager() {};
+		bool perform(unsigned int time_slice_n);
+		std::string getName() const;
+		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+		void save(GAGCore::OutputStream *stream) const;
+		unsigned int numberOfTicks() const { return 1; }
+		///Controls the swarms in order to get the desired numbers of explorers. It puts
+		///the explorers creation at top priority, and if multiple explorers need to be
+		///created, will distribute them between its swarms.
+		bool moderateSwarmsForExplorers(void);
 
-			///Thisd is the number of explorers wanted
-			unsigned int explorers_wanted;
-			///This variable is only changed when the actual orders are sent to the unit module to request explorers,
-			///it keeps track of when numbers change so that the ai knows when to use UnitModule::reserve
-			unsigned int original_explorers_wanted;
-			///Holds a refernece to the ai so taht the module can work properly.
-			AICabino& ai;
+		///Thisd is the number of explorers wanted
+		unsigned int explorers_wanted;
+		///This variable is only changed when the actual orders are sent to the unit module to request explorers,
+		///it keeps track of when numbers change so that the ai knows when to use UnitModule::reserve
+		unsigned int original_explorers_wanted;
+		///Holds a refernece to the ai so taht the module can work properly.
+		AICabino &ai;
 	};
 
 	///Performs usage recording coupled with supply recording
 	class InnManager : public OtherModule
 	{
-		public:
-			InnManager(AICabino& ai);
-			~InnManager() {};
-			bool perform(unsigned int time_slice_n);
-			std::string getName() const;
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream) const;
-			unsigned int numberOfTicks() const
-			{
-				return 2;
-			}
+	  public:
+		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
-			struct singleInnRecord
-			{
-				explicit singleInnRecord(unsigned int food_amount=0) : food_amount(food_amount) {}
-				unsigned int food_amount;
-			};
+	  public:
+		InnManager(AICabino &ai);
+		~InnManager() {};
+		bool perform(unsigned int time_slice_n);
+		std::string getName() const;
+		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+		void save(GAGCore::OutputStream *stream) const;
+		unsigned int numberOfTicks() const { return 2; }
+
+		struct singleInnRecord
+		{
+			explicit singleInnRecord(unsigned int food_amount = 0) : food_amount(food_amount) {}
+			unsigned int food_amount;
+		};
 			struct innRecord
 			{
 				innRecord();
@@ -1070,26 +1082,26 @@ namespace Cabino
 	///This will put clearing-area padding around buildings.
 	class BuildingClearer : public OtherModule
 	{
-		public:
-			BuildingClearer(AICabino& ai);
-			~BuildingClearer() {};
-			bool perform(unsigned int time_slice_n);
-			std::string getName() const;
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream) const;
-			unsigned int numberOfTicks() const
-			{
-				return 2;
-			}
+	  public:
+		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
-			struct clearingRecord
-			{
-				unsigned int x;
-				unsigned int y;
-				unsigned int height;
-				unsigned int width;
-				unsigned int level;
-			};
+	  public:
+		BuildingClearer(AICabino &ai);
+		~BuildingClearer() {};
+		bool perform(unsigned int time_slice_n);
+		std::string getName() const;
+		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+		void save(GAGCore::OutputStream *stream) const;
+		unsigned int numberOfTicks() const { return 2; }
+
+		struct clearingRecord
+		{
+			unsigned int x;
+			unsigned int y;
+			unsigned int height;
+			unsigned int width;
+			unsigned int level;
+		};
 
 
 			std::map<int, clearingRecord> cleared_buildings;
@@ -1109,31 +1121,31 @@ namespace Cabino
 	///flags on nearby fruit trees.
 	class HappinessHandler : public OtherModule
 	{
-		public:
-			HappinessHandler(AICabino& ai);
-			~HappinessHandler();
-			bool perform(unsigned int time_slice_n);
-			std::string getName() const;
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream) const;
-			unsigned int numberOfTicks() const
-			{
-				return 2;
-			}
+	  public:
+		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
-			///Stores a single point on the map
-			struct point
+	  public:
+		HappinessHandler(AICabino &ai);
+		~HappinessHandler();
+		bool perform(unsigned int time_slice_n);
+		std::string getName() const;
+		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+		void save(GAGCore::OutputStream *stream) const;
+		unsigned int numberOfTicks() const { return 2; }
+
+		///Stores a single point on the map
+		struct point
+		{
+			point() {}
+			point(int x, int y) : x(x), y(y) {}
+			int x;
+			int y;
+			bool operator<(const point &cmp) const
 			{
-				point() {}
-				point(int x, int y) : x(x), y(y) {}
-				int x;
-				int y;
-				bool operator<(const point& cmp) const
-				{
-					if(x!=cmp.x)
-						return x<cmp.x;
-					return y<cmp.y;
-				}
+				if (x != cmp.x)
+					return x < cmp.x;
+				return y < cmp.y;
+			}
 			};
 
 			struct fruitTreeRecord
@@ -1173,25 +1185,25 @@ namespace Cabino
 	///This is known as "farming", and is explained on the wiki.
 	class Farmer : public OtherModule
 	{
-		public:
-			Farmer(AICabino& ai);
-			~Farmer();
-			bool perform(unsigned int time_slice_n);
-			std::string getName() const;
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream) const;
-			unsigned int numberOfTicks() const
-			{
-				return 1;
-			}
+	  public:
+		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
-			enum FarmingMethod
-			{
-				CheckerBoard,
-				CrossSpacing,
-				Row4,
-				Column4,
-			};
+	  public:
+		Farmer(AICabino &ai);
+		~Farmer();
+		bool perform(unsigned int time_slice_n);
+		std::string getName() const;
+		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+		void save(GAGCore::OutputStream *stream) const;
+		unsigned int numberOfTicks() const { return 1; }
+
+		enum FarmingMethod
+		{
+			CheckerBoard,
+			CrossSpacing,
+			Row4,
+			Column4,
+		};
 
 			///This structure holds a point, with including comparison operators so that it can have
 			///O(log2(n)) lookup times in a container such as set or map

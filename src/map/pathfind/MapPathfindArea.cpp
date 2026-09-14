@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "MapInternal.h"
 
@@ -11,6 +12,7 @@
 
 bool Map::pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy)
 {
+	PERF_SCOPE_TIME(PathArea);
 	const Uint16 *gradient=getForbiddenGradient(teamNumber, swimClass);
 	bool canSwim=swimClass>0;
 
@@ -49,6 +51,7 @@ bool Map::pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int sw
 
 bool Map::pathfindArea(AreaKind kind, int teamNumber, int swimClass, int x, int y, int *dx, int *dy)
 {
+	PERF_SCOPE_TIME(PathArea);
 	const Uint16 *gradient = (kind == AreaKind::Guard)
 		? getGuardAreasGradient(teamNumber, swimClass)
 		: getClearAreasGradient(teamNumber, swimClass);
@@ -77,6 +80,7 @@ bool Map::pathfindArea(AreaKind kind, int teamNumber, int swimClass, int x, int 
 
 bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, int swimClass, Uint32 teamMask, int maximumLength)
 {
+	PERF_SCOPE_TIME(PathPoint);
 	//This implements a fairly standard A* algorithm, except that each node does not store the location
 	//of the node that lead to it, thus, you can't trace backwards to the starting point to get the path.
 	//Instead, each node holds the direction that you left from the initial node that lead to it, so you

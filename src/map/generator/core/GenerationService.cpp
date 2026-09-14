@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <PerformanceTelemetry.h>
 #include "GenerationService.h"
 #include "Game.h"
 #include "GenerationContext.h"
@@ -15,6 +16,7 @@ std::string GenerationResult::diagnostic() const
 GenerationResult GenerationService::generate(Game &game, const GenerationRequest &request,
 											 bool collectTelemetry) const
 {
+	PERF_SCOPE_TIME(Generation);
 	GenerationResult result;
 	GenerationContext context(request, collectTelemetry);
 	const auto finish = [&]()

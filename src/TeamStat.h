@@ -8,6 +8,7 @@
 #include "Ressource.h"
 
 #include <vector>
+#include "AITelemetry.h"
 
 class Map;
 
@@ -95,24 +96,123 @@ struct EndOfGameStat
 	int value[TYPE_NB_STATS];
 };
 
+// Diagnostic only: never used by AI, orders, RNG or simulation checksums.
+struct GameplayMeasurements
+{
+	enum DeathCause
+	{
+		COMBAT,
+		STARVATION,
+		CLEARING,
+		TRAPPED,
+		UNKNOWN,
+		DEATH_CAUSES
+	};
+	enum DamageSource
+	{
+		MELEE,
+		MAGIC,
+		TOWER,
+		DAMAGE_SOURCES
+	};
+	enum Target
+	{
+		UNIT,
+		BUILDING,
+		TARGETS
+	};
+	enum Purpose
+	{
+		MEAL,
+		SPAWNING,
+		AMMUNITION,
+		CONSTRUCTION,
+		UPGRADE,
+		PURPOSES
+	};
+	enum Completion
+	{
+		NEW_BUILDING,
+		UPGRADED,
+		REPAIRED,
+		COMPLETIONS
+	};
+	enum Removal
+	{
+		DESTROYED,
+		DEMOLISHED,
+		OTHER,
+		REMOVALS
+	};
+	bool operator==(const GameplayMeasurements &) const = default;
+	Uint32 tick = 0;
+	Uint64 births[NB_UNIT_TYPE]{};
+	Uint64 deaths[NB_UNIT_TYPE][DEATH_CAUSES]{};
+	Uint64 conversionsIn[NB_UNIT_TYPE]{};
+	Uint64 conversionsOut[NB_UNIT_TYPE]{};
+	Uint64 harvested[MAX_NB_RESOURCES]{};
+	Uint64 cleared[MAX_NB_RESOURCES]{};
+	Uint64 delivered[MAX_NB_RESOURCES]{};
+	Uint64 withdrawn[MAX_NB_RESOURCES]{};
+	Uint64 transferredIn[MAX_NB_RESOURCES]{};
+	Uint64 transferredOut[MAX_NB_RESOURCES]{};
+	Uint64 consumed[PURPOSES][MAX_NB_RESOURCES]{};
+	Uint64 repairDelivered[MAX_NB_RESOURCES]{};
+	Uint64 meals{};
+	Uint64 healingVisits{};
+	Uint64 hpRestored{};
+	Uint64 damageDealt[DAMAGE_SOURCES][TARGETS]{};
+	Uint64 damageReceived[DAMAGE_SOURCES][TARGETS]{};
+	Uint64 shots[DAMAGE_SOURCES]{};
+	Uint64 impacts[DAMAGE_SOURCES][TARGETS]{};
+	Uint64 completed[COMPLETIONS][IntBuildingType::NB_BUILDING][NB_UNIT_LEVELS]{};
+	Uint64 removed[REMOVALS][IntBuildingType::NB_BUILDING][NB_BUILDING_LONG_LEVELS]{};
+	Uint64 trainingVisits[NB_UNIT_TYPE]{};
+	Uint64 abilityGains[NB_UNIT_TYPE][NB_ABILITY]{};
+	Uint64 stock[MAX_NB_RESOURCES]{};
+	Uint64 carried[MAX_NB_RESOURCES]{};
+	Uint64 buildings[IntBuildingType::NB_BUILDING][NB_BUILDING_LONG_LEVELS]{};
+	Uint64 hungry{};
+	Uint64 critical{};
+	Uint64 feeding{};
+	Uint64 healing{};
+};
+
 class Team;
 
 class TeamStats
 {
 public:
-	TeamStats();
-	virtual ~TeamStats(void);
-	
-	void step(Team *team, bool reloaded = false);
+  std::vector<std::shared_ptr<AITelemetry::Series>> aiTelemetry;
+  GameplayMeasurements measurements;
+  Uint32 coverageStartTick = 0;
+  bool needsMeasurementInitialization = false;
+  std::vector<GameplayMeasurements> measurementHistory;
+  void initializeMeasurements(Uint32 tick);
+  void refreshMeasurements(Team *team);
+  void beginMeasurementSnapshot(Team *team);
+  void observeMeasurementUnit(class Unit *unit);
+  void observeMeasurementBuilding(class Building *building);
+  void printMeasurements(int team, bool final = false) const;
+  static void recordDamage(Team *source, Team *target, int kind, int targetKind, int hp,
+						   int damage);
+  void drawMeasurements(int x, int y);
+  static Uint64 graphValue(const GameplayMeasurements &m, int metric);
+  static const char *measurementLabel(int metric);
 
-	void drawText(int posx, int posy);
-	void drawStat(int posx, int posy);
-	int getFreeUnits(int type);
-	int getTotalUnits(int type);
-	int getWorkersNeeded();
-	int getWorkersBalance();
-	int getWorkersLevel(int level);
-	int getStarvingUnits();
+  TeamStats();
+  virtual ~TeamStats(void);
+
+  void step(Team *team, bool reloaded = false);
+
+  void drawText(int posx, int posy);
+  void drawStat(int posx, int posy);
+  int getFreeUnits(int type);
+  int getTotalUnits(int type);
+  int getWorkersNeeded();
+  int getWorkersBalance();
+  int getWorkersLevel(int level);
+  int getStarvingUnits();
 
 private:
 	enum

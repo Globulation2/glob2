@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "AITelemetryFields.h"
 #include "echo/Echo.h"
 #include "IntBuildingType.h"
 
@@ -90,6 +91,7 @@ void Econo::tick(Echo& echo)
 
 void Econo::tick_initial_setup(Echo& echo)
 {
+	telemetry.count(AITrace::AI4::Econo_tick_initial_setup_calls);
 	if(timer==1)
 	{
 		BuildingSearch bs(echo);

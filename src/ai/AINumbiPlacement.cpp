@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-
+#include "AITelemetryFields.h"
 #include "AINumbi.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -192,7 +192,11 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 
 bool AINumbi::parseBuildingType(const int buildingType)
 {
-	return (buildingType==IntBuildingType::DEFENSE_BUILDING);
+	telemetry.set(AITrace::AI1::AINumbi_parseBuildingType_input_buildingType, buildingType);
+	telemetry.count(AITrace::AI1::AINumbi_parseBuildingType_calls);
+	return telemetry.returnedBool(AITrace::AI1::AINumbi_parseBuildingType_result,
+								  AITrace::AI1::AINumbi_parseBuildingType_true,
+								  (buildingType == IntBuildingType::DEFENSE_BUILDING));
 }
 
 void AINumbi::squareCircleScan(int &dx, int &dy, int &sx, int &sy, int &x, int &y, int &mx, int &my)
@@ -227,6 +231,8 @@ void AINumbi::squareCircleScan(int &dx, int &dy, int &sx, int &sy, int &x, int &
 
 bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 {
+	telemetry.set(AITrace::AI1::AINumbi_findNewEmplacement_input_buildingType, buildingType);
+	telemetry.count(AITrace::AI1::AINumbi_findNewEmplacement_calls);
 	Building **myBuildings=team->myBuildings;
 	Building *b=myBuildings[mainBuilding[buildingType]];
 	if (b==NULL)
@@ -248,7 +254,8 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 	if (b==NULL)
 	{
 		// TODO : scan the units and find a resourceful place.
-		return false;
+		return telemetry.returnedBool(AITrace::AI1::AINumbi_findNewEmplacement_result,
+									  AITrace::AI1::AINumbi_findNewEmplacement_true, false);
 	}
 	int typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(buildingType), 0, true);
 	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
@@ -337,10 +344,13 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 			}
 		}
 		if (bestValid>-1)
-			return true;
+			return telemetry.returnedBool(AITrace::AI1::AINumbi_findNewEmplacement_result,
+										  AITrace::AI1::AINumbi_findNewEmplacement_true, true);
 		nextMainBuilding(buildingType);
-		return false;
+		return telemetry.returnedBool(AITrace::AI1::AINumbi_findNewEmplacement_result,
+									  AITrace::AI1::AINumbi_findNewEmplacement_true, false);
 	}
 	nextMainBuilding(buildingType);
-	return false;
+	return telemetry.returnedBool(AITrace::AI1::AINumbi_findNewEmplacement_result,
+								  AITrace::AI1::AINumbi_findNewEmplacement_true, false);
 }

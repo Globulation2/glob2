@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "Game.h"
 #include "Utilities.h"
@@ -89,6 +90,7 @@ void Map::growResources(void)
 #ifndef YOG_SERVER_ONLY
 void Map::syncStep(Uint32 stepCounter)
 {
+	PERF_SCOPE_TIME(Map);
 	growResources();
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].step();
@@ -150,6 +152,7 @@ void Map::syncStep(Uint32 stepCounter)
 
 void Map::switchFogOfWar(void)
 {
+	PERF_SCOPE_TIME(Fog);
 	memset(fogOfWar, 0, size*sizeof(Uint32));
 	if (fogOfWar == &fogOfWarA[0])
 		fogOfWar = &fogOfWarB[0];

@@ -3,6 +3,8 @@
 
 #include <algorithm>
 #include "Unit.h"
+#include <BinaryStream.h>
+#include <stdexcept>
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
@@ -34,6 +36,14 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	gid = stream->readUint16("gid");
 	this->owner = owner;
 	isDead = stream->readSint32("isDead");
+	diagnosticDeathCause = GameplayMeasurements::UNKNOWN;
+	if (versionMinor >= FILE_FORMAT_VERSION_GAMEPLAY_STATS)
+	{
+		GAGCore::BinaryInputStream::CheckedReads checked(stream);
+		diagnosticDeathCause = stream->readSint32("diagnosticDeathCause");
+		if (diagnosticDeathCause < 0 || diagnosticDeathCause >= GameplayMeasurements::DEATH_CAUSES)
+			throw std::runtime_error("Invalid diagnostic death cause");
+	}
 
 	// position
 	posX = stream->readSint32("posX");
@@ -127,6 +137,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 	// identity
 	stream->writeUint16(gid, "gid");
 	stream->writeSint32(isDead, "isDead");
+	stream->writeSint32(diagnosticDeathCause, "diagnosticDeathCause");
 
 	// position
 	stream->writeSint32(posX, "posX");

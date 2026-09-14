@@ -10,6 +10,7 @@
 namespace GAGGUI
 {
 	class Text;
+	class TextButton;
 	class OnOffButton;
 }
 
@@ -22,7 +23,8 @@ public:
 	//! Destructor
 	virtual ~EndGameStat();
 	//! Set the type of stats (units, buildings, prestige) to draw
-	void setStatType(EndOfGameStat::Type type);
+	void setStatType(int type);
+	void paintMeasurements();
 	//! Enables / disables a particular team
 	void setEnabledState(int teamNum, bool isEnabled);
 	//! paint routine
@@ -42,7 +44,7 @@ protected:
 	std::string getStatLabel();
 
 	//! the type of the stat beeing drawn
-	EndOfGameStat::Type type;
+	int type;
 	//! Pointer to game, used for drawing
 	Game *game;
 	//! List of true/false values for each team's enabled status
@@ -56,7 +58,7 @@ protected:
 struct TeamEntry
 {
 	int teamNum;
-	int endVal[EndOfGameStat::TYPE_NB_STATS];
+	Uint64 endVal[18]{};
 	GAGCore::Color color;
 	std::string name;
 };
@@ -67,12 +69,13 @@ public:
 	//! Return values passed by the screen's buttons to onAction
 	enum ButtonId
 	{
-		//! stat selector buttons use their EndOfGameStat::Type as id
+		//! stat selector buttons use their int as id
 		STAT_BUTTON_FIRST = 0,
 		//! per-team toggle buttons use TEAM_TOGGLE_FIRST + row index
 		TEAM_TOGGLE_FIRST = EndOfGameStat::TYPE_NB_STATS,
 		QUIT = 38,
-		SAVE_REPLAY = 39
+		SAVE_REPLAY = 39,
+		STAT_PAGE = 40
 	};
 
 protected:
@@ -81,14 +84,16 @@ protected:
 	std::vector<OnOffButton *> team_enabled_buttons;
 	EndGameStat *statWidget;
 	Text* graphLabel;
+	int statPage = 0;
+	std::vector<GAGGUI::TextButton *> statButtons;
 
-protected:
+  protected:
 	//! resort players
-	void sortAndSet(EndOfGameStat::Type type);
+	void sortAndSet(int type);
 
 	//! Translated short name of a stat type, used for its selector button and the graph label
-	static std::string statTypeName(EndOfGameStat::Type type);
-	
+	static std::string statTypeName(int type);
+
 	//! pointer to the game, necessary for correctly saving replays
 	Game *game;
 	

@@ -30,6 +30,13 @@ namespace AIEcho
 	class EchoAI
 	{
 	public:
+	  AITelemetry::Sink telemetry;
+	  virtual void captureTelemetry() {}
+	  virtual Uint32 telemetrySchemaVersion() const { return 1; }
+	  virtual const std::vector<AITelemetry::Field> &telemetrySchema() const
+	  {
+		  return AITelemetry::schema(0);
+	  }
 		virtual ~EchoAI(){}
 		///Your AI must implement the load function that loads all of its data from a stream
 		virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
@@ -46,6 +53,11 @@ namespace AIEcho
 	class Econo : public EchoAI
 	{
 	public:
+	  void captureTelemetry() override;
+	  const std::vector<AITelemetry::Field> &telemetrySchema() const override
+	  {
+		  return AITelemetry::schema(4);
+	  }
 		Econo();
 		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 		void save(GAGCore::OutputStream *stream);
@@ -82,28 +94,34 @@ namespace AIEcho
 	class Echo : public AIImplementation
 	{
 	public:
-		Echo(EchoAI* echoai, Player* player);
-		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-		void save(GAGCore::OutputStream *stream);
+	  void captureTelemetry() override;
+	  const std::vector<AITelemetry::Field> &telemetrySchema() const override
+	  {
+		  return echoai->telemetrySchema();
+	  }
+	  Uint32 telemetrySchemaVersion() const override { return echoai->telemetrySchemaVersion(); }
+	  Echo(EchoAI *echoai, Player *player);
+	  bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+	  void save(GAGCore::OutputStream *stream);
 
-		std::shared_ptr<Order> getOrder(void);
+	  std::shared_ptr<Order> getOrder(void);
 
-		unsigned int add_building_order(Construction::BuildingOrder* bo);
-		void add_management_order(Management::ManagementOrder* mo);
-		void add_resource_tracker(Management::ResourceTracker* rt, int building_id);
-		std::shared_ptr<Management::ResourceTracker> get_resource_tracker(int building_id);
+	  unsigned int add_building_order(Construction::BuildingOrder *bo);
+	  void add_management_order(Management::ManagementOrder *mo);
+	  void add_resource_tracker(Management::ResourceTracker *rt, int building_id);
+	  std::shared_ptr<Management::ResourceTracker> get_resource_tracker(int building_id);
 
-		TeamStat& get_team_stats();
-		void flare(int x, int y);
-		Construction::BuildingRegister& get_building_register();
-		Construction::FlagMap& get_flag_map();
-		void push_order(std::shared_ptr<Order> order);
-		Gradients::GradientManager& get_gradient_manager();
-		std::set<int>& get_starting_buildings();
+	  TeamStat &get_team_stats();
+	  void flare(int x, int y);
+	  Construction::BuildingRegister &get_building_register();
+	  Construction::FlagMap &get_flag_map();
+	  void push_order(std::shared_ptr<Order> order);
+	  Gradients::GradientManager &get_gradient_manager();
+	  std::set<int> &get_starting_buildings();
 
-		bool is_fruit_on_map() { return is_fruit; }
+	  bool is_fruit_on_map() { return is_fruit; }
 
-		Player* player;
+	  Player *player;
 	private:
 
 		friend class AIEcho::Management::AddResourceTracker;

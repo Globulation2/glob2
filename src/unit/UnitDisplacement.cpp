@@ -54,6 +54,7 @@ void Unit::handleDisplacement(void)
 			{
 				// we got the resource.
 				carriedResource=destinationPurpose;
+				++owner->stats.measurements.harvested[carriedResource];
 				owner->map->decResource(posX+dx, posY+dy, carriedResource);
 				assert(movement == MOV_HARVESTING);
 				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to additionally decResource() the same resource.
@@ -109,6 +110,7 @@ void Unit::handleDisplacement(void)
 					{
 						targetBuilding->removeResourceFromBuilding(destinationPurpose);
 						carriedResource=destinationPurpose;
+						++owner->stats.measurements.harvested[carriedResource];
 
 						setTargetBuilding(attachedBuilding);
 						displacement=DIS_GOING_TO_BUILDING;
@@ -315,6 +317,8 @@ void Unit::handleDisplacement(void)
 				{
 					displacement=DIS_EXITING_BUILDING;
 					validTarget=false;
+					if (destinationPurpose != FEED && destinationPurpose != HEAL)
+						++owner->stats.measurements.trainingVisits[typeNum];
 
 					if (destinationPurpose==FEED)
 					{
@@ -324,6 +328,9 @@ void Unit::handleDisplacement(void)
 					}
 					else if (destinationPurpose==HEAL)
 					{
+						++attachedBuilding->owner->stats.measurements.healingVisits;
+						attachedBuilding->owner->stats.measurements.hpRestored +=
+							std::max(0, performance[HP] - hp);
 						hp=performance[HP];
 						needToRecheckMedical=true;
 					}
@@ -332,6 +339,8 @@ void Unit::handleDisplacement(void)
 					// the level.
 					else if (!owner->game->gameHeader.isUnitUpgradesDisabled())
 					{
+						Sint32 previousLevels[NB_ABILITY];
+						std::copy(level, level + NB_ABILITY, previousLevels);
 						if (attachedBuilding->type->upgradeInParallel)
 						{
 							for (int ability = (int)WALK; ability < (int)ARMOR; ability++)
@@ -355,7 +364,9 @@ void Unit::handleDisplacement(void)
 							}
 						}
 
-
+						for (int a = 0; a < NB_ABILITY; ++a)
+							owner->stats.measurements.abilityGains[typeNum][a] +=
+								std::max(0, level[a] - previousLevels[a]);
 					}
 				}
 				else
@@ -477,7 +488,11 @@ void Unit::applyPartialInsideBenefit()
 		fruitCount=attachedBuilding->eatOnce(&fruitMask);
 	}
 	else
-		hp+=((performance[HP]-hp)*elapsed)/total;
+	{
+		const int restored = ((performance[HP] - hp) * elapsed) / total;
+		attachedBuilding->owner->stats.measurements.hpRestored += std::max(0, restored);
+		hp += restored;
+	}
 }
 
 void Unit::expelFromBuilding(int x, int y, int dx, int dy)

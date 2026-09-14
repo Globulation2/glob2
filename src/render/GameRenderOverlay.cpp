@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include "MapCopies.h"
 
 #include "AICastor.h"
@@ -38,6 +39,7 @@
 
 void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
+	PERF_SCOPE_TIME(Effects);
 	// Let's paint the bullets and explosions
 	// TODO : optimise : test only possible sectors to show bullets.
 
@@ -126,6 +128,7 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 
 void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
+	PERF_SCOPE_TIME(RenderFog);
 	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
 	{
 		// we have decrease on because we do unaligned lookup
@@ -170,6 +173,7 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 
 void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
+	PERF_SCOPE_TIME(Overlay);
 	if(drawOptions & DRAW_OVERLAY)
 	{
 		OverlayArea* overlays;

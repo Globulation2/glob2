@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "AITelemetryFields.h"
 #include "AINicowar.h"
 #include <string>
 #include "Utilities.h"
@@ -19,6 +20,7 @@ using namespace boost::logic;
 
 int NewNicowar::choose_building_to_attack(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_choose_building_to_attack_calls);
 	std::vector<int> buildings_to_attack;
 	buildings_to_attack.reserve(100);
 
@@ -35,10 +37,11 @@ int NewNicowar::choose_building_to_attack(Echo& echo)
 	}
 
 	if(buildings_to_attack.size() == 0)
-		return -1;
+		return telemetry.returnedInt(AITrace::AI5::NewNicowar_choose_building_to_attack_result, -1);
 
 	int num=syncRand() % buildings_to_attack.size();
-	return buildings_to_attack[num];
+	return telemetry.returnedInt(AITrace::AI5::NewNicowar_choose_building_to_attack_result,
+								 buildings_to_attack[num]);
 }
 
 
@@ -75,6 +78,7 @@ void NewNicowar::attack_building(Echo& echo)
 
 void NewNicowar::control_attacks(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_control_attacks_calls);
 	choose_enemy_target(echo);
 
 	if(target!=AI_NICOWAR_NO_TARGET)
@@ -120,6 +124,7 @@ void NewNicowar::control_attacks(Echo& echo)
 
 void NewNicowar::choose_enemy_target(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_choose_enemy_target_calls);
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 	gi_building.add_obstacle(new Entities::AnyResource);
@@ -166,6 +171,7 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 
 bool NewNicowar::dig_out_enemy(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_dig_out_enemy_calls);
 	///First choose an enemy building to dig out
 	std::vector<int> buildings_to_attack;
 	buildings_to_attack.reserve(100);
@@ -187,7 +193,8 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 	}
 
 	if(buildings_to_attack.size() == 0)
-		return false;
+		return telemetry.returnedBool(AITrace::AI5::NewNicowar_dig_out_enemy_result,
+									  AITrace::AI5::NewNicowar_dig_out_enemy_true, false);
 
 	int num=syncRand() % buildings_to_attack.size();
 
@@ -329,8 +336,9 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 	echo.add_management_order(mo_destroyed);
 
 	is_digging_out=true;
-	
-	return true;
+
+	return telemetry.returnedBool(AITrace::AI5::NewNicowar_dig_out_enemy_result,
+								  AITrace::AI5::NewNicowar_dig_out_enemy_true, true);
 }
 
 

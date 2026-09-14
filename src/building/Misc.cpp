@@ -45,12 +45,13 @@ void Building::releaseAllWorkers()
 	unitsWorking.clear();
 }
 
-void Building::kill(void)
+void Building::kill(int diagnosticRemoval)
 {
 	if (buildingState==DEAD)
 		return;
 
-
+	if (!type->isVirtual)
+		++owner->stats.measurements.removed[diagnosticRemoval][type->shortTypeNum][getLongLevel()];
 	// Units inside need the footprint freed before they can be placed.
 	std::vector<Unit *> unitsToExpel;
 	for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
@@ -118,6 +119,8 @@ void Building::kill(void)
 			u->expelFromBuilding(x, y, dx, dy);
 		else
 		{
+			if (!u->isDead)
+				++u->owner->stats.measurements.deaths[u->typeNum][u->hp < UNIT_HP_DEATH_THRESHOLD ? u->diagnosticDeathCause : GameplayMeasurements::TRAPPED];
 			u->isDead=true;
 			u->standardRandomActivity();
 		}
@@ -212,9 +215,16 @@ void Building::updateResourcesPointer()
 
 void Building::addResourceIntoBuilding(int resourceType)
 {
+	const int before = resources[resourceType];
 	resources[resourceType]+=type->multiplierResource[resourceType];
 	//You can not exceed the maximum amount
 	resources[resourceType] = std::min(resources[resourceType], type->maxResource[resourceType]);
+	const int accepted = std::max(0, resources[resourceType] - before);
+	owner->stats.measurements.delivered[resourceType] += accepted;
+	if (type->canExchange)
+		owner->stats.measurements.transferredIn[resourceType] += accepted;
+	if (constructionResultState == REPAIR)
+		owner->stats.measurements.repairDelivered[resourceType] += accepted;
 	switch (constructionResultState)
 	{
 		case NO_CONSTRUCTION:
@@ -253,8 +263,12 @@ void Building::addResourceIntoBuilding(int resourceType)
 
 void Building::removeResourceFromBuilding(int resourceType)
 {
+	const int before = resources[resourceType];
 	resources[resourceType]-=type->multiplierResource[resourceType];
 	resources[resourceType]= std::max(resources[resourceType], 0);
+	owner->stats.measurements.withdrawn[resourceType] += before - resources[resourceType];
+	if (type->canExchange)
+		owner->stats.measurements.transferredOut[resourceType] += before - resources[resourceType];
 	updateCallLists();
 }
 
@@ -419,6 +433,8 @@ int Building::getLongLevel(void)
 Uint32 Building::eatOnce(Uint32 *mask)
 {
 	resources[WHEAT]--;
+	++owner->stats.measurements.meals;
+	++owner->stats.measurements.consumed[GameplayMeasurements::MEAL][WHEAT];
 	assert(resources[WHEAT]>=0);
 	Uint32 fruitMask=0;
 	Uint32 fruitCount=0;
@@ -428,6 +444,7 @@ Uint32 Building::eatOnce(Uint32 *mask)
 		if (resources[resId])
 		{
 			resources[resId]--;
+			++owner->stats.measurements.consumed[GameplayMeasurements::MEAL][resId];
 			fruitMask|=(1<<i);
 			fruitCount++;
 		}

@@ -2210,6 +2210,56 @@ OpenGL недоступен в этой сборке.
 Нажмите, чтобы повторить
 [Map preview please wait]
 Подождите
+[Stats births]
+Рождения
+[Stats deaths]
+Смерти
+[Stats starvation]
+Голод
+[Stats wheat stock]
+Запас пшеницы
+[Stats wheat loads]
+Грузы пшеницы
+[Stats meals]
+Поданные блюда
+[Stats new buildings]
+Новые здания
+[Stats upgrades]
+Улучшения
+[Stats training]
+Посещения тренировок
+[Stats damage dealt]
+Нанесённый урон
+[Stats damage received]
+Полученный урон
+[Stats HP restored]
+Восстановленное здоровье
+[Stats since tick]
+С такта
+[Stats combat deaths]
+Бой
+[Stats clearing deaths]
+Травма при расчистке
+[Stats trapped deaths]
+В ловушке
+[Stats unknown deaths]
+Другое/неизвестно
+[Stats conversions]
+Пришли / ушли
+[Stats unavailable]
+Недоступно
+[Stats wheat per minute]
+Грузов/мин
+[Stats meals per minute]
+Еды/мин
+[Stats occupancy]
+Питание / лечение
+[Stats page one]
+Статистика 1/2 >
+[Stats page two]
+Статистика 2/2 >
+[Stats next page]
+Страница (P)
 [Map preview choose another]
 Выберите карту
 [Resources never grow or spread across the map.]

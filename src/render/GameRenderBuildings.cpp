@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include <iostream>
 
 #include "AICastor.h"
@@ -177,6 +178,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 
 void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState)
 {
+	PERF_SCOPE_TIME(GroundBuildings);
 	Uint32 visibleTeams = teams[localTeam]->me;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 

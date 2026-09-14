@@ -2208,6 +2208,56 @@ Pratinjau gagal
 Klik untuk mencoba lagi
 [Map preview please wait]
 Harap tunggu
+[Stats births]
+Kelahiran
+[Stats deaths]
+Kematian
+[Stats starvation]
+Kelaparan
+[Stats wheat stock]
+Stok gandum
+[Stats wheat loads]
+Muatan gandum
+[Stats meals]
+Makanan disajikan
+[Stats new buildings]
+Bangunan baru
+[Stats upgrades]
+Peningkatan
+[Stats training]
+Kunjungan pelatihan
+[Stats damage dealt]
+Kerusakan diberikan
+[Stats damage received]
+Kerusakan diterima
+[Stats HP restored]
+Kesehatan dipulihkan
+[Stats since tick]
+Sejak langkah
+[Stats combat deaths]
+Pertempuran
+[Stats clearing deaths]
+Cedera pembersihan
+[Stats trapped deaths]
+Terjebak
+[Stats unknown deaths]
+Lainnya/tidak diketahui
+[Stats conversions]
+Masuk / keluar
+[Stats unavailable]
+Tidak tersedia
+[Stats wheat per minute]
+Muatan/menit
+[Stats meals per minute]
+Makanan/menit
+[Stats occupancy]
+Makan / penyembuhan
+[Stats page one]
+Statistik 1/2 >
+[Stats page two]
+Statistik 2/2 >
+[Stats next page]
+Halaman (P)
 [Map preview choose another]
 Pilih peta
 [Resources never grow or spread across the map.]

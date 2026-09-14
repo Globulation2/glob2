@@ -37,6 +37,11 @@ namespace AIMaxima
 class Maxima : public AIImplementation, private AIMaximaRuntime::RuntimeAI
 {
 public:
+  void captureTelemetry() override;
+  const std::vector<AITelemetry::Field> &telemetrySchema() const override
+  {
+	  return AITelemetry::schema(7);
+  }
 	explicit Maxima(Player *player);
 	Maxima(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);

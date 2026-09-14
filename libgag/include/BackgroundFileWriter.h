@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include <PerformanceTelemetry.h>
 #pragma once
 
 #include <condition_variable>
@@ -33,6 +34,10 @@ namespace GAGCore
 
 	private:
 		void drain();
+		void publishMetrics(); // caller holds mutex, runs on the submitting thread
+		PerformanceTelemetry::Moments queueTimes, hashTimes, writeTimes;
+		std::uint64_t queuedAt = 0, completedWrites = 0, failedWrites = 0, replacedWrites = 0;
+		bool pendingMeasured = false;
 
 		FileManager *fileManager;
 		std::mutex mutex;

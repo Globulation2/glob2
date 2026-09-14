@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -116,6 +117,7 @@ void GameGUI::dragStep(int mx, int my, int button)
 
 void GameGUI::step(void)
 {
+	PERF_SCOPE_TIME(GUI);
 	SDL_Event event, mouseMotionEvent, windowEvent;
 	bool wasMouseMotion=false;
 	bool wasWindowEvent=false;

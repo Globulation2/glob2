@@ -2222,6 +2222,56 @@ Chargement...
 Cliquez pour réessayer
 [Map preview please wait]
 Veuillez patienter
+[Stats births]
+Naissances
+[Stats deaths]
+Morts
+[Stats starvation]
+Famine
+[Stats wheat stock]
+Stock de blé
+[Stats wheat loads]
+Charges de blé
+[Stats meals]
+Repas servis
+[Stats new buildings]
+Nouveaux bâtiments
+[Stats upgrades]
+Améliorations
+[Stats training]
+Visites de formation
+[Stats damage dealt]
+Dégâts infligés
+[Stats damage received]
+Dégâts reçus
+[Stats HP restored]
+PV restaurés
+[Stats since tick]
+Depuis le pas
+[Stats combat deaths]
+Combat
+[Stats clearing deaths]
+Blessure de déblaiement
+[Stats trapped deaths]
+Piégés
+[Stats unknown deaths]
+Autre/inconnu
+[Stats conversions]
+Entrées / sorties
+[Stats unavailable]
+Indisponible
+[Stats wheat per minute]
+Charges/min
+[Stats meals per minute]
+Nourriture/min
+[Stats occupancy]
+Repas / soins
+[Stats page one]
+Statistiques 1/2 >
+[Stats page two]
+Statistiques 2/2 >
+[Stats next page]
+Page suiv. (P)
 [Map preview choose another]
 Choisissez une carte
 [Resources never grow or spread across the map.]

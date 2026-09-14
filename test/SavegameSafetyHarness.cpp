@@ -2,6 +2,7 @@
 #ifdef NDEBUG
 #undef NDEBUG
 #endif
+#include <PerformanceTelemetry.h>
 #define SDL_MAIN_HANDLED
 #ifdef main
 #undef main
@@ -108,6 +109,8 @@ static void checkAtomicWrites(FileManager& files, const fs::path& directory)
 
 static void checkBackgroundWriter(FileManager& files, const fs::path& directory)
 {
+	auto &perf = PerformanceTelemetry::collector();
+	perf.reset();
 	const std::string path = (directory / "background.game").string();
 	{
 		BackgroundFileWriter writer(&files);
@@ -127,6 +130,11 @@ static void checkBackgroundWriter(FileManager& files, const fs::path& directory)
 		writer.write(path, "written after a failure");
 	}
 	assert(contents(path) == "written after a failure");
+	assert(perf.saved + perf.superseded == 52 && perf.failed == 1);
+	assert(perf.window[unsigned(PerformanceTelemetry::Id::SaveWrite)].time.count ==
+		   perf.saved + perf.failed);
+	assert(perf.window[unsigned(PerformanceTelemetry::Id::SaveQueue)].time.count ==
+		   perf.saved + perf.failed);
 	for (const auto& entry : fs::directory_iterator(directory))
 		assert(entry.path().filename().string().find(".tmp-") == std::string::npos);
 	std::cout << "PASS background writes keep the newest snapshot with its finish step, finish on destruction and continue after a failure" << std::endl;
@@ -272,10 +280,15 @@ static void checkRandomContinuation(bool text, bool ai)
 		return result;
 	};
 	std::vector<std::vector<Uint32>> continuation;
-	for (int i=0; i<300; ++i)
+	std::vector<std::vector<GameplayMeasurements>> measurementContinuation;
+	const auto savedAI = ai ? gui.game.players[0]->ai->telemetrySeries->current : AITelemetry::Sample{};
+	for (int i=0; i<700; ++i)
 	{
 		step(gui.game);
 		continuation.push_back(simulationState(gui.game));
+		std::vector<GameplayMeasurements> measurements;
+		for (int t=0; t<gui.game.teamsCount(); ++t) measurements.push_back(gui.game.teams[t]->stats.measurements);
+		measurementContinuation.push_back(measurements);
 	}
 	for (int i=0; i<37; ++i) syncRand();
 	GameGUI restored;
@@ -300,6 +313,7 @@ static void checkRandomContinuation(bool text, bool ai)
 	}
 	auto stream=input(bytes,true);
 	assert(restored.load(stream.get()));
+	if (ai) assert(restored.game.players[0]->ai->telemetrySeries->current == savedAI);
 	if (text)
 	{
 		MemoryStreamBackend source(runtimeText.data(),runtimeText.size());
@@ -313,10 +327,13 @@ static void checkRandomContinuation(bool text, bool ai)
 	auto expected = savedRandom;
 	for (int i=0; i<2000; ++i) assert(syncRand() == expected());
 	syncRandEngine() = savedRandom;
-	for (int i=0; i<300; ++i)
+	for (int i=0; i<700; ++i)
 	{
 		step(restored.game);
 		const auto actual = simulationState(restored.game);
+
+		for (int t=0; t<restored.game.teamsCount(); ++t)
+			assert(restored.game.teams[t]->stats.measurements == measurementContinuation[i][t]);
 		if (actual != continuation[i])
 		{
 			std::cerr << "Continuation mismatch at step " << i << " sizes " << actual.size() << '/' << continuation[i].size() << std::endl;
@@ -325,7 +342,10 @@ static void checkRandomContinuation(bool text, bool ai)
 			assert(false);
 		}
 	}
-	std::cout << "PASS " << (text ? "binary + text routing" : "binary") << (ai ? " AI" : " human") << " saved game continues RNG and 300 simulation steps across header replacement" << std::endl;
+	for (int t=0; t<restored.game.teamsCount(); ++t)
+		assert(restored.game.teams[t]->stats.measurementHistory == gui.game.teams[t]->stats.measurementHistory);
+
+	std::cout << "PASS " << (text ? "binary + text routing" : "binary") << (ai ? " AI" : " human") << " saved game continues RNG and 700 simulation steps and measurements across header replacement" << std::endl;
 }
 
 int main(int argc, char **argv)

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "BuildingType.h"
 #include "EngineTiming.h"
@@ -67,6 +68,7 @@ const Uint16 *Map::buildingGradient(Building *building, int swimClass)
 
 bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int *dist)
 {
+	PERF_SCOPE_TIME(PathBuilding);
 	const Uint16 *gradient=buildingGradient(building, swimClass);
 	if (gradient==NULL)
 		return false;
@@ -100,6 +102,7 @@ const Uint16 *Map::roundTripGradient(Building *building, int resourceType, int s
 
 bool Map::roundTripDistance(Building *building, int resourceType, int swimClass, int x, int y, int *dist)
 {
+	PERF_SCOPE_TIME(PathBuilding);
 	// Only gradients a fetcher keeps alive: hiring looks at every needed
 	// resource of every building, far more than ever get fetched.
 	const Uint16 *gradient=building->roundTripGradient[resourceType][swimClass];
@@ -120,6 +123,7 @@ bool Map::roundTripDistance(Building *building, int resourceType, int swimClass,
 
 bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int *dx, int *dy)
 {
+	PERF_SCOPE_TIME(PathBuilding);
 	assert(building);
 	assert(x>=0);
 	assert(y>=0);

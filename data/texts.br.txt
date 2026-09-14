@@ -2208,6 +2208,56 @@ C'hwitet ar rakwel
 Klikit evit klask en-dro
 [Map preview please wait]
 Gortozit mar plij
+[Stats births]
+Nascimentos
+[Stats deaths]
+Mortes
+[Stats starvation]
+Inanição
+[Stats wheat stock]
+Estoque de trigo
+[Stats wheat loads]
+Cargas de trigo
+[Stats meals]
+Refeições servidas
+[Stats new buildings]
+Novos edifícios
+[Stats upgrades]
+Melhorias
+[Stats training]
+Visitas de treino
+[Stats damage dealt]
+Dano causado
+[Stats damage received]
+Dano recebido
+[Stats HP restored]
+Vida restaurada
+[Stats since tick]
+Desde o passo
+[Stats combat deaths]
+Combate
+[Stats clearing deaths]
+Ferimentos na limpeza
+[Stats trapped deaths]
+Presos
+[Stats unknown deaths]
+Outro/desconhecido
+[Stats conversions]
+Entrada / saída
+[Stats unavailable]
+Indisponível
+[Stats wheat per minute]
+Cargas/min
+[Stats meals per minute]
+Comida/min
+[Stats occupancy]
+Alimentação / cura
+[Stats page one]
+Estatísticas 1/2 >
+[Stats page two]
+Estatísticas 2/2 >
+[Stats next page]
+Página (P)
 [Map preview choose another]
 Dibabit ur gartenn
 [Resources never grow or spread across the map.]

@@ -250,6 +250,10 @@ void Unit::syncStep(void)
 			int damage=getRealAttackStrength()-enemy->getRealArmor(false);
 			if (damage<=0)
 				damage=1;
+			++owner->stats.measurements.shots[GameplayMeasurements::MELEE];
+			TeamStats::recordDamage(owner, enemy->owner, GameplayMeasurements::MELEE,
+									GameplayMeasurements::UNIT, enemy->hp, damage);
+			enemy->recordLethalDamage(damage, GameplayMeasurements::COMBAT);
 			enemy->hp-=damage;
 
 			enemy->underAttackTimer = UNDER_ATTACK_TIMER_TICKS;
@@ -269,6 +273,9 @@ void Unit::syncStep(void)
 				int damage=getRealAttackStrength()-enemy->type->armor;
 				if (damage<=0)
 					damage=1;
+				++owner->stats.measurements.shots[GameplayMeasurements::MELEE];
+				TeamStats::recordDamage(owner, enemy->owner, GameplayMeasurements::MELEE,
+										GameplayMeasurements::BUILDING, enemy->hp, damage);
 				enemy->hp-=damage;
 
 				enemy->underAttackTimer = UNDER_ATTACK_TIMER_TICKS;
@@ -276,7 +283,7 @@ void Unit::syncStep(void)
 				enemy->owner->pushGameEvent(GameEvent::buildingUnderAttack(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->shortTypeNum));
 
 				if (enemy->hp<0)
-					enemy->kill();
+					enemy->kill(GameplayMeasurements::DESTROYED);
 				incrementExperience(damage);
 			}
 		}
@@ -347,4 +354,10 @@ void Unit::setWorkerLevel(Sint32 newLevel)
 		level[ability] = newLevel;
 		performance[ability] = race->getUnitType(typeNum, newLevel)->performance[ability];
 	}
+}
+
+void Unit::recordLethalDamage(int damage, int cause)
+{
+	if (hp >= UNIT_HP_DEATH_THRESHOLD && hp - damage < UNIT_HP_DEATH_THRESHOLD)
+		diagnosticDeathCause = cause;
 }

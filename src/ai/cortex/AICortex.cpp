@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "AITelemetryFields.h"
 #include "AICortex.h"
 #include "CortexObservation.h"
 #include "CortexWheat.h"
@@ -367,6 +368,7 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 shared_ptr<Order> AICortex::getOrder(void)
 {
 	Cortex::TuningScope tuningScope(runtimeTuning);
+	policy.telemetry = telemetry;
 	// Drain any Orders queued by a prior decision cycle, one per tick.
 	if (!orderQueue.empty())
 	{
@@ -829,6 +831,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 		}
 		else
 			action = policy.decide(obs);
+		telemetry.set(AITrace::AI6::economy_selected_action, action.kind);
 		translateAction(action, obs);
 
 		// War-flag management runs EVERY decision cycle, in PARALLEL with decide()'s
@@ -844,6 +847,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 		// bands did not move); only the economy-vs-combat single-slot contention is
 		// gone. ACTION_NOOP when no flag wants to move this cycle enqueues nothing.
 		Cortex::CortexAction combat = policy.decideCombat(obs);
+		telemetry.set(AITrace::AI6::combat_selected_action, combat.kind);
 		translateAction(combat, obs);
 
 		// Defense-flag teardown runs EVERY decision cycle, in PARALLEL with the action

@@ -85,7 +85,13 @@ bool Unit::tryClaimClearingAreaForHarvesting()
 		// TODO : be sure this is the right thing to do and add a decent comment
 		if (movement == MOV_HARVESTING)
 		{
+			const Resource clearedBefore = map->getResource(posX + dx, posY + dy);
+			recordLethalDamage(race->getUnitType(typeNum, level[HARVEST])->harvestDamage,
+							   GameplayMeasurements::CLEARING);
 			map->decResource(posX + dx, posY + dy);
+			if (clearedBefore.type < MAX_NB_RESOURCES &&
+				clearedBefore.getUint32() != map->getResource(posX + dx, posY + dy).getUint32())
+				++owner->stats.measurements.cleared[clearedBefore.type];
 			hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
 		}
 		for (int tdx = -1; tdx <= 1; tdx++)
@@ -369,7 +375,13 @@ void Unit::handleMovementClearingResources()
 	Map *map=owner->map;
 	if (movement==MOV_HARVESTING)
 	{
-		map->decResource(posX+dx, posY+dy);
+		const Resource clearedBefore = map->getResource(posX + dx, posY + dy);
+		recordLethalDamage(race->getUnitType(typeNum, level[HARVEST])->harvestDamage,
+						   GameplayMeasurements::CLEARING);
+		map->decResource(posX + dx, posY + dy);
+		if (clearedBefore.type < MAX_NB_RESOURCES &&
+			clearedBefore.getUint32() != map->getResource(posX + dx, posY + dy).getUint32())
+			++owner->stats.measurements.cleared[clearedBefore.type];
 		hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
 	}
 

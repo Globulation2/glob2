@@ -1,5 +1,6 @@
 /* Maxima farming and clearing policy. */
 
+#include "AITelemetryFields.h"
 #include "AIMaxima.h"
 #include "GlobalContainer.h"
 #include "Game.h"
@@ -279,6 +280,7 @@ struct Maxima::FarmProtectionPlan
 
 void Maxima::record_construction_space_failure()
 {
+	telemetry.count(AITrace::AI7::Maxima_record_construction_space_failure_calls);
 	if(recent_construction_failures
 		<strategy.farming.proactive_failure_threshold)
 		++recent_construction_failures;
@@ -357,6 +359,7 @@ Maxima::WoodClearingTarget Maxima::select_wood_clearing_target(Context& echo) co
 void Maxima::retire_clearing_campaign(Context& echo, const char* reason,
 	const std::string& details)
 {
+	telemetry.count(AITrace::AI7::Maxima_retire_clearing_campaign_calls);
 	echo.add_management_order(new DestroyBuilding(proactive_clearing_flag));
 	emit_telemetry(echo, "land_clearing_finished",
 		"\tflag="+boost::lexical_cast<std::string>(proactive_clearing_flag)
@@ -366,6 +369,7 @@ void Maxima::retire_clearing_campaign(Context& echo, const char* reason,
 
 bool Maxima::continue_clearing_campaign(Context& echo)
 {
+	telemetry.count(AITrace::AI7::Maxima_continue_clearing_campaign_calls);
 	MapInfo mi(echo);
 	if(proactive_clearing_flag!=-1)
 	{
@@ -381,7 +385,9 @@ bool Maxima::continue_clearing_campaign(Context& echo)
 				retire_clearing_campaign(echo, "retired_gate_campaign");
 				farming_urgent=false;
 				director.invalidate();
-				return true;
+				return telemetry.returnedBool(
+					AITrace::AI7::Maxima_continue_clearing_campaign_result,
+					AITrace::AI7::Maxima_continue_clearing_campaign_true, true);
 			}
 
 			// Version 89 used initial_wood=1 for wheat/wood boundary conversion.
@@ -390,7 +396,9 @@ bool Maxima::continue_clearing_campaign(Context& echo)
 			{
 				retire_clearing_campaign(echo, "retired_boundary_conversion");
 				last_proactive_clearing_tick=timer;
-				return true;
+				return telemetry.returnedBool(
+					AITrace::AI7::Maxima_continue_clearing_campaign_result,
+					AITrace::AI7::Maxima_continue_clearing_campaign_true, true);
 			}
 
 			bool clearing_resources[BASIC_COUNT]={false};
@@ -418,23 +426,31 @@ bool Maxima::continue_clearing_campaign(Context& echo)
 					"\twood_remaining="+boost::lexical_cast<std::string>(nearby_wood));
 				last_proactive_clearing_tick=timer;
 				recent_construction_failures=0;
-				return true;
+				return telemetry.returnedBool(
+					AITrace::AI7::Maxima_continue_clearing_campaign_result,
+					AITrace::AI7::Maxima_continue_clearing_campaign_true, true);
 			}
 			echo.add_management_order(new AssignWorkers(
 				strategy.staffing.clearing_workers, proactive_clearing_flag));
-			return true;
+			return telemetry.returnedBool(AITrace::AI7::Maxima_continue_clearing_campaign_result,
+										  AITrace::AI7::Maxima_continue_clearing_campaign_true,
+										  true);
 		}
 		if(echo.get_building_register().is_building_pending(proactive_clearing_flag))
-			return true;
+			return telemetry.returnedBool(AITrace::AI7::Maxima_continue_clearing_campaign_result,
+										  AITrace::AI7::Maxima_continue_clearing_campaign_true,
+										  true);
 		proactive_clearing_flag=-1;
 		last_proactive_clearing_tick=timer;
 	}
 
-	return false;
+	return telemetry.returnedBool(AITrace::AI7::Maxima_continue_clearing_campaign_result,
+								  AITrace::AI7::Maxima_continue_clearing_campaign_true, false);
 }
 
 void Maxima::manage_land_clearing(Context& echo)
 {
+	telemetry.count(AITrace::AI7::Maxima_manage_land_clearing_calls);
 	if(!budget.farming_enabled)
 	{
 		if(proactive_clearing_flag!=-1
@@ -1242,6 +1258,7 @@ void Maxima::apply_farming_protection(Context& echo,
 
 void Maxima::update_farming(Context& echo)
 {
+	telemetry.count(AITrace::AI7::Maxima_update_farming_calls);
 	const std::chrono::steady_clock::time_point started=
 		std::chrono::steady_clock::now();
 	initialize_farming_cache(echo);

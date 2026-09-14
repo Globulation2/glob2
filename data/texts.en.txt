@@ -2330,3 +2330,53 @@ Off (no timer)
 60 minutes
 [Sudden-death timer]
 Sudden-death timer
+[Stats births]
+Births
+[Stats deaths]
+Deaths
+[Stats starvation]
+Starvation
+[Stats wheat stock]
+Wheat stock
+[Stats wheat loads]
+Wheat loads
+[Stats meals]
+Meals served
+[Stats new buildings]
+New buildings
+[Stats upgrades]
+Upgrades
+[Stats training]
+Training visits
+[Stats damage dealt]
+Damage dealt
+[Stats damage received]
+Damage received
+[Stats HP restored]
+HP restored
+[Stats since tick]
+Since tick
+[Stats combat deaths]
+Combat
+[Stats clearing deaths]
+Clearing injury
+[Stats trapped deaths]
+Trapped
+[Stats unknown deaths]
+Other/unknown
+[Stats conversions]
+In / out
+[Stats unavailable]
+Unavailable
+[Stats wheat per minute]
+Loads/min
+[Stats meals per minute]
+Food/min
+[Stats occupancy]
+Feed / heal
+[Stats page one]
+Statistics 1/2  >
+[Stats page two]
+Statistics 2/2  >
+[Stats next page]
+Page (P)

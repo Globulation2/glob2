@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "AITelemetryFields.h"
 #include "AINicowar.h"
 #include "Unit.h"
 
@@ -16,6 +17,7 @@ using namespace boost::logic;
 
 void NewNicowar::update_farming(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_update_farming_calls);
 	//Farming wheat and wood in areas near water
 	AddArea* mo_farming=new AddArea(ForbiddenArea);
 	RemoveArea* mo_non_farming=new RemoveArea(ForbiddenArea);
@@ -121,6 +123,7 @@ void NewNicowar::update_farming(Echo& echo)
 
 void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_update_fruit_flags_calls);
 	if(fruit_phase && !exploration_on_fruit)
 	{
 		//Constraints around nearby settlement
@@ -183,6 +186,7 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 
 void NewNicowar::update_fruit_alliances(AIEcho::Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_update_fruit_alliances_calls);
 	bool activated=fruit_phase;
 
 	for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)

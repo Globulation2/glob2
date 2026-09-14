@@ -2208,6 +2208,56 @@ Globulation 2 커서를 표시합니다.
 클릭하여 다시 시도
 [Map preview please wait]
 잠시 기다려 주세요
+[Stats births]
+탄생
+[Stats deaths]
+사망
+[Stats starvation]
+굶주림
+[Stats wheat stock]
+밀 재고
+[Stats wheat loads]
+밀 운반 횟수
+[Stats meals]
+제공한 식사
+[Stats new buildings]
+새 건물
+[Stats upgrades]
+업그레이드
+[Stats training]
+훈련 횟수
+[Stats damage dealt]
+가한 피해
+[Stats damage received]
+받은 피해
+[Stats HP restored]
+회복한 체력
+[Stats since tick]
+기록 시작 틱
+[Stats combat deaths]
+전투
+[Stats clearing deaths]
+제거 작업 부상
+[Stats trapped deaths]
+갇힘
+[Stats unknown deaths]
+기타/알 수 없음
+[Stats conversions]
+전입 / 전출
+[Stats unavailable]
+데이터 없음
+[Stats wheat per minute]
+운반/분
+[Stats meals per minute]
+식량/분
+[Stats occupancy]
+식사 / 치료
+[Stats page one]
+통계 1/2 >
+[Stats page two]
+통계 2/2 >
+[Stats next page]
+페이지 (P)
 [Map preview choose another]
 지도 선택
 [Resources never grow or spread across the map.]

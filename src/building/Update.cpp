@@ -35,6 +35,20 @@ void Building::updateBuildingSite(void)
 	const bool instantComplete = !resourceFull && owner->game->gameHeader.isInstantConstructionEnabled();
 	if ((resourceFull || instantComplete) && (buildingState!=WAITING_FOR_DESTRUCTION))
 	{
+		if (!type->isVirtual)
+		{
+			int kind = constructionResultState == REPAIR    ? GameplayMeasurements::REPAIRED
+					   : constructionResultState == UPGRADE ? GameplayMeasurements::UPGRADED
+															: GameplayMeasurements::NEW_BUILDING;
+			++owner->stats.measurements.completed[kind][type->shortTypeNum][type->level];
+			if (constructionResultState != REPAIR && !instantComplete)
+				for (int r = 0; r < MAX_RESOURCES; ++r)
+					owner->stats.measurements
+						.consumed[constructionResultState == UPGRADE
+									  ? GameplayMeasurements::UPGRADE
+									  : GameplayMeasurements::CONSTRUCTION][r] +=
+						type->maxResource[r];
+		}
 		// we really uses the resources of the building site:
 		if (!instantComplete)
 			for(int i=0; i<MAX_RESOURCES; i++)

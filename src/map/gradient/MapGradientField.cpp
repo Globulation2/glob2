@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
 
+#include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "MapInternal.h"
 #include "Utilities.h"
@@ -79,6 +80,7 @@ int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 // GRADIENT_FORBIDDEN cells are obstacles.
 void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 {
+	PERF_SCOPE_TIME(Propagation);
 	const int limit = std::min(maxCost, COST_LIMIT);
 	for (int b = 0; b < BUCKETS; b++)
 		buckets[b].clear();
@@ -153,6 +155,7 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 
 bool Map::directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict) const
 {
+	PERF_SCOPE_TIME(PathDirection);
 	const bool canSwim = swimClass > 0;
 	Uint16 here = gradient[coordToIndex(x, y)];
 	if (here <= GRADIENT_UNREACHABLE)

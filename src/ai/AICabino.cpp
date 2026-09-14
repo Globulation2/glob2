@@ -1,6 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2005-2007 Bradley Arsenault
 
+#include "AITelemetryFields.h"
+#include "AITelemetryFields.h"
+#include "AITelemetryFields.h"
+#include "AITelemetryFields.h"
+#include "AITelemetryFields.h"
+#include "AITelemetryFields.h"
+#include "AITelemetryFields.h"
+#include "AITelemetryFields.h"
+#include "AITelemetryFields.h"
+#include "AITelemetryFields.h"
+#include "AITelemetryFields.h"
+#include "AITelemetryFields.h"
 #include <Stream.h>
 
 #include "AICabino.h"
@@ -1170,16 +1182,25 @@ SimpleBuildingDefense::SimpleBuildingDefense(AICabino& ai) : ai(ai)
 
 bool SimpleBuildingDefense::perform(unsigned int time_slice_n)
 {
+	ai.telemetry.set(AITrace::AI8::SimpleBuildingDefense_perform_input_time_slice_n, time_slice_n);
+	ai.telemetry.count(AITrace::AI8::SimpleBuildingDefense_perform_calls);
 	switch(time_slice_n)
 	{
 		case 0:
-			return findDefense();
+			return ai.telemetry.returnedBool(AITrace::AI8::SimpleBuildingDefense_perform_result,
+											 AITrace::AI8::SimpleBuildingDefense_perform_true,
+											 findDefense());
 		case 1:
-			return updateFlags();
+			return ai.telemetry.returnedBool(AITrace::AI8::SimpleBuildingDefense_perform_result,
+											 AITrace::AI8::SimpleBuildingDefense_perform_true,
+											 updateFlags());
 		case 2:
-			return findCreatedDefenseFlags();
+			return ai.telemetry.returnedBool(AITrace::AI8::SimpleBuildingDefense_perform_result,
+											 AITrace::AI8::SimpleBuildingDefense_perform_true,
+											 findCreatedDefenseFlags());
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::SimpleBuildingDefense_perform_result,
+									 AITrace::AI8::SimpleBuildingDefense_perform_true, false);
 }
 
 
@@ -1253,6 +1274,7 @@ void SimpleBuildingDefense::save(GAGCore::OutputStream *stream) const
 
 bool SimpleBuildingDefense::findDefense()
 {
+	ai.telemetry.count(AITrace::AI8::SimpleBuildingDefense_findDefense_calls);
 	ai.getUnitModule()->changeUnits("SimpleBuildingDefense", WARRIOR, BASE_DEFENSE_WARRIORS, ATTACK_STRENGTH, 1);
 	GridPollingSystem gps(ai);
 	for(std::map<unsigned int, unsigned int>::iterator i=building_health.begin(); i!=building_health.end();)
@@ -1327,7 +1349,8 @@ bool SimpleBuildingDefense::findDefense()
 			}
 		}
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::SimpleBuildingDefense_findDefense_result,
+									 AITrace::AI8::SimpleBuildingDefense_findDefense_true, false);
 }
 
 
@@ -1335,6 +1358,7 @@ bool SimpleBuildingDefense::findDefense()
 
 bool SimpleBuildingDefense::updateFlags()
 {
+	ai.telemetry.count(AITrace::AI8::SimpleBuildingDefense_updateFlags_calls);
 	GridPollingSystem gps(ai);
 	for (std::vector<defenseRecord>::iterator i=defending_zones.begin(); i!=defending_zones.end();)
 	{
@@ -1371,7 +1395,8 @@ bool SimpleBuildingDefense::updateFlags()
 		}
 		++i;
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::SimpleBuildingDefense_updateFlags_result,
+									 AITrace::AI8::SimpleBuildingDefense_updateFlags_true, false);
 }
 
 
@@ -1379,6 +1404,7 @@ bool SimpleBuildingDefense::updateFlags()
 
 bool SimpleBuildingDefense::findCreatedDefenseFlags()
 {
+	ai.telemetry.count(AITrace::AI8::SimpleBuildingDefense_findCreatedDefenseFlags_calls);
 	for(unsigned int i=0; i<1024; ++i)
 	{
 		Building* b = ai.team->myBuildings[i];
@@ -1402,7 +1428,9 @@ bool SimpleBuildingDefense::findCreatedDefenseFlags()
 			}
 		}
 	}
-	return false;
+	return ai.telemetry.returnedBool(
+		AITrace::AI8::SimpleBuildingDefense_findCreatedDefenseFlags_result,
+		AITrace::AI8::SimpleBuildingDefense_findCreatedDefenseFlags_true, false);
 }
 
 
@@ -1418,14 +1446,21 @@ GeneralsDefense::GeneralsDefense(AICabino& ai) : ai(ai)
 
 bool GeneralsDefense::perform(unsigned int time_slice_n)
 {
+	ai.telemetry.set(AITrace::AI8::GeneralsDefense_perform_input_time_slice_n, time_slice_n);
+	ai.telemetry.count(AITrace::AI8::GeneralsDefense_perform_calls);
 	switch(time_slice_n)
 	{
 		case 0:
-			return findEnemyFlags();
+			return ai.telemetry.returnedBool(AITrace::AI8::GeneralsDefense_perform_result,
+											 AITrace::AI8::GeneralsDefense_perform_true,
+											 findEnemyFlags());
 		case 1:
-			return updateDefenseFlags();
+			return ai.telemetry.returnedBool(AITrace::AI8::GeneralsDefense_perform_result,
+											 AITrace::AI8::GeneralsDefense_perform_true,
+											 updateDefenseFlags());
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::GeneralsDefense_perform_result,
+									 AITrace::AI8::GeneralsDefense_perform_true, false);
 }
 
 
@@ -1484,6 +1519,7 @@ void GeneralsDefense::save(GAGCore::OutputStream *stream) const
 
 bool GeneralsDefense::findEnemyFlags()
 {
+	ai.telemetry.count(AITrace::AI8::GeneralsDefense_findEnemyFlags_calls);
 	GridPollingSystem gps(ai);
 	for (unsigned int t=0; t<static_cast<unsigned int>(Team::MAX_COUNT); t++)
 	{
@@ -1532,7 +1568,8 @@ bool GeneralsDefense::findEnemyFlags()
 			}
 		}
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::GeneralsDefense_findEnemyFlags_result,
+									 AITrace::AI8::GeneralsDefense_findEnemyFlags_true, false);
 }
 
 
@@ -1540,6 +1577,7 @@ bool GeneralsDefense::findEnemyFlags()
 
 bool GeneralsDefense::updateDefenseFlags()
 {
+	ai.telemetry.count(AITrace::AI8::GeneralsDefense_updateDefenseFlags_calls);
 	for(std::vector<defenseRecord>::iterator i = defending_flags.begin(); i!= defending_flags.end();)
 	{
 		if(buildingStillExists(ai.game, i->enemy_flag)==false)
@@ -1570,7 +1608,8 @@ bool GeneralsDefense::updateDefenseFlags()
 		}
 		++i;
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::GeneralsDefense_updateDefenseFlags_result,
+									 AITrace::AI8::GeneralsDefense_updateDefenseFlags_true, false);
 }
 
 
@@ -1587,18 +1626,30 @@ PrioritizedBuildingAttack::PrioritizedBuildingAttack(AICabino& ai) : ai(ai)
 
 bool PrioritizedBuildingAttack::perform(unsigned int time_slice_n)
 {
+	ai.telemetry.set(AITrace::AI8::PrioritizedBuildingAttack_perform_input_time_slice_n,
+					 time_slice_n);
+	ai.telemetry.count(AITrace::AI8::PrioritizedBuildingAttack_perform_calls);
 	switch(time_slice_n)
 	{
 		case 0:
-			return targetEnemy();
+			return ai.telemetry.returnedBool(AITrace::AI8::PrioritizedBuildingAttack_perform_result,
+											 AITrace::AI8::PrioritizedBuildingAttack_perform_true,
+											 targetEnemy());
 		case 1:
-			return updateAttackFlags();
+			return ai.telemetry.returnedBool(AITrace::AI8::PrioritizedBuildingAttack_perform_result,
+											 AITrace::AI8::PrioritizedBuildingAttack_perform_true,
+											 updateAttackFlags());
 		case 2:
-			return attack();
+			return ai.telemetry.returnedBool(AITrace::AI8::PrioritizedBuildingAttack_perform_result,
+											 AITrace::AI8::PrioritizedBuildingAttack_perform_true,
+											 attack());
 		case 3:
-			return updateAttackFlags();
+			return ai.telemetry.returnedBool(AITrace::AI8::PrioritizedBuildingAttack_perform_result,
+											 AITrace::AI8::PrioritizedBuildingAttack_perform_true,
+											 updateAttackFlags());
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::PrioritizedBuildingAttack_perform_result,
+									 AITrace::AI8::PrioritizedBuildingAttack_perform_true, false);
 }
 
 
@@ -1735,10 +1786,13 @@ bool PrioritizedBuildingAttack::targetEnemy()
 
 bool PrioritizedBuildingAttack::attack()
 {
+	ai.telemetry.count(AITrace::AI8::PrioritizedBuildingAttack_attack_calls);
 	// targetEnemy() (time_slice_n==0) leaves enemy NULL when no enemy team is
 	// currently alive to target; nothing to attack this cycle in that case.
 	if(enemy==NULL)
-		return false;
+		return ai.telemetry.returnedBool(AITrace::AI8::PrioritizedBuildingAttack_attack_result,
+										 AITrace::AI8::PrioritizedBuildingAttack_attack_true,
+										 false);
 
 	GridPollingSystem gps(ai);
 
@@ -1777,7 +1831,9 @@ bool PrioritizedBuildingAttack::attack()
 
 	//If we don't have enough barracks, don't bother doing anything, otherwise, make sure where producing warriors.
 	if(max_barracks_level<MINIMUM_BARRACKS_LEVEL+1 || found_barracks==0)
-		return false;
+		return ai.telemetry.returnedBool(AITrace::AI8::PrioritizedBuildingAttack_attack_result,
+										 AITrace::AI8::PrioritizedBuildingAttack_attack_true,
+										 false);
 	else
 	{
 		for(int i=0; i<NB_UNIT_LEVELS; ++i)
@@ -1793,7 +1849,9 @@ bool PrioritizedBuildingAttack::attack()
 	//Check if we have enough units of the right level
 	unsigned int available_units = ai.getUnitModule()->available("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, strength_level+1, true);
 	if(available_units<MINIMUM_TO_ATTACK)
-		return false;
+		return ai.telemetry.returnedBool(AITrace::AI8::PrioritizedBuildingAttack_attack_result,
+										 AITrace::AI8::PrioritizedBuildingAttack_attack_true,
+										 false);
 
 	//Don't use units that are needed by other flags
 	for(std::vector<attackRecord>::iterator i = attacks.begin(); i!=attacks.end(); ++i)
@@ -1899,11 +1957,14 @@ bool PrioritizedBuildingAttack::attack()
 			}
 			else
 			{
-				return false;
+				return ai.telemetry.returnedBool(
+					AITrace::AI8::PrioritizedBuildingAttack_attack_result,
+					AITrace::AI8::PrioritizedBuildingAttack_attack_true, false);
 			}
 		}
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::PrioritizedBuildingAttack_attack_result,
+									 AITrace::AI8::PrioritizedBuildingAttack_attack_true, false);
 }
 
 
@@ -1911,6 +1972,7 @@ bool PrioritizedBuildingAttack::attack()
 
 bool PrioritizedBuildingAttack::updateAttackFlags()
 {
+	ai.telemetry.count(AITrace::AI8::PrioritizedBuildingAttack_updateAttackFlags_calls);
 	GridPollingSystem gps(ai);
 
 	//Go through all of the buildings, checking each one to see if we have an
@@ -2049,7 +2111,9 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 		++j;
 	}
 
-	return false;
+	return ai.telemetry.returnedBool(
+		AITrace::AI8::PrioritizedBuildingAttack_updateAttackFlags_result,
+		AITrace::AI8::PrioritizedBuildingAttack_updateAttackFlags_true, false);
 }
 
 
@@ -2065,16 +2129,27 @@ DistributedNewConstructionManager::DistributedNewConstructionManager(AICabino& a
 
 bool DistributedNewConstructionManager::perform(unsigned int time_slice_n)
 {
+	ai.telemetry.set(AITrace::AI8::DistributedNewConstructionManager_perform_input_time_slice_n,
+					 time_slice_n);
+	ai.telemetry.count(AITrace::AI8::DistributedNewConstructionManager_perform_calls);
 	switch(time_slice_n)
 	{
 		case 0:
-			return constructBuildings();
+			return ai.telemetry.returnedBool(
+				AITrace::AI8::DistributedNewConstructionManager_perform_result,
+				AITrace::AI8::DistributedNewConstructionManager_perform_true, constructBuildings());
 		case 1:
-			return updateBuildings();
+			return ai.telemetry.returnedBool(
+				AITrace::AI8::DistributedNewConstructionManager_perform_result,
+				AITrace::AI8::DistributedNewConstructionManager_perform_true, updateBuildings());
 		case 2:
-			return calculateBuildings();
+			return ai.telemetry.returnedBool(
+				AITrace::AI8::DistributedNewConstructionManager_perform_result,
+				AITrace::AI8::DistributedNewConstructionManager_perform_true, calculateBuildings());
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::DistributedNewConstructionManager_perform_result,
+									 AITrace::AI8::DistributedNewConstructionManager_perform_true,
+									 false);
 }
 
 
@@ -2173,6 +2248,12 @@ void DistributedNewConstructionManager::save(GAGCore::OutputStream *stream) cons
 
 DistributedNewConstructionManager::upgradeData DistributedNewConstructionManager::findMaxSize(unsigned int building_type, unsigned int cur_level)
 {
+	ai.telemetry.set(AITrace::AI8::DistributedNewConstructionManager_findMaxSize_input_cur_level,
+					 cur_level);
+	ai.telemetry.set(
+		AITrace::AI8::DistributedNewConstructionManager_findMaxSize_input_building_type,
+		building_type);
+	ai.telemetry.count(AITrace::AI8::DistributedNewConstructionManager_findMaxSize_calls);
 	std::string type = IntBuildingType::reverseConversionMap[building_type];
 	BuildingType* new_type = globalContainer->buildingsTypes.getByType(type, 2, false);
 	BuildingType* cur_type = globalContainer->buildingsTypes.getByType(type, cur_level, false);
@@ -2199,6 +2280,10 @@ DistributedNewConstructionManager::upgradeData DistributedNewConstructionManager
 
 DistributedNewConstructionManager::point DistributedNewConstructionManager::findBestPlace(unsigned int building_type)
 {
+	ai.telemetry.set(
+		AITrace::AI8::DistributedNewConstructionManager_findBestPlace_input_building_type,
+		building_type);
+	ai.telemetry.count(AITrace::AI8::DistributedNewConstructionManager_findBestPlace_calls);
 	point top_point;
 	top_point.x=NO_POSITION;
 	top_point.y=NO_POSITION;
@@ -2517,6 +2602,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 
 bool DistributedNewConstructionManager::updateBuildings()
 {
+	ai.telemetry.count(AITrace::AI8::DistributedNewConstructionManager_updateBuildings_calls);
 	//Remove records of buildings that are no longer under construction, or ones for buildings that where destroyed be the enemy
 	for(std::vector<newConstructionRecord>::iterator i = new_buildings.begin(); i != new_buildings.end();)
 	{
@@ -2572,7 +2658,9 @@ bool DistributedNewConstructionManager::updateBuildings()
 //			ai.flare(i->x, i->y);
 //		}
 //	}
-	return false;
+	return ai.telemetry.returnedBool(
+		AITrace::AI8::DistributedNewConstructionManager_updateBuildings_result,
+		AITrace::AI8::DistributedNewConstructionManager_updateBuildings_true, false);
 }
 
 
@@ -2596,6 +2684,7 @@ bool DistributedNewConstructionManager::calculateBuildings()
 
 void DistributedNewConstructionManager::updateNoBuildCache()
 {
+	ai.telemetry.count(AITrace::AI8::DistributedNewConstructionManager_updateNoBuildCache_calls);
 	for(std::map<GridPollingSystem::zone, noBuildRecord>::iterator i=no_build_cache.begin(); i!=no_build_cache.end();)
 	{
 		i->second.turns++;
@@ -2613,6 +2702,7 @@ void DistributedNewConstructionManager::updateNoBuildCache()
 
 void DistributedNewConstructionManager::updateImap()
 {
+	ai.telemetry.count(AITrace::AI8::DistributedNewConstructionManager_updateImap_calls);
 	const unsigned width=ai.map->getW();
 	const unsigned height=ai.map->getH();
 	imap.resize(width*height);
@@ -2685,6 +2775,7 @@ void DistributedNewConstructionManager::updateImap()
 
 void DistributedNewConstructionManager::updateImap(unsigned x, unsigned y, unsigned building_type)
 {
+	ai.telemetry.count(AITrace::AI8::DistributedNewConstructionManager_updateImap_calls);
 	upgradeData bsize;
 	bsize=findMaxSize(building_type, 0);
 	//Then mark all the squares this building occupies in its largest upgrade with an extra padding
@@ -2754,18 +2845,30 @@ RandomUpgradeRepairModule::RandomUpgradeRepairModule(AICabino& ai) : ai(ai)
 
 bool RandomUpgradeRepairModule::perform(unsigned int time_slice_n)
 {
+	ai.telemetry.set(AITrace::AI8::RandomUpgradeRepairModule_perform_input_time_slice_n,
+					 time_slice_n);
+	ai.telemetry.count(AITrace::AI8::RandomUpgradeRepairModule_perform_calls);
 	switch(time_slice_n)
 	{
 		case 0:
-			return removeOldConstruction();
+			return ai.telemetry.returnedBool(AITrace::AI8::RandomUpgradeRepairModule_perform_result,
+											 AITrace::AI8::RandomUpgradeRepairModule_perform_true,
+											 removeOldConstruction());
 		case 1:
-			return updatePendingConstruction();
+			return ai.telemetry.returnedBool(AITrace::AI8::RandomUpgradeRepairModule_perform_result,
+											 AITrace::AI8::RandomUpgradeRepairModule_perform_true,
+											 updatePendingConstruction());
 		case 2:
-			return startNewConstruction();
+			return ai.telemetry.returnedBool(AITrace::AI8::RandomUpgradeRepairModule_perform_result,
+											 AITrace::AI8::RandomUpgradeRepairModule_perform_true,
+											 startNewConstruction());
 		case 3:
-			return reassignConstruction();
+			return ai.telemetry.returnedBool(AITrace::AI8::RandomUpgradeRepairModule_perform_result,
+											 AITrace::AI8::RandomUpgradeRepairModule_perform_true,
+											 reassignConstruction());
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::RandomUpgradeRepairModule_perform_result,
+									 AITrace::AI8::RandomUpgradeRepairModule_perform_true, false);
 }
 
 
@@ -2887,6 +2990,7 @@ bool RandomUpgradeRepairModule::removeOldConstruction(void)
 
 bool RandomUpgradeRepairModule::updatePendingConstruction(void)
 {
+	ai.telemetry.count(AITrace::AI8::RandomUpgradeRepairModule_updatePendingConstruction_calls);
 	for (std::list<constructionRecord>::iterator i = pending_construction.begin(); i!=pending_construction.end();)
 	{
 		Building *b=getBuildingFromGid(ai.game, i->building);
@@ -2913,7 +3017,9 @@ bool RandomUpgradeRepairModule::updatePendingConstruction(void)
 		}
 		i++;
 	}
-	return false;
+	return ai.telemetry.returnedBool(
+		AITrace::AI8::RandomUpgradeRepairModule_updatePendingConstruction_result,
+		AITrace::AI8::RandomUpgradeRepairModule_updatePendingConstruction_true, false);
 }
 
 
@@ -3572,12 +3678,19 @@ BasicDistributedSwarmManager::BasicDistributedSwarmManager(AICabino& ai) : Distr
 
 bool BasicDistributedSwarmManager::perform(unsigned int time_slice_n)
 {
+	ai.telemetry.set(AITrace::AI8::BasicDistributedSwarmManager_perform_input_time_slice_n,
+					 time_slice_n);
+	ai.telemetry.count(AITrace::AI8::BasicDistributedSwarmManager_perform_calls);
 	switch(time_slice_n)
 	{
 		case 0:
-			return moderateSwarms();
+			return ai.telemetry.returnedBool(
+				AITrace::AI8::BasicDistributedSwarmManager_perform_result,
+				AITrace::AI8::BasicDistributedSwarmManager_perform_true, moderateSwarms());
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::BasicDistributedSwarmManager_perform_result,
+									 AITrace::AI8::BasicDistributedSwarmManager_perform_true,
+									 false);
 }
 
 
@@ -3706,13 +3819,18 @@ ExplorationManager::ExplorationManager(AICabino& ai) : ai(ai)
 
 bool ExplorationManager::perform(unsigned int time_slice_n)
 {
+	ai.telemetry.set(AITrace::AI8::ExplorationManager_perform_input_time_slice_n, time_slice_n);
+	ai.telemetry.count(AITrace::AI8::ExplorationManager_perform_calls);
 	explorers_wanted = TOTAL_EXPLORERS;
 	switch(time_slice_n)
 	{
 		case 0:
-			return moderateSwarmsForExplorers();
+			return ai.telemetry.returnedBool(AITrace::AI8::ExplorationManager_perform_result,
+											 AITrace::AI8::ExplorationManager_perform_true,
+											 moderateSwarmsForExplorers());
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::ExplorationManager_perform_result,
+									 AITrace::AI8::ExplorationManager_perform_true, false);
 }
 
 
@@ -3774,14 +3892,19 @@ InnManager::InnManager(AICabino& ai) : ai(ai)
 
 bool InnManager::perform(unsigned int time_slice_n)
 {
+	ai.telemetry.set(AITrace::AI8::InnManager_perform_input_time_slice_n, time_slice_n);
+	ai.telemetry.count(AITrace::AI8::InnManager_perform_calls);
 	switch(time_slice_n)
 	{
 		case 0:
-			return recordInns();
+			return ai.telemetry.returnedBool(AITrace::AI8::InnManager_perform_result,
+											 AITrace::AI8::InnManager_perform_true, recordInns());
 		case 1:
-			return modifyInns();
+			return ai.telemetry.returnedBool(AITrace::AI8::InnManager_perform_result,
+											 AITrace::AI8::InnManager_perform_true, modifyInns());
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::InnManager_perform_result,
+									 AITrace::AI8::InnManager_perform_true, false);
 }
 
 
@@ -3941,12 +4064,17 @@ TowerController::TowerController(AICabino& ai) : ai(ai)
 
 bool TowerController::perform(unsigned int time_slice_n)
 {
+	ai.telemetry.set(AITrace::AI8::TowerController_perform_input_time_slice_n, time_slice_n);
+	ai.telemetry.count(AITrace::AI8::TowerController_perform_calls);
 	switch(time_slice_n)
 	{
 		case 0:
-			return controlTowers();
+			return ai.telemetry.returnedBool(AITrace::AI8::TowerController_perform_result,
+											 AITrace::AI8::TowerController_perform_true,
+											 controlTowers());
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::TowerController_perform_result,
+									 AITrace::AI8::TowerController_perform_true, false);
 }
 
 
@@ -3981,6 +4109,7 @@ void TowerController::save(GAGCore::OutputStream *stream) const
 
 bool TowerController::controlTowers()
 {
+	ai.telemetry.count(AITrace::AI8::TowerController_controlTowers_calls);
 
 	int count=0;
 	for(int i=0; i<1024; i++)
@@ -4004,7 +4133,8 @@ bool TowerController::controlTowers()
 	}
 	ai.getUnitModule()->changeUnits("TowerController", WORKER, count*NUM_PER_TOWER, HARVEST, 1);
 
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::TowerController_controlTowers_result,
+									 AITrace::AI8::TowerController_controlTowers_true, false);
 }
 
 
@@ -4020,14 +4150,21 @@ BuildingClearer::BuildingClearer(AICabino& ai) : ai(ai)
 
 bool BuildingClearer::perform(unsigned int time_slice_n)
 {
+	ai.telemetry.set(AITrace::AI8::BuildingClearer_perform_input_time_slice_n, time_slice_n);
+	ai.telemetry.count(AITrace::AI8::BuildingClearer_perform_calls);
 	switch(time_slice_n)
 	{
 		case 0:
-			return removeOldPadding();
+			return ai.telemetry.returnedBool(AITrace::AI8::BuildingClearer_perform_result,
+											 AITrace::AI8::BuildingClearer_perform_true,
+											 removeOldPadding());
 		case 1:
-			return updateClearingAreas();
+			return ai.telemetry.returnedBool(AITrace::AI8::BuildingClearer_perform_result,
+											 AITrace::AI8::BuildingClearer_perform_true,
+											 updateClearingAreas());
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::BuildingClearer_perform_result,
+									 AITrace::AI8::BuildingClearer_perform_true, false);
 }
 
 
@@ -4138,6 +4275,7 @@ bool BuildingClearer::removeOldPadding()
 
 bool BuildingClearer::updateClearingAreas()
 {
+	ai.telemetry.count(AITrace::AI8::BuildingClearer_updateClearingAreas_calls);
 	for(unsigned int i=0; i<1024; ++i)
 	{
 		Building* b = ai.team->myBuildings[i];
@@ -4186,7 +4324,8 @@ bool BuildingClearer::updateClearingAreas()
 			}
 		}
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::BuildingClearer_updateClearingAreas_result,
+									 AITrace::AI8::BuildingClearer_updateClearingAreas_true, false);
 }
 
 
@@ -4211,15 +4350,22 @@ HappinessHandler::~HappinessHandler()
 
 bool HappinessHandler::perform(unsigned int time_slice_n)
 {
+	ai.telemetry.set(AITrace::AI8::HappinessHandler_perform_input_time_slice_n, time_slice_n);
+	ai.telemetry.count(AITrace::AI8::HappinessHandler_perform_calls);
 	switch(time_slice_n)
 	{
 		case 0:
-			return adjustAlliances();
+			return ai.telemetry.returnedBool(AITrace::AI8::HappinessHandler_perform_result,
+											 AITrace::AI8::HappinessHandler_perform_true,
+											 adjustAlliances());
 		case 1:
-			return searchFruitTrees();
+			return ai.telemetry.returnedBool(AITrace::AI8::HappinessHandler_perform_result,
+											 AITrace::AI8::HappinessHandler_perform_true,
+											 searchFruitTrees());
 	}
 
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::HappinessHandler_perform_result,
+									 AITrace::AI8::HappinessHandler_perform_true, false);
 }
 
 
@@ -4511,13 +4657,16 @@ Farmer::~Farmer()
 
 bool Farmer::perform(unsigned int time_slice_n)
 {
+	ai.telemetry.set(AITrace::AI8::Farmer_perform_input_time_slice_n, time_slice_n);
+	ai.telemetry.count(AITrace::AI8::Farmer_perform_calls);
 	switch(time_slice_n)
 	{
 		case 0:
-			return updateFarm();
-
+			return ai.telemetry.returnedBool(AITrace::AI8::Farmer_perform_result,
+											 AITrace::AI8::Farmer_perform_true, updateFarm());
 	}
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::Farmer_perform_result,
+									 AITrace::AI8::Farmer_perform_true, false);
 }
 
 
@@ -4572,6 +4721,7 @@ void Farmer::save(GAGCore::OutputStream *stream) const
 
 bool Farmer::updateFarm()
 {
+	ai.telemetry.count(AITrace::AI8::Farmer_updateFarm_calls);
 	if(!is_water_gradient_computed)
 	{
 		water_gradient.reset(ai, Gradient::Water, Gradient::None);
@@ -4615,5 +4765,6 @@ bool Farmer::updateFarm()
 		ai.orders.push(std::shared_ptr<Order>(new OrderAlterForbidden(ai.team->teamNumber, BrushTool::MODE_DEL, &del_acc, ai.map)));
 	if(add_acc.getApplicationCount()>0)
 		ai.orders.push(std::shared_ptr<Order>(new OrderAlterForbidden(ai.team->teamNumber, BrushTool::MODE_ADD, &add_acc, ai.map)));
-	return false;
+	return ai.telemetry.returnedBool(AITrace::AI8::Farmer_updateFarm_result,
+									 AITrace::AI8::Farmer_updateFarm_true, false);
 }

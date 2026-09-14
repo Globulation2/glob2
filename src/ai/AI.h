@@ -6,12 +6,14 @@
 #include <SDL_rwops.h>
 
 #include <memory>
+#include "AITelemetry.h"
 namespace GAGCore
 {
 	class InputStream;
 	class OutputStream;
 }
 class Player;
+class Team;
 class Order;
 class AIImplementation;
 /*
@@ -55,6 +57,11 @@ public:
 	AI(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	~AI();
 
+	void bindTelemetry();
+	void captureTelemetry();
+	std::shared_ptr<AITelemetry::Series> telemetrySeries;
+	Team *telemetryTeam = nullptr;
+	bool resumeTelemetry = false;
 	AIImplementation *aiImplementation;
 	ImplementationID implementationID;
 

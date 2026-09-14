@@ -2210,6 +2210,56 @@ Antaŭvido malsukcesis
 Alklaku por reprovi
 [Map preview please wait]
 Bonvolu atendi
+[Stats births]
+Naskiĝoj
+[Stats deaths]
+Mortoj
+[Stats starvation]
+Malsatmortoj
+[Stats wheat stock]
+Tritika stoko
+[Stats wheat loads]
+Tritikaj ŝarĝoj
+[Stats meals]
+Servitaj manĝoj
+[Stats new buildings]
+Novaj konstruaĵoj
+[Stats upgrades]
+Plibonigoj
+[Stats training]
+Trejnaj vizitoj
+[Stats damage dealt]
+Kaŭzita damaĝo
+[Stats damage received]
+Ricevita damaĝo
+[Stats HP restored]
+Restarigita sano
+[Stats since tick]
+Ekde paŝo
+[Stats combat deaths]
+Batalo
+[Stats clearing deaths]
+Vundo dum purigado
+[Stats trapped deaths]
+Kaptitaj
+[Stats unknown deaths]
+Alia/nekonata
+[Stats conversions]
+En / el
+[Stats unavailable]
+Nedisponebla
+[Stats wheat per minute]
+Ŝarĝoj/min
+[Stats meals per minute]
+Manĝaĵo/min
+[Stats occupancy]
+Nutrado / kuracado
+[Stats page one]
+Statistikoj 1/2 >
+[Stats page two]
+Statistikoj 2/2 >
+[Stats next page]
+Paĝo (P)
 [Map preview choose another]
 Elektu mapon
 [Resources never grow or spread across the map.]

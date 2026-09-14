@@ -128,6 +128,11 @@ public:
 private:
 	void firstInit();
 public:
+  void captureTelemetry() override;
+  const std::vector<AITelemetry::Field> &telemetrySchema() const override
+  {
+	  return AITelemetry::schema(2);
+  }
 	AICastor(Player *player);
 	~AICastor();
 

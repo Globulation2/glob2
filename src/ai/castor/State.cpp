@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-
+#include "AITelemetryFields.h"
 #include "AICastor.h"
 #include "Game.h"
 #include "Order.h"
@@ -15,6 +15,7 @@ using std::shared_ptr;
 
 bool AICastor::enoughFreeWorkers()
 {
+	telemetry.count(AITrace::AI2::AICastor_enoughFreeWorkers_calls);
 	int totalWorkers=team->stats.getTotalUnits(WORKER);
 	int workersBalance=team->stats.getWorkersBalance();
 	int partFree=(totalWorkers/strategy.isFreePart);
@@ -34,11 +35,13 @@ bool AICastor::enoughFreeWorkers()
 	bool enough=(workersBalance>minBalance);
 	overWorkers=(workersBalance>minOverWorkers);
 
-	return enough;
+	return telemetry.returnedBool(AITrace::AI2::AICastor_enoughFreeWorkers_result,
+								  AITrace::AI2::AICastor_enoughFreeWorkers_true, enough);
 }
 
 void AICastor::computeCanSwim()
 {
+	telemetry.count(AITrace::AI2::AICastor_computeCanSwim_calls);
 	//printf("computeCanSwim()...\n");
 	// If our population has more healthy-working-units able to swim than healthy-working-units
 	// unable to swim then we choose to be able to go through water:
@@ -63,6 +66,7 @@ void AICastor::computeCanSwim()
 
 void AICastor::computeNeedSwim()
 {
+	telemetry.count(AITrace::AI2::AICastor_computeNeedSwim_calls);
 	int w=map->w;
 	int h=map->h;
 	size_t size=w*h;
@@ -92,6 +96,7 @@ void AICastor::computeNeedSwim()
 
 void AICastor::computeBuildingSum()
 {
+	telemetry.count(AITrace::AI2::AICastor_computeBuildingSum_calls);
 	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 		for (int si=0; si<2; si++)
 			for (int li=0; li<NB_UNIT_LEVELS; li++)
@@ -129,6 +134,7 @@ void AICastor::computeBuildingSum()
 
 void AICastor::computeWarLevel()
 {
+	telemetry.count(AITrace::AI2::AICastor_computeWarLevel_calls);
 	if (timer>strategy.warTimeTrigger)
 	{
 		warTimeTriggerLevel++;

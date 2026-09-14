@@ -52,7 +52,9 @@ static constexpr int SWIM_VARIANT_CAN_SWIM = 1;
 
 class Building : public BuildingUtils
 {
-public:
+	friend struct TeamStatsMeasurementFixture;
+
+  public:
 	static const int MAX_COUNT=1024;
 
 	/// `lastShootStep = LAST_SHOOT_STEP_NEVER` means this turret has
@@ -229,7 +231,7 @@ public:
 	void turretStep(Uint32 stepCounter);
 	/// Kills the building: releases its workers, expels the units inside onto
 	/// the footprint or the ring around it, and queues it for deletion.
-	void kill(void);
+	void kill(int diagnosticRemoval = 2);
 
 	/// This function removes the unit from the list of units working on the building. Units will remove themselves
 	/// when they run out of food, for example. This does not handle units state, just the buildings.

@@ -2212,6 +2212,56 @@ Vorschau fehlgeschlagen
 Zum Wiederholen klicken
 [Map preview please wait]
 Bitte warten
+[Stats births]
+Geburten
+[Stats deaths]
+Todesfälle
+[Stats starvation]
+Verhungert
+[Stats wheat stock]
+Weizenvorrat
+[Stats wheat loads]
+Weizenladungen
+[Stats meals]
+Servierte Mahlzeiten
+[Stats new buildings]
+Neue Gebäude
+[Stats upgrades]
+Ausbauten
+[Stats training]
+Trainingsbesuche
+[Stats damage dealt]
+Verursachter Schaden
+[Stats damage received]
+Erlittener Schaden
+[Stats HP restored]
+Wiederhergestellte LP
+[Stats since tick]
+Seit Spielschritt
+[Stats combat deaths]
+Kampf
+[Stats clearing deaths]
+Räumverletzung
+[Stats trapped deaths]
+Eingeschlossen
+[Stats unknown deaths]
+Andere/unbekannt
+[Stats conversions]
+Ein / aus
+[Stats unavailable]
+Nicht verfügbar
+[Stats wheat per minute]
+Ladungen/min
+[Stats meals per minute]
+Nahrung/min
+[Stats occupancy]
+Essen / Heilung
+[Stats page one]
+Statistik 1/2 >
+[Stats page two]
+Statistik 2/2 >
+[Stats next page]
+Seite (P)
 [Map preview choose another]
 Karte auswählen
 [Resources never grow or spread across the map.]

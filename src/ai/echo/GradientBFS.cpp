@@ -5,6 +5,7 @@
 // kept separate so that determinism tests for `Gradient::expand_bfs` can link
 // without dragging in the full game (Map, Game, GlobalContainer, ...).
 
+#include <PerformanceTelemetry.h>
 #include "echo/Echo.h"
 
 #include <queue>
@@ -35,6 +36,7 @@ Gradient::Gradient(const GradientInfo& gi)
 
 void Gradient::expand_bfs(std::queue<position>& positions)
 {
+	PERF_SCOPE_TIME(AIGradient);
 	const int height = static_cast<int>(gradient.size()) / width;
 	while(!positions.empty())
 	{
