@@ -95,6 +95,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		latticeSites(t.w, t.h, teams, context.bounded("fingerprint-layout", std::uint32_t(t.w)),
 					 context.bounded("fingerprint-layout", std::uint32_t(t.h)))
 			.sites;
+	dealStarts(context, L.homes); // which colony gets which site is a draw, not the order
 	double spacing = std::min(t.w, t.h);
 	for (size_t a = 0; a < L.homes.size(); ++a)
 		for (size_t b = a + 1; b < L.homes.size(); ++b)
@@ -280,7 +281,7 @@ GeneratorDefinition fingerprintDefinition()
 	return {"fingerprint",
 			26,
 			"Fingerprint",
-			2,
+			3,
 			false,
 			{// FEEDBACK 2026-09-13: wavelength 30 and homes of 18 (were 20 and 12).
 			 {"wavelength", "Wavelength", 12, 48, 2, 30, ControlGroup::Terrain},

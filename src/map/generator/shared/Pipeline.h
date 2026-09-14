@@ -20,6 +20,20 @@ namespace MapGeneration
 // its crops; open any route the deposits closed (Roads.h); and have validateWorld rebuild the
 // design and check the finished world against it.
 
+/// Deals a design's start sites to the colonies at random: the design decides where the homes are,
+/// and which colony gets which is a draw from `stream`, so a team number never lands on the same
+/// ground map after map. A design's sites often come in a fixed order (farthest-point spreading
+/// starts from cell 0, a lattice from its first row), and without this team 0 always started top
+/// right of Old town (FEEDBACK 2026-09-13). Every designed generator calls it on its list of home
+/// sites, cells or slots before anything is keyed by colony index, so kits, towers and validators
+/// follow the deal without knowing about it; a validator rebuilding the design from a fresh context
+/// gets the same deal.
+template <typename Sites>
+void dealStarts(GenerationContext &context, Sites &sites, const char *stream = "starts-deal")
+{
+	context.shuffle(sites.begin(), sites.end(), stream);
+}
+
 /// A swarm and its workers for every colony, each inside its own home mask and as near as the
 /// mask allows to its anchor. Fails the candidate on the first colony that does not fit.
 template <typename HomeMask, typename Anchor>

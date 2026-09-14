@@ -48,7 +48,7 @@ and Terrain take a `Game` because placing buildings and units needs its mutation
 | `Room` | Building room as a design decision: `buildableTiles`, `buildAnchors` (every 4x4 footprint's top-left, across the wrap), `buildSites` (footprints in a region) and `growUntilSites` (a chamber grown until it holds exactly what it promised) |
 | `Biomes` | Kinds of land as data: `BiomeKit` (ponds, stone ring, farmland, wood share, outcrops, groves, cover, orchard island) with `fertilePlain`, `stoneFortress`, `orchardIsland` and `forest`; `biomeWorth` (an estimate from the start scorer's weights to share ground by, to be tuned with the fairness tournament); `sketchBiome` (its ponds, island and ring) and `furnishBiome` (its deposits) |
 | `BalancedStarts` | `chooseBalancedStarts`: boot tiles whose walks to wheat and wood are as nearly equal as the finished map allows |
-| `Pipeline` | The stages round the others: `settleColonies`, `secureStartingCrops` (clear round the swarms, guarantee the crops, clear again), `reopenCrampedStarts`, `designMismatch` and `walkFromFirstColony` for validators, `ResourceAmounts` |
+| `Pipeline` | The stages round the others: `dealStarts` (the design's start sites dealt to the colonies at random, so a team number never gets the same ground map after map), `settleColonies`, `secureStartingCrops` (clear round the swarms, guarantee the crops, clear again), `reopenCrampedStarts`, `designMismatch` and `walkFromFirstColony` for validators, `ResourceAmounts` |
 | `Terrain` | The height-field pipeline as stages: `heightFieldTiling`, `classifyHeightField`, `paintHeightFieldTerrain`, `paintHeightFieldResources`, `chooseHeightFieldStarts`, `plantHeightFieldGroves`, composed by `generateHeightField` |
 | `StartQuality` | `scoreStarts`, the finished map's colony quality and fairness the service ranks candidates by |
 | `GenerationContext` | Named `std::mt19937` streams, `bounded` draws and `shuffle` |
@@ -72,7 +72,9 @@ shape, and the newest of them are little more than a sequence of shared stages:
    named streams without touching the map, and returns it with a `failure` string when the
    request leaves no room.
 2. `generate` stamps the layout into a `TerrainSketch`, calls `layBeaches` and `writeUndermap`,
-   then `settleColonies` with a home mask and an anchor per colony.
+   then `settleColonies` with a home mask and an anchor per colony. The design has already dealt its
+   start sites to the colonies at random (`dealStarts`), so which team gets which home is a draw:
+   without it, farthest-point spreading and lattices hand team 0 the same ground on every map.
 3. The kits go down with `plantKit` (three seeds, each grown from the nearest eligible
    tile), then the ambient layers
    (`scatterResources`, or the generator's own ranking fed to `plantFields` and `scatterClumps`,

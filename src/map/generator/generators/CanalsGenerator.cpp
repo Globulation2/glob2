@@ -151,6 +151,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 					"fewer colonies.";
 		return L;
 	}
+	// spreadPockets always starts from block 0, so the deal decides which colony gets which block.
+	dealStarts(context, L.homeCell);
 	// Every other block's kind, dealt from a weighted draw in block order (first play: "each cell
 	// has its own little surprise").
 	L.kind.assign(L.g.cellCount(), Plain);
@@ -502,7 +504,7 @@ GeneratorDefinition canalsDefinition()
 		"canals",
 		29,
 		"Canals",
-		2,
+		3,
 		false,
 		// Blocks of 24 give a 256 map about a hundred blocks; a canal of 3 corners (two tiles of
 		// water) is sealed against diagonal steps and is reached by a level-2 tower, which is what

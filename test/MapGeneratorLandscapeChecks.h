@@ -16,6 +16,7 @@
 #include "Morphology.h"
 #include "Orbits.h"
 #include "Patterns.h"
+#include "Pipeline.h"
 #include "Points.h"
 #include "Roads.h"
 #include "Room.h"
@@ -521,8 +522,37 @@ inline void biomeChecks()
 	}
 }
 
+// dealStarts: a permutation, the same again from the same request, and not the identity for every
+// seed (so a design's first site is not always colony 0's).
+inline void dealChecks()
+{
+	GenerationRequest request;
+	request.seed = 21;
+	std::vector<int> sites{0, 1, 2, 3, 4, 5, 6, 7};
+	GenerationContext context(request), again(request);
+	dealStarts(context, sites);
+	std::vector<int> repeat{0, 1, 2, 3, 4, 5, 6, 7};
+	dealStarts(again, repeat);
+	assert(sites == repeat);
+	std::vector<int> sorted(sites);
+	std::sort(sorted.begin(), sorted.end());
+	assert(sorted == std::vector<int>({0, 1, 2, 3, 4, 5, 6, 7}));
+	int moved = 0;
+	for (std::uint32_t seed = 1; seed <= 12; ++seed)
+	{
+		GenerationRequest other;
+		other.seed = seed;
+		GenerationContext c(other);
+		std::vector<int> dealt{0, 1, 2, 3};
+		dealStarts(c, dealt);
+		moved += dealt[0] != 0;
+	}
+	assert(moved >= 6);
+}
+
 inline void landscapeChecks()
 {
+	dealChecks();
 	orbitChecks();
 	morphologyChecks();
 	growthChecks();

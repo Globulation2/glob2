@@ -128,7 +128,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		if (L.rows.acrossX == 0 && L.rows.acrossY == 0)
 			L.rows.acrossY = turns;
 		const double angle = std::atan2(double(L.rows.acrossY) / t.h, double(L.rows.acrossX) / t.w);
-		L.crops = kStraightCrops + std::lround(std::fabs(std::sin(2 * angle)));
+		L.crops = kStraightCrops +
+				  std::lround((kDiagonalCrops - kStraightCrops) * std::fabs(std::sin(2 * angle)));
 	}
 	L.spacing = stripeSpacing(t, L.rows);
 	L.along = alongStripes(t, L.rows);
@@ -139,6 +140,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.homes = latticeSites(t.w, t.h, teams, context.bounded("polder-layout", std::uint32_t(t.w)),
 						   context.bounded("polder-layout", std::uint32_t(t.h)))
 				  .sites;
+	dealStarts(context, L.homes); // which colony gets which site is a draw, not the order
 	double nearest = std::min(t.w, t.h);
 	for (size_t a = 0; a < L.homes.size(); ++a)
 		for (size_t b = a + 1; b < L.homes.size(); ++b)
@@ -348,7 +350,7 @@ GeneratorDefinition polderDefinition()
 		"polder",
 		30,
 		"Polder",
-		2,
+		3,
 		false,
 		// A dyke every 24 tiles is a lane every one and a half rows' walk; villages of radius 11
 		// hold a swarm, its kit and a few more buildings and no more.

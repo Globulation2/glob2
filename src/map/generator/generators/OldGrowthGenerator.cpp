@@ -122,6 +122,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.homes = latticeSites(t.w, t.h, teams, context.bounded("growth-layout", std::uint32_t(t.w)),
 						   context.bounded("growth-layout", std::uint32_t(t.h)))
 				  .sites;
+	dealStarts(context, L.homes); // which colony gets which site is a draw, not the order
 	L.spacing = std::min(t.w, t.h);
 	for (size_t a = 0; a < L.homes.size(); ++a)
 		for (size_t b = a + 1; b < L.homes.size(); ++b)
@@ -454,7 +455,7 @@ GeneratorDefinition oldGrowthDefinition()
 		"old-growth",
 		28,
 		"Old growth",
-		3,
+		4,
 		false,
 		// 90% cover reads as unbroken forest with the odd glade; one lake per 128x128 of 90
 		// tiles (four on a 256 map, each a few days' cutting from any home) keeps them rare enough

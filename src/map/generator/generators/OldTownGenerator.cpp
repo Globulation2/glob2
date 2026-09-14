@@ -18,6 +18,7 @@
 #include "Tessellation.h"
 #include <algorithm>
 #include <cmath>
+#include <numeric>
 #include <string>
 #include <vector>
 using namespace MapGeneration;
@@ -212,6 +213,20 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 						"smaller blocks or fewer colonies.";
 			return L;
 		}
+		// The spreading picks the plazas in a fixed order (the first is always the same for a
+		// given tiling), so the deal decides which colony gets which pair (FEEDBACK 2026-09-13:
+		// "player 1 always top right"). The annexes travel with their plazas.
+		std::vector<int> order(teams);
+		std::iota(order.begin(), order.end(), 0);
+		dealStarts(context, order);
+		std::vector<int> dealtHomes, dealtAnnexes;
+		for (int k : order)
+		{
+			dealtHomes.push_back(L.homeCell[k]);
+			dealtAnnexes.push_back(L.annexCell[k]);
+		}
+		L.homeCell = dealtHomes;
+		L.annexCell = dealtAnnexes;
 	}
 
 	// Streets: the band along every cell border inside the city; blocks: the rest of the city's
@@ -508,7 +523,7 @@ GeneratorDefinition oldTownDefinition()
 	return {"old-town",
 			31,
 			"Old town",
-			5,
+			6,
 			false,
 			// A city of 70% of the half side leaves a belt of fields round it; blocks of 14 with
 			// streets of 4 give a 256 map about a hundred blocks and streets a column of units wide

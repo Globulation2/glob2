@@ -113,8 +113,9 @@ MazeLayout mazeLayout(const MazeOptions &o, int width, int height, int teams)
 	L.g = latticeFor(o, width, height);
 	L.half = passageHalf(L.g, o.channelWidth);
 	if (L.g.columns < 2 || L.g.rows < 2)
-		L.failure = "The maze needs at least two cells across and down; use a bigger map or smaller "
-					"cells.";
+		L.failure =
+			"The maze needs at least two cells across and down; use a bigger map or smaller "
+			"cells.";
 	else if (L.half < kMinimumPassageHalf)
 		L.failure = "Channels this wide leave too little grass in each cell; use narrower channels "
 					"or bigger cells.";
@@ -147,6 +148,11 @@ MazeDesign designMaze(const GenerationRequest &request, GenerationContext &conte
 	d.layout = mazeLayout(o, 1 << request.wDec, 1 << request.hDec, request.nbTeams);
 	MazeLayout &L = d.layout;
 	Tessellation &g = L.g;
+	// The pockets come in the fixed order farthest-point spreading finds them (from cell 0), so the
+	// deal decides which colony gets which cul-de-sac (dealStarts, Pipeline.h; FEEDBACK 2026-09-13:
+	// the same player kept starting in the same spot).
+	if (L.failure.empty())
+		dealStarts(context, L.homes);
 	if (!L.failure.empty())
 	{
 		d.failure = L.failure;
@@ -297,7 +303,8 @@ void furnishHome(Map &map, const Torus &t, const MazeDesign &d, const std::vecto
 	{ return a.u != b.u ? a.u < b.u : std::abs(a.v) > std::abs(b.v); };
 	const auto nearBackCentre = [back](const CellTile &a, const CellTile &b)
 	{
-		const int da = std::max(a.u + back, std::abs(a.v)), db = std::max(b.u + back, std::abs(b.v));
+		const int da = std::max(a.u + back, std::abs(a.v)),
+				  db = std::max(b.u + back, std::abs(b.v));
 		if (da != db)
 			return da < db;
 		if (std::abs(a.v) != std::abs(b.v))
@@ -462,8 +469,8 @@ std::vector<unsigned char> openCorners(const Torus &t, const MazeDesign &d)
 			walled[g.edges[edge].corners[0]] = walled[g.edges[edge].corners[1]] = 1;
 	for (size_t corner = 0; corner < g.corners.size(); ++corner)
 		if (!walled[corner])
-			ponds[t.at(int(subtileTile(g.corners[corner].x)), int(subtileTile(g.corners[corner].y)))] =
-				1;
+			ponds[t.at(int(subtileTile(g.corners[corner].x)),
+					   int(subtileTile(g.corners[corner].y)))] = 1;
 	return ponds;
 }
 
@@ -579,8 +586,7 @@ bool generate(Game &game, GenerationContext &context)
 		for (size_t i = 0; i < deadEnds.size(); ++i)
 			placeTreasure(map, t, d, deadEnds[i], o.fruit, CHERRY + int((firstType + i) % 3));
 	}
-	scatterThroughMaze(map, context, d, onRoad, o,
-					   o.treasure ? 0 : int(deadEnds.size()) * o.fruit);
+	scatterThroughMaze(map, context, d, onRoad, o, o.treasure ? 0 : int(deadEnds.size()) * o.fruit);
 	seedAlgae(map, context, o.algae);
 	return true;
 }
@@ -661,58 +667,59 @@ MazeOptions::MazeOptions(const GenerationRequest &r)
 
 GeneratorDefinition mazeDefinition()
 {
-	return {"maze",
-			11,
-			"Maze",
-			12,
-			false,
-			{GeneratorControl::choice("cell-shape", "Cell shape", {"Squares", "Hexagons"}, 0),
-			 {"cell-size",
-			  "Cell size",
-			  24,
-			  48,
-			  1,
-			  32,
-			  ControlGroup::Layout,
-			  false,
-			  false,
-			  {24, 32, 40, 48}},
-			 // Cells snap to 24, 32, 40 or 48 tiles; the default 32 gives 64 square cells on a 256
-			 // map, enough corridors to feel like a maze without passages narrower than a small base.
-			 // Hexagons sit half as far apart again (kHexPitchPercent).
-			 // Warp moves the cells' corners by up to this share of what keeps every cell whole, so
-			 // squares and hexagons become irregular polygons; doorways never narrow past the
-			 // smallest a passage may be, so at small cells warp is gentler.
-			 {"warp", "Warp", 0, 100, 25, 0, ControlGroup::Layout},
-			 // Open water on each side of a wall's stone line; passages widen to fill the rest.
-			 {"channel-width", "Channel width", 1, 6, 1, 2, ControlGroup::Layout},
-			 {"loopiness",
-			  "Loopiness",
-			  0,
-			  50,
-			  1,
-			  5,
-			  ControlGroup::Layout,
-			  false,
-			  false,
-			  {0, 5, 10, 20, 35, 50}},
-			 // Loopiness is the share of non-home cells that get one extra opening: the default 5
-			 // opens about 3 walls on a 256 map, a few flanking routes without dissolving the maze.
-			 // Densities for the deposits scattered along the passages (per 256 shore tiles); homes
-			 // always get the same fixed amounts. Fruit is the size, in tiles, of the treasure at
-			 // every dead end that isn't a home.
-			 {"wheat", "Wheat", 0, 64, 1, 48, ControlGroup::Resources},
-			 {"wood", "Wood", 0, 64, 1, 24, ControlGroup::Resources},
-			 {"stone", "Stone", 0, 64, 1, 16, ControlGroup::Resources},
-			 {"algae", "Algae", 0, 64, 1, 24, ControlGroup::Resources},
-			 {"fruit", "Fruit", 0, 25, 1, 9, ControlGroup::Resources},
-			 // Off, passages are grass from shore to shore, with no sand road down the middle.
-			 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
-			 // Off, the treasure's fruit is scattered along the passages' shores instead.
-			 GeneratorControl::toggle("dead-end-treasure", "Treasure in dead ends", true,
-									  ControlGroup::Resources)},
-			generate,
-			true,
-			validate,
-			validateWorld};
+	return {
+		"maze",
+		11,
+		"Maze",
+		13,
+		false,
+		{GeneratorControl::choice("cell-shape", "Cell shape", {"Squares", "Hexagons"}, 0),
+		 {"cell-size",
+		  "Cell size",
+		  24,
+		  48,
+		  1,
+		  32,
+		  ControlGroup::Layout,
+		  false,
+		  false,
+		  {24, 32, 40, 48}},
+		 // Cells snap to 24, 32, 40 or 48 tiles; the default 32 gives 64 square cells on a 256
+		 // map, enough corridors to feel like a maze without passages narrower than a small base.
+		 // Hexagons sit half as far apart again (kHexPitchPercent).
+		 // Warp moves the cells' corners by up to this share of what keeps every cell whole, so
+		 // squares and hexagons become irregular polygons; doorways never narrow past the
+		 // smallest a passage may be, so at small cells warp is gentler.
+		 {"warp", "Warp", 0, 100, 25, 0, ControlGroup::Layout},
+		 // Open water on each side of a wall's stone line; passages widen to fill the rest.
+		 {"channel-width", "Channel width", 1, 6, 1, 2, ControlGroup::Layout},
+		 {"loopiness",
+		  "Loopiness",
+		  0,
+		  50,
+		  1,
+		  5,
+		  ControlGroup::Layout,
+		  false,
+		  false,
+		  {0, 5, 10, 20, 35, 50}},
+		 // Loopiness is the share of non-home cells that get one extra opening: the default 5
+		 // opens about 3 walls on a 256 map, a few flanking routes without dissolving the maze.
+		 // Densities for the deposits scattered along the passages (per 256 shore tiles); homes
+		 // always get the same fixed amounts. Fruit is the size, in tiles, of the treasure at
+		 // every dead end that isn't a home.
+		 {"wheat", "Wheat", 0, 64, 1, 48, ControlGroup::Resources},
+		 {"wood", "Wood", 0, 64, 1, 24, ControlGroup::Resources},
+		 {"stone", "Stone", 0, 64, 1, 16, ControlGroup::Resources},
+		 {"algae", "Algae", 0, 64, 1, 24, ControlGroup::Resources},
+		 {"fruit", "Fruit", 0, 25, 1, 9, ControlGroup::Resources},
+		 // Off, passages are grass from shore to shore, with no sand road down the middle.
+		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
+		 // Off, the treasure's fruit is scattered along the passages' shores instead.
+		 GeneratorControl::toggle("dead-end-treasure", "Treasure in dead ends", true,
+								  ControlGroup::Resources)},
+		generate,
+		true,
+		validate,
+		validateWorld};
 }

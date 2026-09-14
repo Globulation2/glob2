@@ -283,6 +283,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				L.homeRadius + kHomeMargin)
 				L.clearing[i] = 1;
 	}
+	dealStarts(context, L.homes); // which colony gets which valley site is a draw, not the order
 	double nearest = std::min(t.w, t.h);
 	for (size_t a = 0; a < L.homes.size(); ++a)
 		for (size_t b = a + 1; b < L.homes.size(); ++b)
@@ -445,7 +446,7 @@ GeneratorDefinition rainShadowDefinition()
 		"rain-shadow",
 		27,
 		"Rain shadow",
-		2,
+		3,
 		false,
 		// Four ridges on a 256 map give 64-tile valleys: a 12-tile home, a pass every 48 tiles
 		// and a lee band of 6 leave a valley wide enough to farm and to fight in. Ridges three

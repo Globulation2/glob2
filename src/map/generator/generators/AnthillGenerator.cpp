@@ -138,6 +138,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 					"colonies.";
 		return L;
 	}
+	// spreadPockets always starts from site 0, so the deal decides which colony gets which chamber.
+	dealStarts(context, L.homeSite);
 	// The tunnels: a spanning tree through every chamber but the queens', a door into each queen
 	// chamber, and `loops` percent of the chambers' count in extra tunnels.
 	std::vector<unsigned char> isPocket(L.sites.size(), 0);
@@ -413,7 +415,6 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Map &map = game.map;
 	if (const std::string mismatch = designMismatch(L, map, "anthill"); !mismatch.empty())
 		return mismatch;
-	const Torus &t = L.t;
 	// A queen chamber is dry by design (second play); the farm chambers keep the water.
 	for (int site : L.farmSite)
 		if (!map.isWater(L.sites[site].x, L.sites[site].y))
@@ -439,7 +440,7 @@ GeneratorDefinition anthillDefinition()
 		"anthill",
 		32,
 		"Anthill",
-		3,
+		4,
 		false,
 		// Chambers 28 apart give a 256 map about a hundred of them; a chamber of radius 5 holds
 		// three or four buildings; a queen chamber grown to 40 building sites (overlapping 4x4
