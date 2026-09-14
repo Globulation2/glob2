@@ -219,6 +219,11 @@ jobs:
           ./build/src/EnteringUnitSaveHarness
           ./build/src/EnteringUnitSaveHarness --load test/fixtures/entering-explorer/reproducer.game
 
+      - name: Test Cortex placement equivalence
+        run: |
+          scons -j$(nproc) release=1 server=0 cortex-geometry-test
+          ./build/src/CortexGeometryHarness
+
       - name: Test clearing flag resource bounds
         run: |
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/ClearingFlagGradientTest

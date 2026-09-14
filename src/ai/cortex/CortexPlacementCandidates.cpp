@@ -213,6 +213,8 @@ namespace Cortex
 		const int mapW = map.getW();
 		const int mapH = map.getH();
 
+		const PlacementGeometry geometry(team, map);
+
 		ScoredSpot heap[CORTEX_BUILD_CANDIDATES];
 		int count = 0;
 
@@ -415,7 +417,7 @@ namespace Cortex
 				// existing inns. The candidate is offered at its grown footprint
 				// (ew x eh) so an inn's expansion tiles are accounted for. Keeps the
 				// rule symmetric regardless of build order.
-				if (candidateCrowdsInn(game, team, map, gx, gy, ew, eh))
+				if (geometry.candidateCrowdsInn(gx, gy, ew, eh))
 					continue;
 
 				// RESERVED-EXPANSION CLEARANCE: do not place into the expansion tiles an
@@ -425,10 +427,10 @@ namespace Cortex
 				// they will expand into and block the upgrade. We test the candidate's
 				// own GROWN box (gx, gy, ew x eh) against each existing growable type's
 				// reserved box, so neither side's future expansion collides.
-				if (candidateOverlapsReservedExpansion(game, team, map, gx, gy, ew, eh))
+				if (geometry.candidateOverlapsReservedExpansion(gx, gy, ew, eh))
 					continue;
 
-				const int distToColony = distanceToNearestBuilding(game, team, x, y);
+				const int distToColony = geometry.distanceToNearestBuilding(x, y);
 				int score = scoreFromDistance(distToColony);
 				if (footprintBordersResource(map, x, y, w, h))
 					score += 250; // resource adjacency bonus
