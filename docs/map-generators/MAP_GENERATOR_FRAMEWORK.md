@@ -1099,7 +1099,7 @@ into the next.
   failed), the fountain in one and the swarm in the other, the pairs as far apart as the city allows;
   `plazas` (0-4, 2) more per colony farthest from those, given up first when the city is small; and the
   cathedral square at the cell holding the centre, with an orchard of the three fruits round its fountain.
-- **Tendrils.** From the fields' sand cap, one every 8 tiles round it (some seventy on a 256 map), a
+- **Tendrils.** From the fields' sand cap, one every 16 tiles round it (some thirty-five on a 256 map), a
   wavy road of sand two tiles wide and 10-13 tiles long runs in towards the city (`tendrils`, on): across the margin and into the outer streets, notching
   the outer blocks where it meets them (the second and third plays asked for "little tendril sand
   roads extending inwards", short and frequent).

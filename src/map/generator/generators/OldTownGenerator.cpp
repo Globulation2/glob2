@@ -74,11 +74,12 @@ constexpr int kHomeWheat = 14, kHomeWood = 12;
 // margin round it (10 wide, 4 high, a ring of 2 and a vertex more) never meet the city.
 constexpr int kFarmMargin = 4, kFarmRim = 2, kFarmBridges = 16, kPlotMargin = 9;
 // Tendrils (third play: "dozens of them, all the way around the perimeter, roughly evenly spaced ...
-// a default width of 2 cells of sand"): one every this many tiles round the fields' sand cap, this
-// long (plus up to kTendrilExtra), wandering sideways by up to this many tiles, stroked
-// kTendrilHalfWidth either side of its line: three corners across, which is two whole tiles of sand.
-// Eight tiles apart on a ring of about 600 tiles is some seventy tendrils on a 256 map.
-constexpr int kTendrilSpacing = 8, kTendrilLength = 10, kTendrilExtra = 3;
+// a default width of 2 cells of sand", then "1/2 the number of those inwards roads"): one every this
+// many tiles round the fields' sand cap, this long (plus up to kTendrilExtra), wandering sideways by
+// up to this many tiles, stroked kTendrilHalfWidth either side of its line: three corners across,
+// which is two whole tiles of sand. Sixteen tiles apart on a ring of about 600 tiles is some
+// thirty-five tendrils on a 256 map (eight apart, seventy, was too many).
+constexpr int kTendrilSpacing = 16, kTendrilLength = 10, kTendrilExtra = 3;
 constexpr double kTendrilWander = 2.0, kTendrilHalfWidth = 1.5;
 // A fountain fills its plaza to this far short of the streets round it (FEEDBACK 2026-09-13: pools
 // "big enough that they push up close against their surrounding grid cells' stone"): the block's
@@ -507,7 +508,7 @@ GeneratorDefinition oldTownDefinition()
 	return {"old-town",
 			31,
 			"Old town",
-			4,
+			5,
 			false,
 			// A city of 70% of the half side leaves a belt of fields round it; blocks of 14 with
 			// streets of 4 give a 256 map about a hundred blocks and streets a column of units wide
