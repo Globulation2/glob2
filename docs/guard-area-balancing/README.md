@@ -9,7 +9,7 @@ area and any other area stayed empty. How many warriors a defence ended up with
 depended on where the barracks stood, not on what the player painted, and the
 only dependable tool was the war flag.
 
-Since version 98 painted tiles are seeded with a crowding cost, so warriors
+Since version 100 painted tiles are seeded with a crowding cost, so warriors
 spread between areas in proportion to painted size, an area that is over-full
 drains into the others, and a bigger painted area gets more warriors. Painting a
 guard area now means what a player expects it to mean.

@@ -87,12 +87,44 @@ void GameGUI::drawTorusMap(int originX, int originY, int team, unsigned options,
         int my = (py - originY * 32) & (game.map.getH() * 32 - 1);
         toolManager.drawTool(mx, my, localTeamNo, originX, originY);
     }
+    // The ring replaces the 2D map transform, so the selection markers the flat
+    // view paints over the map belong on the surface itself, anchored to it.
     if (selectionMode == BUILDING_SELECTION && view.selectedBuilding)
     {
         Building *b = view.selectedBuilding;
         int x, y;
         game.map.buildingPosToCursor(displayedPosX(*b), displayedPosY(*b), b->type->width, b->type->height, &x, &y,
                                      originX, originY);
-        globalContainer->gfx->drawCircle(x, y, b->type->width * 16, 0, 0, 190);
+        if (b->owner->teamNumber == localTeamNo)
+            globalContainer->gfx->drawCircle(x, y, b->type->width * 16, 0, 0, 190);
+        else if (localTeam->allies & b->owner->me)
+            globalContainer->gfx->drawCircle(x, y, b->type->width * 16, 255, 196, 0);
+        else if (!b->type->isVirtual)
+            globalContainer->gfx->drawCircle(x, y, b->type->width * 16, 190, 0, 0);
+
+        // draw a white circle around units that are working at building
+        if (showUnitWorkingToBuilding && (b->owner->allies & (1 << localTeamNo)))
+            for (std::list<Unit *>::iterator it = b->unitsWorking.begin(); it != b->unitsWorking.end(); ++it)
+            {
+                Unit *unit = *it;
+                int ux, uy;
+                game.map.mapCaseToDisplayable(unit->posX, unit->posY, &ux, &uy, originX, originY);
+                int deltaLeft = 255 - unit->delta;
+                if (unit->action < BUILD)
+                {
+                    ux -= (unit->dx * deltaLeft) >> 3;
+                    uy -= (unit->dy * deltaLeft) >> 3;
+                }
+                globalContainer->gfx->drawCircle(ux + 16, uy + 16, 16, 255, 255, 255, 180);
+            }
+    }
+    else if (selectionMode == RESOURCE_SELECTION)
+    {
+        int resource = selectionResource();
+        int rx = resource & game.map.getMaskW();
+        int ry = resource >> game.map.getShiftW();
+        int px, py;
+        game.map.mapCaseToDisplayable(rx, ry, &px, &py, originX, originY);
+        globalContainer->gfx->drawCircle(px + 16, py + 16, 16, 0, 0, 190);
     }
 }

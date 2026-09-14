@@ -74,6 +74,10 @@ Econo
 Warrush - Hyökkää nopeasti työntäen puolustamiseen painottavan pelaajan häviön partaalle. Vaikeustaso: normaali.
 [AIWarrush]
 Warrush
+[AICabino-Description]
+Cabino johtaa puolustusta, hyökkäystä ja rakentamista itsenäisinä osastoina, jotka toimivat yhden suunnitelman mukaan: kasvaa nopeasti ja hyökkää suurilla sotajoukoilla vastustajiensa kimppuun. Vaikeustaso: haastava.
+[AICabino]
+Cabino
 [Alga]
 Levä
 [algae]
@@ -1260,6 +1264,10 @@ Valtavat tukikohdat ja muunnos hyökkäysten sijaan.
 Strategia: Hyökkää aikaisin ja voimakkaasti, ennen kuin vastustajat ovat valmistautuneet.\n\nVahvuudet: Käyttää hyväkseen puolustamatonta laajentumista ja hidasta sotilaallista valmistautumista.\n\nEhdotettu vastapeli: Selviydy ensimmäisestä hyökkäyksestä pitäen samalla taloutesi toiminnassa ja aloita vastahyökkäys.
 [AIWarrush-Summary]
 Nopeat hyökkäykset, jotka testaavat varhaista puolustustasi.
+[AICabino-Profile]
+Ydinstrategia: itsenäisten erikoisosastojen (puolustus, hyökkäys, rakentaminen, päivitykset, yksikönhallinta) kabinetti, joka toimii omasta aloitteestaan mutta pyrkii yhteen suunnitelmaan: kasvaa nopeasti ja lähettää sitten valtavia armeijoita vastustajia vastaan.\n\nVahvuudet: nopea kasvu tukee hyökkäävää sotilaallista painetta; itsenäiset osastot reagoivat nopeasti paikallisiin uhkiin odottamatta keskitettyä suunnitelmaa.\n\nVastapeli: haasta sen kasvu ajoissa ja käytä maastoa rajoittaaksesi kuinka moni sen joukoista voi taistella kerralla.
+[AICabino-Summary]
+Itsenäiset osastot, jotka tekevät yhteistyötä nopean kasvun ja valtavien armeijoiden eteen.
 [Algae]
 Levä
 [Alliances]
