@@ -55,6 +55,7 @@
 
 #ifndef YOG_SERVER_ONLY
 #include "FrontendTheme.h"
+#include "MapCommand.h"
 #endif
 
 using std::shared_ptr;
@@ -409,6 +410,10 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 
 int Glob2::run(int argc, char *argv[])
 {
+#ifndef YOG_SERVER_ONLY
+	if (argc > 1 && isMapCommand(argv[1]))
+		return runMapCommand(argc, argv);
+#endif
 	srand(time(NULL));
 
 	globalContainer=new GlobalContainer();
@@ -644,22 +649,26 @@ int main(int argc, char *argv[])
 	setvbuf(stdout, NULL, _IOLBF, 0);
 
 #if defined(__APPLE__) && !defined(YOG_SERVER_ONLY)
-	/* SDL has this annoying "feature" of setting working directory to parent
-	   of bundle during static initialization.  We want to set it back to the
-	   main bundle directory so we can find our Resources directory. */
-	CFBundleRef mainBundle = CFBundleGetMainBundle();
-	assert(mainBundle);
-	CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
-	assert(mainBundleURL);
-	CFStringRef cfStringRef = CFURLCopyFileSystemPath(mainBundleURL, kCFURLPOSIXPathStyle);
-	assert(cfStringRef);
+	// Map tools resolve input and output paths relative to the caller.
+	if (!(argc > 1 && isMapCommand(argv[1])))
+	{
+		/* SDL has this annoying "feature" of setting working directory to parent
+		   of bundle during static initialization.  We want to set it back to the
+		   main bundle directory so we can find our Resources directory. */
+		CFBundleRef mainBundle = CFBundleGetMainBundle();
+		assert(mainBundle);
+		CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
+		assert(mainBundleURL);
+		CFStringRef cfStringRef = CFURLCopyFileSystemPath(mainBundleURL, kCFURLPOSIXPathStyle);
+		assert(cfStringRef);
 
-	char path[MAXPATHLEN];
-	CFStringGetCString(cfStringRef, path, MAXPATHLEN, kCFStringEncodingASCII);
-	chdir(path);
+		char path[MAXPATHLEN];
+		CFStringGetCString(cfStringRef, path, MAXPATHLEN, kCFStringEncodingASCII);
+		chdir(path);
 
-	CFRelease(mainBundleURL);
-	CFRelease(cfStringRef);
+		CFRelease(mainBundleURL);
+		CFRelease(cfStringRef);
+	}
 #endif
 
 	Glob2 glob2;
