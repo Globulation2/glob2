@@ -551,6 +551,14 @@ source_files.append("../libusl/src/libusl.a")
 p1 = local.Program("glob2", source_files)
 
 if not env['server']:
+    ledger_env = local.Clone()
+    ledger_env.Append(CCFLAGS=['-UNDEBUG'])
+    ledger_test = local.Program('MaximaFoodLedgerStandaloneTest', [
+        ledger_env.Object('MaximaFoodLedgerStandaloneTest.o', '#test/MaximaFoodLedgerStandaloneTest.cpp'),
+        local.Object('AIMaximaFoodLedger.cpp')])
+    local.Alias('maxima-food-ledger-test', ledger_test)
+
+if not env['server']:
     geometry_sources = [source for source in source_files if source != 'Glob2.cpp']
     geometry_sources += local.Object('CortexGeometryHarness.o', '#test/CortexGeometryHarness.cpp')
     geometry_test = local.Program('CortexGeometryHarness', geometry_sources)

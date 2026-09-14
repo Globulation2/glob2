@@ -86,7 +86,7 @@ int Input::index(int x, int y) const
 
 Result::Result()
 	: totalSupply(0), totalDemand(0), totalClaimed(0), totalResidual(0),
-	  bestSiteResidual(0)
+	  bestSiteResidual(0), residualSumsWidth(0), residualSumsHeight(0)
 {
 }
 
@@ -121,8 +121,7 @@ int innDemand(int servedUnits, int ticksPerMeal, int percent)
 }
 
 Ledger::Ledger()
-	: generation(0), residualSumsWidth(0), residualSumsHeight(0),
-	  residualSumsSource(NULL), residualSumsTotal(-1)
+	: generation(0)
 {
 }
 
@@ -302,16 +301,12 @@ void Ledger::evaluate(const Input& input, Result& result) const
 				residualUpperBound(input,result,x,y,0,0,1,1));
 }
 
-void Ledger::prepareResidualSums(const Input& input, const Result& result) const
+void Ledger::prepareResidualSums(const Input& input, Result& result) const
 {
-	const int size=input.width*input.height;
-	long long total=0;
-	for(int i=0;i<size;++i)total+=result.residual[i];
-	if(residualSumsSource==&result&&residualSumsWidth==input.width
-	   &&residualSumsHeight==input.height&&residualSumsTotal==total)return;
-	residualSumsSource=&result;residualSumsWidth=input.width;
-	residualSumsHeight=input.height;residualSumsTotal=total;
+	result.residualSumsWidth=input.width;
+	result.residualSumsHeight=input.height;
 	const int stride=input.width+1;
+	std::vector<long long>& residualSums=result.residualSums;
 	residualSums.assign(size_t(input.height+1)*stride,0);
 	for(int y=0;y<input.height;++y)
 	{
@@ -329,7 +324,9 @@ long long Ledger::residualUpperBound(const Input& input, const Result& result,
 	int centerX, int centerY, int left, int top, int width, int height) const
 {
 	if(input.width<=0||input.height<=0)return 0;
-	prepareResidualSums(input,result);
+	if(result.residualSumsWidth!=input.width
+	   ||result.residualSumsHeight!=input.height)return 0;
+	const std::vector<long long>& residualSums=result.residualSums;
 	const int stride=input.width+1;
 	const auto rect=[&](int x0,int y0,int w,int h)->long long
 	{

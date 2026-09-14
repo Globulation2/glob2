@@ -139,6 +139,15 @@ struct Result
 	/// many further inns or swarms the map can still support.
 	long long bestSiteResidual;
 	const ConsumerResult* consumer(int key) const;
+
+private:
+	friend class Ledger;
+	// Prepared together with residual by evaluate. Keeping the table in the
+	// snapshot makes copies and queries of older results independent of the
+	// ledger's scratch buffers. Treat evaluated results as read-only.
+	std::vector<long long> residualSums;
+	int residualSumsWidth;
+	int residualSumsHeight;
 };
 
 /// Holds the reusable scratch buffers. Queries never allocate once a map size
@@ -167,7 +176,9 @@ public:
 
 	/// Sound upper bound for the same query, from a summed-area table over the
 	/// residual. Reach is contained in the Chebyshev square, so a candidate
-	/// rejected here would also fail the exact walk.
+	/// rejected here would also fail the exact walk. Requires an unmodified
+	/// result from evaluate; reads its prepared table without scanning,
+	/// allocating or rebuilding. A default/invalid result returns zero.
 	long long residualUpperBound(const Input& input, const Result& result,
 		int centerX, int centerY, int left, int top, int width,
 		int height) const;
@@ -180,17 +191,12 @@ private:
 	};
 	void walk(const Input& input, int centerX, int centerY, int left, int top,
 		int width, int height, std::vector<ReachCell>& reach) const;
-	void prepareResidualSums(const Input& input, const Result& result) const;
+	void prepareResidualSums(const Input& input, Result& result) const;
 	mutable std::vector<int> distanceScratch;
 	mutable std::vector<uint32_t> distanceGeneration;
 	mutable uint32_t generation;
 	mutable std::vector<ReachCell> reachScratch;
 	mutable std::vector<ReachCell> queryScratch;
-	mutable std::vector<long long> residualSums;
-	mutable int residualSumsWidth;
-	mutable int residualSumsHeight;
-	mutable const Result* residualSumsSource;
-	mutable long long residualSumsTotal;
 };
 
 /// Supply of one protected wheat cell, in micro-wheat per tick:
