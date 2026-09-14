@@ -542,3 +542,7 @@ reports, including generation-failure telemetry. The opt-in
 checks complete result/artifact roundtrips and offline record counts on every host;
 add an absolute registered `bundle` path to each host entry. It stops its workers
 after collection. Retained validation is linked in the tournament validation guide.
+The team-statistics harness also checks the AI telemetry schema interface for every
+built-in implementation, shared-team player identities, controller generations,
+reassignment, exact numeric persistence, replay availability, and truncated fields.
+See [AI telemetry](../docs/ai-telemetry.md) for the capture/extension contract.

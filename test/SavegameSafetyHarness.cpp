@@ -272,6 +272,7 @@ static void checkRandomContinuation(bool text, bool ai)
 	};
 	std::vector<std::vector<Uint32>> continuation;
 	std::vector<std::vector<GameplayMeasurements>> measurementContinuation;
+	const auto savedAI = ai ? gui.game.players[0]->ai->telemetrySeries->current : AITelemetry::Sample{};
 	for (int i=0; i<700; ++i)
 	{
 		step(gui.game);
@@ -303,6 +304,7 @@ static void checkRandomContinuation(bool text, bool ai)
 	}
 	auto stream=input(bytes,true);
 	assert(restored.load(stream.get()));
+	if (ai) assert(restored.game.players[0]->ai->telemetrySeries->current == savedAI);
 	if (text)
 	{
 		MemoryStreamBackend source(runtimeText.data(),runtimeText.size());
@@ -320,6 +322,7 @@ static void checkRandomContinuation(bool text, bool ai)
 	{
 		step(restored.game);
 		const auto actual = simulationState(restored.game);
+
 		for (int t=0; t<restored.game.teamsCount(); ++t)
 			assert(restored.game.teams[t]->stats.measurements == measurementContinuation[i][t]);
 		if (actual != continuation[i])
@@ -332,6 +335,7 @@ static void checkRandomContinuation(bool text, bool ai)
 	}
 	for (int t=0; t<restored.game.teamsCount(); ++t)
 		assert(restored.game.teams[t]->stats.measurementHistory == gui.game.teams[t]->stats.measurementHistory);
+
 	std::cout << "PASS " << (text ? "binary + text routing" : "binary") << (ai ? " AI" : " human") << " saved game continues RNG and 700 simulation steps and measurements across header replacement" << std::endl;
 }
 

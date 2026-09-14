@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "AITelemetryFields.h"
 #include <array>
 
 #include "AINumbi.h"
@@ -15,6 +16,10 @@ using std::shared_ptr;
 
 std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, Sint32 numberRequested)
 {
+	telemetry.set(AITrace::AI1::AINumbi_mayAttack_input_numberRequested, numberRequested);
+	telemetry.set(AITrace::AI1::AINumbi_mayAttack_input_criticalTimeout, criticalTimeout);
+	telemetry.set(AITrace::AI1::AINumbi_mayAttack_input_criticalMass, criticalMass);
+	telemetry.count(AITrace::AI1::AINumbi_mayAttack_calls);
 	Unit **myUnits=team->myUnits;
 	int ft=0;
 	for (int i=0; i<Unit::MAX_COUNT; i++)
@@ -35,7 +40,8 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 			//printf("AI:(timeout)new attack with %d units.\n", ft);
 			attackPhase=1;
 		}
-		return shared_ptr<Order>(new NullOrder);
+		return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayAttack_result,
+									   shared_ptr<Order>(new NullOrder));
 	}
 	else if (attackPhase==1)
 	{
@@ -43,7 +49,8 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 		{
 			attackPhase=3;
 			//printf("AI:stop attack.\n");
-			return shared_ptr<Order>(new NullOrder);
+			return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayAttack_result,
+										   shared_ptr<Order>(new NullOrder));
 		}
 
 		int teamNumber=player->team->teamNumber;
@@ -54,12 +61,17 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 				Building *b=*bit;
 				int gbid=map->getBuilding(b->posX, b->posY);
 				if (gbid==NOGBID || Building::GIDtoTeam(gbid)==teamNumber)
-					return shared_ptr<Order>(new OrderDelete(b->gid)); // The target has beed successfully killed.
+					return telemetry.returnedOrder(
+						AITrace::AI1::AINumbi_mayAttack_result,
+						shared_ptr<Order>(
+							new OrderDelete(b->gid))); // The target has beed successfully killed.
 
 				if (b->maxUnitWorking!=numberRequested)
 				{
 					//printf("AI: OrderModifyBuilding(%d, %d)\n", b->gid, numberRequested);
-					return shared_ptr<Order>(new OrderModifyBuilding(b->gid, numberRequested));
+					return telemetry.returnedOrder(
+						AITrace::AI1::AINumbi_mayAttack_result,
+						shared_ptr<Order>(new OrderModifyBuilding(b->gid, numberRequested)));
 				}
 			}
 
@@ -70,7 +82,8 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 			if (game->teams[i]->me & enemies)
 				e=i;
 		if (e==-1)
-			return shared_ptr<Order>(new NullOrder);
+			return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayAttack_result,
+										   shared_ptr<Order>(new NullOrder));
 
 		int ex=-1, ey=-1;
 		int count=0;
@@ -110,30 +123,39 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 			//printf("AI: OrderCreateWarFlag(%d, %d)\n", ex, ey);
-			return shared_ptr<Order>(new OrderCreate(teamNumber, ex, ey, typeNum, AI_NUMBI_WAR_FLAG_INIT_UNITS_WORKING, AI_NUMBI_WAR_FLAG_INIT_FLAG_RADIUS));
+			return telemetry.returnedOrder(
+				AITrace::AI1::AINumbi_mayAttack_result,
+				shared_ptr<Order>(new OrderCreate(teamNumber, ex, ey, typeNum,
+												  AI_NUMBI_WAR_FLAG_INIT_UNITS_WORKING,
+												  AI_NUMBI_WAR_FLAG_INIT_FLAG_RADIUS)));
 		}
 		else
-			return shared_ptr<Order>(new NullOrder);
+			return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayAttack_result,
+										   shared_ptr<Order>(new NullOrder));
 	}
 	else if (attackPhase==2)
 	{
 		assert(false);
-		return shared_ptr<Order>(new NullOrder);
+		return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayAttack_result,
+									   shared_ptr<Order>(new NullOrder));
 	}
 	else if (attackPhase==3)
 	{
 		for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)
 			if ((*bit)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
-				return shared_ptr<Order>(new OrderDelete((*bit)->gid));
+				return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayAttack_result,
+											   shared_ptr<Order>(new OrderDelete((*bit)->gid)));
 		attackPhase=0;
 		criticalWarriors*=AI_NUMBI_ATTACK_BACKOFF_MULTIPLIER;
 		criticalTime*=AI_NUMBI_ATTACK_BACKOFF_MULTIPLIER;
-		return shared_ptr<Order>(new NullOrder);
+		return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayAttack_result,
+									   shared_ptr<Order>(new NullOrder));
 	}
 	else
 	{
 		assert(false);
-		return shared_ptr<Order>(new NullOrder);
+		return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayAttack_result,
+									   shared_ptr<Order>(new NullOrder));
 	}
 
 }
@@ -256,6 +278,9 @@ std::shared_ptr<Order> tryUpgradeRung(
 // NullOrder if neither rung is eligible.
 std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 {
+	telemetry.set(AITrace::AI1::AINumbi_mayUpgrade_input_ntrigger, ntrigger);
+	telemetry.set(AITrace::AI1::AINumbi_mayUpgrade_input_ptrigger, ptrigger);
+	telemetry.count(AITrace::AI1::AINumbi_mayUpgrade_calls);
 	const auto inv = collectUpgradeInventory(team);
 
 	Unit **myUnits = team->myUnits;
@@ -282,7 +307,7 @@ std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigge
 		if (potential > ptrigger && now > ntrigger)
 		{
 			if (auto order = tryUpgradeRung(inv, 0))
-				return order;
+				return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayUpgrade_result, order);
 		}
 	}
 
@@ -294,9 +319,10 @@ std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigge
 		if (potential > ptrigger && now > ntrigger)
 		{
 			if (auto order = tryUpgradeRung(inv, 1))
-				return order;
+				return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayUpgrade_result, order);
 		}
 	}
 
-	return std::make_shared<NullOrder>();
+	return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayUpgrade_result,
+								   std::make_shared<NullOrder>());
 }

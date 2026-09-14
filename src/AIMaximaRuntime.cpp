@@ -1,3 +1,4 @@
+#include "AITelemetryFields.h"
 #include "AIMaximaRuntime.h"
 #include "AIMaximaContinuation.h"
 #include "AIMaximaStrategy.h"
@@ -1028,6 +1029,7 @@ void Context::detect_fruit()
 }
 unsigned Context::add_building_order(Construction::BuildingOrder* order)
 {
+	telemetry.count(AITrace::AI7::runtime_building_queued);
 	buildingOrders.push_back(shared_ptr<Construction::BuildingOrder>(order));order->queue_gradients(gradients);order->id=buildings.register_building();return order->id;
 }
 
@@ -1138,7 +1140,11 @@ bool Context::issue_upgrade_repair(int id,bool repair)
 	buildings.set_upgrading(id);
 	return true;
 }
-void Context::add_management_order(Management::ManagementOrder* order){managementOrders.push_back(shared_ptr<Management::ManagementOrder>(order));}
+void Context::add_management_order(Management::ManagementOrder *order)
+{
+	telemetry.count(AITrace::AI7::runtime_management_queued);
+	managementOrders.push_back(shared_ptr<Management::ManagementOrder>(order));
+}
 void Context::add_resource_tracker(Management::ResourceTracker* tracker,int id){trackers[id]=shared_ptr<Management::ResourceTracker>(tracker);}
 shared_ptr<Management::ResourceTracker> Context::get_resource_tracker(int id)
 {std::map<int,shared_ptr<Management::ResourceTracker> >::iterator i=trackers.find(id);return i==trackers.end()?shared_ptr<Management::ResourceTracker>():i->second;}
@@ -1155,8 +1161,18 @@ void Context::update_management_orders()
 	for(size_t i=0;i<managementOrders.size();)
 	{
 		Conditions::Result result=managementOrders[i]->ready(*this);
-		if(result==Conditions::Ready){shared_ptr<Management::ManagementOrder> current=managementOrders[i];managementOrders.erase(managementOrders.begin()+i);current->modify(*this);}
-		else if(result==Conditions::Impossible)managementOrders.erase(managementOrders.begin()+i);
+		if (result == Conditions::Ready)
+		{
+			shared_ptr<Management::ManagementOrder> current = managementOrders[i];
+			managementOrders.erase(managementOrders.begin() + i);
+			current->modify(*this);
+			telemetry.count(AITrace::AI7::runtime_management_applied);
+		}
+		else if (result == Conditions::Impossible)
+		{
+			telemetry.count(AITrace::AI7::runtime_management_impossible);
+			managementOrders.erase(managementOrders.begin() + i);
+		}
 		else ++i;
 	}
 }
@@ -1174,8 +1190,18 @@ void Context::update_building_orders()
 		// later in the same deterministic traversal order.
 		const PlacementResult placement=buildingOrders[i]->find_location(*this,
 			2048,complete);
-		if(!complete)break;
-		if(!placement.found){buildings.remove_building(buildingOrders[i]->id);buildingOrders.erase(buildingOrders.begin()+i);continue;}
+		if (!complete)
+		{
+			telemetry.count(AITrace::AI7::runtime_placement_deferred);
+			break;
+		}
+		if (!placement.found)
+		{
+			telemetry.count(AITrace::AI7::runtime_placement_failed);
+			buildings.remove_building(buildingOrders[i]->id);
+			buildingOrders.erase(buildingOrders.begin() + i);
+			continue;
+		}
 		const position p=placement.value;
 		const int shortType=buildingOrders[i]->type;const int id=buildingOrders[i]->id;buildings.issue_order(id,p.x,p.y,shortType);
 		Sint32 engineType;

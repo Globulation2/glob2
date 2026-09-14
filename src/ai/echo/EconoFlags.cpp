@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "AITelemetryFields.h"
 #include "echo/Echo.h"
 #include "IntBuildingType.h"
 
@@ -16,6 +17,7 @@ using namespace boost::logic;
 //Explorer flags on the three nearest fruit trees
 void Econo::tick_explorer_flags_fruit(Echo& echo)
 {
+	telemetry.count(AITrace::AI4::Econo_tick_explorer_flags_fruit_calls);
 	if((timer%AI_ECHO_RTI_FRUIT_FLAG_INTERVAL_TICKS)==0)
 	{
 		if(echo.is_fruit_on_map())
@@ -124,6 +126,7 @@ void Econo::tick_explorer_flags_fruit(Echo& echo)
 //Place exploration flags on the enemy swarms
 void Econo::tick_explorer_flags_enemies(Echo& echo)
 {
+	telemetry.count(AITrace::AI4::Econo_tick_explorer_flags_enemies_calls);
 	if((timer%AI_ECHO_RTI_ENEMY_SCAN_INTERVAL_TICKS)==0)
 	{
 		if(echo.get_team_stats().numberUnitPerType[EXPLORER]>=AI_ECHO_RTI_ENEMY_FLAG_EXPLORER_MIN)
@@ -159,6 +162,7 @@ void Econo::tick_explorer_flags_enemies(Echo& echo)
 //Farming wheat and wood near water
 void Econo::tick_farming_areas(Echo& echo)
 {
+	telemetry.count(AITrace::AI4::Econo_tick_farming_areas_calls);
 	if((timer%AI_ECHO_RTI_FARMING_INTERVAL_TICKS)==0)
 	{
 		AddArea* mo_farming=new AddArea(ForbiddenArea);

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-
+#include "AITelemetryFields.h"
 #include "AINumbi.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -13,6 +13,7 @@ using std::shared_ptr;
 
 int AINumbi::estimateFood(Building *building)
 {
+	telemetry.count(AITrace::AI1::AINumbi_estimateFood_calls);
 	int rx, ry, dist;
 	bool found;
 	if (map->resourceAvailableUpdate(team->teamNumber, WHEAT, 0, building->posX-1, building->posY-1, &rx, &ry, &dist))
@@ -104,14 +105,20 @@ int AINumbi::estimateFood(Building *building)
 
 		//printf("r=(%d, %d), w=%d, h=%d, s=%d.\n", rx, ry, w, h, w*h);
 
-		return (w*h);
+		return telemetry.returnedInt(AITrace::AI1::AINumbi_estimateFood_result, (w * h));
 	}
 	else
-		return 0;
+		return telemetry.returnedInt(AITrace::AI1::AINumbi_estimateFood_result, 0);
 }
 
 std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFactor, const int workers, const int explorers, const int warriors)
 {
+	telemetry.set(AITrace::AI1::AINumbi_swarmsForWorkers_input_warriors, warriors);
+	telemetry.set(AITrace::AI1::AINumbi_swarmsForWorkers_input_explorers, explorers);
+	telemetry.set(AITrace::AI1::AINumbi_swarmsForWorkers_input_workers, workers);
+	telemetry.set(AITrace::AI1::AINumbi_swarmsForWorkers_input_nbWorkersFactor, nbWorkersFactor);
+	telemetry.set(AITrace::AI1::AINumbi_swarmsForWorkers_input_minSwarmNumbers, minSwarmNumbers);
+	telemetry.count(AITrace::AI1::AINumbi_swarmsForWorkers_calls);
 	std::list<Building *> swarms=team->swarms;
 	int ss=swarms.size();
 	Sint32 numberRequested=1+(nbWorkersFactor/(ss+1));
@@ -129,7 +136,9 @@ std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const
 			newRatio[WORKER]=workers;
 			newRatio[EXPLORER]=explorers;
 			newRatio[WARRIOR]=warriors;
-			return shared_ptr<Order>(new OrderModifySwarm(b->gid, newRatio));
+			return telemetry.returnedOrder(
+				AITrace::AI1::AINumbi_swarmsForWorkers_result,
+				shared_ptr<Order>(new OrderModifySwarm(b->gid, newRatio)));
 		}
 
 		int f=estimateFood(b);
@@ -143,14 +152,22 @@ std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const
 
 		if (numberRequestedLocal!=numberRequestedTemp)
 		{
-			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, numberRequestedTemp));
+			return telemetry.returnedOrder(
+				AITrace::AI1::AINumbi_swarmsForWorkers_result,
+				shared_ptr<Order>(new OrderModifyBuilding(b->gid, numberRequestedTemp)));
 		}
 	}
-	return shared_ptr<Order>(new NullOrder);
+	return telemetry.returnedOrder(AITrace::AI1::AINumbi_swarmsForWorkers_result,
+								   shared_ptr<Order>(new NullOrder));
 }
 
 std::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numbersInc, const int workers, const int buildingType)
 {
+	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_buildingType, buildingType);
+	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_workers, workers);
+	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_numbersInc, numbersInc);
+	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_numbers, numbers);
+	telemetry.count(AITrace::AI1::AINumbi_adjustBuildings_calls);
 	Building **myBuildings=team->myBuildings;
 	//Unit **myUnits=player->team->myUnits;
 	int fb=0;
@@ -163,7 +180,9 @@ std::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numb
 			fb++;
 			int w=workers;
 			if ((b->maxUnitWorking!=w)&&(b->type->maxUnitWorking))
-				return shared_ptr<Order>(new OrderModifyBuilding(b->gid, w));
+				return telemetry.returnedOrder(
+					AITrace::AI1::AINumbi_adjustBuildings_result,
+					shared_ptr<Order>(new OrderModifyBuilding(b->gid, w)));
 		}
 	}
 
@@ -181,16 +200,25 @@ std::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numb
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(buildingType), 0, true);
 			int teamNumber=team->teamNumber;
-			return shared_ptr<Order>(new OrderCreate(teamNumber, x, y, typeNum, AI_NUMBI_BUILD_ORDER_UNITS_WORKING, AI_NUMBI_BUILD_ORDER_FLAG_RADIUS));
+			return telemetry.returnedOrder(
+				AITrace::AI1::AINumbi_adjustBuildings_result,
+				shared_ptr<Order>(new OrderCreate(teamNumber, x, y, typeNum,
+												  AI_NUMBI_BUILD_ORDER_UNITS_WORKING,
+												  AI_NUMBI_BUILD_ORDER_FLAG_RADIUS)));
 		}
-		return shared_ptr<Order>(new NullOrder);
+		return telemetry.returnedOrder(AITrace::AI1::AINumbi_adjustBuildings_result,
+									   shared_ptr<Order>(new NullOrder));
 	}
 	else
-		return shared_ptr<Order>(new NullOrder);
+		return telemetry.returnedOrder(AITrace::AI1::AINumbi_adjustBuildings_result,
+									   shared_ptr<Order>(new NullOrder));
 }
 
 std::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int workers)
 {
+	telemetry.set(AITrace::AI1::AINumbi_checkoutExpands_input_workers, workers);
+	telemetry.set(AITrace::AI1::AINumbi_checkoutExpands_input_numbers, numbers);
+	telemetry.count(AITrace::AI1::AINumbi_checkoutExpands_calls);
 
 	Building **myBuildings=team->myBuildings;
 	int ss=0;
@@ -211,10 +239,16 @@ std::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int work
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("swarm", 0, true);
 			int teamNumber=team->teamNumber;
-			return shared_ptr<Order>(new OrderCreate(teamNumber, x, y, typeNum, AI_NUMBI_BUILD_ORDER_UNITS_WORKING, AI_NUMBI_BUILD_ORDER_FLAG_RADIUS));
+			return telemetry.returnedOrder(
+				AITrace::AI1::AINumbi_checkoutExpands_result,
+				shared_ptr<Order>(new OrderCreate(teamNumber, x, y, typeNum,
+												  AI_NUMBI_BUILD_ORDER_UNITS_WORKING,
+												  AI_NUMBI_BUILD_ORDER_FLAG_RADIUS)));
 		}
-		return shared_ptr<Order>(new NullOrder);
+		return telemetry.returnedOrder(AITrace::AI1::AINumbi_checkoutExpands_result,
+									   shared_ptr<Order>(new NullOrder));
 	}
 	else
-		return shared_ptr<Order>(new NullOrder);
+		return telemetry.returnedOrder(AITrace::AI1::AINumbi_checkoutExpands_result,
+									   shared_ptr<Order>(new NullOrder));
 }

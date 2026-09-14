@@ -2,6 +2,7 @@
 // Copyright (C) 2026 The Globulation 2 Authors
 
 #pragma once
+#include "AITelemetry.h"
 
 #include "CortexTypes.h"
 #include "CortexNet.h"
@@ -188,84 +189,85 @@ namespace Cortex
 		friend class ::AICortex;
 
 	public:
-		/// Number of features in the decide() feature vector (the ML decision-net
-		/// input width). The single source of truth for the trace CSV columns and
-		/// the future inference path; see docs/AI/cortex/DECIDE_CONTRACT.md for the
-		/// fixed idx order. extractDecideFeatures fills exactly this many.
-		static const int NUM_DECIDE_FEATURES = 48;
+	  AITelemetry::Sink telemetry;
+	  /// Number of features in the decide() feature vector (the ML decision-net
+	  /// input width). The single source of truth for the trace CSV columns and
+	  /// the future inference path; see docs/AI/cortex/DECIDE_CONTRACT.md for the
+	  /// fixed idx order. extractDecideFeatures fills exactly this many.
+	  static const int NUM_DECIDE_FEATURES = 48;
 
-		CortexPolicy();
+	  CortexPolicy();
 
-		/// Decide the next action intent from the current observation. Scores
-		/// every candidate decision and returns the highest-scoring action (NoOp
-		/// when none wants to act). Both engine bindings share this.
-		///
-		/// When `trace != nullptr` it is filled with the per-cycle eligibility mask
-		/// and the winning class index (the ML training label) — a pure read-out of
-		/// the decision already made. Behaviour is byte-identical to the trace ==
-		/// nullptr path (the trace is determinism-neutral: no RNG, no orders, no
-		/// persisted state). See DecideTrace and docs/AI/cortex/DECIDE_CONTRACT.md.
-		CortexAction decide(const CortexObservation& obs, DecideTrace* trace = nullptr);
+	  /// Decide the next action intent from the current observation. Scores
+	  /// every candidate decision and returns the highest-scoring action (NoOp
+	  /// when none wants to act). Both engine bindings share this.
+	  ///
+	  /// When `trace != nullptr` it is filled with the per-cycle eligibility mask
+	  /// and the winning class index (the ML training label) — a pure read-out of
+	  /// the decision already made. Behaviour is byte-identical to the trace ==
+	  /// nullptr path (the trace is determinism-neutral: no RNG, no orders, no
+	  /// persisted state). See DecideTrace and docs/AI/cortex/DECIDE_CONTRACT.md.
+	  CortexAction decide(const CortexObservation &obs, DecideTrace *trace = nullptr);
 
-		/// War-flag management decision, evaluated EVERY decision cycle in PARALLEL
-		/// with decide()'s economy action — NOT as a competing candidate the economy
-		/// scorers could starve (nor vice versa). Runs the utility-argmax over only the
-		/// three war-flag scorers (Defense / RetireFlag / Offense) and returns the
-		/// winning flag action, or ACTION_NOOP when none wants to act this cycle. Their
-		/// SCORE_* bands are unchanged, so the combat-internal priority is preserved
-		/// exactly: serious-defense > blitz-offense > defense > retire > offense.
-		/// Split out of decide() so a busy economy never preempts a war-flag move; the
-		/// action layer drains the combat orders alongside the economy ones, exactly
-		/// like tuneWorkers() / wantWheatProtection(). The 19-class DECIDE_CONTRACT
-		/// trace/ML mask still EVALUATES these three (training continuity); only the
-		/// SELECTION moved here — decide() no longer acts on them.
-		CortexAction decideCombat(const CortexObservation& obs) const;
+	  /// War-flag management decision, evaluated EVERY decision cycle in PARALLEL
+	  /// with decide()'s economy action — NOT as a competing candidate the economy
+	  /// scorers could starve (nor vice versa). Runs the utility-argmax over only the
+	  /// three war-flag scorers (Defense / RetireFlag / Offense) and returns the
+	  /// winning flag action, or ACTION_NOOP when none wants to act this cycle. Their
+	  /// SCORE_* bands are unchanged, so the combat-internal priority is preserved
+	  /// exactly: serious-defense > blitz-offense > defense > retire > offense.
+	  /// Split out of decide() so a busy economy never preempts a war-flag move; the
+	  /// action layer drains the combat orders alongside the economy ones, exactly
+	  /// like tuneWorkers() / wantWheatProtection(). The 19-class DECIDE_CONTRACT
+	  /// trace/ML mask still EVALUATES these three (training continuity); only the
+	  /// SELECTION moved here — decide() no longer acts on them.
+	  CortexAction decideCombat(const CortexObservation &obs) const;
 
-		/// Fill `features` with the 48-element decision feature vector in the EXACT
-		/// idx order of docs/AI/cortex/DECIDE_CONTRACT.md. SINGLE SOURCE OF TRUTH:
-		/// the trace CSV columns and the future decision-net inference path both
-		/// reuse this. Pure function of the observation (raw colony state — no
-		/// derived judgment booleans); reuses computeFacts for the building counts
-		/// and the fillable/unfillable open-job partition.
-		static void extractDecideFeatures(const CortexObservation& obs,
-		                                   int features[NUM_DECIDE_FEATURES]);
+	  /// Fill `features` with the 48-element decision feature vector in the EXACT
+	  /// idx order of docs/AI/cortex/DECIDE_CONTRACT.md. SINGLE SOURCE OF TRUTH:
+	  /// the trace CSV columns and the future decision-net inference path both
+	  /// reuse this. Pure function of the observation (raw colony state — no
+	  /// derived judgment booleans); reuses computeFacts for the building counts
+	  /// and the fillable/unfillable open-job partition.
+	  static void extractDecideFeatures(const CortexObservation &obs,
+										int features[NUM_DECIDE_FEATURES]);
 
-		/// Worker-hauling tuning, evaluated EVERY decision cycle in PARALLEL with
-		/// decide()'s single primary action — NOT as a competing decision the
-		/// build/upgrade/offense scorers could starve or be delayed by. Returns an
-		/// ACTION_TUNE_WORKERS action setting each tracked swarm/inn/site's
-		/// maxUnitWorking, or ACTION_NOOP when nothing crosses a threshold this cycle.
-		/// Keeping existing buildings fed is independent of starting new ones: the
-		/// tune emits OrderModifyBuilding (a worker-count change), which need not
-		/// contend for the cycle's one build/upgrade slot — the action layer drains
-		/// both alongside each other, exactly like wantWheatProtection().
-		CortexAction tuneWorkers(const CortexObservation& obs) const;
+	  /// Worker-hauling tuning, evaluated EVERY decision cycle in PARALLEL with
+	  /// decide()'s single primary action — NOT as a competing decision the
+	  /// build/upgrade/offense scorers could starve or be delayed by. Returns an
+	  /// ACTION_TUNE_WORKERS action setting each tracked swarm/inn/site's
+	  /// maxUnitWorking, or ACTION_NOOP when nothing crosses a threshold this cycle.
+	  /// Keeping existing buildings fed is independent of starting new ones: the
+	  /// tune emits OrderModifyBuilding (a worker-count change), which need not
+	  /// contend for the cycle's one build/upgrade slot — the action layer drains
+	  /// both alongside each other, exactly like wantWheatProtection().
+	  CortexAction tuneWorkers(const CortexObservation &obs) const;
 
-		/// Wheat-forbidden upkeep decision, evaluated EVERY decision cycle in
-		/// PARALLEL with decide()'s single primary action — not as a competing
-		/// decision the build/upgrade scorers could starve. Painting the checkerboard
-		/// is area-paint (OrderAlterForbidden), not an OrderCreate, so it need not
-		/// contend for the cycle's one action slot. The policy still owns the gate:
-		/// true only when the colony is not starving (never wall off wheat while the
-		/// colony is dying) and the reconcile has real work (newly-revealed wheat to
-		/// forbid, or wheat gone/out of view to un-forbid). The open-margin N feeds
-		/// the executor from obs.wheatOpenMargin (the ML seam — a learned policy later
-		/// outputs it). The action layer (AICortex::enqueueWheatForbidden) rebuilds
-		/// the full ADD/DEL tile masks and emits the orders.
-		bool wantWheatProtection(const CortexObservation& obs) const;
+	  /// Wheat-forbidden upkeep decision, evaluated EVERY decision cycle in
+	  /// PARALLEL with decide()'s single primary action — not as a competing
+	  /// decision the build/upgrade scorers could starve. Painting the checkerboard
+	  /// is area-paint (OrderAlterForbidden), not an OrderCreate, so it need not
+	  /// contend for the cycle's one action slot. The policy still owns the gate:
+	  /// true only when the colony is not starving (never wall off wheat while the
+	  /// colony is dying) and the reconcile has real work (newly-revealed wheat to
+	  /// forbid, or wheat gone/out of view to un-forbid). The open-margin N feeds
+	  /// the executor from obs.wheatOpenMargin (the ML seam — a learned policy later
+	  /// outputs it). The action layer (AICortex::enqueueWheatForbidden) rebuilds
+	  /// the full ADD/DEL tile masks and emits the orders.
+	  bool wantWheatProtection(const CortexObservation &obs) const;
 
-		/// Wheat-blitz lift gate, evaluated EVERY decision cycle in PARALLEL with
-		/// decide() (alongside wantWheatProtection). True exactly when the wheat-blitz
-		/// is active: the colony is past wheat capacity and starving (foodSaturated)
-		/// with a committable army and a scouted target. When true the wheat executor
-		/// runs in lift-all mode (un-forbid the WHOLE field for a one-time harvest
-		/// burst to fuel the attack) instead of the steady-state checkerboard. This is
-		/// a deliberate strategic-mode override, NOT a change to the reconcile invariant
-		/// (which only retires paint when wheat is visibly depleted); normal protection
-		/// resumes once the famine ends. Mutually exclusive with wantWheatProtection
-		/// (which returns false while starving), and takes precedence when both could
-		/// apply, so the executor never double-emits.
-		bool wantWheatBlitzLift(const CortexObservation& obs) const;
+	  /// Wheat-blitz lift gate, evaluated EVERY decision cycle in PARALLEL with
+	  /// decide() (alongside wantWheatProtection). True exactly when the wheat-blitz
+	  /// is active: the colony is past wheat capacity and starving (foodSaturated)
+	  /// with a committable army and a scouted target. When true the wheat executor
+	  /// runs in lift-all mode (un-forbid the WHOLE field for a one-time harvest
+	  /// burst to fuel the attack) instead of the steady-state checkerboard. This is
+	  /// a deliberate strategic-mode override, NOT a change to the reconcile invariant
+	  /// (which only retires paint when wheat is visibly depleted); normal protection
+	  /// resumes once the famine ends. Mutually exclusive with wantWheatProtection
+	  /// (which returns false while starving), and takes precedence when both could
+	  /// apply, so the executor never double-emits.
+	  bool wantWheatBlitzLift(const CortexObservation &obs) const;
 
 	private:
 		/// Facts derived ONCE from the (const) observation at the top of decide() and

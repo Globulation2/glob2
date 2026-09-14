@@ -17,6 +17,11 @@ class Building;
 class AINumbi : public AIImplementation
 {
 public:
+  void captureTelemetry() override;
+  const std::vector<AITelemetry::Field> &telemetrySchema() const override
+  {
+	  return AITelemetry::schema(1);
+  }
 	AINumbi(Player *player);
 	AINumbi(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	~AINumbi();

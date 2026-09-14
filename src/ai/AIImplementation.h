@@ -10,6 +10,7 @@ The main method is std::shared_ptr<Order> getOrder() which return the order to b
 */
 
 #include "BuildingType.h"
+#include "AITelemetry.h"
 #include <memory>
 
 namespace GAGCore
@@ -56,6 +57,13 @@ Think if your AI is able to play with a human player?
 class AIImplementation
 {
 public:
+  AITelemetry::Sink telemetry;
+  virtual void captureTelemetry() {}
+  virtual Uint32 telemetrySchemaVersion() const { return 1; }
+  virtual const std::vector<AITelemetry::Field> &telemetrySchema() const
+  {
+	  return AITelemetry::schema(0);
+  }
 	AIImplementation(){}
 	virtual ~AIImplementation(){}
 	

@@ -320,6 +320,7 @@ void TeamStats::step(Team *team, bool reloaded)
 		(measurementHistory.empty() || measurementHistory.back().tick != measurements.tick))
 	{
 		measurementHistory.push_back(measurements);
+		AITelemetry::capture(team, true, getenv("GLOB2_TEAM_TIMELINE") != nullptr);
 		if (getenv("GLOB2_TEAM_TIMELINE"))
 			printMeasurements(team->teamNumber);
 	}
@@ -749,6 +750,10 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	else
 		needsMeasurementInitialization = true;
 
+	if (versionMinor >= FILE_FORMAT_VERSION_AI_TELEMETRY)
+		AITelemetry::load(stream, aiTelemetry);
+	else
+		aiTelemetry.clear();
 	stream->readLeaveSection();
 	return true;
 }
@@ -797,6 +802,7 @@ void TeamStats::save(GAGCore::OutputStream *stream)
 		stream->writeLeaveSection();
 	}
 
+	AITelemetry::save(stream, aiTelemetry);
 	stream->writeLeaveSection();
 }
 

@@ -7,6 +7,7 @@
 #include "Utilities.h"
 #include "Game.h"
 #include "Order.h"
+#include "TeamStat.h"
 #include <assert.h>
 #include <Stream.h>
 
@@ -86,11 +87,24 @@ std::shared_ptr<Order> AI::getOrder(bool paused)
 	if (paused || !player->team->isAlive)
 		return shared_ptr<Order>(new NullOrder());
 	assert(aiImplementation);
-	return aiImplementation->getOrder();
+	bindTelemetry();
+	aiImplementation->telemetry.tick = player->game->stepCounter;
+	aiImplementation->telemetry.count(AITelemetry::Polls);
+	auto order = aiImplementation->getOrder();
+	const auto type = order->getOrderType();
+	aiImplementation->telemetry.count(AITelemetry::OrderTypes + type);
+	aiImplementation->telemetry.count(type == ORDER_NULL ? AITelemetry::NullOrders
+														 : AITelemetry::Orders);
+	telemetrySeries->current.tick = player->game->stepCounter;
+	telemetrySeries->current.available = true;
+	return order;
 }
 
 bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
+	resumeTelemetry = true;
+	telemetrySeries.reset();
+	telemetryTeam = nullptr;
 	assert(player);
 	
 	if (aiImplementation)
@@ -176,4 +190,56 @@ void AI::save(GAGCore::OutputStream *stream)
 	
 	stream->write( "AI e",  4, "signatureEnd");
 	stream->writeLeaveSection();
+}
+
+void AI::bindTelemetry()
+{
+	if (telemetrySeries && telemetryTeam == player->team)
+		return;
+	Uint32 generation = 0;
+	for (int t = 0; t < player->game->mapHeader.getNumberOfTeams(); ++t)
+		if (player->game->teams[t])
+			for (auto &record : player->game->teams[t]->stats.aiTelemetry)
+				if (record->player == player->number)
+				{
+					generation = std::max(generation, record->generation + 1);
+					if (resumeTelemetry && record->active && t == player->team->teamNumber &&
+						record->implementation == implementationID &&
+						record->schemaVersion == aiImplementation->telemetrySchemaVersion() &&
+						record->fields == aiImplementation->telemetrySchema())
+						telemetrySeries = record;
+					else
+						record->active = false;
+				}
+	if (!telemetrySeries || telemetryTeam)
+	{
+		telemetrySeries = std::make_shared<AITelemetry::Series>();
+		auto &r = *telemetrySeries;
+		r.player = player->number;
+		r.implementation = implementationID;
+		r.generation = generation;
+		r.coverage = player->game->stepCounter;
+		r.playerName = player->name;
+		r.schemaVersion = aiImplementation->telemetrySchemaVersion();
+		r.fields = aiImplementation->telemetrySchema();
+		r.current.tick = r.coverage;
+		r.current.values.resize(r.fields.size());
+		for (unsigned i = 0; i < r.fields.size(); ++i)
+			if (r.fields[i].kind == AITelemetry::Counter)
+				r.current.values[i] = {0, r.coverage, true};
+		player->team->stats.aiTelemetry.push_back(telemetrySeries);
+	}
+	telemetryTeam = player->team;
+	resumeTelemetry = false;
+	aiImplementation->telemetry.series = telemetrySeries.get();
+	aiImplementation->telemetry.tick = player->game->stepCounter;
+}
+void AI::captureTelemetry()
+{
+	bindTelemetry();
+	aiImplementation->telemetry.tick = player->game->stepCounter;
+	// Initial/dormant AIs may have lazily initialized state. Never inspect it.
+	if (telemetrySeries->current.available)
+		aiImplementation->captureTelemetry();
+	telemetrySeries->current.tick = player->game->stepCounter;
 }

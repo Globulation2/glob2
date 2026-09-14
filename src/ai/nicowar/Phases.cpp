@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "AITelemetryFields.h"
 #include "AINicowar.h"
 #include "Utilities.h"
 #include "Game.h"
@@ -18,6 +19,7 @@ using namespace boost::logic;
 
 void NewNicowar::check_phases(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_check_phases_calls);
 	TeamStat* stat=echo.player->team->stats.getLatestStat();
 
 	///Qualifications for the growth phase:

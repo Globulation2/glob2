@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2005 Eli Dupree
 
+#include "AITelemetryFields.h"
 #include "AIWarrush.h"
 #include "AIWarrushTuning.h"
 #include "Building.h"
@@ -105,18 +106,38 @@ void AIWarrush::save(GAGCore::OutputStream *stream)
 
 int AIWarrush::numberOfUnitsWithSkillGreaterThanValue(const int skill, const int value)const
 {
-	return countUnitsIf(team, [skill, value](Unit *u) { return u->performance[skill] > value; });
+	telemetry.set(AITrace::AI3::AIWarrush_numberOfUnitsWithSkillGreaterThanValue_input_value,
+				  value);
+	telemetry.set(AITrace::AI3::AIWarrush_numberOfUnitsWithSkillGreaterThanValue_input_skill,
+				  skill);
+	telemetry.count(AITrace::AI3::AIWarrush_numberOfUnitsWithSkillGreaterThanValue_calls);
+	return telemetry.returnedInt(
+		AITrace::AI3::AIWarrush_numberOfUnitsWithSkillGreaterThanValue_result,
+		countUnitsIf(team, [skill, value](Unit *u) { return u->performance[skill] > value; }));
 }
 
 int AIWarrush::numberOfUnitsWithSkillEqualToValue(const int skill, const int value)const
 {
-	return countUnitsIf(team, [skill, value](Unit *u) { return u->performance[skill] == value; });
+	telemetry.set(AITrace::AI3::AIWarrush_numberOfUnitsWithSkillEqualToValue_input_value, value);
+	telemetry.set(AITrace::AI3::AIWarrush_numberOfUnitsWithSkillEqualToValue_input_skill, skill);
+	telemetry.count(AITrace::AI3::AIWarrush_numberOfUnitsWithSkillEqualToValue_calls);
+	return telemetry.returnedInt(
+		AITrace::AI3::AIWarrush_numberOfUnitsWithSkillEqualToValue_result,
+		countUnitsIf(team, [skill, value](Unit *u) { return u->performance[skill] == value; }));
 }
 
 bool AIWarrush::isAnyUnitWithLessThanOneThirdFood()const
 {
+	telemetry.count(AITrace::AI3::AIWarrush_isAnyUnitWithLessThanOneThirdFood_calls);
 	//Yeah, it's a half, not a third. Weird huh? :P
-	return findUnitIf(team, [](Unit *u) { return u->hungry < (Unit::HUNGRY_MAX/AI_WARRUSH_HUNGRY_THRESHOLD_DIVISOR); }) != nullptr;
+	return telemetry.returnedBool(
+		AITrace::AI3::AIWarrush_isAnyUnitWithLessThanOneThirdFood_result,
+		AITrace::AI3::AIWarrush_isAnyUnitWithLessThanOneThirdFood_true,
+		findUnitIf(team,
+				   [](Unit *u)
+				   {
+					   return u->hungry < (Unit::HUNGRY_MAX / AI_WARRUSH_HUNGRY_THRESHOLD_DIVISOR);
+				   }) != nullptr);
 }
 
 Building *AIWarrush::getSwarmWithoutSettings(const int workerRatio, const int explorerRatio, const int warriorRatio)const
@@ -164,50 +185,84 @@ Building *AIWarrush::getSwarmAtRandom()const
 
 bool AIWarrush::allOfBuildingTypeAreCompleted(Sint32 shortTypeNum)const
 {
-	return findBuildingIf(team, [shortTypeNum](Building *b) {
-		return b->type->shortTypeNum == shortTypeNum
-			&& (b->constructionResultState != Building::NO_CONSTRUCTION
-				|| b->buildingState == Building::DEAD);
-	}) == nullptr;
+	telemetry.set(AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_input_shortTypeNum,
+				  shortTypeNum);
+	telemetry.count(AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_calls);
+	return telemetry.returnedBool(AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_result,
+								  AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_true,
+								  findBuildingIf(team,
+												 [shortTypeNum](Building *b)
+												 {
+													 return b->type->shortTypeNum == shortTypeNum &&
+															(b->constructionResultState !=
+																 Building::NO_CONSTRUCTION ||
+															 b->buildingState == Building::DEAD);
+												 }) == nullptr);
 }
 
 bool AIWarrush::allOfBuildingTypeAreFull(Sint32 shortTypeNum)const
 {
-	return findBuildingIf(team, [shortTypeNum](Building *b) {
-		return b->type->shortTypeNum == shortTypeNum
-			&& b->unitsInside.size() < (size_t)b->maxUnitInside;
-	}) == nullptr;
+	telemetry.set(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_input_shortTypeNum,
+				  shortTypeNum);
+	telemetry.count(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_calls);
+	return telemetry.returnedBool(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_result,
+								  AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_true,
+								  findBuildingIf(team,
+												 [shortTypeNum](Building *b)
+												 {
+													 return b->type->shortTypeNum == shortTypeNum &&
+															b->unitsInside.size() <
+																(size_t)b->maxUnitInside;
+												 }) == nullptr);
 }
 
 int AIWarrush::numberOfBuildingsOfType(Sint32 shortTypeNum)const
 {
-	return countBuildingsIf(team, [shortTypeNum](Building *b) {
-		return b->shortTypeNum == shortTypeNum;
-	});
+	telemetry.set(AITrace::AI3::AIWarrush_numberOfBuildingsOfType_input_shortTypeNum, shortTypeNum);
+	telemetry.count(AITrace::AI3::AIWarrush_numberOfBuildingsOfType_calls);
+	return telemetry.returnedInt(AITrace::AI3::AIWarrush_numberOfBuildingsOfType_result,
+								 countBuildingsIf(team, [shortTypeNum](Building *b)
+												  { return b->shortTypeNum == shortTypeNum; }));
 }
 
 
 int AIWarrush::numberOfExtraBuildings()const
 {
-	return countBuildingsIf(team, [](Building *b) {
-		return b->shortTypeNum == IntBuildingType::HEAL_BUILDING
-			|| b->shortTypeNum == IntBuildingType::WALKSPEED_BUILDING
-			|| b->shortTypeNum == IntBuildingType::SWIMSPEED_BUILDING
-			|| b->shortTypeNum == IntBuildingType::SCIENCE_BUILDING
-			|| b->shortTypeNum == IntBuildingType::DEFENSE_BUILDING;
-	});
+	telemetry.count(AITrace::AI3::AIWarrush_numberOfExtraBuildings_calls);
+	return telemetry.returnedInt(
+		AITrace::AI3::AIWarrush_numberOfExtraBuildings_result,
+		countBuildingsIf(team,
+						 [](Building *b)
+						 {
+							 return b->shortTypeNum == IntBuildingType::HEAL_BUILDING ||
+									b->shortTypeNum == IntBuildingType::WALKSPEED_BUILDING ||
+									b->shortTypeNum == IntBuildingType::SWIMSPEED_BUILDING ||
+									b->shortTypeNum == IntBuildingType::SCIENCE_BUILDING ||
+									b->shortTypeNum == IntBuildingType::DEFENSE_BUILDING;
+						 }));
 }
 
 bool AIWarrush::allOfBuildingTypeAreFullyWorked(Sint32 shortTypeNum)const
 {
-	return findBuildingIf(team, [shortTypeNum](Building *b) {
-		return b->shortTypeNum == shortTypeNum
-			&& b->unitsWorking.size() != (size_t)b->maxUnitWorking;
-	}) == nullptr;
+	telemetry.set(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFullyWorked_input_shortTypeNum,
+				  shortTypeNum);
+	telemetry.count(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFullyWorked_calls);
+	return telemetry.returnedBool(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFullyWorked_result,
+								  AITrace::AI3::AIWarrush_allOfBuildingTypeAreFullyWorked_true,
+								  findBuildingIf(team,
+												 [shortTypeNum](Building *b)
+												 {
+													 return b->shortTypeNum == shortTypeNum &&
+															b->unitsWorking.size() !=
+																(size_t)b->maxUnitWorking;
+												 }) == nullptr);
 }
 
 bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 {
+	telemetry.set(AITrace::AI3::AIWarrush_percentageOfBuildingsAreFullyWorked_input_percentage,
+				  percentage);
+	telemetry.count(AITrace::AI3::AIWarrush_percentageOfBuildingsAreFullyWorked_calls);
 	Building **myBuildings=team->myBuildings;
 	int num_buildings = 0;
 	int num_worked_buildings = 0;
@@ -235,7 +290,10 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 		}
 	}
 	if(verbose)std::cout << ": " << num_worked_buildings << " worked out of " << num_buildings << "\n";
-	return num_worked_buildings * 100 >= num_buildings * percentage;
+	return telemetry.returnedBool(
+		AITrace::AI3::AIWarrush_percentageOfBuildingsAreFullyWorked_result,
+		AITrace::AI3::AIWarrush_percentageOfBuildingsAreFullyWorked_true,
+		num_worked_buildings * 100 >= num_buildings * percentage);
 }
 
 std::shared_ptr<Order> AIWarrush::getOrder(void)
@@ -362,6 +420,7 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 
 std::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 {
+	telemetry.count(AITrace::AI3::AIWarrush_pruneGuardAreas_calls);
 	//If we have any guard areas that aren't adjacent to an enemy building, we remove them.
 	BrushAccumulator acc;
 	for(int x=0;x<map->w;x++)
@@ -396,13 +455,18 @@ std::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 	}
 	if(acc.getApplicationCount())
 	{
-		return shared_ptr<Order>(new OrderAlterGuardArea(team->teamNumber,BrushTool::MODE_DEL,&acc,map));
+		return telemetry.returnedOrder(AITrace::AI3::AIWarrush_pruneGuardAreas_result,
+									   shared_ptr<Order>(new OrderAlterGuardArea(
+										   team->teamNumber, BrushTool::MODE_DEL, &acc, map)));
 	}
-	else return shared_ptr<Order>(new NullOrder);
+	else
+		return telemetry.returnedOrder(AITrace::AI3::AIWarrush_pruneGuardAreas_result,
+									   shared_ptr<Order>(new NullOrder));
 }
 	
 std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 {
+	telemetry.count(AITrace::AI3::AIWarrush_placeGuardAreas_calls);
 	BrushAccumulator guard_add_acc;
 	//Place guard area on an enemy building if there is one...
 	for(int i=0;i<Team::MAX_COUNT;i++)
@@ -449,13 +513,19 @@ std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 	
 	if(guard_add_acc.getApplicationCount())
 	{
-		return shared_ptr<Order>(new OrderAlterGuardArea(team->teamNumber,BrushTool::MODE_ADD,&guard_add_acc, map));
+		return telemetry.returnedOrder(
+			AITrace::AI3::AIWarrush_placeGuardAreas_result,
+			shared_ptr<Order>(new OrderAlterGuardArea(team->teamNumber, BrushTool::MODE_ADD,
+													  &guard_add_acc, map)));
 	}
-	else return shared_ptr<Order>(new NullOrder);
+	else
+		return telemetry.returnedOrder(AITrace::AI3::AIWarrush_placeGuardAreas_result,
+									   shared_ptr<Order>(new NullOrder));
 }
 	
 std::shared_ptr<Order> AIWarrush::farm()
 {
+	telemetry.count(AITrace::AI3::AIWarrush_farm_calls);
 	// Algorithm initially stolen from Nicowar.
 	DynamicGradientMapArray water_gradient(map->w,map->h);
 	for(int x=0;x<map->w;x++)
@@ -579,21 +649,33 @@ std::shared_ptr<Order> AIWarrush::farm()
 	}
 
 	if(del_acc.getApplicationCount()>0)
-		return shared_ptr<Order>(new OrderAlterForbidden(team->teamNumber, BrushTool::MODE_DEL, &del_acc, map));
+		return telemetry.returnedOrder(AITrace::AI3::AIWarrush_farm_result,
+									   shared_ptr<Order>(new OrderAlterForbidden(
+										   team->teamNumber, BrushTool::MODE_DEL, &del_acc, map)));
 	if(add_acc.getApplicationCount()>0)
-		return shared_ptr<Order>(new OrderAlterForbidden(team->teamNumber, BrushTool::MODE_ADD, &add_acc, map));
+		return telemetry.returnedOrder(AITrace::AI3::AIWarrush_farm_result,
+									   shared_ptr<Order>(new OrderAlterForbidden(
+										   team->teamNumber, BrushTool::MODE_ADD, &add_acc, map)));
 	if(clr_del_acc.getApplicationCount()>0)
-		return shared_ptr<Order>(new OrderAlterClearArea(team->teamNumber, BrushTool::MODE_DEL, &clr_del_acc, map));
+		return telemetry.returnedOrder(
+			AITrace::AI3::AIWarrush_farm_result,
+			shared_ptr<Order>(
+				new OrderAlterClearArea(team->teamNumber, BrushTool::MODE_DEL, &clr_del_acc, map)));
 	if(clr_add_acc.getApplicationCount()>0)
-		return shared_ptr<Order>(new OrderAlterClearArea(team->teamNumber, BrushTool::MODE_ADD, &clr_add_acc, map));
+		return telemetry.returnedOrder(
+			AITrace::AI3::AIWarrush_farm_result,
+			shared_ptr<Order>(
+				new OrderAlterClearArea(team->teamNumber, BrushTool::MODE_ADD, &clr_add_acc, map)));
 
 	//nothing to do...
-	return shared_ptr<Order>(new NullOrder());
+	return telemetry.returnedOrder(AITrace::AI3::AIWarrush_farm_result,
+								   shared_ptr<Order>(new NullOrder()));
 }
 
 //Simple hack to place explore flags on opponents' starting swarms.
 std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 {
+	telemetry.count(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_calls);
 	if(verbose)std::cout << "looking for swarms:\n";
 	for(int j=0;j<Building::MAX_COUNT;j++)
 	{
@@ -601,7 +683,9 @@ std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 		if((b)&&(b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING)&&(b->constructionResultState == Building::NO_CONSTRUCTION))
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
-			return shared_ptr<Order>(new OrderCreate(team->teamNumber, b->posX, b->posY, typeNum, 1, 1));
+			return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
+										   shared_ptr<Order>(new OrderCreate(
+											   team->teamNumber, b->posX, b->posY, typeNum, 1, 1)));
 		}
 	}
 	if(verbose)std::cout << "No swarms found\n";
@@ -612,7 +696,9 @@ std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 		if(b)
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
-			return shared_ptr<Order>(new OrderCreate(team->teamNumber, b->posX, b->posY, typeNum, 1, 1));
+			return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
+										   shared_ptr<Order>(new OrderCreate(
+											   team->teamNumber, b->posX, b->posY, typeNum, 1, 1)));
 		}
 	}
 	if(verbose)std::cout << "No buildings found\n";
@@ -623,12 +709,15 @@ std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 		if(u)
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
-			return shared_ptr<Order>(new OrderCreate(team->teamNumber, u->posX, u->posY, typeNum, 1, 1));
+			return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
+										   shared_ptr<Order>(new OrderCreate(
+											   team->teamNumber, u->posX, u->posY, typeNum, 1, 1)));
 		}
 	}
 	//what, enemy has no buildings or units at the beginning of the game? o_O O_o o_O
 	if(verbose)std::cout << "No buildings found, no units found o_O\n";
-	return shared_ptr<Order>(new NullOrder);
+	return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
+								   shared_ptr<Order>(new NullOrder));
 }
 
 bool AIWarrush::locationIsAvailableForBuilding(int x, int y, int width, int height)
@@ -693,7 +782,9 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 
 std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 {
-	
+	telemetry.set(AITrace::AI3::AIWarrush_buildBuildingOfType_input_shortTypeNum, shortTypeNum);
+	telemetry.count(AITrace::AI3::AIWarrush_buildBuildingOfType_calls);
+
 	// set delay
 	// now doing this first in order to avoid repeated failed builds
 	// WARNING THIS IS A HACK FIX
@@ -740,7 +831,8 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 	if (!swarm)
 	{
 		if(verbose)std::cout << "No swarm found!\n";
-		return shared_ptr<Order>(new NullOrder);
+		return telemetry.returnedOrder(AITrace::AI3::AIWarrush_buildBuildingOfType_result,
+									   shared_ptr<Order>(new NullOrder));
 	}
 	Sint32 destination_x,destination_y;
 	{
@@ -767,6 +859,9 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 		
 	// create and return order
 	Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(shortTypeNum), 0, true);
-	return shared_ptr<Order>(new OrderCreate(team->teamNumber, destination_x, destination_y, typeNum, 1, 1));
+	return telemetry.returnedOrder(
+		AITrace::AI3::AIWarrush_buildBuildingOfType_result,
+		shared_ptr<Order>(
+			new OrderCreate(team->teamNumber, destination_x, destination_y, typeNum, 1, 1)));
 }
 

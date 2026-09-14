@@ -277,3 +277,7 @@ Player types that trigger AI loading: any `BasePlayer::type >= P_AI (5)`. The pl
 The existing `GLOB2_TEAM_TIMELINE` option also exports timestamped
 [gameplay measurements](gameplay-statistics.md), retained measurement history and
 an exact final snapshot. Legacy timeline records keep their existing formats.
+
+AI controller readouts use the same option; see [AI telemetry](ai-telemetry.md).
+They identify individual players and controller generations. Replay playback does
+not reconstruct internal AI decisions from recorded orders.

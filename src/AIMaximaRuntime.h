@@ -627,7 +627,10 @@ namespace SearchTools
 
 class Context
 {
-public:
+  public:
+	AITelemetry::Sink telemetry;
+
+  public:
 	explicit Context(Player* player);
 	std::shared_ptr<Order> getOrder(RuntimeAI& ai);
 	unsigned add_building_order(Construction::BuildingOrder*);

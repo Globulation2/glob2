@@ -8,6 +8,7 @@
 #include "Ressource.h"
 
 #include <vector>
+#include "AITelemetry.h"
 
 class Map;
 
@@ -182,6 +183,7 @@ class Team;
 class TeamStats
 {
 public:
+  std::vector<std::shared_ptr<AITelemetry::Series>> aiTelemetry;
   GameplayMeasurements measurements;
   Uint32 coverageStartTick = 0;
   bool needsMeasurementInitialization = false;

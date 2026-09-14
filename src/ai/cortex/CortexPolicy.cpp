@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "AITelemetryFields.h"
 #include "CortexPolicy.h"
 #include "CortexTuning.h"
 
@@ -326,6 +327,94 @@ namespace Cortex
 		updateExpandStreak(obs);
 
 		const DecideFacts f = computeFacts(obs);
+		telemetry.set(AITrace::AI6::observation_version, obs.version);
+		telemetry.set(AITrace::AI6::observation_valid, obs.valid);
+		telemetry.set(AITrace::AI6::observation_tick, obs.tick);
+		telemetry.set(AITrace::AI6::observation_totalUnit, obs.totalUnit);
+		telemetry.set(AITrace::AI6::observation_workers, obs.workers);
+		telemetry.set(AITrace::AI6::observation_explorers, obs.explorers);
+		telemetry.set(AITrace::AI6::observation_warriors, obs.warriors);
+		telemetry.set(AITrace::AI6::observation_freeWorkers, obs.freeWorkers);
+		telemetry.set(AITrace::AI6::observation_totalFree, obs.totalFree);
+		telemetry.set(AITrace::AI6::observation_totalNeeded, obs.totalNeeded);
+		telemetry.set(AITrace::AI6::observation_totalBuilding, obs.totalBuilding);
+		telemetry.set(AITrace::AI6::observation_feedCapacity, obs.feedCapacity);
+		telemetry.set(AITrace::AI6::observation_starvingUnits, obs.starvingUnits);
+		telemetry.set(AITrace::AI6::observation_needFood, obs.needFood);
+		telemetry.set(AITrace::AI6::observation_needFoodCritical, obs.needFoodCritical);
+		telemetry.set(AITrace::AI6::observation_needFoodNoInns, obs.needFoodNoInns);
+		telemetry.set(AITrace::AI6::observation_needHeal, obs.needHeal);
+		telemetry.set(AITrace::AI6::observation_prestige, obs.prestige);
+		telemetry.set(AITrace::AI6::observation_swarmsProducing, obs.swarmsProducing);
+		telemetry.set(AITrace::AI6::observation_maxBuildLevel, obs.maxBuildLevel);
+		telemetry.set(AITrace::AI6::observation_warFlagsActive, obs.warFlagsActive);
+		telemetry.set(AITrace::AI6::observation_enemyUnitsNearFlag, obs.enemyUnitsNearFlag);
+		telemetry.set(AITrace::AI6::observation_unitsUnderAttack, obs.unitsUnderAttack);
+		telemetry.set(AITrace::AI6::observation_buildingsUnderAttack, obs.buildingsUnderAttack);
+		telemetry.set(AITrace::AI6::observation_freeWarriors, obs.freeWarriors);
+		telemetry.set(AITrace::AI6::observation_flagPosture, obs.flagPosture);
+		telemetry.set(AITrace::AI6::observation_offenseHoldUntil, obs.offenseHoldUntil);
+		telemetry.set(AITrace::AI6::observation_wheatOpenMargin, obs.wheatOpenMargin);
+		telemetry.set(AITrace::AI6::observation_wheatProtectAddCount, obs.wheatProtectAddCount);
+		telemetry.set(AITrace::AI6::observation_wheatProtectDelCount, obs.wheatProtectDelCount);
+		telemetry.set(AITrace::AI6::observation_swarmsProducingExplorer,
+					  obs.swarmsProducingExplorer);
+		telemetry.set(AITrace::AI6::observation_swarmsProducingWarrior, obs.swarmsProducingWarrior);
+		telemetry.set(AITrace::AI6::observation_swarmsProducingWorker, obs.swarmsProducingWorker);
+		telemetry.set(AITrace::AI6::observation_swarmCount, obs.swarmCount);
+		telemetry.set(AITrace::AI6::observation_innCount, obs.innCount);
+		telemetry.set(AITrace::AI6::observation_siteCount, obs.siteCount);
+		telemetry.set(AITrace::AI6::observation_fruitOnMap, obs.fruitOnMap);
+		telemetry.set(AITrace::AI6::observation_totalPrestige, obs.totalPrestige);
+		telemetry.set(AITrace::AI6::observation_algaeDiscovered, obs.algaeDiscovered);
+		telemetry.set(AITrace::AI6::observation_swimLandReach, obs.swimLandReach);
+		telemetry.set(AITrace::AI6::observation_swimWaterReach, obs.swimWaterReach);
+		telemetry.set(AITrace::AI6::observation_algaeReachable, obs.algaeReachable);
+		telemetry.set(AITrace::AI6::observation_enemyWarriorLevelVisible,
+					  obs.enemyWarriorLevelVisible);
+		telemetry.set(AITrace::AI6::observation_enemyWarriorLevelLatched,
+					  obs.enemyWarriorLevelLatched);
+		telemetry.set(AITrace::AI6::observation_forwardInnUnderway, obs.forwardInnUnderway);
+		telemetry.set(AITrace::AI6::observation_forwardHealUnderway, obs.forwardHealUnderway);
+		telemetry.set(AITrace::AI6::observation_rangeGateWaived, obs.rangeGateWaived);
+		telemetry.set(AITrace::AI6::observation_swimWarriors, obs.swimWarriors);
+		telemetry.set(AITrace::AI6::observation_campaignAmphibious, obs.campaignAmphibious);
+		telemetry.set(AITrace::AI6::observation_campaignLandDist, obs.campaignLandDist);
+		telemetry.set(AITrace::AI6::observation_campaignSwimDist, obs.campaignSwimDist);
+		telemetry.set(AITrace::AI6::observation_landingZoneValid, obs.landingZoneValid);
+		telemetry.set(AITrace::AI6::observation_landingZoneX, obs.landingZoneX);
+		telemetry.set(AITrace::AI6::observation_landingZoneY, obs.landingZoneY);
+		telemetry.set(AITrace::AI6::observation_forwardRallyValid, obs.forwardRallyValid);
+		telemetry.set(AITrace::AI6::observation_forwardRallyX, obs.forwardRallyX);
+		telemetry.set(AITrace::AI6::observation_forwardRallyY, obs.forwardRallyY);
+		telemetry.set(AITrace::AI6::observation_enemyCount, obs.enemyCount);
+		telemetry.set(AITrace::AI6::facts_inns, f.inns);
+		telemetry.set(AITrace::AI6::facts_innSites, f.innSites);
+		telemetry.set(AITrace::AI6::facts_swarms, f.swarms);
+		telemetry.set(AITrace::AI6::facts_swarmSites, f.swarmSites);
+		telemetry.set(AITrace::AI6::facts_barracks, f.barracks);
+		telemetry.set(AITrace::AI6::facts_barracksSites, f.barracksSites);
+		telemetry.set(AITrace::AI6::facts_school, f.school);
+		telemetry.set(AITrace::AI6::facts_schoolSites, f.schoolSites);
+		telemetry.set(AITrace::AI6::facts_heal, f.heal);
+		telemetry.set(AITrace::AI6::facts_healSites, f.healSites);
+		telemetry.set(AITrace::AI6::facts_race, f.race);
+		telemetry.set(AITrace::AI6::facts_raceSites, f.raceSites);
+		telemetry.set(AITrace::AI6::facts_warriors, f.warriors);
+		telemetry.set(AITrace::AI6::facts_starving, f.starving);
+		telemetry.set(AITrace::AI6::facts_hungry, f.hungry);
+		telemetry.set(AITrace::AI6::facts_combatPhase, f.combatPhase);
+		telemetry.set(AITrace::AI6::facts_economyEstablished, f.economyEstablished);
+		telemetry.set(AITrace::AI6::facts_foodSaturated, f.foodSaturated);
+		telemetry.set(AITrace::AI6::facts_canExpand, f.canExpand);
+		telemetry.set(AITrace::AI6::facts_growWorker, f.growWorker);
+		telemetry.set(AITrace::AI6::facts_growExplorer, f.growExplorer);
+		telemetry.set(AITrace::AI6::facts_growWarrior, f.growWarrior);
+		telemetry.set(AITrace::AI6::facts_panic, f.panic);
+		telemetry.set(AITrace::AI6::facts_workersNeeded, f.workersNeeded);
+		telemetry.set(AITrace::AI6::facts_fillableNeeded, f.fillableNeeded);
+		telemetry.set(AITrace::AI6::facts_unfillableNeeded, f.unfillableNeeded);
+		telemetry.count(AITrace::AI6::economy_evaluations);
 
 		// Feasibility gates (see CortexGate): each bit evaluated ONCE per cycle
 		// from the shared facts, then applied declaratively per candidate via
@@ -416,6 +505,7 @@ namespace Cortex
 		for (int k = 0; k < n; k++)
 		{
 			const ScoredAction& c = candidates[k];
+			telemetry.set(AITrace::AI6::economy_score_0 + k, c.score);
 			// Feasibility veto: a candidate whose required gate failed this cycle
 			// is exactly a decline — excluded from selection AND from the mask,
 			// identical to its scorer returning cortexDecline().
@@ -438,6 +528,10 @@ namespace Cortex
 				}
 			}
 		}
+		telemetry.set(AITrace::AI6::economy_hand_choice, bestIndex);
+		telemetry.set(AITrace::AI6::economy_eligible_mask, eligibleMask);
+		telemetry.set(AITrace::AI6::economy_failed_gates, failedGates);
+		telemetry.set(AITrace::AI6::economy_selected_score, best.score);
 		if (trace)
 		{
 			// The trace ALWAYS reflects the HAND rule (the BC training label): mask =
@@ -465,6 +559,7 @@ namespace Cortex
 			// decideCombat()'s parallel pass, so the net must not pick them here either
 			// (else the flag action double-emits with the combat pass this cycle).
 			const int k = decisionNet_.scoreDecision(features, economyMask);
+			telemetry.set(AITrace::AI6::economy_ml_choice, k);
 			if (k >= 0)
 				return candidates[k].action;
 			return makeNoOpAction(); // nothing eligible — same NoOp as the hand path
@@ -495,9 +590,13 @@ namespace Cortex
 		};
 		ScoredAction best{ SCORE_NONE, makeNoOpAction() };
 		const int n = static_cast<int>(sizeof(combat) / sizeof(combat[0]));
+		telemetry.count(AITrace::AI6::combat_evaluations);
+		for (int k = 0; k < n; ++k)
+			telemetry.set(AITrace::AI6::combat_score_0 + k, combat[k].score);
 		for (int k = 0; k < n; k++)
 			if (combat[k].score > best.score) // strict: earlier candidate wins ties
 				best = combat[k];
+		telemetry.set(AITrace::AI6::combat_selected_score, best.score);
 		return best.action;
 	}
 

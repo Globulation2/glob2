@@ -24,6 +24,10 @@
 #include "ReplayReader.h"
 #include "OrderMessages.h"
 #include "Order.h"
+#include "Player.h"
+#include "Utilities.h"
+#include "AIImplementation.h"
+#include <set>
 #include "Toolkit.h"
 #include "StringTable.h"
 #include <SDL_image.h>
@@ -658,7 +662,7 @@ static void measurementReplayBoundaries()
 	require(REPLAY_MINIMUM_VERSION_MINOR == 99 && NET_PROTOCOL_VERSION == 29 &&
 				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 29,
 			"diagnostic save fields preserve replay floor and network gates");
-	for (int version : {98, 99, 100, 101, 102})
+	for (int version : {98, 99, 100, 101, 102, 103})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);
@@ -710,6 +714,201 @@ static void measurementContinuation()
 	for (int t = 0; t < 2; ++t)
 		require(w.game.teams[t]->stats.measurements == loaded->game.teams[t]->stats.measurements,
 				"projectile and pending death continuation totals match");
+}
+
+static void aiTelemetryContinuation(const char *path)
+{
+	FILE *file = std::fopen(path, "rb");
+	require(file != nullptr, "AI continuation fixture opens");
+	GAGCore::BinaryInputStream input(new GAGCore::FileStreamBackend(file));
+	GameGUI gui;
+	require(gui.game.load(&input), "all-AI initial state loads");
+	auto step = [](Game &g)
+	{
+		for (int p = 0; p < g.gameHeader.getNumberOfPlayers(); ++p)
+			if (g.players[p] && g.players[p]->ai)
+			{
+				auto order = g.players[p]->ai->getOrder(false);
+				order->sender = p;
+				g.executeOrder(order, p);
+			}
+		g.syncStep(0);
+	};
+	auto checks = [](Game &g)
+	{
+		std::vector<Uint32> c, b, u;
+		g.checkSum(&c, &b, &u, true);
+		c.erase(c.begin());
+		c.insert(c.end(), b.begin(), b.end());
+		c.insert(c.end(), u.begin(), u.end());
+		return c;
+	};
+	for (int t = 0; t < 500; ++t)
+		step(gui.game);
+	auto loaded = roundTrip(gui.game);
+	// Legacy controllers deliberately rebuild/reset some unsaved internal state.
+    // Compare two continuations of the same saved state, not different AI states.
+    auto reference = roundTrip(gui.game);
+    const auto random = syncRandEngine();
+	std::vector<std::vector<Uint32>> expected;
+	std::vector<std::vector<AITelemetry::Sample>> samples;
+	for (int t = 0; t < 700; ++t)
+	{
+		step(reference->game);
+		expected.push_back(checks(reference->game));
+		std::vector<AITelemetry::Sample> row;
+		for (int p = 0; p < reference->game.gameHeader.getNumberOfPlayers(); ++p)
+			if (reference->game.players[p]->ai)
+				row.push_back(reference->game.players[p]->ai->telemetrySeries->current);
+		samples.push_back(std::move(row));
+	}
+	syncRandEngine() = random;
+	for (int t = 0; t < 700; ++t)
+	{
+		step(loaded->game);
+		if (checks(loaded->game) != expected[t])
+		{
+			std::fprintf(stderr, "AI continuation simulation differs at tick %u\n",
+						 loaded->game.stepCounter);
+			std::exit(1);
+		}
+		unsigned ai = 0;
+		for (int p = 0; p < loaded->game.gameHeader.getNumberOfPlayers(); ++p)
+			if (loaded->game.players[p]->ai)
+			{
+				const auto &actual = loaded->game.players[p]->ai->telemetrySeries->current;
+				const auto &want = samples[t][ai++];
+				if (actual != want)
+				{
+					const auto &series = *loaded->game.players[p]->ai->telemetrySeries;
+					for (unsigned f = 0; f < actual.values.size(); ++f)
+						if (actual.values[f] != want.values[f])
+							std::fprintf(stderr, "AI %d telemetry %s differs at tick %u\n",
+										 series.implementation, series.fields[f].name.c_str(),
+										 actual.tick);
+					std::exit(1);
+				}
+			}
+	}
+	for (int p = 0; p < reference->game.gameHeader.getNumberOfPlayers(); ++p)
+		if (reference->game.players[p]->ai)
+			require(reference->game.players[p]->ai->telemetrySeries->history ==
+						loaded->game.players[p]->ai->telemetrySeries->history,
+					"all-AI sampled history continues across saves");
+	std::puts("PASS all-AI repeated load continuation: 700 ticks of simulation components, current telemetry and "
+			  "retained history");
+}
+
+static void aiTelemetryScenarios()
+{
+	using namespace AITelemetry;
+	// Every controller exposes an independent, self-describing schema.
+	TeamStatsMeasurementFixture w;
+	auto &g = w.game;
+	g.gameHeader.setNumberOfPlayers(2);
+	for (int p = 0; p < 2; ++p)
+	{
+		g.gameHeader.getBasePlayer(p) =
+			BasePlayer(p, "same AI", 0, BasePlayer::playerTypeFromImplementationID(AI::NONE));
+		g.players[p] = new Player(p, "same AI", g.teams[0],
+								  BasePlayer::playerTypeFromImplementationID(AI::NONE));
+		g.players[p]->ai->bindTelemetry();
+	}
+	for (int i = 0; i < AI::SIZE; ++i)
+	{
+		AI controller(static_cast<AI::ImplementationID>(i), g.players[0]);
+		require(controller.aiImplementation->telemetrySchema() == schema(i),
+				"every AI publishes its schema through the standard interface");
+		require(schema(i).size() >= Specific, "common fields exist for every AI");
+		std::set<std::string> names;
+		for (const auto &f : schema(i))
+			require(names.insert(f.name).second, "schema names are unique");
+	}
+	auto a = g.players[0]->ai->telemetrySeries, b = g.players[1]->ai->telemetrySeries;
+	require(a != b && a->player == 0 && b->player == 1,
+			"same AI and team retain distinct player series");
+	auto checksum = g.checkSum(nullptr, nullptr, nullptr);
+	g.players[0]->ai->getOrder(true);
+	require(a->current.values[Polls].bits == 0,
+			"paused polls do not execute or count an implementation");
+	g.players[0]->ai->getOrder(false);
+	require(a->current.values[Polls].bits == 1 && a->current.values[NullOrders].bits == 1 &&
+				b->current.values[Polls].bits == 0,
+			"inactive AI returns are counted once for the correct player");
+	require(g.checkSum(nullptr, nullptr, nullptr) == checksum,
+			"diagnostic collection is excluded from checksums");
+	g.players[0]->ai->aiImplementation->telemetry.setUnsigned(Orders, (Uint64(1) << 55) + 3);
+	g.stepCounter = 512;
+	capture(g.teams[0], true, false);
+	capture(g.teams[0], true, false);
+	require(a->history.size() == 1 && a->history[0].tick == 512, "one sample at its actual tick");
+	g.stepCounter = 711;
+	auto loaded = roundTrip(g);
+	const auto &restored = loaded->game.teams[0]->stats.aiTelemetry;
+	require(restored.size() == 2 && restored[0]->current == a->current &&
+				restored[0]->history == a->history,
+			"AI state and large counters survive game saves between samples");
+	require(loaded->game.players[0]->ai->telemetrySeries == restored[0],
+			"loaded AI rebinds the preserved series");
+	const auto before = a->current.values;
+	globalContainer->replaying = true;
+	g.stepCounter = 1024;
+	capture(g.teams[0], true, false);
+	require(a->history.size() == 1 && !a->current.available && a->current.values == before,
+			"replay does not poll AI, fabricate history, or advance diagnostic values");
+	globalContainer->replaying = false;
+	g.players[0]->makeItAI(AI::NONE);
+	g.players[0]->ai->bindTelemetry();
+	require(!a->active && g.players[0]->ai->telemetrySeries->generation == 1,
+			"controller replacement starts a new generation");
+	g.players[1]->setTeam(g.teams[1]);
+	g.players[1]->ai->bindTelemetry();
+	require(!b->active && g.teams[1]->stats.aiTelemetry.size() == 1,
+			"team reassignment closes the former series");
+
+	// Self-described numeric fields survive without requiring a live controller/schema.
+	std::vector<std::shared_ptr<Series>> records;
+	auto r = std::make_shared<Series>();
+	r->fields = schema(0);
+	r->fields.push_back({"signed", "value", "signed round trip", Signed, Gauge});
+	r->fields.push_back({"real", "value", "double round trip", Real, Gauge});
+	r->current.tick = 99;
+	r->current.available = true;
+	r->current.values.resize(r->fields.size());
+	Sink sink;
+	sink.series = r.get();
+	sink.tick = 99;
+	sink.set(Specific, -12345678901234LL);
+	sink.setReal(Specific + 1, 0.125);
+	records.push_back(r);
+	auto *bytes = new GAGCore::MemoryStreamBackend;
+	GAGCore::BinaryOutputStream writer(bytes);
+	save(&writer, records);
+	const std::string original(bytes->getBuffer(), bytes->getPosition());
+	for (int truncate : {0, 1, 17, 100})
+	{
+		auto *input = new GAGCore::MemoryStreamBackend(original.data(), original.size() - truncate);
+		input->seekFromStart(0);
+		GAGCore::BinaryInputStream reader(input);
+		std::vector<std::shared_ptr<Series>> copy;
+		bool rejected = false;
+		try
+		{
+			load(&reader, copy);
+		}
+		catch (const std::runtime_error &)
+		{
+			rejected = true;
+		}
+		if (truncate)
+			require(rejected, "truncated AI telemetry rejected");
+		else
+			require(copy.size() == 1 && copy[0]->fields == r->fields &&
+						copy[0]->current == r->current,
+					"signed and real fields preserve exact saved representation");
+	}
+	std::puts("AI telemetry schemas, identity, sampling, checksums, replay availability, save "
+			  "continuation and numeric corruption tests passed");
 }
 
 static void measurementScreenshots(const std::string &directory)
@@ -805,7 +1004,12 @@ int main(int argc, char** argv)
     IntBuildingType::init();
     GameGUIKeyActions::init();
     MapEditKeyActions::init();
-    if (argc == 5 && std::string(argv[3]) == "--legacy")
+	if (argc == 5 && std::string(argv[3]) == "--ai-continuation")
+	{
+		aiTelemetryContinuation(argv[4]);
+		return 0;
+	}
+	if (argc == 5 && std::string(argv[3]) == "--legacy")
     {
         FILE* file = std::fopen(argv[4], "rb");
         require(file != nullptr, "open legacy fixture");
@@ -880,6 +1084,7 @@ int main(int argc, char** argv)
             compare(game.teams[0]->stats, reloaded->game.teams[0]->stats);
         }
     }
+	aiTelemetryScenarios();
 	measurementScenarios();
 	measurementContinuation();
 	std::printf("Measurement snapshot memory: %zu bytes per team/sample\n", sizeof(GameplayMeasurements));

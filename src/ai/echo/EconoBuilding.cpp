@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "AITelemetryFields.h"
 #include "echo/Echo.h"
 #include <algorithm>
 #include "IntBuildingType.h"
@@ -18,6 +19,7 @@ using namespace AIEcho::SearchTools;
 //Standard Inns near wheat
 void Econo::tick_inns_near_wheat(Echo& echo)
 {
+	telemetry.count(AITrace::AI4::Econo_tick_inns_near_wheat_calls);
 	if((timer%AI_ECHO_RTI_INN_INTERVAL_TICKS)==0 && (timer%AI_ECHO_RTI_BIG_CYCLE_TICKS)!=0)
 	{
 		BuildingSearch bs_level1(echo);
@@ -91,6 +93,7 @@ void Econo::tick_inns_near_wheat(Echo& echo)
 //Standard swarms near wheat. Uses special mechanism, builds more swarms early on.
 void Econo::tick_swarms_near_wheat(Echo& echo)
 {
+	telemetry.count(AITrace::AI4::Econo_tick_swarms_near_wheat_calls);
 	if((timer%AI_ECHO_RTI_BIG_CYCLE_TICKS)==AI_ECHO_RTI_SWARM_OFFSET_TICKS)
 	{
 		BuildingSearch bs(echo);
@@ -149,6 +152,7 @@ void Econo::tick_swarms_near_wheat(Echo& echo)
 //Standard racetrack near stone and wood
 void Econo::tick_racetrack_near_stone_wood(Echo& echo)
 {
+	telemetry.count(AITrace::AI4::Econo_tick_racetrack_near_stone_wood_calls);
 	if((timer%AI_ECHO_RTI_BIG_CYCLE_TICKS)==AI_ECHO_RTI_RACETRACK_OFFSET_TICKS)
 	{
 		BuildingSearch bs(echo);
@@ -195,6 +199,7 @@ void Econo::tick_racetrack_near_stone_wood(Echo& echo)
 //Standard swimming pool near wheat and wood
 void Econo::tick_swimmingpool_near_wheat_wood(Echo& echo)
 {
+	telemetry.count(AITrace::AI4::Econo_tick_swimmingpool_near_wheat_wood_calls);
 	if((timer%AI_ECHO_RTI_BIG_CYCLE_TICKS)==AI_ECHO_RTI_SWIMMINGPOOL_OFFSET_TICKS)
 	{
 		BuildingSearch bs(echo);
@@ -246,6 +251,7 @@ void Econo::tick_swimmingpool_near_wheat_wood(Echo& echo)
 //Standard school inland away from the enemies
 void Econo::tick_school_inland(Echo& echo)
 {
+	telemetry.count(AITrace::AI4::Econo_tick_school_inland_calls);
 	if((timer%AI_ECHO_RTI_BIG_CYCLE_TICKS)==AI_ECHO_RTI_SCHOOL_OFFSET_TICKS)
 	{
 		BuildingSearch bs(echo);
@@ -288,6 +294,7 @@ void Econo::tick_school_inland(Echo& echo)
 //Level 1 to level 2 upgrades
 void Econo::tick_upgrade_l1_to_l2(Echo& echo)
 {
+	telemetry.count(AITrace::AI4::Econo_tick_upgrade_l1_to_l2_calls);
 	if((timer%AI_ECHO_RTI_UPGRADE_INTERVAL_TICKS)==0)
 	{
 		BuildingSearch level_twos(echo);
@@ -352,6 +359,7 @@ void Econo::tick_upgrade_l1_to_l2(Echo& echo)
 //Level 2 to level 3 upgrades
 void Econo::tick_upgrade_l2_to_l3(Echo& echo)
 {
+	telemetry.count(AITrace::AI4::Econo_tick_upgrade_l2_to_l3_calls);
 	if((timer%AI_ECHO_RTI_UPGRADE_INTERVAL_TICKS)==0)
 	{
 		BuildingSearch level_threes(echo);
@@ -425,6 +433,7 @@ void Econo::tick_upgrade_l2_to_l3(Echo& echo)
 //Delete old inns and swarms that are hard to keep full of wheat
 void Econo::tick_delete_old_inns_swarms(Echo& echo)
 {
+	telemetry.count(AITrace::AI4::Econo_tick_delete_old_inns_swarms_calls);
 	if((timer%AI_ECHO_RTI_DELETE_SCAN_INTERVAL_TICKS)==0)
 	{
 		BuildingSearch inns(echo);

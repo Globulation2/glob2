@@ -434,6 +434,7 @@ void Engine::printTeamTimeline()
 
 		team->stats.refreshMeasurements(team);
 		team->stats.printMeasurements(t, true);
+		AITelemetry::capture(team, false, true, true);
 		// Final detailed snapshot: composition + food economy + building mix.
 		TeamStat* fin = team->stats.getLatestStat();
 		std::cout << "GLOB2_FINAL team=" << t
