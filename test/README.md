@@ -227,7 +227,9 @@ already fills one area thins out into a newly painted one without overshooting
 (`drain`), two nearby unconnected patches share as one position (`patches`), a
 larger farther area takes more (`size`), three areas are all guarded (`three`),
 erasing an area releases its warriors (`erase`), a game saved mid-balancing
-continues identically for 1,000 ticks after loading (`saveload`), the crowding box
+continues identically for 1,000 ticks after loading (`saveload`), settled guards
+on 1x1, sparse, checkerboard and packed areas keep moving rather than standing
+with no direction, which the renderers draw as spinning in place (`spins`), the crowding box
 sum matches a brute-force count across the torus seam (`crowding`), and it times
 the guard-gradient rebuild on 64x64 and 256x256 maps (`timing`).
 

@@ -9,7 +9,7 @@ area and any other area stayed empty. How many warriors a defence ended up with
 depended on where the barracks stood, not on what the player painted, and the
 only dependable tool was the war flag.
 
-Since version 97 painted tiles are seeded with a crowding cost, so warriors
+Since version 98 painted tiles are seeded with a crowding cost, so warriors
 spread between areas in proportion to painted size, an area that is over-full
 drains into the others, and a bigger painted area gets more warriors. Painting a
 guard area now means what a player expects it to mean.
@@ -55,9 +55,15 @@ The rules live in `src/map/gradient/MapGradientArea.cpp`,
   crowding they freed, so the trickle stops before it overshoots and a leaver
   does not turn back (`static_assert` in `MapInternal.h`).
 - **Staying.** A warrior standing on a painted tile that has to take a random
-  step (the area is packed) only steps onto painted tiles. Off the paint it
-  would look like a new arrival to the field, which is how a full area used to
-  drain all at once.
+  step prefers a free painted neighbour. Off the paint it looks like a new
+  arrival to the field, so stepping off whenever it could is how a full area
+  would drain all at once. When no painted neighbour is free (a packed area, or
+  sparse, checkerboard or 1x1 paint), it takes the ordinary random step onto any
+  free tile, as before this change. Holding it still instead would leave it with
+  no direction, which both renderers draw as a unit spinning in place, trapped;
+  and a player's guard area is rarely painted exactly, so warriors standing
+  beside the paint still defend it. Only a warrior boxed in on all eight sides
+  stays put, as any unit always has. The harness's `spins` scenario measures this.
 
 The guard gradient is rebuilt where it always was: on every area order, on
 building death, and once per round of the per-tick gradient round-robin. Nothing
@@ -77,7 +83,7 @@ mid-balancing continues identically for 1,000 ticks after loading.
 | `GUARD_CROWD_RADIUS` | 8 tiles | Warriors and painted tiles this close to a tile count toward it. Must exceed the per-warrior cost in tiles, and be at least the size of a typical area: with radius 3 a 5x5 area has cheaper edge tiles and warriors spread to them instead of leaving. |
 | `GUARD_CROWD_COST_PER_WARRIOR` | 4 tiles | Extra walking one nearby warrior is worth in a 25-tile area. 8 tightens the split (11/13 instead of 13/11 in the harness) at the price of a stronger pull on a moving crowd. |
 | `GUARD_CROWD_REFERENCE_AREA` | 25 painted tiles | Painted count at which the per-warrior cost applies in full; larger paint counts divide it. |
-| `GUARD_CROWD_COST_MAX` | 400 tiles | Keeps seeds above the unreachable sentinel. |
+| `GUARD_CROWD_COST_MAX` | 400 tiles | Keeps seeds above the unreachable sentinel. Also where balancing stops: an area's cost reaches the cap at four nearby warriors per painted tile nearby, which is 100 warriors for a 5x5, 36 for a 3x3 and 4 for a single tile. Past it, every capped area reads the same and the field is a plain nearest-area partition again, so small areas painted with brush 0 balance only up to a handful of warriors. |
 | `GUARD_LEAVE_CHANCE_SHIFT` | 6 (1 in 64 actions) | Drain rate. At 64 a full area of 24 loses 10 to a new area over about 2,000 ticks with no overshoot. |
 
 Shares follow painted size roughly, by design: the equilibrium is a band as wide
@@ -85,6 +91,18 @@ as the walking distance between the areas divided by the per-warrior cost, and
 which point in the band a game lands on depends on how the warriors arrived. An
 exact split would have warriors walking between areas to correct a difference of
 one, which is both wasteful and not what a player painting two areas expects.
+
+The field no longer has a flat peak over the paint. Before this change every
+painted tile sat at `GRADIENT_AT_GOAL` and nothing else did; now only an area with
+no warriors near it does. A 5x5 area with 24 warriors on it sits 96 tiles of cost
+below the goal value, flat across its tiles, and when a second area is freshly
+painted the first one's tiles slope toward it. Any area up to 9x9 fits inside the
+counting window, so it counts the same paint everywhere and stays flat; a larger
+one counts less paint at its edge than at its centre, so it slopes gently inward
+and warriors favour its interior. Code that asks "am I in the area" therefore
+reads the painted bit (`Map::isGuardArea`), not the field's value, and
+`getGlobalGradientDestination` on the guard field no longer reports an exact
+destination; its one guard-area caller only uses it for display.
 
 Things that were tried and dropped: a "leave only for a clear gain" margin on
 the uphill step never fires, because a smooth field only rises one step per
@@ -115,6 +133,7 @@ Scenarios:
 | `three` | Three areas at increasing distance are all guarded. |
 | `erase` | Erasing an area sends its warriors to the remaining one. |
 | `saveload` | A game saved mid-balancing continues identically after loading. |
+| `spins` | Settled guards on 1x1, sparse, checkerboard, packed and roomy areas keep moving: few ticks with no direction, none standing on one painted tile for 500 ticks, and most warriors still within 7 tiles. |
 | `crowding` | The box sum equals a brute-force count across the torus seam. |
 | `timing` | Rebuild wall time on 64x64 and 256x256 maps. |
 | `--screenshots DIR` | Renders the spawn and drain stories to PNG through the real map renderer. |
@@ -134,6 +153,28 @@ Drain trace, every-tick refresh (near / far / walking): tick 0: 24/0/0, 500:
 21/0/3, 1000: 18/4/2, 1500: 14/6/4, 2000 and after: 14/10/0. The count in the
 first area never dips below its final value. In-area wandering, measured as tile
 moves per warrior over the last 500 ticks, is 24 to 25 before and after.
+
+Settled guards, `spins`, 500 ticks sampled after 4,000 (share of on-paint ticks
+with no direction; "held still" is warriors on one painted tile for all 500):
+
+| Paint, 24 warriors | Before the fallback | After | Held still, before / after | Within 7 tiles after |
+| --- | --- | --- | --- | --- |
+| 1x1 | 100% | 10 to 11% | 1 / 0 | 24 |
+| sparse 9x9 (25 tiles) | 100% | 0% | 24 / 0 | 22 to 24 |
+| checkerboard 7x7 (25 tiles) | 81 to 85% | 0% | | 24 |
+| solid 5x5 | 72 to 74% | 1% | | 24 |
+| solid 5x5, 8 warriors | 0% | 0% | | 8 |
+| solid 9x9 | 0 to 0.3% | 0% | | 24 |
+
+What remains on a 1x1 is the one guard boxed in by the crowd pressing round its
+single tile. The balance tables above were recorded before the fallback; with it,
+spawn ends 13 / 11, 13 / 11 and 10 / 14 at the three refresh cadences and drain
+11 / 13 at all three, and every scenario still passes its checks.
+
+These counts move by a warrior or two between runs of the same binary. That is
+not this change: a blank map built in code, stepped without periodic
+checksumming, reaches different states on repeated runs on master's engine as
+well, so it is being traced separately.
 
 Guard-gradient rebuild wall time, median of 200 rebuilds with two 5x5 areas
 painted, both engines timed back to back twice on the same machine (the spread is

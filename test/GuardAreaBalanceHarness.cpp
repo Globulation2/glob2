@@ -166,12 +166,14 @@ struct World
 	}
 
 	//! Paint or erase a zone with the same order a player's brush sends.
-	void paint(const Zone& zone, BrushTool::Mode mode = BrushTool::MODE_ADD)
+	//! keep, when given, picks which tiles of the zone's box are painted.
+	void paint(const Zone& zone, BrushTool::Mode mode = BrushTool::MODE_ADD, bool (*keep)(int dx, int dy) = nullptr)
 	{
 		BrushAccumulator acc;
 		for (int dy = -zone.half; dy <= zone.half; ++dy)
 			for (int dx = -zone.half; dx <= zone.half; ++dx)
-				acc.applyBrush(BrushApplication((zone.x + dx) & game.map.wMask, (zone.y + dy) & game.map.hMask, 0), &game.map);
+				if (!keep || keep(dx, dy))
+					acc.applyBrush(BrushApplication((zone.x + dx) & game.map.wMask, (zone.y + dy) & game.map.hMask, 0), &game.map);
 		std::shared_ptr<Order> order(new OrderAlterGuardArea(0, mode, &acc, &game.map));
 		order->sender = 0;
 		game.executeOrder(order, 0);
@@ -415,6 +417,80 @@ static void erasedAreaReleasesItsWarriors(const Options& options)
 	}
 }
 
+// Warriors that have settled on an area keep moving. A warrior with no free
+// painted neighbour takes an ordinary random step rather than standing with
+// no direction, which both renderers draw as a unit spinning in place, trapped.
+// Every layout still keeps its warriors around the area.
+//
+// A warrior boxed in by other units on all eight sides still has no step to
+// take, as it always had. Only a 1x1 area sees that often: the whole crowd
+// presses in around its one tile, so it gets a looser bound. Before this
+// fallback the 1x1 and sparse layouts sat at 100%, checker at about 80% and a
+// packed 5x5 at about 73%, with every guard on a sparse area never moving.
+static void settledGuardsDoNotSpin(const Options& options)
+{
+	struct Layout { const char* name; int half; int warriors; bool (*keep)(int, int); double maxNoDirection; };
+	const Layout layouts[] = {
+		{"1x1", 0, options.warriors, nullptr, 50.0},
+		{"sparse 9x9", 4, options.warriors, [](int dx, int dy) { return dx % 2 == 0 && dy % 2 == 0; }, 5.0},
+		{"checker 7x7", 3, options.warriors, [](int dx, int dy) { return (dx + dy) % 2 == 0; }, 5.0},
+		{"solid 5x5", 2, options.warriors, nullptr, 5.0},
+		{"solid 5x5, few", 2, options.warriors / 3, nullptr, 5.0},
+		{"solid 9x9", 4, options.warriors, nullptr, 5.0},
+	};
+	std::printf("[spins] %-15s  on-paint ticks  no direction  moves/warrior  held still  within %d tiles\n", "paint", NEAR.countRadius);
+	for (const Layout& layout : layouts)
+	{
+		World world(options);
+		const Zone zone{layout.name, NEAR.x, NEAR.y, layout.half, NEAR.countRadius};
+		world.paint(zone, BrushTool::MODE_ADD, layout.keep);
+		world.spawnWarriors(SPAWN_X, SPAWN_Y, layout.warriors);
+		world.run(options.ticks);
+		long onPaint = 0, noDirection = 0;
+		int moved = 0;
+		// Tile each warrior stood on at the first sample while on paint, or -1
+		// once it has left that tile or the paint.
+		std::vector<int> stillOn(Unit::MAX_COUNT, -2);
+		for (int t = 0; t < 500; ++t)
+		{
+			int stepMoves = 0;
+			world.run(1, &stepMoves);
+			moved += stepMoves;
+			for (int i = 0; i < Unit::MAX_COUNT; ++i)
+			{
+				Unit* u = world.team->myUnits[i];
+				if (!u || u->isDead || u->typeNum != WARRIOR)
+					continue;
+				const int tile = (int)world.game.map.coordToIndex(u->posX, u->posY);
+				if (!world.game.map.isGuardArea(u->posX, u->posY, world.team->me))
+				{
+					stillOn[i] = -1;
+					continue;
+				}
+				if (stillOn[i] == -2)
+					stillOn[i] = t == 0 ? tile : -1;
+				else if (stillOn[i] != tile)
+					stillOn[i] = -1;
+				++onPaint;
+				noDirection += u->direction == UNIT_DIRECTION_NONE;
+			}
+		}
+		const int held = world.countNear(zone);
+		const int heldStill = (int)std::count_if(stillOn.begin(), stillOn.end(), [](int tile) { return tile >= 0; });
+		const double share = onPaint ? 100.0 * noDirection / onPaint : 0.0;
+		std::printf("[spins] %-15s  %14ld  %11.1f%%  %13.1f  %10d  %d of %d\n", layout.name, onPaint, share, (double)moved / layout.warriors, heldStill, held, layout.warriors);
+		if (options.check)
+		{
+			require(onPaint > 0, "some warrior stands on the paint");
+			require(share < layout.maxNoDirection, "warriors on the paint are not left with no direction");
+			require(heldStill == 0, "no warrior stands on one painted tile for the whole sample");
+			require(held >= layout.warriors * 3 / 4, "the area keeps most of its warriors around it");
+		}
+	}
+	if (options.check)
+		std::puts("PASS settled guards keep moving on every paint layout and stay around the area");
+}
+
 // A game saved mid-balancing continues identically after loading: the guard
 // field and its refresh flag are saved, and the crowding counts are recomputed
 // from unit positions at the next rebuild, so no derived state is lost.
@@ -632,7 +708,7 @@ int main(int argc, char** argv)
 		else if (arg == "--slow-cadence") options.slowCadence = true;
 		else if (arg == "--scenario" && i + 1 < argc) scenario = argv[++i];
 		else if (arg == "--screenshots" && i + 1 < argc) options.screenshots = argv[++i];
-		else require(false, "usage: GuardAreaBalanceHarness [check|report] [--ticks N] [--warriors N] [--resource-gradients] [--slow-cadence] [--scenario crowding|timing|spawn|drain|patches|size|three|erase|saveload] [--screenshots DIR]");
+		else require(false, "usage: GuardAreaBalanceHarness [check|report] [--ticks N] [--warriors N] [--resource-gradients] [--slow-cadence] [--scenario crowding|timing|spawn|drain|patches|size|three|erase|saveload|spins] [--screenshots DIR]");
 	}
 	if (!options.screenshots.empty())
 	{
@@ -665,6 +741,7 @@ int main(int argc, char** argv)
 	if (wanted("three")) threeAreasAllGuarded(options);
 	if (wanted("erase")) erasedAreaReleasesItsWarriors(options);
 	if (wanted("saveload")) savedGameContinuesIdentically(options);
+	if (wanted("spins")) settledGuardsDoNotSpin(options);
 	if (options.check)
 		std::puts("Guard area balance regressions passed");
 	return 0;
