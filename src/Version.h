@@ -113,7 +113,8 @@
 //            construction, upgrades, unit/swarm management) that cooperate rather
 //            than a phase-driven strategy. Purely additive: older clients simply
 //            can't load a save that names this AI (see AI::load's default case).
-// version 99 is unused
+// version 99 reads one worker level (build) where hiring used to read harvest and
+//            the upgrade menu build, and evens the two out on load
 // version 100 adds AI::ImplementationID::MAXIMA, a standalone AI that develops a colony
 //            and attacks relentlessly, with its saved execution state. Purely additive,
 //            like Cabino. Maxima's save gates read the numbers its development saves
