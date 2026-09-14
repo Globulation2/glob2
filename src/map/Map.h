@@ -482,6 +482,20 @@ public:
 	//! never grows anything, whatever else is true of it.
 	bool canResourceEverGrowHere(int x, int y, int resourceType) const;
 
+	//! The crop a farm grows on this tile's terrain: wheat on grass, algae on
+	//! water, nothing anywhere else. The terrain decides, so a farm needs no
+	//! per-resource mode and no extra UI.
+	int farmCropAt(int x, int y) const;
+
+	//! Whether a worker should clear the resource on this tile for the team.
+	//!
+	//! True inside a clearing area for anything clearable, as before, and now
+	//! also inside a farm area for anything clearable that is not the crop that
+	//! tile's terrain grows. A farm is kept clear of what it does not grow, so
+	//! wood creeping into a wheat field is cut down instead of overgrowing it,
+	//! and the field expands into the forest as the trees come down.
+	bool isClearingTarget(size_t index, Uint32 teamMask) const;
+
 	//! Whether a farm area may be painted on (x,y).
 	//!
 	//! Painting where nothing can ever grow is a trap rather than a nuisance:

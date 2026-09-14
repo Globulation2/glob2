@@ -51,6 +51,11 @@ void Map::decResource(int x, int y, int resourceType)
 // probe can reach any tile of the 31x31 box around the source.
 static constexpr int GROWTH_PROBE_RADIUS = 15;
 
+// The grain a farmed tile keeps back. decResource clears a granular tile at one
+// grain, so a pooled harvest that took the last one would leave bare ground and
+// the farm would have protected nothing.
+static constexpr int FARM_SEED_AMOUNT = 1;
+
 bool Map::canResourceEverGrowHere(int x, int y, int resourceType) const
 {
 	if (resourceType == NO_RES_TYPE)
@@ -91,25 +96,47 @@ bool Map::canResourceEverGrowHere(int x, int y, int resourceType) const
 	return true;
 }
 
+int Map::farmCropAt(int x, int y) const
+{
+	switch (getTerrainType(x, y))
+	{
+		case GRASS: return WHEAT;
+		case WATER: return ALGA;
+		default:    return NO_RES_TYPE;
+	}
+}
+
+bool Map::isClearingTarget(size_t index, Uint32 teamMask) const
+{
+	const Tile &tile = tiles[index];
+	if (tile.resource.type == NO_RES_TYPE)
+		return false;
+	if (!globalContainer->resourcesTypes.get(tile.resource.type)->clearable)
+		return false;
+	if (tile.clearArea & teamMask)
+		return true;
+	if ((tile.farmArea & teamMask) == 0)
+		return false;
+	// Inside a farm, everything clearable except the crop the terrain grows.
+	return tile.resource.type != farmCropAt(static_cast<int>(index & wMask),
+	                                        static_cast<int>(index >> wDec));
+}
+
 bool Map::canPaintFarmArea(int x, int y) const
 {
 	if (!canResourcesGrow(x, y))
 		return false;
 
 	const Resource &resource = getTile(x, y).resource;
+	// Wood shares wheat's terrain, so a forest inside a wheat farm is paintable:
+	// the farm clears it and grows into it. Stone, papyrus and the fruits are
+	// never farmed and stone and the fruits cannot even be removed.
 	if (resource.type != NO_RES_TYPE
 		&& resource.type != WHEAT && resource.type != WOOD && resource.type != ALGA)
 		return false;
 
-	// Grass means a wheat farm, water means an alga farm; nothing else farms.
-	// Wood shares wheat's terrain, so a forest inside a wheat farm is paintable
-	// and the farm can grow into it as the trees come down.
-	switch (getTerrainType(x, y))
-	{
-		case GRASS: return canResourceEverGrowHere(x, y, WHEAT);
-		case WATER: return canResourceEverGrowHere(x, y, ALGA);
-		default:    return false;
-	}
+	const int crop = farmCropAt(x, y);
+	return crop != NO_RES_TYPE && canResourceEverGrowHere(x, y, crop);
 }
 
 bool Map::isFarmableResource(int resourceType) const
@@ -167,7 +194,7 @@ std::optional<size_t> Map::pickFarmHarvestTile(int x, int y, int resourceType, U
 		return std::nullopt;
 
 	size_t best = frontier.front();
-	Sint32 bestAmount = -1;
+	Sint32 bestAmount = 0;
 	Sint32 bestDistance = 0;
 	for (size_t head = 0; head < frontier.size(); head++)
 	{
@@ -178,11 +205,19 @@ std::optional<size_t> Map::pickFarmHarvestTile(int x, int y, int resourceType, U
 		// Ripest first; then the one the unit is nearest, so a worker eats the
 		// side of the field it stands on; then the tile index, which is the
 		// tie-break that makes the choice the same on every client.
+		//
+		// A tile at FARM_SEED_AMOUNT is this field's seed and is never taken:
+		// decResource would clear it, and a farm that can be reduced to bare
+		// ground is not protecting anything. A field worked past its surplus
+		// therefore stalls at one grain a tile and regrows, and the workers
+		// that arrive meanwhile go home empty. Tiles at the seed amount still
+		// carry the flood, so the field does not split as it is worked down.
 		const Sint32 amount = tiles[index].resource.amount;
 		const Sint32 distance = warpDistSquare(x, y, tx, ty);
-		if (amount > bestAmount
-			|| (amount == bestAmount && distance < bestDistance)
-			|| (amount == bestAmount && distance == bestDistance && index < best))
+		if (amount > FARM_SEED_AMOUNT
+			&& (amount > bestAmount
+				|| (amount == bestAmount && distance < bestDistance)
+				|| (amount == bestAmount && distance == bestDistance && index < best)))
 		{
 			best = index;
 			bestAmount = amount;
@@ -201,6 +236,8 @@ std::optional<size_t> Map::pickFarmHarvestTile(int x, int y, int resourceType, U
 				frontier.push_back(neighbour);
 			}
 	}
+	if (bestAmount == 0)
+		return std::nullopt;
 	return best;
 }
 

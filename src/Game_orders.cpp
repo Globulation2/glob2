@@ -463,6 +463,9 @@ void Game::executeAlterFarmArea(const OrderAlterFarmArea& oaa, int localPlayer)
 	}
 	else
 		assert(false);
+	// A farm area is a clearing goal for everything it does not grow, so the
+	// clearing field has to be rebuilt even though the farm itself has none.
+	map.updateClearAreasGradient(oaa.teamNumber);
 }
 
 void Game::executeModifySwarm(const OrderModifySwarm& oms, int localPlayer)

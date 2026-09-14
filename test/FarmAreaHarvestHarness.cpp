@@ -14,6 +14,7 @@
 
 #include <cassert>
 #include <cstdio>
+#include <utility>
 #include <vector>
 
 GlobalContainer* globalContainer = nullptr;
@@ -98,12 +99,12 @@ namespace
 		Map map;
 		buildMap(map);
 		paintFarm(map, 0, 0, 15, 15);
-		setWheat(map, 5, 5, 1);
+		setWheat(map, 5, 5, 2);
 		// (7,5) is empty, so the ripe patch beyond it is a different field.
 		setWheat(map, 8, 5, 5);
 		setWheat(map, 9, 5, 5);
 		check(harvest(map, 4, 5, 1, 0), "the reachable field should yield");
-		check(wheatAt(map, 5, 5) == 0, "the only reachable tile should be spent");
+		check(wheatAt(map, 5, 5) == 1, "the only reachable tile should be the source");
 		check(wheatAt(map, 8, 5) == 5 && wheatAt(map, 9, 5) == 5,
 			"wheat across a gap must not be teleported");
 	}
@@ -214,6 +215,89 @@ namespace
 		check(map.takeHarvest(4, 5, 1, 0, ALGA, TEAM_MASK), "an alga field yields");
 		check(map.getResource(7, 5).amount == 3, "the ripest alga tile is the source");
 		check(map.getResource(5, 5).amount == 1, "the touched alga tile survives");
+	}
+
+	//! A farm is never stripped bare. Harvesting takes the surplus off a field
+	//! and stops at one grain a tile, because decResource clears a granular tile
+	//! at its last grain and a farm that can be reduced to bare ground is not
+	//! protecting anything. Off a farm the same field is eaten to nothing.
+	void aFarmIsNeverStrippedBare()
+	{
+		auto field = [](Map& map) {
+			map.setSize(4, 4, GRASS);
+			for (int y = 4; y <= 6; y++)
+				for (int x = 4; x <= 6; x++)
+					setWheat(map, x, y, 3);
+		};
+
+		Map farmed;
+		field(farmed);
+		paintFarm(farmed, 0, 0, 15, 15);
+		// Work it from every side, each worker touching the rim tile it faces, so
+		// this is not one worker running out of reach.
+		struct Spot { int x, y, dx, dy; };
+		const Spot spots[] = {{3, 5, 1, 0}, {7, 5, -1, 0}, {5, 3, 0, 1}, {5, 7, 0, -1}};
+		int harvests = 0;
+		for (int round = 0; round < 200; round++)
+			for (const Spot& spot : spots)
+				if (harvest(farmed, spot.x, spot.y, spot.dx, spot.dy))
+					harvests++;
+		check(harvests == 9 * 2, "a farm gives up everything above its seed");
+		int tiles = 0;
+		for (int y = 4; y <= 6; y++)
+			for (int x = 4; x <= 6; x++)
+			{
+				check(wheatAt(farmed, x, y) == 1, "every tile keeps its seed");
+				tiles++;
+			}
+		check(tiles == 9, "no tile of the farm is lost");
+
+		// The identical field with no farm painted shows the failure this is for:
+		// each worker eats the one tile it is touching down to bare ground and
+		// never reaches the rest, so the rim is destroyed and the interior is
+		// untouched.
+		Map bare;
+		field(bare);
+		for (int round = 0; round < 200; round++)
+			for (const Spot& spot : spots)
+				harvest(bare, spot.x, spot.y, spot.dx, spot.dy);
+		int lost = 0;
+		for (const Spot& spot : spots)
+			if (wheatAt(bare, spot.x + spot.dx, spot.y + spot.dy) == 0)
+				lost++;
+		check(lost == 4, "unfarmed, each worker destroys the tile it touches");
+		check(wheatAt(bare, 5, 5) == 3, "unfarmed, the interior is never reached");
+	}
+
+	//! A farm is kept clear of what it does not grow, so wood creeping into a
+	//! wheat field becomes a clearing target and the field expands into it.
+	void woodInAFarmIsAClearingTarget()
+	{
+		Map map;
+		buildMap(map);
+		paintFarm(map, 4, 4, 9, 9);
+
+		auto put = [&](int x, int y, int type, int amount) {
+			Resource &r = map.getTile(x, y).resource;
+			r.type = type; r.variety = 0; r.amount = amount; r.animation = 0;
+		};
+		put(5, 5, WOOD, 3);
+		put(6, 5, WHEAT, 3);
+		put(11, 5, WOOD, 3);   // outside the farm
+
+		check(map.isClearingTarget(map.coordToIndex(5, 5), TEAM_MASK),
+			"wood inside a wheat farm is cleared");
+		check(!map.isClearingTarget(map.coordToIndex(6, 5), TEAM_MASK),
+			"the farm's own crop is never cleared");
+		check(!map.isClearingTarget(map.coordToIndex(11, 5), TEAM_MASK),
+			"wood outside any area is left alone");
+		check(!map.isClearingTarget(map.coordToIndex(5, 5), Team::teamNumberToMask(1)),
+			"another team's farm does not make it a target");
+
+		// A clearing area still behaves as before, crop or not.
+		map.addClearArea(11, 5, 0);
+		check(map.isClearingTarget(map.coordToIndex(11, 5), TEAM_MASK),
+			"a clearing area still clears wood");
 	}
 
 	//! Growth must not know a farm area is painted. A plant has no opinion about
@@ -362,11 +446,11 @@ namespace
 		check(map.isFarmArea(gap - 1, 10, TEAM_MASK), "fixture: the field is painted");
 		check(!map.isFarmArea(gap, 10, TEAM_MASK), "the no-grow tile must be refused");
 
-		setWheat(map, gap - 1, 10, 1);
+		setWheat(map, gap - 1, 10, 2);
 		setWheat(map, gap, 10, 1);
 		setWheat(map, gap + 1, 10, 5);
 		check(harvest(map, gap - 2, 10, 1, 0), "the near patch yields");
-		check(wheatAt(map, gap - 1, 10) == 0, "the near patch is the only reachable field");
+		check(wheatAt(map, gap - 1, 10) == 1, "the near patch is the only reachable field");
 		check(wheatAt(map, gap + 1, 10) == 5, "a refused tile cannot connect two patches");
 		check(wheatAt(map, gap, 10) == 1, "the refused tile is not part of any field");
 	}
@@ -387,13 +471,12 @@ namespace
 		while (harvest(map, 4, 5, 1, 0))
 		{
 			harvests++;
-			check(harvests <= 32, "the reachable field must run out");
+			check(harvests <= 32, "the field must stop yielding");
 		}
-		check(harvests == 9, "a fixed spot should flatten the field then stop");
+		check(harvests == 8, "a fixed spot should flatten the field then stop");
 		check(totalWheat(map) == before - harvests, "every harvest costs exactly one grain");
-		check(wheatAt(map, 5, 5) == 0, "the reachable tile is what finally runs out");
-		check(wheatAt(map, 6, 5) == 1 && wheatAt(map, 7, 5) == 1,
-			"the rest of the field survives and has to be walked to");
+		check(wheatAt(map, 5, 5) == 1 && wheatAt(map, 6, 5) == 1 && wheatAt(map, 7, 5) == 1,
+			"the field is worked down to its seed and no further");
 	}
 }
 
@@ -414,11 +497,13 @@ int main()
 	woodIsNotFarmed();
 	algaeAreFarmed();
 	standingStillOnlyDrainsWhatItTouches();
+	aFarmIsNeverStrippedBare();
+	woodInAFarmIsAClearingTarget();
 	growthIgnoresTheFarmMask();
 	paintingRefusesGroundThatCannotGrow();
 	refusedGroundIsNotAGrainTeleporter();
 	clearingStaysOnTheTouchedTile();
 
-	printf("FarmAreaHarvestHarness: 14 cases passed\n");
+	printf("FarmAreaHarvestHarness: 16 cases passed\n");
 	return 0;
 }

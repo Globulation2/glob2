@@ -163,7 +163,7 @@ void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 		const Tile& c=tiles[i];
 		if (c.forbidden & teamMask)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if(c.clearArea & teamMask && c.resource.type != NO_RES_TYPE && globalContainer->resourcesTypes.get(c.resource.type)->clearable)
+		else if(isClearingTarget(i, teamMask))
 			gradient[i] = GRADIENT_AT_GOAL;
 		else if(immobileUnits[i] != IMMOBILE_UNIT_NONE)
 			gradient[i] = GRADIENT_FORBIDDEN;

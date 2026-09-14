@@ -18,7 +18,13 @@ farm area, and the resource is farmable:
 2. One unit of the resource comes off the tile of that field holding the
    **most** — ties broken by distance to the worker, then by tile index, so the
    choice is the same on every client and in every replay.
-3. If the field is empty, the worker gets **nothing** and goes back to looking.
+3. A tile at one grain is that field's seed and is never the source. A field
+   worked past its surplus stalls at one grain a tile and regrows; the workers
+   that arrive meanwhile go home empty. `decResource` clears a granular tile at
+   its last grain, so without this a farm could be reduced to bare ground and
+   would be protecting nothing.
+4. If nothing in the field is above its seed, the worker gets **nothing** and
+   goes back to looking.
 
 Outside a farm area nothing changes, including the long-standing behaviour that
 a harvest completing on a tile that emptied under the animation still hands the
@@ -55,6 +61,16 @@ of workers standing around it occupies the very tiles it would expand into. The
 decision the player makes is how big to paint the farm and how many workers to
 point at it.
 
+## Keeping the farm clear
+
+A farm is kept clear of what it does not grow. `Map::isClearingTarget` makes any
+clearable resource inside a farm area a clearing goal unless it is the crop that
+tile's terrain grows, so wood creeping into a wheat field is cut down instead of
+overgrowing it, and the field expands into the forest as the trees come down.
+That is the same predicate the clearing-area gradient and
+`Unit::tryClaimClearingAreaForHarvesting` already used, widened by one case, so
+a farm needs no clearing flag of its own.
+
 ## Which resources
 
 The rule applies to a resource that is granular, shrinkable and expendable:
@@ -77,7 +93,7 @@ nothing. Stone and the fruits are eternal and never need protecting.
   by exactly the same rules whether or not an area is painted over it. Pinned
   down by `growthIgnoresTheFarmMask` in the harness, which runs 20,000 ticks on
   two copies of the same map from the same seed and compares every tile.
-- **Clearing.** Clearing is not harvesting. `handleMovementClearingResources`
+- **Clearing of the crop.** Clearing is not harvesting. `handleMovementClearingResources`
   and `tryClaimClearingAreaForHarvesting` call `Map::decResource` on the tile
   they are touching and never go through `takeHarvest`, so a clearing worker
   inside a farm empties the tile it is aimed at and cannot reach into the
