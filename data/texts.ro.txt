@@ -188,6 +188,8 @@ Alegeţi un joc
 Alegeţi o hartă
 [clear area]
 Zonă de curățare
+[farm area]
+Zonă de cultură
 [Clearing:]
 Curățare:
 [clearingflag explanation 2]

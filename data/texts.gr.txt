@@ -242,6 +242,8 @@ caps lock
 Επιλέξτε ένα χάρτη
 [clear area]
 Καθαρισμός περιοχής
+[farm area]
+Περιοχή καλλιέργειας
 [Clearing:]
 Καθαρισμός:
 [clearingflag explanation 2]

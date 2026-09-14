@@ -192,6 +192,8 @@ Caps Lock
 マップを選択
 [clear area]
 資源除去領域
+[farm area]
+農地領域
 [Clearing:]
 除去対象：
 [clearingflag explanation 2]

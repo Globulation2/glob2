@@ -178,6 +178,7 @@
 [f7]
 [f8]
 [f9]
+[farm area]
 [Fertility Map]
 [Flag Defaults]
 [flag settings explanation]

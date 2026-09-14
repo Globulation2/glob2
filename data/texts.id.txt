@@ -192,6 +192,8 @@ Pilih permainan
 Pilih peta
 [clear area]
 Area pembersihan
+[farm area]
+Area pertanian
 [Clearing:]
 Membersihkan:
 [clearingflag explanation 2]

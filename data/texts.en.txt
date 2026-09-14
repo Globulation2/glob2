@@ -192,6 +192,8 @@ Choose a game
 Choose a map
 [clear area]
 Clearing area
+[farm area]
+Farm area
 [Clearing:]
 Clearing:
 [clearingflag explanation 2]

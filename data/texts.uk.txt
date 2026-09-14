@@ -192,6 +192,8 @@ Caps Lock
 Виберіть мапу
 [clear area]
 Ділянка розчищення
+[farm area]
+Ділянка вирощування
 [Clearing:]
 Розчищення:
 [clearingflag explanation 2]

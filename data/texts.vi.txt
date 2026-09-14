@@ -192,6 +192,8 @@ Chọn trận đấu
 Chọn bản đồ
 [clear area]
 Vùng khai quang
+[farm area]
+Vùng canh tác
 [Clearing:]
 Đang khai quang:
 [clearingflag explanation 2]

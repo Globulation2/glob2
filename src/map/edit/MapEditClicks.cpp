@@ -121,6 +121,10 @@ void MapEdit::handleBrushClick(int mx, int my)
 			for (int x=startX; x<startX+width; x++)
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
 				{
+					// Same refusal as in game: a farm area cannot be painted on
+					// ground that can never grow wheat or algae.
+					if (add && brushType == FarmAreaBrush && !game.map.canPaintFarmArea(x, y))
+						continue;
 					Uint32& tileMask = game.map.getTile(x, y).*target.tileMask;
 					if (add)
 						tileMask |= teamBit;
@@ -147,6 +151,8 @@ MapEdit::AreaBrushTarget MapEdit::areaBrushTarget()
 		return {&Tile::guardArea, game.map.displayedGuardAreaView};
 	case ClearAreaBrush:
 		return {&Tile::clearArea, game.map.displayedClearAreaView};
+	case FarmAreaBrush:
+		return {&Tile::farmArea, game.map.displayedFarmAreaView};
 	default:
 		assert(false);
 		return {&Tile::forbidden, game.map.displayedForbiddenView};

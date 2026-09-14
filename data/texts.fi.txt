@@ -188,6 +188,8 @@ Valitse peli
 Valitse kartta
 [clear area]
 Keräämisalue
+[farm area]
+Viljelyalue
 [Clearing:]
 Keräämässä:
 [clearingflag explanation 2]

@@ -246,6 +246,8 @@ Vælg et spil
 Vælg et kort
 [clear area]
 Rydningsområde
+[farm area]
+Dyrkningsområde
 [Clearing:]
 Rydning:
 [clearingflag explanation 2]

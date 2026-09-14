@@ -36,11 +36,13 @@ public:
 	};
 	
 	///List of zone types
+	//! Order matters: it is the left-to-right order of the zone strip's buttons.
 	enum ZoneType
 	{
 		Forbidden=0,
 		Guard,
 		Clearing,
+		Farm,
 	};
 
 	///Activates the building tool with the given building or flag type

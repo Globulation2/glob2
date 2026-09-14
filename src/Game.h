@@ -38,6 +38,7 @@ class OrderModifyMinLevelToFlag;
 class OrderMoveFlag;
 class OrderAlterForbidden;
 class OrderAlterGuardArea;
+class OrderAlterFarmArea;
 class OrderAlterClearArea;
 class OrderModifySwarm;
 class OrderDelete;
@@ -283,6 +284,7 @@ private:
 	void executeMoveFlag(const OrderMoveFlag& order, int localPlayer);
 	void executeAlterForbidden(const OrderAlterForbidden& order, int localPlayer);
 	void executeAlterGuardArea(const OrderAlterGuardArea& order, int localPlayer);
+	void executeAlterFarmArea(const OrderAlterFarmArea& order, int localPlayer);
 	void executeAlterClearArea(const OrderAlterClearArea& order, int localPlayer);
 	void executeModifySwarm(const OrderModifySwarm& order, int localPlayer);
 	/// Delete-building. Bypasses the team-alive gate: dead-team buildings

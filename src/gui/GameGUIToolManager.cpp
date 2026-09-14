@@ -113,6 +113,9 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		case Clearing:
 			c = Color(251,206,0);
 			break;
+		case Farm:
+			c = Color(0,200,80);
+			break;
 		}
 		/* Instead of using a dimmer intensity to indicate
 			removing of areas, this should rather use dashed
@@ -266,12 +269,19 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 	{
 		const bool value = (brushMode == BrushTool::MODE_ADD);
 		Utilities::BitArray& view = displayedViewForZone(zoneType);
+		// The farm brush does not paint ground nothing can grow on. The order
+		// refuses those tiles anyway; skipping them here too keeps the overlay
+		// the player sees from disagreeing with what actually lands.
+		const bool honourFarmTerrain = (zoneType == Farm) && value;
 		for (int y=startY; y<startY+height; y++)
 		{
 			for (int x=startX; x<startX+width; x++)
 			{
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
-					view.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), value);
+				if (!BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
+					continue;
+				if (honourFarmTerrain && !game.map.canPaintFarmArea(x, y))
+					continue;
+				view.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), value);
 			}
 		}
 	}
@@ -295,6 +305,8 @@ Utilities::BitArray& GameGUIToolManager::displayedViewForZone(ZoneType type)
 		return game.map.displayedGuardAreaView;
 	case Clearing:
 		return game.map.displayedClearAreaView;
+	case Farm:
+		return game.map.displayedFarmAreaView;
 	}
 	assert(false);
 	return game.map.displayedForbiddenView;
@@ -317,6 +329,10 @@ void GameGUIToolManager::flushBrushOrders(int localteam)
 		else if (zoneType == Clearing)
 		{
 			orders.push(std::shared_ptr<Order>(new OrderAlterClearArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
+		}
+		else if (zoneType == Farm)
+		{
+			orders.push(std::shared_ptr<Order>(new OrderAlterFarmArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else
 			assert(false);

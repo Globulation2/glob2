@@ -401,3 +401,11 @@ std::shared_ptr<OrderAlterClearArea> OrderAlterClearArea::deserialize(const Uint
 		return nullptr;
 	return order;
 }
+
+std::shared_ptr<OrderAlterFarmArea> OrderAlterFarmArea::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	auto order = std::make_shared<OrderAlterFarmArea>();
+	if (!order->setData(data, dataLength, versionMinor))
+		return nullptr;
+	return order;
+}

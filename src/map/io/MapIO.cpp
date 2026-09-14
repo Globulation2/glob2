@@ -60,6 +60,7 @@ try
 	displayedForbiddenView.resize(size, false);
 	displayedGuardAreaView.resize(size, false);
 	displayedClearAreaView.resize(size, false);
+	displayedFarmAreaView.resize(size, false);
 	tiles.resize(size);
 	undermap = new Uint8[size];
 	listedAddr = new Uint8*[size];
@@ -88,6 +89,8 @@ try
 			stream->readUint32("hiddenForbidden");
 		tiles[i].guardArea = stream->readUint32("guardArea");
 		tiles[i].clearArea = stream->readUint32("clearArea");
+		tiles[i].farmArea = versionMinor >= FILE_FORMAT_VERSION_FARM_AREA
+			? stream->readUint32("farmArea") : 0;
 		tiles[i].scriptAreas = stream->readUint16("scriptAreas");
 		tiles[i].canResourcesGrow = stream->readUint8("canRessourcesGrow");
 		if(versionMinor >= 63)
@@ -213,6 +216,7 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeUint32(tiles[i].forbidden, "forbidden");
 		stream->writeUint32(tiles[i].guardArea, "guardArea");
 		stream->writeUint32(tiles[i].clearArea, "clearArea");
+		stream->writeUint32(tiles[i].farmArea, "farmArea");
 		stream->writeUint16(tiles[i].scriptAreas, "scriptAreas");
 		stream->writeUint8(tiles[i].canResourcesGrow, "canRessourcesGrow");
 		stream->writeUint16(tiles[i].fertility, "fertility");

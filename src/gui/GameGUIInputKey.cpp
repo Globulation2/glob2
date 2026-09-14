@@ -380,6 +380,9 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 				case GameGUIKeyActions::SelectPlaceClearingArea:
 					handleKeySelectPlaceArea(GameGUIToolManager::Clearing);
 					break;
+				case GameGUIKeyActions::SelectPlaceFarmArea:
+					handleKeySelectPlaceArea(GameGUIToolManager::Farm);
+					break;
 				case GameGUIKeyActions::SwitchToAddingAreas:
 				{
 					if(selectionMode != BRUSH_SELECTION)

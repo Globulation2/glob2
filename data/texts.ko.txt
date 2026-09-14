@@ -192,6 +192,8 @@ Caps Lock
 지도 선택
 [clear area]
 정리 구역
+[farm area]
+경작 구역
 [Clearing:]
 제거 대상:
 [clearingflag explanation 2]

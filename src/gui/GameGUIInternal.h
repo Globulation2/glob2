@@ -46,11 +46,42 @@ using namespace GAGGUI;
 
 #define YOFFSET_BRUSH 56
 
-// The flag view's zone-type strip (forbidden/guard/clearing buttons) sits at
-// YPOS_BASE_FLAG+YOFFSET_BRUSH and is this tall; the brush tool panel starts
+// The flag view's zone-type strip (forbidden/guard/clearing/farm buttons) sits
+// at YPOS_BASE_FLAG+YOFFSET_BRUSH and is this tall; the brush tool panel starts
 // directly below it. Shared by the draw path (GameGUIDrawMiscPanels.cpp) and
 // the click path (GameGUIInputMenuClick.cpp) so they cannot drift apart.
 constexpr int ZONE_STRIP_HEIGHT = 40;
+
+// One button per GameGUIToolManager::ZoneType, in that order, laid out across
+// the right menu in panel-local x. Three buttons used to sit at a 40px pitch
+// starting 8px in; a fourth at that pitch would end at 168 and run off the
+// 160px panel, so the pitch is tightened to fit four with even margins:
+// 6, 44, 82, 120, the last ending at 152.
+//
+// Every position, both drawn and clicked, comes from zoneStripButtonX and
+// zoneStripButtonAt below. Nothing else may compute one.
+constexpr int ZONE_STRIP_BUTTON_COUNT = 4;
+constexpr int ZONE_STRIP_BUTTON_SIZE = 32;
+constexpr int ZONE_STRIP_BUTTON_PITCH = 38;
+constexpr int ZONE_STRIP_BUTTON_X0 = 6;
+
+//! Panel-local x of zone button `index`.
+constexpr int zoneStripButtonX(int index)
+{
+	return ZONE_STRIP_BUTTON_X0 + index * ZONE_STRIP_BUTTON_PITCH;
+}
+
+//! The zone button under panel-local x, or -1 for none. The 6px gaps between
+//! sprites are split between their neighbours so no pixel of the strip is dead.
+constexpr int zoneStripButtonAt(int panelX)
+{
+	constexpr int halfGap = (ZONE_STRIP_BUTTON_PITCH - ZONE_STRIP_BUTTON_SIZE) / 2;
+	const int offset = panelX - (ZONE_STRIP_BUTTON_X0 - halfGap);
+	if (offset < 0)
+		return -1;
+	const int index = offset / ZONE_STRIP_BUTTON_PITCH;
+	return index < ZONE_STRIP_BUTTON_COUNT ? index : -1;
+}
 
 // Per-row pitches inside the building info panel resource/swarm sections.
 #define YOFFSET_RESOURCE_LINE 11

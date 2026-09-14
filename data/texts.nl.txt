@@ -194,6 +194,8 @@ Kies een spel
 Kies een speelveld
 [clear area]
 Grondstoffenzone
+[farm area]
+Akkerzone
 [Clearing:]
 ontruimen:
 [clearingflag explanation 2]

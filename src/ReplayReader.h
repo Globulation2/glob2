@@ -28,6 +28,11 @@ static constexpr Uint32 REPLAY_MIN_VALID_ORDERS = 5;
 //! apportionment, round-trip routing and hiring, Echo building-order ids surviving a
 //! load, route fields invalidated by the map's topology generation), so earlier
 //! replays would diverge from what happened.
+//!
+//! Version 98 (the farm area) deliberately does not move this floor. It changes a
+//! harvest only where a farm area is painted, a version-97 map loads with every
+//! Tile::farmArea at zero, and no older replay can contain the order that paints
+//! one, so 97 replays still reproduce exactly.
 static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 97;
 
 /// This class is used for reading replays.

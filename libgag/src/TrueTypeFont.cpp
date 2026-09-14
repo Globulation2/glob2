@@ -68,6 +68,12 @@ namespace GAGCore
 			font = TTF_OpenFontRW(fontStream, 1, size);
 			if (font)
 			{
+				// SDL_ttf defaults to full hinting, which snaps stems onto whole
+				// pixel columns. At the 10px "little" size that merges adjacent
+				// letters: "Farm" and "Swarm" both render with the r fused into
+				// the m. Light hinting keeps the vertical snapping that makes
+				// small text crisp but leaves horizontal metrics alone.
+				TTF_SetFontHinting(font, TTF_HINTING_LIGHT);
 				setStyle(Style(STYLE_NORMAL, 255, 255, 255));
 				return true;
 			}

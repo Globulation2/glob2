@@ -191,10 +191,11 @@ void GameGUI::adjustLocalTeam()
 	// track which team's areas to draw. This is render-only display state, not sim state.
 	game.map.setDisplayedTeam(localTeamNo);
 
-	// Rebuild the render-only forbidden / guard / clear overlay caches for the new view.
+	// Rebuild the render-only forbidden / guard / clear / farm overlay caches for the new view.
 	game.map.computeDisplayedForbidden(localTeamNo);
 	game.map.computeDisplayedGuardArea(localTeamNo);
 	game.map.computeDisplayedClearArea(localTeamNo);
+	game.map.computeDisplayedFarmArea(localTeamNo);
 
 	// set default event position
 	eventGoPosX = localTeam->startPosX;

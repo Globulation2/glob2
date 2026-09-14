@@ -188,6 +188,8 @@ Válassz egy játékot
 Válassz egy térképet
 [clear area]
 Tisztítási terület
+[farm area]
+Termesztési terület
 [Clearing:]
 Tisztítás:
 [clearingflag explanation 2]

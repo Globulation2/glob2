@@ -68,6 +68,7 @@ public:
 	Sprite *areaClearing;
 	Sprite *areaForbidden;
 	Sprite *areaGuard;
+	Sprite *areaFarm;
 	Sprite *bullet;
 	Sprite *bulletExplosion;
 	Sprite *deathAnimation;

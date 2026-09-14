@@ -415,7 +415,7 @@ public:
 
 	Uint8 *getData(void);
 
-	//! Parse the wire format for an OrderAlter{Forbidden,GuardArea,ClearArea}
+	//! Parse the wire format for an OrderAlter{Forbidden,GuardArea,ClearArea,FarmArea}
 	//! packet. Layout: 14-byte fixed header
 	//! (teamNumber: Uint8, type: Uint8, centerX/Y: Sint16, minX/Y: Sint16,
 	//! maxX/Y: Sint16, all big-endian)
@@ -497,6 +497,20 @@ public:
 	static std::shared_ptr<OrderAlterClearArea> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
 	Uint8 getOrderType(void) { return ORDER_ALTER_CLEAR_AREA; }
+};
+
+class OrderAlterFarmArea:public OrderAlterArea
+{
+public:
+	OrderAlterFarmArea() = default;
+	#ifndef YOG_SERVER_ONLY
+	OrderAlterFarmArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterArea(teamNumber, type, acc, map) { }
+	#endif
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderAlterFarmArea> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
+
+	Uint8 getOrderType(void) { return ORDER_ALTER_FARM_AREA; }
 };
 
 

@@ -47,6 +47,7 @@ namespace GameGUIKeyActions
 		table.add(SelectPlaceForbiddenArea, "select place forbidden area");
 		table.add(SelectPlaceGuardArea, "select place guard area");
 		table.add(SelectPlaceClearingArea, "select place clearing area");
+		table.add(SelectPlaceFarmArea, "select place farm area");
 		table.add(SwitchToAddingAreas, "switch to adding areas");
 		table.add(SwitchToRemovingAreas, "switch to removing areas");
 		table.add(SwitchToAreaBrush1, "switch to area brush 1");

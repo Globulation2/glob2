@@ -194,6 +194,8 @@ Escull una partida
 Escull un mapa
 [clear area]
 Area de Neteja
+[farm area]
+Area de Conreu
 [Clearing:]
 Netejant
 [clearingflag explanation 2]

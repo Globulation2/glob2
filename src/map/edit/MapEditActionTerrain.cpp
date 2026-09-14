@@ -107,6 +107,10 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	{
 		beginZonePlacement(GuardAreaBrush);
 	}
+	else if(action=="select farm zone")
+	{
+		beginZonePlacement(FarmAreaBrush);
+	}
 	else if(action=="handle zone click")
 	{
 		if(brushType==NoBrush)
@@ -302,6 +306,7 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 			game.map.computeDisplayedForbidden(team);
 			game.map.computeDisplayedClearArea(team);
 			game.map.computeDisplayedGuardArea(team);
+			game.map.computeDisplayedFarmArea(team);
 		}
 	}
 	else

@@ -188,6 +188,8 @@ caps lock
 Выбор карты
 [clear area]
 Зона очистки
+[farm area]
+Зона земледелия
 [Clearing:]
 Очистка:
 [clearingflag explanation 2]

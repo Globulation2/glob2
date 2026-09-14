@@ -26,6 +26,7 @@ Uint32 Map::checkSum(bool heavy)
 				c.groundUnit +
 				c.airUnit +
 				c.forbidden +
+				c.farmArea +
 				c.scriptAreas;
 			cs=rotl1(cs);
 		}

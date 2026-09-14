@@ -188,6 +188,8 @@ caps lock
 یک نقشه انتخاب کن
 [clear area]
 منطقه‌ی پاکسازی
+[farm area]
+منطقه‌ی کشاورزی
 [Clearing:]
 درحال پاکسازی:
 [clearingflag explanation 2]

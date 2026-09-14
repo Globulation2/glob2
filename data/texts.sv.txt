@@ -194,6 +194,8 @@ Välj ett spel
 Välj en karta
 [clear area]
 Röjningsområde
+[farm area]
+Odlingsområde
 [Clearing:]
 Röjning:
 [clearingflag explanation 2]

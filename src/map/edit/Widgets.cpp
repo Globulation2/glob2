@@ -217,6 +217,12 @@ void ZoneSelector::draw()
 		if(me.brushType==MapEdit::ClearAreaBrush)
 			isSelected=true;
 	}
+	else if(zoneType==FarmingZone)
+	{
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 58);
+		if(me.brushType==MapEdit::FarmAreaBrush)
+			isSelected=true;
+	}
 	if(me.selectionMode==MapEdit::PlaceZone && isSelected)
 	{
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 22);

@@ -188,6 +188,8 @@ Caps Lock
 Избор мапе
 [clear area]
 Област чишћења
+[farm area]
+Област узгоја
 [Clearing:]
 Чишћење:
 [clearingflag explanation 2]

@@ -242,6 +242,8 @@ Caps Lock 鍵
 選擇一個地圖
 [clear area]
 清除區
+[farm area]
+耕種區
 [Clearing:]
 清除:
 [clearingflag explanation 2]
