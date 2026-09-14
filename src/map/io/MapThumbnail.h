@@ -1,54 +1,31 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2008 Bradley Arsenault
-// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
 #pragma once
-
+#include <memory>
 #include <string>
+#include <vector>
 #include "SDL_net.h"
 
+namespace GAGCore { class DrawableSurface; class OutputStream; class InputStream; }
 class Map;
-namespace GAGCore
-{
-	class DrawableSurface;
-	class OutputStream;
-	class InputStream;
-};
 
-///This class encapsulates everything about map thumbnails, which are shown when choosing a map before you start a game
+// Immutable, shared terrain pixels. The legacy wire image remains 128x128;
+// local previews retain up to 512 pixels along the longest map dimension.
 class MapThumbnail
 {
 public:
-	///Constructs a thumbnail
-	MapThumbnail();
-	
-	///Loads the thumbnail from the map with the given map name
-	void loadFromMap(const std::string& map);
-
-	///Renders the thumbnail from a map already in memory
-	void loadFromMap(const Map& map);
-	
-	///Encodes this thumbnail into a stream
-	void encodeData(GAGCore::OutputStream* stream) const;
-
-	///Decodes this thumbnail from a stream
-	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
-
-	///Loads the picture into the given surface
-	void loadIntoSurface(GAGCore::DrawableSurface *surface);
-	
-	///Returns the map width
-	int getMapWidth();
-	
-	///Returns the map height
-	int getMapHeight();
-	
-	///Returns true if this thumbnail is loaded
-	bool isLoaded();
-
+    static constexpr int MaxResolution = 512;
+    static constexpr unsigned MaxEncodedBytes = 60000;
+    struct Image { int width, height; std::vector<Uint8> rgb; };
+    void loadFromMap(const std::string& filename);
+    void loadFromMap(const Map& map);
+    void encodeData(GAGCore::OutputStream* stream) const;
+    void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
+    void loadIntoSurface(GAGCore::DrawableSurface* surface) const;
+    int getMapWidth() const { return lastW; }
+    int getMapHeight() const { return lastH; }
+    bool isLoaded() const { return bool(image); }
+    const std::shared_ptr<const Image>& pixels() const { return image; }
 private:
-	Uint8 buffer[128 * 128 * 3];
-	bool loaded;
-	int lastW;
-	int lastH;
+    std::shared_ptr<const Image> image;
+    int lastW = 0, lastH = 0;
 };

@@ -55,6 +55,7 @@ class LandscapePickerScreen : public Glob2Screen
 	{
 		LandscapePreviewer::Preview preview;
 		std::unique_ptr<DrawableSurface> surface;
+		std::unique_ptr<DrawableSurface> raster;
 		unsigned revision = ~0u;
 	};
 	static std::vector<GenerationRequest> requestsOf(const std::vector<Entry> &);

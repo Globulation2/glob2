@@ -277,7 +277,7 @@ int CustomGameScreen::choose(const std::string &title, const std::vector<std::st
 		endExecute(QUIT_APPLICATION);
 	return result;
 }
-void CustomGameScreen::onGroupActivated(int group) { currentTab = group; }
+void CustomGameScreen::onGroupActivated(int group) { currentTab = group; preview->cancelDrag(); }
 // One request per playable landscape, exactly as picking it would leave the draft: the
 // settings last used with it, or its defaults, at the current size and colony count.
 std::vector<std::pair<int, GenerationRequest>> CustomGameScreen::landscapeEntries() const
@@ -390,6 +390,7 @@ void CustomGameScreen::showStartQuality()
 }
 void CustomGameScreen::invalidate()
 {
+	preview->cancelDrag();
 	validMap = false;
 	quality = {};
 	previewRevision = ~0u;
@@ -425,25 +426,39 @@ bool CustomGameScreen::loadMap(const std::string &requestedPath)
 	const std::string path = (pathError || setup.random) ? requestedPath : canonical.string();
 	try
 	{
-		BinaryInputStream stream(Toolkit::getFileManager()->openInputStreamBackend(path));
-		MapHeader header;
-		if (!stream.isValid() || !header.load(&stream) ||
-			(header.getNumberOfTeams() < 1 || header.getNumberOfTeams() > Team::MAX_COUNT))
-			throw std::runtime_error("map header");
+		const auto stamp = std::filesystem::last_write_time(path);
+		const auto bytes = std::filesystem::file_size(path);
+		auto cached = std::find_if(preview->cache.begin(), preview->cache.end(),
+			[&](const auto &entry) { return entry.path == path && entry.time == stamp && entry.bytes == bytes; });
+		LobbyMapPreview::CachedMap entry;
+		if (cached != preview->cache.end())
+		{
+			entry = *cached;
+			preview->cache.erase(cached);
+		}
+		else
+		{
+			auto world = std::make_unique<Game>(nullptr);
+			BinaryInputStream body(Toolkit::getFileManager()->openInputStreamBackend(path));
+			if (!body.isValid() || !world->load(&body) || world->teamsCount() < 1 || world->teamsCount() > Team::MAX_COUNT)
+				throw std::runtime_error("map body");
+			entry.path = path; entry.time = stamp; entry.bytes = bytes; entry.header = world->mapHeader;
+			entry.terrain.loadFromMap(world->map);
+			if (!entry.terrain.isLoaded()) throw std::runtime_error("map terrain");
+			for (int i = 0; i < world->teamsCount(); ++i)
+				entry.starts.push_back({world->teams[i]->startPosX, world->teams[i]->startPosY, world->teams[i]->color});
+		}
 		int old = setup.capacity;
-		auto world = std::make_unique<Game>(nullptr);
-		BinaryInputStream body(Toolkit::getFileManager()->openInputStreamBackend(path));
-		if (!world->load(&body))
-			throw std::runtime_error("map body");
-		mapHeader = header;
-		setup.setCapacity(header.getNumberOfTeams());
+		mapHeader = entry.header;
+		setup.setCapacity(mapHeader.getNumberOfTeams());
 		source = path;
 		validMap = true;
-		preview->setMapThumbnail(path);
-		preview->starts.clear();
-		for (int i = 0; i < world->teamsCount(); ++i)
-			preview->starts.push_back(
-				{world->teams[i]->startPosX, world->teams[i]->startPosY, world->teams[i]->color});
+		preview->setMapThumbnail(entry.terrain);
+		preview->starts = entry.starts;
+		preview->cache.erase(std::remove_if(preview->cache.begin(), preview->cache.end(),
+			[&](const auto &item) { return item.path == path; }), preview->cache.end());
+		preview->cache.insert(preview->cache.begin(), std::move(entry));
+		if (preview->cache.size() > 8) preview->cache.pop_back();
 		if (!setup.random)
 		{
 			setup.premadeMap = path;
@@ -459,6 +474,7 @@ bool CustomGameScreen::loadMap(const std::string &requestedPath)
 	}
 	catch (const std::exception &)
 	{
+		preview->setState(MapPreview::State::Failed);
 		validMap = false;
 		message = tr("Could not load this map. Choose another map or retry.");
 		return false;
@@ -540,8 +556,20 @@ bool CustomGameScreen::generateMap()
 			game->save(&stream, true, "Random map");
 			stream.flush();
 		}
-		if (!loadMap(candidate))
-			throw std::runtime_error("snapshot load");
+		// Keep the actual generated world for rasterization. Only read back its
+		// finalized header (offset and SHA1), not a second whole Game and Map.
+		BinaryInputStream headerStream(Toolkit::getFileManager()->openInputStreamBackend(candidate));
+		if (!headerStream.isValid() || !mapHeader.load(&headerStream))
+			throw std::runtime_error("snapshot header");
+		MapThumbnail terrain;
+		terrain.loadFromMap(game->map);
+		if (!terrain.isLoaded()) throw std::runtime_error("snapshot preview");
+		preview->setMapThumbnail(terrain);
+		preview->starts.clear();
+		for (int i = 0; i < game->teamsCount(); ++i)
+			preview->starts.push_back({game->teams[i]->startPosX, game->teams[i]->startPosY, game->teams[i]->color});
+		source = candidate;
+		validMap = true;
 		if (!snapshot.empty())
 			std::filesystem::remove_all(std::filesystem::path(snapshot).parent_path());
 		snapshot = candidate;
@@ -571,6 +599,8 @@ void CustomGameScreen::updateLayout()
 }
 void CustomGameScreen::onSDLEvent(SDL_Event *event)
 {
+	if (currentTab == groups[0] && validMap && !controls->popup.open && controls->pressed.empty() &&
+		preview->handlePreviewEvent(event)) return;
 	if (controls->handle(event))
 		return;
 	if (event->type == SDL_KEYDOWN && currentTab == groups[0] && !setup.random &&
@@ -1224,7 +1254,7 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 			[this] { showStartQuality(); }, false, true, false, "little");
 	}
 	// A random map keeps a row under its preview for the Randomize button.
-	const int previewLimit = h - (setup.random ? 162 : 126);
+	const int previewLimit = std::max(1, h - (setup.random ? 210 : 174));
 	int size = std::min(rightW, previewLimit);
 	int previewW = size, previewH = size;
 	if (validMap)
@@ -1238,12 +1268,14 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 		}
 	}
 	int px = rightX + (rightW - previewW) / 2, py = top + 51;
+	int helpHeight = 0;
 	ui.box({px - 3, py - 3, previewW + 6, previewH + 6}, ui.line);
 	if (validMap)
 	{
 		preview->setScreenPosition(px - (gfx->getW() - 640) / 2, py - (gfx->getH() - 480) / 2);
 		preview->setDimensions(previewW, previewH);
 		preview->paint();
+		helpHeight = ui.paragraph(rightX, py + previewH + 7, rightW, tr("Map preview controls"), "little", true);
 	}
 	else
 	{
@@ -1258,7 +1290,7 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 		const int buttonW = std::min(rightW, 160);
 		ui.button(
 			"map/randomize",
-			{rightX + (rightW - buttonW) / 2, py + (validMap ? previewH : size) + 10, buttonW, 30},
+			{rightX + (rightW - buttonW) / 2, py + (validMap ? previewH + helpHeight + 7 : size) + 10, buttonW, 30},
 			tr("Randomize"),
 			[this]
 			{

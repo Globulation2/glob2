@@ -129,6 +129,7 @@ void LandscapePickerScreen::refresh()
 		tile.revision = revision;
 		tile.preview = previewer.preview(i);
 		tile.surface.reset();
+		tile.raster.reset();
 		// A random set of parameters the world refused (every seed failed) is drawn again while
 		// draws remain: the sheet should show maps, not failures, and the user asked for variety.
 		if (tile.preview.state == LandscapePreviewer::State::Failed && redraws[i] > 0)
@@ -144,7 +145,7 @@ void LandscapePickerScreen::refresh()
 		{
 			// Surfaces belong to the UI thread; the worker only hands over pixels.
 			tile.surface =
-				std::make_unique<DrawableSurface>(MapPreview::PreviewSize, MapPreview::PreviewSize);
+				std::make_unique<DrawableSurface>(tile.preview.thumbnail.pixels()->width, tile.preview.thumbnail.pixels()->height);
 			tile.preview.thumbnail.loadIntoSurface(tile.surface.get());
 		}
 	}
@@ -248,7 +249,7 @@ void LandscapePickerScreen::render()
 			current);
 		const SDL_Rect frame{r.x + 8, r.y + 8, image, image};
 		ui.box(frame, Color(211, 223, 197), 3);
-		const auto &tile = tiles[i];
+		auto &tile = tiles[i];
 		std::string note;
 		if (tile.preview.state == LandscapePreviewer::State::Ready && tile.surface)
 		{
@@ -260,7 +261,7 @@ void LandscapePickerScreen::render()
 			map.x += (image - map.w) / 2;
 			map.y += (image - map.h) / 2;
 			drawMapThumbnail(ui.surface(), map, tile.surface.get(), tile.preview.width,
-							 tile.preview.height, tile.preview.starts, compact ? 12 : 14);
+							 tile.preview.height, tile.preview.starts, tile.raster, compact ? 12 : 14);
 			note = std::to_string(tile.preview.width) + " x " +
 				   std::to_string(tile.preview.height) + "  /  " +
 				   std::to_string(tile.preview.starts.size()) + " " + tr("colonies");

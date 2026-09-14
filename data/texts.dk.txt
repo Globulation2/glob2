@@ -2276,3 +2276,17 @@ Plads
 Afsondring
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Hver kolonis start måles på det færdige kort: vejen til hvede og til træ, hvor godt dens jord vokser igen, forekomsterne og byggepladserne inden for rækkevidde og afstanden til rivalerne. Hver faktor scorer fra 0 til 1 mod en fast målestok, totalen vægter dem, retfærdigheden er den dårligste kolonis total delt med den bedstes, og pointtallet er den dårligste total gange retfærdigheden.
+[Map preview controls]
+Træk for at se over kanterne. Brug hjulet til zoom. Højreklik eller dobbeltklik for at nulstille.
+[Map preview drag help]
+Træk for at flytte; brug hjulet til zoom.
+[Map preview loading]
+Indlæser...
+[Map preview failed]
+Forhåndsvisning mislykkedes
+[Map preview retry]
+Klik for at prøve igen
+[Map preview please wait]
+Vent venligst
+[Map preview choose another]
+Vælg et kort

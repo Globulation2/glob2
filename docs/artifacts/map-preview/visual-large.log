@@ -1,0 +1,22 @@
+Settings::load("preferences.txt") : error, can't open file.
+PASS rectangular placement, positive/negative multi-period drags and inverse drags
+Map thumbnail decode: Incomplete binary field: lastW: unspecified iostream_category error
+Map thumbnail decode: Incomplete binary field: lastH: unspecified iostream_category error
+Map thumbnail decode: Incomplete binary field: compressed: unspecified iostream_category error
+Map thumbnail decode: Incomplete binary field: compressed: unspecified iostream_category error
+Map thumbnail decode: Incomplete binary field: compressed: unspecified iostream_category error
+Map thumbnail decode: Invalid map preview pixels
+Map thumbnail decode: Map preview length
+Map thumbnail decode: Invalid map preview pixels
+Map thumbnail decode: Invalid map preview pixels
+Map thumbnail decode: Invalid map preview pixels
+PASS sharp terrain, legacy/new codecs, frame limit, malformed/short/oversized inputs and missing files
+PASS online deduplication, timeout/retry, failure, refresh cache, revision invalidation and eviction
+Map generation: swamp revision 2 seed 843569912 [complete]:
+Map generation: swamp revision 2 seed 99576796 [complete]:
+Map generation: swamp revision 2 seed 2311701542 [complete]:
+Map generation: swamp revision 2 seed 1411467431 [complete]:
+Map generation: swamp revision 2 seed 1894869499 [complete]:
+Map thumbnail load: String mapName length > 1048576: unspecified iostream_category error
+PASS native widget events and custom lobby captures: artifacts/map-preview-rebased-large
+ALL PRE-GAME MAP PREVIEW TESTS PASSED

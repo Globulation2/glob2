@@ -892,24 +892,27 @@ struct CustomGameSetupHarness
       };
       const auto corner = pixel(rect.x + 1, rect.y + 1);
       assert(corner[0] || corner[1] || corner[2]); // no thumbnail letterbox inside the map
-      // LobbyMapPreview clamps a marker's top-left corner so the whole 16x16 square stays inside
-      // the preview, which on a narrow one squeezes a whole edge of the map onto one row or column:
-      // a 128x512 map is 34 pixels wide in the compact window, so every start past about x=60
-      // lands on the same column. Markers then overlap, and each one paints a 20x20 dark backing
-      // two pixels outside its 16x16 fill before filling it, so a later marker legitimately covers
-      // an earlier one's sampled pixel whenever it lands anywhere near it, not only exactly on top
-      // of it. Only a start that nothing is drawn over afterwards can be checked.
+      // Markers stay centered on terrain and repeat across the torus seams.
       std::vector<int> markerX, markerY;
       for (const auto &start : expectedStarts) {
-        markerX.push_back(rect.x + std::clamp(start.x * rect.w / mapW, 2, std::max(2, rect.w - 18)));
-        markerY.push_back(rect.y + std::clamp(start.y * rect.h / mapH, 2, std::max(2, rect.h - 18)));
+        markerX.push_back(rect.x + start.x * rect.w / mapW);
+        markerY.push_back(rect.y + start.y * rect.h / mapH);
       }
       for (size_t i = 0; i < expectedStarts.size(); ++i) {
-        const int sampleX = markerX[i] + 1, sampleY = markerY[i] + 1;
+        const int sampleX = rect.x + (markerX[i] - rect.x - 7 + rect.w) % rect.w;
+        const int sampleY = rect.y + (markerY[i] - rect.y - 7 + rect.h) % rect.h;
+        // The frame is painted over the outermost terrain pixels.
+        if (sampleX == rect.x || sampleX == rect.x + rect.w - 1 ||
+            sampleY == rect.y || sampleY == rect.y + rect.h - 1)
+          continue;
         bool covered = false;
-        for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
-          covered = sampleX >= markerX[j] - 2 && sampleX <= markerX[j] + 17 &&
-                    sampleY >= markerY[j] - 2 && sampleY <= markerY[j] + 17;
+for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
+  for (int dy = -1; dy <= 1; ++dy)
+    for (int dx = -1; dx <= 1; ++dx) {
+      const int cx = markerX[j] + dx * rect.w, cy = markerY[j] + dy * rect.h;
+      covered = covered || (sampleX >= cx - 10 && sampleX < cx + 10 &&
+                            sampleY >= cy - 10 && sampleY < cy + 10);
+    }
         if (covered)
           continue;
         const auto &start = expectedStarts[i];
@@ -1117,7 +1120,8 @@ struct CustomGameSetupHarness
       assert(screen.chosenSeed == seed);
       clickControl("generator/width");
       assert(screen.controls->popup.open);
-      keyEvent(SDLK_UP);
+      // Enlarge it: shrinking can violate the selected landscape's minimum home spacing.
+      keyEvent(SDLK_DOWN);
       keyEvent(SDLK_RETURN);
       assert(!screen.chosenSeed && screen.previewPending);
       preview();

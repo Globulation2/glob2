@@ -2200,3 +2200,17 @@ Prostor
 Odmaknjenost
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Začetek vsake kolonije se meri na dokončanem zemljevidu: pot do pšenice in do lesa, kako dobro se njena zemlja obnavlja, zaloge in gradbena mesta v dosegu ter razdalja do tekmecev. Vsak dejavnik dobi oceno od 0 do 1 glede na stalno merilo, skupni seštevek jih uteži, pravičnost je seštevek najslabše kolonije deljen s seštevkom najboljše, ocena pa je najslabši seštevek pomnožen s pravičnostjo.
+[Map preview controls]
+Povlecite za premik čez robove. Kolešček za povečavo. Desni ali dvojni klik za ponastavitev.
+[Map preview drag help]
+Povlecite za premik; kolešček za povečavo.
+[Map preview loading]
+Nalaganje...
+[Map preview failed]
+Predogled ni uspel
+[Map preview retry]
+Kliknite za ponovni poskus
+[Map preview please wait]
+Počakajte
+[Map preview choose another]
+Izberite zemljevid

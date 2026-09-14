@@ -436,3 +436,14 @@ keyboard file formats remain unchanged.
 settings, language, persistence, keyboard, multiplayer eligibility and camera
 cadence regressions without starting the unrelated engine/replay scenarios.
 The full invocation remains available and reports buffered diagnostics on timeout.
+
+## Pre-game map preview regression
+
+Build `scons -j6 release=1 server=0 map-preview-test`, then run
+`python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapPreviewHarness`.
+For native software captures, run
+`./build/src/MapPreviewHarness glob2-map-preview-tests --visual artifacts/map-preview` (under `xvfb-run -a` on
+headless Linux). Linux CI builds and runs both modes. Fixtures exercise rectangular
+placement, toroidal dragging, legacy/new codecs, malformed input, network frame
+bounds, thumbnail request deduplication, timeout/retry and bounded cache reuse.
+See [pre-game preview behavior and compatibility](../docs/pre-game-map-preview.md).

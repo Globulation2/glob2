@@ -2270,3 +2270,17 @@ Cortex
 Απομόνωση
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Η εκκίνηση κάθε αποικίας μετριέται στον τελικό χάρτη: η διαδρομή ως το σιτάρι και ως το ξύλο, πόσο καλά ξαναφυτρώνει το έδαφός της, τα αποθέματα και οι θέσεις δόμησης σε εμβέλεια, και η απόστασή της από τους αντιπάλους. Κάθε παράγοντας βαθμολογείται από 0 έως 1 απέναντι σε σταθερό όριο, το σύνολο τους σταθμίζει, η δικαιοσύνη είναι το σύνολο της χειρότερης αποικίας προς εκείνο της καλύτερης, και η βαθμολογία είναι το χειρότερο σύνολο επί τη δικαιοσύνη.
+[Map preview controls]
+Σύρετε για μετακίνηση πέρα από τα άκρα. Ροδέλα για ζουμ. Δεξί ή διπλό κλικ για επαναφορά.
+[Map preview drag help]
+Σύρετε για μετακίνηση· ροδέλα για ζουμ.
+[Map preview loading]
+Φόρτωση...
+[Map preview failed]
+Αποτυχία προεπισκόπησης
+[Map preview retry]
+Κλικ για νέα προσπάθεια
+[Map preview please wait]
+Παρακαλώ περιμένετε
+[Map preview choose another]
+Επιλέξτε χάρτη

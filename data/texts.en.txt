@@ -2198,3 +2198,17 @@ Room
 Isolation
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.
+[Map preview controls]
+Drag to wrap. Wheel to zoom. Right-click or double-click to reset.
+[Map preview drag help]
+Drag to wrap; wheel to zoom.
+[Map preview loading]
+Loading...
+[Map preview failed]
+Preview failed
+[Map preview retry]
+Click to retry
+[Map preview please wait]
+Please wait
+[Map preview choose another]
+Choose a map

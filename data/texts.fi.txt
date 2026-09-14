@@ -2200,3 +2200,17 @@ Tila
 Eristyneisyys
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Jokaisen yhdyskunnan aloitus mitataan valmiilta kartalta: matka vehnän ja puun luo, kuinka hyvin sen maa kasvaa takaisin, ulottuvilla olevat esiintymät ja rakennuspaikat sekä etäisyys kilpailijoihin. Jokainen tekijä saa pisteet 0–1 kiinteää mittapuuta vasten, kokonaisarvo painottaa ne, tasapuolisuus on heikoimman yhdyskunnan kokonaisarvo jaettuna parhaan arvolla, ja pisteet ovat heikoin kokonaisarvo kerrottuna tasapuolisuudella.
+[Map preview controls]
+Vedä reunojen yli. Zoomaa rullalla. Palauta näkymä oikealla tai kaksoisnapsautuksella.
+[Map preview drag help]
+Siirrä vetämällä; zoomaa rullalla.
+[Map preview loading]
+Ladataan...
+[Map preview failed]
+Esikatselu epäonnistui
+[Map preview retry]
+Yritä uudelleen napsauttamalla
+[Map preview please wait]
+Odota hetki
+[Map preview choose another]
+Valitse kartta
