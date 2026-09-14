@@ -90,6 +90,13 @@ Result::Result()
 {
 }
 
+void Result::clear()
+{
+	consumers.clear();residual.clear();residualSums.clear();
+	totalSupply=totalDemand=totalClaimed=totalResidual=bestSiteResidual=0;
+	residualSumsWidth=residualSumsHeight=0;
+}
+
 const ConsumerResult* Result::consumer(int key) const
 {
 	for(size_t i=0;i<consumers.size();++i)
@@ -183,7 +190,7 @@ void Ledger::walk(const Input& input, int centerX, int centerY, int left,
 
 void Ledger::evaluate(const Input& input, Result& result) const
 {
-	result=Result();
+	result.clear();
 	const int size=input.width*input.height;
 	if(size<=0||int(input.yield.size())!=size
 	   ||int(input.traversable.size())!=size)return;

@@ -1113,7 +1113,7 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
 	// An appraisal reads the replaced building's standing from the full ledger
 	// of the same world, so refresh that baseline before excluding anything.
 	if(excludeBuilding>=0)prepareFoodLedger(world,excludeAction,-1);
-	foodResult=Result();foodInput.consumers.clear();
+	foodResult.clear();foodInput.consumers.clear();
 	foodLedgerExcludedAction=excludeAction;foodLedgerExcludedBuilding=excludeBuilding;
 	foodLedgerPrepared=true;
 	if(!placementPolicy.foodLedgerEnabled)return;

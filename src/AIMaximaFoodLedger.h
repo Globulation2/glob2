@@ -127,6 +127,8 @@ struct Input
 struct Result
 {
 	Result();
+	/// Invalidate the snapshot while retaining buffers for the next evaluation.
+	void clear();
 	std::vector<ConsumerResult> consumers;
 	/// Supply still unclaimed on every cell, in the same micro-wheat units.
 	std::vector<uint32_t> residual;

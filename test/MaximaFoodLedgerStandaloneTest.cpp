@@ -273,8 +273,13 @@ static void equalTotalChangesRefreshTheSnapshot()
 	resized.yield[resized.index(0,0)]=50;
 	ledger.evaluate(resized,result);
 	assert(ledger.residualUpperBound(resized,result,0,0,0,0,1,1)==50);
+	const size_t capacity=result.residual.capacity();
 	ledger.evaluate(Input(),result);
+	assert(result.residual.empty()&&result.consumers.empty());
+	assert(result.totalSupply==0&&result.totalResidual==0&&result.bestSiteResidual==0);
+	assert(result.residual.capacity()==capacity);
 	assert(ledger.residualUpperBound(resized,result,0,0,0,0,1,1)==0);
+	assert(other.residualUpperBound(input,original,3,3,0,0,1,1)==100);
 }
 
 // Opt-in measurement, never a timing assertion in CI. Compare the same driver
