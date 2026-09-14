@@ -21,6 +21,9 @@
 	#define PACKAGE_VERSION "System Specific - not using autoconf"
 #endif
 #include "Version.h"
+#ifndef YOG_SERVER_ONLY
+#include "MapCommand.h"
+#endif
 
 namespace
 {
@@ -394,6 +397,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("\t\trequires --map; mutually exclusive with --ai-types\n");
 			printf("--save-game-as <path>\twrite the tick-0 .game file before running -test-games*\n");
 			printf("\t\t(pair with GLOB2_TEST_SEED for a reproducible scenario)\n");
+			printMapCommandHelp();
 			printf("-test-map-gen\tGenerates random maps endlessly, without gui\n");
 			printf("-admin-router Allows you to connect to a YOG router to do administration\n");
 			printf("-vs <name>\tsave a videoshot as name\n");

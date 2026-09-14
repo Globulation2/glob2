@@ -845,7 +845,7 @@ int main(int argc, char **argv)
 			std::fprintf(f, "\n");
 		}
 		std::fclose(f);
-		// An overlay beside the dump, one integer per tile, for tools/render_map.py to tint the map
+		// An overlay beside the dump, one integer per tile, for analysis tools to tint the map
 		// by: growth (the crop growth chance, 0-255), sites (1 where a 4x4 building fits today),
 		// chop (every tile's cheapest cost from the nearest colony, clearing wheat and wood as it
 		// goes; -1 unreachable) or owner (which colony that is; -1 unreachable).

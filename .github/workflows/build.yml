@@ -85,6 +85,17 @@ jobs:
       - name: Build glob2
         run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1
 
+      - name: Test map CLI with the shared OpenGL renderer
+        run: |
+          python3 test/test_map_cli.py build/src/glob2 --generation-only
+          LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a python3 test/test_map_cli.py build/src/glob2
+      - name: Upload map CLI previews and command log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-cli-${{ matrix.runner }}
+          path: artifacts/map-cli/
+
       - name: Test torus geometry, picking and cloud coordinates
         run: |
           ${{ matrix.compiler }} -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
@@ -380,6 +391,15 @@ jobs:
 
       - name: Build glob2
         run: scons -j$(nproc) release=1 mingw=1
+
+      - name: Test headless map generation CLI
+        run: python3 test/test_map_cli.py build/src/glob2.exe --generation-only
+      - name: Upload map CLI previews and command log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-cli-windows
+          path: artifacts/map-cli/
 
       - name: Test clearing flag resource bounds
         run: |

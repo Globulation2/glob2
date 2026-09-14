@@ -163,6 +163,7 @@ GameHints.cpp
 GameObjectives.cpp
 GameUtilities.cpp
 Glob2.cpp
+MapCommand.cpp
 Glob2Screen.cpp
 Glob2Style.cpp
 FrontendTheme.cpp

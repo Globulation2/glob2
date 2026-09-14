@@ -1269,10 +1269,11 @@ taking the next chamber down the tunnel.
   every playable landscape at the colony counts and sizes the lobby offers, five seeds at 128
   and 256 and three at 512, prints the success rate per cell and fails any valid cell where no
   seed generated: that is what a player would see as a failed generation. CI runs all three.
-- `tools/render_map.py` renders what the study dumps as PNG, one map (`one <generator>`) or a
-  sheet of generators beside each other at several sizes with an HTML page of captions
-  (`sheet <generators...> --sizes 128 256 512`), optionally tinted by an overlay; no third-party
-  modules. Compare a new generator with its nearest neighbours this way before showing it.
+- The normal client's [map CLI](CLI.md) generates maps and PNG previews with
+  `--generate-map`, loads maps/saves with `--preview-map`, and lists settings with
+  `--list-map-generators`. It supports config files and CLI controls, and reuses the lobby/picker preview renderer.
+  Compare a new generator with its nearest neighbours at 128, 256, and 512 tiles
+  using the documented batch commands before showing it.
 - `tools/new_map_generator.py <id> "<Display name>"` scaffolds a generator that builds, registers
   and passes its own validation: header and source in the designed shape (colonies on a lattice,
   a home and pond each, the kit and crop guarantee), the registry entry, the SConscript line, the

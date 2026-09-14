@@ -47,6 +47,12 @@ to `~/.glob2/replays/last_game.replay`; `GLOB2_REPLAY_PATH` overrides the locati
 See `test/README.md` for the Map-subclass test pattern that avoids linking the
 full simulation for map-predicate tests.
 
+The client also offers `--generate-map`, `--preview-map`, and
+`--list-map-generators` modes; see [map CLI](map-generators/CLI.md) for config files,
+settings, PNG output, and previews of existing maps and saves. PNG export uses
+the existing OpenGL renderer and needs a display context; map-only generation
+can run headlessly.
+
 ## Simulation verification and diagnostics
 
 A `Team` is a colony; a `Player` controls a team, and several players can share one.
