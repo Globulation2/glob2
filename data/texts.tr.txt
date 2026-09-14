@@ -194,6 +194,8 @@ Oyun seç
 Harita seç
 [clear area]
 Temizlik bölgesi
+[farm area]
+Tarım bölgesi
 [Clearing:]
 Temizlenen kaynaklar:
 [clearingflag explanation 2]

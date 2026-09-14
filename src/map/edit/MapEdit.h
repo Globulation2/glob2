@@ -22,6 +22,19 @@
 #define RIGHT_MENU_WIDTH 160
 #define RIGHT_MENU_OFFSET (160-128)/2
 
+// The editor's zone-selector row, panel-local x per ZoneSelector. It carries the
+// same four buttons as the in-game strip and uses the same pitch, but the editor
+// keeps its own copy of the panel constants (see RIGHT_MENU_OFFSET above), so the
+// numbers are repeated here rather than shared with GameGUIInternal.h. Three
+// buttons used to sit at a 40px pitch from 8; a fourth would run past the 160px
+// panel, so the pitch is 38 from 6, ending at 152.
+constexpr int MAPEDIT_ZONE_BUTTON_PITCH = 38;
+constexpr int MAPEDIT_ZONE_BUTTON_X0 = 6;
+constexpr int mapEditZoneButtonX(int index)
+{
+	return MAPEDIT_ZONE_BUTTON_X0 + index * MAPEDIT_ZONE_BUTTON_PITCH;
+}
+
 
 class MapEdit;
 
@@ -130,6 +143,7 @@ public:
 		ForbiddenZone,
 		GuardingZone,
 		ClearingZone,
+		FarmingZone,
 	};
 	
 	ZoneSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, ZoneType zoneType);
@@ -541,6 +555,7 @@ private:
 	ZoneSelector* forbiddenZone;
 	ZoneSelector* guardZone;
 	ZoneSelector* clearingZone;
+	ZoneSelector* farmingZone;
 	BrushSelector* zoneBrushSelector;
 	UnitSelector* worker;
 	UnitSelector* explorer;
@@ -716,6 +731,7 @@ private:
 		ForbiddenBrush,
 		GuardAreaBrush,
 		ClearAreaBrush,
+		FarmAreaBrush,
 		NoBrush,
 		
 	} brushType;

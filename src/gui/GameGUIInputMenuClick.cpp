@@ -84,20 +84,16 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	{
 		int dec = (RIGHT_MENU_WIDTH - BrushTool::WIDTH)/2;
 		int relY = my - YPOS_BASE_FLAG;
-		int nmx = mx - dec;
 		if (relY > YOFFSET_BRUSH)
 		{
 			// set the selection
 			setSelection(BRUSH_SELECTION);
-			// change the brush type (forbidden, guard, clear) if necessary
+			// change the brush type (forbidden, guard, clear, farm) if necessary
 			if (relY < YOFFSET_BRUSH+ZONE_STRIP_HEIGHT)
 			{
-				if (nmx < 44)
-					toolManager.activateZoneTool(GameGUIToolManager::Forbidden);
-				else if (nmx < 84)
-					toolManager.activateZoneTool(GameGUIToolManager::Guard);
-				else if(nmx < 124)
-					toolManager.activateZoneTool(GameGUIToolManager::Clearing);
+				const int zone = zoneStripButtonAt(mx);
+				if (zone >= 0)
+					toolManager.activateZoneTool((GameGUIToolManager::ZoneType)zone);
 			}
 			// anyway, update the tool
 			brush.handleClick(mx-dec, relY-YOFFSET_BRUSH-ZONE_STRIP_HEIGHT);

@@ -188,6 +188,8 @@ Elige una partida
 Elige un mapa
 [clear area]
 Limpiar área
+[farm area]
+Cultivar área
 [Clearing:]
 Limpiando:
 [clearingflag explanation 2]

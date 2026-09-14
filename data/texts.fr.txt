@@ -194,6 +194,8 @@ Choisir une partie
 Choisir une carte
 [clear area]
 Zone de défrichage
+[farm area]
+Zone de culture
 [Clearing:]
 Défrichage de:
 [clearingflag explanation 2]

@@ -373,7 +373,14 @@ int main(int argc, char **argv)
 		const auto mapBytes = bytes.substr(offset);
 		const size_t cells = size_t(gui.game.map.getW()) * gui.game.map.getH();
 		const size_t cellsStart = 12 + cells;
-		const size_t cellsEnd = cellsStart + cells * 33;
+		// Bytes one Tile occupies in the map section, per MapIO.cpp's save loop:
+		// terrain, building, resource, groundUnit, airUnit, forbidden, guardArea,
+		// clearArea, farmArea, scriptAreas, canResourcesGrow and fertility, plus
+		// the per-cell section framing. Adding a field to that loop moves this
+		// number, and the oversized-string corruption below lands on the wrong
+		// byte if it is not moved with it.
+		const size_t TILE_SAVE_BYTES = 37;
+		const size_t cellsEnd = cellsStart + cells * TILE_SAVE_BYTES;
 		const size_t mapEnd = mapBytes.find("MapE");
 		assert(mapEnd != std::string::npos && cellsEnd < mapEnd);
 		const size_t cuts[] = {0, 1, 3, 4, 7, 11, 12, cellsStart - 1, cellsStart,

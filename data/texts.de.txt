@@ -188,6 +188,8 @@ Spiel auswählen
 Karte auswählen
 [clear area]
 Rodungszone
+[farm area]
+Ackerzone
 [Clearing:]
 Rodung:
 [clearingflag explanation 2]

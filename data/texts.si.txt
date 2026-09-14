@@ -188,6 +188,8 @@ Izberi igro
 Izberi mapo
 [clear area]
 Območje čiščenja
+[farm area]
+Območje obdelovanja
 [Clearing:]
 Čiščenje:
 [clearingflag explanation 2]

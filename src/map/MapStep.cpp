@@ -248,6 +248,13 @@ void Map::computeDisplayedClearArea(int teamNumber)
 		displayedClearAreaView.set(i, (tiles[i].clearArea & teamMask) != 0);
 }
 
+void Map::computeDisplayedFarmArea(int teamNumber)
+{
+	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
+	for (size_t i=0; i<size; i++)
+		displayedFarmAreaView.set(i, (tiles[i].farmArea & teamMask) != 0);
+}
+
 
 void Map::initExploredArea(int teamNumber)
 {

@@ -52,6 +52,7 @@ namespace GameGUIKeyActions
 		SelectPlaceForbiddenArea,
 		SelectPlaceGuardArea,
 		SelectPlaceClearingArea,
+		SelectPlaceFarmArea,
 		SwitchToAddingAreas,
 		SwitchToRemovingAreas,
 		SwitchToAreaBrush1,

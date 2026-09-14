@@ -113,6 +113,9 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		case Clearing:
 			c = Color(251,206,0);
 			break;
+		case Farm:
+			c = Color(0,200,80);
+			break;
 		}
 		/* Instead of using a dimmer intensity to indicate
 			removing of areas, this should rather use dashed
@@ -295,6 +298,8 @@ Utilities::BitArray& GameGUIToolManager::displayedViewForZone(ZoneType type)
 		return game.map.displayedGuardAreaView;
 	case Clearing:
 		return game.map.displayedClearAreaView;
+	case Farm:
+		return game.map.displayedFarmAreaView;
 	}
 	assert(false);
 	return game.map.displayedForbiddenView;
@@ -317,6 +322,10 @@ void GameGUIToolManager::flushBrushOrders(int localteam)
 		else if (zoneType == Clearing)
 		{
 			orders.push(std::shared_ptr<Order>(new OrderAlterClearArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
+		}
+		else if (zoneType == Farm)
+		{
+			orders.push(std::shared_ptr<Order>(new OrderAlterFarmArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else
 			assert(false);

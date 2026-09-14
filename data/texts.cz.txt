@@ -188,6 +188,8 @@ Výběr hry
 Výběr mapy
 [clear area]
 Oblast čištění
+[farm area]
+Oblast farmy
 [Clearing:]
 Vyčištění:
 [clearingflag explanation 2]

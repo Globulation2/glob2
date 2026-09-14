@@ -147,6 +147,8 @@ MapEdit::AreaBrushTarget MapEdit::areaBrushTarget()
 		return {&Tile::guardArea, game.map.displayedGuardAreaView};
 	case ClearAreaBrush:
 		return {&Tile::clearArea, game.map.displayedClearAreaView};
+	case FarmAreaBrush:
+		return {&Tile::farmArea, game.map.displayedFarmAreaView};
 	default:
 		assert(false);
 		return {&Tile::forbidden, game.map.displayedForbiddenView};

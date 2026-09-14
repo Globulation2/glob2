@@ -194,6 +194,8 @@ Vyber si hru
 Vyber si mapu
 [clear area]
 Čistenie
+[farm area]
+Pestovanie
 [Clearing:]
 Čistenie:
 [clearingflag explanation 2]

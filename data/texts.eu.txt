@@ -194,6 +194,8 @@ Aukeratu partida
 Aukeratu mapa
 [clear area]
 Garbiketa zonaldea
+[farm area]
+Labore zonaldea
 [Clearing:]
 Garbitu:
 [clearingflag explanation 2]

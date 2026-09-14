@@ -188,6 +188,8 @@ caps lock
 选择一个地图
 [clear area]
 清除区域
+[farm area]
+耕种区域
 [Clearing:]
 清除中:
 [clearingflag explanation 2]

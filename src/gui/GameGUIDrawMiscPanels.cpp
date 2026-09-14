@@ -180,27 +180,27 @@ void GameGUI::drawFlagView(void)
 	// draw flags
 	drawChoice(YPOS_BASE_FLAG, flagsChoiceName, flagsChoiceState, 3);
 
-	// draw choice of area
-	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 13);
-	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+48+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 14);
-	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+88+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 25);
+	// draw choice of area, one sprite per ZoneType in strip order
+	static const int zoneStripSprite[ZONE_STRIP_BUTTON_COUNT] = {13, 14, 25, 58};
+	const int panelLeft = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
+	for (int zone=0; zone<ZONE_STRIP_BUTTON_COUNT; zone++)
+		globalContainer->gfx->drawSprite(panelLeft+zoneStripButtonX(zone), YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, zoneStripSprite[zone]);
 	if (brush.getType() != BrushTool::MODE_NONE)
 	{
-		int decX = 8 + ((int)toolManager.getZoneType()) * 40 + dec;
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 22);
+		globalContainer->gfx->drawSprite(panelLeft+zoneStripButtonX((int)toolManager.getZoneType()), YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 22);
 	}
 	globalContainer->gfx->finishDrawingSprite(globalContainer->gamegui, 255);
 	if(highlights.find(HighlightForbiddenZoneOnPanel) != highlights.end())
 	{
-		arrowPositions.push_back(HighlightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+8+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+		arrowPositions.push_back(HighlightArrowPosition(panelLeft-36+zoneStripButtonX(GameGUIToolManager::Forbidden), YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
 	}
 	if(highlights.find(HighlightGuardZoneOnPanel) != highlights.end())
 	{
-		arrowPositions.push_back(HighlightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+48+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+		arrowPositions.push_back(HighlightArrowPosition(panelLeft-36+zoneStripButtonX(GameGUIToolManager::Guard), YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
 	}
 	if(highlights.find(HighlightClearingZoneOnPanel) != highlights.end())
 	{
-		arrowPositions.push_back(HighlightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+88+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+		arrowPositions.push_back(HighlightArrowPosition(panelLeft-36+zoneStripButtonX(GameGUIToolManager::Clearing), YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
 	}
 
 	// draw brush
@@ -212,29 +212,30 @@ void GameGUI::drawFlagView(void)
 	}
 
 	// draw brush help text
-	if ((mouseX>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec) && (mouseY>YPOS_BASE_FLAG+YOFFSET_BRUSH))
+	// The strip now starts left of the brush panel's inset, so the hover region
+	// is anchored on the strip's own origin rather than on dec.
+	if ((mouseX>panelLeft+ZONE_STRIP_BUTTON_X0) && (mouseY>YPOS_BASE_FLAG+YOFFSET_BRUSH))
 	{
 		int buildingInfoStart = globalContainer->gfx->getH()-50;
+		// Hovering the strip names the button under the cursor; below it, the
+		// zone the brush is actually set to.
+		int hoveredZone;
 		if (mouseY<YPOS_BASE_FLAG+YOFFSET_BRUSH+ZONE_STRIP_HEIGHT)
-		{
-			int panelMouseX = mouseX - globalContainer->gfx->getW() + RIGHT_MENU_WIDTH;
-			if (panelMouseX < 44)
-				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[forbidden area]");
-			else if (panelMouseX < 84)
-				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[guard area]");
-			else
-				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[clear area]");
-		}
+			hoveredZone = zoneStripButtonAt(mouseX - globalContainer->gfx->getW() + RIGHT_MENU_WIDTH);
 		else
+			hoveredZone = (int)toolManager.getZoneType();
+		switch (hoveredZone)
 		{
-			if (toolManager.getZoneType() == GameGUIToolManager::Forbidden)
-				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[forbidden area]");
-			else if (toolManager.getZoneType() == GameGUIToolManager::Guard)
-				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[guard area]");
-			else if (toolManager.getZoneType() == GameGUIToolManager::Clearing)
-				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[clear area]");
-			else
-				assert(false);
+			case GameGUIToolManager::Forbidden:
+				drawTextCenter(panelLeft, buildingInfoStart-32, "[forbidden area]"); break;
+			case GameGUIToolManager::Guard:
+				drawTextCenter(panelLeft, buildingInfoStart-32, "[guard area]"); break;
+			case GameGUIToolManager::Clearing:
+				drawTextCenter(panelLeft, buildingInfoStart-32, "[clear area]"); break;
+			case GameGUIToolManager::Farm:
+				drawTextCenter(panelLeft, buildingInfoStart-32, "[farm area]"); break;
+			default:
+				break;
 		}
 	}
 }

@@ -68,6 +68,7 @@ bool MapEdit::load(const std::string filename)
 		game.map.computeDisplayedForbidden(team);
 		game.map.computeDisplayedClearArea(team);
 		game.map.computeDisplayedGuardArea(team);
+		game.map.computeDisplayedFarmArea(team);
 	
 		hasMapBeenModified = false;
 		return true;

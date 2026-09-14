@@ -101,6 +101,9 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 		case ORDER_ALTER_CLEAR_AREA:
 			executeAlterClearArea(*std::static_pointer_cast<OrderAlterClearArea>(order), localPlayer);
 			break;
+		case ORDER_ALTER_FARM_AREA:
+			executeAlterFarmArea(*std::static_pointer_cast<OrderAlterFarmArea>(order), localPlayer);
+			break;
 		case ORDER_MODIFY_SWARM:
 			if (!isPlayerAlive) break;
 			executeModifySwarm(*std::static_pointer_cast<OrderModifySwarm>(order), localPlayer);
@@ -411,6 +414,53 @@ void Game::executeAlterClearArea(const OrderAlterClearArea& oaa, int localPlayer
 	else
 		assert(false);
 	map.updateClearAreasGradient(oaa.teamNumber);
+}
+
+// A farm area only changes what a harvest draws from, so unlike the other three
+// it feeds no gradient and invalidates no cached field. Painting one is pure
+// tile-mask bookkeeping.
+void Game::executeAlterFarmArea(const OrderAlterFarmArea& oaa, int localPlayer)
+{
+	if (oaa.type == BrushTool::MODE_ADD)
+	{
+		Uint32 teamMask = Team::teamNumberToMask(oaa.teamNumber);
+		size_t orderMaskIndex = 0;
+		for (int y=oaa.centerY+oaa.minY; y<oaa.centerY+oaa.maxY; y++)
+			for (int x=oaa.centerX+oaa.minX; x<oaa.centerX+oaa.maxX; x++)
+			{
+				if (oaa.mask.get(orderMaskIndex))
+				{
+					size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
+					// Update real map
+					map.tiles[index].farmArea |= teamMask;
+					// Update local map
+					if (oaa.teamNumber == players[localPlayer]->teamNumber)
+						map.displayedFarmAreaView.set(index, true);
+				}
+				orderMaskIndex++;
+			}
+	}
+	else if (oaa.type == BrushTool::MODE_DEL)
+	{
+		Uint32 notTeamMask = ~Team::teamNumberToMask(oaa.teamNumber);
+		size_t orderMaskIndex = 0;
+		for (int y=oaa.centerY+oaa.minY; y<oaa.centerY+oaa.maxY; y++)
+			for (int x=oaa.centerX+oaa.minX; x<oaa.centerX+oaa.maxX; x++)
+			{
+				if (oaa.mask.get(orderMaskIndex))
+				{
+					size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
+					// Update real map
+					map.tiles[index].farmArea &= notTeamMask;
+					// Update local map
+					if (oaa.teamNumber == players[localPlayer]->teamNumber)
+						map.displayedFarmAreaView.set(index, false);
+				}
+				orderMaskIndex++;
+			}
+	}
+	else
+		assert(false);
 }
 
 void Game::executeModifySwarm(const OrderModifySwarm& oms, int localPlayer)

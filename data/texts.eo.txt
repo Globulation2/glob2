@@ -188,6 +188,8 @@ Elektu ludon
 Elektu karton
 [clear area]
 Elviŝata areo
+[farm area]
+Kultivata areo
 [Clearing:]
 Viŝante na:
 [clearingflag explanation 2]

@@ -188,6 +188,8 @@ caps lock
 ﺍﺧﺘﺮ ﺧﺎﺭﻃﺔ
 [clear area]
 ﻣﻨﻄﻘﺔ ﺗﺼﻔﻴﺔ
+[farm area]
+ﻣﻨﻄﻘﺔ ﻗﻤﺢ
 [Clearing:]
 ﻳﺼﻔﻲ:
 [clearingflag explanation 2]

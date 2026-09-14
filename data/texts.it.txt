@@ -236,6 +236,8 @@ Seleziona una partita
 Seleziona una mappa
 [clear area]
 Area di raccolta
+[farm area]
+Area di coltura
 [Clearing:]
 Raccolta:
 [clearingflag explanation 2]
