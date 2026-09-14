@@ -271,11 +271,25 @@ profile and working directory; an optional final argument supplies a truncated
 save that must be rejected.
 
 The harness checks the production autosave path, byte equivalence with direct
-serialization, successful reload, truncated map data from file and memory
-streams, recovery after failed loads, and oversized map-area strings. Atomic
-replacement tests cover callback/open/rename failures and temporary-file cleanup.
+serialization to a file, successful reload, disabled autosave, truncated map data
+from file and memory streams, recovery after failed loads, and oversized map-area
+strings. Atomic replacement tests cover callback/open/rename failures and
+temporary-file cleanup; background writes cover superseded snapshots and their
+finish steps, completion on destruction and failed writes. Autosave bytes, SHA1
+included, must match an inline-hashed save, including when the header backpatch
+changes hashed bytes, and `Engine::haveMap` must trust a local save only when its
+SHA1 matches the host's header.
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
+
+## Clearing flag resource bounds
+
+Build `scons release=1 server=0 clearing-gradient-test` and run
+`python3 test/run-savegame-safety-tests.py --check-preferences build/src/ClearingFlagGradientTest`
+(add `.exe` on Windows). The shared runner isolates the working directory and
+profile and verifies that preferences remain unchanged. The regression covers
+weighted building gradients, basic-resource switches, fruit, empty tiles,
+allocation padding and every swimming class. CI executes it on Linux and Windows.
 
 ### Trapped colony elimination
 

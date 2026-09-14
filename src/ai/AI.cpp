@@ -18,6 +18,7 @@
 #include "AINicowar.h"
 #include "echo/Echo.h"
 #include "cortex/AICortex.h"
+#include "AICabino.h"
 
 using std::shared_ptr;
 
@@ -50,6 +51,9 @@ AI::AI(ImplementationID implementationID, Player *player)
 		break;
 		case CORTEX:
 			aiImplementation=new AICortex(player);
+		break;
+		case CABINO:
+			aiImplementation=new Cabino::AICabino(player);
 		break;
 		default:
 			assert(false);
@@ -139,6 +143,9 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		break;
 		case CORTEX:
 			aiImplementation=new AICortex(stream, player, versionMinor);
+		break;
+		case CABINO:
+			aiImplementation=new Cabino::AICabino(stream, player, versionMinor);
 		break;
 		default:
 			fprintf(stderr, "AI id %d does not exist, you probably try to load a map from a more recent version of glob2.\n", implementationID);

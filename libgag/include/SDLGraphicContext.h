@@ -350,6 +350,10 @@ namespace GAGCore
 		void applyWindowMinimumSize(void);
 		//! ratio of GL drawable pixels to logical pixels
 		float drawableScale(void);
+		//! target pixels per logical pixel for the rasteriser: the offscreen target while one is set, the window otherwise
+		float rasterScale(void);
+		//! target pixels per logical pixel while drawing into an offscreen target; 0 while drawing into the window
+		float renderTargetScale = 0.0f;
 		bool mapTransformActive=false;
         bool periodicCopy=false;
 		float mapScale=1, mapTranslateX=0, mapTranslateY=0;
@@ -417,6 +421,8 @@ namespace GAGCore
 		float getUiScale(void) const { return uiScale; }
 		//! the scale the last setRes() was asked for, before the window floor reduced it
 		float getWantedUiScale(void) const { return wantedUiScale; }
+		//! drawable pixels per logical pixel for text drawn on this context, 1 when unscaled
+		float textRenderScale(void);
 		//! the interface scale the desktop asks for, or 0 when nothing reports one
 		static float querySystemUiScale(void);
 		//! the scale actually used for a preference; 0 follows the desktop, GLOB2_UI_SCALE wins
@@ -438,6 +444,10 @@ namespace GAGCore
 		void windowToLogical(Sint32 &x, Sint32 &y);
 		//! set a GL line width in logical pixels; GL rasterises lines in window pixels, which the viewport does not scale
 		void setScaledLineWidth(float width);
+		//! declare that drawing now goes to an offscreen target with this many of its pixels per logical pixel; 0 restores the window
+		void setRenderTargetScale(float pixelsPerLogicalPixel) {renderTargetScale = pixelsPerLogicalPixel;}
+		//! target pixels per logical pixel the rasteriser is drawing at right now
+		float getRasterScale(void) {return rasterScale();}
 		//! translate SDL_GetMouseState coordinates through the active context's scaling
 		static void translateMouseCoordinates(int &x, int &y);
 		//! rewrite a polled event's mouse coordinates from window pixels to logical coordinates

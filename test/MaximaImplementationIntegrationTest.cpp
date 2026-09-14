@@ -1217,7 +1217,7 @@ static void explorerSwarmStaffingRegressions()
         game.map.setMapDiscovered(x,y,player.team->me);
     for(int position:{30,50})
     {
-        game.map.setResource(position+6,position+1,CORN,1);
+        game.map.setResource(position+6,position+1,WHEAT,1);
         game.map.getTile(position+6,position+3).terrain=256;
     }
     // Swarm 0 runs empty; swarms 1 and 2 stay full. Staffing is each swarm's
@@ -1225,7 +1225,7 @@ static void explorerSwarmStaffingRegressions()
     // apportionment to check: what matters is that the empty one ends up with
     // more carriers than the full ones.
     for(int id=0;id<3;++id)
-        c.buildings.get_building(id)->resources[CORN]=id ? 20 : 0;
+        c.buildings.get_building(id)->resources[WHEAT]=id ? 20 : 0;
     ai.budget.staffing_window_samples=2;
     ai.budget.staffing_cooldown_passes=0;
     ai.budget.staffing_minimum_workers=1;
@@ -1321,8 +1321,8 @@ static void economicResourceAccessRegressions()
     for(int y=0;y<64;++y)
     { game.map.getTile(0,y).terrain=256; game.map.getTile(16,y).terrain=256; }
     for(int y=0;y<64;++y) for(int x=0;x<64;++x) game.map.setMapDiscovered(x,y,player.team->me);
-    game.map.setResource(13,20,CORN,1);
-    game.map.setResource(19,11,CORN,1);
+    game.map.setResource(13,20,WHEAT,1);
+    game.map.setResource(19,11,WHEAT,1);
     game.map.setResource(19,12,WOOD,1);
     game.map.setResource(19,13,STONE,1);
     AIMaxima::Maxima ai(&player); Context& c=ai.context; c.initialize();

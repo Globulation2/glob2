@@ -469,7 +469,7 @@ namespace
 				if(!localTiles[index]
 				   || !map->isMapDiscovered(x, y, player->team->me)
 				   || tile.resource.amount<=0
-				   || (tile.resource.type!=ALGA && tile.resource.type!=CORN
+				   || (tile.resource.type!=ALGA && tile.resource.type!=WHEAT
 					   && tile.resource.type!=WOOD && tile.resource.type!=STONE))
 					continue;
 				if(tile.resource.type==ALGA)
@@ -497,7 +497,7 @@ namespace
 				{
 					switch(tile.resource.type)
 					{
-						case CORN: ++result.accessibleCornTiles; break;
+						case WHEAT: ++result.accessibleCornTiles; break;
 						case WOOD: ++result.accessibleWoodTiles; break;
 						case STONE: ++result.accessibleStoneTiles; break;
 						case ALGA:
@@ -974,7 +974,7 @@ void Maxima::initialize_topology_profile(Context& echo)
 			land+=here ? 0 : 1;
 			grass+=map.is_grass(x, y) ? 1 : 0;
 			buildable+=map.is_grass(x, y) && !resource ? 1 : 0;
-			corn+=map.is_resource(x, y, CORN) ? 1 : 0;
+			corn+=map.is_resource(x, y, WHEAT) ? 1 : 0;
 			wood+=map.is_resource(x, y, WOOD) ? 1 : 0;
 			stone+=map.is_resource(x, y, STONE) ? 1 : 0;
 			algae+=map.is_resource(x, y, ALGA) ? 1 : 0;
@@ -1064,7 +1064,7 @@ void Maxima::initialize_topology_profile(Context& echo)
 				continue;
 			component_buildable[label]+=map.is_grass(x, y)
 				&& !map.is_resource(x, y) ? 1 : 0;
-			component_corn[label]+=map.is_resource(x, y, CORN) ? 1 : 0;
+			component_corn[label]+=map.is_resource(x, y, WHEAT) ? 1 : 0;
 			component_wood[label]+=map.is_resource(x, y, WOOD) ? 1 : 0;
 			component_stone[label]+=map.is_resource(x, y, STONE) ? 1 : 0;
 			component_fruit[label]+=map.is_resource(x, y, CHERRY)
@@ -1642,7 +1642,7 @@ void Maxima::update_reconnaissance(Context& echo)
 				reconnaissance.observeEconomicActivity(*team,
 					unit->posX, unit->posY);
 				int economic_value=strategy.raiding.other_resource_value;
-				if(unit->carriedResource==CORN)
+				if(unit->carriedResource==WHEAT)
 					economic_value=strategy.raiding.food_resource_value;
 				else if(unit->carriedResource==WOOD
 				   || unit->carriedResource==STONE
@@ -2125,7 +2125,7 @@ void Maxima::plan_reconnaissance_objectives(Context& echo)
 							site.score=(resource==CHERRY || resource==ORANGE
 								|| resource==PRUNE)
 								? strategy.raiding.fruit_resource_value
-								: (resource==CORN
+								: (resource==WHEAT
 									? strategy.raiding.food_resource_value
 									: ((resource==WOOD || resource==STONE)
 										? strategy.raiding.material_resource_value
@@ -3032,7 +3032,7 @@ void Maxima::finalize_director_plan(Context& echo)
 		if(building && !operating_colonies.count(action.id))
 		{
 			if(!building->unitsWorking.empty()
-			   && building->resources[CORN]>=building->type->resourceForOneUnit)
+			   && building->resources[WHEAT]>=building->type->resourceForOneUnit)
 			{
 				operating_colonies.insert(action.id);
 				emit_telemetry(echo,"colony_swarm_operating",
@@ -5041,7 +5041,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 			++world.swimmingBuilders;
 	}
 	world.accessibleSupplies[WOOD]=environment.accessible_wood;
-	world.accessibleSupplies[CORN]=environment.accessible_corn;
+	world.accessibleSupplies[WHEAT]=environment.accessible_corn;
 	world.accessibleSupplies[STONE]=environment.accessible_stone;
 	world.accessibleSupplies[ALGA]=accessible_algae_units;
 	world.profiles=collect_building_profiles();
@@ -5079,15 +5079,15 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		// keep live amounts for scoring without invalidating topology caches.
 		tile.fertility=cachedFertility?fertilityValues[index]:cell.fertility;
 		int expansionNeighbors=0;
-		if((tile.resourceType==CORN||tile.resourceType==WOOD)&&tile.resourceAmount>0)
+		if((tile.resourceType==WHEAT||tile.resourceType==WOOD)&&tile.resourceAmount>0)
 		{
 			expansionNeighbors=available_expansion_neighbors(echo,x,y);
 			tile.farmCapacity=Farming::usefulExpansionCapacity(tile.fertility,
 				tile.resourceAmount,expansionNeighbors,
-				tile.resourceType==CORN);
+				tile.resourceType==WHEAT);
 		}
 		if(tile.discovered && tile.grass && !tile.occupied
-		   && tile.resourceType==CORN && tile.resourceAmount>0)
+		   && tile.resourceType==WHEAT && tile.resourceAmount>0)
 		{
 			tile.foodOpportunity=tile.fertility;
 			tile.farmCapacity=tile.fertility;
@@ -5097,7 +5097,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		// capacity a settlement can plan against. A protected stack feeds the
 		// harvestable cells around it, so its growth is only worth what its
 		// neighbours can absorb.
-		if(strategy.food.enabled && tile.resourceType==CORN
+		if(strategy.food.enabled && tile.resourceType==WHEAT
 		   && tile.resourceAmount>0
 		   && index<int(wheat_farm_protection_mask.size())
 		   && wheat_farm_protection_mask[index])
@@ -5248,7 +5248,7 @@ Maxima::collect_development_intents(
 		DevelopmentIntent colony;
 		colony.buildingType=IntBuildingType::SWARM_BUILDING;
 		colony.purpose=ColonySeed;
-		colony.requiredResourceType=CORN;
+		colony.requiredResourceType=WHEAT;
 		colony.unmetCount=1;
 		colony.workers=strategy.staffing.construction_swarm_workers;
 		// Colony priority comes from new food / establishment cost in placement.
@@ -6156,7 +6156,7 @@ int Maxima::staff_building(Context& echo, int id)
 	const int previous=state.request;
 	// The building's own stock and its own actual staffing are the only inputs.
 	const int request=StaffingControl::update(state, policy,
-		building->resources[CORN], building->type->maxResource[CORN],
+		building->resources[WHEAT], building->type->maxResource[WHEAT],
 		echo.get_building_register().get_enrolled(id));
 	if(request!=echo.get_building_register().get_assigned(id))
 		echo.add_management_order(new AssignWorkers(request, id));
@@ -6165,8 +6165,8 @@ int Maxima::staff_building(Context& echo, int id)
 		std::ostringstream fields;
 		fields<<"\tbuilding_id="<<id<<"\tworkers="<<request
 			<<"\tprevious="<<previous
-			<<"\tcorn="<<building->resources[CORN]
-			<<"\tcapacity="<<building->type->maxResource[CORN]
+			<<"\tcorn="<<building->resources[WHEAT]
+			<<"\tcapacity="<<building->type->maxResource[WHEAT]
 			<<"\tfill_average="<<state.cornAverage
 			<<"\tenrolled_average="<<state.enrolledAverage;
 		emit_telemetry(echo,"staffing_control",fields.str());

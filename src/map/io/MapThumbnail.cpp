@@ -70,7 +70,7 @@ void MapThumbnail::loadFromMap(const std::string& map)
 		int E[3]= { 0, 40, 120 };
 		int S[3]= { 170, 170, 0 };
 		int wood[3]= { 0, 60, 0 };
-		int corn[3]= { 211, 207, 167 };
+		int wheat[3]= { 211, 207, 167 };
 		int stone[3]= { 104, 112, 124 };
 		int alga[3]= { 41, 157, 165 };
 		int pcol[7];
@@ -111,7 +111,7 @@ void MapThumbnail::loadFromMap(const std::string& map)
 						// get color to add
 						if (map.isResourceTakeable((int)minidx, (int)minidy, WOOD))
 							pcolIndex=3;
-						else if (map.isResourceTakeable((int)minidx, (int)minidy, CORN))
+						else if (map.isResourceTakeable((int)minidx, (int)minidy, WHEAT))
 							pcolIndex=4;
 						else if (map.isResourceTakeable((int)minidx, (int)minidy, STONE))
 							pcolIndex=5;
@@ -129,9 +129,9 @@ void MapThumbnail::loadFromMap(const std::string& map)
 				}
 
 				nCount*=5;
-				r=(int)((H[0]*pcol[GRASS]+E[0]*pcol[WATER]+S[0]*pcol[SAND]+wood[0]*pcol[3]+corn[0]*pcol[4]+stone[0]*pcol[5]+alga[0]*pcol[6])/(nCount));
-				g=(int)((H[1]*pcol[GRASS]+E[1]*pcol[WATER]+S[1]*pcol[SAND]+wood[1]*pcol[3]+corn[1]*pcol[4]+stone[1]*pcol[5]+alga[1]*pcol[6])/(nCount));
-				b=(int)((H[2]*pcol[GRASS]+E[2]*pcol[WATER]+S[2]*pcol[SAND]+wood[2]*pcol[3]+corn[2]*pcol[4]+stone[2]*pcol[5]+alga[2]*pcol[6])/(nCount));
+				r=(int)((H[0]*pcol[GRASS]+E[0]*pcol[WATER]+S[0]*pcol[SAND]+wood[0]*pcol[3]+wheat[0]*pcol[4]+stone[0]*pcol[5]+alga[0]*pcol[6])/(nCount));
+				g=(int)((H[1]*pcol[GRASS]+E[1]*pcol[WATER]+S[1]*pcol[SAND]+wood[1]*pcol[3]+wheat[1]*pcol[4]+stone[1]*pcol[5]+alga[1]*pcol[6])/(nCount));
+				b=(int)((H[2]*pcol[GRASS]+E[2]*pcol[WATER]+S[2]*pcol[SAND]+wood[2]*pcol[3]+wheat[2]*pcol[4]+stone[2]*pcol[5]+alga[2]*pcol[6])/(nCount));
 
 				buffer[(dx+decX) * 128 * 3 + (dy+decY) * 3 + 0] = r;
 				buffer[(dx+decX) * 128 * 3 + (dy+decY) * 3 + 1] = g;

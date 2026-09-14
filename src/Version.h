@@ -7,10 +7,6 @@
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
 #define VERSION_MINOR 100
-// version 100 adds Maxima's inn and swarm relocation actions and their saved state.
-// version 99 removes Maxima's zero-capacity swarm retirement and its saved state.
-// version 98 adds the standalone Maxima AI and its saved execution state,
-// and changes simulation results, so earlier clients and replays are refused.
 // version 91 saves the live RNG and routing state for deterministic continuation.
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
@@ -112,6 +108,17 @@
 // version 97 rebuilds route fields from a map topology generation instead of a proximity
 //            walk, and saves the generation so a loaded game rebuilds on the same ticks:
 //            the simulation changed again
+// version 98 adds AI::ImplementationID::CABINO, a resurrected port of the original
+//            (2005-2007) Nicowar: independent specialist modules (defense, attack,
+//            construction, upgrades, unit/swarm management) that cooperate rather
+//            than a phase-driven strategy. Purely additive: older clients simply
+//            can't load a save that names this AI (see AI::load's default case).
+// version 99 is unused
+// version 100 adds AI::ImplementationID::MAXIMA, a standalone AI that develops a colony
+//            and attacks relentlessly, with its saved execution state. Purely additive,
+//            like Cabino. Maxima's save gates read the numbers its development saves
+//            used (98 for the current offense state, 99 for the retired swarm records,
+//            100 for relocation), so it starts at 100 to satisfy all of them.
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above

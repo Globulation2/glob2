@@ -65,8 +65,8 @@ void farmManagementRadius()
     auto* home=f.game.addBuilding(11,1,
         globalContainer->buildingsTypes.getTypeNum("inn",0,false),0);
     assert(home);
-    map.setResource(11,21,CORN,5);
-    map.setResource(11,23,CORN,5);
+    map.setResource(11,21,WHEAT,5);
+    map.setResource(11,23,WHEAT,5);
     ai.budget.farming_enabled=true;ai.budget.farming_protection_enabled=true;
     ai.budget.farming_management_radius=20;
     ai.budget.farming_wheat_fertility_min=3276;
@@ -88,7 +88,7 @@ void farmManagementRadius()
 
 void coastalWheatCrossesFertilityDips()
 {
-    for(int resource:{CORN,WOOD})
+    for(int resource:{WHEAT,WOOD})
     {
         Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
         for(int y=0;y<64;++y)map.getTile(10,y).terrain=256;
@@ -102,7 +102,7 @@ void coastalWheatCrossesFertilityDips()
             if(live)map.setResource(11,21,resource,1);
             ai.update_farming(ai.context);
             assert(ai.fertility_cache.at(11,21)<65536);
-            assert(bool(ai.farm_protection_mask[21*64+11])==(resource==CORN));
+            assert(bool(ai.farm_protection_mask[21*64+11])==(resource==WHEAT));
             // Neither inland expansion nor distant empty coastline inherits
             // the exception, even though both are valid growing terrain.
             assert(!ai.farm_protection_mask[20*64+12]);
@@ -113,7 +113,7 @@ void coastalWheatCrossesFertilityDips()
 
 void seedSurvival()
 {
-    for(int resource:{CORN,WOOD}) for(int offset:{0,44})
+    for(int resource:{WHEAT,WOOD}) for(int offset:{0,44})
     {
         Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
         auto index=[&](int x,int y){return map.normalizeY(y+offset)*64+map.normalizeX(x+offset);};
@@ -130,7 +130,7 @@ void seedSurvival()
         ai.update_farming(ai.context);
         assert(ai.farm_protection_mask[first] && ai.farm_protection_mask[second]);
         assert(ai.farm_protection_mask[first]);
-        assert(bool(ai.wheat_farm_protection_mask[first])==(resource==CORN));
+        assert(bool(ai.wheat_farm_protection_mask[first])==(resource==WHEAT));
         // Boundary growth keeps both the existing lattice seed and aligned edge.
         map.setResource(growth%64,growth/64,resource,1);
         ai.update_farming(ai.context);
@@ -175,7 +175,7 @@ void initialFlagStaffing()
         if(workers==0)
         {
             Unit* worker=f.game.addUnit(21,20,0,WORKER,0,0,0,0);assert(worker);
-            f.game.map.setResource(22,20,CORN,1);
+            f.game.map.setResource(22,20,WHEAT,1);
             f.game.map.buildingGradient(flag,0);
             // Even if discovery/management is delayed past a recruitment cycle,
             // the default broad resource selector cannot recruit a worker.
@@ -257,7 +257,7 @@ void configurePattern(Fixture& f)
 
 void alignedPatternTransitions()
 {
-    for(int resource:{CORN,WOOD}) for(int offset:{0,42})
+    for(int resource:{WHEAT,WOOD}) for(int offset:{0,42})
     {
         Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
         auto index=[&](int x,int y){return map.normalizeY(y+offset)*64+map.normalizeX(x+offset);};
@@ -319,7 +319,7 @@ void maintenanceProtectionAgreement()
         for(int y=0;y<64;++y)for(int x=0;x<12;++x)
         {int i=index(x,y);map.getTile(i%64,i/64).terrain=256;}
         const int wheat=index(18,21),wood=index(18,22);
-        map.setResource(wheat%64,wheat/64,CORN,1);
+        map.setResource(wheat%64,wheat/64,WHEAT,1);
         map.setResource(wood%64,wood/64,WOOD,1);
         configurePattern(f);
         ai.budget.farming_maintenance_clearing_enabled=true;
@@ -363,13 +363,13 @@ void archipelagoHarvestDoesNotSealWheat()
     ai.budget.farming_wheat_fertility_min=3276;
     for(int round=0;round<8;++round) {
         if(round%2)game.map.setNoResource(48,97,1);
-        else game.map.setResource(48,97,CORN,1);
+        else game.map.setResource(48,97,WHEAT,1);
         ai.update_farming(ai.context);
         for(int patch=0;patch<2;++patch) {
             int wheat=0,open=0;
             for(int y=patch?103:95;y<=(patch?106:99);++y)
                 for(int x=patch?55:48;x<=(patch?61:53);++x)
-                    if(game.map.isResourceTakeable(x,y,CORN)) {
+                    if(game.map.isResourceTakeable(x,y,WHEAT)) {
                         ++wheat;open+=!ai.farm_protection_mask[y*128+x];
                     }
             assert(wheat>0 && open>0);
@@ -394,7 +394,7 @@ void seedStabilityAcrossMaps()
         ai.update_farming(ai.context);
         std::vector<int> seeds;
         for(int y=1;y<h;y+=2)for(int x=1;x<w;x+=2)
-            if(game.map.isResourceTakeable(x,y,CORN)&&ai.farm_protection_mask[y*w+x])
+            if(game.map.isResourceTakeable(x,y,WHEAT)&&ai.farm_protection_mask[y*w+x])
                 seeds.push_back(y*w+x);
         assert(!seeds.empty());
         // Adversarial harvest: remove every available wheat tile each round.
@@ -402,18 +402,18 @@ void seedStabilityAcrossMaps()
         // exercise the exact feedback loop that destroyed Holiday's left farm.
         for(int round=0;round<12;++round) {
             for(int y=0;y<h;++y)for(int x=0;x<w;++x)
-                if(game.map.isResourceTakeable(x,y,CORN)&&!ai.farm_protection_mask[y*w+x])
+                if(game.map.isResourceTakeable(x,y,WHEAT)&&!ai.farm_protection_mask[y*w+x])
                     game.map.setNoResource(x,y,1);
             for(int seed:seeds) {
                 int x=game.map.normalizeX(seed%w+(round%3)-1);
                 int y=game.map.normalizeY(seed/w+((round/3)%3)-1);
                 const Tile& c=game.map.getTile(x,y);
                 if(c.terrain<16&&c.building==NOGBID&&c.resource.type==NO_RES_TYPE)
-                    game.map.setResource(x,y,CORN,1);
+                    game.map.setResource(x,y,WHEAT,1);
             }
             ai.timer+=64;ai.update_farming(ai.context);
             for(int seed:seeds) {
-                assert(game.map.isResourceTakeable(seed%w,seed/w,CORN));
+                assert(game.map.isResourceTakeable(seed%w,seed/w,WHEAT));
                 assert(ai.farm_protection_mask[seed]);
             }
         }

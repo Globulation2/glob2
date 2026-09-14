@@ -74,6 +74,10 @@ Econo
 Warrush atakas rapide kaj sovaĝe, kaj ofte puŝas denendanta ludanto al la bordo de sia ludo. Ĝi mezfacilas.
 [AIWarrush]
 Warrush
+[AICabino-Description]
+Cabino administras defendon, atakon kaj konstruadon kiel sendependajn fakojn, kiuj kunlaboras al unu plano: kreskas rapide kaj sendas grandegajn armeojn al siaj kontraŭuloj. Ĝi malfacilas.
+[AICabino]
+Cabino
 [Alga]
 Algo
 [algae]
@@ -1262,6 +1266,10 @@ Grandegaj bazoj kaj konvertiĝo anstataŭ atakoj.
 Strategio: Atakas frue kaj forte, antaŭ ol kontraŭuloj finas prepariĝi.\n\nFortoj: Ekspluatas nedefenditan ekspansion kaj malrapidan armean preparon.\n\nProponita kontraŭludo: Travivu la unuan atakon konservante vian ekonomion, poste kontraŭataku.
 [AIWarrush-Summary]
 Rapidaj atakoj, kiuj testas viajn fruajn defendojn.
+[AICabino-Profile]
+Ĉefa strategio: kabineto de sendependaj fakoj (defendo, atako, konstruado, plibonigoj, administrado de unuoj), kiuj ĉiu agas laŭ propra iniciato sed kunlaboras al unu plano: kreski rapide kaj poste sendi grandegajn armeojn kontraŭ la malamikojn.\n\nFortoj: Rapida kresko subtenas agreseman militan premon; la sendependaj fakoj reagas rapide al lokaj minacoj sen atendi centran planon.\n\nKontraŭludo provinda: Malhelpu ĝian kreskon frue kaj uzu la terenon por limigi kiom da ĝiaj trupoj povas batali samtempe.
+[AICabino-Summary]
+Sendependaj fakoj kunlaborantaj por rapida kresko kaj grandegaj armeoj.
 [Algae]
 algo
 [Alliances]
@@ -1774,6 +1782,10 @@ La bildoj estos aplikitaj ĉe la sekva ŝargo de ludo aŭ mapredaktilo (OpenGL).
 Aŭtomata tora vido
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Aŭtomate montru la torforman superrigardon de la mapo dum moviĝado tra la mapo (OpenGL).
+[settings Autosave]
+Aŭtomata konservado
+[settings Save the game automatically about every 10 seconds.]
+Aŭtomate konservas la ludon proksimume ĉiujn 10 sekundojn.
 [Channel width]
 Larĝo de kanalo
 [Land bridge width]

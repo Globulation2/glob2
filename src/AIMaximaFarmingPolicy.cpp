@@ -200,7 +200,7 @@ namespace
 		// reserve unrelated empty coast. Keep the exemption after growth too:
 		// protecting an empty tile then exposing its new wheat would defeat it.
 		const bool fertile=fertility>=minimum_fertility
-			|| (resource_type==CORN && shoreline_backed);
+			|| (resource_type==WHEAT && shoreline_backed);
 		if(is_empty_growth_cell(cell)
 		   && fertile)
 		{
@@ -499,7 +499,7 @@ void Maxima::manage_land_clearing(Context& echo)
 		for(int dy=-4; dy<=4; ++dy)
 		{
 			if(mi.is_resource(best_x+dx, best_y+dy, WOOD)
-				&& !mi.is_resource(best_x+dx, best_y+dy, CORN))
+				&& !mi.is_resource(best_x+dx, best_y+dy, WHEAT))
 				release_wood->add_location(best_x+dx, best_y+dy);
 		}
 	}
@@ -656,7 +656,7 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 	{
 		const Tile& cell=map->getTile(index%w, index/w);
 		grandfathered_resource[index]=!applied_maintenance_clearing_mask[index]
-			&& (cell.resource.type==CORN || cell.resource.type==WOOD);
+			&& (cell.resource.type==WHEAT || cell.resource.type==WOOD);
 		resource_burden[index]=std::max(1, int(cell.resource.amount));
 	}
 	auto retain_circulation=[&](const std::vector<int>& tiles)
@@ -717,7 +717,7 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 				for(int index:contract.footprintTiles)if(!memberMask[index])
 				{
 					const int resource=map->getTile(index%w,index/w).resource.type;
-					preserved[index]=resource==CORN||resource==WOOD;
+					preserved[index]=resource==WHEAT||resource==WOOD;
 				}
 				for(const auto& member:members)
 				{
@@ -946,7 +946,7 @@ int Maxima::available_expansion_neighbors(Context& echo, int x, int y) const
 int Maxima::growth_absorbing_neighbors(Context& echo, int x, int y) const
 {
 	Map* map=echo.player->map;
-	const ResourceType* corn=globalContainer->resourcesTypes.get(CORN);
+	const ResourceType* corn=globalContainer->resourcesTypes.get(WHEAT);
 	const int full=corn ? corn->sizesCount : 0;
 	int available=0;
 	for(int dy=-1; dy<=1; ++dy)
@@ -962,7 +962,7 @@ int Maxima::growth_absorbing_neighbors(Context& echo, int x, int y) const
 			// Passing units are deliberately ignored: they move every tick and
 			// would make a standing supply estimate flicker.
 			if(cell.resource.type==NO_RES_TYPE
-			   || (cell.resource.type==CORN && cell.resource.amount<full))
+			   || (cell.resource.type==WHEAT && cell.resource.amount<full))
 				available+=1;
 		}
 	return available;
@@ -1041,7 +1041,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& echo)
 			Uint8 bit=0;
 			if(resource.resource.amount>0)
 			{
-				if(resource.resource.type==CORN) bit=1;
+				if(resource.resource.type==WHEAT) bit=1;
 				else if(resource.resource.type==WOOD) bit=2;
 			}
 			if(!bit) continue;
@@ -1057,7 +1057,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& echo)
 		{
 			const int index=y*w+x;
 			const Tile& cell=map->getTile(x, y);
-			const bool wheat=cell.resource.type==CORN
+			const bool wheat=cell.resource.type==WHEAT
 				&& cell.resource.amount>0;
 			const bool wood=cell.resource.type==WOOD
 				&& cell.resource.amount>0;
@@ -1070,7 +1070,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& echo)
 				|| fertility_cache.at(x, y)>=
 				Uint32(budget.farming_wheat_fertility_min))))
 				wheat_role=classify_farm_tile(map_info, map, water_gradient,
-					fertility_cache, water_exposure, farming_shoreline_mask[index]!=0, x, y, CORN,
+					fertility_cache, water_exposure, farming_shoreline_mask[index]!=0, x, y, WHEAT,
 					Uint32(budget.farming_wheat_fertility_min));
 			if(wood || (empty_growth && (adjacent_resource_mask[index]&2)
 			   && fertility_cache.at(x, y)>=plan.wood_fertility))
@@ -1131,7 +1131,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& echo)
 	for(int start=0;start<w*h;++start)
 	{
 		const int resource=map->getTile(start%w,start/w).resource.type;
-		if(visited[start] || (resource!=CORN && resource!=WOOD)) continue;
+		if(visited[start] || (resource!=WHEAT && resource!=WOOD)) continue;
 		std::vector<int> component(1,start);
 		visited[start]=1;
 		bool protected_live=false;
@@ -1143,7 +1143,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& echo)
 			if(cell.resource.amount>0)
 			{
 				protected_live|=plan.forbidden[index]!=0;
-				const Uint32 minimum=resource==CORN
+				const Uint32 minimum=resource==WHEAT
 					? Uint32(budget.farming_wheat_fertility_min) : plan.wood_fertility;
 				if(fertility_cache.at(x,y)>=minimum
 				   && !has_hard_farming_contract(index)
@@ -1168,14 +1168,14 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& echo)
 		if(protected_live || anchor<0) continue;
 		const int x=anchor%w, y=anchor/w;
 		plan.forbidden[anchor]=1;
-		plan.protected_wheat[anchor]=resource==CORN;
-		if(resource==CORN) ++plan.protected_wheat_bootstraps;
+		plan.protected_wheat[anchor]=resource==WHEAT;
+		if(resource==WHEAT) ++plan.protected_wheat_bootstraps;
 		else ++plan.protected_wood_bootstraps;
 		plan.protected_seeds+=(x&1) && (y&1);
 		const int available=available_expansion_neighbors(echo,x,y);
 		plan.blocked_directions+=8-available;
 		plan.expected_capacity+=Farming::usefulExpansionCapacity(
-			fertility_cache.at(x,y),map_info.get_ammount_resource(x,y),available,resource==CORN);
+			fertility_cache.at(x,y),map_info.get_ammount_resource(x,y),available,resource==WHEAT);
 	}
 	return plan;
 }
@@ -1216,7 +1216,7 @@ void Maxima::apply_farming_protection(Context& echo,
 		// Audit the temporal contract as well as today's mask. Building/path
 		// contracts are explicit overrides; harvesting a neighbor is not.
 		if(Farming::isInteriorSeed(x,y) && farm_protection_mask[index]
-		   && !plan.forbidden[index] && map->isResourceTakeable(x,y,CORN)
+		   && !plan.forbidden[index] && map->isResourceTakeable(x,y,WHEAT)
 		   && !has_hard_farming_contract(index)) ++seed_revocations;
 		const bool actual=map_info.is_forbidden_area(x, y);
 		if(plan.forbidden[index] && !actual)
@@ -1266,7 +1266,7 @@ void Maxima::update_farming(Context& echo)
 			if(nearby[i])continue;
 			const bool established= farm_protection_mask[i]
 				&& Farming::isInteriorSeed(i%w,i/w)
-				&& map->isResourceTakeable(i%w,i/w,CORN);
+				&& map->isResourceTakeable(i%w,i/w,WHEAT);
 			if(established)continue;
 			plan.forbidden[i]=0;
 			plan.protected_wheat[i]=0;

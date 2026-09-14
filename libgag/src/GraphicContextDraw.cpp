@@ -63,12 +63,12 @@ namespace GAGCore
 #endif
     }
 
-	// GL rasterises lines at a width in drawable pixels, which the viewport
+	// GL rasterises lines at a width in the target's pixels, which the viewport
 	// transform does not scale the way it scales filled geometry.
 	void GraphicContext::setScaledLineWidth(float width)
 	{
 		#ifdef HAVE_OPENGL
-		glLineWidth(width * drawableScale() * mapScale);
+		glLineWidth(width * rasterScale() * mapScale);
 		#endif
 	}
 
@@ -232,7 +232,7 @@ namespace GAGCore
 
 			// Drivers only antialias 1 px lines, so a scaled line is built from
 			// several 1 px smooth lines spread across the scaled thickness.
-			const float scale = drawableScale();
+			const float scale = rasterScale();
 			const int passes = std::max(1, static_cast<int>(std::ceil(scale)));
 			float nx = 0.0f, ny = 0.0f;
 			if (passes > 1)
@@ -259,7 +259,7 @@ namespace GAGCore
 				glColor3ub(color.r, color.g, color.b);
 			for (int i = 0; i < passes; ++i)
 			{
-				// offsets in window pixels from -(scale-1)/2 to +(scale-1)/2, mapped back to logical units
+				// offsets in target pixels from -(scale-1)/2 to +(scale-1)/2, mapped back to logical units
 				const float off = passes > 1 ? ((scale - 1.0f) * (static_cast<float>(i) / (passes - 1) - 0.5f)) / scale : 0.0f;
 				glVertex2f(x1 + nx * off, y1 + ny * off);
 				glVertex2f(x2 + nx * off, y2 + ny * off);

@@ -152,7 +152,7 @@ bool Resource::equals(const Entity& other) const
 	return rhs && rhs->resourceType==resourceType;
 }
 bool Resource::can_change() const
-{ return resourceType==WOOD || resourceType==CORN || resourceType==ALGA; }
+{ return resourceType==WOOD || resourceType==WHEAT || resourceType==ALGA; }
 void Resource::save(GAGCore::OutputStream* stream) const
 {stream->writeUint8(type(),"type");stream->writeSint32(resourceType,"resource_type");}
 

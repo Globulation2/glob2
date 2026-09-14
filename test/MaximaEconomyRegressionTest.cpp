@@ -66,7 +66,7 @@ struct Fixture
     }
     void supply(int x,int y)
     {
-        game.map.setResource(x+6,y+1,CORN,1);
+        game.map.setResource(x+6,y+1,WHEAT,1);
         game.map.getTile(x+6,y+3).terrain=256;
     }
     int population() const
@@ -177,10 +177,10 @@ void colonyStartupAndAffordability()
     assert(!ai.budget.colony_swarm_requested);
     Unit* worker=f.game.addUnit(20,20,0,WORKER,0,0,0,0); assert(worker);
     swarm->unitsWorking.push_back(worker);
-    swarm->resources[CORN]=swarm->type->resourceForOneUnit;
+    swarm->resources[WHEAT]=swarm->type->resourceForOneUnit;
     ai.finalize_director_plan(ai.context);
     assert(ai.budget.colony_swarm_requested);
-    swarm->unitsWorking.clear(); swarm->resources[CORN]=0;
+    swarm->unitsWorking.clear(); swarm->resources[WHEAT]=0;
     ai.finalize_director_plan(ai.context);
     assert(ai.budget.colony_swarm_requested); // Later idleness is not a new startup.
 }
@@ -196,7 +196,7 @@ void growingFoodFundsCapacity()
     const int food=ai.environment.accessible_corn;
     const int workers=ai.budget.swarm_workers;
     for(int y=12;y<=20;++y) for(int x=12;x<=20;++x)
-        if(f.game.map.isGrass(x,y)) f.game.map.setResource(x,y,CORN,1);
+        if(f.game.map.isGrass(x,y)) f.game.map.setResource(x,y,WHEAT,1);
     ai.update_environment_model(c); ai.build_policy_bids(); ai.arbitrate_policy_bids();
     assert(ai.environment.accessible_corn>food);
     assert(ai.budget.swarm_workers>workers);
@@ -218,13 +218,13 @@ void soleSwarmStaffsFromItsOwnStock()
     // Carriers no longer come from the colony birth budget: the swarm reads
     // its own wheat stock. A full swarm holds the minimum whatever the budget
     // says, and an empty one asks for more.
-    swarm->resources[CORN]=swarm->type->maxResource[CORN];
+    swarm->resources[WHEAT]=swarm->type->maxResource[WHEAT];
     for(int budget:{10,0,2}) {
         ai.budget.swarm_workers=budget;
         for(int pass=0;pass<6;++pass){ai.manage_swarm(c,0);f.applyStaffing();}
         assert(swarm->maxUnitWorking==1);
     }
-    swarm->resources[CORN]=0;
+    swarm->resources[WHEAT]=0;
     for(int pass=0;pass<6;++pass){ai.manage_swarm(c,0);f.applyStaffing();}
     assert(swarm->maxUnitWorking>1);
 }
@@ -255,7 +255,7 @@ void nearbyCornDeterminesStaffing()
     world=ai.collect_development_world(c);
     assert(world.tile(16,11).foodOpportunity==0);
     assert(world.tile(16,11).farmCapacity==0);
-    f.game.map.setResource(16,11,CORN,1);
+    f.game.map.setResource(16,11,WHEAT,1);
     ai.budget.staffing_new_swarm_workers=1;
     ai.budget.staffing_window_samples=2;
     ai.budget.staffing_cooldown_passes=0;
@@ -264,8 +264,8 @@ void nearbyCornDeterminesStaffing()
     // Staffing no longer divides a colony total between swarms by nearby corn.
     // Each reads its own stock, so the empty one outgrows the full one and
     // neither drops below the minimum.
-    first->resources[CORN]=0;
-    second->resources[CORN]=second->type->maxResource[CORN];
+    first->resources[WHEAT]=0;
+    second->resources[WHEAT]=second->type->maxResource[WHEAT];
     for(int pass=0;pass<6;++pass)
     {
         for(int id=0;id<2;++id) ai.manage_swarm(c,id);
@@ -291,7 +291,7 @@ void cornPileInteriorIsSupply()
     ai.budget.swarm_supply_radius=10;
     const long long before=ai.nearby_farm_capacity(c,0);
     for(int y=9;y<=11;++y) for(int x=37;x<=39;++x)
-        f.game.map.setResource(x,y,CORN,1);
+        f.game.map.setResource(x,y,WHEAT,1);
     const long long planted=ai.nearby_farm_capacity(c,0);
     assert(planted>before);
     f.game.map.setResource(38,10,STONE,1);
@@ -310,10 +310,10 @@ void cornPileInteriorIsSupply()
     ai.budget.staffing_slack=1;
     ai.budget.staffing_minimum_workers=1;
     ai.budget.staffing_maximum_workers=20;
-    inn->resources[CORN]=0;
+    inn->resources[WHEAT]=0;
     for(int pass=0;pass<6;++pass){ai.manage_inn(c,1); f.applyStaffing();}
     assert(inn->maxUnitWorking>=2);
-    inn->resources[CORN]=inn->type->maxResource[CORN];
+    inn->resources[WHEAT]=inn->type->maxResource[WHEAT];
     for(int pass=0;pass<12;++pass){ai.manage_inn(c,1); f.applyStaffing();}
     assert(inn->maxUnitWorking==1);
 }
@@ -376,14 +376,14 @@ void crisisProductionPause()
         // are the building's own business now and keep their minimum.
         assert(swarm->maxUnitWorking>=1);
         for(int type=0;type<NB_UNIT_TYPE;++type) assert(swarm->ratio[type]==0);
-        swarm->resources[CORN]=20;
+        swarm->resources[WHEAT]=20;
         swarm->productionTimeout=expiredTimer;
         const int before=f.population();
         for(int tick=0;tick<1000;++tick) swarm->swarmStep();
         // The existing engine cannot cancel an already-expired timer through
         // AI orders. That one pending birth may finish; further births stop.
         const int pending=expiredTimer<0 ? 1 : 0;
-        assert(f.population()==before+pending && swarm->resources[CORN]==20-5*pending);
+        assert(f.population()==before+pending && swarm->resources[WHEAT]==20-5*pending);
         assert(swarm->productionTimeout==(pending ? swarm->type->unitProductionTime : expiredTimer));
 
         // Funding returns through the same director and executor path.
@@ -395,7 +395,7 @@ void crisisProductionPause()
         assert(swarm->ratio[WORKER]==4 && swarm->ratio[EXPLORER]==1
             && swarm->ratio[WARRIOR]==2);
         for(int tick=0;tick<=swarm->type->unitProductionTime;++tick) swarm->swarmStep();
-        assert(f.population()==before+pending+1 && swarm->resources[CORN]==15-5*pending);
+        assert(f.population()==before+pending+1 && swarm->resources[WHEAT]==15-5*pending);
     }
 }
 
@@ -430,7 +430,7 @@ void completionReallocatesColony()
     ai.budget.staffing_window_samples=2;
     ai.budget.staffing_cooldown_passes=0;
     ai.budget.staffing_minimum_workers=1;
-    old->resources[CORN]=0; fresh->resources[CORN]=0;
+    old->resources[WHEAT]=0; fresh->resources[WHEAT]=0;
     for(int pass=0;pass<6;++pass)
     {
         // The pre-existing swarm is the first building the fixture created.
@@ -457,8 +457,8 @@ void trackerLogicalCadence()
         Fixture f;
         Building* swarm=f.swarm(10,10);
         auto& c=f.ai->context; c.initialize(); c.timer=phase;
-        swarm->resources[CORN]=20;
-        c.add_resource_tracker(new Management::ResourceTracker(c,0,25,CORN),0);
+        swarm->resources[WHEAT]=20;
+        c.add_resource_tracker(new Management::ResourceTracker(c,0,25,WHEAT),0);
         IdleAI idle;
         auto tracker=c.get_resource_tracker(0);
         const auto tick=[&]() {++f.game.stepCounter; c.getOrder(idle);};
@@ -471,7 +471,7 @@ void trackerLogicalCadence()
         assert(tracker->get_age()==10 && tracker->get_total_level()==20);
         for(int i=10;i<250;++i) tick();
         assert(tracker->get_age()==250 && tracker->get_total_level()==500);
-        swarm->resources[CORN]=0;
+        swarm->resources[WHEAT]=0;
         for(int i=0;i<250;++i) tick();
         assert(tracker->get_age()==500 && tracker->get_total_level()==0);
     }
@@ -497,7 +497,7 @@ void holidayHarvestCapacity()
     int productive=0; for(auto entry:before) productive+=entry.second>0;
     assert(productive>0);
     for(int y=0;y<map.getH();++y) for(int x=0;x<map.getW();++x)
-        if(map.getResource(x,y).type==CORN) map.setNoResource(x,y,1);
+        if(map.getResource(x,y).type==WHEAT) map.setNoResource(x,y,1);
     for(auto entry:before) assert(ai.nearby_farm_capacity(c,entry.first)==0);
 }
 
@@ -524,8 +524,8 @@ void newBuildingsStartStaffed()
     assert(inn->maxUnitWorking==4);
     // The seed applies once. From here the loop owns the number, so a building
     // that stays full hands carriers back below its starting count.
-    swarm->resources[CORN]=swarm->type->maxResource[CORN];
-    inn->resources[CORN]=inn->type->maxResource[CORN];
+    swarm->resources[WHEAT]=swarm->type->maxResource[WHEAT];
+    inn->resources[WHEAT]=inn->type->maxResource[WHEAT];
     for(int pass=0;pass<40;++pass)
     {
         ai.manage_swarm(c,0); ai.manage_inn(c,1); f.applyStaffing();

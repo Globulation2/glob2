@@ -32,12 +32,13 @@ namespace AINames
 			{AI::NICOWAR,         "nicowar",         "AINicowar", "Hard"},
 			{AI::MAXIMA,          "maxima",          "AIMaxima", "Hard"},
 			{AI::CORTEX,          "cortex",          "AICortex", "Medium"},
+			{AI::CABINO,          "cabino",          "AICabino", "Medium"},
 		};
 	}
 
 	const std::vector<int>& selectionOrder()
 	{
-		static const std::vector<int> order = {AI::ECONO, AI::NUMBI, AI::WARRUSH, AI::CASTOR, AI::CORTEX, AI::NICOWAR, AI::MAXIMA, AI::NONE};
+		static const std::vector<int> order = {AI::ECONO, AI::NUMBI, AI::WARRUSH, AI::CASTOR, AI::CORTEX, AI::CABINO, AI::NICOWAR, AI::MAXIMA, AI::NONE};
 		return order;
 	}
 	int selectionIndex(int id)

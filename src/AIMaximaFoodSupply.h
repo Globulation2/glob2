@@ -26,7 +26,7 @@ inline long long reachableFoodCapacity(Map* map, Building* building,
 		return map->isMapDiscovered(x,y,teamMask)
 			&& (!(tile.forbidden&teamMask) || (protectedTiles && (*protectedTiles)[index]))
 			&& tile.building==NOGBID
-			&& (tile.resource.type==NO_RES_TYPE || tile.resource.type==CORN)
+			&& (tile.resource.type==NO_RES_TYPE || tile.resource.type==WHEAT)
 			&& (canSwim || !map->isWater(x,y));
 	};
 	std::map<int,int> distance;
@@ -47,7 +47,7 @@ inline long long reachableFoodCapacity(Map* map, Building* building,
 	{
 		const int index=queue[next], x=index%width, y=index/width;
 		const Tile& tile=map->getTile(x,y);
-		if(map->isGrass(x,y) && tile.resource.type==CORN
+		if(map->isGrass(x,y) && tile.resource.type==WHEAT
 		   && tile.resource.amount>0
 		   && (!shared_tiles || shared_tiles->insert(index).second))
 			capacity+=fertility.at(x,y);

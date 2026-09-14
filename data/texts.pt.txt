@@ -74,6 +74,10 @@ Econo
 Warrush ataca depressa e com força, levando frequentemente o defensor ao limite. Dificuldade média.
 [AIWarrush]
 IAWarrush
+[AICabino-Description]
+Cabino gere a defesa, o ataque e a construção como departamentos independentes que convergem para um único plano: expande-se rapidamente e lança enormes exércitos contra os adversários. Dificuldade elevada.
+[AICabino]
+Cabino
 [Alga]
 Algas
 [algae]
@@ -1270,6 +1274,10 @@ Enormes bases e conversão em vez de ataques.
 Estratégia: Ataca cedo e com força, antes que os oponentes terminem de se preparar.\n\nPontos fortes: Explora a expansão sem defesa e a lenta preparação militar.\n\nTáticas a experimentar: Sobreviva ao primeiro ataque enquanto mantém sua economia e depois contra-ataque.
 [AIWarrush-Summary]
 Ataques rápidos que testam suas defesas iniciais.
+[AICabino-Profile]
+Estratégia principal: um gabinete de departamentos especialistas independentes (defesa, ataque, construção, melhoramentos, gestão de unidades) que agem por iniciativa própria mas convergem para um único plano: crescer depressa e depois lançar enormes exércitos contra os adversários.\n\nPontos fortes: a expansão rápida sustenta uma pressão militar agressiva; os departamentos independentes reagem depressa a ameaças locais sem esperar por um plano central.\n\nContrajogo a tentar: conteste a sua expansão cedo e use o terreno para limitar quantas tropas pode empenhar de uma vez.
+[AICabino-Summary]
+Departamentos independentes que cooperam para um crescimento rápido e exércitos enormes.
 [Algae]
 algas
 [Alliances]
@@ -1782,6 +1790,10 @@ Aplicar os gráficos ao carregar a próxima partida ou o editor de mapas (OpenGL
 Vista toroidal automática
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostrar automaticamente a vista geral toroidal enquanto se desloca pelo mapa (OpenGL).
+[settings Autosave]
+Guardar automaticamente
+[settings Save the game automatically about every 10 seconds.]
+Guarda o jogo automaticamente a cada 10 segundos, aproximadamente.
 [Channel width]
 Largura do canal
 [Land bridge width]

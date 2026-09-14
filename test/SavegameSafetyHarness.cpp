@@ -9,13 +9,15 @@
 #include "GlobalContainer.h"
 #include "Version.h"
 #include "Engine.h"
+#include "FileFormatVersions.h"
 #include "Utilities.h"
 #include "Order.h"
 #include "Player.h"
-#include "Version.h"
+#include <BackgroundFileWriter.h>
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <FileManager.h>
+#include <algorithm>
 #include <cassert>
 #include <filesystem>
 #include <fstream>
@@ -100,6 +102,32 @@ static void checkAtomicWrites(FileManager& files, const fs::path& directory)
 #ifndef WIN32
 	std::cout << "PASS injected short write and buffered flush failure preserve previous bytes" << std::endl;
 #endif
+}
+
+static void checkBackgroundWriter(FileManager& files, const fs::path& directory)
+{
+	const std::string path = (directory / "background.game").string();
+	{
+		BackgroundFileWriter writer(&files);
+		writer.waitUntilIdle();
+		// Each snapshot's finish step travels with it, so a superseded one never runs on a newer snapshot.
+		for (int i = 0; i < 50; ++i)
+			writer.write(path, "snapshot " + std::to_string(i), [i](std::string& bytes) { bytes += " finished " + std::to_string(i); });
+		writer.waitUntilIdle();
+		assert(contents(path) == "snapshot 49 finished 49");
+		writer.write(path, "finished by the destructor");
+	}
+	assert(contents(path) == "finished by the destructor");
+	{
+		BackgroundFileWriter writer(&files);
+		writer.write((directory / "missing" / "save.game").string(), "unwritable");
+		writer.waitUntilIdle();
+		writer.write(path, "written after a failure");
+	}
+	assert(contents(path) == "written after a failure");
+	for (const auto& entry : fs::directory_iterator(directory))
+		assert(entry.path().filename().string().find(".tmp-") == std::string::npos);
+	std::cout << "PASS background writes keep the newest snapshot with its finish step, finish on destruction and continue after a failure" << std::endl;
 }
 
 static std::unique_ptr<BinaryInputStream> input(const std::string& bytes, bool file)
@@ -307,6 +335,7 @@ int main(int argc, char **argv)
 		for (bool ai : {false,true}) checkRandomContinuation(text,ai);
 	const fs::path directory = fs::absolute(globals.fileManager->getDir(0));
 	checkAtomicWrites(*globals.fileManager, directory);
+	checkBackgroundWriter(*globals.fileManager, directory);
 	{
 		GameGUI gui;
 		auto map = Engine::loadMapHeader("maps/balanced.map");
@@ -324,16 +353,51 @@ int main(int argc, char **argv)
 			gui.save(&initial, "Auto save");
 		}
 		gui.syncStep();
+		gui.waitForAutosave();
 		const fs::path save = directory / "games" / "Auto_save.game";
 		const auto bytes = contents(save);
 		{
-			auto *backend = new MemoryStreamBackend();
-			BinaryOutputStream reference(backend);
-			gui.save(&reference, "Auto save");
-			const std::string expected(backend->getBuffer(), backend->getPosition());
-			assert(bytes == expected);
+			// Autosave hashes on the writer thread; a direct save hashes as it writes.
+			const fs::path reference = directory / "games" / "reference.game";
+			assert(globals.fileManager->writeAtomically(reference.string(), [&](OutputStream& stream) { gui.save(&stream, "Auto save"); }));
+			assert(contents(reference) == bytes);
+			fs::remove(reference);
 		}
-		std::cout << "PASS atomic autosave bytes match direct serialization" << std::endl;
+		std::cout << "PASS background autosave bytes, SHA1 included, match direct serialization" << std::endl;
+		{
+			// A stale map offset makes the header backpatch rewrite hashed bytes; the deferred hash must still match.
+			const auto serialize = [&](DeferredGameSHA1* deferred) {
+				gui.game.mapHeader.setMapOffset(0);
+				auto *backend = new MemoryStreamBackend();
+				BinaryOutputStream stream(backend);
+				gui.save(&stream, "Stale offset", deferred);
+				return backend->takeContents();
+			};
+			const std::string inlineHashed = serialize(nullptr);
+			DeferredGameSHA1 deferred;
+			std::string deferredHashed = serialize(&deferred);
+			assert(deferredHashed != inlineHashed);
+			deferred.apply(deferredHashed);
+			assert(deferredHashed == inlineHashed);
+		}
+		std::cout << "PASS deferred SHA1 matches an inline hash when the header backpatch changes hashed bytes" << std::endl;
+		{
+			// A stale map offset makes the header backpatch rewrite hashed bytes; the deferred hash must still match.
+			const auto serialize = [&](DeferredGameSHA1* deferred) {
+				gui.game.mapHeader.setMapOffset(0);
+				auto *backend = new MemoryStreamBackend();
+				BinaryOutputStream stream(backend);
+				gui.save(&stream, "Stale offset", deferred);
+				return backend->takeContents();
+			};
+			const std::string inlineHashed = serialize(nullptr);
+			DeferredGameSHA1 deferred;
+			std::string deferredHashed = serialize(&deferred);
+			assert(deferredHashed != inlineHashed);
+			deferred.apply(deferredHashed);
+			assert(deferredHashed == inlineHashed);
+		}
+		std::cout << "PASS deferred SHA1 matches an inline hash when the header backpatch changes hashed bytes" << std::endl;
 
 		{
 			GameGUI restored;
@@ -358,6 +422,7 @@ int main(int argc, char **argv)
 			if (setrlimit(RLIMIT_FSIZE, &budget) != 0) _exit(2);
 			gui.game.stepCounter = 335;
 			gui.syncStep();
+			gui.waitForAutosave();
 			_exit(0);
 		}
 		int status = 0;
@@ -365,9 +430,27 @@ int main(int argc, char **argv)
 		assert(contents(save) == bytes);
 		std::cout << "PASS failed production autosave preserves the previous complete game" << std::endl;
 #endif
+		globals.settings.autosaveGames = false;
+		gui.game.stepCounter = 591;
+		gui.syncStep();
+		gui.waitForAutosave();
+		assert(contents(save) == bytes);
+		globals.settings.autosaveGames = true;
+		std::cout << "PASS disabled autosave leaves the previous save untouched" << std::endl;
 		auto stream = input(bytes, false);
 		MapHeader savedHeader;
 		assert(savedHeader.load(stream.get()));
+		assert(std::any_of(savedHeader.getGameSHA1(), savedHeader.getGameSHA1() + SHA1_BYTE_LEN, [](Uint8 byte) { return byte != 0; }));
+		{
+			// A joining client keeps its own copy only when its header, SHA1 included, matches the host's.
+			Engine engine;
+			MapHeader host = savedHeader;
+			assert(host.getFileName() == "games/Auto_save.game");
+			assert(engine.haveMap(host));
+			host.getGameSHA1()[0] ^= 1;
+			assert(!engine.haveMap(host));
+		}
+		std::cout << "PASS a joining client trusts a local save only when its SHA1 matches the host's" << std::endl;
 		const size_t offset = savedHeader.getMapOffset();
 		assert(bytes.substr(offset, 4) == "MapB");
 		const auto mapBytes = bytes.substr(offset);

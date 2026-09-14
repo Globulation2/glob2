@@ -46,7 +46,7 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         conversion = self.source[self.source.index("struct Maxima::WoodClearingTarget"): ]
         conversion = conversion[:conversion.index("void Maxima::update_maintenance_clearing_areas")]
         self.assertIn("clearing_resources[WOOD]=true", conversion)
-        self.assertNotIn("clearing_resources[CORN]=true", conversion)
+        self.assertNotIn("clearing_resources[WHEAT]=true", conversion)
         self.assertIn("IntBuildingType::CLEARING_FLAG, 0", conversion)
         self.assertIn("AssignWorkers(\n\t\t\t\tstrategy.staffing.clearing_workers", conversion)
         self.assertIn("if(wood<2)", conversion)
@@ -73,7 +73,7 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         self.assertIn("contract.footprintTiles", maintenance)
         self.assertIn("contract.circulationTiles", maintenance)
         self.assertIn("selectResourcePreservingCirculation", maintenance)
-        self.assertIn("cell.resource.type==CORN", maintenance)
+        self.assertIn("cell.resource.type==WHEAT", maintenance)
         self.assertIn("cell.resource.type==WOOD", maintenance)
         self.assertIn("!applied_maintenance_clearing_mask[index]", maintenance)
         self.assertIn('"\\treservation_resources_preserved="', maintenance)

@@ -8,6 +8,7 @@
 
 #include <GUITextInput.h>
 #include <GUIList.h>
+#include <BackgroundFileWriter.h>
 #include <SDLCompat.h>
 #include <Toolkit.h>
 
@@ -90,6 +91,7 @@ void GameGUI::init()
 	gamePaused=false;
 	hardPause=false;
 	anyPlayerWaitedTimeFor=0;
+	lastAutosaveStep=-1;
 	exitGlobCompletely=false;
 	flushOutgoingAndExit=false;
 	drawHealthFoodBar=true;

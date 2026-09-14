@@ -75,7 +75,7 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 
 
 	
-void MapHeader::save(GAGCore::OutputStream *stream) const
+void MapHeader::save(GAGCore::OutputStream *stream, size_t *sha1Position) const
 {
 	stream->writeEnterSection("MapHeader");
 	stream->writeText(mapName, "mapName");
@@ -84,6 +84,8 @@ void MapHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeSint32(numberOfTeams, "numberOfTeams");
 	stream->writeUint32(mapOffset, "mapOffset");
 	stream->writeUint8(isSavedGame, "isSavedGame");
+	if (sha1Position)
+		*sha1Position = stream->getPosition();
 	stream->write(SHA1, 20, "SHA1");
 	stream->writeEnterSection("teams");
 	for(int i=0; i<numberOfTeams; ++i)
@@ -256,7 +258,7 @@ bool MapHeader::operator==(const MapHeader& rhs) const
 		rhs.mapOffset == mapOffset &&
 		rhs.isSavedGame == isSavedGame &&
 		rhs.mapName == mapName &&
-		std::equal(SHA1, SHA1+20, rhs.SHA1)==0)
+		std::equal(SHA1, SHA1+20, rhs.SHA1))
 		return true;
 	return false;
 }

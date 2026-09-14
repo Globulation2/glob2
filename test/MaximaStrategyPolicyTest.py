@@ -204,7 +204,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         )
         self.assertIn("intent.requiredResourceType=ALGA;", self.maxima)
         self.assertNotIn(
-            "unit->carriedRessource==CORN || unit->carriedRessource==ALGA",
+            "unit->carriedRessource==WHEAT || unit->carriedRessource==ALGA",
             self.maxima,
         )
 

@@ -102,6 +102,9 @@ jobs:
           mkdir -p /tmp/glob2-render-profile
           GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
             xvfb-run -a build/src/torus-render-test -g -F -m -s 1120x720
+          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
+            GLOB2_UI_SCALE=3 xvfb-run -a -s '-screen 0 1920x1440x24' \
+            build/src/torus-render-test -g -F -m -s 1920x1440
           GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
             build/src/torus-render-test -G -F -m -s 1120x720
 
@@ -141,6 +144,11 @@ jobs:
           scons -j$(nproc) release=1 server=0 entering-unit-save-test
           ./build/src/EnteringUnitSaveHarness
           ./build/src/EnteringUnitSaveHarness --load test/fixtures/entering-explorer/reproducer.game
+
+      - name: Test clearing flag resource bounds
+        run: |
+          scons -j$(nproc) release=1 server=0 clearing-gradient-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/ClearingFlagGradientTest
 
       - name: Test trapped colony elimination
         run: |
@@ -245,6 +253,14 @@ jobs:
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/WindowResizeHarness gl
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/WindowResizeHarness software
 
+      - name: Build and run the scaled text regression
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+        run: |
+          scons -j$(nproc) release=1 server=0 text-raster-test
+          mkdir -p artifacts/text-raster
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/TextRasterHarness artifacts/text-raster
+
       - name: Check game rendering across repeated map copies
         env:
           SDL_VIDEODRIVER: dummy
@@ -340,6 +356,10 @@ jobs:
       - name: Build glob2
         run: scons -j$(nproc) release=1 mingw=1
 
+      - name: Test clearing flag resource bounds
+        run: |
+          scons -j$(nproc) release=1 mingw=1 server=0 clearing-gradient-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/ClearingFlagGradientTest.exe
       - name: Test status-bar bounds in software rendering
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 point-bar-render-test

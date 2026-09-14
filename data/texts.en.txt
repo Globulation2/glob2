@@ -82,6 +82,10 @@ Econo
 Warrush - Attacks quickly and punishingly, often pushing a defending player to the edge of its game. Medium Difficulty.
 [AIWarrush]
 Warrush
+[AICabino-Description]
+Cabino runs its defense, offense and construction as independent departments that each act on their own initiative, but together they pursue one plan: grow large fast and throw huge armies at its opponents. Hard Difficulty.
+[AICabino]
+Cabino
 [Alga]
 Algae
 [algae]
@@ -1262,6 +1266,10 @@ Huge bases and conversion instead of attacks.
 Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
 [AIWarrush-Summary]
 Fast attacks that test your early defenses.
+[AICabino-Profile]
+Core strategy: A cabinet of independent specialist departments — defense, offense, construction, upgrades, unit management — that each act on their own initiative but converge on one plan: grow large fast, then throw huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure; independent departments react quickly to local threats without waiting on a central plan.\n\nCounterplay to try: Contest its expansion early and use terrain to limit how much of its army can engage at once.
+[AICabino-Summary]
+Independent departments that cooperate toward rapid growth and overwhelming armies.
 [Algae]
 Algae
 [Alliances]
@@ -1774,6 +1782,10 @@ Apply artwork on the next game or editor load (OpenGL).
 Automatic torus view
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automatically show the torus overview while moving around the map (OpenGL).
+[settings Autosave]
+Autosave
+[settings Save the game automatically about every 10 seconds.]
+Save the game automatically about every 10 seconds.
 [Channel width]
 Channel width
 [Land bridge width]

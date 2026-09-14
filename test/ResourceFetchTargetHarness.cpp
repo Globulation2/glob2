@@ -51,13 +51,13 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 	const int unitX = 16, unitY = 16;
 	const int nearX = 20, nearY = 16; // distance 4
 	const int farX = 16, farY = 25;   // distance 9
-	require(game.map.incResource(nearX, nearY, CORN, 0), "seed the near corn tile");
-	require(game.map.incResource(farX, farY, CORN, 0), "seed the far corn tile");
+	require(game.map.incResource(nearX, nearY, WHEAT, 0), "seed the near wheat tile");
+	require(game.map.incResource(farX, farY, WHEAT, 0), "seed the far wheat tile");
 
 	TestUnit* unit = new TestUnit(unitX, unitY, 0, WORKER, team, 0);
 	team->myUnits[0] = unit;
 	game.map.setGroundUnit(unitX, unitY, unit->gid);
-	unit->destinationPurpose = CORN;
+	unit->destinationPurpose = WHEAT;
 	unit->activity = Unit::ACT_FILLING;
 	unit->displacement = Unit::DIS_GOING_TO_RESOURCE;
 	unit->validTarget = true;
@@ -68,9 +68,9 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 
 	// Task assignment: ascend the resource gradient once, same call as
 	// Unit.cpp/UnitDisplacement.cpp.
-	game.map.resourceAvailableUpdate(teamNumber, CORN, swimClass, unit->posX, unit->posY, &unit->targetX, &unit->targetY, NULL);
-	require(unit->targetX == nearX && unit->targetY == nearY, "initial target is the nearer corn tile");
-	require(game.map.getGradient(teamNumber, CORN, swimClass, unit->targetX, unit->targetY) == GRADIENT_AT_GOAL,
+	game.map.resourceAvailableUpdate(teamNumber, WHEAT, swimClass, unit->posX, unit->posY, &unit->targetX, &unit->targetY, NULL);
+	require(unit->targetX == nearX && unit->targetY == nearY, "initial target is the nearer wheat tile");
+	require(game.map.getGradient(teamNumber, WHEAT, swimClass, unit->targetX, unit->targetY) == GRADIENT_AT_GOAL,
 		"initial target is the gradient's goal");
 
 	// One action of walking: the target must not move while it is still valid.
@@ -81,13 +81,13 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 	// layer directly, the same way Map::decResource does; the cached
 	// gradient is untouched until something rebuilds it.
 	game.map.getTile(nearX, nearY).resource.clear();
-	require(game.map.getGradient(teamNumber, CORN, swimClass, nearX, nearY) == GRADIENT_AT_GOAL,
+	require(game.map.getGradient(teamNumber, WHEAT, swimClass, nearX, nearY) == GRADIENT_AT_GOAL,
 		"the cached gradient does not notice the depletion by itself");
 
 	// Simulate the periodic rebuild every cached gradient gets from
 	// Map::syncStep once per its round-robin turn.
-	game.map.updateResourcesGradient(teamNumber, CORN, swimClass);
-	require(game.map.getGradient(teamNumber, CORN, swimClass, nearX, nearY) != GRADIENT_AT_GOAL,
+	game.map.updateResourcesGradient(teamNumber, WHEAT, swimClass);
+	require(game.map.getGradient(teamNumber, WHEAT, swimClass, nearX, nearY) != GRADIENT_AT_GOAL,
 		"the rebuilt gradient no longer marks the depleted tile as the goal");
 
 	// The unit takes its next action. pathfindResource reads the fresh
@@ -95,8 +95,8 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 	// must follow, not keep pointing at the now-empty near tile.
 	unit->stepGoingToResource();
 	require(unit->targetX == farX && unit->targetY == farY,
-		"target is refreshed to the far corn tile once the near one is gone");
-	require(game.map.getGradient(teamNumber, CORN, swimClass, unit->targetX, unit->targetY) == GRADIENT_AT_GOAL,
+		"target is refreshed to the far wheat tile once the near one is gone");
+	require(game.map.getGradient(teamNumber, WHEAT, swimClass, unit->targetX, unit->targetY) == GRADIENT_AT_GOAL,
 		"refreshed target is the rebuilt gradient's goal");
 
 	std::puts("PASS resource-fetch target is refreshed when the gradient it was ascended from is rebuilt");
@@ -136,20 +136,20 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	// cheaper even though A is the nearer tile to ascend to from the unit.
 	const int nearUnitX = 20, nearUnitY = 16;
 	const int nearBuildingX = 7, nearBuildingY = 7;
-	require(game.map.incResource(nearUnitX, nearUnitY, CORN, 0), "seed the tile near the unit");
-	require(game.map.incResource(nearBuildingX, nearBuildingY, CORN, 0), "seed the tile near the building");
+	require(game.map.incResource(nearUnitX, nearUnitY, WHEAT, 0), "seed the tile near the unit");
+	require(game.map.incResource(nearBuildingX, nearBuildingY, WHEAT, 0), "seed the tile near the building");
 
 	TestUnit* unit = new TestUnit(unitX, unitY, 0, WORKER, team, 0);
 	team->myUnits[0] = unit;
 	game.map.setGroundUnit(unitX, unitY, unit->gid);
 	unit->attachedBuilding = inn;
-	unit->destinationPurpose = CORN;
+	unit->destinationPurpose = WHEAT;
 	unit->activity = Unit::ACT_FILLING;
 	unit->displacement = Unit::DIS_GOING_TO_RESOURCE;
 	unit->validTarget = true;
 	const int swimClass = unit->swimClass();
 
-	require(game.map.getGlobalGradientDestination(game.map.getResourceGradient(teamNumber, CORN, swimClass), unit->posX, unit->posY, &unit->targetX, &unit->targetY),
+	require(game.map.getGlobalGradientDestination(game.map.getResourceGradient(teamNumber, WHEAT, swimClass), unit->posX, unit->posY, &unit->targetX, &unit->targetY),
 		"sanity: ascending the plain gradient reaches an exact goal");
 	require(unit->targetX == nearUnitX && unit->targetY == nearUnitY,
 		"sanity: the plain gradient's nearest tile is the one close to the unit, not the building");
@@ -169,14 +169,14 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	// The near-building tile gets fully harvested by someone else. Neither
 	// the resource gradient nor the round-trip field notice by themselves.
 	game.map.getTile(nearBuildingX, nearBuildingY).resource.clear();
-	game.map.updateResourcesGradient(teamNumber, CORN, swimClass);
-	game.map.updateRoundTripGradient(inn, CORN, swimClass);
+	game.map.updateResourcesGradient(teamNumber, WHEAT, swimClass);
+	game.map.updateRoundTripGradient(inn, WHEAT, swimClass);
 
 	// Next action: only the near-unit tile is left on either gradient: the
 	// target must be refreshed to it.
 	unit->stepGoingToResource();
 	require(unit->targetX == nearUnitX && unit->targetY == nearUnitY,
-		"target is refreshed to the only remaining corn tile");
+		"target is refreshed to the only remaining wheat tile");
 
 	std::puts("PASS resource-fetch target tracks the round-trip gradient and refreshes when it is rebuilt");
 }

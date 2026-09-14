@@ -39,6 +39,12 @@ public:
 		CORTEX=6,
 		///Standalone Maxima strategy AI.
 		MAXIMA=7,
+		///Reference to AICabino, a resurrected port of the original (2005-2007)
+		///Nicowar: a set of independent specialist modules (defense, attack,
+		///construction, upgrades, unit/swarm management) that each act on
+		///their own but cooperate toward one game plan, direct AIImplementation
+		///binding, no AIEcho involved.
+		CABINO=8,
 
 		SIZE
 	};
