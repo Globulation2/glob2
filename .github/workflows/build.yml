@@ -398,12 +398,12 @@ jobs:
       - name: Test clearing flag resource bounds
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 clearing-gradient-test
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/ClearingFlagGradientTest.exe
+          python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/ClearingFlagGradientTest.exe
       - name: Test status-bar bounds in software rendering
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 point-bar-render-test
           SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
-            ./build/linux/client/release/src/point-bar-render-test.exe software
+            ./build/mingw/client/release/src/point-bar-render-test.exe software
 
       - name: Test trapped colony elimination
         run: |
