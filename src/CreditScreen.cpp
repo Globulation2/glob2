@@ -3,6 +3,7 @@
 
 #include "CreditScreen.h"
 #include "GlobalContainer.h"
+#include "render/UnitAnimation.h"
 #include <iostream>
 #include <string>
 #include <GUIButton.h>
@@ -16,12 +17,9 @@ using namespace GAGCore;
 
 // New class for an auto-scrolling credit screen.
 
-// Lines marked with a '*' in the credits file are decorated with a walking
-// worker taken from the shared units sprite. The worker walk cycle starts at
-// frame 64 with 8 frames per facing direction; the credits use direction 3,
-// i.e. frames 88..95, cycling through all 8 frames as the text scrolls.
-static constexpr int kWorkerWalkFrameBase = 88;
-static constexpr int kWorkerWalkFrameCount = 8;
+// Credits decorations use worker walking direction 3.
+static constexpr int kWorkerWalkFrameBase = unitAnimationFrame(64, 3, 0);
+static constexpr int kWorkerWalkFrameCount = UNIT_ANIMATION_FRAMES_PER_DIRECTION;
 
 class ScrollingText:public RectangularWidget
 {
@@ -130,9 +128,8 @@ void ScrollingText::paint()
 	assert(parent->getSurface());
 
 	int yPos = y;
-	// offset can be negative (it starts at -h + 25), so mask rather than
-	// modulo to stay within the 8-frame walk cycle
-	const int imgid = kWorkerWalkFrameBase + (offset & (kWorkerWalkFrameCount - 1));
+	// Mask negative scroll offsets and preserve the eight-scroll-step cycle.
+	const int imgid = kWorkerWalkFrameBase + ((offset & 7) * UNIT_ANIMATION_FRAME_MULTIPLIER);
 
 	for (size_t i = 0; i < text.size(); i++)
 	{

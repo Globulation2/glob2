@@ -13,6 +13,7 @@
 #include "SpriteCentering.h"
 #include "TeamDisplay.h"
 #include "Unit.h"
+#include "render/UnitAnimation.h"
 #include "UnitDisplayNames.h"
 
 namespace {
@@ -77,15 +78,7 @@ void GameGUI::drawUnitInfos(void)
 	assert(dir<9);
 	assert(delta>=0);
 	assert(delta<256);
-	if (dir==8)
-	{
-		imgid+=8*(delta>>5);
-	}
-	else
-	{
-		imgid+=8*dir;
-		imgid+=(delta>>5);
-	}
+	imgid=unitAnimationFrame(imgid, dir, delta);
 
 	Sprite *unitSprite=globalContainer->units;
 	unitSprite->setBaseColor(unit->owner->color);

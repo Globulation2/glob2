@@ -180,10 +180,19 @@ namespace GAGCore
                     for(int y=0;y<h;++y)for(int x=0;x<w;++x)
                         for(int c=0;c<4;++c)level[(y*w+x)*4+c]=source[(std::min(y,sdlsurface->h-1)*sdlsurface->w+std::min(x,sdlsurface->w-1))*4+c];
                     glState.allocatedTextureBytes-=gpuBytes;gpuBytes=0;
+                    // S3TC/DXT5 stores one 16-byte block per 4x4 pixel tile, a fixed
+                    // 4:1 ratio versus RGBA8 regardless of encoder; letting the driver
+                    // compress during upload needs no offline tool or vendored encoder.
+                    // Block compression is undefined below 4x4, so the chain stops
+                    // there instead of continuing to the 2x2/1x1 tail.
+                    const bool compress=glState.hasS3TCCompression;
+                    const GLenum internalFormat=compress?GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:GL_RGBA;
                     for(int mip=0;;++mip)
                     {
-                        glTexImage2D(GL_TEXTURE_2D,mip,GL_RGBA,w,h,0,pixelFormat,GL_UNSIGNED_BYTE,level.data());
-                        gpuBytes+=w*h*4;glState.allocatedTextureBytes+=w*h*4;
+                        if(compress&&(w<4||h<4)){glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAX_LEVEL,mip-1);break;}
+                        glTexImage2D(GL_TEXTURE_2D,mip,internalFormat,w,h,0,pixelFormat,GL_UNSIGNED_BYTE,level.data());
+                        const size_t mipBytes=compress?static_cast<size_t>((w+3)/4)*((h+3)/4)*16:static_cast<size_t>(w)*h*4;
+                        gpuBytes+=mipBytes;glState.allocatedTextureBytes+=mipBytes;
                         if(w==1&&h==1)break;
                         int nw=std::max(1,w/2),nh=std::max(1,h/2);
                         std::vector<unsigned char> next(nw*nh*4);

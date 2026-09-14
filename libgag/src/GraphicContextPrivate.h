@@ -68,6 +68,7 @@ namespace GAGCore
 		GLenum _sfactor, _dfactor;
 		bool isTextureSRectangle;
 		bool useATIWorkaround;
+		bool hasS3TCCompression;
 		unsigned allocatedTextureCount;
 		size_t allocatedTextureBytes=0;
 
@@ -76,6 +77,7 @@ namespace GAGCore
 			resetCache();
 			isTextureSRectangle = false;
 			useATIWorkaround = false;
+			hasS3TCCompression = false;
 			allocatedTextureCount = 0;
 		}
 

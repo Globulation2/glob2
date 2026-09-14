@@ -1,6 +1,6 @@
-> Original-only PR: only the 60 verified original-derived frames ship here.
-> References below to approved upscales describe the separate follow-up PR;
-> all unavailable frames use classic artwork in this branch.
+> This pack contains 60 verified original-derived world frames and 1,792 unit poses
+> rendered from original Blender rigs. No AI assets are included; unavailable
+> frames retain classic artwork.
 
 # Recovered artwork in the runtime pack
 
@@ -258,7 +258,8 @@ pack reproducible without GIMP. All four resource atlas mips use these exports.
 Five stages overlap classic silhouettes by 83.6–95.7%, with centers within
 0.58 logical pixels; fine leaf antialiasing differs from classic downsampling.
 
-This brings original-source runtime coverage to **60 of 487 frames**.
+This brings original-source world-art coverage to **60 of 487 frames**, separate
+from the 1,792 unit animation poses described below.
 The other 42 resource frames lack verified matching larger sources: wheat ripe
 states 14/19, alternative papyrus 25–29, stones 30–39, algae 40–49 and fruit
 50–64. The older corn-stalk sources are an alternative style, not replacements
@@ -272,3 +273,18 @@ still need a dedicated render/dependency audit; they have not been declared
 missing. The UI audit used temporary previews; no preview-generation tooling is retained.
 
 Export scripts write staging files under derived/. They do not automatically replace approved production inputs; review and promote the selected outputs before packaging. Historical experiment tooling is not shipped.
+
+## Unit animations
+
+The seven animation sets are rendered directly from the preserved Blender rigs
+in `originals/units` with Blender 2.34. Each direction retains 32 poses; native
+canvases of 32/38/40 pixels become 128/152/160 pixel HD textures. Camera framing,
+materials, team-color and shadow layers use the same settings as the native
+32-pose render. Prepared scene copies only change resolution and sampling fields
+plus the documented explorer camera calibration.
+
+Approved unit layers belong in `production/original-derived`; the runtime copies
+are in `data/highres/v1`. The native fallback sprites remain in `data/gfx`.
+`tools/unit-animation/README.md` documents rendering and validation. The standard
+pack manifest records each frame's source Blender hash, rendered layer hashes,
+native reference hashes, direction/pose and render-frame settings.

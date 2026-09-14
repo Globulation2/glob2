@@ -23,6 +23,8 @@
 #include "Order.h"
 #include "Unit.h"
 #include "UnitDrawGeometry.h"
+#include "UnitAnimation.h"
+#include <algorithm>
 #include "UnitSkin.h"
 #include "Utilities.h"
 #include "GameGUI.h"
@@ -88,15 +90,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	assert(dir<9);
 	assert(delta>=0);
 	assert(delta<256);
-	if (dir==8)
-	{
-		imgid+=8*(delta>>5);
-	}
-	else
-	{
-		imgid+=8*dir;
-		imgid+=(delta>>5);
-	}
+	imgid=unitAnimationFrame(imgid, dir, delta);
 
 	// draw unit
 	Sprite *unitSprite = skin.sprite;
@@ -359,15 +353,7 @@ void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int 
 	assert(dir<9);
 	assert(delta>=0);
 	assert(delta<256);
-	if (dir==8)
-	{
-		imgid+=8*(delta>>5);
-	}
-	else
-	{
-		imgid+=8*dir;
-		imgid+=(delta>>5);
-	}
+	imgid=unitAnimationFrame(imgid, dir, delta);
 
 	Sprite *unitSprite=globalContainer->units;
 	unitSprite->setBaseColor(unit->owner->color);

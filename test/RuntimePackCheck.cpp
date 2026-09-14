@@ -48,6 +48,10 @@ int main(int argc,char**argv)
             if(!sprites.count(prefix)){auto s=std::make_unique<Sprite>();assert(s->load("data/gfx/"+prefix));sprites[prefix]=std::move(s);}
             frames.push_back({prefix,id,index,w,h});
         }
+        // Terrain tiles have no HD layer and so never appear in frames.txt,
+        // but the dense-scene benchmark below draws them alongside frames
+        // that do.
+        if(!sprites.count("terrain")){auto s=std::make_unique<Sprite>();assert(s->load("data/gfx/terrain"));sprites["terrain"]=std::move(s);}
         Sprite::setHighResolution(!original);
         for(auto f:frames){assert(sprites[f.prefix]->getW(f.index)==f.w);assert(sprites[f.prefix]->getH(f.index)==f.h);}
         if(software||fallback){assert(Sprite::highResolutionStats().cpuBytes==0);std::cout<<"PASS software: original resources, all logical sizes\n";}
