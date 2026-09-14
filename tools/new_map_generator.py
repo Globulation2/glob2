@@ -132,6 +132,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		if (water[i])
 			L.terrain[i] = WATER;
 	layBeaches(L.terrain, t);
+	context.telemetry.measure("{id}.home.radius", L.homeRadius);
+	context.telemetry.measure("{id}.homes.actual", L.homes.size());
 	return L;
 }}
 

@@ -217,6 +217,24 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const auto unit = [&](const char *stream)
 	{ return context.bounded(stream, 2001) / 1000.0 - 1; };
 
+	if (context.telemetry.enabled())
+	{
+		context.telemetry.measure("everglades.clearing.requested-radius",
+								  EvergladesOptions(request).clearingSize);
+		context.telemetry.measure("everglades.clearing.actual-radius", g.clearing);
+		context.telemetry.measure("everglades.pools.actual-radius", g.poolRadius);
+		context.telemetry.measure("everglades.pools.expected-coverage", g.coverage);
+		context.telemetry.measure("everglades.home.ring", g.homeRing);
+		context.telemetry.measure("everglades.home.jitter-turn", g.jitterTurn);
+		context.telemetry.measure("everglades.home.jitter-radius", g.jitterRadius);
+		context.telemetry.measure("everglades.home.pond-radius", g.pond);
+		if (g.clearing < EvergladesOptions(request).clearingSize)
+			context.telemetry.fallback("everglades.clearing.shrunk",
+									   "Clearings shrank to fit their ring");
+		if (g.poolRadius < EvergladesOptions(request).poolSize)
+			context.telemetry.fallback("everglades.pools.scaled",
+									   "Pool coverage cap reduced radii");
+	}
 	// The homes: near a ring, evenly spaced from a random start, each nudged a little.
 	const double phase = context.bounded("glades-layout", 3600) / 3600.0 * 2 * kPi;
 	const double wedge = 2 * kPi / teams;
@@ -317,6 +335,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				}
 			}
 	}
+	context.telemetry.measure("everglades.pools.actual", L.pools.size());
 	return L;
 }
 
@@ -386,13 +405,15 @@ void stockSwamp(Map &map, const Layout &L, GenerationContext &context, const Eve
 	// in the thicket, not something to farm.
 	scatterClumps(context, t, ground, int(scaledCount(std::max(2, area / 1000), o.stone)),
 				  "glades-stone", eligible,
-				  [&](MapGeneratorPoint p) {
+				  [&](MapGeneratorPoint p)
+				  {
 					  placeResourceClump(map, context, p, STONE,
 										 1 + int(context.bounded("glades-stone", 2)));
 				  });
 	scatterClumps(context, t, ground, int(scaledCount(std::max(3, area / 1500), o.fruit)),
 				  "glades-fruit", eligible,
-				  [&](MapGeneratorPoint p) {
+				  [&](MapGeneratorPoint p)
+				  {
 					  placeResourceClump(map, context, p,
 										 CHERRY + int(context.bounded("glades-fruit", 3)), 2);
 				  });

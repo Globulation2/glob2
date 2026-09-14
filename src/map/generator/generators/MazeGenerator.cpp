@@ -198,6 +198,12 @@ MazeDesign designMaze(const GenerationRequest &request, GenerationContext &conte
 	d.labels = labelTiles(g);
 	if (d.labels.empty())
 		d.failure = "the maze's cells did not tile the map";
+	context.telemetry.measure("maze.cells.actual", g.cellCount());
+	context.telemetry.measure("maze.passage.half-width", L.half);
+	if (context.telemetry.enabled())
+		context.telemetry.measure("maze.edges.open", std::count(d.open.begin(), d.open.end(), 1));
+	context.telemetry.measure("maze.dead-ends.actual", d.deadEnds.size());
+	context.telemetry.measure("maze.warp.clearance", passageSteps);
 	return d;
 }
 
@@ -668,8 +674,8 @@ MazeOptions::MazeOptions(const GenerationRequest &r)
 	  channelWidth(r.option("channel-width")), loopiness(r.option("loopiness")),
 	  warp(r.option("warp")), wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
-	  fruit(r.option("fruit-amount")),
-	  sandRoads(r.option("sand-roads") != 0), treasure(r.option("dead-end-treasure") != 0)
+	  fruit(r.option("fruit-amount")), sandRoads(r.option("sand-roads") != 0),
+	  treasure(r.option("dead-end-treasure") != 0)
 {
 }
 

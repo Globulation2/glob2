@@ -14,7 +14,8 @@ class GenerationService
 		: registry(registry)
 	{
 	}
-	GenerationResult generate(Game &freshGame, const GenerationRequest &request) const;
+	GenerationResult generate(Game &freshGame, const GenerationRequest &request,
+							  bool collectTelemetry = false) const;
 
 	// Rolls of the same generator differ in how good a start they give, not only in whether
 	// every colony fits, so a caller that can afford more than one roll should keep the best

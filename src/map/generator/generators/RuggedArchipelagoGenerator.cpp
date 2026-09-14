@@ -99,6 +99,8 @@ static int plantBootstraps(Map &map, GenerationContext &context,
 			i--;
 			if (c++ > 65536)
 			{
+				context.telemetry.fallback("rugged-archipelago.starts.spacing-relaxed",
+										   "Repeated rejected draws halved squared spacing", i);
 				minDistSquare = minDistSquare >> 1;
 				// I think that you need to do this only once, in worst case.
 				// With a few luck you doesn't need to.
@@ -116,6 +118,8 @@ static int plantBootstraps(Map &map, GenerationContext &context,
 					map.setUMTerrain(x + dx, y + dy, GRASS);
 		}
 	}
+	context.telemetry.measure("rugged-archipelago.islands.growth-passes", islandsSize);
+	context.telemetry.measure("rugged-archipelago.starts.final-spacing-squared", minDistSquare);
 	return islandsSize;
 }
 
@@ -320,6 +324,7 @@ static void resources(Game &game, GenerationContext &context,
 	// back out. From 2003 until revision 2 Map::smoothResources read the old resource encoding and
 	// did nothing, leaving the deposits as squares; working, it adds about a quarter more wheat and
 	// wood.
+	context.telemetry.measure("rugged-archipelago.resources.smoothing-rounds", smoothResources * 2);
 	map.smoothResources(smoothResources * 2);
 }
 

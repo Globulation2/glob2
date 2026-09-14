@@ -94,10 +94,7 @@ void configure(GenerationRequest &request, const MapSettings &settings)
 									 GeneratorRegistry::builtins().at(request.method).id);
 		c->set(request, *value);
 	}
-	const auto error =
-		validateGenerationRequest(request, GeneratorRegistry::builtins().at(request.method));
-	if (!error.empty())
-		throw std::runtime_error(error);
+	// Relationship validation runs in GenerationService so failures retain JSON diagnostics.
 }
 void catalog(const std::string &name)
 {
@@ -129,6 +126,17 @@ void parentDirectory(const std::string &path)
 	if (!parent.empty())
 		std::filesystem::create_directories(parent);
 }
+void writeJsonReport(const std::string &path, const std::string &report)
+{
+	parentDirectory(path);
+	std::ofstream file(path, std::ios::binary);
+	file << report;
+	file.close();
+	if (!file)
+		throw std::runtime_error("Cannot write JSON: " + path);
+	std::cout << "Map report: " << path << "\n";
+}
+
 bool samePath(const std::string &a, const std::string &b)
 {
 	return !a.empty() && !b.empty() &&
@@ -370,9 +378,13 @@ int runMapCommand(int argc, char **argv)
 		GenerationResult result;
 		if (generate)
 		{
-			result = GenerationService().generate(game, request);
+			result = GenerationService().generate(game, request, !json.empty());
 			if (!result)
+			{
+				if (!json.empty())
+					writeJsonReport(json, describeGenerationFailure(request, result));
 				throw std::runtime_error(result.diagnostic());
+			}
 			std::cout << result.diagnostic() << "\n";
 		}
 		else
@@ -397,15 +409,7 @@ int runMapCommand(int argc, char **argv)
 		if (generate && !output.empty())
 			saveMap(game, output, std::filesystem::path(output).stem().string());
 		if (!json.empty())
-		{
-			parentDirectory(json);
-			std::ofstream file(json, std::ios::binary);
-			file << report;
-			file.close();
-			if (!file)
-				throw std::runtime_error("Cannot write JSON: " + json);
-			std::cout << "Map report: " << json << "\n";
-		}
+			writeJsonReport(json, report);
 		return 0;
 	}
 	catch (const std::exception &e)

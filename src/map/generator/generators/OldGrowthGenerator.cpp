@@ -126,6 +126,11 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.spacing = nearestSiteDistance(t, L.homes);
 	L.homeRadius =
 		std::min<double>(o.homeSize, std::floor(L.spacing / 3 - kClearingMargin - kSandRing));
+	context.telemetry.measure("old-growth.homes.spacing", L.spacing);
+	context.telemetry.measure("old-growth.homes.actual-radius", L.homeRadius);
+	if (L.homeRadius < o.homeSize)
+		context.telemetry.fallback("old-growth.homes.shrunk",
+								   "Homes shrank to preserve intervening forest");
 	if (!homeHasRoom(L.homeRadius))
 	{
 		L.failure = "Too many colonies for this map; use a bigger map or fewer colonies.";
@@ -208,6 +213,11 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		for (int i = 0; i < n; ++i)
 			keepClear[i] = keepClear[i] || shores[i];
 	}
+	context.telemetry.measure("old-growth.lakes.requested", lakes);
+	context.telemetry.measure("old-growth.lakes.actual", L.lakeCentres.size());
+	if (int(L.lakeCentres.size()) < lakes)
+		context.telemetry.fallback("old-growth.lakes.omitted",
+								   "No further lake fit with clearing and shore clearance");
 	// The forest: everything that is not a clearing or water.
 	L.forest.assign(n, 0);
 	for (int i = 0; i < n; ++i)
@@ -256,6 +266,13 @@ void hideGroves(Map &map, const Layout &L, GenerationContext &context, const Old
 	for (int i = 0; i < n; ++i)
 		deep[i] = L.forest[i] && map.getResource(i % t.w, i / t.w).type == WOOD;
 	const std::vector<int> sites = equalCostSites(costs, deep, target, std::max(8, target / 4));
+	context.telemetry.measure("old-growth.groves.target-cutting-cost", target);
+	if (context.telemetry.enabled())
+	{
+		context.telemetry.measure(
+			"old-growth.groves.actual-sites",
+			std::count_if(sites.begin(), sites.end(), [](int site) { return site >= 0; }));
+	}
 	for (int k = 0; k < teams; ++k)
 	{
 		if (sites[k] < 0)
@@ -288,6 +305,7 @@ bool generate(Game &game, GenerationContext &context)
 	const Layout L = design(context.request, context);
 	if (!L.failure.empty())
 	{
+		context.telemetry.fallback("old-growth.layout.failure", L.failure);
 		context.detail = L.failure;
 		return false;
 	}
@@ -372,6 +390,9 @@ bool generate(Game &game, GenerationContext &context)
 		if (L.forest[i])
 			levels.push_back(gaps[i]);
 	const int level = percentile(levels, 100 - o.forestDensity);
+	context.telemetry.measure("old-growth.forest.noise-threshold", level);
+	context.telemetry.measure("old-growth.forest.eligible-corners", levels.size());
+	context.telemetry.choice("old-growth.contact.mode", o.trails ? "starting-trails" : "cutting");
 	plantCover(map, t, L.forest, WOOD, [&](int i)
 			   { return gaps[i] >= level && !reserved[i] && clearGround(map, i % t.w, i / t.w); });
 	if (o.hiddenGroves)

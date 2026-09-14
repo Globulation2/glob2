@@ -188,7 +188,7 @@ int wallReach(const CanalsOptions &o)
 // landing), and off any pad. The block must stay one piece with them in - its land and its bridges,
 // eight ways, as a unit walks - else the block gets no walls and the pad kind instead (a chicane,
 // which has no pad, becomes plain).
-void blockWalls(Layout &L, int cell, int reach)
+void blockWalls(Layout &L, int cell, int reach, GenerationContext &context)
 {
 	const Torus &t = L.t;
 	const int n = t.size();
@@ -287,6 +287,9 @@ void blockWalls(Layout &L, int cell, int reach)
 		}
 	if (pieces > 1)
 	{
+		context.telemetry.fallback(
+			"canals.block.walls-omitted",
+			"Walls would disconnect the block; using the simpler block kind.", cell);
 		L.kind[cell] = L.kind[cell] == Chicane ? Plain : Homestead;
 		return;
 	}
@@ -353,7 +356,11 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			roll -= kKindWeight[kind++];
 		// A moat needs a block big enough for its ring; a smaller block's moat is a lake.
 		if (kind == Moat && o.blockSize < kMoatMinimumBlock)
+		{
+			context.telemetry.fallback("canals.block.moat-to-lake",
+									   "Block size is below the moat minimum.", cell);
 			kind = Lake;
+		}
 		L.kind[cell] = kind;
 		L.facing[cell] = int(context.bounded("canals-facing", 4));
 	}
@@ -460,7 +467,11 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 						fits = L.cell[i] == cell && !L.canal[i];
 					}
 			if (!fits)
+			{
+				context.telemetry.fallback("canals.block.moat-to-lake",
+										   "Moat clearance does not fit the warped block.", cell);
 				L.kind[cell] = Lake;
+			}
 		}
 		if (L.kind[cell] == Lake)
 			fillShape(L.water, t, c.x, c.y, lake, 0.0);
@@ -521,7 +532,25 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// The walls (blockWalls), once the pads' sand is in the sketch, so none stands on it.
 	L.stone.assign(n, 0);
 	for (int cell = 0; cell < L.g.cellCount(); ++cell)
-		blockWalls(L, cell, wallReach(o));
+		blockWalls(L, cell, wallReach(o), context);
+	context.telemetry.measure("canals.blocks.actual", L.g.cellCount());
+	if (context.telemetry.enabled())
+		context.telemetry.measure("canals.bridges.open-edges",
+								  std::count(open.begin(), open.end(), 1));
+	context.telemetry.measure("canals.home.radius", L.homeRadius);
+	if (context.telemetry.enabled())
+	{
+		const char *kindNames[] = {"home",   "plain",   "lake",    "orchard",    "homestead",
+								   "hamlet", "quarry",  "woodlot", "wheatfield", "dune",
+								   "fort",   "bastion", "funnel",  "chicane",    "moat"};
+		int counts[kKinds + 1] = {};
+		for (int kind : L.kind)
+			++counts[kind + 1];
+		for (int kind = Home; kind < kKinds; ++kind)
+			context.telemetry.measure(std::string("canals.block-kind.") + kindNames[kind + 1] +
+										  ".count",
+									  counts[kind + 1]);
+	}
 	return L;
 }
 
@@ -798,12 +827,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 
 CanalsOptions::CanalsOptions(const GenerationRequest &r)
 	: blockShape(r.option("block-shape")), blockSize(r.option("block-size")),
-	  canalWidth(r.option("canal-width")),
-	  warp(r.option("warp")), extraBridges(r.option("extra-bridges")),
-	  towers(r.option("starting-towers")), towerCount(r.option("tower-count")),
-	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
-	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
-	  fruit(r.option("fruit-amount"))
+	  canalWidth(r.option("canal-width")), warp(r.option("warp")),
+	  extraBridges(r.option("extra-bridges")), towers(r.option("starting-towers")),
+	  towerCount(r.option("tower-count")), wheat(r.option("wheat-amount")),
+	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
+	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
 {
 }
 

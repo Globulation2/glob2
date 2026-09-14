@@ -299,10 +299,10 @@ void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &spl
 					  return splitNoise.uiLevel(region[a].x, region[a].y, kBuckets) <
 							 splitNoise.uiLevel(region[b].x, region[b].y, kBuckets);
 				  });
-		const int wheatWanted =
-			std::min<int>(region.size(),
-						  std::max(0, int((std::int64_t(wheatTarget) * std::int64_t(region.size())) /
-										  totalTarget)));
+		const int wheatWanted = std::min<int>(
+			region.size(),
+			std::max(0,
+					 int((std::int64_t(wheatTarget) * std::int64_t(region.size())) / totalTarget)));
 		const int woodWanted =
 			std::min<int>(int(region.size()) - wheatWanted,
 						  std::max(0, int((std::int64_t(woodTarget) * std::int64_t(region.size())) /
@@ -333,6 +333,12 @@ void scatterResources(Game &game, GenerationContext &context, const ResourceDens
 	splitNoise.makePlain(6);
 	int numComponents = 0;
 	const std::vector<int> landComponent = computeComponents(map, false, numComponents);
+	context.telemetry.measure("resources.scatter.land_components", numComponents);
+	context.telemetry.measure("resources.scatter.wheat_target", density.wheat * area / 1600);
+	context.telemetry.measure("resources.scatter.wood_target", density.wood * area / 1600);
+	context.telemetry.measure("resources.scatter.stone_target", density.stone * area / 3000);
+	context.telemetry.measure("resources.scatter.algae_target", density.algae * area / 800);
+	context.telemetry.measure("resources.scatter.fruit_clumps_requested", density.fruit);
 
 	// Densities are tiles per 1600 tiles of map for wheat and wood (a 40x40 square, about one
 	// colony's working area), per 3000 for stone and per 800 for algae: the default 24 wheat covers
@@ -344,12 +350,14 @@ void scatterResources(Game &game, GenerationContext &context, const ResourceDens
 	{
 		int numWaterBodies = 0;
 		const std::vector<int> waterBody = computeComponents(map, true, numWaterBodies);
+		context.telemetry.measure("resources.scatter.water_components", numWaterBodies);
 		scatterBand(map, noise, ALGA, density.algae * area / 800, waterBody, numWaterBodies);
 	}
 
 	// Fruit stays a rare, discrete find rather than a background band - "a distinct little
 	// prize", the same role it already plays elsewhere in these generators - so it keeps the
 	// original single-clump-at-a-random-point search instead of joining the noise bands above.
+	int fruitClumpsPlaced = 0;
 	for (int i = 0; i < density.fruit; ++i)
 	{
 		const int type = CHERRY + context.bounded("resources", 3);
@@ -362,8 +370,14 @@ void scatterResources(Game &game, GenerationContext &context, const ResourceDens
 			found = map.isResourceAllowed(center.x, center.y, type);
 		}
 		if (found)
-			placeResourceClump(map, context, center, type, 1);
+		{
+			if (placeResourceClump(map, context, center, type, 1) > 0)
+				++fruitClumpsPlaced;
+		}
 	}
+	context.telemetry.measure("resources.scatter.fruit_clumps_placed", fruitClumpsPlaced);
+	if (fruitClumpsPlaced < density.fruit)
+		context.telemetry.fallback("resources.scatter.fruit_shortfall", "clump search exhausted");
 }
 
 void fillInResource(Map &map, GenerationContext &context, std::vector<MapGeneratorPoint> &points,
@@ -496,6 +510,9 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 	// grass a topped-up deposit is tried on first, so it lands clearly within reach.
 	const int exploreLimit = std::max(wheatRange, woodRange) * 5 / 2;
 	const int closeRange = wheatRange / 2;
+	context.telemetry.measure("resources.starting.wheat_range", wheatRange);
+	context.telemetry.measure("resources.starting.wood_range", woodRange);
+	context.telemetry.measure("resources.starting.clear_radius", clearRadius);
 	// Below this many reached tiles a team is badly boxed in, but that has two very different
 	// causes: a resource wall sealing off an otherwise fine landmass (swamp and river both paint
 	// resources with no regard for what they might enclose), or the boot search simply landing on
@@ -511,6 +528,10 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 		int bootX = map.normalizeX(context.bootX[team]),
 			bootY = map.normalizeY(context.bootY[team]);
 		ReachResult reach = floodReach(map, bootX, bootY, exploreLimit, closeRange, clearRadius);
+		context.telemetry.measure("resources.starting_wheat.before_distance", reach.wheatDist,
+								  team);
+		context.telemetry.measure("resources.starting_wood.before_distance", reach.woodDist, team);
+		int wallClearRounds = 0;
 		auto pocketSize = [&]
 		{
 			int n = 0;
@@ -531,21 +552,47 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 				terrainOnlyReach(map, bootX, bootY, exploreLimit, protectedWalls);
 			if (!clearResourceWall(map, reach.dist, open, /*minGain=*/1, protectedWalls))
 				break;
+			++wallClearRounds;
 			reach = floodReach(map, bootX, bootY, exploreLimit, closeRange, clearRadius);
 			underServed = reach.wheatDist < 0 || reach.wheatDist > wheatRange ||
 						  reach.woodDist < 0 || reach.woodDist > woodRange;
 		}
+		context.telemetry.measure("resources.starting.wall_clear_rounds", wallClearRounds, team);
+		if (wallClearRounds)
+			context.telemetry.fallback("resources.starting.resource_wall",
+									   "cleared blocking deposits", team);
 		auto placeReachable = [&](int resourceType)
 		{
-			if (!reach.closeGrass.empty() &&
-				placeResourceClumpInArea(map, context, reach.closeGrass, resourceType, 2))
-				return;
-			if (!reach.farGrass.empty())
-				placeResourceClumpInArea(map, context, reach.farGrass, resourceType, 2);
+			int placed = 0;
+			bool triedFar = false;
+			if (!reach.closeGrass.empty())
+				placed = placeResourceClumpInArea(map, context, reach.closeGrass, resourceType, 2);
+			if (!placed && !reach.farGrass.empty())
+			{
+				placed = placeResourceClumpInArea(map, context, reach.farGrass, resourceType, 2);
+				triedFar = true;
+			}
+			if (context.telemetry.enabled())
+			{
+				const std::string key =
+					resourceType == WHEAT ? "resources.starting_wheat" : "resources.starting_wood";
+				if (triedFar)
+					context.telemetry.fallback(key + ".topup_region", "far", team);
+				else if (placed)
+					context.telemetry.choice(key + ".topup_region", "close", team);
+				context.telemetry.measure(key + ".topup_placements", placed, team);
+				if (!placed)
+					context.telemetry.fallback(key + ".topup_failed", "no eligible reachable clump",
+											   team);
+			}
 		};
-		if (reach.wheatDist < 0 || reach.wheatDist > wheatRange)
+		const bool needsWheat = reach.wheatDist < 0 || reach.wheatDist > wheatRange;
+		const bool needsWood = reach.woodDist < 0 || reach.woodDist > woodRange;
+		context.telemetry.measure("resources.starting_wheat.topup_needed", needsWheat, team);
+		context.telemetry.measure("resources.starting_wood.topup_needed", needsWood, team);
+		if (needsWheat)
 			placeReachable(WHEAT);
-		if (reach.woodDist < 0 || reach.woodDist > woodRange)
+		if (needsWood)
 			placeReachable(WOOD);
 	}
 }
@@ -584,8 +631,19 @@ void openCrampedStarts(Game &game, GenerationContext &context, int sites, int ra
 	for (int team = 0; team < context.request.nbTeams; ++team)
 	{
 		WorkerReach reach = reachFromWorkers(map, team, range);
+		context.telemetry.measure("resources.cramped.target_sites", sites, team);
+		context.telemetry.measure("resources.cramped.range", range, team);
+		context.telemetry.measure("resources.cramped.before_sites", reach.sites, team);
 		if (reach.sites >= sites)
+		{
+			context.telemetry.measure("resources.cramped.after_sites", reach.sites, team);
+			context.telemetry.measure("resources.cramped.cleared_tiles", 0, team);
+			context.telemetry.measure("resources.cramped.cleared_rings", 0, team);
+			context.telemetry.measure("resources.cramped.target_met", true, team);
 			continue;
+		}
+		context.telemetry.fallback("resources.cramped.relief", "insufficient building sites", team);
+		int clearedTiles = 0, clearedRings = 0;
 		// Rings measured with resources ignored, so they walk out through the wall itself instead
 		// of stopping at its inner face the way the colony's own flood does.
 		const int bootX = map.normalizeX(context.bootX[team]),
@@ -605,9 +663,17 @@ void openCrampedStarts(Game &game, GenerationContext &context, int sites, int ra
 			if (rings[ring].empty())
 				continue;
 			for (const int p : rings[ring])
+			{
 				map.setNoResource(p % w, p / w, 1);
+				++clearedTiles;
+			}
+			++clearedRings;
 			reach = reachFromWorkers(map, team, range);
 		}
+		context.telemetry.measure("resources.cramped.after_sites", reach.sites, team);
+		context.telemetry.measure("resources.cramped.cleared_tiles", clearedTiles, team);
+		context.telemetry.measure("resources.cramped.cleared_rings", clearedRings, team);
+		context.telemetry.measure("resources.cramped.target_met", reach.sites >= sites, team);
 	}
 }
 } // namespace MapGeneration

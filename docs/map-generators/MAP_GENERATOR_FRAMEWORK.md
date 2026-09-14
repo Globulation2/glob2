@@ -1288,3 +1288,11 @@ settlement footprints, and Fjord's core must keep every player peninsula connect
 lake-connected mode, where that's expected not to hold). Difficult small or crowded combinations
 can still fail outright, but do so with a reproducible stage diagnostic, and are discarded by
 `GenerationService`'s candidate sampling rather than surfaced to a player.
+
+## Observing generator internals
+
+`GenerationContext::telemetry` collects typed generator/helper observations when explicitly
+enabled; `GenerationService` returns them in `GenerationResult` on success and failure.
+It defaults off so ordinary generation and validation probes avoid collection overhead.
+This is separate from `StartQuality` and final-map analysis. See [TELEMETRY.md](TELEMETRY.md)
+for stable keys, bounded retention, failure reports and bulk analysis.

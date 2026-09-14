@@ -171,6 +171,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.cx = t.w / 2;
 	L.cy = t.h / 2;
 	L.stretch = Stretch::toFill(t.w, t.h);
+	context.telemetry.measure("tidal-flats.homes.actual-radius", g.homeRadius);
+	context.telemetry.measure("tidal-flats.homes.ring", g.homeRing);
+	context.telemetry.measure("tidal-flats.central.radius", g.centralRadius);
 	L.phase = context.bounded("flats-layout", 3600) / 3600.0 * 2 * kPi;
 	const double wedge = 2 * kPi / teams;
 	const double arcHalfAt = [&](double d) { return teams < 2 ? kPi * d : kPi * d / teams; }(1.0);
@@ -198,7 +201,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			return false;
 		for (const Feature &b : blobs)
 		{
-			const double need = reach + b.reach + std::max(gap, b.kind == HomeIsland ? homeGap : gap);
+			const double need =
+				reach + b.reach + std::max(gap, b.kind == HomeIsland ? homeGap : gap);
 			if (std::hypot(s0 - b.s, r0 - b.r) < need)
 				return false;
 		}
@@ -207,6 +211,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const auto scatter = [&](Kind kind, int wanted, double low, double high, double roughness,
 							 double gap, double homeGap, const char *stream, bool stretched)
 	{
+		const size_t beforeCount = blobs.size();
+		context.telemetry.measure("tidal-flats.features.requested", wanted, int(kind));
 		// Features are drawn at random across the wedge, from 8 tiles out from the centre to 8
 		// tiles short of the design circle, with 240 tries each (80 until 2026-09-14: a crowded
 		// wedge needs the extra draws to find its last few spots); one that fits nowhere is left
@@ -226,6 +232,11 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			blobs.push_back({{s0, r0, stretch, turn, shape}, kind, reach, placed % 2});
 			++placed;
 		}
+		context.telemetry.measure("tidal-flats.features.actual", blobs.size() - beforeCount,
+								  int(kind));
+		if (blobs.size() - beforeCount < size_t(wanted))
+			context.telemetry.fallback("tidal-flats.features.omitted",
+									   "Placement budget exhausted for crowded wedge", int(kind));
 	};
 	scatter(Neutral, o.extraIslands, std::max(kNeutralMinimum, kNeutralLow * g.homeRadius),
 			std::max(kNeutralMinimum + 1.5, kNeutralHigh * g.homeRadius), kNeutralRoughness,
@@ -308,10 +319,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 					if (b.kind == HomeIsland &&
 						std::hypot(s - b.s, d - b.r) < pond.radiusAt(std::atan2(d - b.r, s - b.s)))
 						L.water[i] = 1;
-					if (b.kind == Neutral &&
-						std::hypot(s - b.s, d - b.r) <
-							oasis.radiusAt(std::atan2(d - b.r, s - b.s)) *
-								std::min(1.0, b.reach / kOasisPondReach))
+					if (b.kind == Neutral && std::hypot(s - b.s, d - b.r) <
+												 oasis.radiusAt(std::atan2(d - b.r, s - b.s)) *
+													 std::min(1.0, b.reach / kOasisPondReach))
 						L.water[i] = 1;
 				}
 			}
@@ -368,8 +378,8 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const T
 					int(scaledCount(area * 2 / 100, o.wood)),
 					[&](int i) { return split.uiLevel(i % t.w, i / t.w, 2048); });
 		scatterClumps(context, t, ground, int(scaledCount(1, o.stone)), "flats-home-stone",
-					  eligible, [&](MapGeneratorPoint p)
-					  { placeResourceClump(map, context, p, STONE, 1); });
+					  eligible,
+					  [&](MapGeneratorPoint p) { placeResourceClump(map, context, p, STONE, 1); });
 	}
 }
 
@@ -441,21 +451,20 @@ void stockIslands(Map &map, const Layout &L, GenerationContext &context, const T
 			for (int f = 0; f < 3; ++f)
 			{
 				const double a = spin + 2 * kPi * f / 3;
-				const int seed =
-					seedNear(t, L.cx + int(std::lround(rho * std::cos(a) * L.stretch.sx)),
-							 L.cy + int(std::lround(rho * std::sin(a) * L.stretch.sy)), 8,
-							 eligible);
+				const int seed = seedNear(
+					t, L.cx + int(std::lround(rho * std::cos(a) * L.stretch.sx)),
+					L.cy + int(std::lround(rho * std::sin(a) * L.stretch.sy)), 8, eligible);
 				if (seed >= 0)
 					placeResourceClump(map, context, {seed % t.w, seed / t.w}, CHERRY + f, 2);
 			}
 		if (scaledCount(1, o.stone) > 0)
-			if (const int seed = seedNear(
-					t,
-					L.cx + int(std::lround((L.g.centralRadius - 4) * std::cos(spin + kPi / 3) *
-										   L.stretch.sx)),
-					L.cy + int(std::lround((L.g.centralRadius - 4) * std::sin(spin + kPi / 3) *
-										   L.stretch.sy)),
-					8, eligible);
+			if (const int seed =
+					seedNear(t,
+							 L.cx + int(std::lround((L.g.centralRadius - 4) *
+													std::cos(spin + kPi / 3) * L.stretch.sx)),
+							 L.cy + int(std::lround((L.g.centralRadius - 4) *
+													std::sin(spin + kPi / 3) * L.stretch.sy)),
+							 8, eligible);
 				seed >= 0)
 				placeResourceClump(map, context, {seed % t.w, seed / t.w}, STONE, 2);
 	}

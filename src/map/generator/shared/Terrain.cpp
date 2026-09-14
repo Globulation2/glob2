@@ -53,9 +53,9 @@ std::vector<GeneratorControl> heightFieldResourceControls()
 HeightFieldOptions HeightFieldOptions::fromRequest(const GenerationRequest &r, bool swamp)
 {
 	const auto weight = [&](const char *id) { return r.options.count(id) ? r.option(id) : 0; };
-	HeightFieldOptions options{r.option("water"),     weight("sand"),    r.option("grass"),
-							   weight("desert"),      r.option("smoothing"), r.option("fruit"),
-							   r.option("repeat"),    swamp};
+	HeightFieldOptions options{
+		r.option("water"),     weight("sand"),    r.option("grass"),  weight("desert"),
+		r.option("smoothing"), r.option("fruit"), r.option("repeat"), swamp};
 	options.wheat = r.option("wheat-amount");
 	options.wood = r.option("wood-amount");
 	options.stone = r.option("stone-amount");
@@ -71,8 +71,7 @@ void openStartsBuriedByAmounts(Game &game, GenerationContext &context,
 	// starts, so an amount well above the default widens them until they can wall a colony in.
 	// placeStarts has already carved out the swarm's own rectangle by now, so nothing needs to be
 	// kept clear for it.
-	reopenCrampedStarts(game, context,
-						{options.wheat, options.wood, options.stone, options.algae});
+	reopenCrampedStarts(game, context, {options.wheat, options.wood, options.stone, options.algae});
 }
 
 // Repeat landscape: the field is built at a fraction of the map's size and stamped several times,
@@ -288,6 +287,7 @@ bool chooseHeightFieldStarts(Game &game, GenerationContext &context)
 	// Old random's full share, because the balanced search below then prefers equal sites over
 	// distant ones; the fifth leaves it enough candidate sets to choose from.
 	int minDistSquare = (int)((double)w * h / (double)nbTeams / 5);
+	context.telemetry.measure("terrain.starts.min_distance_squared", minDistSquare);
 	if (minDistSquare <= 0)
 	{
 		return false;
@@ -295,7 +295,11 @@ bool chooseHeightFieldStarts(Game &game, GenerationContext &context)
 	int *bootX = context.bootX.data();
 	int *bootY = context.bootY.data();
 	if (chooseBalancedStarts(game, context, minDistSquare))
+	{
+		context.telemetry.choice("terrain.starts.method", "balanced");
 		return true;
+	}
+	context.telemetry.fallback("terrain.starts.method", "largest grass rectangle");
 	// TODO: First pass to find the number of available places.
 	for (int team = 0; team < nbTeams; team++)
 	{
@@ -350,8 +354,11 @@ bool chooseHeightFieldStarts(Game &game, GenerationContext &context)
 			}
 		}
 
+		context.telemetry.measure("terrain.starts.rectangle_surface", maxSurface, team);
 		if (maxSurface <= 0)
 		{
+			context.telemetry.choice("terrain.starts.failure", "no separated grass rectangle",
+									 team);
 			return false;
 		}
 		assert(maxSurface);
@@ -371,6 +378,7 @@ bool plantHeightFieldGroves(Map &map, GenerationContext &context, const HeightFi
 							int count)
 {
 	const unsigned int wHeightMap = tiling.w, hHeightMap = tiling.h;
+	context.telemetry.measure("terrain.groves.requested", count);
 	// TODO: count of groves does not scale with mapsize, so it has to be adjusted higher on
 	// bigger maps now.
 	for (int q1 = 0; q1 < count; q1++) // counting groves
@@ -398,6 +406,8 @@ bool plantHeightFieldGroves(Map &map, GenerationContext &context, const HeightFi
 			if (++attempts > int(wHeightMap * hHeightMap * 4))
 			{
 				context.detail = "No free grass for fruit";
+				context.telemetry.measure("terrain.groves.search_attempts", attempts, q1);
+				context.telemetry.choice("terrain.groves.failure", "no free grass for fruit", q1);
 				return false;
 			}
 			x = (context.stream("resources")() % wHeightMap);
@@ -405,12 +415,17 @@ bool plantHeightFieldGroves(Map &map, GenerationContext &context, const HeightFi
 		} while (map.getUMTerrain(x, y) != GRASS || map.isResource(x, y));
 		// choose size of grove (tree count)
 		int grovesize = (context.stream("resources")() % 10) + 1;
+		context.telemetry.measure("terrain.groves.search_attempts", attempts, q1);
+		context.telemetry.measure("terrain.groves.requested_tree_steps", grovesize, q1);
+		context.telemetry.measure("terrain.groves.resource_type", fruit, q1);
+		int stalledSteps = 0;
 		for (int i = 0; i < grovesize; i++)
 		{
 			for (int yRepeat = 0; yRepeat < tiling.hRepeat; yRepeat++)
 				for (int xRepeat = 0; xRepeat < tiling.wRepeat; xRepeat++)
 					map.setResource(xRepeat * wHeightMap + x, yRepeat * hHeightMap + y, fruit, 1);
 			// find a valid neighbor of actual coordinate
+			bool advanced = false;
 			for (int iTry = 0; iTry < 100; iTry++)
 			{
 				int xNew = x + context.stream("resources")() % 3 - 1;
@@ -419,10 +434,16 @@ bool plantHeightFieldGroves(Map &map, GenerationContext &context, const HeightFi
 				{
 					x = xNew;
 					y = yNew;
+					advanced = true;
 					break;
 				}
 			}
+			stalledSteps += !advanced;
 		}
+		context.telemetry.measure("terrain.groves.stalled_neighbor_searches", stalledSteps, q1);
+		if (stalledSteps)
+			context.telemetry.fallback("terrain.groves.neighbor_search_exhausted",
+									   "neighbor search exhausted", q1);
 	}
 	return true;
 }
@@ -441,6 +462,19 @@ bool generateHeightField(Game &game, GenerationContext &context, const HeightFie
 	HeightMap hm(tiling.w, tiling.h, context.stream("heightmap"));
 	build(hm, tiling.w, tiling.h, smoothingFactor);
 	const HeightFieldLevels levels = classifyHeightField(hm, tiling, options);
+	context.telemetry.measure("terrain.height_field.smoothing_factor", smoothingFactor);
+	context.telemetry.measure("terrain.height_field.patch_width", tiling.w);
+	context.telemetry.measure("terrain.height_field.patch_height", tiling.h);
+	context.telemetry.measure("terrain.height_field.repeat_x", tiling.wRepeat);
+	context.telemetry.measure("terrain.height_field.repeat_y", tiling.hRepeat);
+	context.telemetry.measure("terrain.height_field.water_threshold", levels.water);
+	context.telemetry.measure("terrain.height_field.sand_threshold", levels.sand);
+	context.telemetry.measure("terrain.height_field.grass_threshold", levels.grass);
+	context.telemetry.measure("terrain.height_field.wheat_threshold", levels.wheat);
+	context.telemetry.measure("terrain.height_field.wood_threshold", levels.wood);
+	context.telemetry.measure("terrain.height_field.stone_threshold", levels.stone);
+	context.telemetry.measure("terrain.height_field.stone_floor", levels.stoneFloor);
+	context.telemetry.measure("terrain.height_field.algae_threshold", levels.algae);
 	paintHeightFieldTerrain(map, hm, tiling, levels);
 	context.stage = "resources";
 	paintHeightFieldResources(map, hm, tiling, levels, options);

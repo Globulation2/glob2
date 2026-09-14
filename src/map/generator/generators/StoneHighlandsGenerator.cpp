@@ -264,6 +264,9 @@ bool carvePass(Layout &L, GenerationContext &context, int a, int b, std::vector<
 		++band;
 	band = std::max<size_t>(1, band);
 	const size_t first = context.bounded("highlands-passes", std::uint32_t(band));
+	context.telemetry.measure("stone-highlands.pass.candidate-count", candidates.size(),
+							  int(L.passes.size()));
+	context.telemetry.measure("stone-highlands.pass.best-centrality", best, int(L.passes.size()));
 	const int lo = -(width - 1) / 2, hi = width / 2;
 	// Up to 12 tries, starting at a random point among the candidates within a quarter of the best
 	// one's distance from the ridge's ends, so passes are central but not all at the exact middle.
@@ -345,6 +348,8 @@ bool chooseHomes(Layout &L, GenerationContext &context, int teams)
 	const int roomFloor =
 		std::max(percentile(rooms, 50) / 2,
 				 ranked[std::min(ranked.size(), size_t(2 * std::max(1, teams))) - 1]);
+	context.telemetry.measure("stone-highlands.homes.room-floor", roomFloor);
+	context.telemetry.measure("stone-highlands.homes.suitable-valleys", rooms.size());
 	std::vector<int> primary;
 	for (int v = 0; v < L.valleys; ++v)
 		if (site[v] >= 0 && room[v] >= roomFloor)
@@ -379,6 +384,10 @@ bool chooseHomes(Layout &L, GenerationContext &context, int teams)
 			}
 		}
 		if (chosen < 0)
+			context.telemetry.fallback("stone-highlands.homes.secondary-search",
+									   "Primary valleys exhausted; search all deep ground",
+									   int(L.homes.size()));
+		if (chosen < 0)
 		{
 			for (int v = 0; v < L.valleys; ++v)
 				for (int i : L.tilesOf[v])
@@ -402,6 +411,12 @@ bool chooseHomes(Layout &L, GenerationContext &context, int teams)
 			return false;
 		}
 		take(chosen);
+	}
+	for (size_t k = 0; k < L.homes.size(); ++k)
+	{
+		const Home &home = L.homes[k];
+		context.telemetry.measure("stone-highlands.homes.valley", home.valley, int(k));
+		context.telemetry.measure("stone-highlands.homes.valley-room", room[home.valley], int(k));
 	}
 	return true;
 }
@@ -651,6 +666,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		}
 	const std::vector<int> alongRidge = stepsFrom(t, junction, L.ridge);
 
+	context.telemetry.measure("stone-highlands.valleys.actual", L.valleys);
+	context.telemetry.measure("stone-highlands.ridges.thick-share", thickShare);
+	context.telemetry.measure("stone-highlands.ridges.noise-threshold", thickLevel);
 	// A random spanning tree of passes joins every valley; loopiness then opens that share of the
 	// remaining shared ridgelines as well.
 	L.passTile.assign(n, 0);
@@ -676,6 +694,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	}
 	if (groups > 1)
 	{
+		context.telemetry.fallback("stone-highlands.passes.junction-fallback",
+								   "Exclusive boundaries did not connect every valley");
+		context.telemetry.measure("stone-highlands.passes.groups-before-fallback", groups);
 		// Some valley only meets its neighbours near a junction; allow a pass there.
 		std::vector<std::pair<int, int>> fallback;
 		for (const auto &e : anyPair)
@@ -703,6 +724,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 					  o.passWidth))
 			++added;
 
+	context.telemetry.measure("stone-highlands.passes.extra-requested", extra);
+	context.telemetry.measure("stone-highlands.passes.actual", L.passes.size());
 	std::vector<unsigned char> wall(n);
 	for (int i = 0; i < n; ++i)
 		wall[i] = L.ridge[i] || L.passTile[i];
@@ -990,6 +1013,7 @@ bool generate(Game &game, GenerationContext &context)
 	const Layout L = design(context.request, context);
 	if (!L.failure.empty())
 	{
+		context.telemetry.fallback("stone-highlands.layout.failure", L.failure);
 		context.detail = L.failure;
 		return false;
 	}

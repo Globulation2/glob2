@@ -89,6 +89,7 @@ jobs:
         run: |
           scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 map-report-test
           python3 test/test_map_report.py build/src/glob2 build/src/MapReportHarness
+          python3 test/test_map_telemetry.py
       - name: Upload map JSON reports and command log
         if: always()
         uses: actions/upload-artifact@v4
@@ -155,6 +156,7 @@ jobs:
           timeout 300s ./build/src/MapGeneratorGoldenTest glob2-golden-ci --print
           timeout 300s ./build/src/MapGeneratorGoldenTest glob2-golden-ci --require-rows
           timeout 600s ./build/src/MapGeneratorGoldenTest glob2-golden-ci --sweep
+          timeout 600s ./build/src/MapGeneratorGoldenTest glob2-golden-ci --telemetry
           timeout 180s ./build/src/CustomGameSetupHarness
           mkdir -p artifacts/custom-game-ci
           timeout 180s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/CustomGameSetupHarness artifacts/custom-game-ci 2>&1 | grep -v '^Map generation\|^Landscape preview\|^Settings::load' | tee artifacts/custom-game-ci/ui.log
@@ -407,6 +409,7 @@ jobs:
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 map-report-test
           python3 test/test_map_report.py build/src/glob2.exe build/src/MapReportHarness.exe
+          python3 test/test_map_telemetry.py
       - name: Upload map JSON reports and command log
         if: always()
         uses: actions/upload-artifact@v4

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "GenerationRequest.h"
+#include "GenerationTelemetry.h"
 #include "Team.h"
 #include <array>
 #include <map>
@@ -13,7 +14,11 @@ struct GenerationContext
 	std::array<int, Team::MAX_COUNT> bootX{}, bootY{};
 	std::string stage = "terrain";
 	std::string detail;
-	explicit GenerationContext(const GenerationRequest &r) : request(r) {}
+	GenerationTelemetry telemetry;
+	explicit GenerationContext(const GenerationRequest &r, bool collectTelemetry = false)
+		: request(r), telemetry(collectTelemetry)
+	{
+	}
 	std::mt19937 &stream(const std::string &name);
 	std::uint32_t bounded(const std::string &name, std::uint32_t bound);
 	/// Shuffles a range, one bounded draw per element from the back forward.
