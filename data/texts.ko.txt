@@ -56,6 +56,10 @@ Castor는 신중하게 플레이하며 자원이 적은 지도에서 특히 강�
 Castor
 [AICortex-Description]
 Cortex는 새로운 밀밭으로 확장하고 최전선 근처의 여관과 병원의 지원을 받아 전사 그룹을 전투에 보냅니다. 중간 난이도. 실험적입니다.
+[AIMaxima-Description]
+Maxima는 식량이 넉넉한 정착지를 키우고 끊임없이 정찰하며, 내보낼 수 있는 모든 전사로 쉬지 않고 공격합니다. 높은 난이도.
+[AIMaxima]
+Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]

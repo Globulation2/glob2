@@ -56,6 +56,10 @@ Castorは慎重に行動し、資源の少ないマップを得意とします�
 Castor
 [AICortex-Description]
 Cortexは新たな小麦畑へ拡張し、前線の食堂や病院で支援しながら戦士の部隊を次々と送り込みます。難易度は普通。実験段階のAIです。
+[AIMaxima-Description]
+Maximaは食料の足りた植民地を育て、常に偵察し、割ける戦士をすべて送り込んで絶え間なく攻撃します。難易度は高。
+[AIMaxima]
+Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]

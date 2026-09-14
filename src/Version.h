@@ -6,7 +6,7 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 99
+#define VERSION_MINOR 100
 // version 91 saves the live RNG and routing state for deterministic continuation.
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
@@ -115,6 +115,11 @@
 //            can't load a save that names this AI (see AI::load's default case).
 // version 99 reads one worker level (build) where hiring used to read harvest and
 //            the upgrade menu build, and evens the two out on load
+// version 100 adds AI::ImplementationID::MAXIMA, a standalone AI that develops a colony
+//            and attacks relentlessly, with its saved execution state. Purely additive,
+//            like Cabino. Maxima's save gates read the numbers its development saves
+//            used (98 for the current offense state, 99 for the retired swarm records,
+//            100 for relocation), so it starts at 100 to satisfy all of them.
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above

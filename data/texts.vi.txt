@@ -56,6 +56,10 @@ Castor chơi thận trọng và rất giỏi trên các bản đồ ít tài ngu
 Castor
 [AICortex-Description]
 Cortex mở rộng tới những cánh đồng lúa mì mới và gửi các nhóm chiến binh vào trận chiến, được hỗ trợ bởi các nhà trọ và bệnh viện gần tiền tuyến. Độ khó trung bình. Thực nghiệm.
+[AIMaxima-Description]
+Maxima phát triển một thuộc địa được cung cấp đủ lương thực, liên tục trinh sát và tấn công không ngừng bằng mọi chiến binh có thể điều động. Độ khó cao.
+[AIMaxima]
+Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]
