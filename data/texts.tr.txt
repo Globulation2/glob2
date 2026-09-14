@@ -2222,3 +2222,17 @@ Yeniden denemek için tıklayın
 Lütfen bekleyin
 [Map preview choose another]
 Bir harita seçin
+[repeat map horizontally]
+Haritayı yatay olarak tekrarla
+[repeat map vertically]
+Haritayı dikey olarak tekrarla
+[tile x]
+tekrar x
+[tile y]
+tekrar y
+[bases]
+üs
+[number of colonies]
+Koloni sayısı, oyuncu başına bir; artırmak, hepsi sığana kadar haritayı tekrarlar
+[bases per colony]
+Koloni başına üs; üs, haritanın çizildiği hâliyle bir takımı, binaları ve birimleriyle birlikte

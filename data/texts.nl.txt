@@ -2238,3 +2238,17 @@ Klik om opnieuw te proberen
 Even geduld
 [Map preview choose another]
 Kies een kaart
+[repeat map horizontally]
+Kaart horizontaal herhalen
+[repeat map vertically]
+Kaart verticaal herhalen
+[tile x]
+herhaling x
+[tile y]
+herhaling y
+[bases]
+bases
+[number of colonies]
+Aantal kolonies, één per speler; verhogen herhaalt de kaart tot ze passen
+[bases per colony]
+Bases per kolonie; een basis is één team van de kaart zoals getekend, met zijn gebouwen en eenheden

@@ -2210,3 +2210,17 @@ Nhấp để thử lại
 Vui lòng đợi
 [Map preview choose another]
 Chọn bản đồ
+[repeat map horizontally]
+Lặp bản đồ theo chiều ngang
+[repeat map vertically]
+Lặp bản đồ theo chiều dọc
+[tile x]
+lặp x
+[tile y]
+lặp y
+[bases]
+căn cứ
+[number of colonies]
+Số thuộc địa, mỗi người chơi một; tăng lên sẽ lặp bản đồ cho đến khi đủ chỗ
+[bases per colony]
+Căn cứ mỗi thuộc địa; một căn cứ là một đội của bản đồ như đã vẽ, cùng các công trình và đơn vị của nó

@@ -2220,3 +2220,17 @@ Clique para tentar novamente
 Aguarde
 [Map preview choose another]
 Escolha um mapa
+[repeat map horizontally]
+Repetir o mapa na horizontal
+[repeat map vertically]
+Repetir o mapa na vertical
+[tile x]
+repetição x
+[tile y]
+repetição y
+[bases]
+bases
+[number of colonies]
+Número de colónias, uma por jogador; aumentá-lo repete o mapa até que caibam
+[bases per colony]
+Bases por colónia; uma base é uma equipa do mapa tal como foi desenhado, com os seus edifícios e unidades

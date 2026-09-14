@@ -2210,3 +2210,17 @@ Globulation 2 のカーソルを表示します。
 お待ちください
 [Map preview choose another]
 マップを選択
+[repeat map horizontally]
+マップを横に繰り返す
+[repeat map vertically]
+マップを縦に繰り返す
+[tile x]
+繰り返し x
+[tile y]
+繰り返し y
+[bases]
+拠点
+[number of colonies]
+コロニーの数（プレイヤーごとに1つ）。増やすと収まるまでマップを繰り返します
+[bases per colony]
+コロニーあたりの拠点数。拠点とは描かれたマップの1チームで、その建物とユニットを含みます

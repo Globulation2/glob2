@@ -12,6 +12,7 @@ class OutputStream;
 class InputStream;
 } // namespace GAGCore
 class Map;
+class MapHeader;
 
 // Immutable, shared terrain pixels. The legacy wire image remains 128x128;
 // local previews retain up to 512 pixels along the longest map dimension.
@@ -27,6 +28,8 @@ class MapThumbnail
 	};
 	void loadFromMap(const std::string &filename);
 	void loadFromMap(const Map &map);
+	// Buildings and units take the colour of their team in header, as on the repeated-map preview.
+	void loadFromMap(const Map &map, const MapHeader &header);
 	void encodeData(GAGCore::OutputStream *stream) const;
 	void decodeData(GAGCore::InputStream *stream, Uint32 versionMinor);
 	void loadIntoSurface(GAGCore::DrawableSurface *surface) const;
@@ -36,6 +39,7 @@ class MapThumbnail
 	const std::shared_ptr<const Image> &pixels() const { return image; }
 
   private:
+	void render(const Map &map, const MapHeader *header);
 	std::shared_ptr<const Image> image;
 	int lastW = 0, lastH = 0;
 };

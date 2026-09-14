@@ -2290,3 +2290,17 @@ Klik for at prøve igen
 Vent venligst
 [Map preview choose another]
 Vælg et kort
+[repeat map horizontally]
+Gentag kortet vandret
+[repeat map vertically]
+Gentag kortet lodret
+[tile x]
+gentagelse x
+[tile y]
+gentagelse y
+[bases]
+baser
+[number of colonies]
+Antal kolonier, én pr. spiller; et højere tal gentager kortet, indtil de er plads til dem
+[bases per colony]
+Baser pr. koloni; en base er ét hold fra kortet, som det er tegnet, med dets bygninger og enheder

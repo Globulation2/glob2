@@ -2224,3 +2224,17 @@ Cliquez pour réessayer
 Veuillez patienter
 [Map preview choose another]
 Choisissez une carte
+[repeat map horizontally]
+Répéter la carte horizontalement
+[repeat map vertically]
+Répéter la carte verticalement
+[tile x]
+répétition x
+[tile y]
+répétition y
+[bases]
+bases
+[number of colonies]
+Nombre de colonies, une par joueur ; l'augmenter répète la carte jusqu'à ce qu'elles tiennent
+[bases per colony]
+Bases par colonie ; une base est une équipe de la carte telle que dessinée, avec ses bâtiments et ses unités

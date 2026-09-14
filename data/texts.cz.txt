@@ -2214,3 +2214,17 @@ Kliknutím zkuste znovu
 Čekejte prosím
 [Map preview choose another]
 Vyberte mapu
+[repeat map horizontally]
+Opakovat mapu vodorovně
+[repeat map vertically]
+Opakovat mapu svisle
+[tile x]
+opakování x
+[tile y]
+opakování y
+[bases]
+základny
+[number of colonies]
+Počet kolonií, jedna na hráče; zvýšení opakuje mapu, dokud se nevejdou
+[bases per colony]
+Základny na kolonii; základna je jeden tým mapy tak, jak byla nakreslena, s jeho budovami a jednotkami

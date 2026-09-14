@@ -64,7 +64,8 @@
       "Hospital",
       "Magenta",
       "Total",
-      "Tutorial"
+      "Tutorial",
+      "bases"
     ],
     "texts.ca.txt": [
       "Audio",
@@ -75,7 +76,8 @@
       "No",
       "Total",
       "Tutorial",
-      "desert"
+      "desert",
+      "bases"
     ],
     "texts.cz.txt": [
       "Audio",
@@ -138,7 +140,8 @@
       "No",
       "Plazas",
       "Total",
-      "Tutorial"
+      "Tutorial",
+      "bases"
     ],
     "texts.eu.txt": [
       "Info",
@@ -168,7 +171,8 @@
       "Total",
       "Version",
       "colonies",
-      "options"
+      "options",
+      "bases"
     ],
     "texts.gr.txt": [],
     "texts.hu.txt": [
@@ -211,7 +215,8 @@
       "Team",
       "Tutorial",
       "Water",
-      "element"
+      "element",
+      "bases"
     ],
     "texts.pl.txt": [
       "Audio",
@@ -224,7 +229,8 @@
       "Hospital",
       "Magenta",
       "Total",
-      "Tutorial"
+      "Tutorial",
+      "bases"
     ],
     "texts.ro.txt": [
       "Audio",

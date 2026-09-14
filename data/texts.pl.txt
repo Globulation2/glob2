@@ -2214,3 +2214,17 @@ Kliknij, aby ponowić
 Proszę czekać
 [Map preview choose another]
 Wybierz mapę
+[repeat map horizontally]
+Powtórz mapę w poziomie
+[repeat map vertically]
+Powtórz mapę w pionie
+[tile x]
+powtórzenie x
+[tile y]
+powtórzenie y
+[bases]
+bazy
+[number of colonies]
+Liczba kolonii, jedna na gracza; zwiększenie powtarza mapę, aż się zmieszczą
+[bases per colony]
+Bazy na kolonię; baza to jedna drużyna mapy w narysowanej postaci, z jej budynkami i jednostkami

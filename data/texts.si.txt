@@ -2214,3 +2214,17 @@ Kliknite za ponovni poskus
 Počakajte
 [Map preview choose another]
 Izberite zemljevid
+[repeat map horizontally]
+Ponovi zemljevid vodoravno
+[repeat map vertically]
+Ponovi zemljevid navpično
+[tile x]
+ponovitev x
+[tile y]
+ponovitev y
+[bases]
+baze
+[number of colonies]
+Število kolonij, ena na igralca; povečanje ponavlja zemljevid, dokler ne gredo vse nanj
+[bases per colony]
+Baze na kolonijo; baza je ena ekipa zemljevida, kot je narisan, z njenimi zgradbami in enotami

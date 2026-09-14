@@ -2212,3 +2212,17 @@ OpenGL غير متوفر في هذا الإصدار.
 يرجى الانتظار
 [Map preview choose another]
 اختر خريطة
+[repeat map horizontally]
+كرر الخريطة أفقيًا
+[repeat map vertically]
+كرر الخريطة عموديًا
+[tile x]
+تكرار x
+[tile y]
+تكرار y
+[bases]
+قواعد
+[number of colonies]
+عدد المستعمرات، واحدة لكل لاعب؛ زيادته تكرر الخريطة حتى تتسع لها
+[bases per colony]
+القواعد لكل مستعمرة؛ القاعدة فريق واحد من الخريطة كما رُسمت، بمبانيه ووحداته

@@ -4,6 +4,8 @@
 #pragma once
 
 #include "MapHeader.h"
+#include "MapTiling.h"
+#include <map>
 #include "GameHeader.h"
 #include "Glob2Screen.h"
 #include <GUINumber.h>
@@ -98,8 +100,36 @@ private:
 	Glob2FileList *alternateFileList = nullptr;
 	//! The widget that will show a preview of the selection map
 	MapPreview *mapPreview;
-	//! The textual informations about the selected map
-	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate;
+	//! The textual informations about the selected map: teams or bases, size, date
+	Text *mapInfo, *mapSize, *mapDate;
+	//! Repeat factors, colony count and bases per colony for a map, see MapTiling.h; hidden for games and replays
+	Number *repeatX, *repeatY, *teamCount, *coloniesPerTeam;
+	//! Captions beside the four controls
+	Text *repeatXText, *repeatYText, *teamCountText, *coloniesPerTeamText;
+	//! The file of the selected map, key into mapInfos
+	std::string selectedMapFile;
+	//! True while the preview shows the repeated map rather than the file's own thumbnail
+	bool previewTiled = false;
+	//! Show the repeated map in the preview when the controls ask for one, the plain map otherwise
+	void updatePreview();
+	//! Header and size of every map in the list, read once
+	std::map<std::string, MapTiling::MapInfo> mapInfos;
+	//! Header and size of a listed map, read on first use
+	const MapTiling::MapInfo& infoOfMap(const std::string& fileName);
+	//! Reorder the active list: maps that allow the current numbers first, the others after
+	void sortMapList();
+	//! The header of the selected map as it is in the file; mapHeader describes the repeated map
+	MapHeader sourceMapHeader;
+	//! Fill the repeat and team controls for the selected map
+	void updateTilingControls();
+	//! The repeat factors and team count currently chosen; the widgets only mirror them
+	int tileX = 1, tileY = 1, tileTeams = 0, tileColonies = 0;
+	//! True once the user set the colony count or the bases per colony; until then they follow the map
+	bool teamsPicked = false, basesPicked = false;
+	//! Derive mapHeader from the controls
+	void applyTiling();
+	//! True when the controls ask for a repeated map
+	bool tilingActive() const;
 	//! True when the selected map is valid
 	bool validMapSelected;
 	//! Default type

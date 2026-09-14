@@ -2214,3 +2214,17 @@ Yritä uudelleen napsauttamalla
 Odota hetki
 [Map preview choose another]
 Valitse kartta
+[repeat map horizontally]
+Toista kartta vaakasuunnassa
+[repeat map vertically]
+Toista kartta pystysuunnassa
+[tile x]
+toisto x
+[tile y]
+toisto y
+[bases]
+tukikohtaa
+[number of colonies]
+Siirtokuntien määrä, yksi pelaajaa kohden; sen kasvattaminen toistaa karttaa, kunnes ne mahtuvat
+[bases per colony]
+Tukikohtia siirtokuntaa kohden; tukikohta on piirretyn kartan yksi joukkue rakennuksineen ja yksiköineen

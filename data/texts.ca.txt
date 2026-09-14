@@ -2222,3 +2222,17 @@ Fes clic per tornar-ho a provar
 Espera un moment
 [Map preview choose another]
 Tria un mapa
+[repeat map horizontally]
+Repeteix el mapa horitzontalment
+[repeat map vertically]
+Repeteix el mapa verticalment
+[tile x]
+repetició x
+[tile y]
+repetició y
+[bases]
+bases
+[number of colonies]
+Nombre de colònies, una per jugador; augmentar-lo repeteix el mapa fins que hi càpiguen
+[bases per colony]
+Bases per colònia; una base és un equip del mapa tal com està dibuixat, amb els seus edificis i unitats

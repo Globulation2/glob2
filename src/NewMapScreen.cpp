@@ -62,8 +62,9 @@ NewMapScreen::NewMapScreen(const GeneratorRegistry &registry) : registry(registr
 		addWidget(label);
 		controlWidgets.push_back({c, method, number, toggle, label});
 	};
-	for (const auto &c : GenerationRequest::sharedControls())
+	for (const auto &shared : GenerationRequest::sharedControls())
 	{
+		const auto c = editorSizeControl(shared);
 		bool size = c.id == "width" || c.id == "height";
 		int y = c.id == "width" ? 50 : c.id == "height" ? 75 : c.id == "teams" ? 100 : 125;
 		addControl(c, -1, size ? 20 : 310, y);

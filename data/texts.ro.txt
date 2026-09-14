@@ -2214,3 +2214,17 @@ Clic pentru a reîncerca
 Așteaptă
 [Map preview choose another]
 Alege o hartă
+[repeat map horizontally]
+Repetă harta pe orizontală
+[repeat map vertically]
+Repetă harta pe verticală
+[tile x]
+repetare x
+[tile y]
+repetare y
+[bases]
+baze
+[number of colonies]
+Numărul de colonii, câte una pentru fiecare jucător; mărirea lui repetă harta până încap
+[bases per colony]
+Baze pe colonie; o bază este o echipă a hărții așa cum a fost desenată, cu clădirile și unitățile ei

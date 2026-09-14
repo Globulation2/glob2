@@ -2212,3 +2212,17 @@ Alklaku por reprovi
 Bonvolu atendi
 [Map preview choose another]
 Elektu mapon
+[repeat map horizontally]
+Ripeti la mapon horizontale
+[repeat map vertically]
+Ripeti la mapon vertikale
+[tile x]
+ripeto x
+[tile y]
+ripeto y
+[bases]
+bazoj
+[number of colonies]
+Nombro de kolonioj, unu po ludanto; pliigi ĝin ripetas la mapon ĝis ili enspaciĝas
+[bases per colony]
+Bazoj po kolonio; bazo estas unu teamo de la mapo kiel desegnite, kun ĝiaj konstruaĵoj kaj unuoj

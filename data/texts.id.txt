@@ -2210,3 +2210,17 @@ Klik untuk mencoba lagi
 Harap tunggu
 [Map preview choose another]
 Pilih peta
+[repeat map horizontally]
+Ulangi peta secara horizontal
+[repeat map vertically]
+Ulangi peta secara vertikal
+[tile x]
+ulang x
+[tile y]
+ulang y
+[bases]
+markas
+[number of colonies]
+Jumlah koloni, satu per pemain; menaikkannya mengulang peta sampai semuanya muat
+[bases per colony]
+Markas per koloni; satu markas adalah satu tim dari peta seperti digambar, beserta bangunan dan unitnya

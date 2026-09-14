@@ -2214,3 +2214,17 @@ Kattintson az újrapróbáláshoz
 Kérem, várjon
 [Map preview choose another]
 Válasszon térképet
+[repeat map horizontally]
+Térkép ismétlése vízszintesen
+[repeat map vertically]
+Térkép ismétlése függőlegesen
+[tile x]
+ismétlés x
+[tile y]
+ismétlés y
+[bases]
+bázis
+[number of colonies]
+Kolóniák száma, játékosonként egy; növelése addig ismétli a térképet, amíg elférnek
+[bases per colony]
+Bázisok kolóniánként; egy bázis a megrajzolt térkép egy csapata, épületeivel és egységeivel

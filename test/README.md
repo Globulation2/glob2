@@ -100,6 +100,21 @@ To poke `cases[i].terrain` directly (`regenerateMap` is protected): grass < 16, 
 - Adding regression tests around any Map state mutator before refactoring it.
 - **Don't use** for behaviors that genuinely need real `Game` / `Team` / `Unit` / `Building` wiring (e.g. `doesUnitTouchEnemy` reaches into `game->teams[]->myBuildings[]`) — those need either a different stub set or a refactor to decouple first.
 
+## Map tiling regression
+
+```sh
+scons -j2 release=1 server=0 map-tiling-test
+python3 test/run-savegame-safety-tests.py build/src/MapTilingHarness
+```
+
+Loads `maps/balanced_for_2.map`, paints a forbidden, guard and clearing area for one colony
+and a forbidden tile for the other, adds a clearing flag that leaves wood alone, then repeats
+the map 2 x 2 for eight teams with `Game::tileForPlay`. Each copy's team, as
+`MapTiling::teamForColony` deals it, must hold its colony's buildings and units, exactly its
+own bit on every painted tile, and a clearing flag with the same resource choice.
+It also checks that the editor's width and height reach 32 while the lobby's stop at 64, and
+that a 32 x 32 map generates.
+
 ## Real LAN session regression
 
 From the repository root:
@@ -116,6 +131,14 @@ Both cycles force a map download and compare all 616018 bytes against the fixtur
 source (`maps/FourSquares1.map`). The host verifies readiness, roster size, unique
 player IDs, slot masks, and both departures. The map's current size is not hardcoded
 in the test. Linux CI runs this automatically with SDL's dummy video/audio drivers.
+
+With `--tiled` (and `tiled` as a fifth argument to the harness), the host instead offers
+`FourSquares1` repeated 2 x 2 for four colonies. `MapTiling::writeTiledMap` puts that map in
+the temp directory behind `MapHeader`'s file name override, never in a maps folder, so the
+guest can only get it by transfer; the guest compares its download,
+`maps/FourSquares1_2x2_4t1c.map`, with the copy the host leaves as `tiled-source.map` in the
+output directory. The 256 x 256 map is about 3 MB, so each cycle gives the transfer 80 seconds
+before leaving. CI runs both modes.
 
 For two physical machines, run these from each machine's repository root, using
 absolute capture prefixes whose parent directories already exist:

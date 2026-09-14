@@ -2224,3 +2224,17 @@ Egin klik berriro saiatzeko
 Itxaron mesedez
 [Map preview choose another]
 Aukeratu mapa bat
+[repeat map horizontally]
+Errepikatu mapa horizontalki
+[repeat map vertically]
+Errepikatu mapa bertikalki
+[tile x]
+errepikapena x
+[tile y]
+errepikapena y
+[bases]
+baseak
+[number of colonies]
+Kolonia kopurua, bat jokalari bakoitzeko; handitzean mapa errepikatzen da denak sartu arte
+[bases per colony]
+Oinarriak koloniako; oinarria marraztutako maparen talde bat da, bere eraikin eta unitateekin

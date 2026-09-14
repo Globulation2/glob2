@@ -2210,3 +2210,17 @@ Globulation 2 커서를 표시합니다.
 잠시 기다려 주세요
 [Map preview choose another]
 지도 선택
+[repeat map horizontally]
+맵을 가로로 반복
+[repeat map vertically]
+맵을 세로로 반복
+[tile x]
+반복 x
+[tile y]
+반복 y
+[bases]
+기지
+[number of colonies]
+식민지 수, 플레이어마다 하나; 늘리면 모두 들어갈 때까지 맵을 반복합니다
+[bases per colony]
+식민지당 기지 수; 기지는 그려진 맵의 한 팀과 그 건물 및 유닛입니다

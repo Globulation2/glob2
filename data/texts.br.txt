@@ -2210,3 +2210,17 @@ Klikit evit klask en-dro
 Gortozit mar plij
 [Map preview choose another]
 Dibabit ur gartenn
+[repeat map horizontally]
+Repetir o mapa na horizontal
+[repeat map vertically]
+Repetir o mapa na vertical
+[tile x]
+repetição x
+[tile y]
+repetição y
+[bases]
+bases
+[number of colonies]
+Número de colônias, uma por jogador; aumentá-lo repete o mapa até que caibam
+[bases per colony]
+Bases por colônia; uma base é um time do mapa como foi desenhado, com seus prédios e unidades

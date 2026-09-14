@@ -2286,3 +2286,17 @@ OpenGL 在此版本中不可用。
 請稍候
 [Map preview choose another]
 選擇地圖
+[repeat map horizontally]
+水平重複地圖
+[repeat map vertically]
+垂直重複地圖
+[tile x]
+重複 x
+[tile y]
+重複 y
+[bases]
+基地
+[number of colonies]
+殖民地數量，每位玩家一個；增加後地圖會重複直到容納所有殖民地
+[bases per colony]
+每個殖民地的基地數；一個基地是地圖原樣中的一支團隊及其建築和單位

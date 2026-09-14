@@ -8,6 +8,7 @@
 #include "YOGServer.h"
 #include "FileManager.h"
 #include "GUITextInput.h"
+#include "MapTiling.h"
 #include "Toolkit.h"
 
 #include <cstdio>
@@ -51,7 +52,9 @@ Uint32 timeoutTimer(Uint32, void*)
 class JoinScreen : public LANFindScreen
 {
 public:
-	JoinScreen(const std::string& address, const std::string& capture) : capture(capture)
+	// A tiled map is a 256 x 256 map of about 3 MB, which takes the transfer most of a minute.
+	JoinScreen(const std::string& address, const std::string& capture, bool tiled)
+		: capture(capture), stay(tiled ? 80000 : 25000)
 	{
 		// Use the real form's public widget API; no networking is stubbed.
 		for (Widget* widget : widgets)
@@ -65,19 +68,20 @@ public:
 		// SDL timers only enqueue input. Rendering and network state stay on
 		// the real screen's main thread, including the nested lobby loop.
 		SDL_TimerID ready = SDL_AddTimer(5000, readyTimer, nullptr);
-		SDL_TimerID leave = SDL_AddTimer(25000, leaveTimer, nullptr);
-		SDL_TimerID timeout = SDL_AddTimer(40000, timeoutTimer, nullptr);
+		SDL_TimerID leave = SDL_AddTimer(stay, leaveTimer, nullptr);
+		SDL_TimerID timeout = SDL_AddTimer(stay + 15000, timeoutTimer, nullptr);
 		LANFindScreen::onAction(nullptr, BUTTON_RELEASED, CONNECT, 0);
 		SDL_RemoveTimer(ready);
 		SDL_RemoveTimer(leave);
 		SDL_RemoveTimer(timeout);
 		SDL_SaveBMP(globalContainer->gfx->getSDLSurface(), capture.c_str());
-		bool ok = returnCode != QUIT_APPLICATION && SDL_GetTicks64() - start < 39000;
+		bool ok = returnCode != QUIT_APPLICATION && SDL_GetTicks64() - start < stay + 14000;
 		std::puts(ok ? "JOIN PASS: lobby returned through Leave Game" : "JOIN FAIL: lobby did not complete before the timeout");
 		endExecute(ok ? 0 : 1);
 	}
 private:
 	std::string capture;
+	Uint32 stay;
 };
 
 class HostScreen : public Glob2TabScreen
@@ -153,7 +157,18 @@ private:
 	Uint64 start;
 };
 
-int host(int cycles, const std::string& capture)
+// With `tiled`, the host offers FourSquares1 repeated 2 x 2 for four colonies instead. That map
+// exists only in the temp directory, behind MapHeader's file name override, and never in the
+// maps folder, so the guest can only get it by transfer; the host leaves a copy of the exact
+// bytes next to the captures for the guest to compare.
+const char* TILED_DOWNLOAD = "maps/FourSquares1_2x2_4t1c.map";
+
+std::filesystem::path tiledSourceCopy(const std::string& capture)
+{
+	return std::filesystem::path(capture).parent_path() / "tiled-source.map";
+}
+
+int host(int cycles, const std::string& capture, bool tiled)
 {
 	auto client = std::make_shared<YOGClient>();
 	auto server = std::make_shared<YOGServer>(YOGAnonymousLogin, YOGSingleGame);
@@ -167,12 +182,23 @@ int host(int cycles, const std::string& capture)
 	auto game = std::make_shared<MultiplayerGame>(client);
 	client->setMultiplayerGame(game);
 	game->createNewGame("LAN regression");
-	// A private map name forces a real transfer without touching user maps.
 	MapHeader map = Engine::loadMapHeader("maps/FourSquares1.map");
-	map.setMapName("LAN regression transfer");
-	std::filesystem::copy_file("maps/FourSquares1.map",
-		Toolkit::getFileManager()->getDir(0) + "/" + map.getFileName(),
-		std::filesystem::copy_options::overwrite_existing);
+	if (tiled)
+	{
+		map = MapTiling::writeTiledMap(map, 2, 2, 4, 1);
+		if (map.getNumberOfTeams() != 4) { std::puts("HOST FAIL: could not write the tiled map"); return 1; }
+		std::filesystem::copy_file(map.getFileName(), tiledSourceCopy(capture),
+			std::filesystem::copy_options::overwrite_existing);
+		std::printf("HOST tiled map %s at %s\n", map.getMapName().c_str(), map.getFileName().c_str());
+	}
+	else
+	{
+		// A private map name forces a real transfer without touching user maps.
+		map.setMapName("LAN regression transfer");
+		std::filesystem::copy_file("maps/FourSquares1.map",
+			Toolkit::getFileManager()->getDir(0) + "/" + map.getFileName(),
+			std::filesystem::copy_options::overwrite_existing);
+	}
 	game->setMapHeader(map);
 	HostScreen screen(game, cycles, capture);
 	MultiplayerGameScreen lobby(&screen, game, client);
@@ -184,11 +210,12 @@ int host(int cycles, const std::string& capture)
 
 int main(int argc, char** argv)
 {
-	if (argc != 5)
+	if (argc != 5 && !(argc == 6 && std::string(argv[5]) == "tiled"))
 	{
-		std::fprintf(stderr, "Usage: %s host|join address cycles capture-prefix\n", argv[0]);
+		std::fprintf(stderr, "Usage: %s host|join address cycles capture-prefix [tiled]\n", argv[0]);
 		return 2;
 	}
+	const bool tiled = argc == 6;
 	std::setvbuf(stdout, nullptr, _IONBF, 0);
 	SDL_setenv("SDL_AUDIODRIVER", "dummy", 0);
 	GlobalContainer globals;
@@ -210,16 +237,17 @@ int main(int argc, char** argv)
 	globals.load();
 	if (SDLNet_Init() < 0) return 1;
 	int rc = 0;
-	if (std::string(argv[1]) == "host") rc = host(std::stoi(argv[3]), argv[4]);
+	if (std::string(argv[1]) == "host") rc = host(std::stoi(argv[3]), argv[4], tiled);
 	else for (int cycle = 0; cycle < std::stoi(argv[3]) && !rc; ++cycle)
 	{
-		const auto downloaded = std::filesystem::path(globals.fileManager->getDir(0)) / "maps/LAN_regression_transfer.map";
+		const auto downloaded = std::filesystem::path(globals.fileManager->getDir(0)) /
+			(tiled ? TILED_DOWNLOAD : "maps/LAN_regression_transfer.map");
 		// Force a second request too: rejoining must reuse the server's upload
 		// rather than append another copy of its chunks to the cached transfer.
 		std::filesystem::remove(downloaded);
-		JoinScreen screen(argv[2], std::string(argv[4]) + "-" + std::to_string(cycle + 1) + ".bmp");
+		JoinScreen screen(argv[2], std::string(argv[4]) + "-" + std::to_string(cycle + 1) + ".bmp", tiled);
 		rc = screen.execute(globals.gfx, 20);
-		std::ifstream original("maps/FourSquares1.map", std::ios::binary);
+		std::ifstream original(tiled ? tiledSourceCopy(argv[4]) : std::filesystem::path("maps/FourSquares1.map"), std::ios::binary);
 		std::ifstream received(downloaded, std::ios::binary);
 		std::string expected((std::istreambuf_iterator<char>(original)), {});
 		std::string actual((std::istreambuf_iterator<char>(received)), {});

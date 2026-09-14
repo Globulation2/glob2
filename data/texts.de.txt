@@ -2214,3 +2214,17 @@ Zum Wiederholen klicken
 Bitte warten
 [Map preview choose another]
 Karte auswählen
+[repeat map horizontally]
+Karte horizontal wiederholen
+[repeat map vertically]
+Karte vertikal wiederholen
+[tile x]
+Wiederholung x
+[tile y]
+Wiederholung y
+[bases]
+Basen
+[number of colonies]
+Anzahl der Kolonien, eine pro Spieler; ein höherer Wert wiederholt die Karte, bis sie Platz finden
+[bases per colony]
+Basen pro Kolonie; eine Basis ist ein Team der gezeichneten Karte mit seinen Gebäuden und Einheiten

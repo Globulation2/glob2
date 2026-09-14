@@ -5,6 +5,8 @@
 #include "GUIBase.h"
 #include "Map.h"
 #include "MapHeader.h"
+#include "Building.h"
+#include "Unit.h"
 #include "Toolkit.h"
 #include <algorithm>
 #include <array>
@@ -143,6 +145,16 @@ void MapThumbnail::loadFromMap(const std::string &filename)
 
 void MapThumbnail::loadFromMap(const Map &map)
 {
+	render(map, nullptr);
+}
+
+void MapThumbnail::loadFromMap(const Map &map, const MapHeader &header)
+{
+	render(map, &header);
+}
+
+void MapThumbnail::render(const Map &map, const MapHeader *header)
+{
 	*this = MapThumbnail();
 	const int mw = map.getW(), mh = map.getH();
 	if (mw <= 0 || mh <= 0 || mw > 32767 || mh > 32767)
@@ -155,7 +167,7 @@ void MapThumbnail::loadFromMap(const Map &map)
 	for (int y = 0; y < result->height; ++y)
 		for (int x = 0; x < result->width; ++x)
 		{
-			int sums[3] = {}, count = 0;
+			int sums[3] = {}, count = 0, team = -1;
 			// Half-open cells neither double-count boundaries nor sample the next
 			// torus period at the right/bottom edge.
 			for (int sy = y * mh / result->height; sy < (y + 1) * mh / result->height; ++sy)
@@ -174,9 +186,19 @@ void MapThumbnail::loadFromMap(const Map &map)
 					for (int c = 0; c < 3; ++c)
 						sums[c] += colors[color][c];
 					++count;
+					// a building or unit paints the whole pixel in its team's colour
+					if (header && map.getBuilding(sx, sy) != NOGBID)
+						team = Building::GIDtoTeam(map.getBuilding(sx, sy));
+					else if (header && team < 0 && map.getGroundUnit(sx, sy) != NOGUID)
+						team = Unit::GIDtoTeam(map.getGroundUnit(sx, sy));
 				}
+			const bool teamPixel = header && team >= 0 && team < header->getNumberOfTeams();
 			for (int c = 0; c < 3; ++c)
-				result->rgb[(y * result->width + x) * 3 + c] = sums[c] / count;
+			{
+				const auto &teamColor = teamPixel ? header->getBaseTeam(team).color : GAGCore::Color();
+				const int teamChannel = c == 0 ? teamColor.r : c == 1 ? teamColor.g : teamColor.b;
+				result->rgb[(y * result->width + x) * 3 + c] = teamPixel ? teamChannel : sums[c] / count;
+			}
 		}
 	lastW = mw;
 	lastH = mh;

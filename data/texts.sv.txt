@@ -2224,3 +2224,17 @@ Klicka för att försöka igen
 Vänta
 [Map preview choose another]
 Välj en karta
+[repeat map horizontally]
+Upprepa kartan vågrätt
+[repeat map vertically]
+Upprepa kartan lodrätt
+[tile x]
+upprepning x
+[tile y]
+upprepning y
+[bases]
+baser
+[number of colonies]
+Antal kolonier, en per spelare; att öka det upprepar kartan tills de får plats
+[bases per colony]
+Baser per koloni; en bas är ett lag från kartan som den är ritad, med dess byggnader och enheter
