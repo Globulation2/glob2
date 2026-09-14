@@ -18,9 +18,11 @@
 #include "Settlements.h"
 #include "Sketch.h"
 #include "Tessellation.h"
+#include "Topology.h"
 #include "Towers.h"
 #include <algorithm>
 #include <cmath>
+#include <set>
 #include <string>
 #include <vector>
 using namespace MapGeneration;
@@ -53,9 +55,10 @@ using namespace MapGeneration;
 // resources, which can be used as a building spot. maybe a few of them have a sand patch. come up
 // with a few more cool ideas; each cell has its own little surprise." So: home blocks have no pond
 // (their canal waters them), extra bridges default to 30% (was 20) and warp to 80 (was 40), and
-// every other block is dealt one of nine kinds (BlockKind) from a weighted draw: plain fields, a
-// lake, an orchard round a pond, a 4x4 building pad in a ring of sand, two such pads, a quarry, a
-// woodlot, a wheatfield, or a dune of bare sand.
+// every other block is dealt one of fourteen kinds (BlockKind) from a weighted draw, and a facing:
+// plain fields, a lake, an orchard round a pond, a homestead or a hamlet (building pads with wheat and
+// wood beside them), a quarry, a woodlot, a wheatfield, a dune of bare sand, and five kinds built of
+// stone or water (second play): a fort, a bastion, a funnel, a chicane and a moat.
 namespace
 {
 
@@ -66,27 +69,62 @@ constexpr int kHomeWheat = 14, kHomeWood = 12, kHomeQuarry = 2;
 // this far past the canal's edge onto each bank so it lands on grass, not beach.
 constexpr double kBridgeLanding = 2.5;
 // What a block holds (first play: "each cell has its own little surprise"), and the weight each kind
-// is dealt with, out of 100. Plain blocks carry the ambient fields; the rest carry one thing each.
+// is dealt with, out of 100. Second play, FEEDBACK 2026-09-13: "i like the new square types you
+// added, but too many of them are empty of resources. like with the 4x4 squares - those squares are to
+// hold farming buildings. they only matter if there are resources elsewhere on that island outside the
+// sand square. can we also add some types that are more like forts? with some stone that guides
+// enemies into a kill zone or something? just add some cool ideas like this to make the cells more
+// interesting", and "a few of them should be intended for building buildings on of course. but too
+// many of them are boring right now". So the pad kinds became homesteads and hamlets (a wheat and a
+// wood clump beside every pad, and the ambient fields over the rest of the block), plain blocks went
+// from 24 in 100 to 6, and five built kinds joined, each with a clump of wheat and one of wood outside
+// its stone or water and the ambient fields too, so what the stone guards is worth guarding.
 enum BlockKind
 {
 	Home = -1,
 	Plain = 0,
 	Lake,       // a pond at the middle, the fields round it
 	Orchard,    // a small pond with the three fruits round it
-	Pad,        // a 4x4 pad of grass in a ring of sand: a building spot nothing grows onto
-	TwoPads,    // two such pads
+	Homestead,  // a 4x4 pad of grass in a ring of sand, a wheat and a wood clump either side of it
+	Hamlet,     // two such pads side by side, the clumps before and behind them
 	Quarry,     // a stone clump of radius 3
 	Woodlot,    // wood over most of the block
 	Wheatfield, // wheat over most of the block
-	Dune        // a disc of bare sand: walkable, unbuildable, and nothing grows on it
+	Dune,       // a disc of bare sand: walkable, unbuildable, and nothing grows on it
+	Fort,       // a square of stone wall round a pad with one gate at the front, the kill zone
+	Bastion,    // four corner walls round a pad, an opening in the middle of every side
+	Funnel,     // two walls in a V that guide a walk onto a three-tile gap, the pad just behind it
+	Chicane,    // two staggered walls with a corridor between them, the way across the block
+	Moat        // a ring of water round an islet with a pad, one causeway of sand onto it
 };
-constexpr int kKinds = 9;
-constexpr int kKindWeight[kKinds] = {24, 12, 9, 15, 8, 8, 8, 8, 8};
-// The kinds' features: the lake's and the orchard pond's radii, the pad (4 tiles square in a ring
-// one corner wide; stampFarmPlot), how far apart two pads stand, the quarry's radius, the dune's
+constexpr int kKinds = 14;
+constexpr int kKindWeight[kKinds] = {6, 9, 8, 10, 6, 5, 7, 7, 4, 9, 8, 7, 6, 8};
+// The kinds' features: the lake's and the orchard pond's radii, the pad (4 tiles square in a ring one
+// corner wide; stampFarmPlot), how far apart a hamlet's two pads stand, the quarry's radius, the dune's
 // radius, and the share of a woodlot or wheatfield under its crop.
 constexpr double kLakeRadius = 3.5, kOrchardPond = 2.5, kDuneRadius = 4.0;
 constexpr int kPadSize = 4, kPadRing = 1, kPadsApart = 10, kQuarryRadius = 3, kCoverPercent = 60;
+// The built kinds, in tiles from the block's middle in the block's own frame (every block faces one of
+// four ways, dealt with its kind; localTile). A wall's reach is the half block less kWallMargin (a
+// beach, a bridge's landing and a lane round the wall), at most kWallReach: 6 on the default block of
+// 24, so a fort is 13 tiles square, its wall a tile beyond the pad's sand ring. A fort's gate and the
+// funnel's gap are kGateWidth tiles; a bastion's corner arms are two short of the half side, leaving
+// kGateWidth + 2 open in the middle of every side; the funnel's walls run diagonally in from the back
+// corners, two tiles thick because a unit steps diagonally between two stones on a diagonal; the
+// chicane's walls stand kChicaneOffset either side of the middle, each reaching kChicaneOverlap past it
+// from its own side, so the corridor between them is entered at one end and left at the other. Any wall
+// tile the warp has put within two of water, on sand, or off its block is left out, and a block whose
+// walls would cut its land or a bridge off (blockWalls) gets no walls and the pad kind instead. A moat
+// is kMoatWidth corners of water (two tiles of water, which only a swimmer crosses) round an islet of
+// kMoatOuter - kMoatWidth in radius, exactly a pad, its ring and its beach; it needs a block of
+// kMoatMinimumBlock with every corner within kMoatOuter + 1.5 of the middle on the block, else it is
+// dealt as a lake. Beside every pad kind stand a wheat clump of kClumpRadius (a homestead's; the others
+// one smaller) and a wood clump one smaller, kClumpOut from the middle or just outside a built kind's
+// stone or water, so the pad has something to farm.
+constexpr int kWallReach = 6, kWallMargin = 4, kGateWidth = 3, kChicaneOffset = 3,
+			  kChicaneOverlap = 2;
+constexpr double kMoatOuter = 7.5, kMoatWidth = 3.0;
+constexpr int kMoatMinimumBlock = 22, kClumpRadius = 3, kClumpOut = 6;
 // Tower pads beside each colony's starting towers, and the spacing between a colony's sites.
 constexpr int kTowerPads = 2, kTowerSpacing = 6;
 
@@ -96,8 +134,10 @@ struct Layout
 	Tessellation g;
 	std::vector<int> cell; // every tile's block
 	std::vector<int> homeCell;
-	std::vector<int> kind;   // every block's BlockKind
-	std::vector<int> homeOf; // the home block a tile is in, or -1
+	std::vector<int> kind;            // every block's BlockKind
+	std::vector<int> facing;          // every block's quarter turn (0-3) for its built kind
+	std::vector<unsigned char> stone; // the built kinds' walls, as tiles
+	std::vector<int> homeOf;          // the home block a tile is in, or -1
 	std::vector<unsigned char> canal, bridge, water, sand, land;
 	Farm pads; // the building pads, stamped as farm plots
 	TerrainSketch sketch;
@@ -110,6 +150,148 @@ struct Layout
 ShapePoint tilePoint(SubtilePoint p)
 {
 	return {p.x / 16.0, p.y / 16.0};
+}
+
+// A tile at (u, v) in a block's frame: from its middle, turned a quarter turn per facing.
+int localTile(const Layout &L, int cell, int u, int v)
+{
+	const ShapePoint c = tilePoint(L.g.cells[cell].centre);
+	const int cx = int(std::lround(c.x)), cy = int(std::lround(c.y));
+	int dx = u, dy = v;
+	switch (L.facing[cell])
+	{
+	case 1:
+		dx = -v;
+		dy = u;
+		break;
+	case 2:
+		dx = -u;
+		dy = -v;
+		break;
+	case 3:
+		dx = v;
+		dy = -u;
+		break;
+	default:
+		break;
+	}
+	return L.t.at(cx + dx, cy + dy);
+}
+
+// How far a built kind's walls reach from the block's middle.
+int wallReach(const CanalsOptions &o)
+{
+	return std::min(kWallReach, o.blockSize / 2 - kWallMargin);
+}
+
+// THE WALLS of a built kind, as the tiles of the block they may stand on: on the block, clear of water
+// by two corners all round (so the beaches leave them pure grass and nothing stands on a bridge's
+// landing), and off any pad. The block must stay one piece with them in - its land and its bridges,
+// eight ways, as a unit walks - else the block gets no walls and `fallback` instead.
+void blockWalls(Layout &L, int cell, int reach)
+{
+	const Torus &t = L.t;
+	const int n = t.size();
+	const auto wallable = [&](int i)
+	{
+		if (L.cell[i] != cell || L.canal[i] || L.pads.plot[i])
+			return false;
+		const int x = i % t.w, y = i / t.w;
+		for (int dy = -1; dy <= 2; ++dy)
+			for (int dx = -1; dx <= 2; ++dx)
+			{
+				const int j = t.at(x + dx, y + dy);
+				if (L.sketch[j] == WATER)
+					return false;
+				if (dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1 && L.sketch[j] != GRASS)
+					return false;
+			}
+		return true;
+	};
+	std::set<int> tiles;
+	const auto wall = [&](int u, int v)
+	{
+		const int i = localTile(L, cell, u, v);
+		if (wallable(i))
+			tiles.insert(i);
+	};
+	const int half = kGateWidth / 2;
+	switch (L.kind[cell])
+	{
+	case Fort:
+		for (int k = -reach; k <= reach; ++k)
+		{
+			wall(k, -reach);
+			wall(-reach, k);
+			wall(reach, k);
+			if (std::abs(k) > half)
+				wall(k, reach);
+		}
+		break;
+	case Bastion:
+		for (int k = 0; k < reach - 2; ++k)
+			for (const int su : {-1, 1})
+				for (const int sv : {-1, 1})
+				{
+					wall(su * reach, sv * (reach - k));
+					wall(su * (reach - k), sv * reach);
+				}
+		break;
+	case Funnel:
+		for (int k = 0; k <= reach - 3; ++k)
+		{
+			wall(-reach + k, -reach + k);
+			wall(-reach + k + 1, -reach + k);
+			wall(reach - k, -reach + k);
+			wall(reach - k - 1, -reach + k);
+		}
+		break;
+	case Chicane:
+		for (int u = -reach; u <= kChicaneOverlap; ++u)
+			wall(u, -kChicaneOffset);
+		for (int u = -kChicaneOverlap; u <= reach; ++u)
+			wall(u, kChicaneOffset);
+		break;
+	default:
+		return;
+	}
+	if (tiles.empty())
+		return;
+	std::vector<unsigned char> walk(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		const bool water = L.sketch[i] == WATER && L.sketch[t.at(x + 1, y)] == WATER &&
+						   L.sketch[t.at(x, y + 1)] == WATER &&
+						   L.sketch[t.at(x + 1, y + 1)] == WATER;
+		walk[i] = (L.cell[i] == cell && !water) || (L.bridge[i] && L.canal[i]);
+	}
+	for (int i : tiles)
+		walk[i] = 0;
+	const std::vector<int> region = connectedRegions(walk, t.w, t.h, true, GridNeighbors::Eight);
+	std::vector<int> size;
+	for (int i = 0; i < n; ++i)
+		if (walk[i] && region[i] >= 0)
+		{
+			if (region[i] >= int(size.size()))
+				size.resize(region[i] + 1, 0);
+			++size[region[i]];
+		}
+	// Bridges of other blocks make their own small regions; only pieces of this block's land count.
+	int pieces = 0;
+	for (int i = 0; i < n; ++i)
+		if (walk[i] && L.cell[i] == cell && region[i] >= 0 && size[region[i]] > 0)
+		{
+			++pieces;
+			size[region[i]] = 0;
+		}
+	if (pieces > 1)
+	{
+		L.kind[cell] = L.kind[cell] == Chicane ? Plain : Homestead;
+		return;
+	}
+	for (int i : tiles)
+		L.stone[i] = 1;
 }
 
 Layout design(const GenerationRequest &request, GenerationContext &context)
@@ -156,6 +338,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// Every other block's kind, dealt from a weighted draw in block order (first play: "each cell
 	// has its own little surprise").
 	L.kind.assign(L.g.cellCount(), Plain);
+	L.facing.assign(L.g.cellCount(), 0);
 	for (int cell : L.homeCell)
 		L.kind[cell] = Home;
 	for (int cell = 0; cell < L.g.cellCount(); ++cell)
@@ -165,7 +348,11 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		int roll = int(context.bounded("canals-kinds", 100)), kind = 0;
 		while (kind + 1 < kKinds && roll >= kKindWeight[kind])
 			roll -= kKindWeight[kind++];
+		// A moat needs a block big enough for its ring; a smaller block's moat is a lake.
+		if (kind == Moat && o.blockSize < kMoatMinimumBlock)
+			kind = Lake;
 		L.kind[cell] = kind;
+		L.facing[cell] = int(context.bounded("canals-facing", 4));
 	}
 
 	// The canals: every edge stroked canalWidth corners wide. A canal's water is canalWidth - 1 tiles
@@ -246,46 +433,92 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			if (L.cell[i] == L.homeCell[k] && L.land[i])
 				L.homeOf[i] = k;
 	}
-	// Every block's terrain feature, at its middle: a lake, an orchard's pond, a pad or two of grass
-	// in a ring of sand (stamped as farm plots into the sketch), or a dune.
+	// Every block's water and sand feature, at its middle: a lake, an orchard's pond, a dune, or a
+	// moat (a ring of water with one causeway of sand corners across it, at the block's front; a moat
+	// whose ring would not lie wholly on its block is a lake).
 	const RadialShape lake(kLakeRadius, 0.3, context, "canals-lakes");
 	const RadialShape orchardPond(kOrchardPond, 0.3, context, "canals-lakes");
 	const RadialShape dune(kDuneRadius, 0.3, context, "canals-dunes");
-	const FarmPlot pad{kPadSize, kPadSize, kPadRing};
+	const RadialShape moatRing(kMoatOuter, 0.0, context, "canals-moats");
+	const RadialShape islet(kMoatOuter - kMoatWidth, 0.0, context, "canals-moats");
 	for (int cell = 0; cell < L.g.cellCount(); ++cell)
 	{
 		const ShapePoint c = tilePoint(L.g.cells[cell].centre);
+		const int cx = int(std::lround(c.x)), cy = int(std::lround(c.y));
+		if (L.kind[cell] == Moat)
+		{
+			bool fits = true;
+			const int span = int(std::ceil(kMoatOuter + 1.5));
+			for (int dy = -span; dy <= span && fits; ++dy)
+				for (int dx = -span; dx <= span && fits; ++dx)
+					if (std::hypot(dx, dy) < kMoatOuter + 1.5)
+					{
+						const int i = t.at(cx + dx, cy + dy);
+						fits = L.cell[i] == cell && !L.canal[i];
+					}
+			if (!fits)
+				L.kind[cell] = Lake;
+		}
 		if (L.kind[cell] == Lake)
 			fillShape(L.water, t, c.x, c.y, lake, 0.0);
 		else if (L.kind[cell] == Orchard)
 			fillShape(L.water, t, c.x, c.y, orchardPond, 0.0);
 		else if (L.kind[cell] == Dune)
 			fillShape(L.sand, t, c.x, c.y, dune, 0.0);
+		else if (L.kind[cell] == Moat)
+		{
+			// Round the rounded middle, as the pad will be, so the islet holds it exactly.
+			fillShape(L.water, t, cx, cy, moatRing, 0.0);
+			fillShape(L.water, t, cx, cy, islet, 0.0, 0);
+			for (int v = int(kMoatOuter - kMoatWidth) - 1; v <= int(kMoatOuter) + 1; ++v)
+			{
+				const int i = localTile(L, cell, 0, v);
+				L.water[i] = 0;
+				L.sand[i] = 1;
+			}
+		}
 	}
 	L.sketch.assign(n, GRASS);
 	for (int i = 0; i < n; ++i)
 		L.sketch[i] = L.water[i]                                   ? WATER
 					  : (L.sand[i] || (L.bridge[i] && L.canal[i])) ? SAND
 																   : GRASS;
+	// The pads (stampFarmPlot): at the middle of a homestead, fort, bastion or moat, two side by side
+	// on a hamlet, and just behind the gap of a funnel.
+	const FarmPlot pad{kPadSize, kPadSize, kPadRing};
 	L.pads.water = L.water;
 	L.pads.sand.assign(n, 0);
 	L.pads.plot.assign(n, 0);
 	L.pads.row.assign(n, -1);
-	for (int cell = 0; cell < L.g.cellCount(); ++cell)
+	const auto stampPad = [&](int cell, int u, int v)
 	{
-		const ShapePoint c = tilePoint(L.g.cells[cell].centre);
-		const int cx = int(std::lround(c.x)), cy = int(std::lround(c.y));
-		if (L.kind[cell] == Pad)
-			stampFarmPlot(L.sketch, t, L.pads, cx - kPadSize / 2, cy - kPadSize / 2, pad);
-		else if (L.kind[cell] == TwoPads)
+		const int i = localTile(L, cell, u, v);
+		stampFarmPlot(L.sketch, t, L.pads, i % t.w - kPadSize / 2, i / t.w - kPadSize / 2, pad);
+	};
+	for (int cell = 0; cell < L.g.cellCount(); ++cell)
+		switch (L.kind[cell])
 		{
-			stampFarmPlot(L.sketch, t, L.pads, cx - kPadsApart / 2 - kPadSize / 2,
-						  cy - kPadSize / 2, pad);
-			stampFarmPlot(L.sketch, t, L.pads, cx + kPadsApart / 2 - kPadSize / 2,
-						  cy - kPadSize / 2, pad);
+		case Homestead:
+		case Fort:
+		case Bastion:
+		case Moat:
+			stampPad(cell, 0, 0);
+			break;
+		case Hamlet:
+			stampPad(cell, -kPadsApart / 2, 0);
+			stampPad(cell, kPadsApart / 2, 0);
+			break;
+		case Funnel:
+			stampPad(cell, 0, kPadSize / 2);
+			break;
+		default:
+			break;
 		}
-	}
 	L.water = L.pads.water;
+	// The walls (blockWalls), once the pads' sand is in the sketch, so none stands on it.
+	L.stone.assign(n, 0);
+	for (int cell = 0; cell < L.g.cellCount(); ++cell)
+		blockWalls(L, cell, wallReach(o));
 	return L;
 }
 
@@ -342,6 +575,11 @@ bool generate(Game &game, GenerationContext &context)
 		if (L.bridge[i] && L.canal[i])
 			terrain[i] = SAND;
 	writeUndermap(map, terrain);
+	// The built kinds' walls: stone on every designed wall tile (all pure grass, by the design's own
+	// check), before anything else is placed.
+	for (int i = 0; i < n; ++i)
+		if (L.stone[i] && map.isGrass(i % t.w, i / t.w))
+			map.setResource(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "canals colonies";
 	const auto homeMask = [&](int team)
@@ -381,10 +619,14 @@ bool generate(Game &game, GenerationContext &context)
 									clearGround(map, i % t.w, i / t.w);
 						 });
 	// Every block is fertile (its canal is within the growth probe's reach of all of it), so the
-	// ambient farmland is a modest share of the plain, lake and home blocks, in patches; the other
-	// kinds carry their own thing instead, and the bridges' landings stay clear so no field closes
-	// a bridge.
+	// ambient farmland is a share of every block but the kinds that carry their own cover (orchard,
+	// quarry, woodlot, wheatfield, dune), in patches: the pad kinds and the built kinds too, since a pad
+	// only matters with something to farm beside it (second play), 15 and 10 in 100 of the fertile tiles
+	// for wheat and wood (12 and 8 while only plain, lake and home blocks had them). The bridges'
+	// landings stay clear so no field closes a bridge, and a tile's width round every wall, so the
+	// stone stays in plain view.
 	const std::vector<unsigned char> landings = dilate(t, bridges, 2);
+	const std::vector<unsigned char> wallMargin = dilate(t, L.stone, 1);
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	const std::vector<int> patch = periodicNoise(t.w, t.h, 8, context.stream("canals-patch"));
 	const std::vector<int> split = periodicNoise(t.w, t.h, 5, context.stream("canals-split"));
@@ -396,7 +638,8 @@ bool generate(Game &game, GenerationContext &context)
 	const auto eligible = [&](int i)
 	{
 		const int kind = L.kind[L.cell[i]];
-		return open(i) && (kind == Plain || kind == Lake || kind == Home);
+		return open(i) && !wallMargin[i] && kind != Orchard && kind != Quarry && kind != Woodlot &&
+			   kind != Wheatfield && kind != Dune;
 	};
 	int fertile = 0;
 	for (int i = 0; i < n; ++i)
@@ -406,13 +649,17 @@ bool generate(Game &game, GenerationContext &context)
 		[&](int i) { return split[i]; },
 		[&](int area)
 		{
-			return GroundAmounts{int(scaledCount(fertile * 12 / 100, o.wheat)),
-								 int(scaledCount(fertile * 8 / 100, o.wood)),
+			return GroundAmounts{int(scaledCount(fertile * 15 / 100, o.wheat)),
+								 int(scaledCount(fertile * 10 / 100, o.wood)),
 								 int(scaledCount(area / 900, o.stone)), 0};
 		},
 		"canals-stone", "canals-fruit");
 	// Every block's own thing (first play): the three fruits round an orchard's pond, a quarry's
-	// stone, a woodlot's or wheatfield's cover on the block's most-noise share of ground.
+	// stone, a woodlot's or wheatfield's cover on the block's most-noise share of ground; and (second
+	// play) a wheat clump and a wood clump beside every pad, in the block's frame, outside its stone or
+	// water: a homestead's before and behind the pad, a hamlet's before and behind its pair, a fort's
+	// behind and beside it (never before the gate), a bastion's at two corners, a funnel's either side of
+	// the pad inside the V, a chicane's outside both walls, a moat's either side of the ring.
 	const std::vector<int> cover = periodicNoise(t.w, t.h, 6, context.stream("canals-cover"));
 	for (int cell = 0; cell < L.g.cellCount(); ++cell)
 	{
@@ -435,6 +682,57 @@ bool generate(Game &game, GenerationContext &context)
 					placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w),
 									   STONE, kQuarryRadius);
 			break;
+		case Homestead:
+		case Hamlet:
+		case Fort:
+		case Bastion:
+		case Funnel:
+		case Chicane:
+		case Moat:
+		{
+			struct Spot
+			{
+				int u, v, type, radius;
+			};
+			const int r = wallReach(o), m = int(kMoatOuter) + 2, small = kClumpRadius - 1;
+			std::vector<Spot> spots;
+			switch (L.kind[cell])
+			{
+			case Homestead:
+				spots = {{0, -kClumpOut, CORN, kClumpRadius}, {0, kClumpOut, WOOD, small}};
+				break;
+			case Hamlet:
+				spots = {{0, -(kClumpOut - 1), CORN, small}, {0, kClumpOut - 1, WOOD, small}};
+				break;
+			case Fort:
+				spots = {{0, -(r + 2), CORN, small}, {-(r + 2), 0, WOOD, small}};
+				break;
+			case Bastion:
+				spots = {{-(r + 2), -(r + 2), CORN, small}, {r + 2, r + 2, WOOD, small}};
+				break;
+			case Funnel:
+				spots = {{-r, 3, CORN, small}, {r, 3, WOOD, small}};
+				break;
+			case Chicane:
+				spots = {{0, -kClumpOut, CORN, small}, {0, kClumpOut, WOOD, small}};
+				break;
+			default:
+				spots = {{-m, 0, CORN, small}, {m, 0, WOOD, small}};
+				break;
+			}
+			for (const Spot &spot : spots)
+			{
+				if (scaledCount(1, spot.type == CORN ? o.wheat : o.wood) <= 0)
+					continue;
+				const int at = localTile(L, cell, spot.u, spot.v);
+				if (const int seed = seedNear(t, at % t.w, at / t.w, 3,
+											  [&](int i) { return inBlock(i) && !wallMargin[i]; });
+					seed >= 0)
+					placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w),
+									   spot.type, spot.radius);
+			}
+			break;
+		}
 		case Woodlot:
 		case Wheatfield:
 		{
@@ -475,6 +773,21 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (const std::string mismatch = designMismatch(L, map, "canals"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;
+	const int n = t.size();
+	// Every built kind's wall stands, and every moat holds its water round a dry islet.
+	for (int i = 0; i < n; ++i)
+		if (L.stone[i] && map.getResource(i % t.w, i / t.w).type != STONE)
+			return "A wall's stone is missing at (" + std::to_string(i % t.w) + ", " +
+				   std::to_string(i / t.w) + ").";
+	for (int cell = 0; cell < L.g.cellCount(); ++cell)
+		if (L.kind[cell] == Moat)
+		{
+			const int ring = localTile(L, cell, 0, -int(kMoatOuter - 1.5));
+			const int middle = localTile(L, cell, 0, 0);
+			if (!map.isWater(ring % t.w, ring / t.w) || map.isWater(middle % t.w, middle / t.w))
+				return "A moat block has lost its moat at (" + std::to_string(middle % t.w) + ", " +
+					   std::to_string(middle / t.w) + ").";
+		}
 	// Home blocks are dry by design (first play); every lake block keeps its lake.
 	for (int cell = 0; cell < L.g.cellCount(); ++cell)
 		if (L.kind[cell] == Lake)
@@ -504,7 +817,7 @@ GeneratorDefinition canalsDefinition()
 		"canals",
 		29,
 		"Canals",
-		3,
+		4,
 		false,
 		// Blocks of 24 give a 256 map about a hundred blocks; a canal of 3 corners (two tiles of
 		// water) is sealed against diagonal steps and is reached by a level-2 tower, which is what

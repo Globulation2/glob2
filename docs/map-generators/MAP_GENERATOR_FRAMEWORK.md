@@ -1035,11 +1035,20 @@ opening; once swimming pools are built every canal is a road.
   straight canal w corners wide puts the banks' grass w + 4 apart (`Channels`), so 3 is reached by a
   level-2 tower and not a level-1.
 - **Homes and block kinds.** The colonies' blocks are the ones farthest apart on the block graph
-  (`spreadPockets`), each with a kit and no pond (the first play asked for the pond gone; the canal
-  waters the block). Every other block is dealt one of nine kinds from a weighted draw (24/12/9/15/8/
-  8/8/8/8 in 100): plain fields; a lake; an orchard round a small pond; a 4x4 pad of grass in a ring
-  of sand (a building spot nothing grows onto, `stampFarmPlot`); two such pads; a quarry; a woodlot;
-  a wheatfield; a dune of bare sand. "Each cell has its own little surprise." Fairness is statistical.
+  (`spreadPockets`), dealt to the colonies at random, each with a kit and no pond (the first play asked
+  for the pond gone; the canal waters the block). Every other block is dealt one of fourteen kinds and a
+  facing from a weighted draw (6/9/8/10/6/5/7/7/4/9/8/7/6/8 in 100): plain fields; a lake; an orchard
+  round a small pond; a homestead (a 4x4 pad of grass in a ring of sand, `stampFarmPlot`, with a wheat
+  and a wood clump beside it); a hamlet of two pads; a quarry; a woodlot; a wheatfield; a dune of bare
+  sand; and five kinds built of stone or water (second play, 2026-09-13: "too many of them are empty of
+  resources ... add some types that are more like forts, with some stone that guides enemies into a
+  kill zone"): a fort (a 13-tile square of wall round a pad with one three-tile gate), a bastion (four
+  corner walls, an opening in every side), a funnel (two walls in a V onto a three-tile gap with the pad
+  behind it), a chicane (two staggered walls with a corridor between) and a moat (a ring of water round
+  an islet with a pad and one sand causeway). Walls are drawn in the block's frame, only where the warp
+  left pure grass clear of water, and a block whose walls would cut its land or a bridge off gets none
+  (`blockWalls`). Every pad kind and built kind carries the ambient fields too, a tile clear of its
+  walls. "Each cell has its own little surprise." Fairness is statistical.
 - **Bridges.** A tree of shortest block-to-block paths from the first colony's block to every other
   colony's, so every colony can be walked to, then `extra-bridges` percent (0-100, 30) of the blocks'
   count more at random (`openLoops`), so most blocks stay islands until someone swims. A bridge is a line of sand
