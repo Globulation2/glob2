@@ -52,7 +52,7 @@ The rules live in `src/map/gradient/MapGradientArea.cpp`,
   the other actions move to a higher painted neighbour or keep the old in-area
   wander. Leavers still count toward the area they left until they are
   `GUARD_CROWD_RADIUS` tiles out, which costs more than the one warrior's worth of
-  crowding they freed, so the trickle stops before it overshoots and a leaver
+  crowding they freed, so the trickle stops rather than running on, and a leaver
   does not turn back (`static_assert` in `MapInternal.h`).
 - **Staying.** A warrior standing on a painted tile that has to take a random
   step prefers a free painted neighbour. Off the paint it looks like a new
@@ -64,6 +64,10 @@ The rules live in `src/map/gradient/MapGradientArea.cpp`,
   and a player's guard area is rarely painted exactly, so warriors standing
   beside the paint still defend it. Only a warrior boxed in on all eight sides
   stays put, as any unit always has. The harness's `spins` scenario measures this.
+  The cost is a small overshoot while an area drains: a warrior that steps off a
+  packed area is a free warrior to the field and may walk to the other area, so
+  the first area dips a few warriors below where it settles and they come back
+  (below).
 
 The guard gradient is rebuilt where it always was: on every area order, on
 building death, and once per round of the per-tick gradient round-robin. Nothing
@@ -84,7 +88,7 @@ mid-balancing continues identically for 1,000 ticks after loading.
 | `GUARD_CROWD_COST_PER_WARRIOR` | 4 tiles | Extra walking one nearby warrior is worth in a 25-tile area. 8 tightens the split (11/13 instead of 13/11 in the harness) at the price of a stronger pull on a moving crowd. |
 | `GUARD_CROWD_REFERENCE_AREA` | 25 painted tiles | Painted count at which the per-warrior cost applies in full; larger paint counts divide it. |
 | `GUARD_CROWD_COST_MAX` | 400 tiles | Keeps seeds above the unreachable sentinel. Also where balancing stops: an area's cost reaches the cap at four nearby warriors per painted tile nearby, which is 100 warriors for a 5x5, 36 for a 3x3 and 4 for a single tile. Past it, every capped area reads the same and the field is a plain nearest-area partition again, so small areas painted with brush 0 balance only up to a handful of warriors. |
-| `GUARD_LEAVE_CHANCE_SHIFT` | 6 (1 in 64 actions) | Drain rate. At 64 a full area of 24 loses 10 to a new area over about 2,000 ticks with no overshoot. |
+| `GUARD_LEAVE_CHANCE_SHIFT` | 6 (1 in 64 actions) | Drain rate. At 64 a full area of 24 loses 10 to 13 to a new area over about 2,000 ticks. |
 
 Shares follow painted size roughly, by design: the equilibrium is a band as wide
 as the walking distance between the areas divided by the per-warrior cost, and
@@ -127,7 +131,7 @@ Scenarios:
 | Name | What it checks |
 | --- | --- |
 | `spawn` | Warriors arriving from the base take both areas. |
-| `drain` | A clump that fills one area thins into a newly painted one, with no overshoot. |
+| `drain` | A clump that fills one area thins into a newly painted one without emptying out and refilling. |
 | `patches` | Two unconnected patches 3 tiles apart share as one position. |
 | `size` | A 9x9 area farther away takes more than a 5x5 area nearer. |
 | `three` | Three areas at increasing distance are all guarded. |
@@ -149,32 +153,37 @@ Warriors at each area after 4,500 ticks, macOS arm64, release build:
 | three: near / far / third at 18, 32 and 45 tiles | 24 / 0 / 0 | 5 / 10 / 9 | | |
 | erase: far erased after settling | | 24 / 0 | | |
 
-Drain trace, every-tick refresh (near / far / walking): tick 0: 24/0/0, 500:
-21/0/3, 1000: 18/4/2, 1500: 14/6/4, 2000 and after: 14/10/0. The count in the
-first area never dips below its final value. In-area wandering, measured as tile
-moves per warrior over the last 500 ticks, is 24 to 25 before and after.
+Drain trace before the random-step fallback, every-tick refresh (near / far /
+walking): tick 0: 24/0/0, 500: 21/0/3, 1000: 18/4/2, 1500: 14/6/4, 2000 and
+after: 14/10/0, never dipping below its final count. In-area wandering, measured
+as tile moves per warrior over the last 500 ticks, is 24 to 25 before and after.
 
 Settled guards, `spins`, 500 ticks sampled after 4,000 (share of on-paint ticks
 with no direction; "held still" is warriors on one painted tile for all 500):
 
 | Paint, 24 warriors | Before the fallback | After | Held still, before / after | Within 7 tiles after |
 | --- | --- | --- | --- | --- |
-| 1x1 | 100% | 10 to 11% | 1 / 0 | 24 |
+| 1x1 | 100% | 0 to 24% | 1 / 0 | 24 |
 | sparse 9x9 (25 tiles) | 100% | 0% | 24 / 0 | 22 to 24 |
 | checkerboard 7x7 (25 tiles) | 81 to 85% | 0% | | 24 |
-| solid 5x5 | 72 to 74% | 1% | | 24 |
+| solid 5x5 | 72 to 74% | 0.6 to 2.5% | | 24 |
 | solid 5x5, 8 warriors | 0% | 0% | | 8 |
 | solid 9x9 | 0 to 0.3% | 0% | | 24 |
 
-What remains on a 1x1 is the one guard boxed in by the crowd pressing round its
-single tile. The balance tables above were recorded before the fallback; with it,
-spawn ends 13 / 11, 13 / 11 and 10 / 14 at the three refresh cadences and drain
-11 / 13 at all three, and every scenario still passes its checks.
+"After" ranges are over seeds 1-10. What remains on a 1x1 is the one guard boxed
+in by the crowd pressing round its single tile.
 
-These counts move by a warrior or two between runs of the same binary. That is
-not this change: a blank map built in code, stepped without periodic
-checksumming, reaches different states on repeated runs on master's engine as
-well, so it is being traced separately.
+The balance tables above were recorded before the fallback. With it, at seed 1,
+spawn ends 13 / 11, 13 / 11 and 11 / 13 at the three refresh cadences, and drain
+ends 11 / 13 at all three. Over seeds 1-10 at all three cadences, the first area
+in `drain` dips 1 to 5 warriors below where it settles before they come back
+(mean 2.4); without the fallback it never dips, on any seed. Every scenario
+passes its checks on all 30 runs.
+
+The harness sets the game's random seed (`--seed N`, default 1). It used not to,
+and `GameHeader` then seeds from the wall clock, so earlier runs of the same
+binary could differ from one second to the next; the numbers above are seeded
+and repeat exactly.
 
 Guard-gradient rebuild wall time, median of 200 rebuilds with two 5x5 areas
 painted, both engines timed back to back twice on the same machine (the spread is
