@@ -4,6 +4,7 @@
 #include <list>
 #include <math.h>
 #include <stdlib.h>
+#include <algorithm>
 #include <climits>
 
 #include "Building.h"
@@ -39,6 +40,8 @@ namespace
 void Building::step(void)
 {
 	computeWishedResources(wishedResources);
+	if (((owner->game->stepCounter + gid) & 255) == 0)
+		freeIdleGradients();
 
 	updateCallLists();
 	if(underAttackTimer>0)
@@ -49,28 +52,53 @@ void Building::step(void)
 }
 
 
+void Building::setRecordFailingUnits(bool on)
+{
+	recordFailingUnits=on;
+	if(!on)
+		for(int i=0; i<UnitCantWorkReasonSize; ++i)
+			unitsFailingByReason[i].clear();
+}
+
+void Building::noteUnitFailing(Unit* unit, UnitCantWorkReason reason)
+{
+	unitsFailingRequirements[reason] += 1;
+	// "Not available" is every busy unit of the colony: counted, never marked.
+	if(recordFailingUnits && reason!=UnitNotAvailable)
+		unitsFailingByReason[reason].push_back(unit->gid);
+}
+
+void Building::resetFailureTallies()
+{
+	for(int i=0; i<UnitCantWorkReasonSize; ++i)
+	{
+		unitsFailingRequirements[i]=0;
+		unitsFailingByReason[i].clear();
+	}
+}
+
 bool Building::considerUnitForBuilding(Unit* unit, int* distBuilding)
 {
 	if(unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
 	{
-		unitsFailingRequirements[UnitNotAvailable] += 1;
+		noteUnitFailing(unit, UnitNotAvailable);
 		return false;
 	}
 	if(!canUnitWorkHere(unit))
 	{
-		unitsFailingRequirements[UnitTooLowLevel] += 1;
+		noteUnitFailing(unit, UnitTooLowLevel);
 		return false;
 	}
 
 	int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungriness;
 	if(!owner->map->buildingAvailable(this, unit->swimClass(), unit->posX, unit->posY, distBuilding))
 	{
-		unitsFailingRequirements[UnitCantAccessBuilding] += 1;
+		noteUnitFailing(unit, UnitCantAccessBuilding);
 		return false;
 	}
 	if(*distBuilding >= timeLeft)
 	{
-		unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
+		noteUnitFailing(unit, UnitTooFarFromBuilding);
 		return false;
 	}
 	return true;
@@ -89,21 +117,30 @@ bool Building::considerUnitForResource(Unit* unit, int wantedResource, int* dist
 	                                  unit->posX, unit->posY, &distResource))
 	{
 		if(wantedResource<BASIC_COUNT)
-			unitsFailingRequirements[UnitCantAccessResource] += 1;
+			noteUnitFailing(unit, UnitCantAccessResource);
 		else
-			unitsFailingRequirements[UnitCantAccessFruit] += 1;
+			noteUnitFailing(unit, UnitCantAccessFruit);
 		return false;
 	}
 	if(distResource >= timeLeft)
 	{
 		if(wantedResource<BASIC_COUNT)
-			unitsFailingRequirements[UnitTooFarFromResource] += 1;
+			noteUnitFailing(unit, UnitTooFarFromResource);
 		else
-			unitsFailingRequirements[UnitTooFarFromFruit] += 1;
+			noteUnitFailing(unit, UnitTooFarFromFruit);
 		return false;
 	}
 
-	*dist = (distBuilding + distResource)<<Q8_FIXED_POINT_SHIFT;
+	// Score by the whole job: the round-trip field when a fetcher has already
+	// built one. Without one, estimate the carry leg rather than reach for the
+	// building distance alone: a unit standing at the building carries as far
+	// as it walked out, and one standing at the resource carries the building
+	// distance. Building a field here instead would cost one per resource of
+	// every hiring building, nearly all of them never fetched.
+	int roundTrip = 0;
+	if(!owner->map->roundTripDistance(this, wantedResource, unit->swimClass(), unit->posX, unit->posY, &roundTrip))
+		roundTrip = distResource + std::max(distBuilding, distResource);
+	*dist = roundTrip<<Q8_FIXED_POINT_SHIFT;
 	return true;
 }
 
@@ -112,8 +149,7 @@ void Building::gatherBringResourcesCandidates(BringResourcesCandidate* candidate
 	// The tallies count units, and the same unit is offered every resource the
 	// building tries to staff, so start each scan from zero: what the info panel
 	// ends up showing is one coherent pass, for the last resource attempted.
-	for(int i=0; i<UnitCantWorkReasonSize; ++i)
-		unitsFailingRequirements[i]=0;
+	resetFailureTallies();
 
 	for(int n=0; n<Unit::MAX_COUNT; ++n)
 	{
@@ -227,10 +263,7 @@ void Building::selectFetcher(const BringResourcesCandidate* candidates, int want
 
 bool Building::subscribeToBringResourcesStep()
 {
-	for(int i=0; i<UnitCantWorkReasonSize; ++i)
-	{
-		unitsFailingRequirements[i]=0;
-	}
+	resetFailureTallies();
 	if (buildingState==DEAD)
 		return false;
 	if (verbose)
@@ -276,6 +309,7 @@ bool Building::subscribeToBringResourcesStep()
 		{
 			unitsWorking.push_back(sel.choosen);
 			sel.choosen->subscriptionSuccess(this, false);
+			owner->swapTask(sel.choosen);
 			hired=true;
 		}
 	}
@@ -291,12 +325,12 @@ bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist)
 {
 	if (unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
 	{
-		unitsFailingRequirements[UnitNotAvailable] += 1;
+		noteUnitFailing(unit, UnitNotAvailable);
 		return false;
 	}
 	if (!canUnitWorkHere(unit))
 	{
-		unitsFailingRequirements[UnitTooLowLevel] += 1;
+		noteUnitFailing(unit, UnitTooLowLevel);
 		return false;
 	}
 	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungriness;
@@ -308,7 +342,7 @@ bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist)
 	int directdist = owner->map->warpDistSquare(unit->posX, unit->posY, posX, posY);
 	if (timeLeftSquared < directdist)
 	{
-		unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
+		noteUnitFailing(unit, UnitTooFarFromBuilding);
 		return false;
 	}
 	*dist = directdist;
@@ -319,12 +353,12 @@ bool Building::considerUnitForWorkerFlag(Unit* unit, int* dist)
 {
 	if (unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
 	{
-		unitsFailingRequirements[UnitNotAvailable] += 1;
+		noteUnitFailing(unit, UnitNotAvailable);
 		return false;
 	}
 	if (!canUnitWorkHere(unit))
 	{
-		unitsFailingRequirements[UnitTooLowLevel] += 1;
+		noteUnitFailing(unit, UnitTooLowLevel);
 		return false;
 	}
 	int distBuilding = 0;
@@ -335,17 +369,17 @@ bool Building::considerUnitForWorkerFlag(Unit* unit, int* dist)
 	bool canSwim = unit->performance[SWIM];
 	if (!owner->map->buildingAvailable(this, unit->swimClass(), unit->posX, unit->posY, &distBuilding))
 	{
-		unitsFailingRequirements[UnitCantAccessBuilding] += 1;
+		noteUnitFailing(unit, UnitCantAccessBuilding);
 		return false;
 	}
 	if (distBuilding >= timeLeft)
 	{
-		unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
+		noteUnitFailing(unit, UnitTooFarFromBuilding);
 		return false;
 	}
 	if (anyResourceToClear[canSwim] == 2)
 	{
-		unitsFailingRequirements[UnitCantAccessResource] += 1;
+		noteUnitFailing(unit, UnitCantAccessResource);
 		return false;
 	}
 	*dist = distBuilding;
@@ -356,17 +390,17 @@ bool Building::considerUnitForWarriorFlag(Unit* unit, int* dist)
 {
 	if (unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
 	{
-		unitsFailingRequirements[UnitNotAvailable] += 1;
+		noteUnitFailing(unit, UnitNotAvailable);
 		return false;
 	}
 	if (!canUnitWorkHere(unit))
 	{
-		unitsFailingRequirements[UnitTooLowLevel] += 1;
+		noteUnitFailing(unit, UnitTooLowLevel);
 		return false;
 	}
 	if (unit->movement == Unit::MOV_ATTACKING_TARGET)
 	{
-		unitsFailingRequirements[UnitNotAvailable] += 1;
+		noteUnitFailing(unit, UnitNotAvailable);
 		return false;
 	}
 	int distBuilding = 0;
@@ -376,12 +410,12 @@ bool Building::considerUnitForWarriorFlag(Unit* unit, int* dist)
 	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungriness;
 	if (!owner->map->buildingAvailable(this, unit->swimClass(), unit->posX, unit->posY, &distBuilding))
 	{
-		unitsFailingRequirements[UnitCantAccessBuilding] += 1;
+		noteUnitFailing(unit, UnitCantAccessBuilding);
 		return false;
 	}
 	if (distBuilding >= timeLeft)
 	{
-		unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
+		noteUnitFailing(unit, UnitTooFarFromBuilding);
 		return false;
 	}
 	*dist = distBuilding;
@@ -392,10 +426,7 @@ bool Building::subscribeForFlagingStep()
 {
 	if (buildingState==DEAD)
 	{
-		for(int i=0; i<UnitCantWorkReasonSize; ++i)
-		{
-			unitsFailingRequirements[i]=0;
-		}
+		resetFailureTallies();
 		return false;
 	}
 
@@ -406,20 +437,14 @@ bool Building::subscribeForFlagingStep()
 		// Reset stale failure counts for the case where the while loop below
 		// doesn't run (building already fully staffed). When the loop does run,
 		// this is overwritten by the per-iteration reset on iteration 1.
-		for(int i=0; i<UnitCantWorkReasonSize; ++i)
-		{
-			unitsFailingRequirements[i]=0;
-		}
+		resetFailureTallies();
 		while (((Sint32)unitsWorking.size()<desiredMaxUnitWorking))
 		{
 			// Per-iteration reset: the same Unit::MAX_COUNT array is rescanned
 			// each iteration (already-hired units are filtered via
 			// attachedBuilding==this); without this, the same failing units
 			// would be counted N times across N iterations.
-			for(int i=0; i<UnitCantWorkReasonSize; ++i)
-			{
-				unitsFailingRequirements[i]=0;
-			}
+			resetFailureTallies();
 
 			//Generate the list of possible units
 			Unit* possibleUnits[Unit::MAX_COUNT];

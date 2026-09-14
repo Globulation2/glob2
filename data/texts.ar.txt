@@ -1626,6 +1626,8 @@ Cortex
 تم
 [settings Edit shortcut]
 تحرير اختصار لوحة المفاتيح
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+تكبير القوائم والنص والشريط الجانبي على شاشة عالية الدقة.
 [settings Flags]
 أعلام
 [settings Full]
@@ -1640,6 +1642,8 @@ Cortex
 أسلوب اللعب
 [settings Graphics detail]
 تفاصيل الرسومات
+[settings Interface scale]
+مقياس الواجهة
 [settings Keep]
 احتفظ بالتغييرات
 [settings Keep this display mode?]
@@ -1662,6 +1666,8 @@ Cortex
 ﺍﻟﻤﺴﺘﻮﻯ
 [settings Map editor]
 محرر الخرائط
+[settings Match the desktop]
+مطابقة سطح المكتب
 [settings Missing font]
 الخط مفقود
 [settings Music volume]
@@ -1772,6 +1778,10 @@ OpenGL غير متوفر في هذا الإصدار.
 عرض الطارة تلقائيًا
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 إظهار نظرة عامة للخريطة على سطح طارة تلقائيًا أثناء التنقل في الخريطة (OpenGL).
+[settings Autosave]
+ﺍﻟﺤﻔﻆ ﺍﻟﺘﻠﻘﺎﺋﻲ
+[settings Save the game automatically about every 10 seconds.]
+ﺣﻔﻆ ﺍﻟﻠﻌﺒﺔ ﺗﻠﻘﺎﺋﻴﺎ ﻛﻞ 10 ﺛﻮﺍﻥ ﺗﻘﺮﻳﺒﺎ.
 [Channel width]
 عرض القناة
 [Land bridge width]

@@ -1638,6 +1638,8 @@ Bistaratu Globulation 2 jokoaren kurtsorea.
 Eginda
 [settings Edit shortcut]
 Editatu teklatuko lasterbidea
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Handitu menuak, testua eta alboko barra bereizmen handiko pantailan.
 [settings Flags]
 Banderak
 [settings Full]
@@ -1652,6 +1654,8 @@ Jokoaren abiadura
 Jokagarritasuna
 [settings Graphics detail]
 Xehetasun grafikoa
+[settings Interface scale]
+Interfazearen eskala
 [settings Keep]
 Mantendu aldaketak
 [settings Keep this display mode?]
@@ -1674,6 +1678,8 @@ Interfaze osoan erabiltzen den hizkuntza.
 Maila
 [settings Map editor]
 Mapa-editorea
+[settings Match the desktop]
+Mahaigainaren arabera
 [settings Missing font]
 Letra-tipoa falta da
 [settings Music volume]
@@ -1784,6 +1790,10 @@ Erabili hautatutako artelana joko bat edo mapa-editorea kargatzen den hurrengoan
 Toroide-ikuspegi automatikoa
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Erakutsi automatikoki toroide formako maparen ikuspegi orokorra mapan mugitzen zaren bitartean (OpenGL).
+[settings Autosave]
+Gordetze automatikoa
+[settings Save the game automatically about every 10 seconds.]
+Jokoa automatikoki gordetzen du, gutxi gorabehera 10 segundoro.
 [Channel width]
 Kanalaren zabalera
 [Land bridge width]

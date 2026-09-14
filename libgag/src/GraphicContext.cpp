@@ -5,8 +5,13 @@
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <SupportFunctions.h>
+#include <algorithm>
 #include <assert.h>
+#include <cstdlib>
 #include <cstring>
+#ifndef _WIN32
+#include <dlfcn.h>
+#endif
 #include <iostream>
 #include <memory>
 #include <string>
@@ -164,7 +169,19 @@ namespace GAGCore
 	{
 		minW = w;
 		minH = h;
-		if (window) SDL_SetWindowMinimumSize(window, minW, minH);
+		if (window) applyWindowMinimumSize();
+	}
+
+	// The minimum is a floor on the *logical* surface, which is the window divided
+	// by the interface scale -- so the window's own minimum has to be the scaled
+	// one. Without this, a window dragged to 640x480 at scale 1.75 lays the
+	// interface out on 366x274, narrower than the 368px main menu panel.
+	void GraphicContext::applyWindowMinimumSize(void)
+	{
+		if (!window) return;
+		SDL_SetWindowMinimumSize(window,
+			std::max(1, static_cast<int>(minW * uiScale + 0.5f)),
+			std::max(1, static_cast<int>(minH * uiScale + 0.5f)));
 	}
 
 	VideoModes GraphicContext::listVideoModes() const
@@ -274,6 +291,73 @@ namespace GAGCore
 		return windowW && sdlsurface && (windowW != sdlsurface->w || windowH != sdlsurface->h);
 	}
 
+	float GraphicContext::requestedUiScale = 0.0f;
+
+	namespace
+	{
+		float scaleFromEnv(const char *name)
+		{
+			const char *value = getenv(name);
+			if (!value || !*value)
+				return 0.0f;
+			const float scale = static_cast<float>(atof(value));
+			return (scale >= 0.5f && scale <= 8.0f) ? scale : 0.0f;
+		}
+
+		// Xft.dpi in the X resource database is where GTK, Qt and Xwayland all read the
+		// desktop's scale from, and the only place it is exposed as the fraction the user
+		// picked rather than the panel's physical DPI. libX11 is loaded on demand so a
+		// build without X11 simply reports no scale.
+		float scaleFromXResources(void)
+		{
+			#ifndef _WIN32
+			void *lib = dlopen("libX11.so.6", RTLD_LAZY);
+			if (!lib)
+				return 0.0f;
+			auto openDisplay = reinterpret_cast<void *(*)(const char *)>(dlsym(lib, "XOpenDisplay"));
+			auto resourceString = reinterpret_cast<char *(*)(void *)>(dlsym(lib, "XResourceManagerString"));
+			auto closeDisplay = reinterpret_cast<int (*)(void *)>(dlsym(lib, "XCloseDisplay"));
+			float scale = 0.0f;
+			if (openDisplay && resourceString && closeDisplay)
+			{
+				if (void *display = openDisplay(NULL))
+				{
+					if (const char *database = resourceString(display))
+						if (const char *entry = strstr(database, "Xft.dpi:"))
+						{
+							const float dpi = static_cast<float>(atof(entry + strlen("Xft.dpi:")));
+							if (dpi >= 48.0f && dpi <= 768.0f)
+								scale = dpi / 96.0f;
+						}
+					closeDisplay(display);
+				}
+			}
+			dlclose(lib);
+			return scale;
+			#else
+			return 0.0f;
+			#endif
+		}
+	}
+
+	float GraphicContext::querySystemUiScale(void)
+	{
+		// Opens its own X connection, and the settings form asks on every rebuild.
+		static const float cached = scaleFromXResources();
+		return cached;
+	}
+
+	float GraphicContext::effectiveUiScale(float preferred)
+	{
+		float scale = scaleFromEnv("GLOB2_UI_SCALE");
+		if (!scale)
+			scale = preferred;
+		if (!scale)
+			scale = querySystemUiScale();
+		// Below 1 the interface would be drawn smaller than the window can show.
+		return std::max(1.0f, std::min(scale ? scale : 1.0f, 4.0f));
+	}
+
 	void GraphicContext::freeOwnedSurface(void)
 	{
 		if (ownsSurface && sdlsurface)
@@ -313,12 +397,18 @@ namespace GAGCore
 		drawableW = windowW;
 		drawableH = windowH;
 		if (windowW <= 0 || windowH <= 0 || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return;
+		// A resizable window keeps the interface at its scale: the logical surface
+		// follows the window divided by uiScale, not the window itself.
+		const int logicalW = std::max(1, static_cast<int>(windowW / uiScale + 0.5f));
+		const int logicalH = std::max(1, static_cast<int>(windowH / uiScale + 0.5f));
 		if ((optionFlags & RESIZABLE) && !(optionFlags & FULLSCREEN)
-			&& (getW() != windowW || getH() != windowH))
+			&& (getW() != logicalW || getH() != logicalH))
 		{
-			SDL_Surface *resized = SDL_CreateRGBSurface(0, windowW, windowH, 32,
+			SDL_Surface *resized = SDL_CreateRGBSurface(0, logicalW, logicalH, 32,
 				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 			if (!resized) return;
+			requestedW = windowW;
+			requestedH = windowH;
 			freeOwnedSurface();
 			sdlsurface = resized;
 			ownsSurface = true;
@@ -426,6 +516,26 @@ namespace GAGCore
 			h = minH;
 		}
 
+		requestedW = w;
+		requestedH = h;
+		// The window keeps the requested size while the interface is laid out on a
+		// smaller logical surface that is scaled back up to fill it. Widgets, fonts and
+		// the map all keep their pixel sizes, so every screen grows by the same factor
+		// without touching any of the layout constants they are written in.
+		wantedUiScale = uiScale = effectiveUiScale(requestedUiScale);
+		// Widget layouts are authored against 640x480, and setMinRes() has not run yet
+		// on the context's first setRes(), so hold that floor here regardless. Only the
+		// scale is reduced: a window genuinely smaller than the floor keeps scale 1.
+		const int floorW = std::max(minW, 640), floorH = std::max(minH, 480);
+		// One factor for both axes, so scaling never changes the aspect ratio.
+		if (w < static_cast<int>(floorW * uiScale))
+			uiScale = static_cast<float>(w) / floorW;
+		if (h < static_cast<int>(floorH * uiScale))
+			uiScale = static_cast<float>(h) / floorH;
+		uiScale = std::max(1.0f, uiScale);
+		const int logicalW = std::max(1, static_cast<int>(w / uiScale + 0.5f));
+		const int logicalH = std::max(1, static_cast<int>(h / uiScale + 0.5f));
+
 		// set flags
 		optionFlags = flags;
 		Uint32 sdlFlags = 0;
@@ -470,14 +580,14 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
-		SDL_SetWindowMinimumSize(window, std::max(1, minW), std::max(1, minH));
+		applyWindowMinimumSize();
 		// Own the drawing surface: SDL invalidates its window surface during resizing.
-		sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
+		sdlsurface = SDL_CreateRGBSurface(0, logicalW, logicalH, 32,
 			0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 		ownsSurface = true;
 		if (!sdlsurface)
 		{
-			fprintf(stderr, "Toolkit : can't get surface for %dx%d at 32 bpp\n", w, h);
+			fprintf(stderr, "Toolkit : can't get surface for %dx%d at 32 bpp\n", logicalW, logicalH);
 			fprintf(stderr, "Toolkit : %s\n", SDL_GetError());
 			return false;
 		}
@@ -576,7 +686,7 @@ namespace GAGCore
 			{
 				glMatrixMode(GL_PROJECTION);
 				glLoadIdentity();
-				gluOrtho2D(0, w, h, 0);
+				gluOrtho2D(0, logicalW, logicalH, 0);
 				glMatrixMode(GL_MODELVIEW);
 				glLoadIdentity();
 				glGetIntegerv(GL_MAX_TEXTURE_SIZE, &frameCache.maximumTextureSize);

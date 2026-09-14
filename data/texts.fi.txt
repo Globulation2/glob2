@@ -1628,6 +1628,8 @@ Näytä Globulation 2 -kursori.
 Valmis
 [settings Edit shortcut]
 Muokkaa pikanäppäintä
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Suurentaa valikot, tekstin ja sivupalkin tarkkaresoluutioisella näytöllä.
 [settings Flags]
 Liput
 [settings Full]
@@ -1642,6 +1644,8 @@ Pelinopeus
 Pelaaminen
 [settings Graphics detail]
 Graafiset yksityiskohdat
+[settings Interface scale]
+Käyttöliittymän koko
 [settings Keep]
 Säilytä muutokset
 [settings Keep this display mode?]
@@ -1664,6 +1668,8 @@ Koko käyttöliittymässä käytetty kieli.
 Taso
 [settings Map editor]
 Karttaeditori
+[settings Match the desktop]
+Työpöydän mukaan
 [settings Missing font]
 Fontti puuttuu
 [settings Music volume]
@@ -1774,6 +1780,10 @@ Ota grafiikka käyttöön, kun seuraava peli tai karttaeditori ladataan (OpenGL)
 Automaattinen torusnäkymä
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Näytä toruksen muotoinen karttanäkymä automaattisesti liikkuessasi kartalla (OpenGL).
+[settings Autosave]
+Automaattinen tallennus
+[settings Save the game automatically about every 10 seconds.]
+Tallentaa pelin automaattisesti noin 10 sekunnin välein.
 [Channel width]
 Kanavan leveys
 [Land bridge width]

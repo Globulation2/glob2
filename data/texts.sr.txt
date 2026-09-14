@@ -1628,6 +1628,8 @@ Cortex
 Готово
 [settings Edit shortcut]
 Уреди пречицу
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Увећава меније, текст и бочну траку на екрану високе резолуције.
 [settings Flags]
 Заставе
 [settings Full]
@@ -1642,6 +1644,8 @@ Cortex
 Ток игре
 [settings Graphics detail]
 Детаљи графике
+[settings Interface scale]
+Размера интерфејса
 [settings Keep]
 Задржи промене
 [settings Keep this display mode?]
@@ -1664,6 +1668,8 @@ Cortex
 Ниво
 [settings Map editor]
 Уређивач мапа
+[settings Match the desktop]
+Као радна површина
 [settings Missing font]
 Недостаје фонт
 [settings Music volume]
@@ -1774,6 +1780,10 @@ OpenGL није доступан у овој верзији.
 Аутоматски торусни приказ
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Аутоматски прикажи преглед мапе у облику торуса током кретања по мапи (OpenGL).
+[settings Autosave]
+Аутоматско снимање
+[settings Save the game automatically about every 10 seconds.]
+Аутоматски снима игру отприлике сваких 10 секунди.
 [Channel width]
 Ширина канала
 [Land bridge width]

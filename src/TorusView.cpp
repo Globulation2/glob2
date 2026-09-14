@@ -25,7 +25,7 @@ TorusView::~TorusView() { releaseResources(); }
 void TorusView::reset()
 {
     releaseResources();
-    target = moving = pointerHeld = failed = false;
+    target = moving = pointerHeld = panHeld = failed = false;
     lastMove = 0;
     amount = travelU = travelV = cameraU = cameraV = 0;
     worldW = worldH = 0;

@@ -7,21 +7,21 @@
 #include "RessourceType.h"
 
 // Compile-time const table of resource types. The order MUST match the
-// integer IDs declared in Resource.h (WOOD=0, CORN=1, PAPYRUS=2, STONE=3,
+// integer IDs declared in Resource.h (WOOD=0, WHEAT=1, PAPYRUS=2, STONE=3,
 // ALGA=4, CHERRY=5, ORANGE=6, PRUNE=7) — those IDs are persisted in saves,
 // replays and network traffic, so reordering is a behavioral change.
 //
 // Values are transcribed from data/resources.txt (which used a defaults +
 // per-section overrides format); each entry below spells out every field
 // explicitly. The 'clearable' field replaces a hard-coded predicate that
-// previously listed WOOD/CORN/PAPYRUS/ALGA at the call sites in
+// previously listed WOOD/WHEAT/PAPYRUS/ALGA at the call sites in
 // UnitMovement.cpp and MapGradientArea.cpp.
 static constexpr ResourceType kResourceTypes[] = {
 	// WOOD
 	{ /*terrain*/ 2, /*gfxId*/  0, /*sizesCount*/ 5, /*varietiesCount*/ 2,
 	  /*shrinkable*/ 1, /*expendable*/ 1, /*eternal*/ 0, /*granular*/ 0, /*visibleToBeCollected*/ 0,
 	  /*minimapR*/   0, /*minimapG*/  60, /*minimapB*/   0, /*clearable*/ 1 },
-	// CORN
+	// WHEAT
 	{ /*terrain*/ 2, /*gfxId*/ 10, /*sizesCount*/ 5, /*varietiesCount*/ 2,
 	  /*shrinkable*/ 1, /*expendable*/ 1, /*eternal*/ 0, /*granular*/ 1, /*visibleToBeCollected*/ 0,
 	  /*minimapR*/ 211, /*minimapG*/ 207, /*minimapB*/ 167, /*clearable*/ 1 },

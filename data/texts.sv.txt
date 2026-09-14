@@ -1638,6 +1638,8 @@ Visa Globulation 2-markören.
 Klart
 [settings Edit shortcut]
 Redigera kortkommando
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Förstorar menyer, text och sidopanelen på en högupplöst skärm.
 [settings Flags]
 Flaggor
 [settings Full]
@@ -1652,6 +1654,8 @@ Spelhastighet
 Spelförlopp
 [settings Graphics detail]
 Grafikdetaljer
+[settings Interface scale]
+Gränssnittsskala
 [settings Keep]
 Behåll ändringar
 [settings Keep this display mode?]
@@ -1674,6 +1678,8 @@ Språk som används i hela gränssnittet.
 Nivå
 [settings Map editor]
 Kartredigerare
+[settings Match the desktop]
+Följ skrivbordet
 [settings Missing font]
 Saknar typsnitt
 [settings Music volume]
@@ -1784,6 +1790,10 @@ Använd grafiken nästa gång ett spel eller kartredigeraren laddas (OpenGL).
 Automatisk torusvy
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Visa automatiskt den torusformade kartöversikten medan du flyttar runt på kartan (OpenGL).
+[settings Autosave]
+Spara automatiskt
+[settings Save the game automatically about every 10 seconds.]
+Sparar spelet automatiskt ungefär var 10:e sekund.
 [Channel width]
 Kanalbredd
 [Land bridge width]

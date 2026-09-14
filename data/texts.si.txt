@@ -1628,6 +1628,8 @@ Prikaži kazalec igre Globulation 2.
 Končano
 [settings Edit shortcut]
 Uredi bližnjico na tipkovnici
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Poveča menije, besedilo in stransko vrstico na zaslonu z visoko ločljivostjo.
 [settings Flags]
 Zastave
 [settings Full]
@@ -1642,6 +1644,8 @@ Hitrost igre
 Potek igre
 [settings Graphics detail]
 Podrobnosti grafike
+[settings Interface scale]
+Merilo vmesnika
 [settings Keep]
 Obdrži spremembe
 [settings Keep this display mode?]
@@ -1664,6 +1668,8 @@ Jezik, ki se uporablja v celotnem vmesniku.
 Stopnja
 [settings Map editor]
 Urejevalnik zemljevidov
+[settings Match the desktop]
+Kot namizje
 [settings Missing font]
 Manjka pisava
 [settings Music volume]
@@ -1774,6 +1780,10 @@ Izbrana grafika se uporabi ob naslednjem nalaganju igre ali urejevalnika zemljev
 Samodejni torusni pogled
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Samodejno prikaži pregled zemljevida v obliki torusa med premikanjem po zemljevidu (OpenGL).
+[settings Autosave]
+Samodejno shranjevanje
+[settings Save the game automatically about every 10 seconds.]
+Samodejno shrani igro približno vsakih 10 sekund.
 [Channel width]
 Širina kanala
 [Land bridge width]

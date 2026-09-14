@@ -118,7 +118,7 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 
 
 // One hiring pass on a site that wants stone, with two candidates at the given
-// positions, the second holding corn the site cannot take. Returns the
+// positions, the second holding wheat the site cannot take. Returns the
 // gid of the unit hired, and reports each candidate's scored distance.
 static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* emptyCost, int* loadedCost)
 {
@@ -157,9 +157,9 @@ static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* e
 		unit->trigHungry = 100;
 		unit->hungry = unit->trigHungry + 1000 * unit->race->hungriness;
 	}
-	// Unit 1 turns up holding corn, which this site has no use for at all.
-	team->myUnits[1]->carriedResource = CORN;
-	require(site->neededResource(CORN) == 0, "the corn is of no use here");
+	// Unit 1 turns up holding wheat, which this site has no use for at all.
+	team->myUnits[1]->carriedResource = WHEAT;
+	require(site->neededResource(WHEAT) == 0, "the wheat is of no use here");
 
 	const int swimClass = team->myUnits[0]->swimClass();
 	for (int n = 0; n < 2; ++n)

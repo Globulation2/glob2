@@ -1628,6 +1628,8 @@ Muestra el cursor de Globulation 2.
 Hecho
 [settings Edit shortcut]
 Editar atajo de teclado
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Amplía los menús, el texto y la barra lateral en una pantalla de alta resolución.
 [settings Flags]
 Banderas
 [settings Full]
@@ -1642,6 +1644,8 @@ Velocidad del juego
 Jugabilidad
 [settings Graphics detail]
 Detalle de gráficos
+[settings Interface scale]
+Escala de la interfaz
 [settings Keep]
 Mantener cambios
 [settings Keep this display mode?]
@@ -1664,6 +1668,8 @@ Idioma utilizado en toda la interfaz.
 Nivel
 [settings Map editor]
 Editor de mapas
+[settings Match the desktop]
+Igual que el escritorio
 [settings Missing font]
 Fuente faltante
 [settings Music volume]
@@ -1774,6 +1780,10 @@ Aplica los gráficos al cargar la próxima partida o el editor de mapas (OpenGL)
 Vista toroidal automática
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Muestra automáticamente la vista general toroidal mientras te desplazas por el mapa (OpenGL).
+[settings Autosave]
+Guardado automático
+[settings Save the game automatically about every 10 seconds.]
+Guarda la partida automáticamente cada 10 segundos, aproximadamente.
 [Channel width]
 Anchura del canal
 [Land bridge width]

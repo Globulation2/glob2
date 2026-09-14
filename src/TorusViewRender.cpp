@@ -301,7 +301,9 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     float dt = std::min(0.1f, float(now - lastFrame) / 1000.0f);
     lastFrame = now;
     const bool automatic = globalContainer->settings.automaticTorus;
-    if (!automatic || now - lastMove > 250)
+    // Movement only reports tile changes, so a held pan that pauses looks
+    // identical to a finished one. Hold the overview out until the button goes up.
+    if (!automatic || (!panHeld && now - lastMove > 250))
         moving = false;
     const bool pullBack = target || moving;
     if (!pullBack && amount == 0)

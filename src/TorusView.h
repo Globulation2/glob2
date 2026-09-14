@@ -28,6 +28,8 @@ class TorusView
     void notifyMove();
     void stopMoving() { moving = false; }
     void setPointerHeld(bool held) { pointerHeld = held; }
+    // Middle-button panning is a held gesture even between motion events.
+    void setPanHeld(bool held) { panHeld = held; }
     // False requests the ordinary 2D renderer on this same frame.
     bool draw(Game &game, int team, unsigned options, int &viewportX, int &viewportY, int width,
               int height, float flatZoom = 1, float fractionX = 0, float fractionY = 0);
@@ -44,7 +46,7 @@ class TorusView
     float pickU = 0, pickV = 0;
     int pickWidth = 0, pickHeight = 0;
     bool target;
-    bool moving = false, pointerHeld = false;
+    bool moving = false, pointerHeld = false, panHeld = false;
     Uint32 lastMove = 0;
     float amount, zoom;
     float travelU, travelV;

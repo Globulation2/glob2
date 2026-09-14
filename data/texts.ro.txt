@@ -1628,6 +1628,8 @@ Afișați cursorul Globulation 2.
 Gata
 [settings Edit shortcut]
 Editează scurtătura
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Mărește meniurile, textul și bara laterală pe un ecran de înaltă rezoluție.
 [settings Flags]
 Steaguri
 [settings Full]
@@ -1642,6 +1644,8 @@ Viteza jocului
 Mod de joc
 [settings Graphics detail]
 Detalii grafice
+[settings Interface scale]
+Scara interfeței
 [settings Keep]
 Păstrează modificările
 [settings Keep this display mode?]
@@ -1664,6 +1668,8 @@ Limba folosită în întreaga interfață.
 Nivel
 [settings Map editor]
 Editor de hărți
+[settings Match the desktop]
+La fel ca desktopul
 [settings Missing font]
 Lipsește fontul
 [settings Music volume]
@@ -1774,6 +1780,10 @@ Grafica selectată se aplică la următoarea încărcare a jocului sau a editoru
 Vizualizare toroidală automată
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Afișați automat prezentarea generală a hărții în formă de torus în timp ce vă deplasați pe hartă (OpenGL).
+[settings Autosave]
+Salvare automată
+[settings Save the game automatically about every 10 seconds.]
+Salvează jocul automat aproximativ la fiecare 10 secunde.
 [Channel width]
 Lățimea canalului
 [Land bridge width]

@@ -64,6 +64,12 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 		stream->readEnterSection(buildingIndex);
 		building_orders[buildingIndex]=std::shared_ptr<BuildingOrder>(new BuildingOrder);
 		building_orders[buildingIndex]->load(stream, player, versionMinor);
+		// A save from before the id was serialised leaves it at -1. Hand out a
+		// fresh registration rather than a sentinel: the id is used as a
+		// BuildingRegister map key and passed to AssignWorkers, so it has to be
+		// a real one. br is already loaded at this point.
+		if (building_orders[buildingIndex]->id < 0)
+			building_orders[buildingIndex]->id = static_cast<int>(br.register_building());
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();

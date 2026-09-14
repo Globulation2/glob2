@@ -1628,6 +1628,8 @@ Zobrazovat kurzor hry Globulation 2.
 Hotovo
 [settings Edit shortcut]
 Upravit klávesovou zkratku
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Zvětší nabídky, text a postranní panel na obrazovce s vysokým rozlišením.
 [settings Flags]
 Vlajky
 [settings Full]
@@ -1642,6 +1644,8 @@ Rychlost hry
 Hratelnost
 [settings Graphics detail]
 Grafické detaily
+[settings Interface scale]
+Měřítko rozhraní
 [settings Keep]
 Ponechat změny
 [settings Keep this display mode?]
@@ -1664,6 +1668,8 @@ Jazyk používaný v celém rozhraní.
 Úroveň
 [settings Map editor]
 Editor map
+[settings Match the desktop]
+Podle plochy
 [settings Missing font]
 Chybí písmo
 [settings Music volume]
@@ -1774,6 +1780,10 @@ Vybraná grafika se použije při příštím načtení hry nebo editoru map (Op
 Automatický toroidní pohled
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automaticky zobrazovat přehled mapy ve tvaru torusu při pohybu po mapě (OpenGL).
+[settings Autosave]
+Automatické ukládání
+[settings Save the game automatically about every 10 seconds.]
+Hru automaticky ukládá přibližně každých 10 sekund.
 [Channel width]
 Šířka průlivu
 [Land bridge width]

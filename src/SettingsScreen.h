@@ -113,6 +113,7 @@ private:
     void commitText();
     void closeModal();
     void changeDisplay(std::function<void(Settings&)> change);
+    void changeUiScale(int percent);
     int& scrollOffset();
     void focusNext(bool backward);
     void openCategoryPicker();

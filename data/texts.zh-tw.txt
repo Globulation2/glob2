@@ -1700,6 +1700,8 @@ AI策略與對抗
 完成
 [settings Edit shortcut]
 編輯快捷鍵
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+在高解析度螢幕上放大選單、文字與側邊欄。
 [settings Flags]
 旗幟
 [settings Full]
@@ -1714,6 +1716,8 @@ AI策略與對抗
 遊戲玩法
 [settings Graphics detail]
 圖形細節
+[settings Interface scale]
+介面縮放
 [settings Keep]
 保留變更
 [settings Keep this display mode?]
@@ -1736,6 +1740,8 @@ AI策略與對抗
 等級
 [settings Map editor]
 地圖編輯器
+[settings Match the desktop]
+與桌面相同
 [settings Missing font]
 缺少字型
 [settings Music volume]
@@ -1846,6 +1852,10 @@ OpenGL 在此版本中不可用。
 自動環面視圖
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 在地圖上移動時自動顯示圓環形狀的地圖概覽 (OpenGL)。
+[settings Autosave]
+自動儲存
+[settings Save the game automatically about every 10 seconds.]
+大約每10秒自動儲存遊戲。
 [Channel width]
 水道寬度
 [Land bridge width]

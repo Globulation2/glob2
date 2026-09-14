@@ -136,7 +136,7 @@ void generate(const char* path)
 		if(game.map.getUMTerrain(x,y)!=GRASS || (std::abs(dx)<6 && std::abs(dy)<6)) continue;
 		if((x%8<4) && (y%8<4))
 		{
-			const int resource=((x/8+y/8)%5==0) ? STONE : ((x/8+y/8)%2 ? CORN : WOOD);
+			const int resource=((x/8+y/8)%5==0) ? STONE : ((x/8+y/8)%2 ? WHEAT : WOOD);
 			game.map.setResource(x,y,resource,3);
 		}
 	}
@@ -149,7 +149,7 @@ void generate(const char* path)
 	header.getWinningConditions().clear();
 	game.setGameHeader(header);
 	game.setAlliances();
-	game.map.getResourceGradient(0,CORN,0);
+	game.map.getResourceGradient(0,WHEAT,0);
 	game.teams[0]->color=Color(73,191,184);
 	for (int i=0;i<12000;++i)
 	{
@@ -390,7 +390,7 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 			BinaryInputStream in(Toolkit::getFileManager()->openInputStreamBackend(argv[2]));
 			in.readText("format"); require(gui.game.load(&in),"load real-game fixture");
 			std::istringstream state(in.readText("rng")+" "); state >> randomGenerator;
-			gui.game.map.getResourceGradient(0,CORN,0);
+			gui.game.map.getResourceGradient(0,WHEAT,0);
 			gui.localTeamNo=0; gui.localPlayer=0; gui.adjustLocalTeam();
 			globals.replayWriter=std::make_unique<ReplayWriter>();
 			globals.replayWriter->init("",gui);

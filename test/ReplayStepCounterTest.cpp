@@ -44,18 +44,19 @@ using namespace GAGCore;
 // empty stub header), so provide link-level stand-ins without pulling in the
 // real GameGUI.h include surface. The declaration only has to produce the
 // same mangled names as the real out-of-line members.
+struct DeferredGameSHA1;
 class GameGUI
 {
 public:
 	GameGUI();
 	~GameGUI();
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
-	void save(GAGCore::OutputStream *stream, const std::string name);
+	void save(GAGCore::OutputStream *stream, const std::string name, DeferredGameSHA1* deferredSHA1 = nullptr);
 };
 GameGUI::GameGUI() {}
 GameGUI::~GameGUI() {}
 bool GameGUI::load(GAGCore::InputStream*, bool) { return false; }
-void GameGUI::save(GAGCore::OutputStream*, const std::string) {}
+void GameGUI::save(GAGCore::OutputStream*, const std::string, DeferredGameSHA1*) {}
 
 // Linking the real Order.cpp would drag in every OrderCreate / OrderDelete /
 // OrderModify… deserialize symbol through the switch in Order::getOrder. The

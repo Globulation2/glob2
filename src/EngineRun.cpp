@@ -418,10 +418,13 @@ void Engine::reportMultiplayerResult()
 	}
 }
 
-// Close cross-replay debug sinks (sidecar, dataset) and tear down the network
-// + multiplayer session. The Engine itself stays alive for a possible reload.
+// Finish writing the last autosave, close cross-replay debug sinks (sidecar,
+// dataset) and tear down the network + multiplayer session. The Engine itself
+// stays alive for a possible reload.
 void Engine::teardownSession()
 {
+	gui.waitForAutosave();
+
 	if (checksumSidecar)
 	{
 		if (!checksumSidecar->close())

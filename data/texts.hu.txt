@@ -1628,6 +1628,8 @@ Jelenítse meg a Globulation 2 kurzort.
 Kész
 [settings Edit shortcut]
 Billentyűparancs szerkesztése
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Nagyítja a menüket, a szöveget és az oldalsávot nagy felbontású képernyőn.
 [settings Flags]
 Zászlók
 [settings Full]
@@ -1642,6 +1644,8 @@ Játéksebesség
 Játékmenet
 [settings Graphics detail]
 Grafikai részletesség
+[settings Interface scale]
+Felület mérete
 [settings Keep]
 Megtartás
 [settings Keep this display mode?]
@@ -1664,6 +1668,8 @@ Az egész felületen használt nyelv.
 Szint
 [settings Map editor]
 Térképszerkesztő
+[settings Match the desktop]
+Az asztalhoz igazítva
 [settings Missing font]
 Hiányzó betűtípus
 [settings Music volume]
@@ -1774,6 +1780,10 @@ A kiválasztott grafika a játék vagy a térképszerkesztő következő betölt
 Automatikus tórusznézet
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 A tórusz alakú térkép áttekintésének automatikus megjelenítése a térképen való mozgás közben (OpenGL).
+[settings Autosave]
+Automatikus mentés
+[settings Save the game automatically about every 10 seconds.]
+Körülbelül 10 másodpercenként automatikusan menti a játékot.
 [Channel width]
 Csatorna szélessége
 [Land bridge width]

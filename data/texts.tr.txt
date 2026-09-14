@@ -1636,6 +1636,8 @@ Globulation 2 imlecini görüntüleyin.
 Bitti
 [settings Edit shortcut]
 Klavye kısayolunu düzenle
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Yüksek çözünürlüklü ekranda menüleri, metni ve yan çubuğu büyütür.
 [settings Flags]
 Bayraklar
 [settings Full]
@@ -1650,6 +1652,8 @@ Oyun hızı
 Oynanış
 [settings Graphics detail]
 Grafik ayrıntıları
+[settings Interface scale]
+Arayüz ölçeği
 [settings Keep]
 Değişiklikleri koru
 [settings Keep this display mode?]
@@ -1672,6 +1676,8 @@ Arayüz boyunca kullanılan dil.
 Seviye
 [settings Map editor]
 Harita düzenleyici
+[settings Match the desktop]
+Masaüstüyle aynı
 [settings Missing font]
 Eksik yazı tipi
 [settings Music volume]
@@ -1782,6 +1788,10 @@ Seçilen grafikler, oyun veya harita düzenleyici bir sonraki yüklendiğinde uy
 Otomatik torus görünümü
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Haritada dolaşırken torus şeklindeki haritaya genel bakışı otomatik olarak gösterin (OpenGL).
+[settings Autosave]
+Otomatik kaydetme
+[settings Save the game automatically about every 10 seconds.]
+Oyunu yaklaşık 10 saniyede bir otomatik olarak kaydeder.
 [Channel width]
 Kanal genişliği
 [Land bridge width]

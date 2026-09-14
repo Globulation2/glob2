@@ -1626,6 +1626,8 @@ Cortex
 Готово
 [settings Edit shortcut]
 Изменить сочетание клавиш
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Увеличивает меню, текст и боковую панель на экране с высоким разрешением.
 [settings Flags]
 Флаги
 [settings Full]
@@ -1640,6 +1642,8 @@ Cortex
 Игровой процесс
 [settings Graphics detail]
 Детализация графики
+[settings Interface scale]
+Масштаб интерфейса
 [settings Keep]
 Сохранить изменения
 [settings Keep this display mode?]
@@ -1662,6 +1666,8 @@ Cortex
 Уровень
 [settings Map editor]
 Редактор карт
+[settings Match the desktop]
+Как в системе
 [settings Missing font]
 Отсутствует шрифт
 [settings Music volume]
@@ -1772,6 +1778,10 @@ OpenGL недоступен в этой сборке.
 Автоматический вид тора
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Автоматически отображать обзор карты в форме тора при перемещении по карте (OpenGL).
+[settings Autosave]
+Автосохранение
+[settings Save the game automatically about every 10 seconds.]
+Автоматически сохраняет игру примерно каждые 10 секунд.
 [Channel width]
 Ширина пролива
 [Land bridge width]
