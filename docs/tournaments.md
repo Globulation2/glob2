@@ -407,3 +407,74 @@ for complete commands, host configuration, dimensional units and statistical lim
 Native `--generate-map NAME --json FILE` uses tile dimensions; the structured
 `--generate-map --output-dir DIR` interface uses exponent dimensions as documented
 above. Both use the same production report serializer.
+
+## Gameplay, AI and performance telemetry
+
+Add `"outputs":{"telemetry":["team-timeline"]}` to an experiment configuration
+(or pass `--telemetry team-timeline` to `--run-game`). This existing option now
+exports the legacy timeline **and** all gameplay measurements, per-player AI
+schemas/current/history/final values, and engine performance samples/final totals.
+Collection remains automatic; export remains opt-in. No extra worker service,
+transport option or result-schema migration is needed. The catalog advertises
+`gameplay_telemetry_version`, `ai_telemetry_version`, and
+`performance_telemetry_version` (currently 1). Old bundles can still run and their
+missing new record families are reported as unavailable.
+
+Workers already retain `stdout.log`, compress it, checksum it and transfer it with
+the other artifacts. These records stay in that artifact instead of inflating the
+coordinator's SQLite/result payloads. The normal `reanalyze` commands now also
+write `game-telemetry.jsonl` (one typed record per log line) and
+`game-telemetry-values.csv` (one field per row). The main report's `game_telemetry`
+section indexes counts, missing families, missing final records and parse errors
+per game. Existing map telemetry, ratings and adjudication are unchanged. Reports
+use accepted attempts only; diagnostic retries remain accessible separately.
+
+The streaming API uses the same verified, offline artifact reader:
+
+```python
+from tools.tournaments.results import Results
+source = Results("/tmp/glob2-results")
+for game in source:
+    if game["job"]["type"] == "game":
+        for row in source.telemetry(game):
+            if row.get("record") == "GLOB2_AI_FINAL":
+                print(row["job_id"], row["values"])
+```
+
+Rows retain job, attempt, build and host identity, source line, record kind and
+all named values. Integers remain exact Python/JSON integers, including uint64
+counters; CSV adds a value type, so readers must not coerce integer columns
+through floating point. `na` becomes JSON null / CSV `unavailable`, never zero.
+Quoted names/descriptions and per-field `@tick` timestamps survive decoding.
+Unknown AI fields and future AI/performance record kinds are retained. Malformed
+rows are explicit JSONL errors with the raw line; artifact corruption is an error,
+not an empty trace. Export reads one log line at a time without retaining complete
+match histories in memory.
+
+Join AI series using job/attempt + team/player/implementation/generation, not
+team alone. Schemas are deduplicated within a match by AI implementation/schema;
+a player's schema may therefore have been emitted under another player's identity.
+Loaded games retain gameplay/AI coverage and history. History records repeat
+previously sampled ticks at final export: choose sample or history records for a
+curve, rather than summing both. Final records are cumulative counters or current
+stocks, not extra events. The JSONL retains the original ordering and duplicates
+so downstream tools can make that choice explicitly.
+
+Performance session IDs are process-local: qualify them with job/attempt/host/build.
+Do not pool different hosts, modes, budgets or builds blindly. Sample records are
+interval measurements; final records cover the session. Hot-scope estimates,
+observed totals, inclusive times and unavailable self times remain distinct.
+Population standard deviations require sample counts and a parallel-variance
+merge, not averaging standard deviations. A headless run has no render budget
+and cannot measure interactive frame quality. Structured final saves are included
+before the performance final record. Ambient `GLOB2_PERF_DISABLE` and build-label
+overrides are isolated like the existing headless tuning environment.
+
+See [gameplay metric definitions](gameplay-statistics.md),
+[AI schema/extension contract](ai-telemetry.md), and
+[performance scope definitions](performance-telemetry.md).
+The rebased save formats are 105 (gameplay) and 106 (AI), above master's 104;
+released save support still starts at 58. Master's network/YOG gate 33 and replay
+floor 99 are preserved. Pre-rebase development fixtures numbered 101/102 collide
+with master's released fields and should be regenerated; the backup branch retains
+the original development reader. Existing exported logs need no conversion.

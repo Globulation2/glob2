@@ -41,3 +41,9 @@ python3 -m tools.tournaments.generator_stress reanalyze /tmp/telemetry-merge/dis
 Every archive member was checked against its indexed length and SHA-256. Full binary
 bundles remain in ignored `artifacts/tournaments-telemetry-merge/bundles/`; immutable
 manifests are included in the archive.
+
+`game-telemetry-20260914.tar.gz` and its index retain the gameplay/AI/performance
+integration evidence: 17 localhost tournament jobs, all eight AIs, typed log
+roundtrips, old-save checks and per-tick master comparisons. Extract into an empty
+directory and run the normal offline reanalysis against `distributed/localhost`.
+See [validation details](../../../docs/tournament-telemetry-validation.md).

@@ -30,3 +30,8 @@ class Results:
         if meta['encoding'] != 'identity':
             raise ValueError('unknown artifact encoding')
         return path.open(mode)
+
+    def telemetry(self, record):
+        """Stream typed gameplay/AI/performance rows from a verified game log."""
+        from .game_telemetry import records
+        return records(self, record)

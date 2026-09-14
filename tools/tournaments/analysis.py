@@ -275,6 +275,8 @@ def reanalyze(directory, policy='prestige', draws=1000, seed=1, k=32, output=Non
     report['map_telemetry'] = summarize(records, draws, seed)
     out = Path(output) if output else Path(directory) / 'reports' / policy
     out.mkdir(parents=True,exist_ok=True)
+    from .game_telemetry import export
+    report['game_telemetry'] = export(source, records, out)
     atomic_json(out/'report.json',report)
     atomic_json(out/'map-telemetry.json', report['map_telemetry'])
     write_csv(out/'map-telemetry-records.csv', report['map_telemetry']['records'])

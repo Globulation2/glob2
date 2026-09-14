@@ -563,3 +563,15 @@ write timing counts and completed/failed/superseded accounting. See
 `MapGeneratorGoldenTest PROFILE --performance` compares all built-in generators with timing
 off/on (serialized worlds, outcomes, RNG, and generation telemetry) and emits generation
 timing records, including site assignment. Use a disposable HOME and run from the repository.
+
+### Distributed gameplay, AI and performance telemetry
+
+`python3 test/test_distributed_game_telemetry.py` tests typed streaming extraction,
+64-bit values, escaped text, dynamic fields, unavailable data, malformed records,
+compressed artifacts, checksum enforcement and JSONL/CSV roundtrips.
+`python3 test/distributed_game_telemetry_integration.py --hosts HOSTS.json --output NEW_DIR`
+runs all eight AIs on supplied registered bundles through real workers and the
+coordinator. It checks log transfer, complete final telemetry, offline record
+counts, export-on/off per-tick checksums, and repeated save/load telemetry
+continuation. Host entries need absolute `bundle` paths; workers are stopped after
+collection. See [tournament telemetry](../docs/tournaments.md#gameplay-ai-and-performance-telemetry).

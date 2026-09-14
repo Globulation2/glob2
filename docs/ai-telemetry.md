@@ -102,7 +102,7 @@ ending between samples. History repeats previously emitted samples: distinguish
 record types rather than summing them. Closed series remain available in final
 history. Formatting and schema comparisons for output occur only when enabled.
 
-Save format 102 stores descriptors, controller identities, current values,
+Save format 106 stores descriptors, controller identities, current values,
 validity/timestamps, cumulative counters, coverage and sampled history. The minimum
 save version remains 58. Older saves begin new AI coverage at the loaded game tick.
 The loader bounds record/field/string counts, validates types, identities and
@@ -148,3 +148,6 @@ Their post-load decision-call counts can therefore differ from an uninterrupted 
 change deliberately does not repair those gameplay-affecting behaviors. Validation compares
 exact diagnostic restoration and repeatability of two continuations of the same save, while
 retaining the existing simulation continuation checks.
+
+Tournament workers retain these records in verified logs; their normal offline
+analysis exports typed JSONL and CSV. See [distributed telemetry](tournaments.md#gameplay-ai-and-performance-telemetry).

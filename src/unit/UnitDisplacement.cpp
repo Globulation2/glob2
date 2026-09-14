@@ -317,6 +317,8 @@ void Unit::handleDisplacement(void)
 				{
 					displacement=DIS_EXITING_BUILDING;
 					validTarget=false;
+					if (destinationPurpose != FEED && destinationPurpose != HEAL)
+						++owner->stats.measurements.trainingVisits[typeNum];
 
 					if (destinationPurpose==FEED)
 					{
@@ -339,7 +341,6 @@ void Unit::handleDisplacement(void)
 					{
 						Sint32 previousLevels[NB_ABILITY];
 						std::copy(level, level + NB_ABILITY, previousLevels);
-						++owner->stats.measurements.trainingVisits[typeNum];
 						if (attachedBuilding->type->upgradeInParallel)
 						{
 							for (int ability = (int)WALK; ability < (int)ARMOR; ability++)

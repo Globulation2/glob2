@@ -107,3 +107,7 @@ commands, executable hashes, and raw timing results. Cross-platform execution co
 remain required before claiming cross-platform verification.
 
 Local verification results and limits are recorded in [the validation report](performance-telemetry-validation.md).
+
+Structured tournament runs include requested final-save serialization before the
+performance final export. All records pass through verified worker log artifacts
+and the [offline tournament readers](tournaments.md#gameplay-ai-and-performance-telemetry).

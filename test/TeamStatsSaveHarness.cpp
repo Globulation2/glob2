@@ -613,6 +613,41 @@ static void measurementScenarios()
 					Uint64(site->type->multiplierResource[WOOD]),
 				"repair deliveries recorded separately");
 	}
+	{
+		TeamStatsMeasurementFixture w;
+		w.game.gameHeader.setHungerDisabled(true);
+		auto *u = w.unit();
+		u->hungry = 0;
+		const int hp = u->hp;
+		TeamStatsMeasurementFixture::medical(u);
+		require(u->hp == hp && !u->isDead, "no hunger rule preserves health");
+		require(w.game.teams[0]->stats.measurements.deaths[WORKER][Measurements::STARVATION] == 0,
+				"no hunger produces no starvation event");
+	}
+	{
+		TeamStatsMeasurementFixture w;
+		w.game.gameHeader.setUnitUpgradesDisabled(true);
+		auto *b = w.building("barracks");
+		auto *u = w.unit(WARRIOR);
+		const int level = u->level[ATTACK_SPEED];
+		w.inside(u, b, ATTACK_SPEED);
+		TeamStatsMeasurementFixture::displacement(u);
+		const auto &m = w.game.teams[0]->stats.measurements;
+		require(u->level[ATTACK_SPEED] == level && m.trainingVisits[WARRIOR] == 1 &&
+				m.abilityGains[WARRIOR][ATTACK_SPEED] == 0,
+				"disabled upgrades still complete a visit without a level gain");
+	}
+	{
+		TeamStatsMeasurementFixture w;
+		w.game.gameHeader.setInstantConstructionEnabled(true);
+		auto *b = w.building("inn", 8, 8, 0, true);
+		b->update();
+		const auto &m = w.game.teams[0]->stats.measurements;
+		require(!b->type->isBuildingSite, "instant site completes");
+		for (int r = 0; r < MAX_RESOURCES; ++r)
+			require(m.consumed[Measurements::CONSTRUCTION][r] == 0,
+					"instant construction consumes no undelivered resources");
+	}
 	std::puts("Gameplay measurement engine scenarios passed");
 }
 
@@ -624,7 +659,7 @@ static void measurementAttributionFields()
 	GAGCore::BinaryOutputStream writer(storage);
 	bullet.save(&writer);
 	const std::string bytes(storage->getBuffer(), storage->getPosition());
-	// All pre-101 projectile fields are an unchanged prefix.
+	// All pre-105 projectile fields are an unchanged prefix.
 	GAGCore::BinaryInputStream oldReader(
 		new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size() - 4));
 	oldReader.seekFromStart(0);
@@ -659,10 +694,10 @@ static void measurementAttributionFields()
 
 static void measurementReplayBoundaries()
 {
-	require(REPLAY_MINIMUM_VERSION_MINOR == 99 && NET_PROTOCOL_VERSION == 29 &&
-				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 29,
+	require(REPLAY_MINIMUM_VERSION_MINOR == 99 && NET_PROTOCOL_VERSION == 33 &&
+				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 33,
 			"diagnostic save fields preserve replay floor and network gates");
-	for (int version : {98, 99, 100, 101, 102, 103})
+	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);
@@ -816,6 +851,8 @@ static void aiTelemetryScenarios()
 	}
 	for (int i = 0; i < AI::SIZE; ++i)
 	{
+		// Runtime settings belong to a controller implementation on master.
+		g.gameHeader.setAIConfig(0, "");
 		AI controller(static_cast<AI::ImplementationID>(i), g.players[0]);
 		require(controller.aiImplementation->telemetrySchema() == schema(i),
 				"every AI publishes its schema through the standard interface");
@@ -824,6 +861,7 @@ static void aiTelemetryScenarios()
 		for (const auto &f : schema(i))
 			require(names.insert(f.name).second, "schema names are unique");
 	}
+	g.gameHeader.setAIConfig(0, "");
 	auto a = g.players[0]->ai->telemetrySeries, b = g.players[1]->ai->telemetrySeries;
 	require(a != b && a->player == 0 && b->player == 1,
 			"same AI and team retain distinct player series");

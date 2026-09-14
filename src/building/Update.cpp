@@ -41,7 +41,7 @@ void Building::updateBuildingSite(void)
 					   : constructionResultState == UPGRADE ? GameplayMeasurements::UPGRADED
 															: GameplayMeasurements::NEW_BUILDING;
 			++owner->stats.measurements.completed[kind][type->shortTypeNum][type->level];
-			if (constructionResultState != REPAIR)
+			if (constructionResultState != REPAIR && !instantComplete)
 				for (int r = 0; r < MAX_RESOURCES; ++r)
 					owner->stats.measurements
 						.consumed[constructionResultState == UPGRADE

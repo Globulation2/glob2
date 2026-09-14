@@ -708,8 +708,12 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 		reportMultiplayerResult();
 
 	teardownSession();
-	perf.capture(gui.game.stepCounter, true, true);
-	perf.reset();
+	// Structured runs may still write their requested final save after run().
+	if (!globalContainer->structuredHeadless)
+	{
+		perf.capture(gui.game.stepCounter, true, true);
+		perf.reset();
+	}
 
 	prepareNextGameSession(doRunOnceAgain);
 }

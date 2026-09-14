@@ -56,7 +56,7 @@ sample time. At most one sample is retained per 512-tick slot in the engine's
 32-bit tick range (8,388,608 slots); loading checks count, cadence, ordering and
 coverage before accepting samples, and binary fields use checked reads.
 
-Save format **101** stores totals, current snapshots, sampled history, coverage
+Save format **105** stores totals, current snapshots, sampled history, coverage
 start and pending lethal/projectile attribution. The minimum readable save
 version remains **58**. Earlier saves retain their legacy statistics and begin
 new measurement coverage at their loaded game tick. Earlier measurement history
@@ -65,7 +65,7 @@ production/death events. Old projectiles have unknown source-team attribution;
 target damage is still counted, but source-team damage is not guessed.
 
 The replay acceptance floor remains **99** and network/YOG protocol gates remain
-**29**. New-format saves require a reader that understands format 101; these
+**33**. New-format saves require a reader that understands format 105; these
 fields do not change simulation execution or order formats.
 
 ## Existing timeline output
