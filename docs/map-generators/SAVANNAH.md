@@ -181,7 +181,7 @@ Savannah contracts cover supported rectangles, odd/solo colonies, invalid dimens
 and crowding, zero/maximum terrain stability, and 4,096 unattended engine growth calls.
 The all-generator golden and telemetry harnesses cover existing helper callers.
 
-Review evidence and measured tuning results are recorded under `artifacts/savannah/`.
+Review evidence and measured tuning results are on the [evidence/savannah branch](https://github.com/Globulation2/glob2/blob/evidence/savannah/artifacts/savannah/SUMMARY.md); the sample previews are under `docs/artifacts/savannah/`.
 See that run's summary for exact commands, seeds, platform, generated maps, previews,
 telemetry, save/reload and populated-game coverage. Generation success and static
 room checks do not establish enjoyable pacing, conflict around ponds or useful
@@ -234,7 +234,7 @@ movement reports. Linux game saves loaded on macOS. The post-tune 401-case matri
 Windows run, per-tick cross-platform checksums and human play were not performed.
 No simulation, save-format, replay or network version changed.
 
-`artifacts/savannah/playtest-round1/SUMMARY.md` records the requests, per-team
+[The playtest summary](https://github.com/Globulation2/glob2/blob/evidence/savannah/artifacts/savannah/playtest-round1/SUMMARY.md) records the requests, per-team
 telemetry, preview images, candidate failures, saves, replays and commands.
 
 ### Bulk supported-envelope audit (Linux x86_64)
@@ -261,7 +261,7 @@ documented finite-plot ceiling rather than a failed starter guarantee.
 No parameter range or geometry budget changed after the bulk audit: the tested
 valid envelope succeeded with accessible starts and room, and optional feature
 omissions did not compromise the required routes. The reviewer evidence under
-`artifacts/savannah/bulk/SUMMARY.md` retains every request/report, failure-rate
+[The bulk summary](https://github.com/Globulation2/glob2/blob/evidence/savannah/artifacts/savannah/bulk/SUMMARY.md) retains every request/report, failure-rate
 denominator, feature counts, timing, eight saved sample maps with previews and
 the exact commands. The matrix samples mixed sliders but cannot exhaust all
 13⁵ resource combinations; it ran on Linux x86_64, with the earlier macOS
