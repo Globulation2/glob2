@@ -1424,6 +1424,14 @@ the bars this map, and which bars join which is redrawn every seed.
   tile, every channel's core outside its riffles, every riffle open across with walkable land at
   both ends (`fordFault`, `fordLandingWalkable`), every colony walking to colony 0, and every
   colony walking onto its promised bar and standing beside wheat and wood.
+- **Played, and bimodal.** A rotation tournament (six 256×256 maps, four colonies, every cyclic
+  team rotation, four Nicowars, 45,000 ticks) split the starts: on four maps every colony grew to
+  66 to 155 units, while on two maps three of the four starts stalled at 15 to 25 units (peaks of
+  26 to 44, nine to eighteen buildings) with almost no starvation, no trapped units, and a fifth
+  of the harvest of the start that thrived. The start metrics do not separate the two (wheat two
+  to five steps away, comparable fertility and room), so this is an AI stall on the dry terrace
+  rather than a geometry defect the generator can measure; the defaults stand, and the retained
+  maps are the material for a follow-up with other AIs and human play.
 
 ## Compatibility notes
 
