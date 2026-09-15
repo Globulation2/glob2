@@ -1607,6 +1607,29 @@ golden rows. Nobody has played it by hand yet.
   metrics (fertility 0.3 to 0.9, 180 to 500 sites) do not flag those starts, so what dooms
   them is who reaches them first, not what they hold. That is the contract the map states; the
   retained maps are the material for anyone who wants to move the never-grow starts.
+## Plantations
+
+An archipelago of small farm islands. Every island is a plantation: a square plot of grass ringed
+with one vertex of sand at its heart, the only ground a building can stand on, and wheat or wood
+over everything between that ring and the beach; the sea waters the crops, since no tile of an
+island is more than about ten from the water. Two sand lanes run from every plot to the shore.
+Nothing joins the islands: units swim, and the straits between the Voronoi cells (`Channels`'
+`straitsBetweenCells`) are an exact corner width, four by default, so only a level-3 tower reaches
+the next island's first grass. A plot is smaller than a base (8 tiles square), so every colony
+holds several islands from the first minute: its home island with the swarm and a completed
+swimming pool, and granted islands with a pool and an inn each (`claimNeighbourCells` deals them
+round by round, as many to each colony as to any other), with a rock islet beside them. The rest
+are neutral plantations of wheat, wood or both, orchard islets and rock islets. Room is the
+scarcity and the swim is the cost; fairness is statistical (farthest-apart homes, nearest
+granted islands) and the lobby keeps the best-scoring roll. See the generator header for the
+sizes at the defaults, the shrinking order on small maps (crop band, then granted count, then
+refusal) and every constant's reason.
+
+- **Played.** A rotation tournament (six 256×256 maps, four colonies, every cyclic team
+  rotation, four Nicowars, 45,000 ticks) found the archipelago even and hard-fought: pooled
+  per-start peaks of 124 to 158 units, 28 to 44 warriors, three eliminations in 96
+  colony-games, a root-mean-square position bias of zero, and 45 to 65 starvation deaths per
+  colony as swimmers outrun their inns, which is the map's cost of the swim. The defaults stand.
 
 ## Compatibility notes
 
