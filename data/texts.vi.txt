@@ -2554,3 +2554,39 @@ Khoảng nước
 Vòng esker
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Các esker không thể nối mọi drumlin; hãy dùng khoảng nước nhỏ hơn hoặc bản đồ lớn hơn.
+[Continents]
+Các lục địa
+[Continent]
+Lục địa
+[North America]
+Bắc Mỹ
+[South America]
+Nam Mỹ
+[Africa]
+Châu Phi
+[Europe]
+Châu Âu
+[Asia]
+Châu Á
+[Oceania]
+Châu Đại Dương
+[Orientation]
+Hướng
+[Turn to fit]
+Xoay cho vừa
+[Upright]
+Không xoay
+[Mountain ranges]
+Dãy núi
+[Great rivers]
+Sông lớn
+[Islets]
+Đảo nhỏ
+[Oases]
+Ốc đảo
+[The world atlas has no such continent.]
+Tập bản đồ thế giới không có lục địa này.
+[The map is too small to hold a continent.]
+Bản đồ quá nhỏ để chứa một lục địa.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Lục địa này không đủ chỗ cho số thuộc địa này ở kích thước bản đồ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.

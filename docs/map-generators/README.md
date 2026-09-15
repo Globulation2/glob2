@@ -25,6 +25,8 @@ built from, the designed-generator pipeline, the generator catalog, resource pla
 fairness, and [Adding a generator](ADDING_A_GENERATOR.md) for the registry and module interfaces.
 [Game rules for map design](GAME_RULES_FOR_MAP_DESIGN.md) collects the engine rules and play
 principles every generator designs for, which the generators' comments refer to.
+[The world atlas](WORLD_ATLAS.md) documents the real geography compiled in for the Continents
+landscape, its sources and licences, and `tools/world_atlas.py` that regenerates it.
 
 [Generator telemetry](TELEMETRY.md) records internal counts, variants, calibration and fallback
 choices in CLI JSON reports. Use `tools/map_telemetry.py` to collect a bounded seed matrix and

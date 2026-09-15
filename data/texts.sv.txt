@@ -2568,3 +2568,39 @@ Vattengap
 Åsslingor
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Rullstensåsarna kunde inte förbinda alla drumliner; använd ett mindre vattengap eller en större karta.
+[Continents]
+Kontinenter
+[Continent]
+Kontinent
+[North America]
+Nordamerika
+[South America]
+Sydamerika
+[Africa]
+Afrika
+[Europe]
+Europa
+[Asia]
+Asien
+[Oceania]
+Oceanien
+[Orientation]
+Riktning
+[Turn to fit]
+Vrid vid behov
+[Upright]
+Utan vridning
+[Mountain ranges]
+Bergskedjor
+[Great rivers]
+Stora floder
+[Islets]
+Småöar
+[Oases]
+Oaser
+[The world atlas has no such continent.]
+Världsatlasen har ingen sådan kontinent.
+[The map is too small to hold a continent.]
+Kartan är för liten för att rymma en kontinent.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Den här kontinenten har inte plats för så många kolonier vid den här kartstorleken; använd en större karta eller färre kolonier.

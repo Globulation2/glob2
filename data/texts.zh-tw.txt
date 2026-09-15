@@ -2630,3 +2630,39 @@ Emoji
 蛇形丘環路
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 蛇形丘無法連接所有鼓丘；請縮小水域間隙或使用更大的地圖。
+[Continents]
+各大洲
+[Continent]
+大洲
+[North America]
+北美洲
+[South America]
+南美洲
+[Africa]
+非洲
+[Europe]
+歐洲
+[Asia]
+亞洲
+[Oceania]
+大洋洲
+[Orientation]
+方向
+[Turn to fit]
+旋轉以配合
+[Upright]
+不旋轉
+[Mountain ranges]
+山脈
+[Great rivers]
+大河
+[Islets]
+小島
+[Oases]
+綠洲
+[The world atlas has no such continent.]
+世界地圖集中沒有這個大洲。
+[The map is too small to hold a continent.]
+地圖太小，容納不下一個大洲。
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+此大洲在這個地圖大小下容納不下這麼多殖民地；請使用更大的地圖或減少殖民地數量。

@@ -2568,3 +2568,39 @@ Largeur d'eau
 Boucles d'eskers
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Les eskers n'ont pas pu relier tous les drumlins ; utilisez une largeur d'eau plus petite ou une carte plus grande.
+[Continents]
+Continents
+[Continent]
+Continent
+[North America]
+Amérique du Nord
+[South America]
+Amérique du Sud
+[Africa]
+Afrique
+[Europe]
+Europe
+[Asia]
+Asie
+[Oceania]
+Océanie
+[Orientation]
+Orientation
+[Turn to fit]
+Pivoter si besoin
+[Upright]
+Sans rotation
+[Mountain ranges]
+Chaînes de montagnes
+[Great rivers]
+Grands fleuves
+[Islets]
+Îlots
+[Oases]
+Oasis
+[The world atlas has no such continent.]
+L'atlas du monde n'a pas ce continent.
+[The map is too small to hold a continent.]
+La carte est trop petite pour contenir un continent.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Ce continent n'a pas de place pour autant de colonies à cette taille de carte ; utilisez une carte plus grande ou moins de colonies.

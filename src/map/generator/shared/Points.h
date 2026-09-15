@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <functional>
 #include <string>
 #include <vector>
 struct GenerationContext;
@@ -206,4 +207,36 @@ std::vector<int> farthestSites(const Torus &, const std::vector<Site> &,
 /// across the wrap), listed in ascending order.
 std::vector<std::vector<int>> siteNeighbours(const Torus &, const std::vector<int> &labels,
 											 int sites);
+
+/// `count` sites spread over uneven ground by walking distance: the first is a random candidate,
+/// and each next site is the candidate farthest, in steps over `walkable` (eight-connected, across
+/// the wrap), from every site so far, so no two sites are near each other by any route a unit can
+/// take. A coast, a lake or a range between two sites counts for what it is: the way round it.
+/// Straight-line spreading (spreadPoints, relaxPoints) puts two sites a bay apart side by side;
+/// this puts them a bay's walk apart. `trials` spreads are run from different first sites (one draw
+/// from `stream` each) and the one whose closest pair is farthest apart is kept, so a first site on
+/// a cape does not cramp the rest. Candidates a walk from the first site cannot reach are never
+/// chosen (they are on another landmass). Fewer than `count` sites come back only when the
+/// candidates reachable from the first run out. Tiles as indices, in the order chosen.
+///
+/// With `prefer`, each pick is the farthest candidate `prefer(tile)` accepts, tested farthest
+/// first so few are tested; when none is accepted the farthest of all is taken, and `rejected`
+/// (when given) counts the picks that fell back. A test that floods from the candidate (the room
+/// a unit can reach from it, say) is affordable here where it is not for every candidate.
+std::vector<int> farthestSites(const Torus &, const std::vector<unsigned char> &candidates,
+							   const std::vector<unsigned char> &walkable, int count,
+							   GenerationContext &, const std::string &stream, int trials = 6,
+							   const std::function<bool(int)> *prefer = nullptr,
+							   int *rejected = nullptr);
+
+/// Each site moved to the candidate nearest the middle of its own ground: for site k, the tile of
+/// `candidates` labelled k in `labels` (a territory of Territories.h, say) nearest, the short way
+/// round, to the mean position of every tile labelled k, measured as offsets from the site so a
+/// territory across the wrap has a sensible middle. A site with no labelled candidate stays. Run
+/// after farthestSites and growTerritories, then grow the territories again: a site chosen for
+/// being far from the others sits at the edge of its ground, and a round or two of this walks it
+/// to where its colony has room on every side. Deterministic; ties go to the lowest tile index.
+std::vector<int> recentreSites(const Torus &, const std::vector<int> &labels,
+							   const std::vector<unsigned char> &candidates,
+							   const std::vector<int> &sites);
 } // namespace MapGeneration

@@ -252,3 +252,11 @@ Ellen Reitmayr <>
 *
 *
 *
+
+*
+Map data
+
+The Continents landscape is drawn from Natural Earth (naturalearthdata.com), free vector map data in the public domain,
+and from the Köppen-Geiger climate classification of Kottek, Grieser, Beck, Rudolf and Rubel (2006),
+"World Map of the Köppen-Geiger climate classification updated", Meteorologische Zeitschrift 15, 259-263
+(koeppen-geiger.vu-wien.ac.at), used with attribution.

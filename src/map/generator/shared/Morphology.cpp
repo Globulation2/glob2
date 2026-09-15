@@ -309,3 +309,58 @@ std::vector<int> windowMinimum(const Torus &t, const std::vector<int> &field, in
 	return result;
 }
 } // namespace MapGeneration
+
+namespace MapGeneration
+{
+std::vector<unsigned char> bridgeDiagonals(const Torus &t, const std::vector<unsigned char> &mask)
+{
+	std::vector<unsigned char> result = mask;
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+		{
+			if (!mask[t.at(x, y)])
+				continue;
+			// Only the two diagonals ahead in row order, so each contact is looked at once.
+			for (int dx : {-1, 1})
+			{
+				const int diagonal = t.at(x + dx, y + 1), beside = t.at(x + dx, y),
+						  below = t.at(x, y + 1);
+				if (mask[diagonal] && !mask[beside] && !mask[below])
+					result[std::min(beside, below)] = 1;
+			}
+		}
+	return result;
+}
+} // namespace MapGeneration
+
+namespace MapGeneration
+{
+std::vector<int> windowCount(const Torus &t, const std::vector<unsigned char> &mask, int radius)
+{
+	// Rows first: each tile's count over the 2 * radius + 1 tiles of its row, through the wrap.
+	std::vector<int> rows(mask.size(), 0), result(mask.size(), 0);
+	for (int y = 0; y < t.h; ++y)
+	{
+		int sum = 0;
+		for (int dx = -radius; dx <= radius; ++dx)
+			sum += mask[t.at(dx, y)];
+		for (int x = 0; x < t.w; ++x)
+		{
+			rows[size_t(y) * t.w + x] = sum;
+			sum += mask[t.at(x + radius + 1, y)] - mask[t.at(x - radius, y)];
+		}
+	}
+	for (int x = 0; x < t.w; ++x)
+	{
+		int sum = 0;
+		for (int dy = -radius; dy <= radius; ++dy)
+			sum += rows[t.at(x, dy)];
+		for (int y = 0; y < t.h; ++y)
+		{
+			result[size_t(y) * t.w + x] = sum;
+			sum += rows[t.at(x, y + radius + 1)] - rows[t.at(x, y - radius)];
+		}
+	}
+	return result;
+}
+} // namespace MapGeneration

@@ -2556,3 +2556,39 @@ Emoji
 حلقه‌های اسکر
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 اسکرها نتوانستند همهٔ درملین‌ها را به هم برسانند؛ پهنای آب را کمتر کنید یا از نقشهٔ بزرگ‌تری استفاده کنید.
+[Continents]
+قاره‌ها
+[Continent]
+قاره
+[North America]
+آمریکای شمالی
+[South America]
+آمریکای جنوبی
+[Africa]
+آفریقا
+[Europe]
+اروپا
+[Asia]
+آسیا
+[Oceania]
+اقیانوسیه
+[Orientation]
+جهت
+[Turn to fit]
+چرخش برای جا شدن
+[Upright]
+بدون چرخش
+[Mountain ranges]
+رشته‌کوه‌ها
+[Great rivers]
+رودهای بزرگ
+[Islets]
+جزیره‌های کوچک
+[Oases]
+واحه‌ها
+[The world atlas has no such continent.]
+اطلس جهان چنین قاره‌ای ندارد.
+[The map is too small to hold a continent.]
+نقشه کوچک‌تر از آن است که یک قاره در آن جا شود.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+این قاره در این اندازهٔ نقشه جایی برای این تعداد مستعمره ندارد؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.

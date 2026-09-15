@@ -2566,3 +2566,39 @@ Franja d'aigua
 Bucles d'eskers
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Els eskers no han pogut unir tots els drumlins; useu una franja d'aigua més estreta o un mapa més gran.
+[Continents]
+Continents
+[Continent]
+Continent
+[North America]
+Amèrica del Nord
+[South America]
+Amèrica del Sud
+[Africa]
+Àfrica
+[Europe]
+Europa
+[Asia]
+Àsia
+[Oceania]
+Oceania
+[Orientation]
+Orientació
+[Turn to fit]
+Girar per encaixar
+[Upright]
+Sense girar
+[Mountain ranges]
+Serralades
+[Great rivers]
+Grans rius
+[Islets]
+Illots
+[Oases]
+Oasis
+[The world atlas has no such continent.]
+L'atles del món no té aquest continent.
+[The map is too small to hold a continent.]
+El mapa és massa petit per contenir un continent.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Aquest continent no té espai per a tantes colònies amb aquesta mida de mapa; feu servir un mapa més gran o menys colònies.

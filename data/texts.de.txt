@@ -2558,3 +2558,39 @@ Wasserlücke
 Esker-Schleifen
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Die Esker konnten nicht alle Drumlins verbinden; wähle eine kleinere Wasserlücke oder eine größere Karte.
+[Continents]
+Kontinente
+[Continent]
+Kontinent
+[North America]
+Nordamerika
+[South America]
+Südamerika
+[Africa]
+Afrika
+[Europe]
+Europa
+[Asia]
+Asien
+[Oceania]
+Ozeanien
+[Orientation]
+Ausrichtung
+[Turn to fit]
+Passend drehen
+[Upright]
+Nicht drehen
+[Mountain ranges]
+Gebirgszüge
+[Great rivers]
+Große Flüsse
+[Islets]
+Kleine Inseln
+[Oases]
+Oasen
+[The world atlas has no such continent.]
+Der Weltatlas hat keinen solchen Kontinent.
+[The map is too small to hold a continent.]
+Die Karte ist zu klein für einen Kontinent.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Dieser Kontinent bietet bei dieser Kartengröße nicht genug Platz für so viele Kolonien; verwenden Sie eine größere Karte oder weniger Kolonien.

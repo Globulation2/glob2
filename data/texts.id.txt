@@ -2554,3 +2554,39 @@ Celah air
 Simpul esker
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Esker tidak dapat menghubungkan semua drumlin; gunakan celah air yang lebih kecil atau peta yang lebih besar.
+[Continents]
+Benua-benua
+[Continent]
+Benua
+[North America]
+Amerika Utara
+[South America]
+Amerika Selatan
+[Africa]
+Afrika
+[Europe]
+Eropa
+[Asia]
+Asia
+[Oceania]
+Oseania
+[Orientation]
+Orientasi
+[Turn to fit]
+Putar agar muat
+[Upright]
+Tanpa putaran
+[Mountain ranges]
+Pegunungan
+[Great rivers]
+Sungai besar
+[Islets]
+Pulau kecil
+[Oases]
+Oase
+[The world atlas has no such continent.]
+Atlas dunia tidak memiliki benua tersebut.
+[The map is too small to hold a continent.]
+Peta terlalu kecil untuk memuat sebuah benua.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Benua ini tidak memiliki ruang untuk koloni sebanyak ini pada ukuran peta ini; gunakan peta yang lebih besar atau lebih sedikit koloni.

@@ -2556,3 +2556,39 @@ Akva interspaco
 Bukloj de eskeroj
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 La eskeroj ne povis kunligi ĉiujn drumlinojn; uzu pli malgrandan akvan interspacon aŭ pli grandan mapon.
+[Continents]
+Kontinentoj
+[Continent]
+Kontinento
+[North America]
+Nord-Ameriko
+[South America]
+Sud-Ameriko
+[Africa]
+Afriko
+[Europe]
+Eŭropo
+[Asia]
+Azio
+[Oceania]
+Oceanio
+[Orientation]
+Orientiĝo
+[Turn to fit]
+Turni laŭbezone
+[Upright]
+Neturnita
+[Mountain ranges]
+Montoĉenoj
+[Great rivers]
+Grandaj riveroj
+[Islets]
+Insuletoj
+[Oases]
+Oazoj
+[The world atlas has no such continent.]
+La monda atlaso ne havas tian kontinenton.
+[The map is too small to hold a continent.]
+La mapo estas tro malgranda por enhavi kontinenton.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Ĉi tiu kontinento ne havas spacon por tiom da kolonioj ĉe ĉi tiu mapgrandeco; uzu pli grandan mapon aŭ malpli da kolonioj.

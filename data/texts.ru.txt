@@ -2556,3 +2556,39 @@ Emoji
 Петли озов
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Озы не смогли соединить все друмлины; используйте более узкую полосу воды или карту побольше.
+[Continents]
+Материки
+[Continent]
+Материк
+[North America]
+Северная Америка
+[South America]
+Южная Америка
+[Africa]
+Африка
+[Europe]
+Европа
+[Asia]
+Азия
+[Oceania]
+Океания
+[Orientation]
+Ориентация
+[Turn to fit]
+Поворот при необходимости
+[Upright]
+Без поворота
+[Mountain ranges]
+Горные хребты
+[Great rivers]
+Великие реки
+[Islets]
+Островки
+[Oases]
+Оазисы
+[The world atlas has no such continent.]
+В атласе мира нет такого материка.
+[The map is too small to hold a continent.]
+Карта слишком мала, чтобы вместить материк.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+На этом материке при таком размере карты нет места для такого числа колоний; используйте карту побольше или меньше колоний.

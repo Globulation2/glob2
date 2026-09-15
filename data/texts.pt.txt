@@ -2564,3 +2564,39 @@ Faixa de água
 Ciclos de eskers
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Os eskers não conseguiram ligar todos os drumlins; use uma faixa de água mais estreita ou um mapa maior.
+[Continents]
+Continentes
+[Continent]
+Continente
+[North America]
+América do Norte
+[South America]
+América do Sul
+[Africa]
+África
+[Europe]
+Europa
+[Asia]
+Ásia
+[Oceania]
+Oceânia
+[Orientation]
+Orientação
+[Turn to fit]
+Rodar para caber
+[Upright]
+Sem rotação
+[Mountain ranges]
+Cordilheiras
+[Great rivers]
+Grandes rios
+[Islets]
+Ilhéus
+[Oases]
+Oásis
+[The world atlas has no such continent.]
+O atlas mundial não tem esse continente.
+[The map is too small to hold a continent.]
+O mapa é demasiado pequeno para conter um continente.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Este continente não tem espaço para tantas colónias com este tamanho de mapa; use um mapa maior ou menos colónias.

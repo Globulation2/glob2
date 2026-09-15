@@ -86,3 +86,18 @@ int drainWithin(TerrainSketch &sketch, const std::vector<unsigned char> &zone)
 	return drained;
 }
 } // namespace MapGeneration
+
+namespace MapGeneration
+{
+std::uint32_t meanFertilityAround(const Fertility::Field &field, const Torus &t, int site,
+								  int radius)
+{
+	const int sx = site % t.w, sy = site / t.w;
+	std::uint64_t sum = 0;
+	for (int dy = -radius; dy <= radius; ++dy)
+		for (int dx = -radius; dx <= radius; ++dx)
+			sum += field.at(t.x(sx + dx), t.y(sy + dy));
+	const std::uint64_t tiles = std::uint64_t(2 * radius + 1) * (2 * radius + 1);
+	return std::uint32_t(sum / tiles);
+}
+} // namespace MapGeneration

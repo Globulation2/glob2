@@ -2554,3 +2554,39 @@ Emoji
 에스커 순환로
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 에스커가 모든 드럼린을 연결하지 못했습니다. 물길 너비를 줄이거나 더 큰 지도를 사용하세요.
+[Continents]
+세계의 대륙
+[Continent]
+대륙
+[North America]
+북아메리카
+[South America]
+남아메리카
+[Africa]
+아프리카
+[Europe]
+유럽
+[Asia]
+아시아
+[Oceania]
+오세아니아
+[Orientation]
+방향
+[Turn to fit]
+맞게 회전
+[Upright]
+회전 안 함
+[Mountain ranges]
+산맥
+[Great rivers]
+큰 강
+[Islets]
+작은 섬
+[Oases]
+오아시스
+[The world atlas has no such continent.]
+세계 지도책에 그런 대륙이 없습니다.
+[The map is too small to hold a continent.]
+지도가 너무 작아 대륙을 담을 수 없습니다.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+이 지도 크기에서는 이 대륙에 그만큼의 식민지를 둘 공간이 없습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.

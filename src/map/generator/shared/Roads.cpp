@@ -104,8 +104,25 @@ int connectColonies(Map &map, int teams, const std::vector<unsigned char> *alsoB
 	}
 	return opened;
 }
+int clearRoute(Map &map, const Torus &t, const std::vector<int> &route, int radius,
+			   const std::vector<unsigned char> *keep)
+{
+	int cleared = 0;
+	for (int i : route)
+		for (int dy = -radius; dy <= radius; ++dy)
+			for (int dx = -radius; dx <= radius; ++dx)
+			{
+				const int j = t.at(i % t.w + dx, i / t.w + dy);
+				if ((keep && (*keep)[j]) || !map.isResource(j % t.w, j / t.w))
+					continue;
+				map.setNoResource(j % t.w, j / t.w, 1);
+				++cleared;
+			}
+	return cleared;
+}
+
 bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t,
-					  const StepCosts &costs)
+					  const StepCosts &costs, int radius, const std::vector<unsigned char> *keep)
 {
 	const int n = t.w * t.h, teams = context.request.nbTeams;
 	if (teams < 2)
@@ -156,10 +173,13 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 			cheapestWalk(t, GridNeighbors::Cardinal, reachable, target,
 						 [&](int, int to, int, int)
 						 {
-							 return map.getBuilding(to % t.w, to / t.w) != NOGBID
-										? -1
-										: stepCost(map, to % t.w, to / t.w, costs);
+							 if (map.getBuilding(to % t.w, to / t.w) != NOGBID ||
+								 (keep && (*keep)[to]))
+								 return -1;
+							 return stepCost(map, to % t.w, to / t.w, costs);
 						 });
+		if (radius > 0)
+			clearRoute(map, t, route, radius, keep);
 		for (int i : route)
 		{
 			const int x = i % t.w, y = i / t.w;

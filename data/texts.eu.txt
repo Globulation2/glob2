@@ -2568,3 +2568,39 @@ Ur-tartea
 Esker-begiztak
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Eskerrek ezin izan dituzte drumlin guztiak lotu; erabili ur-tarte txikiagoa edo mapa handiagoa.
+[Continents]
+Kontinenteak
+[Continent]
+Kontinentea
+[North America]
+Ipar Amerika
+[South America]
+Hego Amerika
+[Africa]
+Afrika
+[Europe]
+Europa
+[Asia]
+Asia
+[Oceania]
+Ozeania
+[Orientation]
+Orientazioa
+[Turn to fit]
+Biratu egokitzeko
+[Upright]
+Biratu gabe
+[Mountain ranges]
+Mendikateak
+[Great rivers]
+Ibai handiak
+[Islets]
+Uhartetxoak
+[Oases]
+Oasiak
+[The world atlas has no such continent.]
+Munduko atlasak ez du halako kontinenterik.
+[The map is too small to hold a continent.]
+Mapa txikiegia da kontinente bat hartzeko.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Kontinente honek ez du lekurik hainbeste koloniarentzat mapa-tamaina honetan; erabili mapa handiagoa edo kolonia gutxiago.

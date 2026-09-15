@@ -2634,3 +2634,39 @@ Vandgab
 Åssløjfer
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Åsene kunne ikke forbinde alle drumliner; brug et mindre vandgab eller et større kort.
+[Continents]
+Kontinenter
+[Continent]
+Kontinent
+[North America]
+Nordamerika
+[South America]
+Sydamerika
+[Africa]
+Afrika
+[Europe]
+Europa
+[Asia]
+Asien
+[Oceania]
+Oceanien
+[Orientation]
+Retning
+[Turn to fit]
+Drej så det passer
+[Upright]
+Uden drejning
+[Mountain ranges]
+Bjergkæder
+[Great rivers]
+Store floder
+[Islets]
+Småøer
+[Oases]
+Oaser
+[The world atlas has no such continent.]
+Verdensatlasset har ikke et sådant kontinent.
+[The map is too small to hold a continent.]
+Kortet er for lille til at rumme et kontinent.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Dette kontinent har ikke plads til så mange kolonier ved denne kortstørrelse; brug et større kort eller færre kolonier.

@@ -41,6 +41,7 @@
 #include "AllotmentsGenerator.h"
 #include "CaravanseraiGenerator.h"
 #include "DrumlinFieldGenerator.h"
+#include "ContinentsGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -169,6 +170,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 caravanseraiDefinition(),
 											 braidedRiverDefinition(),
 											 drumlinFieldDefinition(),
+											 continentsDefinition(),
 											 uniformDefinition()});
 	return registry;
 }
