@@ -2383,48 +2383,48 @@ Aus (kein Timer)
 [Sudden-death timer]
 Sudden-Death-Timer
 [Stats page three]
-Statistics 3/3  >
+Statistik 3/3 >
 [Stats blocked units]
-Units blocked S/C
+Einheiten S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+Gebäude S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+Schwimmen S/C
 [Stats current blocked units]
-Currently blocked units
+Einheiten C
 [Stats current blocked buildings]
-Currently blocked buildings
+Gebäude C
 [Stats growth global]
-Growth added amount
+Ressourcen +
 [Stats growth new tiles]
-New resource tiles
+Ressourcen +#
 [Stats growth reductions]
-Natural reductions
+Ressourcen -
 [Stats growth per minute]
-Wheat growth/min
+Weizen +/min
 [Stats growth near 8]
-Growth within 8 tiles
+Ressourcen + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+Ressourcen + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+Ressourcen + <=32
 [Stats low HP 25]
-Units at 25% HP
+Leben <=25%
 [Stats low HP 50]
-Units at 50% HP
+Leben <=50%
 [Stats low HP 75]
-Units at 75% HP
+Leben <=75%
 [Stats low food 25]
-Units at 25% food reserve
+Nahrung <=25%
 [Stats low food 50]
-Units at 50% food reserve
+Nahrung <=50%
 [Stats low food 75]
-Units at 75% food reserve
+Nahrung <=75%
 [Stats structural units]
-Structurally blocked units
+Einheiten S
 [Stats structural buildings]
-Structurally blocked buildings
+Gebäude S
 [Stats low HP ranges]
-HP ≤25/50/75%
+Leben: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+Nahrung: <=25/50/75%

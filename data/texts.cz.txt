@@ -2383,48 +2383,48 @@ Vypnuto (bez časovače)
 [Sudden-death timer]
 Časovač náhlé smrti
 [Stats page three]
-Statistics 3/3  >
+Statistiky 3/3 >
 [Stats blocked units]
-Units blocked S/C
+Jednotky S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+Budovy S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+Plavání S/C
 [Stats current blocked units]
-Currently blocked units
+Jednotky C
 [Stats current blocked buildings]
-Currently blocked buildings
+Budovy C
 [Stats growth global]
-Growth added amount
+Zdroje +
 [Stats growth new tiles]
-New resource tiles
+Zdroje +#
 [Stats growth reductions]
-Natural reductions
+Zdroje -
 [Stats growth per minute]
-Wheat growth/min
+Pšenice +/min
 [Stats growth near 8]
-Growth within 8 tiles
+Zdroje + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+Zdroje + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+Zdroje + <=32
 [Stats low HP 25]
-Units at 25% HP
+Životy <=25%
 [Stats low HP 50]
-Units at 50% HP
+Životy <=50%
 [Stats low HP 75]
-Units at 75% HP
+Životy <=75%
 [Stats low food 25]
-Units at 25% food reserve
+Potrava <=25%
 [Stats low food 50]
-Units at 50% food reserve
+Potrava <=50%
 [Stats low food 75]
-Units at 75% food reserve
+Potrava <=75%
 [Stats structural units]
-Structurally blocked units
+Jednotky S
 [Stats structural buildings]
-Structurally blocked buildings
+Budovy S
 [Stats low HP ranges]
-HP ≤25/50/75%
+Životy: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+Potrava: <=25/50/75%

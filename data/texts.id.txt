@@ -2379,48 +2379,48 @@ Nonaktif (tanpa pengatur waktu)
 [Sudden-death timer]
 Pengatur waktu kematian mendadak
 [Stats page three]
-Statistics 3/3  >
+Statistik 3/3 >
 [Stats blocked units]
-Units blocked S/C
+Unit S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+Bangunan S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+Berenang S/C
 [Stats current blocked units]
-Currently blocked units
+Unit C
 [Stats current blocked buildings]
-Currently blocked buildings
+Bangunan C
 [Stats growth global]
-Growth added amount
+Sumber daya +
 [Stats growth new tiles]
-New resource tiles
+Sumber daya +#
 [Stats growth reductions]
-Natural reductions
+Sumber daya -
 [Stats growth per minute]
-Wheat growth/min
+Gandum +/min
 [Stats growth near 8]
-Growth within 8 tiles
+Sumber daya + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+Sumber daya + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+Sumber daya + <=32
 [Stats low HP 25]
-Units at 25% HP
+HP <=25%
 [Stats low HP 50]
-Units at 50% HP
+HP <=50%
 [Stats low HP 75]
-Units at 75% HP
+HP <=75%
 [Stats low food 25]
-Units at 25% food reserve
+Makanan <=25%
 [Stats low food 50]
-Units at 50% food reserve
+Makanan <=50%
 [Stats low food 75]
-Units at 75% food reserve
+Makanan <=75%
 [Stats structural units]
-Structurally blocked units
+Unit S
 [Stats structural buildings]
-Structurally blocked buildings
+Bangunan S
 [Stats low HP ranges]
-HP ≤25/50/75%
+HP: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+Makanan: <=25/50/75%

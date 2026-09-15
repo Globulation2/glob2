@@ -2381,48 +2381,48 @@ OpenGL غير متوفر في هذا الإصدار.
 [Sudden-death timer]
 مؤقت الموت المفاجئ
 [Stats page three]
-Statistics 3/3  >
+إحصاءات 3/3 >
 [Stats blocked units]
-Units blocked S/C
+ﻭﺣﺪﺓ S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+ﺍﻟﻤﺒﺎﻧﻲ S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+ﺍﻟﺴﺒﺎﺣﺔ S/C
 [Stats current blocked units]
-Currently blocked units
+ﻭﺣﺪﺓ C
 [Stats current blocked buildings]
-Currently blocked buildings
+ﺍﻟﻤﺒﺎﻧﻲ C
 [Stats growth global]
-Growth added amount
+الموارد +
 [Stats growth new tiles]
-New resource tiles
+الموارد +#
 [Stats growth reductions]
-Natural reductions
+الموارد -
 [Stats growth per minute]
-Wheat growth/min
+ﻗﻤﺢ +/min
 [Stats growth near 8]
-Growth within 8 tiles
+الموارد + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+الموارد + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+الموارد + <=32
 [Stats low HP 25]
-Units at 25% HP
+ﻥﻕ <=25%
 [Stats low HP 50]
-Units at 50% HP
+ﻥﻕ <=50%
 [Stats low HP 75]
-Units at 75% HP
+ﻥﻕ <=75%
 [Stats low food 25]
-Units at 25% food reserve
+ﺍﻟﻄﻌﺎﻡ <=25%
 [Stats low food 50]
-Units at 50% food reserve
+ﺍﻟﻄﻌﺎﻡ <=50%
 [Stats low food 75]
-Units at 75% food reserve
+ﺍﻟﻄﻌﺎﻡ <=75%
 [Stats structural units]
-Structurally blocked units
+ﻭﺣﺪﺓ S
 [Stats structural buildings]
-Structurally blocked buildings
+ﺍﻟﻤﺒﺎﻧﻲ S
 [Stats low HP ranges]
-HP ≤25/50/75%
+ﻥﻕ: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+ﺍﻟﻄﻌﺎﻡ: <=25/50/75%

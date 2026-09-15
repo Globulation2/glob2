@@ -2453,48 +2453,48 @@ Cortex
 [Sudden-death timer]
 Χρονόμετρο ξαφνικού θανάτου
 [Stats page three]
-Statistics 3/3  >
+Στατιστικά 3/3 >
 [Stats blocked units]
-Units blocked S/C
+Μονάδες S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+Κτίρια S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+Κολύμβηση S/C
 [Stats current blocked units]
-Currently blocked units
+Μονάδες C
 [Stats current blocked buildings]
-Currently blocked buildings
+Κτίρια C
 [Stats growth global]
-Growth added amount
+Πόροι +
 [Stats growth new tiles]
-New resource tiles
+Πόροι +#
 [Stats growth reductions]
-Natural reductions
+Πόροι -
 [Stats growth per minute]
-Wheat growth/min
+Σιτάρι +/min
 [Stats growth near 8]
-Growth within 8 tiles
+Πόροι + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+Πόροι + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+Πόροι + <=32
 [Stats low HP 25]
-Units at 25% HP
+HP <=25%
 [Stats low HP 50]
-Units at 50% HP
+HP <=50%
 [Stats low HP 75]
-Units at 75% HP
+HP <=75%
 [Stats low food 25]
-Units at 25% food reserve
+Τροφή <=25%
 [Stats low food 50]
-Units at 50% food reserve
+Τροφή <=50%
 [Stats low food 75]
-Units at 75% food reserve
+Τροφή <=75%
 [Stats structural units]
-Structurally blocked units
+Μονάδες S
 [Stats structural buildings]
-Structurally blocked buildings
+Κτίρια S
 [Stats low HP ranges]
-HP ≤25/50/75%
+HP: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+Τροφή: <=25/50/75%

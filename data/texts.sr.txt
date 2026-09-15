@@ -2383,48 +2383,48 @@ OpenGL није доступан у овој верзији.
 [Sudden-death timer]
 Тајмер изненадне смрти
 [Stats page three]
-Statistics 3/3  >
+Статистика 3/3 >
 [Stats blocked units]
-Units blocked S/C
+Јединице S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+Зграде S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+Пливање S/C
 [Stats current blocked units]
-Currently blocked units
+Јединице C
 [Stats current blocked buildings]
-Currently blocked buildings
+Зграде C
 [Stats growth global]
-Growth added amount
+Ресурси +
 [Stats growth new tiles]
-New resource tiles
+Ресурси +#
 [Stats growth reductions]
-Natural reductions
+Ресурси -
 [Stats growth per minute]
-Wheat growth/min
+Жито +/min
 [Stats growth near 8]
-Growth within 8 tiles
+Ресурси + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+Ресурси + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+Ресурси + <=32
 [Stats low HP 25]
-Units at 25% HP
+Здравље <=25%
 [Stats low HP 50]
-Units at 50% HP
+Здравље <=50%
 [Stats low HP 75]
-Units at 75% HP
+Здравље <=75%
 [Stats low food 25]
-Units at 25% food reserve
+Храна <=25%
 [Stats low food 50]
-Units at 50% food reserve
+Храна <=50%
 [Stats low food 75]
-Units at 75% food reserve
+Храна <=75%
 [Stats structural units]
-Structurally blocked units
+Јединице S
 [Stats structural buildings]
-Structurally blocked buildings
+Зграде S
 [Stats low HP ranges]
-HP ≤25/50/75%
+Здравље: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+Храна: <=25/50/75%

@@ -2379,48 +2379,48 @@ Desativado (sem cronômetro)
 [Sudden-death timer]
 Cronômetro de morte súbita
 [Stats page three]
-Statistics 3/3  >
+Estatísticas 3/3 >
 [Stats blocked units]
-Units blocked S/C
+Unidades S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+Construções S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+Nadar S/C
 [Stats current blocked units]
-Currently blocked units
+Unidades C
 [Stats current blocked buildings]
-Currently blocked buildings
+Construções C
 [Stats growth global]
-Growth added amount
+Recursos +
 [Stats growth new tiles]
-New resource tiles
+Recursos +#
 [Stats growth reductions]
-Natural reductions
+Recursos -
 [Stats growth per minute]
-Wheat growth/min
+trigo +/min
 [Stats growth near 8]
-Growth within 8 tiles
+Recursos + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+Recursos + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+Recursos + <=32
 [Stats low HP 25]
-Units at 25% HP
+Vida <=25%
 [Stats low HP 50]
-Units at 50% HP
+Vida <=50%
 [Stats low HP 75]
-Units at 75% HP
+Vida <=75%
 [Stats low food 25]
-Units at 25% food reserve
+Comida <=25%
 [Stats low food 50]
-Units at 50% food reserve
+Comida <=50%
 [Stats low food 75]
-Units at 75% food reserve
+Comida <=75%
 [Stats structural units]
-Structurally blocked units
+Unidades S
 [Stats structural buildings]
-Structurally blocked buildings
+Construções S
 [Stats low HP ranges]
-HP ≤25/50/75%
+Vida: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+Comida: <=25/50/75%

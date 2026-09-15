@@ -2455,48 +2455,48 @@ OpenGL 在此版本中不可用。
 [Sudden-death timer]
 驟死計時器
 [Stats page three]
-Statistics 3/3  >
+統計 3/3 >
 [Stats blocked units]
-Units blocked S/C
+單位 S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+建築物 S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+游泳 S/C
 [Stats current blocked units]
-Currently blocked units
+單位 C
 [Stats current blocked buildings]
-Currently blocked buildings
+建築物 C
 [Stats growth global]
-Growth added amount
+資源 +
 [Stats growth new tiles]
-New resource tiles
+資源 +#
 [Stats growth reductions]
-Natural reductions
+資源 -
 [Stats growth per minute]
-Wheat growth/min
+小麥 +/min
 [Stats growth near 8]
-Growth within 8 tiles
+資源 + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+資源 + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+資源 + <=32
 [Stats low HP 25]
-Units at 25% HP
+生命值 <=25%
 [Stats low HP 50]
-Units at 50% HP
+生命值 <=50%
 [Stats low HP 75]
-Units at 75% HP
+生命值 <=75%
 [Stats low food 25]
-Units at 25% food reserve
+食物 <=25%
 [Stats low food 50]
-Units at 50% food reserve
+食物 <=50%
 [Stats low food 75]
-Units at 75% food reserve
+食物 <=75%
 [Stats structural units]
-Structurally blocked units
+單位 S
 [Stats structural buildings]
-Structurally blocked buildings
+建築物 S
 [Stats low HP ranges]
-HP ≤25/50/75%
+生命值: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+食物: <=25/50/75%

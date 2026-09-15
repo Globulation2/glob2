@@ -2393,48 +2393,48 @@ Desaktibatuta (tenporizadorerik gabe)
 [Sudden-death timer]
 Bat-bateko heriotzaren tenporizadorea
 [Stats page three]
-Statistics 3/3  >
+Estatistikak 3/3 >
 [Stats blocked units]
-Units blocked S/C
+Unitateak S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+Eraikuntzak S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+Igeri S/C
 [Stats current blocked units]
-Currently blocked units
+Unitateak C
 [Stats current blocked buildings]
-Currently blocked buildings
+Eraikuntzak C
 [Stats growth global]
-Growth added amount
+Baliabideak +
 [Stats growth new tiles]
-New resource tiles
+Baliabideak +#
 [Stats growth reductions]
-Natural reductions
+Baliabideak -
 [Stats growth per minute]
-Wheat growth/min
+Garia +/min
 [Stats growth near 8]
-Growth within 8 tiles
+Baliabideak + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+Baliabideak + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+Baliabideak + <=32
 [Stats low HP 25]
-Units at 25% HP
+Osotasuna <=25%
 [Stats low HP 50]
-Units at 50% HP
+Osotasuna <=50%
 [Stats low HP 75]
-Units at 75% HP
+Osotasuna <=75%
 [Stats low food 25]
-Units at 25% food reserve
+Janaria <=25%
 [Stats low food 50]
-Units at 50% food reserve
+Janaria <=50%
 [Stats low food 75]
-Units at 75% food reserve
+Janaria <=75%
 [Stats structural units]
-Structurally blocked units
+Unitateak S
 [Stats structural buildings]
-Structurally blocked buildings
+Eraikuntzak S
 [Stats low HP ranges]
-HP ≤25/50/75%
+Osotasuna: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+Janaria: <=25/50/75%

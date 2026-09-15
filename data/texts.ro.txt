@@ -2383,48 +2383,48 @@ Dezactivat (fără temporizator)
 [Sudden-death timer]
 Temporizator de moarte subită
 [Stats page three]
-Statistics 3/3  >
+Statistici 3/3 >
 [Stats blocked units]
-Units blocked S/C
+Unităţi S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+Clădiri S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+Înoată S/C
 [Stats current blocked units]
-Currently blocked units
+Unităţi C
 [Stats current blocked buildings]
-Currently blocked buildings
+Clădiri C
 [Stats growth global]
-Growth added amount
+Resurse +
 [Stats growth new tiles]
-New resource tiles
+Resurse +#
 [Stats growth reductions]
-Natural reductions
+Resurse -
 [Stats growth per minute]
-Wheat growth/min
+Grâu +/min
 [Stats growth near 8]
-Growth within 8 tiles
+Resurse + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+Resurse + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+Resurse + <=32
 [Stats low HP 25]
-Units at 25% HP
+Viata <=25%
 [Stats low HP 50]
-Units at 50% HP
+Viata <=50%
 [Stats low HP 75]
-Units at 75% HP
+Viata <=75%
 [Stats low food 25]
-Units at 25% food reserve
+Mâncare <=25%
 [Stats low food 50]
-Units at 50% food reserve
+Mâncare <=50%
 [Stats low food 75]
-Units at 75% food reserve
+Mâncare <=75%
 [Stats structural units]
-Structurally blocked units
+Unităţi S
 [Stats structural buildings]
-Structurally blocked buildings
+Clădiri S
 [Stats low HP ranges]
-HP ≤25/50/75%
+Viata: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+Mâncare: <=25/50/75%

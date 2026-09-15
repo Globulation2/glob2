@@ -2379,48 +2379,48 @@ Globulation 2 커서를 표시합니다.
 [Sudden-death timer]
 서든데스 타이머
 [Stats page three]
-Statistics 3/3  >
+통계 3/3 >
 [Stats blocked units]
-Units blocked S/C
+유닛 S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+건물 S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+수영 S/C
 [Stats current blocked units]
-Currently blocked units
+유닛 C
 [Stats current blocked buildings]
-Currently blocked buildings
+건물 C
 [Stats growth global]
-Growth added amount
+자원 +
 [Stats growth new tiles]
-New resource tiles
+자원 +#
 [Stats growth reductions]
-Natural reductions
+자원 -
 [Stats growth per minute]
-Wheat growth/min
+밀 +/min
 [Stats growth near 8]
-Growth within 8 tiles
+자원 + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+자원 + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+자원 + <=32
 [Stats low HP 25]
-Units at 25% HP
+체력 <=25%
 [Stats low HP 50]
-Units at 50% HP
+체력 <=50%
 [Stats low HP 75]
-Units at 75% HP
+체력 <=75%
 [Stats low food 25]
-Units at 25% food reserve
+식량 <=25%
 [Stats low food 50]
-Units at 50% food reserve
+식량 <=50%
 [Stats low food 75]
-Units at 75% food reserve
+식량 <=75%
 [Stats structural units]
-Structurally blocked units
+유닛 S
 [Stats structural buildings]
-Structurally blocked buildings
+건물 S
 [Stats low HP ranges]
-HP ≤25/50/75%
+체력: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+식량: <=25/50/75%

@@ -2381,48 +2381,48 @@ OpenGL недоступен в этой сборке.
 [Sudden-death timer]
 Таймер внезапной смерти
 [Stats page three]
-Statistics 3/3  >
+Статистика 3/3 >
 [Stats blocked units]
-Units blocked S/C
+Юниты S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+Здания S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+Плавает S/C
 [Stats current blocked units]
-Currently blocked units
+Юниты C
 [Stats current blocked buildings]
-Currently blocked buildings
+Здания C
 [Stats growth global]
-Growth added amount
+Ресурсы +
 [Stats growth new tiles]
-New resource tiles
+Ресурсы +#
 [Stats growth reductions]
-Natural reductions
+Ресурсы -
 [Stats growth per minute]
-Wheat growth/min
+Пшеница +/min
 [Stats growth near 8]
-Growth within 8 tiles
+Ресурсы + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+Ресурсы + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+Ресурсы + <=32
 [Stats low HP 25]
-Units at 25% HP
+Зд. <=25%
 [Stats low HP 50]
-Units at 50% HP
+Зд. <=50%
 [Stats low HP 75]
-Units at 75% HP
+Зд. <=75%
 [Stats low food 25]
-Units at 25% food reserve
+Еда <=25%
 [Stats low food 50]
-Units at 50% food reserve
+Еда <=50%
 [Stats low food 75]
-Units at 75% food reserve
+Еда <=75%
 [Stats structural units]
-Structurally blocked units
+Юниты S
 [Stats structural buildings]
-Structurally blocked buildings
+Здания S
 [Stats low HP ranges]
-HP ≤25/50/75%
+Зд.: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+Еда: <=25/50/75%

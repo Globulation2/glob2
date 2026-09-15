@@ -2381,48 +2381,48 @@ OpenGL در این بیلد موجود نیست.
 [Sudden-death timer]
 زمان‌سنج مرگ ناگهانی
 [Stats page three]
-Statistics 3/3  >
+آمار 3/3 >
 [Stats blocked units]
-Units blocked S/C
+تعداد افراد S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+ساختمانها S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+شنا S/C
 [Stats current blocked units]
-Currently blocked units
+تعداد افراد C
 [Stats current blocked buildings]
-Currently blocked buildings
+ساختمانها C
 [Stats growth global]
-Growth added amount
+منابع +
 [Stats growth new tiles]
-New resource tiles
+منابع +#
 [Stats growth reductions]
-Natural reductions
+منابع -
 [Stats growth per minute]
-Wheat growth/min
+گندم +/min
 [Stats growth near 8]
-Growth within 8 tiles
+منابع + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+منابع + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+منابع + <=32
 [Stats low HP 25]
-Units at 25% HP
+سلامتی <=25%
 [Stats low HP 50]
-Units at 50% HP
+سلامتی <=50%
 [Stats low HP 75]
-Units at 75% HP
+سلامتی <=75%
 [Stats low food 25]
-Units at 25% food reserve
+تغذیه <=25%
 [Stats low food 50]
-Units at 50% food reserve
+تغذیه <=50%
 [Stats low food 75]
-Units at 75% food reserve
+تغذیه <=75%
 [Stats structural units]
-Structurally blocked units
+تعداد افراد S
 [Stats structural buildings]
-Structurally blocked buildings
+ساختمانها S
 [Stats low HP ranges]
-HP ≤25/50/75%
+سلامتی: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+تغذیه: <=25/50/75%

@@ -2379,48 +2379,48 @@ Tắt (không có bộ đếm giờ)
 [Sudden-death timer]
 Bộ đếm giờ đột tử
 [Stats page three]
-Statistics 3/3  >
+Thống kê 3/3 >
 [Stats blocked units]
-Units blocked S/C
+Đơn vị S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+Công trình S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+Bơi S/C
 [Stats current blocked units]
-Currently blocked units
+Đơn vị C
 [Stats current blocked buildings]
-Currently blocked buildings
+Công trình C
 [Stats growth global]
-Growth added amount
+Tài nguyên +
 [Stats growth new tiles]
-New resource tiles
+Tài nguyên +#
 [Stats growth reductions]
-Natural reductions
+Tài nguyên -
 [Stats growth per minute]
-Wheat growth/min
+Lúa mì +/min
 [Stats growth near 8]
-Growth within 8 tiles
+Tài nguyên + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+Tài nguyên + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+Tài nguyên + <=32
 [Stats low HP 25]
-Units at 25% HP
+Máu <=25%
 [Stats low HP 50]
-Units at 50% HP
+Máu <=50%
 [Stats low HP 75]
-Units at 75% HP
+Máu <=75%
 [Stats low food 25]
-Units at 25% food reserve
+Thức ăn <=25%
 [Stats low food 50]
-Units at 50% food reserve
+Thức ăn <=50%
 [Stats low food 75]
-Units at 75% food reserve
+Thức ăn <=75%
 [Stats structural units]
-Structurally blocked units
+Đơn vị S
 [Stats structural buildings]
-Structurally blocked buildings
+Công trình S
 [Stats low HP ranges]
-HP ≤25/50/75%
+Máu: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+Thức ăn: <=25/50/75%

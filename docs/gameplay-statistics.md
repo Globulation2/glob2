@@ -124,7 +124,8 @@ Post-match graphs keep the six original metrics on page one. **P** cycles pages;
 the same team across sorting/page changes. New graphs use timestamped samples,
 cumulative counters or stock values, and leave missing early history blank.
 Hover a recorded point for its exact 64-bit value. New labels use translation
-keys; untranslated labels fall back to English.
+keys. Non-English catalogs use their translated unit, building, resource, HP,
+food and wheat terms with compact `S/C`, `+`, and distance/percentage notation.
 
 ## Verification
 

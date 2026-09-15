@@ -2381,48 +2381,48 @@ Malŝaltita (neniu kronometro)
 [Sudden-death timer]
 Kronometro de subita morto
 [Stats page three]
-Statistics 3/3  >
+Statistikoj 3/3 >
 [Stats blocked units]
-Units blocked S/C
+Globuloj S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+Konstruaĵoj S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+Naĝado S/C
 [Stats current blocked units]
-Currently blocked units
+Globuloj C
 [Stats current blocked buildings]
-Currently blocked buildings
+Konstruaĵoj C
 [Stats growth global]
-Growth added amount
+Rimedoj +
 [Stats growth new tiles]
-New resource tiles
+Rimedoj +#
 [Stats growth reductions]
-Natural reductions
+Rimedoj -
 [Stats growth per minute]
-Wheat growth/min
+Tritiko +/min
 [Stats growth near 8]
-Growth within 8 tiles
+Rimedoj + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+Rimedoj + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+Rimedoj + <=32
 [Stats low HP 25]
-Units at 25% HP
+VPo <=25%
 [Stats low HP 50]
-Units at 50% HP
+VPo <=50%
 [Stats low HP 75]
-Units at 75% HP
+VPo <=75%
 [Stats low food 25]
-Units at 25% food reserve
+Nutraĵo <=25%
 [Stats low food 50]
-Units at 50% food reserve
+Nutraĵo <=50%
 [Stats low food 75]
-Units at 75% food reserve
+Nutraĵo <=75%
 [Stats structural units]
-Structurally blocked units
+Globuloj S
 [Stats structural buildings]
-Structurally blocked buildings
+Konstruaĵoj S
 [Stats low HP ranges]
-HP ≤25/50/75%
+VPo: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+Nutraĵo: <=25/50/75%

@@ -85,6 +85,11 @@ selected [live measurement](screenshots/live-640x480.png),
 [expanded measurement](screenshots/live-expanded-640x480.png),
 [growth graph](screenshots/graphs-4-640x480.png), and
 [threshold graph](screenshots/graphs-5-640x480.png) views are attached.
+The [translation](glob2-telemetry-translation-test.log),
+[catalog audit](glob2-telemetry-translation-audit.log), and
+[font coverage](glob2-telemetry-font-test.log) checks passed after replacing
+English placeholders in non-English catalogs with compact labels assembled
+from each catalog's translated base terms.
 
 `scons -j8` and `git diff --check` passed. Manual gameplay and platform CPU
 profiling were not part of this local validation; Linux and Windows CI results

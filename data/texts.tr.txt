@@ -2391,48 +2391,48 @@ Kapalı (zamanlayıcı yok)
 [Sudden-death timer]
 Ani ölüm zamanlayıcısı
 [Stats page three]
-Statistics 3/3  >
+İstatistikler 3/3 >
 [Stats blocked units]
-Units blocked S/C
+Birimler S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+Binalar S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+Yüz S/C
 [Stats current blocked units]
-Currently blocked units
+Birimler C
 [Stats current blocked buildings]
-Currently blocked buildings
+Binalar C
 [Stats growth global]
-Growth added amount
+Kaynaklar +
 [Stats growth new tiles]
-New resource tiles
+Kaynaklar +#
 [Stats growth reductions]
-Natural reductions
+Kaynaklar -
 [Stats growth per minute]
-Wheat growth/min
+Buğday +/min
 [Stats growth near 8]
-Growth within 8 tiles
+Kaynaklar + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+Kaynaklar + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+Kaynaklar + <=32
 [Stats low HP 25]
-Units at 25% HP
+Can <=25%
 [Stats low HP 50]
-Units at 50% HP
+Can <=50%
 [Stats low HP 75]
-Units at 75% HP
+Can <=75%
 [Stats low food 25]
-Units at 25% food reserve
+Besin <=25%
 [Stats low food 50]
-Units at 50% food reserve
+Besin <=50%
 [Stats low food 75]
-Units at 75% food reserve
+Besin <=75%
 [Stats structural units]
-Structurally blocked units
+Birimler S
 [Stats structural buildings]
-Structurally blocked buildings
+Binalar S
 [Stats low HP ranges]
-HP ≤25/50/75%
+Can: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+Besin: <=25/50/75%

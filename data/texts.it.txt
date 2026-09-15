@@ -2445,48 +2445,48 @@ Disattivato (nessun timer)
 [Sudden-death timer]
 Timer di morte improvvisa
 [Stats page three]
-Statistics 3/3  >
+Statistiche 3/3 >
 [Stats blocked units]
-Units blocked S/C
+Unità S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+Costruzioni S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+Nuotare S/C
 [Stats current blocked units]
-Currently blocked units
+Unità C
 [Stats current blocked buildings]
-Currently blocked buildings
+Costruzioni C
 [Stats growth global]
-Growth added amount
+Risorse +
 [Stats growth new tiles]
-New resource tiles
+Risorse +#
 [Stats growth reductions]
-Natural reductions
+Risorse -
 [Stats growth per minute]
-Wheat growth/min
+frumento +/min
 [Stats growth near 8]
-Growth within 8 tiles
+Risorse + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+Risorse + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+Risorse + <=32
 [Stats low HP 25]
-Units at 25% HP
+PV <=25%
 [Stats low HP 50]
-Units at 50% HP
+PV <=50%
 [Stats low HP 75]
-Units at 75% HP
+PV <=75%
 [Stats low food 25]
-Units at 25% food reserve
+Cibo <=25%
 [Stats low food 50]
-Units at 50% food reserve
+Cibo <=50%
 [Stats low food 75]
-Units at 75% food reserve
+Cibo <=75%
 [Stats structural units]
-Structurally blocked units
+Unità S
 [Stats structural buildings]
-Structurally blocked buildings
+Costruzioni S
 [Stats low HP ranges]
-HP ≤25/50/75%
+PV: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+Cibo: <=25/50/75%

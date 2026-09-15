@@ -2393,48 +2393,48 @@ Av (ingen timer)
 [Sudden-death timer]
 Sudden death-timer
 [Stats page three]
-Statistics 3/3  >
+Statistik 3/3 >
 [Stats blocked units]
-Units blocked S/C
+Enheter S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+Byggnader S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+Simma S/C
 [Stats current blocked units]
-Currently blocked units
+Enheter C
 [Stats current blocked buildings]
-Currently blocked buildings
+Byggnader C
 [Stats growth global]
-Growth added amount
+Resurser +
 [Stats growth new tiles]
-New resource tiles
+Resurser +#
 [Stats growth reductions]
-Natural reductions
+Resurser -
 [Stats growth per minute]
-Wheat growth/min
+Vete +/min
 [Stats growth near 8]
-Growth within 8 tiles
+Resurser + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+Resurser + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+Resurser + <=32
 [Stats low HP 25]
-Units at 25% HP
+Hälsopoäng <=25%
 [Stats low HP 50]
-Units at 50% HP
+Hälsopoäng <=50%
 [Stats low HP 75]
-Units at 75% HP
+Hälsopoäng <=75%
 [Stats low food 25]
-Units at 25% food reserve
+Mat <=25%
 [Stats low food 50]
-Units at 50% food reserve
+Mat <=50%
 [Stats low food 75]
-Units at 75% food reserve
+Mat <=75%
 [Stats structural units]
-Structurally blocked units
+Enheter S
 [Stats structural buildings]
-Structurally blocked buildings
+Byggnader S
 [Stats low HP ranges]
-HP ≤25/50/75%
+Hälsopoäng: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+Mat: <=25/50/75%

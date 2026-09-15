@@ -2407,48 +2407,48 @@ Uit (geen timer)
 [Sudden-death timer]
 Sudden-death-timer
 [Stats page three]
-Statistics 3/3  >
+Statistieken 3/3 >
 [Stats blocked units]
-Units blocked S/C
+Eenheden S/C
 [Stats blocked buildings]
-Buildings blocked S/C
+Gebouwen S/C
 [Stats blocked buildings swim]
-Swim exits S/C
+Zwemmen S/C
 [Stats current blocked units]
-Currently blocked units
+Eenheden C
 [Stats current blocked buildings]
-Currently blocked buildings
+Gebouwen C
 [Stats growth global]
-Growth added amount
+Hulpbronnen +
 [Stats growth new tiles]
-New resource tiles
+Hulpbronnen +#
 [Stats growth reductions]
-Natural reductions
+Hulpbronnen -
 [Stats growth per minute]
-Wheat growth/min
+Tarwe +/min
 [Stats growth near 8]
-Growth within 8 tiles
+Hulpbronnen + <=8
 [Stats growth near 16]
-Growth within 16 tiles
+Hulpbronnen + <=16
 [Stats growth near 32]
-Growth within 32 tiles
+Hulpbronnen + <=32
 [Stats low HP 25]
-Units at 25% HP
+Sterkte <=25%
 [Stats low HP 50]
-Units at 50% HP
+Sterkte <=50%
 [Stats low HP 75]
-Units at 75% HP
+Sterkte <=75%
 [Stats low food 25]
-Units at 25% food reserve
+Voedsel <=25%
 [Stats low food 50]
-Units at 50% food reserve
+Voedsel <=50%
 [Stats low food 75]
-Units at 75% food reserve
+Voedsel <=75%
 [Stats structural units]
-Structurally blocked units
+Eenheden S
 [Stats structural buildings]
-Structurally blocked buildings
+Gebouwen S
 [Stats low HP ranges]
-HP ≤25/50/75%
+Sterkte: <=25/50/75%
 [Stats low food ranges]
-Food ≤25/50/75%
+Voedsel: <=25/50/75%
