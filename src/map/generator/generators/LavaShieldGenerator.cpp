@@ -55,6 +55,13 @@ constexpr int kCandidateClearance = kHomeHalf + kHomeRing + 2;
 // The home centre must be close enough to shore for external starter fields to renew,
 // but not so close that its sand ring eats the beach. Engine probes reach 15 per axis.
 constexpr int kHomeWaterMin = 12, kHomeWaterMax = 21;
+// Islets off the coast, out where the ocean wraps the torus (a maintainer asked for a couple
+// to keep the seams interesting): at least two, one more per this much sea, each tried this
+// many times, with this much water between an islet and any coast or other islet, so they are
+// reached by swimming only (raiseIslands) and each carries a prize (stockIslands). Their grass
+// is far too small for the town search's clearance, so they are never a home.
+constexpr int kFewestIslets = 2, kSeaPerIslet = 8000, kIsletAttempts = 40;
+constexpr double kIsletMoat = 6;
 // Final-world floors: overlapping 4x4 origins, not a promise of this many buildings.
 // These exceed the shared emergency room target (16), while crop distances use the
 // shared opening budgets. A quality ratio is deliberately not a victory-fairness claim.
@@ -81,6 +88,7 @@ struct Layout
 	std::vector<unsigned char> rock, rim, lake;
 	std::vector<std::vector<StrokePoint>> flows;
 	std::vector<int> flowOwner;
+	std::vector<Island> islets;
 	double cx = 0, cy = 0, lakeRadius = 0, rootRadius = 0;
 	std::string failure;
 };
@@ -246,6 +254,17 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 			L.terrain[i] = WATER;
 		else if (L.rim[i])
 			L.terrain[i] = SAND;
+	}
+	if (o.islets)
+	{
+		int sea = 0;
+		for (int i = 0; i < t.size(); ++i)
+			sea += L.terrain[i] == WATER;
+		const int wanted = std::max(kFewestIslets, sea / kSeaPerIslet);
+		L.islets = raiseIslands(L.terrain, t, context,
+								{"lava-islets", wanted, kIsletAttempts, kIsletMoat});
+		context.telemetry.measure("lava-shield.islets.wanted", wanted);
+		context.telemetry.measure("lava-shield.islets.actual", L.islets.size());
 	}
 	layBeaches(L.terrain, t);
 	const auto grass = pureTiles(L.terrain, t, GRASS);
@@ -554,6 +573,7 @@ bool populate(Game &game, GenerationContext &context, const Layout &L,
 		}
 	seedAlgae(map, context, t, "lava-algae", o.algae,
 			  AlgaeBand::shallows(1, 12, 100).thriving(0.5));
+	stockIslands(map, context, L.islets, "lava-islets");
 	secureStartingCrops(game, context, t, kWheatRange, kWoodRange, 0, &L.rock);
 	// Crops may hide the approaches to the reserved circuit. Only clearable crops may
 	// be opened; fruit, rock and water are never converted into an accidental shortcut.
@@ -662,6 +682,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 LavaShieldOptions::LavaShieldOptions(const GenerationRequest &r)
 	: tongues(r.option("tongue-count")), longTongues(r.option("long-tongues")),
 	  branching(r.option("branching")), rimWidth(r.option("rim-width")),
+	  islets(r.option("islets") != 0),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))
@@ -673,12 +694,13 @@ GeneratorDefinition lavaShieldDefinition()
 	return {"lava-shield",
 			51,
 			"Lava shield",
-			1,
+			2,
 			false,
 			{{"tongue-count", "Lava tongues", 3, 9, 1, 5, ControlGroup::Layout},
 			 {"long-tongues", "Long tongues", 25, 75, 25, 50, ControlGroup::Layout},
 			 {"branching", "Branching", 0, 3, 1, 2, ControlGroup::Layout},
 			 {"rim-width", "Crater rim width", 6, 12, 2, 8, ControlGroup::Terrain},
+			 GeneratorControl::toggle("islets", "Islets", true),
 			 // Both percentage controls intentionally retain the shared 100% default.
 			 // The 2026-09-15 paired AI probe tried 125% wheat / 75% wood: it put
 			 // roughly 400 more wheat tiles on a 256-square island but increased

@@ -8,6 +8,7 @@
 struct LavaShieldOptions
 {
 	int tongues, longTongues, branching, rimWidth;
+	bool islets; // a couple of swimming-prize islets out in the ocean where the torus wraps
 	int wheat, wood, stone, algae, fruit;
 	explicit LavaShieldOptions(const GenerationRequest &);
 };
