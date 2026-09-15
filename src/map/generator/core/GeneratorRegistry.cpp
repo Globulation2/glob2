@@ -143,9 +143,6 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 switchbacksDefinition(),
 											 cityStatesDefinition(),
 											 canalsDefinition(),
-											 emojiDefinition(),
-											 fortsDefinition(),
-											 braidedDeltaDefinition(),
 											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
@@ -155,6 +152,9 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 oldGrowthDefinition(),
 											 anthillDefinition(),
 											 coralDefinition(),
+											 emojiDefinition(),
+											 fortsDefinition(),
+											 braidedDeltaDefinition(),
 											 uniformDefinition()});
 	return registry;
 }
