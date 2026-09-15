@@ -472,7 +472,7 @@ BraidedDeltaOptions::BraidedDeltaOptions(const GenerationRequest &r)
 GeneratorDefinition braidedDeltaDefinition()
 {
 	return {"braided-delta",
-			34,
+			36,
 			"Braided Delta",
 			3,
 			false,
