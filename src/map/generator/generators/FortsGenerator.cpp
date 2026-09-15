@@ -641,7 +641,7 @@ FortsOptions::FortsOptions(const GenerationRequest &r)
 GeneratorDefinition fortsDefinition()
 {
 	return {"forts",
-			34,
+			35,
 			"Forts",
 			6,
 			false,
