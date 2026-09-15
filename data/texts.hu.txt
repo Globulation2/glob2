@@ -2594,3 +2594,15 @@ A világatlaszban nincs ilyen kontinens.
 A térkép túl kicsi egy kontinenshez.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Ezen a kontinensen ekkora térképméretnél nincs hely ennyi kolóniának; használjon nagyobb térképet vagy kevesebb kolóniát.
+[Savannah]
+Szavanna
+[Watering holes]
+Itatóhelyek
+[Dry patches]
+Száraz foltok
+[Sparse]
+Kevés
+[Normal]
+Normál
+[Many]
+Sok

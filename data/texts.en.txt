@@ -2592,3 +2592,15 @@ The world atlas has no such continent.
 The map is too small to hold a continent.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.
+[Savannah]
+Savannah
+[Watering holes]
+Watering holes
+[Dry patches]
+Dry patches
+[Sparse]
+Sparse
+[Normal]
+Normal
+[Many]
+Many

@@ -4,6 +4,11 @@ The map editor, custom-game lobby and study tools share generator control defini
 including labels, ranges, steps and defaults. Uniform terrain is editor-only.
 Normal lobby generation rolls a fresh random map; the preview snapshot is the map launched.
 
+## Savannah
+
+[Savannah design and validation](SAVANNAH.md) documents the open grassland generator,
+its contained crop plots, controls, numerical budgets and supported request envelope.
+
 ## Development tools
 
 Build the study executable with `scons release=1 map-generator-study`.

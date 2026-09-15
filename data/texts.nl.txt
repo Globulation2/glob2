@@ -2618,3 +2618,15 @@ De wereldatlas heeft zo'n continent niet.
 De kaart is te klein voor een continent.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Dit continent heeft bij deze kaartgrootte geen ruimte voor zoveel kolonies; gebruik een grotere kaart of minder kolonies.
+[Savannah]
+Savanne
+[Watering holes]
+Drinkplaatsen
+[Dry patches]
+Droge plekken
+[Sparse]
+Weinig
+[Normal]
+Normaal
+[Many]
+Veel

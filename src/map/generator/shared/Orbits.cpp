@@ -147,6 +147,26 @@ int latticePeriod(const Symmetry &s)
 	return std::max(1, period);
 }
 
+int jitterSites(const Torus &t, std::vector<ShapePoint> &sites, GenerationContext &context,
+				const std::string &stream, int radius, double minimumSpacing)
+{
+	int accepted = 0;
+	if (radius <= 0)
+		return accepted;
+	for (size_t k = 0; k < sites.size(); ++k)
+	{
+		const ShapePoint before = sites[k];
+		sites[k] = {
+			double(t.x(int(before.x) + int(context.bounded(stream, 2 * radius + 1)) - radius)),
+			double(t.y(int(before.y) + int(context.bounded(stream, 2 * radius + 1)) - radius))};
+		if (nearestSiteDistance(t, sites) < minimumSpacing)
+			sites[k] = before;
+		else
+			++accepted;
+	}
+	return accepted;
+}
+
 LatticeSites latticeSites(int width, int height, int teams, double x0, double y0)
 {
 	LatticeSites result;

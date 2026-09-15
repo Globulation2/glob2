@@ -2592,3 +2592,15 @@ Emoji
 الخريطة أصغر من أن تتسع لقارة.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 لا تتسع هذه القارة لهذا العدد من المستعمرات بحجم الخريطة هذا؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
+[Savannah]
+السافانا
+[Watering holes]
+موارد المياه
+[Dry patches]
+مناطق جافة
+[Sparse]
+قليلة
+[Normal]
+عادي
+[Many]
+كثيرة

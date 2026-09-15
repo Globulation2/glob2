@@ -1,0 +1,96 @@
+{
+  "attempts": 742,
+  "failed": 0,
+  "failures": [],
+  "groups": {
+    "mixed": {
+      "attempts": 240,
+      "passed": 240
+    },
+    "resource-ladder": {
+      "attempts": 195,
+      "passed": 195
+    },
+    "shape-edges": {
+      "attempts": 30,
+      "passed": 30
+    },
+    "size-seeds": {
+      "attempts": 88,
+      "passed": 88
+    },
+    "terrain-grid": {
+      "attempts": 189,
+      "passed": 189
+    }
+  },
+  "mode": "full",
+  "passed": 742,
+  "pond_omission_maps": 55,
+  "process_seconds": {
+    "maximum": 6.990386747056618,
+    "mean": 0.6702603549195072
+  },
+  "shapes": {
+    "128x128/1": {
+      "attempts": 26,
+      "passed": 26
+    },
+    "128x128/3": {
+      "attempts": 26,
+      "passed": 26
+    },
+    "128x128/4": {
+      "attempts": 154,
+      "passed": 154
+    },
+    "128x256/1": {
+      "attempts": 18,
+      "passed": 18
+    },
+    "128x256/5": {
+      "attempts": 26,
+      "passed": 26
+    },
+    "128x256/8": {
+      "attempts": 154,
+      "passed": 154
+    },
+    "256x128/1": {
+      "attempts": 18,
+      "passed": 18
+    },
+    "256x128/5": {
+      "attempts": 26,
+      "passed": 26
+    },
+    "256x128/8": {
+      "attempts": 154,
+      "passed": 154
+    },
+    "256x256/12": {
+      "attempts": 26,
+      "passed": 26
+    },
+    "256x256/4": {
+      "attempts": 18,
+      "passed": 18
+    },
+    "256x256/8": {
+      "attempts": 18,
+      "passed": 18
+    },
+    "256x512/12": {
+      "attempts": 26,
+      "passed": 26
+    },
+    "512x256/12": {
+      "attempts": 26,
+      "passed": 26
+    },
+    "512x512/12": {
+      "attempts": 26,
+      "passed": 26
+    }
+  }
+}

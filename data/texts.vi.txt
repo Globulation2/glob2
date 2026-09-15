@@ -2590,3 +2590,15 @@ Tập bản đồ thế giới không có lục địa này.
 Bản đồ quá nhỏ để chứa một lục địa.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Lục địa này không đủ chỗ cho số thuộc địa này ở kích thước bản đồ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[Savannah]
+Xa van
+[Watering holes]
+Hố nước
+[Dry patches]
+Vùng khô
+[Sparse]
+Ít
+[Normal]
+Bình thường
+[Many]
+Nhiều

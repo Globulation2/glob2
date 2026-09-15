@@ -2590,3 +2590,15 @@ Emoji
 マップが小さすぎて大陸が収まりません。
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 このマップの大きさでは、この大陸にそれだけのコロニーを置く場所がありません。より大きなマップを使うか、コロニーを減らしてください。
+[Savannah]
+サバンナ
+[Watering holes]
+水場
+[Dry patches]
+乾燥地
+[Sparse]
+少ない
+[Normal]
+標準
+[Many]
+多い

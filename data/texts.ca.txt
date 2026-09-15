@@ -2602,3 +2602,15 @@ L'atles del món no té aquest continent.
 El mapa és massa petit per contenir un continent.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Aquest continent no té espai per a tantes colònies amb aquesta mida de mapa; feu servir un mapa més gran o menys colònies.
+[Savannah]
+Sabana
+[Watering holes]
+Abeuradors
+[Dry patches]
+Zones seques
+[Sparse]
+Pocs
+[Normal]
+Normal
+[Many]
+Molts

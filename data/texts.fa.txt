@@ -2592,3 +2592,15 @@ Emoji
 نقشه کوچک‌تر از آن است که یک قاره در آن جا شود.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 این قاره در این اندازهٔ نقشه جایی برای این تعداد مستعمره ندارد؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
+[Savannah]
+ساوانا
+[Watering holes]
+آبشخورها
+[Dry patches]
+نواحی خشک
+[Sparse]
+کم
+[Normal]
+عادی
+[Many]
+زیاد
