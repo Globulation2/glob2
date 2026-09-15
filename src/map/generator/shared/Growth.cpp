@@ -31,7 +31,9 @@ Flood cropSpreadEnvelope(const Map &map)
 		const int x = i % t.w, y = i / t.w;
 		const int type = map.getResource(x, y).type;
 		seeds[i] = type == WHEAT || type == WOOD;
-		grass[i] = map.isGrass(x, y);
+		// A tile whose growth flag is off (preventResourceGrowth) never takes a crop, so the
+		// envelope stops at it as the engine does.
+		grass[i] = map.isGrass(x, y) && map.canResourcesGrow(x, y);
 	}
 	// Reuse the same toroidal eight-neighbour topology as the other region operations.
 	return floodFrom(t, seeds, grass);
@@ -102,18 +104,6 @@ int preventResourceGrowth(Map &map, const std::vector<unsigned char> &protectedT
 	return changed;
 }
 
-std::vector<int> cropSpreadEnvelope(const Map &map)
-{
-	const Torus t(map);
-	std::vector<unsigned char> grass(t.size(), 0), crops(t.size(), 0);
-	for (int i = 0; i < t.size(); ++i)
-	{
-		grass[i] = map.isGrass(i % t.w, i / t.w) && map.canResourcesGrow(i % t.w, i / t.w);
-		const auto type = map.getResource(i % t.w, i / t.w).type;
-		crops[i] = type == WHEAT || type == WOOD;
-	}
-	return stepsFrom(t, crops, grass);
-}
 } // namespace MapGeneration
 
 namespace MapGeneration

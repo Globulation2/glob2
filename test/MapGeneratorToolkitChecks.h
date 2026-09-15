@@ -2439,11 +2439,11 @@ inline void siteOperationChecks()
 	fillRectangle(terrain, t, {-8, -8, 9, 9}, GRASS);
 	writeUndermap(contained.map, terrain);
 	contained.map.setResource(30, 30, WHEAT, 1);
-	assert(cropSpreadEnvelope(contained.map)[t.at(0, 0)] < 0);
+	assert(cropSpreadEnvelope(contained.map).steps[t.at(0, 0)] < 0);
 	// Breach a wide strip through the sand ring: the same proof must now reject it.
 	fillRectangle(terrain, t, {5, -2, 13, 3}, GRASS);
 	writeUndermap(contained.map, terrain);
-	assert(cropSpreadEnvelope(contained.map)[t.at(0, 0)] >= 0);
+	assert(cropSpreadEnvelope(contained.map).steps[t.at(0, 0)] >= 0);
 	// A saved no-growth ring can protect buildable grass without a sand gap.
 	// Wrap the fixture around both seams to exercise the same indexing as homes.
 	std::vector<unsigned char> protectedGrass(t.size(), 0);
@@ -2453,7 +2453,7 @@ inline void siteOperationChecks()
 	assert(preventResourceGrowth(contained.map, protectedGrass) == 19 * 19);
 	assert(preventResourceGrowth(contained.map, protectedGrass) == 0);
 	assert(!contained.map.canResourcesGrow(63, 63));
-	assert(cropSpreadEnvelope(contained.map)[t.at(0, 0)] < 0);
+	assert(cropSpreadEnvelope(contained.map).steps[t.at(0, 0)] < 0);
 
 	// Exercise actual engine growth, not just our conservative reachability proof.
 	// Irrigated wood on the unprotected control side must spread, while the
