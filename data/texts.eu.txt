@@ -2660,3 +2660,11 @@ Gutxieneko lur-tartea
 Aukerako tokiko pasabideak goiko eskualde bakoitzeko
 [Optional major shortcuts]
 Aukerako lasterbide nagusiak
+[Lava shield]
+Laba-ezkutua
+[Lava tongues]
+Laba-mihiak
+[Long tongues]
+Mihi luzeak
+[Crater rim width]
+Kraterraren ertzaren zabalera

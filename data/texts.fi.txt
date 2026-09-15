@@ -2650,3 +2650,11 @@ Maa-alueen pienin väli
 Valinnaiset paikalliset ylitykset pääaluetta kohti
 [Optional major shortcuts]
 Valinnaiset suuret oikoreitit
+[Lava shield]
+Laavakilpi
+[Lava tongues]
+Laavakielekkeet
+[Long tongues]
+Pitkät kielekkeet
+[Crater rim width]
+Kraatterin reunan leveys

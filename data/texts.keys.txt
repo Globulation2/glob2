@@ -1322,3 +1322,7 @@
 [Minimum land spacing]
 [Optional local crossings per parent]
 [Optional major shortcuts]
+[Lava shield]
+[Lava tongues]
+[Long tongues]
+[Crater rim width]

@@ -2674,3 +2674,11 @@ Minimale landafstand
 Optionele lokale overgangen per bovenliggende regio
 [Optional major shortcuts]
 Optionele grote binnenwegen
+[Lava shield]
+Lavaschild
+[Lava tongues]
+Lavatongen
+[Long tongues]
+Lange lavatongen
+[Crater rim width]
+Kraterrandbreedte

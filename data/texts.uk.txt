@@ -2646,3 +2646,11 @@ Emoji
 Додаткові місцеві переправи на батьківську область
 [Optional major shortcuts]
 Додаткові основні короткі шляхи
+[Lava shield]
+Лавовий щит
+[Lava tongues]
+Язики лави
+[Long tongues]
+Довгі язики
+[Crater rim width]
+Ширина краю кратера

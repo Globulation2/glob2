@@ -2650,3 +2650,11 @@ Najmanjši razmik kopnega
 Izbirni lokalni prehodi na nadrejeno območje
 [Optional major shortcuts]
 Izbirne glavne bližnjice
+[Lava shield]
+Lavin ščit
+[Lava tongues]
+Jeziki lave
+[Long tongues]
+Dolgi jeziki
+[Crater rim width]
+Širina roba kraterja

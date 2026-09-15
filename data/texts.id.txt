@@ -2646,3 +2646,11 @@ Jarak daratan minimum
 Penyeberangan lokal opsional per wilayah induk
 [Optional major shortcuts]
 Jalan pintas utama opsional
+[Lava shield]
+Perisai lava
+[Lava tongues]
+Lidah lava
+[Long tongues]
+Lidah panjang
+[Crater rim width]
+Lebar bibir kawah

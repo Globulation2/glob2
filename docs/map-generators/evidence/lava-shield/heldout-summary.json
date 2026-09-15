@@ -1,0 +1,232 @@
+{
+  "planned": 80,
+  "accepted": 80,
+  "outcomes": {
+    "completed": 76,
+    "generation_failed": 4
+  },
+  "completed_percent_of_accepted": 95.0,
+  "groups": {
+    "shape": {
+      "128x128x1": {
+        "completed": 4
+      },
+      "256x256x1": {
+        "completed": 4
+      },
+      "256x256x3": {
+        "completed": 4
+      },
+      "256x256x5": {
+        "completed": 4
+      },
+      "256x256x6": {
+        "completed": 3,
+        "generation_failed": 1
+      },
+      "256x256x7": {
+        "completed": 3,
+        "generation_failed": 1
+      },
+      "512x512x1": {
+        "completed": 4
+      },
+      "512x512x10": {
+        "completed": 4
+      },
+      "512x512x11": {
+        "completed": 4
+      },
+      "512x512x12": {
+        "completed": 22,
+        "generation_failed": 2
+      },
+      "512x512x3": {
+        "completed": 4
+      },
+      "512x512x5": {
+        "completed": 4
+      },
+      "512x512x6": {
+        "completed": 4
+      },
+      "512x512x7": {
+        "completed": 4
+      },
+      "512x512x9": {
+        "completed": 4
+      }
+    },
+    "variant": {
+      "dense-heldout": {
+        "completed": 22,
+        "generation_failed": 2
+      },
+      "intermediate-default": {
+        "completed": 28
+      },
+      "intermediate-high": {
+        "completed": 26,
+        "generation_failed": 2
+      }
+    }
+  },
+  "failures": [
+    {
+      "job": "3dc724d456a1e541f324b15c1a80c36c",
+      "host": "therig.local",
+      "seed": 61004,
+      "variant": "intermediate-high",
+      "shape": "256x256x6",
+      "status": "generation_failed",
+      "diagnostic": "lava-shield revision 1 seed 61004 [lava scored settlements]: A coastal town's renewable starter field is too small. Use fewer tongues or colonies, a larger map, or another seed.",
+      "algae-amount": 100,
+      "branching": 3,
+      "fruit-amount": 100,
+      "height": 8,
+      "long-tongues": 75,
+      "rim-width": 8,
+      "stone-amount": 100,
+      "teams": 6,
+      "tongue-count": 5,
+      "wheat-amount": 100,
+      "width": 8,
+      "wood-amount": 100,
+      "workers": 8,
+      "fairness": "",
+      "score": "",
+      "minimum_build_sites": "",
+      "minimum_wheat": "",
+      "minimum_wood": "",
+      "branches_requested": 15,
+      "branches_placed": 13,
+      "approaches_narrow": false,
+      "unreachable_walking_pairs": "",
+      "water_components": "",
+      "telemetry_dropped": 0,
+      "telemetry_invalid": 0,
+      "report_version": 2
+    },
+    {
+      "job": "43fdec6cdd4913620f5e34549a5bb916",
+      "host": "therig.local",
+      "seed": 61004,
+      "variant": "intermediate-high",
+      "shape": "256x256x7",
+      "status": "generation_failed",
+      "diagnostic": "lava-shield revision 1 seed 61004 [lava scored settlements]: A coastal town's renewable starter field is too small. Use fewer tongues or colonies, a larger map, or another seed.",
+      "algae-amount": 100,
+      "branching": 3,
+      "fruit-amount": 100,
+      "height": 8,
+      "long-tongues": 75,
+      "rim-width": 8,
+      "stone-amount": 100,
+      "teams": 7,
+      "tongue-count": 5,
+      "wheat-amount": 100,
+      "width": 8,
+      "wood-amount": 100,
+      "workers": 8,
+      "fairness": "",
+      "score": "",
+      "minimum_build_sites": "",
+      "minimum_wheat": "",
+      "minimum_wood": "",
+      "branches_requested": 15,
+      "branches_placed": 13,
+      "approaches_narrow": false,
+      "unreachable_walking_pairs": "",
+      "water_components": "",
+      "telemetry_dropped": 0,
+      "telemetry_invalid": 0,
+      "report_version": 2
+    },
+    {
+      "job": "47c859a0bb8367874a5b9860e568168d",
+      "host": "pharaoh-dev-3.local",
+      "seed": 62022,
+      "variant": "dense-heldout",
+      "shape": "512x512x12",
+      "status": "generation_failed",
+      "diagnostic": "lava-shield revision 1 seed 62022 [lava scored settlements]: A coastal town's renewable starter field is too small. Use fewer tongues or colonies, a larger map, or another seed.",
+      "algae-amount": 100,
+      "branching": 3,
+      "fruit-amount": 100,
+      "height": 9,
+      "long-tongues": 75,
+      "rim-width": 12,
+      "stone-amount": 100,
+      "teams": 12,
+      "tongue-count": 9,
+      "wheat-amount": 100,
+      "width": 9,
+      "wood-amount": 100,
+      "workers": 8,
+      "fairness": "",
+      "score": "",
+      "minimum_build_sites": "",
+      "minimum_wheat": "",
+      "minimum_wood": "",
+      "branches_requested": 27,
+      "branches_placed": 22,
+      "approaches_narrow": false,
+      "unreachable_walking_pairs": "",
+      "water_components": "",
+      "telemetry_dropped": 0,
+      "telemetry_invalid": 0,
+      "report_version": 2
+    },
+    {
+      "job": "cc43e7e6d31d5dba31095660e59c59a9",
+      "host": "pharaoh-dev-3.local",
+      "seed": 62024,
+      "variant": "dense-heldout",
+      "shape": "512x512x12",
+      "status": "generation_failed",
+      "diagnostic": "lava-shield revision 1 seed 62024 [lava scored settlements]: A coastal town's renewable starter field is too small. Use fewer tongues or colonies, a larger map, or another seed.",
+      "algae-amount": 100,
+      "branching": 3,
+      "fruit-amount": 100,
+      "height": 9,
+      "long-tongues": 75,
+      "rim-width": 12,
+      "stone-amount": 100,
+      "teams": 12,
+      "tongue-count": 9,
+      "wheat-amount": 100,
+      "width": 9,
+      "wood-amount": 100,
+      "workers": 8,
+      "fairness": "",
+      "score": "",
+      "minimum_build_sites": "",
+      "minimum_wheat": "",
+      "minimum_wood": "",
+      "branches_requested": 27,
+      "branches_placed": 20,
+      "approaches_narrow": false,
+      "unreachable_walking_pairs": "",
+      "water_components": "",
+      "telemetry_dropped": 0,
+      "telemetry_invalid": 0,
+      "report_version": 2
+    }
+  ],
+  "quality": {
+    "minimum_fairness": 0.825685,
+    "minimum_build_sites": 315,
+    "minimum_wheat": 0.458333,
+    "minimum_wood": 0.59375,
+    "maximum_unreachable_walking_pairs": 0,
+    "water_component_counts": {
+      "2": 76
+    }
+  },
+  "telemetry": {
+    "completed_with_record": 76,
+    "maps_with_narrow_approach": 28,
+    "dropped_records": 0,
+    "invalid_values": 0
+  }
+}

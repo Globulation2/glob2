@@ -2726,3 +2726,11 @@ Mindste landafstand
 Valgfrie lokale overgange pr. overordnet region
 [Optional major shortcuts]
 Valgfrie større genveje
+[Lava shield]
+Lavaskjold
+[Lava tongues]
+Lavatunger
+[Long tongues]
+Lange lavatunger
+[Crater rim width]
+Kraterkantens bredde

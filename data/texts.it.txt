@@ -2712,3 +2712,11 @@ Distanza minima tra le terre
 Passaggi locali facoltativi per regione madre
 [Optional major shortcuts]
 Scorciatoie principali facoltative
+[Lava shield]
+Scudo di lava
+[Lava tongues]
+Lingue di lava
+[Long tongues]
+Lingue lunghe
+[Crater rim width]
+Larghezza del bordo del cratere

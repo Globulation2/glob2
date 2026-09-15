@@ -2648,3 +2648,11 @@ Minimum land spacing
 Optional local crossings per parent
 [Optional major shortcuts]
 Optional major shortcuts
+[Lava shield]
+Lava shield
+[Lava tongues]
+Lava tongues
+[Long tongues]
+Long tongues
+[Crater rim width]
+Crater rim width

@@ -45,3 +45,8 @@ controls, supported settings and validation contract.
 [Fractal maps and recursive geometry](FRACTAL_MAPS.md) documents reusable halves/thirds,
 rectangular Hilbert paths, travel-benefit crossing selection, and examples for cities,
 reservoirs and folded roads. Keep hierarchy and validate the finished movement graph.
+
+[Lava shield](LAVA_SHIELD.md) documents the volcanic island, its broad coastal gaps
+and narrow beach detours, scored towns, crater-rim prize and validation evidence.
+Its [paired 504-request bulk study](LAVA_SHIELD_BULK_20260915.md) covers the
+control range, smallest layouts, rectangles and dense colony counts.

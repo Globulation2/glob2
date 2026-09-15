@@ -2646,3 +2646,11 @@ Emoji
 상위 구역당 선택적 지역 횡단로
 [Optional major shortcuts]
 선택적 주요 지름길
+[Lava shield]
+용암 방패
+[Lava tongues]
+용암 흐름 수
+[Long tongues]
+긴 용암 흐름
+[Crater rim width]
+분화구 가장자리 폭

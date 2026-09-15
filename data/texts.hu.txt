@@ -2650,3 +2650,11 @@ Legkisebb szárazföldi távolság
 Választható helyi átkelők szülőrégiónként
 [Optional major shortcuts]
 Választható fő rövidítések
+[Lava shield]
+Lávapajzs
+[Lava tongues]
+Lávanyelvek
+[Long tongues]
+Hosszú lávanyelvek
+[Crater rim width]
+Kráterperem szélessége

@@ -2660,3 +2660,11 @@ Minsta landavstånd
 Valfria lokala övergångar per överordnad region
 [Optional major shortcuts]
 Valfria större genvägar
+[Lava shield]
+Lavasköld
+[Lava tongues]
+Lavatungor
+[Long tongues]
+Långa lavatungor
+[Crater rim width]
+Kraterkantens bredd
