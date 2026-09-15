@@ -102,11 +102,12 @@ operations explain their units; the evidence section records actual verification
   after beaches, water to be seen rather than farmed. It waters the plain round it,
   but the plain holds no crop, so containment is unaffected. Pools are not counted
   among the ponds the final check requires pure water at.
-- **Lone trees:** shared dart throwing with spacing 12 proposes single trees on the
-  plain outside every reservation and plot. Only candidates on dry pure grass (crop
-  growth chance zero, so the engine's water probe never lets them spread) are planted,
-  scaled by the wood amount; at zero there are none. The final containment check
-  admits a tree outside a plot only on such dry ground.
+- **Lone trees:** shared dart throwing with spacing 12 proposes tree sites on the
+  plain outside every reservation and plot, each a tree or a clump of two or three
+  (the candidate's index says which). Only tiles of dry pure grass (crop growth chance
+  zero, so the engine's water probe never lets them spread) are planted, scaled by the
+  wood amount; at zero there are none. The final containment check admits a tree
+  outside a plot only on such dry ground.
 - **Dry patches:** periodic noise with cell period 14 makes coherent patches instead
   of speckles. `sprinkleSand` converts the highest-ranked eligible vertices and
   keeps three steps from water. Beaches are laid after all terrain operations.

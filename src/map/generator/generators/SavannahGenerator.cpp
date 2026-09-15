@@ -47,9 +47,9 @@ constexpr int kNeutralReserve = 19, kFeatureGap = 1;
 // no crop to grow there, so the containment argument does not change.
 constexpr double kPondRadius = 5.5, kPoolRadius = 3.5;
 constexpr int kPoolSpacing = 40, kPoolClearance = 9, kPoolReserve = 8;
-// Lone trees dot the plain, a candidate every twelve tiles or so, planted only on dry pure grass
-// (crop growth chance zero), where the engine's water probe never lets a tree spread: scenery and
-// a little finite wood, never a thicket that closes the plain.
+// Lone trees dot the plain, a candidate every twelve tiles or so, each a tree or a clump of two or
+// three, planted only on dry pure grass (crop growth chance zero), where the engine's water probe
+// never lets a tree spread: scenery and a little finite wood, never a thicket that closes the plain.
 constexpr int kPlainTreeSpacing = 12;
 struct Plot
 {
@@ -360,20 +360,37 @@ bool generate(Game &game, GenerationContext &context)
 			return false;
 		}
 	}
-	// Lone trees where nothing can grow: dry pure grass (growth chance zero) outside every plot.
-	// The wood amount scales how many candidates are planted; at zero there are none.
-	int trees = 0;
-	const int wantedTrees = int(scaledCount(int(L.plainTrees.size()), o.wood));
-	for (int i : L.plainTrees)
+	// Lone trees where nothing can grow: dry pure grass (growth chance zero) outside every plot
+	// and reservation. A candidate is a tree or a clump of two or three (the candidate's index
+	// says which), so they read as trees on the preview. The wood amount scales how many
+	// candidates are planted; at zero there are none.
+	int trees = 0, clumps = 0;
+	const int wantedClumps = int(scaledCount(int(L.plainTrees.size()), o.wood));
+	const auto dryGrass = [&](int x, int y)
 	{
-		if (trees == wantedTrees)
-			break;
+		const int i = L.t.at(x, y);
+		return !L.reserved[i] && L.plotOf[i] < 0 && fertility.at(L.t.x(x), L.t.y(y)) == 0 &&
+			   game.map.isGrass(L.t.x(x), L.t.y(y)) && clearGround(game.map, L.t.x(x), L.t.y(y));
+	};
+	for (size_t k = 0; k < L.plainTrees.size() && clumps < wantedClumps; ++k)
+	{
+		const int i = L.plainTrees[k];
 		const int x = i % L.t.w, y = i / L.t.w;
-		if (fertility.at(x, y) != 0 || !game.map.isGrass(x, y) || !clearGround(game.map, x, y))
+		if (!dryGrass(x, y))
 			continue;
 		game.map.setResource(x, y, WOOD, 1);
 		++trees;
+		++clumps;
+		const int extra = int(k % 3);
+		const int dx[] = {1, 0}, dy[] = {0, 1};
+		for (int e = 0; e < extra; ++e)
+			if (dryGrass(x + dx[e], y + dy[e]))
+			{
+				game.map.setResource(L.t.x(x + dx[e]), L.t.y(y + dy[e]), WOOD, 1);
+				++trees;
+			}
 	}
+	context.telemetry.measure("savannah.plains.tree-clumps", clumps);
 	context.telemetry.measure("savannah.plains.trees", trees);
 	seedAlgae(game.map, context, L.t, "savannah-algae", o.algae, AlgaeBand::anyWater(30));
 	// No generic crop/route repair: unrestricted topups would break containment. Essential
