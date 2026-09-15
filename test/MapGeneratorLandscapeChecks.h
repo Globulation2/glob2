@@ -650,17 +650,18 @@ inline void contourFarmChecks()
 		style.innerRadius = 12;
 		style.rows = {8, 6.4};
 		style.bands = 2;
-		style.wobbles = {{3, {0.3, 1.1, 2.0}}, {3, {0.3, 1.1, 2.0}}};
+		style.wobbles = {{3, {0.3, 1.1, 2.0}}};
 		assert(std::abs(style.reach() - style.outerRadius() - 3) < 1e-9);
 		assert(contourNominal(style, 0, style.innerRadius + style.cap, 1.0) ==
 			   style.innerRadius + style.cap);
 		assert(contourNominal(style, 5, 30, 1.0) == 30);
-		const auto contours = layContourFarm(sketch, t, {{0, 0}, {64, 64}}, style);
+		// One hill on the seam: two bands plus the wobble reach farther than half the 64-tile
+		// spacing the circular cases use, and discs must not overlap.
+		const auto contours = layContourFarm(sketch, t, {{0, 0}}, style);
 		assert(contours.farm.rows == 2);
 		int lobed = 0;
 		for (int i = 0; i < t.size(); ++i)
 		{
-			assert(sketch[i] == sketch[t.at(i % t.w + 64, i / t.w + 64)]);
 			const double d = std::hypot(t.offsetX(0, i % t.w), t.offsetY(0, i / t.w));
 			if (d < style.innerRadius || d > style.outerRadius() + 3)
 				assert(contours.farm.row[i] < 0 && !contours.farm.sand[i]);
