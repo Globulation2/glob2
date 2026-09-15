@@ -144,10 +144,6 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 switchbacksDefinition(),
 											 cityStatesDefinition(),
 											 canalsDefinition(),
-											 emojiDefinition(),
-											 fortsDefinition(),
-											 braidedDeltaDefinition(),
-											 breachableHighlandsDefinition(),
 											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
@@ -160,6 +156,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 emojiDefinition(),
 											 fortsDefinition(),
 											 braidedDeltaDefinition(),
+											 breachableHighlandsDefinition(),
 											 uniformDefinition()});
 	return registry;
 }
