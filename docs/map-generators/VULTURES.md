@@ -18,8 +18,8 @@ walking route between all colonies. These establish an opening, not indefinite s
 
 ## Controls
 
-- **Wheat amount:** scales the default 35% coverage of eligible dry ground outside home clearings.
-  Every tile remains one harvest. At zero, only starting rations remain.
+- **Wheat amount:** scales the default 65% coverage of eligible dry ground outside home clearings
+  (full cover from about 155%). Every tile remains one harvest. At zero, only starting rations remain.
 - **Wood amount:** scales the default 20% scatter chance on eligible ground within eight tiles
   of water. At zero, the starter wood remains.
 - **Home size:** requested radius 16–30, default 24. Homes shrink when needed to preserve the
@@ -71,8 +71,10 @@ zero fertility. On seed 7 one Nicowar rotation won earlier, while the other foug
 On seed 11 the 100% opening won in one rotation but both 125% openings remained active at the
 cap. Hunger and starvation moved in both directions, and Maxima still made no army. Because
 this small paired test found no reliable improvement and extra food can soften the requested
-deadline, **35% base field cover and 100% default Wheat amount remain in place**. Players can
-use 125% for a fuller field variant. The raw map, save, result, and gameplay telemetry records
+deadline, that probe left **35% base field cover** in place. Maintainer review of the picture
+then asked for the fields filled in, with passages cleared by workers rather than found: the
+base cover is now **65%**, the open ground the exception rather than the rule, and the trails
+the only routes that come cleared. The control still runs 0 to 200%. The raw map, save, result, and gameplay telemetry records
 are retained in [the playtest evidence](../artifacts/vultures/PLAYTEST.md).
 
 ### Bulk generation and rectangular tuning
@@ -120,7 +122,7 @@ These numbers define a scenario, not universal engine balance rules. They are na
 | 48 starter wheat tiles, one harvest each | A finite bridge to exterior foraging. Kept at zero abundance. Actual survival depends on staffing, travel and population decisions. |
 | 24 starter wood tiles | Construction must not depend on a lucky ambient scatter. Normal engine stock amounts and regrowth remain. |
 | Five quarry tiles | Permanent mining frontage for upgrades and ammunition. Stone is eternal, so this does not describe five pieces of stone. A partial quarry fails generation. |
-| 35% exterior wheat cover at 100% abundance | Coherent patches with several harvesting edges and open approaches. Quantile ties can change the exact fraction; trails can remove more. At 200%, the target is 70%. |
+| 65% exterior wheat cover at 100% abundance | The fields are the ground and the pockets the exception, so moving off the trails means harvesting a way through; the first calibration's 35% left the plain mostly open. Quantile ties can change the exact fraction; trails can remove more. Cover is capped at 100% from about 155% abundance. |
 | Five noise octaves | Patches vary at several scales; isolated random speckles would give many trivial paths and lose Old Growth's field-clearing feel. |
 | 20% shoreline wood scatter | Leaves initial gathering gaps. Scales to 40% at maximum abundance. Later regrowth can fill them; resource scarcity and town management remain player concerns. |
 | Eight-tile shore band | A visibly local wood supply, within the 15-tile growth-probe reach. Measured from final pure-water tiles using wrapped Chebyshev distance. This is an initial placement constraint, not a new simulation boundary. |

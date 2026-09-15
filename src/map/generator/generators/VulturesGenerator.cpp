@@ -32,12 +32,15 @@ constexpr int kStarterWheat = 48, kStarterWood = 24;
 // A small permanent quarry gives mining frontage for upgrades/towers without filling the home.
 // Stone is eternal in this engine, so five tiles is an access budget, not a depletion budget.
 constexpr int kQuarryTiles = 5;
-// At normal abundance, correlated wheat occupies about 35% of eligible dry exterior ground.
-// This leaves several harvesting edges and initial approaches rather than one solid crop wall.
-// A small 128x128 AI pilot found early Nicowar contact at this setting; raising the player control
-// to 125% changed winners and hunger in both directions across paired seeds, so it did not justify
-// raising the opening default. Quantile ties and route clearing mean final cover is not exact.
-constexpr int kWheatCover = 35;
+// At normal abundance, correlated wheat occupies about 65% of eligible dry exterior ground: the
+// fields are the ground and the open pockets are the exception, so getting anywhere but along the
+// cleared trails means harvesting a way through. The first calibration used 35%, which left the
+// plain mostly open with wheat in patches; a small 128x128 AI pilot found early Nicowar contact
+// there and a 125% probe was inconclusive, but a maintainer's look at the picture asked for the
+// fields filled in and the passages cleared by workers, which is the map's concept. The control
+// still runs 0 to 200%; cover is capped at 100. Quantile ties and route clearing mean final cover
+// is not exact.
+constexpr int kWheatCover = 65;
 // A 20% shore scatter leaves worker/building gaps; at 200% it reaches 40%, not a solid wood wall.
 // Eight tiles is a visibly local shoreline band, well inside the engine's 15-tile growth probe.
 // Wood can subsequently spread under ordinary engine rules; only its INITIAL position is capped.
@@ -230,7 +233,7 @@ GeneratorDefinition vulturesDefinition()
 	return {"vultures",
 			47,
 			"Vultures",
-			2,
+			3,
 			false,
 			{{"home-size", "Home size", 16, 30, 1, 24, ControlGroup::Layout},
 			 {"lakes", "Lakes", 0, 4, 1, 1, ControlGroup::Terrain},
