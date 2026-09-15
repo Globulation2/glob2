@@ -27,6 +27,28 @@ The remedies, compared:
 
 Wheat carries the engine's extra one-in-three growth gate and wood does not. Equal wheat and wood areas therefore make a food-poor farm: the generators that feed an AI give wheat two to three times wood's area or cover.
 
+## The AI has to work the plot, not just own it
+
+Contained plots protect the town from its own crops, and the remedy table above recommends them. Rotation tournaments show their cost: a Nicowar colony's harvest, not the plot's regrowth, is what limits it, and the same colony harvests very differently on different plot shapes. Mean wheat harvested per colony in a 45,000-tick four-Nicowar game at 256x256, with the births and peak population it bought:
+
+| Plot design | Wheat harvested | Births | Peak units |
+| --- | ---: | ---: | ---: |
+| Open river banks and bars (Braided Delta) | 320 | 160 | 148 |
+| Farm ring with sand spokes and a pond (Breachable Highlands) | 305 | 98 | 96 |
+| Real geography, kit on fertile grass, dug ponds (Continents) | 244 | 162 | 139 |
+| Dry terrace with a bank strip (Braided river) | 239 | 109 | 94 |
+| Walled fort with two irrigated, sand-rimmed plots (Forts) | 211 | 85 | 84 |
+| Sand-ringed plot inside a sea-watered crop band (Plantations) | 201 | 189 | 144 |
+| Fertile drumlin tail behind a sand collar (Drumlin field) | 159 | 180 | 139 |
+| Finite dry fields (Vultures) | 151 | 148 | 128 |
+| Concentric capped bands with stairs (Rice Terraces) | 146 | 189 | 138 |
+| Sand-ringed pond plot with a divider (Hedgerow Country) | 109 | 55 | 55 |
+| Small sealed grass islands in sand (Savannah) | 66 | 24 | 25 |
+
+Under about 150 wheat in that time a colony never grows, whatever else the map offers. The two lowest rows are the fully sealed circular plots, and neither responded to its obvious lever: giving Hedgerow Country's wheat two thirds of the plot changed nothing (110 harvested either way), and doubling Savannah's home pond changed nothing (66 to 85). Regrowth was never the bottleneck; the AI simply does not work a small ringed plot. Rings with spokes and several entrances (Breachable Highlands, Rice Terraces) are worked; open shores are worked best. So before building a whole map on a sealed-plot economy, put one plot beside an AI colony and read its harvest; and when a tournament shows a flat population with few deaths and few births, look at the harvest before the fertility.
+
+Premade bases are their own case: with either shipped AI a colony never breeds past its premade population (three births in a game), and a Numbi capital on Caravanserai harvests its fields about twenty times in 45,000 ticks and starves once the stocked inns run dry. Those maps are for people; measure AI survival on them, not balance.
+
 ## Ground a colony can reach beats ground it can see
 
 The second recurring defect is measuring room or fertility as area rather than as walkable catchment:
