@@ -547,6 +547,12 @@ public:
 	{ return refusedRelocations.count(replacesBuildingId)>0; }
 	void clearRelocationRefusal(int replacesBuildingId)
 	{ refusedRelocations.erase(replacesBuildingId); }
+	/// End the replacement relationship without discarding building contracts or
+	/// action history. A later nomination must not follow this attempt again.
+	void finishRelocation(int replacesBuildingId);
+	/// The legacy action records omit replacesBuildingId. Recover only the
+	/// actions belonging to the one persisted, still-live nomination.
+	void restoreRelocation(int replacesBuildingId, int nominatedTick);
 	const std::vector<unsigned short>& footprintReferences() const { return footprintRefs; }
 	const std::vector<unsigned short>& circulationReferences() const { return circulationRefs; }
 	bool isFootprintReserved(int index) const;
@@ -586,6 +592,8 @@ public:
 private:
 	template<class Archive> void executionState(Archive& archive);
 	struct Candidate;
+	static void preferUpgrades(std::vector<Candidate>& candidates,
+		const std::vector<DevelopmentIntent>& intents);
 	void clearIncrementalSelection();
 	void buildTemplates();
 	const BuildingProfile* configuredProfile(int type) const;

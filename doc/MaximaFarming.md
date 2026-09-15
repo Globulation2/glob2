@@ -21,6 +21,10 @@ editing shared masks:
    renewable-firebreak masks, then `apply_maintenance_clearing_plan` reconciles
    them once.
 
+Building parcels require grass. The two-tile circulation arteries connecting
+them can cross dry sand (including Canals bridges); water still blocks these
+routes. Selection and pre-issue validation use the same terrain rule.
+
 Active clearing flags have explicit wood and legacy-save campaign states
 instead of relying on an unexplained numeric sentinel throughout the executor.
 

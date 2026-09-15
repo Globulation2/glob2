@@ -1427,7 +1427,8 @@ void Planner::prepareRouteCache(const WorldState& world,int orientation) const
 			for(int k=0;k<2;++k)
 			{
 				const WorldTile& tile=world.tiles[pair[k]];
-				if(!tile.discovered||!tile.grass||tile.occupied||tile.permanentResource
+				// Circulation needs walkable land, not a buildable grass tile.
+				if(!tile.discovered||tile.water||tile.occupied||tile.permanentResource
 				   ||isFootprintReserved(pair[k])) {pass=false;break;}
 				pairAlreadyNetwork=pairAlreadyNetwork&&isCirculationReserved(pair[k]);
 				if(!isCirculationReserved(pair[k]))
@@ -2245,6 +2246,25 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	u.total=placementPolicy.score(u,purpose,spacingQuality); return u;
 }
 
+void Planner::preferUpgrades(std::vector<Candidate>& candidates,
+	const std::vector<DevelopmentIntent>& intents)
+{
+	// Ordinary development should improve existing capacity before opening
+	// another parcel. Keep the original comparison when a viable emergency
+	// construction bid is competing, so this preference cannot delay relief.
+	for(const Candidate& candidate:candidates)
+		if(candidate.action.type<=BuildStandalone && candidate.action.utility.total>=0)
+			for(const DevelopmentIntent& intent:intents)
+				if(intent.emergency && intent.buildingType==candidate.action.buildingType
+				   && intent.purpose==candidate.action.purpose)return;
+	const int upgradePreferencePercent=150;
+	for(Candidate& candidate:candidates)
+		if(candidate.action.type==UpgradeBuilding && candidate.action.utility.total>0)
+			candidate.action.utility.total=int(std::min<long long>(INT_MAX,
+				static_cast<long long>(candidate.action.utility.total)
+				*upgradePreferencePercent/100));
+}
+
 bool Planner::candidateBetter(const Candidate& lhs, const Candidate& rhs) const
 {
 	const DevelopmentAction& a=lhs.action;const DevelopmentAction& b=rhs.action;
@@ -2416,6 +2436,7 @@ bool Planner::selectAction(const WorldState& world,
 			recordBlocked(intents,signature);
 		return false;
 	}
+	preferUpgrades(candidates,intents);
 	Candidate best=candidates[0];
 	for(size_t i=1;i<candidates.size();++i)if(candidateBetter(candidates[i],best))best=candidates[i];
 	if(best.action.utility.total<0)
@@ -2533,6 +2554,7 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 		incrementalSelectionActive=false;
 		incrementalCandidates.clear();return SelectionEmpty;
 	}
+	preferUpgrades(candidates,incrementalIntents);
 	Candidate best=candidates[0];
 	for(size_t i=1;i<candidates.size();++i)
 		if(candidateBetter(candidates[i],best))best=candidates[i];
@@ -2551,6 +2573,28 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 	lastDiagnostics.selectedUtility=selected.utility;
 	incrementalSelectionActive=false;
 	incrementalCandidates.clear();return SelectionFound;
+}
+
+void Planner::finishRelocation(int replacesBuildingId)
+{
+	for(auto& entry:actionMap)
+		if(entry.second.purpose==Relocation
+		   &&entry.second.replacesBuildingId==replacesBuildingId)
+			entry.second.replacesBuildingId=-1;
+	clearRelocationRefusal(replacesBuildingId);
+}
+
+void Planner::restoreRelocation(int replacesBuildingId,int nominatedTick)
+{
+	if(replacesBuildingId<0||nominatedTick<0)return;
+	for(auto& entry:actionMap)
+	{
+		DevelopmentAction& action=entry.second;
+		if(action.purpose==Relocation
+		   &&(action.issuedTick>=nominatedTick
+		      ||(action.state==ParcelReserved&&action.issuedTick<0)))
+			action.replacesBuildingId=replacesBuildingId;
+	}
 }
 
 int Planner::committedBuildingCount(const WorldState& world,int buildingType) const
@@ -2852,7 +2896,7 @@ bool Planner::revalidate(const WorldState& world,const DevelopmentAction& action
 		for(size_t i=0;i<action.arteryTiles.size();++i)
 		{
 			const int index=action.arteryTiles[i];const WorldTile& tile=world.tiles[index];
-			if(!tile.discovered||!tile.grass||tile.occupied||tile.permanentResource
+			if(!tile.discovered||tile.water||tile.occupied||tile.permanentResource
 			   ||isFootprintReserved(index))
 			{
 				reason=RejectedCirculation;
@@ -3223,6 +3267,22 @@ template<class Archive> void Planner::executionState(Archive& a)
 	a("colonyFoodClaims",colonyFoodClaims);
 	a("colonyAnchors",colonyAnchors);
 	if(a.version()>=relocationVersion)a("refusedRelocations",refusedRelocations);
+	if(a.version()>=107)
+	{
+		std::map<int,int> links;
+		for(const auto& entry:actionMap)
+			links[entry.first]=entry.second.replacesBuildingId;
+		a("relocationLinks",links);
+		if(links.size()!=actionMap.size())
+			throw std::runtime_error("Incomplete Maxima relocation relationships");
+		for(auto& entry:actionMap)
+		{
+			const auto link=links.find(entry.first);
+			if(link==links.end())
+				throw std::runtime_error("Unknown Maxima relocation action");
+			entry.second.replacesBuildingId=link->second;
+		}
+	}
 }
 
 void Planner::saveExecutionState(GAGCore::OutputStream* stream) const

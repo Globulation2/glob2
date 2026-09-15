@@ -577,6 +577,10 @@ if not env['server']:
 
 # Optional integration executable; normal game/server builds do not build it.
 if not env['server']:
+    relocation_test = local.Program("MaximaRelocationIntegrationTest",
+        [source for source in source_files if source != "Glob2.cpp"] +
+        [local.Object("MaximaRelocationIntegrationTest", "#test/MaximaRelocationIntegrationTest.cpp")])
+    local.Alias("maxima-relocation-test", relocation_test)
     render_test = local.Program("torus-render-test",
         [source for source in source_files if source != "Glob2.cpp"] +
         [local.Object("TorusRenderIntegrationTest", "#test/TorusRenderIntegrationTest.cpp")])

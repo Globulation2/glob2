@@ -121,6 +121,7 @@ jobs:
             inn-swap-test \
             savegame-safety-test \
             maxima-continuation-test \
+            maxima-relocation-test \
             buffered-file-test \
             team-stats-save-test \
             performance-telemetry-test \
@@ -249,6 +250,14 @@ jobs:
         run: |
           scons -j$(nproc) release=1 server=0 cortex-geometry-test
           ./build/src/CortexGeometryHarness
+
+      - name: Test Maxima relocation handovers and recovery
+        run: |
+          GLOB2_USER_DIR="$(mktemp -d)" ./build/src/MaximaRelocationIntegrationTest
+
+      - name: Test Maxima opening production and economy
+        run: |
+          GLOB2_USER_DIR="$(mktemp -d)" python3 test/run_maxima_implementation_regressions.py --build-dir build --reuse-built-objects --test MaximaEconomyRegressionTest
 
       - name: Test clearing flag resource bounds
         run: |

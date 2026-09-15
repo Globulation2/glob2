@@ -29,16 +29,18 @@ inline long long squareRoot(long long value)
 // B  = B0 F/(F + q B0) / (1 + s H)
 // N  = ceil(B/k), retaining one starting producer.
 // F is deduplicated, reachable, fertility-weighted corn/wheat acreage.
+// Supply is food/foodScale; retain fractional fertility through the funding
+// calculation so a small positive opening farm is not treated as no food.
 // H is max(critical hunger, unserved food)/population: overlapping counts
 // must not be added. No strategic phase or existing swarm count is an input.
 inline Plan plan(int workers, int population, int critical, int unserved,
-    int food, int scalePercent, int foodPerWorkerPercent,
-    int pressureSensitivity, int workersPerSwarm)
+    long long food, int scalePercent, int foodPerWorkerPercent,
+    int pressureSensitivity, int workersPerSwarm, int foodScale=1)
 {
     const long long workforce=std::max(0,workers);
     const long long baseline=std::min(workforce*1000,
         squareRoot(workforce*1000000)*scalePercent/100);
-    const long long supply=std::max(0,food)*100000LL;
+    const long long supply=std::max(0LL,food)*100000LL/std::max(1,foodScale);
     const long long denominator=supply+foodPerWorkerPercent*baseline;
     long long funded=denominator>0 ? baseline*supply/denominator : 0;
     const long long pop=std::max(1,population);
@@ -48,7 +50,10 @@ inline Plan plan(int workers, int population, int critical, int unserved,
     Plan result;
     result.baselineMilliWorkers=baseline;
     result.fundedMilliWorkers=funded;
-    result.workers=int((funded+500)/1000);
+    // Workers are indivisible. Keep the retained producer usable when the
+    // colony has positive funding; rounding a small farm to zero can lock an
+    // opening at four workers forever, even while its swarm holds wheat.
+    result.workers=funded>0 ? std::max(1,int((funded+500)/1000)) : 0;
     result.swarms=std::max(1,(result.workers+workersPerSwarm-1)/workersPerSwarm);
     return result;
 }

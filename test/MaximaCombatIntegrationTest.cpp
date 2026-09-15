@@ -431,7 +431,7 @@ static void barracksAreFilledBeforeAttacking()
     for(int warriors:{6,8}) {
         Fixture f;
         f.building(10,10,0);
-        auto barracks=f.building(14,10,0,"barracks");
+        auto barracks=f.building(14,10,0,"barracks",1);
         barracks->maxUnitInside=4;
         auto target=f.building(35,30,1);
         std::vector<Unit*> army;
@@ -454,6 +454,40 @@ static void barracksAreFilledBeforeAttacking()
             assert(a.tactical_mission.requestedForce==6 && assigned(c,a.tactical_mission.flagId,6));
         }
     }
+}
+
+static void unusableTrainingDoesNotBlockAttacks()
+{
+    for(int untrained:{0,2,4}) {
+        Fixture f;f.building(10,10,0);
+        auto target=f.building(35,30,1);
+        auto low=f.building(14,10,0,"barracks");low->maxUnitInside=4;
+        auto high=f.building(14,30,0,"barracks",1);high->maxUnitInside=2;
+        for(int i=0;i<4;++i)f.warrior(20+i,20,3);
+        for(int i=0;i<untrained;++i)f.warrior(20+i,22,1);
+        auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
+        a.plan_offense(c);
+        assert(a.offense_diagnostics.openTrainingSlots==std::min(2,untrained));
+        assert(a.budget.tactical_kind==Tactics::MissionSiege);
+        assert(a.budget.tactical_requested_force==4+untrained-std::min(2,untrained));
+    }
+}
+
+static void trainingReservationsMatchDifferentLevels()
+{
+    Fixture f;f.building(10,10,0);
+    auto target=f.building(35,30,1);
+    // The first trainee fits either school of combat; the second only fits
+    // the higher level. Reassigning the first must preserve both reservations.
+    auto high=f.building(14,10,0,"barracks",1);high->maxUnitInside=1;
+    auto low=f.building(14,30,0,"barracks");low->maxUnitInside=1;
+    f.warrior(20,20,0);f.warrior(21,20,1);
+    for(int i=0;i<4;++i)f.warrior(22+i,20,3);
+    auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
+    a.strategy.tactics.flag_minimum_level=1;
+    a.plan_offense(c);
+    assert(a.offense_diagnostics.openTrainingSlots==2);
+    assert(a.budget.tactical_requested_force==4);
 }
 
 static void foodPostureDoesNotVetoCombat()
@@ -709,6 +743,8 @@ static void run()
     untrainedWarriorsFightAtLevelOne();
     minimumForceGate();
     barracksAreFilledBeforeAttacking();
+    unusableTrainingDoesNotBlockAttacks();
+    trainingReservationsMatchDifferentLevels();
     foodPostureDoesNotVetoCombat();
     sealedTargetOpensRoute();
     offenseFollowsDestroyedTargets();
