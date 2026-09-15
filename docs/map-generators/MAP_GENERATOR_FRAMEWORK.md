@@ -136,7 +136,7 @@ restores whatever landscape it had.
 | `city-states` | 17 | City states | Its own — see below |
 | `canals` | 29 | Canals | Its own — see below |
 | `braided-river` | 42 | Braided river | Its own — see below |
-| `rice-terraces` | 34 | Rice terraces | [Contour farms and summit towns](RICE_TERRACES.md) |
+| `rice-terraces` | 46 | Rice terraces | [Contour farms and summit towns](RICE_TERRACES.md) |
 | `rugged-archipelago` | 8 | Old islands | Island growth + beach passes, own resource search |
 | `contested-commons` | 9 | Contested commons | Point dispersion (`shared/legacy/Regions`) |
 | `rain-shadow` | 27 | Rain shadow | Its own — see below |

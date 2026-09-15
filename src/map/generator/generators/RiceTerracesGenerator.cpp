@@ -392,7 +392,7 @@ RiceTerracesOptions::RiceTerracesOptions(const GenerationRequest &r)
 GeneratorDefinition riceTerracesDefinition()
 {
 	return {"rice-terraces",
-			34,
+			46,
 			"Rice terraces",
 			5,
 			false,
