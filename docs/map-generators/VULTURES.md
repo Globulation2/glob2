@@ -173,6 +173,16 @@ Existing arithmetic and stream names are preserved for Old Growth compatibility.
   These catch programmer mistakes; they are distinct from a valid request that cannot place its
   promised world. Failures retain the generation stage and collected telemetry.
 
+## Rotation tournament
+
+A rotation tournament (six 256×256 maps, four colonies, every cyclic team rotation, four
+Nicowars, 45,000 ticks) found the map even and lively: pooled per-start peaks of 125 to 131
+units, 50 to 55 warriors per colony, five eliminations in 96 colony-games, and a
+root-mean-square position bias of zero. Starvation deaths of 20 to 25 per colony are the
+finite food doing its work rather than a defect. No colony builds prestige on a finite-food
+map, so games that reach the cap are adjudicated on units, which makes the team-index tally of
+that adjudication noisy; read the per-start economy instead. The defaults are unchanged.
+
 ## Reusable framework additions
 
 - `ClearingLandscape`: layout construction extracted unchanged from Old Growth. Vultures supplies
