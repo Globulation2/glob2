@@ -103,6 +103,8 @@ inline void sketchChecks()
 			sketch[t.at(x, y)] = WATER;
 	const TerrainSketch before = sketch;
 	layBeaches(sketch, t);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
 		{
 			const int i = t.at(x, y);
 			if (before[i] == WATER)
@@ -198,9 +200,12 @@ inline void plantingChecks()
 	{ return i % t.w >= 40 && i % t.w < 42 && i / t.w >= 40 && i / t.w < 44; };
 	assert(growPatch(map, t, t.at(40, 40), WOOD, 50, box) == 8);
 	assert(countResource(map, WOOD) == 8);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
 			if (map.getResource(x, y).type == WOOD)
 				assert(box(t.at(x, y)));
 
+	GenerationRequest request;
 	request.seed = 5;
 	request.nbTeams = 1;
 	GenerationContext context(request);
@@ -214,6 +219,7 @@ inline void plantingChecks()
 	const int anywhereAlgae = countResource(map, ALGA);
 	assert(anywhereAlgae > 0);
 	std::vector<unsigned char> wet(t.size()), dry(t.size());
+	for (int i = 0; i < t.size(); ++i)
 	{
 		wet[i] = map.isWater(i % t.w, i / t.w);
 		dry[i] = !wet[i];
@@ -227,6 +233,8 @@ inline void plantingChecks()
 	// The band constrains the clumps' centres, so single-tile clumps show it exactly.
 	seedAlgae(map, context, t, "algae", 100, AlgaeBand{2, 3, 1, 0});
 	assert(countResource(map, ALGA) > 0);
+	for (int i = 0; i < t.size(); ++i)
+		if (map.getResource(i % t.w, i / t.w).type == ALGA)
 			assert(offshore[i] >= 2 && offshore[i] <= 3);
 	assert(scaledCount(40, 0) == 0);
 	map.setNoResource(8, 40, 1);
@@ -245,6 +253,8 @@ inline void plantingChecks()
 	std::vector<unsigned char> keep(t.size(), 0);
 	keep[t.at(30, 10)] = 1;
 	clearAroundSwarms(map, context, t, &keep);
+	for (int dy = -3; dy < 7; ++dy)
+		for (int dx = -3; dx < 7; ++dx)
 		{
 			const bool inside = dx >= -2 && dx < 6 && dy >= -2 && dy < 6;
 			const bool kept = dx == 0 && dy == 0;
@@ -261,6 +271,7 @@ inline void roadChecks()
 	const Torus t(16, 16);
 	std::vector<unsigned char> goal(t.size(), 0), blocked(t.size(), 0), costly(t.size(), 0);
 	goal[t.at(12, 8)] = 1;
+	for (int y = 0; y < t.h; ++y)
 	{
 		costly[t.at(7, y)] = 1;
 		blocked[t.at(15, y)] = 1;
@@ -283,7 +294,10 @@ inline void roadChecks()
 
 	// On the map, stone columns either side of the source: any walk to the goal crosses one of
 	// them, and openRoad clears exactly one tile of it.
+	Game game(nullptr);
 	grassMap(game, 4, 4);
+	Map &map = game.map;
+	for (int y = 0; y < map.getH(); ++y)
 	{
 		map.setResource(7, y, STONE, 1);
 		map.setResource(15, y, STONE, 1);
@@ -292,8 +306,10 @@ inline void roadChecks()
 	assert(openRoad(map, Torus(map), {t.at(2, 8)}, goal));
 	assert(countResource(map, STONE) == 31);
 	std::vector<unsigned char> wall(t.size(), 0);
+	for (int y = 0; y < t.h; ++y)
 		wall[t.at(9, y)] = wall[t.at(15, y)] = 1;
 	assert(!openRoad(map, Torus(map), {t.at(2, 8)}, goal, &wall));
+	assert(countResource(map, STONE) == 31);
 }
 
 // Settlements and the pipeline stages round them: settleColonies puts every colony down,
@@ -312,6 +328,7 @@ inline void settlementChecks()
 		request.nbTeams = 2;
 		request.nbWorkers = 3;
 		GenerationContext context(request);
+		game.addTeam();
 		game.addTeam();
 		const std::vector<unsigned char> everywhere(t.size(), 1);
 		assert(settleColonies(
@@ -348,8 +365,14 @@ inline void settlementChecks()
 	}
 	{
 		// A colony on bare grass: the guarantee gives it wheat and wood within range.
+		Game game(nullptr);
+		grassMap(game, 6, 6);
+		Map &map = game.map;
+		const Torus t(map);
+		GenerationRequest request;
 		request.seed = 9;
 		request.nbTeams = 1;
+		GenerationContext context(request);
 		context.bootX[0] = 20;
 		context.bootY[0] = 20;
 		guaranteeStartingResources(game, context, 24, 32);
@@ -403,8 +426,17 @@ inline void settlementChecks()
 	}
 	{
 		// A colony buried in wood: openCrampedStarts clears rings until it can build again.
+		Game game(nullptr);
+		grassMap(game, 6, 6);
+		Map &map = game.map;
+		const Torus t(map);
+		GenerationRequest request;
 		request.seed = 21;
+		request.nbTeams = 1;
 		request.nbWorkers = 2;
+		GenerationContext context(request);
+		game.addTeam();
+		const std::vector<unsigned char> everywhere(t.size(), 1);
 		assert(placeSettlement(game, context, 0, everywhere, {30, 30}, "starts"));
 		for (int dy = -12; dy <= 12; ++dy)
 			for (int dx = -12; dx <= 12; ++dx)
@@ -431,13 +463,20 @@ inline void settlementChecks()
 // ones every time for the same map.
 inline void balancedStartChecks()
 {
+	Game game(nullptr);
+	grassMap(game, 6, 6);
+	Map &map = game.map;
+	const Torus t(map);
+	const auto anywhere = [](int) { return true; };
 	growPatch(map, t, t.at(16, 16), WHEAT, 12, anywhere);
 	growPatch(map, t, t.at(22, 16), WOOD, 12, anywhere);
 	growPatch(map, t, t.at(48, 48), WHEAT, 12, anywhere);
 	growPatch(map, t, t.at(42, 48), WOOD, 12, anywhere);
+	GenerationRequest request;
 	request.seed = 4;
 	request.nbTeams = 2;
 	request.nbWorkers = 4;
+	GenerationContext context(request), again(request);
 	assert(chooseBalancedStarts(game, context, 20 * 20));
 	assert(chooseBalancedStarts(game, again, 20 * 20));
 	for (int team = 0; team < 2; ++team)
@@ -462,7 +501,9 @@ inline void balancedStartChecks()
 // stone, and nothing lands on water.
 inline void scatterChecks()
 {
+	Game game(nullptr);
 	game.map.setSize(6, 6);
+	game.map.setGame(&game);
 	game.map.makeHomogenMap(WATER);
 	for (int y = 20; y < 40; ++y)
 		for (int x = 0; x < 64; ++x)
@@ -470,7 +511,9 @@ inline void scatterChecks()
 				game.map.setUMTerrain(x, y, GRASS);
 	game.map.controlSand();
 	game.map.rebuildTerrain();
+	GenerationRequest request;
 	request.seed = 13;
+	GenerationContext context(request);
 	scatterResources(game, context, {40, 20, 30, 0, 0});
 	int wheat[2] = {0, 0}, wood[2] = {0, 0}, stone[2] = {0, 0};
 	for (int y = 0; y < game.map.getH(); ++y)
@@ -478,6 +521,7 @@ inline void scatterChecks()
 		{
 			const int type = game.map.getResource(x, y).type;
 			if (type == NO_RES_TYPE)
+				continue;
 			assert(!game.map.isWater(x, y));
 			const int island = x < 30 ? 0 : 1;
 			wheat[island] += type == WHEAT;
@@ -508,6 +552,7 @@ inline void noiseChecks()
 	for (int v : field)
 		assert(v >= 0 && v <= 65535);
 	for (int v : fractal)
+		assert(v >= 0 && v <= 65535);
 	const std::vector<float> torus = torusNoise(64, 32, rng);
 	float peak = 0;
 	for (float v : torus)
@@ -524,9 +569,12 @@ inline void noiseChecks()
 // on each wedge's middle; a blob holds what lies inside its outline.
 inline void wedgeChecks()
 {
+	const Torus t(64, 64);
 	const WedgeFrame frame(t, 0.0, 4);
 	assert(frame.cx == 32 && frame.cy == 32 && std::abs(frame.wedge - kPi / 2) < 1e-12);
 	int perWedge[4] = {0, 0, 0, 0};
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
 		{
 			const WedgeFrame::Cell cell = frame.cell(x, y);
 			assert(cell.k >= 0 && cell.k < 4 && cell.u >= 0 && cell.u < 1);
@@ -541,7 +589,9 @@ inline void wedgeChecks()
 	WedgeFrame::Cell bent = middle;
 	frame.bend(bent, 2.0);
 	assert(bent.s < middle.s - 1.5 && bent.d == middle.d);
+	GenerationRequest request;
 	request.seed = 2;
+	GenerationContext context(request);
 	const Blob round{0, 10, 1.0, 0.0, RadialShape(3, 0, context, "blob")};
 	assert(round.holds(0, 0) && round.holds(2.5, 0) && !round.holds(0, 3.5) && round.reach() == 3);
 	const Blob stretched{0, 10, 2.0, 0.0, RadialShape(3, 0, context, "blob")};
@@ -552,7 +602,9 @@ inline void wedgeChecks()
 // name, independent of the other streams.
 inline void shuffleChecks()
 {
+	GenerationRequest request;
 	request.seed = 6;
+	GenerationContext context(request), again(request);
 	std::vector<int> order(20), same(20);
 	for (int i = 0; i < 20; ++i)
 		order[i] = same[i] = i;
@@ -563,12 +615,14 @@ inline void shuffleChecks()
 													   10, 11, 12, 13, 14, 15, 16, 17, 18, 19}));
 	std::vector<int> sorted = order;
 	std::sort(sorted.begin(), sorted.end());
+	for (int i = 0; i < 20; ++i)
 		assert(sorted[i] == i);
 	struct Layout
 	{
 		Torus t{1, 1};
 		std::string failure;
 	};
+	Game game(nullptr);
 	game.map.setSize(5, 5);
 	Layout rebuilt;
 	rebuilt.t = {32, 32};
@@ -577,6 +631,7 @@ inline void shuffleChecks()
 	assert(designMismatch(rebuilt, game.map, "test") ==
 		   "The test design does not match the map size.");
 	rebuilt.failure = "no room";
+	assert(designMismatch(rebuilt, game.map, "test") ==
 		   "The test design could not be rebuilt: no room");
 }
 
@@ -588,6 +643,8 @@ inline void drawingChecks()
 	const Torus t(32, 16);
 	std::vector<unsigned char> mask(t.size(), 0);
 	strokePath(mask, t, {{2, 8, 2.5}, {12, 8, 2.5}});
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
 		{
 			const double dx = x < 2 ? 2 - x : x > 12 ? x - 12 : 0, dy = y - 8;
 			assert(mask[t.at(x, y)] == (dx * dx + dy * dy < 2.5 * 2.5));
@@ -596,14 +653,19 @@ inline void drawingChecks()
 	strokePath(mask, t, {{-3, 4, 1.5}, {3, 4, 1.5}}, 7);
 	assert(mask[t.at(31, 4)] == 7 && mask[t.at(29, 4)] == 7 && mask[t.at(2, 4)] == 7);
 	assert(mask[t.at(27, 4)] == 0 && mask[t.at(31, 6)] == 0);
+	std::fill(mask.begin(), mask.end(), 0);
 	strokePath(mask, t, {{16, 8, 4}, {26, 8, 0.5}});
 	assert(mask[t.at(16, 11)] && !mask[t.at(25, 9)] && mask[t.at(25, 8)]);
+	std::fill(mask.begin(), mask.end(), 0);
 	strokePath(mask, t, {{10, 10, 1.1}});
 	assert(std::count(mask.begin(), mask.end(), 1) == 5);
 	const std::vector<StrokePoint> curve = bezierPath({0, 0}, {10, 10}, {20, 0}, 1, 3, 10);
 	assert(curve.size() == 11 && curve.front().x == 0 && curve.back().x == 20);
 	assert(std::abs(curve[5].y - 5) < 1e-9 && std::abs(curve[5].halfWidth - 2) < 1e-9);
 
+	GenerationRequest request;
+	request.seed = 11;
+	GenerationContext context(request);
 	const RadialShape shape(5, 0.4, context, "shape");
 	std::vector<unsigned char> upright(t.size(), 0), turned(t.size(), 0);
 	fillShape(upright, t, 16, 8, shape);
@@ -706,7 +768,9 @@ inline void stretchChecks()
 	assert(std::abs(round.cell(32 + 20, 8).d - 5) < 1e-9);
 	assert(std::abs(round.cell(32, 8 + 5).d - 5) < 1e-9);
 
+	GenerationRequest request;
 	request.seed = 3;
+	GenerationContext context(request);
 	const RadialShape disc(4, 0, context, "stretch");
 	std::vector<unsigned char> plain(t.size(), 0), oval(t.size(), 0);
 	fillShape(plain, t, 32, 8, disc);
@@ -729,6 +793,8 @@ inline void dressingChecks()
 	eligible[t.at(16, 16)] = 0;
 	sprinkleSand(sketch, t, eligible, 0.25, 3, [&](int i) { return double(i % t.w); });
 	int sand = 0;
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
 			if (sketch[t.at(x, y)] == SAND)
 			{
 				++sand;
@@ -739,10 +805,14 @@ inline void dressingChecks()
 	assert(sand == int(std::lround((20 * 20 - 1) * 0.25)) && sketch[t.at(24, 12)] == SAND &&
 		   sketch[t.at(7, 12)] == GRASS);
 
+	Game game(nullptr);
+	grassMap(game, 6, 6);
+	Map &map = game.map;
 	const Torus m(map);
 	for (int y = 0; y < m.h; ++y)
 		for (int x = 0; x < m.w; ++x)
 			map.setUMTerrain(x, y, x >= 40 && x < 48 ? SAND : WATER);
+	map.rebuildTerrain();
 	const std::vector<double> chance = algaeGrowthChance(map, m);
 	assert(chance[m.at(44, 10)] == 0);                   // sand, not water
 	assert(chance[m.at(36, 10)] > chance[m.at(20, 10)]); // nearer the sand grows faster
@@ -752,7 +822,10 @@ inline void dressingChecks()
 	// map that has none.
 	for (int x = 0; x < m.w; ++x)
 		map.setUMTerrain(x, 5, WATER);
+	for (int y = 0; y < m.h; ++y)
 		for (int x = 40; x < 48; ++x)
+			map.setUMTerrain(x, y, WATER);
+	map.rebuildTerrain();
 	const std::vector<double> dry = algaeGrowthChance(map, m);
 	assert(std::count(dry.begin(), dry.end(), 0.0) == long(dry.size()));
 }
@@ -761,6 +834,10 @@ inline void dressingChecks()
 // turns its offsets with its facing; scatterClumps stops after its attempts on ineligible ground.
 inline void layerChecks()
 {
+	Game game(nullptr);
+	grassMap(game, 6, 6);
+	Map &map = game.map;
+	const Torus t(map);
 	std::vector<int> tiles;
 	for (int x = 0; x < 20; ++x)
 		tiles.push_back(t.at(x, 5));
@@ -773,6 +850,9 @@ inline void layerChecks()
 	assert(east.at(4, 1, 3).x == 14 && east.at(4, 1, 3).y == 11 && east.at(4, 1, 3).within == 3);
 	assert(south.at(4, 1, 3).x == 9 && south.at(4, 1, 3).y == 14);
 
+	GenerationRequest request;
+	request.seed = 3;
+	GenerationContext context(request);
 	std::vector<int> ground{t.at(40, 40), t.at(50, 50)};
 	int calls = 0;
 	assert(scatterClumps(
@@ -783,9 +863,12 @@ inline void layerChecks()
 				   ++calls;
 			   }) == 4 &&
 		   calls == 4);
+	assert(scatterClumps(
 			   context, t, ground, 2, "clumps", [](int) { return false; },
 			   [](MapGeneratorPoint) { assert(false); }) == 0);
+	assert(scatterClumps(
 			   context, t, {}, 2, "clumps", [](int) { return true; },
+			   [](MapGeneratorPoint) { assert(false); }) == 0);
 }
 
 // Walls: a sealed coast keeps anything landing on the beach out; labelBorders leaves no diagonal
@@ -794,21 +877,30 @@ inline void layerChecks()
 // its ground; arcPath runs round its circle.
 inline void wallChecks()
 {
+	Game game(nullptr);
 	grassMap(game, 5, 5);
+	Map &map = game.map;
+	const Torus t(map);
+	TerrainSketch sketch(t.size(), WATER);
 	for (int y = 6; y < 26; ++y)
 		for (int x = 6; x < 26; ++x)
+			sketch[t.at(x, y)] = GRASS;
+	layBeaches(sketch, t);
 	writeUndermap(map, sketch);
 	std::vector<unsigned char> sea(t.size(), 0), none(t.size(), 0), all(t.size(), 1);
+	for (int i = 0; i < t.size(); ++i)
 		sea[i] = map.getUMTerrain(i % t.w, i / t.w) == WATER;
 	const std::vector<unsigned char> margin = seaMargin(map, t, sea, none);
 	const std::vector<unsigned char> stone = sealCoasts(map, t, margin, all);
 	assert(std::count(stone.begin(), stone.end(), 1) > 40 && !margin[t.at(16, 16)]);
+	for (int i = 0; i < t.size(); ++i)
 		if (stone[i])
 		{
 			assert(!margin[i] && map.getTerrainType(i % t.w, i / t.w) == GRASS);
 			map.setResource(i % t.w, i / t.w, STONE, 1);
 		}
 	std::vector<unsigned char> beach(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
 		beach[i] = margin[i] && !map.isWater(i % t.w, i / t.w);
 	assert(std::count(beach.begin(), beach.end(), 1) > 0);
 	const std::vector<int> landed = reachesWithShut(map, t, beach, none);
@@ -831,11 +923,15 @@ inline void wallChecks()
 		for (int x = 8; x < 16; ++x)
 			labels[square.at(x, y)] = x == 12 ? -1 : 1;
 	const std::vector<unsigned char> border = labelBorders(square, labels);
+	for (int y = 0; y < square.h; ++y)
 		for (int x = 0; x < square.w; ++x)
 		{
 			const int i = square.at(x, y);
 			assert(border[i] == (x == 8 || x == 15));
 			if (labels[i] != 0 || border[i])
+				continue;
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
 				{
 					const int j = square.at(x + dx, y + dy);
 					assert(labels[j] != 1 || border[j]);
@@ -846,11 +942,13 @@ inline void wallChecks()
 	std::vector<unsigned char> buildable(strip.size(), 0), target(strip.size(), 0);
 	for (int y = 0; y < strip.h; ++y)
 	{
+		for (int x = 0; x < 4; ++x)
 			buildable[strip.at(x, y)] = 1;
 		target[strip.at(9, y)] = 1;
 	}
 	assert(towerReach(strip, buildable, target) == 6);
 	std::fill(buildable.begin(), buildable.end(), 0);
+	for (int y = 0; y < strip.h; ++y)
 		buildable[strip.at(2, y)] = 1;
 	assert(towerReach(strip, buildable, target) == INT_MAX);
 
@@ -879,6 +977,7 @@ inline void wallChecks()
 inline void territoryChecks()
 {
 	const Torus t(30, 30);
+	std::vector<unsigned char> eligible(t.size(), 1);
 	const std::vector<std::vector<int>> seeds = {{t.at(5, 5)}, {t.at(20, 8)}, {t.at(12, 22)}};
 	const auto noise = [&](int tile) { return (tile * 2654435761u) % 700; };
 	const Territories grown = growTerritories(t, eligible, seeds, noise);
@@ -887,6 +986,7 @@ inline void territoryChecks()
 	for (int k = 0; k < 3; ++k)
 	{
 		std::vector<unsigned char> mine(t.size(), 0);
+		for (int i = 0; i < t.size(); ++i)
 			mine[i] = grown.labels[i] == k;
 		// Four-connected inside its own ground: flood cardinally by hand.
 		std::vector<int> stack{seeds[k][0]};
@@ -928,6 +1028,7 @@ inline void territoryChecks()
 // siteAtDepth, smoothLabels and strandedGround; placeTower stocks a tower on allowed ground.
 inline void arenaChecks()
 {
+	const Torus t(64, 64);
 	std::vector<int> gateOf(t.size(), -2);
 	ringWithGates(t, 32, 32, 20, 1.2, {0.0, kPi}, 3, [&](int i, int gate) { gateOf[i] = gate; });
 	assert(gateOf[t.at(52, 32)] == 0 && gateOf[t.at(12, 32)] == 1 && gateOf[t.at(32, 52)] == -1);
@@ -945,7 +1046,9 @@ inline void arenaChecks()
 		   zigzag.legs[1].back().y == 4);
 
 	std::vector<unsigned char> road(t.size(), 0), water(t.size(), 0);
+	for (int x = 0; x < t.w; ++x)
 		road[t.at(x, 10)] = 1;
+	for (int y = 0; y < t.h; ++y)
 		water[t.at(0, y)] = 1;
 	keepRoadInland(road, t, water, 3);
 	assert(!road[t.at(2, 10)] && road[t.at(3, 10)] && !road[t.at(62, 10)]);
@@ -953,6 +1056,7 @@ inline void arenaChecks()
 	assert(spoiled[t.at(3, 9)] && spoiled[t.at(2, 10)] && !spoiled[t.at(3, 11)]);
 
 	std::vector<int> labels(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
 		labels[i] = i % t.w < 32 ? 0 : 1;
 	const std::vector<unsigned char> thin = labelBorders(t, labels),
 									 thick = labelBorders(t, labels, 2);
@@ -962,13 +1066,16 @@ inline void arenaChecks()
 
 	// Stranded ground and depth sites.
 	std::vector<unsigned char> ground(t.size(), 1);
+	for (int y = 0; y < t.h; ++y)
 		ground[t.at(20, y)] = 0;
 	const std::vector<unsigned char> stranded = strandedGround(t, {t.at(5, 5)}, ground);
 	assert(!stranded[t.at(19, 5)] && !stranded[t.at(21, 5)] && !stranded[t.at(20, 5)]);
+	for (int y = 0; y < t.h; ++y)
 		ground[t.at(40, y)] = 0;
 	const std::vector<unsigned char> cut = strandedGround(t, {t.at(5, 5)}, ground);
 	assert(cut[t.at(30, 5)] && !cut[t.at(50, 5)]);
 	std::vector<int> depth(t.size(), -1), room(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
 	{
 		depth[i] = i % t.w;
 		room[i] = std::min(i / t.w, t.h - 1 - i / t.w);
@@ -985,26 +1092,38 @@ inline void arenaChecks()
 		for (int x = 0; x < 60; ++x)
 			stripDepth[t.at(x, y)] = x;
 	std::vector<unsigned char> edge(t.size(), 1);
+	for (int y = 10; y < 30; ++y)
+		for (int x = 0; x < 60; ++x)
 			edge[t.at(x, y)] = 0;
 	const std::vector<int> stripRoom = stepsFrom(t, edge);
 	assert(growFarLake(
 			   t, lake, stripDepth, stripRoom, 3, 60, [](int) { return 0.0; }, queued, 1) == 60);
 	int distant = 0, nearby = 0;
+	for (int i = 0; i < t.size(); ++i)
 		if (lake[i])
 		{
 			assert(stripRoom[i] >= 3);
 			(i % t.w > 30 ? distant : nearby)++;
 		}
 	assert(distant == 60 && nearby == 0);
+	assert(growFarLake(
 			   t, lake, stripDepth, stripRoom, 12, 60, [](int) { return 0.0; }, queued, 2) == 0);
 
 	std::vector<int> jagged(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
 		jagged[i] = i % t.w < 32 ? 0 : 1;
 	jagged[t.at(20, 20)] = 1;
+	std::vector<unsigned char> keep(t.size(), 0);
 	smoothLabels(t, jagged, 1, keep);
 	assert(jagged[t.at(20, 20)] == 0 && jagged[t.at(40, 20)] == 1);
 
 	// Clumps round a circle and a stocked tower, on a real map with a sealed island.
+	Game game(nullptr);
+	grassMap(game, 6, 6);
+	Map &map = game.map;
+	GenerationRequest request;
+	request.seed = 5;
+	GenerationContext context(request);
 	const auto anywhere = [&](int i) { return clearGround(map, i % t.w, i / t.w); };
 	assert(plantRound(map, t, context, 32, 32, 10, {0.0, kPi / 2, kPi}, STONE, 0, 2, anywhere) ==
 		   3);
@@ -1025,15 +1144,22 @@ inline void arenaChecks()
 	assert(placeTower(game, 0, 1, 30, 30, 4, none) == -1);
 
 	// seaEntry finds the one grass gap in a walled coast.
+	TerrainSketch sketch(t.size(), WATER);
 	for (int y = 20; y < 44; ++y)
 		for (int x = 20; x < 44; ++x)
+			sketch[t.at(x, y)] = GRASS;
+	layBeaches(sketch, t);
+	writeUndermap(map, sketch);
 	const std::vector<unsigned char> lakes(t.size(), 0), inside(t.size(), 1);
 	const std::vector<unsigned char> margin = seaMargin(map, t, seaVertices(map, t, lakes), lakes);
 	std::vector<unsigned char> island(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
 		island[i] = !map.isWater(i % t.w, i / t.w);
 	std::vector<unsigned char> wall = sealCoasts(map, t, margin, island);
+	for (int i = 0; i < t.size(); ++i)
 		map.setNoResource(i % t.w, i / t.w, 1);
 	int gap = -1;
+	for (int i = 0; i < t.size(); ++i)
 		if (wall[i])
 		{
 			if (gap < 0 && i % t.w == 32)
@@ -1077,6 +1203,7 @@ inline void subtileRasterChecks()
 		sealed({k * 7 - 90, k * 13 - 50}, {300 - k * 11, k * 5 + 17});
 
 	const Torus t(24, 16);
+	std::vector<unsigned char> mask(t.size(), 0);
 	fillPolygon(mask, t,
 				{{2 * kSubtile, 3 * kSubtile},
 				 {5 * kSubtile, 3 * kSubtile},
@@ -1090,6 +1217,8 @@ inline void subtileRasterChecks()
 		c{19 * kSubtile + 5, 12 * kSubtile - 9}, d{-70, 12 * kSubtile - 9};
 	forEachTileInPolygon(t, {a, b, c}, [&](int tile) { ++cover[tile]; });
 	forEachTileInPolygon(t, {a, c, d}, [&](int tile) { ++cover[tile]; });
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
 		{
 			const long long cx = x * kSubtile + kSubtile / 2, cy = y * kSubtile + kSubtile / 2;
 			const bool inside = cy >= a.y && cy < d.y &&
@@ -1156,6 +1285,7 @@ inline void tessellationChecks()
 	contract(hexTessellation(64, 64, 32), 6);
 	contract(hexTessellation(256, 128, 48), 6);
 
+	GenerationRequest request;
 	request.seed = 9;
 	for (const Tessellation &lattice : {squares, hexes})
 	{
@@ -1190,6 +1320,7 @@ inline void tessellationChecks()
 					continue;
 				const auto &ce = lattice.edges[e].corners, &cf = lattice.edges[f].corners;
 				if (ce[0] == cf[0] || ce[0] == cf[1] || ce[1] == cf[0] || ce[1] == cf[1])
+					continue;
 				const auto steps = [&](const Tessellation &g)
 				{
 					const auto p = g.edgeEnds(int(e), g.edges[e].cells[0]);
@@ -1245,6 +1376,7 @@ inline void boundaryExclusionChecks()
 	assert(shifted.corners == reference.corners);
 	std::fill(excluded.begin(), excluded.end(), 1);
 	assert(relaxWarpOutside(shifted, reference.corners, edges, excluded, 2, 2) == -1);
+	assert(shifted.corners == reference.corners);
 }
 
 // The maze toolkit on a small tiling: pockets that fit, a spanning tree through the rest, one door
@@ -1267,7 +1399,9 @@ inline void graphMazeChecks()
 			isPocket[pocket] = 1;
 		assert(pocketsFit(g, isPocket));
 
+		GenerationRequest request;
 		request.seed = 4;
+		GenerationContext context(request);
 		std::vector<unsigned char> open(g.edges.size(), 0);
 		assert(carveSpanningTree(g, context, "maze", isPocket, open));
 		assert(std::count(open.begin(), open.end(), 1) == n - 3 - 1);
@@ -1284,16 +1418,22 @@ inline void graphMazeChecks()
 		std::vector<int> exits;
 		for (int cell : deadEnds(g, open, isPocket, exits))
 		{
+			int degree = 0;
+			for (int edge : g.cells[cell].edges)
+				degree += open[edge];
 			assert(!isPocket[cell] && degree == 1 && open[exits[cell]]);
 		}
 	}
 
 	const Torus t(8, 8);
+	std::vector<int> labels(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
 		labels[i] = i % t.w < 4 ? 0 : i % t.w == 4 ? -1 : 1;
 	std::vector<unsigned char> reached(t.size(), 1);
 	const RegionLeak leak = firstRegionLeak(t, reached, labels, [](int, int) { return false; });
 	assert(leak.tile >= 0 && labels[leak.tile] != labels[leak.neighbour]);
 	assert(firstRegionLeak(t, reached, labels, [](int, int) { return true; }).tile < 0);
+	for (int i = 0; i < t.size(); ++i)
 		reached[i] = labels[i] == 1;
 	assert(firstRegionLeak(t, reached, labels, [](int, int) { return false; }).tile < 0);
 }
@@ -1323,12 +1463,18 @@ inline void farmAndTowerChecks()
 		assert(std::abs(byWorth.areas[1] - 2 * byWorth.areas[0]) <= 2);
 	}
 
+	Game game(nullptr);
+	grassMap(game, 6, 6);
+	Map &map = game.map;
+	const Torus t(map);
 	std::vector<unsigned char> region(t.size(), 0);
 	for (int y = 10; y < 54; ++y)
 		for (int x = 10; x < 54; ++x)
 			region[t.at(x, y)] = 1;
+	TerrainSketch sketch(t.size(), GRASS);
 	const Farm farm = layFarm(sketch, t, region, 0, {32, 32}, 4, {6, 4});
 	assert(farm.rows >= 3 && !farm.water[t.at(32, 32)] && farm.row[t.at(32, 32)] % 2 == 0);
+	for (int i = 0; i < t.size(); ++i)
 	{
 		if (!region[i])
 			assert(farm.row[i] == -1 && !farm.water[i]);
@@ -1366,9 +1512,12 @@ inline void farmAndTowerChecks()
 				assert(!both.sand[i] && !both.water[i] && plotted[i] == GRASS);
 			}
 	}
+	layBeaches(sketch, t);
+	writeUndermap(map, sketch);
 	const int planted = plantFarm(map, t, farm, 10, 10, [](int) { return true; });
 	assert(planted == 20 && countResource(map, WHEAT) == 10 && countResource(map, WOOD) == 10);
 	int woodRow = -1;
+	for (int i = 0; i < t.size(); ++i)
 		if (map.getResource(i % t.w, i / t.w).type == WOOD)
 		{
 			assert(woodRow < 0 || farm.row[i] == woodRow);
@@ -1378,6 +1527,7 @@ inline void farmAndTowerChecks()
 	const Torus sea(64, 64);
 	std::vector<unsigned char> land(sea.size(), 0), everywhere(sea.size(), 1);
 	for (int y = 28; y < 36; ++y)
+		for (int x = 0; x < 64; ++x)
 			land[sea.at(x, y)] = 1;
 	// The strip is two homes, colony 0's to the west and colony 1's to the east.
 	std::vector<int> homeOf(sea.size(), -1);
@@ -1388,6 +1538,7 @@ inline void farmAndTowerChecks()
 		sea, land, homeOf, everywhere, {{16, 26}, {48, 26}}, {0, 1}, {{16, 32}, {48, 32}}, 4, 2);
 	int sizes[2] = {0, 0};
 	bool touches[2] = {false, false};
+	for (int i = 0; i < sea.size(); ++i)
 		if (fields[i] >= 0 && !land[i])
 		{
 			++sizes[fields[i]];
@@ -1399,11 +1550,13 @@ inline void farmAndTowerChecks()
 	assert(sizes[0] > 400 && std::abs(sizes[0] - sizes[1]) < sizes[0] / 5 && touches[0] &&
 		   touches[1]);
 	std::vector<unsigned char> first(sea.size(), 0), eastHome(sea.size(), 0);
+	for (int i = 0; i < sea.size(); ++i)
 	{
 		first[i] = fields[i] == 0 && !land[i];
 		eastHome[i] = homeOf[i] == 1;
 	}
 	const std::vector<int> fromFirst = stepsFrom(sea, first), fromEast = stepsFrom(sea, eastHome);
+	for (int i = 0; i < sea.size(); ++i)
 	{
 		if (fields[i] == 1 && !land[i])
 			assert(fromFirst[i] >= 4);
@@ -1412,6 +1565,7 @@ inline void farmAndTowerChecks()
 	}
 
 	std::vector<int> halves(sea.size(), 0);
+	for (int i = 0; i < sea.size(); ++i)
 		halves[i] = i % sea.w < 32 ? 0 : 1;
 	separateTerritories(sea, halves, 4);
 	assert(halves[sea.at(31, 5)] == -1 && halves[sea.at(32, 5)] == -1 &&
@@ -1428,14 +1582,17 @@ inline void farmAndTowerChecks()
 			   nearby[sea.at(31, 5)] == -1);
 		const std::vector<unsigned char> filled = fillToNearest(sea, halves, gap, 4);
 		assert(filled[sea.at(31, 5)] && halves[sea.at(31, 5)] == 0 && halves[sea.at(32, 5)] == 1);
+		for (int i = 0; i < sea.size(); ++i)
 			assert(halves[i] >= 0);
 		const auto door = [&](int i, int) { return i / sea.w >= 10 && i / sea.w < 14; };
 		const std::vector<unsigned char> walls = labelBorders(sea, halves, door);
 		assert(walls[sea.at(32, 5)] && !walls[sea.at(31, 5)] && !walls[sea.at(32, 11)]);
 		std::vector<unsigned char> reached(sea.size(), 0);
+		for (int i = 0; i < sea.size(); ++i)
 			reached[i] = !walls[i];
 		assert(firstRegionLeak(sea, reached, halves, [](int, int) { return false; }).tile >= 0);
 		// Through the door the sides meet; with the door's rows shut, nothing leaks, across the wrap too.
+		for (int i = 0; i < sea.size(); ++i)
 			if (i / sea.w >= 9 && i / sea.w < 15)
 				reached[i] = 0;
 		assert(firstRegionLeak(sea, reached, halves, [](int, int) { return false; }).tile < 0);
@@ -1447,13 +1604,17 @@ inline void farmAndTowerChecks()
 	assert(growLakeBeside(
 			   sea, lake, depth, room, 2, 40, site, 0, 1, 6, 20, [](int) { return 0.0; }, queued,
 			   1) == 40);
+	assert(growLakeBeside(
 			   sea, lake, depth, room, 2, 40, site, 0, -1, 6, 20, [](int) { return 0.0; }, queued,
 			   2) == 40);
+	for (int i = 0; i < sea.size(); ++i)
+		if (lake[i])
 			assert(std::abs(sea.offsetY(32, i / sea.w)) >= 6);
 
 	std::vector<int> owner(sea.size(), -1);
 	std::vector<unsigned char> buildable(sea.size(), 0), target(sea.size(), 0), keep(sea.size(), 0);
 	for (int y = 0; y < 64; ++y)
+		for (int x = 0; x < 64; ++x)
 		{
 			const int i = sea.at(x, y);
 			if (x >= 4 && x < 28)
@@ -1538,6 +1699,7 @@ inline void cellCrossingChecks()
 
 inline void partitionChecks()
 {
+	const Torus t(8, 8);
 	std::vector<unsigned char> open(t.size(), 0);
 	std::vector<int> labels(t.size(), -1);
 	// Unlabelled ground must still carry connectivity between labelled plots.
@@ -1559,14 +1721,20 @@ inline void partitionChecks()
 	assert(labelComponents(connectedRegions(open, t.w, t.h, true, GridNeighbors::Cardinal), labels)
 			   .conflictTile < 0);
 	// The same contract must see a connection crossing the horizontal seam.
+	open.assign(t.size(), 0);
+	labels.assign(t.size(), -1);
 	open[t.at(0, 3)] = open[t.at(7, 3)] = 1;
 	labels[t.at(0, 3)] = 0;
 	labels[t.at(7, 3)] = 1;
+	assert(labelComponents(connectedRegions(open, t.w, t.h, true), labels).conflictTile >= 0);
 	assert(labelComponents(connectedRegions(open, t.w, t.h, false), labels).conflictTile < 0);
 }
 
 inline void gatePartitionChecks()
 {
+	const Torus t(16, 8);
+	std::vector<unsigned char> open(t.size(), 0);
+	std::vector<int> labels(t.size(), -1);
 	for (int y = 1; y <= 6; ++y)
 		for (int x = 1; x <= 14; ++x)
 			if (x <= 6 || x >= 9)
@@ -1589,14 +1757,19 @@ inline void gatePartitionChecks()
 	broken[0].tiles.push_back(t.at(4, 0));
 	assert(checkGatePartition(t, open, labels, broken).badGate == 0);
 	broken[0].tiles.clear();
+	assert(checkGatePartition(t, open, labels, broken).badGate == 0);
 	broken = gates;
 	broken[0].regions[1] = 2;
+	assert(checkGatePartition(t, open, labels, broken).badGate == 0);
 	// A two-tile diagonal bypass must be caught even though neither gate changed.
 	open[t.at(7, 1)] = open[t.at(8, 2)] = 1;
 	assert(checkGatePartition(t, open, labels, gates).leakTile >= 0);
 	// Three mutually disconnected rooms touch one plug. Merely finding the two
 	// intended sides would miss this unintended third exit.
+	open.assign(t.size(), 0);
+	labels.assign(t.size(), -1);
 	const int rooms[] = {t.at(3, 3), t.at(5, 3), t.at(4, 5)};
+	for (int k = 0; k < 3; ++k)
 	{
 		open[rooms[k]] = 1;
 		labels[rooms[k]] = k;
@@ -1623,6 +1796,7 @@ inline void baseChecks()
 	const BasePlan hamlet = standardBasePlan(BaseTier::Hamlet, BaseKind::Finished, 0, false);
 	assert(city.pieces.size() == 10 && city.depots.size() == 1 && city.reach == 10);
 	assert(town.pieces.size() == 6 && hamlet.pieces.size() == 4 && hamlet.reach < city.reach);
+	const Torus t(64, 64);
 	const std::vector<unsigned char> all(t.size(), 1);
 	// A quarter turn: facing 1's footprints are facing 0's turned about the site.
 	const std::vector<unsigned char> f0 = baseFootprints(t, city, {{32, 32, 0}});
@@ -1630,6 +1804,8 @@ inline void baseChecks()
 	// Three 4x4 footprints (swarm, barracks, racetrack) and seven 2x2 (three inns, hospital,
 	// school, two towers).
 	assert(std::count(f0.begin(), f0.end(), 1) == 3 * 16 + 7 * 4);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
 			assert(f0[t.at(x, y)] == f1[t.at(32 - (y - 32), 32 + (x - 32))]);
 	for (int facing = 0; facing < 4; ++facing)
 		assert(basePlanFits(t, city, {32, 32, facing}, all, all));
@@ -1642,9 +1818,15 @@ inline void baseChecks()
 	assert(around[t.at(34, 32)] && around[t.at(32, 32)] && !around[t.at(32, 32 + 12)]);
 	{
 		// A finished city on grass: every building, its stock, the garrison, the lists, the start.
+		Game game(nullptr);
+		grassMap(game, 6, 6);
+		GenerationRequest request;
 		request.seed = 5;
 		request.wDec = request.hDec = 6;
+		request.nbTeams = 1;
 		request.nbWorkers = 4;
+		GenerationContext context(request);
+		game.addTeam();
 		assert(raiseBase(game, context, 0, city, {32, 32, 2}, large, nullptr, "bases"));
 		const Team &team = *game.teams[0];
 		int counts[16] = {}, wheat = 0, bullets = 0;
@@ -1690,11 +1872,19 @@ inline void baseChecks()
 	}
 	{
 		// A city of sites: the swarm and one inn finished, eight level-0 sites, wood stacked beside.
+		Game game(nullptr);
+		grassMap(game, 6, 6);
+		GenerationRequest request;
 		request.seed = 6;
+		request.wDec = request.hDec = 6;
+		request.nbTeams = 1;
+		GenerationContext context(request);
+		game.addTeam();
 		const BasePlan sites = standardBasePlan(BaseTier::City, BaseKind::Sites, 0, false);
 		assert(sites.pieces.size() == 10 && sites.depots.size() == 4);
 		assert(raiseBase(game, context, 0, sites, {20, 40, 3}, baseGarrison(24, false), nullptr, "bases"));
 		int finished = 0, unfinished = 0;
+		for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
 			if (const Building *b = game.teams[0]->myBuildings[slot])
 			{
 				if (b->type->isBuildingSite)
@@ -1715,6 +1905,7 @@ inline void baseChecks()
 		CompoundMasks masks(t.size());
 		stampCompound(t, {32, 32, 0}, 5, 2, 3, 0, masks);
 		int interior = 0, wall = 0, gate = 0;
+		for (int i = 0; i < t.size(); ++i)
 		{
 			interior += masks.interiorOf[i] == 0;
 			wall += masks.wall[i];
@@ -1723,11 +1914,15 @@ inline void baseChecks()
 		assert(interior == 81 && wall == 34 && gate == 6);
 		assert(masks.gate[t.at(37, 32)] && masks.gate[t.at(27, 33)] && masks.wall[t.at(32, 37)]);
 		assert(compoundsApart(t, {32, 32, 0}, {45, 32, 0}, 5, 2) && !compoundsApart(t, {32, 32, 0}, {44, 32, 0}, 5, 2));
+		Game game(nullptr);
+		grassMap(game, 6, 6);
 		assert(!wallStanding(game.map, t, masks.wall, masks.gate, "test wall").empty());
+		for (int i = 0; i < t.size(); ++i)
 			if (masks.wall[i])
 				game.map.setResource(i % t.w, i / t.w, STONE, 1);
 		assert(wallStanding(game.map, t, masks.wall, masks.gate, "test wall").empty());
 		game.map.setResource(37, 32, STONE, 1);
+		assert(!wallStanding(game.map, t, masks.wall, masks.gate, "test wall").empty());
 	}
 	{
 		// Lanes about 12 apart on a 64x32 torus: five columns, three rows, spread by whole tiles.
