@@ -16,6 +16,17 @@ This is an optional generator, with no simulation, save-format, replay-version o
 network-version change. Stone remains an inexhaustible resource as well as a
 boundary. Towers can shoot across thin ridges: rock stops walking, not projectiles.
 
+## Rotation tournament
+
+A rotation tournament (six 256×256 maps, four colonies, every cyclic team rotation, four
+Nicowars, 45,000 ticks) found the map even and quiet: every start pooled between 70 and 110
+units at its peak, no colony was eliminated in 24 games, combat deaths stayed in single digits
+per colony, and every game was adjudicated on prestige at the cap. The valley economy caps a
+Nicowar colony near a hundred units before armies matter, and the pass network keeps them
+apart. Raising the extra open passes from 10 to 30 through the existing control changed
+none of this (pooled peaks 90 to 101, still no eliminations), so the defaults stand; whether
+the slower, builder's pace is what the map should feel like is a maintainer's call.
+
 ## Construction and heuristics
 
 The implementation is in
