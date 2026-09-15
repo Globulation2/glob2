@@ -2622,3 +2622,15 @@ Morænebakker
 Fletningen efterlader for lidt terrasse til hjemmene; brug et større kort eller en smallere fletning.
 [The map is too narrow across for a braid; use a bigger map.]
 Kortet er for smalt på tværs til en fletning; brug et større kort.
+[Drumlin field]
+Drumlinfelt
+[Drumlin spacing]
+Drumlinafstand
+[Drumlin length]
+Drumlinlængde
+[Water gap]
+Vandgab
+[Esker loops]
+Åssløjfer
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Åsene kunne ikke forbinde alle drumliner; brug et mindre vandgab eller et større kort.

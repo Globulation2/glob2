@@ -2546,3 +2546,15 @@ Montículos de morrena
 El trenzado deja muy poca terraza para las bases; usa un mapa más grande o un trenzado más estrecho.
 [The map is too narrow across for a braid; use a bigger map.]
 El mapa es demasiado estrecho para un trenzado; usa un mapa más grande.
+[Drumlin field]
+Campo de drumlins
+[Drumlin spacing]
+Separación de los drumlins
+[Drumlin length]
+Longitud de los drumlins
+[Water gap]
+Franja de agua
+[Esker loops]
+Bucles de eskers
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Los eskers no pudieron unir todos los drumlins; usa una franja de agua más estrecha o un mapa más grande.

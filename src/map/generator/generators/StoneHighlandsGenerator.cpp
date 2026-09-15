@@ -131,33 +131,6 @@ struct Layout
 	std::string failure;
 };
 
-struct Disjoint
-{
-	std::vector<int> parent;
-	explicit Disjoint(int count) : parent(count)
-	{
-		for (int i = 0; i < count; ++i)
-			parent[i] = i;
-	}
-	int find(int v)
-	{
-		while (parent[v] != v)
-		{
-			parent[v] = parent[parent[v]];
-			v = parent[v];
-		}
-		return v;
-	}
-	bool join(int a, int b)
-	{
-		a = find(a);
-		b = find(b);
-		if (a == b)
-			return false;
-		parent[b] = a;
-		return true;
-	}
-};
 
 // Up to three distinct valley ids, in ascending order, so a pair of valleys keys the same map entry
 // whichever of the two a scan met first.
@@ -672,7 +645,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// A random spanning tree of passes joins every valley; loopiness then opens that share of the
 	// remaining shared ridgelines as well.
 	L.passTile.assign(n, 0);
-	Disjoint sets(L.valleys);
+	DisjointSets sets(L.valleys);
 	int groups = L.valleys;
 	std::vector<std::pair<int, int>> edges, spare;
 	for (const auto &e : exclusive)
@@ -688,7 +661,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		}
 		if (carvePass(L, context, e.first, e.second, exclusive[e], alongRidge, o.passWidth))
 		{
-			sets.join(e.first, e.second);
+			sets.unite(e.first, e.second);
 			--groups;
 		}
 	}
@@ -706,7 +679,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			if (sets.find(e.first) != sets.find(e.second) &&
 				carvePass(L, context, e.first, e.second, anyPair[e], alongRidge, o.passWidth))
 			{
-				sets.join(e.first, e.second);
+				sets.unite(e.first, e.second);
 				--groups;
 			}
 	}

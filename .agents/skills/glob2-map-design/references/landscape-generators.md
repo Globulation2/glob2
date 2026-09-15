@@ -4,6 +4,7 @@ This reference reviews 16 generators, including their headers, implementation co
 controls, placement stages and validators. Together with [the structured-generator review](shaped-generators.md),
 the review covers all 32 entries in the [registry](../../../../src/map/generator/core/GeneratorRegistry.cpp)
 at authoring time (Braided river, 34, was added after the review and its row describes its own design). Numeric IDs are compatibility identities, not catalog order. Re-read the
+at authoring time. Numeric IDs are compatibility identities, not catalog order. Re-read the
 linked implementation when changing a generator: the examples below describe the reviewed code,
 not permanent API guarantees. Numbers are useful starting points for experiments, not universal
 playability thresholds. Comments headed “WHY IT PLAYS WELL” state design intent; they do not
@@ -11,7 +12,7 @@ establish that the result is fun.
 
 The reviewed option headers are `CoralGenerator.h`, `CraterLakesGenerator.h`,
 `EvergladesGenerator.h`, `FjordContinentGenerator.h`, `IslandsGenerator.h`,
-`OldGrowthGenerator.h`, `PolderGenerator.h`, `RainShadowGenerator.h`, `RiverGenerator.h`,
+`DrumlinFieldGenerator.h`, `OldGrowthGenerator.h`, `PolderGenerator.h`, `RainShadowGenerator.h`, `RiverGenerator.h`,
 `RuggedArchipelagoGenerator.h`, `ShatteredCoastGenerator.h`, `StoneHighlandsGenerator.h`,
 `SwampGenerator.h`, `TidalFlatsGenerator.h`, `WatershedGenerator.h` and `BraidedRiverGenerator.h`, all beside their
 linked implementations in `src/map/generator/generators/`.
@@ -34,6 +35,7 @@ linked implementations in `src/map/generator/generators/`.
 | [Coral, 21](../../../../src/map/generator/generators/CoralGenerator.cpp) | One branching fan grown breadth first and rotated into every colony's share; branches refuse collisions with all copies, with optional bridges. | Random structure can preserve a recognizable silhouette. Collision checks must include transformed copies; growth depth, taper and angle must scale with usable space. Keep supply trunks open and put prizes on remote tips. |
 | [Rain shadow, 27](../../../../src/map/generator/generators/RainShadowGenerator.cpp) | Periodic slanted stone ridges, staggered passes, wet windward streams and dry lee sand; lattice homes snapped into valleys. | Directional economics gives the map a grain. Pass approaches need continuous sand connections into useful routes, not short decorative strips that end in regrowing grass. |
 | [Old growth, 28](../../../../src/map/generator/generators/OldGrowthGenerator.cpp) | Dry wood cover outside protected, well-watered homes; rare distant lakes and hidden groves; optional starting trails. | Clearable barriers and permanent barriers produce different games. Dry forest preserves the history of cutting; hidden prizes should be priced in cutting cost, not straight-line distance. |
+| [Drumlin field, 33](../../../../src/map/generator/generators/DrumlinFieldGenerator.cpp) | Aligned teardrop hills packed under a grain metric in a water matrix; sand eskers from a near tree plus loops are the only dry routes; home heads parted from farm tails by a sand collar. | Anisotropic packing gives a swarm look with a guaranteed water gap; shut-esker isolation and collar continuity are validated on the finished map. Everything is fertile by design, so the beach rim is the permanent road; expect farm drumlins to grow shut. |
 | [Polder, 30](../../../../src/map/generator/generators/PolderGenerator.cpp) | Periodic crop/water rows crossed by sand dykes, grass villages/hamlets and clear farm plots. | Abundant food can produce a logistics game rather than automatic prosperity. Open village ground, anti-growth rings and remote inn plots are necessary complements to fertile rows. |
 | [Braided river, 34](../../../../src/map/generator/generators/BraidedRiverGenerator.cpp) | Antiphase sinusoidal channel threads in lanes across a belt along the long axis; bars are the land components between crossings; riffles (shared `SandFord`s) join them along a random spanning tree plus loops and one forced crossing per home; dry terraces with a sealed bluff line at the seam and an optional moraine. | Read a route graph back off the rasterized water (`channelCrossings`) rather than trusting the plan, and split request-only checks (`validateRequest`) from seed-dependent design failures the service should roll again. Without the sealed line at the torus seam the walk round the back was shorter than the braid. |
 

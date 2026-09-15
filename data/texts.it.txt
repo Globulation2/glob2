@@ -2608,3 +2608,15 @@ Dossi morenici
 L'intreccio lascia troppo poco terrazzo per le basi; usa una mappa più grande o un intreccio più stretto.
 [The map is too narrow across for a braid; use a bigger map.]
 La mappa è troppo stretta in larghezza per un intreccio; usa una mappa più grande.
+[Drumlin field]
+Campo di drumlin
+[Drumlin spacing]
+Distanza tra i drumlin
+[Drumlin length]
+Lunghezza dei drumlin
+[Water gap]
+Fascia d'acqua
+[Esker loops]
+Anelli di esker
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Gli esker non sono riusciti a collegare tutti i drumlin; usa una fascia d'acqua più stretta o una mappa più grande.

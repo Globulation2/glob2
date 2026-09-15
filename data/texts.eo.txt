@@ -2544,3 +2544,15 @@ Morenaj montetoj
 La plektaĵo lasas tro malmulte da teraso por la hejmoj; uzu pli grandan mapon aŭ pli mallarĝan plektaĵon.
 [The map is too narrow across for a braid; use a bigger map.]
 La mapo estas transverse tro mallarĝa por plektaĵo; uzu pli grandan mapon.
+[Drumlin field]
+Drumlina kampo
+[Drumlin spacing]
+Interspaco de drumlinoj
+[Drumlin length]
+Longo de drumlinoj
+[Water gap]
+Akva interspaco
+[Esker loops]
+Bukloj de eskeroj
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+La eskeroj ne povis kunligi ĉiujn drumlinojn; uzu pli malgrandan akvan interspacon aŭ pli grandan mapon.

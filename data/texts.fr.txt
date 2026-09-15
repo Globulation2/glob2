@@ -2556,3 +2556,15 @@ Buttes morainiques
 La tresse laisse trop peu de terrasse pour les bases ; utilisez une carte plus grande ou une tresse plus étroite.
 [The map is too narrow across for a braid; use a bigger map.]
 La carte est trop étroite en travers pour une tresse ; utilisez une carte plus grande.
+[Drumlin field]
+Champ de drumlins
+[Drumlin spacing]
+Espacement des drumlins
+[Drumlin length]
+Longueur des drumlins
+[Water gap]
+Largeur d'eau
+[Esker loops]
+Boucles d'eskers
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Les eskers n'ont pas pu relier tous les drumlins ; utilisez une largeur d'eau plus petite ou une carte plus grande.

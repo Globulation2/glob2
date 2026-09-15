@@ -26,6 +26,7 @@
 #include "LatticeNoise.h"
 #include "Pipeline.h"
 #include "Planting.h"
+#include "Points.h"
 #include "Resources.h"
 #include "Roads.h"
 #include "Settlements.h"
@@ -1438,6 +1439,285 @@ inline void graphMazeChecks()
 	assert(firstRegionLeak(t, reached, labels, [](int, int) { return false; }).tile < 0);
 }
 
+// Landforms under a grain: sites spread under a grain keep their distance under it (closer end to
+// end than side by side), fixed sites are kept and kept clear of; packed radii keep the gap between
+// every pair and drop what is too small; a teardrop is its width wide, its length long, widest
+// where asked, and fits its packed radius under the stretch; the near tree joins every cell with no
+// loop.
+inline void landformChecks()
+{
+	// Big enough that two fixed sites' exclusions (24 across, 60 along under the stretch) leave
+	// most of the map to the darts.
+	const Torus t(256, 128);
+	GenerationRequest request;
+	request.seed = 21;
+	GenerationContext context(request);
+	const Grain grain{2, 1, 250};
+	assert(grain.distance2(0, 0) == 0);
+	// Along the direction the metric shrinks by the stretch; across it, not at all.
+	assert(std::abs(grain.distance(4, 2) - std::hypot(4, 2) / 2.5) < 1e-9);
+	assert(std::abs(grain.distance(-1, 2) - std::hypot(1, 2)) < 1e-9);
+	// (2, 1) lies along the grain and (-1, 2) across it, equally long: across counts the stretch
+	// squared (6.25) more. A distance in tiles across the grain is a plain across offset.
+	assert(grain.distance2(-1, 2) == grain.distance2(2, 1) * 25 / 4);
+	assert((Grain{1, 0, 250}.metric2(3) == Grain{1, 0, 250}.distance2(0, 3)));
+	const std::vector<Site> fixed{{10, 10}, {40, 55}};
+	const std::vector<Site> sites = spreadPoints(t, 12, grain, context, "grain", fixed, 24);
+	assert(sites.size() > 2 && sites[0].x == 10 && sites[1].x == 40);
+	const std::vector<double> nearest = nearestSiteDistances(t, sites, grain);
+	for (size_t a = 0; a < sites.size(); ++a)
+	{
+		double nearestFound = std::min(t.w, t.h);
+		for (size_t b = 0; b < sites.size(); ++b)
+			if (a != b)
+			{
+				const double d = grain.distance(t, sites[a].x, sites[a].y, sites[b].x, sites[b].y);
+				nearestFound = std::min(nearestFound, d);
+				assert(d >= 12 * 83 / 100 - 1e-9);
+				if (b < 2 && a >= 2)
+					assert(d >= 24 - 1e-9);
+			}
+		assert(std::abs(nearest[a] - nearestFound) < 1e-9);
+	}
+	// Through the wrap: under a grain along the width, (0, 0) and (64, 0) on a 128-wide torus are
+	// 64 apart either way in map tiles, and 64 / 2.5 under the grain; (60, 20) and (68, 20) are 8
+	// apart in tiles and 3.2 under it, while the far way round is no nearer.
+	assert(std::abs(Grain{1, 0, 250}.distance(t, 0, 0, 128, 0) - 128 / 2.5) < 1e-9);
+	assert(std::abs(Grain{1, 0, 250}.distance(t, 60, 20, 68, 20) - 3.2) < 1e-9);
+	// And where the nearest image in tiles is not the nearest under the grain: (0, 0) to (62, 30)
+	// is 62 along and 30 across the short way, but 66 along and 30 across the other way round is
+	// 66 / 2.5 = 26.4 along under the grain against 24.8, so the short way still wins; under a
+	// slanted grain the two images can differ in which is nearer, which the four-image search
+	// settles (checked by the spread below keeping its distances).
+	assert(std::abs(Grain{1, 0, 250}.distance(t, 0, 0, 62, 30) - std::hypot(62 / 2.5, 30)) < 1e-9);
+
+	// Repeatable from a fresh context, and different for another seed.
+	GenerationContext again(request);
+	const std::vector<Site> repeat = spreadPoints(t, 12, grain, again, "grain", fixed, 24);
+	assert(repeat.size() == sites.size() && repeat[5].x == sites[5].x && repeat[5].y == sites[5].y);
+	request.seed = 22;
+	GenerationContext other(request);
+	const std::vector<Site> differ = spreadPoints(t, 12, grain, other, "grain", fixed, 24);
+	assert(differ.size() != sites.size() || differ[5].x != sites[5].x || differ[5].y != sites[5].y);
+
+	// Labels: every tile's nearest site under the grain, exactly as a full search finds it.
+	const std::vector<int> labels = nearestSiteLabels(t, sites, 12, grain);
+	for (int i = 0; i < t.size(); i += 7)
+	{
+		std::int64_t best = -1;
+		int who = -1;
+		for (size_t s = 0; s < sites.size(); ++s)
+		{
+			const std::int64_t d = grain.distance2(t, sites[s].x, sites[s].y, i % t.w, i / t.w);
+			if (who < 0 || d < best)
+			{
+				best = d;
+				who = int(s);
+			}
+		}
+		assert(labels[i] == who);
+	}
+
+	// Relaxation keeps the fixed sites still, moves the rest, and keeps the count.
+	const std::vector<Site> relaxed = relaxPoints(t, sites, grain, 12, 2, 2);
+	assert(relaxed.size() == sites.size() && relaxed[0].x == 10 && relaxed[1].y == 55);
+	assert(std::any_of(relaxed.begin() + 2, relaxed.end(), [&](const Site &site)
+					   { return site.x != sites[&site - &relaxed[0]].x ||
+								site.y != sites[&site - &relaxed[0]].y; }));
+
+	// Packing: fixed radii kept, every pair keeps the gap in map tiles (under the grain, the gap
+	// scaled by the pair's shrink), nothing above the maximum, small ones dropped, and a free site
+	// with room grows to the maximum. Two sites end to end along the grain keep a map-tile gap, not
+	// the stretch times it.
+	std::vector<double> given(sites.size(), -1);
+	given[0] = given[1] = 9;
+	const std::vector<double> radius = packLandforms(t, sites, grain, given, 4, 3, 9);
+	assert(radius[0] == 9 && radius[1] == 9);
+	for (size_t a = 0; a < sites.size(); ++a)
+	{
+		assert(radius[a] < 0 || (radius[a] >= 3 && radius[a] <= 9 + 1e-9));
+		for (size_t b = a + 1; b < sites.size(); ++b)
+			if (radius[a] >= 0 && radius[b] >= 0)
+			{
+				// The gap holds on whichever image of the pair is nearest under the grain.
+				const int dx = t.offsetX(sites[a].x, sites[b].x), dy = t.offsetY(sites[a].y, sites[b].y);
+				const int ox = dx > 0 ? dx - t.w : dx + t.w, oy = dy > 0 ? dy - t.h : dy + t.h;
+				const double under = grain.distance(t, sites[a].x, sites[a].y, sites[b].x, sites[b].y);
+				double across = 0;
+				for (const int ex : {dx, ox})
+					for (const int ey : {dy, oy})
+						if (std::abs(grain.distance(ex, ey) - under) < 1e-9)
+							across = std::hypot(ex, ey);
+				assert(radius[a] + radius[b] + 4 * under / across <= under + 1e-9);
+			}
+	}
+	const std::vector<Site> lone{{5, 5}, {64, 32}};
+	const std::vector<double> loneRadius =
+		packLandforms(Torus(128, 128), lone, Grain{1, 0, 100}, {-1, -1}, 4, 3, 9);
+	assert(loneRadius[0] == 9 && loneRadius[1] == 9);
+	// End to end along a grain of stretch 4: sites 40 apart along it are 10 apart under it, and
+	// with a gap of 4 map tiles (1 under the grain) each gets 4.5, not 3.
+	const std::vector<Site> endToEnd{{20, 20}, {60, 20}};
+	const std::vector<double> alongRadius =
+		packLandforms(Torus(128, 128), endToEnd, Grain{1, 0, 400}, {-1, -1}, 4, 3, 9);
+	assert((std::abs(alongRadius[0] - 4.5) < 1e-9 && std::abs(alongRadius[1] - 4.5) < 1e-9));
+
+	// Teardrop: symmetric across, widest where asked, tapering to nothing at both ends, inside the
+	// disc of its reach, and the fitted one reaches exactly its radius.
+	const Teardrop drop{40, 16, 0.4};
+	assert(std::abs(drop.halfWidthAt(-20 + 16) - 8) < 1e-9);
+	assert(drop.halfWidthAt(-20) == 0 && drop.halfWidthAt(20) == 0 && drop.halfWidthAt(-21) == 0);
+	assert(drop.contains(-4, 7.9) && drop.contains(-4, -7.9) && !drop.contains(-4, 8.1));
+	assert(drop.halfWidthAt(-10) > drop.halfWidthAt(-16));
+	assert(drop.halfWidthAt(10) > drop.halfWidthAt(16));
+	assert(drop.halfWidthAt(-4) > drop.halfWidthAt(4)); // the head is the fat end
+	const Teardrop fitted = Teardrop::fitting(10, 2.5);
+	assert(std::abs(fitted.reach(2.5) - 10) < 1e-6);
+	assert(std::abs(fitted.length - 2.5 * fitted.width) < 1e-9);
+	assert(fitted.width < 20 && fitted.width > 18);
+	std::vector<unsigned char> mask(t.size(), 0);
+	fillTeardrop(mask, t, 64, 32, 0, drop);
+	int count = 0, leftOfHead = 0;
+	for (int i = 0; i < t.size(); ++i)
+		if (mask[i])
+		{
+			++count;
+			leftOfHead += i % t.w < 64 - 20;
+		}
+	// Two half-ellipses on the same width add up to the whole ellipse's area.
+	assert(leftOfHead == 0 && count > 0.92 * kPi * 20 * 8 && count < 1.08 * kPi * 20 * 8);
+	assert(mask[t.at(64 - 19, 32)] && !mask[t.at(64 + 19, 40)] && mask[t.at(64 - 4, 39)]);
+	std::vector<unsigned char> turned(t.size(), 0);
+	fillTeardrop(turned, t, 64, 32, kPi / 2, drop);
+	assert(turned[t.at(64, 32 - 19)] && !turned[t.at(64 - 19, 32)]);
+
+	// Grain choices: the fixed headings, a random one within the eight, and the widest for a pair
+	// of sites lying along the width (the vertical grain keeps them farthest apart under it).
+	assert(grainForChoice(1, 250, context, "grain").dy == 0 &&
+		   grainForChoice(2, 250, context, "grain").dx == 0 &&
+		   grainForChoice(3, 250, context, "grain").dx == 1 &&
+		   grainForChoice(3, 250, context, "grain").dy == 1);
+	const Grain drawn = grainForChoice(0, 250, context, "grain");
+	assert(drawn.stretchPercent == 250 && (drawn.dx != 0 || drawn.dy != 0));
+	assert((widestGrainHeading(t, {{10, 10}, {40, 10}}, 250) == 4));
+	// Farthest sites: the farthest eligible site from the seeds first, then from that one too.
+	{
+		const std::vector<Site> line{{0, 0}, {10, 0}, {20, 0}, {30, 0}, {40, 0}};
+		const Torus wide(128, 128);
+		assert((farthestSites(wide, line, {0}, {1, 1, 1, 1, 1}, 2) == std::vector<int>{4, 2}));
+		assert((farthestSites(wide, line, {0}, {1, 1, 1, 0, 0}, 5) == std::vector<int>{2, 1}));
+	}
+	// A teardrop home: the town is the head, the collar a band across the waist, the tail the
+	// rest; its swarm stands in the town and its kit's crops seed on the tail, the quarry near the
+	// tip.
+	{
+		const TeardropHome home{};
+		const Teardrop shape{40, 16, 0.4};
+		int town = 0, collar = 0, tail = 0;
+		stampTeardropHome(t, {64, 32}, 0, shape, home,
+						  [&](int, int ground) { (ground == 0 ? town : ground == 1 ? collar : tail)++; });
+		assert(town > 0 && collar > 0 && tail > 0 && town + collar + tail > 0.92 * kPi * 20 * 8);
+		assert(collar < 3 * 16 && town > tail / 2);
+		const MapGeneratorPoint swarm = teardropHomeSwarm({64, 32}, 0, shape, home);
+		assert(swarm.x + 2 < 64 + home.collarAt(shape) && swarm.x + 2 > 64 - 20);
+		const Kit kit = teardropHomeKit({64, 32}, 0, shape, home, 14, 12, 2);
+		assert(kit.wheat.x > 64 + home.collarAt(shape) + 1 && kit.wood.x == kit.wheat.x &&
+			   kit.wheat.y < 32 && kit.wood.y > 32 && kit.stone.x < 64 - 10 && kit.stoneRadius == 2);
+	}
+
+	// The near tree: one edge fewer than cells, every cell reached, favouring short links.
+	const std::vector<std::vector<int>> neighbours = siteNeighbours(t, labels, int(sites.size()));
+	const CellGraph graph = cellGraph(t, sites, neighbours);
+	std::vector<unsigned char> blocked(sites.size(), 0), open(graph.edgeCells.size(), 0);
+	assert(carveNearTree(graph, context, "tree", blocked, 0, open));
+	assert(std::count(open.begin(), open.end(), 1) == int(sites.size()) - 1);
+	std::vector<int> reached(sites.size(), 0);
+	std::vector<int> stack{0};
+	reached[0] = 1;
+	while (!stack.empty())
+	{
+		const int cell = stack.back();
+		stack.pop_back();
+		for (int edge : graph.cellEdges[cell])
+			if (open[edge] && !reached[graph.other(edge, cell)])
+			{
+				reached[graph.other(edge, cell)] = 1;
+				stack.push_back(graph.other(edge, cell));
+			}
+	}
+	assert(std::all_of(reached.begin(), reached.end(), [](int r) { return r == 1; }));
+	// With no jitter it is the minimum spanning tree: no open edge is longer than a closed edge
+	// that would join the two sides it separates (checked on the longest open edge only).
+	long long longest = -1;
+	int longestEdge = -1;
+	for (size_t edge = 0; edge < open.size(); ++edge)
+		if (open[edge] && graph.distance2(graph.edgeCells[edge][0], graph.edgeCells[edge][1]) > longest)
+		{
+			longest = graph.distance2(graph.edgeCells[edge][0], graph.edgeCells[edge][1]);
+			longestEdge = int(edge);
+		}
+	assert(longestEdge >= 0);
+	std::vector<unsigned char> loops(open);
+	openLoops(graph, context, "tree", blocked, 100, loops);
+	assert(std::count(loops.begin(), loops.end(), 1) > std::count(open.begin(), open.end(), 1));
+	// Corridors along the open edges, carved only where eligible: one per open edge, and every
+	// corridor touches both its cells' surroundings.
+	{
+		std::vector<ShapePoint> middles;
+		for (const Site &site : sites)
+			middles.push_back({site.x + 0.5, site.y + 0.5});
+		std::vector<unsigned char> carved(t.size(), 0);
+		std::mt19937 &random = context.stream("corridors");
+		const auto edges = carveOpenEdges(carved, t, graph, middles, open, 1.5, 3.0, 0.2, random,
+										  [&](int i) { return i % 2 == 0; });
+		assert(edges.size() == size_t(std::count(open.begin(), open.end(), 1)));
+		assert(std::count(carved.begin(), carved.end(), 1) > 0);
+		for (int i = 0; i < t.size(); ++i)
+			assert(!carved[i] || i % 2 == 0);
+	}
+}
+
+// Colonies apart: with the causeway shut two colonies on two islands cannot reach each other, and
+// with it open they can; crops on the way do not count as a barrier.
+inline void colonyLeakChecks()
+{
+	Game game(nullptr);
+	game.map.setSize(6, 6);
+	game.map.setGame(&game);
+	game.map.makeHomogenMap(WATER);
+	const Torus t(64, 64);
+	TerrainSketch sketch(t.size(), WATER);
+	for (int y = 20; y < 44; ++y)
+		for (int x = 0; x < 64; ++x)
+			if ((x >= 4 && x < 24) || (x >= 36 && x < 56))
+				sketch[t.at(x, y)] = GRASS;
+	std::vector<unsigned char> causeway(t.size(), 0);
+	for (int y = 30; y < 33; ++y)
+		for (int x = 24; x < 36; ++x)
+			causeway[t.at(x, y)] = sketch[t.at(x, y)] = SAND;
+	layBeaches(sketch, t);
+	writeUndermap(game.map, sketch);
+	for (int k = 0; k < 2; ++k)
+		game.addTeam();
+	GenerationRequest request;
+	request.nbTeams = 2;
+	request.nbWorkers = 2;
+	GenerationContext context(request);
+	std::vector<unsigned char> homes[2];
+	for (int k = 0; k < 2; ++k)
+	{
+		homes[k].assign(t.size(), 0);
+		for (int i = 0; i < t.size(); ++i)
+			homes[k][i] = game.map.isGrass(i % t.w, i / t.w) && (k == 0 ? i % t.w < 30 : i % t.w > 30);
+		assert(placeSettlement(game, context, k, homes[k], MapGeneratorPoint(k ? 44 : 12, 24)));
+	}
+	game.map.setResource(30, 31, WHEAT, 1);
+	assert(colonyLeak(game.map, t, 2, roadTiles(t, causeway)) == (std::array<int, 2>{-1, -1}));
+	const std::array<int, 2> joined =
+		colonyLeak(game.map, t, 2, std::vector<unsigned char>(t.size(), 0));
+	assert(joined[0] == 0 && joined[1] == 1);
+}
+
 // Farms and towers: bestFarmRows follows the fit; layFarm lays alternating rows clear of the rim and
 // plantFarm fills crop rows with wheat nearest the water and keeps its wood to one row; growFarmFields shares open water equally and parts the
 // fields; separateTerritories opens a gap, fillToNearest closes it and labelBorders walls it but for a door;
@@ -1997,10 +2277,13 @@ inline void toolkitChecks()
 	cellCrossingChecks();
 	partitionChecks();
 	gatePartitionChecks();
+	landformChecks();
+	colonyLeakChecks();
 	puts("PASS shared toolkit: floods, sketch, planting, roads, settlements, balanced starts, "
 		 "premade bases, compounds, lanes, lots, routes, scatter, lattice noise, wedge frame, "
 		 "shuffle, drawing, branches, stretch, sand patches, algae growth, fields, clumps, walls, "
 		 "tower reach, territories, arena primitives, sealed lines, polygons, tessellations, warp, "
-		 "graph mazes, shortcuts, cell crossings, region labels and gate partitions");
+		 "graph mazes, shortcuts, cell crossings, region labels, gate partitions, region leaks, "
+		 "grained landforms, teardrop homes, near trees and colony leaks");
 }
 } // namespace ToolkitChecks

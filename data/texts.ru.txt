@@ -2544,3 +2544,15 @@ Emoji
 Разветвление оставляет базам слишком мало террасы; используйте карту побольше или более узкое разветвление.
 [The map is too narrow across for a braid; use a bigger map.]
 Карта слишком узка поперёк для разветвления; используйте карту побольше.
+[Drumlin field]
+Друмлинное поле
+[Drumlin spacing]
+Шаг друмлинов
+[Drumlin length]
+Длина друмлинов
+[Water gap]
+Полоса воды
+[Esker loops]
+Петли озов
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Озы не смогли соединить все друмлины; используйте более узкую полосу воды или карту побольше.

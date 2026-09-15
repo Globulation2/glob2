@@ -2546,3 +2546,15 @@ Moreenikumpareet
 Palmikko jättää kotialueille liian vähän terassia; käytä suurempaa karttaa tai kapeampaa palmikkoa.
 [The map is too narrow across for a braid; use a bigger map.]
 Kartta on poikittain liian kapea palmikolle; käytä suurempaa karttaa.
+[Drumlin field]
+Drumliinikenttä
+[Drumlin spacing]
+Drumliinien väli
+[Drumlin length]
+Drumliinien pituus
+[Water gap]
+Vesikaista
+[Esker loops]
+Harjulenkit
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Harjut eivät yhdistäneet kaikkia drumliineja; käytä kapeampaa vesikaistaa tai suurempaa karttaa.

@@ -2542,3 +2542,15 @@ Gò băng tích
 Dải bện để lại quá ít thềm cho các căn cứ; hãy dùng bản đồ lớn hơn hoặc dải bện hẹp hơn.
 [The map is too narrow across for a braid; use a bigger map.]
 Bản đồ quá hẹp theo chiều ngang cho một dải bện; hãy dùng bản đồ lớn hơn.
+[Drumlin field]
+Cánh đồng drumlin
+[Drumlin spacing]
+Khoảng cách drumlin
+[Drumlin length]
+Chiều dài drumlin
+[Water gap]
+Khoảng nước
+[Esker loops]
+Vòng esker
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Các esker không thể nối mọi drumlin; hãy dùng khoảng nước nhỏ hơn hoặc bản đồ lớn hơn.

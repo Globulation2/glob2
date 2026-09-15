@@ -2546,3 +2546,15 @@ Morénové pahorky
 Divočící řeka ponechává domovům příliš málo terasy; použijte větší mapu nebo užší řeku.
 [The map is too narrow across for a braid; use a bigger map.]
 Mapa je napříč příliš úzká pro divočící řeku; použijte větší mapu.
+[Drumlin field]
+Drumlinové pole
+[Drumlin spacing]
+Rozestup drumlinů
+[Drumlin length]
+Délka drumlinů
+[Water gap]
+Vodní mezera
+[Esker loops]
+Smyčky eskerů
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Eskery nedokázaly propojit všechny drumliny; použijte menší vodní mezeru nebo větší mapu.

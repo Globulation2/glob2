@@ -2616,3 +2616,15 @@ Emoji
 Το πλέγμα αφήνει πολύ λίγη αναβαθμίδα για τις βάσεις· χρησιμοποιήστε μεγαλύτερο χάρτη ή στενότερο πλέγμα.
 [The map is too narrow across for a braid; use a bigger map.]
 Ο χάρτης είναι πολύ στενός κατά πλάτος για πλέγμα· χρησιμοποιήστε μεγαλύτερο χάρτη.
+[Drumlin field]
+Πεδίο δρούμλιν
+[Drumlin spacing]
+Απόσταση δρούμλιν
+[Drumlin length]
+Μήκος δρούμλιν
+[Water gap]
+Ζώνη νερού
+[Esker loops]
+Βρόχοι έσκερ
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Τα έσκερ δεν μπόρεσαν να ενώσουν όλα τα δρούμλιν· χρησιμοποιήστε μικρότερη ζώνη νερού ή μεγαλύτερο χάρτη.

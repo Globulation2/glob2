@@ -105,6 +105,24 @@ void plantKit(Map &map, const Torus &t, GenerationContext &context, const Kit &k
 						   kit.stoneRadius);
 }
 
+/// A kit whose crops and quarry go on different ground: the wheat and wood patches on tiles
+/// `cropsEligible` allows and the stone clump on tiles `stoneEligible` allows (a farm tail and a
+/// town head, a watered chamber and a dry one), each from the nearest such tile to its seed.
+template <typename CropsEligible, typename StoneEligible>
+void plantSplitKit(Map &map, const Torus &t, GenerationContext &context, const Kit &kit,
+				   CropsEligible cropsEligible, StoneEligible stoneEligible)
+{
+	Kit crops = kit;
+	crops.stoneRadius = -1;
+	plantKit(map, t, context, crops, cropsEligible);
+	if (kit.stoneRadius < 0)
+		return;
+	if (const int seed = seedNear(t, kit.stone.x, kit.stone.y, kit.stone.within, stoneEligible);
+		seed >= 0)
+		placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), STONE,
+						   kit.stoneRadius);
+}
+
 /// A home's own frame for laying out its kit: an origin and a facing, so a kit designed once as
 /// offsets along and across the facing lands the same way round every home.
 struct KitFrame

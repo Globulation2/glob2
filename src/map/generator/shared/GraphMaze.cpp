@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GraphMaze.h"
+#include "Topology.h"
 #include "GenerationContext.h"
 #include <utility>
 #include <algorithm>
@@ -186,6 +187,35 @@ bool carveSpanningTree(const CellGraph &g, GenerationContext &context, const std
 		stack.push_back(next);
 	}
 	return std::all_of(visited.begin(), visited.end(), [](unsigned char v) { return v != 0; });
+}
+
+bool carveNearTree(const CellGraph &g, GenerationContext &context, const std::string &stream,
+				   const std::vector<unsigned char> &blocked, int jitterPercent,
+				   std::vector<unsigned char> &open)
+{
+	// Every edge between two free cells, keyed by its stretched distance; the edge index breaks
+	// ties, so the order is the same on every platform.
+	std::vector<std::pair<long long, int>> edges;
+	for (size_t edge = 0; edge < g.edgeCells.size(); ++edge)
+	{
+		const int a = g.edgeCells[edge][0], b = g.edgeCells[edge][1];
+		if (blocked[a] || blocked[b])
+			continue;
+		const long long stretch = 100 + context.bounded(stream, std::uint32_t(2 * jitterPercent + 1));
+		edges.push_back({g.distance2(a, b) * stretch, int(edge)});
+	}
+	std::sort(edges.begin(), edges.end());
+	DisjointSets sets(g.cellCount());
+	int joined = 0, free = 0;
+	for (int cell = 0; cell < g.cellCount(); ++cell)
+		free += !blocked[cell];
+	for (const auto &[key, edge] : edges)
+		if (sets.unite(g.edgeCells[edge][0], g.edgeCells[edge][1]))
+		{
+			open[edge] = 1;
+			++joined;
+		}
+	return free > 0 && joined == free - 1;
 }
 
 std::vector<int> openPocketDoors(const CellGraph &g, GenerationContext &context,

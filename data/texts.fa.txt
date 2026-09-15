@@ -2544,3 +2544,15 @@ Emoji
 نوار شریانی برای پایگاه‌ها تراس بسیار کمی باقی می‌گذارد؛ از نقشهٔ بزرگ‌تر یا نوار شریانی باریک‌تری استفاده کنید.
 [The map is too narrow across for a braid; use a bigger map.]
 نقشه از عرض برای نوار شریانی بسیار باریک است؛ از نقشهٔ بزرگ‌تر استفاده کنید.
+[Drumlin field]
+دشت درملین
+[Drumlin spacing]
+فاصلهٔ درملین‌ها
+[Drumlin length]
+طول درملین‌ها
+[Water gap]
+پهنای آب
+[Esker loops]
+حلقه‌های اسکر
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+اسکرها نتوانستند همهٔ درملین‌ها را به هم برسانند؛ پهنای آب را کمتر کنید یا از نقشهٔ بزرگ‌تری استفاده کنید.

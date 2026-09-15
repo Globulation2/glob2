@@ -2546,3 +2546,15 @@ Emoji
 Разгранање оставља премало терасе за базе; користите већу мапу или уже разгранање.
 [The map is too narrow across for a braid; use a bigger map.]
 Мапа је попреко преуска за разгранање; користите већу мапу.
+[Drumlin field]
+Друмлинско поље
+[Drumlin spacing]
+Размак друмлина
+[Drumlin length]
+Дужина друмлина
+[Water gap]
+Водени појас
+[Esker loops]
+Петље ескера
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Ескери нису могли да повежу све друмлине; користите ужи водени појас или већу мапу.

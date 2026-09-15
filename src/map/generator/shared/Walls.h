@@ -144,6 +144,14 @@ struct GatePartitionCheck
 GatePartitionCheck checkGatePartition(const Torus &, const std::vector<unsigned char> &passable,
 									  const std::vector<int> &labels,
 									  const std::vector<TileGate> &gates);
+/// The first two colonies that can walk to each other with the `shut` tiles closed, over land that
+/// is not stone, crops and buildings counted as the ground they will leave (only water, stone and
+/// the shut tiles part two colonies for good): {-1, -1} when every colony keeps to itself. The
+/// check for a map whose causeways, bridges or gates are meant to be the only ways between
+/// colonies: shut them and nobody should reach anybody. A shut sand line is undermap corners, so
+/// pass the tiles it makes walkable (Sketch.h's roadTiles), not the corners alone.
+std::array<int, 2> colonyLeak(const Map &, const Torus &, int teams,
+							  const std::vector<unsigned char> &shut);
 
 /// The size of a defence tower's footprint, and the range of each of its three levels
 /// (BuildingTypesDefence.cpp). A tower scans square rings round its footprint's top-left tile with

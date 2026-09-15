@@ -40,6 +40,7 @@
 #include "GlacisGenerator.h"
 #include "AllotmentsGenerator.h"
 #include "CaravanseraiGenerator.h"
+#include "DrumlinFieldGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -167,6 +168,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 allotmentsDefinition(),
 											 caravanseraiDefinition(),
 											 braidedRiverDefinition(),
+											 drumlinFieldDefinition(),
 											 uniformDefinition()});
 	return registry;
 }

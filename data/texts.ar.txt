@@ -2544,3 +2544,15 @@ Emoji
 الضفيرة لا تترك مدرجات كافية للمواطن؛ استخدم خريطة أكبر أو ضفيرة أضيق.
 [The map is too narrow across for a braid; use a bigger map.]
 الخريطة ضيقة جدًا بالعرض لضفيرة؛ استخدم خريطة أكبر.
+[Drumlin field]
+حقل الدرملن
+[Drumlin spacing]
+تباعد الدرملن
+[Drumlin length]
+طول الدرملن
+[Water gap]
+فجوة الماء
+[Esker loops]
+حلقات الإسكر
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+تعذّر على الإسكر وصل كل الدرملن؛ استخدم فجوة ماء أصغر أو خريطة أكبر.

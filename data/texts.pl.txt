@@ -2546,3 +2546,15 @@ Pagórki morenowe
 Roztoka zostawia za mało terasy dla baz; użyj większej mapy lub węższej roztoki.
 [The map is too narrow across for a braid; use a bigger map.]
 Mapa jest w poprzek za wąska na roztokę; użyj większej mapy.
+[Drumlin field]
+Pole drumlinów
+[Drumlin spacing]
+Odstęp drumlinów
+[Drumlin length]
+Długość drumlinów
+[Water gap]
+Pas wody
+[Esker loops]
+Pętle ozów
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Ozy nie zdołały połączyć wszystkich drumlinów; użyj węższego pasa wody lub większej mapy.

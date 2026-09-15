@@ -2546,3 +2546,15 @@ Morenski grički
 Preplet pušča domovom premalo terase; uporabite večji zemljevid ali ožji preplet.
 [The map is too narrow across for a braid; use a bigger map.]
 Zemljevid je počez preozek za preplet; uporabite večji zemljevid.
+[Drumlin field]
+Drumlinsko polje
+[Drumlin spacing]
+Razmik drumlinov
+[Drumlin length]
+Dolžina drumlinov
+[Water gap]
+Vodna vrzel
+[Esker loops]
+Zanke eskerjev
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Eskerji niso mogli povezati vseh drumlinov; uporabite manjšo vodno vrzel ali večji zemljevid.

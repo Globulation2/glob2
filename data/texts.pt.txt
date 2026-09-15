@@ -2552,3 +2552,15 @@ Montículos de moreia
 O entrançado deixa pouco terraço para as bases; use um mapa maior ou um entrançado mais estreito.
 [The map is too narrow across for a braid; use a bigger map.]
 O mapa é demasiado estreito para um entrançado; use um mapa maior.
+[Drumlin field]
+Campo de drumlins
+[Drumlin spacing]
+Espaçamento dos drumlins
+[Drumlin length]
+Comprimento dos drumlins
+[Water gap]
+Faixa de água
+[Esker loops]
+Ciclos de eskers
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Os eskers não conseguiram ligar todos os drumlins; use uma faixa de água mais estreita ou um mapa maior.
