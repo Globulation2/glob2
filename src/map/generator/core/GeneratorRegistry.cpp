@@ -166,6 +166,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 glacisDefinition(),
 											 allotmentsDefinition(),
 											 caravanseraiDefinition(),
+											 braidedRiverDefinition(),
 											 uniformDefinition()});
 	return registry;
 }
