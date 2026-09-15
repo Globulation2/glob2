@@ -2466,3 +2466,11 @@ Ylitykset
 Linnoitukset
 [Gate width]
 Portin leveys
+[Braided Delta]
+Haarautuva suisto
+[Braid count]
+Jokihaarojen määrä
+[Rejoining frequency]
+Yhtymiskohtien tiheys
+[Crossing spacing]
+Ylityspaikkojen väli

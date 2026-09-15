@@ -2462,3 +2462,11 @@ Emoji
 Фортеці
 [Gate width]
 Ширина воріт
+[Braided Delta]
+Розгалужена дельта
+[Braid count]
+Кількість проток
+[Rejoining frequency]
+Частота злиттів
+[Crossing spacing]
+Відстань між переправами

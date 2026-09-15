@@ -2462,3 +2462,11 @@ Emoji
 요새
 [Gate width]
 성문 너비
+[Braided Delta]
+망상 삼각주
+[Braid count]
+분류 수
+[Rejoining frequency]
+합류 빈도
+[Crossing spacing]
+도하 지점 간격

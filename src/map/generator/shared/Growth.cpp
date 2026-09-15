@@ -1,9 +1,41 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Growth.h"
 #include "Morphology.h"
+#include "Map.h"
+#include <stdexcept>
 #include "TerrainType.h"
 namespace MapGeneration
 {
+int cropSeedsIn(const Map &map, const std::vector<unsigned char> &region)
+{
+	const Torus t(map);
+	if (region.size() != size_t(t.size()))
+		throw std::invalid_argument("cropSeedsIn requires one mask entry per map tile");
+	int seeds = 0;
+	for (int i = 0; i < t.size(); ++i)
+		if (region[i])
+		{
+			const int type = map.getResource(i % t.w, i / t.w).type;
+			seeds += type == WHEAT || type == WOOD;
+		}
+	return seeds;
+}
+
+Flood cropSpreadEnvelope(const Map &map)
+{
+	const Torus t(map);
+	std::vector<unsigned char> seeds(t.size(), 0), grass(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		const int type = map.getResource(x, y).type;
+		seeds[i] = type == WHEAT || type == WOOD;
+		grass[i] = map.isGrass(x, y);
+	}
+	// Reuse the same toroidal eight-neighbour topology as the other region operations.
+	return floodFrom(t, seeds, grass);
+}
+
 Fertility::Field cropGrowthField(const TerrainSketch &sketch, const Torus &t)
 {
 	const std::vector<unsigned char> water = pureTiles(sketch, t, WATER);

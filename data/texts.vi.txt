@@ -2462,3 +2462,11 @@ Lối qua
 Pháo đài
 [Gate width]
 Chiều rộng cổng
+[Braided Delta]
+Châu thổ đan nhánh
+[Braid count]
+Số nhánh sông
+[Rejoining frequency]
+Tần suất hợp lưu
+[Crossing spacing]
+Khoảng cách lối qua

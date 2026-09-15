@@ -2462,3 +2462,11 @@ Penyeberangan
 Benteng
 [Gate width]
 Lebar gerbang
+[Braided Delta]
+Delta berjalin
+[Braid count]
+Jumlah cabang
+[Rejoining frequency]
+Frekuensi pertemuan
+[Crossing spacing]
+Jarak penyeberangan

@@ -2466,3 +2466,11 @@ Treceri
 Fortărețe
 [Gate width]
 Lățimea porții
+[Braided Delta]
+Deltă împletită
+[Braid count]
+Număr de brațe
+[Rejoining frequency]
+Frecvența confluențelor
+[Crossing spacing]
+Distanța dintre treceri

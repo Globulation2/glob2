@@ -2462,3 +2462,11 @@ Travessias
 Kreñvlec’hioù
 [Gate width]
 Ledander an nor
+[Braided Delta]
+Delta entrelaçado
+[Braid count]
+Número de braços
+[Rejoining frequency]
+Frequência de confluências
+[Crossing spacing]
+Distância entre passagens

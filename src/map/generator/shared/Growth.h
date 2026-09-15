@@ -7,13 +7,24 @@
 #include <vector>
 namespace MapGeneration
 {
-// Where wheat and wood will grow back, known while the map is still a sketch.
+// Where wheat and wood can spread: sketch fertility and finished-map containment.
 //
 // A crop spreads when a probe up to 15 tiles away on each axis finds pure water and the probe mirrored
 // through the tile finds no pure sand (Map::growResources; Fertility::Field computes the exact chance
 // for every tile). Planting.h's algaeGrowthChance answers the same question for algae on a finished
-// map; these answer it for crops on a TerrainSketch, before anything is written, so a design can size
+// map; the sketch operations answer it before anything is written, so a design can size
 // its farmland to its water, keep a forest from ever growing back, or prove a region stays dry.
+
+/// Existing wheat/wood seeds inside a tile mask (one entry per map tile). Use this after
+/// resource guarantees and repairs to check that reserved building ground stayed seed-free.
+int cropSeedsIn(const Map &, const std::vector<unsigned char> &region);
+
+/// Conservative future crop footprint on a finished map: flood from all wheat/wood through
+/// eight-connected pure grass, wrapping at map edges. Ignores fertility, buildings and other
+/// deposits, so this is a containment test, not a prediction of growth speed or harvests.
+/// Sand barriers stop the flood; sources themselves are included even on non-grass terrain.
+/// Neither operation mutates the map or consumes random numbers.
+Flood cropSpreadEnvelope(const Map &);
 
 /// How far, on each axis, the engine's crop growth probe reaches for water.
 constexpr int kCropProbeReach = 15;

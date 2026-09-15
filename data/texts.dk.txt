@@ -2542,3 +2542,11 @@ Overgange
 Fæstninger
 [Gate width]
 Portbredde
+[Braided Delta]
+Forgrenet delta
+[Braid count]
+Antal flodarme
+[Rejoining frequency]
+Sammenløbsfrekvens
+[Crossing spacing]
+Afstand mellem overgange

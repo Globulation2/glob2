@@ -2466,3 +2466,11 @@ Fordított
 Erődök
 [Gate width]
 Kapuszélesség
+[Braided Delta]
+Fonatos delta
+[Braid count]
+Folyóágak száma
+[Rejoining frequency]
+Összefolyások gyakorisága
+[Crossing spacing]
+Átkelők távolsága

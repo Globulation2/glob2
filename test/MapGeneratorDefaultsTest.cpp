@@ -10,6 +10,7 @@
 #include "MapGeneratorFrameworkChecks.h"
 #include "MapGeneratorContracts.h"
 #include "MapGeneratorLandscapeChecks.h"
+#include "MapGeneratorBraidedDeltaChecks.h"
 #include "MapGeneratorToolkitChecks.h"
 #include "NewMapScreen.h"
 #include "Race.h"
@@ -92,6 +93,7 @@ class MapGeneratorDefaultsTest
 		frameworkChecks();
 		ToolkitChecks::toolkitChecks();
 		LandscapeChecks::landscapeChecks();
+		braidedDeltaChecks();
 		GenerationService service;
 		for (int method : GeneratorRegistry::builtins().methods())
 		{

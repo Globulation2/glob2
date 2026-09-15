@@ -2474,3 +2474,11 @@ Geçitler
 Kaleler
 [Gate width]
 Kapı genişliği
+[Braided Delta]
+Örgülü delta
+[Braid count]
+Kol sayısı
+[Rejoining frequency]
+Birleşme sıklığı
+[Crossing spacing]
+Geçit aralığı

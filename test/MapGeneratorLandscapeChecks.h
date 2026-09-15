@@ -183,6 +183,30 @@ inline void growthChecks()
 	assert(drainWithin(drained, dryZone(t, region)) == 64);
 	layBeaches(drained, t);
 	assert(wetTiles(cropGrowthField(drained, t), region) == 0);
+	// Finished-map containment is independent of fertility: even a dry grass component
+	// is included. An enclosed sand ring must isolate its interior on the torus.
+	Game game(nullptr);
+	landscapeGrass(game, 6, 6);
+	TerrainSketch enclosed(t.size(), GRASS);
+	for (int y = 20; y <= 40; ++y)
+		for (int x = 20; x <= 40; ++x)
+			if (x <= 22 || x >= 38 || y <= 22 || y >= 38)
+				enclosed[t.at(x, y)] = SAND;
+	writeUndermap(game.map, enclosed);
+	game.map.setResource(5, 5, STONE, 1);
+	assert(cropSpreadEnvelope(game.map).visited.empty());
+	game.map.setResource(0, 0, WHEAT, 1);
+	const auto spread = cropSpreadEnvelope(game.map);
+	assert(spread.steps[t.at(63, 63)] == 1); // Diagonal wrapping is a growth route too.
+	assert(spread.steps[t.at(30, 30)] < 0);
+	std::vector<unsigned char> reserved(t.size(), 0);
+	reserved[t.at(30, 30)] = 1;
+	assert(cropSeedsIn(game.map, reserved) == 0);
+	game.map.setResource(30, 30, WOOD, 1);
+	assert(cropSeedsIn(game.map, reserved) == 1);
+	assert(cropSpreadEnvelope(game.map).steps[t.at(31, 31)] == 1);
+	reserved[t.at(0, 0)] = reserved[t.at(5, 5)] = 1;
+	assert(cropSeedsIn(game.map, reserved) == 2); // Stone is not a crop seed.
 }
 
 // Contact: a wood wall stops walkers and costs choppers; costSpread and unevenCosts read the costs;

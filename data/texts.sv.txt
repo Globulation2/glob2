@@ -2476,3 +2476,11 @@ Omvänd
 Fästningar
 [Gate width]
 Portbredd
+[Braided Delta]
+Flätat delta
+[Braid count]
+Antal flodarmar
+[Rejoining frequency]
+Sammanflödesfrekvens
+[Crossing spacing]
+Avstånd mellan övergångar

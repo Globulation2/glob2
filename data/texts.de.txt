@@ -2466,3 +2466,11 @@ Umgekehrt
 Festungen
 [Gate width]
 Torbreite
+[Braided Delta]
+Verflochtenes Delta
+[Braid count]
+Anzahl der Flussarme
+[Rejoining frequency]
+Häufigkeit der Zusammenflüsse
+[Crossing spacing]
+Abstand der Übergänge

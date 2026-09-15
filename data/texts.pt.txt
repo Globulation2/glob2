@@ -2472,3 +2472,11 @@ Passagens
 Fortalezas
 [Gate width]
 Largura do portão
+[Braided Delta]
+Delta entrelaçado
+[Braid count]
+Número de braços
+[Rejoining frequency]
+Frequência de confluências
+[Crossing spacing]
+Distância entre passagens

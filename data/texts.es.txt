@@ -2466,3 +2466,11 @@ Pasos
 Fortalezas
 [Gate width]
 Anchura de la puerta
+[Braided Delta]
+Delta trenzado
+[Braid count]
+Número de brazos
+[Rejoining frequency]
+Frecuencia de confluencias
+[Crossing spacing]
+Distancia entre pasos

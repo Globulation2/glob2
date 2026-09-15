@@ -2466,3 +2466,11 @@ Prehodi
 Trdnjave
 [Gate width]
 Širina vrat
+[Braided Delta]
+Razvejana delta
+[Braid count]
+Število rokavov
+[Rejoining frequency]
+Pogostost sotočij
+[Crossing spacing]
+Razmik med prehodi

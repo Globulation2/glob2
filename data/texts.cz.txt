@@ -2466,3 +2466,11 @@ Přechody
 Pevnosti
 [Gate width]
 Šířka brány
+[Braided Delta]
+Rozvětvená delta
+[Braid count]
+Počet ramen
+[Rejoining frequency]
+Četnost soutoků
+[Crossing spacing]
+Rozestup přechodů

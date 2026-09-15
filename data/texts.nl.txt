@@ -2490,3 +2490,11 @@ Oversteken
 Forten
 [Gate width]
 Poortbreedte
+[Braided Delta]
+Vlechtende delta
+[Braid count]
+Aantal rivierarmen
+[Rejoining frequency]
+Frequentie van samenvloeiingen
+[Crossing spacing]
+Afstand tussen overgangen

@@ -2464,3 +2464,11 @@ Emoji
 Крепости
 [Gate width]
 Ширина ворот
+[Braided Delta]
+Разветвлённая дельта
+[Braid count]
+Число проток
+[Rejoining frequency]
+Частота слияний
+[Crossing spacing]
+Расстояние между переправами

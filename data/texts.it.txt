@@ -2528,3 +2528,11 @@ Passaggi
 Fortezze
 [Gate width]
 Larghezza del portale
+[Braided Delta]
+Delta intrecciato
+[Braid count]
+Numero di rami
+[Rejoining frequency]
+Frequenza delle confluenze
+[Crossing spacing]
+Distanza tra guadi

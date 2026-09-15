@@ -2466,3 +2466,11 @@ Przejścia
 Fortece
 [Gate width]
 Szerokość bramy
+[Braided Delta]
+Delta roztokowa
+[Braid count]
+Liczba ramion
+[Rejoining frequency]
+Częstotliwość połączeń
+[Crossing spacing]
+Odstęp między przeprawami
