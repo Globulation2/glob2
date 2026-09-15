@@ -235,18 +235,68 @@ J qualityJson(const StartQualityReport &report, const StartQualityWeights &weigh
 {
 	std::vector<J> colonies;
 	std::vector<double> totals;
+	std::vector<double> localRoom, localFertile, localExclusive, nearestRival, wheatSupply,
+		woodSupply, exclusiveWheat, exclusiveWood;
+	std::array<std::vector<double>, 6> factorValues;
 	for (size_t i = 0; i < report.colonies.size(); ++i)
 	{
 		const auto &c = report.colonies[i];
+		std::vector<std::pair<std::string, J>> resources;
+		for (int r = 0; r < MAX_RESOURCES; ++r)
+		{
+			const auto &a = c.resources[r];
+			resources.push_back({resourceNames[r],
+				J::object({{"nearest_gather_distance", distance(a.nearestDistance)},
+						   {"catchment_deposit_tiles", a.catchmentDeposits},
+						   {"catchment_stored_amount", a.catchmentAmount},
+						   {"exclusive_catchment_deposit_tiles", a.exclusiveCatchmentDeposits},
+						   {"exclusive_catchment_stored_amount", a.exclusiveCatchmentAmount},
+						   {"tied_catchment_deposit_tiles", a.tiedCatchmentDeposits},
+						   {"tied_catchment_stored_amount", a.tiedCatchmentAmount}})});
+		}
+		std::vector<J> distanceBands;
+		for (const auto &band : c.distanceBands)
+		{
+			std::vector<std::pair<std::string, J>> bandResources;
+			for (int r = 0; r < MAX_RESOURCES; ++r)
+				bandResources.push_back({resourceNames[r],
+					J::object({{"deposit_tiles", band.depositTiles[r]},
+							   {"stored_amount", band.storedAmount[r]},
+							   {"exclusive_deposit_tiles", band.exclusiveDepositTiles[r]},
+							   {"exclusive_stored_amount", band.exclusiveStoredAmount[r]},
+							   {"tied_deposit_tiles", band.tiedDepositTiles[r]},
+							   {"tied_stored_amount", band.tiedStoredAmount[r]}})});
+			distanceBands.push_back(J::object({{"walking_steps", band.walkingSteps},
+				{"reached_tiles", band.reachedTiles},
+				{"grass_tiles", band.grassTiles},
+				{"buildable_tiles", band.buildableTiles},
+				{"fertile_grass_tiles", band.fertileGrassTiles},
+				{"exclusive_nearest_tiles", band.exclusiveNearestTiles},
+				{"tied_nearest_tiles", band.tiedNearestTiles},
+				{"resources", J::object(bandResources)}}));
+		}
 		colonies.push_back(
 			J::object({{"team", i},
+					   {"distance_bands", J::array(distanceBands)},
 					   {"raw", J::object({{"wheat_distance", distance(c.wheatDistance)},
 										  {"wood_distance", distance(c.woodDistance)},
 										  {"catchment_tiles", c.catchmentTiles},
+										  {"reachable_tiles", c.reachableTiles},
+										  {"catchment_grass_tiles", c.catchmentGrass},
+										  {"catchment_buildable_tiles", c.catchmentBuildable},
+										  {"catchment_fertile_grass_tiles", c.catchmentFertileGrass},
+										  {"catchment_growth_enabled_grass_tiles", c.catchmentGrowthEnabledGrass},
+										  {"exclusive_nearest_tiles", c.exclusiveNearestTiles},
+										  {"tied_nearest_tiles", c.tiedNearestTiles},
+										  {"exclusive_catchment_tiles", c.exclusiveCatchmentTiles},
+										  {"tied_catchment_tiles", c.tiedCatchmentTiles},
 										  {"build_sites_4x4", c.buildSites},
 										  {"wheat_and_wood_amount", c.resourceAmount},
+										  {"resources", J::object(resources)},
 										  {"mean_fertility", c.meanFertility},
 										  {"nearest_rival_distance", distance(c.rivalDistance)},
+										  {"reachable_rivals", c.reachableRivals},
+										  {"farthest_rival_distance", distance(c.farthestRivalDistance)},
 										  {"rivals_within_threat", c.rivalsWithinThreat}})},
 					   {"normalized", J::object({{"wheat", c.wheat},
 												 {"wood", c.wood},
@@ -256,6 +306,18 @@ J qualityJson(const StartQualityReport &report, const StartQualityWeights &weigh
 												 {"isolation", c.isolation}})},
 					   {"total", c.total}}));
 		totals.push_back(c.total);
+		const double factors[] = {c.wheat, c.wood, c.fertility, c.depth, c.room, c.isolation};
+		for (int factor = 0; factor < 6; ++factor)
+			factorValues[factor].push_back(factors[factor]);
+		localRoom.push_back(c.catchmentBuildable);
+		localFertile.push_back(c.catchmentFertileGrass);
+		localExclusive.push_back(c.exclusiveCatchmentTiles);
+		wheatSupply.push_back(c.resources[WHEAT].catchmentAmount);
+		woodSupply.push_back(c.resources[WOOD].catchmentAmount);
+		exclusiveWheat.push_back(c.resources[WHEAT].exclusiveCatchmentAmount);
+		exclusiveWood.push_back(c.resources[WOOD].exclusiveCatchmentAmount);
+		if (c.rivalDistance >= 0)
+			nearestRival.push_back(c.rivalDistance);
 	}
 	return J::object(
 		{{"measured", report.measured},
@@ -268,6 +330,20 @@ J qualityJson(const StartQualityReport &report, const StartQualityWeights &weigh
 		 {"fairness", report.measured ? J(report.fairness) : J()},
 		 {"score", report.measured ? J(report.score) : J()},
 		 {"colony_totals", distribution(totals)},
+		 {"normalized_spreads", J::object({{"wheat", distribution(factorValues[0])},
+									  {"wood", distribution(factorValues[1])},
+									  {"fertility", distribution(factorValues[2])},
+									  {"depth", distribution(factorValues[3])},
+									  {"room", distribution(factorValues[4])},
+									  {"isolation", distribution(factorValues[5])}})},
+		 {"raw_spreads", J::object({{"catchment_buildable_tiles", distribution(localRoom)},
+							   {"catchment_fertile_grass_tiles", distribution(localFertile)},
+							   {"exclusive_catchment_tiles", distribution(localExclusive)},
+							   {"wheat_catchment_amount", distribution(wheatSupply)},
+							   {"wood_catchment_amount", distribution(woodSupply)},
+							   {"exclusive_wheat_catchment_amount", distribution(exclusiveWheat)},
+							   {"exclusive_wood_catchment_amount", distribution(exclusiveWood)},
+							   {"nearest_reachable_rival_distance", distribution(nearestRival)}})},
 		 {"colonies", J::array(colonies)}});
 }
 StartQualityReport canonicalQuality(Game &game)

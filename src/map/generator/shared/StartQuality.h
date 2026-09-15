@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "Ressource.h"
+#include <array>
 #include <vector>
 class Game;
 
@@ -39,10 +41,34 @@ struct StartQualityScale
 
 struct ColonyQuality
 {
+	struct DistanceBand
+	{
+		int walkingSteps = 0;
+		int reachedTiles = 0, grassTiles = 0, buildableTiles = 0, fertileGrassTiles = 0;
+		int exclusiveNearestTiles = 0, tiedNearestTiles = 0;
+		std::array<int, MAX_RESOURCES> depositTiles{}, storedAmount{};
+		std::array<int, MAX_RESOURCES> exclusiveDepositTiles{}, exclusiveStoredAmount{};
+		std::array<int, MAX_RESOURCES> tiedDepositTiles{}, tiedStoredAmount{};
+	};
+	struct ResourceAccess
+	{
+		int nearestDistance = -1; ///< neighboring walking tile plus one gathering step
+		int catchmentDeposits = 0, catchmentAmount = 0;
+		int exclusiveCatchmentDeposits = 0, exclusiveCatchmentAmount = 0;
+		int tiedCatchmentDeposits = 0, tiedCatchmentAmount = 0;
+	};
 	// As measured.
 	int wheatDistance = -1, woodDistance = -1;
 	int catchmentTiles = 0, buildSites = 0, resourceAmount = 0;
+	int reachableTiles = 0, catchmentGrass = 0, catchmentBuildable = 0;
+	int catchmentFertileGrass = 0, catchmentGrowthEnabledGrass = 0;
+	int exclusiveNearestTiles = 0, tiedNearestTiles = 0;
+	int exclusiveCatchmentTiles = 0, tiedCatchmentTiles = 0;
+	std::array<ResourceAccess, MAX_RESOURCES> resources{};
+	std::array<DistanceBand, 3> distanceBands{{DistanceBand{12}, DistanceBand{24},
+																		 DistanceBand{48}}};
 	int rivalDistance = -1, rivalsWithinThreat = 0;
+	int reachableRivals = 0, farthestRivalDistance = -1;
 	double meanFertility = 0;
 	// Normalised to [0,1].
 	double wheat = 0, wood = 0, fertility = 0, depth = 0, room = 0, isolation = 0;

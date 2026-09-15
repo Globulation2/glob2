@@ -757,6 +757,103 @@
             "rivals_within_threat": {
               "type": "integer",
               "description": ""
+            },
+            "reachable_tiles": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Walkable tiles reachable from starting ground units."
+            },
+            "catchment_grass_tiles": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Pure-grass tiles within the walking catchment."
+            },
+            "catchment_buildable_tiles": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Single tiles passing isFreeForBuilding within the catchment."
+            },
+            "catchment_fertile_grass_tiles": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Pure-grass catchment tiles with positive gated fertility."
+            },
+            "catchment_growth_enabled_grass_tiles": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Pure-grass catchment tiles with canResourcesGrow true."
+            },
+            "exclusive_nearest_tiles": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Walkable tiles uniquely closest to this colony."
+            },
+            "tied_nearest_tiles": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Walkable tiles tied for closest to this colony."
+            },
+            "exclusive_catchment_tiles": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Exclusive-nearest tiles also inside this colony catchment."
+            },
+            "tied_catchment_tiles": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Tied-nearest tiles also inside this colony catchment."
+            },
+            "reachable_rivals": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Other colonies reachable by walking from this colony."
+            },
+            "farthest_rival_distance": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "description": "Longest walking distance to a reachable rival; null if none."
+            },
+            "resources": {
+              "type": "object",
+              "properties": {
+                "wood": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "wheat": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "papyrus": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "stone": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "algae": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "cherry": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "orange": {
+                  "$ref": "#/$defs/quality_resource_access"
+                },
+                "prune": {
+                  "$ref": "#/$defs/quality_resource_access"
+                }
+              },
+              "required": [
+                "wood",
+                "wheat",
+                "papyrus",
+                "stone",
+                "algae",
+                "cherry",
+                "orange",
+                "prune"
+              ],
+              "additionalProperties": false
             }
           },
           "required": [
@@ -767,7 +864,19 @@
             "wheat_and_wood_amount",
             "mean_fertility",
             "nearest_rival_distance",
-            "rivals_within_threat"
+            "rivals_within_threat",
+            "reachable_tiles",
+            "catchment_grass_tiles",
+            "catchment_buildable_tiles",
+            "catchment_fertile_grass_tiles",
+            "catchment_growth_enabled_grass_tiles",
+            "exclusive_nearest_tiles",
+            "tied_nearest_tiles",
+            "exclusive_catchment_tiles",
+            "tied_catchment_tiles",
+            "reachable_rivals",
+            "farthest_rival_distance",
+            "resources"
           ],
           "additionalProperties": false
         },
@@ -812,13 +921,23 @@
         "total": {
           "type": "number",
           "description": "Weighted mean, forced to zero if wheat or wood is unreachable."
+        },
+        "distance_bands": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/quality_distance_band"
+          },
+          "description": "Fixed 12, 24, 48-step views in that order."
         }
       },
       "required": [
         "team",
         "raw",
         "normalized",
-        "total"
+        "total",
+        "distance_bands"
       ],
       "additionalProperties": false
     },
@@ -878,6 +997,78 @@
           "items": {
             "$ref": "#/$defs/quality_colony"
           }
+        },
+        "raw_spreads": {
+          "type": "object",
+          "properties": {
+            "catchment_buildable_tiles": {
+              "$ref": "#/$defs/distribution"
+            },
+            "catchment_fertile_grass_tiles": {
+              "$ref": "#/$defs/distribution"
+            },
+            "exclusive_catchment_tiles": {
+              "$ref": "#/$defs/distribution"
+            },
+            "wheat_catchment_amount": {
+              "$ref": "#/$defs/distribution"
+            },
+            "wood_catchment_amount": {
+              "$ref": "#/$defs/distribution"
+            },
+            "nearest_reachable_rival_distance": {
+              "$ref": "#/$defs/distribution"
+            },
+            "exclusive_wheat_catchment_amount": {
+              "$ref": "#/$defs/distribution"
+            },
+            "exclusive_wood_catchment_amount": {
+              "$ref": "#/$defs/distribution"
+            }
+          },
+          "required": [
+            "catchment_buildable_tiles",
+            "catchment_fertile_grass_tiles",
+            "exclusive_catchment_tiles",
+            "wheat_catchment_amount",
+            "wood_catchment_amount",
+            "nearest_reachable_rival_distance",
+            "exclusive_wheat_catchment_amount",
+            "exclusive_wood_catchment_amount"
+          ],
+          "additionalProperties": false
+        },
+        "normalized_spreads": {
+          "type": "object",
+          "properties": {
+            "wheat": {
+              "$ref": "#/$defs/distribution"
+            },
+            "wood": {
+              "$ref": "#/$defs/distribution"
+            },
+            "fertility": {
+              "$ref": "#/$defs/distribution"
+            },
+            "depth": {
+              "$ref": "#/$defs/distribution"
+            },
+            "room": {
+              "$ref": "#/$defs/distribution"
+            },
+            "isolation": {
+              "$ref": "#/$defs/distribution"
+            }
+          },
+          "required": [
+            "wheat",
+            "wood",
+            "fertility",
+            "depth",
+            "room",
+            "isolation"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -890,7 +1081,9 @@
         "fairness",
         "score",
         "colony_totals",
-        "colonies"
+        "colonies",
+        "raw_spreads",
+        "normalized_spreads"
       ],
       "additionalProperties": false
     },
@@ -1456,6 +1649,193 @@
         "dropped_records",
         "invalid_values",
         "records"
+      ],
+      "additionalProperties": false
+    },
+    "quality_resource_access": {
+      "type": "object",
+      "properties": {
+        "nearest_gather_distance": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Nearest neighboring walking tile plus one gathering step."
+        },
+        "catchment_deposit_tiles": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Accessible deposit tiles approached within catchment steps, including zero-amount deposits."
+        },
+        "catchment_stored_amount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Stored amount of those accessible catchment deposits."
+        },
+        "exclusive_catchment_deposit_tiles": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Deposits approached strictly sooner than every rival and within catchment."
+        },
+        "exclusive_catchment_stored_amount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Stored amount in exclusive catchment deposits."
+        },
+        "tied_catchment_deposit_tiles": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Deposits tied for best approach with a rival and within catchment."
+        },
+        "tied_catchment_stored_amount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Stored amount in tied catchment deposits."
+        }
+      },
+      "required": [
+        "nearest_gather_distance",
+        "catchment_deposit_tiles",
+        "catchment_stored_amount",
+        "exclusive_catchment_deposit_tiles",
+        "exclusive_catchment_stored_amount",
+        "tied_catchment_deposit_tiles",
+        "tied_catchment_stored_amount"
+      ],
+      "additionalProperties": false
+    },
+    "quality_distance_band_resource": {
+      "type": "object",
+      "properties": {
+        "deposit_tiles": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Accessible deposits within this distance."
+        },
+        "stored_amount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Current stored amount in accessible deposits."
+        },
+        "exclusive_deposit_tiles": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Deposits approached strictly before all rivals."
+        },
+        "exclusive_stored_amount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Stored amount in exclusive deposits."
+        },
+        "tied_deposit_tiles": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Deposits tied for nearest approach."
+        },
+        "tied_stored_amount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Stored amount in tied deposits."
+        }
+      },
+      "required": [
+        "deposit_tiles",
+        "stored_amount",
+        "exclusive_deposit_tiles",
+        "exclusive_stored_amount",
+        "tied_deposit_tiles",
+        "tied_stored_amount"
+      ],
+      "additionalProperties": false
+    },
+    "quality_distance_band": {
+      "type": "object",
+      "properties": {
+        "walking_steps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Inclusive fixed walking radius in steps."
+        },
+        "reached_tiles": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Walkable tiles in range."
+        },
+        "grass_tiles": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Pure grass in range."
+        },
+        "buildable_tiles": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Individually buildable tiles in range."
+        },
+        "fertile_grass_tiles": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Pure grass with positive gated fertility in range."
+        },
+        "exclusive_nearest_tiles": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Range tiles uniquely nearest to this colony."
+        },
+        "tied_nearest_tiles": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Range tiles tied for nearest colony."
+        },
+        "resources": {
+          "type": "object",
+          "properties": {
+            "wood": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "wheat": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "papyrus": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "stone": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "algae": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "cherry": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "orange": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            },
+            "prune": {
+              "$ref": "#/$defs/quality_distance_band_resource"
+            }
+          },
+          "required": [
+            "wood",
+            "wheat",
+            "papyrus",
+            "stone",
+            "algae",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "walking_steps",
+        "reached_tiles",
+        "grass_tiles",
+        "buildable_tiles",
+        "fertile_grass_tiles",
+        "exclusive_nearest_tiles",
+        "tied_nearest_tiles",
+        "resources"
       ],
       "additionalProperties": false
     }

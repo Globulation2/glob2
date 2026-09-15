@@ -65,19 +65,44 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 	map.fertilityMaximum = fertilityMax;
 
 	report.colonies.resize(nbTeams);
+	std::vector<std::vector<int>> walkingFields;
+	walkingFields.reserve(nbTeams);
 
 	for (int team = 0; team < nbTeams; ++team)
 	{
 		ColonyQuality &colony = report.colonies[team];
-		const std::vector<int> dist = walkFromWorkers(map, workers[team]);
+		walkingFields.push_back(walkFromWorkers(map, workers[team]));
+		const std::vector<int> &dist = walkingFields.back();
 
 		for (int p = 0; p < w * h; ++p)
 		{
+			if (dist[p] >= 0)
+				++colony.reachableTiles;
+			if (dist[p] >= 0)
+				for (auto &band : colony.distanceBands)
+					if (dist[p] <= band.walkingSteps)
+					{
+						const int x = p % w, y = p / w;
+						++band.reachedTiles;
+						band.buildableTiles += map.isFreeForBuilding(x, y);
+						if (map.isGrass(p))
+						{
+							++band.grassTiles;
+							band.fertileGrassTiles += fertility.at(x, y) > 0;
+						}
+					}
 			if (dist[p] < 0 || dist[p] > scale.catchmentSteps)
 				continue;
 			const int x = p % w, y = p / w;
 			++colony.catchmentTiles;
 			colony.meanFertility += fertility.at(x, y);
+			if (map.isGrass(p))
+			{
+				++colony.catchmentGrass;
+				colony.catchmentFertileGrass += fertility.at(x, y) > 0;
+				colony.catchmentGrowthEnabledGrass += map.tiles[p].canResourcesGrow;
+			}
+			colony.catchmentBuildable += map.isFreeForBuilding(x, y);
 			if (map.isFreeForBuilding(x, y, 4, 4))
 				++colony.buildSites;
 		}
@@ -90,7 +115,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 			for (int x = 0; x < w; ++x)
 			{
 				const Resource &resource = map.getResource(x, y);
-				if (resource.type != WHEAT && resource.type != WOOD)
+				if (resource.type >= MAX_RESOURCES)
 					continue;
 				int nearest = -1;
 				for (int dy = -1; dy <= 1; ++dy)
@@ -105,12 +130,25 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 				if (nearest < 0)
 					continue;
 				const int reach = nearest + 1;
-				int &best = resource.type == WHEAT ? colony.wheatDistance : colony.woodDistance;
-				if (best < 0 || reach < best)
-					best = reach;
+				auto &access = colony.resources[resource.type];
+				if (access.nearestDistance < 0 || reach < access.nearestDistance)
+					access.nearestDistance = reach;
 				if (nearest <= scale.catchmentSteps)
-					colony.resourceAmount += resource.amount;
+				{
+					++access.catchmentDeposits;
+					access.catchmentAmount += resource.amount;
+				}
+				for (auto &band : colony.distanceBands)
+					if (nearest <= band.walkingSteps)
+					{
+						++band.depositTiles[resource.type];
+						band.storedAmount[resource.type] += resource.amount;
+					}
 			}
+		colony.wheatDistance = colony.resources[WHEAT].nearestDistance;
+		colony.woodDistance = colony.resources[WOOD].nearestDistance;
+		colony.resourceAmount = colony.resources[WHEAT].catchmentAmount +
+								colony.resources[WOOD].catchmentAmount;
 
 		for (int rival = 0; rival < nbTeams; ++rival)
 		{
@@ -122,6 +160,8 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 					nearest = dist[p];
 			if (nearest < 0)
 				continue; // no land route to this rival, which is isolation rather than threat
+			++colony.reachableRivals;
+			colony.farthestRivalDistance = std::max(colony.farthestRivalDistance, nearest);
 			if (colony.rivalDistance < 0 || nearest < colony.rivalDistance)
 				colony.rivalDistance = nearest;
 			if (nearest <= scale.threatRadius)
@@ -159,6 +199,126 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 		if (colony.wheatDistance < 0 || colony.woodDistance < 0)
 			colony.total = 0;
 	}
+
+	// Assign each walkable tile to its uniquely closest colony, or to every colony
+	// tied for first. A catchment tile is also counted in that colony's local share.
+	for (int p = 0; p < w * h; ++p)
+	{
+		int best = -1, ties = 0, owner = -1;
+		for (int team = 0; team < nbTeams; ++team)
+		{
+			const int d = walkingFields[team][p];
+			if (d < 0)
+				continue;
+			if (best < 0 || d < best)
+			{
+				best = d;
+				owner = team;
+				ties = 1;
+			}
+			else if (d == best)
+				++ties;
+		}
+		if (best < 0)
+			continue;
+		for (int team = 0; team < nbTeams; ++team)
+		{
+			if (ties == 1 && team != owner)
+				continue;
+			if (ties > 1 && walkingFields[team][p] != best)
+				continue;
+			auto &colony = report.colonies[team];
+			const bool local = walkingFields[team][p] <= scale.catchmentSteps;
+			for (auto &band : colony.distanceBands)
+				if (walkingFields[team][p] <= band.walkingSteps)
+				{
+					if (ties == 1)
+						++band.exclusiveNearestTiles;
+					else
+						++band.tiedNearestTiles;
+				}
+			if (ties == 1)
+			{
+				++colony.exclusiveNearestTiles;
+				colony.exclusiveCatchmentTiles += local;
+			}
+			else
+			{
+				++colony.tiedNearestTiles;
+				colony.tiedCatchmentTiles += local;
+			}
+		}
+	}
+	// Deposits can be reachable to several colonies yet favour one approach. Track
+	// nearby stock that a colony reaches strictly first versus stock approached at
+	// the same cost as a rival. This is positional access, not actual ownership.
+	std::vector<int> approach(nbTeams, -1);
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+		{
+			const Resource &resource = map.getResource(x, y);
+			if (resource.type >= MAX_RESOURCES)
+				continue;
+			int best = -1, ties = 0, owner = -1;
+			std::fill(approach.begin(), approach.end(), -1);
+			for (int team = 0; team < nbTeams; ++team)
+			{
+				for (int dy = -1; dy <= 1; ++dy)
+					for (int dx = -1; dx <= 1; ++dx)
+					{
+						if (!dx && !dy)
+							continue;
+						const int d = walkingFields[team][map.normalizeY(y + dy) * w +
+																	   map.normalizeX(x + dx)];
+						if (d >= 0 && (approach[team] < 0 || d < approach[team]))
+							approach[team] = d;
+					}
+				if (approach[team] < 0)
+					continue;
+				if (best < 0 || approach[team] < best)
+				{
+					best = approach[team];
+					owner = team;
+					ties = 1;
+				}
+				else if (approach[team] == best)
+					++ties;
+			}
+			if (best < 0)
+				continue;
+			for (int team = 0; team < nbTeams; ++team)
+			{
+				if ((ties == 1 && team != owner) || (ties > 1 && approach[team] != best))
+					continue;
+				auto &access = report.colonies[team].resources[resource.type];
+				for (auto &band : report.colonies[team].distanceBands)
+					if (best <= band.walkingSteps)
+					{
+						if (ties == 1)
+						{
+							++band.exclusiveDepositTiles[resource.type];
+							band.exclusiveStoredAmount[resource.type] += resource.amount;
+						}
+						else
+						{
+							++band.tiedDepositTiles[resource.type];
+							band.tiedStoredAmount[resource.type] += resource.amount;
+						}
+					}
+				if (best > scale.catchmentSteps)
+					continue;
+				if (ties == 1)
+				{
+					++access.exclusiveCatchmentDeposits;
+					access.exclusiveCatchmentAmount += resource.amount;
+				}
+				else
+				{
+					++access.tiedCatchmentDeposits;
+					access.tiedCatchmentAmount += resource.amount;
+				}
+			}
+		}
 
 	report.worst = report.best = report.colonies[0].total;
 	for (const ColonyQuality &colony : report.colonies)

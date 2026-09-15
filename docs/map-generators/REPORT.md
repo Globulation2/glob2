@@ -1,6 +1,6 @@
 # Map JSON report: format and metric definitions
 
-`--json FILE` writes a UTF-8 JSON object with `schema_version: 1`. It works with
+`--json FILE` writes a UTF-8 JSON object with `schema_version: 2`. It works with
 both map CLI modes and does not require OpenGL. It can be requested alone or
 alongside map/PNG outputs:
 
@@ -178,6 +178,8 @@ weights/scales and service result. Both contain:
 | `fairness` | worst/best when best > 0; otherwise 0. **Equal but nonviable zero-score starts yield 0, not 1.** |
 | `score` | worst × fairness^`scale.fairness_exponent`. Rewards both viability and equality. |
 | `colony_totals` | Distribution of colony totals. |
+| `normalized_spreads` | Per-factor distributions of the six normalized components, useful for seeing which part of fairness differs across starts. |
+| `raw_spreads` | Distributions of local buildable/fertile/private ground, separate total and exclusive wheat/wood catchment amounts, and reachable nearest-rival distances. Unreachable rivals are omitted from that last distribution. |
 
 The `scale` fields use these units and canonical defaults:
 
@@ -208,6 +210,35 @@ For each colony, the `raw` measurements are:
 | `mean_fertility` | Mean gated fertility of catchment tiles, in the raw 0–65536 scale; zero for an empty catchment. |
 | `nearest_rival_distance` | Minimum walking distance to another colony's ground-unit tiles; `null` if no rival is reachable. |
 | `rivals_within_threat` | Number of reachable rival colonies at distance ≤ `scale.threat_radius`. |
+
+Additional raw measurements describe possible positional advantages. They do not
+enter the six-factor total or change the generator's candidate selection. They are
+hypotheses for later game-outcome studies, not validated predictors of wins:
+
+| Field | Meaning |
+| --- | --- |
+| `reachable_tiles` | All ground-walkable tiles reached from starting units. |
+| `catchment_grass_tiles`, `catchment_buildable_tiles` | Pure grass and individually buildable tiles in the walking catchment. These differ from overlapping 4×4 anchors. |
+| `catchment_fertile_grass_tiles` | Pure grass with positive gated fertility in the catchment. |
+| `catchment_growth_enabled_grass_tiles` | Pure grass with `canResourcesGrow` true in the catchment; positive fertility and growth permission are separate conditions. |
+| `exclusive_nearest_tiles`, `tied_nearest_tiles` | Walkable tiles uniquely closest to this colony, or tied for closest, across the entire map. Tied tiles count for every tied colony. |
+| `exclusive_catchment_tiles`, `tied_catchment_tiles` | The same nearest-colony shares limited to this colony's walking catchment. These estimate private and contested nearby expansion ground, not ownership or future control. |
+| `resources.<type>.nearest_gather_distance` | Closest neighboring ground tile plus one step for each of the eight known resource types; `null` if inaccessible. |
+| `resources.<type>.catchment_deposit_tiles`, `catchment_stored_amount` | Distinct accessible deposits and their current stored amount, approached from a tile in the catchment. Zero-amount deposits count as tiles. Eternal deposits' stored amount is not lifetime supply. |
+| `resources.<type>.exclusive_catchment_deposit_tiles`, `exclusive_catchment_stored_amount` | Nearby deposits and stored stock this colony can approach strictly sooner than any rival. |
+| `resources.<type>.tied_catchment_deposit_tiles`, `tied_catchment_stored_amount` | Nearby deposits and stock for which the closest approach ties with at least one rival. A tie counts for each tied colony. |
+| `reachable_rivals`, `farthest_rival_distance` | Number of rivals with a ground route and longest such walking distance; `null` distance if none. |
+
+Each colony also has `distance_bands[]` at fixed walking radii of **12, 24, and 48
+steps**. Unlike the generator-specific `scale.catchment_steps`, these are stable
+across generators. Each band repeats `reached_tiles`, `grass_tiles`,
+`buildable_tiles`, `fertile_grass_tiles`, `exclusive_nearest_tiles`, and
+`tied_nearest_tiles` at that radius. Its eight `resources.<type>` entries repeat
+accessible `deposit_tiles` and `stored_amount`, plus the exclusive and tied subsets
+of each. A deposit enters a band when the closest neighboring walking tile is
+within the radius; a deposit can be in a player's accessible stock without being
+its first-access or tied stock. The bands are cumulative, allowing near-home and
+wider expansion comparisons without changing the quality score.
 
 Let clamp(v) mean `max(0, min(1, v))`. Normalized factors are:
 
