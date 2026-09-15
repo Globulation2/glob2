@@ -581,11 +581,82 @@ inline void savannahContracts()
 	Game narrowGap(nullptr);
 	assert(service.generate(narrowGap, r));
 	puts("PASS Savannah: envelope, resource-independent terrain, contained unattended growth");
+inline void vulturesFoodChecks()
+{
+	D request;
+	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("vultures"));
+	request.wDec = request.hDec = 8;
+	request.nbTeams = 2;
+	request.seed = 7;
+	Game game(nullptr);
+	assert(GenerationService().generate(game, request));
+	Map &map = game.map;
+	// The stock cap never refills a deposit or consumes RNG, even with a larger second cap.
+	const auto beforeCap = syncRandEngine();
+	const auto capped = MapGeneration::capResourceStock(map, WHEAT, 1);
+	const auto unchanged = MapGeneration::capResourceStock(map, WHEAT, 3);
+	assert(capped.tiles > 96 && capped.amount == capped.tiles);
+	assert(unchanged.amount == capped.amount && syncRandEngine() == beforeCap);
+	bool rejected = false;
+	try
+	{
+		MapGeneration::capResourceStock(map, WHEAT, 0);
+	}
+	catch (const GenerationFailure &)
+	{
+		rejected = true;
+	}
+	assert(rejected);
+	assert(
+		MapGeneration::startingAccessFailure(map, 2, {{WHEAT, 24, "wheat"}, {WOOD, 32, "wood"}})
+			.empty());
+	// No fruit exists here: a required absent supply must fail, as must an impossible room budget.
+	assert(!MapGeneration::startingAccessFailure(map, 2, {{CHERRY, 24, "cherries"}}).empty());
+	assert(
+		!MapGeneration::startingAccessFailure(map, 2, {}, map.getW() * map.getH(), 1).empty());
+	std::vector<unsigned char> food(map.getW() * map.getH(), 0);
+	int harvested = 0;
+	for (int i = 0; i < int(food.size()); ++i)
+		if (map.getResource(i).type == WHEAT)
+		{
+			assert(map.getResource(i).amount == 1);
+			if (++harvested % 2)
+				map.decResource(i % map.getW(), i / map.getW());
+			else
+				food[i] = 1;
+		}
+	assert(harvested > 96);
+	const auto savedRandom = syncRandEngine();
+	syncRandEngine().seed(19);
+	for (int tick = 0; tick < 2048; ++tick)
+		map.growResources();
+	syncRandEngine() = savedRandom;
+	for (int i = 0; i < int(food.size()); ++i)
+	{
+		assert((map.getResource(i).type == WHEAT) == bool(food[i]));
+		if (food[i])
+			assert(map.getResource(i).amount == 1);
+	}
+	// Retained compact-rectangle failures: dry rations and quarry frontage can both
+	// need several pockets. Keep the full kit rather than rejecting those otherwise viable starts.
+	D compact = request;
+	compact.hDec = 7;
+	compact.nbTeams = 5;
+	compact.options["home-size"] = 30;
+	compact.options["lakes"] = 0;
+	for (unsigned seed : {201u, 202u, 203u, 204u})
+	{
+		compact.seed = seed;
+		Game repaired(nullptr);
+		assert(GenerationService().generate(repaired, compact));
+	}
+	puts("PASS Vultures: one harvest per wheat tile; harvested food never regrows");
 }
 
 inline void generatorContracts()
 {
 	savannahContracts();
+	vulturesFoodChecks();
 	hedgerowContracts();
 	breachableHighlandsContracts();
 	braidedDeltaChecks();
