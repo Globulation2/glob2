@@ -3,8 +3,9 @@
 Savannah (`savannah`, numeric ID **33**, revision **1**) is mostly open grassland.
 Colony economies begin beside small home ponds. Larger neutral watering holes offer
 renewable crops and three fruit kinds, with open ground for forward inns. Scattered
-wood groves and small quarries punctuate the plains. The intended choice is whether
-to expand toward a watering hole or use the open land to flank an opponent.
+wood groves, small quarries, pools and lone trees punctuate the plains. The intended
+choice is whether to expand toward a watering hole or use the open land to flank an
+opponent.
 
 This is an asymmetric landscape with equal starter floors. It does not promise
 identical travel costs, exact resource yields, or equal chances of winning.
@@ -14,7 +15,7 @@ Human play is needed to judge whether its ponds actually attract conflict.
 
 | Control | Values | Default | Meaning |
 | --- | --- | --- | --- |
-| Watering holes | Sparse / Normal / Many | Normal | Targets 1 / 2 / 3 **neutral** ponds per 128×128 area, in addition to home ponds. |
+| Watering holes | Sparse / Normal / Many | Normal | Targets 2 / 3 / 4 **neutral** ponds per 128×128 area, in addition to home ponds and the plain's pools. |
 | Dry patches | 0–20%, step 1 | 8% | Share of eligible plains vertices converted to sand, outside home, approach and feature reservations. This excludes structural sand margins and beaches. |
 | Wheat, wood, stone, algae, fruit amounts | 0–300%, step 25 | 100% | Additional deposits; exact tile counts saturate when eligible plots fill. |
 
@@ -53,7 +54,7 @@ operations explain their units; the evidence section records actual verification
   require every strip tile to be walkable and reachable from the colony's workers.
   Moving units do not count as permanent route obstacles.
 - **Home crops:** wheat has radius 6.5 at (+6, −11), wood radius five at (+6, +10),
-  both with 18% ripple. The pond is at (+9, 0), radius 4.5 with 25% ripple. Crop
+  both with 18% ripple. The pond is at (+9, 0), radius 5.5 with 25% ripple. Crop
   planting ranks exact engine fertility; dry tiles cannot count toward starter
   floors. At 100%, wheat has 20 guaranteed plus 20 scaled initial deposits; wood
   has 20 guaranteed plus eight scaled. The first calibration used radius-four
@@ -75,7 +76,7 @@ operations explain their units; the evidence section records actual verification
 - **Algae:** one radius-one clump per 30 eligible pure-water tiles at 100%,
   scaled by abundance using the existing fertility-aware `seedAlgae` operation.
   It never creates water or changes land connectivity.
-- **Neutral ponds:** radius 4.5, 25% ripple; north/south crop plots radius five,
+- **Neutral ponds:** radius 5.5, 25% ripple; north/south crop plots radius five,
   offset ten tiles, with targets 38 wheat and 28 wood at 100%. Three radius-two
   fruit plots lie on the east side, seven tiles apart, with two deposits of each
   kind at 100%. The west in this local frame remains clear for a forward inn and its margins.
@@ -95,6 +96,17 @@ operations explain their units; the evidence section records actual verification
   afterwards. Four of every five accepted features are radius-three wood groves
   with seven tiles at 100%; the fifth is a radius-two quarry with two stone tiles.
   These optional wood deposits may be finite dry reserves. Home wood is renewable.
+- **Pools:** shared dart throwing with spacing 40 proposes small pools on the open
+  plain; a 9-tile clearance box must be free of every reservation, and radius eight is
+  reserved afterwards. A pool has radius 3.5 with 25% ripple: a few pure-water tiles
+  after beaches, water to be seen rather than farmed. It waters the plain round it,
+  but the plain holds no crop, so containment is unaffected. Pools are not counted
+  among the ponds the final check requires pure water at.
+- **Lone trees:** shared dart throwing with spacing 12 proposes single trees on the
+  plain outside every reservation and plot. Only candidates on dry pure grass (crop
+  growth chance zero, so the engine's water probe never lets them spread) are planted,
+  scaled by the wood amount; at zero there are none. The final containment check
+  admits a tree outside a plot only on such dry ground.
 - **Dry patches:** periodic noise with cell period 14 makes coherent patches instead
   of speckles. `sprinkleSand` converts the highest-ranked eligible vertices and
   keeps three steps from water. Beaches are laid after all terrain operations.
@@ -116,8 +128,9 @@ The change adds operations to existing modules, with no changes to existing defa
   actual planted count. It excludes occupied tiles and supports finite groves and
   permanent quarries as well as crops.
 - `Farmland::containedPlotsMismatch`: checks final grass adjacency against plot labels
-  and rejects spreading crops planted outside those labels. Any eight-neighbour
-  grass connection out of a plot or into another plot fails.
+  and rejects spreading crops planted outside those labels, except a tree on ground
+  whose crop growth chance is zero. Any eight-neighbour grass connection out of a plot
+  or into another plot fails.
 
 The engine expands wheat and wood only onto neighbouring grass. The final adjacency
 check therefore proves that these crops cannot spread out of their plots under

@@ -20,7 +20,8 @@
 using namespace MapGeneration;
 
 // Savannah's contract is room to build and flank, with renewable home supplies and richer ponds
-// between colonies. Crops occupy sealed grass islands in sand, not the whole fertile countryside:
+// between colonies, pools and lone trees dotting the plain between them. Crops occupy sealed
+// grass islands in sand, not the whole fertile countryside:
 // growth can fill those islands without eating the town or the plains. This is a terrain design,
 // not a new growth rule. See docs/map-generators/SAVANNAH.md for budgets and validation evidence.
 namespace
@@ -40,6 +41,16 @@ constexpr int kStarterCrop = 20, kStarterStone = 4;
 // Neutral features reserve a radius-19 disc: pond, two plots, a forward building clearing, and
 // walking frontage. Another tile between discs keep saturated crops from making belts.
 constexpr int kNeutralReserve = 19, kFeatureGap = 1;
+// Water the map wants to be seen to have: watering holes one per 128-square more than the first
+// calibration (Sparse 2, Normal 3, Many 4), ponds of radius 5.5 rather than 4.5, and small pools
+// on the open plain about forty tiles apart. A pool waters the plain round it, but the plain holds
+// no crop to grow there, so the containment argument does not change.
+constexpr double kPondRadius = 5.5, kPoolRadius = 3.5;
+constexpr int kPoolSpacing = 40, kPoolClearance = 9, kPoolReserve = 8;
+// Lone trees dot the plain, a candidate every twelve tiles or so, planted only on dry pure grass
+// (crop growth chance zero), where the engine's water probe never lets a tree spread: scenery and
+// a little finite wood, never a thicket that closes the plain.
+constexpr int kPlainTreeSpacing = 12;
 struct Plot
 {
 	std::vector<int> tiles;
@@ -52,7 +63,8 @@ struct Layout
 	TerrainSketch terrain;
 	std::vector<int> homeOf, plotOf;
 	std::vector<unsigned char> reserved;
-	std::vector<ShapePoint> homes, ponds;
+	std::vector<ShapePoint> homes, ponds, pools;
+	std::vector<int> plainTrees;
 	std::vector<Plot> plots;
 	std::string failure;
 };
@@ -134,7 +146,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 			 "savannah-home-plots");
 		plot(L, context, {h.x + 6, h.y + 10}, 5, WOOD, 8, kStarterCrop, true,
 			 "savannah-home-plots");
-		pond(L, context, {h.x + 9, h.y}, 4.5);
+		pond(L, context, {h.x + 9, h.y}, kPondRadius);
 		// Stone is permanent; four single tiles are a quarry, not a clump that can wall an exit.
 		plot(L, context, {h.x + 18, h.y}, 2, STONE, 0, kStarterStone, false, "savannah-quarries");
 	}
@@ -144,7 +156,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		for (int dy = -26; dy <= 26; ++dy)
 			for (int dx = -13; dx <= -5; ++dx)
 				L.reserved[t.at(int(h.x) + dx, int(h.y) + dy)] = 1;
-	const int wanted = std::max(1, (o.wateringHoles + 1) * t.size() / (128 * 128));
+	const int wanted = std::max(1, (o.wateringHoles + 2) * t.size() / (128 * 128));
 	struct Candidate
 	{
 		ShapePoint at;
@@ -208,7 +220,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		for (int f = 0; f < 3; ++f)
 			plot(L, context, frame.at(11, (f - 1) * 7), 2, CHERRY + f, 2, 0, false,
 				 "savannah-orchards");
-		pond(L, context, c.at, 4.5);
+		pond(L, context, c.at, kPondRadius);
 		++placed;
 	}
 	context.telemetry.measure("savannah.ponds.requested", wanted);
@@ -222,6 +234,25 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 			"No neutral watering hole fits clear of homes and approaches; use fewer colonies.";
 		return L;
 	}
+	// Pools on the open plain, clear of every feature: water to be seen, not farmed.
+	int pools = 0, proposedPools = 0;
+	for (const Site &s : spreadPoints(t, kPoolSpacing, context, "savannah-pool-sites"))
+	{
+		++proposedPools;
+		bool fits = true;
+		for (int dy = -kPoolClearance; dy <= kPoolClearance && fits; ++dy)
+			for (int dx = -kPoolClearance; dx <= kPoolClearance && fits; ++dx)
+				fits = !L.reserved[t.at(s.x + dx, s.y + dy)];
+		if (!fits)
+			continue;
+		reserve(L, {double(s.x), double(s.y)}, kPoolReserve);
+		const RadialShape outline(kPoolRadius, 0.25, context, "savannah-pool-outlines");
+		fillShape(L.terrain, t, s.x, s.y, outline, 0, WATER);
+		L.pools.push_back({double(s.x), double(s.y)});
+		++pools;
+	}
+	context.telemetry.measure("savannah.pools.placed", pools);
+	context.telemetry.measure("savannah.pools.proposed", proposedPools);
 	// Dry groves and outcrops are optional, widely spaced features. Their geometry is independent
 	// of amount controls, including zero. The caps stop even later irrigation from invading plains.
 	int groves = 0, proposedGroves = 0;
@@ -241,6 +272,11 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		++groves;
 	}
 	context.telemetry.measure("savannah.plains.clumps", groves);
+	// Lone trees on the plain: candidates only. generate() plants those on dry pure grass.
+	for (const Site &s : spreadPoints(t, kPlainTreeSpacing, context, "savannah-plain-trees"))
+		if (const int i = t.at(s.x, s.y); !L.reserved[i] && L.plotOf[i] < 0)
+			L.plainTrees.push_back(i);
+	context.telemetry.measure("savannah.plains.tree-candidates", L.plainTrees.size());
 	context.telemetry.measure("savannah.plains.proposed-clumps", proposedGroves);
 	if (groves < proposedGroves)
 		context.telemetry.fallback("savannah.plains.omitted-clumps",
@@ -324,6 +360,21 @@ bool generate(Game &game, GenerationContext &context)
 			return false;
 		}
 	}
+	// Lone trees where nothing can grow: dry pure grass (growth chance zero) outside every plot.
+	// The wood amount scales how many candidates are planted; at zero there are none.
+	int trees = 0;
+	const int wantedTrees = int(scaledCount(int(L.plainTrees.size()), o.wood));
+	for (int i : L.plainTrees)
+	{
+		if (trees == wantedTrees)
+			break;
+		const int x = i % L.t.w, y = i / L.t.w;
+		if (fertility.at(x, y) != 0 || !game.map.isGrass(x, y) || !clearGround(game.map, x, y))
+			continue;
+		game.map.setResource(x, y, WOOD, 1);
+		++trees;
+	}
+	context.telemetry.measure("savannah.plains.trees", trees);
 	seedAlgae(game.map, context, L.t, "savannah-algae", o.algae, AlgaeBand::anyWater(30));
 	// No generic crop/route repair: unrestricted topups would break containment. Essential
 	// shortfalls fail, while optional deposits saturate inside their pre-reserved plots.
@@ -337,7 +388,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		return error;
 	const Map &map = game.map;
 	const Torus &t = L.t;
-	if (const auto error = containedPlotsMismatch(map, t, L.plotOf); !error.empty())
+	// Lone trees on dry ground are the one deposit allowed outside a plot: they cannot spread.
+	const auto fertility = cropGrowthField(L.terrain, t);
+	if (const auto error = containedPlotsMismatch(map, t, L.plotOf, &fertility); !error.empty())
 		return error;
 	if (const auto error =
 			homePondMissing(map, t, L.ponds, int(L.ponds.size()), "watering hole", "pure water");
@@ -347,7 +400,6 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 										  "without clearing or swimming");
 	if (!walk.error.empty())
 		return walk.error;
-	const auto fertility = cropGrowthField(L.terrain, t);
 	const auto buildable = buildableTiles(map);
 	// Neutral ponds need actual room for a forward inn with upgrade margins. The adjacent
 	// sand and crop plots do not count; all footprint tiles must be reached on final land.
@@ -427,7 +479,7 @@ GeneratorDefinition savannahDefinition()
 	return {"savannah",
 			45,
 			"Savannah",
-			1,
+			2,
 			false,
 			{GeneratorControl::choice("watering-holes", "Watering holes",
 									  {"Sparse", "Normal", "Many"}, 1, ControlGroup::Terrain),
