@@ -89,7 +89,6 @@ GeneratorRegistry::GeneratorRegistry(std::vector<GeneratorDefinition> values)
 }
 const GeneratorDefinition *GeneratorRegistry::find(int id) const
 {
-	for (const auto &d : definitions)
 		if (d.legacyId == id)
 			return &d;
 	return nullptr;
@@ -102,7 +101,6 @@ const GeneratorDefinition &GeneratorRegistry::at(int id) const
 }
 int GeneratorRegistry::idOf(const std::string &id) const
 {
-	for (const auto &d : definitions)
 		if (id == d.id)
 			return d.legacyId;
 	throw std::invalid_argument("Unknown generator: " + id);
@@ -110,7 +108,6 @@ int GeneratorRegistry::idOf(const std::string &id) const
 std::vector<int> GeneratorRegistry::methods(bool editor) const
 {
 	std::vector<int> result;
-	for (const auto &d : definitions)
 		if (editor || !d.editorOnly)
 			result.push_back(d.legacyId);
 	return result;
@@ -159,12 +156,8 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 anthillDefinition(),
 											 coralDefinition(),
 											 emojiDefinition(),
-											 emojiDefinition(),
-											 fortsDefinition(),
 											 fortsDefinition(),
 											 braidedDeltaDefinition(),
-											 braidedDeltaDefinition(),
-											 breachableHighlandsDefinition(),
 											 breachableHighlandsDefinition(),
 											 hedgerowCountryDefinition(),
 											 glacisDefinition(),

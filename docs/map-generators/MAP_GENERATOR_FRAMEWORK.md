@@ -797,7 +797,6 @@ orchard is the prize, and the water between is crossed only once colonies can sw
   every other colony clears any deposits in the way.
 - **Checked, not assumed.** `validateWorld` rebuilds the design and requires every spoke's centre
   line to be land, every colony reachable on foot from colony 0 and the hub reachable too, with
-  water, buildings and every resource blocking.
 - **Sand roads.** With `sand-roads` (on), a line of sand one tile thick (`tracePath`) runs down the
   middle of every spoke and whole thread, off the pads and dew drops; torn stubs, which are dead
   ends, get none. Every tile touching the sand loses the pure grass a deposit or a building needs,
@@ -857,15 +856,12 @@ further it is from home.
   the way. `validateWorld` rebuilds the design and requires every trunk's centre line to be land,
   every colony able to walk to its first fork and, with bridges, every colony reachable on foot
   from colony 0.
-- **Sand roads.** With `sand-roads` (on), a line of sand one tile thick (`tracePath`) runs down the
   middle of every branch that forks on and every bridge, off the pads and buds; dead-end tips get
   none, since they carry no traffic and their narrow land would be left without fields. Every tile
   touching the sand loses the pure grass a deposit or a building needs, so nothing can grow or be
   built across the road. Branches never taper below about eight tiles (`branch-width` 7–17, 11 by
   default, is the trunk's), so grass remains either side of the road.
 - **Rectangular maps.** The fan is designed in a circle on the map's shorter side and placed on the
-  map by `Stretch`, so on a rectangular map it fills the map as an ellipse; widths stay in tiles.
-  Square maps are unchanged.
 
 ## Carousel
 
@@ -1010,7 +1006,6 @@ next leg up. Every home reaches a walled wheat farm on either flank.
   blocks since 2026-09-14 (the farms on either flank feed the home; `secureStartingCrops` is the
   backstop). The plateau has a pond and only fruit, an orchard of the three fruits between every
   two summits, so nothing overgrows it.
-- **Starting towers.** `tower-count` towers (default 3, at `starting-towers` level, default 1 since
   2026-09-14) and four open pads per colony, all on its trail
   beside the walkway down its middle, each directly against stone on the inner side of a wall - the side
   towards the middle of the map - so it shoots across the stone at the next leg up, where attackers
@@ -1363,7 +1358,6 @@ extends its reach one oasis at a time, and an army that outruns its oases fights
   to an outpost and to an oasis within sixteen steps of every other's, every oasis with room for two
   2x2 buildings, every colony walkable from the first across the sand.
 
-- **Played.** With four Numbis (six 256×256 maps, every cyclic team rotation, 45,000 ticks)
   every capital starves: units hold at 52 until about tick 20,000 and fall to under ten by
   40,000, with 45 to 51 starvation deaths per colony and no combat. The telemetry shows why: a
   Numbi colony harvests its capital fields about twenty times in the whole game (against about
