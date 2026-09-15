@@ -2452,3 +2452,11 @@ Cortex
 60 λεπτά
 [Sudden-death timer]
 Χρονόμετρο ξαφνικού θανάτου
+[Breachable highlands]
+Υψίπεδα με ρήγματα
+[Ridge depth]
+Πάχος κορυφογραμμών
+[Extra open passes]
+Πρόσθετα ανοιχτά περάσματα
+[Wooded saddles]
+Δασωμένοι αυχένες

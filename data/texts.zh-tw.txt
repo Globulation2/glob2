@@ -2454,3 +2454,11 @@ OpenGL 在此版本中不可用。
 60 分鐘
 [Sudden-death timer]
 驟死計時器
+[Breachable highlands]
+可突破的高地
+[Ridge depth]
+山脊厚度
+[Extra open passes]
+額外開放山口
+[Wooded saddles]
+林木山口

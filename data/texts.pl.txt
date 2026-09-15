@@ -2382,3 +2382,11 @@ Wyłączone (bez zegara)
 60 minut
 [Sudden-death timer]
 Zegar nagłej śmierci
+[Breachable highlands]
+Wyżyny z wyłomami
+[Ridge depth]
+Grubość grzbietów
+[Extra open passes]
+Dodatkowe otwarte przełęcze
+[Wooded saddles]
+Zalesione przełęcze

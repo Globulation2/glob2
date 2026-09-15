@@ -2388,3 +2388,11 @@ Desativado (sem temporizador)
 60 minutos
 [Sudden-death timer]
 Temporizador de morte súbita
+[Breachable highlands]
+Terras altas com brechas
+[Ridge depth]
+Espessura das cristas
+[Extra open passes]
+Passagens abertas adicionais
+[Wooded saddles]
+Selas arborizadas

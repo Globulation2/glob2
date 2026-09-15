@@ -2406,3 +2406,11 @@ Uit (geen timer)
 60 minuten
 [Sudden-death timer]
 Sudden-death-timer
+[Breachable highlands]
+Doorbreekbaar hoogland
+[Ridge depth]
+Dikte van bergruggen
+[Extra open passes]
+Extra open passen
+[Wooded saddles]
+Beboste passen

@@ -1188,3 +1188,7 @@
 [Stats page one]
 [Stats page two]
 [Stats next page]
+[Breachable highlands]
+[Ridge depth]
+[Extra open passes]
+[Wooded saddles]

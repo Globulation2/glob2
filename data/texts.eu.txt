@@ -2392,3 +2392,11 @@ Desaktibatuta (tenporizadorerik gabe)
 60 minutu
 [Sudden-death timer]
 Bat-bateko heriotzaren tenporizadorea
+[Breachable highlands]
+Zuloak ireki daitezkeen goi-lurrak
+[Ridge depth]
+Mendilerroen lodiera
+[Extra open passes]
+Mendate ireki gehigarriak
+[Wooded saddles]
+Mendate basotsuak

@@ -2378,3 +2378,11 @@ Globulation 2 커서를 표시합니다.
 60분
 [Sudden-death timer]
 서든데스 타이머
+[Breachable highlands]
+돌파 가능한 고지
+[Ridge depth]
+능선 두께
+[Extra open passes]
+추가 개방 고개
+[Wooded saddles]
+숲으로 덮인 고개

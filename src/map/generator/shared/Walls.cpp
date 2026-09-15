@@ -3,7 +3,9 @@
 #include "Map.h"
 #include "Sketch.h"
 #include "TerrainType.h"
+#include "Topology.h"
 #include <algorithm>
+#include <stdexcept>
 namespace MapGeneration
 {
 std::vector<unsigned char> seaMargin(const Map &map, const Torus &t,
@@ -35,7 +37,8 @@ std::vector<unsigned char> seaMargin(const Map &map, const Torus &t,
 	return margin;
 }
 
-std::vector<unsigned char> seaVertices(const Map &map, const Torus &t, const std::vector<unsigned char> &lakes)
+std::vector<unsigned char> seaVertices(const Map &map, const Torus &t,
+									   const std::vector<unsigned char> &lakes)
 {
 	std::vector<unsigned char> sea(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
@@ -102,7 +105,8 @@ std::vector<unsigned char> labelBorders(const Torus &t, const std::vector<int> &
 	return wall;
 }
 
-std::vector<unsigned char> labelBorders(const Torus &t, const std::vector<int> &labels, int thickness)
+std::vector<unsigned char> labelBorders(const Torus &t, const std::vector<int> &labels,
+										int thickness)
 {
 	std::vector<unsigned char> wall = labelBorders(t, labels);
 	for (int pass = 1; pass < std::clamp(thickness, 1, 3); ++pass)
@@ -167,8 +171,9 @@ int pieceLeak(const Map &map, const Torus &t, const std::vector<int> &piece,
 	// Crops, fruit and buildings go in time, so only water and stone part two pieces for good.
 	std::vector<unsigned char> open(n, 0);
 	for (int i = 0; i < n; ++i)
-		open[i] = !shut[i] && !map.isWater(i % t.w, i / t.w) &&
-				  !(map.isResource(i % t.w, i / t.w) && map.getResource(i % t.w, i / t.w).type == STONE);
+		open[i] =
+			!shut[i] && !map.isWater(i % t.w, i / t.w) &&
+			!(map.isResource(i % t.w, i / t.w) && map.getResource(i % t.w, i / t.w).type == STONE);
 	int pieces = 0;
 	for (int p : piece)
 		pieces = std::max(pieces, p + 1);
@@ -183,6 +188,81 @@ int pieceLeak(const Map &map, const Torus &t, const std::vector<int> &piece,
 				return i;
 	}
 	return -1;
+}
+
+GatePartitionCheck checkGatePartition(const Torus &t, const std::vector<unsigned char> &passable,
+									  const std::vector<int> &labels,
+									  const std::vector<TileGate> &gates)
+{
+	if (passable.size() != size_t(t.size()) || labels.size() != passable.size())
+		throw std::invalid_argument("Gate partition grids do not match the torus");
+	GatePartitionCheck result;
+	auto sealed = passable;
+	for (size_t k = 0; k < gates.size(); ++k)
+	{
+		const auto &gate = gates[k];
+		// Reject malformed gates before sealing; an empty plug cannot close its
+		// crossing, which would otherwise obscure the useful gate diagnostic.
+		if (gate.tiles.empty() || gate.regions[0] < 0 || gate.regions[1] < 0 ||
+			gate.regions[0] == gate.regions[1])
+		{
+			result.badGate = int(k);
+			return result;
+		}
+		for (int tile : gate.tiles)
+		{
+			if (tile < 0 || tile >= t.size())
+				throw std::invalid_argument("Gate tile outside the torus");
+			sealed[tile] = 0;
+		}
+	}
+	const auto regions = connectedRegions(sealed, t.w, t.h, true, GridNeighbors::Eight);
+	const auto ownership = labelComponents(regions, labels);
+	result.leakTile = ownership.conflictTile;
+	if (result.leakTile >= 0)
+		return result;
+	// Reuse one scratch mask. A successful flood consumes every marked plug tile;
+	// a disconnected plug fails immediately, so its leftover marks never affect
+	// another gate. The work scales with gate area instead of a map flood per gate.
+	std::vector<unsigned char> pending(t.size(), 0);
+	for (size_t k = 0; k < gates.size(); ++k)
+	{
+		const auto &gate = gates[k];
+		for (int tile : gate.tiles)
+			pending[tile] = 1;
+		std::vector<int> queue{gate.tiles.front()};
+		pending[queue.front()] = 0;
+		bool sides[2] = {false, false};
+		bool extraSide = false;
+		for (size_t head = 0; head < queue.size(); ++head)
+		{
+			const int tile = queue[head];
+			for (int oy = -1; oy <= 1; ++oy)
+				for (int ox = -1; ox <= 1; ++ox)
+				{
+					const int neighbour = t.at(tile % t.w + ox, tile / t.w + oy);
+					if (pending[neighbour])
+					{
+						pending[neighbour] = 0;
+						queue.push_back(neighbour);
+					}
+					if (sealed[neighbour])
+					{
+						const int owner = ownership.owners[regions[neighbour]];
+						for (int side = 0; side < 2; ++side)
+							sides[side] = sides[side] || owner == gate.regions[side];
+						extraSide = extraSide || (owner >= 0 && owner != gate.regions[0] &&
+												  owner != gate.regions[1]);
+					}
+				}
+		}
+		if (queue.size() != gate.tiles.size() || !sides[0] || !sides[1] || extraSide)
+		{
+			result.badGate = int(k);
+			return result;
+		}
+	}
+	return result;
 }
 
 int towerReach(const Torus &t, const std::vector<unsigned char> &buildable,

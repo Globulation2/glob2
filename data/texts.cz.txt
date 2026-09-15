@@ -2382,3 +2382,11 @@ Vypnuto (bez časovače)
 60 minut
 [Sudden-death timer]
 Časovač náhlé smrti
+[Breachable highlands]
+Průlomová vysočina
+[Ridge depth]
+Tloušťka hřebenů
+[Extra open passes]
+Další otevřené průsmyky
+[Wooded saddles]
+Zalesněná sedla

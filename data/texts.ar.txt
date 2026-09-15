@@ -2380,3 +2380,11 @@ OpenGL غير متوفر في هذا الإصدار.
 60 دقيقة
 [Sudden-death timer]
 مؤقت الموت المفاجئ
+[Breachable highlands]
+مرتفعات قابلة للاختراق
+[Ridge depth]
+سماكة الحواف الجبلية
+[Extra open passes]
+ممرات مفتوحة إضافية
+[Wooded saddles]
+ممرات مشجرة

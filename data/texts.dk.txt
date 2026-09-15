@@ -2458,3 +2458,11 @@ Fra (ingen timer)
 60 minutter
 [Sudden-death timer]
 Sudden death-timer
+[Breachable highlands]
+Højland med gennembrud
+[Ridge depth]
+Bjergryggens tykkelse
+[Extra open passes]
+Ekstra åbne pas
+[Wooded saddles]
+Skovklædte pas

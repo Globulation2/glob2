@@ -2380,3 +2380,11 @@ Malŝaltita (neniu kronometro)
 60 minutoj
 [Sudden-death timer]
 Kronometro de subita morto
+[Breachable highlands]
+Trarompebla altebenaĵo
+[Ridge depth]
+Dikeco de krestoj
+[Extra open passes]
+Pliaj malfermitaj pasejoj
+[Wooded saddles]
+Arbaraj seloj

@@ -121,6 +121,14 @@ void warpCorners(Tessellation &, int reach, const std::vector<unsigned char> &wa
 /// so every tile belongs to exactly one cell. Empty if some tile was left out or taken twice, which a
 /// valid tiling never does.
 std::vector<int> labelTiles(const Tessellation &);
+
+/// A three-point crossing through an edge's midpoint, in the owning cell's unwrapped
+/// frame. Endpoints stop centreRadius tiles from each cell centre, leaving room for a
+/// pond, plaza or other protected central feature. Parallel edges across a torus seam
+/// produce different crossings even when they join the same cells. Empty if either
+/// centre cannot keep the requested radius; negative radii/half-widths are invalid.
+std::vector<StrokePoint> cellCrossing(const Tessellation &, int edge, double centreRadius,
+									  double halfWidth);
 /// A subtile point (sixteenths of a tile) in tile units: where a cell's centre falls on the map.
 inline ShapePoint tilePoint(SubtilePoint p)
 {

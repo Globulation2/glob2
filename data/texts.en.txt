@@ -2380,3 +2380,11 @@ Statistics 1/2  >
 Statistics 2/2  >
 [Stats next page]
 Page (P)
+[Breachable highlands]
+Breachable highlands
+[Ridge depth]
+Ridge depth
+[Extra open passes]
+Extra open passes
+[Wooded saddles]
+Wooded saddles

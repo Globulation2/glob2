@@ -2380,3 +2380,11 @@ OpenGL در این بیلد موجود نیست.
 60 دقیقه
 [Sudden-death timer]
 زمان‌سنج مرگ ناگهانی
+[Breachable highlands]
+بلندی‌های رخنه‌پذیر
+[Ridge depth]
+ضخامت یال‌ها
+[Extra open passes]
+گذرگاه‌های باز اضافی
+[Wooded saddles]
+گردنه‌های جنگلی

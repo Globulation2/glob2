@@ -2378,3 +2378,11 @@ Tắt (không có bộ đếm giờ)
 60 phút
 [Sudden-death timer]
 Bộ đếm giờ đột tử
+[Breachable highlands]
+Cao nguyên có thể mở lối
+[Ridge depth]
+Độ dày sống núi
+[Extra open passes]
+Đèo mở bổ sung
+[Wooded saddles]
+Đèo phủ rừng

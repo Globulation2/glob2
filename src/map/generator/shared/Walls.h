@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Grid.h"
+#include <array>
 #include <climits>
 #include <string>
 #include <vector>
@@ -19,12 +20,14 @@ namespace MapGeneration
 /// not pure grass) joined to one. `sea` marks undermap vertices, so a generator decides which
 /// water is sea and which (a home's lake) is not. `notBeach` marks sand that must not carry the
 /// margin inland, such as a sand road.
-std::vector<unsigned char> seaMargin(const Map &, const Torus &, const std::vector<unsigned char> &sea,
+std::vector<unsigned char> seaMargin(const Map &, const Torus &,
+									 const std::vector<unsigned char> &sea,
 									 const std::vector<unsigned char> &notBeach);
 
 /// The sea for seaMargin: every water vertex of the map except those of `lakes`, the inland water a
 /// generator keeps apart from the sea.
-std::vector<unsigned char> seaVertices(const Map &, const Torus &, const std::vector<unsigned char> &lakes);
+std::vector<unsigned char> seaVertices(const Map &, const Torus &,
+									   const std::vector<unsigned char> &lakes);
 
 /// Whether a sealed coast holds: the first tile of `inside` (land a swimmer must not get onto) that a
 /// unit walking from the margin's walkable tiles reaches, or -1 when none is. Margin tiles themselves
@@ -62,7 +65,8 @@ std::vector<unsigned char> sealedIslandStone(const Map &, const Torus &,
 std::vector<unsigned char> labelBorders(const Torus &, const std::vector<int> &labels);
 /// The same wall `thickness` tiles thick (1 to 3): the second tile on the other region's side of the
 /// border, the third back on the first's.
-std::vector<unsigned char> labelBorders(const Torus &, const std::vector<int> &labels, int thickness);
+std::vector<unsigned char> labelBorders(const Torus &, const std::vector<int> &labels,
+										int thickness);
 
 /// labelBorders with doors: the border between a tile and its lower-labelled neighbour is walled
 /// unless `open(tile, neighbour)` leaves it open, as where a home meets its own corridor. A tile is
@@ -114,6 +118,32 @@ std::vector<int> reachesWithShut(const Map &, const Torus &, const std::vector<u
 /// first tile of a different part any flood reaches, or -1 when every part keeps to itself.
 int pieceLeak(const Map &, const Torus &, const std::vector<int> &piece,
 			  const std::vector<unsigned char> &shut);
+
+/// A raster gate connecting two region labels. The tiles are the complete plug cut
+/// from a barrier, not its approach road. Separate entries preserve parallel gates
+/// between the same regions. A plug may currently be blocked by clearable material.
+struct TileGate
+{
+	std::array<int, 2> regions;
+	std::vector<int> tiles;
+};
+
+struct GatePartitionCheck
+{
+	int leakTile = -1; // sealed walkable component touches different region labels
+	int badGate = -1;  // empty/disconnected plug, missing side, or contact with a third region
+};
+
+/// Seal every gate in passable ground, then prove that connected components remain
+/// inside one region and each gate is one connected plug touching exactly its two intended
+/// regions. Uses eight neighbors and wraps both axes, matching ground-unit movement.
+/// Unlabelled ground (-1) may connect labelled ground and therefore must not be
+/// removed from the passable mask. Gates are tested independently of their current
+/// passability, so the same check covers open doors and future clearable crossings.
+/// Masks must cover the torus; gate tiles must be valid, unique indices per gate.
+GatePartitionCheck checkGatePartition(const Torus &, const std::vector<unsigned char> &passable,
+									  const std::vector<int> &labels,
+									  const std::vector<TileGate> &gates);
 
 /// The size of a defence tower's footprint, and the range of each of its three levels
 /// (BuildingTypesDefence.cpp). A tower scans square rings round its footprint's top-left tile with

@@ -2392,3 +2392,11 @@ Désactivé (pas de chronomètre)
 60 minutes
 [Sudden-death timer]
 Chronomètre de mort subite
+[Breachable highlands]
+Hautes terres à brèches
+[Ridge depth]
+Épaisseur des crêtes
+[Extra open passes]
+Cols ouverts supplémentaires
+[Wooded saddles]
+Cols boisés

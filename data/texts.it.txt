@@ -2444,3 +2444,11 @@ Disattivato (nessun timer)
 60 minuti
 [Sudden-death timer]
 Timer di morte improvvisa
+[Breachable highlands]
+Altopiani con varchi
+[Ridge depth]
+Spessore delle creste
+[Extra open passes]
+Valichi aperti aggiuntivi
+[Wooded saddles]
+Selle boscose

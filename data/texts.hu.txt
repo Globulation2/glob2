@@ -2382,3 +2382,11 @@ Kikapcsolva (nincs időzítő)
 60 perc
 [Sudden-death timer]
 Hirtelen halál időzítő
+[Breachable highlands]
+Áttörhető felföld
+[Ridge depth]
+Hegygerincek vastagsága
+[Extra open passes]
+További nyitott hágók
+[Wooded saddles]
+Erdős nyergek

@@ -2382,3 +2382,11 @@ Aus (kein Timer)
 60 Minuten
 [Sudden-death timer]
 Sudden-Death-Timer
+[Breachable highlands]
+Durchbrechbares Hochland
+[Ridge depth]
+Kammdicke
+[Extra open passes]
+Zusätzliche offene Pässe
+[Wooded saddles]
+Bewaldete Pässe

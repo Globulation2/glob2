@@ -2378,3 +2378,11 @@ Desativado (sem cronômetro)
 60 minutos
 [Sudden-death timer]
 Cronômetro de morte súbita
+[Breachable highlands]
+Uheldir gant toulloù
+[Ridge depth]
+Tevder ar cʼhrib
+[Extra open passes]
+Tremenioù digor ouzhpenn
+[Wooded saddles]
+Tremenioù koadek

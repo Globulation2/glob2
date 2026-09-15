@@ -2392,3 +2392,11 @@ Av (ingen timer)
 60 minuter
 [Sudden-death timer]
 Sudden death-timer
+[Breachable highlands]
+Högland med genombrott
+[Ridge depth]
+Bergsryggarnas tjocklek
+[Extra open passes]
+Extra öppna pass
+[Wooded saddles]
+Skogklädda pass
