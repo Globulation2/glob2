@@ -231,3 +231,13 @@ by the existing CI-wired defaults harness.
 The JSON report's `canonical_quality` intentionally retains the common cross-generator weights;
 it is not Vultures' candidate-selection score. Use the raw supply/room/contact measurements and
 the generator's own weights when interpreting this deliberately dry scenario.
+
+### Revision 3 on the same protocol
+
+The same six maps, rotations and AIs on revision 3 (65% base cover): pooled per-start peaks of 162
+to 170 units against 126 to 131 on revision 2, 89 to 96 warriors against 50 to 55, 17 to 19
+starvation deaths per colony against 20 to 25, no elimination in 24 games against five, every game
+at the tick cap, a root-mean-square position bias of zero. Wheat harvested per colony fell from 151
+to 127: with the fields filled in the colonies clear less and hold more, feed better and arm more,
+and nobody is overrun by the cap. The fuller fields make the map more even and better fed, not
+hungrier; whether a human wants the 35% openness back is a control away.
