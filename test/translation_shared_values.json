@@ -65,6 +65,7 @@
       "Elite",
       "Hospital",
       "Magenta",
+      "Oceania",
       "Total",
       "Tutorial"
     ],
@@ -72,11 +73,14 @@
       "Audio",
       "Canals",
       "Combat",
+      "Continent",
+      "Continents",
       "Editor",
       "Forts",
       "Hospital",
       "Magenta",
       "No",
+      "Oceania",
       "Total",
       "Tutorial",
       "desert"
@@ -139,6 +143,7 @@
       "Magenta"
     ],
     "texts.es.txt": [
+      "Asia",
       "Coral",
       "Editor",
       "Hospital",
@@ -149,6 +154,7 @@
       "Tutorial"
     ],
     "texts.eu.txt": [
+      "Asia",
       "Info",
       "Magenta"
     ],
@@ -168,12 +174,16 @@
       "Colonies",
       "Combat",
       "Construction",
+      "Continent",
+      "Continents",
       "Cyan",
       "Forts",
+      "Europe",
       "Grain",
       "Magenta",
       "Options",
       "Orange",
+      "Orientation",
       "Polder",
       "Prestige",
       "Proportions",
@@ -192,6 +202,7 @@
       "Polder"
     ],
     "texts.id.txt": [
+      "Asia",
       "Audio",
       "Diagonal",
       "Editor",
@@ -204,11 +215,14 @@
       "Veteran"
     ],
     "texts.it.txt": [
+      "Africa",
+      "Asia",
       "Audio",
       "Briefing",
       "Editor",
       "Magenta",
       "No",
+      "Oceania",
       "Polder",
       "Standard",
       "Start"
@@ -219,6 +233,7 @@
       " teams",
       "%0 teams",
       "Briefing",
+      "Continent",
       "Elite",
       "Info",
       "Lobby",
@@ -233,6 +248,7 @@
     "texts.pl.txt": [
       "Audio",
       "Magenta",
+      "Oceania",
       "Polder"
     ],
     "texts.pt.txt": [
@@ -245,14 +261,18 @@
       "Tutorial"
     ],
     "texts.ro.txt": [
+      "Africa",
+      "Asia",
       "Audio",
       "Caravanserai",
+      "Continent",
       "Control",
       "Coral",
       "Cyan",
       "Editor",
       "Info",
       "Magenta",
+      "Oceania",
       "Polder",
       "Standard",
       "Total",

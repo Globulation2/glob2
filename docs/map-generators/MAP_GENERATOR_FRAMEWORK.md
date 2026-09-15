@@ -1565,8 +1565,10 @@ its catchment 54 at the tenth percentile and 167 at the median, and its mean fer
 1886. In 56 four-colony games of Nicowar against Maxima across the continents on the pre-tuning
 build, no colony of 224 failed to grow past twelve units, while the colonies eliminated first had
 started with the least building room or the least fertile ground, which is what the site scoring,
-the home clearings and the fertility floor above answer. Linux and macOS produce identical golden
-rows. Nobody has played it by hand yet.
+the home clearings and the fertility floor above answer; a confirmation run of 28 games on the
+tuned build had the worst colony's building sites per map at 61 to 310 (25 to 58 before), peak
+units and buildings up, and more games decided by elimination. Linux and macOS produce identical
+golden rows. Nobody has played it by hand yet.
 
 ## Compatibility notes
 
