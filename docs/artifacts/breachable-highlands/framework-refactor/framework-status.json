@@ -1,0 +1,626 @@
+{
+  "experiment": "highlands-shared-pairs-20260915",
+  "mode": "running",
+  "measurements": {
+    "therig-bulk-12": {
+      "finished_attempts": 111,
+      "accepted_results": 66,
+      "process_seconds": 685.2819378376007,
+      "simulation_ticks": 0,
+      "peak_rss_bytes": 211525632,
+      "ticks_per_process_second": 0.0
+    },
+    "therig-bulk-3": {
+      "finished_attempts": 145,
+      "accepted_results": 98,
+      "process_seconds": 879.4140915870667,
+      "simulation_ticks": 0,
+      "peak_rss_bytes": 212316160,
+      "ticks_per_process_second": 0.0
+    },
+    "therig-bulk-8": {
+      "finished_attempts": 105,
+      "accepted_results": 60,
+      "process_seconds": 688.6499013900757,
+      "simulation_ticks": 0,
+      "peak_rss_bytes": 212566016,
+      "ticks_per_process_second": 0.0
+    },
+    "therig-bulk-11": {
+      "finished_attempts": 108,
+      "accepted_results": 65,
+      "process_seconds": 689.1791207790375,
+      "simulation_ticks": 0,
+      "peak_rss_bytes": 211382272,
+      "ticks_per_process_second": 0.0
+    },
+    "therig-bulk-13": {
+      "finished_attempts": 97,
+      "accepted_results": 54,
+      "process_seconds": 660.5268568992615,
+      "simulation_ticks": 0,
+      "peak_rss_bytes": 211075072,
+      "ticks_per_process_second": 0.0
+    },
+    "therig-bulk-6": {
+      "finished_attempts": 97,
+      "accepted_results": 49,
+      "process_seconds": 704.8716914653778,
+      "simulation_ticks": 0,
+      "peak_rss_bytes": 211566592,
+      "ticks_per_process_second": 0.0
+    },
+    "therig-bulk-14": {
+      "finished_attempts": 92,
+      "accepted_results": 44,
+      "process_seconds": 714.7392268180847,
+      "simulation_ticks": 0,
+      "peak_rss_bytes": 212602880,
+      "ticks_per_process_second": 0.0
+    },
+    "therig-bulk-10": {
+      "finished_attempts": 95,
+      "accepted_results": 51,
+      "process_seconds": 687.2614381313324,
+      "simulation_ticks": 0,
+      "peak_rss_bytes": 211623936,
+      "ticks_per_process_second": 0.0
+    },
+    "therig-bulk-15": {
+      "finished_attempts": 104,
+      "accepted_results": 65,
+      "process_seconds": 645.5713572502136,
+      "simulation_ticks": 0,
+      "peak_rss_bytes": 211214336,
+      "ticks_per_process_second": 0.0
+    },
+    "therig-bulk-7": {
+      "finished_attempts": 97,
+      "accepted_results": 54,
+      "process_seconds": 673.752876996994,
+      "simulation_ticks": 0,
+      "peak_rss_bytes": 211697664,
+      "ticks_per_process_second": 0.0
+    },
+    "therig-bulk-1": {
+      "finished_attempts": 153,
+      "accepted_results": 87,
+      "process_seconds": 963.1690649986267,
+      "simulation_ticks": 0,
+      "peak_rss_bytes": 212873216,
+      "ticks_per_process_second": 0.0
+    },
+    "therig-bulk-4": {
+      "finished_attempts": 104,
+      "accepted_results": 58,
+      "process_seconds": 691.3483154773712,
+      "simulation_ticks": 0,
+      "peak_rss_bytes": 213340160,
+      "ticks_per_process_second": 0.0
+    },
+    "therig-bulk-2": {
+      "finished_attempts": 152,
+      "accepted_results": 80,
+      "process_seconds": 1026.1067264080048,
+      "simulation_ticks": 0,
+      "peak_rss_bytes": 211947520,
+      "ticks_per_process_second": 0.0
+    },
+    "therig-bulk-5": {
+      "finished_attempts": 102,
+      "accepted_results": 61,
+      "process_seconds": 668.3102431297302,
+      "simulation_ticks": 0,
+      "peak_rss_bytes": 211365888,
+      "ticks_per_process_second": 0.0
+    },
+    "therig-bulk-9": {
+      "finished_attempts": 94,
+      "accepted_results": 48,
+      "process_seconds": 695.603209733963,
+      "simulation_ticks": 0,
+      "peak_rss_bytes": 211816448,
+      "ticks_per_process_second": 0.0
+    },
+    "therig.local": {
+      "finished_attempts": 170,
+      "accepted_results": 136,
+      "process_seconds": 686.0584790706635,
+      "simulation_ticks": 0,
+      "peak_rss_bytes": 212426752,
+      "ticks_per_process_second": 0.0
+    }
+  },
+  "jobs": {
+    "completed": 1076,
+    "failed": 150
+  },
+  "attempts": {
+    "accepted": 1076,
+    "finished": 750
+  },
+  "failures": [
+    {
+      "host": "therig-bulk-1",
+      "category": "artifact_failure",
+      "count": 66
+    },
+    {
+      "host": "therig-bulk-10",
+      "category": "artifact_failure",
+      "count": 44
+    },
+    {
+      "host": "therig-bulk-11",
+      "category": "artifact_failure",
+      "count": 43
+    },
+    {
+      "host": "therig-bulk-12",
+      "category": "artifact_failure",
+      "count": 45
+    },
+    {
+      "host": "therig-bulk-13",
+      "category": "artifact_failure",
+      "count": 43
+    },
+    {
+      "host": "therig-bulk-14",
+      "category": "artifact_failure",
+      "count": 48
+    },
+    {
+      "host": "therig-bulk-15",
+      "category": "artifact_failure",
+      "count": 39
+    },
+    {
+      "host": "therig-bulk-2",
+      "category": "artifact_failure",
+      "count": 72
+    },
+    {
+      "host": "therig-bulk-3",
+      "category": "artifact_failure",
+      "count": 47
+    },
+    {
+      "host": "therig-bulk-4",
+      "category": "artifact_failure",
+      "count": 46
+    },
+    {
+      "host": "therig-bulk-5",
+      "category": "artifact_failure",
+      "count": 41
+    },
+    {
+      "host": "therig-bulk-6",
+      "category": "artifact_failure",
+      "count": 48
+    },
+    {
+      "host": "therig-bulk-7",
+      "category": "artifact_failure",
+      "count": 43
+    },
+    {
+      "host": "therig-bulk-8",
+      "category": "artifact_failure",
+      "count": 45
+    },
+    {
+      "host": "therig-bulk-9",
+      "category": "artifact_failure",
+      "count": 46
+    },
+    {
+      "host": "therig.local",
+      "category": "artifact_failure",
+      "count": 34
+    }
+  ],
+  "hosts": [
+    {
+      "name": "therig-bulk-1",
+      "updated": 1789486224.6557763,
+      "status": {
+        "accepting": true,
+        "attempts": [],
+        "builds": [],
+        "cache_bytes": 74669240,
+        "counts": {
+          "acknowledged": 471
+        },
+        "daemon_pid": 3764016,
+        "daemon_running": true,
+        "free_bytes": 178806652928,
+        "package_id": "33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702",
+        "platform": {
+          "arch": "x86_64",
+          "os": "linux"
+        },
+        "protocol_version": 1,
+        "slots": 2,
+        "spool_bytes": 0
+      },
+      "error": null
+    },
+    {
+      "name": "therig-bulk-10",
+      "updated": 1789486253.1523774,
+      "status": {
+        "accepting": true,
+        "attempts": [],
+        "builds": [],
+        "cache_bytes": 74669240,
+        "counts": {
+          "acknowledged": 311
+        },
+        "daemon_pid": 3777339,
+        "daemon_running": true,
+        "free_bytes": 178806566912,
+        "package_id": "33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702",
+        "platform": {
+          "arch": "x86_64",
+          "os": "linux"
+        },
+        "protocol_version": 1,
+        "slots": 1,
+        "spool_bytes": 0
+      },
+      "error": null
+    },
+    {
+      "name": "therig-bulk-11",
+      "updated": 1789486247.1995635,
+      "status": {
+        "accepting": true,
+        "attempts": [],
+        "builds": [],
+        "cache_bytes": 74669240,
+        "counts": {
+          "acknowledged": 324
+        },
+        "daemon_pid": 3777369,
+        "daemon_running": true,
+        "free_bytes": 178806632448,
+        "package_id": "33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702",
+        "platform": {
+          "arch": "x86_64",
+          "os": "linux"
+        },
+        "protocol_version": 1,
+        "slots": 1,
+        "spool_bytes": 0
+      },
+      "error": null
+    },
+    {
+      "name": "therig-bulk-12",
+      "updated": 1789486256.0738833,
+      "status": {
+        "accepting": true,
+        "attempts": [],
+        "builds": [],
+        "cache_bytes": 74669240,
+        "counts": {
+          "acknowledged": 319
+        },
+        "daemon_pid": 3777321,
+        "daemon_running": true,
+        "free_bytes": 178806566912,
+        "package_id": "33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702",
+        "platform": {
+          "arch": "x86_64",
+          "os": "linux"
+        },
+        "protocol_version": 1,
+        "slots": 1,
+        "spool_bytes": 0
+      },
+      "error": null
+    },
+    {
+      "name": "therig-bulk-13",
+      "updated": 1789486257.4825692,
+      "status": {
+        "accepting": true,
+        "attempts": [],
+        "builds": [],
+        "cache_bytes": 74669240,
+        "counts": {
+          "acknowledged": 299
+        },
+        "daemon_pid": 3777302,
+        "daemon_running": true,
+        "free_bytes": 178806501376,
+        "package_id": "33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702",
+        "platform": {
+          "arch": "x86_64",
+          "os": "linux"
+        },
+        "protocol_version": 1,
+        "slots": 1,
+        "spool_bytes": 0
+      },
+      "error": null
+    },
+    {
+      "name": "therig-bulk-14",
+      "updated": 1789486258.0915177,
+      "status": {
+        "accepting": true,
+        "attempts": [],
+        "builds": [],
+        "cache_bytes": 74669240,
+        "counts": {
+          "acknowledged": 299
+        },
+        "daemon_pid": 3777364,
+        "daemon_running": true,
+        "free_bytes": 178806501376,
+        "package_id": "33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702",
+        "platform": {
+          "arch": "x86_64",
+          "os": "linux"
+        },
+        "protocol_version": 1,
+        "slots": 1,
+        "spool_bytes": 0
+      },
+      "error": null
+    },
+    {
+      "name": "therig-bulk-15",
+      "updated": 1789486258.4262195,
+      "status": {
+        "accepting": true,
+        "attempts": [],
+        "builds": [],
+        "cache_bytes": 74669240,
+        "counts": {
+          "acknowledged": 320
+        },
+        "daemon_pid": 3777310,
+        "daemon_running": true,
+        "free_bytes": 178806501376,
+        "package_id": "33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702",
+        "platform": {
+          "arch": "x86_64",
+          "os": "linux"
+        },
+        "protocol_version": 1,
+        "slots": 1,
+        "spool_bytes": 0
+      },
+      "error": null
+    },
+    {
+      "name": "therig-bulk-2",
+      "updated": 1789486226.8685863,
+      "status": {
+        "accepting": true,
+        "attempts": [],
+        "builds": [],
+        "cache_bytes": 74669240,
+        "counts": {
+          "acknowledged": 455
+        },
+        "daemon_pid": 3764022,
+        "daemon_running": true,
+        "free_bytes": 178806628352,
+        "package_id": "33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702",
+        "platform": {
+          "arch": "x86_64",
+          "os": "linux"
+        },
+        "protocol_version": 1,
+        "slots": 2,
+        "spool_bytes": 0
+      },
+      "error": null
+    },
+    {
+      "name": "therig-bulk-3",
+      "updated": 1789486226.026444,
+      "status": {
+        "accepting": true,
+        "attempts": [],
+        "builds": [],
+        "cache_bytes": 149567750,
+        "counts": {
+          "acknowledged": 438
+        },
+        "daemon_pid": 3763996,
+        "daemon_running": true,
+        "free_bytes": 178806640640,
+        "package_id": "33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702",
+        "platform": {
+          "arch": "x86_64",
+          "os": "linux"
+        },
+        "protocol_version": 1,
+        "slots": 2,
+        "spool_bytes": 0
+      },
+      "error": null
+    },
+    {
+      "name": "therig-bulk-4",
+      "updated": 1789486237.7555757,
+      "status": {
+        "accepting": true,
+        "attempts": [],
+        "builds": [],
+        "cache_bytes": 74669240,
+        "counts": {
+          "acknowledged": 319
+        },
+        "daemon_pid": 3777283,
+        "daemon_running": true,
+        "free_bytes": 178806644736,
+        "package_id": "33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702",
+        "platform": {
+          "arch": "x86_64",
+          "os": "linux"
+        },
+        "protocol_version": 1,
+        "slots": 1,
+        "spool_bytes": 0
+      },
+      "error": null
+    },
+    {
+      "name": "therig-bulk-5",
+      "updated": 1789486237.8108945,
+      "status": {
+        "accepting": true,
+        "attempts": [],
+        "builds": [],
+        "cache_bytes": 74669240,
+        "counts": {
+          "acknowledged": 311
+        },
+        "daemon_pid": 3777292,
+        "daemon_running": true,
+        "free_bytes": 178806644736,
+        "package_id": "33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702",
+        "platform": {
+          "arch": "x86_64",
+          "os": "linux"
+        },
+        "protocol_version": 1,
+        "slots": 1,
+        "spool_bytes": 0
+      },
+      "error": null
+    },
+    {
+      "name": "therig-bulk-6",
+      "updated": 1789486237.8529375,
+      "status": {
+        "accepting": true,
+        "attempts": [],
+        "builds": [],
+        "cache_bytes": 74669240,
+        "counts": {
+          "acknowledged": 309
+        },
+        "daemon_pid": 3777326,
+        "daemon_running": true,
+        "free_bytes": 178806575104,
+        "package_id": "33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702",
+        "platform": {
+          "arch": "x86_64",
+          "os": "linux"
+        },
+        "protocol_version": 1,
+        "slots": 1,
+        "spool_bytes": 0
+      },
+      "error": null
+    },
+    {
+      "name": "therig-bulk-7",
+      "updated": 1789486237.8530495,
+      "status": {
+        "accepting": true,
+        "attempts": [],
+        "builds": [],
+        "cache_bytes": 74669240,
+        "counts": {
+          "acknowledged": 310
+        },
+        "daemon_pid": 3777331,
+        "daemon_running": true,
+        "free_bytes": 178806575104,
+        "package_id": "33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702",
+        "platform": {
+          "arch": "x86_64",
+          "os": "linux"
+        },
+        "protocol_version": 1,
+        "slots": 1,
+        "spool_bytes": 0
+      },
+      "error": null
+    },
+    {
+      "name": "therig-bulk-8",
+      "updated": 1789486247.6006594,
+      "status": {
+        "accepting": true,
+        "attempts": [],
+        "builds": [],
+        "cache_bytes": 74669240,
+        "counts": {
+          "acknowledged": 318
+        },
+        "daemon_pid": 3777354,
+        "daemon_running": true,
+        "free_bytes": 178806566912,
+        "package_id": "33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702",
+        "platform": {
+          "arch": "x86_64",
+          "os": "linux"
+        },
+        "protocol_version": 1,
+        "slots": 1,
+        "spool_bytes": 0
+      },
+      "error": null
+    },
+    {
+      "name": "therig-bulk-9",
+      "updated": 1789486247.931417,
+      "status": {
+        "accepting": true,
+        "attempts": [],
+        "builds": [],
+        "cache_bytes": 74669240,
+        "counts": {
+          "acknowledged": 305
+        },
+        "daemon_pid": 3777287,
+        "daemon_running": true,
+        "free_bytes": 178806566912,
+        "package_id": "33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702",
+        "platform": {
+          "arch": "x86_64",
+          "os": "linux"
+        },
+        "protocol_version": 1,
+        "slots": 1,
+        "spool_bytes": 0
+      },
+      "error": null
+    },
+    {
+      "name": "therig.local",
+      "updated": 1789486224.4326413,
+      "status": {
+        "accepting": true,
+        "attempts": [],
+        "builds": [],
+        "cache_bytes": 323908284,
+        "counts": {
+          "acknowledged": 767
+        },
+        "daemon_pid": 3751689,
+        "daemon_running": true,
+        "free_bytes": 178806677504,
+        "package_id": "33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702",
+        "platform": {
+          "arch": "x86_64",
+          "os": "linux"
+        },
+        "protocol_version": 1,
+        "slots": 8,
+        "spool_bytes": 0
+      },
+      "error": null
+    }
+  ]
+}

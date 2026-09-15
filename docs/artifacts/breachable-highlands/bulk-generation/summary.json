@@ -1,0 +1,561 @@
+{
+  "non_topology_envelope_checks": 1670,
+  "envelope_disagreements": [],
+  "unique_requested_worlds": 3562,
+  "unique_successful_worlds": 1290,
+  "repeated_report_mismatches": [],
+  "expected_unsupported": 2272,
+  "unexpected_non_success": 0,
+  "metric_unit": "One value per accepted successful map; repeated subjects reduced to within-map extrema.",
+  "planned": 3590,
+  "accepted": 3590,
+  "successful": 1318,
+  "cohorts": {
+    "topology": {
+      "invalid_request": 1582,
+      "success": 338
+    },
+    "individual-levels": {
+      "invalid_request": 4,
+      "success": 230
+    },
+    "crossing-grid": {
+      "success": 220
+    },
+    "mixed": {
+      "success": 338,
+      "invalid_request": 686
+    },
+    "corners": {
+      "success": 64
+    },
+    "default-seeds": {
+      "success": 128
+    }
+  },
+  "non_success_diagnostics": [
+    {
+      "category": "invalid_request",
+      "reason": "Leave at least two expansion valleys and two valleys along each axis; use a larger map, smaller valleys or fewer colonies.",
+      "count": 1208
+    },
+    {
+      "category": "invalid_request",
+      "reason": "Breachable highlands needs both sides at least 128 tiles long.",
+      "count": 844
+    },
+    {
+      "category": "invalid_request",
+      "reason": "These valleys cannot fit separate home exits; use fewer colonies or a larger map.",
+      "count": 129
+    },
+    {
+      "category": "invalid_request",
+      "reason": "No additional ridge connects expansion valleys; use fewer colonies or a larger map.",
+      "count": 91
+    }
+  ],
+  "successful_maps_missing_telemetry": 0,
+  "successful_maps_incomplete_telemetry": 0,
+  "fallback_maps": {
+    "breachable.farm.saturated": 1114
+  },
+  "issues": [],
+  "seed_dependent_topology_outcomes": [],
+  "metrics": {
+    "breachable.saddles.actual": {
+      "count": 1318,
+      "min": 1,
+      "p50": 3.0,
+      "p95": 24.0,
+      "p99": 29.829999999999927,
+      "max": 50,
+      "mean": 8.144916540212444,
+      "minimum_job": "010343faf77729fad7e4374f59502ed3",
+      "maximum_job": "772cbd796aa75335787fd37cf502b7e2"
+    },
+    "breachable.valleys.actual": {
+      "count": 1318,
+      "min": 4,
+      "p50": 16.0,
+      "p95": 64.0,
+      "p99": 64.0,
+      "max": 64,
+      "mean": 28.711684370257966,
+      "minimum_job": "07de9dbda44b3253a230bb121747cfad",
+      "maximum_job": "ffb6f4f707ff106ada02ef198a9cf0e8"
+    },
+    "minimum_saddle_detour_edges": {
+      "count": 1318,
+      "min": 1,
+      "p50": 5.0,
+      "p95": 15.0,
+      "p99": 15.0,
+      "max": 23,
+      "mean": 5.743550834597875,
+      "minimum_job": "010343faf77729fad7e4374f59502ed3",
+      "maximum_job": "f8e03b09f8a0f655dfb894358b7e8952"
+    },
+    "maximum_saddle_detour_edges": {
+      "count": 1318,
+      "min": 1,
+      "p50": 7.0,
+      "p95": 37.0,
+      "p99": 37.0,
+      "max": 45,
+      "mean": 10.826251896813353,
+      "minimum_job": "010343faf77729fad7e4374f59502ed3",
+      "maximum_job": "d03e52a8df5c0f664de0c39a5776c1a8"
+    },
+    "minimum_home_wheat_tiles": {
+      "count": 1318,
+      "min": 54,
+      "p50": 138.0,
+      "p95": 210.0,
+      "p99": 230.0,
+      "max": 231,
+      "mean": 140.88694992412746,
+      "minimum_job": "026b26d2cc2d3d5b24826662fd30d213",
+      "maximum_job": "f343d93c55099b659dae92b8890d9f1d"
+    },
+    "maximum_home_wheat_tiles": {
+      "count": 1318,
+      "min": 54,
+      "p50": 138.0,
+      "p95": 212.0,
+      "p99": 232.0,
+      "max": 233,
+      "mean": 141.304248861912,
+      "minimum_job": "026b26d2cc2d3d5b24826662fd30d213",
+      "maximum_job": "c942855807143276f193021d64962ccd"
+    },
+    "minimum_home_wood_tiles": {
+      "count": 1318,
+      "min": 24,
+      "p50": 48.0,
+      "p95": 64.0,
+      "p99": 69.0,
+      "max": 70,
+      "mean": 48.47040971168437,
+      "minimum_job": "026b26d2cc2d3d5b24826662fd30d213",
+      "maximum_job": "9e74f29bf07318f54ed75c091e8e8d22"
+    },
+    "maximum_home_wood_tiles": {
+      "count": 1318,
+      "min": 24,
+      "p50": 51.0,
+      "p95": 65.0,
+      "p99": 71.0,
+      "max": 71,
+      "mean": 50.455993930197266,
+      "minimum_job": "026b26d2cc2d3d5b24826662fd30d213",
+      "maximum_job": "f059bdcd7743d8364c1a4176381bb518"
+    },
+    "min_local_fit4": {
+      "count": 1318,
+      "min": 262,
+      "p50": 707.0,
+      "p95": 1736.1499999999999,
+      "p99": 1865.6599999999999,
+      "max": 1993,
+      "mean": 851.5341426403642,
+      "minimum_job": "1b6fc0ec17c5bdee432bb563332d1003",
+      "maximum_job": "5aa3050ab4f5f0d6bdd565c6e72a2bd8"
+    },
+    "worst_wheat_distance": {
+      "count": 1318,
+      "min": 4,
+      "p50": 7.0,
+      "p95": 11.0,
+      "p99": 14.0,
+      "max": 17,
+      "mean": 7.261760242792109,
+      "minimum_job": "10c39d007a269b7daf0bbb515decc60e",
+      "maximum_job": "673dc9fbe9f850f9ee766d539305d600"
+    },
+    "worst_wood_distance": {
+      "count": 1318,
+      "min": 10,
+      "p50": 11.0,
+      "p95": 14.0,
+      "p99": 16.0,
+      "max": 18,
+      "mean": 11.576631259484067,
+      "minimum_job": "009372907e4ea3f09f59ea03b5c8fb60",
+      "maximum_job": "d25fdf2ecdbd7ebf05c1105ad20f3874"
+    },
+    "generation_seconds": {
+      "count": 1318,
+      "min": 0.0252057,
+      "p50": 0.277813,
+      "p95": 1.0373584999999999,
+      "p99": 1.3233146999999945,
+      "max": 2.10526,
+      "mean": 0.439416395599393,
+      "minimum_job": "51a3dd8a27503a6c0deebd1f431aa436",
+      "maximum_job": "ec2ceb849de488102ca0614bbba92e3c"
+    },
+    "process_seconds": {
+      "count": 1318,
+      "min": 0.49743008613586426,
+      "p50": 1.1140583753585815,
+      "p95": 3.5333205580711358,
+      "p99": 4.265741691589355,
+      "max": 5.666579961776733,
+      "mean": 1.5441284460073537,
+      "minimum_job": "f82b1e00d182b69d5e568a73e1611e33",
+      "maximum_job": "ec2ceb849de488102ca0614bbba92e3c"
+    },
+    "peak_rss_bytes": {
+      "count": 1318,
+      "min": 23203840,
+      "p50": 41822208.0,
+      "p95": 76962201.6,
+      "p99": 81765498.88,
+      "max": 83828736,
+      "mean": 47410945.16540212,
+      "minimum_job": "51a3dd8a27503a6c0deebd1f431aa436",
+      "maximum_job": "139fefbfbb5a64d412b8552d285b28a5"
+    },
+    "fairness": {
+      "count": 1318,
+      "min": 0.7552959519993895,
+      "p50": 0.9410050711107941,
+      "p95": 1.0,
+      "p99": 1.0,
+      "max": 1,
+      "mean": 0.9363609794848943,
+      "minimum_job": "2587e866847ce24532d14f4372d11f9f",
+      "maximum_job": "fdbd76e94b4f3e5e67b0e5a550d00484"
+    },
+    "worst_nearest_rival_walk_cost": {
+      "count": 1215,
+      "min": 115,
+      "p50": 290.0,
+      "p95": 1086.0,
+      "p99": 1086.0,
+      "max": 1440,
+      "mean": 371.70534979423866,
+      "minimum_job": "976dea40aa33f6df1dfd632c6063d46d",
+      "maximum_job": "f8e03b09f8a0f655dfb894358b7e8952"
+    },
+    "minimum_colony_pair_walk_cost": {
+      "count": 1215,
+      "min": 60,
+      "p50": 165.0,
+      "p95": 352.0,
+      "p99": 529.7199999999998,
+      "max": 960,
+      "mean": 194.46090534979425,
+      "minimum_job": "464b2da8fed8454288aac87323dcd515",
+      "maximum_job": "24b8b827384ccbe6bf76f2f42a426bcd"
+    },
+    "maximum_colony_pair_walk_cost": {
+      "count": 1215,
+      "min": 118,
+      "p50": 476.0,
+      "p95": 1464.0,
+      "p99": 1486.86,
+      "max": 2097,
+      "mean": 594.1283950617284,
+      "minimum_job": "becd438de5715b321ed49dc45e30df39",
+      "maximum_job": "772cbd796aa75335787fd37cf502b7e2"
+    }
+  },
+  "requested_control_coverage": {
+    "algae-amount": {
+      "100": 2559,
+      "0": 79,
+      "25": 75,
+      "50": 70,
+      "75": 77,
+      "125": 77,
+      "150": 87,
+      "175": 77,
+      "200": 80,
+      "225": 73,
+      "250": 86,
+      "275": 93,
+      "300": 157
+    },
+    "extra-passes": {
+      "10": 2747,
+      "0": 302,
+      "20": 272,
+      "30": 269
+    },
+    "fruit-amount": {
+      "100": 2553,
+      "0": 75,
+      "25": 103,
+      "50": 64,
+      "75": 91,
+      "125": 87,
+      "150": 80,
+      "175": 67,
+      "200": 77,
+      "225": 90,
+      "250": 95,
+      "275": 68,
+      "300": 140
+    },
+    "height": {
+      "6": 482,
+      "7": 836,
+      "8": 1234,
+      "9": 1038
+    },
+    "pass-width": {
+      "8": 2586,
+      "6": 353,
+      "10": 334,
+      "12": 317
+    },
+    "pond-size": {
+      "6": 2638,
+      "3": 394,
+      "4": 270,
+      "5": 288
+    },
+    "ridge-depth": {
+      "5": 2539,
+      "3": 270,
+      "7": 266,
+      "9": 231,
+      "11": 284
+    },
+    "teams": {
+      "1": 239,
+      "2": 242,
+      "3": 245,
+      "4": 876,
+      "5": 249,
+      "6": 249,
+      "7": 236,
+      "8": 257,
+      "9": 254,
+      "10": 243,
+      "11": 253,
+      "12": 247
+    },
+    "valley-size": {
+      "64": 1229,
+      "72": 593,
+      "80": 583,
+      "88": 601,
+      "96": 584
+    },
+    "warp": {
+      "80": 2374,
+      "0": 166,
+      "10": 118,
+      "20": 113,
+      "30": 112,
+      "40": 121,
+      "50": 125,
+      "60": 105,
+      "70": 115,
+      "90": 97,
+      "100": 144
+    },
+    "wheat-amount": {
+      "100": 2545,
+      "0": 117,
+      "25": 67,
+      "50": 85,
+      "75": 83,
+      "125": 90,
+      "150": 77,
+      "175": 88,
+      "200": 80,
+      "225": 78,
+      "250": 80,
+      "275": 80,
+      "300": 120
+    },
+    "width": {
+      "6": 482,
+      "7": 813,
+      "8": 1240,
+      "9": 1055
+    },
+    "wood-amount": {
+      "100": 2555,
+      "0": 121,
+      "25": 95,
+      "50": 69,
+      "75": 79,
+      "125": 76,
+      "150": 91,
+      "175": 76,
+      "200": 79,
+      "225": 89,
+      "250": 71,
+      "275": 88,
+      "300": 101
+    },
+    "wooded-saddles": {
+      "50": 2751,
+      "25": 246,
+      "75": 270,
+      "100": 323
+    },
+    "workers": {
+      "4": 2618,
+      "1": 119,
+      "2": 116,
+      "3": 141,
+      "5": 137,
+      "6": 130,
+      "7": 139,
+      "8": 190
+    }
+  },
+  "successful_control_coverage": {
+    "algae-amount": {
+      "100": 915,
+      "0": 25,
+      "25": 35,
+      "50": 32,
+      "75": 21,
+      "125": 27,
+      "150": 33,
+      "175": 28,
+      "200": 22,
+      "225": 27,
+      "250": 33,
+      "275": 24,
+      "300": 96
+    },
+    "extra-passes": {
+      "10": 996,
+      "0": 150,
+      "20": 80,
+      "30": 92
+    },
+    "fruit-amount": {
+      "100": 918,
+      "0": 30,
+      "25": 34,
+      "50": 20,
+      "75": 30,
+      "125": 29,
+      "150": 29,
+      "175": 24,
+      "200": 23,
+      "225": 31,
+      "250": 35,
+      "275": 25,
+      "300": 90
+    },
+    "height": {
+      "7": 59,
+      "8": 650,
+      "9": 609
+    },
+    "pass-width": {
+      "8": 828,
+      "6": 174,
+      "10": 144,
+      "12": 172
+    },
+    "pond-size": {
+      "6": 922,
+      "3": 226,
+      "4": 79,
+      "5": 91
+    },
+    "ridge-depth": {
+      "5": 815,
+      "3": 129,
+      "7": 113,
+      "9": 104,
+      "11": 157
+    },
+    "teams": {
+      "1": 103,
+      "2": 96,
+      "3": 89,
+      "4": 701,
+      "5": 73,
+      "6": 60,
+      "7": 42,
+      "8": 47,
+      "9": 40,
+      "10": 26,
+      "11": 24,
+      "12": 17
+    },
+    "valley-size": {
+      "64": 910,
+      "72": 121,
+      "80": 107,
+      "88": 89,
+      "96": 91
+    },
+    "warp": {
+      "80": 732,
+      "0": 93,
+      "10": 57,
+      "20": 52,
+      "30": 46,
+      "40": 49,
+      "50": 59,
+      "60": 53,
+      "70": 52,
+      "90": 35,
+      "100": 90
+    },
+    "wheat-amount": {
+      "100": 910,
+      "0": 59,
+      "25": 25,
+      "50": 32,
+      "75": 26,
+      "125": 32,
+      "150": 27,
+      "175": 32,
+      "200": 29,
+      "225": 25,
+      "250": 29,
+      "275": 24,
+      "300": 68
+    },
+    "width": {
+      "7": 53,
+      "8": 642,
+      "9": 623
+    },
+    "wood-amount": {
+      "100": 916,
+      "0": 61,
+      "25": 42,
+      "50": 20,
+      "75": 29,
+      "125": 29,
+      "150": 30,
+      "175": 25,
+      "200": 26,
+      "225": 38,
+      "250": 24,
+      "275": 27,
+      "300": 51
+    },
+    "wooded-saddles": {
+      "50": 982,
+      "25": 91,
+      "75": 88,
+      "100": 157
+    },
+    "workers": {
+      "4": 941,
+      "1": 46,
+      "2": 39,
+      "3": 47,
+      "5": 49,
+      "6": 50,
+      "7": 46,
+      "8": 100
+    }
+  }
+}

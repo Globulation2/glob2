@@ -1,0 +1,64 @@
+{
+  "generator_revision": 4,
+  "final_map_checks": {
+    "linux_boundary_maps": 54,
+    "configurations": 27,
+    "macos_fresh_default_maps": 16,
+    "local_statuses": {
+      "ok": 16
+    },
+    "linux_missing_telemetry": 0,
+    "linux_incomplete_telemetry": 0,
+    "minimum_local_4x4_anchors": 321,
+    "mean_generation_seconds": 0.28449334259259257,
+    "maximum_generation_seconds": 1.17114,
+    "peak_process_rss_bytes": 82702336
+  },
+  "golden_rows": {
+    "linux-x86_64": 256,
+    "macos-arm64": 256,
+    "failures": 0
+  },
+  "telemetry_equivalence": {
+    "cases": 96,
+    "semantic_failures": 0
+  },
+  "games": {
+    "full_length_games": 36,
+    "ticks_per_game": 65536,
+    "gameplay_errors": 0,
+    "pilot_ticks": 16384,
+    "terminations": [
+      "tick_cap"
+    ],
+    "peak_process_rss_bytes": 164786176
+  },
+  "continuity": {
+    "revision": 4,
+    "from_tick": 16384,
+    "to_tick": 17408,
+    "identical": true,
+    "runs": [
+      {
+        "platform": "linux",
+        "category": "success",
+        "ticks": 17408,
+        "bytes": 29259064,
+        "sha256": "f533b6637e96c3b39c1e92dd341c2e0cc24fb534bafda48ed19e9bd1cbbac16b"
+      },
+      {
+        "platform": "macos",
+        "category": "success",
+        "ticks": 17408,
+        "bytes": 29259064,
+        "sha256": "f533b6637e96c3b39c1e92dd341c2e0cc24fb534bafda48ed19e9bd1cbbac16b"
+      }
+    ]
+  },
+  "source_sha256": {
+    "src/map/generator/generators/BreachableHighlandsGenerator.cpp": "bbef333b8ac38423cd612fcbd1e0771f1d8daa28660a6a2bd4bdc862d8996e1e",
+    "src/map/generator/generators/BreachableHighlandsGenerator.h": "aa41f608d1eaefb1e65d7fa500f0d924614e7a25648af3063ad650c7a8140923",
+    "test/MapGeneratorDefaultsTest.cpp": "0f38d2a36def6a1d0259e7cb45cc83417c539a0be48e79460f385117c59ee08d",
+    "test/map-generator-golden.txt": "f80e39aad9f93b66939ac0fbe47cf0ab152954b1fa89e2eae301605d354acabe"
+  }
+}

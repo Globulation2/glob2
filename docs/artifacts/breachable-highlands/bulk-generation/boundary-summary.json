@@ -1,0 +1,370 @@
+{
+  "non_topology_envelope_checks": 136,
+  "envelope_disagreements": [],
+  "unique_requested_worlds": 136,
+  "unique_successful_worlds": 136,
+  "repeated_report_mismatches": [],
+  "expected_unsupported": 0,
+  "unexpected_non_success": 0,
+  "metric_unit": "One value per accepted successful map; repeated subjects reduced to within-map extrema.",
+  "planned": 136,
+  "accepted": 136,
+  "successful": 136,
+  "cohorts": {
+    "small-corners": {
+      "success": 64
+    },
+    "large-corners": {
+      "success": 64
+    },
+    "seed-boundaries": {
+      "success": 8
+    }
+  },
+  "non_success_diagnostics": [],
+  "successful_maps_missing_telemetry": 0,
+  "successful_maps_incomplete_telemetry": 0,
+  "fallback_maps": {
+    "breachable.farm.saturated": 104
+  },
+  "issues": [],
+  "seed_dependent_topology_outcomes": [],
+  "metrics": {
+    "breachable.saddles.actual": {
+      "count": 136,
+      "min": 1,
+      "p50": 2.0,
+      "p95": 29.0,
+      "p99": 29.0,
+      "max": 29,
+      "mean": 14.235294117647058,
+      "minimum_job": "014121eeefbd4788b1ccbf55d79ef5f9",
+      "maximum_job": "fe899d90f2df2000be4d6f1eaf3f1c75"
+    },
+    "breachable.valleys.actual": {
+      "count": 136,
+      "min": 4,
+      "p50": 16.0,
+      "p95": 64.0,
+      "p99": 64.0,
+      "max": 64,
+      "mean": 32.94117647058823,
+      "minimum_job": "014121eeefbd4788b1ccbf55d79ef5f9",
+      "maximum_job": "fe899d90f2df2000be4d6f1eaf3f1c75"
+    },
+    "minimum_saddle_detour_edges": {
+      "count": 136,
+      "min": 1,
+      "p50": 3.0,
+      "p95": 3.0,
+      "p99": 7.0,
+      "max": 7,
+      "mean": 2.2058823529411766,
+      "minimum_job": "014121eeefbd4788b1ccbf55d79ef5f9",
+      "maximum_job": "672e410e2a4dc1929c3c0589623768a1"
+    },
+    "maximum_saddle_detour_edges": {
+      "count": 136,
+      "min": 1,
+      "p50": 7.0,
+      "p95": 35.0,
+      "p99": 39.0,
+      "max": 39,
+      "mean": 15.852941176470589,
+      "minimum_job": "014121eeefbd4788b1ccbf55d79ef5f9",
+      "maximum_job": "fe45d83c31cee1ffd061ff4540592cb1"
+    },
+    "minimum_home_wheat_tiles": {
+      "count": 136,
+      "min": 54,
+      "p50": 138.0,
+      "p95": 230.0,
+      "p99": 230.0,
+      "max": 231,
+      "mean": 124.44117647058823,
+      "minimum_job": "014121eeefbd4788b1ccbf55d79ef5f9",
+      "maximum_job": "ffdff5f65e469123ef94c672a9127d13"
+    },
+    "maximum_home_wheat_tiles": {
+      "count": 136,
+      "min": 54,
+      "p50": 138.0,
+      "p95": 232.0,
+      "p99": 232.65,
+      "max": 233,
+      "mean": 125.7720588235294,
+      "minimum_job": "014121eeefbd4788b1ccbf55d79ef5f9",
+      "maximum_job": "e856073c06429ad42e3bf554dcb9f363"
+    },
+    "minimum_home_wood_tiles": {
+      "count": 136,
+      "min": 24,
+      "p50": 45.5,
+      "p95": 70.0,
+      "p99": 70.65,
+      "max": 71,
+      "mean": 41.48529411764706,
+      "minimum_job": "0bafad8b4eb09506132aa2f237551656",
+      "maximum_job": "621460798e1f0f02866b98ec99e178be"
+    },
+    "maximum_home_wood_tiles": {
+      "count": 136,
+      "min": 24,
+      "p50": 49.0,
+      "p95": 71.0,
+      "p99": 71.0,
+      "max": 71,
+      "mean": 42.661764705882355,
+      "minimum_job": "0bafad8b4eb09506132aa2f237551656",
+      "maximum_job": "fe899d90f2df2000be4d6f1eaf3f1c75"
+    },
+    "min_local_fit4": {
+      "count": 136,
+      "min": 273,
+      "p50": 633.0,
+      "p95": 944.75,
+      "p99": 978.8000000000001,
+      "max": 1058,
+      "mean": 667.4411764705883,
+      "minimum_job": "50d63b1b60bd22eb39b2d76aa5f279a1",
+      "maximum_job": "0bafad8b4eb09506132aa2f237551656"
+    },
+    "worst_wheat_distance": {
+      "count": 136,
+      "min": 4,
+      "p50": 6.5,
+      "p95": 11.0,
+      "p99": 12.0,
+      "max": 13,
+      "mean": 7.830882352941177,
+      "minimum_job": "1ca0e19e55a2b3d83430dadd3ee3d5c2",
+      "maximum_job": "fe899d90f2df2000be4d6f1eaf3f1c75"
+    },
+    "worst_wood_distance": {
+      "count": 136,
+      "min": 10,
+      "p50": 11.0,
+      "p95": 13.0,
+      "p99": 13.0,
+      "max": 13,
+      "mean": 11.161764705882353,
+      "minimum_job": "014121eeefbd4788b1ccbf55d79ef5f9",
+      "maximum_job": "ef598c1a916134c5d8066e9ca9810063"
+    },
+    "generation_seconds": {
+      "count": 136,
+      "min": 0.0274643,
+      "p50": 0.2378165,
+      "p95": 1.6946700000000001,
+      "p99": 2.0382745000000004,
+      "max": 2.3719,
+      "mean": 0.6761556301470588,
+      "minimum_job": "d9515eb2dc932e5f75a876fe4e616cb7",
+      "maximum_job": "93435b263757995c61701f21fb48126a"
+    },
+    "process_seconds": {
+      "count": 136,
+      "min": 0.5126700401306152,
+      "p50": 1.1074614524841309,
+      "p95": 5.690271437168121,
+      "p99": 6.425003314018251,
+      "max": 6.752671003341675,
+      "mean": 2.5846181196324967,
+      "minimum_job": "148dd68a659185a5ba786c2a56ce4b2e",
+      "maximum_job": "4ff9f39b8256a507ce98b69934a12b9b"
+    },
+    "peak_rss_bytes": {
+      "count": 136,
+      "min": 23015424,
+      "p50": 32903168.0,
+      "p95": 83709952.0,
+      "p99": 84007526.4,
+      "max": 84250624,
+      "mean": 52210989.176470585,
+      "minimum_job": "97f62050e2cd8d3dbfd94fec47f1e567",
+      "maximum_job": "0f08778ee5dcf3cf158b36ec363b695b"
+    },
+    "fairness": {
+      "count": 136,
+      "min": 0.883717652876025,
+      "p50": 0.9648789091385158,
+      "p95": 0.9972917590979016,
+      "p99": 0.9989522756256962,
+      "max": 0.9997999639846248,
+      "mean": 0.9616779809585794,
+      "minimum_job": "50d63b1b60bd22eb39b2d76aa5f279a1",
+      "maximum_job": "148dd68a659185a5ba786c2a56ce4b2e"
+    },
+    "worst_nearest_rival_walk_cost": {
+      "count": 136,
+      "min": 93,
+      "p50": 175.5,
+      "p95": 528.5,
+      "p99": 752.1000000000006,
+      "max": 907,
+      "mean": 245.08823529411765,
+      "minimum_job": "35223ea145f88aae9adc676ed317fbc8",
+      "maximum_job": "4c67a63995ac50971e611d50bf0ccc02"
+    },
+    "minimum_colony_pair_walk_cost": {
+      "count": 136,
+      "min": 93,
+      "p50": 123.0,
+      "p95": 152.5,
+      "p99": 162.25000000000003,
+      "max": 168,
+      "mean": 126.45588235294117,
+      "minimum_job": "35223ea145f88aae9adc676ed317fbc8",
+      "maximum_job": "6e095b3c7cdf05dca3501a1168e83a53"
+    },
+    "maximum_colony_pair_walk_cost": {
+      "count": 136,
+      "min": 93,
+      "p50": 312.0,
+      "p95": 1810.0,
+      "p99": 1906.3,
+      "max": 1952,
+      "mean": 793.3235294117648,
+      "minimum_job": "35223ea145f88aae9adc676ed317fbc8",
+      "maximum_job": "965c6508aee58bcd8afbbcfaa00b493f"
+    }
+  },
+  "requested_control_coverage": {
+    "algae-amount": {
+      "300": 128,
+      "100": 8
+    },
+    "extra-passes": {
+      "0": 128,
+      "10": 8
+    },
+    "fruit-amount": {
+      "300": 128,
+      "100": 8
+    },
+    "height": {
+      "7": 64,
+      "9": 64,
+      "8": 8
+    },
+    "pass-width": {
+      "6": 64,
+      "12": 64,
+      "8": 8
+    },
+    "pond-size": {
+      "3": 64,
+      "6": 72
+    },
+    "ridge-depth": {
+      "3": 64,
+      "11": 64,
+      "5": 8
+    },
+    "teams": {
+      "2": 64,
+      "12": 64,
+      "4": 8
+    },
+    "valley-size": {
+      "64": 136
+    },
+    "warp": {
+      "0": 64,
+      "100": 64,
+      "80": 8
+    },
+    "wheat-amount": {
+      "0": 64,
+      "300": 64,
+      "100": 8
+    },
+    "width": {
+      "7": 64,
+      "9": 64,
+      "8": 8
+    },
+    "wood-amount": {
+      "0": 64,
+      "300": 64,
+      "100": 8
+    },
+    "wooded-saddles": {
+      "100": 128,
+      "50": 8
+    },
+    "workers": {
+      "8": 128,
+      "4": 8
+    }
+  },
+  "successful_control_coverage": {
+    "algae-amount": {
+      "300": 128,
+      "100": 8
+    },
+    "extra-passes": {
+      "0": 128,
+      "10": 8
+    },
+    "fruit-amount": {
+      "300": 128,
+      "100": 8
+    },
+    "height": {
+      "7": 64,
+      "9": 64,
+      "8": 8
+    },
+    "pass-width": {
+      "6": 64,
+      "12": 64,
+      "8": 8
+    },
+    "pond-size": {
+      "3": 64,
+      "6": 72
+    },
+    "ridge-depth": {
+      "3": 64,
+      "11": 64,
+      "5": 8
+    },
+    "teams": {
+      "2": 64,
+      "12": 64,
+      "4": 8
+    },
+    "valley-size": {
+      "64": 136
+    },
+    "warp": {
+      "0": 64,
+      "100": 64,
+      "80": 8
+    },
+    "wheat-amount": {
+      "0": 64,
+      "300": 64,
+      "100": 8
+    },
+    "width": {
+      "7": 64,
+      "9": 64,
+      "8": 8
+    },
+    "wood-amount": {
+      "0": 64,
+      "300": 64,
+      "100": 8
+    },
+    "wooded-saddles": {
+      "100": 128,
+      "50": 8
+    },
+    "workers": {
+      "8": 128,
+      "4": 8
+    }
+  }
+}

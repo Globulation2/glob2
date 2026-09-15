@@ -1,0 +1,86 @@
+[
+  {
+    "ai": "maxima",
+    "variant": "original",
+    "games": 4,
+    "per_game_means": {
+      "units": 107.5,
+      "buildings": 35,
+      "starvation": 324.25,
+      "births": 445.5,
+      "combat_deaths": 29.75,
+      "melee_damage": 32994,
+      "critical": 18.5
+    },
+    "colonies_alive": 15,
+    "first_melee_ticks": [
+      24064,
+      26112,
+      24064,
+      34304
+    ]
+  },
+  {
+    "ai": "maxima",
+    "variant": "final",
+    "games": 4,
+    "per_game_means": {
+      "units": 185.25,
+      "buildings": 42.5,
+      "starvation": 351.25,
+      "births": 582.75,
+      "combat_deaths": 62.25,
+      "melee_damage": 50811.5,
+      "critical": 33.75
+    },
+    "colonies_alive": 16,
+    "first_melee_ticks": [
+      20992,
+      19968,
+      17920,
+      19456
+    ]
+  },
+  {
+    "ai": "nicowar",
+    "variant": "original",
+    "games": 4,
+    "per_game_means": {
+      "units": 210.25,
+      "buildings": 76.5,
+      "starvation": 50.25,
+      "births": 281.25,
+      "combat_deaths": 36.75,
+      "melee_damage": 45578,
+      "critical": 32.25
+    },
+    "colonies_alive": 16,
+    "first_melee_ticks": [
+      19456,
+      15360,
+      16896,
+      21504
+    ]
+  },
+  {
+    "ai": "nicowar",
+    "variant": "final",
+    "games": 4,
+    "per_game_means": {
+      "units": 279.5,
+      "buildings": 79.25,
+      "starvation": 74.75,
+      "births": 418.25,
+      "combat_deaths": 80,
+      "melee_damage": 100063.5,
+      "critical": 43.25
+    },
+    "colonies_alive": 16,
+    "first_melee_ticks": [
+      16896,
+      14848,
+      15872,
+      16384
+    ]
+  }
+]

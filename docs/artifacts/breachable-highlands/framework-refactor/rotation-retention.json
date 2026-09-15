@@ -1,0 +1,9 @@
+{
+  "accepted_records": 3,
+  "additional_attempt_records": 0,
+  "verified_objects": 45,
+  "verified_object_bytes": 13793235,
+  "archive_contains": "Complete accepted records and native reports, immutable experiment, pinned runner, build manifests.",
+  "object_store": "Original results/artifacts directory retained separately; duplicate objects omitted from this review ZIP.",
+  "zip_bytes": 199088
+}

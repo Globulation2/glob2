@@ -1,0 +1,146 @@
+[
+  {
+    "host": "therig.local",
+    "counts": {
+      "acknowledged": 767
+    },
+    "stop": {
+      "stopping": true
+    }
+  },
+  {
+    "host": "therig-bulk-1",
+    "counts": {
+      "acknowledged": 471
+    },
+    "stop": {
+      "stopping": true
+    }
+  },
+  {
+    "host": "therig-bulk-2",
+    "counts": {
+      "acknowledged": 455
+    },
+    "stop": {
+      "stopping": true
+    }
+  },
+  {
+    "host": "therig-bulk-3",
+    "counts": {
+      "acknowledged": 438
+    },
+    "stop": {
+      "stopping": true
+    }
+  },
+  {
+    "host": "therig-bulk-4",
+    "counts": {
+      "acknowledged": 319
+    },
+    "stop": {
+      "stopping": true
+    }
+  },
+  {
+    "host": "therig-bulk-5",
+    "counts": {
+      "acknowledged": 311
+    },
+    "stop": {
+      "stopping": true
+    }
+  },
+  {
+    "host": "therig-bulk-6",
+    "counts": {
+      "acknowledged": 309
+    },
+    "stop": {
+      "stopping": true
+    }
+  },
+  {
+    "host": "therig-bulk-7",
+    "counts": {
+      "acknowledged": 310
+    },
+    "stop": {
+      "stopping": true
+    }
+  },
+  {
+    "host": "therig-bulk-8",
+    "counts": {
+      "acknowledged": 318
+    },
+    "stop": {
+      "stopping": true
+    }
+  },
+  {
+    "host": "therig-bulk-9",
+    "counts": {
+      "acknowledged": 305
+    },
+    "stop": {
+      "stopping": true
+    }
+  },
+  {
+    "host": "therig-bulk-10",
+    "counts": {
+      "acknowledged": 311
+    },
+    "stop": {
+      "stopping": true
+    }
+  },
+  {
+    "host": "therig-bulk-11",
+    "counts": {
+      "acknowledged": 324
+    },
+    "stop": {
+      "stopping": true
+    }
+  },
+  {
+    "host": "therig-bulk-12",
+    "counts": {
+      "acknowledged": 319
+    },
+    "stop": {
+      "stopping": true
+    }
+  },
+  {
+    "host": "therig-bulk-13",
+    "counts": {
+      "acknowledged": 299
+    },
+    "stop": {
+      "stopping": true
+    }
+  },
+  {
+    "host": "therig-bulk-14",
+    "counts": {
+      "acknowledged": 299
+    },
+    "stop": {
+      "stopping": true
+    }
+  },
+  {
+    "host": "therig-bulk-15",
+    "counts": {
+      "acknowledged": 320
+    },
+    "stop": {
+      "stopping": true
+    }
+  }
+]

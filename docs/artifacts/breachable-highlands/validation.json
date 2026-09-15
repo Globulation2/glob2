@@ -1,0 +1,2173 @@
+{
+  "platform": "macos-arm64",
+  "generator": "breachable-highlands",
+  "revision": 1,
+  "groups": [
+    {
+      "name": "abundant",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.9236474613536854,
+          "minimum_home_anchors": 888,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 9,
+          "saddles": [
+            2
+          ],
+          "saturated": true,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9746079693892499,
+          "minimum_home_anchors": 821,
+          "worst_wheat_walk": 7,
+          "worst_wood_walk": 7,
+          "saddles": [
+            2
+          ],
+          "saturated": true,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9834073104502434,
+          "minimum_home_anchors": 971,
+          "worst_wheat_walk": 7,
+          "worst_wood_walk": 8,
+          "saddles": [
+            2
+          ],
+          "saturated": true,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.900455966521275,
+          "minimum_home_anchors": 763,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 9,
+          "saddles": [
+            2
+          ],
+          "saturated": true,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "crowded",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 8,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.8656643791419963,
+          "minimum_home_anchors": 781,
+          "worst_wheat_walk": 11,
+          "worst_wood_walk": 16,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9494948154019601,
+          "minimum_home_anchors": 823,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 13,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9167837738851877,
+          "minimum_home_anchors": 722,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.8922018115640812,
+          "minimum_home_anchors": 789,
+          "worst_wheat_walk": 11,
+          "worst_wood_walk": 14,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "defaults",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.9345836859975711,
+          "minimum_home_anchors": 895,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9798040170199912,
+          "minimum_home_anchors": 829,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.956225203882973,
+          "minimum_home_anchors": 978,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.9024607588918188,
+          "minimum_home_anchors": 770,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "few-routes",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 0,
+        "wooded-saddles": 25,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.931209188050682,
+          "minimum_home_anchors": 895,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9850510615738426,
+          "minimum_home_anchors": 829,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9680255191454318,
+          "minimum_home_anchors": 978,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 13,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.8961311171047229,
+          "minimum_home_anchors": 770,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "held-out",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 16,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 50001,
+          "fairness": 0.966898833401711,
+          "minimum_home_anchors": 888,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 12,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50002,
+          "fairness": 0.9789669107822807,
+          "minimum_home_anchors": 1002,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 12,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50003,
+          "fairness": 0.9505199256871817,
+          "minimum_home_anchors": 900,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 12,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50004,
+          "fairness": 0.9682214915609896,
+          "minimum_home_anchors": 843,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 11,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50005,
+          "fairness": 0.8891744062559961,
+          "minimum_home_anchors": 867,
+          "worst_wheat_walk": 11,
+          "worst_wood_walk": 14,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50006,
+          "fairness": 0.9655064962112804,
+          "minimum_home_anchors": 842,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 12,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50007,
+          "fairness": 0.95754756225371,
+          "minimum_home_anchors": 819,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50008,
+          "fairness": 0.9515663108154963,
+          "minimum_home_anchors": 918,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50009,
+          "fairness": 0.9815996312441808,
+          "minimum_home_anchors": 788,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50010,
+          "fairness": 0.9796784285464585,
+          "minimum_home_anchors": 935,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 12,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50011,
+          "fairness": 0.8801799393558588,
+          "minimum_home_anchors": 834,
+          "worst_wheat_walk": 11,
+          "worst_wood_walk": 14,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50012,
+          "fairness": 0.9064797003212384,
+          "minimum_home_anchors": 761,
+          "worst_wheat_walk": 11,
+          "worst_wood_walk": 14,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50013,
+          "fairness": 0.9743356581533618,
+          "minimum_home_anchors": 1052,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 12,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50014,
+          "fairness": 0.9798091134684617,
+          "minimum_home_anchors": 814,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50015,
+          "fairness": 0.975738641855697,
+          "minimum_home_anchors": 767,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50016,
+          "fairness": 0.8927468686161942,
+          "minimum_home_anchors": 736,
+          "worst_wheat_walk": 11,
+          "worst_wood_walk": 14,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "large",
+      "parameters": {
+        "width": 512,
+        "height": 512,
+        "teams": 12,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.9307224208555323,
+          "minimum_home_anchors": 706,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            13
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.8155479911035908,
+          "minimum_home_anchors": 709,
+          "worst_wheat_walk": 13,
+          "worst_wood_walk": 16,
+          "saddles": [
+            13
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9049782334206576,
+          "minimum_home_anchors": 759,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            13
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.880444587284223,
+          "minimum_home_anchors": 720,
+          "worst_wheat_walk": 11,
+          "worst_wood_walk": 14,
+          "saddles": [
+            13
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "large-ponds",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.9345836859975711,
+          "minimum_home_anchors": 895,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9798040170199912,
+          "minimum_home_anchors": 829,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.956225203882973,
+          "minimum_home_anchors": 978,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.9024607588918188,
+          "minimum_home_anchors": 770,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "long-map",
+      "parameters": {
+        "width": 128,
+        "height": 512,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 50021,
+          "fairness": 0.988291721008608,
+          "minimum_home_anchors": 845,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 12,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50022,
+          "fairness": 0.9489034106781286,
+          "minimum_home_anchors": 1034,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 12,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50023,
+          "fairness": 0.9884087043321105,
+          "minimum_home_anchors": 870,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50024,
+          "fairness": 0.9876441419302446,
+          "minimum_home_anchors": 899,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "long-map-transposed",
+      "parameters": {
+        "width": 512,
+        "height": 128,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 50021,
+          "fairness": 0.9926590933171103,
+          "minimum_home_anchors": 875,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50022,
+          "fairness": 0.8612206365371833,
+          "minimum_home_anchors": 896,
+          "worst_wheat_walk": 11,
+          "worst_wood_walk": 16,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50023,
+          "fairness": 0.9548151003234788,
+          "minimum_home_anchors": 769,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50024,
+          "fairness": 0.9611159026009071,
+          "minimum_home_anchors": 973,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 12,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "many-routes",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 30,
+        "wooded-saddles": 100,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.9275629978172543,
+          "minimum_home_anchors": 895,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            3
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9700526231482993,
+          "minimum_home_anchors": 829,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            3
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9562238264721384,
+          "minimum_home_anchors": 978,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 13,
+          "saddles": [
+            3
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.9074561339628131,
+          "minimum_home_anchors": 770,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            3
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "parameters": {
+        "width": 128,
+        "height": 256,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.8856206409107218,
+          "minimum_home_anchors": 739,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 15,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9742701109827824,
+          "minimum_home_anchors": 867,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9525665653097056,
+          "minimum_home_anchors": 723,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 14,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.8997915017464677,
+          "minimum_home_anchors": 852,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 14,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "odd",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 5,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.9413634009592903,
+          "minimum_home_anchors": 914,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 12,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.958777271163491,
+          "minimum_home_anchors": 732,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 11,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.965161775139912,
+          "minimum_home_anchors": 935,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 13,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.9239065945756562,
+          "minimum_home_anchors": 855,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "one-worker",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 4,
+        "workers": 1,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 50021,
+          "fairness": 0.9123561873057435,
+          "minimum_home_anchors": 780,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50022,
+          "fairness": 0.926111098767579,
+          "minimum_home_anchors": 815,
+          "worst_wheat_walk": 13,
+          "worst_wood_walk": 17,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50023,
+          "fairness": 0.7936511300484531,
+          "minimum_home_anchors": 622,
+          "worst_wheat_walk": 13,
+          "worst_wood_walk": 16,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50024,
+          "fairness": 0.8241058567198967,
+          "minimum_home_anchors": 614,
+          "worst_wheat_walk": 13,
+          "worst_wood_walk": 16,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "small",
+      "parameters": {
+        "width": 128,
+        "height": 128,
+        "teams": 2,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.9938437979914806,
+          "minimum_home_anchors": 867,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9920209053918981,
+          "minimum_home_anchors": 782,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9824117210616325,
+          "minimum_home_anchors": 742,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.9860975077200764,
+          "minimum_home_anchors": 797,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "solo",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 1,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 50021,
+          "fairness": 1,
+          "minimum_home_anchors": 1150,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            7
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50022,
+          "fairness": 1,
+          "minimum_home_anchors": 976,
+          "worst_wheat_walk": 11,
+          "worst_wood_walk": 14,
+          "saddles": [
+            7
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50023,
+          "fairness": 1,
+          "minimum_home_anchors": 1055,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            7
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50024,
+          "fairness": 1,
+          "minimum_home_anchors": 962,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            7
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "thick",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 11,
+        "pass-width": 6,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 100,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.890201481188199,
+          "minimum_home_anchors": 460,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 12,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9433960932202079,
+          "minimum_home_anchors": 623,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9404324610913524,
+          "minimum_home_anchors": 539,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.9010994509849379,
+          "minimum_home_anchors": 591,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "thin",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 3,
+        "pass-width": 12,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.9259122723347977,
+          "minimum_home_anchors": 948,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9848126945628788,
+          "minimum_home_anchors": 896,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9640958351300494,
+          "minimum_home_anchors": 1064,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.928242930580004,
+          "minimum_home_anchors": 865,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "tiny-ponds",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 3,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.9293664461182265,
+          "minimum_home_anchors": 928,
+          "worst_wheat_walk": 12,
+          "worst_wood_walk": 14,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9915587509650144,
+          "minimum_home_anchors": 861,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 12,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9884893729023769,
+          "minimum_home_anchors": 1011,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 12,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.897712520493019,
+          "minimum_home_anchors": 798,
+          "worst_wheat_walk": 12,
+          "worst_wood_walk": 14,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "unwarped",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 0,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.9295654062416816,
+          "minimum_home_anchors": 994,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9871665924030238,
+          "minimum_home_anchors": 1047,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9534638561421962,
+          "minimum_home_anchors": 970,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.9261805668108102,
+          "minimum_home_anchors": 921,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "valleys-72",
+      "parameters": {
+        "width": 512,
+        "height": 512,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 72,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 50021,
+          "fairness": 0.9672200688456877,
+          "minimum_home_anchors": 1090,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 12,
+          "saddles": [
+            17
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50022,
+          "fairness": 0.8868250796889429,
+          "minimum_home_anchors": 1021,
+          "worst_wheat_walk": 11,
+          "worst_wood_walk": 14,
+          "saddles": [
+            17
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50023,
+          "fairness": 0.983237922211924,
+          "minimum_home_anchors": 891,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            17
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50024,
+          "fairness": 0.9876628388163128,
+          "minimum_home_anchors": 861,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            17
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "valleys-80",
+      "parameters": {
+        "width": 512,
+        "height": 512,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 80,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 50021,
+          "fairness": 0.9889903033858692,
+          "minimum_home_anchors": 1355,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            11
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50022,
+          "fairness": 0.9629740514786888,
+          "minimum_home_anchors": 1014,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 12,
+          "saddles": [
+            11
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50023,
+          "fairness": 0.8790863373538659,
+          "minimum_home_anchors": 1604,
+          "worst_wheat_walk": 11,
+          "worst_wood_walk": 15,
+          "saddles": [
+            11
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50024,
+          "fairness": 0.9790340123249658,
+          "minimum_home_anchors": 1086,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            11
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "valleys-88",
+      "parameters": {
+        "width": 512,
+        "height": 512,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 88,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 50021,
+          "fairness": 0.9850518438302989,
+          "minimum_home_anchors": 1370,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            7
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50022,
+          "fairness": 0.9026572796189549,
+          "minimum_home_anchors": 1691,
+          "worst_wheat_walk": 11,
+          "worst_wood_walk": 14,
+          "saddles": [
+            7
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50023,
+          "fairness": 0.9626912261800787,
+          "minimum_home_anchors": 1342,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 13,
+          "saddles": [
+            7
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 50024,
+          "fairness": 0.9949407131624314,
+          "minimum_home_anchors": 1536,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            7
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "wheat-heavy",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 300,
+        "wood-amount": 0,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.9420515077681014,
+          "minimum_home_anchors": 895,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 17,
+          "saddles": [
+            2
+          ],
+          "saturated": true,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9826798506957004,
+          "minimum_home_anchors": 828,
+          "worst_wheat_walk": 7,
+          "worst_wood_walk": 15,
+          "saddles": [
+            2
+          ],
+          "saturated": true,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9869428078092624,
+          "minimum_home_anchors": 977,
+          "worst_wheat_walk": 7,
+          "worst_wood_walk": 15,
+          "saddles": [
+            2
+          ],
+          "saturated": true,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.8998261928958708,
+          "minimum_home_anchors": 773,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 17,
+          "saddles": [
+            2
+          ],
+          "saturated": true,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "wide",
+      "parameters": {
+        "width": 256,
+        "height": 128,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.9306466096928822,
+          "minimum_home_anchors": 835,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9827664504489375,
+          "minimum_home_anchors": 834,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9776107005479,
+          "minimum_home_anchors": 926,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.9356339094297412,
+          "minimum_home_anchors": 796,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            1
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "wide-valleys",
+      "parameters": {
+        "width": 512,
+        "height": 512,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 96,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.995693118333151,
+          "minimum_home_anchors": 1398,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            7
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9729836225119727,
+          "minimum_home_anchors": 1592,
+          "worst_wheat_walk": 9,
+          "worst_wood_walk": 11,
+          "saddles": [
+            7
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9954940814625066,
+          "minimum_home_anchors": 1446,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            7
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.9226092650870992,
+          "minimum_home_anchors": 1819,
+          "worst_wheat_walk": 10,
+          "worst_wood_walk": 13,
+          "saddles": [
+            7
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "wood-heavy",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 0,
+        "wood-amount": 300,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.9339366754972869,
+          "minimum_home_anchors": 893,
+          "worst_wheat_walk": 15,
+          "worst_wood_walk": 9,
+          "saddles": [
+            2
+          ],
+          "saturated": true,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.981360736040655,
+          "minimum_home_anchors": 826,
+          "worst_wheat_walk": 13,
+          "worst_wood_walk": 7,
+          "saddles": [
+            2
+          ],
+          "saturated": true,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9806072668716175,
+          "minimum_home_anchors": 976,
+          "worst_wheat_walk": 13,
+          "worst_wood_walk": 8,
+          "saddles": [
+            2
+          ],
+          "saturated": true,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.8926791515986117,
+          "minimum_home_anchors": 769,
+          "worst_wheat_walk": 15,
+          "worst_wood_walk": 9,
+          "saddles": [
+            2
+          ],
+          "saturated": true,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "workers-max",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 4,
+        "workers": 8,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.9793301376302878,
+          "minimum_home_anchors": 938,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9808655938971376,
+          "minimum_home_anchors": 835,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9865289592742607,
+          "minimum_home_anchors": 980,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.9764544666053516,
+          "minimum_home_anchors": 813,
+          "worst_wheat_walk": 8,
+          "worst_wood_walk": 11,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    },
+    {
+      "name": "zero",
+      "parameters": {
+        "width": 256,
+        "height": 256,
+        "teams": 4,
+        "workers": 4,
+        "valley-size": 64,
+        "ridge-depth": 5,
+        "pass-width": 8,
+        "extra-passes": 10,
+        "wooded-saddles": 50,
+        "warp": 80,
+        "pond-size": 6,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "successes": 4,
+      "failures": [],
+      "maps": [
+        {
+          "seed": 30001,
+          "fairness": 0.9206509278218601,
+          "minimum_home_anchors": 900,
+          "worst_wheat_walk": 15,
+          "worst_wood_walk": 17,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30002,
+          "fairness": 0.9809498583455838,
+          "minimum_home_anchors": 833,
+          "worst_wheat_walk": 13,
+          "worst_wood_walk": 15,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30003,
+          "fairness": 0.9904308264002907,
+          "minimum_home_anchors": 982,
+          "worst_wheat_walk": 13,
+          "worst_wood_walk": 15,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        },
+        {
+          "seed": 30004,
+          "fairness": 0.8900596755602495,
+          "minimum_home_anchors": 779,
+          "worst_wheat_walk": 15,
+          "worst_wood_walk": 17,
+          "saddles": [
+            2
+          ],
+          "saturated": false,
+          "dropped_records": 0
+        }
+      ]
+    }
+  ],
+  "successes": 124,
+  "rejections": 0,
+  "source_sha256": {
+    "src/map/generator/generators/BreachableHighlandsGenerator.cpp": "4736d082d75a71a1eaa94c0273fb51c9374986693ae77e8fc6a1e869165008c4",
+    "src/map/generator/generators/BreachableHighlandsGenerator.h": "aa41f608d1eaefb1e65d7fa500f0d924614e7a25648af3063ad650c7a8140923"
+  }
+}

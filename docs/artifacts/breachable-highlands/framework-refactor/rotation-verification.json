@@ -1,0 +1,146 @@
+[
+  {
+    "job": {
+      "build": "25f9d5d775f76ef9c95d1bf4bbbf17b28fb04081cdafc4fb67e3644f80d7f6f9",
+      "config": {
+        "candidates": 0,
+        "generator": 33,
+        "params": {
+          "algae-amount": 100,
+          "extra-passes": 10,
+          "fruit-amount": 100,
+          "height": 9,
+          "pass-width": 8,
+          "pond-size": 6,
+          "ridge-depth": 5,
+          "teams": 10,
+          "valley-size": 64,
+          "warp": 80,
+          "wheat-amount": 100,
+          "width": 8,
+          "wood-amount": 100,
+          "wooded-saddles": 50,
+          "workers": 4
+        },
+        "rotations": 10
+      },
+      "depends_on": [],
+      "id": "3fc78cd6233af595e20adc7a2e342f39",
+      "inputs": {},
+      "labels": {
+        "original_job": "6d489338c2466e76d1e0079cdb9c3b01",
+        "teams": 10,
+        "variant": "rotation-regression"
+      },
+      "limits": {
+        "timeout_seconds": 120
+      },
+      "outputs": {
+        "map": true
+      },
+      "schema_version": 1,
+      "seeds": {
+        "map": 71001
+      },
+      "type": "generate_map"
+    },
+    "rotations_verified": true,
+    "r0_matches_before_fix": true
+  },
+  {
+    "job": {
+      "build": "25f9d5d775f76ef9c95d1bf4bbbf17b28fb04081cdafc4fb67e3644f80d7f6f9",
+      "config": {
+        "candidates": 0,
+        "generator": 33,
+        "params": {
+          "algae-amount": 100,
+          "extra-passes": 10,
+          "fruit-amount": 100,
+          "height": 8,
+          "pass-width": 8,
+          "pond-size": 6,
+          "ridge-depth": 5,
+          "teams": 11,
+          "valley-size": 64,
+          "warp": 80,
+          "wheat-amount": 100,
+          "width": 9,
+          "wood-amount": 100,
+          "wooded-saddles": 50,
+          "workers": 4
+        },
+        "rotations": 11
+      },
+      "depends_on": [],
+      "id": "8707e1142a776bc8a29f57afd56c3251",
+      "inputs": {},
+      "labels": {
+        "original_job": "eb6c3f7caddf7771ce78193e552c7375",
+        "teams": 11,
+        "variant": "rotation-regression"
+      },
+      "limits": {
+        "timeout_seconds": 120
+      },
+      "outputs": {
+        "map": true
+      },
+      "schema_version": 1,
+      "seeds": {
+        "map": 71001
+      },
+      "type": "generate_map"
+    },
+    "rotations_verified": true,
+    "r0_matches_before_fix": true
+  },
+  {
+    "job": {
+      "build": "25f9d5d775f76ef9c95d1bf4bbbf17b28fb04081cdafc4fb67e3644f80d7f6f9",
+      "config": {
+        "candidates": 0,
+        "generator": 33,
+        "params": {
+          "algae-amount": 300,
+          "extra-passes": 0,
+          "fruit-amount": 300,
+          "height": 9,
+          "pass-width": 12,
+          "pond-size": 6,
+          "ridge-depth": 3,
+          "teams": 12,
+          "valley-size": 64,
+          "warp": 100,
+          "wheat-amount": 300,
+          "width": 9,
+          "wood-amount": 0,
+          "wooded-saddles": 100,
+          "workers": 8
+        },
+        "rotations": 12
+      },
+      "depends_on": [],
+      "id": "fa7904b8a40a2dff5cc327bb25b376a5",
+      "inputs": {},
+      "labels": {
+        "original_job": "bbca475cabaae0a26d15b00726b7dfc5",
+        "teams": 12,
+        "variant": "rotation-regression"
+      },
+      "limits": {
+        "timeout_seconds": 120
+      },
+      "outputs": {
+        "map": true
+      },
+      "schema_version": 1,
+      "seeds": {
+        "map": 78230
+      },
+      "type": "generate_map"
+    },
+    "rotations_verified": true,
+    "r0_matches_before_fix": true
+  }
+]

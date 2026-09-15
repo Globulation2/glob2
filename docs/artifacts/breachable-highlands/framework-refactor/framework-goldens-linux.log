@@ -1,0 +1,2 @@
+Settings::load("preferences.txt") : error, can't open file.
+linux-x86_64: 256 golden rows compared, 0 failures

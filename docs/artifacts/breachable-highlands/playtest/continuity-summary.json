@@ -1,0 +1,22 @@
+{
+  "revision": 4,
+  "from_tick": 16384,
+  "to_tick": 17408,
+  "identical": true,
+  "runs": [
+    {
+      "platform": "linux",
+      "category": "success",
+      "ticks": 17408,
+      "bytes": 29259064,
+      "sha256": "f533b6637e96c3b39c1e92dd341c2e0cc24fb534bafda48ed19e9bd1cbbac16b"
+    },
+    {
+      "platform": "macos",
+      "category": "success",
+      "ticks": 17408,
+      "bytes": 29259064,
+      "sha256": "f533b6637e96c3b39c1e92dd341c2e0cc24fb534bafda48ed19e9bd1cbbac16b"
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+[
+  {
+    "name": "therig.local",
+    "directory": "/home/bradley/glob2-highlands-20260915/worker",
+    "slots": 8,
+    "transport": "local",
+    "python": "python3"
+  },
+  {
+    "name": "therig-bulk-1",
+    "directory": "/home/bradley/glob2-highlands-20260915/bulk-worker-1",
+    "slots": 2,
+    "transport": "local",
+    "python": "python3"
+  },
+  {
+    "name": "therig-bulk-2",
+    "directory": "/home/bradley/glob2-highlands-20260915/bulk-worker-2",
+    "slots": 2,
+    "transport": "local",
+    "python": "python3"
+  },
+  {
+    "name": "therig-bulk-3",
+    "directory": "/home/bradley/glob2-highlands-20260915/bulk-worker-3",
+    "slots": 2,
+    "transport": "local",
+    "python": "python3"
+  },
+  {
+    "name": "therig-bulk-4",
+    "transport": "local",
+    "python": "python3",
+    "directory": "/home/bradley/glob2-highlands-20260915/bulk-worker-4",
+    "slots": 1
+  },
+  {
+    "name": "therig-bulk-5",
+    "transport": "local",
+    "python": "python3",
+    "directory": "/home/bradley/glob2-highlands-20260915/bulk-worker-5",
+    "slots": 1
+  },
+  {
+    "name": "therig-bulk-6",
+    "transport": "local",
+    "python": "python3",
+    "directory": "/home/bradley/glob2-highlands-20260915/bulk-worker-6",
+    "slots": 1
+  },
+  {
+    "name": "therig-bulk-7",
+    "transport": "local",
+    "python": "python3",
+    "directory": "/home/bradley/glob2-highlands-20260915/bulk-worker-7",
+    "slots": 1
+  },
+  {
+    "name": "therig-bulk-8",
+    "transport": "local",
+    "python": "python3",
+    "directory": "/home/bradley/glob2-highlands-20260915/bulk-worker-8",
+    "slots": 1
+  },
+  {
+    "name": "therig-bulk-9",
+    "transport": "local",
+    "python": "python3",
+    "directory": "/home/bradley/glob2-highlands-20260915/bulk-worker-9",
+    "slots": 1
+  },
+  {
+    "name": "therig-bulk-10",
+    "transport": "local",
+    "python": "python3",
+    "directory": "/home/bradley/glob2-highlands-20260915/bulk-worker-10",
+    "slots": 1
+  },
+  {
+    "name": "therig-bulk-11",
+    "transport": "local",
+    "python": "python3",
+    "directory": "/home/bradley/glob2-highlands-20260915/bulk-worker-11",
+    "slots": 1
+  },
+  {
+    "name": "therig-bulk-12",
+    "transport": "local",
+    "python": "python3",
+    "directory": "/home/bradley/glob2-highlands-20260915/bulk-worker-12",
+    "slots": 1
+  },
+  {
+    "name": "therig-bulk-13",
+    "transport": "local",
+    "python": "python3",
+    "directory": "/home/bradley/glob2-highlands-20260915/bulk-worker-13",
+    "slots": 1
+  },
+  {
+    "name": "therig-bulk-14",
+    "transport": "local",
+    "python": "python3",
+    "directory": "/home/bradley/glob2-highlands-20260915/bulk-worker-14",
+    "slots": 1
+  },
+  {
+    "name": "therig-bulk-15",
+    "transport": "local",
+    "python": "python3",
+    "directory": "/home/bradley/glob2-highlands-20260915/bulk-worker-15",
+    "slots": 1
+  }
+]

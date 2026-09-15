@@ -1,0 +1,106 @@
+[
+  {
+    "id": "88cfa59fc59ed77cea55c68715f04daa677c1865de67195aa421fe976701ac08",
+    "source_revision": "b14837389b676664791aca5a5943301d3f2b236e",
+    "dirty_identity": "094c27a3c70bbbe07fa60e951970dfb28efc39bad3a72f1155d6b78ac7e43508",
+    "build_options": {
+      "jobs": 8,
+      "release": 1,
+      "server": 0
+    },
+    "platform": {
+      "arch": "x86_64",
+      "os": "linux"
+    },
+    "revision": 1,
+    "executable": {
+      "bytes": 11955384,
+      "mode": 493,
+      "path": "glob2",
+      "sha256": "4fc618213b8e06452058c0bddfb406e5579d409a0df1cc7316f49240921c1760"
+    }
+  },
+  {
+    "id": "a46ce070c51f7fb9defdc0e5529ad9aaa911c03484869adda32e0ff61f5b80b1",
+    "source_revision": "b14837389b676664791aca5a5943301d3f2b236e",
+    "dirty_identity": "31d3040091e1061a1145c3d890ca5f443db7bfd2fed09a1ae31f8b5cbeb862c0",
+    "build_options": {
+      "jobs": 8,
+      "release": 1,
+      "server": 0
+    },
+    "platform": {
+      "arch": "x86_64",
+      "os": "linux"
+    },
+    "revision": 2,
+    "executable": {
+      "bytes": 11955384,
+      "mode": 493,
+      "path": "glob2",
+      "sha256": "bb107343aacb502192349412db6c90ec68cb0e938fe9a8b62b355dcdda51deac"
+    }
+  },
+  {
+    "id": "349e40aa5f8feec066b2d3bfea0e93c4f5f9cc4d7e4487ff97a65160a480934f",
+    "source_revision": "b14837389b676664791aca5a5943301d3f2b236e",
+    "dirty_identity": "b8c126676fd74f7d359c3c44a374385da3d02a88538e04e412987a17ea5cb4e0",
+    "build_options": {
+      "jobs": 8,
+      "release": 1,
+      "server": 0
+    },
+    "platform": {
+      "arch": "x86_64",
+      "os": "linux"
+    },
+    "revision": 3,
+    "executable": {
+      "bytes": 11955384,
+      "mode": 493,
+      "path": "glob2",
+      "sha256": "73731bfb2936dc1da6ea476aa10a625f35fb0a1e940065addfb8da1b50968809"
+    }
+  },
+  {
+    "id": "a32e70f6a10b09f565dede92d342b6b2d4f67942a3a59d087680ba71dbfdca91",
+    "source_revision": "b14837389b676664791aca5a5943301d3f2b236e",
+    "dirty_identity": "1263ede91cd2c0a93189b7d1db59a3a555378f721b7c79bc2b7e6bc7eb009d45",
+    "build_options": {
+      "jobs": 8,
+      "release": 1,
+      "server": 0
+    },
+    "platform": {
+      "arch": "x86_64",
+      "os": "linux"
+    },
+    "revision": 4,
+    "executable": {
+      "bytes": 11955384,
+      "mode": 493,
+      "path": "glob2",
+      "sha256": "299480c938b4e8c9606ecc44a3b27a510b003b3f2f0bd77cf33e3b17e6756a6d"
+    }
+  },
+  {
+    "id": "abd182aaeb14bdd020ce82b3a75c150e3dff4e3cc375fc06b0cf1787099d73b0",
+    "source_revision": "b14837389b676664791aca5a5943301d3f2b236e",
+    "dirty_identity": "1263ede91cd2c0a93189b7d1db59a3a555378f721b7c79bc2b7e6bc7eb009d45",
+    "build_options": {
+      "release": 1,
+      "server": 0
+    },
+    "platform": {
+      "arch": "arm64",
+      "os": "darwin"
+    },
+    "revision": 4,
+    "executable": {
+      "bytes": 10777688,
+      "mode": 493,
+      "path": "glob2",
+      "sha256": "2426b84a771fed8eb1562c996b9db2062e5661638762131e17dd7a09a00f7a3f"
+    }
+  }
+]

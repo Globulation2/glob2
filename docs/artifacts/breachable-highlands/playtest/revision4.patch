@@ -1,0 +1,142 @@
+--- a/src/map/generator/generators/BreachableHighlandsGenerator.cpp
++++ b/src/map/generator/generators/BreachableHighlandsGenerator.cpp
+@@ -35,7 +35,7 @@
+ // Home guarantees are added to ambient plots, including at 0% abundance. They are reserves,
+ // not measured yields. The room floor counts overlapping 4x4 anchors, not 32 separate buildings;
+ // generous valley aprons and game checks provide the practical expansion budget.
+-constexpr int kHomeWheat = 36, kHomeWood = 24, kMinimumRoom = 32;
++constexpr int kHomeWheat = 54, kHomeWood = 24, kMinimumRoom = 32;
+ constexpr double kRoadHalfWidth = 1.5;
+ 
+ struct Gate
+@@ -237,6 +237,18 @@
+ 		const ShapePoint c = tilePoint(g.cells[cell].centre);
+ 		fillShape(water, t, c.x, c.y, pond, context.bounded("breachable-ponds", 360) * kPi / 180);
+ 		strokePath(L.road, t, arcPath(c.x, c.y, kFarmRing, 0, 2 * kPi, 1.2, 1));
++		// A grass access lane survives only until crops spread into it. Join both banks to
++		// the outer ring with sand instead: the pond and these spokes divide the fertile
++		// annulus into separate wheat/wood plots, so faster wood growth cannot circle the
++		// shore into the food plot. Water takes precedence below, preserving the pond.
++		// A one-corner half-width also makes a robust walkable harvesting lane after the
++		// four-corner terrain conversion, without spending more of the small farm on sand.
++		strokePath(L.road, t, {{c.x - kFarmRing, c.y, 1.0}, {c.x + kFarmRing, c.y, 1.0}});
++		// Wood gets the southwest quarter, within reach of the western town. The southeast
++		// quarter becomes a second wheat plot. Wheat has the engine's extra one-in-three
++		// growth gate, whereas wood does not: equal farm areas proved food-poor in games.
++		// Three quarters for wheat is a throughput heuristic, not a promised carrying capacity.
++		strokePath(L.road, t, {{c.x, c.y, 1.0}, {c.x, c.y + kFarmRing, 1.0}});
+ 	}
+ 	// Undermap corners beside a deposit must remain grass; otherwise a sand approach could
+ 	// erode a ridge or open a diagonal bypass around its wood plug.
+@@ -292,8 +304,14 @@
+ 			[&](int team)
+ 			{
+ 				const int cell = L.homes[team];
+-				return MapGeneratorPoint(L.cells.centreTileX(cell) - 22,
+-										 L.cells.centreTileY(cell) - 2);
++				// Bias the town toward the wheat half of the basin. The old due-west start
++				// made the first food route go around the ring before reaching harvestable
++				// wheat; permanent farm lanes alone did not cure the resulting food pressure
++				// in Maxima games. A swarm centre about 17 west / 10 north of the pond
++				// keeps a dry apron while favouring repeated food deliveries over the less
++				// frequent opening wood trips. Settlement still checks the whole footprint.
++				return MapGeneratorPoint(L.cells.centreTileX(cell) - 19,
++										 L.cells.centreTileY(cell) - 12);
+ 			}))
+ 		return false;
+ 	context.stage = "breachable farms";
+@@ -302,22 +320,35 @@
+ 	{
+ 		const int cx = L.cells.centreTileX(cell), cy = L.cells.centreTileY(cell);
+ 		const bool home = std::find(L.homes.begin(), L.homes.end(), cell) != L.homes.end();
+-		// Separate north and south crop plots; leave the east and west shores as harvest lanes.
++		// Give food two independently seeded plots; a growth search cannot cross sand from
++		// one into the other. Allocate two thirds of wheat to the northern half and one third
++		// to the southeast quarter. This keeps the original northern reserve while adding a
++		// second renewable harvest front, rather than just deepening an inaccessible deposit.
+ 		for (int type : {WHEAT, WOOD})
+ 		{
+-			const auto eligible = [&](int i)
+-			{
+-				const int oy = t.offsetY(cy, i / t.w);
+-				return L.labels[i] == cell && !reserved[i] && !L.protectedTiles[i] &&
+-					   t.dist2(cx, cy, i % t.w, i / t.w) <= kFarmRadius * kFarmRadius &&
+-					   (type == WHEAT ? oy <= -2 : oy >= 2) && clearGround(map, i % t.w, i / t.w);
+-			};
+ 			const int amount = type == WHEAT ? o.wheat : o.wood;
+-			const int count = int(scaledCount(type == WHEAT ? 56 : 32, amount)) +
++			const int count = int(scaledCount(type == WHEAT ? 84 : 32, amount)) +
+ 							  (home ? (type == WHEAT ? kHomeWheat : kHomeWood) : 0);
+-			const int seed =
+-				seedNear(t, cx, cy + (type == WHEAT ? -1 : 1) * (o.pondSize + 3), 5, eligible);
+-			const int placed = seed < 0 ? 0 : growPatch(map, t, seed, type, count, eligible);
++			int placed = 0;
++			for (int plot = 0; plot < (type == WHEAT ? 2 : 1); ++plot)
++			{
++				const bool north = type == WHEAT && plot == 0;
++				const int side = type == WHEAT ? 1 : -1;
++				const auto eligible = [&](int i)
++				{
++					const int ox = t.offsetX(cx, i % t.w), oy = t.offsetY(cy, i / t.w);
++					return L.labels[i] == cell && !reserved[i] && !L.protectedTiles[i] &&
++						   ox * ox + oy * oy <= kFarmRadius * kFarmRadius &&
++						   (north ? oy <= -2 : oy >= 2 && side * ox >= 2) &&
++						   clearGround(map, i % t.w, i / t.w);
++				};
++				const int diagonal = (o.pondSize + 4) * 3 / 4;
++				const int seed = seedNear(t, cx + (north ? 0 : side * diagonal),
++										  cy + (north ? -(o.pondSize + 3) : diagonal), 5, eligible);
++				const int quota = type == WOOD ? count : north ? count - count / 3 : count / 3;
++				if (seed >= 0)
++					placed += growPatch(map, t, seed, type, quota, eligible);
++			}
+ 			context.telemetry.measure(type == WHEAT ? "breachable.farm.wheat-requested"
+ 													: "breachable.farm.wood-requested",
+ 									  count, cell);
+@@ -330,6 +361,7 @@
+ 													: "breachable.farm.wood-tiles",
+ 									  placed, cell);
+ 		}
++
+ 		// Each neutral valley specialises in one fruit. Rewards are distributed across the
+ 		// route graph, with a dry, buildable apron beside them for inns. There is no central
+ 		// all-fruit jackpot; collecting varieties encourages holding several expansion valleys.
+@@ -391,6 +423,29 @@
+ 			}
+ 		if (!reached)
+ 			return "An expansion valley cannot be reached through the open passes.";
++	}
++	// Validate future crop connectivity, ignoring today's deposits and buildings. Growth
++	// uses eight neighbours, so even a diagonal grass seam would eventually let wood
++	// invade wheat. The north half and both southern quarters must stay separate.
++	std::vector<unsigned char> grass(t.size(), 0);
++	for (int i = 0; i < t.size(); ++i)
++		grass[i] = map.isGrass(i % t.w, i / t.w);
++	const auto cropRegions = connectedRegions(grass, t.w, t.h, true, GridNeighbors::Eight);
++	std::vector<int> cropSide(t.size(), 0);
++	for (int cell = 0; cell < L.cells.cellCount(); ++cell)
++	{
++		const int cx = L.cells.centreTileX(cell), cy = L.cells.centreTileY(cell);
++		for (int y = -kFarmRadius; y <= kFarmRadius; ++y)
++			for (int x = -kFarmRadius; x <= kFarmRadius; ++x)
++			{
++				const int i = t.at(cx + x, cy + y);
++				if (!grass[i] || x * x + y * y > kFarmRadius * kFarmRadius || !y)
++					continue;
++				const int side = y < 0 ? 1 : x < 0 ? 2 : 4;
++				cropSide[cropRegions[i]] |= side;
++				if (cropSide[cropRegions[i]] != side)
++					return "A farm access lane lets wood spread into the wheat plot.";
++			}
+ 	}
+ 	// With every gate sealed, each cell must be separate, including diagonal and seam routes.
+ 	// Opening only one gate must connect exactly its two valleys, both before and after chopping.
+@@ -466,7 +521,7 @@
+ 	return {"breachable-highlands",
+ 			33,
+ 			"Breachable highlands",
+-			1,
++			4,
+ 			false,
+ 			{{"valley-size", "Valley size", 64, 96, 8, 64, ControlGroup::Layout},
+ 			 {"ridge-depth", "Ridge depth", 3, 11, 2, 5, ControlGroup::Terrain},

@@ -1,0 +1,185 @@
+{
+  "groups": [
+    {
+      "attempts": 16,
+      "fallbacks": {
+        "breachable.farm.saturated": {
+          "attempts": 16,
+          "denominator_attempts": 16,
+          "observed_rate": 1.0
+        }
+      },
+      "generator": "breachable-highlands",
+      "incomplete_telemetry_attempts": 0,
+      "metrics": {
+        "breachable.farm.wheat-requested": {
+          "maximum": 138,
+          "mean": 97.5,
+          "minimum": 84,
+          "records": 256
+        },
+        "breachable.farm.wheat-tiles": {
+          "maximum": 138,
+          "mean": 97.4921875,
+          "minimum": 84,
+          "records": 256
+        },
+        "breachable.farm.wood-requested": {
+          "maximum": 56,
+          "mean": 38.0,
+          "minimum": 32,
+          "records": 256
+        },
+        "breachable.farm.wood-tiles": {
+          "maximum": 52,
+          "mean": 36.0859375,
+          "minimum": 32,
+          "records": 256
+        },
+        "breachable.passes.extra": {
+          "maximum": 1,
+          "mean": 1.0,
+          "minimum": 1,
+          "records": 16
+        },
+        "breachable.ridges.depth": {
+          "maximum": 5,
+          "mean": 5.0,
+          "minimum": 5,
+          "records": 16
+        },
+        "breachable.saddle.detour-edges": {
+          "maximum": 7,
+          "mean": 6.25,
+          "minimum": 3,
+          "records": 32
+        },
+        "breachable.saddles.actual": {
+          "maximum": 2,
+          "mean": 2.0,
+          "minimum": 2,
+          "records": 16
+        },
+        "breachable.saddles.candidates": {
+          "maximum": 5,
+          "mean": 5.0,
+          "minimum": 5,
+          "records": 16
+        },
+        "breachable.valleys.actual": {
+          "maximum": 16,
+          "mean": 16.0,
+          "minimum": 16,
+          "records": 16
+        },
+        "resources.starting.clear_radius": {
+          "maximum": 0,
+          "mean": 0.0,
+          "minimum": 0,
+          "records": 16
+        },
+        "resources.starting.wall_clear_rounds": {
+          "maximum": 0,
+          "mean": 0.0,
+          "minimum": 0,
+          "records": 64
+        },
+        "resources.starting.wheat_range": {
+          "maximum": 24,
+          "mean": 24.0,
+          "minimum": 24,
+          "records": 16
+        },
+        "resources.starting.wood_range": {
+          "maximum": 32,
+          "mean": 32.0,
+          "minimum": 32,
+          "records": 16
+        },
+        "resources.starting_wheat.before_distance": {
+          "maximum": 10,
+          "mean": 10.0,
+          "minimum": 10,
+          "records": 64
+        },
+        "resources.starting_wood.before_distance": {
+          "maximum": 14,
+          "mean": 14.0,
+          "minimum": 14,
+          "records": 64
+        },
+        "settlement.eligible_sites": {
+          "maximum": 2519,
+          "mean": 2064.109375,
+          "minimum": 1617,
+          "records": 64
+        },
+        "settlement.initial_worker_room": {
+          "maximum": 20,
+          "mean": 20.0,
+          "minimum": 20,
+          "records": 64
+        },
+        "settlement.nearest_distance_squared": {
+          "maximum": 0,
+          "mean": 0.0,
+          "minimum": 0,
+          "records": 64
+        },
+        "settlement.nearest_ties": {
+          "maximum": 1,
+          "mean": 1.0,
+          "minimum": 1,
+          "records": 64
+        },
+        "settlement.placed_workers": {
+          "maximum": 4,
+          "mean": 4.0,
+          "minimum": 4,
+          "records": 64
+        },
+        "settlement.requested_workers": {
+          "maximum": 4,
+          "mean": 4.0,
+          "minimum": 4,
+          "records": 64
+        },
+        "settlement.worker_tiles": {
+          "maximum": 20,
+          "mean": 20.0,
+          "minimum": 20,
+          "records": 64
+        }
+      },
+      "parameters": {
+        "algae-amount": 100,
+        "extra-passes": 10,
+        "fruit-amount": 100,
+        "height": 256,
+        "pass-width": 8,
+        "pond-size": 6,
+        "ridge-depth": 5,
+        "teams": 4,
+        "valley-size": 64,
+        "warp": 80,
+        "wheat-amount": 100,
+        "width": 256,
+        "wood-amount": 100,
+        "wooded-saddles": 50,
+        "workers": 4
+      },
+      "parameters_source": "report",
+      "revision": 4,
+      "statuses": {
+        "ok": 16
+      },
+      "telemetry_attempts": 16
+    }
+  ],
+  "notes": [
+    "Fallback rates count attempts; absent or truncated telemetry can undercount events.",
+    "Unknown revisions/parameters remain separate groups; do not infer identity for missing reports.",
+    "Numeric summaries weight records, not maps. Boolean and choice values remain in records.jsonl.",
+    "Missing metrics are not zero; sequence and subject identify repeated observations."
+  ]
+}

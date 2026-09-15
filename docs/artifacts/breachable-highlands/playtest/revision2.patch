@@ -1,0 +1,55 @@
+--- a/src/map/generator/generators/BreachableHighlandsGenerator.cpp
++++ b/src/map/generator/generators/BreachableHighlandsGenerator.cpp
+@@ -237,6 +237,13 @@
+ 		const ShapePoint c = tilePoint(g.cells[cell].centre);
+ 		fillShape(water, t, c.x, c.y, pond, context.bounded("breachable-ponds", 360) * kPi / 180);
+ 		strokePath(L.road, t, arcPath(c.x, c.y, kFarmRing, 0, 2 * kPi, 1.2, 1));
++		// A grass access lane survives only until crops spread into it. Join both banks to
++		// the outer ring with sand instead: the pond and these spokes divide the fertile
++		// annulus into separate wheat/wood plots, so faster wood growth cannot circle the
++		// shore into the food plot. Water takes precedence below, preserving the pond.
++		// A one-corner half-width also makes a robust walkable harvesting lane after the
++		// four-corner terrain conversion, without spending more of the small farm on sand.
++		strokePath(L.road, t, {{c.x - kFarmRing, c.y, 1.0}, {c.x + kFarmRing, c.y, 1.0}});
+ 	}
+ 	// Undermap corners beside a deposit must remain grass; otherwise a sand approach could
+ 	// erode a ridge or open a diagonal bypass around its wood plug.
+@@ -392,6 +399,29 @@
+ 		if (!reached)
+ 			return "An expansion valley cannot be reached through the open passes.";
+ 	}
++	// Validate future crop connectivity, ignoring today's deposits and buildings. Growth
++	// uses eight neighbours, so even a diagonal grass seam would eventually let wood
++	// invade wheat. Each basin's north and south grass must belong to separate components.
++	std::vector<unsigned char> grass(t.size(), 0);
++	for (int i = 0; i < t.size(); ++i)
++		grass[i] = map.isGrass(i % t.w, i / t.w);
++	const auto cropRegions = connectedRegions(grass, t.w, t.h, true, GridNeighbors::Eight);
++	std::vector<int> cropSide(t.size(), 0);
++	for (int cell = 0; cell < L.cells.cellCount(); ++cell)
++	{
++		const int cx = L.cells.centreTileX(cell), cy = L.cells.centreTileY(cell);
++		for (int y = -kFarmRadius; y <= kFarmRadius; ++y)
++			for (int x = -kFarmRadius; x <= kFarmRadius; ++x)
++			{
++				const int i = t.at(cx + x, cy + y);
++				if (!grass[i] || x * x + y * y > kFarmRadius * kFarmRadius || !y)
++					continue;
++				const int side = y < 0 ? 1 : 2;
++				cropSide[cropRegions[i]] |= side;
++				if (cropSide[cropRegions[i]] == 3)
++					return "A farm access lane lets wood spread into the wheat plot.";
++			}
++	}
+ 	// With every gate sealed, each cell must be separate, including diagonal and seam routes.
+ 	// Opening only one gate must connect exactly its two valleys, both before and after chopping.
+ 	auto sealed = walkableTiles(map);
+@@ -466,7 +496,7 @@
+ 	return {"breachable-highlands",
+ 			33,
+ 			"Breachable highlands",
+-			1,
++			2,
+ 			false,
+ 			{{"valley-size", "Valley size", 64, 96, 8, 64, ControlGroup::Layout},
+ 			 {"ridge-depth", "Ridge depth", 3, 11, 2, 5, ControlGroup::Terrain},
