@@ -63,8 +63,9 @@ using namespace MapGeneration;
 // (claimNeighbourCells), then a rock islet beside them. Fairness is statistical, and the lobby keeps
 // the best-scoring of several seeds.
 //
-// THE SIZES AT THE DEFAULTS (plot 8, farm width 4, strait 4). An island is a rounded square (a
-// superellipse, insideOutline) so the square plot's corners keep a crop band too: from a plot's
+// THE SIZES AT THE DEFAULTS (plot 8, farm width 4, strait 4). An island is nominally a rounded square
+// (a superellipse, insideOutline) so the square plot's corners keep a crop band too, and where the seed
+// threw islands to spare each draws its own size, stretch and squareness (VARIETY below): from a plot's
 // middle, 4 vertices of grass, the ring vertex, two tiles of mixed ground the ring spoils, 4 tiles of
 // crops and the beach along an axis, and the same from the plot block's corner along a diagonal, which
 // sets the radius at 12 along the axes and about 13.5 at the corners (landRadiusFor); an island is
@@ -110,6 +111,19 @@ constexpr double kSquareness = 3.0, kIsletSquareness = 2.0;
 constexpr double kCornerReach = 1.1225; // 2^(1/2 - 1/3)
 constexpr double kCoastAmplitude = 0.3;
 constexpr int kBorderWarpPercent = 30;
+// VARIETY. Islands all of one size and one rounded-square outline read as a tray of biscuits (a
+// maintainer's first look said so). Where the seed threw at least kVarietyRoom times the islands the
+// colonies need, each island draws a class: a third stay the nominal island, exactly full and
+// unstretched, so homes always have their standard; the rest are smaller (kSizeFactors below 1) or
+// larger (above 1, filling their cell to the strait), stretched along a random heading by up to
+// kStretch (the area held, the short axis narrower), with their own squareness between
+// kSquarenessLow and kSquarenessHigh (a disc to a block) and their own share of the coast wobble. A
+// small or stretched island measures short of full and becomes a granted island or a field; a large
+// one measures full and may be a home. On a crowded map every island stays nominal, as before.
+constexpr double kSizeFactors[] = {0.82, 0.9, 1.0, 1.0, 1.2, 1.35};
+constexpr double kStretch = 1.35, kSquarenessLow = 2.2, kSquarenessHigh = 3.5;
+constexpr double kWobbleShareLow = 0.6, kWobbleShareHigh = 1.5;
+constexpr int kVarietyRoom = 2;
 // Lloyd relaxation rounds after the darts: three even the cells out without moving a site so far that
 // nearestSiteLabels' bucket search (which assumes sites about a spacing apart) misses its nearest.
 constexpr int kRelaxRounds = 3;
@@ -341,26 +355,60 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const double amplitude = kCoastAmplitude * o.coastRoughness / 100.0;
 	L.land.assign(n, 0);
 	L.islands.resize(cells);
-	const auto stampIsland = [&](int s, double radius, double exponent)
+	// Each island's shape class (see VARIETY above): size factor, stretch and its heading, squareness
+	// and wobble share, all from one stream so the draws stay in island order.
+	struct IslandShape
 	{
-		const RadialShape coast(radius, amplitude, context, "plantations-coast");
-		const int reach = int(std::ceil(radius * kCornerReach * (1 + amplitude))) + 1;
+		double size = 1, stretch = 1, heading = 0, exponent = kSquareness, wobble = 1;
+	};
+	const bool varied = cells >= kVarietyRoom * cellsNeeded();
+	context.telemetry.measure("plantations.islands.varied", varied);
+	const auto drawShape = [&]
+	{
+		IslandShape shape;
+		if (!varied)
+			return shape;
+		const char *stream = "plantations-island-shapes";
+		shape.size = kSizeFactors[context.bounded(stream, 6)];
+		if (shape.size != 1.0)
+		{
+			shape.stretch = 1 + (kStretch - 1) * context.bounded(stream, 1000) / 1000.0;
+			shape.heading = kPi * context.bounded(stream, 3600) / 3600.0;
+		}
+		shape.exponent = kSquarenessLow +
+						 (kSquarenessHigh - kSquarenessLow) * context.bounded(stream, 1000) / 1000.0;
+		shape.wobble = kWobbleShareLow +
+					   (kWobbleShareHigh - kWobbleShareLow) * context.bounded(stream, 1000) / 1000.0;
+		return shape;
+	};
+	const auto stampIsland = [&](int s, double radius, double exponent, const IslandShape &shape)
+	{
+		const double wobble = amplitude * shape.wobble;
+		const RadialShape coast(radius * shape.size, wobble, context, "plantations-coast");
+		const int reach =
+			int(std::ceil(radius * shape.size * kCornerReach * (1 + wobble) * shape.stretch)) + 1;
+		const double along = std::cos(shape.heading), across = std::sin(shape.heading);
 		for (int dy = -reach; dy <= reach; ++dy)
 			for (int dx = -reach; dx <= reach; ++dx)
 			{
 				const int i = t.at(L.sites[s].x + dx, L.sites[s].y + dy);
 				if (L.cell[i] != s || strait[i])
 					continue;
-				// The wobble scales the whole outline at this angle, corners and sides alike.
-				const double r = coast.radiusAt(std::atan2(double(dy), double(dx)));
-				if (insideOutline(dx, dy, r, exponent))
+				// The stretch lengthens the outline along its heading and narrows it across, the
+				// area held; the wobble then scales the whole outline at this angle, corners and
+				// sides alike.
+				const double u = (dx * along + dy * across) / shape.stretch,
+							 v = (-dx * across + dy * along) * shape.stretch;
+				const double r = coast.radiusAt(std::atan2(v, u));
+				if (insideOutline(u, v, r, exponent))
 					L.land[i] = 1;
 			}
 	};
 	for (int s = 0; s < cells; ++s)
 	{
 		L.islands[s].site = L.sites[s];
-		stampIsland(s, landRadius, kSquareness);
+		const IslandShape shape = drawShape();
+		stampIsland(s, landRadius, shape.exponent, shape);
 	}
 	// A plot fits where the island has the room the nominal outline would have with a crop band of
 	// kLeastFarm (its corners then reach the beach and its sides keep a few tiles of crops); a full
@@ -526,7 +574,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				if (L.cell[i] == s)
 					L.land[i] = 0;
 			stampIsland(s, L.islands[s].kind == Rock ? kRockIsletRadius : kOrchardIsletRadius,
-						kIsletSquareness);
+						kIsletSquareness, IslandShape{});
 		}
 	measureIslands();
 	for (int s = 0; s < cells; ++s)
@@ -922,7 +970,7 @@ GeneratorDefinition plantationsDefinition()
 		"plantations",
 		48,
 		"Plantations",
-		1,
+		2,
 		false,
 		// A plot of 8 seats a swarm and a pool with half the plot left (8 is the least that seats
 		// both); 4 tiles of crops round it keep an island small enough to swim round and fertile to
