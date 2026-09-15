@@ -1,0 +1,14 @@
+[
+  "/Users/bradley/glob2/build/src/glob2",
+  "--run-game",
+  "--load-game",
+  "/Users/bradley/glob2-maxima-upgrade-review-20260914/input.game",
+  "--ticks",
+  "140000",
+  "--telemetry",
+  "maxima",
+  "--save",
+  "final",
+  "--output-dir",
+  "/Users/bradley/glob2-maxima-upgrade-weight-20260914/after"
+]

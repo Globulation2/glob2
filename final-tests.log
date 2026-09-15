@@ -1,0 +1,206 @@
+In file included from test/MaximaCombatIntegrationTest.cpp:23:
+test/../src/AIMaxima.h:47:7: warning: 'load' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   47 |         bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+      |              ^
+test/../src/ai/AIImplementation.h:70:15: note: overridden virtual function is here
+   70 |         virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
+      |                      ^
+In file included from test/MaximaCombatIntegrationTest.cpp:23:
+test/../src/AIMaxima.h:52:7: warning: 'save' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   52 |         void save(GAGCore::OutputStream *stream);
+      |              ^
+test/../src/ai/AIImplementation.h:71:15: note: overridden virtual function is here
+   71 |         virtual void save(GAGCore::OutputStream *stream)=0;
+      |                      ^
+In file included from test/MaximaCombatIntegrationTest.cpp:23:
+test/../src/AIMaxima.h:53:25: warning: 'getOrder' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   53 |         std::shared_ptr<Order> getOrder();
+      |                                ^
+test/../src/ai/AIImplementation.h:73:33: note: overridden virtual function is here
+   73 |         virtual std::shared_ptr<Order> getOrder(void)=0;
+      |                                        ^
+In file included from test/MaximaCombatIntegrationTest.cpp:23:
+test/../src/AIMaxima.h:55:7: warning: 'tick' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   55 |         void tick(AIMaximaRuntime::Context& echo);
+      |              ^
+test/../src/AIMaximaRuntime.h:114:15: note: overridden virtual function is here
+  114 |         virtual void tick(Context& context)=0;
+      |                      ^
+In file included from test/MaximaCombatIntegrationTest.cpp:23:
+test/../src/AIMaxima.h:56:7: warning: 'handle_event' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   56 |         void handle_event(AIMaximaRuntime::Context& echo, const AIMaximaRuntime::RuntimeEvent& event);
+      |              ^
+test/../src/AIMaximaRuntime.h:115:15: note: overridden virtual function is here
+  115 |         virtual void handle_event(Context& context, const RuntimeEvent& event)=0;
+      |                      ^
+5 warnings generated.
+MaximaCombatIntegrationTest: PASS
+In file included from test/MaximaImplementationIntegrationTest.cpp:6:
+test/../src/ai/AICastor.h:144:7: warning: 'load' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  144 |         bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+      |              ^
+test/../src/ai/AIImplementation.h:70:15: note: overridden virtual function is here
+   70 |         virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
+      |                      ^
+In file included from test/MaximaImplementationIntegrationTest.cpp:6:
+test/../src/ai/AICastor.h:145:7: warning: 'save' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  145 |         void save(GAGCore::OutputStream *stream);
+      |              ^
+test/../src/ai/AIImplementation.h:71:15: note: overridden virtual function is here
+   71 |         virtual void save(GAGCore::OutputStream *stream)=0;
+      |                      ^
+In file included from test/MaximaImplementationIntegrationTest.cpp:6:
+test/../src/ai/AICastor.h:147:24: warning: 'getOrder' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  147 |         std::shared_ptr<Order>getOrder(void);
+      |                               ^
+test/../src/ai/AIImplementation.h:73:33: note: overridden virtual function is here
+   73 |         virtual std::shared_ptr<Order> getOrder(void)=0;
+      |                                        ^
+In file included from test/MaximaImplementationIntegrationTest.cpp:7:
+test/../src/ai/echo/Echo.h:62:8: warning: 'load' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   62 |                 bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+      |                      ^
+test/../src/ai/echo/Echo.h:42:16: note: overridden virtual function is here
+   42 |                 virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
+      |                              ^
+test/../src/ai/echo/Echo.h:63:8: warning: 'save' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   63 |                 void save(GAGCore::OutputStream *stream);
+      |                      ^
+test/../src/ai/echo/Echo.h:44:16: note: overridden virtual function is here
+   44 |                 virtual void save(GAGCore::OutputStream *stream)=0;
+      |                              ^
+test/../src/ai/echo/Echo.h:64:8: warning: 'tick' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   64 |                 void tick(Echo& echo);
+      |                      ^
+test/../src/ai/echo/Echo.h:47:16: note: overridden virtual function is here
+   47 |                 virtual void tick(Echo& echo)=0;
+      |                              ^
+test/../src/ai/echo/Echo.h:65:8: warning: 'handle_message' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   65 |                 void handle_message(Echo& echo, const std::string& message);
+      |                      ^
+test/../src/ai/echo/Echo.h:49:16: note: overridden virtual function is here
+   49 |                 virtual void handle_message(Echo& echo, const std::string& message)=0;
+      |                              ^
+test/../src/ai/echo/Echo.h:104:9: warning: 'load' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  104 |           bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+      |                ^
+test/../src/ai/AIImplementation.h:70:15: note: overridden virtual function is here
+   70 |         virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
+      |                      ^
+In file included from test/MaximaImplementationIntegrationTest.cpp:7:
+test/../src/ai/echo/Echo.h:105:9: warning: 'save' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  105 |           void save(GAGCore::OutputStream *stream);
+      |                ^
+test/../src/ai/AIImplementation.h:71:15: note: overridden virtual function is here
+   71 |         virtual void save(GAGCore::OutputStream *stream)=0;
+      |                      ^
+In file included from test/MaximaImplementationIntegrationTest.cpp:7:
+test/../src/ai/echo/Echo.h:107:27: warning: 'getOrder' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  107 |           std::shared_ptr<Order> getOrder(void);
+      |                                  ^
+test/../src/ai/AIImplementation.h:73:33: note: overridden virtual function is here
+   73 |         virtual std::shared_ptr<Order> getOrder(void)=0;
+      |                                        ^
+In file included from test/MaximaImplementationIntegrationTest.cpp:8:
+test/../src/ai/AINicowar.h:216:7: warning: 'load' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  216 |         bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+      |              ^
+test/../src/ai/echo/Echo.h:42:16: note: overridden virtual function is here
+   42 |                 virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
+      |                              ^
+In file included from test/MaximaImplementationIntegrationTest.cpp:8:
+test/../src/ai/AINicowar.h:217:7: warning: 'save' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  217 |         void save(GAGCore::OutputStream *stream);
+      |              ^
+test/../src/ai/echo/Echo.h:44:16: note: overridden virtual function is here
+   44 |                 virtual void save(GAGCore::OutputStream *stream)=0;
+      |                              ^
+In file included from test/MaximaImplementationIntegrationTest.cpp:8:
+test/../src/ai/AINicowar.h:218:7: warning: 'tick' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  218 |         void tick(AIEcho::Echo& echo);
+      |              ^
+test/../src/ai/echo/Echo.h:47:16: note: overridden virtual function is here
+   47 |                 virtual void tick(Echo& echo)=0;
+      |                              ^
+In file included from test/MaximaImplementationIntegrationTest.cpp:8:
+test/../src/ai/AINicowar.h:219:7: warning: 'handle_message' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  219 |         void handle_message(AIEcho::Echo& echo, const std::string& message);
+      |              ^
+test/../src/ai/echo/Echo.h:49:16: note: overridden virtual function is here
+   49 |                 virtual void handle_message(Echo& echo, const std::string& message)=0;
+      |                              ^
+In file included from test/MaximaImplementationIntegrationTest.cpp:27:
+test/../src/AIMaxima.h:47:7: warning: 'load' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   47 |         bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+      |              ^
+test/../src/ai/AIImplementation.h:70:15: note: overridden virtual function is here
+   70 |         virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
+      |                      ^
+In file included from test/MaximaImplementationIntegrationTest.cpp:27:
+test/../src/AIMaxima.h:52:7: warning: 'save' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   52 |         void save(GAGCore::OutputStream *stream);
+      |              ^
+test/../src/ai/AIImplementation.h:71:15: note: overridden virtual function is here
+   71 |         virtual void save(GAGCore::OutputStream *stream)=0;
+      |                      ^
+In file included from test/MaximaImplementationIntegrationTest.cpp:27:
+test/../src/AIMaxima.h:53:25: warning: 'getOrder' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   53 |         std::shared_ptr<Order> getOrder();
+      |                                ^
+test/../src/ai/AIImplementation.h:73:33: note: overridden virtual function is here
+   73 |         virtual std::shared_ptr<Order> getOrder(void)=0;
+      |                                        ^
+In file included from test/MaximaImplementationIntegrationTest.cpp:27:
+test/../src/AIMaxima.h:55:7: warning: 'tick' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   55 |         void tick(AIMaximaRuntime::Context& echo);
+      |              ^
+test/../src/AIMaximaRuntime.h:114:15: note: overridden virtual function is here
+  114 |         virtual void tick(Context& context)=0;
+      |                      ^
+In file included from test/MaximaImplementationIntegrationTest.cpp:27:
+test/../src/AIMaxima.h:56:7: warning: 'handle_event' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   56 |         void handle_event(AIMaximaRuntime::Context& echo, const AIMaximaRuntime::RuntimeEvent& event);
+      |              ^
+test/../src/AIMaximaRuntime.h:115:15: note: overridden virtual function is here
+  115 |         virtual void handle_event(Context& context, const RuntimeEvent& event)=0;
+      |                      ^
+19 warnings generated.
+MaximaImplementationIntegrationTest: PASS
+In file included from test/MaximaEconomyRegressionTest.cpp:23:
+test/../src/AIMaxima.h:47:7: warning: 'load' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   47 |         bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+      |              ^
+test/../src/ai/AIImplementation.h:70:15: note: overridden virtual function is here
+   70 |         virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
+      |                      ^
+In file included from test/MaximaEconomyRegressionTest.cpp:23:
+test/../src/AIMaxima.h:52:7: warning: 'save' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   52 |         void save(GAGCore::OutputStream *stream);
+      |              ^
+test/../src/ai/AIImplementation.h:71:15: note: overridden virtual function is here
+   71 |         virtual void save(GAGCore::OutputStream *stream)=0;
+      |                      ^
+In file included from test/MaximaEconomyRegressionTest.cpp:23:
+test/../src/AIMaxima.h:53:25: warning: 'getOrder' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   53 |         std::shared_ptr<Order> getOrder();
+      |                                ^
+test/../src/ai/AIImplementation.h:73:33: note: overridden virtual function is here
+   73 |         virtual std::shared_ptr<Order> getOrder(void)=0;
+      |                                        ^
+In file included from test/MaximaEconomyRegressionTest.cpp:23:
+test/../src/AIMaxima.h:55:7: warning: 'tick' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   55 |         void tick(AIMaximaRuntime::Context& echo);
+      |              ^
+test/../src/AIMaximaRuntime.h:114:15: note: overridden virtual function is here
+  114 |         virtual void tick(Context& context)=0;
+      |                      ^
+In file included from test/MaximaEconomyRegressionTest.cpp:23:
+test/../src/AIMaxima.h:56:7: warning: 'handle_event' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   56 |         void handle_event(AIMaximaRuntime::Context& echo, const AIMaximaRuntime::RuntimeEvent& event);
+      |              ^
+test/../src/AIMaximaRuntime.h:115:15: note: overridden virtual function is here
+  115 |         virtual void handle_event(Context& context, const RuntimeEvent& event)=0;
+      |                      ^
+5 warnings generated.
+MaximaEconomyRegressionTest: PASS
+MaximaPlacementStandaloneTest: PASS

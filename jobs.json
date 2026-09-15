@@ -1,0 +1,290 @@
+[
+  {
+    "name": "anthill",
+    "generator": 32,
+    "map_seed": 1270303217,
+    "game_seed": 1139910125,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ]
+  },
+  {
+    "name": "anthill",
+    "generator": 32,
+    "map_seed": 1966330491,
+    "game_seed": 1795902775,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ]
+  },
+  {
+    "name": "canals",
+    "generator": 29,
+    "map_seed": 830835628,
+    "game_seed": 752393554,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ]
+  },
+  {
+    "name": "canals",
+    "generator": 29,
+    "map_seed": 1693303710,
+    "game_seed": 275738692,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ]
+  },
+  {
+    "name": "fingerprint",
+    "generator": 26,
+    "map_seed": 1379737613,
+    "game_seed": 219635272,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ]
+  },
+  {
+    "name": "fingerprint",
+    "generator": 26,
+    "map_seed": 1552288803,
+    "game_seed": 1760225446,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ]
+  },
+  {
+    "name": "old-town",
+    "generator": 31,
+    "map_seed": 109080940,
+    "game_seed": 1047143652,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ]
+  },
+  {
+    "name": "old-town",
+    "generator": 31,
+    "map_seed": 1894263344,
+    "game_seed": 240258196,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ]
+  },
+  {
+    "name": "swamp",
+    "generator": 1,
+    "map_seed": 44370452,
+    "game_seed": 1735395078,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ]
+  },
+  {
+    "name": "swamp",
+    "generator": 1,
+    "map_seed": 1541182001,
+    "game_seed": 763135364,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ]
+  },
+  {
+    "name": "tidal-flats",
+    "generator": 18,
+    "map_seed": 911726003,
+    "game_seed": 839705444,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ]
+  },
+  {
+    "name": "tidal-flats",
+    "generator": 18,
+    "map_seed": 594771618,
+    "game_seed": 2129272411,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ]
+  },
+  {
+    "name": "river",
+    "generator": 2,
+    "map_seed": 441751959,
+    "game_seed": 940916271,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ]
+  },
+  {
+    "name": "river",
+    "generator": 2,
+    "map_seed": 1980499861,
+    "game_seed": 1800763198,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ]
+  },
+  {
+    "name": "spider-web",
+    "generator": 20,
+    "map_seed": 1102061098,
+    "game_seed": 1486196588,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ]
+  },
+  {
+    "name": "spider-web",
+    "generator": 20,
+    "map_seed": 1540754810,
+    "game_seed": 1572747210,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ]
+  },
+  {
+    "name": "stone-highlands",
+    "generator": 14,
+    "map_seed": 1416233443,
+    "game_seed": 1583759484,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ]
+  },
+  {
+    "name": "stone-highlands",
+    "generator": 14,
+    "map_seed": 1439649419,
+    "game_seed": 579712803,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ]
+  },
+  {
+    "name": "switchbacks",
+    "generator": 24,
+    "map_seed": 1823271013,
+    "game_seed": 960790308,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ]
+  },
+  {
+    "name": "switchbacks",
+    "generator": 24,
+    "map_seed": 1587970864,
+    "game_seed": 1985088975,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ]
+  },
+  {
+    "name": "polder",
+    "generator": 30,
+    "map_seed": 1004118375,
+    "game_seed": 1071706480,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ]
+  },
+  {
+    "name": "polder",
+    "generator": 30,
+    "map_seed": 179323863,
+    "game_seed": 1093786774,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ]
+  },
+  {
+    "name": "coral",
+    "generator": 21,
+    "map_seed": 1983122257,
+    "game_seed": 1665863464,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ]
+  },
+  {
+    "name": "coral",
+    "generator": 21,
+    "map_seed": 1522161474,
+    "game_seed": 1367709504,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ]
+  }
+]

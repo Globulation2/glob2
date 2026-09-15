@@ -1,0 +1,699 @@
+{
+  "before": [
+    {
+      "game_tick": "122037",
+      "outcome": "selected",
+      "action": "32",
+      "action_type": "1",
+      "building_type": "5",
+      "building": "-1",
+      "utility": "4656"
+    },
+    {
+      "game_tick": "122040",
+      "outcome": "Completed",
+      "action": "31",
+      "action_type": "0",
+      "building_type": "1",
+      "building": "315",
+      "utility": "4721"
+    },
+    {
+      "game_tick": "124743",
+      "outcome": "selected",
+      "action": "33",
+      "action_type": "1",
+      "building_type": "3",
+      "building": "-1",
+      "utility": "4364"
+    },
+    {
+      "game_tick": "124746",
+      "outcome": "Completed",
+      "action": "32",
+      "action_type": "1",
+      "building_type": "5",
+      "building": "332",
+      "utility": "4656"
+    },
+    {
+      "game_tick": "127436",
+      "outcome": "selected",
+      "action": "34",
+      "action_type": "1",
+      "building_type": "3",
+      "building": "-1",
+      "utility": "4318"
+    },
+    {
+      "game_tick": "127439",
+      "outcome": "Completed",
+      "action": "33",
+      "action_type": "1",
+      "building_type": "3",
+      "building": "339",
+      "utility": "4364"
+    },
+    {
+      "game_tick": "132510",
+      "outcome": "selected",
+      "action": "35",
+      "action_type": "0",
+      "building_type": "2",
+      "building": "-1",
+      "utility": "4997"
+    },
+    {
+      "game_tick": "132512",
+      "outcome": "Completed",
+      "action": "34",
+      "action_type": "1",
+      "building_type": "3",
+      "building": "348",
+      "utility": "4318"
+    },
+    {
+      "game_tick": "133922",
+      "outcome": "selected",
+      "action": "36",
+      "action_type": "1",
+      "building_type": "4",
+      "building": "-1",
+      "utility": "4116"
+    },
+    {
+      "game_tick": "133925",
+      "outcome": "Completed",
+      "action": "35",
+      "action_type": "0",
+      "building_type": "2",
+      "building": "369",
+      "utility": "4997"
+    },
+    {
+      "game_tick": "137734",
+      "outcome": "selected",
+      "action": "37",
+      "action_type": "1",
+      "building_type": "2",
+      "building": "-1",
+      "utility": "4478"
+    },
+    {
+      "game_tick": "137737",
+      "outcome": "Completed",
+      "action": "36",
+      "action_type": "1",
+      "building_type": "4",
+      "building": "376",
+      "utility": "4116"
+    },
+    {
+      "game_tick": "137888",
+      "outcome": "selected",
+      "action": "38",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "8",
+      "utility": "4006"
+    },
+    {
+      "game_tick": "137891",
+      "outcome": "SiteObserved",
+      "action": "37",
+      "action_type": "1",
+      "building_type": "2",
+      "building": "389",
+      "utility": "4478"
+    },
+    {
+      "game_tick": "137891",
+      "outcome": "SiteObserved",
+      "action": "38",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "8",
+      "utility": "4006"
+    },
+    {
+      "game_tick": "138041",
+      "outcome": "selected",
+      "action": "39",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "23",
+      "utility": "4006"
+    },
+    {
+      "game_tick": "138044",
+      "outcome": "SiteObserved",
+      "action": "39",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "23",
+      "utility": "4006"
+    },
+    {
+      "game_tick": "138200",
+      "outcome": "selected",
+      "action": "40",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "332",
+      "utility": "4142"
+    },
+    {
+      "game_tick": "138203",
+      "outcome": "SiteObserved",
+      "action": "40",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "332",
+      "utility": "4142"
+    },
+    {
+      "game_tick": "138354",
+      "outcome": "selected",
+      "action": "41",
+      "action_type": "2",
+      "building_type": "2",
+      "building": "95",
+      "utility": "3678"
+    },
+    {
+      "game_tick": "138361",
+      "outcome": "SiteObserved",
+      "action": "41",
+      "action_type": "2",
+      "building_type": "2",
+      "building": "95",
+      "utility": "3678"
+    },
+    {
+      "game_tick": "138512",
+      "outcome": "selected",
+      "action": "42",
+      "action_type": "2",
+      "building_type": "2",
+      "building": "122",
+      "utility": "3694"
+    },
+    {
+      "game_tick": "138515",
+      "outcome": "SiteObserved",
+      "action": "42",
+      "action_type": "2",
+      "building_type": "2",
+      "building": "122",
+      "utility": "3694"
+    },
+    {
+      "game_tick": "138595",
+      "outcome": "selected",
+      "action": "43",
+      "action_type": "2",
+      "building_type": "2",
+      "building": "145",
+      "utility": "3706"
+    },
+    {
+      "game_tick": "138598",
+      "outcome": "SiteObserved",
+      "action": "43",
+      "action_type": "2",
+      "building_type": "2",
+      "building": "145",
+      "utility": "3706"
+    },
+    {
+      "game_tick": "138761",
+      "outcome": "selected",
+      "action": "44",
+      "action_type": "2",
+      "building_type": "2",
+      "building": "369",
+      "utility": "3694"
+    },
+    {
+      "game_tick": "138764",
+      "outcome": "SiteObserved",
+      "action": "44",
+      "action_type": "2",
+      "building_type": "2",
+      "building": "369",
+      "utility": "3694"
+    },
+    {
+      "game_tick": "138926",
+      "outcome": "Completed",
+      "action": "39",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "23",
+      "utility": "4006"
+    },
+    {
+      "game_tick": "139010",
+      "outcome": "selected",
+      "action": "46",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "23",
+      "utility": "4122"
+    },
+    {
+      "game_tick": "139013",
+      "outcome": "Completed",
+      "action": "38",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "8",
+      "utility": "4006"
+    },
+    {
+      "game_tick": "139013",
+      "outcome": "SiteObserved",
+      "action": "46",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "23",
+      "utility": "4122"
+    },
+    {
+      "game_tick": "139102",
+      "outcome": "selected",
+      "action": "47",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "8",
+      "utility": "4074"
+    },
+    {
+      "game_tick": "139105",
+      "outcome": "SiteObserved",
+      "action": "47",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "8",
+      "utility": "4074"
+    },
+    {
+      "game_tick": "139195",
+      "outcome": "selected",
+      "action": "48",
+      "action_type": "2",
+      "building_type": "6",
+      "building": "14",
+      "utility": "3346"
+    },
+    {
+      "game_tick": "139198",
+      "outcome": "SiteObserved",
+      "action": "48",
+      "action_type": "2",
+      "building_type": "6",
+      "building": "14",
+      "utility": "3346"
+    },
+    {
+      "game_tick": "139282",
+      "outcome": "selected",
+      "action": "49",
+      "action_type": "2",
+      "building_type": "6",
+      "building": "15",
+      "utility": "3346"
+    },
+    {
+      "game_tick": "139285",
+      "outcome": "SiteObserved",
+      "action": "49",
+      "action_type": "2",
+      "building_type": "6",
+      "building": "15",
+      "utility": "3346"
+    },
+    {
+      "game_tick": "139299",
+      "outcome": "selected",
+      "action": "51",
+      "action_type": "3",
+      "building_type": "4",
+      "building": "5",
+      "utility": "2566"
+    },
+    {
+      "game_tick": "139304",
+      "outcome": "SiteObserved",
+      "action": "51",
+      "action_type": "3",
+      "building_type": "4",
+      "building": "5",
+      "utility": "2566"
+    },
+    {
+      "game_tick": "139397",
+      "outcome": "selected",
+      "action": "52",
+      "action_type": "2",
+      "building_type": "3",
+      "building": "348",
+      "utility": "2326"
+    },
+    {
+      "game_tick": "139400",
+      "outcome": "Completed",
+      "action": "40",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "332",
+      "utility": "4142"
+    },
+    {
+      "game_tick": "139400",
+      "outcome": "SiteObserved",
+      "action": "52",
+      "action_type": "2",
+      "building_type": "3",
+      "building": "348",
+      "utility": "2326"
+    },
+    {
+      "game_tick": "139483",
+      "outcome": "selected",
+      "action": "53",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "332",
+      "utility": "4002"
+    },
+    {
+      "game_tick": "139486",
+      "outcome": "SiteObserved",
+      "action": "53",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "332",
+      "utility": "4002"
+    },
+    {
+      "game_tick": "139492",
+      "outcome": "selected",
+      "action": "54",
+      "action_type": "3",
+      "building_type": "1",
+      "building": "197",
+      "utility": "2260"
+    },
+    {
+      "game_tick": "139494",
+      "outcome": "SiteObserved",
+      "action": "54",
+      "action_type": "3",
+      "building_type": "1",
+      "building": "197",
+      "utility": "2260"
+    },
+    {
+      "game_tick": "139496",
+      "outcome": "selected",
+      "action": "55",
+      "action_type": "2",
+      "building_type": "1",
+      "building": "4",
+      "utility": "2196"
+    },
+    {
+      "game_tick": "139499",
+      "outcome": "SiteObserved",
+      "action": "55",
+      "action_type": "2",
+      "building_type": "1",
+      "building": "4",
+      "utility": "2196"
+    },
+    {
+      "game_tick": "139504",
+      "outcome": "selected",
+      "action": "56",
+      "action_type": "2",
+      "building_type": "1",
+      "building": "6",
+      "utility": "2196"
+    },
+    {
+      "game_tick": "139510",
+      "outcome": "SiteObserved",
+      "action": "56",
+      "action_type": "2",
+      "building_type": "1",
+      "building": "6",
+      "utility": "2196"
+    },
+    {
+      "game_tick": "139517",
+      "outcome": "selected",
+      "action": "57",
+      "action_type": "2",
+      "building_type": "1",
+      "building": "10",
+      "utility": "2196"
+    },
+    {
+      "game_tick": "139520",
+      "outcome": "SiteObserved",
+      "action": "57",
+      "action_type": "2",
+      "building_type": "1",
+      "building": "10",
+      "utility": "2196"
+    },
+    {
+      "game_tick": "139608",
+      "outcome": "selected",
+      "action": "58",
+      "action_type": "2",
+      "building_type": "1",
+      "building": "57",
+      "utility": "2208"
+    },
+    {
+      "game_tick": "139617",
+      "outcome": "SiteObserved",
+      "action": "58",
+      "action_type": "2",
+      "building_type": "1",
+      "building": "57",
+      "utility": "2208"
+    },
+    {
+      "game_tick": "139704",
+      "outcome": "selected",
+      "action": "59",
+      "action_type": "2",
+      "building_type": "1",
+      "building": "68",
+      "utility": "2208"
+    },
+    {
+      "game_tick": "139710",
+      "outcome": "SiteObserved",
+      "action": "59",
+      "action_type": "2",
+      "building_type": "1",
+      "building": "68",
+      "utility": "2208"
+    },
+    {
+      "game_tick": "139796",
+      "outcome": "selected",
+      "action": "60",
+      "action_type": "2",
+      "building_type": "1",
+      "building": "215",
+      "utility": "2212"
+    },
+    {
+      "game_tick": "139799",
+      "outcome": "SiteObserved",
+      "action": "60",
+      "action_type": "2",
+      "building_type": "1",
+      "building": "215",
+      "utility": "2212"
+    },
+    {
+      "game_tick": "139883",
+      "outcome": "selected",
+      "action": "61",
+      "action_type": "2",
+      "building_type": "1",
+      "building": "252",
+      "utility": "2224"
+    },
+    {
+      "game_tick": "139886",
+      "outcome": "SiteObserved",
+      "action": "61",
+      "action_type": "2",
+      "building_type": "1",
+      "building": "252",
+      "utility": "2224"
+    },
+    {
+      "game_tick": "139967",
+      "outcome": "selected",
+      "action": "62",
+      "action_type": "2",
+      "building_type": "1",
+      "building": "267",
+      "utility": "2224"
+    },
+    {
+      "game_tick": "139970",
+      "outcome": "SiteObserved",
+      "action": "62",
+      "action_type": "2",
+      "building_type": "1",
+      "building": "267",
+      "utility": "2224"
+    }
+  ],
+  "after": [
+    {
+      "game_tick": "122037",
+      "outcome": "selected",
+      "action": "32",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "8",
+      "utility": "5991"
+    },
+    {
+      "game_tick": "122040",
+      "outcome": "Completed",
+      "action": "31",
+      "action_type": "0",
+      "building_type": "1",
+      "building": "315",
+      "utility": "4721"
+    },
+    {
+      "game_tick": "122040",
+      "outcome": "SiteObserved",
+      "action": "32",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "8",
+      "utility": "5991"
+    },
+    {
+      "game_tick": "126297",
+      "outcome": "selected",
+      "action": "33",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "23",
+      "utility": "6045"
+    },
+    {
+      "game_tick": "126300",
+      "outcome": "Completed",
+      "action": "32",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "8",
+      "utility": "5991"
+    },
+    {
+      "game_tick": "126300",
+      "outcome": "SiteObserved",
+      "action": "33",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "23",
+      "utility": "6045"
+    },
+    {
+      "game_tick": "130654",
+      "outcome": "selected",
+      "action": "34",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "8",
+      "utility": "6051"
+    },
+    {
+      "game_tick": "130657",
+      "outcome": "Completed",
+      "action": "33",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "23",
+      "utility": "6045"
+    },
+    {
+      "game_tick": "130657",
+      "outcome": "SiteObserved",
+      "action": "34",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "8",
+      "utility": "6051"
+    },
+    {
+      "game_tick": "135020",
+      "outcome": "selected",
+      "action": "35",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "23",
+      "utility": "6051"
+    },
+    {
+      "game_tick": "135026",
+      "outcome": "Completed",
+      "action": "34",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "8",
+      "utility": "6051"
+    },
+    {
+      "game_tick": "135026",
+      "outcome": "SiteObserved",
+      "action": "35",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "23",
+      "utility": "6051"
+    },
+    {
+      "game_tick": "139362",
+      "outcome": "selected",
+      "action": "36",
+      "action_type": "2",
+      "building_type": "2",
+      "building": "95",
+      "utility": "5343"
+    },
+    {
+      "game_tick": "139368",
+      "outcome": "Completed",
+      "action": "35",
+      "action_type": "2",
+      "building_type": "5",
+      "building": "23",
+      "utility": "6051"
+    },
+    {
+      "game_tick": "139368",
+      "outcome": "SiteObserved",
+      "action": "36",
+      "action_type": "2",
+      "building_type": "2",
+      "building": "95",
+      "utility": "5343"
+    }
+  ]
+}

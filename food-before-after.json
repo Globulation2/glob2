@@ -1,0 +1,116 @@
+[
+  {
+    "map": "anthill-1270303217",
+    "variant": "before",
+    "ticks": 45000,
+    "teams": [
+      {
+        "team": "0",
+        "population": 19,
+        "zero_samples": 41,
+        "last_budget": "0"
+      },
+      {
+        "team": "1",
+        "population": 17,
+        "zero_samples": 41,
+        "last_budget": "0"
+      }
+    ]
+  },
+  {
+    "map": "anthill-1270303217",
+    "variant": "after",
+    "ticks": 30690,
+    "teams": [
+      {
+        "team": "0",
+        "population": 8,
+        "zero_samples": 1,
+        "last_budget": "1"
+      },
+      {
+        "team": "1",
+        "population": 42,
+        "zero_samples": 0,
+        "last_budget": "1"
+      }
+    ]
+  },
+  {
+    "map": "anthill-1966330491",
+    "variant": "before",
+    "ticks": 45000,
+    "teams": [
+      {
+        "team": "0",
+        "population": 11,
+        "zero_samples": 40,
+        "last_budget": "0"
+      },
+      {
+        "team": "2",
+        "population": 20,
+        "zero_samples": 42,
+        "last_budget": "0"
+      }
+    ]
+  },
+  {
+    "map": "anthill-1966330491",
+    "variant": "after",
+    "ticks": 45000,
+    "teams": [
+      {
+        "team": "0",
+        "population": 30,
+        "zero_samples": 0,
+        "last_budget": "1"
+      },
+      {
+        "team": "2",
+        "population": 14,
+        "zero_samples": 0,
+        "last_budget": "1"
+      }
+    ]
+  },
+  {
+    "map": "switchbacks-1587970864",
+    "variant": "before",
+    "ticks": 45000,
+    "teams": [
+      {
+        "team": "0",
+        "population": 0,
+        "zero_samples": 10,
+        "last_budget": "0"
+      },
+      {
+        "team": "2",
+        "population": 4,
+        "zero_samples": 44,
+        "last_budget": "0"
+      }
+    ]
+  },
+  {
+    "map": "switchbacks-1587970864",
+    "variant": "after",
+    "ticks": 45000,
+    "teams": [
+      {
+        "team": "0",
+        "population": 97,
+        "zero_samples": 0,
+        "last_budget": "14"
+      },
+      {
+        "team": "2",
+        "population": 112,
+        "zero_samples": 0,
+        "last_budget": "10"
+      }
+    ]
+  }
+]

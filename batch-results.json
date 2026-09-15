@@ -1,0 +1,362 @@
+[
+  {
+    "name": "anthill",
+    "generator": 32,
+    "map_seed": 1270303217,
+    "game_seed": 1139910125,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ],
+    "run": "anthill-1270303217",
+    "exit_code": 0,
+    "seconds": 5.87
+  },
+  {
+    "name": "anthill",
+    "generator": 32,
+    "map_seed": 1966330491,
+    "game_seed": 1795902775,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ],
+    "run": "anthill-1966330491",
+    "exit_code": 0,
+    "seconds": 30.79
+  },
+  {
+    "name": "canals",
+    "generator": 29,
+    "map_seed": 830835628,
+    "game_seed": 752393554,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ],
+    "run": "canals-830835628",
+    "exit_code": 0,
+    "seconds": 23.77
+  },
+  {
+    "name": "canals",
+    "generator": 29,
+    "map_seed": 1693303710,
+    "game_seed": 275738692,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ],
+    "run": "canals-1693303710",
+    "exit_code": 0,
+    "seconds": 80.46
+  },
+  {
+    "name": "fingerprint",
+    "generator": 26,
+    "map_seed": 1379737613,
+    "game_seed": 219635272,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ],
+    "run": "fingerprint-1379737613",
+    "exit_code": 0,
+    "seconds": 18.8
+  },
+  {
+    "name": "fingerprint",
+    "generator": 26,
+    "map_seed": 1552288803,
+    "game_seed": 1760225446,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ],
+    "run": "fingerprint-1552288803",
+    "exit_code": 0,
+    "seconds": 107.17
+  },
+  {
+    "name": "old-town",
+    "generator": 31,
+    "map_seed": 109080940,
+    "game_seed": 1047143652,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ],
+    "run": "old-town-109080940",
+    "exit_code": 0,
+    "seconds": 15.1
+  },
+  {
+    "name": "old-town",
+    "generator": 31,
+    "map_seed": 1894263344,
+    "game_seed": 240258196,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ],
+    "run": "old-town-1894263344",
+    "exit_code": 0,
+    "seconds": 81.19
+  },
+  {
+    "name": "swamp",
+    "generator": 1,
+    "map_seed": 44370452,
+    "game_seed": 1735395078,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ],
+    "run": "swamp-44370452",
+    "exit_code": 0,
+    "seconds": 5.87
+  },
+  {
+    "name": "swamp",
+    "generator": 1,
+    "map_seed": 1541182001,
+    "game_seed": 763135364,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ],
+    "run": "swamp-1541182001",
+    "exit_code": 0,
+    "seconds": 127.3
+  },
+  {
+    "name": "tidal-flats",
+    "generator": 18,
+    "map_seed": 911726003,
+    "game_seed": 839705444,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ],
+    "run": "tidal-flats-911726003",
+    "exit_code": 0,
+    "seconds": 7.17
+  },
+  {
+    "name": "tidal-flats",
+    "generator": 18,
+    "map_seed": 594771618,
+    "game_seed": 2129272411,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ],
+    "run": "tidal-flats-594771618",
+    "exit_code": 0,
+    "seconds": 97.14
+  },
+  {
+    "name": "river",
+    "generator": 2,
+    "map_seed": 441751959,
+    "game_seed": 940916271,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ],
+    "run": "river-441751959",
+    "exit_code": 0,
+    "seconds": 11.4
+  },
+  {
+    "name": "river",
+    "generator": 2,
+    "map_seed": 1980499861,
+    "game_seed": 1800763198,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ],
+    "run": "river-1980499861",
+    "exit_code": 0,
+    "seconds": 98.8
+  },
+  {
+    "name": "spider-web",
+    "generator": 20,
+    "map_seed": 1102061098,
+    "game_seed": 1486196588,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ],
+    "run": "spider-web-1102061098",
+    "exit_code": 0,
+    "seconds": 15.52
+  },
+  {
+    "name": "spider-web",
+    "generator": 20,
+    "map_seed": 1540754810,
+    "game_seed": 1572747210,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ],
+    "run": "spider-web-1540754810",
+    "exit_code": 0,
+    "seconds": 81.53
+  },
+  {
+    "name": "stone-highlands",
+    "generator": 14,
+    "map_seed": 1416233443,
+    "game_seed": 1583759484,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ],
+    "run": "stone-highlands-1416233443",
+    "exit_code": 0,
+    "seconds": 21.98
+  },
+  {
+    "name": "stone-highlands",
+    "generator": 14,
+    "map_seed": 1439649419,
+    "game_seed": 579712803,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ],
+    "run": "stone-highlands-1439649419",
+    "exit_code": 0,
+    "seconds": 107.15
+  },
+  {
+    "name": "switchbacks",
+    "generator": 24,
+    "map_seed": 1823271013,
+    "game_seed": 960790308,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ],
+    "run": "switchbacks-1823271013",
+    "exit_code": 0,
+    "seconds": 23.01
+  },
+  {
+    "name": "switchbacks",
+    "generator": 24,
+    "map_seed": 1587970864,
+    "game_seed": 1985088975,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ],
+    "run": "switchbacks-1587970864",
+    "exit_code": 0,
+    "seconds": 59.6
+  },
+  {
+    "name": "polder",
+    "generator": 30,
+    "map_seed": 1004118375,
+    "game_seed": 1071706480,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ],
+    "run": "polder-1004118375",
+    "exit_code": 0,
+    "seconds": 31.72
+  },
+  {
+    "name": "polder",
+    "generator": 30,
+    "map_seed": 179323863,
+    "game_seed": 1093786774,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ],
+    "run": "polder-179323863",
+    "exit_code": 0,
+    "seconds": 129.39
+  },
+  {
+    "name": "coral",
+    "generator": 21,
+    "map_seed": 1983122257,
+    "game_seed": 1665863464,
+    "size": 7,
+    "players": [
+      "maxima",
+      "maxima"
+    ],
+    "run": "coral-1983122257",
+    "exit_code": 0,
+    "seconds": 3.48
+  },
+  {
+    "name": "coral",
+    "generator": 21,
+    "map_seed": 1522161474,
+    "game_seed": 1367709504,
+    "size": 8,
+    "players": [
+      "maxima",
+      "nicowar",
+      "maxima",
+      "cortex"
+    ],
+    "run": "coral-1522161474",
+    "exit_code": 0,
+    "seconds": 111.74
+  }
+]
