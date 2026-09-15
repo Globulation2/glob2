@@ -144,8 +144,8 @@ restores whatever landscape it had.
 | `braided-river` | 42 | Braided river | Its own — see below |
 | `rice-terraces` | 46 | Rice terraces | [Contour farms and summit towns](RICE_TERRACES.md) |
 | `plantations` | 48 | Plantations | Its own — see below |
-| `sierpinski-gardens` | 34 | Sierpiński Gardens | [Recursive lakes, home districts and orchard causeways](FRACTAL_MAPS.md) |
-| `hilbert-river` | 35 | Hilbert River | [Folded river, contained bank farms and hierarchical shortcuts](FRACTAL_MAPS.md) |
+| `sierpinski-gardens` | 49 | Sierpiński Gardens | [Recursive lakes, home districts and orchard causeways](FRACTAL_MAPS.md) |
+| `hilbert-river` | 50 | Hilbert River | [Folded river, contained bank farms and hierarchical shortcuts](FRACTAL_MAPS.md) |
 | `rugged-archipelago` | 8 | Old islands | Island growth + beach passes, own resource search |
 | `contested-commons` | 9 | Contested commons | Point dispersion (`shared/legacy/Regions`) |
 | `rain-shadow` | 27 | Rain shadow | Its own — see below |

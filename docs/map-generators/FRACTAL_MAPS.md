@@ -2,7 +2,7 @@
 
 ## Play contract
 
-**Sierpiński Gardens** (`sierpinski-gardens`, numeric ID 34, revision 1) surrounds a
+**Sierpiński Gardens** (`sierpinski-gardens`, numeric ID 49, revision 1) surrounds a
 central orchard island with a rectangular lake, eight first-level districts, and
 smaller central-third lakes in eligible districts. Home reservations stop further
 cutting. Opposing causeway pairs provide distinct island approaches; the outside
@@ -13,7 +13,7 @@ and nearby construction land.
 
 Engine map preview: seed 20001, default controls, 256×256, four colonies.
 
-**Hilbert River** (`hilbert-river`, numeric ID 35, revision 1) follows a continuous
+**Hilbert River** (`hilbert-river`, numeric ID 50, revision 1) follows a continuous
 Hilbert curve. Broad pockets between folds hold colonies. Walking around the river
 ends and across map seams remains possible; direct bank crossings shorten those
 routes, and swimming offers further alternatives. Orchards sit by regional crossing
@@ -232,7 +232,7 @@ a maintainer playtest judgment.
 
 Pilot bundles precede the final registration audit: consult each bundle catalog when
 reading numeric generator IDs. ID 33 remains retired; the delivered registrations
-are 34 (Gardens) and 35 (Hilbert). Prototype IDs are not a save-format change.
+are 49 (Gardens) and 50 (Hilbert). Prototype IDs are not a save-format change.
 
 The analyzer normalizes omitted control defaults and lists distinct successful and
 rejected seeds per configuration in `support.csv`. Duplicate baseline/grid jobs do

@@ -272,7 +272,7 @@ GeneratorDefinition sierpinskiGardensDefinition()
 	const auto resources = resourceControls();
 	controls.insert(controls.end(), resources.begin(), resources.end());
 	return {"sierpinski-gardens",
-			34,
+			49,
 			"Sierpiński Gardens",
 			1,
 			false,
