@@ -2265,9 +2265,9 @@ Menjar/min
 [Stats occupancy]
 Alimentació / cura
 [Stats page one]
-Estadístiques 1/2 >
+Estadístiques 1/3 >
 [Stats page two]
-Estadístiques 2/2 >
+Estadístiques 2/3 >
 [Stats next page]
 Pàgina (P)
 [Map preview choose another]
@@ -2390,3 +2390,49 @@ Desactivat (sense temporitzador)
 60 minuts
 [Sudden-death timer]
 Temporitzador de mort sobtada
+[Stats page three]
+Estadístiques 3/3 >
+[Stats blocked units]
+Unitats S/C
+[Stats blocked buildings]
+Edificis S/C
+[Stats blocked buildings swim]
+Nedar S/C
+[Stats current blocked units]
+Unitats C
+[Stats current blocked buildings]
+Edificis C
+[Stats growth global]
+Recursos +
+[Stats growth new tiles]
+Recursos +#
+[Stats growth reductions]
+Recursos -
+[Stats growth per minute]
+Blat +/min
+[Stats growth near 8]
+Recursos + <=8
+[Stats growth near 16]
+Recursos + <=16
+[Stats growth near 32]
+Recursos + <=32
+[Stats low HP 25]
+Vida <=25%
+[Stats low HP 50]
+Vida <=50%
+[Stats low HP 75]
+Vida <=75%
+[Stats low food 25]
+Menjar <=25%
+[Stats low food 50]
+Menjar <=50%
+[Stats low food 75]
+Menjar <=75%
+[Stats structural units]
+Unitats S
+[Stats structural buildings]
+Edificis S
+[Stats low HP ranges]
+Vida: <=25/50/75%
+[Stats low food ranges]
+Menjar: <=25/50/75%

@@ -2257,9 +2257,9 @@ Comida/min
 [Stats occupancy]
 Alimentación / curación
 [Stats page one]
-Estadísticas 1/2 >
+Estadísticas 1/3 >
 [Stats page two]
-Estadísticas 2/2 >
+Estadísticas 2/3 >
 [Stats next page]
 Página (P)
 [Map preview choose another]
@@ -2382,3 +2382,49 @@ Desactivado (sin temporizador)
 60 minutos
 [Sudden-death timer]
 Temporizador de muerte súbita
+[Stats page three]
+Estadísticas 3/3 >
+[Stats blocked units]
+Unidades S/C
+[Stats blocked buildings]
+Edificios S/C
+[Stats blocked buildings swim]
+Nadar S/C
+[Stats current blocked units]
+Unidades C
+[Stats current blocked buildings]
+Edificios C
+[Stats growth global]
+Recursos +
+[Stats growth new tiles]
+Recursos +#
+[Stats growth reductions]
+Recursos -
+[Stats growth per minute]
+Trigo +/min
+[Stats growth near 8]
+Recursos + <=8
+[Stats growth near 16]
+Recursos + <=16
+[Stats growth near 32]
+Recursos + <=32
+[Stats low HP 25]
+caballos de fuerza <=25%
+[Stats low HP 50]
+caballos de fuerza <=50%
+[Stats low HP 75]
+caballos de fuerza <=75%
+[Stats low food 25]
+Alimento <=25%
+[Stats low food 50]
+Alimento <=50%
+[Stats low food 75]
+Alimento <=75%
+[Stats structural units]
+Unidades S
+[Stats structural buildings]
+Edificios S
+[Stats low HP ranges]
+caballos de fuerza: <=25/50/75%
+[Stats low food ranges]
+Alimento: <=25/50/75%

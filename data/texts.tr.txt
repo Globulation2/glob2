@@ -2265,9 +2265,9 @@ Yiyecek/dak
 [Stats occupancy]
 Beslenme / tedavi
 [Stats page one]
-İstatistikler 1/2 >
+İstatistikler 1/3 >
 [Stats page two]
-İstatistikler 2/2 >
+İstatistikler 2/3 >
 [Stats next page]
 Sayfa (P)
 [Map preview choose another]
@@ -2390,3 +2390,49 @@ Kapalı (zamanlayıcı yok)
 60 dakika
 [Sudden-death timer]
 Ani ölüm zamanlayıcısı
+[Stats page three]
+İstatistikler 3/3 >
+[Stats blocked units]
+Birimler S/C
+[Stats blocked buildings]
+Binalar S/C
+[Stats blocked buildings swim]
+Yüz S/C
+[Stats current blocked units]
+Birimler C
+[Stats current blocked buildings]
+Binalar C
+[Stats growth global]
+Kaynaklar +
+[Stats growth new tiles]
+Kaynaklar +#
+[Stats growth reductions]
+Kaynaklar -
+[Stats growth per minute]
+Buğday +/min
+[Stats growth near 8]
+Kaynaklar + <=8
+[Stats growth near 16]
+Kaynaklar + <=16
+[Stats growth near 32]
+Kaynaklar + <=32
+[Stats low HP 25]
+Can <=25%
+[Stats low HP 50]
+Can <=50%
+[Stats low HP 75]
+Can <=75%
+[Stats low food 25]
+Besin <=25%
+[Stats low food 50]
+Besin <=50%
+[Stats low food 75]
+Besin <=75%
+[Stats structural units]
+Birimler S
+[Stats structural buildings]
+Binalar S
+[Stats low HP ranges]
+Can: <=25/50/75%
+[Stats low food ranges]
+Besin: <=25/50/75%

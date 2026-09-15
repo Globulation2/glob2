@@ -1,0 +1,2 @@
+PASS: stdout matches version88.expected.txt
+PASS: disposable profile preferences unchanged

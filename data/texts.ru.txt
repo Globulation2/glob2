@@ -2255,9 +2255,9 @@ OpenGL недоступен в этой сборке.
 [Stats occupancy]
 Питание / лечение
 [Stats page one]
-Статистика 1/2 >
+Статистика 1/3 >
 [Stats page two]
-Статистика 2/2 >
+Статистика 2/3 >
 [Stats next page]
 Страница (P)
 [Map preview choose another]
@@ -2380,3 +2380,49 @@ OpenGL недоступен в этой сборке.
 60 минут
 [Sudden-death timer]
 Таймер внезапной смерти
+[Stats page three]
+Статистика 3/3 >
+[Stats blocked units]
+Юниты S/C
+[Stats blocked buildings]
+Здания S/C
+[Stats blocked buildings swim]
+Плавает S/C
+[Stats current blocked units]
+Юниты C
+[Stats current blocked buildings]
+Здания C
+[Stats growth global]
+Ресурсы +
+[Stats growth new tiles]
+Ресурсы +#
+[Stats growth reductions]
+Ресурсы -
+[Stats growth per minute]
+Пшеница +/min
+[Stats growth near 8]
+Ресурсы + <=8
+[Stats growth near 16]
+Ресурсы + <=16
+[Stats growth near 32]
+Ресурсы + <=32
+[Stats low HP 25]
+Зд. <=25%
+[Stats low HP 50]
+Зд. <=50%
+[Stats low HP 75]
+Зд. <=75%
+[Stats low food 25]
+Еда <=25%
+[Stats low food 50]
+Еда <=50%
+[Stats low food 75]
+Еда <=75%
+[Stats structural units]
+Юниты S
+[Stats structural buildings]
+Здания S
+[Stats low HP ranges]
+Зд.: <=25/50/75%
+[Stats low food ranges]
+Еда: <=25/50/75%

@@ -13,6 +13,7 @@
 #endif  // !YOG_SERVER_ONLY
 
 #include <algorithm>
+#include <tuple>
 
 
 // growResources, syncStep, fog of war, discovery, explored area
@@ -21,6 +22,7 @@ void Map::growResources(void)
 {
 	if (game->gameHeader.isResourceGrowthDisabled())
 		return;
+	rebuildGrowthCoverage();
 	// Custom-game "scarce resources" rule: an extra grow/extend probability
 	// divisor, stacking with (not replacing) corn's own CORN_GROWTH_DIVISOR
 	// roll below, applied uniformly to every resource type.
@@ -68,7 +70,11 @@ void Map::growResources(void)
 					{
 						// we grow resource:
 						if(canResourcesGrow(x, y))
-							incResource(x, y, r.type, r.variety);
+						{
+							const int beforeType = r.type, beforeAmount = r.amount;
+							incResource(x, y, beforeType, r.variety);
+							recordNaturalGrowth(x,y,beforeType,beforeType,beforeAmount);
+						}
 					}
 					else if (globalContainer->resourcesTypes.get(r.type)->expendable)
 					{
@@ -78,11 +84,134 @@ void Map::growResources(void)
 						int nx=x+dx;
 						int ny=y+dy;
 						if(canResourcesGrow(nx, ny))
+						{
+							const Resource &before = getResource(nx, ny);
+							const int beforeType = before.type, beforeAmount = before.amount;
 							incResource(nx, ny, r.type, r.variety);
+							recordNaturalGrowth(nx,ny,r.type,beforeType,beforeAmount);
+						}
 					}
 				}
 			}
 		}
+	}
+}
+
+void Map::rebuildGrowthCoverage()
+{
+	static_assert(3 * Team::MAX_COUNT <= 64, "Growth distance masks must fit one tile word");
+	// Old saves start the new diagnostic interval at the loaded tick.
+	for (int t = 0; t < game->mapHeader.getNumberOfTeams(); ++t)
+	{
+		Team *team = game->teams[t];
+		if (!team) continue;
+		auto &stats = team->stats;
+		if (stats.coverageBuildings.empty() && stats.coverageBuildingTick == 0 &&
+			stats.extendedCoverageStartTick > 0 && game->stepCounter >= stats.extendedCoverageStartTick)
+		{
+			for (int i = 0; i < Building::MAX_COUNT; ++i)
+			{
+				Building *b = team->myBuildings[i];
+				if (b && !b->type->isVirtual && b->buildingState != Building::DEAD)
+					stats.coverageBuildings.push_back({b->posX,b->posY,b->type->width,b->type->height});
+			}
+			stats.coverageBuildingTick = game->stepCounter;
+			std::sort(stats.coverageBuildings.begin(), stats.coverageBuildings.end(),
+				[](const TeamStats::CoverageBuilding &a, const TeamStats::CoverageBuilding &b) {
+					return std::tie(a.x,a.y,a.width,a.height) < std::tie(b.x,b.y,b.width,b.height);
+				});
+			++stats.coverageBuildingGeneration;
+		}
+	}
+	const int teams = game->mapHeader.getNumberOfTeams();
+	const size_t tileCount = size_t(w) * h;
+	if (!growthCoverageValid || growthCoverage.size() != tileCount ||
+		growthCoverageCounts[0].size() != tileCount * teams)
+	{
+		growthCoverage.assign(tileCount, 0);
+		for (auto &counts : growthCoverageCounts) counts.assign(tileCount * teams, 0);
+		for (auto &buildings : growthCoverageBuildings) buildings.clear();
+		std::fill(std::begin(growthCoverageGeneration), std::end(growthCoverageGeneration), Uint32(-1));
+		growthCoverageValid = true;
+	}
+	static constexpr int radius[3] = {8,16,32};
+	// The count planes are team-major. A changed building touches only its
+	// Chebyshev footprint; growth events still read just three contiguous masks.
+	const auto paint = [&](int t, const TeamStats::CoverageBuilding &b, int delta)
+	{
+		const size_t plane = size_t(t) * tileCount;
+		for (int y = b.y - radius[2]; y < b.y + b.height + radius[2]; ++y)
+		{
+			const int dy = std::max({b.y - y, 0, y - (b.y + b.height - 1)});
+			const size_t row = size_t(y & hMask) * w;
+			for (int x = b.x - radius[2]; x < b.x + b.width + radius[2]; ++x)
+			{
+				const int dx = std::max({b.x - x, 0, x - (b.x + b.width - 1)});
+				const int d = std::max(dx,dy);
+				const size_t index = row + (x & wMask);
+				for (int band = 0; band < 3; ++band)
+					if (d <= radius[band])
+				{
+					const Uint64 bit = Uint64(1) << (band * Team::MAX_COUNT + t);
+					Uint32 &count = growthCoverageCounts[band][plane + index];
+					if (delta > 0)
+					{
+						if (count++ == 0) growthCoverage[index] |= bit;
+					}
+					else if (--count == 0) growthCoverage[index] &= ~bit;
+				}
+			}
+		}
+	};
+	const auto less = [](const TeamStats::CoverageBuilding &a, const TeamStats::CoverageBuilding &b) {
+		return std::tie(a.x,a.y,a.width,a.height) < std::tie(b.x,b.y,b.width,b.height);
+	};
+	for (int t = 0; t < teams; ++t)
+	{
+		Team *team = game->teams[t];
+		if (!team) continue;
+		auto &stats = team->stats;
+		if (growthCoverageGeneration[t] == stats.coverageBuildingGeneration) continue;
+		auto &old = growthCoverageBuildings[t];
+		const auto &now = stats.coverageBuildings;
+		size_t i = 0, j = 0;
+		while (i < old.size() || j < now.size())
+		{
+			if (j == now.size() || (i < old.size() && less(old[i],now[j]))) paint(t,old[i++],-1);
+			else if (i == old.size() || less(now[j],old[i])) paint(t,now[j++],1);
+			else { ++i; ++j; }
+		}
+		old = now;
+		growthCoverageGeneration[t] = stats.coverageBuildingGeneration;
+	}
+}
+
+void Map::recordNaturalGrowth(int x, int y, int resourceType, int oldType, int oldAmount)
+{
+	const Resource &after = getResource(x,y);
+	if (resourceType < 0 || resourceType >= MAX_NB_RESOURCES) return;
+	const int tiles = oldType == NO_RES_TYPE && after.type == resourceType;
+	const int delta = after.amount - (tiles ? 0 : oldAmount);
+	if (!tiles && !delta) return;
+	const size_t index = size_t(y & hMask) * w + (x & wMask);
+	const Uint64 packed = growthCoverage[index];
+	const Uint32 masks[3] = {Uint32(packed), Uint32(packed >> Team::MAX_COUNT),
+		Uint32(packed >> (2 * Team::MAX_COUNT))};
+	for (int t = 0; t < game->mapHeader.getNumberOfTeams(); ++t)
+	{
+		Team *team = game->teams[t];
+		if (!team) continue;
+		auto &m = team->stats.measurements;
+		m.growthGlobal[0][resourceType] += tiles;
+		m.growthGlobal[1][resourceType] += std::max(0,delta);
+		m.growthGlobal[2][resourceType] += std::max(0,-delta);
+		for (int band = 0; band < 3; ++band)
+			if (masks[band] & (Uint32(1) << t))
+			{
+				m.growthTiles[band][resourceType] += tiles;
+				m.growthAmount[band][resourceType] += std::max(0,delta);
+				m.growthReduction[band][resourceType] += std::max(0,-delta);
+			}
 	}
 }
 
@@ -287,5 +416,3 @@ void Map::updateExploredArea(int teamNumber)
 		if (exploredArea[teamNumber][i] > 0)
 			exploredArea[teamNumber][i]--;
 }
-
-

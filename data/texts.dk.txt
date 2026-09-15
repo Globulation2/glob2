@@ -2333,9 +2333,9 @@ Mad/min
 [Stats occupancy]
 Mad / heling
 [Stats page one]
-Statistik 1/2 >
+Statistik 1/3 >
 [Stats page two]
-Statistik 2/2 >
+Statistik 2/3 >
 [Stats next page]
 Side (P)
 [Map preview choose another]
@@ -2458,3 +2458,49 @@ Fra (ingen timer)
 60 minutter
 [Sudden-death timer]
 Sudden death-timer
+[Stats page three]
+Statistik 3/3 >
+[Stats blocked units]
+Enheder S/C
+[Stats blocked buildings]
+Bygninger S/C
+[Stats blocked buildings swim]
+Svøm S/C
+[Stats current blocked units]
+Enheder C
+[Stats current blocked buildings]
+Bygninger C
+[Stats growth global]
+Ressourcer +
+[Stats growth new tiles]
+Ressourcer +#
+[Stats growth reductions]
+Ressourcer -
+[Stats growth per minute]
+Hvede +/min
+[Stats growth near 8]
+Ressourcer + <=8
+[Stats growth near 16]
+Ressourcer + <=16
+[Stats growth near 32]
+Ressourcer + <=32
+[Stats low HP 25]
+HP <=25%
+[Stats low HP 50]
+HP <=50%
+[Stats low HP 75]
+HP <=75%
+[Stats low food 25]
+Mad <=25%
+[Stats low food 50]
+Mad <=50%
+[Stats low food 75]
+Mad <=75%
+[Stats structural units]
+Enheder S
+[Stats structural buildings]
+Bygninger S
+[Stats low HP ranges]
+HP: <=25/50/75%
+[Stats low food ranges]
+Mad: <=25/50/75%

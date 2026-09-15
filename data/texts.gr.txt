@@ -2327,9 +2327,9 @@ Cortex
 [Stats occupancy]
 Σίτιση / θεραπεία
 [Stats page one]
-Στατιστικά 1/2 >
+Στατιστικά 1/3 >
 [Stats page two]
-Στατιστικά 2/2 >
+Στατιστικά 2/3 >
 [Stats next page]
 Σελίδα (P)
 [Map preview choose another]
@@ -2452,3 +2452,49 @@ Cortex
 60 λεπτά
 [Sudden-death timer]
 Χρονόμετρο ξαφνικού θανάτου
+[Stats page three]
+Στατιστικά 3/3 >
+[Stats blocked units]
+Μονάδες S/C
+[Stats blocked buildings]
+Κτίρια S/C
+[Stats blocked buildings swim]
+Κολύμβηση S/C
+[Stats current blocked units]
+Μονάδες C
+[Stats current blocked buildings]
+Κτίρια C
+[Stats growth global]
+Πόροι +
+[Stats growth new tiles]
+Πόροι +#
+[Stats growth reductions]
+Πόροι -
+[Stats growth per minute]
+Σιτάρι +/min
+[Stats growth near 8]
+Πόροι + <=8
+[Stats growth near 16]
+Πόροι + <=16
+[Stats growth near 32]
+Πόροι + <=32
+[Stats low HP 25]
+HP <=25%
+[Stats low HP 50]
+HP <=50%
+[Stats low HP 75]
+HP <=75%
+[Stats low food 25]
+Τροφή <=25%
+[Stats low food 50]
+Τροφή <=50%
+[Stats low food 75]
+Τροφή <=75%
+[Stats structural units]
+Μονάδες S
+[Stats structural buildings]
+Κτίρια S
+[Stats low HP ranges]
+HP: <=25/50/75%
+[Stats low food ranges]
+Τροφή: <=25/50/75%

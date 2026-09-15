@@ -2281,9 +2281,9 @@ Voedsel/min
 [Stats occupancy]
 Eten / genezen
 [Stats page one]
-Statistieken 1/2 >
+Statistieken 1/3 >
 [Stats page two]
-Statistieken 2/2 >
+Statistieken 2/3 >
 [Stats next page]
 Pagina (P)
 [Map preview choose another]
@@ -2406,3 +2406,49 @@ Uit (geen timer)
 60 minuten
 [Sudden-death timer]
 Sudden-death-timer
+[Stats page three]
+Statistieken 3/3 >
+[Stats blocked units]
+Eenheden S/C
+[Stats blocked buildings]
+Gebouwen S/C
+[Stats blocked buildings swim]
+Zwemmen S/C
+[Stats current blocked units]
+Eenheden C
+[Stats current blocked buildings]
+Gebouwen C
+[Stats growth global]
+Hulpbronnen +
+[Stats growth new tiles]
+Hulpbronnen +#
+[Stats growth reductions]
+Hulpbronnen -
+[Stats growth per minute]
+Tarwe +/min
+[Stats growth near 8]
+Hulpbronnen + <=8
+[Stats growth near 16]
+Hulpbronnen + <=16
+[Stats growth near 32]
+Hulpbronnen + <=32
+[Stats low HP 25]
+Sterkte <=25%
+[Stats low HP 50]
+Sterkte <=50%
+[Stats low HP 75]
+Sterkte <=75%
+[Stats low food 25]
+Voedsel <=25%
+[Stats low food 50]
+Voedsel <=50%
+[Stats low food 75]
+Voedsel <=75%
+[Stats structural units]
+Eenheden S
+[Stats structural buildings]
+Gebouwen S
+[Stats low HP ranges]
+Sterkte: <=25/50/75%
+[Stats low food ranges]
+Voedsel: <=25/50/75%

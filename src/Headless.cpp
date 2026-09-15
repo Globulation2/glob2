@@ -100,6 +100,16 @@ void isolateEnvironment()
 		unsetenv(key);
 #endif
 }
+void setHeadlessEnvironment(const char* key, const char* value)
+{
+	SDL_setenv(key, value, 1);
+#ifdef WIN32
+	// The engine reads these flags with the C runtime's getenv. On Windows,
+	// SDL's environment update does not repopulate the runtime view after the
+	// isolation step removed the key with _putenv_s.
+	_putenv_s(key, value);
+#endif
+}
 void jsonArray(std::ostream& out, int value) { out << value; }
 template<class T, size_t N> void jsonArray(std::ostream& out, const T (&values)[N])
 {
@@ -152,12 +162,12 @@ struct HeadlessRunner
 		if(options.count("--replay") && one(options,"--replay")!="true" && one(options,"--replay")!="false")
 			throw std::invalid_argument("--replay must be true or false");
 		const std::string replay=(output/"game.replay").string();
-		SDL_setenv("GLOB2_REPLAY_PATH", replay.c_str(), 1);
+		setHeadlessEnvironment("GLOB2_REPLAY_PATH", replay.c_str());
 		for(const auto &telemetry : many(options,"--telemetry"))
 		{
-			if(telemetry=="checksums") SDL_setenv("GLOB2_CHECKSUM_SIDECAR", "1", 1);
-			else if(telemetry=="team-timeline") SDL_setenv("GLOB2_TEAM_TIMELINE", "1", 1);
-			else if(telemetry=="maxima") SDL_setenv("GLOB2_MAXIMA_TELEMETRY", "1", 1);
+			if(telemetry=="checksums") setHeadlessEnvironment("GLOB2_CHECKSUM_SIDECAR", "1");
+			else if(telemetry=="team-timeline") setHeadlessEnvironment("GLOB2_TEAM_TIMELINE", "1");
+			else if(telemetry=="maxima") setHeadlessEnvironment("GLOB2_MAXIMA_TELEMETRY", "1");
 			else throw std::invalid_argument("unknown telemetry: " + telemetry);
 		}
 		globals.load();
@@ -342,7 +352,7 @@ int runHeadlessCommand(int argc,char **argv)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":1,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\"],\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
+				<< ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\"],\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())
 			{

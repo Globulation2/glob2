@@ -2257,9 +2257,9 @@ Hrana/min
 [Stats occupancy]
 Hranjenje / zdravljenje
 [Stats page one]
-Statistika 1/2 >
+Statistika 1/3 >
 [Stats page two]
-Statistika 2/2 >
+Statistika 2/3 >
 [Stats next page]
 Stran (P)
 [Map preview choose another]
@@ -2382,3 +2382,49 @@ Izklopljeno (brez odštevalnika)
 60 minut
 [Sudden-death timer]
 Odštevalnik nenadne smrti
+[Stats page three]
+Statistika 3/3 >
+[Stats blocked units]
+Enote S/C
+[Stats blocked buildings]
+Stavbe S/C
+[Stats blocked buildings swim]
+Plavanje S/C
+[Stats current blocked units]
+Enote C
+[Stats current blocked buildings]
+Stavbe C
+[Stats growth global]
+Viri +
+[Stats growth new tiles]
+Viri +#
+[Stats growth reductions]
+Viri -
+[Stats growth per minute]
+Pšenica +/min
+[Stats growth near 8]
+Viri + <=8
+[Stats growth near 16]
+Viri + <=16
+[Stats growth near 32]
+Viri + <=32
+[Stats low HP 25]
+Zdravje <=25%
+[Stats low HP 50]
+Zdravje <=50%
+[Stats low HP 75]
+Zdravje <=75%
+[Stats low food 25]
+Hrana <=25%
+[Stats low food 50]
+Hrana <=50%
+[Stats low food 75]
+Hrana <=75%
+[Stats structural units]
+Enote S
+[Stats structural buildings]
+Stavbe S
+[Stats low HP ranges]
+Zdravje: <=25/50/75%
+[Stats low food ranges]
+Hrana: <=25/50/75%

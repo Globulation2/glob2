@@ -2255,9 +2255,9 @@ Manĝaĵo/min
 [Stats occupancy]
 Nutrado / kuracado
 [Stats page one]
-Statistikoj 1/2 >
+Statistikoj 1/3 >
 [Stats page two]
-Statistikoj 2/2 >
+Statistikoj 2/3 >
 [Stats next page]
 Paĝo (P)
 [Map preview choose another]
@@ -2380,3 +2380,49 @@ Malŝaltita (neniu kronometro)
 60 minutoj
 [Sudden-death timer]
 Kronometro de subita morto
+[Stats page three]
+Statistikoj 3/3 >
+[Stats blocked units]
+Globuloj S/C
+[Stats blocked buildings]
+Konstruaĵoj S/C
+[Stats blocked buildings swim]
+Naĝado S/C
+[Stats current blocked units]
+Globuloj C
+[Stats current blocked buildings]
+Konstruaĵoj C
+[Stats growth global]
+Rimedoj +
+[Stats growth new tiles]
+Rimedoj +#
+[Stats growth reductions]
+Rimedoj -
+[Stats growth per minute]
+Tritiko +/min
+[Stats growth near 8]
+Rimedoj + <=8
+[Stats growth near 16]
+Rimedoj + <=16
+[Stats growth near 32]
+Rimedoj + <=32
+[Stats low HP 25]
+VPo <=25%
+[Stats low HP 50]
+VPo <=50%
+[Stats low HP 75]
+VPo <=75%
+[Stats low food 25]
+Nutraĵo <=25%
+[Stats low food 50]
+Nutraĵo <=50%
+[Stats low food 75]
+Nutraĵo <=75%
+[Stats structural units]
+Globuloj S
+[Stats structural buildings]
+Konstruaĵoj S
+[Stats low HP ranges]
+VPo: <=25/50/75%
+[Stats low food ranges]
+Nutraĵo: <=25/50/75%

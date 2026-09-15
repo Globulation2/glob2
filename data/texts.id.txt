@@ -2253,9 +2253,9 @@ Makanan/menit
 [Stats occupancy]
 Makan / penyembuhan
 [Stats page one]
-Statistik 1/2 >
+Statistik 1/3 >
 [Stats page two]
-Statistik 2/2 >
+Statistik 2/3 >
 [Stats next page]
 Halaman (P)
 [Map preview choose another]
@@ -2378,3 +2378,49 @@ Nonaktif (tanpa pengatur waktu)
 60 menit
 [Sudden-death timer]
 Pengatur waktu kematian mendadak
+[Stats page three]
+Statistik 3/3 >
+[Stats blocked units]
+Unit S/C
+[Stats blocked buildings]
+Bangunan S/C
+[Stats blocked buildings swim]
+Berenang S/C
+[Stats current blocked units]
+Unit C
+[Stats current blocked buildings]
+Bangunan C
+[Stats growth global]
+Sumber daya +
+[Stats growth new tiles]
+Sumber daya +#
+[Stats growth reductions]
+Sumber daya -
+[Stats growth per minute]
+Gandum +/min
+[Stats growth near 8]
+Sumber daya + <=8
+[Stats growth near 16]
+Sumber daya + <=16
+[Stats growth near 32]
+Sumber daya + <=32
+[Stats low HP 25]
+HP <=25%
+[Stats low HP 50]
+HP <=50%
+[Stats low HP 75]
+HP <=75%
+[Stats low food 25]
+Makanan <=25%
+[Stats low food 50]
+Makanan <=50%
+[Stats low food 75]
+Makanan <=75%
+[Stats structural units]
+Unit S
+[Stats structural buildings]
+Bangunan S
+[Stats low HP ranges]
+HP: <=25/50/75%
+[Stats low food ranges]
+Makanan: <=25/50/75%

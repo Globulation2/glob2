@@ -2253,9 +2253,9 @@ OpenGL недоступний у цій збірці.
 [Stats occupancy]
 Харчування / лікування
 [Stats page one]
-Статистика 1/2 >
+Статистика 1/3 >
 [Stats page two]
-Статистика 2/2 >
+Статистика 2/3 >
 [Stats next page]
 Сторінка (P)
 [Map preview choose another]
@@ -2378,3 +2378,49 @@ OpenGL недоступний у цій збірці.
 60 хвилин
 [Sudden-death timer]
 Таймер раптової смерті
+[Stats page three]
+Статистика 3/3 >
+[Stats blocked units]
+Істоти S/C
+[Stats blocked buildings]
+Будівлі S/C
+[Stats blocked buildings swim]
+Плавання S/C
+[Stats current blocked units]
+Істоти C
+[Stats current blocked buildings]
+Будівлі C
+[Stats growth global]
+Ресурси +
+[Stats growth new tiles]
+Ресурси +#
+[Stats growth reductions]
+Ресурси -
+[Stats growth per minute]
+Пшениця +/min
+[Stats growth near 8]
+Ресурси + <=8
+[Stats growth near 16]
+Ресурси + <=16
+[Stats growth near 32]
+Ресурси + <=32
+[Stats low HP 25]
+Здоров’я <=25%
+[Stats low HP 50]
+Здоров’я <=50%
+[Stats low HP 75]
+Здоров’я <=75%
+[Stats low food 25]
+Їжа <=25%
+[Stats low food 50]
+Їжа <=50%
+[Stats low food 75]
+Їжа <=75%
+[Stats structural units]
+Істоти S
+[Stats structural buildings]
+Будівлі S
+[Stats low HP ranges]
+Здоров’я: <=25/50/75%
+[Stats low food ranges]
+Їжа: <=25/50/75%

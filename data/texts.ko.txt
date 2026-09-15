@@ -2253,9 +2253,9 @@ Globulation 2 커서를 표시합니다.
 [Stats occupancy]
 식사 / 치료
 [Stats page one]
-통계 1/2 >
+통계 1/3 >
 [Stats page two]
-통계 2/2 >
+통계 2/3 >
 [Stats next page]
 페이지 (P)
 [Map preview choose another]
@@ -2378,3 +2378,49 @@ Globulation 2 커서를 표시합니다.
 60분
 [Sudden-death timer]
 서든데스 타이머
+[Stats page three]
+통계 3/3 >
+[Stats blocked units]
+유닛 S/C
+[Stats blocked buildings]
+건물 S/C
+[Stats blocked buildings swim]
+수영 S/C
+[Stats current blocked units]
+유닛 C
+[Stats current blocked buildings]
+건물 C
+[Stats growth global]
+자원 +
+[Stats growth new tiles]
+자원 +#
+[Stats growth reductions]
+자원 -
+[Stats growth per minute]
+밀 +/min
+[Stats growth near 8]
+자원 + <=8
+[Stats growth near 16]
+자원 + <=16
+[Stats growth near 32]
+자원 + <=32
+[Stats low HP 25]
+체력 <=25%
+[Stats low HP 50]
+체력 <=50%
+[Stats low HP 75]
+체력 <=75%
+[Stats low food 25]
+식량 <=25%
+[Stats low food 50]
+식량 <=50%
+[Stats low food 75]
+식량 <=75%
+[Stats structural units]
+유닛 S
+[Stats structural buildings]
+건물 S
+[Stats low HP ranges]
+체력: <=25/50/75%
+[Stats low food ranges]
+식량: <=25/50/75%

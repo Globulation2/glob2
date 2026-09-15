@@ -2267,9 +2267,9 @@ Nourriture/min
 [Stats occupancy]
 Repas / soins
 [Stats page one]
-Statistiques 1/2 >
+Statistiques 1/3 >
 [Stats page two]
-Statistiques 2/2 >
+Statistiques 2/3 >
 [Stats next page]
 Page suiv. (P)
 [Map preview choose another]
@@ -2392,3 +2392,49 @@ Désactivé (pas de chronomètre)
 60 minutes
 [Sudden-death timer]
 Chronomètre de mort subite
+[Stats page three]
+Statistiques 3/3 >
+[Stats blocked units]
+Unités S/C
+[Stats blocked buildings]
+Bâtiments S/C
+[Stats blocked buildings swim]
+Nage S/C
+[Stats current blocked units]
+Unités C
+[Stats current blocked buildings]
+Bâtiments C
+[Stats growth global]
+Ressources +
+[Stats growth new tiles]
+Ressources +#
+[Stats growth reductions]
+Ressources -
+[Stats growth per minute]
+Blé +/min
+[Stats growth near 8]
+Ressources + <=8
+[Stats growth near 16]
+Ressources + <=16
+[Stats growth near 32]
+Ressources + <=32
+[Stats low HP 25]
+PV <=25%
+[Stats low HP 50]
+PV <=50%
+[Stats low HP 75]
+PV <=75%
+[Stats low food 25]
+Nourriture <=25%
+[Stats low food 50]
+Nourriture <=50%
+[Stats low food 75]
+Nourriture <=75%
+[Stats structural units]
+Unités S
+[Stats structural buildings]
+Bâtiments S
+[Stats low HP ranges]
+PV: <=25/50/75%
+[Stats low food ranges]
+Nourriture: <=25/50/75%

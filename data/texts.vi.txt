@@ -2253,9 +2253,9 @@ Thức ăn/phút
 [Stats occupancy]
 Ăn / chữa trị
 [Stats page one]
-Thống kê 1/2 >
+Thống kê 1/3 >
 [Stats page two]
-Thống kê 2/2 >
+Thống kê 2/3 >
 [Stats next page]
 Trang (P)
 [Map preview choose another]
@@ -2378,3 +2378,49 @@ Tắt (không có bộ đếm giờ)
 60 phút
 [Sudden-death timer]
 Bộ đếm giờ đột tử
+[Stats page three]
+Thống kê 3/3 >
+[Stats blocked units]
+Đơn vị S/C
+[Stats blocked buildings]
+Công trình S/C
+[Stats blocked buildings swim]
+Bơi S/C
+[Stats current blocked units]
+Đơn vị C
+[Stats current blocked buildings]
+Công trình C
+[Stats growth global]
+Tài nguyên +
+[Stats growth new tiles]
+Tài nguyên +#
+[Stats growth reductions]
+Tài nguyên -
+[Stats growth per minute]
+Lúa mì +/min
+[Stats growth near 8]
+Tài nguyên + <=8
+[Stats growth near 16]
+Tài nguyên + <=16
+[Stats growth near 32]
+Tài nguyên + <=32
+[Stats low HP 25]
+Máu <=25%
+[Stats low HP 50]
+Máu <=50%
+[Stats low HP 75]
+Máu <=75%
+[Stats low food 25]
+Thức ăn <=25%
+[Stats low food 50]
+Thức ăn <=50%
+[Stats low food 75]
+Thức ăn <=75%
+[Stats structural units]
+Đơn vị S
+[Stats structural buildings]
+Công trình S
+[Stats low HP ranges]
+Máu: <=25/50/75%
+[Stats low food ranges]
+Thức ăn: <=25/50/75%

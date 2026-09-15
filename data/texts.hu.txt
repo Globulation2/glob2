@@ -2257,9 +2257,9 @@ Rakomány/perc
 [Stats occupancy]
 Etetés / gyógyítás
 [Stats page one]
-Statisztika 1/2 >
+Statisztika 1/3 >
 [Stats page two]
-Statisztika 2/2 >
+Statisztika 2/3 >
 [Stats next page]
 Oldal (P)
 [Map preview choose another]
@@ -2382,3 +2382,49 @@ Kikapcsolva (nincs időzítő)
 60 perc
 [Sudden-death timer]
 Hirtelen halál időzítő
+[Stats page three]
+Statisztika 3/3 >
+[Stats blocked units]
+Egységek S/C
+[Stats blocked buildings]
+Épületek S/C
+[Stats blocked buildings swim]
+Úszik S/C
+[Stats current blocked units]
+Egységek C
+[Stats current blocked buildings]
+Épületek C
+[Stats growth global]
+Erőforrások +
+[Stats growth new tiles]
+Erőforrások +#
+[Stats growth reductions]
+Erőforrások -
+[Stats growth per minute]
+Búza +/min
+[Stats growth near 8]
+Erőforrások + <=8
+[Stats growth near 16]
+Erőforrások + <=16
+[Stats growth near 32]
+Erőforrások + <=32
+[Stats low HP 25]
+Életpont <=25%
+[Stats low HP 50]
+Életpont <=50%
+[Stats low HP 75]
+Életpont <=75%
+[Stats low food 25]
+Élelmiszer <=25%
+[Stats low food 50]
+Élelmiszer <=50%
+[Stats low food 75]
+Élelmiszer <=75%
+[Stats structural units]
+Egységek S
+[Stats structural buildings]
+Épületek S
+[Stats low HP ranges]
+Életpont: <=25/50/75%
+[Stats low food ranges]
+Élelmiszer: <=25/50/75%

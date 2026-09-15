@@ -2319,9 +2319,9 @@ Cibo/min
 [Stats occupancy]
 Pasti / cure
 [Stats page one]
-Statistiche 1/2 >
+Statistiche 1/3 >
 [Stats page two]
-Statistiche 2/2 >
+Statistiche 2/3 >
 [Stats next page]
 Pagina (P)
 [Map preview choose another]
@@ -2444,3 +2444,49 @@ Disattivato (nessun timer)
 60 minuti
 [Sudden-death timer]
 Timer di morte improvvisa
+[Stats page three]
+Statistiche 3/3 >
+[Stats blocked units]
+Unità S/C
+[Stats blocked buildings]
+Costruzioni S/C
+[Stats blocked buildings swim]
+Nuotare S/C
+[Stats current blocked units]
+Unità C
+[Stats current blocked buildings]
+Costruzioni C
+[Stats growth global]
+Risorse +
+[Stats growth new tiles]
+Risorse +#
+[Stats growth reductions]
+Risorse -
+[Stats growth per minute]
+frumento +/min
+[Stats growth near 8]
+Risorse + <=8
+[Stats growth near 16]
+Risorse + <=16
+[Stats growth near 32]
+Risorse + <=32
+[Stats low HP 25]
+PV <=25%
+[Stats low HP 50]
+PV <=50%
+[Stats low HP 75]
+PV <=75%
+[Stats low food 25]
+Cibo <=25%
+[Stats low food 50]
+Cibo <=50%
+[Stats low food 75]
+Cibo <=75%
+[Stats structural units]
+Unità S
+[Stats structural buildings]
+Costruzioni S
+[Stats low HP ranges]
+PV: <=25/50/75%
+[Stats low food ranges]
+Cibo: <=25/50/75%

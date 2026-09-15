@@ -2257,9 +2257,9 @@ OpenGL није доступан у овој верзији.
 [Stats occupancy]
 Храњење / лечење
 [Stats page one]
-Статистика 1/2 >
+Статистика 1/3 >
 [Stats page two]
-Статистика 2/2 >
+Статистика 2/3 >
 [Stats next page]
 Страница (P)
 [Map preview choose another]
@@ -2382,3 +2382,49 @@ OpenGL није доступан у овој верзији.
 60 минута
 [Sudden-death timer]
 Тајмер изненадне смрти
+[Stats page three]
+Статистика 3/3 >
+[Stats blocked units]
+Јединице S/C
+[Stats blocked buildings]
+Зграде S/C
+[Stats blocked buildings swim]
+Пливање S/C
+[Stats current blocked units]
+Јединице C
+[Stats current blocked buildings]
+Зграде C
+[Stats growth global]
+Ресурси +
+[Stats growth new tiles]
+Ресурси +#
+[Stats growth reductions]
+Ресурси -
+[Stats growth per minute]
+Жито +/min
+[Stats growth near 8]
+Ресурси + <=8
+[Stats growth near 16]
+Ресурси + <=16
+[Stats growth near 32]
+Ресурси + <=32
+[Stats low HP 25]
+Здравље <=25%
+[Stats low HP 50]
+Здравље <=50%
+[Stats low HP 75]
+Здравље <=75%
+[Stats low food 25]
+Храна <=25%
+[Stats low food 50]
+Храна <=50%
+[Stats low food 75]
+Храна <=75%
+[Stats structural units]
+Јединице S
+[Stats structural buildings]
+Зграде S
+[Stats low HP ranges]
+Здравље: <=25/50/75%
+[Stats low food ranges]
+Храна: <=25/50/75%

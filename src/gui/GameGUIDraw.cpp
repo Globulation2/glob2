@@ -817,10 +817,13 @@ void GameGUI::drawStatisticsPage(int y)
 	const int x = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH + RIGHT_MENU_OFFSET;
 	globalContainer->gfx->drawString(
 		x + 4, y, globalContainer->littleFont,
-		Toolkit::getStringTable()->getString(measurementPage ? "[Stats page two]"
-															 : "[Stats page one]"));
-	if (measurementPage)
+		Toolkit::getStringTable()->getString(measurementPage == 0 ? "[Stats page one]"
+													: measurementPage == 1 ? "[Stats page two]"
+													: "[Stats page three]"));
+	if (measurementPage == 1)
 		teamStats->drawMeasurements(x, y + 16);
+	else if (measurementPage == 2)
+		teamStats->drawExpandedMeasurements(x, y + 16);
 	else
 		teamStats->drawText(x, y);
 }

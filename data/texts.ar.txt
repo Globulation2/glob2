@@ -2255,9 +2255,9 @@ OpenGL غير متوفر في هذا الإصدار.
 [Stats occupancy]
 إطعام / علاج
 [Stats page one]
-إحصاءات 1/2 >
+إحصاءات 1/3 >
 [Stats page two]
-إحصاءات 2/2 >
+إحصاءات 2/3 >
 [Stats next page]
 صفحة (P)
 [Map preview choose another]
@@ -2380,3 +2380,49 @@ OpenGL غير متوفر في هذا الإصدار.
 60 دقيقة
 [Sudden-death timer]
 مؤقت الموت المفاجئ
+[Stats page three]
+إحصاءات 3/3 >
+[Stats blocked units]
+ﻭﺣﺪﺓ S/C
+[Stats blocked buildings]
+ﺍﻟﻤﺒﺎﻧﻲ S/C
+[Stats blocked buildings swim]
+ﺍﻟﺴﺒﺎﺣﺔ S/C
+[Stats current blocked units]
+ﻭﺣﺪﺓ C
+[Stats current blocked buildings]
+ﺍﻟﻤﺒﺎﻧﻲ C
+[Stats growth global]
+الموارد +
+[Stats growth new tiles]
+الموارد +#
+[Stats growth reductions]
+الموارد -
+[Stats growth per minute]
+ﻗﻤﺢ +/min
+[Stats growth near 8]
+الموارد + <=8
+[Stats growth near 16]
+الموارد + <=16
+[Stats growth near 32]
+الموارد + <=32
+[Stats low HP 25]
+ﻥﻕ <=25%
+[Stats low HP 50]
+ﻥﻕ <=50%
+[Stats low HP 75]
+ﻥﻕ <=75%
+[Stats low food 25]
+ﺍﻟﻄﻌﺎﻡ <=25%
+[Stats low food 50]
+ﺍﻟﻄﻌﺎﻡ <=50%
+[Stats low food 75]
+ﺍﻟﻄﻌﺎﻡ <=75%
+[Stats structural units]
+ﻭﺣﺪﺓ S
+[Stats structural buildings]
+ﺍﻟﻤﺒﺎﻧﻲ S
+[Stats low HP ranges]
+ﻥﻕ: <=25/50/75%
+[Stats low food ranges]
+ﺍﻟﻄﻌﺎﻡ: <=25/50/75%

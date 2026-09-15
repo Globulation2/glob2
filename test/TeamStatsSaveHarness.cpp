@@ -50,6 +50,10 @@ static void compare(TeamStats& expected, TeamStats& actual)
 	require(expected.measurements == actual.measurements,
 			"new measurement totals and snapshots survive loading");
 	require(expected.coverageStartTick == actual.coverageStartTick &&
+				expected.extendedCoverageStartTick == actual.extendedCoverageStartTick &&
+				expected.coverageBuildingTick == actual.coverageBuildingTick &&
+				expected.coverageBuildingGeneration == actual.coverageBuildingGeneration &&
+				expected.coverageBuildings == actual.coverageBuildings &&
 				expected.measurementHistory == actual.measurementHistory,
 			"timestamped measurement coverage and history survive loading");
 	const auto &a = *expected.getLatestStat();
@@ -283,6 +287,77 @@ struct TeamStatsMeasurementFixture
 
 static void measurementScenarios()
 {
+	{
+		TeamStatsMeasurementFixture w;
+		auto *u = w.unit(WORKER,20,20);
+		u->hp = u->performance[HP] / 4;
+		u->hungry = Unit::HUNGRY_MAX / 2;
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+				if (dx || dy) w.game.map.setGroundUnit(20+dx,20+dy,u->gid);
+		auto &stats = w.game.teams[0]->stats;
+		stats.sampleTraps(w.game.teams[0]);
+		require(stats.measurements.trappedUnits[0][WORKER] == 0 &&
+			stats.measurements.trappedUnits[1][WORKER] == 1,
+			"temporary occupancy is separate from structural blockage");
+		require(stats.measurements.lowHP[0][WORKER] == 1 &&
+			stats.measurements.lowFood[1][WORKER] == 1 &&
+			stats.measurements.lowFood[0][WORKER] == 0,
+			"health and food cutoffs are inclusive and independent");
+	}
+	{
+		TeamStatsMeasurementFixture w;
+		Building *b = w.building("inn",8,8);
+		auto &stats = w.game.teams[0]->stats;
+		stats.sampleTraps(w.game.teams[0]);
+		w.game.map.rebuildGrowthCoverage();
+		for (int distance : {8,9})
+		{
+			const int x = b->posX + b->type->width - 1 + distance;
+			require(w.game.map.incResource(x,8,WHEAT,0), "fixture resource seeded");
+			w.game.map.recordNaturalGrowth(x,8,WHEAT,NO_RES_TYPE,0);
+		}
+		require(stats.measurements.growthGlobal[0][WHEAT] == 2 &&
+			stats.measurements.growthAmount[0][WHEAT] == 1 &&
+			stats.measurements.growthAmount[1][WHEAT] == 2 &&
+			stats.measurements.growthAmount[2][WHEAT] == 2,
+			"growth distance boundary is inclusive and global events remain exact");
+		w.game.stepCounter = 77;
+		auto loaded = roundTrip(w.game);
+		require(stats.coverageBuildings == loaded->game.teams[0]->stats.coverageBuildings &&
+			stats.coverageBuildingGeneration == loaded->game.teams[0]->stats.coverageBuildingGeneration,
+			"mid-interval building coverage anchors survive save/load");
+		const int nextX = b->posX + b->type->width + 8;
+		for (Game *g : {&w.game, &loaded->game})
+		{
+			g->map.rebuildGrowthCoverage();
+			require(g->map.incResource(nextX,8,WHEAT,0), "continuation resource seeded");
+			g->map.recordNaturalGrowth(nextX,8,WHEAT,NO_RES_TYPE,0);
+		}
+		require(stats.measurements == loaded->game.teams[0]->stats.measurements,
+			"mid-interval growth telemetry continues identically after load");
+	}
+	{
+		TeamStatsMeasurementFixture w;
+		auto &stats = w.game.teams[0]->stats;
+		const TeamStats::CoverageBuilding anchor{8,8,2,2};
+		stats.coverageBuildings = {anchor,anchor};
+		++stats.coverageBuildingGeneration;
+		w.game.map.rebuildGrowthCoverage();
+		const size_t tile = size_t(8) * w.game.map.getW() + 8;
+		require((w.game.map.growthCoverage[tile] & 1) != 0,
+			"overlapping anchors mark their shared tile");
+		stats.coverageBuildings.pop_back();
+		++stats.coverageBuildingGeneration;
+		w.game.map.rebuildGrowthCoverage();
+		require((w.game.map.growthCoverage[tile] & 1) != 0,
+			"removing one overlapping anchor preserves coverage");
+		stats.coverageBuildings.clear();
+		++stats.coverageBuildingGeneration;
+		w.game.map.rebuildGrowthCoverage();
+		require((w.game.map.growthCoverage[tile] & 1) == 0,
+			"removing the last anchor clears coverage");
+	}
 	{
 		TeamStatsMeasurementFixture w;
 		auto *swarm = w.building("swarm");
@@ -697,7 +772,7 @@ static void measurementReplayBoundaries()
 	require(REPLAY_MINIMUM_VERSION_MINOR == 99 && NET_PROTOCOL_VERSION == 33 &&
 				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 33,
 			"diagnostic save fields preserve replay floor and network gates");
-	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, VERSION_MINOR+1})
+	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, VERSION_MINOR, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);
@@ -997,6 +1072,17 @@ static void measurementScreenshots(const std::string &directory)
 		if (t % 2)
 			stats.measurementHistory.erase(stats.measurementHistory.begin(),
 										   stats.measurementHistory.begin() + 2);
+		for (auto &sample : stats.measurementHistory)
+		{
+			sample.growthGlobal[1][WHEAT] = Uint64(t+1) * sample.tick;
+			sample.growthAmount[1][WHEAT] = Uint64(t+1) * sample.tick / 2;
+			sample.trappedUnits[1][WORKER] = t+1;
+			sample.lowFood[0][WORKER] = t+2;
+		}
+		stats.measurements.growthGlobal[1][WHEAT] = Uint64(t+1) * 4096;
+		stats.measurements.growthAmount[1][WHEAT] = Uint64(t+1) * 2048;
+		stats.measurements.trappedUnits[1][WORKER] = t+1;
+		stats.measurements.lowFood[0][WORKER] = t+2;
 	}
 	gui.localTeamNo = 0;
 	gui.localPlayer = 0;
@@ -1015,7 +1101,7 @@ static void measurementScreenshots(const std::string &directory)
 					dispatchInit();
 				}
 			} screen(&gui);
-			for (int page = 0; page < 3; ++page)
+			for (int page = 0; page < 6; ++page)
 			{
 				screen.dispatchPaint();
 				require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
@@ -1031,7 +1117,14 @@ static void measurementScreenshots(const std::string &directory)
 		game.teams[0]->stats.drawMeasurements(size.first - 144, 211);
 		require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
 							(directory + "/live-" + suffix).c_str()) == 0,
-				"save live panel screenshot");
+			"save live panel screenshot");
+		globalContainer->gfx->drawFilledRect(0, 0, size.first, size.second, 0, 0, 32);
+		globalContainer->gfx->drawString(size.first - 140, 195, globalContainer->littleFont,
+									 Toolkit::getStringTable()->getString("[Stats page three]"));
+		game.teams[0]->stats.drawExpandedMeasurements(size.first - 144, 211);
+		require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
+							(directory + "/live-expanded-" + suffix).c_str()) == 0,
+			"save expanded live panel screenshot");
 	}
 }
 

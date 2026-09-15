@@ -2255,9 +2255,9 @@ OpenGL در این بیلد موجود نیست.
 [Stats occupancy]
 تغذیه / درمان
 [Stats page one]
-آمار 1/2 >
+آمار 1/3 >
 [Stats page two]
-آمار 2/2 >
+آمار 2/3 >
 [Stats next page]
 صفحه (P)
 [Map preview choose another]
@@ -2380,3 +2380,49 @@ OpenGL در این بیلد موجود نیست.
 60 دقیقه
 [Sudden-death timer]
 زمان‌سنج مرگ ناگهانی
+[Stats page three]
+آمار 3/3 >
+[Stats blocked units]
+تعداد افراد S/C
+[Stats blocked buildings]
+ساختمانها S/C
+[Stats blocked buildings swim]
+شنا S/C
+[Stats current blocked units]
+تعداد افراد C
+[Stats current blocked buildings]
+ساختمانها C
+[Stats growth global]
+منابع +
+[Stats growth new tiles]
+منابع +#
+[Stats growth reductions]
+منابع -
+[Stats growth per minute]
+گندم +/min
+[Stats growth near 8]
+منابع + <=8
+[Stats growth near 16]
+منابع + <=16
+[Stats growth near 32]
+منابع + <=32
+[Stats low HP 25]
+سلامتی <=25%
+[Stats low HP 50]
+سلامتی <=50%
+[Stats low HP 75]
+سلامتی <=75%
+[Stats low food 25]
+تغذیه <=25%
+[Stats low food 50]
+تغذیه <=50%
+[Stats low food 75]
+تغذیه <=75%
+[Stats structural units]
+تعداد افراد S
+[Stats structural buildings]
+ساختمانها S
+[Stats low HP ranges]
+سلامتی: <=25/50/75%
+[Stats low food ranges]
+تغذیه: <=25/50/75%

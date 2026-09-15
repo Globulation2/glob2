@@ -2257,9 +2257,9 @@ Ruokaa/min
 [Stats occupancy]
 Ruokailu / hoito
 [Stats page one]
-Tilastot 1/2 >
+Tilastot 1/3 >
 [Stats page two]
-Tilastot 2/2 >
+Tilastot 2/3 >
 [Stats next page]
 Sivu (P)
 [Map preview choose another]
@@ -2382,3 +2382,49 @@ Pois (ei ajastinta)
 60 minuuttia
 [Sudden-death timer]
 Äkkikuoleman ajastin
+[Stats page three]
+Tilastot 3/3 >
+[Stats blocked units]
+Yksiköt S/C
+[Stats blocked buildings]
+Rakennuksia S/C
+[Stats blocked buildings swim]
+Uinti S/C
+[Stats current blocked units]
+Yksiköt C
+[Stats current blocked buildings]
+Rakennuksia C
+[Stats growth global]
+Resurssit +
+[Stats growth new tiles]
+Resurssit +#
+[Stats growth reductions]
+Resurssit -
+[Stats growth per minute]
+Vilja +/min
+[Stats growth near 8]
+Resurssit + <=8
+[Stats growth near 16]
+Resurssit + <=16
+[Stats growth near 32]
+Resurssit + <=32
+[Stats low HP 25]
+HP <=25%
+[Stats low HP 50]
+HP <=50%
+[Stats low HP 75]
+HP <=75%
+[Stats low food 25]
+Ruoka <=25%
+[Stats low food 50]
+Ruoka <=50%
+[Stats low food 75]
+Ruoka <=75%
+[Stats structural units]
+Yksiköt S
+[Stats structural buildings]
+Rakennuksia S
+[Stats low HP ranges]
+HP: <=25/50/75%
+[Stats low food ranges]
+Ruoka: <=25/50/75%

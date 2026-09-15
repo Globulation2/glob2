@@ -2265,9 +2265,9 @@ Jedlo/min
 [Stats occupancy]
 Kŕmenie / liečenie
 [Stats page one]
-Štatistiky 1/2 >
+Štatistiky 1/3 >
 [Stats page two]
-Štatistiky 2/2 >
+Štatistiky 2/3 >
 [Stats next page]
 Strana (P)
 [Map preview choose another]
@@ -2390,3 +2390,49 @@ Vypnuté (bez časovača)
 60 minút
 [Sudden-death timer]
 Časovač náhlej smrti
+[Stats page three]
+Štatistiky 3/3 >
+[Stats blocked units]
+Jednotky S/C
+[Stats blocked buildings]
+Budovy S/C
+[Stats blocked buildings swim]
+Plávanie S/C
+[Stats current blocked units]
+Jednotky C
+[Stats current blocked buildings]
+Budovy C
+[Stats growth global]
+Zdroje +
+[Stats growth new tiles]
+Zdroje +#
+[Stats growth reductions]
+Zdroje -
+[Stats growth per minute]
+Pšenica +/min
+[Stats growth near 8]
+Zdroje + <=8
+[Stats growth near 16]
+Zdroje + <=16
+[Stats growth near 32]
+Zdroje + <=32
+[Stats low HP 25]
+Zdravie <=25%
+[Stats low HP 50]
+Zdravie <=50%
+[Stats low HP 75]
+Zdravie <=75%
+[Stats low food 25]
+Jedlo <=25%
+[Stats low food 50]
+Jedlo <=50%
+[Stats low food 75]
+Jedlo <=75%
+[Stats structural units]
+Jednotky S
+[Stats structural buildings]
+Budovy S
+[Stats low HP ranges]
+Zdravie: <=25/50/75%
+[Stats low food ranges]
+Jedlo: <=25/50/75%

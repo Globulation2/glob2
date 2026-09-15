@@ -2267,9 +2267,9 @@ Mat/min
 [Stats occupancy]
 Mat / vård
 [Stats page one]
-Statistik 1/2 >
+Statistik 1/3 >
 [Stats page two]
-Statistik 2/2 >
+Statistik 2/3 >
 [Stats next page]
 Sida (P)
 [Map preview choose another]
@@ -2392,3 +2392,49 @@ Av (ingen timer)
 60 minuter
 [Sudden-death timer]
 Sudden death-timer
+[Stats page three]
+Statistik 3/3 >
+[Stats blocked units]
+Enheter S/C
+[Stats blocked buildings]
+Byggnader S/C
+[Stats blocked buildings swim]
+Simma S/C
+[Stats current blocked units]
+Enheter C
+[Stats current blocked buildings]
+Byggnader C
+[Stats growth global]
+Resurser +
+[Stats growth new tiles]
+Resurser +#
+[Stats growth reductions]
+Resurser -
+[Stats growth per minute]
+Vete +/min
+[Stats growth near 8]
+Resurser + <=8
+[Stats growth near 16]
+Resurser + <=16
+[Stats growth near 32]
+Resurser + <=32
+[Stats low HP 25]
+Hälsopoäng <=25%
+[Stats low HP 50]
+Hälsopoäng <=50%
+[Stats low HP 75]
+Hälsopoäng <=75%
+[Stats low food 25]
+Mat <=25%
+[Stats low food 50]
+Mat <=50%
+[Stats low food 75]
+Mat <=75%
+[Stats structural units]
+Enheter S
+[Stats structural buildings]
+Byggnader S
+[Stats low HP ranges]
+Hälsopoäng: <=25/50/75%
+[Stats low food ranges]
+Mat: <=25/50/75%

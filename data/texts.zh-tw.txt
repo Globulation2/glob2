@@ -2329,9 +2329,9 @@ OpenGL 在此版本中不可用。
 [Stats occupancy]
 進食 / 治療
 [Stats page one]
-統計 1/2 >
+統計 1/3 >
 [Stats page two]
-統計 2/2 >
+統計 2/3 >
 [Stats next page]
 頁面 (P)
 [Map preview choose another]
@@ -2454,3 +2454,49 @@ OpenGL 在此版本中不可用。
 60 分鐘
 [Sudden-death timer]
 驟死計時器
+[Stats page three]
+統計 3/3 >
+[Stats blocked units]
+單位 S/C
+[Stats blocked buildings]
+建築物 S/C
+[Stats blocked buildings swim]
+游泳 S/C
+[Stats current blocked units]
+單位 C
+[Stats current blocked buildings]
+建築物 C
+[Stats growth global]
+資源 +
+[Stats growth new tiles]
+資源 +#
+[Stats growth reductions]
+資源 -
+[Stats growth per minute]
+小麥 +/min
+[Stats growth near 8]
+資源 + <=8
+[Stats growth near 16]
+資源 + <=16
+[Stats growth near 32]
+資源 + <=32
+[Stats low HP 25]
+生命值 <=25%
+[Stats low HP 50]
+生命值 <=50%
+[Stats low HP 75]
+生命值 <=75%
+[Stats low food 25]
+食物 <=25%
+[Stats low food 50]
+食物 <=50%
+[Stats low food 75]
+食物 <=75%
+[Stats structural units]
+單位 S
+[Stats structural buildings]
+建築物 S
+[Stats low HP ranges]
+生命值: <=25/50/75%
+[Stats low food ranges]
+食物: <=25/50/75%

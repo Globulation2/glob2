@@ -2267,9 +2267,9 @@ Janaria/min
 [Stats occupancy]
 Elikadura / sendaketa
 [Stats page one]
-Estatistikak 1/2 >
+Estatistikak 1/3 >
 [Stats page two]
-Estatistikak 2/2 >
+Estatistikak 2/3 >
 [Stats next page]
 Orria (P)
 [Map preview choose another]
@@ -2392,3 +2392,49 @@ Desaktibatuta (tenporizadorerik gabe)
 60 minutu
 [Sudden-death timer]
 Bat-bateko heriotzaren tenporizadorea
+[Stats page three]
+Estatistikak 3/3 >
+[Stats blocked units]
+Unitateak S/C
+[Stats blocked buildings]
+Eraikuntzak S/C
+[Stats blocked buildings swim]
+Igeri S/C
+[Stats current blocked units]
+Unitateak C
+[Stats current blocked buildings]
+Eraikuntzak C
+[Stats growth global]
+Baliabideak +
+[Stats growth new tiles]
+Baliabideak +#
+[Stats growth reductions]
+Baliabideak -
+[Stats growth per minute]
+Garia +/min
+[Stats growth near 8]
+Baliabideak + <=8
+[Stats growth near 16]
+Baliabideak + <=16
+[Stats growth near 32]
+Baliabideak + <=32
+[Stats low HP 25]
+Osotasuna <=25%
+[Stats low HP 50]
+Osotasuna <=50%
+[Stats low HP 75]
+Osotasuna <=75%
+[Stats low food 25]
+Janaria <=25%
+[Stats low food 50]
+Janaria <=50%
+[Stats low food 75]
+Janaria <=75%
+[Stats structural units]
+Unitateak S
+[Stats structural buildings]
+Eraikuntzak S
+[Stats low HP ranges]
+Osotasuna: <=25/50/75%
+[Stats low food ranges]
+Janaria: <=25/50/75%
