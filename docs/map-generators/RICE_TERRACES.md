@@ -90,6 +90,16 @@ resource-growth calls.
 Static connectivity, generation repeatability and AI survival are separate checks;
 human play is still needed to assess stair defense strength and valley incentives.
 
+## Rotation tournament
+
+A rotation tournament on revision 5 (six 256×256 maps, four colonies, every cyclic team
+rotation, four Nicowars, 45,000 ticks) found the terraces even and hard: a root-mean-square
+position bias of zero, pooled per-start peaks of 124 to 146 units, 20 to 34 warriors, 24
+eliminations in 96 colony-games, and 60 to 67 starvation deaths per colony, the highest of any
+map that still grows. The capped bands are worked (about 145 wheat harvested per colony), but
+not fast enough for the armies the stairs invite, so the fights come with hunger. The defaults
+stand; whether that pressure is the intended feel is a maintainer's judgment.
+
 ## Initial playtest tuning
 
 Revision 4 retains three default stairs and the original terrain geometry. It supplies
