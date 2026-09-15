@@ -920,7 +920,7 @@ GeneratorDefinition plantationsDefinition()
 {
 	GeneratorDefinition definition{
 		"plantations",
-		34,
+		48,
 		"Plantations",
 		1,
 		false,
