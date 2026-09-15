@@ -16,6 +16,7 @@
 #include "Pipeline.h"
 #include "Sketch.h"
 #include <cassert>
+#include <chrono>
 #include <cstdio>
 #include <set>
 #include <string>
