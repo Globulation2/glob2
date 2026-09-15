@@ -101,6 +101,8 @@ Generators written in parallel meet in the same handful of files: the registry, 
 
 Stack the branches in one order, rebase each onto the previous one's tip, and normalize the shared files after every rebase; then a branch's fingerprints computed at the top of the stack are valid for every branch below it, because each branch's own golden table already showed its shared-code changes leaving the other generators alone. One Linux build at the top therefore supplies the Linux rows for every generator in the stack. Build and run the tests on each branch before pushing it: a stack that compiles at the top can still fail at a middle branch whose registry lost an entry. Keep build logs and other session files out of commits (`git add` the files you changed, not the tree).
 
+Two branches will also generalise the same helper in two directions: one turns `placeTower` into a starting-building placement with coverage and stocked supplies, another into `placeBuilding` for any completed building. Neither is wrong, and a concatenating merge keeps both bodies and compiles neither. Merge them into one search with each caller's options on top (here `startingBuildingSite` under `placeTower`, `placeStartingBuilding` and `placeBuilding`), keep every caller's exact behaviour so the fingerprints hold, and say so in the header. The same goes for two branches that each revise a shared function: take the revising branch's version whole and re-apply the other branch's purely additive functions as a patch, rather than trusting the union.
+
 ## Verification that answers design questions
 
 Use an optimized client for measurements and choose build concurrency for available memory. The following are entry points, not a claim they have been run for a new design:
