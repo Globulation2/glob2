@@ -1998,11 +1998,9 @@ inline void toolkitChecks()
 	partitionChecks();
 	gatePartitionChecks();
 	puts("PASS shared toolkit: floods, sketch, planting, roads, settlements, balanced starts, "
-	puts("PASS shared toolkit: floods, premade bases, compounds, lanes and lots, routes, sketch, "
-		 "planting, roads, settlements, balanced starts, "
-		 "scatter, lattice noise, wedge frame, shuffle, drawing, branches, stretch, sand patches, "
-		 "algae growth, fields and clumps, walls and tower reach, territories, arena primitives, "
-		 "sealed lines and polygons, tessellations and warp, graph mazes, shortcuts, cell "
-		 "crossings, region labels and gate partitions");
+		 "premade bases, compounds, lanes, lots, routes, scatter, lattice noise, wedge frame, "
+		 "shuffle, drawing, branches, stretch, sand patches, algae growth, fields, clumps, walls, "
+		 "tower reach, territories, arena primitives, sealed lines, polygons, tessellations, warp, "
+		 "graph mazes, shortcuts, cell crossings, region labels and gate partitions");
 }
 } // namespace ToolkitChecks
