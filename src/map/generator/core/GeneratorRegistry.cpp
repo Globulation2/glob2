@@ -153,7 +153,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 canalsDefinition(),
 											 ruggedArchipelagoDefinition(),
 											 drumlinFieldDefinition(), ruggedArchipelagoDefinition(),
-											 continentsDefinition(), ruggedArchipelagoDefinition(),
+											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
 											 evergladesDefinition(),
@@ -172,6 +172,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 caravanseraiDefinition(),
 											 braidedRiverDefinition(),
 											 drumlinFieldDefinition(),
+											 continentsDefinition(),
 											 uniformDefinition()});
 	return registry;
 }

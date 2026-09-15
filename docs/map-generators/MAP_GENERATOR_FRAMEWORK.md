@@ -154,6 +154,7 @@ restores whatever landscape it had.
 | `allotments` | 40 | Allotments | Its own — see below; a premade base of construction sites |
 | `caravanserai` | 41 | Caravanserai | Its own — see below; a premade base |
 | `drumlin-field` | 43 | Drumlin field | Its own — see below |
+| `continents` | 44 | Continents | Its own — see below |
 | `uniform` | 0 | uniform terrain | Editor-only; one terrain type, unstructured |
 
 Retired ids, never reused: 25 (Marches, a lattice of homelands with wooded border bands, dropped
