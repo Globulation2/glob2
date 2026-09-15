@@ -147,7 +147,7 @@ restores whatever landscape it had.
 | `polder` | 30 | Polder | Its own — see below |
 | `carousel` | 22 | Carousel | Its own — see below |
 | `old-growth` | 28 | Old growth | Its own — see below |
-| `vultures` | 33 | Vultures | Dry, finite wheat fields and shoreline wood — see [design and verification](VULTURES.md) |
+| `vultures` | 47 | Vultures | Dry, finite wheat fields and shoreline wood — see [design and verification](VULTURES.md) |
 | `anthill` | 32 | Anthill | Its own — see below |
 | `glacis` | 39 | The Glacis | Its own — see below; a premade base (`shared/Bases`) |
 | `savannah` | 45 | Savannah | [Open plains, contained home crops and neutral watering holes](SAVANNAH.md) |

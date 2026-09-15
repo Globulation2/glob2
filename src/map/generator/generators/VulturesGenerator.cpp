@@ -228,7 +228,7 @@ GeneratorDefinition vulturesDefinition()
 	// corner patches; defaults are one 90-corner lake. The shared layout may omit a lake, but
 	// never shrink its exclusion zone to force one in. Resource percentages are 0..200.
 	return {"vultures",
-			33,
+			47,
 			"Vultures",
 			2,
 			false,
