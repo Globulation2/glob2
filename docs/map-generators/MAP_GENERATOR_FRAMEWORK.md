@@ -1489,6 +1489,15 @@ the beach round every drumlin stays walkable, so the shoreline is always a road.
   four whole-map labellings under the grain (three relaxation rounds and the cell graph), each
   searching the bounding box of the grain's reach ellipse round every tile.
 
+- **Played.** A rotation tournament (six 256×256 maps, four colonies, every cyclic team
+  rotation, four Nicowars, 45,000 ticks) found the lake land healthy and unhurried: pooled
+  per-start peaks of 110 to 190 units, 30 to 65 warriors, one colony in 96 eliminated (the
+  drumlins are islands until the pools are built), prestige on every map. One start in six
+  maps stalled at 35 units. The generator's colony index 2 won 14 of 23 adjudicated games and
+  had the largest population on four of six maps although sites are dealt at random and the
+  start metrics show no index pattern; treat that as an open question for a larger sample, not
+  a measured defect.
+
 ## Compatibility notes
 
 - A `GeneratorDefinition::legacyId` is a stable compatibility identifier, not a display or sort
