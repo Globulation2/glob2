@@ -1775,6 +1775,8 @@ inline void gatePartitionChecks()
 		labels[rooms[k]] = k;
 	}
 	assert(checkGatePartition(t, open, labels, {{{0, 1}, {t.at(4, 4)}}}).badGate == 0);
+}
+
 // Premade bases: the tier and garrison tables; one plan's footprints at every facing; a finished
 // city and a city of sites raised on grass with their stock, units and lists; the validator's proof
 // and the structural check's worker-count hook. Then the square compounds, the lane grid and its
