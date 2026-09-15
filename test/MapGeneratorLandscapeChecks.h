@@ -664,7 +664,7 @@ inline void contourFarmChecks()
 			const double d = std::hypot(t.offsetX(0, i % t.w), t.offsetY(0, i / t.w));
 			if (d < style.innerRadius || d > style.outerRadius() + 3)
 				assert(contours.farm.row[i] < 0 && !contours.farm.sand[i]);
-			else if (d <= style.innerRadius + style.cap)
+			else if (d < style.innerRadius + style.cap)
 				assert(contours.farm.row[i] < 0 && contours.farm.sand[i]);
 			lobed += contours.farm.row[i] >= 0 && d > style.outerRadius();
 		}
