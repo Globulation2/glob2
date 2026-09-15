@@ -2390,3 +2390,15 @@ Desactivat (sense temporitzador)
 60 minuts
 [Sudden-death timer]
 Temporitzador de mort sobtada
+[Savannah]
+Sabana
+[Watering holes]
+Abeuradors
+[Dry patches]
+Zones seques
+[Sparse]
+Pocs
+[Normal]
+Normal
+[Many]
+Molts

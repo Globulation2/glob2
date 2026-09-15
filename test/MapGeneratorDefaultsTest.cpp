@@ -84,12 +84,87 @@ class MapGeneratorDefaultsTest
 			s.dispatchEvents(&event);
 		}
 	}
+	// Savannah's terrain is invariant under resource sliders, and its final validator must
+	// still accept natural growth. Test the real engine instead of simulating a new growth rule.
+	static void savannahContracts()
+	{
+		const auto &definition =
+			GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("savannah"));
+		D request;
+		request.setMethodDefaults(definition.legacyId);
+		assert(definition.legacyId == 33 && definition.revision == 1);
+		assert(request.option("watering-holes") == 1 && request.option("dry-patches") == 8);
+		GenerationService service;
+		for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}})
+			for (int teams : {1, 3, 4})
+			{
+				D r = request;
+				r.wDec = dimensions.first;
+				r.hDec = dimensions.second;
+				r.nbTeams = teams;
+				r.seed = 17;
+				Game g(nullptr);
+				const auto result = service.generate(g, r);
+				if (!result)
+					std::fprintf(stderr, "Savannah contract: %s\n", result.diagnostic().c_str());
+				assert(result);
+			}
+		Game zero(nullptr), abundant(nullptr);
+		D r = request;
+		r.wDec = r.hDec = 7;
+		r.seed = 37;
+		for (const auto &control : definition.controls)
+			if (control.group == ControlGroup::Resources)
+				r.options[control.id] = 0;
+		assert(service.generate(zero, r));
+		for (const auto &control : definition.controls)
+			if (control.group == ControlGroup::Resources)
+				r.options[control.id] = control.maximum;
+		assert(service.generate(abundant, r));
+		for (int y = 0; y < zero.map.getH(); ++y)
+			for (int x = 0; x < zero.map.getW(); ++x)
+			{
+				assert(zero.map.isGrass(x, y) == abundant.map.isGrass(x, y));
+				assert(zero.map.isWater(x, y) == abundant.map.isWater(x, y));
+				assert(zero.map.isSand(x, y) == abundant.map.isSand(x, y));
+			}
+		GenerationContext context(r);
+		setSyncRandSeed(3821);
+		// 4096 full-map growth calls exercise many visits per deposit without an AI clearing
+		// anything; the structural validator proves the bound beyond this finite stress test.
+		for (int tick = 0; tick < 4096; ++tick)
+			abundant.map.growResources();
+		const auto growthError = definition.validateWorld(abundant, context);
+		if (!growthError.empty())
+			std::fprintf(stderr, "Savannah growth: %s\n", growthError.c_str());
+		assert(growthError.empty());
+		for (auto dimensions : {std::pair{6, 7}, std::pair{7, 9}, std::pair{9, 7}})
+		{
+			r.wDec = dimensions.first;
+			r.hDec = dimensions.second;
+			Game g(nullptr);
+			assert(service.generate(g, r).error == GenerationError::InvalidRequest);
+			assert(g.teamsCount() == 0);
+		}
+		r.wDec = r.hDec = 7;
+		r.nbTeams = 5;
+		Game crowded(nullptr);
+		assert(service.generate(crowded, r).error == GenerationError::InvalidRequest);
+		// Retained crowded seed: finite random pond darts used to miss its narrow legal gap.
+		r = request;
+		r.wDec = r.hDec = 7;
+		r.seed = 1001;
+		Game narrowGap(nullptr);
+		assert(service.generate(narrowGap, r));
+		puts("PASS Savannah: envelope, resource-independent terrain, contained unattended growth");
+	}
 	static void generationContracts()
 	{
 		globalsInit();
 		frameworkChecks();
 		ToolkitChecks::toolkitChecks();
 		LandscapeChecks::landscapeChecks();
+		savannahContracts();
 		GenerationService service;
 		for (int method : GeneratorRegistry::builtins().methods())
 		{
@@ -131,6 +206,14 @@ class MapGeneratorDefaultsTest
 					rectangular.wDec = dimensions.first;
 					rectangular.hDec = dimensions.second;
 					Game world(nullptr);
+					// Savannah explicitly budgets rectangles only up to 2:1.
+					if (method == GeneratorRegistry::builtins().idOf("savannah"))
+					{
+						assert(service.generate(world, rectangular).error ==
+							   GenerationError::InvalidRequest);
+						assert(world.teamsCount() == 0);
+						continue;
+					}
 					assert(service.generate(world, rectangular));
 					assert(world.map.getW() == (1 << dimensions.first));
 					assert(world.map.getH() == (1 << dimensions.second));
@@ -265,8 +348,8 @@ class MapGeneratorDefaultsTest
 			const auto amount = GeneratorControl::percentage("amount", "Fruit");
 			assert(!amount.isToggle() && amount.defaultValue == 100 && !rejected(amount));
 			// A choice stores the index of its named option and is shown by name.
-			const auto shape = GeneratorControl::choice("shape", "Cell shape",
-														{"Squares", "Hexagons"}, 1);
+			const auto shape =
+				GeneratorControl::choice("shape", "Cell shape", {"Squares", "Hexagons"}, 1);
 			assert(shape.isChoice() && !shape.isToggle() && shape.defaultValue == 1 &&
 				   shape.values() == std::vector<int>({0, 1}) &&
 				   std::string(shape.valueLabel(1)) == "Hexagons" && !shape.valueLabel(2) &&
@@ -402,7 +485,8 @@ class MapGeneratorDefaultsTest
 		D editorFirst, lobbyFirst;
 		editorFirst.setMethodDefaults(GeneratorRegistry::builtins().methods().front());
 		lobbyFirst.setMethodDefaults(GeneratorRegistry::builtins().methods(false).front());
-		assert(GeneratorRegistry::builtins().methods(false).front() == GeneratorRegistry::builtins().idOf("fingerprint"));
+		assert(GeneratorRegistry::builtins().methods(false).front() ==
+			   GeneratorRegistry::builtins().idOf("fingerprint"));
 		assert(s.methods->getSelectionIndex() == 0);
 		sameControls(s.descriptor, editorFirst);
 		sameControls(lobby.generator, lobbyFirst);
@@ -440,7 +524,8 @@ class MapGeneratorDefaultsTest
 				assert(decoded.setData(encoded.getData(), encoded.getDataLength()));
 				sameControls(fromLegacyDescriptor(decoded, 0), expected);
 			}
-			if (output && ((m >= 4 && m <= 8) || m == GeneratorRegistry::builtins().idOf("fjord-continent")))
+			if (output &&
+				((m >= 4 && m <= 8) || m == GeneratorRegistry::builtins().idOf("fjord-continent")))
 			{
 				s.gfx->drawFilledRect(0, 0, 640, 480, GAGCore::Color(34, 55, 42));
 				for (auto *w : s.widgets)

@@ -2380,3 +2380,15 @@ OpenGL غير متوفر في هذا الإصدار.
 60 دقيقة
 [Sudden-death timer]
 مؤقت الموت المفاجئ
+[Savannah]
+السافانا
+[Watering holes]
+موارد المياه
+[Dry patches]
+مناطق جافة
+[Sparse]
+قليلة
+[Normal]
+عادي
+[Many]
+كثيرة

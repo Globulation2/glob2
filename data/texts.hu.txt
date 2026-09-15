@@ -2382,3 +2382,15 @@ Kikapcsolva (nincs időzítő)
 60 perc
 [Sudden-death timer]
 Hirtelen halál időzítő
+[Savannah]
+Szavanna
+[Watering holes]
+Itatóhelyek
+[Dry patches]
+Száraz foltok
+[Sparse]
+Kevés
+[Normal]
+Normál
+[Many]
+Sok

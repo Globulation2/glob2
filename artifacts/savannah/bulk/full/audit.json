@@ -1,0 +1,899 @@
+{
+  "attempts": 742,
+  "passed": 742,
+  "failed": 0,
+  "success_rate": 1.0,
+  "shapes": {
+    "128x128/1": {
+      "attempts": 26,
+      "passed": 26
+    },
+    "128x128/3": {
+      "attempts": 26,
+      "passed": 26
+    },
+    "128x128/4": {
+      "attempts": 154,
+      "passed": 154
+    },
+    "128x256/1": {
+      "attempts": 18,
+      "passed": 18
+    },
+    "128x256/5": {
+      "attempts": 26,
+      "passed": 26
+    },
+    "128x256/8": {
+      "attempts": 154,
+      "passed": 154
+    },
+    "256x128/1": {
+      "attempts": 18,
+      "passed": 18
+    },
+    "256x128/5": {
+      "attempts": 26,
+      "passed": 26
+    },
+    "256x128/8": {
+      "attempts": 154,
+      "passed": 154
+    },
+    "256x256/12": {
+      "attempts": 26,
+      "passed": 26
+    },
+    "256x256/4": {
+      "attempts": 18,
+      "passed": 18
+    },
+    "256x256/8": {
+      "attempts": 18,
+      "passed": 18
+    },
+    "256x512/12": {
+      "attempts": 26,
+      "passed": 26
+    },
+    "512x256/12": {
+      "attempts": 26,
+      "passed": 26
+    },
+    "512x512/12": {
+      "attempts": 26,
+      "passed": 26
+    }
+  },
+  "control_coverage": {
+    "watering-holes": [
+      0,
+      1,
+      2
+    ],
+    "dry-patches": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "workers": [
+      1,
+      4,
+      8
+    ],
+    "wheat-amount": [
+      0,
+      25,
+      50,
+      75,
+      100,
+      125,
+      150,
+      175,
+      200,
+      225,
+      250,
+      275,
+      300
+    ],
+    "wood-amount": [
+      0,
+      25,
+      50,
+      75,
+      100,
+      125,
+      150,
+      175,
+      200,
+      225,
+      250,
+      275,
+      300
+    ],
+    "stone-amount": [
+      0,
+      25,
+      50,
+      75,
+      100,
+      125,
+      150,
+      175,
+      200,
+      225,
+      250,
+      275,
+      300
+    ],
+    "algae-amount": [
+      0,
+      25,
+      50,
+      75,
+      100,
+      125,
+      150,
+      175,
+      200,
+      225,
+      250,
+      275,
+      300
+    ],
+    "fruit-amount": [
+      0,
+      25,
+      50,
+      75,
+      100,
+      125,
+      150,
+      175,
+      200,
+      225,
+      250,
+      275,
+      300
+    ]
+  },
+  "all_discrete_control_values_covered": true,
+  "coverage_checks": {
+    "watering-holes": true,
+    "dry-patches": true,
+    "workers": true,
+    "wheat-amount": true,
+    "wood-amount": true,
+    "stone-amount": true,
+    "algae-amount": true,
+    "fruit-amount": true
+  },
+  "ponds": {
+    "128x128/1 choice0": {
+      "maps": 3,
+      "requested": 3,
+      "placed": 3,
+      "omitted_maps": 0,
+      "min_placed": 1
+    },
+    "128x128/1 choice1": {
+      "maps": 17,
+      "requested": 34,
+      "placed": 34,
+      "omitted_maps": 0,
+      "min_placed": 2
+    },
+    "128x128/1 choice2": {
+      "maps": 6,
+      "requested": 18,
+      "placed": 18,
+      "omitted_maps": 0,
+      "min_placed": 3
+    },
+    "128x128/3 choice0": {
+      "maps": 4,
+      "requested": 4,
+      "placed": 4,
+      "omitted_maps": 0,
+      "min_placed": 1
+    },
+    "128x128/3 choice1": {
+      "maps": 12,
+      "requested": 24,
+      "placed": 24,
+      "omitted_maps": 0,
+      "min_placed": 2
+    },
+    "128x128/3 choice2": {
+      "maps": 10,
+      "requested": 30,
+      "placed": 30,
+      "omitted_maps": 0,
+      "min_placed": 3
+    },
+    "128x128/4 choice0": {
+      "maps": 30,
+      "requested": 30,
+      "placed": 30,
+      "omitted_maps": 0,
+      "min_placed": 1
+    },
+    "128x128/4 choice1": {
+      "maps": 97,
+      "requested": 194,
+      "placed": 188,
+      "omitted_maps": 6,
+      "min_placed": 1
+    },
+    "128x128/4 choice2": {
+      "maps": 27,
+      "requested": 81,
+      "placed": 63,
+      "omitted_maps": 15,
+      "min_placed": 1
+    },
+    "128x256/1 choice0": {
+      "maps": 6,
+      "requested": 12,
+      "placed": 12,
+      "omitted_maps": 0,
+      "min_placed": 2
+    },
+    "128x256/1 choice1": {
+      "maps": 4,
+      "requested": 16,
+      "placed": 16,
+      "omitted_maps": 0,
+      "min_placed": 4
+    },
+    "128x256/1 choice2": {
+      "maps": 8,
+      "requested": 48,
+      "placed": 48,
+      "omitted_maps": 0,
+      "min_placed": 6
+    },
+    "128x256/5 choice0": {
+      "maps": 5,
+      "requested": 10,
+      "placed": 10,
+      "omitted_maps": 0,
+      "min_placed": 2
+    },
+    "128x256/5 choice1": {
+      "maps": 13,
+      "requested": 52,
+      "placed": 52,
+      "omitted_maps": 0,
+      "min_placed": 4
+    },
+    "128x256/5 choice2": {
+      "maps": 8,
+      "requested": 48,
+      "placed": 48,
+      "omitted_maps": 0,
+      "min_placed": 6
+    },
+    "128x256/8 choice0": {
+      "maps": 28,
+      "requested": 56,
+      "placed": 56,
+      "omitted_maps": 0,
+      "min_placed": 2
+    },
+    "128x256/8 choice1": {
+      "maps": 100,
+      "requested": 400,
+      "placed": 397,
+      "omitted_maps": 3,
+      "min_placed": 3
+    },
+    "128x256/8 choice2": {
+      "maps": 26,
+      "requested": 156,
+      "placed": 133,
+      "omitted_maps": 14,
+      "min_placed": 3
+    },
+    "256x128/1 choice0": {
+      "maps": 4,
+      "requested": 8,
+      "placed": 8,
+      "omitted_maps": 0,
+      "min_placed": 2
+    },
+    "256x128/1 choice1": {
+      "maps": 7,
+      "requested": 28,
+      "placed": 28,
+      "omitted_maps": 0,
+      "min_placed": 4
+    },
+    "256x128/1 choice2": {
+      "maps": 7,
+      "requested": 42,
+      "placed": 42,
+      "omitted_maps": 0,
+      "min_placed": 6
+    },
+    "256x128/5 choice0": {
+      "maps": 5,
+      "requested": 10,
+      "placed": 10,
+      "omitted_maps": 0,
+      "min_placed": 2
+    },
+    "256x128/5 choice1": {
+      "maps": 15,
+      "requested": 60,
+      "placed": 60,
+      "omitted_maps": 0,
+      "min_placed": 4
+    },
+    "256x128/5 choice2": {
+      "maps": 6,
+      "requested": 36,
+      "placed": 36,
+      "omitted_maps": 0,
+      "min_placed": 6
+    },
+    "256x128/8 choice0": {
+      "maps": 28,
+      "requested": 56,
+      "placed": 56,
+      "omitted_maps": 0,
+      "min_placed": 2
+    },
+    "256x128/8 choice1": {
+      "maps": 100,
+      "requested": 400,
+      "placed": 397,
+      "omitted_maps": 3,
+      "min_placed": 3
+    },
+    "256x128/8 choice2": {
+      "maps": 26,
+      "requested": 156,
+      "placed": 138,
+      "omitted_maps": 14,
+      "min_placed": 4
+    },
+    "256x256/12 choice0": {
+      "maps": 6,
+      "requested": 24,
+      "placed": 24,
+      "omitted_maps": 0,
+      "min_placed": 4
+    },
+    "256x256/12 choice1": {
+      "maps": 17,
+      "requested": 136,
+      "placed": 136,
+      "omitted_maps": 0,
+      "min_placed": 8
+    },
+    "256x256/12 choice2": {
+      "maps": 3,
+      "requested": 36,
+      "placed": 36,
+      "omitted_maps": 0,
+      "min_placed": 12
+    },
+    "256x256/4 choice0": {
+      "maps": 7,
+      "requested": 28,
+      "placed": 28,
+      "omitted_maps": 0,
+      "min_placed": 4
+    },
+    "256x256/4 choice1": {
+      "maps": 6,
+      "requested": 48,
+      "placed": 48,
+      "omitted_maps": 0,
+      "min_placed": 8
+    },
+    "256x256/4 choice2": {
+      "maps": 5,
+      "requested": 60,
+      "placed": 60,
+      "omitted_maps": 0,
+      "min_placed": 12
+    },
+    "256x256/8 choice0": {
+      "maps": 6,
+      "requested": 24,
+      "placed": 24,
+      "omitted_maps": 0,
+      "min_placed": 4
+    },
+    "256x256/8 choice1": {
+      "maps": 3,
+      "requested": 24,
+      "placed": 24,
+      "omitted_maps": 0,
+      "min_placed": 8
+    },
+    "256x256/8 choice2": {
+      "maps": 9,
+      "requested": 108,
+      "placed": 108,
+      "omitted_maps": 0,
+      "min_placed": 12
+    },
+    "256x512/12 choice0": {
+      "maps": 4,
+      "requested": 32,
+      "placed": 32,
+      "omitted_maps": 0,
+      "min_placed": 8
+    },
+    "256x512/12 choice1": {
+      "maps": 17,
+      "requested": 272,
+      "placed": 272,
+      "omitted_maps": 0,
+      "min_placed": 16
+    },
+    "256x512/12 choice2": {
+      "maps": 5,
+      "requested": 120,
+      "placed": 120,
+      "omitted_maps": 0,
+      "min_placed": 24
+    },
+    "512x256/12 choice0": {
+      "maps": 9,
+      "requested": 72,
+      "placed": 72,
+      "omitted_maps": 0,
+      "min_placed": 8
+    },
+    "512x256/12 choice1": {
+      "maps": 14,
+      "requested": 224,
+      "placed": 224,
+      "omitted_maps": 0,
+      "min_placed": 16
+    },
+    "512x256/12 choice2": {
+      "maps": 3,
+      "requested": 72,
+      "placed": 72,
+      "omitted_maps": 0,
+      "min_placed": 24
+    },
+    "512x512/12 choice0": {
+      "maps": 7,
+      "requested": 112,
+      "placed": 112,
+      "omitted_maps": 0,
+      "min_placed": 16
+    },
+    "512x512/12 choice1": {
+      "maps": 14,
+      "requested": 448,
+      "placed": 448,
+      "omitted_maps": 0,
+      "min_placed": 32
+    },
+    "512x512/12 choice2": {
+      "maps": 5,
+      "requested": 240,
+      "placed": 240,
+      "omitted_maps": 0,
+      "min_placed": 48
+    }
+  },
+  "pond_omission_maps": 55,
+  "zero_pond_maps": 0,
+  "plot_saturation_maps": 264,
+  "static_metrics": {
+    "min_fairness": 0.8002494572165699,
+    "p05_fairness": 0.8494467269135906,
+    "max_wheat_gather_steps": 14,
+    "max_wood_gather_steps": 14,
+    "min_weakest_home_build_sites_4x4": 745
+  },
+  "slowest_seconds": 6.990386747056618,
+  "weakest_fairness": [
+    {
+      "index": 492,
+      "seed": 23492,
+      "shape": "256x256/8",
+      "fairness": 0.8002494572165699,
+      "worst_wheat_distance": 14,
+      "worst_wood_distance": 13,
+      "weakest_build_room": 1373,
+      "requested_ponds": 4,
+      "placed_ponds": 4,
+      "settings": {
+        "algae-amount": "0",
+        "dry-patches": "0",
+        "fruit-amount": "0",
+        "height": "256",
+        "stone-amount": "0",
+        "teams": "8",
+        "watering-holes": "0",
+        "wheat-amount": "0",
+        "width": "256",
+        "wood-amount": "0",
+        "workers": "1"
+      },
+      "report": "attempt-0492/report.json"
+    },
+    {
+      "index": 498,
+      "seed": 23498,
+      "shape": "256x512/12",
+      "fairness": 0.8100206275531648,
+      "worst_wheat_distance": 13,
+      "worst_wood_distance": 14,
+      "weakest_build_room": 1445,
+      "requested_ponds": 8,
+      "placed_ponds": 8,
+      "settings": {
+        "algae-amount": "0",
+        "dry-patches": "0",
+        "fruit-amount": "0",
+        "height": "512",
+        "stone-amount": "0",
+        "teams": "12",
+        "watering-holes": "0",
+        "wheat-amount": "0",
+        "width": "256",
+        "wood-amount": "0",
+        "workers": "1"
+      },
+      "report": "attempt-0498/report.json"
+    },
+    {
+      "index": 494,
+      "seed": 23494,
+      "shape": "256x256/12",
+      "fairness": 0.810791215883278,
+      "worst_wheat_distance": 13,
+      "worst_wood_distance": 14,
+      "weakest_build_room": 1440,
+      "requested_ponds": 4,
+      "placed_ponds": 4,
+      "settings": {
+        "algae-amount": "0",
+        "dry-patches": "0",
+        "fruit-amount": "0",
+        "height": "256",
+        "stone-amount": "0",
+        "teams": "12",
+        "watering-holes": "0",
+        "wheat-amount": "0",
+        "width": "256",
+        "wood-amount": "0",
+        "workers": "1"
+      },
+      "report": "attempt-0494/report.json"
+    },
+    {
+      "index": 576,
+      "seed": 23576,
+      "shape": "512x512/12",
+      "fairness": 0.813040170393602,
+      "worst_wheat_distance": 14,
+      "worst_wood_distance": 12,
+      "weakest_build_room": 1112,
+      "requested_ponds": 16,
+      "placed_ponds": 16,
+      "settings": {
+        "algae-amount": "275",
+        "dry-patches": "14",
+        "fruit-amount": "150",
+        "height": "512",
+        "stone-amount": "150",
+        "teams": "12",
+        "watering-holes": "0",
+        "wheat-amount": "25",
+        "width": "512",
+        "wood-amount": "150",
+        "workers": "1"
+      },
+      "report": "attempt-0576/report.json"
+    },
+    {
+      "index": 566,
+      "seed": 23566,
+      "shape": "256x128/5",
+      "fairness": 0.8235844614013078,
+      "worst_wheat_distance": 12,
+      "worst_wood_distance": 13,
+      "weakest_build_room": 1098,
+      "requested_ponds": 6,
+      "placed_ponds": 6,
+      "settings": {
+        "algae-amount": "225",
+        "dry-patches": "14",
+        "fruit-amount": "300",
+        "height": "128",
+        "stone-amount": "300",
+        "teams": "5",
+        "watering-holes": "2",
+        "wheat-amount": "75",
+        "width": "256",
+        "wood-amount": "0",
+        "workers": "1"
+      },
+      "report": "attempt-0566/report.json"
+    }
+  ],
+  "longest_wheat": [
+    {
+      "index": 492,
+      "seed": 23492,
+      "shape": "256x256/8",
+      "fairness": 0.8002494572165699,
+      "worst_wheat_distance": 14,
+      "worst_wood_distance": 13,
+      "weakest_build_room": 1373,
+      "requested_ponds": 4,
+      "placed_ponds": 4,
+      "settings": {
+        "algae-amount": "0",
+        "dry-patches": "0",
+        "fruit-amount": "0",
+        "height": "256",
+        "stone-amount": "0",
+        "teams": "8",
+        "watering-holes": "0",
+        "wheat-amount": "0",
+        "width": "256",
+        "wood-amount": "0",
+        "workers": "1"
+      },
+      "report": "attempt-0492/report.json"
+    },
+    {
+      "index": 576,
+      "seed": 23576,
+      "shape": "512x512/12",
+      "fairness": 0.813040170393602,
+      "worst_wheat_distance": 14,
+      "worst_wood_distance": 12,
+      "weakest_build_room": 1112,
+      "requested_ponds": 16,
+      "placed_ponds": 16,
+      "settings": {
+        "algae-amount": "275",
+        "dry-patches": "14",
+        "fruit-amount": "150",
+        "height": "512",
+        "stone-amount": "150",
+        "teams": "12",
+        "watering-holes": "0",
+        "wheat-amount": "25",
+        "width": "512",
+        "wood-amount": "150",
+        "workers": "1"
+      },
+      "report": "attempt-0576/report.json"
+    },
+    {
+      "index": 712,
+      "seed": 23712,
+      "shape": "128x128/1",
+      "fairness": 1,
+      "worst_wheat_distance": 14,
+      "worst_wood_distance": 13,
+      "weakest_build_room": 1110,
+      "requested_ponds": 2,
+      "placed_ponds": 2,
+      "settings": {
+        "algae-amount": "225",
+        "dry-patches": "20",
+        "fruit-amount": "0",
+        "height": "128",
+        "stone-amount": "0",
+        "teams": "1",
+        "watering-holes": "1",
+        "wheat-amount": "0",
+        "width": "128",
+        "wood-amount": "75",
+        "workers": "1"
+      },
+      "report": "attempt-0712/report.json"
+    },
+    {
+      "index": 482,
+      "seed": 23482,
+      "shape": "256x128/8",
+      "fairness": 0.8469082329539093,
+      "worst_wheat_distance": 13,
+      "worst_wood_distance": 12,
+      "weakest_build_room": 1373,
+      "requested_ponds": 2,
+      "placed_ponds": 2,
+      "settings": {
+        "algae-amount": "0",
+        "dry-patches": "0",
+        "fruit-amount": "0",
+        "height": "128",
+        "stone-amount": "0",
+        "teams": "8",
+        "watering-holes": "0",
+        "wheat-amount": "0",
+        "width": "256",
+        "wood-amount": "0",
+        "workers": "1"
+      },
+      "report": "attempt-0482/report.json"
+    },
+    {
+      "index": 484,
+      "seed": 23484,
+      "shape": "128x256/1",
+      "fairness": 1,
+      "worst_wheat_distance": 13,
+      "worst_wood_distance": 13,
+      "weakest_build_room": 1302,
+      "requested_ponds": 2,
+      "placed_ponds": 2,
+      "settings": {
+        "algae-amount": "0",
+        "dry-patches": "0",
+        "fruit-amount": "0",
+        "height": "256",
+        "stone-amount": "0",
+        "teams": "1",
+        "watering-holes": "0",
+        "wheat-amount": "0",
+        "width": "128",
+        "wood-amount": "0",
+        "workers": "1"
+      },
+      "report": "attempt-0484/report.json"
+    }
+  ],
+  "least_room": [
+    {
+      "index": 718,
+      "seed": 23718,
+      "shape": "128x256/1",
+      "fairness": 1,
+      "worst_wheat_distance": 10,
+      "worst_wood_distance": 9,
+      "weakest_build_room": 745,
+      "requested_ponds": 6,
+      "placed_ponds": 6,
+      "settings": {
+        "algae-amount": "250",
+        "dry-patches": "12",
+        "fruit-amount": "100",
+        "height": "256",
+        "stone-amount": "25",
+        "teams": "1",
+        "watering-holes": "2",
+        "wheat-amount": "250",
+        "width": "128",
+        "wood-amount": "125",
+        "workers": "1"
+      },
+      "report": "attempt-0718/report.json"
+    },
+    {
+      "index": 507,
+      "seed": 23507,
+      "shape": "256x128/8",
+      "fairness": 0.9714506618948019,
+      "worst_wheat_distance": 8,
+      "worst_wood_distance": 9,
+      "weakest_build_room": 855,
+      "requested_ponds": 2,
+      "placed_ponds": 2,
+      "settings": {
+        "algae-amount": "250",
+        "dry-patches": "15",
+        "fruit-amount": "0",
+        "height": "128",
+        "stone-amount": "300",
+        "teams": "8",
+        "watering-holes": "0",
+        "wheat-amount": "100",
+        "width": "256",
+        "wood-amount": "225",
+        "workers": "4"
+      },
+      "report": "attempt-0507/report.json"
+    },
+    {
+      "index": 681,
+      "seed": 23681,
+      "shape": "512x512/12",
+      "fairness": 0.8472131731731176,
+      "worst_wheat_distance": 12,
+      "worst_wood_distance": 13,
+      "weakest_build_room": 859,
+      "requested_ponds": 32,
+      "placed_ponds": 32,
+      "settings": {
+        "algae-amount": "250",
+        "dry-patches": "16",
+        "fruit-amount": "175",
+        "height": "512",
+        "stone-amount": "100",
+        "teams": "12",
+        "watering-holes": "1",
+        "wheat-amount": "175",
+        "width": "512",
+        "wood-amount": "200",
+        "workers": "1"
+      },
+      "report": "attempt-0681/report.json"
+    },
+    {
+      "index": 672,
+      "seed": 23672,
+      "shape": "256x128/8",
+      "fairness": 0.8326730713642087,
+      "worst_wheat_distance": 13,
+      "worst_wood_distance": 13,
+      "weakest_build_room": 860,
+      "requested_ponds": 4,
+      "placed_ponds": 4,
+      "settings": {
+        "algae-amount": "225",
+        "dry-patches": "17",
+        "fruit-amount": "300",
+        "height": "128",
+        "stone-amount": "200",
+        "teams": "8",
+        "watering-holes": "1",
+        "wheat-amount": "175",
+        "width": "256",
+        "wood-amount": "0",
+        "workers": "1"
+      },
+      "report": "attempt-0672/report.json"
+    },
+    {
+      "index": 574,
+      "seed": 23574,
+      "shape": "512x256/12",
+      "fairness": 0.8596318942899198,
+      "worst_wheat_distance": 11,
+      "worst_wood_distance": 13,
+      "weakest_build_room": 897,
+      "requested_ponds": 24,
+      "placed_ponds": 24,
+      "settings": {
+        "algae-amount": "75",
+        "dry-patches": "18",
+        "fruit-amount": "125",
+        "height": "256",
+        "stone-amount": "50",
+        "teams": "12",
+        "watering-holes": "2",
+        "wheat-amount": "300",
+        "width": "512",
+        "wood-amount": "250",
+        "workers": "1"
+      },
+      "report": "attempt-0574/report.json"
+    }
+  ],
+  "failures": []
+}

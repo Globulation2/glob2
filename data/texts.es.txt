@@ -2382,3 +2382,15 @@ Desactivado (sin temporizador)
 60 minutos
 [Sudden-death timer]
 Temporizador de muerte súbita
+[Savannah]
+Sabana
+[Watering holes]
+Abrevaderos
+[Dry patches]
+Zonas secas
+[Sparse]
+Escasos
+[Normal]
+Normal
+[Many]
+Muchos

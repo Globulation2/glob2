@@ -2380,3 +2380,15 @@ OpenGL در این بیلد موجود نیست.
 60 دقیقه
 [Sudden-death timer]
 زمان‌سنج مرگ ناگهانی
+[Savannah]
+ساوانا
+[Watering holes]
+آبشخورها
+[Dry patches]
+نواحی خشک
+[Sparse]
+کم
+[Normal]
+عادی
+[Many]
+زیاد

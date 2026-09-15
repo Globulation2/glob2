@@ -1,0 +1,21 @@
+{
+  "independent_seed_generation": {
+    "same_colony_starts": false,
+    "same_terrain_report": false,
+    "mac_fairness": 0.9548264524051517,
+    "linux_fairness": 0.9555019435875189
+  },
+  "linux_map_loaded_on_mac": {
+    "terrain": true,
+    "underlying_terrain": true,
+    "resources": true,
+    "space": true,
+    "fertility": true,
+    "movement": true
+  },
+  "same_starts_after_load": true,
+  "preview_pixel_differences": 119,
+  "preview_pixels": 65536,
+  "quality_max_absolute_difference": 3.3306690738754696e-16,
+  "linux_game_save_loaded_on_mac": true
+}

@@ -2452,3 +2452,15 @@ Cortex
 60 λεπτά
 [Sudden-death timer]
 Χρονόμετρο ξαφνικού θανάτου
+[Savannah]
+Σαβάνα
+[Watering holes]
+Νερόλακκοι
+[Dry patches]
+Ξηρές περιοχές
+[Sparse]
+Λίγοι
+[Normal]
+Κανονικά
+[Many]
+Πολλοί

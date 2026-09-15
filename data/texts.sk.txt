@@ -2390,3 +2390,15 @@ Vypnuté (bez časovača)
 60 minút
 [Sudden-death timer]
 Časovač náhlej smrti
+[Savannah]
+Savana
+[Watering holes]
+Napájadlá
+[Dry patches]
+Suché oblasti
+[Sparse]
+Málo
+[Normal]
+Normálne
+[Many]
+Veľa

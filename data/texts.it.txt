@@ -2444,3 +2444,15 @@ Disattivato (nessun timer)
 60 minuti
 [Sudden-death timer]
 Timer di morte improvvisa
+[Savannah]
+Savana
+[Watering holes]
+Pozze d’acqua
+[Dry patches]
+Zone aride
+[Sparse]
+Poche
+[Normal]
+Normale
+[Many]
+Molte

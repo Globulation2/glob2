@@ -2390,3 +2390,15 @@ Kapalı (zamanlayıcı yok)
 60 dakika
 [Sudden-death timer]
 Ani ölüm zamanlayıcısı
+[Savannah]
+Savan
+[Watering holes]
+Su birikintileri
+[Dry patches]
+Kurak alanlar
+[Sparse]
+Az
+[Normal]
+Normal
+[Many]
+Çok

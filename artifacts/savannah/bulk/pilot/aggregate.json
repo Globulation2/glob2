@@ -1,0 +1,84 @@
+{
+  "attempts": 130,
+  "failed": 0,
+  "failures": [],
+  "groups": {
+    "pilot-edges": {
+      "attempts": 90,
+      "passed": 90
+    },
+    "pilot-mixed": {
+      "attempts": 40,
+      "passed": 40
+    }
+  },
+  "mode": "pilot",
+  "passed": 130,
+  "pond_omission_maps": 15,
+  "process_seconds": {
+    "maximum": 5.58982776699122,
+    "mean": 0.5782321203571673
+  },
+  "shapes": {
+    "128x128/1": {
+      "attempts": 21,
+      "passed": 21
+    },
+    "128x128/3": {
+      "attempts": 3,
+      "passed": 3
+    },
+    "128x128/4": {
+      "attempts": 21,
+      "passed": 21
+    },
+    "128x256/1": {
+      "attempts": 3,
+      "passed": 3
+    },
+    "128x256/5": {
+      "attempts": 3,
+      "passed": 3
+    },
+    "128x256/8": {
+      "attempts": 21,
+      "passed": 21
+    },
+    "256x128/1": {
+      "attempts": 3,
+      "passed": 3
+    },
+    "256x128/5": {
+      "attempts": 3,
+      "passed": 3
+    },
+    "256x128/8": {
+      "attempts": 21,
+      "passed": 21
+    },
+    "256x256/12": {
+      "attempts": 20,
+      "passed": 20
+    },
+    "256x256/4": {
+      "attempts": 3,
+      "passed": 3
+    },
+    "256x256/8": {
+      "attempts": 2,
+      "passed": 2
+    },
+    "256x512/12": {
+      "attempts": 2,
+      "passed": 2
+    },
+    "512x256/12": {
+      "attempts": 2,
+      "passed": 2
+    },
+    "512x512/12": {
+      "attempts": 2,
+      "passed": 2
+    }
+  }
+}

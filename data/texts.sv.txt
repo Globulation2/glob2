@@ -2392,3 +2392,15 @@ Av (ingen timer)
 60 minuter
 [Sudden-death timer]
 Sudden death-timer
+[Savannah]
+Savann
+[Watering holes]
+Vattenhål
+[Dry patches]
+Torra områden
+[Sparse]
+Få
+[Normal]
+Normal
+[Many]
+Många

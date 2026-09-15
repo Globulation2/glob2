@@ -2392,3 +2392,15 @@ Désactivé (pas de chronomètre)
 60 minutes
 [Sudden-death timer]
 Chronomètre de mort subite
+[Savannah]
+Savane
+[Watering holes]
+Points d’eau
+[Dry patches]
+Zones sèches
+[Sparse]
+Rares
+[Normal]
+Normal
+[Many]
+Nombreux

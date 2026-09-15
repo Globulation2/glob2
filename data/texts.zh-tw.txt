@@ -2454,3 +2454,15 @@ OpenGL 在此版本中不可用。
 60 分鐘
 [Sudden-death timer]
 驟死計時器
+[Savannah]
+稀樹草原
+[Watering holes]
+水塘
+[Dry patches]
+乾燥地帶
+[Sparse]
+稀少
+[Normal]
+正常
+[Many]
+眾多

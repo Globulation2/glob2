@@ -1,5 +1,5 @@
 {
-  "_comment": "Identical text is allowed only for standard names/key legends and reviewed shared vocabulary. These are not English fallback translations. Additions require linguistic review.",
+  "_comment": "Identical text is allowed only for standard names/key legends and reviewed shared vocabulary. These are not English fallback translations. Additions require linguistic review. For Savannah, Normal is the native control label in ca, de, dk, es, fr, pt, ro, sv, tr, and id; its other controls have local translations.",
   "standard_names_and_key_legends": [
     "2 vs 2",
     "AI",
@@ -77,7 +77,8 @@
       "No",
       "Total",
       "Tutorial",
-      "desert"
+      "desert",
+      "Normal"
     ],
     "texts.cz.txt": [
       "Audio",
@@ -106,7 +107,8 @@
       "Start",
       "Team",
       "Version",
-      "Veteran"
+      "Veteran",
+      "Normal"
     ],
     "texts.dk.txt": [
       "Alliance",
@@ -130,7 +132,8 @@
       "Team",
       "Total",
       "Version",
-      "Veteran"
+      "Veteran",
+      "Normal"
     ],
     "texts.eo.txt": [
       "Info",
@@ -144,7 +147,8 @@
       "No",
       "Plazas",
       "Total",
-      "Tutorial"
+      "Tutorial",
+      "Normal"
     ],
     "texts.eu.txt": [
       "Info",
@@ -179,7 +183,8 @@
       "Total",
       "Version",
       "colonies",
-      "options"
+      "options",
+      "Normal"
     ],
     "texts.gr.txt": [],
     "texts.hu.txt": [
@@ -198,7 +203,8 @@
       "Spiral",
       "Total",
       "Tutorial",
-      "Veteran"
+      "Veteran",
+      "Normal"
     ],
     "texts.it.txt": [
       "Audio",
@@ -239,7 +245,8 @@
       "Hospital",
       "Magenta",
       "Total",
-      "Tutorial"
+      "Tutorial",
+      "Normal"
     ],
     "texts.ro.txt": [
       "Audio",
@@ -253,7 +260,8 @@
       "Standard",
       "Total",
       "Tutorial",
-      "Veteran"
+      "Veteran",
+      "Normal"
     ],
     "texts.ru.txt": [],
     "texts.si.txt": [
@@ -285,11 +293,13 @@
       "Standard",
       "Team",
       "Version",
-      "Veteran"
+      "Veteran",
+      "Normal"
     ],
     "texts.tr.txt": [
       "Polder",
-      "Spiral"
+      "Spiral",
+      "Normal"
     ],
     "texts.uk.txt": [],
     "texts.vi.txt": [],

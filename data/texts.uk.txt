@@ -2378,3 +2378,15 @@ OpenGL недоступний у цій збірці.
 60 хвилин
 [Sudden-death timer]
 Таймер раптової смерті
+[Savannah]
+Савана
+[Watering holes]
+Водопої
+[Dry patches]
+Сухі ділянки
+[Sparse]
+Мало
+[Normal]
+Звичайно
+[Many]
+Багато

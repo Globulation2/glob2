@@ -2382,3 +2382,15 @@ Izklopljeno (brez odštevalnika)
 60 minut
 [Sudden-death timer]
 Odštevalnik nenadne smrti
+[Savannah]
+Savana
+[Watering holes]
+Napajališča
+[Dry patches]
+Suha območja
+[Sparse]
+Malo
+[Normal]
+Običajno
+[Many]
+Veliko

@@ -2380,3 +2380,15 @@ Statistics 1/2  >
 Statistics 2/2  >
 [Stats next page]
 Page (P)
+[Savannah]
+Savannah
+[Watering holes]
+Watering holes
+[Dry patches]
+Dry patches
+[Sparse]
+Sparse
+[Normal]
+Normal
+[Many]
+Many

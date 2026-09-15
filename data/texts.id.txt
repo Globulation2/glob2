@@ -2378,3 +2378,15 @@ Nonaktif (tanpa pengatur waktu)
 60 menit
 [Sudden-death timer]
 Pengatur waktu kematian mendadak
+[Savannah]
+Sabana
+[Watering holes]
+Kubangan air
+[Dry patches]
+Area kering
+[Sparse]
+Sedikit
+[Normal]
+Normal
+[Many]
+Banyak

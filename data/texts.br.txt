@@ -2378,3 +2378,15 @@ Desativado (sem cronômetro)
 60 minutos
 [Sudden-death timer]
 Cronômetro de morte súbita
+[Savannah]
+Savanenn
+[Watering holes]
+Poulloù dour
+[Dry patches]
+Tachennoù sec’h
+[Sparse]
+Nebeut
+[Normal]
+Reizh
+[Many]
+Kalz

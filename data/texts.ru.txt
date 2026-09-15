@@ -2380,3 +2380,15 @@ OpenGL недоступен в этой сборке.
 60 минут
 [Sudden-death timer]
 Таймер внезапной смерти
+[Savannah]
+Саванна
+[Watering holes]
+Водопои
+[Dry patches]
+Сухие участки
+[Sparse]
+Мало
+[Normal]
+Обычно
+[Many]
+Много

@@ -31,6 +31,7 @@
 #include "PolderGenerator.h"
 #include "OldTownGenerator.h"
 #include "AnthillGenerator.h"
+#include "SavannahGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -140,6 +141,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 switchbacksDefinition(),
 											 cityStatesDefinition(),
 											 canalsDefinition(),
+											 savannahDefinition(),
 											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),

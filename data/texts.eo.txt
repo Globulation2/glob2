@@ -2380,3 +2380,15 @@ Malŝaltita (neniu kronometro)
 60 minutoj
 [Sudden-death timer]
 Kronometro de subita morto
+[Savannah]
+Savano
+[Watering holes]
+Trinkejoj
+[Dry patches]
+Sekaj areoj
+[Sparse]
+Malmultaj
+[Normal]
+Normala
+[Many]
+Multaj

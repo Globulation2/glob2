@@ -2406,3 +2406,15 @@ Uit (geen timer)
 60 minuten
 [Sudden-death timer]
 Sudden-death-timer
+[Savannah]
+Savanne
+[Watering holes]
+Drinkplaatsen
+[Dry patches]
+Droge plekken
+[Sparse]
+Weinig
+[Normal]
+Normaal
+[Many]
+Veel
