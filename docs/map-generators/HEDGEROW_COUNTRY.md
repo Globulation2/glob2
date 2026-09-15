@@ -1,8 +1,5 @@
 # Hedgerow Country
 
-Screenshots, sample maps/replays, complete bulk request/metric rows, and test logs
-are available in the [review evidence](../artifacts/hedgerow-country/README.md) and the [evidence branch](https://github.com/Globulation2/glob2/blob/evidence/hedgerow-country/docs/artifacts/hedgerow-country/README.md).
-
 Hedgerow Country (`hedgerow-country`, numeric ID 33, revision 6) is an optional
 procedural generator. It adds no simulation rules, save-format changes or new
 resource behavior.
@@ -134,16 +131,23 @@ build/src/glob2 --generate-map hedgerow-country --seed 19 \
   --json artifacts/hedgerow-country/default.json
 ```
 
-The original implementation evidence is retained under
-`artifacts/hedgerow-country/`. The follow-up fairness study is documented in
-[`HEDGEROW_PLAYTEST.md`](HEDGEROW_PLAYTEST.md), with immutable baseline/candidate
-builds, parameter sweeps, rotated mirror games, map previews, replays and saves
-under `artifacts/hedgerow-fairness/`.
+## Validation record
+
+The bulk study generated every supported request (2,098, including 512 fresh seeds) and
+rejected every unsupported one (133) with no crashes, timeouts, disconnected starts or
+cramped-start flags; twelve layouts needed one warp contraction. Eighty AI matchups compared
+the prototype and revised farms: every game reached the 60,000-tick cap, opening starvation
+fell substantially, and the revised economy supported faster growth and more fighting. Six
+successful maps still have strongly uneven expansion territory (worst ratio about 7.4:1).
+
+The complete bulk plans and rows, the playtest records, sample replays, saved maps, the
+immutable build identities and the analysis scripts live on the
+[evidence/hedgerow-country branch](https://github.com/Globulation2/glob2/blob/evidence/hedgerow-country/docs/artifacts/hedgerow-country/README.md), with the
+[bulk validation](https://github.com/Globulation2/glob2/blob/evidence/hedgerow-country/docs/map-generators/HEDGEROW_BULK_VALIDATION.md) and
+[playtest](https://github.com/Globulation2/glob2/blob/evidence/hedgerow-country/docs/map-generators/HEDGEROW_PLAYTEST.md) write-ups; the previews stay in
+[docs/artifacts/hedgerow-country](../artifacts/hedgerow-country/README.md).
 
 Human play remains necessary to judge whether roughly five tiles of wood feels
 worth clearing. Static walking/clearing costs suggest useful shortcuts but do not
 measure worker time. Other remaining risks include tower coverage of gateways,
 asymmetric expansion, AI-specific food management, and regular-looking farm modules.
-
-For full control-range reliability, retained failures and rare layout warnings,
-see [bulk generation validation](HEDGEROW_BULK_VALIDATION.md).
