@@ -2472,3 +2472,11 @@ Emoji
 Частота слияний
 [Crossing spacing]
 Расстояние между переправами
+[Breachable highlands]
+Нагорье с проломами
+[Ridge depth]
+Толщина хребтов
+[Extra open passes]
+Дополнительные открытые перевалы
+[Wooded saddles]
+Лесистые седловины

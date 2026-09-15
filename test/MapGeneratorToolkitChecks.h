@@ -432,8 +432,8 @@ inline void settlementChecks()
 					map.setResource(t.x(30 + dx), t.y(30 + dy), WOOD, 1);
 		const auto sites = [&]
 		{
-			const Flood flood = floodFrom(t, tileMask(t, unitTilesByTeam(map, 1)[0]),
-										  groundUnitTiles(map), 24);
+			const Flood flood =
+				floodFrom(t, tileMask(t, unitTilesByTeam(map, 1)[0]), groundUnitTiles(map), 24);
 			int count = 0;
 			for (int i : flood.visited)
 				count += map.isFreeForBuilding(i % t.w, i / t.w, 4, 4);
@@ -469,7 +469,8 @@ inline void balancedStartChecks()
 	assert(chooseBalancedStarts(game, again, 20 * 20));
 	for (int team = 0; team < 2; ++team)
 	{
-		assert(context.bootX[team] == again.bootX[team] && context.bootY[team] == again.bootY[team]);
+		assert(context.bootX[team] == again.bootX[team] &&
+			   context.bootY[team] == again.bootY[team]);
 		assert(map.isFreeForBuilding(context.bootX[team], context.bootY[team], 4, 4));
 	}
 	assert(t.dist2(context.bootX[0], context.bootY[0], context.bootX[1], context.bootY[1]) >=
@@ -598,8 +599,8 @@ inline void shuffleChecks()
 	context.bounded("other", 1000);
 	context.shuffle(order.begin(), order.end(), "deal");
 	again.shuffle(same.begin(), same.end(), "deal");
-	assert(order == same && order != std::vector<int>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-													  13, 14, 15, 16, 17, 18, 19}));
+	assert(order == same && order != std::vector<int>({0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
+													   10, 11, 12, 13, 14, 15, 16, 17, 18, 19}));
 	std::vector<int> sorted = order;
 	std::sort(sorted.begin(), sorted.end());
 	for (int i = 0; i < 20; ++i)
@@ -842,17 +843,20 @@ inline void layerChecks()
 	GenerationContext context(request);
 	std::vector<int> ground{t.at(40, 40), t.at(50, 50)};
 	int calls = 0;
-	assert(scatterClumps(context, t, ground, 4, "clumps", [&](int i) { return i == ground[1]; },
-						 [&](MapGeneratorPoint p)
-						 {
-							 assert(p.x == 50 && p.y == 50);
-							 ++calls;
-						 }) == 4 &&
+	assert(scatterClumps(
+			   context, t, ground, 4, "clumps", [&](int i) { return i == ground[1]; },
+			   [&](MapGeneratorPoint p)
+			   {
+				   assert(p.x == 50 && p.y == 50);
+				   ++calls;
+			   }) == 4 &&
 		   calls == 4);
-	assert(scatterClumps(context, t, ground, 2, "clumps", [](int) { return false; },
-						 [](MapGeneratorPoint) { assert(false); }) == 0);
-	assert(scatterClumps(context, t, {}, 2, "clumps", [](int) { return true; },
-						 [](MapGeneratorPoint) { assert(false); }) == 0);
+	assert(scatterClumps(
+			   context, t, ground, 2, "clumps", [](int) { return false; },
+			   [](MapGeneratorPoint) { assert(false); }) == 0);
+	assert(scatterClumps(
+			   context, t, {}, 2, "clumps", [](int) { return true; },
+			   [](MapGeneratorPoint) { assert(false); }) == 0);
 }
 
 // Walls: a sealed coast keeps anything landing on the beach out; labelBorders leaves no diagonal
@@ -939,8 +943,9 @@ inline void wallChecks()
 	std::vector<unsigned char> water(square.size(), 0);
 	std::vector<int> queued(square.size(), 0);
 	const auto flat = [](int tile) { return tile; };
-	assert(growWater(square, water, square.at(8, 8), 20, [](int) { return true; }, flat, queued,
-					 1) == 20 &&
+	assert(growWater(
+			   square, water, square.at(8, 8), 20, [](int) { return true; }, flat, queued, 1) ==
+			   20 &&
 		   std::count(water.begin(), water.end(), 1) == 20);
 	std::fill(water.begin(), water.end(), 0);
 	const auto smallRoom = [&](int tile) { return tile % square.w < 3 && tile / square.w < 2; };
@@ -1013,8 +1018,7 @@ inline void arenaChecks()
 {
 	const Torus t(64, 64);
 	std::vector<int> gateOf(t.size(), -2);
-	ringWithGates(t, 32, 32, 20, 1.2, {0.0, kPi}, 3,
-				  [&](int i, int gate) { gateOf[i] = gate; });
+	ringWithGates(t, 32, 32, 20, 1.2, {0.0, kPi}, 3, [&](int i, int gate) { gateOf[i] = gate; });
 	assert(gateOf[t.at(52, 32)] == 0 && gateOf[t.at(12, 32)] == 1 && gateOf[t.at(32, 52)] == -1);
 	assert(gateOf[t.at(32, 32)] == -2 && gateOf[t.at(52, 36)] == -1);
 
@@ -1026,7 +1030,8 @@ inline void arenaChecks()
 	const Zigzag zigzag = zigzagPath(AxisFrame{0, 0, 0}, 40, 30, 8, 3, 6, 5, 2);
 	assert(zigzag.legs.size() == 3 && zigzag.path.size() == 8 && zigzag.finishAcross == -6);
 	assert(zigzag.path.front().x == 40 && zigzag.path.front().y == 6 && zigzag.path.back().x == 5);
-	assert(zigzag.legs[1].front().x == 22 && zigzag.legs[1].front().y == -4 && zigzag.legs[1].back().y == 4);
+	assert(zigzag.legs[1].front().x == 22 && zigzag.legs[1].front().y == -4 &&
+		   zigzag.legs[1].back().y == 4);
 
 	std::vector<unsigned char> road(t.size(), 0), water(t.size(), 0);
 	for (int x = 0; x < t.w; ++x)
@@ -1041,8 +1046,10 @@ inline void arenaChecks()
 	std::vector<int> labels(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 		labels[i] = i % t.w < 32 ? 0 : 1;
-	const std::vector<unsigned char> thin = labelBorders(t, labels), thick = labelBorders(t, labels, 2);
-	assert(std::count(thick.begin(), thick.end(), 1) == 2 * std::count(thin.begin(), thin.end(), 1));
+	const std::vector<unsigned char> thin = labelBorders(t, labels),
+									 thick = labelBorders(t, labels, 2);
+	assert(std::count(thick.begin(), thick.end(), 1) ==
+		   2 * std::count(thin.begin(), thin.end(), 1));
 	assert(thick[t.at(31, 5)] && thick[t.at(32, 5)] && !thin[t.at(31, 5)]);
 
 	// Stranded ground and depth sites.
@@ -1077,7 +1084,8 @@ inline void arenaChecks()
 		for (int x = 0; x < 60; ++x)
 			edge[t.at(x, y)] = 0;
 	const std::vector<int> stripRoom = stepsFrom(t, edge);
-	assert(growFarLake(t, lake, stripDepth, stripRoom, 3, 60, [](int) { return 0.0; }, queued, 1) == 60);
+	assert(growFarLake(
+			   t, lake, stripDepth, stripRoom, 3, 60, [](int) { return 0.0; }, queued, 1) == 60);
 	int distant = 0, nearby = 0;
 	for (int i = 0; i < t.size(); ++i)
 		if (lake[i])
@@ -1086,7 +1094,8 @@ inline void arenaChecks()
 			(i % t.w > 30 ? distant : nearby)++;
 		}
 	assert(distant == 60 && nearby == 0);
-	assert(growFarLake(t, lake, stripDepth, stripRoom, 12, 60, [](int) { return 0.0; }, queued, 2) == 0);
+	assert(growFarLake(
+			   t, lake, stripDepth, stripRoom, 12, 60, [](int) { return 0.0; }, queued, 2) == 0);
 
 	std::vector<int> jagged(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
@@ -1104,7 +1113,8 @@ inline void arenaChecks()
 	request.seed = 5;
 	GenerationContext context(request);
 	const auto anywhere = [&](int i) { return clearGround(map, i % t.w, i / t.w); };
-	assert(plantRound(map, t, context, 32, 32, 10, {0.0, kPi / 2, kPi}, STONE, 0, 2, anywhere) == 3);
+	assert(plantRound(map, t, context, 32, 32, 10, {0.0, kPi / 2, kPi}, STONE, 0, 2, anywhere) ==
+		   3);
 	assert(map.getResource(42, 32).type == STONE && map.getResource(22, 32).type == STONE);
 	assert(plantOrchard(map, t, context, 32, 32, 20, {0.0}, 4, 2, 0, anywhere) == 3);
 	assert(map.getResource(52, 32).type == CHERRY + 1);
@@ -1192,7 +1202,7 @@ inline void subtileRasterChecks()
 	// Two triangles either side of a slanted cut through a strip that wraps the seam.
 	std::vector<int> cover(t.size(), 0);
 	const SubtilePoint a{-70, 2 * kSubtile + 3}, b{19 * kSubtile + 5, 2 * kSubtile + 3},
-					   c{19 * kSubtile + 5, 12 * kSubtile - 9}, d{-70, 12 * kSubtile - 9};
+		c{19 * kSubtile + 5, 12 * kSubtile - 9}, d{-70, 12 * kSubtile - 9};
 	forEachTileInPolygon(t, {a, b, c}, [&](int tile) { ++cover[tile]; });
 	forEachTileInPolygon(t, {a, c, d}, [&](int tile) { ++cover[tile]; });
 	for (int y = 0; y < t.h; ++y)
@@ -1200,8 +1210,8 @@ inline void subtileRasterChecks()
 		{
 			const long long cx = x * kSubtile + kSubtile / 2, cy = y * kSubtile + kSubtile / 2;
 			const bool inside = cy >= a.y && cy < d.y &&
-								((cx >= a.x && cx < b.x) || (cx - t.w * kSubtile >= a.x &&
-															  cx - t.w * kSubtile < b.x));
+								((cx >= a.x && cx < b.x) ||
+								 (cx - t.w * kSubtile >= a.x && cx - t.w * kSubtile < b.x));
 			assert(cover[t.at(x, y)] == (inside ? 1 : 0));
 		}
 }
@@ -1230,7 +1240,8 @@ inline void tessellationChecks()
 				assert(std::find(back.begin(), back.end(), edge) != back.end());
 				// Seen from the other side the edge runs backwards, one whole map shift away.
 				const auto here = g.edgeEnds(edge, cell), there = g.edgeEnds(edge, next);
-				const long long sx = here.first.x - there.second.x, sy = here.first.y - there.second.y;
+				const long long sx = here.first.x - there.second.x,
+								sy = here.first.y - there.second.y;
 				assert(sx % (g.t.w * kSubtile) == 0 && sy % (g.t.h * kSubtile) == 0);
 				assert(here.second.x - there.first.x == sx && here.second.y - there.first.y == sy);
 				const SubtilePoint across = g.centreAcross(edge, cell);
@@ -1380,8 +1391,10 @@ inline void graphMazeChecks()
 // the other colony, starts towers facing each other empty and gives every colony its count.
 inline void farmAndTowerChecks()
 {
-	const FarmRows straight = bestFarmRows(0), diagonal = bestFarmRows(kPi / 4), turned = bestFarmRows(kPi / 2);
-	assert(straight.crops == 10 && straight.water == 8 && diagonal.crops == 12 && diagonal.water == 9);
+	const FarmRows straight = bestFarmRows(0), diagonal = bestFarmRows(kPi / 4),
+				   turned = bestFarmRows(kPi / 2);
+	assert(straight.crops == 10 && straight.water == 8 && diagonal.crops == 12 &&
+		   diagonal.water == 9);
 	assert(turned.crops == straight.crops && bestFarmRows(-kPi / 4).crops == diagonal.crops);
 	assert(std::abs(farmYield(0) - 0.1489) < 1e-9 && std::abs(farmYield(kPi / 4) - 0.1126) < 1e-9);
 	assert(std::abs(farmYield(kPi / 8) - 0.1225) < 1e-9 && farmYield(kPi / 2) == farmYield(0));
@@ -1391,8 +1404,8 @@ inline void farmAndTowerChecks()
 		const Torus open(40, 40);
 		const std::vector<unsigned char> all(open.size(), 1);
 		const std::vector<double> worth = {1.0, 0.5};
-		const Territories byWorth =
-			growTerritories(open, all, {{open.at(5, 20)}, {open.at(25, 20)}}, [](int) { return 0; }, &worth);
+		const Territories byWorth = growTerritories(
+			open, all, {{open.at(5, 20)}, {open.at(25, 20)}}, [](int) { return 0; }, &worth);
 		assert(std::abs(byWorth.areas[1] - 2 * byWorth.areas[0]) <= 2);
 	}
 
@@ -1425,9 +1438,12 @@ inline void farmAndTowerChecks()
 		// crosses the whole field on one road. Only the rim keeps its crops.
 		TerrainSketch bridged(t.size(), GRASS);
 		const Farm crossed = layFarm(bridged, t, region, 0, {32, 32}, 4, {6, 4}, nullptr, 8);
-		assert(!crossed.water[t.at(32, 36)] && crossed.sand[t.at(32, 36)] && bridged[t.at(32, 36)] == SAND);
-		assert(crossed.sand[t.at(24, 36)] && crossed.water[t.at(33, 36)] && crossed.water[t.at(28, 36)]);
-		assert(crossed.sand[t.at(32, 32)] && bridged[t.at(32, 32)] == SAND && crossed.rows == farm.rows);
+		assert(!crossed.water[t.at(32, 36)] && crossed.sand[t.at(32, 36)] &&
+			   bridged[t.at(32, 36)] == SAND);
+		assert(crossed.sand[t.at(24, 36)] && crossed.water[t.at(33, 36)] &&
+			   crossed.water[t.at(28, 36)]);
+		assert(crossed.sand[t.at(32, 32)] && bridged[t.at(32, 32)] == SAND &&
+			   crossed.rows == farm.rows);
 		assert(!crossed.sand[t.at(33, 32)] && bridged[t.at(33, 32)] == GRASS);
 		assert(!crossed.sand[t.at(32, 10)] && !crossed.sand[t.at(32, 53)]); // the rim stays grass
 		// A building plot's grass trumps a bridge through it.
@@ -1464,8 +1480,8 @@ inline void farmAndTowerChecks()
 	for (int i = 0; i < sea.size(); ++i)
 		if (land[i])
 			homeOf[i] = i % sea.w < 32 ? 0 : 1;
-	const std::vector<int> fields = growFarmFields(sea, land, homeOf, everywhere, {{16, 26}, {48, 26}}, {0, 1},
-												   {{16, 32}, {48, 32}}, 4, 2);
+	const std::vector<int> fields = growFarmFields(
+		sea, land, homeOf, everywhere, {{16, 26}, {48, 26}}, {0, 1}, {{16, 32}, {48, 32}}, 4, 2);
 	int sizes[2] = {0, 0};
 	bool touches[2] = {false, false};
 	for (int i = 0; i < sea.size(); ++i)
@@ -1473,9 +1489,12 @@ inline void farmAndTowerChecks()
 		{
 			++sizes[fields[i]];
 			for (const auto &step : kCardinalSteps)
-				touches[fields[i]] = touches[fields[i]] || homeOf[sea.at(i % 64 + step[0], i / 64 + step[1])] == fields[i];
+				touches[fields[i]] =
+					touches[fields[i]] ||
+					homeOf[sea.at(i % 64 + step[0], i / 64 + step[1])] == fields[i];
 		}
-	assert(sizes[0] > 400 && std::abs(sizes[0] - sizes[1]) < sizes[0] / 5 && touches[0] && touches[1]);
+	assert(sizes[0] > 400 && std::abs(sizes[0] - sizes[1]) < sizes[0] / 5 && touches[0] &&
+		   touches[1]);
 	std::vector<unsigned char> first(sea.size(), 0), eastHome(sea.size(), 0);
 	for (int i = 0; i < sea.size(); ++i)
 	{
@@ -1495,7 +1514,8 @@ inline void farmAndTowerChecks()
 	for (int i = 0; i < sea.size(); ++i)
 		halves[i] = i % sea.w < 32 ? 0 : 1;
 	separateTerritories(sea, halves, 4);
-	assert(halves[sea.at(31, 5)] == -1 && halves[sea.at(32, 5)] == -1 && halves[sea.at(29, 5)] == 0);
+	assert(halves[sea.at(31, 5)] == -1 && halves[sea.at(32, 5)] == -1 &&
+		   halves[sea.at(29, 5)] == 0);
 
 	// fillToNearest closes the gap again, each tile to its nearer side, and labelBorders with a door
 	// walls the border everywhere but where the door leaves it open.
@@ -1504,7 +1524,8 @@ inline void farmAndTowerChecks()
 		for (int i = 0; i < sea.size(); ++i)
 			gap[i] = halves[i] < 0;
 		std::vector<int> nearby = halves;
-		assert(fillToNearest(sea, nearby, gap, 1)[sea.at(30, 5)] && nearby[sea.at(30, 5)] == 0 && nearby[sea.at(31, 5)] == -1);
+		assert(fillToNearest(sea, nearby, gap, 1)[sea.at(30, 5)] && nearby[sea.at(30, 5)] == 0 &&
+			   nearby[sea.at(31, 5)] == -1);
 		const std::vector<unsigned char> filled = fillToNearest(sea, halves, gap, 4);
 		assert(filled[sea.at(31, 5)] && halves[sea.at(31, 5)] == 0 && halves[sea.at(32, 5)] == 1);
 		for (int i = 0; i < sea.size(); ++i)
@@ -1526,8 +1547,12 @@ inline void farmAndTowerChecks()
 	std::vector<unsigned char> lake(sea.size(), 0);
 	std::vector<int> queued(sea.size(), 0), depth(sea.size(), 0), room(sea.size(), 20);
 	const int site = sea.at(32, 32);
-	assert(growLakeBeside(sea, lake, depth, room, 2, 40, site, 0, 1, 6, 20, [](int) { return 0.0; }, queued, 1) == 40);
-	assert(growLakeBeside(sea, lake, depth, room, 2, 40, site, 0, -1, 6, 20, [](int) { return 0.0; }, queued, 2) == 40);
+	assert(growLakeBeside(
+			   sea, lake, depth, room, 2, 40, site, 0, 1, 6, 20, [](int) { return 0.0; }, queued,
+			   1) == 40);
+	assert(growLakeBeside(
+			   sea, lake, depth, room, 2, 40, site, 0, -1, 6, 20, [](int) { return 0.0; }, queued,
+			   2) == 40);
 	for (int i = 0; i < sea.size(); ++i)
 		if (lake[i])
 			assert(std::abs(sea.offsetY(32, i / sea.w)) >= 6);
@@ -1559,12 +1584,143 @@ inline void farmAndTowerChecks()
 		bool facing = false;
 		const int s = plan.towers[0][a];
 		for (int o : plan.towers[1])
-			facing = facing || std::max(std::abs(sea.offsetX(s % 64, o % 64)), std::abs(sea.offsetY(s / 64, o / 64))) - 1 <= request.range;
+			facing = facing || std::max(std::abs(sea.offsetX(s % 64, o % 64)),
+										std::abs(sea.offsetY(s / 64, o / 64))) -
+									   1 <=
+								   request.range;
 		assert(bool(plan.stocked[0][a]) == !facing);
 		assert(s % 64 >= 19); // beside the four-tile gap, the only border within range
 	}
 	const std::vector<unsigned char> footprints = towerFootprints(sea, plan);
 	assert(std::count(footprints.begin(), footprints.end(), 1) == 4 * 10);
+}
+
+// Shortcuts retain parallel edge identities and rank the detour through the unchanged
+// open graph. The disconnected fifth cell also exercises the unreachable sentinel.
+inline void shortcutChecks()
+{
+	CellGraph g;
+	g.cellEdges.resize(5);
+	g.edgeCells = {{0, 1}, {1, 2}, {2, 3}, {0, 3}, {0, 1}, {0, 4}};
+	for (int e = 0; e < int(g.edgeCells.size()); ++e)
+		for (int cell : g.edgeCells[e])
+			g.cellEdges[cell].push_back(e);
+	std::vector<unsigned char> open{1, 1, 1, 0, 0, 0};
+	assert((closedEdges(g, open) == std::vector<int>{3, 4, 5}));
+	std::vector<unsigned char> blocked{0, 0, 0, 1, 0};
+	assert((closedEdges(g, open, blocked) == std::vector<int>{4, 5}));
+	const auto detours = edgeDetours(g, open, {4, 3, 5});
+	assert(detours[3] == 3 && detours[4] == 1 && detours[5] == -1 && detours[0] == -1);
+	assert((open == std::vector<unsigned char>{1, 1, 1, 0, 0, 0}));
+	open[3] = 1;
+	assert(edgeDetours(g, open, {3})[3] == 1);
+}
+
+// On a two-column torus the same cells share two edges. Their crossings must stay
+// on different sides of the centres, while both reserve the requested central disc.
+inline void cellCrossingChecks()
+{
+	const auto g = squareTessellation(32, 32, 16);
+	std::vector<std::vector<unsigned char>> masks;
+	for (int e : g.cells[0].edges)
+	{
+		if (g.other(e, 0) != 1)
+			continue;
+		const auto path = cellCrossing(g, e, 3, 1);
+		assert(path.size() == 3);
+		const int owner = g.edges[e].cells[0];
+		const auto from = tilePoint(g.cells[owner].centre);
+		const auto to = tilePoint(g.centreAcross(e, owner));
+		assert(std::abs(std::hypot(path.front().x - from.x, path.front().y - from.y) - 3) < 1e-9);
+		assert(std::abs(std::hypot(path.back().x - to.x, path.back().y - to.y) - 3) < 1e-9);
+		masks.emplace_back(g.t.size(), 0);
+		strokePath(masks.back(), g.t, path);
+		assert(std::count(masks.back().begin(), masks.back().end(), 1) > 0);
+		assert(cellCrossing(g, e, 100, 1).empty());
+	}
+	assert(masks.size() == 2);
+	for (int i = 0; i < g.t.size(); ++i)
+		assert(!masks[0][i] || !masks[1][i]);
+}
+
+inline void partitionChecks()
+{
+	const Torus t(8, 8);
+	std::vector<unsigned char> open(t.size(), 0);
+	std::vector<int> labels(t.size(), -1);
+	// Unlabelled ground must still carry connectivity between labelled plots.
+	for (int x = 0; x <= 2; ++x)
+		open[t.at(x, 0)] = 1;
+	labels[t.at(0, 0)] = 4;
+	labels[t.at(2, 0)] = 9;
+	assert(labelComponents(connectedRegions(open, t.w, t.h, true), labels).conflictTile >= 0);
+	open[t.at(1, 0)] = 0;
+	assert(labelComponents(connectedRegions(open, t.w, t.h, true), labels).conflictTile < 0);
+	// A diagonal crop seam is a leak under eight-neighbor growth, but not cardinal growth.
+	open.assign(t.size(), 0);
+	labels.assign(t.size(), -1);
+	open[t.at(0, 0)] = open[t.at(1, 1)] = 1;
+	labels[t.at(0, 0)] = 0;
+	labels[t.at(1, 1)] = 1;
+	assert(labelComponents(connectedRegions(open, t.w, t.h, true, GridNeighbors::Eight), labels)
+			   .conflictTile >= 0);
+	assert(labelComponents(connectedRegions(open, t.w, t.h, true, GridNeighbors::Cardinal), labels)
+			   .conflictTile < 0);
+	// The same contract must see a connection crossing the horizontal seam.
+	open.assign(t.size(), 0);
+	labels.assign(t.size(), -1);
+	open[t.at(0, 3)] = open[t.at(7, 3)] = 1;
+	labels[t.at(0, 3)] = 0;
+	labels[t.at(7, 3)] = 1;
+	assert(labelComponents(connectedRegions(open, t.w, t.h, true), labels).conflictTile >= 0);
+	assert(labelComponents(connectedRegions(open, t.w, t.h, false), labels).conflictTile < 0);
+}
+
+inline void gatePartitionChecks()
+{
+	const Torus t(16, 8);
+	std::vector<unsigned char> open(t.size(), 0);
+	std::vector<int> labels(t.size(), -1);
+	for (int y = 1; y <= 6; ++y)
+		for (int x = 1; x <= 14; ++x)
+			if (x <= 6 || x >= 9)
+			{
+				open[t.at(x, y)] = 1;
+				labels[t.at(x, y)] = x <= 6 ? 0 : 1;
+			}
+	// Two plugs connect the same rooms, one across the seam. They may be clearable
+	// (absent from open) or already open; sealing them must yield the same partition.
+	const std::vector<TileGate> gates{{{0, 1}, {t.at(7, 3), t.at(8, 3)}},
+									  {{0, 1}, {t.at(15, 3), t.at(0, 3)}}};
+	const auto clearable = checkGatePartition(t, open, labels, gates);
+	assert(clearable.leakTile < 0 && clearable.badGate < 0);
+	for (const auto &gate : gates)
+		for (int tile : gate.tiles)
+			open[tile] = 1;
+	const auto opened = checkGatePartition(t, open, labels, gates);
+	assert(opened.leakTile < 0 && opened.badGate < 0);
+	auto broken = gates;
+	broken[0].tiles.push_back(t.at(4, 0));
+	assert(checkGatePartition(t, open, labels, broken).badGate == 0);
+	broken[0].tiles.clear();
+	assert(checkGatePartition(t, open, labels, broken).badGate == 0);
+	broken = gates;
+	broken[0].regions[1] = 2;
+	assert(checkGatePartition(t, open, labels, broken).badGate == 0);
+	// A two-tile diagonal bypass must be caught even though neither gate changed.
+	open[t.at(7, 1)] = open[t.at(8, 2)] = 1;
+	assert(checkGatePartition(t, open, labels, gates).leakTile >= 0);
+	// Three mutually disconnected rooms touch one plug. Merely finding the two
+	// intended sides would miss this unintended third exit.
+	open.assign(t.size(), 0);
+	labels.assign(t.size(), -1);
+	const int rooms[] = {t.at(3, 3), t.at(5, 3), t.at(4, 5)};
+	for (int k = 0; k < 3; ++k)
+	{
+		open[rooms[k]] = 1;
+		labels[rooms[k]] = k;
+	}
+	assert(checkGatePartition(t, open, labels, {{{0, 1}, {t.at(4, 4)}}}).badGate == 0);
 }
 
 inline void toolkitChecks()
@@ -1591,9 +1747,14 @@ inline void toolkitChecks()
 	subtileRasterChecks();
 	tessellationChecks();
 	graphMazeChecks();
+	shortcutChecks();
+	cellCrossingChecks();
+	partitionChecks();
+	gatePartitionChecks();
 	puts("PASS shared toolkit: floods, sketch, planting, roads, settlements, balanced starts, "
 		 "scatter, lattice noise, wedge frame, shuffle, drawing, branches, stretch, sand patches, "
 		 "algae growth, fields and clumps, walls and tower reach, territories, arena primitives, "
-		 "sealed lines and polygons, tessellations and warp, graph mazes and region leaks");
+		 "sealed lines and polygons, tessellations and warp, graph mazes, shortcuts, cell "
+		 "crossings, region labels and gate partitions");
 }
 } // namespace ToolkitChecks

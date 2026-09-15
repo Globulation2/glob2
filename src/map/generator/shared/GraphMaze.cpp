@@ -3,6 +3,7 @@
 #include "GenerationContext.h"
 #include <utility>
 #include <algorithm>
+#include <stdexcept>
 namespace MapGeneration
 {
 CellGraph cellGraph(const Tessellation &tiling)
@@ -103,10 +104,54 @@ std::vector<int> spreadPockets(const CellGraph &g, int count)
 			return {};
 		pockets.push_back(chosen);
 		for (int cell = 0; cell < g.cellCount(); ++cell)
-			nearest[cell] = pockets.size() == 1 ? g.distance2(cell, chosen)
-												: std::min(nearest[cell], g.distance2(cell, chosen));
+			nearest[cell] = pockets.size() == 1
+								? g.distance2(cell, chosen)
+								: std::min(nearest[cell], g.distance2(cell, chosen));
 	}
 	return pockets;
+}
+
+std::vector<int> closedEdges(const CellGraph &g, const std::vector<unsigned char> &open,
+							 const std::vector<unsigned char> &blocked)
+{
+	if (open.size() != g.edgeCells.size() ||
+		(!blocked.empty() && blocked.size() != g.cellEdges.size()))
+		throw std::invalid_argument("Maze masks do not match the cell graph");
+	std::vector<int> result;
+	for (int edge = 0; edge < int(g.edgeCells.size()); ++edge)
+		if (!open[edge] &&
+			(blocked.empty() || (!blocked[g.edgeCells[edge][0]] && !blocked[g.edgeCells[edge][1]])))
+			result.push_back(edge);
+	return result;
+}
+
+std::vector<int> edgeDetours(const CellGraph &g, const std::vector<unsigned char> &open,
+							 const std::vector<int> &edges)
+{
+	if (open.size() != g.edgeCells.size())
+		throw std::invalid_argument("Maze edge mask does not match the cell graph");
+	RegionGraph routes(g.cellCount());
+	for (int edge = 0; edge < int(g.edgeCells.size()); ++edge)
+		if (open[edge])
+		{
+			const auto &cells = g.edgeCells[edge];
+			routes[cells[0]].push_back(cells[1]);
+			routes[cells[1]].push_back(cells[0]);
+		}
+	std::vector<int> result(g.edgeCells.size(), -1);
+	// Several candidate edges can have the same first endpoint. One flood per source
+	// gives exactly the same distances while avoiding repeated graph walks.
+	std::vector<std::vector<int>> distances(g.cellCount());
+	for (int edge : edges)
+	{
+		if (edge < 0 || edge >= int(g.edgeCells.size()))
+			throw std::invalid_argument("Shortcut edge outside the cell graph");
+		const auto &cells = g.edgeCells[edge];
+		if (distances[cells[0]].empty())
+			distances[cells[0]] = graphDistances(routes, {cells[0]});
+		result[edge] = distances[cells[0]][cells[1]];
+	}
+	return result;
 }
 
 bool carveSpanningTree(const CellGraph &g, GenerationContext &context, const std::string &stream,

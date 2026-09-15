@@ -4,8 +4,36 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
+#include <stdexcept>
 namespace MapGeneration
 {
+std::vector<StrokePoint> cellCrossing(const Tessellation &g, int edge, double centreRadius,
+									  double halfWidth)
+{
+	if (edge < 0 || edge >= int(g.edges.size()) || !std::isfinite(centreRadius) ||
+		!std::isfinite(halfWidth) || centreRadius < 0 || halfWidth < 0)
+		throw std::invalid_argument("Invalid cell crossing geometry");
+	const int owner = g.edges[edge].cells[0];
+	const auto ends = g.edgeEnds(edge, owner);
+	const ShapePoint a = tilePoint(ends.first), b = tilePoint(ends.second);
+	const ShapePoint midpoint{(a.x + b.x) / 2, (a.y + b.y) / 2};
+	const ShapePoint from = tilePoint(g.cells[owner].centre);
+	const ShapePoint to = tilePoint(g.centreAcross(edge, owner));
+	const auto approach = [&](ShapePoint centre)
+	{
+		const double vx = midpoint.x - centre.x, vy = midpoint.y - centre.y;
+		const double scale = centreRadius / std::hypot(vx, vy);
+		return ShapePoint{centre.x + vx * scale, centre.y + vy * scale};
+	};
+	if (std::hypot(midpoint.x - from.x, midpoint.y - from.y) <= centreRadius ||
+		std::hypot(midpoint.x - to.x, midpoint.y - to.y) <= centreRadius)
+		return {};
+	const ShapePoint entry = approach(from), exit = approach(to);
+	return {{entry.x, entry.y, halfWidth},
+			{midpoint.x, midpoint.y, halfWidth},
+			{exit.x, exit.y, halfWidth}};
+}
+
 namespace
 {
 long long floorDiv(long long a, long long b)
@@ -146,7 +174,8 @@ Tessellation squareTessellation(int width, int height, int cellSize)
 				return {(long long)(column / g.columns) * width * kSubtile,
 						(long long)(row / g.rows) * height * kSubtile};
 			};
-			cell.cornerShifts = {shift(c + 1, r), shift(c + 1, r + 1), shift(c, r + 1), shift(c, r)};
+			cell.cornerShifts = {shift(c + 1, r), shift(c + 1, r + 1), shift(c, r + 1),
+								 shift(c, r)};
 			cell.edges = {2 * self, 2 * self + 1, 2 * g.cellAt(c - 1, r),
 						  2 * g.cellAt(c, r - 1) + 1};
 			g.cells.push_back(cell);
@@ -154,10 +183,10 @@ Tessellation squareTessellation(int width, int height, int cellSize)
 	for (int self = 0; self < g.cellCount(); ++self)
 	{
 		const auto &cell = g.cells[self];
-		g.edges.push_back({{self, g.cellAt(cell.column + 1, cell.row)},
-						   {cell.corners[0], cell.corners[1]}});
-		g.edges.push_back({{self, g.cellAt(cell.column, cell.row + 1)},
-						   {cell.corners[1], cell.corners[2]}});
+		g.edges.push_back(
+			{{self, g.cellAt(cell.column + 1, cell.row)}, {cell.corners[0], cell.corners[1]}});
+		g.edges.push_back(
+			{{self, g.cellAt(cell.column, cell.row + 1)}, {cell.corners[1], cell.corners[2]}});
 	}
 	return g;
 }
@@ -197,16 +226,20 @@ Tessellation hexTessellation(int width, int height, int pitch)
 			cell.centre = at(2 * c + p, 3 * r);
 			// Clockwise from the upper right corner: lower right, bottom, lower left, upper left,
 			// top; so the edges run east, south-east, south-west, west, north-west, north-east.
-			cell.corners = {2 * self + 1,	   2 * southEast,	 2 * southWest + 1,
-							2 * southWest,	   2 * west + 1,	 2 * self};
+			cell.corners = {2 * self + 1,  2 * southEast, 2 * southWest + 1,
+							2 * southWest, 2 * west + 1,  2 * self};
 			// Each corner is stored with the cell that owns it; a neighbour past the seam owns the
 			// copy one map size away.
 			const auto shift = [&](int column, int row) -> SubtilePoint
 			{ return {floorDiv(column, g.columns) * w, floorDiv(row, g.rows) * h}; };
-			cell.cornerShifts = {shift(c, r),			shift(c + p, r + 1), shift(c + p - 1, r + 1),
-								 shift(c + p - 1, r + 1), shift(c - 1, r),	 shift(c, r)};
-			cell.edges = {3 * self,			3 * self + 1,	   3 * self + 2,
-						  3 * west,			3 * northWest + 1, 3 * northEast + 2};
+			cell.cornerShifts = {shift(c, r),
+								 shift(c + p, r + 1),
+								 shift(c + p - 1, r + 1),
+								 shift(c + p - 1, r + 1),
+								 shift(c - 1, r),
+								 shift(c, r)};
+			cell.edges = {3 * self, 3 * self + 1,      3 * self + 2,
+						  3 * west, 3 * northWest + 1, 3 * northEast + 2};
 			g.cells.push_back(cell);
 			const int owned[3] = {east, southEast, southWest};
 			for (int k = 0; k < 3; ++k)
@@ -249,7 +282,8 @@ int warpLimit(const Tessellation &g)
 		for (size_t k = 0; k < n; ++k)
 			for (size_t e = 0; e < n; ++e)
 				if (e != k && (e + 1) % n != k)
-					least = std::min(least, lineDistance(points[k], points[e], points[(e + 1) % n]));
+					least =
+						std::min(least, lineDistance(points[k], points[e], points[(e + 1) % n]));
 	}
 	// Three corners move at once (this one and the far edge's two ends), each by up to sqrt(2) times
 	// its reach on one axis.

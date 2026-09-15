@@ -2498,3 +2498,11 @@ Aantal rivierarmen
 Frequentie van samenvloeiingen
 [Crossing spacing]
 Afstand tussen overgangen
+[Breachable highlands]
+Doorbreekbaar hoogland
+[Ridge depth]
+Dikte van bergruggen
+[Extra open passes]
+Extra open passen
+[Wooded saddles]
+Beboste passen

@@ -94,6 +94,36 @@ std::vector<int> connectedRegions(const std::vector<unsigned char> &passable, in
 	}
 	return regions;
 }
+ComponentLabels labelComponents(const std::vector<int> &components, const std::vector<int> &labels)
+{
+	if (components.size() != labels.size())
+		throw std::invalid_argument("Component and label grids differ in size");
+	ComponentLabels result;
+	for (size_t i = 0; i < components.size(); ++i)
+	{
+		const int component = components[i];
+		if (component < 0)
+			continue;
+		if (size_t(component) >= components.size())
+			throw std::invalid_argument("Component ID outside dense grid range");
+		if (component >= int(result.owners.size()))
+			result.owners.resize(component + 1, -1);
+		if (labels[i] < 0)
+			continue;
+		int &owner = result.owners[component];
+		if (owner >= 0 && owner != labels[i])
+		{
+			// Retain the first owner and conflict: callers can inspect a deterministic
+			// witness without changing the labels of the remaining components.
+			if (result.conflictTile < 0)
+				result.conflictTile = int(i);
+		}
+		else
+			owner = labels[i];
+	}
+	return result;
+}
+
 RegionGraph regionAdjacency(const std::vector<int> &labels, int w, int h,
 							const std::vector<int> &ids, bool wrap)
 {

@@ -2484,3 +2484,11 @@ Adar kopurua
 Elkarguneen maiztasuna
 [Crossing spacing]
 Pasabideen arteko tartea
+[Breachable highlands]
+Zuloak ireki daitezkeen goi-lurrak
+[Ridge depth]
+Mendilerroen lodiera
+[Extra open passes]
+Mendate ireki gehigarriak
+[Wooded saddles]
+Mendate basotsuak

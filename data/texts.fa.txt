@@ -2472,3 +2472,11 @@ Emoji
 بسامد پیوندها
 [Crossing spacing]
 فاصلهٔ گذرگاه‌ها
+[Breachable highlands]
+بلندی‌های رخنه‌پذیر
+[Ridge depth]
+ضخامت یال‌ها
+[Extra open passes]
+گذرگاه‌های باز اضافی
+[Wooded saddles]
+گردنه‌های جنگلی

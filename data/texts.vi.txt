@@ -2470,3 +2470,11 @@ Số nhánh sông
 Tần suất hợp lưu
 [Crossing spacing]
 Khoảng cách lối qua
+[Breachable highlands]
+Cao nguyên có thể mở lối
+[Ridge depth]
+Độ dày sống núi
+[Extra open passes]
+Đèo mở bổ sung
+[Wooded saddles]
+Đèo phủ rừng

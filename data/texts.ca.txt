@@ -2482,3 +2482,11 @@ Nombre de braços
 Freqüència de confluències
 [Crossing spacing]
 Distància entre passos
+[Breachable highlands]
+Terres altes amb bretxes
+[Ridge depth]
+Gruix de les carenes
+[Extra open passes]
+Passos oberts addicionals
+[Wooded saddles]
+Colls boscosos

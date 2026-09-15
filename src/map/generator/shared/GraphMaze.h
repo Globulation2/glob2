@@ -52,6 +52,20 @@ bool pocketsFit(const CellGraph &, const std::vector<unsigned char> &pocket);
 /// pocketsFit (the lowest index on a tie). Empty if the tiling can't hold them.
 std::vector<int> spreadPockets(const CellGraph &, int count);
 
+/// Closed edges with neither endpoint blocked, in ascending edge-ID order. An empty
+/// blocked mask excludes no cells. Parallel edges retain their separate identities.
+/// This supplies a stable candidate list before a caller shuffles or ranks shortcuts.
+std::vector<int> closedEdges(const CellGraph &, const std::vector<unsigned char> &open,
+							 const std::vector<unsigned char> &blocked = {});
+
+/// For each requested edge, the distance between its endpoints using only open edges:
+/// the detour a shortcut would avoid, measured in graph edges, not tiles or travel time.
+/// The result is indexed by edge ID; unrequested or unreachable edges have value -1.
+/// Distances use the original open graph for every candidate, without adding shortcuts
+/// as they are measured. No RNG is consumed; stable sorting can preserve a seeded tie order.
+std::vector<int> edgeDetours(const CellGraph &, const std::vector<unsigned char> &open,
+							 const std::vector<int> &edges);
+
 /// Opens a spanning tree of the cells not `blocked` with a recursive backtracker from a random
 /// start: long winding passages with comparatively few, deep dead ends. Returns whether every such
 /// cell was reached.

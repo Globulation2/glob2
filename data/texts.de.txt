@@ -2474,3 +2474,11 @@ Anzahl der Flussarme
 Häufigkeit der Zusammenflüsse
 [Crossing spacing]
 Abstand der Übergänge
+[Breachable highlands]
+Durchbrechbares Hochland
+[Ridge depth]
+Kammdicke
+[Extra open passes]
+Zusätzliche offene Pässe
+[Wooded saddles]
+Bewaldete Pässe

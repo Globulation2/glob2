@@ -2474,3 +2474,11 @@ Folyóágak száma
 Összefolyások gyakorisága
 [Crossing spacing]
 Átkelők távolsága
+[Breachable highlands]
+Áttörhető felföld
+[Ridge depth]
+Hegygerincek vastagsága
+[Extra open passes]
+További nyitott hágók
+[Wooded saddles]
+Erdős nyergek

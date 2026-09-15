@@ -2474,3 +2474,11 @@ Emoji
 Учесталост спајања
 [Crossing spacing]
 Размак између прелаза
+[Breachable highlands]
+Висораван са пробојима
+[Ridge depth]
+Дебљина гребена
+[Extra open passes]
+Додатни отворени превоји
+[Wooded saddles]
+Шумовита седла

@@ -2474,3 +2474,11 @@ Număr de brațe
 Frecvența confluențelor
 [Crossing spacing]
 Distanța dintre treceri
+[Breachable highlands]
+Ținuturi înalte cu breșe
+[Ridge depth]
+Grosimea crestelor
+[Extra open passes]
+Trecători deschise suplimentare
+[Wooded saddles]
+Șei împădurite

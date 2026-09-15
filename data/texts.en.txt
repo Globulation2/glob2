@@ -2472,3 +2472,11 @@ Braid count
 Rejoining frequency
 [Crossing spacing]
 Crossing spacing
+[Breachable highlands]
+Breachable highlands
+[Ridge depth]
+Ridge depth
+[Extra open passes]
+Extra open passes
+[Wooded saddles]
+Wooded saddles

@@ -34,6 +34,7 @@
 #include "EmojiGenerator.h"
 #include "FortsGenerator.h"
 #include "BraidedDeltaGenerator.h"
+#include "BreachableHighlandsGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -155,6 +156,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 emojiDefinition(),
 											 fortsDefinition(),
 											 braidedDeltaDefinition(),
+											 breachableHighlandsDefinition(),
 											 uniformDefinition()});
 	return registry;
 }

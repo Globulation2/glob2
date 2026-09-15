@@ -2546,3 +2546,11 @@ Emoji
 匯合頻率
 [Crossing spacing]
 渡口間距
+[Breachable highlands]
+可突破的高地
+[Ridge depth]
+山脊厚度
+[Extra open passes]
+額外開放山口
+[Wooded saddles]
+林木山口

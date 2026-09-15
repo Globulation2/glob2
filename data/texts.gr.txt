@@ -2544,3 +2544,11 @@ Emoji
 Συχνότητα συμβολών
 [Crossing spacing]
 Απόσταση διαβάσεων
+[Breachable highlands]
+Υψίπεδα με ρήγματα
+[Ridge depth]
+Πάχος κορυφογραμμών
+[Extra open passes]
+Πρόσθετα ανοιχτά περάσματα
+[Wooded saddles]
+Δασωμένοι αυχένες

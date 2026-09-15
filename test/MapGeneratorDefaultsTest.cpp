@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #define SDL_MAIN_HANDLED
 #include "CustomGameSetup.h"
+#include "Contact.h"
+#include "FertilityField.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GenerationService.h"
@@ -14,6 +16,7 @@
 #include "NewMapScreen.h"
 #include "Race.h"
 #include "Resources.h"
+#include "Sketch.h"
 #include "StartingPositions.h"
 #include "Unit.h"
 #include "Utilities.h"
