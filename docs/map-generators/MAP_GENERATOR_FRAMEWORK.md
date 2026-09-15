@@ -1571,6 +1571,15 @@ tuned build had the worst colony's building sites per map at 61 to 310 (25 to 58
 units and buildings up, and more games decided by elimination. Linux and macOS produce identical
 golden rows. Nobody has played it by hand yet.
 
+- **Played, as a toy plays.** A rotation tournament (six 256×256 maps, four colonies, every
+  cyclic team rotation, four Nicowars, 45,000 ticks) shows the geography deciding: pooled
+  per-start peaks from 90 to 200 units, a root-mean-square position bias of 38 points, and on
+  four of six maps one start that never passed about 30 units and was eliminated in every
+  rotation by a rival 55 to 120 tiles away (more combat than starvation deaths). The start
+  metrics (fertility 0.3 to 0.9, 180 to 500 sites) do not flag those starts, so what dooms
+  them is who reaches them first, not what they hold. That is the contract the map states; the
+  retained maps are the material for anyone who wants to move the never-grow starts.
+
 ## Compatibility notes
 
 - A `GeneratorDefinition::legacyId` is a stable compatibility identifier, not a display or sort
