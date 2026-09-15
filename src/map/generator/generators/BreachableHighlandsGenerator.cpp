@@ -445,7 +445,7 @@ BreachableHighlandsOptions::BreachableHighlandsOptions(const GenerationRequest &
 GeneratorDefinition breachableHighlandsDefinition()
 {
 	return {"breachable-highlands",
-			33,
+			37,
 			"Breachable highlands",
 			4,
 			false,

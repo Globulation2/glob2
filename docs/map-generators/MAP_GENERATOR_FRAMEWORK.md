@@ -136,6 +136,7 @@ restores whatever landscape it had.
 | `emoji` | 34 | Emoji | [Design and play contract](emoji/DESIGN.md) |
 | `forts` | 35 | Forts | [Walled forts in river country](FORTS.md) |
 | `braided-delta` | 36 | Braided Delta | [Design and heuristics](BRAIDED_DELTA.md) |
+| `breachable-highlands` | 37 | Breachable highlands | [Stone valleys with clearable wooded saddles](BREACHABLE_HIGHLANDS.md) |
 | `uniform` | 0 | uniform terrain | Editor-only; one terrain type, unstructured |
 
 Retired ids, never reused: 25 (Marches, a lattice of homelands with wooded border bands, dropped
