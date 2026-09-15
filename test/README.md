@@ -612,7 +612,8 @@ Text output is also checked. Linux and Windows CI run it.
 ## Nicowar farming wood clearance
 
 `NicowarFarmingHarness` executes the farming scan and its real area orders. It
-checks the wood/wheat zone boundaries, four-way wheat adjacency, both wrap seams,
+checks the wood/wheat zone boundaries, eight-way wheat adjacency (including inside
+the wood zone), both wrap seams and diagonal corner wrapping,
 removal of conflicting farming protection, cleanup after wood and neighboring
 wheat disappear, and preservation of building clearing strips.
 
