@@ -2464,3 +2464,11 @@ Emoji
 دژها
 [Gate width]
 پهنای دروازه
+[Braided Delta]
+دلتای شاخه‌شاخه
+[Braid count]
+تعداد شاخه‌ها
+[Rejoining frequency]
+بسامد پیوندها
+[Crossing spacing]
+فاصلهٔ گذرگاه‌ها

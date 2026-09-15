@@ -2466,3 +2466,11 @@ Emoji
 Тврђаве
 [Gate width]
 Ширина капије
+[Braided Delta]
+Разграната делта
+[Braid count]
+Број рукаваца
+[Rejoining frequency]
+Учесталост спајања
+[Crossing spacing]
+Размак између прелаза

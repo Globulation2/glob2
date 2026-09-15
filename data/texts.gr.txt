@@ -2536,3 +2536,11 @@ Emoji
 Οχυρά
 [Gate width]
 Πλάτος πύλης
+[Braided Delta]
+Διακλαδισμένο δέλτα
+[Braid count]
+Αριθμός κλάδων
+[Rejoining frequency]
+Συχνότητα συμβολών
+[Crossing spacing]
+Απόσταση διαβάσεων

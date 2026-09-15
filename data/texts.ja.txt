@@ -2462,3 +2462,11 @@ Emoji
 砦
 [Gate width]
 城門の幅
+[Braided Delta]
+網状三角州
+[Braid count]
+分流数
+[Rejoining frequency]
+合流頻度
+[Crossing spacing]
+渡河地点の間隔

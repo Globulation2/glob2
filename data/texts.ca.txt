@@ -2474,3 +2474,11 @@ Passos
 Forts
 [Gate width]
 Amplada de la porta
+[Braided Delta]
+Delta trenat
+[Braid count]
+Nombre de braços
+[Rejoining frequency]
+Freqüència de confluències
+[Crossing spacing]
+Distància entre passos

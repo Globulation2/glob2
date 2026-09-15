@@ -2462,3 +2462,11 @@ Emoji
 堡垒
 [Gate width]
 城门宽度
+[Braided Delta]
+辫状三角洲
+[Braid count]
+河汊数量
+[Rejoining frequency]
+汇合频率
+[Crossing spacing]
+渡口间距

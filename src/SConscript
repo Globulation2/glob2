@@ -224,6 +224,7 @@ map/generator/generators/UniformGenerator.cpp
 map/generator/generators/WatershedGenerator.cpp
 map/generator/generators/EmojiGenerator.cpp
 map/generator/generators/FortsGenerator.cpp
+map/generator/generators/BraidedDeltaGenerator.cpp
 map/generator/generators/AnthillGenerator.cpp
 map/generator/generators/OldTownGenerator.cpp
 map/generator/generators/PolderGenerator.cpp

@@ -33,6 +33,7 @@
 #include "AnthillGenerator.h"
 #include "EmojiGenerator.h"
 #include "FortsGenerator.h"
+#include "BraidedDeltaGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -142,8 +143,6 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 switchbacksDefinition(),
 											 cityStatesDefinition(),
 											 canalsDefinition(),
-											 emojiDefinition(),
-											 fortsDefinition(),
 											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
@@ -153,6 +152,9 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 oldGrowthDefinition(),
 											 anthillDefinition(),
 											 coralDefinition(),
+											 emojiDefinition(),
+											 fortsDefinition(),
+											 braidedDeltaDefinition(),
 											 uniformDefinition()});
 	return registry;
 }

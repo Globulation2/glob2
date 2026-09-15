@@ -2464,3 +2464,11 @@ Emoji
 حصون
 [Gate width]
 عرض البوابة
+[Braided Delta]
+دلتا متشعبة
+[Braid count]
+عدد الفروع
+[Rejoining frequency]
+تكرار الالتقاء
+[Crossing spacing]
+المسافة بين المعابر

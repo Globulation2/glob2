@@ -29,3 +29,6 @@ principles every generator designs for, which the generators' comments refer to.
 [Generator telemetry](TELEMETRY.md) records internal counts, variants, calibration and fallback
 choices in CLI JSON reports. Use `tools/map_telemetry.py` to collect a bounded seed matrix and
 analyze those observations alongside final-map metrics.
+
+[Braided Delta](BRAIDED_DELTA.md) documents the braided river design, island room budgets,
+controls, supported settings and validation contract.

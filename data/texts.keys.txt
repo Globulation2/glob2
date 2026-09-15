@@ -1230,3 +1230,7 @@
 [Crossings]
 [Forts]
 [Gate width]
+[Braided Delta]
+[Braid count]
+[Rejoining frequency]
+[Crossing spacing]

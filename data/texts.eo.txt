@@ -2464,3 +2464,11 @@ Transirejoj
 Fortikaĵoj
 [Gate width]
 Larĝo de pordego
+[Braided Delta]
+Plektita delto
+[Braid count]
+Nombro de riverbrakoj
+[Rejoining frequency]
+Ofteco de kunfluoj
+[Crossing spacing]
+Interspaco de transirejoj

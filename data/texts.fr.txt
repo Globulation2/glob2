@@ -2476,3 +2476,11 @@ Passages
 Forts
 [Gate width]
 Largeur des portes
+[Braided Delta]
+Delta en tresses
+[Braid count]
+Nombre de bras
+[Rejoining frequency]
+Fréquence des confluences
+[Crossing spacing]
+Espacement des passages

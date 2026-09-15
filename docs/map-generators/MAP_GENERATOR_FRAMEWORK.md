@@ -40,7 +40,7 @@ and Terrain take a `Game` because placing buildings and units needs its mutation
 | `Homes` | Homes built alike: `stampRoundHome`, `homeSwarmSite` and `plantHomeKit` (a round home facing out from the middle, its swarm towards its door, optional ponds kept clear of its edge, and a wheat and wood kit near the swarm with no stone, since these homes are walled in stone; `homeHasRoom` is the size floor; Carousel, Switchbacks; the axis is any heading, out from the middle on a ring), `regionHome` (a home in ground of any shape: the swarm the same walk in from the door as every other colony's, on the roomiest such tile, facing away from the door), and `furnishGround` (farmland in patches on a ground's fertile tiles, outcrops and groves; City states, Carousel, Switchbacks, Amphitheatre) |
 | `Orbits` | Fairness by symmetry groups rather than wedges: `Symmetry` (signed permutation matrices on doubled centred coordinates plus a whole-tile translation, mapping tiles and corners exactly), `pointSymmetry` (the half turn, quarter turns, mirrors and all eight square symmetries; Symmetric arena), `translationSymmetry` (the roomiest lattice of 2, 4, 8... colonies on the torus, square, staggered or sheared, with no centre and served as well on a rectangular map), `latticeSites` (colonies on that lattice, or evenly staggered rows when the count has no exact group), `stampOrbits`, `orbitSum`, `orbitNoise` and `topShare` (features and fields every symmetry leaves unchanged), `equaliseDeposits` (the gameplay RNG's amounts made equal across each orbit) and `orbitMismatch` (the finished world checked exactly symmetric, colonies permuted one to one) |
 | `Morphology` | Mask arithmetic on the torus in integers: `dilate`, `erode`, `openMask`, `closeMask` (squares), `distanceSquaredTo` (exact Euclidean) and `dilateRound`, `clearance` (steps to the nearest tile outside a mask), `dropSmallRegions` (specks, or pockets on the inverted mask), `widestWalkClearance` and `narrowestPassage` (the width of a walk's narrowest point, a validator's check that a tunnel or street still takes a column of units) and `slivers` (Stone highlands' pockets, Farmland's field opening, `roomyGround`, `separateTerritories`) |
-| `Growth` | Where wheat and wood grow back, known on the sketch: `cropGrowthField` (the exact `Fertility::Field` of a `TerrainSketch`, not gated on deposits), `wateredShare`, `wetTiles` (a region promised dry checks 0), `dryZone` (where water would water a region: `kCropProbeReach` on each axis) and `drainWithin` |
+| `Growth` | Where wheat and wood grow back, known on the sketch: `cropGrowthField` (the exact `Fertility::Field` of a `TerrainSketch`, not gated on deposits), `wateredShare`, `wetTiles` (a region promised dry checks 0), `dryZone` (where water would water a region: `kCropProbeReach` on each axis) and `drainWithin`; finished-map `cropSeedsIn` checks protected masks after resource repairs, and `cropSpreadEnvelope` conservatively floods wheat/wood through toroidal eight-connected grass to test long-term containment without simulating growth speed |
 | `Contact` | Distances by what a step costs: `StepCosts` (open, clearable, eternal, water, building; `walking`, `chopping`, `swimming`), `stepCost`, `costsFrom`, `contactMatrix` (every colony's cost to every other), `costsToTarget`, `costSpread`, `unevenCosts` (a validator's message) and `equalCostSites` (one site per colony at the same cost from home, on its own side: groves an equal chop into a forest) |
 | `Points` | Irregular sites and cells: `spreadPoints` (dart throwing with a minimum spacing), `nearestSiteLabels` (warped Voronoi cells in sixteenths of a tile), `relaxPoints` (Lloyd relaxation on the torus) and `siteNeighbours` (which cells touch); Stone highlands' basins |
 | `Patterns` | Structure with a grain: `turingPattern` (labyrinths and spots grown from noise by activation and inhibition, about a wavelength across, optionally stretched), `stripePhase`, `stripeSpacing`, `stripeHeading`, `stripeNormal` and `stripeDistance` (parallel stripes that wrap both seams exactly at any whole-number slant, optionally warped), `upwindSteps` (the shadow a mask casts downwind) and `traceStreamline` (a curve following a field of headings) |
@@ -63,9 +63,9 @@ them so the ranking rewards what it is meant to be.
 
 ## The designed generator
 
-Twenty-one generators (Maze, Fjord continent, Watershed, Stone highlands, Symmetric arena, Ring world,
+Twenty-two generators (Maze, Fjord continent, Watershed, Stone highlands, Symmetric arena, Ring world,
 City states, Tidal flats, Everglades, Spider web, Coral, Carousel, Amphitheatre, Switchbacks, and the
-landscape generators Fingerprint, Rain shadow, Old growth, Canals, Polder, Old town and Anthill) follow one
+landscape generators Fingerprint, Rain shadow, Old growth, Canals, Polder, Old town, Anthill and Braided Delta) follow one
 shape, and the newest of them are little more than a sequence of shared stages:
 
 1. `design(request, context)` computes the whole layout from the request and the context's
@@ -133,6 +133,7 @@ restores whatever landscape it had.
 | `coral` | 21 | Coral | Its own — see below |
 | `emoji` | 34 | Emoji | [Design and play contract](emoji/DESIGN.md) |
 | `forts` | 35 | Forts | [Walled forts in river country](FORTS.md) |
+| `braided-delta` | 36 | Braided Delta | [Design and heuristics](BRAIDED_DELTA.md) |
 | `uniform` | 0 | uniform terrain | Editor-only; one terrain type, unstructured |
 
 Retired ids, never reused: 25 (Marches, a lattice of homelands with wooded border bands, dropped

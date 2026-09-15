@@ -2464,3 +2464,11 @@ Crossings
 Forts
 [Gate width]
 Gate width
+[Braided Delta]
+Braided Delta
+[Braid count]
+Braid count
+[Rejoining frequency]
+Rejoining frequency
+[Crossing spacing]
+Crossing spacing

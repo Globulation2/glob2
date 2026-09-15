@@ -2476,3 +2476,11 @@ Pasabideak
 Gotorlekuak
 [Gate width]
 Atearen zabalera
+[Braided Delta]
+Delta txirikordatua
+[Braid count]
+Adar kopurua
+[Rejoining frequency]
+Elkarguneen maiztasuna
+[Crossing spacing]
+Pasabideen arteko tartea
