@@ -2614,3 +2614,5 @@ Emoji
 언덕당 계단 수
 [Valley river]
 계곡의 강
+[Vultures]
+독수리

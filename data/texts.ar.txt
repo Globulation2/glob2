@@ -2616,3 +2616,5 @@ Emoji
 سلالم لكل تل
 [Valley river]
 نهر الوادي
+[Vultures]
+النسور

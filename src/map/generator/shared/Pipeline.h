@@ -108,6 +108,24 @@ bool settleRoundColonies(Game &, GenerationContext &, const char *stream,
 template <typename Layout>
 std::string designMismatch(const Layout &L, const Map &map, const char *name);
 
+/// A finished colony must be able to harvest `type` within `range` walking steps. `name` is
+/// used in failure diagnostics. The last step means gathering from a neighboring walkable tile,
+/// not walking through the resource. Permanent resources are valid targets too.
+struct ResourceAccessRule
+{
+	int type, range;
+	const char *name;
+};
+/// Read-only counterpart to starting-resource/room repairs, for maps whose resource policy
+/// forbids those repairs from planting freely (dry reserves, protected farmland, shore-only wood).
+/// Floods from each colony's actual workers with the engine's non-swimmer ground predicate.
+/// Requires `minimumSites` overlapping 4x4 anchors within `buildingRange`; these are placement
+/// options, not disjoint buildings. Returns the first unmet rule with colony and observed distance
+/// or site count. No mutation, RNG draws or silent weakening of requirements. Invalid budgets or
+/// resource rules throw GenerationFailure; no worker for a colony is an explicit failure.
+std::string startingAccessFailure(const Map &, int teams, const std::vector<ResourceAccessRule> &,
+								  int minimumSites = 16, int buildingRange = 24);
+
 /// Every colony's walk from colony 0's workers, with water, buildings and every resource
 /// blocking (units don't, since they move): the check every validator makes.
 struct ColonyWalk

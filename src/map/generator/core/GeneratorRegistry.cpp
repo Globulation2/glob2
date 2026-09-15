@@ -44,6 +44,7 @@
 #include "ContinentsGenerator.h"
 #include "SavannahGenerator.h"
 #include "RiceTerracesGenerator.h"
+#include "VulturesGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -175,6 +176,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 continentsDefinition(),
 											 savannahDefinition(),
 											 riceTerracesDefinition(),
+											 vulturesDefinition(),
 											 uniformDefinition()});
 	return registry;
 }

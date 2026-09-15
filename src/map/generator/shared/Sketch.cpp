@@ -7,6 +7,15 @@
 #include <cmath>
 namespace MapGeneration
 {
+std::vector<unsigned char> pureTiles(const Map &map, TerrainType type)
+{
+	const Torus t(map);
+	std::vector<unsigned char> result(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+		result[i] = map.getTerrainType(i % t.w, i / t.w) == type;
+	return result;
+}
+
 void layBeaches(TerrainSketch &terrain, const Torus &t)
 {
 	const TerrainSketch original(terrain);
@@ -120,8 +129,8 @@ std::vector<Island> raiseIslands(TerrainSketch &terrain, const Torus &t, Generat
 	return islands;
 }
 
-void keepRoadInland(std::vector<unsigned char> &road, const Torus &t, const std::vector<unsigned char> &water,
-					int gap)
+void keepRoadInland(std::vector<unsigned char> &road, const Torus &t,
+					const std::vector<unsigned char> &water, int gap)
 {
 	const std::vector<int> shore = stepsFrom(t, water);
 	for (int i = 0; i < t.size(); ++i)

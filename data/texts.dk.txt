@@ -2694,3 +2694,5 @@ Bredde på højdekurvebånd
 Trapper pr. bakke
 [Valley river]
 Flod i dalen
+[Vultures]
+Gribbe

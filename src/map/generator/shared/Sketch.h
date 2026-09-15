@@ -38,6 +38,10 @@ std::vector<unsigned char> tileCorners(const Torus &, const std::vector<unsigned
 /// water and pure sand, so this is the sketch as the game will see it.
 std::vector<unsigned char> pureTiles(const TerrainSketch &, const Torus &, TerrainType type);
 
+/// The same pure-terrain mask from a finished map's rendered tiles. Use after all terrain repairs
+/// when validating a growth or shoreline promise; mixed beach tiles belong to none of the masks.
+std::vector<unsigned char> pureTiles(const Map &, TerrainType);
+
 /// Decorative patches of sand inside the land, away from any shore: of the grass tiles `eligible`
 /// allows that lie at least `inland` steps from water, the `share` (0 to 1) with the highest
 /// `noiseAt(tile)` turn to sand. Sampling smooth noise gives a few rounded patches rather than
@@ -66,8 +70,8 @@ void sprinkleSand(TerrainSketch &sketch, const Torus &t, const std::vector<unsig
 /// A sand road kept inland: clears every road vertex fewer than `gap` steps from `water`. Sand that
 /// touches a beach carries the sea's margin along it, and stone only stands on grass, so a road that
 /// reached a walled coast would open a gap in the wall.
-void keepRoadInland(std::vector<unsigned char> &road, const Torus &, const std::vector<unsigned char> &water,
-					int gap);
+void keepRoadInland(std::vector<unsigned char> &road, const Torus &,
+					const std::vector<unsigned char> &water, int gap);
 
 /// The tiles a sand road spoils for building and deposits: a tile takes its terrain from its four
 /// corners, so every tile touching one of the road's vertices is no longer pure grass.

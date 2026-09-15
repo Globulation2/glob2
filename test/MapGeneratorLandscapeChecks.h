@@ -29,6 +29,7 @@
 #include <cstdint>
 #include <random>
 #include <set>
+#include <tuple>
 #include <vector>
 
 namespace LandscapeChecks
@@ -78,6 +79,19 @@ inline void orbitChecks()
 	assert(!three.exact && three.sites.size() == 3);
 	const LatticeSites four = latticeSites(64, 64, 4, 5, 7);
 	assert(four.exact && four.sites.size() == 4 && four.sites[0].x == 5 && four.sites[0].y == 7);
+	assert(roomyLatticeSites(0, 64, 4, 5, 7).sites.empty());
+	assert(roomyLatticeSites(64, 64, 0, 5, 7).sites.empty());
+	// Seven or eleven teams cannot factor into balanced equal rows on these rectangles, yet
+	// larger composite grids fit. The opt-in vacancy operation must improve whole-tile
+	// wrapped spacing without changing the ordinary exact/equal-row operation above.
+	for (const auto [w, h, teams] : {std::tuple{256, 128, 7}, std::tuple{128, 256, 11}})
+	{
+		const Torus t(w, h);
+		const LatticeSites ordinary = latticeSites(w, h, teams, 5, 7);
+		const LatticeSites roomy = roomyLatticeSites(w, h, teams, 5, 7);
+		assert(roomy.sites.size() == size_t(teams) && roomy.vacancies > 0);
+		assert(nearestSiteDistance(t, roomy.sites) > nearestSiteDistance(t, ordinary.sites));
+	}
 
 	std::vector<unsigned char> feature(size_t(64) * 64, 0);
 	feature[size_t(7) * 64 + 3] = 1;
@@ -159,6 +173,22 @@ inline void morphologyChecks()
 
 // Growth: a pond waters what is near it and nothing more than its probe reaches; draining the dry
 // zone of a region leaves it dry.
+// Disconnected habitat: a nearby two-tile pocket must not prevent fulfilling a five-tile
+// budget from a second pocket. With neither pocket eligible, placement terminates with zero.
+inline void patchBudgetChecks()
+{
+	Game game(nullptr);
+	landscapeGrass(game, 5, 5);
+	const Torus t(game.map);
+	std::vector<unsigned char> allowed(t.size(), 0);
+	for (int x : {4, 5, 8, 9, 10})
+		allowed[t.at(x, 4)] = 1;
+	const auto eligible = [&](int i) { return allowed[i]; };
+	const auto planted = growPatchesNear(game.map, t, 4, 4, 8, WHEAT, 5, eligible);
+	assert(planted.tiles == 5 && planted.patches == 2);
+	assert(growPatchesNear(game.map, t, 4, 4, 8, WHEAT, 5, eligible).tiles == 0);
+}
+
 inline void growthChecks()
 {
 	const Torus t(64, 64);
@@ -167,6 +197,12 @@ inline void growthChecks()
 		for (int x = 28; x < 36; ++x)
 			sketch[t.at(x, y)] = WATER;
 	layBeaches(sketch, t);
+	// The finished-map overload must agree with sketch corner arithmetic, including beaches.
+	Game written(nullptr);
+	landscapeGrass(written, 6, 6);
+	writeUndermap(written.map, sketch);
+	for (const auto type : {GRASS, SAND, WATER})
+		assert(pureTiles(written.map, type) == pureTiles(sketch, t, type));
 	Fertility::Field field = cropGrowthField(sketch, t);
 	assert(field.at(26, 31) > 0 && field.at(0, 0) == 0);
 	std::vector<unsigned char> distant(t.size(), 0), nearby(t.size(), 0);
@@ -680,6 +716,7 @@ inline void landscapeChecks()
 	orbitChecks();
 	morphologyChecks();
 	growthChecks();
+	patchBudgetChecks();
 	contactChecks();
 	pointChecks();
 	patternChecks();

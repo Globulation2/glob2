@@ -2618,3 +2618,5 @@ Anchura de las bandas de nivel
 Escaleras por colina
 [Valley river]
 Río del valle
+[Vultures]
+Buitres

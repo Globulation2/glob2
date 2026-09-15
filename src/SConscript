@@ -232,6 +232,7 @@ map/generator/generators/DrumlinFieldGenerator.cpp
 map/generator/generators/ContinentsGenerator.cpp
 map/generator/generators/SavannahGenerator.cpp
 map/generator/generators/RiceTerracesGenerator.cpp
+map/generator/generators/VulturesGenerator.cpp
 map/generator/generators/AnthillGenerator.cpp
 map/generator/generators/OldTownGenerator.cpp
 map/generator/generators/PolderGenerator.cpp
@@ -272,6 +273,7 @@ map/generator/shared/Room.cpp
 map/generator/shared/Biomes.cpp
 map/generator/shared/LatticeNoise.cpp
 map/generator/shared/Pipeline.cpp
+map/generator/shared/ClearingLandscape.cpp
 map/generator/shared/Planting.cpp
 map/generator/shared/Roads.cpp
 map/generator/shared/Sketch.cpp

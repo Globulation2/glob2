@@ -2618,3 +2618,5 @@ Poloměr kopce
 Schodiště na kopec
 [Valley river]
 Řeka v údolí
+[Vultures]
+Supi
