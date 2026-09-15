@@ -73,6 +73,7 @@
       "Canals",
       "Combat",
       "Editor",
+      "Forts",
       "Hospital",
       "Magenta",
       "No",
@@ -157,10 +158,10 @@
       "Magenta"
     ],
     "texts.fr.txt": [
-      "90 minutes",
       "30 minutes",
       "45 minutes",
       "60 minutes",
+      "90 minutes",
       "Alliance",
       "Alliances",
       "Audio",
@@ -168,6 +169,7 @@
       "Combat",
       "Construction",
       "Cyan",
+      "Forts",
       "Grain",
       "Magenta",
       "Options",

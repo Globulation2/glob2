@@ -2462,3 +2462,7 @@ Normal
 Invertido
 [Crossings]
 Pasos
+[Forts]
+Fortalezas
+[Gate width]
+Anchura de la puerta

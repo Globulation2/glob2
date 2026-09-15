@@ -2468,3 +2468,7 @@ Normal
 Invertido
 [Crossings]
 Passagens
+[Forts]
+Fortalezas
+[Gate width]
+Largura do portão

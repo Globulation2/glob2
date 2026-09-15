@@ -2538,3 +2538,7 @@ Normal
 Omvendt
 [Crossings]
 Overgange
+[Forts]
+Fæstninger
+[Gate width]
+Portbredde

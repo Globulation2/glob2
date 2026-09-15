@@ -102,8 +102,84 @@ inline void emojiContracts()
 		 "colonies/workers, unsupported geometry rejected");
 }
 
+// The smallest fort must retain its enclosure and usable food/wood at both abundance extremes.
+// Breaking a real rampart also exercises the generator's finished-world validator.
+inline void fortsContracts()
+{
+	D request;
+	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("forts"));
+	request.wDec = request.hDec = 6;
+	request.nbTeams = 1;
+	request.nbWorkers = 8;
+	request.options["home-size"] = 20;
+	request.options["gate-width"] = 8;
+	request.options["river-width"] = 9;
+	const auto &definition = GeneratorRegistry::builtins().at(request.method);
+	for (int lakes : {0, 1, 3})
+		for (int amount : {0, 300})
+		{
+			request.options["lakes"] = lakes;
+			for (const char *key : {"wheat-amount", "wood-amount", "stone-amount",
+									"algae-amount", "fruit-amount"})
+				request.options[key] = amount;
+			Game game(nullptr);
+			const auto result = GenerationService().generate(game, request, true);
+			if (!result)
+				std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+			assert(result);
+			int crops[2] = {0, 0}, wall = -1;
+			for (int i = 0; i < 64 * 64; ++i)
+			{
+				const auto &resource = game.map.getResource(i);
+				if (resource.type == WHEAT)
+					++crops[0];
+				if (resource.type == WOOD)
+					++crops[1];
+				if (resource.type == STONE && amount == 0)
+					wall = i;
+			}
+			assert(crops[0] >= 32 && crops[1] >= 32);
+			GenerationContext check(request);
+			assert(definition.validateWorld(game, check).empty());
+			if (amount > 0)
+			{
+				// Household fruit is an economic guarantee at nonzero default/max abundance.
+				for (int i = 0; i < 64 * 64; ++i)
+				{
+					const int type = game.map.getResource(i).type;
+					if (type >= CHERRY && type < CHERRY + 3)
+						game.map.setNoResource(i % 64, i / 64, 1);
+				}
+				assert(definition.validateWorld(game, check).find("orchard") !=
+					   std::string::npos);
+			}
+			if (amount == 0)
+			{
+				// Leave crops unharvested long enough to fill their plots: the courtyard and gates
+				// must still be usable when growth, rather than an AI, shapes the opening.
+				setSyncRandSeed(917);
+				for (int tick = 0; tick < 20000; ++tick)
+					game.map.growResources();
+				assert(definition.validateWorld(game, check).empty());
+				const Team *team = game.teams[0];
+				for (int dy = -2; dy < 6; ++dy)
+					for (int dx = -2; dx < 6; ++dx)
+						assert(
+							!game.map.isResource(team->startPosX + dx, team->startPosY + dy));
+				assert(wall >= 0);
+				game.map.setNoResource(wall % 64, wall / 64, 1);
+				assert(!definition.validateWorld(game, check).empty());
+			}
+		}
+	request.nbTeams = 4;
+	Game crowded(nullptr);
+	assert(GenerationService().generate(crowded, request).error ==
+		   GenerationError::InvalidRequest);
+}
+
 inline void generatorContracts()
 {
+	fortsContracts();
 	emojiContracts();
 }
 } // namespace GeneratorContracts

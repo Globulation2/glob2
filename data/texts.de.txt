@@ -2462,3 +2462,7 @@ Normal
 Umgekehrt
 [Crossings]
 Übergänge
+[Forts]
+Festungen
+[Gate width]
+Torbreite

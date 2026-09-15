@@ -2460,3 +2460,7 @@ Regular
 Inverse
 [Crossings]
 Crossings
+[Forts]
+Forts
+[Gate width]
+Gate width

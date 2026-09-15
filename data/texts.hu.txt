@@ -2462,3 +2462,7 @@ Normál
 Fordított
 [Crossings]
 Átkelők
+[Forts]
+Erődök
+[Gate width]
+Kapuszélesség

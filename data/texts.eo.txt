@@ -2460,3 +2460,7 @@ Normala
 Inversa
 [Crossings]
 Transirejoj
+[Forts]
+Fortikaĵoj
+[Gate width]
+Larĝo de pordego

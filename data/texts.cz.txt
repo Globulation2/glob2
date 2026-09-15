@@ -2462,3 +2462,7 @@ Běžný
 Obrácený
 [Crossings]
 Přechody
+[Forts]
+Pevnosti
+[Gate width]
+Šířka brány

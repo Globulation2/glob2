@@ -2458,3 +2458,7 @@ Emoji
 반전
 [Crossings]
 통로
+[Forts]
+요새
+[Gate width]
+성문 너비

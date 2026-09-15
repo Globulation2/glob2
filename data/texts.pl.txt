@@ -2462,3 +2462,7 @@ Zwykły
 Odwrócony
 [Crossings]
 Przejścia
+[Forts]
+Fortece
+[Gate width]
+Szerokość bramy

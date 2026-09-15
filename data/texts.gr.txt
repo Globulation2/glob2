@@ -2532,3 +2532,7 @@ Emoji
 Αντίστροφο
 [Crossings]
 Περάσματα
+[Forts]
+Οχυρά
+[Gate width]
+Πλάτος πύλης

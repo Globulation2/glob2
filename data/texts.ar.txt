@@ -2460,3 +2460,7 @@ Emoji
 معكوس
 [Crossings]
 معابر
+[Forts]
+حصون
+[Gate width]
+عرض البوابة

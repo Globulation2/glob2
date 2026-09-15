@@ -2462,3 +2462,7 @@ Tavallinen
 Käänteinen
 [Crossings]
 Ylitykset
+[Forts]
+Linnoitukset
+[Gate width]
+Portin leveys

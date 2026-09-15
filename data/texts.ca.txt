@@ -2470,3 +2470,7 @@ Normal
 Invertit
 [Crossings]
 Passos
+[Forts]
+Forts
+[Gate width]
+Amplada de la porta

@@ -132,6 +132,7 @@ restores whatever landscape it had.
 | `anthill` | 32 | Anthill | Its own — see below |
 | `coral` | 21 | Coral | Its own — see below |
 | `emoji` | 34 | Emoji | [Design and play contract](emoji/DESIGN.md) |
+| `forts` | 35 | Forts | [Walled forts in river country](FORTS.md) |
 | `uniform` | 0 | uniform terrain | Editor-only; one terrain type, unstructured |
 
 Retired ids, never reused: 25 (Marches, a lattice of homelands with wooded border bands, dropped
