@@ -1,0 +1,568 @@
+{
+  "platform": "darwin/arm64 (this session's only available machine)",
+  "runs_per_scenario": 3,
+  "map_generation": [
+    {
+      "size": "128x128",
+      "teams": 2,
+      "binary": "baseline",
+      "label": "baseline generate 128x128/2t",
+      "runs": 3,
+      "ok": 3,
+      "real_s": {
+        "min": 0.03,
+        "median": 0.03,
+        "max": 0.03
+      },
+      "user_s": {
+        "min": 0.02,
+        "median": 0.02,
+        "max": 0.02
+      },
+      "sys_s": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0
+      },
+      "maxrss": {
+        "min": 21020672,
+        "median": 21053440,
+        "max": 21069824
+      },
+      "output_path": "map.map",
+      "output_bytes": 999172
+    },
+    {
+      "size": "128x128",
+      "teams": 2,
+      "binary": "new",
+      "label": "new generate 128x128/2t",
+      "runs": 3,
+      "ok": 3,
+      "real_s": {
+        "min": 0.03,
+        "median": 0.03,
+        "max": 0.03
+      },
+      "user_s": {
+        "min": 0.02,
+        "median": 0.02,
+        "max": 0.02
+      },
+      "sys_s": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0
+      },
+      "maxrss": {
+        "min": 21282816,
+        "median": 21348352,
+        "max": 21364736
+      },
+      "output_path": "map.map.gz",
+      "output_bytes": 35808
+    },
+    {
+      "size": "256x256",
+      "teams": 4,
+      "binary": "baseline",
+      "label": "baseline generate 256x256/4t",
+      "runs": 3,
+      "ok": 3,
+      "real_s": {
+        "min": 0.08,
+        "median": 0.08,
+        "max": 0.08
+      },
+      "user_s": {
+        "min": 0.06,
+        "median": 0.06,
+        "max": 0.06
+      },
+      "sys_s": {
+        "min": 0.01,
+        "median": 0.01,
+        "max": 0.01
+      },
+      "maxrss": {
+        "min": 30982144,
+        "median": 30998528,
+        "max": 31064064
+      },
+      "output_path": "map.map",
+      "output_bytes": 3111372
+    },
+    {
+      "size": "256x256",
+      "teams": 4,
+      "binary": "new",
+      "label": "new generate 256x256/4t",
+      "runs": 3,
+      "ok": 3,
+      "real_s": {
+        "min": 0.09,
+        "median": 0.09,
+        "max": 0.09
+      },
+      "user_s": {
+        "min": 0.08,
+        "median": 0.08,
+        "max": 0.08
+      },
+      "sys_s": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0
+      },
+      "maxrss": {
+        "min": 34127872,
+        "median": 34127872,
+        "max": 34177024
+      },
+      "output_path": "map.map.gz",
+      "output_bytes": 146826
+    },
+    {
+      "size": "512x512",
+      "teams": 8,
+      "binary": "baseline",
+      "label": "baseline generate 512x512/8t",
+      "runs": 3,
+      "ok": 3,
+      "real_s": {
+        "min": 0.25,
+        "median": 0.25,
+        "max": 0.26
+      },
+      "user_s": {
+        "min": 0.2,
+        "median": 0.2,
+        "max": 0.21
+      },
+      "sys_s": {
+        "min": 0.03,
+        "median": 0.03,
+        "max": 0.04
+      },
+      "maxrss": {
+        "min": 76578816,
+        "median": 76595200,
+        "max": 76726272
+      },
+      "output_path": "map.map",
+      "output_bytes": 10679644
+    },
+    {
+      "size": "512x512",
+      "teams": 8,
+      "binary": "new",
+      "label": "new generate 512x512/8t",
+      "runs": 3,
+      "ok": 3,
+      "real_s": {
+        "min": 0.27,
+        "median": 0.27,
+        "max": 0.27
+      },
+      "user_s": {
+        "min": 0.26,
+        "median": 0.26,
+        "max": 0.26
+      },
+      "sys_s": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0
+      },
+      "maxrss": {
+        "min": 87375872,
+        "median": 87392256,
+        "max": 87474176
+      },
+      "output_path": "map.map.gz",
+      "output_bytes": 495010
+    }
+  ],
+  "save_cost": [
+    {
+      "fixture": "gd-small-2ai",
+      "binary": "baseline",
+      "label": "baseline save-cost gd-small-2ai",
+      "runs": 3,
+      "ok": 1,
+      "real_s": {
+        "min": 0.22,
+        "median": 0.22,
+        "max": 0.22
+      },
+      "user_s": {
+        "min": 0.17,
+        "median": 0.17,
+        "max": 0.17
+      },
+      "sys_s": {
+        "min": 0.02,
+        "median": 0.02,
+        "max": 0.02
+      },
+      "maxrss": {
+        "min": 27983872,
+        "median": 27983872,
+        "max": 27983872
+      },
+      "output_sizes": {
+        "checkpoint-1024.game": 903109,
+        "checkpoint-1536.game": 995728,
+        "checkpoint-2048.game": 1021304,
+        "checkpoint-512.game": 853617,
+        "final.game": 1021304,
+        "initial.game": 736897
+      }
+    },
+    {
+      "fixture": "gd-small-2ai",
+      "binary": "new",
+      "label": "new save-cost gd-small-2ai",
+      "runs": 3,
+      "ok": 1,
+      "real_s": {
+        "min": 0.22,
+        "median": 0.22,
+        "max": 0.22
+      },
+      "user_s": {
+        "min": 0.2,
+        "median": 0.2,
+        "max": 0.2
+      },
+      "sys_s": {
+        "min": 0.01,
+        "median": 0.01,
+        "max": 0.01
+      },
+      "maxrss": {
+        "min": 32014336,
+        "median": 32014336,
+        "max": 32014336
+      },
+      "output_sizes": {
+        "checkpoint-1024.game.gz": 50451,
+        "checkpoint-1536.game.gz": 65588,
+        "checkpoint-2048.game.gz": 69785,
+        "checkpoint-512.game.gz": 45424,
+        "final.game.gz": 69785,
+        "initial.game.gz": 27708
+      }
+    },
+    {
+      "fixture": "mixed-ai-initial",
+      "binary": "baseline",
+      "label": "baseline save-cost mixed-ai-initial",
+      "runs": 3,
+      "ok": 1,
+      "real_s": {
+        "min": 3.42,
+        "median": 3.42,
+        "max": 3.42
+      },
+      "user_s": {
+        "min": 2.41,
+        "median": 2.41,
+        "max": 2.41
+      },
+      "sys_s": {
+        "min": 0.68,
+        "median": 0.68,
+        "max": 0.68
+      },
+      "maxrss": {
+        "min": 90619904,
+        "median": 90619904,
+        "max": 90619904
+      },
+      "output_sizes": {
+        "checkpoint-1024.game": 47460589,
+        "checkpoint-1536.game": 50198810,
+        "checkpoint-2048.game": 50315153,
+        "checkpoint-512.game": 45767146,
+        "final.game": 50315153,
+        "initial.game": 7215974
+      }
+    },
+    {
+      "fixture": "mixed-ai-initial",
+      "binary": "new",
+      "label": "new save-cost mixed-ai-initial",
+      "runs": 3,
+      "ok": 1,
+      "real_s": {
+        "min": 4.35,
+        "median": 4.35,
+        "max": 4.35
+      },
+      "user_s": {
+        "min": 4.28,
+        "median": 4.28,
+        "max": 4.28
+      },
+      "sys_s": {
+        "min": 0.04,
+        "median": 0.04,
+        "max": 0.04
+      },
+      "maxrss": {
+        "min": 388939776,
+        "median": 388939776,
+        "max": 388939776
+      },
+      "output_sizes": {
+        "checkpoint-1024.game.gz": 3169977,
+        "checkpoint-1536.game.gz": 3521353,
+        "checkpoint-2048.game.gz": 3475007,
+        "checkpoint-512.game.gz": 2853092,
+        "final.game.gz": 3475008,
+        "initial.game.gz": 288924
+      }
+    },
+    {
+      "fixture": "maxima-initial",
+      "binary": "baseline",
+      "label": "baseline save-cost maxima-initial",
+      "runs": 3,
+      "ok": 1,
+      "real_s": {
+        "min": 1.14,
+        "median": 1.14,
+        "max": 1.14
+      },
+      "user_s": {
+        "min": 0.76,
+        "median": 0.76,
+        "max": 0.76
+      },
+      "sys_s": {
+        "min": 0.27,
+        "median": 0.27,
+        "max": 0.27
+      },
+      "maxrss": {
+        "min": 51118080,
+        "median": 51118080,
+        "max": 51118080
+      },
+      "output_sizes": {
+        "checkpoint-1024.game": 19643427,
+        "checkpoint-1536.game": 19662101,
+        "checkpoint-2048.game": 20113665,
+        "checkpoint-512.game": 18471017,
+        "final.game": 20113665,
+        "initial.game": 2477492
+      }
+    },
+    {
+      "fixture": "maxima-initial",
+      "binary": "new",
+      "label": "new save-cost maxima-initial",
+      "runs": 3,
+      "ok": 1,
+      "real_s": {
+        "min": 1.56,
+        "median": 1.56,
+        "max": 1.56
+      },
+      "user_s": {
+        "min": 1.52,
+        "median": 1.52,
+        "max": 1.52
+      },
+      "sys_s": {
+        "min": 0.02,
+        "median": 0.02,
+        "max": 0.02
+      },
+      "maxrss": {
+        "min": 176078848,
+        "median": 176078848,
+        "max": 176078848
+      },
+      "output_sizes": {
+        "checkpoint-1024.game.gz": 1345831,
+        "checkpoint-1536.game.gz": 1371722,
+        "checkpoint-2048.game.gz": 1452058,
+        "checkpoint-512.game.gz": 1244173,
+        "final.game.gz": 1452055,
+        "initial.game.gz": 127389
+      }
+    }
+  ],
+  "load_only": [
+    {
+      "fixture": "gd-small-2ai",
+      "variant": "raw",
+      "label": "new load-only gd-small-2ai raw",
+      "runs": 3,
+      "ok": 3,
+      "real_s": {
+        "min": 0.03,
+        "median": 0.03,
+        "max": 0.03
+      },
+      "user_s": {
+        "min": 0.02,
+        "median": 0.02,
+        "max": 0.02
+      },
+      "sys_s": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0
+      },
+      "maxrss": {
+        "min": 20217856,
+        "median": 20217856,
+        "max": 20332544
+      },
+      "input_bytes": 197439
+    },
+    {
+      "fixture": "gd-small-2ai",
+      "variant": "gzip",
+      "label": "new load-only gd-small-2ai gzip",
+      "runs": 3,
+      "ok": 3,
+      "real_s": {
+        "min": 0.03,
+        "median": 0.03,
+        "max": 0.03
+      },
+      "user_s": {
+        "min": 0.02,
+        "median": 0.02,
+        "max": 0.02
+      },
+      "sys_s": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0
+      },
+      "maxrss": {
+        "min": 20529152,
+        "median": 20578304,
+        "max": 20611072
+      },
+      "input_bytes": 17729
+    },
+    {
+      "fixture": "mixed-ai-initial",
+      "variant": "raw",
+      "label": "new load-only mixed-ai-initial raw",
+      "runs": 3,
+      "ok": 3,
+      "real_s": {
+        "min": 0.17,
+        "median": 0.17,
+        "max": 0.17
+      },
+      "user_s": {
+        "min": 0.16,
+        "median": 0.16,
+        "max": 0.16
+      },
+      "sys_s": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0
+      },
+      "maxrss": {
+        "min": 40632320,
+        "median": 40681472,
+        "max": 40697856
+      },
+      "input_bytes": 6742207
+    },
+    {
+      "fixture": "mixed-ai-initial",
+      "variant": "gzip",
+      "label": "new load-only mixed-ai-initial gzip",
+      "runs": 3,
+      "ok": 3,
+      "real_s": {
+        "min": 0.14,
+        "median": 0.14,
+        "max": 0.14
+      },
+      "user_s": {
+        "min": 0.13,
+        "median": 0.13,
+        "max": 0.13
+      },
+      "sys_s": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0
+      },
+      "maxrss": {
+        "min": 61931520,
+        "median": 62062592,
+        "max": 62078976
+      },
+      "input_bytes": 256660
+    },
+    {
+      "fixture": "maxima-initial",
+      "variant": "raw",
+      "label": "new load-only maxima-initial raw",
+      "runs": 3,
+      "ok": 3,
+      "real_s": {
+        "min": 0.07,
+        "median": 0.07,
+        "max": 0.07
+      },
+      "user_s": {
+        "min": 0.06,
+        "median": 0.06,
+        "max": 0.06
+      },
+      "sys_s": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0
+      },
+      "maxrss": {
+        "min": 26607616,
+        "median": 26640384,
+        "max": 26656768
+      },
+      "input_bytes": 1964441
+    },
+    {
+      "fixture": "maxima-initial",
+      "variant": "gzip",
+      "label": "new load-only maxima-initial gzip",
+      "runs": 3,
+      "ok": 3,
+      "real_s": {
+        "min": 0.06,
+        "median": 0.06,
+        "max": 0.06
+      },
+      "user_s": {
+        "min": 0.06,
+        "median": 0.06,
+        "max": 0.06
+      },
+      "sys_s": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0
+      },
+      "maxrss": {
+        "min": 30261248,
+        "median": 30408704,
+        "max": 30474240
+      },
+      "input_bytes": 89702
+    }
+  ]
+}

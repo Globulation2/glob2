@@ -5,6 +5,7 @@
 #include "MapHeader.h"
 #include "Game.h"
 #include <algorithm>
+#include <map>
 #include "FileManager.h"
 
 MapHeader::MapHeader()
@@ -266,13 +267,20 @@ bool MapHeader::operator==(const MapHeader& rhs) const
 
 std::string glob2FilenameToName(const std::string& filename)
 {
+	// Strip a ".gz" container suffix first so "Foo.map.gz"/"Foo.game.gz" resolve
+	// their display name exactly like the uncompressed "Foo.map"/"Foo.game" did.
+	std::string trimmed = filename;
+	static const std::string gzSuffix = ".gz";
+	if (trimmed.size() >= gzSuffix.size() && trimmed.compare(trimmed.size()-gzSuffix.size(), gzSuffix.size(), gzSuffix) == 0)
+		trimmed.resize(trimmed.size() - gzSuffix.size());
+
 	std::string mapName;
-	if(filename.find(".game")!=std::string::npos)
-		mapName=filename.substr(filename.find("/")+1, filename.size()-6-filename.find("/"));
-	else if(filename.find(".replay")!=std::string::npos)
-		mapName=filename.substr(filename.find("/")+1, filename.size()-8-filename.find("/"));
+	if(trimmed.find(".game")!=std::string::npos)
+		mapName=trimmed.substr(trimmed.find("/")+1, trimmed.size()-6-trimmed.find("/"));
+	else if(trimmed.find(".replay")!=std::string::npos)
+		mapName=trimmed.substr(trimmed.find("/")+1, trimmed.size()-8-trimmed.find("/"));
 	else
-		mapName=filename.substr(filename.find("/")+1, filename.size()-5-filename.find("/"));
+		mapName=trimmed.substr(trimmed.find("/")+1, trimmed.size()-5-trimmed.find("/"));
 	size_t pos = mapName.find("_");
 	while(pos != std::string::npos)
 	{
@@ -307,5 +315,65 @@ std::string glob2NameToFilename(const std::string& dir, const std::string& name,
 		fullFileName += extension;
 	}
 	return fullFileName;
+}
+
+namespace
+{
+	bool endsWithGz(const std::string& path)
+	{
+		static const std::string suffix = ".gz";
+		return path.size() >= suffix.size() && path.compare(path.size()-suffix.size(), suffix.size(), suffix) == 0;
+	}
+}
+
+std::string glob2GzipWritePath(const std::string& path)
+{
+	return endsWithGz(path) ? path : path + ".gz";
+}
+
+bool glob2IsGzipPath(const std::string& path)
+{
+	return endsWithGz(path);
+}
+
+std::string glob2PreferGzipReadPath(GAGCore::FileManager& files, const std::string& path)
+{
+	if (endsWithGz(path))
+		return path;
+	const std::string gzipped = path + ".gz";
+	return files.exists(gzipped) ? gzipped : path;
+}
+
+GAGCore::StreamBackend *glob2OpenMapOrSaveInputStreamBackend(GAGCore::FileManager& files, const std::string& path)
+{
+	return files.openInflatingInputStreamBackend(glob2PreferGzipReadPath(files, path));
+}
+
+std::vector<std::string> glob2ListMapOrSaveFiles(GAGCore::FileManager& files, const std::string& dir, const std::string& baseExtension)
+{
+	std::vector<std::string> result;
+	std::map<std::string, size_t> indexByName;
+	auto scan = [&](const std::string& extension, bool isGzip)
+	{
+		if (!files.initDirectoryListing(dir.c_str(), extension, false))
+			return;
+		std::string fileName;
+		while (!(fileName = files.getNextDirectoryEntry()).empty())
+		{
+			std::string name = isGzip ? fileName.substr(0, fileName.size()-3) : fileName;
+			std::string fullFileName = dir + DIR_SEPARATOR + fileName;
+			auto it = indexByName.find(name);
+			if (it != indexByName.end())
+				result[it->second] = fullFileName; // the later (".gz") scan wins
+			else
+			{
+				indexByName[name] = result.size();
+				result.push_back(fullFileName);
+			}
+		}
+	};
+	scan(baseExtension, false);
+	scan(baseExtension + ".gz", true);
+	return result;
 }
 

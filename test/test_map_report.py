@@ -240,7 +240,10 @@ def main():
         assert fixtures['algae-ring']['movement']['walking_and_swimming']['between_colonies'] == [[0,None],[None,0]]
         assert fixtures['empty']['canonical_quality']['measured'] is False
         assert fixtures['empty']['resources']['types']['wood']['percent_of_resource_tiles'] is None
-        saved, report=OUT/'maze.map', OUT/'maze.json'
+        # --output writes maze.map.gz (an explicit ".map" destination gets a ".gz"
+        # suffix); naming the variable with the suffix already applied means the
+        # CLI's actual output path and this variable are exactly the same string.
+        saved, report=OUT/'maze.map.gz', OUT/'maze.json'
         args=['--generate-map','maze','--seed','7','--width','128','--height','128','--set','cell-shape=0']
         run([*args,'--output',saved])
         original=saved.read_bytes()
@@ -267,7 +270,7 @@ def main():
         assert loaded['generation'] == {'available':False,'parameters':None,'telemetry':None,'reason':'Map/save files do not store the complete original generator request'}
         for key in ['terrain','underlying_terrain','resources','space','fertility','canonical_quality','movement','start_position_euclidean_distances']:
             assert loaded[key] == generated[key], key+' changed on load'
-        for fixture in ['team-stats/version88.game','wrapped-building/reproducer.game','entering-explorer/reproducer.game']:
+        for fixture in ['team-stats/version88.game.gz','wrapped-building/reproducer.game.gz','entering-explorer/reproducer.game.gz']:
             source=ROOT/'test/fixtures'/fixture
             snapshot=source.read_bytes()
             output=OUT/(source.parent.name+'.json')
@@ -282,7 +285,7 @@ def main():
         assert failed['report_type'] == 'generation_failure' and 'map' not in failed
         assert failed['generation']['outcome']['error'] == 'invalid_request'
         assert failed['generation']['telemetry']['records'][-1]['kind'] == 'error'
-        assert not (OUT/'must-not-exist.map').exists()
+        assert not (OUT/'must-not-exist.map').exists() and not (OUT/'must-not-exist.map.gz').exists()
         for bad in [[*args,'--output',saved,'--json',saved],['--preview-map',saved,'--json',saved],
                     [*args,'--json',OUT],[*args,'--json'],[*args,'--json',report,'--preview-size','256'],
                     ['--generate-map','maze','--config',profile/'map.cfg','--json',profile/'map.cfg']]:

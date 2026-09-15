@@ -45,7 +45,7 @@ class Planner:
                   'subject_player': config.get('player', 0), 'rotation': rotation, 'variant': variant, 'pair': pair, 'held_out': held_out,
                   'symmetric_control': method == 15, 'block': f'{method}:{map_seed}:{seed}'}
         value = job('game', build,
-                    inputs={'map': {'job': generated['id'], 'artifact': f'map-r{rotation}.map'}},
+                    inputs={'map': {'job': generated['id'], 'artifact': f'map-r{rotation}.map.gz'}},
                     depends_on=[generated['id']], seeds={'game': seed},
                     config={'players': players, 'ticks': config.get('ticks', 90000),
                             'ai_params': overrides or {}, **({'alliances': alliances} if alliances else {})},

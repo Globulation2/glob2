@@ -28,7 +28,7 @@ Before: no schools requested and upgrades disabled. After: two school sites obse
 
 ```sh
 build/src/glob2 --run-game --load-game /path/to/maxima_upgrade_test.game --ticks 36000 --output-dir /tmp/maxima-school-fixed --telemetry maxima --telemetry team-timeline --save final
-build/src/glob2 --run-game --load-game /tmp/maxima-school-fixed/final.game --ticks 36064 --output-dir /tmp/maxima-school-reloaded
+build/src/glob2 --run-game --load-game /tmp/maxima-school-fixed/final.game.gz --ticks 36064 --output-dir /tmp/maxima-school-reloaded
 ```
 
 Both load/continuation commands succeeded. No save fields, order payloads or engine simulation rules change. AI decisions intentionally change on continuation; recorded orders remain the replay/network interface. Cross-platform checksum equivalence was not tested. The requesting maintainer played the installed changes, reported that they worked well, and explicitly approved merging them.

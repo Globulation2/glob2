@@ -28,16 +28,17 @@
 bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI, const std::string& sourceFileName)
 {
 	init();
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(sourceFileName.empty()?mapHeader.getFileName():sourceFileName));
+	FileManager& files = *Toolkit::getFileManager();
+	InputStream *stream = new BinaryInputStream(glob2OpenMapOrSaveInputStreamBackend(files, sourceFileName.empty()?mapHeader.getFileName():sourceFileName));
 	if (stream->isEndOfStream() && !sourceFileName.empty()) { delete stream; return false; }
 	if (stream->isEndOfStream())
 	{
 		delete stream;
-		stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName(true)));
+		stream = new BinaryInputStream(glob2OpenMapOrSaveInputStreamBackend(files, mapHeader.getFileName(true)));
 		if(stream->isEndOfStream())
 		{
 			delete stream;
-			stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName(false,true)));
+			stream = new BinaryInputStream(glob2OpenMapOrSaveInputStreamBackend(files, mapHeader.getFileName(false,true)));
 			if(stream->isEndOfStream())
 			{
 				std::cerr << "GameGUI::loadFromHeaders() : error, can't open file " << mapHeader.getFileName() << ", " << mapHeader.getFileName(true) << " or " << mapHeader.getFileName(false,true) << std::endl;

@@ -6,6 +6,7 @@
 #include <functional>
 #include <algorithm>
 #include <iostream>
+#include <map>
 #include <Toolkit.h>
 #include "TextSort.h"
 
@@ -37,9 +38,14 @@ namespace GAGGUI
 	
 	void FileList::generateList()
 	{
+		generateListFromExtensions({this->extension});
+	}
+
+	void FileList::generateListFromExtensions(const std::vector<std::string>& extensions)
+	{
 		// we free the current list
 		this->strings.clear();
-	
+
 		std::string fullDir = this->dir;
 		// we add the parent directory
 		if (! this->current.empty())
@@ -47,28 +53,45 @@ namespace GAGGUI
 			this->addText("../");
 			fullDir += DIR_SEPARATOR + this->current;
 		}
-		// we add the other files
-		if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), this->extension, this->recurse))
+
+		// Files are collected by display name before being added, so a later
+		// extension in the list can replace an earlier match (single-extension
+		// callers never collide, so this reproduces the previous behavior exactly).
+		std::map<std::string, std::string> filesByListName;
+		bool any = false;
+		bool includeDirs = this->recurse;
+		for (const std::string& extension : extensions)
 		{
-			std::string filename;
-			while (!(filename = Toolkit::getFileManager()->getNextDirectoryEntry()).empty())
+			if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), extension, includeDirs))
 			{
-				std::string fullFileName = fullDir + DIR_SEPARATOR + filename;
-				if (Toolkit::getFileManager()->isDir(fullFileName.c_str()))
+				any = true;
+				std::string filename;
+				while (!(filename = Toolkit::getFileManager()->getNextDirectoryEntry()).empty())
 				{
-					std::string dirName = std::string(filename) + DIR_SEPARATOR;
-					this->addText(dirName.c_str());
-				}
-				else
-				{
-					std::string listName = this->fileToList(filename);
-					if (listName.length())
-						this->addText(listName.c_str());
+					std::string fullFileName = fullDir + DIR_SEPARATOR + filename;
+					if (Toolkit::getFileManager()->isDir(fullFileName.c_str()))
+					{
+						if (includeDirs)
+						{
+							std::string dirName = std::string(filename) + DIR_SEPARATOR;
+							this->addText(dirName.c_str());
+						}
+					}
+					else
+					{
+						std::string listName = this->fileToList(filename);
+						if (listName.length())
+							filesByListName[listName] = filename;
+					}
 				}
 			}
-			this->sort();
+			includeDirs = false; // subfolders are only collected from the first extension
 		}
-		
+		for (const auto& entry : filesByListName)
+			this->addText(entry.first.c_str());
+		if (any)
+			this->sort();
+
 		// we deselect
 		this->nth = -1;
 	}

@@ -1,0 +1,272 @@
+{
+  "files": [
+    {
+      "path": "campaigns/tutorial-part1.map",
+      "original_bytes": 639523,
+      "original_sha256": "58e98b58850af21a0800016897ea714205c3f1a9465d667b83663415c954b79d",
+      "gzip_bytes": 73454,
+      "gzip_path": "campaigns/tutorial-part1.map.gz"
+    },
+    {
+      "path": "campaigns/tutorial-part2.map",
+      "original_bytes": 675964,
+      "original_sha256": "5d36823a11459af8d0e93b5cf210cee52186db87e2c79d5d77d5d4adaddce56d",
+      "gzip_bytes": 86498,
+      "gzip_path": "campaigns/tutorial-part2.map.gz"
+    },
+    {
+      "path": "campaigns/tutorial-part3.map",
+      "original_bytes": 657337,
+      "original_sha256": "b673c85ad061fd8cfc21a711718268df84eebbbc7e8d0d417dcb052156a6a498",
+      "gzip_bytes": 78866,
+      "gzip_path": "campaigns/tutorial-part3.map.gz"
+    },
+    {
+      "path": "campaigns/tutorial-part4.map",
+      "original_bytes": 653724,
+      "original_sha256": "9b87b324659037940d3adca081aaf89a7ce7d3fe55d80b128994d0add2a7efa2",
+      "gzip_bytes": 73746,
+      "gzip_path": "campaigns/tutorial-part4.map.gz"
+    },
+    {
+      "path": "docs/artifacts/map-preview/generated-wide.map",
+      "original_bytes": 3086530,
+      "original_sha256": "835b56901c3da6eb34391f55d19f73db42aba7bf430f7154097bd8dd0a4623f2",
+      "gzip_bytes": 255616,
+      "gzip_path": "docs/artifacts/map-preview/generated-wide.map.gz"
+    },
+    {
+      "path": "docs/artifacts/map-preview/selection-fixture.map",
+      "original_bytes": 616018,
+      "original_sha256": "5b470a3432a21d483be12f3fc63116f4a86c25e89a549a0fe71d753257e89c98",
+      "gzip_bytes": 48770,
+      "gzip_path": "docs/artifacts/map-preview/selection-fixture.map.gz"
+    },
+    {
+      "path": "games/G2.game",
+      "original_bytes": 672404,
+      "original_sha256": "0b360e240e128d172bc8ab631dad159cab7ec2eebe7f9ff01e60057d40642667",
+      "gzip_bytes": 65504,
+      "gzip_path": "games/G2.game.gz"
+    },
+    {
+      "path": "games/cross-replay.game",
+      "original_bytes": 197509,
+      "original_sha256": "91cbeadd0fce2ec3bc3cb620ce1bea2ac2fc78d9763ce07ddce583342482ee68",
+      "gzip_bytes": 17733,
+      "gzip_path": "games/cross-replay.game.gz"
+    },
+    {
+      "path": "games/gd-archipelago.game",
+      "original_bytes": 952877,
+      "original_sha256": "41292477b4538e652efc31bfc419ff9d3b2e15fb24c69f0bb63c36ed2fe8ba26",
+      "gzip_bytes": 54836,
+      "gzip_path": "games/gd-archipelago.game.gz"
+    },
+    {
+      "path": "games/gd-bigarena-long.game",
+      "original_bytes": 2350359,
+      "original_sha256": "11dd4fcadf0ff8cd2341408e665ce4207e69849c14d105f780762baeed3fffdc",
+      "gzip_bytes": 206904,
+      "gzip_path": "games/gd-bigarena-long.game.gz"
+    },
+    {
+      "path": "games/gd-large-4ai.game",
+      "original_bytes": 738126,
+      "original_sha256": "792110aa5f100d2b23187bb819f847c4e0c9ac172c29aebb50620ec2ce5ee530",
+      "gzip_bytes": 55068,
+      "gzip_path": "games/gd-large-4ai.game.gz"
+    },
+    {
+      "path": "games/gd-small-2ai.game",
+      "original_bytes": 197439,
+      "original_sha256": "42ee9a1a3d02c915b4094757589f6bc4de3bfd71b30ea43971cc805eb6691d1c",
+      "gzip_bytes": 17729,
+      "gzip_path": "games/gd-small-2ai.game.gz"
+    },
+    {
+      "path": "maps/A_big_pond.map",
+      "original_bytes": 594149,
+      "original_sha256": "08e074f5889c1f192ba5acd3df7985cbfad6d64e27b4ae7b64a52bf5559120f6",
+      "gzip_bytes": 49410,
+      "gzip_path": "maps/A_big_pond.map.gz"
+    },
+    {
+      "path": "maps/Archipelago.map",
+      "original_bytes": 623981,
+      "original_sha256": "d55ee0693806bc71e26499880cf720545a4e095fdd133b922afba901ce287a44",
+      "gzip_bytes": 52932,
+      "gzip_path": "maps/Archipelago.map.gz"
+    },
+    {
+      "path": "maps/Centerfolds_2.map",
+      "original_bytes": 621579,
+      "original_sha256": "8777f5b92e728ce30d4005f82997758af66202c69fdfddfff5727170753646e0",
+      "gzip_bytes": 52128,
+      "gzip_path": "maps/Centerfolds_2.map.gz"
+    },
+    {
+      "path": "maps/Dejans.map",
+      "original_bytes": 166554,
+      "original_sha256": "0e75fb0cca7b023371e12ec523a34cfc349fb843ecb2b896b3fd91591a85f947",
+      "gzip_bytes": 15274,
+      "gzip_path": "maps/Dejans.map.gz"
+    },
+    {
+      "path": "maps/Easy_Three.map",
+      "original_bytes": 596416,
+      "original_sha256": "4d627c1c1a00ec4f03a1bc3e268fd2c0989e5c8ec9e1fd250dd52dc8a6c050cf",
+      "gzip_bytes": 48142,
+      "gzip_path": "maps/Easy_Three.map.gz"
+    },
+    {
+      "path": "maps/FourSquares1.map",
+      "original_bytes": 616018,
+      "original_sha256": "5b470a3432a21d483be12f3fc63116f4a86c25e89a549a0fe71d753257e89c98",
+      "gzip_bytes": 48770,
+      "gzip_path": "maps/FourSquares1.map.gz"
+    },
+    {
+      "path": "maps/G2.map",
+      "original_bytes": 611804,
+      "original_sha256": "9fa6bf53cf6cbb199edc52174fc30277d3ff8f687d80904fbb7931145e930bfb",
+      "gzip_bytes": 64853,
+      "gzip_path": "maps/G2.map.gz"
+    },
+    {
+      "path": "maps/Garden_3.map",
+      "original_bytes": 610398,
+      "original_sha256": "d3da152f4f04a91cd764196618cbd0b8ff615202f8cb91b6bbced6e5d59857e5",
+      "gzip_bytes": 57562,
+      "gzip_path": "maps/Garden_3.map.gz"
+    },
+    {
+      "path": "maps/Holiday_Island_2.map",
+      "original_bytes": 611862,
+      "original_sha256": "3d702611c798a7ea1668d909abd9dcda1a2037a8d0a60693ac51d01cbe82ff4a",
+      "gzip_bytes": 53790,
+      "gzip_path": "maps/Holiday_Island_2.map.gz"
+    },
+    {
+      "path": "maps/Island_of_the_Renfur.map",
+      "original_bytes": 643006,
+      "original_sha256": "3e2a6d517f37edb29566b8516a295d6be1c0a21e4086e95fd1007c5c898b66cb",
+      "gzip_bytes": 57457,
+      "gzip_path": "maps/Island_of_the_Renfur.map.gz"
+    },
+    {
+      "path": "maps/Isles.map",
+      "original_bytes": 610395,
+      "original_sha256": "e56ac1c2c168f8a59838858055d1288c99aae625d74317d443c749c42bb782ab",
+      "gzip_bytes": 45739,
+      "gzip_path": "maps/Isles.map.gz"
+    },
+    {
+      "path": "maps/Mazury.map",
+      "original_bytes": 586786,
+      "original_sha256": "8b99803baf6c0d48bddd949ed0357f031b6cbdaab4725b8e184ee8d118418a96",
+      "gzip_bytes": 66436,
+      "gzip_path": "maps/Mazury.map.gz"
+    },
+    {
+      "path": "maps/Migration.map",
+      "original_bytes": 605698,
+      "original_sha256": "2b8fef438e63fedef4eab85a37366ad1e09fbd90819bfc1347a593f93142398d",
+      "gzip_bytes": 57699,
+      "gzip_path": "maps/Migration.map.gz"
+    },
+    {
+      "path": "maps/Muka.map",
+      "original_bytes": 306582,
+      "original_sha256": "f35a03764a460e94b986f50258daf7579bdd229a76f763f020aec958009b3100",
+      "gzip_bytes": 34637,
+      "gzip_path": "maps/Muka.map.gz"
+    },
+    {
+      "path": "maps/Oazis.map",
+      "original_bytes": 2365234,
+      "original_sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448",
+      "gzip_bytes": 206505,
+      "gzip_path": "maps/Oazis.map.gz"
+    },
+    {
+      "path": "maps/Playground.map",
+      "original_bytes": 659316,
+      "original_sha256": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf",
+      "gzip_bytes": 68072,
+      "gzip_path": "maps/Playground.map.gz"
+    },
+    {
+      "path": "maps/Sand_River.map",
+      "original_bytes": 635248,
+      "original_sha256": "561cdd1a08556cb0259e31bd07d4c93578e2fddd6a54e7bcc23fbbbd50e8640f",
+      "gzip_bytes": 63388,
+      "gzip_path": "maps/Sand_River.map.gz"
+    },
+    {
+      "path": "maps/SmallForTwo.map",
+      "original_bytes": 166555,
+      "original_sha256": "e5c630b303ec32349fb20aed98b4ee5bb5bea456d089ebfe92c43ece317200fe",
+      "gzip_bytes": 17091,
+      "gzip_path": "maps/SmallForTwo.map.gz"
+    },
+    {
+      "path": "maps/Triangle.map",
+      "original_bytes": 597473,
+      "original_sha256": "6929046118d73a0c3f36dc5c30b4763f4392b4c3d9bc8c6b4421dec1a3f681b9",
+      "gzip_bytes": 62712,
+      "gzip_path": "maps/Triangle.map.gz"
+    },
+    {
+      "path": "maps/Wild_River.map",
+      "original_bytes": 636262,
+      "original_sha256": "bf029abac3704caf8b9b263b201d9fa220f0a61b1bddfec58a975b972f5c16cd",
+      "gzip_bytes": 55732,
+      "gzip_path": "maps/Wild_River.map.gz"
+    },
+    {
+      "path": "maps/balanced.map",
+      "original_bytes": 637223,
+      "original_sha256": "31199b6bb5518f5330d59564ec9a148e2237bc5022bd77bed891dd51772cce5e",
+      "gzip_bytes": 62544,
+      "gzip_path": "maps/balanced.map.gz"
+    },
+    {
+      "path": "maps/balanced_for_2.map",
+      "original_bytes": 167697,
+      "original_sha256": "d08591f6b0c06df96cdcb594703badedc7a7547b5d9ec3dac09ce2b76c1684ac",
+      "gzip_bytes": 15335,
+      "gzip_path": "maps/balanced_for_2.map.gz"
+    },
+    {
+      "path": "maps/strange2.map",
+      "original_bytes": 674704,
+      "original_sha256": "b61df76a7d6494ce6c7e884344afc6b973c4ec80945c7c5bbac806125b49901a",
+      "gzip_bytes": 27230,
+      "gzip_path": "maps/strange2.map.gz"
+    },
+    {
+      "path": "test/fixtures/entering-explorer/reproducer.game",
+      "original_bytes": 47841,
+      "original_sha256": "ff85d82f983409056022b42df237e769bb29b079a6786840f2e3e517bf64d442",
+      "gzip_bytes": 1815,
+      "gzip_path": "test/fixtures/entering-explorer/reproducer.game.gz"
+    },
+    {
+      "path": "test/fixtures/team-stats/version88.game",
+      "original_bytes": 47809,
+      "original_sha256": "2ecb40b5a16e1e56c0d7b2e499969964d5d3c1e4574fcdd10960d1e53a8ff316",
+      "gzip_bytes": 2004,
+      "gzip_path": "test/fixtures/team-stats/version88.game.gz"
+    },
+    {
+      "path": "test/fixtures/wrapped-building/reproducer.game",
+      "original_bytes": 47498,
+      "original_sha256": "8723b7b92b9ecd7ce71c58c8af1ba109644df3964fc041f00eb5d63175e43746",
+      "gzip_bytes": 1801,
+      "gzip_path": "test/fixtures/wrapped-building/reproducer.game.gz"
+    }
+  ],
+  "total_original_bytes": 25925898,
+  "total_gzip_bytes": 2323782
+}

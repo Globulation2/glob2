@@ -434,9 +434,12 @@ void CustomGameScreen::listMaps()
 
 bool CustomGameScreen::loadMap(const std::string &requestedPath)
 {
+	// Callers (the library list, test harnesses, saved preferences) may still pass
+	// a bare ".map" name; prefer an existing ".gz" sibling before resolving it.
+	const std::string resolvedRequest = glob2PreferGzipReadPath(*Toolkit::getFileManager(), requestedPath);
 	std::error_code pathError;
-	auto canonical = std::filesystem::canonical(requestedPath, pathError);
-	const std::string path = (pathError || setup.random) ? requestedPath : canonical.string();
+	auto canonical = std::filesystem::canonical(resolvedRequest, pathError);
+	const std::string path = (pathError || setup.random) ? resolvedRequest : canonical.string();
 	try
 	{
 		const auto stamp = std::filesystem::last_write_time(path);
@@ -453,7 +456,7 @@ bool CustomGameScreen::loadMap(const std::string &requestedPath)
 		else
 		{
 			auto world = std::make_unique<Game>(nullptr);
-			BinaryInputStream body(Toolkit::getFileManager()->openInputStreamBackend(path));
+			BinaryInputStream body(Toolkit::getFileManager()->openInflatingInputStreamBackend(path));
 			if (!body.isValid() || !world->load(&body) || world->teamsCount() < 1 ||
 				world->teamsCount() > Team::MAX_COUNT)
 				throw std::runtime_error("map body");
@@ -578,18 +581,15 @@ bool CustomGameScreen::generateMap()
 		initial.setRandomSeed(generationResult.seed);
 		setup.writeHeader(initial, username);
 		game->setGameHeader(initial);
-		{
-			BinaryOutputStream stream(
-				Toolkit::getFileManager()->openOutputStreamBackend(candidate));
-			if (!stream.isValid())
-				throw std::runtime_error("snapshot");
-			game->save(&stream, true, "Random map");
-			stream.flush();
-		}
+		const std::string candidateGzip = glob2GzipWritePath(candidate);
+		const bool snapshotSaved = Toolkit::getFileManager()->writeGzipAtomically(candidateGzip,
+			[&](OutputStream &stream) { game->save(&stream, true, "Random map"); });
+		if (!snapshotSaved)
+			throw std::runtime_error("snapshot");
 		// Keep the actual generated world for rasterization. Only read back its
 		// finalized header (offset and SHA1), not a second whole Game and Map.
 		BinaryInputStream headerStream(
-			Toolkit::getFileManager()->openInputStreamBackend(candidate));
+			Toolkit::getFileManager()->openInflatingInputStreamBackend(candidateGzip));
 		if (!headerStream.isValid() || !mapHeader.load(&headerStream))
 			throw std::runtime_error("snapshot header");
 		MapThumbnail terrain;

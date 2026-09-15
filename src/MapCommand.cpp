@@ -20,6 +20,7 @@
 #include "Race.h"
 #include <BinaryStream.h>
 #include <FileManager.h>
+#include <GzipUtil.h>
 #include <StreamBackend.h>
 #include <algorithm>
 #include <filesystem>
@@ -137,6 +138,11 @@ void writeJsonReport(const std::string &path, const std::string &report)
 	std::cout << "Map report: " << path << "\n";
 }
 
+bool endsWithGz(const std::string &path)
+{
+	static const std::string suffix = ".gz";
+	return path.size() >= suffix.size() && path.compare(path.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
 bool samePath(const std::string &a, const std::string &b)
 {
 	return !a.empty() && !b.empty() &&
@@ -147,16 +153,17 @@ bool samePath(const std::string &a, const std::string &b)
 void saveMap(Game &game, const std::string &path, const std::string &name)
 {
 	auto *backend = new GAGCore::MemoryStreamBackend();
-	GAGCore::BinaryOutputStream stream(backend);
-	game.save(&stream, true, name);
-	stream.flush();
-	backend->seekFromEnd(0);
-	parentDirectory(path);
-	std::ofstream out(path, std::ios::binary);
-	out.write(backend->getBuffer(), backend->getPosition());
-	out.close();
-	if (!out)
-		throw std::runtime_error("Cannot write map: " + path);
+	std::string contents;
+	{
+		GAGCore::BinaryOutputStream stream(backend);
+		game.save(&stream, true, name);
+		contents = backend->takeContents();
+	}
+	const std::string gzipPath = glob2GzipWritePath(path);
+	parentDirectory(gzipPath);
+	if (!GAGCore::writeGzipAtomicToPath(gzipPath, contents))
+		throw std::runtime_error("Cannot write map: " + gzipPath);
+	std::cout << "Map: " << gzipPath << "\n";
 }
 // The same widget paints CLI images and in-game previews. Only its static layout and
 // destination differ: exports have no interaction or transition animation.
@@ -390,10 +397,15 @@ int runMapCommand(int argc, char **argv)
 		else
 		{
 			// Explicit paths use the same loader as normal games, without stepping simulation.
-			GAGCore::BinaryInputStream stream(
-				new GAGCore::FileStreamBackend(std::fopen(argv[2], "rb")));
+			// A bare ".map"/".game" path prefers an existing ".gz" sibling, matching how
+			// the rest of the engine resolves map/save names.
+			std::string inputPath = argv[2];
+			std::error_code exists;
+			if (!endsWithGz(inputPath) && std::filesystem::exists(inputPath + ".gz", exists))
+				inputPath += ".gz";
+			GAGCore::BinaryInputStream stream(GAGCore::openInflatingFileStreamBackend(inputPath));
 			if (stream.isEndOfStream() || !game.load(&stream))
-				throw std::runtime_error("Cannot load map/save: " + std::string(argv[2]));
+				throw std::runtime_error("Cannot load map/save: " + inputPath);
 		}
 		// Analyze the original snapshot before any serializer updates its header metadata.
 		const std::string report = json.empty() ? ""

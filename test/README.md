@@ -159,8 +159,11 @@ python3 test/run_lan_session_test.py build/src/LANSessionHarness
 This runs separate host and joining client processes with real SDL lobby widgets,
 YOG anonymous LAN server, game router, and TCP connections. The joiner uses the
 actual `LANFindScreen` Connect path. It clicks Ready and Leave Game, then rejoins.
-Both cycles force a map download and compare all 616018 bytes against the fixture
-source (`maps/FourSquares1.map`). The host verifies readiness, roster size, unique
+Both cycles force a map download and compare the downloaded `.gz` bytes against
+the fixture source (`maps/FourSquares1.map.gz`) byte for byte: the host's private
+copy is already gzip-compressed, so the transfer exercises sending a locally
+compressed map without gzipping it again, and a new receiver stores the download
+as `.gz` without unzipping it. The host verifies readiness, roster size, unique
 player IDs, slot masks, and both departures. The map's current size is not hardcoded
 in the test. Linux CI runs this automatically with SDL's dummy video/audio drivers.
 
@@ -382,8 +385,12 @@ older saves remain loadable.
 ```sh
 scons -j8 release=1 server=0 team-stats-save-test
 python3 test/run-savegame-safety-tests.py --check-preferences build/src/TeamStatsSaveHarness .
-python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness . --legacy test/fixtures/team-stats/version88.game
-python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness . --legacy games/gd-small-2ai.game
+# The fixtures below are checked in gzip-compressed; inflate them to genuinely
+# raw files first so --legacy exercises loading an uncompressed legacy save.
+python3 test/inflate_gzip_fixture.py test/fixtures/team-stats/version88.game.gz /tmp/version88.game
+python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness . --legacy /tmp/version88.game
+python3 test/inflate_gzip_fixture.py games/gd-small-2ai.game.gz /tmp/gd-small-2ai.game
+python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness . --legacy /tmp/gd-small-2ai.game
 ```
 
 This headless test verifies live statistics and smoothing across all 32 sampling

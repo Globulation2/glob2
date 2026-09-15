@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Rebuild the recorded pre-change thumbnail and selection pipeline locally."""
+import gzip
 import os
 from pathlib import Path
 import shlex
@@ -50,4 +51,8 @@ with tempfile.TemporaryDirectory(prefix="glob2-preview-baseline-") as directory:
         else:
             command.append(arg)
     subprocess.run(command, check=True)
-    subprocess.run([str(work / "Baseline"), str(EVIDENCE / "selection-fixture.map")], check=True)
+    # Baseline.cpp reads the raw serialized bytes directly, so the checked-in
+    # ".gz" fixture is inflated to a temporary raw file first.
+    inflated = work / "selection-fixture.map"
+    inflated.write_bytes(gzip.decompress((EVIDENCE / "selection-fixture.map.gz").read_bytes()))
+    subprocess.run([str(work / "Baseline"), str(inflated)], check=True)
