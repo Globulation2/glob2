@@ -134,6 +134,11 @@ struct ColonyWalk
 	std::vector<int> steps;                // from colony 0's workers
 	std::string error;
 };
+/// The opposite promise, for a map of islands: no colony's units can walk to any other colony's on
+/// the engine's own ground rule (groundUnitTiles: no swimming, deposits and buildings block). "" when
+/// every colony is cut off from every other, else "Colony a can walk to colony b <route>."
+std::string coloniesApart(const Map &, int teams, const std::string &route);
+
 /// `ground` names what the workers walk ("the flats"); `route` finishes the cut-off message
 /// ("over the flats", or empty).
 ColonyWalk walkFromFirstColony(const Map &, int teams, const std::string &ground,

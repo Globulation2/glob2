@@ -39,6 +39,28 @@ void strokePath(std::vector<unsigned char> &mask, const Torus &, const std::vect
 void tracePath(std::vector<unsigned char> &mask, const Torus &, const std::vector<StrokePoint> &,
 			   unsigned char value = 1);
 
+/// A line one tile thick traced from `from` along `heading` (radians), a tile at a time, until it is
+/// `length` tiles long or the next tile is one `stop(tile)` refuses: consecutive tiles always touch, at
+/// least at a corner, as tracePath's do. Sets `value` on every tile it covers and returns the last one,
+/// or -1 when it covered none. A lane from a plot out to the shore, a jetty, a spoke traced until it
+/// meets water.
+template <typename Stop>
+int traceRay(std::vector<unsigned char> &mask, const Torus &t, ShapePoint from, double heading,
+			 double length, Stop stop, unsigned char value = 1)
+{
+	int last = -1;
+	const double cx = std::cos(heading), sy = std::sin(heading);
+	for (double d = 0; d <= length; d += 1.0)
+	{
+		const int i = t.at(int(std::lround(from.x + d * cx)), int(std::lround(from.y + d * sy)));
+		if (stop(i))
+			break;
+		mask[i] = value;
+		last = i;
+	}
+	return last;
+}
+
 /// `segments` + 1 points along the quadratic Bezier from `from` through the pull of `control`
 /// to `to`, with the half width running linearly from one end's to the other's: a thread that
 /// sags or bows.

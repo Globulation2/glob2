@@ -2616,3 +2616,15 @@ Emoji
 계곡의 강
 [Vultures]
 독수리
+[Plantations]
+농장
+[Plot size]
+건설 부지 크기
+[Farm width]
+농경지 너비
+[Islands per colony]
+식민지당 섬 수
+[Outpost inns]
+전초 여관
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+섬이 건설 부지에 비해 너무 작습니다. 더 큰 지도를 사용하거나, 건설 부지를 더 작게 하거나, 식민지 수를 줄이세요.

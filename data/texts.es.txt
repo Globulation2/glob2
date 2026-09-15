@@ -2620,3 +2620,15 @@ Escaleras por colina
 Río del valle
 [Vultures]
 Buitres
+[Plantations]
+Plantaciones
+[Plot size]
+Tamaño del solar
+[Farm width]
+Anchura de los cultivos
+[Islands per colony]
+Islas por colonia
+[Outpost inns]
+Posadas de avanzada
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Las islas son demasiado pequeñas para sus solares; usa un mapa más grande, un solar más pequeño o menos colonias.

@@ -214,6 +214,22 @@ std::vector<int> clearance(const Torus &t, const std::vector<unsigned char> &mas
 	return steps;
 }
 
+int roomiestTile(const Torus &t, const std::vector<unsigned char> &region,
+				 const std::vector<int> &room, int nearX, int nearY)
+{
+	int best = -1;
+	for (int i = 0; i < t.size(); ++i)
+	{
+		if (!region[i])
+			continue;
+		if (best < 0 || room[i] > room[best] ||
+			(room[i] == room[best] && t.dist2(i % t.w, i / t.w, nearX, nearY) <
+										  t.dist2(best % t.w, best / t.w, nearX, nearY)))
+			best = i;
+	}
+	return best;
+}
+
 std::vector<unsigned char> dropSmallRegions(const Torus &t, const std::vector<unsigned char> &mask,
 											int minimumTiles, GridNeighbors neighbours)
 {

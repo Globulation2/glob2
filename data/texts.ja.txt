@@ -2616,3 +2616,15 @@ Emoji
 谷の川
 [Vultures]
 ハゲワシ
+[Plantations]
+農園
+[Plot size]
+建設用地の大きさ
+[Farm width]
+農地の幅
+[Islands per colony]
+コロニーごとの島数
+[Outpost inns]
+前哨食堂
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+島が建設用地に対して小さすぎます。より大きなマップを使うか、建設用地を小さくするか、コロニーを減らしてください。

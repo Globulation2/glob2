@@ -2692,3 +2692,15 @@ Emoji
 山谷河流
 [Vultures]
 禿鷲
+[Plantations]
+種植園
+[Plot size]
+建築用地大小
+[Farm width]
+農田寬度
+[Islands per colony]
+每個殖民地的島嶼數
+[Outpost inns]
+前哨客棧
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+這些島嶼對於自己的建築用地來說太小；請使用更大的地圖、更小的建築用地或減少殖民地數量。

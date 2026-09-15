@@ -2644,3 +2644,15 @@ Trappen per heuvel
 Rivier in het dal
 [Vultures]
 Gieren
+[Plantations]
+Plantages
+[Plot size]
+Grootte van de bouwkavel
+[Farm width]
+Akkerbreedte
+[Islands per colony]
+Eilanden per kolonie
+[Outpost inns]
+Buitenpostherbergen
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+De eilanden zijn te klein voor hun bouwkavels; gebruik een grotere kaart, een kleinere bouwkavel of minder kolonies.

@@ -2626,3 +2626,15 @@ Escadas por colina
 Rio do vale
 [Vultures]
 Abutres
+[Plantations]
+Plantações
+[Plot size]
+Tamanho do lote
+[Farm width]
+Largura da lavoura
+[Islands per colony]
+Ilhas por colónia
+[Outpost inns]
+Tabernas de posto avançado
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+As ilhas são demasiado pequenas para os seus lotes; use um mapa maior, um lote mais pequeno ou menos colónias.

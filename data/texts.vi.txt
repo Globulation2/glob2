@@ -2616,3 +2616,15 @@ Số cầu thang mỗi đồi
 Sông thung lũng
 [Vultures]
 Kền kền
+[Plantations]
+Đồn điền
+[Plot size]
+Kích thước lô đất xây dựng
+[Farm width]
+Chiều rộng đất canh tác
+[Islands per colony]
+Số đảo mỗi thuộc địa
+[Outpost inns]
+Quán trọ tiền đồn
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Các đảo này quá nhỏ so với lô đất xây dựng của chúng; hãy dùng bản đồ lớn hơn, lô đất nhỏ hơn hoặc ít thuộc địa hơn.

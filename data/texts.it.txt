@@ -2682,3 +2682,15 @@ Scale per collina
 Fiume nella valle
 [Vultures]
 Avvoltoi
+[Plantations]
+Piantagioni
+[Plot size]
+Dimensione del lotto edificabile
+[Farm width]
+Larghezza delle coltivazioni
+[Islands per colony]
+Isole per colonia
+[Outpost inns]
+Mense d'avamposto
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Le isole sono troppo piccole per i loro lotti; usa una mappa più grande, un lotto più piccolo o meno colonie.

@@ -2620,3 +2620,15 @@ Schody na wzgórze
 Rzeka w dolinie
 [Vultures]
 Sępy
+[Plantations]
+Plantacje
+[Plot size]
+Rozmiar działki budowlanej
+[Farm width]
+Szerokość pól
+[Islands per colony]
+Wyspy na kolonię
+[Outpost inns]
+Wysunięte gospody
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Wyspy są za małe na swoje działki; użyj większej mapy, mniejszej działki lub mniejszej liczby kolonii.

@@ -2616,3 +2616,15 @@ Diri dre dorgenn
 Stêr an draonienn
 [Vultures]
 Guped
+[Plantations]
+Plantações
+[Plot size]
+Tamanho do lote
+[Farm width]
+Largura da lavoura
+[Islands per colony]
+Ilhas por colônia
+[Outpost inns]
+Tavernas de posto avançado
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+As ilhas são pequenas demais para os seus lotes; use um mapa maior, um lote menor ou menos colônias.

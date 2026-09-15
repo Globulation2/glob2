@@ -2616,3 +2616,15 @@ Emoji
 山谷河流
 [Vultures]
 秃鹫
+[Plantations]
+种植园
+[Plot size]
+建筑用地大小
+[Farm width]
+农田宽度
+[Islands per colony]
+每个殖民地的岛屿数
+[Outpost inns]
+前哨食堂
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+这些岛屿对于自己的建筑用地来说太小；请使用更大的地图、更小的建筑用地或减少殖民地数量。

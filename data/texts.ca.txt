@@ -2628,3 +2628,15 @@ Escales per turó
 Riu de la vall
 [Vultures]
 Voltors
+[Plantations]
+Plantacions
+[Plot size]
+Mida del solar
+[Farm width]
+Amplada del conreu
+[Islands per colony]
+Illes per colònia
+[Outpost inns]
+Despenses d'avançada
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Les illes són massa petites per als seus solars; useu un mapa més gran, un solar més petit o menys colònies.

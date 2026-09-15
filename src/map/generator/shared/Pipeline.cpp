@@ -132,6 +132,24 @@ CropsInReach cropsBesideReach(const Map &map, const std::vector<int> &reach)
 				(type == WHEAT ? crops.wheat : crops.wood) || beside;
 		}
 	return crops;
+std::string coloniesApart(const Map &map, int teams, const std::string &route)
+{
+	const std::vector<std::vector<int>> units = unitTilesByTeam(map, teams);
+	const Torus t(map);
+	const std::vector<unsigned char> ground = groundUnitTiles(map);
+	for (int a = 0; a < teams; ++a)
+	{
+		if (units[a].empty())
+			continue;
+		const std::vector<int> steps = stepsFrom(t, tileMask(t, units[a]), ground);
+		for (int b = 0; b < teams; ++b)
+			if (b != a)
+				for (int tile : units[b])
+					if (steps[tile] >= 0)
+						return "Colony " + std::to_string(a) + " can walk to colony " +
+							   std::to_string(b) + (route.empty() ? "" : " " + route) + ".";
+	}
+	return "";
 }
 
 std::vector<unsigned char> homeGrassMask(const Map &map, const Torus &t,

@@ -2,6 +2,7 @@
 #pragma once
 #include "GenerationContext.h"
 #include "Grid.h"
+#include "LatticeNoise.h"
 #include "Map.h"
 #include "Resources.h"
 #include "Sketch.h"
@@ -234,6 +235,38 @@ int plantCover(Map &map, const Torus &t, const std::vector<unsigned char> &regio
 	{
 		const int x = i % t.w, y = i / t.w;
 		if (!region[i] || !eligible(i) || !map.isResourceAllowed(x, y, type))
+			continue;
+		map.setResource(x, y, type, 1);
+		++planted;
+	}
+	return planted;
+}
+
+/// Cover over a share of chosen ground: of `candidates` (tile indices in index order), the `sharePercent`
+/// with the highest `levelAt(tile)` get one deposit of `type` each, in index order, where the engine
+/// accepts it. Sampling a smooth noise field for the level leaves the cover in patches with gaps between
+/// them to walk and build in, rather than speckle; a share of 100 covers every candidate. The threshold
+/// is the level at the (100 - share)th percentile of the candidates' levels (LatticeNoise.h's
+/// percentile), so the share holds tile for tile whatever the field's range. Returns how many it planted.
+template <typename LevelAt>
+int plantCoverShare(Map &map, const Torus &t, const std::vector<int> &candidates, int type,
+					int sharePercent, LevelAt levelAt)
+{
+	if (candidates.empty())
+		return 0;
+	const int share = std::clamp(sharePercent, 0, 100);
+	if (share <= 0)
+		return 0;
+	std::vector<int> levels;
+	levels.reserve(candidates.size());
+	for (int i : candidates)
+		levels.push_back(levelAt(i));
+	const int level = percentile(levels, 100 - share);
+	int planted = 0;
+	for (int i : candidates)
+	{
+		const int x = i % t.w, y = i / t.w;
+		if (levelAt(i) < level || !map.isResourceAllowed(x, y, type))
 			continue;
 		map.setResource(x, y, type, 1);
 		++planted;

@@ -49,6 +49,18 @@ std::vector<unsigned char> beachTiles(const Map &, const Torus &);
 /// of it. Run after layBeaches (a bridge's own sand needs no beach). Returns the corners changed.
 int bridgeAcross(TerrainSketch &, const Torus &, ShapePoint from, ShapePoint to, double halfWidth);
 
+/// The water that parts labelled cells into islands: a strait `corners` undermap corners wide (4 to 8)
+/// along every border between two cells of `labels` (as nearestSiteLabels or labelTiles give them). An
+/// even width is the two tiles either side of a border grown (corners - 2) / 2 tiles each way; an odd
+/// one is labelBorders' one-tile wall grown (corners - 1) / 2. Grown as squares, so a diagonal border's
+/// water is thinner than a straight one's measured across it: 4 corners leave three pure-water tiles
+/// across a straight strait and three along a diagonal step, which is what seals a strait against a
+/// unit stepping diagonally (two tiles of water, Channels.h); 3 corners would leave one on a diagonal,
+/// which a unit steps across, so nothing narrower than 4 is offered. Negative labels count as water
+/// already and take no strait of their own.
+std::vector<unsigned char> straitsBetweenCells(const Torus &, const std::vector<int> &labels,
+											   int corners);
+
 /// How many separate bridges (eight-connected pieces of `bridges`) touch each label's ground, for the
 /// labels 0 to `labels` - 1: the check that every colony got as many ways across as every other.
 std::vector<int> crossingsPerLabel(const Torus &, const std::vector<unsigned char> &bridges,
