@@ -581,6 +581,8 @@ inline void savannahContracts()
 	Game narrowGap(nullptr);
 	assert(service.generate(narrowGap, r));
 	puts("PASS Savannah: envelope, resource-independent terrain, contained unattended growth");
+}
+
 inline void vulturesFoodChecks()
 {
 	D request;
