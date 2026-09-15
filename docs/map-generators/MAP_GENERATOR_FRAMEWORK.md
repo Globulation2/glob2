@@ -219,8 +219,8 @@ were counts of their own until that audit and are percentages since.
 | The Glacis | The wadi banks' wheat and wood, the plain's outcrops, the groves beside the fords and the wadis' algae; every compound's well-side kit, quarry, walls, stock and starting towers are unscaled | Garrison (on): off, a compound starts with its colonists only |
 | Allotments | The field lots' wheat and wood, the woodlots, the quarry and grove lots and the ditches' algae; every city's sites, wood stacks, stock and home fields are unscaled | Garrison (on) |
 | Caravanserai | The outposts' quarry, orchard and algae; every capital's fields, stock and towers, and the oases' and outposts' wheat, are unscaled | Garrison (on) |
-| Braided river | Every bar's farmland and the terraces' thin bank-strip farmland, the dry terraces' woodlots and outcrops, the deep bars' fruit groves and the channels' algae; every home's kit, every promised bar's wheat and wood, the bluffs and the moraine are unscaled | Moraine hummocks (on): off, the terrace edges are open bank |
 | Continents | Every kind of land's kit (`scaledBiome`): its farmland's wheat and wood shares, its dry reserve, its outcrops, its groves, and its cover (wood over forest, stone over the ranges); the shallows' algae; the islets' prizes are drawn unscaled and every colony's kit is unscaled. `oases` (0-200) scales the pond dug for a colony that starts with no water in reach | Mountain ranges (on): off, a range is savanna; Great rivers (on); Islets (on) |
+| Braided river | Every bar's farmland and the terraces' thin bank-strip farmland, the dry terraces' woodlots and outcrops, the deep bars' fruit groves and the channels' algae; every home's kit, every promised bar's wheat and wood, the bluffs and the moraine are unscaled | Moraine hummocks (on): off, the terrace edges are open bank. Dry patches (12): the share of the terraces' inland grass turned to sand patches, 0 for the plain sheet of grass |
 
 `scaledCount` and `scaledShare` (`shared/Resources.h`) apply a percentage to a count or a share and
 return it unchanged at 100. `setScaledResource` scales one `Map::setResource` square to a share of
@@ -1417,7 +1417,13 @@ the bars this map, and which bars join which is redrawn every seed.
   a stone clump behind) and its promised bar an unscaled wheat and wood clump; every bar's grass
   is furnished a third under crops in patches along its shores (`furnishGround`, 2:1 wheat to
   wood), the bank strips at a quarter of that, the dry terraces get finite woodlots and stone
-  outcrops, the bars nearest the belt's middle a grove of fruit each (one per 8,000 tiles, at least
+  outcrops and, so the plain behind the moraine is not one sheet of grass (a maintainer's first look
+  found it bland), patches of sand: `dry-patches` (0 to 30, 12) percent of each terrace's inland
+  grass where a period-18 noise peaks (`sprinkleSand`, rounded patches rather than speckle), eight
+  steps or more from water so the bank strip and the moraine's contour keep their grass, two tiles
+  off the bluffs and hummocks (a sand corner spoils the tiles round it and stone stands on pure
+  grass) and clear of every town's room, so no colony loses building ground to them. The bars
+  nearest the belt's middle get a grove of fruit each (one per 8,000 tiles, at least
   three), and the channels algae where it regrows. `secureStartingCrops` and `connectColonies`
   run with the bluffs and moraine protected; `reopenCrampedStarts` at non-default amounts.
   `validateRequest` needs a terrace at least 22 tiles wide (a 128 map at 60% is the edge; 64 maps
@@ -1434,6 +1440,11 @@ the bars this map, and which bars join which is redrawn every seed.
   to five steps away, comparable fertility and room), so this is an AI stall on the dry terrace
   rather than a geometry defect the generator can measure; the defaults stand, and the retained
   maps are the material for a follow-up with other AIs and human play.
+- **Played again with the dry patches.** The same protocol on revision 2 (12% of the terraces'
+  inland grass in sand patches): the same economy within noise (pooled per-start units 58 to 96
+  against 62 to 103, wheat harvested per colony 218 against 239, births 102 against 109), the same
+  bimodal stalls on the same maps, and no significant position bias. The patches cost the terrace
+  nothing a colony uses; they are the look of a dry plain.
 ## Drumlin field
 
 A lake land: a swarm of long oval grass hills, all pointing the way the ice went, with water in every

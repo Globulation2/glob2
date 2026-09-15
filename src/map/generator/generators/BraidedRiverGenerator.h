@@ -9,6 +9,7 @@ struct BraidedRiverOptions
 	int barSize;      // a bar's length along the river, in tiles
 	int extraRiffles; // percentage of the spare bar-to-bar crossings opened beyond the tree
 	bool moraine;     // a broken line of stone hummocks along each terrace edge
+	int dryPatches;   // percentage of the terraces' inland grass turned to sand patches
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit BraidedRiverOptions(const GenerationRequest &r);
 };
