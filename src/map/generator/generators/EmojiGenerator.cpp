@@ -169,6 +169,11 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		o.character == 0 ? int(context.bounded("emoji-character", 8)) : o.character - 1;
 	const bool outline = o.outline == 0 ? context.bounded("emoji-style", 2) != 0 : o.outline == 1;
 	const bool inverse = o.inverse == 0 ? context.bounded("emoji-terrain", 2) != 0 : o.inverse == 2;
+	// An inverse outline is the only land: a rim ribbon every colony's town, farm and front share.
+	// Rotation tournaments found the rim start beside a facial-feature junction losing every game;
+	// drawing the rim at a quarter of the radius instead (16 corners at 256) changed neither the
+	// eliminations (36 against 32 in 96 colony-games on the same six seeds) nor the position bias,
+	// so the width stays at what the drawing wants and the exposure is the variant's character.
 	const double thickness = inverse ? std::max(14.0, 0.19 * radius) : std::max(7.0, 0.11 * radius);
 	auto ink = glyph(t, character, outline, radius, thickness);
 	L.terrain.resize(t.size());
@@ -540,7 +545,7 @@ GeneratorDefinition emojiDefinition()
 {
 	return {
 		"emoji",
-		33,
+		34,
 		"Emoji",
 		9,
 		false,

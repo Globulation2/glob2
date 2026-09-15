@@ -91,15 +91,25 @@ fresh-seed check remained at 0/256. These are fixed-map rotations, not independe
 samples of every possible map. Gameplay used four colonies/four workers at 256×256
 and default abundance; the supported extremes received generation checks.
 
+A later rotation tournament (six 256×256 maps, four colonies, every cyclic team
+rotation, four Nicowars, 45,000 ticks) found the filled and water-ink variants healthy and
+every grass-ink outline map with a rim start that was eliminated in three or four rotations
+whoever played it, and one such map with a start winning every rotation. Drawing the inverse
+outline at a quarter of the radius instead of 0.19 (16 corners at 256 rather than 12) was tried
+on six pinned seeds and changed nothing: 36 eliminations against 32 in 96 colony-games, the
+same position bias, the doomed starts still doomed. The width therefore stays as drawn; the
+exposure of a rim start is the inverse outline's character, and the lobby's start scorer does
+not see it. A four-Maxima run was even but showed Maxima starving in the hundreds on the dry
+plain outside the bypass, where nothing regrows; Nicowar does not expand there.
+
 Nicowar's strongest-position win counts decreased on all three matched full-game
 cases. Maxima's late-game balance remains less conclusive: 18/24 revised matches
 reached the 90,000-tick cap. Larger populations and longer competing economies are
 an intended change in feel; all capped matches still recorded late combat. Human
 play and longer matches are needed to judge final resolution and fun.
 
-The local study, rejected candidates, maps and saves are retained under
-`artifacts/emoji/balance-tuning/`. Published review artifacts, screenshots and the
-complete evidence archive are on the [Emoji evidence branch](https://github.com/Globulation2/glob2/tree/evidence/emoji-map-generator).
+Published review artifacts, screenshots and the complete evidence archive are on the
+[Emoji evidence branch](https://github.com/Globulation2/glob2/tree/evidence/emoji-map-generator).
 The tournament used engine/AI base `b28b4333f`; later AI changes on master were
 not part of these measurements. The final
 non-default resource repair passed all 64 extreme-setting generation cases and left
