@@ -10,9 +10,10 @@ The archives, logs and raw records linked from these notes live on the `evidence
 [Final bulk generation and tuning](BULK.md) ·
 [All 33 locale translations](https://github.com/Globulation2/glob2/blob/evidence/vultures/docs/artifacts/vultures/translations-check.json)
 
-This original package exercised generator **33**, revision **1**, using the optimized
-macOS ARM64 client. The final revision **2** adds the opt-in crowded-lattice fallback;
-its already playable macOS golden fingerprints are unchanged. The final 461-job Linux
+This original package exercised the generator at legacy id 33, revision **1**, using the optimized
+macOS ARM64 client. Revision **2** added the opt-in crowded-lattice fallback with the macOS golden
+fingerprints unchanged; revision **3** (legacy id **47**) fills the fields in, 65% cover instead of
+35%, on maintainer review, and the 256×256 preview above is regenerated at that revision. The final 461-job Linux
 bulk results and revision-2 source identity are in [BULK.md](BULK.md).
 [Build/source identity](https://github.com/Globulation2/glob2/blob/evidence/vultures/docs/artifacts/vultures/build-manifest.json) and [reproduction commands](https://github.com/Globulation2/glob2/blob/evidence/vultures/docs/artifacts/vultures/reproduce.sh) identify
 what was exercised. No simulation, AI, save-format, replay or network-version code was changed.

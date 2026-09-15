@@ -43,7 +43,7 @@ streams and traversal order for already playable requests. Vultures opts into a 
 fallback only when the ordinary clearing geometry cannot fit; Old Growth does not. Vultures
 has its own furnishing and final validation. Common crop
 repairs are deliberately avoided because they could insert renewable wheat; trail and room
-repairs can only remove resources. Numeric ID 33 is additive; save, replay and network formats
+repairs can only remove resources. Numeric ID 47 is additive; save, replay and network formats
 are unchanged. Revision 2 records the geometry fallback; its previously playable golden
 fingerprints are unchanged. Generated maps use the existing full-world serializer.
 
