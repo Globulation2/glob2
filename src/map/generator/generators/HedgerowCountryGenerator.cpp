@@ -453,7 +453,7 @@ GeneratorDefinition hedgerowCountryDefinition()
 {
 	return {
 		"hedgerow-country",
-		33,
+		38,
 		"Hedgerow Country",
 		6,
 		false,
