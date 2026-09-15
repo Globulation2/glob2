@@ -37,6 +37,22 @@ void clearAroundSwarms(Map &map, const GenerationContext &context, const Torus &
 			}
 }
 
+int clearDeposits(Map &map, const Torus &t, const std::vector<unsigned char> &region,
+				  const std::vector<unsigned char> *keep)
+{
+	int cleared = 0;
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		if (region[i] && map.isResource(x, y) && !map.isWater(x, y) && !(keep && (*keep)[i]))
+		{
+			map.setNoResource(x, y, 1);
+			++cleared;
+		}
+	}
+	return cleared;
+}
+
 namespace
 {
 // Map::growResources' algae test, evaluated exactly for chosen tiles. Each offset is the difference

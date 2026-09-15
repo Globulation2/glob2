@@ -2532,3 +2532,17 @@ Keitaiden väli
 Etuvartioita siirtokuntaa kohden
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 Tukikohta ei mahdu maapohjalleen tällä koolla; suurenna kokosäädintä tai vähennä Uudisasukkaita.
+[Braided river]
+Palmikoiva joki
+[Braid width]
+Palmikon leveys
+[Bar size]
+Särkkien koko
+[Extra riffles]
+Lisäkahlaamot
+[Moraine hummocks]
+Moreenikumpareet
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Palmikko jättää kotialueille liian vähän terassia; käytä suurempaa karttaa tai kapeampaa palmikkoa.
+[The map is too narrow across for a braid; use a bigger map.]
+Kartta on poikittain liian kapea palmikolle; käytä suurempaa karttaa.

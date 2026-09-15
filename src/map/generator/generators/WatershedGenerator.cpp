@@ -2,11 +2,13 @@
 #include "WatershedGenerator.h"
 #include "FertilityField.h"
 #include "Game.h"
+#include "Channels.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
 #include "LatticeNoise.h"
 #include "Pipeline.h"
+#include "Planting.h"
 #include "Resources.h"
 #include "Roads.h"
 #include "Settlements.h"
@@ -243,6 +245,12 @@ struct Ford
 	Vec center, along, across;
 	double span;
 };
+// A ford as Channels.h stamps and checks it.
+SandFord asSandFord(const Ford &f)
+{
+	return {f.center.x, f.center.y, f.along.x, f.along.y,
+			f.across.x, f.across.y, f.span,    kFordHalfWidth};
+}
 
 struct Layout
 {
@@ -1103,22 +1111,6 @@ std::vector<int> waterDistance(const std::vector<unsigned char> &terrain, int w,
 	return distance;
 }
 
-void stampFord(std::vector<unsigned char> &terrain, int w, int h, const Ford &f)
-{
-	const int reach = int(std::ceil(f.span + kFordHalfWidth)) + 1;
-	const int cx = int(std::floor(f.center.x)), cy = int(std::floor(f.center.y));
-	for (int dy = -reach; dy <= reach; ++dy)
-		for (int dx = -reach; dx <= reach; ++dx)
-		{
-			const Vec d{cx + dx - f.center.x, cy + dy - f.center.y};
-			if (std::abs(dot(d, f.along)) > kFordHalfWidth || std::abs(dot(d, f.across)) > f.span)
-				continue;
-			unsigned char &t = terrain[size_t(wrapIndex(cy + dy, h)) * w + wrapIndex(cx + dx, w)];
-			if (t == WATER)
-				t = SAND;
-		}
-}
-
 std::vector<unsigned char> stampTerrain(const Layout &layout, const WatershedOptions &o,
 										GenerationContext &context)
 {
@@ -1193,88 +1185,45 @@ std::vector<unsigned char> stampTerrain(const Layout &layout, const WatershedOpt
 					}
 		}
 	for (const Ford &f : layout.fords)
-		stampFord(terrain, w, h, f);
+		stampFord(terrain, Torus{w, h}, asSandFord(f));
 	return terrain;
 }
 
 // Every ford interrupts a real channel - open water runs on in line just upstream and downstream
 // of it - is open from bank to bank along three parallel lines, and reaches dry land at both
-// ends. `water(x, y)` answers for a tile.
+// ends (fordFault, Channels.h). `water(x, y)` answers for a tile.
 template <typename Water> std::string checkFords(const Layout &layout, Water water)
 {
-	const int w = layout.frame.width, h = layout.frame.height;
-	auto wet = [&](Vec p)
-	{ return water(wrapIndex(int(std::floor(p.x)), w), wrapIndex(int(std::floor(p.y)), h)); };
-	auto where = [&](const Ford &f)
-	{
-		return " at (" + std::to_string(wrapIndex(int(f.center.x), w)) + ", " +
-			   std::to_string(wrapIndex(int(f.center.y), h)) + ")";
-	};
-	// Open water within a tile of a point: a thin or diagonal channel's water core need not cover
-	// any one exact tile once its shores are sanded.
-	auto wetNear = [&](Vec p)
-	{
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-				if (wet(p + Vec{double(dx), double(dy)}))
-					return true;
-		return false;
-	};
+	const Torus t{layout.frame.width, layout.frame.height};
 	for (const Ford &f : layout.fords)
-	{
-		for (int side : {-1, 1})
-			// 2.5 tiles past the ford's edge up- and downstream there must be open water, so the
-			// ford really interrupts a channel.
-			if (!wetNear(f.center + f.along * (side * (kFordHalfWidth + 2.5))))
-				return "A ford" + where(f) + " does not cross a channel.";
-		for (int a = -1; a <= 1; ++a)
-			for (double s = -f.span; s <= f.span + 1e-9; s += kSpacing)
-				if (wet(f.center + f.along * a + f.across * s))
-					return "A ford" + where(f) + " is cut by open water.";
-		for (int side : {-1, 1})
-			if (wet(f.center + f.across * (side * (f.span + 1.0))))
-				return "A ford" + where(f) + " does not reach its bank.";
-	}
+		if (const std::string fault = fordFault(t, asSandFord(f), water); !fault.empty())
+			return fault;
 	return "";
 }
 
 // Every channel keeps a 4-connected core of open water from its spring to where it ends, except
-// where a ford crosses it - so the fords are the only way over on foot.
+// where a ford crosses it - so the fords are the only way over on foot (channelCoreFault,
+// Channels.h); the check starts afresh past every ford and where a reach meets the sea.
 template <typename Water> std::string checkChannels(const Layout &layout, Water water)
 {
-	const int w = layout.frame.width, h = layout.frame.height;
+	const Torus t{layout.frame.width, layout.frame.height};
 	for (const Reach &reach : layout.reaches)
 	{
-		bool previous = false;
-		int px = 0, py = 0;
-		for (size_t i = 0; i < reach.points.size(); ++i)
+		std::vector<ShapePoint> line;
+		line.reserve(reach.points.size());
+		for (const Vec &p : reach.points)
+			line.push_back({p.x, p.y});
+		const auto skip = [&](int i)
 		{
-			const Vec p = reach.points[i];
-			bool skip = reach.coastGap[i] < 2.0;
-			for (size_t k = 0; !skip && k < layout.fords.size(); ++k)
-			{
-				const Ford &f = layout.fords[k];
-				const Vec d{centred(p.x - f.center.x, w), centred(p.y - f.center.y, h)};
-				skip = std::abs(dot(d, f.along)) <= kFordHalfWidth + 2 &&
-					   std::abs(dot(d, f.across)) <= f.span + 1;
-			}
-			if (skip)
-			{
-				previous = false;
-				continue;
-			}
-			const int x = wrapIndex(int(std::floor(p.x)), w),
-					  y = wrapIndex(int(std::floor(p.y)), h);
-			if (!water(x, y))
-				return "A river channel silts up at (" + std::to_string(x) + ", " +
-					   std::to_string(y) + ").";
-			if (previous && x != px && y != py && !water(x, py) && !water(px, y))
-				return "A river channel can be stepped across at (" + std::to_string(x) + ", " +
-					   std::to_string(y) + ").";
-			previous = true;
-			px = x;
-			py = y;
-		}
+			if (reach.coastGap[i] < 2.0)
+				return true;
+			for (const Ford &f : layout.fords)
+				if (asSandFord(f).covers(t, line[i].x, line[i].y, 2, 1))
+					return true;
+			return false;
+		};
+		if (const std::string fault = channelCoreFault(t, line, skip, water); !fault.empty())
+			return fault;
 	}
 	return "";
 }
@@ -1826,29 +1775,6 @@ void placeAlgae(Game &game, GenerationContext &context, const Layout &layout, co
 	}
 }
 
-// Clears the fewest resource tiles that let every colony walk to colony 0.
-bool connectColonies(Game &game, int teams, std::string &detail)
-{
-	Map &map = game.map;
-	const Torus t(map);
-	const auto workers = unitTilesByTeam(map, teams);
-	for (int team = 1; team < teams; ++team)
-	{
-		const std::vector<int> reach = stepsFrom(t, tileMask(t, workers[0]), walkableTiles(map));
-		bool connected = false;
-		for (int p : workers[team])
-			connected = connected || reach[p] >= 0;
-		if (connected)
-			continue;
-		if (!openRoad(map, t, workers[0], tileMask(t, workers[team])))
-		{
-			detail = "colony " + std::to_string(team) + " has no land route to colony 0";
-			return false;
-		}
-	}
-	return true;
-}
-
 bool generate(Game &game, GenerationContext &context)
 {
 	context.stage = "watershed layout";
@@ -1927,19 +1853,16 @@ bool generate(Game &game, GenerationContext &context)
 	placeStone(game, context, tiles, keepClear, reservations, o.stone);
 	placeFarmland(game, context, tiles, fertility, keepClear, reservations, o);
 	placeAlgae(game, context, layout, tiles, o.algae);
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-			if (keepClear[size_t(y) * w + x] && map.isResource(x, y) && !map.isWater(x, y))
-				map.setNoResource(x, y, 1);
+	clearDeposits(map, Torus{w, h}, keepClear);
 	context.stage = "watershed connectivity";
-	if (!connectColonies(game, teams, context.detail))
+	if (connectColonies(map, teams, nullptr, context.detail) < 0)
 		return false;
 	// Opening a route can clear part of a starter kit, so the kits are topped up afterwards - held
 	// to the kit's own distance rather than the shared defaults, so a colony whose kit could not be
 	// placed still gets wheat and wood as near as its rivals do - and the routes checked once more
 	// in case a top-up closed one.
 	guaranteeStartingResources(game, context, 16, 16);
-	return connectColonies(game, teams, context.detail);
+	return connectColonies(map, teams, nullptr, context.detail) >= 0;
 }
 
 std::string validate(const GenerationRequest &r)
@@ -1976,23 +1899,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			met = met || fromFirst[p] >= 0;
 		if (!met)
 			return "Colony " + std::to_string(team) + " cannot walk to colony 0 without swimming.";
-		bool wheat = false, wood = false;
-		for (int y = 0; y < h && !(wheat && wood); ++y)
-			for (int x = 0; x < w; ++x)
-			{
-				const int type = map.getResource(x, y).type;
-				if (type != WHEAT && type != WOOD)
-					continue;
-				bool beside = false;
-				for (int dy = -1; dy <= 1 && !beside; ++dy)
-					for (int dx = -1; dx <= 1 && !beside; ++dx)
-						beside =
-							reach[size_t(map.normalizeY(y + dy)) * w + map.normalizeX(x + dx)] >= 0;
-				(type == WHEAT ? wheat : wood) = (type == WHEAT ? wheat : wood) || beside;
-			}
-		if (!wheat || !wood)
-			return "Colony " + std::to_string(team) + " cannot walk to " +
-				   (wheat ? "wood." : "wheat.");
+		if (const std::string missing = cropsBesideReach(map, reach).missing(); !missing.empty())
+			return "Colony " + std::to_string(team) + " " + missing;
 	}
 
 	const WatershedOptions o(context.request);
@@ -2004,22 +1912,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		return error;
 	for (const Ford &f : layout.fords)
 		for (int side : {-1, 1})
-		{
-			const Vec end = f.center + f.across * (side * (f.span + 1.0));
-			bool walkable = false;
-			for (int dy = -1; dy <= 1 && !walkable; ++dy)
-				for (int dx = -1; dx <= 1 && !walkable; ++dx)
-				{
-					const int x = map.normalizeX(int(std::floor(end.x)) + dx);
-					const int y = map.normalizeY(int(std::floor(end.y)) + dy);
-					walkable = !map.isWater(x, y) && !map.isResource(x, y) &&
-							   map.getBuilding(x, y) == NOGBID;
-				}
-			if (!walkable)
+			if (!fordLandingWalkable(map, Torus(map), asSandFord(f), side))
 				return "A ford at (" + std::to_string(map.normalizeX(int(f.center.x))) + ", " +
 					   std::to_string(map.normalizeY(int(f.center.y))) +
 					   ") has no walkable land on one bank.";
-		}
 	return checkChannels(layout, water);
 }
 } // namespace

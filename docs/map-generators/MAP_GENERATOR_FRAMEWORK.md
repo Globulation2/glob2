@@ -19,17 +19,17 @@ and Terrain take a `Game` because placing buildings and units needs its mutation
 
 | Module | What it gives a generator |
 |---|---|
-| `Grid` | `Torus` wrap and offset arithmetic; `floodFrom`/`stepsFrom`, the one eight-connected breadth-first flood (with a step limit and the visit order for callers that need it); `walkableTiles` and `groundUnitTiles` passability masks; `unitTilesByTeam` and `firstColonyCutOff` |
-| `Topology` | `connectedRegions` component labelling with explicit wrap and neighbour policy; `labelComponents` (assign component owners and report the first mixed-label component, keeping unlabelled connecting ground); `regionAdjacency` and `graphDistances` over sparse labels |
+| `Grid` | `Torus` wrap and offset arithmetic; `floodFrom`/`stepsFrom`, the one eight-connected breadth-first flood (with a step limit and the visit order for callers that need it); `walkableTiles` and `groundUnitTiles` passability masks; `unitTilesByTeam` and `firstColonyCutOff`; `Axes`, the map's axes turned so that u runs along its longer side and v across it, the frame of a belt that wraps the map the long way (Ring world, Braided river) |
+| `Topology` | `connectedRegions` component labelling with explicit wrap and neighbour policy; `labelComponents` (assign component owners and report the first mixed-label component, keeping unlabelled connecting ground); `regionAdjacency` and `graphDistances` over sparse labels; `DisjointSets`, union-find for a spanning tree of crossings grown by Kruskal's rule |
 | `Geometry` | `kPi`; `ShapeTransform` (invertible stretch and rotation); `Stretch`, which places a layout designed in a circle on a map's shorter side onto a rectangular map as an ellipse touching all four sides (`toFill`, `apply`, `undo`, `heading`), exactly the identity on a square map; `RadialShape`, a seeded rough outline with a per-angle `radiusAt()`; `stampShape` and `stampRoughDisc` into a label grid; `AxisFrame`, a frame along a heading from an origin (`at(along, across)` and `project`), in which a colony's trail, gates or towers are designed once |
-| `Drawing` | Drawing on the torus: `strokePath`, a thick path of points each with its own half width, rasterized through the wrap; `tracePath`, a path traced one tile thick with no gaps (a sand road); `bezierPath`, a quadratic curve as such a path; `polarPoint`; `forEachTileInShape` and `fillShape`, a `RadialShape` filled at any centre and turned to any heading within its bounding box, optionally stretched into an oval; `stretchPath`, a designed path placed on the map by a `Stretch` with its half widths kept in tiles; `bentPath`, a tapered path leaving a point along a heading and bowing sideways; `wanderingPath` and `carveCorridor`, a path (and its stroke) that wanders from one point to another the short way round the torus, leaving and arriving exactly where asked, its width swelling and narrowing (a tunnel, a lane, a trail that doesn't look ruled); `pathClearance` and `pathBounds`, the water between two stroked paths (optionally ignoring a branch's root) and a cheap bounding circle; `growBranches`, a tree grown level by level by forking in two at every tip to a `ForkStyle`, every branch offered to a caller's `accept` before it is kept and a refused one retried once at half length; `arcPath`, a circular arc as a stroke; `zigzagPath`, a switchback trail in an `AxisFrame` with each leg's straight run returned apart from its turns; `ringWithGates`, every tile of a ring visited with the gate it lies in (a wall with ramps, a moat with bridges); exact fixed-point geometry for designs that must rasterize the same everywhere: `SubtilePoint` (16 units a tile), `sealedSegmentTiles` and `traceSealedPath` (a line no unit can cross even diagonally, at any slant), `forEachTileInPolygon` and `fillPolygon` (tile centres inside a polygon, shared edges split exactly, through the wrap) |
+| `Drawing` | Drawing on the torus: `strokePath`, a thick path of points each with its own half width, rasterized through the wrap; `tracePath`, a path traced one tile thick with no gaps (a sand road); `bezierPath`, a quadratic curve as such a path; `polarPoint`; `forEachTileInShape` and `fillShape`, a `RadialShape` filled at any centre and turned to any heading within its bounding box, optionally stretched into an oval; `stretchPath`, a designed path placed on the map by a `Stretch` with its half widths kept in tiles; `bentPath`, a tapered path leaving a point along a heading and bowing sideways; `wanderingPath` and `carveCorridor`, a path (and its stroke) that wanders from one point to another the short way round the torus, leaving and arriving exactly where asked, its width swelling and narrowing (a tunnel, a lane, a trail that doesn't look ruled); `pathClearance` and `pathBounds`, the water between two stroked paths (optionally ignoring a branch's root) and a cheap bounding circle; `growBranches`, a tree grown level by level by forking in two at every tip to a `ForkStyle`, every branch offered to a caller's `accept` before it is kept and a refused one retried once at half length; `arcPath`, a circular arc as a stroke; `zigzagPath`, a switchback trail in an `AxisFrame` with each leg's straight run returned apart from its turns; `ringWithGates`, every tile of a ring visited with the gate it lies in (a wall with ramps, a moat with bridges); exact fixed-point geometry for designs that must rasterize the same everywhere: `SubtilePoint` (16 units a tile), `sealedSegmentTiles` and `traceSealedPath` (a line no unit can cross even diagonally, at any slant), `forEachTileInPolygon` and `fillPolygon` (tile centres inside a polygon, shared edges split exactly, through the wrap); `traceSealedLap`, a sealed line right round the torus along one axis (a wall of bluffs at the back of a belt) |
 | `Wedge` | `WedgeFrame`: the map as one equal wedge per colony round the centre, so a feature designed once in a wedge's frame is stamped into every wedge alike; given a `Stretch` it measures every cell in the round design frame, so the same design fills a rectangular map; `Blob`, a stretched, turned rough disc in that frame; `WedgeField`, periodic noise sampled in the wedge frame so a layer planted by it comes out the same in every wedge |
 | `Sketch` | `TerrainSketch`, the undermap designed in memory; `layBeaches`, the order-independent beach pass; `raiseIslands`; `sprinkleSand`, decorative sand patches on inland grass following a caller's noise, kept a strip of grass away from every beach; `writeUndermap`; `pureTiles`, the tiles whose four corners all hold one terrain (the sketch as the game will draw it), and `tileCorners`, the reverse; `growWater`, one body of water grown to an exact tile count by a caller's key (Stone highlands' ponds, Amphitheatre's bays); `keepRoadInland` and `roadTiles`, a sand road kept off every beach and the tiles its vertices spoil |
 | `LatticeNoise` | `PeriodicNoise`, value noise that tiles the torus exactly and samples anywhere, with `periodicNoise`/`fractalNoise` (integer fields per tile, octaves) and `torusNoise` (four octaves in [-1, 1]) sampled from it, plus `percentile` |
 | `HeightMap`, `Noise` | Perlin noise faded across the wrap, and the stamped height fields the height-field generators shape |
-| `Planting` | The deposits a generator places by hand: `clearGround`, `growPatch`, `seedNear`, `plantKit` (a home's wheat, wood and stone from three seeds, or no stone for a home already walled in it), `KitFrame` (a home's origin and facing, so one kit design lands the same way round every home), `swarmSurroundings`, `clearAroundSwarms`, `seedAlgae` (any water or a shallows band; optionally only its best-growing share, shared out equally between the colonies' wedges), `algaeGrowthChance` (each water tile's chance of passing the engine's algae growth test, which needs water within 15 tiles and solid sand within 30 at a reflected offset), `stockIslands`, `plantFields` (the preferred tiles dealt into wheat and wood patches by an unrelated split key), `scatterClumps` (clumps dropped on random eligible tiles of a region), `plantRound` and `plantOrchard` (a clump, or groves of the three fruits, at the same point round a circle at every colony's angle), `plantCover` (one deposit over every allowed tile of a region: a forest, a wheat plain, undergrowth); `seedAlgae` can also share its clumps between labelled groups of water such as private bays |
+| `Planting` | The deposits a generator places by hand: `clearGround`, `growPatch`, `seedNear`, `plantKit` (a home's wheat, wood and stone from three seeds, or no stone for a home already walled in it), `KitFrame` (a home's origin and facing, so one kit design lands the same way round every home), `swarmSurroundings`, `clearAroundSwarms`, `seedAlgae` (any water or a shallows band; optionally only its best-growing share, shared out equally between the colonies' wedges), `algaeGrowthChance` (each water tile's chance of passing the engine's algae growth test, which needs water within 15 tiles and solid sand within 30 at a reflected offset), `stockIslands`, `plantFields` (the preferred tiles dealt into wheat and wood patches by an unrelated split key), `scatterClumps` (clumps dropped on random eligible tiles of a region), `plantRound` and `plantOrchard` (a clump, or groves of the three fruits, at the same point round a circle at every colony's angle), `plantCover` (one deposit over every allowed tile of a region: a forest, a wheat plain, undergrowth); `seedAlgae` can also share its clumps between labelled groups of water such as private bays; `clearDeposits`, the deposits on ground a design promised open (a ford's landings) cleared, a designed wall kept |
 | `Resources` | The ambient layer and its fairness guards: `scaledCount`/`scaledShare`, `placeResourceClump`, `setScaledResource`, `scatterResources`, `guaranteeStartingResources`, `openCrampedStarts` |
-| `Roads` | `cheapestRoute` and `openRoad`: the walk that crosses the fewest deposits, with only those cleared; `cheapestWalk`, the same search by any step cost (Symmetric arena's causeway routes); `openColonyRoutes`, the backstop that opens the cheapest way from colony 0's doorstep to any colony it cannot walk to under a `StepCosts` model, clearing deposits and fording water with sand (Everglades) |
+| `Roads` | `cheapestRoute` and `openRoad`: the walk that crosses the fewest deposits, with only those cleared; `cheapestWalk`, the same search by any step cost (Symmetric arena's causeway routes); `openColonyRoutes`, the backstop that opens the cheapest way from colony 0's doorstep to any colony it cannot walk to under a `StepCosts` model, clearing deposits and fording water with sand (Everglades); `connectColonies`, the cheapest walk from colony 0 to every colony it cannot reach opened through deposits alone, never water or a designed wall (Watershed, Braided river) |
 | `Settlements` | `placeSettlement`: whole-footprint home mask, nearest legal anchor, exact worker count, per-colony diagnostics; `placeTower`, a completed, stocked defence tower of a chosen level at the allowed footprint nearest a designed point |
 | `Walls` | Walls a design builds and the checks that prove they hold: `seaVertices` and `seaMargin` (the land a swimmer can stand on), `sealCoasts` (stone on every grass tile touching that margin, so a coast is sealed; City states, Carousel, Switchbacks), `islandSeaMargin` and `sealedIslandStone` (the margin and the stone of walled land in the sea with ponds and sand roads, once for Carousel and Switchbacks), `checkGatePartition` (seal explicit tile plugs, detect diagonal or wrapped boundary leaks, and prove each connected plug touches exactly its two labelled regions); `labelBorders` (a wall between labelled regions no unit can cross even diagonally, one to three tiles thick, or with doors a design leaves open; Stone highlands' ridges, Amphitheatre's borders, Carousel's walls), `designedStone` (a designed band's stone and any gaps the beach pass left), `reachesWithShut`, `pieceLeak` and `seaEntry` (with the doors shut, does any part reach another, or the sea reach inside), `towerReach` (how close a tower on some ground comes to shooting at a target: towers scan square rings with no line of sight), `walkSpread` (every colony's walk to its own target, and how uneven they are) and `firstRegionLeak` (reachable ground where two labelled regions meet that a design says must not; Maze's walls) |
 | `Tessellation` | Polygon tilings of the torus with no terrain attached: `squareTessellation` and `hexTessellation` (cells, the corners they share and edges as identities, exact across the wrap even two cells wide), `edgeEnds`, `centreAcross`, `outline`, `transform` (the lattice's translations and mirrors), `labelTiles` (every tile's cell), `cellCrossing` (a path through a particular shared edge, outside reserved centre discs, preserving distinct toroidal parallel crossings), `shortestEdgeSteps` and `centreClearance`; `warpLimit` and `warpCorners`, corners moved at random into irregular polygons that still tile, never closing the gap between walls that share no corner below a minimum (Maze); `rasterizeBoundaries` (sealed selected edges with toroidal thickness) and `relaxWarpOutside` (bounded deterministic contraction away from an arbitrary protected tile mask) |
@@ -47,12 +47,12 @@ and Terrain take a `Game` because placing buildings and units needs its mutation
 | `Growth` | Where wheat and wood grow back, known on the sketch: `cropGrowthField` (the exact `Fertility::Field` of a `TerrainSketch`, not gated on deposits), `wateredShare`, `wetTiles` (a region promised dry checks 0), `dryZone` (where water would water a region: `kCropProbeReach` on each axis) and `drainWithin`; finished-map `cropSeedsIn` checks protected masks after resource repairs, and `cropSpreadEnvelope` conservatively floods wheat/wood through toroidal eight-connected grass to test long-term containment without simulating growth speed |
 | `Contact` | Distances by what a step costs: `StepCosts` (open, clearable, eternal, water, building; `walking`, `chopping`, `swimming`), `stepCost`, `costsFrom`, `contactMatrix` (every colony's cost to every other), `costsToTarget`, `costSpread`, `unevenCosts` (a validator's message) and `equalCostSites` (one site per colony at the same cost from home, on its own side: groves an equal chop into a forest) |
 | `Points` | Irregular sites and cells: `spreadPoints` (dart throwing with a minimum spacing), `nearestSiteLabels` (warped Voronoi cells in sixteenths of a tile), `relaxPoints` (Lloyd relaxation on the torus) and `siteNeighbours` (which cells touch); Stone highlands' basins |
-| `Patterns` | Structure with a grain: `turingPattern` (labyrinths and spots grown from noise by activation and inhibition, about a wavelength across, optionally stretched), `stripePhase`, `stripeSpacing`, `stripeHeading`, `stripeNormal` and `stripeDistance` (parallel stripes that wrap both seams exactly at any whole-number slant, optionally warped), `upwindSteps` (the shadow a mask casts downwind) and `traceStreamline` (a curve following a field of headings) |
-| `Channels` | Water sized for its purpose: the beach arithmetic once (`kChannelSpoiledTiles`, `bankToBank`: a channel w corners wide spoils w + 3 tiles and puts banks w + 4 apart), `widestChannelTowersCross` and `narrowestChannelTowersMiss` by tower level, `beachTiles` (the rim towers stand against to cover a canal, on a sketch or a map), `bridgeAcross` (a sand bridge across water) and `crossingsPerLabel` (every colony's number of ways across) |
+| `Patterns` | Structure with a grain: `turingPattern` (labyrinths and spots grown from noise by activation and inhibition, about a wavelength across, optionally stretched), `stripePhase`, `stripeSpacing`, `stripeHeading`, `stripeNormal` and `stripeDistance` (parallel stripes that wrap both seams exactly at any whole-number slant, optionally warped), `upwindSteps` (the shadow a mask casts downwind) and `traceStreamline` (a curve following a field of headings); `runsAndGaps`, a broken line of runs and gaps (a moraine's hummocks, cover with doors in it) |
+| `Channels` | Water sized for its purpose: the beach arithmetic once (`kChannelSpoiledTiles`, `bankToBank`: a channel w corners wide spoils w + 3 tiles and puts banks w + 4 apart), `widestChannelTowersCross` and `narrowestChannelTowersMiss` by tower level, `beachTiles` (the rim towers stand against to cover a canal, on a sketch or a map), `bridgeAcross` (a sand bridge across water) and `crossingsPerLabel` (every colony's number of ways across); channels drawn as centre lines with a radius per point: `SandFord` with `stampFord`, `fordAlong`, `fordFault` and `fordLandingWalkable` (a ford laid across a channel and checked on the rasterized water: it interrupts open water, is dry across and lands on walkable ground), `channelCoreFault` (a channel keeps a 4-connected core of water except at its fords, so nothing steps over it) and `channelCrossings` (the stretches two labelled regions face each other across, the edges of a crossing graph; Watershed's fords, Braided river's riffles) |
 | `Room` | Building room as a design decision: `buildableTiles`, `buildAnchors` (every 4x4 footprint's top-left, across the wrap), `buildSites` (footprints in a region) and `growUntilSites` (a chamber grown until it holds exactly what it promised) |
 | `Biomes` | Kinds of land as data: `BiomeKit` (ponds, stone ring, farmland, wood share, outcrops, groves, cover, orchard island) with `fertilePlain`, `stoneFortress`, `orchardIsland` and `forest`; `biomeWorth` (an estimate from the start scorer's weights to share ground by, to be tuned with the fairness tournament); `sketchBiome` (its ponds, island and ring) and `furnishBiome` (its deposits) |
 | `BalancedStarts` | `chooseBalancedStarts`: boot tiles whose walks to wheat and wood are as nearly equal as the finished map allows |
-| `Pipeline` | The stages round the others: `dealStarts` (the design's start sites dealt to the colonies at random, so a team number never gets the same ground map after map), `designFailure` (the registry's request check for a designed generator: the design's own failure), `settleColonies` and `settleRoundColonies` (round homes on their own grass, `homeGrassMask`), `homePondMissing` (a validator's check that every home kept its pond), `secureStartingCrops` (clear round the swarms, guarantee the crops, clear again), `reopenCrampedStarts`, `designMismatch` and `walkFromFirstColony` for validators, `ResourceAmounts` |
+| `Pipeline` | The stages round the others: `dealStarts` (the design's start sites dealt to the colonies at random, so a team number never gets the same ground map after map), `designFailure` (the registry's request check for a designed generator: the design's own failure), `settleColonies` and `settleRoundColonies` (round homes on their own grass, `homeGrassMask`), `homePondMissing` (a validator's check that every home kept its pond), `secureStartingCrops` (clear round the swarms, guarantee the crops, clear again), `reopenCrampedStarts`, `designMismatch`, `walkFromFirstColony` and `cropsBesideReach` (which crops a flood from a colony stands beside) for validators, `ResourceAmounts` |
 | `Terrain` | The height-field pipeline as stages: `heightFieldTiling`, `classifyHeightField`, `paintHeightFieldTerrain`, `paintHeightFieldResources`, `chooseHeightFieldStarts`, `plantHeightFieldGroves`, composed by `generateHeightField` |
 | `StartQuality` | `scoreStarts`, the finished map's colony quality and fairness the service ranks candidates by |
 | `GenerationContext` | Named `std::mt19937` streams, `bounded` draws and `shuffle` |
@@ -73,6 +73,8 @@ landscape generators Fingerprint, Rain shadow, Old growth, Canals, Polder, Old t
 landscape generators Fingerprint, Rain shadow, Old growth, Canals, Polder, Old town, Anthill and
 [Breachable highlands](BREACHABLE_HIGHLANDS.md)) follow one
 shape, and the newest of them are little more than a sequence of shared stages:
+landscape generators Fingerprint, Rain shadow, Old growth, Canals, Polder, Old town, Anthill and Braided
+river) follow one shape, and the newest of them are little more than a sequence of shared stages:
 
 1. `design(request, context)` computes the whole layout from the request and the context's
    named streams without touching the map, and returns it with a `failure` string when the
@@ -128,6 +130,7 @@ restores whatever landscape it had.
 | `switchbacks` | 24 | Switchbacks | Its own — see below |
 | `city-states` | 17 | City states | Its own — see below |
 | `canals` | 29 | Canals | Its own — see below |
+| `braided-river` | 42 | Braided river | Its own — see below |
 | `rugged-archipelago` | 8 | Old islands | Island growth + beach passes, own resource search |
 | `contested-commons` | 9 | Contested commons | Point dispersion (`shared/legacy/Regions`) |
 | `rain-shadow` | 27 | Rain shadow | Its own — see below |
@@ -207,6 +210,7 @@ were counts of their own until that audit and are percentages since.
 | The Glacis | The wadi banks' wheat and wood, the plain's outcrops, the groves beside the fords and the wadis' algae; every compound's well-side kit, quarry, walls, stock and starting towers are unscaled | Garrison (on): off, a compound starts with its colonists only |
 | Allotments | The field lots' wheat and wood, the woodlots, the quarry and grove lots and the ditches' algae; every city's sites, wood stacks, stock and home fields are unscaled | Garrison (on) |
 | Caravanserai | The outposts' quarry, orchard and algae; every capital's fields, stock and towers, and the oases' and outposts' wheat, are unscaled | Garrison (on) |
+| Braided river | Every bar's farmland and the terraces' thin bank-strip farmland, the dry terraces' woodlots and outcrops, the deep bars' fruit groves and the channels' algae; every home's kit, every promised bar's wheat and wood, the bluffs and the moraine are unscaled | Moraine hummocks (on): off, the terrace edges are open bank |
 
 `scaledCount` and `scaledShare` (`shared/Resources.h`) apply a percentage to a count or a share and
 return it unchanged at 100. `setScaledResource` scales one `Map::setResource` square to a share of
@@ -278,7 +282,7 @@ fixed resource pass:
   states' walls; they are
   treated like terrain, never cleared and never looked past. It wraps each boot tile onto the map
   first, since the height-field generators' fallback site search can hand over one past the edge.
-  RuggedArchipelago, ShatteredCoast, Fjord, Watershed, Stone highlands, Ring world, City states,
+  RuggedArchipelago, ShatteredCoast, Fjord, Watershed, Braided river, Stone highlands, Ring world, City states,
   Tidal flats, Everglades, Spider web and Coral call this, as do the height-field generators, and Concrete islands and Isles at any wheat or wood amount
   other than 100.
   Maze doesn't need it: its deposits are placed only along passage shores, leaving a clear lane
@@ -793,7 +797,6 @@ orchard is the prize, and the water between is crossed only once colonies can sw
   every other colony clears any deposits in the way.
 - **Checked, not assumed.** `validateWorld` rebuilds the design and requires every spoke's centre
   line to be land, every colony reachable on foot from colony 0 and the hub reachable too, with
-  water, buildings and every resource blocking.
 - **Sand roads.** With `sand-roads` (on), a line of sand one tile thick (`tracePath`) runs down the
   middle of every spoke and whole thread, off the pads and dew drops; torn stubs, which are dead
   ends, get none. Every tile touching the sand loses the pure grass a deposit or a building needs,
@@ -853,15 +856,12 @@ further it is from home.
   the way. `validateWorld` rebuilds the design and requires every trunk's centre line to be land,
   every colony able to walk to its first fork and, with bridges, every colony reachable on foot
   from colony 0.
-- **Sand roads.** With `sand-roads` (on), a line of sand one tile thick (`tracePath`) runs down the
   middle of every branch that forks on and every bridge, off the pads and buds; dead-end tips get
   none, since they carry no traffic and their narrow land would be left without fields. Every tile
   touching the sand loses the pure grass a deposit or a building needs, so nothing can grow or be
   built across the road. Branches never taper below about eight tiles (`branch-width` 7–17, 11 by
   default, is the trunk's), so grass remains either side of the road.
 - **Rectangular maps.** The fan is designed in a circle on the map's shorter side and placed on the
-  map by `Stretch`, so on a rectangular map it fills the map as an ellipse; widths stay in tiles.
-  Square maps are unchanged.
 
 ## Carousel
 
@@ -1006,7 +1006,6 @@ next leg up. Every home reaches a walled wheat farm on either flank.
   blocks since 2026-09-14 (the farms on either flank feed the home; `secureStartingCrops` is the
   backstop). The plateau has a pond and only fruit, an orchard of the three fruits between every
   two summits, so nothing overgrows it.
-- **Starting towers.** `tower-count` towers (default 3, at `starting-towers` level, default 1 since
   2026-09-14) and four open pads per colony, all on its trail
   beside the walkway down its middle, each directly against stone on the inner side of a wall - the side
   towards the middle of the map - so it shoots across the stone at the next leg up, where attackers
@@ -1359,7 +1358,6 @@ extends its reach one oasis at a time, and an army that outruns its oases fights
   to an outpost and to an oasis within sixteen steps of every other's, every oasis with room for two
   2x2 buildings, every colony walkable from the first across the sand.
 
-- **Played.** With four Numbis (six 256×256 maps, every cyclic team rotation, 45,000 ticks)
   every capital starves: units hold at 52 until about tick 20,000 and fall to under ten by
   40,000, with 45 to 51 starvation deaths per colony and no combat. The telemetry shows why: a
   Numbi colony harvests its capital fields about twenty times in the whole game (against about
@@ -1367,6 +1365,65 @@ extends its reach one oasis at a time, and an army that outruns its oases fights
   stable plateau; the collapse is after it. Whether the capital's wheat should stand where Numbi
   will harvest it, or the map is simply for people, is the decision to make before this map is
   offered to AI games.
+## Braided river
+
+A glacial outwash plain: a wide belt of interlaced channels and gravel bars runs the long way
+round the map, a dry terrace lies along either bank, and a wall of bedrock bluffs stands where the
+two terraces meet across the far seam of the torus. Homes are on the terraces; the bars are the
+fertile ground; on foot the only way from bank to bank is over the riffles (sand fords) that join
+the bars this map, and which bars join which is redrawn every seed.
+
+- **Threads.** `channels` sinusoidal channel threads (3 to 9; 6 by default) wrap the map a whole
+  number of times, each in its own lane across the belt (`braid-width`, a percentage of the map's
+  breadth, 40 by default), neighbouring threads in antiphase so every adjacent pair crosses twice a
+  period and the land between two crossings is a lens-shaped bar `bar-size` tiles long (half the
+  period, rounded to a whole number of periods round the lap). Each thread's phase drifts, its
+  swing swells and its width (4.4 to 7 corners) swells and narrows over whole cycles of the lap,
+  so the weave never repeats and the seam cannot be seen. Lanes are held between 11 and 26 tiles
+  by dropping or adding threads, so bars stay bar-sized on every map: 3 threads on a 128 map, 6 on
+  256 and 7 on 512 at the default width. Every channel keeps a 4-connected core of open water
+  outside its riffles (`channelCoreFault`), so no unit steps over one.
+- **Bars and riffles.** The bars are the land components the rasterized water leaves, the two
+  terraces the components outside the belt. `channelCrossings` finds every stretch of channel two
+  bars face each other across; a riffle (`SandFord`, three rows of sand across the channel) is
+  tried at the middle of each chosen stretch on the sketch itself (`stampFord`, then `fordFault`:
+  open water either side of it, dry across, land at both ends, and no other thread's centre line
+  under its sand), and one that fails is unstamped and its stretch passed over. Chosen: one forced
+  crossing per colony, from its terrace to the nearest bar with room for wheat and wood whose
+  riffle works; a random spanning tree of the rest over `DisjointSets` (long stretches between
+  real bars first, stretches of 4 to 8 tiles and scraps of 12 tiles or more only if the banks are
+  still apart); and `extra-riffles` percent (25 by default) of the leftover bar-to-bar stretches
+  as loops, never two riffles within 9 tiles of each other on one thread. A seed whose bars do
+  not join the two banks is refused for another.
+- **Terraces, homes and the wall.** Homes stand 8 to 13 steps up the bank on the larger terrace
+  half of a slot, one slot per colony along the lap alternating banks, dealt to the colonies at
+  random. The terrace beyond fifteen tiles of the water grows nothing, so a town there is never
+  overgrown; the bank strip in front regrows thinly; the bars regrow richly. A sealed line of
+  stone bluffs (`traceSealedLap`) waving round the seam keeps the two terraces from being one
+  plain, since walking round the back of the torus would otherwise be shorter than crossing the
+  braid. With `moraine` (on) a broken line of stone hummocks (`runsAndGaps`) stands four steps up
+  each bank with a door at every riffle landing and none against a home.
+- **Resources.** Every home gets an unscaled kit (wheat and wood beside the swarm along the bank,
+  a stone clump behind) and its promised bar an unscaled wheat and wood clump; every bar's grass
+  is furnished a third under crops in patches along its shores (`furnishGround`, 2:1 wheat to
+  wood), the bank strips at a quarter of that, the dry terraces get finite woodlots and stone
+  outcrops, the bars nearest the belt's middle a grove of fruit each (one per 8,000 tiles, at least
+  three), and the channels algae where it regrows. `secureStartingCrops` and `connectColonies`
+  run with the bluffs and moraine protected; `reopenCrampedStarts` at non-default amounts.
+  `validateRequest` needs a terrace at least 22 tiles wide (a 128 map at 60% is the edge; 64 maps
+  are refused) and 36 tiles of bank per colony on each bank.
+- **Checked, not assumed.** `validateWorld` rebuilds the design and requires stone on every bluff
+  tile, every channel's core outside its riffles, every riffle open across with walkable land at
+  both ends (`fordFault`, `fordLandingWalkable`), every colony walking to colony 0, and every
+  colony walking onto its promised bar and standing beside wheat and wood.
+- **Played, and bimodal.** A rotation tournament (six 256×256 maps, four colonies, every cyclic
+  team rotation, four Nicowars, 45,000 ticks) split the starts: on four maps every colony grew to
+  66 to 155 units, while on two maps three of the four starts stalled at 15 to 25 units (peaks of
+  26 to 44, nine to eighteen buildings) with almost no starvation, no trapped units, and a fifth
+  of the harvest of the start that thrived. The start metrics do not separate the two (wheat two
+  to five steps away, comparable fertility and room), so this is an AI stall on the dry terrace
+  rather than a geometry defect the generator can measure; the defaults stand, and the retained
+  maps are the material for a follow-up with other AIs and human play.
 
 ## Compatibility notes
 

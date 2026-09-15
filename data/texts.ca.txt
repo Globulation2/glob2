@@ -2540,3 +2540,17 @@ Separació dels oasis
 Avançades per colònia
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 La base no cap en el seu terreny amb aquesta mida; apugeu el control de mida o abaixeu els Colons.
+[Braided river]
+Riu trenat
+[Braid width]
+Amplada de la trena
+[Bar size]
+Mida de les barres
+[Extra riffles]
+Guals extra
+[Moraine hummocks]
+Monticles de morrena
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+La trena deixa massa poca terrassa per a les bases; useu un mapa més gran o una trena més estreta.
+[The map is too narrow across for a braid; use a bigger map.]
+El mapa és massa estret per a una trena; useu un mapa més gran.

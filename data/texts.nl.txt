@@ -2556,3 +2556,17 @@ Afstand tussen oases
 Buitenposten per kolonie
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 De basis past bij deze grootte niet op haar grond; verhoog de grootte-instelling of verlaag Kolonisten.
+[Braided river]
+Vlechtende rivier
+[Braid width]
+Vlechtbreedte
+[Bar size]
+Grindbankgrootte
+[Extra riffles]
+Extra doorwaadplaatsen
+[Moraine hummocks]
+Moreneheuvels
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+De vlechting laat te weinig terras over voor de thuisbases; gebruik een grotere kaart of een smallere vlechting.
+[The map is too narrow across for a braid; use a bigger map.]
+De kaart is in de breedte te smal voor een vlechting; gebruik een grotere kaart.

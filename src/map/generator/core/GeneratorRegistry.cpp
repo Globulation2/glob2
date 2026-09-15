@@ -32,6 +32,7 @@
 #include "OldTownGenerator.h"
 #include "AnthillGenerator.h"
 #include "EmojiGenerator.h"
+#include "BraidedRiverGenerator.h"
 #include "FortsGenerator.h"
 #include "BraidedDeltaGenerator.h"
 #include "BreachableHighlandsGenerator.h"
@@ -165,6 +166,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 glacisDefinition(),
 											 allotmentsDefinition(),
 											 caravanseraiDefinition(),
+											 braidedRiverDefinition(),
 											 uniformDefinition()});
 	return registry;
 }

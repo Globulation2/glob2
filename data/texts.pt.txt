@@ -2538,3 +2538,17 @@ Espaçamento dos oásis
 Postos avançados por colónia
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 A base não cabe no seu terreno com este tamanho; aumente o controlo de tamanho ou reduza os Colonos.
+[Braided river]
+Rio entrançado
+[Braid width]
+Largura do entrançado
+[Bar size]
+Tamanho das barras
+[Extra riffles]
+Vaus adicionais
+[Moraine hummocks]
+Montículos de moreia
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+O entrançado deixa pouco terraço para as bases; use um mapa maior ou um entrançado mais estreito.
+[The map is too narrow across for a braid; use a bigger map.]
+O mapa é demasiado estreito para um entrançado; use um mapa maior.

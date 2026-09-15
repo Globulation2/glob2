@@ -2532,3 +2532,17 @@ Distanța dintre oaze
 Avanposturi per colonie
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 Baza nu încape pe terenul ei la această mărime; măriți controlul mărimii sau reduceți Coloniștii.
+[Braided river]
+Râu împletit
+[Braid width]
+Lățimea împletiturii
+[Bar size]
+Mărimea bancurilor
+[Extra riffles]
+Vaduri suplimentare
+[Moraine hummocks]
+Movile morenice
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Împletitura lasă prea puțină terasă pentru baze; folosește o hartă mai mare sau o împletitură mai îngustă.
+[The map is too narrow across for a braid; use a bigger map.]
+Harta este prea îngustă pe lățime pentru o împletitură; folosește o hartă mai mare.

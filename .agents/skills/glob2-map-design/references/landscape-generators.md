@@ -1,9 +1,9 @@
 # Lessons from landscapes and organic shapes
 
-This reference reviews 15 generators, including their headers, implementation comments,
+This reference reviews 16 generators, including their headers, implementation comments,
 controls, placement stages and validators. Together with [the structured-generator review](shaped-generators.md),
-the review covers all 31 entries in the [registry](../../../../src/map/generator/core/GeneratorRegistry.cpp)
-at authoring time. Numeric IDs are compatibility identities, not catalog order. Re-read the
+the review covers all 32 entries in the [registry](../../../../src/map/generator/core/GeneratorRegistry.cpp)
+at authoring time (Braided river, 34, was added after the review and its row describes its own design). Numeric IDs are compatibility identities, not catalog order. Re-read the
 linked implementation when changing a generator: the examples below describe the reviewed code,
 not permanent API guarantees. Numbers are useful starting points for experiments, not universal
 playability thresholds. Comments headed “WHY IT PLAYS WELL” state design intent; they do not
@@ -13,7 +13,7 @@ The reviewed option headers are `CoralGenerator.h`, `CraterLakesGenerator.h`,
 `EvergladesGenerator.h`, `FjordContinentGenerator.h`, `IslandsGenerator.h`,
 `OldGrowthGenerator.h`, `PolderGenerator.h`, `RainShadowGenerator.h`, `RiverGenerator.h`,
 `RuggedArchipelagoGenerator.h`, `ShatteredCoastGenerator.h`, `StoneHighlandsGenerator.h`,
-`SwampGenerator.h`, `TidalFlatsGenerator.h` and `WatershedGenerator.h`, all beside their
+`SwampGenerator.h`, `TidalFlatsGenerator.h`, `WatershedGenerator.h` and `BraidedRiverGenerator.h`, all beside their
 linked implementations in `src/map/generator/generators/`.
 
 ## Coverage and where to borrow an idea
@@ -35,6 +35,7 @@ linked implementations in `src/map/generator/generators/`.
 | [Rain shadow, 27](../../../../src/map/generator/generators/RainShadowGenerator.cpp) | Periodic slanted stone ridges, staggered passes, wet windward streams and dry lee sand; lattice homes snapped into valleys. | Directional economics gives the map a grain. Pass approaches need continuous sand connections into useful routes, not short decorative strips that end in regrowing grass. |
 | [Old growth, 28](../../../../src/map/generator/generators/OldGrowthGenerator.cpp) | Dry wood cover outside protected, well-watered homes; rare distant lakes and hidden groves; optional starting trails. | Clearable barriers and permanent barriers produce different games. Dry forest preserves the history of cutting; hidden prizes should be priced in cutting cost, not straight-line distance. |
 | [Polder, 30](../../../../src/map/generator/generators/PolderGenerator.cpp) | Periodic crop/water rows crossed by sand dykes, grass villages/hamlets and clear farm plots. | Abundant food can produce a logistics game rather than automatic prosperity. Open village ground, anti-growth rings and remote inn plots are necessary complements to fertile rows. |
+| [Braided river, 34](../../../../src/map/generator/generators/BraidedRiverGenerator.cpp) | Antiphase sinusoidal channel threads in lanes across a belt along the long axis; bars are the land components between crossings; riffles (shared `SandFord`s) join them along a random spanning tree plus loops and one forced crossing per home; dry terraces with a sealed bluff line at the seam and an optional moraine. | Read a route graph back off the rasterized water (`channelCrossings`) rather than trusting the plan, and split request-only checks (`validateRequest`) from seed-dependent design failures the service should roll again. Without the sealed line at the torus seam the walk round the back was shorter than the braid. |
 
 The four height-field generators share [Terrain](../../../../src/map/generator/shared/Terrain.h)
 and [HeightMap](../../../../src/map/generator/shared/HeightMap.cpp). Changes to their shared

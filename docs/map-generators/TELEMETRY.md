@@ -38,7 +38,7 @@ Use a stable generator/helper namespace and a descriptive operation name. Includ
 
 ## What is instrumented
 
-Every built-in generator emits its own observations. Examples include City states' effective home/heart kinds and islet counts; Canals' block-kind histogram and wall/moat fallbacks; Anthill's chambers and room shortfalls; the height-field modes' fitted parameters; Watershed's start-search relaxation; and optional island, lake, farm and crossing shortfalls across the catalog. Uniform reports its intentionally empty starting-colony configuration.
+Every built-in generator emits its own observations. Examples include City states' effective home/heart kinds and islet counts; Canals' block-kind histogram and wall/moat fallbacks; Anthill's chambers and room shortfalls; the height-field modes' fitted parameters; Watershed's start-search relaxation; Braided river's clamped channel count, crossings found and riffles by kind (forced, tree, loop), and its short-stretch and relaxed-home-distance fallbacks; and optional island, lake, farm and crossing shortfalls across the catalog. Uniform reports its intentionally empty starting-colony configuration.
 
 Shared helpers report reusable decisions:
 

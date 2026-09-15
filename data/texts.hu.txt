@@ -2532,3 +2532,17 @@ Oázisok távolsága
 Előőrsök kolóniánként
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 A bázis ezzel a mérettel nem fér el a talaján; növelje a méret beállítását vagy csökkentse a Telepesek értékét.
+[Braided river]
+Fonatos folyó
+[Braid width]
+Fonat szélessége
+[Bar size]
+Zátonyok mérete
+[Extra riffles]
+További gázlók
+[Moraine hummocks]
+Morénahalmok
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+A fonat túl kevés teraszt hagy az otthonoknak; használj nagyobb térképet vagy keskenyebb fonatot.
+[The map is too narrow across for a braid; use a bigger map.]
+A térkép keresztben túl keskeny egy fonathoz; használj nagyobb térképet.

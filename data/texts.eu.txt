@@ -2542,3 +2542,17 @@ Oasien arteko tartea
 Aurrepostuak koloniako
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 Basea ez da bere lurrean sartzen tamaina honetan; igo tamainaren kontrola edo jaitsi Kolonoak.
+[Braided river]
+Ibai txirikordatua
+[Braid width]
+Txirikordaren zabalera
+[Bar size]
+Legar-barren tamaina
+[Extra riffles]
+Ibi gehigarriak
+[Moraine hummocks]
+Morrena-muinoak
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Txirikordak terraza gutxiegi uzten die etxeei; erabili mapa handiagoa edo txirikorda estuagoa.
+[The map is too narrow across for a braid; use a bigger map.]
+Mapa estuegia da zeharka txirikorda baterako; erabili mapa handiagoa.

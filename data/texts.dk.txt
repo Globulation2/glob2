@@ -2608,3 +2608,17 @@ Afstand mellem oaser
 Forposter pr. koloni
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 Basen passer ikke til sin grund ved denne størrelse; hæv størrelsesindstillingen eller sænk Kolonister.
+[Braided river]
+Flettet flod
+[Braid width]
+Fletningens bredde
+[Bar size]
+Grusbankestørrelse
+[Extra riffles]
+Ekstra vadesteder
+[Moraine hummocks]
+Morænebakker
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Fletningen efterlader for lidt terrasse til hjemmene; brug et større kort eller en smallere fletning.
+[The map is too narrow across for a braid; use a bigger map.]
+Kortet er for smalt på tværs til en fletning; brug et større kort.

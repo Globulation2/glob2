@@ -251,8 +251,8 @@ struct Zigzag
 	std::vector<std::vector<StrokePoint>> legs;
 	double finishAcross = 0; // the side the path finishes on
 };
-Zigzag zigzagPath(const AxisFrame &, double start, double firstLeg, double pitch, int legs, double span,
-				  double finish, double halfWidth);
+Zigzag zigzagPath(const AxisFrame &, double start, double firstLeg, double pitch, int legs,
+				  double span, double finish, double halfWidth);
 
 /// Visits every tile within `halfWidth` of the circle of `radius` round (cx, cy), through the wrap:
 /// `visit(tile, gate)` with the index into `gates` of the gate the tile lies in - a gap reaching
@@ -331,6 +331,31 @@ std::vector<std::pair<long long, long long>> sealedSegmentTiles(SubtilePoint a, 
 void traceSealedPath(std::vector<unsigned char> &mask, const Torus &,
 					 const std::vector<SubtilePoint> &points, unsigned char value = 1,
 					 bool closed = false);
+
+/// A sealed line right round the torus along one axis: a vertex every `step` tiles at u = 0,
+/// step, 2 * step, ... and a last one at u = length, the first vertex's image past the seam, each
+/// at the tile `vAt(u)` across (rounded), traced with traceSealedPath so that nothing steps over
+/// it at any slant and the seam is crossed rather than the map run back across. A wall of bluffs
+/// along the back of a belt that wraps the map the long way.
+template <typename VAt>
+void traceSealedLap(std::vector<unsigned char> &mask, const Torus &t, bool alongX, int step,
+					VAt vAt, unsigned char value = 1)
+{
+	const int length = alongX ? t.w : t.h;
+	std::vector<SubtilePoint> line;
+	for (int u = 0; u <= length; u += std::max(1, step))
+	{
+		const int v = int(std::lround(vAt(u)));
+		line.push_back(alongX ? subtileCentre(u, v) : subtileCentre(v, u));
+	}
+	if (line.size() < 2 || (length % std::max(1, step)) != 0)
+	{
+		// A step that does not divide the lap still needs the closing vertex at u = length.
+		const int v = int(std::lround(vAt(length)));
+		line.push_back(alongX ? subtileCentre(length, v) : subtileCentre(v, length));
+	}
+	traceSealedPath(mask, t, line, value, false);
+}
 
 /// Visits each tile whose centre lies inside the polygon `outline` (any simple polygon, either
 /// winding, coordinates unwrapped) with its wrapped tile index. A centre exactly on an edge

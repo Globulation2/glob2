@@ -2532,3 +2532,17 @@ Odstęp oaz
 Placówki na kolonię
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 Baza nie mieści się na swoim gruncie przy tym rozmiarze; zwiększ ustawienie rozmiaru albo zmniejsz Kolonistów.
+[Braided river]
+Rzeka roztokowa
+[Braid width]
+Szerokość roztoki
+[Bar size]
+Rozmiar łach
+[Extra riffles]
+Dodatkowe brody
+[Moraine hummocks]
+Pagórki morenowe
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Roztoka zostawia za mało terasy dla baz; użyj większej mapy lub węższej roztoki.
+[The map is too narrow across for a braid; use a bigger map.]
+Mapa jest w poprzek za wąska na roztokę; użyj większej mapy.

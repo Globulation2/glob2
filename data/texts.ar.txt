@@ -2530,3 +2530,17 @@ Emoji
 المواقع الأمامية لكل مستعمرة
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 القاعدة لا تتسع لأرضها بهذا الحجم؛ ارفع عنصر التحكم في الحجم أو قلّل المستوطنين.
+[Braided river]
+نهر مضفّر
+[Braid width]
+عرض الضفيرة
+[Bar size]
+حجم الحواجز الحصوية
+[Extra riffles]
+مخاضات إضافية
+[Moraine hummocks]
+روابي ركامية
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+الضفيرة لا تترك مدرجات كافية للمواطن؛ استخدم خريطة أكبر أو ضفيرة أضيق.
+[The map is too narrow across for a braid; use a bigger map.]
+الخريطة ضيقة جدًا بالعرض لضفيرة؛ استخدم خريطة أكبر.

@@ -223,6 +223,7 @@ map/generator/generators/TidalFlatsGenerator.cpp
 map/generator/generators/UniformGenerator.cpp
 map/generator/generators/WatershedGenerator.cpp
 map/generator/generators/EmojiGenerator.cpp
+map/generator/generators/BraidedRiverGenerator.cpp
 map/generator/generators/FortsGenerator.cpp
 map/generator/generators/BraidedDeltaGenerator.cpp
 map/generator/generators/BreachableHighlandsGenerator.cpp

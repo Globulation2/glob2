@@ -86,6 +86,15 @@ std::vector<int> cheapestRoute(const Torus &, const std::vector<int> &sources,
 bool openRoad(Map &, const Torus &, const std::vector<int> &sources,
 			  const std::vector<unsigned char> &goal,
 			  const std::vector<unsigned char> *alsoBlocked = nullptr);
+/// Every colony must be able to walk to colony 0 at the start, and the deposits are the last thing
+/// laid: for each colony whose workers colony 0's cannot reach over walkable land (Grid.h), the
+/// cheapest walk between them is opened with openRoad, clearing only the deposits on it, never
+/// water, buildings or `alsoBlocked` (a designed wall). Almost always nothing is in the way.
+/// Returns how many walks were opened, or -1 with `detail` set when a colony has no land route
+/// at all, which a design that keeps its ground joined should never allow. Watershed's and
+/// Braided river's last word on their deposits.
+int connectColonies(Map &, int teams, const std::vector<unsigned char> *alsoBlocked,
+					std::string &detail);
 /// Every colony must be able to walk to colony 0 at the start. Where a map's growth, water or walls box
 /// one in, the cheapest way from anything colony 0's doorstep reaches to that colony's doorstep (the
 /// open ring round its swarm) is opened under `costs`, four-connected: deposits on it are cleared, and
