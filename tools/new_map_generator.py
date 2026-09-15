@@ -215,8 +215,13 @@ def camel(identifier):
     return ''.join(part.capitalize() for part in identifier.split('-'))
 
 
+# Legacy ids of generators that were dropped; docs/map-generators/MAP_GENERATOR_FRAMEWORK.md keeps the
+# list. They stay taken: a saved game or a replay that names one must not resolve to a newer map.
+RETIRED_LEGACY_IDS = {25, 33}
+
+
 def used_legacy_ids():
-    ids = set()
+    ids = set(RETIRED_LEGACY_IDS)
     for path in GENERATORS.glob('*.cpp'):
         for match in re.finditer(r'return\s*\{\s*"[a-z0-9-]+",\s*(\d+),', path.read_text()):
             ids.add(int(match.group(1)))

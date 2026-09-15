@@ -41,6 +41,7 @@
 #include "AllotmentsGenerator.h"
 #include "CaravanseraiGenerator.h"
 #include "DrumlinFieldGenerator.h"
+#include "ContinentsGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -151,6 +152,8 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 cityStatesDefinition(),
 											 canalsDefinition(),
 											 ruggedArchipelagoDefinition(),
+											 drumlinFieldDefinition(), ruggedArchipelagoDefinition(),
+											 continentsDefinition(), ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
 											 evergladesDefinition(),

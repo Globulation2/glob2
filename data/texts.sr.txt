@@ -2558,3 +2558,39 @@ Emoji
 Петље ескера
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Ескери нису могли да повежу све друмлине; користите ужи водени појас или већу мапу.
+[Continents]
+Континенти
+[Continent]
+Континент
+[North America]
+Северна Америка
+[South America]
+Јужна Америка
+[Africa]
+Африка
+[Europe]
+Европа
+[Asia]
+Азија
+[Oceania]
+Океанија
+[Orientation]
+Оријентација
+[Turn to fit]
+Окрени по потреби
+[Upright]
+Без окретања
+[Mountain ranges]
+Планински венци
+[Great rivers]
+Велике реке
+[Islets]
+Острвца
+[Oases]
+Оазе
+[The world atlas has no such continent.]
+Светски атлас нема такав континент.
+[The map is too small to hold a continent.]
+Мапа је премала да би стао континент.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Овај континент нема места за толико колонија при овој величини мапе; користите већу мапу или мање колонија.

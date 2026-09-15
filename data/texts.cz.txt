@@ -2558,3 +2558,39 @@ Vodní mezera
 Smyčky eskerů
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Eskery nedokázaly propojit všechny drumliny; použijte menší vodní mezeru nebo větší mapu.
+[Continents]
+Kontinenty
+[Continent]
+Kontinent
+[North America]
+Severní Amerika
+[South America]
+Jižní Amerika
+[Africa]
+Afrika
+[Europe]
+Evropa
+[Asia]
+Asie
+[Oceania]
+Oceánie
+[Orientation]
+Orientace
+[Turn to fit]
+Otočit podle potřeby
+[Upright]
+Bez otáčení
+[Mountain ranges]
+Pohoří
+[Great rivers]
+Veletoky
+[Islets]
+Ostrůvky
+[Oases]
+Oázy
+[The world atlas has no such continent.]
+Světový atlas takový kontinent nemá.
+[The map is too small to hold a continent.]
+Mapa je příliš malá, aby se na ni vešel kontinent.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Tento kontinent nemá při této velikosti mapy místo pro tolik kolonií; použijte větší mapu nebo méně kolonií.

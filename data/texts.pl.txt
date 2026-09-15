@@ -2558,3 +2558,39 @@ Pas wody
 Pętle ozów
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Ozy nie zdołały połączyć wszystkich drumlinów; użyj węższego pasa wody lub większej mapy.
+[Continents]
+Kontynenty
+[Continent]
+Kontynent
+[North America]
+Ameryka Północna
+[South America]
+Ameryka Południowa
+[Africa]
+Afryka
+[Europe]
+Europa
+[Asia]
+Azja
+[Oceania]
+Oceania
+[Orientation]
+Orientacja
+[Turn to fit]
+Obrót w razie potrzeby
+[Upright]
+Bez obrotu
+[Mountain ranges]
+Łańcuchy górskie
+[Great rivers]
+Wielkie rzeki
+[Islets]
+Wysepki
+[Oases]
+Oazy
+[The world atlas has no such continent.]
+Atlas świata nie ma takiego kontynentu.
+[The map is too small to hold a continent.]
+Mapa jest za mała, by pomieścić kontynent.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Ten kontynent nie ma miejsca dla tylu kolonii przy tym rozmiarze mapy; użyj większej mapy lub mniejszej liczby kolonii.

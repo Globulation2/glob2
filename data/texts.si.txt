@@ -2558,3 +2558,39 @@ Vodna vrzel
 Zanke eskerjev
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Eskerji niso mogli povezati vseh drumlinov; uporabite manjšo vodno vrzel ali večji zemljevid.
+[Continents]
+Celine
+[Continent]
+Celina
+[North America]
+Severna Amerika
+[South America]
+Južna Amerika
+[Africa]
+Afrika
+[Europe]
+Evropa
+[Asia]
+Azija
+[Oceania]
+Oceanija
+[Orientation]
+Usmerjenost
+[Turn to fit]
+Zavrti po potrebi
+[Upright]
+Brez vrtenja
+[Mountain ranges]
+Gorske verige
+[Great rivers]
+Velike reke
+[Islets]
+Otočki
+[Oases]
+Oaze
+[The world atlas has no such continent.]
+Svetovni atlas nima take celine.
+[The map is too small to hold a continent.]
+Zemljevid je premajhen za celino.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Ta celina pri tej velikosti zemljevida nima prostora za toliko kolonij; uporabite večji zemljevid ali manj kolonij.

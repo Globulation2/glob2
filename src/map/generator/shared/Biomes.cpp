@@ -6,9 +6,12 @@
 #include "LatticeNoise.h"
 #include "Map.h"
 #include "Morphology.h"
+#include "Pipeline.h"
 #include "Planting.h"
+#include "Resources.h"
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 namespace MapGeneration
 {
 BiomeKit fertilePlain()
@@ -62,6 +65,103 @@ BiomeKit forest()
 	kit.grovesPer1000 = 2;
 	kit.coverPercent = 55;
 	return kit;
+}
+
+BiomeKit farmland()
+{
+	BiomeKit kit;
+	kit.name = "farmland";
+	// Nearly half the watered ground under crops, a third of it wood: the plains are where colonies
+	// feed. A fifth of the dry ground carries finite reserves for whoever walks out to them.
+	kit.farmPerMille = 450;
+	kit.woodPercent = 35;
+	kit.outcropsPer1000 = 2;
+	kit.grovesPer1000 = 1;
+	kit.dryFarmPerMille = 200;
+	return kit;
+}
+
+BiomeKit woodland()
+{
+	BiomeKit kit;
+	kit.name = "woodland";
+	// Wood over half the ground in patches (the gaps are where a colony builds), fields where the
+	// water is, and the most fruit of any land: a forest is worth cutting into.
+	kit.farmPerMille = 250;
+	kit.woodPercent = 60;
+	kit.outcropsPer1000 = 2;
+	kit.grovesPer1000 = 3;
+	kit.coverPercent = 55;
+	kit.dryFarmPerMille = 120;
+	return kit;
+}
+
+BiomeKit savanna()
+{
+	BiomeKit kit;
+	kit.name = "savanna";
+	// Dry grassland: crops only where the geography waters it and thin even there, a few finite
+	// patches, and outcrops rather than groves.
+	kit.farmPerMille = 180;
+	kit.woodPercent = 25;
+	kit.outcropsPer1000 = 3;
+	kit.grovesPer1000 = 1;
+	kit.dryFarmPerMille = 60;
+	return kit;
+}
+
+BiomeKit barrens()
+{
+	BiomeKit kit;
+	kit.name = "barrens";
+	// Tundra: grass a colony can build on but little grows; scrub wood, outcrops, no fruit.
+	kit.farmPerMille = 120;
+	kit.woodPercent = 50;
+	kit.outcropsPer1000 = 4;
+	kit.dryFarmPerMille = 30;
+	return kit;
+}
+
+BiomeKit highland()
+{
+	BiomeKit kit;
+	kit.name = "highland";
+	// A range: stone over 40% of the ground in patches. Below the eight-connected percolation
+	// threshold of about 59% open (41% blocked) the gaps still thread through, so a range is slow
+	// and winding to cross on foot but not a wall, and the route opener (Roads.h) cuts a pass only
+	// where no gap serves. Thin fields in the valleys; every outcrop is a quarry already.
+	kit.farmPerMille = 150;
+	kit.woodPercent = 40;
+	kit.outcropsPer1000 = 1;
+	kit.grovesPer1000 = 1;
+	kit.coverPercent = 40;
+	kit.coverResource = STONE;
+	kit.dryFarmPerMille = 50;
+	return kit;
+}
+
+BiomeKit scaledBiome(const BiomeKit &kit, const ResourceAmounts &amounts)
+{
+	BiomeKit scaled = kit;
+	// The farmland is one number split by woodPercent; scale each share by its own amount and
+	// recombine, so a map with no wood at all still has its wheat.
+	const auto rescale = [&](int perMille, int &outPerMille, int &outWoodPercent)
+	{
+		const std::int64_t wheat = scaledCount(std::int64_t(perMille) * (100 - kit.woodPercent), amounts.wheat);
+		const std::int64_t wood = scaledCount(std::int64_t(perMille) * kit.woodPercent, amounts.wood);
+		outPerMille = int((wheat + wood + 50) / 100);
+		outWoodPercent = wheat + wood > 0 ? int(wood * 100 / (wheat + wood)) : kit.woodPercent;
+	};
+	int woodPercent = kit.woodPercent;
+	rescale(kit.farmPerMille, scaled.farmPerMille, woodPercent);
+	int dryWoodPercent = kit.woodPercent;
+	rescale(kit.dryFarmPerMille, scaled.dryFarmPerMille, dryWoodPercent);
+	scaled.woodPercent = woodPercent;
+	scaled.outcropsPer1000 = int(scaledCount(kit.outcropsPer1000, amounts.stone));
+	scaled.grovesPer1000 = int(scaledCount(kit.grovesPer1000, amounts.fruit));
+	scaled.coverPercent = std::min(
+		100, int(scaledCount(kit.coverPercent, kit.coverResource == STONE ? amounts.stone : amounts.wood)));
+	return scaled;
 }
 
 namespace
@@ -159,7 +259,7 @@ BiomeTerrain sketchBiome(TerrainSketch &sketch, const Torus &t,
 void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 				  const std::vector<unsigned char> &region, const BiomeTerrain &terrain,
 				  const BiomeKit &kit, const std::vector<unsigned char> &keepClear,
-				  const std::string &stream)
+				  const std::string &stream, const std::vector<unsigned char> *noCover)
 {
 	const int n = t.size();
 	for (int i = 0; i < n; ++i)
@@ -194,6 +294,31 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 	for (int i = 0; i < n; ++i)
 		if (terrain.island[i] && !keepClear[i] && map.isResourceAllowed(i % t.w, i / t.w, CHERRY))
 			map.setResource(i % t.w, i / t.w, CHERRY + fruit++ % 3, 1);
+	// The dry reserve: finite crops on the ground where nothing regrows, in the same patches (the
+	// top of the patch noise) so they read as fields and not speckle, dealt by the split noise.
+	if (kit.dryFarmPerMille > 0)
+	{
+		std::vector<int> dry;
+		std::vector<int> levels;
+		for (int i = 0; i < n; ++i)
+			if (eligible(i) && fertility.at(i % t.w, i / t.w) == 0)
+			{
+				dry.push_back(i);
+				levels.push_back(patch[i]);
+			}
+		const int reserve = int(dry.size()) * kit.dryFarmPerMille / 1000;
+		if (reserve > 0)
+		{
+			// Fields on the patchiest 45% of the dry ground, as furnishGround lays the wet ones.
+			const int cut = percentile(levels, 55);
+			std::vector<int> fields;
+			for (int i : dry)
+				if (patch[i] >= cut)
+					fields.push_back(i);
+			plantFields(map, t, fields, reserve * (100 - kit.woodPercent) / 100,
+						reserve * kit.woodPercent / 100, [&](int i) { return split[i]; });
+		}
+	}
 	if (kit.coverPercent <= 0)
 		return;
 	const std::vector<int> cover = periodicNoise(t.w, t.h, 10, context.stream(stream + "-cover"));
@@ -204,6 +329,7 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 	if (open.empty())
 		return;
 	const int level = percentile(open, 100 - std::clamp(kit.coverPercent, 0, 100));
-	plantCover(map, t, region, WOOD, [&](int i) { return eligible(i) && cover[i] >= level; });
+	plantCover(map, t, region, kit.coverResource, [&](int i)
+			   { return eligible(i) && cover[i] >= level && !(noCover && (*noCover)[i]); });
 }
 } // namespace MapGeneration

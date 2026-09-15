@@ -24,6 +24,7 @@ Validate post-furnishing home capacity, protected-wall continuity, exits, target
 | Shape, stroke, noisy border, region | `Geometry`, `Drawing`, `Morphology`, `Sketch`, `Wedge` | Budget transformed maximum extent and final pure tiles, not just the nominal radius. |
 | Fair repetitions | `Orbits`, `LatticeNoise` | Preserve tile/corner orbits, including deposit amounts and colony footprints. |
 | Organic structure | `HeightMap`, `Noise`, `Patterns`, `Points`, `Tessellation`, `GraphMaze`, `Biomes` | Let correlated fields shape coherent regions; avoid independent speckle that destroys building space. |
+| Real geography or a picture | `WorldAtlas`, `Raster`, `Landmass` | Fit with a sea margin so the seam stays open, resample by majority, clean slivers and specks the beach pass would waste, and choose sites on the mainland by walking distance (`farthestSites`). |
 | Renewable plots and growth containment | `Growth`, `Farmland`, `Planting`, `Resources` | Choose water and dry buffers before planting; stock only terrain that can sustain the intended role. |
 | Homes and finite building capacity | `Homes`, `Room`, `Territories`, `Settlements` | Measure complete footprints, fair regional capacity, and space for all starting workers. |
 | Fronts, shortcuts and defense | `Channels`, `Roads`, `Contact`, `Walls`, `Towers` | Measure actual entry costs and firing envelopes; preserve structural boundaries during repairs. |

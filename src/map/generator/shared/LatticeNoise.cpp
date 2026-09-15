@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "LatticeNoise.h"
 #include <algorithm>
+#include <climits>
 #include <cmath>
 #include <utility>
 namespace MapGeneration
@@ -92,5 +93,26 @@ int percentile(std::vector<int> samples, int percent)
 	const size_t k = std::min(samples.size() - 1, samples.size() * size_t(percent) / 100);
 	std::nth_element(samples.begin(), samples.begin() + k, samples.end());
 	return samples[k];
+}
+} // namespace MapGeneration
+
+namespace MapGeneration
+{
+std::vector<unsigned char> noisyShare(const std::vector<unsigned char> &region,
+									  const std::vector<int> &noise, int percent)
+{
+	std::vector<unsigned char> result(region.size(), 0);
+	if (percent <= 0)
+		return result;
+	std::vector<int> levels;
+	for (size_t i = 0; i < region.size(); ++i)
+		if (region[i])
+			levels.push_back(noise[i]);
+	if (levels.empty())
+		return result;
+	const int level = percent >= 100 ? INT_MIN : percentile(levels, 100 - percent);
+	for (size_t i = 0; i < region.size(); ++i)
+		result[i] = region[i] && noise[i] >= level;
+	return result;
 }
 } // namespace MapGeneration

@@ -2566,3 +2566,39 @@ Su boşluğu
 Esker döngüleri
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Eskerler tüm drumlinleri birleştiremedi; daha küçük bir su boşluğu veya daha büyük bir harita kullanın.
+[Continents]
+Kıtalar
+[Continent]
+Kıta
+[North America]
+Kuzey Amerika
+[South America]
+Güney Amerika
+[Africa]
+Afrika
+[Europe]
+Avrupa
+[Asia]
+Asya
+[Oceania]
+Okyanusya
+[Orientation]
+Yön
+[Turn to fit]
+Sığdırmak için döndür
+[Upright]
+Döndürmeden
+[Mountain ranges]
+Sıradağlar
+[Great rivers]
+Büyük nehirler
+[Islets]
+Adacıklar
+[Oases]
+Vahalar
+[The world atlas has no such continent.]
+Dünya atlasında böyle bir kıta yok.
+[The map is too small to hold a continent.]
+Harita bir kıtayı sığdıramayacak kadar küçük.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Bu kıtada bu harita boyutunda bu kadar koloni için yer yok; daha büyük bir harita veya daha az koloni kullanın.

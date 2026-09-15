@@ -2558,3 +2558,39 @@ Vízsáv
 Eskerhurkok
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Az eskerek nem tudták összekötni az összes drumlint; használj keskenyebb vízsávot vagy nagyobb térképet.
+[Continents]
+Kontinensek
+[Continent]
+Kontinens
+[North America]
+Észak-Amerika
+[South America]
+Dél-Amerika
+[Africa]
+Afrika
+[Europe]
+Európa
+[Asia]
+Ázsia
+[Oceania]
+Óceánia
+[Orientation]
+Tájolás
+[Turn to fit]
+Elforgatás, ha kell
+[Upright]
+Forgatás nélkül
+[Mountain ranges]
+Hegyláncok
+[Great rivers]
+Nagy folyók
+[Islets]
+Szigetecskék
+[Oases]
+Oázisok
+[The world atlas has no such continent.]
+A világatlaszban nincs ilyen kontinens.
+[The map is too small to hold a continent.]
+A térkép túl kicsi egy kontinenshez.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Ezen a kontinensen ekkora térképméretnél nincs hely ennyi kolóniának; használjon nagyobb térképet vagy kevesebb kolóniát.

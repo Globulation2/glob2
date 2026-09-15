@@ -2558,3 +2558,39 @@ Fâșia de apă
 Bucle de eskere
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Eskerele nu au putut lega toate drumlinurile; folosiți o fâșie de apă mai mică sau o hartă mai mare.
+[Continents]
+Continente
+[Continent]
+Continent
+[North America]
+America de Nord
+[South America]
+America de Sud
+[Africa]
+Africa
+[Europe]
+Europa
+[Asia]
+Asia
+[Oceania]
+Oceania
+[Orientation]
+Orientare
+[Turn to fit]
+Rotire la nevoie
+[Upright]
+Fără rotire
+[Mountain ranges]
+Lanțuri muntoase
+[Great rivers]
+Fluvii mari
+[Islets]
+Insulițe
+[Oases]
+Oaze
+[The world atlas has no such continent.]
+Atlasul lumii nu are un astfel de continent.
+[The map is too small to hold a continent.]
+Harta este prea mică pentru a cuprinde un continent.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Acest continent nu are loc pentru atâtea colonii la această mărime a hărții; folosiți o hartă mai mare sau mai puține colonii.

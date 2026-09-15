@@ -2628,3 +2628,39 @@ Emoji
 Βρόχοι έσκερ
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Τα έσκερ δεν μπόρεσαν να ενώσουν όλα τα δρούμλιν· χρησιμοποιήστε μικρότερη ζώνη νερού ή μεγαλύτερο χάρτη.
+[Continents]
+Ήπειροι
+[Continent]
+Ήπειρος
+[North America]
+Βόρεια Αμερική
+[South America]
+Νότια Αμερική
+[Africa]
+Αφρική
+[Europe]
+Ευρώπη
+[Asia]
+Ασία
+[Oceania]
+Ωκεανία
+[Orientation]
+Προσανατολισμός
+[Turn to fit]
+Περιστροφή για προσαρμογή
+[Upright]
+Χωρίς περιστροφή
+[Mountain ranges]
+Οροσειρές
+[Great rivers]
+Μεγάλα ποτάμια
+[Islets]
+Νησίδες
+[Oases]
+Οάσεις
+[The world atlas has no such continent.]
+Ο παγκόσμιος άτλαντας δεν έχει τέτοια ήπειρο.
+[The map is too small to hold a continent.]
+Ο χάρτης είναι πολύ μικρός για να χωρέσει μια ήπειρο.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Αυτή η ήπειρος δεν έχει χώρο για τόσες αποικίες σε αυτό το μέγεθος χάρτη· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.

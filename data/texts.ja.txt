@@ -2554,3 +2554,39 @@ Emoji
 エスカーの環
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 エスカーで全てのドラムリンをつなげませんでした。水域の幅を狭くするか、より大きな地図にしてください。
+[Continents]
+世界の大陸
+[Continent]
+大陸
+[North America]
+北アメリカ
+[South America]
+南アメリカ
+[Africa]
+アフリカ
+[Europe]
+ヨーロッパ
+[Asia]
+アジア
+[Oceania]
+オセアニア
+[Orientation]
+向き
+[Turn to fit]
+合わせて回転
+[Upright]
+回転しない
+[Mountain ranges]
+山脈
+[Great rivers]
+大河
+[Islets]
+小島
+[Oases]
+オアシス
+[The world atlas has no such continent.]
+世界地図帳にその大陸はありません。
+[The map is too small to hold a continent.]
+マップが小さすぎて大陸が収まりません。
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+このマップの大きさでは、この大陸にそれだけのコロニーを置く場所がありません。より大きなマップを使うか、コロニーを減らしてください。

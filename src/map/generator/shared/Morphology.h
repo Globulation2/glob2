@@ -65,6 +65,19 @@ int narrowestPassage(const Torus &, const std::vector<unsigned char> &mask,
 std::vector<unsigned char> slivers(const Torus &, const std::vector<unsigned char> &mask,
 								   int minimumClearance);
 
+/// The mask with every diagonal-only contact joined: where two mask tiles touch only at a corner and
+/// neither tile beside that corner is in the mask, the one of those two with the lower index joins
+/// it. A line of tiles that must hold water or wall against eight-connected movement (a river, a
+/// moat's core) leaks at every diagonal step otherwise; after this the mask is four-connected
+/// wherever it was eight-connected. One pass suffices: a bridging tile touches its two neighbours
+/// orthogonally and creates no new diagonal-only contact with them.
+std::vector<unsigned char> bridgeDiagonals(const Torus &, const std::vector<unsigned char> &mask);
+
+/// How many mask tiles lie within `radius` Chebyshev steps (a square) of every tile, across the
+/// wrap: running sums along rows then columns, so the cost does not grow with the radius. A cheap
+/// measure of how much of a kind of ground a site has round it (buildable grass, farmable land).
+std::vector<int> windowCount(const Torus &, const std::vector<unsigned char> &mask, int radius);
+
 /// The least value of an integer field within `radius` Chebyshev steps (a square) of every tile,
 /// across the wrap: a running minimum along rows then columns, so the cost does not grow with the
 /// radius. A tile equal to its window's minimum is a local minimum with nothing lower within the

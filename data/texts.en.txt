@@ -2556,3 +2556,39 @@ Water gap
 Esker loops
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 The eskers could not join every drumlin; use a smaller water gap or a bigger map.
+[Continents]
+Continents
+[Continent]
+Continent
+[North America]
+North America
+[South America]
+South America
+[Africa]
+Africa
+[Europe]
+Europe
+[Asia]
+Asia
+[Oceania]
+Oceania
+[Orientation]
+Orientation
+[Turn to fit]
+Turn to fit
+[Upright]
+Upright
+[Mountain ranges]
+Mountain ranges
+[Great rivers]
+Great rivers
+[Islets]
+Islets
+[Oases]
+Oases
+[The world atlas has no such continent.]
+The world atlas has no such continent.
+[The map is too small to hold a continent.]
+The map is too small to hold a continent.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.

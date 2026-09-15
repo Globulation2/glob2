@@ -2558,3 +2558,39 @@ Vesikaista
 Harjulenkit
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Harjut eivät yhdistäneet kaikkia drumliineja; käytä kapeampaa vesikaistaa tai suurempaa karttaa.
+[Continents]
+Mantereet
+[Continent]
+Manner
+[North America]
+Pohjois-Amerikka
+[South America]
+Etelä-Amerikka
+[Africa]
+Afrikka
+[Europe]
+Eurooppa
+[Asia]
+Aasia
+[Oceania]
+Oseania
+[Orientation]
+Suunta
+[Turn to fit]
+Käännä tarvittaessa
+[Upright]
+Kääntämättä
+[Mountain ranges]
+Vuoristot
+[Great rivers]
+Suuret joet
+[Islets]
+Luodot
+[Oases]
+Keitaat
+[The world atlas has no such continent.]
+Maailmankartastossa ei ole sellaista mannerta.
+[The map is too small to hold a continent.]
+Kartta on liian pieni mantereelle.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Tällä mantereella ei ole tilaa näin monelle siirtokunnalle tällä karttakoolla; käytä suurempaa karttaa tai vähemmän siirtokuntia.

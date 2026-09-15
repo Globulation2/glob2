@@ -2582,3 +2582,39 @@ Waterstrook
 Eskerlussen
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 De eskers konden niet alle drumlins verbinden; gebruik een smallere waterstrook of een grotere kaart.
+[Continents]
+Continenten
+[Continent]
+Continent
+[North America]
+Noord-Amerika
+[South America]
+Zuid-Amerika
+[Africa]
+Afrika
+[Europe]
+Europa
+[Asia]
+Azië
+[Oceania]
+Oceanië
+[Orientation]
+Oriëntatie
+[Turn to fit]
+Draaien indien nodig
+[Upright]
+Niet draaien
+[Mountain ranges]
+Gebergten
+[Great rivers]
+Grote rivieren
+[Islets]
+Eilandjes
+[Oases]
+Oasen
+[The world atlas has no such continent.]
+De wereldatlas heeft zo'n continent niet.
+[The map is too small to hold a continent.]
+De kaart is te klein voor een continent.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Dit continent heeft bij deze kaartgrootte geen ruimte voor zoveel kolonies; gebruik een grotere kaart of minder kolonies.

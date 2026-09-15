@@ -2566,3 +2566,39 @@ Vodná medzera
 Slučky eskerov
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 Eskery nedokázali prepojiť všetky drumliny; použite menšiu vodnú medzeru alebo väčšiu mapu.
+[Continents]
+Kontinenty
+[Continent]
+Kontinent
+[North America]
+Severná Amerika
+[South America]
+Južná Amerika
+[Africa]
+Afrika
+[Europe]
+Európa
+[Asia]
+Ázia
+[Oceania]
+Oceánia
+[Orientation]
+Orientácia
+[Turn to fit]
+Otočiť podľa potreby
+[Upright]
+Bez otáčania
+[Mountain ranges]
+Pohoria
+[Great rivers]
+Veľtoky
+[Islets]
+Ostrovčeky
+[Oases]
+Oázy
+[The world atlas has no such continent.]
+Svetový atlas taký kontinent nemá.
+[The map is too small to hold a continent.]
+Mapa je príliš malá, aby sa na ňu zmestil kontinent.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Tento kontinent nemá pri tejto veľkosti mapy miesto pre toľko kolónií; použite väčšiu mapu alebo menej kolónií.

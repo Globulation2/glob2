@@ -2,10 +2,14 @@
 #include <PerformanceTelemetry.h>
 #include "Points.h"
 #include "GenerationContext.h"
+#include "Grid.h"
 #include "LatticeNoise.h"
 #include <algorithm>
+#include <climits>
 #include <cstdint>
+#include <functional>
 #include <cstdlib>
+#include <utility>
 namespace MapGeneration
 {
 namespace
@@ -543,5 +547,113 @@ std::vector<std::vector<int>> siteNeighbours(const Torus &t, const std::vector<i
 		list.erase(std::unique(list.begin(), list.end()), list.end());
 	}
 	return graph;
+}
+} // namespace MapGeneration
+
+namespace MapGeneration
+{
+std::vector<int> farthestSites(const Torus &t, const std::vector<unsigned char> &candidates,
+							   const std::vector<unsigned char> &walkable, int count,
+							   GenerationContext &context, const std::string &stream, int trials,
+							   const std::function<bool(int)> *prefer, int *rejected)
+{
+	PERF_SCOPE_TIME(Sites);
+	std::vector<int> pool;
+	for (int i = 0; i < t.size(); ++i)
+		if (candidates[i])
+			pool.push_back(i);
+	std::vector<int> best;
+	int bestSpacing = -1, bestRejected = 0;
+	if (pool.empty() || count <= 0)
+		return best;
+	// Every trial draws its first site whether or not a trial is kept, so the draws a request
+	// consumes depend on `trials` alone and a validator replaying the design lands on the same
+	// sites.
+	for (int trial = 0; trial < std::max(1, trials); ++trial)
+	{
+		std::vector<int> chosen{pool[context.bounded(stream, std::uint32_t(pool.size()))]};
+		int spacing = INT_MAX, fellBack = 0;
+		while (int(chosen.size()) < count)
+		{
+			const std::vector<int> steps = stepsFrom(t, tileMask(t, chosen), walkable);
+			// Candidates farthest first, the lower index first among equals.
+			std::vector<std::pair<int, int>> order;
+			for (int i : pool)
+				if (steps[i] > 0)
+					order.push_back({-steps[i], i});
+			if (order.empty())
+				break;
+			std::sort(order.begin(), order.end());
+			int next = -1;
+			if (prefer)
+				for (const auto &[negative, i] : order)
+					if ((*prefer)(i))
+					{
+						next = i;
+						break;
+					}
+			if (next < 0)
+			{
+				next = order.front().second;
+				fellBack += prefer != nullptr;
+			}
+			spacing = std::min(spacing, steps[next]);
+			chosen.push_back(next);
+		}
+		// A trial that placed more sites beats one that placed fewer; among full trials the one
+		// whose closest pair is farthest apart wins, the earlier trial on a tie.
+		if (chosen.size() > best.size() || (chosen.size() == best.size() && spacing > bestSpacing))
+		{
+			best = chosen;
+			bestSpacing = spacing;
+			bestRejected = fellBack;
+		}
+	}
+	if (rejected)
+		*rejected = bestRejected;
+	return best;
+}
+
+std::vector<int> recentreSites(const Torus &t, const std::vector<int> &labels,
+							   const std::vector<unsigned char> &candidates,
+							   const std::vector<int> &sites)
+{
+	std::vector<int> moved = sites;
+	const int n = int(sites.size());
+	std::vector<std::int64_t> sumX(n, 0), sumY(n, 0), tiles(n, 0);
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int k = labels[i];
+		if (k < 0 || k >= n)
+			continue;
+		const int sx = sites[k] % t.w, sy = sites[k] / t.w;
+		sumX[k] += t.offsetX(sx, i % t.w);
+		sumY[k] += t.offsetY(sy, i / t.w);
+		++tiles[k];
+	}
+	for (int k = 0; k < n; ++k)
+	{
+		if (tiles[k] == 0)
+			continue;
+		// The middle in sixteenths of a tile, rounded to nearest, so the arithmetic is integer.
+		const std::int64_t mx = (sites[k] % t.w) * 16 + (sumX[k] * 16 + tiles[k] / 2) / tiles[k];
+		const std::int64_t my = (sites[k] / t.w) * 16 + (sumY[k] * 16 + tiles[k] / 2) / tiles[k];
+		std::int64_t nearest = -1;
+		for (int i = 0; i < t.size(); ++i)
+		{
+			if (!candidates[i] || labels[i] != k)
+				continue;
+			std::int64_t dx = std::abs((i % t.w) * 16 - mx), dy = std::abs((i / t.w) * 16 - my);
+			dx = std::min(dx, t.w * 16 - dx);
+			dy = std::min(dy, t.h * 16 - dy);
+			const std::int64_t d = dx * dx + dy * dy;
+			if (nearest < 0 || d < nearest)
+			{
+				nearest = d;
+				moved[k] = i;
+			}
+		}
+	}
+	return moved;
 }
 } // namespace MapGeneration

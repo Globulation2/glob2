@@ -2556,3 +2556,39 @@ Emoji
 حلقات الإسكر
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
 تعذّر على الإسكر وصل كل الدرملن؛ استخدم فجوة ماء أصغر أو خريطة أكبر.
+[Continents]
+القارات
+[Continent]
+القارة
+[North America]
+أمريكا الشمالية
+[South America]
+أمريكا الجنوبية
+[Africa]
+أفريقيا
+[Europe]
+أوروبا
+[Asia]
+آسيا
+[Oceania]
+أوقيانوسيا
+[Orientation]
+الاتجاه
+[Turn to fit]
+تدوير للملاءمة
+[Upright]
+بدون تدوير
+[Mountain ranges]
+سلاسل جبلية
+[Great rivers]
+أنهار كبرى
+[Islets]
+جزر صغيرة
+[Oases]
+واحات
+[The world atlas has no such continent.]
+لا توجد قارة بهذا الاسم في أطلس العالم.
+[The map is too small to hold a continent.]
+الخريطة أصغر من أن تتسع لقارة.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+لا تتسع هذه القارة لهذا العدد من المستعمرات بحجم الخريطة هذا؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
