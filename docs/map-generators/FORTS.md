@@ -123,6 +123,17 @@ Rotating team labels controls label effects but does not make the four observati
 of a map independent samples of terrain. Human enjoyment and defensive pacing still
 need playtesting.
 
+A later rotation tournament (six 256×256 maps, four colonies, every cyclic team rotation,
+four Nicowars, 45,000 ticks) found the same shape at the default settings: no game resolved,
+eliminations in 8 of 96 colony-games, and a population ceiling rather than a positional
+defect. Pooled per-start peaks ran 70 to 95 units, and some forts held at about 35 units
+for the whole game with 13 to 18 buildings and few deaths of any cause: the enclosed plots
+feed a town but not an army, and the forts that reached 150 units stood beside river-bank
+fields. Doubling the lake count through the existing control did not raise the ceiling
+(pooled peaks 66 to 94), because the extra water lands in the wooded uplands where no
+colony harvests. The defaults are unchanged; growth beyond the walls is the expansion the
+map asks for, and a maintainer should judge whether that pace is enjoyable.
+
 Revision 6 explicitly sequences lattice RNG draws across compilers. All 32 native
 map files used in the final Nicowar study are byte-identical to revision 5, so this
 portability fix preserves the tested layouts.
