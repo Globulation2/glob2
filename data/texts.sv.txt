@@ -2556,3 +2556,15 @@ Moränkullar
 Flätan lämnar för lite terrass åt hemmen; använd en större karta eller en smalare fläta.
 [The map is too narrow across for a braid; use a bigger map.]
 Kartan är för smal på tvären för en fläta; använd en större karta.
+[Drumlin field]
+Drumlinfält
+[Drumlin spacing]
+Drumlinavstånd
+[Drumlin length]
+Drumlinlängd
+[Water gap]
+Vattengap
+[Esker loops]
+Åsslingor
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Rullstensåsarna kunde inte förbinda alla drumliner; använd ett mindre vattengap eller en större karta.

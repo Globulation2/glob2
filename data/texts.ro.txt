@@ -2546,3 +2546,15 @@ Movile morenice
 Împletitura lasă prea puțină terasă pentru baze; folosește o hartă mai mare sau o împletitură mai îngustă.
 [The map is too narrow across for a braid; use a bigger map.]
 Harta este prea îngustă pe lățime pentru o împletitură; folosește o hartă mai mare.
+[Drumlin field]
+Câmp de drumlinuri
+[Drumlin spacing]
+Distanța dintre drumlinuri
+[Drumlin length]
+Lungimea drumlinurilor
+[Water gap]
+Fâșia de apă
+[Esker loops]
+Bucle de eskere
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Eskerele nu au putut lega toate drumlinurile; folosiți o fâșie de apă mai mică sau o hartă mai mare.

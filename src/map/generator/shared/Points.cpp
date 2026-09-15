@@ -73,6 +73,356 @@ std::vector<Site> spreadPoints(const Torus &t, int spacing, GenerationContext &c
 	return sites;
 }
 
+namespace
+{
+// The eight headings: east, then round by about 22 degrees to north-east of west. Small whole
+// numbers, so every landform along one lands the same way on every platform.
+constexpr int kHeadingSteps[kGrainHeadings][2] = {{1, 0},  {2, 1},  {1, 1},  {1, 2},
+												  {0, 1}, {-1, 2}, {-1, 1}, {-2, 1}};
+} // namespace
+
+Grain grainHeading(int index, int stretchPercent)
+{
+	const int k = ((index % kGrainHeadings) + kGrainHeadings) % kGrainHeadings;
+	return Grain{kHeadingSteps[k][0], kHeadingSteps[k][1], std::max(100, stretchPercent)};
+}
+
+Grain grainForChoice(int choice, int stretchPercent, GenerationContext &context,
+					 const std::string &stream)
+{
+	const int fixed[] = {0, 4, 2};
+	const int index = choice >= 1 && choice <= 3 ? fixed[choice - 1]
+												 : int(context.bounded(stream, kGrainHeadings));
+	return grainHeading(index, stretchPercent);
+}
+
+int widestGrainHeading(const Torus &t, const std::vector<Site> &sites, int stretchPercent)
+{
+	int best = 0;
+	double widest = -1;
+	for (int k = 0; k < kGrainHeadings; ++k)
+	{
+		const std::vector<double> nearest =
+			nearestSiteDistances(t, sites, grainHeading(k, stretchPercent));
+		const double least = nearest.empty() ? double(std::min(t.w, t.h))
+											 : *std::min_element(nearest.begin(), nearest.end());
+		if (least > widest)
+		{
+			widest = least;
+			best = k;
+		}
+	}
+	return best;
+}
+
+std::vector<int> farthestSites(const Torus &t, const std::vector<Site> &sites,
+							   const std::vector<int> &seeds,
+							   const std::vector<unsigned char> &eligible, int count)
+{
+	const size_t n = sites.size();
+	std::vector<std::int64_t> nearest(n, -1);
+	const auto measureFrom = [&](int from)
+	{
+		for (size_t s = 0; s < n; ++s)
+		{
+			const std::int64_t d = t.dist2(sites[s].x, sites[s].y, sites[from].x, sites[from].y);
+			nearest[s] = nearest[s] < 0 ? d : std::min(nearest[s], d);
+		}
+	};
+	std::vector<unsigned char> taken(n, 0);
+	for (int seed : seeds)
+	{
+		measureFrom(seed);
+		taken[seed] = 1; // a seed is never chosen, whatever `eligible` says of it
+	}
+	std::vector<int> chosen;
+	for (int k = 0; k < count; ++k)
+	{
+		int pick = -1;
+		for (size_t s = 0; s < n; ++s)
+			if (eligible[s] && !taken[s] && (pick < 0 || nearest[s] > nearest[pick]))
+				pick = int(s);
+		if (pick < 0)
+			break;
+		taken[pick] = 1;
+		chosen.push_back(pick);
+		measureFrom(pick);
+	}
+	return chosen;
+}
+
+std::vector<Site> spreadPoints(const Torus &t, int spacing, const Grain &grain,
+							   GenerationContext &context, const std::string &stream,
+							   const std::vector<Site> &fixed, int fixedMinimum, int minimumPercent,
+							   int dartsPerSite)
+{
+	PERF_SCOPE_TIME(Sites);
+	const int minimum = std::max(4, spacing * minimumPercent / 100);
+	const int stretch = std::max(100, grain.stretchPercent);
+	// One site is expected per spacing squared across by spacing times the stretch along.
+	const std::int64_t expected = std::max<std::int64_t>(
+		2, std::int64_t(t.w) * t.h * 100 / (std::int64_t(spacing) * spacing * stretch));
+	// Under the grain a dart within `minimum` of a site lies within `minimum` tiles of it across
+	// the grain and within `minimum` times the stretch along it, so in map tiles it lies within
+	// minimum * stretch / 100 either way: buckets of `minimum` tiles searched that many buckets
+	// out. A fixed site's exclusion is wider, so the window is sized to the wider of the two.
+	const int widest = std::max(minimum, fixedMinimum);
+	const int gx = std::max(1, t.w / minimum), gy = std::max(1, t.h / minimum);
+	const int window = (widest * stretch / 100 + minimum - 1) / minimum;
+	std::vector<std::vector<int>> columns(gx), rows(gy);
+	for (int c = 0; c < gx; ++c)
+		columns[c] = bucketWindow(c, gx, window);
+	for (int r = 0; r < gy; ++r)
+		rows[r] = bucketWindow(r, gy, window);
+	std::vector<std::vector<int>> buckets(size_t(gx) * gy);
+	std::vector<Site> sites;
+	const std::int64_t clear = grain.metric2(minimum), clearFixed = grain.metric2(fixedMinimum);
+	const auto place = [&](int x, int y)
+	{
+		buckets[size_t(y * gy / t.h) * gx + x * gx / t.w].push_back(int(sites.size()));
+		sites.push_back({x, y});
+	};
+	for (const Site &site : fixed)
+		place(t.x(site.x), t.y(site.y));
+	const size_t fixedCount = sites.size();
+	for (std::int64_t attempt = 0; attempt < expected * dartsPerSite; ++attempt)
+	{
+		const int x = int(context.bounded(stream, t.w));
+		const int y = int(context.bounded(stream, t.h));
+		const int bx = x * gx / t.w, by = y * gy / t.h;
+		bool free = true;
+		for (int row : rows[by])
+		{
+			for (int column : columns[bx])
+			{
+				for (int s : buckets[size_t(row) * gx + column])
+				{
+					const std::int64_t d = grain.distance2(t, sites[s].x, sites[s].y, x, y);
+					if (d < (size_t(s) < fixedCount ? clearFixed : clear))
+					{
+						free = false;
+						break;
+					}
+				}
+				if (!free)
+					break;
+			}
+			if (!free)
+				break;
+		}
+		if (free)
+			place(x, y);
+	}
+	return sites;
+}
+
+std::vector<double> nearestSiteDistances(const Torus &t, const std::vector<Site> &sites,
+										  const Grain &grain)
+{
+	std::vector<double> nearest(sites.size(), double(std::min(t.w, t.h)));
+	for (size_t a = 0; a < sites.size(); ++a)
+		for (size_t b = a + 1; b < sites.size(); ++b)
+		{
+			const double d = grain.distance(t, sites[a].x, sites[a].y, sites[b].x, sites[b].y);
+			nearest[a] = std::min(nearest[a], d);
+			nearest[b] = std::min(nearest[b], d);
+		}
+	return nearest;
+}
+
+std::vector<int> nearestSiteLabels(const Torus &t, const std::vector<Site> &sites, int spacing,
+								   const Grain &grain, int reach)
+{
+	PERF_SCOPE_TIME(Sites);
+	std::vector<int> label(size_t(t.w) * t.h, 0);
+	if (sites.empty())
+		return label;
+	if (reach <= 0)
+		reach = 2 * spacing;
+	// The window: the bounding box, in map tiles, of the ellipse `reach` under the grain (reach
+	// across the grain, reach times the stretch along it), which is how far a site within reach can
+	// lie on each axis; as buckets of a spacing, one more for the tile's own place in its bucket.
+	// A bucket window along the grain is the stretch times deeper than across it, so a slanted
+	// grain costs more buckets than an axis-aligned one, never more than the ellipse needs.
+	const double stretch = std::max(100, grain.stretchPercent) / 100.0;
+	const double c = std::cos(grain.heading()), sn = std::sin(grain.heading());
+	const double extentX = reach * std::hypot(c * stretch, sn),
+				 extentY = reach * std::hypot(sn * stretch, c);
+	const int gx = std::max(1, t.w / spacing), gy = std::max(1, t.h / spacing);
+	const int windowX = int(std::ceil(extentX * gx / t.w)) + 1,
+			  windowY = int(std::ceil(extentY * gy / t.h)) + 1;
+	std::vector<std::vector<int>> buckets(size_t(gx) * gy), columns(gx), rows(gy);
+	for (size_t s = 0; s < sites.size(); ++s)
+		buckets[size_t(sites[s].y * gy / t.h) * gx + sites[s].x * gx / t.w].push_back(int(s));
+	for (int col = 0; col < gx; ++col)
+		columns[col] = bucketWindow(col, gx, windowX);
+	for (int r = 0; r < gy; ++r)
+		rows[r] = bucketWindow(r, gy, windowY);
+	const std::int64_t within = grain.metric2(reach);
+	const int halfW = t.w / 2, halfH = t.h / 2;
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+		{
+			std::int64_t best = INT64_MAX;
+			int nearest = -1;
+			// The inner loop of a whole-map labelling, run a few dozen times per tile: the wrap
+			// is a comparison rather than Torus::offsetX's two remainders, and the far images
+			// are tried only when Grain::distance2's bound says one could be nearer.
+			const auto consider = [&](int s)
+			{
+				int dx = x - sites[s].x, dy = y - sites[s].y;
+				if (dx > halfW)
+					dx -= t.w;
+				else if (dx < -halfW)
+					dx += t.w;
+				if (dy > halfH)
+					dy -= t.h;
+				else if (dy < -halfH)
+					dy += t.h;
+				std::int64_t d = grain.distance2(dx, dy);
+				const std::int64_t reach2 = (std::int64_t(dx) * dx + std::int64_t(dy) * dy) *
+												grain.stretchPercent * grain.stretchPercent / 10000 +
+											1;
+				const int otherX = dx > 0 ? dx - t.w : dx + t.w, otherY = dy > 0 ? dy - t.h : dy + t.h;
+				const bool tryX = std::int64_t(otherX) * otherX <= reach2,
+						   tryY = std::int64_t(otherY) * otherY <= reach2;
+				if (tryX)
+					d = std::min(d, grain.distance2(otherX, dy));
+				if (tryY)
+					d = std::min(d, grain.distance2(dx, otherY));
+				if (tryX && tryY)
+					d = std::min(d, grain.distance2(otherX, otherY));
+				if (d < best || (d == best && s < nearest))
+				{
+					best = d;
+					nearest = s;
+				}
+			};
+			for (int row : rows[y * gy / t.h])
+				for (int column : columns[x * gx / t.w])
+					for (int s : buckets[size_t(row) * gx + column])
+						consider(s);
+			// Nothing within reach in the window: nothing within reach anywhere, so the nearest
+			// site, wherever it is, needs the whole list.
+			if (nearest < 0 || best > within)
+				for (size_t s = 0; s < sites.size(); ++s)
+					consider(int(s));
+			label[size_t(y) * t.w + x] = nearest;
+		}
+	return label;
+}
+
+std::vector<Site> relaxPoints(const Torus &t, std::vector<Site> sites, const Grain &grain,
+							  int spacing, int iterations, int fixedCount, int reach)
+{
+	PERF_SCOPE_TIME(Relax);
+	const int n = int(sites.size());
+	for (int round = 0; round < iterations && n > 0; ++round)
+	{
+		const std::vector<int> label = nearestSiteLabels(t, sites, spacing, grain, reach);
+		std::vector<std::int64_t> sumX(n, 0), sumY(n, 0), count(n, 0);
+		for (int y = 0; y < t.h; ++y)
+			for (int x = 0; x < t.w; ++x)
+			{
+				const int s = label[size_t(y) * t.w + x];
+				// Offsets from the site, so a cell across the wrap averages the short way round.
+				sumX[s] += t.offsetX(sites[s].x, x);
+				sumY[s] += t.offsetY(sites[s].y, y);
+				++count[s];
+			}
+		for (int s = fixedCount; s < n; ++s)
+			if (count[s])
+			{
+				// Round half away from zero, in integers, as relaxPoints does.
+				const auto mean = [&](std::int64_t sum)
+				{
+					return int(sum >= 0 ? (2 * sum + count[s]) / (2 * count[s])
+										: -((-2 * sum + count[s]) / (2 * count[s])));
+				};
+				sites[s].x = t.x(sites[s].x + mean(sumX[s]));
+				sites[s].y = t.y(sites[s].y + mean(sumY[s]));
+			}
+	}
+	return sites;
+}
+
+std::vector<double> packLandforms(const Torus &t, const std::vector<Site> &sites,
+								  const Grain &grain, const std::vector<double> &fixed, double gap,
+								  double minimum, double maximum)
+{
+	const size_t n = sites.size();
+	std::vector<double> radius(n, 0);
+	// Each pair's distance under the grain, and the room the pair must keep under the grain for
+	// `gap` map tiles between them: the gap scaled by the pair's distance under the grain over its
+	// map distance, which is 1 for a pair across the grain and 1 / stretch for a pair along it,
+	// because that ratio is exactly how much a map length in the pair's direction shrinks under
+	// the grain.
+	std::vector<std::vector<double>> distance(n, std::vector<double>(n, 0)),
+		room(n, std::vector<double>(n, 0));
+	for (size_t a = 0; a < n; ++a)
+		for (size_t b = a + 1; b < n; ++b)
+		{
+			// The pair's map distance is measured on the same image of the pair as its distance
+			// under the grain, which may not be the nearest image in map tiles.
+			const int dx = t.offsetX(sites[a].x, sites[b].x), dy = t.offsetY(sites[a].y, sites[b].y);
+			const int otherX = dx > 0 ? dx - t.w : dx + t.w, otherY = dy > 0 ? dy - t.h : dy + t.h;
+			double under = 0, across = 0;
+			for (const int ox : {dx, otherX})
+				for (const int oy : {dy, otherY})
+					if (const double d = grain.distance(ox, oy); across == 0 || d < under)
+					{
+						under = d;
+						across = std::hypot(ox, oy);
+					}
+			distance[a][b] = distance[b][a] = under;
+			room[a][b] = room[b][a] = across > 0 ? gap * under / across : gap;
+		}
+	// Every free site starts at half its nearest neighbour's distance less that pair's gap: two
+	// neighbours each taking that keep the gap between them whatever else is round them.
+	for (size_t s = 0; s < n; ++s)
+	{
+		if (fixed[s] >= 0)
+		{
+			radius[s] = fixed[s];
+			continue;
+		}
+		double nearest = std::min(t.w, t.h);
+		for (size_t o = 0; o < n; ++o)
+			if (o != s)
+				nearest = std::min(nearest, (distance[s][o] - room[s][o]) / 2);
+		radius[s] = std::clamp(nearest, 0.0, maximum);
+	}
+	// Then each grows into the slack its neighbours leave. Radii only ever grow, and each is set
+	// against the others' current radii, so every pair keeps its gap after every step; three rounds
+	// take up nearly all the slack (the fourth changes radii by under a tenth of a tile in
+	// practice). Sites that end up under `minimum` are dropped, and one more round lets their
+	// neighbours use the ground they gave up.
+	const auto grow = [&](const std::vector<unsigned char> &dropped)
+	{
+		for (size_t s = 0; s < n; ++s)
+		{
+			if (fixed[s] >= 0 || dropped[s])
+				continue;
+			double slack = maximum;
+			for (size_t o = 0; o < n; ++o)
+				if (o != s && !dropped[o])
+					slack = std::min(slack, distance[s][o] - radius[o] - room[s][o]);
+			radius[s] = std::max(radius[s], std::min(slack, maximum));
+		}
+	};
+	std::vector<unsigned char> dropped(n, 0);
+	for (int round = 0; round < 3; ++round)
+		grow(dropped);
+	for (size_t s = 0; s < n; ++s)
+		if (fixed[s] < 0 && radius[s] < minimum)
+			dropped[s] = 1;
+	grow(dropped);
+	for (size_t s = 0; s < n; ++s)
+		if (dropped[s])
+			radius[s] = -1;
+	return radius;
+}
+
 std::vector<int> nearestSiteLabels(const Torus &t, const std::vector<Site> &sites, int spacing,
 								   GenerationContext &context, const std::string &stream,
 								   int warpPeriodPercent, int warpPercent)

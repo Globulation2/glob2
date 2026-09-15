@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "Drawing.h"
 #include "Points.h"
 #include "Tessellation.h"
 #include <array>
 #include <functional>
+#include <random>
 #include <string>
 #include <vector>
 struct GenerationContext;
@@ -72,6 +74,17 @@ std::vector<int> edgeDetours(const CellGraph &, const std::vector<unsigned char>
 bool carveSpanningTree(const CellGraph &, GenerationContext &, const std::string &stream,
 					   const std::vector<unsigned char> &blocked, std::vector<unsigned char> &open);
 
+/// Opens a spanning tree of the cells not `blocked` that joins near neighbours first: Kruskal's
+/// algorithm over the edges between them in order of their cells' distance, each distance stretched
+/// by up to `jitterPercent` of itself by a draw from `stream`, so the tree changes from seed to
+/// seed while still preferring short links. Where carveSpanningTree winds long passages through a
+/// maze, this makes the network a traveller would: eskers between drumlins, bridges between
+/// islands, roads between towns, each to the next one over. Returns whether every such cell was
+/// reached.
+bool carveNearTree(const CellGraph &, GenerationContext &, const std::string &stream,
+				   const std::vector<unsigned char> &blocked, int jitterPercent,
+				   std::vector<unsigned char> &open);
+
 /// Opens one door into each pocket, through a random edge onto a cell that isn't a pocket, and
 /// returns each pocket's door edge in the order given.
 std::vector<int> openPocketDoors(const CellGraph &, GenerationContext &, const std::string &stream,
@@ -84,6 +97,45 @@ std::vector<int> openPocketDoors(const CellGraph &, GenerationContext &, const s
 void openLoops(const CellGraph &, GenerationContext &, const std::string &stream,
 			   const std::vector<unsigned char> &blocked, int percent,
 			   std::vector<unsigned char> &open);
+
+/// A wandering corridor (Drawing.h's carveCorridor) along every open edge of a graph, from the one
+/// cell's point to the other's, carved into `mask` on the tiles `eligible(tile)` allows: tunnels
+/// between chambers, eskers over the water between drumlins (eligible: water only, so the corridor
+/// is nothing across the land it joins). Corridors are carved in edge order, each drawing from
+/// `random` as wanderingPath does. Returns each carved edge's two cells, in that order.
+template <typename Eligible>
+std::vector<std::array<int, 2>>
+carveOpenEdges(std::vector<unsigned char> &mask, const Torus &t, const CellGraph &g,
+			   const std::vector<ShapePoint> &points, const std::vector<unsigned char> &open,
+			   double halfWidth, double wander, double widthJitter, std::mt19937 &random,
+			   Eligible eligible)
+{
+	std::vector<std::array<int, 2>> carved;
+	std::vector<unsigned char> line(mask.size(), 0);
+	for (size_t edge = 0; edge < open.size(); ++edge)
+	{
+		if (!open[edge])
+			continue;
+		const int a = g.edgeCells[edge][0], b = g.edgeCells[edge][1];
+		const std::vector<StrokePoint> path =
+			wanderingPath(t, points[a], points[b], halfWidth, wander, widthJitter, random);
+		strokePath(line, t, path);
+		// Only the stroke's bounding circle need be looked at, and cleared for the next edge.
+		const PathBounds bounds = pathBounds(path);
+		const int reach = int(std::ceil(bounds.radius)) + 1;
+		const int x0 = int(std::lround(bounds.x)), y0 = int(std::lround(bounds.y));
+		for (int y = y0 - reach; y <= y0 + reach; ++y)
+			for (int x = x0 - reach; x <= x0 + reach; ++x)
+			{
+				const int i = t.at(x, y);
+				if (line[i] && eligible(i))
+					mask[i] = 1;
+				line[i] = 0;
+			}
+		carved.push_back({a, b});
+	}
+	return carved;
+}
 
 /// The cells, other than `blocked` ones, with exactly one open edge, and that edge for each (by
 /// cell index; -1 elsewhere).

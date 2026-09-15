@@ -2542,3 +2542,15 @@ Emoji
 망상대가 본거지를 위한 단구를 너무 적게 남깁니다. 더 큰 지도를 사용하거나 망상대를 좁히세요.
 [The map is too narrow across for a braid; use a bigger map.]
 지도의 폭이 망상 하천을 두기에 너무 좁습니다. 더 큰 지도를 사용하세요.
+[Drumlin field]
+드럼린 들판
+[Drumlin spacing]
+드럼린 간격
+[Drumlin length]
+드럼린 길이
+[Water gap]
+물길 너비
+[Esker loops]
+에스커 순환로
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+에스커가 모든 드럼린을 연결하지 못했습니다. 물길 너비를 줄이거나 더 큰 지도를 사용하세요.

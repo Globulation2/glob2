@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Grid.h"
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
 #include <string>
 #include <vector>
 struct GenerationContext;
@@ -45,6 +48,159 @@ std::vector<int> nearestSiteLabels(const Torus &, const std::vector<Site> &sites
 /// short way round from the site), `iterations` times, so cells grow more even in size. Cheap enough for
 /// a few dozen sites; the search is exhaustive.
 std::vector<Site> relaxPoints(const Torus &, std::vector<Site> sites, int iterations);
+
+/// A grain: a direction across the map, as whole steps so the same seed lands the same way on every
+/// platform, and how much farther things reach along it than across it. Under a grain, distance is
+/// measured in a frame squashed along the direction by `stretchPercent`: two sites a stretch apart
+/// along the grain are as "close" as two sites one tile apart across it. Everything laid out under
+/// a grain - sites, the landforms round them, the gaps between them - comes out elongated the same
+/// way, which is what a field of drumlins, dunes or roches moutonnées looks like: a swarm all
+/// pointing one way. A stretch of 100 is plain distance.
+struct Grain
+{
+	int dx = 1, dy = 0;       // the direction, as whole steps (any pair but 0, 0)
+	int stretchPercent = 100; // reach along the direction relative to across it, 100 or more
+	/// The offset's part along the direction and across it (to its left), each scaled by the
+	/// direction's length so no square root is needed: whole-number arithmetic.
+	std::int64_t along(int offX, int offY) const
+	{
+		return std::int64_t(offX) * dx + std::int64_t(offY) * dy;
+	}
+	std::int64_t across(int offX, int offY) const
+	{
+		return -std::int64_t(offX) * dy + std::int64_t(offY) * dx;
+	}
+	/// Squared length of the direction, the scale the two parts carry.
+	std::int64_t length2() const { return std::int64_t(dx) * dx + std::int64_t(dy) * dy; }
+	/// The offset's squared distance under the grain, in tiles squared times length2() times
+	/// stretchPercent squared: compare two of these directly, or with `metric2(tiles)` of a
+	/// distance.
+	std::int64_t distance2(int offX, int offY) const
+	{
+		const std::int64_t a = along(offX, offY), c = across(offX, offY);
+		return a * a * 10000 + c * c * stretchPercent * stretchPercent;
+	}
+	/// A distance in tiles across the grain, in distance2's units.
+	std::int64_t metric2(std::int64_t tiles) const
+	{
+		return tiles * tiles * length2() * stretchPercent * stretchPercent;
+	}
+	/// The heading of the direction, radians.
+	double heading() const { return std::atan2(double(dy), double(dx)); }
+	/// distance2 as a plain distance in tiles across the grain.
+	double distance(int offX, int offY) const
+	{
+		return std::sqrt(double(distance2(offX, offY)) /
+						 (double(length2()) * stretchPercent * stretchPercent));
+	}
+	/// The squared distance under the grain between two tiles of a torus, the short way round
+	/// under the grain: on a torus a tile has four nearest images, and the one nearest in map tiles
+	/// need not be the one nearest under the grain (two tiles half a map apart along the width may
+	/// be closer through the wrap along the grain than across it), so all four are tried.
+	std::int64_t distance2(const Torus &t, int ax, int ay, int bx, int by) const
+	{
+		const int dx = t.offsetX(ax, bx), dy = t.offsetY(ay, by);
+		std::int64_t best = distance2(dx, dy);
+		// A far image is at least as long in map tiles as its wrapped offset on that axis, and a
+		// distance under the grain is at least the map distance over the stretch, so an image whose
+		// wrapped offset alone exceeds the near image's map distance times the stretch can never
+		// win: for a tile a spacing from its site on a big map, no far image is ever measured.
+		const std::int64_t reach2 = (std::int64_t(dx) * dx + std::int64_t(dy) * dy) *
+									stretchPercent * stretchPercent / 10000 + 1;
+		const int otherX = dx > 0 ? dx - t.w : dx + t.w, otherY = dy > 0 ? dy - t.h : dy + t.h;
+		const bool tryX = std::int64_t(otherX) * otherX <= reach2,
+				   tryY = std::int64_t(otherY) * otherY <= reach2;
+		if (tryX)
+			best = std::min(best, distance2(otherX, dy));
+		if (tryY)
+			best = std::min(best, distance2(dx, otherY));
+		if (tryX && tryY)
+			best = std::min(best, distance2(otherX, otherY));
+		return best;
+	}
+	double distance(const Torus &t, int ax, int ay, int bx, int by) const
+	{
+		return std::sqrt(double(distance2(t, ax, ay, bx, by)) /
+						 (double(length2()) * stretchPercent * stretchPercent));
+	}
+};
+
+/// The eight whole-step headings a grain is drawn from, about 22 degrees apart round half a turn
+/// (the other half is the same grain the other way): index 0 runs along the width, 4 down the
+/// height, 2 on the diagonal. `grainHeading` gives the grain of that index with a stretch.
+constexpr int kGrainHeadings = 8;
+Grain grainHeading(int index, int stretchPercent);
+
+/// A grain from a control's choice: 0 a random heading drawn from `stream`, 1 along the width, 2
+/// down the height, 3 the diagonal. What a "Grain" choice (Random, Horizontal, Vertical, Diagonal)
+/// means to every map with a grain.
+Grain grainForChoice(int choice, int stretchPercent, GenerationContext &,
+					 const std::string &stream);
+
+/// The heading (0 to kGrainHeadings - 1) under which `sites` lie farthest apart (the least distance
+/// between any two, under that grain, is greatest; the lowest index on a tie): the grain that
+/// leaves the most room round a design's fixed sites, when the drawn one leaves too little.
+int widestGrainHeading(const Torus &, const std::vector<Site> &, int stretchPercent);
+
+/// spreadPoints under a grain: darts are kept when they lie at least `minimumPercent` of `spacing`
+/// (and at least 4 tiles) from every site kept before them, measured under the grain, so sites can
+/// stand `stretch` times closer together along the grain than across it. `fixed` sites are kept
+/// first and never moved, and a dart within `fixedMinimum` tiles (under the grain) of one of them
+/// is refused: a design seats its colonies where it likes and lets the swarm fill in round them,
+/// each colony keeping room for a landform of its own. Darts per expected site and draws as
+/// spreadPoints.
+std::vector<Site> spreadPoints(const Torus &, int spacing, const Grain &, GenerationContext &,
+							   const std::string &stream, const std::vector<Site> &fixed,
+							   int fixedMinimum, int minimumPercent = 83, int dartsPerSite = 60);
+
+/// Each site's distance (under the grain, in tiles across it) to the nearest other site, the short
+/// way round; the shorter map side when there is only one. The room a landform round each site has.
+std::vector<double> nearestSiteDistances(const Torus &, const std::vector<Site> &, const Grain &);
+
+/// Every tile's nearest site under the grain, a tie going to the lower index: the cells of a swarm
+/// of aligned landforms, elongated with the grain, so two landforms end to end are neighbours as
+/// readily as two side by side. `spacing` sizes the search buckets as nearestSiteLabels, and
+/// `reach` (tiles under the grain; twice the spacing when 0) how far the search looks: the window
+/// round a tile is the bounding box of the ellipse `reach` under the grain, so a site within reach
+/// is always found and is then the nearest; a tile with no site within reach (a sparse corner) is
+/// labelled by a search of every site. Pass a reach no tile's nearest site is beyond (a spacing
+/// or two for a relaxed swarm, a fixed site's exclusion where one keeps the rest away).
+std::vector<int> nearestSiteLabels(const Torus &, const std::vector<Site> &, int spacing,
+								   const Grain &, int reach = 0);
+
+/// Lloyd relaxation under a grain: each site moves to the centroid of the tiles nearest it under
+/// the grain (nearestSiteLabels), `iterations` times, so the cells grow even in size and the swarm
+/// packs as tightly as its count allows; the first `fixedCount` sites never move (a design's
+/// colonies). Dart throwing alone leaves the cells uneven (some sites nearly a spacing apart, some
+/// twice that), and landforms packed round uneven sites waste the room between the far pairs.
+std::vector<Site> relaxPoints(const Torus &, std::vector<Site> sites, const Grain &, int spacing,
+							  int iterations, int fixedCount = 0, int reach = 0);
+
+/// Radii (under a grain, in tiles across it) for a landform round every site, packed so that any
+/// two keep at least `gap` tiles of open ground between them in every direction: the gap is in map
+/// tiles whichever way the pair lies, so two landforms end to end along the grain sit as close as
+/// two side by side, not the stretch times farther (under the grain a pair's distance is its map
+/// distance divided by up to the stretch, so the gap the pair needs under the grain is scaled the
+/// same way). A site whose radius is given (`fixed[s]` at or above 0) keeps it, and every other
+/// starts at half its nearest neighbour's distance less that pair's gap and then, in index order,
+/// grows into whatever slack its neighbours leave (a neighbour that is small because of a third
+/// site on its far side leaves room on this side), up to `maximum`, over a few rounds. A landform
+/// that fits inside its site's radius under the grain (Teardrop::fitting; an ellipse `radius`
+/// across and `radius` times the stretch long) then never comes within `gap` map tiles of another.
+/// Sites left with a radius under `minimum` get -1: too small to be worth a landform, and the
+/// ground goes to the water instead. Rounds are index order, so the result is the same on every
+/// platform.
+std::vector<double> packLandforms(const Torus &, const std::vector<Site> &, const Grain &,
+								  const std::vector<double> &fixed, double gap, double minimum,
+								  double maximum);
+
+/// Farthest-point spreading over sites: `count` of the sites `eligible` allows, each in turn the
+/// one farthest (in map tiles, the short way round) from every `seed` site and every site chosen
+/// before it, the lowest index on a tie; a seed is never chosen. Prizes on the ground farthest from
+/// every home, in the order a generator should hand them out.
+std::vector<int> farthestSites(const Torus &, const std::vector<Site> &,
+							   const std::vector<int> &seeds,
+							   const std::vector<unsigned char> &eligible, int count);
 
 /// The site graph of a labelling: two sites are neighbours when their cells touch (four-connected,
 /// across the wrap), listed in ascending order.

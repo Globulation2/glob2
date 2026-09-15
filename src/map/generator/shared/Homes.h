@@ -142,6 +142,83 @@ void plantOpenHomeKit(Map &map, const Torus &t, GenerationContext &context, Shap
 	plantKit(map, t, context, kit, eligible);
 }
 
+/// A home on a teardrop landform (Geometry.h): the blunt head is the town, open grass for the swarm
+/// and its buildings; a collar of sand across the waist parts the town from the tail; and the tail
+/// is the colony's farm, where the kit's crops go and spread without ever reaching the town.
+/// Drumlin field's homes; any map whose homes are long hills or dunes with water all round.
+///
+/// The shares are of the shape's length back from its head. The town ends at `townShare` (0.45
+/// takes the head past its widest point, at 0.4 of a drumlin, so the roomiest ground is the town
+/// and the tapering tail the farm); the collar is `collarWidth` tiles thick about that line (2: one
+/// tile of sand corners stops a crop spreading across and the second keeps a stray grass corner
+/// from bridging it, as Polder's village ring found); the swarm stands at `swarmShare` (0.25:
+/// between the head's tip and the collar, with building room on both sides), but never more than
+/// `swarmFromCollar` tiles short of the collar (12: on a long home a quarter of the length would
+/// leave the kit past the collar a 20-step walk, near the crop guarantee's 24). The kit's crops
+/// seed `kitPastCollar` tiles past the collar and `kitAcrossShare` of the half width either side of
+/// the axis, the quarry `quarryFromTip` tiles in from the head's tip where the shape is narrow and
+/// nothing else wants the ground, each searched `kitReach` tiles round (the collar's sand and the
+/// beach spoil the tiles nearest the seed, so the search reaches past them).
+struct TeardropHome
+{
+	double townShare = 0.45, collarWidth = 2.0, swarmShare = 0.25, swarmFromCollar = 12.0;
+	double kitPastCollar = 4.0, kitAcrossShare = 0.45, quarryFromTip = 4.0;
+	int kitReach = 8;
+	/// Where the swarm's centre lies along the shape, from its middle.
+	double swarmAt(const Teardrop &shape) const
+	{
+		return std::max(-shape.length / 2 + swarmShare * shape.length,
+						collarAt(shape) - swarmFromCollar);
+	}
+	/// Where the collar's centre line lies along the shape, from its middle.
+	double collarAt(const Teardrop &shape) const
+	{
+		return -shape.length / 2 + townShare * shape.length;
+	}
+	/// Which ground a point `along` the shape lies on: 0 town, 1 collar, 2 tail.
+	int groundAt(const Teardrop &shape, double along) const
+	{
+		const double collar = collarAt(shape);
+		return std::abs(along - collar) < collarWidth / 2 ? 1 : along < collar ? 0 : 2;
+	}
+};
+
+/// Visits every tile of a teardrop home centred at `centre` along `heading` (head to tail):
+/// `visit(tile, ground)` with the ground as TeardropHome::groundAt gives it.
+template <typename Visit>
+void stampTeardropHome(const Torus &t, ShapePoint centre, double heading, const Teardrop &shape,
+					   const TeardropHome &home, Visit visit)
+{
+	forEachTileInTeardrop(t, centre.x, centre.y, heading, shape, [&](int i, double along, double)
+						  { visit(i, home.groundAt(shape, along)); });
+}
+
+/// Where a teardrop home's swarm goes: the top-left tile of its 4x4 footprint, which is what
+/// placeSettlement measures from.
+inline MapGeneratorPoint teardropHomeSwarm(ShapePoint centre, double heading, const Teardrop &shape,
+										   const TeardropHome &home)
+{
+	const ShapePoint p = polarPoint(centre.x, centre.y, home.swarmAt(shape), heading);
+	return MapGeneratorPoint(int(std::lround(p.x)) - 2, int(std::lround(p.y)) - 2);
+}
+
+/// A teardrop home's starter kit: `wheat` and `wood` tiles seeded on the tail just past the collar,
+/// either side of the axis, and a quarry of `quarry` radius (below 0 for none) near the head's tip.
+/// Plant it with plantSplitKit (Planting.h), the crops on the tail and the quarry on the town.
+inline Kit teardropHomeKit(ShapePoint centre, double heading, const Teardrop &shape,
+						   const TeardropHome &home, int wheat, int wood, int quarry)
+{
+	const KitFrame frame{int(std::lround(centre.x)), int(std::lround(centre.y)), heading};
+	const double kitAlong = home.collarAt(shape) + home.collarWidth / 2 + home.kitPastCollar;
+	const double kitAcross = home.kitAcrossShare * shape.width / 2;
+	return {frame.at(kitAlong, -kitAcross, home.kitReach),
+			frame.at(kitAlong, kitAcross, home.kitReach),
+			frame.at(-shape.length / 2 + home.quarryFromTip, 0, home.kitReach),
+			wheat,
+			wood,
+			quarry};
+}
+
 /// A home in ground of any shape: a Voronoi cell, a chamber, a town block, a territory. The swarm stands
 /// the same walk from the home's way in as every other colony's (siteAtDepth over walking steps from the
 /// `door` tiles through `region`), on the roomiest such tile; `axis` points from the door towards the
@@ -204,13 +281,17 @@ struct GroundAmounts
 /// (so it lies in patches with gaps to walk and build in), most fertile first, and deals them into
 /// wheat and wood by `splitAt(tile)` (plantFields). `amountsFor(area)` sizes all four layers from the
 /// ground's tile count. Outcrops are one-tile stone clumps from `stoneStream`; groves are one-tile
-/// clumps of a fruit drawn from `fruitStream`. A generator that stamps one design into every wedge
-/// samples `patchAt` and `splitAt` in the wedge frame, so every home gets the same patches.
-template <typename Eligible, typename PatchAt, typename SplitAt, typename AmountsFor>
-void furnishGround(Map &map, const Torus &t, GenerationContext &context,
-				   const Fertility::Field &fertility, Eligible eligible, PatchAt patchAt,
-				   SplitAt splitAt, AmountsFor amountsFor, const char *stoneStream,
-				   const char *fruitStream)
+/// clumps of a fruit drawn from `fruitStream`; both go only where `clumpsAllowed(tile)` says, which
+/// by default is everywhere eligible (a map keeps them off its homes' own farms, say). A generator
+/// that stamps one design into every wedge samples `patchAt` and `splitAt` in the wedge frame, so
+/// every home gets the same patches.
+template <typename Eligible, typename PatchAt, typename SplitAt, typename AmountsFor,
+		  typename ClumpsAllowed = bool (*)(int)>
+void furnishGround(
+	Map &map, const Torus &t, GenerationContext &context, const Fertility::Field &fertility,
+	Eligible eligible, PatchAt patchAt, SplitAt splitAt, AmountsFor amountsFor,
+	const char *stoneStream, const char *fruitStream,
+	ClumpsAllowed clumpsAllowed = [](int) { return true; })
 {
 	const int n = t.w * t.h;
 	std::vector<int> ground;
@@ -241,10 +322,11 @@ void furnishGround(Map &map, const Torus &t, GenerationContext &context,
 		chosen.push_back(entry.second);
 	const GroundAmounts amounts = amountsFor(int(ground.size()));
 	plantFields(map, t, chosen, amounts.wheat, amounts.wood, splitAt);
-	scatterClumps(context, t, ground, amounts.outcrops, stoneStream, eligible,
+	const auto clumpGround = [&](int i) { return eligible(i) && clumpsAllowed(i); };
+	scatterClumps(context, t, ground, amounts.outcrops, stoneStream, clumpGround,
 				  [&](MapGeneratorPoint p) { placeResourceClump(map, context, p, STONE, 1); });
 	scatterClumps(
-		context, t, ground, amounts.groves, fruitStream, eligible, [&](MapGeneratorPoint p)
+		context, t, ground, amounts.groves, fruitStream, clumpGround, [&](MapGeneratorPoint p)
 		{ placeResourceClump(map, context, p, CHERRY + int(context.bounded(fruitStream, 3)), 1); });
 }
 } // namespace MapGeneration

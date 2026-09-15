@@ -2570,3 +2570,15 @@ Moreneheuvels
 De vlechting laat te weinig terras over voor de thuisbases; gebruik een grotere kaart of een smallere vlechting.
 [The map is too narrow across for a braid; use a bigger map.]
 De kaart is in de breedte te smal voor een vlechting; gebruik een grotere kaart.
+[Drumlin field]
+Drumlinveld
+[Drumlin spacing]
+Drumlinafstand
+[Drumlin length]
+Drumlinlengte
+[Water gap]
+Waterstrook
+[Esker loops]
+Eskerlussen
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+De eskers konden niet alle drumlins verbinden; gebruik een smallere waterstrook of een grotere kaart.

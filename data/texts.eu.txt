@@ -2556,3 +2556,15 @@ Morrena-muinoak
 Txirikordak terraza gutxiegi uzten die etxeei; erabili mapa handiagoa edo txirikorda estuagoa.
 [The map is too narrow across for a braid; use a bigger map.]
 Mapa estuegia da zeharka txirikorda baterako; erabili mapa handiagoa.
+[Drumlin field]
+Drumlin-zelaia
+[Drumlin spacing]
+Drumlinen arteko tartea
+[Drumlin length]
+Drumlinen luzera
+[Water gap]
+Ur-tartea
+[Esker loops]
+Esker-begiztak
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Eskerrek ezin izan dituzte drumlin guztiak lotu; erabili ur-tarte txikiagoa edo mapa handiagoa.

@@ -2542,3 +2542,15 @@ Gundukan morena
 Anyaman menyisakan terlalu sedikit teras untuk markas; gunakan peta lebih besar atau anyaman lebih sempit.
 [The map is too narrow across for a braid; use a bigger map.]
 Peta terlalu sempit melintang untuk anyaman; gunakan peta lebih besar.
+[Drumlin field]
+Padang drumlin
+[Drumlin spacing]
+Jarak drumlin
+[Drumlin length]
+Panjang drumlin
+[Water gap]
+Celah air
+[Esker loops]
+Simpul esker
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Esker tidak dapat menghubungkan semua drumlin; gunakan celah air yang lebih kecil atau peta yang lebih besar.

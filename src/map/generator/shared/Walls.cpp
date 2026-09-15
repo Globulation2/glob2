@@ -164,6 +164,27 @@ std::vector<int> reachesWithShut(const Map &map, const Torus &t,
 	return stepsFrom(t, from, open);
 }
 
+std::array<int, 2> colonyLeak(const Map &map, const Torus &t, int teams,
+							  const std::vector<unsigned char> &shut)
+{
+	const int n = t.w * t.h;
+	std::vector<unsigned char> open(n, 0);
+	for (int i = 0; i < n; ++i)
+		open[i] = !shut[i] && !map.isWater(i % t.w, i / t.w) &&
+				  !(map.isResource(i % t.w, i / t.w) && map.getResource(i % t.w, i / t.w).type == STONE);
+	const std::vector<std::vector<int>> units = unitTilesByTeam(map, teams);
+	for (int k = 0; k < teams; ++k)
+	{
+		const std::vector<int> steps = stepsFrom(t, tileMask(t, units[k]), open);
+		for (int other = 0; other < teams; ++other)
+			if (other != k)
+				for (int tile : units[other])
+					if (steps[tile] >= 0)
+						return {k, other};
+	}
+	return {-1, -1};
+}
+
 int pieceLeak(const Map &map, const Torus &t, const std::vector<int> &piece,
 			  const std::vector<unsigned char> &shut)
 {

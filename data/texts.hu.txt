@@ -2546,3 +2546,15 @@ Morénahalmok
 A fonat túl kevés teraszt hagy az otthonoknak; használj nagyobb térképet vagy keskenyebb fonatot.
 [The map is too narrow across for a braid; use a bigger map.]
 A térkép keresztben túl keskeny egy fonathoz; használj nagyobb térképet.
+[Drumlin field]
+Drumlinmező
+[Drumlin spacing]
+Drumlinek távolsága
+[Drumlin length]
+Drumlinek hossza
+[Water gap]
+Vízsáv
+[Esker loops]
+Eskerhurkok
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Az eskerek nem tudták összekötni az összes drumlint; használj keskenyebb vízsávot vagy nagyobb térképet.

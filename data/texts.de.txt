@@ -2546,3 +2546,15 @@ Moränenhügel
 Die Verflechtung lässt den Heimaten zu wenig Terrasse; wähle eine größere Karte oder eine schmalere Verflechtung.
 [The map is too narrow across for a braid; use a bigger map.]
 Die Karte ist in der Breite zu schmal für eine Verflechtung; wähle eine größere Karte.
+[Drumlin field]
+Drumlinfeld
+[Drumlin spacing]
+Drumlin-Abstand
+[Drumlin length]
+Drumlin-Länge
+[Water gap]
+Wasserlücke
+[Esker loops]
+Esker-Schleifen
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Die Esker konnten nicht alle Drumlins verbinden; wähle eine kleinere Wasserlücke oder eine größere Karte.

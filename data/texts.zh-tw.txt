@@ -2618,3 +2618,15 @@ Emoji
 辮狀帶留給基地的階地太少；請使用更大的地圖或更窄的辮狀帶。
 [The map is too narrow across for a braid; use a bigger map.]
 地圖的寬度太窄，容不下辮狀河；請使用更大的地圖。
+[Drumlin field]
+鼓丘原野
+[Drumlin spacing]
+鼓丘間距
+[Drumlin length]
+鼓丘長度
+[Water gap]
+水域間隙
+[Esker loops]
+蛇形丘環路
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+蛇形丘無法連接所有鼓丘；請縮小水域間隙或使用更大的地圖。

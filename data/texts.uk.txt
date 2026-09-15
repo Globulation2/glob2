@@ -2542,3 +2542,15 @@ Emoji
 Розгалуження залишає базам замало тераси; використайте більшу мапу або вужче розгалуження.
 [The map is too narrow across for a braid; use a bigger map.]
 Мапа надто вузька впоперек для розгалуження; використайте більшу мапу.
+[Drumlin field]
+Друмлінове поле
+[Drumlin spacing]
+Крок друмлінів
+[Drumlin length]
+Довжина друмлінів
+[Water gap]
+Смуга води
+[Esker loops]
+Петлі озів
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Ози не змогли з'єднати всі друмліни; використайте вужчу смугу води або більшу карту.

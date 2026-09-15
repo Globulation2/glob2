@@ -2554,3 +2554,15 @@ Moren tümsekleri
 Örgü, üsler için çok az teras bırakıyor; daha büyük bir harita veya daha dar bir örgü kullanın.
 [The map is too narrow across for a braid; use a bigger map.]
 Harita enine bir örgü için çok dar; daha büyük bir harita kullanın.
+[Drumlin field]
+Drumlin alanı
+[Drumlin spacing]
+Drumlin aralığı
+[Drumlin length]
+Drumlin uzunluğu
+[Water gap]
+Su boşluğu
+[Esker loops]
+Esker döngüleri
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Eskerler tüm drumlinleri birleştiremedi; daha küçük bir su boşluğu veya daha büyük bir harita kullanın.

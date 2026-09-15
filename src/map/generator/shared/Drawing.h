@@ -221,6 +221,35 @@ inline void fillShape(std::vector<unsigned char> &mask, const Torus &t, double c
 		t, cx, cy, shape, turn, [&](int i, double, double) { mask[i] = value; }, stretch);
 }
 
+/// Visits every tile a Teardrop centred at (cx, cy) with its axis along `heading` (radians, head
+/// to tail) covers, through the wrap: `visit(tile, along, across)` with the tile's place in the
+/// shape's own frame. Searches only the bounding box of the length. Every drumlin of a field is
+/// stamped this way at the field's one heading.
+template <typename Visit>
+void forEachTileInTeardrop(const Torus &t, double cx, double cy, double heading,
+						   const Teardrop &shape, Visit visit)
+{
+	const int reach = int(std::ceil(shape.length / 2)) + 1;
+	const int x0 = int(std::lround(cx)), y0 = int(std::lround(cy));
+	const double c = std::cos(heading), s = std::sin(heading);
+	for (int y = y0 - reach; y <= y0 + reach; ++y)
+		for (int x = x0 - reach; x <= x0 + reach; ++x)
+		{
+			const double dx = x - cx, dy = y - cy;
+			const double along = dx * c + dy * s, across = -dx * s + dy * c;
+			if (shape.contains(along, across))
+				visit(t.at(x, y), along, across);
+		}
+}
+
+/// Sets `value` on every tile of a Teardrop centred at (cx, cy) along `heading`.
+inline void fillTeardrop(std::vector<unsigned char> &mask, const Torus &t, double cx, double cy,
+						 double heading, const Teardrop &shape, unsigned char value = 1)
+{
+	forEachTileInTeardrop(t, cx, cy, heading, shape,
+						  [&](int i, double, double) { mask[i] = value; });
+}
+
 /// Points along the arc `radius` tiles round (cx, cy) from angle `from` to angle `to` (radians,
 /// either way round), about `step` tiles apart along the arc, all with the same half width: a
 /// corridor that follows a circle, or a ring drawn a piece at a time.

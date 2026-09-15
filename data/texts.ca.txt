@@ -2554,3 +2554,15 @@ Monticles de morrena
 La trena deixa massa poca terrassa per a les bases; useu un mapa més gran o una trena més estreta.
 [The map is too narrow across for a braid; use a bigger map.]
 El mapa és massa estret per a una trena; useu un mapa més gran.
+[Drumlin field]
+Camp de drumlins
+[Drumlin spacing]
+Separació dels drumlins
+[Drumlin length]
+Longitud dels drumlins
+[Water gap]
+Franja d'aigua
+[Esker loops]
+Bucles d'eskers
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Els eskers no han pogut unir tots els drumlins; useu una franja d'aigua més estreta o un mapa més gran.

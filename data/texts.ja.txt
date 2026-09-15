@@ -2542,3 +2542,15 @@ Emoji
 網状帯が本拠地に残す段丘が少なすぎます。より大きな地図を使うか、網状帯を狭くしてください。
 [The map is too narrow across for a braid; use a bigger map.]
 地図の幅が網状河川には狭すぎます。より大きな地図を使ってください。
+[Drumlin field]
+ドラムリン地帯
+[Drumlin spacing]
+ドラムリンの間隔
+[Drumlin length]
+ドラムリンの長さ
+[Water gap]
+水域の幅
+[Esker loops]
+エスカーの環
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+エスカーで全てのドラムリンをつなげませんでした。水域の幅を狭くするか、より大きな地図にしてください。

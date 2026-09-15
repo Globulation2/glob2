@@ -59,6 +59,38 @@ double RadialShape::maximumRadius() const
 		sum += std::abs(a);
 	return radius * (1 + sum);
 }
+double Teardrop::halfWidthAt(double along) const
+{
+	// Distance back from the head, 0 to length; the widest point lies headShare of the way.
+	const double s = along + length / 2, widest = headShare * length;
+	if (s <= 0 || s >= length || width <= 0)
+		return 0;
+	const double u = s < widest ? (widest - s) / widest : (s - widest) / (length - widest);
+	return width / 2 * std::sqrt(std::max(0.0, 1 - u * u));
+}
+
+double Teardrop::reach(double stretch) const
+{
+	// Sampled along the outline: 64 stations along the length is within a hundredth of a tile of
+	// the true maximum for any shape a map draws, and a closed form would need the roots of a
+	// quartic for no gain.
+	double farthest = length / 2 / stretch;
+	for (int k = 1; k < 64; ++k)
+	{
+		const double along = -length / 2 + length * k / 64;
+		farthest = std::max(farthest, std::hypot(along / stretch, halfWidthAt(along)));
+	}
+	return farthest;
+}
+
+Teardrop Teardrop::fitting(double radius, double stretch, double headShare)
+{
+	// Reach scales with the shape, so the shape of unit width is measured once and scaled.
+	const Teardrop unit{stretch, 1.0, headShare};
+	const double scale = radius / unit.reach(stretch);
+	return {stretch * scale, scale, headShare};
+}
+
 void stampShape(std::vector<int> &labels, int width, int height, int label,
 				const ShapeTransform &transform, const RadialShape &shape, bool wrap)
 {
