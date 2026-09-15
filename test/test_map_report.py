@@ -118,8 +118,56 @@ def invariants(j):
     quality = j['canonical_quality']
     if quality['measured']:
         weights, scale = quality['weights'], quality['scale']
+        for factor, spread in quality['normalized_spreads'].items():
+            values = [c['normalized'][factor] for c in quality['colonies']]
+            assert spread['count'] == len(values)
+            close(spread['min'],min(values))
+            close(spread['max'],max(values))
+            close(spread['mean'],sum(values)/len(values))
         for c in quality['colonies']:
             r, normalized = c['raw'], c['normalized']
+            i = c['team']
+            walking = j['movement']['walking']['colonies'][i]
+            assert r['reachable_tiles'] == walking['reachable']['tiles']
+            assert r['catchment_tiles'] == walking['catchment_tiles']
+            assert r['exclusive_nearest_tiles'] == walking['exclusive_nearest_territory_tiles']
+            assert r['tied_nearest_tiles'] == walking['tied_nearest_territory_tiles']
+            assert r['catchment_buildable_tiles'] <= r['catchment_tiles']
+            assert r['catchment_fertile_grass_tiles'] <= r['catchment_grass_tiles']
+            assert r['catchment_growth_enabled_grass_tiles'] <= r['catchment_grass_tiles']
+            assert r['exclusive_catchment_tiles'] + r['tied_catchment_tiles'] <= r['catchment_tiles']
+            assert r['wheat_and_wood_amount'] == sum(r['resources'][k]['catchment_stored_amount'] for k in ('wheat','wood'))
+            bands = c['distance_bands']
+            assert [b['walking_steps'] for b in bands] == [12,24,48]
+            for a,b in zip(bands,bands[1:]):
+                for field in ('reached_tiles','grass_tiles','buildable_tiles','fertile_grass_tiles'):
+                    assert a[field] <= b[field]
+                for name in a['resources']:
+                    for field in ('deposit_tiles','stored_amount'):
+                        assert a['resources'][name][field] <= b['resources'][name][field]
+            for band in bands:
+                assert band['exclusive_nearest_tiles'] + band['tied_nearest_tiles'] <= band['reached_tiles']
+                assert band['fertile_grass_tiles'] <= band['grass_tiles'] <= band['reached_tiles']
+                assert band['buildable_tiles'] <= band['reached_tiles']
+                for access in band['resources'].values():
+                    assert access['exclusive_deposit_tiles'] + access['tied_deposit_tiles'] <= access['deposit_tiles']
+                    assert access['exclusive_stored_amount'] + access['tied_stored_amount'] <= access['stored_amount']
+            if scale['catchment_steps'] == 24:
+                assert bands[1]['reached_tiles'] == r['catchment_tiles']
+                assert bands[1]['buildable_tiles'] == r['catchment_buildable_tiles']
+                assert bands[1]['fertile_grass_tiles'] == r['catchment_fertile_grass_tiles']
+                assert bands[1]['exclusive_nearest_tiles'] == r['exclusive_catchment_tiles']
+                assert bands[1]['tied_nearest_tiles'] == r['tied_catchment_tiles']
+                for name in bands[1]['resources']:
+                    assert bands[1]['resources'][name]['stored_amount'] == r['resources'][name]['catchment_stored_amount']
+            for access in r['resources'].values():
+                assert access['exclusive_catchment_deposit_tiles'] + access['tied_catchment_deposit_tiles'] <= access['catchment_deposit_tiles']
+                assert access['exclusive_catchment_stored_amount'] + access['tied_catchment_stored_amount'] <= access['catchment_stored_amount']
+            for name in ('wheat','wood'):
+                assert r[name+'_distance'] == r['resources'][name]['nearest_gather_distance']
+            reachable = [d for k,d in enumerate(j['movement']['walking']['between_colonies'][i]) if i != k and d is not None]
+            assert r['reachable_rivals'] == len(reachable)
+            assert r['farthest_rival_distance'] == (max(reachable) if reachable else None)
             for resource in ('wheat','wood'):
                 d = r[resource+'_distance']
                 close(normalized[resource],0 if d is None else max(0,min(1,1-d/scale[resource+'_reference'])))

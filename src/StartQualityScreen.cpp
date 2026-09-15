@@ -94,7 +94,7 @@ void StartQualityScreen::render()
 		ui.text(x + 8 + labelW + c * cellW, rowY, fixed(factorWeights[c]), "little", cellW - 6,
 				true);
 	rowY += 22;
-	const int rowH = 44;
+	const int rowH = 68;
 	for (size_t i = 0; i < report.colonies.size(); ++i)
 	{
 		const auto &q = report.colonies[i];
@@ -119,6 +119,10 @@ void StartQualityScreen::render()
 			ui.text(cx, rowY + 18, fixed(scores[c]), "little", cellW - 6, true);
 		}
 		ui.text(x + 8 + labelW + 6 * cellW, rowY + 6, fixed(q.total), "standard", cellW - 6);
+		const std::string stock = tr("Wheat") + " " +
+			std::to_string(q.resources[WHEAT].catchmentAmount) + "  /  " + tr("Wood") +
+			" " + std::to_string(q.resources[WOOD].catchmentAmount);
+		ui.text(x + 26, rowY + 40, stock, "little", w - 42);
 		rowY += rowH;
 	}
 	rowY += 8;
