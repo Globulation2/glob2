@@ -46,7 +46,7 @@ def detailed_ticks(data: bytes) -> dict[int, bytes]:
 
 def main(binary: str) -> int:
     for save, ticks, fixture in SCENARIOS:
-        with tempfile.TemporaryDirectory(prefix="glob2-telemetry-check-") as directory:
+        with tempfile.TemporaryDirectory(prefix="glob2-telemetry-check-", dir=ROOT) as directory:
             output = Path(directory)
             command = [str(Path(binary).resolve()), "--run-game", "--load-game", str(save),
                        "--ticks", str(ticks), "--telemetry", "checksums",
@@ -55,7 +55,16 @@ def main(binary: str) -> int:
             if result.returncode:
                 sys.stderr.write(result.stdout + result.stderr)
                 return result.returncode
-            actual = (output / "game.replay.checksums").read_bytes()
+            sidecar = output / "game.replay.checksums"
+            if not sidecar.exists():
+                print(f"{save.name}: checksum sidecar missing from {output}", file=sys.stderr)
+                sys.stderr.write(result.stdout + result.stderr)
+                print("output files:", [p.name for p in output.iterdir()], file=sys.stderr)
+                report = output / "result.json"
+                if report.exists():
+                    print(report.read_text(encoding="utf-8")[:4000], file=sys.stderr)
+                return 1
+            actual = sidecar.read_bytes()
             with gzip.open(fixture, "rb") as stream:
                 expected = stream.read()
             if actual != expected:
@@ -66,7 +75,7 @@ def main(binary: str) -> int:
                 return 1
             print(f"PASS {save.name}: {ticks} ticks, identical checksum sidecar: "
                   f"{hashlib.sha256(actual).hexdigest()}")
-    with tempfile.TemporaryDirectory(prefix="glob2-telemetry-save-check-") as directory:
+    with tempfile.TemporaryDirectory(prefix="glob2-telemetry-save-check-", dir=ROOT) as directory:
         checkpoint = Path(directory) / "checkpoint.game"
         with gzip.open(CHECKPOINT, "rb") as stream:
             checkpoint.write_bytes(stream.read())
@@ -77,6 +86,11 @@ def main(binary: str) -> int:
         if result.returncode:
             sys.stderr.write(result.stdout + result.stderr)
             return result.returncode
+        if not (output / "game.replay.checksums").exists():
+            print("checkpoint checksum sidecar missing", file=sys.stderr)
+            sys.stderr.write(result.stdout + result.stderr)
+            print("output files:", [p.name for p in output.iterdir()], file=sys.stderr)
+            return 1
         with gzip.open(PARENT_RELOAD, "rb") as stream:
             expected = detailed_ticks(stream.read())
         actual = detailed_ticks((output / "game.replay.checksums").read_bytes())
