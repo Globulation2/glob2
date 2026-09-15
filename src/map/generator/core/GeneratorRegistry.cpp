@@ -32,6 +32,7 @@
 #include "OldTownGenerator.h"
 #include "AnthillGenerator.h"
 #include "EmojiGenerator.h"
+#include "FortsGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -142,6 +143,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 cityStatesDefinition(),
 											 canalsDefinition(),
 											 emojiDefinition(),
+											 fortsDefinition(),
 											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),

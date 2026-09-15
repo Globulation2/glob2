@@ -2460,3 +2460,7 @@ Emoji
 Обратный
 [Crossings]
 Переправы
+[Forts]
+Крепости
+[Gate width]
+Ширина ворот

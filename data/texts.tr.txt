@@ -2470,3 +2470,7 @@ Normal
 Ters
 [Crossings]
 Geçitler
+[Forts]
+Kaleler
+[Gate width]
+Kapı genişliği

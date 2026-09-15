@@ -2458,3 +2458,7 @@ Normal
 Invertido
 [Crossings]
 Travessias
+[Forts]
+Kreñvlec’hioù
+[Gate width]
+Ledander an nor

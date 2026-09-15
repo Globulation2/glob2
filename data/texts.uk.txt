@@ -2458,3 +2458,7 @@ Emoji
 Зворотний
 [Crossings]
 Переправи
+[Forts]
+Фортеці
+[Gate width]
+Ширина воріт

@@ -2472,3 +2472,7 @@ Arrunta
 Alderantzizkoa
 [Crossings]
 Pasabideak
+[Forts]
+Gotorlekuak
+[Gate width]
+Atearen zabalera

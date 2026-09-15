@@ -10,6 +10,9 @@ executable is needed. The normal game data directory (including fonts and the GU
 theme for PNGs) must be available. Put the
 launch mode first; these modes do not combine with game, replay, or server launch modes.
 
+For the fortified countryside generator, see [Forts](FORTS.md) for its controls,
+resource guarantees, supported combinations and validation evidence.
+
 ## Generate a map and preview
 
 ```sh

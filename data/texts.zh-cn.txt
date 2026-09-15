@@ -2458,3 +2458,7 @@ Emoji
 反转
 [Crossings]
 通道
+[Forts]
+堡垒
+[Gate width]
+城门宽度

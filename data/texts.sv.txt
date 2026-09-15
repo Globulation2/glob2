@@ -2472,3 +2472,7 @@ Normal
 Omvänd
 [Crossings]
 Övergångar
+[Forts]
+Fästningar
+[Gate width]
+Portbredd

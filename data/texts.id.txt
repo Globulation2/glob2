@@ -2458,3 +2458,7 @@ Biasa
 Terbalik
 [Crossings]
 Penyeberangan
+[Forts]
+Benteng
+[Gate width]
+Lebar gerbang

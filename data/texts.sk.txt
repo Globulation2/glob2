@@ -2470,3 +2470,7 @@ Bežný
 Obrátený
 [Crossings]
 Priechody
+[Forts]
+Pevnosti
+[Gate width]
+Šírka brány

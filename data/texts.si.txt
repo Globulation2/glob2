@@ -2462,3 +2462,7 @@ Običajno
 Obrnjeno
 [Crossings]
 Prehodi
+[Forts]
+Trdnjave
+[Gate width]
+Širina vrat

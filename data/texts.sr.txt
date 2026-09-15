@@ -2462,3 +2462,7 @@ Emoji
 Обрнуто
 [Crossings]
 Прелази
+[Forts]
+Тврђаве
+[Gate width]
+Ширина капије

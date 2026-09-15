@@ -2524,3 +2524,7 @@ Normale
 Invertito
 [Crossings]
 Passaggi
+[Forts]
+Fortezze
+[Gate width]
+Larghezza del portale

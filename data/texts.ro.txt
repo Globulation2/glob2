@@ -2462,3 +2462,7 @@ Normal
 Inversat
 [Crossings]
 Treceri
+[Forts]
+Fortărețe
+[Gate width]
+Lățimea porții

@@ -2458,3 +2458,7 @@ Emoji
 反転
 [Crossings]
 通路
+[Forts]
+砦
+[Gate width]
+城門の幅

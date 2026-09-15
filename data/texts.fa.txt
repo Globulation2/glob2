@@ -2460,3 +2460,7 @@ Emoji
 وارونه
 [Crossings]
 گذرگاه‌ها
+[Forts]
+دژها
+[Gate width]
+پهنای دروازه

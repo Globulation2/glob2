@@ -2458,3 +2458,7 @@ Thông thường
 Đảo ngược
 [Crossings]
 Lối qua
+[Forts]
+Pháo đài
+[Gate width]
+Chiều rộng cổng
