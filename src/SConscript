@@ -462,6 +462,102 @@ yog/YOGServerRouterManager.cpp
 yog/YOGServerRouterPlayer.cpp
 """)
 server_source_files=Split("""
+ai/AINames.cpp
+AIMaximaStrategy.cpp
+BasePlayer.cpp
+BaseTeam.cpp
+BitArray.cpp
+GameHeader.cpp
+LANGameInformation.cpp
+map/io/MapHeader.cpp
+net/NetBroadcaster.cpp
+net/NetConnection.cpp
+net/NetConnectionThread.cpp
+net/NetConnectionThreadMessage.cpp
+net/NetGamePlayerManager.cpp
+net/NetListener.cpp
+net/message/NetMessage.cpp
+net/message/AuthMessages.cpp
+net/message/FileTransferMessages.cpp
+net/message/GameCreateMessages.cpp
+net/message/GameHeaderMessages.cpp
+net/message/GameJoinMessages.cpp
+net/message/GameLaunchMessages.cpp
+net/message/GameTeamMessages.cpp
+net/message/LobbyMessages.cpp
+net/message/MapDatabaseMessages.cpp
+net/message/MapUploadMessages.cpp
+net/message/MessageRecipients.cpp
+net/message/OrderMessages.cpp
+net/message/RegistrationMessages.cpp
+net/message/RouterAdminMessages.cpp
+net/message/RouterMessages.cpp
+net/NetReteamingInformation.cpp
+net/NetTestSuite.cpp
+Order.cpp
+OrderBuilding.cpp
+OrderModify.cpp
+OrderMisc.cpp
+game/entities/Race.cpp
+game/entities/UnitType.cpp
+Utilities.cpp
+yog/YOGConsts.cpp
+yog/YOGGameInfo.cpp
+yog/YOGGameResults.cpp
+yog/YOGMessage.cpp
+yog/YOGPlayerSessionInfo.cpp
+yog/YOGPlayerStoredInfo.cpp
+building/BuildingUtils.cpp
+Bullet.cpp
+game/entities/Resources.cpp
+Glob2.cpp
+GlobalContainer.cpp
+GlobalContainerArgs.cpp
+map/Map.cpp
+map/gradient/MapGradientArea.cpp
+map/gradient/MapGradientBuilding.cpp
+map/gradient/MapGradientGlobal.cpp
+map/gradient/MapGradientField.cpp
+map/io/MapExploredAreaIO.cpp
+map/io/MapIO.cpp
+map/MapMisc.cpp
+map/pathfind/MapPathfindArea.cpp
+map/pathfind/MapPathfindRessource.cpp
+map/MapQuery.cpp
+map/MapResources.cpp
+map/MapStep.cpp
+map/MapTerrain.cpp
+render/MapView.cpp
+map/io/MapThumbnail.cpp
+Sector.cpp
+Settings.cpp
+unit/UnitUtils.cpp
+yog/YOGAfterJoinGameInformation.cpp
+yog/YOGDownloadableMapInfo.cpp
+WinningConditions.cpp
+yog/YOGServerAdministratorCommands.cpp
+yog/YOGServerAdministrator.cpp
+yog/YOGServerAdministratorList.cpp
+yog/YOGServerBannedIPListManager.cpp
+yog/YOGServerChatChannel.cpp
+yog/YOGServerChatChannelManager.cpp
+yog/YOGServer.cpp
+yog/YOGServerFileDistributationManager.cpp
+yog/YOGServerFileDistributor.cpp
+yog/YOGServerGame.cpp
+yog/YOGServerGameLog.cpp
+yog/YOGServerGameRouter.cpp
+yog/YOGServerMapDatabank.cpp
+yog/YOGServerPasswordRegistry.cpp
+yog/YOGServerPlayer.cpp
+yog/YOGServerPlayerScoreCalculator.cpp
+yog/YOGServerPlayerStoredInfoManager.cpp
+yog/YOGServerRouterAdministratorCommands.cpp
+yog/YOGServerRouterAdministrator.cpp
+yog/YOGServerRouter.cpp
+yog/YOGServerRouterManager.cpp
+yog/YOGServerRouterPlayer.cpp
+""")
 Import('env')
 local = env.Clone()
 #Add libgag and USL, not as a library, but as an object
@@ -477,6 +573,7 @@ if not env['server']:
         local.Object('AIMaximaFoodLedger.cpp')])
     local.Alias('maxima-food-ledger-test', ledger_test)
 
+if not env['server']:
     continuation_env = local.Clone()
     continuation_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
     continuation_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
@@ -485,23 +582,28 @@ if not env['server']:
         '../libgag/src/libgag.a'])
     local.Alias('maxima-continuation-test', continuation_test)
 
+if not env['server']:
     geometry_sources = [source for source in source_files if source != 'Glob2.cpp']
     geometry_sources += local.Object('CortexGeometryHarness.o', '#test/CortexGeometryHarness.cpp')
     geometry_test = local.Program('CortexGeometryHarness', geometry_sources)
     local.Alias('cortex-geometry-test', geometry_test)
 
 # Optional integration executable; normal game/server builds do not build it.
+if not env['server']:
     relocation_test = local.Program("MaximaRelocationIntegrationTest",
         [source for source in source_files if source != "Glob2.cpp"] +
         [local.Object("MaximaRelocationIntegrationTest", "#test/MaximaRelocationIntegrationTest.cpp")])
     local.Alias("maxima-relocation-test", relocation_test)
     render_test = local.Program("torus-render-test",
+        [source for source in source_files if source != "Glob2.cpp"] +
         [local.Object("TorusRenderIntegrationTest", "#test/TorusRenderIntegrationTest.cpp")])
     local.Alias("torus-render-test", render_test)
     render_benchmark = local.Program("torus-render-benchmark",
+        [source for source in source_files if source != "Glob2.cpp"] +
         [local.Object("TorusRenderBenchmark", "#test/TorusRenderBenchmark.cpp")])
     local.Alias("torus-render-benchmark", render_benchmark)
 
+if not env['server']:
     # Compile with local, not stats_env, to avoid rebuilding shared objects under a second environment.
     stats_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
     stats_sources += [source for source in source_files if not source.endswith('.cpp')]
@@ -514,41 +616,49 @@ if not env['server']:
 
 # Integration harness: reuse the client objects with a test entry point.
 # Explicit target only; the server and normal client build remain unchanged.
+if not env['server']:
     selection_sources = [source for source in source_files if source != 'Glob2.cpp']
     selection_sources += local.Object('GameGUISelectionHarness.o', '#test/GameGUISelectionHarness.cpp')
     selection_test = local.Program('GameGUISelectionHarness', selection_sources)
     local.Alias('selection-test', selection_test)
 
+if not env['server']:
     terrain_sources = [source for source in source_files if source != 'Glob2.cpp']
     terrain_sources += local.Object('TerrainResourcesHarness.o', '#test/TerrainResourcesHarness.cpp')
     terrain_test = local.Program('TerrainResourcesHarness', terrain_sources)
     local.Alias('terrain-test', terrain_test)
 
+if not env['server']:
     farming_sources = [source for source in source_files if source != 'Glob2.cpp']
     farming_sources += local.Object('NicowarFarmingHarness.o', '#test/NicowarFarmingHarness.cpp')
     farming_test = local.Program('NicowarFarmingHarness', farming_sources)
     local.Alias('nicowar-farming-test', farming_test)
 
+if not env['server']:
     gradient_sources = [source for source in source_files if source != 'Glob2.cpp']
     gradient_sources += local.Object('GlobalGradientHarness.o', '#test/GlobalGradientHarness.cpp')
     gradient_test = local.Program('GlobalGradientHarness', gradient_sources)
     local.Alias('global-gradient-test', gradient_test)
 
+if not env['server']:
     lan_sources = [source for source in source_files if source != 'Glob2.cpp']
     lan_sources += local.Object('LANSessionHarness.o', '#test/LANSessionHarness.cpp')
     lan_test = local.Program('LANSessionHarness', lan_sources)
     local.Alias('lan-test', lan_test)
 
+if not env['server']:
     settings_sources = [source for source in source_files if source != 'Glob2.cpp']
     settings_sources += local.Object('SettingsScreenTest.o', '#test/SettingsScreenTest.cpp')
     settings_test = local.Program('settings-screen-tests', settings_sources)
     local.Alias('settings-tests', settings_test)
 
+if not env['server']:
     speed_sources = [source for source in source_files if source != 'Glob2.cpp']
     speed_sources += local.Object('GameSpeedTest.o', '#test/GameSpeedTest.cpp')
     speed_test = local.Program('game-speed-tests', speed_sources)
     local.Alias('speed-tests', speed_test)
 
+if not env['server']:
     # Compile with local, not savegame_env, to avoid rebuilding shared objects under a second environment.
     savegame_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
     savegame_sources += [source for source in source_files if not source.endswith('.cpp')]
@@ -560,22 +670,26 @@ if not env['server']:
     savegame_test = savegame_env.Program('SavegameSafetyHarness', savegame_sources)
     local.Alias('savegame-safety-test', savegame_test)
 
+if not env['server']:
     # Compile with local, not clearing_env, to avoid rebuilding shared objects under a second environment.
     clearing_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
     clearing_sources += [source for source in source_files if not source.endswith('.cpp')]
     clearing_sources += local.Object('ClearingFlagGradientTest.o', '#test/ClearingFlagGradientTest.cpp')
     clearing_env = local.Clone()
+    # Headless tests use a console entry point so failures reach the CI log.
     clearing_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
     clearing_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
     clearing_test = clearing_env.Program('ClearingFlagGradientTest', clearing_sources)
     local.Alias('clearing-gradient-test', clearing_test)
 
 # Status-bar pixel regression: exercise the shared renderer without a map.
+if not env['server']:
     bar_sources = [source for source in source_files if source != 'Glob2.cpp']
     bar_sources += local.Object('PointBarRenderTest.o', '#test/PointBarRenderTest.cpp')
     bar_test = local.Program('point-bar-render-test', bar_sources)
     local.Alias('point-bar-render-test', bar_test)
 
+if not env['server']:
     # Use the real renderer and settings handlers. Access relaxation is confined
     # to the test translation unit; production objects retain their normal flags.
     render_env = savegame_env.Clone()
@@ -587,17 +701,20 @@ if not env['server']:
     local.Alias('map-render-resize-test', render_test)
 
 
+if not env['server']:
     # Compile with local, not trapped_env, to avoid rebuilding shared objects under a second environment.
     trapped_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
     trapped_sources += [source for source in source_files if not source.endswith('.cpp')]
     trapped_sources += local.Object('TrappedUnitLifecycleTest.o', '#test/TrappedUnitLifecycleTest.cpp')
     trapped_env = local.Clone()
+    # Headless tests use a console entry point so failures reach the CI log.
     trapped_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
     trapped_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
     trapped_test = trapped_env.Program('TrappedUnitLifecycleTest', trapped_sources)
     local.Alias('trapped-unit-test', trapped_test)
 
 # Map analysis and UI contract tests use production generators and widgets.
+if not env['server']:
     for alias, target in [('map-generator-study', 'MapGeneratorStudy'), ('map-generator-defaults-test', 'MapGeneratorDefaultsTest'),
                           ('map-generator-golden-test', 'MapGeneratorGoldenTest')]:
         sources = [source for source in source_files if source != 'Glob2.cpp']
@@ -608,10 +725,12 @@ if not env['server']:
 server_source_files.append("../libgag/src/libgag_server.a")
 p2 = local.Program("glob2-server", server_source_files)
 
+if not env['server']:
     local.Default(p1)
 else:
     local.Default(p2)
 
+Import('env')
 Import("PackTar")
     
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
@@ -626,35 +745,48 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     PackTar(env["TARFILE"], "SConscript")
 
 # Real engine save/load regression, built only by its explicit target.
+if not env['server']:
     regression_sources = [source for source in source_files if source != 'Glob2.cpp']
     regression_sources += local.Object('BuildingFootprintHarness.o', '#test/BuildingFootprintHarness.cpp')
     regression_test = local.Program('BuildingFootprintHarness', regression_sources)
     local.Alias('building-footprint-test', regression_test)
 
+# Real engine save/load regression, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
     regression_sources += local.Object('EnteringUnitSaveHarness.o', '#test/EnteringUnitSaveHarness.cpp')
     regression_test = local.Program('EnteringUnitSaveHarness', regression_sources)
     local.Alias('entering-unit-save-test', regression_test)
 
+if not env['server']:
     buffer_sources = ['#test/BufferedFileStreamHarness.cpp', '../libgag/src/libgag.a']
     buffer_test = local.Program('BufferedFileStreamHarness', buffer_sources)
     local.Alias('buffered-file-test', buffer_test)
 
 # Real engine regression for immobile units and weighted building gradients, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
     regression_sources += local.Object('ImmobileUnitGradientHarness.o', '#test/ImmobileUnitGradientHarness.cpp')
     regression_test = local.Program('ImmobileUnitGradientHarness', regression_sources)
     local.Alias('immobile-unit-gradient-test', regression_test)
 
 # Real engine regression for building placement and removal refreshing neighbouring route fields, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
     regression_sources += local.Object('BuildingGradientInvalidationHarness.o', '#test/BuildingGradientInvalidationHarness.cpp')
     regression_test = local.Program('BuildingGradientInvalidationHarness', regression_sources)
     local.Alias('building-gradient-invalidation-test', regression_test)
 
 # Real engine regression for resource-fetch target staleness, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
     regression_sources += local.Object('ResourceFetchTargetHarness.o', '#test/ResourceFetchTargetHarness.cpp')
     regression_test = local.Program('ResourceFetchTargetHarness', regression_sources)
     local.Alias('resource-fetch-target-test', regression_test)
 
 # Real engine regression for fetch-job apportionment, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
     regression_sources += local.Object('FetchApportionmentHarness.o', '#test/FetchApportionmentHarness.cpp')
     regression_test = local.Program('FetchApportionmentHarness', regression_sources)
     local.Alias('fetch-apportionment-test', regression_test)
@@ -668,6 +800,7 @@ if not env['server'] and 'entering-unit-draw-test' in COMMAND_LINE_TARGETS:
     entering_draw_sources += local.Object('EnteringUnitDrawHarness.o', '#test/EnteringUnitDrawHarness.cpp')
     entering_draw_test = local.Program('EnteringUnitDrawHarness', entering_draw_sources)
     local.Alias('entering-unit-draw-test', entering_draw_test)
+if not env['server']:
     highres_sources = [source for source in source_files if source != 'Glob2.cpp']
     highres_sources += local.Object('HighResolutionIntegrationHarness.o', '#test/HighResolutionIntegrationHarness.cpp')
     highres_test = local.Program('HighResolutionIntegrationHarness', highres_sources)
@@ -703,26 +836,34 @@ if not env['server'] and 'map-preview-test' in COMMAND_LINE_TARGETS:
     local.Alias('map-preview-test', local.Program('MapPreviewHarness', preview_sources))
 
 # Real engine regression for units surviving building destruction, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
     regression_sources += local.Object('BuildingExpelHarness.o', '#test/BuildingExpelHarness.cpp')
     regression_test = local.Program('BuildingExpelHarness', regression_sources)
     local.Alias('building-expel-test', regression_test)
 
 # Real engine regression for inn swaps between hungry units, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
     regression_sources += local.Object('InnSwapHarness.o', '#test/InnSwapHarness.cpp')
     regression_test = local.Program('InnSwapHarness', regression_sources)
     local.Alias('inn-swap-test', regression_test)
 
 # Real engine regression for the resource hunger gate, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
     regression_sources += local.Object('RoundTripHungerGateHarness.o', '#test/RoundTripHungerGateHarness.cpp')
     regression_test = local.Program('RoundTripHungerGateHarness', regression_sources)
     local.Alias('round-trip-hunger-gate-test', regression_test)
 
+if not env['server']:
     tournament_env = local.Clone()
     tournament_env['CXXFLAGS'] = local.Split(local['CXXFLAGS']) + ['-fno-access-control']
     tournament_sources = [source for source in source_files if source != 'Glob2.cpp']
     tournament_sources += tournament_env.Object('TournamentCompatibilityTest.o', '#test/TournamentCompatibilityTest.cpp')
     local.Alias('tournament-compatibility-test', local.Program('TournamentCompatibilityTest', tournament_sources))
 # Map-report fixtures exercise analytic route lengths and read-only scoring.
+if not env['server']:
     report_sources = [source for source in source_files if source != 'Glob2.cpp']
     report_sources += local.Object('MapReportHarness.o', '#test/MapReportHarness.cpp')
     report_test = local.Program('MapReportHarness', report_sources)
