@@ -1,6 +1,6 @@
 # Savannah
 
-Savannah (`savannah`, numeric ID **33**, revision **1**) is mostly open grassland.
+Savannah (`savannah`, numeric ID **45**, revision **2**) is mostly open grassland.
 Colony economies begin beside small home ponds. Larger neutral watering holes offer
 renewable crops and three fruit kinds, with open ground for forward inns. Scattered
 wood groves, small quarries, pools and lone trees punctuate the plains. The intended

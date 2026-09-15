@@ -8,3 +8,7 @@ replays and the analysis scripts) lives on the
 The `*-preview.png` files are the bulk study's sample cases (map size, colony count and
 pond setting in the name); `local-seed*-final.png` are the end states of the two local
 playtest games.
+
+Revision 2 (pools, lone trees and more water at the holes), 256×256, four colonies, seed 101:
+
+![Savannah revision 2](plains-256-4-seed101.png)
