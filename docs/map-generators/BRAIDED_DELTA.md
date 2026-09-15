@@ -121,6 +121,17 @@ contains the full protocol, paired metrics, caveats, reproduction scripts and li
 to saved-world evidence. These are initial AI observations, not proof of human fun
 or competitive balance.
 
+## Rotation tournament
+
+A rotation tournament on revision 3 (six 256×256 maps, four colonies, every cyclic team
+rotation, four Nicowars, 45,000 ticks) measured a root-mean-square position bias of 8 points,
+under the fair-map floor for that sample, with pooled per-start peaks of 125 to 166 units and
+16 eliminations in 96 colony-games. Two maps still had a start that starved and was overrun in
+three of four rotations (peaks of 50 to 85 units, 13 to 42 starvation deaths); the guaranteed
+kit here is the smallest among comparable landscapes (18 wheat and 18 wood) and the bank crops
+are a sparse scatter, but no single geometric cause was visible, so the defaults stand. The
+retained maps and per-colony records are the material for a follow-up.
+
 ## Controls and supported envelope
 
 | Control | Range; default | Effect |
