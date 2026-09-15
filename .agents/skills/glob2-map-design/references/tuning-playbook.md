@@ -64,6 +64,35 @@ Tune with games, not only the scorer. The loop, with the distributed tools:
 
 Read each AI's results separately. Nicowar overbuilds swarms on premade bases and starves; Castor cannot run a base of construction sites; Numbi places no food inn if the wheat plot's edge moves toward town; Maxima clears routes other AIs cannot, hiding blocked approaches. A map that only Maxima survives is not tuned.
 
+## Four shapes a tournament result takes
+
+Rotation tournaments of six maps by four rotations at 256x256 sort generators into a few
+recognisable shapes. Name the shape before choosing a remedy:
+
+- **A doomed start.** One slot is eliminated in three or four rotations whoever plays it, with a
+  low peak (50 to 90 units) and more combat than starvation deaths. It is exposed, not poor:
+  an inverse-outline Emoji rim start between two rivals, a Braided Delta island whose approaches
+  favour a neighbour. Geometry is the remedy (more room, another exit), not more wheat.
+- **A food-capped economy.** Every start flattens at the same modest population (Forts at 35 to
+  90, Breachable Highlands at 70 to 110) with few deaths of any kind and many buildings. The map
+  feeds a town but not an army; only starts beside extra water (a river bank, a second lake)
+  break out. The lever is watered, harvestable frontage within the colony's reach, and the
+  cheapest test is an existing control (Forts' lake count, Highlands' extra passes) before any
+  code changes.
+- **A peaceful stalemate.** No eliminations in twenty-four games, combat deaths in single digits,
+  every game adjudicated on prestige. Sealed valleys and long pass networks (Breachable
+  Highlands) produce this with Nicowar; a prestige-adjudicated "bias" of twenty points is then
+  noise, not unfairness. Decide whether the concept wants contact sooner; if so open more routes
+  by default rather than tuning the economy.
+- **AI-specific collapse.** Maxima starving by the hundreds on Emoji's dry hinterland while
+  Nicowar thrives, Nicowar overbuilding swarms on premade bases, Castor stalling on a base of
+  sites. The map exposes an AI habit; record it as a limit unless the concept can cheaply feed
+  the habit (scattered ponds on a dry plain), and never tune the geometry to one AI's bug.
+
+A generator can be under the fair-map floor and still have a doomed start on a third of its
+maps, because the floor averages over maps. Read the per-map counts and the per-start economy
+before the headline number.
+
 ## Route protection: which barrier for which promise
 
 | Promise | Mechanism | Generators | Validation |
