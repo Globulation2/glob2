@@ -79,36 +79,42 @@ int main(int argc, char** argv)
 		for (int y=0; y<64; ++y) map.getTile(0,y).terrain = 256;
 		for (int x : {5, 6, 7, 9, 10}) map.setResource(x, 9, WOOD, 0);
 		map.setResource(4, 9, WHEAT, 0);
+		map.setResource(5, 20, WOOD, 0);
 		map.addForbidden(7, 9, 0);
 		f.update();
-		require(!f.clearing(5,9), "wood zone survives even beside wheat");
+		require(f.clearing(5,9), "wheat adjacency overrides wood zone");
+		require(!f.clearing(5,20), "wood zone survives away from wheat");
 		require(f.clearing(6,9) && f.clearing(7,9) && f.clearing(9,9), "wood cleared throughout wheat-only band");
 		require(!f.clearing(10,9), "unrelated wood beyond wheat zone survives");
 		require(!map.isForbidden(7,9,1), "clearing target loses farming protection");
 		map.setResource(7,9,WHEAT,0);
+		map.setResource(5,9,WHEAT,0);
 		map.setNoResource(9,9,0);
 		f.update();
+		require(!f.clearing(5,9) && map.isForbidden(5,9,1), "replacement wheat protected inside wood zone");
 		require(!f.clearing(7,9) && !f.clearing(9,9), "cleared tiles released for wheat");
 		require(map.isForbidden(7,9,1), "replacement wheat protected in same scan");
 	}
 	{
 		Fixture f;
 		auto& map = f.game.map;
-		const int directions[][2] = {{-1,0}, {1,0}, {0,-1}, {0,1}};
-		for (int i=0; i<4; ++i)
+		const int directions[][2] = {{-1,0}, {1,0}, {0,-1}, {0,1}, {-1,-1}, {-1,1}, {1,-1}, {1,1}};
+		for (int i=0; i<8; ++i)
 		{
-			map.setResource(20,10+8*i,WOOD,0);
-			map.setResource(20+directions[i][0],10+8*i+directions[i][1],WHEAT,0);
+			map.setResource(20,6+7*i,WOOD,0);
+			map.setResource(20+directions[i][0],6+7*i+directions[i][1],WHEAT,0);
 		}
 		map.setResource(50,50,WOOD,0); map.setResource(51,50,WHEAT,0);
 		map.setResource(40,40,WOOD,0); map.setResource(41,41,WHEAT,0);
 		map.setResource(63,20,WOOD,0); map.setResource(0,20,WHEAT,0);
 		map.setResource(20,63,WOOD,0); map.setResource(20,0,WHEAT,0);
+		map.setResource(63,63,WOOD,0); map.setResource(0,0,WHEAT,0);
 		f.update();
-		for (int i=0; i<4; ++i) require(f.clearing(20,10+8*i), "four-way wheat adjacency");
+		for (int i=0; i<8; ++i) require(f.clearing(20,6+7*i), "eight-way wheat adjacency");
 		require(!f.clearing(50,50), "undiscovered wood is not targeted");
-		require(!f.clearing(40,40), "diagonal adjacency alone leaves wood alone");
+		require(f.clearing(40,40), "diagonal wheat adjacency");
 		require(f.clearing(63,20) && f.clearing(20,63), "adjacency wraps both map seams");
+		require(f.clearing(63,63), "diagonal adjacency wraps map corner");
 		map.setNoResource(63,20,0); map.setNoResource(0,20,0);
 		const int inn = globals.buildingsTypes.getTypeNum("inn",0,false);
 		require(f.game.addBuilding(0,30,inn,0) != nullptr, "create building beside wrap seam");
@@ -117,5 +123,5 @@ int main(int argc, char** argv)
 		require(!f.clearing(63,20), "cleanup survives loss of neighboring wheat");
 		require(f.clearing(63,29), "preserve diagonal building clearance across seam");
 	}
-	std::puts("PASS: Nicowar zone boundaries, four-way adjacency, wrap seams, discovery, protection, cleanup and building clearance");
+	std::puts("PASS: Nicowar zone boundaries, eight-way adjacency, wrap seams, discovery, protection, cleanup and building clearance");
 }

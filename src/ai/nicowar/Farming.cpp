@@ -98,14 +98,16 @@ void NewNicowar::update_farming(Echo& echo)
 				}
 
 
-				bool clear_wood = is_wood && !is_in_wood_zone &&
-					(is_in_wheat_zone || mi.is_resource(x-1, y, WHEAT) ||
+				bool clear_wood = is_wood &&
+					((is_in_wheat_zone && !is_in_wood_zone) || mi.is_resource(x-1, y, WHEAT) ||
 					 mi.is_resource(x+1, y, WHEAT) || mi.is_resource(x, y-1, WHEAT) ||
-					 mi.is_resource(x, y+1, WHEAT));
+					 mi.is_resource(x, y+1, WHEAT) || mi.is_resource(x-1, y-1, WHEAT) ||
+					 mi.is_resource(x-1, y+1, WHEAT) || mi.is_resource(x+1, y-1, WHEAT) ||
+					 mi.is_resource(x+1, y+1, WHEAT));
 				bool clearing_area = mi.is_clearing_area(x,y);
 				if(clear_wood && !clearing_area)
 					mo_clearing->add_location(x, y);
-				else if(!is_wood && !is_in_wood_zone && clearing_area)
+				else if(!is_wood && clearing_area)
 				{
 					// Keep building clearance; release cleared farm tiles for wheat.
 					bool beside_building = false;
