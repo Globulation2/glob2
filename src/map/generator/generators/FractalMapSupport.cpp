@@ -404,7 +404,7 @@ std::string validate(const Game &game, const GenerationContext &context, const L
 	// Over-approximate all future crop spread by flooding every pure-grass tile from
 	// today's wheat/wood. Ignore buildings in this flood: even demolition must not let
 	// crops enter a home court. Sand caps must contain the components geometrically.
-	const auto spread = cropSpreadEnvelope(map);
+	const auto spread = cropSpreadEnvelope(map).steps;
 	for (Home h : L.homes)
 		for (int y = -10; y < 14; ++y)
 			for (int x = -12; x < 12; ++x)

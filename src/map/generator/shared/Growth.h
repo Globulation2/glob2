@@ -42,8 +42,6 @@ Fertility::Field cropGrowthField(const TerrainSketch &, const Torus &);
 double wateredShare(const Fertility::Field &, const std::vector<unsigned char> &region,
 					std::uint32_t minimum = 1);
 
-}
-
 /// How many of `region`'s tiles have any chance at all: a design that promises a region stays dry
 /// (a forest that never grows back) checks this is 0.
 int wetTiles(const Fertility::Field &, const std::vector<unsigned char> &region);
@@ -132,12 +130,4 @@ int digPond(TerrainSketch &sketch, const Torus &t, int site, int nearest, int fa
 /// would make harvesting trips too long. Existing resources are not cleared.
 int preventResourceGrowth(Map &, const std::vector<unsigned char> &protectedTiles);
 
-/// Conservative future wheat/wood envelope on finished terrain, as step distances
-/// (-1 outside). Flood growable pure grass from existing crops across the torus. Respect
-/// saved growth restrictions on destination tiles, just as Map::growResources does. Ignore
-/// buildings and fertility: demolition or later water edits cannot invalidate this
-/// containment proof while the grass/sand partition and growth restrictions stay intact.
-/// This is an upper
-/// bound on spread, not a prediction of its speed or sustainable yield.
-std::vector<int> cropSpreadEnvelope(const Map &);
 } // namespace MapGeneration
