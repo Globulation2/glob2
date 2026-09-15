@@ -1618,12 +1618,14 @@ the next island's first grass. A plot is smaller than a base (8 tiles square), s
 holds several islands from the first minute: its home island with the swarm and a completed
 swimming pool, and granted islands with a pool and an inn each (`claimNeighbourCells` deals them
 round by round, as many to each colony as to any other), with a rock islet beside them. The rest
-are neutral plantations of wheat, wood or both, orchard islets and rock islets. Where the seed
-threw at least twice the islands the colonies need, each island draws its own shape: a third stay
-the nominal rounded square, full and unstretched, so homes have their standard; the rest are smaller
-or larger (a large one fills its cell to the strait), stretched along a random heading with the area
-held, rounder or squarer, and more or less wobbled at the coast, so the archipelago reads as one
-coast's islands rather than a tray of the same biscuit. Room is the
+are neutral plantations of wheat, wood or both, orchard islets and rock islets. Every island is
+first stamped as the nominal rounded square and the homes and granted islands dealt on that; then,
+where the seed threw at least twice the islands the colonies need, the islands are reshaped: a
+colony's own keep their size and vary only in squareness, wobble and a slight stretch (one that
+loses its plot goes back to nominal), and the neutral ones draw the whole range, smaller or larger
+(a large one fills its cell to the strait), stretched along a random heading with the area held,
+rounder or squarer, more or less wobbled, so the archipelago reads as one coast's islands rather
+than a tray of the same biscuit without changing what any colony was dealt. Room is the
 scarcity and the swim is the cost; fairness is statistical (farthest-apart homes, nearest
 granted islands) and the lobby keeps the best-scoring roll. See the generator header for the
 sizes at the defaults, the shrinking order on small maps (crop band, then granted count, then
@@ -1635,8 +1637,10 @@ refusal) and every constant's reason.
   colony-games, a root-mean-square position bias of zero, and 45 to 65 starvation deaths per
   colony as swimmers outrun their inns, which is the map's cost of the swim. The defaults stand.
 - **Seen.** A maintainer's first look found the islands too alike, all one size and all round;
-  revision 2 gives them the shape classes above. The same tournament played on revision 2 is
-  recorded below the Vultures entry's example in the design notes.
+  revision 2 reshapes them as above. A first cut reshaped the colonies' islands with the rest,
+  and the same tournament paid for it with a 30-point position bias and pooled per-start units
+  from 104 to 183: what a colony is dealt must stay what it was. The tournament on the final
+  revision 2 is recorded in the pull request.
 
 ## Compatibility notes
 

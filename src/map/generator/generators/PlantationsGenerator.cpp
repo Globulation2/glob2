@@ -112,16 +112,20 @@ constexpr double kCornerReach = 1.1225; // 2^(1/2 - 1/3)
 constexpr double kCoastAmplitude = 0.3;
 constexpr int kBorderWarpPercent = 30;
 // VARIETY. Islands all of one size and one rounded-square outline read as a tray of biscuits (a
-// maintainer's first look said so). Where the seed threw at least kVarietyRoom times the islands the
-// colonies need, each island draws a class: a third stay the nominal island, exactly full and
-// unstretched, so homes always have their standard; the rest are smaller (kSizeFactors below 1) or
-// larger (above 1, filling their cell to the strait), stretched along a random heading by up to
-// kStretch (the area held, the short axis narrower), with their own squareness between
-// kSquarenessLow and kSquarenessHigh (a disc to a block) and their own share of the coast wobble. A
-// small or stretched island measures short of full and becomes a granted island or a field; a large
-// one measures full and may be a home. On a crowded map every island stays nominal, as before.
+// maintainer's first look said so). Every island is first stamped nominal, measured, and the homes
+// and granted islands chosen on that, exactly as when every island was nominal; then, where the seed
+// threw at least kVarietyRoom times the islands the colonies need, the islands are reshaped. A
+// colony's own islands keep their size (their room is what the colony was dealt) and vary only in
+// squareness, wobble and a stretch of at most kOwnedStretch, and any that loses its plot goes back to
+// nominal; the neutral islands draw the whole range: smaller (kSizeFactors below 1) or larger (above
+// 1, filling their cell to the strait), stretched along a random heading by up to kStretch (the
+// area held, the short axis narrower), rounder or squarer between kSquarenessLow and
+// kSquarenessHigh, more or less wobbled. A first cut varied the homes' islands too, and a rotation
+// tournament paid for it with a 30-point position bias; the deal must stay what it was. On a
+// crowded map every island stays nominal.
 constexpr double kSizeFactors[] = {0.82, 0.9, 1.0, 1.0, 1.2, 1.35};
-constexpr double kStretch = 1.35, kSquarenessLow = 2.2, kSquarenessHigh = 3.5;
+constexpr double kStretch = 1.35, kOwnedStretch = 1.12;
+constexpr double kSquarenessLow = 2.2, kSquarenessHigh = 3.5;
 constexpr double kWobbleShareLow = 0.6, kWobbleShareHigh = 1.5;
 constexpr int kVarietyRoom = 2;
 // Lloyd relaxation rounds after the darts: three even the cells out without moving a site so far that
@@ -363,16 +367,15 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	};
 	const bool varied = cells >= kVarietyRoom * cellsNeeded();
 	context.telemetry.measure("plantations.islands.varied", varied);
-	const auto drawShape = [&]
+	const auto drawShape = [&](bool owned)
 	{
 		IslandShape shape;
-		if (!varied)
-			return shape;
 		const char *stream = "plantations-island-shapes";
-		shape.size = kSizeFactors[context.bounded(stream, 6)];
-		if (shape.size != 1.0)
+		shape.size = owned ? 1.0 : kSizeFactors[context.bounded(stream, 6)];
+		if (owned || shape.size != 1.0)
 		{
-			shape.stretch = 1 + (kStretch - 1) * context.bounded(stream, 1000) / 1000.0;
+			const double most = owned ? kOwnedStretch : kStretch;
+			shape.stretch = 1 + (most - 1) * context.bounded(stream, 1000) / 1000.0;
 			shape.heading = kPi * context.bounded(stream, 3600) / 3600.0;
 		}
 		shape.exponent = kSquarenessLow +
@@ -380,6 +383,17 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		shape.wobble = kWobbleShareLow +
 					   (kWobbleShareHigh - kWobbleShareLow) * context.bounded(stream, 1000) / 1000.0;
 		return shape;
+	};
+	const auto clearIsland = [&](int s)
+	{
+		const int reach = int(std::ceil(landRadius * kSizeFactors[5] * kCornerReach * 2 * kStretch)) + 2;
+		for (int dy = -reach; dy <= reach; ++dy)
+			for (int dx = -reach; dx <= reach; ++dx)
+			{
+				const int i = t.at(L.sites[s].x + dx, L.sites[s].y + dy);
+				if (L.cell[i] == s)
+					L.land[i] = 0;
+			}
 	};
 	const auto stampIsland = [&](int s, double radius, double exponent, const IslandShape &shape)
 	{
@@ -407,8 +421,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	for (int s = 0; s < cells; ++s)
 	{
 		L.islands[s].site = L.sites[s];
-		const IslandShape shape = drawShape();
-		stampIsland(s, landRadius, shape.exponent, shape);
+		stampIsland(s, landRadius, kSquareness, IslandShape{});
 	}
 	// A plot fits where the island has the room the nominal outline would have with a crop band of
 	// kLeastFarm (its corners then reach the beach and its sides keep a few tiles of crops); a full
@@ -497,6 +510,36 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			// read differently and it has a reason to work both; any more alternate.
 			island.kind = g % 2 == 0 ? Wheat : Wood;
 		}
+	}
+	// THE RESHAPING (VARIETY above): the colonies' islands mildly, the rest of the archipelago
+	// fully, then measured again; a colony's island that lost its plot (or a home its fullness)
+	// goes back to nominal.
+	if (varied)
+	{
+		std::vector<unsigned char> owned(size_t(cells), 0);
+		for (int cell : L.homeCell)
+			owned[cell] = 1;
+		for (const auto &granted : L.grantedCells)
+			for (int cell : granted)
+				owned[cell] = 1;
+		for (int s = 0; s < cells; ++s)
+		{
+			const IslandShape shape = drawShape(owned[s]);
+			clearIsland(s);
+			stampIsland(s, landRadius, shape.exponent, shape);
+		}
+		measureIslands();
+		int reverted = 0;
+		for (int s = 0; s < cells; ++s)
+			if (owned[s] && (!hasPlot[s] || (L.islands[s].home && !full[s])))
+			{
+				clearIsland(s);
+				stampIsland(s, landRadius, kSquareness, IslandShape{});
+				++reverted;
+			}
+		if (reverted)
+			measureIslands();
+		context.telemetry.measure("plantations.islands.reverted", reverted);
 	}
 	L.rockCells.assign(teams, {});
 	for (int k = 0; k < teams && L.rockIslets; ++k)
