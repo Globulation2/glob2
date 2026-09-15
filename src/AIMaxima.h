@@ -644,7 +644,6 @@ private:
 		AIMaximaRuntime::Context& echo, uint32_t* signature=NULL) const;
 	const std::vector<AIMaximaPlacement::BuildingProfile>&
 		collect_building_profiles() const;
-	int school_algae_requirement() const;
 	std::vector<AIMaximaPlacement::DevelopmentIntent>
 		collect_development_intents(
 			const AIMaximaPlacement::WorldState& world) const;

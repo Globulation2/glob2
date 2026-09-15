@@ -1,0 +1,49 @@
+In file included from test/MaximaEconomyRegressionTest.cpp:23:
+test/../src/AIMaxima.h:47:7: warning: 'load' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   47 |         bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+      |              ^
+test/../src/ai/AIImplementation.h:70:15: note: overridden virtual function is here
+   70 |         virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
+      |                      ^
+In file included from test/MaximaEconomyRegressionTest.cpp:23:
+test/../src/AIMaxima.h:52:7: warning: 'save' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   52 |         void save(GAGCore::OutputStream *stream);
+      |              ^
+test/../src/ai/AIImplementation.h:71:15: note: overridden virtual function is here
+   71 |         virtual void save(GAGCore::OutputStream *stream)=0;
+      |                      ^
+In file included from test/MaximaEconomyRegressionTest.cpp:23:
+test/../src/AIMaxima.h:53:25: warning: 'getOrder' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   53 |         std::shared_ptr<Order> getOrder();
+      |                                ^
+test/../src/ai/AIImplementation.h:73:33: note: overridden virtual function is here
+   73 |         virtual std::shared_ptr<Order> getOrder(void)=0;
+      |                                        ^
+In file included from test/MaximaEconomyRegressionTest.cpp:23:
+test/../src/AIMaxima.h:55:7: warning: 'tick' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   55 |         void tick(AIMaximaRuntime::Context& echo);
+      |              ^
+test/../src/AIMaximaRuntime.h:114:15: note: overridden virtual function is here
+  114 |         virtual void tick(Context& context)=0;
+      |                      ^
+In file included from test/MaximaEconomyRegressionTest.cpp:23:
+test/../src/AIMaxima.h:56:7: warning: 'handle_event' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   56 |         void handle_event(AIMaximaRuntime::Context& echo, const AIMaximaRuntime::RuntimeEvent& event);
+      |              ^
+test/../src/AIMaximaRuntime.h:115:15: note: overridden virtual function is here
+  115 |         virtual void handle_event(Context& context, const RuntimeEvent& event)=0;
+      |                      ^
+5 warnings generated.
+Settings::load("preferences.txt") : error, can't open file.
+Assertion failed: (ai.budget.desired_schools>0), function schoolsDoNotRequireKnownAlgae, file MaximaEconomyRegressionTest.cpp, line 598.
+Traceback (most recent call last):
+  File "/Users/bradley/glob2-pr-help-3/test/run_maxima_implementation_regressions.py", line 123, in <module>
+    main()
+    ~~~~^^
+  File "/Users/bradley/glob2-pr-help-3/test/run_maxima_implementation_regressions.py", line 111, in main
+    result.check_returncode()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 509, in check_returncode
+    raise CalledProcessError(self.returncode, self.args, self.stdout,
+                             self.stderr)
+subprocess.CalledProcessError: Command '['/var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/maxima-regressions-fx1ojuhg/MaximaEconomyRegressionTest']' died with <Signals.SIGABRT: 6>.

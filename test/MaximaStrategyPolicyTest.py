@@ -192,7 +192,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         self.assertIn(
             "known_algae_units>walk_accessible_algae_units", self.maxima
         )
-        self.assertIn(
+        self.assertNotIn(
             "accessible_algae_units>=school_algae_requirement()", self.maxima
         )
         self.assertIn(
@@ -204,7 +204,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         self.assertIn(
             "walking[index]=clear && !map->isWater(x, y);", self.maxima
         )
-        self.assertIn("intent.requiredResourceType=ALGA;", self.maxima)
+        self.assertNotIn("intent.requiredResourceType=ALGA;", self.maxima)
         self.assertNotIn(
             "unit->carriedRessource==WHEAT || unit->carriedRessource==ALGA",
             self.maxima,
