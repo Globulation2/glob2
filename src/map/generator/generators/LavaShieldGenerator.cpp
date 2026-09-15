@@ -671,7 +671,7 @@ LavaShieldOptions::LavaShieldOptions(const GenerationRequest &r)
 GeneratorDefinition lavaShieldDefinition()
 {
 	return {"lava-shield",
-			33,
+			51,
 			"Lava shield",
 			1,
 			false,
