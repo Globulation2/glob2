@@ -2488,3 +2488,43 @@ Ketebalan pagar tanaman
 Jalur masuk yang ada
 [Wooded boundary share]
 Proporsi batas berpohon
+[The Glacis]
+Glasis
+[Allotments]
+Petak Kebun
+[Caravanserai]
+Karavanserai
+[Colonists]
+Kolonis
+[Garrison]
+Garnisun
+[Compound size]
+Ukuran benteng
+[Wall gates]
+Gerbang tembok
+[Wadi count]
+Jumlah wadi
+[Ford spacing]
+Jarak penyeberangan
+[Lot size]
+Ukuran petak
+[Mixed]
+Campuran
+[Small]
+Kecil
+[Large]
+Besar
+[Lane spacing]
+Jarak lorong
+[Ditch every]
+Parit setiap
+[Wood share]
+Porsi kayu
+[Capital size]
+Ukuran ibu kota
+[Oasis spacing]
+Jarak oasis
+[Outposts per colony]
+Pos terdepan per koloni
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+Pangkalan tidak muat di tanahnya pada ukuran ini; naikkan kontrol ukuran atau turunkan Kolonis.

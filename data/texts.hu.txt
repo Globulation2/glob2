@@ -2492,3 +2492,43 @@ Sövényvastagság
 Meglévő átjárók
 [Wooded boundary share]
 Fás határok aránya
+[The Glacis]
+A Glacis
+[Allotments]
+Kiskertek
+[Caravanserai]
+Karavánszeráj
+[Colonists]
+Telepesek
+[Garrison]
+Helyőrség
+[Compound size]
+Erődítmény mérete
+[Wall gates]
+Kapuk a falban
+[Wadi count]
+Vádik száma
+[Ford spacing]
+Gázlók távolsága
+[Lot size]
+Telkek mérete
+[Mixed]
+Vegyes
+[Small]
+Kicsi
+[Large]
+Nagy
+[Lane spacing]
+Ösvények távolsága
+[Ditch every]
+Árkok távolsága
+[Wood share]
+Fa aránya
+[Capital size]
+Főváros mérete
+[Oasis spacing]
+Oázisok távolsága
+[Outposts per colony]
+Előőrsök kolóniánként
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+A bázis ezzel a mérettel nem fér el a talaján; növelje a méret beállítását vagy csökkentse a Telepesek értékét.

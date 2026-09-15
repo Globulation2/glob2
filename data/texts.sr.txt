@@ -2492,3 +2492,43 @@ Emoji
 Постојећи пролази
 [Wooded boundary share]
 Удео шумовитих граница
+[The Glacis]
+Гласис
+[Allotments]
+Баште
+[Caravanserai]
+Каравансарај
+[Colonists]
+Колонисти
+[Garrison]
+Гарнизон
+[Compound size]
+Величина утврђења
+[Wall gates]
+Капије у зиду
+[Wadi count]
+Број вадија
+[Ford spacing]
+Размак газова
+[Lot size]
+Величина парцела
+[Mixed]
+Мешовито
+[Small]
+Мало
+[Large]
+Велико
+[Lane spacing]
+Размак стаза
+[Ditch every]
+Размак ровова
+[Wood share]
+Удео дрвета
+[Capital size]
+Величина престонице
+[Oasis spacing]
+Размак оаза
+[Outposts per colony]
+Испоставе по колонији
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+База не стаје на своје земљиште при овој величини; повећајте величину или смањите Колонисте.

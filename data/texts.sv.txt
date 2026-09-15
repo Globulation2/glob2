@@ -2502,3 +2502,43 @@ Häcktjocklek
 Befintliga öppningar
 [Wooded boundary share]
 Andel trädbevuxna gränser
+[The Glacis]
+Glacisen
+[Allotments]
+Kolonilotter
+[Caravanserai]
+Karavanseraj
+[Colonists]
+Kolonister
+[Garrison]
+Garnison
+[Compound size]
+Inhägnadens storlek
+[Wall gates]
+Portar i muren
+[Wadi count]
+Antal wadier
+[Ford spacing]
+Avstånd mellan vadställen
+[Lot size]
+Lottstorlek
+[Mixed]
+Blandat
+[Small]
+Litet
+[Large]
+Stort
+[Lane spacing]
+Avstånd mellan gångar
+[Ditch every]
+Avstånd mellan diken
+[Wood share]
+Andel trä
+[Capital size]
+Huvudstadens storlek
+[Oasis spacing]
+Avstånd mellan oaser
+[Outposts per colony]
+Utposter per koloni
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+Basen får inte plats på sin mark i den här storleken; höj storleksreglaget eller sänk Kolonister.

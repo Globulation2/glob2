@@ -2490,3 +2490,43 @@ Emoji
 الممرات الموجودة
 [Wooded boundary share]
 نسبة الحدود المشجرة
+[The Glacis]
+الغلاسيس
+[Allotments]
+قطع الأراضي
+[Caravanserai]
+الخان
+[Colonists]
+المستوطنون
+[Garrison]
+الحامية
+[Compound size]
+حجم الحصن
+[Wall gates]
+بوابات السور
+[Wadi count]
+عدد الوديان
+[Ford spacing]
+تباعد المخاضات
+[Lot size]
+حجم القطع
+[Mixed]
+مختلط
+[Small]
+صغير
+[Large]
+كبير
+[Lane spacing]
+تباعد الممرات
+[Ditch every]
+خندق كل
+[Wood share]
+نسبة الخشب
+[Capital size]
+حجم العاصمة
+[Oasis spacing]
+تباعد الواحات
+[Outposts per colony]
+المواقع الأمامية لكل مستعمرة
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+القاعدة لا تتسع لأرضها بهذا الحجم؛ ارفع عنصر التحكم في الحجم أو قلّل المستوطنين.

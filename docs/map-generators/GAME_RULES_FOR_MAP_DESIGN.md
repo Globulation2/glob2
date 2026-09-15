@@ -115,3 +115,39 @@ These are judgement rules rather than engine rules, learned from playtesting on 
 - **Defaults must work at every size.** 128×128, 256×256 and 512×512 maps, 2 to 12 colonies and
   rectangular maps are all in play; tuning that looks good at one size often breaks another, which
   is why several generators scale widths and angles with map size.
+
+## Premade bases
+
+A landscape may start a colony with a whole base standing (`shared/Bases.h`: The Glacis,
+Allotments, Caravanserai). The engine rules it is built on, each verified in the source:
+
+- **A building is raised with `Game::addBuilding`, which checks no room.** `checkRoomForBuilding`
+  runs first. A finished type comes out of `Building`'s constructor complete (`hp = hpInit`, times
+  the fortress-buildings multiplier), with empty stock, worker ratios of workers only, no bullets,
+  and in no call list (`src/building/Lifecycle.cpp`).
+- **Only level-0 construction sites can be placed.** A site type (`getTypeNum(name, 0, true)`) is
+  valid straight from the constructor (`NEW_BUILDING`, hp 1); a higher-level site needs an
+  `UPGRADE` state the constructor does not set, so a plan never asks for one.
+- **Stock is written straight into `Building::resources`**, capped by the type's `maxResource`
+  (an inn holds 10, 30 or 50 wheat by level; a swarm 20; fruit moves in tens), and a tower's
+  bullets into `Building::bullets`. Stock, hp, ratios and bullets survive the lobby's save and
+  reload of the generated map; `maxUnitWorking` does not (`Building::load` resets it), so nothing
+  may depend on it.
+- **`Team::createLists` runs exactly once per colony, after the last building.** It asserts its
+  lists are empty and then rebuilds them, running every building's `update()`, which is what
+  registers an inn to feed (only while its wheat exceeds the units inside) and a site to be worked.
+  `placeTower` pushes into the turret list by hand because it runs after that, so a design raises
+  its bases first and chooses wall towers second; never place a flag before the lists exist.
+- **Units are placed with `Game::addUnit(x, y, team, type, level, ...)`** on a free tile
+  (`isFreeForGroundUnit`, or `isFreeForAirUnit` for an explorer); `level` (0 to 3) applies to
+  every ability. A team holds 1024 units and 1024 buildings.
+- **The structural check counts only WORKER units**, against `GeneratorDefinition::startingWorkers`
+  when set; a premade base's warriors and explorers pass freely.
+- **A fed unit walks 264 tiles before it is hungry** (`HUNGRY_MAX` 150000 over 425 per completed
+  move at level 0) and 352 before it starves, at 16 ticks a tile. Inn spacing on a map of walks is
+  about supply throughput (an inn feeds 4, 7 or 17 at once) and forward feeding, not survival.
+- **Every AI adopts what it finds** (Echo and Nicowar through `BuildingRegister::initiate`, Numbi,
+  Castor and Cortex by reading `myBuildings` live), but their openings drift: Cortex sets the first
+  swarm's workers to 4 and tracks at most 24 sites and 16 inns; Nicowar does not count pre-placed
+  sites towards its own cap and, in the first headless plays, bred warriors it could not feed. Keep
+  a premade base's sites under a dozen and its regrowing food within a short walk of the swarm.

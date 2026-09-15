@@ -2488,3 +2488,43 @@ Emoji
 Наявні проходи
 [Wooded boundary share]
 Частка лісистих меж
+[The Glacis]
+Гласис
+[Allotments]
+Садові ділянки
+[Caravanserai]
+Караван-сарай
+[Colonists]
+Колоністи
+[Garrison]
+Гарнізон
+[Compound size]
+Розмір укріплення
+[Wall gates]
+Ворота в стіні
+[Wadi count]
+Кількість ваді
+[Ford spacing]
+Крок бродів
+[Lot size]
+Розмір ділянок
+[Mixed]
+Змішаний
+[Small]
+Малий
+[Large]
+Великий
+[Lane spacing]
+Крок доріжок
+[Ditch every]
+Крок ровів
+[Wood share]
+Частка деревини
+[Capital size]
+Розмір столиці
+[Oasis spacing]
+Крок оаз
+[Outposts per colony]
+Форпостів на колонію
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+База не вміщується на своїй землі за цього розміру; збільште розмір або зменште Колоністів.

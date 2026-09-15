@@ -2488,3 +2488,43 @@ Emoji
 기존 통로
 [Wooded boundary share]
 나무 경계 비율
+[The Glacis]
+글라시
+[Allotments]
+텃밭
+[Caravanserai]
+카라반사라이
+[Colonists]
+정착민
+[Garrison]
+수비대
+[Compound size]
+성곽 크기
+[Wall gates]
+성벽 문 수
+[Wadi count]
+와디 수
+[Ford spacing]
+여울 간격
+[Lot size]
+부지 크기
+[Mixed]
+혼합
+[Small]
+작음
+[Large]
+큼
+[Lane spacing]
+길 간격
+[Ditch every]
+도랑 간격
+[Wood share]
+나무 비율
+[Capital size]
+수도 크기
+[Oasis spacing]
+오아시스 간격
+[Outposts per colony]
+식민지당 전초기지 수
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+이 크기에서는 기지가 지면에 맞지 않습니다. 크기 설정을 높이거나 정착민을 줄이세요.

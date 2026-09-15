@@ -2492,3 +2492,43 @@ Debelina živih mej
 Obstoječi prehodi
 [Wooded boundary share]
 Delež gozdnatih meja
+[The Glacis]
+Predpolje
+[Allotments]
+Vrtički
+[Caravanserai]
+Karavanseraj
+[Colonists]
+Kolonisti
+[Garrison]
+Garnizija
+[Compound size]
+Velikost obzidja
+[Wall gates]
+Vrata v zidu
+[Wadi count]
+Število vadijev
+[Ford spacing]
+Razmik brodov
+[Lot size]
+Velikost parcel
+[Mixed]
+Mešano
+[Small]
+Majhno
+[Large]
+Veliko
+[Lane spacing]
+Razmik poti
+[Ditch every]
+Razmik jarkov
+[Wood share]
+Delež lesa
+[Capital size]
+Velikost prestolnice
+[Oasis spacing]
+Razmik oaz
+[Outposts per colony]
+Postojanke na kolonijo
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+Baza pri tej velikosti ne gre na svoje zemljišče; povečajte nastavitev velikosti ali zmanjšajte Koloniste.

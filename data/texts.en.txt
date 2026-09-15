@@ -2490,3 +2490,43 @@ Hedge thickness
 Existing gateways
 [Wooded boundary share]
 Wooded boundary share
+[The Glacis]
+The Glacis
+[Allotments]
+Allotments
+[Caravanserai]
+Caravanserai
+[Colonists]
+Colonists
+[Garrison]
+Garrison
+[Compound size]
+Compound size
+[Wall gates]
+Wall gates
+[Wadi count]
+Wadi count
+[Ford spacing]
+Ford spacing
+[Lot size]
+Lot size
+[Mixed]
+Mixed
+[Small]
+Small
+[Large]
+Large
+[Lane spacing]
+Lane spacing
+[Ditch every]
+Ditch every
+[Wood share]
+Wood share
+[Capital size]
+Capital size
+[Oasis spacing]
+Oasis spacing
+[Outposts per colony]
+Outposts per colony
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+The base does not fit its ground at this size; raise the size control or lower Colonists.

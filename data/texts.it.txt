@@ -2554,3 +2554,43 @@ Spessore delle siepi
 Passaggi esistenti
 [Wooded boundary share]
 Quota dei confini alberati
+[The Glacis]
+Lo Spalto
+[Allotments]
+Orti
+[Caravanserai]
+Caravanserraglio
+[Colonists]
+Coloni
+[Garrison]
+Guarnigione
+[Compound size]
+Dimensione del recinto
+[Wall gates]
+Porte delle mura
+[Wadi count]
+Numero di uadi
+[Ford spacing]
+Distanza tra i guadi
+[Lot size]
+Dimensione dei lotti
+[Mixed]
+Misto
+[Small]
+Piccolo
+[Large]
+Grande
+[Lane spacing]
+Distanza tra i vialetti
+[Ditch every]
+Fossato ogni
+[Wood share]
+Quota di legno
+[Capital size]
+Dimensione della capitale
+[Oasis spacing]
+Distanza tra le oasi
+[Outposts per colony]
+Avamposti per colonia
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+La base non entra nel suo terreno a questa dimensione; alza il controllo della dimensione o abbassa i Coloni.

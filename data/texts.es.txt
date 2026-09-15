@@ -2492,3 +2492,43 @@ Grosor de los setos
 Pasos existentes
 [Wooded boundary share]
 Proporción de lindes arboladas
+[The Glacis]
+El Glacis
+[Allotments]
+Huertos
+[Caravanserai]
+Caravasar
+[Colonists]
+Colonos
+[Garrison]
+Guarnición
+[Compound size]
+Tamaño del recinto
+[Wall gates]
+Puertas de la muralla
+[Wadi count]
+Número de uadis
+[Ford spacing]
+Separación de los vados
+[Lot size]
+Tamaño de las parcelas
+[Mixed]
+Mixto
+[Small]
+Pequeño
+[Large]
+Grande
+[Lane spacing]
+Separación de los caminos
+[Ditch every]
+Zanja cada
+[Wood share]
+Proporción de madera
+[Capital size]
+Tamaño de la capital
+[Oasis spacing]
+Separación de los oasis
+[Outposts per colony]
+Puestos avanzados por colonia
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+La base no cabe en su terreno con este tamaño; suba el control de tamaño o baje los Colonos.

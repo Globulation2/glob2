@@ -2492,3 +2492,43 @@ Tloušťka živých plotů
 Existující průchody
 [Wooded boundary share]
 Podíl zalesněných hranic
+[The Glacis]
+Předpolí
+[Allotments]
+Zahrádky
+[Caravanserai]
+Karavanseráj
+[Colonists]
+Kolonisté
+[Garrison]
+Posádka
+[Compound size]
+Velikost opevnění
+[Wall gates]
+Brány v hradbě
+[Wadi count]
+Počet vádí
+[Ford spacing]
+Rozestup brodů
+[Lot size]
+Velikost parcel
+[Mixed]
+Smíšené
+[Small]
+Malé
+[Large]
+Velké
+[Lane spacing]
+Rozestup cest
+[Ditch every]
+Rozestup příkopů
+[Wood share]
+Podíl dřeva
+[Capital size]
+Velikost hlavního města
+[Oasis spacing]
+Rozestup oáz
+[Outposts per colony]
+Výspy na kolonii
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+Základna se při této velikosti nevejde na svůj pozemek; zvyšte ovladač velikosti nebo snižte Kolonisty.

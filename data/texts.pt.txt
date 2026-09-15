@@ -2498,3 +2498,43 @@ Espessura das sebes
 Passagens existentes
 [Wooded boundary share]
 Proporção de limites arborizados
+[The Glacis]
+O Glacis
+[Allotments]
+Hortas
+[Caravanserai]
+Caravançarai
+[Colonists]
+Colonos
+[Garrison]
+Guarnição
+[Compound size]
+Tamanho do recinto
+[Wall gates]
+Portões da muralha
+[Wadi count]
+Número de uádis
+[Ford spacing]
+Espaçamento dos vaus
+[Lot size]
+Tamanho dos lotes
+[Mixed]
+Misto
+[Small]
+Pequeno
+[Large]
+Grande
+[Lane spacing]
+Espaçamento das vielas
+[Ditch every]
+Vala a cada
+[Wood share]
+Proporção de madeira
+[Capital size]
+Tamanho da capital
+[Oasis spacing]
+Espaçamento dos oásis
+[Outposts per colony]
+Postos avançados por colónia
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+A base não cabe no seu terreno com este tamanho; aumente o controlo de tamanho ou reduza os Colonos.

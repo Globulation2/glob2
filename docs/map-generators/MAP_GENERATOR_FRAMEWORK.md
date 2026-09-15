@@ -38,6 +38,10 @@ and Terrain take a `Game` because placing buildings and units needs its mutation
 | `Farmland` | Farms laid like real ones, in long rows of crops with water between: `bestFarmRows`, the crop and water widths that yield most for rows at an angle (10 and 8 tiles along an axis, 12 and 9 on the diagonal, a rough line through the exact regrowth sums `tools/farm_row_fit.py` computes); `farmYield`, the yield per tile at that angle from the same fit (0.149 along an axis, 0.113 on the diagonal); `layFarm`, rows over a region with a rim of land kept round them and, optionally, a 10x4 building plot of grass ringed with sand at its most inland point and sand bridges clean across the farm every so many tiles along the rows, water and crop rows alike (2026-09-14; before, only the water rows), so workers cross the whole field on one road (a plot's grass always wins over a bridge), and a ring of sand closing the crop rows so wheat and wood never spread out of the farm; `plantFarm`, wheat along the water on every crop row and a small woodlot along one; `clearFarmPlots`; `farmReachable`, the share of a farm's crop land a colony can walk to; `growFarmFields`, farm fields grown into open water straight out of their own homes by equal yield for their row angles, held off all other land and each other, opened so no strip too narrow for its beaches survives (and only ground whose eroded core joins the home's core stays, since two cores that do not touch can overlap once grown back through a waist the coast walls then close), and joined to their homes by a broad neck. Walls round a farm are the map's business, not the farm's |
 | `Towers` | Tower sites chosen for the ground they cover over the walls, other colonies' (offence) or their own (defence), each weighted: `startingTowerRequest` (a request from a map's level and count controls), `chooseTowerSites` (best first, a colony at a time in turn, optionally every site directly against a wall, no stocked tower in range of another colony's tower or swarm, plus open 2x2 pads for players to build more), `settleStartingTowers` (the sequence every arena map runs: `dropBlockingSites` so no site closes a colony's walk to a goal, `evenTowerPlan` so every colony has as many sites as the fewest got, then `raiseTowers`), `towerFootprints` and `roomyGround` (no tower on a strip it could close); a tower in range of another colony's tower starts empty |
 | `Homes` | Homes built alike: `stampRoundHome`, `homeSwarmSite` and `plantHomeKit` (a round home facing out from the middle, its swarm towards its door, optional ponds kept clear of its edge, and a wheat and wood kit near the swarm with no stone, since these homes are walled in stone; `homeHasRoom` is the size floor; Carousel, Switchbacks; the axis is any heading, out from the middle on a ring), `regionHome` (a home in ground of any shape: the swarm the same walk in from the door as every other colony's, on the roomiest such tile, facing away from the door), and `furnishGround` (farmland in patches on a ground's fertile tiles, outcrops and groves; City states, Carousel, Switchbacks, Amphitheatre) |
+| `Bases` | Premade bases (The Glacis, Allotments, Caravanserai): a colony that starts with a whole base standing, or staked out as sites, and far more colonists than the lobby's "Starting workers" control allows. `BasePlan` (pieces as building type, level, frame offset, finished or level-0 site, stock share; depots such as a quarry or wood stacks), `standardBasePlan` (one layout at three tiers, Hamlet/Town/City, in two kinds, Finished/Sites, with optional stocked towers and a quarry; tiers drop pieces without moving the rest), `baseTier` and `baseGarrison` (a `colonists` value to a tier, and to workers plus, with the garrison on, three eighths as many level-1 warriors and an eighth as many explorers), `BaseSite` and `baseTile`/`baseFootprint` (a site with a quarter-turn facing, Canals' block frame, so rectangles stay rectangles), `basePlanFits` (every footprint on pure grass, disjoint, a one-tile walking ring on open ground round each, depots clear), `baseFootprints`/`baseSurroundings` (masks later layers keep clear of), `raiseBase`/`raiseBases` (checkRoomForBuilding, addBuilding, stock before the lists, `garrison` ring by ring round the swarm, one `Team::createLists` per colony, start position and boot tile from the swarm), `plantBaseDepots` and `validateBase` (every planned building of the right type, level and finished-ness on its footprint, and the colony's worker count). A landscape using it sets `GeneratorDefinition::startingWorkers` |
+| `Compounds` | Square walled compounds round a base site: `stampCompound` (interior labelled, a one-tile stone wall at a Chebyshev radius, gates of odd width cut on the facing side, then the back and the flanks), `compoundsApart` and `wallStanding` (a validator's proof that every designed wall tile holds stone and every gate is open) |
+| `Lots` | Lanes and lots: `layLanes` (one-tile lanes about a pitch apart that wrap the torus exactly, spread by whole tiles like Maze's cells), `LaneGrid` (each tile's block by column and row, each block's span between its lanes), `laneTiles`, `stampLotPad` (a sand-ringed grass pad of the first size that fits, centred in its block, held back for a ditch's beach; Canals' homestead pad as a primitive) |
+| `Routes` | Routes between sites on the torus, the short way round: `midpointAcross`, `siteDistance`, `nearestPairs` (each site's nearest others as pairs, each once), `waypointsAlong` (stepping stones along the straight way between two points, with gaps kept at both ends), `headingAcross` and `quarterTurn` (a heading as a BaseSite facing) |
 | `Orbits` | Fairness by symmetry groups rather than wedges: `Symmetry` (signed permutation matrices on doubled centred coordinates plus a whole-tile translation, mapping tiles and corners exactly), `pointSymmetry` (the half turn, quarter turns, mirrors and all eight square symmetries; Symmetric arena), `translationSymmetry` (the roomiest lattice of 2, 4, 8... colonies on the torus, square, staggered or sheared, with no centre and served as well on a rectangular map), `latticeSites` (colonies on that lattice, or evenly staggered rows when the count has no exact group), `stampOrbits`, `orbitSum`, `orbitNoise` and `topShare` (features and fields every symmetry leaves unchanged), `equaliseDeposits` (the gameplay RNG's amounts made equal across each orbit) and `orbitMismatch` (the finished world checked exactly symmetric, colonies permuted one to one) |
 | `Morphology` | Mask arithmetic on the torus in integers: `dilate`, `erode`, `openMask`, `closeMask` (squares), `distanceSquaredTo` (exact Euclidean) and `dilateRound`, `clearance` (steps to the nearest tile outside a mask), `dropSmallRegions` (specks, or pockets on the inverted mask), `widestWalkClearance` and `narrowestPassage` (the width of a walk's narrowest point, a validator's check that a tunnel or street still takes a column of units) and `slivers` (Stone highlands' pockets, Farmland's field opening, `roomyGround`, `separateTerritories`) |
 | `Growth` | Where wheat and wood grow back, known on the sketch: `cropGrowthField` (the exact `Fertility::Field` of a `TerrainSketch`, not gated on deposits), `wateredShare`, `wetTiles` (a region promised dry checks 0), `dryZone` (where water would water a region: `kCropProbeReach` on each axis) and `drainWithin`; finished-map `cropSeedsIn` checks protected masks after resource repairs, and `cropSpreadEnvelope` conservatively floods wheat/wood through toroidal eight-connected grass to test long-term containment without simulating growth speed |
@@ -132,12 +136,15 @@ restores whatever landscape it had.
 | `carousel` | 22 | Carousel | Its own — see below |
 | `old-growth` | 28 | Old growth | Its own — see below |
 | `anthill` | 32 | Anthill | Its own — see below |
+| `glacis` | 39 | The Glacis | Its own — see below; a premade base (`shared/Bases`) |
 | `coral` | 21 | Coral | Its own — see below |
 | `emoji` | 34 | Emoji | [Design and play contract](emoji/DESIGN.md) |
 | `forts` | 35 | Forts | [Walled forts in river country](FORTS.md) |
 | `braided-delta` | 36 | Braided Delta | [Design and heuristics](BRAIDED_DELTA.md) |
 | `breachable-highlands` | 37 | Breachable highlands | [Stone valleys with clearable wooded saddles](BREACHABLE_HIGHLANDS.md) |
 | `hedgerow-country` | 38 | Hedgerow Country | [Warped fields, gateways and cuttable hedges](HEDGEROW_COUNTRY.md) |
+| `allotments` | 40 | Allotments | Its own — see below; a premade base of construction sites |
+| `caravanserai` | 41 | Caravanserai | Its own — see below; a premade base |
 | `uniform` | 0 | uniform terrain | Editor-only; one terrain type, unstructured |
 
 Retired ids, never reused: 25 (Marches, a lattice of homelands with wooded border bands, dropped
@@ -197,6 +204,9 @@ were counts of their own until that audit and are percentages since.
 | Carousel | Every home's ambient fields, the farms' wheat and woodlots, the courts' and the plaza orchard's fruit, and the lagoon's algae; the walls' stone and the starting towers are unscaled (a home has no kit since 2026-09-14) | Sand roads (on): off, the corridors and spokes are grass from wall to wall |
 | Amphitheatre | Every territory's ambient fields and grove, the arena's groves and terrace outcrops, and the bays' algae; every home's kit, the walls' stone and the starting towers are unscaled | None |
 | Switchbacks | Every home's ambient fields and grove, the farms' wheat and woodlots, the plateau's orchard, and the algae; the mountains' stone and the starting towers are unscaled (a home has no kit since 2026-09-14) | Sand roads (on): off, the trails are grass from wall to wall |
+| The Glacis | The wadi banks' wheat and wood, the plain's outcrops, the groves beside the fords and the wadis' algae; every compound's well-side kit, quarry, walls, stock and starting towers are unscaled | Garrison (on): off, a compound starts with its colonists only |
+| Allotments | The field lots' wheat and wood, the woodlots, the quarry and grove lots and the ditches' algae; every city's sites, wood stacks, stock and home fields are unscaled | Garrison (on) |
+| Caravanserai | The outposts' quarry, orchard and algae; every capital's fields, stock and towers, and the oases' and outposts' wheat, are unscaled | Garrison (on) |
 
 `scaledCount` and `scaledShare` (`shared/Resources.h`) apply a percentage to a count or a share and
 return it unchanged at 100. `setScaledResource` scales one `Map::setResource` square to a share of
@@ -335,6 +345,17 @@ list of localized names and requests, so the editor or a multiplayer lobby can r
 Background rolls are safe because `syncRand()`'s state is per thread: a worker seeds its own
 stream inside `GenerationService::generate` and never touches the menu's live colony on the UI
 thread.
+
+### Premade bases and the worker count
+
+The structural check after generation (`validateGeneratedWorld`) requires every colony to hold a
+swarm and exactly as many WORKER units as the lobby's shared "Starting workers" control (1 to 8).
+A landscape built on `shared/Bases` starts thirty-odd colonists, so it owns that number through a
+control of its own (`colonists`, 16 to 48) and says so with `GeneratorDefinition::startingWorkers`,
+a hook the check compares against instead; the lobby's "Starting workers" value is ignored by The
+Glacis, Allotments and Caravanserai, and warriors and explorers are never counted. Such a landscape
+also sets `qualityScale.roomReference` lower where its ground is cramped on purpose (Allotments'
+lots, Caravanserai's capital disc), so the seed ranking still tells a good roll from a poor one.
 
 ## Fjord continent
 
@@ -1217,6 +1238,135 @@ taking the next chamber down the tunnel.
   and never onto a pond's beach, so no colony starts with more room than another.
 - **Rock.** Stone on every uncarved tile the beaches left pure grass; `openColonyRoutes` clears crops
   in a tunnel and cuts stone only as a last resort, at a cost that keeps it to a tile or two.
+
+## The Glacis
+
+Every colony starts inside a finished, walled compound - swarm, inns full of wheat, hospital,
+school, barracks, racetrack, a quarry, a well with a wheat and a wood patch beside it, stocked
+towers on the wall, thirty-odd colonists and a garrison of level-1 warriors and explorers - and the
+first quarter hour of every other landscape is skipped. Between the compounds lies the glacis: a
+plain of dry grass with no water, so nothing grows on it or grows it shut, yet buildable, so a
+forward inn or tower there is a deliberate move under the walls' towers. Across the plain, one to a
+band between the compounds' rows, run the wadis: sunken rivers two tiles wide with farmland along
+both banks and a sand ford every so often, the only regrowing food outside the walls and, until
+someone builds a swimming pool, the only way over.
+
+- **Bases.** `colonists` (16-48, 32) buys a Hamlet, Town or City base (`shared/Bases`,
+  `standardBasePlan`) and that many workers; `garrison` (on) adds three eighths as many level-1
+  warriors and an eighth as many explorers. The lobby's "Starting workers" is ignored.
+- **Compounds.** Square walls of stone at `compound-size` (12-20, 16) from the swarm, never less
+  than the base's reach plus three (a walkway and two rows for towers), with `wall-gates` (1-2, 2)
+  three-tile gates on the facing side and its back; a single gate faces a wadi. The compounds stand
+  on a lattice (`latticeSites`, `dealStarts`), each facing a random way; a well of 2x2 vertices
+  three tiles in from the back wall with 24 wheat and 16 wood five tiles either side of it (the
+  first headless play had a colony starve on a dry compound), and the quarry from the base plan.
+- **Wadis.** In every band between two lines of compounds, `wadi-count` (1-3, 1) water lines of
+  three vertices (two tiles of water, a mixed tile either side) spread evenly through the ground the
+  compounds and a two-tile margin leave, banks of pure grass three to six steps out on both sides,
+  and fords of three sand vertices every `ford-spacing` (16-48, 24) tiles along it, a whole number
+  round the wrap, each band's offset its own; a lane one tile wider than each ford is kept clear of
+  crops through the banks (the first roll walled every ford in with wheat). Wadis run between the
+  lattice's rows, or its columns when it has one row (512x128 with four colonies). A band too
+  narrow loses wadis first, then the compounds shrink to what their base needs, then the map is
+  refused.
+- **Towers.** `starting-towers` (0-3, 1) and `tower-count` (1-4, 4): sites on the interior directly
+  against the wall (`chooseTowerSites` with `against`), scored by the plain they cover, own ground
+  and others' alike, two open pads besides; none may close the walk to a gate
+  (`settleStartingTowers`), and every colony keeps as many as the fewest got.
+- **Resources.** Banks nearest the water first: 70% wheat and 20% wood of the bank tiles at the
+  default amounts, dealt into patches by a noise field; an outcrop per 3000 tiles of plain; a grove
+  of one fruit on the bank beside every ford; algae in the wadis. `secureStartingCrops` and
+  `reopenCrampedStarts` run with the walls protected, since a compound full of buildings is exactly
+  what the cramped-start opener would otherwise open by eating a wall.
+- **Checked, not assumed.** Every wall tile stone and every gate open (`wallStanding`), every well
+  present, every base complete with its worker count (`validateBase`), the same number of towers in
+  every compound, every colony walkable from the first over the fords, and every colony's walk to
+  its nearest ford within a compound's width of every other's.
+
+- **Played.** Rotation tournaments (six 256×256 maps, four colonies, every cyclic team rotation,
+  45,000 ticks) with four Nicowars and then four Numbis both show the AI limit the premade base
+  imposes: no colony breeds beyond its 52 premade units (three births each in 45,000 ticks).
+  Nicowar declines from about 60 to 20 units with 25 to 40 starvation deaths per colony; Numbi
+  holds 35 to 43 units with 11 to 18 starvation deaths and twenty-odd buildings, harvesting the
+  well's wheat and the banks but never feeding the swarm. The map is a human-play concept; an AI
+  tournament measures survival on it, not balance.
+
+## Allotments
+
+Every colony starts with a whole city staked out but not built: the swarm and one inn finished and
+stocked, every other building of the base a level-0 construction site with wood stacked beside it,
+thirty-odd colonists waiting to be told what to finish first. Beyond the city the whole map is
+parcelled: a lattice of one-tile sand lanes cuts the ground into blocks and every block holds one
+lot, a pad of grass in a ring of sand that exactly one building fits on. Down every third lane runs
+a ditch of water, so the lots along it are fields whose crops regrow; the blocks touching a city are
+its home fields, each with a well; alternate lots away from the water are woodlots; the smallest
+lots carry a quarry or a grove; the rest are open, waiting to be built on.
+
+- **Bases.** `colonists` (16-48, 32) and `garrison` (on) as The Glacis; the base is
+  `standardBasePlan` of kind Sites: 3, 5 or 8 sites by tier, with five-tile wood stacks by the
+  base's four corners, so no AI has to find wood before it can build.
+- **Lanes and cities.** `layLanes` at `lane-spacing` (8-16, 12), a whole number of lanes round the
+  wrap so blocks differ by at most a tile. Each city takes a superblock of as many blocks as hold
+  its base on pure grass (two at a pitch of 12), snapped to the lanes with its inner lanes
+  suppressed and its site at the middle, facing a random way; cities must keep a whole block from
+  each other, else the lanes are laid closer (down to 8), then the map is refused.
+- **Ditches.** Every `ditch-every`-th (2-4, 3) lane on each axis, offset by a draw, two water
+  vertices wide (one tile of water: a single vertex is a puddle units walk through), kept two tiles
+  from any city and off every crossing, where the sand stays as a ford.
+- **Lots.** `lot-size` (Mixed, Small, Medium, Large): pads of 6, 4 or 2 (Mixed deals them in a
+  fixed cycle), each held back for a ditch's beach and shrunk to what its block holds
+  (`stampLotPad`). A block touching a ditch is a field; the four blocks touching a city are home
+  fields, as large as the block allows, with a well of 2x2 vertices at the pad's middle (the first
+  headless play starved a colony whose home fields never regrew); of the rest, odd blocks are
+  woodlots with `wood-share` (0-100, 50) percent probability, small Mixed pads alternate quarry and
+  grove, and everything else is open. Fields carry 80% wheat and 10% wood of their pad at the
+  default amounts, woodlots all wood, quarries and groves one clump.
+- **Checked, not assumed.** Every base complete, every open lot still buildable, every colony's
+  walk to a ditch's beach within two lane pitches of every other's, every colony walkable from the
+  first down the lanes.
+
+- **Played.** With four Numbis (six 256×256 maps, every cyclic team rotation, 45,000 ticks)
+  every colony builds its city of sites and then sits at 49 to 52 units with almost no
+  starvation, three births and no fighting: the base gets finished and nothing else happens, which
+  is the AI limit rather than the map's.
+
+## Caravanserai
+
+Every colony starts with a finished capital - the whole base, two stocked towers, colonists and
+garrison - on a disc of grass with a pond and fields to live on, and nothing else at home: no stone,
+no fruit, no algae. Everything else is desert: bare sand, walkable but unbuildable and foodless.
+Half way between neighbouring capitals stand the outposts, discs round a pond with a quarry, an
+orchard of the three fruits, algae and wheat, the only stone, fruit and algae on the map, each the
+same walk from the two capitals that share it; along the way from every capital to its outposts lie
+the oases, small discs with a pond, a patch of wheat and room for one inn and one tower. A colony
+extends its reach one oasis at a time, and an army that outruns its oases fights hungry.
+
+- **Bases.** `colonists` (16-48, 32) and `garrison` (on) as The Glacis; the base carries two
+  stocked level-1 towers and no quarry.
+- **Capitals.** Nearly round discs (roughness 0.04: at 0.1 a capital of 15 dipped under its base's
+  corners) of `capital-size` (14-22, 18), never less than the base's reach plus five, each facing
+  its first outpost, with a 2x2-vertex pond four tiles in from the back and 36 wheat and 20 wood
+  either side of it (24 and 16 starved a colony in the first play).
+- **Outposts and oases.** One outpost at the midpoint between each colony and each of its
+  `outposts-per-colony` (1-3, 2) nearest neighbours (`nearestPairs`, `midpointAcross`): a disc of
+  radius 9 with a 3x3-vertex pond, a stone clump of radius 2 to its east, the orchard to its west
+  and 16 wheat. Oases every `oasis-spacing` (24-56, 32) tiles along the straight way from a capital
+  to an outpost (`waypointsAlong`), starting half a spacing beyond the capital and stopping half a
+  spacing short of the outpost, kept apart from every other disc: radius 6, a 2x2-vertex pond to
+  one side, 8 wheat. A chain may hold no oasis on a small map; capitals shrink so an outpost fits
+  between them, then the map is refused.
+- **Checked, not assumed.** Every base complete, every capital's pond present, every colony's walk
+  to an outpost and to an oasis within sixteen steps of every other's, every oasis with room for two
+  2x2 buildings, every colony walkable from the first across the sand.
+
+- **Played.** With four Numbis (six 256×256 maps, every cyclic team rotation, 45,000 ticks)
+  every capital starves: units hold at 52 until about tick 20,000 and fall to under ten by
+  40,000, with 45 to 51 starvation deaths per colony and no combat. The telemetry shows why: a
+  Numbi colony harvests its capital fields about twenty times in the whole game (against about
+  190 wood), so the stocked inns run dry once and nothing refills them. A short playtest sees the
+  stable plateau; the collapse is after it. Whether the capital's wheat should stand where Numbi
+  will harvest it, or the map is simply for people, is the decision to make before this map is
+  offered to AI games.
 
 ## Compatibility notes
 
