@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GenerationService.h"
+#include "GenerationValidation.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "LegacyGenerationDescriptor.h"
@@ -123,6 +124,22 @@ class MapGeneratorDefaultsTest
 			assert(bool(a) == bool(b) && a.stage == b.stage && hash == mapFingerprint(repeat));
 			assert(checksum == repeat.checkSum(nullptr, nullptr, nullptr, true));
 			assert(request.seed == 22001 && request.options == DWithDefaults(method).options);
+			if (method == GeneratorRegistry::builtins().idOf("lava-shield"))
+			{
+				if (!a)
+					std::cerr << a.diagnostic() << std::endl;
+				assert(a); // A repeatable failure is not a valid default map.
+				GenerationContext probe(request);
+				const auto &definition = GeneratorRegistry::builtins().at(method);
+				assert(definition.validateWorld(first, probe).empty());
+				// Removing all rock must be caught by the generator's actual final-world
+				// validator, not merely by a golden hash. Corrupt the unused repeated copy.
+				for (int y = 0; y < repeat.map.getH(); ++y)
+					for (int x = 0; x < repeat.map.getW(); ++x)
+						if (repeat.map.getResource(x, y).type == STONE)
+							repeat.map.setNoResource(x, y, 1);
+				assert(!definition.validateWorld(repeat, probe).empty());
+			}
 			if (a)
 			{
 				auto rejected = service.generate(first, request);
@@ -182,6 +199,30 @@ class MapGeneratorDefaultsTest
 					std::cerr << outcome.diagnostic() << std::endl;
 				assert(outcome && world.teamsCount() == teams);
 			}
+		// These combined controls exhausted real coastal towns/approaches in held-out
+		// seeds. Reject them before world mutation, while retaining the full control
+		// range on an ordinary four-colony map. Test each budget independently.
+		for (int dims : {7, 8})
+		{
+			D lava;
+			lava.setMethodDefaults(GeneratorRegistry::builtins().idOf("lava-shield"));
+			lava.wDec = lava.hDec = dims;
+			lava.nbTeams = dims == 7 ? 2 : 8;
+			const auto &definition = GeneratorRegistry::builtins().at(lava.method);
+			assert(validateGenerationRequest(lava, definition).empty());
+			for (const char *key : {"tongue-count", "rim-width"})
+			{
+				D crowded = lava;
+				crowded.options[key] = std::string(key) == "tongue-count" ? 9 : 12;
+				Game untouched(nullptr);
+				const auto result = service.generate(untouched, crowded);
+				assert(result.error == GenerationError::InvalidRequest &&
+					   untouched.teamsCount() == 0);
+				crowded.wDec = crowded.hDec = 8;
+				crowded.nbTeams = 4;
+				assert(validateGenerationRequest(crowded, definition).empty());
+			}
+		}
 		// Scoped RNG restoration must also hold when placement fails.
 		setSyncRandSeed(711);
 		auto savedFailureRng = syncRandEngine();

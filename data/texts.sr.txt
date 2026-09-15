@@ -2650,3 +2650,11 @@ Emoji
 Необавезни локални прелази по надређеној области
 [Optional major shortcuts]
 Необавезне главне пречице
+[Lava shield]
+Лавин штит
+[Lava tongues]
+Језици лаве
+[Long tongues]
+Дуги језици
+[Crater rim width]
+Ширина обода кратера

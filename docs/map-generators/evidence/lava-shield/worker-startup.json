@@ -1,0 +1,16 @@
+{
+  "accepted_maps": 504,
+  "nonaccepted_attempts": {
+    "process_failure": 34
+  },
+  "devlaptop_startup_errors": 34,
+  "worker_glibc": {
+    "devlaptop.local": "2.39",
+    "therig.local": "2.43",
+    "pharaoh-dev-1.local": "2.43",
+    "pharaoh-dev-2.local": "2.43",
+    "pharaoh-dev-3.local": "2.43"
+  },
+  "example_stderr": "/home/bradley/glob2-lava-bulk-20260915/workers/33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702/bundles/0d103f2221fcfacb65527502a1bcfc73025a93775137eef85698781ba0ceaaf0/glob2: /lib/x86_64-linux-gnu/libm.so.6: version `GLIBC_2.43' not found (required by /home/bradley/glob2-lava-bulk-20260915/workers/33bcdf1f2ce8b2e2f4a97ae47ba8a6679929403470025139a5976bbfa78b5702/bundles/0d103f2221fcfacb65527502a1bcfc73025a93775137eef85698781ba0ceaaf0/glob2)",
+  "response": "Final matrix restarted without devlaptop.local; its leased jobs were accepted on compatible hosts."
+}

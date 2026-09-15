@@ -1,0 +1,50 @@
+[
+  {
+    "file": "maps/default-256.map.gz",
+    "sha256": "0fcb3596be6ed03428ff68ae7329cdd2e2ae17ded0bd34342fc146752a6ec1f8"
+  },
+  {
+    "file": "maps/default-256.json.gz",
+    "sha256": "d7c05f808203d855dd8ec8c352230755b503c5d978684593f91fd423405df5cb"
+  },
+  {
+    "file": "../../images/lava-shield/default-256.png",
+    "sha256": "51be4f45b1cbf37f9ddb7413ce5e8fbaf107e6709d6ea2b3e15975b846192d34"
+  },
+  {
+    "file": "maps/small-128.map.gz",
+    "sha256": "7fae407f1ae05a36f271afe7dd1e7f5721ff028e4ddb818328b21d8a75f87622"
+  },
+  {
+    "file": "maps/small-128.json.gz",
+    "sha256": "df35c228955ec912cef19cf07bc45bd90983ac50b6ece4f8fa9a09bff3137aea"
+  },
+  {
+    "file": "../../images/lava-shield/small-128.png",
+    "sha256": "01acef3b6190ad3b4e18f7bdce06fddee31043b8d7b5b6424bafe3f5b0be1d9c"
+  },
+  {
+    "file": "maps/rectangle-512x256.map.gz",
+    "sha256": "98ee2fabcc7de9460ffb20abcef6d05e6e9401722ab45f44e48bec51674c6ae8"
+  },
+  {
+    "file": "maps/rectangle-512x256.json.gz",
+    "sha256": "e0dc60224d1ee86768bb6063c92698d2df46e5449f28f9d8cc5a0193cfa9879c"
+  },
+  {
+    "file": "../../images/lava-shield/rectangle-512x256.png",
+    "sha256": "8b7d49ec4feb554d7a66589581f8c20feca6121f5f66bdf7ca16930b15710101"
+  },
+  {
+    "file": "maps/dense-512.map.gz",
+    "sha256": "f1e0a8b26bbd3dbebc7ab1ad0078783aed00c49e458044f4eece3c3be37126ec"
+  },
+  {
+    "file": "maps/dense-512.json.gz",
+    "sha256": "daea1996c467a4d4e3ea7ae3131ace25c4c2e728848ca2b003eb66fb9c505c99"
+  },
+  {
+    "file": "../../images/lava-shield/dense-512.png",
+    "sha256": "8c6aafb79746f41e378f6f34bc1b3e95d62a435201770eb66fc7d8e3b71d0e78"
+  }
+]

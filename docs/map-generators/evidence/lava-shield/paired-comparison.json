@@ -1,0 +1,73 @@
+{
+  "planned": 504,
+  "final_accepted": 504,
+  "rescued": [
+    {
+      "seed": 44004,
+      "shape": "512x512x12",
+      "variant": "all-resources-0",
+      "original": "generation_failed",
+      "final": "completed",
+      "world_metrics_changed": false
+    },
+    {
+      "seed": 44004,
+      "shape": "512x512x12",
+      "variant": "all-resources-300",
+      "original": "generation_failed",
+      "final": "completed",
+      "world_metrics_changed": false
+    },
+    {
+      "seed": 50029,
+      "shape": "512x512x4",
+      "variant": "combined-random",
+      "original": "generation_failed",
+      "final": "completed",
+      "world_metrics_changed": false
+    },
+    {
+      "seed": 50117,
+      "shape": "256x256x8",
+      "variant": "combined-random",
+      "original": "generation_failed",
+      "final": "completed",
+      "world_metrics_changed": false
+    },
+    {
+      "seed": 61004,
+      "shape": "256x256x6",
+      "variant": "intermediate-high",
+      "original": "generation_failed",
+      "final": "completed",
+      "world_metrics_changed": false
+    },
+    {
+      "seed": 61004,
+      "shape": "256x256x7",
+      "variant": "intermediate-high",
+      "original": "generation_failed",
+      "final": "completed",
+      "world_metrics_changed": false
+    },
+    {
+      "seed": 62022,
+      "shape": "512x512x12",
+      "variant": "dense-heldout",
+      "original": "generation_failed",
+      "final": "completed",
+      "world_metrics_changed": false
+    },
+    {
+      "seed": 62024,
+      "shape": "512x512x12",
+      "variant": "dense-heldout",
+      "original": "generation_failed",
+      "final": "completed",
+      "world_metrics_changed": false
+    }
+  ],
+  "new_failures": [],
+  "old_success_metric_changes": 30,
+  "pending": 0
+}

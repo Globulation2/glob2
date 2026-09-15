@@ -2722,3 +2722,11 @@ Emoji
 每個父區域的可選局部通道
 [Optional major shortcuts]
 可選主要捷徑
+[Lava shield]
+熔岩盾
+[Lava tongues]
+熔岩舌數量
+[Long tongues]
+長熔岩舌
+[Crater rim width]
+火山口邊緣寬度

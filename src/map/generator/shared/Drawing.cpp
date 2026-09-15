@@ -23,6 +23,47 @@ void fillRectangle(std::vector<unsigned char> &mask, const Torus &t, RegionBound
 			mask[t.at(x, y)] = value;
 }
 
+std::vector<StrokePoint> downhillPath(ShapePoint centre, double fromRadius, double toRadius,
+									  double heading, double fromHalfWidth, double toHalfWidth,
+									  std::mt19937 &random, const DownhillStyle &style,
+									  const Stretch &stretch)
+{
+	for (double v :
+		 {centre.x, centre.y, fromRadius, toRadius, heading, fromHalfWidth, toHalfWidth, style.step,
+		  style.memory, style.angularNoise, style.maxDrift, stretch.sx, stretch.sy})
+		if (!std::isfinite(v))
+			return {};
+	if (fromRadius < 0 || toRadius <= fromRadius || style.step <= 0 || style.memory < 0 ||
+		style.memory >= 1 || style.angularNoise < 0 || style.maxDrift < 0 || fromHalfWidth <= 0 ||
+		toHalfWidth <= 0 || stretch.sx <= 0 || stretch.sy <= 0)
+		return {};
+	// A defensive cap prevents an accidentally microscopic step allocating unbounded
+	// memory. 65536 segments already exceed a full diagonal of any supported map.
+	const double needed = std::ceil((toRadius - fromRadius) / style.step);
+	if (needed > 65536)
+		return {};
+	const int segments = int(needed);
+	std::vector<StrokePoint> path;
+	path.reserve(segments + 1);
+	double turn = 0, angle = heading;
+	for (int k = 0; k <= segments; ++k)
+	{
+		const double radius = std::min(toRadius, fromRadius + k * style.step);
+		const double progress = (radius - fromRadius) / (toRadius - fromRadius);
+		if (k)
+		{
+			// Explicit conversion avoids implementation-defined uniform distributions.
+			const double roll = random() / 4294967296.0;
+			turn = style.memory * turn + (2 * roll - 1) * style.angularNoise;
+			angle = std::clamp(angle + turn, heading - style.maxDrift, heading + style.maxDrift);
+		}
+		const ShapePoint p =
+			stretch.apply(centre.x, centre.y, polarPoint(centre.x, centre.y, radius, angle));
+		path.push_back({p.x, p.y, fromHalfWidth + (toHalfWidth - fromHalfWidth) * progress});
+	}
+	return path;
+}
+
 namespace
 {
 void strokeSegment(std::vector<unsigned char> &mask, const Torus &t, const StrokePoint &a,

@@ -2646,3 +2646,11 @@ Khoảng đất tối thiểu
 Lối băng qua cục bộ tùy chọn mỗi vùng cha
 [Optional major shortcuts]
 Đường tắt chính tùy chọn
+[Lava shield]
+Khiên dung nham
+[Lava tongues]
+Lưỡi dung nham
+[Long tongues]
+Lưỡi dài
+[Crater rim width]
+Độ rộng vành miệng núi lửa

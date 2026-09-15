@@ -2650,3 +2650,11 @@ Distanța minimă de uscat
 Treceri locale opționale pe regiune părinte
 [Optional major shortcuts]
 Scurtături principale opționale
+[Lava shield]
+Scut de lavă
+[Lava tongues]
+Limbi de lavă
+[Long tongues]
+Limbi lungi
+[Crater rim width]
+Lățimea marginii craterului

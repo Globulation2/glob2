@@ -1,0 +1,74 @@
+[
+  {
+    "seed": 44004,
+    "shape": "512x512x12",
+    "variant": "all-resources-0",
+    "original": "generation_failed",
+    "new": "completed",
+    "diagnostic": "lava-shield revision 1 seed 44004 [complete]: ",
+    "report": "/tmp/glob2-lava-shield.PWvN7m/fallback-probes/case-00/result.json"
+  },
+  {
+    "seed": 44004,
+    "shape": "512x512x12",
+    "variant": "all-resources-300",
+    "original": "generation_failed",
+    "new": "completed",
+    "diagnostic": "lava-shield revision 1 seed 44004 [complete]: ",
+    "report": "/tmp/glob2-lava-shield.PWvN7m/fallback-probes/case-01/result.json"
+  },
+  {
+    "seed": 50029,
+    "shape": "512x512x4",
+    "variant": "combined-random",
+    "original": "generation_failed",
+    "new": "completed",
+    "diagnostic": "lava-shield revision 1 seed 50029 [complete]: ",
+    "report": "/tmp/glob2-lava-shield.PWvN7m/fallback-probes/case-02/result.json"
+  },
+  {
+    "seed": 50117,
+    "shape": "256x256x8",
+    "variant": "combined-random",
+    "original": "generation_failed",
+    "new": "completed",
+    "diagnostic": "lava-shield revision 1 seed 50117 [complete]: ",
+    "report": "/tmp/glob2-lava-shield.PWvN7m/fallback-probes/case-03/result.json"
+  },
+  {
+    "seed": 61004,
+    "shape": "256x256x6",
+    "variant": "intermediate-high",
+    "original": "generation_failed",
+    "new": "completed",
+    "diagnostic": "lava-shield revision 1 seed 61004 [complete]: ",
+    "report": "/tmp/glob2-lava-shield.PWvN7m/fallback-probes/case-04/result.json"
+  },
+  {
+    "seed": 61004,
+    "shape": "256x256x7",
+    "variant": "intermediate-high",
+    "original": "generation_failed",
+    "new": "completed",
+    "diagnostic": "lava-shield revision 1 seed 61004 [complete]: ",
+    "report": "/tmp/glob2-lava-shield.PWvN7m/fallback-probes/case-05/result.json"
+  },
+  {
+    "seed": 62022,
+    "shape": "512x512x12",
+    "variant": "dense-heldout",
+    "original": "generation_failed",
+    "new": "completed",
+    "diagnostic": "lava-shield revision 1 seed 62022 [complete]: ",
+    "report": "/tmp/glob2-lava-shield.PWvN7m/fallback-probes/case-06/result.json"
+  },
+  {
+    "seed": 62024,
+    "shape": "512x512x12",
+    "variant": "dense-heldout",
+    "original": "generation_failed",
+    "new": "completed",
+    "diagnostic": "lava-shield revision 1 seed 62024 [complete]: ",
+    "report": "/tmp/glob2-lava-shield.PWvN7m/fallback-probes/case-07/result.json"
+  }
+]

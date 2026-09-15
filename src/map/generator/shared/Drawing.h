@@ -73,6 +73,20 @@ int traceRay(std::vector<unsigned char> &mask, const Torus &t, ShapePoint from, 
 	return last;
 }
 
+/// A radial downhill walk. Radius strictly increases by step, while correlated angular
+/// perturbations bend the flow within maxDrift of heading. Width tapers linearly in map
+/// tiles; stretch moves centres only. Useful for lava, roots, drainage and ridge fingers.
+/// Memory is in [0,1); angularNoise and maxDrift are radians. Invalid/nonfinite geometry
+/// returns an empty path without drawing RNG. The terminal radius is always included.
+struct DownhillStyle
+{
+	double step = 3, memory = 0.72, angularNoise = 0.055, maxDrift = 0.3;
+};
+std::vector<StrokePoint> downhillPath(ShapePoint centre, double fromRadius, double toRadius,
+									  double heading, double fromHalfWidth, double toHalfWidth,
+									  std::mt19937 &, const DownhillStyle & = {},
+									  const Stretch & = {});
+
 /// `segments` + 1 points along the quadratic Bezier from `from` through the pull of `control`
 /// to `to`, with the half width running linearly from one end's to the other's: a thread that
 /// sags or bows.

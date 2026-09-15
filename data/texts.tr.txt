@@ -2658,3 +2658,11 @@ En az kara aralığı
 Üst bölge başına isteğe bağlı yerel geçişler
 [Optional major shortcuts]
 İsteğe bağlı ana kestirmeler
+[Lava shield]
+Lav kalkanı
+[Lava tongues]
+Lav dilleri
+[Long tongues]
+Uzun lav dilleri
+[Crater rim width]
+Krater kenarı genişliği

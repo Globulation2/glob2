@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <PerformanceTelemetry.h>
 #include "Points.h"
+#include <cmath>
 #include "GenerationContext.h"
 #include "Grid.h"
 #include "LatticeNoise.h"
@@ -12,6 +13,47 @@
 #include <utility>
 namespace MapGeneration
 {
+std::vector<int> spreadRankedSites(const Torus &t, const std::vector<RankedSite> &sites, int count,
+								   int minimumSpacing, size_t first)
+{
+	if (count < 1 || minimumSpacing < 1 || first >= sites.size())
+		return {};
+	double maximumWeight = 0;
+	for (const auto &site : sites)
+	{
+		if (site.tile < 0 || site.tile >= t.size() || !std::isfinite(site.weight) ||
+			site.weight <= 0)
+			return {};
+		maximumWeight = std::max(maximumWeight, site.weight);
+	}
+	std::vector<int> picked{sites[first].tile};
+	while (int(picked.size()) < count)
+	{
+		double best = -1;
+		int chosen = -1;
+		for (const auto &site : sites)
+		{
+			int distance = INT_MAX;
+			for (int p : picked)
+				distance =
+					std::min(distance, t.dist2(site.tile % t.w, site.tile / t.w, p % t.w, p / t.w));
+			if (distance < static_cast<long long>(minimumSpacing) * minimumSpacing)
+				continue;
+			// Normalize by one common factor to avoid overflow for large finite weights.
+			const double score = distance * (site.weight / maximumWeight);
+			if (score > best)
+			{
+				best = score;
+				chosen = site.tile;
+			}
+		}
+		if (chosen < 0)
+			break;
+		picked.push_back(chosen);
+	}
+	return picked;
+}
+
 namespace
 {
 // Bucket rows or columns to search around bucket c: all of them when a window would wrap onto

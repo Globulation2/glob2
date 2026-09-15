@@ -2650,3 +2650,11 @@ Minimalny odstęp lądu
 Opcjonalne lokalne przeprawy na region nadrzędny
 [Optional major shortcuts]
 Opcjonalne główne skróty
+[Lava shield]
+Tarcza lawowa
+[Lava tongues]
+Jęzory lawy
+[Long tongues]
+Długie jęzory
+[Crater rim width]
+Szerokość krawędzi krateru

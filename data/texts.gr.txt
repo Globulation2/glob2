@@ -2720,3 +2720,11 @@ Emoji
 Προαιρετικές τοπικές διαβάσεις ανά γονική περιοχή
 [Optional major shortcuts]
 Προαιρετικές κύριες συντομεύσεις
+[Lava shield]
+Ασπίδα λάβας
+[Lava tongues]
+Γλώσσες λάβας
+[Long tongues]
+Μακριές γλώσσες
+[Crater rim width]
+Πλάτος χείλους κρατήρα

@@ -2646,3 +2646,11 @@ Espaçamento mínimo de terra
 Travessias locais opcionais por região superior
 [Optional major shortcuts]
 Atalhos principais opcionais
+[Lava shield]
+Skoed lava
+[Lava tongues]
+Teodoù lava
+[Long tongues]
+Teodoù hir
+[Crater rim width]
+Ledander ribl ar c'hrater

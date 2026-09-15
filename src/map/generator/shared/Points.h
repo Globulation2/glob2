@@ -3,6 +3,7 @@
 #include "Grid.h"
 #include <algorithm>
 #include <cmath>
+#include <cstddef>
 #include <cstdint>
 #include <functional>
 #include <string>
@@ -11,8 +12,9 @@ struct GenerationContext;
 namespace MapGeneration
 {
 // Scattered sites on the torus and the cells they own: basins between ridges (Stone highlands),
-// chambers in rock, plazas in a town, villages on a polder. Everything here is integer arithmetic on
-// whole tiles and sixteenths of a tile, so the same seed draws the same cells on every platform.
+// chambers in rock, plazas in a town, villages on a polder. Cell geometry uses integer arithmetic
+// on whole tiles and sixteenths of a tile. Ranked selection also accepts floating-point preference
+// weights; callers needing exact cross-platform ordering should use representable discrete weights.
 // Tessellation.h is the regular counterpart (square and hexagon lattices); these are irregular.
 
 struct Site
@@ -34,6 +36,21 @@ struct NearestSites
 /// distances), e.g. rivers between hills or ridges between basins. Duplicate site
 /// coordinates remain distinct entries. Empty and singleton sets are supported.
 NearestSites nearestTwoSites(const Torus &, const std::vector<Site> &, int x, int y);
+
+/// A candidate tile and a positive, finite preference weight. The caller determines
+/// eligibility and what the weight means (fertility, room, resource access, etc.).
+struct RankedSite
+{
+	int tile;
+	double weight;
+};
+/// Greedy maximin spreading from candidates[first]: maximize nearest squared toroidal
+/// distance times weight. Minimum spacing is an absolute floor, unaffected by weights.
+/// Equal scores retain input order. Returns a partial set on exhausted geometry, empty
+/// for invalid arguments/candidates. Does not draw RNG or assign team indices; callers
+/// choose first and deal the result separately. This is a proposal, not final fairness.
+std::vector<int> spreadRankedSites(const Torus &, const std::vector<RankedSite> &, int count,
+								   int minimumSpacing, size_t first);
 
 /// Sites by dart throwing on the torus: a dart is kept when it lies at least `minimumPercent` of
 /// `spacing` (and at least 4 tiles) from every site kept before it. `dartsPerSite` darts are thrown per

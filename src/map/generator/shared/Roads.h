@@ -2,6 +2,7 @@
 #pragma once
 #include "Contact.h"
 #include "Grid.h"
+#include "Sketch.h"
 #include "Topology.h"
 #include <climits>
 #include <functional>
@@ -77,6 +78,30 @@ std::vector<int> cheapestRoute(const Torus &, const std::vector<int> &sources,
 							   const std::vector<unsigned char> &goal,
 							   const std::vector<unsigned char> &blocked,
 							   const std::vector<unsigned char> &costly);
+
+/// Reserve a permanent sand approach BEFORE placing resources/buildings. Finds a
+/// cheapest path, widened by radius tiles (Chebyshev), between valid sources
+/// and goal. No painted corner may be water or spoil a protected tile's terrain.
+/// Returns the centreline, goal first; empty means no route and leaves sketch unchanged.
+/// radius 0 is one pure-sand tile wide; radius 1 is three. Invalid masks/sources or
+/// radius return empty. Source/goal cells that cannot fit the width are ignored.
+/// Eight-neighbour routes use 10/14 cardinal/diagonal step lengths; cardinal-only
+/// routes use unit lengths. Dilation keeps diagonal routes broad after rasterization.
+/// Optional positive tileCosts steer the route along a terrain/noise field; each must
+/// be at most INT_MAX / (tile count * maximum step length), bounding every simple path sum.
+/// At radius 0 only, existingPassage may mark already walkable, crop-proof tiles
+/// (for example mixed beach terrain). Such tiles need no conversion and are left
+/// untouched. The caller must establish that semantic guarantee from the world;
+/// this operation still excludes protectedTiles themselves. Other path tiles must
+/// satisfy the ordinary corner protections and become pure sand. This allows an
+/// existing beach bypass that cannot be repainted without spoiling adjacent stone.
+/// This never creates a ford: callers must explicitly allow another operation for that.
+std::vector<int> reserveSandRoute(TerrainSketch &, const Torus &, const std::vector<int> &sources,
+								  const std::vector<unsigned char> &goal,
+								  const std::vector<unsigned char> &protectedTiles, int radius = 0,
+								  const std::vector<int> *tileCosts = nullptr,
+								  GridNeighbors neighbours = GridNeighbors::Cardinal,
+								  const std::vector<unsigned char> *existingPassage = nullptr);
 
 /// Deposits may land anywhere, and a band of them could close a colony off from where it must
 /// be able to walk. This keeps one way open: the cheapest walk from the sources to the goal

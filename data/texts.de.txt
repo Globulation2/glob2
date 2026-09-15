@@ -2650,3 +2650,11 @@ Minimaler Landabstand
 Optionale lokale Übergänge je übergeordneter Region
 [Optional major shortcuts]
 Optionale große Abkürzungen
+[Lava shield]
+Lavaschild
+[Lava tongues]
+Lavazungen
+[Long tongues]
+Lange Lavazungen
+[Crater rim width]
+Kraterrandbreite

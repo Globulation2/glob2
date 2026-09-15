@@ -2648,3 +2648,11 @@ Emoji
 گذرگاه‌های محلی اختیاری در هر ناحیه مادر
 [Optional major shortcuts]
 میانبرهای اصلی اختیاری
+[Lava shield]
+سپر گدازه
+[Lava tongues]
+زبانه‌های گدازه
+[Long tongues]
+زبانه‌های بلند
+[Crater rim width]
+پهنای لبهٔ دهانه

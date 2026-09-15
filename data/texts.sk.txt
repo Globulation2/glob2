@@ -2658,3 +2658,11 @@ Minimálny odstup pevniny
 Voliteľné miestne priechody na nadradenú oblasť
 [Optional major shortcuts]
 Voliteľné hlavné skratky
+[Lava shield]
+Lávový štít
+[Lava tongues]
+Lávové jazyky
+[Long tongues]
+Dlhé jazyky
+[Crater rim width]
+Šírka okraja krátera
