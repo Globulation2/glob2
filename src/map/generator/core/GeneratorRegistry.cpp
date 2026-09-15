@@ -147,7 +147,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 switchbacksDefinition(),
 											 cityStatesDefinition(),
 											 canalsDefinition(),
-											 drumlinFieldDefinition(), ruggedArchipelagoDefinition(),
+											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
 											 evergladesDefinition(),
@@ -165,6 +165,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 allotmentsDefinition(),
 											 caravanseraiDefinition(),
 											 braidedRiverDefinition(),
+											 drumlinFieldDefinition(),
 											 uniformDefinition()});
 	return registry;
 }
