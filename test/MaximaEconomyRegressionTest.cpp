@@ -584,6 +584,30 @@ void newBuildingsStartStaffed()
     assert(inn->maxUnitWorking<4);
 }
 
+static void schoolsDoNotRequireKnownAlgae()
+{
+    Fixture f; f.swarm(10,10);
+    auto& ai=*f.ai; auto& c=ai.context; c.initialize();
+    ai.snapshot.population=184; ai.snapshot.workers=92;
+    ai.snapshot.swarms=1; ai.snapshot.completed_swarms=1;
+    ai.environment.food_security=100; ai.environment.food_headroom=100;
+    ai.environment.resource_capacity=100;
+    ai.demands.technology=100;
+    ai.known_algae_units=0; ai.accessible_algae_units=0;
+    ai.build_policy_bids(); ai.arbitrate_policy_bids(); ai.finalize_director_plan(c);
+    assert(ai.budget.desired_schools>0);
+    AIMaximaPlacement::WorldState world;
+    const auto intents=ai.collect_development_intents(world);
+    bool schoolRequested=false;
+    for(const auto& intent:intents)
+        if(intent.buildingType==IntBuildingType::SCIENCE_BUILDING)
+        {
+            schoolRequested=true;
+            assert(intent.requiredResourceType==-1);
+        }
+    assert(schoolRequested);
+}
+
 int main()
 {
     GlobalContainer container; globalContainer=&container; container.runNoX=true;
@@ -591,6 +615,7 @@ int main()
     IntBuildingType::init();
 
 
+    schoolsDoNotRequireKnownAlgae();
     birthBudgetScalesBeyondTwenty();
     growingFoodFundsCapacity();
     colonyStartupAndAffordability();

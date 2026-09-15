@@ -28,7 +28,10 @@ delete orders are executed against real buildings to verify the replacement surv
 `MaximaEconomyRegressionTest` also checks City States fractional starter supply:
 the measured Q16 values fund nonzero ratios through the real swarm management
 path, while true zero supply still pauses births. Equivalent whole-tile and Q16
-inputs produce the same budget. Run it with
+inputs produce the same budget. It also checks that Maxima requests schools
+without known or accessible algae and passes those requests to placement without
+a discovered-algae prerequisite. Workers still need to deliver construction
+materials to complete the schools. Run it with
 `python3 test/run_maxima_implementation_regressions.py --test MaximaEconomyRegressionTest`.
 
 ## Maxima sand-bridge routing regression

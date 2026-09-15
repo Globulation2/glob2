@@ -2705,10 +2705,8 @@ void Maxima::build_policy_bids()
 
 	PolicyBid& technology=policy_bids[PolicyTechnology];
 	technology.utility=demands.technology;
-	// Shoreline algae can be collected by walkers; deep-water algae only becomes
-	// eligible after a swimming worker can actually reach it.
+	// School demand is independent of algae discovery and distance.
 	technology.desired_schools=snapshot.population>=school_population_min
-		&& accessible_algae_units>=school_algae_requirement()
 		&& technology.utility>=strategy.economy.school_utility_min
 		? (technology.utility>=second_school_utility_min
 			? strategy.economy.second_school_target
@@ -4949,21 +4947,6 @@ Maxima::collect_building_profiles() const
 }
 
 
-int Maxima::school_algae_requirement() const
-{
-	const std::vector<AIMaximaPlacement::BuildingProfile>& profiles=
-		collect_building_profiles();
-	for(size_t index=0; index<profiles.size(); ++index)
-		if(profiles[index].buildingType==IntBuildingType::SCIENCE_BUILDING)
-		{
-			const AIMaximaPlacement::BuildingLevelProfile* initial=
-				profiles[index].atLevel(1);
-			return initial ? initial->constructionResources[ALGA] : INT_MAX;
-		}
-	return INT_MAX;
-}
-
-
 void Maxima::configure_development_planner()
 {
 	using namespace AIMaximaPlacement;
@@ -5255,8 +5238,6 @@ Maxima::collect_development_intents(
 			intent.unmetCount=demands[i].desired-current;
 			intent.priority=clamp_score(demands[i].priority);
 			intent.workers=demands[i].workers;
-			if(demands[i].type==IntBuildingType::SCIENCE_BUILDING)
-				intent.requiredResourceType=ALGA;
 			intent.emergency=demands[i].type==IntBuildingType::FOOD_BUILDING
 				?budget.recovery_active:demands[i].type==IntBuildingType::DEFENSE_BUILDING
 				&&explorer_defense_active();
