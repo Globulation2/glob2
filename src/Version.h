@@ -6,7 +6,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 107
+#define VERSION_MINOR 108
+// version 108 persists extended diagnostic gameplay measurements.
 // version 107 persists Maxima relocation relationships and fractional food supply.
 // version 101 persists resolved per-player runtime AI configuration in all header forms
 //             and Cortex queued orders, settle clocks and policy debounce for continuation.

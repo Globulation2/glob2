@@ -429,7 +429,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 					? gui->game.teams[entry.teamNum]->stats.endOfGameStats[endIndex].value[j]
 					: 0;
 		}
-		for (int j = 0; j < 12; ++j)
+		for (int j = 0; j < 30; ++j)
 			entry.endVal[j + 6] =
 				TeamStats::graphValue(gui->game.teams[entry.teamNum]->stats.measurements, j);
 		teams.push_back(entry);
@@ -472,7 +472,7 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (par1 == STAT_PAGE)
 		{
-			statPage = (statPage + 1) % 3;
+			statPage = (statPage + 1) % 6;
 			for (int i = 0; i < 6; ++i)
 				statButtons[i]->setText(statTypeName(statPage * 6 + i));
 			statWidget->setStatType(statPage * 6);
@@ -662,6 +662,8 @@ void EndGameStat::paintMeasurements()
 	for (int t = 0; t < game->mapHeader.getNumberOfTeams(); ++t)
 		if (isTeamEnabled[t])
 			for (const auto &m : game->teams[t]->stats.measurementHistory)
+				if (type - 6 < 16 || m.tick > game->teams[t]->stats.extendedCoverageStartTick ||
+					(game->teams[t]->stats.extendedCoverageStartTick == 0 && m.tick == 0))
 				maximum = std::max(maximum, TeamStats::graphValue(m, type - 6));
 	const std::string scale = std::to_string(maximum);
 	const int ew = std::max(1, w - font->getStringWidth(scale) - 12), eh = std::max(1, h - 24);
@@ -683,6 +685,9 @@ void EndGameStat::paintMeasurements()
 		int prevX = -1, prevY = -1;
 		for (const auto &m : stats.measurementHistory)
 		{
+			if (type - 6 >= 16 && m.tick <= stats.extendedCoverageStartTick &&
+				!(stats.extendedCoverageStartTick == 0 && m.tick == 0))
+				continue;
 			const Uint64 value = TeamStats::graphValue(m, type - 6);
 			const int px = static_cast<Uint64>(m.tick) * ew / end;
 			const int py = eh - static_cast<long double>(value) * eh / maximum;

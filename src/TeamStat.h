@@ -176,6 +176,17 @@ struct GameplayMeasurements
 	Uint64 critical{};
 	Uint64 feeding{};
 	Uint64 healing{};
+	// Snapshot diagnostics. Structural counts ignore temporary unit occupancy.
+	Uint64 trappedUnits[2][NB_UNIT_TYPE]{};
+	Uint64 trappedBuildings[2][2][IntBuildingType::NB_BUILDING]{}; // blockage, swim ability, type
+	Uint64 lowHP[3][NB_UNIT_TYPE]{};
+	Uint64 lowFood[3][NB_UNIT_TYPE]{};
+	Uint32 trappedTick = 0;
+	// Cumulative natural map growth within 8, 16 and 32 tiles of this team.
+	Uint64 growthTiles[3][MAX_NB_RESOURCES]{};
+	Uint64 growthAmount[3][MAX_NB_RESOURCES]{};
+	Uint64 growthReduction[3][MAX_NB_RESOURCES]{};
+	Uint64 growthGlobal[3][MAX_NB_RESOURCES]{};
 };
 
 class Team;
@@ -183,13 +194,19 @@ class Team;
 class TeamStats
 {
 public:
+  struct CoverageBuilding { int x, y, width, height; bool operator==(const CoverageBuilding &) const = default; };
+  std::vector<CoverageBuilding> coverageBuildings;
+  Uint32 coverageBuildingTick = 0;
+  Uint32 coverageBuildingGeneration = 0;
   std::vector<std::shared_ptr<AITelemetry::Series>> aiTelemetry;
   GameplayMeasurements measurements;
   Uint32 coverageStartTick = 0;
+  Uint32 extendedCoverageStartTick = 0;
   bool needsMeasurementInitialization = false;
   std::vector<GameplayMeasurements> measurementHistory;
   void initializeMeasurements(Uint32 tick);
   void refreshMeasurements(Team *team);
+  void sampleTraps(Team *team);
   void beginMeasurementSnapshot(Team *team);
   void observeMeasurementUnit(class Unit *unit);
   void observeMeasurementBuilding(class Building *building);
@@ -197,6 +214,7 @@ public:
   static void recordDamage(Team *source, Team *target, int kind, int targetKind, int hp,
 						   int damage);
   void drawMeasurements(int x, int y);
+  void drawExpandedMeasurements(int x, int y);
   static Uint64 graphValue(const GameplayMeasurements &m, int metric);
   static const char *measurementLabel(int metric);
 
@@ -246,4 +264,3 @@ public:
 	//! headless team-timeline dump (Engine::printAutomaticEndingSummary).
 	const std::vector<EndOfGameStat> &getEndOfGameStats(void) const { return endOfGameStats; }
 };
-

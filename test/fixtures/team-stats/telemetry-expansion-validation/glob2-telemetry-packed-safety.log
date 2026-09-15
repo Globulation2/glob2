@@ -1,0 +1,66 @@
+Starting headless savegame safety checks
+PASS pending construction binary/text round trips, queue order, staffing, delayed placement, empty queue and invalid reference
+PASS binary human saved game continues RNG and 700 simulation steps and measurements across header replacement
+PASS binary AI saved game continues RNG and 700 simulation steps and measurements across header replacement
+PASS binary + text routing human saved game continues RNG and 700 simulation steps and measurements across header replacement
+PASS binary + text routing AI saved game continues RNG and 700 simulation steps and measurements across header replacement
+FileManager::writeAtomically: /var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/glob2-save-test-296912d76798410f941c839a4cca7387x0vhrhpm/home/.glob2-save-test-296912d76798410f941c839a4cca7387/atomic.game: injected serialization failure
+FileManager::writeAtomically: /var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/glob2-save-test-296912d76798410f941c839a4cca7387x0vhrhpm/home/.glob2-save-test-296912d76798410f941c839a4cca7387/directory.game: File replacement failed: unspecified iostream_category error
+FileManager::writeAtomically: cannot create temporary file for /var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/glob2-save-test-296912d76798410f941c839a4cca7387x0vhrhpm/home/.glob2-save-test-296912d76798410f941c839a4cca7387/missing/save.game
+PASS atomic creation/replacement, close drains pending writes, temporary-name collision, seek, serialization/open/rename failure, temporary cleanup
+PASS injected short write and buffered flush failure preserve previous bytes
+FileManager::writeAtomically: cannot create temporary file for /var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/glob2-save-test-296912d76798410f941c839a4cca7387x0vhrhpm/home/.glob2-save-test-296912d76798410f941c839a4cca7387/missing/save.game
+BackgroundFileWriter: /var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/glob2-save-test-296912d76798410f941c839a4cca7387x0vhrhpm/home/.glob2-save-test-296912d76798410f941c839a4cca7387/missing/save.game was not replaced; the previous file is kept
+PASS background writes keep the newest snapshot with its finish step, finish on destruction and continue after a failure
+PASS headless autosave defaults off and can be explicitly enabled
+PASS background autosave bytes, SHA1 included, match direct serialization
+PASS deferred SHA1 matches an inline hash when the header backpatch changes hashed bytes
+PASS deferred SHA1 matches an inline hash when the header backpatch changes hashed bytes
+PASS production autosave reloads with unchanged simulation checksum components
+PASS autosave waits for the configured interval
+PASS failed production autosave preserves the previous complete game
+PASS disabled autosave leaves the previous save untouched
+PASS a joining client trusts a local save only when its SHA1 matches the host's
+Map::load: Incomplete binary field: signatureStart: unspecified iostream_category error
+Map::load: Incomplete binary field: signatureStart: unspecified iostream_category error
+Map::load: Incomplete binary field: signatureStart: unspecified iostream_category error
+Map::load: Incomplete binary field: wDec: unspecified iostream_category error
+Map::load: Incomplete binary field: wDec: unspecified iostream_category error
+Map::load: Incomplete binary field: hDec: unspecified iostream_category error
+Map::load: Incomplete binary field: undermap: unspecified iostream_category error
+Map::load: Incomplete binary field: undermap: unspecified iostream_category error
+Map::load: Incomplete binary field: mapDiscovered: unspecified iostream_category error
+Map::load: Incomplete binary field: building: unspecified iostream_category error
+Map::load: Incomplete binary field: building: unspecified iostream_category error
+Map::load: Incomplete binary field: fertility: unspecified iostream_category error
+Map::load: Incomplete binary field: building: unspecified iostream_category error
+Map::load: Incomplete binary field: fertility: unspecified iostream_category error
+Map::load: Incomplete binary field: : unspecified iostream_category error
+Map::load: Incomplete binary field: : unspecified iostream_category error
+Map::load: Incomplete binary field: signatureEnd: unspecified iostream_category error
+Map::load: Incomplete binary field: signatureEnd: unspecified iostream_category error
+Map::load: Incomplete binary field: signatureStart: unspecified iostream_category error
+Map::load: Incomplete binary field: signatureStart: unspecified iostream_category error
+Map::load: Incomplete binary field: signatureStart: unspecified iostream_category error
+Map::load: Incomplete binary field: wDec: unspecified iostream_category error
+Map::load: Incomplete binary field: wDec: unspecified iostream_category error
+Map::load: Incomplete binary field: hDec: unspecified iostream_category error
+Map::load: Incomplete binary field: undermap: unspecified iostream_category error
+Map::load: Incomplete binary field: undermap: unspecified iostream_category error
+Map::load: Incomplete binary field: mapDiscovered: unspecified iostream_category error
+Map::load: Incomplete binary field: building: unspecified iostream_category error
+Map::load: Incomplete binary field: building: unspecified iostream_category error
+Map::load: Incomplete binary field: fertility: unspecified iostream_category error
+Map::load: Incomplete binary field: building: unspecified iostream_category error
+Map::load: Incomplete binary field: fertility: unspecified iostream_category error
+Map::load: Incomplete binary field: : unspecified iostream_category error
+Map::load: Incomplete binary field: : unspecified iostream_category error
+Map::load: Incomplete binary field: signatureEnd: unspecified iostream_category error
+Map::load: Incomplete binary field: signatureEnd: unspecified iostream_category error
+PASS 36 truncated map loads rejected, followed by successful reuse
+Map::load: String areaname length > 1048576: unspecified iostream_category error
+Map::load: String areaname length > 1048576: unspecified iostream_category error
+PASS oversized map-area string rejected before allocation
+GameGUI::load : can't load game
+PASS issue #130 attachment rejected without abort
+PASS: disposable profile preferences unchanged

@@ -529,7 +529,7 @@ private:
 	bool showUnitWorkingToBuilding;
 
 	TeamStats *teamStats;
-	bool measurementPage = false;
+	int measurementPage = 0;
 	void drawStatisticsPage(int y);
 	Team *localTeam;
 
@@ -701,5 +701,4 @@ private:
 	//! Update overview navigation and particle offsets after viewport movement
 	void viewportChanged(int oldViewportX, int viewportX, int oldViewportY, int viewportY);
 };
-
 

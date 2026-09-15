@@ -113,6 +113,8 @@ static constexpr int FILE_FORMAT_VERSION_COMBAT_RULES = 103;
 static constexpr int FILE_FORMAT_VERSION_GAMEPLAY_STATS = 105;
 
 static constexpr int FILE_FORMAT_VERSION_AI_TELEMETRY = 106;
+//! Sampled blockage, health-band and nearby natural growth diagnostics.
+static constexpr int FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS = 108;
 
 // === Save-file section signatures (4-byte ASCII tags) ===
 // Embedded as four chars at the start of each save section so a corrupted
@@ -144,4 +146,3 @@ inline constexpr const char FILE_SIG_CHECKSUM_SIDECAR[5] = "GCS1";
 
 //! SHA-1 hash byte length, used by the checksum sidecar (Game_io.cpp:459-461).
 static constexpr int SHA1_BYTE_LEN = 20;
-

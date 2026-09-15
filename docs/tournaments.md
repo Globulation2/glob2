@@ -421,7 +421,7 @@ schemas/current/history/final values, and engine performance samples/final total
 Collection remains automatic; export remains opt-in. No extra worker service,
 transport option or result-schema migration is needed. The catalog advertises
 `gameplay_telemetry_version`, `ai_telemetry_version`, and
-`performance_telemetry_version` (currently 1). Old bundles can still run and their
+`performance_telemetry_version` (gameplay 2, AI 1, performance 1). Old bundles can still run and their
 missing new record families are reported as unavailable.
 
 Workers already retain `stdout.log`, compress it, checksum it and transfer it with

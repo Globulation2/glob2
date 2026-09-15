@@ -58,7 +58,7 @@ protected:
 struct TeamEntry
 {
 	int teamNum;
-	Uint64 endVal[18]{};
+	Uint64 endVal[36]{};
 	GAGCore::Color color;
 	std::string name;
 };
@@ -105,4 +105,3 @@ public:
 private:
 	void saveReplay(const char *dir, const char *ext);
 };
-
