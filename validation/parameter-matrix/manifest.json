@@ -1,0 +1,1178 @@
+[
+  {
+    "case": "small",
+    "lakes": 0,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=6",
+      "h=6",
+      "teams=1",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/small-l0-s11.json",
+      "home-size=20"
+    ]
+  },
+  {
+    "case": "small",
+    "lakes": 0,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=6",
+      "h=6",
+      "teams=1",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/small-l0-s13.json",
+      "home-size=20"
+    ]
+  },
+  {
+    "case": "small",
+    "lakes": 1,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=6",
+      "h=6",
+      "teams=1",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/small-l1-s11.json",
+      "home-size=20"
+    ]
+  },
+  {
+    "case": "small",
+    "lakes": 1,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=6",
+      "h=6",
+      "teams=1",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/small-l1-s13.json",
+      "home-size=20"
+    ]
+  },
+  {
+    "case": "small",
+    "lakes": 3,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=6",
+      "h=6",
+      "teams=1",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/small-l3-s11.json",
+      "home-size=20"
+    ]
+  },
+  {
+    "case": "small",
+    "lakes": 3,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=6",
+      "h=6",
+      "teams=1",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/small-l3-s13.json",
+      "home-size=20"
+    ]
+  },
+  {
+    "case": "crowded",
+    "lakes": 0,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/crowded-l0-s11.json"
+    ]
+  },
+  {
+    "case": "crowded",
+    "lakes": 0,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/crowded-l0-s13.json"
+    ]
+  },
+  {
+    "case": "crowded",
+    "lakes": 1,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/crowded-l1-s11.json"
+    ]
+  },
+  {
+    "case": "crowded",
+    "lakes": 1,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/crowded-l1-s13.json"
+    ]
+  },
+  {
+    "case": "crowded",
+    "lakes": 3,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/crowded-l3-s11.json"
+    ]
+  },
+  {
+    "case": "crowded",
+    "lakes": 3,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/crowded-l3-s13.json"
+    ]
+  },
+  {
+    "case": "wide",
+    "lakes": 0,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=8",
+      "h=7",
+      "teams=3",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/wide-l0-s11.json"
+    ]
+  },
+  {
+    "case": "wide",
+    "lakes": 0,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=8",
+      "h=7",
+      "teams=3",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/wide-l0-s13.json"
+    ]
+  },
+  {
+    "case": "wide",
+    "lakes": 1,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=8",
+      "h=7",
+      "teams=3",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/wide-l1-s11.json"
+    ]
+  },
+  {
+    "case": "wide",
+    "lakes": 1,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=8",
+      "h=7",
+      "teams=3",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/wide-l1-s13.json"
+    ]
+  },
+  {
+    "case": "wide",
+    "lakes": 3,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=8",
+      "h=7",
+      "teams=3",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/wide-l3-s11.json"
+    ]
+  },
+  {
+    "case": "wide",
+    "lakes": 3,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=8",
+      "h=7",
+      "teams=3",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/wide-l3-s13.json"
+    ]
+  },
+  {
+    "case": "tall",
+    "lakes": 0,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=7",
+      "h=8",
+      "teams=3",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/tall-l0-s11.json"
+    ]
+  },
+  {
+    "case": "tall",
+    "lakes": 0,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=7",
+      "h=8",
+      "teams=3",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/tall-l0-s13.json"
+    ]
+  },
+  {
+    "case": "tall",
+    "lakes": 1,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=7",
+      "h=8",
+      "teams=3",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/tall-l1-s11.json"
+    ]
+  },
+  {
+    "case": "tall",
+    "lakes": 1,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=7",
+      "h=8",
+      "teams=3",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/tall-l1-s13.json"
+    ]
+  },
+  {
+    "case": "tall",
+    "lakes": 3,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=7",
+      "h=8",
+      "teams=3",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/tall-l3-s11.json"
+    ]
+  },
+  {
+    "case": "tall",
+    "lakes": 3,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=7",
+      "h=8",
+      "teams=3",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/tall-l3-s13.json"
+    ]
+  },
+  {
+    "case": "large",
+    "lakes": 0,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=9",
+      "h=9",
+      "teams=12",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-l0-s11.json"
+    ]
+  },
+  {
+    "case": "large",
+    "lakes": 0,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=9",
+      "h=9",
+      "teams=12",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-l0-s13.json"
+    ]
+  },
+  {
+    "case": "large",
+    "lakes": 1,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=9",
+      "h=9",
+      "teams=12",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-l1-s11.json"
+    ]
+  },
+  {
+    "case": "large",
+    "lakes": 1,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=9",
+      "h=9",
+      "teams=12",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-l1-s13.json"
+    ]
+  },
+  {
+    "case": "large",
+    "lakes": 3,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=9",
+      "h=9",
+      "teams=12",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-l3-s11.json"
+    ]
+  },
+  {
+    "case": "large",
+    "lakes": 3,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=9",
+      "h=9",
+      "teams=12",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-l3-s13.json"
+    ]
+  },
+  {
+    "case": "large-one",
+    "lakes": 0,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=9",
+      "h=9",
+      "teams=1",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-one-l0-s11.json"
+    ]
+  },
+  {
+    "case": "large-one",
+    "lakes": 0,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=9",
+      "h=9",
+      "teams=1",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-one-l0-s13.json"
+    ]
+  },
+  {
+    "case": "large-one",
+    "lakes": 1,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=9",
+      "h=9",
+      "teams=1",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-one-l1-s11.json"
+    ]
+  },
+  {
+    "case": "large-one",
+    "lakes": 1,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=9",
+      "h=9",
+      "teams=1",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-one-l1-s13.json"
+    ]
+  },
+  {
+    "case": "large-one",
+    "lakes": 3,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=9",
+      "h=9",
+      "teams=1",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-one-l3-s11.json"
+    ]
+  },
+  {
+    "case": "large-one",
+    "lakes": 3,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=9",
+      "h=9",
+      "teams=1",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-one-l3-s13.json"
+    ]
+  },
+  {
+    "case": "large-forts",
+    "lakes": 0,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=8",
+      "h=8",
+      "teams=4",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-forts-l0-s11.json",
+      "home-size=26",
+      "village-size=12",
+      "river-width=13"
+    ]
+  },
+  {
+    "case": "large-forts",
+    "lakes": 0,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=8",
+      "h=8",
+      "teams=4",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-forts-l0-s13.json",
+      "home-size=26",
+      "village-size=12",
+      "river-width=13"
+    ]
+  },
+  {
+    "case": "large-forts",
+    "lakes": 1,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=8",
+      "h=8",
+      "teams=4",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-forts-l1-s11.json",
+      "home-size=26",
+      "village-size=12",
+      "river-width=13"
+    ]
+  },
+  {
+    "case": "large-forts",
+    "lakes": 1,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=8",
+      "h=8",
+      "teams=4",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-forts-l1-s13.json",
+      "home-size=26",
+      "village-size=12",
+      "river-width=13"
+    ]
+  },
+  {
+    "case": "large-forts",
+    "lakes": 3,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=8",
+      "h=8",
+      "teams=4",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-forts-l3-s11.json",
+      "home-size=26",
+      "village-size=12",
+      "river-width=13"
+    ]
+  },
+  {
+    "case": "large-forts",
+    "lakes": 3,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=8",
+      "h=8",
+      "teams=4",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/large-forts-l3-s13.json",
+      "home-size=26",
+      "village-size=12",
+      "river-width=13"
+    ]
+  },
+  {
+    "case": "small-towns",
+    "lakes": 0,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=8",
+      "h=8",
+      "teams=4",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/small-towns-l0-s11.json",
+      "village-size=8",
+      "river-width=3"
+    ]
+  },
+  {
+    "case": "small-towns",
+    "lakes": 0,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=8",
+      "h=8",
+      "teams=4",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/small-towns-l0-s13.json",
+      "village-size=8",
+      "river-width=3"
+    ]
+  },
+  {
+    "case": "small-towns",
+    "lakes": 1,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=8",
+      "h=8",
+      "teams=4",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/small-towns-l1-s11.json",
+      "village-size=8",
+      "river-width=3"
+    ]
+  },
+  {
+    "case": "small-towns",
+    "lakes": 1,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=8",
+      "h=8",
+      "teams=4",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/small-towns-l1-s13.json",
+      "village-size=8",
+      "river-width=3"
+    ]
+  },
+  {
+    "case": "small-towns",
+    "lakes": 3,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=8",
+      "h=8",
+      "teams=4",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/small-towns-l3-s11.json",
+      "village-size=8",
+      "river-width=3"
+    ]
+  },
+  {
+    "case": "small-towns",
+    "lakes": 3,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=8",
+      "h=8",
+      "teams=4",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/small-towns-l3-s13.json",
+      "village-size=8",
+      "river-width=3"
+    ]
+  },
+  {
+    "case": "scarce",
+    "lakes": 0,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/scarce-l0-s11.json",
+      "wheat-amount=0",
+      "wood-amount=0",
+      "stone-amount=0",
+      "fruit-amount=0",
+      "algae-amount=0"
+    ]
+  },
+  {
+    "case": "scarce",
+    "lakes": 0,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/scarce-l0-s13.json",
+      "wheat-amount=0",
+      "wood-amount=0",
+      "stone-amount=0",
+      "fruit-amount=0",
+      "algae-amount=0"
+    ]
+  },
+  {
+    "case": "scarce",
+    "lakes": 1,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/scarce-l1-s11.json",
+      "wheat-amount=0",
+      "wood-amount=0",
+      "stone-amount=0",
+      "fruit-amount=0",
+      "algae-amount=0"
+    ]
+  },
+  {
+    "case": "scarce",
+    "lakes": 1,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/scarce-l1-s13.json",
+      "wheat-amount=0",
+      "wood-amount=0",
+      "stone-amount=0",
+      "fruit-amount=0",
+      "algae-amount=0"
+    ]
+  },
+  {
+    "case": "scarce",
+    "lakes": 3,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/scarce-l3-s11.json",
+      "wheat-amount=0",
+      "wood-amount=0",
+      "stone-amount=0",
+      "fruit-amount=0",
+      "algae-amount=0"
+    ]
+  },
+  {
+    "case": "scarce",
+    "lakes": 3,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/scarce-l3-s13.json",
+      "wheat-amount=0",
+      "wood-amount=0",
+      "stone-amount=0",
+      "fruit-amount=0",
+      "algae-amount=0"
+    ]
+  },
+  {
+    "case": "abundant",
+    "lakes": 0,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/abundant-l0-s11.json",
+      "wheat-amount=300",
+      "wood-amount=300",
+      "stone-amount=300",
+      "fruit-amount=300",
+      "algae-amount=300"
+    ]
+  },
+  {
+    "case": "abundant",
+    "lakes": 0,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=0",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/abundant-l0-s13.json",
+      "wheat-amount=300",
+      "wood-amount=300",
+      "stone-amount=300",
+      "fruit-amount=300",
+      "algae-amount=300"
+    ]
+  },
+  {
+    "case": "abundant",
+    "lakes": 1,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/abundant-l1-s11.json",
+      "wheat-amount=300",
+      "wood-amount=300",
+      "stone-amount=300",
+      "fruit-amount=300",
+      "algae-amount=300"
+    ]
+  },
+  {
+    "case": "abundant",
+    "lakes": 1,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=1",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/abundant-l1-s13.json",
+      "wheat-amount=300",
+      "wood-amount=300",
+      "stone-amount=300",
+      "fruit-amount=300",
+      "algae-amount=300"
+    ]
+  },
+  {
+    "case": "abundant",
+    "lakes": 3,
+    "seed": 11,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "11",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/abundant-l3-s11.json",
+      "wheat-amount=300",
+      "wood-amount=300",
+      "stone-amount=300",
+      "fruit-amount=300",
+      "algae-amount=300"
+    ]
+  },
+  {
+    "case": "abundant",
+    "lakes": 3,
+    "seed": 13,
+    "exit": 0,
+    "status": "completed",
+    "command": [
+      "/Users/bradley/glob2-pr-help/build/src/MapGeneratorStudy",
+      "34",
+      "13",
+      "forts-lake-check",
+      "w=7",
+      "h=7",
+      "teams=4",
+      "lakes=3",
+      "result=/Users/bradley/glob2-pr-help/artifacts/forts-tuning/r5-checks/abundant-l3-s13.json",
+      "wheat-amount=300",
+      "wood-amount=300",
+      "stone-amount=300",
+      "fruit-amount=300",
+      "algae-amount=300"
+    ]
+  }
+]

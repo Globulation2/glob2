@@ -1,0 +1,218 @@
+[
+  {
+    "variant": "baseline-r3",
+    "map_seed": 17,
+    "games": 4,
+    "leaders": [
+      0,
+      0,
+      2,
+      2
+    ],
+    "wins": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "mean_population": [
+      4,
+      7.5,
+      107.25,
+      184.5
+    ],
+    "mean_starvation": 17.6875,
+    "eliminations": 5,
+    "low_population": 6,
+    "worst_best_population_ratio": 0.02168021680216802
+  },
+  {
+    "variant": "baseline-r3",
+    "map_seed": 29,
+    "games": 4,
+    "leaders": [
+      3,
+      0,
+      0,
+      1
+    ],
+    "wins": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "mean_population": [
+      192.5,
+      57.5,
+      5.5,
+      75.5
+    ],
+    "mean_starvation": 19.625,
+    "eliminations": 1,
+    "low_population": 3,
+    "worst_best_population_ratio": 0.02857142857142857
+  },
+  {
+    "variant": "baseline-r3",
+    "map_seed": 43,
+    "games": 4,
+    "leaders": [
+      0,
+      1,
+      2,
+      1
+    ],
+    "wins": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "mean_population": [
+      21,
+      97.5,
+      154.75,
+      127.75
+    ],
+    "mean_starvation": 15.6875,
+    "eliminations": 5,
+    "low_population": 6,
+    "worst_best_population_ratio": 0.13570274636510501
+  },
+  {
+    "variant": "baseline-r3",
+    "map_seed": 61,
+    "games": 4,
+    "leaders": [
+      0,
+      2,
+      1,
+      1
+    ],
+    "wins": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "mean_population": [
+      10.5,
+      126.5,
+      47.25,
+      28
+    ],
+    "mean_starvation": 16.3125,
+    "eliminations": 3,
+    "low_population": 6,
+    "worst_best_population_ratio": 0.08300395256916997
+  },
+  {
+    "variant": "r4",
+    "map_seed": 17,
+    "games": 4,
+    "leaders": [
+      0,
+      1,
+      3,
+      0
+    ],
+    "wins": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "mean_population": [
+      28.5,
+      85.25,
+      183.25,
+      129
+    ],
+    "mean_starvation": 12.9375,
+    "eliminations": 1,
+    "low_population": 3,
+    "worst_best_population_ratio": 0.15552523874488403
+  },
+  {
+    "variant": "r4",
+    "map_seed": 29,
+    "games": 4,
+    "leaders": [
+      2,
+      0,
+      1,
+      1
+    ],
+    "wins": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "mean_population": [
+      157.75,
+      67,
+      101,
+      84.25
+    ],
+    "mean_starvation": 16.125,
+    "eliminations": 1,
+    "low_population": 1,
+    "worst_best_population_ratio": 0.4247226624405705
+  },
+  {
+    "variant": "r4",
+    "map_seed": 43,
+    "games": 4,
+    "leaders": [
+      0,
+      1,
+      1,
+      2
+    ],
+    "wins": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "mean_population": [
+      39,
+      104,
+      64,
+      156.5
+    ],
+    "mean_starvation": 10.5,
+    "eliminations": 4,
+    "low_population": 6,
+    "worst_best_population_ratio": 0.24920127795527156
+  },
+  {
+    "variant": "r4",
+    "map_seed": 61,
+    "games": 4,
+    "leaders": [
+      1,
+      2,
+      0,
+      1
+    ],
+    "wins": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "mean_population": [
+      41.5,
+      138,
+      49.5,
+      58.75
+    ],
+    "mean_starvation": 18.5,
+    "eliminations": 6,
+    "low_population": 8,
+    "worst_best_population_ratio": 0.3007246376811594
+  }
+]

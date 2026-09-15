@@ -1,0 +1,24 @@
+{
+  "initial.game": {
+    "mac_sha256": "fbb5efa39a04475d1f1a594b8906a608ac2d65696f22e424cc0e3be46b2c5c33",
+    "linux_sha256": "ad923224b029514923d5ce269e4fc260b77b2e12952ee6928586d4b277cf8e89",
+    "bytes_equal": false,
+    "mac_bytes": 5673084,
+    "linux_bytes": 5673084
+  },
+  "game.replay": {
+    "mac_sha256": "a469c7d335f027336c41ecb3919e1359f8d78c81a6d3ed2d2e999556eb10c5d6",
+    "linux_sha256": "f9e9b6b5e51134134730f914df5867825d0d53d0cbb87bab5e2065b16c522163",
+    "bytes_equal": false,
+    "mac_bytes": 5687028,
+    "linux_bytes": 5687028
+  },
+  "game.replay.checksums": {
+    "mac_sha256": "22a19bf9123c2794e53399a60d9699e89c9924d24a2817469f397806a32f1017",
+    "linux_sha256": "22a19bf9123c2794e53399a60d9699e89c9924d24a2817469f397806a32f1017",
+    "bytes_equal": true,
+    "mac_bytes": 20286608,
+    "linux_bytes": 20286608,
+    "ticks": 4096
+  }
+}

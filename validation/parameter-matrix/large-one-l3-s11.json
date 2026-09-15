@@ -1,0 +1,1396 @@
+{"schema_version":1,"job_type":"generate_map","status":"completed","generator":"forts","revision":5,"map_seed":11,"chosen_seed":11,"candidates":0,"seconds":0.162302,"diagnostic":"forts revision 5 seed 11 [complete]: ","request":{"method":34,"width":9,"height":9,"teams":1,"workers":4,"options":{"algae-amount":100,"fruit-amount":100,"gate-width":6,"home-size":22,"lakes":3,"river-width":9,"stone-amount":100,"village-size":10,"wheat-amount":100,"wood-amount":100}},"statistics":{"tiles":262144,"grass_tiles":214301,"sand_tiles":607,"water_tiles":40100,"shore":7136,"free":164309,"fit4":140240,"wheat_tiles":9804,"wood_tiles":35112,"stone_tiles":3888,"algae_tiles":3782},"quality":{"score":0.420497,"fairness":1,"worst":0.420497,"best":0.420497,"colonies":[{"start":0,"wheat_distance":9,"wood_distance":16,"catchment_tiles":1394,"build_sites":374,"resource_amount":139,"rival_distance":-1,"rivals_within_threat":0,"mean_fertility":140.002,"wheat":0.625,"wood":0.5,"fertility":0.0175003,"depth":0.308889,"room":0.415556,"isolation":1,"total":0.420497}]},"map_report":{
+  "schema_version": 2,
+  "report_type": "map",
+  "engine": {
+    "version_major": 0,
+    "version_minor": 107
+  },
+  "map": {
+    "name": null,
+    "width": 512,
+    "height": 512,
+    "tiles": 262144,
+    "wrap_x": true,
+    "wrap_y": true,
+    "player_slots": 1,
+    "controller_count": 0,
+    "saved_game": false,
+    "tick": 0,
+    "game_seed": 11,
+    "colonies": [
+      {
+        "team": 0,
+        "alive": true,
+        "start": {
+          "x": 186,
+          "y": 72,
+          "source": 3
+        },
+        "units": {
+          "workers": 4,
+          "explorers": 0,
+          "warriors": 0
+        },
+        "buildings_and_flags": 1
+      }
+    ],
+    "controllers": []
+  },
+  "generation": {
+    "available": true,
+    "generator": "forts",
+    "legacy_id": 34,
+    "revision": 5,
+    "seed": 11,
+    "parameters": {
+      "width": 512,
+      "height": 512,
+      "teams": 1,
+      "workers": 4,
+      "home-size": 22,
+      "gate-width": 6,
+      "river-width": 9,
+      "lakes": 3,
+      "village-size": 10,
+      "wheat-amount": 100,
+      "wood-amount": 100,
+      "stone-amount": 100,
+      "algae-amount": 100,
+      "fruit-amount": 100
+    },
+    "raw_request": {
+      "method": 34,
+      "width_exponent": 9,
+      "height_exponent": 9,
+      "teams": 1,
+      "workers": 4,
+      "options": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "gate-width": 6,
+        "home-size": 22,
+        "lakes": 3,
+        "river-width": 9,
+        "stone-amount": 100,
+        "village-size": 10,
+        "wheat-amount": 100,
+        "wood-amount": 100
+      }
+    },
+    "legacy_terrain_type": 2,
+    "legacy_resource_amounts": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7
+    ],
+    "telemetry": {
+      "schema_version": 1,
+      "enabled": true,
+      "record_limit": 4096,
+      "dropped_records": 0,
+      "invalid_values": 0,
+      "records": [
+        {
+          "key": "forts.lake.target-water-corners",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 16384
+        },
+        {
+          "key": "forts.lake.placed-water-corners",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 16384
+        },
+        {
+          "key": "forts.lake.target-water-corners",
+          "kind": "measurement",
+          "subject": 1,
+          "value": 16384
+        },
+        {
+          "key": "forts.lake.placed-water-corners",
+          "kind": "measurement",
+          "subject": 1,
+          "value": 16384
+        },
+        {
+          "key": "forts.lake.target-water-corners",
+          "kind": "measurement",
+          "subject": 2,
+          "value": 16384
+        },
+        {
+          "key": "forts.lake.placed-water-corners",
+          "kind": "measurement",
+          "subject": 2,
+          "value": 821
+        },
+        {
+          "key": "forts.lake.capacity",
+          "kind": "fallback",
+          "subject": 2,
+          "value": "The countryside limits this lake."
+        },
+        {
+          "key": "forts.river.minimum-width-corners",
+          "kind": "measurement",
+          "subject": null,
+          "value": 9
+        },
+        {
+          "key": "forts.river.direction",
+          "kind": "choice",
+          "subject": null,
+          "value": "east-west"
+        },
+        {
+          "key": "forts.towns.requested",
+          "kind": "measurement",
+          "subject": null,
+          "value": 1
+        },
+        {
+          "key": "forts.towns.placed",
+          "kind": "measurement",
+          "subject": null,
+          "value": 1
+        },
+        {
+          "key": "forts.home.half-width",
+          "kind": "measurement",
+          "subject": null,
+          "value": 22
+        },
+        {
+          "key": "forts.homes.placed",
+          "kind": "measurement",
+          "subject": null,
+          "value": 1
+        },
+        {
+          "key": "forts.gates.per-home",
+          "kind": "measurement",
+          "subject": null,
+          "value": 2
+        },
+        {
+          "key": "forts.river.width-corners",
+          "kind": "measurement",
+          "subject": null,
+          "value": 9
+        },
+        {
+          "key": "settlement.eligible_sites",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 478
+        },
+        {
+          "key": "settlement.nearest_ties",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 1
+        },
+        {
+          "key": "settlement.nearest_distance_squared",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 0
+        },
+        {
+          "key": "settlement.requested_workers",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 4
+        },
+        {
+          "key": "settlement.initial_worker_room",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 20
+        },
+        {
+          "key": "settlement.worker_tiles",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 20
+        },
+        {
+          "key": "settlement.placed_workers",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 4
+        },
+        {
+          "key": "forts.plot.target-tiles",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 64
+        },
+        {
+          "key": "forts.plot.planted-tiles",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 64
+        },
+        {
+          "key": "forts.plot.planted-growth-sum",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 354062
+        },
+        {
+          "key": "forts.plot.target-tiles",
+          "kind": "measurement",
+          "subject": 1,
+          "value": 48
+        },
+        {
+          "key": "forts.plot.planted-tiles",
+          "kind": "measurement",
+          "subject": 1,
+          "value": 48
+        },
+        {
+          "key": "forts.plot.planted-growth-sum",
+          "kind": "measurement",
+          "subject": 1,
+          "value": 297582
+        },
+        {
+          "key": "forts.orchard.target-tiles",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 3
+        },
+        {
+          "key": "forts.orchard.planted-tiles",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 3
+        },
+        {
+          "key": "forts.orchard.target-tiles",
+          "kind": "measurement",
+          "subject": 1,
+          "value": 3
+        },
+        {
+          "key": "forts.orchard.planted-tiles",
+          "kind": "measurement",
+          "subject": 1,
+          "value": 3
+        },
+        {
+          "key": "forts.orchard.target-tiles",
+          "kind": "measurement",
+          "subject": 2,
+          "value": 3
+        },
+        {
+          "key": "forts.orchard.planted-tiles",
+          "kind": "measurement",
+          "subject": 2,
+          "value": 3
+        },
+        {
+          "key": "forts.uplands.stone-tiles",
+          "kind": "measurement",
+          "subject": null,
+          "value": 2125
+        },
+        {
+          "key": "forts.forest.planted-tiles",
+          "kind": "measurement",
+          "subject": null,
+          "value": 35064
+        },
+        {
+          "key": "resources.starting.wheat_range",
+          "kind": "measurement",
+          "subject": null,
+          "value": 24
+        },
+        {
+          "key": "resources.starting.wood_range",
+          "kind": "measurement",
+          "subject": null,
+          "value": 32
+        },
+        {
+          "key": "resources.starting.clear_radius",
+          "kind": "measurement",
+          "subject": null,
+          "value": 0
+        },
+        {
+          "key": "resources.starting_wheat.before_distance",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 13
+        },
+        {
+          "key": "resources.starting_wood.before_distance",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 20
+        },
+        {
+          "key": "resources.starting.wall_clear_rounds",
+          "kind": "measurement",
+          "subject": 0,
+          "value": 0
+        },
+        {
+          "key": "resources.starting_wheat.topup_needed",
+          "kind": "measurement",
+          "subject": 0,
+          "value": false
+        },
+        {
+          "key": "resources.starting_wood.topup_needed",
+          "kind": "measurement",
+          "subject": 0,
+          "value": false
+        },
+        {
+          "key": "pipeline.cramped_relief.enabled",
+          "kind": "measurement",
+          "subject": null,
+          "value": false
+        }
+      ]
+    },
+    "outcome": {
+      "success": true,
+      "stage": "complete",
+      "error": "none",
+      "detail": ""
+    },
+    "selection_quality": {
+      "measured": true,
+      "unavailable_reason": null,
+      "weights": {
+        "wheat": 0.22,
+        "wood": 0.22,
+        "fertility": 0.25,
+        "depth": 0.12,
+        "room": 0.10000000000000001,
+        "isolation": 0.089999999999999997
+      },
+      "scale": {
+        "catchment_steps": 24,
+        "wheat_reference": 24,
+        "wood_reference": 32,
+        "fertility_reference": 8000,
+        "depth_reference": 450,
+        "room_reference": 900,
+        "isolation_reference": 60,
+        "threat_radius": 40,
+        "crowd_penalty": 0.14999999999999999,
+        "fairness_exponent": 1
+      },
+      "worst": 0.42049728947473303,
+      "best": 0.42049728947473303,
+      "fairness": 1,
+      "score": 0.42049728947473303,
+      "colony_totals": {
+        "count": 1,
+        "min": 0.42049728947473303,
+        "max": 0.42049728947473303,
+        "mean": 0.42049728947473303,
+        "stddev": 0,
+        "median": 0.42049728947473303,
+        "p10": 0.42049728947473303,
+        "p90": 0.42049728947473303
+      },
+      "colonies": [
+        {
+          "team": 0,
+          "raw": {
+            "wheat_distance": 9,
+            "wood_distance": 16,
+            "catchment_tiles": 1394,
+            "build_sites_4x4": 374,
+            "wheat_and_wood_amount": 139,
+            "mean_fertility": 140.00215208034433,
+            "nearest_rival_distance": null,
+            "rivals_within_threat": 0
+          },
+          "normalized": {
+            "wheat": 0.625,
+            "wood": 0.5,
+            "fertility": 0.017500269010043042,
+            "depth": 0.30888888888888888,
+            "room": 0.41555555555555557,
+            "isolation": 1
+          },
+          "total": 0.42049728947473303
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "percent_denominator": "All map tiles unless the field says otherwise; percentages are 0..100",
+    "distance": "Eight-neighbor toroidal minimum cost between current ground-unit tile sets; ignores transient unit collisions, fog, diplomacy and orders",
+    "unreachable": "null; diagonal colony distances are zero even without sources",
+    "resource_access": "Minimum cost to a neighboring tile plus one; only deposits with positive stored amount count",
+    "catchment_cost": 24,
+    "resource_amount": "Stored amount is a snapshot, not lifetime supply; eternal deposits are not finite stockpiles",
+    "components": "Toroidal; terrain land/water are four-connected, resource patches and movement are eight-connected",
+    "canonical_quality": "Production scoreStarts with common default weights/scales, independent of generator; uses its own ground-unit passability rule",
+    "quality_formula": "total = weighted mean of normalized factors, forced to 0 if wheat/wood unreachable; fairness = worst/best or 0 when best=0; score = worst * fairness^exponent",
+    "percentiles": "Linear interpolation at p*(count-1); stddev is population standard deviation"
+  },
+  "terrain": {
+    "grass": {
+      "tiles": 214301,
+      "percent": 81.749343872070312
+    },
+    "grass_sand_border": {
+      "tiles": 3576,
+      "percent": 1.3641357421875
+    },
+    "sand": {
+      "tiles": 607,
+      "percent": 0.2315521240234375
+    },
+    "sand_water_border": {
+      "tiles": 3560,
+      "percent": 1.3580322265625
+    },
+    "water": {
+      "tiles": 40100,
+      "percent": 15.29693603515625
+    },
+    "unknown": {
+      "tiles": 0,
+      "percent": 0
+    }
+  },
+  "underlying_terrain": {
+    "water": {
+      "tiles": 41880,
+      "percent": 15.9759521484375
+    },
+    "sand": {
+      "tiles": 4188,
+      "percent": 1.59759521484375
+    },
+    "grass": {
+      "tiles": 216076,
+      "percent": 82.42645263671875
+    },
+    "unknown": {
+      "tiles": 0,
+      "percent": 0
+    }
+  },
+  "resources": {
+    "occupied": {
+      "tiles": 53754,
+      "percent": 20.505523681640625
+    },
+    "unknown_type_tiles": 0,
+    "types": {
+      "wood": {
+        "coverage": {
+          "tiles": 35112,
+          "percent": 13.3941650390625
+        },
+        "percent_of_resource_tiles": 65.319790155151239,
+        "stored_amount": 87870,
+        "harvestable_tiles": 35112,
+        "eternal": false,
+        "clearable": true,
+        "amount_per_deposit": {
+          "count": 35112,
+          "min": 1,
+          "max": 4,
+          "mean": 2.5025632262474367,
+          "stddev": 1.1182348208390818,
+          "median": 3,
+          "p10": 1,
+          "p90": 4
+        },
+        "patches": {
+          "components": 17,
+          "passable": {
+            "tiles": 35112,
+            "percent": 13.3941650390625
+          },
+          "largest_component_tiles": 12344,
+          "largest_component_percent_of_passable": 35.156071998177261,
+          "component_sizes": {
+            "count": 17,
+            "min": 12,
+            "max": 12344,
+            "mean": 2065.4117647058824,
+            "stddev": 3074.7670989528242,
+            "median": 1055,
+            "p10": 24.199999999999999,
+            "p90": 4651.6000000000004
+          }
+        }
+      },
+      "wheat": {
+        "coverage": {
+          "tiles": 9804,
+          "percent": 3.73992919921875
+        },
+        "percent_of_resource_tiles": 18.238642705659114,
+        "stored_amount": 24516,
+        "harvestable_tiles": 9804,
+        "eternal": false,
+        "clearable": true,
+        "amount_per_deposit": {
+          "count": 9804,
+          "min": 1,
+          "max": 4,
+          "mean": 2.5006119951040393,
+          "stddev": 1.116299089164656,
+          "median": 2,
+          "p10": 1,
+          "p90": 4
+        },
+        "patches": {
+          "components": 39,
+          "passable": {
+            "tiles": 9804,
+            "percent": 3.73992919921875
+          },
+          "largest_component_tiles": 1166,
+          "largest_component_percent_of_passable": 11.893104855161159,
+          "component_sizes": {
+            "count": 39,
+            "min": 1,
+            "max": 1166,
+            "mean": 251.38461538461539,
+            "stddev": 290.445247533155,
+            "median": 187,
+            "p10": 9.6000000000000014,
+            "p90": 656.20000000000005
+          }
+        }
+      },
+      "papyrus": {
+        "coverage": {
+          "tiles": 0,
+          "percent": 0
+        },
+        "percent_of_resource_tiles": 0,
+        "stored_amount": 0,
+        "harvestable_tiles": 0,
+        "eternal": false,
+        "clearable": true,
+        "amount_per_deposit": {
+          "count": 0,
+          "min": null,
+          "max": null,
+          "mean": null,
+          "stddev": null,
+          "median": null,
+          "p10": null,
+          "p90": null
+        },
+        "patches": {
+          "components": 0,
+          "passable": {
+            "tiles": 0,
+            "percent": 0
+          },
+          "largest_component_tiles": 0,
+          "largest_component_percent_of_passable": null,
+          "component_sizes": {
+            "count": 0,
+            "min": null,
+            "max": null,
+            "mean": null,
+            "stddev": null,
+            "median": null,
+            "p10": null,
+            "p90": null
+          }
+        }
+      },
+      "stone": {
+        "coverage": {
+          "tiles": 3888,
+          "percent": 1.483154296875
+        },
+        "percent_of_resource_tiles": 7.2329501060386203,
+        "stored_amount": 9651,
+        "harvestable_tiles": 3888,
+        "eternal": true,
+        "clearable": false,
+        "amount_per_deposit": {
+          "count": 3888,
+          "min": 1,
+          "max": 4,
+          "mean": 2.4822530864197532,
+          "stddev": 1.1188130586595257,
+          "median": 2,
+          "p10": 1,
+          "p90": 4
+        },
+        "patches": {
+          "components": 351,
+          "passable": {
+            "tiles": 3888,
+            "percent": 1.483154296875
+          },
+          "largest_component_tiles": 888,
+          "largest_component_percent_of_passable": 22.839506172839506,
+          "component_sizes": {
+            "count": 351,
+            "min": 1,
+            "max": 888,
+            "mean": 11.076923076923077,
+            "stddev": 62.575695997438835,
+            "median": 4,
+            "p10": 3,
+            "p90": 5
+          }
+        }
+      },
+      "algae": {
+        "coverage": {
+          "tiles": 3782,
+          "percent": 1.442718505859375
+        },
+        "percent_of_resource_tiles": 7.0357554786620531,
+        "stored_amount": 9485,
+        "harvestable_tiles": 3782,
+        "eternal": false,
+        "clearable": true,
+        "amount_per_deposit": {
+          "count": 3782,
+          "min": 1,
+          "max": 4,
+          "mean": 2.5079323109465892,
+          "stddev": 1.1151642164658189,
+          "median": 3,
+          "p10": 1,
+          "p90": 4
+        },
+        "patches": {
+          "components": 695,
+          "passable": {
+            "tiles": 3782,
+            "percent": 1.442718505859375
+          },
+          "largest_component_tiles": 34,
+          "largest_component_percent_of_passable": 0.89899524061343206,
+          "component_sizes": {
+            "count": 695,
+            "min": 1,
+            "max": 34,
+            "mean": 5.4417266187050357,
+            "stddev": 3.4527415711166887,
+            "median": 4,
+            "p10": 3,
+            "p90": 9
+          }
+        }
+      },
+      "cherry": {
+        "coverage": {
+          "tiles": 403,
+          "percent": 0.1537322998046875
+        },
+        "percent_of_resource_tiles": 0.74971164936562862,
+        "stored_amount": 812,
+        "harvestable_tiles": 403,
+        "eternal": true,
+        "clearable": false,
+        "amount_per_deposit": {
+          "count": 403,
+          "min": 1,
+          "max": 3,
+          "mean": 2.0148883374689825,
+          "stddev": 0.8183847038597597,
+          "median": 2,
+          "p10": 1,
+          "p90": 3
+        },
+        "patches": {
+          "components": 101,
+          "passable": {
+            "tiles": 403,
+            "percent": 0.1537322998046875
+          },
+          "largest_component_tiles": 5,
+          "largest_component_percent_of_passable": 1.2406947890818858,
+          "component_sizes": {
+            "count": 101,
+            "min": 1,
+            "max": 5,
+            "mean": 3.9900990099009901,
+            "stddev": 0.93866399164287917,
+            "median": 4,
+            "p10": 3,
+            "p90": 5
+          }
+        }
+      },
+      "orange": {
+        "coverage": {
+          "tiles": 365,
+          "percent": 0.1392364501953125
+        },
+        "percent_of_resource_tiles": 0.67901923577780254,
+        "stored_amount": 734,
+        "harvestable_tiles": 365,
+        "eternal": true,
+        "clearable": false,
+        "amount_per_deposit": {
+          "count": 365,
+          "min": 1,
+          "max": 3,
+          "mean": 2.010958904109589,
+          "stddev": 0.8341284753439473,
+          "median": 2,
+          "p10": 1,
+          "p90": 3
+        },
+        "patches": {
+          "components": 95,
+          "passable": {
+            "tiles": 365,
+            "percent": 0.1392364501953125
+          },
+          "largest_component_tiles": 5,
+          "largest_component_percent_of_passable": 1.3698630136986301,
+          "component_sizes": {
+            "count": 95,
+            "min": 1,
+            "max": 5,
+            "mean": 3.8421052631578947,
+            "stddev": 1.0189343191856894,
+            "median": 4,
+            "p10": 2,
+            "p90": 5
+          }
+        }
+      },
+      "prune": {
+        "coverage": {
+          "tiles": 400,
+          "percent": 0.152587890625
+        },
+        "percent_of_resource_tiles": 0.74413066934553707,
+        "stored_amount": 794,
+        "harvestable_tiles": 400,
+        "eternal": true,
+        "clearable": false,
+        "amount_per_deposit": {
+          "count": 400,
+          "min": 1,
+          "max": 3,
+          "mean": 1.9850000000000001,
+          "stddev": 0.83652555250870775,
+          "median": 2,
+          "p10": 1,
+          "p90": 3
+        },
+        "patches": {
+          "components": 98,
+          "passable": {
+            "tiles": 400,
+            "percent": 0.152587890625
+          },
+          "largest_component_tiles": 8,
+          "largest_component_percent_of_passable": 2,
+          "component_sizes": {
+            "count": 98,
+            "min": 2,
+            "max": 8,
+            "mean": 4.0816326530612246,
+            "stddev": 0.94408436785472449,
+            "median": 4,
+            "p10": 3,
+            "p90": 5
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "building_footprint": {
+      "tiles": 16,
+      "percent": 0.006103515625
+    },
+    "buildable": {
+      "tiles": 164309,
+      "percent": 62.678909301757812
+    },
+    "build_sites_4x4": 140240,
+    "growth_disabled": {
+      "tiles": 0,
+      "percent": 0
+    },
+    "land_regions": {
+      "components": 5,
+      "passable": {
+        "tiles": 222044,
+        "percent": 84.70306396484375
+      },
+      "largest_component_tiles": 218294,
+      "largest_component_percent_of_passable": 98.311145538722059,
+      "component_sizes": {
+        "count": 5,
+        "min": 12,
+        "max": 218294,
+        "mean": 44408.800000000003,
+        "stddev": 86952.93001480744,
+        "median": 166,
+        "p10": 23.600000000000001,
+        "p90": 132388.80000000002
+      }
+    },
+    "water_regions": {
+      "components": 6,
+      "passable": {
+        "tiles": 40100,
+        "percent": 15.29693603515625
+      },
+      "largest_component_tiles": 39767,
+      "largest_component_percent_of_passable": 99.169576059850371,
+      "component_sizes": {
+        "count": 6,
+        "min": 18,
+        "max": 39767,
+        "mean": 6683.333333333333,
+        "stddev": 14795.612093530372,
+        "median": 44,
+        "p10": 18,
+        "p90": 19988
+      }
+    }
+  },
+  "fertility": {
+    "scale": 65536,
+    "all_tiles": {
+      "count": 262144,
+      "min": 0,
+      "max": 46981,
+      "mean": 806.25197982788086,
+      "stddev": 3238.2534440258423,
+      "median": 0,
+      "p10": 0,
+      "p90": 399
+    },
+    "grass_tiles": {
+      "count": 214301,
+      "min": 0,
+      "max": 46981,
+      "mean": 986.24886958063655,
+      "stddev": 3556.6615825005583,
+      "median": 0,
+      "p10": 0,
+      "p90": 1446
+    },
+    "potential_grass_ignoring_deposit_reachability": {
+      "count": 214301,
+      "min": 0,
+      "max": 56932,
+      "mean": 1074.7220544934462,
+      "stddev": 3762.194700514639,
+      "median": 0,
+      "p10": 0,
+      "p90": 1870
+    },
+    "positive_grass": {
+      "tiles": 35066,
+      "percent": 16.362966108417599
+    }
+  },
+  "canonical_quality": {
+    "measured": true,
+    "unavailable_reason": null,
+    "weights": {
+      "wheat": 0.22,
+      "wood": 0.22,
+      "fertility": 0.25,
+      "depth": 0.12,
+      "room": 0.10000000000000001,
+      "isolation": 0.089999999999999997
+    },
+    "scale": {
+      "catchment_steps": 24,
+      "wheat_reference": 24,
+      "wood_reference": 32,
+      "fertility_reference": 8000,
+      "depth_reference": 450,
+      "room_reference": 900,
+      "isolation_reference": 60,
+      "threat_radius": 40,
+      "crowd_penalty": 0.14999999999999999,
+      "fairness_exponent": 1
+    },
+    "worst": 0.42049728947473303,
+    "best": 0.42049728947473303,
+    "fairness": 1,
+    "score": 0.42049728947473303,
+    "colony_totals": {
+      "count": 1,
+      "min": 0.42049728947473303,
+      "max": 0.42049728947473303,
+      "mean": 0.42049728947473303,
+      "stddev": 0,
+      "median": 0.42049728947473303,
+      "p10": 0.42049728947473303,
+      "p90": 0.42049728947473303
+    },
+    "colonies": [
+      {
+        "team": 0,
+        "raw": {
+          "wheat_distance": 9,
+          "wood_distance": 16,
+          "catchment_tiles": 1394,
+          "build_sites_4x4": 374,
+          "wheat_and_wood_amount": 139,
+          "mean_fertility": 140.00215208034433,
+          "nearest_rival_distance": null,
+          "rivals_within_threat": 0
+        },
+        "normalized": {
+          "wheat": 0.625,
+          "wood": 0.5,
+          "fertility": 0.017500269010043042,
+          "depth": 0.30888888888888888,
+          "room": 0.41555555555555557,
+          "isolation": 1
+        },
+        "total": 0.42049728947473303
+      }
+    ]
+  },
+  "start_position_euclidean_distances": [
+    [
+      0
+    ]
+  ],
+  "movement": {
+    "walking": {
+      "step_costs": {
+        "open": 1,
+        "water": null,
+        "clearable_resource": null,
+        "eternal_resource": null,
+        "building": null
+      },
+      "between_colonies": [
+        [
+          0
+        ]
+      ],
+      "nearest_rival": [
+        null
+      ],
+      "nearest_rival_spread": null,
+      "unreachable_directed_pairs": 0,
+      "directed_pair_costs": {
+        "count": 0,
+        "min": null,
+        "max": null,
+        "mean": null,
+        "stddev": null,
+        "median": null,
+        "p10": null,
+        "p90": null
+      },
+      "connectivity": {
+        "components": 6,
+        "passable": {
+          "tiles": 172056,
+          "percent": 65.6341552734375
+        },
+        "largest_component_tiles": 168663,
+        "largest_component_percent_of_passable": 98.0279676384433,
+        "component_sizes": {
+          "count": 6,
+          "min": 12,
+          "max": 168663,
+          "mean": 28676,
+          "stddev": 62613.342294860231,
+          "median": 153,
+          "p10": 26.5,
+          "p90": 85848.5
+        }
+      },
+      "territory": {
+        "unreachable_tiles": 259110,
+        "tied_tiles": 0,
+        "cost_to_closest_colony": {
+          "count": 3034,
+          "min": 0,
+          "max": 65,
+          "mean": 29.302241265655901,
+          "stddev": 17.749983471441777,
+          "median": 26,
+          "p10": 7,
+          "p90": 55
+        }
+      },
+      "colonies": [
+        {
+          "team": 0,
+          "source_tiles": 4,
+          "reachable": {
+            "tiles": 3034,
+            "percent": 1.157379150390625
+          },
+          "catchment_tiles": 1394,
+          "reachable_build_sites_4x4": 450,
+          "catchment_build_sites_4x4": 374,
+          "exclusive_nearest_territory_tiles": 3034,
+          "tied_nearest_territory_tiles": 0,
+          "resources": {
+            "wood": {
+              "nearest_gather_cost": 16,
+              "reachable_deposit_tiles": 30,
+              "reachable_stored_amount": 73,
+              "catchment_deposit_tiles": 24,
+              "catchment_stored_amount": 54
+            },
+            "wheat": {
+              "nearest_gather_cost": 9,
+              "reachable_deposit_tiles": 32,
+              "reachable_stored_amount": 85,
+              "catchment_deposit_tiles": 32,
+              "catchment_stored_amount": 85
+            },
+            "papyrus": {
+              "nearest_gather_cost": null,
+              "reachable_deposit_tiles": 0,
+              "reachable_stored_amount": 0,
+              "catchment_deposit_tiles": 0,
+              "catchment_stored_amount": 0
+            },
+            "stone": {
+              "nearest_gather_cost": 10,
+              "reachable_deposit_tiles": 324,
+              "reachable_stored_amount": 824,
+              "catchment_deposit_tiles": 99,
+              "catchment_stored_amount": 246
+            },
+            "algae": {
+              "nearest_gather_cost": 16,
+              "reachable_deposit_tiles": 43,
+              "reachable_stored_amount": 108,
+              "catchment_deposit_tiles": 6,
+              "catchment_stored_amount": 13
+            },
+            "cherry": {
+              "nearest_gather_cost": 25,
+              "reachable_deposit_tiles": 3,
+              "reachable_stored_amount": 9,
+              "catchment_deposit_tiles": 3,
+              "catchment_stored_amount": 9
+            },
+            "orange": {
+              "nearest_gather_cost": 25,
+              "reachable_deposit_tiles": 3,
+              "reachable_stored_amount": 6,
+              "catchment_deposit_tiles": 3,
+              "catchment_stored_amount": 6
+            },
+            "prune": {
+              "nearest_gather_cost": 25,
+              "reachable_deposit_tiles": 3,
+              "reachable_stored_amount": 7,
+              "catchment_deposit_tiles": 3,
+              "catchment_stored_amount": 7
+            }
+          }
+        }
+      ]
+    },
+    "walking_and_swimming": {
+      "step_costs": {
+        "open": 1,
+        "water": 1,
+        "clearable_resource": null,
+        "eternal_resource": null,
+        "building": null
+      },
+      "between_colonies": [
+        [
+          0
+        ]
+      ],
+      "nearest_rival": [
+        null
+      ],
+      "nearest_rival_spread": null,
+      "unreachable_directed_pairs": 0,
+      "directed_pair_costs": {
+        "count": 0,
+        "min": null,
+        "max": null,
+        "mean": null,
+        "stddev": null,
+        "median": null,
+        "p10": null,
+        "p90": null
+      },
+      "connectivity": {
+        "components": 2,
+        "passable": {
+          "tiles": 208374,
+          "percent": 79.488372802734375
+        },
+        "largest_component_tiles": 208209,
+        "largest_component_percent_of_passable": 99.920815456822822,
+        "component_sizes": {
+          "count": 2,
+          "min": 165,
+          "max": 208209,
+          "mean": 104187,
+          "stddev": 104022,
+          "median": 104187,
+          "p10": 20969.400000000001,
+          "p90": 187404.60000000001
+        }
+      },
+      "territory": {
+        "unreachable_tiles": 53935,
+        "tied_tiles": 0,
+        "cost_to_closest_colony": {
+          "count": 208209,
+          "min": 0,
+          "max": 296,
+          "mean": 177.1694163076524,
+          "stddev": 61.942096175256083,
+          "median": 189,
+          "p10": 84,
+          "p90": 249
+        }
+      },
+      "colonies": [
+        {
+          "team": 0,
+          "source_tiles": 4,
+          "reachable": {
+            "tiles": 208209,
+            "percent": 79.425430297851562
+          },
+          "catchment_tiles": 1742,
+          "reachable_build_sites_4x4": 140175,
+          "catchment_build_sites_4x4": 374,
+          "exclusive_nearest_territory_tiles": 208209,
+          "tied_nearest_territory_tiles": 0,
+          "resources": {
+            "wood": {
+              "nearest_gather_cost": 16,
+              "reachable_deposit_tiles": 3583,
+              "reachable_stored_amount": 9018,
+              "catchment_deposit_tiles": 24,
+              "catchment_stored_amount": 54
+            },
+            "wheat": {
+              "nearest_gather_cost": 9,
+              "reachable_deposit_tiles": 3369,
+              "reachable_stored_amount": 8372,
+              "catchment_deposit_tiles": 32,
+              "catchment_stored_amount": 85
+            },
+            "papyrus": {
+              "nearest_gather_cost": null,
+              "reachable_deposit_tiles": 0,
+              "reachable_stored_amount": 0,
+              "catchment_deposit_tiles": 0,
+              "catchment_stored_amount": 0
+            },
+            "stone": {
+              "nearest_gather_cost": 10,
+              "reachable_deposit_tiles": 1723,
+              "reachable_stored_amount": 4306,
+              "catchment_deposit_tiles": 99,
+              "catchment_stored_amount": 246
+            },
+            "algae": {
+              "nearest_gather_cost": 16,
+              "reachable_deposit_tiles": 3781,
+              "reachable_stored_amount": 9483,
+              "catchment_deposit_tiles": 22,
+              "catchment_stored_amount": 45
+            },
+            "cherry": {
+              "nearest_gather_cost": 25,
+              "reachable_deposit_tiles": 403,
+              "reachable_stored_amount": 812,
+              "catchment_deposit_tiles": 3,
+              "catchment_stored_amount": 9
+            },
+            "orange": {
+              "nearest_gather_cost": 25,
+              "reachable_deposit_tiles": 365,
+              "reachable_stored_amount": 734,
+              "catchment_deposit_tiles": 3,
+              "catchment_stored_amount": 6
+            },
+            "prune": {
+              "nearest_gather_cost": 25,
+              "reachable_deposit_tiles": 400,
+              "reachable_stored_amount": 794,
+              "catchment_deposit_tiles": 3,
+              "catchment_stored_amount": 7
+            }
+          }
+        }
+      ]
+    },
+    "walking_and_clearing": {
+      "step_costs": {
+        "open": 1,
+        "water": null,
+        "clearable_resource": 4,
+        "eternal_resource": null,
+        "building": null
+      },
+      "between_colonies": [
+        [
+          0
+        ]
+      ],
+      "nearest_rival": [
+        null
+      ],
+      "nearest_rival_spread": null,
+      "unreachable_directed_pairs": 0,
+      "directed_pair_costs": {
+        "count": 0,
+        "min": null,
+        "max": null,
+        "mean": null,
+        "stddev": null,
+        "median": null,
+        "p10": null,
+        "p90": null
+      },
+      "connectivity": {
+        "components": 5,
+        "passable": {
+          "tiles": 216972,
+          "percent": 82.76824951171875
+        },
+        "largest_component_tiles": 213607,
+        "largest_component_percent_of_passable": 98.449108640746275,
+        "component_sizes": {
+          "count": 5,
+          "min": 12,
+          "max": 213607,
+          "mean": 43394.400000000001,
+          "stddev": 85114.637271388288,
+          "median": 166,
+          "p10": 23.600000000000001,
+          "p90": 129422.60000000002
+        }
+      },
+      "territory": {
+        "unreachable_tiles": 258998,
+        "tied_tiles": 0,
+        "cost_to_closest_colony": {
+          "count": 3146,
+          "min": 0,
+          "max": 65,
+          "mean": 29.040368722186905,
+          "stddev": 17.51088911218207,
+          "median": 26,
+          "p10": 7,
+          "p90": 55
+        }
+      },
+      "colonies": [
+        {
+          "team": 0,
+          "source_tiles": 4,
+          "reachable": {
+            "tiles": 3146,
+            "percent": 1.200103759765625
+          },
+          "catchment_tiles": 1469,
+          "reachable_build_sites_4x4": 450,
+          "catchment_build_sites_4x4": 374,
+          "exclusive_nearest_territory_tiles": 3146,
+          "tied_nearest_territory_tiles": 0,
+          "resources": {
+            "wood": {
+              "nearest_gather_cost": 16,
+              "reachable_deposit_tiles": 48,
+              "reachable_stored_amount": 109,
+              "catchment_deposit_tiles": 35,
+              "catchment_stored_amount": 76
+            },
+            "wheat": {
+              "nearest_gather_cost": 9,
+              "reachable_deposit_tiles": 64,
+              "reachable_stored_amount": 161,
+              "catchment_deposit_tiles": 64,
+              "catchment_stored_amount": 161
+            },
+            "papyrus": {
+              "nearest_gather_cost": null,
+              "reachable_deposit_tiles": 0,
+              "reachable_stored_amount": 0,
+              "catchment_deposit_tiles": 0,
+              "catchment_stored_amount": 0
+            },
+            "stone": {
+              "nearest_gather_cost": 10,
+              "reachable_deposit_tiles": 324,
+              "reachable_stored_amount": 824,
+              "catchment_deposit_tiles": 99,
+              "catchment_stored_amount": 246
+            },
+            "algae": {
+              "nearest_gather_cost": 16,
+              "reachable_deposit_tiles": 43,
+              "reachable_stored_amount": 108,
+              "catchment_deposit_tiles": 6,
+              "catchment_stored_amount": 13
+            },
+            "cherry": {
+              "nearest_gather_cost": 25,
+              "reachable_deposit_tiles": 3,
+              "reachable_stored_amount": 9,
+              "catchment_deposit_tiles": 3,
+              "catchment_stored_amount": 9
+            },
+            "orange": {
+              "nearest_gather_cost": 25,
+              "reachable_deposit_tiles": 3,
+              "reachable_stored_amount": 6,
+              "catchment_deposit_tiles": 3,
+              "catchment_stored_amount": 6
+            },
+            "prune": {
+              "nearest_gather_cost": 25,
+              "reachable_deposit_tiles": 3,
+              "reachable_stored_amount": 7,
+              "catchment_deposit_tiles": 3,
+              "catchment_stored_amount": 7
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+,"rotations":1,"rotations_verified":false}
