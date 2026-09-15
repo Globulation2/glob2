@@ -526,7 +526,7 @@ GeneratorDefinition drumlinFieldDefinition()
 {
 	return {
 		"drumlin-field",
-		33,
+		43,
 		"Drumlin field",
 		1,
 		false,
