@@ -1441,6 +1441,11 @@ the bars this map, and which bars join which is redrawn every seed.
   to five steps away, comparable fertility and room), so this is an AI stall on the dry terrace
   rather than a geometry defect the generator can measure; the defaults stand, and the retained
   maps are the material for a follow-up with other AIs and human play.
+- **Played again with the dry patches.** The same protocol on revision 2 (12% of the terraces'
+  inland grass in sand patches): the same economy within noise (pooled per-start units 58 to 96
+  against 62 to 103, wheat harvested per colony 218 against 239, births 102 against 109), the same
+  bimodal stalls on the same maps, and no significant position bias. The patches cost the terrace
+  nothing a colony uses; they are the look of a dry plain.
 ## Drumlin field
 
 A lake land: a swarm of long oval grass hills, all pointing the way the ice went, with water in every
