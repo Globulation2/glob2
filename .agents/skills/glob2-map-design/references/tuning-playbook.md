@@ -130,6 +130,19 @@ Select whole boundaries, never independent tiles: random holes in a thin wall le
 
 Every robust generator negotiates its layout in the same order: compute the room each feature needs (a base's reach plus tower rows, a farm radius plus its ring plus the growth probe, a channel's width plus beaches), drop optional features first (The Glacis' extra wadis, Plantations' neutral islands and crop band, Drumlin field's farm room), shrink homes only to a documented floor (a drumlin's half width of 8, a plantation plot of 8, a summit fixed at 16), and refuse with a message that names the control to change. A repair that erases the concept (filling a channel, opening a saddle, planting the town) is a failed candidate, not a fix. Braided Delta translates a clipped town clearing by at most six tiles rather than shrinking it; Continents relaxes site room from four to two and says so in telemetry; Drumlin field takes the grain heading that keeps crowded homes farthest apart rather than refusing the request.
 
+## The picture is the first review
+
+A maintainer meets a new map as a preview before any number, and what the preview says about the concept decides whether the numbers get read. Four kinds of remark come up on first looks, and each has a cheap, structural answer:
+
+| What the eye catches | Why it jars | The answer that keeps the budget |
+| --- | --- | --- |
+| Invented features on a map that claims real geography (a ring of round islets round a continent) | The concept's promise is that the land looks like itself; anything the atlas does not show reads as a bug | Make the invention opt-in (`islets` off by default) rather than deleting the primitive |
+| Compass-perfect shapes where the concept names something natural (terraces as concentric circles look like a centre-pivot farm) | Nature's contours are lobed and nested, not round; the eye reads the circle as machinery | Keep the geometry exact and wobble its radius: a few low harmonics of the heading, the same shift for every band so widths hold, ramped in past the summit's cap so the town stays round and the mapping along a ray stays monotone (`ContourWobble`, `contourNominal`). Spend only as much amplitude as leaves the valley floor open, so band counts do not change |
+| Open ground where the concept says work (a finite-food plain with passages already through the wheat) | If the fields are the obstacle, a map with more gap than field has given the obstacle away | Raise the cover default until the open pockets are the exception; leave the cleared trails as the only free routes and keep the control's range |
+| Scenery the concept names but the map lacks (a savannah with no trees on its plain, too little water to look inhabited) | The concept is a picture in the maintainer's head before it is a contract | Add the scenery where it cannot break the contract: lone trees only on ground whose crop growth chance is zero, so the engine never spreads them; pools where no crop is planted; one more watering hole per area, a tile more pond radius |
+
+None of these needs a new control. Each is a default, a toggle or a few tiles, plus a revision bump and regenerated fingerprints on both platforms, and each deserves the same paired tournament as any other tuning change before the numbers are trusted. Record the remark and the answer in the generator's header comments: the next designer will meet the same eye.
+
 ## What to write down
 
 For every tuning change keep the seed, the request, the symptom (which colony, which tick, which metric), the hypothesis, the change and the paired re-run. The generators' headers carry this record in the comments on their constants; the pull requests carry the numbers. Both are what the next map's designer reads.
