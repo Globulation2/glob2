@@ -2390,3 +2390,13 @@ Desactivat (sense temporitzador)
 60 minuts
 [Sudden-death timer]
 Temporitzador de mort sobtada
+[Hedgerow Country]
+Camps amb bardisses
+[Field size]
+Mida dels camps
+[Hedge thickness]
+Gruix de les bardisses
+[Existing gateways]
+Passos existents
+[Wooded boundary share]
+Proporció de límits arbrats

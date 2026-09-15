@@ -2378,3 +2378,13 @@ OpenGL недоступний у цій збірці.
 60 хвилин
 [Sudden-death timer]
 Таймер раптової смерті
+[Hedgerow Country]
+Край живоплотів
+[Field size]
+Розмір полів
+[Hedge thickness]
+Товщина живоплотів
+[Existing gateways]
+Наявні проходи
+[Wooded boundary share]
+Частка лісистих меж

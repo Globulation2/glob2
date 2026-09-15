@@ -2388,3 +2388,13 @@ Desativado (sem temporizador)
 60 minutos
 [Sudden-death timer]
 Temporizador de morte súbita
+[Hedgerow Country]
+Campos com sebes
+[Field size]
+Tamanho dos campos
+[Hedge thickness]
+Espessura das sebes
+[Existing gateways]
+Passagens existentes
+[Wooded boundary share]
+Proporção de limites arborizados

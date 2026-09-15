@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Tessellation.h"
 #include "GenerationContext.h"
+#include "Morphology.h"
+#include <cassert>
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
@@ -254,6 +256,55 @@ int warpLimit(const Tessellation &g)
 	// Three corners move at once (this one and the far edge's two ends), each by up to sqrt(2) times
 	// its reach on one axis.
 	return std::max(0, int(std::floor(least / (3 * std::sqrt(2.0)))) - 1);
+}
+
+std::vector<unsigned char> rasterizeBoundaries(const Tessellation &g,
+	const std::vector<unsigned char> &walls, int radius)
+{
+	assert(walls.size() == g.edges.size() && radius >= 0);
+	std::vector<unsigned char> mask(g.t.size(), 0);
+	for (int e = 0; e < int(g.edges.size()); ++e)
+		if (walls[e])
+		{
+			const auto ends = g.edgeEnds(e, g.edges[e].cells[0]);
+			traceSealedPath(mask, g.t, {ends.first, ends.second});
+		}
+	return radius ? dilate(g.t, mask, radius) : mask;
+}
+
+int relaxWarpOutside(Tessellation &g, const std::vector<SubtilePoint> &referenceCorners,
+	const std::vector<unsigned char> &walls, const std::vector<unsigned char> &excluded,
+	int radius, int maxContractions)
+{
+	assert(referenceCorners.size() == g.corners.size());
+	assert(excluded.size() == size_t(g.t.size()) && maxContractions > 0);
+	// Inspect the exact raster footprint, including thickness and the torus seam.
+	// A centre-to-line distance cannot represent an arbitrary reserved tile mask.
+	for (int contractions = 0; contractions <= maxContractions; ++contractions)
+	{
+		const auto boundary = rasterizeBoundaries(g, walls, radius);
+		bool safe = true;
+		for (int i = 0; i < g.t.size(); ++i)
+			if (boundary[i] && excluded[i])
+			{
+				safe = false;
+				break;
+			}
+		if (safe)
+			return contractions;
+		if (contractions == maxContractions)
+			return -1;
+		// Preserve corner identities and shared edges. Never repair overlap by
+		// deleting wall pixels: that would invent routes through the barrier.
+		for (size_t k = 0; k < g.corners.size(); ++k)
+		{
+			g.corners[k].x = referenceCorners[k].x + (contractions + 1 == maxContractions
+				? 0 : (g.corners[k].x - referenceCorners[k].x) / 2);
+			g.corners[k].y = referenceCorners[k].y + (contractions + 1 == maxContractions
+				? 0 : (g.corners[k].y - referenceCorners[k].y) / 2);
+		}
+	}
+	return -1;
 }
 
 void warpCorners(Tessellation &g, int reach, const std::vector<unsigned char> &walls,

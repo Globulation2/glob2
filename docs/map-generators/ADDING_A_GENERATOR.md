@@ -145,3 +145,6 @@ Guard telemetry-only loops and dynamic strings with `telemetry.enabled()`. Valid
 output equivalence, trace repeatability and generation cost. Keep useful bounded production
 metrics; remove temporary per-candidate/per-tile debug traces before finalizing. Bulk seed
 analysis of internal telemetry and final-map outcomes is part of tuning a generator.
+
+For a commented example of connected field lanes, dry clearable boundaries and
+contained starter farms, see [Hedgerow Country](HEDGEROW_COUNTRY.md).

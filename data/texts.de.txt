@@ -2382,3 +2382,13 @@ Aus (kein Timer)
 60 Minuten
 [Sudden-death timer]
 Sudden-Death-Timer
+[Hedgerow Country]
+Heckenlandschaft
+[Field size]
+Feldgröße
+[Hedge thickness]
+Heckendicke
+[Existing gateways]
+Vorhandene Durchgänge
+[Wooded boundary share]
+Anteil bewaldeter Grenzen

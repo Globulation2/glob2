@@ -2382,3 +2382,13 @@ Pois (ei ajastinta)
 60 minuuttia
 [Sudden-death timer]
 Äkkikuoleman ajastin
+[Hedgerow Country]
+Pensasaitamaaseutu
+[Field size]
+Peltojen koko
+[Hedge thickness]
+Pensasaitojen paksuus
+[Existing gateways]
+Olemassa olevat kulkuaukot
+[Wooded boundary share]
+Puustoisten rajojen osuus

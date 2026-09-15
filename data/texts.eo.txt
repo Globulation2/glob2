@@ -2380,3 +2380,13 @@ Malŝaltita (neniu kronometro)
 60 minutoj
 [Sudden-death timer]
 Kronometro de subita morto
+[Hedgerow Country]
+Heĝa kamparo
+[Field size]
+Grandeco de kampoj
+[Hedge thickness]
+Dikeco de heĝoj
+[Existing gateways]
+Ekzistantaj pasejoj
+[Wooded boundary share]
+Proporcio de arbaj limoj

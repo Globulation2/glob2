@@ -2392,3 +2392,13 @@ Désactivé (pas de chronomètre)
 60 minutes
 [Sudden-death timer]
 Chronomètre de mort subite
+[Hedgerow Country]
+Bocage
+[Field size]
+Taille des champs
+[Hedge thickness]
+Épaisseur des haies
+[Existing gateways]
+Passages existants
+[Wooded boundary share]
+Part des limites boisées

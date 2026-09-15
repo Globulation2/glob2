@@ -2406,3 +2406,13 @@ Uit (geen timer)
 60 minuten
 [Sudden-death timer]
 Sudden-death-timer
+[Hedgerow Country]
+Heggenlandschap
+[Field size]
+Veldgrootte
+[Hedge thickness]
+Heggendikte
+[Existing gateways]
+Bestaande doorgangen
+[Wooded boundary share]
+Aandeel beboste grenzen

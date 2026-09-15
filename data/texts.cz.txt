@@ -2382,3 +2382,13 @@ Vypnuto (bez časovače)
 60 minut
 [Sudden-death timer]
 Časovač náhlé smrti
+[Hedgerow Country]
+Krajina živých plotů
+[Field size]
+Velikost polí
+[Hedge thickness]
+Tloušťka živých plotů
+[Existing gateways]
+Existující průchody
+[Wooded boundary share]
+Podíl zalesněných hranic

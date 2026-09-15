@@ -2380,3 +2380,13 @@ Statistics 1/2  >
 Statistics 2/2  >
 [Stats next page]
 Page (P)
+[Hedgerow Country]
+Hedgerow Country
+[Field size]
+Field size
+[Hedge thickness]
+Hedge thickness
+[Existing gateways]
+Existing gateways
+[Wooded boundary share]
+Wooded boundary share

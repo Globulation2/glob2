@@ -1188,3 +1188,8 @@
 [Stats page one]
 [Stats page two]
 [Stats next page]
+[Hedgerow Country]
+[Field size]
+[Hedge thickness]
+[Existing gateways]
+[Wooded boundary share]

@@ -2452,3 +2452,13 @@ Cortex
 60 λεπτά
 [Sudden-death timer]
 Χρονόμετρο ξαφνικού θανάτου
+[Hedgerow Country]
+Ύπαιθρος με φράχτες
+[Field size]
+Μέγεθος χωραφιών
+[Hedge thickness]
+Πάχος φραχτών
+[Existing gateways]
+Υπάρχοντα περάσματα
+[Wooded boundary share]
+Ποσοστό δασωμένων ορίων

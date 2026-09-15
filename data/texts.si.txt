@@ -2382,3 +2382,13 @@ Izklopljeno (brez odštevalnika)
 60 minut
 [Sudden-death timer]
 Odštevalnik nenadne smrti
+[Hedgerow Country]
+Pokrajina živih mej
+[Field size]
+Velikost polj
+[Hedge thickness]
+Debelina živih mej
+[Existing gateways]
+Obstoječi prehodi
+[Wooded boundary share]
+Delež gozdnatih meja

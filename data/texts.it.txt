@@ -2444,3 +2444,13 @@ Disattivato (nessun timer)
 60 minuti
 [Sudden-death timer]
 Timer di morte improvvisa
+[Hedgerow Country]
+Campagna di siepi
+[Field size]
+Dimensione dei campi
+[Hedge thickness]
+Spessore delle siepi
+[Existing gateways]
+Passaggi esistenti
+[Wooded boundary share]
+Quota dei confini alberati

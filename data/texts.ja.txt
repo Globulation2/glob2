@@ -2378,3 +2378,13 @@ Globulation 2 のカーソルを表示します。
 60分
 [Sudden-death timer]
 サドンデスタイマー
+[Hedgerow Country]
+生け垣の田園
+[Field size]
+畑の大きさ
+[Hedge thickness]
+生け垣の厚さ
+[Existing gateways]
+既存の通り道
+[Wooded boundary share]
+樹木のある境界の割合

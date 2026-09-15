@@ -2390,3 +2390,13 @@ Kapalı (zamanlayıcı yok)
 60 dakika
 [Sudden-death timer]
 Ani ölüm zamanlayıcısı
+[Hedgerow Country]
+Çitli kırlar
+[Field size]
+Tarla boyutu
+[Hedge thickness]
+Çit kalınlığı
+[Existing gateways]
+Mevcut geçitler
+[Wooded boundary share]
+Ağaçlık sınır oranı

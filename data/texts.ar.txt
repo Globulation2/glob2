@@ -2380,3 +2380,13 @@ OpenGL غير متوفر في هذا الإصدار.
 60 دقيقة
 [Sudden-death timer]
 مؤقت الموت المفاجئ
+[Hedgerow Country]
+ريف الأسيجة
+[Field size]
+حجم الحقول
+[Hedge thickness]
+سماكة الأسيجة
+[Existing gateways]
+الممرات الموجودة
+[Wooded boundary share]
+نسبة الحدود المشجرة

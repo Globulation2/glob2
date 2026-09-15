@@ -2392,3 +2392,13 @@ Desaktibatuta (tenporizadorerik gabe)
 60 minutu
 [Sudden-death timer]
 Bat-bateko heriotzaren tenporizadorea
+[Hedgerow Country]
+Heskaien landa
+[Field size]
+Soroen tamaina
+[Hedge thickness]
+Heskaien lodiera
+[Existing gateways]
+Dauden pasabideak
+[Wooded boundary share]
+Zuhaitzez estalitako mugen proportzioa

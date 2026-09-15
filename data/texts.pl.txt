@@ -2382,3 +2382,13 @@ Wyłączone (bez zegara)
 60 minut
 [Sudden-death timer]
 Zegar nagłej śmierci
+[Hedgerow Country]
+Kraina żywopłotów
+[Field size]
+Wielkość pól
+[Hedge thickness]
+Grubość żywopłotów
+[Existing gateways]
+Istniejące przejścia
+[Wooded boundary share]
+Udział zadrzewionych granic

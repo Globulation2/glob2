@@ -2454,3 +2454,13 @@ OpenGL 在此版本中不可用。
 60 分鐘
 [Sudden-death timer]
 驟死計時器
+[Hedgerow Country]
+樹籬田園
+[Field size]
+田塊大小
+[Hedge thickness]
+樹籬厚度
+[Existing gateways]
+現有通道
+[Wooded boundary share]
+林木邊界比例

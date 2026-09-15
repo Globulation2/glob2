@@ -2380,3 +2380,13 @@ OpenGL недоступен в этой сборке.
 60 минут
 [Sudden-death timer]
 Таймер внезапной смерти
+[Hedgerow Country]
+Край живых изгородей
+[Field size]
+Размер полей
+[Hedge thickness]
+Толщина изгородей
+[Existing gateways]
+Существующие проходы
+[Wooded boundary share]
+Доля лесистых границ

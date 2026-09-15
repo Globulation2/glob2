@@ -2382,3 +2382,13 @@ Kikapcsolva (nincs időzítő)
 60 perc
 [Sudden-death timer]
 Hirtelen halál időzítő
+[Hedgerow Country]
+Sövényes vidék
+[Field size]
+Mezőméret
+[Hedge thickness]
+Sövényvastagság
+[Existing gateways]
+Meglévő átjárók
+[Wooded boundary share]
+Fás határok aránya

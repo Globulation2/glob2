@@ -2392,3 +2392,13 @@ Av (ingen timer)
 60 minuter
 [Sudden-death timer]
 Sudden death-timer
+[Hedgerow Country]
+Häcklandskap
+[Field size]
+Fältstorlek
+[Hedge thickness]
+Häcktjocklek
+[Existing gateways]
+Befintliga öppningar
+[Wooded boundary share]
+Andel trädbevuxna gränser
