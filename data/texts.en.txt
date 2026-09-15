@@ -2380,3 +2380,15 @@ Statistics 1/2  >
 Statistics 2/2  >
 [Stats next page]
 Page (P)
+[Rice terraces]
+Rice terraces
+[Unoccupied hills]
+Unoccupied hills
+[Hill radius]
+Hill radius
+[Contour band width]
+Contour band width
+[Stairs per hill]
+Stairs per hill
+[Valley river]
+Valley river

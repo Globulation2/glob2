@@ -2382,3 +2382,15 @@ Desactivado (sin temporizador)
 60 minutos
 [Sudden-death timer]
 Temporizador de muerte súbita
+[Rice terraces]
+Terrazas de arroz
+[Unoccupied hills]
+Colinas desocupadas
+[Hill radius]
+Radio de las colinas
+[Contour band width]
+Anchura de las bandas de nivel
+[Stairs per hill]
+Escaleras por colina
+[Valley river]
+Río del valle

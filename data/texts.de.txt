@@ -2382,3 +2382,15 @@ Aus (kein Timer)
 60 Minuten
 [Sudden-death timer]
 Sudden-Death-Timer
+[Rice terraces]
+Reisterrassen
+[Unoccupied hills]
+Unbesetzte Hügel
+[Hill radius]
+Hügelradius
+[Contour band width]
+Breite der Höhenbänder
+[Stairs per hill]
+Treppen pro Hügel
+[Valley river]
+Talfluss

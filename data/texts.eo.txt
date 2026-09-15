@@ -2380,3 +2380,15 @@ Malŝaltita (neniu kronometro)
 60 minutoj
 [Sudden-death timer]
 Kronometro de subita morto
+[Rice terraces]
+Rizterasoj
+[Unoccupied hills]
+Neokupitaj montetoj
+[Hill radius]
+Monteta radiuso
+[Contour band width]
+Larĝo de nivelaj bendoj
+[Stairs per hill]
+Ŝtuparoj por monteto
+[Valley river]
+Vala rivero

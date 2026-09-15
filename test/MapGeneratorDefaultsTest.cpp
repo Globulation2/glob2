@@ -84,12 +84,99 @@ class MapGeneratorDefaultsTest
 			s.dispatchEvents(&event);
 		}
 	}
+	// Rice terraces must keep their towns and traffic usable after resources spread.
+	// Exercise the final-world validator again after unattended engine growth: unlike
+	// snapshot hashes this catches a crop front reaching summit building space.
+	static void riceTerracesContracts()
+	{
+		const auto &registry = GeneratorRegistry::builtins();
+		const int method = registry.idOf("rice-terraces");
+		GenerationService service;
+		for (int variant = 0; variant < 6; ++variant)
+		{
+			D request;
+			request.setMethodDefaults(method);
+			request.seed = 7101 + variant;
+			request.wDec = request.hDec = 8;
+			request.nbTeams = 4;
+			request.options["stairs"] = 2 + variant % 3;
+			if (variant == 1)
+				request.wDec = 9;
+			if (variant == 2)
+				request.hDec = 9;
+			if (variant == 3)
+				request.nbTeams = 1;
+			if (variant == 4)
+				request.options["extra-hills"] = 2;
+			if (variant == 5)
+				request.options["valley-river"] = 0;
+			const int amount = variant == 0 ? 0 : variant == 5 ? 300 : 100;
+			for (const char *key :
+				 {"wheat-amount", "wood-amount", "stone-amount", "algae-amount", "fruit-amount"})
+				request.options[key] = amount;
+			Game world(nullptr);
+			const auto result = service.generate(world, request, true);
+			if (!result)
+				std::cerr << result.diagnostic() << std::endl;
+			assert(result);
+			if (variant == 5)
+			{
+				setSyncRandSeed(177);
+				for (int tick = 0; tick < 12000; ++tick)
+					world.map.growResources();
+				GenerationContext context(request);
+				const std::string failure = registry.find(method)->validateWorld(world, context);
+				if (!failure.empty())
+					std::cerr << failure << std::endl;
+				assert(failure.empty());
+			}
+		}
+		// Bulk generation found these two valid layouts failing *after* the
+		// emergency wood rescue had spilled across the town's sand cap. Keep
+		// their full requests: ordinary default seeds never trigger that rescue,
+		// and a primitive-only clump test cannot prove the assembled map passes
+		// future summit containment and walking checks.
+		for (int variant = 0; variant < 2; ++variant)
+		{
+			D request;
+			request.setMethodDefaults(method);
+			request.seed = 34101;
+			request.wDec = variant == 0 ? 8 : 9;
+			request.hDec = 9;
+			request.nbTeams = variant == 0 ? 7 : 6;
+			request.nbWorkers = variant == 0 ? 2 : 7;
+			request.options["band-width"] = 120;
+			request.options["extra-hills"] = variant == 0 ? 0 : 2;
+			request.options["hill-radius"] = variant == 0 ? 100 : 88;
+			request.options["stairs"] = variant == 0 ? 2 : 4;
+			request.options["starting-towers"] = variant == 0 ? 1 : 0;
+			request.options["valley-river"] = variant == 0 ? 0 : 1;
+			request.options["wheat-amount"] = 300;
+			request.options["wood-amount"] = variant == 0 ? 0 : 225;
+			request.options["stone-amount"] = 200;
+			request.options["algae-amount"] = variant == 0 ? 250 : 175;
+			request.options["fruit-amount"] = variant == 0 ? 100 : 0;
+			Game world(nullptr);
+			const auto result = service.generate(world, request, true);
+			if (!result)
+				std::cerr << result.diagnostic() << std::endl;
+			assert(result);
+		}
+		D invalid;
+		invalid.setMethodDefaults(method);
+		invalid.wDec = invalid.hDec = 6;
+		Game world(nullptr);
+		assert(service.generate(world, invalid).error == GenerationError::InvalidRequest);
+		puts("PASS rice terraces: scarcity, crowding, rectangles, vacant hills, stairs and late "
+			 "growth");
+	}
 	static void generationContracts()
 	{
 		globalsInit();
 		frameworkChecks();
 		ToolkitChecks::toolkitChecks();
 		LandscapeChecks::landscapeChecks();
+		riceTerracesContracts();
 		GenerationService service;
 		for (int method : GeneratorRegistry::builtins().methods())
 		{

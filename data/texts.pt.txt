@@ -2388,3 +2388,15 @@ Desativado (sem temporizador)
 60 minutos
 [Sudden-death timer]
 Temporizador de morte súbita
+[Rice terraces]
+Terraços de arroz
+[Unoccupied hills]
+Colinas desocupadas
+[Hill radius]
+Raio das colinas
+[Contour band width]
+Largura das faixas de nível
+[Stairs per hill]
+Escadas por colina
+[Valley river]
+Rio do vale

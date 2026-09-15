@@ -16,6 +16,21 @@ struct Site
 	int x, y;
 };
 
+/// The two closest distinct site entries to a tile, ordered by squared toroidal
+/// distance and then input index. Missing sites/distances are -1. Keeping squared
+/// distances preserves exact ties and lets callers avoid roots when only comparing.
+struct NearestSites
+{
+	int first = -1, second = -1;
+	int firstDistanceSquared = -1, secondDistanceSquared = -1;
+};
+
+/// Exhaustive unwarped query for small site sets, with no spacing requirement.
+/// Useful for a region's owner and its boundary strength (difference of the two
+/// distances), e.g. rivers between hills or ridges between basins. Duplicate site
+/// coordinates remain distinct entries. Empty and singleton sets are supported.
+NearestSites nearestTwoSites(const Torus &, const std::vector<Site> &, int x, int y);
+
 /// Sites by dart throwing on the torus: a dart is kept when it lies at least `minimumPercent` of
 /// `spacing` (and at least 4 tiles) from every site kept before it. `dartsPerSite` darts are thrown per
 /// expected site (one per spacing squared, at least 2), enough to saturate the map, after which nearly

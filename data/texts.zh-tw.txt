@@ -2454,3 +2454,15 @@ OpenGL 在此版本中不可用。
 60 分鐘
 [Sudden-death timer]
 驟死計時器
+[Rice terraces]
+梯田
+[Unoccupied hills]
+無人山丘
+[Hill radius]
+山丘半徑
+[Contour band width]
+等高帶寬度
+[Stairs per hill]
+每座山丘的階梯數
+[Valley river]
+山谷河流

@@ -2382,3 +2382,15 @@ Wyłączone (bez zegara)
 60 minut
 [Sudden-death timer]
 Zegar nagłej śmierci
+[Rice terraces]
+Tarasy ryżowe
+[Unoccupied hills]
+Niezajęte wzgórza
+[Hill radius]
+Promień wzgórza
+[Contour band width]
+Szerokość pasów poziomicowych
+[Stairs per hill]
+Schody na wzgórze
+[Valley river]
+Rzeka w dolinie

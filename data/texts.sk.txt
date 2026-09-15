@@ -2390,3 +2390,15 @@ Vypnuté (bez časovača)
 60 minút
 [Sudden-death timer]
 Časovač náhlej smrti
+[Rice terraces]
+Ryžové terasy
+[Unoccupied hills]
+Neobsadené kopce
+[Hill radius]
+Polomer kopca
+[Contour band width]
+Šírka vrstevnicových pásov
+[Stairs per hill]
+Schodiská na kopec
+[Valley river]
+Rieka v údolí

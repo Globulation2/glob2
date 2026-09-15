@@ -192,6 +192,13 @@ inline void plantingChecks()
 		for (int x = 0; x < t.w; ++x)
 			if (map.getResource(x, y).type == WOOD)
 				assert(box(t.at(x, y)));
+	// A requested entrance just across the seam must find the allowed patch,
+	// exhaust its four tiles honestly, and leave all surrounding ground clear.
+	const auto seamPatch = [&](int i)
+	{ return i % t.w < 2 && i / t.w >= 10 && i / t.w < 12 && clear(i); };
+	assert(plantPatchNear(map, t, {63, 10, 3}, WHEAT, 12, seamPatch) == 4);
+	assert(plantPatchNear(map, t, {63, 10, 3}, WHEAT, 12, seamPatch) == 0);
+	assert(clearGround(map, 63, 10) && clearGround(map, 2, 10));
 
 	GenerationRequest request;
 	request.seed = 5;
@@ -411,6 +418,50 @@ inline void settlementChecks()
 		guaranteeStartingResources(keep, context, 24, 32, 0, &ring);
 		assert(countResource(designed, STONE) == 24 && countResource(designed, WHEAT) > 1 &&
 			   countResource(designed, WOOD) > 1);
+		// A protected *placement* band has a different meaning from the stone
+		// wall above. The rescue may centre a radius-two patch beside its edge;
+		// the whole patch must remain inside the band, including at the torus
+		// seam. This caught crops spilling into Rice Terraces' dry town when
+		// ambient wood was scarce and the general topup tried to help.
+		Game band(nullptr);
+		grassMap(band, 6, 6);
+		std::vector<unsigned char> allowed(t.size(), 0);
+		for (int y = 18; y <= 25; ++y)
+			for (int x = 25; x <= 33; ++x)
+				allowed[t.at(x, y)] = 1;
+		const int placed = placeResourceClump(band.map, context, {25, 20}, WOOD, 2, &allowed);
+		assert(placed > 0);
+		for (int y = 0; y < t.h; ++y)
+			for (int x = 0; x < t.w; ++x)
+				if (band.map.isResource(x, y))
+					assert(allowed[t.at(x, y)]);
+		// In the normal rescue path, both crops must honour the same band;
+		// rejection of a too-short mask happens before any world mutation.
+		Game topup(nullptr);
+		grassMap(topup, 6, 6);
+		guaranteeStartingResources(topup, context, 24, 32, 0, nullptr, &allowed);
+		assert(countResource(topup.map, WHEAT) > 0 && countResource(topup.map, WOOD) > 0);
+		for (int y = 0; y < t.h; ++y)
+			for (int x = 0; x < t.w; ++x)
+				if (topup.map.isResource(x, y))
+					assert(allowed[t.at(x, y)]);
+		Game packed(nullptr);
+		grassMap(packed, 6, 6);
+		for (int y = 18; y <= 25; ++y)
+			for (int x = 25; x <= 33; ++x)
+				packed.map.setResource(x, y, WHEAT, 1);
+		const int beforeWheat = countResource(packed.map, WHEAT);
+		guaranteeStartingResources(packed, context, 24, 32, 0, nullptr, &allowed);
+		// With no free allowed grass, the opt-in backstop trades a small
+		// *accessible* surplus patch for the missing crop. It must not erase
+		// the whole wheat belt or plant outside the farm mask.
+		assert(countResource(packed.map, WHEAT) > 0 &&
+			   countResource(packed.map, WHEAT) < beforeWheat &&
+			   countResource(packed.map, WOOD) > 0);
+		for (int y = 0; y < t.h; ++y)
+			for (int x = 0; x < t.w; ++x)
+				if (packed.map.isResource(x, y))
+					assert(allowed[t.at(x, y)]);
 	}
 	{
 		// A colony buried in wood: openCrampedStarts clears rings until it can build again.
@@ -1120,6 +1171,31 @@ inline void arenaChecks()
 	assert(game.teams[0]->turrets.size() == 1 && game.teams[0]->turrets.front()->bullets > 0);
 	std::vector<unsigned char> none(t.size(), 0);
 	assert(placeTower(game, 0, 1, 30, 30, 4, none) == -1);
+	// The closest ordinary site cannot cover x=14. The constraint must choose
+	// the farther legal footprint at x=8 (its east tile x=9 has range 5), and
+	// reject an impossible target without adding a partially valid tower.
+	const int covering = placeTower(game, 0, 0, 5, 8, 4, allowed, true, {{14, 8}, {14, 9}});
+	assert(covering == t.at(8, 7));
+	const auto towerCount = game.teams[0]->turrets.size();
+	assert(placeTower(game, 0, 0, 5, 8, 4, allowed, true, {{30, 30}}) == -1);
+	assert(game.teams[0]->turrets.size() == towerCount);
+	// Supplying a starting tower is a finite initial stock, not a new refill
+	// rule. Existing calls remain empty; the opt-in uses the actual type's cap.
+	assert(game.teams[0]->turrets.front()->resources[STONE] == 0);
+	assert(placeTower(game, 0, 0, 5, 8, 4, allowed, true, {}, true) >= 0);
+	const auto supplied = game.teams[0]->turrets.back();
+	assert(supplied->resources[STONE] == supplied->type->maxResource[STONE]);
+	assert(supplied->desiredMaxUnitWorking == 0);
+	// A stocked starter inn registers feeding service immediately but does not
+	// receive fruit. Its entire footprint must obey the same placement mask.
+	std::vector<unsigned char> innGround(t.size(), 1);
+	const int innSite = placeStartingBuilding(game, 0, "inn", 0, 18, 18, 3, innGround, {WHEAT});
+	assert(innSite >= 0 && !game.teams[0]->canFeedUnit.empty());
+	const auto inn = game.teams[0]->canFeedUnit.front();
+	assert(inn->resources[WHEAT] == inn->type->maxResource[WHEAT]);
+	assert(inn->resources[CHERRY] == 0 && inn->resources[ORANGE] == 0 &&
+		   inn->resources[PRUNE] == 0);
+	assert(placeStartingBuilding(game, 0, "inn", 0, 18, 18, 3, none, {WHEAT}) == -1);
 
 	// seaEntry finds the one grass gap in a walled coast.
 	TerrainSketch sketch(t.size(), WATER);

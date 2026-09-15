@@ -2378,3 +2378,15 @@ Desativado (sem cronômetro)
 60 minutos
 [Sudden-death timer]
 Cronômetro de morte súbita
+[Rice terraces]
+Terasoù riz
+[Unoccupied hills]
+Torgennoù dieub
+[Hill radius]
+Skin an dorgenn
+[Contour band width]
+Ledander ar bandennoù kontour
+[Stairs per hill]
+Diri dre dorgenn
+[Valley river]
+Stêr an draonienn

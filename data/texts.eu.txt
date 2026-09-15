@@ -2392,3 +2392,15 @@ Desaktibatuta (tenporizadorerik gabe)
 60 minutu
 [Sudden-death timer]
 Bat-bateko heriotzaren tenporizadorea
+[Rice terraces]
+Arroz-terrazak
+[Unoccupied hills]
+Okupatu gabeko muinoak
+[Hill radius]
+Muinoaren erradioa
+[Contour band width]
+Sestra-banden zabalera
+[Stairs per hill]
+Eskailerak muinoko
+[Valley river]
+Haraneko ibaia

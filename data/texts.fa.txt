@@ -2380,3 +2380,15 @@ OpenGL در این بیلد موجود نیست.
 60 دقیقه
 [Sudden-death timer]
 زمان‌سنج مرگ ناگهانی
+[Rice terraces]
+شالیزارهای پلکانی
+[Unoccupied hills]
+تپه‌های خالی
+[Hill radius]
+شعاع تپه
+[Contour band width]
+پهنای نوارهای تراز
+[Stairs per hill]
+پلکان در هر تپه
+[Valley river]
+رود دره

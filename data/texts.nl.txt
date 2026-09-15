@@ -2406,3 +2406,15 @@ Uit (geen timer)
 60 minuten
 [Sudden-death timer]
 Sudden-death-timer
+[Rice terraces]
+Rijstterrassen
+[Unoccupied hills]
+Onbezette heuvels
+[Hill radius]
+Heuvelstraal
+[Contour band width]
+Breedte van hoogtebanden
+[Stairs per hill]
+Trappen per heuvel
+[Valley river]
+Rivier in het dal

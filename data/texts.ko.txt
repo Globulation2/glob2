@@ -2378,3 +2378,15 @@ Globulation 2 커서를 표시합니다.
 60분
 [Sudden-death timer]
 서든데스 타이머
+[Rice terraces]
+계단식 논
+[Unoccupied hills]
+비어 있는 언덕
+[Hill radius]
+언덕 반경
+[Contour band width]
+등고선 띠 너비
+[Stairs per hill]
+언덕당 계단 수
+[Valley river]
+계곡의 강

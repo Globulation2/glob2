@@ -79,6 +79,20 @@ struct KitSeed
 {
 	int x, y, within;
 };
+
+/// Place a compact resource patch near an intended gathering point. Search and
+/// growth share the same eligibility mask, so a fallback seed cannot cross into
+/// protected home ground. Returns the actual count (including zero when no seed
+/// fits), letting callers distinguish an optional deposit from a required kit.
+/// This deliberately makes no random draws: equal translated entrances get the
+/// same bounded search and cardinal growth order.
+template <typename Eligible>
+int plantPatchNear(Map &map, const Torus &t, const KitSeed &at, int type, int count,
+				   Eligible eligible)
+{
+	const int seed = seedNear(t, at.x, at.y, at.within, eligible);
+	return seed < 0 ? 0 : growPatch(map, t, seed, type, count, eligible);
+}
 struct Kit
 {
 	KitSeed wheat, wood, stone;
@@ -92,11 +106,8 @@ template <typename Eligible>
 void plantKit(Map &map, const Torus &t, GenerationContext &context, const Kit &kit,
 			  Eligible eligible)
 {
-	if (const int seed = seedNear(t, kit.wheat.x, kit.wheat.y, kit.wheat.within, eligible);
-		seed >= 0)
-		growPatch(map, t, seed, WHEAT, kit.wheatTiles, eligible);
-	if (const int seed = seedNear(t, kit.wood.x, kit.wood.y, kit.wood.within, eligible); seed >= 0)
-		growPatch(map, t, seed, WOOD, kit.woodTiles, eligible);
+	plantPatchNear(map, t, kit.wheat, WHEAT, kit.wheatTiles, eligible);
+	plantPatchNear(map, t, kit.wood, WOOD, kit.woodTiles, eligible);
 	if (kit.stoneRadius < 0)
 		return;
 	if (const int seed = seedNear(t, kit.stone.x, kit.stone.y, kit.stone.within, eligible);

@@ -2380,3 +2380,15 @@ OpenGL недоступен в этой сборке.
 60 минут
 [Sudden-death timer]
 Таймер внезапной смерти
+[Rice terraces]
+Рисовые террасы
+[Unoccupied hills]
+Незанятые холмы
+[Hill radius]
+Радиус холма
+[Contour band width]
+Ширина высотных полос
+[Stairs per hill]
+Лестниц на холм
+[Valley river]
+Река в долине

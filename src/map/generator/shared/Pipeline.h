@@ -70,10 +70,13 @@ bool settleColonies(Game &game, GenerationContext &context, const char *stream, 
 /// The usual last word on every colony's crops: clear the ground round the swarms, run the
 /// wheat/wood guarantee (guaranteeStartingResources) and clear round the swarms again, since a
 /// topped-up deposit may land there. Tiles of `keep` are designed deposits (walls) that are never
-/// cleared and never looked past.
+/// cleared and never looked past. `allowedTopup` is an independent row-major mask for where new
+/// emergency crops may go; it clips the entire clump to a designed farm belt. Keeping these
+/// roles separate lets a map protect both structural deposits and crop-free town ground.
 void secureStartingCrops(Game &, GenerationContext &, const Torus &, int wheatRange = 24,
 						 int woodRange = 32, int clearRadius = 0,
-						 const std::vector<unsigned char> *keep = nullptr);
+						 const std::vector<unsigned char> *keep = nullptr,
+						 const std::vector<unsigned char> *allowedTopup = nullptr);
 
 /// The resource amounts a generator's ambient layers are scaled by; every one is 100 by default.
 struct ResourceAmounts

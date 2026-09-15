@@ -2380,3 +2380,15 @@ OpenGL غير متوفر في هذا الإصدار.
 60 دقيقة
 [Sudden-death timer]
 مؤقت الموت المفاجئ
+[Rice terraces]
+مصاطب الأرز
+[Unoccupied hills]
+تلال غير مأهولة
+[Hill radius]
+نصف قطر التل
+[Contour band width]
+عرض النطاق الكنتوري
+[Stairs per hill]
+سلالم لكل تل
+[Valley river]
+نهر الوادي

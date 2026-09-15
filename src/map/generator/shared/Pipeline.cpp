@@ -22,10 +22,12 @@ bool reopenCrampedStarts(Game &game, GenerationContext &context, const ResourceA
 }
 
 void secureStartingCrops(Game &game, GenerationContext &context, const Torus &t, int wheatRange,
-						 int woodRange, int clearRadius, const std::vector<unsigned char> *keep)
+						 int woodRange, int clearRadius, const std::vector<unsigned char> *keep,
+						 const std::vector<unsigned char> *allowedTopup)
 {
 	clearAroundSwarms(game.map, context, t, keep);
-	guaranteeStartingResources(game, context, wheatRange, woodRange, clearRadius, keep);
+	guaranteeStartingResources(game, context, wheatRange, woodRange, clearRadius, keep,
+							   allowedTopup);
 	clearAroundSwarms(game.map, context, t, keep);
 }
 

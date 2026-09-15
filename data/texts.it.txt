@@ -2444,3 +2444,15 @@ Disattivato (nessun timer)
 60 minuti
 [Sudden-death timer]
 Timer di morte improvvisa
+[Rice terraces]
+Risaie a terrazza
+[Unoccupied hills]
+Colline libere
+[Hill radius]
+Raggio delle colline
+[Contour band width]
+Larghezza delle fasce di livello
+[Stairs per hill]
+Scale per collina
+[Valley river]
+Fiume nella valle
