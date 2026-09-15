@@ -35,6 +35,7 @@
 #include "FortsGenerator.h"
 #include "BraidedDeltaGenerator.h"
 #include "BreachableHighlandsGenerator.h"
+#include "HedgerowCountryGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -157,6 +158,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 fortsDefinition(),
 											 braidedDeltaDefinition(),
 											 breachableHighlandsDefinition(),
+											 hedgerowCountryDefinition(),
 											 uniformDefinition()});
 	return registry;
 }

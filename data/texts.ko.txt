@@ -2478,3 +2478,13 @@ Emoji
 추가 개방 고개
 [Wooded saddles]
 숲으로 덮인 고개
+[Hedgerow Country]
+산울타리 전원
+[Field size]
+밭 크기
+[Hedge thickness]
+산울타리 두께
+[Existing gateways]
+기존 통로
+[Wooded boundary share]
+나무 경계 비율

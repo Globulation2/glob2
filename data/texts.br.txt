@@ -2478,3 +2478,13 @@ Tevder ar cʼhrib
 Tremenioù digor ouzhpenn
 [Wooded saddles]
 Tremenioù koadek
+[Hedgerow Country]
+Campos com sebes
+[Field size]
+Tamanho dos campos
+[Hedge thickness]
+Espessura das sebes
+[Existing gateways]
+Passagens existentes
+[Wooded boundary share]
+Proporção de limites arborizados

@@ -2552,3 +2552,13 @@ Emoji
 Πρόσθετα ανοιχτά περάσματα
 [Wooded saddles]
 Δασωμένοι αυχένες
+[Hedgerow Country]
+Ύπαιθρος με φράχτες
+[Field size]
+Μέγεθος χωραφιών
+[Hedge thickness]
+Πάχος φραχτών
+[Existing gateways]
+Υπάρχοντα περάσματα
+[Wooded boundary share]
+Ποσοστό δασωμένων ορίων

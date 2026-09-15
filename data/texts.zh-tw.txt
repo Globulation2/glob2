@@ -2554,3 +2554,13 @@ Emoji
 額外開放山口
 [Wooded saddles]
 林木山口
+[Hedgerow Country]
+樹籬田園
+[Field size]
+田塊大小
+[Hedge thickness]
+樹籬厚度
+[Existing gateways]
+現有通道
+[Wooded boundary share]
+林木邊界比例

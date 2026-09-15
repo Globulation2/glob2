@@ -2482,3 +2482,13 @@ Grosor de las crestas
 Pasos abiertos adicionales
 [Wooded saddles]
 Collados boscosos
+[Hedgerow Country]
+Campos con setos
+[Field size]
+Tamaño de los campos
+[Hedge thickness]
+Grosor de los setos
+[Existing gateways]
+Pasos existentes
+[Wooded boundary share]
+Proporción de lindes arboladas

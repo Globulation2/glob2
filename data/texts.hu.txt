@@ -2482,3 +2482,13 @@ Hegygerincek vastagsága
 További nyitott hágók
 [Wooded saddles]
 Erdős nyergek
+[Hedgerow Country]
+Sövényes vidék
+[Field size]
+Mezőméret
+[Hedge thickness]
+Sövényvastagság
+[Existing gateways]
+Meglévő átjárók
+[Wooded boundary share]
+Fás határok aránya

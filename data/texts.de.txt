@@ -2482,3 +2482,13 @@ Kammdicke
 Zusätzliche offene Pässe
 [Wooded saddles]
 Bewaldete Pässe
+[Hedgerow Country]
+Heckenlandschaft
+[Field size]
+Feldgröße
+[Hedge thickness]
+Heckendicke
+[Existing gateways]
+Vorhandene Durchgänge
+[Wooded boundary share]
+Anteil bewaldeter Grenzen

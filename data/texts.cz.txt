@@ -2482,3 +2482,13 @@ Tloušťka hřebenů
 Další otevřené průsmyky
 [Wooded saddles]
 Zalesněná sedla
+[Hedgerow Country]
+Krajina živých plotů
+[Field size]
+Velikost polí
+[Hedge thickness]
+Tloušťka živých plotů
+[Existing gateways]
+Existující průchody
+[Wooded boundary share]
+Podíl zalesněných hranic

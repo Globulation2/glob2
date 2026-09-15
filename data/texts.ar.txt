@@ -2480,3 +2480,13 @@ Emoji
 ممرات مفتوحة إضافية
 [Wooded saddles]
 ممرات مشجرة
+[Hedgerow Country]
+ريف الأسيجة
+[Field size]
+حجم الحقول
+[Hedge thickness]
+سماكة الأسيجة
+[Existing gateways]
+الممرات الموجودة
+[Wooded boundary share]
+نسبة الحدود المشجرة

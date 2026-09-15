@@ -2478,3 +2478,13 @@ Cao nguyên có thể mở lối
 Đèo mở bổ sung
 [Wooded saddles]
 Đèo phủ rừng
+[Hedgerow Country]
+Miền quê hàng rào cây
+[Field size]
+Kích thước cánh đồng
+[Hedge thickness]
+Độ dày hàng rào cây
+[Existing gateways]
+Lối đi có sẵn
+[Wooded boundary share]
+Tỷ lệ ranh giới có cây

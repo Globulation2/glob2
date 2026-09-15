@@ -2490,3 +2490,13 @@ Hrúbka hrebeňov
 Ďalšie otvorené priesmyky
 [Wooded saddles]
 Zalesnené sedlá
+[Hedgerow Country]
+Krajina živých plotov
+[Field size]
+Veľkosť polí
+[Hedge thickness]
+Hrúbka živých plotov
+[Existing gateways]
+Existujúce priechody
+[Wooded boundary share]
+Podiel zalesnených hraníc

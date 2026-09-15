@@ -2482,3 +2482,13 @@ Grubość grzbietów
 Dodatkowe otwarte przełęcze
 [Wooded saddles]
 Zalesione przełęcze
+[Hedgerow Country]
+Kraina żywopłotów
+[Field size]
+Wielkość pól
+[Hedge thickness]
+Grubość żywopłotów
+[Existing gateways]
+Istniejące przejścia
+[Wooded boundary share]
+Udział zadrzewionych granic
