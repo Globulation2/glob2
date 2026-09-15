@@ -1,0 +1,5 @@
+{
+  "identical_glyph_and_terrain_design_source": true,
+  "design_sha256": "1f1779eeccbb08f0e276c2c5eb451fdba0f89dde143d2c8cc7dd53b753255cb0",
+  "validation": "Every generated world is checked corner-by-corner against this pre-settlement design; contracts also compare terrain across colony/worker counts for all32variants."
+}

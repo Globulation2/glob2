@@ -1,0 +1,8 @@
+Settings::load("preferences.txt") : error, can't open file.
+PASS Emoji: random defaults, all 32 explicit variants, terrain independent of colonies/workers, unsupported geometry rejected
+PASS discrete domains, shape bounds, topology, home footprints, exact workers and custom validation
+PASS shared toolkit: floods, sketch, planting, roads, settlements, balanced starts, scatter, lattice noise, wedge frame, shuffle, drawing, branches, stretch, sand patches, algae growth, fields and clumps, walls and tower reach, territories, arena primitives, sealed lines and polygons, tessellations and warp, graph mazes and region leaks
+PASS landscape toolkit: symmetry groups, morphology, crop growth, cost models and routes, sites and cell graphs, patterns, wandering paths, channels, building room, region homes, biome kits
+PASS registration extension, explicit seeds, interleaved repeatability, RNG isolation, errors and legacy sentinels
+PASS scatterResources places algae on water, in every water body
+PASS shared presets, ranges and steps; all editor values; lobby/editor mode memory; serialization and validation

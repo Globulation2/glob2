@@ -1,0 +1,11 @@
+{
+  "linux_ticks": 4096,
+  "mac_ticks": 4096,
+  "identical_complete_sidecars": true,
+  "linux_sha256": "f2ab7284319f98a4cc8fa8d20cec6744546c1a28df6e930dfa2300320a3d796f",
+  "mac_sha256": "f2ab7284319f98a4cc8fa8d20cec6744546c1a28df6e930dfa2300320a3d796f",
+  "scope": "Exact Linux-generated r8 smiley map, four Maxima AIs, game seed96001,4096ticks; Linuxx86_64 vs macOSarm64",
+  "game.replay_identical": true,
+  "initial.game_identical": true,
+  "final.game_identical": true
+}

@@ -1,0 +1,2553 @@
+{
+  "openings": {
+    "r3": {
+      "colonies": 96,
+      "stalls": 16,
+      "population_at_most_four": 16,
+      "starvation_deaths": 42,
+      "groups": [
+        {
+          "map": "c1-s2-t2-seed73001",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 7,
+          "mean_population_by_seat": [
+            23.75,
+            5.25,
+            1,
+            29.75
+          ]
+        },
+        {
+          "map": "c1-s2-t2-seed73001",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            24.25,
+            20,
+            23,
+            29.25
+          ]
+        },
+        {
+          "map": "c2-s2-t2-seed73002",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 9,
+          "mean_population_by_seat": [
+            0,
+            16.25,
+            14.75,
+            4
+          ]
+        },
+        {
+          "map": "c2-s2-t2-seed73002",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            19.5,
+            25.5,
+            28.75,
+            17.25
+          ]
+        },
+        {
+          "map": "c6-s1-t1-seed73002",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            59.25,
+            24.5,
+            51.5,
+            52.5
+          ]
+        },
+        {
+          "map": "c6-s1-t1-seed73002",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            64,
+            66.25,
+            55.5,
+            70.5
+          ]
+        }
+      ]
+    },
+    "r4": {
+      "colonies": 96,
+      "stalls": 8,
+      "population_at_most_four": 12,
+      "starvation_deaths": 134,
+      "groups": [
+        {
+          "map": "c1-s2-t2-seed73001",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 4,
+          "mean_population_by_seat": [
+            4,
+            5.75,
+            42.5,
+            25.5
+          ]
+        },
+        {
+          "map": "c1-s2-t2-seed73001",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            35.25,
+            37.75,
+            34,
+            22.5
+          ]
+        },
+        {
+          "map": "c2-s2-t2-seed73002",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            9.75,
+            48.25,
+            35.5,
+            44
+          ]
+        },
+        {
+          "map": "c2-s2-t2-seed73002",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            21.25,
+            31.5,
+            39,
+            27.5
+          ]
+        },
+        {
+          "map": "c6-s1-t1-seed73002",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 4,
+          "mean_population_by_seat": [
+            42,
+            4,
+            37.25,
+            43.25
+          ]
+        },
+        {
+          "map": "c6-s1-t1-seed73002",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            65,
+            54.25,
+            77.25,
+            38
+          ]
+        }
+      ]
+    },
+    "r5": {
+      "colonies": 96,
+      "stalls": 7,
+      "population_at_most_four": 8,
+      "starvation_deaths": 103,
+      "groups": [
+        {
+          "map": "c1-s2-t2-seed73001",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 2,
+          "mean_population_by_seat": [
+            14.5,
+            7.75,
+            42.75,
+            24.5
+          ]
+        },
+        {
+          "map": "c1-s2-t2-seed73001",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            41.5,
+            35.75,
+            26.75,
+            30
+          ]
+        },
+        {
+          "map": "c2-s2-t2-seed73002",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 2,
+          "mean_population_by_seat": [
+            6.5,
+            52,
+            12.75,
+            44
+          ]
+        },
+        {
+          "map": "c2-s2-t2-seed73002",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            22.5,
+            47.5,
+            44,
+            32.75
+          ]
+        },
+        {
+          "map": "c6-s1-t1-seed73002",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 3,
+          "mean_population_by_seat": [
+            39,
+            5.25,
+            31.25,
+            39
+          ]
+        },
+        {
+          "map": "c6-s1-t1-seed73002",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            61.25,
+            39,
+            83.5,
+            45.75
+          ]
+        }
+      ]
+    },
+    "r6": {
+      "colonies": 96,
+      "stalls": 17,
+      "population_at_most_four": 18,
+      "starvation_deaths": 39,
+      "groups": [
+        {
+          "map": "c1-s2-t2-seed73001",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 5,
+          "mean_population_by_seat": [
+            9.5,
+            4,
+            37.25,
+            27.75
+          ]
+        },
+        {
+          "map": "c1-s2-t2-seed73001",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            33.25,
+            39,
+            33.5,
+            31
+          ]
+        },
+        {
+          "map": "c2-s2-t2-seed73002",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 8,
+          "mean_population_by_seat": [
+            2.75,
+            41,
+            8.25,
+            5.5
+          ]
+        },
+        {
+          "map": "c2-s2-t2-seed73002",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            20,
+            32.5,
+            36.25,
+            31.25
+          ]
+        },
+        {
+          "map": "c6-s1-t1-seed73002",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 4,
+          "mean_population_by_seat": [
+            49.25,
+            21.5,
+            37,
+            40.5
+          ]
+        },
+        {
+          "map": "c6-s1-t1-seed73002",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            76,
+            68.75,
+            75,
+            71
+          ]
+        }
+      ]
+    },
+    "r7": {
+      "colonies": 96,
+      "stalls": 17,
+      "population_at_most_four": 18,
+      "starvation_deaths": 39,
+      "groups": [
+        {
+          "map": "c1-s2-t2-seed73001",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 5,
+          "mean_population_by_seat": [
+            9.5,
+            4,
+            37.25,
+            27.75
+          ]
+        },
+        {
+          "map": "c1-s2-t2-seed73001",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            33.25,
+            39,
+            33.5,
+            31
+          ]
+        },
+        {
+          "map": "c2-s2-t2-seed73002",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 8,
+          "mean_population_by_seat": [
+            2.75,
+            41,
+            8.25,
+            5.5
+          ]
+        },
+        {
+          "map": "c2-s2-t2-seed73002",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            20,
+            32.5,
+            36.25,
+            31.25
+          ]
+        },
+        {
+          "map": "c6-s1-t1-seed73002",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 4,
+          "mean_population_by_seat": [
+            49.25,
+            21.5,
+            37,
+            40.5
+          ]
+        },
+        {
+          "map": "c6-s1-t1-seed73002",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            76,
+            68.75,
+            75,
+            71
+          ]
+        }
+      ]
+    },
+    "r8": {
+      "colonies": 96,
+      "stalls": 0,
+      "population_at_most_four": 0,
+      "starvation_deaths": 83,
+      "groups": [
+        {
+          "map": "c1-s2-t2-seed73001",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            47.75,
+            69.25,
+            37.25,
+            33.75
+          ]
+        },
+        {
+          "map": "c1-s2-t2-seed73001",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            47.25,
+            49.5,
+            22.25,
+            39.75
+          ]
+        },
+        {
+          "map": "c2-s2-t2-seed73002",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            37.75,
+            58,
+            48.5,
+            34.75
+          ]
+        },
+        {
+          "map": "c2-s2-t2-seed73002",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            26.5,
+            40.25,
+            37,
+            24.75
+          ]
+        },
+        {
+          "map": "c6-s1-t1-seed73002",
+          "ai": "maxima",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            57.75,
+            48.5,
+            62.5,
+            59
+          ]
+        },
+        {
+          "map": "c6-s1-t1-seed73002",
+          "ai": "nicowar",
+          "colonies": 16,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            80,
+            69,
+            74.25,
+            71.25
+          ]
+        }
+      ]
+    },
+    "heldout-r3": {
+      "colonies": 256,
+      "stalls": 0,
+      "population_at_most_four": 1,
+      "starvation_deaths": 113,
+      "groups": [
+        {
+          "map": "c3-s1-t1-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            51,
+            61.5,
+            42,
+            39.5
+          ]
+        },
+        {
+          "map": "c3-s1-t1-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            59,
+            70,
+            50,
+            57
+          ]
+        },
+        {
+          "map": "c3-s1-t2-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            44,
+            40,
+            51.5,
+            54
+          ]
+        },
+        {
+          "map": "c3-s1-t2-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            49,
+            43.5,
+            45,
+            53
+          ]
+        },
+        {
+          "map": "c3-s2-t1-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            29,
+            24,
+            12,
+            27.5
+          ]
+        },
+        {
+          "map": "c3-s2-t1-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            56.5,
+            46,
+            49.5,
+            60
+          ]
+        },
+        {
+          "map": "c3-s2-t2-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            28.5,
+            26.5,
+            27.5,
+            27.5
+          ]
+        },
+        {
+          "map": "c3-s2-t2-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            18.5,
+            21.5,
+            24.5,
+            19.5
+          ]
+        },
+        {
+          "map": "c4-s1-t1-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            31.5,
+            42,
+            37.5,
+            21
+          ]
+        },
+        {
+          "map": "c4-s1-t1-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            65,
+            60,
+            59,
+            54.5
+          ]
+        },
+        {
+          "map": "c4-s1-t2-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            45,
+            41,
+            47.5,
+            53.5
+          ]
+        },
+        {
+          "map": "c4-s1-t2-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            46.5,
+            38.5,
+            42,
+            56.5
+          ]
+        },
+        {
+          "map": "c4-s2-t1-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            32.5,
+            21.5,
+            14,
+            22
+          ]
+        },
+        {
+          "map": "c4-s2-t1-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            63.5,
+            41.5,
+            45,
+            61.5
+          ]
+        },
+        {
+          "map": "c4-s2-t2-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            21,
+            46,
+            32.5,
+            47
+          ]
+        },
+        {
+          "map": "c4-s2-t2-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            48,
+            37,
+            23.5,
+            32.5
+          ]
+        },
+        {
+          "map": "c7-s1-t1-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            17.5,
+            40,
+            63.5,
+            37
+          ]
+        },
+        {
+          "map": "c7-s1-t1-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            55.5,
+            34.5,
+            81.5,
+            70.5
+          ]
+        },
+        {
+          "map": "c7-s1-t2-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            45.5,
+            69,
+            42,
+            44
+          ]
+        },
+        {
+          "map": "c7-s1-t2-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            47.5,
+            58.5,
+            51.5,
+            23.5
+          ]
+        },
+        {
+          "map": "c7-s2-t1-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            27.5,
+            34.5,
+            37.5,
+            69
+          ]
+        },
+        {
+          "map": "c7-s2-t1-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            74.5,
+            76.5,
+            42.5,
+            67
+          ]
+        },
+        {
+          "map": "c7-s2-t2-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            35.5,
+            47,
+            52.5,
+            5
+          ]
+        },
+        {
+          "map": "c7-s2-t2-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            53,
+            35,
+            64.5,
+            14.5
+          ]
+        },
+        {
+          "map": "c8-s1-t1-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            48.5,
+            49.5,
+            38.5,
+            78
+          ]
+        },
+        {
+          "map": "c8-s1-t1-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            77,
+            39.5,
+            68,
+            82
+          ]
+        },
+        {
+          "map": "c8-s1-t2-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            42.5,
+            36,
+            51.5,
+            37.5
+          ]
+        },
+        {
+          "map": "c8-s1-t2-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            37,
+            38.5,
+            43.5,
+            16.5
+          ]
+        },
+        {
+          "map": "c8-s2-t1-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            52.5,
+            59,
+            53,
+            55.5
+          ]
+        },
+        {
+          "map": "c8-s2-t1-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            73.5,
+            69,
+            76,
+            61
+          ]
+        },
+        {
+          "map": "c8-s2-t2-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            40.5,
+            52,
+            35,
+            45
+          ]
+        },
+        {
+          "map": "c8-s2-t2-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            22,
+            45.5,
+            49,
+            25
+          ]
+        }
+      ]
+    },
+    "heldout-r8": {
+      "colonies": 256,
+      "stalls": 0,
+      "population_at_most_four": 1,
+      "starvation_deaths": 385,
+      "groups": [
+        {
+          "map": "c3-s1-t1-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            60.5,
+            47.5,
+            54,
+            43.5
+          ]
+        },
+        {
+          "map": "c3-s1-t1-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            53,
+            65.5,
+            47,
+            64.5
+          ]
+        },
+        {
+          "map": "c3-s1-t2-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            67,
+            45,
+            55,
+            63.5
+          ]
+        },
+        {
+          "map": "c3-s1-t2-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            57,
+            46,
+            34,
+            56
+          ]
+        },
+        {
+          "map": "c3-s2-t1-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            62.5,
+            29.5,
+            32,
+            81
+          ]
+        },
+        {
+          "map": "c3-s2-t1-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            59,
+            75.5,
+            49,
+            80.5
+          ]
+        },
+        {
+          "map": "c3-s2-t2-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            51.5,
+            39,
+            60.5,
+            47.5
+          ]
+        },
+        {
+          "map": "c3-s2-t2-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            48.5,
+            41,
+            59,
+            35.5
+          ]
+        },
+        {
+          "map": "c4-s1-t1-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            45,
+            64,
+            51.5,
+            18.5
+          ]
+        },
+        {
+          "map": "c4-s1-t1-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            80.5,
+            66,
+            61,
+            71
+          ]
+        },
+        {
+          "map": "c4-s1-t2-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            59.5,
+            48,
+            56,
+            63
+          ]
+        },
+        {
+          "map": "c4-s1-t2-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            52.5,
+            49.5,
+            69,
+            46.5
+          ]
+        },
+        {
+          "map": "c4-s2-t1-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            64,
+            52.5,
+            38,
+            40
+          ]
+        },
+        {
+          "map": "c4-s2-t1-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            69.5,
+            78,
+            54.5,
+            64.5
+          ]
+        },
+        {
+          "map": "c4-s2-t2-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            73,
+            56.5,
+            40,
+            53.5
+          ]
+        },
+        {
+          "map": "c4-s2-t2-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            49,
+            41.5,
+            41,
+            34
+          ]
+        },
+        {
+          "map": "c7-s1-t1-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            63.5,
+            43,
+            66,
+            68
+          ]
+        },
+        {
+          "map": "c7-s1-t1-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            71.5,
+            73.5,
+            57,
+            73.5
+          ]
+        },
+        {
+          "map": "c7-s1-t2-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            71,
+            38,
+            60.5,
+            45.5
+          ]
+        },
+        {
+          "map": "c7-s1-t2-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            50,
+            23.5,
+            47,
+            67.5
+          ]
+        },
+        {
+          "map": "c7-s2-t1-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            77,
+            53.5,
+            38,
+            86.5
+          ]
+        },
+        {
+          "map": "c7-s2-t1-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            88.5,
+            57,
+            56,
+            47.5
+          ]
+        },
+        {
+          "map": "c7-s2-t2-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            53,
+            82,
+            57.5,
+            48.5
+          ]
+        },
+        {
+          "map": "c7-s2-t2-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            43,
+            68,
+            37.5,
+            33
+          ]
+        },
+        {
+          "map": "c8-s1-t1-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            68,
+            53.5,
+            74.5,
+            84
+          ]
+        },
+        {
+          "map": "c8-s1-t1-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            75.5,
+            72.5,
+            59.5,
+            81.5
+          ]
+        },
+        {
+          "map": "c8-s1-t2-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            74,
+            48.5,
+            58,
+            61.5
+          ]
+        },
+        {
+          "map": "c8-s1-t2-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            38,
+            64.5,
+            55,
+            8
+          ]
+        },
+        {
+          "map": "c8-s2-t1-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            85,
+            72,
+            59,
+            56
+          ]
+        },
+        {
+          "map": "c8-s2-t1-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            63.5,
+            65.5,
+            59.5,
+            82
+          ]
+        },
+        {
+          "map": "c8-s2-t2-seed74011",
+          "ai": "maxima",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            73.5,
+            42,
+            64,
+            68
+          ]
+        },
+        {
+          "map": "c8-s2-t2-seed74011",
+          "ai": "nicowar",
+          "colonies": 8,
+          "stalls": 0,
+          "mean_population_by_seat": [
+            24.5,
+            59.5,
+            31,
+            30
+          ]
+        }
+      ]
+    }
+  },
+  "full": {
+    "r3": {
+      "games": 48,
+      "blocks": [
+        {
+          "map": "c1-s2-t2-seed73001",
+          "ai": "maxima",
+          "games": 8,
+          "engine_wins": [
+            0,
+            2,
+            0,
+            6
+          ],
+          "max_seat_wins": 6,
+          "capped": 0,
+          "game_seeds": [
+            91001,
+            95001
+          ]
+        },
+        {
+          "map": "c1-s2-t2-seed73001",
+          "ai": "nicowar",
+          "games": 8,
+          "engine_wins": [
+            0,
+            0,
+            0,
+            8
+          ],
+          "max_seat_wins": 8,
+          "capped": 0,
+          "game_seeds": [
+            91001,
+            95001
+          ]
+        },
+        {
+          "map": "c2-s2-t2-seed73002",
+          "ai": "maxima",
+          "games": 8,
+          "engine_wins": [
+            0,
+            6,
+            0,
+            1
+          ],
+          "max_seat_wins": 6,
+          "capped": 1,
+          "game_seeds": [
+            91001,
+            95001
+          ]
+        },
+        {
+          "map": "c2-s2-t2-seed73002",
+          "ai": "nicowar",
+          "games": 8,
+          "engine_wins": [
+            1,
+            0,
+            7,
+            0
+          ],
+          "max_seat_wins": 7,
+          "capped": 0,
+          "game_seeds": [
+            91001,
+            95001
+          ]
+        },
+        {
+          "map": "c6-s1-t1-seed73002",
+          "ai": "maxima",
+          "games": 8,
+          "engine_wins": [
+            0,
+            0,
+            1,
+            0
+          ],
+          "max_seat_wins": 1,
+          "capped": 7,
+          "game_seeds": [
+            91001,
+            95001
+          ]
+        },
+        {
+          "map": "c6-s1-t1-seed73002",
+          "ai": "nicowar",
+          "games": 8,
+          "engine_wins": [
+            5,
+            0,
+            1,
+            2
+          ],
+          "max_seat_wins": 5,
+          "capped": 0,
+          "game_seeds": [
+            91001,
+            95001
+          ]
+        }
+      ]
+    },
+    "r8": {
+      "games": 48,
+      "blocks": [
+        {
+          "map": "c1-s2-t2-seed73001",
+          "ai": "maxima",
+          "games": 8,
+          "engine_wins": [
+            0,
+            1,
+            1,
+            0
+          ],
+          "max_seat_wins": 1,
+          "capped": 6,
+          "game_seeds": [
+            91001,
+            95001
+          ]
+        },
+        {
+          "map": "c1-s2-t2-seed73001",
+          "ai": "nicowar",
+          "games": 8,
+          "engine_wins": [
+            1,
+            3,
+            2,
+            0
+          ],
+          "max_seat_wins": 3,
+          "capped": 2,
+          "game_seeds": [
+            91001,
+            95001
+          ]
+        },
+        {
+          "map": "c2-s2-t2-seed73002",
+          "ai": "maxima",
+          "games": 8,
+          "engine_wins": [
+            0,
+            0,
+            0,
+            3
+          ],
+          "max_seat_wins": 3,
+          "capped": 5,
+          "game_seeds": [
+            91001,
+            95001
+          ]
+        },
+        {
+          "map": "c2-s2-t2-seed73002",
+          "ai": "nicowar",
+          "games": 8,
+          "engine_wins": [
+            1,
+            4,
+            2,
+            1
+          ],
+          "max_seat_wins": 4,
+          "capped": 0,
+          "game_seeds": [
+            91001,
+            95001
+          ]
+        },
+        {
+          "map": "c6-s1-t1-seed73002",
+          "ai": "maxima",
+          "games": 8,
+          "engine_wins": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "max_seat_wins": 1,
+          "capped": 7,
+          "game_seeds": [
+            91001,
+            95001
+          ]
+        },
+        {
+          "map": "c6-s1-t1-seed73002",
+          "ai": "nicowar",
+          "games": 8,
+          "engine_wins": [
+            2,
+            1,
+            1,
+            3
+          ],
+          "max_seat_wins": 3,
+          "capped": 1,
+          "game_seeds": [
+            91001,
+            95001
+          ]
+        }
+      ]
+    }
+  },
+  "generation": {
+    "probe-r4": {
+      "accepted": 3,
+      "success": 3,
+      "failures": []
+    },
+    "probe-r5": {
+      "accepted": 3,
+      "success": 3,
+      "failures": []
+    },
+    "probe-r6": {
+      "accepted": 3,
+      "success": 3,
+      "failures": []
+    },
+    "probe-r7": {
+      "accepted": 3,
+      "success": 3,
+      "failures": []
+    },
+    "probe-r8": {
+      "accepted": 3,
+      "success": 3,
+      "failures": []
+    },
+    "heldout-r3": {
+      "accepted": 16,
+      "success": 16,
+      "failures": []
+    },
+    "heldout-r8": {
+      "accepted": 16,
+      "success": 16,
+      "failures": []
+    },
+    "stress-r8": {
+      "accepted": 64,
+      "success": 63,
+      "failures": [
+        {
+          "job": "ff5bc49ccacf25261b069cf561faa82a",
+          "labels": {
+            "amount": 200,
+            "character": 6,
+            "inverse": 1,
+            "outline": 2,
+            "size": 256,
+            "workers": 8
+          },
+          "category": "generation_failed",
+          "result": {
+            "chosen_seed": 74021,
+            "diagnostic": "emoji revision 8 seed 74021 [generator validation]: Emoji start has insufficient existing construction room.",
+            "generator": "emoji",
+            "job_type": "generate_map",
+            "map_report": {
+              "engine": {
+                "version_major": 0,
+                "version_minor": 106
+              },
+              "generation": {
+                "available": true,
+                "generator": "emoji",
+                "legacy_id": 33,
+                "legacy_resource_amounts": [
+                  7,
+                  7,
+                  7,
+                  7,
+                  7,
+                  7,
+                  7,
+                  7,
+                  7,
+                  7,
+                  7,
+                  7,
+                  7,
+                  7,
+                  7
+                ],
+                "legacy_terrain_type": 2,
+                "outcome": {
+                  "detail": "Emoji start has insufficient existing construction room.",
+                  "error": "invalid_world",
+                  "stage": "generator validation",
+                  "success": false
+                },
+                "parameters": {
+                  "algae-amount": 200,
+                  "character": 6,
+                  "crossings": 4,
+                  "fruit-amount": 200,
+                  "height": 256,
+                  "inverse": 1,
+                  "outline": 2,
+                  "stone-amount": 200,
+                  "teams": 8,
+                  "wheat-amount": 200,
+                  "width": 256,
+                  "wood-amount": 200,
+                  "workers": 8
+                },
+                "raw_request": {
+                  "height_exponent": 8,
+                  "method": 33,
+                  "options": {
+                    "algae-amount": 200,
+                    "character": 6,
+                    "crossings": 4,
+                    "fruit-amount": 200,
+                    "inverse": 1,
+                    "outline": 2,
+                    "stone-amount": 200,
+                    "wheat-amount": 200,
+                    "wood-amount": 200
+                  },
+                  "teams": 8,
+                  "width_exponent": 8,
+                  "workers": 8
+                },
+                "revision": 8,
+                "seed": 74021,
+                "selection_quality": null,
+                "telemetry": {
+                  "dropped_records": 0,
+                  "enabled": true,
+                  "invalid_values": 0,
+                  "record_limit": 4096,
+                  "records": [
+                    {
+                      "key": "emoji.character",
+                      "kind": "choice",
+                      "subject": null,
+                      "value": "sunglasses"
+                    },
+                    {
+                      "key": "emoji.style",
+                      "kind": "choice",
+                      "subject": null,
+                      "value": "filled"
+                    },
+                    {
+                      "key": "emoji.terrain",
+                      "kind": "choice",
+                      "subject": null,
+                      "value": "water-ink"
+                    },
+                    {
+                      "key": "emoji.stroke.width-corners",
+                      "kind": "measurement",
+                      "subject": null,
+                      "value": 7.3216
+                    },
+                    {
+                      "key": "emoji.ink.corners",
+                      "kind": "measurement",
+                      "subject": null,
+                      "value": 11898
+                    },
+                    {
+                      "key": "emoji.crossings.requested",
+                      "kind": "measurement",
+                      "subject": null,
+                      "value": 4
+                    },
+                    {
+                      "key": "emoji.crossings.placed",
+                      "kind": "measurement",
+                      "subject": null,
+                      "value": 4
+                    },
+                    {
+                      "key": "emoji.crossings.phase-radians",
+                      "kind": "measurement",
+                      "subject": null,
+                      "value": 1.0799224746714913
+                    },
+                    {
+                      "key": "emoji.home.crop-target-tiles",
+                      "kind": "measurement",
+                      "subject": null,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.starts.eligible",
+                      "kind": "measurement",
+                      "subject": null,
+                      "value": 547
+                    },
+                    {
+                      "key": "emoji.starts.spacing-tiles",
+                      "kind": "measurement",
+                      "subject": null,
+                      "value": 62
+                    },
+                    {
+                      "key": "emoji.starts.refinement-score",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": 1386273
+                    },
+                    {
+                      "key": "emoji.starts.refinement-score",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": 615510
+                    },
+                    {
+                      "key": "emoji.starts.refinement-score",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": 638792
+                    },
+                    {
+                      "key": "emoji.starts.refinement-score",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": 680239
+                    },
+                    {
+                      "key": "emoji.starts.refinement-score",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": 636689
+                    },
+                    {
+                      "key": "emoji.starts.refinement-score",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": 681826
+                    },
+                    {
+                      "key": "emoji.starts.refinement-score",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": 443189
+                    },
+                    {
+                      "key": "emoji.starts.refinement-score",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": 589257
+                    },
+                    {
+                      "key": "emoji.starts.placed",
+                      "kind": "measurement",
+                      "subject": null,
+                      "value": 8
+                    },
+                    {
+                      "key": "settlement.eligible_sites",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": 46628
+                    },
+                    {
+                      "key": "settlement.nearest_ties",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": 1
+                    },
+                    {
+                      "key": "settlement.nearest_distance_squared",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": 0
+                    },
+                    {
+                      "key": "settlement.requested_workers",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": 8
+                    },
+                    {
+                      "key": "settlement.initial_worker_room",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": 20
+                    },
+                    {
+                      "key": "settlement.worker_tiles",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": 20
+                    },
+                    {
+                      "key": "settlement.placed_workers",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": 8
+                    },
+                    {
+                      "key": "settlement.eligible_sites",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": 46563
+                    },
+                    {
+                      "key": "settlement.nearest_ties",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": 1
+                    },
+                    {
+                      "key": "settlement.nearest_distance_squared",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": 0
+                    },
+                    {
+                      "key": "settlement.requested_workers",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": 8
+                    },
+                    {
+                      "key": "settlement.initial_worker_room",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": 20
+                    },
+                    {
+                      "key": "settlement.worker_tiles",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": 20
+                    },
+                    {
+                      "key": "settlement.placed_workers",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": 8
+                    },
+                    {
+                      "key": "settlement.eligible_sites",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": 46502
+                    },
+                    {
+                      "key": "settlement.nearest_ties",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": 1
+                    },
+                    {
+                      "key": "settlement.nearest_distance_squared",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": 0
+                    },
+                    {
+                      "key": "settlement.requested_workers",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": 8
+                    },
+                    {
+                      "key": "settlement.initial_worker_room",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": 20
+                    },
+                    {
+                      "key": "settlement.worker_tiles",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": 20
+                    },
+                    {
+                      "key": "settlement.placed_workers",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": 8
+                    },
+                    {
+                      "key": "settlement.eligible_sites",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": 46440
+                    },
+                    {
+                      "key": "settlement.nearest_ties",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": 1
+                    },
+                    {
+                      "key": "settlement.nearest_distance_squared",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": 0
+                    },
+                    {
+                      "key": "settlement.requested_workers",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": 8
+                    },
+                    {
+                      "key": "settlement.initial_worker_room",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": 20
+                    },
+                    {
+                      "key": "settlement.worker_tiles",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": 20
+                    },
+                    {
+                      "key": "settlement.placed_workers",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": 8
+                    },
+                    {
+                      "key": "settlement.eligible_sites",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": 46380
+                    },
+                    {
+                      "key": "settlement.nearest_ties",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": 1
+                    },
+                    {
+                      "key": "settlement.nearest_distance_squared",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": 0
+                    },
+                    {
+                      "key": "settlement.requested_workers",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": 8
+                    },
+                    {
+                      "key": "settlement.initial_worker_room",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": 20
+                    },
+                    {
+                      "key": "settlement.worker_tiles",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": 20
+                    },
+                    {
+                      "key": "settlement.placed_workers",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": 8
+                    },
+                    {
+                      "key": "settlement.eligible_sites",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": 46321
+                    },
+                    {
+                      "key": "settlement.nearest_ties",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": 1
+                    },
+                    {
+                      "key": "settlement.nearest_distance_squared",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": 0
+                    },
+                    {
+                      "key": "settlement.requested_workers",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": 8
+                    },
+                    {
+                      "key": "settlement.initial_worker_room",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": 20
+                    },
+                    {
+                      "key": "settlement.worker_tiles",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": 20
+                    },
+                    {
+                      "key": "settlement.placed_workers",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": 8
+                    },
+                    {
+                      "key": "settlement.eligible_sites",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": 46260
+                    },
+                    {
+                      "key": "settlement.nearest_ties",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": 1
+                    },
+                    {
+                      "key": "settlement.nearest_distance_squared",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": 0
+                    },
+                    {
+                      "key": "settlement.requested_workers",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": 8
+                    },
+                    {
+                      "key": "settlement.initial_worker_room",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": 20
+                    },
+                    {
+                      "key": "settlement.worker_tiles",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": 20
+                    },
+                    {
+                      "key": "settlement.placed_workers",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": 8
+                    },
+                    {
+                      "key": "settlement.eligible_sites",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": 46192
+                    },
+                    {
+                      "key": "settlement.nearest_ties",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": 1
+                    },
+                    {
+                      "key": "settlement.nearest_distance_squared",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": 0
+                    },
+                    {
+                      "key": "settlement.requested_workers",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": 8
+                    },
+                    {
+                      "key": "settlement.initial_worker_room",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": 20
+                    },
+                    {
+                      "key": "settlement.worker_tiles",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": 20
+                    },
+                    {
+                      "key": "settlement.placed_workers",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": 8
+                    },
+                    {
+                      "key": "emoji.home.wheat-placed",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.home.wood-placed",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.home.wheat-placed",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.home.wood-placed",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.home.wheat-placed",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.home.wood-placed",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.home.wheat-placed",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.home.wood-placed",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.home.wheat-placed",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.home.wood-placed",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.home.wheat-placed",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.home.wood-placed",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.home.wheat-placed",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.home.wood-placed",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.home.wheat-placed",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.home.wood-placed",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": 48
+                    },
+                    {
+                      "key": "emoji.home.close-wheat-placed",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": 24
+                    },
+                    {
+                      "key": "emoji.home.close-wood-placed",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": 16
+                    },
+                    {
+                      "key": "emoji.home.close-wheat-placed",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": 24
+                    },
+                    {
+                      "key": "emoji.home.close-wood-placed",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": 16
+                    },
+                    {
+                      "key": "emoji.home.close-wheat-placed",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": 24
+                    },
+                    {
+                      "key": "emoji.home.close-wood-placed",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": 16
+                    },
+                    {
+                      "key": "emoji.home.close-wheat-placed",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": 24
+                    },
+                    {
+                      "key": "emoji.home.close-wood-placed",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": 16
+                    },
+                    {
+                      "key": "emoji.home.close-wheat-placed",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": 24
+                    },
+                    {
+                      "key": "emoji.home.close-wood-placed",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": 16
+                    },
+                    {
+                      "key": "emoji.home.close-wheat-placed",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": 24
+                    },
+                    {
+                      "key": "emoji.home.close-wood-placed",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": 16
+                    },
+                    {
+                      "key": "emoji.home.close-wheat-placed",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": 24
+                    },
+                    {
+                      "key": "emoji.home.close-wood-placed",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": 16
+                    },
+                    {
+                      "key": "emoji.home.close-wheat-placed",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": 24
+                    },
+                    {
+                      "key": "emoji.home.close-wood-placed",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": 16
+                    },
+                    {
+                      "key": "resources.starting.wheat_range",
+                      "kind": "measurement",
+                      "subject": null,
+                      "value": 24
+                    },
+                    {
+                      "key": "resources.starting.wood_range",
+                      "kind": "measurement",
+                      "subject": null,
+                      "value": 32
+                    },
+                    {
+                      "key": "resources.starting.clear_radius",
+                      "kind": "measurement",
+                      "subject": null,
+                      "value": 0
+                    },
+                    {
+                      "key": "resources.starting_wheat.before_distance",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": 8
+                    },
+                    {
+                      "key": "resources.starting_wood.before_distance",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": 7
+                    },
+                    {
+                      "key": "resources.starting.wall_clear_rounds",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": 0
+                    },
+                    {
+                      "key": "resources.starting_wheat.topup_needed",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": false
+                    },
+                    {
+                      "key": "resources.starting_wood.topup_needed",
+                      "kind": "measurement",
+                      "subject": 0,
+                      "value": false
+                    },
+                    {
+                      "key": "resources.starting_wheat.before_distance",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": 4
+                    },
+                    {
+                      "key": "resources.starting_wood.before_distance",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": 8
+                    },
+                    {
+                      "key": "resources.starting.wall_clear_rounds",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": 0
+                    },
+                    {
+                      "key": "resources.starting_wheat.topup_needed",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": false
+                    },
+                    {
+                      "key": "resources.starting_wood.topup_needed",
+                      "kind": "measurement",
+                      "subject": 1,
+                      "value": false
+                    },
+                    {
+                      "key": "resources.starting_wheat.before_distance",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": 9
+                    },
+                    {
+                      "key": "resources.starting_wood.before_distance",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": 12
+                    },
+                    {
+                      "key": "resources.starting.wall_clear_rounds",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": 0
+                    },
+                    {
+                      "key": "resources.starting_wheat.topup_needed",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": false
+                    },
+                    {
+                      "key": "resources.starting_wood.topup_needed",
+                      "kind": "measurement",
+                      "subject": 2,
+                      "value": false
+                    },
+                    {
+                      "key": "resources.starting_wheat.before_distance",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": 8
+                    },
+                    {
+                      "key": "resources.starting_wood.before_distance",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": 8
+                    },
+                    {
+                      "key": "resources.starting.wall_clear_rounds",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": 0
+                    },
+                    {
+                      "key": "resources.starting_wheat.topup_needed",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": false
+                    },
+                    {
+                      "key": "resources.starting_wood.topup_needed",
+                      "kind": "measurement",
+                      "subject": 3,
+                      "value": false
+                    },
+                    {
+                      "key": "resources.starting_wheat.before_distance",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": 8
+                    },
+                    {
+                      "key": "resources.starting_wood.before_distance",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": 5
+                    },
+                    {
+                      "key": "resources.starting.wall_clear_rounds",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": 0
+                    },
+                    {
+                      "key": "resources.starting_wheat.topup_needed",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": false
+                    },
+                    {
+                      "key": "resources.starting_wood.topup_needed",
+                      "kind": "measurement",
+                      "subject": 4,
+                      "value": false
+                    },
+                    {
+                      "key": "resources.starting_wheat.before_distance",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": 8
+                    },
+                    {
+                      "key": "resources.starting_wood.before_distance",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": 11
+                    },
+                    {
+                      "key": "resources.starting.wall_clear_rounds",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": 0
+                    },
+                    {
+                      "key": "resources.starting_wheat.topup_needed",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": false
+                    },
+                    {
+                      "key": "resources.starting_wood.topup_needed",
+                      "kind": "measurement",
+                      "subject": 5,
+                      "value": false
+                    },
+                    {
+                      "key": "resources.starting_wheat.before_distance",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": 6
+                    },
+                    {
+                      "key": "resources.starting_wood.before_distance",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": 4
+                    },
+                    {
+                      "key": "resources.starting.wall_clear_rounds",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": 0
+                    },
+                    {
+                      "key": "resources.starting_wheat.topup_needed",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": false
+                    },
+                    {
+                      "key": "resources.starting_wood.topup_needed",
+                      "kind": "measurement",
+                      "subject": 6,
+                      "value": false
+                    },
+                    {
+                      "key": "resources.starting_wheat.before_distance",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": 6
+                    },
+                    {
+                      "key": "resources.starting_wood.before_distance",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": 7
+                    },
+                    {
+                      "key": "resources.starting.wall_clear_rounds",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": 0
+                    },
+                    {
+                      "key": "resources.starting_wheat.topup_needed",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": false
+                    },
+                    {
+                      "key": "resources.starting_wood.topup_needed",
+                      "kind": "measurement",
+                      "subject": 7,
+                      "value": false
+                    },
+                    {
+                      "key": "generation.failure",
+                      "kind": "error",
+                      "subject": null,
+                      "value": "generator validation: Emoji start has insufficient existing construction room."
+                    }
+                  ],
+                  "schema_version": 1
+                }
+              },
+              "report_type": "generation_failure",
+              "schema_version": 2
+            },
+            "map_seed": 74021,
+            "schema_version": 1,
+            "seconds": 0.321204,
+            "status": "generation_failed"
+          }
+        }
+      ]
+    },
+    "stress-r9": {
+      "accepted": 64,
+      "success": 64,
+      "failures": []
+    },
+    "identity-r9": {
+      "accepted": 19,
+      "success": 19,
+      "failures": []
+    }
+  }
+}
