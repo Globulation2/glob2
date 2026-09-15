@@ -2528,3 +2528,17 @@ Emoji
 식민지당 전초기지 수
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 이 크기에서는 기지가 지면에 맞지 않습니다. 크기 설정을 높이거나 정착민을 줄이세요.
+[Braided river]
+망상 하천
+[Braid width]
+망상대 너비
+[Bar size]
+모래톱 크기
+[Extra riffles]
+추가 여울
+[Moraine hummocks]
+빙퇴석 둔덕
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+망상대가 본거지를 위한 단구를 너무 적게 남깁니다. 더 큰 지도를 사용하거나 망상대를 좁히세요.
+[The map is too narrow across for a braid; use a bigger map.]
+지도의 폭이 망상 하천을 두기에 너무 좁습니다. 더 큰 지도를 사용하세요.

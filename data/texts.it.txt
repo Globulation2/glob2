@@ -2594,3 +2594,17 @@ Distanza tra le oasi
 Avamposti per colonia
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 La base non entra nel suo terreno a questa dimensione; alza il controllo della dimensione o abbassa i Coloni.
+[Braided river]
+Fiume intrecciato
+[Braid width]
+Larghezza dell'intreccio
+[Bar size]
+Dimensione delle barre
+[Extra riffles]
+Guadi aggiuntivi
+[Moraine hummocks]
+Dossi morenici
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+L'intreccio lascia troppo poco terrazzo per le basi; usa una mappa più grande o un intreccio più stretto.
+[The map is too narrow across for a braid; use a bigger map.]
+La mappa è troppo stretta in larghezza per un intreccio; usa una mappa più grande.

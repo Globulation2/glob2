@@ -165,8 +165,9 @@ int plantCover(Map &map, const Torus &t, const std::vector<unsigned char> &regio
 /// `radius`, searched within `within` tiles. A prize or an outcrop designed once per colony lands the
 /// same way at every colony's angle. Returns how many were placed.
 template <typename Eligible>
-int plantRound(Map &map, const Torus &t, GenerationContext &context, double cx, double cy, double radius,
-			   const std::vector<double> &angles, int type, int clumpRadius, int within, Eligible eligible)
+int plantRound(Map &map, const Torus &t, GenerationContext &context, double cx, double cy,
+			   double radius, const std::vector<double> &angles, int type, int clumpRadius,
+			   int within, Eligible eligible)
 {
 	int planted = 0;
 	for (const double a : angles)
@@ -175,7 +176,8 @@ int plantRound(Map &map, const Torus &t, GenerationContext &context, double cx, 
 								  int(std::lround(cy + radius * std::sin(a))), within, eligible);
 		if (seed < 0)
 			continue;
-		placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), type, clumpRadius);
+		placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), type,
+						   clumpRadius);
 		++planted;
 	}
 	return planted;
@@ -195,8 +197,8 @@ int plantOrchard(Map &map, const Torus &t, GenerationContext &context, double cx
 	for (const double angle : angles)
 		for (int fruit = 0; fruit < 3; ++fruit)
 			planted += plantRound(map, t, context, cx, cy, radius,
-								  {angle + (fruit - 1) * spacing / std::max(1.0, radius)}, CHERRY + fruit,
-								  clumpRadius, within, eligible);
+								  {angle + (fruit - 1) * spacing / std::max(1.0, radius)},
+								  CHERRY + fruit, clumpRadius, within, eligible);
 	return planted;
 }
 
@@ -231,6 +233,12 @@ std::vector<unsigned char> swarmSurroundings(const Torus &, const GenerationCont
 /// (a designed wall beside it, say).
 void clearAroundSwarms(Map &, const GenerationContext &, const Torus &,
 					   const std::vector<unsigned char> *keep = nullptr);
+
+/// Clears every deposit on the land tiles of `region`, except tiles of `keep` (a designed wall):
+/// the ground a design promised to leave open (a ford's landings, a lane past a swarm), whatever a
+/// later layer dropped there. Algae on water is left alone. Returns how many tiles were cleared.
+int clearDeposits(Map &, const Torus &, const std::vector<unsigned char> &region,
+				  const std::vector<unsigned char> *keep = nullptr);
 
 /// The chance, per water tile, that algae there passes Map::growResources' test to grow or spread
 /// when the engine visits it. The engine draws an offset of up to 15 tiles each way (the difference

@@ -30,4 +30,34 @@ ComponentLabels labelComponents(const std::vector<int> &components, const std::v
 // Region IDs may be sparse; caller supplies their ordered IDs. Ignores other labels.
 RegionGraph regionAdjacency(const std::vector<int> &labels, int width, int height,
 							const std::vector<int> &regionIds, bool wrap);
+
+/// Disjoint sets over 0 to n - 1 (union-find with path halving): which regions a sequence of
+/// joins has made one, for a spanning tree of crossings grown by Kruskal's rule (a join that
+/// changes nothing closes a loop) or a check that two regions ended up joined.
+struct DisjointSets
+{
+	std::vector<int> parent;
+	explicit DisjointSets(int n) : parent(size_t(n))
+	{
+		for (int i = 0; i < n; ++i)
+			parent[i] = i;
+	}
+	int find(int a)
+	{
+		while (parent[a] != a)
+			a = parent[a] = parent[parent[a]];
+		return a;
+	}
+	/// Joins the two sets; false when they were one already.
+	bool unite(int a, int b)
+	{
+		a = find(a);
+		b = find(b);
+		if (a == b)
+			return false;
+		parent[a] = b;
+		return true;
+	}
+	bool joined(int a, int b) { return find(a) == find(b); }
+};
 } // namespace MapGeneration

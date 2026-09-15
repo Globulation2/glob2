@@ -2528,3 +2528,17 @@ Jarak oasis
 Pos terdepan per koloni
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 Pangkalan tidak muat di tanahnya pada ukuran ini; naikkan kontrol ukuran atau turunkan Kolonis.
+[Braided river]
+Sungai teranyam
+[Braid width]
+Lebar anyaman
+[Bar size]
+Ukuran gosong
+[Extra riffles]
+Penyeberangan dangkal tambahan
+[Moraine hummocks]
+Gundukan morena
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Anyaman menyisakan terlalu sedikit teras untuk markas; gunakan peta lebih besar atau anyaman lebih sempit.
+[The map is too narrow across for a braid; use a bigger map.]
+Peta terlalu sempit melintang untuk anyaman; gunakan peta lebih besar.

@@ -39,6 +39,7 @@
 #include "GlacisGenerator.h"
 #include "AllotmentsGenerator.h"
 #include "CaravanseraiGenerator.h"
+#include "BraidedRiverGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -148,6 +149,11 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 switchbacksDefinition(),
 											 cityStatesDefinition(),
 											 canalsDefinition(),
+											 emojiDefinition(),
+											 fortsDefinition(),
+											 braidedDeltaDefinition(),
+											 breachableHighlandsDefinition(),
+											 braidedRiverDefinition(),
 											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),

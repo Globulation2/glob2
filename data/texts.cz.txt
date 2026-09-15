@@ -2532,3 +2532,17 @@ Rozestup oáz
 Výspy na kolonii
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 Základna se při této velikosti nevejde na svůj pozemek; zvyšte ovladač velikosti nebo snižte Kolonisty.
+[Braided river]
+Divočící řeka
+[Braid width]
+Šířka divočení
+[Bar size]
+Velikost lavic
+[Extra riffles]
+Brody navíc
+[Moraine hummocks]
+Morénové pahorky
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Divočící řeka ponechává domovům příliš málo terasy; použijte větší mapu nebo užší řeku.
+[The map is too narrow across for a braid; use a bigger map.]
+Mapa je napříč příliš úzká pro divočící řeku; použijte větší mapu.

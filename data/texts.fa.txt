@@ -2530,3 +2530,17 @@ Emoji
 پاسگاه برای هر مستعمره
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 پایگاه در این اندازه در زمین خود جا نمی‌شود؛ کنترل اندازه را افزایش دهید یا مستعمره‌نشینان را کاهش دهید.
+[Braided river]
+رودخانهٔ شریانی
+[Braid width]
+پهنای نوار شریانی
+[Bar size]
+اندازهٔ پشته‌های شنی
+[Extra riffles]
+گدارهای اضافی
+[Moraine hummocks]
+تپه‌های یخرفتی
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+نوار شریانی برای پایگاه‌ها تراس بسیار کمی باقی می‌گذارد؛ از نقشهٔ بزرگ‌تر یا نوار شریانی باریک‌تری استفاده کنید.
+[The map is too narrow across for a braid; use a bigger map.]
+نقشه از عرض برای نوار شریانی بسیار باریک است؛ از نقشهٔ بزرگ‌تر استفاده کنید.

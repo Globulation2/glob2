@@ -2530,3 +2530,17 @@ Emoji
 Форпостов на колонию
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 База не помещается на своей земле при этом размере; увеличьте размер или уменьшите Колонистов.
+[Braided river]
+Разветвлённая река
+[Braid width]
+Ширина разветвления
+[Bar size]
+Размер отмелей
+[Extra riffles]
+Дополнительные броды
+[Moraine hummocks]
+Моренные холмы
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Разветвление оставляет базам слишком мало террасы; используйте карту побольше или более узкое разветвление.
+[The map is too narrow across for a braid; use a bigger map.]
+Карта слишком узка поперёк для разветвления; используйте карту побольше.

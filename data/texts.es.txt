@@ -2532,3 +2532,17 @@ Separación de los oasis
 Puestos avanzados por colonia
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 La base no cabe en su terreno con este tamaño; suba el control de tamaño o baje los Colonos.
+[Braided river]
+Río trenzado
+[Braid width]
+Ancho del trenzado
+[Bar size]
+Tamaño de las barras
+[Extra riffles]
+Vados extra
+[Moraine hummocks]
+Montículos de morrena
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+El trenzado deja muy poca terraza para las bases; usa un mapa más grande o un trenzado más estrecho.
+[The map is too narrow across for a braid; use a bigger map.]
+El mapa es demasiado estrecho para un trenzado; usa un mapa más grande.

@@ -2542,3 +2542,17 @@ Espacement des oasis
 Avant-postes par colonie
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 La base ne tient pas sur son terrain à cette taille ; augmentez le réglage de taille ou réduisez les Colons.
+[Braided river]
+Rivière en tresses
+[Braid width]
+Largeur de la tresse
+[Bar size]
+Taille des bancs
+[Extra riffles]
+Gués supplémentaires
+[Moraine hummocks]
+Buttes morainiques
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+La tresse laisse trop peu de terrasse pour les bases ; utilisez une carte plus grande ou une tresse plus étroite.
+[The map is too narrow across for a braid; use a bigger map.]
+La carte est trop étroite en travers pour une tresse ; utilisez une carte plus grande.

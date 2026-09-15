@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Patterns.h"
+#include "GenerationContext.h"
 #include "LatticeNoise.h"
 #include <algorithm>
 #include <cstdint>
@@ -194,5 +195,19 @@ std::vector<int> upwindSteps(const Torus &t, const std::vector<unsigned char> &m
 				}
 		}
 	return steps;
+}
+std::vector<unsigned char> runsAndGaps(int length, int runLow, int runHigh, int gapLow, int gapHigh,
+									   GenerationContext &context, const char *stream)
+{
+	std::vector<unsigned char> on(size_t(std::max(0, length)), 0);
+	for (int u = 0; u < length;)
+	{
+		const int run = runLow + int(context.bounded(stream, std::uint32_t(runHigh - runLow + 1)));
+		const int gap = gapLow + int(context.bounded(stream, std::uint32_t(gapHigh - gapLow + 1)));
+		for (int k = 0; k < run && u < length; ++k)
+			on[u++] = 1;
+		u += gap;
+	}
+	return on;
 }
 } // namespace MapGeneration

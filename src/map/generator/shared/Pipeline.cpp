@@ -47,6 +47,34 @@ ColonyWalk walkFromFirstColony(const Map &map, int teams, const std::string &gro
 	return walk;
 }
 
+std::string CropsInReach::missing() const
+{
+	if (wheat && wood)
+		return "";
+	return std::string("cannot walk to ") + (wheat ? "wood." : "wheat.");
+}
+
+CropsInReach cropsBesideReach(const Map &map, const std::vector<int> &reach)
+{
+	CropsInReach crops;
+	const int w = map.getW(), h = map.getH();
+	for (int y = 0; y < h && !(crops.wheat && crops.wood); ++y)
+		for (int x = 0; x < w; ++x)
+		{
+			const int type = map.getResource(x, y).type;
+			if (type != WHEAT && type != WOOD)
+				continue;
+			bool beside = false;
+			for (int dy = -1; dy <= 1 && !beside; ++dy)
+				for (int dx = -1; dx <= 1 && !beside; ++dx)
+					beside =
+						reach[size_t(map.normalizeY(y + dy)) * w + map.normalizeX(x + dx)] >= 0;
+			(type == WHEAT ? crops.wheat : crops.wood) =
+				(type == WHEAT ? crops.wheat : crops.wood) || beside;
+		}
+	return crops;
+}
+
 std::vector<unsigned char> homeGrassMask(const Map &map, const Torus &t,
 										 const std::vector<int> &homeOf, int team)
 {

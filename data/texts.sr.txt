@@ -2532,3 +2532,17 @@ Emoji
 Испоставе по колонији
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 База не стаје на своје земљиште при овој величини; повећајте величину или смањите Колонисте.
+[Braided river]
+Разграната река
+[Braid width]
+Ширина разгранања
+[Bar size]
+Величина спрудова
+[Extra riffles]
+Додатни газови
+[Moraine hummocks]
+Моренски брежуљци
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Разгранање оставља премало терасе за базе; користите већу мапу или уже разгранање.
+[The map is too narrow across for a braid; use a bigger map.]
+Мапа је попреко преуска за разгранање; користите већу мапу.

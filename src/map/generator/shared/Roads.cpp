@@ -4,6 +4,7 @@
 #include "Map.h"
 #include <climits>
 #include <deque>
+#include <string>
 namespace MapGeneration
 {
 std::vector<int> cheapestRoute(const Torus &t, const std::vector<int> &sources,
@@ -79,6 +80,29 @@ bool openRoad(Map &map, const Torus &t, const std::vector<int> &sources,
 		if (map.isResource(i % t.w, i / t.w))
 			map.setNoResource(i % t.w, i / t.w, 1);
 	return true;
+}
+int connectColonies(Map &map, int teams, const std::vector<unsigned char> *alsoBlocked,
+					std::string &detail)
+{
+	const Torus t(map);
+	const auto workers = unitTilesByTeam(map, teams);
+	int opened = 0;
+	for (int team = 1; team < teams; ++team)
+	{
+		const std::vector<int> reach = stepsFrom(t, tileMask(t, workers[0]), walkableTiles(map));
+		bool connected = false;
+		for (int p : workers[team])
+			connected = connected || reach[p] >= 0;
+		if (connected)
+			continue;
+		if (!openRoad(map, t, workers[0], tileMask(t, workers[team]), alsoBlocked))
+		{
+			detail = "colony " + std::to_string(team) + " has no land route to colony 0";
+			return -1;
+		}
+		++opened;
+	}
+	return opened;
 }
 bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t,
 					  const StepCosts &costs)

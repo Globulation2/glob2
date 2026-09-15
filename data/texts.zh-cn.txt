@@ -2528,3 +2528,17 @@ Emoji
 每个殖民地的哨站数
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 此大小下基地无法放入其地面；请调高大小控件或降低殖民者数量。
+[Braided river]
+辫状河
+[Braid width]
+辫状带宽度
+[Bar size]
+沙洲大小
+[Extra riffles]
+额外浅滩
+[Moraine hummocks]
+冰碛小丘
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+辫状带留给基地的阶地太少；请使用更大的地图或更窄的辫状带。
+[The map is too narrow across for a braid; use a bigger map.]
+地图的宽度太窄，容不下辫状河；请使用更大的地图。

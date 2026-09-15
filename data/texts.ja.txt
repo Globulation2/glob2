@@ -2528,3 +2528,17 @@ Emoji
 コロニーごとの前哨数
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 この大きさでは拠点が地面に収まりません。大きさの設定を上げるか、入植者を減らしてください。
+[Braided river]
+網状河川
+[Braid width]
+網状帯の幅
+[Bar size]
+砂州の大きさ
+[Extra riffles]
+追加の浅瀬
+[Moraine hummocks]
+モレーンの小丘
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+網状帯が本拠地に残す段丘が少なすぎます。より大きな地図を使うか、網状帯を狭くしてください。
+[The map is too narrow across for a braid; use a bigger map.]
+地図の幅が網状河川には狭すぎます。より大きな地図を使ってください。

@@ -2540,3 +2540,17 @@ Vaha aralığı
 Koloni başına karakol
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 Üs bu boyutta zeminine sığmıyor; boyut ayarını yükseltin ya da Yerleşimciler değerini düşürün.
+[Braided river]
+Örgülü nehir
+[Braid width]
+Örgü genişliği
+[Bar size]
+Çakıl seti boyutu
+[Extra riffles]
+Ek sığ geçitler
+[Moraine hummocks]
+Moren tümsekleri
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Örgü, üsler için çok az teras bırakıyor; daha büyük bir harita veya daha dar bir örgü kullanın.
+[The map is too narrow across for a braid; use a bigger map.]
+Harita enine bir örgü için çok dar; daha büyük bir harita kullanın.

@@ -2530,3 +2530,17 @@ Interspaco de oazoj
 Antaŭpostenoj po kolonio
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 La bazo ne konvenas al sia grundo ĉe ĉi tiu grando; altigu la agordon de grando aŭ malaltigu Kolonianojn.
+[Braided river]
+Plektita rivero
+[Braid width]
+Larĝo de la plektaĵo
+[Bar size]
+Grando de gruzbenkoj
+[Extra riffles]
+Pliaj travadejoj
+[Moraine hummocks]
+Morenaj montetoj
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+La plektaĵo lasas tro malmulte da teraso por la hejmoj; uzu pli grandan mapon aŭ pli mallarĝan plektaĵon.
+[The map is too narrow across for a braid; use a bigger map.]
+La mapo estas transverse tro mallarĝa por plektaĵo; uzu pli grandan mapon.

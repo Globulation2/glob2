@@ -2532,3 +2532,17 @@ Oasenabstand
 Außenposten pro Kolonie
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 Die Basis passt bei dieser Größe nicht auf ihren Boden; erhöhen Sie den Größenregler oder verringern Sie die Kolonisten.
+[Braided river]
+Verflochtener Fluss
+[Braid width]
+Verflechtungsbreite
+[Bar size]
+Kiesbankgröße
+[Extra riffles]
+Zusätzliche Furten
+[Moraine hummocks]
+Moränenhügel
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Die Verflechtung lässt den Heimaten zu wenig Terrasse; wähle eine größere Karte oder eine schmalere Verflechtung.
+[The map is too narrow across for a braid; use a bigger map.]
+Die Karte ist in der Breite zu schmal für eine Verflechtung; wähle eine größere Karte.

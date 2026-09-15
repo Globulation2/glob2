@@ -2530,3 +2530,17 @@ Oasis spacing
 Outposts per colony
 [The base does not fit its ground at this size; raise the size control or lower Colonists.]
 The base does not fit its ground at this size; raise the size control or lower Colonists.
+[Braided river]
+Braided river
+[Braid width]
+Braid width
+[Bar size]
+Bar size
+[Extra riffles]
+Extra riffles
+[Moraine hummocks]
+Moraine hummocks
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.
+[The map is too narrow across for a braid; use a bigger map.]
+The map is too narrow across for a braid; use a bigger map.
