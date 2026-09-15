@@ -135,6 +135,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
                 case GameGUIKeyActions::HardPause:
                 case GameGUIKeyActions::IncreaseGameSpeed:
                 case GameGUIKeyActions::DecreaseGameSpeed:
+                case GameGUIKeyActions::ToggleTorusView:
                 case GameGUIKeyActions::ToggleDrawUnitPaths:
                 case GameGUIKeyActions::ToggleDrawInformation:
                 case GameGUIKeyActions::ToggleDrawAccessibilityAids:
