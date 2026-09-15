@@ -133,7 +133,6 @@ restores whatever landscape it had.
 | `coral` | 21 | Coral | Its own — see below |
 | `emoji` | 34 | Emoji | [Design and play contract](emoji/DESIGN.md) |
 | `forts` | 35 | Forts | [Walled forts in river country](FORTS.md) |
-| `braided-delta` | 34 | Braided Delta | [Design and heuristics](BRAIDED_DELTA.md) |
 | `braided-delta` | 36 | Braided Delta | [Design and heuristics](BRAIDED_DELTA.md) |
 | `uniform` | 0 | uniform terrain | Editor-only; one terrain type, unstructured |
 
