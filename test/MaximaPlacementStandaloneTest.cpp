@@ -54,6 +54,37 @@ static void occupy(WorldState& world,const DevelopmentAction& action)
 		}
 }
 
+static void upgradesUsuallyBeatNewConstruction()
+{
+	WorldState world=makeWorld();
+	WorldBuilding building;building.id=10;building.buildingType=3;building.level=1;
+	building.centerX=10;building.centerY=12;building.hp=building.hpMax=100;
+	world.buildings.push_back(building);
+	DevelopmentAction footprint;footprint.centerX=10;footprint.centerY=12;
+	footprint.initialFootprint=world.profile(3)->atLevel(1)->footprint;occupy(world,footprint);
+	DevelopmentLimits limits;limits.allowUpgrades=true;limits.level1Upgrades=1;
+	limits.newConstruction=1;limits.upgradePriorities[{3,1}]=80;
+	DevelopmentIntent build;build.buildingType=7;build.unmetCount=1;build.priority=100;
+	for(bool emergency:{false,true})
+	{
+		build.emergency=emergency;
+		Planner planner;planner.configure(world.profiles,1,2,6,5,7);
+		// Demand dominates this fixture: a worthwhile upgrade normally beats
+		// a somewhat stronger expansion bid, but not emergency construction.
+		planner.mutablePolicy().unmetDemandWeight=100;
+		planner.adoptStartingBuildings(world);
+		Planner incremental=planner;
+		DevelopmentAction selected,chunked;
+		assert(planner.selectAction(world,{build},limits,selected));
+		assert((selected.type==UpgradeBuilding)==!emergency);
+		SelectionProgress progress;
+		do {progress=incremental.selectActionIncremental(world,{build},limits,chunked,
+			world.computeSignature(),128);}while(progress==SelectionPending);
+		assert(progress==SelectionFound);
+		assert(chunked.type==selected.type&&chunked.utility.total==selected.utility.total);
+	}
+}
+
 static void placementReviewRegressions()
 {
 	{
@@ -363,6 +394,7 @@ static void placementContinuationRegression()
 int main()
 {
 	placementReviewRegressions();
+	upgradesUsuallyBeatNewConstruction();
 	foodLedgerPlacementRegression();
 	relocationAppraisalRegression();
 	placementContinuationRegression();
@@ -499,7 +531,8 @@ int main()
 		std::vector<DevelopmentIntent>(),repairLimits,upgradeAction,&currentReason));
 	assert(currentReason==RejectedAuthorization);
 
-	// Director priorities change only demand, preserving every spatial score.
+	// Director priorities change only demand before the 50% upgrade preference,
+	// preserving every spatial component.
 	// Zero is a veto both during selection and if authority changes before issue.
 	{
 		Planner upgrades;upgrades.configure(makeProfiles(),1,2,6,5,7);
@@ -515,7 +548,7 @@ int main()
 		assert(weighted.buildingId==generic.buildingId);
 		assert(weighted.utility.unmetDemand==80);
 		assert(weighted.utility.total-generic.utility.total
-			==(80-generic.utility.unmetDemand)*upgrades.policy().unmetDemandWeight);
+			==(80-generic.utility.unmetDemand)*upgrades.policy().unmetDemandWeight*3/2);
 		priorityLimits.upgradePriorities[std::make_pair(2,1)]=0;
 		assert(!upgrades.revalidateSelection(healthyWorld,noIntents,
 			priorityLimits,weighted,&currentReason));

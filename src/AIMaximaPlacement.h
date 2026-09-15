@@ -592,6 +592,8 @@ public:
 private:
 	template<class Archive> void executionState(Archive& archive);
 	struct Candidate;
+	static void preferUpgrades(std::vector<Candidate>& candidates,
+		const std::vector<DevelopmentIntent>& intents);
 	void clearIncrementalSelection();
 	void buildTemplates();
 	const BuildingProfile* configuredProfile(int type) const;

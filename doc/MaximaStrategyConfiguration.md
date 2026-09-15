@@ -35,6 +35,24 @@ The first command emits types, units, groups, descriptions, hard bounds, and
 recommended search bounds. The second emits fully resolved values, ordered
 sources, and source/line provenance for every key.
 
+## Upgrade preference
+
+The shared development selector gives positive-scoring, legal upgrades a **50%
+score bonus** after applying the director's per-building demand weights. This
+usually favors improving existing capacity over opening another construction
+site, while retaining the comparison of benefit, downtime, threat and cost.
+Zero-priority upgrades remain vetoed; workforce quotas, food backing, building
+health and reserved-space checks still apply. Negative-scoring upgrades receive
+no bonus.
+
+When a viable emergency-construction candidate is present, the selector keeps
+the original scores for that pass, so this preference does not delay emergency
+relief. Both immediate and incremental selection use the same rule. The bonus
+is applied when a pass finishes; no new save fields or strategy keys are added.
+Telemetry's total utility includes the bonus; its component values remain the
+unweighted inputs. This preference intentionally brings upgrades forward and
+requires gameplay review.
+
 ## Decision groups and impact
 
 The base file is ordered in the same direction that a decision flows through

@@ -2246,6 +2246,25 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	u.total=placementPolicy.score(u,purpose,spacingQuality); return u;
 }
 
+void Planner::preferUpgrades(std::vector<Candidate>& candidates,
+	const std::vector<DevelopmentIntent>& intents)
+{
+	// Ordinary development should improve existing capacity before opening
+	// another parcel. Keep the original comparison when a viable emergency
+	// construction bid is competing, so this preference cannot delay relief.
+	for(const Candidate& candidate:candidates)
+		if(candidate.action.type<=BuildStandalone && candidate.action.utility.total>=0)
+			for(const DevelopmentIntent& intent:intents)
+				if(intent.emergency && intent.buildingType==candidate.action.buildingType
+				   && intent.purpose==candidate.action.purpose)return;
+	const int upgradePreferencePercent=150;
+	for(Candidate& candidate:candidates)
+		if(candidate.action.type==UpgradeBuilding && candidate.action.utility.total>0)
+			candidate.action.utility.total=int(std::min<long long>(INT_MAX,
+				static_cast<long long>(candidate.action.utility.total)
+				*upgradePreferencePercent/100));
+}
+
 bool Planner::candidateBetter(const Candidate& lhs, const Candidate& rhs) const
 {
 	const DevelopmentAction& a=lhs.action;const DevelopmentAction& b=rhs.action;
@@ -2417,6 +2436,7 @@ bool Planner::selectAction(const WorldState& world,
 			recordBlocked(intents,signature);
 		return false;
 	}
+	preferUpgrades(candidates,intents);
 	Candidate best=candidates[0];
 	for(size_t i=1;i<candidates.size();++i)if(candidateBetter(candidates[i],best))best=candidates[i];
 	if(best.action.utility.total<0)
@@ -2534,6 +2554,7 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 		incrementalSelectionActive=false;
 		incrementalCandidates.clear();return SelectionEmpty;
 	}
+	preferUpgrades(candidates,incrementalIntents);
 	Candidate best=candidates[0];
 	for(size_t i=1;i<candidates.size();++i)
 		if(candidateBetter(candidates[i],best))best=candidates[i];
