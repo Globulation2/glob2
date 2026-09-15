@@ -2606,3 +2606,15 @@ Málo
 Normální
 [Many]
 Mnoho
+[Rice terraces]
+Rýžové terasy
+[Unoccupied hills]
+Neobsazené kopce
+[Hill radius]
+Poloměr kopce
+[Contour band width]
+Šířka vrstevnicových pásů
+[Stairs per hill]
+Schodiště na kopec
+[Valley river]
+Řeka v údolí

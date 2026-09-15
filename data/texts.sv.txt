@@ -2616,3 +2616,15 @@ Få
 Normal
 [Many]
 Många
+[Rice terraces]
+Risterrasser
+[Unoccupied hills]
+Obebodda kullar
+[Hill radius]
+Kullradie
+[Contour band width]
+Höjdkurvbandens bredd
+[Stairs per hill]
+Trappor per kulle
+[Valley river]
+Flod i dalen

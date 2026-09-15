@@ -2606,3 +2606,15 @@ Wenige
 Normal
 [Many]
 Viele
+[Rice terraces]
+Reisterrassen
+[Unoccupied hills]
+Unbesetzte Hügel
+[Hill radius]
+Hügelradius
+[Contour band width]
+Breite der Höhenbänder
+[Stairs per hill]
+Treppen pro Hügel
+[Valley river]
+Talfluss

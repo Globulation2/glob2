@@ -2606,3 +2606,15 @@ Malo
 Običajno
 [Many]
 Veliko
+[Rice terraces]
+Riževe terase
+[Unoccupied hills]
+Nezasedeni hribi
+[Hill radius]
+Polmer hriba
+[Contour band width]
+Širina višinskih pasov
+[Stairs per hill]
+Stopnišča na hrib
+[Valley river]
+Reka v dolini

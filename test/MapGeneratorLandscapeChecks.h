@@ -7,6 +7,7 @@
 #include "Channels.h"
 #include "Contact.h"
 #include "Drawing.h"
+#include "Farmland.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GraphMaze.h"
@@ -574,8 +575,107 @@ inline void dealChecks()
 	assert(moved >= 6);
 }
 
+// Circular farm caps must block future crop spread, including across the torus seam.
+// Test narrow bands and arbitrary crossing angles after beach conversion, not merely
+// that the primitive painted some water. The sand core must join inner and outer caps.
+inline void contourFarmChecks()
+{
+	// The owner/boundary query needs exact ties and sensible missing-site sentinels.
+	const Torus rectangle{128, 64};
+	assert(nearestTwoSites(rectangle, {}, 0, 0).first == -1);
+	const auto lone = nearestTwoSites(rectangle, {{127, 63}}, 0, 0);
+	assert(lone.first == 0 && lone.firstDistanceSquared == 2 && lone.second == -1);
+	const auto tie = nearestTwoSites(rectangle, {{1, 0}, {127, 0}, {60, 30}}, 0, 0);
+	assert(tie.first == 0 && tie.second == 1 && tie.firstDistanceSquared == 1 &&
+		   tie.secondDistanceSquared == 1);
+	const auto duplicate = nearestTwoSites(rectangle, {{0, 0}, {0, 0}}, 0, 0);
+	assert(duplicate.first == 0 && duplicate.second == 1 && duplicate.secondDistanceSquared == 0);
+	const Torus t{128, 128};
+	for (double phase : {0.0, 0.37, kPi / 4})
+		for (int crossings : {2, 3, 4})
+		{
+			TerrainSketch sketch(t.size(), GRASS);
+			ContourFarmStyle style;
+			style.innerRadius = 12;
+			style.rows = {8, 6.4};
+			style.crossings = crossings;
+			style.phase = phase;
+			// One disc wraps both seams; the other tests ordinary translation.
+			const auto contours = layContourFarm(sketch, t, {{0, 0}, {64, 64}}, style);
+			layBeaches(sketch, t);
+			const auto grass = pureTiles(sketch, t, GRASS);
+			const auto water = pureTiles(sketch, t, WATER);
+			const auto sand = pureTiles(sketch, t, SAND);
+			assert(count(water) > 100 && contours.farm.rows == 1);
+			const auto growth = stepsFrom(t, tileMask(t, {t.at(0, 0), t.at(64, 64)}), grass);
+			for (int i = 0; i < t.size(); ++i)
+			{
+				assert(contours.farm.row[i] < 0 || growth[i] < 0);
+				assert(sketch[i] == sketch[t.at(i % t.w + 64, i / t.w + 64)]);
+			}
+			for (int s = 0; s < crossings; ++s)
+			{
+				const double angle = phase + s * 2 * kPi / crossings;
+				const auto atRadius = [&](double radius)
+				{
+					return t.at(int(std::lround(radius * std::cos(angle))),
+								int(std::lround(radius * std::sin(angle))));
+				};
+				const int entry = atRadius(style.innerRadius + 1);
+				const int exit = atRadius(style.outerRadius() - 1);
+				// Keep the search on crossing cores only: going around a water band
+				// via another stair would hide a broken diagonal crossing here.
+				std::vector<unsigned char> walk(t.size(), 0);
+				for (int i = 0; i < t.size(); ++i)
+					walk[i] = sand[i] && contours.crossings[i];
+				const int source =
+					seedNear(t, entry % t.w, entry / t.w, 3, [&](int i) { return walk[i]; });
+				const int target =
+					seedNear(t, exit % t.w, exit / t.w, 3, [&](int i) { return walk[i]; });
+				assert(source >= 0 && target >= 0);
+				const auto reached = stepsFrom(t, tileMask(t, {source}), walk);
+				assert(reached[target] >= 0);
+			}
+			int cores = 0;
+			for (int i = 0; i < t.size(); ++i)
+				cores += sand[i] && contours.crossings[i];
+			assert(cores > 50);
+		}
+	// Lobed contours: the summit and its cap stay round, no band reaches farther than the
+	// amplitude past the circular outer radius, some band ground lies beyond that circle, and
+	// the layout is still a function of the whole-corner translation.
+	{
+		TerrainSketch sketch(t.size(), GRASS);
+		ContourFarmStyle style;
+		style.innerRadius = 12;
+		style.rows = {8, 6.4};
+		style.bands = 2;
+		style.wobbles = {{3, {0.3, 1.1, 2.0}}};
+		assert(std::abs(style.reach() - style.outerRadius() - 3) < 1e-9);
+		assert(contourNominal(style, 0, style.innerRadius + style.cap, 1.0) ==
+			   style.innerRadius + style.cap);
+		assert(contourNominal(style, 5, 30, 1.0) == 30);
+		// One hill on the seam: two bands plus the wobble reach farther than half the 64-tile
+		// spacing the circular cases use, and discs must not overlap.
+		const auto contours = layContourFarm(sketch, t, {{0, 0}}, style);
+		assert(contours.farm.rows == 2);
+		int lobed = 0;
+		for (int i = 0; i < t.size(); ++i)
+		{
+			const double d = std::hypot(t.offsetX(0, i % t.w), t.offsetY(0, i / t.w));
+			if (d < style.innerRadius || d > style.outerRadius() + 3)
+				assert(contours.farm.row[i] < 0 && !contours.farm.sand[i]);
+			else if (d < style.innerRadius + style.cap)
+				assert(contours.farm.row[i] < 0 && contours.farm.sand[i]);
+			lobed += contours.farm.row[i] >= 0 && d > style.outerRadius();
+		}
+		assert(lobed > 0);
+	}
+}
+
 inline void landscapeChecks()
 {
+	contourFarmChecks();
 	dealChecks();
 	orbitChecks();
 	morphologyChecks();

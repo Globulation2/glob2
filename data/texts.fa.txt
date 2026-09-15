@@ -2604,3 +2604,15 @@ Emoji
 عادی
 [Many]
 زیاد
+[Rice terraces]
+شالیزارهای پلکانی
+[Unoccupied hills]
+تپه‌های خالی
+[Hill radius]
+شعاع تپه
+[Contour band width]
+پهنای نوارهای تراز
+[Stairs per hill]
+پلکان در هر تپه
+[Valley river]
+رود دره

@@ -2604,3 +2604,15 @@ Malmultaj
 Normala
 [Many]
 Multaj
+[Rice terraces]
+Rizterasoj
+[Unoccupied hills]
+Neokupitaj montetoj
+[Hill radius]
+Monteta radiuso
+[Contour band width]
+Larĝo de nivelaj bendoj
+[Stairs per hill]
+Ŝtuparoj por monteto
+[Valley river]
+Vala rivero

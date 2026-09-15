@@ -2602,3 +2602,15 @@ Emoji
 正常
 [Many]
 众多
+[Rice terraces]
+梯田
+[Unoccupied hills]
+无人山丘
+[Hill radius]
+山丘半径
+[Contour band width]
+等高带宽度
+[Stairs per hill]
+每座山丘的阶梯数
+[Valley river]
+山谷河流

@@ -2602,3 +2602,15 @@ Emoji
 Звичайно
 [Many]
 Багато
+[Rice terraces]
+Рисові тераси
+[Unoccupied hills]
+Незайняті пагорби
+[Hill radius]
+Радіус пагорба
+[Contour band width]
+Ширина висотних смуг
+[Stairs per hill]
+Сходів на пагорб
+[Valley river]
+Річка в долині

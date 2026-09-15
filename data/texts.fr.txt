@@ -2616,3 +2616,15 @@ Rares
 Normal
 [Many]
 Nombreux
+[Rice terraces]
+Rizières en terrasses
+[Unoccupied hills]
+Collines inoccupées
+[Hill radius]
+Rayon des collines
+[Contour band width]
+Largeur des bandes de niveau
+[Stairs per hill]
+Escaliers par colline
+[Valley river]
+Rivière de vallée

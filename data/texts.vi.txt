@@ -2602,3 +2602,15 @@ Vùng khô
 Bình thường
 [Many]
 Nhiều
+[Rice terraces]
+Ruộng bậc thang
+[Unoccupied hills]
+Đồi chưa có người ở
+[Hill radius]
+Bán kính đồi
+[Contour band width]
+Độ rộng dải đồng mức
+[Stairs per hill]
+Số cầu thang mỗi đồi
+[Valley river]
+Sông thung lũng

@@ -2676,3 +2676,15 @@ Emoji
 Κανονικά
 [Many]
 Πολλοί
+[Rice terraces]
+Αναβαθμίδες ρυζιού
+[Unoccupied hills]
+Ακατοίκητοι λόφοι
+[Hill radius]
+Ακτίνα λόφου
+[Contour band width]
+Πλάτος υψομετρικών ζωνών
+[Stairs per hill]
+Σκάλες ανά λόφο
+[Valley river]
+Ποτάμι κοιλάδας

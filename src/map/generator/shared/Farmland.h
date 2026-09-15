@@ -83,6 +83,58 @@ struct Farm
 	int plotX = -1, plotY = -1;
 };
 
+/// A low-harmonic wobble of one hill's contours: at each heading the bands shift in or out by up
+/// to `amplitude` tiles, the same shift for every band so their widths hold, ramped in past the
+/// summit's cap so the summit and its cap stay round. Three harmonics (two, three and five waves
+/// round the hill) with their own phases make a hill lobed rather than circular, and the ramp keeps
+/// the mapping monotone along every ray so no contour folds back on itself.
+struct ContourWobble
+{
+	double amplitude = 0;
+	double phase[3] = {0, 0, 0};
+	double at(double angle) const;
+};
+
+/// Contour rows around a central clearing, circular or wobbled. Widths are undermap CORNERS, as
+/// in layFarm; beaches and four-corner conversion consume crop ground at every boundary.
+/// The inner and outer caps contain eight-neighbour crop spread. Every radial crossing
+/// cuts BOTH crop and water rows, keeping circulation open after crops fill the bands.
+struct ContourFarmStyle
+{
+	FarmRows rows{10, 8};
+	double innerRadius = 16, cap = 2;
+	int bands = 1, crossings = 3;
+	double crossingHalfWidth = 2.5, phase = 0;
+	std::vector<ContourWobble> wobbles; // one per centre; empty (or none for a centre) is a circle
+	double outerRadius() const { return innerRadius + 2 * cap + bands * rows.period(); }
+	/// The farthest any band reaches from a centre once the wobble is counted.
+	double reach() const;
+};
+
+/// The radius the band arithmetic sees for a point `distance` from centre `centre` at `angle`:
+/// the distance itself inside the summit's cap and for a centre without a wobble, the distance
+/// shifted by the centre's wobble beyond it.
+double contourNominal(const ContourFarmStyle &, size_t centre, double distance, double angle);
+
+struct ContourFarm
+{
+	Farm farm;
+	// Crossing corners only, separate from the caps in farm.sand. Callers use these to
+	// preserve roads, score defenses or verify every crossing's finished walkable core.
+	std::vector<unsigned char> crossings;
+};
+
+/// Stamps complete concentric crop/water bands at each centre into an existing sketch.
+/// Central clearings and ground outside the outer cap are untouched. All centres use
+/// the same style, so one farm mask can be planted with per-region eligibility policies.
+/// Centres are whole-corner positions; distances wrap on the torus. The caller budgets
+/// non-overlapping outer discs (including their copies across a seam) and supplies
+/// positive row widths, cap, band count and crossing width. Crossings may be zero.
+/// No beach pass is run: compose other terrain first, then call layBeaches once.
+/// Like layFarm, this creates geometry only; plantFarm stocks the finished grass later.
+ContourFarm layContourFarm(TerrainSketch &, const Torus &, const std::vector<ShapePoint> &centres,
+						   const ContourFarmStyle &);
+
 /// A clearing in the middle of a farm for buildings: `width` by `height` tiles of pure grass with a
 /// ring of sand `ring` undermap vertices wide round it (two vertices make a full tile of sand), so
 /// no crop grows onto it and nothing but the clearing is buildable. 10 by 4 seats a swarm or an inn

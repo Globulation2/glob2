@@ -2602,3 +2602,15 @@ Emoji
 標準
 [Many]
 多い
+[Rice terraces]
+棚田
+[Unoccupied hills]
+無人の丘
+[Hill radius]
+丘の半径
+[Contour band width]
+等高線帯の幅
+[Stairs per hill]
+丘ごとの階段数
+[Valley river]
+谷の川

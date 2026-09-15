@@ -2682,3 +2682,15 @@ Få
 Normal
 [Many]
 Mange
+[Rice terraces]
+Risterrasser
+[Unoccupied hills]
+Ubeboede bakker
+[Hill radius]
+Bakkeradius
+[Contour band width]
+Bredde på højdekurvebånd
+[Stairs per hill]
+Trapper pr. bakke
+[Valley river]
+Flod i dalen

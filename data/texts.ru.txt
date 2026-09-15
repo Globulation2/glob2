@@ -2604,3 +2604,15 @@ Emoji
 Обычно
 [Many]
 Много
+[Rice terraces]
+Рисовые террасы
+[Unoccupied hills]
+Незанятые холмы
+[Hill radius]
+Радиус холма
+[Contour band width]
+Ширина высотных полос
+[Stairs per hill]
+Лестниц на холм
+[Valley river]
+Река в долине

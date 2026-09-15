@@ -2606,3 +2606,15 @@ Escasos
 Normal
 [Many]
 Muchos
+[Rice terraces]
+Terrazas de arroz
+[Unoccupied hills]
+Colinas desocupadas
+[Hill radius]
+Radio de las colinas
+[Contour band width]
+Anchura de las bandas de nivel
+[Stairs per hill]
+Escaleras por colina
+[Valley river]
+Río del valle

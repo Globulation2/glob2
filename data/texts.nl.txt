@@ -2630,3 +2630,15 @@ Weinig
 Normaal
 [Many]
 Veel
+[Rice terraces]
+Rijstterrassen
+[Unoccupied hills]
+Onbezette heuvels
+[Hill radius]
+Heuvelstraal
+[Contour band width]
+Breedte van hoogtebanden
+[Stairs per hill]
+Trappen per heuvel
+[Valley river]
+Rivier in het dal

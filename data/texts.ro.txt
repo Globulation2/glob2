@@ -2606,3 +2606,15 @@ Puține
 Normal
 [Many]
 Multe
+[Rice terraces]
+Terase de orez
+[Unoccupied hills]
+Dealuri neocupate
+[Hill radius]
+Raza dealului
+[Contour band width]
+Lățimea benzilor de nivel
+[Stairs per hill]
+Scări pe deal
+[Valley river]
+Râu în vale

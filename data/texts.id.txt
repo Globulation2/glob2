@@ -2602,3 +2602,15 @@ Sedikit
 Normal
 [Many]
 Banyak
+[Rice terraces]
+Teras sawah
+[Unoccupied hills]
+Bukit kosong
+[Hill radius]
+Jari-jari bukit
+[Contour band width]
+Lebar pita kontur
+[Stairs per hill]
+Tangga per bukit
+[Valley river]
+Sungai lembah
