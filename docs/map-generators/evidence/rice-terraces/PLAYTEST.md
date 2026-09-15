@@ -85,7 +85,7 @@ and whether the valley fruit is sufficiently attractive.
 
 ## Validation and artifacts
 
-[Download the review packet](playtest.zip): accepted requests/results, compressed
+[Download the review packet](https://github.com/Globulation2/glob2/blob/evidence/rice-terraces/docs/map-generators/evidence/rice-terraces/playtest.zip) (on the evidence branch, kept out of the main history): accepted requests/results, compressed
 native gameplay measurement extracts, analysis scripts and summaries, selected
 full saves/replays, runtime source snapshots with recorded hashes, native map,
 request report, previews and verification logs. Extracts explicitly identify their

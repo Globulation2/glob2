@@ -2,7 +2,7 @@
 
 ![Revision 5, seed 7, four colonies](revision5-seed-7.png)
 
-[Download the accepted jobs, native reports, settings, logs and source identity](bulk-generation.zip).
+[Download the accepted jobs, native reports, settings, logs and source identity](https://github.com/Globulation2/glob2/blob/evidence/rice-terraces/docs/map-generators/evidence/rice-terraces/bulk-generation.zip) (on the evidence branch, kept out of the main history).
 The earlier [AI playtest](PLAYTEST.md) tested revision 4; this packet tests generation
 after the crop-rescue repair.
 

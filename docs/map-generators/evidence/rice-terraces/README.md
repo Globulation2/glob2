@@ -5,7 +5,7 @@ The evidence below records revision 1.
 # Rice Terraces verification — revision 1
 
 [Initial seed 7](seed-7.png) · [After 40,000 Nicowar ticks](after-40000-ticks.png) ·
-[Download evidence](verification.zip)
+[Download evidence](https://github.com/Globulation2/glob2/blob/evidence/rice-terraces/docs/map-generators/evidence/rice-terraces/verification.zip) (on the evidence branch, kept out of the main history)
 
 The archive contains native maps, request/report JSON, both AI games' initial and
 final saves and replays, study configurations and accepted result records, telemetry
