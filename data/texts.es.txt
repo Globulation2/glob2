@@ -2382,3 +2382,5 @@ Desactivado (sin temporizador)
 60 minutos
 [Sudden-death timer]
 Temporizador de muerte súbita
+[Vultures]
+Buitres

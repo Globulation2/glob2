@@ -2390,3 +2390,5 @@ Kapalı (zamanlayıcı yok)
 60 dakika
 [Sudden-death timer]
 Ani ölüm zamanlayıcısı
+[Vultures]
+Akbabalar

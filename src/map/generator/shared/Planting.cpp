@@ -1,12 +1,30 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Planting.h"
 #include "GenerationContext.h"
+#include "GenerationResult.h"
 #include "Resources.h"
 #include "Wedge.h"
 #include <algorithm>
 #include <cstdlib>
 namespace MapGeneration
 {
+ResourceStock capResourceStock(Map &map, int type, int maximumAmount)
+{
+	if (type < 0 || type >= MAX_NB_RESOURCES || maximumAmount <= 0)
+		throw GenerationFailure("Resource stock cap requires a valid type and a positive amount");
+	ResourceStock stock;
+	for (int i = 0; i < map.getW() * map.getH(); ++i)
+	{
+		auto &resource = map.getResource(i);
+		if (resource.type != type)
+			continue;
+		resource.amount = std::min<int>(resource.amount, maximumAmount);
+		++stock.tiles;
+		stock.amount += resource.amount;
+	}
+	return stock;
+}
+
 bool clearGround(const Map &map, int x, int y)
 {
 	return map.isGrass(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID &&

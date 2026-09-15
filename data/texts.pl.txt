@@ -2382,3 +2382,5 @@ Wyłączone (bez zegara)
 60 minut
 [Sudden-death timer]
 Zegar nagłej śmierci
+[Vultures]
+Sępy

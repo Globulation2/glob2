@@ -2444,3 +2444,5 @@ Disattivato (nessun timer)
 60 minuti
 [Sudden-death timer]
 Timer di morte improvvisa
+[Vultures]
+Avvoltoi

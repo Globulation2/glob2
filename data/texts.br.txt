@@ -2378,3 +2378,5 @@ Desativado (sem cronômetro)
 60 minutos
 [Sudden-death timer]
 Cronômetro de morte súbita
+[Vultures]
+Guped

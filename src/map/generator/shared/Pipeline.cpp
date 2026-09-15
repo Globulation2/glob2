@@ -2,11 +2,68 @@
 #include "Pipeline.h"
 #include "Game.h"
 #include "GenerationContext.h"
+#include "GenerationResult.h"
 #include "Homes.h"
 #include "Planting.h"
 #include "Resources.h"
 namespace MapGeneration
 {
+std::string startingAccessFailure(const Map &map, int teams,
+								  const std::vector<ResourceAccessRule> &rules, int minimumSites,
+								  int buildingRange)
+{
+	if (teams < 1 || teams > Team::MAX_COUNT || minimumSites < 0 || buildingRange < 0)
+		throw GenerationFailure("Invalid starting-access colony or building budget");
+	int range = buildingRange;
+	for (const auto &rule : rules)
+	{
+		if (rule.type < 0 || rule.type >= MAX_NB_RESOURCES || rule.range < 1 || !rule.name)
+			throw GenerationFailure("Invalid starting-access resource rule");
+		range = std::max(range, rule.range);
+	}
+	const Torus t(map);
+	const auto workers = unitTilesByTeam(map, teams);
+	const auto passable = groundUnitTiles(map);
+	for (int k = 0; k < teams; ++k)
+	{
+		const std::string colony = "Colony " + std::to_string(k) + " ";
+		if (workers[k].empty())
+			return colony + "has no workers to reach its supplies.";
+		const auto reached = floodFrom(t, tileMask(t, workers[k]), passable, range);
+		std::vector<int> distances(rules.size(), -1);
+		int sites = 0;
+		for (int i : reached.visited)
+		{
+			const int x = i % t.w, y = i / t.w, distance = reached.steps[i];
+			if (distance <= buildingRange && map.isFreeForBuilding(x, y, 4, 4))
+				++sites;
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+				{
+					if (!dx && !dy)
+						continue;
+					const auto &resource = map.getResource(t.x(x + dx), t.y(y + dy));
+					if (!resource.amount)
+						continue;
+					for (size_t r = 0; r < rules.size(); ++r)
+						if (resource.type == rules[r].type &&
+							(distances[r] < 0 || distance + 1 < distances[r]))
+							distances[r] = distance + 1;
+				}
+		}
+		for (size_t r = 0; r < rules.size(); ++r)
+			if (distances[r] < 0 || distances[r] > rules[r].range)
+				return colony + "cannot harvest " + rules[r].name + " within " +
+					   std::to_string(rules[r].range) + " steps (observed " +
+					   std::to_string(distances[r]) + "; -1 means unreachable).";
+		if (sites < minimumSites)
+			return colony + "has only " + std::to_string(sites) +
+				   " reachable 4x4 building origins; " + std::to_string(minimumSites) +
+				   " required within " + std::to_string(buildingRange) + " steps.";
+	}
+	return "";
+}
+
 bool reopenCrampedStarts(Game &game, GenerationContext &context, const ResourceAmounts &amounts,
 						 int wheatRange, int woodRange, int clearRadius,
 						 const std::vector<unsigned char> *protectedWalls)

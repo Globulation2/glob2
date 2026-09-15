@@ -1,0 +1,15 @@
+{
+  "shared_ticks": 10000,
+  "first_shared_tick": 10000,
+  "first_different_record_tick": 10167,
+  "at_first_difference": {
+    "original": [
+      10167,
+      3484834866
+    ],
+    "resumed": [
+      10167,
+      3264331629
+    ]
+  }
+}

@@ -2406,3 +2406,5 @@ Uit (geen timer)
 60 minuten
 [Sudden-death timer]
 Sudden-death-timer
+[Vultures]
+Gieren

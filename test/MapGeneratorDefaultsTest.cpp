@@ -35,6 +35,77 @@ using D = GenerationRequest;
 class MapGeneratorDefaultsTest
 {
   public:
+	static void vulturesFoodChecks()
+	{
+		D request;
+		request.setMethodDefaults(GeneratorRegistry::builtins().idOf("vultures"));
+		request.wDec = request.hDec = 8;
+		request.nbTeams = 2;
+		request.seed = 7;
+		Game game(nullptr);
+		assert(GenerationService().generate(game, request));
+		Map &map = game.map;
+		// The stock cap never refills a deposit or consumes RNG, even with a larger second cap.
+		const auto beforeCap = syncRandEngine();
+		const auto capped = MapGeneration::capResourceStock(map, WHEAT, 1);
+		const auto unchanged = MapGeneration::capResourceStock(map, WHEAT, 3);
+		assert(capped.tiles > 96 && capped.amount == capped.tiles);
+		assert(unchanged.amount == capped.amount && syncRandEngine() == beforeCap);
+		bool rejected = false;
+		try
+		{
+			MapGeneration::capResourceStock(map, WHEAT, 0);
+		}
+		catch (const GenerationFailure &)
+		{
+			rejected = true;
+		}
+		assert(rejected);
+		assert(
+			MapGeneration::startingAccessFailure(map, 2, {{WHEAT, 24, "wheat"}, {WOOD, 32, "wood"}})
+				.empty());
+		// No fruit exists here: a required absent supply must fail, as must an impossible room budget.
+		assert(!MapGeneration::startingAccessFailure(map, 2, {{CHERRY, 24, "cherries"}}).empty());
+		assert(
+			!MapGeneration::startingAccessFailure(map, 2, {}, map.getW() * map.getH(), 1).empty());
+		std::vector<unsigned char> food(map.getW() * map.getH(), 0);
+		int harvested = 0;
+		for (int i = 0; i < int(food.size()); ++i)
+			if (map.getResource(i).type == WHEAT)
+			{
+				assert(map.getResource(i).amount == 1);
+				if (++harvested % 2)
+					map.decResource(i % map.getW(), i / map.getW());
+				else
+					food[i] = 1;
+			}
+		assert(harvested > 96);
+		const auto savedRandom = syncRandEngine();
+		syncRandEngine().seed(19);
+		for (int tick = 0; tick < 2048; ++tick)
+			map.growResources();
+		syncRandEngine() = savedRandom;
+		for (int i = 0; i < int(food.size()); ++i)
+		{
+			assert((map.getResource(i).type == WHEAT) == bool(food[i]));
+			if (food[i])
+				assert(map.getResource(i).amount == 1);
+		}
+		// Retained compact-rectangle failures: dry rations and quarry frontage can both
+		// need several pockets. Keep the full kit rather than rejecting those otherwise viable starts.
+		D compact = request;
+		compact.hDec = 7;
+		compact.nbTeams = 5;
+		compact.options["home-size"] = 30;
+		compact.options["lakes"] = 0;
+		for (unsigned seed : {201u, 202u, 203u, 204u})
+		{
+			compact.seed = seed;
+			Game repaired(nullptr);
+			assert(GenerationService().generate(repaired, compact));
+		}
+		puts("PASS Vultures: one harvest per wheat tile; harvested food never regrows");
+	}
 	static void select(NewMapScreen &s, int method)
 	{
 		s.methods->setSelectionIndex(s.registry.selectionIndex(method));
@@ -90,6 +161,7 @@ class MapGeneratorDefaultsTest
 		frameworkChecks();
 		ToolkitChecks::toolkitChecks();
 		LandscapeChecks::landscapeChecks();
+		vulturesFoodChecks();
 		GenerationService service;
 		for (int method : GeneratorRegistry::builtins().methods())
 		{
@@ -265,8 +337,8 @@ class MapGeneratorDefaultsTest
 			const auto amount = GeneratorControl::percentage("amount", "Fruit");
 			assert(!amount.isToggle() && amount.defaultValue == 100 && !rejected(amount));
 			// A choice stores the index of its named option and is shown by name.
-			const auto shape = GeneratorControl::choice("shape", "Cell shape",
-														{"Squares", "Hexagons"}, 1);
+			const auto shape =
+				GeneratorControl::choice("shape", "Cell shape", {"Squares", "Hexagons"}, 1);
 			assert(shape.isChoice() && !shape.isToggle() && shape.defaultValue == 1 &&
 				   shape.values() == std::vector<int>({0, 1}) &&
 				   std::string(shape.valueLabel(1)) == "Hexagons" && !shape.valueLabel(2) &&
@@ -402,7 +474,8 @@ class MapGeneratorDefaultsTest
 		D editorFirst, lobbyFirst;
 		editorFirst.setMethodDefaults(GeneratorRegistry::builtins().methods().front());
 		lobbyFirst.setMethodDefaults(GeneratorRegistry::builtins().methods(false).front());
-		assert(GeneratorRegistry::builtins().methods(false).front() == GeneratorRegistry::builtins().idOf("fingerprint"));
+		assert(GeneratorRegistry::builtins().methods(false).front() ==
+			   GeneratorRegistry::builtins().idOf("fingerprint"));
 		assert(s.methods->getSelectionIndex() == 0);
 		sameControls(s.descriptor, editorFirst);
 		sameControls(lobby.generator, lobbyFirst);
@@ -440,7 +513,8 @@ class MapGeneratorDefaultsTest
 				assert(decoded.setData(encoded.getData(), encoded.getDataLength()));
 				sameControls(fromLegacyDescriptor(decoded, 0), expected);
 			}
-			if (output && ((m >= 4 && m <= 8) || m == GeneratorRegistry::builtins().idOf("fjord-continent")))
+			if (output &&
+				((m >= 4 && m <= 8) || m == GeneratorRegistry::builtins().idOf("fjord-continent")))
 			{
 				s.gfx->drawFilledRect(0, 0, 640, 480, GAGCore::Color(34, 55, 42));
 				for (auto *w : s.widgets)

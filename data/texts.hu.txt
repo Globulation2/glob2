@@ -2382,3 +2382,5 @@ Kikapcsolva (nincs időzítő)
 60 perc
 [Sudden-death timer]
 Hirtelen halál időzítő
+[Vultures]
+Keselyűk

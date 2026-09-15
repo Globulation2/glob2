@@ -25,6 +25,19 @@ constexpr int kSwarmClearance = 2;
 /// Grass with nothing on it: no deposit, no building, no unit.
 bool clearGround(const Map &, int x, int y);
 
+/// The remaining stock after applying a resource cap, counted during the same mutation pass.
+struct ResourceStock
+{
+	int tiles = 0;
+	std::int64_t amount = 0;
+};
+/// Caps every existing deposit of `type` at `maximumAmount`, without adding deposits, refilling
+/// depleted ones, changing varieties or drawing RNG. A finite crop field can use one harvest per
+/// tile; larger caps allow reserve scenarios. This controls stock, NOT growth: the caller must
+/// separately prove that any crop promised to be finite has zero fertility. A nonpositive cap
+/// or invalid resource type is a programming error reported as GenerationFailure.
+ResourceStock capResourceStock(Map &, int type, int maximumAmount);
+
 /// Grows a compact patch of one resource outward from a seed tile, breadth-first over the four
 /// cardinal neighbours, onto tiles the predicate allows. Returns how many tiles it placed.
 template <typename Eligible>
@@ -71,6 +84,45 @@ int seedNear(const Torus &t, int ax, int ay, int within, Eligible eligible)
 			}
 		}
 	return seed;
+}
+
+/// Total placement and number of connected patches needed, for caller telemetry/fallback reporting.
+struct PatchBudgetResult
+{
+	int tiles = 0, patches = 0;
+};
+/// Places a total budget near (ax, ay), allowing several disconnected eligible pockets.
+/// Start with the nearest seed in the search box, grow its connected patch, then use the nearest
+/// remaining seed until the budget is spent or no eligible seed remains. This differs from
+/// growPatch: a small dry island must not consume the entire placement attempt when another
+/// dry patch nearby can hold the remainder. Existing resources and terrain/occupancy the engine
+/// refuses are excluded internally; caller eligibility adds habitat/protected-area rules.
+/// The pass adds at least one tile per successful iteration, so iterations are bounded by
+/// `count`, never by wall time; a zero-progress patch ends the search. The returned actual count
+/// makes shortfall explicit. Every seed stays within `within`; each patch can grow beyond that
+/// box if eligibility permits it. Final worker access still requires a separate path check.
+template <typename Eligible>
+PatchBudgetResult growPatchesNear(Map &map, const Torus &t, int ax, int ay, int within, int type,
+								  int count, Eligible eligible)
+{
+	const auto vacant = [&](int i)
+	{
+		return eligible(i) && !map.isResource(i % t.w, i / t.w) &&
+			   map.isResourceAllowed(i % t.w, i / t.w, type);
+	};
+	PatchBudgetResult result;
+	while (result.tiles < count)
+	{
+		const int seed = seedNear(t, ax, ay, within, vacant);
+		if (seed < 0)
+			break;
+		const int added = growPatch(map, t, seed, type, count - result.tiles, vacant);
+		if (added <= 0)
+			break;
+		result.tiles += added;
+		++result.patches;
+	}
+	return result;
 }
 
 /// Where a kit's three deposits go: each grows from the nearest eligible tile to its point,
@@ -165,8 +217,9 @@ int plantCover(Map &map, const Torus &t, const std::vector<unsigned char> &regio
 /// `radius`, searched within `within` tiles. A prize or an outcrop designed once per colony lands the
 /// same way at every colony's angle. Returns how many were placed.
 template <typename Eligible>
-int plantRound(Map &map, const Torus &t, GenerationContext &context, double cx, double cy, double radius,
-			   const std::vector<double> &angles, int type, int clumpRadius, int within, Eligible eligible)
+int plantRound(Map &map, const Torus &t, GenerationContext &context, double cx, double cy,
+			   double radius, const std::vector<double> &angles, int type, int clumpRadius,
+			   int within, Eligible eligible)
 {
 	int planted = 0;
 	for (const double a : angles)
@@ -175,7 +228,8 @@ int plantRound(Map &map, const Torus &t, GenerationContext &context, double cx, 
 								  int(std::lround(cy + radius * std::sin(a))), within, eligible);
 		if (seed < 0)
 			continue;
-		placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), type, clumpRadius);
+		placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), type,
+						   clumpRadius);
 		++planted;
 	}
 	return planted;
@@ -195,8 +249,8 @@ int plantOrchard(Map &map, const Torus &t, GenerationContext &context, double cx
 	for (const double angle : angles)
 		for (int fruit = 0; fruit < 3; ++fruit)
 			planted += plantRound(map, t, context, cx, cy, radius,
-								  {angle + (fruit - 1) * spacing / std::max(1.0, radius)}, CHERRY + fruit,
-								  clumpRadius, within, eligible);
+								  {angle + (fruit - 1) * spacing / std::max(1.0, radius)},
+								  CHERRY + fruit, clumpRadius, within, eligible);
 	return planted;
 }
 

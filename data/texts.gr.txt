@@ -2452,3 +2452,5 @@ Cortex
 60 λεπτά
 [Sudden-death timer]
 Χρονόμετρο ξαφνικού θανάτου
+[Vultures]
+Γύπες

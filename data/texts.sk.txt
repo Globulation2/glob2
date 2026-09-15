@@ -2390,3 +2390,5 @@ Vypnuté (bez časovača)
 60 minút
 [Sudden-death timer]
 Časovač náhlej smrti
+[Vultures]
+Supy

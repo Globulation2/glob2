@@ -2390,3 +2390,5 @@ Desactivat (sense temporitzador)
 60 minuts
 [Sudden-death timer]
 Temporitzador de mort sobtada
+[Vultures]
+Voltors

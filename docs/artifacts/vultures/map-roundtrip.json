@@ -1,0 +1,8 @@
+{
+  "terrain": true,
+  "underlying_terrain": true,
+  "resources": true,
+  "space": true,
+  "fertility": true,
+  "movement": true
+}

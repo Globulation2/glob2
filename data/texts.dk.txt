@@ -2458,3 +2458,5 @@ Fra (ingen timer)
 60 minutter
 [Sudden-death timer]
 Sudden death-timer
+[Vultures]
+Gribbe

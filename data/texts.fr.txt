@@ -2392,3 +2392,5 @@ Désactivé (pas de chronomètre)
 60 minutes
 [Sudden-death timer]
 Chronomètre de mort subite
+[Vultures]
+Vautours

@@ -2378,3 +2378,5 @@ Nonaktif (tanpa pengatur waktu)
 60 menit
 [Sudden-death timer]
 Pengatur waktu kematian mendadak
+[Vultures]
+Burung nasar

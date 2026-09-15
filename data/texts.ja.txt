@@ -2378,3 +2378,5 @@ Globulation 2 のカーソルを表示します。
 60分
 [Sudden-death timer]
 サドンデスタイマー
+[Vultures]
+ハゲワシ

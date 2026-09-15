@@ -2382,3 +2382,5 @@ Pois (ei ajastinta)
 60 minuuttia
 [Sudden-death timer]
 Äkkikuoleman ajastin
+[Vultures]
+Korppikotkat

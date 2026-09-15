@@ -2392,3 +2392,5 @@ Desaktibatuta (tenporizadorerik gabe)
 60 minutu
 [Sudden-death timer]
 Bat-bateko heriotzaren tenporizadorea
+[Vultures]
+Saiak

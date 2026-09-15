@@ -188,6 +188,59 @@ LatticeSites latticeSites(int width, int height, int teams, double x0, double y0
 	return result;
 }
 
+LatticeSites roomyLatticeSites(int width, int height, int teams, double x0, double y0,
+							   int maxVacancies)
+{
+	// Refuse degenerate dimensions before invoking latticeSites: its ordinary row
+	// arithmetic assumes a positive torus. A bad request must not divide by zero.
+	if (width <= 0 || height <= 0 || teams < 1)
+		return {};
+	LatticeSites best = latticeSites(width, height, teams, x0, y0);
+	if (teams < 2 || maxVacancies <= 0)
+		return best;
+	const Torus t(width, height);
+	double bestSpacing = nearestSiteDistance(t, best.sites);
+	// A prime team count can be forced into a very long single row. A nearby composite
+	// count often has a balanced lattice; leave its surplus sites empty instead of rejecting
+	// a map on which even more colonies would fit. Four is enough to reach 12 from counts
+	// 8..11 (the lobby's maximum is 12); the loop remains bounded for other callers too.
+	// Cap caller-supplied work at four spare sites, the useful envelope for the
+	// registered 12-colony range; this also prevents a tuning typo from making a
+	// pathological search. The public request validator separately bounds teams.
+	for (int vacancies = 1; vacancies <= std::min(maxVacancies, 4); ++vacancies)
+	{
+		LatticeSites candidate = latticeSites(width, height, teams + vacancies, x0, y0);
+		if (candidate.sites.size() != size_t(teams + vacancies))
+			continue;
+		for (int removed = 0; removed < vacancies; ++removed)
+		{
+			int choice = -1;
+			double choiceSpacing = -1;
+			for (size_t site = 0; site < candidate.sites.size(); ++site)
+			{
+				std::vector<ShapePoint> surviving = candidate.sites;
+				surviving.erase(surviving.begin() + site);
+				const double spacing = nearestSiteDistance(t, surviving);
+				if (spacing > choiceSpacing)
+				{
+					choice = int(site);
+					choiceSpacing = spacing;
+				}
+			}
+			candidate.sites.erase(candidate.sites.begin() + choice);
+		}
+		const double spacing = nearestSiteDistance(t, candidate.sites);
+		if (spacing > bestSpacing)
+		{
+			best = std::move(candidate);
+			best.exact = false; // omitted images no longer form the full translation orbit
+			best.vacancies = vacancies;
+			bestSpacing = spacing;
+		}
+	}
+	return best;
+}
+
 std::vector<unsigned char> stampOrbits(const Symmetry &s, const std::vector<unsigned char> &feature,
 									   bool corners)
 {

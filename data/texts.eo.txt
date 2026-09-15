@@ -2380,3 +2380,5 @@ Malŝaltita (neniu kronometro)
 60 minutoj
 [Sudden-death timer]
 Kronometro de subita morto
+[Vultures]
+Vulturoj
