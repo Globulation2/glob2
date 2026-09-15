@@ -153,7 +153,6 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 canalsDefinition(),
 											 ruggedArchipelagoDefinition(),
 											 drumlinFieldDefinition(), ruggedArchipelagoDefinition(),
-											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
 											 evergladesDefinition(),
