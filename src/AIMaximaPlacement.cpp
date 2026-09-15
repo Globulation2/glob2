@@ -2257,7 +2257,7 @@ void Planner::preferUpgrades(std::vector<Candidate>& candidates,
 			for(const DevelopmentIntent& intent:intents)
 				if(intent.emergency && intent.buildingType==candidate.action.buildingType
 				   && intent.purpose==candidate.action.purpose)return;
-	const int upgradePreferencePercent=150;
+	const int upgradePreferencePercent=125;
 	for(Candidate& candidate:candidates)
 		if(candidate.action.type==UpgradeBuilding && candidate.action.utility.total>0)
 			candidate.action.utility.total=int(std::min<long long>(INT_MAX,

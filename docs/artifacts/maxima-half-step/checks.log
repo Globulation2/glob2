@@ -1,0 +1,15 @@
+macOS arm64; Maxima placement regression rebuilt from this tree.
+MaximaPlacementStandaloneTest: PASS
+
+$ python3 -m unittest discover -s test -p MaximaStrategyPolicyTest.py
+............
+----------------------------------------------------------------------
+Ran 12 tests in 0.089s
+
+OK
+$ python3 test/MaximaStrategyConfigTest.py
+.........s....
+----------------------------------------------------------------------
+Ran 14 tests in 0.683s
+
+OK (skipped=1)

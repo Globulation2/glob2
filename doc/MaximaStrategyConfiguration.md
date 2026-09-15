@@ -37,7 +37,7 @@ sources, and source/line provenance for every key.
 
 ## Upgrade preference
 
-The shared development selector gives positive-scoring, legal upgrades a **50%
+The shared development selector gives positive-scoring, legal upgrades a **25%
 score bonus** after applying the director's per-building demand weights. This
 usually favors improving existing capacity over opening another construction
 site, while retaining the comparison of benefit, downtime, threat and cost.
