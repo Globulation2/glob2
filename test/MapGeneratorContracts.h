@@ -14,6 +14,7 @@
 #include "Growth.h"
 #include "MapGeneratorFrameworkChecks.h"
 #include "Pipeline.h"
+#include "Planting.h"
 #include "Sketch.h"
 #include <cassert>
 #include <chrono>
