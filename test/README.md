@@ -31,6 +31,14 @@ path, while true zero supply still pauses births. Equivalent whole-tile and Q16
 inputs produce the same budget. Run it with
 `python3 test/run_maxima_implementation_regressions.py --test MaximaEconomyRegressionTest`.
 
+## Maxima sand-bridge routing regression
+
+`MaximaPlacementStandaloneTest` checks that a colony can route builders across a
+sand bridge without swimmers, then reserve and revalidate that route. Flooding a
+route tile must reject it. Building parcels still require grass; circulation
+arteries accept dry sand, matching ground-unit traversal. Run with
+`python3 test/run_maxima_implementation_regressions.py --test MaximaPlacementStandaloneTest`.
+
 ## Selection lifetime regression
 
 `GameGUISelectionHarness.cpp` links the real client objects with a test entry

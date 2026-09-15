@@ -1427,7 +1427,8 @@ void Planner::prepareRouteCache(const WorldState& world,int orientation) const
 			for(int k=0;k<2;++k)
 			{
 				const WorldTile& tile=world.tiles[pair[k]];
-				if(!tile.discovered||!tile.grass||tile.occupied||tile.permanentResource
+				// Circulation needs walkable land, not a buildable grass tile.
+				if(!tile.discovered||tile.water||tile.occupied||tile.permanentResource
 				   ||isFootprintReserved(pair[k])) {pass=false;break;}
 				pairAlreadyNetwork=pairAlreadyNetwork&&isCirculationReserved(pair[k]);
 				if(!isCirculationReserved(pair[k]))
@@ -2874,7 +2875,7 @@ bool Planner::revalidate(const WorldState& world,const DevelopmentAction& action
 		for(size_t i=0;i<action.arteryTiles.size();++i)
 		{
 			const int index=action.arteryTiles[i];const WorldTile& tile=world.tiles[index];
-			if(!tile.discovered||!tile.grass||tile.occupied||tile.permanentResource
+			if(!tile.discovered||tile.water||tile.occupied||tile.permanentResource
 			   ||isFootprintReserved(index))
 			{
 				reason=RejectedCirculation;

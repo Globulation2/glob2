@@ -662,6 +662,29 @@ int main()
 	assert(!dryColonizer.selectAction(islands,
 		std::vector<DevelopmentIntent>(1,colony),fourSites,seed));
 	assert(dryColonizer.selectionSummary().rejected[RejectedIslandBuilders]>0);
+	// Walkers can cross sand bridges. Keep building parcels on grass, but
+	// do not mistake a dry connection between colonies for a swimming route.
+	{
+		WorldState bridged=islands;
+		for(int y=10;y<=35;++y)for(int x=10;x<=35;++x)
+			if((x<=13||y>=32)&&bridged.tile(x,y).water)
+			{bridged.tile(x,y).water=false;bridged.tile(x,y).grass=false;}
+		Planner bridgeColonizer;bridgeColonizer.configure(makeProfiles(),1,2,6,5,7);
+		bridgeColonizer.adoptStartingBuildings(bridged);
+		DevelopmentAction bridgeSeed;
+		assert(bridgeColonizer.selectAction(bridged,{colony},fourSites,bridgeSeed));
+		assert(!bridgeSeed.requiresSwimmingBuilders&&!bridgeSeed.arteryTiles.empty());
+		int sandTile=-1;
+		for(int tile:bridgeSeed.arteryTiles)
+			if(!bridged.tiles[tile].grass)sandTile=tile;
+		assert(sandTile>=0);
+		assert(bridgeColonizer.reserve(bridged,bridgeSeed));
+		RejectionReason reason;
+		assert(bridgeColonizer.revalidate(bridged,bridgeSeed,&reason,true));
+		bridged.tiles[sandTile].water=true;
+		assert(!bridgeColonizer.revalidate(bridged,bridgeSeed,&reason,true));
+		assert(reason==RejectedCirculation);
+	}
 	islands.swimmingBuilders=2;
 	// Reuse the failed planner: training swimmers does not alter occupancy.
 	assert(dryColonizer.selectAction(islands,
