@@ -5,6 +5,8 @@
 // MapGeneratorLandscapeChecks.h; a check here is about one landscape's own contract.
 #pragma once
 #include "BraidedDeltaGenerator.h"
+#include "Contact.h"
+#include "FertilityField.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GenerationService.h"
@@ -12,6 +14,7 @@
 #include "Growth.h"
 #include "MapGeneratorFrameworkChecks.h"
 #include "Pipeline.h"
+#include "Sketch.h"
 #include <cassert>
 #include <cstdio>
 #include <set>
