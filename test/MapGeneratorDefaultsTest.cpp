@@ -8,6 +8,7 @@
 #include "IntBuildingType.h"
 #include "LegacyGenerationDescriptor.h"
 #include "MapGeneratorFrameworkChecks.h"
+#include "MapGeneratorContracts.h"
 #include "MapGeneratorLandscapeChecks.h"
 #include "MapGeneratorToolkitChecks.h"
 #include "NewMapScreen.h"
@@ -87,6 +88,7 @@ class MapGeneratorDefaultsTest
 	static void generationContracts()
 	{
 		globalsInit();
+		GeneratorContracts::generatorContracts();
 		frameworkChecks();
 		ToolkitChecks::toolkitChecks();
 		LandscapeChecks::landscapeChecks();
@@ -131,6 +133,15 @@ class MapGeneratorDefaultsTest
 					rectangular.wDec = dimensions.first;
 					rectangular.hDec = dimensions.second;
 					Game world(nullptr);
+					// A landscape may refuse a shape its concept cannot hold (Emoji needs a
+					// square); it must then say so up front, through its request check.
+					if (const auto &d = GeneratorRegistry::builtins().at(method);
+						d.validateRequest && !d.validateRequest(rectangular).empty())
+					{
+						assert(service.generate(world, rectangular).error ==
+							   GenerationError::InvalidRequest);
+						continue;
+					}
 					assert(service.generate(world, rectangular));
 					assert(world.map.getW() == (1 << dimensions.first));
 					assert(world.map.getH() == (1 << dimensions.second));
@@ -265,8 +276,8 @@ class MapGeneratorDefaultsTest
 			const auto amount = GeneratorControl::percentage("amount", "Fruit");
 			assert(!amount.isToggle() && amount.defaultValue == 100 && !rejected(amount));
 			// A choice stores the index of its named option and is shown by name.
-			const auto shape = GeneratorControl::choice("shape", "Cell shape",
-														{"Squares", "Hexagons"}, 1);
+			const auto shape =
+				GeneratorControl::choice("shape", "Cell shape", {"Squares", "Hexagons"}, 1);
 			assert(shape.isChoice() && !shape.isToggle() && shape.defaultValue == 1 &&
 				   shape.values() == std::vector<int>({0, 1}) &&
 				   std::string(shape.valueLabel(1)) == "Hexagons" && !shape.valueLabel(2) &&
@@ -402,7 +413,8 @@ class MapGeneratorDefaultsTest
 		D editorFirst, lobbyFirst;
 		editorFirst.setMethodDefaults(GeneratorRegistry::builtins().methods().front());
 		lobbyFirst.setMethodDefaults(GeneratorRegistry::builtins().methods(false).front());
-		assert(GeneratorRegistry::builtins().methods(false).front() == GeneratorRegistry::builtins().idOf("fingerprint"));
+		assert(GeneratorRegistry::builtins().methods(false).front() ==
+			   GeneratorRegistry::builtins().idOf("fingerprint"));
 		assert(s.methods->getSelectionIndex() == 0);
 		sameControls(s.descriptor, editorFirst);
 		sameControls(lobby.generator, lobbyFirst);
@@ -440,7 +452,8 @@ class MapGeneratorDefaultsTest
 				assert(decoded.setData(encoded.getData(), encoded.getDataLength()));
 				sameControls(fromLegacyDescriptor(decoded, 0), expected);
 			}
-			if (output && ((m >= 4 && m <= 8) || m == GeneratorRegistry::builtins().idOf("fjord-continent")))
+			if (output &&
+				((m >= 4 && m <= 8) || m == GeneratorRegistry::builtins().idOf("fjord-continent")))
 			{
 				s.gfx->drawFilledRect(0, 0, 640, 480, GAGCore::Color(34, 55, 42));
 				for (auto *w : s.widgets)

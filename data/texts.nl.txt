@@ -2452,3 +2452,37 @@ Gebouwen S
 Sterkte: <=25/50/75%
 [Stats low food ranges]
 Voedsel: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Emoji-teken
+[Smiley]
+Lachend gezicht
+[Sad face]
+Verdrietig gezicht
+[Winking face]
+Knipoog
+[Surprised face]
+Verbaasd gezicht
+[Heart eyes]
+Hartogen
+[Sunglasses]
+Zonnebril
+[Heart]
+Hart
+[Star]
+Ster
+[Emoji style]
+Emoji-stijl
+[Outline]
+Omtrek
+[Filled]
+Gevuld
+[Emoji terrain]
+Emoji-terrein
+[Regular]
+Normaal
+[Inverse]
+Omgekeerd
+[Crossings]
+Oversteken

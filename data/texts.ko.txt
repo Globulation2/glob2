@@ -2424,3 +2424,37 @@ Globulation 2 커서를 표시합니다.
 체력: <=25/50/75%
 [Stats low food ranges]
 식량: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+이모지 종류
+[Smiley]
+웃는 얼굴
+[Sad face]
+슬픈 얼굴
+[Winking face]
+윙크하는 얼굴
+[Surprised face]
+놀란 얼굴
+[Heart eyes]
+하트 눈
+[Sunglasses]
+선글라스
+[Heart]
+하트
+[Star]
+별
+[Emoji style]
+이모지 스타일
+[Outline]
+윤곽선
+[Filled]
+채우기
+[Emoji terrain]
+이모지 지형
+[Regular]
+일반
+[Inverse]
+반전
+[Crossings]
+통로

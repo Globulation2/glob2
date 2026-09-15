@@ -2428,3 +2428,37 @@ Egységek S
 Életpont: <=25/50/75%
 [Stats low food ranges]
 Élelmiszer: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Emodzsi karakter
+[Smiley]
+Mosolygó arc
+[Sad face]
+Szomorú arc
+[Winking face]
+Kacsintó arc
+[Surprised face]
+Meglepett arc
+[Heart eyes]
+Szívszemek
+[Sunglasses]
+Napszemüveg
+[Heart]
+Szív
+[Star]
+Csillag
+[Emoji style]
+Emodzsi stílusa
+[Outline]
+Körvonal
+[Filled]
+Kitöltött
+[Emoji terrain]
+Emodzsi terepe
+[Regular]
+Normál
+[Inverse]
+Fordított
+[Crossings]
+Átkelők

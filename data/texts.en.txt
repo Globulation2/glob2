@@ -2426,3 +2426,37 @@ Structurally blocked buildings
 HP ≤25/50/75%
 [Stats low food ranges]
 Food ≤25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Emoji character
+[Smiley]
+Smiley
+[Sad face]
+Sad face
+[Winking face]
+Winking face
+[Surprised face]
+Surprised face
+[Heart eyes]
+Heart eyes
+[Sunglasses]
+Sunglasses
+[Heart]
+Heart
+[Star]
+Star
+[Emoji style]
+Emoji style
+[Outline]
+Outline
+[Filled]
+Filled
+[Emoji terrain]
+Emoji terrain
+[Regular]
+Regular
+[Inverse]
+Inverse
+[Crossings]
+Crossings

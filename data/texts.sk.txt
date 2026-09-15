@@ -2436,3 +2436,37 @@ Budovy S
 Zdravie: <=25/50/75%
 [Stats low food ranges]
 Jedlo: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Znak emoji
+[Smiley]
+Usmiata tvár
+[Sad face]
+Smutná tvár
+[Winking face]
+Žmurknutie
+[Surprised face]
+Prekvapená tvár
+[Heart eyes]
+Srdiečkové oči
+[Sunglasses]
+Slnečné okuliare
+[Heart]
+Srdce
+[Star]
+Hviezda
+[Emoji style]
+Štýl emoji
+[Outline]
+Obrys
+[Filled]
+Výplň
+[Emoji terrain]
+Terén emoji
+[Regular]
+Bežný
+[Inverse]
+Obrátený
+[Crossings]
+Priechody

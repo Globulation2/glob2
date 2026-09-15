@@ -2438,3 +2438,37 @@ Eraikuntzak S
 Osotasuna: <=25/50/75%
 [Stats low food ranges]
 Janaria: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Emoji karakterea
+[Smiley]
+Aurpegi irribarretsua
+[Sad face]
+Aurpegi tristea
+[Winking face]
+Keinua
+[Surprised face]
+Aurpegi harritua
+[Heart eyes]
+Bihotz-begiak
+[Sunglasses]
+Eguzkitako betaurrekoak
+[Heart]
+Bihotza
+[Star]
+Izarra
+[Emoji style]
+Emoji estiloa
+[Outline]
+Ingurua
+[Filled]
+Betea
+[Emoji terrain]
+Emoji lurra
+[Regular]
+Arrunta
+[Inverse]
+Alderantzizkoa
+[Crossings]
+Pasabideak

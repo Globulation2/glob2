@@ -2426,3 +2426,37 @@ OpenGL недоступен в этой сборке.
 Зд.: <=25/50/75%
 [Stats low food ranges]
 Еда: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Символ эмодзи
+[Smiley]
+Улыбка
+[Sad face]
+Грустное лицо
+[Winking face]
+Подмигивание
+[Surprised face]
+Удивлённое лицо
+[Heart eyes]
+Глаза-сердечки
+[Sunglasses]
+Солнечные очки
+[Heart]
+Сердце
+[Star]
+Звезда
+[Emoji style]
+Стиль эмодзи
+[Outline]
+Контур
+[Filled]
+Заливка
+[Emoji terrain]
+Ландшафт эмодзи
+[Regular]
+Обычный
+[Inverse]
+Обратный
+[Crossings]
+Переправы

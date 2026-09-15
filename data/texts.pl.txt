@@ -2428,3 +2428,37 @@ Budowle S
 Punkty życia: <=25/50/75%
 [Stats low food ranges]
 Jedzenie: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Znak emoji
+[Smiley]
+Uśmiechnięta twarz
+[Sad face]
+Smutna twarz
+[Winking face]
+Mrugnięcie
+[Surprised face]
+Zaskoczona twarz
+[Heart eyes]
+Oczy w kształcie serc
+[Sunglasses]
+Okulary przeciwsłoneczne
+[Heart]
+Serce
+[Star]
+Gwiazda
+[Emoji style]
+Styl emoji
+[Outline]
+Obrys
+[Filled]
+Wypełnienie
+[Emoji terrain]
+Teren emoji
+[Regular]
+Zwykły
+[Inverse]
+Odwrócony
+[Crossings]
+Przejścia

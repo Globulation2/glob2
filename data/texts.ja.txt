@@ -2424,3 +2424,37 @@ Globulation 2 のカーソルを表示します。
 体力: <=25/50/75%
 [Stats low food ranges]
 食料: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+絵文字の種類
+[Smiley]
+笑顔
+[Sad face]
+悲しい顔
+[Winking face]
+ウインク
+[Surprised face]
+驚いた顔
+[Heart eyes]
+ハートの目
+[Sunglasses]
+サングラス
+[Heart]
+ハート
+[Star]
+星
+[Emoji style]
+絵文字の描画
+[Outline]
+輪郭
+[Filled]
+塗りつぶし
+[Emoji terrain]
+絵文字の地形
+[Regular]
+通常
+[Inverse]
+反転
+[Crossings]
+通路

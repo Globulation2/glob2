@@ -2428,3 +2428,37 @@ Budovy S
 Životy: <=25/50/75%
 [Stats low food ranges]
 Potrava: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Znak emoji
+[Smiley]
+Usměvavá tvář
+[Sad face]
+Smutná tvář
+[Winking face]
+Mrknutí
+[Surprised face]
+Překvapená tvář
+[Heart eyes]
+Srdíčkové oči
+[Sunglasses]
+Sluneční brýle
+[Heart]
+Srdce
+[Star]
+Hvězda
+[Emoji style]
+Styl emoji
+[Outline]
+Obrys
+[Filled]
+Výplň
+[Emoji terrain]
+Terén emoji
+[Regular]
+Běžný
+[Inverse]
+Obrácený
+[Crossings]
+Přechody

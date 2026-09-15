@@ -2428,3 +2428,37 @@ Rakennuksia S
 HP: <=25/50/75%
 [Stats low food ranges]
 Ruoka: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Emojimerkki
+[Smiley]
+Hymyilevät kasvot
+[Sad face]
+Surulliset kasvot
+[Winking face]
+Silmänisku
+[Surprised face]
+Yllättyneet kasvot
+[Heart eyes]
+Sydänsilmät
+[Sunglasses]
+Aurinkolasit
+[Heart]
+Sydän
+[Star]
+Tähti
+[Emoji style]
+Emojin tyyli
+[Outline]
+Ääriviiva
+[Filled]
+Täytetty
+[Emoji terrain]
+Emojin maasto
+[Regular]
+Tavallinen
+[Inverse]
+Käänteinen
+[Crossings]
+Ylitykset

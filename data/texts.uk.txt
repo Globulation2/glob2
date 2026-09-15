@@ -2424,3 +2424,37 @@ OpenGL недоступний у цій збірці.
 Здоров’я: <=25/50/75%
 [Stats low food ranges]
 Їжа: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Символ емодзі
+[Smiley]
+Усмішка
+[Sad face]
+Сумне обличчя
+[Winking face]
+Підморгування
+[Surprised face]
+Здивоване обличчя
+[Heart eyes]
+Очі-сердечка
+[Sunglasses]
+Сонцезахисні окуляри
+[Heart]
+Серце
+[Star]
+Зірка
+[Emoji style]
+Стиль емодзі
+[Outline]
+Контур
+[Filled]
+Заливка
+[Emoji terrain]
+Ландшафт емодзі
+[Regular]
+Звичайний
+[Inverse]
+Зворотний
+[Crossings]
+Переправи

@@ -2504,3 +2504,37 @@ Bygninger S
 HP: <=25/50/75%
 [Stats low food ranges]
 Mad: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Emoji-tegn
+[Smiley]
+Smilende ansigt
+[Sad face]
+Trist ansigt
+[Winking face]
+Blinkende ansigt
+[Surprised face]
+Overrasket ansigt
+[Heart eyes]
+Hjerteøjne
+[Sunglasses]
+Solbriller
+[Heart]
+Hjerte
+[Star]
+Stjerne
+[Emoji style]
+Emoji-stil
+[Outline]
+Omrids
+[Filled]
+Udfyldt
+[Emoji terrain]
+Emoji-terræn
+[Regular]
+Normal
+[Inverse]
+Omvendt
+[Crossings]
+Overgange

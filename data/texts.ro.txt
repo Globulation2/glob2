@@ -2428,3 +2428,37 @@ Clădiri S
 Viata: <=25/50/75%
 [Stats low food ranges]
 Mâncare: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Caracter emoji
+[Smiley]
+Față zâmbitoare
+[Sad face]
+Față tristă
+[Winking face]
+Față care face cu ochiul
+[Surprised face]
+Față surprinsă
+[Heart eyes]
+Ochi în formă de inimă
+[Sunglasses]
+Ochelari de soare
+[Heart]
+Inimă
+[Star]
+Stea
+[Emoji style]
+Stil emoji
+[Outline]
+Contur
+[Filled]
+Umplut
+[Emoji terrain]
+Teren emoji
+[Regular]
+Normal
+[Inverse]
+Inversat
+[Crossings]
+Treceri

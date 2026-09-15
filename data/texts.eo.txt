@@ -2426,3 +2426,37 @@ Konstruaĵoj S
 VPo: <=25/50/75%
 [Stats low food ranges]
 Nutraĵo: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Emoĝia signo
+[Smiley]
+Ridetanta vizaĝo
+[Sad face]
+Malĝoja vizaĝo
+[Winking face]
+Palpebruma vizaĝo
+[Surprised face]
+Surprizita vizaĝo
+[Heart eyes]
+Koraj okuloj
+[Sunglasses]
+Sunokulvitroj
+[Heart]
+Koro
+[Star]
+Stelo
+[Emoji style]
+Emoĝia stilo
+[Outline]
+Konturo
+[Filled]
+Plenigita
+[Emoji terrain]
+Emoĝia tereno
+[Regular]
+Normala
+[Inverse]
+Inversa
+[Crossings]
+Transirejoj

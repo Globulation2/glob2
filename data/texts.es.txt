@@ -2428,3 +2428,37 @@ Edificios S
 caballos de fuerza: <=25/50/75%
 [Stats low food ranges]
 Alimento: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Carácter emoji
+[Smiley]
+Cara sonriente
+[Sad face]
+Cara triste
+[Winking face]
+Guiño
+[Surprised face]
+Cara sorprendida
+[Heart eyes]
+Ojos de corazón
+[Sunglasses]
+Gafas de sol
+[Heart]
+Corazón
+[Star]
+Estrella
+[Emoji style]
+Estilo de emoji
+[Outline]
+Contorno
+[Filled]
+Relleno
+[Emoji terrain]
+Terreno de emoji
+[Regular]
+Normal
+[Inverse]
+Invertido
+[Crossings]
+Pasos

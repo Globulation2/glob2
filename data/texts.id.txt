@@ -2424,3 +2424,37 @@ Bangunan S
 HP: <=25/50/75%
 [Stats low food ranges]
 Makanan: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Karakter emoji
+[Smiley]
+Wajah tersenyum
+[Sad face]
+Wajah sedih
+[Winking face]
+Wajah mengedip
+[Surprised face]
+Wajah terkejut
+[Heart eyes]
+Mata hati
+[Sunglasses]
+Kacamata hitam
+[Heart]
+Hati
+[Star]
+Bintang
+[Emoji style]
+Gaya emoji
+[Outline]
+Garis luar
+[Filled]
+Terisi
+[Emoji terrain]
+Medan emoji
+[Regular]
+Biasa
+[Inverse]
+Terbalik
+[Crossings]
+Penyeberangan

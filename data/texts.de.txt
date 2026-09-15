@@ -2428,3 +2428,37 @@ Gebäude S
 Leben: <=25/50/75%
 [Stats low food ranges]
 Nahrung: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Emoji-Zeichen
+[Smiley]
+Lächelndes Gesicht
+[Sad face]
+Trauriges Gesicht
+[Winking face]
+Zwinkerndes Gesicht
+[Surprised face]
+Überraschtes Gesicht
+[Heart eyes]
+Herzaugen
+[Sunglasses]
+Sonnenbrille
+[Heart]
+Herz
+[Star]
+Stern
+[Emoji style]
+Emoji-Stil
+[Outline]
+Umriss
+[Filled]
+Gefüllt
+[Emoji terrain]
+Emoji-Gelände
+[Regular]
+Normal
+[Inverse]
+Umgekehrt
+[Crossings]
+Übergänge

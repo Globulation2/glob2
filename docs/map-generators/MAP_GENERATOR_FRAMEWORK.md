@@ -131,6 +131,7 @@ restores whatever landscape it had.
 | `old-growth` | 28 | Old growth | Its own — see below |
 | `anthill` | 32 | Anthill | Its own — see below |
 | `coral` | 21 | Coral | Its own — see below |
+| `emoji` | 34 | Emoji | [Design and play contract](emoji/DESIGN.md) |
 | `uniform` | 0 | uniform terrain | Editor-only; one terrain type, unstructured |
 
 Retired ids, never reused: 25 (Marches, a lattice of homelands with wooded border bands, dropped
