@@ -1,7 +1,7 @@
 # Hedgerow Country: full-parameter generation sweep
 
 Screenshots, sample maps/replays, complete bulk request/metric rows, and test logs
-are available in the [checked-in review evidence](../artifacts/hedgerow-country/README.md).
+are available in the [review evidence](../artifacts/hedgerow-country/README.md) and the [evidence branch](https://github.com/Globulation2/glob2/blob/evidence/hedgerow-country/docs/artifacts/hedgerow-country/README.md).
 
 This checks generation reliability and extreme layouts, first on revision 5
 and then on revision 6 after correcting a rare fertile-hedge construction failure.

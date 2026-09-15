@@ -1,7 +1,7 @@
 # Hedgerow Country: initial fairness playtest
 
 Screenshots, sample maps/replays, complete bulk request/metric rows, and test logs
-are available in the [checked-in review evidence](../artifacts/hedgerow-country/README.md).
+are available in the [review evidence](../artifacts/hedgerow-country/README.md) and the [evidence branch](https://github.com/Globulation2/glob2/blob/evidence/hedgerow-country/docs/artifacts/hedgerow-country/README.md).
 
 ## Changes selected
 
