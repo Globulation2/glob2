@@ -2428,3 +2428,37 @@ Stavbe S
 Zdravje: <=25/50/75%
 [Stats low food ranges]
 Hrana: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Znak emoji
+[Smiley]
+Nasmejan obraz
+[Sad face]
+Žalosten obraz
+[Winking face]
+Pomežik
+[Surprised face]
+Presenečen obraz
+[Heart eyes]
+Srčaste oči
+[Sunglasses]
+Sončna očala
+[Heart]
+Srce
+[Star]
+Zvezda
+[Emoji style]
+Slog emojija
+[Outline]
+Obris
+[Filled]
+Zapolnjeno
+[Emoji terrain]
+Teren emojija
+[Regular]
+Običajno
+[Inverse]
+Obrnjeno
+[Crossings]
+Prehodi

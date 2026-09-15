@@ -2436,3 +2436,37 @@ Binalar S
 Can: <=25/50/75%
 [Stats low food ranges]
 Besin: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Emoji karakteri
+[Smiley]
+Gülen yüz
+[Sad face]
+Üzgün yüz
+[Winking face]
+Göz kırpan yüz
+[Surprised face]
+Şaşkın yüz
+[Heart eyes]
+Kalp gözler
+[Sunglasses]
+Güneş gözlüğü
+[Heart]
+Kalp
+[Star]
+Yıldız
+[Emoji style]
+Emoji biçimi
+[Outline]
+Ana hat
+[Filled]
+Dolu
+[Emoji terrain]
+Emoji arazisi
+[Regular]
+Normal
+[Inverse]
+Ters
+[Crossings]
+Geçitler

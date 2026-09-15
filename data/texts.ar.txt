@@ -2426,3 +2426,37 @@ OpenGL غير متوفر في هذا الإصدار.
 ﻥﻕ: <=25/50/75%
 [Stats low food ranges]
 ﺍﻟﻄﻌﺎﻡ: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+رمز تعبيري
+[Smiley]
+وجه مبتسم
+[Sad face]
+وجه حزين
+[Winking face]
+وجه يغمز
+[Surprised face]
+وجه متفاجئ
+[Heart eyes]
+عيون على شكل قلوب
+[Sunglasses]
+نظارات شمسية
+[Heart]
+قلب
+[Star]
+نجمة
+[Emoji style]
+نمط الرمز التعبيري
+[Outline]
+مخطط
+[Filled]
+ممتلئ
+[Emoji terrain]
+تضاريس الرمز التعبيري
+[Regular]
+عادي
+[Inverse]
+معكوس
+[Crossings]
+معابر

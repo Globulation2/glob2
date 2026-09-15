@@ -521,7 +521,6 @@ Descrição do mapa
 [Map Discovered]
 Mapa
 [Map download failure: lost connection]
-<<<<<<< /media/disk-2/attila/glob2/data/texts.br.txt
 [Map name: %0]
 Nome do mapa: %0.
 [map name]
@@ -2378,6 +2377,7 @@ Desativado (sem cronômetro)
 60 minutos
 [Sudden-death timer]
 Cronômetro de morte súbita
+<<<<<<< HEAD
 [Stats page three]
 Estatísticas 3/3 >
 [Stats blocked units]
@@ -2424,3 +2424,37 @@ Construções S
 Vida: <=25/50/75%
 [Stats low food ranges]
 Comida: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Caractere emoji
+[Smiley]
+Rosto sorridente
+[Sad face]
+Rosto triste
+[Winking face]
+Piscadinha
+[Surprised face]
+Rosto surpreso
+[Heart eyes]
+Olhos de coração
+[Sunglasses]
+Óculos de sol
+[Heart]
+Coração
+[Star]
+Estrela
+[Emoji style]
+Estilo do emoji
+[Outline]
+Contorno
+[Filled]
+Preenchido
+[Emoji terrain]
+Terreno do emoji
+[Regular]
+Normal
+[Inverse]
+Invertido
+[Crossings]
+Travessias

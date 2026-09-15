@@ -2438,3 +2438,37 @@ Byggnader S
 Hälsopoäng: <=25/50/75%
 [Stats low food ranges]
 Mat: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Emoji-tecken
+[Smiley]
+Leende ansikte
+[Sad face]
+Ledsen min
+[Winking face]
+Blinkande ansikte
+[Surprised face]
+Förvånat ansikte
+[Heart eyes]
+Hjärtögon
+[Sunglasses]
+Solglasögon
+[Heart]
+Hjärta
+[Star]
+Stjärna
+[Emoji style]
+Emoji-stil
+[Outline]
+Kontur
+[Filled]
+Fylld
+[Emoji terrain]
+Emoji-terräng
+[Regular]
+Normal
+[Inverse]
+Omvänd
+[Crossings]
+Övergångar

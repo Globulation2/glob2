@@ -29,3 +29,10 @@ principles every generator designs for, which the generators' comments refer to.
 [Generator telemetry](TELEMETRY.md) records internal counts, variants, calibration and fallback
 choices in CLI JSON reports. Use `tools/map_telemetry.py` to collect a bounded seed matrix and
 analyze those observations alongside final-map metrics.
+
+## Emoji
+
+[Emoji](emoji/DESIGN.md) draws eight faces and symbols as outlined or filled water
+or grass. Character, style and terrain each default to Random and can be pinned
+independently. Square 256/512 maps support 1–8 colonies with starts selected on existing
+grass and a protected outer route. Colony placement never changes terrain.

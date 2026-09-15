@@ -2490,3 +2490,37 @@ Costruzioni S
 PV: <=25/50/75%
 [Stats low food ranges]
 Cibo: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Carattere emoji
+[Smiley]
+Viso sorridente
+[Sad face]
+Viso triste
+[Winking face]
+Occhiolino
+[Surprised face]
+Viso sorpreso
+[Heart eyes]
+Occhi a cuore
+[Sunglasses]
+Occhiali da sole
+[Heart]
+Cuore
+[Star]
+Stella
+[Emoji style]
+Stile emoji
+[Outline]
+Contorno
+[Filled]
+Pieno
+[Emoji terrain]
+Terreno emoji
+[Regular]
+Normale
+[Inverse]
+Invertito
+[Crossings]
+Passaggi

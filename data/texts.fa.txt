@@ -2426,3 +2426,37 @@ OpenGL در این بیلد موجود نیست.
 سلامتی: <=25/50/75%
 [Stats low food ranges]
 تغذیه: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+نویسهٔ شکلک
+[Smiley]
+چهرهٔ خندان
+[Sad face]
+چهرهٔ غمگین
+[Winking face]
+چشمک
+[Surprised face]
+چهرهٔ شگفت‌زده
+[Heart eyes]
+چشم‌های قلبی
+[Sunglasses]
+عینک آفتابی
+[Heart]
+قلب
+[Star]
+ستاره
+[Emoji style]
+سبک شکلک
+[Outline]
+خط دور
+[Filled]
+توپر
+[Emoji terrain]
+زمین شکلک
+[Regular]
+عادی
+[Inverse]
+وارونه
+[Crossings]
+گذرگاه‌ها

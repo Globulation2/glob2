@@ -2424,3 +2424,37 @@ Công trình S
 Máu: <=25/50/75%
 [Stats low food ranges]
 Thức ăn: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Ký tự biểu cảm
+[Smiley]
+Mặt cười
+[Sad face]
+Mặt buồn
+[Winking face]
+Mặt nháy mắt
+[Surprised face]
+Mặt ngạc nhiên
+[Heart eyes]
+Mắt trái tim
+[Sunglasses]
+Kính râm
+[Heart]
+Trái tim
+[Star]
+Ngôi sao
+[Emoji style]
+Kiểu biểu cảm
+[Outline]
+Đường viền
+[Filled]
+Tô kín
+[Emoji terrain]
+Địa hình biểu cảm
+[Regular]
+Thông thường
+[Inverse]
+Đảo ngược
+[Crossings]
+Lối qua

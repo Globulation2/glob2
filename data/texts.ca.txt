@@ -2436,3 +2436,37 @@ Edificis S
 Vida: <=25/50/75%
 [Stats low food ranges]
 Menjar: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Caràcter emoji
+[Smiley]
+Cara somrient
+[Sad face]
+Cara trista
+[Winking face]
+Picada d’ullet
+[Surprised face]
+Cara sorpresa
+[Heart eyes]
+Ulls de cor
+[Sunglasses]
+Ulleres de sol
+[Heart]
+Cor
+[Star]
+Estrella
+[Emoji style]
+Estil de l’emoji
+[Outline]
+Contorn
+[Filled]
+Ple
+[Emoji terrain]
+Terreny de l’emoji
+[Regular]
+Normal
+[Inverse]
+Invertit
+[Crossings]
+Passos

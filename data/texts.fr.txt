@@ -2438,3 +2438,37 @@ Bâtiments S
 PV: <=25/50/75%
 [Stats low food ranges]
 Nourriture: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Émoji
+[Smiley]
+Visage souriant
+[Sad face]
+Visage triste
+[Winking face]
+Clin d’œil
+[Surprised face]
+Visage surpris
+[Heart eyes]
+Yeux en cœur
+[Sunglasses]
+Lunettes de soleil
+[Heart]
+Cœur
+[Star]
+Étoile
+[Emoji style]
+Style d’émoji
+[Outline]
+Contour
+[Filled]
+Plein
+[Emoji terrain]
+Terrain d’émoji
+[Regular]
+Normal
+[Inverse]
+Inversé
+[Crossings]
+Passages

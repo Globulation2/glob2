@@ -2498,3 +2498,37 @@ HP <=75%
 HP: <=25/50/75%
 [Stats low food ranges]
 Τροφή: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Χαρακτήρας emoji
+[Smiley]
+Χαμογελαστό πρόσωπο
+[Sad face]
+Λυπημένο πρόσωπο
+[Winking face]
+Κλείσιμο ματιού
+[Surprised face]
+Έκπληκτο πρόσωπο
+[Heart eyes]
+Μάτια καρδιές
+[Sunglasses]
+Γυαλιά ηλίου
+[Heart]
+Καρδιά
+[Star]
+Αστέρι
+[Emoji style]
+Στυλ emoji
+[Outline]
+Περίγραμμα
+[Filled]
+Γεμάτο
+[Emoji terrain]
+Έδαφος emoji
+[Regular]
+Κανονικό
+[Inverse]
+Αντίστροφο
+[Crossings]
+Περάσματα

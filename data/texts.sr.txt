@@ -2428,3 +2428,37 @@ OpenGL није доступан у овој верзији.
 Здравље: <=25/50/75%
 [Stats low food ranges]
 Храна: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Симбол емоџија
+[Smiley]
+Насмејано лице
+[Sad face]
+Тужно лице
+[Winking face]
+Намигивање
+[Surprised face]
+Изненађено лице
+[Heart eyes]
+Очи у облику срца
+[Sunglasses]
+Наочаре за сунце
+[Heart]
+Срце
+[Star]
+Звезда
+[Emoji style]
+Стил емоџија
+[Outline]
+Обрис
+[Filled]
+Попуњено
+[Emoji terrain]
+Терен емоџија
+[Regular]
+Обично
+[Inverse]
+Обрнуто
+[Crossings]
+Прелази

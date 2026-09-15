@@ -2500,3 +2500,37 @@ OpenGL 在此版本中不可用。
 生命值: <=25/50/75%
 [Stats low food ranges]
 食物: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+表情圖案
+[Smiley]
+笑臉
+[Sad face]
+難過的臉
+[Winking face]
+眨眼的臉
+[Surprised face]
+驚訝的臉
+[Heart eyes]
+愛心眼
+[Sunglasses]
+太陽眼鏡
+[Heart]
+愛心
+[Star]
+星星
+[Emoji style]
+表情樣式
+[Outline]
+輪廓
+[Filled]
+實心
+[Emoji terrain]
+表情地形
+[Regular]
+一般
+[Inverse]
+反轉
+[Crossings]
+通道

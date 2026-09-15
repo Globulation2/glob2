@@ -2434,3 +2434,37 @@ Prédios S
 PV: <=25/50/75%
 [Stats low food ranges]
 Comida: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Caractere emoji
+[Smiley]
+Rosto sorridente
+[Sad face]
+Rosto triste
+[Winking face]
+Piscadela
+[Surprised face]
+Rosto surpreso
+[Heart eyes]
+Olhos de coração
+[Sunglasses]
+Óculos de sol
+[Heart]
+Coração
+[Star]
+Estrela
+[Emoji style]
+Estilo do emoji
+[Outline]
+Contorno
+[Filled]
+Preenchido
+[Emoji terrain]
+Terreno do emoji
+[Regular]
+Normal
+[Inverse]
+Invertido
+[Crossings]
+Passagens
