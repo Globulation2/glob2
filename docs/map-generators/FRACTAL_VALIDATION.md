@@ -9,7 +9,7 @@ Linux checks use x86-64 Docker emulation.
 
 ## Implemented and checked
 
-Both generators are registered at revision 1: Gardens ID 34 and Hilbert ID 35.
+Both generators are registered at revision 1: Gardens ID 49 and Hilbert ID 50 (they took 34 and 35 first, which went to Emoji and Forts).
 ID 33 remains retired. Earlier prototype bundles used different IDs; interpret each
 record with its own immutable bundle catalog.
 
