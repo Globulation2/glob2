@@ -531,7 +531,7 @@ int main()
 		std::vector<DevelopmentIntent>(),repairLimits,upgradeAction,&currentReason));
 	assert(currentReason==RejectedAuthorization);
 
-	// Director priorities change only demand before the 50% upgrade preference,
+	// Director priorities change only demand before the 25% upgrade preference,
 	// preserving every spatial component.
 	// Zero is a veto both during selection and if authority changes before issue.
 	{
@@ -548,7 +548,7 @@ int main()
 		assert(weighted.buildingId==generic.buildingId);
 		assert(weighted.utility.unmetDemand==80);
 		assert(weighted.utility.total-generic.utility.total
-			==(80-generic.utility.unmetDemand)*upgrades.policy().unmetDemandWeight*3/2);
+			==(80-generic.utility.unmetDemand)*upgrades.policy().unmetDemandWeight*5/4);
 		priorityLimits.upgradePriorities[std::make_pair(2,1)]=0;
 		assert(!upgrades.revalidateSelection(healthyWorld,noIntents,
 			priorityLimits,weighted,&currentReason));
