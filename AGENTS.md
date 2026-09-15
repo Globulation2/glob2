@@ -2,8 +2,10 @@
 
 This guide maps the repository and records shared compatibility and review rules.
 Choose tools and workflow to suit the task. `CLAUDE.md` is a Git-tracked relative
-symlink to this file; edit `AGENTS.md` only. If symlinks appear as plain text in a
-checkout, read `AGENTS.md` directly.
+symlink to this file; edit `AGENTS.md` only. Likewise, agent skills live in
+`.agents/skills/`, and `.claude/skills` is a tracked relative symlink to it so Claude
+Code discovers them; add or edit skills under `.agents/skills/` only. If symlinks
+appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` directly.
 
 ## Repository map
 
