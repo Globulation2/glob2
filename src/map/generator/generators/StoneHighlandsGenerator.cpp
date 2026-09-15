@@ -661,7 +661,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		}
 		if (carvePass(L, context, e.first, e.second, exclusive[e], alongRidge, o.passWidth))
 		{
-			sets.join(e.first, e.second);
+			sets.unite(e.first, e.second);
 			--groups;
 		}
 	}
@@ -679,7 +679,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			if (sets.find(e.first) != sets.find(e.second) &&
 				carvePass(L, context, e.first, e.second, anyPair[e], alongRidge, o.passWidth))
 			{
-				sets.join(e.first, e.second);
+				sets.unite(e.first, e.second);
 				--groups;
 			}
 	}
