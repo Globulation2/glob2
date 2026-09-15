@@ -641,6 +641,35 @@ inline void contourFarmChecks()
 				cores += sand[i] && contours.crossings[i];
 			assert(cores > 50);
 		}
+	// Lobed contours: the summit and its cap stay round, no band reaches farther than the
+	// amplitude past the circular outer radius, some band ground lies beyond that circle, and
+	// the layout is still a function of the whole-corner translation.
+	{
+		TerrainSketch sketch(t.size(), GRASS);
+		ContourFarmStyle style;
+		style.innerRadius = 12;
+		style.rows = {8, 6.4};
+		style.bands = 2;
+		style.wobbles = {{3, {0.3, 1.1, 2.0}}, {3, {0.3, 1.1, 2.0}}};
+		assert(std::abs(style.reach() - style.outerRadius() - 3) < 1e-9);
+		assert(contourNominal(style, 0, style.innerRadius + style.cap, 1.0) ==
+			   style.innerRadius + style.cap);
+		assert(contourNominal(style, 5, 30, 1.0) == 30);
+		const auto contours = layContourFarm(sketch, t, {{0, 0}, {64, 64}}, style);
+		assert(contours.farm.rows == 2);
+		int lobed = 0;
+		for (int i = 0; i < t.size(); ++i)
+		{
+			assert(sketch[i] == sketch[t.at(i % t.w + 64, i / t.w + 64)]);
+			const double d = std::hypot(t.offsetX(0, i % t.w), t.offsetY(0, i / t.w));
+			if (d < style.innerRadius || d > style.outerRadius() + 3)
+				assert(contours.farm.row[i] < 0 && !contours.farm.sand[i]);
+			else if (d <= style.innerRadius + style.cap)
+				assert(contours.farm.row[i] < 0 && contours.farm.sand[i]);
+			lobed += contours.farm.row[i] >= 0 && d > style.outerRadius();
+		}
+		assert(lobed > 0);
+	}
 }
 
 inline void landscapeChecks()

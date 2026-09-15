@@ -2,7 +2,8 @@
 
 ## Play contract
 
-Every colony owns a grass summit surrounded by concentric crop and water contours.
+Every colony owns a grass summit surrounded by concentric crop and water contours,
+lobed like a real hill's rather than drawn with compasses.
 A small starter inn holds ten wheat for the first feeding cycle; ongoing meals
 come from the terraces.
 Five-corner-wide radial sand stairs carry workers and attackers across the terraces.
@@ -13,6 +14,8 @@ still require clearing. The whole climb is longer than a summit tower's range.
 
 The summit has radius 16 and a two-corner sand containment ring. Complete crop/water
 bands end in another sand cap, keeping growth away from both summit and commons.
+Beyond the summit's cap the bands lobe in and out by up to four tiles, the same shift
+for every band at a heading so their widths hold; the summit and its cap stay round.
 The open valleys offer fruit, quarry outcrops and expansion room. Optional vacant
 hills provide another farm and summit to contest. A valley river follows boundaries
 between hills and has regular sand fords. Players choose which stairs to defend and
@@ -45,7 +48,13 @@ when an additional complete band fits inside the available spacing.
 The generator reuses lattice sites, farm row fitting/planting, colony placement,
 beaches, tower placement, resource guarantees and building-room helpers.
 The shared farmland toolkit now provides `ContourFarmStyle` and `layContourFarm`
-for capped circular rows and constant-width radial crossings. `nearestTwoSites` in `Points`
+for capped contour rows and constant-width radial crossings, with `ContourWobble`
+(three harmonics round the hill, own phases per hill, ramped in past the summit's cap
+so the mapping along a ray stays monotone and no contour folds) making the hills lobed;
+`contourNominal` is the radius the band arithmetic sees, which the generator uses to
+tell hill ground from valley. The lobe amplitude is as much of four tiles as leaves
+half the valley floor open at the closest pair of hills, so the fitted band count is
+the same as for circles. `nearestTwoSites` in `Points`
 provides exact owner/runner-up distances for valley boundaries, with stable ties and
 explicit empty/single-site results. The optional `placeTower` coverage-point constraint selects a footprint that covers
 every required approach tile, using the actual tower type's range. Empty coverage

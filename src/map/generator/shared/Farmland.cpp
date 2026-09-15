@@ -88,6 +88,33 @@ std::string containedPlotsMismatch(const Map &map, const Torus &t, const std::ve
 	return "";
 }
 
+double ContourWobble::at(double angle) const
+{
+	// The weights sum to one, so the shift never exceeds the amplitude.
+	return amplitude * (0.55 * std::sin(2 * angle + phase[0]) + 0.3 * std::sin(3 * angle + phase[1]) +
+						0.15 * std::sin(5 * angle + phase[2]));
+}
+
+double ContourFarmStyle::reach() const
+{
+	double amplitude = 0;
+	for (const ContourWobble &w : wobbles)
+		amplitude = std::max(amplitude, w.amplitude);
+	return outerRadius() + amplitude;
+}
+
+double contourNominal(const ContourFarmStyle &style, size_t centre, double distance, double angle)
+{
+	if (centre >= style.wobbles.size() || style.wobbles[centre].amplitude <= 0)
+		return distance;
+	const ContourWobble &w = style.wobbles[centre];
+	// Ramped in over amplitude + 2 tiles past the cap: the shift then changes by less than a tile
+	// per tile along a ray, so the mapping is monotone, and the summit and its cap stay round.
+	const double ramp =
+		std::clamp((distance - style.innerRadius - style.cap) / (w.amplitude + 2), 0.0, 1.0);
+	return distance + w.at(angle) * ramp;
+}
+
 ContourFarm layContourFarm(TerrainSketch &sketch, const Torus &t,
 						   const std::vector<ShapePoint> &centres, const ContourFarmStyle &style)
 {
@@ -100,7 +127,7 @@ ContourFarm layContourFarm(TerrainSketch &sketch, const Torus &t,
 	result.crossings.assign(t.size(), 0);
 	farm.rows = style.bands;
 	const double outer = style.outerRadius();
-	const int extent = int(std::ceil(outer));
+	const int extent = int(std::ceil(style.reach()));
 	// Scan each bounded disc rather than the whole torus for each centre. Integer
 	// offsets give identical rasterization at every whole-corner translation, even
 	// when a disc straddles the map seam. Discs must not overlap: silently choosing
@@ -111,11 +138,14 @@ ContourFarm layContourFarm(TerrainSketch &sketch, const Torus &t,
 		const double angle = style.phase + s * 2 * kPi / style.crossings;
 		directions.push_back({std::cos(angle), std::sin(angle)});
 	}
-	for (const ShapePoint &centre : centres)
+	for (size_t c = 0; c < centres.size(); ++c)
+	{
+		const ShapePoint &centre = centres[c];
 		for (int dy = -extent; dy <= extent; ++dy)
 			for (int dx = -extent; dx <= extent; ++dx)
 			{
-				const double distance = std::hypot(dx, dy);
+				const double distance =
+					contourNominal(style, c, std::hypot(dx, dy), std::atan2(double(dy), double(dx)));
 				if (distance < style.innerRadius || distance > outer)
 					continue;
 				const int i = t.at(int(centre.x) + dx, int(centre.y) + dy);
@@ -142,6 +172,7 @@ ContourFarm layContourFarm(TerrainSketch &sketch, const Torus &t,
 				farm.water[i] = water;
 				sketch[i] = water ? WATER : GRASS;
 			}
+	}
 	return result;
 }
 

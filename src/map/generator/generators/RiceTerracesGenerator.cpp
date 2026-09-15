@@ -19,8 +19,10 @@
 #include <vector>
 using namespace MapGeneration;
 
-// Rice terraces: each colony farms the concentric contours around its own hill. Sand stairs
-// cross the fields and irrigation ditches; the summit is a town, the valleys are shared ground.
+// Rice terraces: each colony farms the concentric contours around its own hill, lobed the way a
+// real hill's contours are rather than drawn with compasses (a maintainer's first look at the
+// circles saw a centre-pivot farm). Sand stairs cross the fields and irrigation ditches; the
+// summit is a town, the valleys are shared ground.
 // These are terrain contours, not engine elevation: towers shoot across them without a height
 // bonus. A summit tower covers a stair's final approach, not the whole climb from the valley.
 // Swimming bypasses the water barriers, and harvesting can open crop bands, but neither can
@@ -37,6 +39,9 @@ constexpr double kValley = 14;
 // retains multiple walkable tiles after four-corner terrain conversion. Towers sit inside
 // the summit, to one side of the mouth, never on the stair itself.
 constexpr double kStairHalf = 2.5;
+// How far the contours may lobe in or out, in tiles. Up to half the valley floor between two
+// hills' circular outer caps may go to their lobes; the rest stays open ground.
+constexpr double kWobble = 4;
 struct Layout
 {
 	Torus t{1, 1};
@@ -45,7 +50,7 @@ struct Layout
 	std::vector<int> homeOf, hillOf;
 	std::vector<unsigned char> stairs, valley;
 	Farm farm;
-	double radius = 0, phase = 0;
+	double radius = 0, phase = 0, wobble = 0;
 	int bands = 0;
 	std::string failure;
 };
@@ -82,13 +87,26 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	// band connected to valley grass: it would spread into the commons during a long game.
 	L.radius = kSummit + 2 * kCap + L.bands * rows.period();
 	L.phase = context.bounded("rice-stairs", 3600) * (2 * kPi / 3600);
+	// The lobes: as much of kWobble as leaves half the valley floor open at the closest pair of
+	// hills, so a fitted band count never changes for them; each hill draws its own phases.
+	L.wobble = std::clamp((separation - 2 * L.radius - kValley / 2) / 2, 0.0, kWobble);
+	std::vector<ContourWobble> wobbles;
+	for (size_t k = 0; k < L.hills.size(); ++k)
+	{
+		ContourWobble w;
+		w.amplitude = L.wobble;
+		for (double &phase : w.phase)
+			phase = context.bounded("rice-contours", 3600) * (2 * kPi / 3600);
+		wobbles.push_back(w);
+	}
 	L.terrain.assign(n, GRASS);
 	L.homeOf.assign(n, -1);
 	L.hillOf.assign(n, -1);
 	L.valley.assign(n, 1);
 	// The reusable farm operation owns row/cap/crossing geometry. This generator
 	// supplies the fitted budget and later assigns summit and valley ownership.
-	const ContourFarmStyle style{rows, kSummit, kCap, L.bands, o.stairs, kStairHalf, L.phase};
+	ContourFarmStyle style{rows, kSummit, kCap, L.bands, o.stairs, kStairHalf, L.phase};
+	style.wobbles = wobbles;
 	ContourFarm contours = layContourFarm(L.terrain, t, L.hills, style);
 	L.farm = std::move(contours.farm);
 	L.stairs = std::move(contours.crossings);
@@ -107,9 +125,12 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		const double first = std::sqrt(double(nearest.firstDistanceSquared));
 		const double second = nearest.second < 0 ? first + t.w + t.h
 												 : std::sqrt(double(nearest.secondDistanceSquared));
-		if (first > L.radius)
+		// The hill's ground ends where its lobed outer cap does, not at the circle.
+		const int dx = t.offsetX(int(L.hills[h].x), x), dy = t.offsetY(int(L.hills[h].y), y);
+		const double nominal = contourNominal(style, size_t(h), first, std::atan2(double(dy), double(dx)));
+		if (nominal > L.radius)
 		{
-			if (o.river && hills > 1 && second - first < 3 && first > L.radius + 3)
+			if (o.river && hills > 1 && second - first < 3 && nominal > L.radius + 3)
 			{
 				const bool ford = x % 24 < 5 || y % 24 < 5;
 				L.terrain[i] = ford ? SAND : WATER;
@@ -130,6 +151,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	context.telemetry.measure("rice.hills.actual", hills);
 	context.telemetry.measure("rice.hills.radius-budget", budget);
 	context.telemetry.measure("rice.hills.radius-actual", L.radius);
+	context.telemetry.measure("rice.contours.wobble", L.wobble);
 	context.telemetry.measure("rice.bands.per-hill", L.bands);
 	context.telemetry.measure("rice.bands.crop-width", rows.crops);
 	context.telemetry.measure("rice.bands.water-width", rows.water);
@@ -394,7 +416,7 @@ GeneratorDefinition riceTerracesDefinition()
 	return {"rice-terraces",
 			46,
 			"Rice terraces",
-			5,
+			6,
 			false,
 			{{"extra-hills", "Unoccupied hills", 0, 4, 1, 0, ControlGroup::Layout},
 			 {"hill-radius", "Hill radius", 44, 100, 4, 60, ControlGroup::Layout},
