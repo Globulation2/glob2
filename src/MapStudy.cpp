@@ -312,7 +312,15 @@ int saveRotatedMaps(Game &game, const GenerationResult &result, const Generation
 		if (!loadMapBytes(shifted, previous))
 			return 5;
 		shiftTeams(shifted, 1);
-		const std::string bytes = saveMapBytes(shifted, label(k % n));
+		const std::string rotationName = label(k % n);
+		// Crossing r9/r10 (or returning from r10/r11 to r0) changes the header
+		// length. Game::save hashes its initial header before patching the new map
+		// offset, just as on the first generated save above. Prime that offset
+		// when the label length changes, then compare canonical saved bytes.
+		// This is study-artifact normalization; no game state or save format changes.
+		if (rotationName.size() != label((k - 1) % n).size())
+			(void)saveMapBytes(shifted, rotationName);
+		const std::string bytes = saveMapBytes(shifted, rotationName);
 		Game check(nullptr);
 		if (!loadMapBytes(check, bytes))
 			return 5;

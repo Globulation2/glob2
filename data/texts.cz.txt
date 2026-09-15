@@ -2474,3 +2474,11 @@ Počet ramen
 Četnost soutoků
 [Crossing spacing]
 Rozestup přechodů
+[Breachable highlands]
+Průlomová vysočina
+[Ridge depth]
+Tloušťka hřebenů
+[Extra open passes]
+Další otevřené průsmyky
+[Wooded saddles]
+Zalesněná sedla

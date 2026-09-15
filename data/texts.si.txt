@@ -2474,3 +2474,11 @@ Razvejana delta
 Pogostost sotočij
 [Crossing spacing]
 Razmik med prehodi
+[Breachable highlands]
+Prebojno višavje
+[Ridge depth]
+Debelina grebenov
+[Extra open passes]
+Dodatni odprti prelazi
+[Wooded saddles]
+Gozdnata sedla

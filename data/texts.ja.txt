@@ -2470,3 +2470,11 @@ Emoji
 合流頻度
 [Crossing spacing]
 渡河地点の間隔
+[Breachable highlands]
+突破できる高地
+[Ridge depth]
+尾根の厚さ
+[Extra open passes]
+追加の開放峠
+[Wooded saddles]
+森林の峠

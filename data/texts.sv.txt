@@ -2484,3 +2484,11 @@ Antal flodarmar
 Sammanflödesfrekvens
 [Crossing spacing]
 Avstånd mellan övergångar
+[Breachable highlands]
+Högland med genombrott
+[Ridge depth]
+Bergsryggarnas tjocklek
+[Extra open passes]
+Extra öppna pass
+[Wooded saddles]
+Skogklädda pass

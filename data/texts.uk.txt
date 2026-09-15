@@ -2470,3 +2470,11 @@ Emoji
 Частота злиттів
 [Crossing spacing]
 Відстань між переправами
+[Breachable highlands]
+Нагір’я з проломами
+[Ridge depth]
+Товщина хребтів
+[Extra open passes]
+Додаткові відкриті перевали
+[Wooded saddles]
+Лісисті сідловини

@@ -2484,3 +2484,11 @@ Nombre de bras
 Fréquence des confluences
 [Crossing spacing]
 Espacement des passages
+[Breachable highlands]
+Hautes terres à brèches
+[Ridge depth]
+Épaisseur des crêtes
+[Extra open passes]
+Cols ouverts supplémentaires
+[Wooded saddles]
+Cols boisés

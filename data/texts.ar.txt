@@ -2472,3 +2472,11 @@ Emoji
 تكرار الالتقاء
 [Crossing spacing]
 المسافة بين المعابر
+[Breachable highlands]
+مرتفعات قابلة للاختراق
+[Ridge depth]
+سماكة الحواف الجبلية
+[Extra open passes]
+ممرات مفتوحة إضافية
+[Wooded saddles]
+ممرات مشجرة

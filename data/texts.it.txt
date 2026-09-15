@@ -2536,3 +2536,11 @@ Numero di rami
 Frequenza delle confluenze
 [Crossing spacing]
 Distanza tra guadi
+[Breachable highlands]
+Altopiani con varchi
+[Ridge depth]
+Spessore delle creste
+[Extra open passes]
+Valichi aperti aggiuntivi
+[Wooded saddles]
+Selle boscose

@@ -34,6 +34,7 @@
 #include "EmojiGenerator.h"
 #include "FortsGenerator.h"
 #include "BraidedDeltaGenerator.h"
+#include "BreachableHighlandsGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -143,6 +144,10 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 switchbacksDefinition(),
 											 cityStatesDefinition(),
 											 canalsDefinition(),
+											 emojiDefinition(),
+											 fortsDefinition(),
+											 braidedDeltaDefinition(),
+											 breachableHighlandsDefinition(),
 											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),

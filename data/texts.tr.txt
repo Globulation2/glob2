@@ -2482,3 +2482,11 @@ Kol sayısı
 Birleşme sıklığı
 [Crossing spacing]
 Geçit aralığı
+[Breachable highlands]
+Geçit açılabilen yaylalar
+[Ridge depth]
+Sırt kalınlığı
+[Extra open passes]
+Ek açık geçitler
+[Wooded saddles]
+Ormanlık geçitler

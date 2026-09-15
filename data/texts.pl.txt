@@ -2474,3 +2474,11 @@ Liczba ramion
 Częstotliwość połączeń
 [Crossing spacing]
 Odstęp między przeprawami
+[Breachable highlands]
+Wyżyny z wyłomami
+[Ridge depth]
+Grubość grzbietów
+[Extra open passes]
+Dodatkowe otwarte przełęcze
+[Wooded saddles]
+Zalesione przełęcze

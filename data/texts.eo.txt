@@ -2472,3 +2472,11 @@ Nombro de riverbrakoj
 Ofteco de kunfluoj
 [Crossing spacing]
 Interspaco de transirejoj
+[Breachable highlands]
+Trarompebla altebenaĵo
+[Ridge depth]
+Dikeco de krestoj
+[Extra open passes]
+Pliaj malfermitaj pasejoj
+[Wooded saddles]
+Arbaraj seloj

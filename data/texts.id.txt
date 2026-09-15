@@ -2470,3 +2470,11 @@ Jumlah cabang
 Frekuensi pertemuan
 [Crossing spacing]
 Jarak penyeberangan
+[Breachable highlands]
+Dataran tinggi yang dapat ditembus
+[Ridge depth]
+Ketebalan punggung bukit
+[Extra open passes]
+Celah terbuka tambahan
+[Wooded saddles]
+Celah berhutan

@@ -1234,3 +1234,7 @@
 [Braid count]
 [Rejoining frequency]
 [Crossing spacing]
+[Breachable highlands]
+[Ridge depth]
+[Extra open passes]
+[Wooded saddles]

@@ -2480,3 +2480,11 @@ Número de braços
 Frequência de confluências
 [Crossing spacing]
 Distância entre passagens
+[Breachable highlands]
+Terras altas com brechas
+[Ridge depth]
+Espessura das cristas
+[Extra open passes]
+Passagens abertas adicionais
+[Wooded saddles]
+Selas arborizadas

@@ -2474,3 +2474,11 @@ Número de brazos
 Frecuencia de confluencias
 [Crossing spacing]
 Distancia entre pasos
+[Breachable highlands]
+Tierras altas con brechas
+[Ridge depth]
+Grosor de las crestas
+[Extra open passes]
+Pasos abiertos adicionales
+[Wooded saddles]
+Collados boscosos

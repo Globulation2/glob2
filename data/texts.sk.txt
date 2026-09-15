@@ -2482,3 +2482,11 @@ Počet ramien
 Frekvencia sútokov
 [Crossing spacing]
 Rozostup priechodov
+[Breachable highlands]
+Priechodná vysočina
+[Ridge depth]
+Hrúbka hrebeňov
+[Extra open passes]
+Ďalšie otvorené priesmyky
+[Wooded saddles]
+Zalesnené sedlá

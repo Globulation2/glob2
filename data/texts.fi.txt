@@ -2474,3 +2474,11 @@ Jokihaarojen määrä
 Yhtymiskohtien tiheys
 [Crossing spacing]
 Ylityspaikkojen väli
+[Breachable highlands]
+Murrettava ylänkö
+[Ridge depth]
+Harjanteiden paksuus
+[Extra open passes]
+Ylimääräiset avoimet solat
+[Wooded saddles]
+Metsäiset solat

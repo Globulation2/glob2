@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #define SDL_MAIN_HANDLED
 #include "CustomGameSetup.h"
+#include "Contact.h"
+#include "FertilityField.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GenerationService.h"
@@ -14,6 +16,7 @@
 #include "NewMapScreen.h"
 #include "Race.h"
 #include "Resources.h"
+#include "Sketch.h"
 #include "StartingPositions.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -85,6 +88,93 @@ class MapGeneratorDefaultsTest
 			s.dispatchEvents(&event);
 		}
 	}
+	// These checks exercise the finished world's contract, including destructive edits a
+	// generation smoke test would miss: saddle preservation and permanent-ridge validation.
+	static void breachableHighlandsContracts()
+	{
+		GenerationService service;
+		D request;
+		request.setMethodDefaults(GeneratorRegistry::builtins().idOf("breachable-highlands"));
+		request.seed = 1;
+		Game game(nullptr);
+		assert(service.generate(game, request));
+		GenerationContext context(request);
+		const auto &definition = GeneratorRegistry::builtins().at(request.method);
+		const auto fertility = Fertility::forMap(game.map, false);
+		std::vector<int> saddle;
+		int ridge = -1;
+		for (int i = 0; i < game.map.getW() * game.map.getH(); ++i)
+		{
+			const int x = i % game.map.getW(), y = i / game.map.getW();
+			const int type = game.map.getResource(x, y).type;
+			if (type == WOOD && !fertility.at(x, y))
+				saddle.push_back(i);
+			if (type == STONE)
+				ridge = i;
+		}
+		assert(saddle.size() >= 12 && ridge >= 0);
+		const auto before = MapGeneration::contactMatrix(game.map, request.nbTeams,
+														 MapGeneration::StepCosts::walking());
+		for (int i : saddle)
+			game.map.setNoResource(i % game.map.getW(), i / game.map.getW(), 1);
+		assert(definition.validateWorld(game, context).find("saddle") != std::string::npos);
+		const auto after = MapGeneration::contactMatrix(game.map, request.nbTeams,
+														MapGeneration::StepCosts::walking());
+		int bestSaving = 0;
+		for (int a = 0; a < request.nbTeams; ++a)
+			for (int b = 0; b < request.nbTeams; ++b)
+			{
+				assert(after.cost[a][b] >= 0 && after.cost[a][b] <= before.cost[a][b]);
+				bestSaving = std::max(bestSaving, before.cost[a][b] - after.cost[a][b]);
+			}
+		assert(bestSaving > 0);
+		std::printf("Breachable highlands seed 1: clearing saddles saves up to %d walking steps\n",
+					bestSaving);
+		for (int i : saddle)
+			game.map.setResource(i % game.map.getW(), i / game.map.getW(), WOOD, 1);
+		assert(definition.validateWorld(game, context).empty());
+		game.map.setNoResource(ridge % game.map.getW(), ridge / game.map.getW(), 1);
+		assert(definition.validateWorld(game, context).find("ridge") != std::string::npos);
+		// Initially separate deposits are insufficient: removing the sand containment
+		// lets future wood growth reach food plots. Keep valid beaches and the original
+		// deposits, then require the validator to reject that future growth connection.
+		Game uncontained(nullptr);
+		assert(service.generate(uncontained, request));
+		const MapGeneration::Torus farmTorus{uncontained.map.getW(), uncontained.map.getH()};
+		MapGeneration::TerrainSketch terrain(farmTorus.size());
+		for (int i = 0; i < farmTorus.size(); ++i)
+		{
+			const int value = uncontained.map.getUMTerrain(i % farmTorus.w, i / farmTorus.w);
+			terrain[i] = value == SAND ? GRASS : value;
+		}
+		MapGeneration::layBeaches(terrain, farmTorus);
+		MapGeneration::writeUndermap(uncontained.map, terrain);
+		assert(definition.validateWorld(uncontained, context).find("farm access lane") !=
+			   std::string::npos);
+		// Abundance changes the farms, never the stone or saddle geometry. Both extremes
+		// still have viable starts and pass the generator's topology and dryness checks.
+		for (int amount : {0, 300})
+		{
+			D changed = request;
+			for (const char *key : {"wheat-amount", "wood-amount", "algae-amount", "fruit-amount"})
+				changed.options[key] = amount;
+			Game extreme(nullptr);
+			assert(service.generate(extreme, changed));
+			for (int i : saddle)
+				assert(
+					extreme.map.getResource(i % extreme.map.getW(), i / extreme.map.getW()).type ==
+					WOOD);
+			assert(extreme.map.getResource(ridge % extreme.map.getW(), ridge / extreme.map.getW())
+					   .type == STONE);
+		}
+		D crowded = request;
+		crowded.wDec = crowded.hDec = 7;
+		Game rejected(nullptr);
+		assert(service.generate(rejected, crowded).error == GenerationError::InvalidRequest);
+		puts("PASS breachable highlands: dry saddles, real shortcuts, protected ridges, crop "
+			 "containment, abundance "
+			 "extremes and crowding");
+	}
 	static void generationContracts()
 	{
 		globalsInit();
@@ -92,6 +182,7 @@ class MapGeneratorDefaultsTest
 		frameworkChecks();
 		ToolkitChecks::toolkitChecks();
 		LandscapeChecks::landscapeChecks();
+		breachableHighlandsContracts();
 		GenerationService service;
 		for (int method : GeneratorRegistry::builtins().methods())
 		{

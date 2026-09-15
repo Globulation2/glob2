@@ -2470,3 +2470,11 @@ Número de braços
 Frequência de confluências
 [Crossing spacing]
 Distância entre passagens
+[Breachable highlands]
+Uheldir gant toulloù
+[Ridge depth]
+Tevder ar cʼhrib
+[Extra open passes]
+Tremenioù digor ouzhpenn
+[Wooded saddles]
+Tremenioù koadek
