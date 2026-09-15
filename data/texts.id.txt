@@ -2628,3 +2628,21 @@ Pulau per koloni
 Penginapan pos terdepan
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 Pulau-pulau ini terlalu kecil untuk petak bangunannya; gunakan peta yang lebih besar, petak bangunan yang lebih kecil, atau koloni yang lebih sedikit.
+[Sierpiński Gardens]
+Kebun Sierpiński
+[Hilbert River]
+Sungai Hilbert
+[Maximum nesting]
+Tingkat bersarang maksimum
+[Minimum terminal district side]
+Sisi minimum distrik akhir
+[Major crossing pairs]
+Pasangan penyeberangan utama
+[Maximum fold depth]
+Kedalaman lipatan maksimum
+[Minimum land spacing]
+Jarak daratan minimum
+[Optional local crossings per parent]
+Penyeberangan lokal opsional per wilayah induk
+[Optional major shortcuts]
+Jalan pintas utama opsional

@@ -2632,3 +2632,21 @@ Otoki na kolonijo
 Oporiščne restavracije
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 Otoki so premajhni za svoje parcele; uporabite večji zemljevid, manjšo parcelo ali manj kolonij.
+[Sierpiński Gardens]
+Sierpińskijevi vrtovi
+[Hilbert River]
+Hilbertova reka
+[Maximum nesting]
+Največje gnezdenje
+[Minimum terminal district side]
+Najmanjša stranica končnih območij
+[Major crossing pairs]
+Pari glavnih prehodov
+[Maximum fold depth]
+Največja globina pregibov
+[Minimum land spacing]
+Najmanjši razmik kopnega
+[Optional local crossings per parent]
+Izbirni lokalni prehodi na nadrejeno območje
+[Optional major shortcuts]
+Izbirne glavne bližnjice

@@ -2628,3 +2628,21 @@ Emoji
 Їдальні на аванпостах
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 Острови замалі для своїх ділянок; використайте більшу карту, меншу ділянку або менше колоній.
+[Sierpiński Gardens]
+Сади Серпінського
+[Hilbert River]
+Річка Гільберта
+[Maximum nesting]
+Максимальна вкладеність
+[Minimum terminal district side]
+Мінімальна сторона кінцевого району
+[Major crossing pairs]
+Пари основних переправ
+[Maximum fold depth]
+Максимальна глибина вигинів
+[Minimum land spacing]
+Мінімальна ширина суші між берегами
+[Optional local crossings per parent]
+Додаткові місцеві переправи на батьківську область
+[Optional major shortcuts]
+Додаткові основні короткі шляхи

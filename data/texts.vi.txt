@@ -2628,3 +2628,21 @@ Số đảo mỗi thuộc địa
 Quán trọ tiền đồn
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 Các đảo này quá nhỏ so với lô đất xây dựng của chúng; hãy dùng bản đồ lớn hơn, lô đất nhỏ hơn hoặc ít thuộc địa hơn.
+[Sierpiński Gardens]
+Vườn Sierpiński
+[Hilbert River]
+Sông Hilbert
+[Maximum nesting]
+Mức lồng nhau tối đa
+[Minimum terminal district side]
+Cạnh tối thiểu của khu cuối
+[Major crossing pairs]
+Cặp lối băng qua chính
+[Maximum fold depth]
+Độ sâu nếp gấp tối đa
+[Minimum land spacing]
+Khoảng đất tối thiểu
+[Optional local crossings per parent]
+Lối băng qua cục bộ tùy chọn mỗi vùng cha
+[Optional major shortcuts]
+Đường tắt chính tùy chọn

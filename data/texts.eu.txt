@@ -2642,3 +2642,21 @@ Uharteak koloniako
 Kanpoko ostatuak
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 Uharteak txikiegiak dira beren lursailetarako; erabili mapa handiagoa, lursail txikiagoa edo kolonia gutxiago.
+[Sierpiński Gardens]
+Sierpińskiren lorategiak
+[Hilbert River]
+Hilberten ibaia
+[Maximum nesting]
+Habiaratze maximoa
+[Minimum terminal district side]
+Amaierako barrutien gutxieneko aldea
+[Major crossing pairs]
+Pasabide nagusien bikoteak
+[Maximum fold depth]
+Tolestura-sakonera maximoa
+[Minimum land spacing]
+Gutxieneko lur-tartea
+[Optional local crossings per parent]
+Aukerako tokiko pasabideak goiko eskualde bakoitzeko
+[Optional major shortcuts]
+Aukerako lasterbide nagusiak

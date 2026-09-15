@@ -2632,3 +2632,21 @@ Wyspy na kolonię
 Wysunięte gospody
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 Wyspy są za małe na swoje działki; użyj większej mapy, mniejszej działki lub mniejszej liczby kolonii.
+[Sierpiński Gardens]
+Ogrody Sierpińskiego
+[Hilbert River]
+Rzeka Hilberta
+[Maximum nesting]
+Maksymalne zagnieżdżenie
+[Minimum terminal district side]
+Minimalny bok dzielnicy końcowej
+[Major crossing pairs]
+Pary głównych przepraw
+[Maximum fold depth]
+Maksymalna głębokość zagięć
+[Minimum land spacing]
+Minimalny odstęp lądu
+[Optional local crossings per parent]
+Opcjonalne lokalne przeprawy na region nadrzędny
+[Optional major shortcuts]
+Opcjonalne główne skróty

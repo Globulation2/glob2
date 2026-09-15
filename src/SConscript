@@ -234,6 +234,9 @@ map/generator/generators/SavannahGenerator.cpp
 map/generator/generators/RiceTerracesGenerator.cpp
 map/generator/generators/VulturesGenerator.cpp
 map/generator/generators/PlantationsGenerator.cpp
+map/generator/generators/HilbertRiverGenerator.cpp
+map/generator/generators/FractalMapSupport.cpp
+map/generator/generators/SierpinskiGardensGenerator.cpp
 map/generator/generators/AnthillGenerator.cpp
 map/generator/generators/OldTownGenerator.cpp
 map/generator/generators/PolderGenerator.cpp
@@ -248,6 +251,8 @@ map/generator/shared/legacy/Distances.cpp
 map/generator/shared/HeightMap.cpp
 map/generator/shared/Noise.cpp
 map/generator/shared/BalancedStarts.cpp
+map/generator/shared/RecursiveGeometry.cpp
+map/generator/shared/HierarchicalCrossings.cpp
 map/generator/shared/Drawing.cpp
 map/generator/shared/Geometry.cpp
 map/generator/shared/Grid.cpp

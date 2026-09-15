@@ -2630,3 +2630,21 @@ Islands per colony
 Outpost inns
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.
+[Sierpiński Gardens]
+Sierpiński Gardens
+[Hilbert River]
+Hilbert River
+[Maximum nesting]
+Maximum nesting
+[Minimum terminal district side]
+Minimum terminal district side
+[Major crossing pairs]
+Major crossing pairs
+[Maximum fold depth]
+Maximum fold depth
+[Minimum land spacing]
+Minimum land spacing
+[Optional local crossings per parent]
+Optional local crossings per parent
+[Optional major shortcuts]
+Optional major shortcuts

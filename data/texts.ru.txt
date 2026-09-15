@@ -2630,3 +2630,21 @@ Emoji
 Кабаки на аванпостах
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 Острова слишком малы для своих участков; используйте карту побольше, участок поменьше или меньше колоний.
+[Sierpiński Gardens]
+Сады Серпинского
+[Hilbert River]
+Река Гильберта
+[Maximum nesting]
+Максимальная вложенность
+[Minimum terminal district side]
+Минимальная сторона конечного района
+[Major crossing pairs]
+Пары основных переправ
+[Maximum fold depth]
+Максимальная глубина изгибов
+[Minimum land spacing]
+Минимальная ширина суши между берегами
+[Optional local crossings per parent]
+Дополнительные местные переправы на родительскую область
+[Optional major shortcuts]
+Дополнительные основные короткие пути

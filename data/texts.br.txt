@@ -2628,3 +2628,21 @@ Ilhas por colônia
 Tavernas de posto avançado
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 As ilhas são pequenas demais para os seus lotes; use um mapa maior, um lote menor ou menos colônias.
+[Sierpiński Gardens]
+Jardins de Sierpiński
+[Hilbert River]
+Rio de Hilbert
+[Maximum nesting]
+Aninhamento máximo
+[Minimum terminal district side]
+Lado mínimo dos distritos terminais
+[Major crossing pairs]
+Pares de travessias principais
+[Maximum fold depth]
+Profundidade máxima das dobras
+[Minimum land spacing]
+Espaçamento mínimo de terra
+[Optional local crossings per parent]
+Travessias locais opcionais por região superior
+[Optional major shortcuts]
+Atalhos principais opcionais

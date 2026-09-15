@@ -527,5 +527,14 @@ int main(int argc, char **argv)
 	globals.gfx = GAGCore::Toolkit::initGraphic(640, 480, 0, "Map defaults test", "");
 	GAGCore::Toolkit::loadFont("data/fonts/sans.ttf", 20, "menu");
 	GAGCore::Toolkit::loadFont("data/fonts/sans.ttf", 13, "standard");
+	// Fast iteration over reusable primitives and their raster/economy fixtures.
+	// The ordinary invocation still runs the complete registry/editor/defaults
+	// contract; this option never weakens that CI path or changes generated worlds.
+	if (argc == 3 && std::string(argv[2]) == "--toolkit-only")
+	{
+		ToolkitChecks::toolkitChecks();
+		puts("PASS toolkit-only geometry, raster, resource and home contracts");
+		return 0;
+	}
 	MapGeneratorDefaultsTest::run(argc == 3 ? argv[2] : nullptr);
 }

@@ -178,3 +178,17 @@ collector has a record cap. See the telemetry guide for collection commands and 
 For larger batches, follow [distributed telemetry studies](distributed-telemetry.md):
 plan individually identified samples, run them through the shared durable workers,
 and reanalyze the complete returned reports with map-level statistical weighting.
+
+## Recursive layouts
+
+See [fractal geometry and worked examples](../../../../docs/map-generators/FRACTAL_MAPS.md).
+Use `RecursiveGeometry` for integer region trees and rectangular Hilbert paths, and
+`HierarchicalCrossings` for coarse travel-benefit selection. Preserve stop reasons and
+region IDs through design; check beaches, seam routes and final engine movement afterward.
+
+For reusable start-site work, use `selectSeparatedSites` for bounded toroidal maximin
+selection, `resourceFrontages` on an existing movement flood, and `arrangeBuildingGrid`
+to check actual disjoint footprints plus access after every proposed building is placed.
+`preventResourceGrowth` protects tile masks with the engine’s existing serialized flag.
+`cropSpreadEnvelope` honors these flags and proves containment independently of present
+fertility or buildings. Keep economic thresholds and module layouts in generators.

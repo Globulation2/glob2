@@ -2632,3 +2632,21 @@ Islas por colonia
 Posadas de avanzada
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 Las islas son demasiado pequeñas para sus solares; usa un mapa más grande, un solar más pequeño o menos colonias.
+[Sierpiński Gardens]
+Jardines de Sierpiński
+[Hilbert River]
+Río de Hilbert
+[Maximum nesting]
+Anidamiento máximo
+[Minimum terminal district side]
+Lado mínimo de los distritos terminales
+[Major crossing pairs]
+Pares de pasos principales
+[Maximum fold depth]
+Profundidad máxima de pliegues
+[Minimum land spacing]
+Separación mínima de tierra
+[Optional local crossings per parent]
+Pasos locales opcionales por región superior
+[Optional major shortcuts]
+Atajos principales opcionales

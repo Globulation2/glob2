@@ -2656,3 +2656,21 @@ Eilanden per kolonie
 Buitenpostherbergen
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 De eilanden zijn te klein voor hun bouwkavels; gebruik een grotere kaart, een kleinere bouwkavel of minder kolonies.
+[Sierpiński Gardens]
+Sierpiński-tuinen
+[Hilbert River]
+Hilbert-rivier
+[Maximum nesting]
+Maximale nesting
+[Minimum terminal district side]
+Minimale zijde van einddistricten
+[Major crossing pairs]
+Paren hoofdovergangen
+[Maximum fold depth]
+Maximale vouwdiepte
+[Minimum land spacing]
+Minimale landafstand
+[Optional local crossings per parent]
+Optionele lokale overgangen per bovenliggende regio
+[Optional major shortcuts]
+Optionele grote binnenwegen

@@ -2628,3 +2628,21 @@ Emoji
 전초 여관
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 섬이 건설 부지에 비해 너무 작습니다. 더 큰 지도를 사용하거나, 건설 부지를 더 작게 하거나, 식민지 수를 줄이세요.
+[Sierpiński Gardens]
+시에르핀스키 정원
+[Hilbert River]
+힐베르트 강
+[Maximum nesting]
+최대 중첩 깊이
+[Minimum terminal district side]
+말단 구역 최소 변 길이
+[Major crossing pairs]
+주요 횡단로 쌍
+[Maximum fold depth]
+최대 접힘 깊이
+[Minimum land spacing]
+최소 육지 간격
+[Optional local crossings per parent]
+상위 구역당 선택적 지역 횡단로
+[Optional major shortcuts]
+선택적 주요 지름길
