@@ -1639,8 +1639,10 @@ refusal) and every constant's reason.
 - **Seen.** A maintainer's first look found the islands too alike, all one size and all round;
   revision 2 reshapes them as above. A first cut reshaped the colonies' islands with the rest,
   and the same tournament paid for it with a 30-point position bias and pooled per-start units
-  from 104 to 183: what a colony is dealt must stay what it was. The tournament on the final
-  revision 2 is recorded in the pull request.
+  from 104 to 183: what a colony is dealt must stay what it was. Reshaped after the deal, the
+  same tournament came back to revision 1's numbers: position bias zero, pooled per-start units
+  87 to 128 (revision 1: 81 to 125), wheat harvested per colony 208 against 201, births 190
+  against 189, seven eliminations in 96 colony-games.
 
 ## Compatibility notes
 
