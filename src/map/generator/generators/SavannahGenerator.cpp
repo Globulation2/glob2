@@ -425,7 +425,7 @@ SavannahOptions::SavannahOptions(const GenerationRequest &r)
 GeneratorDefinition savannahDefinition()
 {
 	return {"savannah",
-			33,
+			45,
 			"Savannah",
 			1,
 			false,

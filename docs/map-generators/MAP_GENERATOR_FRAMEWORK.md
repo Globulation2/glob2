@@ -145,7 +145,7 @@ restores whatever landscape it had.
 | `old-growth` | 28 | Old growth | Its own — see below |
 | `anthill` | 32 | Anthill | Its own — see below |
 | `glacis` | 39 | The Glacis | Its own — see below; a premade base (`shared/Bases`) |
-| `savannah` | 33 | Savannah | [Open plains, contained home crops and neutral watering holes](SAVANNAH.md) |
+| `savannah` | 45 | Savannah | [Open plains, contained home crops and neutral watering holes](SAVANNAH.md) |
 | `coral` | 21 | Coral | Its own — see below |
 | `emoji` | 34 | Emoji | [Design and play contract](emoji/DESIGN.md) |
 | `forts` | 35 | Forts | [Walled forts in river country](FORTS.md) |
