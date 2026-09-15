@@ -205,6 +205,19 @@ constexpr int kMoraineSteps = 4;
 constexpr int kMoraineRunLow = 4, kMoraineRunHigh = 7, kMoraineGapLow = 3, kMoraineGapHigh = 5;
 constexpr int kMoraineDoor = 5;
 
+// --- The dry terrace's patches --------------------------------------------------------------------
+//
+// The terrace behind the moraine is a plain of grass with nothing on it but woodlots and outcrops,
+// and a maintainer's first look found it bland. Patches of sand now break it, `dry-patches` (0 to
+// 30, 12) percent of the terrace's inland grass, chosen where a periodic noise of period
+// kDryPatchPeriod peaks (sprinkleSand: rounded patches rather than speckle), kDryPatchInland
+// steps from water so the bank strip and the moraine's contour keep their grass, and clear of
+// every home's town room by kDryPatchTownClear so the sand never takes a colony's building ground.
+// Sand grows nothing and holds no building: the patches are the look of a dry plain, not a
+// resource, and they never touch the bars.
+constexpr int kDryPatchPeriod = 18, kDryPatchInland = 8, kDryPatchTownClear = 14;
+constexpr const char *kDryPatchStream = "braided-river-dry-patches";
+
 // --- Resources ------------------------------------------------------------------------------------
 //
 // Every bar's farmland covers this share of its eligible grass (furnishGround: plantFields in
@@ -939,6 +952,34 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		hummocks += h;
 	context.telemetry.measure("braided-river.moraine.designed", hummocks);
 	context.telemetry.measure("braided-river.homes.actual", L.homes.size());
+	// The dry patches, last, on the terraces only: off the moraine, off the wall, off every town's
+	// room and off the riffles' landings, and never nearer the water than the bank strip.
+	{
+		std::vector<unsigned char> keep(size_t(t.size()), 0);
+		for (const Home &home : L.homes)
+			for (int dv = -kDryPatchTownClear; dv <= kDryPatchTownClear + 3; ++dv)
+				for (int du = -kDryPatchTownClear; du <= kDryPatchTownClear + 3; ++du)
+					keep[axes.at(home.u + du, home.v + dv)] = 1;
+		const std::vector<unsigned char> landings = dilate(t, L.riffleTiles, kMoraineDoor);
+		// A sand corner spoils the four tiles round it, and stone stands on pure grass only, so
+		// the wall and the moraine keep two tiles of grass on every side.
+		const std::vector<unsigned char> stone = dilate(t, L.wall, 2), moraine = dilate(t, L.hummocks, 2);
+		std::vector<unsigned char> eligible(size_t(t.size()), 0);
+		for (int i = 0; i < t.size(); ++i)
+			eligible[i] = L.isTerrace(L.comp[i]) && !keep[i] && !stone[i] && !moraine[i] &&
+						  !landings[i];
+		const std::vector<int> noise =
+			periodicNoise(t.w, t.h, kDryPatchPeriod, context.stream(kDryPatchStream));
+		int before = 0;
+		for (int i = 0; i < t.size(); ++i)
+			before += L.terrain[i] == SAND;
+		sprinkleSand(L.terrain, t, eligible, o.dryPatches / 100.0, kDryPatchInland,
+					 [&](int i) { return noise[i]; });
+		int after = 0;
+		for (int i = 0; i < t.size(); ++i)
+			after += L.terrain[i] == SAND;
+		context.telemetry.measure("braided-river.dry-patches.corners", after - before);
+	}
 	return L;
 }
 
@@ -1261,7 +1302,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 BraidedRiverOptions::BraidedRiverOptions(const GenerationRequest &r)
 	: braidWidth(r.option("braid-width")), channels(r.option("channels")),
 	  barSize(r.option("bar-size")), extraRiffles(r.option("extra-riffles")),
-	  moraine(r.option("moraine") != 0), wheat(r.option("wheat-amount")),
+	  moraine(r.option("moraine") != 0), dryPatches(r.option("dry-patches")),
+	  wheat(r.option("wheat-amount")),
 	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
 	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
 {
@@ -1272,7 +1314,7 @@ GeneratorDefinition braidedRiverDefinition()
 	return {"braided-river",
 			42,
 			"Braided river",
-			1,
+			2,
 			false,
 			{// The belt of channels and bars as a share of the map's breadth; what is left either
 			 // side is terrace. Below 30 the braid is two threads; above 60 a 128 map has no
@@ -1288,6 +1330,9 @@ GeneratorDefinition braidedRiverDefinition()
 			 // How many of the crossable stretches left over after the spanning tree get a riffle
 			 // too: at 0 the way across is a tree, at 100 every stretch long enough is open.
 			 {"extra-riffles", "Extra riffles", 0, 100, 5, 25, ControlGroup::Layout},
+			 // Sand patches on the dry terrace, a share of its inland grass: the look of a plain
+			 // that is dry, not another resource.
+			 {"dry-patches", "Dry patches", 0, 30, 1, 12, ControlGroup::Terrain},
 			 // Off, the terrace edges are open bank; on, a broken line of stone hummocks four
 			 // tiles up each bank, with a gap at every riffle landing.
 			 GeneratorControl::toggle("moraine", "Moraine hummocks", true, ControlGroup::Layout),
