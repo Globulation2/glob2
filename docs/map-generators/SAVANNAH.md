@@ -175,6 +175,22 @@ request and generator revision.
 
 ## Verification and review
 
+### Rotation tournament
+
+A rotation tournament (six 256×256 maps, four colonies, every cyclic team rotation, four
+Nicowars, 45,000 ticks) found every colony on every map flat at 22 to 33 units for the whole
+game, with 11 to 15 buildings, four starvation deaths and a dozen births: a colony that builds
+but never breeds. The gameplay telemetry explains it: 55 to 96 wheat harvested per colony in
+45,000 ticks against 300 wood, about sixty new wheat tiles grown within eight tiles of the
+colony's buildings in that time, and 650 new wheat tiles on the whole map. Enlarging the home
+pond from radius 4.5 to 6.5 (roughly doubling the water the growth probe can find from the
+plot) was tried on the same six seeds and changed nothing (peaks 27 to 29, wheat harvested 85),
+so the pond is not the limit either: a Nicowar colony harvests almost nothing from the ringed
+plot however fast it regrows. The defaults stand unchanged; the finding is that this map's
+sealed-plot economy needs a farmer that will work it, which the current AIs are not, and human
+play is the test that remains.
+
+
 The existing CI defaults harness includes seam containment, deliberately broken
 containment, fertility filtering, planting limits and repeatable jitter checks.
 Savannah contracts cover supported rectangles, odd/solo colonies, invalid dimensions
