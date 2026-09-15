@@ -1780,6 +1780,7 @@ inline void gatePartitionChecks()
 // and the structural check's worker-count hook. Then the square compounds, the lane grid and its
 // pads, and the routes between sites the base landscapes are built from.
 inline void baseChecks()
+{
 	assert(baseTier(16) == BaseTier::Hamlet && baseTier(20) == BaseTier::Hamlet);
 	assert(baseTier(24) == BaseTier::Town && baseTier(28) == BaseTier::Town);
 	assert(baseTier(32) == BaseTier::City && baseTier(48) == BaseTier::City);
@@ -1813,6 +1814,7 @@ inline void baseChecks()
 	assert(!basePlanFits(t, city, {32, 32, 0}, all, ringBlocked));
 	const std::vector<unsigned char> around = baseSurroundings(t, city, {{32, 32, 0}});
 	assert(around[t.at(34, 32)] && around[t.at(32, 32)] && !around[t.at(32, 32 + 12)]);
+	{
 		// A finished city on grass: every building, its stock, the garrison, the lists, the start.
 		Game game(nullptr);
 		grassMap(game, 6, 6);
@@ -1828,10 +1830,12 @@ inline void baseChecks()
 		int counts[16] = {}, wheat = 0, bullets = 0;
 		for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
 			if (const Building *b = team.myBuildings[slot])
+			{
 				assert(!b->type->isBuildingSite);
 				++counts[b->type->shortTypeNum];
 				wheat += b->resources[WHEAT];
 				bullets += b->bullets;
+			}
 		assert(counts[IntBuildingType::SWARM_BUILDING] == 1 &&
 			   counts[IntBuildingType::FOOD_BUILDING] == 3 &&
 			   counts[IntBuildingType::HEAL_BUILDING] == 1 &&
@@ -1863,6 +1867,8 @@ inline void baseChecks()
 		assert(validateGeneratedWorld(game, request, definition).empty());
 		plantBaseDepots(game.map, context, t, city, {32, 32, 2});
 		assert(countResource(game.map, STONE) > 0);
+	}
+	{
 		// A city of sites: the swarm and one inn finished, eight level-0 sites, wood stacked beside.
 		Game game(nullptr);
 		grassMap(game, 6, 6);
@@ -1878,6 +1884,7 @@ inline void baseChecks()
 		int finished = 0, unfinished = 0;
 		for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
 			if (const Building *b = game.teams[0]->myBuildings[slot])
+			{
 				if (b->type->isBuildingSite)
 				{
 					assert(b->type->level == 0 && b->hp == 1);
@@ -1885,10 +1892,13 @@ inline void baseChecks()
 				}
 				else
 					++finished;
+			}
 		assert(finished == 2 && unfinished == 8);
 		plantBaseDepots(game.map, context, t, sites, {20, 40, 3});
 		assert(countResource(game.map, WOOD) >= 4);
 		assert(validateBase(game, t, 0, sites, {20, 40, 3}, 24).empty());
+	}
+	{
 		// A square compound: interior, wall and two gates; the walls' standing proof.
 		CompoundMasks masks(t.size());
 		stampCompound(t, {32, 32, 0}, 5, 2, 3, 0, masks);
@@ -1911,6 +1921,8 @@ inline void baseChecks()
 		assert(wallStanding(game.map, t, masks.wall, masks.gate, "test wall").empty());
 		game.map.setResource(37, 32, STONE, 1);
 		assert(!wallStanding(game.map, t, masks.wall, masks.gate, "test wall").empty());
+	}
+	{
 		// Lanes about 12 apart on a 64x32 torus: five columns, three rows, spread by whole tiles.
 		const Torus small(64, 32);
 		const LaneGrid grid = layLanes(small, 12, 3, 5);
@@ -1935,6 +1947,8 @@ inline void baseChecks()
 			   sketch[small.at(25, 24)] == SAND);
 		assert(stampLotPad(sketch, grid, pads, 2, 1, {6, 4, 2}, x0, y0, 2) == 4);
 		assert(stampLotPad(sketch, grid, pads, 3, 1, {6}, x0, y0, 3) == 0);
+	}
+	{
 		// Routes across the wrap: midpoints, neighbours, stepping stones and headings.
 		const ShapePoint a{60, 10}, b{4, 10}, c{32, 40};
 		const ShapePoint middle = midpointAcross(t, a, b);
@@ -1948,6 +1962,7 @@ inline void baseChecks()
 		assert(quarterTurn(headingAcross(t, a, b)) == 0 && quarterTurn(headingAcross(t, b, a)) == 2);
 		assert(quarterTurn(headingAcross(t, {10, 10}, {10, 20})) == 1 &&
 			   quarterTurn(headingAcross(t, {10, 20}, {10, 10})) == 3);
+	}
 }
 
 inline void toolkitChecks()
