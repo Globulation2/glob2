@@ -2478,3 +2478,13 @@ Emoji
 追加の開放峠
 [Wooded saddles]
 森林の峠
+[Hedgerow Country]
+生け垣の田園
+[Field size]
+畑の大きさ
+[Hedge thickness]
+生け垣の厚さ
+[Existing gateways]
+既存の通り道
+[Wooded boundary share]
+樹木のある境界の割合

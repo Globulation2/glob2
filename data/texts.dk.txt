@@ -2558,3 +2558,13 @@ Bjergryggens tykkelse
 Ekstra åbne pas
 [Wooded saddles]
 Skovklædte pas
+[Hedgerow Country]
+Hegnelandskab
+[Field size]
+Markstørrelse
+[Hedge thickness]
+Hegntykkelse
+[Existing gateways]
+Eksisterende åbninger
+[Wooded boundary share]
+Andel skovbevoksede grænser

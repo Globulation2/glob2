@@ -117,6 +117,28 @@ int warpLimit(const Tessellation &);
 void warpCorners(Tessellation &, int reach, const std::vector<unsigned char> &walls, int minimumGap,
 				 int minimumClearance, GenerationContext &, const std::string &stream);
 
+/// Rasterize selected edges as sealed eight-neighbour barriers, then dilate by
+/// `radius` tiles with the shared toroidal morphology operation. `walls` has one
+/// flag per edge. Radius 0 retains the sealed centreline; no terrain is attached.
+std::vector<unsigned char> rasterizeBoundaries(const Tessellation &,
+	const std::vector<unsigned char> &walls, int radius = 0);
+
+/// Contract corner offsets toward `referenceCorners` until the rasterized thick
+/// boundaries avoid every nonzero tile in `excluded`. The reference must use the
+/// same lattice topology and unwrapped corner coordinate convention. This tests
+/// arbitrary protected shapes (farms, building reservations, channels), rather
+/// than estimating their clearance with a circle around the cell centre.
+///
+/// Safe input is unchanged. Each attempt halves all offsets with integer arithmetic;
+/// the last allowed attempt snaps to the reference, so work is bounded and consumes
+/// no RNG. Returns the number of contractions, or -1 if even the reference collides
+/// (leaving its corners installed). maxContractions must be positive. This guarantees
+/// mask separation, not polygon validity or any other geometric constraint: callers
+/// must supply a suitable reference and validate their finished design as usual.
+int relaxWarpOutside(Tessellation &, const std::vector<SubtilePoint> &referenceCorners,
+	const std::vector<unsigned char> &walls, const std::vector<unsigned char> &excluded,
+	int radius, int maxContractions = 16);
+
 /// Each tile's cell: the cell whose outline contains the tile's centre (forEachTileInPolygon's rule),
 /// so every tile belongs to exactly one cell. Empty if some tile was left out or taken twice, which a
 /// valid tiling never does.

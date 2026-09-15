@@ -2492,3 +2492,13 @@ Mendilerroen lodiera
 Mendate ireki gehigarriak
 [Wooded saddles]
 Mendate basotsuak
+[Hedgerow Country]
+Heskaien landa
+[Field size]
+Soroen tamaina
+[Hedge thickness]
+Heskaien lodiera
+[Existing gateways]
+Dauden pasabideak
+[Wooded boundary share]
+Zuhaitzez estalitako mugen proportzioa

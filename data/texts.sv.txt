@@ -2492,3 +2492,13 @@ Bergsryggarnas tjocklek
 Extra öppna pass
 [Wooded saddles]
 Skogklädda pass
+[Hedgerow Country]
+Häcklandskap
+[Field size]
+Fältstorlek
+[Hedge thickness]
+Häcktjocklek
+[Existing gateways]
+Befintliga öppningar
+[Wooded boundary share]
+Andel trädbevuxna gränser

@@ -2506,3 +2506,13 @@ Dikte van bergruggen
 Extra open passen
 [Wooded saddles]
 Beboste passen
+[Hedgerow Country]
+Heggenlandschap
+[Field size]
+Veldgrootte
+[Hedge thickness]
+Heggendikte
+[Existing gateways]
+Bestaande doorgangen
+[Wooded boundary share]
+Aandeel beboste grenzen

@@ -1325,6 +1325,48 @@ inline void tessellationChecks()
 	}
 }
 
+// Arbitrary protected tiles need exact thick-wall clearance, including wrapping.
+// These fixtures exercise safe/no-op, repair, bounded fallback and impossible
+// reservations without depending on any generator's farm policy or random seed.
+inline void boundaryExclusionChecks()
+{
+	const auto reference = squareTessellation(64, 48, 16);
+	std::vector<unsigned char> edges(reference.edges.size(), 1);
+	const auto thin = rasterizeBoundaries(reference, edges);
+	const auto thick = rasterizeBoundaries(reference, edges, 2);
+	assert(thick == dilate(reference.t, thin, 2));
+	assert(thick[reference.t.at(-1, 8)]); // thick boundary wraps through x=0
+	std::vector<unsigned char> none(edges.size(), 0);
+	const auto absent = rasterizeBoundaries(reference, none, 2);
+	assert(std::count(absent.begin(), absent.end(), 1) == 0);
+	std::vector<unsigned char> excluded(reference.t.size(), 0);
+	for (int cell = 0; cell < reference.cellCount(); ++cell)
+		excluded[reference.t.at(reference.centreTileX(cell), reference.centreTileY(cell))] = 1;
+	auto safe = reference;
+	assert(relaxWarpOutside(safe, reference.corners, edges, excluded, 2) == 0);
+	assert(safe.corners == reference.corners);
+	auto shifted = reference;
+	for (auto &corner : shifted.corners)
+		corner.x += 8 * 16; // a wall now passes through every protected centre
+	const auto collided = rasterizeBoundaries(shifted, edges, 2);
+	assert(collided[reference.t.at(8, 8)]);
+	auto repaired = shifted, repeated = shifted;
+	const int reductions = relaxWarpOutside(repaired, reference.corners, edges, excluded, 2);
+	assert(reductions > 0);
+	assert(relaxWarpOutside(repeated, reference.corners, edges, excluded, 2) == reductions);
+	assert(repaired.corners == repeated.corners);
+	const auto cleared = rasterizeBoundaries(repaired, edges, 2);
+	for (int tile = 0; tile < reference.t.size(); ++tile)
+		assert(!(cleared[tile] && excluded[tile]));
+	assert(!labelTiles(repaired).empty());
+	// One allowed contraction uses the exact reference instead of an unbounded retry.
+	assert(relaxWarpOutside(shifted, reference.corners, edges, excluded, 2, 1) == 1);
+	assert(shifted.corners == reference.corners);
+	std::fill(excluded.begin(), excluded.end(), 1);
+	assert(relaxWarpOutside(shifted, reference.corners, edges, excluded, 2, 2) == -1);
+	assert(shifted.corners == reference.corners);
+}
+
 // The maze toolkit on a small tiling: pockets that fit, a spanning tree through the rest, one door
 // per pocket, loops that never touch a pocket, dead ends with their one exit; and firstRegionLeak
 // finds ground shared by regions that aren't allowed to share it.
@@ -1725,6 +1767,7 @@ inline void gatePartitionChecks()
 
 inline void toolkitChecks()
 {
+	boundaryExclusionChecks();
 	floodChecks();
 	sketchChecks();
 	plantingChecks();

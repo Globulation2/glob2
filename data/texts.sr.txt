@@ -2482,3 +2482,13 @@ Emoji
 Додатни отворени превоји
 [Wooded saddles]
 Шумовита седла
+[Hedgerow Country]
+Предео живих ограда
+[Field size]
+Величина поља
+[Hedge thickness]
+Дебљина живих ограда
+[Existing gateways]
+Постојећи пролази
+[Wooded boundary share]
+Удео шумовитих граница

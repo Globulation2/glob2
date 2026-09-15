@@ -2478,3 +2478,13 @@ Emoji
 Додаткові відкриті перевали
 [Wooded saddles]
 Лісисті сідловини
+[Hedgerow Country]
+Край живоплотів
+[Field size]
+Розмір полів
+[Hedge thickness]
+Товщина живоплотів
+[Existing gateways]
+Наявні проходи
+[Wooded boundary share]
+Частка лісистих меж

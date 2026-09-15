@@ -2480,3 +2480,13 @@ Emoji
 Дополнительные открытые перевалы
 [Wooded saddles]
 Лесистые седловины
+[Hedgerow Country]
+Край живых изгородей
+[Field size]
+Размер полей
+[Hedge thickness]
+Толщина изгородей
+[Existing gateways]
+Существующие проходы
+[Wooded boundary share]
+Доля лесистых границ

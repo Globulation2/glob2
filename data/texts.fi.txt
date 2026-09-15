@@ -2482,3 +2482,13 @@ Harjanteiden paksuus
 Ylimääräiset avoimet solat
 [Wooded saddles]
 Metsäiset solat
+[Hedgerow Country]
+Pensasaitamaaseutu
+[Field size]
+Peltojen koko
+[Hedge thickness]
+Pensasaitojen paksuus
+[Existing gateways]
+Olemassa olevat kulkuaukot
+[Wooded boundary share]
+Puustoisten rajojen osuus

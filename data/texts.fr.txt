@@ -2492,3 +2492,13 @@ Hautes terres à brèches
 Cols ouverts supplémentaires
 [Wooded saddles]
 Cols boisés
+[Hedgerow Country]
+Bocage
+[Field size]
+Taille des champs
+[Hedge thickness]
+Épaisseur des haies
+[Existing gateways]
+Passages existants
+[Wooded boundary share]
+Part des limites boisées

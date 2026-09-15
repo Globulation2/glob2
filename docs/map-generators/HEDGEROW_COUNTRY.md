@@ -1,0 +1,149 @@
+# Hedgerow Country
+
+Screenshots, sample maps/replays, complete bulk request/metric rows, and test logs
+are available in the [checked-in review evidence](../artifacts/hedgerow-country/README.md).
+
+Hedgerow Country (`hedgerow-country`, numeric ID 33, revision 6) is an optional
+procedural generator. It adds no simulation rules, save-format changes or new
+resource behavior.
+
+## Play contract
+
+The opening already has a connected network of lanes and gateways. Every field,
+including vacant expansion fields, can be entered without clearing wood or
+learning to swim. Players can follow that network or cut a shorter approach
+through a hedge. The resulting opening works in both directions: a more convenient
+farm or attack route can also expose the player's territory.
+
+Villages have broad grass for buildings, a contained renewable wheat plot and
+woodlot, and a small quarry. Vacant fields offer the same irrigated ground plus
+scaled crops and scattered fruit kinds. These are expansion opportunities rather
+than mandatory prerequisites for first contact. Unlike Old growth, the colony
+does not have to clear its way out of a forest.
+
+## Construction and heuristics
+
+The implementation is extensively commented in
+[`HedgerowCountryGenerator.cpp`](../../src/map/generator/generators/HedgerowCountryGenerator.cpp).
+It uses shared primitives without changing their behavior for other generators.
+
+1. **Warped fields.** `squareTessellation` divides the torus into cells. Shared
+   corners move with `warpCorners`, preserving valid polygons and at least 28
+   tiles from each centre to its boundary lines (34 for field sizes 80/96).
+   The shared `rasterizeBoundaries` and `relaxWarpOutside` operations check all
+   potential hedges at the requested thickness.
+   If any wall enters the 41×41 square enclosing a pond’s possible growth reach,
+   corner offsets are halved toward the regular lattice until the envelope is
+   clear. This bounded, deterministic safeguard preserves safe warps and the RNG
+   streams; it never removes hedge pixels to hide a fertile boundary. The
+   `hedgerow.warp-contractions` metric reports its frequency.
+   The larger budget protects the square growth probe against steeper diagonal
+   boundaries. Larger fields still allow stronger
+   warping; the smallest fields deliberately limit distortion to preserve farms
+   and village room. Wrapping edges are ordinary edges, including distinct edges
+   between the same pair of cells on a two-cell-wide torus.
+2. **Connected routes first.** `carveSpanningTree` opens a winding connected graph
+   through all fields. `openLoops` adds optional routes. Selected boundaries carry
+   wood even when they have a gateway; unselected boundaries stay broadly open.
+   Therefore lowering wooded share can shorten journeys beyond the marked lanes.
+3. **Solid hedges, deliberate entrances.** `traceSealedPath` closes diagonal leaks;
+   dilation makes cutting several tiles deep. Sand lanes cut through their planned
+   gateways. Terrain is represented by corners, so after the beach pass the hedge
+   mask excludes mixed-terrain road shoulders where wood cannot be placed.
+4. **Permanent breaches.** Farm ponds sit inside the fields. The clearance budget
+   accounts for their centred five-corner radius, the engine's 15-tile
+   growth probe, hedge depth and rasterization. This geometric budget is only a
+   heuristic: final validation checks the actual engine fertility field at every
+   surviving hedge tile and requires exactly zero fertility.
+5. **Separate production and construction.** Each field has a 29×29-corner farm
+   enclosure, capped by two sand corners. Its central 100-water-tile pond waters separate
+   wheat and wood halves; a sand divider prevents wood spreading into the wheat.
+   The surrounding 41×41 grass square interrupts the sand lanes and gives room
+   for buildings. Crops inside the enclosure cannot spread across its cap.
+6. **Forgiving starts.** A swarm starts north of its farm. The settlement helper
+   searches a 17×13 candidate rectangle and places the full footprint and workers.
+   Occupied fields retain 48 initial wheat tiles and 24 wood tiles before scaled
+   crops, and one quarry tile. The normal reachable-crop backstop protects hedges
+   from clearing; it cannot create an unrequested shortcut.
+7. **Walking access, then team assignment.** Farthest-point selection proposes
+   one arrangement per possible first field. Reject candidates that reduce the
+   original minimum geometric separation. Score the remainder using shared tile
+   floods around actual designed hedges, water and capped growing plots. Sample
+   one walkable tile per 4×4 block, splitting ties equally. Maximize the product
+   of weakest/strongest territory and nearest-rival distance ratios; break ties
+   by territory ratio, contact ratio, then longer nearest contact. This avoids
+   rewarding either private land or isolation alone. Strict ties retain the seeded
+   arrangement. Finally randomly deal the selected sites to team indices.
+8. **Equal crop stocks.** Corresponding farm tiles receive alternating two/three
+   resource units. This preserves the prior mean stock while removing accidental
+   per-village stock differences from deposit randomization. Crops remain ordinary
+   renewable engine resources. Structural hedge stocks keep their original policy.
+
+The placement score is a bounded approximation: at most 64 floods and a 64 MiB
+local distance cache at 512×512. It excludes growing plots even where they start
+partly empty, and does not model buildings or exact initial worker positions.
+Final reports independently measure actual worker routes and exclusive territory.
+It improves selected layouts without promising symmetry or a global fairness floor.
+
+The farm enlargement follows actual mirror games: increasing starter food with a
+36-water-tile pond encouraged Maxima to expand and then starve. The selected pond
+instead increases renewable water exposure and harvest frontage. The swarm moves
+farther north to retain a complete dry footprint outside the larger enclosure.
+This makes Hedgerow Country's economy faster than revision 1; it does not change
+any other map or the simulation's crop-growth rules.
+
+Every field currently has one compact farm pond. Empty village ground and farm
+positions are regular within the warped cells; this makes openings predictable,
+though the landscape is more orderly than a hand-painted countryside.
+
+## Controls and supported settings
+
+| Control | Values; default | Effect |
+| --- | --- | --- |
+| Field size | 64, 80, 96; **64** | Target pitch. Actual pitch is map dimension divided by the whole number of fields that fit. |
+| Hedge thickness | 2–4; **3** | Dilation radius is value minus one: approximately 3/5/7 wood tiles deep, with rasterization variation. |
+| Existing gateways | 0, 25, 50, 75; **25** | Extra open boundaries per 100 fields, rounded down, in addition to the spanning tree. Zero remains connected. |
+| Wooded boundary share | 50–100%, step 10; **90%** | Seeded chance that a whole boundary carries a hedge. |
+| Wheat / wood amount | 0–300%; **100%** | Farm crops; occupied fields retain their starter guarantees. Wood amount does not thin structural hedges. |
+| Stone / fruit amount | 0–300%; **100%** | Small deposits beside farms; occupied fields retain one stone tile. |
+
+The map must fit at least two fields along **each** axis and at most one colony
+per field. Thus 128×128 supports four colonies at field size 64; larger field
+settings require larger dimensions. 64-tile sides are rejected explicitly.
+The normal shared limits remain 512 tiles per axis, 12 colonies and 1–8 workers.
+Rectangles and odd colony counts are supported when they satisfy the field budget.
+
+## Validation and reproduction
+
+The final-world validator checks that every hedge tile remains wood and is dry,
+marked lanes are open, every colony is reachable from the first, and every field
+has a reachable entrance. It checks the completed world after settlement and
+resource placement. These checks establish connectivity, not traffic capacity,
+long-term AI success or the value of every possible shortcut.
+
+```sh
+scons release=1 server=0 -j4 map-generator-study map-generator-defaults-test \
+  map-generator-golden-test custom-setup-test build/src/glob2
+build/src/MapGeneratorDefaultsTest glob2-hedgerow-contracts
+build/src/MapGeneratorGoldenTest glob2-hedgerow-golden --require-rows
+build/src/CustomGameSetupHarness
+build/src/glob2 --generate-map hedgerow-country --seed 19 \
+  --width 256 --height 256 --teams 4 \
+  --output artifacts/hedgerow-country/default.map \
+  --preview artifacts/hedgerow-country/default.png \
+  --json artifacts/hedgerow-country/default.json
+```
+
+The original implementation evidence is retained under
+`artifacts/hedgerow-country/`. The follow-up fairness study is documented in
+[`HEDGEROW_PLAYTEST.md`](HEDGEROW_PLAYTEST.md), with immutable baseline/candidate
+builds, parameter sweeps, rotated mirror games, map previews, replays and saves
+under `artifacts/hedgerow-fairness/`.
+
+Human play remains necessary to judge whether roughly five tiles of wood feels
+worth clearing. Static walking/clearing costs suggest useful shortcuts but do not
+measure worker time. Other remaining risks include tower coverage of gateways,
+asymmetric expansion, AI-specific food management, and regular-looking farm modules.
+
+For full control-range reliability, retained failures and rare layout warnings,
+see [bulk generation validation](HEDGEROW_BULK_VALIDATION.md).

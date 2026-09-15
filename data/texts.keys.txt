@@ -1238,3 +1238,8 @@
 [Ridge depth]
 [Extra open passes]
 [Wooded saddles]
+[Hedgerow Country]
+[Field size]
+[Hedge thickness]
+[Existing gateways]
+[Wooded boundary share]

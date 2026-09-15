@@ -2478,3 +2478,13 @@ Ketebalan punggung bukit
 Celah terbuka tambahan
 [Wooded saddles]
 Celah berhutan
+[Hedgerow Country]
+Pedesaan berpagar tanaman
+[Field size]
+Ukuran ladang
+[Hedge thickness]
+Ketebalan pagar tanaman
+[Existing gateways]
+Jalur masuk yang ada
+[Wooded boundary share]
+Proporsi batas berpohon

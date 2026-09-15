@@ -2482,3 +2482,13 @@ Grosimea crestelor
 Trecători deschise suplimentare
 [Wooded saddles]
 Șei împădurite
+[Hedgerow Country]
+Ținutul gardurilor vii
+[Field size]
+Dimensiunea câmpurilor
+[Hedge thickness]
+Grosimea gardurilor vii
+[Existing gateways]
+Treceri existente
+[Wooded boundary share]
+Proporția hotarelor împădurite

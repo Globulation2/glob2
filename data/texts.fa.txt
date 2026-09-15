@@ -2480,3 +2480,13 @@ Emoji
 گذرگاه‌های باز اضافی
 [Wooded saddles]
 گردنه‌های جنگلی
+[Hedgerow Country]
+روستای پرچین‌ها
+[Field size]
+اندازهٔ کشتزار
+[Hedge thickness]
+ضخامت پرچین
+[Existing gateways]
+گذرگاه‌های موجود
+[Wooded boundary share]
+سهم مرزهای درخت‌دار

@@ -2490,3 +2490,13 @@ Sırt kalınlığı
 Ek açık geçitler
 [Wooded saddles]
 Ormanlık geçitler
+[Hedgerow Country]
+Çitli kırlar
+[Field size]
+Tarla boyutu
+[Hedge thickness]
+Çit kalınlığı
+[Existing gateways]
+Mevcut geçitler
+[Wooded boundary share]
+Ağaçlık sınır oranı
