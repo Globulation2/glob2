@@ -1285,6 +1285,14 @@ someone builds a swimming pool, the only way over.
   every compound, every colony walkable from the first over the fords, and every colony's walk to
   its nearest ford within a compound's width of every other's.
 
+- **Played.** Rotation tournaments (six 256×256 maps, four colonies, every cyclic team rotation,
+  45,000 ticks) with four Nicowars and then four Numbis both show the AI limit the premade base
+  imposes: no colony breeds beyond its 52 premade units (three births each in 45,000 ticks).
+  Nicowar declines from about 60 to 20 units with 25 to 40 starvation deaths per colony; Numbi
+  holds 35 to 43 units with 11 to 18 starvation deaths and twenty-odd buildings, harvesting the
+  well's wheat and the banks but never feeding the swarm. The map is a human-play concept; an AI
+  tournament measures survival on it, not balance.
+
 ## Allotments
 
 Every colony starts with a whole city staked out but not built: the swarm and one inn finished and
@@ -1319,6 +1327,11 @@ lots carry a quarry or a grove; the rest are open, waiting to be built on.
   walk to a ditch's beach within two lane pitches of every other's, every colony walkable from the
   first down the lanes.
 
+- **Played.** With four Numbis (six 256×256 maps, every cyclic team rotation, 45,000 ticks)
+  every colony builds its city of sites and then sits at 49 to 52 units with almost no
+  starvation, three births and no fighting: the base gets finished and nothing else happens, which
+  is the AI limit rather than the map's.
+
 ## Caravanserai
 
 Every colony starts with a finished capital - the whole base, two stocked towers, colonists and
@@ -1347,6 +1360,15 @@ extends its reach one oasis at a time, and an army that outruns its oases fights
 - **Checked, not assumed.** Every base complete, every capital's pond present, every colony's walk
   to an outpost and to an oasis within sixteen steps of every other's, every oasis with room for two
   2x2 buildings, every colony walkable from the first across the sand.
+
+- **Played.** With four Numbis (six 256×256 maps, every cyclic team rotation, 45,000 ticks)
+  every capital starves: units hold at 52 until about tick 20,000 and fall to under ten by
+  40,000, with 45 to 51 starvation deaths per colony and no combat. The telemetry shows why: a
+  Numbi colony harvests its capital fields about twenty times in the whole game (against about
+  190 wood), so the stocked inns run dry once and nothing refills them. A short playtest sees the
+  stable plateau; the collapse is after it. Whether the capital's wheat should stand where Numbi
+  will harvest it, or the map is simply for people, is the decision to make before this map is
+  offered to AI games.
 
 ## Compatibility notes
 
