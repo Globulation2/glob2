@@ -2704,3 +2704,21 @@ Emoji
 前哨客棧
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 這些島嶼對於自己的建築用地來說太小；請使用更大的地圖、更小的建築用地或減少殖民地數量。
+[Sierpiński Gardens]
+謝爾賓斯基花園
+[Hilbert River]
+希爾伯特河
+[Maximum nesting]
+最大巢狀層數
+[Minimum terminal district side]
+末級區域最小邊長
+[Major crossing pairs]
+主要通道對數
+[Maximum fold depth]
+最大折疊深度
+[Minimum land spacing]
+最小陸地間距
+[Optional local crossings per parent]
+每個父區域的可選局部通道
+[Optional major shortcuts]
+可選主要捷徑

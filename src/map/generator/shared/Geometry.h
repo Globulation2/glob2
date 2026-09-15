@@ -8,6 +8,15 @@
 struct GenerationContext;
 namespace MapGeneration
 {
+/// Half-open, unwrapped tile/corner bounds. Shared integer boundaries, rather than rounded
+/// child centres, are essential when thirds do not divide the map's power-of-two dimensions.
+struct RegionBounds
+{
+	int x0, y0, x1, y1;
+	int width() const { return x1 - x0; }
+	int height() const { return y1 - y0; }
+	bool contains(int x, int y) const { return x >= x0 && x < x1 && y >= y0 && y < y1; }
+};
 constexpr double kPi = 3.14159265358979323846;
 struct ShapePoint
 {

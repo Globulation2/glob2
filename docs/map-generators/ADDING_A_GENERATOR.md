@@ -148,3 +148,9 @@ analysis of internal telemetry and final-map outcomes is part of tuning a genera
 
 For a commented example of connected field lanes, dry clearable boundaries and
 contained starter farms, see [Hedgerow Country](HEDGEROW_COUNTRY.md).
+
+## Recursive layouts
+
+[Fractal maps and recursive geometry](FRACTAL_MAPS.md) documents reusable halves/thirds,
+rectangular Hilbert paths, travel-benefit crossing selection, and examples for cities,
+reservoirs and folded roads. Keep hierarchy and validate the finished movement graph.

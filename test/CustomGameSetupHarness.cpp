@@ -1509,6 +1509,29 @@ int main(int argc, char **argv)
 		CustomGameSetupHarness::sessionReplay(map, control);
 	}
 	CustomGameSetupHarness::sessionReplay("maps/FourSquares1.map", CustomGameSetup::Human, true);
+	// Exercise new terrain through the real match/replay path, not just map bytes.
+	// Explicit seeds and no rerolls keep failures reviewable; the engine's normal
+	// replay checksum assertions remain active throughout playback.
+	for (const char *id : {"sierpinski-gardens", "hilbert-river"})
+	{
+		Game game(nullptr);
+		GenerationRequest request;
+		request.setMethodDefaults(GeneratorRegistry::builtins().idOf(id));
+		request.seed = 20001;
+		request.wDec = request.hDec = 8;
+		request.nbTeams = 4;
+		MapGenerator generator;
+		assert(generator.generateMap(game, request));
+		const auto fractalMap = (dir / (std::string(id) + ".map")).string();
+		{
+			GAGCore::BinaryOutputStream out(
+				Toolkit::getFileManager()->openOutputStreamBackend(fractalMap));
+			game.save(&out, true, id);
+		}
+		CustomGameSetupHarness::sessionReplay(fractalMap, CustomGameSetup::Computer);
+		std::cout << "PASS generated fractal replay: " << id << "\n";
+	}
+
 	std::filesystem::remove_all(dir);
 	std::cout << "ALL CUSTOM SETUP TESTS PASSED\n";
 }

@@ -2642,3 +2642,21 @@ Tomtstorlek
 Utpostvärdshus
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 Öarna är för små för sina tomter; använd en större karta, en mindre tomt eller färre kolonier.
+[Sierpiński Gardens]
+Sierpińskis trädgårdar
+[Hilbert River]
+Hilberts flod
+[Maximum nesting]
+Maximal nästling
+[Minimum terminal district side]
+Minsta sida för slutdistrikt
+[Major crossing pairs]
+Par av huvudövergångar
+[Maximum fold depth]
+Maximalt vikningsdjup
+[Minimum land spacing]
+Minsta landavstånd
+[Optional local crossings per parent]
+Valfria lokala övergångar per överordnad region
+[Optional major shortcuts]
+Valfria större genvägar

@@ -2694,3 +2694,21 @@ Isole per colonia
 Mense d'avamposto
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 Le isole sono troppo piccole per i loro lotti; usa una mappa più grande, un lotto più piccolo o meno colonie.
+[Sierpiński Gardens]
+Giardini di Sierpiński
+[Hilbert River]
+Fiume di Hilbert
+[Maximum nesting]
+Annidamento massimo
+[Minimum terminal district side]
+Lato minimo dei distretti terminali
+[Major crossing pairs]
+Coppie di passaggi principali
+[Maximum fold depth]
+Profondità massima delle pieghe
+[Minimum land spacing]
+Distanza minima tra le terre
+[Optional local crossings per parent]
+Passaggi locali facoltativi per regione madre
+[Optional major shortcuts]
+Scorciatoie principali facoltative

@@ -111,6 +111,9 @@ std::vector<unsigned char> walkableTiles(const Map &);
 /// The same question put to the engine's own rule, Map::isHardSpaceForGroundUnit, for a unit
 /// that cannot swim and belongs to no team.
 std::vector<unsigned char> groundUnitTiles(const Map &);
+/// Explicit movement mode, using the same engine predicate and team mask as the
+/// walking overload. Keep swimming and walking fields separate in route comparisons.
+std::vector<unsigned char> groundUnitTiles(const Map &, bool canSwim);
 /// The lowest colony from `first` on none of whose units the flood reached, or -1 when every
 /// one was: the check every validator makes that colonies can walk to colony 0.
 int firstColonyCutOff(const std::vector<int> &steps, const std::vector<std::vector<int>> &units,

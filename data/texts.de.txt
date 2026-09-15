@@ -2632,3 +2632,21 @@ Inseln pro Kolonie
 Außenposten-Gasthöfe
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 Die Inseln sind zu klein für ihre Bauplätze; wähle eine größere Karte, einen kleineren Bauplatz oder weniger Kolonien.
+[Sierpiński Gardens]
+Sierpiński-Gärten
+[Hilbert River]
+Hilbert-Fluss
+[Maximum nesting]
+Maximale Verschachtelung
+[Minimum terminal district side]
+Minimale Seitenlänge der Endbezirke
+[Major crossing pairs]
+Paare großer Übergänge
+[Maximum fold depth]
+Maximale Faltungstiefe
+[Minimum land spacing]
+Minimaler Landabstand
+[Optional local crossings per parent]
+Optionale lokale Übergänge je übergeordneter Region
+[Optional major shortcuts]
+Optionale große Abkürzungen

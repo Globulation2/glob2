@@ -788,4 +788,32 @@ void openCrampedStarts(Game &game, GenerationContext &context, int sites, int ra
 		context.telemetry.measure("resources.cramped.target_met", reach.sites >= sites, team);
 	}
 }
+
+std::map<int, ResourceFrontage> resourceFrontages(const Map &map, const Flood &access,
+												  int maximumSteps,
+												  const Fertility::Field *fertility)
+{
+	const Torus t(map);
+	std::map<int, ResourceFrontage> result;
+	for (int i : access.visited)
+	{
+		if (access.steps[i] < 0 || access.steps[i] > maximumSteps)
+			continue;
+		for (const auto &step : kCardinalSteps)
+		{
+			const int x = t.x(i % t.w + step[0]), y = t.y(i / t.w + step[1]);
+			if (!map.isResource(x, y))
+				continue;
+			const int type = map.getResource(x, y).type;
+			auto &front = result[type];
+			++front.edges;
+			if (front.nearestStep < 0 || access.steps[i] < front.nearestStep)
+				front.nearestStep = access.steps[i];
+			// Fertility describes wheat/wood propagation, not stone or fruit renewal.
+			front.renewableEdges +=
+				fertility && (type == WHEAT || type == WOOD) && fertility->at(x, y) > 0;
+		}
+	}
+	return result;
+}
 } // namespace MapGeneration

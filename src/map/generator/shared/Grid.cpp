@@ -86,10 +86,14 @@ std::vector<unsigned char> walkableTiles(const Map &map)
 
 std::vector<unsigned char> groundUnitTiles(const Map &map)
 {
+	return groundUnitTiles(map, false);
+}
+std::vector<unsigned char> groundUnitTiles(const Map &map, bool canSwim)
+{
 	std::vector<unsigned char> hard(size_t(map.getW()) * map.getH(), 0);
 	for (int y = 0; y < map.getH(); ++y)
 		for (int x = 0; x < map.getW(); ++x)
-			hard[size_t(y) * map.getW() + x] = map.isHardSpaceForGroundUnit(x, y, false, 0);
+			hard[size_t(y) * map.getW() + x] = map.isHardSpaceForGroundUnit(x, y, canSwim, 0);
 	return hard;
 }
 

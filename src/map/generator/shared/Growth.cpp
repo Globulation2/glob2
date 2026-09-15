@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Growth.h"
+#include "Map.h"
 #include "Morphology.h"
 #include "Map.h"
 #include <stdexcept>
@@ -84,6 +85,34 @@ int drainWithin(TerrainSketch &sketch, const std::vector<unsigned char> &zone)
 			++drained;
 		}
 	return drained;
+}
+
+int preventResourceGrowth(Map &map, const std::vector<unsigned char> &protectedTiles)
+{
+	const Torus t(map);
+	if (protectedTiles.size() != size_t(t.size()))
+		return -1;
+	int changed = 0;
+	for (int i = 0; i < t.size(); ++i)
+		if (protectedTiles[i] && map.canResourcesGrow(i % t.w, i / t.w))
+		{
+			map.getTile(i % t.w, i / t.w).canResourcesGrow = false;
+			++changed;
+		}
+	return changed;
+}
+
+std::vector<int> cropSpreadEnvelope(const Map &map)
+{
+	const Torus t(map);
+	std::vector<unsigned char> grass(t.size(), 0), crops(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+	{
+		grass[i] = map.isGrass(i % t.w, i / t.w) && map.canResourcesGrow(i % t.w, i / t.w);
+		const auto type = map.getResource(i % t.w, i / t.w).type;
+		crops[i] = type == WHEAT || type == WOOD;
+	}
+	return stepsFrom(t, crops, grass);
 }
 } // namespace MapGeneration
 

@@ -2632,3 +2632,21 @@ Szigetek kolóniánként
 Előőrsi étkezdék
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 A szigetek túl kicsik a telkeikhez; használj nagyobb térképet, kisebb telket vagy kevesebb kolóniát.
+[Sierpiński Gardens]
+Sierpiński kertjei
+[Hilbert River]
+Hilbert folyója
+[Maximum nesting]
+Legnagyobb beágyazás
+[Minimum terminal district side]
+Végső körzet legkisebb oldala
+[Major crossing pairs]
+Fő átkelőpárok
+[Maximum fold depth]
+Legnagyobb hajtásmélység
+[Minimum land spacing]
+Legkisebb szárazföldi távolság
+[Optional local crossings per parent]
+Választható helyi átkelők szülőrégiónként
+[Optional major shortcuts]
+Választható fő rövidítések

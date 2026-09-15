@@ -2702,3 +2702,21 @@ Emoji
 Προκεχωρημένα πανδοχεία
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 Τα νησιά είναι πολύ μικρά για τα οικόπεδά τους· χρησιμοποιήστε μεγαλύτερο χάρτη, μικρότερο οικόπεδο ή λιγότερες αποικίες.
+[Sierpiński Gardens]
+Κήποι του Σιερπίνσκι
+[Hilbert River]
+Ποταμός του Χίλμπερτ
+[Maximum nesting]
+Μέγιστη εμφώλευση
+[Minimum terminal district side]
+Ελάχιστη πλευρά τελικών περιοχών
+[Major crossing pairs]
+Ζεύγη κύριων διαβάσεων
+[Maximum fold depth]
+Μέγιστο βάθος πτυχώσεων
+[Minimum land spacing]
+Ελάχιστη απόσταση ξηράς
+[Optional local crossings per parent]
+Προαιρετικές τοπικές διαβάσεις ανά γονική περιοχή
+[Optional major shortcuts]
+Προαιρετικές κύριες συντομεύσεις
