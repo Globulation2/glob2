@@ -529,7 +529,7 @@ GeneratorDefinition allotmentsDefinition()
 {
 	GeneratorDefinition d{
 		"allotments",
-		35,
+		40,
 		"Allotments",
 		1,
 		false,

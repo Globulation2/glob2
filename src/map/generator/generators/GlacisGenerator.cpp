@@ -581,7 +581,7 @@ GeneratorDefinition glacisDefinition()
 {
 	GeneratorDefinition d{
 		"glacis",
-		34,
+		39,
 		"The Glacis",
 		1,
 		false,

@@ -447,7 +447,7 @@ GeneratorDefinition caravanseraiDefinition()
 {
 	GeneratorDefinition d{
 		"caravanserai",
-		36,
+		41,
 		"Caravanserai",
 		1,
 		false,

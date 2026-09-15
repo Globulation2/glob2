@@ -136,7 +136,7 @@ restores whatever landscape it had.
 | `carousel` | 22 | Carousel | Its own — see below |
 | `old-growth` | 28 | Old growth | Its own — see below |
 | `anthill` | 32 | Anthill | Its own — see below |
-| `glacis` | 34 | The Glacis | Its own — see below; a premade base (`shared/Bases`) |
+| `glacis` | 39 | The Glacis | Its own — see below; a premade base (`shared/Bases`) |
 | `coral` | 21 | Coral | Its own — see below |
 | `emoji` | 34 | Emoji | [Design and play contract](emoji/DESIGN.md) |
 | `forts` | 35 | Forts | [Walled forts in river country](FORTS.md) |
@@ -145,6 +145,8 @@ restores whatever landscape it had.
 | `hedgerow-country` | 38 | Hedgerow Country | [Warped fields, gateways and cuttable hedges](HEDGEROW_COUNTRY.md) |
 | `allotments` | 35 | Allotments | Its own — see below; a premade base of construction sites |
 | `caravanserai` | 36 | Caravanserai | Its own — see below; a premade base |
+| `allotments` | 40 | Allotments | Its own — see below; a premade base of construction sites |
+| `caravanserai` | 41 | Caravanserai | Its own — see below; a premade base |
 | `uniform` | 0 | uniform terrain | Editor-only; one terrain type, unstructured |
 
 Retired ids, never reused: 25 (Marches, a lattice of homelands with wooded border bands, dropped
