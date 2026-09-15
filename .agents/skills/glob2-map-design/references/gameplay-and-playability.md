@@ -46,6 +46,10 @@ Check resource access at the end of placement and repair. The [resource helpers]
 
 Resource controls must affect the whole economic design: reserve size, scatter, planted plots, and optional strategic deposits, subject to the documented starting guarantees. Separate deliberately permanent structural stone from optional economic stone using a protected mask and the existing primitive contract. Do not silently dilute boundary stone when turning resource abundance down, or hide most of the map's economy in fixed unscaled deposits.
 
+## Scenery that cannot grow
+
+The engine spreads wheat, wood and algae only from a deposit whose own tile has water within its random probe (up to fifteen tiles on each axis) and no sand behind it; a deposit with a crop growth chance of zero never spreads, however fertile its neighbours. That rule is a design lever: trees and wheat on ground the growth field marks zero are scenery and finite stock, safe inside a containment design that otherwise forbids crops outside sealed plots. Prove it where the map is checked, not where it is drawn: a validator that admits a deposit outside its plots should ask the growth field of the finished terrain, not the design's intent, and keep the field's own probe reach as its only assumption.
+
 ## Give AIs ordinary, forgiving spaces
 
 Do not assume that an AI will recognize a beautiful farm design, clear a blocked route promptly, or reserve the exact future footprint the map requires. Existing policies differ:

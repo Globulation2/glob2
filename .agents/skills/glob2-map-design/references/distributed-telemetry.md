@@ -113,3 +113,51 @@ raw results/build manifests so reports can be regenerated. Retain exact failing 
 surprising seeds, then request maps for previews and follow up with AI games and human
 play. Internal telemetry explains construction choices; it does not establish that a
 map is fun, fair, or playable through late resource growth.
+
+## Balancing tournaments on the same workers
+
+The same coordinator plays the rotation tournaments that tune a generator ([the tuning
+playbook](tuning-playbook.md) says what to read from them). A `fairness` experiment names one
+generator, a few map seeds, a colony count and one AI; the planner adds every cyclic rotation
+of team indices over the starts, so wins by start and wins by team index separate.
+
+```json
+{
+  "id": "delta-r3-nicowar",
+  "generators": [36], "map_seeds": [101, 102, 103, 104, 105, 106], "game_seeds": [1],
+  "colonies": 4, "ai": "nicowar", "ticks": 45000, "candidates": 5,
+  "generator_params": {"width": 8, "height": 8, "workers": 4},
+  "outputs": {"telemetry": ["team-timeline"], "saves": ["final"]},
+  "timeout_seconds": 5400,
+  "settings": {"prefetch": 0, "heartbeat_seconds": 10}
+}
+```
+
+```sh
+python3 -m tools.tournaments.fairness plan delta.json --bundle /abs/bundles/ID --output delta-plan.json
+python3 -m tools.tournaments submit delta-plan.json artifacts/delta-r3-nicowar --bundle /abs/bundles/ID
+python3 -m tools.tournaments run artifacts/delta-r3-nicowar --hosts hosts.json
+python3 -m tools.tournaments.fairness reanalyze artifacts/delta-r3-nicowar
+```
+
+Things the first run teaches the hard way:
+
+- `outputs` applies to the game jobs. `map: true` is a generation output the planner already
+  sets; on a game it is a missing artifact, the attempt is recorded as an `artifact_failure`
+  with its complete result attached, and the job is retried on another host.
+- With the default prefetch of two per slot, the first host to synchronize takes the whole
+  queue: a four-core host ends up with nine games while a 32-core host idles. `prefetch: 0`
+  and the biggest host first in `hosts.json` spread one wave evenly.
+- One worker directory serves one coordinator at a time. To run several tournaments at once,
+  give each its own `directory` per host and split the slots between them; the CPUs are
+  shared either way, so this only pipelines generation, play and collection.
+- Build the bundle on the worker with the oldest glibc; a newer host's binary is refused by
+  an older one. A 45,000-tick four-Nicowar game at 256x256 costs about four core-minutes, so
+  six maps by four rotations by one AI is one wave on sixty cores.
+- Game results in `result.json` carry every team's `history` (units, buildings, prestige, HP,
+  attack, defense every 512 ticks) and final counts; the `GLOB2_MEASURE` rows in `stdout.log`
+  carry deaths by unit type and cause, hunger bands, blocked units and buildings, and natural
+  growth near the team's buildings. `Results.telemetry(record)` streams them typed. Pool per
+  start slot over rotations before looking at winners.
+- The played map is an artifact of its generation job (`map-r0.map`); `--preview-map` renders
+  it and the final save headlessly with `SDL_VIDEODRIVER=dummy`.
