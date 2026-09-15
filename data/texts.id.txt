@@ -2590,3 +2590,15 @@ Atlas dunia tidak memiliki benua tersebut.
 Peta terlalu kecil untuk memuat sebuah benua.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Benua ini tidak memiliki ruang untuk koloni sebanyak ini pada ukuran peta ini; gunakan peta yang lebih besar atau lebih sedikit koloni.
+[Savannah]
+Sabana
+[Watering holes]
+Kubangan air
+[Dry patches]
+Area kering
+[Sparse]
+Sedikit
+[Normal]
+Normal
+[Many]
+Banyak

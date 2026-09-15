@@ -2594,3 +2594,15 @@ Svetovni atlas nima take celine.
 Zemljevid je premajhen za celino.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Ta celina pri tej velikosti zemljevida nima prostora za toliko kolonij; uporabite večji zemljevid ali manj kolonij.
+[Savannah]
+Savana
+[Watering holes]
+Napajališča
+[Dry patches]
+Suha območja
+[Sparse]
+Malo
+[Normal]
+Običajno
+[Many]
+Veliko

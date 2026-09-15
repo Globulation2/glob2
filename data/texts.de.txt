@@ -2594,3 +2594,15 @@ Der Weltatlas hat keinen solchen Kontinent.
 Die Karte ist zu klein für einen Kontinent.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Dieser Kontinent bietet bei dieser Kartengröße nicht genug Platz für so viele Kolonien; verwenden Sie eine größere Karte oder weniger Kolonien.
+[Savannah]
+Savanne
+[Watering holes]
+Wasserstellen
+[Dry patches]
+Trockene Flächen
+[Sparse]
+Wenige
+[Normal]
+Normal
+[Many]
+Viele

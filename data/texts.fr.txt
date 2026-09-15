@@ -2604,3 +2604,15 @@ L'atlas du monde n'a pas ce continent.
 La carte est trop petite pour contenir un continent.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Ce continent n'a pas de place pour autant de colonies à cette taille de carte ; utilisez une carte plus grande ou moins de colonies.
+[Savannah]
+Savane
+[Watering holes]
+Points d’eau
+[Dry patches]
+Zones sèches
+[Sparse]
+Rares
+[Normal]
+Normal
+[Many]
+Nombreux

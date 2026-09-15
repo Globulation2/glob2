@@ -2604,3 +2604,15 @@ Munduko atlasak ez du halako kontinenterik.
 Mapa txikiegia da kontinente bat hartzeko.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Kontinente honek ez du lekurik hainbeste koloniarentzat mapa-tamaina honetan; erabili mapa handiagoa edo kolonia gutxiago.
+[Savannah]
+Sabana
+[Watering holes]
+Ur-putzuak
+[Dry patches]
+Eremu lehorrak
+[Sparse]
+Gutxi
+[Normal]
+Normala
+[Many]
+Asko

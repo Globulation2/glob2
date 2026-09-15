@@ -2604,3 +2604,15 @@ Världsatlasen har ingen sådan kontinent.
 Kartan är för liten för att rymma en kontinent.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Den här kontinenten har inte plats för så många kolonier vid den här kartstorleken; använd en större karta eller färre kolonier.
+[Savannah]
+Savann
+[Watering holes]
+Vattenhål
+[Dry patches]
+Torra områden
+[Sparse]
+Få
+[Normal]
+Normal
+[Many]
+Många

@@ -2590,3 +2590,15 @@ Emoji
 지도가 너무 작아 대륙을 담을 수 없습니다.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 이 지도 크기에서는 이 대륙에 그만큼의 식민지를 둘 공간이 없습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[Savannah]
+사바나
+[Watering holes]
+물웅덩이
+[Dry patches]
+건조 지대
+[Sparse]
+적음
+[Normal]
+보통
+[Many]
+많음

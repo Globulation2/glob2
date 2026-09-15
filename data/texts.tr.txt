@@ -2602,3 +2602,15 @@ Dünya atlasında böyle bir kıta yok.
 Harita bir kıtayı sığdıramayacak kadar küçük.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Bu kıtada bu harita boyutunda bu kadar koloni için yer yok; daha büyük bir harita veya daha az koloni kullanın.
+[Savannah]
+Savan
+[Watering holes]
+Su birikintileri
+[Dry patches]
+Kurak alanlar
+[Sparse]
+Az
+[Normal]
+Normal
+[Many]
+Çok

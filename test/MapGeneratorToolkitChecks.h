@@ -37,6 +37,8 @@
 #include "Walls.h"
 #include "Homes.h"
 #include "Farmland.h"
+#include "Growth.h"
+#include "Orbits.h"
 #include "Towers.h"
 #include "Wedge.h"
 #include <algorithm>
@@ -2247,9 +2249,56 @@ inline void baseChecks()
 	}
 }
 
+// Sand containment is tested at a toroidal seam and with a deliberately opened diagonal leak.
+// Ranking must reject dry renewable seeds, honour scarcity, and retain the caller's count ceiling.
+inline void containedPlotChecks()
+{
+	Game game(nullptr);
+	grassMap(game, 6, 6);
+	const Torus t{64, 64};
+	TerrainSketch sketch(t.size(), GRASS);
+	std::vector<int> corners;
+	for (int y = -4; y <= 4; ++y)
+		for (int x = -4; x <= 4; ++x)
+			if (x * x + y * y <= 16)
+				corners.push_back(t.at(x, y));
+	const auto tiles = stampContainedPlot(sketch, t, corners);
+	assert(!tiles.empty());
+	std::vector<int> labels(t.size(), -1);
+	for (int i : tiles)
+		labels[i] = 0;
+	writeUndermap(game.map, sketch);
+	assert(containedPlotsMismatch(game.map, t, labels).empty());
+	const auto dry = cropGrowthField(sketch, t);
+	assert(plantContainedPlot(game.map, t, tiles, dry, WOOD, 10) == 0);
+	assert(plantContainedPlot(game.map, t, tiles, dry, WOOD, 3, false) == 3);
+	assert(plantContainedPlot(game.map, t, tiles, dry, WOOD, 0, false) == 0);
+	assert(plantContainedPlot(game.map, t, tiles, dry, WOOD, 10000, false) ==
+		   int(tiles.size()) - 3);
+	assert(containedPlotsMismatch(game.map, t, labels).empty());
+	// A grass path across the cap invalidates the structural proof even before a crop spreads.
+	for (int x = 0; x <= 10; ++x)
+		for (int y = 0; y <= 2; ++y)
+			sketch[t.at(x, y)] = GRASS;
+	writeUndermap(game.map, sketch);
+	assert(!containedPlotsMismatch(game.map, t, labels).empty());
+
+	GenerationRequest request;
+	request.seed = 912;
+	GenerationContext a(request), b(request);
+	auto sites = latticeSites(128, 128, 4, 0, 0).sites, repeat = sites;
+	assert(jitterSites({128, 128}, sites, a, "test-jitter", 4, 48) ==
+		   jitterSites({128, 128}, repeat, b, "test-jitter", 4, 48));
+	assert(nearestSiteDistance({128, 128}, sites) >= 48);
+	for (size_t k = 0; k < sites.size(); ++k)
+		assert(sites[k].x == repeat[k].x && sites[k].y == repeat[k].y);
+	assert(jitterSites({128, 128}, sites, a, "test-jitter", 0, 48) == 0);
+}
+
 inline void toolkitChecks()
 {
 	boundaryExclusionChecks();
+	containedPlotChecks();
 	floodChecks();
 	baseChecks();
 	sketchChecks();

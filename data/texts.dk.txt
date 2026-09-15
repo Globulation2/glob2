@@ -2670,3 +2670,15 @@ Verdensatlasset har ikke et sådant kontinent.
 Kortet er for lille til at rumme et kontinent.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Dette kontinent har ikke plads til så mange kolonier ved denne kortstørrelse; brug et større kort eller færre kolonier.
+[Savannah]
+Savanne
+[Watering holes]
+Vandhuller
+[Dry patches]
+Tørre områder
+[Sparse]
+Få
+[Normal]
+Normal
+[Many]
+Mange

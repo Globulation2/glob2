@@ -3,11 +3,13 @@
 #include "Morphology.h"
 #include "Map.h"
 #include "Resources.h"
+#include "Planting.h"
 #include "Drawing.h"
 #include "Territories.h"
 #include "Topology.h"
 #include <algorithm>
 #include <cmath>
+#include <set>
 namespace MapGeneration
 {
 namespace
@@ -15,6 +17,76 @@ namespace
 // How far from its point a field's seed may move to find open ground.
 constexpr int kSeedSearch = 16;
 } // namespace
+
+std::vector<int> stampContainedPlot(TerrainSketch &sketch, const Torus &t,
+									const std::vector<int> &corners)
+{
+	const std::set<int> inside(corners.begin(), corners.end());
+	// Two corner rows include a pure-sand tile even on a straight edge. Using a square
+	// stencil also seals diagonal steps; radial offsets alone need not seal raster corners.
+	for (int i : inside)
+		for (int dy = -2; dy <= 2; ++dy)
+			for (int dx = -2; dx <= 2; ++dx)
+				sketch[t.at(i % t.w + dx, i / t.w + dy)] = SAND;
+	for (int i : inside)
+		sketch[i] = GRASS;
+	std::vector<int> tiles;
+	for (int i : inside)
+		if (inside.count(t.at(i % t.w + 1, i / t.w)) && inside.count(t.at(i % t.w, i / t.w + 1)) &&
+			inside.count(t.at(i % t.w + 1, i / t.w + 1)))
+			tiles.push_back(i);
+	return tiles;
+}
+
+int plantContainedPlot(Map &map, const Torus &t, const std::vector<int> &tiles,
+					   const Fertility::Field &fertility, int resource, int wanted, bool renewable)
+{
+	std::vector<std::pair<int, int>> ranked;
+	for (int i : tiles)
+	{
+		const int f = fertility.at(i % t.w, i / t.w);
+		if ((!renewable || f > 0) && clearGround(map, i % t.w, i / t.w))
+			ranked.push_back({-f, i});
+	}
+	std::sort(ranked.begin(), ranked.end());
+	const int count = std::min(std::max(0, wanted), int(ranked.size()));
+	for (int k = 0; k < count; ++k)
+	{
+		const int i = ranked[k].second;
+		map.setResource(i % t.w, i / t.w, resource, 1);
+	}
+	return count;
+}
+
+std::string containedPlotsMismatch(const Map &map, const Torus &t, const std::vector<int> &plotOf,
+								   const Fertility::Field *dry)
+{
+	if (int(plotOf.size()) != t.size())
+		return "Contained plot labels have the wrong dimensions.";
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		const int type = map.getResource(x, y).type;
+		if (plotOf[i] < 0)
+		{
+			const bool loneTree = type == WOOD && dry && dry->at(x, y) == 0;
+			if ((type == WHEAT || type == WOOD) && !loneTree)
+				return "A spreading crop was planted outside its contained plot.";
+			continue;
+		}
+		if (!map.isGrass(x, y))
+			return "Contained plot " + std::to_string(plotOf[i]) + " lost grass at (" +
+				   std::to_string(x) + ", " + std::to_string(y) + ").";
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				const int j = t.at(x + dx, y + dy);
+				if (map.isGrass(j % t.w, j / t.w) && plotOf[j] != plotOf[i])
+					return "A contained plot has a grass growth connection across its margin.";
+			}
+	}
+	return "";
+}
 
 FarmRows bestFarmRows(double angle)
 {

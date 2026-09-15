@@ -2600,3 +2600,15 @@ O atlas mundial não tem esse continente.
 O mapa é demasiado pequeno para conter um continente.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Este continente não tem espaço para tantas colónias com este tamanho de mapa; use um mapa maior ou menos colónias.
+[Savannah]
+Savana
+[Watering holes]
+Pontos de água
+[Dry patches]
+Áreas secas
+[Sparse]
+Poucos
+[Normal]
+Normal
+[Many]
+Muitos

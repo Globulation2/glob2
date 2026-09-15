@@ -2592,3 +2592,15 @@ La monda atlaso ne havas tian kontinenton.
 La mapo estas tro malgranda por enhavi kontinenton.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Ĉi tiu kontinento ne havas spacon por tiom da kolonioj ĉe ĉi tiu mapgrandeco; uzu pli grandan mapon aŭ malpli da kolonioj.
+[Savannah]
+Savano
+[Watering holes]
+Trinkejoj
+[Dry patches]
+Sekaj areoj
+[Sparse]
+Malmultaj
+[Normal]
+Normala
+[Many]
+Multaj

@@ -508,8 +508,84 @@ inline void hedgerowContracts()
 		 "size rejection");
 }
 
+// Savannah's terrain is invariant under resource sliders, and its final validator must
+// still accept natural growth. Test the real engine instead of simulating a new growth rule.
+inline void savannahContracts()
+{
+	const auto &definition =
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("savannah"));
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(definition.legacyId == 45 && definition.revision == 2);
+	assert(request.option("watering-holes") == 1 && request.option("dry-patches") == 8);
+	GenerationService service;
+	for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}})
+		for (int teams : {1, 3, 4})
+		{
+			D r = request;
+			r.wDec = dimensions.first;
+			r.hDec = dimensions.second;
+			r.nbTeams = teams;
+			r.seed = 17;
+			Game g(nullptr);
+			const auto result = service.generate(g, r);
+			if (!result)
+				std::fprintf(stderr, "Savannah contract: %s\n", result.diagnostic().c_str());
+			assert(result);
+		}
+	Game zero(nullptr), abundant(nullptr);
+	D r = request;
+	r.wDec = r.hDec = 7;
+	r.seed = 37;
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = 0;
+	assert(service.generate(zero, r));
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = control.maximum;
+	assert(service.generate(abundant, r));
+	for (int y = 0; y < zero.map.getH(); ++y)
+		for (int x = 0; x < zero.map.getW(); ++x)
+		{
+			assert(zero.map.isGrass(x, y) == abundant.map.isGrass(x, y));
+			assert(zero.map.isWater(x, y) == abundant.map.isWater(x, y));
+			assert(zero.map.isSand(x, y) == abundant.map.isSand(x, y));
+		}
+	GenerationContext context(r);
+	setSyncRandSeed(3821);
+	// 4096 full-map growth calls exercise many visits per deposit without an AI clearing
+	// anything; the structural validator proves the bound beyond this finite stress test.
+	for (int tick = 0; tick < 4096; ++tick)
+		abundant.map.growResources();
+	const auto growthError = definition.validateWorld(abundant, context);
+	if (!growthError.empty())
+		std::fprintf(stderr, "Savannah growth: %s\n", growthError.c_str());
+	assert(growthError.empty());
+	for (auto dimensions : {std::pair{6, 7}, std::pair{7, 9}, std::pair{9, 7}})
+	{
+		r.wDec = dimensions.first;
+		r.hDec = dimensions.second;
+		Game g(nullptr);
+		assert(service.generate(g, r).error == GenerationError::InvalidRequest);
+		assert(g.teamsCount() == 0);
+	}
+	r.wDec = r.hDec = 7;
+	r.nbTeams = 5;
+	Game crowded(nullptr);
+	assert(service.generate(crowded, r).error == GenerationError::InvalidRequest);
+	// Retained crowded seed: finite random pond darts used to miss its narrow legal gap.
+	r = request;
+	r.wDec = r.hDec = 7;
+	r.seed = 1001;
+	Game narrowGap(nullptr);
+	assert(service.generate(narrowGap, r));
+	puts("PASS Savannah: envelope, resource-independent terrain, contained unattended growth");
+}
+
 inline void generatorContracts()
 {
+	savannahContracts();
 	hedgerowContracts();
 	breachableHighlandsContracts();
 	braidedDeltaChecks();

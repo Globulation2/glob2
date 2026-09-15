@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Geometry.h"
+#include "FertilityField.h"
+#include <string>
 #include "Grid.h"
 #include "Sketch.h"
 #include <vector>
@@ -21,6 +23,28 @@ namespace MapGeneration
 // round the farm; bridges cross the whole farm, water rows and crop rows alike, so workers need not walk
 // round a long row nor cut through one; and a ring round the building plot keeps crops off it. Walls
 // round a farm are the map's business, not the farm's.
+
+/// An irregular grass plot surrounded by sand. `corners` is an arbitrary, nonempty set of
+/// undermap vertices; a two-vertex Chebyshev margin seals even diagonal growth across the wrap.
+/// Returns the pure grass tiles inside it, suitable for a crop eligibility list. The caller must
+/// reserve the plot AND its margin before stamping: this operation intentionally overwrites terrain.
+/// Run beaches afterwards and check final tiles if later stages can overlap the plot.
+std::vector<int> stampContainedPlot(TerrainSketch &, const Torus &,
+									const std::vector<int> &corners);
+
+/// Plant up to `wanted` deposits in a contained plot, preferring exact crop fertility (tile index
+/// breaks ties). With renewable=true, dry tiles are excluded; false also serves finite dry groves
+/// and quarries. Returns actual deposits planted, so essential shortfalls can fail explicitly.
+int plantContainedPlot(Map &, const Torus &, const std::vector<int> &tiles,
+					   const Fertility::Field &, int resource, int wanted, bool renewable = true);
+
+/// Prove on final terrain that eight-neighbour grass growth cannot leave or join differently
+/// labelled plots. `plotOf` labels pure grass tiles (-1 outside); also reject wheat/wood planted
+/// outside them, except a tree on a tile whose crop growth chance in `dry` is zero (the engine's
+/// water probe never lets it spread). Empty means sealed. Does not assume a particular outline or
+/// sand graphic.
+std::string containedPlotsMismatch(const Map &, const Torus &, const std::vector<int> &plotOf,
+								   const Fertility::Field *dry = nullptr);
 
 /// The widths of a farm's crop rows and water rows, measured across the rows in tiles.
 struct FarmRows

@@ -2594,3 +2594,15 @@ Maailmankartastossa ei ole sellaista mannerta.
 Kartta on liian pieni mantereelle.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Tällä mantereella ei ole tilaa näin monelle siirtokunnalle tällä karttakoolla; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[Savannah]
+Savanni
+[Watering holes]
+Juomapaikat
+[Dry patches]
+Kuivat alueet
+[Sparse]
+Harvassa
+[Normal]
+Normaali
+[Many]
+Paljon

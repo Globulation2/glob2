@@ -2666,3 +2666,15 @@ Emoji
 地圖太小，容納不下一個大洲。
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 此大洲在這個地圖大小下容納不下這麼多殖民地；請使用更大的地圖或減少殖民地數量。
+[Savannah]
+稀樹草原
+[Watering holes]
+水塘
+[Dry patches]
+乾燥地帶
+[Sparse]
+稀少
+[Normal]
+正常
+[Many]
+眾多

@@ -2590,3 +2590,15 @@ Emoji
 Карта замала, щоб вмістити материк.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 На цьому материку за такого розміру карти немає місця для такої кількості колоній; використайте більшу карту або менше колоній.
+[Savannah]
+Савана
+[Watering holes]
+Водопої
+[Dry patches]
+Сухі ділянки
+[Sparse]
+Мало
+[Normal]
+Звичайно
+[Many]
+Багато

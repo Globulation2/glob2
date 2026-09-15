@@ -2602,3 +2602,15 @@ Svetový atlas taký kontinent nemá.
 Mapa je príliš malá, aby sa na ňu zmestil kontinent.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Tento kontinent nemá pri tejto veľkosti mapy miesto pre toľko kolónií; použite väčšiu mapu alebo menej kolónií.
+[Savannah]
+Savana
+[Watering holes]
+Napájadlá
+[Dry patches]
+Suché oblasti
+[Sparse]
+Málo
+[Normal]
+Normálne
+[Many]
+Veľa

@@ -89,6 +89,13 @@ struct LatticeSites
 };
 LatticeSites latticeSites(int width, int height, int teams, double x0, double y0);
 
+/// Move sites by at most `radius` whole tiles on each axis, preserving `minimumSpacing`
+/// measured on wrapped, truncated tile centres as nearestSiteDistance does. One proposal per
+/// site, in input order; a rejected move leaves that site unchanged. Returns accepted moves.
+/// This bounded operation cannot rescue an initially invalid lattice; validate spacing first.
+int jitterSites(const Torus &, std::vector<ShapePoint> &, GenerationContext &,
+				const std::string &stream, int radius, double minimumSpacing);
+
 /// Colony 0's feature stamped onto every image of it: an entry is set when any image of its tile (or
 /// corner) lies in the feature. A union doesn't depend on the order an orbit is visited in, so the
 /// result is exactly symmetric.

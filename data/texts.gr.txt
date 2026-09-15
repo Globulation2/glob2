@@ -2664,3 +2664,15 @@ Emoji
 Ο χάρτης είναι πολύ μικρός για να χωρέσει μια ήπειρο.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
 Αυτή η ήπειρος δεν έχει χώρο για τόσες αποικίες σε αυτό το μέγεθος χάρτη· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
+[Savannah]
+Σαβάνα
+[Watering holes]
+Νερόλακκοι
+[Dry patches]
+Ξηρές περιοχές
+[Sparse]
+Λίγοι
+[Normal]
+Κανονικά
+[Many]
+Πολλοί
