@@ -327,7 +327,7 @@ build/src/CustomGameSetupHarness
 
 The sweep shard is the current zero-based playable catalog position out of 31;
 recompute it if the catalog gains another generator. New golden rows use stable
-ID 33. Existing golden rows must remain unchanged. Use disposable `GLOB2_USER_DIR`
+ID 51 (it took 33 first, which is retired and never reused). Existing golden rows must remain unchanged. Use disposable `GLOB2_USER_DIR`
 profiles as recorded in the evidence commands.
 
 For an inspectable map:
@@ -466,7 +466,7 @@ All eight paired final-map reports match their earlier physical/quality reports
 exactly after excluding the intentionally extended telemetry trace. Final seed 7
 also has identical saved map bytes, preserving both four-player AI runs. The new
 collector adds approach-width records. Final default/primitive contracts passed;
-the final golden update retained every baseline row and added only ID 33's eight
+the final golden update retained every baseline row and added only the generator's eight
 rows. Final telemetry off/on/repeat checks passed all 96 cases with zero semantic
 failures. Lava shield seeds 1–3 took 733–1,401 ms off and 959–1,157 ms on under shared
 host load; these noisy three-sample timings are not an overhead estimate. All four
@@ -499,7 +499,7 @@ The map, replay, initial/final saves and final native analysis are retained in
 
 An isolated source/build directory on the configured Linux x86-64 host compiled
 the same implementation with GCC 15.2. The native default/primitive contracts
-passed. All 256 Linux golden cases passed after adding the eight ID-33 rows;
+passed. All 256 Linux golden cases passed after adding the eight Lava shield rows;
 all 256 macOS cases are also covered. The final table retains **every pre-existing
 row** and adds sixteen rows total. The copied-cache build procedure, source-archive
 hash, compiler/platform identity and logs are retained under `artifacts/lava-shield/linux/`.
