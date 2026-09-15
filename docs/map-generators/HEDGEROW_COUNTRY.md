@@ -133,6 +133,17 @@ build/src/glob2 --generate-map hedgerow-country --seed 19 \
 
 ## Validation record
 
+A rotation tournament (six 256×256 maps, four colonies, every cyclic team rotation, four
+Nicowars, 45,000 ticks) found the economy the map's limit: every colony peaked at 50 to 58
+units and declined to 35 to 45, with 15 to 20 buildings, three to six warriors, no prestige and
+about 110 wheat harvested per colony in the whole game against 640 wood. Moving the plot's sand
+divider east of the pond so that wheat took two thirds of the plot changed nothing (peaks 53 to
+58, wheat harvested 110), so the layout stands; what limits a Nicowar colony here is how little
+of the ringed plot it harvests, not how much could regrow. Whether the map is meant to be played
+at that pace, or its plots should open toward the village, is the design question to settle in
+play.
+
+
 The bulk study generated every supported request (2,098, including 512 fresh seeds) and
 rejected every unsupported one (133) with no crashes, timeouts, disconnected starts or
 cramped-start flags; twelve layouts needed one warp contraction. Eighty AI matchups compared
