@@ -91,6 +91,7 @@ The generator does not introduce a new terrain type or alter resource/movement r
 | Long tongues | 25%, 50%, 75%; 50% | Percentage of primary flows reaching the coast. Rounded to a count, with at least one long and one short flow. Changes broad versus beach-only coastal detours. |
 | Branching | 0–3; 2 | Side-branch proposals per primary flow. Crowded or uphill proposals are omitted, with counts in telemetry. |
 | Crater rim width | 6–12, step 2; 8 | Grass budget outside the fixed shoreline/circuit margin, before the stone roots begin. |
+| Islets | on/off; on | A couple of small islands out in the ocean where the torus wraps (at least two, one more per 8,000 tiles of sea), each six tiles of water from any coast so only swimmers reach it, each with a prize at its middle. A maintainer's first look asked for them; off leaves the ocean empty as the first revision had it. |
 | Wheat/wood amounts | Shared percentage controls | Scale optional fertile patches; external starter patches remain guaranteed. |
 | Stone amount | Shared percentage control | Scales sparse optional outcrops. Structural lava remains an inexhaustible quarry at zero. |
 | Algae amount | Shared percentage control | Scales shallow-water clumps, using the engine-derived growth preference. |
