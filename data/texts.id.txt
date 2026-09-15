@@ -2616,3 +2616,15 @@ Tangga per bukit
 Sungai lembah
 [Vultures]
 Burung nasar
+[Plantations]
+Perkebunan
+[Plot size]
+Ukuran petak bangunan
+[Farm width]
+Lebar ladang
+[Islands per colony]
+Pulau per koloni
+[Outpost inns]
+Penginapan pos terdepan
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Pulau-pulau ini terlalu kecil untuk petak bangunannya; gunakan peta yang lebih besar, petak bangunan yang lebih kecil, atau koloni yang lebih sedikit.

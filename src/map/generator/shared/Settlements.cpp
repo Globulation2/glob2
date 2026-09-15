@@ -199,6 +199,39 @@ int startingBuildingSite(Game &game, int team, const BuildingType *buildingType,
 }
 } // namespace
 
+int placeBuilding(Game &game, int team, const char *typeName, int level, double x, double y,
+				  int within, const std::vector<unsigned char> &allowed)
+{
+	const int type = globalContainer->buildingsTypes.getTypeNum(typeName, level, false);
+	const BuildingType *buildingType = globalContainer->buildingsTypes.get(type);
+	const int best = startingBuildingSite(game, team, buildingType, x, y, within, allowed);
+	if (best < 0)
+		return -1;
+	const int w = game.map.getW();
+	Building *building = game.addBuilding(best % w, best / w, type, team, 1, 0);
+	if (!building)
+		return -1;
+	// The colony's lists were built when its swarm went down (Team::createLists); a building placed
+	// since joins the lists that function fills from the type, the way it would have taken it in.
+	if (buildingType->shootingRange)
+		game.teams[team]->turrets.push_back(building);
+	if (buildingType->unitProductionTime)
+		game.teams[team]->swarms.push_back(building);
+	return best;
+}
+
+int countBuildings(const Game &game, int team, const char *typeName)
+{
+	if (team < 0 || team >= game.teamsCount() || !game.teams[team])
+		return 0;
+	int count = 0;
+	for (int i = 0; i < Building::MAX_COUNT; ++i)
+		if (const Building *b = game.teams[team]->myBuildings[i])
+			if (b->type && b->type->type == typeName && !b->type->isBuildingSite)
+				++count;
+	return count;
+}
+
 int placeTower(Game &game, int team, int level, double x, double y, int within,
 			   const std::vector<unsigned char> &allowed, bool stocked,
 			   const std::vector<MapGeneratorPoint> &cover, bool supplyStone)

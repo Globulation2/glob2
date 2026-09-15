@@ -2620,3 +2620,15 @@ Emoji
 Река у долини
 [Vultures]
 Лешинари
+[Plantations]
+Плантаже
+[Plot size]
+Величина грађевинске парцеле
+[Farm width]
+Ширина поља
+[Islands per colony]
+Острва по колонији
+[Outpost inns]
+Предстражне гостионице
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Острва су премала за своје парцеле; користите већу мапу, мању парцелу или мање колонија.

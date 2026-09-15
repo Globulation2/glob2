@@ -2690,3 +2690,15 @@ Emoji
 Ποτάμι κοιλάδας
 [Vultures]
 Γύπες
+[Plantations]
+Φυτείες
+[Plot size]
+Μέγεθος οικοπέδου
+[Farm width]
+Πλάτος καλλιεργειών
+[Islands per colony]
+Νησιά ανά αποικία
+[Outpost inns]
+Προκεχωρημένα πανδοχεία
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Τα νησιά είναι πολύ μικρά για τα οικόπεδά τους· χρησιμοποιήστε μεγαλύτερο χάρτη, μικρότερο οικόπεδο ή λιγότερες αποικίες.

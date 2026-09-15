@@ -2628,3 +2628,15 @@ Schodiská na kopec
 Rieka v údolí
 [Vultures]
 Supy
+[Plantations]
+Plantáže
+[Plot size]
+Veľkosť stavebného pozemku
+[Farm width]
+Šírka polí
+[Islands per colony]
+Ostrovy na kolóniu
+[Outpost inns]
+Predsunuté jedálne
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Ostrovy sú pre svoje pozemky príliš malé; použite väčšiu mapu, menší pozemok alebo menej kolónií.

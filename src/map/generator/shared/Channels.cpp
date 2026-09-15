@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Channels.h"
 #include "Map.h"
+#include "Morphology.h"
 #include "TerrainType.h"
 #include "Topology.h"
 #include "Walls.h"
@@ -51,6 +52,34 @@ int bridgeAcross(TerrainSketch &sketch, const Torus &t, ShapePoint from, ShapePo
 			++laid;
 		}
 	return laid;
+}
+
+std::vector<unsigned char> straitsBetweenCells(const Torus &t, const std::vector<int> &labels,
+											   int corners)
+{
+	const int width = std::max(4, corners);
+	std::vector<unsigned char> seam(size_t(t.size()), 0);
+	if (width % 2 == 1)
+		seam = labelBorders(t, labels);
+	else
+		// Both sides of every border: a tile is seam when any of its eight neighbours lies in another
+		// cell, so the seam is two tiles thick along a straight border.
+		for (int y = 0; y < t.h; ++y)
+			for (int x = 0; x < t.w; ++x)
+			{
+				const int i = y * t.w + x;
+				if (labels[i] < 0)
+					continue;
+				for (int dy = -1; dy <= 1 && !seam[i]; ++dy)
+					for (int dx = -1; dx <= 1 && !seam[i]; ++dx)
+						seam[i] = labels[t.at(x + dx, y + dy)] != labels[i];
+			}
+	std::vector<unsigned char> water =
+		dilate(t, seam, width % 2 == 1 ? (width - 1) / 2 : (width - 2) / 2);
+	for (int i = 0; i < t.size(); ++i)
+		if (labels[i] < 0)
+			water[i] = 1;
+	return water;
 }
 
 std::vector<int> crossingsPerLabel(const Torus &t, const std::vector<unsigned char> &bridges,

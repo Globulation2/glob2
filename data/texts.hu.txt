@@ -2620,3 +2620,15 @@ Lépcsők dombonként
 Völgyi folyó
 [Vultures]
 Keselyűk
+[Plantations]
+Ültetvények
+[Plot size]
+Építési telek mérete
+[Farm width]
+Szántóföld szélessége
+[Islands per colony]
+Szigetek kolóniánként
+[Outpost inns]
+Előőrsi étkezdék
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+A szigetek túl kicsik a telkeikhez; használj nagyobb térképet, kisebb telket vagy kevesebb kolóniát.

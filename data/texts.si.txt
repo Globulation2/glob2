@@ -2620,3 +2620,15 @@ Stopnišča na hrib
 Reka v dolini
 [Vultures]
 Jastrebi
+[Plantations]
+Nasadi
+[Plot size]
+Velikost gradbene parcele
+[Farm width]
+Širina njiv
+[Islands per colony]
+Otoki na kolonijo
+[Outpost inns]
+Oporiščne restavracije
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Otoki so premajhni za svoje parcele; uporabite večji zemljevid, manjšo parcelo ali manj kolonij.

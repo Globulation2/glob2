@@ -2630,3 +2630,15 @@ Eskailerak muinoko
 Haraneko ibaia
 [Vultures]
 Saiak
+[Plantations]
+Landaketak
+[Plot size]
+Eraikitzeko lursailaren tamaina
+[Farm width]
+Soroen zabalera
+[Islands per colony]
+Uharteak koloniako
+[Outpost inns]
+Kanpoko ostatuak
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Uharteak txikiegiak dira beren lursailetarako; erabili mapa handiagoa, lursail txikiagoa edo kolonia gutxiago.

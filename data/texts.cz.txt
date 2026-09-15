@@ -2620,3 +2620,15 @@ Schodiště na kopec
 Řeka v údolí
 [Vultures]
 Supi
+[Plantations]
+Plantáže
+[Plot size]
+Velikost stavební parcely
+[Farm width]
+Šířka polí
+[Islands per colony]
+Ostrovy na kolonii
+[Outpost inns]
+Předsunuté hospody
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Ostrovy jsou pro své parcely příliš malé; použijte větší mapu, menší parcelu nebo méně kolonií.

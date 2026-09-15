@@ -60,6 +60,10 @@ using namespace MapGeneration;
 // plain fields, a lake, an orchard round a pond, a homestead or a hamlet (building pads with wheat and
 // wood beside them), a quarry, a woodlot, a wheatfield, a dune of bare sand, and five kinds built of
 // stone or water (second play): a fort, a bastion, a funnel, a chicane and a moat.
+//
+// Revision 6 (2026-09-15): a woodlot's or wheatfield's cover goes down through plantCoverShare (shared
+// with Plantations); the default map is unchanged, and at a wood or wheat amount of 0 such a block is
+// now bare where it used to keep its single highest-noise tile under crop.
 namespace
 {
 
@@ -760,18 +764,14 @@ bool generate(Game &game, GenerationContext &context)
 		case Woodlot:
 		case Wheatfield:
 		{
-			std::vector<int> levels;
+			std::vector<int> candidates;
 			for (int i = 0; i < n; ++i)
 				if (inBlock(i))
-					levels.push_back(cover[i]);
-			if (levels.empty())
-				break;
-			const int share = std::clamp(
-				int(scaledCount(kCoverPercent, L.kind[cell] == Woodlot ? o.wood : o.wheat)), 0,
-				100);
-			const int level = percentile(levels, 100 - share);
-			plantCover(map, t, L.land, L.kind[cell] == Woodlot ? WOOD : WHEAT,
-					   [&](int i) { return inBlock(i) && cover[i] >= level; });
+					candidates.push_back(i);
+			plantCoverShare(
+				map, t, candidates, L.kind[cell] == Woodlot ? WOOD : WHEAT,
+				int(scaledCount(kCoverPercent, L.kind[cell] == Woodlot ? o.wood : o.wheat)),
+				[&](int i) { return cover[i]; });
 			break;
 		}
 		default:
@@ -841,7 +841,7 @@ GeneratorDefinition canalsDefinition()
 		"canals",
 		29,
 		"Canals",
-		5,
+		6,
 		false,
 		// Blocks of 24 give a 256 map about a hundred blocks; a canal of 3 corners (two tiles of
 		// water) is sealed against diagonal steps and is reached by a level-2 tower, one upgrade

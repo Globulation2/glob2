@@ -2696,3 +2696,15 @@ Trapper pr. bakke
 Flod i dalen
 [Vultures]
 Gribbe
+[Plantations]
+Plantager
+[Plot size]
+Byggegrundstørrelse
+[Farm width]
+Markbredde
+[Islands per colony]
+Øer pr. koloni
+[Outpost inns]
+Forpostkroer
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Øerne er for små til deres byggegrunde; brug et større kort, en mindre byggegrund eller færre kolonier.

@@ -2618,3 +2618,15 @@ Emoji
 Река в долине
 [Vultures]
 Стервятники
+[Plantations]
+Плантации
+[Plot size]
+Размер участка под застройку
+[Farm width]
+Ширина полей
+[Islands per colony]
+Островов на колонию
+[Outpost inns]
+Кабаки на аванпостах
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Острова слишком малы для своих участков; используйте карту побольше, участок поменьше или меньше колоний.

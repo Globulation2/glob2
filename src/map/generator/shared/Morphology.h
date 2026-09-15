@@ -42,6 +42,12 @@ std::vector<unsigned char> dilateRound(const Torus &, const std::vector<unsigned
 /// A mask with nothing outside it gets the half of the longer side everywhere.
 std::vector<int> clearance(const Torus &, const std::vector<unsigned char> &mask);
 
+/// The tile of `region` with the most `room` (its clearance, say), the one nearest (nearX, nearY) the
+/// short way round on a tie, then the lowest index: where a feature that needs ground all round it (a
+/// plot, a pond, a chamber) stands best. -1 for an empty region.
+int roomiestTile(const Torus &, const std::vector<unsigned char> &region,
+				 const std::vector<int> &room, int nearX, int nearY);
+
 /// The mask with every connected part (with the given neighbours, across the wrap) smaller than
 /// `minimumTiles` removed. Pass the inverted mask to fill pockets instead.
 std::vector<unsigned char> dropSmallRegions(const Torus &, const std::vector<unsigned char> &mask,

@@ -2618,3 +2618,15 @@ Emoji
 رود دره
 [Vultures]
 کرکس‌ها
+[Plantations]
+مزارع
+[Plot size]
+اندازهٔ قطعهٔ ساخت
+[Farm width]
+پهنای مزرعه
+[Islands per colony]
+جزیره برای هر مستعمره
+[Outpost inns]
+مسافرخانه‌های مرزی
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+جزیره‌ها برای قطعه‌های ساخت خود بیش از حد کوچک‌اند؛ از نقشهٔ بزرگ‌تر، قطعهٔ ساخت کوچک‌تر یا مستعمره‌های کمتر استفاده کنید.

@@ -54,6 +54,24 @@ bool pocketsFit(const CellGraph &, const std::vector<unsigned char> &pocket);
 /// pocketsFit (the lowest index on a tie). Empty if the tiling can't hold them.
 std::vector<int> spreadPockets(const CellGraph &, int count);
 
+/// Cells spread as far apart as the graph allows with no maze to leave behind them: farthest-point
+/// spreading from the lowest `eligible` cell over the eligible cells only (the islands fit to be
+/// homes), the lowest index on a tie. Unlike spreadPockets it never asks that the other cells stay
+/// joined, which a ring of cells round a narrow map or a dozen homes among seventeen cells cannot
+/// give. Empty when there are fewer eligible cells than `count`.
+std::vector<int> farthestCells(const CellGraph &, int count,
+							   const std::vector<unsigned char> &eligible);
+
+/// Neighbouring cells dealt to seed cells, as many to each as to every other: round by round, every
+/// seed in turn takes the `eligible` cell nearest its seed (by the graph's distance2, the lowest index
+/// on a tie) that touches any cell it already holds and no seed holds; a round in which some seed finds
+/// none is undone for the seeds that did, and the dealing stops there, so every seed ends with the same
+/// count, `wanted` when the graph allows. A colony's outer islands, the chambers off its queen's room,
+/// the blocks round its home block. Returns each seed's cells in the order taken.
+std::vector<std::vector<int>> claimNeighbourCells(const CellGraph &, const std::vector<int> &seeds,
+												  int wanted,
+												  const std::vector<unsigned char> &eligible);
+
 /// Closed edges with neither endpoint blocked, in ascending edge-ID order. An empty
 /// blocked mask excludes no cells. Parallel edges retain their separate identities.
 /// This supplies a stable candidate list before a caller shuffles or ranks shortcuts.

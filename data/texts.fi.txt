@@ -2620,3 +2620,15 @@ Portaita kukkulalla
 Laakson joki
 [Vultures]
 Korppikotkat
+[Plantations]
+Plantaasit
+[Plot size]
+Rakennuspaikan koko
+[Farm width]
+Pellon leveys
+[Islands per colony]
+Saaria siirtokuntaa kohden
+[Outpost inns]
+Etuvartiomajatalot
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Saaret ovat liian pieniä rakennuspaikoilleen; käytä suurempaa karttaa, pienempää rakennuspaikkaa tai vähemmän siirtokuntia.

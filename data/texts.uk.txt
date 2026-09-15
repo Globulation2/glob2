@@ -2616,3 +2616,15 @@ Emoji
 Річка в долині
 [Vultures]
 Стерв’ятники
+[Plantations]
+Плантації
+[Plot size]
+Розмір ділянки під забудову
+[Farm width]
+Ширина полів
+[Islands per colony]
+Островів на колонію
+[Outpost inns]
+Їдальні на аванпостах
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Острови замалі для своїх ділянок; використайте більшу карту, меншу ділянку або менше колоній.

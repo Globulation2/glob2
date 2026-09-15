@@ -2620,3 +2620,15 @@ Scări pe deal
 Râu în vale
 [Vultures]
 Vulturi
+[Plantations]
+Plantații
+[Plot size]
+Mărimea lotului de construcție
+[Farm width]
+Lățimea culturilor
+[Islands per colony]
+Insule per colonie
+[Outpost inns]
+Popasuri de avanpost
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Insulele sunt prea mici pentru loturile lor; folosește o hartă mai mare, un lot mai mic sau mai puține colonii.

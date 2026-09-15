@@ -112,6 +112,81 @@ std::vector<int> spreadPockets(const CellGraph &g, int count)
 	return pockets;
 }
 
+std::vector<int> farthestCells(const CellGraph &g, int count,
+							   const std::vector<unsigned char> &eligible)
+{
+	std::vector<unsigned char> taken(size_t(g.cellCount()), 0);
+	std::vector<int> chosen;
+	std::vector<long long> nearest(size_t(g.cellCount()), 0);
+	for (int k = 0; k < count; ++k)
+	{
+		int best = -1;
+		for (int cell = 0; cell < g.cellCount(); ++cell)
+			if (eligible[cell] && !taken[cell] && (best < 0 || nearest[cell] > nearest[best]))
+				best = cell;
+		if (best < 0)
+			return {};
+		taken[best] = 1;
+		chosen.push_back(best);
+		for (int cell = 0; cell < g.cellCount(); ++cell)
+			nearest[cell] = chosen.size() == 1 ? g.distance2(cell, best)
+											   : std::min(nearest[cell], g.distance2(cell, best));
+	}
+	return chosen;
+}
+
+std::vector<std::vector<int>> claimNeighbourCells(const CellGraph &g, const std::vector<int> &seeds,
+												  int wanted,
+												  const std::vector<unsigned char> &eligible)
+{
+	std::vector<std::vector<int>> held(seeds.size());
+	std::vector<int> owner(size_t(g.cellCount()), -1);
+	for (size_t s = 0; s < seeds.size(); ++s)
+		owner[seeds[s]] = int(s);
+	for (int round = 0; round < wanted; ++round)
+	{
+		std::vector<int> taken;
+		bool complete = true;
+		for (size_t s = 0; s < seeds.size() && complete; ++s)
+		{
+			int best = -1;
+			const auto consider = [&](int cell)
+			{
+				for (int edge : g.cellEdges[cell])
+				{
+					const int next = g.other(edge, cell);
+					if (owner[next] >= 0 || !eligible[next])
+						continue;
+					if (best < 0 || g.distance2(seeds[s], next) < g.distance2(seeds[s], best))
+						best = next;
+				}
+			};
+			consider(seeds[s]);
+			for (int cell : held[s])
+				consider(cell);
+			if (best < 0)
+				complete = false;
+			else
+			{
+				owner[best] = int(s);
+				held[s].push_back(best);
+				taken.push_back(best);
+			}
+		}
+		if (!complete)
+		{
+			// The round is undone so no seed holds more than another.
+			for (int cell : taken)
+			{
+				held[owner[cell]].pop_back();
+				owner[cell] = -1;
+			}
+			break;
+		}
+	}
+	return held;
+}
+
 std::vector<int> closedEdges(const CellGraph &g, const std::vector<unsigned char> &open,
 							 const std::vector<unsigned char> &blocked)
 {

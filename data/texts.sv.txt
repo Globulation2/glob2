@@ -2630,3 +2630,15 @@ Trappor per kulle
 Flod i dalen
 [Vultures]
 Gamar
+[Plantations]
+Plantager
+[Plot size]
+Tomtstorlek
+[Farm width]
+Åkerbredd
+[Islands per colony]
+Öar per koloni
+[Outpost inns]
+Utpostvärdshus
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Öarna är för små för sina tomter; använd en större karta, en mindre tomt eller färre kolonier.

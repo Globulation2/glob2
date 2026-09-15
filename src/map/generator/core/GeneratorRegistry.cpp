@@ -45,6 +45,7 @@
 #include "SavannahGenerator.h"
 #include "RiceTerracesGenerator.h"
 #include "VulturesGenerator.h"
+#include "PlantationsGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -177,6 +178,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 savannahDefinition(),
 											 riceTerracesDefinition(),
 											 vulturesDefinition(),
+											 plantationsDefinition(),
 											 uniformDefinition()});
 	return registry;
 }

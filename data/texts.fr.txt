@@ -2630,3 +2630,15 @@ Escaliers par colline
 Rivière de vallée
 [Vultures]
 Vautours
+[Plantations]
+Plantations
+[Plot size]
+Taille de la parcelle à bâtir
+[Farm width]
+Largeur des cultures
+[Islands per colony]
+Îles par colonie
+[Outpost inns]
+Auberges d'avant-poste
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Les îles sont trop petites pour leurs parcelles ; utilisez une carte plus grande, une parcelle plus petite ou moins de colonies.

@@ -2618,3 +2618,15 @@ Larĝo de nivelaj bendoj
 Vala rivero
 [Vultures]
 Vulturoj
+[Plantations]
+Plantejoj
+[Plot size]
+Grando de konstruejo
+[Farm width]
+Larĝo de kampoj
+[Islands per colony]
+Insuloj po kolonio
+[Outpost inns]
+Antaŭpostenaj manĝejoj
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+La insuloj estas tro malgrandaj por siaj konstruejoj; uzu pli grandan mapon, pli malgrandan konstruejon aŭ malpli da kolonioj.

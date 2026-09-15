@@ -2620,3 +2620,15 @@ Treppen pro Hügel
 Talfluss
 [Vultures]
 Geier
+[Plantations]
+Plantagen
+[Plot size]
+Bauplatzgröße
+[Farm width]
+Ackerbreite
+[Islands per colony]
+Inseln pro Kolonie
+[Outpost inns]
+Außenposten-Gasthöfe
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Die Inseln sind zu klein für ihre Bauplätze; wähle eine größere Karte, einen kleineren Bauplatz oder weniger Kolonien.

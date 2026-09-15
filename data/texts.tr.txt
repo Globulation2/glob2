@@ -2628,3 +2628,15 @@ Tepe başına merdiven
 Vadi nehri
 [Vultures]
 Akbabalar
+[Plantations]
+Plantasyonlar
+[Plot size]
+Yapı arsası boyutu
+[Farm width]
+Tarla genişliği
+[Islands per colony]
+Koloni başına ada
+[Outpost inns]
+Karakol otelleri
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Adalar kendi arsaları için çok küçük; daha büyük bir harita, daha küçük bir arsa veya daha az koloni kullanın.
