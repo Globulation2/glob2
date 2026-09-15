@@ -2626,3 +2626,5 @@ Polomer kopca
 Schodiská na kopec
 [Valley river]
 Rieka v údolí
+[Vultures]
+Supy

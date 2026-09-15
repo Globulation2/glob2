@@ -1,0 +1,38 @@
+{
+  "src/map/generator/MapHomogen.cpp": {
+    "unchanged_from_HEAD": true,
+    "sha256": "0bd5748dc60ad048f0bdcc71913adad5e7fec7c155f7e48d3985858d27037db8"
+  },
+  "src/map/generator/generators/ShatteredCoastGenerator.h": {
+    "unchanged_from_HEAD": true,
+    "sha256": "a803cf27384cfea1efd591f2ae1a3aeec262039d16c8738ce01f834e6d6328de"
+  },
+  "src/map/generator/shared/Drawing.h": {
+    "unchanged_from_HEAD": true,
+    "sha256": "11ade9ca029deaf5105f2273fd28a13a5826e2d87987f9cd5eea60ee060c1650"
+  },
+  "src/map/generator/shared/Geometry.cpp": {
+    "unchanged_from_HEAD": true,
+    "sha256": "e3dfbfac04354a4ac1a2749e8886ed0e5c64630f7dd4fea8db912fd71ae82a1e"
+  },
+  "src/map/generator/shared/Geometry.h": {
+    "unchanged_from_HEAD": true,
+    "sha256": "3eb5445bd44ac166e3f4dc7a578b80a834d31a7131844345aec1677e626dbf1b"
+  },
+  "src/map/generator/shared/GraphMaze.cpp": {
+    "unchanged_from_HEAD": true,
+    "sha256": "c06bf863443b52beaaa09d3dae2e9b414c816c3c351abed18700a93be6bd0cec"
+  },
+  "src/map/generator/shared/Tessellation.cpp": {
+    "unchanged_from_HEAD": true,
+    "sha256": "14c2fefaddb375220d9ef33027cfb2453b8894f7cd287ee7e26dea728c2cf42a"
+  },
+  "src/map/generator/shared/Walls.cpp": {
+    "unchanged_from_HEAD": true,
+    "sha256": "3c5f4b7bad10b596e6cf340839f98edd5fed09f20aaef6cc8f4faf23210104d6"
+  },
+  "src/map/generator/shared/Walls.h": {
+    "unchanged_from_HEAD": true,
+    "sha256": "8dab325b2ac5edbc5dd5b0f330c2ccbdcdde01e232d1bcc56d3c7ecdc106d86a"
+  }
+}

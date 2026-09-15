@@ -2616,3 +2616,5 @@ Emoji
 پلکان در هر تپه
 [Valley river]
 رود دره
+[Vultures]
+کرکس‌ها

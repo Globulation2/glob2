@@ -2616,3 +2616,5 @@ Larĝo de nivelaj bendoj
 Ŝtuparoj por monteto
 [Valley river]
 Vala rivero
+[Vultures]
+Vulturoj

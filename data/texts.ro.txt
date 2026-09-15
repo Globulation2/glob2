@@ -2618,3 +2618,5 @@ Lățimea benzilor de nivel
 Scări pe deal
 [Valley river]
 Râu în vale
+[Vultures]
+Vulturi

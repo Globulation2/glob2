@@ -86,6 +86,7 @@ struct LatticeSites
 {
 	std::vector<ShapePoint> sites;
 	bool exact = false;
+	int vacancies = 0; // extra lattice sites left empty, if a sparse lattice was requested
 };
 LatticeSites latticeSites(int width, int height, int teams, double x0, double y0);
 
@@ -95,6 +96,13 @@ LatticeSites latticeSites(int width, int height, int teams, double x0, double y0
 /// This bounded operation cannot rescue an initially invalid lattice; validate spacing first.
 int jitterSites(const Torus &, std::vector<ShapePoint> &, GenerationContext &,
 				const std::string &stream, int radius, double minimumSpacing);
+/// Roomier fallback for colony counts whose equal-row factorization is crowded (notably primes).
+/// Tries at most `maxVacancies` extra lattice sites and leaves the extras empty. Each vacancy is
+/// chosen to maximize the minimum wrapped whole-tile distance among the surviving sites; equal
+/// scores retain the first choice. The original lattice wins unless spacing strictly improves.
+/// This is opt-in: callers that need exact symmetry or historic layout output keep latticeSites.
+LatticeSites roomyLatticeSites(int width, int height, int teams, double x0, double y0,
+							   int maxVacancies = 4);
 
 /// Colony 0's feature stamped onto every image of it: an entry is set when any image of its tile (or
 /// corner) lies in the feature. A union doesn't depend on the order an orbit is visited in, so the

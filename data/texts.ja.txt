@@ -2614,3 +2614,5 @@ Emoji
 丘ごとの階段数
 [Valley river]
 谷の川
+[Vultures]
+ハゲワシ

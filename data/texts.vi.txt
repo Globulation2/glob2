@@ -2614,3 +2614,5 @@ Bán kính đồi
 Số cầu thang mỗi đồi
 [Valley river]
 Sông thung lũng
+[Vultures]
+Kền kền

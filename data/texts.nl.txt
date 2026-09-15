@@ -2642,3 +2642,5 @@ Breedte van hoogtebanden
 Trappen per heuvel
 [Valley river]
 Rivier in het dal
+[Vultures]
+Gieren

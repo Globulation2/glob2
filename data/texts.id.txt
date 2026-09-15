@@ -2614,3 +2614,5 @@ Lebar pita kontur
 Tangga per bukit
 [Valley river]
 Sungai lembah
+[Vultures]
+Burung nasar

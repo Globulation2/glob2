@@ -2618,3 +2618,5 @@ Szerokość pasów poziomicowych
 Schody na wzgórze
 [Valley river]
 Rzeka w dolinie
+[Vultures]
+Sępy

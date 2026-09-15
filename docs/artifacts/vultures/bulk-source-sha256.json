@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "base_commit": "af7073c449c58dfe1db8f522eed2b07a7939806b",
+  "linux_binary_sha256": "220b81100a1dedb72cb8a169a3b5dca13e556ec2b70588f557d5570526b7881d",
+  "source_sha256": {
+    "src/map/generator/shared/Orbits.cpp": "c40976071c89fa2c55cdcf17dbe03c603096a4db99cb7fbe6651f279d8a70994",
+    "src/map/generator/shared/Orbits.h": "d03e5e6d96e5f33491a38fe8f60aac1aa967345a563b7d0f47615f5f44abc667",
+    "src/map/generator/shared/ClearingLandscape.cpp": "fd79e4ec214f8ce754803c73025409d119249d5df11c30ca2b5364352e113eb4",
+    "src/map/generator/shared/ClearingLandscape.h": "0538681aec77825ae32eb2adc147c3b209cbee8fe7c4f1fc73ad62e2e90aabe7",
+    "src/map/generator/generators/VulturesGenerator.cpp": "fbd4070f3034906847d9d311092ba239f719d8e9b456837ef8e8767c8a27b6c3",
+    "src/MapReport.cpp": "9edca25d6337c163da9d8cf2ec32fafafe6a5d2a31e07e068d962bd98d24e139",
+    "src/StartQualityScreen.cpp": "5dadf4afb0a77b9c50d846e0db9d695505ed2490628598be2351d4ee94477cb3",
+    "src/map/generator/shared/StartQuality.cpp": "66dd64c470f4e66762b79cd5568839591e37b5e1bd9b7dbb9af8919a11a1c74f",
+    "src/map/generator/shared/StartQuality.h": "53cad9dd0150786513f08b5263eb4b70b3daf0badb0a33da210fc99a91a84a04"
+  },
+  "runner_sha256": "8b928271dfc62848107f0f1d70efcf1c9c9b3fdf59d4944d74d2f3cf2da7dfe4",
+  "cases_sha256": "0814bfcd2c7f49459404f4f6fcbe02070d962c6b1a1b684ac888049a36319e0d"
+}

@@ -2628,3 +2628,5 @@ Höjdkurvbandens bredd
 Trappor per kulle
 [Valley river]
 Flod i dalen
+[Vultures]
+Gamar

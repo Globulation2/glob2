@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OldGrowthGenerator.h"
+#include "ClearingLandscape.h"
 #include "Contact.h"
 #include "FertilityField.h"
 #include "Game.h"
@@ -71,22 +72,8 @@ namespace
 // Every home's starting kit, unscaled whatever the amounts say: two wheat patches beside the central
 // pond and a quarry. No wood (FEEDBACK 2026-09-13): the forest edge is the woodlot.
 constexpr int kHomeWheat = 24, kHomeQuarry = 2;
-// The ring of pools round a home (FEEDBACK 2026-09-13, "a lot more pools of water"): `homePools`
-// pools of this radius on a ring at this share of the home's radius, each with this much wheat on its
-// shore. At the default radius 24 the ring is 14 tiles out, so every pool waters the ground between
-// itself and the central pond (the growth probe reaches 15) and the whole clearing is fertile.
-constexpr double kPoolRadius = 2.5, kPoolRingShare = 0.6;
+constexpr double kPoolRadius = 2.5;
 constexpr int kPoolWheat = 32, kPoolSeeds = 4;
-// The forest starts this far beyond a home's rough disc, so the clearing's edge is open ground to
-// build against and the pond's beach never meets a tree; then a ring of sand this wide keeps the
-// forest from spreading into the clearing (FEEDBACK 2026-09-13). Two tiles: crops spread only onto
-// an adjacent grass tile, so a single tile of sand corners already stops them, and the second tile
-// keeps the beach arithmetic from ever leaving a grass corner between forest and clearing.
-constexpr double kClearingMargin = 3.0;
-constexpr int kSandRing = 2;
-// Lakes keep this far from every clearing and from each other's shores, so a lake's regrowth never
-// reaches a home's forest edge (the growth probe reaches 15 tiles) and two lakes read as two.
-constexpr int kLakeGap = 20;
 // A hidden grove lies at this share of the cutting cost half way to the nearest rival: nearer its
 // own home than anyone else's, but deep enough that reaching it is a decision. Its pocket is a
 // clearing of this radius.
@@ -97,132 +84,11 @@ constexpr int kGroveWheat = 16, kGroveStone = 1;
 // What a lake holds: wheat round its shore and an orchard of all three fruits.
 constexpr int kLakeWheat = 40;
 
-struct Layout
-{
-	Torus t{1, 1};
-	double homeRadius = 0, spacing = 0;
-	std::vector<ShapePoint> homes, kits;
-	std::vector<int> homeOf;
-	std::vector<unsigned char> water, clearing, sand, forest, lake;
-	std::vector<std::vector<ShapePoint>> pools; // each home's ring of pools
-	std::vector<int> lakeCentres;
-	std::string failure;
-};
-
+using Layout = ClearingLandscape;
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
 	const OldGrowthOptions o(request);
-	Layout L;
-	L.t = {1 << request.wDec, 1 << request.hDec};
-	const Torus &t = L.t;
-	const int n = t.size(), teams = std::max(1, request.nbTeams);
-
-	// Homes on the roomiest lattice, shrunk to leave a stretch of forest between neighbours at least
-	// as wide as a clearing, so no two clearings ever touch.
-	L.homes = latticeSites(t.w, t.h, teams, context.bounded("growth-layout", std::uint32_t(t.w)),
-						   context.bounded("growth-layout", std::uint32_t(t.h)))
-				  .sites;
-	dealStarts(context, L.homes); // which colony gets which site is a draw, not the order
-	L.spacing = nearestSiteDistance(t, L.homes);
-	L.homeRadius =
-		std::min<double>(o.homeSize, std::floor(L.spacing / 3 - kClearingMargin - kSandRing));
-	context.telemetry.measure("old-growth.homes.spacing", L.spacing);
-	context.telemetry.measure("old-growth.homes.actual-radius", L.homeRadius);
-	if (L.homeRadius < o.homeSize)
-		context.telemetry.fallback("old-growth.homes.shrunk",
-								   "Homes shrank to preserve intervening forest");
-	if (!homeHasRoom(L.homeRadius))
-	{
-		L.failure = "Too many colonies for this map; use a bigger map or fewer colonies.";
-		return L;
-	}
-	L.clearing.assign(n, 0);
-	L.sand.assign(n, 0);
-	for (const ShapePoint &home : L.homes)
-		for (int i = 0; i < n; ++i)
-		{
-			const double d =
-				std::hypot(t.offsetX(int(home.x), i % t.w), t.offsetY(int(home.y), i / t.w));
-			if (d <= L.homeRadius + kClearingMargin)
-				L.clearing[i] = 1;
-			else if (d <= L.homeRadius + kClearingMargin + kSandRing)
-				L.sand[i] = 1;
-		}
-	for (int i = 0; i < n; ++i)
-		if (L.clearing[i])
-			L.sand[i] = 0;
-	L.homeOf.assign(n, -1);
-	L.water.assign(n, 0);
-	const RadialShape home(L.homeRadius, 0.15, context, "growth-home");
-	const RadialShape pond(homePondRadius(L.homeRadius), 0.3, context, "growth-pond");
-	L.kits = stampRoundHomes(t, L.homes, 0.0, home, L.homeRadius, 1, &pond, L.water, L.homeOf);
-	// The ring of pools (FEEDBACK 2026-09-13), evenly spaced from a random phase per home.
-	const RadialShape pool(kPoolRadius, 0.3, context, "growth-pools");
-	for (const ShapePoint &home : L.homes)
-	{
-		std::vector<ShapePoint> ring;
-		const double phase = context.bounded("growth-pools", 3600) / 3600.0 * 2 * kPi;
-		for (int p = 0; p < o.homePools; ++p)
-		{
-			const ShapePoint at = polarPoint(home.x, home.y, kPoolRingShare * L.homeRadius,
-											 phase + 2 * kPi * p / o.homePools);
-			ring.push_back(at);
-			fillShape(L.water, t, at.x, at.y, pool, 0.0);
-		}
-		L.pools.push_back(ring);
-	}
-
-	// Lakes: each at the tile farthest from every clearing and every lake so far (the exact
-	// distance transform, Morphology.h), grown to `lakeSize` tiles by distance from its seed with a
-	// little noise in the key so the outline is a lake's, not a disc's. `lakes` is a count per
-	// 128x128 of map, so a 256 map gets four times as many as a 128.
-	L.lake.assign(n, 0);
-	const int lakes = int(std::lround(o.lakes * double(n) / (128.0 * 128.0)));
-	std::vector<unsigned char> settled(n, 0);
-	for (int i = 0; i < n; ++i)
-		settled[i] = L.clearing[i] || L.sand[i];
-	std::vector<unsigned char> keepClear = dilate(t, settled, kLakeGap);
-	const std::vector<int> ripple = periodicNoise(t.w, t.h, 6, context.stream("growth-lakes"));
-	std::vector<int> queued(n, 0);
-	for (int lake = 0; lake < lakes; ++lake)
-	{
-		const std::vector<std::int64_t> clearance = distanceSquaredTo(t, keepClear);
-		int seed = -1;
-		for (int i = 0; i < n; ++i)
-			if (!keepClear[i] && (seed < 0 || clearance[i] > clearance[seed]))
-				seed = i;
-		if (seed < 0)
-			break;
-		const int grown = growWater(
-			t, L.water, seed, o.lakeSize, [&](int i) { return !keepClear[i]; },
-			[&](int i)
-			{
-				const double d =
-					std::sqrt(double(t.dist2(seed % t.w, seed / t.w, i % t.w, i / t.w)));
-				return std::int64_t(d * 1000) + std::int64_t(ripple[i]) * 2500 / 65536;
-			},
-			queued, lake + 1);
-		if (grown <= 0)
-			break;
-		L.lakeCentres.push_back(seed);
-		for (int i = 0; i < n; ++i)
-			if (L.water[i] && !L.clearing[i])
-				L.lake[i] = 1;
-		keepClear = dilate(t, settled, kLakeGap);
-		const std::vector<unsigned char> shores = dilate(t, L.lake, kLakeGap);
-		for (int i = 0; i < n; ++i)
-			keepClear[i] = keepClear[i] || shores[i];
-	}
-	context.telemetry.measure("old-growth.lakes.requested", lakes);
-	context.telemetry.measure("old-growth.lakes.actual", L.lakeCentres.size());
-	if (int(L.lakeCentres.size()) < lakes)
-		context.telemetry.fallback("old-growth.lakes.omitted",
-								   "No further lake fit with clearing and shore clearance");
-	// The forest: everything that is not a clearing or water.
-	L.forest.assign(n, 0);
-	for (int i = 0; i < n; ++i)
-		L.forest[i] = !L.clearing[i] && !L.sand[i] && !L.water[i];
-	return L;
+	return clearingLandscape(request, context, {o.homeSize, o.homePools, o.lakes, o.lakeSize});
 }
 
 // Hidden groves: one per colony, at kGroveDepthPercent of the cutting cost half way to its nearest

@@ -2614,3 +2614,5 @@ Ledander ar bandennoù kontour
 Diri dre dorgenn
 [Valley river]
 Stêr an draonienn
+[Vultures]
+Guped

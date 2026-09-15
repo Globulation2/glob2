@@ -2626,3 +2626,5 @@ Amplada de les bandes de nivell
 Escales per turó
 [Valley river]
 Riu de la vall
+[Vultures]
+Voltors

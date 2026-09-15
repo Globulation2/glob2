@@ -2628,3 +2628,5 @@ Largeur des bandes de niveau
 Escaliers par colline
 [Valley river]
 Rivière de vallée
+[Vultures]
+Vautours

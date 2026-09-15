@@ -2618,3 +2618,5 @@ Korkeusvyöhykkeiden leveys
 Portaita kukkulalla
 [Valley river]
 Laakson joki
+[Vultures]
+Korppikotkat

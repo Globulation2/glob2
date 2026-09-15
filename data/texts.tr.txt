@@ -2626,3 +2626,5 @@ Eşyükselti şeridi genişliği
 Tepe başına merdiven
 [Valley river]
 Vadi nehri
+[Vultures]
+Akbabalar

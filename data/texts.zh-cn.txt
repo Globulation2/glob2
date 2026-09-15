@@ -2614,3 +2614,5 @@ Emoji
 每座山丘的阶梯数
 [Valley river]
 山谷河流
+[Vultures]
+秃鹫
