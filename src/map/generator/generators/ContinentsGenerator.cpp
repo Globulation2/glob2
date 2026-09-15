@@ -57,7 +57,8 @@ using namespace MapGeneration;
 // - A great river is a line of pure water a tile wide, a barrier to walking, with a ford every so
 //   often where the noise says so. Holding a ford is holding a crossing.
 // - The ocean round the continent is the torus's seam, so a continent never meets itself across
-//   the wrap; islets out in it are prizes for the first colony to swim.
+//   the wrap. Islets out in it (`islets`, off by default) are invented, not geography: prizes for the
+//   first colony to swim, for anyone who wants them.
 //
 // THE STAGES. The atlas region is fitted into the map with a sea margin and resampled by majority
 // to a corner grid; slivers, specks and islets too small to build on are cleaned off; classes
@@ -350,7 +351,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	context.telemetry.measure("continents.rivers.ford-corners",
 							  std::count(L.ford.begin(), L.ford.end(), 1));
 
-	// Islets in the open sea, before the beaches: prizes for whoever swims first (stockIslands).
+	// Islets in the open sea, before the beaches: prizes for whoever swims first (stockIslands). Off
+	// by default since they are not on any map of the continent; a maintainer looking at Europe asked
+	// where the ring of round islands came from.
 	if (o.islets)
 	{
 		int sea = 0;
@@ -750,7 +753,7 @@ GeneratorDefinition continentsDefinition()
 	return {"continents",
 			44, // 33 was Patchwork, retired 2026-09-13 and never reused
 			"Continents",
-			1,
+			2,
 			false,
 			{GeneratorControl::choice("continent", "Continent",
 									  {"Random", "North America", "South America", "Africa",
@@ -759,7 +762,7 @@ GeneratorDefinition continentsDefinition()
 			 GeneratorControl::choice("orientation", "Orientation", {"Turn to fit", "Upright"}, 0),
 			 GeneratorControl::toggle("mountains", "Mountain ranges", true),
 			 GeneratorControl::toggle("rivers", "Great rivers", true),
-			 GeneratorControl::toggle("islets", "Islets", true),
+			 GeneratorControl::toggle("islets", "Islets", false),
 			 GeneratorControl::percentage("oases", "Oases", 200),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),

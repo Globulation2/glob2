@@ -1504,7 +1504,8 @@ that the continent looks like itself.
   tiles: 4 on a 128 map, 8 on a 256, 16 on a 512), centred, turned a quarter turn when that fits a
   rectangle larger (`orientation`: Turn to fit, or Upright), and resampled by majority to the
   undermap's corners (`Raster`). The margin is the torus's seam, so a continent never meets itself
-  across the wrap. The rest of a rectangle is sea, with islets in it.
+  across the wrap. The rest of a rectangle is sea; round islets in it (`islets`, off by default)
+  are invented for whoever wants swimming prizes, not drawn from the atlas.
 - **The coast.** Land narrower than three tiles, specks of sea and islets under twelve tiles go
   (`cleanLandmass`); a filled pool takes the land round it. Ocean and lakes are water, deserts and
   ice caps sand, everything else grass with its character planted on it.
@@ -1539,8 +1540,8 @@ that the continent looks like itself.
   crops on the rest, cover in patches from a noise field. Round every home two clearings: no ambient
   deposit at all within 5 tiles (an 11x11 square; on a fertile river bank the fields had filled the
   home square itself) and no cover within 8 (17x17, room to build before cutting). Every colony's kit
-  (20 wheat, 16 wood, a quarry) is unscaled and goes in the inner clearing; islets carry a prize each
-  (`stockIslands`); algae in the shallows.
+  (20 wheat, 16 wood, a quarry) is unscaled and goes in the inner clearing; islets, when asked for,
+  carry a prize each (`stockIslands`); algae in the shallows.
 - **Routes.** `openColonyRoutes` under a cost model (a clearable deposit 3, stone 6, water 10) with a
   lane three wide cuts a pass through scree or a ford where a colony cannot otherwise walk to the
   first; then the crop guarantee, then cramped starts reopened at non-default amounts, then the
