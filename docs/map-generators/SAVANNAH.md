@@ -300,3 +300,13 @@ non-English language tables contain local Savannah labels; the catalog audit rep
 zero missing or untranslated keys, and the English-fallback regression test passes.
 Identical native spellings of the Normal choice in ten languages are recorded as
 reviewed shared vocabulary.
+
+### Revision 2 on the same protocol
+
+The same six maps, rotations and AIs played on revision 2 (three watering holes per 128-square,
+radius-5.5 ponds, pools and lone trees on the plain): pooled per-start units 27 to 33 (peaks 28 to
+34) against 22 to 25 on revision 1, wheat harvested per colony 88 against 66 and wood 382 against
+310, births 30 against 24, still no elimination in 24 games, every game at the tick cap, and a
+root-mean-square position bias of 8 points (no map's start counts significant). The extra water
+lifts the economy by about a fifth without changing the map's flat, unhurried character; what a
+Nicowar colony works of a sealed plot, not the water beside it, still sets the ceiling.
