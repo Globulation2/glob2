@@ -143,8 +143,6 @@ restores whatever landscape it had.
 | `braided-delta` | 36 | Braided Delta | [Design and heuristics](BRAIDED_DELTA.md) |
 | `breachable-highlands` | 37 | Breachable highlands | [Stone valleys with clearable wooded saddles](BREACHABLE_HIGHLANDS.md) |
 | `hedgerow-country` | 38 | Hedgerow Country | [Warped fields, gateways and cuttable hedges](HEDGEROW_COUNTRY.md) |
-| `allotments` | 35 | Allotments | Its own — see below; a premade base of construction sites |
-| `caravanserai` | 36 | Caravanserai | Its own — see below; a premade base |
 | `allotments` | 40 | Allotments | Its own — see below; a premade base of construction sites |
 | `caravanserai` | 41 | Caravanserai | Its own — see below; a premade base |
 | `uniform` | 0 | uniform terrain | Editor-only; one terrain type, unstructured |
