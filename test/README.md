@@ -608,3 +608,15 @@ Build `scons release=1 server=0 maxima-continuation-test`, then run
 binary archive with the scalar path, including SHA1, nested records, signed
 limits, 64-bit ordering, strings, buffer boundaries and interleaved direct writes.
 Text output is also checked. Linux and Windows CI run it.
+
+## Nicowar farming wood clearance
+
+`NicowarFarmingHarness` executes the farming scan and its real area orders. It
+checks the wood/wheat zone boundaries, four-way wheat adjacency, both wrap seams,
+removal of conflicting farming protection, cleanup after wood and neighboring
+wheat disappear, and preservation of building clearing strips.
+
+```sh
+scons release=1 server=0 nicowar-farming-test
+python3 test/run-savegame-safety-tests.py build/src/NicowarFarmingHarness .
+```

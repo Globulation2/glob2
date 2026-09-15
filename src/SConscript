@@ -616,6 +616,12 @@ if not env['server']:
     local.Alias('terrain-test', terrain_test)
 
 if not env['server']:
+    farming_sources = [source for source in source_files if source != 'Glob2.cpp']
+    farming_sources += local.Object('NicowarFarmingHarness.o', '#test/NicowarFarmingHarness.cpp')
+    farming_test = local.Program('NicowarFarmingHarness', farming_sources)
+    local.Alias('nicowar-farming-test', farming_test)
+
+if not env['server']:
     gradient_sources = [source for source in source_files if source != 'Glob2.cpp']
     gradient_sources += local.Object('GlobalGradientHarness.o', '#test/GlobalGradientHarness.cpp')
     gradient_test = local.Program('GlobalGradientHarness', gradient_sources)

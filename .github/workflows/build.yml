@@ -127,6 +127,7 @@ jobs:
             performance-telemetry-test \
             terrain-test \
             global-gradient-test \
+            nicowar-farming-test \
             lan-test \
             aspect-test \
             resize-test \
@@ -327,6 +328,10 @@ jobs:
       - name: Build and run the terrain resource regression
         run: |
           ./build/src/TerrainResourcesHarness
+
+      - name: Test Nicowar farming wood clearance
+        run: |
+          python3 test/run-savegame-safety-tests.py build/src/NicowarFarmingHarness .
 
       - name: Build and run the global gradient regression
         run: |
