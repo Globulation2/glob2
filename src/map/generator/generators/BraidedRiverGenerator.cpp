@@ -1270,7 +1270,7 @@ BraidedRiverOptions::BraidedRiverOptions(const GenerationRequest &r)
 GeneratorDefinition braidedRiverDefinition()
 {
 	return {"braided-river",
-			34,
+			42,
 			"Braided river",
 			1,
 			false,

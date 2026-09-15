@@ -132,7 +132,7 @@ restores whatever landscape it had.
 | `switchbacks` | 24 | Switchbacks | Its own — see below |
 | `city-states` | 17 | City states | Its own — see below |
 | `canals` | 29 | Canals | Its own — see below |
-| `braided-river` | 34 | Braided river | Its own — see below |
+| `braided-river` | 42 | Braided river | Its own — see below |
 | `rugged-archipelago` | 8 | Old islands | Island growth + beach passes, own resource search |
 | `contested-commons` | 9 | Contested commons | Point dispersion (`shared/legacy/Regions`) |
 | `rain-shadow` | 27 | Rain shadow | Its own — see below |
