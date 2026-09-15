@@ -1,0 +1,9 @@
+Settings::load("preferences.txt") : error, can't open file.
+Original resource atlas maximum pixel difference: 0/255
+HD resource atlas maximum pixel difference: 0/255
+Torus worker marker bright pixels: 491 -> 626
+Torus selection circle: 2 atlas texels wide at interface scale 1.96111
+Torus selection markers passed
+Manual/automatic modes, saved option and pointer hold passed
+Navigation, GL state, picking and reload lifecycle passed
+Rectangular-map rendering, fitting, picking and cache changes passed

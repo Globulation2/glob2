@@ -1,0 +1,2 @@
+Settings::load("preferences.txt") : error, can't open file.
+Software game rendering and inactive torus controls passed

@@ -1,0 +1,1 @@
+Assertion failed: (gui.torusView.enabled() == gpu), function run, file SpectatorKeySmoke.cpp, line 136.
