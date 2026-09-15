@@ -1,6 +1,6 @@
 # Vultures: initial AI playtest and field tuning — 2026-09-15
 
-[Design contract](../../map-generators/VULTURES.md) · [Accepted games, maps, saves, telemetry and checksums](playtest-evidence.zip)
+[Design contract](../../map-generators/VULTURES.md) · [Accepted games, maps, saves, telemetry and checksums](https://github.com/Globulation2/glob2/blob/evidence/vultures/docs/artifacts/vultures/playtest-evidence.zip)
 
 This is a light headless AI playtest of generator 33, revision 1. It checks whether colonies
 can grow, find each other, fight, and experience a finite-food deadline. It is not a human

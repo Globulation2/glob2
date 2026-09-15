@@ -1,18 +1,20 @@
 # Vultures verification — 2026-09-15
 
+The archives, logs and raw records linked from these notes live on the `evidence/vultures` branch, kept out of the main source history; the previews and the notes themselves stay here.
+
 [Design and tuning rationale](../../map-generators/VULTURES.md) ·
 [256×256 preview](vultures-7-large.png) · [128×128 duel](duel-7-large.png) ·
 [Seven-colony rectangle](rectangular-7-large.png) ·
-[After the Nicowar match](nicowar-final.png) · [Playable maps and evidence](evidence.zip) ·
+[After the Nicowar match](nicowar-final.png) · [Playable maps and evidence](https://github.com/Globulation2/glob2/blob/evidence/vultures/docs/artifacts/vultures/evidence.zip) ·
 [Initial Linux AI playtest and field tuning](PLAYTEST.md) ·
 [Final bulk generation and tuning](BULK.md) ·
-[All 33 locale translations](translations-check.json)
+[All 33 locale translations](https://github.com/Globulation2/glob2/blob/evidence/vultures/docs/artifacts/vultures/translations-check.json)
 
 This original package exercised generator **33**, revision **1**, using the optimized
 macOS ARM64 client. The final revision **2** adds the opt-in crowded-lattice fallback;
 its already playable macOS golden fingerprints are unchanged. The final 461-job Linux
 bulk results and revision-2 source identity are in [BULK.md](BULK.md).
-[Build/source identity](build-manifest.json) and [reproduction commands](reproduce.sh) identify
+[Build/source identity](https://github.com/Globulation2/glob2/blob/evidence/vultures/docs/artifacts/vultures/build-manifest.json) and [reproduction commands](https://github.com/Globulation2/glob2/blob/evidence/vultures/docs/artifacts/vultures/reproduce.sh) identify
 what was exercised. No simulation, AI, save-format, replay or network-version code was changed.
 
 ## Initial revision-1 verification results
@@ -26,7 +28,7 @@ what was exercised. No simulation, AI, save-format, replay or network-version co
   records exactly, with no dropped/invalid observations.
 - **Formatting:** touched generator files and tests pass clang-format, and `git diff --check`
   passes. The whole-tree check reports existing formatting violations in nine untouched files;
-  [their byte identity with HEAD](preexisting-formatting.json) is recorded. Those files were
+  [their byte identity with HEAD](https://github.com/Globulation2/glob2/blob/evidence/vultures/docs/artifacts/vultures/preexisting-formatting.json) is recorded. Those files were
   left unchanged.
 
 For Vultures seeds 1–3, generation milliseconds (off/on) were 635.862/310.458,
@@ -52,7 +54,7 @@ working copies and larger diagnostic traces remain under `artifacts/vultures/`.
   2/3/4/6/8/12 colonies; 512×512 with 4/12 colonies. Every accepted cell succeeded on every seed.
 - The golden update compared existing rows before writing and added only eight Vultures rows.
   All **248 existing macOS golden fingerprints**, including Old Growth's eight, were unchanged.
-- [Seventeen final parameter probes](final-matrix.csv) all passed. They cover both rectangle
+- [Seventeen final parameter probes](https://github.com/Globulation2/glob2/blob/evidence/vultures/docs/artifacts/vultures/final-matrix.csv) all passed. They cover both rectangle
   orientations, odd counts, one/eight starting workers, one/twelve colonies, small and large
   homes, no/maximal lakes, zero/maximum resources, and 512×512 at twelve colonies with both
   resources at maximum. No collected telemetry was dropped or invalid.
@@ -97,14 +99,14 @@ must be exhausted before someone can win. Human balance/play-feel review remains
 
 ## Save/load and coverage limits
 
-[Map round-trip comparison](map-roundtrip.json) found identical terrain, underlying terrain,
+[Map round-trip comparison](https://github.com/Globulation2/glob2/blob/evidence/vultures/docs/artifacts/vultures/map-roundtrip.json) found identical terrain, underlying terrain,
 resources, space, fertility and movement measurements after loading the serialized sample map.
 The final source's regenerated seed-7 map also matches those measurements from the played map.
 No special growth flags or serialized caches are introduced by this generator.
 
 **Nicowar simulation continuation is not verified equivalent.** Reloading the tick-10,000
 checkpoint agreed through tick 10,166, then differed at tick 10,167. At tick 20,000, unit and
-building counts differed as well. [The comparison](save-continuation.json), retained checkpoint,
+building counts differed as well. [The comparison](https://github.com/Globulation2/glob2/blob/evidence/vultures/docs/artifacts/vultures/save-continuation.json), retained checkpoint,
 replay and first differing records allow investigation. The generator is not invoked by that
 load path, and simulation/AI source is untouched, but this observation has not been isolated
 against a separate base build; do not call it a proven pre-existing bug or claim a passing

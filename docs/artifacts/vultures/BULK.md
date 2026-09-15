@@ -1,6 +1,6 @@
 # Vultures: bulk generation and rectangular tuning — 2026-09-15
 
-[Design and tuning rationale](../../map-generators/VULTURES.md) · [Raw bulk evidence](bulk-evidence.zip) · [Reproduction runner](bulk-runner.py)
+[Design and tuning rationale](../../map-generators/VULTURES.md) · [Raw bulk evidence](https://github.com/Globulation2/glob2/blob/evidence/vultures/docs/artifacts/vultures/bulk-evidence.zip) · [Reproduction runner](https://github.com/Globulation2/glob2/blob/evidence/vultures/docs/artifacts/vultures/bulk-runner.py)
 
 **Final result:** revision 2 generated 406 of 461 requested maps. The other 55 were
 explicit validation rejections for colony counts that cannot fit the shared pond,
