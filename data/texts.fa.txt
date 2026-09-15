@@ -2490,3 +2490,43 @@ Emoji
 گذرگاه‌های موجود
 [Wooded boundary share]
 سهم مرزهای درخت‌دار
+[The Glacis]
+گلاسی
+[Allotments]
+باغچه‌ها
+[Caravanserai]
+کاروانسرا
+[Colonists]
+مستعمره‌نشینان
+[Garrison]
+پادگان
+[Compound size]
+اندازهٔ حصار
+[Wall gates]
+دروازه‌های دیوار
+[Wadi count]
+شمار وادی‌ها
+[Ford spacing]
+فاصلهٔ گدارها
+[Lot size]
+اندازهٔ قطعه‌ها
+[Mixed]
+مختلط
+[Small]
+کوچک
+[Large]
+بزرگ
+[Lane spacing]
+فاصلهٔ کوره‌راه‌ها
+[Ditch every]
+خندق در هر
+[Wood share]
+سهم چوب
+[Capital size]
+اندازهٔ پایتخت
+[Oasis spacing]
+فاصلهٔ واحه‌ها
+[Outposts per colony]
+پاسگاه برای هر مستعمره
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+پایگاه در این اندازه در زمین خود جا نمی‌شود؛ کنترل اندازه را افزایش دهید یا مستعمره‌نشینان را کاهش دهید.

@@ -2492,3 +2492,43 @@ Grubość żywopłotów
 Istniejące przejścia
 [Wooded boundary share]
 Udział zadrzewionych granic
+[The Glacis]
+Przedstok
+[Allotments]
+Działki
+[Caravanserai]
+Karawanseraj
+[Colonists]
+Koloniści
+[Garrison]
+Garnizon
+[Compound size]
+Rozmiar obwarowań
+[Wall gates]
+Bramy w murze
+[Wadi count]
+Liczba wadi
+[Ford spacing]
+Odstęp brodów
+[Lot size]
+Rozmiar działek
+[Mixed]
+Mieszany
+[Small]
+Mały
+[Large]
+Duży
+[Lane spacing]
+Odstęp dróżek
+[Ditch every]
+Rów co
+[Wood share]
+Udział drewna
+[Capital size]
+Rozmiar stolicy
+[Oasis spacing]
+Odstęp oaz
+[Outposts per colony]
+Placówki na kolonię
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+Baza nie mieści się na swoim gruncie przy tym rozmiarze; zwiększ ustawienie rozmiaru albo zmniejsz Kolonistów.

@@ -2492,3 +2492,43 @@ Heckendicke
 Vorhandene Durchgänge
 [Wooded boundary share]
 Anteil bewaldeter Grenzen
+[The Glacis]
+Das Glacis
+[Allotments]
+Schrebergärten
+[Caravanserai]
+Karawanserei
+[Colonists]
+Kolonisten
+[Garrison]
+Garnison
+[Compound size]
+Größe der Umfriedung
+[Wall gates]
+Mauertore
+[Wadi count]
+Anzahl der Wadis
+[Ford spacing]
+Furtabstand
+[Lot size]
+Parzellengröße
+[Mixed]
+Gemischt
+[Small]
+Klein
+[Large]
+Groß
+[Lane spacing]
+Wegabstand
+[Ditch every]
+Graben alle
+[Wood share]
+Holzanteil
+[Capital size]
+Hauptstadtgröße
+[Oasis spacing]
+Oasenabstand
+[Outposts per colony]
+Außenposten pro Kolonie
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+Die Basis passt bei dieser Größe nicht auf ihren Boden; erhöhen Sie den Größenregler oder verringern Sie die Kolonisten.

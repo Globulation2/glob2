@@ -44,6 +44,9 @@ std::string validateGeneratedWorld(const Game &g, const GenerationRequest &r,
 		return "Incorrect map dimensions";
 	if (g.mapHeader.getNumberOfTeams() != (d.hasStartingColonies ? r.nbTeams : 1))
 		return "Incorrect colony count";
+	// A landscape that owns its worker count (a premade base) says so; every other colony starts
+	// with the lobby's shared "Starting workers" value.
+	const int expectedWorkers = d.startingWorkers ? d.startingWorkers(r) : r.nbWorkers;
 	if (d.hasStartingColonies)
 		for (int i = 0; i < r.nbTeams; ++i)
 		{
@@ -62,7 +65,7 @@ std::string validateGeneratedWorld(const Game &g, const GenerationRequest &r,
 				if (const auto *building = team->myBuildings[slot];
 					building && building->type->shortTypeNum == IntBuildingType::SWARM_BUILDING)
 					swarm = true;
-			if (workers != r.nbWorkers || !swarm)
+			if (workers != expectedWorkers || !swarm)
 				return "Incomplete starting colony";
 		}
 	return {};

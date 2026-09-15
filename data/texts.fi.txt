@@ -2492,3 +2492,43 @@ Pensasaitojen paksuus
 Olemassa olevat kulkuaukot
 [Wooded boundary share]
 Puustoisten rajojen osuus
+[The Glacis]
+Glasiisi
+[Allotments]
+Siirtolapuutarhat
+[Caravanserai]
+Karavaaniseralji
+[Colonists]
+Uudisasukkaat
+[Garrison]
+Varuskunta
+[Compound size]
+Aitauksen koko
+[Wall gates]
+Muurin portit
+[Wadi count]
+Wadien määrä
+[Ford spacing]
+Kahlaamojen väli
+[Lot size]
+Tonttien koko
+[Mixed]
+Sekalainen
+[Small]
+Pieni
+[Large]
+Suuri
+[Lane spacing]
+Kujien väli
+[Ditch every]
+Ojien väli
+[Wood share]
+Puun osuus
+[Capital size]
+Pääkaupungin koko
+[Oasis spacing]
+Keitaiden väli
+[Outposts per colony]
+Etuvartioita siirtokuntaa kohden
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+Tukikohta ei mahdu maapohjalleen tällä koolla; suurenna kokosäädintä tai vähennä Uudisasukkaita.

@@ -2562,3 +2562,43 @@ Emoji
 Υπάρχοντα περάσματα
 [Wooded boundary share]
 Ποσοστό δασωμένων ορίων
+[The Glacis]
+Το Γκλασί
+[Allotments]
+Λαχανόκηποι
+[Caravanserai]
+Καραβανσεράι
+[Colonists]
+Άποικοι
+[Garrison]
+Φρουρά
+[Compound size]
+Μέγεθος περιβόλου
+[Wall gates]
+Πύλες του τείχους
+[Wadi count]
+Αριθμός ουάντι
+[Ford spacing]
+Απόσταση περασμάτων
+[Lot size]
+Μέγεθος οικοπέδων
+[Mixed]
+Μικτό
+[Small]
+Μικρό
+[Large]
+Μεγάλο
+[Lane spacing]
+Απόσταση μονοπατιών
+[Ditch every]
+Τάφρος κάθε
+[Wood share]
+Μερίδιο ξύλου
+[Capital size]
+Μέγεθος πρωτεύουσας
+[Oasis spacing]
+Απόσταση οάσεων
+[Outposts per colony]
+Φυλάκια ανά αποικία
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+Η βάση δεν χωράει στο έδαφός της σε αυτό το μέγεθος· αυξήστε τη ρύθμιση μεγέθους ή μειώστε τους Αποίκους.

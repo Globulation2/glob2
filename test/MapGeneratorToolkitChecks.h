@@ -5,7 +5,19 @@
 // here before it shows up as a changed golden fingerprint somewhere downstream. Needs the
 // globals loaded: building and resource types.
 #include "BalancedStarts.h"
+#include "Bases.h"
+#include "Building.h"
+#include "BuildingType.h"
+#include "Compounds.h"
 #include "Drawing.h"
+#include "GenerationValidation.h"
+#include "GeneratorDefinition.h"
+#include "IntBuildingType.h"
+#include "Lots.h"
+#include "Routes.h"
+#include "Team.h"
+#include "Unit.h"
+#include "UnitConsts.h"
 #include "GraphMaze.h"
 #include "Game.h"
 #include "GenerationContext.h"
@@ -1763,12 +1775,186 @@ inline void gatePartitionChecks()
 		labels[rooms[k]] = k;
 	}
 	assert(checkGatePartition(t, open, labels, {{{0, 1}, {t.at(4, 4)}}}).badGate == 0);
+// Premade bases: the tier and garrison tables; one plan's footprints at every facing; a finished
+// city and a city of sites raised on grass with their stock, units and lists; the validator's proof
+// and the structural check's worker-count hook. Then the square compounds, the lane grid and its
+// pads, and the routes between sites the base landscapes are built from.
+inline void baseChecks()
+	assert(baseTier(16) == BaseTier::Hamlet && baseTier(20) == BaseTier::Hamlet);
+	assert(baseTier(24) == BaseTier::Town && baseTier(28) == BaseTier::Town);
+	assert(baseTier(32) == BaseTier::City && baseTier(48) == BaseTier::City);
+	const BaseGarrison large = baseGarrison(32, true);
+	assert(large.workers == 32 && large.warriors == 12 && large.warriorLevel == 1 &&
+		   large.explorers == 4);
+	assert(baseGarrison(16, true).warriors == 6 && baseGarrison(16, true).explorers == 2);
+	assert(baseGarrison(32, false).warriors == 0 && baseGarrison(32, false).explorers == 0);
+	const BasePlan city = standardBasePlan(BaseTier::City, BaseKind::Finished, 2, true);
+	const BasePlan town = standardBasePlan(BaseTier::Town, BaseKind::Finished, 0, false);
+	const BasePlan hamlet = standardBasePlan(BaseTier::Hamlet, BaseKind::Finished, 0, false);
+	assert(city.pieces.size() == 10 && city.depots.size() == 1 && city.reach == 10);
+	assert(town.pieces.size() == 6 && hamlet.pieces.size() == 4 && hamlet.reach < city.reach);
+	const Torus t(64, 64);
+	const std::vector<unsigned char> all(t.size(), 1);
+	// A quarter turn: facing 1's footprints are facing 0's turned about the site.
+	const std::vector<unsigned char> f0 = baseFootprints(t, city, {{32, 32, 0}});
+	const std::vector<unsigned char> f1 = baseFootprints(t, city, {{32, 32, 1}});
+	// Three 4x4 footprints (swarm, barracks, racetrack) and seven 2x2 (three inns, hospital,
+	// school, two towers).
+	assert(std::count(f0.begin(), f0.end(), 1) == 3 * 16 + 7 * 4);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+			assert(f0[t.at(x, y)] == f1[t.at(32 - (y - 32), 32 + (x - 32))]);
+	for (int facing = 0; facing < 4; ++facing)
+		assert(basePlanFits(t, city, {32, 32, facing}, all, all));
+	std::vector<unsigned char> blocked = all, ringBlocked = all;
+	blocked[t.at(32, 32)] = 0;     // a swarm tile
+	ringBlocked[t.at(34, 32)] = 0; // the tile right of the swarm: its walking ring
+	assert(!basePlanFits(t, city, {32, 32, 0}, blocked, all));
+	assert(!basePlanFits(t, city, {32, 32, 0}, all, ringBlocked));
+	const std::vector<unsigned char> around = baseSurroundings(t, city, {{32, 32, 0}});
+	assert(around[t.at(34, 32)] && around[t.at(32, 32)] && !around[t.at(32, 32 + 12)]);
+		// A finished city on grass: every building, its stock, the garrison, the lists, the start.
+		Game game(nullptr);
+		grassMap(game, 6, 6);
+		GenerationRequest request;
+		request.seed = 5;
+		request.wDec = request.hDec = 6;
+		request.nbTeams = 1;
+		request.nbWorkers = 4;
+		GenerationContext context(request);
+		game.addTeam();
+		assert(raiseBase(game, context, 0, city, {32, 32, 2}, large, nullptr, "bases"));
+		const Team &team = *game.teams[0];
+		int counts[16] = {}, wheat = 0, bullets = 0;
+		for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
+			if (const Building *b = team.myBuildings[slot])
+				assert(!b->type->isBuildingSite);
+				++counts[b->type->shortTypeNum];
+				wheat += b->resources[WHEAT];
+				bullets += b->bullets;
+		assert(counts[IntBuildingType::SWARM_BUILDING] == 1 &&
+			   counts[IntBuildingType::FOOD_BUILDING] == 3 &&
+			   counts[IntBuildingType::HEAL_BUILDING] == 1 &&
+			   counts[IntBuildingType::SCIENCE_BUILDING] == 1 &&
+			   counts[IntBuildingType::ATTACK_BUILDING] == 1 &&
+			   counts[IntBuildingType::WALKSPEED_BUILDING] == 1 &&
+			   counts[IntBuildingType::DEFENSE_BUILDING] == 2);
+		assert(wheat == 20 + 30 + 30 + 10 && bullets == 2 * 12);
+		assert(team.swarms.size() == 1 && team.turrets.size() == 2);
+		int workers = 0, warriors = 0, explorers = 0;
+		for (int slot = 0; slot < Unit::MAX_COUNT; ++slot)
+			if (const Unit *unit = team.myUnits[slot])
+				(unit->typeNum == WORKER ? workers : unit->typeNum == WARRIOR ? warriors : explorers)++;
+		assert(workers == 32 && warriors == 12 && explorers == 4);
+		// At facing 2 the swarm's frame corners (-2,-2)..(1,1) turn to (2,2)..(-1,-1), so its
+		// top-left lands one tile up and left of the site.
+		assert(team.startPosSet == Team::START_POS_FROM_SWARM && team.startPosX == 32 - 1 &&
+			   team.startPosY == 32 - 1 && context.bootX[0] == team.startPosX &&
+			   context.bootY[0] == team.startPosY);
+		assert(validateBase(game, t, 0, city, {32, 32, 2}, 32).empty());
+		assert(!validateBase(game, t, 0, city, {32, 32, 2}, 31).empty());
+		assert(!validateBase(game, t, 0, city, {33, 32, 2}, 32).empty());
+		assert(!validateBase(game, t, 0, city, {32, 32, 0}, 32).empty());
+		// The structural check counts the colony's workers against the lobby's value unless the
+		// definition owns the count.
+		GeneratorDefinition definition{"test-base", 998, "Test base", 1, false, {}, nullptr, true};
+		assert(validateGeneratedWorld(game, request, definition) == "Incomplete starting colony");
+		definition.startingWorkers = [](const GenerationRequest &) { return 32; };
+		assert(validateGeneratedWorld(game, request, definition).empty());
+		plantBaseDepots(game.map, context, t, city, {32, 32, 2});
+		assert(countResource(game.map, STONE) > 0);
+		// A city of sites: the swarm and one inn finished, eight level-0 sites, wood stacked beside.
+		Game game(nullptr);
+		grassMap(game, 6, 6);
+		GenerationRequest request;
+		request.seed = 6;
+		request.wDec = request.hDec = 6;
+		request.nbTeams = 1;
+		GenerationContext context(request);
+		game.addTeam();
+		const BasePlan sites = standardBasePlan(BaseTier::City, BaseKind::Sites, 0, false);
+		assert(sites.pieces.size() == 10 && sites.depots.size() == 4);
+		assert(raiseBase(game, context, 0, sites, {20, 40, 3}, baseGarrison(24, false), nullptr, "bases"));
+		int finished = 0, unfinished = 0;
+		for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
+			if (const Building *b = game.teams[0]->myBuildings[slot])
+				if (b->type->isBuildingSite)
+				{
+					assert(b->type->level == 0 && b->hp == 1);
+					++unfinished;
+				}
+				else
+					++finished;
+		assert(finished == 2 && unfinished == 8);
+		plantBaseDepots(game.map, context, t, sites, {20, 40, 3});
+		assert(countResource(game.map, WOOD) >= 4);
+		assert(validateBase(game, t, 0, sites, {20, 40, 3}, 24).empty());
+		// A square compound: interior, wall and two gates; the walls' standing proof.
+		CompoundMasks masks(t.size());
+		stampCompound(t, {32, 32, 0}, 5, 2, 3, 0, masks);
+		int interior = 0, wall = 0, gate = 0;
+		for (int i = 0; i < t.size(); ++i)
+		{
+			interior += masks.interiorOf[i] == 0;
+			wall += masks.wall[i];
+			gate += masks.gate[i];
+		}
+		assert(interior == 81 && wall == 34 && gate == 6);
+		assert(masks.gate[t.at(37, 32)] && masks.gate[t.at(27, 33)] && masks.wall[t.at(32, 37)]);
+		assert(compoundsApart(t, {32, 32, 0}, {45, 32, 0}, 5, 2) && !compoundsApart(t, {32, 32, 0}, {44, 32, 0}, 5, 2));
+		Game game(nullptr);
+		grassMap(game, 6, 6);
+		assert(!wallStanding(game.map, t, masks.wall, masks.gate, "test wall").empty());
+		for (int i = 0; i < t.size(); ++i)
+			if (masks.wall[i])
+				game.map.setResource(i % t.w, i / t.w, STONE, 1);
+		assert(wallStanding(game.map, t, masks.wall, masks.gate, "test wall").empty());
+		game.map.setResource(37, 32, STONE, 1);
+		assert(!wallStanding(game.map, t, masks.wall, masks.gate, "test wall").empty());
+		// Lanes about 12 apart on a 64x32 torus: five columns, three rows, spread by whole tiles.
+		const Torus small(64, 32);
+		const LaneGrid grid = layLanes(small, 12, 3, 5);
+		assert(grid.columns() == 5 && grid.rows() == 3);
+		const std::vector<int> expectedX{3, 15, 28, 41, 54}, expectedY{5, 15, 26};
+		assert(grid.laneX == expectedX && grid.laneY == expectedY);
+		assert(grid.column(20) == 1 && grid.column(1) == 4 && grid.row(30) == 2 && grid.row(5) == 0);
+		assert(grid.columnSpan(0).start == 4 && grid.columnSpan(0).count == 11);
+		assert(grid.columnSpan(4).start == 55 && grid.columnSpan(4).count == 12);
+		const std::vector<unsigned char> lanes = laneTiles(grid);
+		assert(std::count(lanes.begin(), lanes.end(), 1) == 5 * 32 + 3 * 64 - 15);
+		TerrainSketch sketch(small.size(), GRASS);
+		Farm pads;
+		pads.water.assign(small.size(), 0);
+		pads.sand.assign(small.size(), 0);
+		pads.plot.assign(small.size(), 0);
+		pads.row.assign(small.size(), -1);
+		int x0 = -1, y0 = -1;
+		assert(stampLotPad(sketch, grid, pads, 1, 1, {6, 4, 2}, x0, y0) == 6 && x0 == 18 && y0 == 17);
+		assert(std::count(pads.plot.begin(), pads.plot.end(), 1) == 36);
+		assert(sketch[small.at(17, 16)] == SAND && sketch[small.at(18, 17)] == GRASS &&
+			   sketch[small.at(25, 24)] == SAND);
+		assert(stampLotPad(sketch, grid, pads, 2, 1, {6, 4, 2}, x0, y0, 2) == 4);
+		assert(stampLotPad(sketch, grid, pads, 3, 1, {6}, x0, y0, 3) == 0);
+		// Routes across the wrap: midpoints, neighbours, stepping stones and headings.
+		const ShapePoint a{60, 10}, b{4, 10}, c{32, 40};
+		const ShapePoint middle = midpointAcross(t, a, b);
+		assert(middle.x == 0 && middle.y == 10 && siteDistance(t, a, b) == 8);
+		const auto pairs = nearestPairs(t, {a, b, c}, 1);
+		const std::pair<int, int> ab(0, 1), ac(0, 2);
+		assert(pairs.size() == 2 && pairs[0] == ab && pairs[1] == ac);
+		const auto stones = waypointsAlong(t, a, b, 3, 1, 1);
+		assert(stones.size() == 3 && stones[0].x == 61 && stones[1].x == 0 && stones[2].x == 3);
+		assert(waypointsAlong(t, a, b, 3, 5, 5).empty());
+		assert(quarterTurn(headingAcross(t, a, b)) == 0 && quarterTurn(headingAcross(t, b, a)) == 2);
+		assert(quarterTurn(headingAcross(t, {10, 10}, {10, 20})) == 1 &&
+			   quarterTurn(headingAcross(t, {10, 20}, {10, 10})) == 3);
 }
 
 inline void toolkitChecks()
 {
 	boundaryExclusionChecks();
 	floodChecks();
+	baseChecks();
 	sketchChecks();
 	plantingChecks();
 	roadChecks();
@@ -1795,6 +1981,8 @@ inline void toolkitChecks()
 	partitionChecks();
 	gatePartitionChecks();
 	puts("PASS shared toolkit: floods, sketch, planting, roads, settlements, balanced starts, "
+	puts("PASS shared toolkit: floods, premade bases, compounds, lanes and lots, routes, sketch, "
+		 "planting, roads, settlements, balanced starts, "
 		 "scatter, lattice noise, wedge frame, shuffle, drawing, branches, stretch, sand patches, "
 		 "algae growth, fields and clumps, walls and tower reach, territories, arena primitives, "
 		 "sealed lines and polygons, tessellations and warp, graph mazes, shortcuts, cell "

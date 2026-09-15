@@ -2502,3 +2502,43 @@ Taille des champs
 Passages existants
 [Wooded boundary share]
 Part des limites boisées
+[The Glacis]
+Le Glacis
+[Allotments]
+Jardins familiaux
+[Caravanserai]
+Caravansérail
+[Colonists]
+Colons
+[Garrison]
+Garnison
+[Compound size]
+Taille de l'enceinte
+[Wall gates]
+Portes du mur
+[Wadi count]
+Nombre d'oueds
+[Ford spacing]
+Espacement des gués
+[Lot size]
+Taille des lots
+[Mixed]
+Mixte
+[Small]
+Petit
+[Large]
+Grand
+[Lane spacing]
+Espacement des allées
+[Ditch every]
+Fossé toutes les
+[Wood share]
+Part de bois
+[Capital size]
+Taille de la capitale
+[Oasis spacing]
+Espacement des oasis
+[Outposts per colony]
+Avant-postes par colonie
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+La base ne tient pas sur son terrain à cette taille ; augmentez le réglage de taille ou réduisez les Colons.

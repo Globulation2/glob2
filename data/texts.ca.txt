@@ -2500,3 +2500,43 @@ Gruix de les bardisses
 Passos existents
 [Wooded boundary share]
 Proporció de límits arbrats
+[The Glacis]
+El Glacis
+[Allotments]
+Horts
+[Caravanserai]
+Caravanserrall
+[Colonists]
+Colons
+[Garrison]
+Guarnició
+[Compound size]
+Mida del recinte
+[Wall gates]
+Portes de la muralla
+[Wadi count]
+Nombre d'uadis
+[Ford spacing]
+Separació dels guals
+[Lot size]
+Mida de les parcel·les
+[Mixed]
+Mixta
+[Small]
+Petita
+[Large]
+Gran
+[Lane spacing]
+Separació dels camins
+[Ditch every]
+Rasa cada
+[Wood share]
+Proporció de fusta
+[Capital size]
+Mida de la capital
+[Oasis spacing]
+Separació dels oasis
+[Outposts per colony]
+Avançades per colònia
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+La base no cap en el seu terreny amb aquesta mida; apugeu el control de mida o abaixeu els Colons.

@@ -2488,3 +2488,43 @@ Emoji
 既存の通り道
 [Wooded boundary share]
 樹木のある境界の割合
+[The Glacis]
+斜堤
+[Allotments]
+市民農園
+[Caravanserai]
+キャラバンサライ
+[Colonists]
+入植者
+[Garrison]
+守備隊
+[Compound size]
+城郭の大きさ
+[Wall gates]
+城壁の門数
+[Wadi count]
+ワジの数
+[Ford spacing]
+浅瀬の間隔
+[Lot size]
+区画の大きさ
+[Mixed]
+混合
+[Small]
+小
+[Large]
+大
+[Lane spacing]
+小道の間隔
+[Ditch every]
+溝の間隔
+[Wood share]
+木材の割合
+[Capital size]
+首都の大きさ
+[Oasis spacing]
+オアシスの間隔
+[Outposts per colony]
+コロニーごとの前哨数
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+この大きさでは拠点が地面に収まりません。大きさの設定を上げるか、入植者を減らしてください。

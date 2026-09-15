@@ -24,4 +24,10 @@ struct GeneratorDefinition
 	// than marking every candidate down for it.
 	MapGeneration::StartQualityWeights qualityWeights{};
 	MapGeneration::StartQualityScale qualityScale{};
+	// How many WORKER units every colony starts with, when that is not the lobby's shared "Starting
+	// workers" control (1 to 8). A premade-base landscape (shared/Bases.h) owns its count through a
+	// control of its own and ignores the lobby's value; the structural check after generation
+	// (validateGeneratedWorld) compares against this instead. nullptr means request.nbWorkers, as
+	// every other landscape. Declared last so every existing positional initialiser stays valid.
+	int (*startingWorkers)(const GenerationRequest &) = nullptr;
 };

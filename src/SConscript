@@ -234,6 +234,9 @@ map/generator/generators/CanalsGenerator.cpp
 map/generator/generators/OldGrowthGenerator.cpp
 map/generator/generators/RainShadowGenerator.cpp
 map/generator/generators/FingerprintGenerator.cpp
+map/generator/generators/GlacisGenerator.cpp
+map/generator/generators/AllotmentsGenerator.cpp
+map/generator/generators/CaravanseraiGenerator.cpp
 map/generator/shared/legacy/Distances.cpp
 map/generator/shared/HeightMap.cpp
 map/generator/shared/Noise.cpp
@@ -244,6 +247,9 @@ map/generator/shared/Grid.cpp
 map/generator/shared/Walls.cpp
 map/generator/shared/Farmland.cpp
 map/generator/shared/Towers.cpp
+map/generator/shared/Bases.cpp
+map/generator/shared/Compounds.cpp
+map/generator/shared/Lots.cpp
 map/generator/shared/Tessellation.cpp
 map/generator/shared/GraphMaze.cpp
 map/generator/shared/Orbits.cpp

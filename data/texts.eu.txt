@@ -2502,3 +2502,43 @@ Heskaien lodiera
 Dauden pasabideak
 [Wooded boundary share]
 Zuhaitzez estalitako mugen proportzioa
+[The Glacis]
+Glazisa
+[Allotments]
+Baratzeak
+[Caravanserai]
+Karabanserai
+[Colonists]
+Kolonoak
+[Garrison]
+Goarnizioa
+[Compound size]
+Esparruaren tamaina
+[Wall gates]
+Harresiko ateak
+[Wadi count]
+Uadi kopurua
+[Ford spacing]
+Ibien arteko tartea
+[Lot size]
+Lursailen tamaina
+[Mixed]
+Nahasia
+[Small]
+Txikia
+[Large]
+Handia
+[Lane spacing]
+Bidexken arteko tartea
+[Ditch every]
+Lubakien tartea
+[Wood share]
+Egur proportzioa
+[Capital size]
+Hiriburuaren tamaina
+[Oasis spacing]
+Oasien arteko tartea
+[Outposts per colony]
+Aurrepostuak koloniako
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+Basea ez da bere lurrean sartzen tamaina honetan; igo tamainaren kontrola edo jaitsi Kolonoak.

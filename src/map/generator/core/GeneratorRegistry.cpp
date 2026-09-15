@@ -36,6 +36,9 @@
 #include "BraidedDeltaGenerator.h"
 #include "BreachableHighlandsGenerator.h"
 #include "HedgerowCountryGenerator.h"
+#include "GlacisGenerator.h"
+#include "AllotmentsGenerator.h"
+#include "CaravanseraiGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -153,12 +156,15 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 carouselDefinition(),
 											 oldGrowthDefinition(),
 											 anthillDefinition(),
+											 glacisDefinition(),
 											 coralDefinition(),
 											 emojiDefinition(),
 											 fortsDefinition(),
 											 braidedDeltaDefinition(),
 											 breachableHighlandsDefinition(),
 											 hedgerowCountryDefinition(),
+											 allotmentsDefinition(),
+											 caravanseraiDefinition(),
 											 uniformDefinition()});
 	return registry;
 }

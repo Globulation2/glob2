@@ -2488,3 +2488,43 @@ Kích thước cánh đồng
 Lối đi có sẵn
 [Wooded boundary share]
 Tỷ lệ ranh giới có cây
+[The Glacis]
+Dốc thành
+[Allotments]
+Vườn phân lô
+[Caravanserai]
+Lữ quán thương đoàn
+[Colonists]
+Dân định cư
+[Garrison]
+Đội đồn trú
+[Compound size]
+Kích thước thành lũy
+[Wall gates]
+Cổng tường
+[Wadi count]
+Số suối cạn
+[Ford spacing]
+Khoảng cách bãi cạn
+[Lot size]
+Kích thước lô
+[Mixed]
+Hỗn hợp
+[Small]
+Nhỏ
+[Large]
+Lớn
+[Lane spacing]
+Khoảng cách lối đi
+[Ditch every]
+Mương mỗi
+[Wood share]
+Tỷ lệ gỗ
+[Capital size]
+Kích thước thủ đô
+[Oasis spacing]
+Khoảng cách ốc đảo
+[Outposts per colony]
+Số tiền đồn mỗi thuộc địa
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+Căn cứ không vừa nền đất ở kích thước này; hãy tăng điều khiển kích thước hoặc giảm Dân định cư.

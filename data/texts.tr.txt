@@ -2500,3 +2500,43 @@ Tarla boyutu
 Mevcut geçitler
 [Wooded boundary share]
 Ağaçlık sınır oranı
+[The Glacis]
+Glasi
+[Allotments]
+Hobi Bahçeleri
+[Caravanserai]
+Kervansaray
+[Colonists]
+Yerleşimciler
+[Garrison]
+Garnizon
+[Compound size]
+Sur içi boyutu
+[Wall gates]
+Sur kapıları
+[Wadi count]
+Kuru dere sayısı
+[Ford spacing]
+Sığ geçit aralığı
+[Lot size]
+Parsel boyutu
+[Mixed]
+Karışık
+[Small]
+Küçük
+[Large]
+Büyük
+[Lane spacing]
+Yol aralığı
+[Ditch every]
+Hendek aralığı
+[Wood share]
+Odun oranı
+[Capital size]
+Başkent boyutu
+[Oasis spacing]
+Vaha aralığı
+[Outposts per colony]
+Koloni başına karakol
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+Üs bu boyutta zeminine sığmıyor; boyut ayarını yükseltin ya da Yerleşimciler değerini düşürün.

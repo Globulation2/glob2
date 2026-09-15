@@ -2568,3 +2568,43 @@ Hegntykkelse
 Eksisterende åbninger
 [Wooded boundary share]
 Andel skovbevoksede grænser
+[The Glacis]
+Glaciset
+[Allotments]
+Kolonihaver
+[Caravanserai]
+Karavanserai
+[Colonists]
+Kolonister
+[Garrison]
+Garnison
+[Compound size]
+Indhegningens størrelse
+[Wall gates]
+Porte i muren
+[Wadi count]
+Antal wadier
+[Ford spacing]
+Afstand mellem vadesteder
+[Lot size]
+Parcelstørrelse
+[Mixed]
+Blandet
+[Small]
+Lille
+[Large]
+Stor
+[Lane spacing]
+Afstand mellem stier
+[Ditch every]
+Grøft for hver
+[Wood share]
+Andel af træ
+[Capital size]
+Hovedstadens størrelse
+[Oasis spacing]
+Afstand mellem oaser
+[Outposts per colony]
+Forposter pr. koloni
+[The base does not fit its ground at this size; raise the size control or lower Colonists.]
+Basen passer ikke til sin grund ved denne størrelse; hæv størrelsesindstillingen eller sænk Kolonister.
