@@ -253,6 +253,10 @@ map/generator/shared/Towers.cpp
 map/generator/shared/Bases.cpp
 map/generator/shared/Compounds.cpp
 map/generator/shared/Lots.cpp
+map/generator/shared/WorldAtlas.cpp
+map/generator/shared/WorldAtlasData.cpp
+map/generator/shared/Raster.cpp
+map/generator/shared/Landmass.cpp
 map/generator/shared/Tessellation.cpp
 map/generator/shared/GraphMaze.cpp
 map/generator/shared/Orbits.cpp
@@ -264,10 +268,6 @@ map/generator/shared/Patterns.cpp
 map/generator/shared/Channels.cpp
 map/generator/shared/Room.cpp
 map/generator/shared/Biomes.cpp
-map/generator/shared/WorldAtlas.cpp
-map/generator/shared/WorldAtlasData.cpp
-map/generator/shared/Raster.cpp
-map/generator/shared/Landmass.cpp
 map/generator/shared/LatticeNoise.cpp
 map/generator/shared/Pipeline.cpp
 map/generator/shared/Planting.cpp
