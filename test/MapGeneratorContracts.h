@@ -516,7 +516,7 @@ inline void savannahContracts()
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("savannah"));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(definition.legacyId == 33 && definition.revision == 1);
+	assert(definition.legacyId == 45 && definition.revision == 2);
 	assert(request.option("watering-holes") == 1 && request.option("dry-patches") == 8);
 	GenerationService service;
 	for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}})
