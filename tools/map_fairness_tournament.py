@@ -235,7 +235,7 @@ def produce_map(config, paths, generator, seed):
     remove_tree(profile, paths['out'])
     record = parse_study(stdout)
     for entry in record.get('files', []):
-        entry['path'] = str(directory / 'native' / f'map-r{entry["rotation"]}.map')
+        entry['path'] = str(directory / 'native' / f'map-r{entry["rotation"]}.map.gz')
     record.update({
         'key': key, 'method': method, 'map_seed': seed, 'colonies': colonies,
         'width': config['width'], 'height': config['height'], 'controls': controls,
@@ -373,7 +373,9 @@ def run_game(config, paths, record, job, directory=None, force=False):
     (profile / 'maps').mkdir(parents=True)
     map_file = next(f for f in record['files'] if f['rotation'] == job['rotation'])
     map_name = f'fairness-{record["key"]}-r{job["rotation"]}'
-    os.symlink(Path(map_file['path']).resolve(), profile / 'maps' / f'{map_name}.map')
+    # map_file's content is always gzip-compressed (map generation always produces
+    # a ".gz" file); name the symlink to match so the engine inflates it.
+    os.symlink(Path(map_file['path']).resolve(), profile / 'maps' / f'{map_name}.map.gz')
     env = dict(os.environ)
     env.update(GLOB2_USER_DIR=str(profile), GLOB2_TEST_SEED=str(job['seed']),
                GLOB2_TEAM_RESULTS='1', GLOB2_TEST_MAX_TICKS=str(int(config['tick_cap'])),

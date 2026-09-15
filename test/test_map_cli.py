@@ -83,7 +83,10 @@ def main():
         assert '--preview-map' in run('--help')
         config = OUT / 'maze.cfg'
         config.write_text('# Test CLI precedence even before --config\nseed=99\nwidth=256\nheight=128\nteams=4\nworkers=4\ncell-shape=1\n')
-        first, second, saved, loaded = (OUT / name for name in ('cli.png','config.png','maze.map','loaded.png'))
+        # --output writes maze.map.gz (an explicit ".map" destination gets a ".gz"
+        # suffix); naming the variable with the suffix already applied means the
+        # CLI's actual output path and this variable are exactly the same string.
+        first, second, saved, loaded = (OUT / name for name in ('cli.png','config.png','maze.map.gz','loaded.png'))
         if GENERATION_ONLY:
             env['SDL_VIDEODRIVER'] = 'invalid'
             run('--generate-map','maze','--seed','7','--width','128','--height','128',
@@ -123,7 +126,7 @@ def main():
         run('--preview-map',saved,'--output','relative.png')
         assert png(profile/'relative.png')[:2] == (256,256), 'CLI changed working directory'
         assert saved.read_bytes() == saved_before, 'Preview modified input map'
-        for fixture in ('team-stats/version88.game','wrapped-building/reproducer.game','entering-explorer/reproducer.game'):
+        for fixture in ('team-stats/version88.game.gz','wrapped-building/reproducer.game.gz','entering-explorer/reproducer.game.gz'):
             source = ROOT / 'test/fixtures' / fixture
             old = source.read_bytes()
             run('--preview-map',source,'--output',OUT / (source.parent.name+'.png'))
@@ -136,7 +139,7 @@ def main():
             run('--generate-map','maze','--seed','7','--width','256','--height','128',
                 '--preview',OUT/f'rectangular-{scale}.png','--preview-scale',scale)
             assert png(OUT/f'rectangular-{scale}.png')[:2] == (256*scale,128*scale)
-        premade = next(iter(sorted((ROOT / 'maps').glob('*.map'))))
+        premade = next(iter(sorted((ROOT / 'maps').glob('*.map.gz'))))
         run('--preview-map',premade,'--output',OUT / 'premade.png')
         png(OUT / 'premade.png')
         invalid = [

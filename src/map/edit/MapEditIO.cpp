@@ -22,7 +22,7 @@ bool MapEdit::load(const std::string filename)
 {
 	assert(filename.size());
 
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	InputStream *stream = new BinaryInputStream(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), filename));
 	if (stream->isEndOfStream())
 	{
 		std::cerr << "MapEdit::load(\"" << filename << "\") : error, can't open file." << std::endl;
@@ -87,26 +87,21 @@ bool MapEdit::save(const std::string filename, const std::string name)
 
 	hasMapBeenModified = false;
 
-	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
-	if (stream->isEndOfStream())
+	const bool saved = Toolkit::getFileManager()->writeGzipAtomically(glob2GzipWritePath(filename),
+		[&](OutputStream &stream) { game.save(&stream, true, name); });
+	if (!saved)
 	{
 		std::cerr << "MapEdit::save(\"" << filename << "\",\"" << name << "\") : error, can't open file." << std::endl;
-		delete stream;
 		return false;
 	}
-	else
-	{
-		game.save(stream, true, name);
-		delete stream;
 
-		// Game::save() now restores mapHeader.mapName/isSavedGame so that
-		// in-game saves don't permanently clobber the live map name. The
-		// editor relies on the post-save mutation for its "current name"
-		// UI (the LoadSaveScreen default), so re-apply explicitly.
-		game.mapHeader.setMapName(name);
-		game.mapHeader.setIsSavedGame(false);
-		return true;
-	}
+	// Game::save() now restores mapHeader.mapName/isSavedGame so that
+	// in-game saves don't permanently clobber the live map name. The
+	// editor relies on the post-save mutation for its "current name"
+	// UI (the LoadSaveScreen default), so re-apply explicitly.
+	game.mapHeader.setMapName(name);
+	game.mapHeader.setIsSavedGame(false);
+	return true;
 }
 
 

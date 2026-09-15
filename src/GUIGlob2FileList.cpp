@@ -3,6 +3,8 @@
 
 #include "GUIGlob2FileList.h"
 #include "Game.h"
+#include <Toolkit.h>
+#include <FileManager.h>
 
 Glob2FileList::Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font,
 														 const std::string dir,
@@ -30,5 +32,14 @@ std::string Glob2FileList::fileToList(const std::string fileName) const
 
 std::string Glob2FileList::listToFile(const std::string listName) const
 {
-	return glob2NameToFilename(fullDir(), listName, extension);
+	const std::string rawPath = glob2NameToFilename(fullDir(), listName, extension);
+	return glob2PreferGzipReadPath(*Toolkit::getFileManager(), rawPath);
+}
+
+void Glob2FileList::generateList()
+{
+	if (extension.empty())
+		generateListFromExtensions({extension});
+	else
+		generateListFromExtensions({extension, extension + ".gz"});
 }

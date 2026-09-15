@@ -4,6 +4,7 @@
 #include "BinaryStream.h"
 #include "FileManager.h"
 #include "FileTransferMessages.h"
+#include "MapHeader.h"
 #include "StreamBackend.h"
 #include "Toolkit.h"
 #include "YOGClientFileAssembler.h"
@@ -42,9 +43,18 @@ void YOGClientFileAssembler::update()
 void YOGClientFileAssembler::startSendingFile(std::string mapname)
 {
 	std::shared_ptr<YOGClient> nclient(client);
-	Toolkit::getFileManager()->gzip(mapname, mapname+".gz");
+	FileManager& files = *Toolkit::getFileManager();
+	const std::string resolved = glob2PreferGzipReadPath(files, mapname);
+	// A locally compressed map is already the wire payload; only a legacy raw
+	// map needs gzipping once before it is sent.
+	std::string gzipFile = resolved;
+	if (!glob2IsGzipPath(resolved))
+	{
+		files.gzip(resolved, resolved+".gz");
+		gzipFile = resolved+".gz";
+	}
 	finished=0;
-	istream.reset(new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapname+".gz")));
+	istream.reset(new BinaryInputStream(files.openInputStreamBackend(gzipFile)));
 	istream->seekFromEnd(0);
 	size=istream->getPosition();
 	istream->seekFromStart(0);
@@ -86,14 +96,18 @@ void YOGClientFileAssembler::handleMessage(std::shared_ptr<NetMessage> message)
 			if(finished>=size)
 			{
 				mode=NoTransfer;
-				//Write from the buffer, obackend, to the file
-				BinaryOutputStream* fstream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename+".gz"));
+				// The wire payload is always a single gzip layer of the map bytes;
+				// store it directly as the new on-disk container (atomically, so a
+				// crash mid-write can't leave a corrupt file) instead of unzipping
+				// to a raw file. An older receiver's gunzip-to-raw still works on
+				// this same payload, so this is compatible with peers running that code.
 				ostream->seekFromEnd(0);
-				fstream->write(obackend->getBuffer(), ostream->getPosition(), "");
-				delete fstream;
+				const size_t receivedSize = ostream->getPosition();
+				const char* receivedData = obackend->getBuffer();
+				Toolkit::getFileManager()->writeAtomically(filename+".gz", [&](OutputStream& stream) {
+					stream.write(receivedData, receivedSize, "");
+				});
 				ostream.reset();
-				//unzip file
-				Toolkit::getFileManager()->gunzip(filename+".gz", filename);
 			}
 		}
 	}

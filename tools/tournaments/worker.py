@@ -264,7 +264,10 @@ def execute(root, identity):
             bundle = inspect_bundle(worker.root / 'bundles' / job['build'])
             inputs = {}
             for name, artifact in attempt['resolved_inputs'].items():
-                target = directory / 'inputs' / identifier(name)
+                # Keep a ".gz" source suffix: the engine decides whether to inflate
+                # a map/save file by its extension, not its content.
+                suffix = '.gz' if artifact.get('path', '').endswith('.gz') else ''
+                target = directory / 'inputs' / (identifier(name) + suffix)
                 copy_decoded(worker.root / 'objects' / artifact['sha256'], target, artifact)
                 inputs[name] = str(target)
             out = directory / 'output'
@@ -362,7 +365,7 @@ def pack(root, identity):
             artifacts.append(meta)
         present = {a['path'] for a in artifacts}
         requested = list(attempt['job']['outputs'].get('required', []))
-        requested += [f'{s}.game' for s in attempt['job']['outputs'].get('saves', []) if s in ('initial', 'final')]
+        requested += [f'{s}.game.gz' for s in attempt['job']['outputs'].get('saves', []) if s in ('initial', 'final')]
         if attempt['job']['outputs'].get('replay'):
             requested.append('game.replay')
         if 'checksums' in attempt['job']['outputs'].get('telemetry', []):
@@ -370,7 +373,7 @@ def pack(root, identity):
         if 'terrain' in attempt['job']['outputs'].get('reports', []):
             requested.append('terrain.txt')
         if attempt['job']['outputs'].get('map'):
-            requested += [f'map-r{i}.map' for i in range(attempt['job']['config'].get('rotations', 1))]
+            requested += [f'map-r{i}.map.gz' for i in range(attempt['job']['config'].get('rotations', 1))]
         missing = sorted(set(requested) - present)
         if missing and execution['category'] == 'success':
             execution['category'] = 'artifact_failure'

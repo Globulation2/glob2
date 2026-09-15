@@ -41,6 +41,17 @@ private:
 		return nameToFilenameFunc(fullDir(), listName, extension);
 	}
 
+	// Also lists "<extension>.gz" files (a no-op for extensions, like
+	// "replay", that are never gzip-compressed), so a Load Game/Script list
+	// still shows entries once the matching files are stored compressed.
+	void generateList() override
+	{
+		if (extension.empty())
+			generateListFromExtensions({extension});
+		else
+			generateListFromExtensions({extension, extension + ".gz"});
+	}
+
 private:
 	std::string (*filenameToNameFunc)(const std::string& filename);
 	std::string (*nameToFilenameFunc)(const std::string& dir, const std::string& name, const std::string& extension);

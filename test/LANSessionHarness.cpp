@@ -167,11 +167,15 @@ int host(int cycles, const std::string& capture)
 	auto game = std::make_shared<MultiplayerGame>(client);
 	client->setMultiplayerGame(game);
 	game->createNewGame("LAN regression");
-	// A private map name forces a real transfer without touching user maps.
+	// A private map name forces a real transfer without touching user maps. The
+	// source fixture is already gzip-compressed, so copying its exact bytes
+	// under the new name exercises "send a locally compressed map without
+	// gzipping it again" on the host side of the transfer.
 	MapHeader map = Engine::loadMapHeader("maps/FourSquares1.map");
 	map.setMapName("LAN regression transfer");
-	std::filesystem::copy_file("maps/FourSquares1.map",
-		Toolkit::getFileManager()->getDir(0) + "/" + map.getFileName(),
+	const std::string sourcePath = glob2PreferGzipReadPath(*Toolkit::getFileManager(), "maps/FourSquares1.map");
+	std::filesystem::copy_file(sourcePath,
+		Toolkit::getFileManager()->getDir(0) + "/" + glob2GzipWritePath(map.getFileName()),
 		std::filesystem::copy_options::overwrite_existing);
 	game->setMapHeader(map);
 	HostScreen screen(game, cycles, capture);
@@ -213,13 +217,17 @@ int main(int argc, char** argv)
 	if (std::string(argv[1]) == "host") rc = host(std::stoi(argv[3]), argv[4]);
 	else for (int cycle = 0; cycle < std::stoi(argv[3]) && !rc; ++cycle)
 	{
-		const auto downloaded = std::filesystem::path(globals.fileManager->getDir(0)) / "maps/LAN_regression_transfer.map";
+		// A new receiver stores the download as ".gz" without unzipping it (see
+		// YOGClientFileAssembler::handleMessage), so this is the file to expect.
+		const auto downloaded = std::filesystem::path(globals.fileManager->getDir(0)) / "maps/LAN_regression_transfer.map.gz";
 		// Force a second request too: rejoining must reuse the server's upload
 		// rather than append another copy of its chunks to the cached transfer.
 		std::filesystem::remove(downloaded);
 		JoinScreen screen(argv[2], std::string(argv[4]) + "-" + std::to_string(cycle + 1) + ".bmp");
 		rc = screen.execute(globals.gfx, 20);
-		std::ifstream original("maps/FourSquares1.map", std::ios::binary);
+		// The host sent its own copy of the fixture's exact gzip bytes unchanged
+		// (see above), so the download should still match them byte for byte.
+		std::ifstream original(glob2PreferGzipReadPath(*globals.fileManager, "maps/FourSquares1.map"), std::ios::binary);
 		std::ifstream received(downloaded, std::ios::binary);
 		std::string expected((std::istreambuf_iterator<char>(original)), {});
 		std::string actual((std::istreambuf_iterator<char>(received)), {});

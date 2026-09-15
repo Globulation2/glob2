@@ -6,6 +6,7 @@
 #include "FileManager.h"
 #include "GUIList.h"
 #include <string>
+#include <vector>
 
 namespace GAGGUI
 {
@@ -53,8 +54,19 @@ namespace GAGGUI
 		//! Regenerate the list content from the current directory.
 		//! Dispatches through the virtual fileToList/listToFile, so the
 		//! constructors do not call it; call it once the subclass is built.
-		void generateList();
+		//! Virtual so a subclass can list more than one extension (see
+		//! generateListFromExtensions); directory navigation inside this class
+		//! calls generateList() on itself, so only overriding, not hiding, reaches it.
+		virtual void generateList();
 		//! Called when selection changes. Override List behaviour, enter subfolder if enabled and possible and signal parent otherwise
 		void selectionChanged();
+
+	protected:
+		//! Regenerates the list by scanning, in order, each extension in
+		//! `extensions` under dir/current; a display name (per fileToList)
+		//! produced by more than one extension keeps the last match. Passing
+		//! {extension} reproduces generateList()'s exact behavior. Subfolders
+		//! are only collected once, from the first extension scanned.
+		void generateListFromExtensions(const std::vector<std::string>& extensions);
 	};
 }
