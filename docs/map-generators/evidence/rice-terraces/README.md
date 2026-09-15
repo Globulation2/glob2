@@ -96,3 +96,7 @@ No simulation, save-format, replay acceptance or network version rules changed.
 Windows generation and cross-platform per-tick simulation checksums were not
 verified. Cross-platform claims here concern map generation only. Human gameplay
 review remains outstanding.
+
+Revision 6 (lobed contours), seed 7, 256×256, four colonies:
+
+![Revision 6, seed 7](revision6-seed-7.png)
