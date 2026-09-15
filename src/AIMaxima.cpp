@@ -648,7 +648,7 @@ Maxima::PolicyBid::PolicyBid()
 
 
 Maxima::EnvironmentModel::EnvironmentModel()
-	: known_tiles(0), accessible_corn(0), accessible_wood(0),
+	: known_tiles(0), accessible_corn(0), accessible_corn_fraction(0), accessible_wood(0),
 	  accessible_stone(0), accessible_algae(0), buildable_tiles(0),
 	  water_tiles(0), feeding_capacity(0), food_headroom(70), resource_capacity(50), space_capacity(50),
 	  food_security(70), abundance(50), terrain_abundance(50),
@@ -1243,6 +1243,7 @@ void Maxima::update_environment_model(Context& echo)
 		   || echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
 			food_capacity+=nearby_farm_capacity(echo,*i,&food_tiles);
 	observed.accessible_corn=int(food_capacity/65536);
+	observed.accessible_corn_fraction=int(food_capacity%65536);
 	observed.accessible_wood=resources.accessibleWoodTiles;
 	observed.accessible_stone=resources.accessibleStoneTiles;
 	for(int x=0; x<map.get_width(); ++x)
@@ -1351,6 +1352,7 @@ void Maxima::update_environment_model(Context& echo)
 	// smoothed to prevent one unlucky harvest or sighting from thrashing policy.
 	environment.known_tiles=observed.known_tiles;
 	environment.accessible_corn=observed.accessible_corn;
+	environment.accessible_corn_fraction=observed.accessible_corn_fraction;
 	environment.accessible_wood=observed.accessible_wood;
 	environment.accessible_stone=observed.accessible_stone;
 	environment.accessible_algae=observed.accessible_algae;
@@ -2612,10 +2614,11 @@ void Maxima::build_policy_bids()
 	growth.utility=demands.growth;
 	const SwarmController::Plan birth=SwarmController::plan(snapshot.workers,
 		snapshot.population, snapshot.critical_food, snapshot.unserved_food,
-		environment.accessible_corn, strategy.economy.swarm_labor_scale_percent,
+		environment.accessible_corn*65536LL+environment.accessible_corn_fraction,
+		strategy.economy.swarm_labor_scale_percent,
 		strategy.economy.swarm_food_per_worker_percent,
 		strategy.economy.swarm_pressure_sensitivity,
-		strategy.economy.swarm_workers_per_building);
+		strategy.economy.swarm_workers_per_building,65536);
 	growth.desired_swarms=birth.swarms;
 	growth.swarm_workers=birth.workers;
 	// Protected farm capacity is the ceiling on both targets. Asking for
@@ -3333,6 +3336,7 @@ void Maxima::emit_director_snapshot(Context& echo) const
 		<<"\tthreat_pressure="<<environment.threat_pressure
 		<<"\tknown_local_tiles="<<environment.known_tiles
 		<<"\taccessible_corn="<<environment.accessible_corn
+		<<"\taccessible_corn_fraction="<<environment.accessible_corn_fraction
 		<<"\taccessible_wood="<<environment.accessible_wood
 		<<"\taccessible_stone="<<environment.accessible_stone
 		<<"\taccessible_algae="<<environment.accessible_algae
@@ -4001,6 +4005,8 @@ template<class Archive> void Maxima::executionState(Archive& a)
 	a("development_cycle_pending",development_cycle_pending);
 	a("preemptive_defense_pending",preemptive_defense_pending);
 	a("reactive_defense_pending",reactive_defense_pending);
+	if(a.version()>=107)
+		a("environment.accessible_corn_fraction",environment.accessible_corn_fraction);
 }
 void Maxima::saveExecutionState(GAGCore::OutputStream* stream)
 {
@@ -4551,6 +4557,11 @@ bool Maxima::loadState(GAGCore::InputStream *stream, Player *player,
 	if(player && player->map)
 		initialize_farming_cache(context);
 	loadExecutionState(stream, versionMinor);
+	// Older saves omitted action replacement links. Recover identifiable live
+	// attempts, leaving historical actions detached; new saves restore exactly.
+	if(versionMinor<107)
+		development_planner.restoreRelocation(relocation_target_building,
+			relocation_target_since);
 	stream->readLeaveSection();
 	return true;
 }
@@ -5860,7 +5871,7 @@ void Maxima::update_food_retirement(Context& echo,
 	for(size_t b=0;b<world.buildings.size();++b)
 	{
 		const AIMaximaPlacement::WorldBuilding& building=world.buildings[b];
-		if(building.site)continue;
+		if(building.site||food_building_pending_deletion(echo,building.id))continue;
 		if(building.buildingType==IntBuildingType::FOOD_BUILDING)
 		{++completed_inns;inn_level[building.id]=std::max(1,building.level);}
 		else if(building.buildingType==IntBuildingType::SWARM_BUILDING)
@@ -5876,16 +5887,18 @@ void Maxima::update_food_retirement(Context& echo,
 	for(std::map<int,int>::const_iterator i=inn_level.begin();i!=inn_level.end();++i)
 		seats+=seats_of(i->second);
 
+	const AIMaximaPlacement::DevelopmentAction* relocation=current_food_relocation();
+	const int replacement=relocation?relocation->buildingId:-1;
 	const AIMaximaFoodLedger::ConsumerResult* worst=NULL;
 	for(size_t i=0;i<ledger.consumers.size();++i)
 	{
 		const AIMaximaFoodLedger::ConsumerResult& value=ledger.consumers[i];
 		if(value.key<0||!value.retirable)continue;
-		if(establishing.count(value.key)||food_retirement_issued.count(value.key))
+		if(establishing.count(value.key)||food_building_pending_deletion(echo,value.key))
 			continue;
-		// A nominated building is being rebuilt elsewhere, or waiting to hear
-		// that it cannot be; retirement resumes if the nomination is abandoned.
-		if(value.key==relocation_target_building)continue;
+		// Keep both sides of a handover until it finishes. Counts above exclude
+		// every queued deletion, including one just issued by relocation.
+		if(value.key==relocation_target_building||value.key==replacement)continue;
 		const int burden=value.kind==AIMaximaFoodLedger::InnConsumer ? inn_burden : swarm_burden;
 		if(value.coveragePercent>=burden)continue;
 		const std::map<int,int>::const_iterator since=
@@ -5940,6 +5953,35 @@ std::set<int> Maxima::establishing_colony_buildings() const
 	return establishing;
 }
 
+bool Maxima::food_building_pending_deletion(Context& echo,int id) const
+{
+	const Building* building=echo.get_building_register().get_building(id);
+	return food_retirement_issued.count(id)||relocation_destroy_issued.count(id)
+		||!building||building->buildingState==Building::WAITING_FOR_DESTRUCTION;
+}
+
+const AIMaximaPlacement::DevelopmentAction* Maxima::current_food_relocation() const
+{
+	if(relocation_target_building<0)return NULL;
+	const AIMaximaPlacement::DevelopmentAction* action=NULL;
+	for(const auto& entry:development_planner.actions())
+		if(entry.second.purpose==AIMaximaPlacement::Relocation
+		   &&entry.second.replacesBuildingId==relocation_target_building
+		   &&(!action||entry.second.id>action->id))
+			action=&entry.second;
+	return action;
+}
+
+void Maxima::finish_food_relocation()
+{
+	if(relocation_target_building>=0)
+		development_planner.finishRelocation(relocation_target_building);
+	relocation_target_building=-1;
+	relocation_target_since=-1;
+	relocation_completed_tick=-1;
+	last_food_relocation_tick=timer;
+}
+
 void Maxima::update_food_relocation(Context& echo,
 	const AIMaximaPlacement::WorldState& world)
 {
@@ -5947,9 +5989,7 @@ void Maxima::update_food_relocation(Context& echo,
 	if(!budget.food_relocation_enabled)
 	{
 		relocation_since.clear();
-		relocation_target_building=-1;
-		relocation_target_since=-1;
-		relocation_completed_tick=-1;
+		if(relocation_target_building>=0)finish_food_relocation();
 		return;
 	}
 	const AIMaximaFoodLedger::Result& ledger=
@@ -5973,7 +6013,7 @@ void Maxima::update_food_relocation(Context& echo,
 		const bool coverageRoom=100-value.coveragePercent
 			>=policy.relocationMinCoverageGainPercent;
 		if(establishing.count(value.key)||value.quality<threshold
-		   ||food_retirement_issued.count(value.key)||!(distanceRoom||coverageRoom))
+		   ||food_building_pending_deletion(echo,value.key)||!(distanceRoom||coverageRoom))
 		{relocation_since.erase(value.key);continue;}
 		if(!relocation_since.count(value.key))relocation_since[value.key]=timer;
 		if(timer-relocation_since[value.key]<budget.food_relocation_confirm_ticks)
@@ -6000,23 +6040,29 @@ void Maxima::update_food_relocation(Context& echo,
 			// The old building is gone, by our order or otherwise: finished.
 			emit_telemetry(echo,"food_relocation_done",
 				"\tbuilding_id="+boost::lexical_cast<std::string>(target));
-			relocation_target_building=-1;relocation_target_since=-1;
-			relocation_completed_tick=-1;
-			last_food_relocation_tick=timer;
+			finish_food_relocation();
 			return;
 		}
+		// A deletion already in flight owns this handover until the old building
+		// disappears. Keep protecting its replacement, without queuing it twice.
+		if(food_building_pending_deletion(echo,target))return;
 		// Follow the newest planner action for this nomination.
-		const DevelopmentAction* action=NULL;
-		for(const auto& entry:development_planner.actions())
-			if(entry.second.purpose==Relocation
-			   &&entry.second.replacesBuildingId==target
-			   &&(!action||entry.second.id>action->id))
-				action=&entry.second;
+		const DevelopmentAction* action=current_food_relocation();
 		const bool underway=action&&(action->state==ParcelReserved
 			||action->state==CreateIssued||action->state==SiteObserved);
 		if(action&&action->state==Completed)
 		{
 			const WorldBuilding* replacement=world.building(action->buildingId);
+			// Completed actions are historical: observe() no longer updates them.
+			// Losing the replacement must release the nomination and permit a retry.
+			if(!replacement||food_building_pending_deletion(echo,action->buildingId))
+			{
+				emit_telemetry(echo,"food_relocation_abandoned",
+					"\tbuilding_id="+boost::lexical_cast<std::string>(target)
+					+"\treason="+(replacement?"replacement_deleting":"replacement_missing"));
+				finish_food_relocation();
+				return;
+			}
 			if(replacement&&!replacement->site&&relocation_completed_tick<0)
 				relocation_completed_tick=timer;
 			// Capacity is preserved by the replacement, so an attack does not
@@ -6040,6 +6086,7 @@ void Maxima::update_food_relocation(Context& echo,
 					{
 						const WorldBuilding& building=world.buildings[b];
 						if(building.site
+						   ||food_building_pending_deletion(echo,building.id)
 						   ||building.buildingType!=IntBuildingType::FOOD_BUILDING)
 							continue;
 						const int level=std::min(3,std::max(1,building.level));
@@ -6066,9 +6113,7 @@ void Maxima::update_food_relocation(Context& echo,
 						emit_telemetry(echo,"food_relocation_abandoned",
 							"\tbuilding_id="+boost::lexical_cast<std::string>(target)
 							+"\treason=deferred");
-						relocation_target_building=-1;relocation_target_since=-1;
-						relocation_completed_tick=-1;
-						last_food_relocation_tick=timer;
+						finish_food_relocation();
 					}
 				}
 				else
@@ -6097,9 +6142,7 @@ void Maxima::update_food_relocation(Context& echo,
 				<<"\treason="<<(failed?lifecycleName(action->state)
 					:refused?"refused":"no_site");
 			emit_telemetry(echo,"food_relocation_abandoned",fields.str());
-			relocation_target_building=-1;relocation_target_since=-1;
-			relocation_completed_tick=-1;
-			last_food_relocation_tick=timer;
+			finish_food_relocation();
 		}
 		return;
 	}

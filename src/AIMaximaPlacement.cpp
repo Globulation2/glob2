@@ -2553,6 +2553,28 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 	incrementalCandidates.clear();return SelectionFound;
 }
 
+void Planner::finishRelocation(int replacesBuildingId)
+{
+	for(auto& entry:actionMap)
+		if(entry.second.purpose==Relocation
+		   &&entry.second.replacesBuildingId==replacesBuildingId)
+			entry.second.replacesBuildingId=-1;
+	clearRelocationRefusal(replacesBuildingId);
+}
+
+void Planner::restoreRelocation(int replacesBuildingId,int nominatedTick)
+{
+	if(replacesBuildingId<0||nominatedTick<0)return;
+	for(auto& entry:actionMap)
+	{
+		DevelopmentAction& action=entry.second;
+		if(action.purpose==Relocation
+		   &&(action.issuedTick>=nominatedTick
+		      ||(action.state==ParcelReserved&&action.issuedTick<0)))
+			action.replacesBuildingId=replacesBuildingId;
+	}
+}
+
 int Planner::committedBuildingCount(const WorldState& world,int buildingType) const
 {
 	int count=0;
@@ -3223,6 +3245,22 @@ template<class Archive> void Planner::executionState(Archive& a)
 	a("colonyFoodClaims",colonyFoodClaims);
 	a("colonyAnchors",colonyAnchors);
 	if(a.version()>=relocationVersion)a("refusedRelocations",refusedRelocations);
+	if(a.version()>=107)
+	{
+		std::map<int,int> links;
+		for(const auto& entry:actionMap)
+			links[entry.first]=entry.second.replacesBuildingId;
+		a("relocationLinks",links);
+		if(links.size()!=actionMap.size())
+			throw std::runtime_error("Incomplete Maxima relocation relationships");
+		for(auto& entry:actionMap)
+		{
+			const auto link=links.find(entry.first);
+			if(link==links.end())
+				throw std::runtime_error("Unknown Maxima relocation action");
+			entry.second.replacesBuildingId=link->second;
+		}
+	}
 }
 
 void Planner::saveExecutionState(GAGCore::OutputStream* stream) const

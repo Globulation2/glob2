@@ -6,7 +6,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 106
+#define VERSION_MINOR 107
+// version 107 persists Maxima relocation relationships and fractional food supply.
 // version 101 persists resolved per-player runtime AI configuration in all header forms
 //             and Cortex queued orders, settle clocks and policy debounce for continuation.
 // version 105 preserves diagnostic gameplay measurements and damage attribution.
@@ -149,4 +150,3 @@
 // version 31 GameHeader carries the custom-game economy rules; older clients would misread it
 // version 32 GameHeader carries the custom-game combat rules; older clients would misread it
 // version 33 GameHeader can carry the sudden-death winning condition, which older clients can't decode
-

@@ -153,9 +153,11 @@ only building of a kind: the opening swarm and inn are often the ones worth
 moving, and with the replacement built first there is no capacity to protect. When nothing is under attack, nobody is critically
 hungry, no recovery posture is active and `food.relocation_cooldown_ticks` have
 passed since the last relocation ended, the worst candidate is nominated. One
-nomination is live at a time; the nominated building is exempt from burden
-retirement while it waits, and retirement resumes if the nomination is
-abandoned. Relocation runs before retirement in the same pass for that reason.
+nomination is live at a time; both the nominated building and its replacement
+are exempt from burden retirement until the handover finishes or is abandoned.
+Relocation runs before retirement in the same pass. Retirement's swarm and inn
+capacity counts exclude queued deletions and buildings already being destroyed,
+including an old building just claimed by relocation in that pass.
 
 **Siting and pricing** is the planner's job. The nomination becomes a
 `Relocation` intent for the same building type carrying `replacesBuildingId`.
@@ -206,6 +208,19 @@ offer within `food.relocation_offer_ticks`, or if the destroy stays deferred
 for `food.relocation_cooldown_ticks`, the nomination is abandoned (keeping both buildings in the
 last case) and the cooldown restarts. Telemetry: `food_relocation_nominated`, `_lifecycle`,
 `_deferred`, `_destroy`, `_done`, `_abandoned`.
+
+A completed replacement that disappears or enters deletion before handover also
+abandons the nomination, preserving the old building and restarting the cooldown.
+Completed planner actions retain their history, so the executor checks the actual
+replacement on each pass. Finishing or abandoning a nomination detaches its old
+planner relationships; a later attempt can offer a new site without following or
+being blocked by the previous completed or failed action. Building contracts are
+retained. Save version 107 persists action replacement links, including detached
+historical actions; earlier formats omitted these links. Older saves remain
+loadable (the minimum version is still 58). For them, the executor recovers issued
+attempts dated within the live nomination and unissued reserved attempts; older
+history remains detached. This repairs identifiable active handovers without
+pretending that older saves contain the missing relationship data.
 
 | Parameter | Default | Role |
 | --- | --- | --- |

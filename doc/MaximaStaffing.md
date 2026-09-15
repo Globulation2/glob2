@@ -96,6 +96,20 @@ Birth funding stays a colony decision: `SwarmController` still sizes the swarm
 target, and a zero birth budget still pauses production ratios. Only staffing
 became local.
 
+Birth funding retains fractional fertility (Q16 units: 65,536 equals one full
+tile) until the final worker budget is rounded. Previously the food observation
+was truncated to whole tiles first. City States starter farms could supply less
+than one full tile in these units, so Maxima treated real supply as zero and
+set every production ratio to zero indefinitely. The director's
+`accessible_corn_fraction` diagnostic reports the remainder alongside the existing
+whole-tile `accessible_corn` value. Save version 107 preserves this remainder;
+older saves start with zero remainder and refresh it on the next food observation.
+Positive funding retains at least one producer when converting to whole workers;
+rounding a sub-half-worker budget down to zero would otherwise stall smaller
+starter farms indefinitely. Zero funding still pauses production. This also
+makes Maxima more willing to produce on small farms under food pressure; a
+maintainer should review that gameplay effect.
+
 ## Tests
 
 `test/MaximaStaffingControlStandaloneTest.cpp` covers growth when empty,

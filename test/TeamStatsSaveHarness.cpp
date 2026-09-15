@@ -697,7 +697,7 @@ static void measurementReplayBoundaries()
 	require(REPLAY_MINIMUM_VERSION_MINOR == 99 && NET_PROTOCOL_VERSION == 33 &&
 				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 33,
 			"diagnostic save fields preserve replay floor and network gates");
-	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107})
+	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);

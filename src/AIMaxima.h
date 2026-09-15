@@ -367,6 +367,7 @@ private:
 		EnvironmentModel();
 		int known_tiles;
 		int accessible_corn;
+		int accessible_corn_fraction; // Remaining Q16 fertility units, 0..65535.
 		int accessible_wood;
 		int accessible_stone;
 		int accessible_algae;
@@ -683,6 +684,9 @@ private:
 	int relocation_completed_tick;
 	int last_food_relocation_tick;
 	std::set<int> relocation_destroy_issued;
+	bool food_building_pending_deletion(AIMaximaRuntime::Context& echo, int id) const;
+	const AIMaximaPlacement::DevelopmentAction* current_food_relocation() const;
+	void finish_food_relocation();
 	void update_food_relocation(AIMaximaRuntime::Context& echo,
 		const AIMaximaPlacement::WorldState& world);
 	///Colony swarms whose settlement is not yet running: exempt from both

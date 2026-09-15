@@ -15,6 +15,22 @@ of bound queries at 128², 256² and 512². The output includes deterministic re
 digests; timing is informational and is never a CI assertion. Compile the same
 driver against both revisions when comparing performance.
 
+## Maxima relocation regression
+
+Build `scons release=1 server=0 maxima-relocation-test` and run
+`build/src/MaximaRelocationIntegrationTest`. Linux CI runs this harness against
+the real runtime and engine buildings. It checks same-pass relocation/retirement
+deletions, last-swarm and inn-seat protection with pending deletions, replacement
+loss during a deferred handover, and fresh attempts after abandonment. Save/load
+round trips cover pending handovers and detached historical actions. The queued
+delete orders are executed against real buildings to verify the replacement survives.
+
+`MaximaEconomyRegressionTest` also checks City States fractional starter supply:
+the measured Q16 values fund nonzero ratios through the real swarm management
+path, while true zero supply still pauses births. Equivalent whole-tile and Q16
+inputs produce the same budget. Run it with
+`python3 test/run_maxima_implementation_regressions.py --test MaximaEconomyRegressionTest`.
+
 ## Selection lifetime regression
 
 `GameGUISelectionHarness.cpp` links the real client objects with a test entry

@@ -103,9 +103,35 @@ struct Fixture
 void birthBudgetScalesBeyondTwenty()
 {
     using namespace AIMaxima::SwarmController;
+    // City States seed 7: positive starter farms used to be truncated to zero,
+    // disabling every birth despite having enough supply to fund one worker.
+    for(int supply:{2483,6554,6901,15984,17699,23193,23594})
+    {
+        assert(plan(4,4,0,0,supply,275,25,6,6,65536).workers==1);
+        assert(plan(4,4,0,0,supply/65536,275,25,6,6).workers==0);
+    }
+    {
+        Fixture opening;
+        Building* swarm=opening.swarm(32,32);
+        auto& ai=*opening.ai;
+        ai.context.initialize();
+        ai.snapshot.population=ai.snapshot.workers=4;
+        opening.player.team->stats.getLatestStat()->totalUnit=4;
+        ai.environment.accessible_corn=0;
+        ai.environment.accessible_corn_fraction=17699;
+        ai.build_policy_bids(); ai.arbitrate_policy_bids();
+        assert(ai.budget.swarm_workers==1);
+        ai.manage_swarm(ai.context,0); opening.applyStaffing();
+        assert(swarm->ratio[WORKER]>0);
+        ai.environment.accessible_corn_fraction=0;
+        ai.build_policy_bids(); ai.arbitrate_policy_bids();
+        ai.manage_swarm(ai.context,0); opening.applyStaffing();
+        assert(swarm->ratio[WORKER]+swarm->ratio[EXPLORER]+swarm->ratio[WARRIOR]==0);
+    }
     // Physical boundaries and monotonic responses, across realistic domains.
     for(int w=0;w<=1000;w+=5) for(int food:{0,5,50,500,5000}) {
         auto p=plan(w,1000,0,0,food,250,100,3,6);
+        assert(plan(w,1000,0,0,food*65536LL,250,100,3,6,65536).workers==p.workers);
         assert(p.workers>=0 && p.workers<=w && p.swarms>=1);
         assert(plan(w+1,1000,0,0,food,250,100,3,6).workers>=p.workers);
         assert(plan(w,1000,0,0,food+1,250,100,3,6).workers>=p.workers);
