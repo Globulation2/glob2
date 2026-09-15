@@ -123,8 +123,11 @@ but have no runtime effect.
 Warriors attack continuously. Every `tactics.review_interval_ticks` Maxima
 counts the warriors that satisfy the flag level in `tactics.flag_minimum_level`
 (1 admits untrained warriors) and are free or already on its offensive flag.
-Training comes first: every open barracks slot is reserved for a warrior, and
-only the surplus beyond that capacity is offered to the flag. When at least
+Training comes first: available warriors are matched to open barracks slots
+that can improve an ability they can learn. Each warrior and slot is reserved
+at most once; fully trained warriors are not held back by unusable capacity.
+Only the surplus beyond those reservations is offered to the flag. The
+`offense_training_slots` diagnostic reports these usable reservations. When at least
 `tactics.min_force` surplus warriors can reach a remembered enemy building or a
 visible worker cluster, one war flag is placed directly on the best target and
 requests that surplus, up to `military.attack_unit_cap`; the request follows

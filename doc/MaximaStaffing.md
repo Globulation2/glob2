@@ -110,6 +110,16 @@ starter farms indefinitely. Zero funding still pauses production. This also
 makes Maxima more willing to produce on small farms under food pressure; a
 maintainer should review that gameplay effect.
 
+When all local food catchments are empty, the director performs one shared
+search from completed inns and swarms for reachable growing wheat. It samples
+one local radius beyond the nearest food and discounts each tile by
+`local_radius / max(local_radius, path_distance)`. Existing nonzero local
+estimates are unchanged. This avoids stopping births solely because the nearest
+farm lies beyond the local cutoff, while water, discovery, forbidden areas and
+blocked routes still restrict supply. Stored wheat alone is not recurring supply.
+No additional state is serialized. This recovery behavior can increase growth
+on sparse maps and needs gameplay review.
+
 ## Tests
 
 `test/MaximaStaffingControlStandaloneTest.cpp` covers growth when empty,

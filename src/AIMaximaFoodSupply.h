@@ -4,11 +4,65 @@
 #include "Building.h"
 #include "BuildingType.h"
 #include "AIMaximaFarming.h"
+#include <algorithm>
 #include <map>
 #include <set>
 #include <vector>
 
 namespace AIMaxima {
+// A shared predicate keeps local and recovery estimates on the same routes.
+inline bool foodTileAccessible(Map* map,int x,int y,Uint32 teamMask,
+    bool canSwim,const std::vector<Uint8>* protectedTiles)
+{
+    const Tile& tile=map->getTile(x,y);
+    const int index=y*map->getW()+x;
+    return map->isMapDiscovered(x,y,teamMask)
+        && (!(tile.forbidden&teamMask) || (protectedTiles && (*protectedTiles)[index]))
+        && tile.building==NOGBID
+        && (tile.resource.type==NO_RES_TYPE || tile.resource.type==WHEAT)
+        && (canSwim || !map->isWater(x,y));
+}
+
+// Recovery estimate used only when all local catchments are empty. Search once
+// from every completed food building, stopping one local radius beyond the
+// nearest growing wheat. Discount distant supply for the longer carrier trip.
+inline long long distantFoodCapacity(Map* map,const std::vector<Building*>& buildings,
+    Uint32 teamMask,bool canSwim,int radius,const Farming::ExactFertilityCache& fertility,
+    const std::vector<Uint8>* protectedTiles)
+{
+    const int width=map->getW(),size=width*map->getH();
+    std::vector<int> distance(size,-1),queue;
+    const auto add=[&](int x,int y,int steps) {
+        x=map->normalizeX(x);y=map->normalizeY(y);const int index=y*width+x;
+        if(distance[index]<0 && foodTileAccessible(map,x,y,teamMask,canSwim,protectedTiles))
+        {distance[index]=steps;queue.push_back(index);}
+    };
+    for(const Building* b:buildings)
+        for(int dy=-1;dy<=b->type->height;++dy)
+            for(int dx=-1;dx<=b->type->width;++dx)
+                if(dx==-1 || dx==b->type->width || dy==-1 || dy==b->type->height)
+                    add(b->posX+dx,b->posY+dy,0);
+    long long capacity=0;int stop=size;
+    const int localRadius=std::max(1,radius);
+    for(size_t next=0;next<queue.size();++next)
+    {
+        const int index=queue[next],x=index%width,y=index/width,steps=distance[index];
+        if(steps>stop)break;
+        const Tile& tile=map->getTile(x,y);
+        if(map->isGrass(x,y) && tile.resource.type==WHEAT && tile.resource.amount>0
+           && fertility.at(x,y)>0)
+        {
+            if(stop==size)stop=std::min(size,steps+localRadius);
+            capacity+=static_cast<long long>(fertility.at(x,y))*localRadius
+                /std::max(localRadius,steps);
+        }
+        if(steps>=stop)continue;
+        for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
+            if(dx || dy)add(x+dx,y+dy,steps+1);
+    }
+    return capacity;
+}
+
 // Shared by policy and read-only tournament observations. Corn is the engine's
 // resource name for wheat; fertility measures its recurring growing capacity.
 inline long long reachableFoodCapacity(Map* map, Building* building,
@@ -21,13 +75,7 @@ inline long long reachableFoodCapacity(Map* map, Building* building,
 	// Empty ground remains traversable, but only existing corn contributes
 	// food capacity. Fertility alone does not imply a food supply.
 	const auto accessible=[&](int x, int y) {
-		const Tile& tile=map->getTile(x,y);
-		const int index=y*width+x;
-		return map->isMapDiscovered(x,y,teamMask)
-			&& (!(tile.forbidden&teamMask) || (protectedTiles && (*protectedTiles)[index]))
-			&& tile.building==NOGBID
-			&& (tile.resource.type==NO_RES_TYPE || tile.resource.type==WHEAT)
-			&& (canSwim || !map->isWater(x,y));
+		return foodTileAccessible(map,x,y,teamMask,canSwim,protectedTiles);
 	};
 	std::map<int,int> distance;
 	std::vector<int> queue;

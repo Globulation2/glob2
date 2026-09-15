@@ -229,6 +229,30 @@ void growingFoodFundsCapacity()
     assert(ai.budget.desired_swarms>1);
 }
 
+void distantWheatFundsRecovery()
+{
+    Fixture f;auto swarm=f.swarm(10,10);f.supply(30,10);
+    auto& ai=*f.ai;auto& c=ai.context;c.initialize();
+    ai.snapshot.population=4;ai.snapshot.workers=4;ai.budget.swarm_supply_radius=12;
+    assert(ai.nearby_farm_capacity(c,0)==0);
+    ai.update_environment_model(c);ai.build_policy_bids();ai.arbitrate_policy_bids();
+    assert(ai.environment.accessible_corn*65536LL+ai.environment.accessible_corn_fraction>0);
+    assert(ai.budget.swarm_workers>0);
+    ai.manage_swarm(c,0);f.applyStaffing();assert(swarm->ratio[WORKER]>0);
+    // Full stores cannot manufacture recurring capacity when no wheat remains.
+    f.game.map.setNoResource(36,11,1);
+    swarm->resources[WHEAT]=swarm->type->maxResource[WHEAT];
+    ai.update_environment_model(c);ai.build_policy_bids();ai.arbitrate_policy_bids();
+    assert(ai.budget.swarm_workers==0);
+    f.game.map.setResource(36,11,WHEAT,1);
+    // A full water barrier (including the wrap edge) cuts off nonswimmers.
+    for(int y=0;y<64;++y)for(int x:{0,25})f.game.map.getTile(x,y).terrain=256;
+    ai.fertility_cache=AIMaxima::Farming::ExactFertilityCache();
+    ai.budget.can_swim=false;
+    ai.update_environment_model(c);ai.build_policy_bids();ai.arbitrate_policy_bids();
+    assert(ai.budget.swarm_workers==0);
+}
+
 void soleSwarmStaffsFromItsOwnStock()
 {
     Fixture f;Building* swarm=f.swarm(10,10,0);
@@ -570,6 +594,7 @@ int main()
     birthBudgetScalesBeyondTwenty();
     growingFoodFundsCapacity();
     colonyStartupAndAffordability();
+    distantWheatFundsRecovery();
     soleSwarmStaffsFromItsOwnStock();
     newBuildingsStartStaffed();
     nearbyCornDeterminesStaffing();

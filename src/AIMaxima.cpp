@@ -32,6 +32,7 @@
 #include <climits>
 #include <cstdlib>
 #include <deque>
+#include <functional>
 #include <set>
 #include <sstream>
 #include <vector>
@@ -1236,12 +1237,21 @@ void Maxima::update_environment_model(Context& echo)
 	observed.accessible_algae=resources.accessibleAlgaeTiles;
 	std::set<int> food_tiles;
 	long long food_capacity=0;
+	std::vector<Building*> food_sources;
 	BuildingSearch food_buildings(echo);
 	food_buildings.add_condition(new NotUnderConstruction);
 	for(building_search_iterator i=food_buildings.begin();i!=food_buildings.end();++i)
 		if(echo.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING
 		   || echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
+		{
 			food_capacity+=nearby_farm_capacity(echo,*i,&food_tiles);
+			Building* source=echo.get_building_register().get_building(*i);
+			if(source)food_sources.push_back(source);
+		}
+	if(food_capacity==0 && !food_sources.empty())
+		food_capacity=distantFoodCapacity(echo.player->map,food_sources,
+			echo.player->team->me,budget.can_swim,budget.swarm_supply_radius,
+			fertility_cache,&applied_farm_protection_mask);
 	observed.accessible_corn=int(food_capacity/65536);
 	observed.accessible_corn_fraction=int(food_capacity%65536);
 	observed.accessible_wood=resources.accessibleWoodTiles;
@@ -6363,22 +6373,55 @@ void Maxima::plan_offense(Context& echo)
 		? echo.get_building_register().get_building(tactical_mission.flagId) : NULL;
 	TacticalReachability reachability(map, strategy.tactics.flag_minimum_level);
 	int eligible=0;
+	std::vector<const Unit*> trainees;
 	for(int id=0; id<Unit::MAX_COUNT; ++id)
 		if(tactical_warrior_available(echo.player->team->myUnits[id], flag,
 			strategy.tactics.flag_minimum_level))
+		{
 			++eligible;
+			trainees.push_back(echo.player->team->myUnits[id]);
+		}
 	offense_diagnostics.eligibleWarriors=eligible;
-	// Training comes first: every open barracks slot is reserved for a warrior,
-	// and only the surplus beyond that capacity goes to the flag.
-	int open_training_slots=0;
+	// Reserve training only for available warriors who can learn there.
+	// Match trainees to capacity so overlapping barracks do not reserve the
+	// same soldier twice or hold fully trained soldiers back indefinitely.
+	std::vector<const Building*> barracks;
+	std::vector<int> capacities;
 	for(int id=0; id<Building::MAX_COUNT; ++id)
 	{
-		const Building* barracks=echo.player->team->myBuildings[id];
-		if(!barracks || barracks->type->shortTypeNum!=IntBuildingType::ATTACK_BUILDING
-		   || barracks->type->isBuildingSite)
-			continue;
-		open_training_slots+=std::max(0,
-			barracks->maxUnitInside-int(barracks->unitsInside.size()));
+		const Building* b=echo.player->team->myBuildings[id];
+		if(!b || b->type->shortTypeNum!=IntBuildingType::ATTACK_BUILDING
+		   || b->type->isBuildingSite)continue;
+		const int capacity=b->maxUnitInside-int(b->unitsInside.size());
+		if(capacity>0){barracks.push_back(b);capacities.push_back(capacity);}
+	}
+	std::vector<std::vector<int>> assignments(barracks.size());
+	std::vector<std::vector<int>> choices(trainees.size());
+	for(size_t u=0;u<trainees.size();++u)
+		for(size_t b=0;b<barracks.size();++b)
+			for(int ability=WALK;ability<ARMOR;++ability)
+				if(trainees[u]->canLearn[ability] && barracks[b]->type->upgrade[ability]
+				   && trainees[u]->level[ability]<=barracks[b]->type->level)
+				{choices[u].push_back(int(b));break;}
+	std::function<bool(int,std::vector<bool>&)> assignTraining=
+		[&](int unit,std::vector<bool>& visited) {
+			for(int b:choices[unit])
+			{
+				if(visited[b])continue;
+				visited[b]=true;
+				if(int(assignments[b].size())<capacities[b])
+				{assignments[b].push_back(unit);return true;}
+				for(int& previous:assignments[b])
+					if(assignTraining(previous,visited))
+					{previous=unit;return true;}
+			}
+			return false;
+		};
+	int open_training_slots=0;
+	for(size_t u=0;u<trainees.size();++u)
+	{
+		std::vector<bool> visited(barracks.size(),false);
+		if(assignTraining(int(u),visited))++open_training_slots;
 	}
 	offense_diagnostics.openTrainingSlots=open_training_slots;
 	const int surplus=eligible-open_training_slots;
