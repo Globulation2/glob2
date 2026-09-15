@@ -748,7 +748,7 @@ ContinentsOptions::ContinentsOptions(const GenerationRequest &r)
 GeneratorDefinition continentsDefinition()
 {
 	return {"continents",
-			34, // 33 was Patchwork, retired 2026-09-13 and never reused
+			44, // 33 was Patchwork, retired 2026-09-13 and never reused
 			"Continents",
 			1,
 			false,

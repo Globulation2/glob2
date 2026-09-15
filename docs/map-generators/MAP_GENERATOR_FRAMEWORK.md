@@ -153,6 +153,7 @@ restores whatever landscape it had.
 | `anthill` | 32 | Anthill | Its own — see below |
 | `glacis` | 39 | The Glacis | Its own — see below; a premade base (`shared/Bases`) |
 | `continents` | 34 | Continents | Its own — see below |
+| `continents` | 44 | Continents | Its own — see below |
 | `coral` | 21 | Coral | Its own — see below |
 | `emoji` | 34 | Emoji | [Design and play contract](emoji/DESIGN.md) |
 | `forts` | 35 | Forts | [Walled forts in river country](FORTS.md) |
