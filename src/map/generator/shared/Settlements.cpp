@@ -154,6 +154,8 @@ int startingBuildingSite(Game &game, int team, const BuildingType *buildingType,
 {
 	if (!buildingType || team < 0 || team >= game.teamsCount() || !game.teams[team] ||
 		allowed.size() != size_t(game.map.getW()) * game.map.getH())
+}
+
 int placeBuilding(Game &game, int team, const char *typeName, int level, double x, double y,
 				  int within, const std::vector<unsigned char> &allowed)
 {

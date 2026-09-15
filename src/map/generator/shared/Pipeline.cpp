@@ -132,6 +132,8 @@ CropsInReach cropsBesideReach(const Map &map, const std::vector<int> &reach)
 				(type == WHEAT ? crops.wheat : crops.wood) || beside;
 		}
 	return crops;
+}
+
 std::string coloniesApart(const Map &map, int teams, const std::string &route)
 {
 	const std::vector<std::vector<int>> units = unitTilesByTeam(map, teams);

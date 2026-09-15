@@ -153,6 +153,8 @@ std::vector<int> edgeDetours(const CellGraph &g, const std::vector<unsigned char
 		result[edge] = distances[cells[0]][cells[1]];
 	}
 	return result;
+}
+
 std::vector<int> farthestCells(const CellGraph &g, int count,
 							   const std::vector<unsigned char> &eligible)
 {
