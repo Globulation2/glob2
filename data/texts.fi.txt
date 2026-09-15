@@ -2606,3 +2606,15 @@ Harvassa
 Normaali
 [Many]
 Paljon
+[Rice terraces]
+Riisiterassit
+[Unoccupied hills]
+Asumattomat kukkulat
+[Hill radius]
+Kukkulan säde
+[Contour band width]
+Korkeusvyöhykkeiden leveys
+[Stairs per hill]
+Portaita kukkulalla
+[Valley river]
+Laakson joki

@@ -2614,3 +2614,15 @@ Az
 Normal
 [Many]
 Çok
+[Rice terraces]
+Pirinç terasları
+[Unoccupied hills]
+Boş tepeler
+[Hill radius]
+Tepe yarıçapı
+[Contour band width]
+Eşyükselti şeridi genişliği
+[Stairs per hill]
+Tepe başına merdiven
+[Valley river]
+Vadi nehri

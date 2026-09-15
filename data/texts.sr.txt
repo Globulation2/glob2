@@ -2606,3 +2606,15 @@ Emoji
 Нормално
 [Many]
 Много
+[Rice terraces]
+Пиринчане терасе
+[Unoccupied hills]
+Незаузета брда
+[Hill radius]
+Полупречник брда
+[Contour band width]
+Ширина висинских појасева
+[Stairs per hill]
+Степеништа по брду
+[Valley river]
+Река у долини

@@ -20,10 +20,16 @@ struct ResourceDensities
 };
 void fillInResource(Map &map, GenerationContext &context, std::vector<MapGeneratorPoint> &points,
 					int resourceType, int maxFillSize);
+// `allowed` is an optional row-major tile mask for a bounded *new* deposit. It
+// filters every tile of the clump, not just its centre: a radius-two rescue next
+// to a town boundary must not spill one corner into protected building ground.
+// Null preserves the historical placement and random-draw order for every
+// existing generator. The caller owns the mask and must match the map size.
 int placeResourceClump(Map &, GenerationContext &, MapGeneratorPoint center, int resourceType,
-					   int radius);
+						 int radius, const std::vector<unsigned char> *allowed = nullptr);
 int placeResourceClumpInArea(Map &, GenerationContext &, const std::vector<MapGeneratorPoint> &,
-							 int resourceType, int radius);
+							  int resourceType, int radius,
+							  const std::vector<unsigned char> *allowed = nullptr);
 // Map::setResource(x, y, type, size) scaled to `percent` of that square's tiles: the tiles
 // nearest its centre, placed in setResource's own order, so 100 is exactly that call.
 void setScaledResource(Map &, int x, int y, int resourceType, int size, int percent);
@@ -37,9 +43,14 @@ void scatterResources(Game &, GenerationContext &, const ResourceDensities &);
 // protectedWalls, when given, is a row-major width*height mask of resource tiles that belong to
 // the map's design (a generator's stone ridgelines, say). They are treated like terrain: never
 // cleared, and never looked past when deciding whether a colony is walled into a pocket.
+// allowedTopup is a separate row-major mask for where NEW emergency wheat/wood may be planted.
+// Keeping it separate matters: a stone wall is protected from clearing, whereas a dry town
+// or a sand stair excludes crops even though it is not a resource wall. Null retains the
+// original rescue policy. A clump is clipped tile-by-tile to this mask.
 void guaranteeStartingResources(Game &game, GenerationContext &context, int wheatRange,
 								int woodRange, int clearRadius = 0,
-								const std::vector<unsigned char> *protectedWalls = nullptr);
+								const std::vector<unsigned char> *protectedWalls = nullptr,
+								const std::vector<unsigned char> *allowedTopup = nullptr);
 // A colony with nowhere to build is unplayable however rich the ground around it is: resources
 // block ground units and buildings alike, so a resource amount well above the default can wall a
 // swarm into a pocket with no room for a 4x4 building. guaranteeStartingResources above only opens

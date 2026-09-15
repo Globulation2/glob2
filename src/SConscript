@@ -231,6 +231,7 @@ map/generator/generators/HedgerowCountryGenerator.cpp
 map/generator/generators/DrumlinFieldGenerator.cpp
 map/generator/generators/ContinentsGenerator.cpp
 map/generator/generators/SavannahGenerator.cpp
+map/generator/generators/RiceTerracesGenerator.cpp
 map/generator/generators/AnthillGenerator.cpp
 map/generator/generators/OldTownGenerator.cpp
 map/generator/generators/PolderGenerator.cpp

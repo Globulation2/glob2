@@ -43,6 +43,7 @@
 #include "DrumlinFieldGenerator.h"
 #include "ContinentsGenerator.h"
 #include "SavannahGenerator.h"
+#include "RiceTerracesGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -173,6 +174,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 drumlinFieldDefinition(),
 											 continentsDefinition(),
 											 savannahDefinition(),
+											 riceTerracesDefinition(),
 											 uniformDefinition()});
 	return registry;
 }

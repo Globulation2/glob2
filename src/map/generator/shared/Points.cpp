@@ -33,6 +33,30 @@ std::vector<int> bucketWindow(int c, int count, int radius)
 }
 } // namespace
 
+NearestSites nearestTwoSites(const Torus &t, const std::vector<Site> &sites, int x, int y)
+{
+	NearestSites result;
+	for (int k = 0; k < int(sites.size()); ++k)
+	{
+		const int d = t.dist2(sites[k].x, sites[k].y, x, y);
+		// Strict comparisons retain the lower input index on ties. Demote the
+		// former closest site as a unit so owner and distance never get separated.
+		if (result.first < 0 || d < result.firstDistanceSquared)
+		{
+			result.second = result.first;
+			result.secondDistanceSquared = result.firstDistanceSquared;
+			result.first = k;
+			result.firstDistanceSquared = d;
+		}
+		else if (result.second < 0 || d < result.secondDistanceSquared)
+		{
+			result.second = k;
+			result.secondDistanceSquared = d;
+		}
+	}
+	return result;
+}
+
 std::vector<Site> spreadPoints(const Torus &t, int spacing, GenerationContext &context,
 							   const std::string &stream, int minimumPercent, int dartsPerSite)
 {

@@ -83,6 +83,38 @@ struct Farm
 	int plotX = -1, plotY = -1;
 };
 
+/// Circular contour rows around a central clearing. Widths are undermap CORNERS, as in
+/// layFarm; beaches and four-corner conversion consume crop ground at every boundary.
+/// The inner and outer caps contain eight-neighbour crop spread. Every radial crossing
+/// cuts BOTH crop and water rows, keeping circulation open after crops fill the bands.
+struct ContourFarmStyle
+{
+	FarmRows rows{10, 8};
+	double innerRadius = 16, cap = 2;
+	int bands = 1, crossings = 3;
+	double crossingHalfWidth = 2.5, phase = 0;
+	double outerRadius() const { return innerRadius + 2 * cap + bands * rows.period(); }
+};
+
+struct ContourFarm
+{
+	Farm farm;
+	// Crossing corners only, separate from the caps in farm.sand. Callers use these to
+	// preserve roads, score defenses or verify every crossing's finished walkable core.
+	std::vector<unsigned char> crossings;
+};
+
+/// Stamps complete concentric crop/water bands at each centre into an existing sketch.
+/// Central clearings and ground outside the outer cap are untouched. All centres use
+/// the same style, so one farm mask can be planted with per-region eligibility policies.
+/// Centres are whole-corner positions; distances wrap on the torus. The caller budgets
+/// non-overlapping outer discs (including their copies across a seam) and supplies
+/// positive row widths, cap, band count and crossing width. Crossings may be zero.
+/// No beach pass is run: compose other terrain first, then call layBeaches once.
+/// Like layFarm, this creates geometry only; plantFarm stocks the finished grass later.
+ContourFarm layContourFarm(TerrainSketch &, const Torus &, const std::vector<ShapePoint> &centres,
+						   const ContourFarmStyle &);
+
 /// A clearing in the middle of a farm for buildings: `width` by `height` tiles of pure grass with a
 /// ring of sand `ring` undermap vertices wide round it (two vertices make a full tile of sand), so
 /// no crop grows onto it and nothing but the clearing is buildable. 10 by 4 seats a swarm or an inn

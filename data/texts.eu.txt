@@ -2616,3 +2616,15 @@ Gutxi
 Normala
 [Many]
 Asko
+[Rice terraces]
+Arroz-terrazak
+[Unoccupied hills]
+Okupatu gabeko muinoak
+[Hill radius]
+Muinoaren erradioa
+[Contour band width]
+Sestra-banden zabalera
+[Stairs per hill]
+Eskailerak muinoko
+[Valley river]
+Haraneko ibaia

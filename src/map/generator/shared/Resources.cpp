@@ -25,8 +25,12 @@ using namespace MapGeneration;
 namespace MapGeneration
 {
 int placeResourceClump(Map &map, GenerationContext &context, MapGeneratorPoint center,
-					   int resourceType, int radius)
+					   int resourceType, int radius, const std::vector<unsigned char> *allowed)
 {
+	// Validate before the first deposit, including for callers that use this
+	// primitive directly rather than through guaranteeStartingResources.
+	if (allowed && allowed->size() != size_t(map.getW()) * map.getH())
+		throw GenerationFailure("Resource clump placement mask does not match the map size");
 	int placed = 0;
 	for (int dy = -radius; dy <= radius; ++dy)
 		for (int dx = -radius; dx <= radius; ++dx)
@@ -36,6 +40,11 @@ int placeResourceClump(Map &map, GenerationContext &context, MapGeneratorPoint c
 				(d2 > (radius - 1) * (radius - 1) && context.bounded("resources", 4) == 0))
 				continue;
 			const int x = map.normalizeX(center.x + dx), y = map.normalizeY(center.y + dy);
+			// The centre can be legal while a clump's edge crosses a sand cap or
+			// summit. Check each wrapped tile before placing it. Null keeps every
+			// old caller's branch and RNG sequence exactly as it was.
+			if (allowed && !(*allowed)[size_t(y) * map.getW() + x])
+				continue;
 			const int existingType = map.getResource(x, y).type;
 			if (map.isResourceAllowed(x, y, resourceType) &&
 				(existingType == NO_RES_TYPE || existingType == resourceType))
@@ -84,17 +93,24 @@ void setScaledResource(Map &map, int x, int y, int resourceType, int size, int p
 
 int placeResourceClumpInArea(Map &map, GenerationContext &context,
 							 const std::vector<MapGeneratorPoint> &points, int resourceType,
-							 int radius)
+							 int radius, const std::vector<unsigned char> *allowed)
 {
+	// Centre filtering below indexes the mask before placeResourceClump sees
+	// it. Check the same contract here so an invalid mask never mutates the map.
+	if (allowed && allowed->size() != size_t(map.getW()) * map.getH())
+		throw GenerationFailure("Resource clump placement mask does not match the map size");
 	if (points.empty())
 		return 0;
 	const size_t first = context.bounded("resources", points.size());
 	for (size_t offset = 0; offset < points.size(); ++offset)
 	{
 		const MapGeneratorPoint &center = points[(first + offset) % points.size()];
+		if (allowed && !(*allowed)[size_t(map.normalizeY(center.y)) * map.getW() +
+										map.normalizeX(center.x)])
+			continue;
 		if (!map.isResourceAllowed(center.x, center.y, resourceType))
 			continue;
-		const int placed = placeResourceClump(map, context, center, resourceType, radius);
+		const int placed = placeResourceClump(map, context, center, resourceType, radius, allowed);
 		if (placed)
 			return placed;
 	}
@@ -496,15 +512,93 @@ bool clearResourceWall(Map &map, const std::vector<int> &boxedDist,
 	}
 	return cleared > 0;
 }
+
+struct CropReplant
+{
+	int placed = 0, cleared = 0;
+};
+
+// An opt-in last resort for a deliberately bounded farm. An extreme amount can
+// fill every eligible row with the *other* crop, leaving no free grass for a
+// missing starter crop. Planting in the town would technically satisfy the
+// general guarantee but erase a generator's protected layout. Trade a small
+// accessible patch of the surplus crop instead. The ordinary guarantee keeps
+// its historical behavior because this runs only with `allowedTopup`.
+CropReplant replantAccessibleCrop(Map &map, GenerationContext &context,
+							   const ReachResult &reach, int resourceType, int range,
+							   const std::vector<unsigned char> &allowedTopup,
+							   const std::vector<unsigned char> *protectedWalls)
+{
+	const Torus t(map);
+	const int surplusType = resourceType == WHEAT ? WOOD : WHEAT;
+	int best = -1, bestDistance = range + 1;
+	// A resource tile itself blocks walking. Score its accessible neighbouring
+	// sand/grass tile using the *current* resource-respecting flood, so the new
+	// crop is gatherable immediately rather than merely Euclidean-near town.
+	for (int p = 0; p < t.size(); ++p)
+	{
+		const int d = reach.dist[p];
+		if (d < 0 || d + 1 > range || d + 1 >= bestDistance)
+			continue;
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				if (!dx && !dy)
+					continue;
+				const int i = t.at(p % t.w + dx, p / t.w + dy);
+				if (!allowedTopup[i] || (protectedWalls && (*protectedWalls)[i]) ||
+					map.getResource(i % t.w, i / t.w).type != surplusType ||
+					!map.isResourceAllowed(i % t.w, i / t.w, resourceType))
+					continue;
+				best = i;
+				bestDistance = d + 1;
+			}
+	}
+	if (best < 0)
+		return {};
+	std::vector<unsigned char> cropGround;
+	const std::vector<unsigned char> *placement = &allowedTopup;
+	if (protectedWalls)
+	{
+		// A map may protect deposits and prohibit new crops independently.
+		// Intersect only on this rare fallback, preserving both contracts.
+		cropGround = allowedTopup;
+		for (int i = 0; i < t.size(); ++i)
+			if ((*protectedWalls)[i])
+				cropGround[i] = 0;
+		placement = &cropGround;
+	}
+	CropReplant result;
+	for (int dy = -2; dy <= 2; ++dy)
+		for (int dx = -2; dx <= 2; ++dx)
+		{
+			if (dx * dx + dy * dy > 4)
+				continue;
+			const int i = t.at(best % t.w + dx, best / t.w + dy);
+			if (!(*placement)[i] || map.getResource(i % t.w, i / t.w).type != surplusType)
+				continue;
+			map.setNoResource(i % t.w, i / t.w, 1);
+			++result.cleared;
+		}
+	// The chosen centre was verified above and cleared, so the clipped clump
+	// always gives at least one immediately accessible tile. Only opposite
+	// crops are traded, within two tiles and within the supplied farm mask.
+	result.placed = placeResourceClump(map, context, {best % t.w, best / t.w}, resourceType,
+										2, placement);
+	return result;
+}
 } // namespace
 
 void guaranteeStartingResources(Game &game, GenerationContext &context, int wheatRange,
 								int woodRange, int clearRadius,
-								const std::vector<unsigned char> *protectedWalls)
+								const std::vector<unsigned char> *protectedWalls,
+								const std::vector<unsigned char> *allowedTopup)
 {
 	Map &map = game.map;
 	if (protectedWalls && protectedWalls->size() != size_t(map.getW()) * map.getH())
 		throw GenerationFailure("Protected wall mask does not match the map size");
+	if (allowedTopup && allowedTopup->size() != size_t(map.getW()) * map.getH())
+		throw GenerationFailure("Starting crop placement mask does not match the map size");
 	// Floods reach two and a half times the farthest range, so a deposit just out of range can
 	// still be found and a wall beyond it measured; closeRange, half the wheat range, marks the
 	// grass a topped-up deposit is tried on first, so it lands clearly within reach.
@@ -565,18 +659,36 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 		{
 			int placed = 0;
 			bool triedFar = false;
+			CropReplant replanted;
 			if (!reach.closeGrass.empty())
-				placed = placeResourceClumpInArea(map, context, reach.closeGrass, resourceType, 2);
+				placed = placeResourceClumpInArea(map, context, reach.closeGrass, resourceType, 2,
+										 allowedTopup);
 			if (!placed && !reach.farGrass.empty())
 			{
-				placed = placeResourceClumpInArea(map, context, reach.farGrass, resourceType, 2);
+				placed = placeResourceClumpInArea(map, context, reach.farGrass, resourceType, 2,
+										 allowedTopup);
 				triedFar = true;
+			}
+			if (!placed && allowedTopup)
+			{
+				replanted = replantAccessibleCrop(map, context, reach, resourceType,
+										 resourceType == WHEAT ? wheatRange : woodRange,
+										 *allowedTopup, protectedWalls);
+				placed = replanted.placed;
 			}
 			if (context.telemetry.enabled())
 			{
 				const std::string key =
 					resourceType == WHEAT ? "resources.starting_wheat" : "resources.starting_wood";
-				if (triedFar)
+				if (replanted.placed)
+				{
+					context.telemetry.fallback(key + ".topup_replant",
+										   "accessible surplus crop traded within allowed farmland",
+										   team);
+					context.telemetry.measure(key + ".topup_replant_cleared",
+										  replanted.cleared, team);
+				}
+				else if (triedFar)
 					context.telemetry.fallback(key + ".topup_region", "far", team);
 				else if (placed)
 					context.telemetry.choice(key + ".topup_region", "close", team);

@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GlobalContainer.h"
+#include "Grid.h"
 #include "Unit.h"
 #include <cmath>
 #include <limits>
@@ -142,14 +143,20 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 	return true;
 }
 
-int placeTower(Game &game, int team, int level, double x, double y, int within,
-			   const std::vector<unsigned char> &allowed, bool stocked)
+namespace
 {
-	const int type = globalContainer->buildingsTypes.getTypeNum("defencetower", level, false);
-	const BuildingType *tower = globalContainer->buildingsTypes.get(type);
-	if (!tower || team < 0 || team >= game.teamsCount() || !game.teams[team])
+// Shared nearest-footprint search for optional starting buildings. Keep the
+// historic tower traversal and tie order: existing maps must not change merely
+// because an inn now uses the same search. Coverage is an optional tower filter.
+int startingBuildingSite(Game &game, int team, const BuildingType *buildingType, double x, double y,
+						 int within, const std::vector<unsigned char> &allowed,
+						 const std::vector<MapGeneratorPoint> &cover = {})
+{
+	if (!buildingType || team < 0 || team >= game.teamsCount() || !game.teams[team] ||
+		allowed.size() != size_t(game.map.getW()) * game.map.getH())
 		return -1;
 	const Map &map = game.map;
+	const Torus torus(map);
 	const int w = map.getW(), h = map.getH();
 	const int cx = int(std::lround(x)), cy = int(std::lround(y));
 	int best = -1;
@@ -159,13 +166,25 @@ int placeTower(Game &game, int team, int level, double x, double y, int within,
 		{
 			const int px = map.normalizeX(cx + dx), py = map.normalizeY(cy + dy);
 			bool fits = true;
-			for (int fy = 0; fy < tower->height && fits; ++fy)
-				for (int fx = 0; fx < tower->width && fits; ++fx)
+			for (int fy = 0; fy < buildingType->height && fits; ++fy)
+				for (int fx = 0; fx < buildingType->width && fits; ++fx)
 					fits = allowed[map.normalizeY(py + fy) * w + map.normalizeX(px + fx)] != 0;
-			if (!fits || !game.checkRoomForBuilding(px, py, tower, team, false))
+			// Scan the real footprint and range, not a centre-distance approximation.
+			// The optional constraint costs only candidate footprint × cover points;
+			// existing callers pass no points and keep their exact selection order.
+			for (const MapGeneratorPoint &point : cover)
+			{
+				int reach = std::numeric_limits<int>::max();
+				for (int fy = 0; fy < buildingType->height; ++fy)
+					for (int fx = 0; fx < buildingType->width; ++fx)
+						reach =
+							std::min(reach, torus.chebyshev(px + fx, py + fy, point.x, point.y));
+				fits = fits && reach <= buildingType->shootingRange;
+			}
+			if (!fits || !game.checkRoomForBuilding(px, py, buildingType, team, false))
 				continue;
-			const double mx = cx + dx + tower->width / 2.0 - x,
-						 my = cy + dy + tower->height / 2.0 - y;
+			const double mx = cx + dx + buildingType->width / 2.0 - x,
+						 my = cy + dy + buildingType->height / 2.0 - y;
 			const double d = mx * mx + my * my;
 			if (d < nearest)
 			{
@@ -176,13 +195,70 @@ int placeTower(Game &game, int team, int level, double x, double y, int within,
 	(void)h;
 	if (best < 0)
 		return -1;
+	return best;
+}
+} // namespace
+
+int placeTower(Game &game, int team, int level, double x, double y, int within,
+			   const std::vector<unsigned char> &allowed, bool stocked,
+			   const std::vector<MapGeneratorPoint> &cover, bool supplyStone)
+{
+	const int type = globalContainer->buildingsTypes.getTypeNum("defencetower", level, false);
+	const BuildingType *tower = globalContainer->buildingsTypes.get(type);
+	const int best = startingBuildingSite(game, team, tower, x, y, within, allowed, cover);
+	if (best < 0)
+		return -1;
+	const int w = game.map.getW();
 	Building *building = game.addBuilding(best % w, best / w, type, team, 1, 0);
 	if (!building)
 		return -1;
 	building->bullets = stocked ? tower->maxBullets : 0;
+	if (supplyStone)
+	{
+		// Reserve stone and loaded bullets are separate stores. Supplying both
+		// avoids an immediate delivery job, but combat consumes them normally and
+		// later replenishment still needs miners. Refresh the call lists now so
+		// the initial save does not retain the empty store's worker request.
+		building->resources[STONE] = tower->maxResource[STONE];
+		building->updateCallLists();
+	}
 	// The colony's lists were built when its swarm went down; the tower joins its turrets the way
 	// Team::createLists would have taken it in.
 	game.teams[team]->turrets.push_back(building);
 	return best;
+}
+int placeStartingBuilding(Game &game, int team, const char *name, int level, double x, double y,
+						  int within, const std::vector<unsigned char> &allowed,
+						  const std::vector<int> &supplies)
+{
+	const int type = globalContainer->buildingsTypes.getTypeNum(name, level, false);
+	const BuildingType *buildingType = globalContainer->buildingsTypes.get(type);
+	// Validate supplies before mutation. Callers choose resource kinds explicitly:
+	// filling an inn's whole table would silently give away the contested fruit.
+	for (int resource : supplies)
+		if (resource < 0 || resource >= MAX_NB_RESOURCES)
+			return -1;
+	const int site = startingBuildingSite(game, team, buildingType, x, y, within, allowed);
+	if (site < 0)
+		return -1;
+	const int w = game.map.getW();
+	Building *building = game.addBuilding(site % w, site / w, type, team, 1, 0);
+	if (!building)
+		return -1;
+	for (int resource : supplies)
+		building->resources[resource] = buildingType->maxResource[resource];
+	// Game::addBuilding already registers markets and virtual buildings. Add
+	// only the static lists it leaves to the setup caller; createLists cannot
+	// be called again on a colony that already owns a swarm or towers.
+	if (buildingType->unitProductionTime)
+		game.teams[team]->swarms.push_back(building);
+	if (buildingType->shootingRange)
+		game.teams[team]->turrets.push_back(building);
+	if (buildingType->zonable[WORKER])
+		game.teams[team]->clearingFlags.push_back(building);
+	// Register this building's feeding/work services, leaving existing task
+	// order alone. Normal tick logic resumes deliveries as supplies run out.
+	building->update();
+	return site;
 }
 } // namespace MapGeneration

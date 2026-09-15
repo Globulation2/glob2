@@ -2606,3 +2606,15 @@ Kevés
 Normál
 [Many]
 Sok
+[Rice terraces]
+Rizsteraszok
+[Unoccupied hills]
+Lakatlan dombok
+[Hill radius]
+Dombsugár
+[Contour band width]
+Szintvonalas sávok szélessége
+[Stairs per hill]
+Lépcsők dombonként
+[Valley river]
+Völgyi folyó

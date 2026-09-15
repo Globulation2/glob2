@@ -2614,3 +2614,15 @@ Pocs
 Normal
 [Many]
 Molts
+[Rice terraces]
+Terrasses d’arròs
+[Unoccupied hills]
+Turons desocupats
+[Hill radius]
+Radi dels turons
+[Contour band width]
+Amplada de les bandes de nivell
+[Stairs per hill]
+Escales per turó
+[Valley river]
+Riu de la vall

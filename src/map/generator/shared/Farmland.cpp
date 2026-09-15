@@ -88,6 +88,63 @@ std::string containedPlotsMismatch(const Map &map, const Torus &t, const std::ve
 	return "";
 }
 
+ContourFarm layContourFarm(TerrainSketch &sketch, const Torus &t,
+						   const std::vector<ShapePoint> &centres, const ContourFarmStyle &style)
+{
+	ContourFarm result;
+	Farm &farm = result.farm;
+	farm.water.assign(t.size(), 0);
+	farm.sand.assign(t.size(), 0);
+	farm.plot.assign(t.size(), 0);
+	farm.row.assign(t.size(), -1);
+	result.crossings.assign(t.size(), 0);
+	farm.rows = style.bands;
+	const double outer = style.outerRadius();
+	const int extent = int(std::ceil(outer));
+	// Scan each bounded disc rather than the whole torus for each centre. Integer
+	// offsets give identical rasterization at every whole-corner translation, even
+	// when a disc straddles the map seam. Discs must not overlap: silently choosing
+	// a winning farm would cut the other farm's containment cap.
+	std::vector<ShapePoint> directions;
+	for (int s = 0; s < style.crossings; ++s)
+	{
+		const double angle = style.phase + s * 2 * kPi / style.crossings;
+		directions.push_back({std::cos(angle), std::sin(angle)});
+	}
+	for (const ShapePoint &centre : centres)
+		for (int dy = -extent; dy <= extent; ++dy)
+			for (int dx = -extent; dx <= extent; ++dx)
+			{
+				const double distance = std::hypot(dx, dy);
+				if (distance < style.innerRadius || distance > outer)
+					continue;
+				const int i = t.at(int(centre.x) + dx, int(centre.y) + dy);
+				// A ray, not an infinite line: the positive projection selects the
+				// outward half and the perpendicular projection controls true width.
+				// This avoids stair widths shrinking with radius as angular wedges do.
+				for (const ShapePoint &direction : directions)
+					if (dx * direction.x + dy * direction.y > 0 &&
+						std::fabs(-dx * direction.y + dy * direction.x) <= style.crossingHalfWidth)
+						result.crossings[i] = 1;
+				const double radial = distance - style.innerRadius - style.cap;
+				if (result.crossings[i] || radial < 0 || distance > outer - style.cap)
+				{
+					sketch[i] = SAND;
+					farm.sand[i] = 1;
+					continue;
+				}
+				// Each complete period begins with crops and ends with irrigation.
+				// Keeping the last water band whole is important: an outer crop
+				// fragment would have a different growth budget and harvesting edge.
+				const int band = int(radial / style.rows.period());
+				const bool water = std::fmod(radial, style.rows.period()) >= style.rows.crops;
+				farm.row[i] = 2 * band + int(water);
+				farm.water[i] = water;
+				sketch[i] = water ? WATER : GRASS;
+			}
+	return result;
+}
+
 FarmRows bestFarmRows(double angle)
 {
 	// Rows repeat every quarter turn and mirror about the diagonal, so only the angle from the nearest
