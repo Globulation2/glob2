@@ -227,15 +227,19 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		const int y = (b.y0 + b.y1) / 2;
 		// Banks alternate food and timber by seeded lake role; unsuccessful plots are
 		// genuine omissions, never an excuse to fill part of the recursive lake.
+		// One bank in four carries timber, the rest food: the ambient copses are the map's
+		// wood, and a lake bank is worth more as somewhere a colony can feed itself.
 		const bool timber =
-			GenerationContext::deriveSeed(r.seed, "garden-farm-" + std::to_string(k)) % 3 == 0;
+			GenerationContext::deriveSeed(r.seed, "garden-farm-" + std::to_string(k)) % 4 == 0;
 		const int x = (b.x0 + b.x1) / 2;
 		// All four banks, not just the two sides: a garden lake with crops on one shore and
-		// bare grass on the other three was most of what made this map read as empty.
-		farms += bankFarm(L, {b.x0 - 18, y - 12, b.x0 - 5, y + 12}, timber);
-		farms += bankFarm(L, {b.x1 + 5, y - 12, b.x1 + 18, y + 12}, !timber);
-		farms += bankFarm(L, {x - 12, b.y0 - 18, x + 12, b.y0 - 5}, !timber);
-		farms += bankFarm(L, {x - 12, b.y1 + 5, x + 12, b.y1 + 18}, timber);
+		// bare grass on the other three was most of what made this map read as empty. Each box
+		// runs up to the lake's own edge, so the plot shares the shore's sand and its crops
+		// stand in the water's growth range instead of a few tiles inland of it.
+		farms += bankFarm(L, {b.x0 - 15, y - 12, b.x0 + 1, y + 12}, timber);
+		farms += bankFarm(L, {b.x1 - 1, y - 12, b.x1 + 15, y + 12}, !timber);
+		farms += bankFarm(L, {x - 12, b.y0 - 15, x + 12, b.y0 + 1}, !timber);
+		farms += bankFarm(L, {x - 12, b.y1 - 1, x + 12, b.y1 + 15}, timber);
 	}
 	context.telemetry.measure("sierpinski.bank-farms.proposed", smallerLakes.size() * 4);
 	context.telemetry.measure("sierpinski.bank-farms.placed", farms);
@@ -282,7 +286,7 @@ GeneratorDefinition sierpinskiGardensDefinition()
 	return {"sierpinski-gardens",
 			49,
 			"Sierpiński Gardens",
-			2,
+			3,
 			false,
 			controls,
 			generate,

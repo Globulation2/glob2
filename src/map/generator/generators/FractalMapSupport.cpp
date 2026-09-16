@@ -126,7 +126,7 @@ void layHomeEconomies(Layout &L)
 		// deposit. Water is behind the crops, the home is in front. Crop plots have their
 		// own sand cap, so renewable supplies cannot engulf the construction district.
 		fillRectangle(L.terrain, t, {h.x - 26, h.y - 28, h.x + 27, h.y - 12}, SAND);
-		fillRectangle(L.terrain, t, {h.x - 24, h.y - 26, h.x + 25, h.y - 22}, WATER);
+		fillRectangle(L.terrain, t, {h.x - 24, h.y - 27, h.x + 25, h.y - 22}, WATER);
 		fillRectangle(L.terrain, t, {h.x - 24, h.y - 20, h.x + 25, h.y - 14}, GRASS);
 		fillRectangle(L.wheat, t, {h.x - 23, h.y - 19, h.x + 24, h.y - 15}, 1);
 		// Keep timber in the two outer bays beside the wheat. Saved-state probes
@@ -147,15 +147,20 @@ void layHomeEconomies(Layout &L)
 		// Wood has a separate, narrower plot: enough renewable timber for upgrades, but
 		// not so much forest that it competes with food or forces clearing before building.
 		fillRectangle(L.terrain, t, {h.x - 26, h.y + 17, h.x + 27, h.y + 29}, SAND);
-		fillRectangle(L.terrain, t, {h.x - 24, h.y + 25, h.x + 25, h.y + 27}, WATER);
+		// Five rows of water, matching the wheat side: two rows fed the timber slowly and left
+		// the south of every module looking dry (2026-09-16). Crops regrow at a rate set by how
+		// much water is near them, so the width of this strip is the timber supply.
+		fillRectangle(L.terrain, t, {h.x - 24, h.y + 24, h.x + 25, h.y + 29}, WATER);
 		fillRectangle(L.terrain, t, {h.x - 24, h.y + 19, h.x + 25, h.y + 23}, GRASS);
 		fillRectangle(L.wood, t, {h.x - 23, h.y + 20, h.x + 24, h.y + 22}, 1);
 		// Crossing each crop frontage with three pure-sand aisles limits patch width and
-		// guarantees access even after every eligible crop tile has filled in.
+		// guarantees access even after every eligible crop tile has filled in. The aisles stop
+		// at the crops: run through the water as well and each strip becomes four short ponds
+		// instead of one long one, which waters the same crops less and reads as a sand grid.
 		for (int offset : {-16, 0, 16})
 		{
-			fillRectangle(L.terrain, t, {h.x + offset, h.y - 28, h.x + offset + 2, h.y - 12}, SAND);
-			fillRectangle(L.terrain, t, {h.x + offset, h.y + 17, h.x + offset + 2, h.y + 29}, SAND);
+			fillRectangle(L.terrain, t, {h.x + offset, h.y - 21, h.x + offset + 2, h.y - 12}, SAND);
+			fillRectangle(L.terrain, t, {h.x + offset, h.y + 17, h.x + offset + 2, h.y + 24}, SAND);
 		}
 		// Food-service buildings need to hug the grain, especially policies that
 		// require an upgraded inn footprint within one tile of harvestable wheat.
@@ -203,26 +208,58 @@ void layHomeEconomies(Layout &L)
 }
 namespace
 {
-bool stampBankFarm(Layout &L, RegionBounds b, bool timber)
+// A plot with fewer crop tiles than this is a sliver of shoreline, not somewhere worth walking.
+constexpr int kLeastBankCrops = 40;
+int stampBankFarm(Layout &L, RegionBounds b, bool timber)
 {
-	// A small expansion plot borrows irrigation from the lake/river rather than adding
-	// another artificial channel. Its sand rim contains all later crop spread; the
-	// surrounding grass remains available for buildings and a two-way gathering lane.
+	// A plot sits against the water it borrows its irrigation from: how fast a crop grows back
+	// depends on how much water is near it, and a plot laid a few tiles inland off the shore
+	// regrew too slowly to be worth the walk (2026-09-16). So the box may run into the water
+	// and its beach, and the plot simply takes whatever grass is inside it, sharing the shore's
+	// own sand as the cap on that side. Nothing designed may be underneath: a home module, a
+	// crossing or another plot still refuses the site outright.
 	for (int y = b.y0 - 3; y < b.y1 + 3; ++y)
 		for (int x = b.x0 - 3; x < b.x1 + 3; ++x)
 		{
 			const int i = L.t.at(x, y);
-			if (L.terrain[i] != GRASS || L.reserved[i] || L.crossings[i] || L.wheat[i] || L.wood[i])
-				return false;
+			if (L.reserved[i] || L.crossings[i] || L.wheat[i] || L.wood[i])
+				return 0;
 		}
-	fillRectangle(L.terrain, L.t, b, SAND);
-	RegionBounds crops{b.x0 + 2, b.y0 + 2, b.x1 - 2, b.y1 - 2};
-	fillRectangle(L.terrain, L.t, crops, GRASS);
 	// One corner less on the far sides: planting is on pure tiles, not corners.
-	--crops.x1;
-	--crops.y1;
-	fillRectangle(timber ? L.wood : L.wheat, L.t, crops, 1);
-	return true;
+	RegionBounds crops{b.x0 + 2, b.y0 + 2, b.x1 - 3, b.y1 - 3};
+	// Count the grass this site would actually plant before changing anything: against a
+	// shore, a box can be mostly water, and a plot too small to be worth walking to should
+	// leave the ground as it found it so the caller can try the next position.
+	int planted = 0;
+	for (int y = crops.y0; y < crops.y1; ++y)
+		for (int x = crops.x0; x < crops.x1; ++x)
+			if (L.terrain[L.t.at(x, y)] == GRASS)
+				++planted;
+	if (planted < kLeastBankCrops)
+		return 0;
+	// Decide from the ground as it was found, not as this leaves it: only what was grass
+	// becomes rim or crops, so the plot can neither fill a lake nor carry a shoreline away,
+	// and the crop bed is not swallowed by the rim that goes down first.
+	std::vector<unsigned char> wasGrass(size_t((b.x1 - b.x0 + 2) * (b.y1 - b.y0 + 2)), 0);
+	const int stride = b.x1 - b.x0 + 2;
+	const auto found = [&](int x, int y) -> unsigned char &
+	{ return wasGrass[size_t(y - b.y0 + 1) * stride + (x - b.x0 + 1)]; };
+	for (int y = b.y0; y < b.y1; ++y)
+		for (int x = b.x0; x < b.x1; ++x)
+			found(x, y) = L.terrain[L.t.at(x, y)] == GRASS;
+	for (int y = b.y0; y < b.y1; ++y)
+		for (int x = b.x0; x < b.x1; ++x)
+		{
+			if (!found(x, y))
+				continue;
+			const int i = L.t.at(x, y);
+			const bool inside =
+				x >= crops.x0 && x < crops.x1 + 1 && y >= crops.y0 && y < crops.y1 + 1;
+			L.terrain[i] = inside ? GRASS : SAND;
+			if (inside && x < crops.x1 && y < crops.y1)
+				(timber ? L.wood : L.wheat)[i] = 1;
+		}
+	return planted;
 }
 } // namespace
 
@@ -387,20 +424,25 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 		const int x = i % t.w, y = i / t.w;
 		if (x % 8 >= 3 || y % 8 >= 3)
 			continue; // permanent gathering lanes between 3×3 patches
-		const int kind = ((x / 8) + (y / 8)) % 4;
-		const int type = kind < 3 ? CHERRY + kind : STONE;
-		const int amount = context.request.option(kind < 3 ? "fruit-amount" : "stone-amount");
-		if (int(context.bounded("fractal-objectives", 300)) < amount)
+		// All three fruits and nothing else. A court sits on the central island or beside a
+		// crossing — the places both sides have to come to — and fruit is what an inn turns
+		// into a reason to hold ground, so this is where it belongs rather than sprinkled
+		// over the whole map. Stone left these courts at the same time and went out to the
+		// quarries below.
+		const int type = CHERRY + ((x / 8) + (y / 8)) % 3;
+		// Full at the default amount, where it used to be a third: a court holding forty tiles
+		// of fruit across a whole map is not a prize anyone crosses a bridge for.
+		if (int(context.bounded("fractal-objectives", 100)) < context.request.option("fruit-amount"))
 			map.setResource(x, y, type, 1);
 	}
 	// Outside those courts the open land carried nothing at all, which is most of why these
 	// two maps measured barren beside every other landscape: a quarter the resource tiles of
 	// the median map, and three quarters of the ground bare (2026-09-16). It now carries
-	// deposits on the same 8-lattice the courts use, so 3x3 patches always alternate with
-	// permanent gathering lanes and no slider can build a wall across the land. Only timber,
-	// fruit and stone, and timber and fruit only where the ground cannot grow them back: a
-	// renewable patch out here would spread into the routes the design promises, which is
-	// what the courts-only rule was protecting. Food stays inside the contained plots.
+	// timber on the same 8-lattice the courts use, so 3x3 copses always alternate with
+	// permanent gathering lanes and no slider can build a wall across the land. Timber only:
+	// stone belongs at the quarries, fruit in the contested courts, and food inside the
+	// contained plots. A first pass scattered all three everywhere and the map read as
+	// confetti rather than as somewhere with places worth going.
 	std::vector<unsigned char> ambient(t.size(), 0);
 	int ambientTiles = 0;
 	for (int i = 0; i < t.size(); ++i)
@@ -413,13 +455,14 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 		// gaps are what keep a module's expansion room and the walking lanes open.
 		if (x % 8 >= 3 || y % 8 >= 3 || !clearGround(map, x, y))
 			continue;
-		const int kind = ((x / 8) * 3 + (y / 8) * 5) % 8;
-		const int type = kind < 3 ? STONE : kind < 6 ? WOOD : CHERRY + (kind - 6);
-		const int amount = context.request.option(
-			type == STONE ? "stone-amount" : type == WOOD ? "wood-amount" : "fruit-amount");
-		if (int(context.bounded("fractal-ambient", 100)) >= amount)
+		// Every other cell of the lattice, so open ground still outweighs copses: filling all
+		// of them put five times as much timber on the map as food and turned the land into
+		// woodland with clearings rather than garden with woods in it.
+		if (((x / 8) + (y / 8)) % 2)
 			continue;
-		map.setResource(x, y, type, 1);
+		if (int(context.bounded("fractal-ambient", 100)) >= context.request.option("wood-amount"))
+			continue;
+		map.setResource(x, y, WOOD, 1);
 		ambient[i] = 1;
 		++ambientTiles;
 	}
@@ -433,6 +476,76 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 		return false;
 	}
 	context.telemetry.measure("fractal.ambient.deposit-tiles", ambientTiles);
+	// Stone is the one thing worth a journey. Rather than a patch every eight tiles, a handful
+	// of real quarries go as far from every home as the map allows: the ground between homes
+	// on a torus, which is also the ground you have to hold to work them. Each is a clump the
+	// size of a building court, and the six-tile opening quarry inside every module is what
+	// keeps a colony from being stuck before it gets there.
+	std::vector<int> quarries;
+	const int wanted = 2 + context.request.nbTeams / 2;
+	for (int round = 0; round < wanted; ++round)
+	{
+		int best = -1, bestScore = -1;
+		for (int y = 4; y < t.h; y += 8)
+			for (int x = 4; x < t.w; x += 8)
+			{
+				const int i = t.at(x, y);
+				if (L.reserved[i] || L.crossings[i] || L.objectives[i] || L.wheat[i] || L.wood[i] ||
+					!clearGround(map, x, y) || !map.isGrass(x, y))
+					continue;
+				int score = INT_MAX;
+				for (Home h : L.homes)
+					score = std::min(score, t.chebyshev(x, y, h.x, h.y));
+				for (int other : quarries)
+					score = std::min(score, t.chebyshev(x, y, other % t.w, other / t.w));
+				if (score > bestScore)
+				{
+					bestScore = score;
+					best = i;
+				}
+			}
+		if (best < 0 || bestScore < 24)
+			break;
+		quarries.push_back(best);
+	}
+	std::vector<unsigned char> quarryTiles(t.size(), 0);
+	int quarryStone = 0;
+	for (const int site : quarries)
+	{
+		const int cx = site % t.w, cy = site / t.w;
+		for (int dy = -4; dy <= 4; ++dy)
+			for (int dx = -4; dx <= 4; ++dx)
+			{
+				// A rounded clump, and never on a lane the design owns.
+				if (dx * dx + dy * dy > 20)
+					continue;
+				const int x = t.x(cx + dx), y = t.y(cy + dy), i = t.at(x, y);
+				if (L.reserved[i] || L.crossings[i] || L.objectives[i] || L.wheat[i] ||
+					L.wood[i] || !map.isGrass(x, y) || !clearGround(map, x, y))
+					continue;
+				if (int(context.bounded("fractal-quarries", 100)) >=
+					context.request.option("stone-amount"))
+					continue;
+				map.setResource(x, y, STONE, 1);
+				quarryTiles[i] = 1;
+				++quarryStone;
+			}
+	}
+	if (preventResourceGrowth(map, quarryTiles) < 0)
+	{
+		context.detail = "Invalid quarry mask.";
+		return false;
+	}
+	context.telemetry.measure("fractal.quarries.placed", int(quarries.size()));
+	context.telemetry.measure("fractal.quarries.stone-tiles", quarryStone);
+	if (!quarries.empty())
+	{
+		int nearest = INT_MAX;
+		for (const int site : quarries)
+			for (Home h : L.homes)
+				nearest = std::min(nearest, t.chebyshev(site % t.w, site / t.w, h.x, h.y));
+		context.telemetry.measure("fractal.quarries.nearest-home-distance", nearest);
+	}
 	seedAlgae(map, context, t, "fractal-algae", context.request.option("algae-amount"),
 			  AlgaeBand::anyWater(100));
 

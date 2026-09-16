@@ -161,23 +161,32 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	{
 		const double dx = segment.to.x - segment.from.x, dy = segment.to.y - segment.from.y;
 		const double length = std::hypot(dx, dy);
-		// Quarter and three-quarter points on both banks, keeping clear of the midpoint
-		// crossing courts and the rounded ends: one plot per segment side left long
-		// straights of river with nothing growing beside them. Plot orientation follows the
-		// bank, so rectangular scaling never widens the river.
+		// One plot on each bank of every segment, at its midpoint, sliding along the bank
+		// when the first position is taken. Plot orientation follows the bank, so
+		// rectangular scaling never widens the river.
 		for (int side : {-1, 1})
-			for (const double along : {0.25, 0.75})
+			for (const double along : {0.5})
 			{
+				// Offset by half the river plus half the plot: the plot's inner edge lands on
+				// the bank itself, so its crops share the river's sand and stand in its
+				// growth range. Laid a dozen tiles inland they regrew too slowly to be worth
+				// the walk (2026-09-16).
 				const int x =
-					int(segment.from.x + dx * along - side * dy / length * (o.width / 2 + 12));
+					int(segment.from.x + dx * along - side * dy / length * (o.width / 2 + 8));
 				const int y =
-					int(segment.from.y + dy * along + side * dx / length * (o.width / 2 + 12));
-				const int hx = dx == 0 ? 6 : 10, hy = dx == 0 ? 10 : 6;
+					int(segment.from.y + dy * along + side * dx / length * (o.width / 2 + 8));
+				// Square-ish and large: a plot's sand rim is fixed by its perimeter, so a few
+				// big plots cost far less sand per crop tile than many small ones. At four
+				// narrow plots a segment the rims alone covered a tenth of the map.
+				const int hx = dx == 0 ? 8 : 11, hy = dx == 0 ? 11 : 8;
+				// One bank in four carries timber, the rest food: the ambient copses are the
+				// map's wood, and a river bank is worth more as somewhere a colony can feed
+				// itself.
 				farms += bankFarm(L, {x - hx, y - hy, x + hx, y + hy},
-								  (segment.id + side + int(along * 4)) % 3 == 0);
+								  (segment.id + side + int(along * 4)) % 4 == 0);
 			}
 	}
-	context.telemetry.measure("hilbert.bank-farms.proposed", path.segments.size() * 4);
+	context.telemetry.measure("hilbert.bank-farms.proposed", path.segments.size() * 2);
 	context.telemetry.measure("hilbert.bank-farms.placed", farms);
 	context.telemetry.measure("hilbert.depth.requested", o.depth);
 	context.telemetry.measure("hilbert.depth.achieved", path.actualOrder);
@@ -221,6 +230,6 @@ GeneratorDefinition hilbertRiverDefinition()
 		{"major-shortcuts", "Optional major shortcuts", 0, 4, 1, 2, ControlGroup::Layout}};
 	const auto resources = resourceControls();
 	controls.insert(controls.end(), resources.begin(), resources.end());
-	return {"hilbert-river", 50,           "Hilbert River", 2, false, controls, generate, true,
+	return {"hilbert-river", 50,           "Hilbert River", 3, false, controls, generate, true,
 			validateRequest, validateWorld};
 }

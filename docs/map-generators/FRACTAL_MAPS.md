@@ -72,32 +72,51 @@ landscapes, third and sixth lowest of all of them. Three things now fill it, and
 none of them may touch a home module, a crossing, an objective court or an existing
 plot:
 
-- **Bank plots** slide along the bank and retry two tiles smaller before reporting
-  an omission, instead of refusing on the first blocked box. Hilbert proposes a plot
-  at the quarter and three-quarter points of both banks of every segment (was one
-  per side) and places most of them; Gardens proposes all four banks of every
-  smaller lake (was two).
+- **Bank plots** sit against the water, sharing the shore's own sand as their cap on
+  that side, because how fast a crop regrows depends on how much water is near it and
+  a plot laid a dozen tiles inland was not worth the walk. They slide along the bank
+  and retry two tiles smaller before reporting an omission, instead of refusing on the
+  first blocked box, and a site that would leave fewer than forty crop tiles is passed
+  over rather than stamped. Gardens proposes all four banks of every smaller lake (was
+  two); Hilbert proposes one plot on each bank of every segment, large and square-ish,
+  since a plot's sand rim is set by its perimeter and many small plots cost a tenth of
+  the map in rim alone. Three banks in four carry food.
 - **Garden beds** are the home module at a quarter scale — a square pool, a ring of
   crops it waters, a sand cap that contains them — dropped on a jittered lattice
   through the open land, sized to the pockets between Hilbert's folds. They are the
   water away from the one fractal channel, in the same square-on-a-grid language.
-- **Ambient deposits** cover the rest on the same 8-lattice the objective courts
-  use, so 3×3 patches always alternate with permanent gathering lanes. They are
-  timber, fruit and stone only, and the engine's saved `canResourcesGrow` flag holds
-  each patch where it was put: out here a patch is finite, something to go and take,
-  and it can never spread into a route. Renewable food stays inside the contained
-  plots. The lattice gaps are also what keep each module's expansion anchors
+- **Ambient copses** cover the rest: timber, on every other cell of the same 8-lattice
+  the objective courts use, so 3×3 copses always alternate with permanent gathering
+  lanes and open ground still outweighs them. The engine's saved `canResourcesGrow`
+  flag holds each copse where it was put, so out here a patch is finite, something to
+  go and take, and it can never spread into a route. Renewable food stays inside the
+  contained plots. The lattice gaps are also what keep each module's expansion anchors
   available, which the finished-world check requires.
+- **Stone** is not scattered at all. A handful of quarries — two plus half the colony
+  count — go as far from every home as the map allows, each a clump the size of a
+  building court, typically sixty tiles or more from the nearest module. The six-tile
+  opening quarry inside every module is what keeps a colony from being stuck before it
+  gets there. **Fruit** fills the objective courts instead, at full density: a court
+  sits on the central island or beside a crossing, which is where a prize worth
+  fighting over belongs. Scattering both across the whole map read as confetti and gave
+  neither of them anywhere to be.
 
 Measured over 128/256/512 maps at two to eight colonies, six seeds each, this takes
-Hilbert from 1,871 to 6,536 resource tiles and Gardens from 1,422 to 5,950, against
-a 7,764 median across the 48 playable landscapes. Water rises from 10.2% to 13.0%
-and from 12.7% to 18.0%, still well under the field's 29.8%: these are maps of land
+Hilbert from 1,871 to 4,902 resource tiles and Gardens from 1,422 to 4,442, against
+a 7,764 median across the 48 playable landscapes; the maps stay
+deliberately short of that median, since most of it is timber on landscapes that are
+forest first. Water rises from 10.2% to 13.0% and from 12.7% to 18.0%, still well
+under the field's 29.8%: these are maps of land
 cut by one fractal channel, and the median belongs to archipelagos. Widening the
 channel was tried and rejected — a seven-tile river leaves no room for a crossing
 court on a 128 map, which costs the smallest supported size entirely — so the extra
 water comes from the beds instead. `river-width` and `lake-size` remain the controls
 for players who want more.
+
+Inside a module, the two irrigation strips are five rows deep and continuous: the sand
+aisles that limit crop width stop at the crops, where they used to run on through the
+water and leave each strip as four short ponds. The timber side had two rows against the
+wheat side's four and read dry, which is also how fast it fed.
 
 The home module's outer sand cap is frayed one or two tiles outward over open grass,
 from a hash of the home's own coordinates rather than any random stream, so the
