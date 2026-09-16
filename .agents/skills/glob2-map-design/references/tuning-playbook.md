@@ -33,6 +33,7 @@ Contained plots protect the town from its own crops, and the remedy table above 
 
 | Plot design | Wheat harvested | Births | Peak units |
 | --- | ---: | ---: | ---: |
+| A whole volcanic island's slopes, coast and crater rim, homes scored on the finished world (Lava shield) | 424 | 292 | 216 |
 | Open river banks and bars (Braided Delta) | 320 | 160 | 148 |
 | Farm ring with sand spokes and a pond (Breachable Highlands) | 305 | 98 | 96 |
 | Real geography, kit on fertile grass, dug ponds (Continents) | 244 | 162 | 139 |
@@ -43,11 +44,13 @@ Contained plots protect the town from its own crops, and the remedy table above 
 | Finite dry fields, 35% cover (Vultures) | 151 | 148 | 128 |
 | Finite dry fields, 65% cover (Vultures after review) | 127 | 194 | 166 |
 | Concentric capped bands with stairs (Rice Terraces) | 146 | 189 | 138 |
+| Fixed home module: sealed wheat and wood plots, a service court, near timber bays, in a pocket of a folded river (Hilbert River) | 180 | 47 | 51 |
+| The same module in a district between nested lakes (Sierpiński Gardens) | 123 | 37 | 37 |
 | Sand-ringed pond plot with a divider (Hedgerow Country) | 109 | 55 | 55 |
 | Small sealed grass islands in sand (Savannah) | 66 | 24 | 25 |
 | The same plots with a third more watering holes, pools and bigger ponds (Savannah after review) | 88 | 30 | 30 |
 
-Under about 150 wheat in that time a colony never grows, whatever else the map offers. The two lowest rows are the fully sealed circular plots, and neither responded to its obvious lever: giving Hedgerow Country's wheat two thirds of the plot changed nothing (110 harvested either way), and doubling Savannah's home pond changed nothing (66 to 85); a third more watering holes, pools on the plain and bigger ponds together lifted it only to 88, a fifth more units and no other change. Regrowth was never the bottleneck; the AI simply does not work a small ringed plot. The Vultures rows show the opposite lever: filling the finite fields in from 35% to 65% cover cut the harvest from 151 to 127 yet raised the peak from 128 to 166 units and warriors from 50 to 90 while starvation and eliminations fell to none. Fields the AI holds rather than clears are food it keeps and walls it keeps behind; a harvest count reads as work done, not wealth held. Rings with spokes and several entrances (Breachable Highlands, Rice Terraces) are worked; open shores are worked best. So before building a whole map on a sealed-plot economy, put one plot beside an AI colony and read its harvest; and when a tournament shows a flat population with few deaths and few births, look at the harvest before the fertility.
+Under about 150 wheat in that time a colony never grows, whatever else the map offers; a home module engineered for an AI's opening (service court, timber bays, sealed plots) still sits in that band, because the sealing is what caps the harvest. The two lowest rows are the fully sealed circular plots, and neither responded to its obvious lever: giving Hedgerow Country's wheat two thirds of the plot changed nothing (110 harvested either way), and doubling Savannah's home pond changed nothing (66 to 85); a third more watering holes, pools on the plain and bigger ponds together lifted it only to 88, a fifth more units and no other change. Regrowth was never the bottleneck; the AI simply does not work a small ringed plot. The Vultures rows show the opposite lever: filling the finite fields in from 35% to 65% cover cut the harvest from 151 to 127 yet raised the peak from 128 to 166 units and warriors from 50 to 90 while starvation and eliminations fell to none. Fields the AI holds rather than clears are food it keeps and walls it keeps behind; a harvest count reads as work done, not wealth held. Rings with spokes and several entrances (Breachable Highlands, Rice Terraces) are worked; open shores are worked best. So before building a whole map on a sealed-plot economy, put one plot beside an AI colony and read its harvest; and when a tournament shows a flat population with few deaths and few births, look at the harvest before the fertility.
 
 Premade bases are their own case: with either shipped AI a colony never breeds past its premade population (three births in a game), and a Numbi capital on Caravanserai harvests its fields about twenty times in 45,000 ticks and starves once the stocked inns run dry. Those maps are for people; measure AI survival on them, not balance.
 
