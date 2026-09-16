@@ -22,14 +22,34 @@ void blurLine(const std::vector<int> &in, std::vector<int> &out, int r)
 	}
 	const int span = 2 * r + 1;
 	std::int64_t sum = 0;
-	for (int d = -r; d <= r; ++d)
-		sum += in[((d % n) + n) % n];
-	for (int i = 0; i < n; ++i)
+	for (int d = -r; d < 0; ++d)
+		sum += in[n + d];
+	for (int d = 0; d <= r; ++d)
+		sum += in[d];
+	// r <= (n - 2) / 2 here (the r >= n/2 line above returned already), so i - r and i + r + 1
+	// leave [0, n) only in these two disjoint end ranges; splitting the loop this way replaces
+	// the pair of remainders every iteration used with plain indexing in between.
+	int i = 0;
+	for (; i < r; ++i)
 	{
 		const std::int64_t q = sum >= 0 ? sum / span : -((-sum + span - 1) / span);
 		out[i] = int(q);
-		sum -= in[((i - r) % n + n) % n];
-		sum += in[(i + r + 1) % n];
+		sum -= in[i - r + n];
+		sum += in[i + r + 1];
+	}
+	for (; i < n - r - 1; ++i)
+	{
+		const std::int64_t q = sum >= 0 ? sum / span : -((-sum + span - 1) / span);
+		out[i] = int(q);
+		sum -= in[i - r];
+		sum += in[i + r + 1];
+	}
+	for (; i < n; ++i)
+	{
+		const std::int64_t q = sum >= 0 ? sum / span : -((-sum + span - 1) / span);
+		out[i] = int(q);
+		sum -= in[i - r];
+		sum += in[i + r + 1 - n];
 	}
 }
 

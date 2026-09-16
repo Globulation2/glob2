@@ -1708,6 +1708,13 @@ refusal) and every constant's reason.
   every playable landscape at the colony counts and sizes the lobby offers, five seeds at 128
   and 256 and three at 512, prints the success rate per cell and fails any valid cell where no
   seed generated: that is what a player would see as a failed generation. CI runs all three.
+- `test/MapGeneratorProfileFixture.cpp` builds to `MapGeneratorProfileFixture
+  <profile-dir> <seed> <rounds>`, a load generator for external sampling profilers (macOS
+  `sample`, Linux `perf record`): it round-robins every registered generator for `rounds` passes,
+  drawing shared and generator-specific controls at random each attempt the same way
+  `GenerationRequest::randomizeControls` does, and prints a per-generator attempt/success/timing
+  table. It is not wired into CI and makes no coverage claim; point a profiler at its PID while it
+  runs, or use its own timings for a quick before/after comparison at a fixed seed and round count.
 - The normal client's [map CLI](CLI.md) generates maps and PNG previews with
   `--generate-map`, loads maps/saves with `--preview-map`, and lists settings with
   `--list-map-generators`. It supports config files and CLI controls, and reuses the lobby/picker preview renderer.
