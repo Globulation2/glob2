@@ -79,7 +79,9 @@ and `./build/src/TerrainResourcesHarness`. The harness links the actual client
 objects and exercises terrain regeneration and resource clearing for all eight
 resource types, all five base terrains, overlapping strokes, and all four
 wrapped map corners. A whole-map oracle checks both removal and preservation.
-These are headless map-operation tests; they do not drive editor mouse events.
+It also checks the prototype ice and cobblestone rules: placement, resources, step
+costs, walking speed and ice damage. These are headless map-operation tests; they do
+not drive editor mouse events.
 
 ## Map generator golden maps and colony sweep
 
