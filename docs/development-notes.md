@@ -8,6 +8,9 @@ notes when the referenced behavior changes.
 Tournament CLI, persistent workers, and per-player AI save compatibility are
 documented in [Distributed tournaments](tournaments.md).
 
+The prototype ice and cobblestone terrains, their rules, tiles and compatibility status are
+described in [Prototype terrain](prototype-terrain.md).
+
 ## Build and test entry points
 
 Choose build concurrency for available memory and other running builds; CPU count
