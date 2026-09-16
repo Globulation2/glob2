@@ -134,6 +134,16 @@ For targeted settings, pass a JSON configuration list with `id`, `method` and a 
 
 Before accepting a generator or structural refactor, inspect fixed-seed previews and poor-performing examples, exercise range endpoints and crowded/rectangular maps, and investigate changes beyond the documented statistical thresholds. Keep generated evidence under ignored `artifacts/` and summarize findings in the pull request. The comparison plotter requires an explicitly supplied baseline study summary.
 
+### No-growth zones are forbidden
+
+A generator may never disable resource growth on any tile. The engine's saved
+`canResourcesGrow` flag is for hand-made scenarios such as the tutorial, not for generated
+maps, and `validateGeneratedWorld` refuses a generated world with even one no-growth tile.
+Contain crops with terrain the player can see: sand caps and aisles (one row of sand corners
+is enough to stop a crop extending), dry ground for scenery that must not spread, or leaving
+the deposit out. [Game rules for map design](GAME_RULES_FOR_MAP_DESIGN.md) has the engine
+detail.
+
 ### Maps can't be ugly
 
 A change made for mobility, fairness or a healthier economy must not destroy the aesthetic vision the map was built on. When the fix and the picture disagree, find the version of the fix that keeps the picture; it nearly always exists. Three checks catch most of what previews miss:

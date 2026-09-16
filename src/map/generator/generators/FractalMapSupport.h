@@ -20,7 +20,7 @@ struct Layout
 	Torus t{1, 1};
 	TerrainSketch terrain;
 	std::vector<Home> homes;
-	std::vector<unsigned char> reserved, wheat, wood, objectives, crossings, growthRestricted;
+	std::vector<unsigned char> reserved, wheat, wood, objectives, crossings;
 	/// The footprint of everything a garden path may lead to: home modules, beds, bank plots,
 	/// lakes and crossing landings. Appended as each is laid; read by gardenPaths.
 	std::vector<RegionBounds> features;

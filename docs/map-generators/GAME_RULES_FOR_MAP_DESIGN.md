@@ -81,20 +81,23 @@ Consequences a generator has to design around:
   or a count of wood tiles on a final save against the same count at tick zero. Treat a sprinkle
   of timber across open land as a promise that the land will eventually be woods, and either keep
   the sprinkle sparse and contained or leave it out.
-- **Containing a deposit means flagging its neighbours, not the deposit.** `canResourcesGrow` is a
-  per-tile saved flag that blocks growth *on that tile*. A patch whose own tiles are flagged can
-  still extend into unflagged ground beside it, so a genuinely finite patch is the patch plus the
-  ring it could reach (`preventResourceGrowth` over a dilated mask), or a patch on ground where
-  the water probe cannot succeed, or one capped with `capResourceStock`. The ring must be
-  complete: ground that cannot carry the flag, such as a fruit court whose fruit must regrow,
-  has to be kept away from the patch rather than carved out of its ring, or the patch spreads
-  from that side. Sand around a plot works because a deposit cannot occupy sand at all; that is
-  a different mechanism from the flag.
-- **Flag the ring alone to keep a deposit renewable.** A deposit thickens on its own tile and
-  extends onto a neighbour, and the flag is checked on whichever tile would change. Flag the
-  patch and its ring and the patch is finite; flag only the ring and the patch regrows in
-  place after every harvest but can never extend. That is the containment for food meant to
-  feed a colony where sand would look wrong — a spot of wheat on a riverbank.
+- **No-growth zones are forbidden on generated maps.** The engine keeps a saved per-tile
+  `canResourcesGrow` flag, and it exists for hand-made scenarios such as the tutorial, where a
+  designer freezes the ground a lesson needs. A generator may not set it on any tile: the shared
+  structural check (`validateGeneratedWorld`) refuses a generated world with even one no-growth
+  tile, and the toolkit no longer has a helper that sets it. A frozen tile is invisible to the
+  player, stops farmland regrowing where they expect it to, and hides an overgrowth problem the
+  design should have solved (the fractal maps used it and were stripped of it on 2026-09-16).
+  Contain crops with terrain instead, which players can see and reason about:
+  - **Sand.** A deposit cannot occupy sand, so a sand cap or aisle contains a plot permanently.
+    One row of sand *corners* is enough: the two tile rows either side of it are no longer pure
+    grass, and no crop can extend across them.
+  - **Dry ground.** A wheat or wood deposit whose growth probe can never find water never
+    thickens or extends. Scenery on dry ground (`Fertility::forMap` reads zero) stays the size it
+    was planted.
+  - **Leaving it out.** A copse that would have to be held back by anything else does not belong
+    on fertile ground.
+  Stone and fruit need none of this: neither extends (their resource types are not expendable).
 - **Fruit is a weapon.** A colony whose inns hold all three fruits can pull hungry enemy units
   across to its side, so an orchard of all three kinds in contested ground is the strongest prize
   a map can offer, and fruit spread unevenly between colonies is a real unfairness.

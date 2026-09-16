@@ -192,6 +192,8 @@ region IDs through design; check beaches, seam routes and final engine movement 
 For reusable start-site work, use `selectSeparatedSites` for bounded toroidal maximin
 selection, `resourceFrontages` on an existing movement flood, and `arrangeBuildingGrid`
 to check actual disjoint footprints plus access after every proposed building is placed.
-`preventResourceGrowth` protects tile masks with the engine’s existing serialized flag.
-`cropSpreadEnvelope` honors these flags and proves containment independently of present
-fertility or buildings. Keep economic thresholds and module layouts in generators.
+`cropSpreadEnvelope` proves containment independently of present fertility or buildings.
+Containment on a generated map is terrain only: the engine's saved no-growth flag is
+forbidden there (it is for hand-made scenarios such as the tutorial), and the shared
+structural check refuses any generated world that sets it. Keep economic thresholds and
+module layouts in generators.

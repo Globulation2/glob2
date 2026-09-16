@@ -86,11 +86,10 @@ plot:
   through the open land, sized to the pockets between Hilbert's folds. They are the
   water away from the one fractal channel, in the same square-on-a-grid language.
 - **Ambient copses** are sparse: timber on one cell in eight of the same 8-lattice the
-  objective courts use, scattered rather than gridded, so 3×3 copses always sit apart
-  with permanent gathering lanes between them. Each is finite — the engine's saved
-  `canResourcesGrow` flag covers the copse *and the ring it could extend into* (see
-  below) — so out here a patch is something to go and take, not something that takes
-  the map. Renewable food stays inside the contained plots. The gaps are also what keep
+  objective courts use, scattered rather than gridded, and only on dry ground where the
+  growth probe can never find water, so a copse stays the size it was planted — something
+  to go and take, not something that takes the map. On fertile ground there is simply no
+  copse. Renewable food stays inside the sand-contained plots. The gaps are also what keep
   each module's expansion anchors available, which the finished-world check requires.
 - **Stone** is not scattered at all. A handful of quarries — two plus half the colony
   count — go as far from every home as the map allows, each a clump the size of a
@@ -147,24 +146,24 @@ use. A bed lays four rows of grass round its pool so the beach can take the inne
 leave three rows of crops.
 
 Wheat also grows along the shore of each map's centrepiece — Hilbert's river, Gardens'
-central lake — in 3×3 spots just past the beach, at least twenty tiles apart and never on or
-beside anything the design owns. They are contained by flagging each spot's ring and not the
-spot: a spot regrows in place after every harvest and never extends. Gardens' four bank plots
+central lake — in 3×3 spots, at least twenty tiles apart and never on anything the design
+owns. They sit right against the beach and grow and spread like any
+farmland; the beaches and paths round them are sand, so a spot can spread along the bank
+without shutting a route. Gardens' four bank plots
 round every smaller lake are three wheat and one timber, the seed choosing which bank.
 
 Every path meets the sand or water of the feature it joins, not the edge of that feature's
 recorded box, which is larger than its visible rim. A crossing's two landings are joined to
 the tree separately, so every bridge is met by a path on both banks.
 
-Ambient copses and quarries are finite. `canResourcesGrow` blocks growth only on the flagged
-tile, and a deposit extends to its neighbours once its amount passes a random 0–7, so each
-copse and quarry is flagged together with the complete ring of tiles it could reach, and
-neither may sit beside a fruit court or a crop plot, whose own tiles cannot carry the flag.
-Copses sit on one lattice cell in eight. Over one 50,000-tick game per map on the same seeds
-(map seed 3001, game seed 19, four AIs), wood went from 2,858 to 17,682 tiles on Gardens and
-2,882 to 20,737 on Hilbert before this — 27% and 32% of the map, one forest of 9,132 tiles —
-and from 1,375 to 2,600 and 1,271 to 2,527 after: about 4% of the map, the growth being the
-contained plots filling in.
+No growth is frozen anywhere on either map: generated maps may not use the engine's saved
+no-growth flag, which is for hand-made scenarios such as the tutorial, and the shared
+structural check refuses any generated world that has one. Everything that must not spread
+is contained by terrain. Plots and beds are sand-capped. Copses sit only on dry ground and on
+one lattice cell in eight. Quarries need nothing: stone never extends. Before any of this,
+one 50,000-tick game per map (map seed 3001, game seed 19, four AIs) took wood from 2,858 to
+17,682 tiles on Gardens and 2,882 to 20,737 on Hilbert — 27% and 32% of the map, one forest of
+9,132 tiles.
 
 The home module's outer sand cap is frayed one or two tiles outward over open grass,
 from a hash of the home's own coordinates rather than any random stream, so the
@@ -183,8 +182,9 @@ a wheat plot north and a second wheat plot south (it grew timber until 2026-09-1
 home's renewable timber is now the two bays at the ends of the north plot, and the rest is
 out on the map), several harvesting aisles, a quarry,
 and access to outside building ground. Sand caps contain most crop edges. A grass
-service apron directly beside wheat fits feeding buildings; the existing saved
-`canResourcesGrow` flag protects this apron from future crops. Near timber bays
+service apron directly beside wheat fits feeding buildings. Wheat may grow onto the apron
+as farmland does, but a single row of sand corners along its foot keeps it out of the court
+below. Near timber bays
 shorten inn construction and upgrade deliveries, and are the home's only renewable timber. No emergency resource clearer may carve another crossing.
 
 A bounded maximin search tries up to 64 initial anchors, with toroidal separation.
@@ -235,11 +235,10 @@ it describes future room rather than permission to place a building immediately.
 
 The growth envelope floods pure grass from wheat/wood across seams, ignoring buildings
 and current fertility. It deliberately overestimates spread, so containment survives
-building demolition and fertility changes as long as terrain and saved growth restrictions remain.
-`preventResourceGrowth(map, mask)` sets that existing tile flag without clearing resources;
-it returns the number changed, or −1 for a wrong-sized mask without mutation. The
-envelope honors these restrictions. Engine-growth fixtures and map round trips check
-the actual mechanism, including wrapped tiles.
+building demolition and fertility changes as long as the terrain remains. Generated maps
+contain crops with terrain only; there is no helper for the engine's saved no-growth flag,
+which is forbidden on generated maps. An engine-growth fixture checks that a sand ring
+really holds irrigated wood back, including across the map's seams.
 Frontage counts describe edges, not unique resource deposits or concurrent worker slots.
 
 ### `RecursiveGeometry.h`

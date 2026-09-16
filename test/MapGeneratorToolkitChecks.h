@@ -2234,6 +2234,13 @@ inline void baseChecks()
 		assert(validateGeneratedWorld(game, request, definition) == "Incomplete starting colony");
 		definition.startingWorkers = [](const GenerationRequest &) { return 32; };
 		assert(validateGeneratedWorld(game, request, definition).empty());
+		// A generated map may not disable resource growth anywhere, even one tile: no-growth
+		// zones belong to hand-made scenarios such as the tutorial.
+		game.map.getTile(5, 7).canResourcesGrow = false;
+		assert(validateGeneratedWorld(game, request, definition).rfind(
+				   "Generated maps may not disable resource growth", 0) == 0);
+		game.map.getTile(5, 7).canResourcesGrow = true;
+		assert(validateGeneratedWorld(game, request, definition).empty());
 		plantBaseDepots(game.map, context, t, city, {32, 32, 2});
 		assert(countResource(game.map, STONE) > 0);
 	}
@@ -2444,42 +2451,34 @@ inline void siteOperationChecks()
 	fillRectangle(terrain, t, {5, -2, 13, 3}, GRASS);
 	writeUndermap(contained.map, terrain);
 	assert(cropSpreadEnvelope(contained.map).steps[t.at(0, 0)] >= 0);
-	// A saved no-growth ring can protect buildable grass without a sand gap.
-	// Wrap the fixture around both seams to exercise the same indexing as homes.
-	std::vector<unsigned char> protectedGrass(t.size(), 0);
-	fillRectangle(protectedGrass, t, {-9, -9, 10, 10});
-	assert(preventResourceGrowth(contained.map, {}) == -1);
-	assert(contained.map.canResourcesGrow(0, 0));
-	assert(preventResourceGrowth(contained.map, protectedGrass) == 19 * 19);
-	assert(preventResourceGrowth(contained.map, protectedGrass) == 0);
-	assert(!contained.map.canResourcesGrow(63, 63));
-	assert(cropSpreadEnvelope(contained.map).steps[t.at(0, 0)] < 0);
 
 	// Exercise actual engine growth, not just our conservative reachability proof.
-	// Irrigated wood on the unprotected control side must spread, while the
-	// immediately adjoining protected grass remains empty. Restore simulation RNG
-	// so this fixture cannot change subsequent generator golden measurements.
+	// Irrigated wood outside a sand ring must spread, while the grass inside it stays
+	// empty: terrain is the only containment a generated map may use, because the saved
+	// no-growth flag is forbidden outside hand-made scenarios. Restore simulation RNG so
+	// this fixture cannot change subsequent generator golden measurements.
 	Game growing(nullptr);
 	grassMap(growing, 6, 6);
 	terrain.assign(t.size(), GRASS);
-	fillRectangle(terrain, t, {-12, -12, 13, -5}, WATER);
+	fillRectangle(terrain, t, {-12, -12, 13, -6}, WATER);
+	fillRectangle(terrain, t, {-6, -2, 7, 7}, SAND);
+	fillRectangle(terrain, t, {-4, 0, 5, 5}, GRASS);
 	writeUndermap(growing.map, terrain);
-	protectedGrass.assign(t.size(), 0);
-	fillRectangle(protectedGrass, t, {-4, 0, 5, 5});
-	assert(preventResourceGrowth(growing.map, protectedGrass) == 45);
+	std::vector<unsigned char> inside(t.size(), 0);
+	fillRectangle(inside, t, {-4, 0, 5, 5});
 	const auto savedRandom = syncRandEngine();
 	setSyncRandSeed(20001);
 	for (int x = -4; x <= 4; ++x)
-		growing.map.setResource(t.x(x), 63, WOOD, 1); // brush diameter, not amount
+		growing.map.setResource(t.x(x), t.y(-4), WOOD, 1); // brush diameter, not amount
 	for (int i = 0; i < t.size(); ++i)
-		if (protectedGrass[i])
+		if (inside[i])
 			assert(!growing.map.isResource(i % t.w, i / t.w));
 	for (int step = 0; step < 12000; ++step)
 		growing.map.growResources();
 	syncRandEngine() = savedRandom;
 	assert(countResource(growing.map, WOOD) > 9);
 	for (int i = 0; i < t.size(); ++i)
-		if (protectedGrass[i])
+		if (inside[i])
 			assert(growing.map.getResource(i % t.w, i / t.w).type == NO_RES_TYPE);
 }
 

@@ -119,13 +119,11 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	for (int i = 0; i < t.size(); ++i)
 		protectedPlots[i] |= L.wood[i];
 	auto crossingExclusion = tileCorners(t, protectedPlots);
-	const auto serviceCorners = tileCorners(t, L.growthRestricted);
-	for (int i = 0; i < t.size(); ++i)
-		crossingExclusion[i] |= serviceCorners[i];
 	for (int i = 0; i < t.size(); ++i)
 		crossingExclusion[i] |= L.reserved[i] && L.terrain[i] == WATER;
+	// A causeway may cross neither a home's construction court nor the service apron above it.
 	for (Home h : L.homes)
-		fillRectangle(crossingExclusion, t, {h.x - 12, h.y - 10, h.x + 13, h.y + 15});
+		fillRectangle(crossingExclusion, t, {h.x - 12, h.y - 16, h.x + 13, h.y + 15});
 	// Each candidate is a complete opposing pair of causeways, represented as one path
 	// across the island. Selecting halves independently could leave all approaches on
 	// one shore.
@@ -373,7 +371,7 @@ GeneratorDefinition sierpinskiGardensDefinition()
 	return {"sierpinski-gardens",
 			49,
 			"Sierpiński Gardens",
-			5,
+			6,
 			false,
 			controls,
 			generate,

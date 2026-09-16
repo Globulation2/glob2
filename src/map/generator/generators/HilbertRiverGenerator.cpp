@@ -241,6 +241,6 @@ GeneratorDefinition hilbertRiverDefinition()
 		{"major-shortcuts", "Optional major shortcuts", 0, 4, 1, 2, ControlGroup::Layout}};
 	const auto resources = resourceControls();
 	controls.insert(controls.end(), resources.begin(), resources.end());
-	return {"hilbert-river", 50,           "Hilbert River", 5, false, controls, generate, true,
+	return {"hilbert-river", 50,           "Hilbert River", 6, false, controls, generate, true,
 			validateRequest, validateWorld};
 }

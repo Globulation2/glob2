@@ -35,7 +35,7 @@ void initialize(Layout &L, const GenerationRequest &r)
 	L.t = Torus(1 << r.wDec, 1 << r.hDec);
 	L.terrain.assign(L.t.size(), GRASS);
 	L.reserved.assign(L.t.size(), 0);
-	L.wheat = L.wood = L.objectives = L.crossings = L.growthRestricted = L.wheatShore = L.reserved;
+	L.wheat = L.wood = L.objectives = L.crossings = L.wheatShore = L.reserved;
 }
 bool reserveHomes(Layout &L, GenerationContext &context, const std::vector<Home> &preferred,
 				  GenerationTelemetry *observations)
@@ -167,14 +167,17 @@ void layHomeEconomies(Layout &L)
 			fillRectangle(L.terrain, t, {h.x + offset, h.y + 17, h.x + offset + 2, h.y + 24}, SAND);
 		}
 		// Food-service buildings need to hug the grain, especially policies that
-		// require an upgraded inn footprint within one tile of harvestable wheat.
-		// A multi-corner sand barrier cannot satisfy that distance. Join a grass
-		// apron to the main court and protect its TILE footprint with the existing
-		// saved no-growth flag instead. Five clear rows fit a 3x3 inn (or a 4x4
-		// swarm) and access; the 24x24 main court remains available below it.
-		// The flag is installed after rasterization, never by clearing grown crops.
+		// require an upgraded inn footprint within one tile of harvestable wheat, so
+		// a grass apron runs straight off the wheat bed: five clear rows fit a 3x3 inn
+		// (or a 4x4 swarm) against the grain. Wheat may grow over the apron, as farmland
+		// does, but never into the construction court: a single row of sand corners
+		// along the apron's foot makes the two tile rows either side of it unplantable,
+		// which no crop can extend across. The court loses only its top row, which lies
+		// inside the building grid's inset margin. Generated maps may not use the saved
+		// no-growth flag at all — it belongs to hand-made scenarios such as the tutorial —
+		// and this apron used to be held clear with it (removed 2026-09-16).
 		fillRectangle(L.terrain, t, {h.x - 12, h.y - 15, h.x + 13, h.y - 9}, GRASS);
-		fillRectangle(L.growthRestricted, t, {h.x - 12, h.y - 15, h.x + 12, h.y - 10});
+		fillRectangle(L.terrain, t, {h.x - 14, h.y - 10, h.x + 15, h.y - 9}, SAND);
 		// The module's outer edge used to be a crisp rectangle, so every colony on both maps
 		// opened inside the same stamped yellow box. Fray it: each tile along the outside of
 		// the cap may push a few tiles further out over open grass. Sand is only ever added,
@@ -645,13 +648,6 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 	Map &map = game.map;
 	context.stage = "fractal terrain and contained farms";
 	writeUndermap(map, L.terrain);
-	const int protectedTiles = preventResourceGrowth(map, L.growthRestricted);
-	if (protectedTiles < 0)
-	{
-		context.detail = "Invalid farm service-court growth mask.";
-		return false;
-	}
-	context.telemetry.measure("fractal.homes.growth-protected-tiles", protectedTiles);
 
 	const int wheatAmount = context.request.option("wheat-amount"),
 			  woodAmount = context.request.option("wood-amount");
@@ -709,30 +705,15 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 	// stone belongs at the quarries, fruit in the contested courts, and food inside the
 	// contained plots. A first pass scattered all three everywhere and the map read as
 	// confetti rather than as somewhere with places worth going.
-	std::vector<unsigned char> spots(t.size(), 0);
-	const auto besideCropOrCourt = [&](int x, int y)
-	{
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				const int j = t.at(x + dx, y + dy);
-				if (L.objectives[j] || L.wheat[j] || L.wood[j] || spots[j])
-					return true;
-			}
-		return false;
-	};
 	// Spots of wheat along the shore of the water the design names — Hilbert's river,
 	// Gardens' central lake — so the banks of the map's centrepiece carry food of their own.
-	// A spot is a 3x3 of wheat just past the beach, at least a court's width from
-	// the next, and never on or beside anything the design owns. By water, wheat would
-	// spread, so a spot is contained the one way that still lets it feed a colony: the
-	// no-growth flag goes on its RING and not on the spot. The spot thickens back in place
-	// after every harvest, and can never extend, because every tile it could extend into is
-	// flagged (2026-09-16).
+	// A spot is a 3x3 of wheat right against the beach, at least a court's width from the
+	// next, and never on anything the design owns. It grows and spreads like any farmland:
+	// how fast wheat regrows depends on how much water its random probe finds, so a spot
+	// laid back from the shore barely grew, and the beaches and paths round it are sand, so
+	// it can spread along the bank without shutting a route (2026-09-16).
 	{
-		// Six tiles: a spot and its ring are five across and must clear the beach, so the
-		// nearest a centre can sit is about four tiles out; six leaves room to find one.
-		const auto nearShore = dilate(t, L.wheatShore, 6);
+		const auto nearShore = dilate(t, L.wheatShore, 4);
 		std::vector<int> centres;
 		const int spacing = 20;
 		for (int i = 0; i < t.size(); ++i)
@@ -741,16 +722,14 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 				continue;
 			const int cx = i % t.w, cy = i / t.w;
 			bool clear = true;
-			for (int dy = -2; clear && dy <= 2; ++dy)
-				for (int dx = -2; clear && dx <= 2; ++dx)
+			for (int dy = -1; clear && dy <= 1; ++dy)
+				for (int dx = -1; clear && dx <= 1; ++dx)
 				{
 					const int x = t.x(cx + dx), y = t.y(cy + dy), j = t.at(x, y);
-					// The spot and its ring: all grass, none of it designed ground, and
-					// nothing a spot's ring would have to leave unflagged next to it.
 					clear = map.isGrass(x, y) && clearGround(map, x, y) && !L.reserved[j] &&
 							!L.crossings[j] && !L.objectives[j] && !L.wheat[j] && !L.wood[j];
 				}
-			if (!clear || besideCropOrCourt(cx, cy))
+			if (!clear)
 				continue;
 			bool apart = true;
 			for (const int c : centres)
@@ -768,21 +747,13 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 						context.request.option("wheat-amount"))
 						continue;
 					map.setResource(x, y, WHEAT, 1);
-					spots[t.at(x, y)] = 1;
 					++planted;
 				}
-		auto ring = dilate(t, spots, 1);
-		for (int i = 0; i < t.size(); ++i)
-			if (spots[i])
-				ring[i] = 0;
-		if (preventResourceGrowth(map, ring) < 0)
-		{
-			context.detail = "Invalid shore wheat ring.";
-			return false;
-		}
 		context.telemetry.measure("fractal.shore-wheat.spots", int(centres.size()));
 		context.telemetry.measure("fractal.shore-wheat.tiles", planted);
 	}
+	// The growth field of the finished terrain, water from beds, plots and lakes included.
+	const auto dryGround = Fertility::forMap(map, false);
 	std::vector<unsigned char> ambient(t.size(), 0);
 	int ambientTiles = 0;
 	for (int i = 0; i < t.size(); ++i)
@@ -790,11 +761,12 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 		const int x = i % t.w, y = i / t.w;
 		if (L.objectives[i] || L.reserved[i] || L.crossings[i] || L.wheat[i] || L.wood[i])
 			continue;
-		// Nor beside a court or a crop plot: the containment ring below has to cover every
-		// neighbour, and a court's own tiles cannot carry the no-growth flag without stopping
-		// its fruit growing back. A copse against a court left that side unguarded, and one
-		// game filled the orchard island with forest from it (2026-09-16).
-		if (besideCropOrCourt(x, y))
+		// Only on dry ground, where the growth probe can never find water: a copse there
+		// cannot extend, so it stays the size it was planted. On fertile ground a scattered
+		// copse is a forest with a delay — one 50,000-tick game grew the fractal maps to a
+		// third wood (2026-09-16). Generated maps may not hold it back with the saved
+		// no-growth flag, so where the ground is fertile there is simply no copse.
+		if (dryGround.at(x, y) != 0)
 			continue;
 		// 3x3 patches with five clear tiles between them, the same lattice the objective
 		// courts use: a patch costs building anchors as well as giving resources, and the
@@ -812,25 +784,6 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 		map.setResource(x, y, WOOD, 1);
 		ambient[i] = 1;
 		++ambientTiles;
-	}
-	// Make them finite, and mind exactly what that takes. Map::growResources lets a deposit
-	// EXTEND to a neighbouring tile whenever its amount exceeds a random 0-7, and wood and
-	// wheat may do it wherever water lies within about fifteen tiles. canResourcesGrow blocks
-	// growth on the flagged tile only, so flagging a copse and nothing else still lets it
-	// creep outward a tile at a time — and with garden beds spreading water across the map,
-	// there is almost nowhere it cannot. A 50,000-tick game showed the result: forest over
-	// most of the land (2026-09-16). The flag therefore covers each copse AND the ring of
-	// tiles it could extend into, minus anything the design owns, which is what actually
-	// makes a patch something you go and take rather than something that takes the map.
-	// The ring is complete: placement kept every copse clear of courts and crop plots, and a
-	// module's reserved margin or a crossing's approach is ordinary grass that must not grow
-	// wood either. Carving those out of the ring is what let copses beside a module's corner
-	// spread across its margin.
-	const auto contained = dilate(t, ambient, 1);
-	if (preventResourceGrowth(map, contained) < 0)
-	{
-		context.detail = "Invalid ambient deposit mask.";
-		return false;
 	}
 	context.telemetry.measure("fractal.ambient.deposit-tiles", ambientTiles);
 	// Stone is the one thing worth a journey. Rather than a patch every eight tiles, a handful
@@ -865,7 +818,6 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 			break;
 		quarries.push_back(best);
 	}
-	std::vector<unsigned char> quarryTiles(t.size(), 0);
 	int quarryStone = 0;
 	for (const int site : quarries)
 	{
@@ -878,26 +830,17 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 					continue;
 				const int x = t.x(cx + dx), y = t.y(cy + dy), i = t.at(x, y);
 				if (L.reserved[i] || L.crossings[i] || L.objectives[i] || L.wheat[i] ||
-					L.wood[i] || !map.isGrass(x, y) || !clearGround(map, x, y) ||
-					besideCropOrCourt(x, y))
+					L.wood[i] || !map.isGrass(x, y) || !clearGround(map, x, y))
 					continue;
 				if (int(context.bounded("fractal-quarries", 100)) >=
 					context.request.option("stone-amount"))
 					continue;
 				map.setResource(x, y, STONE, 1);
-				quarryTiles[i] = 1;
 				++quarryStone;
 			}
 	}
-	// Stone extends the same way and needs no water at all, so a quarry left unflagged would
-	// grow into the walls its own comment promises it is not. Same treatment: the clump and
-	// the ring it could reach.
-	const auto quarryContained = dilate(t, quarryTiles, 1);
-	if (preventResourceGrowth(map, quarryContained) < 0)
-	{
-		context.detail = "Invalid quarry mask.";
-		return false;
-	}
+	// Stone never extends (its resource type is not expendable), so a quarry needs nothing to
+	// keep it the size it was placed.
 	context.telemetry.measure("fractal.quarries.placed", int(quarries.size()));
 	context.telemetry.measure("fractal.quarries.stone-tiles", quarryStone);
 	if (!quarries.empty())
@@ -1086,9 +1029,7 @@ std::string validate(const Game &game, const GenerationContext &context, const L
 		if (L.crossings[i] && map.isWater(i % t.w, i / t.w))
 			return "A designed crossing was lost at (" + std::to_string(i % t.w) + "," +
 				   std::to_string(i / t.w) + ") during terrain rasterization.";
-		if (L.growthRestricted[i] &&
-			(map.canResourcesGrow(i % t.w, i / t.w) || map.isResource(i % t.w, i / t.w)))
-			return "A farm service court lost its persistent crop protection.";
+
 	}
 	return "";
 }

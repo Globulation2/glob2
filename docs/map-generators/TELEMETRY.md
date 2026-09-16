@@ -102,8 +102,7 @@ Temporary debug instrumentation is useful for one hypothesis: every rejected poi
 ## Fractal generator records
 
 `fractal.homes.*` reports bounded-search attempts, candidate/fitted counts, optional spare modules,
-and the site omitted after finished-world scoring. `fractal.homes.growth-protected-tiles`
-counts changed saved growth flags for grass service aprons, reusing the mutation’s counter. Search relaxation is always zero;
+and the site omitted after finished-world scoring. Search relaxation is always zero;
 Hilbert emits a search batch for every attempted uniform order. `fractal.home.*` subjects are stable
 home-site indices, not team indices; `home.team` records the later random deal. Frontages
 count resource-adjacent walking edges (a deposit may have several); renewable frontages
