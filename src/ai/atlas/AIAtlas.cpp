@@ -114,7 +114,7 @@ std::shared_ptr<Order> AIAtlas::getOrder(void)
 		const bool gotField = source_->field(Uint32(tick), desired_);
 		if (gotField)
 		{
-			auto orders = reconciler_.plan(desired_);
+			auto orders = reconciler_.plan(desired_, Uint32(tick));
 			lastPlanSize_ = orders.size();
 			for (auto &order : orders)
 				queue_.push_back(std::move(order));

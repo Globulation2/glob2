@@ -17,6 +17,7 @@
 #include "UnitConsts.h"
 
 #include <algorithm>
+#include <cmath>
 
 static_assert(Atlas::SWARM_RATIO_STRIDE == NB_UNIT_TYPE,
               "DesiredState::swarmRatio stride must match the engine's unit-type count");
@@ -54,6 +55,8 @@ namespace Atlas
 		map_ = game_ ? &game_->map : nullptr;
 		observed_.clear();
 		emptyStreak_.clear();
+		bindings_.clear();
+		boundCells_.clear();
 		sequence_ = 0;
 		stats_.clear();
 	}
@@ -239,11 +242,131 @@ namespace Atlas
 		}
 	}
 
+	/*
+	  Drop bindings that no longer describe anything real, and recompute the set
+	  of cells they protect.
+
+	  A binding dies when the desire it served changed or vanished, when the
+	  building that satisfied it is gone, or when it was issued long enough ago
+	  that the construction site should have appeared and did not. That last
+	  case is what stops a single failed order from blocking its desire for the
+	  rest of the game.
+	*/
+	void Reconciler::refreshBindings(const DesiredState &desired, Uint32 tick)
+	{
+		boundCells_.clear();
+		for (auto it = bindings_.begin(); it != bindings_.end();)
+		{
+			const Binding &binding = it->second;
+			const bool stillWanted =
+				it->first < desired.building.size() &&
+				desired.building[it->first] == Uint8(binding.shortType + 1);
+			if (!stillWanted)
+			{
+				it = bindings_.erase(it);
+				continue;
+			}
+
+			auto found = observed_.find(binding.actualCell);
+			const bool realised = found != observed_.end() && found->second &&
+			                      found->second->type &&
+			                      found->second->type->shortTypeNum == binding.shortType;
+			if (realised)
+			{
+				boundCells_.insert(binding.actualCell);
+				++it;
+				continue;
+			}
+
+			// Not realised yet. Hold the binding only while the site could
+			// still plausibly be on its way.
+			if (tick >= binding.issuedTick &&
+			    tick - binding.issuedTick < Uint32(config_.pendingBindingTicks))
+			{
+				boundCells_.insert(binding.actualCell);
+				++it;
+				continue;
+			}
+			it = bindings_.erase(it);
+		}
+	}
+
+	/*
+	  Placement: score plus legality, not an exact coordinate.
+
+	  Modelled on AIEcho::Construction::BuildingOrder::find_location, which
+	  scores every cell and masks it by passes_constraint, then takes the argmax
+	  over what is legal. Echo could survive its preferred tile being occupied
+	  because it never named a tile in the first place — it named an intent.
+
+	  Atlas keeps that split but learns the score half: the field supplies
+	  buildingScore, the engine supplies legality, and placement is the best
+	  legal cell near the preferred one. Demanding the exact cell instead is
+	  what turned a blocked footprint into a desire that could never be
+	  satisfied, which is what stalled the oracle at 28 buildings while the
+	  teacher went on to 42.
+
+	  Two things Echo did here that are deliberately not copied: it gave up on
+	  the order permanently when no location was found, and it signalled that
+	  failure as position(0,0) — an ordinary cell on a wrapping map. A desire
+	  that cannot be placed this step is simply not placed this step; it is
+	  re-diffed on the next one like everything else.
+	*/
+	bool Reconciler::findNearbyPlacement(const DesiredState &desired, int shortType, Sint32 x,
+	                                     Sint32 y, const std::unordered_set<size_t> &claimed,
+	                                     Sint32 &outX, Sint32 &outY)
+	{
+		if (config_.placementSearchRadius <= 0 || !map_)
+			return false;
+
+		int bestScore = -1;
+		int bestDist = config_.placementSearchRadius + 1;
+		bool found = false;
+
+		for (int ring = 1; ring <= config_.placementSearchRadius; ring++)
+		{
+			for (int dy = -ring; dy <= ring; dy++)
+				for (int dx = -ring; dx <= ring; dx++)
+				{
+					// Only the perimeter of each ring; the interior was covered
+					// by a previous, strictly closer ring.
+					if (std::max(std::abs(dx), std::abs(dy)) != ring)
+						continue;
+					const Sint32 cx = map_->normalizeX(x + dx);
+					const Sint32 cy = map_->normalizeY(y + dy);
+					const size_t cell = desired.index(cx, cy);
+					if (claimed.count(cell) || observed_.count(cell))
+						continue;
+					if (!canPlace(shortType, cx, cy))
+						continue;
+					const int score = int(desired.buildingScore[cell]);
+					if (score > bestScore || (score == bestScore && ring < bestDist))
+					{
+						bestScore = score;
+						bestDist = ring;
+						outX = cx;
+						outY = cy;
+						found = true;
+					}
+				}
+			// Stop at the first ring that yielded anything: a closer legal cell
+			// is preferred over a marginally better-scoring distant one, since
+			// the field's score was expressed about the preferred cell, not
+			// about somewhere several tiles away.
+			if (found)
+				return true;
+		}
+		return found;
+	}
+
 	void Reconciler::planBuildings(const DesiredState &desired, const FlagPlan &plan,
 	                               std::vector<Candidate> &out)
 	{
 		const Sint32 w = desired.w;
 		const Sint32 h = desired.h;
+		// Cells taken by a relocation this step, so two displaced desires do
+		// not both retarget the same empty tile.
+		std::unordered_set<size_t> claimed;
 
 		for (Sint32 y = 0; y < h; y++)
 		{
@@ -271,6 +394,14 @@ namespace Atlas
 				auto arriving = plan.moved.find(i);
 				if (arriving != plan.moved.end())
 					have = arriving->second;
+
+				// A building standing here to satisfy a desire recorded
+				// elsewhere is not an abandoned building.
+				if (boundCells_.count(i))
+				{
+					emptyStreak_[i] = 0;
+					continue;
+				}
 
 				if (wanted == 0)
 				{
@@ -302,11 +433,42 @@ namespace Atlas
 
 				if (!have)
 				{
+					// Already satisfied somewhere else, or on its way there.
+					auto bound = bindings_.find(i);
+					if (bound != bindings_.end())
+					{
+						auto at = observed_.find(bound->second.actualCell);
+						if (at != observed_.end() && at->second)
+						{
+							// Reconcile the relocated building's attributes
+							// against the desire that asked for it.
+							have = at->second;
+						}
+						else
+						{
+							continue; // issued, not yet standing
+						}
+					}
+				}
+
+				if (!have)
+				{
+					Sint32 placeX = x, placeY = y;
 					if (!canPlace(shortType, x, y))
 					{
-						stats_.illegalSkipped++;
-						continue;
+						// Preferred cell is not buildable. Relocate rather than
+						// drop the desire — see the placement note above.
+						if (!findNearbyPlacement(desired, shortType, x, y, claimed, placeX, placeY))
+						{
+							stats_.illegalSkipped++;
+							continue;
+						}
+						stats_.relocated++;
 					}
+					const size_t placedCell = desired.index(placeX, placeY);
+					claimed.insert(placedCell);
+					bindings_[i] = Binding{placedCell, shortType, planTick_};
+					boundCells_.insert(placedCell);
 					Sint32 typeNum = -1;
 					BuildingType *type = placeableType(shortType, &typeNum);
 					if (!type)
@@ -320,8 +482,9 @@ namespace Atlas
 					std::optional<Sint32> radius;
 					if (type->isVirtual && desired.flagRadius[i] != DONT_CARE)
 						radius = Sint32(desired.flagRadius[i]);
-					out.push_back({std::make_shared<OrderCreate>(team_->teamNumber, x, y, typeNum,
-					                                             unitWorking, unitWorkingFuture, radius),
+					out.push_back({std::make_shared<OrderCreate>(team_->teamNumber, placeX, placeY,
+					                                             typeNum, unitWorking,
+					                                             unitWorkingFuture, radius),
 					               urgency, sequence_++});
 					stats_.created++;
 					continue;
@@ -528,7 +691,7 @@ namespace Atlas
 		}
 	}
 
-	std::vector<std::shared_ptr<Order>> Reconciler::plan(const DesiredState &desired)
+	std::vector<std::shared_ptr<Order>> Reconciler::plan(const DesiredState &desired, Uint32 tick)
 	{
 		stats_.clear();
 		std::vector<std::shared_ptr<Order>> result;
@@ -544,7 +707,9 @@ namespace Atlas
 		if (emptyStreak_.size() != cells)
 			emptyStreak_.assign(cells, 0);
 
+		planTick_ = tick;
 		indexObserved();
+		refreshBindings(desired, tick);
 
 		std::vector<Candidate> candidates;
 		FlagPlan flagPlan;

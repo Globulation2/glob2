@@ -87,6 +87,18 @@ namespace Atlas
 		//! wanted type, offset by one. Anchored top-left (see header comment).
 		std::vector<Uint8> building;
 
+		//! How strongly this cell is wanted for `building`, 0..255.
+		//!
+		//! This is the learned half of AIEcho's constraint split (see
+		//! AtlasReconciler's placement note): Echo's calculate_constraint
+		//! scores a cell and passes_constraint decides whether it is legal at
+		//! all, and the placement is the argmax of the score over the legal
+		//! cells. Here the network supplies the score and the engine supplies
+		//! legality. Treating the field as an exact coordinate instead throws
+		//! that away, and a blocked cell becomes a desire that can never be
+		//! satisfied rather than one that relocates.
+		std::vector<Uint8> buildingScore;
+
 		//! Wanted building level, 0-based to match BuildingType::level.
 		//! DONT_CARE leaves upgrades alone. A level above the building's
 		//! current one drives OrderConstruction (upgrade); Atlas never
@@ -147,6 +159,7 @@ namespace Atlas
 			h = height;
 			const size_t n = size_t(w) * size_t(h);
 			building.assign(n, 0);
+			buildingScore.assign(n, 0);
 			level.assign(n, DONT_CARE);
 			workers.assign(n, DONT_CARE);
 			workersFuture.assign(n, DONT_CARE);
@@ -167,7 +180,8 @@ namespace Atlas
 			       flagRadius.size() == n && areas.size() == n &&
 			       urgency.size() == n && commit.size() == n &&
 			       swarmRatio.size() == n * SWARM_RATIO_STRIDE &&
-			       priority.size() == n && minLevelToFlag.size() == n;
+			       priority.size() == n && minLevelToFlag.size() == n &&
+			       buildingScore.size() == n;
 		}
 
 		//! Row-major index. Callers are responsible for wrapping x and y into

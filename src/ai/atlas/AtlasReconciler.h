@@ -77,6 +77,16 @@ namespace Atlas
 		//! dragged across the map takes its garrison out of the game twice.
 		int maxFlagMoveDist = 8;
 
+		//! How far from its preferred cell a building may be relocated when
+		//! that cell is not buildable. 0 disables relocation, restoring the
+		//! exact-coordinate behaviour.
+		int placementSearchRadius = 6;
+
+		//! How long a relocated placement stays bound to its desire while the
+		//! construction site has not yet appeared, in ticks. Covers the gap
+		//! between issuing OrderCreate and the building becoming observable.
+		int pendingBindingTicks = 200;
+
 		//! Hard cap on orders emitted per policy step. Prevents one wild field
 		//! from monopolising the order channel for many seconds.
 		size_t maxQueuedOrders = 64;
@@ -102,6 +112,8 @@ namespace Atlas
 		//! fixes, so counting them together hides the diagnosis.
 		int illegalFog = 0;
 		int illegalOccupied = 0;
+		//! Desires satisfied at a cell other than the one the field preferred.
+		int relocated = 0;
 		int cappedOut = 0;
 
 		void clear() { *this = ReconcilerStats(); }
@@ -126,7 +138,9 @@ namespace Atlas
 		//! Diff `desired` against the live game state and return the orders
 		//! that close the gap, highest urgency first. Returns an empty vector
 		//! when the field is absent, malformed, or already satisfied.
-		std::vector<std::shared_ptr<Order>> plan(const DesiredState &desired);
+		//! `tick` is the current game tick, used to expire pending relocation
+		//! bindings. Defaults to 0 for callers that do not model time.
+		std::vector<std::shared_ptr<Order>> plan(const DesiredState &desired, Uint32 tick = 0);
 
 		const ReconcilerStats &stats() const { return stats_; }
 		const ReconcilerConfig &config() const { return config_; }
@@ -165,6 +179,9 @@ namespace Atlas
 		void planFlagMoves(const DesiredState &desired, FlagPlan &plan,
 		                   std::vector<Candidate> &out);
 
+		//! Expire dead bindings and rebuild boundCells_.
+		void refreshBindings(const DesiredState &desired, Uint32 tick);
+
 		void planBuildings(const DesiredState &desired, const FlagPlan &plan,
 		                   std::vector<Candidate> &out);
 		void planAreas(const DesiredState &desired, std::vector<Candidate> &out);
@@ -173,6 +190,15 @@ namespace Atlas
 		//! top-left at (x,y): the map is discovered there and the footprint is
 		//! free. Virtual buildings (flags) skip the ground-occupancy test.
 		bool canPlace(int shortType, int x, int y);
+
+		//! Best legal cell for `shortType` within placementSearchRadius of
+		//! (x,y), excluding cells already claimed this step. Returns false when
+		//! nothing nearby is legal. Ranked by the field's score, then by
+		//! distance — the score is the policy's opinion and outranks mere
+		//! proximity, but proximity breaks ties so relocation stays local.
+		bool findNearbyPlacement(const DesiredState &desired, int shortType, Sint32 x, Sint32 y,
+		                         const std::unordered_set<size_t> &claimed, Sint32 &outX,
+		                         Sint32 &outY);
 
 		Team *team_ = nullptr;
 		Game *game_ = nullptr;
@@ -187,6 +213,39 @@ namespace Atlas
 		//! holding a building. Sized w*h on first plan().
 		std::vector<Uint16> emptyStreak_;
 
+		/*!
+		  Where a desire was actually satisfied, when that was not the cell it
+		  named.
+
+		  Relocation breaks the property the whole level-triggered design rests
+		  on: that re-asserting a satisfied desire is a no-op. A building the
+		  field wanted at C but which had to go to C' leaves C looking empty, so
+		  the next diff relocates it again, and again, while the copies at C'
+		  are orphans the demolition path then tears down. The first attempt at
+		  this built more buildings than the teacher and lost faster.
+
+		  This is AIEcho's BuildingRegister lesson in miniature: it registers an
+		  id for a building before the building exists and carries it through
+		  pending to found, precisely so intent stays bound to its realisation.
+		  Binding by cell rather than gid because OrderCreate does not report
+		  the gid it will produce, so the site's arrival has to be observed.
+		*/
+		struct Binding
+		{
+			size_t actualCell;
+			int shortType;
+			//! Tick the order was issued, so a binding whose site never
+			//! appeared expires instead of blocking the desire forever.
+			Uint32 issuedTick;
+		};
+		std::unordered_map<size_t, Binding> bindings_;
+
+		//! Cells holding a building that satisfies a desire elsewhere. They
+		//! must not be read as unwanted and demolished.
+		std::unordered_set<size_t> boundCells_;
+
 		Uint32 sequence_ = 0;
+		//! Tick of the plan in progress, stamped onto new bindings.
+		Uint32 planTick_ = 0;
 	};
 } // namespace Atlas

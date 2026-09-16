@@ -133,15 +133,42 @@ int main()
 		check(countType(plan, ORDER_CREATE) == 1, "and that order is an OrderCreate");
 	}
 
-	// --- 3. An illegal desire produces nothing -----------------------------
-	// (8,8) already holds the inn, so its footprint is not free. Wanting a
-	// second inn on top of it must be dropped, not attempted.
+	// --- 3. A blocked desire RELOCATES rather than dying -------------------
+	// (8,8) already holds the inn, so a second inn on its footprint is not
+	// placeable there. The field names a preference, not a coordinate (the
+	// score/legality split borrowed from AIEcho), so the reconciler must put
+	// the building on the best legal cell nearby instead of dropping a desire
+	// that could then never be satisfied.
 	{
+		reconciler.init(team, config);
 		Atlas::DesiredState d = baseline();
 		d.building[d.index(8, 9)] = Uint8(IntBuildingType::FOOD_BUILDING + 1);
 		auto plan = reconciler.plan(d);
-		check(plan.empty(), "a desire overlapping an existing footprint is dropped");
+		check(countType(plan, ORDER_CREATE) == 1, "a blocked desire is relocated, not dropped");
+		check(reconciler.stats().relocated == 1, "and is counted as a relocation");
+		if (countType(plan, ORDER_CREATE) == 1)
+		{
+			auto created = std::static_pointer_cast<OrderCreate>(plan[0]);
+			const int dist = std::max(std::abs(created->posX - 8), std::abs(created->posY - 9));
+			check(dist > 0 && dist <= config.placementSearchRadius,
+			      "and lands within the search radius of the preferred cell");
+		}
+	}
+
+	// --- 3b. Relocation can be switched off --------------------------------
+	// placementSearchRadius = 0 restores exact-coordinate behaviour, which is
+	// what the oracle wants when it is being used to measure how faithfully a
+	// teacher's exact layout can be reproduced.
+	{
+		Atlas::ReconcilerConfig exact = config;
+		exact.placementSearchRadius = 0;
+		reconciler.init(team, exact);
+		Atlas::DesiredState d = baseline();
+		d.building[d.index(8, 9)] = Uint8(IntBuildingType::FOOD_BUILDING + 1);
+		auto plan = reconciler.plan(d);
+		check(plan.empty(), "with relocation disabled the blocked desire is dropped");
 		check(reconciler.stats().illegalSkipped > 0, "and is counted as illegal");
+		reconciler.init(team, config);
 	}
 
 	// --- 4. Absence of desire does NOT immediately demolish -----------------
