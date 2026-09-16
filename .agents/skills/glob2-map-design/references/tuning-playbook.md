@@ -110,7 +110,11 @@ recognisable shapes. Name the shape before choosing a remedy:
   every game adjudicated on prestige. Sealed valleys and long pass networks (Breachable
   Highlands) produce this with Nicowar; a prestige-adjudicated "bias" of twenty points is then
   noise, not unfairness. Decide whether the concept wants contact sooner; if so open more routes
-  by default rather than tuning the economy.
+  by default rather than tuning the economy. Check the walk before the pass count: when armies
+  set out but starve on the way (warrior starvation deaths high, combat deaths low), the routes
+  exist but are longer than a fed unit's hunger budget. Polder's rows under crop forced detours
+  the length of each row until sand lanes crossed the crops as well as the ditches; see walking
+  distance as a hunger budget in [gameplay and playability](gameplay-and-playability.md).
 - **AI-specific collapse.** Maxima starving by the hundreds on Emoji's dry hinterland while
   Nicowar thrives, Nicowar overbuilding swarms on premade bases, Castor stalling on a base of
   sites. The map exposes an AI habit; record it as a limit unless the concept can cheaply feed

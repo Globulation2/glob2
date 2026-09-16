@@ -174,8 +174,12 @@ Allotments, Caravanserai). The engine rules it is built on, each verified in the
 - **The structural check counts only WORKER units**, against `GeneratorDefinition::startingWorkers`
   when set; a premade base's warriors and explorers pass freely.
 - **A fed unit walks 264 tiles before it is hungry** (`HUNGRY_MAX` 150000 over 425 per completed
-  move at level 0) and 352 before it starves, at 16 ticks a tile. Inn spacing on a map of walks is
-  about supply throughput (an inn feeds 4, 7 or 17 at once) and forward feeding, not survival.
+  move at level 0) and 352 before it starves, at 16 ticks a tile. Those are walked tiles, detours
+  included: a map that forces long detours round rows, walls or crops can starve an army on its way
+  to a base that looks close (Polder, until 2026-09-16, when its rows under crop were crossed only at
+  the ditches). Keep colony-to-rival walks well inside that budget, with crossings through every kind
+  of linear obstacle and forward inn ground on the way. On a map of short walks, inn spacing is about
+  supply throughput (an inn feeds 4, 7 or 17 at once) and forward feeding, not survival.
 - **Every AI adopts what it finds** (Echo and Nicowar through `BuildingRegister::initiate`, Numbi,
   Castor and Cortex by reading `myBuildings` live), but their openings drift: Cortex sets the first
   swarm's workers to 4 and tracks at most 24 sites and 16 inns; Nicowar does not count pre-placed

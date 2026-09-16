@@ -90,6 +90,13 @@ Use eight-neighbor connectivity when checking actual ground reachability, and in
 
 Connectivity is a minimum, not a throughput test. Make heavily shared lanes wider or offer parallel routes, then watch traffic in populated games. Recheck routes with swimmers and after plausible construction at chokepoints. A map intended to open after swimming needs reachable training space and the upgrade resources that make swimming attainable.
 
+**Walking distance is a hunger budget, so mobility decides whether armies arrive.** A fed unit walks about 264 tiles before it is hungry and 352 before it starves ([game rules](../../../../docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md)), and that is walked tiles, detours and all, not the straight line between bases. A map whose rows, ditches, walls or crops force long detours can look compact in a preview and still starve every attack on the way: on Polder the dykes crossed only the ditches, so each row under crop was a wall a unit walked the length of, and units sent against an enemy base starved before they reached it; the game stalled into peace. Sand lanes through the crop rows as well as over the water (`FarmBridges`, 2026-09-16) fixed it without touching the concept. When a design lays long linear obstacles (farm rows, canals, hedges, ridges):
+
+- Cross them often, and cross every kind: a bridge over the water is no use if the crop beside it is a wall. Prefer permanent sand crossings to grass lanes that crops refill.
+- Measure the walk, not the distance: the route from each colony to its nearest rival, on final terrain with crops treated as blocking, should sit well inside the hunger budget, with room for a forward inn on the way (hamlets, plots).
+- Check the late game too: crops spread, so a lane that is open at tick 0 can close by tick 30,000. Only sand (or water for swimmers) keeps a crossing open.
+- Read tournament deaths by cause: many starvation deaths among warriors, few combat deaths and no eliminations is the signature (the peaceful stalemate in the [tuning playbook](tuning-playbook.md)).
+
 ## Tower geometry and permanent boundaries
 
 **Engine rules.** [Defence towers](../../../../src/game/entities/BuildingTypesDefence.cpp) occupy 2×2 tiles and have ranges 5, 7, and 9 at player-facing levels 1–3 (table levels 0–2). [Target selection](../../../../src/building/TypeSteps.cpp) scans square rings using [turretScanTile](../../../../src/building/BuildingUtils.cpp); it does not perform a wall/water line-of-sight test. Towers can threaten units and buildings across a barrier, although range alone does not promise a shot: ammunition, target selection, and target motion also matter. Stone access supplies ammunition as well as upgrades.
