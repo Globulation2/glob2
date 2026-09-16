@@ -2054,6 +2054,12 @@ Mostovi čez vodni jarek
 Razčlenjene obale
 [Sand roads]
 Peščene poti
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Zakladi v slepih ulicah
 [Fjord bank deposits]

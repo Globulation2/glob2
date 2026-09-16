@@ -2054,6 +2054,12 @@ Mosty přes příkop
 Členité pobřeží
 [Sand roads]
 Písečné cesty
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Poklady ve slepých uličkách
 [Fjord bank deposits]

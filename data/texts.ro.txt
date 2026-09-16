@@ -2054,6 +2054,12 @@ Poduri peste șanțul cu apă
 Coaste crestate
 [Sand roads]
 Drumuri de nisip
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Comori în fundături
 [Fjord bank deposits]

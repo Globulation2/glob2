@@ -2078,6 +2078,12 @@ Bruggen over de gracht
 Grillige kusten
 [Sand roads]
 Zandwegen
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Schatten in doodlopende gangen
 [Fjord bank deposits]

@@ -2054,6 +2054,12 @@ Puentes sobre el foso
 Costas escarpadas
 [Sand roads]
 Caminos de arena
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Tesoros en los callejones sin salida
 [Fjord bank deposits]

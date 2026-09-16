@@ -18,8 +18,10 @@ using namespace GAGCore;
 namespace
 {
 constexpr int LegacyBytes = 128 * 128 * 3;
-const int colors[7][3] = {{0, 90, 0},      {0, 40, 120},    {170, 170, 0}, {0, 60, 0},
-						  {211, 207, 167}, {104, 112, 124}, {41, 157, 165}};
+// Grass, water, sand, then wood, wheat, stone and algae, then ice and cobblestone.
+const int colors[9][3] = {{0, 90, 0},      {0, 40, 120},    {170, 170, 0}, {0, 60, 0},
+						  {211, 207, 167}, {104, 112, 124}, {41, 157, 165},
+						  {190, 225, 240}, {120, 116, 108}};
 std::vector<Uint8> compress(const std::vector<Uint8> &input)
 {
 	uLongf length = compressBound(input.size());
@@ -162,7 +164,11 @@ void MapThumbnail::loadFromMap(const Map &map)
 				for (int sx = x * mw / result->width; sx < (x + 1) * mw / result->width; ++sx)
 				{
 					const auto terrain = map.getUMTerrain(sx, sy);
-					int color = terrain == GRASS ? 0 : terrain == WATER ? 1 : 2;
+					int color = terrain == GRASS		 ? 0
+								: terrain == WATER		 ? 1
+								: terrain == ICE		 ? 7
+								: terrain == COBBLESTONE ? 8
+														 : 2;
 					const int resources[] = {WOOD, WHEAT, STONE, ALGA};
 					for (int r = 0; r < 4; ++r)
 						if (map.isResourceTakeable(sx, sy, resources[r]))
@@ -170,7 +176,7 @@ void MapThumbnail::loadFromMap(const Map &map)
 							color = r + 3;
 							break;
 						}
-					color = std::clamp(color, 0, 6);
+					color = std::clamp(color, 0, 8);
 					for (int c = 0; c < 3; ++c)
 						sums[c] += colors[color][c];
 					++count;

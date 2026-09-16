@@ -2050,6 +2050,12 @@ OpenGL недоступний у цій збірці.
 Порізані береги
 [Sand roads]
 Піщані дороги
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Скарби в глухих кутах
 [Fjord bank deposits]

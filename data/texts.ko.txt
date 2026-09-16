@@ -2050,6 +2050,12 @@ Globulation 2 커서를 표시합니다.
 들쭉날쭉한 해안선
 [Sand roads]
 모래길
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 막다른 길의 보물
 [Fjord bank deposits]

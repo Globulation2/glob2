@@ -2064,6 +2064,12 @@ Lubanarroko zubiak
 Kostalde malkarrak
 [Sand roads]
 Harea-bideak
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Altxorrak kale itsuetan
 [Fjord bank deposits]

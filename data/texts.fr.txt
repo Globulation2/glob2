@@ -2064,6 +2064,12 @@ Ponts sur les douves
 Côtes découpées
 [Sand roads]
 Chemins de sable
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Trésors dans les culs-de-sac
 [Fjord bank deposits]

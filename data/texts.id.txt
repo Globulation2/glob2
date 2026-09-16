@@ -2050,6 +2050,12 @@ Jembatan di atas parit air
 Pantai bergerigi
 [Sand roads]
 Jalan pasir
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Harta di jalan buntu
 [Fjord bank deposits]

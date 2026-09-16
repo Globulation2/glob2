@@ -2126,6 +2126,12 @@ OpenGL 在此版本中不可用。
 曲折的海岸線
 [Sand roads]
 沙土路
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 死路盡頭的寶藏
 [Fjord bank deposits]

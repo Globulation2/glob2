@@ -2054,6 +2054,12 @@ Hidak a várárkon
 Tagolt partok
 [Sand roads]
 Homokutak
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Kincsek a zsákutcákban
 [Fjord bank deposits]

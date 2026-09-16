@@ -2054,6 +2054,12 @@ Mosty nad fosą
 Postrzępione wybrzeża
 [Sand roads]
 Piaszczyste drogi
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Skarby w ślepych zaułkach
 [Fjord bank deposits]

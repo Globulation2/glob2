@@ -2130,6 +2130,12 @@ Broer over voldgraven
 Takkede kyster
 [Sand roads]
 Sandveje
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Skatte i blindgyder
 [Fjord bank deposits]

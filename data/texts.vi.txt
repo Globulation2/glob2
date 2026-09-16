@@ -2050,6 +2050,12 @@ Cầu qua hào nước
 Bờ biển lởm chởm
 [Sand roads]
 Đường cát
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Kho báu ở ngõ cụt
 [Fjord bank deposits]

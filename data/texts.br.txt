@@ -2050,6 +2050,12 @@ Pontes sobre o fosso
 Costas recortadas
 [Sand roads]
 Estradas de areia
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Tesouros em becos sem saída
 [Fjord bank deposits]

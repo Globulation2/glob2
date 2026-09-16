@@ -2052,6 +2052,12 @@ OpenGL недоступен в этой сборке.
 Изрезанные берега
 [Sand roads]
 Песчаные дороги
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Сокровища в тупиках
 [Fjord bank deposits]

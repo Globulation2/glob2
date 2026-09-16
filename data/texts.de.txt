@@ -2054,6 +2054,12 @@ Brücken über den Graben
 Zerklüftete Küsten
 [Sand roads]
 Sandwege
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Schätze in Sackgassen
 [Fjord bank deposits]

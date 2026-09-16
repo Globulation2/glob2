@@ -2050,6 +2050,12 @@ Globulation 2 のカーソルを表示します。
 入り組んだ海岸線
 [Sand roads]
 砂の道
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 行き止まりの宝
 [Fjord bank deposits]

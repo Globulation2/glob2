@@ -2052,6 +2052,12 @@ Pontoj super la fosaĵo
 Dentitaj marbordoj
 [Sand roads]
 Sablaj vojoj
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Trezoroj en senelirejoj
 [Fjord bank deposits]

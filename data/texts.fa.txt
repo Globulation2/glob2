@@ -2052,6 +2052,12 @@ OpenGL در این بیلد موجود نیست.
 ساحل‌های دندانه‌دار
 [Sand roads]
 جاده‌های شنی
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 گنج در بن‌بست‌ها
 [Fjord bank deposits]

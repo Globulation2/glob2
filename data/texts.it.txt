@@ -2116,6 +2116,12 @@ Ponti sul fossato
 Coste frastagliate
 [Sand roads]
 Strade di sabbia
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Tesori nei vicoli ciechi
 [Fjord bank deposits]

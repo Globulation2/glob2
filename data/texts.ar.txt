@@ -2052,6 +2052,12 @@ OpenGL غير متوفر في هذا الإصدار.
 سواحل متعرجة
 [Sand roads]
 طرق رملية
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 كنوز في الطرق المسدودة
 [Fjord bank deposits]

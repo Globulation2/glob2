@@ -2062,6 +2062,12 @@ Su hendeği köprüleri
 Girintili kıyılar
 [Sand roads]
 Kum yollar
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Çıkmaz yollarda hazine
 [Fjord bank deposits]

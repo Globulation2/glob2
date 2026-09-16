@@ -2124,6 +2124,12 @@ Cortex
 Οδοντωτές ακτές
 [Sand roads]
 Αμμώδεις δρόμοι
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Θησαυροί στα αδιέξοδα
 [Fjord bank deposits]

@@ -2054,6 +2054,12 @@ OpenGL није доступан у овој верзији.
 Разуђене обале
 [Sand roads]
 Пешчани путеви
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Благо у ћорсокацима
 [Fjord bank deposits]

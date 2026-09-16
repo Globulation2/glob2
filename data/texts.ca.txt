@@ -2062,6 +2062,12 @@ Ponts sobre el fossat
 Costes retallades
 [Sand roads]
 Camins de sorra
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Tresors als atzucacs
 [Fjord bank deposits]

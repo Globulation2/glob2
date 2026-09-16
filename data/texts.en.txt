@@ -2052,6 +2052,12 @@ Moat bridges
 Jagged coastlines
 [Sand roads]
 Sand roads
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Treasure in dead ends
 [Fjord bank deposits]

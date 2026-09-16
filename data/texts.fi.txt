@@ -2054,6 +2054,12 @@ Sillat vallihaudan yli
 Rikkonaiset rannikot
 [Sand roads]
 Hiekkatiet
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Aarteita umpikujissa
 [Fjord bank deposits]
