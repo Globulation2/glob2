@@ -149,7 +149,13 @@ def main() -> int:
                     help="sample placements from the policy instead of taking "
                          "the field's argmax (required for on-policy RL)")
     ap.add_argument("--placements", type=int, default=8,
-                    help="placements sampled per policy step when --sample")
+                    help="new placements per policy step (sampled under "
+                         "--sample, highest-probability under --top-k)")
+    ap.add_argument("--top-k", action="store_true",
+                    help="deterministic deployment: take the --placements "
+                         "most probable cells. Without this or --sample the "
+                         "field is a per-cell argmax, which is empty in "
+                         "practice -- see the note in the serve loop.")
     ap.add_argument("--score-floor", type=int, default=0,
                     help="drop predicted buildings whose softmax score is below "
                          "this (0..255); the reconciler still ranks by score")
@@ -273,16 +279,30 @@ def main() -> int:
         cls = probs.argmax(dim=1).to(torch.uint8)
         score = (probs.amax(dim=1) * 255).clamp(0, 255).to(torch.uint8)
 
-        if args.sample:
-            # The desired field is: keep what we already have, plus exactly the
-            # placements that were sampled. Everything else is explicitly empty,
-            # so the action the policy is credited for is the action the
-            # reconciler actually carries out.
+        # The desired field is: keep what we already have, plus exactly k new
+        # placements. Everything else is explicitly empty, so under --sample the
+        # action the policy is credited for is the action the reconciler
+        # actually carries out.
+        #
+        # Selecting those k by per-cell argmax does NOT work, and quietly
+        # produced an AI that did nothing at all. Buildings occupy ~0.1% of
+        # cells, so class 0 ("no building") wins the argmax essentially
+        # everywhere; the desired field came out empty, the reconciler found no
+        # diff to close, and Neurotica sat on its starting base for entire
+        # games while BC metrics looked healthy -- those are top-k ranking
+        # metrics, which is exactly what argmax is not. Rank cells by occupancy
+        # probability 1 - p(empty) instead, matching the candidate set that
+        # NeuroticaNet.placement_distribution samples from.
+        if args.sample or args.top_k:
             best_type = probs[:, 1:].argmax(dim=1).to(torch.uint8) + 1
+            if args.sample:
+                idx = out["placements"]
+            else:
+                occ = (1.0 - probs[:, 0]).masked_fill(existing, 0.0).flatten(1)
+                idx = occ.topk(min(args.placements, occ.shape[1]), dim=1).indices
             field = torch.where(existing, cls, torch.zeros_like(cls))
             flat = field.flatten(1)
-            flat.scatter_(1, out["placements"], best_type.flatten(1)
-                          .gather(1, out["placements"]))
+            flat.scatter_(1, idx, best_type.flatten(1).gather(1, idx))
             cls = flat.view_as(cls)
         elif args.score_floor > 0:
             cls = torch.where(score >= args.score_floor, cls, torch.zeros_like(cls))
