@@ -2070,6 +2070,8 @@ Cobblestone
 Treasure in dead ends
 [Fjord bank deposits]
 Fjord bank deposits
+[Ice bridges]
+Ice bridges
 [Sandy lake shore]
 Sandy lake shore
 [River delta]
@@ -2176,6 +2178,8 @@ Home pools
 Farm plots
 [Tendril roads]
 Tendril roads
+[Cobblestone streets]
+Cobblestone streets
 [Random]
 Random
 [Vertical]

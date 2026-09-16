@@ -2068,6 +2068,8 @@ Cát
 Kho báu ở ngõ cụt
 [Fjord bank deposits]
 Mỏ tài nguyên ven vịnh hẹp
+[Ice bridges]
+Cầu băng
 [Sandy lake shore]
 Bờ hồ đầy cát
 [River delta]
@@ -2174,6 +2176,8 @@ Ao căn cứ
 Lô đất canh tác
 [Tendril roads]
 Đường dây leo
+[Cobblestone streets]
+Phố lát đá cuội
 [Random]
 Ngẫu nhiên
 [Vertical]

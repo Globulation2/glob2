@@ -2144,6 +2144,8 @@ OpenGL 在此版本中不可用。
 死路盡頭的寶藏
 [Fjord bank deposits]
 峽灣岸邊的資源
+[Ice bridges]
+冰橋
 [Sandy lake shore]
 沙質湖岸
 [River delta]
@@ -2250,6 +2252,8 @@ OpenGL 在此版本中不可用。
 農田地塊
 [Tendril roads]
 藤蔓狀道路
+[Cobblestone streets]
+鵝卵石街道
 [Random]
 隨機
 [Vertical]

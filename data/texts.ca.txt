@@ -2080,6 +2080,8 @@ Llambordes
 Tresors als atzucacs
 [Fjord bank deposits]
 Dipòsits a les ribes dels fiords
+[Ice bridges]
+Ponts de gel
 [Sandy lake shore]
 Riba sorrenca del llac
 [River delta]
@@ -2186,6 +2188,8 @@ Basses de la base
 Parcel·les de conreu
 [Tendril roads]
 Camins en circell
+[Cobblestone streets]
+Carrers de llambordes
 [Random]
 Aleatori
 [Vertical]

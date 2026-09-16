@@ -2068,6 +2068,8 @@ Globulation 2 커서를 표시합니다.
 막다른 길의 보물
 [Fjord bank deposits]
 피오르 기슭의 자원
+[Ice bridges]
+얼음 다리
 [Sandy lake shore]
 모래 호숫가
 [River delta]
@@ -2174,6 +2176,8 @@ Globulation 2 커서를 표시합니다.
 농경지
 [Tendril roads]
 덩굴길
+[Cobblestone streets]
+조약돌 거리
 [Random]
 무작위
 [Vertical]

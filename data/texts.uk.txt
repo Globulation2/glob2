@@ -2068,6 +2068,8 @@ OpenGL недоступний у цій збірці.
 Скарби в глухих кутах
 [Fjord bank deposits]
 Поклади на берегах фіордів
+[Ice bridges]
+Крижані мости
 [Sandy lake shore]
 Піщаний берег озера
 [River delta]
@@ -2174,6 +2176,8 @@ OpenGL недоступний у цій збірці.
 Земельні наділи
 [Tendril roads]
 Дороги-вусики
+[Cobblestone streets]
+Бруковані вулиці
 [Random]
 Випадково
 [Vertical]

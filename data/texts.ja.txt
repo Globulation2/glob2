@@ -2068,6 +2068,8 @@ Globulation 2 のカーソルを表示します。
 行き止まりの宝
 [Fjord bank deposits]
 フィヨルド岸の資源
+[Ice bridges]
+氷の橋
 [Sandy lake shore]
 湖の砂浜
 [River delta]
@@ -2174,6 +2176,8 @@ Globulation 2 のカーソルを表示します。
 農地の区画
 [Tendril roads]
 つる状の道
+[Cobblestone streets]
+石畳の街路
 [Random]
 ランダム
 [Vertical]

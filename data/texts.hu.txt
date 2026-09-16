@@ -2072,6 +2072,8 @@ Macskakő
 Kincsek a zsákutcákban
 [Fjord bank deposits]
 Lelőhelyek a fjordok partján
+[Ice bridges]
+Jéghidak
 [Sandy lake shore]
 Homokos tópart
 [River delta]
@@ -2178,6 +2180,8 @@ Otthoni tavacskák
 Szántóparcellák
 [Tendril roads]
 Kacsutak
+[Cobblestone streets]
+Macskaköves utcák
 [Random]
 Véletlenszerű
 [Vertical]

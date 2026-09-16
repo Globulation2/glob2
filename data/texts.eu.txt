@@ -2082,6 +2082,8 @@ Galtzada-harriak
 Altxorrak kale itsuetan
 [Fjord bank deposits]
 Fiordoen ertzetako baliabideak
+[Ice bridges]
+Izotz-zubiak
 [Sandy lake shore]
 Aintziraren ertz hareatsua
 [River delta]
@@ -2188,6 +2190,8 @@ Etxeko putzuak
 Soro-lursailak
 [Tendril roads]
 Kiribil-bideak
+[Cobblestone streets]
+Galtzada-harrizko kaleak
 [Random]
 Ausazkoa
 [Vertical]

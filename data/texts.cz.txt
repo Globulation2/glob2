@@ -2072,6 +2072,8 @@ Dlažba
 Poklady ve slepých uličkách
 [Fjord bank deposits]
 Ložiska na březích fjordů
+[Ice bridges]
+Ledové mosty
 [Sandy lake shore]
 Písečný břeh jezera
 [River delta]
@@ -2178,6 +2180,8 @@ Tůně u domova
 Zemědělské parcely
 [Tendril roads]
 Úponkové cesty
+[Cobblestone streets]
+Dlážděné ulice
 [Random]
 Náhodně
 [Vertical]

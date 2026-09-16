@@ -2072,6 +2072,8 @@ Piatră cubică
 Comori în fundături
 [Fjord bank deposits]
 Zăcăminte pe malurile fiordurilor
+[Ice bridges]
+Poduri de gheață
 [Sandy lake shore]
 Mal nisipos al lacului
 [River delta]
@@ -2178,6 +2180,8 @@ Iazuri la bază
 Parcele agricole
 [Tendril roads]
 Drumuri-cârcei
+[Cobblestone streets]
+Străzi din piatră cubică
 [Random]
 Aleatoriu
 [Vertical]

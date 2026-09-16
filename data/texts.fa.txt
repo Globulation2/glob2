@@ -2070,6 +2070,8 @@ OpenGL در این بیلد موجود نیست.
 گنج در بن‌بست‌ها
 [Fjord bank deposits]
 ذخایر کرانهٔ آبدره‌ها
+[Ice bridges]
+پل‌های یخی
 [Sandy lake shore]
 کرانهٔ شنی دریاچه
 [River delta]
@@ -2176,6 +2178,8 @@ OpenGL در این بیلد موجود نیست.
 قطعه‌های زراعی
 [Tendril roads]
 جاده‌های پیچک‌وار
+[Cobblestone streets]
+خیابان‌های سنگفرش
 [Random]
 تصادفی
 [Vertical]

@@ -2070,6 +2070,8 @@ OpenGL غير متوفر في هذا الإصدار.
 كنوز في الطرق المسدودة
 [Fjord bank deposits]
 رواسب على ضفاف المضائق البحرية
+[Ice bridges]
+جسور جليدية
 [Sandy lake shore]
 شاطئ رملي حول البحيرة
 [River delta]
@@ -2176,6 +2178,8 @@ OpenGL غير متوفر في هذا الإصدار.
 قطع المزارع
 [Tendril roads]
 طرق متفرعة
+[Cobblestone streets]
+شوارع من حجارة مرصوفة
 [Random]
 عشوائي
 [Vertical]

@@ -2072,6 +2072,8 @@ Bruk
 Skarby w ślepych zaułkach
 [Fjord bank deposits]
 Złoża na brzegach fiordów
+[Ice bridges]
+Lodowe mosty
 [Sandy lake shore]
 Piaszczysty brzeg jeziora
 [River delta]
@@ -2178,6 +2180,8 @@ Stawy bazy
 Działki rolne
 [Tendril roads]
 Drogi wąsowe
+[Cobblestone streets]
+Brukowane ulice
 [Random]
 Losowo
 [Vertical]

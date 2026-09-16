@@ -2072,6 +2072,8 @@ Tlakovci
 Zakladi v slepih ulicah
 [Fjord bank deposits]
 Nahajališča na bregovih fjordov
+[Ice bridges]
+Ledeni mostovi
 [Sandy lake shore]
 Peščena obala jezera
 [River delta]
@@ -2178,6 +2180,8 @@ Mlake ob domu
 Njivske parcele
 [Tendril roads]
 Vitičaste poti
+[Cobblestone streets]
+Tlakovane ulice
 [Random]
 Naključno
 [Vertical]

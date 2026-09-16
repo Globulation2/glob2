@@ -2070,6 +2070,8 @@ Pavimŝtonoj
 Trezoroj en senelirejoj
 [Fjord bank deposits]
 Kuŝejoj ĉe fjordaj bordoj
+[Ice bridges]
+Glaciaj pontoj
 [Sandy lake shore]
 Sabla lagbordo
 [River delta]
@@ -2176,6 +2178,8 @@ Lagetoj de la hejmo
 Kampparceloj
 [Tendril roads]
 Ĉiraj vojoj
+[Cobblestone streets]
+Pavimŝtonaj stratoj
 [Random]
 Hazarda
 [Vertical]

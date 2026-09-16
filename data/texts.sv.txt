@@ -2082,6 +2082,8 @@ Kullersten
 Skatter i återvändsgränder
 [Fjord bank deposits]
 Fyndigheter längs fjordstränderna
+[Ice bridges]
+Isbroar
 [Sandy lake shore]
 Sandig sjöstrand
 [River delta]
@@ -2188,6 +2190,8 @@ Hemmets gölar
 Åkerlotter
 [Tendril roads]
 Slingervägar
+[Cobblestone streets]
+Kullerstensgator
 [Random]
 Slumpmässig
 [Vertical]

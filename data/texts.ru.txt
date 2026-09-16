@@ -2070,6 +2070,8 @@ OpenGL недоступен в этой сборке.
 Сокровища в тупиках
 [Fjord bank deposits]
 Залежи на берегах фьордов
+[Ice bridges]
+Ледяные мосты
 [Sandy lake shore]
 Песчаный берег озера
 [River delta]
@@ -2176,6 +2178,8 @@ OpenGL недоступен в этой сборке.
 Земельные наделы
 [Tendril roads]
 Дороги-усики
+[Cobblestone streets]
+Булыжные улицы
 [Random]
 Случайно
 [Vertical]

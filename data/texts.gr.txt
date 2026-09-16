@@ -2142,6 +2142,8 @@ Cortex
 Θησαυροί στα αδιέξοδα
 [Fjord bank deposits]
 Κοιτάσματα στις όχθες των φιόρδ
+[Ice bridges]
+Παγωμένες γέφυρες
 [Sandy lake shore]
 Αμμώδης όχθη λίμνης
 [River delta]
@@ -2248,6 +2250,8 @@ Cortex
 Αγροτεμάχια
 [Tendril roads]
 Δρόμοι-έλικες
+[Cobblestone streets]
+Λιθόστρωτοι δρόμοι
 [Random]
 Τυχαία
 [Vertical]

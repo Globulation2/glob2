@@ -2096,6 +2096,8 @@ Kasseien
 Schatten in doodlopende gangen
 [Fjord bank deposits]
 Voorraden langs de fjordoevers
+[Ice bridges]
+IJsbruggen
 [Sandy lake shore]
 Zandige meeroever
 [River delta]
@@ -2202,6 +2204,8 @@ Poelen bij de thuisbasis
 Akkerpercelen
 [Tendril roads]
 Rankwegen
+[Cobblestone streets]
+Kasseistraten
 [Random]
 Willekeurig
 [Vertical]

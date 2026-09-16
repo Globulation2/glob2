@@ -2134,6 +2134,8 @@ Ciottolato
 Tesori nei vicoli ciechi
 [Fjord bank deposits]
 Giacimenti sulle rive dei fiordi
+[Ice bridges]
+Ponti di ghiaccio
 [Sandy lake shore]
 Riva sabbiosa del lago
 [River delta]
@@ -2240,6 +2242,8 @@ Stagni della base
 Appezzamenti agricoli
 [Tendril roads]
 Strade a viticcio
+[Cobblestone streets]
+Strade in ciottolato
 [Random]
 Casuale
 [Vertical]

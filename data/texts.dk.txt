@@ -2148,6 +2148,8 @@ Brosten
 Skatte i blindgyder
 [Fjord bank deposits]
 Forekomster langs fjordbredderne
+[Ice bridges]
+Isbroer
 [Sandy lake shore]
 Sandet søbred
 [River delta]
@@ -2254,6 +2256,8 @@ Hjemmets vandhuller
 Marklodder
 [Tendril roads]
 Slyngveje
+[Cobblestone streets]
+Brostensgader
 [Random]
 Tilfældig
 [Vertical]

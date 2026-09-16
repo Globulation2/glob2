@@ -2072,6 +2072,8 @@ Adoquines
 Tesoros en los callejones sin salida
 [Fjord bank deposits]
 Depósitos en las orillas de los fiordos
+[Ice bridges]
+Puentes de hielo
 [Sandy lake shore]
 Orilla arenosa del lago
 [River delta]
@@ -2178,6 +2180,8 @@ Charcas de la base
 Parcelas de cultivo
 [Tendril roads]
 Caminos en zarcillo
+[Cobblestone streets]
+Calles de adoquines
 [Random]
 Aleatorio
 [Vertical]

@@ -2072,6 +2072,8 @@ OpenGL није доступан у овој верзији.
 Благо у ћорсокацима
 [Fjord bank deposits]
 Налазишта на обалама фјордова
+[Ice bridges]
+Ледени мостови
 [Sandy lake shore]
 Пешчана обала језера
 [River delta]
@@ -2178,6 +2180,8 @@ OpenGL није доступан у овој верзији.
 Пољопривредне парцеле
 [Tendril roads]
 Путеви-витице
+[Cobblestone streets]
+Калдрмисане улице
 [Random]
 Насумично
 [Vertical]

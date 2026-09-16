@@ -2078,6 +2078,8 @@ Calçada
 Tesouros em becos sem saída
 [Fjord bank deposits]
 Depósitos nas margens dos fiordes
+[Ice bridges]
+Pontes de gelo
 [Sandy lake shore]
 Margem arenosa do lago
 [River delta]
@@ -2184,6 +2186,8 @@ Poças da base
 Parcelas agrícolas
 [Tendril roads]
 Estradas em gavinha
+[Cobblestone streets]
+Ruas de calçada
 [Random]
 Aleatório
 [Vertical]

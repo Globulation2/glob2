@@ -2072,6 +2072,8 @@ Mukulakivi
 Aarteita umpikujissa
 [Fjord bank deposits]
 Esiintymiä vuonojen rannoilla
+[Ice bridges]
+Jääsillat
 [Sandy lake shore]
 Hiekkainen järvenranta
 [River delta]
@@ -2178,6 +2180,8 @@ Kotialueen lammikot
 Peltopalstat
 [Tendril roads]
 Rönsytiet
+[Cobblestone streets]
+Mukulakivikadut
 [Random]
 Satunnainen
 [Vertical]

@@ -2068,6 +2068,8 @@ OpenGL 在此版本中不可用。
 死路尽头的宝藏
 [Fjord bank deposits]
 峡湾岸边的资源
+[Ice bridges]
+冰桥
 [Sandy lake shore]
 沙质湖岸
 [River delta]
@@ -2174,6 +2176,8 @@ OpenGL 在此版本中不可用。
 农田地块
 [Tendril roads]
 藤蔓状道路
+[Cobblestone streets]
+鹅卵石街道
 [Random]
 随机
 [Vertical]

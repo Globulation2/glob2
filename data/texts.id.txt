@@ -2068,6 +2068,8 @@ Batu bulat
 Harta di jalan buntu
 [Fjord bank deposits]
 Sumber daya di tepi fjord
+[Ice bridges]
+Jembatan es
 [Sandy lake shore]
 Tepi danau berpasir
 [River delta]
@@ -2174,6 +2176,8 @@ Kolam markas
 Petak ladang
 [Tendril roads]
 Jalan sulur
+[Cobblestone streets]
+Jalan batu bulat
 [Random]
 Acak
 [Vertical]

@@ -2080,6 +2080,8 @@ Arnavut kaldırımı
 Çıkmaz yollarda hazine
 [Fjord bank deposits]
 Fiyort kıyılarında kaynaklar
+[Ice bridges]
+Buz köprüleri
 [Sandy lake shore]
 Kumlu göl kıyısı
 [River delta]
@@ -2186,6 +2188,8 @@ Döngüler
 Tarla parselleri
 [Tendril roads]
 Sarmaşık yollar
+[Cobblestone streets]
+Arnavut kaldırımı sokaklar
 [Random]
 Rastgele
 [Vertical]

@@ -2072,6 +2072,8 @@ Kopfsteinpflaster
 Schätze in Sackgassen
 [Fjord bank deposits]
 Vorkommen an den Fjordufern
+[Ice bridges]
+Eisbrücken
 [Sandy lake shore]
 Sandiges Seeufer
 [River delta]
@@ -2178,6 +2180,8 @@ Heimatteiche
 Ackerparzellen
 [Tendril roads]
 Rankenwege
+[Cobblestone streets]
+Kopfsteinpflasterstraßen
 [Random]
 Zufällig
 [Vertical]
