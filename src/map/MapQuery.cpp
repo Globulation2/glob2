@@ -29,7 +29,7 @@ bool Map::checkTile(int x, int y, TileChecks c, bool canSwim,
 		return false;
 	if (c.waterBlocks && !canSwim && isWater(x, y))
 		return false;
-	if (c.requireGrass && !isGrass(x, y))
+	if (c.requireBuildable && !isGrass(x, y) && !isCobblestone(x, y))
 		return false;
 	if (c.checkForbidden && (getForbidden(x, y) & teamMask))
 		return false;

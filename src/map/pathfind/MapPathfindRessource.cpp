@@ -74,7 +74,8 @@ void Map::pathfindRandom(Unit *unit)
 		{
 			int tx=(x+tabClose[di][0])&wMask;
 			int ty=(y+tabClose[di][1])&hMask;
-			if (isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me))
+			// Idle units keep off ice; only a route with a purpose crosses it.
+			if (isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me) && !isIce(tx, ty))
 			{
 				da[di]=true;
 				count++;

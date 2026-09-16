@@ -476,7 +476,7 @@ private:
 		bool noResource    : 1; //!< reject if a resource sits on the tile
 		bool noUnit         : 1; //!< reject if a ground unit sits on the tile
 		bool waterBlocks    : 1; //!< reject water tiles unless canSwim is true
-		bool requireGrass   : 1; //!< reject any tile whose terrain isn't grass
+		bool requireBuildable : 1; //!< reject any tile whose terrain isn't grass or cobblestone
 		bool checkForbidden : 1; //!< reject if the tile's forbidden mask intersects teamMask
 	};
 	//! Returns true iff (x,y) passes every enabled check. A building whose gid
@@ -621,8 +621,8 @@ public:
 	static int swimClass(int walkSpeed, int swimSpeed);
 	//! Swim class used where no unit is at hand: water costs the same as land.
 	static constexpr int SWIM_CLASS_EVEN = 3;
-	//! Cheapest possible step for a class, the A* heuristic unit.
-	static int minStepCost(int swimClass);
+	//! Cheapest possible step for a class on this map, the A* heuristic unit.
+	int minStepCost(int swimClass) const;
 	//! Highest cost a gradient can hold (see MapInternal.h).
 	static constexpr int GRADIENT_COST_LIMIT = 0xFFFF - 1 - 1 - 42;
 	//! Cost of stepping (dx, dy) into the cell at targetIndex, in gradient units.
