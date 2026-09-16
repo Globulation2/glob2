@@ -2524,40 +2524,58 @@ Het Glacis
 Volkstuinen
 [Caravanserai]
 Karavanserai
-[Colonists]
-Kolonisten
-[Garrison]
-Garnizoen
-[Compound size]
-Grootte van de ommuring
-[Wall gates]
-Muurpoorten
-[Wadi count]
-Aantal wadi's
-[Ford spacing]
-Afstand tussen doorwaadplaatsen
-[Lot size]
-Kavelgrootte
 [Mixed]
 Gemengd
-[Small]
-Klein
-[Large]
-Groot
-[Lane spacing]
-Afstand tussen paden
-[Ditch every]
-Sloot om de
-[Wood share]
-Aandeel hout
-[Capital size]
-Grootte van de hoofdstad
-[Oasis spacing]
-Afstand tussen oases
-[Outposts per colony]
-Buitenposten per kolonie
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-De basis past bij deze grootte niet op haar grond; verhoog de grootte-instelling of verlaag Kolonisten.
+[Fort size]
+Fortgrootte
+[Bastions]
+Aantal bastions
+[Four-pointed]
+Vierpuntig
+[Five-pointed]
+Vijfpuntig
+[Six-pointed]
+Zespuntig
+[Glacis width]
+Glacisbreedte
+[Gates]
+Poorten
+[Site size]
+Perceelgrootte
+[Plot width]
+Bedbreedte
+[Plot mix]
+Bedmenging
+[Tended]
+Verzorgd
+[Overgrown]
+Verwilderd
+[Commons]
+Meenten
+[Few]
+Weinig
+[Some]
+Enkele
+[Home oasis size]
+Grootte van de thuisoase
+[Caravanserais per colony]
+Karavanserais per kolonie
+[Desert]
+Woestijn
+[Open erg]
+Open zandzee
+[Dunes and mesas]
+Duinen en mesa's
+[Canyon country]
+Canyonland
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Een fort kan zijn voorde niet bereiken; gebruik een grotere kaart of minder kolonies.
+[A wall would stand on a beach; try another seed.]
+Een muur zou op een strand staan; probeer een ander zaadje.
+[The fort is too small for its gardens; raise Fort size.]
+Het fort is te klein voor zijn tuinen; verhoog de fortgrootte.
+[The home oasis is too small; raise Home oasis size.]
+De thuisoase is te klein; verhoog de grootte van de thuisoase.
 [Braided river]
 Vlechtende rivier
 [Braid width]

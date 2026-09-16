@@ -10,7 +10,7 @@ namespace MapGeneration
 {
 // Routes between sites on the torus: which sites are neighbours, where the ground between two of
 // them is, and stepping stones along the way. Polder's hamlets (a grass disc half way between
-// neighbouring villages) and Caravanserai's oases and outposts are all built from these; the
+// neighbouring villages) and Caravanserai's caravanserais and route oases are built from these; the
 // arithmetic is the short way round the wrap every time, so a route never goes the long way round.
 
 /// The point half way from `a` to `b`, the short way round.
@@ -70,7 +70,7 @@ inline std::vector<ShapePoint> waypointsAlong(const Torus &t, ShapePoint from, S
 }
 
 /// The heading (radians) from `from` towards `to`, the short way round, and that heading as the
-/// nearest quarter turn: 0 for +x, 1 for +y, 2 for -x, 3 for -y (a BaseSite's facing).
+/// nearest quarter turn: 0 for +x, 1 for +y, 2 for -x, 3 for -y (a stencil's facing, Orbits.h).
 inline double headingAcross(const Torus &t, ShapePoint from, ShapePoint to)
 {
 	return std::atan2(t.offsetY(int(from.y), int(to.y)), t.offsetX(int(from.x), int(to.x)));

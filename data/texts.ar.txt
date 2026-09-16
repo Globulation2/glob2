@@ -2498,40 +2498,58 @@ Emoji
 قطع الأراضي
 [Caravanserai]
 الخان
-[Colonists]
-المستوطنون
-[Garrison]
-الحامية
-[Compound size]
-حجم الحصن
-[Wall gates]
-بوابات السور
-[Wadi count]
-عدد الوديان
-[Ford spacing]
-تباعد المخاضات
-[Lot size]
-حجم القطع
 [Mixed]
 مختلط
-[Small]
-صغير
-[Large]
-كبير
-[Lane spacing]
-تباعد الممرات
-[Ditch every]
-خندق كل
-[Wood share]
-نسبة الخشب
-[Capital size]
-حجم العاصمة
-[Oasis spacing]
-تباعد الواحات
-[Outposts per colony]
-المواقع الأمامية لكل مستعمرة
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-القاعدة لا تتسع لأرضها بهذا الحجم؛ ارفع عنصر التحكم في الحجم أو قلّل المستوطنين.
+[Fort size]
+حجم القلعة
+[Bastions]
+الأبراج الركنية
+[Four-pointed]
+رباعية الرؤوس
+[Five-pointed]
+خماسية الرؤوس
+[Six-pointed]
+سداسية الرؤوس
+[Glacis width]
+عرض المنحدر الدفاعي
+[Gates]
+البوابات
+[Site size]
+حجم القطع
+[Plot width]
+عرض الأحواض
+[Plot mix]
+تشكيلة الأحواض
+[Tended]
+معتنى بها
+[Overgrown]
+مهملة
+[Commons]
+أراضٍ مشاعة
+[Few]
+قليل
+[Some]
+بعض
+[Home oasis size]
+حجم الواحة الأم
+[Caravanserais per colony]
+الخانات لكل مستعمرة
+[Desert]
+الصحراء
+[Open erg]
+عرق مفتوح
+[Dunes and mesas]
+كثبان وهضاب
+[Canyon country]
+بلاد الأخاديد
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+لا تستطيع قلعة الوصول إلى مخاضتها؛ استخدم خريطة أكبر أو مستعمرات أقل.
+[A wall would stand on a beach; try another seed.]
+سيقوم سور على شاطئ؛ جرّب بذرة أخرى.
+[The fort is too small for its gardens; raise Fort size.]
+القلعة أصغر من أن تتسع لحدائقها؛ زِد حجم القلعة.
+[The home oasis is too small; raise Home oasis size.]
+الواحة الأم صغيرة جدًا؛ زِد حجم الواحة الأم.
 [Braided river]
 نهر مضفّر
 [Braid width]

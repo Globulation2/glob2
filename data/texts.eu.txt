@@ -2510,40 +2510,58 @@ Glazisa
 Baratzeak
 [Caravanserai]
 Karabanserai
-[Colonists]
-Kolonoak
-[Garrison]
-Goarnizioa
-[Compound size]
-Esparruaren tamaina
-[Wall gates]
-Harresiko ateak
-[Wadi count]
-Uadi kopurua
-[Ford spacing]
-Ibien arteko tartea
-[Lot size]
-Lursailen tamaina
 [Mixed]
 Nahasia
-[Small]
-Txikia
-[Large]
-Handia
-[Lane spacing]
-Bidexken arteko tartea
-[Ditch every]
-Lubakien tartea
-[Wood share]
-Egur proportzioa
-[Capital size]
-Hiriburuaren tamaina
-[Oasis spacing]
-Oasien arteko tartea
-[Outposts per colony]
-Aurrepostuak koloniako
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-Basea ez da bere lurrean sartzen tamaina honetan; igo tamainaren kontrola edo jaitsi Kolonoak.
+[Fort size]
+Gotorlekuaren tamaina
+[Bastions]
+Bastioiak
+[Four-pointed]
+Lau puntakoa
+[Five-pointed]
+Bost puntakoa
+[Six-pointed]
+Sei puntakoa
+[Glacis width]
+Glaziaren zabalera
+[Gates]
+Ateak
+[Site size]
+Lursailen tamaina
+[Plot width]
+Lurzatien zabalera
+[Plot mix]
+Lurzatien nahasketa
+[Tended]
+Zainduak
+[Overgrown]
+Basatuak
+[Commons]
+Herri-lurrak
+[Few]
+Gutxi
+[Some]
+Batzuk
+[Home oasis size]
+Jatorrizko oasiaren tamaina
+[Caravanserais per colony]
+Karabanserak koloniako
+[Desert]
+Basamortua
+[Open erg]
+Erg irekia
+[Dunes and mesas]
+Dunak eta mahaimendiak
+[Canyon country]
+Arroilen lurraldea
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Gotorleku batek ezin du bere ibira iritsi; erabili mapa handiagoa edo kolonia gutxiago.
+[A wall would stand on a beach; try another seed.]
+Horma bat hondartza baten gainean geratuko litzateke; saiatu beste hazi batekin.
+[The fort is too small for its gardens; raise Fort size.]
+Gotorlekua txikiegia da bere baratzeentzat; handitu gotorlekuaren tamaina.
+[The home oasis is too small; raise Home oasis size.]
+Jatorrizko oasia txikiegia da; handitu jatorrizko oasiaren tamaina.
 [Braided river]
 Ibai txirikordatua
 [Braid width]

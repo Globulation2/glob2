@@ -159,5 +159,8 @@ Things the first run teaches the hard way:
   carry deaths by unit type and cause, hunger bands, blocked units and buildings, and natural
   growth near the team's buildings. `Results.telemetry(record)` streams them typed. Pool per
   start slot over rotations before looking at winners.
+- `scripts/tournament_starts.py RESULTS` prints that per-start economy for every generator, and with
+  `--detail ID --telemetry-key KEY` joins each start to a per-colony draw its generation recorded
+  (a facing, a variant), which is how a start-split result is traced to its cause.
 - The played map is an artifact of its generation job (`map-r0.map`); `--preview-map` renders
   it and the final save headlessly with `SDL_VIDEODRIVER=dummy`.

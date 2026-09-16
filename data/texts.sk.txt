@@ -2508,40 +2508,58 @@ Predpolie
 Záhradky
 [Caravanserai]
 Karavánseráj
-[Colonists]
-Kolonisti
-[Garrison]
-Posádka
-[Compound size]
-Veľkosť opevnenia
-[Wall gates]
-Brány v hradbe
-[Wadi count]
-Počet vádí
-[Ford spacing]
-Rozostup brodov
-[Lot size]
-Veľkosť parciel
 [Mixed]
 Zmiešaná
-[Small]
-Malá
-[Large]
-Veľká
-[Lane spacing]
-Rozostup ciest
-[Ditch every]
-Rozostup priekop
-[Wood share]
-Podiel dreva
-[Capital size]
-Veľkosť hlavného mesta
-[Oasis spacing]
-Rozostup oáz
-[Outposts per colony]
-Výspy na kolóniu
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-Základňa sa pri tejto veľkosti nezmestí na svoj pozemok; zvýšte ovládač veľkosti alebo znížte Kolonistov.
+[Fort size]
+Veľkosť pevnosti
+[Bastions]
+Bašty
+[Four-pointed]
+Štvorcípa
+[Five-pointed]
+Päťcípa
+[Six-pointed]
+Šesťcípa
+[Glacis width]
+Šírka predpolia
+[Gates]
+Brány
+[Site size]
+Veľkosť parciel
+[Plot width]
+Šírka záhonov
+[Plot mix]
+Zmes záhonov
+[Tended]
+Udržiavané
+[Overgrown]
+Zarastené
+[Commons]
+Obecné pasienky
+[Few]
+Málo
+[Some]
+Niekoľko
+[Home oasis size]
+Veľkosť domovskej oázy
+[Caravanserais per colony]
+Karavanseraje na kolóniu
+[Desert]
+Púšť
+[Open erg]
+Otvorený erg
+[Dunes and mesas]
+Duny a stolové hory
+[Canyon country]
+Kaňonová krajina
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Pevnosť nedosiahne na svoj brod; použite väčšiu mapu alebo menej kolónií.
+[A wall would stand on a beach; try another seed.]
+Múr by stál na pláži; skúste iné semienko.
+[The fort is too small for its gardens; raise Fort size.]
+Pevnosť je na svoje záhrady príliš malá; zväčšite veľkosť pevnosti.
+[The home oasis is too small; raise Home oasis size.]
+Domovská oáza je príliš malá; zväčšite veľkosť domovskej oázy.
 [Braided river]
 Divočiaca rieka
 [Braid width]

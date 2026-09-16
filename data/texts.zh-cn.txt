@@ -2496,40 +2496,58 @@ Emoji
 菜园地
 [Caravanserai]
 商队驿站
-[Colonists]
-殖民者
-[Garrison]
-驻军
-[Compound size]
-城郭大小
-[Wall gates]
-城墙门数
-[Wadi count]
-旱谷数量
-[Ford spacing]
-浅滩间距
-[Lot size]
-地块大小
 [Mixed]
 混合
-[Small]
-小
-[Large]
-大
-[Lane spacing]
-小路间距
-[Ditch every]
-沟渠间隔
-[Wood share]
-木材比例
-[Capital size]
-首都大小
-[Oasis spacing]
-绿洲间距
-[Outposts per colony]
-每个殖民地的哨站数
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-此大小下基地无法放入其地面；请调高大小控件或降低殖民者数量。
+[Fort size]
+堡垒大小
+[Bastions]
+棱堡
+[Four-pointed]
+四角星形
+[Five-pointed]
+五角星形
+[Six-pointed]
+六角星形
+[Glacis width]
+斜堤宽度
+[Gates]
+城门
+[Site size]
+地块大小
+[Plot width]
+菜畦宽度
+[Plot mix]
+菜畦组合
+[Tended]
+精心照料
+[Overgrown]
+荒芜
+[Commons]
+公地
+[Few]
+少
+[Some]
+一些
+[Home oasis size]
+家乡绿洲大小
+[Caravanserais per colony]
+每个殖民地的商队驿站
+[Desert]
+沙漠
+[Open erg]
+开阔沙海
+[Dunes and mesas]
+沙丘与桌山
+[Canyon country]
+峡谷地带
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+有堡垒无法到达它的浅滩；请使用更大的地图或更少的殖民地。
+[A wall would stand on a beach; try another seed.]
+有城墙会建在沙滩上；请尝试其他种子。
+[The fort is too small for its gardens; raise Fort size.]
+堡垒太小，容不下它的菜园；请增大堡垒大小。
+[The home oasis is too small; raise Home oasis size.]
+家乡绿洲太小；请增大家乡绿洲大小。
 [Braided river]
 辫状河
 [Braid width]

@@ -146,10 +146,12 @@ These are judgement rules rather than engine rules, learned from playtesting on 
   rectangular maps are all in play; tuning that looks good at one size often breaks another, which
   is why several generators scale widths and angles with map size.
 
-## Premade bases
+## Buildings and units placed by a generator
 
-A landscape may start a colony with a whole base standing (`shared/Bases.h`: The Glacis,
-Allotments, Caravanserai). The engine rules it is built on, each verified in the source:
+A landscape may grant a colony buildings or units beyond its swarm and workers (Hills' inn,
+Plantations' pools and inns; until 2026-09-16 The Glacis, Allotments and Caravanserai started whole
+premade bases, which the shipped AIs barely grew beyond, so their revision 2 dropped them). The engine rules
+it rests on, each verified in the source:
 
 - **A building is raised with `Game::addBuilding`, which checks no room.** `checkRoomForBuilding`
   runs first. A finished type comes out of `Building`'s constructor complete (`hp = hpInit`, times
@@ -171,8 +173,8 @@ Allotments, Caravanserai). The engine rules it is built on, each verified in the
 - **Units are placed with `Game::addUnit(x, y, team, type, level, ...)`** on a free tile
   (`isFreeForGroundUnit`, or `isFreeForAirUnit` for an explorer); `level` (0 to 3) applies to
   every ability. A team holds 1024 units and 1024 buildings.
-- **The structural check counts only WORKER units**, against `GeneratorDefinition::startingWorkers`
-  when set; a premade base's warriors and explorers pass freely.
+- **The structural check counts only WORKER units**, against the lobby's "Starting workers";
+  granted warriors and explorers pass freely.
 - **A fed unit walks 264 tiles before it is hungry** (`HUNGRY_MAX` 150000 over 425 per completed
   move at level 0) and 352 before it starves, at 16 ticks a tile. Those are walked tiles, detours
   included: a map that forces long detours round rows, walls or crops can starve an army on its way
@@ -183,5 +185,9 @@ Allotments, Caravanserai). The engine rules it is built on, each verified in the
 - **Every AI adopts what it finds** (Echo and Nicowar through `BuildingRegister::initiate`, Numbi,
   Castor and Cortex by reading `myBuildings` live), but their openings drift: Cortex sets the first
   swarm's workers to 4 and tracks at most 24 sites and 16 inns; Nicowar does not count pre-placed
-  sites towards its own cap and, in the first headless plays, bred warriors it could not feed. Keep
-  a premade base's sites under a dozen and its regrowing food within a short walk of the swarm.
+  sites towards its own cap and, in the first headless plays of premade bases, bred warriors it
+  could not feed. Keep granted sites under a dozen and regrowing food within a short walk of the
+  swarm. In rotation tournaments of the premade bases (2026-09-16, 45,000 ticks), a finished base
+  of fifty-odd units bred 14 to 15 births a colony with Nicowar and 4 to 9 with Numbi, and
+  Caravanserai's starved; only Allotments' base of sites, which Nicowar had to build out, bred
+  (82 births). Grant a start, not a population.

@@ -4,9 +4,7 @@
 #include "GeneratorDefinition.h"
 struct AllotmentsOptions
 {
-	int colonists;
-	bool garrison;
-	int lotSize, laneSpacing, ditchEvery, woodShare;
+	int siteSize, stripWidth, plotMix, commons;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit AllotmentsOptions(const GenerationRequest &r);
 };

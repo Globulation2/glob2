@@ -2562,40 +2562,58 @@ Lo Spalto
 Orti
 [Caravanserai]
 Caravanserraglio
-[Colonists]
-Coloni
-[Garrison]
-Guarnigione
-[Compound size]
-Dimensione del recinto
-[Wall gates]
-Porte delle mura
-[Wadi count]
-Numero di uadi
-[Ford spacing]
-Distanza tra i guadi
-[Lot size]
-Dimensione dei lotti
 [Mixed]
 Misto
-[Small]
-Piccolo
-[Large]
-Grande
-[Lane spacing]
-Distanza tra i vialetti
-[Ditch every]
-Fossato ogni
-[Wood share]
-Quota di legno
-[Capital size]
-Dimensione della capitale
-[Oasis spacing]
-Distanza tra le oasi
-[Outposts per colony]
-Avamposti per colonia
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-La base non entra nel suo terreno a questa dimensione; alza il controllo della dimensione o abbassa i Coloni.
+[Fort size]
+Dimensione del forte
+[Bastions]
+Bastioni
+[Four-pointed]
+A quattro punte
+[Five-pointed]
+A cinque punte
+[Six-pointed]
+A sei punte
+[Glacis width]
+Larghezza dello spalto
+[Gates]
+Porte
+[Site size]
+Dimensione dei lotti
+[Plot width]
+Larghezza delle aiuole
+[Plot mix]
+Assortimento delle aiuole
+[Tended]
+Curate
+[Overgrown]
+Incolte
+[Commons]
+Terre comuni
+[Few]
+Pochi
+[Some]
+Alcuni
+[Home oasis size]
+Dimensione dell'oasi natale
+[Caravanserais per colony]
+Caravanserragli per colonia
+[Desert]
+Deserto
+[Open erg]
+Erg aperto
+[Dunes and mesas]
+Dune e mesa
+[Canyon country]
+Terra di canyon
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Un forte non raggiunge il suo guado; usa una mappa più grande o meno colonie.
+[A wall would stand on a beach; try another seed.]
+Un muro sorgerebbe su una spiaggia; prova un altro seme.
+[The fort is too small for its gardens; raise Fort size.]
+Il forte è troppo piccolo per i suoi orti; aumenta la dimensione del forte.
+[The home oasis is too small; raise Home oasis size.]
+L'oasi natale è troppo piccola; aumenta la dimensione dell'oasi natale.
 [Braided river]
 Fiume intrecciato
 [Braid width]

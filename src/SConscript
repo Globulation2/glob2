@@ -261,9 +261,6 @@ map/generator/shared/Grid.cpp
 map/generator/shared/Walls.cpp
 map/generator/shared/Farmland.cpp
 map/generator/shared/Towers.cpp
-map/generator/shared/Bases.cpp
-map/generator/shared/Compounds.cpp
-map/generator/shared/Lots.cpp
 map/generator/shared/WorldAtlas.cpp
 map/generator/shared/WorldAtlasData.cpp
 map/generator/shared/Raster.cpp

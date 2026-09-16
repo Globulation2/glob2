@@ -357,4 +357,20 @@ std::vector<unsigned char> sealedIslandStone(const Map &map, const Torus &t,
 			stone[i] = 1;
 	return stone;
 }
+std::string wallStanding(const Map &map, const Torus &t, const std::vector<unsigned char> &wall,
+						 const std::vector<unsigned char> &doors, const char *what)
+{
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		const bool stone = map.isResource(x, y) && map.getResource(x, y).type == STONE;
+		if (wall[i] && !stone)
+			return std::string("A ") + what + " has lost its stone at (" + std::to_string(x) + ", " +
+				   std::to_string(y) + ").";
+		if (doors[i] && stone)
+			return std::string("A ") + what + "'s gate is walled up at (" + std::to_string(x) +
+				   ", " + std::to_string(y) + ").";
+	}
+	return "";
+}
 } // namespace MapGeneration

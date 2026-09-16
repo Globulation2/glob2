@@ -31,9 +31,7 @@ keeps the match summary and launch action available while dense content scrolls.
 - Expand Terrain, Resources and Layout to tune the applicable generator controls.
   Resource amounts are percentages of the landscape's own default (100). On/off
   switches are checkbox rows: click one, or press Space or Return while it has
-  focus. Starting workers belong to Game Rules; premade maps retain authored units, and the
-  premade-base landscapes (The Glacis, Allotments, Caravanserai) start the colonists their own
-  Colonists control says, ignoring Starting workers.
+  focus. Starting workers belong to Game Rules; premade maps retain authored units.
 - Under a generated map's preview the lobby shows its start quality: the fairness
   (the worst colony's start over the best) and the score it ranked its candidate
   rolls by, with an (i) that opens the breakdown, one row per colony with what was

@@ -214,4 +214,11 @@ RegionLeak firstRegionLeak(const Torus &t, const std::vector<unsigned char> &rea
 		}
 	return {};
 }
+
+/// A validator's proof that a designed wall stands: the first tile of `wall` that holds no stone on
+/// the finished map, or of `doors` that holds stone, as a message naming `what` and the tile; ""
+/// when every tile is as designed. A wall tile the beaches spoiled (no longer grass) counts as
+/// broken, since the design promised stone there.
+std::string wallStanding(const Map &, const Torus &, const std::vector<unsigned char> &wall,
+						 const std::vector<unsigned char> &doors, const char *what);
 } // namespace MapGeneration

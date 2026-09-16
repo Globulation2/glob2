@@ -54,9 +54,8 @@ std::string validateGeneratedWorld(const Game &g, const GenerationRequest &r,
 			if (!g.map.canResourcesGrow(x, y))
 				return "Generated maps may not disable resource growth (no-growth zone at " +
 					   std::to_string(x) + "," + std::to_string(y) + ")";
-	// A landscape that owns its worker count (a premade base) says so; every other colony starts
-	// with the lobby's shared "Starting workers" value.
-	const int expectedWorkers = d.startingWorkers ? d.startingWorkers(r) : r.nbWorkers;
+	// Every colony starts with the lobby's shared "Starting workers" value.
+	const int expectedWorkers = r.nbWorkers;
 	if (d.hasStartingColonies)
 		for (int i = 0; i < r.nbTeams; ++i)
 		{

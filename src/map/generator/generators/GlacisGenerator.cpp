@@ -1,119 +1,494 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GlacisGenerator.h"
-#include "Bases.h"
-#include "Building.h"
-#include "BuildingType.h"
-#include "Compounds.h"
 #include "Contact.h"
+#include "Drawing.h"
+#include "FertilityField.h"
+#include "BuildingType.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
+#include "Growth.h"
+#include "Homes.h"
 #include "LatticeNoise.h"
 #include "Orbits.h"
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Resources.h"
 #include "Roads.h"
+#include "Room.h"
 #include "Routes.h"
+#include "Settlements.h"
 #include "Sketch.h"
 #include "Towers.h"
 #include "Walls.h"
 #include <algorithm>
+#include <array>
+#include <climits>
 #include <cmath>
 #include <cstdint>
 #include <string>
 #include <vector>
 using namespace MapGeneration;
 
-// The Glacis: every colony starts inside a finished, walled compound - swarm, inns full of wheat, a
-// hospital, a school, a barracks, a racetrack, a quarry, stocked towers on the wall, thirty-odd
-// colonists and a garrison - and the first quarter hour of every other landscape (build a swarm's
-// worth of huts, wait for wheat) is simply skipped. What lies between the compounds is the glacis:
-// a wide plain of dry grass with no water on it at all, so nothing ever grows there and nothing
-// ever grows it shut, yet it is grass, so any building put up on it is a deliberate forward move
-// and stands in the open under the walls' towers. Cutting across the plain, one to a band between
-// the compounds' rows, run the wadis: sunken rivers two tiles wide, each with a strip of farmland
-// along both banks where wheat and wood regrow, and a sand ford across them every so often. The
-// wadis are the only regrowing food outside the walls and the fords the only ways over the water
-// until someone builds a swimming pool, so a wadi is what a colony leaves its compound for and a
-// ford is where it meets its neighbour.
+// The Glacis: star forts in open country.
 //
-// The compounds stand on a lattice (Orbits.h): exact translation copies for 2, 4 or 8 colonies,
-// evenly spaced staggered rows otherwise, so a rectangular map is served as well as a square one
-// (a wedge design would stretch the wadis fat along the long side). Wadis run along the lattice's
-// rows, or between its columns when it has only one row, which is what a 512x128 map with four
-// colonies gets. Fairness is by construction: every compound is the same square with the same
-// base at its middle, faces a random way, and stands midway between the two wadis bounding its
-// band; the validator proves the walls stand, every base is complete, every colony has the same
-// number of towers and the same walk to its nearest ford, and every colony can reach the first.
+// WHAT IT LOOKS LIKE. A bastioned star fort seen from the air, the way Vauban built them: an
+// angular stone trace of arrowhead bastions joined by short curtains; a water moat following every
+// salient and re-entrant of it; beyond the moat a pale covered way; and then the glacis itself, a
+// broad ring of bare, cleared grass sloping away from the works, edged with a sand foot, that
+// stands out against the woods and fields of the countryside around. Sand tracks leave the gates
+// over causeways and cross the glacis to the country roads. Between the forts run meandering
+// streams, and where a stream parts two forts' countryside the road crosses it at a ford. (The
+// first version drew square compounds on a plain of bare grass with ruler-straight wadis, and
+// nothing read as a fortress: the glacis cannot be seen without the country it is cleared from.)
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). A colony that already
-// works decides from the first tick: upgrade behind the wall or push out to a wadi; the plain is
-// buildable but barren, so a forward inn there has to be fed from home; stone walls are permanent
-// and towers shoot over them, so the gates are where fights happen; and the fords, being sand,
-// can never be built over or grown shut, so the way to a neighbour stays open whatever happens.
+// HOW IT PLAYS. Every colony starts with an ordinary swarm and workers in the courtyard of its
+// own fort. Two bastions at the back are its gardens: pockets of grass inside the wall, watered by
+// the moat a few tiles beyond it and closed off from the courtyard by a sand gorge line, so the
+// opening wheat and wood regrow and never spread over the town. The courtyard holds a small town,
+// not a city: growth means leaving through the gates. The glacis is buildable and nothing is
+// planted on it, and the sand of the covered way and the foot keep the country's crops from ever
+// growing onto it, so a forward inn or tower there is a deliberate move made in the open, next to
+// the enemy's works. The country between the forts is where the wealth is - forests, fields, stone
+// outcrops, and at every contested ford an orchard of the three fruits and a quarry on both banks -
+// and the fords are where neighbours meet. The remaining bastions, those flanking the gates, are
+// the tower positions; the starting-towers control puts completed towers there.
+//
+// FAIRNESS. The forts stand on a lattice (Orbits.h) and every fort is one stencil stamped by whole
+// quarter turns, which carry tiles exactly onto tiles, so every colony's walls, moat, glacis,
+// gardens and courtyard are identical. The country between them is noise, shared out by nearest
+// fort; its streams follow the boundaries between neighbours and its fords are the midpoints of
+// those boundaries, so every contested ford is about as far from both forts that share it. The
+// lobby's best-of-five start scoring covers what the noise leaves uneven.
+//
+// FAILURE MODES this design watches for: a beach eating a wall tile (the berm between wall and
+// moat is wide enough that it cannot, and design() proves it); crops spreading onto the glacis or
+// out of a garden (validateWorld floods the finished grass to prove they cannot); a fort closed
+// off (pieceLeak with the gates shut, then every colony walked to from the first); forts too
+// close (the glacis narrows first, then the fort, then the map is refused).
 namespace
 {
-// The shape of a wadi band, across the rows, in tiles: three vertices of water make two tiles of
-// pure water with a mixed sand/water tile either side (walkable only at the fords) and a mixed
-// grass/sand tile beyond that; the banks are the pure grass from three to six steps out from the
-// water on both sides (kBankReach), where every crop lies within the growth probe's reach of the
-// water and no crop stands in the beach. Water 2 + mixed 4 + banks 8 = 14 tiles.
-constexpr int kWaterVertices = 3, kBankNear = 3, kBankReach = 6;
-constexpr int kBandWidth = 2 + 4 + 2 * (kBankReach - kBankNear + 1);
-// Ground kept between a wall and the nearest wadi feature, and between two wadis: two tiles of
-// bare grass so a beach never spoils a wall tile (stone stands on pure grass only) and a crop never
-// stands against the wall, and six tiles between two wadis' bank crops so the plain reads as plain.
-constexpr int kWallMargin = 2, kBetweenWadis = 6;
-// Along a row, the least plain between two compounds' walls: room for a column of units to pass
-// and a tower to stand between them.
-constexpr int kAlongGap = 8;
-// A ford is three sand vertices across the water: two tiles of pure sand and a mixed tile either
-// side, a way over four tiles wide, which a column of units and a stone wall's worth of blocking
-// can both fit. A gate is three tiles wide for the same reason. Through the banks on both sides
-// of every ford runs a lane one tile wider than the ford on each side that no crop is planted on
-// (the first roll planted the banks right up to the fords and the validator found every ford
-// walled in by wheat), so a ford is a way over from the first tick, not after a harvest.
-constexpr int kFordVertices = 3, kGateWidth = 3, kFordLaneMargin = 1;
-// The room a compound needs beyond its base's reach: one tile of walkway round the base, two rows
-// against the wall for the 2x2 towers that stand flush against it, and one more for the well: its
-// pond three tiles in from the wall spoils the four tiles behind it for building with its beach,
-// and the base's back row must stay pure grass (the second sweep refused every compound of 12 and
-// 13 for exactly that).
-constexpr int kCompoundBeyondBase = 4;
-// Every compound's well and kit, unscaled. The first headless play (four AIs, 20000 ticks) had
-// one colony fall from 71 units to 30 with up to 21 of them starving at a time: the compound was
-// dry by design, its 24 wheat tiles never grew back, and the nearest bank was 45 tiles beyond the
-// gate, too far to haul wheat to the inns. So every compound has a well - a pond of 2x2 vertices
-// (one tile of water in its beach) three tiles in from the back wall - with a wheat patch and a
-// wood patch either side of it, five tiles out, well within the growth probe's reach, so the
-// kit regrows slowly (the beach's sand slows it) and a colony that never leaves its walls lives,
-// while the banks are still where the food is. The quarry is the base plan's own depot.
-constexpr int kWellVertices = 2, kWellInset = 3, kKitFlank = 5;
-constexpr int kHomeWheat = 24, kHomeWood = 16;
-// Towers: two open 2x2 pads beside the towers for more, four tiles between sites so a wall's
-// towers spread along it rather than bunching at one corner.
+// The trace, as shares of the bastion tip radius and of half a bastion's sector (pi / N): the
+// curtain's corners (the flank bases), the shoulders where the faces meet the flanks, and the tip.
+// Tuned on previews and a Nicowar game (2026-09-16): a slender trace (curtain at 0.56 of the tip)
+// read best but left a courtyard too small to grow a town in (half Forts' wheat harvest in 30,000
+// ticks); these fatter ones still read as bastions. Fewer bastions need a smaller curtain so the
+// arrowheads still project.
+struct TraceShape
+{
+	double curtain, shoulder, flankAngle, shoulderAngle;
+};
+TraceShape traceShape(int bastions)
+{
+	if (bastions <= 4)
+		return {0.62, 0.82, 0.60, 0.42};
+	if (bastions == 5)
+		return {0.66, 0.84, 0.55, 0.40};
+	return {0.68, 0.85, 0.52, 0.38};
+}
+// The works outwards from the trace, as distances from it in tiles: the wall (inside the trace),
+// the berm of grass between wall and moat (wide enough that the moat's beach never reaches a wall
+// tile, since stone stands on pure grass only), the moat's water, the covered way's sand, then the
+// glacis of `glacis-width` tiles and its one-tile sand foot.
+constexpr double kWall = 2.2, kBerm = 2.5, kMoat = 3, kCovered = 2, kFoot = 1;
+// Tiles beyond the foot that belong to the fort's zone: no stream, road or deposit, so a track
+// meets the foot square and the country's crops start a few tiles out.
+constexpr double kZoneMargin = 2;
+// Gates are three tiles wide through the wall; the causeway over the moat five vertices; the track
+// over the covered way, glacis and foot three.
+constexpr double kGateHalf = 1.5, kCausewayHalf = 2.0, kTrackHalf = 1.0;
+// The kitchen gardens: every courtyard tile behind a line this far back of the fort's middle is
+// garden, closed off from the town in front by one row of sand corners, and split into a wheat half
+// and a wood half by a sand lane as wide as the back gate running from it to the garden line (so
+// the gate, too, opens on sand and not on garden). Each half has a cistern, a
+// pond of water corners within this radius of its middle, so the gardens regrow (the moat alone,
+// five tiles beyond the wall, left the first design's bastion gardens food-capped at 28 units in a
+// 30,000-tick Nicowar game).
+constexpr double kGardenFront = 1.5, kCisternRadius = 2.4;
+// Negotiation floors: a glacis narrower than 4 no longer reads as one, and a fort under 20 has no
+// courtyard left; the country between two forts' zones needs room for a stream and its banks.
+constexpr int kLeastGlacis = 4, kLeastFort = 20, kCountryBetween = 16;
+// The gardens' crops: the wheat half is planted to this share of its ground and the wood half to
+// this, around the cisterns, scaled by the amounts, never below the unscaled floors that feed an
+// opening. A half must keep this much pure grass once its sand and beaches are laid.
+constexpr int kGardenWheatPercent = 75, kGardenWoodPercent = 45, kGardenWheatFloor = 40,
+			  kGardenWoodFloor = 20, kLeastGardenTiles = 40, kLeastWoodGardenTiles = 24,
+			  kDefaultFort = 30, kLeastThreeGardens = 26;
+// The wood garden is the outer part of the second half (its bastion), beyond an arc of sand at this
+// share of the curtain's inner radius; the rest of that half is a second wheat garden. (Equal wheat and wood halves
+// fed 34 to 42 Nicowar colonists and then starved them; wood was never short.)
+constexpr double kWoodArc = 0.98;
+// Streams wander this far from the boundary between two forts' country, over a noise field; their
+// water is a stroke three vertices wide. A stream boundary shorter than this is a corner where
+// three forts meet, not a front, and gets no stream.
+constexpr int kLeastBoundary = 24;
+// A stream's course: the boundary walk displaced sideways by two sine waves along it, of a long
+// and a short wavelength drawn per stream, tapered to nothing at its ends so streams still meet
+// where three forts' country does. Its water is a stroke this wide.
+constexpr double kMeanderLong = 6, kMeanderShort = 1.5, kStreamHalfWidth = 1.4;
+// Ponds in the country, one per this many tiles of it, each this many water corners, well away
+// from the forts and the streams: the water that makes fields out in the country.
+constexpr int kCountryTilesPerPond = 1800, kPondCorners = 40, kPondClearance = 9;
+// The contested ford is a 5x5 of sand at a stream's middle; its prizes stand this far out on both
+// banks: three fruit groves along the bank, a quarry behind them.
+constexpr int kFordHalf = 2, kPrizeOut = 8, kQuarryOut = 12, kGroveSpacing = 4, kGroveTiles = 4;
+// The country: forest on the woodiest share of it, then fields, outcrops and groves.
+constexpr int kForestPercent = 30, kFieldTilesPer = 16, kOutcropTilesPer = 700, kGroveTilesPer = 1100;
+// Towers: two open pads per colony in its tower bastions, four tiles apart.
 constexpr int kTowerPads = 2, kTowerSpacing = 4;
-// The banks: seven in ten tiles under wheat and two in ten under wood at the default amounts (a
-// wadi is a granary first), the rest open so a unit walks the bank. The plain: one stone outcrop
-// per 3000 tiles, so upgrades out on the plain are possible but the quarry at home is the rule.
-constexpr int kBankWheatPercent = 70, kBankWoodPercent = 20, kPlainTilesPerOutcrop = 3000;
+
+enum TileKind : signed char
+{
+	kOutside,
+	kCourt,
+	kPocket, // inside a front bastion, beyond its chord: tower ground
+	kGarden, // behind the garden line
+	kWallTile,
+	kGateTile,
+	kBermTile,
+	kMoatTile,
+	kCoveredTile,
+	kGlacisTile,
+	kFootTile
+};
+
+double segmentDistance(double px, double py, double ax, double ay, double bx, double by)
+{
+	const double dx = bx - ax, dy = by - ay;
+	const double len2 = dx * dx + dy * dy;
+	const double s = len2 > 0 ? std::clamp(((px - ax) * dx + (py - ay) * dy) / len2, 0.0, 1.0) : 0;
+	return std::hypot(px - ax - s * dx, py - ay - s * dy);
+}
+
+// One fort in its own frame, stamped at every colony by quarter turns. Vertices and tiles are
+// stored separately: a vertex at offset (dx, dy) is the frame point (dx, dy), a tile the point
+// (dx + 0.5, dy + 0.5), so a quarter turn about the origin vertex carries both grids onto
+// themselves exactly.
+struct FortStencil
+{
+	int extent = 0; // offsets run from -extent to extent
+	int bastions = 5;
+	double tip = 0, glacis = 0;
+	std::vector<unsigned char> vertex; // TerrainType
+	std::vector<signed char> kind;     // TileKind of each tile
+	std::vector<signed char> half;     // for kGarden tiles, the garden: 0 and 2 wheat, 1 wood
+	std::vector<unsigned char> zone;   // tiles within the fort's zone (no country features)
+	std::vector<unsigned char> core;   // tiles out to the foot (roads keep off)
+	// Gardens: 0 and 2 are wheat, 1 is wood.
+	std::array<ShapePoint, 3> cisterns{};  // frame points, by garden (the wood garden's is a seed)
+	std::array<int, 3> gardenTiles{};      // pure grass in each garden, beaches laid
+	bool threeGardens = true;
+	ShapePoint swarm{};                    // frame point
+	std::vector<ShapePoint> gateEnds;      // frame points just beyond each gate's foot
+	int side() const { return 2 * extent + 1; }
+	int index(int dx, int dy) const { return (dy + extent) * side() + dx + extent; }
+};
+
+FortStencil buildStencil(int bastions, double tip, double glacis, int gates)
+{
+	FortStencil s;
+	s.bastions = bastions;
+	s.tip = tip;
+	s.glacis = glacis;
+	const TraceShape shape = traceShape(bastions);
+	const double half = kPi / bastions;
+	std::vector<ShapePoint> trace;
+	std::vector<double> bastionAngle;
+	for (int b = 0; b < bastions; ++b)
+	{
+		const double a = half + 2 * kPi * b / bastions;
+		bastionAngle.push_back(a);
+		const double pts[5][2] = {{shape.curtain, -shape.flankAngle},
+								  {shape.shoulder, -shape.shoulderAngle},
+								  {1, 0},
+								  {shape.shoulder, shape.shoulderAngle},
+								  {shape.curtain, shape.flankAngle}};
+		for (const auto &p : pts)
+			trace.push_back(polarPoint(0, 0, p[0] * tip, a + p[1] * half));
+	}
+	const auto signedDistance = [&](double px, double py)
+	{
+		double nearest = 1e9;
+		bool in = false;
+		const size_t n = trace.size();
+		for (size_t i = 0; i < n; ++i)
+		{
+			const ShapePoint &a = trace[i], &b = trace[(i + 1) % n];
+			nearest = std::min(nearest, segmentDistance(px, py, a.x, a.y, b.x, b.y));
+			if ((a.y > py) != (b.y > py) && px < a.x + (py - a.y) * (b.x - a.x) / (b.y - a.y))
+				in = !in;
+		}
+		return in ? -nearest : nearest;
+	};
+	// Gates open in the curtains facing the four ways out, in the order front, back, left, right, as
+	// many as asked: the country roads run to the fords between neighbouring forts, which lie along
+	// the lattice's axes, so every road leaves its fort straight out of a gate.
+	std::vector<double> gateAngles;
+	std::vector<int> gateCurtains;
+	for (double target : {0.0, kPi, kPi / 2, 3 * kPi / 2})
+	{
+		if (int(gateCurtains.size()) >= gates)
+			break;
+		int best = -1;
+		double nearest = 1e9;
+		for (int c = 0; c < bastions; ++c)
+		{
+			const double off = std::abs(std::remainder(2 * kPi * c / bastions - target, 2 * kPi));
+			if (std::find(gateCurtains.begin(), gateCurtains.end(), c) == gateCurtains.end() &&
+				off < nearest - 1e-9)
+			{
+				nearest = off;
+				best = c;
+			}
+		}
+		gateCurtains.push_back(best);
+		gateAngles.push_back(2 * kPi * best / bastions);
+	}
+	// The garden lane runs to the back gate's curtain (the curtain facing back when there is no
+	// back gate), splitting the gardens in two.
+	double back = kPi;
+	{
+		double nearest = 1e9;
+		for (int c = 0; c < bastions; ++c)
+		{
+			const double off = std::abs(std::remainder(2 * kPi * c / bastions - kPi, 2 * kPi));
+			if (off < nearest - 1e-9)
+			{
+				nearest = off;
+				back = 2 * kPi * c / bastions;
+			}
+		}
+		if (gateAngles.size() > 1)
+			back = gateAngles[1];
+	}
+	const double court = shape.curtain * tip - kWall;
+	// The cisterns shrink with a fort shrunk to fit a crowded map, so their beaches leave it gardens.
+	const double cistern = std::clamp(kCisternRadius * court / 18, 1.6, kCisternRadius);
+	// A cistern in each wheat garden, towards the back curtain, off the lane to its own side (garden 0 lies on the lane's left, (-sin, cos) of the way back); the wood
+	// garden's seed out beyond the arc.
+	const auto backFrame = [&](double along, double across)
+	{
+		return ShapePoint{along * std::cos(back) - across * std::sin(back),
+						  along * std::sin(back) + across * std::cos(back)};
+	};
+	// A fort shrunk below kLeastThreeGardens has no room for the arc: its whole second half is wood.
+	s.threeGardens = tip >= kLeastThreeGardens;
+	// The cisterns stand at the back of their gardens, so the wheat between the garden line and
+	// the water is one unbroken block (see the planting below).
+	s.cisterns = {backFrame(0.7 * court, 0.4 * court),
+				  s.threeGardens ? backFrame(0.85 * court, -0.75 * court)
+								 : backFrame(0.7 * court, -0.4 * court),
+				  backFrame(0.7 * court, -0.4 * court)};
+	s.swarm = {0.35 * court, 0};
+
+	const double glacisFrom = kBerm + kMoat + kCovered, footTo = glacisFrom + glacis + kFoot;
+	s.extent = int(std::ceil(tip + footTo + kZoneMargin)) + 2;
+	const int side = s.side();
+	s.vertex.assign(size_t(side) * side, GRASS);
+	s.kind.assign(size_t(side) * side, kOutside);
+	s.half.assign(size_t(side) * side, -1);
+	s.zone.assign(size_t(side) * side, 0);
+	s.core.assign(size_t(side) * side, 0);
+	const auto nearGate = [&](double px, double py, double halfWidth)
+	{
+		for (double g : gateAngles)
+		{
+			const double along = px * std::cos(g) + py * std::sin(g);
+			const double across = -px * std::sin(g) + py * std::cos(g);
+			if (along > 0 && std::abs(across) <= halfWidth)
+				return true;
+		}
+		return false;
+	};
+	// A front bastion's interior beyond the chord between its flank bases: where towers go.
+	const auto inFrontBastion = [&](double px, double py)
+	{
+		for (int b = 0; b < bastions; ++b)
+		{
+			if (std::cos(bastionAngle[b]) < 0.2 ||
+				std::abs(std::remainder(std::atan2(py, px) - bastionAngle[b], 2 * kPi)) >= half)
+				continue;
+			const ShapePoint a = polarPoint(0, 0, shape.curtain * tip, bastionAngle[b] - shape.flankAngle * half);
+			const ShapePoint c = polarPoint(0, 0, shape.curtain * tip, bastionAngle[b] + shape.flankAngle * half);
+			const double cross = (c.x - a.x) * (py - a.y) - (c.y - a.y) * (px - a.x);
+			const double origin = (c.x - a.x) * (0 - a.y) - (c.y - a.y) * (0 - a.x);
+			if ((cross > 0) != (origin > 0))
+				return true;
+		}
+		return false;
+	};
+	const double backX = std::cos(back), backY = std::sin(back);
+	std::vector<unsigned char> lines(size_t(side) * side, 0);
+	for (int dy = -s.extent; dy <= s.extent; ++dy)
+		for (int dx = -s.extent; dx <= s.extent; ++dx)
+		{
+			const int at = s.index(dx, dy);
+			// The vertex.
+			{
+				const double px = dx, py = dy, d = signedDistance(px, py);
+				unsigned char terrain = GRASS;
+				if (d > kBerm && d <= kBerm + kMoat)
+					terrain = nearGate(px, py, kCausewayHalf) ? SAND : WATER;
+				else if (d > kBerm + kMoat && d <= glacisFrom)
+					terrain = SAND;
+				else if (d > glacisFrom && d <= footTo - kFoot)
+					terrain = nearGate(px, py, kTrackHalf) ? SAND : GRASS;
+				else if (d > footTo - kFoot && d <= footTo)
+					terrain = SAND;
+				else if (d <= 0.3)
+				{
+					// The garden line across the courtyard, and the lane down the gardens' middle.
+					const double along = px * backX + py * backY, across = -px * backY + py * backX;
+					if (std::abs(px + kGardenFront) <= 0.6 ||
+						(px < -kGardenFront && along > 0 && std::abs(across) <= kCausewayHalf))
+						lines[at] = 1;
+					if (s.threeGardens && px < -kGardenFront && across < -kCausewayHalf &&
+						std::abs(std::hypot(px, py) - kWoodArc * court) <= 0.6)
+						lines[at] = 1;
+					for (const int h : {0, s.threeGardens ? 2 : 0})
+						if (std::hypot(px - s.cisterns[h].x, py - s.cisterns[h].y) <= cistern)
+							terrain = WATER;
+				}
+				s.vertex[at] = terrain;
+			}
+			// The tile.
+			{
+				const double px = dx + 0.5, py = dy + 0.5, d = signedDistance(px, py);
+				TileKind kind = kOutside;
+				if (d <= -kWall)
+				{
+					if (px < -kGardenFront)
+					{
+						kind = kGarden;
+						const double across = -px * backY + py * backX;
+						s.half[at] = across > 0 ? 0
+									 : !s.threeGardens || std::hypot(px, py) > kWoodArc * court ? 1
+																								: 2;
+					}
+					else
+						kind = inFrontBastion(px, py) ? kPocket : kCourt;
+				}
+				else if (d <= 0)
+					kind = nearGate(px, py, kGateHalf) ? kGateTile : kWallTile;
+				else if (d <= kBerm)
+					kind = kBermTile;
+				else if (d <= kBerm + kMoat)
+					kind = kMoatTile;
+				else if (d <= glacisFrom)
+					kind = kCoveredTile;
+				else if (d <= footTo - kFoot)
+					kind = kGlacisTile;
+				else if (d <= footTo)
+					kind = kFootTile;
+				s.kind[at] = kind;
+				s.zone[at] = d <= footTo + kZoneMargin;
+				s.core[at] = d <= footTo;
+			}
+		}
+	// A line vertex is sand unless it would spoil a wall tile (stone stands on pure grass only): the
+	// line stops at the wall's inner face, where its last vertex still touches a wall tile, which
+	// keeps the gardens sealed.
+	for (int dy = -s.extent + 1; dy <= s.extent; ++dy)
+		for (int dx = -s.extent + 1; dx <= s.extent; ++dx)
+		{
+			if (!lines[s.index(dx, dy)] || s.vertex[s.index(dx, dy)] != GRASS)
+				continue;
+			bool spoils = false;
+			for (const auto &[tx, ty] : {std::pair{dx - 1, dy - 1}, {dx, dy - 1}, {dx - 1, dy}, {dx, dy}})
+				spoils = spoils || s.kind[s.index(tx, ty)] == kWallTile;
+			if (!spoils)
+				s.vertex[s.index(dx, dy)] = SAND;
+		}
+	// Where the garden line meets the wall's inner face at a slant, the corners it could not take
+	// can leave a diagonal of pure grass between the gardens and the courtyard. Any tile a crop in
+	// the gardens could step onto that is not garden becomes wall, until none is left.
+	const auto vertexAfterBeach = [&](int vx, int vy)
+	{
+		const unsigned char v = s.vertex[s.index(vx, vy)];
+		if (v != GRASS)
+			return v;
+		for (int ny = vy - 1; ny <= vy + 1; ++ny)
+			for (int nx = vx - 1; nx <= vx + 1; ++nx)
+				if (nx >= -s.extent && nx <= s.extent && ny >= -s.extent && ny <= s.extent &&
+					s.vertex[s.index(nx, ny)] == WATER)
+					return static_cast<unsigned char>(SAND);
+		return v;
+	};
+	const auto pureAt = [&](int dx, int dy)
+	{
+		return vertexAfterBeach(dx, dy) == GRASS && vertexAfterBeach(dx + 1, dy) == GRASS &&
+			   vertexAfterBeach(dx, dy + 1) == GRASS && vertexAfterBeach(dx + 1, dy + 1) == GRASS;
+	};
+	for (bool sealed = false; !sealed;)
+	{
+		sealed = true;
+		for (int dy = -s.extent + 1; dy < s.extent - 1; ++dy)
+			for (int dx = -s.extent + 1; dx < s.extent - 1; ++dx)
+			{
+				const int at = s.index(dx, dy);
+				if (s.kind[at] == kGarden || s.kind[at] == kWallTile || s.kind[at] == kOutside ||
+					!pureAt(dx, dy))
+					continue;
+				bool touches = false;
+				for (int ny = dy - 1; ny <= dy + 1 && !touches; ++ny)
+					for (int nx = dx - 1; nx <= dx + 1 && !touches; ++nx)
+						touches = s.kind[s.index(nx, ny)] == kGarden && pureAt(nx, ny);
+				if (touches)
+				{
+					s.kind[at] = kWallTile;
+					sealed = false;
+				}
+			}
+	}
+	// Each half's pure grass once the cisterns' beaches are laid: tiles whose four corners are grass
+	// and with no water corner in the ring round them.
+	for (int dy = -s.extent + 1; dy < s.extent - 1; ++dy)
+		for (int dx = -s.extent + 1; dx < s.extent - 1; ++dx)
+		{
+			const int at = s.index(dx, dy);
+			if (s.kind[at] != kGarden)
+				continue;
+			bool pure = true;
+			for (int vy = dy - 1; vy <= dy + 2 && pure; ++vy)
+				for (int vx = dx - 1; vx <= dx + 2 && pure; ++vx)
+				{
+					const bool corner = vx >= dx && vx <= dx + 1 && vy >= dy && vy <= dy + 1;
+					const unsigned char v = s.vertex[s.index(vx, vy)];
+					pure = corner ? v == GRASS : v != WATER;
+				}
+			s.gardenTiles[s.half[at]] += pure;
+		}
+	for (double g : gateAngles)
+	{
+		double r = 0;
+		while (signedDistance(r * std::cos(g), r * std::sin(g)) <= footTo + 0.5)
+			r += 0.5;
+		s.gateEnds.push_back(polarPoint(0, 0, r + 1, g));
+	}
+	return s;
+}
+
+struct Ford
+{
+	int tile;
+	ShapePoint along; // the stream's direction at the ford, a unit vector
+	int a, b;         // the two forts whose country the stream parts
+};
 
 struct Layout
 {
 	Torus t{1, 1};
+	FortStencil stencil;
 	std::vector<ShapePoint> homes;
-	std::vector<BaseSite> sites;
-	BasePlan plan;
-	int compound = 0, wadis = 0;
-	bool vertical = false; // wadis run between the lattice's columns, not its rows
-	CompoundMasks compounds;
-	std::vector<unsigned char> water, ford, bankZone, fordLane, plain;
-	std::vector<int> territory; // every tile's nearest compound, for the towers' scoring
-	std::vector<ShapePoint> fords; // the middle of every ford, on its wadi's water line
-	std::vector<ShapePoint> wells; // every compound's well, as its top-left vertex
-	TerrainSketch sketch;
+	std::vector<int> facings;
+	TerrainSketch sketch; // undermap corners
+	std::vector<signed char> kind;
+	std::vector<int> fortOf;    // colony of every tile in a fort's zone, else -1
+	std::vector<int> gardenOf;  // colony * 3 + garden for garden tiles, else -1
+	std::vector<unsigned char> core, zone, wall, gate, glacis, roads;
+	std::vector<Ford> fords;
+	int streams = 0;
 	std::string failure;
 };
 
@@ -124,88 +499,43 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.t = {1 << request.wDec, 1 << request.hDec};
 	const Torus &t = L.t;
 	const int n = t.size(), teams = std::max(1, request.nbTeams);
-	L.plan = standardBasePlan(baseTier(o.colonists), BaseKind::Finished, 0, true);
 
-	// The compounds on a lattice; which colony gets which is a draw.
-	L.homes = latticeSites(t.w, t.h, teams, context.bounded("glacis-layout", std::uint32_t(t.w)),
-						   context.bounded("glacis-layout", std::uint32_t(t.h)))
-				  .sites;
+	// Sequence named-stream draws in separate statements: argument evaluation order differs
+	// between compilers.
+	const int bastions =
+		o.bastions == 0 ? 4 + int(context.bounded("glacis-bastions", 3)) : o.bastions + 3;
+	const int offsetX = int(context.bounded("glacis-layout", std::uint32_t(t.w)));
+	const int offsetY = int(context.bounded("glacis-layout", std::uint32_t(t.h)));
+	L.homes = latticeSites(t.w, t.h, teams, offsetX, offsetY).sites;
 	dealStarts(context, L.homes);
-	for (const ShapePoint &home : L.homes)
-		L.sites.push_back({int(std::lround(home.x)) % t.w, int(std::lround(home.y)) % t.h,
-						   int(context.bounded("glacis-facing", 4))});
+	// One facing for every colony, drawn once per map. A home stencil turned by different quarter
+	// turns covers identical tiles, but the AIs scan along the map's axes: with a facing per colony,
+	// Numbi colonies on The Glacis grew to 60 in one facing and 20 to 30 in the others (rotation
+	// tournaments, 2026-09-16). The same facing makes every home an exact translation of the others.
+	const int facing = int(context.bounded("glacis-facing", 4));
+	L.facings.assign(teams, facing);
+	context.telemetry.measure("glacis.fort.facing", facing);
+	context.telemetry.measure("glacis.bastions", bastions);
 
-	// The lattice's lines across the bands: its distinct rows, or its distinct columns when there
-	// is one row (a wide map with few colonies), so every band runs between two lines of compounds
-	// and every compound has a wadi on either side.
-	std::vector<int> rows, columns;
-	for (const BaseSite &site : L.sites)
+	// Negotiate the fort into the lattice: the glacis narrows first, then the fort.
+	double nearest = std::min(t.w, t.h);
+	for (int a = 0; a < teams; ++a)
+		for (int b = a + 1; b < teams; ++b)
+			nearest = std::min(nearest, siteDistance(t, L.homes[a], L.homes[b]));
+	int tip = o.fortSize, glacis = o.glacisWidth;
+	const auto reach = [&]
+	{ return tip + kBerm + kMoat + kCovered + glacis + kFoot + kZoneMargin; };
+	while (2 * reach() + kCountryBetween > nearest)
 	{
-		if (std::find(rows.begin(), rows.end(), site.y) == rows.end())
-			rows.push_back(site.y);
-		if (std::find(columns.begin(), columns.end(), site.x) == columns.end())
-			columns.push_back(site.x);
-	}
-	L.vertical = rows.size() == 1 && columns.size() > 1;
-	// A compound with a single gate faces a wadi (either of the two bounding its band, by a draw),
-	// so every colony's way out leads to its food and every colony's walk to a ford is the same;
-	// the first sweep found single-gate maps failing the validator's walk check whenever a gate
-	// happened to face along the band. With two gates (front and back) the facing is free.
-	if (o.wallGates == 1)
-		for (BaseSite &site : L.sites)
+		if (glacis > kLeastGlacis)
 		{
-			const int towards = int(context.bounded("glacis-gate", 2)) * 2; // 0 or 2: +/- across
-			site.facing = L.vertical ? towards : towards + 1;
+			glacis -= 2;
+			context.telemetry.fallback("glacis.glacis.narrowed", "Forts too close for the glacis");
 		}
-	std::vector<int> lines = L.vertical ? columns : rows;
-	std::sort(lines.begin(), lines.end());
-	const int across = L.vertical ? t.w : t.h, along = L.vertical ? t.h : t.w;
-	const auto acrossOf = [&](const BaseSite &s) { return L.vertical ? s.x : s.y; };
-	const auto alongOf = [&](const BaseSite &s) { return L.vertical ? s.y : s.x; };
-	// The narrowest band, wall line to wall line, and the nearest two compounds on one line.
-	int narrowestBand = across, nearestAlong = along;
-	for (size_t r = 0; r < lines.size(); ++r)
-		narrowestBand =
-			std::min(narrowestBand, lines.size() == 1
-										? across
-										: ((lines[(r + 1) % lines.size()] - lines[r]) % across + across) % across);
-	for (size_t a = 0; a < L.sites.size(); ++a)
-		for (size_t b = a + 1; b < L.sites.size(); ++b)
-			if (acrossOf(L.sites[a]) == acrossOf(L.sites[b]))
-			{
-				const int d = alongOf(L.sites[a]) - alongOf(L.sites[b]);
-				nearestAlong = std::min(nearestAlong, std::min((d % along + along) % along,
-																(-d % along + along) % along));
-			}
-
-	// Negotiating the compound and the wadis into the band. A compound must hold its base with the
-	// towers' rows; a band must hold two half compounds, its wadis with their banks, the margins
-	// and the gaps between wadis. Too tight, the wadis go first (a band with one wadi still feeds),
-	// then the compound shrinks to what its base needs, and only then the map is refused.
-	const int leastCompound = L.plan.reach + kCompoundBeyondBase;
-	L.compound = std::max(o.compoundSize, leastCompound);
-	if (L.compound > o.compoundSize)
-		context.telemetry.fallback("glacis.compound.grown",
-								   "Compound grew to hold its base and the towers' rows");
-	L.wadis = o.wadis;
-	const auto bandNeeds = [&]
-	{
-		return 2 * (L.compound + 1) + L.wadis * kBandWidth + 2 * kWallMargin +
-			   (L.wadis - 1) * kBetweenWadis;
-	};
-	const auto alongNeeds = [&] { return 2 * (L.compound + 1) + kAlongGap; };
-	while (bandNeeds() > narrowestBand || alongNeeds() > nearestAlong)
-	{
-		if (bandNeeds() > narrowestBand && L.wadis > 1)
+		else if (tip > kLeastFort)
 		{
-			--L.wadis;
-			context.telemetry.fallback("glacis.wadis.reduced", "A band could not hold every wadi");
-		}
-		else if (L.compound > leastCompound)
-		{
-			--L.compound;
-			context.telemetry.fallback("glacis.compound.shrunk",
-									   "Compounds shrank to fit their bands");
+			tip -= 2;
+			context.telemetry.fallback("glacis.fort.shrunk", "Forts too close for their size");
 		}
 		else
 		{
@@ -213,167 +543,303 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			return L;
 		}
 	}
-	context.telemetry.measure("glacis.compound.actual", L.compound);
-	context.telemetry.measure("glacis.wadis.actual", L.wadis);
-	context.telemetry.measure("glacis.lattice.lines", int(lines.size()));
-	context.telemetry.measure("glacis.band.narrowest", narrowestBand);
-
-	// The compounds: interior labelled, wall and gates masked.
-	L.compounds = CompoundMasks(n);
-	for (size_t k = 0; k < L.sites.size(); ++k)
-		stampCompound(t, L.sites[k], L.compound, o.wallGates, kGateWidth, int(k), L.compounds);
-
-	// The wadis: in every band, `wadis` water lines spread evenly through the ground left between
-	// the two compounds' margins, each with its bank zone either side, and fords across every
-	// `fordSpacing` tiles along it (a whole number of fords round the wrap, so the pattern is
-	// seamless), each band's fords offset by a draw of their own so no two bands' fords line up.
-	L.water.assign(n, 0);
-	L.ford.assign(n, 0);
-	L.bankZone.assign(n, 0);
-	L.fordLane.assign(n, 0);
-	const int fordCount = std::max(1, int(std::lround(double(along) / o.fordSpacing)));
-	const int bandCount = int(lines.size());
-	std::vector<int> fordOffsets;
-	for (int r = 0; r < bandCount; ++r)
-		fordOffsets.push_back(int(context.bounded("glacis-fords", std::uint32_t(along))));
-	for (int r = 0; r < bandCount; ++r)
+	context.telemetry.measure("glacis.fort.tip", tip);
+	context.telemetry.measure("glacis.glacis.width", glacis);
+	L.stencil = buildStencil(bastions, tip, glacis, o.gates);
+	context.telemetry.measure("glacis.garden.wheat-tiles",
+							  L.stencil.gardenTiles[0] + L.stencil.gardenTiles[2]);
+	context.telemetry.measure("glacis.garden.wood-tiles", L.stencil.gardenTiles[1]);
+	// The floors are for the default fort; a fort shrunk to fit a crowded map keeps gardens in
+	// proportion to its courtyard, never below a quarter of them.
+	const double scale = std::max(0.3, double(tip * tip) / (kDefaultFort * kDefaultFort));
+	if (L.stencil.gardenTiles[0] < kLeastGardenTiles * scale ||
+		(L.stencil.threeGardens && L.stencil.gardenTiles[2] < kLeastGardenTiles * scale) ||
+		L.stencil.gardenTiles[1] < kLeastWoodGardenTiles * scale)
 	{
-		const int start = lines[r];
-		const int gap = bandCount == 1 ? across : ((lines[(r + 1) % bandCount] - start) % across + across) % across;
-		const int freeFrom = L.compound + 1 + kWallMargin, freeTo = gap - freeFrom;
-		const double share = double(freeTo - freeFrom) / L.wadis;
-		for (int j = 0; j < L.wadis; ++j)
-		{
-			// The water line of wadi j, as a whole offset across the band from the compounds' line.
-			const int centre = start + int(std::lround(freeFrom + (j + 0.5) * share));
-			for (int f = 0; f < fordCount; ++f)
+		L.failure = "The fort is too small for its gardens; raise Fort size.";
+		return L;
+	}
+	const FortStencil &s = L.stencil;
+	context.telemetry.measure("glacis.bastions.actual", s.bastions);
+
+	// Stamp every fort.
+	L.sketch.assign(n, GRASS);
+	L.kind.assign(n, kOutside);
+	L.fortOf.assign(n, -1);
+	L.gardenOf.assign(n, -1);
+	L.core.assign(n, 0);
+	L.zone.assign(n, 0);
+	L.wall.assign(n, 0);
+	L.gate.assign(n, 0);
+	L.glacis.assign(n, 0);
+	L.roads.assign(n, 0);
+	for (int k = 0; k < teams; ++k)
+	{
+		const int cx = int(std::lround(L.homes[k].x)), cy = int(std::lround(L.homes[k].y));
+		for (int dy = -s.extent; dy <= s.extent; ++dy)
+			for (int dx = -s.extent; dx <= s.extent; ++dx)
 			{
-				const int at = (fordOffsets[r] + int(std::int64_t(f) * along / fordCount)) % along;
-				L.fords.push_back(L.vertical ? ShapePoint{double(t.x(centre)), double(at)}
-											 : ShapePoint{double(at), double(t.y(centre))});
+				const int at = s.index(dx, dy);
+				const auto [vx, vy] = turnStencilVertex(L.facings[k], dx, dy);
+				const int v = t.at(cx + vx, cy + vy);
+				if (s.vertex[at] != GRASS)
+					L.sketch[v] = TerrainType(s.vertex[at]);
+				const auto [tx, ty] = turnStencilTile(L.facings[k], dx, dy);
+				const int i = t.at(cx + tx, cy + ty);
+				if (!s.zone[at])
+					continue;
+				if (L.fortOf[i] >= 0 && L.fortOf[i] != k)
+				{
+					L.failure = "Too many colonies for this map; use a bigger map or fewer colonies.";
+					return L;
+				}
+				L.fortOf[i] = k;
+				L.zone[i] = 1;
+				L.core[i] = s.core[at];
+				L.kind[i] = s.kind[at];
+				L.wall[i] = s.kind[at] == kWallTile;
+				L.gate[i] = s.kind[at] == kGateTile;
+				L.glacis[i] = s.kind[at] == kGlacisTile;
+				if (s.kind[at] == kGarden)
+					L.gardenOf[i] = k * 3 + s.half[at];
 			}
-			for (int a = 0; a < along; ++a)
+	}
+
+	// The country: every tile belongs to its nearest fort, and a stream follows every long
+	// boundary between two forts' country, wandering over a noise field.
+	const std::vector<int> meander = fractalNoise(t.w, t.h, 32, 3, context.stream("glacis-streams"));
+	const std::vector<int> uplands = fractalNoise(t.w, t.h, 64, 3, context.stream("glacis-uplands"));
+	std::vector<unsigned char> water(n, 0);
+	if (teams > 1)
+	{
+		std::vector<int> owner(n, 0);
+		for (int i = 0; i < n; ++i)
+		{
+			int best = INT_MAX;
+			for (int k = 0; k < teams; ++k)
 			{
-				// Where along the wadi this column lies in its ford period, in units of 1/fordCount
-				// of a tile, so the pattern repeats exactly round the wrap.
-				const auto inPeriod = [&](int offset)
+				const int d = t.dist2(i % t.w, i / t.w, int(std::lround(L.homes[k].x)),
+									  int(std::lround(L.homes[k].y)));
+				if (d < best)
 				{
-					return ((a - fordOffsets[r] - offset) % along + along) % along * fordCount % along;
-				};
-				const bool onFord = inPeriod(0) < kFordVertices * fordCount;
-				const bool onLane =
-					inPeriod(-kFordLaneMargin) < (kFordVertices + 2 * kFordLaneMargin) * fordCount;
-				for (int e = -(kBankReach + 1); e <= kBankReach + 1; ++e)
-				{
-					const int c = centre + e;
-					const int i = L.vertical ? t.at(c, a) : t.at(a, c);
-					if (std::abs(e) <= kWaterVertices / 2)
-					{
-						L.water[i] = 1;
-						L.ford[i] = onFord;
-					}
-					else if (std::abs(e) >= kBankNear)
-						L.bankZone[i] = 1;
-					if (onLane && std::abs(e) > kWaterVertices / 2)
-						L.fordLane[i] = 1;
+					best = d;
+					owner[i] = k;
 				}
 			}
 		}
-	}
-	// Nothing of a wadi may stand where a compound does (the arithmetic keeps them apart; the
-	// clearing is the invariant), and the plain is whatever is left.
-	L.plain.assign(n, 0);
-	L.territory.assign(n, -1);
-	for (int i = 0; i < n; ++i)
-	{
-		const bool compound = L.compounds.interiorOf[i] >= 0 || L.compounds.wall[i] || L.compounds.gate[i];
-		if (compound)
-			L.water[i] = L.ford[i] = L.bankZone[i] = L.fordLane[i] = 0;
-		L.plain[i] = !compound && !L.water[i] && !L.bankZone[i];
-		int nearest = -1, best = 0;
-		for (size_t k = 0; k < L.sites.size(); ++k)
+		std::vector<int> pairKey(n, -1);
+		for (int i = 0; i < n; ++i)
 		{
-			const int d = t.dist2(i % t.w, i / t.w, L.sites[k].x, L.sites[k].y);
-			if (nearest < 0 || d < best)
-			{
-				nearest = int(k);
-				best = d;
-			}
+			const int x = i % t.w, y = i / t.w;
+			for (const int j : {t.at(x + 1, y), t.at(x, y + 1)})
+				if (owner[j] != owner[i])
+				{
+					const int a = std::min(owner[i], owner[j]), b = std::max(owner[i], owner[j]);
+					pairKey[i] = a * teams + b;
+				}
 		}
-		L.territory[i] = nearest;
+		std::vector<unsigned char> seen(n, 0);
+		std::vector<unsigned char> blocked(n, 0);
+		for (int i = 0; i < n; ++i)
+			blocked[i] = L.zone[i];
+		const std::vector<int> fromZone = stepsFrom(t, blocked);
+		for (int start = 0; start < n; ++start)
+		{
+			if (pairKey[start] < 0 || seen[start])
+				continue;
+			// One boundary: its tiles, eight-connected, with the same pair of forts.
+			std::vector<int> component{start};
+			seen[start] = 1;
+			for (size_t q = 0; q < component.size(); ++q)
+			{
+				const int x = component[q] % t.w, y = component[q] / t.w;
+				for (int ddy = -1; ddy <= 1; ++ddy)
+					for (int ddx = -1; ddx <= 1; ++ddx)
+					{
+						const int j = t.at(x + ddx, y + ddy);
+						if (!seen[j] && pairKey[j] == pairKey[start])
+						{
+							seen[j] = 1;
+							component.push_back(j);
+						}
+					}
+			}
+			if (int(component.size()) < kLeastBoundary)
+				continue;
+			const std::vector<unsigned char> mask = tileMask(t, component);
+			const auto farthest = [&](int from)
+			{
+				const std::vector<int> steps = stepsFrom(t, tileMask(t, {from}), mask);
+				int best = from;
+				for (int i : component)
+					if (steps[i] > steps[best])
+						best = i;
+				return best;
+			};
+			const int end1 = farthest(component.front()), end2 = farthest(end1);
+			const std::vector<int> fromBoundary = stepsFrom(t, mask);
+			std::vector<int> path = cheapestWalk(
+				t, GridNeighbors::Cardinal, {end1}, tileMask(t, {end2}),
+				[&](int, int to, int, int)
+				{
+					if (fromBoundary[to] > 2 || (fromZone[to] >= 0 && fromZone[to] <= 3))
+						return -1;
+					return 10 + 4 * fromBoundary[to];
+				});
+			if (path.size() < 8)
+				continue;
+			// Unwrap the walk and displace it.
+			const int m = int(path.size());
+			std::vector<ShapePoint> base(m);
+			base[0] = {double(path[0] % t.w), double(path[0] / t.w)};
+			for (int j = 1; j < m; ++j)
+				base[j] = {base[j - 1].x + t.offsetX(path[j - 1] % t.w, path[j] % t.w),
+						   base[j - 1].y + t.offsetY(path[j - 1] / t.w, path[j] / t.w)};
+			const double longWave = 40 + context.bounded("glacis-meander", 32);
+			const double shortWave = 14 + context.bounded("glacis-meander", 10);
+			const double longPhase = context.bounded("glacis-meander", 628) / 100.0;
+			const double shortPhase = context.bounded("glacis-meander", 628) / 100.0;
+			std::vector<StrokePoint> course(m);
+			std::vector<ShapePoint> tangent(m);
+			for (int j = 0; j < m; ++j)
+			{
+				const ShapePoint &a = base[std::max(0, j - 5)], &b = base[std::min(m - 1, j + 5)];
+				const double len = std::max(1e-9, std::hypot(b.x - a.x, b.y - a.y));
+				tangent[j] = {(b.x - a.x) / len, (b.y - a.y) / len};
+				const double along = double(j) / (m - 1);
+				const double taper = std::sqrt(std::sin(kPi * along));
+				const double side =
+					taper * (kMeanderLong * std::sin(2 * kPi * j / longWave + longPhase) +
+							 kMeanderShort * std::sin(2 * kPi * j / shortWave + shortPhase));
+				course[j] = {base[j].x - tangent[j].y * side, base[j].y + tangent[j].x * side,
+							 kStreamHalfWidth};
+			}
+			std::vector<unsigned char> stream(n, 0);
+			strokePath(stream, t, course);
+			for (int i = 0; i < n; ++i)
+				if (stream[i] && (fromZone[i] < 0 || fromZone[i] > 2))
+					water[i] = 1;
+			++L.streams;
+			const int mid = m / 2;
+			const double ax = tangent[mid].x, ay = tangent[mid].y, len = 1;
+			path[mid] = t.at(int(std::lround(course[mid].x)), int(std::lround(course[mid].y)));
+			L.fords.push_back({path[mid], {ax / len, ay / len}, pairKey[start] / teams,
+							   pairKey[start] % teams});
+		}
 	}
-	// Every compound's well, after the clearing above so it is the one water inside a wall.
-	// The well by its frame tile, not its vertices: a block of vertices turned by the facing lands
-	// a tile off at two of the four facings (a vertex's tile is its lower-right neighbour), which
-	// the third sweep found putting a beach on the barracks' back row. baseFootprint gives the tile
-	// the frame tile turns to; the well's vertices are that tile's corners.
-	for (const BaseSite &site : L.sites)
+	// Ponds out in the country.
 	{
-		const BaseFootprint wellTile = baseFootprint(site, -(L.compound - kWellInset), 0, 1, 1);
-		const int corner = t.at(site.x + wellTile.dx, site.y + wellTile.dy);
-		L.wells.push_back({double(corner % t.w), double(corner / t.w)});
-		for (int dv = 0; dv < kWellVertices; ++dv)
-			for (int du = 0; du < kWellVertices; ++du)
-				L.water[t.at(corner % t.w + du, corner / t.w + dv)] = 1;
+		std::vector<unsigned char> keepOff(n, 0);
+		int country = 0;
+		for (int i = 0; i < n; ++i)
+		{
+			keepOff[i] = L.zone[i] || water[i];
+			country += !L.zone[i];
+		}
+		const std::vector<int> clearance = stepsFrom(t, keepOff);
+		std::vector<int> queued(n, 0);
+		const int ponds = country / kCountryTilesPerPond;
+		int placed = 0;
+		for (int p = 0; p < ponds; ++p)
+			for (int attempt = 0; attempt < 40; ++attempt)
+			{
+				const int seed = int(context.bounded("glacis-ponds", std::uint32_t(n)));
+				if (clearance[seed] < kPondClearance || water[seed])
+					continue;
+				bool apart = true;
+				for (int i = 0; i < n && apart; ++i)
+					apart = !(queued[i] && t.chebyshev(i % t.w, i / t.w, seed % t.w, seed / t.w) < 2 * kPondClearance);
+				if (!apart)
+					continue;
+				growWater(
+					t, water, seed, kPondCorners, [&](int i) { return clearance[i] >= 4; },
+					[&](int i)
+					{
+						const long long dx = t.offsetX(seed % t.w, i % t.w),
+										dy = t.offsetY(seed / t.w, i / t.w);
+						return dx * dx + dy * dy + meander[i] / 512;
+					},
+					queued, p + 1);
+				++placed;
+				break;
+			}
+		context.telemetry.measure("glacis.country.ponds", placed);
 	}
-	L.sketch.assign(n, GRASS);
 	for (int i = 0; i < n; ++i)
-		L.sketch[i] = L.water[i] ? (L.ford[i] ? SAND : WATER) : GRASS;
-	context.telemetry.measure("glacis.fords.actual", int(L.fords.size()));
+		if (water[i])
+			L.sketch[i] = WATER;
+	// Every contested ford is sand, and a country road runs from it to the nearest gate of each
+	// fort it lies between, over the cheapest ground (roads share their way where they can).
+	for (const Ford &ford : L.fords)
+		for (int ddy = -kFordHalf; ddy <= kFordHalf; ++ddy)
+			for (int ddx = -kFordHalf; ddx <= kFordHalf; ++ddx)
+			{
+				const int j = t.at(ford.tile % t.w + ddx, ford.tile / t.w + ddy);
+				L.sketch[j] = SAND;
+				L.roads[j] = 1;
+			}
+	const std::vector<int> fromCore = stepsFrom(t, L.core);
+	for (const Ford &ford : L.fords)
+		for (const int k : {ford.a, ford.b})
+		{
+			const int cx = int(std::lround(L.homes[k].x)), cy = int(std::lround(L.homes[k].y));
+			int end = -1, best = INT_MAX;
+			for (const ShapePoint &e : s.gateEnds)
+			{
+				const ShapePoint p = turnStencilPoint(L.facings[k], e);
+				const int tile = t.at(cx + int(std::lround(p.x)), cy + int(std::lround(p.y)));
+				const int d = t.dist2(tile % t.w, tile / t.w, ford.tile % t.w, ford.tile / t.w);
+				if (d < best)
+				{
+					best = d;
+					end = tile;
+				}
+			}
+			const std::vector<int> path = cheapestWalk(
+				t, GridNeighbors::Eight, {end}, tileMask(t, {ford.tile}),
+				[&](int, int to, int ddx, int ddy)
+				{
+					if (L.core[to])
+						return -1;
+					if (L.roads[to])
+						return ddx && ddy ? 4 : 3;
+					// Keep off the foot of the glacis, so tracks come in square to the gate.
+					const int nearFoot = fromCore[to] >= 0 ? std::max(0, 8 - fromCore[to]) : 0;
+					return (ddx && ddy ? 14 : 10) + uplands[to] / 4096 + (water[to] ? 200 : 0) +
+						   8 * nearFoot;
+				});
+			if (path.empty())
+			{
+				L.failure = "A fort cannot reach its ford; use a bigger map or fewer colonies.";
+				return L;
+			}
+			for (int i : path)
+				for (int ddy = -1; ddy <= 1; ++ddy)
+					for (int ddx = -1; ddx <= 1; ++ddx)
+					{
+						const int j = t.at(i % t.w + ddx, i / t.w + ddy);
+						if (!L.core[j])
+						{
+							L.roads[j] = 1;
+							L.sketch[j] = SAND;
+						}
+					}
+		}
+	context.telemetry.measure("glacis.streams", L.streams);
+	context.telemetry.measure("glacis.fords", int(L.fords.size()));
 
-	// The base proved to fit its compound on the sketch as the game will see it, beaches laid (it
-	// does by the arithmetic above; the check is the design's own invariant, and it is what catches
-	// a well's beach reaching a building's ring).
+	// The design's own invariant on the sketch as the game will see it: every wall tile stays pure
+	// grass for its stone.
 	TerrainSketch beached = L.sketch;
 	layBeaches(beached, t);
 	const std::vector<unsigned char> pure = pureTiles(beached, t, GRASS);
-	const std::vector<unsigned char> pureWater = pureTiles(beached, t, WATER);
-	for (size_t k = 0; k < L.sites.size(); ++k)
-	{
-		std::vector<unsigned char> buildable(n, 0), open(n, 0);
-		for (int i = 0; i < n; ++i)
+	for (int i = 0; i < n; ++i)
+		if (L.wall[i] && !pure[i])
 		{
-			buildable[i] = pure[i] && L.compounds.interiorOf[i] == int(k);
-			open[i] = !pureWater[i] && L.compounds.interiorOf[i] == int(k);
-		}
-		if (const std::string misfit = basePlanMisfit(t, L.plan, L.sites[k], buildable, open);
-			!misfit.empty())
-		{
-			context.telemetry.choice("bases.fit", "rejected: " + misfit, int(k));
-			L.failure = "The base does not fit its ground at this size; raise the size control or "
-						"lower Colonists.";
+			L.failure = "A wall would stand on a beach; try another seed.";
 			return L;
 		}
-		context.telemetry.choice("bases.fit", "fits", int(k));
-	}
 	return L;
-}
-
-// Every colony's towers: on its own interior against its wall, scored by the plain they cover
-// (its own ground before the wall and any neighbour's), none within range of a rival's swarm, and
-// none closing the walk from the swarm to a gate.
-TowerPlan planTowers(const Map &map, const Layout &L, const GenerationContext &context,
-					 const GlacisOptions &o, const std::vector<unsigned char> &reserved)
-{
-	const Torus &t = L.t;
-	const int n = t.size(), teams = int(L.sites.size());
-	std::vector<int> owner(n, -1);
-	std::vector<unsigned char> buildable(n, 0), target(n, 0);
-	for (int i = 0; i < n; ++i)
-	{
-		const int x = i % t.w, y = i / t.w;
-		const int inside = L.compounds.interiorOf[i];
-		owner[i] = inside >= 0 ? inside : L.territory[i];
-		target[i] = inside < 0 && !L.compounds.wall[i] && !map.isWater(x, y);
-		buildable[i] = inside >= 0 && map.isGrass(x, y) && !map.isResource(x, y) &&
-					   map.getBuilding(x, y) == NOGBID && !reserved[i];
-	}
-	TowerRequest request = startingTowerRequest(o.towerLevel, o.towerCount, kTowerPads, kTowerSpacing);
-	request.otherWeight = 1;
-	request.ownWeight = 1;
-	request.against = &L.compounds.wall;
-	return chooseTowerSites(t, owner, buildable, target, swarmSurroundings(t, context, 0), teams,
-							request);
 }
 
 bool generate(Game &game, GenerationContext &context)
@@ -389,6 +855,7 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	Map &map = game.map;
 	const Torus &t = L.t;
+	const FortStencil &s = L.stencil;
 	const int n = t.size(), teams = context.request.nbTeams;
 	for (int k = 0; k < teams; ++k)
 		game.addTeam();
@@ -397,15 +864,11 @@ bool generate(Game &game, GenerationContext &context)
 	TerrainSketch terrain = L.sketch;
 	layBeaches(terrain, t);
 	writeUndermap(map, terrain);
-
-	// The walls: stone on every wall tile. A gap (a tile the beaches spoiled) would be a breach the
-	// design never meant, so it fails the candidate rather than shipping an open compound.
-	context.stage = "glacis walls";
-	const DesignedStone walls = designedStone(map, t, L.compounds.wall);
+	const DesignedStone walls = designedStone(map, t, L.wall);
 	if (walls.gaps)
 	{
-		context.detail = "a compound wall has a gap at (" + std::to_string(walls.firstGap % t.w) +
-						 ", " + std::to_string(walls.firstGap / t.w) + ")";
+		context.detail = "a fort wall has a gap at (" + std::to_string(walls.firstGap % t.w) + ", " +
+						 std::to_string(walls.firstGap / t.w) + ")";
 		return false;
 	}
 	for (int i = 0; i < n; ++i)
@@ -413,103 +876,187 @@ bool generate(Game &game, GenerationContext &context)
 			map.setResource(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "glacis colonies";
-	const BaseGarrison units = baseGarrison(o.colonists, o.garrison);
-	if (!raiseBases(game, context, L.plan, L.sites, units, &L.compounds.interiorOf,
-					"glacis-colonists"))
+	std::vector<int> courtOf(n, -1);
+	for (int i = 0; i < n; ++i)
+		if (L.kind[i] == kCourt)
+			courtOf[i] = L.fortOf[i];
+	if (!settleColonies(
+			game, context, "glacis-starts",
+			[&](int k) { return homeGrassMask(map, t, courtOf, k); },
+			[&](int k)
+			{
+				const ShapePoint p = turnStencilPoint(L.facings[k], L.stencil.swarm);
+				return MapGeneratorPoint(int(std::lround(L.homes[k].x + p.x)) - 2,
+										 int(std::lround(L.homes[k].y + p.y)) - 2);
+			}))
 		return false;
-	for (int k = 0; k < teams; ++k)
-		plantBaseDepots(map, context, t, L.plan, L.sites[k]);
+	std::vector<unsigned char> reserved = swarmSurroundings(t, context);
 
-	// Towers against the walls, after the bases (their swarms are what the towers keep out of
-	// range of, and their lists already exist) and before the crops.
+	// Towers in the bastions that flank the gates, against the wall, scored by the ground they
+	// cover outside it.
 	context.stage = "glacis towers";
-	std::vector<unsigned char> reserved = baseSurroundings(t, L.plan, L.sites);
 	{
-		const std::vector<unsigned char> swarms = swarmSurroundings(t, context);
+		std::vector<int> owner(n, -1);
+		std::vector<unsigned char> buildable(n, 0), target(n, 0);
 		for (int i = 0; i < n; ++i)
-			reserved[i] = reserved[i] || swarms[i];
+		{
+			const int x = i % t.w, y = i / t.w;
+			owner[i] = L.fortOf[i];
+			const bool towerBastion = L.kind[i] == kPocket;
+			buildable[i] = towerBastion && map.isGrass(x, y) && !map.isResource(x, y) &&
+						   map.getBuilding(x, y) == NOGBID && !reserved[i];
+			target[i] = L.fortOf[i] >= 0 && L.kind[i] != kCourt && L.kind[i] != kPocket &&
+						L.kind[i] != kGarden &&
+						!L.wall[i] && !map.isWater(x, y);
+		}
+		TowerRequest request = startingTowerRequest(o.towerLevel, o.towerLevel > 0 ? 2 : 0,
+													kTowerPads, kTowerSpacing);
+		request.otherWeight = 0;
+		request.ownWeight = 1;
+		request.against = &L.wall;
+		TowerPlan towers = chooseTowerSites(t, owner, buildable, target,
+											swarmSurroundings(t, context, 0), teams, request);
+		if (!settleStartingTowers(game, context, towers, o.towerLevel, o.towerLevel > 0, &L.gate))
+			return false;
+		const std::vector<unsigned char> pads = towerFootprints(t, towers);
+		for (int i = 0; i < n; ++i)
+			reserved[i] = reserved[i] || pads[i];
 	}
-	TowerPlan towers = planTowers(map, L, context, o, reserved);
-	if (!settleStartingTowers(game, context, towers, o.towerLevel,
-							  o.towerLevel > 0 && o.towerCount > 0, &L.compounds.gate))
-		return false;
-	const std::vector<unsigned char> pads = towerFootprints(t, towers);
-	for (int i = 0; i < n; ++i)
-		reserved[i] = reserved[i] || pads[i] || L.compounds.wall[i] || L.compounds.gate[i] ||
-					  L.fordLane[i];
 
-	context.stage = "glacis resources";
-	// Each compound's kit either side of its well at the back, the same at every facing.
+	context.stage = "glacis gardens";
+	std::vector<unsigned char> topup(n, 0);
+	for (int i = 0; i < n; ++i)
+		topup[i] = L.gardenOf[i] >= 0;
 	for (int k = 0; k < teams; ++k)
 	{
-		const BaseSite &site = L.sites[k];
-		const KitFrame frame{site.x, site.y, site.facing * kPi / 2};
-		const double back = L.compound - kWellInset;
-		const Kit kit{frame.at(-back, -kKitFlank, 4), frame.at(-back, kKitFlank, 4),
-					  frame.at(0, 0, 0), kHomeWheat, kHomeWood, -1};
-		plantKit(map, t, context, kit,
-				 [&](int i)
-				 {
-					 return L.compounds.interiorOf[i] == k && !reserved[i] &&
-							clearGround(map, i % t.w, i / t.w);
-				 });
+		const int cx = int(std::lround(L.homes[k].x)), cy = int(std::lround(L.homes[k].y));
+		for (int h = 0; h < (s.threeGardens ? 3 : 2); ++h)
+		{
+			const ShapePoint c = turnStencilPoint(L.facings[k], s.cisterns[h]);
+			const bool wood = h == 1;
+			const int wanted =
+				wood ? std::max(kGardenWoodFloor,
+								int(scaledCount(s.gardenTiles[h] * kGardenWoodPercent / 100, o.wood)))
+					 : std::max(kGardenWheatFloor / 2,
+								int(scaledCount(s.gardenTiles[h] * kGardenWheatPercent / 100, o.wheat)));
+			const auto eligible = [&](int i)
+			{
+				return L.gardenOf[i] == k * 3 + h && map.isGrass(i % t.w, i / t.w) && !reserved[i] &&
+					   clearGround(map, i % t.w, i / t.w);
+			};
+			int placed = 0;
+			if (wood)
+				placed = plantPatchNear(map, t, {cx + int(std::lround(c.x)), cy + int(std::lround(c.y)), 10},
+										WOOD, std::min(wanted, s.gardenTiles[h]), eligible);
+			else
+			{
+				// Wheat in a solid band from the garden line back, nearest the swarm: a patch grown
+				// round the cistern left Numbi's scan of its food (estimateFood, one contiguous
+				// rectangle from the nearest wheat) running into the cistern's water in two of the
+				// four facings, and those forts' colonies stalled at 15 in a Numbi tournament
+				// while the other two facings reached 60 (2026-09-16).
+				const int sx = game.teams[k]->startPosX + 2, sy = game.teams[k]->startPosY + 2;
+				std::vector<std::pair<int, int>> garden;
+				for (int i = 0; i < n; ++i)
+					if (eligible(i))
+						garden.push_back({t.dist2(i % t.w, i / t.w, sx, sy), i});
+				std::stable_sort(garden.begin(), garden.end());
+				for (const auto &[d, i] : garden)
+					if (placed < std::min(wanted, s.gardenTiles[h]))
+					{
+						map.setResource(i % t.w, i / t.w, WHEAT, 1);
+						++placed;
+					}
+			}
+			context.telemetry.measure(wood ? "glacis.garden.wood-planted" : "glacis.garden.wheat-planted",
+									  placed, k * 3 + h);
+		}
 	}
-	// The banks: crops nearest the water first (where they regrow best), wheat and wood dealt
-	// into patches by a noise field unrelated to the distance so they do not form two stripes.
-	std::vector<unsigned char> waterTiles(n, 0);
+
+	context.stage = "glacis country";
+	const Fertility::Field fertility = cropGrowthField(terrain, t);
+	const std::vector<int> woods = fractalNoise(t.w, t.h, 48, 3, context.stream("glacis-woods"));
+	const PeriodicNoise fields(t.w, t.h, 12, context.stream("glacis-fields"));
+	const auto country = [&](int i)
+	{ return !L.zone[i] && !L.roads[i] && clearGround(map, i % t.w, i / t.w); };
+	std::vector<int> open;
 	for (int i = 0; i < n; ++i)
-		waterTiles[i] = map.isWater(i % t.w, i / t.w);
-	const std::vector<int> fromWater = stepsFrom(t, waterTiles);
-	const std::vector<int> split = periodicNoise(t.w, t.h, 6, context.stream("glacis-split"));
-	std::vector<std::pair<int, int>> banks;
-	for (int i = 0; i < n; ++i)
-		if (L.bankZone[i] && !reserved[i] && map.isGrass(i % t.w, i / t.w) &&
-			clearGround(map, i % t.w, i / t.w) && fromWater[i] >= 0)
-			banks.push_back({fromWater[i], i});
-	std::stable_sort(banks.begin(), banks.end());
-	std::vector<int> bankTiles;
-	for (const auto &entry : banks)
-		bankTiles.push_back(entry.second);
-	const int bankCount = int(bankTiles.size());
-	plantFields(map, t, bankTiles, int(scaledCount(bankCount * kBankWheatPercent / 100, o.wheat)),
-				int(scaledCount(bankCount * kBankWoodPercent / 100, o.wood)),
-				[&](int i) { return split[i]; });
-	// The plain's outcrops, and a grove of one fruit beside every ford: the prize a ford is fought
-	// over, on the bank where a unit crossing lands.
-	std::vector<int> plainGround;
-	for (int i = 0; i < n; ++i)
-		if (L.plain[i] && !reserved[i])
-			plainGround.push_back(i);
-	const auto openPlain = [&](int i)
-	{ return L.plain[i] && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
-	scatterClumps(context, t, plainGround,
-				  int(scaledCount(int(plainGround.size()) / kPlainTilesPerOutcrop, o.stone)),
-				  "glacis-stone", openPlain,
-				  [&](MapGeneratorPoint p) { placeResourceClump(map, context, p, STONE, 1); });
-	if (scaledCount(1, o.fruit) > 0)
-		for (const ShapePoint &ford : L.fords)
-			if (const int seed = seedNear(t, int(ford.x), int(ford.y), kBankReach + 1,
-										  [&](int i)
-										  {
-											  return L.bankZone[i] && !reserved[i] &&
-													 clearGround(map, i % t.w, i / t.w);
-										  });
-				seed >= 0)
-				placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w),
-								   CHERRY + int(context.bounded("glacis-fruit", 3)), 1);
-	seedAlgae(map, context, t, "glacis-algae", o.algae, AlgaeBand::anyWater(60));
-	// The walls are designed stone: never cleared by the crop guarantee, never looked past, and
-	// never eaten by the cramped-start opener (a compound full of buildings is exactly what it
-	// would try to open up).
-	secureStartingCrops(game, context, t, 24, 32, 0, &walls.stone);
+		if (country(i))
+			open.push_back(i);
+	// Woods crowd up to the foot of every glacis, the ground its builders cleared, so the ring reads
+	// against them; further out the noise alone decides.
+	const std::vector<int> fromZone = stepsFrom(t, L.zone);
+	const auto woodiness = [&](int i)
+	{ return woods[i] + (fromZone[i] >= 0 ? std::max(0, 10 - fromZone[i]) * 3000 : 0); };
+	std::stable_sort(open.begin(), open.end(),
+					 [&](int a, int b) { return woodiness(a) > woodiness(b); });
+	const int forest =
+		std::min(int(open.size()), int(scaledCount(int(open.size()) * kForestPercent / 100, o.wood)));
+	for (int j = 0; j < forest; ++j)
+		map.setResource(open[j] % t.w, open[j] / t.w, WOOD, 1);
+	context.telemetry.measure("glacis.country.forest-tiles", forest);
+	// The contested fords' prizes, before the fields take the banks.
+	for (size_t f = 0; f < L.fords.size(); ++f)
+	{
+		const Ford &ford = L.fords[f];
+		const int fx = ford.tile % t.w, fy = ford.tile / t.w;
+		const double nx = -ford.along.y, ny = ford.along.x;
+		for (const int bank : {-1, 1})
+		{
+			for (int fruit = 0; fruit < 3; ++fruit)
+			{
+				const double along = (fruit - 1) * kGroveSpacing;
+				const int seed = seedNear(
+					t, fx + int(std::lround(bank * kPrizeOut * nx + along * ford.along.x)),
+					fy + int(std::lround(bank * kPrizeOut * ny + along * ford.along.y)), 3,
+					[&](int i) { return country(i); });
+				if (seed >= 0)
+					growPatch(map, t, seed, CHERRY + fruit, int(scaledCount(kGroveTiles, o.fruit)),
+							  [&](int i) { return country(i); });
+			}
+			const int quarry = seedNear(t, fx + int(std::lround(bank * kQuarryOut * nx)),
+										fy + int(std::lround(bank * kQuarryOut * ny)), 4,
+										[&](int i) { return country(i); });
+			if (quarry >= 0 && scaledCount(1, o.stone) > 0)
+				placeResourceClump(map, context, MapGeneratorPoint(quarry % t.w, quarry / t.w), STONE,
+								   1);
+		}
+	}
+	furnishGround(
+		map, t, context, fertility, country, [&](int i) { return fields.at(i % t.w, i / t.w); },
+		[&](int i) { return fields.at(i % t.w + 7919, i / t.w + 104729); },
+		[&](int area)
+		{
+			return GroundAmounts{int(scaledCount(area / kFieldTilesPer, o.wheat)), 0,
+								 int(scaledCount(area / kOutcropTilesPer, o.stone)),
+								 int(scaledCount(area / kGroveTilesPer, o.fruit))};
+		},
+		"glacis-outcrops", "glacis-groves");
+	seedAlgae(map, context, t, "glacis-algae", o.algae, AlgaeBand::anyWater(50));
+
+	secureStartingCrops(game, context, t, 24, 32, 0, &walls.stone, &topup);
 	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, o.algae, o.fruit}, 24, 32, 0,
 						&walls.stone);
-
-	// Gates and fords are open ground that nothing grows over; only bank crops could close a way,
-	// and the cheapest way through them is opened, never through water or stone.
 	context.stage = "glacis routes";
-	openColonyRoutes(map, context, t, StepCosts{1, 3, -1, -1, -1});
+	openColonyRoutes(map, context, t, StepCosts{1, 3, -1, -1, -1}, 0, &walls.stone);
 	return true;
+}
+
+// Every pure-grass tile a crop on `from` could ever spread to, eight-connected, never onto stone.
+std::vector<int> grassReach(const Map &map, const Torus &t, const std::vector<unsigned char> &from)
+{
+	const int n = t.size();
+	std::vector<unsigned char> open(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		open[i] = map.isGrass(x, y) &&
+				  !(map.isResource(x, y) && map.getResource(x, y).type == STONE);
+	}
+	std::vector<unsigned char> source(n, 0);
+	for (int i = 0; i < n; ++i)
+		source[i] = from[i] && open[i];
+	return stepsFrom(t, source, open);
 }
 
 std::string validateWorld(const Game &game, const GenerationContext &context)
@@ -519,95 +1066,91 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const GlacisOptions o(context.request);
 	const Map &map = game.map;
 	const Torus &t = L.t;
-	const int teams = context.request.nbTeams;
+	const int n = t.size(), teams = context.request.nbTeams;
 	if (const std::string mismatch = designMismatch(L, map, "glacis"); !mismatch.empty())
 		return mismatch;
-	if (const std::string broken =
-			wallStanding(map, t, L.compounds.wall, L.compounds.gate, "compound wall");
-		!broken.empty())
+	if (const std::string broken = wallStanding(map, t, L.wall, L.gate, "fort wall"); !broken.empty())
 		return broken;
-	if (const std::string dry = homePondMissing(map, t, L.wells, teams, "compound", "well");
-		!dry.empty())
-		return dry;
-	int fewestTowers = -1, mostTowers = 0;
+	std::vector<int> pieces(n, -1);
+	for (int i = 0; i < n; ++i)
+		pieces[i] = (L.kind[i] == kCourt || L.kind[i] == kPocket || L.kind[i] == kGarden) ? L.fortOf[i]
+					: (!L.wall[i] && !L.gate[i])                  ? teams
+																  : -1;
+	if (pieceLeak(map, t, pieces, L.gate) >= 0)
+		return "A fort can be entered other than by its gates.";
+	// The glacis stays bare: nothing planted on it, and no grass joins it to anything else a crop
+	// could spread from.
+	const std::vector<int> fromGlacis = grassReach(map, t, L.glacis);
+	for (int i = 0; i < n; ++i)
+	{
+		if (L.glacis[i] && map.isResource(i % t.w, i / t.w))
+			return "Something was planted on a glacis.";
+		if (fromGlacis[i] >= 0 && L.kind[i] != kGlacisTile && L.kind[i] != kCoveredTile &&
+			L.kind[i] != kFootTile)
+			return "A glacis is joined to grass a crop could spread from.";
+	}
+	// The gardens keep their crops off the town.
+	{
+		std::vector<unsigned char> gardens(n, 0);
+		for (int i = 0; i < n; ++i)
+			gardens[i] = L.gardenOf[i] >= 0;
+		const std::vector<int> reach = grassReach(map, t, gardens);
+		for (int i = 0; i < n; ++i)
+			if (reach[i] >= 0 && !gardens[i])
+				return "A fort's gardens are open to its courtyard.";
+	}
+	int fewest = INT_MAX, most = 0;
 	for (int k = 0; k < teams; ++k)
 	{
-		if (const std::string missing = validateBase(game, t, k, L.plan, L.sites[k], o.colonists);
-			!missing.empty())
-			return missing;
 		int towers = 0;
 		for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
 			if (const Building *b = game.teams[k]->myBuildings[slot];
 				b && b->type->shootingRange && !b->type->isBuildingSite)
 				++towers;
-		fewestTowers = fewestTowers < 0 ? towers : std::min(fewestTowers, towers);
-		mostTowers = std::max(mostTowers, towers);
+		fewest = std::min(fewest, towers);
+		most = std::max(most, towers);
 	}
-	if (teams > 0 && (fewestTowers != mostTowers || (o.towerLevel > 0 && fewestTowers < 1)))
+	if (teams > 0 && (fewest != most || (o.towerLevel > 0 && fewest < 1)))
 		return "The colonies do not start with the same towers.";
-	ColonyWalk walk = walkFromFirstColony(map, teams, "the glacis", "over the fords");
-	if (!walk.error.empty())
+	if (const ColonyWalk walk = walkFromFirstColony(map, teams, "the country", "over the fords");
+		!walk.error.empty())
 		return walk.error;
-	// Every colony's walk to the nearest ford it can reach - by walking, whichever band and
-	// whichever gate - within a ford spacing (the fords' offsets differ band by band) plus the
-	// spread of where its colonists stand of every other's. (The first sweeps measured the walk
-	// to the ford nearest as the crow flies, which with one gate can lie behind the compound.)
-	if (!L.fords.empty() && teams > 1)
-	{
-		std::vector<unsigned char> fords(t.size(), 0);
-		for (int i = 0; i < t.size(); ++i)
-			fords[i] = L.ford[i] && !map.isWater(i % t.w, i / t.w) && !map.isResource(i % t.w, i / t.w);
-		if (const std::string uneven = unevenCosts(costsToTarget(map, teams, fords, StepCosts::walking()),
-												   o.fordSpacing + kGarrisonReach, "a ford");
-			!uneven.empty())
-			return uneven;
-	}
-	return "";
+	return startingAccessFailure(map, teams, {{WHEAT, 24, "wheat"}, {WOOD, 32, "wood"}}, 16, 24);
 }
 } // namespace
 
 GlacisOptions::GlacisOptions(const GenerationRequest &r)
-	: colonists(r.option("colonists")), garrison(r.option("garrison") != 0),
-	  compoundSize(r.option("compound-size")), wallGates(r.option("wall-gates")),
-	  wadis(r.option("wadi-count")), fordSpacing(r.option("ford-spacing")),
-	  towerLevel(r.option("starting-towers")), towerCount(r.option("tower-count")),
-	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
-	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
-	  fruit(r.option("fruit-amount"))
+	: fortSize(r.option("fort-size")), bastions(r.option("bastions")),
+	  glacisWidth(r.option("glacis-width")), gates(r.option("gates")),
+	  towerLevel(r.option("starting-towers")), wheat(r.option("wheat-amount")),
+	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
+	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
 {
 }
 
 GeneratorDefinition glacisDefinition()
 {
-	GeneratorDefinition d{
-		"glacis",
-		39,
-		"The Glacis",
-		1,
-		false,
-		// Colonists 16 to 48 (a hamlet to a city, Bases.h), 32 by default; the garrison on. A
-		// compound of 16 holds a city base with room to spare; 13 is the least a hamlet needs
-		// with its well, and a city grows a smaller setting to 14.
-		// One wadi per band by default: a second or third makes the plain a wetland. Fords every
-		// 24 tiles: a compound's width apart, so no ford is far from a gate. Level-1 towers, four
-		// per compound, one for each wall.
-		{{"colonists", "Colonists", 16, 48, 4, 32, ControlGroup::Layout},
-		 GeneratorControl::toggle("garrison", "Garrison", true, ControlGroup::Layout),
-		 {"compound-size", "Compound size", 13, 20, 1, 16, ControlGroup::Layout},
-		 {"wall-gates", "Wall gates", 1, 2, 1, 2, ControlGroup::Layout},
-		 {"wadi-count", "Wadi count", 1, 3, 1, 1, ControlGroup::Terrain},
-		 {"ford-spacing", "Ford spacing", 16, 48, 8, 24, ControlGroup::Terrain},
-		 {"starting-towers", "Starting tower level", 0, 3, 1, 1, ControlGroup::Layout},
-		 {"tower-count", "Towers per colony", 1, 4, 1, 4, ControlGroup::Layout},
-		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-		 GeneratorControl::percentage("wood-amount", "Wood amount"),
-		 GeneratorControl::percentage("stone-amount", "Stone amount"),
-		 GeneratorControl::percentage("algae-amount", "Algae amount"),
-		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		designFailure<design>,
-		validateWorld};
-	d.startingWorkers = [](const GenerationRequest &r) { return r.option("colonists"); };
-	return d;
+	return {"glacis",
+			39,
+			"The Glacis",
+			2,
+			false,
+			// Fort size is the bastion tip radius: 28 holds a small town and three gardens; 20 is
+			// the least with a courtyard. Bastions Mixed deals four, five or six per map. A glacis of
+			// 10 reads as a cleared ring against the country; under 6 it does not. Starting towers
+			// off by default: a tower's empty stone store recruits workers before the first harvest.
+			{{"fort-size", "Fort size", 20, 36, 2, 30, ControlGroup::Layout},
+			 GeneratorControl::choice("bastions", "Bastions", {"Mixed", "Four-pointed", "Five-pointed", "Six-pointed"}, 0),
+			 {"glacis-width", "Glacis width", 6, 14, 2, 10, ControlGroup::Layout},
+			 {"gates", "Gates", 1, 4, 1, 4, ControlGroup::Layout},
+			 {"starting-towers", "Starting tower level", 0, 3, 1, 0, ControlGroup::Layout},
+			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+			 GeneratorControl::percentage("wood-amount", "Wood amount"),
+			 GeneratorControl::percentage("stone-amount", "Stone amount"),
+			 GeneratorControl::percentage("algae-amount", "Algae amount"),
+			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+			generate,
+			true,
+			designFailure<design>,
+			validateWorld};
 }
