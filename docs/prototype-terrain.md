@@ -23,13 +23,22 @@ maps search exactly as before.
 
 ## Tiles
 
-A tile is drawn from its four undermap corners. A tile with any ice corner is ice (sprites
-272-287), one with four cobblestone corners is cobblestone (288-303); any other tile uses the
-original grass/sand/water lookup with cobblestone corners read as sand. Both ranges fail
-`isGrass`, `isSand` and `isWater`, which is what keeps resources off them. The sprites are
-flat placeholders drawn by `tools/placeholder_terrain.py`; real artwork can replace
-`data/gfx/terrain272.png`-`terrain303.png` under the same names, but proper transitions need a
-renderer that blends terrain borders.
+For the rules, a tile with any ice corner is ice (sprites 272-287) and one with four
+cobblestone corners is cobblestone (288-303); any other tile uses the original
+grass/sand/water lookup with cobblestone corners read as sand. Both ranges fail `isGrass`,
+`isSand` and `isWater`, which is what keeps resources off them.
+
+Drawing works from the corners instead (`Map::prototypeTerrainLayers`, used by
+`Game::drawMapTerrain`): a tile touching ice or cobblestone first draws the ground beneath, the
+original tile its other corners make, then lays a cobblestone and then an ice edge sprite over
+it (304-415 ice, 416-527 cobblestone: 14 corner shapes, 8 variants). The edge sprites are cut
+to the alpha of the sand-over-water tiles of the same shape, so they meet other terrain with a
+beach's ragged outline. Variants come from the tile position, never the synchronized RNG, so
+drawing changes nothing in the simulation.
+
+`tools/placeholder_terrain.py` draws all of these from the game's own art: ice is the water
+tiles recoloured pale with faint cracks, cobblestone is rounded stones carrying the sand
+tiles' grain. Better artwork can replace the files under the same names.
 
 Grass never touches water (sand lies between), so a rule keeping ice off sand would leave
 no valid way to lay ice across a sand-banked river, even allowing diagonal contact; ice

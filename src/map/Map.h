@@ -412,7 +412,10 @@ public:
 	//! Sprite ranges of the prototype terrains: flat tiles with no transition art.
 	static constexpr Uint16 ICE_TILE_FIRST = 272;
 	static constexpr Uint16 COBBLESTONE_TILE_FIRST = 288;
-	static constexpr Uint16 TERRAIN_TILE_END = 304;
+	//! Edge sprites laid over neighbouring terrain: 14 corner shapes x 8 variants each.
+	static constexpr Uint16 ICE_EDGE_FIRST = 304;
+	static constexpr Uint16 COBBLESTONE_EDGE_FIRST = 416;
+	static constexpr Uint16 TERRAIN_TILE_END = 528;
 	static bool isIceTile(Uint16 t) { return t >= ICE_TILE_FIRST && t < ICE_TILE_FIRST + 16; }
 	static bool isCobblestoneTile(Uint16 t) { return t >= COBBLESTONE_TILE_FIRST && t < COBBLESTONE_TILE_FIRST + 16; }
 
@@ -760,6 +763,16 @@ protected:
 	void regenerateMap(int x, int y, int w, int h);
 	
 	Uint16 lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const;
+public:
+	//! The grass/sand/water tile for four such corners, choosing the `variant`-th of its variants.
+	static Uint16 baseTerrainTile(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br, unsigned variant);
+	//! Drawing only: the terrain sprites to draw bottom-up for tile (x, y) when a corner of it is
+	//! ice or cobblestone, whose edges are laid over the terrain around them; returns how many
+	//! (at most 3), or 0 for a tile drawn from getTerrain as usual. A water base is not listed,
+	//! since water is drawn beneath the terrain. Variants come from the position, not the
+	//! synchronized RNG.
+	int prototypeTerrainLayers(int x, int y, Uint16 layers[3]) const;
+private:
 
 public:
 	// Rebuild rendered terrain after bulk undermap edits.

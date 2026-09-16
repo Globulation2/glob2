@@ -73,6 +73,15 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 				((drawOptions & DRAW_WHOLE_MAP) != 0))
 			{
 				// draw terrain
+				// Ice and cobblestone lay their edges over the terrain round them.
+				Uint16 layers[3];
+				const int layerCount=map.prototypeTerrainLayers(x+viewportX, y+viewportY, layers);
+				if (layerCount)
+				{
+					for (int l=0; l<layerCount; l++)
+						globalContainer->gfx->drawSprite(x<<5, y<<5, globalContainer->terrain, layers[l]);
+					continue;
+				}
 				int id=map.getTerrain(x+viewportX, y+viewportY);
 				Sprite *sprite;
 				if (id<Map::TERRAIN_TILE_END)

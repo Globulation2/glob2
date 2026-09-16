@@ -15,5 +15,7 @@ In previews ice is pale blue and cobblestone tan.
 The `game-*.png` screenshots are from the macOS client (`-test-games 1 --map <name> --matchup
 castor,castor`) on 128x128 two-colony maps generated with seed 3 and the option on, a few
 seconds into the game, halved in size. Old town and City states show Castor building on
-cobblestone; the Fjord continent shot is scrolled to an ice bridge still under fog of war.
-`placeholder-tiles.png` shows eight of the sixteen ice and cobblestone tiles, enlarged.
+cobblestone; the Fjord continent shot is scrolled to an ice bridge still under fog of war, and City states
+was generated with seed 3.
+`placeholder-tiles.png` shows whole ice and cobblestone tiles and some of their edge tiles over
+grass, enlarged.

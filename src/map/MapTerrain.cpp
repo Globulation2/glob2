@@ -77,7 +77,7 @@ void Map::regenerateMap(int x, int y, int w, int h)
 		}
 }
 
-Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const
+Uint16 Map::baseTerrainTile(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br, unsigned variant)
 {
 	/*
 		Value of vertice's order in square :
@@ -188,5 +188,63 @@ Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const
 	br=2-br;
 	int index=tl*27+tr*9+bl*3+br;
 
-	return terrainLookupTable[index][0]+(syncRand()%terrainLookupTable[index][1]);
+	return terrainLookupTable[index][0]+(variant%terrainLookupTable[index][1]);
+}
+
+Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const
+{
+	return baseTerrainTile(tl, tr, bl, br, syncRand());
+}
+
+int Map::prototypeTerrainLayers(int x, int y, Uint16 layers[3]) const
+{
+	const TerrainType corners[4] = {getUMTerrain(x,y), getUMTerrain(x+1,y), getUMTerrain(x,y+1), getUMTerrain(x+1,y+1)};
+	// Masks with tl=8, tr=4, bl=2, br=1, the order the edge sprites are drawn in.
+	int ice = 0, cobblestone = 0;
+	int counts[3] = {0, 0, 0};
+	for (int i = 0; i < 4; i++)
+	{
+		const int bit = 8 >> i;
+		if (corners[i] == ICE)
+			ice |= bit;
+		else if (corners[i] == COBBLESTONE)
+			cobblestone |= bit;
+		else
+			counts[corners[i]]++;
+	}
+	if (!ice && !cobblestone)
+		return 0;
+	// A variant per tile from its position, stable from frame to frame.
+	Uint32 h = Uint32(x) * 73856093u ^ Uint32(y) * 19349663u;
+	h ^= h >> 13;
+	h *= 0x5bd1e995u;
+	h ^= h >> 15;
+	int n = 0;
+	if (counts[WATER] + counts[SAND] + counts[GRASS] > 0)
+	{
+		// The ground beneath: the new corners take the commonest original terrain of the tile
+		// (sand, then grass, then water on a tie), which their edges then cover.
+		TerrainType under = SAND;
+		if (counts[GRASS] > counts[under])
+			under = GRASS;
+		if (counts[WATER] > counts[under])
+			under = WATER;
+		Uint8 base[4];
+		for (int i = 0; i < 4; i++)
+			base[i] = Uint8(corners[i] == ICE || corners[i] == COBBLESTONE ? under : corners[i]);
+		const Uint16 tile = baseTerrainTile(base[0], base[1], base[2], base[3], h);
+		if (tile < 256 || tile >= 272)
+			layers[n++] = tile;
+	}
+	else if (cobblestone)
+	{
+		// Ice and cobblestone only: cobblestone beneath, the ice's edge over it.
+		layers[n++] = COBBLESTONE_TILE_FIRST + h % 16;
+		cobblestone = 0;
+	}
+	if (cobblestone)
+		layers[n++] = cobblestone == 15 ? COBBLESTONE_TILE_FIRST + h % 16 : COBBLESTONE_EDGE_FIRST + (cobblestone - 1) * 8 + (h >> 4) % 8;
+	if (ice)
+		layers[n++] = ice == 15 ? ICE_TILE_FIRST + h % 16 : ICE_EDGE_FIRST + (ice - 1) * 8 + (h >> 8) % 8;
+	return n;
 }

@@ -816,9 +816,14 @@ std::vector<IceBridge> layIceBridges(Game &game, GenerationContext &context,
 			}
 		if (reach[0] < 0 || reach[1] < 0)
 			continue;
-		for (double along = -1.0; along <= 1.0 + 1e-9; along += 0.5)
-			for (double across = -reach[0]; across <= reach[1] + 1e-9; across += 0.5)
+		// The bridge's sides waver along its length, so it reads as a floe rather than a plank.
+		const double phase = context.bounded("ice-bridges", 628) / 100.0;
+		for (double across = -reach[0]; across <= reach[1] + 1e-9; across += 0.5)
+			for (double along = -2.0; along <= 2.0 + 1e-9; along += 0.5)
 			{
+				const double halfWidth = 1.25 + 0.75 * std::sin(across * 0.7 + phase);
+				if (std::abs(along) > halfWidth)
+					continue;
 				const MapGeneratorPoint p = corner(along, across);
 				const TerrainType t = map.getUMTerrain(p.x, p.y);
 				if (t == WATER || t == SAND)
