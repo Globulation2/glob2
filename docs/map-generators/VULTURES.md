@@ -5,8 +5,11 @@ Vultures uses Old Growth's sand-ringed home clearings and distant lakes. Wheat r
 forest in irregular fields; wood grows beside water. Homes retain building room, and starting
 trails connect opponents without requiring swimming or an initial clearing campaign.
 
-Every wheat tile starts with **one harvest** and has exactly zero growth probability under the
-engine's water-and-sand rule. This includes the starting rations. There are no renewable wheat
+Every wheat tile starts with **three to five harvests**, drawn at random per tile from the map's
+own `vultures-rations` stream once every repair is done, and has exactly zero growth probability
+under the engine's water-and-sand rule. Until revision 4 (2026-09-16) every tile held one harvest,
+which the engine draws as a nearly spent field; a maintainer's review asked for full-looking wheat,
+so the food on a default map is about four times what the playtests below measured. This includes the starting rations. There are no renewable wheat
 plots, fruit or algae. Wheat therefore cannot spread into irrigated ground: no initial wheat
 source can grow. Wood starts within eight tiles (wrapped Chebyshev distance) of pure water;
 normal shoreline wood regrowth remains enabled. No simulation rules or tile growth flags change.
@@ -19,7 +22,7 @@ walking route between all colonies. These establish an opening, not indefinite s
 ## Controls
 
 - **Wheat amount:** scales the default 65% coverage of eligible dry ground outside home clearings
-  (full cover from about 155%). Every tile remains one harvest. At zero, only starting rations remain.
+  (full cover from about 155%). Every tile holds three to five harvests. At zero, only starting rations remain.
 - **Wood amount:** scales the default 20% scatter chance on eligible ground within eight tiles
   of water. At zero, the starter wood remains.
 - **Home size:** requested radius 16–30, default 24. Homes shrink when needed to preserve the
@@ -66,7 +69,7 @@ and three buildings per side, without an army. These are AI behaviors observed o
 food scenario, not final judgments on human pacing or every map size.
 
 The tuning probe raised the existing **Wheat amount** control to 125%, increasing initial wheat
-from 3,347 to 4,182 rations on each sampled Linux map; each tile still held one harvest with
+from 3,347 to 4,182 rations on each sampled Linux map (revision 3); each tile still held one harvest with
 zero fertility. On seed 7 one Nicowar rotation won earlier, while the other fought past the cap.
 On seed 11 the 100% opening won in one rotation but both 125% openings remained active at the
 cap. Hunger and starvation moved in both directions, and Maxima still made no army. Because
@@ -119,7 +122,7 @@ These numbers define a scenario, not universal engine balance rules. They are na
 
 | Budget / heuristic | Reason and limitation |
 | --- | --- |
-| 48 starter wheat tiles, one harvest each | A finite bridge to exterior foraging. Kept at zero abundance. Actual survival depends on staffing, travel and population decisions. |
+| 48 starter wheat tiles, three to five harvests each | A finite bridge to exterior foraging. Kept at zero abundance. Actual survival depends on staffing, travel and population decisions. |
 | 24 starter wood tiles | Construction must not depend on a lucky ambient scatter. Normal engine stock amounts and regrowth remain. |
 | Five quarry tiles | Permanent mining frontage for upgrades and ammunition. Stone is eternal, so this does not describe five pieces of stone. A partial quarry fails generation. |
 | 65% exterior wheat cover at 100% abundance | The fields are the ground and the pockets the exception, so moving off the trails means harvesting a way through; the first calibration's 35% left the plain mostly open. Quantile ties can change the exact fraction; trails can remove more. Cover is capped at 100% from about 155% abundance. |
@@ -193,7 +196,9 @@ that adjudication noisy; read the per-start economy instead. The defaults are un
   Mixed beach tiles are excluded. This supports final-world habitat validation after repairs.
 - `capResourceStock`: caps existing stocks without refilling, creating deposits, changing sprites
   or drawing RNG. Returns tile count and remaining stock from the same pass for telemetry. It
-  does not disable growth; callers must establish dryness separately.
+  does not disable growth; callers must establish dryness separately. Vultures capped its wheat
+  at one harvest with it until revision 4 and now sets three to five per tile itself; the
+  primitive stays for a finite crop that wants a cap.
 - `startingAccessFailure`: read-only supply and room validator. Callers supply resource types,
   names and travel budgets; it supports stone or fruit targets as well as wheat and wood. It
   floods from actual workers with the engine's non-swimmer predicate and reports the first

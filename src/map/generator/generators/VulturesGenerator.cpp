@@ -18,12 +18,12 @@
 using namespace MapGeneration;
 
 // Old Growth's clearings and lakes, with finite wheat replacing the dry forest. Every wheat
-// tile has zero growth probability and one harvest left. Wood alone occupies the shores.
+// tile has zero growth probability and three to five harvests left. Wood alone occupies the shores.
 // Homes have room to build and small dry rations; trails allow raids immediately. Harvesting
 // opens the fields, but spending the finite food on population leaves less time for an army.
 namespace
 {
-// Opening budgets are deliberately fixed even at zero abundance. Forty-eight single-harvest
+// Opening budgets are deliberately fixed even at zero abundance. Forty-eight finite
 // wheat tiles provide a small reserve while workers reach the exterior fields; they are not
 // a sustainable farm or a guarantee of any particular survival time. Twenty-four timber tiles
 // keep the first buildings from depending on a lucky shore scatter. Timber retains normal
@@ -53,7 +53,11 @@ constexpr int kWheatReach = 24, kWoodReach = 32, kRoomRange = 24, kRoomSites = 1
 // Search around the pond rather than its water tile. Twelve spans the beach and nearby grass;
 // putting the quarry nine tiles beyond its centre separates it from the swarm and dry rations.
 constexpr int kPondSearch = 12, kQuarryOffset = 9;
-constexpr int kFoodPerTile = 1;
+// Every wheat tile holds a random three to five harvests (maintainer review 2026-09-16: nearly all
+// the wheat held one, the engine's sprite for a spent field, and the plain read as stubble). Five
+// is a full deposit (the engine's wheat has five sizes). Tiles, not harvests, still set how much
+// harvesting a passage through the fields costs; the harvests set how long the food lasts.
+constexpr int kLeastRations = 3, kMostRations = 5;
 using Layout = ClearingLandscape;
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
@@ -181,10 +185,18 @@ bool generate(Game &game, GenerationContext &context)
 	const bool trails = openColonyRoutes(map, context, t, StepCosts::chopping(3));
 	context.telemetry.measure("vultures.trails.cleared", trails);
 	openCrampedStarts(game, context, kRoomSites, kRoomRange);
-	// Capping after every repair makes the final total honest. Ordinary setResource varies
-	// stock/sprites through engine RNG; the cap adds no draws and never replenishes a deposit.
-	const ResourceStock food = capResourceStock(map, WHEAT, kFoodPerTile);
-	context.telemetry.measure("vultures.food.total-rations", food.amount);
+	// Setting the stock after every repair makes the final total honest: ordinary setResource
+	// draws a stock from engine RNG, so every wheat tile the fields, the rations or a repair left
+	// is given its harvests here from the map's own stream, in tile order.
+	std::int64_t food = 0;
+	for (int i = 0; i < t.size(); ++i)
+		if (auto &resource = map.getResource(i); resource.type == WHEAT)
+		{
+			resource.amount = kLeastRations + int(context.bounded(
+												  "vultures-rations", kMostRations - kLeastRations + 1));
+			food += resource.amount;
+		}
+	context.telemetry.measure("vultures.food.total-rations", food);
 	return true;
 }
 
@@ -203,8 +215,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		const auto &r = map.getResource(i);
-		if (r.type == WHEAT && (fertility.at(i % t.w, i / t.w) != 0 || r.amount != kFoodPerTile))
-			return "Wheat must be dry and hold exactly one ration.";
+		if (r.type == WHEAT && (fertility.at(i % t.w, i / t.w) != 0 || r.amount < kLeastRations ||
+								r.amount > kMostRations))
+			return "Wheat must be dry and hold three to five rations.";
 		if (r.type == WOOD && !shore[i])
 			return "Wood must stand within eight tiles of water.";
 	}
@@ -233,7 +246,7 @@ GeneratorDefinition vulturesDefinition()
 	return {"vultures",
 			47,
 			"Vultures",
-			3,
+			4,
 			false,
 			{{"home-size", "Home size", 16, 30, 1, 24, ControlGroup::Layout},
 			 {"lakes", "Lakes", 0, 4, 1, 1, ControlGroup::Terrain},
