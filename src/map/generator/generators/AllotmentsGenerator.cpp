@@ -1,118 +1,197 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "AllotmentsGenerator.h"
-#include "Bases.h"
 #include "Contact.h"
-#include "Farmland.h"
+#include "Drawing.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
 #include "LatticeNoise.h"
-#include "Lots.h"
-#include "Morphology.h"
 #include "Orbits.h"
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Resources.h"
 #include "Roads.h"
+#include "Room.h"
+#include "Settlements.h"
 #include "Sketch.h"
+#include "Tessellation.h"
 #include <algorithm>
+#include <array>
+#include <climits>
 #include <cmath>
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <cstdio>
 using namespace MapGeneration;
 
-// Allotments: every colony starts with a whole city staked out but not built. The swarm and one
-// inn stand finished and stocked; every other building of the base - inns, hospital, school,
-// barracks, racetrack, two towers - is a construction site with wood stacked beside it, and thirty-
-// odd colonists are waiting to be told what to finish first. Beyond the city the whole map is
-// already parcelled: a lattice of one-tile sand lanes cuts the ground into blocks, and every block
-// holds one lot, a pad of grass in a ring of sand that exactly one building fits on. Down every
-// third lane runs a ditch of water, so the lots along it are fields whose crops regrow; alternate
-// lots away from the water are woodlots; the smallest lots carry a quarry or a grove; the rest are
-// open, waiting to be built on. Expansion is discrete and readable - take a lot, fill it - and two
-// colonies meet where their built-out suburbs do.
+// Allotments: villages among allotment gardens.
 //
-// The cities stand on a lattice (Orbits.h), each snapped to the middle of a superblock of lanes, so
-// its lanes are suppressed and its bounding lanes are its edge; the lanes wrap the torus exactly
-// (Lots.h) so a rectangular map is served as well as a square one. Fairness is statistical, like
-// Polder's: every city sees the same lanes and lots, and which ditch it stands nearest is where it
-// fell, which the validator bounds.
+// WHAT IT LOOKS LIKE. Allotment gardens on the edge of town seen from the air: parcels of land cut
+// by lanes, most of them divided into rows of narrow plots side by side, each tended differently -
+// grain, fruit bushes, a thicket someone let go, a bare plot with a shed at the end of it - with a
+// water ditch running across the rows where the gardeners fill their cans. Between the garden sites
+// lie commons (meadow round a pond) and the odd woodlot. Every colony's village is an open green
+// behind its own allotment block. (The first version tiled one square lot with a sand ring over the
+// whole map: it read as graph paper and left room for 316 buildings on a whole 256 map.)
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). A sand lane can never grow
-// shut and never be built on, so the ways between lots stay open whatever anyone builds; a pad is
-// the only pure grass in its block, so every building placement is one clear choice and the AIs
-// see the same sites the players do; sand beside a crop slows its regrowth, so the fields along a
-// ditch are the granary and everything else is a one-off; and a base of sites rather than buildings
-// turns the opening into a sequencing puzzle - which site gets the workers first - that the player
-// solves with the plan already on the ground.
+// HOW IT PLAYS. A plot is a strip of grass between two sand paths, so its crops never spread past
+// it and every plot is worked from both long sides: a lot of frontage in a little ground, which is
+// what the AIs harvest well. A village has a town's worth of open building ground and a block of
+// plots fed by its own ditch. The garden sites between villages are the food the colonies grow
+// into and fight over; the commons are where a colony builds out; the woodlots are its timber; the
+// sheds on bare plots are small stones for its first upgrades. The lanes between parcels are sand,
+// so every parcel stays reachable whatever grows.
+//
+// FAIRNESS. Villages stand on a lattice and are one stencil stamped by quarter turns, so every
+// village, allotment block, ditch and planting pattern is identical. The parcels between them are a
+// warped tiling whose kinds and plot mixes are drawn, which the lobby's best-of-five start scoring
+// evens out.
 namespace
 {
-// Pad sizes: a lot holds a building, so a large lot is a 6x6 pad (a 4x4 barracks with a tile round
-// it, or four 2x2s), a medium one 4x4 (one swarm-sized building exactly) and a small one 2x2 (an
-// inn, a hospital, a school or a tower). The Mixed setting deals them in a fixed cycle over the
-// blocks so every neighbourhood has all three.
-constexpr int kLargePad = 6, kMediumPad = 4, kSmallPad = 2;
-// A ditch is two water vertices down its lane: one pure tile of water between two beaches, so it
-// blocks walking (a single vertex would only be a puddle every unit walks through) while spoiling
-// only five tiles across. Its lane's crossings stay sand, a ford at every lane it meets.
-constexpr int kDitchVertices = 2;
-// The extra tiles a ditch's beach takes out of the block on each side of it: two on the far side
-// of the lane vertex (the second water vertex and its beach), one on the near side.
-constexpr int kDitchFar = 2, kDitchNear = 1;
-// A ditch keeps this far from a city: its beach would spoil the city's edge for building and the
-// city's bounding lane is where the colonists walk out.
-constexpr int kDitchClearOfCity = 2;
-// The blocks touching a city on each side are its home fields: large pads under wheat whatever
-// else the roles say, so the first food is a lane away, each with a well at its middle - a pond of
-// 2x2 vertices, one tile of water in its beach - so the wheat round it regrows. The first headless
-// play (four AIs, 20000 ticks) had one colony starve to death by tick 8000: its home fields were
-// then dry and their wheat, once cut, never came back, and the nearest ditch was two blocks away.
-// A well costs a 6x6 pad the 4x4 of tiles its beach spoils and leaves some twenty for crops.
-constexpr int kHomeFieldPad = 6, kWellVertices = 2;
-// Fields: eight in ten pad tiles wheat, one in ten wood at the default amounts; a woodlot is all
-// wood. The small lots not needed for anything else alternate quarry and grove.
-constexpr int kFieldWheatPercent = 80, kFieldWoodPercent = 10;
-// How far a colony's walk to a ditch may differ from another's before the validator complains:
-// `ditch-every` lane pitches, since a city may stand anywhere between two ditch lanes on either
-// axis, plus its superblock's width, since it may have to walk round its own city to reach one
-// (the sweeps measured 34 tiles at a pitch of 8 with a ditch every third lane and a superblock
-// of three).
-constexpr int kDitchWalkTolerancePitches = 1;
+// The village, in its own frame: a square of half-size kVillageHalf ringed by a lane, its front a
+// green (kTownFront onwards) and its back an allotment block: plots `strip-width` wide across the
+// frame, either side of a ditch kDitchCorners wide down the block's middle.
+constexpr int kVillageHalf = 24, kTownFront = -5, kDitchCorners = 4, kVillageStrip = 9;
+constexpr double kSwarmForward = 8;
+// The village's plots, repeating down each side of the ditch: W wheat, D wood, F fruit, B bare.
+// Village plots are kVillageStrip tiles wide whatever the Plot width control says: Numbi breeds
+// only while the wheat block nearest its swarm is about three tiles per colonist (estimateFood
+// measures one contiguous rectangle), and plots four wide held its villages at 13 colonists in a
+// 45,000-tick tournament (2026-09-16).
+constexpr const char *kVillagePattern = "WWDWWFWDW";
+// Parcels: the tiling's cells. A site's plots are `strip-width` tiles wide (varied a tile either
+// way per site), in bands of two rows of plots kLeastPlot to kMostPlot long either side of a ditch.
+constexpr int kLeastPlot = 5, kMostPlot = 8;
+// Parcel kinds by the Commons control: commons percent; woodlots take kWoodlotPercent; the rest
+// are garden sites. Parcels with less interior than kLeastParcel are always commons.
+constexpr int kCommonsPercent[3] = {12, 25, 40};
+constexpr int kWoodlotPercent = 15, kLeastParcel = 150;
+// Plot styles by the Plot mix control (Tended, Mixed, Overgrown): percent wheat, wood, fruit; the
+// rest are bare, and a bare plot has a shed (a stone) with kShedPercent probability.
+constexpr int kStyleShares[3][3] = {{58, 14, 8}, {46, 24, 7}, {30, 44, 5}};
+constexpr int kShedPercent = 45;
+// Cover: a wheat or wood plot is planted over this share of its ground; a fruit plot holds this
+// many bushes; a woodlot is wooded over this share of its best (noisiest) ground.
+constexpr int kPlotCoverPercent = 75, kFruitTiles = 6, kWoodlotCoverPercent = 60;
+// A commons: a pond of radius kCommonsPond to kCommonsPond + 2, and a fruit clump or a stone clump.
+constexpr double kCommonsPond = 2.5;
 
-enum class Lot
+enum Kind : signed char
 {
-	None,   // a city's ground, or a block too small for any pad
-	Open,   // a pad kept clear to build on
-	Field,  // a pad under wheat (touches a ditch, or is a home field)
-	Woodlot,
-	Quarry,
-	Grove
+	kNone,
+	kTown,
+	kPlot,
+	kCommons,
+	kWoodlot
+};
+enum Style : signed char
+{
+	kWheat,
+	kWood,
+	kFruit,
+	kBare
+};
+
+struct VillageStencil
+{
+	int extent = kVillageHalf + 1;
+	std::vector<unsigned char> vertex;
+	std::vector<signed char> kind;
+	std::vector<int> plot;              // plot index in `styles`, or -1
+	std::vector<signed char> styles;    // per plot
+	int townSites = 0;
+	int side() const { return 2 * extent + 1; }
+	int index(int dx, int dy) const { return (dy + extent) * side() + dx + extent; }
+};
+
+VillageStencil buildVillage(int strip)
+{
+	VillageStencil s;
+	const int side = s.side(), H = kVillageHalf;
+	s.vertex.assign(size_t(side) * side, GRASS);
+	s.kind.assign(size_t(side) * side, kNone);
+	s.plot.assign(size_t(side) * side, -1);
+	const int pitch = strip + 1;
+	const int ditch = (-H + kTownFront) / 2 - kDitchCorners / 2;
+	for (int dy = -s.extent; dy <= s.extent; ++dy)
+		for (int dx = -s.extent; dx <= s.extent; ++dx)
+		{
+			const int at = s.index(dx, dy), ring = std::max(std::abs(dx), std::abs(dy));
+			unsigned char v = GRASS;
+			if (ring >= H)
+				v = SAND;
+			else if (dx == kTownFront)
+				v = SAND;
+			else if (dx < kTownFront)
+			{
+				if (dx >= ditch && dx < ditch + kDitchCorners)
+					v = std::abs(dy) < H - 1 ? WATER : SAND;
+				else if ((dy + H) % pitch == 0)
+					v = SAND;
+			}
+			s.vertex[at] = v;
+			// The tile whose top-left corner this is.
+			if (ring >= H)
+				continue;
+			if (dx >= kTownFront)
+				s.kind[at] = kTown;
+			else if (dx < ditch - 1 || dx >= ditch + kDitchCorners)
+			{
+				s.kind[at] = kPlot;
+				const int band = (dy + H) / pitch, west = dx < ditch;
+				s.plot[at] = band * 2 + west;
+			}
+		}
+	const int plots = 2 * ((2 * H) / pitch + 1);
+	for (int p = 0; p < plots; ++p)
+	{
+		const char c = kVillagePattern[(p / 2) % 9];
+		s.styles.push_back(c == 'W' ? kWheat : c == 'D' ? kWood : c == 'F' ? kFruit : kBare);
+	}
+	// The green's 4x4 build sites, all four corners of every tile grass.
+	const auto pureTown = [&](int dx, int dy)
+	{
+		return s.kind[s.index(dx, dy)] == kTown && s.vertex[s.index(dx, dy)] == GRASS &&
+			   s.vertex[s.index(dx + 1, dy)] == GRASS && s.vertex[s.index(dx, dy + 1)] == GRASS &&
+			   s.vertex[s.index(dx + 1, dy + 1)] == GRASS;
+	};
+	for (int dy = -H; dy + 4 < H; ++dy)
+		for (int dx = kTownFront; dx + 4 < H; ++dx)
+		{
+			bool fits = true;
+			for (int y = 0; y < 4 && fits; ++y)
+				for (int x = 0; x < 4 && fits; ++x)
+					fits = pureTown(dx + x, dy + y);
+			s.townSites += fits;
+		}
+	return s;
+}
+
+struct Parcel
+{
+	signed char kind;
+	int orientation, strip, length;
 };
 
 struct Layout
 {
 	Torus t{1, 1};
+	VillageStencil village;
 	std::vector<ShapePoint> homes;
-	std::vector<BaseSite> sites;
-	BasePlan plan;
-	LaneGrid lanes;
-	int pitch = 0, superblock = 0;
-	std::vector<int> interiorOf;                // each city's ground, bounding lanes excluded
-	std::vector<unsigned char> lane, ditch;     // lane vertices; ditch water vertices
-	std::vector<Lot> lotOf;                     // per block (column * rows + row)
-	std::vector<int> padX, padY, padSize;       // per block; size 0 when it has no pad
-	Farm pads;                                  // every pad's grass (plot) and sand
+	std::vector<int> facings;
+	Tessellation parcels;
+	std::vector<Parcel> kinds;
 	TerrainSketch sketch;
+	std::vector<signed char> kind;
+	std::vector<int> homeOf;   // colony of every village tile, else -1
+	std::vector<int> cellOf;   // parcel of every tile outside the villages, else -1
+	std::vector<int> plotOf;   // global plot id of every plot tile, else -1
+	std::vector<signed char> styles; // per global plot id
+	std::vector<unsigned char> lanes;
 	std::string failure;
 };
-
-int blockIndex(const LaneGrid &g, int column, int row)
-{
-	return ((column % g.columns() + g.columns()) % g.columns()) * g.rows() +
-		   (row % g.rows() + g.rows()) % g.rows();
-}
 
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
@@ -121,250 +200,227 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.t = {1 << request.wDec, 1 << request.hDec};
 	const Torus &t = L.t;
 	const int n = t.size(), teams = std::max(1, request.nbTeams);
-	L.plan = standardBasePlan(baseTier(o.colonists), BaseKind::Sites, 0, false);
+	const int H = kVillageHalf;
 
-	L.homes = latticeSites(t.w, t.h, teams, context.bounded("allotments-layout", std::uint32_t(t.w)),
-						   context.bounded("allotments-layout", std::uint32_t(t.h)))
-				  .sites;
+	const int offsetX = int(context.bounded("allotments-layout", std::uint32_t(t.w)));
+	const int offsetY = int(context.bounded("allotments-layout", std::uint32_t(t.h)));
+	L.homes = latticeSites(t.w, t.h, teams, offsetX, offsetY).sites;
+	for (ShapePoint &h : L.homes)
+		h = {double(int(std::lround(h.x)) % t.w), double(int(std::lround(h.y)) % t.h)};
 	dealStarts(context, L.homes);
-	std::vector<int> facings;
-	for (size_t k = 0; k < L.homes.size(); ++k)
-		facings.push_back(int(context.bounded("allotments-facing", 4)));
-
-	// The lanes, and the superblock a city takes: enough blocks that the pure grass between its
-	// bounding lanes (the block widths less the lanes' spoiled tiles) holds the base. Cities must
-	// keep a block between them; when they cannot, the lanes are laid closer (a smaller pitch means
-	// more, smaller blocks, and a superblock of about the same tiles), and when nothing fits the map
-	// is refused.
-	const int laneOffsetX = int(context.bounded("allotments-lanes", std::uint32_t(t.w)));
-	const int laneOffsetY = int(context.bounded("allotments-lanes", std::uint32_t(t.h)));
-	std::vector<std::pair<int, int>> corners; // each city's superblock's first column and row
-	for (L.pitch = o.laneSpacing;; L.pitch -= 2)
+	// One facing for every colony, drawn once per map. A home stencil turned by different quarter
+	// turns covers identical tiles, but the AIs scan along the map's axes: with a facing per colony,
+	// Numbi colonies on The Glacis grew to 60 in one facing and 20 to 30 in the others (rotation
+	// tournaments, 2026-09-16). The same facing makes every home an exact translation of the others.
+	L.facings.assign(teams, int(context.bounded("allotments-facing", 4)));
+	if (nearestSiteDistance(t, L.homes) < 2 * H + 10 || std::min(t.w, t.h) < 2 * H + 10)
 	{
-		L.lanes = layLanes(t, L.pitch, laneOffsetX, laneOffsetY);
-		int narrowest = std::min(t.w, t.h);
-		for (int c = 0; c < L.lanes.columns(); ++c)
-			narrowest = std::min(narrowest, L.lanes.columnSpan(c).count + 1);
-		for (int r = 0; r < L.lanes.rows(); ++r)
-			narrowest = std::min(narrowest, L.lanes.rowSpan(r).count + 1);
-		// m blocks of at least `narrowest` tiles hold m * narrowest - 3 tiles of pure grass (the
-		// bounding lanes spoil a tile each side, and one of them is the lane itself).
-		L.superblock = 1;
-		while (L.superblock * narrowest - 3 < 2 * L.plan.reach + 1)
-			++L.superblock;
-		corners.clear();
-		bool apart = L.superblock + 1 <= L.lanes.columns() && L.superblock + 1 <= L.lanes.rows();
-		for (const ShapePoint &home : L.homes)
-		{
-			const int column = L.lanes.column(int(home.x)) - (L.superblock - 1) / 2;
-			const int row = L.lanes.row(int(home.y)) - (L.superblock - 1) / 2;
-			corners.push_back({column, row});
-		}
-		for (size_t a = 0; a < corners.size() && apart; ++a)
-			for (size_t b = a + 1; b < corners.size() && apart; ++b)
-			{
-				// Two superblocks are apart when a whole block lies between them on some axis.
-				const auto gap = [&](int u, int v, int count)
-				{
-					const int d = ((u - v) % count + count) % count;
-					return std::min(d, count - d);
-				};
-				apart = gap(corners[a].first, corners[b].first, L.lanes.columns()) > L.superblock ||
-						gap(corners[a].second, corners[b].second, L.lanes.rows()) > L.superblock;
-			}
-		if (apart)
-			break;
-		if (L.pitch - 2 < 8)
-		{
-			L.failure = "Too many colonies for this map; use a bigger map or fewer colonies.";
-			return L;
-		}
-		context.telemetry.fallback("allotments.lanes.narrowed",
-								   "Lanes were laid closer so every city keeps a block from the next");
+		L.failure = "Too many colonies for this map; use a bigger map or fewer colonies.";
+		return L;
 	}
-	context.telemetry.measure("allotments.pitch.actual", L.pitch);
-	context.telemetry.measure("allotments.superblock.blocks", L.superblock);
-	context.telemetry.measure("allotments.lanes.columns", L.lanes.columns());
-	context.telemetry.measure("allotments.lanes.rows", L.lanes.rows());
+	L.village = buildVillage(kVillageStrip);
+	const VillageStencil &v = L.village;
+	context.telemetry.measure("allotments.village.town-sites", v.townSites);
 
-	// Each city's ground: the tiles strictly inside its superblock's bounding lanes, its site at
-	// the middle of them. The inner lanes are suppressed.
-	L.interiorOf.assign(n, -1);
-	L.lane = laneTiles(L.lanes);
-	const int columns = L.lanes.columns(), rows = L.lanes.rows();
-	std::vector<unsigned char> cityBlock(size_t(columns) * rows, 0);
-	for (size_t k = 0; k < corners.size(); ++k)
-	{
-		const int c0 = corners[k].first, r0 = corners[k].second;
-		const int x0 = L.lanes.laneX[(c0 % columns + columns) % columns];
-		const int y0 = L.lanes.laneY[(r0 % rows + rows) % rows];
-		const int x1 = L.lanes.laneX[((c0 + L.superblock) % columns + columns) % columns];
-		const int y1 = L.lanes.laneY[((r0 + L.superblock) % rows + rows) % rows];
-		const int width = ((x1 - x0) % t.w + t.w) % t.w, height = ((y1 - y0) % t.h + t.h) % t.h;
-		for (int dy = 1; dy < height; ++dy)
-			for (int dx = 1; dx < width; ++dx)
-			{
-				const int i = t.at(x0 + dx, y0 + dy);
-				L.interiorOf[i] = int(k);
-				L.lane[i] = 0;
-			}
-		for (int dc = 0; dc < L.superblock; ++dc)
-			for (int dr = 0; dr < L.superblock; ++dr)
-				cityBlock[blockIndex(L.lanes, c0 + dc, r0 + dr)] = 1;
-		L.sites.push_back({t.x(x0 + width / 2), t.y(y0 + height / 2), facings[k]});
-	}
-
-	// Ditches down every `ditchEvery`-th lane on each axis, offset by a draw so the ditches do not
-	// always start at lane 0, two vertices wide (the lane's and the next), kept clear of cities and
-	// of every crossing with another lane, where the sand stays as a ford.
-	L.ditch.assign(n, 0);
-	const int ditchColumn = int(context.bounded("allotments-ditch", std::uint32_t(o.ditchEvery)));
-	const int ditchRow = int(context.bounded("allotments-ditch", std::uint32_t(o.ditchEvery)));
-	std::vector<unsigned char> ditchLaneX(columns, 0), ditchLaneY(rows, 0);
-	for (int c = 0; c < columns; ++c)
-		ditchLaneX[c] = c % o.ditchEvery == ditchColumn;
-	for (int r = 0; r < rows; ++r)
-		ditchLaneY[r] = r % o.ditchEvery == ditchRow;
-	std::vector<unsigned char> city(n, 0);
-	for (int i = 0; i < n; ++i)
-		city[i] = L.interiorOf[i] >= 0;
-	const std::vector<unsigned char> nearCity = dilate(t, city, kDitchClearOfCity);
-	const std::vector<unsigned char> crossings = [&]
-	{
-		std::vector<unsigned char> mask(n, 0);
-		for (int x : L.lanes.laneX)
-			for (int y : L.lanes.laneY)
-				for (int dy = -1; dy <= kDitchVertices; ++dy)
-					for (int dx = -1; dx <= kDitchVertices; ++dx)
-						mask[t.at(x + dx, y + dy)] = 1;
-		return mask;
-	}();
-	for (int c = 0; c < columns; ++c)
-		if (ditchLaneX[c])
-			for (int y = 0; y < t.h; ++y)
-				for (int d = 0; d < kDitchVertices; ++d)
-				{
-					const int i = t.at(L.lanes.laneX[c] + d, y);
-					if (!nearCity[i] && !crossings[i] && L.lane[t.at(L.lanes.laneX[c], y)])
-						L.ditch[i] = 1;
-				}
-	for (int r = 0; r < rows; ++r)
-		if (ditchLaneY[r])
-			for (int x = 0; x < t.w; ++x)
-				for (int d = 0; d < kDitchVertices; ++d)
-				{
-					const int i = t.at(x, L.lanes.laneY[r] + d);
-					if (!nearCity[i] && !crossings[i] && L.lane[t.at(x, L.lanes.laneY[r])])
-						L.ditch[i] = 1;
-				}
-
-	// The sketch so far: grass, lanes of sand, ditches of water. Then a pad in every block that is
-	// no city's, its role decided by what it touches.
 	L.sketch.assign(n, GRASS);
-	for (int i = 0; i < n; ++i)
-		L.sketch[i] = L.ditch[i] ? WATER : L.lane[i] ? SAND : GRASS;
-	L.pads.water = L.ditch;
-	L.pads.sand = L.lane;
-	L.pads.plot.assign(n, 0);
-	L.pads.row.assign(n, -1);
-	L.lotOf.assign(size_t(columns) * rows, Lot::None);
-	L.padX.assign(L.lotOf.size(), 0);
-	L.padY.assign(L.lotOf.size(), 0);
-	L.padSize.assign(L.lotOf.size(), 0);
-	const std::vector<int> sizesFor[4] = {{}, {kSmallPad}, {kMediumPad, kSmallPad}, {kLargePad, kMediumPad, kSmallPad}};
-	int fields = 0, woodlots = 0, quarries = 0, groves = 0, open = 0, smallOpen = 0;
-	for (int c = 0; c < columns; ++c)
-		for (int r = 0; r < rows; ++r)
-		{
-			const int b = blockIndex(L.lanes, c, r);
-			if (cityBlock[b])
-				continue;
-			// A block touches a ditch when one of its four bounding lanes is a ditch lane (and
-			// that ditch is not one a city silenced: a home field is a field anyway).
-			const bool leftDitch = ditchLaneX[c], rightDitch = ditchLaneX[(c + 1) % columns];
-			const bool topDitch = ditchLaneY[r], bottomDitch = ditchLaneY[(r + 1) % rows];
-			bool homeField = false;
-			for (int dc = -1; dc <= 1 && !homeField; ++dc)
-				for (int dr = -1; dr <= 1 && !homeField; ++dr)
-					homeField = (dc == 0) != (dr == 0) && cityBlock[blockIndex(L.lanes, c + dc, r + dr)];
-			// The pad, sized by the setting, centred in the room the lanes and any ditch leave; a
-			// home field is as large as its block allows, for its well.
-			std::vector<int> sizes;
-			if (homeField)
-				sizes = sizesFor[3];
-			else if (o.lotSize == 0)
-				sizes = sizesFor[3 - (c + 2 * r) % 3];
-			else
-				sizes = sizesFor[o.lotSize];
-			// stampLotPad's margin is symmetric; a ditch takes more on its far side, so the pad is
-			// held back by the larger of the two on every side that has one.
-			const int shrink = (leftDitch || rightDitch || topDitch || bottomDitch)
-								   ? std::max(kDitchFar, kDitchNear)
-								   : 0;
-			L.padSize[b] = stampLotPad(L.sketch, L.lanes, L.pads, c, r, sizes, L.padX[b], L.padY[b], shrink);
-			if (L.padSize[b] == 0)
-				continue;
-			if (homeField || leftDitch || rightDitch || topDitch || bottomDitch)
-			{
-				L.lotOf[b] = Lot::Field;
-				++fields;
-				// A home field's well: water at the pad's middle, kept in the pad register so the
-				// beach is laid and the plot's tally excludes it.
-				if (homeField && L.padSize[b] >= kHomeFieldPad)
-					for (int dy = 0; dy < kWellVertices; ++dy)
-						for (int dx = 0; dx < kWellVertices; ++dx)
-						{
-							const int i = t.at(L.padX[b] + L.padSize[b] / 2 - 1 + dx,
-											   L.padY[b] + L.padSize[b] / 2 - 1 + dy);
-							L.sketch[i] = WATER;
-							L.pads.water[i] = 1;
-						}
-			}
-			else if ((c + r) % 2 == 1 && int(context.bounded("allotments-wood", 100)) < o.woodShare)
-			{
-				L.lotOf[b] = Lot::Woodlot;
-				++woodlots;
-			}
-			else if (L.padSize[b] == kSmallPad && o.lotSize == 0)
-			{
-				// Small open lots alternate quarry and grove: the prizes of the subdivision.
-				L.lotOf[b] = (smallOpen++ % 2 == 0) ? Lot::Quarry : Lot::Grove;
-				(L.lotOf[b] == Lot::Quarry ? quarries : groves) += 1;
-			}
-			else
-			{
-				L.lotOf[b] = Lot::Open;
-				++open;
-			}
-		}
-	context.telemetry.measure("allotments.lots.fields", fields);
-	context.telemetry.measure("allotments.lots.woodlots", woodlots);
-	context.telemetry.measure("allotments.lots.quarries", quarries);
-	context.telemetry.measure("allotments.lots.groves", groves);
-	context.telemetry.measure("allotments.lots.open", open);
-
-	// The bases fit their cities: proved on the sketch as the game will see it, beaches laid.
-	TerrainSketch beached = L.sketch;
-	layBeaches(beached, t);
-	const std::vector<unsigned char> pure = pureTiles(beached, t, GRASS);
-	const std::vector<unsigned char> water = pureTiles(beached, t, WATER);
-	std::vector<unsigned char> openGround(n, 0);
-	for (int i = 0; i < n; ++i)
-		openGround[i] = !water[i];
-	for (size_t k = 0; k < L.sites.size(); ++k)
+	L.kind.assign(n, kNone);
+	L.homeOf.assign(n, -1);
+	L.cellOf.assign(n, -1);
+	L.plotOf.assign(n, -1);
+	L.lanes.assign(n, 0);
+	std::vector<unsigned char> villages(n, 0);
+	for (int k = 0; k < teams; ++k)
 	{
-		std::vector<unsigned char> buildable(n, 0);
-		for (int i = 0; i < n; ++i)
-			buildable[i] = pure[i] && L.interiorOf[i] == int(k);
-		if (const std::string misfit = basePlanMisfit(t, L.plan, L.sites[k], buildable, openGround);
-			!misfit.empty())
+		const int cx = int(L.homes[k].x), cy = int(L.homes[k].y);
+		for (int dy = -v.extent - 2; dy <= v.extent + 2; ++dy)
+			for (int dx = -v.extent - 2; dx <= v.extent + 2; ++dx)
+				villages[t.at(cx + dx, cy + dy)] = 1;
+	}
+
+	// The parcels: a warped square tiling, its edges sand lanes.
+	L.parcels = squareTessellation(t.w, t.h, o.siteSize);
+	Tessellation &g = L.parcels;
+	const std::vector<unsigned char> allEdges(g.edges.size(), 1);
+	warpCorners(g, warpLimit(g), allEdges, 8, o.siteSize / 4, context, "allotments-warp");
+	const std::vector<int> labels = labelTiles(g);
+	if (labels.empty())
+	{
+		L.failure = "Too many colonies for this map; use a bigger map or fewer colonies.";
+		return L;
+	}
+	const std::vector<unsigned char> lanes = rasterizeBoundaries(g, allEdges, 0);
+	for (int i = 0; i < n; ++i)
+		if (!villages[i])
 		{
-			context.telemetry.choice("bases.fit", "rejected: " + misfit, int(k));
-			L.failure = "The base does not fit its ground at this size; raise the size control or "
-						"lower Colonists.";
-			return L;
+			L.cellOf[i] = labels[i];
+			if (lanes[i])
+			{
+				L.lanes[i] = 1;
+				L.sketch[i] = SAND;
+			}
 		}
-		context.telemetry.choice("bases.fit", "fits", int(k));
+	std::vector<int> interior(g.cellCount(), 0);
+	for (int i = 0; i < n; ++i)
+		if (L.cellOf[i] >= 0 && !L.lanes[i])
+			++interior[L.cellOf[i]];
+	const int commons = kCommonsPercent[std::clamp(o.commons, 0, 2)];
+	std::array<int, 3> counts{};
+	for (int c = 0; c < g.cellCount(); ++c)
+	{
+		Parcel parcel{kPlot, 0, o.stripWidth, kLeastPlot};
+		const int roll = int(context.bounded("allotments-parcels", 100));
+		parcel.orientation = int(context.bounded("allotments-parcels", 2));
+		parcel.strip = std::max(2, o.stripWidth - 1 + int(context.bounded("allotments-parcels", 3)));
+		parcel.length = kLeastPlot + int(context.bounded("allotments-parcels", kMostPlot - kLeastPlot + 1));
+		if (interior[c] < kLeastParcel || roll < commons)
+			parcel.kind = kCommons;
+		else if (roll < commons + kWoodlotPercent)
+			parcel.kind = kWoodlot;
+		L.kinds.push_back(parcel);
+		++counts[parcel.kind == kPlot ? 0 : parcel.kind == kCommons ? 1 : 2];
+	}
+	context.telemetry.measure("allotments.parcels.gardens", counts[0]);
+	context.telemetry.measure("allotments.parcels.commons", counts[1]);
+	context.telemetry.measure("allotments.parcels.woodlots", counts[2]);
+
+	// Garden sites: bands of plots either side of a ditch, the plots divided by sand paths.
+	// A corner takes its parcel's pattern when the tile it is the top-left corner of lies in the
+	// parcel off the lanes (the lanes' own corners stay sand).
+	const auto cornerInside = [&](int i, int c) { return L.cellOf[i] == c && !L.lanes[i]; };
+	const auto styleOf = [&](int mix)
+	{
+		const int roll = int(context.bounded("allotments-plots", 100));
+		const auto &share = kStyleShares[std::clamp(mix, 0, 2)];
+		return static_cast<signed char>(roll < share[0]                         ? kWheat
+										: roll < share[0] + share[1]            ? kWood
+										: roll < share[0] + share[1] + share[2] ? kFruit
+																				: kBare);
+	};
+	std::vector<std::vector<int>> cellTiles(g.cellCount());
+	for (int i = 0; i < n; ++i)
+		if (L.cellOf[i] >= 0)
+			cellTiles[L.cellOf[i]].push_back(i);
+	for (int c = 0; c < g.cellCount(); ++c)
+	{
+		const Parcel &parcel = L.kinds[c];
+		if (parcel.kind != kPlot)
+			continue;
+		const int band = 2 * parcel.length + kDitchCorners + 2, pitch = parcel.strip + 1;
+		const int cx = g.centreTileX(c), cy = g.centreTileY(c);
+		const int bandOffset = int(context.bounded("allotments-plots", std::uint32_t(band)));
+		const int stripOffset = int(context.bounded("allotments-plots", std::uint32_t(pitch)));
+		for (int i : cellTiles[c])
+		{
+			if (!cornerInside(i, c))
+				continue;
+			const int dx = t.offsetX(cx, i % t.w), dy = t.offsetY(cy, i / t.w);
+			const int u = (parcel.orientation ? dy : dx) + 1024 * band + bandOffset;
+			const int w = (parcel.orientation ? dx : dy) + 1024 * pitch + stripOffset;
+			// Along a band: a path, a row of plots, the ditch, a row of plots; across it, a path
+			// between every two plots.
+			const int inBand = u % band;
+			if (inBand == 0)
+				L.sketch[i] = SAND;
+			else if (inBand > parcel.length && inBand <= parcel.length + kDitchCorners)
+				L.sketch[i] = WATER;
+			else if (w % pitch == 0)
+				L.sketch[i] = SAND;
+		}
+	}
+	// Commons: a pond in the middle of the parcel.
+	for (int c = 0; c < g.cellCount(); ++c)
+	{
+		if (L.kinds[c].kind == kPlot)
+			continue;
+		for (int i : cellTiles[c])
+			if (!L.lanes[i])
+				L.kind[i] = L.kinds[c].kind;
+		if (L.kinds[c].kind != kCommons)
+			continue;
+		const double radius = kCommonsPond + context.bounded("allotments-commons", 3);
+		const RadialShape pond(radius, 0.25, context, "allotments-commons");
+		const int cx = g.centreTileX(c), cy = g.centreTileY(c);
+		forEachTileInShape(t, cx, cy, pond, 0,
+						   [&](int i, double, double)
+						   {
+							   if (cornerInside(i, c) && L.cellOf[i] == c)
+								   L.sketch[i] = WATER;
+						   });
+	}
+
+	// The plots are what the terrain makes of the pattern: every eight-connected patch of pure grass
+	// in a garden parcel, once the ditches' beaches are laid, is one plot with a style of its own.
+	// (Deriving them from the pattern's arithmetic instead missed the patches a warped lane cuts
+	// short, which then joined two plots or a plot to open ground.)
+	{
+		TerrainSketch beached = L.sketch;
+		layBeaches(beached, t);
+		const std::vector<unsigned char> pure = pureTiles(beached, t, GRASS);
+		for (int c = 0; c < g.cellCount(); ++c)
+		{
+			if (L.kinds[c].kind != kPlot)
+				continue;
+			for (int start : cellTiles[c])
+			{
+				if (!pure[start] || L.lanes[start] || L.plotOf[start] >= 0)
+					continue;
+				const int id = int(L.styles.size());
+				std::vector<int> patch{start};
+				L.plotOf[start] = id;
+				for (size_t q = 0; q < patch.size(); ++q)
+				{
+					const int x = patch[q] % t.w, y = patch[q] / t.w;
+					for (int dy = -1; dy <= 1; ++dy)
+						for (int dx = -1; dx <= 1; ++dx)
+						{
+							const int j = t.at(x + dx, y + dy);
+							if (pure[j] && L.cellOf[j] == c && !L.lanes[j] && L.plotOf[j] < 0)
+							{
+								L.plotOf[j] = id;
+								patch.push_back(j);
+							}
+						}
+				}
+				for (int j : patch)
+					L.kind[j] = kPlot;
+				// A sliver a lane cut off is left bare.
+				L.styles.push_back(patch.size() < 6 ? static_cast<signed char>(kBare) : styleOf(o.plotMix));
+			}
+		}
+	}
+
+	// The villages, over whatever the parcels drew there.
+	for (int k = 0; k < teams; ++k)
+	{
+		const int cx = int(L.homes[k].x), cy = int(L.homes[k].y);
+		const int base = int(L.styles.size());
+		L.styles.insert(L.styles.end(), v.styles.begin(), v.styles.end());
+		for (int dy = -v.extent - 2; dy <= v.extent + 2; ++dy)
+			for (int dx = -v.extent - 2; dx <= v.extent + 2; ++dx)
+			{
+				const int i = t.at(cx + dx, cy + dy);
+				// A lane round the village's margin closes off the parcels the village cut into.
+				const int ring = std::max(std::abs(dx), std::abs(dy));
+				L.sketch[i] = ring == v.extent + 2 ? SAND : ring > v.extent ? GRASS : L.sketch[i];
+				L.kind[i] = kNone;
+				L.plotOf[i] = -1;
+			}
+		for (int dy = -v.extent; dy <= v.extent; ++dy)
+			for (int dx = -v.extent; dx <= v.extent; ++dx)
+			{
+				const int at = v.index(dx, dy);
+				const auto [vx, vy] = turnStencilVertex(L.facings[k], dx, dy);
+				L.sketch[t.at(cx + vx, cy + vy)] = TerrainType(v.vertex[at]);
+				const auto [tx, ty] = turnStencilTile(L.facings[k], dx, dy);
+				const int i = t.at(cx + tx, cy + ty);
+				if (v.kind[at] != kNone)
+				{
+					L.kind[i] = v.kind[at];
+					L.homeOf[i] = k;
+				}
+				if (v.plot[at] >= 0)
+					L.plotOf[i] = base + v.plot[at];
+			}
 	}
 	return L;
 }
@@ -392,70 +448,107 @@ bool generate(Game &game, GenerationContext &context)
 	writeUndermap(map, terrain);
 
 	context.stage = "allotments colonies";
-	const BaseGarrison units = baseGarrison(o.colonists, o.garrison);
-	if (!raiseBases(game, context, L.plan, L.sites, units, &L.interiorOf, "allotments-colonists"))
-		return false;
-	for (int k = 0; k < teams; ++k)
-		plantBaseDepots(map, context, t, L.plan, L.sites[k]);
-
-	context.stage = "allotments resources";
-	// Nothing grows on a city's ground beyond its own stacks, on a lane, or on an open lot.
-	std::vector<unsigned char> reserved = baseSurroundings(t, L.plan, L.sites);
-	const std::vector<unsigned char> swarms = swarmSurroundings(t, context);
-	Farm openPads = L.pads;
-	openPads.plot.assign(n, 0);
+	std::vector<int> townOf(n, -1);
 	for (int i = 0; i < n; ++i)
-		reserved[i] = reserved[i] || swarms[i] || L.lane[i] || L.interiorOf[i] >= 0;
-	const std::vector<int> split = periodicNoise(t.w, t.h, 4, context.stream("allotments-split"));
-	const int columns = L.lanes.columns(), rows = L.lanes.rows();
-	for (int c = 0; c < columns; ++c)
-		for (int r = 0; r < rows; ++r)
-		{
-			const int b = blockIndex(L.lanes, c, r);
-			const int size = L.padSize[b];
-			if (size == 0)
-				continue;
-			std::vector<int> pad;
-			for (int dy = 0; dy < size; ++dy)
-				for (int dx = 0; dx < size; ++dx)
-					pad.push_back(t.at(L.padX[b] + dx, L.padY[b] + dy));
-			const auto onPad = [&](int i)
-			{ return L.pads.plot[i] && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
-			const MapGeneratorPoint middle(t.x(L.padX[b] + size / 2), t.y(L.padY[b] + size / 2));
-			switch (L.lotOf[b])
+		if (L.kind[i] == kTown)
+			townOf[i] = L.homeOf[i];
+	if (!settleColonies(
+			game, context, "allotments-starts",
+			[&](int k) { return homeGrassMask(map, t, townOf, k); },
+			[&](int k)
 			{
-			case Lot::Field:
-				plantFields(map, t, pad, int(scaledCount(size * size * kFieldWheatPercent / 100, o.wheat)),
-							int(scaledCount(size * size * kFieldWoodPercent / 100, o.wood)),
-							[&](int i) { return split[i]; });
-				break;
-			case Lot::Woodlot:
-				growPatch(map, t, pad.front(), WOOD, int(scaledCount(size * size, o.wood)), onPad);
-				break;
-			case Lot::Quarry:
-				if (scaledCount(1, o.stone) > 0)
-					placeResourceClump(map, context, middle, STONE, 1);
-				break;
-			case Lot::Grove:
-				if (scaledCount(1, o.fruit) > 0)
-					placeResourceClump(map, context, middle,
-									   CHERRY + int(context.bounded("allotments-fruit", 3)), 1);
-				break;
-			case Lot::Open:
-				for (int i : pad)
-					openPads.plot[i] = 1;
-				break;
-			case Lot::None:
-				break;
-			}
-		}
-	seedAlgae(map, context, t, "allotments-algae", o.algae, AlgaeBand::anyWater(40));
-	clearFarmPlots(map, t, {openPads});
-	secureStartingCrops(game, context, t);
-	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, o.algae, o.fruit});
+				const ShapePoint p = turnStencilPoint(L.facings[k], {kSwarmForward, 0});
+				return MapGeneratorPoint(int(L.homes[k].x + p.x) - 2, int(L.homes[k].y + p.y) - 2);
+			}))
+		return false;
+	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
 
-	// The lanes join everything and nothing grows on them; a home field's crops could still stand
-	// across a city's way out, so the cheapest way through crops is opened, never through water.
+	context.stage = "allotments plots";
+	std::vector<std::vector<int>> plotTiles(L.styles.size());
+	for (int i = 0; i < n; ++i)
+		if (L.plotOf[i] >= 0 && map.isGrass(i % t.w, i / t.w) && !reserved[i] &&
+			clearGround(map, i % t.w, i / t.w))
+			plotTiles[L.plotOf[i]].push_back(i);
+	std::array<int, 4> planted{};
+	std::vector<unsigned char> topup(n, 0);
+	for (size_t p = 0; p < plotTiles.size(); ++p)
+	{
+		const std::vector<int> &tiles = plotTiles[p];
+		if (tiles.empty())
+			continue;
+		const bool home = L.homeOf[tiles.front()] >= 0;
+		for (int i : tiles)
+			topup[i] = home;
+		const Style style = Style(L.styles[p]);
+		if (style == kWheat || style == kWood)
+		{
+			// A village's plots are its opening and are unscaled; the gardens' scale.
+			const int share = int(tiles.size()) * kPlotCoverPercent / 100;
+			const int count = std::min(int(tiles.size()),
+									   home ? share : int(scaledCount(share, style == kWheat ? o.wheat : o.wood)));
+			for (int j = 0; j < count; ++j)
+				map.setResource(tiles[j] % t.w, tiles[j] / t.w, style == kWheat ? WHEAT : WOOD, 1);
+			planted[style] += count;
+		}
+		else if (style == kFruit)
+		{
+			const int count = std::min(int(tiles.size()), home ? kFruitTiles : int(scaledCount(kFruitTiles, o.fruit)));
+			const int fruit = CHERRY + int(p % 3);
+			for (int j = 0; j < count; ++j)
+				map.setResource(tiles[j] % t.w, tiles[j] / t.w, fruit, 1);
+			planted[kFruit] += count;
+		}
+		else if (int(context.bounded("allotments-sheds", 100)) < kShedPercent && (home || scaledCount(1, o.stone) > 0))
+		{
+			map.setResource(tiles.back() % t.w, tiles.back() / t.w, STONE, 1);
+			++planted[kBare];
+		}
+	}
+	context.telemetry.measure("allotments.plots.wheat-tiles", planted[kWheat]);
+	context.telemetry.measure("allotments.plots.wood-tiles", planted[kWood]);
+	context.telemetry.measure("allotments.plots.fruit-tiles", planted[kFruit]);
+	context.telemetry.measure("allotments.plots.sheds", planted[kBare]);
+
+	context.stage = "allotments parcels";
+	const std::vector<int> noise = fractalNoise(t.w, t.h, 16, 2, context.stream("allotments-woods"));
+	for (int c = 0; c < L.parcels.cellCount(); ++c)
+	{
+		const Parcel &parcel = L.kinds[c];
+		std::vector<int> ground;
+		for (int i = 0; i < n; ++i)
+			if (L.cellOf[i] == c && L.kind[i] == parcel.kind && L.homeOf[i] < 0 &&
+				map.isGrass(i % t.w, i / t.w) && clearGround(map, i % t.w, i / t.w) && !reserved[i])
+				ground.push_back(i);
+		if (ground.empty())
+			continue;
+		if (parcel.kind == kWoodlot)
+		{
+			std::stable_sort(ground.begin(), ground.end(),
+							 [&](int a, int b) { return noise[a] > noise[b]; });
+			const int count = std::min(int(ground.size()),
+									   int(scaledCount(int(ground.size()) * kWoodlotCoverPercent / 100, o.wood)));
+			for (int j = 0; j < count; ++j)
+				map.setResource(ground[j] % t.w, ground[j] / t.w, WOOD, 1);
+		}
+		else if (parcel.kind == kCommons)
+		{
+			// One grove or one small quarry on every commons.
+			const int seed = ground[context.bounded("allotments-commons", std::uint32_t(ground.size()))];
+			if (context.bounded("allotments-commons", 2))
+			{
+				if (scaledCount(1, o.fruit) > 0)
+					growPatch(map, t, seed, CHERRY + int(context.bounded("allotments-commons", 3)),
+							  int(scaledCount(5, o.fruit)),
+							  [&](int i) { return L.cellOf[i] == c && L.kind[i] == kCommons && clearGround(map, i % t.w, i / t.w); });
+			}
+			else if (scaledCount(1, o.stone) > 0)
+				placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), STONE, 1);
+		}
+	}
+	seedAlgae(map, context, t, "allotments-algae", o.algae, AlgaeBand::anyWater(40));
+
+	secureStartingCrops(game, context, t, 24, 32, 0, nullptr, &topup);
+	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, o.algae, o.fruit}, 24, 32, 0);
 	context.stage = "allotments routes";
 	openColonyRoutes(map, context, t, StepCosts{1, 3, -1, -1, -1});
 	return true;
@@ -465,60 +558,59 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	const AllotmentsOptions o(context.request);
 	const Map &map = game.map;
 	const Torus &t = L.t;
 	const int n = t.size(), teams = context.request.nbTeams;
 	if (const std::string mismatch = designMismatch(L, map, "allotments"); !mismatch.empty())
 		return mismatch;
-	for (int k = 0; k < teams; ++k)
-		if (const std::string missing = validateBase(game, t, k, L.plan, L.sites[k], o.colonists);
-			!missing.empty())
-			return missing;
-	// Every open lot is still open.
-	for (int c = 0; c < L.lanes.columns(); ++c)
-		for (int r = 0; r < L.lanes.rows(); ++r)
-		{
-			const int b = blockIndex(L.lanes, c, r);
-			if (L.lotOf[b] != Lot::Open)
-				continue;
-			for (int dy = 0; dy < L.padSize[b]; ++dy)
-				for (int dx = 0; dx < L.padSize[b]; ++dx)
-				{
-					const int x = t.x(L.padX[b] + dx), y = t.y(L.padY[b] + dy);
-					if (!map.isGrass(x, y) || map.isResource(x, y))
-						return "An open lot at (" + std::to_string(x) + ", " + std::to_string(y) +
-							   ") is not buildable.";
-				}
-		}
-	// Every colony as near a ditch as every other, give or take where its city fell between two
-	// ditch lanes: the walk to the nearest ditch beach.
-	std::vector<unsigned char> beach(n, 0);
-	bool anyDitch = false;
+	// Every plot keeps its crops to itself: flooding every plot's grass at once, labelled by plot,
+	// never reaches grass of another plot or outside the plots.
+	std::vector<int> label(n, -1);
+	std::vector<int> queue;
+	const auto open = [&](int i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		return map.isGrass(x, y) && !(map.isResource(x, y) && map.getResource(x, y).type == STONE);
+	};
 	for (int i = 0; i < n; ++i)
-		if (map.isWater(i % t.w, i / t.w))
-			for (int dy = -1; dy <= 1; ++dy)
-				for (int dx = -1; dx <= 1; ++dx)
+		if (L.plotOf[i] >= 0 && open(i))
+		{
+			label[i] = L.plotOf[i];
+			queue.push_back(i);
+		}
+	for (size_t q = 0; q < queue.size(); ++q)
+	{
+		const int i = queue[q], x = i % t.w, y = i / t.w;
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				const int j = t.at(x + dx, y + dy);
+				if (j == i || !open(j))
+					continue;
+				if (label[j] < 0)
 				{
-					const int j = t.at(i % t.w + dx, i / t.w + dy);
-					if (!map.isWater(j % t.w, j / t.w) && !map.isResource(j % t.w, j / t.w))
-						beach[j] = anyDitch = true;
+					if (L.plotOf[j] != label[i])
+					{
+						std::fprintf(stderr, "LEAK from %d,%d plot %d kind %d cell %d home %d -> %d,%d plot %d kind %d cell %d home %d lane %d\n", x, y, label[i], L.kind[i], L.cellOf[i], L.homeOf[i], j % t.w, j / t.w, L.plotOf[j], L.kind[j], L.cellOf[j], L.homeOf[j], L.lanes[j]);
+						return "A plot's crops can spread out of it.";
+					}
+					label[j] = label[i];
+					queue.push_back(j);
 				}
-	if (anyDitch && teams > 1)
-		if (const std::string uneven = unevenCosts(costsToTarget(map, teams, beach, StepCosts::walking()),
-												   kDitchWalkTolerancePitches *
-													   (o.ditchEvery + L.superblock) * L.pitch,
-												   "a ditch");
-			!uneven.empty())
-			return uneven;
-	return walkFromFirstColony(map, teams, "the allotments", "down the lanes").error;
+				else if (label[j] != label[i])
+					return "Two plots' crops can spread into each other.";
+			}
+	}
+	if (const ColonyWalk walk = walkFromFirstColony(map, teams, "the lanes", "along the lanes");
+		!walk.error.empty())
+		return walk.error;
+	return startingAccessFailure(map, teams, {{WHEAT, 24, "wheat"}, {WOOD, 32, "wood"}}, 16, 24);
 }
 } // namespace
 
 AllotmentsOptions::AllotmentsOptions(const GenerationRequest &r)
-	: colonists(r.option("colonists")), garrison(r.option("garrison") != 0),
-	  lotSize(r.option("lot-size")), laneSpacing(r.option("lane-spacing")),
-	  ditchEvery(r.option("ditch-every")), woodShare(r.option("wood-share")),
+	: siteSize(r.option("site-size")), stripWidth(r.option("strip-width")),
+	  plotMix(r.option("plot-mix")), commons(r.option("commons")),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))
@@ -527,32 +619,24 @@ AllotmentsOptions::AllotmentsOptions(const GenerationRequest &r)
 
 GeneratorDefinition allotmentsDefinition()
 {
-	GeneratorDefinition d{
-		"allotments",
-		40,
-		"Allotments",
-		1,
-		false,
-		// Lanes 12 apart by default: a block of 12 holds a 6x6 pad with a two-tile walkway round it
-		// and a superblock of two holds a city base; 8 is the tightest a 4x4 pad fits, 16 gives
-		// broad lots. A ditch every third lane puts every block within one block of water. Half the
-		// odd blocks away from water are woodlots.
-		{{"colonists", "Colonists", 16, 48, 4, 32, ControlGroup::Layout},
-		 GeneratorControl::toggle("garrison", "Garrison", true, ControlGroup::Layout),
-		 GeneratorControl::choice("lot-size", "Lot size", {"Mixed", "Small", "Medium", "Large"}, 0,
-								  ControlGroup::Layout),
-		 {"lane-spacing", "Lane spacing", 8, 16, 2, 12, ControlGroup::Terrain},
-		 {"ditch-every", "Ditch every", 2, 4, 1, 3, ControlGroup::Terrain},
-		 {"wood-share", "Wood share", 0, 100, 10, 50, ControlGroup::Resources},
-		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-		 GeneratorControl::percentage("wood-amount", "Wood amount"),
-		 GeneratorControl::percentage("stone-amount", "Stone amount"),
-		 GeneratorControl::percentage("algae-amount", "Algae amount"),
-		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		designFailure<design>,
-		validateWorld};
-	d.startingWorkers = [](const GenerationRequest &r) { return r.option("colonists"); };
-	return d;
+	return {"allotments",
+			40,
+			"Allotments",
+			2,
+			false,
+			// Site size is the pitch of the parcel tiling: 36 gives a 256 map seven parcels a side.
+			// Plots four tiles wide are narrow enough to read as strips and wide enough to work.
+			{{"site-size", "Site size", 28, 48, 4, 36, ControlGroup::Layout},
+			 {"strip-width", "Plot width", 3, 5, 1, 4, ControlGroup::Layout},
+			 GeneratorControl::choice("plot-mix", "Plot mix", {"Tended", "Mixed", "Overgrown"}, 1),
+			 GeneratorControl::choice("commons", "Commons", {"Few", "Some", "Many"}, 1),
+			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+			 GeneratorControl::percentage("wood-amount", "Wood amount"),
+			 GeneratorControl::percentage("stone-amount", "Stone amount"),
+			 GeneratorControl::percentage("algae-amount", "Algae amount"),
+			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+			generate,
+			true,
+			designFailure<design>,
+			validateWorld};
 }

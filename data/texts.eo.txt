@@ -2498,40 +2498,58 @@ La Glaciso
 Ĝardenparceloj
 [Caravanserai]
 Karavanejo
-[Colonists]
-Kolonianoj
-[Garrison]
-Garnizono
-[Compound size]
-Grando de fortikaĵo
-[Wall gates]
-Pordegoj de la muro
-[Wadi count]
-Nombro de vadioj
-[Ford spacing]
-Interspaco de travadejoj
-[Lot size]
-Grando de parceloj
 [Mixed]
 Miksita
-[Small]
-Malgranda
-[Large]
-Granda
-[Lane spacing]
-Interspaco de vojetoj
-[Ditch every]
-Interspaco de fosaĵoj
-[Wood share]
-Proporcio de ligno
-[Capital size]
-Grando de ĉefurbo
-[Oasis spacing]
-Interspaco de oazoj
-[Outposts per colony]
-Antaŭpostenoj po kolonio
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-La bazo ne konvenas al sia grundo ĉe ĉi tiu grando; altigu la agordon de grando aŭ malaltigu Kolonianojn.
+[Fort size]
+Grando de fortikaĵo
+[Bastions]
+Bastionoj
+[Four-pointed]
+Kvarpinta
+[Five-pointed]
+Kvinpinta
+[Six-pointed]
+Sespinta
+[Glacis width]
+Larĝo de glacio
+[Gates]
+Pordegoj
+[Site size]
+Grando de parceloj
+[Plot width]
+Larĝo de bedoj
+[Plot mix]
+Miksaĵo de bedoj
+[Tended]
+Prizorgataj
+[Overgrown]
+Superkreskitaj
+[Commons]
+Komunaj herbejoj
+[Few]
+Malmultaj
+[Some]
+Kelkaj
+[Home oasis size]
+Grando de hejma oazo
+[Caravanserais per colony]
+Karavanserajoj po kolonio
+[Desert]
+Dezerto
+[Open erg]
+Malferma ergo
+[Dunes and mesas]
+Dunoj kaj mezaoj
+[Canyon country]
+Kanjonlando
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Fortikaĵo ne povas atingi sian vadejon; uzu pli grandan mapon aŭ malpli da kolonioj.
+[A wall would stand on a beach; try another seed.]
+Muro starus sur strando; provu alian semon.
+[The fort is too small for its gardens; raise Fort size.]
+La fortikaĵo estas tro malgranda por siaj ĝardenoj; pligrandigu la grandon de fortikaĵo.
+[The home oasis is too small; raise Home oasis size.]
+La hejma oazo estas tro malgranda; pligrandigu la grandon de hejma oazo.
 [Braided river]
 Plektita rivero
 [Braid width]

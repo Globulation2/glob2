@@ -2500,40 +2500,58 @@ Glasiisi
 Siirtolapuutarhat
 [Caravanserai]
 Karavaaniseralji
-[Colonists]
-Uudisasukkaat
-[Garrison]
-Varuskunta
-[Compound size]
-Aitauksen koko
-[Wall gates]
-Muurin portit
-[Wadi count]
-Wadien määrä
-[Ford spacing]
-Kahlaamojen väli
-[Lot size]
-Tonttien koko
 [Mixed]
 Sekalainen
-[Small]
-Pieni
-[Large]
-Suuri
-[Lane spacing]
-Kujien väli
-[Ditch every]
-Ojien väli
-[Wood share]
-Puun osuus
-[Capital size]
-Pääkaupungin koko
-[Oasis spacing]
-Keitaiden väli
-[Outposts per colony]
-Etuvartioita siirtokuntaa kohden
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-Tukikohta ei mahdu maapohjalleen tällä koolla; suurenna kokosäädintä tai vähennä Uudisasukkaita.
+[Fort size]
+Linnoituksen koko
+[Bastions]
+Bastionit
+[Four-pointed]
+Nelisakarainen
+[Five-pointed]
+Viisisakarainen
+[Six-pointed]
+Kuusisakarainen
+[Glacis width]
+Glasiksen leveys
+[Gates]
+Portit
+[Site size]
+Palstojen koko
+[Plot width]
+Penkkien leveys
+[Plot mix]
+Penkkien sekoitus
+[Tended]
+Hoidetut
+[Overgrown]
+Villiintyneet
+[Commons]
+Yhteismaat
+[Few]
+Vähän
+[Some]
+Joitakin
+[Home oasis size]
+Kotikeitaan koko
+[Caravanserais per colony]
+Karavaaniseraljeja siirtokuntaa kohti
+[Desert]
+Aavikko
+[Open erg]
+Avoin erg
+[Dunes and mesas]
+Dyynit ja mesat
+[Canyon country]
+Kanjonimaa
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Linnoitus ei ulotu kahlaamoonsa; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[A wall would stand on a beach; try another seed.]
+Muuri seisoisi rannalla; kokeile toista siementä.
+[The fort is too small for its gardens; raise Fort size.]
+Linnoitus on liian pieni puutarhoilleen; kasvata linnoituksen kokoa.
+[The home oasis is too small; raise Home oasis size.]
+Kotikeidas on liian pieni; kasvata kotikeitaan kokoa.
 [Braided river]
 Palmikoiva joki
 [Braid width]

@@ -2500,40 +2500,58 @@ Das Glacis
 Schrebergärten
 [Caravanserai]
 Karawanserei
-[Colonists]
-Kolonisten
-[Garrison]
-Garnison
-[Compound size]
-Größe der Umfriedung
-[Wall gates]
-Mauertore
-[Wadi count]
-Anzahl der Wadis
-[Ford spacing]
-Furtabstand
-[Lot size]
-Parzellengröße
 [Mixed]
 Gemischt
-[Small]
-Klein
-[Large]
-Groß
-[Lane spacing]
-Wegabstand
-[Ditch every]
-Graben alle
-[Wood share]
-Holzanteil
-[Capital size]
-Hauptstadtgröße
-[Oasis spacing]
-Oasenabstand
-[Outposts per colony]
-Außenposten pro Kolonie
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-Die Basis passt bei dieser Größe nicht auf ihren Boden; erhöhen Sie den Größenregler oder verringern Sie die Kolonisten.
+[Fort size]
+Festungsgröße
+[Bastions]
+Bastionen
+[Four-pointed]
+Vierzackig
+[Five-pointed]
+Fünfzackig
+[Six-pointed]
+Sechszackig
+[Glacis width]
+Glacisbreite
+[Gates]
+Tore
+[Site size]
+Parzellengröße
+[Plot width]
+Beetbreite
+[Plot mix]
+Beetmischung
+[Tended]
+Gepflegt
+[Overgrown]
+Verwildert
+[Commons]
+Allmenden
+[Few]
+Wenige
+[Some]
+Einige
+[Home oasis size]
+Größe der Heimatoase
+[Caravanserais per colony]
+Karawansereien pro Kolonie
+[Desert]
+Wüste
+[Open erg]
+Offene Sandwüste
+[Dunes and mesas]
+Dünen und Tafelberge
+[Canyon country]
+Canyonland
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Eine Festung erreicht ihre Furt nicht; verwenden Sie eine größere Karte oder weniger Kolonien.
+[A wall would stand on a beach; try another seed.]
+Eine Mauer würde auf einem Strand stehen; versuchen Sie einen anderen Seed.
+[The fort is too small for its gardens; raise Fort size.]
+Die Festung ist zu klein für ihre Gärten; erhöhen Sie die Festungsgröße.
+[The home oasis is too small; raise Home oasis size.]
+Die Heimatoase ist zu klein; erhöhen Sie die Größe der Heimatoase.
 [Braided river]
 Verflochtener Fluss
 [Braid width]

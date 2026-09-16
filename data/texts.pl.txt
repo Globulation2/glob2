@@ -2500,40 +2500,58 @@ Przedstok
 Działki
 [Caravanserai]
 Karawanseraj
-[Colonists]
-Koloniści
-[Garrison]
-Garnizon
-[Compound size]
-Rozmiar obwarowań
-[Wall gates]
-Bramy w murze
-[Wadi count]
-Liczba wadi
-[Ford spacing]
-Odstęp brodów
-[Lot size]
-Rozmiar działek
 [Mixed]
 Mieszany
-[Small]
-Mały
-[Large]
-Duży
-[Lane spacing]
-Odstęp dróżek
-[Ditch every]
-Rów co
-[Wood share]
-Udział drewna
-[Capital size]
-Rozmiar stolicy
-[Oasis spacing]
-Odstęp oaz
-[Outposts per colony]
-Placówki na kolonię
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-Baza nie mieści się na swoim gruncie przy tym rozmiarze; zwiększ ustawienie rozmiaru albo zmniejsz Kolonistów.
+[Fort size]
+Rozmiar fortu
+[Bastions]
+Bastiony
+[Four-pointed]
+Czteroramienny
+[Five-pointed]
+Pięcioramienny
+[Six-pointed]
+Sześcioramienny
+[Glacis width]
+Szerokość stoku
+[Gates]
+Bramy
+[Site size]
+Rozmiar działek
+[Plot width]
+Szerokość grządek
+[Plot mix]
+Mieszanka grządek
+[Tended]
+Zadbane
+[Overgrown]
+Zarośnięte
+[Commons]
+Błonia
+[Few]
+Mało
+[Some]
+Kilka
+[Home oasis size]
+Rozmiar rodzimej oazy
+[Caravanserais per colony]
+Karawanseraje na kolonię
+[Desert]
+Pustynia
+[Open erg]
+Otwarty erg
+[Dunes and mesas]
+Wydmy i płaskowyże
+[Canyon country]
+Kraina kanionów
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Fort nie może dotrzeć do swojego brodu; użyj większej mapy lub mniejszej liczby kolonii.
+[A wall would stand on a beach; try another seed.]
+Mur stanąłby na plaży; spróbuj innego ziarna.
+[The fort is too small for its gardens; raise Fort size.]
+Fort jest za mały na swoje ogrody; zwiększ rozmiar fortu.
+[The home oasis is too small; raise Home oasis size.]
+Rodzima oaza jest za mała; zwiększ rozmiar rodzimej oazy.
 [Braided river]
 Rzeka roztokowa
 [Braid width]

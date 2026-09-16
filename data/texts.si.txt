@@ -2500,40 +2500,58 @@ Predpolje
 Vrtički
 [Caravanserai]
 Karavanseraj
-[Colonists]
-Kolonisti
-[Garrison]
-Garnizija
-[Compound size]
-Velikost obzidja
-[Wall gates]
-Vrata v zidu
-[Wadi count]
-Število vadijev
-[Ford spacing]
-Razmik brodov
-[Lot size]
-Velikost parcel
 [Mixed]
 Mešano
-[Small]
-Majhno
-[Large]
-Veliko
-[Lane spacing]
-Razmik poti
-[Ditch every]
-Razmik jarkov
-[Wood share]
-Delež lesa
-[Capital size]
-Velikost prestolnice
-[Oasis spacing]
-Razmik oaz
-[Outposts per colony]
-Postojanke na kolonijo
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-Baza pri tej velikosti ne gre na svoje zemljišče; povečajte nastavitev velikosti ali zmanjšajte Koloniste.
+[Fort size]
+Velikost trdnjave
+[Bastions]
+Bastijoni
+[Four-pointed]
+Štirikraka
+[Five-pointed]
+Peterokraka
+[Six-pointed]
+Šesterokraka
+[Glacis width]
+Širina glacisa
+[Gates]
+Vrata
+[Site size]
+Velikost parcel
+[Plot width]
+Širina gredic
+[Plot mix]
+Mešanica gredic
+[Tended]
+Negovane
+[Overgrown]
+Zaraščene
+[Commons]
+Gmajne
+[Few]
+Malo
+[Some]
+Nekaj
+[Home oasis size]
+Velikost domače oaze
+[Caravanserais per colony]
+Karavanseraji na kolonijo
+[Desert]
+Puščava
+[Open erg]
+Odprti erg
+[Dunes and mesas]
+Sipine in mize
+[Canyon country]
+Dežela kanjonov
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Trdnjava ne more doseči svojega broda; uporabite večji zemljevid ali manj kolonij.
+[A wall would stand on a beach; try another seed.]
+Zid bi stal na plaži; poskusite drugo seme.
+[The fort is too small for its gardens; raise Fort size.]
+Trdnjava je premajhna za svoje vrtove; povečajte velikost trdnjave.
+[The home oasis is too small; raise Home oasis size.]
+Domača oaza je premajhna; povečajte velikost domače oaze.
 [Braided river]
 Prepletena reka
 [Braid width]

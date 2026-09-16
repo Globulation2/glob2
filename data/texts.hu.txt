@@ -2500,40 +2500,58 @@ A Glacis
 Kiskertek
 [Caravanserai]
 Karavánszeráj
-[Colonists]
-Telepesek
-[Garrison]
-Helyőrség
-[Compound size]
-Erődítmény mérete
-[Wall gates]
-Kapuk a falban
-[Wadi count]
-Vádik száma
-[Ford spacing]
-Gázlók távolsága
-[Lot size]
-Telkek mérete
 [Mixed]
 Vegyes
-[Small]
-Kicsi
-[Large]
-Nagy
-[Lane spacing]
-Ösvények távolsága
-[Ditch every]
-Árkok távolsága
-[Wood share]
-Fa aránya
-[Capital size]
-Főváros mérete
-[Oasis spacing]
-Oázisok távolsága
-[Outposts per colony]
-Előőrsök kolóniánként
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-A bázis ezzel a mérettel nem fér el a talaján; növelje a méret beállítását vagy csökkentse a Telepesek értékét.
+[Fort size]
+Erőd mérete
+[Bastions]
+Bástyák
+[Four-pointed]
+Négyágú
+[Five-pointed]
+Ötágú
+[Six-pointed]
+Hatágú
+[Glacis width]
+Glacis szélessége
+[Gates]
+Kapuk
+[Site size]
+Parcellák mérete
+[Plot width]
+Ágyások szélessége
+[Plot mix]
+Ágyások keveréke
+[Tended]
+Gondozott
+[Overgrown]
+Elvadult
+[Commons]
+Közlegelők
+[Few]
+Kevés
+[Some]
+Néhány
+[Home oasis size]
+Szülőoázis mérete
+[Caravanserais per colony]
+Karavánszerájok kolóniánként
+[Desert]
+Sivatag
+[Open erg]
+Nyílt erg
+[Dunes and mesas]
+Dűnék és tanúhegyek
+[Canyon country]
+Kanyonvidék
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Egy erőd nem éri el a gázlóját; használj nagyobb térképet vagy kevesebb kolóniát.
+[A wall would stand on a beach; try another seed.]
+Egy fal homokparton állna; próbálj másik magot.
+[The fort is too small for its gardens; raise Fort size.]
+Az erőd túl kicsi a kertjeihez; növeld az erőd méretét.
+[The home oasis is too small; raise Home oasis size.]
+A szülőoázis túl kicsi; növeld a szülőoázis méretét.
 [Braided river]
 Fonatos folyó
 [Braid width]

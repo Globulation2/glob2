@@ -149,4 +149,55 @@ inline double nearestSiteDistance(const Torus &t, const std::vector<ShapePoint> 
 												   t.offsetY(int(sites[a].y), int(sites[b].y))));
 	return nearest;
 }
+/// Quarter turns of a stencil: a design drawn once in its own frame (offsets from an origin vertex)
+/// and stamped at every colony turned by a whole number of quarter turns, `facing` 0 to 3, so every
+/// copy covers exactly the same tiles. The two grids turn differently: a vertex (undermap corner)
+/// at offset (dx, dy) turns about the origin vertex, while tile (dx, dy), whose centre lies half a
+/// tile past its top-left corner, lands one tile over on the axes the turn flips. Evaluate a
+/// stencil's tiles at their centres and its corners at the corners, and turn each with its own rule,
+/// and the terrain and the tile masks of every copy agree. (The Glacis' forts and Caravanserai's
+/// home oases.)
+inline std::pair<int, int> turnStencilVertex(int facing, int dx, int dy)
+{
+	switch (facing & 3)
+	{
+	case 1:
+		return {-dy, dx};
+	case 2:
+		return {-dx, -dy};
+	case 3:
+		return {dy, -dx};
+	default:
+		return {dx, dy};
+	}
+}
+inline std::pair<int, int> turnStencilTile(int facing, int dx, int dy)
+{
+	switch (facing & 3)
+	{
+	case 1:
+		return {-dy - 1, dx};
+	case 2:
+		return {-dx - 1, -dy - 1};
+	case 3:
+		return {dy, -dx - 1};
+	default:
+		return {dx, dy};
+	}
+}
+/// A frame point (such as a stencil's feature centre) turned the same way, about the origin vertex.
+inline ShapePoint turnStencilPoint(int facing, ShapePoint p)
+{
+	switch (facing & 3)
+	{
+	case 1:
+		return {-p.y, p.x};
+	case 2:
+		return {-p.x, -p.y};
+	case 3:
+		return {p.y, -p.x};
+	default:
+		return p;
+	}
+}
 } // namespace MapGeneration

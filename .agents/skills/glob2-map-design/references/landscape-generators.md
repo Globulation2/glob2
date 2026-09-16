@@ -193,6 +193,17 @@ passes, warped ridge phase, inland lakes and sand patches. Everglades hides its 
 lattice through bounded jitter and a coarse wetness field. Use random topology, meaningful
 spacing and regional texture together; rotating a fixed layout alone offers limited replay value.
 
+Two drawing traps turn nature into diagrams. A route found by `cheapestWalk` along a boundary
+follows the boundary: noise in the step cost is not enough to make a stream meander, and The
+Glacis' first streams came out ruler-straight. Walk the boundary, then displace the walk sideways
+by two sine waves of wavelength and phase drawn per stream, tapered to nothing at both ends so
+streams still meet at junctions, and stroke the displaced line. And a body grown with `growWater`
+round a key of distance plus a little noise, or a `RadialShape` of low roughness, comes out a
+circle: ponds, oases and homes on the first rebuilds read as compass work until the noise weight
+dominated the key, the roughness rose to 0.2 to 0.3, and oases were stretched up to 1.8 along a
+drawn heading. Check a mosaic of seeds for circles and straight lines where the concept names
+something natural.
+
 Keep geometry-aware bounds. Fjord continent checks an offshore island against the actual coast
 in its direction, instead of a pessimistic single maximum coast radius that would reject almost
 every island. Tidal flats uses bounded placement attempts and skips optional blobs that cannot

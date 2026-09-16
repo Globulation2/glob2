@@ -2508,40 +2508,58 @@ El Glacis
 Horts
 [Caravanserai]
 Caravanserrall
-[Colonists]
-Colons
-[Garrison]
-Guarnició
-[Compound size]
-Mida del recinte
-[Wall gates]
-Portes de la muralla
-[Wadi count]
-Nombre d'uadis
-[Ford spacing]
-Separació dels guals
-[Lot size]
-Mida de les parcel·les
 [Mixed]
 Mixta
-[Small]
-Petita
-[Large]
-Gran
-[Lane spacing]
-Separació dels camins
-[Ditch every]
-Rasa cada
-[Wood share]
-Proporció de fusta
-[Capital size]
-Mida de la capital
-[Oasis spacing]
-Separació dels oasis
-[Outposts per colony]
-Avançades per colònia
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-La base no cap en el seu terreny amb aquesta mida; apugeu el control de mida o abaixeu els Colons.
+[Fort size]
+Mida del fort
+[Bastions]
+Nombre de bastions
+[Four-pointed]
+De quatre puntes
+[Five-pointed]
+De cinc puntes
+[Six-pointed]
+De sis puntes
+[Glacis width]
+Amplada del glacis
+[Gates]
+Portes
+[Site size]
+Mida de les parcel·les
+[Plot width]
+Amplada dels bancals
+[Plot mix]
+Barreja de bancals
+[Tended]
+Cuidats
+[Overgrown]
+Abandonats
+[Commons]
+Terres comunals
+[Few]
+Pocs
+[Some]
+Alguns
+[Home oasis size]
+Mida de l'oasi natal
+[Caravanserais per colony]
+Caravanserralls per colònia
+[Desert]
+Paisatge desèrtic
+[Open erg]
+Erg obert
+[Dunes and mesas]
+Dunes i meses
+[Canyon country]
+Terra de canyons
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Un fort no pot arribar al seu gual; feu servir un mapa més gran o menys colònies.
+[A wall would stand on a beach; try another seed.]
+Un mur quedaria sobre una platja; proveu una altra llavor.
+[The fort is too small for its gardens; raise Fort size.]
+El fort és massa petit per als seus horts; augmenteu la mida del fort.
+[The home oasis is too small; raise Home oasis size.]
+L'oasi natal és massa petit; augmenteu la mida de l'oasi natal.
 [Braided river]
 Riu trenat
 [Braid width]

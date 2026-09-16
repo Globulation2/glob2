@@ -17,10 +17,13 @@
 #include "Planting.h"
 #include "Sketch.h"
 #include <cassert>
+#include <cmath>
 #include <chrono>
 #include <cstdio>
 #include <set>
 #include <string>
+#include <tuple>
+#include <vector>
 
 namespace GeneratorContracts
 {
@@ -661,8 +664,148 @@ inline void locustFoodChecks()
 	puts("PASS Locust: three to five harvests per wheat tile; harvested food never regrows");
 }
 
+// The three landscapes rebuilt on 2026-09-16 (revision 2): a shared envelope of shapes and colony
+// counts, resource extremes, unattended growth that must stay inside every sealed garden, plot and
+// glacis, and deliberate damage each validator has to notice.
+inline void rebuiltLandscapeContracts()
+{
+	GenerationService service;
+	const auto generate = [&](const char *id, int wDec, int hDec, int teams, std::uint32_t seed,
+							  const std::vector<std::pair<const char *, int>> &options, Game &game)
+	{
+		D r;
+		r.setMethodDefaults(GeneratorRegistry::builtins().idOf(id));
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		for (const auto &[key, value] : options)
+			r.options[key] = value;
+		const auto result = service.generate(game, r);
+		if (!result)
+			std::fprintf(stderr, "%s contract (%d x %d, %d colonies): %s\n", id, 1 << wDec,
+						 1 << hDec, teams, result.diagnostic().c_str());
+		return std::pair{r, bool(result)};
+	};
+	const auto amounts = [](int amount)
+	{
+		std::vector<std::pair<const char *, int>> all;
+		for (const char *key :
+			 {"wheat-amount", "wood-amount", "stone-amount", "algae-amount", "fruit-amount"})
+			all.push_back({key, amount});
+		return all;
+	};
+	for (const char *id : {"glacis", "allotments", "caravanserai"})
+	{
+		const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf(id));
+		assert(definition.revision == 2);
+		// The supported envelope: square and rectangular maps, one colony to a crowd.
+		for (const auto &[w, h, teams] :
+			 {std::tuple{8, 8, 1}, std::tuple{8, 8, 4}, std::tuple{8, 8, 6}, std::tuple{9, 8, 4},
+			  std::tuple{8, 9, 8}, std::tuple{7, 7, 1}})
+		{
+			Game game(nullptr);
+			assert(generate(id, w, h, teams, 11, {}, game).second);
+		}
+		// Resource extremes, then growth left alone on the abundant map.
+		Game scarce(nullptr), abundant(nullptr);
+		assert(generate(id, 7, 7, 2, 23, amounts(0), scarce).second);
+		const auto [request, ok] = generate(id, 7, 7, 2, 23, amounts(300), abundant);
+		assert(ok);
+		setSyncRandSeed(4409);
+		for (int tick = 0; tick < 2048; ++tick)
+			abundant.map.growResources();
+		GenerationContext check(request);
+		const std::string grown = definition.validateWorld(abundant, check);
+		if (!grown.empty())
+			std::fprintf(stderr, "%s growth: %s\n", id, grown.c_str());
+		assert(grown.empty());
+		// A map far too small for its homes is refused before anything is built.
+		Game crowded(nullptr);
+		D tiny = request;
+		tiny.wDec = tiny.hDec = 6;
+		tiny.nbTeams = 4;
+		assert(service.generate(crowded, tiny).error == GenerationError::InvalidRequest);
+	}
+	{
+		// With no stone to scale and no mesas, the only stone is a designed wall: remove one and
+		// the validator must notice, for the forts and the caravanserais alike.
+		for (const auto &[id, options] :
+			 {std::pair{"glacis", std::vector<std::pair<const char *, int>>{{"stone-amount", 0}}},
+			  std::pair{"caravanserai",
+						std::vector<std::pair<const char *, int>>{{"stone-amount", 0}, {"desert", 0}}}})
+		{
+			Game game(nullptr);
+			const auto [request, ok] = generate(id, 8, 8, 4, 31, options, game);
+			assert(ok);
+			const auto &definition =
+				GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf(id));
+			GenerationContext check(request);
+			assert(definition.validateWorld(game, check).empty());
+			bool removed = false;
+			for (int i = 0; i < 256 * 256 && !removed; ++i)
+				if (game.map.getResource(i).type == STONE)
+				{
+					game.map.setNoResource(i % 256, i / 256, 1);
+					removed = true;
+				}
+			assert(removed);
+			assert(definition.validateWorld(game, check).find("wall") != std::string::npos);
+		}
+		// A glacis must stay bare: a crop planted on one is refused.
+		Game game(nullptr);
+		const auto [request, ok] = generate("glacis", 8, 8, 2, 31, {}, game);
+		assert(ok);
+		const auto &definition =
+			GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("glacis"));
+		GenerationContext check(request);
+		// The glacis ring lies some 32 to 46 tiles out from the fort's middle: try tiles out there
+		// until one is refused as glacis, putting back each one that was not.
+		const Team *team = game.teams[0];
+		bool planted = false;
+		int tries = 0;
+		for (int direction = 0; direction < 16 && !planted && tries < 48; ++direction)
+			for (int d = 34; d <= 46 && !planted && tries < 48; d += 3)
+			{
+				const int x = (team->startPosX + int(std::lround(d * std::cos(direction * kPi / 8))) + 256) % 256;
+				const int y = (team->startPosY + int(std::lround(d * std::sin(direction * kPi / 8))) + 256) % 256;
+				if (!game.map.isGrass(x, y) || game.map.isResource(x, y) || game.map.getBuilding(x, y) != NOGBID)
+					continue;
+				++tries;
+				game.map.setResource(x, y, WHEAT, 1);
+				if (definition.validateWorld(game, check).find("glacis") != std::string::npos)
+					planted = true;
+				else
+					game.map.setNoResource(x, y, 1);
+			}
+		assert(planted);
+	}
+	{
+		// A village with its plots cleared has no wheat to walk to.
+		Game game(nullptr);
+		const auto [request, ok] = generate("allotments", 8, 8, 4, 31, {}, game);
+		assert(ok);
+		const auto &definition =
+			GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("allotments"));
+		GenerationContext check(request);
+		assert(definition.validateWorld(game, check).empty());
+		const Team *team = game.teams[0];
+		for (int dy = -40; dy <= 40; ++dy)
+			for (int dx = -40; dx <= 40; ++dx)
+			{
+				const int x = (team->startPosX + dx + 256) % 256, y = (team->startPosY + dy + 256) % 256;
+				if (game.map.getResource(x, y).type == WHEAT)
+					game.map.setNoResource(x, y, 1);
+			}
+		assert(!definition.validateWorld(game, check).empty());
+	}
+	puts("PASS The Glacis, Allotments, Caravanserai: envelope, resource extremes, contained growth, "
+		 "walls, bare glacis and village crops");
+}
+
 inline void generatorContracts()
 {
+	rebuiltLandscapeContracts();
 	savannahContracts();
 	locustFoodChecks();
 	hedgerowContracts();

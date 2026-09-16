@@ -4,9 +4,7 @@
 #include "GeneratorDefinition.h"
 struct GlacisOptions
 {
-	int colonists;
-	bool garrison;
-	int compoundSize, wallGates, wadis, fordSpacing, towerLevel, towerCount;
+	int fortSize, bastions, glacisWidth, gates, towerLevel;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit GlacisOptions(const GenerationRequest &r);
 };

@@ -2510,40 +2510,58 @@ Le Glacis
 Jardins familiaux
 [Caravanserai]
 Caravansérail
-[Colonists]
-Colons
-[Garrison]
-Garnison
-[Compound size]
-Taille de l'enceinte
-[Wall gates]
-Portes du mur
-[Wadi count]
-Nombre d'oueds
-[Ford spacing]
-Espacement des gués
-[Lot size]
-Taille des lots
 [Mixed]
 Mixte
-[Small]
-Petit
-[Large]
-Grand
-[Lane spacing]
-Espacement des allées
-[Ditch every]
-Fossé toutes les
-[Wood share]
-Part de bois
-[Capital size]
-Taille de la capitale
-[Oasis spacing]
-Espacement des oasis
-[Outposts per colony]
-Avant-postes par colonie
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-La base ne tient pas sur son terrain à cette taille ; augmentez le réglage de taille ou réduisez les Colons.
+[Fort size]
+Taille du fort
+[Bastions]
+Nombre de bastions
+[Four-pointed]
+À quatre pointes
+[Five-pointed]
+À cinq pointes
+[Six-pointed]
+À six pointes
+[Glacis width]
+Largeur du glacis
+[Gates]
+Portes
+[Site size]
+Taille des parcelles
+[Plot width]
+Largeur des planches
+[Plot mix]
+Mélange des planches
+[Tended]
+Entretenues
+[Overgrown]
+À l'abandon
+[Commons]
+Communaux
+[Few]
+Peu
+[Some]
+Quelques-uns
+[Home oasis size]
+Taille de l'oasis natale
+[Caravanserais per colony]
+Caravansérails par colonie
+[Desert]
+Désert
+[Open erg]
+Erg ouvert
+[Dunes and mesas]
+Dunes et mesas
+[Canyon country]
+Pays de canyons
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Un fort ne peut pas atteindre son gué ; utilisez une carte plus grande ou moins de colonies.
+[A wall would stand on a beach; try another seed.]
+Un mur se trouverait sur une plage ; essayez une autre graine.
+[The fort is too small for its gardens; raise Fort size.]
+Le fort est trop petit pour ses jardins ; augmentez la taille du fort.
+[The home oasis is too small; raise Home oasis size.]
+L'oasis natale est trop petite ; augmentez la taille de l'oasis natale.
 [Braided river]
 Rivière en tresses
 [Braid width]

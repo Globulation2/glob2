@@ -2496,40 +2496,58 @@ Emoji
 市民農園
 [Caravanserai]
 キャラバンサライ
-[Colonists]
-入植者
-[Garrison]
-守備隊
-[Compound size]
-城郭の大きさ
-[Wall gates]
-城壁の門数
-[Wadi count]
-ワジの数
-[Ford spacing]
-浅瀬の間隔
-[Lot size]
-区画の大きさ
 [Mixed]
 混合
-[Small]
-小
-[Large]
-大
-[Lane spacing]
-小道の間隔
-[Ditch every]
-溝の間隔
-[Wood share]
-木材の割合
-[Capital size]
-首都の大きさ
-[Oasis spacing]
-オアシスの間隔
-[Outposts per colony]
-コロニーごとの前哨数
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-この大きさでは拠点が地面に収まりません。大きさの設定を上げるか、入植者を減らしてください。
+[Fort size]
+要塞の大きさ
+[Bastions]
+稜堡
+[Four-pointed]
+四稜
+[Five-pointed]
+五稜
+[Six-pointed]
+六稜
+[Glacis width]
+斜堤の幅
+[Gates]
+門
+[Site size]
+区画の大きさ
+[Plot width]
+畝の幅
+[Plot mix]
+畝の構成
+[Tended]
+手入れ済み
+[Overgrown]
+荒れ放題
+[Commons]
+共有地
+[Few]
+少ない
+[Some]
+いくつか
+[Home oasis size]
+故郷のオアシスの大きさ
+[Caravanserais per colony]
+植民地ごとの隊商宿
+[Desert]
+砂漠
+[Open erg]
+開けた砂砂漠
+[Dunes and mesas]
+砂丘とメサ
+[Canyon country]
+峡谷地帯
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+要塞が浅瀬に届きません。より大きなマップか、より少ない植民地を使ってください。
+[A wall would stand on a beach; try another seed.]
+壁が砂浜の上に立ってしまいます。別のシードを試してください。
+[The fort is too small for its gardens; raise Fort size.]
+要塞が菜園には小さすぎます。要塞の大きさを上げてください。
+[The home oasis is too small; raise Home oasis size.]
+故郷のオアシスが小さすぎます。故郷のオアシスの大きさを上げてください。
 [Braided river]
 網状河川
 [Braid width]

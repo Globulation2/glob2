@@ -2576,40 +2576,58 @@ Glaciset
 Kolonihaver
 [Caravanserai]
 Karavanserai
-[Colonists]
-Kolonister
-[Garrison]
-Garnison
-[Compound size]
-Indhegningens størrelse
-[Wall gates]
-Porte i muren
-[Wadi count]
-Antal wadier
-[Ford spacing]
-Afstand mellem vadesteder
-[Lot size]
-Parcelstørrelse
 [Mixed]
 Blandet
-[Small]
-Lille
-[Large]
-Stor
-[Lane spacing]
-Afstand mellem stier
-[Ditch every]
-Grøft for hver
-[Wood share]
-Andel af træ
-[Capital size]
-Hovedstadens størrelse
-[Oasis spacing]
-Afstand mellem oaser
-[Outposts per colony]
-Forposter pr. koloni
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-Basen passer ikke til sin grund ved denne størrelse; hæv størrelsesindstillingen eller sænk Kolonister.
+[Fort size]
+Fæstningens størrelse
+[Bastions]
+Bastioner
+[Four-pointed]
+Firtakket
+[Five-pointed]
+Femtakket
+[Six-pointed]
+Sekstakket
+[Glacis width]
+Glacisbredde
+[Gates]
+Porte
+[Site size]
+Parcelstørrelse
+[Plot width]
+Bedbredde
+[Plot mix]
+Bedblanding
+[Tended]
+Plejede
+[Overgrown]
+Tilgroede
+[Commons]
+Fællesjorder
+[Few]
+Få
+[Some]
+Nogle
+[Home oasis size]
+Hjemoasens størrelse
+[Caravanserais per colony]
+Karavanserajer pr. koloni
+[Desert]
+Ørken
+[Open erg]
+Åben erg
+[Dunes and mesas]
+Klitter og mesaer
+[Canyon country]
+Kløftland
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+En fæstning kan ikke nå sit vadested; brug et større kort eller færre kolonier.
+[A wall would stand on a beach; try another seed.]
+En mur ville stå på en strand; prøv et andet seed.
+[The fort is too small for its gardens; raise Fort size.]
+Fæstningen er for lille til sine haver; øg fæstningens størrelse.
+[The home oasis is too small; raise Home oasis size.]
+Hjemoasen er for lille; øg hjemoasens størrelse.
 [Braided river]
 Flettet flod
 [Braid width]

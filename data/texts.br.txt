@@ -2496,40 +2496,58 @@ O Glacis
 Hortas
 [Caravanserai]
 Caravançará
-[Colonists]
-Colonos
-[Garrison]
-Guarnição
-[Compound size]
-Tamanho do recinto
-[Wall gates]
-Portões da muralha
-[Wadi count]
-Número de uádis
-[Ford spacing]
-Espaçamento dos vaus
-[Lot size]
-Tamanho dos lotes
 [Mixed]
 Misto
-[Small]
-Pequeno
-[Large]
-Grande
-[Lane spacing]
-Espaçamento das vielas
-[Ditch every]
-Vala a cada
-[Wood share]
-Proporção de madeira
-[Capital size]
-Tamanho da capital
-[Oasis spacing]
-Espaçamento dos oásis
-[Outposts per colony]
-Postos avançados por colônia
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-A base não cabe no seu terreno com este tamanho; aumente o controle de tamanho ou reduza os Colonos.
+[Fort size]
+Tamanho do forte
+[Bastions]
+Baluartes
+[Four-pointed]
+De quatro pontas
+[Five-pointed]
+De cinco pontas
+[Six-pointed]
+De seis pontas
+[Glacis width]
+Largura da esplanada
+[Gates]
+Portões
+[Site size]
+Tamanho dos lotes
+[Plot width]
+Largura dos canteiros
+[Plot mix]
+Mistura de canteiros
+[Tended]
+Cuidados
+[Overgrown]
+Abandonados
+[Commons]
+Terras comunais
+[Few]
+Poucos
+[Some]
+Alguns
+[Home oasis size]
+Tamanho do oásis natal
+[Caravanserais per colony]
+Caravançarás por colônia
+[Desert]
+Deserto
+[Open erg]
+Erg aberto
+[Dunes and mesas]
+Dunas e mesetas
+[Canyon country]
+Terra de cânions
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Um forte não consegue chegar ao seu vau; use um mapa maior ou menos colônias.
+[A wall would stand on a beach; try another seed.]
+Um muro ficaria sobre uma praia; tente outra semente.
+[The fort is too small for its gardens; raise Fort size.]
+O forte é pequeno demais para suas hortas; aumente o tamanho do forte.
+[The home oasis is too small; raise Home oasis size.]
+O oásis natal é pequeno demais; aumente o tamanho do oásis natal.
 [Braided river]
 Rio entrelaçado
 [Braid width]

@@ -4,9 +4,7 @@
 #include "GeneratorDefinition.h"
 struct CaravanseraiOptions
 {
-	int colonists;
-	bool garrison;
-	int capitalSize, oasisSpacing, outposts;
+	int oasisSize, oases, caravanserais, desert;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit CaravanseraiOptions(const GenerationRequest &r);
 };

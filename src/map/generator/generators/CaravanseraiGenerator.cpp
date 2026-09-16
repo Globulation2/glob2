@@ -1,130 +1,274 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CaravanseraiGenerator.h"
-#include "Bases.h"
+#include "BuildingType.h"
 #include "Contact.h"
 #include "Drawing.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
+#include "Growth.h"
+#include "LatticeNoise.h"
 #include "Orbits.h"
+#include "Patterns.h"
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Resources.h"
 #include "Roads.h"
 #include "Room.h"
 #include "Routes.h"
+#include "Settlements.h"
 #include "Sketch.h"
+#include "Walls.h"
 #include <algorithm>
+#include <array>
+#include <climits>
 #include <cmath>
 #include <cstdint>
 #include <string>
 #include <vector>
 using namespace MapGeneration;
 
-// Caravanserai: every colony starts with a finished capital - its whole base, two stocked towers,
-// thirty-odd colonists and a garrison - on a disc of grass with a pond and fields enough to live
-// on, and nothing else: no stone, no fruit, no algae at home. Everything else is desert: bare sand,
-// walkable but unbuildable and foodless, so a unit out on it is a unit away from every inn.
-// Between neighbouring capitals, half way, stand the outposts: discs of grass round a pond with a
-// quarry, an orchard of the three fruits and algae, the only stone, fruit and algae on the map,
-// each the same walk from the two capitals that share it. And along the way from every capital to
-// its outposts, spaced a supply hop apart, lie the oases: small discs of grass with a pond, room
-// for one inn and one tower, nothing more. A colony extends its reach one oasis at a time; an army
-// that outruns its oases fights hungry; whoever holds a chain of oases holds the way to the
-// outpost, and whoever cuts it starves the army beyond.
+// Caravanserai: oasis towns on a desert trade route.
 //
-// The capitals stand on a lattice (Orbits.h); every outpost is the midpoint between two
-// neighbouring capitals (Routes.h), and on flat sand straight distance is walking cost, so the
-// outposts are equidistant by construction and the validator proves the walks equal. Chains are
-// stepping stones along those straight ways.
+// WHAT IT LOOKS LIKE. A desert seen from the air: bare sand dunes in long parallel bands with
+// sparse scrub in the hollows between them, flat-topped rock mesas standing out of the sand, and
+// scattered oases, each an irregular pool ringed with green, date palms and a patch of grain. Every
+// colony's home is a large oasis town round its own lake, its shore a ring of fields and a palm
+// grove behind a sand path, the town beyond. Half way between neighbouring towns, on the caravan
+// route, stands a caravanserai: a square walled courtyard with a gate at either end and a well in
+// the middle, in an oasis of its own with orchards and a quarry. The routes between towns are
+// clear lines of sand through the scrub. (The first version was flat sand with perfect circles in
+// straight rows, 28 water tiles and 80 of wood on the whole map: nothing read as a desert and no
+// colony could build its way along the chain.)
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Sand holds no building and
-// no crop, so the desert can never be settled, only crossed, and every forward inn stands where
-// the map put an oasis; stone is permanent and the only stone is at the outposts, so upgrades
-// mean holding an outpost; fruit converts a hungry enemy, and the only fruit stands where two
-// colonies meet; and water is the one thing the map has none of between the discs, so the
-// swimming-pool turn never comes - this is a map of walks.
+// HOW IT PLAYS. Sand holds no building and no crop, so the desert can be crossed but never
+// settled: every forward inn, tower or barracks stands on an oasis, and the oases are what a colony
+// expands along. Home is rich - a lake, wheat and palms on its shore, a town's worth of building
+// room - and everything else is out in the sand: the stone and fruit are at the caravanserais,
+// which every pair of neighbours shares at equal distance, and in the rock of the mesas; the oases
+// between add forward ground, a little grain and palms. Mesas are walls of stone the routes must go
+// round, so the way to a caravanserai is not always the straight one.
+//
+// FAIRNESS. The towns stand on a lattice and are one stencil stamped by quarter turns, so every
+// home oasis, lake, field ring and palm grove is identical. Each caravanserai is the midpoint of two
+// neighbours, and the oases on the way to it are placed along each colony's straight route at the
+// same spacing; the scattered oases, mesas and dunes are noise, and the lobby's best-of-five start
+// scoring covers what they leave uneven. The validator proves every colony's walk to its nearest
+// caravanserai is within a tolerance of every other's.
 namespace
 {
-// An oasis is a disc of radius 6 with a 2x2-vertex pond (one tile of water with its beach) at one
-// side: pure grass enough for a 2x2 inn and a 2x2 tower with a walkway, which the validator counts.
-// An outpost is a disc of radius 9 with a 3x3-vertex pond at its middle, its quarry and orchard
-// round the pond at radius 5. The capital's pond is 2x2 vertices at the back of its disc, four
-// tiles in from the edge so its beach never reaches the sand.
-constexpr double kOasisRadius = 6, kOutpostRadius = 9;
-constexpr int kOasisPondVertices = 2, kOutpostPondVertices = 3, kCapitalPondVertices = 2;
-constexpr int kCapitalPondInset = 4;
-// The room a capital needs beyond its base's reach: a walkway round the base, then the pond, four
-// tiles in from the edge, whose beach spoils the tile behind it for building, so the base's back
-// row stays pure grass; six tiles (the second sweep refused every capital of 14 at five).
-constexpr int kCapitalBeyondBase = 6;
-// How rough the discs' outlines are (RadialShape: four harmonics whose amplitudes sum to about
-// three times the roughness at the worst angle). A capital is nearly round, 0.04, since its base's
-// corners lie eleven tiles from its middle and the first sweep found a capital of 15 at 0.1
-// dipping under them; an outpost is 0.08 so its prizes at radius 5 always stand on grass; an
-// oasis, which only has to hold an inn and a tower, may be as ragged as 0.2.
-constexpr double kCapitalRoughness = 0.04, kOutpostRoughness = 0.08, kOasisRoughness = 0.2;
-// Every capital's fields, unscaled: wheat and wood beside its pond, where they regrow. The first
-// headless play (four AIs, 20000 ticks) starved one colony down to a single worker on 24 tiles of
-// wheat, so a capital now has 36 of wheat and 20 of wood, an oasis a patch of 8 wheat beside its
-// pond (a caravanserai stocks food: a forward inn there has something to fill itself with) and an
-// outpost 16 round its pond, the granary an outpost is held for besides its stone and fruit. All
-// unscaled: they are what keeps every colony alive, not the map's ambient layer.
-constexpr int kHomeWheat = 36, kHomeWood = 20, kOasisWheat = 8, kOutpostWheat = 16;
-// Where the orchard and the quarry stand round an outpost's pond, and how big: the groves a tile
-// clump each, the quarry a clump of radius 2 (some thirteen tiles, which never run out).
-constexpr double kPrizeRadius = 5, kOrchardSpacing = 3.5;
-constexpr int kQuarryRadius = 2;
-// The least straight-line ground a chain must have between a capital's edge and an outpost's for
-// the outpost to stand at all; below it two capitals are simply too close.
-constexpr int kLeastChain = 4;
-// How far an oasis keeps from anything else: half a spacing from another oasis, and its own
-// radius plus a gap from any capital or outpost, so no two discs' beaches meet.
-constexpr double kDiscGap = 3;
-// The tolerance the validator allows between colonies' walks to an outpost or an oasis: where the
-// colonists stand round the swarm (up to kGarrisonReach rings out) and which way the base faces
-// account for a dozen steps; the design accounts for none.
-constexpr int kWalkTolerance = 16;
-// Algae in every outpost pond: one clump per 4 water tiles, so a 2x2 pond gets its clump.
-constexpr int kAlgaeTilesPerClump = 4;
+// The home oasis, in its own frame: an outline of `oasis-size` tiles radius, a lake at the back of
+// it a third as wide, a ring of fields round the lake's shore closed off from the town by a sand
+// path, and a palm grove in the back of the ring between two sand spokes.
+constexpr double kHomeRoughness = 0.2, kLakeShare = 0.3, kLakeBack = 0.42, kLakeRoughness = 0.3;
+constexpr double kFieldWidth = 6, kGroveHalfAngle = 0.8;
+// The home's crops: wheat on this share of the ring's ground, palms on this share of the grove's,
+// scaled by the amounts but never below floors that feed an opening.
+constexpr int kWheatPercent = 55, kPalmPercent = 60, kWheatFloor = 60, kPalmFloor = 30;
+// A home must keep this much town (4x4 build sites) and this much field ring.
+constexpr int kLeastTownSites = 60, kLeastFieldTiles = 120, kDefaultHome = 24;
+// A caravanserai: a courtyard wall at Chebyshev distance 6 from its middle, gates three tiles
+// wide at both ends of the route, a well of 2x2 corners in the middle, standing in an oasis of
+// radius 14 with a pond to one side of the route.
+constexpr int kSeraiWall = 6, kSeraiGateHalf = 1, kWellCorners = 2;
+constexpr double kSeraiOasis = 14, kSeraiRoughness = 0.1, kSeraiPondOut = 11, kSeraiPond = 2.8;
+// A caravanserai's prizes: the three fruits in groves beside the courtyard, a quarry beside them,
+// grain and palms by the pond. Groves and quarry scale with their amounts.
+constexpr int kGroveTiles = 5, kQuarryRadius = 2, kSeraiWheat = 18, kSeraiPalms = 10;
+// Oases: route oases every `kWaySpacing` tiles along each colony's straight way to a caravanserai,
+// and scattered oases one per so many desert tiles by the Oases control; radii 4 to 8, a pond at
+// a third of the radius, off centre; palms and grain in proportion.
+constexpr int kWaySpacing = 32, kLeastOasis = 4, kMostOasis = 10, kOasisGap = 8;
+constexpr int kDesertTilesPerOasis[3] = {3200, 1800, 1100};
+// Mesas: the noise field's top share of the open desert by the Desert control, kept this far from
+// every oasis, town and route.
+constexpr int kMesaPercent[3] = {0, 5, 11};
+constexpr int kMesaClearance = 6;
+// Dunes: scrub on this share of the corners in the hollows between dune bands, never two side by
+// side (a single grass corner is scrub; four make a buildable tile), and not on the routes.
+constexpr int kHollowPercent = 38, kScrubPercent = 16;
+constexpr double kDuneSpacing = 12;
+constexpr int kHaloWidth = 3, kHaloPercent = 30;
+constexpr int kLeastHomeDistance = 16;
+// Lattices that are not exact (six colonies on a rectangle) leave neighbours at unequal distances,
+// which the caravanserai walk inherits; 32 steps is a quarter of a 256 map's colony spacing.
+constexpr int kWalkTolerance = 32;
+
+enum HomeKind : signed char
+{
+	kNotHome,
+	kTown,
+	kFields,
+	kGrove,
+	kLake
+};
+
+struct HomeStencil
+{
+	int extent = 0;
+	double radius = 0;
+	std::vector<unsigned char> vertex;
+	std::vector<signed char> kind;
+	std::array<int, 3> pure{}; // town, fields, grove pure grass tiles, beaches laid
+	int townSites = 0;
+	ShapePoint swarm{}, lake{};
+	int side() const { return 2 * extent + 1; }
+	int index(int dx, int dy) const { return (dy + extent) * side() + dx + extent; }
+};
+
+HomeStencil buildHome(double radius, GenerationContext &context)
+{
+	HomeStencil s;
+	s.radius = radius;
+	const RadialShape outline(radius, kHomeRoughness, context, "caravanserai-home");
+	const RadialShape lake(kLakeShare * radius, kLakeRoughness, context, "caravanserai-lake");
+	s.lake = {-kLakeBack * radius, 0};
+	s.extent = int(std::ceil(outline.maximumRadius())) + 3;
+	const int side = s.side();
+	s.vertex.assign(size_t(side) * side, SAND);
+	s.kind.assign(size_t(side) * side, kNotHome);
+	const auto classify = [&](double px, double py, bool vertex)
+	{
+		const double r = std::hypot(px, py);
+		if (r > outline.radiusAt(std::atan2(py, px)))
+			return std::pair<signed char, unsigned char>{kNotHome, SAND};
+		const double lx = px - s.lake.x, ly = py - s.lake.y;
+		const double angle = std::atan2(ly, lx), fromLake = std::hypot(lx, ly);
+		const double shore = fromLake - lake.radiusAt(angle);
+		if (shore <= 0)
+			return std::pair<signed char, unsigned char>{kLake, WATER};
+		if (shore <= kFieldWidth + 1)
+		{
+			const double off = std::abs(std::remainder(angle - kPi, 2 * kPi));
+			const double spokeGap = std::abs(off - kGroveHalfAngle) * fromLake;
+			if (vertex && (shore > kFieldWidth || spokeGap <= 0.6))
+				return std::pair<signed char, unsigned char>{kFields, SAND};
+			if (shore <= kFieldWidth)
+				return std::pair<signed char, unsigned char>{off < kGroveHalfAngle ? kGrove : kFields,
+															 GRASS};
+			return std::pair<signed char, unsigned char>{kTown, GRASS};
+		}
+		return std::pair<signed char, unsigned char>{kTown, GRASS};
+	};
+	for (int dy = -s.extent; dy <= s.extent; ++dy)
+		for (int dx = -s.extent; dx <= s.extent; ++dx)
+		{
+			const int at = s.index(dx, dy);
+			s.vertex[at] = classify(dx, dy, true).second;
+			s.kind[at] = classify(dx + 0.5, dy + 0.5, false).first;
+		}
+	// Pure grass once the lake's beach is laid, by kind; and the town's 4x4 build sites.
+	const auto after = [&](int vx, int vy)
+	{
+		const unsigned char v = s.vertex[s.index(vx, vy)];
+		if (v != GRASS)
+			return v;
+		for (int ny = vy - 1; ny <= vy + 1; ++ny)
+			for (int nx = vx - 1; nx <= vx + 1; ++nx)
+				if (std::abs(nx) <= s.extent && std::abs(ny) <= s.extent &&
+					s.vertex[s.index(nx, ny)] == WATER)
+					return static_cast<unsigned char>(SAND);
+		return v;
+	};
+	std::vector<unsigned char> townPure(size_t(side) * side, 0);
+	for (int dy = -s.extent; dy < s.extent; ++dy)
+		for (int dx = -s.extent; dx < s.extent; ++dx)
+		{
+			const bool pure = after(dx, dy) == GRASS && after(dx + 1, dy) == GRASS &&
+							  after(dx, dy + 1) == GRASS && after(dx + 1, dy + 1) == GRASS;
+			const signed char kind = s.kind[s.index(dx, dy)];
+			if (!pure)
+				continue;
+			if (kind == kTown)
+			{
+				++s.pure[0];
+				townPure[s.index(dx, dy)] = 1;
+			}
+			else if (kind == kFields)
+				++s.pure[1];
+			else if (kind == kGrove)
+				++s.pure[2];
+		}
+	// The swarm goes where the town is widest: the tile farthest from any tile that is not town
+	// (ties forward). Numbi searches for a first building only when its swarm's surroundings are
+	// open, and a swarm set a fixed distance forward stood against the field ring's path, where no
+	// Numbi colony ever built (a 45,000-tick Numbi tournament, 2026-09-16).
+	{
+		int best = -1, bestTile = -1;
+		for (int dy = -s.extent + 1; dy < s.extent - 1; ++dy)
+			for (int dx = -s.extent + 1; dx < s.extent - 1; ++dx)
+			{
+				if (s.kind[s.index(dx, dy)] != kTown)
+					continue;
+				int clear = 0;
+				bool open = true;
+				while (open && clear < s.extent)
+				{
+					++clear;
+					for (int oy = -clear; oy <= clear && open; ++oy)
+						for (int ox = -clear; ox <= clear && open; ++ox)
+						{
+							if (std::max(std::abs(ox), std::abs(oy)) != clear)
+								continue;
+							const int x = dx + ox, y = dy + oy;
+							open = std::abs(x) <= s.extent && std::abs(y) <= s.extent &&
+								   s.kind[s.index(x, y)] == kTown;
+						}
+				}
+				const int score = clear * 1000 + dx * 10 - std::abs(dy);
+				if (score > best)
+				{
+					best = score;
+					bestTile = s.index(dx, dy);
+				}
+			}
+		const int side = s.side();
+		s.swarm = {double(bestTile % side - s.extent) + 0.5, double(bestTile / side - s.extent) + 0.5};
+	}
+	for (int dy = -s.extent; dy + 3 < s.extent; ++dy)
+		for (int dx = -s.extent; dx + 3 < s.extent; ++dx)
+		{
+			bool fits = true;
+			for (int y = 0; y < 4 && fits; ++y)
+				for (int x = 0; x < 4 && fits; ++x)
+					fits = townPure[s.index(dx + x, dy + y)];
+			s.townSites += fits;
+		}
+	return s;
+}
+
+struct Serai
+{
+	ShapePoint centre;
+	int facing; // quarter turn of the route through it
+	int pondSide;
+	int a, b;
+};
+
+struct Oasis
+{
+	ShapePoint centre, pond;
+	double radius;
+};
 
 struct Layout
 {
 	Torus t{1, 1};
+	HomeStencil home;
 	std::vector<ShapePoint> homes;
-	std::vector<BaseSite> sites;
-	BasePlan plan;
-	int capital = 0, spacing = 0;
-	std::vector<ShapePoint> outposts, oases, homePonds;
-	std::vector<std::pair<int, int>> pairs; // the two colonies each outpost stands between
-	std::vector<int> capitalOf, outpostOf, oasisOf; // per tile, or -1
-	std::vector<unsigned char> water;
+	std::vector<int> facings;
+	std::vector<Serai> serais;
+	std::vector<Oasis> oases;
 	TerrainSketch sketch;
+	std::vector<signed char> homeKind;
+	std::vector<int> homeOf;       // colony of every home tile, else -1
+	std::vector<int> seraiOf;      // caravanserai of every tile in its oasis, else -1
+	std::vector<int> courtyardOf;  // caravanserai of every courtyard tile, else -1
+	std::vector<int> oasisOf;      // scattered or route oasis of every tile, else -1
+	std::vector<unsigned char> wall, gate, mesa, route;
 	std::string failure;
 };
-
-// Stamps a square of water vertices `size` across with its top-left at (x, y).
-void stampPond(Layout &L, int x, int y, int size)
-{
-	for (int dy = 0; dy < size; ++dy)
-		for (int dx = 0; dx < size; ++dx)
-			L.water[L.t.at(x + dx, y + dy)] = 1;
-}
-
-// The sketch from the discs and ponds: sand everywhere but the discs' grass and the ponds' water.
-void writeSketch(Layout &L)
-{
-	const int n = L.t.size();
-	L.sketch.assign(n, SAND);
-	for (int i = 0; i < n; ++i)
-	{
-		if (L.capitalOf[i] >= 0 || L.outpostOf[i] >= 0 || L.oasisOf[i] >= 0)
-			L.sketch[i] = GRASS;
-		if (L.water[i])
-			L.sketch[i] = WATER;
-	}
-}
 
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
@@ -133,166 +277,321 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.t = {1 << request.wDec, 1 << request.hDec};
 	const Torus &t = L.t;
 	const int n = t.size(), teams = std::max(1, request.nbTeams);
-	L.plan = standardBasePlan(baseTier(o.colonists), BaseKind::Finished, 2, false);
 
-	L.homes = latticeSites(t.w, t.h, teams, context.bounded("caravanserai-layout", std::uint32_t(t.w)),
-						   context.bounded("caravanserai-layout", std::uint32_t(t.h)))
-				  .sites;
+	const int offsetX = int(context.bounded("caravanserai-layout", std::uint32_t(t.w)));
+	const int offsetY = int(context.bounded("caravanserai-layout", std::uint32_t(t.h)));
+	L.homes = latticeSites(t.w, t.h, teams, offsetX, offsetY).sites;
+	for (ShapePoint &h : L.homes)
+		h = {double(int(std::lround(h.x)) % t.w), double(int(std::lround(h.y)) % t.h)};
 	dealStarts(context, L.homes);
+	// One facing for every colony, drawn once per map. A home stencil turned by different quarter
+	// turns covers identical tiles, but the AIs scan along the map's axes: with a facing per colony,
+	// Numbi colonies on The Glacis grew to 60 in one facing and 20 to 30 in the others (rotation
+	// tournaments, 2026-09-16). The same facing makes every home an exact translation of the others.
+	L.facings.assign(teams, int(context.bounded("caravanserai-facing", 4)));
+
+	// Negotiate the home into the lattice: a caravanserai needs its whole oasis between two homes.
 	const double nearest = nearestSiteDistance(t, L.homes);
-
-	// The outposts: one between every colony and each of its `outposts` nearest neighbours, at the
-	// midpoint; a pair shared by two colonies is one outpost.
-	// A pair whose midpoint lands on or beside a third capital (on a single row of colonies a
-	// colony's third neighbour is two steps along it, and the "outpost" between them would be the
-	// colony in the middle) is no route at all and is dropped.
-	for (const auto &pair : nearestPairs(t, L.homes, o.outposts))
+	int radius = o.oasisSize;
+	bool serais = teams > 1;
+	const auto homeReach = [&] { return radius * (1 + 3 * kHomeRoughness) + 3; };
+	while (teams > 1 && nearest < 2 * (homeReach() + kSeraiOasis + 4) && radius > kLeastHomeDistance)
 	{
-		const ShapePoint middle = midpointAcross(t, L.homes[pair.first], L.homes[pair.second]);
-		bool blocked = false;
-		for (size_t k = 0; k < L.homes.size() && !blocked; ++k)
-			blocked = int(k) != pair.first && int(k) != pair.second &&
-					  siteDistance(t, middle, L.homes[k]) < o.capitalSize + kOutpostRadius + kDiscGap;
-		if (blocked)
-		{
-			context.telemetry.fallback("caravanserai.outposts.blocked",
-									   "An outpost between two colonies would stand on a third");
-			continue;
-		}
-		L.pairs.push_back(pair);
-		L.outposts.push_back(middle);
+		radius -= 2;
+		context.telemetry.fallback("caravanserai.home.shrunk", "Homes shrank for their caravanserais");
 	}
-
-	// The capital: as big as asked, never smaller than its base needs, and never so big that an
-	// outpost cannot stand between two of them (then it shrinks, then the map is refused).
-	const int leastCapital = L.plan.reach + kCapitalBeyondBase;
-	L.capital = std::max(o.capitalSize, leastCapital);
-	if (L.capital > leastCapital && L.capital > o.capitalSize)
-		context.telemetry.fallback("caravanserai.capital.grown",
-								   "Capital grew to hold its base, pond and fields");
-	const auto chainRoom = [&]
-	{ return nearest / 2 - L.capital - kOutpostRadius; };
-	while (!L.pairs.empty() && chainRoom() < kLeastChain && L.capital > leastCapital)
+	if (teams > 1 && nearest < 2 * (homeReach() + kSeraiOasis + 4))
 	{
-		--L.capital;
-		context.telemetry.fallback("caravanserai.capital.shrunk",
-								   "Capitals shrank so an outpost stands between them");
+		serais = false;
+		context.telemetry.fallback("caravanserai.serais.omitted", "No room for caravanserais");
 	}
-	if (!L.pairs.empty() && chainRoom() < kLeastChain)
+	if (nearest < 2 * homeReach() + 8 || std::min(t.w, t.h) < 2 * homeReach() + 8)
 	{
 		L.failure = "Too many colonies for this map; use a bigger map or fewer colonies.";
 		return L;
 	}
-
-	// Each capital faces its first outpost (the way its colonists will mostly go), or any way when
-	// it has none. The site is the disc's middle; the pond stands at the back.
-	for (size_t k = 0; k < L.homes.size(); ++k)
+	context.telemetry.measure("caravanserai.home.radius", radius);
+	L.home = buildHome(radius, context);
+	const HomeStencil &s = L.home;
+	context.telemetry.measure("caravanserai.home.town-sites", s.townSites);
+	context.telemetry.measure("caravanserai.home.field-tiles", s.pure[1]);
+	context.telemetry.measure("caravanserai.home.grove-tiles", s.pure[2]);
+	// The floors are for the default home; a home shrunk to fit a crowded map keeps them in
+	// proportion, never below a third.
+	const double scale = std::max(0.33, double(radius * radius) / (kDefaultHome * kDefaultHome));
+	if (s.townSites < kLeastTownSites * scale || s.pure[1] < kLeastFieldTiles * scale)
 	{
-		int facing = int(context.bounded("caravanserai-facing", 4));
-		for (const auto &pair : L.pairs)
-			if (pair.first == int(k) || pair.second == int(k))
-			{
-				const ShapePoint other = L.homes[pair.first == int(k) ? pair.second : pair.first];
-				facing = quarterTurn(headingAcross(t, L.homes[k], other));
-				break;
-			}
-		L.sites.push_back({int(std::lround(L.homes[k].x)) % t.w, int(std::lround(L.homes[k].y)) % t.h, facing});
+		L.failure = "The home oasis is too small; raise Home oasis size.";
+		return L;
 	}
 
-	// The oases: stepping stones from every capital towards each of its outposts, a spacing apart
-	// from the capital's edge, stopping half a spacing short of the outpost's edge, kept apart from
-	// each other and from every disc. A chain may have none on a small map (the outpost is then a
-	// walk across bare sand); the spacing is asked for, never negotiated, since a shorter chain is
-	// the map's answer to a cramped one.
-	L.spacing = o.oasisSpacing;
-	const auto tooNear = [&](ShapePoint p)
-	{
-		for (const ShapePoint &home : L.homes)
-			if (siteDistance(t, p, home) < L.capital + kOasisRadius + kDiscGap)
-				return true;
-		for (const ShapePoint &outpost : L.outposts)
-			if (siteDistance(t, p, outpost) < kOutpostRadius + kOasisRadius + kDiscGap)
-				return true;
-		for (const ShapePoint &oasis : L.oases)
-			if (siteDistance(t, p, oasis) < std::max(L.spacing / 2.0, 2 * kOasisRadius + kDiscGap))
-				return true;
-		return false;
-	};
-	for (size_t p = 0; p < L.pairs.size(); ++p)
-		for (const int k : {L.pairs[p].first, L.pairs[p].second})
-			for (const ShapePoint &stone :
-				 waypointsAlong(t, L.homes[k], L.outposts[p], L.spacing, L.capital + L.spacing / 2.0,
-								kOutpostRadius + L.spacing / 2.0))
-				if (!tooNear(stone))
-					L.oases.push_back(stone);
-	context.telemetry.measure("caravanserai.capital.actual", L.capital);
-	context.telemetry.measure("caravanserai.outposts.actual", int(L.outposts.size()));
-	context.telemetry.measure("caravanserai.oases.actual", int(L.oases.size()));
-
-	// The discs and ponds. Capitals first, so their ground wins where a rough edge would touch.
-	L.capitalOf.assign(n, -1);
-	L.outpostOf.assign(n, -1);
+	L.sketch.assign(n, SAND);
+	L.homeKind.assign(n, kNotHome);
+	L.homeOf.assign(n, -1);
+	L.seraiOf.assign(n, -1);
+	L.courtyardOf.assign(n, -1);
 	L.oasisOf.assign(n, -1);
-	L.water.assign(n, 0);
-	const RadialShape capital(L.capital, kCapitalRoughness, context, "caravanserai-capital");
-	const RadialShape outpost(kOutpostRadius, kOutpostRoughness, context, "caravanserai-outpost");
-	const RadialShape oasis(kOasisRadius, kOasisRoughness, context, "caravanserai-oasis");
-	for (size_t k = 0; k < L.sites.size(); ++k)
+	L.wall.assign(n, 0);
+	L.gate.assign(n, 0);
+	L.mesa.assign(n, 0);
+	L.route.assign(n, 0);
+	std::vector<unsigned char> feature(n, 0); // corners any oasis, home or courtyard owns
+	for (int k = 0; k < teams; ++k)
 	{
-		forEachTileInShape(t, L.sites[k].x, L.sites[k].y, capital, 0,
-						   [&](int i, double, double) { L.capitalOf[i] = int(k); });
-		// The pond by its frame tile, not its vertices: a block of vertices turned by the facing
-		// lands a tile off at two of the four facings (a vertex's tile is its lower-right neighbour),
-		// which the third sweep found putting a beach on a base's back row. baseFootprint gives the
-		// tile the frame tile turns to; the pond's vertices are that tile's corners.
-		const BaseFootprint pondTile =
-			baseFootprint(L.sites[k], -(L.capital - kCapitalPondInset), 0, 1, 1);
-		const int pond = t.at(L.sites[k].x + pondTile.dx, L.sites[k].y + pondTile.dy);
-		stampPond(L, pond % t.w, pond / t.w, kCapitalPondVertices);
-		L.homePonds.push_back({double(pond % t.w), double(pond / t.w)});
+		const int cx = int(L.homes[k].x), cy = int(L.homes[k].y);
+		for (int dy = -s.extent; dy <= s.extent; ++dy)
+			for (int dx = -s.extent; dx <= s.extent; ++dx)
+			{
+				const int at = s.index(dx, dy);
+				const auto [tx, ty] = turnStencilTile(L.facings[k], dx, dy);
+				const int i = t.at(cx + tx, cy + ty);
+				if (s.kind[at] != kNotHome)
+				{
+					L.homeKind[i] = s.kind[at];
+					L.homeOf[i] = k;
+				}
+				const auto [vx, vy] = turnStencilVertex(L.facings[k], dx, dy);
+				const int v = t.at(cx + vx, cy + vy);
+				if (s.vertex[at] != SAND || s.kind[at] != kNotHome)
+				{
+					L.sketch[v] = TerrainType(s.vertex[at]);
+					feature[v] = 1;
+				}
+			}
 	}
-	for (size_t p = 0; p < L.outposts.size(); ++p)
-	{
-		forEachTileInShape(t, L.outposts[p].x, L.outposts[p].y, outpost, 0, [&](int i, double, double)
-						   { if (L.capitalOf[i] < 0) L.outpostOf[i] = int(p); });
-		stampPond(L, int(std::lround(L.outposts[p].x)) - kOutpostPondVertices / 2,
-				  int(std::lround(L.outposts[p].y)) - kOutpostPondVertices / 2, kOutpostPondVertices);
-	}
-	for (size_t q = 0; q < L.oases.size(); ++q)
-	{
-		forEachTileInShape(t, L.oases[q].x, L.oases[q].y, oasis, 0, [&](int i, double, double)
-						   { if (L.capitalOf[i] < 0 && L.outpostOf[i] < 0) L.oasisOf[i] = int(q); });
-		// The pond to one side of the oasis, off the line of the chain, so the way through stays
-		// grass: three tiles from the middle, on the side a draw picks.
-		const double side = context.bounded("caravanserai-oasis", 2) ? 1.0 : -1.0;
-		stampPond(L, int(std::lround(L.oases[q].x + side * 3)) - kOasisPondVertices / 2,
-				  int(std::lround(L.oases[q].y)) - kOasisPondVertices / 2, kOasisPondVertices);
-	}
-	writeSketch(L);
 
-	// The bases fit their capitals, proved on the sketch as the game will see it.
+	// Caravanserais between neighbours.
+	if (serais)
+	{
+		const RadialShape seraiOasis(kSeraiOasis, kSeraiRoughness, context, "caravanserai-serai");
+		for (const auto &[a, b] : nearestPairs(t, L.homes, o.caravanserais))
+		{
+			ShapePoint mid = midpointAcross(t, L.homes[a], L.homes[b]);
+			mid = {std::floor(mid.x), std::floor(mid.y)};
+			bool clear = true;
+			for (const Serai &other : L.serais)
+				clear = clear && siteDistance(t, mid, other.centre) >= 2 * kSeraiOasis + 4;
+			for (int k = 0; k < teams; ++k)
+				clear = clear && siteDistance(t, mid, L.homes[k]) >= homeReach() + kSeraiOasis + 2;
+			if (!clear)
+			{
+				context.telemetry.fallback("caravanserai.serai.crowded",
+										   "A caravanserai had no room between its homes", a * teams + b);
+				continue;
+			}
+			const Serai serai{mid, quarterTurn(headingAcross(t, L.homes[a], L.homes[b])),
+							  int(context.bounded("caravanserai-serai", 2)) * 2 - 1, a, b};
+			const int index = int(L.serais.size());
+			L.serais.push_back(serai);
+			const int cx = int(mid.x), cy = int(mid.y);
+			forEachTileInShape(t, mid.x, mid.y, seraiOasis, 0,
+							   [&](int i, double, double)
+							   {
+								   L.sketch[i] = GRASS;
+								   feature[i] = 1;
+								   L.seraiOf[i] = index;
+							   });
+			const bool alongX = serai.facing % 2 == 0;
+			for (int dy = -kSeraiWall; dy <= kSeraiWall; ++dy)
+				for (int dx = -kSeraiWall; dx <= kSeraiWall; ++dx)
+				{
+					const int i = t.at(cx + dx, cy + dy);
+					L.sketch[i] = GRASS;
+					L.sketch[t.at(cx + dx + 1, cy + dy + 1)] = GRASS;
+					const int ring = std::max(std::abs(dx), std::abs(dy));
+					if (ring < kSeraiWall)
+						L.courtyardOf[i] = index;
+					else
+					{
+						const int along = alongX ? dx : dy, across = alongX ? dy : dx;
+						const bool door = std::abs(along) == kSeraiWall && std::abs(across) <= kSeraiGateHalf;
+						(door ? L.gate : L.wall)[i] = 1;
+					}
+				}
+			// The well, in the middle of the courtyard.
+			for (int dy = 0; dy < kWellCorners; ++dy)
+				for (int dx = 0; dx < kWellCorners; ++dx)
+					L.sketch[t.at(cx + dx, cy + dy)] = WATER;
+			// The pond, to one side of the route outside the wall.
+			const double px = alongX ? cx : cx + serai.pondSide * kSeraiPondOut;
+			const double py = alongX ? cy + serai.pondSide * kSeraiPondOut : cy;
+			for (int dy = -4; dy <= 4; ++dy)
+				for (int dx = -4; dx <= 4; ++dx)
+					if (std::hypot(dx, dy) <= kSeraiPond)
+						L.sketch[t.at(int(px) + dx, int(py) + dy)] = WATER;
+		}
+	}
+	context.telemetry.measure("caravanserai.serais", int(L.serais.size()));
+
+	// Oases: first along every colony's way to each caravanserai it shares, then scattered.
+	std::vector<unsigned char> taken = feature;
+	const auto clearOf = [&](ShapePoint p, double r)
+	{
+		for (int k = 0; k < teams; ++k)
+			if (siteDistance(t, p, L.homes[k]) < homeReach() + r + kOasisGap)
+				return false;
+		for (const Serai &serai : L.serais)
+			if (siteDistance(t, p, serai.centre) < kSeraiOasis + r + kOasisGap)
+				return false;
+		for (const Oasis &other : L.oases)
+			if (siteDistance(t, p, other.centre) < other.radius + r + kOasisGap)
+				return false;
+		return true;
+	};
+	const auto stampOasis = [&](ShapePoint centre, double r)
+	{
+		// Oases vary: rougher outlines, and most drawn out along a hollow between the dunes.
+		const RadialShape outline(r, 0.3, context, "caravanserai-oases");
+		const double stretch = 1.0 + context.bounded("caravanserai-oases", 80) / 100.0;
+		const double heading = context.bounded("caravanserai-oases", 628) / 100.0;
+		const double pondAngle = context.bounded("caravanserai-oases", 628) / 100.0;
+		const RadialShape pond(std::max(1.6, 0.32 * r), 0.3, context, "caravanserai-oases");
+		const ShapePoint pondAt = polarPoint(centre.x, centre.y, 0.3 * r, pondAngle);
+		const int index = int(L.oases.size());
+		L.oases.push_back({centre, pondAt, r});
+		const int reach = int(std::ceil(outline.maximumRadius() * stretch)) + 1;
+		for (int dy = -reach; dy <= reach; ++dy)
+			for (int dx = -reach; dx <= reach; ++dx)
+			{
+				const double along = (dx * std::cos(heading) + dy * std::sin(heading)) / stretch;
+				const double across = (-dx * std::sin(heading) + dy * std::cos(heading)) * std::sqrt(stretch);
+				if (std::hypot(along, across) > outline.radiusAt(std::atan2(across, along)))
+					continue;
+				const int i = t.at(int(centre.x) + dx, int(centre.y) + dy);
+				L.sketch[i] = GRASS;
+				feature[i] = 1;
+				L.oasisOf[i] = index;
+			}
+		forEachTileInShape(t, pondAt.x, pondAt.y, pond, 0,
+						   [&](int i, double, double) { L.sketch[i] = WATER; });
+	};
+	int routeOases = 0;
+	for (const Serai &serai : L.serais)
+		for (const int k : {serai.a, serai.b})
+			for (const ShapePoint &p :
+				 waypointsAlong(t, L.homes[k], serai.centre, kWaySpacing, homeReach() + kWaySpacing / 2.0,
+								kSeraiOasis + kWaySpacing / 2.0))
+			{
+				const double r = kLeastOasis + context.bounded("caravanserai-oases", kMostOasis - kLeastOasis + 1);
+				if (clearOf(p, r))
+				{
+					stampOasis(p, r);
+					++routeOases;
+				}
+			}
+	int desert = 0;
+	for (int i = 0; i < n; ++i)
+		desert += !feature[i];
+	const int wanted = desert / kDesertTilesPerOasis[std::clamp(o.oases, 0, 2)];
+	int scattered = 0;
+	for (int attempt = 0; attempt < 40 * wanted && scattered < wanted; ++attempt)
+	{
+		const int i = int(context.bounded("caravanserai-scatter", std::uint32_t(n)));
+		const double r = kLeastOasis + context.bounded("caravanserai-scatter", kMostOasis - kLeastOasis + 1);
+		const ShapePoint p{double(i % t.w), double(i / t.w)};
+		if (!clearOf(p, r))
+			continue;
+		stampOasis(p, r);
+		++scattered;
+	}
+	context.telemetry.measure("caravanserai.oases.route", routeOases);
+	context.telemetry.measure("caravanserai.oases.scattered", scattered);
+
+	// The caravan routes: from every home to each caravanserai it shares, round the features.
+	const std::vector<int> fromFeature = stepsFrom(t, feature);
+	const std::vector<int> relief = fractalNoise(t.w, t.h, 48, 3, context.stream("caravanserai-mesas"));
+	for (const Serai &serai : L.serais)
+		for (const int k : {serai.a, serai.b})
+		{
+			const std::vector<int> path = cheapestWalk(
+				t, GridNeighbors::Eight, {t.at(int(L.homes[k].x), int(L.homes[k].y))},
+				tileMask(t, {t.at(int(serai.centre.x), int(serai.centre.y))}),
+				[&](int, int to, int dx, int dy)
+				{ return (dx && dy ? 14 : 10) + (L.oasisOf[to] >= 0 ? 0 : 4) + relief[to] / 8192; });
+			for (int i : path)
+				if (!feature[i])
+					L.route[i] = 1;
+		}
+	std::vector<unsigned char> keepClear = feature;
+	for (int i = 0; i < n; ++i)
+		keepClear[i] = keepClear[i] || L.route[i];
+	const std::vector<int> fromKept = stepsFrom(t, keepClear);
+
+	// Mesas on the high ground of the relief, clear of everything a colony needs.
+	const int desertChoice = std::clamp(o.desert, 0, 2);
+	if (kMesaPercent[desertChoice] > 0)
+	{
+		std::vector<int> samples;
+		for (int i = 0; i < n; ++i)
+			if (fromKept[i] >= kMesaClearance)
+				samples.push_back(relief[i]);
+		if (!samples.empty())
+		{
+			// The share of the whole map, taken from the eligible desert.
+			const int share = std::min(100, int(std::int64_t(kMesaPercent[desertChoice]) * n / samples.size()));
+			const int cut = percentile(samples, 100 - share);
+			for (int i = 0; i < n; ++i)
+				if (fromKept[i] >= kMesaClearance && relief[i] >= cut)
+					L.sketch[i] = GRASS;
+		}
+	}
+	// A mesa's stone stands on the tiles whose four corners it raised.
+	int mesaTiles = 0;
+	for (int i = 0; i < n; ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		bool rock = fromKept[i] >= kMesaClearance;
+		for (const int j : {i, t.at(x + 1, y), t.at(x, y + 1), t.at(x + 1, y + 1)})
+			rock = rock && L.sketch[j] == GRASS && !feature[j] && fromKept[j] >= kMesaClearance;
+		L.mesa[i] = rock;
+		mesaTiles += rock;
+	}
+	context.telemetry.measure("caravanserai.mesa.tiles", mesaTiles);
+
+	// Dunes: scrub in the hollows between the bands, a single corner at a time.
+	StripeStyle dunes;
+	dunes.acrossX = 1 + int(context.bounded("caravanserai-dunes", 4));
+	dunes.acrossY = int(context.bounded("caravanserai-dunes", 3)) * (context.bounded("caravanserai-dunes", 2) ? 1 : -1);
+	dunes.warpPercent = 35;
+	std::mt19937 &duneStream = context.stream("caravanserai-dunes");
+	const std::vector<int> phase = stripePhase(t, dunes, duneStream);
+	// Many dune bands to one stripe of the field: a whole number, so the bands still wrap.
+	const int bands = std::max(1, int(std::lround(stripeSpacing(t, dunes) / kDuneSpacing)));
+	int scrub = 0;
+	for (int i = 0; i < n; ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		const bool hollow = (phase[i] * bands) % 65536 < 65536 * kHollowPercent / 100;
+		if (L.sketch[i] != SAND || fromKept[i] < 2)
+			continue;
+		// Round every oasis the scrub thickens into a halo, wherever the dunes lie.
+		const bool halo = fromFeature[i] >= 0 && fromFeature[i] <= kHaloWidth;
+		if (!hollow && !halo)
+			continue;
+		if (int(context.bounded("caravanserai-scrub", 100)) >= (halo ? kHaloPercent : kScrubPercent))
+			continue;
+		bool alone = true;
+		for (int dy = -1; dy <= 1 && alone; ++dy)
+			for (int dx = -1; dx <= 1 && alone; ++dx)
+				alone = (!dx && !dy) || L.sketch[t.at(x + dx, y + dy)] != GRASS;
+		if (alone)
+		{
+			L.sketch[i] = GRASS;
+			++scrub;
+		}
+	}
+	context.telemetry.measure("caravanserai.dunes.scrub", scrub);
+
+	// The design's invariants on the sketch as the game will see it: courtyard walls on pure grass.
 	TerrainSketch beached = L.sketch;
 	layBeaches(beached, t);
 	const std::vector<unsigned char> pure = pureTiles(beached, t, GRASS);
-	const std::vector<unsigned char> water = pureTiles(beached, t, WATER);
-	std::vector<unsigned char> open(n, 0);
 	for (int i = 0; i < n; ++i)
-		open[i] = !water[i];
-	for (size_t k = 0; k < L.sites.size(); ++k)
-	{
-		std::vector<unsigned char> buildable(n, 0);
-		for (int i = 0; i < n; ++i)
-			buildable[i] = pure[i] && L.capitalOf[i] == int(k);
-		if (const std::string misfit = basePlanMisfit(t, L.plan, L.sites[k], buildable, open);
-			!misfit.empty())
+		if (L.wall[i] && !pure[i])
 		{
-			context.telemetry.choice("bases.fit", "rejected: " + misfit, int(k));
-			L.failure = "The base does not fit its ground at this size; raise the size control or "
-						"lower Colonists.";
+			L.failure = "A wall would stand on a beach; try another seed.";
 			return L;
 		}
-		context.telemetry.choice("bases.fit", "fits", int(k));
-	}
 	return L;
 }
 
@@ -300,9 +599,6 @@ bool generate(Game &game, GenerationContext &context)
 {
 	context.stage = "caravanserai layout";
 	const CaravanseraiOptions o(context.request);
-	Map &map = game.map;
-	// Desert first: everything the sketch does not paint is sand.
-	map.makeHomogenMap(SAND);
 	const Layout L = design(context.request, context);
 	if (!L.failure.empty())
 	{
@@ -310,6 +606,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.detail = L.failure;
 		return false;
 	}
+	Map &map = game.map;
 	const Torus &t = L.t;
 	const int n = t.size(), teams = context.request.nbTeams;
 	for (int k = 0; k < teams; ++k)
@@ -319,156 +616,235 @@ bool generate(Game &game, GenerationContext &context)
 	TerrainSketch terrain = L.sketch;
 	layBeaches(terrain, t);
 	writeUndermap(map, terrain);
+	const DesignedStone walls = designedStone(map, t, L.wall);
+	if (walls.gaps)
+	{
+		context.detail = "a caravanserai wall has a gap";
+		return false;
+	}
+	std::vector<unsigned char> structural = walls.stone;
+	for (int i = 0; i < n; ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		if (walls.stone[i])
+			map.setResource(x, y, STONE, 1);
+		else if (L.mesa[i] && map.isGrass(x, y))
+		{
+			map.setResource(x, y, STONE, 1);
+			structural[i] = 1;
+		}
+	}
 
 	context.stage = "caravanserai colonies";
-	const BaseGarrison units = baseGarrison(o.colonists, o.garrison);
-	if (!raiseBases(game, context, L.plan, L.sites, units, &L.capitalOf, "caravanserai-colonists"))
+	std::vector<int> townOf(n, -1);
+	for (int i = 0; i < n; ++i)
+		if (L.homeKind[i] == kTown)
+			townOf[i] = L.homeOf[i];
+	if (!settleColonies(
+			game, context, "caravanserai-starts",
+			[&](int k) { return homeGrassMask(map, t, townOf, k); },
+			[&](int k)
+			{
+				const ShapePoint p = turnStencilPoint(L.facings[k], L.home.swarm);
+				return MapGeneratorPoint(int(std::floor(L.homes[k].x + p.x)) - 2,
+										 int(std::floor(L.homes[k].y + p.y)) - 2);
+			}))
 		return false;
+	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
 
 	context.stage = "caravanserai resources";
-	std::vector<unsigned char> reserved = baseSurroundings(t, L.plan, L.sites);
-	const std::vector<unsigned char> swarms = swarmSurroundings(t, context);
+	std::vector<unsigned char> waterTiles(n, 0);
 	for (int i = 0; i < n; ++i)
-		reserved[i] = reserved[i] || swarms[i];
-	// Every capital's fields beside its pond, on either flank of the line from the pond to the
-	// swarm: the same at every facing.
+		waterTiles[i] = map.isWater(i % t.w, i / t.w);
+	const std::vector<int> fromWater = stepsFrom(t, waterTiles);
+	const auto open = [&](int i)
+	{ return map.isGrass(i % t.w, i / t.w) && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+	// Plant `count` of `type` on the tiles `where` allows, nearest the water first.
+	const auto plantNearWater = [&](int type, int count, auto where)
+	{
+		std::vector<std::pair<int, int>> tiles;
+		for (int i = 0; i < n; ++i)
+			if (where(i) && open(i) && fromWater[i] >= 0)
+				tiles.push_back({fromWater[i], i});
+		std::stable_sort(tiles.begin(), tiles.end());
+		int placed = 0;
+		for (const auto &[d, i] : tiles)
+		{
+			if (placed >= count)
+				break;
+			map.setResource(i % t.w, i / t.w, type, 1);
+			++placed;
+		}
+		return placed;
+	};
+	const HomeStencil &s = L.home;
+	const int wheat = std::max(kWheatFloor, int(scaledCount(s.pure[1] * kWheatPercent / 100, o.wheat)));
+	const int palms = std::max(kPalmFloor, int(scaledCount(s.pure[2] * kPalmPercent / 100, o.wood)));
+	std::vector<unsigned char> topup(n, 0);
 	for (int k = 0; k < teams; ++k)
 	{
-		const KitFrame frame{int(L.homePonds[k].x), int(L.homePonds[k].y), L.sites[k].facing * kPi / 2};
-		const Kit kit{frame.at(2, -4, 5), frame.at(2, 4, 5), frame.at(0, 0, 0), kHomeWheat, kHomeWood, -1};
-		plantKit(map, t, context, kit,
-				 [&](int i)
-				 { return L.capitalOf[i] == k && !reserved[i] && clearGround(map, i % t.w, i / t.w); });
+		// Wheat in a solid arc of the ring nearest the town's swarm (the whole ring is within the
+		// growth probe of the lake): a thin band along the water left Numbi's estimate of its food
+		// too small to breed on.
+		const ShapePoint swarm = turnStencilPoint(L.facings[k], s.swarm);
+		const int sx = int(std::floor(L.homes[k].x + swarm.x)), sy = int(std::floor(L.homes[k].y + swarm.y));
+		std::vector<std::pair<int, int>> ring;
+		for (int i = 0; i < n; ++i)
+			if (L.homeOf[i] == k && L.homeKind[i] == kFields && open(i))
+				ring.push_back({t.dist2(i % t.w, i / t.w, sx, sy), i});
+		std::stable_sort(ring.begin(), ring.end());
+		int w = 0;
+		for (const auto &[d, i] : ring)
+			if (w < wheat)
+			{
+				map.setResource(i % t.w, i / t.w, WHEAT, 1);
+				++w;
+			}
+		const int p = plantNearWater(WOOD, palms, [&](int i) { return L.homeOf[i] == k && L.homeKind[i] == kGrove; });
+		context.telemetry.measure("caravanserai.home.wheat-planted", w, k);
+		context.telemetry.measure("caravanserai.home.palms-planted", p, k);
 	}
-	// Every outpost's prizes round its pond: the quarry towards the map's east and the orchard of
-	// the three fruits towards its west, the same at every outpost, so no outpost is richer; then
-	// its wheat on whatever grass is left nearest the pond. Every oasis's wheat likewise.
-	for (size_t p = 0; p < L.outposts.size(); ++p)
+	for (int i = 0; i < n; ++i)
+		topup[i] = L.homeKind[i] == kFields || L.homeKind[i] == kGrove;
+	// The caravanserais' prizes.
+	for (size_t v = 0; v < L.serais.size(); ++v)
 	{
-		const auto onOutpost = [&](int i)
-		{ return L.outpostOf[i] == int(p) && clearGround(map, i % t.w, i / t.w); };
-		if (scaledCount(1, o.stone) > 0)
-			plantRound(map, t, context, L.outposts[p].x, L.outposts[p].y, kPrizeRadius, {0.0}, STONE,
-					   kQuarryRadius, 3, onOutpost);
-		if (scaledCount(1, o.fruit) > 0)
-			plantOrchard(map, t, context, L.outposts[p].x, L.outposts[p].y, kPrizeRadius, {kPi},
-						 kOrchardSpacing, 3, 1, onOutpost);
-		if (const int seed = seedNear(t, int(L.outposts[p].x), int(L.outposts[p].y), 4, onOutpost);
-			seed >= 0)
-			growPatch(map, t, seed, WHEAT, kOutpostWheat, onOutpost);
+		const Serai &serai = L.serais[v];
+		const int cx = int(serai.centre.x), cy = int(serai.centre.y);
+		const bool alongX = serai.facing % 2 == 0;
+		const auto inOasis = [&](int i)
+		{ return L.seraiOf[i] == int(v) && L.courtyardOf[i] < 0 && !L.wall[i] && !L.gate[i]; };
+		// Groves and quarry on the far side from the pond, off the route.
+		const int side = -serai.pondSide;
+		for (int fruit = 0; fruit < 4; ++fruit)
+		{
+			const int along = (fruit - 1) * 5 - 2;
+			const int ax = alongX ? cx + along : cx + side * 9, ay = alongX ? cy + side * 9 : cy + along;
+			const int seed = seedNear(t, ax, ay, 3, [&](int i) { return inOasis(i) && open(i); });
+			if (seed < 0)
+				continue;
+			if (fruit < 3)
+				growPatch(map, t, seed, CHERRY + fruit, int(scaledCount(kGroveTiles, o.fruit)),
+						  [&](int i) { return inOasis(i) && open(i); });
+			else if (scaledCount(1, o.stone) > 0)
+				placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), STONE,
+								   kQuarryRadius);
+		}
+		plantNearWater(WHEAT, int(scaledCount(kSeraiWheat, o.wheat)), [&](int i) { return inOasis(i) && t.chebyshev(i % t.w, i / t.w, cx, cy) > kSeraiWall + 1; });
+		plantNearWater(WOOD, int(scaledCount(kSeraiPalms, o.wood)), [&](int i) { return inOasis(i) && t.chebyshev(i % t.w, i / t.w, cx, cy) > kSeraiWall + 1; });
 	}
+	// The oases: palms by the pond, a little grain.
 	for (size_t q = 0; q < L.oases.size(); ++q)
 	{
-		const auto onOasis = [&](int i)
-		{ return L.oasisOf[i] == int(q) && clearGround(map, i % t.w, i / t.w); };
-		if (const int seed = seedNear(t, int(L.oases[q].x), int(L.oases[q].y), 4, onOasis); seed >= 0)
-			growPatch(map, t, seed, WHEAT, kOasisWheat, onOasis);
+		const double r = L.oases[q].radius;
+		const auto inOasis = [&](int i) { return L.oasisOf[i] == int(q); };
+		plantNearWater(WOOD, int(scaledCount(int(r * 1.5), o.wood)), inOasis);
+		plantNearWater(WHEAT, int(scaledCount(int(r * 1.2), o.wheat)), inOasis);
 	}
-	// Algae only in the outposts' ponds (a capital's or an oasis's pond has none).
-	std::vector<int> pondOf(n, -1);
-	for (int i = 0; i < n; ++i)
-		if (map.isWater(i % t.w, i / t.w))
-			for (size_t p = 0; p < L.outposts.size() && pondOf[i] < 0; ++p)
-				if (t.dist2(i % t.w, i / t.w, int(L.outposts[p].x), int(L.outposts[p].y)) <= kOutpostPondVertices * kOutpostPondVertices)
-					pondOf[i] = int(p);
-	seedAlgae(map, context, t, "caravanserai-algae", o.algae, AlgaeBand::anyWater(kAlgaeTilesPerClump),
-			  pondOf, int(L.outposts.size()));
-	secureStartingCrops(game, context, t);
-	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, o.algae, o.fruit});
+	seedAlgae(map, context, t, "caravanserai-algae", o.algae, AlgaeBand::anyWater(30));
 
-	// Sand is open ground: every colony can already walk to every other. The backstop only ever
-	// clears a crop that happened to stand across a capital's way out.
+	secureStartingCrops(game, context, t, 24, 32, 0, &structural, &topup);
+	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, o.algae, o.fruit}, 24, 32, 0,
+						&structural);
 	context.stage = "caravanserai routes";
-	openColonyRoutes(map, context, t, StepCosts::walking());
+	openColonyRoutes(map, context, t, StepCosts{1, 3, -1, -1, -1}, 0, &structural);
 	return true;
+}
+
+std::vector<int> grassReach(const Map &map, const Torus &t, const std::vector<unsigned char> &from)
+{
+	const int n = t.size();
+	std::vector<unsigned char> open(n, 0), source(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		open[i] = map.isGrass(x, y) && !(map.isResource(x, y) && map.getResource(x, y).type == STONE);
+		source[i] = from[i] && open[i];
+	}
+	return stepsFrom(t, source, open);
 }
 
 std::string validateWorld(const Game &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	const CaravanseraiOptions o(context.request);
 	const Map &map = game.map;
 	const Torus &t = L.t;
 	const int n = t.size(), teams = context.request.nbTeams;
 	if (const std::string mismatch = designMismatch(L, map, "caravanserai"); !mismatch.empty())
 		return mismatch;
-	for (int k = 0; k < teams; ++k)
-		if (const std::string missing = validateBase(game, t, k, L.plan, L.sites[k], o.colonists);
-			!missing.empty())
-			return missing;
-	if (const std::string pond = homePondMissing(map, t, L.homePonds, teams, "capital", "pond");
-		!pond.empty())
-		return pond;
-	// Every colony as far from an outpost, and from an oasis, as every other.
-	if (teams > 1 && !L.outposts.empty())
+	if (const std::string broken = wallStanding(map, t, L.wall, L.gate, "caravanserai wall");
+		!broken.empty())
+		return broken;
+	if (!L.serais.empty())
 	{
-		std::vector<unsigned char> outposts(n, 0), oases(n, 0);
+		std::vector<int> pieces(n, -1);
 		for (int i = 0; i < n; ++i)
-		{
-			outposts[i] = L.outpostOf[i] >= 0 && !map.isWater(i % t.w, i / t.w);
-			oases[i] = L.oasisOf[i] >= 0 && !map.isWater(i % t.w, i / t.w);
-		}
-		if (const std::string uneven = unevenCosts(
-				costsToTarget(map, teams, outposts, StepCosts::walking()), kWalkTolerance, "an outpost");
+			pieces[i] = L.courtyardOf[i] >= 0 ? L.courtyardOf[i]
+						: (!L.wall[i] && !L.gate[i]) ? int(L.serais.size())
+													 : -1;
+		if (pieceLeak(map, t, pieces, L.gate) >= 0)
+			return "A caravanserai can be entered other than by its gates.";
+	}
+	// The field ring and the grove keep their crops off the town and off each other.
+	for (const signed char kind : {kFields, kGrove})
+	{
+		std::vector<unsigned char> part(n, 0);
+		for (int i = 0; i < n; ++i)
+			part[i] = L.homeKind[i] == kind;
+		const std::vector<int> reach = grassReach(map, t, part);
+		for (int i = 0; i < n; ++i)
+			if (reach[i] >= 0 && !part[i])
+				return kind == kFields ? "A home's fields are open to its town."
+									   : "A home's palm grove is open to its fields or town.";
+	}
+	if (const ColonyWalk walk = walkFromFirstColony(map, teams, "the desert", "across the sand");
+		!walk.error.empty())
+		return walk.error;
+	if (!L.serais.empty() && teams > 1)
+	{
+		std::vector<unsigned char> gates(n, 0);
+		for (int i = 0; i < n; ++i)
+			gates[i] = L.gate[i];
+		if (const std::string uneven = unevenCosts(costsToTarget(map, teams, gates, StepCosts::walking()),
+												   kWalkTolerance, "a caravanserai");
 			!uneven.empty())
 			return uneven;
-		if (!L.oases.empty())
-			if (const std::string uneven = unevenCosts(
-					costsToTarget(map, teams, oases, StepCosts::walking()), kWalkTolerance, "an oasis");
-				!uneven.empty())
-				return uneven;
 	}
-	// Every oasis has room for an inn and a tower: two free 2x2 footprints.
-	const std::vector<unsigned char> buildable = buildableTiles(map);
-	for (size_t q = 0; q < L.oases.size(); ++q)
-	{
-		std::vector<unsigned char> disc(n, 0);
-		for (int i = 0; i < n; ++i)
-			disc[i] = L.oasisOf[i] == int(q);
-		if (buildSites(t, buildable, disc, 2) < 2)
-			return "An oasis at (" + std::to_string(int(L.oases[q].x)) + ", " +
-				   std::to_string(int(L.oases[q].y)) + ") has no room for an inn and a tower.";
-	}
-	return walkFromFirstColony(map, teams, "the desert", "across the sand").error;
+	return startingAccessFailure(map, teams, {{WHEAT, 24, "wheat"}, {WOOD, 32, "wood"}}, 16, 24);
 }
 } // namespace
 
 CaravanseraiOptions::CaravanseraiOptions(const GenerationRequest &r)
-	: colonists(r.option("colonists")), garrison(r.option("garrison") != 0),
-	  capitalSize(r.option("capital-size")), oasisSpacing(r.option("oasis-spacing")),
-	  outposts(r.option("outposts-per-colony")), wheat(r.option("wheat-amount")),
-	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
-	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
+	: oasisSize(r.option("oasis-size")), oases(r.option("oases")),
+	  caravanserais(r.option("caravanserais")), desert(r.option("desert")),
+	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
+	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
+	  fruit(r.option("fruit-amount"))
 {
 }
 
 GeneratorDefinition caravanseraiDefinition()
 {
-	GeneratorDefinition d{
-		"caravanserai",
-		41,
-		"Caravanserai",
-		1,
-		false,
-		// A capital of 18 holds a city base with its pond and fields; 14 is a hamlet's least.
-		// Oases 32 apart by default: on a 256 map with four colonies the way to an outpost is 64
-		// tiles, room for one oasis; 24 puts two on it and 56 is a single stone on a big map. Two
-		// outposts per colony: one towards each of its two nearest neighbours.
-		{{"colonists", "Colonists", 16, 48, 4, 32, ControlGroup::Layout},
-		 GeneratorControl::toggle("garrison", "Garrison", true, ControlGroup::Layout),
-		 {"capital-size", "Capital size", 14, 22, 1, 18, ControlGroup::Layout},
-		 {"oasis-spacing", "Oasis spacing", 24, 56, 8, 32, ControlGroup::Terrain},
-		 {"outposts-per-colony", "Outposts per colony", 1, 3, 1, 2, ControlGroup::Layout},
-		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-		 GeneratorControl::percentage("wood-amount", "Wood amount"),
-		 GeneratorControl::percentage("stone-amount", "Stone amount"),
-		 GeneratorControl::percentage("algae-amount", "Algae amount"),
-		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		designFailure<design>,
-		validateWorld};
-	d.startingWorkers = [](const GenerationRequest &r) { return r.option("colonists"); };
-	return d;
+	return {"caravanserai",
+			41,
+			"Caravanserai",
+			2,
+			false,
+			// Home oasis size is the town's radius: 24 holds a lake, its field ring and a town of
+			// 60-odd build sites. Two caravanserais per colony: one to each of its two nearest
+			// neighbours on a square lattice's row and column.
+			{{"oasis-size", "Home oasis size", 18, 30, 2, 24, ControlGroup::Layout},
+			 GeneratorControl::choice("oases", "Oases", {"Sparse", "Normal", "Many"}, 1),
+			 {"caravanserais", "Caravanserais per colony", 1, 3, 1, 2, ControlGroup::Layout},
+			 GeneratorControl::choice("desert", "Desert", {"Open erg", "Dunes and mesas", "Canyon country"}, 1),
+			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+			 GeneratorControl::percentage("wood-amount", "Wood amount"),
+			 GeneratorControl::percentage("stone-amount", "Stone amount"),
+			 GeneratorControl::percentage("algae-amount", "Algae amount"),
+			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+			generate,
+			true,
+			designFailure<design>,
+			validateWorld};
 }

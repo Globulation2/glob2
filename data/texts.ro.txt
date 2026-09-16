@@ -2500,40 +2500,58 @@ Glacisul
 Loturi
 [Caravanserai]
 Caravanserai
-[Colonists]
-Coloniști
-[Garrison]
-Garnizoană
-[Compound size]
-Mărimea incintei
-[Wall gates]
-Porțile zidului
-[Wadi count]
-Numărul de ueduri
-[Ford spacing]
-Distanța dintre vaduri
-[Lot size]
-Mărimea loturilor
 [Mixed]
 Mixt
-[Small]
-Mic
-[Large]
-Mare
-[Lane spacing]
-Distanța dintre alei
-[Ditch every]
-Șanț la fiecare
-[Wood share]
-Ponderea lemnului
-[Capital size]
-Mărimea capitalei
-[Oasis spacing]
-Distanța dintre oaze
-[Outposts per colony]
-Avanposturi per colonie
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-Baza nu încape pe terenul ei la această mărime; măriți controlul mărimii sau reduceți Coloniștii.
+[Fort size]
+Mărimea fortului
+[Bastions]
+Bastioane
+[Four-pointed]
+Cu patru colțuri
+[Five-pointed]
+Cu cinci colțuri
+[Six-pointed]
+Cu șase colțuri
+[Glacis width]
+Lățimea glacisului
+[Gates]
+Porți
+[Site size]
+Mărimea parcelelor
+[Plot width]
+Lățimea straturilor
+[Plot mix]
+Amestecul straturilor
+[Tended]
+Îngrijite
+[Overgrown]
+Năpădite
+[Commons]
+Izlazuri
+[Few]
+Puține
+[Some]
+Câteva
+[Home oasis size]
+Mărimea oazei natale
+[Caravanserais per colony]
+Caravanseraiuri pe colonie
+[Desert]
+Deșert
+[Open erg]
+Erg deschis
+[Dunes and mesas]
+Dune și platouri
+[Canyon country]
+Ținut de canioane
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Un fort nu își poate atinge vadul; folosiți o hartă mai mare sau mai puține colonii.
+[A wall would stand on a beach; try another seed.]
+Un zid ar sta pe o plajă; încercați altă sămânță.
+[The fort is too small for its gardens; raise Fort size.]
+Fortul este prea mic pentru grădinile sale; măriți mărimea fortului.
+[The home oasis is too small; raise Home oasis size.]
+Oaza natală este prea mică; măriți mărimea oazei natale.
 [Braided river]
 Râu împletit
 [Braid width]

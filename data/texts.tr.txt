@@ -2508,40 +2508,58 @@ Glasi
 Hobi Bahçeleri
 [Caravanserai]
 Kervansaray
-[Colonists]
-Yerleşimciler
-[Garrison]
-Garnizon
-[Compound size]
-Sur içi boyutu
-[Wall gates]
-Sur kapıları
-[Wadi count]
-Kuru dere sayısı
-[Ford spacing]
-Sığ geçit aralığı
-[Lot size]
-Parsel boyutu
 [Mixed]
 Karışık
-[Small]
-Küçük
-[Large]
-Büyük
-[Lane spacing]
-Yol aralığı
-[Ditch every]
-Hendek aralığı
-[Wood share]
-Odun oranı
-[Capital size]
-Başkent boyutu
-[Oasis spacing]
-Vaha aralığı
-[Outposts per colony]
-Koloni başına karakol
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-Üs bu boyutta zeminine sığmıyor; boyut ayarını yükseltin ya da Yerleşimciler değerini düşürün.
+[Fort size]
+Kale boyutu
+[Bastions]
+Tabyalar
+[Four-pointed]
+Dört köşeli
+[Five-pointed]
+Beş köşeli
+[Six-pointed]
+Altı köşeli
+[Glacis width]
+Şev genişliği
+[Gates]
+Kapılar
+[Site size]
+Parsel boyutu
+[Plot width]
+Tarh genişliği
+[Plot mix]
+Tarh karışımı
+[Tended]
+Bakımlı
+[Overgrown]
+Bakımsız
+[Commons]
+Ortak meralar
+[Few]
+Az
+[Some]
+Birkaç
+[Home oasis size]
+Yurt vahası boyutu
+[Caravanserais per colony]
+Koloni başına kervansaray
+[Desert]
+Çöl
+[Open erg]
+Açık erg
+[Dunes and mesas]
+Kum tepeleri ve mesalar
+[Canyon country]
+Kanyon diyarı
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Bir kale geçidine ulaşamıyor; daha büyük bir harita veya daha az koloni kullanın.
+[A wall would stand on a beach; try another seed.]
+Bir duvar kumsalda kalacak; başka bir tohum deneyin.
+[The fort is too small for its gardens; raise Fort size.]
+Kale bahçeleri için çok küçük; kale boyutunu artırın.
+[The home oasis is too small; raise Home oasis size.]
+Yurt vahası çok küçük; yurt vahası boyutunu artırın.
 [Braided river]
 Örgülü nehir
 [Braid width]

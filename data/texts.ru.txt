@@ -2498,40 +2498,58 @@ Emoji
 Садовые участки
 [Caravanserai]
 Караван-сарай
-[Colonists]
-Колонисты
-[Garrison]
-Гарнизон
-[Compound size]
-Размер укрепления
-[Wall gates]
-Ворота в стене
-[Wadi count]
-Число вади
-[Ford spacing]
-Шаг бродов
-[Lot size]
-Размер участков
 [Mixed]
 Смешанный
-[Small]
-Малый
-[Large]
-Большой
-[Lane spacing]
-Шаг дорожек
-[Ditch every]
-Шаг рвов
-[Wood share]
-Доля дерева
-[Capital size]
-Размер столицы
-[Oasis spacing]
-Шаг оазисов
-[Outposts per colony]
-Форпостов на колонию
-[The base does not fit its ground at this size; raise the size control or lower Colonists.]
-База не помещается на своей земле при этом размере; увеличьте размер или уменьшите Колонистов.
+[Fort size]
+Размер крепости
+[Bastions]
+Бастионы
+[Four-pointed]
+Четырёхлучевая
+[Five-pointed]
+Пятилучевая
+[Six-pointed]
+Шестилучевая
+[Glacis width]
+Ширина гласиса
+[Gates]
+Ворота
+[Site size]
+Размер участков
+[Plot width]
+Ширина грядок
+[Plot mix]
+Состав грядок
+[Tended]
+Ухоженные
+[Overgrown]
+Заросшие
+[Commons]
+Общинные луга
+[Few]
+Мало
+[Some]
+Несколько
+[Home oasis size]
+Размер родного оазиса
+[Caravanserais per colony]
+Караван-сараи на колонию
+[Desert]
+Пустыня
+[Open erg]
+Открытый эрг
+[Dunes and mesas]
+Дюны и столовые горы
+[Canyon country]
+Страна каньонов
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Крепость не может дойти до своего брода; используйте карту побольше или меньше колоний.
+[A wall would stand on a beach; try another seed.]
+Стена стояла бы на пляже; попробуйте другое зерно.
+[The fort is too small for its gardens; raise Fort size.]
+Крепость слишком мала для своих огородов; увеличьте размер крепости.
+[The home oasis is too small; raise Home oasis size.]
+Родной оазис слишком мал; увеличьте размер родного оазиса.
 [Braided river]
 Разветвлённая река
 [Braid width]
