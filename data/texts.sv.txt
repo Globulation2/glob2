@@ -1863,13 +1863,13 @@ Torrhet
 [Fords]
 Vadställen
 [Frozen crossings]
-Frozen crossings
+Frusna vadställen
 [Half frozen]
-Half frozen
+Hälften frusna
 [All frozen]
-All frozen
+Alla frusna
 [Off]
-Off
+Av
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Avrinningsområdet har för lite flodslätt för så många kolonier; använd en större karta eller färre kolonier.
 [Stone highlands]
@@ -2073,11 +2073,11 @@ Taggiga kuster
 [Sand roads]
 Sandvägar
 [Road surface]
-Road surface
+Vägbeläggning
 [Sand]
 Sand
 [Cobblestone]
-Cobblestone
+Kullersten
 [Treasure in dead ends]
 Skatter i återvändsgränder
 [Fjord bank deposits]

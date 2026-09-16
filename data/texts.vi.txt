@@ -1849,13 +1849,13 @@ Mật độ sông
 [Fords]
 Bãi cạn
 [Frozen crossings]
-Frozen crossings
+Bãi cạn đóng băng
 [Half frozen]
-Half frozen
+Một nửa đóng băng
 [All frozen]
-All frozen
+Tất cả đóng băng
 [Off]
-Off
+Tắt
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Lưu vực sông có quá ít đồng bằng ngập lũ cho số thuộc địa này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
 [Stone highlands]
@@ -2059,11 +2059,11 @@ Bờ biển lởm chởm
 [Sand roads]
 Đường cát
 [Road surface]
-Road surface
+Mặt đường
 [Sand]
-Sand
+Cát
 [Cobblestone]
-Cobblestone
+Đá cuội
 [Treasure in dead ends]
 Kho báu ở ngõ cụt
 [Fjord bank deposits]

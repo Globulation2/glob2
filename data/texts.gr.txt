@@ -1923,13 +1923,13 @@ Cortex
 [Fords]
 Ρηχά περάσματα
 [Frozen crossings]
-Frozen crossings
+Παγωμένα περάσματα
 [Half frozen]
-Half frozen
+Μισά παγωμένα
 [All frozen]
-All frozen
+Όλα παγωμένα
 [Off]
-Off
+Ανενεργό
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Η λεκάνη απορροής έχει πολύ λίγη πεδιάδα πλημμυρών για τόσες αποικίες. Χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
 [Stone highlands]
@@ -2133,11 +2133,11 @@ Off
 [Sand roads]
 Αμμώδεις δρόμοι
 [Road surface]
-Road surface
+Επιφάνεια δρόμων
 [Sand]
-Sand
+Άμμος
 [Cobblestone]
-Cobblestone
+Λιθόστρωτο
 [Treasure in dead ends]
 Θησαυροί στα αδιέξοδα
 [Fjord bank deposits]

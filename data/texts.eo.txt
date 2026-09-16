@@ -1851,13 +1851,13 @@ Sekeco
 [Fords]
 Travadejoj
 [Frozen crossings]
-Frozen crossings
+Frostaj travadejoj
 [Half frozen]
-Half frozen
+Duone frostaj
 [All frozen]
-All frozen
+Ĉiuj frostaj
 [Off]
-Off
+Malŝaltita
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 La riverbaseno havas tro malmulte da inundebenaĵo por tiom da kolonioj; uzu pli grandan mapon aŭ malpli da kolonioj.
 [Stone highlands]
@@ -2061,11 +2061,11 @@ Dentitaj marbordoj
 [Sand roads]
 Sablaj vojoj
 [Road surface]
-Road surface
+Vojsurfaco
 [Sand]
-Sand
+Sablo
 [Cobblestone]
-Cobblestone
+Pavimŝtonoj
 [Treasure in dead ends]
 Trezoroj en senelirejoj
 [Fjord bank deposits]

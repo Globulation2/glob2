@@ -1853,13 +1853,13 @@ Kuivuus
 [Fords]
 Kahlaamot
 [Frozen crossings]
-Frozen crossings
+Jäätyneet kahlaamot
 [Half frozen]
-Half frozen
+Puolet jäässä
 [All frozen]
-All frozen
+Kaikki jäässä
 [Off]
-Off
+Pois
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Valuma-alueella on liian vähän tulvatasankoa näin monelle siirtokunnalle; käytä suurempaa karttaa tai vähemmän siirtokuntia.
 [Stone highlands]
@@ -2063,11 +2063,11 @@ Rikkonaiset rannikot
 [Sand roads]
 Hiekkatiet
 [Road surface]
-Road surface
+Tien pinta
 [Sand]
-Sand
+Hiekka
 [Cobblestone]
-Cobblestone
+Mukulakivi
 [Treasure in dead ends]
 Aarteita umpikujissa
 [Fjord bank deposits]

@@ -1853,13 +1853,13 @@ OpenGL није доступан у овој верзији.
 [Fords]
 Газови
 [Frozen crossings]
-Frozen crossings
+Залеђени газови
 [Half frozen]
-Half frozen
+Пола залеђено
 [All frozen]
-All frozen
+Сви залеђени
 [Off]
-Off
+Искључено
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Речни слив има премало плавне равнице за толико колонија; користите већу мапу или мање колонија.
 [Stone highlands]
@@ -2063,11 +2063,11 @@ Off
 [Sand roads]
 Пешчани путеви
 [Road surface]
-Road surface
+Површина путева
 [Sand]
-Sand
+Песак
 [Cobblestone]
-Cobblestone
+Калдрма
 [Treasure in dead ends]
 Благо у ћорсокацима
 [Fjord bank deposits]

@@ -1853,13 +1853,13 @@ Ariditate
 [Fords]
 Vaduri
 [Frozen crossings]
-Frozen crossings
+Vaduri înghețate
 [Half frozen]
-Half frozen
+Jumătate înghețate
 [All frozen]
-All frozen
+Toate înghețate
 [Off]
-Off
+Dezactivat
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Bazinul hidrografic are prea puțină luncă pentru atâtea colonii; folosiți o hartă mai mare sau mai puține colonii.
 [Stone highlands]
@@ -2063,11 +2063,11 @@ Coaste crestate
 [Sand roads]
 Drumuri de nisip
 [Road surface]
-Road surface
+Suprafața drumurilor
 [Sand]
-Sand
+Nisip
 [Cobblestone]
-Cobblestone
+Piatră cubică
 [Treasure in dead ends]
 Comori în fundături
 [Fjord bank deposits]

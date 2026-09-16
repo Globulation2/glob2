@@ -1853,13 +1853,13 @@ Trockenheit
 [Fords]
 Furten
 [Frozen crossings]
-Frozen crossings
+Gefrorene Furten
 [Half frozen]
-Half frozen
+Halb gefroren
 [All frozen]
-All frozen
+Alle gefroren
 [Off]
-Off
+Aus
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Das Flusseinzugsgebiet hat zu wenig Auenland für so viele Kolonien; verwenden Sie eine größere Karte oder weniger Kolonien.
 [Stone highlands]
@@ -2063,11 +2063,11 @@ Zerklüftete Küsten
 [Sand roads]
 Sandwege
 [Road surface]
-Road surface
+Wegbelag
 [Sand]
 Sand
 [Cobblestone]
-Cobblestone
+Kopfsteinpflaster
 [Treasure in dead ends]
 Schätze in Sackgassen
 [Fjord bank deposits]

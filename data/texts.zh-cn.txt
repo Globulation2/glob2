@@ -1849,13 +1849,13 @@ OpenGL 在此版本中不可用。
 [Fords]
 浅滩
 [Frozen crossings]
-Frozen crossings
+冰冻浅滩
 [Half frozen]
-Half frozen
+一半冰冻
 [All frozen]
-All frozen
+全部冰冻
 [Off]
-Off
+关闭
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 流域中的泛滥平原太少，容纳不下这么多殖民地；请使用更大的地图或减少殖民地数量。
 [Stone highlands]
@@ -2059,11 +2059,11 @@ Off
 [Sand roads]
 沙土路
 [Road surface]
-Road surface
+路面
 [Sand]
-Sand
+沙土
 [Cobblestone]
-Cobblestone
+鹅卵石
 [Treasure in dead ends]
 死路尽头的宝藏
 [Fjord bank deposits]

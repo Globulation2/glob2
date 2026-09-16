@@ -1853,13 +1853,13 @@ Aridez
 [Fords]
 Vados
 [Frozen crossings]
-Frozen crossings
+Vados helados
 [Half frozen]
-Half frozen
+Mitad helados
 [All frozen]
-All frozen
+Todos helados
 [Off]
-Off
+Desactivado
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 La cuenca tiene muy poca llanura aluvial para tantas colonias; use un mapa más grande o menos colonias.
 [Stone highlands]
@@ -2063,11 +2063,11 @@ Costas escarpadas
 [Sand roads]
 Caminos de arena
 [Road surface]
-Road surface
+Pavimento
 [Sand]
-Sand
+Arena
 [Cobblestone]
-Cobblestone
+Adoquines
 [Treasure in dead ends]
 Tesoros en los callejones sin salida
 [Fjord bank deposits]

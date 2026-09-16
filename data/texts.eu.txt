@@ -1863,13 +1863,13 @@ Lehortasuna
 [Fords]
 Ibiak
 [Frozen crossings]
-Frozen crossings
+Ibi izoztuak
 [Half frozen]
-Half frozen
+Erdiak izoztuta
 [All frozen]
-All frozen
+Guztiak izoztuta
 [Off]
-Off
+Desaktibatuta
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Ibai-arroak uholde-lautada gutxiegi du hainbeste koloniarentzat; erabili mapa handiagoa edo kolonia gutxiago.
 [Stone highlands]
@@ -2073,11 +2073,11 @@ Kostalde malkarrak
 [Sand roads]
 Harea-bideak
 [Road surface]
-Road surface
+Bide-azala
 [Sand]
-Sand
+Area
 [Cobblestone]
-Cobblestone
+Galtzada-harriak
 [Treasure in dead ends]
 Altxorrak kale itsuetan
 [Fjord bank deposits]

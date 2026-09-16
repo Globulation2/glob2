@@ -1929,13 +1929,13 @@ Tørhed
 [Fords]
 Vadesteder
 [Frozen crossings]
-Frozen crossings
+Frosne vadesteder
 [Half frozen]
-Half frozen
+Halvt frosne
 [All frozen]
-All frozen
+Alle frosne
 [Off]
-Off
+Fra
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Afvandingsområdet har for lidt flodslette til så mange kolonier; brug et større kort eller færre kolonier.
 [Stone highlands]
@@ -2139,11 +2139,11 @@ Takkede kyster
 [Sand roads]
 Sandveje
 [Road surface]
-Road surface
+Vejbelægning
 [Sand]
 Sand
 [Cobblestone]
-Cobblestone
+Brosten
 [Treasure in dead ends]
 Skatte i blindgyder
 [Fjord bank deposits]

@@ -1851,13 +1851,13 @@ OpenGL غير متوفر في هذا الإصدار.
 [Fords]
 المخاضات
 [Frozen crossings]
-Frozen crossings
+مخاضات متجمدة
 [Half frozen]
-Half frozen
+نصفها متجمد
 [All frozen]
-All frozen
+كلها متجمدة
 [Off]
-Off
+معطّل
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 لا يحتوي مستجمع المياه على سهول فيضية كافية لهذا العدد من المستعمرات؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
 [Stone highlands]
@@ -2061,11 +2061,11 @@ Off
 [Sand roads]
 طرق رملية
 [Road surface]
-Road surface
+سطح الطرق
 [Sand]
-Sand
+رمل
 [Cobblestone]
-Cobblestone
+حجارة مرصوفة
 [Treasure in dead ends]
 كنوز في الطرق المسدودة
 [Fjord bank deposits]

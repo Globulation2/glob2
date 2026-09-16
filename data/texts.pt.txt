@@ -1859,13 +1859,13 @@ Aridez
 [Fords]
 Vaus
 [Frozen crossings]
-Frozen crossings
+Vaus gelados
 [Half frozen]
-Half frozen
+Metade gelados
 [All frozen]
-All frozen
+Todos gelados
 [Off]
-Off
+Desativado
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 A bacia hidrográfica tem pouca planície aluvial para tantas colónias; use um mapa maior ou menos colónias.
 [Stone highlands]
@@ -2069,11 +2069,11 @@ Costas recortadas
 [Sand roads]
 Estradas de areia
 [Road surface]
-Road surface
+Pavimento
 [Sand]
-Sand
+Areia
 [Cobblestone]
-Cobblestone
+Calçada
 [Treasure in dead ends]
 Tesouros em becos sem saída
 [Fjord bank deposits]

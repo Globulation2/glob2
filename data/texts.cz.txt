@@ -1853,13 +1853,13 @@ Vyprahlost
 [Fords]
 Brody
 [Frozen crossings]
-Frozen crossings
+Zamrzlé brody
 [Half frozen]
-Half frozen
+Polovina zamrzlá
 [All frozen]
-All frozen
+Všechny zamrzlé
 [Off]
-Off
+Vypnuto
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Povodí má pro tolik kolonií příliš málo záplavové nivy; použijte větší mapu nebo méně kolonií.
 [Stone highlands]
@@ -2063,11 +2063,11 @@ Mosty přes příkop
 [Sand roads]
 Písečné cesty
 [Road surface]
-Road surface
+Povrch cest
 [Sand]
-Sand
+Písek
 [Cobblestone]
-Cobblestone
+Dlažba
 [Treasure in dead ends]
 Poklady ve slepých uličkách
 [Fjord bank deposits]

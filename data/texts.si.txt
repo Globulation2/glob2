@@ -1853,13 +1853,13 @@ Sušnost
 [Fords]
 Brodi
 [Frozen crossings]
-Frozen crossings
+Zamrznjeni brodi
 [Half frozen]
-Half frozen
+Polovica zamrznjenih
 [All frozen]
-All frozen
+Vsi zamrznjeni
 [Off]
-Off
+Izklopljeno
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Porečje ima premalo poplavne ravnice za toliko kolonij; uporabite večji zemljevid ali manj kolonij.
 [Stone highlands]
@@ -2063,11 +2063,11 @@ Razčlenjene obale
 [Sand roads]
 Peščene poti
 [Road surface]
-Road surface
+Površina poti
 [Sand]
-Sand
+Pesek
 [Cobblestone]
-Cobblestone
+Tlakovci
 [Treasure in dead ends]
 Zakladi v slepih ulicah
 [Fjord bank deposits]

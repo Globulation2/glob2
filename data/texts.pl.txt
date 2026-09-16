@@ -1853,13 +1853,13 @@ Suchość
 [Fords]
 Brody
 [Frozen crossings]
-Frozen crossings
+Zamarznięte brody
 [Half frozen]
-Half frozen
+Połowa zamarznięta
 [All frozen]
-All frozen
+Wszystkie zamarznięte
 [Off]
-Off
+Wyłączone
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Dorzecze ma za mało terenów zalewowych dla tylu kolonii; użyj większej mapy lub mniejszej liczby kolonii.
 [Stone highlands]
@@ -2063,11 +2063,11 @@ Postrzępione wybrzeża
 [Sand roads]
 Piaszczyste drogi
 [Road surface]
-Road surface
+Nawierzchnia dróg
 [Sand]
-Sand
+Piasek
 [Cobblestone]
-Cobblestone
+Bruk
 [Treasure in dead ends]
 Skarby w ślepych zaułkach
 [Fjord bank deposits]

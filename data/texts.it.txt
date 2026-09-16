@@ -1915,13 +1915,13 @@ Aridità
 [Fords]
 Guadi
 [Frozen crossings]
-Frozen crossings
+Guadi ghiacciati
 [Half frozen]
-Half frozen
+Metà ghiacciati
 [All frozen]
-All frozen
+Tutti ghiacciati
 [Off]
-Off
+Disattivato
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Il bacino idrografico ha troppo poca pianura alluvionale per così tante colonie; usa una mappa più grande o meno colonie.
 [Stone highlands]
@@ -2125,11 +2125,11 @@ Coste frastagliate
 [Sand roads]
 Strade di sabbia
 [Road surface]
-Road surface
+Fondo stradale
 [Sand]
-Sand
+Sabbia
 [Cobblestone]
-Cobblestone
+Ciottolato
 [Treasure in dead ends]
 Tesori nei vicoli ciechi
 [Fjord bank deposits]

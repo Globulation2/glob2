@@ -1849,13 +1849,13 @@ Globulation 2 のカーソルを表示します。
 [Fords]
 浅瀬
 [Frozen crossings]
-Frozen crossings
+凍った浅瀬
 [Half frozen]
-Half frozen
+半分凍結
 [All frozen]
-All frozen
+すべて凍結
 [Off]
-Off
+オフ
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 このコロニー数に対して流域の氾濫原が少なすぎます。より大きなマップを使うか、コロニーを減らしてください。
 [Stone highlands]
@@ -2059,11 +2059,11 @@ Off
 [Sand roads]
 砂の道
 [Road surface]
-Road surface
+道の舗装
 [Sand]
-Sand
+砂
 [Cobblestone]
-Cobblestone
+石畳
 [Treasure in dead ends]
 行き止まりの宝
 [Fjord bank deposits]

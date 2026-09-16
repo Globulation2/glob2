@@ -1849,13 +1849,13 @@ Kekeringan
 [Fords]
 Penyeberangan dangkal
 [Frozen crossings]
-Frozen crossings
+Penyeberangan beku
 [Half frozen]
-Half frozen
+Separuh beku
 [All frozen]
-All frozen
+Semua beku
 [Off]
-Off
+Nonaktif
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Daerah aliran sungai memiliki terlalu sedikit dataran banjir untuk koloni sebanyak ini; gunakan peta yang lebih besar atau lebih sedikit koloni.
 [Stone highlands]
@@ -2059,11 +2059,11 @@ Pantai bergerigi
 [Sand roads]
 Jalan pasir
 [Road surface]
-Road surface
+Permukaan jalan
 [Sand]
-Sand
+Pasir
 [Cobblestone]
-Cobblestone
+Batu bulat
 [Treasure in dead ends]
 Harta di jalan buntu
 [Fjord bank deposits]

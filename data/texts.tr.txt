@@ -1861,13 +1861,13 @@ Kuraklık
 [Fords]
 Sığ geçitler
 [Frozen crossings]
-Frozen crossings
+Donmuş geçitler
 [Half frozen]
-Half frozen
+Yarısı donmuş
 [All frozen]
-All frozen
+Hepsi donmuş
 [Off]
-Off
+Kapalı
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Havzada bu kadar koloni için çok az taşkın ovası var; daha büyük bir harita veya daha az koloni kullanın.
 [Stone highlands]
@@ -2071,11 +2071,11 @@ Girintili kıyılar
 [Sand roads]
 Kum yollar
 [Road surface]
-Road surface
+Yol kaplaması
 [Sand]
-Sand
+Kum
 [Cobblestone]
-Cobblestone
+Arnavut kaldırımı
 [Treasure in dead ends]
 Çıkmaz yollarda hazine
 [Fjord bank deposits]

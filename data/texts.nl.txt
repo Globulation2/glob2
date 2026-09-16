@@ -1877,13 +1877,13 @@ Droogte
 [Fords]
 Doorwaadplaatsen
 [Frozen crossings]
-Frozen crossings
+Bevroren doorwaadplaatsen
 [Half frozen]
-Half frozen
+Half bevroren
 [All frozen]
-All frozen
+Alle bevroren
 [Off]
-Off
+Uit
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Het stroomgebied heeft te weinig overstromingsvlakte voor zoveel kolonies; gebruik een grotere kaart of minder kolonies.
 [Stone highlands]
@@ -2087,11 +2087,11 @@ Grillige kusten
 [Sand roads]
 Zandwegen
 [Road surface]
-Road surface
+Wegdek
 [Sand]
-Sand
+Zand
 [Cobblestone]
-Cobblestone
+Kasseien
 [Treasure in dead ends]
 Schatten in doodlopende gangen
 [Fjord bank deposits]

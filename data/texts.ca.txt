@@ -1861,13 +1861,13 @@ Aridesa
 [Fords]
 Guals
 [Frozen crossings]
-Frozen crossings
+Guals glaçats
 [Half frozen]
-Half frozen
+Meitat glaçats
 [All frozen]
-All frozen
+Tots glaçats
 [Off]
-Off
+Desactivat
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 La conca té massa poca plana al·luvial per a tantes colònies; feu servir un mapa més gran o menys colònies.
 [Stone highlands]
@@ -2071,11 +2071,11 @@ Costes retallades
 [Sand roads]
 Camins de sorra
 [Road surface]
-Road surface
+Paviment
 [Sand]
-Sand
+Sorra
 [Cobblestone]
-Cobblestone
+Llambordes
 [Treasure in dead ends]
 Tresors als atzucacs
 [Fjord bank deposits]

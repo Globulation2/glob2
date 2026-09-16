@@ -1863,13 +1863,13 @@ Aridité
 [Fords]
 Gués
 [Frozen crossings]
-Frozen crossings
+Gués gelés
 [Half frozen]
-Half frozen
+Moitié gelés
 [All frozen]
-All frozen
+Tous gelés
 [Off]
-Off
+Désactivé
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Le bassin versant a trop peu de plaines inondables pour autant de colonies ; utilisez une carte plus grande ou moins de colonies.
 [Stone highlands]
@@ -2073,11 +2073,11 @@ Côtes découpées
 [Sand roads]
 Chemins de sable
 [Road surface]
-Road surface
+Revêtement
 [Sand]
-Sand
+Sable
 [Cobblestone]
-Cobblestone
+Pavés
 [Treasure in dead ends]
 Trésors dans les culs-de-sac
 [Fjord bank deposits]

@@ -1853,13 +1853,13 @@ Szárazság
 [Fords]
 Gázlók
 [Frozen crossings]
-Frozen crossings
+Befagyott gázlók
 [Half frozen]
-Half frozen
+Félig befagyva
 [All frozen]
-All frozen
+Mind befagyva
 [Off]
-Off
+Kikapcsolva
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 A vízgyűjtőn túl kevés az ártér ennyi kolóniához; használjon nagyobb térképet vagy kevesebb kolóniát.
 [Stone highlands]
@@ -2063,11 +2063,11 @@ Tagolt partok
 [Sand roads]
 Homokutak
 [Road surface]
-Road surface
+Útburkolat
 [Sand]
-Sand
+Homok
 [Cobblestone]
-Cobblestone
+Macskakő
 [Treasure in dead ends]
 Kincsek a zsákutcákban
 [Fjord bank deposits]
