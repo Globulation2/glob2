@@ -131,15 +131,27 @@ remain authoritative.
 
 ### Town selection, crops and room
 
-Candidates lie on a four-tile sampling grid. Each needs twelve tiles of
-Chebyshev clearance from non-grass or structural rock, and must be 12–21 eight-neighbour grid
+Every town on a map is drawn to one plan (revision 4). The plan is one of seven shapes, each
+about 250 clear tiles: a 16×16 square, rectangles of 18×14, 19×13 and 22×11, a 17×17
+square with rounded corners, a 17×17 octagon and a 20×16 oval, turned either way. Its
+edge frays. Round the town, stretches of the boundary sit a corner inside or outside the
+plan, and here and there the two-corner sand ring runs a corner thicker. The fray is drawn
+once, from the `lava-town` stream, and every town shares it, so the colonies start on the
+same ground and the edge still looks grown rather than ruled.
+
+![One town from each of the seven plans](images/lava-shield/town-shapes.png)
+
+Candidates lie on a four-tile sampling grid. Every tile the town will touch (its grass and
+every tile with a corner in its ring, thicker stretches included) must be pure grass
+free of structural rock, so the ring can never take a corner from a tile of lava stone. Each candidate must also be 12–21 eight-neighbour grid
 steps from ocean water (crater sources are excluded). A radial exclusion keeps crater-side candidates out so the
-summit starts neutral. Fertility is summed over a 23×23 neighbourhood: the town and
-its immediate external growing edges.
+summit starts neutral. Fertility is summed over a square three tiles past the plan's
+half-length (23×23 for the square town): the town and its immediate external growing edges.
 
 Each proposal starts in the fertile half of candidates, then uses shared weighted
 maximin spreading. The preference multiplier spans 0.6–1.0, keeping spacing relevant
-when fertility differs. A 28-tile Euclidean separation is an absolute floor. Sites
+when fertility differs. A Euclidean separation of two town envelopes plus eight tiles
+(28 for the square town) is an absolute floor; it follows the plan's size, not its frayed edge. Sites
 are dealt to team indices before placement. Four proposals are fully materialized;
 `StartQuality` scores actual swarms, workers, harvest trips, resources and room.
 A proposal must have wheat within 24 steps, wood within 32, at least 48 reachable
@@ -155,8 +167,8 @@ minimum observed over forty default 256×256 four-colony seeds, so it does not
 reject anything the generator produces at its defaults. Ties keep the earlier
 proposal.
 
-Each town reuses `stampFarmPlot` to leave 16×16 pure grass inside a two-corner sand
-ring. A sand approach begins just outside that ring and reaches the crater circuit,
+Each town leaves its plan's pure grass inside the frayed two-corner sand ring. A sand
+approach begins two corners beyond the plain ring and reaches the crater circuit,
 protecting town and route from future crop growth. It first requests three tiles
 of width. If that cannot fit, the same shared operation tries a one-tile route with the
 same protected terrain and routing costs. Existing walkable non-grass beach
@@ -166,7 +178,8 @@ crop may end up inside the town after repair. These reservations consume buildab
 land deliberately; they make the remaining building space durable.
 
 Starter wheat aims for 40 tiles, starter wood for 32. Their seeds maximize positive
-engine fertility within a 16-tile box of the home; growth stays within 18 tiles and
+engine fertility within a box eight tiles past the plan's half-length (16 for the square
+town); growth stays within ten tiles past it (18) and
 outside all reservations. At least half each target must fit or the proposal fails.
 This shortfall tolerance preserves usable harvest edges without moving water or
 rock. Final walking access is checked separately; straight-line distance is not
@@ -302,6 +315,7 @@ once, rather than summing discarded proposals into the final map.
 | `lava-shield.tongues.requested`, `.long` | Primary count and effective rounded long-flow count. “Long” describes a coast-reaching design, not a walking seal. |
 | `lava-shield.branches.requested`, `.placed`, `.refused` | Side proposals and collision/coast/uphill omissions. `branches.omitted` records the fallback when any are refused. |
 | `lava-shield.crater.radius`, `lava-shield.rim.width` | Effective design-frame radius and selected rim budget in tiles. |
+| `lava-shield.town.shape`, `.grass-corners`, `.half-extent` | The map's town plan, the grass corners one town holds after fraying, and half the plan's longer side. |
 | `lava-shield.starts.candidates` | Terrain shortlist before complete-world trials. |
 | `starts.scored.proposals`, `.viable`, `.selected` | Trial budget, number passing construction and quality floors, and zero-based chosen proposal (−1 on failure). |
 | `starts.scored.outcome`, `.score` | Per-proposal outcome text and viable score; subject is the zero-based proposal index. |

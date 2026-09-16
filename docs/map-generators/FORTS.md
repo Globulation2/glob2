@@ -1,13 +1,33 @@
 # Forts
 
-**Forts** (`forts`, numeric ID 34) is a medieval, central-European-inspired landscape:
+**Forts** (`forts`, numeric ID 35, revision 7) is a medieval, central-European-inspired landscape:
 stone enclosures open onto wooded uplands, rocky crowns, winding river valleys,
 irregular lakes, market-town sites, fields and orchards. It is an imagined countryside, not a geographic
 reconstruction of Europe.
 
-Each colony starts in a rectangular fort with corner bastions, two opposite gates,
-a broad construction courtyard, separate irrigated wheat and wood plots, and a small
-household orchard. Shallow moat sections supply water around each estate.
+Each colony starts in a rectangular fort with two opposite gates, a broad construction
+courtyard, separate irrigated wheat and wood plots, and a small household orchard. A
+shallow moat runs all the way round each fort, broken only where the gate roads cross it,
+and narrows round any tower that stands out past the wall (a beach may not touch stone).
+
+Every fort on a map is built to one design, so the colonies start alike, and the design
+changes from map to map. Before revision 7 every fort had its yard on the left and its
+plots on the right. The design combines:
+
+| Part | Choices |
+| --- | --- |
+| Interior layout | **Bailey** (yard on one side, wheat and wood plots side by side on the other); **diagonal** (wheat and wood in opposite corners, yard in the other two); **long gardens** (a long wheat garden down most of one wall, wood along half the opposite wall); **chapter** (wheat in the two corners of one wall, wood in the middle of the other) |
+| Walls | **Bastions** (square corner bastions); **gatehouse** (bastions, a square tower either side of each gate and one in the middle of each long wall); **round towers** (at the corners and beside the gates) |
+| Orientation | Gates east–west or north–south, and the layout mirrored across either axis |
+| Market towns | **Crossroads** (four plots); **green** (a ring street round a small green, cut by one through street); **high street** (a main street with a back lane crossing it either side), turned either way |
+
+![Eight Forts maps, one fort from each: layout, wall style and town plan](images/forts-designs.png)
+
+Plots and towers stay a tile clear of the ramparts. A tile of stone needs all four of its
+corners grass, and a mirrored plot's sand sits one corner nearer the wall than the original,
+so this margin makes every turn and mirror legal. A plot watered along its long side takes
+its water on the side toward the gate road. The engine does not count water that has pure
+sand directly opposite it, so crops between a canal and the broad road never regrew.
 Sand borders contain those plots; sand roads through the gates resist crop growth
 and connect the colonies by land, crossing rivers at fords. The opening supports
 settlement inside the fort; larger economies and additional fruit collection encourage expansion
@@ -74,7 +94,7 @@ building anchors inside each fort, walking connectivity between colonies, and at
 placed market town.
 These anchors overlap; they are not a count of independent buildings.
 
-Telemetry records fort dimensions/counts, river orientation and fitted width, lake target/actual area and capacity limits,
+Telemetry records the design (`forts.design.layout`, `.walls`, `.town`, `.gates`), fort dimensions/counts, river orientation and fitted width, lake target/actual area and capacity limits,
 town placement/omissions, plot target/actual
 planting and summed growth potential, household orchard counts, plot-capacity limits, forest tiles and rocky-upland tiles, alongside shared
 settlement and starting-resource observations. It makes no random draws or extra

@@ -119,60 +119,199 @@ bool overlapsHome(const Layout &L, RegionBounds bounds, int margin)
 				return true;
 	return false;
 }
-void layHomeEconomies(Layout &L)
+const char *homeDesignName(HomeDesign design)
+{
+	static const char *const names[] = {"parterre", "horseshoe", "cloister", "four-beds"};
+	return names[int(design)];
+}
+bool layHomeEconomies(Layout &L, GenerationContext &context)
 {
 	const auto &t = L.t;
+	// One garden per map, drawn at every home: the design sets how much water waters each crop
+	// and how far a worker walks to it, so colonies on one map must share it, but a map that
+	// always drew the same stamp read as monotonous across games (maintainer review 2026-09-16).
+	L.homeDesign = HomeDesign(context.bounded("fractal-home-design", unsigned(HomeDesign::Count)));
+	context.telemetry.choice("fractal.homes.design", homeDesignName(L.homeDesign));
 	for (Home h : L.homes)
 	{
+		// Every rectangle below is relative to the home's centre, half-open like fillRectangle.
+		const auto at = [&](int x0, int y0, int x1, int y1)
+		{ return RegionBounds{h.x + x0, h.y + y0, h.x + x1, h.y + y1}; };
+		const auto paint = [&](TerrainType type, int x0, int y0, int x1, int y1)
+		{ fillRectangle(L.terrain, t, at(x0, y0, x1, y1), type); };
+		const auto crop = [&](bool timber, int x0, int y0, int x1, int y1)
+		{
+			fillRectangle(L.wheat, t, at(x0, y0, x1, y1), !timber);
+			fillRectangle(L.wood, t, at(x0, y0, x1, y1), timber);
+		};
+		// A pure-sand aisle through a crop bed limits patch width and guarantees access even after
+		// every eligible crop tile has filled in. Aisles stop at the crops: run through the water
+		// as well and one long canal becomes several short ponds, which waters the same crops
+		// less and reads as a sand grid.
+		const auto clearCrops = [&](int x0, int y0, int x1, int y1)
+		{
+			fillRectangle(L.wheat, t, at(x0, y0, x1, y1), 0);
+			fillRectangle(L.wood, t, at(x0, y0, x1, y1), 0);
+		};
+		const auto aisle = [&](int x0, int y0, int x1, int y1)
+		{
+			paint(SAND, x0, y0, x1, y1);
+			clearCrops(x0, y0, x1, y1);
+		};
+		// A square bed: a sand cap two corners wide, grass inside it, and a pool whose beach the
+		// shoreline pass takes out of the innermost grass row, leaving crops all round it.
+		const auto bed = [&](bool timber, int x0, int y0, int side)
+		{
+			paint(SAND, x0, y0, x0 + side, y0 + side);
+			paint(GRASS, x0 + 2, y0 + 2, x0 + side - 2, y0 + side - 2);
+			crop(timber, x0 + 2, y0 + 2, x0 + side - 3, y0 + side - 3);
+			paint(WATER, x0 + 6, y0 + 6, x0 + side - 6, y0 + side - 6);
+			clearCrops(x0 + 5, y0 + 5, x0 + side - 5, y0 + side - 5);
+		};
 		// Construction ground is 24×24 pure tiles (25×25 corners), surrounded by two
 		// corners of sand. The ring stops resource spread while remaining walkable;
 		// its northern side opens onto the service apron below.
-		fillRectangle(L.terrain, t, {h.x - 14, h.y - 12, h.x + 15, h.y + 17}, SAND);
-		fillRectangle(L.terrain, t, {h.x - 12, h.y - 10, h.x + 13, h.y + 15}, GRASS);
-		// A long wheat frontage lets several workers harvest without queuing at a single
-		// deposit. Water is behind the crops, the home is in front. Crop plots have their
-		// own sand cap, so renewable supplies cannot engulf the construction district.
-		// Two corners of sand on every side of each water strip, matching the flanks and the width
-		// of a garden path: a one-corner rim on the water side read as a thinner, notched border.
-		fillRectangle(L.terrain, t, {h.x - 26, h.y - 29, h.x + 27, h.y - 12}, SAND);
-		fillRectangle(L.terrain, t, {h.x - 24, h.y - 27, h.x + 25, h.y - 22}, WATER);
-		fillRectangle(L.terrain, t, {h.x - 24, h.y - 20, h.x + 25, h.y - 14}, GRASS);
-		fillRectangle(L.wheat, t, {h.x - 23, h.y - 19, h.x + 24, h.y - 15}, 1);
-		// Keep timber in the two outer bays beside the wheat. Saved-state probes
-		// showed an inn could be 26 walking tiles from the southern timber plot:
-		// its sole feeding service closed for an upgrade, then hungry workers
-		// could not finish the long wood deliveries. Nearby wood shortens that
-		// construction trip without giving free buildings or changing AI policy.
-		// The existing two-corner sand aisles separate these bays from the two
-		// inner wheat beds, so later forest growth cannot replace their grain.
-		// The union of crop masks is unchanged, so crossing exclusions and the 24x24
-		// court do not move. These bays are the home's only renewable timber.
-		for (const RegionBounds bay : {RegionBounds{h.x - 23, h.y - 19, h.x - 16, h.y - 15},
-									   RegionBounds{h.x + 18, h.y - 19, h.x + 24, h.y - 15}})
+		switch (L.homeDesign)
 		{
-			fillRectangle(L.wheat, t, bay, 0);
-			fillRectangle(L.wood, t, bay, 1);
-		}
-		// The southern plot is wheat too: a home's renewable timber is the two bays above, and
-		// the rest comes from copses and timber bank plots out on the map, so a colony that
-		// wants to build big has a reason to leave home. The finished-world check still refuses
-		// any home without reachable renewable wood.
-		fillRectangle(L.terrain, t, {h.x - 26, h.y + 17, h.x + 27, h.y + 31}, SAND);
-		// Five rows of water, matching the northern strip: two rows fed the plot slowly and left
-		// the south of every module looking dry. Crops regrow at a rate set by how much water is
-		// near them, so the width of this strip is the plot's supply.
-		fillRectangle(L.terrain, t, {h.x - 24, h.y + 24, h.x + 25, h.y + 29}, WATER);
-		fillRectangle(L.terrain, t, {h.x - 24, h.y + 19, h.x + 25, h.y + 23}, GRASS);
-		fillRectangle(L.wheat, t, {h.x - 23, h.y + 20, h.x + 24, h.y + 22}, 1);
-		// Crossing each crop frontage with three pure-sand aisles limits patch width and
-		// guarantees access even after every eligible crop tile has filled in. The aisles stop
-		// at the crops: run through the water as well and each strip becomes four short ponds
-		// instead of one long one, which waters the same crops less and reads as a sand grid.
-		for (int offset : {-16, 0, 16})
+		case HomeDesign::Parterre:
 		{
-			fillRectangle(L.terrain, t, {h.x + offset, h.y - 21, h.x + offset + 2, h.y - 12}, SAND);
-			fillRectangle(L.terrain, t, {h.x + offset, h.y + 17, h.x + offset + 2, h.y + 24}, SAND);
+			// A long wheat frontage lets several workers harvest without queuing at a single
+			// deposit. Water is behind the crops, the home is in front. Crop plots have their
+			// own sand cap, so renewable supplies cannot engulf the construction district.
+			// Two corners of sand on every side of each water strip, matching the flanks and the
+			// width of a garden path: a one-corner rim on the water side read as a thinner,
+			// notched border.
+			paint(SAND, -26, -29, 27, -12);
+			paint(WATER, -24, -27, 25, -22);
+			paint(GRASS, -24, -20, 25, -14);
+			crop(false, -23, -19, 24, -15);
+			// Keep timber in the two outer bays beside the wheat. Saved-state probes
+			// showed an inn could be 26 walking tiles from the southern timber plot:
+			// its sole feeding service closed for an upgrade, then hungry workers
+			// could not finish the long wood deliveries. Nearby wood shortens that
+			// construction trip without giving free buildings or changing AI policy.
+			// The two-corner sand aisles separate these bays from the two inner wheat
+			// beds, so later forest growth cannot replace their grain.
+			crop(true, -23, -19, -16, -15);
+			crop(true, 18, -19, 24, -15);
+			// The southern plot is wheat too: a home's renewable timber is the two bays above,
+			// and the rest comes from copses and timber bank plots out on the map, so a colony
+			// that wants to build big has a reason to leave home. Five rows of water, matching
+			// the northern strip: two rows fed the plot slowly and left the south of every
+			// module looking dry. Crops regrow at a rate set by how much water is near them, so
+			// the width of this strip is the plot's supply.
+			paint(SAND, -26, 17, 27, 31);
+			paint(WATER, -24, 24, 25, 29);
+			paint(GRASS, -24, 19, 25, 24);
+			crop(false, -23, 20, 24, 23);
+			for (int offset : {-16, 0, 16})
+			{
+				aisle(offset, -21, offset + 2, -12);
+				aisle(offset, 17, offset + 2, 24);
+			}
+			L.quarryX = 20;
+			L.quarryY = -3;
+			break;
 		}
+		case HomeDesign::Horseshoe:
+		{
+			// One canal bent round three sides of the court, with its crops on the inside of the
+			// bend, and the south left as lawn. The arms end in timber, the rest is wheat.
+			// The canal is narrower than a parterre's and keeps two corners of lawn outside its
+			// sand: a home in a tight pocket of the map builds its first expansion on the ground
+			// round the module's edge, and a canal out to the rim left it none within a day's walk.
+			paint(SAND, -27, -27, 28, -12);
+			paint(SAND, 15, -12, 28, 24);
+			paint(SAND, -27, -12, -14, 24);
+			paint(SAND, 13, 17, 15, 22);
+			paint(SAND, -14, 17, -12, 22);
+			paint(WATER, -25, -25, 26, -22);
+			paint(WATER, 23, -22, 26, 22);
+			paint(WATER, -25, -22, -22, 22);
+			paint(GRASS, -20, -20, 21, -14);
+			paint(GRASS, 15, -14, 21, 20);
+			paint(GRASS, -20, -14, -14, 20);
+			crop(false, -19, -19, 20, -15);
+			crop(false, 16, -15, 20, 19);
+			crop(false, -19, -15, -15, 19);
+			crop(true, 16, 11, 20, 19);
+			crop(true, -19, 11, -15, 19);
+			for (int offset : {-10, 0, 10})
+				aisle(offset, -21, offset + 2, -12);
+			for (int offset : {-6, 8})
+			{
+				aisle(15, offset, 21, offset + 2);
+				aisle(-20, offset, -14, offset + 2);
+			}
+			// A causeway north across the bend: colonies start by the service apron, and on a
+			// crowded map the way round by the lawn left too little ground within a day's walk.
+			aisle(-1, -27, 2, -14);
+			L.quarryX = 6;
+			L.quarryY = 21;
+			break;
+		}
+		case HomeDesign::Cloister:
+		{
+			// A canal all the way round, crops on its inner bank, and a sand causeway across it on
+			// each side. Two corners of lawn stay outside the canal's sand, as round a horseshoe.
+			// The quarry is the well in a corner of the court: nowhere else inside is dry ground.
+			paint(SAND, -27, -27, 28, 28);
+			paint(WATER, -25, -25, 26, -22);
+			paint(WATER, -25, 24, 26, 26);
+			paint(WATER, 23, -22, 26, 24);
+			paint(WATER, -25, -22, -22, 24);
+			paint(GRASS, -20, -20, 21, -14);
+			paint(GRASS, -20, 17, 21, 22);
+			paint(GRASS, 15, -14, 21, 17);
+			paint(GRASS, -20, -14, -14, 17);
+			crop(false, -19, -19, 20, -15);
+			crop(false, -19, 18, 20, 21);
+			crop(false, 16, -15, 20, 18);
+			crop(false, -19, -15, -15, 18);
+			crop(true, 16, 10, 20, 21);
+			crop(true, -19, 10, -15, 21);
+			for (int offset : {-10, 0, 10})
+				aisle(offset, -21, offset + 2, -12);
+			for (int offset : {-12, 11})
+				aisle(offset, 17, offset + 2, 23);
+			for (int offset : {-8, 8})
+			{
+				aisle(15, offset, 21, offset + 2);
+				aisle(-20, offset, -14, offset + 2);
+			}
+			// Causeways: three corners of sand straight across water, bank and crops, one on each
+			// side, so the colony by the service apron has a way straight out.
+			aisle(-1, -27, 2, -14);
+			aisle(-1, 17, 2, 28);
+			aisle(15, 0, 28, 3);
+			aisle(-27, 0, -14, 3);
+			L.quarryX = -12;
+			L.quarryY = 12;
+			break;
+		}
+		case HomeDesign::FourBeds:
+		{
+			// A short canal feeds the wheat along the service apron; a square pool bed stands in
+			// each corner of the module, one of them timber, and the flanks and the south between
+			// the beds stay lawn.
+			paint(SAND, -13, -29, 14, -12);
+			paint(WATER, -11, -27, 12, -22);
+			paint(GRASS, -11, -20, 12, -14);
+			crop(false, -10, -19, 11, -15);
+			aisle(0, -21, 2, -12);
+			bed(false, -29, -29, 16);
+			bed(false, 14, -29, 16);
+			bed(false, -29, 14, 16);
+			bed(true, 14, 14, 16);
+			L.quarryX = 6;
+			L.quarryY = 21;
+			break;
+		}
+		default:
+			break;
+		}
+		paint(SAND, -14, -12, 15, 17);
+		paint(GRASS, -12, -10, 13, 15);
 		// Food-service buildings need to hug the grain, especially policies that
 		// require an upgraded inn footprint within one tile of harvestable wheat, so
 		// a grass apron runs straight off the wheat bed: five clear rows fit a 3x3 inn
@@ -182,8 +321,11 @@ void layHomeEconomies(Layout &L)
 		// which no crop can extend across. The court loses only its top row, which lies
 		// inside the building grid's inset margin. Terrain is the only containment: generated
 		// maps may not use the saved no-growth flag, which belongs to hand-made scenarios.
-		fillRectangle(L.terrain, t, {h.x - 12, h.y - 15, h.x + 13, h.y - 9}, GRASS);
-		fillRectangle(L.terrain, t, {h.x - 14, h.y - 10, h.x + 15, h.y - 9}, SAND);
+		paint(GRASS, -12, -15, 13, -9);
+		paint(SAND, -14, -10, 15, -9);
+		// The quarry's ground is held like an objective court, so a garden path that runs in to
+		// meet the court across open lawn cannot pave the stone's tiles first.
+		fillRectangle(L.objectives, t, at(L.quarryX, L.quarryY, L.quarryX + 2, L.quarryY + 3), 1);
 		// The module's rim is a straight-edged rectangle: these maps are formal gardens, and a
 		// two-wide path can only meet a straight edge flush.
 		L.features.push_back({h.x - 29, h.y - 30, h.x + 30, h.y + 31});
@@ -193,6 +335,22 @@ void layHomeEconomies(Layout &L)
 	// stamped after this call needs its own pass, which is why both maps finish their design
 	// with one.
 	layBeaches(L.terrain, t);
+	// Every design must keep its crops inside its own sand: growth follows pure grass in eight
+	// directions, so a crop that can reach past the module's reservation would, given time, cover
+	// the meadow. Checked on the design, before anything else is laid round the homes.
+	const auto grass = pureTiles(L.terrain, t, GRASS);
+	std::vector<unsigned char> crops(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+		crops[i] = grass[i] && (L.wheat[i] || L.wood[i]);
+	const auto spread = floodFrom(t, crops, grass);
+	for (int i : spread.visited)
+		if (!L.reserved[i])
+		{
+			L.failure = std::string("The ") + homeDesignName(L.homeDesign) +
+						" home garden lets its crops grow out past its sand.";
+			return false;
+		}
+	return true;
 }
 namespace
 {
@@ -663,11 +821,12 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 	}
 	for (Home h : L.homes)
 	{
-		// Quarry is outside both farm plots and the central building district. A 2×3 patch
+		// Quarry is outside the farm plots, on lawn the design leaves dry (in a cloister, whose
+		// canal leaves no lawn, it is the well in a corner of the court). A 2×3 patch
 		// has multiple gathering edges but does not make a wall. This opening minimum is
 		// deliberately retained at zero stone amount, like the renewable food and wood.
-		for (int y = -3; y < 0; ++y)
-			for (int x = 20; x < 22; ++x)
+		for (int y = L.quarryY; y < L.quarryY + 3; ++y)
+			for (int x = L.quarryX; x < L.quarryX + 2; ++x)
 				map.setResource(t.x(h.x + x), t.y(h.y + y), STONE, 1);
 	}
 	// Ambient deposits stay in designated objective courts. This prevents high resource
@@ -896,8 +1055,13 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 					 std::min(1.0, expansion / 500.0);
 		if (!wheat || !wood || !quarry || !renewableWheat || !renewableWood || expansion < 16)
 		{
-			context.detail = "Home " + std::to_string(h) +
-							 " lacks reachable food, wood, quarry or expansion room.";
+			std::string lacking;
+			for (const auto &[missing, name] :
+				 {std::pair{!wheat || !renewableWheat, " food"}, {!wood || !renewableWood, " wood"},
+				  {!quarry, " quarry"}, {expansion < 16, " expansion room"}})
+				if (missing)
+					lacking += name;
+			context.detail = "Home " + std::to_string(h) + " lacks reachable" + lacking + ".";
 			return false;
 		}
 	}

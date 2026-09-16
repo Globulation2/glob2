@@ -30,6 +30,91 @@ using namespace MapGeneration;
 // deposits, including at zero stone abundance; there are no changes to buildings or combat rules.
 namespace
 {
+// Every fort on a map is built to one design, so the colonies start with the same courtyard, plots
+// and walls, but the design changes from map to map: a map that always drew its yard on the left
+// and its plots on the right read as one stamp (maintainer review 2026-09-16). A design is an
+// interior layout, a wall style, and a quarter turn and mirror of the whole fort, plus the plan
+// of the market towns.
+enum class FortLayout
+{
+	Bailey,      // yard on one side, wheat and wood plots side by side on the other
+	Diagonal,    // wheat and wood in opposite corners, the yard in the other two
+	LongGardens, // a long wheat garden down most of one wall, wood along half the other
+	Chapter,     // wheat in the two corners of one wall, wood in the middle of the other
+	Count
+};
+enum class FortWalls
+{
+	Bastions,  // square corner bastions
+	Gatehouse, // corner bastions, towers flanking both gates and one mid-wall tower each side
+	Round,     // round towers at the corners and flanking the gates
+	Count
+};
+enum class TownPlan
+{
+	Crossroads, // two streets crossing: four plots
+	Green,      // a ring street round a small central green, cut by one through street
+	HighStreet, // one main street with a back lane crossing it either side
+	Count
+};
+const char *const kLayoutNames[] = {"bailey", "diagonal", "long-gardens", "chapter"};
+const char *const kWallNames[] = {"bastions", "gatehouse", "round-towers"};
+const char *const kTownNames[] = {"crossroads", "green", "high-street"};
+struct FortDesign
+{
+	FortLayout layout = FortLayout::Bailey;
+	FortWalls walls = FortWalls::Bastions;
+	TownPlan town = TownPlan::Crossroads;
+	// The fort's own frame, (u, v): u runs gate to gate. A quarter turn puts the gates north and
+	// south instead of east and west; the flips mirror the layout across either axis.
+	bool turn = false, flipU = false, flipV = false, townTurn = false;
+	int x(int u, int v) const { return turn ? (flipV ? -v : v) : (flipU ? -u : u); }
+	int y(int u, int v) const { return turn ? (flipU ? -u : u) : (flipV ? -v : v); }
+};
+/// A sand-rimmed crop plot in a fort's frame: the plot spans a in [a0, a1] and b in [b0, b1], and
+/// sits at u = su * a, v = sv * b. Its water lies along the far a edge (waterOnA) or the near b
+/// edge, the side toward the gate road: crops regrow from water only where no sand lies directly
+/// opposite it, so a plot's crops never sit between its water and the road's broad sand.
+struct FortPlot
+{
+	int a0, a1, b0, b1, su, sv;
+	bool waterOnA, timber;
+};
+struct FortPlan
+{
+	std::vector<FortPlot> plots;
+	int settleU, settleV;     // the colony's starting point, in the yard
+	int orchardU, orchardV;   // the first household orchard seed
+	int orchardDu, orchardDv; // the step to the next
+};
+FortPlan fortPlan(FortLayout layout, int r)
+{
+	// A plot watered along its long side needs ten corners of depth: its rim, four corners of
+	// water, the beach the shoreline pass takes from the grass, and four rows of crops.
+	// Plots stop at r - 5, a tile short of the bastions and towers: a tile of stone needs all four
+	// of its corners grass, and mirroring a plot onto a fort's other side moves its sand rim one
+	// corner nearer the stone than it sits on the side it was drawn for.
+	const int e = r - 5;
+	switch (layout)
+	{
+	case FortLayout::Diagonal:
+		return {{{2, e, 4, e, 1, -1, true, false}, {2, e, 4, e, -1, 1, true, true}},
+				-10, -9, 6, e, 4, 0};
+	case FortLayout::LongGardens:
+		return {{{6 - e, e, e - 10, e, 1, -1, false, false}, {2, e, e - 10, e, 1, 1, false, true}},
+				-10, 9, -r + 6, r - 3, 4, 0};
+	case FortLayout::Chapter:
+		return {{{e - 10, e, 4, e, 1, -1, false, false},
+				 {e - 10, e, 4, e, -1, -1, false, false},
+				 {-7, 7, e - 10, e, 1, 1, false, true}},
+				0, -10, -e, 6, 0, 4};
+	default:
+		// Separate irrigated food and wood plots, each enclosed by sand. The other half of the
+		// fort remains a large uninterrupted construction yard, with room for upgraded buildings.
+		return {{{2, e, 4, e, 1, -1, true, false}, {2, e, 4, e, 1, 1, true, true}},
+				-10, -9, -r + 6, e, 4, 0};
+	}
+}
 struct Layout
 {
 	Torus t{1, 1};
@@ -37,6 +122,7 @@ struct Layout
 	std::vector<int> homeOf, plot, uplands;
 	std::vector<unsigned char> wall, roads, gates, buffer, towns;
 	std::vector<ShapePoint> homes, villages;
+	FortDesign design;
 	std::string failure;
 };
 
@@ -225,8 +311,26 @@ void marketTowns(Layout &L, const FortsOptions &o, const GenerationRequest &requ
 			{
 				const int i = t.at(site % t.w + dx, site / t.w + dy);
 				L.towns[i] = 1;
-				if (std::abs(dx) <= 1 || std::abs(dy) <= 1 ||
-					std::max(std::abs(dx), std::abs(dy)) == townRadius)
+				// Streets in the town's own frame; every plan joins the centre, where the roads
+				// arrive, to the boundary street.
+				const int across = std::abs(L.design.townTurn ? dy : dx),
+						  along = std::abs(L.design.townTurn ? dx : dy),
+						  ring = std::max(across, along), half = townRadius / 2;
+				bool street = false;
+				switch (L.design.town)
+				{
+				case TownPlan::Green:
+					// A small green inside a ring street, a wide band of plots round it.
+					street = across <= 1 || ring == 3 || ring == 4;
+					break;
+				case TownPlan::HighStreet:
+					street = along <= 1 || across == half || across == half + 1;
+					break;
+				default:
+					street = across <= 1 || along <= 1;
+					break;
+				}
+				if (street || ring == townRadius)
 				{
 					L.roads[i] = 1;
 					L.terrain[i] = SAND;
@@ -358,64 +462,112 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.failure = "Too many colonies for this map; use a bigger map or fewer colonies.";
 		return L;
 	}
+	// One design for every fort on the map, from its own stream so the rest of the layout draws
+	// what it always drew.
+	FortDesign &d = L.design;
+	d.layout = FortLayout(context.bounded("forts-design", unsigned(FortLayout::Count)));
+	d.walls = FortWalls(context.bounded("forts-design", unsigned(FortWalls::Count)));
+	d.town = TownPlan(context.bounded("forts-design", unsigned(TownPlan::Count)));
+	d.turn = context.bounded("forts-design", 2);
+	d.flipU = context.bounded("forts-design", 2);
+	d.flipV = context.bounded("forts-design", 2);
+	d.townTurn = context.bounded("forts-design", 2);
+	context.telemetry.choice("forts.design.layout", kLayoutNames[int(d.layout)]);
+	context.telemetry.choice("forts.design.walls", kWallNames[int(d.walls)]);
+	context.telemetry.choice("forts.design.town", kTownNames[int(d.town)]);
+	context.telemetry.choice("forts.design.gates", d.turn ? "north-south" : "east-west");
+	const FortPlan plan = fortPlan(d.layout, r);
+	const int gate = o.gateWidth / 2;
 	std::vector<int> exits;
 	for (int k = 0; k < request.nbTeams; ++k)
 	{
 		const int cx = int(L.homes[k].x), cy = int(L.homes[k].y);
-		for (int dy = -r - 5; dy <= r + 5; ++dy)
-			for (int dx = -r - 5; dx <= r + 5; ++dx)
+		const auto at = [&](int u, int v) { return t.at(cx + d.x(u, v), cy + d.y(u, v)); };
+		const auto tower = [&](int u, int v)
+		{
+			const int au = std::abs(u), av = std::abs(v);
+			switch (d.walls)
 			{
-				const int i = t.at(cx + dx, cy + dy);
+			case FortWalls::Gatehouse:
+				// A square tower either side of each gate and one in the middle of each long wall.
+				return (au >= r - 3 && au <= r + 1 && av >= gate + 2 && av <= gate + 5) ||
+					   (av >= r - 3 && av <= r + 1 && au <= 2);
+			case FortWalls::Round:
+			{
+				// Round towers at the corners and beside the gates, standing out past the wall.
+				const auto round = [&](int tu, int tv)
+				{ return (au - tu) * (au - tu) + (av - tv) * (av - tv) <= 8; };
+				return round(r, r) || round(r, gate + 4);
+			}
+			default:
+				return false;
+			}
+		};
+		for (int v = -r - 5; v <= r + 5; ++v)
+			for (int u = -r - 5; u <= r + 5; ++u)
+			{
+				const int i = at(u, v);
 				L.buffer[i] = 1;
 				L.terrain[i] = GRASS;
-				const int edge = std::max(std::abs(dx), std::abs(dy));
+				const int edge = std::max(std::abs(u), std::abs(v));
 				if (edge < r - 1)
 					L.homeOf[i] = k;
 				// Two-tile ramparts with square corner bastions, and two broad opposite gateways.
-				const bool bastion =
-					std::abs(dx) >= r - 3 && std::abs(dy) >= r - 3 && edge <= r + 1;
-				L.wall[i] = (edge >= r - 1 && edge <= r) || bastion;
-				if (std::abs(dy) <= o.gateWidth / 2 + 1)
+				const bool bastion = d.walls != FortWalls::Round && std::abs(u) >= r - 3 &&
+									 std::abs(v) >= r - 3 && edge <= r + 1;
+				L.wall[i] = (edge >= r - 1 && edge <= r) || bastion || tower(u, v);
+				if (std::abs(v) <= gate + 1)
 				{
 					L.wall[i] = 0;
-					if (std::abs(dx) >= r - 1 && std::abs(dx) <= r)
+					if (std::abs(u) >= r - 1 && std::abs(u) <= r)
 						L.gates[i] = 1;
 				}
-				if (std::abs(dy) <= o.gateWidth / 2 && std::abs(dx) <= r + 5)
+				if (std::abs(v) <= gate && std::abs(u) <= r + 5)
 				{
 					L.wall[i] = 0;
-					if (std::abs(dx) >= r - 1 && std::abs(dx) <= r)
+					if (std::abs(u) >= r - 1 && std::abs(u) <= r)
 						L.gates[i] = 1;
 					L.roads[i] = 1;
 					L.terrain[i] = SAND;
 				}
 			}
-		// Separate irrigated food and wood plots, each enclosed by sand. The left half of the
-		// fort remains a large uninterrupted construction yard, with room for upgraded buildings.
-		for (int side : {-1, 1})
-			for (int dy = 4; dy <= r - 4; ++dy)
-				for (int dx = 2; dx <= r - 4; ++dx)
+		for (const FortPlot &p : plan.plots)
+			for (int b = p.b0; b <= p.b1; ++b)
+				for (int a = p.a0; a <= p.a1; ++a)
 				{
-					const int i = t.at(cx + dx, cy + side * dy);
-					const bool rim = dx == 2 || dx == r - 4 || dy == 4 || dy == r - 4;
+					const int i = at(p.su * a, p.sv * b);
+					const bool rim = a == p.a0 || a == p.a1 || b == p.b0 || b == p.b1;
 					L.terrain[i] = rim ? SAND : GRASS;
 					if (!rim)
-						L.plot[i] = 2 * k + (side > 0);
-					if (dx >= r - 9 && dx <= r - 5 && dy >= 6 && dy <= r - 5)
+						L.plot[i] = 2 * k + p.timber;
+					const bool water = p.waterOnA ? a >= p.a1 - 5 && b >= p.b0 + 2 && b < p.b1
+												  : b <= p.b0 + 4 && a >= p.a0 + 2 && a <= p.a1 - 2;
+					if (water && !rim)
 						L.terrain[i] = WATER;
 				}
-		// Shallow moat sections irrigate every estate, even when the main river is far away.
-		// Leave the gates and projecting bastions on dry ground.
-		for (int dy = -r - 5; dy <= r + 5; ++dy)
-			for (int dx = -r - 5; dx <= r + 5; ++dx)
+		// A moat all the way round, broken only where the gate roads cross it. It keeps a corner
+		// clear of every rampart and tower, because a beach may not touch a tile of stone: where a
+		// tower stands out it narrows round it instead of stopping.
+		const auto nearStone = [&](int x, int y)
+		{
+			for (int ty = y - 2; ty <= y + 1; ++ty)
+				for (int tx = x - 2; tx <= x + 1; ++tx)
+					if (L.wall[t.at(tx, ty)])
+						return true;
+			return false;
+		};
+		for (int v = -r - 5; v <= r + 5; ++v)
+			for (int u = -r - 5; u <= r + 5; ++u)
 			{
-				const int edge = std::max(std::abs(dx), std::abs(dy));
-				if (edge >= r + 3 && std::min(std::abs(dx), std::abs(dy)) <= r - 6 &&
-					std::abs(dy) > o.gateWidth / 2 + 3)
-					L.terrain[t.at(cx + dx, cy + dy)] = WATER;
+				const int edge = std::max(std::abs(u), std::abs(v));
+				if (edge < r + 3 || std::abs(v) <= gate + 3)
+					continue;
+				const int x = cx + d.x(u, v), y = cy + d.y(u, v);
+				if (!nearStone(x, y))
+					L.terrain[t.at(x, y)] = WATER;
 			}
-		exits.push_back(t.at(cx - r - 5, cy));
-		exits.push_back(t.at(cx + r + 5, cy));
+		exits.push_back(at(-r - 5, 0));
+		exits.push_back(at(r + 5, 0));
 	}
 	marketTowns(L, o, request, context);
 	if (!riverCountry(L, o, request, context))
@@ -457,6 +609,8 @@ bool generate(Game &game, GenerationContext &context)
 			map.setResource(i % t.w, i / t.w, STONE, 1);
 	for (int k = 0; k < context.request.nbTeams; ++k)
 		game.addTeam();
+	const FortDesign &d = L.design;
+	const FortPlan plan = fortPlan(d.layout, o.homeSize);
 	context.stage = "forts colonies";
 	if (!settleColonies(
 			game, context, "forts-starts",
@@ -469,7 +623,10 @@ bool generate(Game &game, GenerationContext &context)
 				return mask;
 			},
 			[&](int k)
-			{ return MapGeneratorPoint(int(L.homes[k].x) - 10, int(L.homes[k].y) - 9); }))
+			{
+				return MapGeneratorPoint(int(L.homes[k].x) + d.x(plan.settleU, plan.settleV),
+										 int(L.homes[k].y) + d.y(plan.settleU, plan.settleV));
+			}))
 		return false;
 	context.stage = "forts farms and countryside";
 	const auto reserved = swarmSurroundings(t, context);
@@ -510,7 +667,9 @@ bool generate(Game &game, GenerationContext &context)
 		for (int fruit = 0; fruit < 3; ++fruit)
 		{
 			const int cx = int(L.homes[k].x), cy = int(L.homes[k].y);
-			const int seed = t.at(cx - o.homeSize + 6 + 4 * fruit, cy + o.homeSize - 5);
+			const int u = plan.orchardU + fruit * plan.orchardDu,
+					  v = plan.orchardV + fruit * plan.orchardDv;
+			const int seed = t.at(cx + d.x(u, v), cy + d.y(u, v));
 			const auto eligible = [&](int i)
 			{
 				return L.homeOf[i] == k && L.plot[i] < 0 && !L.roads[i] && !reserved[i] &&
@@ -643,7 +802,9 @@ GeneratorDefinition fortsDefinition()
 	return {"forts",
 			35,
 			"Forts",
-			6,
+			// Revision 7: one fort design per map (interior layout, wall style, quarter turn and
+			// mirror, market-town plan), moats all the way round, plots a tile clear of the stone.
+			7,
 			false,
 			{{"home-size", "Home size", 20, 26, 2, 22, ControlGroup::Layout},
 			 {"gate-width", "Gate width", 4, 8, 2, 6, ControlGroup::Layout},

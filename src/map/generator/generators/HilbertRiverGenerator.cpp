@@ -63,7 +63,8 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	// The river is the shore that gets wheat spots when the resources go down.
 	strokePath(L.wheatShore, t, river);
 	// Include home irrigation in the graph's real end-around and seam distances.
-	layHomeEconomies(L);
+	if (!layHomeEconomies(L, context))
+		return L;
 	std::vector<CrossingCandidate> candidates;
 	const double reach = o.width / 2.0 + 5;
 	const auto propose = [&](const std::vector<double> &fractions)
@@ -234,6 +235,7 @@ GeneratorDefinition hilbertRiverDefinition()
 		{"major-shortcuts", "Optional major shortcuts", 0, 4, 1, 2, ControlGroup::Layout}};
 	const auto resources = resourceControls();
 	controls.insert(controls.end(), resources.begin(), resources.end());
-	return {"hilbert-river", 50,           "Hilbert River", 7, false, controls, generate, true,
+	// Revision 8: one of four home garden designs per map (FractalMapSupport.h).
+	return {"hilbert-river", 50,           "Hilbert River", 8, false, controls, generate, true,
 			validateRequest, validateWorld};
 }

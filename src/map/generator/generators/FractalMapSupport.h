@@ -15,11 +15,27 @@ struct Home
 {
 	int x, y;
 };
+/// The garden a home module is drawn as. One design is chosen per map and every home draws it, so
+/// the colonies still start with the same court, crops and water; the next map may draw another.
+/// Every design keeps the same 24×24 construction court, the service apron with wheat along its
+/// north edge, and the 56-tile footprint, so reservation, settlement and validation are shared.
+enum class HomeDesign
+{
+	Parterre,  // long canals north and south of the court
+	Horseshoe, // one canal round the north, east and west, open lawn to the south
+	Cloister,  // a canal all the way round, crossed by a causeway on each side
+	FourBeds,  // a short north canal and four square pool beds at the corners
+	Count
+};
+const char *homeDesignName(HomeDesign);
 struct Layout
 {
 	Torus t{1, 1};
 	TerrainSketch terrain;
 	std::vector<Home> homes;
+	HomeDesign homeDesign = HomeDesign::Parterre;
+	/// Offset from a home's centre of the top-left tile of its 2×3 opening quarry.
+	int quarryX = 20, quarryY = -3;
 	std::vector<unsigned char> reserved, wheat, wood, objectives, crossings;
 	/// The footprint of everything a garden path may lead to: home modules, beds, bank plots,
 	/// lakes and crossing landings. Appended as each is laid; read by gardenPaths.
@@ -40,7 +56,9 @@ void initialize(Layout &, const GenerationRequest &);
 bool reserveHomes(Layout &, GenerationContext &, const std::vector<Home> &preferred = {},
 				  GenerationTelemetry *observations = nullptr);
 bool overlapsHome(const Layout &, RegionBounds, int margin = 0);
-void layHomeEconomies(Layout &);
+/// Chooses the map's home design and draws it at every home. Fails (sets `failure`) if a home's
+/// crops could grow out past its own sand.
+bool layHomeEconomies(Layout &, GenerationContext &);
 /// A sand-contained bank plot; only stamps existing unreserved grass, never a crossing.
 /// Slides along the bank and tries once two tiles smaller before reporting an omission.
 bool bankFarm(Layout &, RegionBounds, bool timber);
