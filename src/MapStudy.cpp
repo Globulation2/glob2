@@ -4,6 +4,7 @@
 #include "MapReport.h"
 #include "Game.h"
 #include "GenerationService.h"
+#include "StartProbe.h"
 #include "GeneratorRegistry.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
@@ -50,6 +51,44 @@ std::string candidateRollsJson(const std::vector<GenerationService::CandidateRol
 			<< ",\"seconds\":" << rolls[i].seconds << '}';
 	}
 	out << ']';
+	return out.str();
+}
+// Candidate start measurements, emitted only for `--report probe`: the fairness fitting tool
+// regenerates a tournament's maps with this on to test a new idea against games already played.
+std::string probeJson(Game &game, int nbTeams, bool wanted)
+{
+	if (!wanted)
+		return "";
+	const auto report = MapGeneration::probeStarts(game, nbTeams);
+	std::ostringstream out;
+	out << "\"start_probe\":{\"measured\":" << (report.measured ? "true" : "false")
+		<< ",\"colonies\":[";
+	for (std::size_t i = 0; i < report.colonies.size(); ++i)
+	{
+		const auto &c = report.colonies[i];
+		if (i) out << ',';
+		out << "{\"start\":" << i << ",\"renewable_wheat\":" << c.renewableWheat
+			<< ",\"encroaching_wood\":" << c.encroachingWood
+			<< ",\"encroaching_wheat\":" << c.encroachingWheat
+			<< ",\"wood_front_tiles\":" << c.woodFrontTiles
+			<< ",\"threatened_build_sites\":" << c.threatenedBuildSites
+			<< ",\"harvest_throughput\":" << c.harvestThroughput
+			<< ",\"wood_throughput\":" << c.woodThroughput
+			<< ",\"inn_next_to_wheat_distance\":" << c.innNextToWheatDistance
+			<< ",\"inn_next_to_wheat_sites\":" << c.innNextToWheatSites
+			<< ",\"second_swarm_distance\":" << c.secondSwarmDistance
+			<< ",\"second_swarm_sites\":" << c.secondSwarmSites
+			<< ",\"choke_width\":" << c.chokeWidth
+			<< ",\"contested_wheat_distance\":" << c.contestedWheatDistance
+			<< ",\"contested_wheat_deposits\":" << c.contestedWheatDeposits
+			<< ",\"harvest_frontage\":{";
+		const char *names[MAX_RESOURCES] = {"wood", "wheat", "papyrus", "stone",
+											"algae", "cherry", "orange", "prune"};
+		for (int r = 0; r < MAX_RESOURCES; ++r)
+			out << (r ? "," : "") << '"' << names[r] << "\":" << c.harvestFrontage[r];
+		out << "}}";
+	}
+	out << "]},";
 	return out.str();
 }
 constexpr std::uint64_t kFnvOffset = 14695981039346656037ULL;
@@ -474,11 +513,12 @@ int runMapStudy(int argc, char **argv)
 	descriptor.setMethodDefaults(method);
 	descriptor.seed = seed;
 	bool tuning = false;
-	bool headroom = false;
+	bool headroom = false, probe = false;
 	bool quality = false;
 	std::string dump, savePrefix, mapName, overlay, resultPath, resultJson;
 	std::ostringstream measurements;
 	int candidates = 0, rotations = 1;
+	std::vector<std::string> perturbations; // KIND:TEAM:RADIUS, applied before the map is saved
 	std::map<std::string, std::string> aliases = {{"smooth", "smoothing"},
 												  {"craters", "lake-density"},
 												  {"extra", "extra-islands"},
@@ -497,6 +537,10 @@ int runMapStudy(int argc, char **argv)
 			tuning = true;
 		else if (arg == "headroom")
 			headroom = true;
+		else if (arg == "probe")
+			probe = true;
+		else if (arg.rfind("perturb=", 0) == 0)
+			perturbations.push_back(arg.substr(8));
 		else if (arg == "quality")
 			quality = true;
 		else if (arg == "preset")
@@ -928,7 +972,8 @@ int runMapStudy(int argc, char **argv)
 			<< ",\"shore\":" << shore << ",\"free\":" << free << ",\"fit4\":" << fit4
 			<< ",\"wheat_tiles\":" << resources[WHEAT] << ",\"wood_tiles\":" << resources[WOOD]
 			<< ",\"stone_tiles\":" << resources[STONE] << ",\"algae_tiles\":" << resources[ALGA]
-			<< measurements.str() << "},\"quality\":{\"score\":" << result.quality.score
+			<< measurements.str() << "}," << probeJson(game, descriptor.nbTeams, probe)
+			<< "\"quality\":{\"score\":" << result.quality.score
 			<< ",\"fairness\":" << result.quality.fairness
 			<< ",\"worst_fitness\":" << result.quality.worstFitness
 			<< ",\"best_fitness\":" << result.quality.bestFitness
@@ -947,6 +992,29 @@ int runMapStudy(int argc, char **argv)
 		out << "]},\"map_report\":" << mapReport << "}";
 		resultJson = out.str();
 	}
+	// Counterfactual edits, after every measurement above has seen the unedited world and before
+	// the map is saved: the saved map is the perturbed one, and the result records what changed.
+	std::string perturbed;
+	for (const auto &spec : perturbations)
+	{
+		const auto first = spec.find(':'), second = spec.find(':', first + 1);
+		if (first == std::string::npos || second == std::string::npos)
+			return 2;
+		const std::string kind = spec.substr(0, first);
+		const int team = std::atoi(spec.substr(first + 1, second - first - 1).c_str());
+		const int radius = std::atoi(spec.substr(second + 1).c_str());
+		const int resource = kind == "remove-wheat" ? WHEAT : kind == "remove-wood" ? WOOD
+						   : kind == "remove-stone" ? STONE : -1;
+		if (resource < 0)
+			return 2;
+		const int removed = MapGeneration::removeResourceNear(game, team, resource, radius);
+		std::printf("PERTURB,%s,%d,%d,%d\n", kind.c_str(), team, radius, removed);
+		perturbed += std::string(perturbed.empty() ? "" : ",") + "{\"kind\":" + Headless::quote(kind) +
+					 ",\"team\":" + std::to_string(team) + ",\"radius\":" + std::to_string(radius) +
+					 ",\"removed\":" + std::to_string(removed) + "}";
+	}
+	if (!perturbations.empty() && !resultJson.empty() && resultJson.back() == '}')
+		resultJson.insert(resultJson.size() - 1, ",\"perturbations\":[" + perturbed + "]");
 	int code = 0;
 	if (!success && !resultPath.empty())
 		code = result.error == GenerationError::InvalidRequest ? 2 : 4;

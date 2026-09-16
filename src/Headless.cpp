@@ -370,7 +370,7 @@ int runHeadlessCommand(int argc,char **argv)
 		}
 		const std::set<std::string> common={"--output-dir","--profile"};
 		const std::set<std::string> gameKeys={"--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--ticks","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
-		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report"};
+		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)
 		{
@@ -434,8 +434,9 @@ int runHeadlessCommand(int argc,char **argv)
 			const auto write=one(options,"--write-map","false");
 			if(write!="true"&&write!="false")throw std::invalid_argument("--write-map must be true or false");
 			if(write=="true")args.push_back("save="+(output/"map").string());
+			for(const auto &spec:many(options,"--perturb"))args.push_back("perturb="+spec);
 			for(const auto &report:many(options,"--report"))
-				if(report=="headroom")args.push_back(report);
+				if(report=="headroom"||report=="probe")args.push_back(report);
 				else if(report=="terrain")args.push_back("dump="+(output/"terrain.txt").string());
 				else throw std::invalid_argument("unknown report: " + report);
 			Headless::writeJson((output/"progress.json").string(),"{\"schema_version\":1,\"stage\":\"generation\"}");
