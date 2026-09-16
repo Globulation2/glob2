@@ -290,7 +290,7 @@ map/generator/shared/ScoredSettlements.cpp
 map/generator/shared/legacy/Regions.cpp
 map/generator/shared/Resources.cpp
 map/generator/shared/legacy/StartingPositions.cpp
-map/generator/shared/StartProbe.cpp
+map/generator/shared/StartDiagnostics.cpp
 map/generator/shared/StartQuality.cpp
 map/generator/shared/Terrain.cpp
 map/gradient/MapGradientArea.cpp

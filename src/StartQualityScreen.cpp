@@ -102,8 +102,11 @@ void StartQualityScreen::render()
 	for (int c = 0; c < terms; ++c)
 		headingH = std::max(headingH, ui.paragraph(x + 8 + labelW + c * cellW, rowY, cellW - 6,
 												   fairnessModelTerms()[c].label));
-	ui.text(x + 8 + labelW + terms * cellW, rowY, tr("Fitness"), "standard", cellW - 6);
-	ui.text(x + 8 + labelW + (terms + 1) * cellW, rowY, tr("Win chance"), "standard", cellW - 6);
+	// Same wrapping for the two result columns, which narrow as the model gains terms.
+	headingH = std::max(headingH, ui.paragraph(x + 8 + labelW + terms * cellW, rowY, cellW - 6,
+											   tr("Fitness")));
+	headingH = std::max(headingH, ui.paragraph(x + 8 + labelW + (terms + 1) * cellW, rowY,
+											   cellW - 6, tr("Win chance")));
 	rowY += std::max(34, headingH + 6);
 	// The fitted coefficient, so the reader sees which way each measurement pushes.
 	ui.text(x + 8, rowY, tr("Coefficient"), "little", labelW - 8, true);

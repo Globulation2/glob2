@@ -201,12 +201,51 @@ class Emission(unittest.TestCase):
         # A label a player can read, not the internal name.
         self.assertIn('Uncontested wheat stock within 48 steps', text)
 
+    def test_every_shipped_label_is_a_phrase_not_code(self):
+        # The breakdown screen draws these as column headings. A label built by the C++
+        # expression generator once shipped as a heading made of source code.
+        for name, _ in F.FINAL_FEATURES:
+            label = F.measurement_label(name)
+            for token in ('colony.', 'double(', 'std::', '[', '*', '_'):
+                self.assertNotIn(token, label, f'{name} has a code-like label: {label}')
+            self.assertLess(len(label), 60, f'{name} label too long for a column: {label}')
+
+    def test_derived_composites_are_the_consolidated_four(self):
+        entries = [{'measurements': {'band12_wheat_exclusive_amount': a,
+                                     'band24_wheat_exclusive_amount': b,
+                                     'band48_wheat_exclusive_amount': c,
+                                     'band24_wood_amount': 10.0, 'build_sites_4x4': 100.0,
+                                     'catchment_fertile_grass_tiles': 50.0,
+                                     'rivals_within_threat': r}}
+                   for a, b, c, r in ((10.0, 30.0, 60.0, 0.0), (5.0, 15.0, 40.0, 2.0))]
+        rows = F.derived_measurements(entries)
+        self.assertEqual(sorted(rows[0]), ['d_food_security', 'd_limiting_input',
+                                           'd_wheat_decayed', 'd_wheat_ratio_to_best'])
+        self.assertAlmostEqual(rows[0]['d_wheat_ratio_to_best'], 2.0)
+        self.assertAlmostEqual(rows[1]['d_food_security'], 5.0)
+        # Nearer wheat counts for more than the same amount further out.
+        near = F.DECAY_NEAR * 10 + F.DECAY_MID * 20 + F.DECAY_FAR * 30
+        self.assertAlmostEqual(rows[0]['d_wheat_decayed'], near)
+
+    def test_diagnostics_read_absence_as_absence(self):
+        row = F.diagnostic_measurements({'renewable_wheat': 4.0, 'encroaching_wood': 2.0,
+                                         'inn_next_to_wheat_distance': -1,
+                                         'contested_wheat_distance': 9, 'choke_width': 12})
+        self.assertEqual(row['diag_inn_next_to_wheat_distance'], F.UNREACHABLE)
+        self.assertEqual(row['diag_inn_next_to_wheat_absent'], 1.0)
+        self.assertEqual(row['diag_contested_wheat_distance'], 9.0)
+        self.assertAlmostEqual(row['diag_forest_vs_field'], 0.5)
+        self.assertTrue(all(name.startswith('diag_') for name in row))
+        self.assertFalse(any(F.eligible_measurement(name) for name in row))
+
     def test_labels_read_as_english(self):
         self.assertEqual(F.measurement_label('nearest_rival_distance'),
                          'Steps to the nearest rival')
         self.assertEqual(F.measurement_label('band24_wood_tiles'),
                          'Wood patches within 24 steps')
         self.assertEqual(F.measurement_label('build_sites_4x4'), 'Building sites')
+        self.assertEqual(F.measurement_label('band24_tied_nearest_tiles'),
+                         'Contested territory within 24 steps')
 
     def test_the_legacy_factors_and_the_team_index_cannot_enter_the_model(self):
         self.assertFalse(F.eligible_measurement('legacy_total'))

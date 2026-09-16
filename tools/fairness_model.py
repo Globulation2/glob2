@@ -395,59 +395,57 @@ MOVEMENT_PREFIX = 'move_'
 def movement_measurements(report, index):
     """Structural measurements of one start, from the report's movement section.
 
-    These cost three whole-map flood fills per colony, which is why they carry
-    their own prefix and are barred from the fitted model: a generator scoring
-    five candidate rolls cannot afford them. They are here to answer whether
-    structure predicts winning at all, and so to say what a cheap approximation
-    inside scoreStarts would have to approximate.
+    Only what walking alone does not already say. Walking reachability, territory and
+    rival distances are copies of ColonyQuality fields (rank correlation 1.000 over
+    13,200 colonies), and walking-and-clearing tracks walking at 0.91-0.99, so neither is
+    repeated. Kept: what clearing and swimming ADD over walking, the swimming distance to
+    the nearest rival (which differs from walking wherever water separates colonies), how
+    the rivals are arranged rather than only the nearest, and the wheat and wood a colony
+    can reach anywhere on the map.
+
+    Screen-only: the movement section costs whole-map flood fills per colony per mode, so
+    these never enter the fitted model.
     """
     out = {}
     movement = report.get('movement') or {}
-    base = None
-    for short, name in MOVEMENT_MODES.items():
-        mode = movement.get(name) or {}
-        colonies = mode.get('colonies') or []
-        if index >= len(colonies):
+
+    def colony(mode):
+        colonies = (movement.get(MOVEMENT_MODES[mode]) or {}).get('colonies') or []
+        return colonies[index] if index < len(colonies) else None
+
+    def reach(entry):
+        return float((entry.get('reachable') or {}).get('tiles') or 0)
+
+    walk, clear, swim = colony('walk'), colony('clear'), colony('swim')
+    if walk is None:
+        return out
+    # What cutting forest and learning to swim open up beyond plain walking.
+    if clear is not None:
+        out[MOVEMENT_PREFIX + 'clear_gain_tiles'] = reach(clear) - reach(walk)
+    if swim is not None:
+        out[MOVEMENT_PREFIX + 'swim_gain_tiles'] = reach(swim) - reach(walk)
+    for resource in ('wheat', 'wood'):
+        entry = (walk.get('resources') or {}).get(resource) or {}
+        out[f'{MOVEMENT_PREFIX}walk_{resource}_reachable_amount'] = \
+            float(entry.get('reachable_stored_amount') or 0)
+    for short in ('walk', 'swim'):
+        rows = (movement.get(MOVEMENT_MODES[short]) or {}).get('between_colonies') or []
+        if index >= len(rows):
             continue
-        colony = colonies[index]
-        reach = float((colony.get('reachable') or {}).get('tiles') or 0)
-        out[f'{MOVEMENT_PREFIX}{short}_reachable_tiles'] = reach
-        out[f'{MOVEMENT_PREFIX}{short}_reachable_percent'] = \
-            float((colony.get('reachable') or {}).get('percent') or 0)
-        out[f'{MOVEMENT_PREFIX}{short}_reachable_sites'] = \
-            float(colony.get('reachable_build_sites_4x4') or 0)
-        out[f'{MOVEMENT_PREFIX}{short}_exclusive_territory'] = \
-            float(colony.get('exclusive_nearest_territory_tiles') or 0)
-        out[f'{MOVEMENT_PREFIX}{short}_tied_territory'] = \
-            float(colony.get('tied_nearest_territory_tiles') or 0)
-        for resource in ('wheat', 'wood', 'stone'):
-            entry = (colony.get('resources') or {}).get(resource) or {}
-            out[f'{MOVEMENT_PREFIX}{short}_{resource}_reachable_amount'] = \
-                float(entry.get('reachable_stored_amount') or 0)
-            out[f'{MOVEMENT_PREFIX}{short}_{resource}_reachable_tiles'] = \
-                float(entry.get('reachable_deposit_tiles') or 0)
-        if short == 'walk':
-            base = reach
-        elif base is not None:
-            # What this mode opens up that plain walking does not.
-            out[f'{MOVEMENT_PREFIX}{short}_gain_tiles'] = reach - base
-        # How the rivals sit around this colony, not just the nearest one.
-        row = (mode.get('between_colonies') or [])
-        if index < len(row):
-            distances = [value for other, value in enumerate(row[index] or [])
-                         if other != index and value is not None]
-            out[f'{MOVEMENT_PREFIX}{short}_rivals_reachable'] = float(len(distances))
-            if distances:
-                nearest = float(min(distances))
-                mean = sum(distances) / len(distances)
-                out[f'{MOVEMENT_PREFIX}{short}_rival_nearest'] = nearest
-                out[f'{MOVEMENT_PREFIX}{short}_rival_mean'] = mean
-                out[f'{MOVEMENT_PREFIX}{short}_rival_farthest'] = float(max(distances))
-                # Below 1 the colony is closer in than the others: more fronts to hold.
-                out[f'{MOVEMENT_PREFIX}{short}_centrality'] = nearest / mean if mean else 0.0
-                # Rivals sitting within half again the nearest one: how many fronts at once.
-                out[f'{MOVEMENT_PREFIX}{short}_close_fronts'] = \
-                    float(sum(1 for value in distances if value <= 1.5 * nearest))
+        distances = [value for other, value in enumerate(rows[index] or [])
+                     if other != index and value is not None]
+        if short == 'swim':
+            out[MOVEMENT_PREFIX + 'swim_rivals_reachable'] = float(len(distances))
+            out[MOVEMENT_PREFIX + 'swim_rival_nearest'] = float(min(distances)) if distances else UNREACHABLE
+            continue
+        if distances:
+            nearest = float(min(distances))
+            mean = sum(distances) / len(distances)
+            # Below 1 the colony sits closer in than its rivals do on average: more fronts.
+            out[MOVEMENT_PREFIX + 'walk_centrality'] = nearest / mean if mean else 0.0
+            # Rivals within half again the nearest one's distance: fronts held at once.
+            out[MOVEMENT_PREFIX + 'walk_close_fronts'] = \
+                float(sum(1 for value in distances if value <= 1.5 * nearest))
     return out
 
 
@@ -564,7 +562,7 @@ def load_dataset(root, policy='prestige', movement=False, telemetry=False):
 # value and the map seed it used, so a tournament's maps can be rebuilt exactly.
 # That makes a new idea for a measurement a minutes-long experiment against games
 # already played, instead of another tournament.
-PROBE_PREFIX = 'probe_'
+DIAGNOSTIC_PREFIX = 'diag_'
 TELEMETRY_PREFIX = 'tel_'
 DERIVED_PREFIX = 'd_'
 # Shell weights for the distance-decayed measurements: exp(-r/16) at each band's
@@ -576,16 +574,16 @@ DECAY_FAR = math.exp(-36.0 / DECAY_STEPS)
 
 
 def derived_measurements(entries):
-    """Composites of measurements we already have, in shapes the model cannot reach.
+    """Composites of ColonyQuality measurements, in shapes a linear term cannot reach.
 
-    The fitted model is linear in its transformed terms, and every term is read off
-    one colony at a time. These are the things that form cannot say: a colony judged
-    against its RIVALS rather than against the map's total, an economy limited by its
-    scarcest input rather than helped by its most plentiful, and food weighted by how
-    far away it is rather than counted inside an arbitrary 24-step fence.
-
-    Free to test -- no regeneration, no new engine code -- so a bad idea costs nothing
-    but the line that proposes it.
+    Four ideas, each kept in its most refined form after the duplicates were measured
+    out: food weighted by distance rather than counted inside a fence (in the fitted
+    model), food per rival close enough to come for it, food judged against the
+    best-fed rival rather than against the map's total, and an economy limited by its
+    scarcest input rather than helped by its most plentiful. Rank, gap and head-to-head
+    forms of the rival comparison ran at 0.98 with each other and are gone; so are
+    decayed wood and room, pressure and contested fraction, which re-derived existing
+    fields at 0.95 to 0.997.
     """
     rows = [entry['measurements'] for entry in entries]
     count = len(rows)
@@ -600,60 +598,29 @@ def derived_measurements(entries):
     wheat = column('band24_wheat_exclusive_amount')
     wheat12 = column('band12_wheat_exclusive_amount')
     wheat48 = column('band48_wheat_exclusive_amount')
-    wood12 = column('band12_wood_amount')
-    wood48 = column('band48_wood_amount')
-    room12 = column('band12_buildable_tiles')
-    room48 = column('band48_buildable_tiles')
-    room = column('band24_buildable_tiles')
     wood = column('band24_wood_amount')
     sites = column('build_sites_4x4')
     fertile = column('catchment_fertile_grass_tiles')
-    tied = column('band24_tied_nearest_tiles')
-    exclusive = column('band24_exclusive_nearest_tiles')
     threat = column('rivals_within_threat')
-    rival = column('nearest_rival_distance')
     out = []
     for index in range(count):
         row = {}
-        # Liebig's law: an economy runs at the rate of its scarcest input, not the
-        # average of its inputs. The model can only ever add terms together.
+        # Wheat weighted by how far away it is, instead of counted inside a 24-step fence:
+        # each walking band weighted by exp(-steps/16) at its midpoint. The constant sits on
+        # a broad plateau from 12 to 20 when swept against the games.
+        near, mid, far = wheat12[index], wheat[index] - wheat12[index], wheat48[index] - wheat[index]
+        row[DERIVED_PREFIX + 'wheat_decayed'] = DECAY_NEAR * near + DECAY_MID * mid + DECAY_FAR * far
+        # Food discounted by who else is close enough to come and take it.
+        row[DERIVED_PREFIX + 'food_security'] = wheat[index] / (1.0 + threat[index])
+        # This colony's food as a fraction of the best-fed rival's.
+        others = [wheat[other] for other in range(count) if other != index]
+        best = max(others) if others else 0.0
+        row[DERIVED_PREFIX + 'wheat_ratio_to_best'] = wheat[index] / best if best > 0 else 1.0
+        # Liebig's law: an economy runs at the rate of its scarcest input. Scaled so that an
+        # exactly even share of every input reads 1.
         inputs = [share(wheat, index), share(wood, index), share(sites, index),
                   share(fertile, index)]
         row[DERIVED_PREFIX + 'limiting_input'] = min(inputs) * count
-        row[DERIVED_PREFIX + 'input_balance'] = min(inputs) / max(max(inputs), 1e-9)
-        # Resources weighted by how far away they are, instead of counted inside an
-        # arbitrary 24-step fence. The three bands give a coarse radial profile, so each
-        # shell is weighted by the decay at its midpoint. The constant was swept against
-        # the games: the fit is a broad plateau between 12 and 20 and falls away outside
-        # it, so 16 is the middle of the plateau rather than a point estimate.
-        for name, shells in (('wheat_decayed', (wheat12, wheat, wheat48)),
-                             ('wood_decayed', (wood12, wood, wood48)),
-                             ('room_decayed', (room12, room, room48))):
-            inner, middle, outer = shells
-            near = inner[index]
-            mid = middle[index] - inner[index]
-            far = outer[index] - middle[index]
-            row[DERIVED_PREFIX + name] = (DECAY_NEAR * near + DECAY_MID * mid + DECAY_FAR * far)
-        # Judged against rivals rather than against the map's total.
-        others = [wheat[other] for other in range(count) if other != index]
-        best = max(others) if others else 0.0
-        row[DERIVED_PREFIX + 'wheat_gap_to_best'] = wheat[index] - best
-        row[DERIVED_PREFIX + 'wheat_ratio_to_best'] = wheat[index] / best if best > 0 else 1.0
-        row[DERIVED_PREFIX + 'wheat_beats'] = (sum(1 for value in others if wheat[index] > value) /
-                                               max(len(others), 1))
-        ordered = sorted(range(count), key=lambda k: wheat[k])
-        row[DERIVED_PREFIX + 'wheat_rank'] = ordered.index(index) / max(count - 1, 1)
-        # Food and the room to turn it into buildings: a colony needs both, and the
-        # model can only add them.
-        row[DERIVED_PREFIX + 'wheat_times_room'] = (math.log1p(wheat[index]) *
-                                                    math.log1p(sites[index]))
-        row[DERIVED_PREFIX + 'wheat_per_site'] = wheat[index] / sites[index] if sites[index] else 0.0
-        # Food discounted by who else is close enough to come and take it.
-        row[DERIVED_PREFIX + 'food_security'] = wheat[index] / (1.0 + threat[index])
-        row[DERIVED_PREFIX + 'pressure'] = threat[index] * math.exp(-max(rival[index], 0) / 24.0)
-        # How much of this colony's near ground is shared with somebody.
-        held = exclusive[index] + tied[index]
-        row[DERIVED_PREFIX + 'contested_fraction'] = tied[index] / held if held > 0 else 0.0
         out.append(row)
     return out
 
@@ -705,39 +672,32 @@ def telemetry_measurements(report, colonies):
     return out
 
 
-def probe_measurements(colony):
-    """One start's candidate measurements, from `--report probe`."""
+def diagnostic_measurements(colony):
+    """One start's diagnostics, from `--report diagnostics` (StartDiagnostics.h)."""
     out = {}
-    for key in ('renewable_wheat', 'second_swarm_distance', 'second_swarm_sites',
-                'choke_width', 'contested_wheat_distance', 'contested_wheat_deposits',
-                'encroaching_wood', 'encroaching_wheat', 'wood_front_tiles',
-                'threatened_build_sites', 'harvest_throughput', 'wood_throughput',
-                'inn_next_to_wheat_distance', 'inn_next_to_wheat_sites'):
+    for key in ('renewable_wheat', 'wheat_throughput', 'wood_throughput', 'stone_throughput',
+                'fruit_throughput', 'inn_next_to_wheat_distance', 'inn_next_to_wheat_sites',
+                'second_swarm_sites', 'encroaching_wood', 'threatened_build_sites',
+                'contested_wheat_distance', 'choke_width'):
         value = colony.get(key)
         # -1 is the engine's "there is no such thing here", not a small distance.
         if key.endswith('_distance') and (value is None or value < 0):
-            out[PROBE_PREFIX + key] = UNREACHABLE
-            out[PROBE_PREFIX + key.replace('_distance', '_absent')] = 1.0
+            out[DIAGNOSTIC_PREFIX + key] = UNREACHABLE
         else:
-            out[PROBE_PREFIX + key] = float(value or 0)
-            if key.endswith('_distance'):
-                out[PROBE_PREFIX + key.replace('_distance', '_absent')] = 0.0
-    for name, value in (colony.get('harvest_frontage') or {}).items():
-        out[f'{PROBE_PREFIX}{name}_frontage'] = float(value or 0)
-    # The hypothesis this pair exists to test: a start is bad when the forest advances
-    # faster than the field does, so the colony loses buildable ground it then has to
-    # clear back. Absolute fronts say how fast each grows; the ratio says who is winning.
-    wood = out.get(PROBE_PREFIX + 'encroaching_wood', 0.0)
-    wheat = out.get(PROBE_PREFIX + 'encroaching_wheat', 0.0)
-    out[PROBE_PREFIX + 'forest_vs_field'] = wood / wheat if wheat > 0 else (1.0 if wood else 0.0)
-    out[PROBE_PREFIX + 'forest_advantage'] = wood - wheat
-    sites = out.get(PROBE_PREFIX + 'threatened_build_sites', 0.0)
-    out[PROBE_PREFIX + 'threatened_site_rate'] = sites * wood
+            out[DIAGNOSTIC_PREFIX + key] = float(value or 0)
+    # No inn site next to grain at all is its own finding, not a long walk to one.
+    out[DIAGNOSTIC_PREFIX + 'inn_next_to_wheat_absent'] = \
+        1.0 if (colony.get('inn_next_to_wheat_distance') or -1) < 0 else 0.0
+    # The forest's front against the field's: above 1 the trees advance faster than the
+    # crops regrow, and the colony loses ground it has to clear back.
+    wood = out[DIAGNOSTIC_PREFIX + 'encroaching_wood']
+    wheat = out[DIAGNOSTIC_PREFIX + 'renewable_wheat']
+    out[DIAGNOSTIC_PREFIX + 'forest_vs_field'] = wood / wheat if wheat > 0 else (1.0 if wood else 0.0)
     return out
 
 
 def remeasure(binary, dataset, directory, jobs=3):
-    """Rebuild every played map and collect its candidate measurements."""
+    """Rebuild every played map and collect its start diagnostics."""
     import concurrent.futures
     import shutil
     import subprocess
@@ -755,7 +715,8 @@ def remeasure(binary, dataset, directory, jobs=3):
         arguments = [binary, '--generate-map', '--generator', str(request['generator']),
                      '--map-seed', str(request['map_seed']),
                      '--candidates', str(request['candidates']), '--write-map', 'false',
-                     '--report', 'probe', '--output-dir', str(output), '--profile', 'fairness-probe']
+                     '--report', 'diagnostics', '--output-dir', str(output),
+                     '--profile', 'fairness-remeasure']
         for name, value in sorted(request['params'].items()):
             arguments += ['--param', f'{name}={value}']
         subprocess.run(arguments, capture_output=True)
@@ -763,10 +724,10 @@ def remeasure(binary, dataset, directory, jobs=3):
             result = read_json(output / 'result.json')
         except (OSError, ValueError):
             return key, None
-        probe = result.get('start_probe') or {}
-        if not probe.get('measured'):
+        diagnostics = result.get('start_diagnostics') or {}
+        if not diagnostics.get('measured'):
             return key, None
-        return key, [probe_measurements(colony) for colony in probe['colonies']]
+        return key, [diagnostic_measurements(colony) for colony in diagnostics['colonies']]
 
     measured = {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=jobs) as pool:
@@ -776,8 +737,8 @@ def remeasure(binary, dataset, directory, jobs=3):
     return measured
 
 
-def attach_probe(dataset, measured):
-    """Merge candidate measurements into the games whose maps were rebuilt."""
+def attach_diagnostics(dataset, measured):
+    """Merge start diagnostics into the games whose maps were rebuilt."""
     kept, dropped = [], 0
     for game in dataset['games']:
         colonies = measured.get(game['map'])
@@ -785,10 +746,10 @@ def attach_probe(dataset, measured):
             dropped += 1
             continue
         # Colony order is the generator's, which is the order both reports use.
-        for entry, probe in zip(game['entries'], colonies):
-            entry['measurements'] = dict(entry['measurements'], **probe)
+        for entry, extra in zip(game['entries'], colonies):
+            entry['measurements'] = dict(entry['measurements'], **extra)
         kept.append(game)
-    return {'games': kept, 'skipped': dict(dataset['skipped'], no_probe=dropped)}
+    return {'games': kept, 'skipped': dict(dataset['skipped'], no_diagnostics=dropped)}
 
 # ---------------------------------------------------------------------------
 # Features and transforms
@@ -839,11 +800,7 @@ FAMILY_RULES = (
     (re.compile(r'^(reachable_rivals|rivals_within_threat)$'), 'rivals'),
     # A decayed measurement summarises the same thing its bands do, so it shares
     # their family: the model takes one account of a colony's food, not three.
-    (re.compile(r'^d_(wheat_decayed|food_security|wheat_per_site|wheat_times_room)$'), 'wheat stock'),
-    (re.compile(r'^d_wood_decayed$'), 'wood stock'),
-    (re.compile(r'^d_room_decayed$'), 'room'),
-    (re.compile(r'^d_contested_fraction$'), 'contested territory'),
-    (re.compile(r'^d_pressure$'), 'rivals'),
+    (re.compile(r'^d_(wheat_decayed|food_security|wheat_ratio_to_best)$'), 'wheat stock'),
 )
 
 
@@ -1382,14 +1339,10 @@ RESOURCE_FIELDS = {'catchment_tiles': 'catchmentDeposits', 'catchment_amount': '
 
 # Derived composites the header generator can write out. Each reads one colony only,
 # and is arithmetic over ColonyQuality fields scoreStarts already produces, so promoting
-# one costs the generator nothing. The cross-colony composites (gap to the best rival,
-# rank, the limiting input) would need the model to compare siblings and are screened
+# one costs the generator nothing. The cross-colony composites (ratio to the best-fed
+# rival, the limiting input) would need the model to compare siblings and are screened
 # but not emitted; if one ever earns its place, teach cpp_expression to loop first.
-EMITTABLE_DERIVED = {
-    DERIVED_PREFIX + name for name in
-    ('wheat_decayed', 'wood_decayed', 'room_decayed', 'food_security', 'contested_fraction',
-     'wheat_per_site', 'pressure', 'wheat_times_room')
-}
+EMITTABLE_DERIVED = {DERIVED_PREFIX + name for name in ('wheat_decayed', 'food_security')}
 
 
 def eligible_measurement(name):
@@ -1401,7 +1354,7 @@ def eligible_measurement(name):
     and so cannot run inside candidate scoring.
     """
     return (not name.startswith(INELIGIBLE[0]) and name != INELIGIBLE[1]
-            and not name.startswith(MOVEMENT_PREFIX) and not name.startswith(PROBE_PREFIX)
+            and not name.startswith(MOVEMENT_PREFIX) and not name.startswith(DIAGNOSTIC_PREFIX)
             and not name.startswith(TELEMETRY_PREFIX)
             and (not name.startswith(DERIVED_PREFIX) or name in EMITTABLE_DERIVED))
 
@@ -1446,27 +1399,14 @@ def cpp_expression(name):
         derived = name[len(DERIVED_PREFIX):]
         def band(steps, field):
             return cpp_expression(f'band{steps}_{field}')
-        if derived in ('wheat_decayed', 'wood_decayed', 'room_decayed'):
-            field = {'wheat_decayed': 'wheat_exclusive_amount', 'wood_decayed': 'wood_amount',
-                     'room_decayed': 'buildable_tiles'}[derived]
-            near, mid, far = band(12, field), band(24, field), band(48, field)
+        if derived == 'wheat_decayed':
+            near, mid, far = (band(12, 'wheat_exclusive_amount'), band(24, 'wheat_exclusive_amount'),
+                              band(48, 'wheat_exclusive_amount'))
             return (f'({DECAY_NEAR!r} * ({near}) + {DECAY_MID!r} * (({mid}) - ({near}))'
                     f' + {DECAY_FAR!r} * (({far}) - ({mid})))')
         if derived == 'food_security':
             return (f'({band(24, "wheat_exclusive_amount")} / '
                     f'(1.0 + {cpp_expression("rivals_within_threat")}))')
-        if derived == 'contested_fraction':
-            tied, own = band(24, 'tied_nearest_tiles'), band(24, 'exclusive_nearest_tiles')
-            return f'((({tied}) + ({own})) > 0 ? ({tied}) / (({tied}) + ({own})) : 0.0)'
-        if derived == 'wheat_per_site':
-            sites = cpp_expression('build_sites_4x4')
-            return f'({sites} > 0 ? {band(24, "wheat_exclusive_amount")} / {sites} : 0.0)'
-        if derived == 'pressure':
-            return (f'({cpp_expression("rivals_within_threat")} * '
-                    f'std::exp(-std::max({cpp_expression("nearest_rival_distance")}, 0.0) / 24.0))')
-        if derived == 'wheat_times_room':
-            return (f'(std::log1p(std::max({band(24, "wheat_exclusive_amount")}, 0.0)) * '
-                    f'std::log1p(std::max({cpp_expression("build_sites_4x4")}, 0.0)))')
     match = re.match(r'band(12|24|48)_(.+)$', name)
     if match:
         band = f'{colony}.distanceBands[{BAND_INDEX[int(match.group(1))]}]'
@@ -1517,12 +1457,22 @@ PLAIN_LABELS = {
 }
 
 
+DERIVED_LABELS = {
+    DERIVED_PREFIX + 'wheat_decayed': 'Uncontested wheat, nearest counts most',
+    DERIVED_PREFIX + 'food_security': 'Uncontested wheat per rival close by',
+    DERIVED_PREFIX + 'wheat_ratio_to_best': "Wheat against the best-fed rival's",
+    DERIVED_PREFIX + 'limiting_input': 'Scarcest of wheat, wood, room and fertile ground',
+}
+
+
 def measurement_label(name):
     """A phrase a player can read, for the lobby's breakdown of the score."""
     if name in PLAIN_LABELS:
         return PLAIN_LABELS[name]
     match = re.match(r'band(12|24|48)_(.+?)_(amount|tiles|exclusive_amount)$', name)
-    if match:
+    # Only a real resource name reads as "<resource> stock/patches"; band24_tied_nearest_tiles
+    # has the same shape and is territory, not a resource called tied_nearest.
+    if match and match.group(2) in HUMAN_RESOURCES:
         steps, resource, kind = match.groups()
         label = HUMAN_RESOURCES.get(resource, resource.title())
         if kind == 'exclusive_amount':
@@ -1530,35 +1480,12 @@ def measurement_label(name):
         what = 'stock' if kind == 'amount' else 'patches'
         return f'{label} {what} within {steps} steps'
     if name.startswith(DERIVED_PREFIX):
-        derived = name[len(DERIVED_PREFIX):]
-        def band(steps, field):
-            return cpp_expression(f'band{steps}_{field}')
-        if derived in ('wheat_decayed', 'wood_decayed', 'room_decayed'):
-            field = {'wheat_decayed': 'wheat_exclusive_amount', 'wood_decayed': 'wood_amount',
-                     'room_decayed': 'buildable_tiles'}[derived]
-            near, mid, far = band(12, field), band(24, field), band(48, field)
-            return (f'({DECAY_NEAR!r} * ({near}) + {DECAY_MID!r} * (({mid}) - ({near}))'
-                    f' + {DECAY_FAR!r} * (({far}) - ({mid})))')
-        if derived == 'food_security':
-            return (f'({band(24, "wheat_exclusive_amount")} / '
-                    f'(1.0 + {cpp_expression("rivals_within_threat")}))')
-        if derived == 'contested_fraction':
-            tied, own = band(24, 'tied_nearest_tiles'), band(24, 'exclusive_nearest_tiles')
-            return f'((({tied}) + ({own})) > 0 ? ({tied}) / (({tied}) + ({own})) : 0.0)'
-        if derived == 'wheat_per_site':
-            sites = cpp_expression('build_sites_4x4')
-            return f'({sites} > 0 ? {band(24, "wheat_exclusive_amount")} / {sites} : 0.0)'
-        if derived == 'pressure':
-            return (f'({cpp_expression("rivals_within_threat")} * '
-                    f'std::exp(-std::max({cpp_expression("nearest_rival_distance")}, 0.0) / 24.0))')
-        if derived == 'wheat_times_room':
-            return (f'(std::log1p(std::max({band(24, "wheat_exclusive_amount")}, 0.0)) * '
-                    f'std::log1p(std::max({cpp_expression("build_sites_4x4")}, 0.0)))')
+        return DERIVED_LABELS.get(name, name[len(DERIVED_PREFIX):].replace('_', ' ').capitalize())
     match = re.match(r'band(12|24|48)_(.+)$', name)
     if match:
         steps, rest = match.groups()
-        return PLAIN_LABELS.get('catchment_' + rest, rest.replace('_', ' ').capitalize()) + \
-            f' within {steps} steps'
+        label = PLAIN_LABELS.get(rest) or PLAIN_LABELS.get('catchment_' + rest)
+        return (label or rest.replace('_', ' ').capitalize()) + f' within {steps} steps'
     for resource, label in HUMAN_RESOURCES.items():
         if name == f'{resource}_distance':
             return f'Steps to {label.lower()}'
@@ -1810,7 +1737,7 @@ def run_remeasure(root, binary, maps, jobs, folds, output):
     if not dataset['games']:
         raise ValueError('no played games found')
     measured = remeasure(binary, dataset, maps, jobs)
-    dataset = attach_probe(dataset, measured)
+    dataset = attach_diagnostics(dataset, measured)
     if not dataset['games']:
         raise ValueError('no map could be rebuilt; is the binary the one that played them?')
     screened = screen(dataset, folds)
@@ -1818,7 +1745,7 @@ def run_remeasure(root, binary, maps, jobs, folds, output):
     current = cross_validated(dataset, base, folds).get('mcfadden_r2', 0.0)
     additions = []
     for row in screened:
-        if not (row['name'].startswith(PROBE_PREFIX) or row['name'].startswith(MOVEMENT_PREFIX)):
+        if not (row['name'].startswith(DIAGNOSTIC_PREFIX) or row['name'].startswith(MOVEMENT_PREFIX)):
             continue
         if any(row['name'] == name for name, _ in base):
             continue

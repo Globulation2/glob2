@@ -144,15 +144,35 @@ is deterministic, so the tournament's maps can be rebuilt exactly and measured a
 python3 tools/fairness_model.py remeasure artifacts/fairness-model --jobs 6
 ```
 
-It rebuilds every played map with `--report probe`, joins the candidate measurements in
-`StartProbe.cpp` to the games already played, and reports what each adds to the fitted model.
-About six minutes for 1,330 maps; no games. Three further layers are available to the fit
-without rebuilding anything: whole-map movement under walking, clearing and swimming
-(`move_`), the generator's own per-colony telemetry (`tel_`), and composites derived from
-ColonyQuality (`d_`). Movement, telemetry and probe measurements cannot enter the fitted model —
-they cost flood fills or are generator-specific — and exist to answer whether an idea predicts
-winning at all. Derived composites that read one colony are emittable, and one of them is in
-the model.
+It rebuilds every played map with `--report diagnostics`, joins the measurements to the games
+already played, and reports what each adds to the fitted model — about six minutes for 1,330
+maps, no games. Four layers of measurement sit beside the model's own ColonyQuality fields:
+
+| Layer | Prefix | Source | In the model? |
+| --- | --- | --- | --- |
+| Start diagnostics | `diag_` | `StartDiagnostics.h`, `--report diagnostics` | No |
+| Movement | `move_` | the map report's walking, clearing and swimming sections | No |
+| Generator telemetry | `tel_` | per-colony records the generator made while building | No |
+| Derived composites | `d_` | arithmetic over ColonyQuality fields | Wheat decayed, yes |
+
+The diagnostics and the movement, telemetry and derived layers are kept for diagnosing play —
+why an AI does well or badly on a kind of terrain — rather than for scoring. Each was measured
+against every other and against ColonyQuality over 13,200 colonies, and a measurement whose rank
+correlation with one already kept reached about 0.9 was removed, keeping the most refined form:
+
+- **Movement** keeps what clearing and swimming *add* over walking, the swimming distance to the
+  nearest rival, rival centrality and fronts, and whole-map reachable wheat and wood. Walking
+  reachability, territory and rival distances were exact copies of ColonyQuality fields (1.000),
+  and clearing tracked walking at 0.91–0.99.
+- **Diagnostics** keep regrowth capacity, trip-weighted harvest throughput for wheat, wood, stone
+  and fruit, inn sites next to grain, second-swarm room, the forest's front and the build sites
+  on it, contested wheat and choke width. Harvest frontage (a re-count of catchment deposit
+  tiles), the field's front (identical to regrowth capacity), a second-swarm distance that never
+  left its floor, and the raw forest-front tile count went.
+- **Derived** keeps four distinct ideas: decayed wheat, wheat per nearby rival, wheat against the
+  best-fed rival, and the scarcest input. Rank, gap and head-to-head forms of the rival
+  comparison ran at 0.98 with each other; decayed wood and room, pressure and contested fraction
+  re-derived existing fields at 0.95–0.997.
 
 ### What does not predict winning
 

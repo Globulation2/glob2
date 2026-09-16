@@ -776,13 +776,12 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 						   "Toroidal; terrain land/water are four-connected, resource "
 						   "patches and movement are eight-connected"},
 						  {"canonical_quality",
-						   "Production scoreStarts with common default weights/scales, independent "
-						   "of "
-						   "generator; uses its own ground-unit passability rule"},
+						   "Production scoreStarts with the fitted fairness model, identical for "
+						   "every generator; uses its own ground-unit passability rule"},
 						  {"quality_formula",
-						   "total = weighted mean of normalized factors, forced to "
-						   "0 if wheat/wood unreachable; fairness = worst/best or 0 "
-						   "when best=0; score = worst * fairness^exponent"},
+						   "fitness = model.intercept + sum of coefficient * transform(measurement) "
+						   "over model.terms; win_probability = softmax(fitness) over the map's "
+						   "colonies; fairness = score = 1 - Gini(win_probability) * n/(n-1)"},
 						  {"percentiles",
 						   "Linear interpolation at p*(count-1); stddev is population "
 						   "standard deviation"}})},

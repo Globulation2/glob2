@@ -7,7 +7,7 @@
 // colony-count-normalised Gini of those probabilities.
 //
 // Fitted on 2942 free-for-all games over 1482 randomly drawn maps,
-// the same AI in every slot (castor, maxima, nicowar, numbi), at 109165e33.
+// the same AI in every slot (castor, maxima, nicowar, numbi), at 1af7f82fb.
 // Cross-validated McFadden R2 0.0278, 0.0282 in sample.
 // See docs/map-generators/FAIRNESS_MODEL.md.
 #pragma once
@@ -49,8 +49,8 @@ struct FairnessModelTerm
 inline const FairnessModelTerm *fairnessModelTerms()
 {
 	static const FairnessModelTerm terms[] = {
-		{"d_wheat_decayed", "share", "(0.6872892787909722 * (double(colony.distanceBands[0].exclusiveStoredAmount[WHEAT])) + 0.32465246735834974 * ((double(colony.distanceBands[1].exclusiveStoredAmount[WHEAT])) - (double(colony.distanceBands[0].exclusiveStoredAmount[WHEAT]))) + 0.10539922456186433 * ((double(colony.distanceBands[2].exclusiveStoredAmount[WHEAT])) - (double(colony.distanceBands[1].exclusiveStoredAmount[WHEAT]))))", FAIRNESS_MODEL_D_WHEAT_DECAYED_SHARE},
-		{"band24_tied_nearest_tiles", "sqrt", "Tied_Nearest patches within 24 steps", FAIRNESS_MODEL_BAND24_TIED_NEAREST_TILES_SQRT},
+		{"d_wheat_decayed", "share", "Uncontested wheat, nearest counts most", FAIRNESS_MODEL_D_WHEAT_DECAYED_SHARE},
+		{"band24_tied_nearest_tiles", "sqrt", "Contested territory within 24 steps", FAIRNESS_MODEL_BAND24_TIED_NEAREST_TILES_SQRT},
 		{"build_sites_4x4", "log", "Building sites", FAIRNESS_MODEL_BUILD_SITES_4X4_LOG},
 		{"rivals_within_threat", "identity", "Rivals close by", FAIRNESS_MODEL_RIVALS_WITHIN_THREAT_IDENTITY},
 		{"band48_wood_amount", "identity", "Wood stock within 48 steps", FAIRNESS_MODEL_BAND48_WOOD_AMOUNT_IDENTITY},

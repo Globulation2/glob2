@@ -4,7 +4,7 @@
 #include "MapReport.h"
 #include "Game.h"
 #include "GenerationService.h"
-#include "StartProbe.h"
+#include "StartDiagnostics.h"
 #include "GeneratorRegistry.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
@@ -53,40 +53,32 @@ std::string candidateRollsJson(const std::vector<GenerationService::CandidateRol
 	out << ']';
 	return out.str();
 }
-// Candidate start measurements, emitted only for `--report probe`: the fairness fitting tool
-// regenerates a tournament's maps with this on to test a new idea against games already played.
-std::string probeJson(Game &game, int nbTeams, bool wanted)
+// Start diagnostics, emitted only for `--report diagnostics`: measurements of each colony's
+// start that the fairness model does not use, for diagnosing play (StartDiagnostics.h).
+std::string diagnosticsJson(Game &game, int nbTeams, bool wanted)
 {
 	if (!wanted)
 		return "";
-	const auto report = MapGeneration::probeStarts(game, nbTeams);
+	const auto report = MapGeneration::diagnoseStarts(game, nbTeams);
 	std::ostringstream out;
-	out << "\"start_probe\":{\"measured\":" << (report.measured ? "true" : "false")
+	out << "\"start_diagnostics\":{\"measured\":" << (report.measured ? "true" : "false")
 		<< ",\"colonies\":[";
 	for (std::size_t i = 0; i < report.colonies.size(); ++i)
 	{
 		const auto &c = report.colonies[i];
 		if (i) out << ',';
 		out << "{\"start\":" << i << ",\"renewable_wheat\":" << c.renewableWheat
-			<< ",\"encroaching_wood\":" << c.encroachingWood
-			<< ",\"encroaching_wheat\":" << c.encroachingWheat
-			<< ",\"wood_front_tiles\":" << c.woodFrontTiles
-			<< ",\"threatened_build_sites\":" << c.threatenedBuildSites
-			<< ",\"harvest_throughput\":" << c.harvestThroughput
+			<< ",\"wheat_throughput\":" << c.wheatThroughput
 			<< ",\"wood_throughput\":" << c.woodThroughput
+			<< ",\"stone_throughput\":" << c.stoneThroughput
+			<< ",\"fruit_throughput\":" << c.fruitThroughput
 			<< ",\"inn_next_to_wheat_distance\":" << c.innNextToWheatDistance
 			<< ",\"inn_next_to_wheat_sites\":" << c.innNextToWheatSites
-			<< ",\"second_swarm_distance\":" << c.secondSwarmDistance
 			<< ",\"second_swarm_sites\":" << c.secondSwarmSites
-			<< ",\"choke_width\":" << c.chokeWidth
+			<< ",\"encroaching_wood\":" << c.encroachingWood
+			<< ",\"threatened_build_sites\":" << c.threatenedBuildSites
 			<< ",\"contested_wheat_distance\":" << c.contestedWheatDistance
-			<< ",\"contested_wheat_deposits\":" << c.contestedWheatDeposits
-			<< ",\"harvest_frontage\":{";
-		const char *names[MAX_RESOURCES] = {"wood", "wheat", "papyrus", "stone",
-											"algae", "cherry", "orange", "prune"};
-		for (int r = 0; r < MAX_RESOURCES; ++r)
-			out << (r ? "," : "") << '"' << names[r] << "\":" << c.harvestFrontage[r];
-		out << "}}";
+			<< ",\"choke_width\":" << c.chokeWidth << '}';
 	}
 	out << "]},";
 	return out.str();
@@ -513,7 +505,7 @@ int runMapStudy(int argc, char **argv)
 	descriptor.setMethodDefaults(method);
 	descriptor.seed = seed;
 	bool tuning = false;
-	bool headroom = false, probe = false;
+	bool headroom = false, diagnostics = false;
 	bool quality = false;
 	std::string dump, savePrefix, mapName, overlay, resultPath, resultJson;
 	std::ostringstream measurements;
@@ -537,8 +529,8 @@ int runMapStudy(int argc, char **argv)
 			tuning = true;
 		else if (arg == "headroom")
 			headroom = true;
-		else if (arg == "probe")
-			probe = true;
+		else if (arg == "diagnostics")
+			diagnostics = true;
 		else if (arg.rfind("perturb=", 0) == 0)
 			perturbations.push_back(arg.substr(8));
 		else if (arg == "quality")
@@ -972,7 +964,7 @@ int runMapStudy(int argc, char **argv)
 			<< ",\"shore\":" << shore << ",\"free\":" << free << ",\"fit4\":" << fit4
 			<< ",\"wheat_tiles\":" << resources[WHEAT] << ",\"wood_tiles\":" << resources[WOOD]
 			<< ",\"stone_tiles\":" << resources[STONE] << ",\"algae_tiles\":" << resources[ALGA]
-			<< measurements.str() << "}," << probeJson(game, descriptor.nbTeams, probe)
+			<< measurements.str() << "}," << diagnosticsJson(game, descriptor.nbTeams, diagnostics)
 			<< "\"quality\":{\"score\":" << result.quality.score
 			<< ",\"fairness\":" << result.quality.fairness
 			<< ",\"worst_fitness\":" << result.quality.worstFitness
