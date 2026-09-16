@@ -7,6 +7,7 @@
 #include "GlobalContainer.h"
 #include "Grid.h"
 #include "Regions.h"
+#include "Pipeline.h"
 #include "Resources.h"
 #include "Settlements.h"
 #include "Topology.h"
@@ -549,7 +550,13 @@ static bool generate(Game &game, GenerationContext &context)
 	sizeIslands(game, context, options, L);
 	paintTerrain(game, context, options, L);
 	stockCommons(game, context, options, L);
-	return settleHomes(game, context, options, L);
+	if (!settleHomes(game, context, options, L))
+		return false;
+	// A home island's own fields can close the ground round the swarm, leaving a colony with its
+	// crops at its feet and nowhere to build. Opening it up costs a colony that already has its
+	// room nothing (openStartsBuriedByResources leaves such a colony untouched).
+	openStartsBuriedByResources(game, context);
+	return true;
 }
 
 } // namespace
@@ -564,12 +571,20 @@ ContestedCommonsOptions::ContestedCommonsOptions(const GenerationRequest &r)
 {
 }
 
+// The home islands are sized against a worst-case shape, not measured after the coast is rough
+// and the moat is cut, so a colony can end up with its wheat across the water or its island
+// filled by its own fields. The floor is what the home island exists to provide.
+static std::string validateWorld(const Game &game, const GenerationContext &context)
+{
+	return startingFloorFailure(game.map, context.request.nbTeams);
+}
+
 GeneratorDefinition contestedCommonsDefinition()
 {
 	return {"contested-commons",
 			9,
 			"Contested commons",
-			2,
+			3,
 			false,
 			// Home island size is a percentage of the closest colony spacing; commons size a
 			// percentage of the home radius (limited by the room the spread leaves); moat width a
@@ -590,5 +605,8 @@ GeneratorDefinition contestedCommonsDefinition()
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),
 			 GeneratorControl::percentage("algae-amount", "Algae amount"),
 			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate};
+			generate,
+			true,
+			nullptr,
+			validateWorld};
 }

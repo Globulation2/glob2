@@ -4,7 +4,7 @@
 #include "GeneratorDefinition.h"
 struct HedgerowCountryOptions
 {
-	int fieldSize, hedgeThickness, gateways, woodedShare, wheat, wood, stone, fruit;
+	int fieldSize, hedgeThickness, gateways, woodedShare, wheat, wood, stone, algae, fruit;
 	explicit HedgerowCountryOptions(const GenerationRequest &);
 };
 GeneratorDefinition hedgerowCountryDefinition();

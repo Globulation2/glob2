@@ -137,7 +137,9 @@ sentinel. `resources.types` always includes `wood`, `wheat`, `papyrus`, `stone`,
 - `build_sites_4x4`: number of valid top-left anchors for entirely buildable 4×4
   footprints, including ones spanning a map edge. **Anchors overlap**: this is a
   measure of building room, not how many buildings can be constructed simultaneously.
-- `growth_disabled`: coverage of tiles whose `canResourcesGrow` flag is false.
+- `growth_disabled`: coverage of tiles whose `canResourcesGrow` flag is false. Always zero
+  for a generated map, which may not disable growth; nonzero only for hand-made maps and
+  scenarios such as the tutorial.
 - `land_regions`: four-connected regions of grass, sand, and their border tiles
   (sprite IDs below 256); unknown terrain is excluded.
 - `water_regions`: four-connected regions of pure-water tiles (256–271).

@@ -41,10 +41,13 @@ void Field::buildWrappedIndexes()
 	wrappedY.resize((KERNEL_WIDTH * 2 + 1) * height);
 	for (int offset = -KERNEL_WIDTH; offset <= KERNEL_WIDTH; ++offset)
 	{
+		// offset % width/height does not depend on x/y; computing it once per offset instead of
+		// once per tile turns this into 63 divisions instead of up to 63 * width and 63 * height.
+		const int baseX = offset % width, baseY = offset % height;
 		for (int x = 0; x < width; ++x)
-			wrappedX[(offset + KERNEL_WIDTH) * width + x] = (x + offset % width + width) % width;
+			wrappedX[(offset + KERNEL_WIDTH) * width + x] = (x + baseX + width) % width;
 		for (int y = 0; y < height; ++y)
-			wrappedY[(offset + KERNEL_WIDTH) * height + y] = (y + offset % height + height) % height;
+			wrappedY[(offset + KERNEL_WIDTH) * height + y] = (y + baseY + height) % height;
 	}
 }
 
@@ -145,14 +148,23 @@ void Field::rebuild(int newWidth, int newHeight, const std::vector<std::uint8_t>
 					continue;
 				const int* const xWrap = &wrappedX[KERNEL_WIDTH * width + sx];
 				const int* const yWrap = &wrappedY[KERNEL_WIDTH * height + sy];
+				// xWrap[dx * width] and xWrap[2 * dx * width] depend only on dx, not dy, but sit
+				// inside the dy loop below, which revisits every dx KERNEL_WIDTH times; looking
+				// each one up once here instead removes that factor from this tile's cost.
+				int targetX[KERNEL_WIDTH], probeX[KERNEL_WIDTH];
+				for (int dx = -KERNEL_RADIUS; dx <= KERNEL_RADIUS; ++dx)
+				{
+					targetX[dx + KERNEL_RADIUS] = xWrap[dx * width];
+					probeX[dx + KERNEL_RADIUS] = xWrap[2 * dx * width];
+				}
 				for (int dy = -KERNEL_RADIUS; dy <= KERNEL_RADIUS; ++dy)
 				{
 					const std::uint32_t yWeight = OFFSET_WEIGHT[dy + KERNEL_RADIUS];
 					std::uint32_t* const targetRow = &fertility[yWrap[dy * height] * width];
 					const std::uint8_t* const waterRow = &water[yWrap[2 * dy * height] * width];
 					for (int dx = -KERNEL_RADIUS; dx <= KERNEL_RADIUS; ++dx)
-						if (waterRow[xWrap[2 * dx * width]])
-							targetRow[xWrap[dx * width]] -=
+						if (waterRow[probeX[dx + KERNEL_RADIUS]])
+							targetRow[targetX[dx + KERNEL_RADIUS]] -=
 								yWeight * OFFSET_WEIGHT[dx + KERNEL_RADIUS];
 				}
 			}
@@ -169,14 +181,22 @@ void Field::rebuild(int newWidth, int newHeight, const std::vector<std::uint8_t>
 					continue;
 				const int* const xWrap = &wrappedX[KERNEL_WIDTH * width + waterX];
 				const int* const yWrap = &wrappedY[KERNEL_WIDTH * height + waterY];
+				// See the SandCorrection branch above: xWrap[-dx * width] and xWrap[-2 * dx * width]
+				// depend only on dx, so look each one up once here instead of once per (dy, dx).
+				int targetX[KERNEL_WIDTH], probeX[KERNEL_WIDTH];
+				for (int dx = -KERNEL_RADIUS; dx <= KERNEL_RADIUS; ++dx)
+				{
+					targetX[dx + KERNEL_RADIUS] = xWrap[-dx * width];
+					probeX[dx + KERNEL_RADIUS] = xWrap[-2 * dx * width];
+				}
 				for (int dy = -KERNEL_RADIUS; dy <= KERNEL_RADIUS; ++dy)
 				{
 					const std::uint32_t yWeight = OFFSET_WEIGHT[dy + KERNEL_RADIUS];
 					std::uint32_t* const targetRow = &fertility[yWrap[-dy * height] * width];
 					const std::uint8_t* const sandRow = &sand[yWrap[-2 * dy * height] * width];
 					for (int dx = -KERNEL_RADIUS; dx <= KERNEL_RADIUS; ++dx)
-						if (!sandRow[xWrap[-2 * dx * width]])
-							targetRow[xWrap[-dx * width]] +=
+						if (!sandRow[probeX[dx + KERNEL_RADIUS]])
+							targetRow[targetX[dx + KERNEL_RADIUS]] +=
 								yWeight * OFFSET_WEIGHT[dx + KERNEL_RADIUS];
 				}
 			}

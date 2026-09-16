@@ -1,131 +1,89 @@
 # Rice terraces
 
+Long terraced hillsides that run diagonally across the whole torus. Every hillside is one
+continuous stripe: a dry crest where the towns stand, narrow contour strips of rice and
+irrigation channels stepping down both of its slopes, and a valley floor of shared ground with a
+river along its middle. With a slant, a hillside is one long spiral round the torus, so the
+terraces join into a single stretch of landscape. The contours sway together along the hillside,
+so the terraces meander rather than run ruled. Sand stairs climb straight across the terraces and
+carry on across the valley as roads that ford the river.
+
+This map replaced an earlier generator of the same name on 2026-09-16. That one drew
+concentric crop and water rings round point summits and is now [Hills](HILLS.md). A
+maintainer found that the rings did not read as rice terraces, however lobed, because real
+terraces are not rings round a point. They are many narrow strips following the contour of a
+long slope, stacked and winding across whole hillsides. This design starts from those signatures
+and borrows Rain shadow's slanted stripe field for the geometry. The
+[tuning playbook](../../.agents/skills/glob2-map-design/references/tuning-playbook.md)
+records the lesson as "model the real thing, not the nearest primitive".
+
 ## Play contract
 
-Every colony owns a grass summit surrounded by concentric crop and water contours,
-lobed like a real hill's rather than drawn with compasses.
-A small starter inn holds ten wheat for the first feeding cycle; ongoing meals
-come from the terraces.
-Five-corner-wide radial sand stairs carry workers and attackers across the terraces.
-One starting tower per stair covers its upper approach. Its magazine and finite
-stone reserve start full, leaving opening workers available to establish food. These are drawn contours;
-the engine has no elevation bonus. Swimming bypasses irrigation ditches, while crops
-still require clearing. The whole climb is longer than a summit tower's range.
+- **Crests are the towns.** Every colony starts in a round grass clearing on the middle line of a
+  crest. Towns are spread along the crests as far apart as they go: the first at a seeded crest
+  tile, each next one the crest tile farthest from the towns before it. The terraces bend round
+  each town inside a two-corner sand ring. A town has a completed starter inn with a first meal,
+  a quarry tile, 14 wheat tiles on the first terrace of each slope below it and 12 wood tiles on
+  one of them. These starter supplies are kept at every resource amount.
+- **Terraces are the farms.** Each terrace is five corners of rice (wheat) and two of water at
+  100% band width. Every rice tile lies within the engine's growth probe of several channels, so
+  the terraces regrow. Half the fertile rice ground starts under wheat and 6% under wood, in
+  patches. Sand caps above and below each slope's terraces, and each town's ring, keep crops off
+  the towns and the valley however long the game runs. The validator checks that no pure grass
+  reachable from a town can ever be a terrace strip.
+- **Stairs are the only way through.** Water and crops block walking, so the terraces are a wall
+  between a crest and its valley. Stairs five corners wide cross them every `stair-spacing` tiles
+  along the hillside. The two slopes of a valley are staggered by half a spacing, so no stair
+  lines up with the one facing it. In the valley each stair continues as a three-corner sand road
+  to the middle and past it, fording the river.
+- **Valleys are the commons.** Quarry outcrops and fruit groves are scattered over the valley
+  floor, and algae in the channels and river. Colonies on facing slopes meet in the valleys.
 
-The summit has radius 16 and a two-corner sand containment ring. Complete crop/water
-bands end in another sand cap, keeping growth away from both summit and commons.
-Beyond the summit's cap the bands lobe in and out by up to four tiles, the same shift
-for every band at a heading so their widths hold; the summit and its cap stay round.
-The open valleys offer fruit, quarry outcrops and expansion room. Optional vacant
-hills provide another farm and summit to contest. A valley river follows boundaries
-between hills and has regular sand fords. Players choose which stairs to defend and
-which valley to develop; stairs are permanent terrain, without a new gate mechanic.
+## Controls
 
-## Controls and fitting
+| Control | Values; default | Effect |
+| --- | --- | --- |
+| Hillsides | 1–6; **1** | Hillsides per 256 tiles of the map's longer side. On a 256 map at slant 1, one hillside crosses the map twice. |
+| Slant | 0–3; **1** | As in Rain shadow: how many hillsides a line across the width climbs. With a slant every crest is one spiral round the torus. |
+| Terraces per slope | 2–12; **8** | Terraces down each side of a crest, cut to what fits. |
+| Contour band width | 80–140%; **100%** | Scales each terrace's rice and water widths. |
+| Waviness | 0–16, step 2; **12** | Amplitude in tiles of the contours' sway along the hillside. |
+| Stair spacing | 24–96, step 8; **48** | Target tiles between stairs along a hillside, rounded so a whole number fit per turn. |
+| Home size | 10–18; **12** | Town radius. The crest is three tiles wider on each side. |
+| Valley river | on/off; **on** | A river along every valley's middle; roads ford it. |
+| Wheat / wood / stone / algae / fruit amount | 0–300%; **100%** | Terrace crops, valley outcrops and groves, and algae. Town starter supplies stay. |
 
-- **Unoccupied hills:** 0–4 additional hills beyond the colony count.
-- **Hill radius:** 44–100, a maximum budget; only complete bands are fitted.
-- **Contour band width:** 80–120% of `bestFarmRows(0)` (10 crop / 8 water corners).
-- **Stairs per hill:** 2–4, each five corners wide.
-- **Starting tower level:** 0–3; zero omits the towers.
-- **Valley river:** on/off. A single hill has no inter-hill river.
-- **Resource amounts:** all five ambient layers scale. Each occupied hill retains
-  a small inner-terrace wheat patch beside every stair, one wood patch and one
-  summit quarry at zero. The starter inn and tower reserves are also finite guarantees.
+## Construction
 
-The supported envelope is geometric: the nearest pair of lattice hills and each
-map side must fit two hills plus 14 corners of valley. A hill needs a radius-16
-summit, two caps, and at least one complete band. Requests outside this envelope
-are rejected before world mutation. Rectangles and odd colony counts use the same
-fit rule. Starts are randomly dealt; this is comparable spacing, not exact symmetry.
-At standard width, a band needs radius 38; two bands need radius 56. At 256×256,
-four colonies normally fit two bands, whereas dense layouts fit fewer. A 64×64
-map cannot fit the contract. Increasing the radius control only changes terrain
-when an additional complete band fits inside the available spacing.
+1. **Fitting.** Hillsides start at the control's count scaled to the map. Hillsides are added
+   until the crests' total length (map area over the stripe spacing) gives every town a town's
+   width of crest on each side. They are taken away one at a time until a slope holds the
+   terraces asked for beside a crest, the narrowest valley (16 tiles) and the sway. Then the
+   terraces are cut to what fits. Only a slope with no room for one terrace refuses the map.
+2. **Hillsides.** `stripePhase` gives every tile its place across the hillside, with a fine
+   fractal grain of 3% of a spacing. The sway adds the same number of tiles to every contour at
+   a point along the hillside: three sine waves of about 110, 60 and 36 tiles (whole numbers of
+   waves per turn along, so the stripes still wrap) sharing the waviness in the proportions 50,
+   30 and 20. A shared shift keeps each terrace's width along the slope's normal and cannot fold
+   a contour; only where the hillside turns steeply do the terraces narrow.
+3. **Zones.** By distance from the crest: crest, cap, terraces (rice then channel, down the
+   slope), cap, valley. Stairs replace the cap and terraces within 2.5 corners of their line.
+   Roads replace valley ground within 1.5 corners of it. The river runs within 1.5 corners of the
+   valley's middle.
+4. **Towns.** Farthest-point selection on the crests' middle line, then a clearing of the town's
+   radius and a sand ring where the clearing meets anything but crest.
+5. **Beaches** last, then the colonies, the starter inn, quarry and crops, the terraces'
+   furnishing, the valley's outcrops and groves, algae, and the shared first-crop rescue, which
+   may plant only on a terrace strip.
 
-## Implementation and invariants
+The starter crops search for the first-terrace tile nearest the town on each slope, skipping any
+pocket a stair or the town's ring has cut too short for the whole patch.
 
-The generator reuses lattice sites, farm row fitting/planting, colony placement,
-beaches, tower placement, resource guarantees and building-room helpers.
-The shared farmland toolkit now provides `ContourFarmStyle` and `layContourFarm`
-for capped contour rows and constant-width radial crossings, with `ContourWobble`
-(three harmonics round the hill, own phases per hill, ramped in past the summit's cap
-so the mapping along a ray stays monotone and no contour folds) making the hills lobed;
-`contourNominal` is the radius the band arithmetic sees, which the generator uses to
-tell hill ground from valley. The lobe amplitude is as much of four tiles as leaves
-half the valley floor open at the closest pair of hills, so the fitted band count is
-the same as for circles. `nearestTwoSites` in `Points`
-provides exact owner/runner-up distances for valley boundaries, with stable ties and
-explicit empty/single-site results. The optional `placeTower` coverage-point constraint selects a footprint that covers
-every required approach tile, using the actual tower type's range. Empty coverage
-points retain existing placement behavior. Its opt-in `supplyStone` fills the initial
-reserve without requesting opening miners; other maps retain their existing stocks.
-`plantPatchNear` combines bounded seed search and compact patch growth, returning
-the actual count so required starter patches can reject insufficient room.
-`placeStartingBuilding` shares the tower footprint search and provides selective
-finite supplies, registering the new building's service lists without disturbing
-existing colony tasks. Simulation rules retain their behavior. The source comments explain
-corner-to-tile losses, containment, starter placement, radius quantization and
-bounded tower searches.
-The shared crop rescue now accepts an optional placement mask. Rice Terraces confines
-its emergency wheat and wood to crop rows, including every tile of a radius-two clump.
-When an extreme amount fills those rows with one crop, the rescue trades a small patch
-of that accessible surplus for the missing starter crop. This keeps the town and stairs
-dry while giving workers a reachable gathering edge. Other generators retain the
-previous rescue policy unless they opt in to the mask.
+## Verification
 
-Validation reconstructs the design and checks finished stair cores, full stair
-reachability from each colony, inter-colony walking, summit building room, absence
-of spreading summit deposits, and separation of summit and terrace pure-grass
-components. Tower placement constrains the actual footprint to cover the full upper stair
-width using the engine's firing range. Generation telemetry records fitted radii,
-band widths/counts, stair angle/count, river water corners and crop budget saturation.
-
-## Reproduction
-
-```sh
-scons release=1 server=0 -j6 map-generator-defaults-test map-generator-golden-test build/src/glob2
-build/src/glob2 --generate-map rice-terraces --seed 7 --width 256 --height 256 --teams 4 --output artifacts/rice-terraces/seed-7.map --preview artifacts/rice-terraces/seed-7.png --json artifacts/rice-terraces/seed-7.json
-python3 tools/map_telemetry.py collect --generators rice-terraces --seed-start 20001 --count 8 --set width=256 --set height=256 --set teams=4 --jobs 2 --out artifacts/rice-terraces/held-out
-python3 tools/map_telemetry.py summarize artifacts/rice-terraces/held-out
-```
-
-[Verification results, previews, native maps, replays and study evidence](evidence/rice-terraces/README.md) are retained with this implementation.
-The primitive regressions cover translated/wrapped contours, diagonal crossing cores,
-future growth components, and nearest-site tie/sentinel behavior. The generator
-regression includes resource extremes, rectangles, vacant hills and 12,000 unattended
-resource-growth calls.
-
-Static connectivity, generation repeatability and AI survival are separate checks;
-human play is still needed to assess stair defense strength and valley incentives.
-
-## Rotation tournament
-
-A rotation tournament on revision 5 (six 256×256 maps, four colonies, every cyclic team
-rotation, four Nicowars, 45,000 ticks) found the terraces even and hard: a root-mean-square
-position bias of zero, pooled per-start peaks of 124 to 146 units, 20 to 34 warriors, 24
-eliminations in 96 colony-games, and 60 to 67 starvation deaths per colony, the highest of any
-map that still grows. The capped bands are worked (about 145 wheat harvested per colony), but
-not fast enough for the armies the stairs invite, so the fights come with hunger. The defaults
-stand; whether that pressure is the intended feel is a maintainer's judgment.
-
-## Initial playtest tuning
-
-Revision 4 retains three default stairs and the original terrain geometry. It supplies
-starting tower reserves, distributes starter wheat near all inner stair mouths,
-and gives each summit a small inn stocked only with wheat.
-These changes target opening worker diversion and the first feeding deadline; they
-do not alter AI or simulation rules. [Playtest results and evidence](evidence/rice-terraces/PLAYTEST.md)
-compare the original, four-stair, reserve-only and nearby-food variants on paired
-seeds, with prospective validation of the stocked-inn opening. The revision-1 archive above remains
-available as the original implementation baseline.
-
-## Bulk generation repair
-
-Revision 5 keeps the same layout and opening supplies. A broad control study found
-that the unconstrained crop rescue could put wood in a dry summit when dense wheat
-made the original wood inaccessible. The shared placement mask and bounded crop
-trade above repair that case. The original failed seed/settings requests, the
-corrected reports, broad validation and generation timing are recorded in
-[bulk generation evidence](evidence/rice-terraces/BULK_GENERATION.md). The AI
-playtest archive describes revision 4 before this generation-only repair.
+- 60 generation cases at revision 1 all complete. The ten sizes and colony counts the golden
+  sweep uses (128/2, 128/4, 256/2–12, 512/4, 512/12) ran on four seeds each. Every slant,
+  hillside, waviness, band width, home size, stair spacing, terrace count and river extreme ran
+  at 256/4 on two seeds.
+- The golden table and sweep cover it like every registered generator.
+- No AI tournament or human play has been run on this map yet.

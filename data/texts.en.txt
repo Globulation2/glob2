@@ -1978,6 +1978,10 @@ Trail width
 Wall between legs
 [Farm building plots]
 Farm building plots
+[Sand bridges over water]
+Sand bridges over water
+[Sand lanes through crops]
+Sand lanes through crops
 [Carousels need at least two colonies.]
 Carousels need at least two colonies.
 [Switchbacks need at least two colonies.]
@@ -2614,8 +2618,18 @@ Contour band width
 Stairs per hill
 [Valley river]
 Valley river
-[Vultures]
-Vultures
+[Hills]
+Hills
+[Hillsides]
+Hillsides
+[Terraces per slope]
+Terraces per slope
+[Waviness]
+Waviness
+[Stair spacing]
+Stair spacing
+[Locust]
+Locust
 [Plantations]
 Plantations
 [Plot size]

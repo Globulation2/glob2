@@ -1976,6 +1976,10 @@ OpenGL недоступний у цій збірці.
 Стіна між витками
 [Farm building plots]
 Ділянки під забудову на фермах
+[Sand bridges over water]
+Піщані мости через воду
+[Sand lanes through crops]
+Піщані доріжки через посіви
 [Carousels need at least two colonies.]
 Для каруселі потрібні принаймні дві колонії.
 [Switchbacks need at least two colonies.]
@@ -2612,8 +2616,18 @@ Emoji
 Сходів на пагорб
 [Valley river]
 Річка в долині
-[Vultures]
-Стерв’ятники
+[Hills]
+Пагорби
+[Hillsides]
+Схили
+[Terraces per slope]
+Терас на схил
+[Waviness]
+Хвилястість
+[Stair spacing]
+Крок сходів
+[Locust]
+Сарана
 [Plantations]
 Плантації
 [Plot size]

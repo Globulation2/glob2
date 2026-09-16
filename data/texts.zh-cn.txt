@@ -1976,6 +1976,10 @@ OpenGL 在此版本中不可用。
 弯道之间的墙
 [Farm building plots]
 农场建筑用地
+[Sand bridges over water]
+水上沙桥
+[Sand lanes through crops]
+穿过农田的沙道
 [Carousels need at least two colonies.]
 旋转木马至少需要两个殖民地。
 [Switchbacks need at least two colonies.]
@@ -2612,8 +2616,18 @@ Emoji
 每座山丘的阶梯数
 [Valley river]
 山谷河流
-[Vultures]
-秃鹫
+[Hills]
+丘陵
+[Hillsides]
+山坡
+[Terraces per slope]
+每坡梯田数
+[Waviness]
+波动程度
+[Stair spacing]
+台阶间距
+[Locust]
+蝗灾
 [Plantations]
 种植园
 [Plot size]

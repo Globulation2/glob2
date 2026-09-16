@@ -22,19 +22,29 @@ Flood floodFrom(const Torus &t, const std::vector<unsigned char> &source,
 		}
 	for (size_t head = 0; head < queue.size(); ++head)
 	{
-		if (dist[queue[head]] >= limit)
+		const int tile = queue[head], here = dist[tile];
+		if (here >= limit)
 			continue;
-		const int x = queue[head] % t.w, y = queue[head] / t.w;
+		const int x = tile % t.w, y = tile / t.w, stepped = here + 1;
 		for (int dy = -1; dy <= 1; ++dy)
+		{
+			// Every neighbour on this row shares one wrapped y; folding it in once here, instead
+			// of inside Torus::at for each of the three dx below, is exact - at() is y() * w + x().
+			const int row = t.y(y + dy) * t.w;
 			for (int dx = -1; dx <= 1; ++dx)
 			{
-				const int n = t.at(x + dx, y + dy);
+				// (0, 0) is `tile` itself, already visited (dist[tile] = here >= 0), so it always
+				// fails the dist[n] < 0 test below; skipping it changes no result.
+				if (!dx && !dy)
+					continue;
+				const int n = row + t.x(x + dx);
 				if (dist[n] < 0 && open[n])
 				{
-					dist[n] = dist[queue[head]] + 1;
+					dist[n] = stepped;
 					queue.push_back(n);
 				}
 			}
+		}
 	}
 	return flood;
 }

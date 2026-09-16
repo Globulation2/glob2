@@ -1988,6 +1988,10 @@ Amplada del camí
 Mur entre trams
 [Farm building plots]
 Solars a les granges
+[Sand bridges over water]
+Ponts de sorra sobre l'aigua
+[Sand lanes through crops]
+Camins de sorra entre els conreus
 [Carousels need at least two colonies.]
 El carrusel necessita almenys dues colònies.
 [Switchbacks need at least two colonies.]
@@ -2624,8 +2628,18 @@ Amplada de les bandes de nivell
 Escales per turó
 [Valley river]
 Riu de la vall
-[Vultures]
-Voltors
+[Hills]
+Turons
+[Hillsides]
+Vessants
+[Terraces per slope]
+Terrasses per vessant
+[Waviness]
+Ondulació
+[Stair spacing]
+Separació de les escales
+[Locust]
+Llagostes
 [Plantations]
 Plantacions
 [Plot size]

@@ -1980,6 +1980,10 @@ Ancho del sendero
 Muro entre tramos
 [Farm building plots]
 Solares en las granjas
+[Sand bridges over water]
+Puentes de arena sobre el agua
+[Sand lanes through crops]
+Senderos de arena entre los cultivos
 [Carousels need at least two colonies.]
 El carrusel necesita al menos dos colonias.
 [Switchbacks need at least two colonies.]
@@ -2616,8 +2620,18 @@ Anchura de las bandas de nivel
 Escaleras por colina
 [Valley river]
 Río del valle
-[Vultures]
-Buitres
+[Hills]
+Colinas
+[Hillsides]
+Laderas
+[Terraces per slope]
+Terrazas por ladera
+[Waviness]
+Ondulación
+[Stair spacing]
+Separación de escaleras
+[Locust]
+Langostas
 [Plantations]
 Plantaciones
 [Plot size]

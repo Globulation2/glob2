@@ -5,7 +5,7 @@
 struct SwitchbacksOptions
 {
 	int trailWidth, legWall, plateauSize, homeSize, towers, towerCount;
-	bool sandRoads, farmPlots;
+	bool sandRoads, farmPlots, waterCrossings, cropCrossings;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit SwitchbacksOptions(const GenerationRequest &r);
 };

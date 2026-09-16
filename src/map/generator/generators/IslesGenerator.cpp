@@ -333,9 +333,14 @@ static bool generate(Game &game, GenerationContext &context)
 	{
 		return false;
 	}
-	// A colony's own fields are its only wheat and wood, and a field or deposit grown well past its
-	// default size can also wall the colony in with nowhere left to build.
-	reopenCrampedStarts(game, context, {options.wheat, options.wood, options.stone, options.algae});
+	// Whatever the amounts, a colony can end up walled into a pocket by the deposits laid
+	// around it: nothing here budgets its room. Opening it up costs a colony that already has
+	// its room nothing (openStartsBuriedByResources leaves such a colony untouched).
+	// Wood is topped up only for a colony that cannot reach any, matching what this
+	// landscape's validator asks: how far the nearest stand is round the channels is a
+	// question about its economy, and planting a fresh one at 32 steps would answer it here
+	// by accident.
+	openStartsBuriedByResources(game, context, 24, kReachableAnywhere);
 
 	// Initialize final team info
 	for (int i = 0; i < context.request.nbTeams; ++i)
@@ -345,13 +350,22 @@ static bool generate(Game &game, GenerationContext &context)
 	return true;
 }
 
+// Every colony's own island carries its fields, so the floor here asks for wheat at the door and
+// room to build on it. Wood only has to be reachable at all: on a crowded archipelago the nearest
+// stand can be a long walk round the channels (see the review of 2026-09-16), which is a question
+// about this landscape's economy rather than a world the service should throw away.
+static std::string validateWorld(const Game &game, const GenerationContext &context)
+{
+	return startingFloorFailure(game.map, context.request.nbTeams, 24, kReachableAnywhere);
+}
+
 GeneratorDefinition islesDefinition()
 {
 	return {
 		"isles",
 		6,
 		"Isles",
-		2,
+		3,
 		false,
 		// Island size is each island's diameter as a percentage of the least distance between
 		// colonies (see layoutIslands for its range); bridge width is how many steps a bridge's
@@ -367,5 +381,8 @@ GeneratorDefinition islesDefinition()
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount")},
-		generate};
+		generate,
+		true,
+		nullptr,
+		validateWorld};
 }

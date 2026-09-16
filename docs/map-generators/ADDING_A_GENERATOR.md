@@ -31,7 +31,7 @@ Declare a choice between named options with `GeneratorControl::choice(id, label,
 
 Declare resource amounts with `GeneratorControl::percentage(id, label, maximum)`: 0 to `maximum` (300 unless given) in steps of 25, defaulting to 100, in the Resources group. The percentage scales the numbers that already decide that resource's amount — densities, clump sizes and counts, noise or fertility thresholds — and 100 must reproduce the unscaled map exactly: use `MapGeneration::scaledCount()` and `scaledShare()` from `shared/Resources.h`, which return their input unchanged at 100, and draw nothing from a random stream at 100 that the unscaled code didn't. Decide deliberately which placements are fairness guarantees (starter kits, reachability backstops, 1:1 guaranteed wheat and wood) and leave those unscaled, so every setting stays playable. Keep existing control ids and meanings; a generator that already exposes explicit amounts (Maze) keeps them.
 
-Check the top of each range as carefully as the bottom. Resources block ground units and buildings alike, so an amount well above the default can wall a colony into a pocket with nowhere to build, or cover the building sites a start search was looking at — a map that still passes `validateWorld` and is still unplayable. `MapGeneration::openCrampedStarts()` clears the resource tiles nearest such a colony, ring by ring, until it can reach 16 tiles where a 4x4 building fits within 24 steps; call it at non-default amounts only (the height-field generators go through `openStartsBuriedByAmounts()`) and re-run `guaranteeStartingResources()` afterwards, since the clearing can take the nearest crop with the wall. If a generator picks its start sites relative to a scaled field, make that search widen rather than fail when the field covers everything it wanted. `MapGeneratorStudy`'s `tuning` line reports the worst colony's build sites and crop distances, which is how to see both problems.
+Check the top of each range as carefully as the bottom. Resources block ground units and buildings alike, so an amount well above the default can wall a colony into a pocket with nowhere to build, or cover the building sites a start search was looking at — a map that still passes `validateWorld` and is still unplayable. `MapGeneration::openCrampedStarts()` clears the resource tiles nearest such a colony, ring by ring, until it can reach 16 tiles where a 4x4 building fits within 24 steps; call it through `reopenCrampedStarts()` at non-default amounts, or through `openStartsBuriedByResources()` at any amount when nothing in the design budgets a colony's room (the height-field and other legacy-core landscapes do). Both re-run `guaranteeStartingResources()` afterwards, since the clearing can take the nearest crop with the wall. If a generator picks its start sites relative to a scaled field, make that search widen rather than fail when the field covers everything it wanted. `MapGeneratorStudy`'s `tuning` line reports the worst colony's build sites and crop distances, which is how to see both problems.
 
 Lobby preferences save a control through its legacy descriptor field when it has one (`wheat`, `lake-size`, ...) and in the preferences' `options` section otherwise, so new controls persist with no further work.
 
@@ -133,6 +133,26 @@ python3 tools/plot_map_generator_refactor.py \
 For targeted settings, pass a JSON configuration list with `id`, `method` and a `params` object whose keys are stable control IDs. A sample uses registered defaults plus those overrides. Out-of-range values fail explicitly. `--binary` selects a separately built historical executable for comparison.
 
 Before accepting a generator or structural refactor, inspect fixed-seed previews and poor-performing examples, exercise range endpoints and crowded/rectangular maps, and investigate changes beyond the documented statistical thresholds. Keep generated evidence under ignored `artifacts/` and summarize findings in the pull request. The comparison plotter requires an explicitly supplied baseline study summary.
+
+### No-growth zones are forbidden
+
+A generator may never disable resource growth on any tile. The engine's saved
+`canResourcesGrow` flag is for hand-made scenarios such as the tutorial, not for generated
+maps, and `validateGeneratedWorld` refuses a generated world with even one no-growth tile.
+Contain crops with terrain the player can see: sand caps and aisles (one row of sand corners
+is enough to stop a crop extending), dry ground for scenery that must not spread, or leaving
+the deposit out. [Game rules for map design](GAME_RULES_FOR_MAP_DESIGN.md) has the engine
+detail.
+
+### Maps can't be ugly
+
+A change made for mobility, fairness or a healthier economy must not destroy the aesthetic vision the map was built on. When the fix and the picture disagree, find the version of the fix that keeps the picture; it nearly always exists. Three checks catch most of what previews miss:
+
+- **Look at a played game, not only a preview.** Wood that the engine can spread, and shorelines stamped after the beach pass, look correct in a preview and wrong forty thousand ticks later. Compare wood tiles on a final save with the same count at tick zero (`--save final`, then `--preview-map final.game --json`).
+- **Paint what the feature needs, not what protects it.** A route's protection mask and its visible surface are different things: a causeway's mask can cover its whole stroke while its sand stops at the water.
+- **Draw connections in the map's own language.** A formal map's paths are straight and square; a natural map's are not. A repair that drags a diagonal or a staircase across a square design has changed what the map is.
+
+The engine rules behind the first check — how a deposit extends, and why terrain rather than a no-growth flag has to contain it — are in [game rules for map design](GAME_RULES_FOR_MAP_DESIGN.md).
 
 ## Instrument internal decisions
 

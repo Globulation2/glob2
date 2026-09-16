@@ -17,8 +17,13 @@ struct Torus
 	Torus(int width, int height) : w(width), h(height) {}
 	explicit Torus(const Map &);
 	int size() const { return w * h; }
-	int x(int v) const { return ((v % w) + w) % w; }
-	int y(int v) const { return ((v % h) + h) % h; }
+	// The double remainder below is the general wraparound formula for any v, including one far
+	// outside [0, w) or negative past a single wrap. Almost every caller here offsets an in-range
+	// coordinate by a small amount (a neighbour step, a kernel radius), so it is already in range
+	// far more often than not; that common case returns directly, at the cost of one comparison,
+	// instead of two integer divisions. Both branches return the identical value for in-range v.
+	int x(int v) const { return v >= 0 && v < w ? v : ((v % w) + w) % w; }
+	int y(int v) const { return v >= 0 && v < h ? v : ((v % h) + h) % h; }
 	int at(int px, int py) const { return y(py) * w + x(px); }
 	/// Signed shortest offset from one column to another across the wrap.
 	int offsetX(int from, int to) const

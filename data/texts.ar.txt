@@ -1978,6 +1978,10 @@ OpenGL غير متوفر في هذا الإصدار.
 الجدار بين المنعطفات
 [Farm building plots]
 قطع بناء في المزارع
+[Sand bridges over water]
+جسور رملية فوق الماء
+[Sand lanes through crops]
+ممرات رملية عبر المحاصيل
 [Carousels need at least two colonies.]
 تحتاج الدوّامة إلى مستعمرتين على الأقل.
 [Switchbacks need at least two colonies.]
@@ -2614,8 +2618,18 @@ Emoji
 سلالم لكل تل
 [Valley river]
 نهر الوادي
-[Vultures]
-النسور
+[Hills]
+تلال
+[Hillsides]
+سفوح
+[Terraces per slope]
+مدرجات لكل سفح
+[Waviness]
+التموج
+[Stair spacing]
+المسافة بين الدرجات
+[Locust]
+الجراد
 [Plantations]
 المزارع
 [Plot size]

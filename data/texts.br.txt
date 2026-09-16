@@ -1976,6 +1976,10 @@ Largura da trilha
 Muro entre trechos
 [Farm building plots]
 Lotes para construir nas fazendas
+[Sand bridges over water]
+Pontes de areia sobre a água
+[Sand lanes through crops]
+Trilhas de areia entre as plantações
 [Carousels need at least two colonies.]
 O carrossel precisa de pelo menos duas colônias.
 [Switchbacks need at least two colonies.]
@@ -2612,8 +2616,18 @@ Ledander ar bandennoù kontour
 Diri dre dorgenn
 [Valley river]
 Stêr an draonienn
-[Vultures]
-Guped
+[Hills]
+Colinas
+[Hillsides]
+Encostas
+[Terraces per slope]
+Terraços por encosta
+[Waviness]
+Ondulação
+[Stair spacing]
+Espaçamento das escadas
+[Locust]
+Gafanhotos
 [Plantations]
 Plantações
 [Plot size]

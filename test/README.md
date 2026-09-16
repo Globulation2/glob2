@@ -102,6 +102,20 @@ flaky performance threshold. `python3 test/test_map_telemetry.py` tests the bulk
 retention and aggregation. The existing JSON-report test covers typed telemetry, malformed reports,
 service failures and raw invalid requests. See [telemetry](../docs/map-generators/TELEMETRY.md).
 
+## Map generator profiling fixture
+
+`scons -j8 release=1 server=0 map-generator-profile-fixture` builds
+`build/src/MapGeneratorProfileFixture <profile-dir> <seed> <rounds>`, which round-robins every
+registered generator for `rounds` passes with parameters (shared and generator-specific) drawn
+at random the same way `GenerationRequest::randomizeControls` does, and prints a per-generator
+attempt/success/timing table. It exists to give an external sampling profiler (macOS `sample`,
+Linux `perf record`) a sustained, representative mix of real generation work to attach to; run it
+with a large round count in the background and sample its PID. It is not a regression test (see
+`--sweep` and `--performance` above for that) and is not wired into CI, but a fixed seed and round
+count also make it a quick way to compare a shared primitive's before/after cost: attempt/success
+counts per generator repeat exactly across a behavior-preserving change, so a diff there is a
+signal something changed, not just an optimization's timing.
+
 ## Map subclass test pattern
 
 Pattern used by `MapQueryTest.cpp` (commit `2d42c340`). Lets you write tests against `Map`'s predicates with a minimal link surface — no `globalContainer`, no real `Sector` array, no transitive pull of `Bullet` / `Team` / `Building` / `Unit` into the test binary.

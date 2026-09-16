@@ -1978,6 +1978,10 @@ OpenGL недоступен в этой сборке.
 Стена между витками
 [Farm building plots]
 Участки под застройку на фермах
+[Sand bridges over water]
+Песчаные мосты через воду
+[Sand lanes through crops]
+Песчаные дорожки через посевы
 [Carousels need at least two colonies.]
 Для карусели нужны хотя бы две колонии.
 [Switchbacks need at least two colonies.]
@@ -2614,8 +2618,18 @@ Emoji
 Лестниц на холм
 [Valley river]
 Река в долине
-[Vultures]
-Стервятники
+[Hills]
+Холмы
+[Hillsides]
+Склоны
+[Terraces per slope]
+Террас на склон
+[Waviness]
+Волнистость
+[Stair spacing]
+Шаг лестниц
+[Locust]
+Саранча
 [Plantations]
 Плантации
 [Plot size]

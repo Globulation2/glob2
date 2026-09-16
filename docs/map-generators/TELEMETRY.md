@@ -102,8 +102,7 @@ Temporary debug instrumentation is useful for one hypothesis: every rejected poi
 ## Fractal generator records
 
 `fractal.homes.*` reports bounded-search attempts, candidate/fitted counts, optional spare modules,
-and the site omitted after finished-world scoring. `fractal.homes.growth-protected-tiles`
-counts changed saved growth flags for grass service aprons, reusing the mutation’s counter. Search relaxation is always zero;
+and the site omitted after finished-world scoring. Search relaxation is always zero;
 Hilbert emits a search batch for every attempted uniform order. `fractal.home.*` subjects are stable
 home-site indices, not team indices; `home.team` records the later random deal. Frontages
 count resource-adjacent walking edges (a deposit may have several); renewable frontages
@@ -119,4 +118,16 @@ map; do not treat their mean as the map's bridge count. Gardens counts opposing 
 `local-shortfall` and `major-shortfall` are unspent optional budgets, not silently omitted
 mandatory connectivity. `sierpinski.depth.*`, `sierpinski.regions.*`, `hilbert.depth.*`, and
 `hilbert.orientation` explain achieved geometry. `*.bank-farms.proposed/placed` exposes
-actual farm omissions. No telemetry-only scans or random draws are used.
+actual farm omissions. `sierpinski.crossings.square-axes` counts axes (0–2) with at least
+one legal square causeway; `angled-fallback` is 1 only when that falls short of the pairs
+requested and the angled search ran; `blocked-approaches` and `legal-candidates` count its
+proposals. `hilbert.crossings.extra-samples` is 1 when no midpoint court fitted and interior
+fractions were tried.
+
+The shared finishing stages report what they laid: `fractal.beds.*` (pools placed, water and
+crop tiles), `fractal.paths.*` (features to join, path edges drawn, sand tiles laid, and
+`unjoined-groups`, the number of path-tree components left over after crossing landings are
+linked), `fractal.shore-wheat.*` (spots and planted tiles), `fractal.ambient.deposit-tiles`
+(dry-ground copse tiles) and `fractal.quarries.*` (quarries placed, stone tiles, and the
+nearest quarry-to-home Chebyshev distance, emitted only when at least one quarry was placed).
+No telemetry-only scans or random draws are used.

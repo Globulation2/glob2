@@ -77,7 +77,7 @@ For each resource layer, write down its policy:
 
 At 100%, the scaling helpers preserve their inputs. For existing maps, avoid extra default-path random draws that unnecessarily change established output. For a new map, ensure a control does something: the current scaffold declares wheat/wood amounts but only plants fixed starter kits, so those controls still need real ambient layers wired to them. A percentage used only as `amount > 0` provides presence/absence, not a useful abundance scale.
 
-High amounts can remove legal starting sites or wall colonies into crops. Widen a bounded site search when sensible; run `reopenCrampedStarts` or the height-field equivalent at non-default amounts, passing protected walls. It uses `openCrampedStarts` to seek 16 reachable 4×4 anchors within 24 steps, then rechecks crop supply. These are emergency heuristic targets, not a promise of sixteen independent buildings or a substitute for deliberately roomy defaults. Inspect its result and validate your stronger map-specific minimum.
+High amounts can remove legal starting sites or wall colonies into crops. Widen a bounded site search when sensible; run `reopenCrampedStarts` at non-default amounts, passing protected walls, or `openStartsBuriedByResources` when nothing in the design budgets a colony's room, so the defaults can bury one too. It uses `openCrampedStarts` to seek 16 reachable 4×4 anchors within 24 steps, then rechecks crop supply. These are emergency heuristic targets, not a promise of sixteen independent buildings or a substitute for deliberately roomy defaults. Inspect its result and validate your stronger map-specific minimum.
 
 ## Registration and style
 
@@ -117,13 +117,14 @@ build/src/MapGeneratorDefaultsTest glob2-map-design-contracts
 build/src/CustomGameSetupHarness
 build/src/MapGeneratorGoldenTest glob2-map-design-golden --require-rows
 build/src/MapGeneratorGoldenTest glob2-map-design-sweep --sweep
+build/src/MapGeneratorGoldenTest glob2-map-design-perf --performance
 scons release=1 server=0
 build/src/glob2 --list-map-generators
 build/src/glob2 --list-map-generators canals
 build/src/glob2 --generate-map canals --seed 7 --width 128 --height 256 --teams 4 --output artifacts/map-design/canals-7.map --preview artifacts/map-design/canals-7.png --json artifacts/map-design/canals-7.json
 ```
 
-Use disposable test profiles, following the [test README](../../../../test/README.md). For intentional output changes, bump the affected revision and run `MapGeneratorGoldenTest <disposable-profile> --update`, then inspect the diff and rerun comparison. A golden hash proves reproducibility of a known snapshot, not quality. Without `--require-rows`, a platform with no baseline rows can report that fact and pass; obtain the affected platform's rows from an actual run rather than treating that as coverage.
+Use disposable test profiles, following the [test README](../../../../test/README.md). For intentional output changes, bump the affected revision and run `MapGeneratorGoldenTest <disposable-profile> --update`, then inspect the diff and rerun comparison. A golden hash proves reproducibility of a known snapshot, not quality. Without `--require-rows`, a platform with no baseline rows can report that fact and pass; obtain the affected platform's rows from an actual run rather than treating that as coverage. `--performance` times every generator at its own defaults (256x256, seed 42) and asserts identical bytes, outcomes and telemetry with the internal performance collector on and off; for a broader load, `MapGeneratorProfileFixture <profile-dir> <seed> <rounds>` (see the [framework doc](../../../../docs/map-generators/MAP_GENERATOR_FRAMEWORK.md)) round-robins every generator at randomly drawn parameters, which is also a fixed-seed/round-count way to compare a shared primitive's before/after cost, and a target for an external sampling profiler.
 
 The current golden `--sweep` is deliberately small: selected square sizes/counts, three or five seeds, passing an accepted cell if at least one succeeds. It skips invalid combinations and does not cover rectangles, all controls, 64-tile maps or every team count. Inspect success rates and supplement it. A cell surviving only one of five trials is a warning even though the harness passes.
 
@@ -191,6 +192,8 @@ region IDs through design; check beaches, seam routes and final engine movement 
 For reusable start-site work, use `selectSeparatedSites` for bounded toroidal maximin
 selection, `resourceFrontages` on an existing movement flood, and `arrangeBuildingGrid`
 to check actual disjoint footprints plus access after every proposed building is placed.
-`preventResourceGrowth` protects tile masks with the engine’s existing serialized flag.
-`cropSpreadEnvelope` honors these flags and proves containment independently of present
-fertility or buildings. Keep economic thresholds and module layouts in generators.
+`cropSpreadEnvelope` proves containment independently of present fertility or buildings.
+Containment on a generated map is terrain only: the engine's saved no-growth flag is
+forbidden there (it is for hand-made scenarios such as the tutorial), and the shared
+structural check refuses any generated world that sets it. Keep economic thresholds and
+module layouts in generators.

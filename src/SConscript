@@ -231,8 +231,9 @@ map/generator/generators/HedgerowCountryGenerator.cpp
 map/generator/generators/DrumlinFieldGenerator.cpp
 map/generator/generators/ContinentsGenerator.cpp
 map/generator/generators/SavannahGenerator.cpp
+map/generator/generators/HillsGenerator.cpp
 map/generator/generators/RiceTerracesGenerator.cpp
-map/generator/generators/VulturesGenerator.cpp
+map/generator/generators/LocustGenerator.cpp
 map/generator/generators/PlantationsGenerator.cpp
 map/generator/generators/HilbertRiverGenerator.cpp
 map/generator/generators/FractalMapSupport.cpp
@@ -734,7 +735,8 @@ if not env['server']:
 # Map analysis and UI contract tests use production generators and widgets.
 if not env['server']:
     for alias, target in [('map-generator-study', 'MapGeneratorStudy'), ('map-generator-defaults-test', 'MapGeneratorDefaultsTest'),
-                          ('map-generator-golden-test', 'MapGeneratorGoldenTest')]:
+                          ('map-generator-golden-test', 'MapGeneratorGoldenTest'),
+                          ('map-generator-profile-fixture', 'MapGeneratorProfileFixture')]:
         sources = [source for source in source_files if source != 'Glob2.cpp']
         sources += local.Object(target + '.o', '#test/' + target + '.cpp')
         local.Alias(alias, local.Program(target, sources))

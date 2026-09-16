@@ -2004,6 +2004,10 @@ Padbreedte
 Muur tussen bochten
 [Farm building plots]
 Bouwkavels in de boerderijen
+[Sand bridges over water]
+Zandbruggen over water
+[Sand lanes through crops]
+Zandpaden door de gewassen
 [Carousels need at least two colonies.]
 Een draaimolen heeft minstens twee kolonies nodig.
 [Switchbacks need at least two colonies.]
@@ -2640,8 +2644,18 @@ Breedte van hoogtebanden
 Trappen per heuvel
 [Valley river]
 Rivier in het dal
-[Vultures]
-Gieren
+[Hills]
+Heuvels
+[Hillsides]
+Hellingen
+[Terraces per slope]
+Terrassen per helling
+[Waviness]
+Golving
+[Stair spacing]
+Trapafstand
+[Locust]
+Sprinkhanen
 [Plantations]
 Plantages
 [Plot size]

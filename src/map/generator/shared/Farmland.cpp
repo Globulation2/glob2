@@ -227,9 +227,21 @@ void stampFarmPlot(TerrainSketch &sketch, const Torus &t, Farm &farm, int x0, in
 			farm.plot[t.at(x0 + dx, y0 + dy)] = 1;
 }
 
+GeneratorControl waterCrossingsControl()
+{
+	return GeneratorControl::toggle("water-crossings", "Sand bridges over water", true,
+									ControlGroup::Terrain);
+}
+
+GeneratorControl cropCrossingsControl()
+{
+	return GeneratorControl::toggle("crop-crossings", "Sand lanes through crops", true,
+									ControlGroup::Terrain);
+}
+
 Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned char> &region,
 			 double angle, ShapePoint origin, int rim, const FarmRows &rows, const FarmPlot *plot,
-			 int bridgeSpacing, bool caps)
+			 const FarmBridges &bridges, bool caps)
 {
 	const int n = t.size();
 	Farm farm;
@@ -286,23 +298,24 @@ Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned c
 				farm.sand[i] = 1;
 				sketch[i] = SAND;
 			}
-	// Bridges: every `bridgeSpacing` tiles along the rows, a line of sand vertices straight across the
+	// Bridges: every `bridges.spacing` tiles along the rows, a line of sand vertices straight across the
 	// whole farm inside its cap, water rows and crop rows alike (FEEDBACK 2026-09-14: "extend those
 	// same sand bridges across the grass farm portions as well, so they go clean across the whole
 	// farm"). Across a water row the tiles either side of the line are no longer pure water, so
 	// workers walk across, two tiles wide, instead of round the end of a long row; across a crop row
 	// the line is a lane no crop grows over, so the farm is cut into bays that can be walked round
-	// without cutting through the rows. The cap ring (fromEdge == rim - 1) is sand already; the rim
-	// beyond it is the coast's or the wall's, and is left alone.
-	if (bridgeSpacing > 0)
+	// without cutting through the rows. Each half can be switched off (FarmBridges). The cap ring
+	// (fromEdge == rim - 1) is sand already; the rim beyond it is the coast's or the wall's, and is
+	// left alone.
+	if (bridges.spacing > 0)
 	{
 		const double ax = std::cos(angle), ay = std::sin(angle);
 		for (int i = 0; i < n; ++i)
 		{
-			if (!region[i] || fromEdge[i] < rim - 1)
+			if (!region[i] || fromEdge[i] < rim - 1 || !bridges.crosses(farm.water[i]))
 				continue;
 			const double along = t.offsetX(ox, i % t.w) * ax + t.offsetY(oy, i / t.w) * ay;
-			const double off = along - bridgeSpacing * std::round(along / bridgeSpacing);
+			const double off = along - bridges.spacing * std::round(along / bridges.spacing);
 			if (std::abs(off) < kBridgeHalfWidth)
 			{
 				farm.water[i] = 0;

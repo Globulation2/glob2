@@ -1976,6 +1976,10 @@ Globulation 2 のカーソルを表示します。
 折り返しの間の壁
 [Farm building plots]
 農場の建設用地
+[Sand bridges over water]
+水上の砂の橋
+[Sand lanes through crops]
+作物を横切る砂の小道
 [Carousels need at least two colonies.]
 回転木馬には少なくとも2つのコロニーが必要です。
 [Switchbacks need at least two colonies.]
@@ -2612,8 +2616,18 @@ Emoji
 丘ごとの階段数
 [Valley river]
 谷の川
-[Vultures]
-ハゲワシ
+[Hills]
+丘陵
+[Hillsides]
+斜面
+[Terraces per slope]
+斜面ごとの段数
+[Waviness]
+うねり
+[Stair spacing]
+階段の間隔
+[Locust]
+イナゴ
 [Plantations]
 農園
 [Plot size]

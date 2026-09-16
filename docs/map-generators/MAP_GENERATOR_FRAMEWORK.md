@@ -37,10 +37,10 @@ and Terrain take a `Game` because placing buildings and units needs its mutation
 | `Tessellation` | Polygon tilings of the torus with no terrain attached: `squareTessellation` and `hexTessellation` (cells, the corners they share and edges as identities, exact across the wrap even two cells wide), `edgeEnds`, `centreAcross`, `outline`, `transform` (the lattice's translations and mirrors), `labelTiles` (every tile's cell), `cellCrossing` (a path through a particular shared edge, outside reserved centre discs, preserving distinct toroidal parallel crossings), `shortestEdgeSteps` and `centreClearance`; `warpLimit` and `warpCorners`, corners moved at random into irregular polygons that still tile, never closing the gap between walls that share no corner below a minimum (Maze); `rasterizeBoundaries` (sealed selected edges with toroidal thickness) and `relaxWarpOutside` (bounded deterministic contraction away from an arbitrary protected tile mask) |
 | `GraphMaze` | A maze carved through any `CellGraph` (a tessellation's with `cellGraph(tiling)`, or scattered sites' with `cellGraph(torus, sites, siteNeighbours)`): `pocketsFit` and `spreadPockets` (cul-de-sac cells spread as far apart as still leaves a maze), `carveSpanningTree` (recursive backtracker), `carveNearTree` (Kruskal over jittered distances: the network a traveller would build, each cell to the next one over), `openPocketDoors`, `openLoops`, `deadEnds` (Maze, Drumlin field); `closedEdges` (candidate crossings excluding protected endpoints) and `edgeDetours` (existing route lengths for shortcut scoring, caching floods by endpoint); `farthestCells` (farthest-point spreading over eligible cells with no maze constraint) and `claimNeighbourCells`, neighbouring cells dealt to seed cells round by round with every seed ending on the same count (Plantations' granted islands) |
 | `HeightMap`, `Noise` | Perlin noise faded across the wrap, and the stamped height fields the height-field generators shape |
-| `ClearingLandscape` | Sand-contained round homes on a dealt lattice, optional home pools and distant lakes; shared by Old Growth and Vultures without changing Old Growth's seed streams or layout arithmetic for passing layouts. Vultures may opt into a vacancy lattice only after the ordinary room check fails |
+| `ClearingLandscape` | Sand-contained round homes on a dealt lattice, optional home pools and distant lakes; shared by Old Growth and Locust without changing Old Growth's seed streams or layout arithmetic for passing layouts. Locust may opt into a vacancy lattice only after the ordinary room check fails |
 | `ScoredSettlements` | `chooseScoredSettlements`: compare a bounded list of complete settlement proposals in fresh worlds, score actual workers/resources/room with `StartQuality`, enforce caller viability checks, and restore all trial RNG effects; the returned winning sites are materialized by the same builder |
 | `Territories` | Ground shared out where wedges cannot be fair (a square map's corners, the wrap, odd colony counts): `growTerritories`, equal-area regions grown together from seed tiles, the smallest always taking the next cheapest tile, connected and deterministic, or shared by value when each claimant's ground has a worth per tile; `balancedTerritories`, a power diagram from one site per claimant with the weights tuned until the areas are equal, so every border is a straight line (Amphitheatre); `smoothLabels`, a majority filter over any radius that trims spurs or, at a radius of 3 or 4, straightens borders into curves; `separateTerritories`, a gap opened between neighbouring territories; `fillToNearest`, the reverse: unclaimed ground near labelled regions given to the nearest, so water between pieces becomes land; `strandedGround`, land a flood cannot reach; `growFarLake`, a lake of an exact size at the roomy far end of a region; `growLakeBeside`, one on either flank of a site, kept wholly to its side of the line from the way in; `siteAtDepth`, the roomiest site a given number of steps from a region's way in |
-| `Farmland` | `stampContainedPlot`, arbitrary grass-corner sets with sealed sand margins; `plantContainedPlot`, fertility-ranked deposits with explicit count and renewable constraints; `containedPlotsMismatch`, final eight-neighbour grass containment validation (see [Savannah](SAVANNAH.md)). Farms laid like real ones, in long rows of crops with water between: `bestFarmRows`, the crop and water widths that yield most for rows at an angle (10 and 8 tiles along an axis, 12 and 9 on the diagonal, a rough line through the exact regrowth sums `tools/farm_row_fit.py` computes); `farmYield`, the yield per tile at that angle from the same fit (0.149 along an axis, 0.113 on the diagonal); `layFarm`, rows over a region with a rim of land kept round them and, optionally, a 10x4 building plot of grass ringed with sand at its most inland point and sand bridges clean across the farm every so many tiles along the rows, water and crop rows alike (2026-09-14; before, only the water rows), so workers cross the whole field on one road (a plot's grass always wins over a bridge), and a ring of sand closing the crop rows so wheat and wood never spread out of the farm; `plantFarm`, wheat along the water on every crop row and a small woodlot along one; `clearFarmPlots`; `farmReachable`, the share of a farm's crop land a colony can walk to; `growFarmFields`, farm fields grown into open water straight out of their own homes by equal yield for their row angles, held off all other land and each other, opened so no strip too narrow for its beaches survives (and only ground whose eroded core joins the home's core stays, since two cores that do not touch can overlap once grown back through a waist the coast walls then close), and joined to their homes by a broad neck. Walls round a farm are the map's business, not the farm's; `layContourFarm`, complete circular bands around central clearings, with inner/outer sand caps and radial crossings (`ContourFarmStyle`) |
+| `Farmland` | `stampContainedPlot`, arbitrary grass-corner sets with sealed sand margins; `plantContainedPlot`, fertility-ranked deposits with explicit count and renewable constraints; `containedPlotsMismatch`, final eight-neighbour grass containment validation (see [Savannah](SAVANNAH.md)). Farms laid like real ones, in long rows of crops with water between: `bestFarmRows`, the crop and water widths that yield most for rows at an angle (10 and 8 tiles along an axis, 12 and 9 on the diagonal, a rough line through the exact regrowth sums `tools/farm_row_fit.py` computes); `farmYield`, the yield per tile at that angle from the same fit (0.149 along an axis, 0.113 on the diagonal); `layFarm`, rows over a region with a rim of land kept round them and, optionally, a 10x4 building plot of grass ringed with sand at its most inland point and sand bridges clean across the farm every so many tiles along the rows, water and crop rows alike (2026-09-14; before, only the water rows), each half switched by `FarmBridges` and offered to players by every farm-row map as `water-crossings` and `crop-crossings` (`waterCrossingsControl`, `cropCrossingsControl`, both on), so workers cross the whole field on one road (a plot's grass always wins over a bridge), and a ring of sand closing the crop rows so wheat and wood never spread out of the farm; `plantFarm`, wheat along the water on every crop row and a small woodlot along one; `clearFarmPlots`; `farmReachable`, the share of a farm's crop land a colony can walk to; `growFarmFields`, farm fields grown into open water straight out of their own homes by equal yield for their row angles, held off all other land and each other, opened so no strip too narrow for its beaches survives (and only ground whose eroded core joins the home's core stays, since two cores that do not touch can overlap once grown back through a waist the coast walls then close), and joined to their homes by a broad neck. Walls round a farm are the map's business, not the farm's; `layContourFarm`, complete circular bands around central clearings, with inner/outer sand caps and radial crossings (`ContourFarmStyle`) |
 | `Towers` | Tower sites chosen for the ground they cover over the walls, other colonies' (offence) or their own (defence), each weighted: `startingTowerRequest` (a request from a map's level and count controls), `chooseTowerSites` (best first, a colony at a time in turn, optionally every site directly against a wall, no stocked tower in range of another colony's tower or swarm, plus open 2x2 pads for players to build more), `settleStartingTowers` (the sequence every arena map runs: `dropBlockingSites` so no site closes a colony's walk to a goal, `evenTowerPlan` so every colony has as many sites as the fewest got, then `raiseTowers`), `towerFootprints` and `roomyGround` (no tower on a strip it could close); a tower in range of another colony's tower starts empty |
 | `Homes` | Homes built alike: `stampRoundHome`, `homeSwarmSite` and `plantHomeKit` (a round home facing out from the middle, its swarm towards its door, optional ponds kept clear of its edge, and a wheat and wood kit near the swarm with no stone, since these homes are walled in stone; `homeHasRoom` is the size floor; Carousel, Switchbacks; the axis is any heading, out from the middle on a ring), `regionHome` (a home in ground of any shape: the swarm the same walk in from the door as every other colony's, on the roomiest such tile, facing away from the door), and `furnishGround` (farmland in patches on a ground's fertile tiles, outcrops and groves; City states, Carousel, Switchbacks, Amphitheatre); Homes built alike: `TeardropHome` with `stampTeardropHome`, `teardropHomeSwarm` and `teardropHomeKit` (a home on a long hill: town head, sand collar, farm tail; Drumlin field) |
 | `Bases` | Premade bases (The Glacis, Allotments, Caravanserai): a colony that starts with a whole base standing, or staked out as sites, and far more colonists than the lobby's "Starting workers" control allows. `BasePlan` (pieces as building type, level, frame offset, finished or level-0 site, stock share; depots such as a quarry or wood stacks), `standardBasePlan` (one layout at three tiers, Hamlet/Town/City, in two kinds, Finished/Sites, with optional stocked towers and a quarry; tiers drop pieces without moving the rest), `baseTier` and `baseGarrison` (a `colonists` value to a tier, and to workers plus, with the garrison on, three eighths as many level-1 warriors and an eighth as many explorers), `BaseSite` and `baseTile`/`baseFootprint` (a site with a quarter-turn facing, Canals' block frame, so rectangles stay rectangles), `basePlanFits` (every footprint on pure grass, disjoint, a one-tile walking ring on open ground round each, depots clear), `baseFootprints`/`baseSurroundings` (masks later layers keep clear of), `raiseBase`/`raiseBases` (checkRoomForBuilding, addBuilding, stock before the lists, `garrison` ring by ring round the swarm, one `Team::createLists` per colony, start position and boot tile from the swarm), `plantBaseDepots` and `validateBase` (every planned building of the right type, level and finished-ness on its footprint, and the colony's worker count). A landscape using it sets `GeneratorDefinition::startingWorkers` |
@@ -60,7 +60,7 @@ and Terrain take a `Game` because placing buildings and units needs its mutation
 | `Raster` | A picture laid onto the torus: `fitRaster` (a source raster fitted inside the map less a margin, centred, its aspect kept, turned a quarter turn when that fits a rectangle larger, all in integer fractions), `resampleRaster` with `resampleMajority` (each tile's most common class, sea on a tie) and `resampleAny` (a flag any covered cell carries: a river survives shrinking) |
 | `Landmass` | Rasterized coasts made playable: `cleanLandmass` (slivers under three tiles wide, specks of sea and islets nothing fits on, by `CoastCleaning` thresholds), `largestRegion` (the mainland) and `inheritLabels` (filled ground takes the classes round it) |
 | `BalancedStarts` | `chooseBalancedStarts`: boot tiles whose walks to wheat and wood are as nearly equal as the finished map allows |
-| `Pipeline` | The stages round the others: `dealStarts` (the design's start sites dealt to the colonies at random, so a team number never gets the same ground map after map), `designFailure` (the registry's request check for a designed generator: the design's own failure), `settleColonies` and `settleRoundColonies` (round homes on their own grass, `homeGrassMask`), `homePondMissing` (a validator's check that every home kept its pond), `secureStartingCrops` (clear round the swarms, guarantee the crops, clear again), `reopenCrampedStarts`, `designMismatch`, `walkFromFirstColony` and `cropsBesideReach` (which crops a flood from a colony stands beside) for validators, `ResourceAmounts`; The stages round the others: `dealStarts` (the design's start sites dealt to the colonies at random, so a team number never gets the same ground map after map), `designFailure` (the registry's request check for a designed generator: the design's own failure), `settleColonies` and `settleRoundColonies` (round homes on their own grass, `homeGrassMask`), `homePondMissing` (a validator's check that every home kept its pond), `secureStartingCrops` (clear round the swarms, guarantee the crops, clear again), `reopenCrampedStarts`, `designMismatch` and `walkFromFirstColony` for validators, `startingAccessFailure` (read-only worker access to caller-selected supplies and nearby 4×4 building origins), `ResourceAmounts`; The stages round the others: `dealStarts` (the design's start sites dealt to the colonies at random, so a team number never gets the same ground map after map), `designFailure` (the registry's request check for a designed generator: the design's own failure), `settleColonies` and `settleRoundColonies` (round homes on their own grass, `homeGrassMask`), `homePondMissing` (a validator's check that every home kept its pond), `secureStartingCrops` (clear round the swarms, guarantee the crops, clear again), `reopenCrampedStarts`, `designMismatch`, `walkFromFirstColony` and `coloniesApart` (the island map's opposite promise: no colony can walk to another) for validators, `ResourceAmounts` |
+| `Pipeline` | The stages round the others: `dealStarts` (the design's start sites dealt to the colonies at random, so a team number never gets the same ground map after map), `designFailure` (the registry's request check for a designed generator: the design's own failure), `settleColonies` and `settleRoundColonies` (round homes on their own grass, `homeGrassMask`), `homePondMissing` (a validator's check that every home kept its pond), `secureStartingCrops` (clear round the swarms, guarantee the crops, clear again), `reopenCrampedStarts` (at non-default amounts) and `openStartsBuriedByResources` (at any amount), `designMismatch`, `walkFromFirstColony`, `cropsBesideReach` (which crops a flood from a colony stands beside) and `coloniesApart` (the island map's opposite promise: no colony can walk to another) for validators, `startingAccessFailure` (read-only worker access to caller-selected supplies and nearby 4×4 building origins) and `startingFloorFailure` (the wheat, wood and building-room floor every legacy-core landscape validates), `ResourceAmounts` |
 | `Terrain` | The height-field pipeline as stages: `heightFieldTiling`, `classifyHeightField`, `paintHeightFieldTerrain`, `paintHeightFieldResources`, `chooseHeightFieldStarts`, `plantHeightFieldGroves`, composed by `generateHeightField` |
 | `StartQuality` | `scoreStarts`, the finished map's colony measurements; `FairnessModel.h` scores them and the service ranks candidates by the resulting fairness |
 | `GenerationContext` | Named `std::mt19937` streams, `bounded` draws and `shuffle` |
@@ -83,7 +83,7 @@ landscape generators Fingerprint, Rain shadow, Old growth, Canals, Polder, Old t
 [Breachable highlands](BREACHABLE_HIGHLANDS.md)) follow one
 landscape generators Fingerprint, Rain shadow, Old growth, Canals, Polder, Old town, Anthill and Drumlin
 field) follow one
-landscape generators Fingerprint, Rain shadow, Old growth, Vultures, Canals, Polder, Old town and Anthill) follow one
+landscape generators Fingerprint, Rain shadow, Old growth, Locust, Canals, Polder, Old town and Anthill) follow one
 landscape generators Fingerprint, Rain shadow, Old growth, Canals, Polder, Old town, Anthill and Plantations) follow one
 shape, and the newest of them are little more than a sequence of shared stages:
 landscape generators Fingerprint, Rain shadow, Old growth, Canals, Polder, Old town, Anthill and Braided
@@ -102,7 +102,8 @@ river) follow one shape, and the newest of them are little more than a sequence 
    `seedAlgae`, `stockIslands`), then `secureStartingCrops`: `clearAroundSwarms`,
    `guaranteeStartingResources` and `clearAroundSwarms` again.
 4. `openRoad` (or the generator's own cheapest-walk variant) keeps every walk the map promises
-   open, clearing only the deposits in the way; `reopenCrampedStarts` runs at non-default amounts.
+   open, clearing only the deposits in the way; `reopenCrampedStarts` runs at non-default amounts
+   (`openStartsBuriedByResources` for a landscape that wants that relief at the defaults too).
 5. `validateWorld` calls `design` again on a fresh context, checks it with `designMismatch`,
    walks every colony from colony 0 with `walkFromFirstColony`, and then checks whatever the
    design promised: ponds present, walls standing, fords open, symmetry exact.
@@ -144,7 +145,8 @@ restores whatever landscape it had.
 | `city-states` | 17 | City states | Its own — see below |
 | `canals` | 29 | Canals | Its own — see below |
 | `braided-river` | 42 | Braided river | Its own — see below |
-| `rice-terraces` | 46 | Rice terraces | [Contour farms and summit towns](RICE_TERRACES.md) |
+| `hills` | 46 | Hills | [Contour farms and summit towns](HILLS.md) (named Rice terraces until 2026-09-16) |
+| `rice-terraces` | 52 | Rice terraces | [Terraced hillsides spiralling round the torus](RICE_TERRACES.md) |
 | `plantations` | 48 | Plantations | Its own — see below |
 | `sierpinski-gardens` | 49 | Sierpiński Gardens | [Recursive lakes, home districts and orchard causeways](FRACTAL_MAPS.md) |
 | `hilbert-river` | 50 | Hilbert River | [Folded river, contained bank farms and hierarchical shortcuts](FRACTAL_MAPS.md) |
@@ -156,7 +158,7 @@ restores whatever landscape it had.
 | `polder` | 30 | Polder | Its own — see below |
 | `carousel` | 22 | Carousel | Its own — see below |
 | `old-growth` | 28 | Old growth | Its own — see below |
-| `vultures` | 47 | Vultures | Dry, finite wheat fields and shoreline wood — see [design and verification](VULTURES.md) |
+| `locust` | 47 | Locust | Dry, finite wheat fields and shoreline wood — see [design and verification](LOCUST.md) (named Vultures until 2026-09-16) |
 | `anthill` | 32 | Anthill | Its own — see below |
 | `glacis` | 39 | The Glacis | Its own — see below; a premade base (`shared/Bases`) |
 | `savannah` | 45 | Savannah | [Open plains, contained home crops and neutral watering holes](SAVANNAH.md) |
@@ -188,6 +190,15 @@ as a deliberate design choice rather than a noise scatter. Shattered Coast and R
 Archipelago predate the shared resource/placement machinery and still place resources relative
 to each boot tile with their own compass-direction search, rather than through
 `scatterResources`/`chooseBalancedStarts`.
+
+None of these ten designs an economy — the field or the region graph decides where land is, and
+the start search takes the best of what it left — so none of them can promise the shape of a
+colony's ground. Since 2026-09-16 each one instead promises the floor underneath it: the relief in
+`openStartsBuriedByResources` opens a colony that deposits walled in, and a `validateWorld` of
+`startingFloorFailure` (`shared/Pipeline`) rerolls the seed when a colony still cannot reach wheat
+or wood, or still has fewer than 16 4x4 building origins within 24 steps. Concrete Islands and
+Isles pass `kReachableAnywhere` as the wood range in both, so an archipelago's long walk to the
+nearest stand stays a question about those landscapes rather than a world the service throws away.
 
 ## Resource amounts and switches
 
@@ -249,9 +260,12 @@ building. `guaranteeStartingResources` does not cover that case — a colony bur
 wheat at its feet, so it counts as served — so `openCrampedStarts` (`shared/Resources.h`) clears
 the resource tiles nearest such a colony, one ring at a time outwards, until it can walk to 16
 tiles where a 4x4 building fits within 24 steps, and the caller then re-runs the guarantee in case
-the clearing took the nearest crop too. A colony that already has the room is untouched. The
-height-field generators (through `openStartsBuriedByAmounts`), Fjord and Ring world run it at any
-non-default amount, and never at the defaults. Concrete islands and Isles need it differently:
+the clearing took the nearest crop too. A colony that already has the room is untouched.
+`reopenCrampedStarts` runs that pair at any non-default amount and never at the defaults;
+`openStartsBuriedByResources` runs it whatever the amounts are, which is what the landscapes on
+the legacy core call, since nothing in them budgets a colony's room and the defaults bury one too
+(a 512-tile fjord continent with four colonies sealed two of them onto nine tiles and four until
+2026-09-16). Concrete islands and Isles need it differently:
 their colonies' fields can cover every building site the start search looks at, so at a non-default
 amount that search widens its window out from the default field rather than failing.
 
@@ -390,9 +404,10 @@ swarm and exactly as many WORKER units as the lobby's shared "Starting workers" 
 A landscape built on `shared/Bases` starts thirty-odd colonists, so it owns that number through a
 control of its own (`colonists`, 16 to 48) and says so with `GeneratorDefinition::startingWorkers`,
 a hook the check compares against instead; the lobby's "Starting workers" value is ignored by The
-Glacis, Allotments and Caravanserai, and warriors and explorers are never counted. Such a landscape
-also sets `qualityScale.roomReference` lower where its ground is cramped on purpose (Allotments'
-lots, Caravanserai's capital disc), so the seed ranking still tells a good roll from a poor one.
+Glacis, Allotments and Caravanserai, and warriors and explorers are never counted. Ground that is
+cramped on purpose for every colony (Allotments' lots, Caravanserai's capital disc) needs no
+allowance in the seed ranking: the fitted fairness model compares a map's colonies with each other,
+so room scarce for all of them does not mark the roll down.
 
 ## Fjord continent
 
@@ -927,7 +942,8 @@ farms reaching in towards the plaza made it "hard to know where you are on the m
   lays rows along the colony's axis at `bestFarmRows` widths over the whole walled field, keeping
   three tiles of land round the water (six against open sea), with a sand cap closing the crop rows,
   a sand bridge clean across the whole farm, water and crop rows alike, every 16 tiles (2026-09-14:
-  "so they go clean across the whole farm") and, with `farm-plots` (on), a 10x4 building plot.
+  "so they go clean across the whole farm"; `water-crossings` and `crop-crossings`, both on, switch
+  each half) and, with `farm-plots` (on), a 10x4 building plot.
   `plantFarm` plants wheat along the water with one small woodlot. The farms are the homes' only
   water.
 - **Filling in and walls** (`fillAndWall`). The sea outside the ring within `kFillReach` (24) tiles
@@ -1028,7 +1044,8 @@ next leg up. Every home reaches a walled wheat farm on either flank.
   (third play, 2026-09-13; before this the fields kept three tiles of water from each other and the
   mountains, which on a 256x128 map took over half the sea). Rows run across the axis at `bestFarmRows`
   widths (`layFarm`, rim 3), with a sand cap, a sand bridge clean across the whole farm every 16
-  tiles (2026-09-14; before, only the water rows) and a 10x4 building plot under `farm-plots` (on);
+  tiles (2026-09-14; before, only the water rows; `water-crossings` and `crop-crossings`, both on, switch
+  each half) and a 10x4 building plot under `farm-plots` (on);
   wheat with one woodlot (`plantFarm`).
 - **Walls.** The mountains' rock, the border lines between colonies, and a sealed coast on whatever sea a
   design leaves (none at the defaults). Sea within a level-3 tower's range of the plateau becomes rock
@@ -1111,10 +1128,10 @@ at intervals staggered from ridge to ridge, so moving along a valley is easy and
 - **Checked, not assumed.** Every ridge tile that could hold stone does, every pond present, every
   colony walkable from the first through the passes.
 
-## Vultures
+## Locust
 
 An additive finite-food landscape built on the shared Old Growth clearing geometry. See
-[Vultures design, budgets, reusable operations and verification](VULTURES.md). New shared
+[Locust design, budgets, reusable operations and verification](LOCUST.md) (named Vultures until 2026-09-16). New shared
 operations are `pureTiles(Map, type)`, `capResourceStock` and `startingAccessFailure`; existing
 map policies are unchanged.
 
@@ -1196,7 +1213,7 @@ opening; once swimming pools are built every canal is a road.
 ## Polder
 
 Reclaimed land, all of it: the whole torus laid out in rows of crops with a ditch of water between every
-two, sand dykes across the ditches at intervals, small grass villages for the colonies and hamlets
+two, sand dykes across the rows at intervals, small grass villages for the colonies and hamlets
 between them. Food is effectively unlimited; the game is logistics, on the dykes and the ditches' beaches,
 until someone can swim.
 
@@ -1207,7 +1224,11 @@ until someone can swim.
   circle of `s / 16`, so the rows stay 16 apart and the angle is one of some fifty on a 256 map;
   Vertical, Horizontal and Diagonal are fixed. Dykes every
   `dyke-spacing` tiles (12-48, 24) along the rows, two corners of sand wide, laid by the phase along the
-  rows (`alongStripes`).
+  rows (`alongStripes`) over the ditches and, since 2026-09-16, through the crop rows too, as every
+  farm-row map's bridges are, so a row still under crop is never a wall a worker walks the length of.
+  `water-crossings` and `crop-crossings` (both on) switch each half (`FarmBridges`). With the ditches
+  uncrossed the villages and hamlets are the only ways over a ditch that wraps the torus, and a seed
+  whose colonies they cannot join fails validation (one of twelve at 256/4 and 128/2).
 - **Villages.** Grass discs of `village-size` (8-20, 14) on a lattice, shrunk so a whole row and ditch
   lie between two, each in a two-tile ring of sand the crops cannot cross (first play: growth "quickly
   crowds out the base"); each holds a swarm, its quarry and a few buildings, and no wheat or wood
@@ -1244,7 +1265,7 @@ into the next.
   the outer blocks where it meets them (the second and third plays asked for "little tendril sand
   roads extending inwards", short and frequent).
 - **Fields.** Outside the city, farm rows along the map's axis (`layFarm` at `bestFarmRows`, bridged
-  clean across every 16) with `farm-plots` (0-6, 3) 10x4 building plots per colony spread through them
+  clean across every 16, water and crop rows alike, under `water-crossings` and `crop-crossings`, both on) with `farm-plots` (0-6, 3) 10x4 building plots per colony spread through them
   (`stampFarmPlot`, each the farthest a plot can stand from the city and the plots before it), half
   their fertile ground under wheat and a twentieth under wood, no outcrops; the plazas inside get a
   light share so they stay open. Every kit has no quarry: the blocks are stone.
@@ -1499,8 +1520,8 @@ the beach round every drumlin stays walkable, so the shoreline is always a road.
   the head, never more than 12 tiles short of the collar), a two-tile sand collar across the waist, the tail the farm: wheat 14 and wood 12 planted
   just past the collar (`teardropHomeKit`, `plantSplitKit`), a quarry near the head's tip, and the
   rest of the tail furnished as farmland like any farm drumlin. No home pond: the lakes are the
-  water. Building room is scarce by design, so the definition's `qualityScale` sets the room
-  reference to 300 sites (a town holds about 200) for the lobby's seed ranking.
+  water. Building room is scarce by design; the lobby's seed ranking needs no allowance for it,
+  since the fitted fairness model compares towns with each other rather than with an open plain.
 - **Sizing.** Homes are `home-size` (8-16, 11) half-width, shrunk to fit between their nearest
   neighbours under the grain, and shrunk again (to the floor of 8) so a farm drumlin fits at the
   lattice cells' centres between them; below the floor the request is refused
@@ -1622,9 +1643,14 @@ over everything between that ring and the beach; the sea waters the crops, since
 island is more than about ten from the water. Two sand lanes run from every plot to the shore.
 Nothing joins the islands: units swim, and the straits between the Voronoi cells (`Channels`'
 `straitsBetweenCells`) are an exact corner width, four by default, so only a level-3 tower reaches
-the next island's first grass. A plot is smaller than a base (8 tiles square), so every colony
+the next island's first grass. A plot is smaller than a base (10 tiles square), so every colony
 holds several islands from the first minute: its home island with the swarm and a completed
-swimming pool, and granted islands with a pool and an inn each (`claimNeighbourCells` deals them
+swimming pool, and granted islands with a swarm, a pool and an inn each. On every one of a colony's
+plots the swarm and the pool stand side by side along the top, the pool against the right edge
+with a clear tile all round for its level-1 upgrade (4x4 to 6x6) and the swarm against that ring,
+so a plot of 10 is exactly swarm, ring, pool, ring (8 until 2026-09-16, when a pool could not
+upgrade). Every shipped AI built swarms on islands without a pool and pools on islands without a
+swarm, breeding units that could never leave, so the pair is seeded rather than left to them (`claimNeighbourCells` deals them
 round by round, as many to each colony as to any other), with a rock islet beside them. The rest
 are neutral plantations of wheat, wood or both, orchard islets and rock islets. Every island is
 first stamped as the nominal rounded square and the homes and granted islands dealt on that; then,
@@ -1710,6 +1736,13 @@ refusal) and every constant's reason.
   every playable landscape at the colony counts and sizes the lobby offers, five seeds at 128
   and 256 and three at 512, prints the success rate per cell and fails any valid cell where no
   seed generated: that is what a player would see as a failed generation. CI runs all three.
+- `test/MapGeneratorProfileFixture.cpp` builds to `MapGeneratorProfileFixture
+  <profile-dir> <seed> <rounds>`, a load generator for external sampling profilers (macOS
+  `sample`, Linux `perf record`): it round-robins every registered generator for `rounds` passes,
+  drawing shared and generator-specific controls at random each attempt the same way
+  `GenerationRequest::randomizeControls` does, and prints a per-generator attempt/success/timing
+  table. It is not wired into CI and makes no coverage claim; point a profiler at its PID while it
+  runs, or use its own timings for a quick before/after comparison at a fixed seed and round count.
 - The normal client's [map CLI](CLI.md) generates maps and PNG previews with
   `--generate-map`, loads maps/saves with `--preview-map`, and lists settings with
   `--list-map-generators`. It supports config files and CLI controls, and reuses the lobby/picker preview renderer.

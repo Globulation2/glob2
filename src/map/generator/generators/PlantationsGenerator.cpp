@@ -31,11 +31,11 @@ using namespace MapGeneration;
 // rows need one. Two sand lanes run from every plot to the shore, so a worker walks out through a
 // solid field and a swimmer walks in. Nothing joins the islands: units swim.
 //
-// A plot is smaller than a base (8 tiles square by default: a swarm, a pool and one or two more
-// buildings), so a colony holds several islands from the first minute (FEEDBACK 2026-09-15, the
+// A plot is smaller than a base (10 tiles square by default: a swarm, a pool with room to upgrade
+// and one or two more buildings), so a colony holds several islands from the first minute (FEEDBACK 2026-09-15, the
 // concept: "the protected building plots should be smaller than a normal player base, so you need to
 // combine several of them"): its home island, where the swarm and a completed swimming pool stand on
-// the plot, and two more granted islands, each with a completed pool and an inn ("player should be
+// the plot, and two more granted islands, each with a swarm, a completed pool and an inn ("player should be
 // granted buildings on a few islands right from the start, as well as a pool on each one so workers
 // can learn to swim"). Building space is tight on purpose: what a colony spends a plot's last tiles
 // on, and which island it claims next, is the game. The rest of the islands are neutral plantations
@@ -80,9 +80,14 @@ namespace
 // terrain from its four corners, so the ring spoils the two tiles either side of it (kRingBand) for
 // crops and buildings alike, a walkable band round every plot where workers wait and units pass, while
 // a single sand vertex is already enough to stop the crops, which spread only onto pure grass
-// (Map::growResources). A plot narrower than 8 cannot seat a swarm (4x4) and a pool (4x4) side by
-// side, which is why 8 is the least offered.
+// (Map::growResources). A plot narrower than kLeastPlot cannot seat a swarm (4x4) beside a pool
+// (4x4) with the clear ring round the pool that its level-1 upgrade to 6x6 needs, so that is the
+// least offered.
 constexpr int kPlotRing = 1, kRingBand = 2;
+constexpr int kSwarmSize = 4, kPoolSize = 4, kInnSize = 2;
+// The swarm and pool's top row on the plot: one row clear above the pool for its upgrade.
+constexpr int kPairRow = 1;
+constexpr int kLeastPlot = kSwarmSize + 1 + kPoolSize + 1;
 // THE COAST. layBeaches turns the outermost land vertex to sand, and the tile inside it shares that
 // vertex, so the crop band ends kCoastBand tiles short of the water; the first water vertex lies one
 // more out. So an island's land reaches plotHalf + kRingBand + farm + kCoastBand vertices from the
@@ -267,7 +272,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// SIZING. Everything is as asked while the map is expected to hold every colony's islands (home,
 	// granted, a rock islet), counting one island per spacing squared of map; a map too small for that
 	// climbs down a ladder, a step at a time and each step noted, before it refuses: the farm width to
-	// kLeastFarm, the plot to 8 (the least that seats a swarm and a pool), the strait to 4 (the least
+	// kLeastFarm, the plot to kLeastPlot (the least that seats a swarm and an upgradable pool), the strait to 4 (the least
 	// that seals), then the granted islands to none, and last the rock islets, so a crowded map is
 	// still an archipelago of homes rather than a refusal (the bulk study's refusals were nearly all
 	// maps with a 64-tile side or a 128 map with eight or twelve colonies). The estimate is rough (the
@@ -297,7 +302,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	};
 	climbDown(L.farmWidth, kLeastFarm, "plantations.layout.farm-shrunk",
 			  "Farm width reduced so every colony's islands fit the map");
-	climbDown(L.plotSize, 8, "plantations.layout.plot-shrunk",
+	climbDown(L.plotSize, kLeastPlot, "plantations.layout.plot-shrunk",
 			  "Plot size reduced so every colony's islands fit the map");
 	climbDown(L.straitWidth, 4, "plantations.layout.strait-narrowed",
 			  "Strait narrowed so every colony's islands fit the map");
@@ -761,18 +766,22 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "plantations terrain";
 	writeUndermap(map, L.sketch);
 
-	// THE GRANTED BUILDINGS, before the colonies: a completed swimming pool on every island a colony
-	// holds - on the home plot's bottom-right corner, where the swarm (top-left) leaves it, on a granted
-	// plot's top-left - an inn on the home plot's top-right corner (first play, 2026-09-15: with the
-	// swarm and the pool already on the plot, Maxima and Nicowar fed eighty units through the one inn
-	// they managed to fit, and a third of them went hungry; the inn is the building every colony
-	// needs first and the plot has exactly one 2x2 corner for it) and, with outpost inns on, an inn
-	// on each granted plot's bottom-right corner.
-	// They go down before the swarm and its workers so that no worker, dropped at random on a free
-	// tile beside the swarm, stands where the pool must go (the first play lost a seed in four to
-	// that), and so Team::createLists, run when the swarm goes down, takes them in with it. A home
-	// without a pool would strand its colony on one island, so that is a failed candidate; a missing
-	// outpost building is only noted.
+	// THE GRANTED BUILDINGS, before the colonies. Every island a colony holds - its home and each
+	// granted island - carries a swarm and a completed swimming pool packed side by side along the
+	// plot's top (FEEDBACK 2026-09-16: every AI built swarms on islands without a pool, and pools on
+	// islands without a swarm, so the units it bred could never leave; seeding the pair means no AI
+	// has to work that out). The pool sits against the plot's right edge with a clear tile all
+	// round it, the ground its level-1 upgrade (4x4 to 6x6, centred) takes, and the swarm stands
+	// against that ring on its left: a plot of kLeastPlot is exactly swarm, ring, pool, ring. An inn
+	// takes the home plot's bottom-right corner (first play, 2026-09-15: with the swarm and the pool
+	// already on the plot, Maxima and Nicowar fed eighty units through the one inn they managed to
+	// fit, and a third of them went hungry) and, with outpost inns on, each granted plot's.
+	// The pools and inns go down before the home swarm and its workers so that no worker, dropped at
+	// random on a free tile beside the swarm, stands where one must go (the first play lost a seed
+	// in four to that), and so Team::createLists, run when the home swarm goes down, takes them in
+	// with it. The granted islands' swarms follow the colonies: createLists insists a colony has no
+	// swarm before it runs, and no worker is dropped off the home island. A home without its pool would strand its colony on one island, so that
+	// is a failed candidate; a missing outpost building is only noted.
 	context.stage = "plantations buildings";
 	const auto plotGrass = [&](const Island &island)
 	{
@@ -782,21 +791,30 @@ bool generate(Game &game, GenerationContext &context)
 				ground[t.at(island.plotX + dx, island.plotY + dy)] = 1;
 		return ground;
 	};
+	// A building exactly at plot tile (dx, dy), its top-left: the allowed ground is its own footprint.
+	const auto placeAt = [&](int team, const char *type, const Island &island, int dx, int dy,
+							 int size)
+	{
+		std::vector<unsigned char> footprint(size_t(n), 0);
+		for (int y = 0; y < size; ++y)
+			for (int x = 0; x < size; ++x)
+				footprint[t.at(island.plotX + dx + x, island.plotY + dy + y)] = 1;
+		return placeBuilding(game, team, type, 0, island.plotX + dx, island.plotY + dy, 0,
+							 footprint) >= 0;
+	};
+	const int poolX = L.plotSize - 1 - kPoolSize, swarmX = poolX - 1 - kSwarmSize;
 	for (int k = 0; k < teams; ++k)
 	{
 		const Island &home = L.islands[L.homeCell[k]];
-		const int half = L.plotSize / 2;
-		const int pool = placeBuilding(game, k, "swimmingpool", 0, home.plotX + half + 2,
-									   home.plotY + half + 2, L.plotSize, plotGrass(home));
-		context.telemetry.measure("plantations.home.pool", pool >= 0, k);
-		int pools = 1, inns = 0;
-		if (placeBuilding(game, k, "inn", 0, home.plotX + L.plotSize - 1, home.plotY + 1,
-						  L.plotSize, plotGrass(home)) >= 0)
+		const bool pool = placeAt(k, "swimmingpool", home, poolX, kPairRow, kPoolSize);
+		context.telemetry.measure("plantations.home.pool", pool, k);
+		int pools = pool ? 1 : 0, inns = 0;
+		if (placeAt(k, "inn", home, L.plotSize - kInnSize, L.plotSize - kInnSize, kInnSize))
 			++inns;
 		else
 			context.telemetry.fallback("plantations.home.inn-missing",
 									   "No room for an inn on the home plot", k);
-		if (pool < 0)
+		if (!pool)
 		{
 			context.detail =
 				"Colony " + std::to_string(k) + "'s home plot has no room for its pool.";
@@ -805,17 +823,15 @@ bool generate(Game &game, GenerationContext &context)
 		for (int cell : L.grantedCells[k])
 		{
 			const Island &outer = L.islands[cell];
-			const std::vector<unsigned char> allowed = plotGrass(outer);
-			if (placeBuilding(game, k, "swimmingpool", 0, outer.plotX + 2, outer.plotY + 2,
-							  L.plotSize, allowed) >= 0)
+			if (placeAt(k, "swimmingpool", outer, poolX, kPairRow, kPoolSize))
 				++pools;
 			else
 				context.telemetry.fallback("plantations.outpost.pool-missing",
 										   "No room for a pool on a granted plot", k);
 			if (o.outpostInns)
 			{
-				if (placeBuilding(game, k, "inn", 0, outer.plotX + L.plotSize - 1,
-								  outer.plotY + L.plotSize - 1, L.plotSize, allowed) >= 0)
+				if (placeAt(k, "inn", outer, L.plotSize - kInnSize, L.plotSize - kInnSize,
+							kInnSize))
 					++inns;
 				else
 					context.telemetry.fallback("plantations.outpost.inn-missing",
@@ -826,8 +842,8 @@ bool generate(Game &game, GenerationContext &context)
 		context.telemetry.measure("plantations.inns.placed", inns, k);
 	}
 
-	// THE COLONIES. Every swarm stands at its home plot's top-left corner, beside the pool already on
-	// the bottom-right, and the rest of the plot stays open; the home ground the swarm and its workers
+	// THE COLONIES. Every home swarm stands beside its pool, against the ring the pool's upgrade
+	// keeps (the granted islands' swarms are already down), and the rest of the plot stays open; the home ground the swarm and its workers
 	// may use is the plot's grass and the walkable band its ring spoils.
 	context.stage = "plantations colonies";
 	const auto homeMask = [&](int team)
@@ -842,10 +858,21 @@ bool generate(Game &game, GenerationContext &context)
 	const auto anchor = [&](int team)
 	{
 		const Island &home = L.islands[L.homeCell[team]];
-		return MapGeneratorPoint(home.plotX, home.plotY);
+		return MapGeneratorPoint(home.plotX + swarmX, home.plotY + kPairRow);
 	};
 	if (!settleColonies(game, context, "plantations-starts", homeMask, anchor))
 		return false;
+	for (int k = 0; k < teams; ++k)
+	{
+		int swarms = 0;
+		for (int cell : L.grantedCells[k])
+			if (placeAt(k, "swarm", L.islands[cell], swarmX, kPairRow, kSwarmSize))
+				++swarms;
+			else
+				context.telemetry.fallback("plantations.outpost.swarm-missing",
+										   "No room for a swarm on a granted plot", k);
+		context.telemetry.measure("plantations.outpost-swarms.placed", swarms, k);
+	}
 
 	// THE CROPS. Every plantation's crop band - its pure grass off the plot, the lanes and the swarm's
 	// surroundings - under wheat, wood or both in patches: a mixed island is split into a wheat half
@@ -967,6 +994,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 		if (countBuildings(game, k, "swimmingpool") < 1 + int(L.grantedCells[k].size()))
 			return "Colony " + std::to_string(k) + " has lost a swimming pool.";
+	// And a swarm beside every pool, so no colony breeds units on an island they cannot leave.
+	for (int k = 0; k < teams; ++k)
+		if (countBuildings(game, k, "swarm") < 1 + int(L.grantedCells[k].size()))
+			return "Colony " + std::to_string(k) + " has lost a granted swarm.";
 	// No colony can walk to another: the straits hold, causeways or not.
 	if (const std::string leak = coloniesApart(map, teams, "across a strait"); !leak.empty())
 		return leak;
@@ -1013,13 +1044,13 @@ GeneratorDefinition plantationsDefinition()
 		"plantations",
 		48,
 		"Plantations",
-		2,
+		3,
 		false,
-		// A plot of 8 seats a swarm and a pool with half the plot left (8 is the least that seats
-		// both); 4 tiles of crops round it keep an island small enough to swim round and fertile to
+		// A plot of 10 seats a swarm beside a pool with room for its level-1 upgrade and four rows
+		// left (10 is the least that seats both, 8 until 2026-09-16); 4 tiles of crops round it keep an island small enough to swim round and fertile to
 		// its middle; a strait of 4 corners is sealed against diagonal steps and out of reach of a
 		// level-2 tower (Channels.h); three islands per colony is a base's worth of plots.
-		{{"plot-size", "Plot size", 8, 12, 1, 8, ControlGroup::Layout},
+		{{"plot-size", "Plot size", kLeastPlot, 14, 1, kLeastPlot, ControlGroup::Layout},
 		 {"farm-width", "Farm width", 3, 8, 1, 4, ControlGroup::Terrain},
 		 {"strait-width", "Strait width", 4, 8, 1, 4, ControlGroup::Terrain},
 		 {"islands-per-colony", "Islands per colony", 1, 4, 1, 3, ControlGroup::Layout},

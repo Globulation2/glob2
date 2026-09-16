@@ -1990,6 +1990,10 @@ Bidearen zabalera
 Bihurguneen arteko horma
 [Farm building plots]
 Eraikitzeko lursailak baserrietan
+[Sand bridges over water]
+Hareazko zubiak uraren gainean
+[Sand lanes through crops]
+Hareazko bideak laboreen artean
 [Carousels need at least two colonies.]
 Karruselak gutxienez bi kolonia behar ditu.
 [Switchbacks need at least two colonies.]
@@ -2626,8 +2630,18 @@ Sestra-banden zabalera
 Eskailerak muinoko
 [Valley river]
 Haraneko ibaia
-[Vultures]
-Saiak
+[Hills]
+Muinoak
+[Hillsides]
+Hegalak
+[Terraces per slope]
+Terrazak hegaleko
+[Waviness]
+Uhintasuna
+[Stair spacing]
+Eskaileren arteko tartea
+[Locust]
+Matxinsaltoak
 [Plantations]
 Landaketak
 [Plot size]
