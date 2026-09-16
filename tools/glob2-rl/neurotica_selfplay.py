@@ -85,10 +85,21 @@ def play_one(args, generators, game_id: int) -> dict:
     outcome = 0.0 if winner < 0 else (1.0 if winner == 0 else -1.0)
 
     # Stamp the outcome onto whatever the server recorded for this game.
+    #
+    # The server writes a trajectory when the connection drops, which happens
+    # as the game process exits — so the file may not exist yet at the instant
+    # subprocess.run returns. Poll briefly rather than racing it; an unstamped
+    # trajectory is silently dropped by the learner, which would quietly throw
+    # away every episode.
     if args.record_dir:
-        for team in (0, 1):
-            meta = os.path.join(args.record_dir, f"g{game_id}_t{team}.json")
-            if os.path.exists(meta):
+        stamped = 0
+        deadline = time.time() + args.stamp_timeout
+        pending = {0, 1}
+        while pending and time.time() < deadline:
+            for team in list(pending):
+                meta = os.path.join(args.record_dir, f"g{game_id}_t{team}.json")
+                if not os.path.exists(meta):
+                    continue
                 try:
                     with open(meta) as fh:
                         data = json.load(fh)
@@ -96,8 +107,15 @@ def play_one(args, generators, game_id: int) -> dict:
                     data["opponent"] = opponent
                     with open(meta, "w") as fh:
                         json.dump(data, fh)
+                    stamped += 1
                 except Exception:
                     pass
+                pending.discard(team)
+            if pending:
+                time.sleep(0.25)
+        if stamped == 0:
+            print(f"warning: game {game_id} produced no trajectory to stamp",
+                  flush=True)
     return {"game_id": game_id, "opponent": opponent, "winner": winner,
             "outcome": outcome}
 
@@ -119,6 +137,9 @@ def main() -> int:
     ap.add_argument("--policy-period", type=int, default=100)
     ap.add_argument("--max-ticks", type=int, default=0)
     ap.add_argument("--timeout", type=int, default=1800)
+    ap.add_argument("--stamp-timeout", type=float, default=20.0,
+                    help="how long to wait for the server to flush a trajectory "
+                         "before giving up on stamping its outcome")
     args = ap.parse_args()
 
     with open(args.generators) as fh:

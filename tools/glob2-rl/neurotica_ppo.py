@@ -37,12 +37,33 @@ from neurotica_net import NeuroticaNet
 
 @dataclass
 class Trajectory:
-    obs_path: str          # .npy memmap of observations for this episode
+    obs_path: str          # .npy memmap of DYNAMIC planes for this episode
     latents: np.ndarray    # (T, latent_dim)
     logps: np.ndarray      # (T,)
     values: np.ndarray     # (T,)
     potentials: np.ndarray # (T,)
+    ticks: np.ndarray      # (T,)
+    static: np.ndarray     # (n_static, H, W) uint8, constant for the episode
     outcome: float         # +1 win, -1 loss, 0 undecided
+
+
+def build_observation(static: np.ndarray, dynamic: np.ndarray,
+                      tick: int) -> np.ndarray:
+    """Reassemble the exact network input from a stored transition.
+
+    Must match neurotica_data.py and neurotica_serve.py exactly: static planes,
+    then dynamic, then the two tick planes. A mismatch here trains the policy on
+    a different input than it acted on, which is the kind of bug that shows up
+    as "PPO mysteriously does not learn".
+    """
+    h, w = dynamic.shape[-2:]
+    t = np.float32(min(int(tick), 60000) / 60000.0)
+    tick_planes = np.stack([
+        np.full((h, w), t, dtype=np.float32),
+        np.full((h, w), np.float32(np.sqrt(t)), dtype=np.float32)])
+    return np.concatenate([static.astype(np.float32) / 255.0,
+                           dynamic.astype(np.float32) / 255.0,
+                           tick_planes], axis=0)
 
 
 def compute_rewards(traj: Trajectory, gamma: float, shaping: float) -> np.ndarray:
@@ -82,6 +103,7 @@ def load_trajectories(run_dir: str) -> List[Trajectory]:
                 obs_path=base + ".obs.npy",
                 latents=arrays["latents"], logps=arrays["logps"],
                 values=arrays["values"], potentials=arrays["potentials"],
+                ticks=arrays["ticks"], static=arrays["static"],
                 outcome=float(meta["outcome"])))
         except Exception:
             continue  # a partially written episode; skip rather than crash
@@ -100,7 +122,7 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
         all_z.append(traj.latents)
         all_logp.append(traj.logps)
         obs = np.load(traj.obs_path, mmap_mode="r")
-        obs_refs.extend([(obs, i) for i in range(len(traj.logps))])
+        obs_refs.extend([(obs, i, traj) for i in range(len(traj.logps))])
 
     adv = np.concatenate(all_adv)
     ret = np.concatenate(all_ret)
@@ -116,7 +138,10 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
         np.random.shuffle(idx_all)
         for start in range(0, n, args.minibatch):
             idx = idx_all[start:start + args.minibatch]
-            obs_batch = np.stack([obs_refs[i][0][obs_refs[i][1]] for i in idx])
+            obs_batch = np.stack([
+                build_observation(obs_refs[i][2].static, obs_refs[i][0][obs_refs[i][1]],
+                                  obs_refs[i][2].ticks[obs_refs[i][1]])
+                for i in idx])
             x = torch.from_numpy(obs_batch).to(device).to(memory_format=torch.channels_last)
             zb = torch.from_numpy(z[idx]).to(device)
             with torch.autocast("cuda", dtype=torch.float16):

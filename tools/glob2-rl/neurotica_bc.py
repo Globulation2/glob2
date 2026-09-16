@@ -41,6 +41,9 @@ def build_loss_weights(empty_weight: float, device) -> torch.Tensor:
 # planes. Used to separate copying from predicting.
 MY_BUILDING_FIRST = 4 + 8
 MY_BUILDING_COUNT = 13
+#! Tolerance for "close enough", in tiles, matching the reconciler's default
+#! placementSearchRadius.
+NEAR_RADIUS = 6
 
 
 @torch.no_grad()
@@ -67,6 +70,13 @@ def evaluate(net, loader, device, weights, limit_batches=40):
     # thresholded precision is punishing and uninformative.
     topk_hits = {1: 0, 5: 0, 20: 0}
     topk_total = {1: 0, 5: 0, 20: 0}
+    # Exact-cell precision understates usefulness: the reconciler relocates a
+    # blocked or slightly-off desire to the best legal cell nearby, so a
+    # prediction two tiles out still puts a building roughly where it belongs.
+    # near_hits counts a top-1 pick as correct if any novel label cell lies
+    # within NEAR_RADIUS tiles of it.
+    near_hits = 0
+    near_total = 0
     for i, (obs, building, areas) in enumerate(loader):
         if i >= limit_batches:
             break
@@ -112,6 +122,17 @@ def evaluate(net, loader, device, weights, limit_batches=40):
             topk_hits[k] += hits[has_novel].sum().item()
             topk_total[k] += int(has_novel.sum().item()) * k
 
+        # Dilate the novel-truth mask; wrap-aware would be better but the
+        # error at the seam is negligible next to what this is measuring.
+        dilated = F.max_pool2d(novel.float().unsqueeze(1),
+                               kernel_size=2 * NEAR_RADIUS + 1,
+                               stride=1, padding=NEAR_RADIUS).squeeze(1) > 0
+        top1 = cand.argmax(dim=1)
+        dil_flat = dilated.flatten(1)
+        has_novel_1 = truth.any(dim=1)
+        near_hits += dil_flat.gather(1, top1[:, None]).squeeze(1)[has_novel_1].sum().item()
+        near_total += int(has_novel_1.sum().item())
+
         area_pred = (out["areas"].float() > 0)
         area_correct += (area_pred == (areas > 0.5)).sum().item()
         area_total += areas.numel()
@@ -127,6 +148,7 @@ def evaluate(net, loader, device, weights, limit_batches=40):
     novel_precision = novel_tp / max(novel_tp + novel_fp, 1)
     prec_at = {k: topk_hits[k] / max(topk_total[k], 1) for k in topk_hits}
     return dict(p1=prec_at[1], p5=prec_at[5], p20=prec_at[20],
+                near1=near_hits / max(near_total, 1),
                 loss=tot_loss / max(tot_n, 1), recall=recall, precision=precision,
                 f1=2 * recall * precision / max(recall + precision, 1e-9),
                 area_acc=area_correct / max(area_total, 1),
@@ -231,7 +253,7 @@ def main() -> int:
         m = evaluate(net, val_loader, device, weights)
         print(f"epoch {epoch}: train {run_loss/max(run_n,1):.4f} val {m['loss']:.4f} "
               f"| COPY {m['copy_recall']:.3f} | NOVEL rec {m['novel_recall']:.3f} "
-              f"| P@1 {m['p1']:.3f} P@5 {m['p5']:.3f} P@20 {m['p20']:.3f} "
+              f"| P@1 {m['p1']:.3f} P@5 {m['p5']:.3f} near@1 {m['near1']:.3f} "
               f"| area {m['area_acc']:.4f} | {time.time()-t_epoch:.0f}s", flush=True)
         torch.save({"model": net.state_dict(), "args": vars(args),
                     "in_planes": in_planes, "metrics": m}, f"{args.out}/last.pt")

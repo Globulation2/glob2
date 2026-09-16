@@ -53,11 +53,16 @@ def flush_trajectory(client, record_dir: str) -> None:
     import json
     base = os.path.join(record_dir, f"g{client.game_id}_t{client.team_seen}")
     np.save(base + ".obs.npy", np.stack(client.obs_u8))
+    # Static planes and ticks travel with the episode: PPO has to rebuild the
+    # exact network input, and storing only the dynamic planes would leave it
+    # six channels short.
     np.savez(base + ".npz",
              latents=np.stack(client.latents).astype(np.float32),
              logps=np.array(client.logps, dtype=np.float32),
              values=np.array(client.values, dtype=np.float32),
-             potentials=np.array(client.potentials, dtype=np.float32))
+             potentials=np.array(client.potentials, dtype=np.float32),
+             ticks=np.array(client.ticks, dtype=np.int64),
+             static=client.static_u8)
     with open(base + ".json", "w") as fh:
         json.dump({"game_id": int(client.game_id), "team": int(client.team_seen),
                    "steps": len(client.logps), "outcome": None}, fh)
@@ -77,8 +82,9 @@ class Client:
         static_raw = _recv_exact(conn, self.n_static * self.w * self.h)
         if static_raw is None:
             raise ValueError("short static planes")
-        self.static = (np.frombuffer(static_raw, dtype=np.uint8)
-                       .reshape(self.n_static, self.h, self.w).astype(np.float32) / 255.0)
+        self.static_u8 = (np.frombuffer(static_raw, dtype=np.uint8)
+                          .reshape(self.n_static, self.h, self.w).copy())
+        self.static = self.static_u8.astype(np.float32) / 255.0
         self.dyn_bytes = self.n_dynamic * self.w * self.h
         self.latent = (np.random.randn(latent_dim).astype(np.float32) * latent_std
                        if latent_std > 0 else np.zeros(latent_dim, dtype=np.float32))
@@ -90,6 +96,7 @@ class Client:
         self.logps: list = []
         self.values: list = []
         self.potentials: list = []
+        self.ticks: list = []
 
 
 def _recv_exact(conn: socket.socket, n: int):
@@ -243,6 +250,7 @@ def main() -> int:
             val = out.get("value")
             for n, (client, dyn, _tick) in enumerate(pending):
                 client.obs_u8.append(dyn.copy())
+                client.ticks.append(int(_tick))
                 if lat is not None:
                     client.latents.append(lat[n].float().cpu().numpy())
                     client.logps.append(float(lp[n]))
