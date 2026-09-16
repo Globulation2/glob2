@@ -7,6 +7,7 @@
 #include "StartQuality.h"
 #include "Utilities.h"
 #include <algorithm>
+#include <chrono>
 #include <string>
 std::string GenerationResult::diagnostic() const
 {
@@ -109,7 +110,8 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 }
 
 std::uint32_t GenerationService::bestSeed(const GenerationRequest &request, std::uint32_t rootSeed,
-										  int candidates) const
+										  int candidates,
+										  std::vector<CandidateRoll> *rolls) const
 {
 	std::uint32_t chosen = GenerationContext::deriveSeed(rootSeed, "attempt/0");
 	double bestScore = -1.0;
@@ -118,7 +120,12 @@ std::uint32_t GenerationService::bestSeed(const GenerationRequest &request, std:
 		Game game(nullptr);
 		GenerationRequest roll = request;
 		roll.seed = GenerationContext::deriveSeed(rootSeed, "attempt/" + std::to_string(attempt));
+		const auto start = std::chrono::steady_clock::now();
 		const auto result = generate(game, roll);
+		const double seconds =
+			std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+		if (rolls)
+			rolls->push_back({roll.seed, bool(result), result ? result.quality.score : 0.0, seconds});
 		if (!result || result.quality.score <= bestScore)
 			continue;
 		bestScore = result.quality.score;

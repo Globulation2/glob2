@@ -36,6 +36,22 @@
 
 namespace
 {
+// Every candidate roll the lobby's best-of-N would have tried, in order, so an
+// offline study can read the best-of-k curve for any k without regenerating.
+std::string candidateRollsJson(const std::vector<GenerationService::CandidateRoll> &rolls)
+{
+	std::ostringstream out;
+	out << '[';
+	for (std::size_t i = 0; i < rolls.size(); ++i)
+	{
+		if (i) out << ',';
+		out << "{\"seed\":" << rolls[i].seed << ",\"generated\":"
+			<< (rolls[i].generated ? "true" : "false") << ",\"score\":" << rolls[i].score
+			<< ",\"seconds\":" << rolls[i].seconds << '}';
+	}
+	out << ']';
+	return out.str();
+}
 constexpr std::uint64_t kFnvOffset = 14695981039346656037ULL;
 std::uint64_t fnv(std::uint64_t hash, std::uint64_t value)
 {
@@ -520,12 +536,18 @@ int runMapStudy(int argc, char **argv)
 				descriptor.options[id] = value; // Service validates; never silently clamp studies.
 		}
 	}
+	std::vector<GenerationService::CandidateRoll> candidateRolls;
 	if (candidates > 0)
 	{
 		// The lobby's roll: the best-scoring of `candidates` seeds derived from the root seed
 		// (CustomGameScreen::generateMap), so studied maps are the maps players actually get.
-		descriptor.seed = GenerationService().bestSeed(descriptor, seed, candidates);
+		// Every attempt is retained so a sampling study can read what each extra roll bought.
+		descriptor.seed = GenerationService().bestSeed(descriptor, seed, candidates, &candidateRolls);
 		std::printf("SAMPLED,%u,%u,%d\n", seed, descriptor.seed, candidates);
+		for (std::size_t i = 0; i < candidateRolls.size(); ++i)
+			std::printf("ROLL,%zu,%u,%d,%.6f,%.6f\n", i, candidateRolls[i].seed,
+						candidateRolls[i].generated ? 1 : 0, candidateRolls[i].score,
+						candidateRolls[i].seconds);
 	}
 	const auto start = std::chrono::steady_clock::now();
 	const auto result = GenerationService().generate(game, descriptor, !resultPath.empty());
@@ -888,6 +910,7 @@ int runMapStudy(int argc, char **argv)
 			<< ",\"generator\":" << Headless::quote(result.generatorId)
 			<< ",\"revision\":" << result.revision << ",\"map_seed\":" << seed
 			<< ",\"chosen_seed\":" << result.seed << ",\"candidates\":" << candidates
+			<< ",\"candidate_rolls\":" << candidateRollsJson(candidateRolls)
 			<< ",\"seconds\":" << seconds << ",\"diagnostic\":" << Headless::quote(result.diagnostic())
 			<< ",\"request\":{\"method\":" << method << ",\"width\":" << descriptor.wDec
 			<< ",\"height\":" << descriptor.hDec << ",\"teams\":" << descriptor.nbTeams
