@@ -893,10 +893,19 @@ static bool generate(Game &game, GenerationContext &context)
 	// placement method. Top up anyone still missing either within comfortable range now that
 	// placeStarts() has already carved its own clearing, so there's nothing left to step on.
 	guaranteeStartingResources(game, context, 24, 32);
-	// A deposit grown well past its default size can wall a colony into its own clearing with
-	// nowhere left to build.
-	reopenCrampedStarts(game, context, {options.wheat, options.wood, options.stone, options.algae});
+	// Whatever the amounts, a colony can end up walled into a pocket by the deposits laid
+	// around it: nothing here budgets its room. Opening it up costs a map that already has
+	// its room nothing (openStartsBuriedByResources leaves such a colony untouched).
+	openStartsBuriedByResources(game, context);
 	return true;
+}
+
+// The terrain is texture rather than design, and the colony search takes the widest grass it
+// finds, so this is the one promise worth making: a colony that can reach its crops and has
+// somewhere to put its first buildings. A seed that leaves one walled into a cove is rerolled.
+static std::string validateWorld(const Game &game, const GenerationContext &context)
+{
+	return startingFloorFailure(game.map, context.request.nbTeams);
 }
 
 GeneratorDefinition shatteredCoastDefinition()
@@ -905,7 +914,7 @@ GeneratorDefinition shatteredCoastDefinition()
 		"shattered-coast",
 		7,
 		"Old random",
-		3,
+		4,
 		false,
 		// The three terrain weights are relative (40/4/60 asks for 38% water, 4% sand, 58% grass
 		// before sand control adds the beaches); smoothing is the number of passes, which sets the
@@ -921,5 +930,8 @@ GeneratorDefinition shatteredCoastDefinition()
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount")},
-		generate};
+		generate,
+		true,
+		nullptr,
+		validateWorld};
 }

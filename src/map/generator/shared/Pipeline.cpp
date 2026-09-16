@@ -64,6 +64,12 @@ std::string startingAccessFailure(const Map &map, int teams,
 	return "";
 }
 
+std::string startingFloorFailure(const Map &map, int teams, int wheatRange, int woodRange)
+{
+	return startingAccessFailure(map, teams,
+								 {{WHEAT, wheatRange, "wheat"}, {WOOD, woodRange, "wood"}});
+}
+
 bool reopenCrampedStarts(Game &game, GenerationContext &context, const ResourceAmounts &amounts,
 						 int wheatRange, int woodRange, int clearRadius,
 						 const std::vector<unsigned char> *protectedWalls)
@@ -71,11 +77,18 @@ bool reopenCrampedStarts(Game &game, GenerationContext &context, const ResourceA
 	context.telemetry.measure("pipeline.cramped_relief.enabled", amounts.scaled());
 	if (!amounts.scaled())
 		return false;
+	openStartsBuriedByResources(game, context, wheatRange, woodRange, clearRadius, protectedWalls);
+	return true;
+}
+
+void openStartsBuriedByResources(Game &game, GenerationContext &context, int wheatRange,
+								 int woodRange, int clearRadius,
+								 const std::vector<unsigned char> *protectedWalls)
+{
 	// At least 16 free 4x4 building sites within 24 steps of every swarm: room for a first base
 	// (inns, huts, a school) without clearing anything.
 	openCrampedStarts(game, context, 16, 24, protectedWalls);
 	guaranteeStartingResources(game, context, wheatRange, woodRange, clearRadius, protectedWalls);
-	return true;
 }
 
 void secureStartingCrops(Game &game, GenerationContext &context, const Torus &t, int wheatRange,

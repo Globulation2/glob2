@@ -101,7 +101,8 @@ river) follow one shape, and the newest of them are little more than a sequence 
    `seedAlgae`, `stockIslands`), then `secureStartingCrops`: `clearAroundSwarms`,
    `guaranteeStartingResources` and `clearAroundSwarms` again.
 4. `openRoad` (or the generator's own cheapest-walk variant) keeps every walk the map promises
-   open, clearing only the deposits in the way; `reopenCrampedStarts` runs at non-default amounts.
+   open, clearing only the deposits in the way; `reopenCrampedStarts` runs at non-default amounts
+   (`openStartsBuriedByResources` for a landscape that wants that relief at the defaults too).
 5. `validateWorld` calls `design` again on a fresh context, checks it with `designMismatch`,
    walks every colony from colony 0 with `walkFromFirstColony`, and then checks whatever the
    design promised: ponds present, walls standing, fords open, symmetry exact.
@@ -188,6 +189,15 @@ Archipelago predate the shared resource/placement machinery and still place reso
 to each boot tile with their own compass-direction search, rather than through
 `scatterResources`/`chooseBalancedStarts`.
 
+None of these ten designs an economy — the field or the region graph decides where land is, and
+the start search takes the best of what it left — so none of them can promise the shape of a
+colony's ground. Since 2026-09-16 each one instead promises the floor underneath it: the relief in
+`openStartsBuriedByResources` opens a colony that deposits walled in, and a `validateWorld` of
+`startingFloorFailure` (`shared/Pipeline`) rerolls the seed when a colony still cannot reach wheat
+or wood, or still has fewer than 16 4x4 building origins within 24 steps. Concrete Islands and
+Isles pass `kReachableAnywhere` as the wood range in both, so an archipelago's long walk to the
+nearest stand stays a question about those landscapes rather than a world the service throws away.
+
 ## Resource amounts and switches
 
 Every playable generator has amount controls for the resources it places (wheat, wood and stone
@@ -248,9 +258,12 @@ building. `guaranteeStartingResources` does not cover that case — a colony bur
 wheat at its feet, so it counts as served — so `openCrampedStarts` (`shared/Resources.h`) clears
 the resource tiles nearest such a colony, one ring at a time outwards, until it can walk to 16
 tiles where a 4x4 building fits within 24 steps, and the caller then re-runs the guarantee in case
-the clearing took the nearest crop too. A colony that already has the room is untouched. The
-height-field generators (through `openStartsBuriedByAmounts`), Fjord and Ring world run it at any
-non-default amount, and never at the defaults. Concrete islands and Isles need it differently:
+the clearing took the nearest crop too. A colony that already has the room is untouched.
+`reopenCrampedStarts` runs that pair at any non-default amount and never at the defaults;
+`openStartsBuriedByResources` runs it whatever the amounts are, which is what the landscapes on
+the legacy core call, since nothing in them budgets a colony's room and the defaults bury one too
+(a 512-tile fjord continent with four colonies sealed two of them onto nine tiles and four until
+2026-09-16). Concrete islands and Isles need it differently:
 their colonies' fields can cover every building site the start search looks at, so at a non-default
 amount that search widens its window out from the default field rather than failing.
 

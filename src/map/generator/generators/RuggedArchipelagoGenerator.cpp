@@ -343,10 +343,19 @@ static bool generate(Game &game, GenerationContext &context)
 	// wood even though the search ran in every direction. Top up anyone still missing either
 	// within comfortable range; islands that were already generous are left untouched.
 	guaranteeStartingResources(game, context, 24, 32);
-	// A deposit grown well past its default size can wall a colony into its own clearing with
-	// nowhere left to build on an island this small.
-	reopenCrampedStarts(game, context, {options.wheat, options.wood, options.stone, options.algae});
+	// Whatever the amounts, a colony can end up walled into a pocket by the deposits laid
+	// around it: nothing here budgets its room. Opening it up costs a map that already has
+	// its room nothing (openStartsBuriedByResources leaves such a colony untouched).
+	openStartsBuriedByResources(game, context);
 	return true;
+}
+
+// Islands grown by accretion can come out as a sliver, and the compass-oriented kits are laid on
+// whatever grass survived the smoothing. The floor checks what those kits are for: crops within
+// reach of the colony that owns them, and room for a first base beside them.
+static std::string validateWorld(const Game &game, const GenerationContext &context)
+{
+	return startingFloorFailure(game.map, context.request.nbTeams);
 }
 
 GeneratorDefinition ruggedArchipelagoDefinition()
@@ -355,7 +364,7 @@ GeneratorDefinition ruggedArchipelagoDefinition()
 		"rugged-archipelago",
 		8,
 		"Old islands",
-		2,
+		3,
 		false,
 		// Island size scales the growth passes (see plantBootstraps for why its range is narrow);
 		// beach size is the number of beach-widening passes.
@@ -369,5 +378,8 @@ GeneratorDefinition ruggedArchipelagoDefinition()
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount")},
-		generate};
+		generate,
+		true,
+		nullptr,
+		validateWorld};
 }

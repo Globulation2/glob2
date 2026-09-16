@@ -844,8 +844,10 @@ static bool generate(Game &game, GenerationContext &context)
 	guaranteeStartingResources(game, context, 24, 32);
 	// The scatter and bank clumps above are sized by the resource amounts, and the ambient scatter
 	// covers up to two thirds of the continent's grass at the top of their range.
-	reopenCrampedStarts(game, context,
-						{options.wheat, options.wood, options.stone, options.algae, options.fruit});
+	// Whatever the amounts, a colony can end up walled into a pocket by the deposits laid
+	// around it: nothing here budgets its room. Opening it up costs a map that already has
+	// its room nothing (openStartsBuriedByResources leaves such a colony untouched).
+	openStartsBuriedByResources(game, context);
 	return true;
 }
 
@@ -862,12 +864,20 @@ FjordContinentOptions::FjordContinentOptions(const GenerationRequest &r)
 {
 }
 
+// Starts are searched toward the fjord tips, where a sector can narrow to a ledge with nowhere to
+// build. Nothing downstream measures that, so the floor does: crops within reach and room for a
+// first base. It bites hardest on large maps with few colonies, where the tips are longest.
+static std::string validateWorld(const Game &game, const GenerationContext &context)
+{
+	return startingFloorFailure(game.map, context.request.nbTeams);
+}
+
 GeneratorDefinition fjordContinentDefinition()
 {
 	return {"fjord-continent",
 			12,
 			"Fjord continent",
-			11,
+			12,
 			false,
 			{{"continent-size", "Continent size", 28, 40, 2, 34, ControlGroup::Terrain},
 			 {"coast-roughness", "Coast roughness", 10, 35, 1, 22, ControlGroup::Terrain},
@@ -890,5 +900,8 @@ GeneratorDefinition fjordContinentDefinition()
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),
 			 GeneratorControl::percentage("algae-amount", "Algae amount"),
 			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate};
+			generate,
+			true,
+			nullptr,
+			validateWorld};
 }
