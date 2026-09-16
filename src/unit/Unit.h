@@ -263,6 +263,8 @@ public:
 	//! Movement speed for the tile the unit is entering: faster on cobblestone, slower on ice.
 	//! Other actions, and flying, keep base.
 	int terrainSpeed(int base) const;
+	//! One tick of harm from the ground: 1 HP every ICE_DAMAGE_TICKS on ice, for units outside buildings.
+	void takeTerrainDamage();
 	//! Pathfinding swim class from the unit's walk and swim speeds (see Map::swimClass).
 	int swimClass() const;
 	Sint32 level[NB_ABILITY];

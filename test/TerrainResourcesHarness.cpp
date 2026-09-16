@@ -220,5 +220,78 @@ int main()
         assert(world.alive(world.swarmGid, true));
     }
     std::printf("Terrain entity regressions passed: %d strokes, 5 terrains, interior and four wrapped corners, swimmers and separate occupancy layers\n", entityStrokes);
+
+	// Prototype terrain rules on a grass map with a strip of ice (column 4) and a patch of
+	// cobblestone (columns 8-11), painted through the editor's map operation.
+	{
+		World world(swarm, swarmW, swarmH);
+		Map& map = world.game.map;
+		assert(!map.hasCobblestone());
+		const int landDiagonal = map.stepCost(1, 1, map.coordToIndex(2, 2), 0);
+		const int land = map.stepCost(1, 0, map.coordToIndex(2, 2), 0);
+		assert(map.minStepCost(0) == land);
+		for (int y = 0; y < 16; ++y)
+			map.setUMatPos(4, y, ICE, 1);
+		for (int y = 0; y < 16; ++y)
+			for (int x = 8; x <= 12; ++x)
+				map.setUMatPos(x, y, COBBLESTONE, 1);
+		assert(map.isIce(4, 3) && map.isIce(3, 3) && !map.isIce(5, 3) && !map.isIce(2, 3));
+		assert(map.isCobblestone(8, 3) && map.isCobblestone(11, 3) && !map.isCobblestone(7, 3) && !map.isCobblestone(12, 3));
+		assert(map.hasCobblestone());
+		// Neither is grass, sand or water, so no resource belongs on either.
+		for (int type = 0; type < MAX_RESOURCES; ++type)
+			assert(!map.isResourceAllowed(4, 3, type) && !map.isResourceAllowed(9, 3, type));
+		// Buildings stand on cobblestone and grass, not on ice.
+		assert(map.isFreeForBuilding(9, 2) && map.isFreeForBuilding(1, 2) && !map.isFreeForBuilding(4, 2));
+		// Steps into ice cost three land steps, into cobblestone half of one, diagonals alike.
+		assert(map.stepCost(1, 0, map.coordToIndex(4, 3), 0) == 3 * land);
+		assert(map.stepCost(1, 0, map.coordToIndex(9, 3), 0) == land / 2);
+		assert(map.stepCost(1, 1, map.coordToIndex(9, 3), 3) == landDiagonal / 2);
+		assert(map.minStepCost(0) == land / 2);
+
+		// Walking speed doubles on cobblestone and halves on ice; the worker's other actions do not change.
+		Unit* worker = world.game.getUnit(world.workerGid);
+		const int walk = worker->performance[WALK];
+		auto moveTo = [&](int x, int y)
+		{
+			map.setGroundUnit(worker->posX, worker->posY, NOGUID);
+			worker->posX = x;
+			worker->posY = y;
+			map.setGroundUnit(x, y, worker->gid);
+		};
+		worker->action = WALK;
+		moveTo(9, 5);
+		assert(worker->terrainSpeed(walk) == 2 * walk);
+		moveTo(4, 5);
+		assert(worker->terrainSpeed(walk) == walk / 2);
+		moveTo(1, 5);
+		assert(worker->terrainSpeed(walk) == walk);
+		worker->action = HARVEST;
+		moveTo(4, 5);
+		assert(worker->terrainSpeed(walk) == walk);
+
+		// Ice takes 1 HP every 32 ticks from ground units; none from units elsewhere or explorers.
+		Unit* explorer = world.game.getUnit(world.explorerGid);
+		map.setAirUnit(explorer->posX, explorer->posY, NOGUID);
+		explorer->posX = 4;
+		explorer->posY = 6;
+		map.setAirUnit(4, 6, explorer->gid);
+		const int workerHP = worker->hp, explorerHP = explorer->hp;
+		for (Uint32 tick = 1; tick <= 320; ++tick)
+		{
+			world.game.stepCounter = tick;
+			worker->takeTerrainDamage();
+			explorer->takeTerrainDamage();
+		}
+		assert(worker->hp == workerHP - 10 && explorer->hp == explorerHP);
+		moveTo(1, 5);
+		for (Uint32 tick = 321; tick <= 640; ++tick)
+		{
+			world.game.stepCounter = tick;
+			worker->takeTerrainDamage();
+		}
+		assert(worker->hp == workerHP - 10);
+	}
+	std::printf("Terrain rule regressions passed: ice and cobblestone placement, step costs, speed and ice damage\n");
     return 0;
 }
