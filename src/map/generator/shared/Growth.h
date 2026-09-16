@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <vector>
+class Map;
 namespace MapGeneration
 {
 // Where wheat and wood can spread: sketch fertility and finished-map containment.
@@ -121,4 +122,12 @@ int digPond(TerrainSketch &sketch, const Torus &t, int site, int nearest, int fa
 		}
 	return dug;
 }
+/// Disable incoming resource growth on a tile mask using the engine's existing
+/// serialized canResourcesGrow flag. Leaves terrain, resources and unmarked tiles
+/// unchanged; callers must leave protected construction/circulation tiles unseeded.
+/// Returns changed flags, or -1 for a wrong-sized mask without changing the map.
+/// This supports grass service courts directly beside crops, where a sand barrier
+/// would make harvesting trips too long. Existing resources are not cleared.
+int preventResourceGrowth(Map &, const std::vector<unsigned char> &protectedTiles);
+
 } // namespace MapGeneration

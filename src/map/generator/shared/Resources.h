@@ -1,7 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Regions.h"
+#include "Grid.h"
 #include <cstdint>
+#include <map>
+namespace Fertility
+{
+class Field;
+}
 namespace MapGeneration
 {
 // A resource-amount percentage (GeneratorControl::percentage) applied to a count or a share,
@@ -64,4 +70,18 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 // or wood along with the wall.
 void openCrampedStarts(Game &game, GenerationContext &context, int sites = 16, int range = 24,
 					   const std::vector<unsigned char> *protectedWalls = nullptr);
+
+struct ResourceFrontage
+{
+	int edges = 0, renewableEdges = 0;
+	int nearestStep = -1;
+};
+/// Count resource-adjacent cardinal edges from a caller's finished-world movement
+/// flood, within maximumSteps. One deposit may expose several harvesting faces;
+/// these are frontage counts, not unique deposits, stock, or concurrent worker slots.
+/// An optional matching fertility field identifies edges bordering renewable crops.
+/// This read-only operation shares the caller's flood/field and makes no extra scans
+/// outside the visited catchment. Absent resource types have no entry.
+std::map<int, ResourceFrontage> resourceFrontages(const Map &, const Flood &, int maximumSteps,
+												  const Fertility::Field *fertility = nullptr);
 } // namespace MapGeneration

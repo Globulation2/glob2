@@ -46,6 +46,8 @@
 #include "RiceTerracesGenerator.h"
 #include "VulturesGenerator.h"
 #include "PlantationsGenerator.h"
+#include "SierpinskiGardensGenerator.h"
+#include "HilbertRiverGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -155,6 +157,8 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 switchbacksDefinition(),
 											 cityStatesDefinition(),
 											 canalsDefinition(),
+											 sierpinskiGardensDefinition(),
+											 hilbertRiverDefinition(),
 											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),

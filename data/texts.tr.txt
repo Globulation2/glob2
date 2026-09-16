@@ -2640,3 +2640,21 @@ Koloni başına ada
 Karakol otelleri
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 Adalar kendi arsaları için çok küçük; daha büyük bir harita, daha küçük bir arsa veya daha az koloni kullanın.
+[Sierpiński Gardens]
+Sierpiński Bahçeleri
+[Hilbert River]
+Hilbert Nehri
+[Maximum nesting]
+En fazla iç içe geçme
+[Minimum terminal district side]
+En küçük uç bölge kenarı
+[Major crossing pairs]
+Ana geçiş çiftleri
+[Maximum fold depth]
+En fazla kıvrım derinliği
+[Minimum land spacing]
+En az kara aralığı
+[Optional local crossings per parent]
+Üst bölge başına isteğe bağlı yerel geçişler
+[Optional major shortcuts]
+İsteğe bağlı ana kestirmeler

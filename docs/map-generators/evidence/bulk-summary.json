@@ -1,0 +1,1157 @@
+{
+  "planned": 3616,
+  "observed": 3616,
+  "categories": {
+    "success": 2879,
+    "invalid_request": 737
+  },
+  "hard": {},
+  "soft": {},
+  "missing_jobs": [],
+  "mixed_seed_outcomes": [
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 7,
+        "local-crossings": 0,
+        "major-shortcuts": 0,
+        "maximum-fold-depth": 1,
+        "minimum-land-spacing": 24,
+        "river-width": 4,
+        "stone-amount": 100,
+        "teams": 2,
+        "wheat-amount": 100,
+        "width": 7,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001
+        ],
+        "invalid_request": [
+          20002,
+          30001,
+          30002
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 7,
+        "local-crossings": 0,
+        "major-shortcuts": 0,
+        "maximum-fold-depth": 1,
+        "minimum-land-spacing": 24,
+        "river-width": 4,
+        "stone-amount": 100,
+        "teams": 8,
+        "wheat-amount": 100,
+        "width": 9,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          30001,
+          30002
+        ],
+        "invalid_request": [
+          20002
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 9,
+        "local-crossings": 2,
+        "major-shortcuts": 4,
+        "maximum-fold-depth": 4,
+        "minimum-land-spacing": 40,
+        "river-width": 10,
+        "stone-amount": 100,
+        "teams": 8,
+        "wheat-amount": 100,
+        "width": 7,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          20002,
+          30001
+        ],
+        "invalid_request": [
+          30002
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 7,
+        "local-crossings": 2,
+        "major-shortcuts": 4,
+        "maximum-fold-depth": 4,
+        "minimum-land-spacing": 40,
+        "river-width": 10,
+        "stone-amount": 100,
+        "teams": 8,
+        "wheat-amount": 100,
+        "width": 9,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "invalid_request": [
+          20001,
+          20002,
+          30001
+        ],
+        "success": [
+          30002
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 7,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 2,
+        "wheat-amount": 100,
+        "width": 7,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          20003,
+          20010,
+          20012,
+          30005,
+          30008
+        ],
+        "invalid_request": [
+          20002,
+          20004,
+          20005,
+          20006,
+          20007,
+          20008,
+          20009,
+          20011,
+          20013,
+          20014,
+          20015,
+          20016,
+          30001,
+          30002,
+          30003,
+          30004,
+          30006,
+          30007
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 7,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 2,
+        "wheat-amount": 100,
+        "width": 8,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          20002,
+          20003,
+          20004,
+          20005,
+          20006,
+          20007,
+          20008,
+          20009,
+          20010,
+          20011,
+          20012,
+          20013,
+          20014,
+          20015,
+          20016,
+          30001,
+          30002,
+          30004,
+          30005,
+          30006,
+          30007,
+          30008
+        ],
+        "invalid_request": [
+          30003
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 7,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 8,
+        "wheat-amount": 100,
+        "width": 9,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          20003,
+          20004,
+          20005,
+          20006,
+          20008,
+          20009,
+          20010,
+          20011,
+          20012,
+          20013,
+          20015,
+          20016,
+          30001,
+          30002,
+          30003,
+          30004,
+          30005,
+          30006,
+          30007,
+          30008
+        ],
+        "invalid_request": [
+          20002,
+          20007,
+          20014
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 8,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 2,
+        "wheat-amount": 100,
+        "width": 7,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          20002,
+          20003,
+          20004,
+          20005,
+          20006,
+          20007,
+          20008,
+          20009,
+          20010,
+          20011,
+          20012,
+          20013,
+          20014,
+          20015,
+          20016,
+          30001,
+          30002,
+          30003,
+          30005,
+          30006,
+          30007,
+          30008
+        ],
+        "invalid_request": [
+          30004
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 8,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 8,
+        "wheat-amount": 100,
+        "width": 8,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          20002,
+          20003,
+          20004,
+          20005,
+          20006,
+          20007,
+          20009,
+          20010,
+          20011,
+          20012,
+          20013,
+          20014,
+          20015,
+          20016,
+          30001,
+          30002,
+          30003,
+          30004,
+          30005,
+          30006,
+          30007,
+          30008
+        ],
+        "invalid_request": [
+          20008
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 9,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 8,
+        "wheat-amount": 100,
+        "width": 7,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          20002,
+          20004,
+          20005,
+          20006,
+          20007,
+          20008,
+          20009,
+          20010,
+          20011,
+          20012,
+          20013,
+          20014,
+          20016,
+          30001,
+          30002,
+          30003,
+          30004,
+          30005,
+          30006,
+          30007,
+          30008
+        ],
+        "invalid_request": [
+          20003,
+          20015
+        ]
+      }
+    },
+    {
+      "generator": 34,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 7,
+        "lake-size": 100,
+        "major-crossing-pairs": 2,
+        "maximum-nesting": 3,
+        "minimum-district-side": 24,
+        "stone-amount": 100,
+        "teams": 4,
+        "wheat-amount": 100,
+        "width": 8,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          20002,
+          20003,
+          20004,
+          20005,
+          20006,
+          20007,
+          20008,
+          20009,
+          20010,
+          20011,
+          20012,
+          20013,
+          20014,
+          20015,
+          20016,
+          30001,
+          30002,
+          30003,
+          30004,
+          30006,
+          30007,
+          30008
+        ],
+        "invalid_request": [
+          30005
+        ]
+      }
+    },
+    {
+      "generator": 34,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 7,
+        "lake-size": 100,
+        "major-crossing-pairs": 2,
+        "maximum-nesting": 3,
+        "minimum-district-side": 24,
+        "stone-amount": 100,
+        "teams": 5,
+        "wheat-amount": 100,
+        "width": 8,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          20002,
+          20003,
+          20004,
+          20005,
+          20006,
+          20007,
+          20008,
+          20009,
+          20010,
+          20011,
+          20012,
+          20013,
+          20014,
+          20015,
+          20016,
+          30001,
+          30002,
+          30003,
+          30004,
+          30006,
+          30007,
+          30008
+        ],
+        "invalid_request": [
+          30005
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 7,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 3,
+        "wheat-amount": 100,
+        "width": 7,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          20003,
+          20010,
+          20012,
+          30005,
+          30008
+        ],
+        "invalid_request": [
+          20002,
+          20004,
+          20005,
+          20006,
+          20007,
+          20008,
+          20009,
+          20011,
+          20013,
+          20014,
+          20015,
+          20016,
+          30001,
+          30002,
+          30003,
+          30004,
+          30006,
+          30007
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 7,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 3,
+        "wheat-amount": 100,
+        "width": 8,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          20002,
+          20003,
+          20004,
+          20005,
+          20006,
+          20008,
+          20009,
+          20010,
+          20011,
+          20012,
+          20013,
+          20014,
+          20016,
+          30002,
+          30004,
+          30005,
+          30006,
+          30007,
+          30008
+        ],
+        "invalid_request": [
+          20007,
+          20015,
+          30001,
+          30003
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 7,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 4,
+        "wheat-amount": 100,
+        "width": 8,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "invalid_request": [
+          20001,
+          20002,
+          20006,
+          20007,
+          20008,
+          20015,
+          20016,
+          30001,
+          30003,
+          30008
+        ],
+        "success": [
+          20003,
+          20004,
+          20005,
+          20009,
+          20010,
+          20011,
+          20012,
+          20013,
+          20014,
+          30002,
+          30004,
+          30005,
+          30006,
+          30007
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 7,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 5,
+        "wheat-amount": 100,
+        "width": 8,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "invalid_request": [
+          20001,
+          20002,
+          20006,
+          20007,
+          20008,
+          20013,
+          20015,
+          20016,
+          30001,
+          30003,
+          30004,
+          30008
+        ],
+        "success": [
+          20003,
+          20004,
+          20005,
+          20009,
+          20010,
+          20011,
+          20012,
+          20014,
+          30002,
+          30005,
+          30006,
+          30007
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 7,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 6,
+        "wheat-amount": 100,
+        "width": 8,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "invalid_request": [
+          20001,
+          20002,
+          20003,
+          20006,
+          20007,
+          20008,
+          20010,
+          20013,
+          20015,
+          20016,
+          30003,
+          30004,
+          30007,
+          30008
+        ],
+        "success": [
+          20004,
+          20005,
+          20009,
+          20011,
+          20012,
+          20014,
+          30001,
+          30002,
+          30005,
+          30006
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 7,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 7,
+        "wheat-amount": 100,
+        "width": 8,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "invalid_request": [
+          20001,
+          20002,
+          20003,
+          20004,
+          20005,
+          20006,
+          20007,
+          20008,
+          20010,
+          20011,
+          20013,
+          20015,
+          20016,
+          30001,
+          30002,
+          30003,
+          30004,
+          30005,
+          30006,
+          30007,
+          30008
+        ],
+        "success": [
+          20009,
+          20012,
+          20014
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 7,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 7,
+        "wheat-amount": 100,
+        "width": 9,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          20002,
+          20003,
+          20004,
+          20005,
+          20006,
+          20008,
+          20009,
+          20010,
+          20011,
+          20012,
+          20013,
+          20015,
+          20016,
+          30001,
+          30002,
+          30003,
+          30004,
+          30005,
+          30006,
+          30007,
+          30008
+        ],
+        "invalid_request": [
+          20007,
+          20014
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 8,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 3,
+        "wheat-amount": 100,
+        "width": 7,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          20002,
+          20004,
+          20005,
+          20006,
+          20007,
+          20008,
+          20009,
+          20010,
+          20011,
+          20012,
+          20013,
+          20014,
+          20015,
+          20016,
+          30001,
+          30002,
+          30003,
+          30005,
+          30006,
+          30007,
+          30008
+        ],
+        "invalid_request": [
+          20003,
+          30004
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 8,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 4,
+        "wheat-amount": 100,
+        "width": 7,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          20002,
+          20004,
+          20005,
+          20006,
+          20007,
+          20008,
+          20009,
+          20010,
+          20011,
+          20012,
+          20013,
+          20015,
+          20016,
+          30001,
+          30002,
+          30003,
+          30005,
+          30006,
+          30007,
+          30008
+        ],
+        "invalid_request": [
+          20003,
+          20014,
+          30004
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 8,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 5,
+        "wheat-amount": 100,
+        "width": 7,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          20002,
+          20004,
+          20005,
+          20006,
+          20007,
+          20009,
+          20010,
+          20011,
+          20012,
+          20013,
+          20015,
+          20016,
+          30001,
+          30002,
+          30003,
+          30005,
+          30006,
+          30007,
+          30008
+        ],
+        "invalid_request": [
+          20003,
+          20008,
+          20014,
+          30004
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 8,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 6,
+        "wheat-amount": 100,
+        "width": 7,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "invalid_request": [
+          20001,
+          20002,
+          20003,
+          20008,
+          20010,
+          20014,
+          30004
+        ],
+        "success": [
+          20004,
+          20005,
+          20006,
+          20007,
+          20009,
+          20011,
+          20012,
+          20013,
+          20015,
+          20016,
+          30001,
+          30002,
+          30003,
+          30005,
+          30006,
+          30007,
+          30008
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 8,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 7,
+        "wheat-amount": 100,
+        "width": 7,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "invalid_request": [
+          20001,
+          20002,
+          20003,
+          20004,
+          20005,
+          20006,
+          20008,
+          20009,
+          20010,
+          20011,
+          20014,
+          20016,
+          30001,
+          30004,
+          30005,
+          30006,
+          30007,
+          30008
+        ],
+        "success": [
+          20007,
+          20012,
+          20013,
+          20015,
+          30002,
+          30003
+        ]
+      }
+    },
+    {
+      "generator": 35,
+      "params": {
+        "algae-amount": 100,
+        "fruit-amount": 100,
+        "height": 9,
+        "local-crossings": 1,
+        "major-shortcuts": 2,
+        "maximum-fold-depth": 3,
+        "minimum-land-spacing": 28,
+        "river-width": 6,
+        "stone-amount": 100,
+        "teams": 7,
+        "wheat-amount": 100,
+        "width": 7,
+        "wood-amount": 100,
+        "workers": 4
+      },
+      "categories": {
+        "success": [
+          20001,
+          20002,
+          20003,
+          20004,
+          20005,
+          20006,
+          20007,
+          20008,
+          20009,
+          20010,
+          20011,
+          20012,
+          20013,
+          20014,
+          20016,
+          30001,
+          30002,
+          30003,
+          30004,
+          30005,
+          30006,
+          30007,
+          30008
+        ],
+        "invalid_request": [
+          20015
+        ]
+      }
+    }
+  ],
+  "repeated_job_identities": 4
+}

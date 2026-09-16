@@ -13,6 +13,12 @@ namespace MapGeneration
 // width at each, and filled radial shapes, rasterized onto tile masks. Coordinates are map tiles
 // and may run past the edges; every tile is written through the wrap.
 
+/// Fill half-open integer bounds, wrapping every write. Unlike polygon rasterization,
+/// this addresses corners/tiles exactly: a 25x25 corner rectangle makes 24x24 pure tiles.
+/// Empty bounds do nothing; callers own clipping/reservation policy.
+void fillRectangle(std::vector<unsigned char> &, const Torus &, RegionBounds,
+				   unsigned char value = 1);
+
 /// A point on a stroked path and the path's half width there. The width is interpolated linearly
 /// between points, and every point is a round joint, so a path turns without gaps.
 struct StrokePoint
@@ -31,6 +37,12 @@ inline ShapePoint polarPoint(double cx, double cy, double radius, double angle)
 /// interpolated at the nearest point. A closed path joins its last point back to its first.
 void strokePath(std::vector<unsigned char> &mask, const Torus &, const std::vector<StrokePoint> &,
 				unsigned char value = 1, bool closed = false);
+
+/// Does the exact stroke raster touch a protected tile/corner mask? Uses strokePath's
+/// width, joints, and wrapping, so legality checks cannot disagree with stamping.
+/// Useful when proposing roads/crossings beside reserved plots; does not edit either mask.
+bool strokeIntersectsMask(const Torus &, const std::vector<StrokePoint> &,
+						  const std::vector<unsigned char> &protectedMask);
 
 /// Sets `value` on a line one tile thick through the path's points: each segment is traced from
 /// its rounded ends with Bresenham's steps, so consecutive tiles always touch, at least at a corner,

@@ -4,6 +4,25 @@
 #include <cmath>
 namespace MapGeneration
 {
+bool strokeIntersectsMask(const Torus &t, const std::vector<StrokePoint> &path,
+						  const std::vector<unsigned char> &protectedMask)
+{
+	std::vector<unsigned char> stroke(t.size(), 0);
+	strokePath(stroke, t, path);
+	for (int i = 0; i < t.size(); ++i)
+		if (stroke[i] && protectedMask[i])
+			return true;
+	return false;
+}
+
+void fillRectangle(std::vector<unsigned char> &mask, const Torus &t, RegionBounds b,
+				   unsigned char value)
+{
+	for (int y = b.y0; y < b.y1; ++y)
+		for (int x = b.x0; x < b.x1; ++x)
+			mask[t.at(x, y)] = value;
+}
+
 namespace
 {
 void strokeSegment(std::vector<unsigned char> &mask, const Torus &t, const StrokePoint &a,

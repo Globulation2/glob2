@@ -9,6 +9,12 @@
 #include "Building.h"
 #include "BuildingType.h"
 #include "Compounds.h"
+#include "RecursiveGeometry.h"
+#include "GenerationService.h"
+#include "GeneratorRegistry.h"
+#include <BinaryStream.h>
+#include <StreamBackend.h>
+#include "HierarchicalCrossings.h"
 #include "Drawing.h"
 #include "GenerationValidation.h"
 #include "GeneratorDefinition.h"
@@ -28,6 +34,8 @@
 #include "Planting.h"
 #include "Points.h"
 #include "Resources.h"
+#include "Room.h"
+#include "Growth.h"
 #include "Roads.h"
 #include "Settlements.h"
 #include "Sketch.h"
@@ -42,6 +50,7 @@
 #include "Towers.h"
 #include "Wedge.h"
 #include <algorithm>
+#include <limits>
 #include <cassert>
 #include <cmath>
 #include <cstdio>
@@ -2371,10 +2380,357 @@ inline void containedPlotChecks()
 	assert(jitterSites({128, 128}, sites, a, "test-jitter", 0, 48) == 0);
 }
 
+// Recursive partitions are tested on awkward thirds, not just power-of-two squares.
+// Every terminal rectangle must cover exactly its own share, including stopped homes.
+// Reusable site operations are tested with small fixtures independent of either
+// fractal design: seam separation, real movement modes, and space after all proposed
+// buildings have been placed, rather than a count of overlapping empty anchors.
+inline void siteOperationChecks()
+{
+	const Torus t(64, 64);
+	std::vector<unsigned char> mask(t.size(), 0);
+	fillRectangle(mask, t, {-2, -1, 2, 2});
+	assert(std::count(mask.begin(), mask.end(), 1) == 12 && mask[t.at(63, 63)]);
+	assert(strokeIntersectsMask(t, {{60, 0, 2}, {68, 0, 2}}, mask));
+	assert(!strokeIntersectsMask(t, {{60, 20, 2}, {68, 20, 2}}, mask));
+	const std::vector<int> candidates{t.at(1, 1), t.at(63, 1), t.at(32, 32)};
+	const auto sites = selectSeparatedSites(t, candidates, 2, 16);
+	assert(sites.failure.empty() && sites.indices == std::vector<int>({0, 2}));
+	const auto impossible = selectSeparatedSites(t, candidates, 3, 16);
+	assert(!impossible.failure.empty() && impossible.indices.size() == 2);
+	assert(!selectSeparatedSites(t, {-1}, 1, 16).failure.empty());
+
+	std::vector<unsigned char> clear(t.size(), 1);
+	const BuildingGrid grid{{-12, -10, 12, 14}, 4, 4, 2, 1};
+	const auto layout = arrangeBuildingGrid(t, clear, clear, grid, {t.at(-13, 0)});
+	const auto upgraded =
+		arrangeBuildingGrid(t, clear, clear, {grid.bounds, 6, 6, 2, 1}, {t.at(-13, 0)});
+	assert(upgraded.failure.empty() && upgraded.footprints.size() == 9);
+
+	assert(layout.failure.empty() && layout.footprints.size() == 16);
+	std::set<int> occupied;
+	for (const auto &box : layout.footprints)
+		for (int y = box.y0; y < box.y1; ++y)
+			for (int x = box.x0; x < box.x1; ++x)
+				assert(occupied.insert(t.at(x, y)).second);
+	assert(!arrangeBuildingGrid(t, clear, std::vector<unsigned char>(t.size(), 0), grid,
+								{t.at(-13, 0)})
+				.failure.empty());
+	assert(!arrangeBuildingGrid(t, clear, clear, {{0, 0, 65, 24}}, {0}).failure.empty());
+
+	Game game(nullptr);
+	grassMap(game, 6, 6);
+	game.map.setResource(63, 0, WHEAT, 1);
+	game.map.setResource(0, 63, WOOD, 1);
+	const auto access = floodFrom(t, tileMask(t, {0}), groundUnitTiles(game.map), 0);
+	auto frontage = resourceFrontages(game.map, access, 0);
+	assert(frontage[WHEAT].edges == 1 && frontage[WOOD].edges == 1);
+	assert(frontage[WHEAT].nearestStep == 0 && !frontage[WHEAT].renewableEdges);
+	TerrainSketch terrain(t.size(), GRASS);
+	fillRectangle(terrain, t, {20, 20, 30, 30}, WATER);
+	writeUndermap(game.map, terrain);
+	assert(!groundUnitTiles(game.map)[t.at(24, 24)]);
+	assert(groundUnitTiles(game.map, true)[t.at(24, 24)]);
+
+	Game contained(nullptr);
+	grassMap(contained, 6, 6);
+	terrain.assign(t.size(), GRASS);
+	fillRectangle(terrain, t, {-10, -10, 11, 11}, SAND);
+	fillRectangle(terrain, t, {-8, -8, 9, 9}, GRASS);
+	writeUndermap(contained.map, terrain);
+	contained.map.setResource(30, 30, WHEAT, 1);
+	assert(cropSpreadEnvelope(contained.map).steps[t.at(0, 0)] < 0);
+	// Breach a wide strip through the sand ring: the same proof must now reject it.
+	fillRectangle(terrain, t, {5, -2, 13, 3}, GRASS);
+	writeUndermap(contained.map, terrain);
+	assert(cropSpreadEnvelope(contained.map).steps[t.at(0, 0)] >= 0);
+	// A saved no-growth ring can protect buildable grass without a sand gap.
+	// Wrap the fixture around both seams to exercise the same indexing as homes.
+	std::vector<unsigned char> protectedGrass(t.size(), 0);
+	fillRectangle(protectedGrass, t, {-9, -9, 10, 10});
+	assert(preventResourceGrowth(contained.map, {}) == -1);
+	assert(contained.map.canResourcesGrow(0, 0));
+	assert(preventResourceGrowth(contained.map, protectedGrass) == 19 * 19);
+	assert(preventResourceGrowth(contained.map, protectedGrass) == 0);
+	assert(!contained.map.canResourcesGrow(63, 63));
+	assert(cropSpreadEnvelope(contained.map).steps[t.at(0, 0)] < 0);
+
+	// Exercise actual engine growth, not just our conservative reachability proof.
+	// Irrigated wood on the unprotected control side must spread, while the
+	// immediately adjoining protected grass remains empty. Restore simulation RNG
+	// so this fixture cannot change subsequent generator golden measurements.
+	Game growing(nullptr);
+	grassMap(growing, 6, 6);
+	terrain.assign(t.size(), GRASS);
+	fillRectangle(terrain, t, {-12, -12, 13, -5}, WATER);
+	writeUndermap(growing.map, terrain);
+	protectedGrass.assign(t.size(), 0);
+	fillRectangle(protectedGrass, t, {-4, 0, 5, 5});
+	assert(preventResourceGrowth(growing.map, protectedGrass) == 45);
+	const auto savedRandom = syncRandEngine();
+	setSyncRandSeed(20001);
+	for (int x = -4; x <= 4; ++x)
+		growing.map.setResource(t.x(x), 63, WOOD, 1); // brush diameter, not amount
+	for (int i = 0; i < t.size(); ++i)
+		if (protectedGrass[i])
+			assert(!growing.map.isResource(i % t.w, i / t.w));
+	for (int step = 0; step < 12000; ++step)
+		growing.map.growResources();
+	syncRandEngine() = savedRandom;
+	assert(countResource(growing.map, WOOD) > 9);
+	for (int i = 0; i < t.size(); ++i)
+		if (protectedGrass[i])
+			assert(growing.map.getResource(i % t.w, i / t.w).type == NO_RES_TYPE);
+}
+
+inline void recursiveGeometryChecks()
+{
+	for (int divisions : {2, 3})
+	{
+		const auto tree =
+			partitionRegions({3, 5, 134, 266}, divisions, 4, 7, [](const RecursiveRegion &r)
+							 { return r.id == 2 ? RegionStop::Home : RegionStop::None; });
+		assert(tree.failure.empty() && tree.regions[2].stop == RegionStop::Home);
+		std::vector<int> cover(131 * 261, 0);
+		for (const auto &r : tree.regions)
+		{
+			assert(r.id >= 0 && r.depth <= 4);
+			if (r.terminal())
+				for (int y = r.bounds.y0; y < r.bounds.y1; ++y)
+					for (int x = r.bounds.x0; x < r.bounds.x1; ++x)
+						++cover[(y - 5) * 131 + x - 3];
+			else
+			{
+				assert(r.children.size() == size_t(divisions * divisions));
+				int area = 0;
+				for (int child : r.children)
+				{
+					const auto &c = tree.regions[child];
+					assert(c.parent == r.id && c.depth == r.depth + 1);
+					area += c.bounds.width() * c.bounds.height();
+				}
+				assert(area == r.bounds.width() * r.bounds.height());
+			}
+		}
+		assert(std::all_of(cover.begin(), cover.end(), [](int n) { return n == 1; }));
+	}
+	assert(!partitionRegions({0, 0, 256, 256}, 3, 4, 1, {}, 10).failure.empty());
+	assert(!partitionRegions({0, 0, 256, 256}, 4, 4, 1).failure.empty());
+	for (int orientation = 0; orientation < 8; ++orientation)
+		for (int maximum = 1; maximum <= 4; ++maximum)
+		{
+			const auto path = hilbertPath({0, 0, 128, 512}, maximum, 24, orientation);
+			assert(path.failure.empty() && path.actualOrder == std::min(2, maximum));
+			const int side = 1 << path.actualOrder;
+			assert(path.points.size() == size_t(side * side));
+			std::set<std::pair<int, int>> points;
+			for (const auto &p : path.points)
+			{
+				assert(p.x >= 0 && p.x < 128 && p.y >= 0 && p.y < 512);
+				assert(points.insert({int(p.x), int(p.y)}).second);
+			}
+			for (const auto &segment : path.segments)
+			{
+				const double dx = std::abs(segment.from.x - segment.to.x) / (128.0 / side);
+				const double dy = std::abs(segment.from.y - segment.to.y) / (512.0 / side);
+				// Unique grid vertices connected only to adjacent vertices imply no crossing
+				// centreline interiors (there are no diagonal segments).
+				assert(dx + dy == 1 && (dx == 0 || dy == 0));
+				assert(segment.parentRegion >= 0 && segment.level < path.actualOrder);
+			}
+		}
+	// Exercise actual high orders as well as spacing-reduced requests, with a
+	// negative unwrapped origin to catch truncation mistakes in region ownership.
+	for (int orientation = 0; orientation < 8; ++orientation)
+		for (int order : {3, 4})
+		{
+			const auto path = hilbertPath({-256, -128, 256, 896}, order, 16, orientation);
+			assert(path.failure.empty() && path.actualOrder == order);
+			const int side = 1 << order;
+			std::set<std::pair<int, int>> vertices;
+			for (const auto &p : path.points)
+				assert(vertices.insert({int(p.x), int(p.y)}).second);
+			for (const auto &segment : path.segments)
+			{
+				const double dx = std::abs(segment.from.x - segment.to.x) / (512.0 / side);
+				const double dy = std::abs(segment.from.y - segment.to.y) / (1024.0 / side);
+				assert(dx + dy == 1 && (dx == 0 || dy == 0));
+				const auto &parent = path.tree.regions[segment.parentRegion];
+				assert(parent.bounds.contains(int(segment.from.x), int(segment.from.y)));
+				assert(parent.bounds.contains(int(segment.to.x), int(segment.to.y)));
+			}
+		}
+	const RegionBounds overflow{std::numeric_limits<int>::min(), 0, std::numeric_limits<int>::max(),
+								512};
+	assert(!partitionRegions(overflow, 2, 2, 1).failure.empty());
+	assert(!hilbertPath(overflow, 2, 1).failure.empty());
+	assert(!hilbertPath({0, 0, 32, 128}, 4, 24).failure.empty());
+	assert(!hilbertPath({0, 0, 512, 512}, 99, 1).failure.empty());
+
+	// Sampling retains hierarchy and unwrapped geometry. A seam-spanning source
+	// must remain eight tiles long, never turn into the long way around the torus.
+	const std::vector<RecursiveSegment> samples{{7, 2, 3, {60, 30}, {68, 30}}};
+	const auto transverse = transverseCrossings(samples, {0.5, 0.25, 0.75}, 5, 2);
+	assert(transverse.failure.empty() && transverse.candidates.size() == 3);
+	assert(transverse.candidates[0].id == 7 && transverse.candidates[1].id == 15);
+	assert(transverse.candidates[0].from.x == 64 && transverse.candidates[0].from.y == 35);
+	assert(transverse.candidates[0].to.y == 25 && transverse.candidates[0].level == 2);
+	assert(transverseCrossings(samples, {0.25}, 5, 3).candidates.empty());
+	assert(!transverseCrossings(samples, {0}, 5, 2).failure.empty());
+	assert(!transverseCrossings({{0, 0, 0, {1, 1}, {1, 1}}}, {0.5}, 5, 2).failure.empty());
+	const Torus t(64, 64);
+	std::vector<CrossingCandidate> candidates{{10, 0, 1, 1, 4, 5, {5, 5}, {10, 5}},
+											  {11, 1, 2, 0, 0, 5, {25, 5}, {30, 5}},
+											  {12, 0, 2, 0, 0, 6, {45, 5}, {50, 5}}};
+	std::vector<CrossingCandidate> seam{{91, 77, 88, 1, 5, 2, {-0.5, 5}, {1, 5}}};
+	std::vector<unsigned char> open(t.size(), 1);
+	const auto endpointGraph = crossingEndpointGraph(t, open, seam);
+	assert(endpointGraph.failure.empty() && endpointGraph.regions == 2);
+	assert(endpointGraph.edges.size() == 1 && endpointGraph.edges[0].length == 2);
+	assert(seam[0].fromRegion == 0 && seam[0].toRegion == 1 && seam[0].parentRegion == 5);
+	open[t.at(63, 5)] = 0;
+	assert(!crossingEndpointGraph(t, open, seam).failure.empty());
+	const auto connected = selectCrossings(t, 3, {}, {0, 1, 2}, candidates, 0, 0, 8, 42);
+	assert(connected.failure.empty() && connected.mandatory == 2 && connected.selected.size() == 2);
+	std::reverse(candidates.begin(), candidates.end());
+	const auto repeated = selectCrossings(t, 3, {}, {0, 1, 2}, candidates, 0, 0, 8, 42);
+	assert(repeated.selected.size() == connected.selected.size());
+	for (size_t i = 0; i < repeated.selected.size(); ++i)
+		assert(repeated.selected[i].id == connected.selected[i].id);
+	assert(!selectCrossings(t, 3, {}, {0, 1, 2}, candidates, 0, 0, 40, 42).failure.empty());
+	assert(!selectCrossings(t, 3, {}, {0, 1, 2}, candidates, 0, 0, 0, 42,
+							[](const auto &, const auto &) { return false; })
+				.failure.empty());
+
+	const auto scarce =
+		selectCrossings(t, 3, {{0, 1, 100}, {1, 2, 100}}, {}, candidates, 2, 4, 8, 42);
+	assert(scarce.failure.empty() && scarce.majorShortfall > 0 && scarce.localShortfall > 0);
+	assert(!selectCrossings(t, 3, {}, {}, candidates, 2147483647, 0, 8, 42).failure.empty());
+	assert(
+		!selectCrossings(t, 3, {{0, 1, 1000000000}}, {}, candidates, 0, 0, 8, 42).failure.empty());
+	assert(!selectCrossings(t, 3, {}, {0, 1, 2}, candidates, 0, 0, 2147483647, 42).failure.empty());
+
+	// Raster fixture: the same crossing width survives both beaches and the torus seam.
+	TerrainSketch terrain(t.size(), WATER);
+	std::vector<unsigned char> crossing(t.size(), 0);
+	strokePath(crossing, t, {{60, 30, 3.5}, {68, 30, 3.5}});
+	for (int i = 0; i < t.size(); ++i)
+		if (crossing[i])
+			terrain[i] = SAND;
+	layBeaches(terrain, t);
+	const auto water = pureTiles(terrain, t, WATER);
+	for (int x = 61; x <= 66; ++x)
+		for (int y = 28; y <= 32; ++y)
+			assert(!water[t.at(x, y)]);
+}
+
+// Fractal-specific economy regression: zero ambient resources still support the
+// maximum opening worker count, and ordinary map serialization preserves terrain,
+// deposits and starting sites. Run in this existing CI harness, not an ad-hoc binary.
+inline void fractalEconomyChecks()
+{
+	for (const char *id : {"sierpinski-gardens", "hilbert-river"})
+	{
+		GenerationRequest request;
+		request.setMethodDefaults(GeneratorRegistry::builtins().idOf(id));
+		request.seed = 20001;
+		request.wDec = request.hDec = 8;
+		request.nbTeams = 4;
+		request.nbWorkers = 8;
+		for (const char *key :
+			 {"wheat-amount", "wood-amount", "stone-amount", "algae-amount", "fruit-amount"})
+			request.options[key] = 0;
+		Game game(nullptr);
+		const auto result = GenerationService().generate(game, request, true);
+		if (!result)
+			std::fprintf(stderr, "%s scarcity: %s\n", id, result.diagnostic().c_str());
+		assert(result);
+		assert(countResource(game.map, WHEAT) > 0 && countResource(game.map, WOOD) > 0 &&
+			   countResource(game.map, STONE) > 0);
+		assert(countResource(game.map, CHERRY) == 0 && countResource(game.map, ORANGE) == 0 &&
+			   countResource(game.map, PRUNE) == 0);
+		const auto units = unitTilesByTeam(game.map, 4);
+		for (const auto &team : units)
+			assert(team.size() == 8);
+		std::string bytes;
+		{
+			auto *memory = new GAGCore::MemoryStreamBackend();
+			GAGCore::BinaryOutputStream output(memory);
+			game.save(&output, true, "Fractal map round trip");
+			output.flush();
+			memory->seekFromEnd(0);
+			bytes.assign(memory->getBuffer(), memory->getPosition());
+		}
+		Game loaded(nullptr);
+		auto *readback = new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size());
+		// The memory constructor appends supplied bytes and leaves its cursor at EOF.
+		readback->seekFromStart(0);
+		GAGCore::BinaryInputStream input(readback);
+		assert(loaded.load(&input));
+		for (int y = 0; y < game.map.getH(); ++y)
+			for (int x = 0; x < game.map.getW(); ++x)
+			{
+				assert(game.map.getTerrain(x, y) == loaded.map.getTerrain(x, y));
+				assert(game.map.canResourcesGrow(x, y) == loaded.map.canResourcesGrow(x, y));
+				assert(game.map.getResource(x, y).type == loaded.map.getResource(x, y).type);
+				assert(game.map.getResource(x, y).amount == loaded.map.getResource(x, y).amount);
+			}
+		for (int team = 0; team < 4; ++team)
+		{
+			assert(game.teams[team]->startPosX == loaded.teams[team]->startPosX);
+			assert(game.teams[team]->startPosY == loaded.teams[team]->startPosY);
+		}
+	}
+}
+inline void fractalCrossingRegressionChecks()
+{
+	// These requests used to pass preflight and then lose a bridge shoulder to
+	// a home farm. Keep both complete requests as regressions, without rerolls.
+	for (int teams : {4, 5})
+	{
+		GenerationRequest request;
+		request.setMethodDefaults(GeneratorRegistry::builtins().idOf("sierpinski-gardens"));
+		request.wDec = 7;
+		request.hDec = 8;
+		request.nbTeams = teams;
+		request.seed = 20001;
+		Game game(nullptr);
+		const auto result = GenerationService().generate(game, request, true);
+		if (!result)
+			std::fprintf(stderr, "Gardens narrow crossing: %s\n", result.diagnostic().c_str());
+		assert(result);
+	}
+	// Shallow folds can have all segment midpoints occupied while quarter-bank
+	// approaches fit. Both ordinary and minimum controls used to reject this seed.
+	for (bool minimum : {false, true})
+	{
+		GenerationRequest request;
+		request.setMethodDefaults(GeneratorRegistry::builtins().idOf("hilbert-river"));
+		request.seed = 20002;
+		request.options["maximum-fold-depth"] = 1;
+		if (minimum)
+		{
+			request.options["river-width"] = 4;
+			request.options["minimum-land-spacing"] = 24;
+			request.options["local-crossings"] = 0;
+			request.options["major-shortcuts"] = 0;
+		}
+		Game game(nullptr);
+		const auto result = GenerationService().generate(game, request, true);
+		if (!result)
+			std::fprintf(stderr, "Hilbert shallow crossing: %s\n", result.diagnostic().c_str());
+		assert(result);
+	}
+}
+
 inline void toolkitChecks()
 {
 	boundaryExclusionChecks();
 	containedPlotChecks();
+	siteOperationChecks();
+	fractalCrossingRegressionChecks();
+	recursiveGeometryChecks();
+	fractalEconomyChecks();
 	floodChecks();
 	baseChecks();
 	sketchChecks();

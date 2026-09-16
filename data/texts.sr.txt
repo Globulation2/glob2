@@ -2632,3 +2632,21 @@ Emoji
 Предстражне гостионице
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 Острва су премала за своје парцеле; користите већу мапу, мању парцелу или мање колонија.
+[Sierpiński Gardens]
+Вртови Серпинског
+[Hilbert River]
+Хилбертова река
+[Maximum nesting]
+Највеће угнежђивање
+[Minimum terminal district side]
+Најмања страница крајњих области
+[Major crossing pairs]
+Парови главних прелаза
+[Maximum fold depth]
+Највећа дубина прегиба
+[Minimum land spacing]
+Најмањи размак копна
+[Optional local crossings per parent]
+Необавезни локални прелази по надређеној области
+[Optional major shortcuts]
+Необавезне главне пречице

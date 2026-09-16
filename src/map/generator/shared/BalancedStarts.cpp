@@ -11,6 +11,53 @@
 #include <vector>
 namespace MapGeneration
 {
+SeparatedSites selectSeparatedSites(const Torus &t, const std::vector<int> &candidates, int count,
+									int minimumSeparation, int maximumAttempts)
+{
+	SeparatedSites result;
+	if (count < 1 || count > 32 || minimumSeparation < 1 || maximumAttempts < 1 ||
+		maximumAttempts > 64 || candidates.size() > 4096 ||
+		std::any_of(candidates.begin(), candidates.end(),
+					[&](int i) { return i < 0 || i >= t.size(); }))
+	{
+		result.failure = "Invalid separated-site candidates, count, spacing or search limit.";
+		return result;
+	}
+	for (size_t first = 0; first < std::min<size_t>(maximumAttempts, candidates.size()); ++first)
+	{
+		++result.attempts;
+		std::vector<int> chosen{int(first)};
+		while (chosen.size() < size_t(count))
+		{
+			int winner = -1, score = -1;
+			for (size_t i = 0; i < candidates.size(); ++i)
+			{
+				const int p = candidates[i];
+				int nearest = INT_MAX;
+				for (int index : chosen)
+				{
+					const int h = candidates[index];
+					nearest = std::min(nearest, t.chebyshev(p % t.w, p / t.w, h % t.w, h / t.w));
+				}
+				if (nearest >= minimumSeparation && nearest > score)
+				{
+					winner = int(i);
+					score = nearest;
+				}
+			}
+			if (winner < 0)
+				break;
+			chosen.push_back(winner);
+		}
+		if (chosen.size() > result.indices.size())
+			result.indices = chosen;
+		if (result.indices.size() == size_t(count))
+			return result;
+	}
+	result.failure = "Bounded separated-site search did not fit the requested count.";
+	return result;
+}
+
 namespace
 {
 // isHardSpaceForGroundUnit(x, y, false, 0) is a pure function of terrain/resource state for

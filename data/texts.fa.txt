@@ -2630,3 +2630,21 @@ Emoji
 مسافرخانه‌های مرزی
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 جزیره‌ها برای قطعه‌های ساخت خود بیش از حد کوچک‌اند؛ از نقشهٔ بزرگ‌تر، قطعهٔ ساخت کوچک‌تر یا مستعمره‌های کمتر استفاده کنید.
+[Sierpiński Gardens]
+باغ‌های سرپینسکی
+[Hilbert River]
+رود هیلبرت
+[Maximum nesting]
+بیشترین تودرتویی
+[Minimum terminal district side]
+کمترین ضلع ناحیه‌های پایانی
+[Major crossing pairs]
+جفت گذرگاه‌های اصلی
+[Maximum fold depth]
+بیشترین عمق چین‌ها
+[Minimum land spacing]
+کمترین فاصله خشکی
+[Optional local crossings per parent]
+گذرگاه‌های محلی اختیاری در هر ناحیه مادر
+[Optional major shortcuts]
+میانبرهای اصلی اختیاری

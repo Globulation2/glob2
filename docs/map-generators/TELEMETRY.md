@@ -98,3 +98,25 @@ Temporary debug instrumentation is useful for one hypothesis: every rejected poi
 ## Verification
 
 `MapGeneratorDefaultsTest` exercises typed values, bounds, disabled collection and partial failure traces. `test/test_map_report.py` verifies JSON types/escaping, failure output, malformed request serialization, schema rejection, no map-byte changes when JSON is requested, and repeatability. `MapGeneratorGoldenTest <profile> --telemetry` compares enabled/disabled full serialized worlds and RNG state for all generators, checks repeatable traces, and prints separate generation timings. Timing differences are reported rather than asserted against a flaky wall-clock threshold. Existing golden rows still protect pre-change maps; telemetry-only changes should not require generator revision bumps.
+
+## Fractal generator records
+
+`fractal.homes.*` reports bounded-search attempts, candidate/fitted counts, optional spare modules,
+and the site omitted after finished-world scoring. `fractal.homes.growth-protected-tiles`
+counts changed saved growth flags for grass service aprons, reusing the mutation’s counter. Search relaxation is always zero;
+Hilbert emits a search batch for every attempted uniform order. `fractal.home.*` subjects are stable
+home-site indices, not team indices; `home.team` records the later random deal. Frontages
+count resource-adjacent walking edges (a deposit may have several); renewable frontages
+also require positive exact engine growth probability. Expansion anchors overlap and are
+scoring inputs; final validation separately checks a nonoverlapping building arrangement.
+Contact records repeat by source-site subject, with targets in site-index order. Walking
+and swimming use the engine's corresponding hard-space predicates.
+
+`fractal.crossing.*` subjects are candidate IDs; benefits are graph-distance reductions
+at selection time. `fractal.crossings.*` counts are per selector invocation: Hilbert emits
+one mandatory batch followed by an optional batch. Sum counts across batches within a
+map; do not treat their mean as the map's bridge count. Gardens counts opposing pairs.
+`local-shortfall` and `major-shortfall` are unspent optional budgets, not silently omitted
+mandatory connectivity. `sierpinski.depth.*`, `sierpinski.regions.*`, `hilbert.depth.*`, and
+`hilbert.orientation` explain achieved geometry. `*.bank-farms.proposed/placed` exposes
+actual farm omissions. No telemetry-only scans or random draws are used.

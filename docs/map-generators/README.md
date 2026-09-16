@@ -39,3 +39,9 @@ analyze those observations alongside final-map metrics.
 
 [Braided Delta](BRAIDED_DELTA.md) documents the braided river design, island room budgets,
 controls, supported settings and validation contract.
+
+## Recursive layouts
+
+[Fractal maps and recursive geometry](FRACTAL_MAPS.md) documents reusable halves/thirds,
+rectangular Hilbert paths, travel-benefit crossing selection, and examples for cities,
+reservoirs and folded roads. Keep hierarchy and validate the finished movement graph.

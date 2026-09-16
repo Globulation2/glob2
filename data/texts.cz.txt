@@ -2632,3 +2632,21 @@ Ostrovy na kolonii
 Předsunuté hospody
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
 Ostrovy jsou pro své parcely příliš malé; použijte větší mapu, menší parcelu nebo méně kolonií.
+[Sierpiński Gardens]
+Sierpińského zahrady
+[Hilbert River]
+Hilbertova řeka
+[Maximum nesting]
+Maximální vnoření
+[Minimum terminal district side]
+Minimální strana koncové oblasti
+[Major crossing pairs]
+Páry hlavních přechodů
+[Maximum fold depth]
+Maximální hloubka záhybů
+[Minimum land spacing]
+Minimální rozestup pevniny
+[Optional local crossings per parent]
+Volitelné místní přechody na nadřazenou oblast
+[Optional major shortcuts]
+Volitelné hlavní zkratky
