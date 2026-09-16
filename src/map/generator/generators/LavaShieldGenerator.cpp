@@ -699,7 +699,12 @@ GeneratorDefinition lavaShieldDefinition()
 	return {"lava-shield",
 			51,
 			"Lava shield",
-			2,
+			// Revision 3: the towns are chosen by the fitted fairness model now. Lava shield is
+			// the one generator that ranks its own settlement proposals by the map score
+			// (chooseScoredSettlements), and that score changed from the weakest town's quality
+			// gated by a worst-over-best ratio to how evenly the towns share the chance of
+			// winning, so a different proposal wins on some seeds.
+			3,
 			false,
 			{{"tongue-count", "Lava tongues", 3, 9, 1, 5, ControlGroup::Layout},
 			 {"long-tongues", "Long tongues", 25, 75, 25, 50, ControlGroup::Layout},
