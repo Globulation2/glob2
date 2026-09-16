@@ -6,9 +6,9 @@
 // softmax(F) over that map's colonies, and map fairness is 1 minus the
 // colony-count-normalised Gini of those probabilities.
 //
-// Fitted on 352 free-for-all games over 182 randomly drawn maps,
-// the same AI in every slot (castor, maxima, nicowar, numbi), at 92b0b46e5.
-// Cross-validated McFadden R2 0.0533, 0.0533 in sample.
+// Fitted on 2942 free-for-all games over 1482 randomly drawn maps,
+// the same AI in every slot (castor, maxima, nicowar, numbi), at 6ca445f19.
+// Cross-validated McFadden R2 0.0247, 0.0252 in sample.
 // See docs/map-generators/FAIRNESS_MODEL.md.
 #pragma once
 #include "Ressource.h"
@@ -22,19 +22,21 @@ namespace MapGeneration
 /// Softmax fixes the scale of F but not its zero: this anchors the mean fitness
 /// of the fitted starts at zero, so an absolute level is a convention, not a
 /// measurement. Differences between colonies are what the games determined.
-constexpr double FAIRNESS_MODEL_INTERCEPT = -3.7370459880619826;
+constexpr double FAIRNESS_MODEL_INTERCEPT = -0.7613654071870021;
 
-/// band48_wheat_exclusive_amount (log)
-constexpr double FAIRNESS_MODEL_BAND48_WHEAT_EXCLUSIVE_AMOUNT_LOG = 0.7863684719244538;
-/// nearest_rival_distance (identity)
-constexpr double FAIRNESS_MODEL_NEAREST_RIVAL_DISTANCE_IDENTITY = -0.0022972221169768226;
-/// tied_nearest_tiles (share)
-constexpr double FAIRNESS_MODEL_TIED_NEAREST_TILES_SHARE = -0.6743567542392739;
-/// mean_fertility (log)
-constexpr double FAIRNESS_MODEL_MEAN_FERTILITY_LOG = 0.005934114555601074;
+/// band24_wheat_exclusive_amount (share)
+constexpr double FAIRNESS_MODEL_BAND24_WHEAT_EXCLUSIVE_AMOUNT_SHARE = 2.4500685410361194;
+/// band24_tied_nearest_tiles (sqrt)
+constexpr double FAIRNESS_MODEL_BAND24_TIED_NEAREST_TILES_SQRT = -0.04763615374663231;
+/// build_sites_4x4 (log)
+constexpr double FAIRNESS_MODEL_BUILD_SITES_4X4_LOG = 0.11058238196543992;
+/// rivals_within_threat (identity)
+constexpr double FAIRNESS_MODEL_RIVALS_WITHIN_THREAT_IDENTITY = -0.12473452719013209;
+/// band48_wood_amount (identity)
+constexpr double FAIRNESS_MODEL_BAND48_WOOD_AMOUNT_IDENTITY = -0.0005162425810652294;
 
-constexpr int FAIRNESS_MODEL_FEATURE_COUNT = 4;
-constexpr int FAIRNESS_MODEL_GAMES = 352;
+constexpr int FAIRNESS_MODEL_FEATURE_COUNT = 5;
+constexpr int FAIRNESS_MODEL_GAMES = 2942;
 
 /// The fitted terms by name, for reports and the lobby's breakdown screen.
 struct FairnessModelTerm
@@ -47,10 +49,11 @@ struct FairnessModelTerm
 inline const FairnessModelTerm *fairnessModelTerms()
 {
 	static const FairnessModelTerm terms[] = {
-		{"band48_wheat_exclusive_amount", "log", "Wheat uncontested stock within 48 steps", FAIRNESS_MODEL_BAND48_WHEAT_EXCLUSIVE_AMOUNT_LOG},
-		{"nearest_rival_distance", "identity", "Steps to the nearest rival", FAIRNESS_MODEL_NEAREST_RIVAL_DISTANCE_IDENTITY},
-		{"tied_nearest_tiles", "share", "Contested territory", FAIRNESS_MODEL_TIED_NEAREST_TILES_SHARE},
-		{"mean_fertility", "log", "Ground fertility", FAIRNESS_MODEL_MEAN_FERTILITY_LOG},
+		{"band24_wheat_exclusive_amount", "share", "Uncontested wheat stock within 24 steps", FAIRNESS_MODEL_BAND24_WHEAT_EXCLUSIVE_AMOUNT_SHARE},
+		{"band24_tied_nearest_tiles", "sqrt", "Tied_Nearest patches within 24 steps", FAIRNESS_MODEL_BAND24_TIED_NEAREST_TILES_SQRT},
+		{"build_sites_4x4", "log", "Building sites", FAIRNESS_MODEL_BUILD_SITES_4X4_LOG},
+		{"rivals_within_threat", "identity", "Rivals close by", FAIRNESS_MODEL_RIVALS_WITHIN_THREAT_IDENTITY},
+		{"band48_wood_amount", "identity", "Wood stock within 48 steps", FAIRNESS_MODEL_BAND48_WOOD_AMOUNT_IDENTITY},
 	};
 	return terms;
 }
@@ -63,10 +66,11 @@ inline double fairnessModelMeasurement(const std::vector<ColonyQuality> &colonie
 	const ColonyQuality &colony = colonies[index];
 	switch (term)
 	{
-	case 0: return double(colony.distanceBands[2].exclusiveStoredAmount[WHEAT]);
-	case 1: return (colony.rivalDistance < 0 ? 512.0 : double(colony.rivalDistance));
-	case 2: return double(colony.tiedNearestTiles);
-	case 3: return double(colony.meanFertility);
+	case 0: return double(colony.distanceBands[1].exclusiveStoredAmount[WHEAT]);
+	case 1: return double(colony.distanceBands[1].tiedNearestTiles);
+	case 2: return double(colony.buildSites);
+	case 3: return double(colony.rivalsWithinThreat);
+	case 4: return double(colony.distanceBands[2].storedAmount[WOOD]);
 	}
 	return 0;
 }
@@ -78,16 +82,17 @@ inline double fairnessModelContribution(const std::vector<ColonyQuality> &coloni
 	const ColonyQuality &colony = colonies[index];
 	switch (term)
 	{
-	case 0: return FAIRNESS_MODEL_BAND48_WHEAT_EXCLUSIVE_AMOUNT_LOG * std::log1p(std::max(double(colony.distanceBands[2].exclusiveStoredAmount[WHEAT]), 0.0));
-	case 1: return FAIRNESS_MODEL_NEAREST_RIVAL_DISTANCE_IDENTITY * (colony.rivalDistance < 0 ? 512.0 : double(colony.rivalDistance));
-	case 2:
+	case 0:
 	{
 		double total = 0;
 		for (const ColonyQuality &other : colonies)
-			total += double(other.tiedNearestTiles);
-		return FAIRNESS_MODEL_TIED_NEAREST_TILES_SHARE * (total > 0 ? (double(colony.tiedNearestTiles)) / total : 0.0);
+			total += double(other.distanceBands[1].exclusiveStoredAmount[WHEAT]);
+		return FAIRNESS_MODEL_BAND24_WHEAT_EXCLUSIVE_AMOUNT_SHARE * (total > 0 ? (double(colony.distanceBands[1].exclusiveStoredAmount[WHEAT])) / total : 0.0);
 	}
-	case 3: return FAIRNESS_MODEL_MEAN_FERTILITY_LOG * std::log1p(std::max(double(colony.meanFertility), 0.0));
+	case 1: return FAIRNESS_MODEL_BAND24_TIED_NEAREST_TILES_SQRT * std::sqrt(std::max(double(colony.distanceBands[1].tiedNearestTiles), 0.0));
+	case 2: return FAIRNESS_MODEL_BUILD_SITES_4X4_LOG * std::log1p(std::max(double(colony.buildSites), 0.0));
+	case 3: return FAIRNESS_MODEL_RIVALS_WITHIN_THREAT_IDENTITY * double(colony.rivalsWithinThreat);
+	case 4: return FAIRNESS_MODEL_BAND48_WOOD_AMOUNT_IDENTITY * double(colony.distanceBands[2].storedAmount[WOOD]);
 	}
 	return 0;
 }
@@ -97,15 +102,16 @@ inline double startFitness(const std::vector<ColonyQuality> &colonies, std::size
 {
 	const ColonyQuality &colony = colonies[index];
 	double fitness = FAIRNESS_MODEL_INTERCEPT;
-	fitness += FAIRNESS_MODEL_BAND48_WHEAT_EXCLUSIVE_AMOUNT_LOG * std::log1p(std::max(double(colony.distanceBands[2].exclusiveStoredAmount[WHEAT]), 0.0));
-	fitness += FAIRNESS_MODEL_NEAREST_RIVAL_DISTANCE_IDENTITY * (colony.rivalDistance < 0 ? 512.0 : double(colony.rivalDistance));
-	{ // tied_nearest_tiles, as this colony's share of the map's total
+	{ // band24_wheat_exclusive_amount, as this colony's share of the map's total
 		double total = 0;
 		for (const ColonyQuality &other : colonies)
-			total += double(other.tiedNearestTiles);
-		fitness += FAIRNESS_MODEL_TIED_NEAREST_TILES_SHARE * (total > 0 ? (double(colony.tiedNearestTiles)) / total : 0.0);
+			total += double(other.distanceBands[1].exclusiveStoredAmount[WHEAT]);
+		fitness += FAIRNESS_MODEL_BAND24_WHEAT_EXCLUSIVE_AMOUNT_SHARE * (total > 0 ? (double(colony.distanceBands[1].exclusiveStoredAmount[WHEAT])) / total : 0.0);
 	}
-	fitness += FAIRNESS_MODEL_MEAN_FERTILITY_LOG * std::log1p(std::max(double(colony.meanFertility), 0.0));
+	fitness += FAIRNESS_MODEL_BAND24_TIED_NEAREST_TILES_SQRT * std::sqrt(std::max(double(colony.distanceBands[1].tiedNearestTiles), 0.0));
+	fitness += FAIRNESS_MODEL_BUILD_SITES_4X4_LOG * std::log1p(std::max(double(colony.buildSites), 0.0));
+	fitness += FAIRNESS_MODEL_RIVALS_WITHIN_THREAT_IDENTITY * double(colony.rivalsWithinThreat);
+	fitness += FAIRNESS_MODEL_BAND48_WOOD_AMOUNT_IDENTITY * double(colony.distanceBands[2].storedAmount[WOOD]);
 	return fitness;
 }
 } // namespace MapGeneration

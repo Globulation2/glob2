@@ -39,6 +39,7 @@ import os
 import random
 import re
 import sys
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -242,15 +243,30 @@ def open_round(directory):
         return None
 
 
-def unfinished(status):
-    return bool(status['jobs'].get('pending') or status['jobs'].get('active'))
+# One synchronisation pass per round per interval. A bounded pass does not pace
+# itself the way the coordinator's own continuous loop does, and it ends with a
+# full status() -- which parses every stored attempt record, hundreds of
+# megabytes once a run is large. Calling it back to back pegs a core, starves
+# the hosts it is meant to feed and expires their leases.
+SYNC_INTERVAL_SECONDS = 60
+
+
+def unfinished(coordinator):
+    """Is there work left? Counted off the job table, not the full status report."""
+    states = dict(coordinator.db.execute(
+        'SELECT state,count(*) FROM jobs GROUP BY state').fetchall())
+    return bool(states.get('pending') or states.get('active'))
 
 
 def run_rounds(root, hosts, once=False, collect_only=False):
     """Advance every round a bounded step at a time, not one round to the end.
 
     Rounds share the same hosts, so running one to completion before touching
-    the next would leave the others' work queued behind it for hours.
+    the next would leave the others' work queued behind it for hours. Each pass
+    is one bounded synchronization per round, paced by the heartbeat: the
+    coordinator's own continuous loop paces itself, and a bounded pass does not,
+    so calling it back to back would spin on SSH and starve the hosts it is
+    trying to feed.
     """
     report, coordinators = [], []
     for directory in round_directories(root):
@@ -262,14 +278,19 @@ def run_rounds(root, hosts, once=False, collect_only=False):
     try:
         while True:
             live = False
+            started = time.monotonic()
             for name, coordinator in coordinators:
+                if not collect_only and not unfinished(coordinator):
+                    continue
                 coordinator.run(hosts, True, collect_only)
-                if not collect_only and unfinished(coordinator.status()):
+                if not collect_only and unfinished(coordinator):
                     live = True
             if once or collect_only or not live:
                 break
+            time.sleep(max(0.0, SYNC_INTERVAL_SECONDS - (time.monotonic() - started)))
         for name, coordinator in coordinators:
-            report.append({'round': name, 'status': coordinator.status()['jobs']})
+            report.append({'round': name, 'jobs': dict(coordinator.db.execute(
+                'SELECT state,count(*) FROM jobs GROUP BY state').fetchall())})
     finally:
         for _, coordinator in coordinators:
             coordinator.close()
@@ -976,10 +997,26 @@ def fairness_distribution(model, dataset):
 # is what produced this list, and `docs/map-generators/FAIRNESS_MODEL.md`
 # records why each measurement is in it.
 FINAL_FEATURES = [
-    ('band48_wheat_exclusive_amount', 'log'),
-    ('nearest_rival_distance', 'identity'),
-    ('tied_nearest_tiles', 'share'),
-    ('mean_fertility', 'log'),
+    # Food a colony will actually get: the wheat within a young colony's walk that
+    # no rival reaches sooner, as its share of what the map's colonies hold between
+    # them. Far and away the strongest single predictor of winning, and a share
+    # rather than a count because the same coefficient has to mean the same thing
+    # on a 64x64 map and a 512x512 one.
+    ('band24_wheat_exclusive_amount', 'share'),
+    # Ground within the same walk that a rival reaches just as soon: territory that
+    # has to be contested rather than settled.
+    ('band24_tied_nearest_tiles', 'sqrt'),
+    # Room to build, under a log: the difference between 100 sites and 200 matters,
+    # between 900 and 1000 much less.
+    ('build_sites_4x4', 'log'),
+    # How crowded the neighbourhood is, counting rivals inside the threat radius.
+    ('rivals_within_threat', 'identity'),
+    # Wood standing within 48 steps, which comes out NEGATIVE. Wood is a supply, so
+    # the sign is the surprise of this fit; the reading that fits the rest of the
+    # model is that standing forest is ground you cannot build on and have to clear
+    # before you can grow into it, and that no colony in these games ran short of
+    # wood. Stated as a measured association, not a mechanism.
+    ('band48_wood_amount', 'identity'),
 ]
 HEADER_PATH = 'src/map/generator/shared/FairnessModel.h'
 IDENTIFIER_PATTERN = re.compile(r'[^A-Za-z0-9]+')

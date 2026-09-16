@@ -301,7 +301,7 @@ def main():
             run(bad,ok=False)
         assert saved.read_bytes() == original
         assert (prefs.read_bytes(),prefs.stat().st_mtime_ns) == before
-    print('PASS map JSON: schema contract, analytic distances/resources/space, fairness formulas, '
+    print('PASS map JSON: schema contract, analytic distances/resources/space, the fitted fairness model, '
           'unchanged serialized state/RNG, config provenance, repeatability, old saves and output errors')
     print('Artifacts:',OUT)
 

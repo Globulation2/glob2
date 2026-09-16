@@ -126,6 +126,12 @@ editing when the fit changes, including when it selects different measurements.
 from the report's own raw measurements and its published coefficients, and requires the
 engine to agree exactly. That is what keeps the two implementations from drifting.
 
+One generator's maps depend on the coefficients. Lava shield ranks its own settlement
+proposals by the map score (`chooseScoredSettlements`), so refitting changes which town
+layout it picks on some seeds. After a refit, re-run
+`build/src/MapGeneratorGoldenTest PROFILE --update --force` and commit the rows; `--force`
+because a refit is new data for a shared score, not a new revision of that generator.
+
 ## How many candidate rolls to keep
 
 The lobby generates `GenerationService::kSampledCandidates` rolls and keeps the fairest.
