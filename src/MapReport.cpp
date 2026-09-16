@@ -215,12 +215,18 @@ J scaleJson(const StartQualityScale &s)
 }
 J modelJson()
 {
-	std::vector<std::pair<std::string, J>> terms;
+	std::vector<J> terms;
 	for (int i = 0; i < FAIRNESS_MODEL_FEATURE_COUNT; ++i)
-		terms.push_back({fairnessModelTerms()[i].name, J(fairnessModelTerms()[i].coefficient)});
+	{
+		const auto &term = fairnessModelTerms()[i];
+		terms.push_back(J::object({{"measurement", term.name},
+								   {"transform", term.transform},
+								   {"label", term.label},
+								   {"coefficient", term.coefficient}}));
+	}
 	return J::object({{"intercept", FAIRNESS_MODEL_INTERCEPT},
 					  {"games", FAIRNESS_MODEL_GAMES},
-					  {"terms", J::object(terms)}});
+					  {"terms", J::array(terms)}});
 }
 J qualityJson(const StartQualityReport &report, const StartQualityScale &scale)
 {
