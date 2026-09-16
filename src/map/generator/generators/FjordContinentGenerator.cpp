@@ -469,10 +469,16 @@ std::vector<MapGeneratorPoint> anchorTeams(Game &game, const FjordLayout &layout
 	{
 		double theta = layout.teamTheta[i];
 		double maxR = layout.coast.radiusAt(theta);
-		// 8 tiles in from the coast: room for the swarm and its clear ring with the sea at its
-		// back. Stepping inward (at most 30 steps, stopping 2 tiles outside the core) is only for
-		// when that tile turned out to be water.
-		double r = std::max(layout.coreR + 6.0, maxR - 8.0);
+		// 11 tiles in from the coast: room for the swarm and its clear ring with the sea at its
+		// back. It was 8 until 2026-09-16, which seated the swarm where the peninsula is still
+		// narrowing, so the deposits laid round it could close the last of its walking room. Three
+		// tiles further in takes that from 4.6% of colonies to 1.1% (456 colonies over ten
+		// size/colony cells and eight seeds; two tiles reaches 2.6%), and costs about a point of
+		// start quality on the median map (canonical worst-colony score 0.696 to 0.689) because the
+		// ground out at the tip scores well when it is not a trap. openStartsBuriedByResources
+		// still catches the rest. Stepping inward (at most 30 steps, stopping 2 tiles outside the
+		// core) is only for when that tile turned out to be water.
+		double r = std::max(layout.coreR + 6.0, maxR - 11.0);
 		double stepIn = (maxR - (layout.coreR + 2.0)) / 30.0;
 		if (stepIn <= 0.0)
 			stepIn = 1.0;
@@ -877,7 +883,7 @@ GeneratorDefinition fjordContinentDefinition()
 	return {"fjord-continent",
 			12,
 			"Fjord continent",
-			12,
+			13,
 			false,
 			{{"continent-size", "Continent size", 28, 40, 2, 34, ControlGroup::Terrain},
 			 {"coast-roughness", "Coast roughness", 10, 35, 1, 22, ControlGroup::Terrain},
