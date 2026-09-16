@@ -90,6 +90,11 @@ Consequences a generator has to design around:
   has to be kept away from the patch rather than carved out of its ring, or the patch spreads
   from that side. Sand around a plot works because a deposit cannot occupy sand at all; that is
   a different mechanism from the flag.
+- **Flag the ring alone to keep a deposit renewable.** A deposit thickens on its own tile and
+  extends onto a neighbour, and the flag is checked on whichever tile would change. Flag the
+  patch and its ring and the patch is finite; flag only the ring and the patch regrows in
+  place after every harvest but can never extend. That is the containment for food meant to
+  feed a colony where sand would look wrong — a spot of wheat on a riverbank.
 - **Fruit is a weapon.** A colony whose inns hold all three fruits can pull hungry enemy units
   across to its side, so an orchard of all three kinds in contested ground is the strongest prize
   a map can offer, and fruit spread unevenly between colonies is a real unfairness.

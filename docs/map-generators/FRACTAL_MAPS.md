@@ -102,11 +102,12 @@ plot:
   neither of them anywhere to be.
 
 Measured over 128/256/512 maps at two to eight colonies, six seeds each, this takes
-Hilbert from 1,871 to 3,230 resource tiles and Gardens from 1,422 to 2,990, against
+Hilbert from 1,871 to 3,519 resource tiles and Gardens from 1,422 to 3,137, against
 a 7,764 median across the 48 playable landscapes. They stay deliberately short of that
 median: most of it is timber, and on a map with water across its open land every scattered
-tree is a future forest, so food and timber are held roughly level instead. Water rises
-from 10.2% to 13.8% and from 12.7% to 18.5%, still well
+tree is a future forest, so these maps lean on food instead — about two tiles of wheat for
+every one of timber (Hilbert 1,966 to 990, Gardens 1,560 to 942). Water rises from 10.2% to
+13.8% and from 12.7% to 18.5%, still well
 under the field's 29.8%: these are maps of land
 cut by one fractal channel, and the median belongs to archipelagos. Widening the
 channel was tried and rejected — a seven-tile river leaves no room for a crossing
@@ -145,6 +146,16 @@ terrain is cut, because beds, plots and paths are all laid after the pass the ho
 use. A bed lays four rows of grass round its pool so the beach can take the innermost and
 leave three rows of crops.
 
+Wheat also grows along the shore of each map's centrepiece — Hilbert's river, Gardens'
+central lake — in 3×3 spots just past the beach, at least twenty tiles apart and never on or
+beside anything the design owns. They are contained by flagging each spot's ring and not the
+spot: a spot regrows in place after every harvest and never extends. Gardens' four bank plots
+round every smaller lake are three wheat and one timber, the seed choosing which bank.
+
+Every path meets the sand or water of the feature it joins, not the edge of that feature's
+recorded box, which is larger than its visible rim. A crossing's two landings are joined to
+the tree separately, so every bridge is met by a path on both banks.
+
 Ambient copses and quarries are finite. `canResourcesGrow` blocks growth only on the flagged
 tile, and a deposit extends to its neighbours once its amount passes a random 0–7, so each
 copse and quarry is flagged together with the complete ring of tiles it could reach, and
@@ -168,11 +179,13 @@ room.
 `generators/FractalMapSupport` contains the economic policy shared by these two
 maps; it is deliberately outside the neutral geometry toolkit. A home module
 occupies roughly 56×56 corners. It contains 24×24 pure-grass construction tiles,
-separate renewable wheat and wood plots, several harvesting aisles, a quarry,
+a wheat plot north and a second wheat plot south (it grew timber until 2026-09-16; the
+home's renewable timber is now the two bays at the ends of the north plot, and the rest is
+out on the map), several harvesting aisles, a quarry,
 and access to outside building ground. Sand caps contain most crop edges. A grass
 service apron directly beside wheat fits feeding buildings; the existing saved
 `canResourcesGrow` flag protects this apron from future crops. Near timber bays
-shorten inn construction and upgrade deliveries; the southern plot supplies bulk wood. No emergency resource clearer may carve another crossing.
+shorten inn construction and upgrade deliveries, and are the home's only renewable timber. No emergency resource clearer may carve another crossing.
 
 A bounded maximin search tries up to 64 initial anchors, with toroidal separation.
 Gardens prefers complete first-level districts where they are large enough; narrow

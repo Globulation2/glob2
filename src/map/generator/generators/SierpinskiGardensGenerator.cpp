@@ -37,6 +37,8 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	const auto &t = L.t;
 	const RegionBounds root{0, 0, t.w, t.h}, lake = lakeIn(root, o.lakePercent);
 	fillRectangle(L.terrain, t, lake, WATER);
+	// The central lake's outer shore gets wheat spots when the resources go down.
+	fillRectangle(L.wheatShore, t, lake, 1);
 	// Reserve homes against the largest, unavoidable lake FIRST. Smaller lakes are only
 	// allowed in unreserved districts. No late "make room" pass may flatten the nesting.
 	std::vector<Home> districts;
@@ -303,19 +305,20 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		const int y = (b.y0 + b.y1) / 2;
 		// Banks alternate food and timber by seeded lake role; unsuccessful plots are
 		// genuine omissions, never an excuse to fill part of the recursive lake.
-		// One bank in four carries timber, the rest food: the ambient copses are the map's
-		// wood, and a lake bank is worth more as somewhere a colony can feed itself.
-		const bool timber =
-			GenerationContext::deriveSeed(r.seed, "garden-farm-" + std::to_string(k)) % 4 == 0;
+		// Three banks of every lake grow wheat and exactly one grows timber, the seed choosing
+		// which: a garden lake is somewhere a colony feeds itself, with one stand of wood
+		// beside it. Alternating the kinds round the lake gave two of each (2026-09-16).
+		const int timberSide =
+			int(GenerationContext::deriveSeed(r.seed, "garden-farm-" + std::to_string(k)) % 4);
 		const int x = (b.x0 + b.x1) / 2;
 		// All four banks, not just the two sides: a garden lake with crops on one shore and
 		// bare grass on the other three was most of what made this map read as empty. Each box
 		// runs up to the lake's own edge, so the plot shares the shore's sand and its crops
 		// stand in the water's growth range instead of a few tiles inland of it.
-		farms += bankFarm(L, {b.x0 - 15, y - 12, b.x0 + 1, y + 12}, timber);
-		farms += bankFarm(L, {b.x1 - 1, y - 12, b.x1 + 15, y + 12}, !timber);
-		farms += bankFarm(L, {x - 12, b.y0 - 15, x + 12, b.y0 + 1}, !timber);
-		farms += bankFarm(L, {x - 12, b.y1 - 1, x + 12, b.y1 + 15}, timber);
+		farms += bankFarm(L, {b.x0 - 15, y - 12, b.x0 + 1, y + 12}, timberSide == 0);
+		farms += bankFarm(L, {b.x1 - 1, y - 12, b.x1 + 15, y + 12}, timberSide == 1);
+		farms += bankFarm(L, {x - 12, b.y0 - 15, x + 12, b.y0 + 1}, timberSide == 2);
+		farms += bankFarm(L, {x - 12, b.y1 - 1, x + 12, b.y1 + 15}, timberSide == 3);
 	}
 	// The lakes are features too, so paths lead to their shores as well as to the plots.
 	L.features.push_back({lake.x0 - 2, lake.y0 - 2, lake.x1 + 2, lake.y1 + 2});
@@ -370,7 +373,7 @@ GeneratorDefinition sierpinskiGardensDefinition()
 	return {"sierpinski-gardens",
 			49,
 			"Sierpiński Gardens",
-			4,
+			5,
 			false,
 			controls,
 			generate,

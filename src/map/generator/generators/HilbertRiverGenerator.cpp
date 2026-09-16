@@ -59,6 +59,13 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		if (maximum == 1)
 			return L;
 	}
+	// The river is the shore that gets wheat spots when the resources go down.
+	{
+		std::vector<StrokePoint> stroke;
+		for (const auto &p : path.points)
+			stroke.push_back({p.x, p.y, o.width / 2.0});
+		strokePath(L.wheatShore, t, stroke);
+	}
 	// Include home irrigation in the graph's real end-around and seam distances.
 	layHomeEconomies(L);
 	std::vector<CrossingCandidate> candidates;
@@ -234,6 +241,6 @@ GeneratorDefinition hilbertRiverDefinition()
 		{"major-shortcuts", "Optional major shortcuts", 0, 4, 1, 2, ControlGroup::Layout}};
 	const auto resources = resourceControls();
 	controls.insert(controls.end(), resources.begin(), resources.end());
-	return {"hilbert-river", 50,           "Hilbert River", 4, false, controls, generate, true,
+	return {"hilbert-river", 50,           "Hilbert River", 5, false, controls, generate, true,
 			validateRequest, validateWorld};
 }

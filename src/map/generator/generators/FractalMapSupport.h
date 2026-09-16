@@ -30,6 +30,8 @@ struct Layout
 	/// Per feature, ground to pave if a path arrives: a crossing's approach from the end of its
 	/// stroke to the shore where its surface begins. Empty for every other feature.
 	std::vector<std::vector<int>> featureApproach;
+	/// Water whose shore gets spots of wheat: Hilbert's river, Gardens' central lake.
+	std::vector<unsigned char> wheatShore;
 	std::string failure;
 };
 void initialize(Layout &, const GenerationRequest &);

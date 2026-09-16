@@ -19,7 +19,7 @@ namespace
 // Opening-game probes found food-limited colonies while their first inn upgraded.
 // Move the swarm six tiles toward its contained wheat instead of enlarging crops
 // into the building court. The full swarm still fits inside the 24x24 court; the
-// southern timber plot stays reachable and is rechecked after workers are placed.
+// timber bays beside the wheat stay reachable and are rechecked after workers are placed.
 // This is an economic tuning offset, not a change to the neutral site selector.
 constexpr int kStarterNorthOffset = 6;
 } // namespace
@@ -35,7 +35,7 @@ void initialize(Layout &L, const GenerationRequest &r)
 	L.t = Torus(1 << r.wDec, 1 << r.hDec);
 	L.terrain.assign(L.t.size(), GRASS);
 	L.reserved.assign(L.t.size(), 0);
-	L.wheat = L.wood = L.objectives = L.crossings = L.growthRestricted = L.reserved;
+	L.wheat = L.wood = L.objectives = L.crossings = L.growthRestricted = L.wheatShore = L.reserved;
 }
 bool reserveHomes(Layout &L, GenerationContext &context, const std::vector<Home> &preferred,
 				  GenerationTelemetry *observations)
@@ -138,22 +138,25 @@ void layHomeEconomies(Layout &L)
 		// The existing two-corner sand aisles separate these bays from the two
 		// inner wheat beds, so later forest growth cannot replace their grain.
 		// The union of crop masks is unchanged: protected bridge geometry and the
-		// 24x24 court do not move. Southern timber remains the bulk expansion plot.
+		// 24x24 court do not move. They are the home's only renewable timber since the
+		// southern plot became wheat.
 		for (const RegionBounds bay : {RegionBounds{h.x - 23, h.y - 19, h.x - 16, h.y - 15},
 									   RegionBounds{h.x + 18, h.y - 19, h.x + 24, h.y - 15}})
 		{
 			fillRectangle(L.wheat, t, bay, 0);
 			fillRectangle(L.wood, t, bay, 1);
 		}
-		// Wood has a separate, narrower plot: enough renewable timber for upgrades, but
-		// not so much forest that it competes with food or forces clearing before building.
+		// The southern plot is wheat too (2026-09-16): a home's renewable timber is the two
+		// bays above, and the rest comes from copses and timber bank plots out on the map, so
+		// a colony that wants to build big has a reason to leave home. The finished-world
+		// check still refuses any home without reachable renewable wood.
 		fillRectangle(L.terrain, t, {h.x - 26, h.y + 17, h.x + 27, h.y + 29}, SAND);
 		// Five rows of water, matching the wheat side: two rows fed the timber slowly and left
 		// the south of every module looking dry (2026-09-16). Crops regrow at a rate set by how
 		// much water is near them, so the width of this strip is the timber supply.
 		fillRectangle(L.terrain, t, {h.x - 24, h.y + 24, h.x + 25, h.y + 29}, WATER);
 		fillRectangle(L.terrain, t, {h.x - 24, h.y + 19, h.x + 25, h.y + 23}, GRASS);
-		fillRectangle(L.wood, t, {h.x - 23, h.y + 20, h.x + 24, h.y + 22}, 1);
+		fillRectangle(L.wheat, t, {h.x - 23, h.y + 20, h.x + 24, h.y + 22}, 1);
 		// Crossing each crop frontage with three pure-sand aisles limits patch width and
 		// guarantees access even after every eligible crop tile has filled in. The aisles stop
 		// at the crops: run through the water as well and each strip becomes four short ponds
@@ -401,9 +404,17 @@ int gardenPaths(Layout &L, GenerationContext &context)
 		int d = ((to - from) % size + size) % size;
 		return d > size / 2 ? d - size : d;
 	};
-	// Walk a polyline of straight legs from feature a to feature b. Tiles still inside a are
-	// the way out and tiles inside b the way in; everything between must be open ground.
-	// Returns the tiles of the path proper, or nothing when the route crosses anything else.
+	// Ground a path end may be laid over inside a feature's own box: grass that is not a crop,
+	// a court or a crossing's paving. A feature's box is larger than its visible edge — a
+	// home's box takes in its frayed margin — so a path that stopped at the box stopped a few
+	// tiles short of the sand it was meant to meet (2026-09-16).
+	const auto paveable = [&](int i)
+	{ return path[i] || (L.terrain[i] == GRASS && !L.wheat[i] && !L.wood[i] && !L.objectives[i]); };
+	// Walk a polyline of straight legs from feature a to feature b. Inside a, only the stretch
+	// after its last sand or water tile belongs to the path, so the path starts against a's
+	// edge; between the boxes every tile must be open ground; inside b, the path runs on until
+	// it meets b's first sand or water tile. Returns the tiles of the path, or nothing when the
+	// route crosses anything else.
 	const auto trace = [&](int a, int b, const std::vector<std::pair<int, int>> &corners)
 	{
 		std::vector<int> tiles;
@@ -418,11 +429,22 @@ int gardenPaths(Layout &L, GenerationContext &context)
 			{
 				const int x = x0 + dx * k, y = y0 + dy * k, i = t.at(x, y);
 				if (inside(x, y, L.features[size_t(b)]))
-					return tiles;
+				{
+					if (!paveable(i))
+						return tiles;
+					tiles.push_back(i);
+					continue;
+				}
 				if (!left)
 				{
 					if (inside(x, y, L.features[size_t(a)]))
+					{
+						if (paveable(i))
+							tiles.push_back(i);
+						else
+							tiles.clear();
 						continue;
+					}
 					left = true;
 				}
 				if (!open(i))
@@ -430,7 +452,9 @@ int gardenPaths(Layout &L, GenerationContext &context)
 				tiles.push_back(i);
 			}
 		}
-		return std::vector<int>{};
+		// Ran out of legs without meeting b's edge: b's box was reached only through open
+		// ground to its centre, which a real feature always has an edge before.
+		return tiles;
 	};
 	// Candidate edges: each feature to its six nearest, by the Manhattan distance a square
 	// path actually walks, shortest first.
@@ -470,10 +494,11 @@ int gardenPaths(Layout &L, GenerationContext &context)
 		return v;
 	};
 	std::vector<unsigned char> reached(static_cast<size_t>(n), 0);
-	// A crossing already joins its two landings; the tree should use it, not route round it.
-	for (const auto &[a, b] : L.featureLinks)
-		if (a < n && b < n && find(a) != find(b))
-			root[size_t(find(a))] = find(b);
+	// A crossing's two landings are deliberately NOT joined before the tree is built. Joined,
+	// the tree needed only one path into the pair, so one bank of every bridge got a path and
+	// the other got none (2026-09-16). Separate, the water between them refuses every route
+	// across, so each bank joins the features on its own side and every bridge is met at both
+	// ends. The crossing counts as a join only when reporting what is left unjoined.
 	int joined = 0, pathTiles = 0;
 	for (const auto &e : edges)
 	{
@@ -527,6 +552,9 @@ int gardenPaths(Layout &L, GenerationContext &context)
 			L.terrain[i] = SAND;
 			++sand;
 		}
+	for (const auto &[a, b] : L.featureLinks)
+		if (a < n && b < n && find(a) != find(b))
+			root[size_t(find(a))] = find(b);
 	int components = 0;
 	for (int v = 0; v < n; ++v)
 		components += find(v) == v;
@@ -681,17 +709,80 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 	// stone belongs at the quarries, fruit in the contested courts, and food inside the
 	// contained plots. A first pass scattered all three everywhere and the map read as
 	// confetti rather than as somewhere with places worth going.
+	std::vector<unsigned char> spots(t.size(), 0);
 	const auto besideCropOrCourt = [&](int x, int y)
 	{
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
 				const int j = t.at(x + dx, y + dy);
-				if (L.objectives[j] || L.wheat[j] || L.wood[j])
+				if (L.objectives[j] || L.wheat[j] || L.wood[j] || spots[j])
 					return true;
 			}
 		return false;
 	};
+	// Spots of wheat along the shore of the water the design names — Hilbert's river,
+	// Gardens' central lake — so the banks of the map's centrepiece carry food of their own.
+	// A spot is a 3x3 of wheat just past the beach, at least a court's width from
+	// the next, and never on or beside anything the design owns. By water, wheat would
+	// spread, so a spot is contained the one way that still lets it feed a colony: the
+	// no-growth flag goes on its RING and not on the spot. The spot thickens back in place
+	// after every harvest, and can never extend, because every tile it could extend into is
+	// flagged (2026-09-16).
+	{
+		// Six tiles: a spot and its ring are five across and must clear the beach, so the
+		// nearest a centre can sit is about four tiles out; six leaves room to find one.
+		const auto nearShore = dilate(t, L.wheatShore, 6);
+		std::vector<int> centres;
+		const int spacing = 20;
+		for (int i = 0; i < t.size(); ++i)
+		{
+			if (!nearShore[i] || L.wheatShore[i])
+				continue;
+			const int cx = i % t.w, cy = i / t.w;
+			bool clear = true;
+			for (int dy = -2; clear && dy <= 2; ++dy)
+				for (int dx = -2; clear && dx <= 2; ++dx)
+				{
+					const int x = t.x(cx + dx), y = t.y(cy + dy), j = t.at(x, y);
+					// The spot and its ring: all grass, none of it designed ground, and
+					// nothing a spot's ring would have to leave unflagged next to it.
+					clear = map.isGrass(x, y) && clearGround(map, x, y) && !L.reserved[j] &&
+							!L.crossings[j] && !L.objectives[j] && !L.wheat[j] && !L.wood[j];
+				}
+			if (!clear || besideCropOrCourt(cx, cy))
+				continue;
+			bool apart = true;
+			for (const int c : centres)
+				apart &= t.chebyshev(cx, cy, c % t.w, c / t.w) >= spacing;
+			if (apart)
+				centres.push_back(i);
+		}
+		int planted = 0;
+		for (const int c : centres)
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+				{
+					const int x = t.x(c % t.w + dx), y = t.y(c / t.w + dy);
+					if (int(context.bounded("fractal-shore-wheat", 100)) >=
+						context.request.option("wheat-amount"))
+						continue;
+					map.setResource(x, y, WHEAT, 1);
+					spots[t.at(x, y)] = 1;
+					++planted;
+				}
+		auto ring = dilate(t, spots, 1);
+		for (int i = 0; i < t.size(); ++i)
+			if (spots[i])
+				ring[i] = 0;
+		if (preventResourceGrowth(map, ring) < 0)
+		{
+			context.detail = "Invalid shore wheat ring.";
+			return false;
+		}
+		context.telemetry.measure("fractal.shore-wheat.spots", int(centres.size()));
+		context.telemetry.measure("fractal.shore-wheat.tiles", planted);
+	}
 	std::vector<unsigned char> ambient(t.size(), 0);
 	int ambientTiles = 0;
 	for (int i = 0; i < t.size(); ++i)
