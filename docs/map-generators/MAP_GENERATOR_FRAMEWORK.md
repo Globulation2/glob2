@@ -37,7 +37,7 @@ and Terrain take a `Game` because placing buildings and units needs its mutation
 | `Tessellation` | Polygon tilings of the torus with no terrain attached: `squareTessellation` and `hexTessellation` (cells, the corners they share and edges as identities, exact across the wrap even two cells wide), `edgeEnds`, `centreAcross`, `outline`, `transform` (the lattice's translations and mirrors), `labelTiles` (every tile's cell), `cellCrossing` (a path through a particular shared edge, outside reserved centre discs, preserving distinct toroidal parallel crossings), `shortestEdgeSteps` and `centreClearance`; `warpLimit` and `warpCorners`, corners moved at random into irregular polygons that still tile, never closing the gap between walls that share no corner below a minimum (Maze); `rasterizeBoundaries` (sealed selected edges with toroidal thickness) and `relaxWarpOutside` (bounded deterministic contraction away from an arbitrary protected tile mask) |
 | `GraphMaze` | A maze carved through any `CellGraph` (a tessellation's with `cellGraph(tiling)`, or scattered sites' with `cellGraph(torus, sites, siteNeighbours)`): `pocketsFit` and `spreadPockets` (cul-de-sac cells spread as far apart as still leaves a maze), `carveSpanningTree` (recursive backtracker), `carveNearTree` (Kruskal over jittered distances: the network a traveller would build, each cell to the next one over), `openPocketDoors`, `openLoops`, `deadEnds` (Maze, Drumlin field); `closedEdges` (candidate crossings excluding protected endpoints) and `edgeDetours` (existing route lengths for shortcut scoring, caching floods by endpoint); `farthestCells` (farthest-point spreading over eligible cells with no maze constraint) and `claimNeighbourCells`, neighbouring cells dealt to seed cells round by round with every seed ending on the same count (Plantations' granted islands) |
 | `HeightMap`, `Noise` | Perlin noise faded across the wrap, and the stamped height fields the height-field generators shape |
-| `ClearingLandscape` | Sand-contained round homes on a dealt lattice, optional home pools and distant lakes; shared by Old Growth and Vultures without changing Old Growth's seed streams or layout arithmetic for passing layouts. Vultures may opt into a vacancy lattice only after the ordinary room check fails |
+| `ClearingLandscape` | Sand-contained round homes on a dealt lattice, optional home pools and distant lakes; shared by Old Growth and Locust without changing Old Growth's seed streams or layout arithmetic for passing layouts. Locust may opt into a vacancy lattice only after the ordinary room check fails |
 | `ScoredSettlements` | `chooseScoredSettlements`: compare a bounded list of complete settlement proposals in fresh worlds, score actual workers/resources/room with `StartQuality`, enforce caller viability checks, and restore all trial RNG effects; the returned winning sites are materialized by the same builder |
 | `Territories` | Ground shared out where wedges cannot be fair (a square map's corners, the wrap, odd colony counts): `growTerritories`, equal-area regions grown together from seed tiles, the smallest always taking the next cheapest tile, connected and deterministic, or shared by value when each claimant's ground has a worth per tile; `balancedTerritories`, a power diagram from one site per claimant with the weights tuned until the areas are equal, so every border is a straight line (Amphitheatre); `smoothLabels`, a majority filter over any radius that trims spurs or, at a radius of 3 or 4, straightens borders into curves; `separateTerritories`, a gap opened between neighbouring territories; `fillToNearest`, the reverse: unclaimed ground near labelled regions given to the nearest, so water between pieces becomes land; `strandedGround`, land a flood cannot reach; `growFarLake`, a lake of an exact size at the roomy far end of a region; `growLakeBeside`, one on either flank of a site, kept wholly to its side of the line from the way in; `siteAtDepth`, the roomiest site a given number of steps from a region's way in |
 | `Farmland` | `stampContainedPlot`, arbitrary grass-corner sets with sealed sand margins; `plantContainedPlot`, fertility-ranked deposits with explicit count and renewable constraints; `containedPlotsMismatch`, final eight-neighbour grass containment validation (see [Savannah](SAVANNAH.md)). Farms laid like real ones, in long rows of crops with water between: `bestFarmRows`, the crop and water widths that yield most for rows at an angle (10 and 8 tiles along an axis, 12 and 9 on the diagonal, a rough line through the exact regrowth sums `tools/farm_row_fit.py` computes); `farmYield`, the yield per tile at that angle from the same fit (0.149 along an axis, 0.113 on the diagonal); `layFarm`, rows over a region with a rim of land kept round them and, optionally, a 10x4 building plot of grass ringed with sand at its most inland point and sand bridges clean across the farm every so many tiles along the rows, water and crop rows alike (2026-09-14; before, only the water rows), each half switched by `FarmBridges` and offered to players by every farm-row map as `water-crossings` and `crop-crossings` (`waterCrossingsControl`, `cropCrossingsControl`, both on), so workers cross the whole field on one road (a plot's grass always wins over a bridge), and a ring of sand closing the crop rows so wheat and wood never spread out of the farm; `plantFarm`, wheat along the water on every crop row and a small woodlot along one; `clearFarmPlots`; `farmReachable`, the share of a farm's crop land a colony can walk to; `growFarmFields`, farm fields grown into open water straight out of their own homes by equal yield for their row angles, held off all other land and each other, opened so no strip too narrow for its beaches survives (and only ground whose eroded core joins the home's core stays, since two cores that do not touch can overlap once grown back through a waist the coast walls then close), and joined to their homes by a broad neck. Walls round a farm are the map's business, not the farm's; `layContourFarm`, complete circular bands around central clearings, with inner/outer sand caps and radial crossings (`ContourFarmStyle`) |
@@ -82,7 +82,7 @@ landscape generators Fingerprint, Rain shadow, Old growth, Canals, Polder, Old t
 [Breachable highlands](BREACHABLE_HIGHLANDS.md)) follow one
 landscape generators Fingerprint, Rain shadow, Old growth, Canals, Polder, Old town, Anthill and Drumlin
 field) follow one
-landscape generators Fingerprint, Rain shadow, Old growth, Vultures, Canals, Polder, Old town and Anthill) follow one
+landscape generators Fingerprint, Rain shadow, Old growth, Locust, Canals, Polder, Old town and Anthill) follow one
 landscape generators Fingerprint, Rain shadow, Old growth, Canals, Polder, Old town, Anthill and Plantations) follow one
 shape, and the newest of them are little more than a sequence of shared stages:
 landscape generators Fingerprint, Rain shadow, Old growth, Canals, Polder, Old town, Anthill and Braided
@@ -144,7 +144,8 @@ restores whatever landscape it had.
 | `city-states` | 17 | City states | Its own — see below |
 | `canals` | 29 | Canals | Its own — see below |
 | `braided-river` | 42 | Braided river | Its own — see below |
-| `rice-terraces` | 46 | Rice terraces | [Contour farms and summit towns](RICE_TERRACES.md) |
+| `hills` | 46 | Hills | [Contour farms and summit towns](HILLS.md) (named Rice terraces until 2026-09-16) |
+| `rice-terraces` | 52 | Rice terraces | [Terraced hillsides spiralling round the torus](RICE_TERRACES.md) |
 | `plantations` | 48 | Plantations | Its own — see below |
 | `sierpinski-gardens` | 49 | Sierpiński Gardens | [Recursive lakes, home districts and orchard causeways](FRACTAL_MAPS.md) |
 | `hilbert-river` | 50 | Hilbert River | [Folded river, contained bank farms and hierarchical shortcuts](FRACTAL_MAPS.md) |
@@ -156,7 +157,7 @@ restores whatever landscape it had.
 | `polder` | 30 | Polder | Its own — see below |
 | `carousel` | 22 | Carousel | Its own — see below |
 | `old-growth` | 28 | Old growth | Its own — see below |
-| `vultures` | 47 | Vultures | Dry, finite wheat fields and shoreline wood — see [design and verification](VULTURES.md) |
+| `locust` | 47 | Locust | Dry, finite wheat fields and shoreline wood — see [design and verification](LOCUST.md) (named Vultures until 2026-09-16) |
 | `anthill` | 32 | Anthill | Its own — see below |
 | `glacis` | 39 | The Glacis | Its own — see below; a premade base (`shared/Bases`) |
 | `savannah` | 45 | Savannah | [Open plains, contained home crops and neutral watering holes](SAVANNAH.md) |
@@ -1124,10 +1125,10 @@ at intervals staggered from ridge to ridge, so moving along a valley is easy and
 - **Checked, not assumed.** Every ridge tile that could hold stone does, every pond present, every
   colony walkable from the first through the passes.
 
-## Vultures
+## Locust
 
 An additive finite-food landscape built on the shared Old Growth clearing geometry. See
-[Vultures design, budgets, reusable operations and verification](VULTURES.md). New shared
+[Locust design, budgets, reusable operations and verification](LOCUST.md) (named Vultures until 2026-09-16). New shared
 operations are `pureTiles(Map, type)`, `capResourceStock` and `startingAccessFailure`; existing
 map policies are unchanged.
 

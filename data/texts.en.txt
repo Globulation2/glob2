@@ -2620,8 +2620,18 @@ Contour band width
 Stairs per hill
 [Valley river]
 Valley river
-[Vultures]
-Vultures
+[Hills]
+Hills
+[Hillsides]
+Hillsides
+[Terraces per slope]
+Terraces per slope
+[Waviness]
+Waviness
+[Stair spacing]
+Stair spacing
+[Locust]
+Locust
 [Plantations]
 Plantations
 [Plot size]

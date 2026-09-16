@@ -2620,8 +2620,18 @@ Emoji
 Лестниц на холм
 [Valley river]
 Река в долине
-[Vultures]
-Стервятники
+[Hills]
+Холмы
+[Hillsides]
+Склоны
+[Terraces per slope]
+Террас на склон
+[Waviness]
+Волнистость
+[Stair spacing]
+Шаг лестниц
+[Locust]
+Саранча
 [Plantations]
 Плантации
 [Plot size]

@@ -2622,8 +2622,18 @@ Szintvonalas sávok szélessége
 Lépcsők dombonként
 [Valley river]
 Völgyi folyó
-[Vultures]
-Keselyűk
+[Hills]
+Dombok
+[Hillsides]
+Lejtők
+[Terraces per slope]
+Teraszok lejtőnként
+[Waviness]
+Hullámosság
+[Stair spacing]
+Lépcsők távolsága
+[Locust]
+Sáskák
 [Plantations]
 Ültetvények
 [Plot size]

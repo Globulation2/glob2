@@ -2620,8 +2620,18 @@ Larĝo de nivelaj bendoj
 Ŝtuparoj por monteto
 [Valley river]
 Vala rivero
-[Vultures]
-Vulturoj
+[Hills]
+Montetoj
+[Hillsides]
+Deklivoj
+[Terraces per slope]
+Terasoj po deklivo
+[Waviness]
+Ondeco
+[Stair spacing]
+Interspaco de ŝtupoj
+[Locust]
+Akridoj
 [Plantations]
 Plantejoj
 [Plot size]

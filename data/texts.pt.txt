@@ -2628,8 +2628,18 @@ Largura das faixas de nível
 Escadas por colina
 [Valley river]
 Rio do vale
-[Vultures]
-Abutres
+[Hills]
+Colinas
+[Hillsides]
+Encostas
+[Terraces per slope]
+Socalcos por encosta
+[Waviness]
+Ondulação
+[Stair spacing]
+Espaçamento das escadas
+[Locust]
+Gafanhotos
 [Plantations]
 Plantações
 [Plot size]

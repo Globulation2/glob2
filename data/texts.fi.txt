@@ -2622,8 +2622,18 @@ Korkeusvyöhykkeiden leveys
 Portaita kukkulalla
 [Valley river]
 Laakson joki
-[Vultures]
-Korppikotkat
+[Hills]
+Kukkulat
+[Hillsides]
+Rinteet
+[Terraces per slope]
+Terasseja rinnettä kohden
+[Waviness]
+Aaltoilevuus
+[Stair spacing]
+Portaiden väli
+[Locust]
+Heinäsirkat
 [Plantations]
 Plantaasit
 [Plot size]

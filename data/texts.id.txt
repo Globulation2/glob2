@@ -2618,8 +2618,18 @@ Lebar pita kontur
 Tangga per bukit
 [Valley river]
 Sungai lembah
-[Vultures]
-Burung nasar
+[Hills]
+Bukit
+[Hillsides]
+Lereng
+[Terraces per slope]
+Teras per lereng
+[Waviness]
+Kebergelombangan
+[Stair spacing]
+Jarak tangga
+[Locust]
+Belalang
 [Plantations]
 Perkebunan
 [Plot size]

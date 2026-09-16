@@ -2630,8 +2630,18 @@ Polomer kopca
 Schodiská na kopec
 [Valley river]
 Rieka v údolí
-[Vultures]
-Supy
+[Hills]
+Kopce
+[Hillsides]
+Svahy
+[Terraces per slope]
+Terasy na svah
+[Waviness]
+Zvlnenie
+[Stair spacing]
+Rozstup schodov
+[Locust]
+Kobylky
 [Plantations]
 Plantáže
 [Plot size]

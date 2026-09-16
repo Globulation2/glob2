@@ -2622,8 +2622,18 @@ Szerokość pasów poziomicowych
 Schody na wzgórze
 [Valley river]
 Rzeka w dolinie
-[Vultures]
-Sępy
+[Hills]
+Wzgórza
+[Hillsides]
+Stoki
+[Terraces per slope]
+Tarasy na stok
+[Waviness]
+Falistość
+[Stair spacing]
+Odstęp schodów
+[Locust]
+Szarańcza
 [Plantations]
 Plantacje
 [Plot size]

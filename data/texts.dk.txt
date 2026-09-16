@@ -2698,8 +2698,18 @@ Bredde på højdekurvebånd
 Trapper pr. bakke
 [Valley river]
 Flod i dalen
-[Vultures]
-Gribbe
+[Hills]
+Bakker
+[Hillsides]
+Skråninger
+[Terraces per slope]
+Terrasser pr. skråning
+[Waviness]
+Bølgethed
+[Stair spacing]
+Trappeafstand
+[Locust]
+Græshopper
 [Plantations]
 Plantager
 [Plot size]

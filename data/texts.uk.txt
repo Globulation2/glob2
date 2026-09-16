@@ -2618,8 +2618,18 @@ Emoji
 Сходів на пагорб
 [Valley river]
 Річка в долині
-[Vultures]
-Стерв’ятники
+[Hills]
+Пагорби
+[Hillsides]
+Схили
+[Terraces per slope]
+Терас на схил
+[Waviness]
+Хвилястість
+[Stair spacing]
+Крок сходів
+[Locust]
+Сарана
 [Plantations]
 Плантації
 [Plot size]

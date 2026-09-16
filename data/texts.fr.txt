@@ -2632,8 +2632,18 @@ Largeur des bandes de niveau
 Escaliers par colline
 [Valley river]
 Rivière de vallée
-[Vultures]
-Vautours
+[Hills]
+Collines
+[Hillsides]
+Versants
+[Terraces per slope]
+Terrasses par versant
+[Waviness]
+Ondulation
+[Stair spacing]
+Espacement des escaliers
+[Locust]
+Criquets
 [Plantations]
 Plantations
 [Plot size]

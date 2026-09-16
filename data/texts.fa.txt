@@ -2620,8 +2620,18 @@ Emoji
 پلکان در هر تپه
 [Valley river]
 رود دره
-[Vultures]
-کرکس‌ها
+[Hills]
+تپه‌ها
+[Hillsides]
+دامنه‌ها
+[Terraces per slope]
+تراس در هر دامنه
+[Waviness]
+موج‌داری
+[Stair spacing]
+فاصله پلکان‌ها
+[Locust]
+ملخ
 [Plantations]
 مزارع
 [Plot size]

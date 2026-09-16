@@ -2622,8 +2622,18 @@ Polmer hriba
 Stopnišča na hrib
 [Valley river]
 Reka v dolini
-[Vultures]
-Jastrebi
+[Hills]
+Hribi
+[Hillsides]
+Pobočja
+[Terraces per slope]
+Teras na pobočje
+[Waviness]
+Valovitost
+[Stair spacing]
+Razmik stopnic
+[Locust]
+Kobilice
 [Plantations]
 Nasadi
 [Plot size]

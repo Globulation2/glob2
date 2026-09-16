@@ -2622,8 +2622,18 @@ Poloměr kopce
 Schodiště na kopec
 [Valley river]
 Řeka v údolí
-[Vultures]
-Supi
+[Hills]
+Kopce
+[Hillsides]
+Svahy
+[Terraces per slope]
+Terasy na svah
+[Waviness]
+Zvlnění
+[Stair spacing]
+Rozestup schodů
+[Locust]
+Kobylky
 [Plantations]
 Plantáže
 [Plot size]

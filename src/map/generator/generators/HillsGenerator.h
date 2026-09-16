@@ -2,11 +2,11 @@
 #pragma once
 #include "GenerationRequest.h"
 #include "GeneratorDefinition.h"
-struct RiceTerracesOptions
+struct HillsOptions
 {
 	int extraHills, hillRadius, bandWidth, stairs, towers;
 	bool river;
 	int wheat, wood, stone, algae, fruit;
-	explicit RiceTerracesOptions(const GenerationRequest &);
+	explicit HillsOptions(const GenerationRequest &);
 };
-GeneratorDefinition riceTerracesDefinition();
+GeneratorDefinition hillsDefinition();

@@ -2620,8 +2620,18 @@ Emoji
 سلالم لكل تل
 [Valley river]
 نهر الوادي
-[Vultures]
-النسور
+[Hills]
+تلال
+[Hillsides]
+سفوح
+[Terraces per slope]
+مدرجات لكل سفح
+[Waviness]
+التموج
+[Stair spacing]
+المسافة بين الدرجات
+[Locust]
+الجراد
 [Plantations]
 المزارع
 [Plot size]

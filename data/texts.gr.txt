@@ -2692,8 +2692,18 @@ Emoji
 Σκάλες ανά λόφο
 [Valley river]
 Ποτάμι κοιλάδας
-[Vultures]
-Γύπες
+[Hills]
+Λόφοι
+[Hillsides]
+Πλαγιές
+[Terraces per slope]
+Αναβαθμίδες ανά πλαγιά
+[Waviness]
+Κυματισμός
+[Stair spacing]
+Απόσταση σκαλοπατιών
+[Locust]
+Ακρίδες
 [Plantations]
 Φυτείες
 [Plot size]

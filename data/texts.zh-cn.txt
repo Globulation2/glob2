@@ -2618,8 +2618,18 @@ Emoji
 每座山丘的阶梯数
 [Valley river]
 山谷河流
-[Vultures]
-秃鹫
+[Hills]
+丘陵
+[Hillsides]
+山坡
+[Terraces per slope]
+每坡梯田数
+[Waviness]
+波动程度
+[Stair spacing]
+台阶间距
+[Locust]
+蝗灾
 [Plantations]
 种植园
 [Plot size]

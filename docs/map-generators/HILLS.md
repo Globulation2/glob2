@@ -1,4 +1,10 @@
-# Rice terraces
+# Hills
+
+Named **Rice terraces** until 2026-09-16. A maintainer found that closed rings round point
+summits, however lobed, do not read as rice terraces, which are long narrow strips following
+the contour of a whole hillside; that name now belongs to a map of terraced hillsides
+([Rice terraces](RICE_TERRACES.md)), and this map keeps its geometry, its numeric id 46 and its
+seed streams under the name it looks like. Its string id is now `hills`.
 
 ## Play contract
 
@@ -16,6 +22,14 @@ The summit has radius 16 and a two-corner sand containment ring. Complete crop/w
 bands end in another sand cap, keeping growth away from both summit and commons.
 Beyond the summit's cap the bands lobe in and out by up to four tiles, the same shift
 for every band at a heading so their widths hold; the summit and its cap stay round.
+Every stair carries on past the outer cap as a three-corner sand road across the valley to the
+edge of the hill's ground (where another hill becomes the nearest) and four tiles past it, so it
+fords the valley river there (revision 7: "at least one sand road connecting from each of the
+spokes outwards to the edges of your square"). Between every two stairs, just beyond the outer
+cap's furthest lobe, a small wild patch of four crop tiles alternates wheat and wood (revision 7:
+"a couple small seeds of wheat and wood on the outside of each of the rings"). They lie within the
+growth probe of the hill's outer water band and spread into the commons over a long game; the
+amounts scale them to nothing.
 The open valleys offer fruit, quarry outcrops and expansion room. Optional vacant
 hills provide another farm and summit to contest. A valley river follows boundaries
 between hills and has regular sand fords. Players choose which stairs to defend and
@@ -67,7 +81,7 @@ finite supplies, registering the new building's service lists without disturbing
 existing colony tasks. Simulation rules retain their behavior. The source comments explain
 corner-to-tile losses, containment, starter placement, radius quantization and
 bounded tower searches.
-The shared crop rescue now accepts an optional placement mask. Rice Terraces confines
+The shared crop rescue now accepts an optional placement mask. Hills confines
 its emergency wheat and wood to crop rows, including every tile of a radius-two clump.
 When an extreme amount fills those rows with one crop, the rescue trades a small patch
 of that accessible surplus for the missing starter crop. This keeps the town and stairs
@@ -85,12 +99,12 @@ band widths/counts, stair angle/count, river water corners and crop budget satur
 
 ```sh
 scons release=1 server=0 -j6 map-generator-defaults-test map-generator-golden-test build/src/glob2
-build/src/glob2 --generate-map rice-terraces --seed 7 --width 256 --height 256 --teams 4 --output artifacts/rice-terraces/seed-7.map --preview artifacts/rice-terraces/seed-7.png --json artifacts/rice-terraces/seed-7.json
-python3 tools/map_telemetry.py collect --generators rice-terraces --seed-start 20001 --count 8 --set width=256 --set height=256 --set teams=4 --jobs 2 --out artifacts/rice-terraces/held-out
-python3 tools/map_telemetry.py summarize artifacts/rice-terraces/held-out
+build/src/glob2 --generate-map hills --seed 7 --width 256 --height 256 --teams 4 --output artifacts/hills/seed-7.map --preview artifacts/hills/seed-7.png --json artifacts/hills/seed-7.json
+python3 tools/map_telemetry.py collect --generators hills --seed-start 20001 --count 8 --set width=256 --set height=256 --set teams=4 --jobs 2 --out artifacts/hills/held-out
+python3 tools/map_telemetry.py summarize artifacts/hills/held-out
 ```
 
-[Verification results, previews, native maps, replays and study evidence](evidence/rice-terraces/README.md) are retained with this implementation.
+[Verification results, previews, native maps, replays and study evidence](evidence/rice-terraces/README.md) are retained with this implementation, under its former name and for revisions before the valley roads and wild crops.
 The primitive regressions cover translated/wrapped contours, diagonal crossing cores,
 future growth components, and nearest-site tie/sentinel behavior. The generator
 regression includes resource extremes, rectangles, vacant hills and 12,000 unattended

@@ -2622,8 +2622,18 @@ Lățimea benzilor de nivel
 Scări pe deal
 [Valley river]
 Râu în vale
-[Vultures]
-Vulturi
+[Hills]
+Dealuri
+[Hillsides]
+Versanți
+[Terraces per slope]
+Terase pe versant
+[Waviness]
+Ondulare
+[Stair spacing]
+Distanța dintre scări
+[Locust]
+Lăcuste
 [Plantations]
 Plantații
 [Plot size]

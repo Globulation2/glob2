@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "RiceTerracesGenerator.h"
+#include "HillsGenerator.h"
+#include "Drawing.h"
 #include "Farmland.h"
 #include "Game.h"
 #include "GenerationContext.h"
@@ -19,10 +20,15 @@
 #include <vector>
 using namespace MapGeneration;
 
-// Rice terraces: each colony farms the concentric contours around its own hill, lobed the way a
-// real hill's contours are rather than drawn with compasses (a maintainer's first look at the
-// circles saw a centre-pivot farm). Sand stairs cross the fields and irrigation ditches; the
-// summit is a town, the valleys are shared ground.
+// Hills: each colony farms the concentric contours around its own hill, lobed the way a real
+// hill's contours are rather than drawn with compasses (a maintainer's first look at the circles
+// saw a centre-pivot farm). Sand stairs cross the fields and irrigation ditches and carry on as
+// sand roads across the valley to the edge of the hill's ground; the summit is a town, the valleys
+// are shared ground with a few small wild crops just outside every hill.
+// Named Rice terraces until 2026-09-16, when a maintainer found closed rings round point summits
+// did not read as rice terraces at all, however lobed; that name went to a map of long terraced
+// hillsides (RiceTerracesGenerator.cpp), and this one kept its geometry under the name it looks
+// like. The seed streams keep their rice- names so the layouts they draw are unchanged.
 // These are terrain contours, not engine elevation: towers shoot across them without a height
 // bonus. A summit tower covers a stair's final approach, not the whole climb from the valley.
 // Swimming bypasses the water barriers, and harvesting can open crop bands, but neither can
@@ -42,13 +48,21 @@ constexpr double kStairHalf = 2.5;
 // How far the contours may lobe in or out, in tiles. Up to half the valley floor between two
 // hills' circular outer caps may go to their lobes; the rest stays open ground.
 constexpr double kWobble = 4;
+// The valley roads: sand this many corners either side of a stair's line, and this many tiles past
+// the edge of the hill's ground, across the river that runs along that edge.
+constexpr double kRoadHalf = 1.5, kRoadOverrun = 4;
+// Wild crops just outside every hill (maintainer review 2026-09-16: "a couple small seeds of wheat
+// and wood on the outside of each of the rings"): a patch of this many tiles between every two
+// stairs, this far beyond the outer cap's furthest lobe, alternating wheat and wood.
+constexpr int kWildPatch = 4;
+constexpr double kWildOut = 4;
 struct Layout
 {
 	Torus t{1, 1};
 	TerrainSketch terrain;
 	std::vector<ShapePoint> hills;
 	std::vector<int> homeOf, hillOf;
-	std::vector<unsigned char> stairs, valley;
+	std::vector<unsigned char> stairs, valley, roads;
 	Farm farm;
 	double radius = 0, phase = 0, wobble = 0;
 	int bands = 0;
@@ -57,7 +71,7 @@ struct Layout
 
 Layout design(const GenerationRequest &r, GenerationContext &context)
 {
-	const RiceTerracesOptions o(r);
+	const HillsOptions o(r);
 	Layout L;
 	L.t = {1 << r.wDec, 1 << r.hDec};
 	const Torus &t = L.t;
@@ -79,7 +93,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	L.bands = int(std::floor((budget - kSummit - 2 * kCap) / rows.period()));
 	if (L.bands < 1)
 	{
-		L.failure = "Rice terraces need room for a summit, a full crop/water band and valleys; "
+		L.failure = "Hills need room for a summit, a full crop/water band and valleys; "
 					"use a larger map, fewer hills, narrower bands or a larger hill radius.";
 		return L;
 	}
@@ -147,7 +161,45 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 			continue;
 		}
 	}
+	// Every stair carries on as a sand road across the valley to the edge of its hill's ground, the
+	// line where another hill becomes the nearest, and a few tiles past it so it fords the valley
+	// river there (maintainer review 2026-09-16: "at least one sand road connecting from each of
+	// the spokes outwards to the edges of your square"). A stair ended at the outer cap, leaving
+	// the valley walk to find by itself. The road starts inside the lobed outer cap, over the
+	// stair's own sand, so the two always join.
+	L.roads.assign(n, 0);
+	int roadTiles = 0;
+	for (size_t h = 0; h < L.hills.size(); ++h)
+		for (int s = 0; s < o.stairs; ++s)
+		{
+			const double angle = L.phase + s * 2 * kPi / o.stairs;
+			const double c = std::cos(angle), sn = std::sin(angle);
+			double reach = L.radius;
+			for (double r = L.radius; r < std::max(t.w, t.h); r += 0.5)
+			{
+				const int x = t.x(int(std::lround(L.hills[h].x + r * c)));
+				const int y = t.y(int(std::lround(L.hills[h].y + r * sn)));
+				if (nearestTwoSites(t, sites, x, y).first != int(h))
+					break;
+				reach = r;
+			}
+			reach += kRoadOverrun;
+			const double from = L.radius - L.wobble - 2 * kCap;
+			strokePath(L.roads, t,
+					   {{L.hills[h].x + from * c, L.hills[h].y + from * sn, kRoadHalf},
+						{L.hills[h].x + reach * c, L.hills[h].y + reach * sn, kRoadHalf}});
+		}
+	for (int i = 0; i < n; ++i)
+	{
+		L.roads[i] = L.roads[i] && L.valley[i];
+		if (L.roads[i])
+		{
+			L.terrain[i] = SAND;
+			++roadTiles;
+		}
+	}
 	layBeaches(L.terrain, t);
+	context.telemetry.measure("rice.roads.corners", roadTiles);
 	context.telemetry.measure("rice.hills.actual", hills);
 	context.telemetry.measure("rice.hills.radius-budget", budget);
 	context.telemetry.measure("rice.hills.radius-actual", L.radius);
@@ -163,8 +215,8 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 
 bool generate(Game &game, GenerationContext &context)
 {
-	context.stage = "rice terraces layout";
-	const RiceTerracesOptions o(context.request);
+	context.stage = "hills layout";
+	const HillsOptions o(context.request);
 	const Layout L = design(context.request, context);
 	if (!L.failure.empty())
 	{
@@ -177,7 +229,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 		game.addTeam();
 	writeUndermap(map, L.terrain);
-	context.stage = "rice terraces summits";
+	context.stage = "hills summits";
 	const auto home = [&](int k)
 	{
 		std::vector<unsigned char> mask(n, 0);
@@ -189,7 +241,7 @@ bool generate(Game &game, GenerationContext &context)
 	{ return MapGeneratorPoint(int(L.hills[k].x) - 2, int(L.hills[k].y) - 2); };
 	if (!settleColonies(game, context, "rice-starts", home, anchor))
 		return false;
-	context.stage = "rice terraces first meal";
+	context.stage = "hills first meal";
 	for (int k = 0; k < teams; ++k)
 	{
 		// The first feeding deadline arrives before some AI openings finish
@@ -205,7 +257,7 @@ bool generate(Game &game, GenerationContext &context)
 		}
 	}
 	context.telemetry.measure("rice.inns.per-colony", 1);
-	context.stage = "rice terraces defenses";
+	context.stage = "hills defenses";
 	// Place one tower beside EACH mouth rather than scoring all stairs together (which can
 	// concentrate every tower at one entrance). Search only three tiles around its designed
 	// position. Failure is explicit: silently dropping one would leave one colony exposed.
@@ -237,7 +289,7 @@ bool generate(Game &game, GenerationContext &context)
 		}
 	context.telemetry.measure("rice.towers.per-colony", o.towers > 0 ? o.stairs : 0);
 	context.telemetry.choice("rice.towers.supplies", "magazine-and-stone-reserve");
-	context.stage = "rice terraces crops";
+	context.stage = "hills crops";
 	const auto free = [&](int i) { return clearGround(map, i % t.w, i / t.w); };
 	// Seed food beside EVERY stair, on the inner edge of the first crop band.
 	// A single starter patch made a summit inn's opening haul depend on which
@@ -305,8 +357,27 @@ bool generate(Game &game, GenerationContext &context)
 			context.telemetry.fallback("rice.crops.saturated", "Available crop row grass filled.",
 									   k);
 	}
-	// Only persistent fruit and quarry outcrops in the commons. Wheat and the faster wood
-	// stay within capped terraces; valley towns therefore retain their expansion room.
+	// Small wild crops in the valley just outside every hill, between its stairs, alternating wheat
+	// and wood so every hill has both. They lie within the growth probe of the hill's outer water
+	// band, so they spread into the commons over a long game: that is the point, a reason to walk
+	// out of the terraces, but it is also valley room a colony may have to clear.
+	int wild = 0;
+	for (int h = 0; h < int(L.hills.size()); ++h)
+		for (int s = 0; s < o.stairs; ++s)
+		{
+			const bool wheat = s % 2 == 0;
+			const int wanted = int(scaledCount(kWildPatch, wheat ? o.wheat : o.wood));
+			if (wanted <= 0)
+				continue;
+			const KitFrame frame{int(L.hills[h].x), int(L.hills[h].y),
+								 L.phase + (s + 0.5) * 2 * kPi / o.stairs};
+			wild += plantPatchNear(map, t, frame.at(L.radius + L.wobble + kWildOut, 0, 4),
+								   wheat ? WHEAT : WOOD, wanted,
+								   [&](int i) { return L.valley[i] && !L.roads[i] && free(i); });
+		}
+	context.telemetry.measure("rice.wild-crops.tiles", wild);
+	// Otherwise only persistent fruit and quarry outcrops in the commons: the terraces' wheat and
+	// faster wood stay within their caps, so valley towns keep their expansion room.
 	std::vector<int> commons;
 	for (int i = 0; i < n; ++i)
 		if (L.valley[i] && free(i))
@@ -356,7 +427,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	if (const std::string mismatch = designMismatch(L, game.map, "rice terraces");
+	if (const std::string mismatch = designMismatch(L, game.map, "hills");
 		!mismatch.empty())
 		return mismatch;
 	const Map &map = game.map;
@@ -369,7 +440,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const auto sand = pureTiles(L.terrain, t, SAND);
 	for (int i = 0; i < t.size(); ++i)
 		if (L.stairs[i] && sand[i] && (!open[i] || !map.isSand(i % t.w, i / t.w)))
-			return "A rice terrace stair is blocked.";
+			return "A hill stair is blocked.";
 	for (int k = 0; k < context.request.nbTeams; ++k)
 	{
 		std::vector<unsigned char> home(t.size(), 0);
@@ -395,14 +466,14 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		}
 		// These overlap: 100 anchors are a generous contiguous budget, not 100 buildings.
 		if (buildSites(t, buildable, home) < 100)
-			return "A rice terrace summit lacks building room.";
+			return "A hill summit lacks building room.";
 	}
-	return walkFromFirstColony(map, context.request.nbTeams, "rice terraces",
+	return walkFromFirstColony(map, context.request.nbTeams, "the hills",
 							   "along the stairs and valley fords")
 		.error;
 }
 } // namespace
-RiceTerracesOptions::RiceTerracesOptions(const GenerationRequest &r)
+HillsOptions::HillsOptions(const GenerationRequest &r)
 	: extraHills(r.option("extra-hills")), hillRadius(r.option("hill-radius")),
 	  bandWidth(r.option("band-width")), stairs(r.option("stairs")),
 	  towers(r.option("starting-towers")), river(r.option("valley-river") != 0),
@@ -411,12 +482,12 @@ RiceTerracesOptions::RiceTerracesOptions(const GenerationRequest &r)
 	  fruit(r.option("fruit-amount"))
 {
 }
-GeneratorDefinition riceTerracesDefinition()
+GeneratorDefinition hillsDefinition()
 {
-	return {"rice-terraces",
+	return {"hills",
 			46,
-			"Rice terraces",
-			6,
+			"Hills",
+			7,
 			false,
 			{{"extra-hills", "Unoccupied hills", 0, 4, 1, 0, ControlGroup::Layout},
 			 {"hill-radius", "Hill radius", 44, 100, 4, 60, ControlGroup::Layout},

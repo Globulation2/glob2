@@ -2632,8 +2632,18 @@ Höjdkurvbandens bredd
 Trappor per kulle
 [Valley river]
 Flod i dalen
-[Vultures]
-Gamar
+[Hills]
+Kullar
+[Hillsides]
+Sluttningar
+[Terraces per slope]
+Terrasser per sluttning
+[Waviness]
+Vågighet
+[Stair spacing]
+Trappavstånd
+[Locust]
+Gräshoppor
 [Plantations]
 Plantager
 [Plot size]

@@ -2632,8 +2632,18 @@ Sestra-banden zabalera
 Eskailerak muinoko
 [Valley river]
 Haraneko ibaia
-[Vultures]
-Saiak
+[Hills]
+Muinoak
+[Hillsides]
+Hegalak
+[Terraces per slope]
+Terrazak hegaleko
+[Waviness]
+Uhintasuna
+[Stair spacing]
+Eskaileren arteko tartea
+[Locust]
+Matxinsaltoak
 [Plantations]
 Landaketak
 [Plot size]

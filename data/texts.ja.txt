@@ -2618,8 +2618,18 @@ Emoji
 丘ごとの階段数
 [Valley river]
 谷の川
-[Vultures]
-ハゲワシ
+[Hills]
+丘陵
+[Hillsides]
+斜面
+[Terraces per slope]
+斜面ごとの段数
+[Waviness]
+うねり
+[Stair spacing]
+階段の間隔
+[Locust]
+イナゴ
 [Plantations]
 農園
 [Plot size]

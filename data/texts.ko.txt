@@ -2618,8 +2618,18 @@ Emoji
 언덕당 계단 수
 [Valley river]
 계곡의 강
-[Vultures]
-독수리
+[Hills]
+언덕
+[Hillsides]
+비탈
+[Terraces per slope]
+비탈당 계단식 논
+[Waviness]
+굴곡
+[Stair spacing]
+계단 간격
+[Locust]
+메뚜기 떼
 [Plantations]
 농장
 [Plot size]

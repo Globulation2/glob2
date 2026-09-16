@@ -2622,8 +2622,18 @@ Emoji
 Степеништа по брду
 [Valley river]
 Река у долини
-[Vultures]
-Лешинари
+[Hills]
+Брда
+[Hillsides]
+Падине
+[Terraces per slope]
+Тераса по падини
+[Waviness]
+Таласастост
+[Stair spacing]
+Размак степеница
+[Locust]
+Скакавци
 [Plantations]
 Плантаже
 [Plot size]

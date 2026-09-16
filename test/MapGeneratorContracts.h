@@ -584,17 +584,22 @@ inline void savannahContracts()
 	puts("PASS Savannah: envelope, resource-independent terrain, contained unattended growth");
 }
 
-inline void vulturesFoodChecks()
+inline void locustFoodChecks()
 {
 	D request;
-	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("vultures"));
+	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("locust"));
 	request.wDec = request.hDec = 8;
 	request.nbTeams = 2;
 	request.seed = 7;
 	Game game(nullptr);
 	assert(GenerationService().generate(game, request));
 	Map &map = game.map;
-	// The stock cap never refills a deposit or consumes RNG, even with a larger second cap.
+	// Every wheat tile starts with three to five harvests.
+	for (int i = 0; i < map.getW() * map.getH(); ++i)
+		if (map.getResource(i).type == WHEAT)
+			assert(map.getResource(i).amount >= 3 && map.getResource(i).amount <= 5);
+	// The stock cap never refills a deposit or consumes RNG, even with a larger second cap. Cap to
+	// one harvest here so the regrowth check below can harvest every other tile out in one step.
 	const auto beforeCap = syncRandEngine();
 	const auto capped = MapGeneration::capResourceStock(map, WHEAT, 1);
 	const auto unchanged = MapGeneration::capResourceStock(map, WHEAT, 3);
@@ -653,13 +658,13 @@ inline void vulturesFoodChecks()
 		Game repaired(nullptr);
 		assert(GenerationService().generate(repaired, compact));
 	}
-	puts("PASS Vultures: one harvest per wheat tile; harvested food never regrows");
+	puts("PASS Locust: three to five harvests per wheat tile; harvested food never regrows");
 }
 
 inline void generatorContracts()
 {
 	savannahContracts();
-	vulturesFoodChecks();
+	locustFoodChecks();
 	hedgerowContracts();
 	breachableHighlandsContracts();
 	braidedDeltaChecks();

@@ -2618,8 +2618,18 @@ Bán kính đồi
 Số cầu thang mỗi đồi
 [Valley river]
 Sông thung lũng
-[Vultures]
-Kền kền
+[Hills]
+Đồi
+[Hillsides]
+Sườn đồi
+[Terraces per slope]
+Số ruộng bậc thang mỗi sườn
+[Waviness]
+Độ uốn lượn
+[Stair spacing]
+Khoảng cách bậc thang
+[Locust]
+Châu chấu
 [Plantations]
 Đồn điền
 [Plot size]

@@ -2618,8 +2618,18 @@ Ledander ar bandennoù kontour
 Diri dre dorgenn
 [Valley river]
 Stêr an draonienn
-[Vultures]
-Guped
+[Hills]
+Colinas
+[Hillsides]
+Encostas
+[Terraces per slope]
+Terraços por encosta
+[Waviness]
+Ondulação
+[Stair spacing]
+Espaçamento das escadas
+[Locust]
+Gafanhotos
 [Plantations]
 Plantações
 [Plot size]

@@ -2622,8 +2622,18 @@ Breite der Höhenbänder
 Treppen pro Hügel
 [Valley river]
 Talfluss
-[Vultures]
-Geier
+[Hills]
+Hügel
+[Hillsides]
+Hänge
+[Terraces per slope]
+Terrassen je Hang
+[Waviness]
+Welligkeit
+[Stair spacing]
+Treppenabstand
+[Locust]
+Heuschrecken
 [Plantations]
 Plantagen
 [Plot size]
