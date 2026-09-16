@@ -4,6 +4,8 @@
 #include "MapReport.h"
 #include "Game.h"
 #include "GenerationService.h"
+#include "StartDiagnostics.h"
+#include "FairnessModel.h"
 #include "GeneratorRegistry.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
@@ -26,6 +28,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
+#include <functional>
 #include <map>
 #include <sstream>
 #include <queue>
@@ -36,6 +39,137 @@
 
 namespace
 {
+// Every candidate roll the lobby's best-of-N would have tried, in order, so an
+// offline study can read the best-of-k curve for any k without regenerating.
+std::string candidateRollsJson(const std::vector<GenerationService::CandidateRoll> &rolls)
+{
+	std::ostringstream out;
+	out << '[';
+	for (std::size_t i = 0; i < rolls.size(); ++i)
+	{
+		if (i) out << ',';
+		out << "{\"seed\":" << rolls[i].seed << ",\"generated\":"
+			<< (rolls[i].generated ? "true" : "false") << ",\"score\":" << rolls[i].score
+			<< ",\"seconds\":" << rolls[i].seconds << '}';
+	}
+	out << ']';
+	return out.str();
+}
+// What each layer of map measurement costs, for `--report timing`: every stage is run several
+// times on the same finished map and the median kept, so one slow scheduling hiccup does not
+// become the answer. Generation is timed from an empty Game, as a lobby candidate roll pays it.
+std::string metricTimingJson(Game &game, const GenerationRequest &descriptor,
+							 const GenerationResult &result)
+{
+	using Clock = std::chrono::steady_clock;
+	constexpr int kRepeats = 5;
+	const auto median = [](std::vector<double> values)
+	{
+		std::sort(values.begin(), values.end());
+		return values[values.size() / 2];
+	};
+	const auto milliseconds = [](Clock::time_point since)
+	{ return std::chrono::duration<double, std::milli>(Clock::now() - since).count(); };
+	const auto timed = [&](const std::function<void()> &work)
+	{
+		std::vector<double> samples;
+		for (int i = 0; i < kRepeats; ++i)
+		{
+			const auto start = Clock::now();
+			work();
+			samples.push_back(milliseconds(start));
+		}
+		return median(samples);
+	};
+	const int teams = descriptor.nbTeams;
+	const double generation = timed([&] { Game fresh(nullptr); GenerationService().generate(fresh, descriptor, false); });
+	// The same roll with the clock around generate() alone, as GenerationService::bestSeed times
+	// a candidate: the difference is building and tearing down the Game it fills.
+	std::vector<double> generateOnly;
+	timed([&]
+	{
+		Game fresh(nullptr);
+		const auto start = Clock::now();
+		GenerationService().generate(fresh, descriptor, false);
+		generateOnly.push_back(milliseconds(start));
+	});
+	const double withTelemetry = timed([&] { Game fresh(nullptr); GenerationService().generate(fresh, descriptor, true); });
+	const double score = timed([&] { MapGeneration::scoreStarts(game, teams); });
+	// The fitted model alone takes microseconds; evaluate it many times and divide.
+	const auto quality = MapGeneration::scoreStarts(game, teams);
+	constexpr int kModelLoops = 2000;
+	const double model = timed([&]
+	{
+		std::vector<double> fitness(quality.colonies.size());
+		for (int loop = 0; loop < kModelLoops; ++loop)
+		{
+			for (std::size_t i = 0; i < fitness.size(); ++i)
+				fitness[i] = MapGeneration::startFitness(quality.colonies, i);
+			MapGeneration::mapFairness(MapGeneration::winProbabilities(fitness));
+		}
+	}) / kModelLoops;
+	const double diagnostics = timed([&] { MapGeneration::diagnoseStarts(game, teams); });
+	std::vector<MapReportTimings> reports(kRepeats);
+	std::vector<double> totals;
+	for (auto &report : reports)
+	{
+		const auto start = Clock::now();
+		describeMap(game, &descriptor, &result, &report);
+		totals.push_back(milliseconds(start));
+	}
+	const auto stage = [&](double MapReportTimings::*field)
+	{
+		std::vector<double> values;
+		for (const auto &report : reports)
+			values.push_back(report.*field * 1000.0);
+		return median(values);
+	};
+	std::ostringstream out;
+	out << "\"timing\":{\"repetitions\":" << kRepeats << ",\"tiles\":" << game.map.getW() * game.map.getH()
+		<< ",\"generation_ms\":" << generation << ",\"generate_call_ms\":" << median(generateOnly)
+		<< ",\"generation_with_telemetry_ms\":" << withTelemetry
+		<< ",\"score_starts_ms\":" << score << ",\"fairness_model_ms\":" << model
+		<< ",\"diagnostics_ms\":" << diagnostics << ",\"report_ms\":" << median(totals)
+		<< ",\"report_stages_ms\":{\"tile_scan\":" << stage(&MapReportTimings::tileScan)
+		<< ",\"resource_patches\":" << stage(&MapReportTimings::resourcePatches)
+		<< ",\"space\":" << stage(&MapReportTimings::space)
+		<< ",\"start_quality\":" << stage(&MapReportTimings::startQuality)
+		<< ",\"movement_walking\":" << stage(&MapReportTimings::walking)
+		<< ",\"movement_swimming\":" << stage(&MapReportTimings::swimming)
+		<< ",\"movement_clearing\":" << stage(&MapReportTimings::clearing)
+		<< ",\"serialise\":" << stage(&MapReportTimings::serialise) << "}},";
+	return out.str();
+}
+// Start diagnostics, emitted only for `--report diagnostics`: measurements of each colony's
+// start that the fairness model does not use, for diagnosing play (StartDiagnostics.h).
+std::string diagnosticsJson(Game &game, int nbTeams, bool wanted)
+{
+	if (!wanted)
+		return "";
+	const auto report = MapGeneration::diagnoseStarts(game, nbTeams);
+	std::ostringstream out;
+	out << "\"start_diagnostics\":{\"measured\":" << (report.measured ? "true" : "false")
+		<< ",\"colonies\":[";
+	for (std::size_t i = 0; i < report.colonies.size(); ++i)
+	{
+		const auto &c = report.colonies[i];
+		if (i) out << ',';
+		out << "{\"start\":" << i << ",\"renewable_wheat\":" << c.renewableWheat
+			<< ",\"wheat_throughput\":" << c.wheatThroughput
+			<< ",\"wood_throughput\":" << c.woodThroughput
+			<< ",\"stone_throughput\":" << c.stoneThroughput
+			<< ",\"fruit_throughput\":" << c.fruitThroughput
+			<< ",\"inn_next_to_wheat_distance\":" << c.innNextToWheatDistance
+			<< ",\"inn_next_to_wheat_sites\":" << c.innNextToWheatSites
+			<< ",\"second_swarm_sites\":" << c.secondSwarmSites
+			<< ",\"encroaching_wood\":" << c.encroachingWood
+			<< ",\"threatened_build_sites\":" << c.threatenedBuildSites
+			<< ",\"contested_wheat_distance\":" << c.contestedWheatDistance
+			<< ",\"choke_width\":" << c.chokeWidth << '}';
+	}
+	out << "]},";
+	return out.str();
+}
 constexpr std::uint64_t kFnvOffset = 14695981039346656037ULL;
 std::uint64_t fnv(std::uint64_t hash, std::uint64_t value)
 {
@@ -458,11 +592,12 @@ int runMapStudy(int argc, char **argv)
 	descriptor.setMethodDefaults(method);
 	descriptor.seed = seed;
 	bool tuning = false;
-	bool headroom = false;
+	bool headroom = false, diagnostics = false, timing = false;
 	bool quality = false;
 	std::string dump, savePrefix, mapName, overlay, resultPath, resultJson;
 	std::ostringstream measurements;
 	int candidates = 0, rotations = 1;
+	std::vector<std::string> perturbations; // KIND:TEAM:RADIUS, applied before the map is saved
 	std::map<std::string, std::string> aliases = {{"smooth", "smoothing"},
 												  {"craters", "lake-density"},
 												  {"extra", "extra-islands"},
@@ -481,6 +616,12 @@ int runMapStudy(int argc, char **argv)
 			tuning = true;
 		else if (arg == "headroom")
 			headroom = true;
+		else if (arg == "diagnostics")
+			diagnostics = true;
+		else if (arg == "timing")
+			timing = true;
+		else if (arg.rfind("perturb=", 0) == 0)
+			perturbations.push_back(arg.substr(8));
 		else if (arg == "quality")
 			quality = true;
 		else if (arg == "preset")
@@ -520,12 +661,18 @@ int runMapStudy(int argc, char **argv)
 				descriptor.options[id] = value; // Service validates; never silently clamp studies.
 		}
 	}
+	std::vector<GenerationService::CandidateRoll> candidateRolls;
 	if (candidates > 0)
 	{
 		// The lobby's roll: the best-scoring of `candidates` seeds derived from the root seed
 		// (CustomGameScreen::generateMap), so studied maps are the maps players actually get.
-		descriptor.seed = GenerationService().bestSeed(descriptor, seed, candidates);
+		// Every attempt is retained so a sampling study can read what each extra roll bought.
+		descriptor.seed = GenerationService().bestSeed(descriptor, seed, candidates, &candidateRolls);
 		std::printf("SAMPLED,%u,%u,%d\n", seed, descriptor.seed, candidates);
+		for (std::size_t i = 0; i < candidateRolls.size(); ++i)
+			std::printf("ROLL,%zu,%u,%d,%.6f,%.6f\n", i, candidateRolls[i].seed,
+						candidateRolls[i].generated ? 1 : 0, candidateRolls[i].score,
+						candidateRolls[i].seconds);
 	}
 	const auto start = std::chrono::steady_clock::now();
 	const auto result = GenerationService().generate(game, descriptor, !resultPath.empty());
@@ -548,6 +695,7 @@ int runMapStudy(int argc, char **argv)
 	}
 	// Capture before study scorers, save/reload verification or team rotations mutate caches.
 	const std::string mapReport = resultPath.empty() ? "" : describeMap(game, &descriptor, &result);
+	const std::string timingJson = timing ? metricTimingJson(game, descriptor, result) : "";
 	auto &map = game.map;
 	int grass = 0, sand = 0, water = 0, shore = 0, free = 0, fit4 = 0;
 	int umGrass = 0, umSand = 0, umWater = 0;
@@ -833,15 +981,16 @@ int runMapStudy(int argc, char **argv)
 		MapGeneration::scoreStarts(game, descriptor.nbTeams);
 		const double scoreSeconds =
 			std::chrono::duration<double>(std::chrono::steady_clock::now() - scoreStart).count();
-		std::printf("QUALITY,%d,%.6f,%.6f,%.6f,%.6f,%d,%.6f\n", q.measured, q.score, q.fairness,
-					q.worst, q.best, (int)q.colonies.size(), scoreSeconds);
+		std::printf("QUALITY,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%.6f\n", q.measured, q.score,
+					q.fairness, q.worstFitness, q.bestFitness, q.meanFitness,
+					(int)q.colonies.size(), scoreSeconds);
 		for (size_t t = 0; t < q.colonies.size(); ++t)
 		{
 			const auto &c = q.colonies[t];
-			std::printf("COLONY,%d,%d,%d,%d,%d,%d,%d,%d,%.1f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n",
+			std::printf("COLONY,%d,%d,%d,%d,%d,%d,%d,%d,%.1f,%.6f,%.6f\n",
 						(int)t, c.wheatDistance, c.woodDistance, c.catchmentTiles, c.buildSites,
 						c.resourceAmount, c.rivalDistance, c.rivalsWithinThreat, c.meanFertility,
-						c.wheat, c.wood, c.fertility, c.depth, c.room, c.isolation, c.total);
+						c.fitness, c.winProbability);
 		}
 	}
 	if (!dump.empty())
@@ -888,6 +1037,7 @@ int runMapStudy(int argc, char **argv)
 			<< ",\"generator\":" << Headless::quote(result.generatorId)
 			<< ",\"revision\":" << result.revision << ",\"map_seed\":" << seed
 			<< ",\"chosen_seed\":" << result.seed << ",\"candidates\":" << candidates
+			<< ",\"candidate_rolls\":" << candidateRollsJson(candidateRolls)
 			<< ",\"seconds\":" << seconds << ",\"diagnostic\":" << Headless::quote(result.diagnostic())
 			<< ",\"request\":{\"method\":" << method << ",\"width\":" << descriptor.wDec
 			<< ",\"height\":" << descriptor.hDec << ",\"teams\":" << descriptor.nbTeams
@@ -904,9 +1054,13 @@ int runMapStudy(int argc, char **argv)
 			<< ",\"shore\":" << shore << ",\"free\":" << free << ",\"fit4\":" << fit4
 			<< ",\"wheat_tiles\":" << resources[WHEAT] << ",\"wood_tiles\":" << resources[WOOD]
 			<< ",\"stone_tiles\":" << resources[STONE] << ",\"algae_tiles\":" << resources[ALGA]
-			<< measurements.str() << "},\"quality\":{\"score\":" << result.quality.score
-			<< ",\"fairness\":" << result.quality.fairness << ",\"worst\":" << result.quality.worst
-			<< ",\"best\":" << result.quality.best << ",\"colonies\":[";
+			<< measurements.str() << "}," << diagnosticsJson(game, descriptor.nbTeams, diagnostics)
+			<< timingJson
+			<< "\"quality\":{\"score\":" << result.quality.score
+			<< ",\"fairness\":" << result.quality.fairness
+			<< ",\"worst_fitness\":" << result.quality.worstFitness
+			<< ",\"best_fitness\":" << result.quality.bestFitness
+			<< ",\"mean_fitness\":" << result.quality.meanFitness << ",\"colonies\":[";
 		for (size_t t=0; t<result.quality.colonies.size(); ++t)
 		{
 			const auto &c=result.quality.colonies[t];
@@ -915,13 +1069,35 @@ int runMapStudy(int argc, char **argv)
 				<< ",\"wood_distance\":" << c.woodDistance << ",\"catchment_tiles\":" << c.catchmentTiles
 				<< ",\"build_sites\":" << c.buildSites << ",\"resource_amount\":" << c.resourceAmount
 				<< ",\"rival_distance\":" << c.rivalDistance << ",\"rivals_within_threat\":" << c.rivalsWithinThreat
-				<< ",\"mean_fertility\":" << c.meanFertility << ",\"wheat\":" << c.wheat
-				<< ",\"wood\":" << c.wood << ",\"fertility\":" << c.fertility << ",\"depth\":" << c.depth
-				<< ",\"room\":" << c.room << ",\"isolation\":" << c.isolation << ",\"total\":" << c.total << '}';
+				<< ",\"mean_fertility\":" << c.meanFertility << ",\"fitness\":" << c.fitness
+				<< ",\"win_probability\":" << c.winProbability << '}';
 		}
 		out << "]},\"map_report\":" << mapReport << "}";
 		resultJson = out.str();
 	}
+	// Counterfactual edits, after every measurement above has seen the unedited world and before
+	// the map is saved: the saved map is the perturbed one, and the result records what changed.
+	std::string perturbed;
+	for (const auto &spec : perturbations)
+	{
+		const auto first = spec.find(':'), second = spec.find(':', first + 1);
+		if (first == std::string::npos || second == std::string::npos)
+			return 2;
+		const std::string kind = spec.substr(0, first);
+		const int team = std::atoi(spec.substr(first + 1, second - first - 1).c_str());
+		const int radius = std::atoi(spec.substr(second + 1).c_str());
+		const int resource = kind == "remove-wheat" ? WHEAT : kind == "remove-wood" ? WOOD
+						   : kind == "remove-stone" ? STONE : -1;
+		if (resource < 0)
+			return 2;
+		const int removed = MapGeneration::removeResourceNear(game, team, resource, radius);
+		std::printf("PERTURB,%s,%d,%d,%d\n", kind.c_str(), team, radius, removed);
+		perturbed += std::string(perturbed.empty() ? "" : ",") + "{\"kind\":" + Headless::quote(kind) +
+					 ",\"team\":" + std::to_string(team) + ",\"radius\":" + std::to_string(radius) +
+					 ",\"removed\":" + std::to_string(removed) + "}";
+	}
+	if (!perturbations.empty() && !resultJson.empty() && resultJson.back() == '}')
+		resultJson.insert(resultJson.size() - 1, ",\"perturbations\":[" + perturbed + "]");
 	int code = 0;
 	if (!success && !resultPath.empty())
 		code = result.error == GenerationError::InvalidRequest ? 2 : 4;

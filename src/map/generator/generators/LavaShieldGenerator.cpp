@@ -64,9 +64,14 @@ constexpr int kFewestIslets = 2, kSeaPerIslet = 8000, kIsletAttempts = 40;
 constexpr double kIsletMoat = 6;
 // Final-world floors: overlapping 4x4 origins, not a promise of this many buildings.
 // These exceed the shared emergency room target (16), while crop distances use the
-// shared opening budgets. A quality ratio is deliberately not a victory-fairness claim.
+// shared opening budgets.
 constexpr int kMinimumSites = 48, kWheatRange = 24, kWoodRange = 32;
-constexpr double kMinimumFairness = 0.65;
+// Fairness is now the fitted model's (StartQuality.h): 1 when every town is as likely to win
+// as any other. Over forty default 256x256 four-colony seeds Lava shield sits between 0.84 and
+// 0.97, so this floor rejects towns that are genuinely lopsided without touching what the
+// generator produces at its defaults. It was 0.65 on the old worst-over-best ratio, which is a
+// different quantity on a different scale; the two numbers are not comparable.
+constexpr double kMinimumFairness = 0.80;
 // External crop patches bootstrap zero-abundance games. Their fertile placement and
 // harvest frontage matter more than filling the whole home with a fixed resource kit.
 constexpr int kStarterWheat = 40, kStarterWood = 32;
@@ -694,7 +699,12 @@ GeneratorDefinition lavaShieldDefinition()
 	return {"lava-shield",
 			51,
 			"Lava shield",
-			2,
+			// Revision 3: the towns are chosen by the fitted fairness model now. Lava shield is
+			// the one generator that ranks its own settlement proposals by the map score
+			// (chooseScoredSettlements), and that score changed from the weakest town's quality
+			// gated by a worst-over-best ratio to how evenly the towns share the chance of
+			// winning, so a different proposal wins on some seeds.
+			3,
 			false,
 			{{"tongue-count", "Lava tongues", 3, 9, 1, 5, ControlGroup::Layout},
 			 {"long-tongues", "Long tongues", 25, 75, 25, 50, ControlGroup::Layout},

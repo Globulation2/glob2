@@ -2186,24 +2186,22 @@ Paraméterek véletlenszerűen
 Kezdés minősége
 [Fairness]
 Méltányosság
-[Score]
-Pontszám
-[Weight]
-Súly
+[Fitness]
+Erősség
+[Win chance]
+Nyerési esély
+[Coefficient]
+Együttható
+[Average]
+Átlag
+[Fitted on games:]
+Illesztve játszmákra:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Minden kolónia kezdését a kész térképen mérjük, és egy egyenrangú ellenfelek közötti több ezer játszmára illesztett modell ezekből a mérésekből erősséget számol. Az erősség megmutatja, mennyire valószínű, hogy a kolónia nyer. A méltányosság azt mutatja, mennyire egyenletesen oszlanak meg ezek az esélyek: 1, ha minden kolóniának ugyanakkora esélye van a győzelemre, 0, ha egyetlen kolónia vinné el a térképet.
 [Worst]
 Leggyengébb
 [Best]
 Legjobb
-[Fertility]
-Termékenység
-[Deposits]
-Készletek
-[Room]
-Hely
-[Isolation]
-Elszigeteltség
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Minden kolónia kezdését a kész térképen mérjük: az út a búzáig és a fáig, mennyire nő vissza a talaja, az elérhető készletek és építési helyek, valamint a távolság a riválisoktól. Minden tényező 0-tól 1-ig pontoz egy rögzített mércéhez képest, az összeg súlyozza őket, a méltányosság a leggyengébb kolónia összege osztva a legjobbéval, a pontszám pedig a leggyengébb összeg szorozva a méltányossággal.
 [Map preview controls]
 Húzással lépjen át a széleken. Görgővel nagyíthat. Jobb vagy dupla kattintással alaphelyzetbe állíthat.
 [Map preview drag help]

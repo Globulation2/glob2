@@ -2184,24 +2184,22 @@ OpenGL غير متوفر في هذا الإصدار.
 جودة البداية
 [Fairness]
 الإنصاف
-[Score]
-النتيجة
-[Weight]
-الوزن
+[Fitness]
+القوة
+[Win chance]
+فرصة الفوز
+[Coefficient]
+المعامل
+[Average]
+المتوسط
+[Fitted on games:]
+عدد المباريات المستخدمة للملاءمة:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+تُقاس بداية كل مستعمرة على الخريطة النهائية، ويحوّل نموذج مُلاءَم على آلاف المباريات بين خصوم متكافئين هذه القياسات إلى قوة. تدل القوة على مدى احتمال فوز تلك المستعمرة. الإنصاف هو مدى تساوي توزيع هذه الفرص: 1 عندما تتساوى فرص فوز جميع المستعمرات، و0 عندما تستحوذ مستعمرة واحدة على الخريطة.
 [Worst]
 الأدنى
 [Best]
 الأعلى
-[Fertility]
-الخصوبة
-[Deposits]
-المخزون
-[Room]
-المساحة
-[Isolation]
-العزلة
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-يُقاس موقع بداية كل مستعمرة على الخريطة النهائية: المسافة إلى القمح وإلى الخشب، ومدى تجدد نمو أرضها، والمخزون ومواقع البناء في متناولها، وبُعدها عن المنافسين. يُقيَّم كل عامل من 0 إلى 1 مقابل حد ثابت، ويجمعها المجموع بأوزانها، والإنصاف هو مجموع أضعف مستعمرة مقسوماً على مجموع أفضلها، والنتيجة هي أضعف مجموع مضروباً في الإنصاف.
 [Map preview controls]
 اسحب للالتفاف. استخدم العجلة للتكبير. انقر باليمين أو مرتين لإعادة الضبط.
 [Map preview drag help]

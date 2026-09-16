@@ -2210,24 +2210,22 @@ Parameters willekeurig kiezen
 Startkwaliteit
 [Fairness]
 Eerlijkheid
-[Score]
-Waardering
-[Weight]
-Gewicht
+[Fitness]
+Sterkte
+[Win chance]
+Winkans
+[Coefficient]
+Coëfficiënt
+[Average]
+Gemiddelde
+[Fitted on games:]
+Gefit op spellen:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+De start van elke kolonie wordt op de voltooide kaart gemeten, en een model dat is gefit op duizenden spellen tussen gelijkwaardige tegenstanders zet die metingen om in een sterkte. De sterkte geeft aan hoe waarschijnlijk het is dat die kolonie wint. Eerlijkheid is hoe gelijk die kansen verdeeld zijn: 1 als elke kolonie even veel kans heeft om te winnen, 0 als één kolonie de hele kaart zou nemen.
 [Worst]
 Slechtste
 [Best]
 Beste
-[Fertility]
-Vruchtbaarheid
-[Deposits]
-Voorraden
-[Room]
-Ruimte
-[Isolation]
-Afzondering
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-De start van elke kolonie wordt gemeten op de voltooide kaart: de loop naar tarwe en naar hout, hoe goed haar grond teruggroeit, de voorraden en bouwplaatsen binnen bereik, en haar afstand tot rivalen. Elke factor scoort van 0 tot 1 tegen een vaste maatstaf, het totaal weegt ze, de eerlijkheid is het totaal van de slechtste kolonie gedeeld door dat van de beste, en de waardering is het slechtste totaal maal de eerlijkheid.
 [Map preview controls]
 Sleep om over de randen te bewegen. Muiswiel om te zoomen. Rechtsklik of dubbelklik om te herstellen.
 [Map preview drag help]

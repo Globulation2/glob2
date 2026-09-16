@@ -143,9 +143,17 @@ when fertility differs. A 28-tile Euclidean separation is an absolute floor. Sit
 are dealt to team indices before placement. Four proposals are fully materialized;
 `StartQuality` scores actual swarms, workers, harvest trips, resources and room.
 A proposal must have wheat within 24 steps, wood within 32, at least 48 reachable
-4×4 building origins, and weakest/best score ratio at least 0.65. Origins overlap;
+4×4 building origins, and a map fairness of at least 0.80. Origins overlap;
 48 does not mean 48 separate buildings. The winning proposal maximizes the shared
-weakest-start score times fairness. Ties keep the earlier proposal.
+map score, which since revision 3 is the
+[fitted fairness model](FAIRNESS_MODEL.md)'s fairness: how evenly the towns share
+the chance of winning, rather than the weakest town's quality gated by a
+worst-over-best ratio. That changes which proposal wins on some seeds, which is
+what the revision bump records. The 0.80 floor is the old 0.65 restated on the new
+scale — a different quantity, not a comparable number — and sits below the 0.84
+minimum observed over forty default 256×256 four-colony seeds, so it does not
+reject anything the generator produces at its defaults. Ties keep the earlier
+proposal.
 
 Each town reuses `stampFarmPlot` to leave 16×16 pure grass inside a two-corner sand
 ring. A sand approach begins just outside that ring and reaches the crater circuit,

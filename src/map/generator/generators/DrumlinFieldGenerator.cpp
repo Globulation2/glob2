@@ -554,16 +554,5 @@ GeneratorDefinition drumlinFieldDefinition()
 		generate,
 		true,
 		homesFailure,
-		validateWorld,
-		{},
-		// Building room is scarce by design: a town is the head of an island, some 200 swarm-sized
-		// sites within a young colony's walk against the scorer's reference of 900 for open maps,
-		// and the next room is another drumlin along an esker. The lobby ranks seeds against what
-		// the map is meant to be, not against a plain.
-		[]
-		{
-			MapGeneration::StartQualityScale scale;
-			scale.roomReference = 300;
-			return scale;
-		}()};
+		validateWorld};
 }

@@ -62,16 +62,17 @@ and Terrain take a `Game` because placing buildings and units needs its mutation
 | `BalancedStarts` | `chooseBalancedStarts`: boot tiles whose walks to wheat and wood are as nearly equal as the finished map allows |
 | `Pipeline` | The stages round the others: `dealStarts` (the design's start sites dealt to the colonies at random, so a team number never gets the same ground map after map), `designFailure` (the registry's request check for a designed generator: the design's own failure), `settleColonies` and `settleRoundColonies` (round homes on their own grass, `homeGrassMask`), `homePondMissing` (a validator's check that every home kept its pond), `secureStartingCrops` (clear round the swarms, guarantee the crops, clear again), `reopenCrampedStarts` (at non-default amounts) and `openStartsBuriedByResources` (at any amount), `designMismatch`, `walkFromFirstColony`, `cropsBesideReach` (which crops a flood from a colony stands beside) and `coloniesApart` (the island map's opposite promise: no colony can walk to another) for validators, `startingAccessFailure` (read-only worker access to caller-selected supplies and nearby 4×4 building origins) and `startingFloorFailure` (the wheat, wood and building-room floor every legacy-core landscape validates), `ResourceAmounts` |
 | `Terrain` | The height-field pipeline as stages: `heightFieldTiling`, `classifyHeightField`, `paintHeightFieldTerrain`, `paintHeightFieldResources`, `chooseHeightFieldStarts`, `plantHeightFieldGroves`, composed by `generateHeightField` |
-| `StartQuality` | `scoreStarts`, the finished map's colony quality and fairness the service ranks candidates by |
+| `StartQuality` | `scoreStarts`, the finished map's colony measurements; `FairnessModel.h` scores them and the service ranks candidates by the resulting fairness |
 | `GenerationContext` | Named `std::mt19937` streams, `bounded` draws and `shuffle` |
 | `legacy/Regions`, `legacy/Distances`, `legacy/StartingPositions` | The older area-grid toolkit: point dispersion (`splitUpPoints`, `splitUpArea`, `divideUpArea`), the legacy distance encoding, `divideUpPlayerLands` and the boot-tile placers `placeStarts`/`placeArchipelagoStarts`. Concrete islands, Isles, Contested commons and the height-field generators still build on it; nothing new should |
 
 Controls and validation live in `core/`: `GeneratorControls` declares discrete, stepped,
 power-of-two and named-choice option domains once for the UI and the catalog; `GeneratorDefinition::validateRequest`
 is a pure check run before generation, and `validateWorld` runs after the structural checks
-against the finished terrain. `GeneratorDefinition::qualityWeights` and `qualityScale` say how the
-lobby ranks a generator's candidate seeds (`scoreStarts`); a map cramped or crowded on purpose sets
-them so the ranking rewards what it is meant to be.
+against the finished terrain. How the lobby ranks a generator's candidate seeds is not a
+generator's business any more: every seed is scored by the same fitted fairness model
+(`FairnessModel.h`), and a map that is cramped or crowded on purpose states that through its
+own `validateWorld` rather than by retuning the ranking.
 
 ## The designed generator
 
@@ -362,14 +363,15 @@ own terrain and resources:
   takes the narrowest score window that still holds enough mutually distant sites, falling back
   to the older any-legal-site search on maps where no set of sites can reach both resources at
   all.
-- `shared/StartQuality::scoreStarts` scores the *finished* map's colonies on six factors —
-  fertility (weighted highest, since it decides whether a colony's wheat ever comes back at all),
-  wheat/wood distance, buildable room, resource depth, and isolation from rivals — normalized
-  against fixed reference values (`StartQualityScale`, e.g. `wheatReference = 24`,
-  `fertilityReference = 8000` on `Fertility::kScale`) so that candidate maps are ranked against a
-  constant yardstick, not against each other's own best colony. A map's score is
-  `worst * (worst/best)^fairnessExponent`: the weakest colony's quality, gated by how evenly the
-  map shared quality out. `scoreStarts` also stamps the same `Fertility::Field` it computes for
+- `shared/StartQuality::scoreStarts` measures the *finished* map's colonies: the walk to every
+  resource, the stock standing within 12, 24 and 48 walking steps and how much of it no rival
+  reaches sooner, buildable room, territory held outright and contested, ground fertility, and
+  the distance to the nearest and farthest rival. What those measurements are worth is not
+  decided here: `FairnessModel.h` turns them into a start's fitness with coefficients fitted to
+  thousands of real games, a softmax over the map's colonies turns fitness into a chance of
+  winning, and the map's score is the fairness of those chances — 1 when every colony is as
+  likely to win as any other. See [FAIRNESS_MODEL.md](FAIRNESS_MODEL.md). `scoreStarts` also
+  stamps the same `Fertility::Field` it computes for
   scoring into `Map::Tile::fertility`/`Map::fertilityMaximum`, which is otherwise only ever
   populated by the editor's fertility tool or old-save migration — without this, every generated
   map's in-game fertility overlay would show nothing at all.
@@ -402,9 +404,10 @@ swarm and exactly as many WORKER units as the lobby's shared "Starting workers" 
 A landscape built on `shared/Bases` starts thirty-odd colonists, so it owns that number through a
 control of its own (`colonists`, 16 to 48) and says so with `GeneratorDefinition::startingWorkers`,
 a hook the check compares against instead; the lobby's "Starting workers" value is ignored by The
-Glacis, Allotments and Caravanserai, and warriors and explorers are never counted. Such a landscape
-also sets `qualityScale.roomReference` lower where its ground is cramped on purpose (Allotments'
-lots, Caravanserai's capital disc), so the seed ranking still tells a good roll from a poor one.
+Glacis, Allotments and Caravanserai, and warriors and explorers are never counted. Ground that is
+cramped on purpose for every colony (Allotments' lots, Caravanserai's capital disc) needs no
+allowance in the seed ranking: the fitted fairness model compares a map's colonies with each other,
+so room scarce for all of them does not mark the roll down.
 
 ## Fjord continent
 
@@ -1517,8 +1520,8 @@ the beach round every drumlin stays walkable, so the shoreline is always a road.
   the head, never more than 12 tiles short of the collar), a two-tile sand collar across the waist, the tail the farm: wheat 14 and wood 12 planted
   just past the collar (`teardropHomeKit`, `plantSplitKit`), a quarry near the head's tip, and the
   rest of the tail furnished as farmland like any farm drumlin. No home pond: the lakes are the
-  water. Building room is scarce by design, so the definition's `qualityScale` sets the room
-  reference to 300 sites (a town holds about 200) for the lobby's seed ranking.
+  water. Building room is scarce by design; the lobby's seed ranking needs no allowance for it,
+  since the fitted fairness model compares towns with each other rather than with an open plain.
 - **Sizing.** Homes are `home-size` (8-16, 11) half-width, shrunk to fit between their nearest
   neighbours under the grain, and shrunk again (to the floor of 8) so a farm drumlin fits at the
   lattice cells' centres between them; below the floor the request is refused
@@ -1556,7 +1559,7 @@ torus, with the geography a player knows. The Great Lakes, Victoria and Baikal a
 the Gobi and the Outback are sand; the Rockies, the Andes and the Himalayas are stone; the taiga and
 the Amazon are wood; the Mississippi, the Nile and the Yangtze are rivers; and the plains people
 farm are wheat country. A toy rather than a tournament map: the geography is fixed, no two colonies
-get the same ground, and fairness is measured after the fact (`scoreStarts`, the lobby's best of
+get the same ground, and fairness is measured after the fact (the fitted model, the lobby's best of
 several rolls) rather than proved by symmetry. What it promises is that every colony can start and
 that the continent looks like itself.
 

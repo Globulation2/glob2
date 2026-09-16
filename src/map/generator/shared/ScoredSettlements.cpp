@@ -7,8 +7,7 @@ namespace MapGeneration
 {
 ScoredSettlementChoice
 chooseScoredSettlements(GenerationContext &context, const std::vector<std::vector<int>> &proposals,
-						const SettlementBuilder &build, const SettlementCheck &check,
-						const StartQualityWeights &weights, const StartQualityScale &scale)
+						const SettlementBuilder &build, const SettlementCheck &check)
 {
 	struct EngineScope
 	{
@@ -39,7 +38,7 @@ chooseScoredSettlements(GenerationContext &context, const std::vector<std::vecto
 			context.telemetry.choice("starts.scored.outcome", result.failure, int(k));
 			continue;
 		}
-		const auto quality = scoreStarts(trial, context.request.nbTeams, weights, scale);
+		const auto quality = scoreStarts(trial, context.request.nbTeams);
 		const std::string failure =
 			quality.measured && int(quality.colonies.size()) == context.request.nbTeams
 				? check(quality)

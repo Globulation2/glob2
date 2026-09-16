@@ -118,7 +118,7 @@ The shared tools encode a few measurable promises every generator is expected to
 - **Room to build.** `openCrampedStarts` makes sure a colony can walk to at least 16 free 4×4
   building sites within 24 steps. A colony walled in by its own deposits cannot grow at all.
 - **Workers can leave the swarm.** A clear ring of `kSwarmClearance` tiles round each swarm.
-- **Fair starts.** `scoreStarts` rates each colony on wheat and wood distance, fertility, deposit
+- **Fair starts.** `scoreStarts` measures each colony on wheat and wood distance, fertility, deposit
   depth, room and isolation from rivals; fairness is the weakest start divided by the strongest,
   and the lobby keeps the best-scoring of several seeds. Designed generators get fairness by
   construction instead: they design one colony's share and turn or mirror it onto every other

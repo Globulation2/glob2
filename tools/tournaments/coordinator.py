@@ -28,6 +28,10 @@ class Coordinator:
         if self.manifest['package_id'] != package_identity():
             raise ValueError('experiment pins another worker package; use its preserved worker.pyz or create a new experiment revision')
         self.settings = DEFAULTS | self.manifest.get('settings', {})
+        # Bundle manifests are immutable once installed, and dispatch consults one
+        # per pending job per host. Reading them from disk each time costs more
+        # than everything else the coordinator does on a large experiment.
+        self.bundles = {}
         self.db = database(self.root / 'state.sqlite')
         self.db.executescript('''
             CREATE TABLE IF NOT EXISTS jobs (
@@ -152,6 +156,11 @@ class Coordinator:
                 if active == row['id']:
                     self._retry_or_fail(row['job_id'], 'transport_failure')
 
+    def bundle(self, build):
+        if build not in self.bundles:
+            self.bundles[build] = inspect_bundle(self.root / 'builds' / build, verify=False)
+        return self.bundles[build]
+
     def resolve_inputs(self, job):
         inputs = {}
         for name, source in job['inputs'].items():
@@ -183,7 +192,7 @@ class Coordinator:
             if len(dispatched) >= room:
                 break
             job = json.loads(row['spec'])
-            bundle = inspect_bundle(self.root / 'builds' / job['build'], verify=False)
+            bundle = self.bundle(job['build'])
             if not eligible(bundle, status, job['type']):
                 continue
             parents = [self.db.execute('SELECT state,accepted FROM jobs WHERE id=?', (dep,)).fetchone() for dep in job['depends_on']]

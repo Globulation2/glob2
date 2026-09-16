@@ -1066,12 +1066,5 @@ GeneratorDefinition plantationsDefinition()
 		true,
 		designFailure<design>,
 		validateWorld};
-	// Room is scarce by design: a home plot holds a handful of building sites after its swarm and
-	// pool, so the ranking measures room against that rather than a whole meadow, and a colony's
-	// rivals are always out of walking reach, so isolation tells the candidates nothing apart.
-	definition.qualityScale.roomReference = 24;
-	definition.qualityWeights.isolation = 0.0;
-	definition.qualityWeights.room = 0.15;
-	definition.qualityWeights.fertility = 0.29;
 	return definition;
 }

@@ -366,11 +366,27 @@ inline void settlementChecks()
 		growPatch(map, t, t.at(40, 14), WOOD, 10, [](int) { return true; });
 		const StartQualityReport report = scoreStarts(game, 2);
 		assert(report.measured && report.colonies.size() == 2);
+		double winShare = 0;
 		for (const ColonyQuality &colony : report.colonies)
-			assert(colony.wheatDistance > 0 && colony.woodDistance > 0 && colony.total > 0 &&
-				   colony.total <= 1 && colony.buildSites > 0);
-		assert(report.worst <= report.best && report.score <= report.worst + 1e-12 &&
-			   report.fairness > 0 && report.fairness <= 1);
+		{
+			assert(colony.wheatDistance > 0 && colony.woodDistance > 0 && colony.buildSites > 0);
+			assert(colony.winProbability > 0 && colony.winProbability < 1);
+			winShare += colony.winProbability;
+		}
+		assert(std::fabs(winShare - 1.0) < 1e-9);
+		assert(report.worstFitness <= report.meanFitness &&
+			   report.meanFitness <= report.bestFitness);
+		assert(report.score == report.fairness && report.fairness > 0 && report.fairness <= 1);
+		// Fairness reads off the same scale whatever the colony count: equal chances are 1,
+		// and one colony taking everything is 0 for two colonies as much as for eight.
+		assert(mapFairness({0.5, 0.5}) == 1.0 && mapFairness({0.25, 0.25, 0.25, 0.25}) == 1.0);
+		assert(mapFairness({1.0, 0.0}) == 0.0 && mapFairness({1.0, 0.0, 0.0, 0.0}) == 0.0);
+		assert(mapFairness({1.0}) == 1.0);
+		// Softmax: equal fitness is an equal chance, and a higher fitness is a better chance.
+		const auto even = winProbabilities({0.5, 0.5, 0.5});
+		assert(std::fabs(even[0] - 1.0 / 3) < 1e-9 && std::fabs(even[2] - 1.0 / 3) < 1e-9);
+		const auto skewed = winProbabilities({0.0, 2.0});
+		assert(skewed[1] > skewed[0] && std::fabs(skewed[0] + skewed[1] - 1.0) < 1e-9);
 		// Two water walls, one across the wrap, cut colony 1 off from colony 0.
 		for (int y = 0; y < t.h; ++y)
 			for (int x = 0; x < t.w; ++x)

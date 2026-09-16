@@ -554,8 +554,5 @@ GeneratorDefinition allotmentsDefinition()
 		designFailure<design>,
 		validateWorld};
 	d.startingWorkers = [](const GenerationRequest &r) { return r.option("colonists"); };
-	// Only the open lots are room to build, so the start scorer's reference for building room is
-	// a third of the usual: a subdivision is cramped on purpose.
-	d.qualityScale.roomReference = 300;
 	return d;
 }

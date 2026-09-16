@@ -2196,24 +2196,22 @@ Paramètres au hasard
 Qualité du départ
 [Fairness]
 Équité
-[Score]
-Note
-[Weight]
-Poids
+[Fitness]
+Aptitude
+[Win chance]
+Chance de victoire
+[Coefficient]
+Pondération
+[Average]
+Moyenne
+[Fitted on games:]
+Ajusté sur des parties :
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Le départ de chaque colonie est mesuré sur la carte terminée, et un modèle ajusté sur des milliers de parties entre adversaires de même niveau transforme ces mesures en aptitude. L'aptitude indique la probabilité que cette colonie gagne. L'équité indique à quel point ces chances sont réparties également : 1 quand chaque colonie a autant de chances de gagner que les autres, 0 quand une seule colonie s'emparerait de la carte.
 [Worst]
 Pire
 [Best]
 Meilleur
-[Fertility]
-Fertilité
-[Deposits]
-Gisements
-[Room]
-Espace
-[Isolation]
-Isolement
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Le départ de chaque colonie est mesuré sur la carte terminée : le trajet jusqu'au blé et au bois, la repousse de son sol, les gisements et emplacements de construction à portée, et sa distance aux rivaux. Chaque facteur est noté de 0 à 1 face à une barre fixe, le total les pondère, l'équité est le total de la pire colonie divisé par celui de la meilleure, et la note est le pire total multiplié par l'équité.
 [Map preview controls]
 Glissez pour traverser les bords. Molette pour zoomer. Clic droit ou double clic pour réinitialiser.
 [Map preview drag help]

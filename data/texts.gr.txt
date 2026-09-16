@@ -2256,24 +2256,22 @@ Cortex
 Ποιότητα εκκίνησης
 [Fairness]
 Δικαιοσύνη
-[Score]
-Βαθμολογία
-[Weight]
-Βάρος
+[Fitness]
+Ισχύς
+[Win chance]
+Πιθανότητα νίκης
+[Coefficient]
+Συντελεστής
+[Average]
+Μέσος όρος
+[Fitted on games:]
+Προσαρμογή σε παιχνίδια:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Η εκκίνηση κάθε αποικίας μετριέται στον ολοκληρωμένο χάρτη και ένα μοντέλο προσαρμοσμένο σε χιλιάδες παιχνίδια μεταξύ ισάξιων αντιπάλων μετατρέπει αυτές τις μετρήσεις σε ισχύ. Η ισχύς δείχνει πόσο πιθανό είναι να κερδίσει η αποικία. Η δικαιοσύνη δείχνει πόσο ισόποσα μοιράζονται αυτές οι πιθανότητες: 1 όταν κάθε αποικία έχει την ίδια πιθανότητα νίκης, 0 όταν μία μόνο αποικία θα κυριαρχούσε στον χάρτη.
 [Worst]
 Χειρότερο
 [Best]
 Καλύτερο
-[Fertility]
-Γονιμότητα
-[Deposits]
-Αποθέματα
-[Room]
-Χώρος
-[Isolation]
-Απομόνωση
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Η εκκίνηση κάθε αποικίας μετριέται στον τελικό χάρτη: η διαδρομή ως το σιτάρι και ως το ξύλο, πόσο καλά ξαναφυτρώνει το έδαφός της, τα αποθέματα και οι θέσεις δόμησης σε εμβέλεια, και η απόστασή της από τους αντιπάλους. Κάθε παράγοντας βαθμολογείται από 0 έως 1 απέναντι σε σταθερό όριο, το σύνολο τους σταθμίζει, η δικαιοσύνη είναι το σύνολο της χειρότερης αποικίας προς εκείνο της καλύτερης, και η βαθμολογία είναι το χειρότερο σύνολο επί τη δικαιοσύνη.
 [Map preview controls]
 Σύρετε για μετακίνηση πέρα από τα άκρα. Ροδέλα για ζουμ. Δεξί ή διπλό κλικ για επαναφορά.
 [Map preview drag help]

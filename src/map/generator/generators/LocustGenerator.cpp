@@ -258,8 +258,5 @@ GeneratorDefinition locustDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld,
-			// Wheat/wood access dominate (30%/25%); stock 20%, room 15%, separation 10%.
-			// Fertility gets zero weight: rewarding renewable food would contradict the concept.
-			{0.30, 0.25, 0.0, 0.20, 0.15, 0.10}};
+			validateWorld};
 }

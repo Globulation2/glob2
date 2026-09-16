@@ -2258,24 +2258,22 @@ OpenGL 在此版本中不可用。
 開局品質
 [Fairness]
 公平度
-[Score]
-評分
-[Weight]
-權重
+[Fitness]
+強度
+[Win chance]
+勝率
+[Coefficient]
+係數
+[Average]
+平均
+[Fitted on games:]
+擬合對局數：
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+每個殖民地的開局都在完成的地圖上測量，並由以數千場實力相當對手之間的對局擬合出的模型，將這些測量轉換為強度。強度表示該殖民地獲勝的可能性。公平度表示這些機會分配得多平均：當每個殖民地的獲勝機會都相同時為 1，當單一殖民地會拿下整張地圖時為 0。
 [Worst]
 最低
 [Best]
 最高
-[Fertility]
-肥沃度
-[Deposits]
-儲量
-[Room]
-空間
-[Isolation]
-隔離度
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-每個殖民地的開局都在完成的地圖上測量：到小麥和木材的路程、土地的再生能力、可及範圍內的儲量和建築用地，以及與對手的距離。每項因素按固定標準計 0 到 1 分，總分對其加權，公平度是最低殖民地的總分除以最高者，評分是最低總分乘以公平度。
 [Map preview controls]
 拖曳以跨越邊界，滾輪縮放。按右鍵或連按兩下重設。
 [Map preview drag help]
