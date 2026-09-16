@@ -31,7 +31,14 @@ bool reserveHomes(Layout &, GenerationContext &, const std::vector<Home> &prefer
 bool overlapsHome(const Layout &, RegionBounds, int margin = 0);
 void layHomeEconomies(Layout &);
 /// A sand-contained bank plot; only stamps existing unreserved grass, never a crossing.
+/// Slides along the bank and tries once two tiles smaller before reporting an omission.
 bool bankFarm(Layout &, RegionBounds, bool timber);
+/// Square garden pools on a jittered lattice through the open land, each with crop plots on
+/// two of its banks: the water these maps need away from their one fractal channel, in the
+/// same square-on-a-grid language as the rest of the design. Only stamps clean unreserved
+/// grass with a walking margin round it, so it can neither cut a designed route nor touch a
+/// home module. Returns the number of pools placed.
+int gardenBeds(Layout &, GenerationContext &, int spacing, int half, int margin = 6);
 void stampCrossings(Layout &, const CrossingSelection &, GenerationContext &);
 bool furnishAndSettle(Game &, GenerationContext &, const Layout &);
 std::string validate(const Game &, const GenerationContext &, const Layout &);

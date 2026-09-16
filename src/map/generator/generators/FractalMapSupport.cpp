@@ -166,10 +166,44 @@ void layHomeEconomies(Layout &L)
 		// The flag is installed after rasterization, never by clearing grown crops.
 		fillRectangle(L.terrain, t, {h.x - 12, h.y - 15, h.x + 13, h.y - 9}, GRASS);
 		fillRectangle(L.growthRestricted, t, {h.x - 12, h.y - 15, h.x + 12, h.y - 10});
+		// The module's outer edge used to be a crisp rectangle, so every colony on both maps
+		// opened inside the same stamped yellow box. Fray it: each tile along the outside of
+		// the cap may push a few tiles further out over open grass. Sand is only ever added,
+		// and only inside the reserved 61x61 the home already owns, so every containment the
+		// plots depend on is exactly as it was and nothing else can have claimed that ground.
+		// The pattern comes from the home's own coordinates, so it varies with the seed and
+		// between colonies without drawing from any random stream.
+		const auto fray = [&](int x, int y, int dx, int dy)
+		{
+			const unsigned hash = unsigned(x * 73856093) ^ unsigned(y * 19349663);
+			// One or two tiles on about two thirds of the perimeter. Sand is not building
+			// ground, so a deeper fray eats the expansion anchors every module is checked
+			// for: at four tiles it cost eight-colony 256 maps their ninth module.
+			for (int step = 1; step <= int(hash % 3u); ++step)
+			{
+				const int i = t.at(x + dx * step, y + dy * step);
+				if (std::abs(x + dx * step - h.x) > 29 || std::abs(y + dy * step - h.y) > 29 ||
+					L.terrain[i] != GRASS)
+					break;
+				L.terrain[i] = SAND;
+			}
+		};
+		for (int x = h.x - 26; x < h.x + 27; ++x)
+		{
+			fray(x, h.y - 28, 0, -1);
+			fray(x, h.y + 28, 0, 1);
+		}
+		for (int y = h.y - 28; y < h.y + 29; ++y)
+		{
+			fray(h.x - 26, y, -1, 0);
+			fray(h.x + 26, y, 1, 0);
+		}
 	}
 	layBeaches(L.terrain, t);
 }
-bool bankFarm(Layout &L, RegionBounds b, bool timber)
+namespace
+{
+bool stampBankFarm(Layout &L, RegionBounds b, bool timber)
 {
 	// A small expansion plot borrows irrigation from the lake/river rather than adding
 	// another artificial channel. Its sand rim contains all later crop spread; the
@@ -189,6 +223,96 @@ bool bankFarm(Layout &L, RegionBounds b, bool timber)
 	--crops.y1;
 	fillRectangle(timber ? L.wood : L.wheat, L.t, crops, 1);
 	return true;
+}
+} // namespace
+
+bool bankFarm(Layout &L, RegionBounds b, bool timber)
+{
+	// The first choice of box is often blocked by one corner of a neighbouring plot, a
+	// crossing's shoulder or a home module, and refusing there left the bank bare: Hilbert
+	// placed 12 of the 30 plots it proposed and Sierpiński offered six in total, which is
+	// most of why these two maps measured barren beside every other landscape (2026-09-16).
+	// So slide along the bank before giving up, then try the same positions two tiles
+	// smaller. Deterministic, order-independent, and every candidate still has to be clean
+	// unreserved grass: this widens the search, it never weakens what a plot may sit on.
+	const bool horizontal = b.x1 - b.x0 >= b.y1 - b.y0;
+	for (const int shrink : {0, 2})
+	{
+		const RegionBounds inset{b.x0 + shrink, b.y0 + shrink, b.x1 - shrink, b.y1 - shrink};
+		if (inset.x1 - inset.x0 < 8 || inset.y1 - inset.y0 < 8)
+			break;
+		for (const int slide : {0, -5, 5, -10, 10, -15, 15})
+		{
+			const int dx = horizontal ? slide : 0, dy = horizontal ? 0 : slide;
+			if (stampBankFarm(L, {inset.x0 + dx, inset.y0 + dy, inset.x1 + dx, inset.y1 + dy},
+							  timber))
+				return true;
+		}
+	}
+	return false;
+}
+
+int gardenBeds(Layout &L, GenerationContext &context, int spacing, int half, int margin)
+{
+	const auto &t = L.t;
+	// A bed is the home module's idea at one quarter the size: a square pool, a ring of crops
+	// the pool waters, and a sand cap that contains them. It needs `margin` of clean grass all
+	// round so the walk past it survives; on Hilbert that margin is most of a pocket between
+	// two folds, which is why its beds are small. A bed that does not fit is simply not placed,
+	// never forced, and nothing here may touch a home module, a crossing or an objective court.
+	const auto clear = [&](RegionBounds b)
+	{
+		for (int y = b.y0 - margin; y < b.y1 + margin; ++y)
+			for (int x = b.x0 - margin; x < b.x1 + margin; ++x)
+			{
+				const int i = t.at(x, y);
+				if (L.terrain[i] != GRASS || L.reserved[i] || L.crossings[i] || L.objectives[i] ||
+					L.wheat[i] || L.wood[i])
+					return false;
+			}
+		return true;
+	};
+	int beds = 0, water = 0, crops = 0;
+	for (int cy = spacing / 2; cy < t.h; cy += spacing)
+		for (int cx = spacing / 2; cx < t.w; cx += spacing)
+		{
+			// Jitter keeps the beds off a perfect grid without letting them wander into each
+			// other; the lattice itself is what makes them read as part of the design.
+			const int jx = int(context.bounded("garden-beds", spacing / 3)) - spacing / 6;
+			const int jy = int(context.bounded("garden-beds", spacing / 3)) - spacing / 6;
+			const int x = cx + jx, y = cy + jy;
+			const RegionBounds bed{x - half, y - half, x + half, y + half};
+			if (!clear(bed))
+				continue;
+			// Sand cap, crop ring, pool. Three tiles of grass between the pool and the cap:
+			// the crops, and a lane to walk along them. The pool takes the rest, because the
+			// water these maps were missing has to come from somewhere other than widening
+			// the one channel their geometry is built around — at seven tiles instead of six
+			// the Hilbert river left no room for a crossing court on a 128 map at all.
+			fillRectangle(L.terrain, t, bed, SAND);
+			const RegionBounds ring{bed.x0 + 2, bed.y0 + 2, bed.x1 - 2, bed.y1 - 2};
+			fillRectangle(L.terrain, t, ring, GRASS);
+			const RegionBounds pool{bed.x0 + 5, bed.y0 + 5, bed.x1 - 5, bed.y1 - 5};
+			fillRectangle(L.terrain, t, pool, WATER);
+			// Alternate the beds between food and timber so neither crop can be cornered by
+			// taking one part of the map, and so a bed is worth walking to from either home.
+			auto &crop = beds % 3 == 2 ? L.wood : L.wheat;
+			for (int py = ring.y0; py < ring.y1 - 1; ++py)
+				for (int px = ring.x0; px < ring.x1 - 1; ++px)
+				{
+					const int i = t.at(px, py);
+					if (L.terrain[i] != GRASS)
+						continue;
+					crop[i] = 1;
+					++crops;
+				}
+			water += (pool.x1 - pool.x0) * (pool.y1 - pool.y0);
+			++beds;
+		}
+	context.telemetry.measure("fractal.beds.placed", beds);
+	context.telemetry.measure("fractal.beds.water-tiles", water);
+	context.telemetry.measure("fractal.beds.crop-tiles", crops);
+	return beds;
 }
 
 void stampCrossings(Layout &L, const CrossingSelection &selection, GenerationContext &context)
@@ -269,6 +393,46 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 		if (int(context.bounded("fractal-objectives", 300)) < amount)
 			map.setResource(x, y, type, 1);
 	}
+	// Outside those courts the open land carried nothing at all, which is most of why these
+	// two maps measured barren beside every other landscape: a quarter the resource tiles of
+	// the median map, and three quarters of the ground bare (2026-09-16). It now carries
+	// deposits on the same 8-lattice the courts use, so 3x3 patches always alternate with
+	// permanent gathering lanes and no slider can build a wall across the land. Only timber,
+	// fruit and stone, and timber and fruit only where the ground cannot grow them back: a
+	// renewable patch out here would spread into the routes the design promises, which is
+	// what the courts-only rule was protecting. Food stays inside the contained plots.
+	std::vector<unsigned char> ambient(t.size(), 0);
+	int ambientTiles = 0;
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		if (L.objectives[i] || L.reserved[i] || L.crossings[i] || L.wheat[i] || L.wood[i])
+			continue;
+		// 3x3 patches with five clear tiles between them, the same lattice the objective
+		// courts use: a patch costs building anchors as well as giving resources, and the
+		// gaps are what keep a module's expansion room and the walking lanes open.
+		if (x % 8 >= 3 || y % 8 >= 3 || !clearGround(map, x, y))
+			continue;
+		const int kind = ((x / 8) * 3 + (y / 8) * 5) % 8;
+		const int type = kind < 3 ? STONE : kind < 6 ? WOOD : CHERRY + (kind - 6);
+		const int amount = context.request.option(
+			type == STONE ? "stone-amount" : type == WOOD ? "wood-amount" : "fruit-amount");
+		if (int(context.bounded("fractal-ambient", 100)) >= amount)
+			continue;
+		map.setResource(x, y, type, 1);
+		ambient[i] = 1;
+		++ambientTiles;
+	}
+	// These are finite: the engine's saved no-growth flag holds every ambient patch where it
+	// was put, so a slider cannot grow one into the lanes between them, and the renewable
+	// economy stays where the design contains it — the home plots, the bank plots and the
+	// beds. Out here a patch is a thing you go and take, not a thing that spreads.
+	if (preventResourceGrowth(map, ambient) < 0)
+	{
+		context.detail = "Invalid ambient deposit mask.";
+		return false;
+	}
+	context.telemetry.measure("fractal.ambient.deposit-tiles", ambientTiles);
 	seedAlgae(map, context, t, "fractal-algae", context.request.option("algae-amount"),
 			  AlgaeBand::anyWater(100));
 

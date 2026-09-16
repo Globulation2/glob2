@@ -168,6 +168,9 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 				propose(3 + k, k * kPi / 36 + shift);
 	context.telemetry.measure("sierpinski.crossings.blocked-approaches", blockedApproaches);
 	context.telemetry.measure("sierpinski.crossings.legal-candidates", candidates.size());
+	// Garden pools in the meadows the recursion left empty. They go in before the causeway
+	// graph is measured, so a pool can never appear under a selected approach.
+	gardenBeds(L, context, 30, 13, 4);
 	layBeaches(L.terrain, t);
 	// Graph travel uses the preliminary land mask. Finished-world validators later
 	// account for deposits, settlements, and actual engine movement predicates.
@@ -226,10 +229,15 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		// genuine omissions, never an excuse to fill part of the recursive lake.
 		const bool timber =
 			GenerationContext::deriveSeed(r.seed, "garden-farm-" + std::to_string(k)) % 3 == 0;
+		const int x = (b.x0 + b.x1) / 2;
+		// All four banks, not just the two sides: a garden lake with crops on one shore and
+		// bare grass on the other three was most of what made this map read as empty.
 		farms += bankFarm(L, {b.x0 - 18, y - 12, b.x0 - 5, y + 12}, timber);
 		farms += bankFarm(L, {b.x1 + 5, y - 12, b.x1 + 18, y + 12}, !timber);
+		farms += bankFarm(L, {x - 12, b.y0 - 18, x + 12, b.y0 - 5}, !timber);
+		farms += bankFarm(L, {x - 12, b.y1 + 5, x + 12, b.y1 + 18}, timber);
 	}
-	context.telemetry.measure("sierpinski.bank-farms.proposed", smallerLakes.size() * 2);
+	context.telemetry.measure("sierpinski.bank-farms.proposed", smallerLakes.size() * 4);
 	context.telemetry.measure("sierpinski.bank-farms.placed", farms);
 	context.telemetry.measure("sierpinski.depth.requested", o.nesting);
 	context.telemetry.measure("sierpinski.depth.achieved", actualNesting);
@@ -274,7 +282,7 @@ GeneratorDefinition sierpinskiGardensDefinition()
 	return {"sierpinski-gardens",
 			49,
 			"Sierpiński Gardens",
-			1,
+			2,
 			false,
 			controls,
 			generate,

@@ -153,22 +153,31 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	for (ShapePoint p : {bridge.from, bridge.to})
 		fillRectangle(L.objectives, t, {int(p.x) - 10, int(p.y) - 10, int(p.x) + 11, int(p.y) + 11},
 					  1);
+	// Pools in the pockets between the folds, before the bank plots, so the river's own
+	// banks keep first claim on the ground beside them.
+	gardenBeds(L, context, (o.width + o.spacing) / 2, (o.spacing - 8) / 2, 4);
 	int farms = 0;
 	for (const auto &segment : path.segments)
 	{
 		const double dx = segment.to.x - segment.from.x, dy = segment.to.y - segment.from.y;
 		const double length = std::hypot(dx, dy);
-		// Quarter points stay away from the midpoint crossing courts and rounded ends.
-		// Plot orientation follows the bank, so rectangular scaling never widens the river.
+		// Quarter and three-quarter points on both banks, keeping clear of the midpoint
+		// crossing courts and the rounded ends: one plot per segment side left long
+		// straights of river with nothing growing beside them. Plot orientation follows the
+		// bank, so rectangular scaling never widens the river.
 		for (int side : {-1, 1})
-		{
-			const int x = int(segment.from.x + dx / 4 - side * dy / length * (o.width / 2 + 12));
-			const int y = int(segment.from.y + dy / 4 + side * dx / length * (o.width / 2 + 12));
-			const int hx = dx == 0 ? 6 : 10, hy = dx == 0 ? 10 : 6;
-			farms += bankFarm(L, {x - hx, y - hy, x + hx, y + hy}, (segment.id + side) % 3 == 0);
-		}
+			for (const double along : {0.25, 0.75})
+			{
+				const int x =
+					int(segment.from.x + dx * along - side * dy / length * (o.width / 2 + 12));
+				const int y =
+					int(segment.from.y + dy * along + side * dx / length * (o.width / 2 + 12));
+				const int hx = dx == 0 ? 6 : 10, hy = dx == 0 ? 10 : 6;
+				farms += bankFarm(L, {x - hx, y - hy, x + hx, y + hy},
+								  (segment.id + side + int(along * 4)) % 3 == 0);
+			}
 	}
-	context.telemetry.measure("hilbert.bank-farms.proposed", path.segments.size() * 2);
+	context.telemetry.measure("hilbert.bank-farms.proposed", path.segments.size() * 4);
 	context.telemetry.measure("hilbert.bank-farms.placed", farms);
 	context.telemetry.measure("hilbert.depth.requested", o.depth);
 	context.telemetry.measure("hilbert.depth.achieved", path.actualOrder);
@@ -212,6 +221,6 @@ GeneratorDefinition hilbertRiverDefinition()
 		{"major-shortcuts", "Optional major shortcuts", 0, 4, 1, 2, ControlGroup::Layout}};
 	const auto resources = resourceControls();
 	controls.insert(controls.end(), resources.begin(), resources.end());
-	return {"hilbert-river", 50,           "Hilbert River", 1, false, controls, generate, true,
+	return {"hilbert-river", 50,           "Hilbert River", 2, false, controls, generate, true,
 			validateRequest, validateWorld};
 }

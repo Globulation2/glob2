@@ -2,22 +2,24 @@
 
 ## Play contract
 
-**Sierpiński Gardens** (`sierpinski-gardens`, numeric ID 49, revision 1) surrounds a
+**Sierpiński Gardens** (`sierpinski-gardens`, numeric ID 49, revision 2) surrounds a
 central orchard island with a rectangular lake, eight first-level districts, and
 smaller central-third lakes in eligible districts. Home reservations stop further
 cutting. Opposing causeway pairs provide distinct island approaches; the outside
-land remains joined across the torus. Unreserved lake banks offer contained farms
-and nearby construction land.
+land remains joined across the torus. Every lake bank offers contained farms and
+nearby construction land, and garden beds and ambient deposits fill the meadows the
+recursion leaves between them.
 
 ![Sierpiński Gardens at 256×256 with four colonies](images/sierpinski-gardens.png)
 
 Engine map preview: seed 20001, default controls, 256×256, four colonies.
 
-**Hilbert River** (`hilbert-river`, numeric ID 50, revision 1) follows a continuous
+**Hilbert River** (`hilbert-river`, numeric ID 50, revision 2) follows a continuous
 Hilbert curve. Broad pockets between folds hold colonies. Walking around the river
 ends and across map seams remains possible; direct bank crossings shorten those
 routes, and swimming offers further alternatives. Orchards sit by regional crossing
-courts. Farms follow eligible banks.
+courts. Farms follow both banks of every segment, and garden beds sit in the pockets
+the folds enclose.
 
 ![Hilbert River at 256×256 with four colonies](images/hilbert-river.png)
 
@@ -60,6 +62,50 @@ an opening minimum at zero; ambient bank crops do not. Home stock density ranges
 from 50% to 100%, and ambient bank density from 0% to 100%. Opening quarries retain
 six tiles per module at zero ambient stone. Objective fruit/stone and algae scale
 with their amounts. Plot area and permanent lanes do not grow with abundance.
+
+### Garden beds and the open land
+
+Until 2026-09-16 the land between the design's features carried nothing: deposits
+lived only inside objective courts and contained plots, and both maps measured
+around 1,400–1,900 resource tiles against a 7,800 median across the 48 playable
+landscapes, third and sixth lowest of all of them. Three things now fill it, and
+none of them may touch a home module, a crossing, an objective court or an existing
+plot:
+
+- **Bank plots** slide along the bank and retry two tiles smaller before reporting
+  an omission, instead of refusing on the first blocked box. Hilbert proposes a plot
+  at the quarter and three-quarter points of both banks of every segment (was one
+  per side) and places most of them; Gardens proposes all four banks of every
+  smaller lake (was two).
+- **Garden beds** are the home module at a quarter scale — a square pool, a ring of
+  crops it waters, a sand cap that contains them — dropped on a jittered lattice
+  through the open land, sized to the pockets between Hilbert's folds. They are the
+  water away from the one fractal channel, in the same square-on-a-grid language.
+- **Ambient deposits** cover the rest on the same 8-lattice the objective courts
+  use, so 3×3 patches always alternate with permanent gathering lanes. They are
+  timber, fruit and stone only, and the engine's saved `canResourcesGrow` flag holds
+  each patch where it was put: out here a patch is finite, something to go and take,
+  and it can never spread into a route. Renewable food stays inside the contained
+  plots. The lattice gaps are also what keep each module's expansion anchors
+  available, which the finished-world check requires.
+
+Measured over 128/256/512 maps at two to eight colonies, six seeds each, this takes
+Hilbert from 1,871 to 6,536 resource tiles and Gardens from 1,422 to 5,950, against
+a 7,764 median across the 48 playable landscapes. Water rises from 10.2% to 13.0%
+and from 12.7% to 18.0%, still well under the field's 29.8%: these are maps of land
+cut by one fractal channel, and the median belongs to archipelagos. Widening the
+channel was tried and rejected — a seven-tile river leaves no room for a crossing
+court on a 128 map, which costs the smallest supported size entirely — so the extra
+water comes from the beds instead. `river-width` and `lake-size` remain the controls
+for players who want more.
+
+The home module's outer sand cap is frayed one or two tiles outward over open grass,
+from a hash of the home's own coordinates rather than any random stream, so the
+colonies no longer all open inside an identical stamped rectangle. Sand is only ever
+added, and only inside the 61×61 the module already reserves, so every containment
+proof is unchanged. The fray is deliberately shallow: sand is not building ground,
+and at four tiles deep it cost eight-colony 256 maps their ninth module's expansion
+room.
 
 ### Home and start policy
 
