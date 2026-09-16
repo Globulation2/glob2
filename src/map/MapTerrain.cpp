@@ -21,9 +21,7 @@ bool Map::touchesUMTerrain(int x, int y, TerrainType t) const
 }
 
 // Paints t on an l by l square and repairs the corners around it that may not touch t:
-// grass and water meet through sand, ice never touches sand, cobblestone never touches
-// water. Sand that ice reaches turns to ice where it holds a shore, grass elsewhere; ice
-// that sand reaches turns back into the water or grass beside it.
+// grass and water meet through sand, and so do cobblestone and water. Ice touches anything.
 void Map::setUMatPos(int x, int y, TerrainType t, int l)
 {
 	bool repairedPrototypeTerrain = false;
@@ -39,16 +37,6 @@ void Map::setUMatPos(int x, int y, TerrainType t, int l)
 				else if ((t==WATER && n==COBBLESTONE) || (t==COBBLESTONE && n==WATER))
 				{
 					setUMTerrain(nx, ny, SAND);
-					repairedPrototypeTerrain = true;
-				}
-				else if (t==ICE && n==SAND)
-				{
-					setUMTerrain(nx, ny, touchesUMTerrain(nx, ny, WATER) ? ICE : GRASS);
-					repairedPrototypeTerrain = true;
-				}
-				else if (t==SAND && n==ICE)
-				{
-					setUMTerrain(nx, ny, touchesUMTerrain(nx, ny, WATER) ? WATER : GRASS);
 					repairedPrototypeTerrain = true;
 				}
 			}

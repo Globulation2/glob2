@@ -55,7 +55,7 @@ int main()
 						{
 							const TerrainType n = map.getUMTerrain(px + dx, py + dy);
 							auto pair = [&](TerrainType a, TerrainType b) { return (paint == a && n == b) || (paint == b && n == a); };
-							assert(!pair(GRASS, WATER) && !pair(ICE, SAND) && !pair(COBBLESTONE, WATER));
+							assert(!pair(GRASS, WATER) && !pair(COBBLESTONE, WATER));
 						}
 					if (paint == GRASS)
 						for (int y = py - 1; y <= py; ++y)
