@@ -81,6 +81,22 @@ class Trace:
     def for_team(self, team: int) -> List[Snapshot]:
         return [s for s in self.snapshots if s.team == team]
 
+    def at(self, team: int, tick: int) -> Optional[Snapshot]:
+        """Earliest snapshot for `team` at or after `tick`, else None.
+
+        Mirrors TraceReader::at in the C++. Returning None past the end of the
+        recording rather than clamping to the last snapshot is deliberate:
+        beyond the trace there is no evidence of what the teacher wanted, and
+        repeating its final state would be an invented label.
+        """
+        best = None
+        for snapshot in self.snapshots:
+            if snapshot.team != team or snapshot.tick < tick:
+                continue
+            if best is None or snapshot.tick < best.tick:
+                best = snapshot
+        return best
+
     def teachers(self) -> Dict[int, int]:
         """team -> teacher id (AI::ImplementationID), from the first snapshot."""
         found: Dict[int, int] = {}

@@ -27,6 +27,7 @@
 #include "Player.h"
 #include "ai/AI.h"
 #include "ai/atlas/AtlasTrace.h"
+#include "ai/atlas/AtlasObservation.h"
 
 #define BULLET_IMGID 0
 
@@ -214,6 +215,16 @@ void Game::syncStep(Sint32 localTeam)
 				for (int t=0; t<mapHeader.getNumberOfTeams(); t++)
 					if (teams[t])
 						globalContainer->atlasTraceWriter->writeSnapshot(
+							teams[t], (Uint32)stepCounter, atlasTeacherIdFor(*this, t));
+		}
+
+		if (globalContainer->atlasObsWriter && globalContainer->atlasObsWriter->isValid())
+		{
+			const Uint32 period = globalContainer->atlasObsWriter->samplePeriod();
+			if (period > 0 && (stepCounter % period) == 0)
+				for (int t=0; t<mapHeader.getNumberOfTeams(); t++)
+					if (teams[t])
+						globalContainer->atlasObsWriter->writeRecord(
 							teams[t], (Uint32)stepCounter, atlasTeacherIdFor(*this, t));
 		}
 

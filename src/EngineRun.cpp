@@ -15,6 +15,7 @@
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #include "ai/atlas/AtlasTrace.h"
+#include "ai/atlas/AtlasObservation.h"
 #include "SDLCompat.h"
 #include "team/Team.h"
 #include "TeamStat.h"
@@ -551,6 +552,12 @@ void Engine::teardownSession()
 		}
 		globalContainer->atlasTraceWriter->close(outcomes);
 		globalContainer->atlasTraceWriter.reset();
+	}
+
+	if (globalContainer->atlasObsWriter)
+	{
+		globalContainer->atlasObsWriter->close();
+		globalContainer->atlasObsWriter.reset();
 	}
 
 	net.reset();

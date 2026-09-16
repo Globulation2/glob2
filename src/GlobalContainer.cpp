@@ -20,6 +20,7 @@
 #ifndef YOG_SERVER_ONLY
 #include "DatasetWriter.h"
 #include "ai/atlas/AtlasTrace.h"
+#include "ai/atlas/AtlasObservation.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #endif  // !YOG_SERVER_ONLY

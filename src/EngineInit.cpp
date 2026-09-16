@@ -13,6 +13,7 @@
 #include "ChooseMapScreen.h"
 #include "DatasetWriter.h"
 #include "ai/atlas/AtlasTrace.h"
+#include "ai/atlas/AtlasObservation.h"
 #include "Engine.h"
 #include "EngineTiming.h"
 #include "Game.h"
@@ -484,6 +485,30 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 			std::cerr << "GLOB2_ATLAS_TRACE_PATH: failed to open trace file "
 				<< envAtlasTrace << std::endl;
 			globalContainer->atlasTraceWriter.reset();
+		}
+	}
+
+	// Observation planes for behaviour cloning (GLOB2_ATLAS_OBS_PATH). Sampled
+	// far more sparsely than the trace by default: a record is ~58 dense planes,
+	// so at the trace's cadence this would be most of a gigabyte per game.
+	const char* envAtlasObs = getenv("GLOB2_ATLAS_OBS_PATH");
+	if (envAtlasObs && !globalContainer->replaying)
+	{
+		Uint32 period = 250;
+		if (const char* envObsPeriod = getenv("GLOB2_ATLAS_OBS_PERIOD"))
+		{
+			const long parsed = strtol(envObsPeriod, nullptr, 10);
+			if (parsed > 0)
+				period = Uint32(parsed);
+		}
+		globalContainer->atlasObsWriter = std::make_unique<Atlas::ObservationWriter>();
+		if (!globalContainer->atlasObsWriter->open(
+				envAtlasObs, &gui.game.map,
+				Uint8(gui.game.mapHeader.getNumberOfTeams()), period))
+		{
+			std::cerr << "GLOB2_ATLAS_OBS_PATH: failed to open observation file "
+				<< envAtlasObs << std::endl;
+			globalContainer->atlasObsWriter.reset();
 		}
 	}
 
