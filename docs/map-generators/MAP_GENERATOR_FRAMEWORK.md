@@ -1639,9 +1639,14 @@ over everything between that ring and the beach; the sea waters the crops, since
 island is more than about ten from the water. Two sand lanes run from every plot to the shore.
 Nothing joins the islands: units swim, and the straits between the Voronoi cells (`Channels`'
 `straitsBetweenCells`) are an exact corner width, four by default, so only a level-3 tower reaches
-the next island's first grass. A plot is smaller than a base (8 tiles square), so every colony
+the next island's first grass. A plot is smaller than a base (10 tiles square), so every colony
 holds several islands from the first minute: its home island with the swarm and a completed
-swimming pool, and granted islands with a pool and an inn each (`claimNeighbourCells` deals them
+swimming pool, and granted islands with a swarm, a pool and an inn each. On every one of a colony's
+plots the swarm and the pool stand side by side along the top, the pool against the right edge
+with a clear tile all round for its level-1 upgrade (4x4 to 6x6) and the swarm against that ring,
+so a plot of 10 is exactly swarm, ring, pool, ring (8 until 2026-09-16, when a pool could not
+upgrade). Every shipped AI built swarms on islands without a pool and pools on islands without a
+swarm, breeding units that could never leave, so the pair is seeded rather than left to them (`claimNeighbourCells` deals them
 round by round, as many to each colony as to any other), with a rock islet beside them. The rest
 are neutral plantations of wheat, wood or both, orchard islets and rock islets. Every island is
 first stamped as the nominal rounded square and the homes and granted islands dealt on that; then,
