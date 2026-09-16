@@ -38,7 +38,7 @@ therefore touches anything.
 ## Editing and generators
 
 The map editor's terrain panel has Ice and Cobblestone brushes; painting cobblestone beside
-water (or water beside cobblestone) turns the water corner to sand. Two generators show the
+water (or water beside cobblestone) turns the water corner to sand. Four generators show the
 terrains off:
 
 - **Watershed**, *Frozen crossings*: Half frozen lays every other ford in ice, All frozen every
@@ -48,6 +48,13 @@ terrains off:
   along every block so the blocks keep their stone.
 - **Fjord continent**, *Ice bridges*: ice spans the middle of every fjord from grass to grass,
   a short way to a neighbour besides the walk round through the core.
+
+## AI awareness
+
+Only the basics: every AI that places buildings through `Map::checkTile` sees cobblestone as
+buildable, as do Castor's building-space map and Maxima's buildable-ground counts
+(`Map::isBuildableGround`). Castor's own walking map treats ice as a wall. Route-finding keeps
+every AI's units off ice when a detour is short. No AI plans around ice damage or seeks roads out.
 
 ## Compatibility
 
