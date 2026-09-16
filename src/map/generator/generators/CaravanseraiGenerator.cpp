@@ -470,8 +470,5 @@ GeneratorDefinition caravanseraiDefinition()
 		designFailure<design>,
 		validateWorld};
 	d.startingWorkers = [](const GenerationRequest &r) { return r.option("colonists"); };
-	// Only the capital's disc is room to build, so the start scorer's reference for building room
-	// is a fraction of the usual: the desert is unbuildable on purpose.
-	d.qualityScale.roomReference = 200;
 	return d;
 }

@@ -36,6 +36,22 @@
 
 namespace
 {
+// Every candidate roll the lobby's best-of-N would have tried, in order, so an
+// offline study can read the best-of-k curve for any k without regenerating.
+std::string candidateRollsJson(const std::vector<GenerationService::CandidateRoll> &rolls)
+{
+	std::ostringstream out;
+	out << '[';
+	for (std::size_t i = 0; i < rolls.size(); ++i)
+	{
+		if (i) out << ',';
+		out << "{\"seed\":" << rolls[i].seed << ",\"generated\":"
+			<< (rolls[i].generated ? "true" : "false") << ",\"score\":" << rolls[i].score
+			<< ",\"seconds\":" << rolls[i].seconds << '}';
+	}
+	out << ']';
+	return out.str();
+}
 constexpr std::uint64_t kFnvOffset = 14695981039346656037ULL;
 std::uint64_t fnv(std::uint64_t hash, std::uint64_t value)
 {
@@ -520,12 +536,18 @@ int runMapStudy(int argc, char **argv)
 				descriptor.options[id] = value; // Service validates; never silently clamp studies.
 		}
 	}
+	std::vector<GenerationService::CandidateRoll> candidateRolls;
 	if (candidates > 0)
 	{
 		// The lobby's roll: the best-scoring of `candidates` seeds derived from the root seed
 		// (CustomGameScreen::generateMap), so studied maps are the maps players actually get.
-		descriptor.seed = GenerationService().bestSeed(descriptor, seed, candidates);
+		// Every attempt is retained so a sampling study can read what each extra roll bought.
+		descriptor.seed = GenerationService().bestSeed(descriptor, seed, candidates, &candidateRolls);
 		std::printf("SAMPLED,%u,%u,%d\n", seed, descriptor.seed, candidates);
+		for (std::size_t i = 0; i < candidateRolls.size(); ++i)
+			std::printf("ROLL,%zu,%u,%d,%.6f,%.6f\n", i, candidateRolls[i].seed,
+						candidateRolls[i].generated ? 1 : 0, candidateRolls[i].score,
+						candidateRolls[i].seconds);
 	}
 	const auto start = std::chrono::steady_clock::now();
 	const auto result = GenerationService().generate(game, descriptor, !resultPath.empty());
@@ -833,15 +855,16 @@ int runMapStudy(int argc, char **argv)
 		MapGeneration::scoreStarts(game, descriptor.nbTeams);
 		const double scoreSeconds =
 			std::chrono::duration<double>(std::chrono::steady_clock::now() - scoreStart).count();
-		std::printf("QUALITY,%d,%.6f,%.6f,%.6f,%.6f,%d,%.6f\n", q.measured, q.score, q.fairness,
-					q.worst, q.best, (int)q.colonies.size(), scoreSeconds);
+		std::printf("QUALITY,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%.6f\n", q.measured, q.score,
+					q.fairness, q.worstFitness, q.bestFitness, q.meanFitness,
+					(int)q.colonies.size(), scoreSeconds);
 		for (size_t t = 0; t < q.colonies.size(); ++t)
 		{
 			const auto &c = q.colonies[t];
-			std::printf("COLONY,%d,%d,%d,%d,%d,%d,%d,%d,%.1f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n",
+			std::printf("COLONY,%d,%d,%d,%d,%d,%d,%d,%d,%.1f,%.6f,%.6f\n",
 						(int)t, c.wheatDistance, c.woodDistance, c.catchmentTiles, c.buildSites,
 						c.resourceAmount, c.rivalDistance, c.rivalsWithinThreat, c.meanFertility,
-						c.wheat, c.wood, c.fertility, c.depth, c.room, c.isolation, c.total);
+						c.fitness, c.winProbability);
 		}
 	}
 	if (!dump.empty())
@@ -888,6 +911,7 @@ int runMapStudy(int argc, char **argv)
 			<< ",\"generator\":" << Headless::quote(result.generatorId)
 			<< ",\"revision\":" << result.revision << ",\"map_seed\":" << seed
 			<< ",\"chosen_seed\":" << result.seed << ",\"candidates\":" << candidates
+			<< ",\"candidate_rolls\":" << candidateRollsJson(candidateRolls)
 			<< ",\"seconds\":" << seconds << ",\"diagnostic\":" << Headless::quote(result.diagnostic())
 			<< ",\"request\":{\"method\":" << method << ",\"width\":" << descriptor.wDec
 			<< ",\"height\":" << descriptor.hDec << ",\"teams\":" << descriptor.nbTeams
@@ -905,8 +929,10 @@ int runMapStudy(int argc, char **argv)
 			<< ",\"wheat_tiles\":" << resources[WHEAT] << ",\"wood_tiles\":" << resources[WOOD]
 			<< ",\"stone_tiles\":" << resources[STONE] << ",\"algae_tiles\":" << resources[ALGA]
 			<< measurements.str() << "},\"quality\":{\"score\":" << result.quality.score
-			<< ",\"fairness\":" << result.quality.fairness << ",\"worst\":" << result.quality.worst
-			<< ",\"best\":" << result.quality.best << ",\"colonies\":[";
+			<< ",\"fairness\":" << result.quality.fairness
+			<< ",\"worst_fitness\":" << result.quality.worstFitness
+			<< ",\"best_fitness\":" << result.quality.bestFitness
+			<< ",\"mean_fitness\":" << result.quality.meanFitness << ",\"colonies\":[";
 		for (size_t t=0; t<result.quality.colonies.size(); ++t)
 		{
 			const auto &c=result.quality.colonies[t];
@@ -915,9 +941,8 @@ int runMapStudy(int argc, char **argv)
 				<< ",\"wood_distance\":" << c.woodDistance << ",\"catchment_tiles\":" << c.catchmentTiles
 				<< ",\"build_sites\":" << c.buildSites << ",\"resource_amount\":" << c.resourceAmount
 				<< ",\"rival_distance\":" << c.rivalDistance << ",\"rivals_within_threat\":" << c.rivalsWithinThreat
-				<< ",\"mean_fertility\":" << c.meanFertility << ",\"wheat\":" << c.wheat
-				<< ",\"wood\":" << c.wood << ",\"fertility\":" << c.fertility << ",\"depth\":" << c.depth
-				<< ",\"room\":" << c.room << ",\"isolation\":" << c.isolation << ",\"total\":" << c.total << '}';
+				<< ",\"mean_fertility\":" << c.meanFertility << ",\"fitness\":" << c.fitness
+				<< ",\"win_probability\":" << c.winProbability << '}';
 		}
 		out << "]},\"map_report\":" << mapReport << "}";
 		resultJson = out.str();

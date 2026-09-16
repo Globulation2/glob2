@@ -135,10 +135,12 @@ core to prevent diagonal stepping across a supposed continuous river.
 
 Symmetry is only one option. Use the existing [start scorer](../../../../src/map/generator/shared/StartQuality.h)
 and [balanced start search](../../../../src/map/generator/shared/BalancedStarts.h) as measurable
-components, not as certificates of competitive fairness. The scorer uses wheat/wood access,
-fertility, resource depth, building room and isolation; it reports weakest/strongest ratio and
-ranks maps by `worst * pow(fairness, fairnessExponent)`. The nonzero weakest-start term avoids
-rewarding a map simply because all colonies are equally bad.
+components, not as certificates of competitive fairness. The scorer measures wheat/wood access,
+fertility, resource depth, building room and isolation, and a
+[model fitted to real games](../../../../docs/map-generators/FAIRNESS_MODEL.md) turns those into
+each colony's chance of winning; maps are ranked by how evenly that chance is shared. Fairness
+alone will happily reward a map on which every colony is equally bad, so keep an absolute
+viability check in `validateWorld`.
 
 Useful construction heuristics from these generators:
 
