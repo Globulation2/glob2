@@ -116,7 +116,26 @@ void Map::regenerateMap(int x, int y, int w, int h)
 {
 	for (int dx=x; dx<x+w; dx++)
 		for (int dy=y; dy<y+h; dy++)
-			setTerrain(dx, dy, lookup(getUMTerrain(dx,dy), getUMTerrain(dx+1,dy), getUMTerrain(dx,dy+1), getUMTerrain(dx+1,dy+1)));
+		{
+			const TerrainType corners[4] = {getUMTerrain(dx,dy), getUMTerrain(dx+1,dy), getUMTerrain(dx,dy+1), getUMTerrain(dx+1,dy+1)};
+			// The prototype terrains have flat tiles and no transition art: a tile with any ice
+			// corner is ice, one wholly of cobblestone is cobblestone. Any other tile touching
+			// cobblestone is drawn and treated as if the cobblestone corners were sand.
+			bool ice = false, cobblestone = true;
+			Uint8 base[4];
+			for (int i = 0; i < 4; i++)
+			{
+				ice |= corners[i] == ICE;
+				cobblestone &= corners[i] == COBBLESTONE;
+				base[i] = Uint8(corners[i] == COBBLESTONE ? SAND : corners[i]);
+			}
+			if (ice)
+				setTerrain(dx, dy, ICE_TILE_FIRST + (syncRand() % 16));
+			else if (cobblestone)
+				setTerrain(dx, dy, COBBLESTONE_TILE_FIRST + (syncRand() % 16));
+			else
+				setTerrain(dx, dy, lookup(base[0], base[1], base[2], base[3]));
+		}
 }
 
 Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const

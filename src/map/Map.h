@@ -343,7 +343,9 @@ public:
 	
 	void setTerrain(int x, int y, Uint16 terrain)
 	{
-		tiles[coordToIndex(x, y)].terrain = terrain;
+		Uint16 &t = tiles[coordToIndex(x, y)].terrain;
+		cobblestoneTiles += int(isCobblestoneTile(terrain)) - int(isCobblestoneTile(t));
+		t = terrain;
 	}
 	
 	//! A bump throws away every cached route field in the game, so only paint
@@ -407,6 +409,20 @@ public:
 		return ((t>=128)&&(t<128+16));
 	}
 	
+	//! Sprite ranges of the prototype terrains: flat tiles with no transition art.
+	static constexpr Uint16 ICE_TILE_FIRST = 272;
+	static constexpr Uint16 COBBLESTONE_TILE_FIRST = 288;
+	static constexpr Uint16 TERRAIN_TILE_END = 304;
+	static bool isIceTile(Uint16 t) { return t >= ICE_TILE_FIRST && t < ICE_TILE_FIRST + 16; }
+	static bool isCobblestoneTile(Uint16 t) { return t >= COBBLESTONE_TILE_FIRST && t < COBBLESTONE_TILE_FIRST + 16; }
+
+	bool isIce(int x, int y) const { return isIceTile(getTerrain(x, y)); }
+	bool isIce(size_t pos) const { return isIceTile(getTerrain(pos)); }
+	bool isCobblestone(int x, int y) const { return isCobblestoneTile(getTerrain(x, y)); }
+	bool isCobblestone(size_t pos) const { return isCobblestoneTile(getTerrain(pos)); }
+	//! Whether any tile is cobblestone, which lowers the cheapest possible step (see minStepCost).
+	bool hasCobblestone() const { return cobblestoneTiles > 0; }
+
 	bool hasSand(int x, int y) const
 	{
 		int t=getTerrain(x, y);
@@ -689,6 +705,8 @@ public:
 	//! and immobile units are left out on purpose; they change far too often
 	//! and a unit blocked by one forces its own rebuild in pathfindBuilding.
 	Uint32 topologyGeneration;
+	//! Cobblestone tiles on the map, kept by setTerrain and load; derived, never saved.
+	int cobblestoneTiles = 0;
 	void bumpTopologyGeneration() { topologyGeneration++; }
 	bool pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
 	enum class AreaKind { Guard, Clear };
