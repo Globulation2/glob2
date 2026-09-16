@@ -753,6 +753,114 @@ def forward_select(dataset, candidates, limit=8, folds=5, ridge=1e-3, tolerance=
 
 
 # ---------------------------------------------------------------------------
+# Robustness
+# ---------------------------------------------------------------------------
+def bootstrap_coefficients(dataset, features, draws=200, ridge=1e-3, seed=1):
+    """Cluster bootstrap over maps.
+
+    Two games share a map, so they share its starts and are not independent.
+    Resampling whole maps keeps that dependence inside the interval instead of
+    pretending every game is a fresh observation.
+    """
+    import numpy as np
+    keys = sorted({game['map'] for game in dataset['games']})
+    index = {key: [] for key in keys}
+    for position, game in enumerate(dataset['games']):
+        index[game['map']].append(position)
+    problem = Problem(dataset, features, ridge)
+    rng = random.Random(seed)
+    samples = []
+    for _ in range(draws):
+        picked = [position for key in (rng.choice(keys) for _ in keys) for position in index[key]]
+        try:
+            weights, _ = problem.subset(np.asarray(picked)).fit()
+        except (ValueError, FloatingPointError):
+            continue
+        samples.append(weights / problem.scale)
+    if not samples:
+        return []
+    matrix = np.asarray(samples)
+    return [{'name': name, 'transform': transform,
+             'low': float(np.percentile(matrix[:, k], 2.5)),
+             'high': float(np.percentile(matrix[:, k], 97.5)),
+             'sign_stability': float(max((matrix[:, k] > 0).mean(), (matrix[:, k] < 0).mean()))}
+            for k, (name, transform) in enumerate(features)]
+
+
+SUBGROUPS = {
+    'decided outright': lambda game: game['engine_outcome'],
+    'stopped at the cap': lambda game: not game['engine_outcome'],
+    'two or three colonies': lambda game: game['colonies'] <= 3,
+    'four or five colonies': lambda game: 4 <= game['colonies'] <= 5,
+    'six or more colonies': lambda game: game['colonies'] >= 6,
+    'up to 128x128': lambda game: 2 ** (game['width'] + game['height']) <= 16384,
+    'larger than 128x128': lambda game: 2 ** (game['width'] + game['height']) > 16384,
+    'default controls': lambda game: game['defaults'],
+    'randomised controls': lambda game: not game['defaults'],
+}
+
+
+def subgroup_fits(dataset, features, folds=5, ridge=1e-3, minimum=150):
+    """Refit on slices of the games; a model worth keeping does not flip sign."""
+    report = []
+    groups = dict(SUBGROUPS)
+    for ai in sorted({game['ai'] for game in dataset['games']}):
+        groups['AI: ' + ai] = (lambda value: (lambda game: game['ai'] == value))(ai)
+    for label, predicate in groups.items():
+        subset = {'games': [game for game in dataset['games'] if predicate(game)],
+                  'skipped': dataset['skipped']}
+        if len(subset['games']) < minimum:
+            report.append({'group': label, 'games': len(subset['games']), 'skipped': True})
+            continue
+        model = fit_model(subset, features, ridge)
+        report.append({'group': label, 'games': len(subset['games']),
+                       'coefficients': {item['name']: item['coefficient'] for item in model['features']},
+                       'train_r2': model['train']['mcfadden_r2'],
+                       'cv_r2': cross_validated(subset, features, folds, ridge).get('mcfadden_r2')})
+    return report
+
+
+def calibration(model, dataset, buckets=10):
+    """Predicted against observed win rate, pooled over every colony of every game."""
+    rows = predicted(model, dataset)
+    pairs = []
+    for row, game in zip(rows, dataset['games']):
+        for probability, entry in zip(row['probability'], game['entries']):
+            pairs.append((probability, 1.0 if entry['won'] else 0.0))
+    pairs.sort()
+    size = max(1, len(pairs) // buckets)
+    report = []
+    for start in range(0, len(pairs), size):
+        block = pairs[start:start + size]
+        if len(block) < size // 2:
+            break
+        report.append({'count': len(block),
+                       'predicted': sum(p for p, _ in block) / len(block),
+                       'observed': sum(w for _, w in block) / len(block)})
+    return report
+
+
+def fairness_distribution(model, dataset):
+    """What the new score says about the maps the tournament actually drew."""
+    from collections import defaultdict
+    rows = predicted(model, dataset)
+    seen, by_generator = {}, defaultdict(list)
+    for row, game in zip(rows, dataset['games']):
+        if game['map'] in seen:
+            continue
+        seen[game['map']] = row['fairness']
+        by_generator[game['generator']].append(row['fairness'])
+    values = sorted(seen.values())
+    def at(fraction):
+        return values[min(len(values) - 1, int(fraction * len(values)))] if values else None
+    return {'maps': len(values), 'min': values[0] if values else None,
+            'p10': at(0.10), 'median': at(0.50), 'p90': at(0.90),
+            'max': values[-1] if values else None,
+            'by_generator': {name: {'maps': len(items), 'mean': sum(items) / len(items)}
+                             for name, items in sorted(by_generator.items())}}
+
+
+# ---------------------------------------------------------------------------
 # Final model
 # ---------------------------------------------------------------------------
 # Screened on the played tournament and checked by hand; `fit --mode explore`
@@ -822,7 +930,8 @@ def describe(dataset):
             'default_controls': sum(1 for game in games if game['defaults'])}
 
 
-def markdown_report(summary, screened, history, model, scores, legacy):
+def markdown_report(summary, screened, history, model, scores, legacy,
+                    intervals=(), groups=(), curve=(), spread=None):
     lines = ['# Fairness model fit', '',
              f"{summary['games']} games on {summary['maps']} maps; "
              f"{summary['decided_by_engine']} decided outright, "
@@ -859,10 +968,45 @@ def markdown_report(summary, screened, history, model, scores, legacy):
                   f"top-1 {scores.get('accuracy', 0):.3f}.", '',
                   f"The incumbent start score alone reaches CV McFadden R2 "
                   f"{legacy.get('legacy_total_cv_r2', 0):.4f}."]
+    if intervals:
+        lines += ['', '## Coefficient intervals (cluster bootstrap over maps)', '',
+                  '| Measurement | 2.5% | 97.5% | Sign stability |',
+                  '| --- | ---: | ---: | ---: |']
+        for item in intervals:
+            lines.append(f"| {item['name']} | {item['low']:+.5g} | {item['high']:+.5g} | "
+                         f"{item['sign_stability']:.2f} |")
+    if groups:
+        names = [item['name'] for item in model['features']] if model else []
+        lines += ['', '## The same model refit on slices of the games', '',
+                  '| Slice | Games | CV R2 | ' + ' | '.join(names) + ' |',
+                  '| --- | ---: | ---: |' + ' ---: |' * len(names)]
+        for item in groups:
+            if item.get('skipped'):
+                lines.append(f"| {item['group']} | {item['games']} | too few | "
+                             + ' | '.join('' for _ in names) + ' |')
+                continue
+            cells = ' | '.join(f"{item['coefficients'][name]:+.4g}" for name in names)
+            lines.append(f"| {item['group']} | {item['games']} | "
+                         f"{item['cv_r2']:+.4f} | {cells} |")
+    if curve:
+        lines += ['', '## Calibration', '', '| Predicted | Observed | Colonies |',
+                  '| ---: | ---: | ---: |']
+        for bucket in curve:
+            lines.append(f"| {bucket['predicted']:.3f} | {bucket['observed']:.3f} | "
+                         f"{bucket['count']} |")
+    if spread:
+        lines += ['', '## Fairness of the maps the tournament drew', '',
+                  f"{spread['maps']} maps: min {spread['min']:.3f}, p10 {spread['p10']:.3f}, "
+                  f"median {spread['median']:.3f}, p90 {spread['p90']:.3f}, "
+                  f"max {spread['max']:.3f}.", '',
+                  '| Generator | Maps | Mean fairness |', '| --- | ---: | ---: |']
+        for name, item in sorted(spread['by_generator'].items(),
+                                 key=lambda pair: pair[1]['mean']):
+            lines.append(f"| {name} | {item['maps']} | {item['mean']:.3f} |")
     return '\n'.join(lines) + '\n'
 
 
-def run_fit(root, mode, output, folds, ridge, limit, policy, revision):
+def run_fit(root, mode, output, folds, ridge, limit, policy, revision, draws=200):
     dataset = load_dataset(root, policy)
     if not dataset['games']:
         raise ValueError('no played games found; run the tournament first')
@@ -886,12 +1030,21 @@ def run_fit(root, mode, output, folds, ridge, limit, policy, revision):
         legacy = {'legacy_total_cv_r2':
                   cross_validated(dataset, [('legacy_total', 'identity')], folds, ridge)
                   .get('mcfadden_r2', 0.0)}
+    intervals, groups, curve, spread = [], [], [], {}
+    if model:
+        intervals = bootstrap_coefficients(dataset, selected, draws, ridge)
+        groups = subgroup_fits(dataset, selected, folds, ridge)
+        curve = calibration(model, dataset)
+        spread = fairness_distribution(model, dataset)
     report = {'schema_version': SCHEMA_VERSION, 'mode': mode, 'policy': policy,
               'summary': summary, 'screened': screened, 'selection': history,
-              'legacy': legacy, 'model': model, 'cross_validated': scores}
+              'legacy': legacy, 'model': model, 'cross_validated': scores,
+              'intervals': intervals, 'subgroups': groups, 'calibration': curve,
+              'fairness_distribution': spread}
     atomic_json(output / f'{mode}.json', report)
     (output / f'{mode}.md').write_text(markdown_report(summary, screened, history, model,
-                                                       scores, legacy))
+                                                       scores, legacy, intervals, groups,
+                                                       curve, spread))
     if mode == 'final':
         rounds = sorted({game['round'] for game in dataset['games']})
         ais = sorted({game['ai'] for game in dataset['games']})
@@ -902,6 +1055,160 @@ def run_fit(root, mode, output, folds, ridge, limit, policy, revision):
                      'train_r2': model['train']['mcfadden_r2']})
         report['header'] = HEADER_PATH
     return report
+
+
+# ---------------------------------------------------------------------------
+# Sampling study: what does another candidate roll buy?
+# ---------------------------------------------------------------------------
+# The lobby keeps the best-scoring of `kSampledCandidates` rolls. Every roll
+# costs a full generation, and the whole search has to stay inside the map's
+# time budget, so the question is how much fairness the k-th roll still adds.
+SAMPLING_SHAPES = ((7, 7, 4), (8, 8, 4), (7, 7, 2), (8, 8, 8))
+SAMPLING_BUDGET_SECONDS = 0.5
+SAMPLING_TARGET = 0.80
+
+
+def sampling_run(binary, generator, width, height, colonies, seed, candidates, directory):
+    import subprocess
+    output = Path(directory) / f'{generator}-{width}-{height}-{colonies}-{seed}'
+    arguments = [binary, '--generate-map', '--generator', str(generator),
+                 '--map-seed', str(seed), '--param', f'teams={colonies}',
+                 '--param', f'width={width}', '--param', f'height={height}',
+                 '--candidates', str(candidates), '--write-map', 'false',
+                 '--output-dir', str(output), '--profile', 'fairness-sampling']
+    subprocess.run(arguments, capture_output=True)
+    try:
+        return read_json(output / 'result.json').get('candidate_rolls') or []
+    except (OSError, ValueError):
+        return []
+
+
+def sampling_curves(rolls, candidates):
+    """Best-of-k score and cumulative cost for every k, from one root seed."""
+    best, seconds, running, cost = [], [], -1.0, 0.0
+    for index in range(candidates):
+        roll = rolls[index] if index < len(rolls) else None
+        if roll:
+            cost += roll['seconds']
+            if roll['generated'] and roll['score'] > running:
+                running = roll['score']
+        best.append(running)
+        seconds.append(cost)
+    return best, seconds
+
+
+def sampling_study(binary, directory, generators, seeds, candidates, jobs, shapes):
+    import concurrent.futures
+    from collections import defaultdict
+    work, rows = [], defaultdict(list)
+    for generator in generators:
+        for width, height, colonies in shapes:
+            for seed in range(1, seeds + 1):
+                work.append((generator, width, height, colonies, seed))
+    Path(directory).mkdir(parents=True, exist_ok=True)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=jobs) as pool:
+        futures = {pool.submit(sampling_run, binary, item[0], item[1], item[2], item[3],
+                               item[4], candidates, directory): item for item in work}
+        for future in concurrent.futures.as_completed(futures):
+            generator, width, height, colonies, seed = futures[future]
+            rolls = future.result()
+            if not rolls or not any(roll['generated'] for roll in rolls):
+                continue
+            best, seconds = sampling_curves(rolls, candidates)
+            rows[(generator, width, height, colonies)].append({'seed': seed, 'best': best,
+                                                               'seconds': seconds})
+    return rows
+
+
+def sampling_summary(rows, candidates, budget=SAMPLING_BUDGET_SECONDS, target=SAMPLING_TARGET):
+    report = []
+    for (generator, width, height, colonies), samples in sorted(rows.items()):
+        if not samples:
+            continue
+        count = len(samples)
+        mean_best = [sum(sample['best'][k] for sample in samples) / count
+                     for k in range(candidates)]
+        mean_cost = [sum(sample['seconds'][k] for sample in samples) / count
+                     for k in range(candidates)]
+        floor, ceiling = mean_best[0], mean_best[-1]
+        span = ceiling - floor
+        reached, affordable = None, None
+        for k in range(candidates):
+            if reached is None and (span <= 1e-9 or (mean_best[k] - floor) / span >= target):
+                reached = k + 1
+            if mean_cost[k] <= budget:
+                affordable = k + 1
+        report.append({'generator': generator, 'width': width, 'height': height,
+                       'colonies': colonies, 'seeds': count,
+                       'fairness_at_1': floor, 'fairness_at_max': ceiling,
+                       'gain': span, 'mean_best': mean_best, 'mean_seconds': mean_cost,
+                       'candidates_for_target': reached, 'candidates_within_budget': affordable,
+                       'recommended': min(reached or candidates, affordable or 1)
+                       if reached else (affordable or 1)})
+    return report
+
+
+def sampling_plot(report, path, candidates):
+    try:
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+    except ImportError:
+        return None
+    shapes = sorted({(row['width'], row['height'], row['colonies']) for row in report})
+    figure, axes = plt.subplots(len(shapes), 2, figsize=(13, 4 * len(shapes)), squeeze=False)
+    steps = range(1, candidates + 1)
+    for index, shape in enumerate(shapes):
+        rows = [row for row in report if (row['width'], row['height'], row['colonies']) == shape]
+        left, right = axes[index][0], axes[index][1]
+        for row in rows:
+            left.plot(steps, row['mean_best'], linewidth=0.9, alpha=0.65)
+            right.plot(steps, [value * 1000 for value in row['mean_seconds']],
+                       linewidth=0.9, alpha=0.65)
+        pooled = [sum(row['mean_best'][k] for row in rows) / len(rows) for k in range(candidates)]
+        left.plot(steps, pooled, color='black', linewidth=2.4, label='all generators')
+        left.set_title(f'{2 ** shape[0]}x{2 ** shape[1]}, {shape[2]} colonies: fairness of the kept roll')
+        left.set_xlabel('candidate rolls'); left.set_ylabel('fairness'); left.legend()
+        right.axhline(SAMPLING_BUDGET_SECONDS * 1000, color='red', linestyle='--',
+                      label=f'{int(SAMPLING_BUDGET_SECONDS * 1000)} ms budget')
+        right.set_yscale('log')
+        right.set_title('cumulative generation time')
+        right.set_xlabel('candidate rolls'); right.set_ylabel('milliseconds'); right.legend()
+    figure.tight_layout()
+    figure.savefig(path, dpi=130)
+    plt.close(figure)
+    return path
+
+
+def run_sampling(binary, directory, catalog, seeds, candidates, jobs, output):
+    generators = [g['method'] for g in playable_generators(catalog)]
+    names = {g['method']: g['id'] for g in playable_generators(catalog)}
+    rows = sampling_study(binary, Path(directory) / 'maps', generators, seeds, candidates,
+                          jobs, SAMPLING_SHAPES)
+    report = sampling_summary(rows, candidates)
+    for row in report:
+        row['generator_id'] = names.get(row['generator'], str(row['generator']))
+    output = Path(output or Path(directory) / 'analysis')
+    output.mkdir(parents=True, exist_ok=True)
+    atomic_json(output / 'sampling.json', {'schema_version': SCHEMA_VERSION,
+                                           'candidates': candidates, 'seeds': seeds,
+                                           'budget_seconds': SAMPLING_BUDGET_SECONDS,
+                                           'target': SAMPLING_TARGET, 'rows': report})
+    sampling_plot(report, str(output / 'sampling.png'), candidates)
+    lines = ['# What another candidate roll buys', '',
+             f'{seeds} root seeds per generator and shape, {candidates} rolls each; the kept roll '
+             f'is the best-scoring of the first k. Budget {int(SAMPLING_BUDGET_SECONDS * 1000)} ms '
+             f'for the whole search, target {int(SAMPLING_TARGET * 100)}% of the available gain.',
+             '', '| Generator | Shape | Fairness at 1 | at max | Gain | k for target | k in budget | Recommended |',
+             '| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |']
+    for row in sorted(report, key=lambda item: (-item['gain'], item['generator_id'])):
+        shape = f"{2 ** row['width']}x{2 ** row['height']}/{row['colonies']}"
+        lines.append(f"| {row['generator_id']} | {shape} | {row['fairness_at_1']:.3f} | "
+                     f"{row['fairness_at_max']:.3f} | {row['gain']:+.3f} | "
+                     f"{row['candidates_for_target']} | {row['candidates_within_budget']} | "
+                     f"{row['recommended']} |")
+    (output / 'sampling.md').write_text('\n'.join(lines) + '\n')
+    return {'shapes': len(SAMPLING_SHAPES), 'rows': len(report), 'output': str(output)}
 
 
 # ---------------------------------------------------------------------------
@@ -929,6 +1236,14 @@ def main():
     p = sub.add_parser('play', help='keep playing an already drawn tournament')
     p.add_argument('directory'); p.add_argument('--hosts', required=True)
     p.add_argument('--once', action='store_true')
+    p = sub.add_parser('sampling', help='measure what extra candidate rolls buy')
+    p.add_argument('directory')
+    p.add_argument('--binary', default='build/src/glob2')
+    p.add_argument('--catalog', required=True)
+    p.add_argument('--seeds', type=int, default=24)
+    p.add_argument('--candidates', type=int, default=32)
+    p.add_argument('--jobs', type=int, default=1)
+    p.add_argument('--output')
     p = sub.add_parser('fit')
     p.add_argument('directory')
     p.add_argument('--mode', choices=('explore', 'final'), default='final')
@@ -938,6 +1253,7 @@ def main():
     p.add_argument('--limit', type=int, default=8)
     p.add_argument('--policy', default='prestige')
     p.add_argument('--revision', default=os.environ.get('GLOB2_REVISION', 'unknown'))
+    p.add_argument('--draws', type=int, default=200, help='cluster bootstrap draws')
     args = parser.parse_args()
     try:
         if args.command in ('run', 'extend'):
@@ -952,9 +1268,12 @@ def main():
             value = run_rounds(args.directory, read_json(args.hosts), True, True)
         elif args.command == 'status':
             value = status_rounds(args.directory)
+        elif args.command == 'sampling':
+            value = run_sampling(args.binary, args.directory, read_json(args.catalog),
+                                 args.seeds, args.candidates, args.jobs, args.output)
         else:
             value = run_fit(args.directory, args.mode, args.output, args.folds,
-                            args.ridge, args.limit, args.policy, args.revision)
+                            args.ridge, args.limit, args.policy, args.revision, args.draws)
             value.pop('screened', None)
         print(json.dumps(value, indent=2, allow_nan=False, default=str))
     except (OSError, ValueError, KeyError) as error:
