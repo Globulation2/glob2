@@ -109,7 +109,7 @@ globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.m
 		if(selectionMode==PlaceZone)
 			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY);
 		if(selectionMode==PlaceTerrain)
-			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY, (terrainType>TerrainSelector::Water ? 0 : 1));
+			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY, (!TerrainSelector::isBaseTerrain(terrainType) ? 0 : 1));
 		if(selectionMode==PlaceUnit)
 			drawPlacingUnitOnMap();
 		if(selectionMode==RemoveObject)

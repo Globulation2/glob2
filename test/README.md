@@ -77,7 +77,7 @@ normal build. This is a direct method regression, not an interactive replay test
 From the repository root, run `scons -j8 release=1 server=0 terrain-test`
 and `./build/src/TerrainResourcesHarness`. The harness links the actual client
 objects and exercises terrain regeneration and resource clearing for all eight
-resource types, all three base terrains, overlapping strokes, and all four
+resource types, all five base terrains, overlapping strokes, and all four
 wrapped map corners. A whole-map oracle checks both removal and preservation.
 These are headless map-operation tests; they do not drive editor mouse events.
 

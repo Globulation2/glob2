@@ -562,6 +562,8 @@ public:
 	TerrainType getUMTerrain(int x, int y) const { return (TerrainType)undermap[coordToIndex(x, y)]; }
 	//! Set undermap terrain type at (x,y) (undermap positions) on an area
 	void setUMatPos(int x, int y, TerrainType t, int l);
+	//! Whether any of the eight undermap corners around (x, y) is t.
+	bool touchesUMTerrain(int x, int y, TerrainType t) const;
 
 	//! With l==0, it will remove no resource. (Unaligned coordinates)
 	void setNoResource(int x, int y, int l);

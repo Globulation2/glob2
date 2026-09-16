@@ -6,106 +6,57 @@
 
 // Terrain editing & rendering: setUMatPos, regenerateMap, lookup
 
+namespace
+{
+	// The neighbours setUMatPos looks at, in its historical order.
+	constexpr int UM_NEIGHBOURS[8][2] = {{0,-1}, {0,1}, {-1,0}, {1,0}, {-1,-1}, {1,-1}, {1,1}, {-1,1}};
+}
+
+bool Map::touchesUMTerrain(int x, int y, TerrainType t) const
+{
+	for (const auto &d : UM_NEIGHBOURS)
+		if (getUMTerrain(x+d[0], y+d[1])==t)
+			return true;
+	return false;
+}
+
+// Paints t on an l by l square and repairs the corners around it that may not touch t:
+// grass and water meet through sand, ice never touches sand, cobblestone never touches
+// water. Sand that ice reaches turns to ice where it holds a shore, grass elsewhere; ice
+// that sand reaches turns back into the water or grass beside it.
 void Map::setUMatPos(int x, int y, TerrainType t, int l)
 {
+	bool repairedPrototypeTerrain = false;
 	for (int dx=x-(l>>1); dx<x+(l>>1)+1; dx++)
 		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
 		{
-			if (t==GRASS)
+			for (const auto &d : UM_NEIGHBOURS)
 			{
-				if (getUMTerrain(dx,dy-1)==WATER)
+				const int nx=dx+d[0], ny=dy+d[1];
+				const TerrainType n=getUMTerrain(nx, ny);
+				if ((t==GRASS && n==WATER) || (t==WATER && n==GRASS))
+					setUMTerrain(nx, ny, SAND);
+				else if ((t==WATER && n==COBBLESTONE) || (t==COBBLESTONE && n==WATER))
 				{
-// 					setNoResource(dx, dy-1, 1);
-					setUMTerrain(dx,dy-1,SAND);
+					setUMTerrain(nx, ny, SAND);
+					repairedPrototypeTerrain = true;
 				}
-				if (getUMTerrain(dx,dy+1)==WATER)
+				else if (t==ICE && n==SAND)
 				{
-// 					setNoResource(dx, dy+1, 1);
-					setUMTerrain(dx,dy+1,SAND);
+					setUMTerrain(nx, ny, touchesUMTerrain(nx, ny, WATER) ? ICE : GRASS);
+					repairedPrototypeTerrain = true;
 				}
-
-				if (getUMTerrain(dx-1,dy)==WATER)
+				else if (t==SAND && n==ICE)
 				{
-// 					setNoResource(dx-1, dy, 1);
-					setUMTerrain(dx-1,dy,SAND);
-				}
-				if (getUMTerrain(dx+1,dy)==WATER)
-				{
-// 					setNoResource(dx+1, dy, 1);
-					setUMTerrain(dx+1,dy,SAND);
-				}
-
-				if (getUMTerrain(dx-1,dy-1)==WATER)
-				{
-// 					setNoResource(dx-1, dy-1, 1);
-					setUMTerrain(dx-1,dy-1,SAND);
-				}
-				if (getUMTerrain(dx+1,dy-1)==WATER)
-				{
-// 					setNoResource(dx+1, dy-1, 1);
-					setUMTerrain(dx+1,dy-1,SAND);
-				}
-
-				if (getUMTerrain(dx+1,dy+1)==WATER)
-				{
-// 					setNoResource(dx+1, dy+1, 1);
-					setUMTerrain(dx+1,dy+1,SAND);
-				}
-				if (getUMTerrain(dx-1,dy+1)==WATER)
-				{
-// 					setNoResource(dx-1, dy+1, 1);
-					setUMTerrain(dx-1,dy+1,SAND);
-				}
-			}
-			else if (t==WATER)
-			{
-				if (getUMTerrain(dx,dy-1)==GRASS)
-				{
-// 					setNoResource(dx, dy-1, 1);
-					setUMTerrain(dx,dy-1,SAND);
-				}
-				if (getUMTerrain(dx,dy+1)==GRASS)
-				{
-// 					setNoResource(dx, dy+1, 1);
-					setUMTerrain(dx,dy+1,SAND);
-				}
-
-				if (getUMTerrain(dx-1,dy)==GRASS)
-				{
-// 					setNoResource(dx-1, dy, 1);
-					setUMTerrain(dx-1,dy,SAND);
-				}
-				if (getUMTerrain(dx+1,dy)==GRASS)
-				{
-// 					setNoResource(dx+1, dy, 1);
-					setUMTerrain(dx+1,dy,SAND);
-				}
-
-				if (getUMTerrain(dx-1,dy-1)==GRASS)
-				{
-// 					setNoResource(dx-1, dy-1, 1);
-					setUMTerrain(dx-1,dy-1,SAND);
-				}
-				if (getUMTerrain(dx+1,dy-1)==GRASS)
-				{
-// 					setNoResource(dx+1, dy-1, 1);
-					setUMTerrain(dx+1,dy-1,SAND);
-				}
-
-				if (getUMTerrain(dx+1,dy+1)==GRASS)
-				{
-// 					setNoResource(dx+1, dy+1, 1);
-					setUMTerrain(dx+1,dy+1,SAND);
-				}
-				if (getUMTerrain(dx-1,dy+1)==GRASS)
-				{
-// 					setNoResource(dx-1, dy+1, 1);
-					setUMTerrain(dx-1,dy+1,SAND);
+					setUMTerrain(nx, ny, touchesUMTerrain(nx, ny, WATER) ? WATER : GRASS);
+					repairedPrototypeTerrain = true;
 				}
 			}
 			setUMTerrain(dx,dy,t);
 		}
-	if (t==SAND)
+	// Sand repairs nothing among the original terrains, so its redraw can stay one corner
+	// tighter; the redrawn area decides how many random tile variants are drawn.
+	if (t==SAND && !repairedPrototypeTerrain)
 		regenerateMap(x-(l>>1)-1,y-(l>>1)-1,l+1,l+1);
 	else
 		regenerateMap(x-(l>>1)-2,y-(l>>1)-2,l+3,l+3);
