@@ -1976,6 +1976,10 @@ Globulation 2 커서를 표시합니다.
 굽이 사이 벽
 [Farm building plots]
 농장 건설 부지
+[Sand bridges over water]
+물 위의 모래 다리
+[Sand lanes through crops]
+작물 사이의 모래 길
 [Carousels need at least two colonies.]
 회전목마에는 식민지가 두 개 이상 필요합니다.
 [Switchbacks need at least two colonies.]
@@ -2614,8 +2618,18 @@ Emoji
 언덕당 계단 수
 [Valley river]
 계곡의 강
-[Vultures]
-독수리
+[Hills]
+언덕
+[Hillsides]
+비탈
+[Terraces per slope]
+비탈당 계단식 논
+[Waviness]
+굴곡
+[Stair spacing]
+계단 간격
+[Locust]
+메뚜기 떼
 [Plantations]
 농장
 [Plot size]

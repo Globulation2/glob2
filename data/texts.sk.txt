@@ -1988,6 +1988,10 @@ Veľkosť náhornej plošiny
 Múr medzi serpentínami
 [Farm building plots]
 Stavebné pozemky na farmách
+[Sand bridges over water]
+Piesočné mosty cez vodu
+[Sand lanes through crops]
+Piesočné cesty cez polia
 [Carousels need at least two colonies.]
 Kolotoč potrebuje aspoň dve kolónie.
 [Switchbacks need at least two colonies.]
@@ -2626,8 +2630,18 @@ Polomer kopca
 Schodiská na kopec
 [Valley river]
 Rieka v údolí
-[Vultures]
-Supy
+[Hills]
+Kopce
+[Hillsides]
+Svahy
+[Terraces per slope]
+Terasy na svah
+[Waviness]
+Zvlnenie
+[Stair spacing]
+Rozstup schodov
+[Locust]
+Kobylky
 [Plantations]
 Plantáže
 [Plot size]

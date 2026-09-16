@@ -4,7 +4,7 @@
 #include "GeneratorDefinition.h"
 struct RiceTerracesOptions
 {
-	int extraHills, hillRadius, bandWidth, stairs, towers;
+	int hillsides, slant, terraces, bandWidth, waviness, stairSpacing, homeSize;
 	bool river;
 	int wheat, wood, stone, algae, fruit;
 	explicit RiceTerracesOptions(const GenerationRequest &);

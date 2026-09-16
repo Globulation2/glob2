@@ -2,22 +2,24 @@
 
 ## Play contract
 
-**Sierpiński Gardens** (`sierpinski-gardens`, numeric ID 49, revision 1) surrounds a
+**Sierpiński Gardens** (`sierpinski-gardens`, numeric ID 49, revision 7) surrounds a
 central orchard island with a rectangular lake, eight first-level districts, and
 smaller central-third lakes in eligible districts. Home reservations stop further
 cutting. Opposing causeway pairs provide distinct island approaches; the outside
-land remains joined across the torus. Unreserved lake banks offer contained farms
-and nearby construction land.
+land remains joined across the torus. Every lake bank offers contained farms and
+nearby construction land, and garden beds, square sand paths and sparse copses fill the
+meadows the recursion leaves between them.
 
 ![Sierpiński Gardens at 256×256 with four colonies](images/sierpinski-gardens.png)
 
 Engine map preview: seed 20001, default controls, 256×256, four colonies.
 
-**Hilbert River** (`hilbert-river`, numeric ID 50, revision 1) follows a continuous
+**Hilbert River** (`hilbert-river`, numeric ID 50, revision 7) follows a continuous
 Hilbert curve. Broad pockets between folds hold colonies. Walking around the river
 ends and across map seams remains possible; direct bank crossings shorten those
-routes, and swimming offers further alternatives. Orchards sit by regional crossing
-courts. Farms follow eligible banks.
+routes, and swimming offers further alternatives. Orchards sit by the mandatory and
+regional crossing courts. Farms follow both banks of every segment, garden beds sit in
+the pockets the folds enclose, and square sand paths join them.
 
 ![Hilbert River at 256×256 with four colonies](images/hilbert-river.png)
 
@@ -58,19 +60,137 @@ instruction to destroy home ground to achieve a number.
 Both have 0–300% wheat, wood, stone, algae and fruit controls. Home wheat/wood retain
 an opening minimum at zero; ambient bank crops do not. Home stock density ranges
 from 50% to 100%, and ambient bank density from 0% to 100%. Opening quarries retain
-six tiles per module at zero ambient stone. Objective fruit/stone and algae scale
-with their amounts. Plot area and permanent lanes do not grow with abundance.
+six tiles per module at zero stone amount. Objective-court fruit, shore wheat spots,
+ambient copses, distant quarries and algae scale with their amounts. Plot area and
+permanent lanes do not grow with abundance.
+
+### Garden beds and the open land
+
+Until 2026-09-16 the land between the design's features carried nothing: deposits
+lived only inside objective courts and contained plots, and both maps measured
+around 1,400–1,900 resource tiles against a 7,800 median across the 48 playable
+landscapes, third and sixth lowest of all of them. Four things now fill it, and
+none of them may touch a home module, a crossing, an objective court or an existing
+plot:
+
+- **Bank plots** sit against the water, sharing the shore's own sand as their cap on
+  that side, because how fast a crop regrows depends on how much water is near it and
+  a plot laid a dozen tiles inland was not worth the walk. They slide along the bank
+  and retry two tiles smaller before reporting an omission, instead of refusing on the
+  first blocked box, and a site that would leave fewer than forty crop tiles is passed
+  over rather than stamped. Gardens proposes all four banks of every smaller lake (was
+  two); Hilbert proposes one plot on each bank of every segment, large and square-ish,
+  since a plot's sand rim is set by its perimeter and many small plots cost a tenth of
+  the map in rim alone. Three banks in four carry food.
+- **Garden beds** are the home module at a quarter scale — a square pool, a ring of
+  crops it waters, a sand cap that contains them — dropped on a jittered lattice
+  through the open land, sized to the pockets between Hilbert's folds. They are the
+  water away from the one fractal channel, in the same square-on-a-grid language.
+- **Ambient copses** are sparse: timber on one cell in eight of the same 8-lattice the
+  objective courts use, scattered rather than gridded, and only on dry ground where the
+  growth probe can never find water, so a copse stays the size it was planted — something
+  to go and take, not something that takes the map. On fertile ground there is simply no
+  copse. Renewable food stays inside the sand-contained plots and the shore wheat spots
+  described below. The gaps are also what keep each module's expansion anchors
+  available, which the finished-world check requires.
+- **Stone** is not scattered at all. A handful of quarries — two plus half the colony
+  count — go as far from every home as the map allows, each a clump the size of a
+  building court, typically sixty tiles or more from the nearest module. The six-tile
+  opening quarry inside every module is what keeps a colony from being stuck before it
+  gets there. **Fruit** fills the objective courts instead, at full density: a court
+  sits on the central island or beside a crossing, which is where a prize worth
+  fighting over belongs. Scattering both across the whole map read as confetti and gave
+  neither of them anywhere to be.
+
+Measured over 128/256/512 maps at two to eight colonies, six seeds each, this takes
+Hilbert from 1,871 to 3,519 resource tiles and Gardens from 1,422 to 3,137, against
+a 7,764 median across the 48 playable landscapes. They stay deliberately short of that
+median: most of it is timber, and on a map with water across its open land every scattered
+tree is a future forest, so these maps lean on food instead — about two tiles of wheat for
+every one of timber (Hilbert 1,966 to 990, Gardens 1,560 to 942). Water rises from 10.2% to
+13.8% and from 12.7% to 18.5%, still well
+under the field's 29.8%: these are maps of land
+cut by one fractal channel, and the median belongs to archipelagos. Widening the
+channel was tried and rejected — a seven-tile river leaves no room for a crossing
+court on a 128 map, which costs the smallest supported size entirely — so the extra
+water comes from the beds instead. `river-width` and `lake-size` remain the controls
+for players who want more.
+
+Inside a module, the two irrigation strips are five rows deep and continuous: the sand
+aisles that limit crop width stop at the crops, where they used to run on through the
+water and leave each strip as four short ponds. The southern strip was once two rows deep,
+which read dry and fed its plot slowly, since regrowth depends on nearby water.
+
+### Garden paths, causeways and shorelines
+
+Both maps are formal gardens, and the connections between their parts are drawn that way.
+`gardenPaths` joins every recorded feature — home modules, beds, bank plots, lakes and
+crossing landings — with a spanning tree built shortest edge first. Each edge is an L or a
+Z of straight horizontal and vertical legs, never a staircase or a diagonal, laid only over
+open grass, so a path can lead to a feature but never cross one. Paths are sand two corners
+wide, the same slim line a module's rim is drawn in, which also makes them permanent: no
+crop can grow over sand, so the ways between the gardens survive overgrowth. A crossing's
+two landings count as already joined; each landing is the last grass tile on the bridge's
+axis, and a path must arrive along that axis, centred on the bridge, so it runs straight on
+from the causeway rather than turning onto it.
+At 256×256 with four colonies Gardens joins every feature; Hilbert leaves the few pockets
+that river folds seal off without a bridge, which a path could only reach through water.
+
+Gardens' causeways run horizontal and vertical only. A pair is a causeway and its mirror
+along its own axis, so the third pair is two parallels rather than a diagonal. On a 128 map a
+home's court can block a whole axis; only then does the original angled search return, for
+the missing axis alone, recorded as `sierpinski.crossings.angled-fallback`. On both maps a
+crossing's protection mask covers its whole stroke, but its sand is painted only over water:
+nothing is drawn onto the land beyond the lake, or across Gardens' orchard island.
+
+Grass never touches water. Both designs end with a full `layBeaches` pass once the last
+terrain is cut, because beds, plots and paths are all laid after the pass the home modules
+use. A bed lays four rows of grass round its pool so the beach can take the innermost and
+leave three rows of crops.
+
+Wheat also grows along the shore of each map's centrepiece — Hilbert's river, Gardens'
+central lake — in 3×3 spots, at least twenty tiles apart and never on anything the design
+owns. They sit right against the beach and grow and spread like any
+farmland; the beaches and paths round them are sand, so a spot can spread along the bank
+without shutting a route. Gardens' four bank plots
+round every smaller lake are three wheat and one timber, the seed choosing which bank.
+
+Clean, neat and tidy is these maps' aesthetic, and the paths are held to it. Every path
+meets the sand or water of the feature it joins, not the edge of that feature's recorded box,
+which is larger than its visible rim, and it meets it flush: both of its tiles stop against
+the rim, so nothing juts past a join and no join is one tile wide. A path keeps a tile of
+grass between itself and anything it passes, so two paths or a path and a rim never merge
+into a wider smear; bends are full two-by-two corners. A route that cannot be drawn that way
+is not drawn. A crossing's two landings are joined to the tree separately, so every bridge is
+met by a path on both banks.
+
+No growth is frozen anywhere on either map: generated maps may not use the engine's saved
+no-growth flag, which is for hand-made scenarios such as the tutorial, and the shared
+structural check refuses any generated world that has one. Everything that must not spread
+is contained by terrain. Plots and beds are sand-capped. Copses sit only on dry ground and on
+one lattice cell in eight. Quarries need nothing: stone never extends. Before any of this,
+one 50,000-tick game per map (map seed 3001, game seed 19, four AIs) took wood from 2,858 to
+17,682 tiles on Gardens and 2,882 to 20,737 on Hilbert — 27% and 32% of the map, one forest of
+9,132 tiles.
+
+The home module's rim is a straight-edged rectangle, two corners of sand on every side,
+including beyond each water strip, so it is the same width as the paths that meet it. A
+ragged, frayed rim was tried so colonies would not all open inside an identical stamped box,
+and removed: it is exactly what a formal garden should not have, and a path cannot meet it
+flush.
 
 ### Home and start policy
 
 `generators/FractalMapSupport` contains the economic policy shared by these two
 maps; it is deliberately outside the neutral geometry toolkit. A home module
 occupies roughly 56×56 corners. It contains 24×24 pure-grass construction tiles,
-separate renewable wheat and wood plots, several harvesting aisles, a quarry,
-and access to outside building ground. Sand caps contain most crop edges. A grass
-service apron directly beside wheat fits feeding buildings; the existing saved
-`canResourcesGrow` flag protects this apron from future crops. Near timber bays
-shorten inn construction and upgrade deliveries; the southern plot supplies bulk wood. No emergency resource clearer may carve another crossing.
+a wheat plot north and a second wheat plot south (the home's renewable timber is the two
+bays at the ends of the north plot, and the rest is out on the map), several harvesting
+aisles, a quarry, and access to outside building ground. Sand caps contain most crop edges.
+A grass service apron directly beside wheat fits feeding buildings. Wheat may grow onto the
+apron as farmland does, but a single row of sand corners along its foot keeps it out of the
+court below. The near timber bays shorten inn construction and upgrade deliveries. No
+emergency resource clearer may carve another crossing.
 
 A bounded maximin search tries up to 64 initial anchors, with toroidal separation.
 Gardens prefers complete first-level districts where they are large enough; narrow
@@ -120,11 +240,10 @@ it describes future room rather than permission to place a building immediately.
 
 The growth envelope floods pure grass from wheat/wood across seams, ignoring buildings
 and current fertility. It deliberately overestimates spread, so containment survives
-building demolition and fertility changes as long as terrain and saved growth restrictions remain.
-`preventResourceGrowth(map, mask)` sets that existing tile flag without clearing resources;
-it returns the number changed, or −1 for a wrong-sized mask without mutation. The
-envelope honors these restrictions. Engine-growth fixtures and map round trips check
-the actual mechanism, including wrapped tiles.
+building demolition and fertility changes as long as the terrain remains. Generated maps
+contain crops with terrain only; there is no helper for the engine's saved no-growth flag,
+which is forbidden on generated maps. An engine-growth fixture checks that a sand ring
+really holds irrigated wood back, including across the map's seams.
 Frontage counts describe edges, not unique resource deposits or concurrent worker slots.
 
 ### `RecursiveGeometry.h`
@@ -172,7 +291,7 @@ matters: a correct graph cannot prove a beach preserved a crossing, a building d
 block access, or farms left useful gathering frontage. Benefit estimates are not game
 travel times. Gardens ranks an approach to the required island destination and stamps its opposing
 counterpart as the same causeway pair. The counterpart is not credited in that coarse
-benefit estimate. Pair paths may share the island court; geometric approach angles
+benefit estimate. Pair paths may share the island court; distinct approach positions
 and the shared compatibility predicate provide separation. Measuring only travel between outer banks would omit the island
 objective and incorrectly reject valid maps with short seam routes.
 
@@ -252,10 +371,11 @@ for constraints beyond midpoint separation (for example, keeping both shores of 
 opposing causeway pair distinct). These operations support roads, canals, and bridges
 without embedding either fractal map's layout.
 
-Gardens first proposes its three usual opposing approaches. When home reservations
-exclude too many, it tries a bounded five-degree angular grid, rejecting complete
-strokes that touch protected irrigation water, crop corners, or the construction court.
-Empty external home lanes may meet a causeway. Pair selection keeps both bank
+Gardens first proposes its two square centre lines, then parallels on both axes that
+still land on the orchard island, rejecting complete strokes that touch protected
+irrigation water, crop corners, the construction court or its service apron. Only when
+home reservations leave an axis with no square candidate does it add a bounded
+five-degree angular grid for that shortfall. Empty external home lanes may meet a causeway. Pair selection keeps both bank
 approaches at least ten tiles apart, including across seams.
 It never clears a home farm or changes the nested lakes to force a crossing.
 

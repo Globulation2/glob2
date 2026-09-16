@@ -1978,6 +1978,10 @@ Larĝo de la pado
 Muro inter kurboj
 [Farm building plots]
 Konstruejoj en la bienoj
+[Sand bridges over water]
+Sablaj pontoj super akvo
+[Sand lanes through crops]
+Sablaj vojetoj tra la kultivaĵoj
 [Carousels need at least two colonies.]
 Karuselo bezonas almenaŭ du koloniojn.
 [Switchbacks need at least two colonies.]
@@ -2616,8 +2620,18 @@ Larĝo de nivelaj bendoj
 Ŝtuparoj por monteto
 [Valley river]
 Vala rivero
-[Vultures]
-Vulturoj
+[Hills]
+Montetoj
+[Hillsides]
+Deklivoj
+[Terraces per slope]
+Terasoj po deklivo
+[Waviness]
+Ondeco
+[Stair spacing]
+Interspaco de ŝtupoj
+[Locust]
+Akridoj
 [Plantations]
 Plantejoj
 [Plot size]

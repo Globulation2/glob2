@@ -4,6 +4,7 @@
 #include "BalancedStarts.h"
 #include "Game.h"
 #include "Growth.h"
+#include "Morphology.h"
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Room.h"
@@ -18,9 +19,15 @@ namespace
 // Opening-game probes found food-limited colonies while their first inn upgraded.
 // Move the swarm six tiles toward its contained wheat instead of enlarging crops
 // into the building court. The full swarm still fits inside the 24x24 court; the
-// southern timber plot stays reachable and is rechecked after workers are placed.
+// timber bays beside the wheat stay reachable and are rechecked after workers are placed.
 // This is an economic tuning offset, not a change to the neutral site selector.
 constexpr int kStarterNorthOffset = 6;
+// A tile the design has already given a purpose: a home module, a crossing, an objective court
+// or a crop plot. Nothing laid later — a bed, a copse, a quarry, a spot of shore wheat — may sit on it.
+bool claimed(const Layout &L, int i)
+{
+	return L.reserved[i] || L.crossings[i] || L.objectives[i] || L.wheat[i] || L.wood[i];
+}
 } // namespace
 
 void initialize(Layout &L, const GenerationRequest &r)
@@ -34,7 +41,7 @@ void initialize(Layout &L, const GenerationRequest &r)
 	L.t = Torus(1 << r.wDec, 1 << r.hDec);
 	L.terrain.assign(L.t.size(), GRASS);
 	L.reserved.assign(L.t.size(), 0);
-	L.wheat = L.wood = L.objectives = L.crossings = L.growthRestricted = L.reserved;
+	L.wheat = L.wood = L.objectives = L.crossings = L.wheatShore = L.reserved;
 }
 bool reserveHomes(Layout &L, GenerationContext &context, const std::vector<Home> &preferred,
 				  GenerationTelemetry *observations)
@@ -119,14 +126,16 @@ void layHomeEconomies(Layout &L)
 	{
 		// Construction ground is 24×24 pure tiles (25×25 corners), surrounded by two
 		// corners of sand. The ring stops resource spread while remaining walkable;
-		// its northern opening is the persistently protected service apron below.
+		// its northern side opens onto the service apron below.
 		fillRectangle(L.terrain, t, {h.x - 14, h.y - 12, h.x + 15, h.y + 17}, SAND);
 		fillRectangle(L.terrain, t, {h.x - 12, h.y - 10, h.x + 13, h.y + 15}, GRASS);
 		// A long wheat frontage lets several workers harvest without queuing at a single
 		// deposit. Water is behind the crops, the home is in front. Crop plots have their
 		// own sand cap, so renewable supplies cannot engulf the construction district.
-		fillRectangle(L.terrain, t, {h.x - 26, h.y - 28, h.x + 27, h.y - 12}, SAND);
-		fillRectangle(L.terrain, t, {h.x - 24, h.y - 26, h.x + 25, h.y - 22}, WATER);
+		// Two corners of sand on every side of each water strip, matching the flanks and the width
+		// of a garden path: a one-corner rim on the water side read as a thinner, notched border.
+		fillRectangle(L.terrain, t, {h.x - 26, h.y - 29, h.x + 27, h.y - 12}, SAND);
+		fillRectangle(L.terrain, t, {h.x - 24, h.y - 27, h.x + 25, h.y - 22}, WATER);
 		fillRectangle(L.terrain, t, {h.x - 24, h.y - 20, h.x + 25, h.y - 14}, GRASS);
 		fillRectangle(L.wheat, t, {h.x - 23, h.y - 19, h.x + 24, h.y - 15}, 1);
 		// Keep timber in the two outer bays beside the wheat. Saved-state probes
@@ -136,59 +145,442 @@ void layHomeEconomies(Layout &L)
 		// construction trip without giving free buildings or changing AI policy.
 		// The existing two-corner sand aisles separate these bays from the two
 		// inner wheat beds, so later forest growth cannot replace their grain.
-		// The union of crop masks is unchanged: protected bridge geometry and the
-		// 24x24 court do not move. Southern timber remains the bulk expansion plot.
+		// The union of crop masks is unchanged, so crossing exclusions and the 24x24
+		// court do not move. These bays are the home's only renewable timber.
 		for (const RegionBounds bay : {RegionBounds{h.x - 23, h.y - 19, h.x - 16, h.y - 15},
 									   RegionBounds{h.x + 18, h.y - 19, h.x + 24, h.y - 15}})
 		{
 			fillRectangle(L.wheat, t, bay, 0);
 			fillRectangle(L.wood, t, bay, 1);
 		}
-		// Wood has a separate, narrower plot: enough renewable timber for upgrades, but
-		// not so much forest that it competes with food or forces clearing before building.
-		fillRectangle(L.terrain, t, {h.x - 26, h.y + 17, h.x + 27, h.y + 29}, SAND);
-		fillRectangle(L.terrain, t, {h.x - 24, h.y + 25, h.x + 25, h.y + 27}, WATER);
+		// The southern plot is wheat too: a home's renewable timber is the two bays above, and
+		// the rest comes from copses and timber bank plots out on the map, so a colony that
+		// wants to build big has a reason to leave home. The finished-world check still refuses
+		// any home without reachable renewable wood.
+		fillRectangle(L.terrain, t, {h.x - 26, h.y + 17, h.x + 27, h.y + 31}, SAND);
+		// Five rows of water, matching the northern strip: two rows fed the plot slowly and left
+		// the south of every module looking dry. Crops regrow at a rate set by how much water is
+		// near them, so the width of this strip is the plot's supply.
+		fillRectangle(L.terrain, t, {h.x - 24, h.y + 24, h.x + 25, h.y + 29}, WATER);
 		fillRectangle(L.terrain, t, {h.x - 24, h.y + 19, h.x + 25, h.y + 23}, GRASS);
-		fillRectangle(L.wood, t, {h.x - 23, h.y + 20, h.x + 24, h.y + 22}, 1);
+		fillRectangle(L.wheat, t, {h.x - 23, h.y + 20, h.x + 24, h.y + 22}, 1);
 		// Crossing each crop frontage with three pure-sand aisles limits patch width and
-		// guarantees access even after every eligible crop tile has filled in.
+		// guarantees access even after every eligible crop tile has filled in. The aisles stop
+		// at the crops: run through the water as well and each strip becomes four short ponds
+		// instead of one long one, which waters the same crops less and reads as a sand grid.
 		for (int offset : {-16, 0, 16})
 		{
-			fillRectangle(L.terrain, t, {h.x + offset, h.y - 28, h.x + offset + 2, h.y - 12}, SAND);
-			fillRectangle(L.terrain, t, {h.x + offset, h.y + 17, h.x + offset + 2, h.y + 29}, SAND);
+			fillRectangle(L.terrain, t, {h.x + offset, h.y - 21, h.x + offset + 2, h.y - 12}, SAND);
+			fillRectangle(L.terrain, t, {h.x + offset, h.y + 17, h.x + offset + 2, h.y + 24}, SAND);
 		}
 		// Food-service buildings need to hug the grain, especially policies that
-		// require an upgraded inn footprint within one tile of harvestable wheat.
-		// A multi-corner sand barrier cannot satisfy that distance. Join a grass
-		// apron to the main court and protect its TILE footprint with the existing
-		// saved no-growth flag instead. Five clear rows fit a 3x3 inn (or a 4x4
-		// swarm) and access; the 24x24 main court remains available below it.
-		// The flag is installed after rasterization, never by clearing grown crops.
+		// require an upgraded inn footprint within one tile of harvestable wheat, so
+		// a grass apron runs straight off the wheat bed: five clear rows fit a 3x3 inn
+		// (or a 4x4 swarm) against the grain. Wheat may grow over the apron, as farmland
+		// does, but never into the construction court: a single row of sand corners
+		// along the apron's foot makes the two tile rows either side of it unplantable,
+		// which no crop can extend across. The court loses only its top row, which lies
+		// inside the building grid's inset margin. Terrain is the only containment: generated
+		// maps may not use the saved no-growth flag, which belongs to hand-made scenarios.
 		fillRectangle(L.terrain, t, {h.x - 12, h.y - 15, h.x + 13, h.y - 9}, GRASS);
-		fillRectangle(L.growthRestricted, t, {h.x - 12, h.y - 15, h.x + 12, h.y - 10});
+		fillRectangle(L.terrain, t, {h.x - 14, h.y - 10, h.x + 15, h.y - 9}, SAND);
+		// The module's rim is a straight-edged rectangle: these maps are formal gardens, and a
+		// two-wide path can only meet a straight edge flush.
+		L.features.push_back({h.x - 29, h.y - 30, h.x + 30, h.y + 31});
 	}
+	// Grass may never touch water: the engine's terrain model expects a beach between them,
+	// and without one the shoreline renders as a hard edge that reads as a bug. Everything
+	// stamped after this call needs its own pass, which is why both maps finish their design
+	// with one.
 	layBeaches(L.terrain, t);
 }
-bool bankFarm(Layout &L, RegionBounds b, bool timber)
+namespace
 {
-	// A small expansion plot borrows irrigation from the lake/river rather than adding
-	// another artificial channel. Its sand rim contains all later crop spread; the
-	// surrounding grass remains available for buildings and a two-way gathering lane.
+// A plot with fewer crop tiles than this is a sliver of shoreline, not somewhere worth walking.
+constexpr int kLeastBankCrops = 40;
+int stampBankFarm(Layout &L, RegionBounds b, bool timber)
+{
+	// A plot sits against the water it borrows its irrigation from: how fast a crop grows back
+	// depends on how much water is near it, and a plot laid a few tiles inland off the shore
+	// regrew too slowly to be worth the walk. So the box may run into the water
+	// and its beach, and the plot simply takes whatever grass is inside it, sharing the shore's
+	// own sand as the cap on that side. Nothing designed may be underneath: a home module, a
+	// crossing or another plot still refuses the site outright.
 	for (int y = b.y0 - 3; y < b.y1 + 3; ++y)
 		for (int x = b.x0 - 3; x < b.x1 + 3; ++x)
 		{
 			const int i = L.t.at(x, y);
-			if (L.terrain[i] != GRASS || L.reserved[i] || L.crossings[i] || L.wheat[i] || L.wood[i])
-				return false;
+			if (L.reserved[i] || L.crossings[i] || L.wheat[i] || L.wood[i])
+				return 0;
 		}
-	fillRectangle(L.terrain, L.t, b, SAND);
-	RegionBounds crops{b.x0 + 2, b.y0 + 2, b.x1 - 2, b.y1 - 2};
-	fillRectangle(L.terrain, L.t, crops, GRASS);
 	// One corner less on the far sides: planting is on pure tiles, not corners.
-	--crops.x1;
-	--crops.y1;
-	fillRectangle(timber ? L.wood : L.wheat, L.t, crops, 1);
-	return true;
+	RegionBounds crops{b.x0 + 2, b.y0 + 2, b.x1 - 3, b.y1 - 3};
+	// Count the grass this site would actually plant before changing anything: against a
+	// shore, a box can be mostly water, and a plot too small to be worth walking to should
+	// leave the ground as it found it so the caller can try the next position.
+	int planted = 0;
+	for (int y = crops.y0; y < crops.y1; ++y)
+		for (int x = crops.x0; x < crops.x1; ++x)
+			if (L.terrain[L.t.at(x, y)] == GRASS)
+				++planted;
+	if (planted < kLeastBankCrops)
+		return 0;
+	// Decide from the ground as it was found, not as this leaves it: only what was grass
+	// becomes rim or crops, so the plot can neither fill a lake nor carry a shoreline away,
+	// and the crop bed is not swallowed by the rim that goes down first.
+	std::vector<unsigned char> wasGrass(size_t((b.x1 - b.x0 + 2) * (b.y1 - b.y0 + 2)), 0);
+	const int stride = b.x1 - b.x0 + 2;
+	const auto found = [&](int x, int y) -> unsigned char &
+	{ return wasGrass[size_t(y - b.y0 + 1) * stride + (x - b.x0 + 1)]; };
+	for (int y = b.y0; y < b.y1; ++y)
+		for (int x = b.x0; x < b.x1; ++x)
+			found(x, y) = L.terrain[L.t.at(x, y)] == GRASS;
+	for (int y = b.y0; y < b.y1; ++y)
+		for (int x = b.x0; x < b.x1; ++x)
+		{
+			if (!found(x, y))
+				continue;
+			const int i = L.t.at(x, y);
+			const bool inside =
+				x >= crops.x0 && x < crops.x1 + 1 && y >= crops.y0 && y < crops.y1 + 1;
+			L.terrain[i] = inside ? GRASS : SAND;
+			if (inside && x < crops.x1 && y < crops.y1)
+				(timber ? L.wood : L.wheat)[i] = 1;
+		}
+	L.features.push_back(b);
+	return planted;
+}
+} // namespace
+
+bool bankFarm(Layout &L, RegionBounds b, bool timber)
+{
+	// The first choice of box is often blocked by one corner of a neighbouring plot, a
+	// crossing's shoulder or a home module, and refusing there left the bank bare: Hilbert
+	// placed 12 of the 30 plots it proposed and Sierpiński offered six in total, which is
+	// most of why these two maps measured barren beside every other landscape.
+	// So slide along the bank before giving up, then try the same positions two tiles
+	// smaller. Deterministic, order-independent, and every candidate still has to be clean
+	// unreserved grass: this widens the search, it never weakens what a plot may sit on.
+	const bool horizontal = b.x1 - b.x0 >= b.y1 - b.y0;
+	for (const int shrink : {0, 2})
+	{
+		const RegionBounds inset{b.x0 + shrink, b.y0 + shrink, b.x1 - shrink, b.y1 - shrink};
+		if (inset.x1 - inset.x0 < 8 || inset.y1 - inset.y0 < 8)
+			break;
+		for (const int slide : {0, -5, 5, -10, 10, -15, 15})
+		{
+			const int dx = horizontal ? slide : 0, dy = horizontal ? 0 : slide;
+			if (stampBankFarm(L, {inset.x0 + dx, inset.y0 + dy, inset.x1 + dx, inset.y1 + dy},
+							  timber))
+				return true;
+		}
+	}
+	return false;
+}
+
+int gardenBeds(Layout &L, GenerationContext &context, int spacing, int half, int margin)
+{
+	const auto &t = L.t;
+	// A bed is the home module's idea at one quarter the size: a square pool, a ring of crops
+	// the pool waters, and a sand cap that contains them. It needs `margin` of clean grass all
+	// round so the walk past it survives; on Hilbert that margin is most of a pocket between
+	// two folds, which is why its beds are small. A bed that does not fit is simply not placed,
+	// never forced, and nothing here may touch a home module, a crossing or an objective court.
+	const auto clear = [&](RegionBounds b)
+	{
+		for (int y = b.y0 - margin; y < b.y1 + margin; ++y)
+			for (int x = b.x0 - margin; x < b.x1 + margin; ++x)
+			{
+				const int i = t.at(x, y);
+				if (L.terrain[i] != GRASS || claimed(L, i))
+					return false;
+			}
+		return true;
+	};
+	int beds = 0, water = 0, crops = 0;
+	for (int cy = spacing / 2; cy < t.h; cy += spacing)
+		for (int cx = spacing / 2; cx < t.w; cx += spacing)
+		{
+			// Jitter keeps the beds off a perfect grid without letting them wander into each
+			// other; the lattice itself is what makes them read as part of the design.
+			const int jx = int(context.bounded("garden-beds", spacing / 3)) - spacing / 6;
+			const int jy = int(context.bounded("garden-beds", spacing / 3)) - spacing / 6;
+			const int x = cx + jx, y = cy + jy;
+			const RegionBounds bed{x - half, y - half, x + half, y + half};
+			if (!clear(bed))
+				continue;
+			// Sand cap, crop ring, pool. Four tiles of grass between the pool and the cap:
+			// the beach the shoreline pass will take out of the inner row, three rows of
+			// crops, and the walking lane along them. The pool takes the rest, because the
+			// water these maps were missing has to come from somewhere other than widening
+			// the one channel their geometry is built around — at seven tiles instead of six
+			// the Hilbert river left no room for a crossing court on a 128 map at all.
+			fillRectangle(L.terrain, t, bed, SAND);
+			const RegionBounds ring{bed.x0 + 2, bed.y0 + 2, bed.x1 - 2, bed.y1 - 2};
+			fillRectangle(L.terrain, t, ring, GRASS);
+			const RegionBounds pool{bed.x0 + 6, bed.y0 + 6, bed.x1 - 6, bed.y1 - 6};
+			fillRectangle(L.terrain, t, pool, WATER);
+			// Every third bed grows timber and the rest wheat, so neither crop can be cornered
+			// by taking one part of the map, and a bed is worth walking to from either home.
+			auto &crop = beds % 3 == 2 ? L.wood : L.wheat;
+			for (int py = ring.y0; py < ring.y1 - 1; ++py)
+				for (int px = ring.x0; px < ring.x1 - 1; ++px)
+				{
+					const int i = t.at(px, py);
+					if (L.terrain[i] != GRASS)
+						continue;
+					crop[i] = 1;
+					++crops;
+				}
+			water += (pool.x1 - pool.x0) * (pool.y1 - pool.y0);
+			L.features.push_back(bed);
+			++beds;
+		}
+	context.telemetry.measure("fractal.beds.placed", beds);
+	context.telemetry.measure("fractal.beds.water-tiles", water);
+	context.telemetry.measure("fractal.beds.crop-tiles", crops);
+	return beds;
+}
+
+int gardenPaths(Layout &L, GenerationContext &context)
+{
+	// A formal garden's paths are clean, neat and tidy: straight edges, one width, square
+	// corners, and every path meeting what it joins flush, with nothing jutting past a junction
+	// and nothing missing from one. Each edge is an L or a Z of horizontal and
+	// vertical legs laid over open grass, two tiles wide throughout — the path's line and the
+	// tile beside it, a full 2x2 at every bend. A route is only accepted when both of its tiles
+	// meet the feature at each end on the same line, when a bridge is met straight along its
+	// own axis, and when the path keeps a tile of clear grass from any rim or beach it passes,
+	// so it meets things head-on and never grazes along them. Sand, so nothing grows over it.
+	const auto &t = L.t;
+	const int n = int(L.features.size());
+	L.featureAxis.resize(size_t(n), 0);
+	if (n < 2)
+		return 0;
+	const auto inside = [&](int x, int y, const RegionBounds &b)
+	{
+		const int w = b.x1 - b.x0, h = b.y1 - b.y0;
+		return ((x - b.x0) % t.w + t.w) % t.w < w && ((y - b.y0) % t.h + t.h) % t.h < h;
+	};
+	std::vector<unsigned char> owned(size_t(t.size()), 0), path(size_t(t.size()), 0);
+	for (const auto &b : L.features)
+		fillRectangle(owned, t, b, 1);
+	// Ground a path may be laid over: grass that is no crop, court or other feature's box.
+	const auto open = [&](int i)
+	{
+		return path[i] || (L.terrain[i] == GRASS && !owned[i] && !L.wheat[i] && !L.wood[i] &&
+						   !L.objectives[i]);
+	};
+	// Grass that is no crop or court: what a path end may run over inside its own feature's
+	// box, and the only ground a path may pass beside without grazing it.
+	const auto paveable = [&](int i)
+	{ return path[i] || (L.terrain[i] == GRASS && !L.wheat[i] && !L.wood[i] && !L.objectives[i]); };
+	const auto centre = [&](const RegionBounds &b)
+	{ return std::pair<int, int>{(b.x0 + b.x1) / 2, (b.y0 + b.y1) / 2}; };
+	const auto delta = [&](int from, int to, int size)
+	{
+		int d = ((to - from) % size + size) % size;
+		return d > size / 2 ? d - size : d;
+	};
+	// A centre-line tile of a route and the legs it belongs to: bit 1 horizontal, bit 2 vertical.
+	struct Step
+	{
+		int x, y, legs;
+	};
+	// The partner of a centre-line tile across the path's width, on a leg stepping by dx.
+	const auto partner = [&](const Step &s, int dx)
+	{ return dx != 0 ? t.at(s.x, s.y + 1) : t.at(s.x + 1, s.y); };
+	const auto trace = [&](int a, int b, const std::vector<std::pair<int, int>> &corners)
+	{
+		std::vector<Step> steps;
+		bool left = false, reached = false;
+		int lastDx = 0, lastDy = 0, firstDx = 0, firstDy = 0;
+		for (size_t leg = 0; leg + 1 < corners.size() && !reached; ++leg)
+		{
+			const auto [x0, y0] = corners[leg];
+			const auto [x1, y1] = corners[leg + 1];
+			const int dx = (x1 > x0) - (x1 < x0), dy = (y1 > y0) - (y1 < y0);
+			const int length = std::abs(x1 - x0) + std::abs(y1 - y0);
+			if (length == 0)
+				continue;
+			const int legBit = dx != 0 ? 1 : 2;
+			if (!steps.empty() && (lastDx != dx || lastDy != dy))
+				steps.back().legs |= legBit; // the bend tile carries both legs
+			for (int k = (leg == 0 ? 0 : 1); k <= length; ++k)
+			{
+				const int x = x0 + dx * k, y = y0 + dy * k, i = t.at(x, y);
+				if (inside(x, y, L.features[size_t(b)]))
+				{
+					if (!paveable(i))
+					{
+						reached = true;
+						break;
+					}
+				}
+				else if (!left && inside(x, y, L.features[size_t(a)]))
+				{
+					if (!paveable(i))
+						steps.clear();
+					else
+					{
+						if (steps.empty())
+						{
+							firstDx = dx;
+							firstDy = dy;
+						}
+						steps.push_back({x, y, legBit});
+					}
+					lastDx = dx;
+					lastDy = dy;
+					continue;
+				}
+				else
+				{
+					left = true;
+					if (!open(i))
+						return std::vector<Step>{};
+				}
+				if (steps.empty())
+				{
+					firstDx = dx;
+					firstDy = dy;
+				}
+				steps.push_back({x, y, legBit});
+				lastDx = dx;
+				lastDy = dy;
+			}
+		}
+		if (!reached || steps.size() < 3)
+			return std::vector<Step>{};
+		// Bridges are met straight along their own axis, at both ends of the route.
+		const auto axisOk = [&](int feature, int dx, int dy)
+		{
+			const int axis = L.featureAxis[size_t(feature)];
+			return axis == 0 || (axis == 1 && dx != 0) || (axis == 2 && dy != 0);
+		};
+		if (!axisOk(a, firstDx, firstDy) || !axisOk(b, lastDx, lastDy))
+			return std::vector<Step>{};
+		// Flush at both ends: the tile beside the path's line must also stop against the
+		// feature, on the same line, and be open itself.
+		const Step &head = steps.front(), &tail = steps.back();
+		const int headPartner = partner(head, firstDx), tailPartner = partner(tail, lastDx);
+		const int hpx = headPartner % t.w, hpy = headPartner / t.w, tpx = tailPartner % t.w,
+				  tpy = tailPartner / t.w;
+		if (!paveable(headPartner) || !paveable(tailPartner) ||
+			paveable(t.at(hpx - firstDx, hpy - firstDy)) || paveable(t.at(tpx + lastDx, tpy + lastDy)))
+			return std::vector<Step>{};
+		// Clearance: away from its two ends, nothing but grass or path round the path's width.
+		for (size_t k = 2; k + 2 < steps.size(); ++k)
+			for (int dy = -1; dy <= 2; ++dy)
+				for (int dx = -1; dx <= 2; ++dx)
+					if (!paveable(t.at(steps[k].x + dx, steps[k].y + dy)))
+						return std::vector<Step>{};
+		// And the path's own second tile along its length must be open ground too.
+		for (size_t k = 0; k < steps.size(); ++k)
+		{
+			const int horizontalLeg = steps[k].legs & 1;
+			const int j = horizontalLeg ? t.at(steps[k].x, steps[k].y + 1) : t.at(steps[k].x + 1, steps[k].y);
+			if (!paveable(j))
+				return std::vector<Step>{};
+		}
+		return steps;
+	};
+	// Candidate edges: each feature to its six nearest, by the Manhattan distance a square
+	// path actually walks, shortest first.
+	struct Edge
+	{
+		int length, a, b;
+	};
+	std::vector<Edge> edges;
+	for (int a = 0; a < n; ++a)
+	{
+		const auto [ax, ay] = centre(L.features[size_t(a)]);
+		std::vector<Edge> closest;
+		for (int b = 0; b < n; ++b)
+			if (b != a)
+			{
+				const auto [bx, by] = centre(L.features[size_t(b)]);
+				closest.push_back({std::abs(delta(ax, bx, t.w)) + std::abs(delta(ay, by, t.h)), a, b});
+			}
+		std::sort(closest.begin(), closest.end(),
+				  [](const Edge &l, const Edge &r)
+				  { return l.length != r.length ? l.length < r.length : l.b < r.b; });
+		for (size_t k = 0; k < closest.size() && k < 6; ++k)
+			edges.push_back(closest[k]);
+	}
+	std::sort(edges.begin(), edges.end(),
+			  [](const Edge &l, const Edge &r)
+			  {
+				  return l.length != r.length ? l.length < r.length
+											  : std::make_pair(l.a, l.b) < std::make_pair(r.a, r.b);
+			  });
+	std::vector<int> root(static_cast<size_t>(n));
+	std::iota(root.begin(), root.end(), 0);
+	const auto find = [&](int v)
+	{
+		while (root[size_t(v)] != v)
+			v = root[size_t(v)] = root[size_t(root[size_t(v)])];
+		return v;
+	};
+	// A crossing's two landings are joined to the tree separately: each bank must be met.
+	int joined = 0;
+	std::vector<Step> laid;
+	for (const auto &e : edges)
+	{
+		if (find(e.a) == find(e.b))
+			continue;
+		const auto [ax, ay] = centre(L.features[size_t(e.a)]);
+		const auto [cbx, cby] = centre(L.features[size_t(e.b)]);
+		const int bx = ax + delta(ax, cbx, t.w), by = ay + delta(ay, cby, t.h);
+		const int mx = (ax + bx) / 2, my = (ay + by) / 2;
+		std::vector<Step> route;
+		for (const auto &corners : std::vector<std::vector<std::pair<int, int>>>{
+				 {{ax, ay}, {bx, ay}, {bx, by}},
+				 {{ax, ay}, {ax, by}, {bx, by}},
+				 {{ax, ay}, {mx, ay}, {mx, by}, {bx, by}},
+				 {{ax, ay}, {ax, my}, {bx, my}, {bx, by}}})
+			if (route = trace(e.a, e.b, corners); !route.empty())
+				break;
+		if (route.empty())
+			continue;
+		for (const auto &st : route)
+		{
+			path[t.at(st.x, st.y)] = 1;
+			laid.push_back(st);
+		}
+		root[size_t(find(e.a))] = find(e.b);
+		++joined;
+	}
+	// Two tiles wide throughout: the line, the tile beside it for each leg the tile is on, and
+	// the diagonal at a bend so every corner is a full square.
+	std::vector<unsigned char> surface = path;
+	for (const auto &st : laid)
+	{
+		if (st.legs & 1)
+			surface[t.at(st.x, st.y + 1)] = 1;
+		if (st.legs & 2)
+			surface[t.at(st.x + 1, st.y)] = 1;
+		if ((st.legs & 3) == 3)
+			surface[t.at(st.x + 1, st.y + 1)] = 1;
+	}
+	int sand = 0;
+	for (int i = 0; i < t.size(); ++i)
+		if (surface[i] && L.terrain[i] == GRASS)
+		{
+			L.terrain[i] = SAND;
+			++sand;
+		}
+	for (const auto &[a, b] : L.featureLinks)
+		if (a < n && b < n && find(a) != find(b))
+			root[size_t(find(a))] = find(b);
+	int components = 0;
+	for (int v = 0; v < n; ++v)
+		components += find(v) == v;
+	context.telemetry.measure("fractal.paths.features", n);
+	context.telemetry.measure("fractal.paths.edges", joined);
+	context.telemetry.measure("fractal.paths.sand-tiles", sand);
+	context.telemetry.measure("fractal.paths.unjoined-groups", components - 1);
+	return components - 1;
 }
 
 void stampCrossings(Layout &L, const CrossingSelection &selection, GenerationContext &context)
@@ -196,14 +588,46 @@ void stampCrossings(Layout &L, const CrossingSelection &selection, GenerationCon
 	for (size_t k = 0; k < selection.selected.size(); ++k)
 	{
 		const auto &c = selection.selected[k];
-		// Seven undermap corners across yields at least six traversable tiles. Sand makes
-		// the crossing permanent against crop spread; shoulders meet the existing banks.
+		// Seven undermap corners across yields at least six traversable tiles.
 		strokePath(L.crossings, L.t, {{c.from.x, c.from.y, 3.5}, {c.to.x, c.to.y, 3.5}});
+		// A landing is the last grass tile before the shore on the crossing's own axis, offset
+		// so a two-wide path is centred on the bridge. A path must arrive along that axis and
+		// end flush against the bridge's sand, so no stub juts past the junction.
+		const bool horizontal = std::abs(c.to.x - c.from.x) >= std::abs(c.to.y - c.from.y);
+		const int first = int(L.features.size());
+		for (const auto &[end, other] : {std::pair{c.from, c.to}, std::pair{c.to, c.from}})
+		{
+			const int step = horizontal ? ((other.x > end.x) - (other.x < end.x))
+										: ((other.y > end.y) - (other.y < end.y));
+			int x = horizontal ? int(std::lround(end.x)) : int(std::lround(end.x)) - 1;
+			int y = horizontal ? int(std::lround(end.y)) - 1 : int(std::lround(end.y));
+			int lastX = x, lastY = y;
+			for (int k = 0; k < 64; ++k)
+			{
+				if (L.terrain[L.t.at(x, y)] != GRASS)
+					break;
+				lastX = x;
+				lastY = y;
+				(horizontal ? x : y) += step;
+			}
+			L.features.push_back({lastX, lastY, lastX + 1, lastY + 1});
+			L.featureAxis.resize(L.features.size(), 0);
+			L.featureAxis.back() = horizontal ? 1 : 2;
+		}
+		L.featureLinks.push_back({first, first + 1});
 		context.telemetry.measure("fractal.crossing.benefit-estimate", selection.benefits[k], c.id);
 		context.telemetry.measure("fractal.crossing.level", c.level, c.id);
 	}
+	// The stroke is the route; the sand is only its surface over water. The crossing mask
+	// still covers the whole stroke — landings on the bank and across Gardens' orchard
+	// island — so nothing the design lays later may sit on the way through, and every crop
+	// that could reach it is contained already. But the paint stops at the water's edge.
+	// Painting the whole stroke drew a sand bar out past the lake onto the land and
+	// straight across the orchard island, and a causeway that crosses the thing it was
+	// built to reach reads as a diagram, not a garden. Access is the reason a
+	// crossing exists; it is not a licence to draw over the map it serves.
 	for (int i = 0; i < L.t.size(); ++i)
-		if (L.crossings[i])
+		if (L.crossings[i] && L.terrain[i] == WATER)
 			L.terrain[i] = SAND;
 	context.telemetry.measure("fractal.crossings.mandatory", selection.mandatory);
 	context.telemetry.measure("fractal.crossings.local", selection.local);
@@ -218,13 +642,6 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 	Map &map = game.map;
 	context.stage = "fractal terrain and contained farms";
 	writeUndermap(map, L.terrain);
-	const int protectedTiles = preventResourceGrowth(map, L.growthRestricted);
-	if (protectedTiles < 0)
-	{
-		context.detail = "Invalid farm service-court growth mask.";
-		return false;
-	}
-	context.telemetry.measure("fractal.homes.growth-protected-tiles", protectedTiles);
 
 	const int wheatAmount = context.request.option("wheat-amount"),
 			  woodAmount = context.request.option("wood-amount");
@@ -248,7 +665,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 	{
 		// Quarry is outside both farm plots and the central building district. A 2×3 patch
 		// has multiple gathering edges but does not make a wall. This opening minimum is
-		// deliberately retained at zero ambient stone, like the renewable food and wood.
+		// deliberately retained at zero stone amount, like the renewable food and wood.
 		for (int y = -3; y < 0; ++y)
 			for (int x = 20; x < 22; ++x)
 				map.setResource(t.x(h.x + x), t.y(h.y + y), STONE, 1);
@@ -263,11 +680,164 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 		const int x = i % t.w, y = i / t.w;
 		if (x % 8 >= 3 || y % 8 >= 3)
 			continue; // permanent gathering lanes between 3×3 patches
-		const int kind = ((x / 8) + (y / 8)) % 4;
-		const int type = kind < 3 ? CHERRY + kind : STONE;
-		const int amount = context.request.option(kind < 3 ? "fruit-amount" : "stone-amount");
-		if (int(context.bounded("fractal-objectives", 300)) < amount)
+		// All three fruits and nothing else. A court sits on the central island or beside a
+		// crossing — the places both sides have to come to — and fruit is what an inn turns
+		// into a reason to hold ground, so this is where it belongs rather than sprinkled
+		// over the whole map. Stone goes out to the quarries below instead.
+		const int type = CHERRY + ((x / 8) + (y / 8)) % 3;
+		// Full at the default amount: at a third, a court holding forty tiles of fruit across a
+		// whole map was not a prize anyone crosses a bridge for.
+		if (int(context.bounded("fractal-objectives", 100)) < context.request.option("fruit-amount"))
 			map.setResource(x, y, type, 1);
+	}
+	// Spots of wheat along the shore of the water the design names — Hilbert's river,
+	// Gardens' central lake — so the banks of the map's centrepiece carry food of their own.
+	// A spot is a 3x3 of wheat right against the beach, at least a court's width from the
+	// next, and never on anything the design owns. It grows and spreads like any farmland:
+	// how fast wheat regrows depends on how much water its random probe finds, so a spot
+	// laid back from the shore barely grew, and the beaches and paths round it are sand, so
+	// it can spread along the bank without shutting a route.
+	{
+		const auto nearShore = dilate(t, L.wheatShore, 4);
+		std::vector<int> centres;
+		const int spacing = 20;
+		for (int i = 0; i < t.size(); ++i)
+		{
+			if (!nearShore[i] || L.wheatShore[i])
+				continue;
+			const int cx = i % t.w, cy = i / t.w;
+			bool clear = true;
+			for (int dy = -1; clear && dy <= 1; ++dy)
+				for (int dx = -1; clear && dx <= 1; ++dx)
+				{
+					const int x = t.x(cx + dx), y = t.y(cy + dy), j = t.at(x, y);
+					clear = map.isGrass(x, y) && clearGround(map, x, y) && !claimed(L, j);
+				}
+			if (!clear)
+				continue;
+			bool apart = true;
+			for (const int c : centres)
+				apart &= t.chebyshev(cx, cy, c % t.w, c / t.w) >= spacing;
+			if (apart)
+				centres.push_back(i);
+		}
+		int planted = 0;
+		for (const int c : centres)
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+				{
+					const int x = t.x(c % t.w + dx), y = t.y(c / t.w + dy);
+					if (int(context.bounded("fractal-shore-wheat", 100)) >=
+						context.request.option("wheat-amount"))
+						continue;
+					map.setResource(x, y, WHEAT, 1);
+					++planted;
+				}
+		context.telemetry.measure("fractal.shore-wheat.spots", int(centres.size()));
+		context.telemetry.measure("fractal.shore-wheat.tiles", planted);
+	}
+	// Outside the courts and plots the open land once carried nothing at all, which is most of
+	// why these two maps measured barren beside every other landscape: a quarter the resource
+	// tiles of the median map, and three quarters of the ground bare. It carries timber on the
+	// same 8-lattice the courts use, so 3x3 copses always alternate with permanent gathering
+	// lanes and no slider can build a wall across the land. Timber only: stone belongs at the
+	// quarries, fruit in the contested courts, and food inside the contained plots and along the
+	// shore. Scattering all three everywhere read as confetti rather than as somewhere with
+	// places worth going.
+	// The growth field of the finished terrain, water from beds, plots and lakes included.
+	const auto dryGround = Fertility::forMap(map, false);
+	int ambientTiles = 0;
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		if (claimed(L, i))
+			continue;
+		// Only on dry ground, where the growth probe can never find water: a copse there
+		// cannot extend, so it stays the size it was planted. On fertile ground a scattered
+		// copse is a forest with a delay — one 50,000-tick game grew the fractal maps to a
+		// third wood. Generated maps may not hold it back with the saved no-growth flag, so
+		// where the ground is fertile there is simply no copse.
+		if (dryGround.at(x, y) != 0)
+			continue;
+		// 3x3 patches with five clear tiles between them, the same lattice the objective
+		// courts use: a patch costs building anchors as well as giving resources, and the
+		// gaps are what keep a module's expansion room and the walking lanes open.
+		if (x % 8 >= 3 || y % 8 >= 3 || !clearGround(map, x, y))
+			continue;
+		// One cell of the lattice in eight, scattered rather than gridded: dense enough to
+		// read as woods on the way somewhere, sparse enough that the land between the
+		// design's features still looks like land. Every other cell put five times as much
+		// timber on the map as food, and even at half that it read as sprinkled everywhere.
+		if (((x / 8) * 3 + (y / 8) * 7) % 8)
+			continue;
+		if (int(context.bounded("fractal-ambient", 100)) >= context.request.option("wood-amount"))
+			continue;
+		map.setResource(x, y, WOOD, 1);
+		++ambientTiles;
+	}
+	context.telemetry.measure("fractal.ambient.deposit-tiles", ambientTiles);
+	// Stone is the one thing worth a journey. Rather than a patch every eight tiles, a handful
+	// of real quarries go as far from every home as the map allows: the ground between homes
+	// on a torus, which is also the ground you have to hold to work them. Each is a clump the
+	// size of a building court, and the six-tile opening quarry inside every module is what
+	// keeps a colony from being stuck before it gets there.
+	std::vector<int> quarries;
+	const int wanted = 2 + context.request.nbTeams / 2;
+	for (int round = 0; round < wanted; ++round)
+	{
+		int best = -1, bestScore = -1;
+		for (int y = 4; y < t.h; y += 8)
+			for (int x = 4; x < t.w; x += 8)
+			{
+				const int i = t.at(x, y);
+				if (claimed(L, i) || !clearGround(map, x, y) || !map.isGrass(x, y))
+					continue;
+				int score = INT_MAX;
+				for (Home h : L.homes)
+					score = std::min(score, t.chebyshev(x, y, h.x, h.y));
+				for (int other : quarries)
+					score = std::min(score, t.chebyshev(x, y, other % t.w, other / t.w));
+				if (score > bestScore)
+				{
+					bestScore = score;
+					best = i;
+				}
+			}
+		if (best < 0 || bestScore < 24)
+			break;
+		quarries.push_back(best);
+	}
+	int quarryStone = 0;
+	for (const int site : quarries)
+	{
+		const int cx = site % t.w, cy = site / t.w;
+		for (int dy = -4; dy <= 4; ++dy)
+			for (int dx = -4; dx <= 4; ++dx)
+			{
+				// A rounded clump, and never on a lane the design owns.
+				if (dx * dx + dy * dy > 20)
+					continue;
+				const int x = t.x(cx + dx), y = t.y(cy + dy), i = t.at(x, y);
+				if (claimed(L, i) || !map.isGrass(x, y) || !clearGround(map, x, y))
+					continue;
+				if (int(context.bounded("fractal-quarries", 100)) >=
+					context.request.option("stone-amount"))
+					continue;
+				map.setResource(x, y, STONE, 1);
+				++quarryStone;
+			}
+	}
+	// Stone never extends (its resource type is not expendable), so a quarry needs nothing to
+	// keep it the size it was placed.
+	context.telemetry.measure("fractal.quarries.placed", int(quarries.size()));
+	context.telemetry.measure("fractal.quarries.stone-tiles", quarryStone);
+	if (!quarries.empty())
+	{
+		int nearest = INT_MAX;
+		for (const int site : quarries)
+			for (Home h : L.homes)
+				nearest = std::min(nearest, t.chebyshev(site % t.w, site / t.w, h.x, h.y));
+		context.telemetry.measure("fractal.quarries.nearest-home-distance", nearest);
 	}
 	seedAlgae(map, context, t, "fractal-algae", context.request.option("algae-amount"),
 			  AlgaeBand::anyWater(100));
@@ -447,9 +1017,6 @@ std::string validate(const Game &game, const GenerationContext &context, const L
 		if (L.crossings[i] && map.isWater(i % t.w, i / t.w))
 			return "A designed crossing was lost at (" + std::to_string(i % t.w) + "," +
 				   std::to_string(i / t.w) + ") during terrain rasterization.";
-		if (L.growthRestricted[i] &&
-			(map.canResourcesGrow(i % t.w, i / t.w) || map.isResource(i % t.w, i / t.w)))
-			return "A farm service court lost its persistent crop protection.";
 	}
 	return "";
 }

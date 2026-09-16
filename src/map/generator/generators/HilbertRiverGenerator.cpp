@@ -30,6 +30,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	// come from the shared decoder; independently rotating children would break the river.
 	const int orientation = context.bounded("hilbert-orientation", 8);
 	HilbertPath path;
+	std::vector<StrokePoint> river;
 	int homeLimited = 0;
 	for (int maximum = o.depth; maximum >= 1; --maximum)
 	{
@@ -40,10 +41,10 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 			return L;
 		}
 		L.terrain.assign(t.size(), GRASS);
-		std::vector<StrokePoint> stroke;
+		river.clear();
 		for (const auto &p : path.points)
-			stroke.push_back({p.x, p.y, o.width / 2.0});
-		strokePath(L.terrain, t, stroke, WATER);
+			river.push_back({p.x, p.y, o.width / 2.0});
+		strokePath(L.terrain, t, river, WATER);
 		// The river stops at the first/last cell centre. Leaving those ends inside the map
 		// preserves a deliberate long walking alternative and useful swimming shortcuts.
 		// If homes cannot fit, lower the UNIFORM order, not selected pieces of the river.
@@ -59,6 +60,8 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		if (maximum == 1)
 			return L;
 	}
+	// The river is the shore that gets wheat spots when the resources go down.
+	strokePath(L.wheatShore, t, river);
 	// Include home irrigation in the graph's real end-around and seam distances.
 	layHomeEconomies(L);
 	std::vector<CrossingCandidate> candidates;
@@ -143,8 +146,8 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	}
 	stampCrossings(L, mandatory, context);
 	stampCrossings(L, selected, context);
-	// Fruit courts flank the selected regional crossings. Their gathering lanes and the
-	// permanently sandy crossings stay open even when the fruit/stone controls are high.
+	// Fruit courts flank the mandatory bridge and the selected regional crossings. Their
+	// gathering lanes and the permanently sandy crossings stay open even when fruit is high.
 	for (const auto &c : selected.selected)
 		if (c.level == 0)
 			for (ShapePoint p : {c.from, c.to})
@@ -153,21 +156,40 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	for (ShapePoint p : {bridge.from, bridge.to})
 		fillRectangle(L.objectives, t, {int(p.x) - 10, int(p.y) - 10, int(p.x) + 11, int(p.y) + 11},
 					  1);
+	// Pools in the pockets between the folds, before the bank plots, so the river's own
+	// banks keep first claim on the ground beside them.
+	gardenBeds(L, context, (o.width + o.spacing) / 2, (o.spacing - 8) / 2, 4);
 	int farms = 0;
 	for (const auto &segment : path.segments)
 	{
 		const double dx = segment.to.x - segment.from.x, dy = segment.to.y - segment.from.y;
 		const double length = std::hypot(dx, dy);
-		// Quarter points stay away from the midpoint crossing courts and rounded ends.
-		// Plot orientation follows the bank, so rectangular scaling never widens the river.
+		// One plot on each bank of every segment, at its midpoint, sliding along the bank
+		// when the first position is taken. Plot orientation follows the bank, so
+		// rectangular scaling never widens the river.
 		for (int side : {-1, 1})
 		{
-			const int x = int(segment.from.x + dx / 4 - side * dy / length * (o.width / 2 + 12));
-			const int y = int(segment.from.y + dy / 4 + side * dx / length * (o.width / 2 + 12));
-			const int hx = dx == 0 ? 6 : 10, hy = dx == 0 ? 10 : 6;
-			farms += bankFarm(L, {x - hx, y - hy, x + hx, y + hy}, (segment.id + side) % 3 == 0);
+			// Offset by half the river plus half the plot: the plot's inner edge lands on
+			// the bank itself, so its crops share the river's sand and stand in its
+			// growth range. Laid a dozen tiles inland they regrew too slowly to be worth
+			// the walk.
+			const int x = int(segment.from.x + dx * 0.5 - side * dy / length * (o.width / 2 + 8));
+			const int y = int(segment.from.y + dy * 0.5 + side * dx / length * (o.width / 2 + 8));
+			// Square-ish and large: a plot's sand rim is fixed by its perimeter, so a few
+			// big plots cost far less sand per crop tile than many small ones. At four
+			// narrow plots a segment the rims alone covered a tenth of the map.
+			const int hx = dx == 0 ? 8 : 11, hy = dx == 0 ? 11 : 8;
+			// One bank in four carries timber, the rest food: the ambient copses are the
+			// map's wood, and a river bank is worth more as somewhere a colony can feed
+			// itself. (The +2 is the midpoint's slot, kept so existing seeds keep their plots.)
+			farms += bankFarm(L, {x - hx, y - hy, x + hx, y + hy},
+							  (segment.id + side + 2) % 4 == 0);
 		}
 	}
+	gardenPaths(L, context);
+	// The beds, plots and paths just laid may meet the river: give the whole map its
+	// shoreline again now that nothing further will cut terrain. Grass may never touch water.
+	layBeaches(L.terrain, t);
 	context.telemetry.measure("hilbert.bank-farms.proposed", path.segments.size() * 2);
 	context.telemetry.measure("hilbert.bank-farms.placed", farms);
 	context.telemetry.measure("hilbert.depth.requested", o.depth);
@@ -212,6 +234,6 @@ GeneratorDefinition hilbertRiverDefinition()
 		{"major-shortcuts", "Optional major shortcuts", 0, 4, 1, 2, ControlGroup::Layout}};
 	const auto resources = resourceControls();
 	controls.insert(controls.end(), resources.begin(), resources.end());
-	return {"hilbert-river", 50,           "Hilbert River", 1, false, controls, generate, true,
+	return {"hilbert-river", 50,           "Hilbert River", 7, false, controls, generate, true,
 			validateRequest, validateWorld};
 }

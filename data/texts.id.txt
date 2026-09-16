@@ -1976,6 +1976,10 @@ Lebar jalan setapak
 Tembok antar tikungan
 [Farm building plots]
 Petak bangunan di ladang
+[Sand bridges over water]
+Jembatan pasir di atas air
+[Sand lanes through crops]
+Jalur pasir melintasi tanaman
 [Carousels need at least two colonies.]
 Komidi putar memerlukan setidaknya dua koloni.
 [Switchbacks need at least two colonies.]
@@ -2614,8 +2618,18 @@ Lebar pita kontur
 Tangga per bukit
 [Valley river]
 Sungai lembah
-[Vultures]
-Burung nasar
+[Hills]
+Bukit
+[Hillsides]
+Lereng
+[Terraces per slope]
+Teras per lereng
+[Waviness]
+Kebergelombangan
+[Stair spacing]
+Jarak tangga
+[Locust]
+Belalang
 [Plantations]
 Perkebunan
 [Plot size]

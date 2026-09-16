@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <PerformanceTelemetry.h>
 #include "GenerationValidation.h"
+#include <string>
 #include "Building.h"
 #include "BuildingType.h"
 #include "Game.h"
@@ -44,6 +45,15 @@ std::string validateGeneratedWorld(const Game &g, const GenerationRequest &r,
 		return "Incorrect map dimensions";
 	if (g.mapHeader.getNumberOfTeams() != (d.hasStartingColonies ? r.nbTeams : 1))
 		return "Incorrect colony count";
+	// No generated map may disable resource growth. The engine's saved canResourcesGrow flag
+	// is for hand-made scenarios such as the tutorial; a generated map contains its crops with
+	// terrain, or it does not contain them. Using the flag froze farmland and hid overgrowth
+	// the design should have solved (2026-09-16).
+	for (int y = 0; y < g.map.getH(); ++y)
+		for (int x = 0; x < g.map.getW(); ++x)
+			if (!g.map.canResourcesGrow(x, y))
+				return "Generated maps may not disable resource growth (no-growth zone at " +
+					   std::to_string(x) + "," + std::to_string(y) + ")";
 	// A landscape that owns its worker count (a premade base) says so; every other colony starts
 	// with the lobby's shared "Starting workers" value.
 	const int expectedWorkers = d.startingWorkers ? d.startingWorkers(r) : r.nbWorkers;

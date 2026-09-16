@@ -1980,6 +1980,10 @@ Polun leveys
 Muuri mutkien välissä
 [Farm building plots]
 Rakennuspaikat tiloilla
+[Sand bridges over water]
+Hiekkasillat veden yli
+[Sand lanes through crops]
+Hiekkapolut viljelysten läpi
 [Carousels need at least two colonies.]
 Karuselli tarvitsee vähintään kaksi siirtokuntaa.
 [Switchbacks need at least two colonies.]
@@ -2618,8 +2622,18 @@ Korkeusvyöhykkeiden leveys
 Portaita kukkulalla
 [Valley river]
 Laakson joki
-[Vultures]
-Korppikotkat
+[Hills]
+Kukkulat
+[Hillsides]
+Rinteet
+[Terraces per slope]
+Terasseja rinnettä kohden
+[Waviness]
+Aaltoilevuus
+[Stair spacing]
+Portaiden väli
+[Locust]
+Heinäsirkat
 [Plantations]
 Plantaasit
 [Plot size]

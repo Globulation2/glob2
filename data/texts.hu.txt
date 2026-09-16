@@ -1980,6 +1980,10 @@ Fennsík mérete
 Fal a kanyarok között
 [Farm building plots]
 Építési telkek a farmokon
+[Sand bridges over water]
+Homokhidak a víz felett
+[Sand lanes through crops]
+Homokösvények a termésen át
 [Carousels need at least two colonies.]
 A körhintához legalább két kolónia kell.
 [Switchbacks need at least two colonies.]
@@ -2618,8 +2622,18 @@ Szintvonalas sávok szélessége
 Lépcsők dombonként
 [Valley river]
 Völgyi folyó
-[Vultures]
-Keselyűk
+[Hills]
+Dombok
+[Hillsides]
+Lejtők
+[Terraces per slope]
+Teraszok lejtőnként
+[Waviness]
+Hullámosság
+[Stair spacing]
+Lépcsők távolsága
+[Locust]
+Sáskák
 [Plantations]
 Ültetvények
 [Plot size]
