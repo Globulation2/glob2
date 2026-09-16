@@ -57,7 +57,7 @@ def flush_trajectory(client, record_dir: str) -> None:
     # exact network input, and storing only the dynamic planes would leave it
     # six channels short.
     np.savez(base + ".npz",
-             latents=np.stack(client.latents).astype(np.float32),
+             placements=np.stack(client.latents).astype(np.int64),
              logps=np.array(client.logps, dtype=np.float32),
              values=np.array(client.values, dtype=np.float32),
              potentials=np.array(client.potentials, dtype=np.float32),
@@ -137,11 +137,19 @@ def main() -> int:
     ap.add_argument("--batch-wait-ms", type=float, default=2.0)
     ap.add_argument("--latent-std", type=float, default=0.0)
     ap.add_argument("--latent-dim", type=int, default=32)
+    ap.add_argument("--reload-from", default=None,
+                    help="watch this checkpoint and hot-reload when it changes, "
+                         "so a PPO update takes effect without restarting the "
+                         "server and dropping every in-flight game")
+    ap.add_argument("--reload-every", type=float, default=30.0,
+                    help="seconds between checkpoint mtime checks")
     ap.add_argument("--record-dir", default=None,
                     help="write one trajectory per connection here, for PPO")
     ap.add_argument("--sample", action="store_true",
-                    help="sample the exploration latent from the policy instead "
-                         "of using its mean (required for on-policy RL)")
+                    help="sample placements from the policy instead of taking "
+                         "the field's argmax (required for on-policy RL)")
+    ap.add_argument("--placements", type=int, default=8,
+                    help="placements sampled per policy step when --sample")
     ap.add_argument("--score-floor", type=int, default=0,
                     help="drop predicted buildings whose softmax score is below "
                          "this (0..255); the reconciler still ranks by score")
@@ -171,6 +179,9 @@ def main() -> int:
     clients = {}
     served = 0
     t_start = time.time()
+    last_reload_check = time.time()
+    reload_mtime = (os.path.getmtime(args.reload_from)
+                    if args.reload_from and os.path.exists(args.reload_from) else 0.0)
 
     while True:
         pending = []          # (client, dynamic planes, tick)
@@ -226,18 +237,54 @@ def main() -> int:
             if not pending and not clients:
                 time.sleep(0.01)
 
+        # Hot-reload between batches, never mid-batch: a policy that changed
+        # halfway through a forward pass would make the recorded log-probs
+        # disagree with the weights that produced them, which silently
+        # corrupts the PPO ratio.
+        if args.reload_from and time.time() - last_reload_check > args.reload_every:
+            last_reload_check = time.time()
+            try:
+                mtime = os.path.getmtime(args.reload_from)
+                if mtime > reload_mtime:
+                    fresh = torch.load(args.reload_from, map_location="cpu",
+                                       weights_only=False)
+                    net.load_state_dict(fresh["model"])
+                    net.eval().to(args.device).to(memory_format=torch.channels_last)
+                    reload_mtime = mtime
+                    print(f"reloaded policy from {args.reload_from}", flush=True)
+            except Exception as exc:
+                print("reload failed (keeping current policy):", exc, flush=True)
+
         batch = np.stack([build_input(c, d, t) for c, d, t in pending])
         x = torch.from_numpy(batch).to(args.device).to(memory_format=torch.channels_last)
+        # Which cells this team already occupies. MY_BUILDING_SLICE indexes the
+        # dynamic planes; in the assembled input they sit after the 4 static
+        # planes.
+        existing = x[:, 4 + MY_BUILDING_SLICE.start:4 + MY_BUILDING_SLICE.stop]
+        existing = existing.amax(dim=1) > 0.5
+
         with torch.no_grad(), torch.autocast("cuda", dtype=torch.float16):
             if args.sample:
-                out = net.act(x, deterministic=False)
+                out = net.act_placements(x, existing, k=args.placements)
             else:
                 out = net(x)
         logits = out["building"].float()
         probs = torch.softmax(logits, dim=1)
         cls = probs.argmax(dim=1).to(torch.uint8)
         score = (probs.amax(dim=1) * 255).clamp(0, 255).to(torch.uint8)
-        if args.score_floor > 0:
+
+        if args.sample:
+            # The desired field is: keep what we already have, plus exactly the
+            # placements that were sampled. Everything else is explicitly empty,
+            # so the action the policy is credited for is the action the
+            # reconciler actually carries out.
+            best_type = probs[:, 1:].argmax(dim=1).to(torch.uint8) + 1
+            field = torch.where(existing, cls, torch.zeros_like(cls))
+            flat = field.flatten(1)
+            flat.scatter_(1, out["placements"], best_type.flatten(1)
+                          .gather(1, out["placements"]))
+            cls = flat.view_as(cls)
+        elif args.score_floor > 0:
             cls = torch.where(score >= args.score_floor, cls, torch.zeros_like(cls))
         areas = (torch.sigmoid(out["areas"].float()) > 0.5)
         area_bits = (areas[:, 0].to(torch.uint8) * 1 + areas[:, 1].to(torch.uint8) * 2
@@ -245,14 +292,14 @@ def main() -> int:
         packed = torch.stack([cls, score, area_bits], dim=-1).cpu().numpy()
 
         if args.record_dir:
-            lat = out.get("latent")
+            lat = out.get("placements")
             lp = out.get("logp")
             val = out.get("value")
             for n, (client, dyn, _tick) in enumerate(pending):
                 client.obs_u8.append(dyn.copy())
                 client.ticks.append(int(_tick))
                 if lat is not None:
-                    client.latents.append(lat[n].float().cpu().numpy())
+                    client.latents.append(lat[n].cpu().numpy().astype(np.int64))
                     client.logps.append(float(lp[n]))
                 if val is not None:
                     client.values.append(float(val[n]))

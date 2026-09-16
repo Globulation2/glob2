@@ -38,7 +38,7 @@ from neurotica_net import NeuroticaNet
 @dataclass
 class Trajectory:
     obs_path: str          # .npy memmap of DYNAMIC planes for this episode
-    latents: np.ndarray    # (T, latent_dim)
+    placements: np.ndarray # (T, k) flat cell indices that were acted on
     logps: np.ndarray      # (T,)
     values: np.ndarray     # (T,)
     potentials: np.ndarray # (T,)
@@ -101,7 +101,7 @@ def load_trajectories(run_dir: str) -> List[Trajectory]:
             arrays = np.load(base + ".npz")
             out.append(Trajectory(
                 obs_path=base + ".obs.npy",
-                latents=arrays["latents"], logps=arrays["logps"],
+                placements=arrays["placements"], logps=arrays["logps"],
                 values=arrays["values"], potentials=arrays["potentials"],
                 ticks=arrays["ticks"], static=arrays["static"],
                 outcome=float(meta["outcome"])))
@@ -113,20 +113,20 @@ def load_trajectories(run_dir: str) -> List[Trajectory]:
 def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
     if not trajs:
         return {}
-    all_adv, all_ret, all_z, all_logp, obs_refs = [], [], [], [], []
+    all_adv, all_ret, all_act, all_logp, obs_refs = [], [], [], [], []
     for traj in trajs:
         rewards = compute_rewards(traj, args.gamma, args.shaping)
         adv, ret = gae(rewards, traj.values, args.gamma, args.lam)
         all_adv.append(adv)
         all_ret.append(ret)
-        all_z.append(traj.latents)
+        all_act.append(traj.placements)
         all_logp.append(traj.logps)
         obs = np.load(traj.obs_path, mmap_mode="r")
         obs_refs.extend([(obs, i, traj) for i in range(len(traj.logps))])
 
     adv = np.concatenate(all_adv)
     ret = np.concatenate(all_ret)
-    z = np.concatenate(all_z)
+    acts = np.concatenate(all_act)
     logp_old = np.concatenate(all_logp)
     adv = (adv - adv.mean()) / (adv.std() + 1e-8)
 
@@ -143,9 +143,12 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
                                   obs_refs[i][2].ticks[obs_refs[i][1]])
                 for i in idx])
             x = torch.from_numpy(obs_batch).to(device).to(memory_format=torch.channels_last)
-            zb = torch.from_numpy(z[idx]).to(device)
+            ab = torch.from_numpy(acts[idx]).to(device)
+            # Rebuild the same "already occupied" mask the server used, or the
+            # re-scored distribution would not be the one that acted.
+            existing = x[:, 4 + 8:4 + 8 + 13].amax(dim=1) > 0.5
             with torch.autocast("cuda", dtype=torch.float16):
-                ev = net.evaluate_latent(x, zb)
+                ev = net.evaluate_placements(x, ab, existing)
             ratio = (ev["logp"] - torch.from_numpy(logp_old[idx]).to(device)).exp()
             a = torch.from_numpy(adv[idx]).to(device)
             pg = -torch.min(ratio * a,

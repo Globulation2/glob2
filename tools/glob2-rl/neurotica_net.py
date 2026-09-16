@@ -209,6 +209,58 @@ class NeuroticaNet(nn.Module):
                    latent_mu=mu, latent_logstd=logstd)
         return out
 
+    # --- placement actions -------------------------------------------------
+    #
+    # The action is WHICH PLACEMENTS TO MAKE, not the whole field and not the
+    # latent.
+    #
+    # Sampling every cell independently makes log pi(a|s) a sum over ~200k
+    # terms and PPO's ratio explodes. Making the latent the action avoids that
+    # but is worse: the decoder never appears in log pi(a|s), so it receives no
+    # gradient at all and the policy's PLAY can never change. Verified — the
+    # policy loss sent exactly 0.0 gradient to FiLM, the decoder and the
+    # building head.
+    #
+    # The reconciler never acts on the whole field anyway: it ranks cells by
+    # score and drains a capped queue, so a handful of placements per step is
+    # what actually happens. Sampling k of them gives a k-term log-prob, which
+    # is tractable, and the gradient flows through the building head into the
+    # decoder — the part that plays.
+    #
+    # Cells the team already occupies are excluded from the draw. Reproducing
+    # an existing building is a copy, not a decision, and BC already does it at
+    # 0.999 recall; leaving it deterministic keeps the sampled action pure
+    # novelty.
+
+    @staticmethod
+    def placement_distribution(building_logits, existing_mask):
+        """Categorical over empty cells, weighted by P(any building there)."""
+        probs = torch.softmax(building_logits.float(), dim=1)
+        occupied = 1.0 - probs[:, 0]
+        cand = occupied.masked_fill(existing_mask, 0.0).flatten(1)
+        # A row with no legal candidate would make a degenerate distribution;
+        # fall back to uniform so sampling stays defined.
+        empty_rows = cand.sum(dim=1, keepdim=True) <= 0
+        cand = torch.where(empty_rows, torch.ones_like(cand), cand)
+        return torch.distributions.Categorical(probs=cand / cand.sum(dim=1, keepdim=True))
+
+    def act_placements(self, x, existing_mask, k: int = 8):
+        out = self.forward(x)
+        dist = self.placement_distribution(out["building"], existing_mask)
+        idx = dist.sample((k,)).T.contiguous()            # (B, k)
+        out["placements"] = idx
+        out["logp"] = dist.log_prob(idx.T).sum(dim=0)     # (B,)
+        out["entropy"] = dist.entropy()
+        return out
+
+    def evaluate_placements(self, x, idx, existing_mask):
+        """Re-score stored placements under the current policy, for PPO."""
+        out = self.forward(x)
+        dist = self.placement_distribution(out["building"], existing_mask)
+        return dict(logp=dist.log_prob(idx.T).sum(dim=0),
+                    entropy=dist.entropy(),
+                    value=out["value"])
+
     def evaluate_latent(self, x, z):
         """Re-score a stored latent under the current policy, for PPO."""
         mid, skips = self.encode(x)
