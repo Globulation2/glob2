@@ -559,3 +559,14 @@ same tested binary ran the direct game. This harness limit must not be counted
 as a generation failure or ignored as a successful structured job. No movement,
 AI or simulation rule changed during the follow-up. New AI games were not used
 to claim human enjoyment or cross-platform generation equivalence.
+
+## Rotation tournament
+
+Six 256×256 maps (seeds 101 to 106), four colonies, every cyclic team rotation, four Nicowars,
+45,000 ticks, on revision 2 with the islets: the richest economy of the maps measured this way.
+Pooled per-start units of 131 to 240 (peaks 162 to 250), 16 to 25 buildings, 37 to 72 warriors,
+about 424 wheat and 2,380 wood harvested per colony, 292 births, 11 to 14 starvation deaths per
+colony, nine eliminations in 96 colony-games, prestige on every map. Position bias 19 points
+(p = 0.24, not significant): the wedges are unequal by design and the lobby keeps the best of
+several rolls, and the map's colony index 1 had the smallest wedge on this seed set. The
+islets took no start and changed no colony's ground. The defaults stand.
