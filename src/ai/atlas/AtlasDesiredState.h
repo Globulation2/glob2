@@ -45,6 +45,22 @@ namespace Atlas
 	//! AtlasReconciler's demolish rule.
 	static constexpr Uint8 DONT_CARE = 255;
 
+	//! Entries per cell in DesiredState::swarmRatio, one per unit type
+	//! (NB_UNIT_TYPE in src/unit/UnitConsts.h). Declared here rather than
+	//! included so this header stays free of engine dependencies; the
+	//! reconciler static_asserts the two agree.
+	static constexpr size_t SWARM_RATIO_STRIDE = 3;
+
+	//! Encoding of DesiredState::priority. Building::priority is signed
+	//! (-1 low, 0 normal, +1 high); these planes are unsigned, so the mapping
+	//! is explicit rather than a biased integer nobody can read.
+	enum PriorityLevel : Uint8
+	{
+		PRIORITY_LOW = 0,
+		PRIORITY_NORMAL = 1,
+		PRIORITY_HIGH = 2
+	};
+
 	//! Bits in DesiredState::areas. These mirror Map's three per-team area
 	//! layers (AreaType in Map.h) but are packed one cell per byte here
 	//! because the policy emits them as three independent sigmoids.
@@ -87,6 +103,23 @@ namespace Atlas
 		//! (war / exploration / clearing flags). DONT_CARE leaves it alone.
 		std::vector<Uint8> flagRadius;
 
+		//! Wanted unit-production ratio for a swarm, one entry per unit type
+		//! (NB_UNIT_TYPE == 3: worker, explorer, warrior), stored at
+		//! index(x,y)*SWARM_RATIO_STRIDE + type. DONT_CARE in the worker slot
+		//! leaves the whole swarm alone. Without this plane Atlas can place a
+		//! swarm but not decide what comes out of it, which is most of what a
+		//! swarm is for.
+		std::vector<Uint8> swarmRatio;
+
+		//! Wanted Building::priority, encoded PRIORITY_LOW/NORMAL/HIGH since
+		//! the engine's own value is signed (-1/0/+1) and these planes are
+		//! unsigned. DONT_CARE leaves it alone.
+		std::vector<Uint8> priority;
+
+		//! Wanted Building::minLevelToFlag — the minimum unit level a flag
+		//! will accept. DONT_CARE leaves it alone.
+		std::vector<Uint8> minLevelToFlag;
+
 		//! Bitmask of AreaBit. Diffed against Map::isGuardArea/isClearArea/
 		//! isForbidden for this team and emitted as OrderAlterArea ADD/DEL.
 		std::vector<Uint8> areas;
@@ -118,6 +151,9 @@ namespace Atlas
 			workers.assign(n, DONT_CARE);
 			workersFuture.assign(n, DONT_CARE);
 			flagRadius.assign(n, DONT_CARE);
+			swarmRatio.assign(n * SWARM_RATIO_STRIDE, DONT_CARE);
+			priority.assign(n, DONT_CARE);
+			minLevelToFlag.assign(n, DONT_CARE);
 			areas.assign(n, 0);
 			urgency.assign(n, 0);
 			commit.assign(n, 0);
@@ -129,7 +165,9 @@ namespace Atlas
 			return w > 0 && h > 0 && building.size() == n && level.size() == n &&
 			       workers.size() == n && workersFuture.size() == n &&
 			       flagRadius.size() == n && areas.size() == n &&
-			       urgency.size() == n && commit.size() == n;
+			       urgency.size() == n && commit.size() == n &&
+			       swarmRatio.size() == n * SWARM_RATIO_STRIDE &&
+			       priority.size() == n && minLevelToFlag.size() == n;
 		}
 
 		//! Row-major index. Callers are responsible for wrapping x and y into

@@ -17,7 +17,10 @@ namespace Atlas
 {
 	namespace
 	{
-		const char TRACE_MAGIC[4] = {'A', 'T', 'R', '1'};
+		// Bumped from ATR1 when the per-building record grew priority, min-level and
+		// unit ratios. Readers reject on magic, so an old trace fails loudly
+		// rather than being misparsed at a shifted offset.
+		const char TRACE_MAGIC[4] = {'A', 'T', 'R', '2'};
 		const char TRACE_FOOTER_MAGIC[4] = {'A', 'T', 'R', 'E'};
 		constexpr size_t HEADER_BYTES = 16;
 		//! Offset of the patched snapshot count within the header.
@@ -57,6 +60,10 @@ namespace Atlas
 				record.workers = Uint8(std::min<Sint32>(b->maxUnitWorking, 255));
 				record.flagRadius =
 					b->type->isVirtual ? Uint8(std::min<Sint32>(b->unitStayRange, 255)) : 0;
+				record.priority = Uint8(std::clamp<Sint32>(b->priority + 1, 0, 2));
+				record.minLevelToFlag = Uint8(std::clamp<Sint32>(b->minLevelToFlag, 0, 255));
+				for (size_t u = 0; u < SWARM_RATIO_STRIDE; u++)
+					record.ratio[u] = Uint8(std::clamp<Sint32>(b->ratio[u], 0, 255));
 				out.push_back(record);
 			}
 		}
@@ -136,6 +143,10 @@ namespace Atlas
 			put<Uint8>(file_, b.level);
 			put<Uint8>(file_, b.workers);
 			put<Uint8>(file_, b.flagRadius);
+			put<Uint8>(file_, b.priority);
+			put<Uint8>(file_, b.minLevelToFlag);
+			for (size_t u = 0; u < SWARM_RATIO_STRIDE; u++)
+				put<Uint8>(file_, b.ratio[u]);
 		}
 
 		// Run-length encode the area layers. Area maps are overwhelmingly one
@@ -233,8 +244,12 @@ namespace Atlas
 				TraceBuilding &record = snapshot.buildings[b];
 				if (!take(buf, at, record.x) || !take(buf, at, record.y) ||
 				    !take(buf, at, record.shortType) || !take(buf, at, record.level) ||
-				    !take(buf, at, record.workers) || !take(buf, at, record.flagRadius))
+				    !take(buf, at, record.workers) || !take(buf, at, record.flagRadius) ||
+				    !take(buf, at, record.priority) || !take(buf, at, record.minLevelToFlag))
 					return false;
+				for (size_t u = 0; u < SWARM_RATIO_STRIDE; u++)
+					if (!take(buf, at, record.ratio[u]))
+						return false;
 			}
 
 			Uint32 runCount = 0;
@@ -312,6 +327,12 @@ namespace Atlas
 			out.workersFuture[i] = b.workers;
 			if (b.flagRadius != 0)
 				out.flagRadius[i] = b.flagRadius;
+			out.priority[i] = b.priority;
+			if (b.shortType == IntBuildingType::SWARM_BUILDING)
+				for (size_t u = 0; u < SWARM_RATIO_STRIDE; u++)
+					out.swarmRatio[i * SWARM_RATIO_STRIDE + u] = b.ratio[u];
+			else
+				out.minLevelToFlag[i] = b.minLevelToFlag;
 			// Uniform mid urgency: a trace records what a teacher had, not the
 			// order it wanted things in, so inventing a priority here would be
 			// fabricating a label. M2's policy learns urgency for real.

@@ -24,7 +24,7 @@ import struct
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
-MAGIC = b"ATR1"
+MAGIC = b"ATR2"
 FOOTER_MAGIC = b"ATRE"
 HEADER_BYTES = 16
 
@@ -46,6 +46,11 @@ class Building:
     level: int
     workers: int
     flag_radius: int
+    # Building::priority biased by +1, so 0=low, 1=normal, 2=high.
+    priority: int = 1
+    min_level_to_flag: int = 0
+    # Unit-production ratio, one entry per unit type (worker/explorer/warrior).
+    ratio: tuple = (0, 0, 0)
 
     @property
     def name(self) -> str:
@@ -114,9 +119,11 @@ def load(path: str) -> Trace:
         (tick, team, teacher, num_buildings) = cur.take("<IBBH")
         snapshot = Snapshot(tick=tick, team=team, teacher=teacher)
         for _b in range(num_buildings):
-            (x, y, short_type, level, workers, radius) = cur.take("<HHBBBB")
+            (x, y, short_type, level, workers, radius, priority, min_level,
+             r0, r1, r2) = cur.take("<HHBBBBBBBBB")
             snapshot.buildings.append(
-                Building(x, y, short_type, level, workers, radius))
+                Building(x, y, short_type, level, workers, radius,
+                         priority, min_level, (r0, r1, r2)))
 
         (runs,) = cur.take("<I")
         areas = bytearray()

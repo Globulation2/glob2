@@ -36,6 +36,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 class Building;
@@ -63,6 +64,14 @@ namespace Atlas
 		//! however long it has been desired-empty.
 		Uint8 commitBlocksDemolish = 128;
 
+		//! Greatest distance, in tiles, over which an existing flag may be
+		//! retargeted to satisfy a desire for a flag of the same type instead
+		//! of building a new one. See the flag-identity note in the .cpp:
+		//! a desired-state field describes configurations, not objects, so
+		//! "flag moved" and "flag replaced" are the same picture and the
+		//! reconciler has to choose a reading.
+		int maxFlagMoveDist = 64;
+
 		//! Hard cap on orders emitted per policy step. Prevents one wild field
 		//! from monopolising the order channel for many seconds.
 		size_t maxQueuedOrders = 64;
@@ -77,8 +86,17 @@ namespace Atlas
 		int upgraded = 0;
 		int restaffed = 0;
 		int flagsRetuned = 0;
+		int flagsMoved = 0;
+		int swarmsRetuned = 0;
+		int repriorised = 0;
 		int areaOrders = 0;
 		int illegalSkipped = 0;
+		//! Breakdown of illegalSkipped by cause. A desire dropped for fog is
+		//! waiting on exploration; one dropped for an occupied footprint is
+		//! waiting on something being cleared or moved. The two want opposite
+		//! fixes, so counting them together hides the diagnosis.
+		int illegalFog = 0;
+		int illegalOccupied = 0;
 		int cappedOut = 0;
 
 		void clear() { *this = ReconcilerStats(); }
@@ -122,13 +140,28 @@ namespace Atlas
 		//! Index this team's live buildings by their anchor cell.
 		void indexObserved();
 
-		void planBuildings(const DesiredState &desired, std::vector<Candidate> &out);
+		//! Cells whose diff is already handled by a flag move, so the main
+		//! pass must neither create at the destination nor demolish at the
+		//! source.
+		struct FlagPlan
+		{
+			std::unordered_set<size_t> satisfied;
+			std::unordered_set<size_t> vacated;
+		};
+
+		//! Match unmet flag desires against flags the field no longer wants
+		//! where they stand, and retarget rather than rebuild.
+		void planFlagMoves(const DesiredState &desired, FlagPlan &plan,
+		                   std::vector<Candidate> &out);
+
+		void planBuildings(const DesiredState &desired, const FlagPlan &plan,
+		                   std::vector<Candidate> &out);
 		void planAreas(const DesiredState &desired, std::vector<Candidate> &out);
 
 		//! True when a building of `shortType` may legally be placed with its
 		//! top-left at (x,y): the map is discovered there and the footprint is
 		//! free. Virtual buildings (flags) skip the ground-occupancy test.
-		bool canPlace(int shortType, int x, int y) const;
+		bool canPlace(int shortType, int x, int y);
 
 		Team *team_ = nullptr;
 		Game *game_ = nullptr;

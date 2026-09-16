@@ -32,7 +32,7 @@
   Format (little-endian):
 
     HEADER (16 bytes)
-      [4B] magic "ATR1"
+      [4B] magic "ATR2"
       [4B] u32 num_snapshots      (patched by close())
       [2B] u16 map_w
       [2B] u16 map_h
@@ -45,13 +45,16 @@
       [1B] u8  team_number
       [1B] u8  teacher_id         (AI::ImplementationID of the team's AI)
       [2B] u16 num_buildings
-      per building (8 bytes):
+      per building (13 bytes):
         [2B] u16 x                (top-left anchor, matching OrderCreate)
         [2B] u16 y
         [1B] u8  short_type       (IntBuildingType::Number)
         [1B] u8  level            (BuildingType::level, 0-based)
         [1B] u8  workers          (Building::maxUnitWorking)
         [1B] u8  flag_radius      (unitStayRange; 0 for non-virtual)
+        [1B] u8  priority         (Building::priority + 1, so 0/1/2)
+        [1B] u8  min_level_to_flag
+        [3B] u8  ratio[3]         (Building::ratio, one per unit type)
       [4B] u32 area_rle_pairs
       per pair (3 bytes):
         [1B] u8  area bits        (Atlas::AreaBit mask)
@@ -92,6 +95,12 @@ namespace Atlas
 		Uint8 level = 0;
 		Uint8 workers = 0;
 		Uint8 flagRadius = 0;
+		//! Building::priority biased by +1, so the signed -1/0/+1 fits a byte
+		//! and matches DesiredState's PriorityLevel encoding.
+		Uint8 priority = PRIORITY_NORMAL;
+		Uint8 minLevelToFlag = 0;
+		//! Unit-production ratio, one entry per unit type.
+		Uint8 ratio[SWARM_RATIO_STRIDE] = {0, 0, 0};
 	};
 
 	struct TraceSnapshot

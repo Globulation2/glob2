@@ -85,9 +85,37 @@ namespace Atlas
 	{
 		if (!team_ || !trace_)
 			return false;
-		const TraceSnapshot *snapshot = trace_->at(Uint8(team_->teamNumber), tick + delta_);
-		if (!snapshot)
+		const Uint8 team = Uint8(team_->teamNumber);
+		const TraceSnapshot *target = trace_->at(team, tick + delta_);
+		if (!target)
 			return false; // past the end of the recording — stay inert
-		return trace_->expand(*snapshot, out);
+		if (!trace_->expand(*target, out))
+			return false;
+
+		// Derive urgency from the teacher's own timing.
+		//
+		// A trace records what a team HAD, not the order it wanted things in,
+		// so expand() can only set a flat urgency — and a flat urgency means
+		// the field cannot express sequencing at all. That matters because the
+		// desired field is routinely unaffordable, so the urgency plane is
+		// what decides which half of it actually happens.
+		//
+		// The teacher's state at the CURRENT tick recovers the missing signal.
+		// Anything it already had by now is something we are behind on, so it
+		// outranks anything it only acquires later. That turns the oracle from
+		// "here is a picture of the future" into "catch up first, then build
+		// ahead", which is what a build order is.
+		const TraceSnapshot *already = trace_->at(team, tick);
+		if (!already)
+			return true;
+		for (const TraceBuilding &b : already->buildings)
+		{
+			if (b.x >= out.w || b.y >= out.h)
+				continue;
+			const size_t i = out.index(b.x, b.y);
+			if (out.building[i] == Uint8(b.shortType + 1))
+				out.urgency[i] = 255;
+		}
+		return true;
 	}
 } // namespace Atlas

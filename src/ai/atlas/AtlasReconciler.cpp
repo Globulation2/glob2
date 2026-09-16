@@ -14,8 +14,12 @@
 #include "Order.h"
 #include "Player.h"
 #include "Team.h"
+#include "UnitConsts.h"
 
 #include <algorithm>
+
+static_assert(Atlas::SWARM_RATIO_STRIDE == NB_UNIT_TYPE,
+              "DesiredState::swarmRatio stride must match the engine's unit-type count");
 
 namespace Atlas
 {
@@ -78,7 +82,7 @@ namespace Atlas
 		}
 	}
 
-	bool Reconciler::canPlace(int shortType, int x, int y) const
+	bool Reconciler::canPlace(int shortType, int x, int y)
 	{
 		if (!map_ || !team_)
 			return false;
@@ -90,15 +94,112 @@ namespace Atlas
 		// blind is not something we want the policy to discover as a trick —
 		// and AIImplementation.h makes fog fairness the implementer's job.
 		if (!map_->isMapDiscovered(x, y, team_->me))
+		{
+			stats_.illegalFog++;
 			return false;
+		}
 		// Virtual buildings (war / exploration / clearing flags) do not occupy
 		// the ground-occupancy map, so the footprint test does not apply.
 		if (type->isVirtual)
 			return true;
-		return map_->isFreeForBuilding(x, y, type->width, type->height);
+		if (!map_->isFreeForBuilding(x, y, type->width, type->height))
+		{
+			stats_.illegalOccupied++;
+			return false;
+		}
+		return true;
 	}
 
-	void Reconciler::planBuildings(const DesiredState &desired, std::vector<Candidate> &out)
+	/*
+	  Flag identity.
+
+	  A desired-state field describes configurations, not objects. "Flag at A"
+	  this step and "flag at B" next step is the same picture whether the
+	  player moved one flag or destroyed one and built another — the field
+	  cannot tell us which, so the reconciler has to pick a reading.
+
+	  Delete-and-recreate is the wrong one for flags. It routes through the
+	  demolish-persistence gate, so a war flag would take demolishPersistSteps
+	  policy steps to follow a battle it should track immediately, and it
+	  throws away the flag's construction in the process. So: match each unmet
+	  flag desire against a flag of the same type that the field no longer
+	  wants where it stands, and retarget it with OrderMoveFlag.
+
+	  Greedy nearest-first matching. It is not optimal assignment, but flags of
+	  one type are few and the cost of a suboptimal pairing is a slightly
+	  longer walk, not a wrong plan.
+	*/
+	void Reconciler::planFlagMoves(const DesiredState &desired, FlagPlan &plan,
+	                               std::vector<Candidate> &out)
+	{
+		if (!map_ || config_.maxFlagMoveDist <= 0)
+			return;
+
+		// Flags the field no longer wants where they currently stand.
+		struct Orphan
+		{
+			Building *building;
+			size_t cell;
+			int shortType;
+			bool taken;
+		};
+		std::vector<Orphan> orphans;
+		for (const auto &entry : observed_)
+		{
+			Building *b = entry.second;
+			if (!b || !b->type || !b->type->isVirtual)
+				continue;
+			const int shortType = b->type->shortTypeNum;
+			if (desired.building[entry.first] == Uint8(shortType + 1))
+				continue; // still wanted exactly where it is
+			orphans.push_back({b, entry.first, shortType, false});
+		}
+		if (orphans.empty())
+			return;
+
+		for (Sint32 y = 0; y < desired.h; y++)
+			for (Sint32 x = 0; x < desired.w; x++)
+			{
+				const size_t i = desired.index(x, y);
+				const Uint8 wanted = desired.building[i];
+				if (wanted == 0)
+					continue;
+				if (observed_.find(i) != observed_.end())
+					continue; // something is already here; not a move target
+				const int shortType = int(wanted) - 1;
+				Sint32 typeNum = -1;
+				BuildingType *type = placeableType(shortType, &typeNum);
+				if (!type || !type->isVirtual)
+					continue;
+
+				Orphan *best = nullptr;
+				int bestDist = config_.maxFlagMoveDist + 1;
+				for (Orphan &orphan : orphans)
+				{
+					if (orphan.taken || orphan.shortType != shortType)
+						continue;
+					const int dist = map_->warpDistMax(
+						x, y, orphan.building->posX, orphan.building->posY);
+					if (dist < bestDist)
+					{
+						bestDist = dist;
+						best = &orphan;
+					}
+				}
+				if (!best)
+					continue;
+
+				best->taken = true;
+				plan.satisfied.insert(i);
+				plan.vacated.insert(best->cell);
+				out.push_back({std::make_shared<OrderMoveFlag>(best->building->gid, x, y, false),
+				               desired.urgency[i], sequence_++});
+				stats_.flagsMoved++;
+			}
+	}
+
+	void Reconciler::planBuildings(const DesiredState &desired, const FlagPlan &plan,
+	                               std::vector<Candidate> &out)
 	{
 		const Sint32 w = desired.w;
 		const Sint32 h = desired.h;
@@ -110,6 +211,15 @@ namespace Atlas
 				const size_t i = desired.index(x, y);
 				const Uint8 wanted = desired.building[i];
 				const Uint8 urgency = desired.urgency[i];
+
+				// A cell already handled by a flag move needs nothing further:
+				// the destination is satisfied, and the source has been
+				// vacated on purpose rather than abandoned.
+				if (plan.satisfied.count(i) || plan.vacated.count(i))
+				{
+					emptyStreak_[i] = 0;
+					continue;
+				}
 
 				auto found = observed_.find(i);
 				Building *have = (found == observed_.end()) ? nullptr : found->second;
@@ -215,6 +325,52 @@ namespace Atlas
 				    Sint32(wantRadius) != have->unitStayRange)
 				{
 					out.push_back({std::make_shared<OrderModifyFlag>(have->gid, Sint32(wantRadius)),
+					               urgency, sequence_++});
+					stats_.flagsRetuned++;
+				}
+
+				// Unit production. Without this a swarm is placed but never
+				// told what to make, so the team builds the teacher's base and
+				// then fields the default unit mix.
+				const size_t ratioBase = i * SWARM_RATIO_STRIDE;
+				if (have->type && have->type->shortTypeNum == IntBuildingType::SWARM_BUILDING &&
+				    desired.swarmRatio[ratioBase] != DONT_CARE)
+				{
+					Sint32 wanted[NB_UNIT_TYPE];
+					bool differs = false;
+					for (int u = 0; u < NB_UNIT_TYPE; u++)
+					{
+						const Uint8 value = desired.swarmRatio[ratioBase + size_t(u)];
+						wanted[u] = (value == DONT_CARE) ? have->ratio[u] : Sint32(value);
+						if (wanted[u] != have->ratio[u])
+							differs = true;
+					}
+					if (differs)
+					{
+						out.push_back({std::make_shared<OrderModifySwarm>(have->gid, wanted),
+						               urgency, sequence_++});
+						stats_.swarmsRetuned++;
+					}
+				}
+
+				const Uint8 wantPriority = desired.priority[i];
+				if (wantPriority != DONT_CARE)
+				{
+					const Sint32 asSigned = Sint32(wantPriority) - Sint32(PRIORITY_NORMAL);
+					if (asSigned != have->priority)
+					{
+						out.push_back({std::make_shared<OrderChangePriority>(have->gid, asSigned),
+						               urgency, sequence_++});
+						stats_.repriorised++;
+					}
+				}
+
+				const Uint8 wantMinLevel = desired.minLevelToFlag[i];
+				if (wantMinLevel != DONT_CARE && have->type && have->type->isVirtual &&
+				    Sint32(wantMinLevel) != have->minLevelToFlag)
+				{
+					out.push_back({std::make_shared<OrderModifyMinLevelToFlag>(
+					                   have->gid, Uint16(wantMinLevel)),
 					               urgency, sequence_++});
 					stats_.flagsRetuned++;
 				}
@@ -343,7 +499,9 @@ namespace Atlas
 		indexObserved();
 
 		std::vector<Candidate> candidates;
-		planBuildings(desired, candidates);
+		FlagPlan flagPlan;
+		planFlagMoves(desired, flagPlan, candidates);
+		planBuildings(desired, flagPlan, candidates);
 		planAreas(desired, candidates);
 
 		// Urgency descending, then emission order, so a tie is resolved by

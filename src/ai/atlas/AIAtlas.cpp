@@ -111,7 +111,8 @@ std::shared_ptr<Order> AIAtlas::getOrder(void)
 		// policy has already moved on from, which is exactly the incoherence
 		// the level-triggered design exists to avoid.
 		queue_.clear();
-		if (source_->field(Uint32(tick), desired_))
+		const bool gotField = source_->field(Uint32(tick), desired_);
+		if (gotField)
 		{
 			auto orders = reconciler_.plan(desired_);
 			lastPlanSize_ = orders.size();
@@ -121,6 +122,32 @@ std::shared_ptr<Order> AIAtlas::getOrder(void)
 		else
 		{
 			lastPlanSize_ = 0;
+		}
+
+		// GLOB2_ATLAS_DEBUG=<n> prints plan statistics every n policy steps.
+		// Distinguishing "planned and found nothing to do" from "never planned"
+		// is not possible from the order stream alone, and the difference is
+		// the whole diagnosis when Atlas goes quiet.
+		static const int debugEvery = []() {
+			const char *env = getenv("GLOB2_ATLAS_DEBUG");
+			return env ? int(strtol(env, nullptr, 10)) : 0;
+		}();
+		if (debugEvery > 0 && (lastPlanTick_ / period) % debugEvery == 0)
+		{
+			const auto &s = reconciler_.stats();
+			int wanted = 0;
+			for (Uint8 cell : desired_.building)
+				if (cell)
+					wanted++;
+			std::cerr << "ATLAS tick=" << tick << " team=" << int(team_->teamNumber)
+			          << " src=" << source_->name() << " field=" << (gotField ? "ok" : "none")
+			          << " wanted=" << wanted << " orders=" << lastPlanSize_
+			          << " created=" << s.created << " demolished=" << s.demolished
+			          << " upgraded=" << s.upgraded << " restaffed=" << s.restaffed
+			          << " swarms=" << s.swarmsRetuned << " flagsMoved=" << s.flagsMoved
+			          << " areas=" << s.areaOrders << " illegal=" << s.illegalSkipped << " (fog=" << s.illegalFog
+			          << " occupied=" << s.illegalOccupied << ")"
+			          << " capped=" << s.cappedOut << std::endl;
 		}
 	}
 
