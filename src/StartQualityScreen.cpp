@@ -26,6 +26,10 @@ std::string percent(double v)
 }
 std::string signed_(double v)
 {
+	// Round before choosing the sign, so a contribution that prints as zero does not come out
+	// as "+-0.000" when it happens to be a very small negative number.
+	if (v > -0.0005 && v < 0.0005)
+		v = 0;
 	return (v >= 0 ? "+" : "") + fixed(v, 3);
 }
 } // namespace
@@ -86,16 +90,21 @@ void StartQualityScreen::render()
 	const int columns = terms + 3; // colony, every term, fitness, win chance
 	const int labelW = compact ? 80 : 110;
 	const int cellW = (w - 16 - labelW) / (columns - 1);
-	ui.beginRegion(40, {x, yy, w, height - yy - 70});
+	ui.beginRegion(40, {x, yy, w, height - yy - 100});
 	int rowY = yy - ui.regions[40].offset;
 	const int startY = rowY;
 	ui.text(x + 8, rowY, tr("Colony"), "standard", labelW - 8);
+	// A term's heading is the model's own phrase for the measurement, generated with the
+	// coefficients rather than held in the string table: a refit can introduce a heading no
+	// translator has ever seen, and a missing key would show as "[...]". It wraps, because
+	// these are phrases rather than the single words the old fixed columns had.
+	int headingH = 0;
 	for (int c = 0; c < terms; ++c)
-		ui.text(x + 8 + labelW + c * cellW, rowY, tr(fairnessModelTerms()[c].label), "little",
-				cellW - 6);
+		headingH = std::max(headingH, ui.paragraph(x + 8 + labelW + c * cellW, rowY, cellW - 6,
+												   fairnessModelTerms()[c].label));
 	ui.text(x + 8 + labelW + terms * cellW, rowY, tr("Fitness"), "standard", cellW - 6);
 	ui.text(x + 8 + labelW + (terms + 1) * cellW, rowY, tr("Win chance"), "standard", cellW - 6);
-	rowY += 34;
+	rowY += std::max(34, headingH + 6);
 	// The fitted coefficient, so the reader sees which way each measurement pushes.
 	ui.text(x + 8, rowY, tr("Coefficient"), "little", labelW - 8, true);
 	for (int c = 0; c < terms; ++c)
@@ -127,18 +136,18 @@ void StartQualityScreen::render()
 		rowY += rowH;
 	}
 	rowY += 8;
+	ui.endRegion(rowY - startY);
+	// The headline stays out of the scrolling table: with eight colonies the rows run off the
+	// bottom, and the one number a reader came for should not scroll away with them.
 	const std::string totals = tr("Fairness") + " " + fixed(report.fairness) + "  /  " +
 							   tr("Worst") + " " + signed_(report.worstFitness) + "  /  " +
 							   tr("Best") + " " + signed_(report.bestFitness) + "  /  " +
 							   tr("Average") + " " + signed_(report.meanFitness);
-	ui.text(x + 8, rowY, totals, "standard", w - 16);
-	rowY += 26;
+	ui.text(x + 8, height - 92, totals, "standard", w - 16);
 	char fitted[128];
 	std::snprintf(fitted, sizeof fitted, "%s %d", tr("Fitted on games:").c_str(),
 				  FAIRNESS_MODEL_GAMES);
-	ui.text(x + 8, rowY, fitted, "little", w - 16);
-	rowY += 24;
-	ui.endRegion(rowY - startY);
+	ui.text(x + 8, height - 68, fitted, "little", w - 16);
 	ui.button(
 		"quality/back", {x, height - 55, 100, 34}, tr("Back"), [this] { endExecute(BACK); }, false,
 		true, true);

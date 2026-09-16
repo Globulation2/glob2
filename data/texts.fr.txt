@@ -2192,24 +2192,22 @@ Paramètres au hasard
 Qualité du départ
 [Fairness]
 Équité
-[Score]
-Note
-[Weight]
-Poids
+[Fitness]
+Fitness
+[Win chance]
+Win chance
+[Coefficient]
+Coefficient
+[Average]
+Average
+[Fitted on games:]
+Fitted on games:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
 [Worst]
 Pire
 [Best]
 Meilleur
-[Fertility]
-Fertilité
-[Deposits]
-Gisements
-[Room]
-Espace
-[Isolation]
-Isolement
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Le départ de chaque colonie est mesuré sur la carte terminée : le trajet jusqu'au blé et au bois, la repousse de son sol, les gisements et emplacements de construction à portée, et sa distance aux rivaux. Chaque facteur est noté de 0 à 1 face à une barre fixe, le total les pondère, l'équité est le total de la pire colonie divisé par celui de la meilleure, et la note est le pire total multiplié par l'équité.
 [Map preview controls]
 Glissez pour traverser les bords. Molette pour zoomer. Clic droit ou double clic pour réinitialiser.
 [Map preview drag help]

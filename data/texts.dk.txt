@@ -2258,24 +2258,22 @@ Vælg tilfældige parametre
 Startkvalitet
 [Fairness]
 Retfærdighed
-[Score]
-Pointtal
-[Weight]
-Vægt
+[Fitness]
+Fitness
+[Win chance]
+Win chance
+[Coefficient]
+Coefficient
+[Average]
+Average
+[Fitted on games:]
+Fitted on games:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
 [Worst]
 Dårligst
 [Best]
 Bedst
-[Fertility]
-Frugtbarhed
-[Deposits]
-Forekomster
-[Room]
-Plads
-[Isolation]
-Afsondring
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Hver kolonis start måles på det færdige kort: vejen til hvede og til træ, hvor godt dens jord vokser igen, forekomsterne og byggepladserne inden for rækkevidde og afstanden til rivalerne. Hver faktor scorer fra 0 til 1 mod en fast målestok, totalen vægter dem, retfærdigheden er den dårligste kolonis total delt med den bedstes, og pointtallet er den dårligste total gange retfærdigheden.
 [Map preview controls]
 Træk for at se over kanterne. Brug hjulet til zoom. Højreklik eller dobbeltklik for at nulstille.
 [Map preview drag help]

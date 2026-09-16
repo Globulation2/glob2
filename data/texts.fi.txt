@@ -2182,24 +2182,22 @@ Satunnaista parametrit
 Aloituksen laatu
 [Fairness]
 Tasapuolisuus
-[Score]
-Pisteet
-[Weight]
-Paino
+[Fitness]
+Fitness
+[Win chance]
+Win chance
+[Coefficient]
+Coefficient
+[Average]
+Average
+[Fitted on games:]
+Fitted on games:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
 [Worst]
 Heikoin
 [Best]
 Paras
-[Fertility]
-Hedelmällisyys
-[Deposits]
-Esiintymät
-[Room]
-Tila
-[Isolation]
-Eristyneisyys
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Jokaisen yhdyskunnan aloitus mitataan valmiilta kartalta: matka vehnän ja puun luo, kuinka hyvin sen maa kasvaa takaisin, ulottuvilla olevat esiintymät ja rakennuspaikat sekä etäisyys kilpailijoihin. Jokainen tekijä saa pisteet 0–1 kiinteää mittapuuta vasten, kokonaisarvo painottaa ne, tasapuolisuus on heikoimman yhdyskunnan kokonaisarvo jaettuna parhaan arvolla, ja pisteet ovat heikoin kokonaisarvo kerrottuna tasapuolisuudella.
 [Map preview controls]
 Vedä reunojen yli. Zoomaa rullalla. Palauta näkymä oikealla tai kaksoisnapsautuksella.
 [Map preview drag help]

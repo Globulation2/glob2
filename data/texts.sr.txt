@@ -2182,24 +2182,22 @@ OpenGL није доступан у овој верзији.
 Квалитет почетка
 [Fairness]
 Правичност
-[Score]
-Оцена
-[Weight]
-Тежина
+[Fitness]
+Fitness
+[Win chance]
+Win chance
+[Coefficient]
+Coefficient
+[Average]
+Average
+[Fitted on games:]
+Fitted on games:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
 [Worst]
 Најслабији
 [Best]
 Најбољи
-[Fertility]
-Плодност
-[Deposits]
-Залихе
-[Room]
-Простор
-[Isolation]
-Удаљеност
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Почетак сваке колоније мери се на завршеној мапи: пут до жита и до дрвета, колико добро њено тло поново расте, залихе и места за градњу на дохват руке и удаљеност од супарника. Сваки чинилац добија оцену од 0 до 1 према сталној мери, укупан збир их одмерава, правичност је збир најслабије колоније подељен збиром најбоље, а оцена је најслабији збир помножен правичношћу.
 [Map preview controls]
 Превуците преко ивица. Точкић мења увећање. Десни или двоструки клик враћа приказ.
 [Map preview drag help]

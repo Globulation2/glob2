@@ -2178,24 +2178,22 @@ Globulation 2 のカーソルを表示します。
 開始地点の質
 [Fairness]
 公平性
-[Score]
-スコア
-[Weight]
-重み
+[Fitness]
+Fitness
+[Win chance]
+Win chance
+[Coefficient]
+Coefficient
+[Average]
+Average
+[Fitted on games:]
+Fitted on games:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
 [Worst]
 最低
 [Best]
 最高
-[Fertility]
-肥沃度
-[Deposits]
-資源量
-[Room]
-建設余地
-[Isolation]
-隔離度
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-各コロニーの開始地点は完成したマップ上で測定されます: 小麦と木材までの道のり、地面の再生の良さ、手の届く範囲の資源量と建設地、そしてライバルまでの距離です。各要素は固定の基準に対して0から1で採点され、合計はそれらを重み付けし、公平性は最低のコロニーの合計を最高のもので割った値、スコアは最低の合計に公平性を掛けた値です。
 [Map preview controls]
 ドラッグで境界を越えて移動。ホイールで拡大縮小。右クリックまたはダブルクリックでリセット。
 [Map preview drag help]
