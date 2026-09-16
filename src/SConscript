@@ -82,6 +82,7 @@ ai/neurotica/AINeurotica.cpp
 ai/neurotica/NeuroticaFieldSource.cpp
 ai/neurotica/NeuroticaTrace.cpp
 ai/neurotica/NeuroticaObservation.cpp
+ai/neurotica/NeuroticaPolicySocket.cpp
 ai/neurotica/NeuroticaReconciler.cpp
 ai/cortex/AICortex.cpp
 ai/cortex/AICortexFlags.cpp

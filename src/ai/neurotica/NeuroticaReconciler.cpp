@@ -19,6 +19,8 @@
 #include <algorithm>
 #include <cmath>
 
+static_assert(Neurotica::IntBuildingTypeCount == IntBuildingType::NB_BUILDING,
+              "NeuroticaDesiredState.h duplicates NB_BUILDING; the two drifted");
 static_assert(Neurotica::SWARM_RATIO_STRIDE == NB_UNIT_TYPE,
               "DesiredState::swarmRatio stride must match the engine's unit-type count");
 

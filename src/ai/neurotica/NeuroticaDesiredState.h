@@ -45,6 +45,11 @@ namespace Neurotica
 	//! NeuroticaReconciler's demolish rule.
 	static constexpr Uint8 DONT_CARE = 255;
 
+	//! IntBuildingType::NB_BUILDING, duplicated so this header stays free of
+	//! engine includes. Static-asserted against the real value in the
+	//! reconciler, which does include it.
+	static constexpr Uint8 IntBuildingTypeCount = 13;
+
 	//! Entries per cell in DesiredState::swarmRatio, one per unit type
 	//! (NB_UNIT_TYPE in src/unit/UnitConsts.h). Declared here rather than
 	//! included so this header stays free of engine dependencies; the

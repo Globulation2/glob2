@@ -4,6 +4,7 @@
 #include "AINeurotica.h"
 
 #include "NeuroticaFieldSource.h"
+#include "NeuroticaPolicySocket.h"
 #include "Game.h"
 #include "Order.h"
 #include "Player.h"
@@ -36,7 +37,12 @@ void AINeurotica::init(Player *player)
 		// they run the M0 gate: drive the reconciler from a strong AI's own
 		// future map and see whether the declarative representation is enough
 		// to reproduce its play.
-		const char *oraclePath = getenv("GLOB2_NEUROTICA_ORACLE");
+		// A live policy server takes precedence over the oracle: if one is
+		// listening, this AI is being driven by a network.
+		if (const char *socketPath = getenv("GLOB2_NEUROTICA_POLICY_SOCKET"))
+			source_ = std::make_unique<Neurotica::PolicySocketSource>(team_, socketPath);
+
+		const char *oraclePath = source_ ? nullptr : getenv("GLOB2_NEUROTICA_ORACLE");
 		if (oraclePath)
 		{
 			auto trace = std::make_shared<Neurotica::TraceReader>();
