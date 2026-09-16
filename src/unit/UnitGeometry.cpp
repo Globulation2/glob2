@@ -169,6 +169,17 @@ void Unit::dxDyFromDirection(void)
 	dxDyFromDirection(direction,&dx,&dy);
 }
 
+int Unit::terrainSpeed(int base) const
+{
+	if (action != WALK && action != SWIM)
+		return base;
+	if (owner->map->isCobblestone(posX, posY))
+		return std::min(base * COBBLESTONE_SPEED_FACTOR, UNIT_DELTA_MAX);
+	if (owner->map->isIce(posX, posY))
+		return std::max(base / ICE_SPEED_DIVISOR, 1);
+	return base;
+}
+
 int Unit::swimClass() const
 {
 	return Map::swimClass(performance[WALK], performance[SWIM]);

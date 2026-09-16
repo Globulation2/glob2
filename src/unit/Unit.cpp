@@ -299,6 +299,16 @@ void Unit::syncStep(void)
 	if(underAttackTimer > 0)
 		underAttackTimer -= 1;
 
+	// Ice hurts every ground unit standing on it; handleMedical deals with the consequences.
+	// Deaths count as UNKNOWN: a new cause would change the saved measurement layout.
+	if (!performance[FLY] && displacement!=DIS_ENTERING_BUILDING && displacement!=DIS_INSIDE
+		&& displacement!=DIS_EXITING_BUILDING && owner->game->stepCounter % ICE_DAMAGE_TICKS == 0
+		&& owner->map->isIce(posX, posY))
+	{
+		recordLethalDamage(1, GameplayMeasurements::UNKNOWN);
+		hp--;
+	}
+
 // Burst mode completes an action every tick and keeps its original unscaled speed.
 //#define BURST_UNIT_MODE
 	int stepSpeed=speed;

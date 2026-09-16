@@ -260,6 +260,9 @@ public:
 
 	// quality parameters
 	Sint32 performance[NB_ABILITY];
+	//! Movement speed for the tile the unit is entering: faster on cobblestone, slower on ice.
+	//! Other actions, and flying, keep base.
+	int terrainSpeed(int base) const;
 	//! Pathfinding swim class from the unit's walk and swim speeds (see Map::swimClass).
 	int swimClass() const;
 	Sint32 level[NB_ABILITY];

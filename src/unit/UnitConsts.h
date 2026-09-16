@@ -39,6 +39,13 @@ enum Abilities
 //! land to water being three times dearer (see Map::swimClass). The map keeps
 //! one gradient per class so units share routes at their quantized water cost.
 static constexpr int SWIM_CLASS_COUNT = 7;
+
+// === Prototype terrains ===
+//! A ground unit standing on ice loses 1 HP every this many ticks.
+static constexpr int ICE_DAMAGE_TICKS = 32;
+//! Walking or swimming speed is multiplied on cobblestone and divided on ice by these.
+static constexpr int COBBLESTONE_SPEED_FACTOR = 2;
+static constexpr int ICE_SPEED_DIVISOR = 2;
 const int NB_MOVE=9;
 const int NB_ABILITY=17;
 
