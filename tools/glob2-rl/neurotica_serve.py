@@ -266,8 +266,8 @@ def main() -> int:
         # Which cells this team already occupies. MY_BUILDING_SLICE indexes the
         # dynamic planes; in the assembled input they sit after the 4 static
         # planes.
-        existing = x[:, 4 + MY_BUILDING_SLICE.start:4 + MY_BUILDING_SLICE.stop]
-        existing = existing.amax(dim=1) > 0.5
+        my_buildings = x[:, 4 + MY_BUILDING_SLICE.start:4 + MY_BUILDING_SLICE.stop]
+        existing = my_buildings.amax(dim=1) > 0.5
 
         with torch.no_grad(), torch.autocast("cuda", dtype=torch.float16):
             if args.sample:
@@ -300,7 +300,18 @@ def main() -> int:
             else:
                 occ = (1.0 - probs[:, 0]).masked_fill(existing, 0.0).flatten(1)
                 idx = occ.topk(min(args.placements, occ.shape[1]), dim=1).indices
-            field = torch.where(existing, cls, torch.zeros_like(cls))
+            # Cells we already occupy re-assert the building that is observed
+            # there, never the model's argmax. The building plane has no
+            # DONT_CARE (0 means "none", 1..13 a type), so an occupied cell the
+            # model is unsure about reads as "empty wanted here" and the
+            # reconciler demolishes it after demolishPersistSteps. With the
+            # argmax field that fired constantly: 874 created against 683
+            # demolished in 8000 ticks, the AI tearing down its own base as
+            # fast as it built it. Re-asserting the observed type makes the
+            # field idempotent on everything already standing, so only the k
+            # new placements can ever be a change.
+            observed_type = (my_buildings.argmax(dim=1).to(torch.uint8) + 1)
+            field = torch.where(existing, observed_type, torch.zeros_like(cls))
             flat = field.flatten(1)
             flat.scatter_(1, idx, best_type.flatten(1).gather(1, idx))
             cls = flat.view_as(cls)
