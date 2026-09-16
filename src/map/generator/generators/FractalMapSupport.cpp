@@ -126,7 +126,9 @@ void layHomeEconomies(Layout &L)
 		// A long wheat frontage lets several workers harvest without queuing at a single
 		// deposit. Water is behind the crops, the home is in front. Crop plots have their
 		// own sand cap, so renewable supplies cannot engulf the construction district.
-		fillRectangle(L.terrain, t, {h.x - 26, h.y - 28, h.x + 27, h.y - 12}, SAND);
+		// Two corners of sand on every side of each water strip, matching the flanks and the width
+		// of a garden path: a one-corner rim on the water side read as a thinner, notched border.
+		fillRectangle(L.terrain, t, {h.x - 26, h.y - 29, h.x + 27, h.y - 12}, SAND);
 		fillRectangle(L.terrain, t, {h.x - 24, h.y - 27, h.x + 25, h.y - 22}, WATER);
 		fillRectangle(L.terrain, t, {h.x - 24, h.y - 20, h.x + 25, h.y - 14}, GRASS);
 		fillRectangle(L.wheat, t, {h.x - 23, h.y - 19, h.x + 24, h.y - 15}, 1);
@@ -150,7 +152,7 @@ void layHomeEconomies(Layout &L)
 		// bays above, and the rest comes from copses and timber bank plots out on the map, so
 		// a colony that wants to build big has a reason to leave home. The finished-world
 		// check still refuses any home without reachable renewable wood.
-		fillRectangle(L.terrain, t, {h.x - 26, h.y + 17, h.x + 27, h.y + 29}, SAND);
+		fillRectangle(L.terrain, t, {h.x - 26, h.y + 17, h.x + 27, h.y + 31}, SAND);
 		// Five rows of water, matching the wheat side: two rows fed the timber slowly and left
 		// the south of every module looking dry (2026-09-16). Crops regrow at a rate set by how
 		// much water is near them, so the width of this strip is the timber supply.
@@ -178,38 +180,10 @@ void layHomeEconomies(Layout &L)
 		// and this apron used to be held clear with it (removed 2026-09-16).
 		fillRectangle(L.terrain, t, {h.x - 12, h.y - 15, h.x + 13, h.y - 9}, GRASS);
 		fillRectangle(L.terrain, t, {h.x - 14, h.y - 10, h.x + 15, h.y - 9}, SAND);
-		// The module's outer edge used to be a crisp rectangle, so every colony on both maps
-		// opened inside the same stamped yellow box. Fray it: each tile along the outside of
-		// the cap may push a few tiles further out over open grass. Sand is only ever added,
-		// and only inside the reserved 61x61 the home already owns, so every containment the
-		// plots depend on is exactly as it was and nothing else can have claimed that ground.
-		// The pattern comes from the home's own coordinates, so it varies with the seed and
-		// between colonies without drawing from any random stream.
-		const auto fray = [&](int x, int y, int dx, int dy)
-		{
-			const unsigned hash = unsigned(x * 73856093) ^ unsigned(y * 19349663);
-			// One or two tiles on about two thirds of the perimeter. Sand is not building
-			// ground, so a deeper fray eats the expansion anchors every module is checked
-			// for: at four tiles it cost eight-colony 256 maps their ninth module.
-			for (int step = 1; step <= int(hash % 3u); ++step)
-			{
-				const int i = t.at(x + dx * step, y + dy * step);
-				if (std::abs(x + dx * step - h.x) > 29 || std::abs(y + dy * step - h.y) > 29 ||
-					L.terrain[i] != GRASS)
-					break;
-				L.terrain[i] = SAND;
-			}
-		};
-		for (int x = h.x - 26; x < h.x + 27; ++x)
-		{
-			fray(x, h.y - 28, 0, -1);
-			fray(x, h.y + 28, 0, 1);
-		}
-		for (int y = h.y - 28; y < h.y + 29; ++y)
-		{
-			fray(h.x - 26, y, -1, 0);
-			fray(h.x + 26, y, 1, 0);
-		}
+		// The module's rim is a straight-edged rectangle. It was frayed for a day so colonies
+		// would not all open inside the same stamped box, but these maps are formal gardens:
+		// clean, square and tidy is the aesthetic, and a two-wide path cannot meet a ragged
+		// edge flush (2026-09-16).
 		L.features.push_back({h.x - 29, h.y - 30, h.x + 30, h.y + 31});
 	}
 	// Grass may never touch water: the engine's terrain model expects a beach between them,
@@ -369,15 +343,17 @@ int gardenBeds(Layout &L, GenerationContext &context, int spacing, int half, int
 
 int gardenPaths(Layout &L, GenerationContext &context)
 {
-	// A formal garden's paths run straight and meet square: every leg here is horizontal or
-	// vertical, and an edge between two features is either one bend (an L) or two (a Z), never
-	// a staircase and never a diagonal. Paths go only over open grass, so one can lead up to a
-	// bed, a plot, a lake or a home but can never be drawn across one. They are sand two corners
-	// wide — the same slim line a module's own rim is drawn in — which also makes them
-	// permanent: nothing can grow over a sand path, so the ways between the gardens survive the
-	// overgrowth that shuts ordinary grass lanes.
+	// A formal garden's paths are clean, neat and tidy: straight edges, one width, square
+	// corners, and every path meeting what it joins flush, with nothing jutting past a junction
+	// and nothing missing from one (2026-09-16). Each edge is an L or a Z of horizontal and
+	// vertical legs laid over open grass, two tiles wide throughout — the path's line and the
+	// tile beside it, a full 2x2 at every bend. A route is only accepted when both of its tiles
+	// meet the feature at each end on the same line, when a bridge is met straight along its
+	// own axis, and when the path keeps a tile of clear grass from any rim or beach it passes,
+	// so it meets things head-on and never grazes along them. Sand, so nothing grows over it.
 	const auto &t = L.t;
 	const int n = int(L.features.size());
+	L.featureAxis.resize(size_t(n), 0);
 	if (n < 2)
 		return 0;
 	const auto inside = [&](int x, int y, const RegionBounds &b)
@@ -388,18 +364,18 @@ int gardenPaths(Layout &L, GenerationContext &context)
 	std::vector<unsigned char> owned(size_t(t.size()), 0), path(size_t(t.size()), 0);
 	for (const auto &b : L.features)
 		fillRectangle(owned, t, b, 1);
-	for (Home h : L.homes)
-		fillRectangle(owned, t, {h.x - 30, h.y - 30, h.x + 31, h.y + 31}, 1);
-	// A crossing's protected stroke is seven corners wide, wider than its landing, so land
-	// that belongs to a crossing is open to paths: a path running along a bridge's own land
-	// approach is the one place a path is most wanted, and refusing it left every bridge
-	// unreachable from the side. Its water, and the orchard island inside a lake's footprint,
-	// stay closed through the terrain and ownership tests.
+	// Ground a path may be laid over: grass that is no crop, court or other feature's box.
 	const auto open = [&](int i)
 	{
 		return path[i] || (L.terrain[i] == GRASS && !owned[i] && !L.wheat[i] && !L.wood[i] &&
 						   !L.objectives[i]);
 	};
+	// Ground a path end may run over inside its own feature's box.
+	const auto paveable = [&](int i)
+	{ return path[i] || (L.terrain[i] == GRASS && !L.wheat[i] && !L.wood[i] && !L.objectives[i]); };
+	// Ground a path may pass beside without grazing it.
+	const auto clearBeside = [&](int i)
+	{ return path[i] || (L.terrain[i] == GRASS && !L.wheat[i] && !L.wood[i] && !L.objectives[i]); };
 	const auto centre = [&](const RegionBounds &b)
 	{ return std::pair<int, int>{(b.x0 + b.x1) / 2, (b.y0 + b.y1) / 2}; };
 	const auto delta = [&](int from, int to, int size)
@@ -407,57 +383,109 @@ int gardenPaths(Layout &L, GenerationContext &context)
 		int d = ((to - from) % size + size) % size;
 		return d > size / 2 ? d - size : d;
 	};
-	// Ground a path end may be laid over inside a feature's own box: grass that is not a crop,
-	// a court or a crossing's paving. A feature's box is larger than its visible edge — a
-	// home's box takes in its frayed margin — so a path that stopped at the box stopped a few
-	// tiles short of the sand it was meant to meet (2026-09-16).
-	const auto paveable = [&](int i)
-	{ return path[i] || (L.terrain[i] == GRASS && !L.wheat[i] && !L.wood[i] && !L.objectives[i]); };
-	// Walk a polyline of straight legs from feature a to feature b. Inside a, only the stretch
-	// after its last sand or water tile belongs to the path, so the path starts against a's
-	// edge; between the boxes every tile must be open ground; inside b, the path runs on until
-	// it meets b's first sand or water tile. Returns the tiles of the path, or nothing when the
-	// route crosses anything else.
+	// A centre-line tile of a route and the legs it belongs to: bit 1 horizontal, bit 2 vertical.
+	struct Step
+	{
+		int x, y, legs;
+	};
+	// The partner of a centre-line tile across the path's width.
+	const auto partner = [&](const Step &s, int dx, int dy)
+	{ return dx != 0 ? t.at(s.x, s.y + 1) : t.at(s.x + 1, s.y); };
 	const auto trace = [&](int a, int b, const std::vector<std::pair<int, int>> &corners)
 	{
-		std::vector<int> tiles;
-		bool left = false;
-		for (size_t leg = 0; leg + 1 < corners.size(); ++leg)
+		std::vector<Step> steps;
+		bool left = false, reached = false;
+		int lastDx = 0, lastDy = 0, firstDx = 0, firstDy = 0;
+		for (size_t leg = 0; leg + 1 < corners.size() && !reached; ++leg)
 		{
 			const auto [x0, y0] = corners[leg];
 			const auto [x1, y1] = corners[leg + 1];
 			const int dx = (x1 > x0) - (x1 < x0), dy = (y1 > y0) - (y1 < y0);
-			const int steps = std::abs(x1 - x0) + std::abs(y1 - y0);
-			for (int k = (leg == 0 ? 0 : 1); k <= steps; ++k)
+			const int length = std::abs(x1 - x0) + std::abs(y1 - y0);
+			if (length == 0)
+				continue;
+			const int legBit = dx != 0 ? 1 : 2;
+			if (!steps.empty() && (lastDx != dx || lastDy != dy))
+				steps.back().legs |= legBit; // the bend tile carries both legs
+			for (int k = (leg == 0 ? 0 : 1); k <= length; ++k)
 			{
 				const int x = x0 + dx * k, y = y0 + dy * k, i = t.at(x, y);
 				if (inside(x, y, L.features[size_t(b)]))
 				{
 					if (!paveable(i))
-						return tiles;
-					tiles.push_back(i);
+					{
+						reached = true;
+						break;
+					}
+				}
+				else if (!left && inside(x, y, L.features[size_t(a)]))
+				{
+					if (!paveable(i))
+						steps.clear();
+					else
+					{
+						if (steps.empty())
+						{
+							firstDx = dx;
+							firstDy = dy;
+						}
+						steps.push_back({x, y, legBit});
+					}
+					lastDx = dx;
+					lastDy = dy;
 					continue;
 				}
-				if (!left)
+				else
 				{
-					if (inside(x, y, L.features[size_t(a)]))
-					{
-						if (paveable(i))
-							tiles.push_back(i);
-						else
-							tiles.clear();
-						continue;
-					}
 					left = true;
+					if (!open(i))
+						return std::vector<Step>{};
 				}
-				if (!open(i))
-					return std::vector<int>{};
-				tiles.push_back(i);
+				if (steps.empty())
+				{
+					firstDx = dx;
+					firstDy = dy;
+				}
+				steps.push_back({x, y, legBit});
+				lastDx = dx;
+				lastDy = dy;
 			}
 		}
-		// Ran out of legs without meeting b's edge: b's box was reached only through open
-		// ground to its centre, which a real feature always has an edge before.
-		return tiles;
+		if (!reached || steps.size() < 3)
+			return std::vector<Step>{};
+		// Bridges are met straight along their own axis, at both ends of the route.
+		const auto axisOk = [&](int feature, int dx, int dy)
+		{
+			const int axis = L.featureAxis[size_t(feature)];
+			return axis == 0 || (axis == 1 && dx != 0) || (axis == 2 && dy != 0);
+		};
+		if (!axisOk(a, firstDx, firstDy) || !axisOk(b, lastDx, lastDy))
+			return std::vector<Step>{};
+		// Flush at both ends: the tile beside the path's line must also stop against the
+		// feature, on the same line, and be open itself.
+		const Step &head = steps.front(), &tail = steps.back();
+		const int headPartner = partner(head, firstDx, firstDy),
+				  tailPartner = partner(tail, lastDx, lastDy);
+		const int hpx = headPartner % t.w, hpy = headPartner / t.w, tpx = tailPartner % t.w,
+				  tpy = tailPartner / t.w;
+		if (!paveable(headPartner) || !paveable(tailPartner) ||
+			paveable(t.at(hpx - firstDx, hpy - firstDy)) || paveable(t.at(tpx + lastDx, tpy + lastDy)))
+			return std::vector<Step>{};
+		// Clearance: away from its two ends, nothing but grass or path round the path's width.
+		for (size_t k = 2; k + 2 < steps.size(); ++k)
+			for (int dy = -1; dy <= 2; ++dy)
+				for (int dx = -1; dx <= 2; ++dx)
+					if (!clearBeside(t.at(steps[k].x + dx, steps[k].y + dy)))
+						return std::vector<Step>{};
+		// And the path's own second tile along its length must be open ground too.
+		for (size_t k = 0; k < steps.size(); ++k)
+		{
+			const int horizontalLeg = steps[k].legs & 1;
+			const int j = horizontalLeg ? t.at(steps[k].x, steps[k].y + 1) : t.at(steps[k].x + 1, steps[k].y);
+			if (!paveable(j))
+				return std::vector<Step>{};
+		}
+		return steps;
 	};
 	// Candidate edges: each feature to its six nearest, by the Manhattan distance a square
 	// path actually walks, shortest first.
@@ -496,13 +524,9 @@ int gardenPaths(Layout &L, GenerationContext &context)
 			v = root[size_t(v)] = root[size_t(root[size_t(v)])];
 		return v;
 	};
-	std::vector<unsigned char> reached(static_cast<size_t>(n), 0);
-	// A crossing's two landings are deliberately NOT joined before the tree is built. Joined,
-	// the tree needed only one path into the pair, so one bank of every bridge got a path and
-	// the other got none (2026-09-16). Separate, the water between them refuses every route
-	// across, so each bank joins the features on its own side and every bridge is met at both
-	// ends. The crossing counts as a join only when reporting what is left unjoined.
-	int joined = 0, pathTiles = 0;
+	// A crossing's two landings are joined to the tree separately: each bank must be met.
+	int joined = 0;
+	std::vector<Step> laid;
 	for (const auto &e : edges)
 	{
 		if (find(e.a) == find(e.b))
@@ -511,8 +535,7 @@ int gardenPaths(Layout &L, GenerationContext &context)
 		const auto [cbx, cby] = centre(L.features[size_t(e.b)]);
 		const int bx = ax + delta(ax, cbx, t.w), by = ay + delta(ay, cby, t.h);
 		const int mx = (ax + bx) / 2, my = (ay + by) / 2;
-		// An L either way round, then a Z either way round through the midpoint.
-		std::vector<int> route;
+		std::vector<Step> route;
 		for (const auto &corners : std::vector<std::vector<std::pair<int, int>>>{
 				 {{ax, ay}, {bx, ay}, {bx, by}},
 				 {{ax, ay}, {ax, by}, {bx, by}},
@@ -522,32 +545,26 @@ int gardenPaths(Layout &L, GenerationContext &context)
 				break;
 		if (route.empty())
 			continue;
-		for (const int i : route)
-			if (!path[i])
-			{
-				path[i] = 1;
-				++pathTiles;
-			}
-		reached[size_t(e.a)] = reached[size_t(e.b)] = 1;
+		for (const auto &st : route)
+		{
+			path[t.at(st.x, st.y)] = 1;
+			laid.push_back(st);
+		}
 		root[size_t(find(e.a))] = find(e.b);
 		++joined;
 	}
-	// Pave the approach to every crossing a path arrived at, so the path meets the bridge.
-	for (int f = 0; f < n && f < int(L.featureApproach.size()); ++f)
-		if (reached[size_t(f)])
-			for (const int i : L.featureApproach[size_t(f)])
-				if (L.terrain[i] == GRASS)
-					path[i] = 1;
-	// Two corners wide: the line itself and the corner beside it, only where that is open too.
+	// Two tiles wide throughout: the line, the tile beside it for each leg the tile is on, and
+	// the diagonal at a bend so every corner is a full square.
 	std::vector<unsigned char> surface = path;
-	for (int i = 0; i < t.size(); ++i)
-		if (path[i])
-		{
-			const int x = i % t.w, y = i / t.w;
-			for (const int j : {t.at(x + 1, y), t.at(x, y + 1)})
-				if (open(j))
-					surface[j] = 1;
-		}
+	for (const auto &st : laid)
+	{
+		if (st.legs & 1)
+			surface[t.at(st.x, st.y + 1)] = 1;
+		if (st.legs & 2)
+			surface[t.at(st.x + 1, st.y)] = 1;
+		if ((st.legs & 3) == 3)
+			surface[t.at(st.x + 1, st.y + 1)] = 1;
+	}
 	int sand = 0;
 	for (int i = 0; i < t.size(); ++i)
 		if (surface[i] && L.terrain[i] == GRASS)
@@ -575,50 +592,31 @@ void stampCrossings(Layout &L, const CrossingSelection &selection, GenerationCon
 		const auto &c = selection.selected[k];
 		// Seven undermap corners across yields at least six traversable tiles.
 		strokePath(L.crossings, L.t, {{c.from.x, c.from.y, 3.5}, {c.to.x, c.to.y, 3.5}});
-		// A landing is the approach to the crossing: the ground from the end of the stroke in
-		// to the first tile that is not grass, the shore where the surface begins. A path may
-		// meet it anywhere along that approach, and the approach is paved only if one does, so
-		// the path runs right up to the bridge — stopping at the stroke's end left a gap that
-		// read as a dead end, and stopping at the shore made the landing too small to reach.
-		const auto approach = [&](ShapePoint from, ShapePoint to)
-		{
-			std::vector<int> tiles;
-			const double length = std::max(1.0, std::hypot(to.x - from.x, to.y - from.y));
-			for (double d = 0; d <= length; d += 1.0)
-			{
-				const int x = int(std::lround(from.x + (to.x - from.x) * d / length));
-				const int y = int(std::lround(from.y + (to.y - from.y) * d / length));
-				const int i = L.t.at(x, y);
-				if (L.terrain[i] != GRASS)
-					break;
-				if (tiles.empty() || tiles.back() != i)
-					tiles.push_back(i);
-			}
-			return tiles;
-		};
+		// A landing is the last grass tile before the shore on the crossing's own axis, offset
+		// so a two-wide path is centred on the bridge. A path must arrive along that axis and
+		// end flush against the bridge's sand. Landings used to be boxes round a paved approach
+		// from the end of the stroke, which left stubs jutting past the junction and paths
+		// meeting the bridge off its centre line (2026-09-16).
+		const bool horizontal = std::abs(c.to.x - c.from.x) >= std::abs(c.to.y - c.from.y);
 		const int first = int(L.features.size());
 		for (const auto &[end, other] : {std::pair{c.from, c.to}, std::pair{c.to, c.from}})
 		{
-			auto tiles = approach(end, other);
-			// The box spans the approach and one tile round it, so a path meeting it from any
-			// side stops against the paving rather than short of it.
-			int x0 = int(end.x), y0 = int(end.y), x1 = x0 + 1, y1 = y0 + 1;
-			for (const int i : tiles)
+			const int step = horizontal ? ((other.x > end.x) - (other.x < end.x))
+										: ((other.y > end.y) - (other.y < end.y));
+			int x = horizontal ? int(std::lround(end.x)) : int(std::lround(end.x)) - 1;
+			int y = horizontal ? int(std::lround(end.y)) - 1 : int(std::lround(end.y));
+			int lastX = x, lastY = y;
+			for (int k = 0; k < 64; ++k)
 			{
-				int x = i % L.t.w, y = i / L.t.w;
-				// Unwrap onto the end's side of the seam before extending the box.
-				if (x - int(end.x) > L.t.w / 2) x -= L.t.w;
-				if (int(end.x) - x > L.t.w / 2) x += L.t.w;
-				if (y - int(end.y) > L.t.h / 2) y -= L.t.h;
-				if (int(end.y) - y > L.t.h / 2) y += L.t.h;
-				x0 = std::min(x0, x);
-				y0 = std::min(y0, y);
-				x1 = std::max(x1, x + 1);
-				y1 = std::max(y1, y + 1);
+				if (L.terrain[L.t.at(x, y)] != GRASS)
+					break;
+				lastX = x;
+				lastY = y;
+				(horizontal ? x : y) += step;
 			}
-			L.features.push_back({x0 - 1, y0 - 1, x1 + 1, y1 + 1});
-			L.featureApproach.resize(L.features.size());
-			L.featureApproach.back() = std::move(tiles);
+			L.features.push_back({lastX, lastY, lastX + 1, lastY + 1});
+			L.featureAxis.resize(L.features.size(), 0);
+			L.featureAxis.back() = horizontal ? 1 : 2;
 		}
 		L.featureLinks.push_back({first, first + 1});
 		context.telemetry.measure("fractal.crossing.benefit-estimate", selection.benefits[k], c.id);

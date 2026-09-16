@@ -128,8 +128,9 @@ Z of straight horizontal and vertical legs, never a staircase or a diagonal, lai
 open grass, so a path can lead to a feature but never cross one. Paths are sand two corners
 wide, the same slim line a module's rim is drawn in, which also makes them permanent: no
 crop can grow over sand, so the ways between the gardens survive overgrowth. A crossing's
-two landings count as already joined, and the approach from the end of its stroke to the
-shore is paved only when a path arrives, so every path meets its bridge and none ends short.
+two landings count as already joined; each landing is the last grass tile on the bridge's
+axis, and a path must arrive along that axis, centred on the bridge, so it runs straight on
+from the causeway rather than turning onto it.
 At 256×256 with four colonies Gardens joins every feature; Hilbert leaves the few pockets
 that river folds seal off without a bridge, which a path could only reach through water.
 
@@ -152,9 +153,14 @@ farmland; the beaches and paths round them are sand, so a spot can spread along 
 without shutting a route. Gardens' four bank plots
 round every smaller lake are three wheat and one timber, the seed choosing which bank.
 
-Every path meets the sand or water of the feature it joins, not the edge of that feature's
-recorded box, which is larger than its visible rim. A crossing's two landings are joined to
-the tree separately, so every bridge is met by a path on both banks.
+Clean, neat and tidy is these maps' aesthetic, and the paths are held to it. Every path
+meets the sand or water of the feature it joins, not the edge of that feature's recorded box,
+which is larger than its visible rim, and it meets it flush: both of its tiles stop against
+the rim, so nothing juts past a join and no join is one tile wide. A path keeps a tile of
+grass between itself and anything it passes, so two paths or a path and a rim never merge
+into a wider smear; bends are full two-by-two corners. A route that cannot be drawn that way
+is not drawn. A crossing's two landings are joined to the tree separately, so every bridge is
+met by a path on both banks.
 
 No growth is frozen anywhere on either map: generated maps may not use the engine's saved
 no-growth flag, which is for hand-made scenarios such as the tutorial, and the shared
@@ -165,13 +171,11 @@ one 50,000-tick game per map (map seed 3001, game seed 19, four AIs) took wood f
 17,682 tiles on Gardens and 2,882 to 20,737 on Hilbert — 27% and 32% of the map, one forest of
 9,132 tiles.
 
-The home module's outer sand cap is frayed one or two tiles outward over open grass,
-from a hash of the home's own coordinates rather than any random stream, so the
-colonies no longer all open inside an identical stamped rectangle. Sand is only ever
-added, and only inside the 61×61 the module already reserves, so every containment
-proof is unchanged. The fray is deliberately shallow: sand is not building ground,
-and at four tiles deep it cost eight-colony 256 maps their ninth module's expansion
-room.
+The home module's rim is a straight-edged rectangle, two corners of sand on every side,
+including beyond each water strip, so it is the same width as the paths that meet it. For a
+day it was frayed one or two tiles outward so colonies would not all open inside an identical
+stamped box; that ragged edge is exactly what a formal garden should not have, and a path
+cannot meet it flush (removed 2026-09-16).
 
 ### Home and start policy
 

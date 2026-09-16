@@ -371,7 +371,7 @@ GeneratorDefinition sierpinskiGardensDefinition()
 	return {"sierpinski-gardens",
 			49,
 			"Sierpiński Gardens",
-			6,
+			7,
 			false,
 			controls,
 			generate,

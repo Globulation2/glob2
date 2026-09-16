@@ -27,9 +27,9 @@ struct Layout
 	/// Pairs of features already joined by something other than a path — the two landings of
 	/// one crossing — so the path tree does not try to walk round the water between them.
 	std::vector<std::pair<int, int>> featureLinks;
-	/// Per feature, ground to pave if a path arrives: a crossing's approach from the end of its
-	/// stroke to the shore where its surface begins. Empty for every other feature.
-	std::vector<std::vector<int>> featureApproach;
+	/// Per feature, the axis a path must arrive along: 0 any, 1 horizontal, 2 vertical. A
+	/// crossing's landings are met straight along the bridge.
+	std::vector<int> featureAxis;
 	/// Water whose shore gets spots of wheat: Hilbert's river, Gardens' central lake.
 	std::vector<unsigned char> wheatShore;
 	std::string failure;
