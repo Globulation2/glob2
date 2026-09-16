@@ -2,11 +2,79 @@
 #include "Roads.h"
 #include "GenerationContext.h"
 #include "Map.h"
+#include "Morphology.h"
 #include <climits>
 #include <deque>
 #include <string>
 namespace MapGeneration
 {
+std::vector<int> reserveSandRoute(TerrainSketch &sketch, const Torus &t,
+								  const std::vector<int> &sources,
+								  const std::vector<unsigned char> &goal,
+								  const std::vector<unsigned char> &protectedTiles, int radius,
+								  const std::vector<int> *tileCosts, GridNeighbors neighbours,
+								  const std::vector<unsigned char> *existingPassage)
+{
+	if (sketch.size() != size_t(t.size()) || goal.size() != sketch.size() ||
+		protectedTiles.size() != sketch.size() || radius < 0 || radius >= std::min(t.w, t.h) / 2)
+		return {};
+	if (existingPassage && (radius != 0 || existingPassage->size() != sketch.size()))
+		return {};
+	if (tileCosts)
+	{
+		if (tileCosts->size() != sketch.size())
+			return {};
+		for (int cost : *tileCosts)
+			if (cost < 1 ||
+				cost > INT_MAX / t.size() / (neighbours == GridNeighbors::Eight ? 14 : 1))
+				return {};
+	}
+	for (int p : sources)
+		if (p < 0 || p >= t.size())
+			return {};
+	std::vector<unsigned char> water(sketch.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+		water[i] = sketch[i] == WATER;
+	// A route tile writes all four corners. Protect one additional tile around
+	// protected terrain, then allow for the requested route dilation as well.
+	auto blocked = dilate(t, protectedTiles, radius + 1);
+	const auto wet = dilate(t, roadTiles(t, water), radius);
+	for (int i = 0; i < t.size(); ++i)
+	{
+		// Existing passages are traversed, not repainted: their neighbours need
+		// no conversion margin. Never turn permission beside protected terrain
+		// into permission to occupy that protected terrain itself.
+		blocked[i] = protectedTiles[i] ||
+					 ((blocked[i] || wet[i]) && !(existingPassage && (*existingPassage)[i]));
+	}
+	std::vector<int> valid;
+	for (int p : sources)
+		if (!blocked[p])
+			valid.push_back(p);
+	const auto path = cheapestWalk(t, neighbours, valid, goal,
+								   [&](int, int to, int dx, int dy)
+								   {
+									   if (blocked[to])
+										   return -1;
+									   const int length = neighbours == GridNeighbors::Eight
+															  ? (dx && dy ? 14 : 10)
+															  : 1;
+									   return length * (tileCosts ? (*tileCosts)[to] : 1);
+								   });
+	if (path.empty())
+		return {};
+	auto paint = tileMask(t, path);
+	if (existingPassage)
+		for (int i = 0; i < t.size(); ++i)
+			if ((*existingPassage)[i])
+				paint[i] = 0;
+	const auto corners = tileCorners(t, dilate(t, paint, radius));
+	for (int i = 0; i < t.size(); ++i)
+		if (corners[i])
+			sketch[i] = SAND;
+	return path;
+}
+
 std::vector<int> cheapestRoute(const Torus &t, const std::vector<int> &sources,
 							   const std::vector<unsigned char> &goal,
 							   const std::vector<unsigned char> &blocked,

@@ -126,6 +126,44 @@ PatchBudgetResult growPatchesNear(Map &map, const Torus &t, int ax, int ay, int 
 	return result;
 }
 
+/// Choose a compact-patch seed with usable frontage, rather than a single
+/// attractive but isolated tile. `within` limits the home catchment and `radius`
+/// controls the cheap local density probe. Only call this after an ordinary patch
+/// seed failed its budget: probing every candidate in every map would be costly.
+/// Capacity ranks first; caller priority (a nonnegative finite desirability,
+/// for example fertility) breaks ties. Negative capacity/priority initial values
+/// below are sentinels so the first eligible candidate always wins its bucket.
+/// Existing placements remain in the eligibility predicate, so a retry cannot
+/// overwrite a resource or silently inflate a previously sufficient patch.
+template <typename Eligible, typename Priority>
+int seedForPatchCapacity(const Torus &t, int ax, int ay, int within, int radius,
+					 Eligible eligible, Priority priority)
+{
+	if (within < 0 || radius < 0)
+		return -1;
+	int best = -1, bestCapacity = -1;
+	double bestPriority = -1;
+	for (int dy = -within; dy <= within; ++dy)
+		for (int dx = -within; dx <= within; ++dx)
+		{
+			const int x = t.x(ax + dx), y = t.y(ay + dy), i = t.at(x, y);
+			if (!eligible(i))
+				continue;
+			int capacity = 0;
+			for (int cy = -radius; cy <= radius; ++cy)
+				for (int cx = -radius; cx <= radius; ++cx)
+					capacity += eligible(t.at(x + cx, y + cy)) ? 1 : 0;
+			const double value = priority(i);
+			if (capacity > bestCapacity || (capacity == bestCapacity && value > bestPriority))
+			{
+				best = i;
+				bestCapacity = capacity;
+				bestPriority = value;
+			}
+		}
+	return best;
+}
+
 /// Where a kit's three deposits go: each grows from the nearest eligible tile to its point,
 /// searched `within` tiles of it.
 struct KitSeed

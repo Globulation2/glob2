@@ -2660,3 +2660,11 @@ Espacement minimal des terres
 Passages locaux facultatifs par région mère
 [Optional major shortcuts]
 Raccourcis principaux facultatifs
+[Lava shield]
+Bouclier de lave
+[Lava tongues]
+Coulées de lave
+[Long tongues]
+Longues coulées
+[Crater rim width]
+Largeur du bord du cratère

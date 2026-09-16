@@ -2650,3 +2650,11 @@ Separación mínima de tierra
 Pasos locales opcionales por región superior
 [Optional major shortcuts]
 Atajos principales opcionales
+[Lava shield]
+Escudo de lava
+[Lava tongues]
+Lenguas de lava
+[Long tongues]
+Lenguas largas
+[Crater rim width]
+Anchura del borde del cráter

@@ -2646,3 +2646,11 @@ Emoji
 親領域ごとの追加局所横断路
 [Optional major shortcuts]
 追加の主要近道
+[Lava shield]
+溶岩の盾
+[Lava tongues]
+溶岩流の数
+[Long tongues]
+長い溶岩流
+[Crater rim width]
+火口縁の幅

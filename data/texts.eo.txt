@@ -2648,3 +2648,11 @@ Minimuma tera interspaco
 Laŭvolaj lokaj transirejoj por patra regiono
 [Optional major shortcuts]
 Laŭvolaj ĉefaj mallongigoj
+[Lava shield]
+Lava ŝildo
+[Lava tongues]
+Lavaj langoj
+[Long tongues]
+Longaj langoj
+[Crater rim width]
+Larĝo de la kratera rando

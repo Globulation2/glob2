@@ -2650,3 +2650,11 @@ Minimální rozestup pevniny
 Volitelné místní přechody na nadřazenou oblast
 [Optional major shortcuts]
 Volitelné hlavní zkratky
+[Lava shield]
+Lávový štít
+[Lava tongues]
+Lávové jazyky
+[Long tongues]
+Dlouhé jazyky
+[Crater rim width]
+Šířka okraje kráteru

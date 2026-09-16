@@ -2658,3 +2658,11 @@ Separació mínima de terra
 Passos locals opcionals per regió superior
 [Optional major shortcuts]
 Dreceres principals opcionals
+[Lava shield]
+Escut de lava
+[Lava tongues]
+Llengües de lava
+[Long tongues]
+Llengües llargues
+[Crater rim width]
+Amplada de la vora del cràter

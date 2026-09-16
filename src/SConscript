@@ -237,6 +237,7 @@ map/generator/generators/PlantationsGenerator.cpp
 map/generator/generators/HilbertRiverGenerator.cpp
 map/generator/generators/FractalMapSupport.cpp
 map/generator/generators/SierpinskiGardensGenerator.cpp
+map/generator/generators/LavaShieldGenerator.cpp
 map/generator/generators/AnthillGenerator.cpp
 map/generator/generators/OldTownGenerator.cpp
 map/generator/generators/PolderGenerator.cpp
@@ -285,6 +286,7 @@ map/generator/shared/Roads.cpp
 map/generator/shared/Sketch.cpp
 map/generator/shared/Topology.cpp
 map/generator/shared/Settlements.cpp
+map/generator/shared/ScoredSettlements.cpp
 map/generator/shared/legacy/Regions.cpp
 map/generator/shared/Resources.cpp
 map/generator/shared/legacy/StartingPositions.cpp

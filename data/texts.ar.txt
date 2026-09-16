@@ -2648,3 +2648,11 @@ Emoji
 معابر محلية اختيارية لكل منطقة أم
 [Optional major shortcuts]
 اختصارات رئيسية اختيارية
+[Lava shield]
+درع الحمم
+[Lava tongues]
+ألسنة الحمم
+[Long tongues]
+الألسنة الطويلة
+[Crater rim width]
+عرض حافة الفوهة
