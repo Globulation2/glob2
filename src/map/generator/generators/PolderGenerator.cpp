@@ -26,8 +26,8 @@ using namespace MapGeneration;
 
 // Polder: reclaimed land, all of it. The whole torus is laid out in long rows of crops with a
 // ditch of water between every two, the way a real farm is (Farmland.h's row widths: crops wide
-// enough to fill, water close enough that every crop regrows), and sand dykes cross the ditches at
-// regular intervals. Every colony starts in a small grass village on the rows, and hamlets of grass
+// enough to fill, water close enough that every crop regrows), and sand dykes cross the rows, ditches
+// and crops alike, at regular intervals. Every colony starts in a small grass village on the rows, and hamlets of grass
 // lie between the villages for forward inns. Food is effectively unlimited: the game is logistics.
 // Units walk only where there is no crop and no water - along the ditches' beaches, over the dykes,
 // through the villages - so hungry units walk a long way unless the inns are placed well, fights
@@ -42,6 +42,10 @@ using namespace MapGeneration;
 // water within a few tiles of every crop keeps every field regrowing, so the map never runs short;
 // sand beside a ditch is where everyone walks. Swimming turns every ditch into a road: the second
 // half of the game is a different map.
+//
+// FEEDBACK 2026-09-16: the dykes crossed only the ditches, so a row under crop was a wall a worker
+// walked the length of; "standard farm plot shared code should have sand bridges crossing not just
+// water, but also crossing the grass farm itself", each half a toggle, both on (FarmBridges).
 //
 // FEEDBACK 2026-09-13 (first play): "can we randomize the angle that the farms run at each round?
 // also, the bases are wayyy so small and the aggressive growth quickly crowds out the base, so the
@@ -191,12 +195,15 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			}
 	}
 
-	// Water in every ditch, except through the villages and hamlets, and the dykes across it: a line
-	// of sand corners every `dykeSpacing` tiles along the rows.
+	// Water in every ditch, except through the villages and hamlets, and the dykes across the rows: a
+	// line of sand corners every `dykeSpacing` tiles along them, over the ditches (a crossing) and
+	// through the crops (a lane no crop grows over, so a harvested-out row is never the only way
+	// across), each half switched by its control as on every farm-row map (FarmBridges).
 	const int cropUnits = int(L.crops / L.spacing * 65536);
 	const double alongLength = stripeSpacing(t, L.along);
 	const int dykes = std::max(1, int(std::lround(alongLength / o.dykeSpacing)));
 	const int dykePeriod = 65536 / dykes, dykeHalf = int(kDykeCorners / 2.0 / alongLength * 65536);
+	const FarmBridges bridges{o.dykeSpacing, o.waterCrossings, o.cropCrossings};
 	L.dyke.assign(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
@@ -204,8 +211,11 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			continue;
 		const int offset = along[i] % dykePeriod;
 		const bool onDyke = offset < dykeHalf || dykePeriod - offset < dykeHalf;
-		if (phase[i] >= cropUnits)
-			(onDyke ? L.dyke[i] : L.water[i]) = 1;
+		const bool ditch = phase[i] >= cropUnits;
+		if (onDyke && bridges.crosses(ditch))
+			L.dyke[i] = 1;
+		else if (ditch)
+			L.water[i] = 1;
 	}
 	// The terrain as designed, and the rows as a farm so plots can be stamped into them
 	// (stampFarmPlot): two and a half plots per colony (first play), each the farthest a plot can
@@ -342,6 +352,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 PolderOptions::PolderOptions(const GenerationRequest &r)
 	: rowAngle(r.option("row-angle")), dykeSpacing(r.option("dyke-spacing")),
 	  villageSize(r.option("village-size")), hamlets(r.option("hamlets") != 0),
+	  waterCrossings(r.option("water-crossings") != 0), cropCrossings(r.option("crop-crossings") != 0),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))
@@ -354,7 +365,7 @@ GeneratorDefinition polderDefinition()
 		"polder",
 		30,
 		"Polder",
-		4,
+		5,
 		false,
 		// A dyke every 24 tiles is a lane every one and a half rows' walk; villages of radius 14
 		// hold a swarm, its kit and a few more buildings and no more (11 before the first play, and
@@ -364,6 +375,10 @@ GeneratorDefinition polderDefinition()
 								  {"Random", "Vertical", "Horizontal", "Diagonal"}, 0,
 								  ControlGroup::Terrain),
 		 {"dyke-spacing", "Dyke spacing", 12, 48, 4, 24, ControlGroup::Terrain},
+		 // The farm rows' sand bridges over the water and lanes through the crops (FarmBridges),
+		 // both on by default so workers cross the rows rather than walking round them.
+		 waterCrossingsControl(),
+		 cropCrossingsControl(),
 		 {"village-size", "Village size", 8, 20, 1, 14, ControlGroup::Layout},
 		 GeneratorControl::toggle("hamlets", "Hamlets", true, ControlGroup::Layout),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),

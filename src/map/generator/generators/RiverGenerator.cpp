@@ -2,6 +2,7 @@
 #include "RiverGenerator.h"
 #include "Game.h"
 #include "GenerationContext.h"
+#include "Pipeline.h"
 #include "StartingPositions.h"
 #include "Terrain.h"
 #include <algorithm>
@@ -41,8 +42,21 @@ static bool generate(Game &game, GenerationContext &context)
 	context.stage = "starts";
 	if (!placeStarts(game, context))
 		return false;
-	openStartsBuriedByAmounts(game, context, terrain);
+	// The resource bands are painted from map-wide noise with no awareness of where any colony
+	// starts, so they can wall one into a pocket with nowhere to build — a raised amount widens
+	// them, but the defaults manage it too. placeStarts has already carved out the swarm's own
+	// rectangle by now, so nothing needs to be kept clear for it.
+	openStartsBuriedByResources(game, context);
 	return true;
+}
+
+// Nothing here designs an economy: the height field decides where land is and placeStarts picks
+// the best spots it left. So the only promise this landscape can make is the floor every colony
+// needs — wheat and wood it can walk to, and room for a first base — and the service rolls
+// another seed when a field does not leave one.
+static std::string validateWorld(const Game &game, const GenerationContext &context)
+{
+	return startingFloorFailure(game.map, context.request.nbTeams);
 }
 
 GeneratorDefinition riverDefinition()
@@ -60,5 +74,6 @@ GeneratorDefinition riverDefinition()
 	for (auto &c : heightFieldResourceControls())
 		controls.push_back(std::move(c));
 	controls.push_back({"repeat", "Repeat landscape", 0, 5, 1, 0, ControlGroup::Layout, true});
-	return {"river", 2, "River", 2, false, std::move(controls), generate};
+	return {"river", 2, "River", 3, false, std::move(controls), generate, true, nullptr,
+			validateWorld};
 }

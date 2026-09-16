@@ -1988,6 +1988,10 @@ Lățimea potecii
 Zid între serpentine
 [Farm building plots]
 Loturi de construcție în ferme
+[Sand bridges over water]
+Poduri de nisip peste apă
+[Sand lanes through crops]
+Cărări de nisip prin culturi
 [Carousels need at least two colonies.]
 Caruselul are nevoie de cel puțin două colonii.
 [Switchbacks need at least two colonies.]
@@ -2200,24 +2204,22 @@ Parametri la întâmplare
 Calitatea startului
 [Fairness]
 Echitate
-[Score]
-Scor
-[Weight]
-Pondere
+[Fitness]
+Putere
+[Win chance]
+Șansă de câștig
+[Coefficient]
+Coeficient
+[Average]
+Medie
+[Fitted on games:]
+Ajustat pe partide:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Startul fiecărei colonii este măsurat pe harta finalizată, iar un model ajustat pe mii de partide între adversari egali transformă aceste măsurători într-o putere. Puterea arată cât de probabil este ca acea colonie să câștige. Echitatea arată cât de egal sunt împărțite aceste șanse: 1 când fiecare colonie are aceeași șansă de câștig, 0 când o singură colonie ar lua harta.
 [Worst]
 Cel mai slab
 [Best]
 Cel mai bun
-[Fertility]
-Fertilitate
-[Deposits]
-Zăcăminte
-[Room]
-Spațiu
-[Isolation]
-Izolare
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Startul fiecărei colonii se măsoară pe harta terminată: drumul până la grâu și la lemn, cât de bine își reface terenul, zăcămintele și locurile de construcție la îndemână și distanța față de rivali. Fiecare factor primește de la 0 la 1 față de un prag fix, totalul îi ponderează, echitatea este totalul celei mai slabe colonii împărțit la cel al celei mai bune, iar scorul este cel mai slab total înmulțit cu echitatea.
 [Map preview controls]
 Trage pentru a trece peste margini. Rotița mărește. Clic dreapta sau dublu clic pentru resetare.
 [Map preview drag help]
@@ -2636,8 +2638,18 @@ Lățimea benzilor de nivel
 Scări pe deal
 [Valley river]
 Râu în vale
-[Vultures]
-Vulturi
+[Hills]
+Dealuri
+[Hillsides]
+Versanți
+[Terraces per slope]
+Terase pe versant
+[Waviness]
+Ondulare
+[Stair spacing]
+Distanța dintre scări
+[Locust]
+Lăcuste
 [Plantations]
 Plantații
 [Plot size]

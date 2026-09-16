@@ -1988,6 +1988,10 @@ Velikost náhorní plošiny
 Zeď mezi serpentinami
 [Farm building plots]
 Stavební parcely na farmách
+[Sand bridges over water]
+Písečné mosty přes vodu
+[Sand lanes through crops]
+Písečné cesty přes pole
 [Carousels need at least two colonies.]
 Kolotoč potřebuje alespoň dvě kolonie.
 [Switchbacks need at least two colonies.]
@@ -2200,24 +2204,22 @@ Náhodně zvolit parametry
 Kvalita startu
 [Fairness]
 Spravedlnost
-[Score]
-Skóre
-[Weight]
-Váha
+[Fitness]
+Síla
+[Win chance]
+Šance na výhru
+[Coefficient]
+Koeficient
+[Average]
+Průměr
+[Fitted on games:]
+Přizpůsobeno na hrách:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Start každé kolonie se měří na hotové mapě a model přizpůsobený tisícům her mezi rovnocennými soupeři z těchto měření určí sílu. Síla říká, jak pravděpodobně kolonie vyhraje. Spravedlnost vyjadřuje, jak rovnoměrně jsou tyto šance rozděleny: 1, když má každá kolonie stejnou šanci na výhru, 0, když by mapu ovládla jediná kolonie.
 [Worst]
 Nejhorší
 [Best]
 Nejlepší
-[Fertility]
-Úrodnost
-[Deposits]
-Zásoby
-[Room]
-Prostor
-[Isolation]
-Odloučení
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Start každé kolonie se měří na hotové mapě: cesta k obilí a ke dřevu, jak dobře její půda dorůstá, zásoby a stavební místa v dosahu a vzdálenost od soupeřů. Každý činitel dostane skóre od 0 do 1 vůči pevné laťce, celek je váží, spravedlnost je celek nejhorší kolonie dělený celkem nejlepší a skóre je nejhorší celek násobený spravedlností.
 [Map preview controls]
 Tažením posouvejte přes okraje. Kolečkem přibližujte. Pravým nebo dvojitým kliknutím obnovte pohled.
 [Map preview drag help]
@@ -2636,8 +2638,18 @@ Poloměr kopce
 Schodiště na kopec
 [Valley river]
 Řeka v údolí
-[Vultures]
-Supi
+[Hills]
+Kopce
+[Hillsides]
+Svahy
+[Terraces per slope]
+Terasy na svah
+[Waviness]
+Zvlnění
+[Stair spacing]
+Rozestup schodů
+[Locust]
+Kobylky
 [Plantations]
 Plantáže
 [Plot size]

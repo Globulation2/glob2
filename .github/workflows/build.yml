@@ -167,6 +167,7 @@ jobs:
           python3 test/test_distributed_map_telemetry.py
           python3 test/test_distributed_game_telemetry.py
           python3 test/test_map_fairness_tournament.py
+          python3 test/test_fairness_model.py
           ./build/src/TournamentCompatibilityTest
           python3 test/tournament_cli_integration.py --output artifacts/tournament-cli
 

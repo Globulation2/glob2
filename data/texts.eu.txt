@@ -1998,6 +1998,10 @@ Bidearen zabalera
 Bihurguneen arteko horma
 [Farm building plots]
 Eraikitzeko lursailak baserrietan
+[Sand bridges over water]
+Hareazko zubiak uraren gainean
+[Sand lanes through crops]
+Hareazko bideak laboreen artean
 [Carousels need at least two colonies.]
 Karruselak gutxienez bi kolonia behar ditu.
 [Switchbacks need at least two colonies.]
@@ -2210,24 +2214,22 @@ Parametroak ausaz aukeratu
 Hasieraren kalitatea
 [Fairness]
 Zuzentasuna
-[Score]
-Puntuazioa
-[Weight]
-Pisua
+[Fitness]
+Egokitasuna
+[Win chance]
+Irabazteko aukera
+[Coefficient]
+Koefizientea
+[Average]
+Batez bestekoa
+[Fitted on games:]
+Partidekin doitua:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Kolonia bakoitzaren hasiera amaitutako mapan neurtzen da, eta aurkari parekoen arteko milaka partidarekin doitutako eredu batek neurketa horiek egokitasun bihurtzen ditu. Egokitasunak adierazten du kolonia horrek irabazteko zer aukera duen. Zuzentasunak adierazten du aukera horiek zenbateraino banatzen diren berdin: 1 kolonia guztiek irabazteko aukera bera dutenean, 0 kolonia bakar batek mapa osoa hartuko lukeenean.
 [Worst]
 Okerrena
 [Best]
 Onena
-[Fertility]
-Emankortasuna
-[Deposits]
-Hobiak
-[Room]
-Lekua
-[Isolation]
-Isolamendua
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Kolonia bakoitzaren hasiera amaitutako mapan neurtzen da: gariraino eta egurreraino dagoen bidea, bere lurra zein ondo berritzen den, eskura dituen hobiak eta eraikitzeko lekuak, eta aurkariekiko distantzia. Faktore bakoitzak 0tik 1era puntuatzen du neurri finko baten aurrean, guztizkoak haztatzen ditu, zuzentasuna koloniarik okerrenaren guztizkoa onenarenaz zatituta da, eta puntuazioa guztizko okerrena zuzentasunaz biderkatuta.
 [Map preview controls]
 Arrastatu ertzak zeharkatzeko. Erabili gurpila zooma egiteko. Eskuineko edo klik bikoitza berrezartzeko.
 [Map preview drag help]
@@ -2646,8 +2648,18 @@ Sestra-banden zabalera
 Eskailerak muinoko
 [Valley river]
 Haraneko ibaia
-[Vultures]
-Saiak
+[Hills]
+Muinoak
+[Hillsides]
+Hegalak
+[Terraces per slope]
+Terrazak hegaleko
+[Waviness]
+Uhintasuna
+[Stair spacing]
+Eskaileren arteko tartea
+[Locust]
+Matxinsaltoak
 [Plantations]
 Landaketak
 [Plot size]

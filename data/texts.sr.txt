@@ -1988,6 +1988,10 @@ OpenGL није доступан у овој верзији.
 Зид између кривина
 [Farm building plots]
 Грађевинске парцеле на фармама
+[Sand bridges over water]
+Пешчани мостови преко воде
+[Sand lanes through crops]
+Пешчане стазе кроз усеве
 [Carousels need at least two colonies.]
 Вртешци су потребне бар две колоније.
 [Switchbacks need at least two colonies.]
@@ -2200,24 +2204,22 @@ OpenGL није доступан у овој верзији.
 Квалитет почетка
 [Fairness]
 Правичност
-[Score]
-Оцена
-[Weight]
-Тежина
+[Fitness]
+Снага
+[Win chance]
+Шанса за победу
+[Coefficient]
+Коефицијент
+[Average]
+Просек
+[Fitted on games:]
+Прилагођено на партијама:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Почетак сваке колоније мери се на завршеној мапи, а модел прилагођен хиљадама партија између равноправних противника претвара та мерења у снагу. Снага показује колико је вероватно да ће колонија победити. Правичност показује колико су те шансе равномерно распоређене: 1 када свака колонија има једнаку шансу за победу, 0 када би једна колонија преузела целу мапу.
 [Worst]
 Најслабији
 [Best]
 Најбољи
-[Fertility]
-Плодност
-[Deposits]
-Залихе
-[Room]
-Простор
-[Isolation]
-Удаљеност
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Почетак сваке колоније мери се на завршеној мапи: пут до жита и до дрвета, колико добро њено тло поново расте, залихе и места за градњу на дохват руке и удаљеност од супарника. Сваки чинилац добија оцену од 0 до 1 према сталној мери, укупан збир их одмерава, правичност је збир најслабије колоније подељен збиром најбоље, а оцена је најслабији збир помножен правичношћу.
 [Map preview controls]
 Превуците преко ивица. Точкић мења увећање. Десни или двоструки клик враћа приказ.
 [Map preview drag help]
@@ -2636,8 +2638,18 @@ Emoji
 Степеништа по брду
 [Valley river]
 Река у долини
-[Vultures]
-Лешинари
+[Hills]
+Брда
+[Hillsides]
+Падине
+[Terraces per slope]
+Тераса по падини
+[Waviness]
+Таласастост
+[Stair spacing]
+Размак степеница
+[Locust]
+Скакавци
 [Plantations]
 Плантаже
 [Plot size]

@@ -9,6 +9,8 @@ import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from tools import fairness_model
 BINARY = Path(sys.argv[1]).resolve()
 HARNESS = Path(sys.argv[2]).resolve()
 OUT = ROOT / 'artifacts/map-report'
@@ -117,15 +119,16 @@ def invariants(j):
             if walk is not None: assert swim is not None and swim <= walk
     quality = j['canonical_quality']
     if quality['measured']:
-        weights, scale = quality['weights'], quality['scale']
-        for factor, spread in quality['normalized_spreads'].items():
-            values = [c['normalized'][factor] for c in quality['colonies']]
+        model, scale = quality['model'], quality['scale']
+        for field, spread in (('fitness', quality['colony_fitness']),
+                              ('win_probability', quality['colony_win_probability'])):
+            values = [c[field] for c in quality['colonies']]
             assert spread['count'] == len(values)
             close(spread['min'],min(values))
             close(spread['max'],max(values))
             close(spread['mean'],sum(values)/len(values))
         for c in quality['colonies']:
-            r, normalized = c['raw'], c['normalized']
+            r = c['raw']
             i = c['team']
             walking = j['movement']['walking']['colonies'][i]
             assert r['reachable_tiles'] == walking['reachable']['tiles']
@@ -168,21 +171,33 @@ def invariants(j):
             reachable = [d for k,d in enumerate(j['movement']['walking']['between_colonies'][i]) if i != k and d is not None]
             assert r['reachable_rivals'] == len(reachable)
             assert r['farthest_rival_distance'] == (max(reachable) if reachable else None)
-            for resource in ('wheat','wood'):
-                d = r[resource+'_distance']
-                close(normalized[resource],0 if d is None else max(0,min(1,1-d/scale[resource+'_reference'])))
-            close(normalized['fertility'],max(0,min(1,r['mean_fertility']/scale['fertility_reference'])))
-            close(normalized['depth'],min(1,r['wheat_and_wood_amount']/scale['depth_reference']))
-            close(normalized['room'],min(1,r['build_sites_4x4']/scale['room_reference']))
-            spacing=1 if r['nearest_rival_distance'] is None else min(1,r['nearest_rival_distance']/scale['isolation_reference'])
-            close(normalized['isolation'],spacing*max(0,1-scale['crowd_penalty']*max(0,r['rivals_within_threat']-1)))
-            expected=sum(weights[k]*normalized[k] for k in weights)/sum(weights.values())
-            if r['wheat_distance'] is None or r['wood_distance'] is None: expected=0
-            close(c['total'],expected)
-        close(quality['worst'],min(c['total'] for c in quality['colonies']))
-        close(quality['best'],max(c['total'] for c in quality['colonies']))
-        close(quality['fairness'],quality['worst']/quality['best'] if quality['best'] else 0)
-        close(quality['score'],quality['worst']*quality['fairness']**scale['fairness_exponent'])
+        # Re-derive the fitted model from the report's own raw measurements and its
+        # published coefficients: the engine's fitness, win probabilities and fairness
+        # must be exactly what the fitting tool's definitions produce.
+        measured = [fairness_model.colony_measurements(c) for c in quality['colonies']]
+        # Some terms are composites the fitting tool derives across a map's colonies.
+        derived = fairness_model.derived_measurements([{'measurements': m} for m in measured])
+        measured = [dict(m, **extra) for m, extra in zip(measured, derived)]
+        fitness = []
+        for index in range(len(measured)):
+            value = model['intercept']
+            for term in model['terms']:
+                column = [row[term['measurement']] for row in measured]
+                transform = fairness_model.TRANSFORMS[term['transform']]
+                value += term['coefficient'] * transform(column[index], sum(column))
+            fitness.append(value)
+        probability = fairness_model.softmax(fitness)
+        for c, f, p in zip(quality['colonies'], fitness, probability):
+            close(c['fitness'],f)
+            close(c['win_probability'],p)
+        close(quality['worst_fitness'],min(fitness))
+        close(quality['best_fitness'],max(fitness))
+        close(quality['mean_fitness'],sum(fitness)/len(fitness))
+        close(quality['fairness'],fairness_model.fairness(fitness))
+        close(quality['score'],quality['fairness'])
+        assert 0 <= quality['fairness'] <= 1
+        assert abs(sum(probability) - 1) < 1e-9
+        assert scale['catchment_steps'] > 0 and scale['threat_radius'] > 0
     else:
         assert quality['colonies'] == [] and quality['score'] is None
 
@@ -289,7 +304,7 @@ def main():
             run(bad,ok=False)
         assert saved.read_bytes() == original
         assert (prefs.read_bytes(),prefs.stat().st_mtime_ns) == before
-    print('PASS map JSON: schema contract, analytic distances/resources/space, fairness formulas, '
+    print('PASS map JSON: schema contract, analytic distances/resources/space, the fitted fairness model, '
           'unchanged serialized state/RNG, config provenance, repeatability, old saves and output errors')
     print('Artifacts:',OUT)
 

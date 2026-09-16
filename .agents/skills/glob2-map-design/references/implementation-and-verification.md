@@ -58,7 +58,7 @@ For exact claims, transform undermap **corners** and final **tiles** correctly, 
 
 For asymmetric landscapes, [BalancedStarts.cpp](../../../../src/map/generator/shared/BalancedStarts.cpp) is an instructive bounded search. It floods distances from gathering neighbors, considers legal swarm footprints, shortlists at most 900 sites, re-scores after modeling the starting colony, and seeks a narrow resource-cost window containing mutually separated starts. This is a heuristic, not an optimal global placement solver, and its legacy placement model is not a drop-in replacement for arbitrary settlement geometry.
 
-Use [StartQuality](../../../../src/map/generator/shared/StartQuality.h) to compare *finished* colonies on wheat/wood access, fertility, resource depth, room, and isolation. Its score is `worst * fairness^exponent`, with fairness `worst / best` when best is positive. Adjust weights/scales to express the concept, retaining absolute viability checks. A higher isolation reward can prefer a dull or unreachable start; reachable wheat can coexist with no building space. Do not tune the score solely to make your preferred screenshot win.
+Use [StartQuality](../../../../src/map/generator/shared/StartQuality.h) to compare *finished* colonies on wheat/wood access, fertility, resource depth, room, and isolation. What those measurements are worth is fitted to real games ([FairnessModel.h](../../../../src/map/generator/shared/FairnessModel.h), [the method](../../../../docs/map-generators/FAIRNESS_MODEL.md)) and is the same for every generator, so a concept that needs a different bar states it in `validateWorld` rather than by retuning the score. The score is the map's fairness: 1 when every colony is equally likely to win, 0 when one would take the map. It says nothing about whether the starts are any good, so keep absolute viability checks. Reachable wheat can coexist with no building space.
 
 Also measure nearest rival, access to contested targets, number of fronts, expansion capacity and walking versus swimming/clearing costs. `Contact` supplies comparative costs; these are not time estimates. In particular its generic water-first `StepCosts` model is different from the report's engine swimming predicate when algae occupies water. Use the actual movement predicate for a gameplay reachability claim. Deal home sites with `dealStarts` before any home/kit/tower arrays are indexed by team: random assignment avoids persistent index bias but does not repair an unfair map.
 
@@ -77,7 +77,7 @@ For each resource layer, write down its policy:
 
 At 100%, the scaling helpers preserve their inputs. For existing maps, avoid extra default-path random draws that unnecessarily change established output. For a new map, ensure a control does something: the current scaffold declares wheat/wood amounts but only plants fixed starter kits, so those controls still need real ambient layers wired to them. A percentage used only as `amount > 0` provides presence/absence, not a useful abundance scale.
 
-High amounts can remove legal starting sites or wall colonies into crops. Widen a bounded site search when sensible; run `reopenCrampedStarts` or the height-field equivalent at non-default amounts, passing protected walls. It uses `openCrampedStarts` to seek 16 reachable 4×4 anchors within 24 steps, then rechecks crop supply. These are emergency heuristic targets, not a promise of sixteen independent buildings or a substitute for deliberately roomy defaults. Inspect its result and validate your stronger map-specific minimum.
+High amounts can remove legal starting sites or wall colonies into crops. Widen a bounded site search when sensible; run `reopenCrampedStarts` at non-default amounts, passing protected walls, or `openStartsBuriedByResources` when nothing in the design budgets a colony's room, so the defaults can bury one too. It uses `openCrampedStarts` to seek 16 reachable 4×4 anchors within 24 steps, then rechecks crop supply. These are emergency heuristic targets, not a promise of sixteen independent buildings or a substitute for deliberately roomy defaults. Inspect its result and validate your stronger map-specific minimum.
 
 ## Registration and style
 
@@ -192,6 +192,8 @@ region IDs through design; check beaches, seam routes and final engine movement 
 For reusable start-site work, use `selectSeparatedSites` for bounded toroidal maximin
 selection, `resourceFrontages` on an existing movement flood, and `arrangeBuildingGrid`
 to check actual disjoint footprints plus access after every proposed building is placed.
-`preventResourceGrowth` protects tile masks with the engine’s existing serialized flag.
-`cropSpreadEnvelope` honors these flags and proves containment independently of present
-fertility or buildings. Keep economic thresholds and module layouts in generators.
+`cropSpreadEnvelope` proves containment independently of present fertility or buildings.
+Containment on a generated map is terrain only: the engine's saved no-growth flag is
+forbidden there (it is for hand-made scenarios such as the tutorial), and the shared
+structural check refuses any generated world that sets it. Keep economic thresholds and
+module layouts in generators.

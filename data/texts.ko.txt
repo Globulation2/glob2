@@ -1984,6 +1984,10 @@ Globulation 2 커서를 표시합니다.
 굽이 사이 벽
 [Farm building plots]
 농장 건설 부지
+[Sand bridges over water]
+물 위의 모래 다리
+[Sand lanes through crops]
+작물 사이의 모래 길
 [Carousels need at least two colonies.]
 회전목마에는 식민지가 두 개 이상 필요합니다.
 [Switchbacks need at least two colonies.]
@@ -2196,24 +2200,22 @@ Globulation 2 커서를 표시합니다.
 시작 품질
 [Fairness]
 공정성
-[Score]
-점수
-[Weight]
-가중치
+[Fitness]
+강도
+[Win chance]
+승리 확률
+[Coefficient]
+계수
+[Average]
+평균
+[Fitted on games:]
+학습한 게임 수:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+각 식민지의 시작 지점은 완성된 지도에서 측정되며, 실력이 비슷한 상대끼리 치른 수천 번의 게임으로 학습한 모델이 그 측정값을 강도로 바꿉니다. 강도는 그 식민지가 이길 가능성이 얼마나 되는지를 나타냅니다. 공정성은 그 가능성이 얼마나 고르게 나뉘는지를 나타냅니다. 모든 식민지의 승리 가능성이 같으면 1, 한 식민지가 지도를 차지하게 되면 0입니다.
 [Worst]
 최저
 [Best]
 최고
-[Fertility]
-비옥도
-[Deposits]
-매장량
-[Room]
-공간
-[Isolation]
-격리
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-각 식민지의 시작 지점은 완성된 지도에서 측정됩니다: 밀과 목재까지의 거리, 땅이 얼마나 잘 다시 자라는지, 닿을 수 있는 매장량과 건설 부지, 그리고 경쟁자와의 거리입니다. 각 요소는 고정된 기준에 대해 0에서 1로 점수가 매겨지고, 합계는 이를 가중하며, 공정성은 최저 식민지의 합계를 최고 식민지의 합계로 나눈 값이고, 점수는 최저 합계에 공정성을 곱한 값입니다.
 [Map preview controls]
 드래그하여 경계를 넘어 이동합니다. 휠로 확대합니다. 오른쪽 클릭이나 두 번 클릭으로 초기화합니다.
 [Map preview drag help]
@@ -2632,8 +2634,18 @@ Emoji
 언덕당 계단 수
 [Valley river]
 계곡의 강
-[Vultures]
-독수리
+[Hills]
+언덕
+[Hillsides]
+비탈
+[Terraces per slope]
+비탈당 계단식 논
+[Waviness]
+굴곡
+[Stair spacing]
+계단 간격
+[Locust]
+메뚜기 떼
 [Plantations]
 농장
 [Plot size]

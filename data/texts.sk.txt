@@ -1996,6 +1996,10 @@ Veľkosť náhornej plošiny
 Múr medzi serpentínami
 [Farm building plots]
 Stavebné pozemky na farmách
+[Sand bridges over water]
+Piesočné mosty cez vodu
+[Sand lanes through crops]
+Piesočné cesty cez polia
 [Carousels need at least two colonies.]
 Kolotoč potrebuje aspoň dve kolónie.
 [Switchbacks need at least two colonies.]
@@ -2208,24 +2212,22 @@ Náhodne zvoliť parametre
 Kvalita štartu
 [Fairness]
 Spravodlivosť
-[Score]
-Skóre
-[Weight]
-Váha
+[Fitness]
+Sila
+[Win chance]
+Šanca na výhru
+[Coefficient]
+Koeficient
+[Average]
+Priemer
+[Fitted on games:]
+Prispôsobené na hrách:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Štart každej kolónie sa meria na hotovej mape a model prispôsobený tisícom hier medzi rovnocennými súpermi z týchto meraní určí silu. Sila hovorí, ako pravdepodobne kolónia vyhrá. Spravodlivosť vyjadruje, ako rovnomerne sú tieto šance rozdelené: 1, keď má každá kolónia rovnakú šancu na výhru, 0, keď by mapu ovládla jediná kolónia.
 [Worst]
 Najhorší
 [Best]
 Najlepší
-[Fertility]
-Úrodnosť
-[Deposits]
-Zásoby
-[Room]
-Priestor
-[Isolation]
-Odlúčenosť
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Štart každej kolónie sa meria na hotovej mape: cesta k obiliu a k drevu, ako dobre jej pôda dorastá, zásoby a stavebné miesta v dosahu a vzdialenosť od súperov. Každý činiteľ dostane od 0 do 1 voči pevnej latke, celok ich váži, spravodlivosť je celok najhoršej kolónie delený celkom najlepšej a skóre je najhorší celok násobený spravodlivosťou.
 [Map preview controls]
 Ťahaním posúvajte cez okraje. Kolieskom približujte. Pravým alebo dvojitým kliknutím obnovte pohľad.
 [Map preview drag help]
@@ -2644,8 +2646,18 @@ Polomer kopca
 Schodiská na kopec
 [Valley river]
 Rieka v údolí
-[Vultures]
-Supy
+[Hills]
+Kopce
+[Hillsides]
+Svahy
+[Terraces per slope]
+Terasy na svah
+[Waviness]
+Zvlnenie
+[Stair spacing]
+Rozstup schodov
+[Locust]
+Kobylky
 [Plantations]
 Plantáže
 [Plot size]

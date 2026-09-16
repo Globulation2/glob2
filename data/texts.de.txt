@@ -1988,6 +1988,10 @@ Pfadbreite
 Mauer zwischen Kehren
 [Farm building plots]
 Bauplätze in den Farmen
+[Sand bridges over water]
+Sandbrücken über Wasser
+[Sand lanes through crops]
+Sandwege durch die Felder
 [Carousels need at least two colonies.]
 Ein Karussell braucht mindestens zwei Kolonien.
 [Switchbacks need at least two colonies.]
@@ -2200,24 +2204,22 @@ Parameter zufällig wählen
 Startqualität
 [Fairness]
 Ausgeglichenheit
-[Score]
-Wertung
-[Weight]
-Gewicht
+[Fitness]
+Stärke
+[Win chance]
+Siegchance
+[Coefficient]
+Koeffizient
+[Average]
+Durchschnitt
+[Fitted on games:]
+Angepasst an Partien:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Der Start jeder Kolonie wird auf der fertigen Karte vermessen, und ein an Tausenden von Partien zwischen gleich starken Gegnern angepasstes Modell macht aus diesen Messungen eine Stärke. Die Stärke gibt an, wie wahrscheinlich diese Kolonie gewinnt. Die Ausgeglichenheit zeigt, wie gleichmäßig diese Chancen verteilt sind: 1, wenn jede Kolonie gleich wahrscheinlich gewinnt, 0, wenn eine einzige Kolonie die Karte an sich reißen würde.
 [Worst]
 Schlechteste
 [Best]
 Beste
-[Fertility]
-Fruchtbarkeit
-[Deposits]
-Vorkommen
-[Room]
-Platz
-[Isolation]
-Abgeschiedenheit
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Der Start jeder Kolonie wird auf der fertigen Karte gemessen: der Weg zu Weizen und zu Holz, wie gut ihr Boden nachwächst, die Vorkommen und Bauplätze in Reichweite und ihr Abstand zu Rivalen. Jeder Faktor erhält 0 bis 1 gegenüber einer festen Messlatte, die Summe gewichtet sie, die Ausgeglichenheit ist die Summe der schlechtesten Kolonie geteilt durch die der besten, und die Wertung ist die schlechteste Summe mal der Ausgeglichenheit.
 [Map preview controls]
 Ziehen zum Verschieben über die Ränder. Mausrad zum Zoomen. Rechts- oder Doppelklick zum Zurücksetzen.
 [Map preview drag help]
@@ -2636,8 +2638,18 @@ Breite der Höhenbänder
 Treppen pro Hügel
 [Valley river]
 Talfluss
-[Vultures]
-Geier
+[Hills]
+Hügel
+[Hillsides]
+Hänge
+[Terraces per slope]
+Terrassen je Hang
+[Waviness]
+Welligkeit
+[Stair spacing]
+Treppenabstand
+[Locust]
+Heuschrecken
 [Plantations]
 Plantagen
 [Plot size]

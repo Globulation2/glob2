@@ -18,12 +18,6 @@ struct GeneratorDefinition
 	// Optional pure checks for relationships between controls and generator-specific topology.
 	std::string (*validateRequest)(const GenerationRequest &) = nullptr;
 	std::string (*validateWorld)(const Game &, const GenerationContext &) = nullptr;
-	// How the lobby ranks this generator's candidate seeds (StartQuality.h). The defaults suit most
-	// maps; a map that is cramped, crowded or far-flung on purpose (building room scarce by design,
-	// colonies meant to touch) says so here, so the ranking rewards what the map is meant to be rather
-	// than marking every candidate down for it.
-	MapGeneration::StartQualityWeights qualityWeights{};
-	MapGeneration::StartQualityScale qualityScale{};
 	// How many WORKER units every colony starts with, when that is not the lobby's shared "Starting
 	// workers" control (1 to 8). A premade-base landscape (shared/Bases.h) owns its count through a
 	// control of its own and ignores the lobby's value; the structural check after generation

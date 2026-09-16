@@ -56,10 +56,10 @@ For generation in this invocation, `generation.available` is true and includes:
   indexed by resource ID. IDs 0–7 are the resource types listed below; remaining
   slots are reserved. These are recorded for completeness, not additional CLI
   controls. They are request quantities, not measured amounts in the final map.
-- `selection_quality`: the production generator's candidate-ranking report, with
-  that generator's own weights and scales. It has the same structure as
-  `canonical_quality` below. This is the score used for that generator's design,
-  so it is not necessarily comparable with another generator's selection score.
+- `selection_quality`: the candidate-ranking report the production service produced
+  for this roll. It has the same structure as `canonical_quality` below, and since
+  every generator is now scored by the same fitted model, the two agree except where
+  the roll analysed differs from the roll played.
 
 Existing map/save formats do **not** retain the complete generator request.
 Reports from files therefore have `generation.available: false`, `parameters:
@@ -137,7 +137,9 @@ sentinel. `resources.types` always includes `wood`, `wheat`, `papyrus`, `stone`,
 - `build_sites_4x4`: number of valid top-left anchors for entirely buildable 4×4
   footprints, including ones spanning a map edge. **Anchors overlap**: this is a
   measure of building room, not how many buildings can be constructed simultaneously.
-- `growth_disabled`: coverage of tiles whose `canResourcesGrow` flag is false.
+- `growth_disabled`: coverage of tiles whose `canResourcesGrow` flag is false. Always zero
+  for a generated map, which may not disable growth; nonzero only for hand-made maps and
+  scenarios such as the tutorial.
 - `land_regions`: four-connected regions of grass, sand, and their border tiles
   (sprite IDs below 256); unknown terrain is excluded.
 - `water_regions`: four-connected regions of pure-water tiles (256–271).
@@ -162,42 +164,50 @@ cache values. Scoring's cache writes are restored exactly after analysis.
 
 ## Fairness and its inputs
 
-`canonical_quality` calls the existing `scoreStarts` with the **same default
-weights and scales for every generator**. Compare this score across maps.
-`generation.selection_quality`, when available, records the generator's own
-weights/scales and service result. Both contain:
+`canonical_quality` calls `scoreStarts`, which measures every colony on the finished
+map and then scores those measurements with the fitted fairness model
+(`FairnessModel.h`, see [FAIRNESS_MODEL.md](FAIRNESS_MODEL.md)). Every generator is
+measured and scored identically, so this score compares across maps.
+`generation.selection_quality`, when available, records the service result for the
+roll the generator actually produced. Both contain:
 
 | Field | Meaning |
 | --- | --- |
 | `measured` | True only when at least one colony exists and every colony has at least one ground-unit source tile. |
 | `unavailable_reason` | Explanation if unmeasured; otherwise `null`. |
-| `weights` | Six coefficients in the weighted mean: wheat, wood, fertility, depth, room, isolation. |
-| `scale` | All normalization references, catchment/threat thresholds, crowd penalty, and fairness exponent actually used. |
-| `colonies[]` | Entries in team order, each with `team`, `raw`, `normalized`, and `total`. Empty if unmeasured. |
-| `worst`, `best` | Smallest/largest colony total, or `null` if unmeasured. |
-| `fairness` | worst/best when best > 0; otherwise 0. **Equal but nonviable zero-score starts yield 0, not 1.** |
-| `score` | worst × fairness^`scale.fairness_exponent`. Rewards both viability and equality. |
-| `colony_totals` | Distribution of colony totals. |
-| `normalized_spreads` | Per-factor distributions of the six normalized components, useful for seeing which part of fairness differs across starts. |
+| `model` | The fitted model in force: `intercept`, the `games` it was fitted to, and `terms[]` with each term's `measurement`, `transform`, `label` and `coefficient`. Read these from the report rather than assuming a fixed list; a refit can change which measurements appear. |
+| `scale` | The two thresholds that decide what gets measured: `catchment_steps` and `threat_radius`. |
+| `colonies[]` | Entries in team order, each with `team`, `raw`, `distance_bands`, `fitness` and `win_probability`. Empty if unmeasured. |
+| `worst_fitness`, `best_fitness`, `mean_fitness` | Smallest, largest and mean colony fitness, or `null` if unmeasured. |
+| `fairness` | 1 − Gini(`win_probability`) × n/(n−1): 1 when every colony is equally likely to win, 0 when one colony would take the map. 1 for a single colony. |
+| `score` | What the lobby keeps its best candidate roll by. Equal to `fairness`. |
+| `colony_fitness`, `colony_win_probability` | Distributions of the two per-colony outputs. |
 | `raw_spreads` | Distributions of local buildable/fertile/private ground, separate total and exclusive wheat/wood catchment amounts, and reachable nearest-rival distances. Unreachable rivals are omitted from that last distribution. |
+
+A colony's `fitness` is
+
+```
+intercept + sum over terms of coefficient × transform(measurement)
+```
+
+where `transform` is one of `identity`, `log` (`log1p` of the value, clamped at zero),
+`sqrt`, `square`, `share` (the value over the sum of that measurement across the map's
+colonies) or `decay24` (`exp(-value/24)`). A distance that was never reached enters as
+512 rather than `null`, always alongside its own indicator measurement.
+`win_probability` is the softmax of the fitnesses over that map's colonies.
+
+Fitness is determined only up to an additive constant: softmax is unchanged by adding
+the same number to every colony, so the games behind the model fixed the differences
+and the scale, never the zero. The generated header anchors the zero at the mean
+fitness of the fitted starts. Read a fitness as a comparison, not an absolute rating;
+`fairness`, which depends only on differences, carries no such caveat.
 
 The `scale` fields use these units and canonical defaults:
 
 | Field | Default | Meaning |
 | --- | --- | --- |
 | `catchment_steps` | 24 | Inclusive walking radius for local measurements. |
-| `wheat_reference`, `wood_reference` | 24, 32 | Gathering distances at which the corresponding normalized factor reaches zero. |
-| `fertility_reference` | 8000 | Mean raw fertility giving a normalized fertility factor of one. |
-| `depth_reference` | 450 | Stored wheat-plus-wood amount giving a depth factor of one. |
-| `room_reference` | 900 | Overlapping 4×4 anchors giving a room factor of one. |
-| `isolation_reference` | 60 | Rival walking distance giving maximum spacing credit. |
 | `threat_radius` | 40 | Inclusive walking distance for counting nearby rivals. |
-| `crowd_penalty` | 0.15 | Fraction of isolation credit removed per nearby rival beyond the first. |
-| `fairness_exponent` | 1 | Dimensionless exponent; zero ignores the fairness multiplier, larger values penalize unequal starts more strongly. |
-
-For example, wheat distance 6 with reference 24 gives a wheat factor of 0.75.
-Totals of 0.6 and 0.8 give fairness 0.75 and score 0.45 at exponent 1.
-These are comparative design scores, not probabilities of winning.
 
 For each colony, the `raw` measurements are:
 
@@ -211,9 +221,9 @@ For each colony, the `raw` measurements are:
 | `nearest_rival_distance` | Minimum walking distance to another colony's ground-unit tiles; `null` if no rival is reachable. |
 | `rivals_within_threat` | Number of reachable rival colonies at distance ≤ `scale.threat_radius`. |
 
-Additional raw measurements describe possible positional advantages. They do not
-enter the six-factor total or change the generator's candidate selection. They are
-hypotheses for later game-outcome studies, not validated predictors of wins:
+Every raw measurement below is a candidate input to the fairness model; which of them a
+given fit selected is in `model.terms`. The rest are retained because a later refit on
+more games may select them:
 
 | Field | Meaning |
 | --- | --- |
@@ -238,24 +248,10 @@ accessible `deposit_tiles` and `stored_amount`, plus the exclusive and tied subs
 of each. A deposit enters a band when the closest neighboring walking tile is
 within the radius; a deposit can be in a player's accessible stock without being
 its first-access or tied stock. The bands are cumulative, allowing near-home and
-wider expansion comparisons without changing the quality score.
+wider expansion comparisons.
 
-Let clamp(v) mean `max(0, min(1, v))`. Normalized factors are:
-
-- `wheat = clamp(1 − wheat_distance / wheat_reference)`; zero if unreachable.
-- `wood = clamp(1 − wood_distance / wood_reference)`; zero if unreachable.
-- `fertility = clamp(mean_fertility / fertility_reference)`.
-- `depth = clamp(wheat_and_wood_amount / depth_reference)`.
-- `room = clamp(build_sites_4x4 / room_reference)`.
-- For `isolation`, spacing is 1 if no rival is reachable, otherwise
-  `clamp(nearest_rival_distance / isolation_reference)`. Multiply spacing by
-  `max(0, 1 − crowd_penalty × max(0, rivals_within_threat − 1))`.
-
-`total = sum(weight × factor) / sum(weights)`, or zero when weights sum to zero.
-It is forced to zero if either wheat or wood is unreachable. All normalized
-factors and totals are dimensionless, normally 0–1. The default weights are
-0.22, 0.22, 0.25, 0.12, 0.10, and 0.09 respectively. Always read `scale` and
-`weights` from the report rather than assuming those values remain fixed.
+The bands are a measurement grid, not a score: the model may select a measurement at
+one radius and not at another, and the fit decides which.
 
 ## Distances, access, and territory
 

@@ -23,7 +23,7 @@ reroll the artwork or roads.
 Faces retain their eyes and mouths in both styles: these are ink strokes in an
 outline and holes in a filled face. Heart and star have hollow outline variants.
 Regular outlines divide a grass interior from the surrounding country; crossings
-breach the rim. Filled lagoons make shoreline and swimming important. Inverse
+bridge the rim's water. Filled lagoons make shoreline and swimming important. Inverse
 filled shapes provide a central continent. Inverse outlines use thicker strokes
 (minimum 14 undermap corners) to retain land after beaches, creating narrow fronts.
 The bypass and crossing causeways deliberately override the binary
@@ -62,7 +62,12 @@ The outer sand spine is a continuous loop globally, reachable over existing land
 colony. It supports two directions of travel around the drawing. Sand stops crop
 spread and prevents construction on the spine. Crossings have narrow sand spines
 with grass shoulders; a seed changes their placement around the art, altering
-access to features. Flying and swimming units can take additional routes. Some
+access to features. A crossing only bridges water: it runs inward from the bypass to
+the first land beyond the first water and stops there, drawing nothing over the art's
+own land. A crossing with no water to cross, or one that would only lead out into a
+lake (an inverse or filled face's eyes and mouth), is not laid at all, so no single
+colony gets a private causeway to a facial island, and the drawing keeps its look
+(maintainer review 2026-09-16). `emoji.crossings.placed` counts the ones laid. Flying and swimming units can take additional routes. Some
 facial features are deliberately offshore and may need swimming.
 
 The final validator checks every terrain corner against the pre-settlement design,

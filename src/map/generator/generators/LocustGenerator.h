@@ -2,9 +2,9 @@
 #pragma once
 #include "GenerationRequest.h"
 #include "GeneratorDefinition.h"
-struct VulturesOptions
+struct LocustOptions
 {
 	int homeSize, lakes, lakeSize, wheat, wood;
-	explicit VulturesOptions(const GenerationRequest &);
+	explicit LocustOptions(const GenerationRequest &);
 };
-GeneratorDefinition vulturesDefinition();
+GeneratorDefinition locustDefinition();

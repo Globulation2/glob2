@@ -1988,6 +1988,10 @@ Ancho del sendero
 Muro entre tramos
 [Farm building plots]
 Solares en las granjas
+[Sand bridges over water]
+Puentes de arena sobre el agua
+[Sand lanes through crops]
+Senderos de arena entre los cultivos
 [Carousels need at least two colonies.]
 El carrusel necesita al menos dos colonias.
 [Switchbacks need at least two colonies.]
@@ -2200,24 +2204,22 @@ Aleatorizar parámetros
 Calidad del inicio
 [Fairness]
 Equidad
-[Score]
-Puntuación
-[Weight]
-Peso
+[Fitness]
+Aptitud
+[Win chance]
+Probabilidad de ganar
+[Coefficient]
+Coeficiente
+[Average]
+Media
+[Fitted on games:]
+Ajustado con partidas:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+El inicio de cada colonia se mide en el mapa terminado, y un modelo ajustado con miles de partidas entre rivales equivalentes convierte esas medidas en aptitud. La aptitud indica qué probabilidad tiene esa colonia de ganar. La equidad indica cuán repartidas están esas probabilidades: 1 cuando todas las colonias tienen la misma probabilidad de ganar, 0 cuando una sola colonia se quedaría con el mapa.
 [Worst]
 Peor
 [Best]
 Mejor
-[Fertility]
-Fertilidad
-[Deposits]
-Depósitos
-[Room]
-Espacio
-[Isolation]
-Aislamiento
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-El inicio de cada colonia se mide sobre el mapa terminado: el camino hasta el trigo y la madera, lo bien que rebrota su terreno, los depósitos y sitios de construcción a su alcance, y su distancia a los rivales. Cada factor puntúa de 0 a 1 frente a un umbral fijo, el total los pondera, la equidad es el total de la peor colonia dividido por el de la mejor, y la puntuación es el peor total multiplicado por la equidad.
 [Map preview controls]
 Arrastra para recorrer los bordes. Rueda para ampliar. Clic derecho o doble clic para restablecer.
 [Map preview drag help]
@@ -2636,8 +2638,18 @@ Anchura de las bandas de nivel
 Escaleras por colina
 [Valley river]
 Río del valle
-[Vultures]
-Buitres
+[Hills]
+Colinas
+[Hillsides]
+Laderas
+[Terraces per slope]
+Terrazas por ladera
+[Waviness]
+Ondulación
+[Stair spacing]
+Separación de escaleras
+[Locust]
+Langostas
 [Plantations]
 Plantaciones
 [Plot size]

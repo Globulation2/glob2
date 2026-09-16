@@ -2050,6 +2050,10 @@ Larghezza del sentiero
 Muro tra i tornanti
 [Farm building plots]
 Lotti edificabili nelle fattorie
+[Sand bridges over water]
+Ponti di sabbia sull'acqua
+[Sand lanes through crops]
+Sentieri di sabbia tra le colture
 [Carousels need at least two colonies.]
 La giostra richiede almeno due colonie.
 [Switchbacks need at least two colonies.]
@@ -2262,24 +2266,22 @@ Parametri a caso
 Qualità della partenza
 [Fairness]
 Equità
-[Score]
-Punteggio
-[Weight]
-Peso
+[Fitness]
+Idoneità
+[Win chance]
+Probabilità di vittoria
+[Coefficient]
+Coefficiente
+[Average]
+Media
+[Fitted on games:]
+Adattato su partite:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+La partenza di ogni colonia viene misurata sulla mappa finita, e un modello adattato su migliaia di partite tra avversari equivalenti trasforma queste misure in idoneità. L'idoneità indica quanto è probabile che la colonia vinca. L'equità indica quanto equamente sono distribuite queste probabilità: 1 quando ogni colonia ha la stessa probabilità di vincere, 0 quando una sola colonia si prenderebbe la mappa.
 [Worst]
 Peggiore
 [Best]
 Migliore
-[Fertility]
-Fertilità
-[Deposits]
-Giacimenti
-[Room]
-Spazio
-[Isolation]
-Isolamento
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-La partenza di ogni colonia è misurata sulla mappa finita: il cammino fino al grano e al legno, quanto bene ricresce il suo terreno, i giacimenti e i siti edificabili a portata, e la distanza dai rivali. Ogni fattore ottiene un punteggio da 0 a 1 rispetto a un'asticella fissa, il totale li pondera, l'equità è il totale della colonia peggiore diviso per quello della migliore, e il punteggio è il totale peggiore moltiplicato per l'equità.
 [Map preview controls]
 Trascina per attraversare i bordi. Rotella per ingrandire. Clic destro o doppio clic per ripristinare.
 [Map preview drag help]
@@ -2698,8 +2700,18 @@ Larghezza delle fasce di livello
 Scale per collina
 [Valley river]
 Fiume nella valle
-[Vultures]
-Avvoltoi
+[Hills]
+Colline
+[Hillsides]
+Versanti
+[Terraces per slope]
+Terrazze per versante
+[Waviness]
+Ondulazione
+[Stair spacing]
+Distanza tra le scale
+[Locust]
+Locuste
 [Plantations]
 Piantagioni
 [Plot size]

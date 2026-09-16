@@ -537,6 +537,12 @@ See [pre-game preview behavior and compatibility](../docs/pre-game-map-preview.m
 `python3 test/test_tournaments.py` exercises leases, duplicates, resumable transfers,
 worker queues, immutable builds and offline statistical policies using stdlib fixtures.
 `python3 test/test_map_fairness_tournament.py` retains the fairness estimator regressions.
+`python3 test/test_fairness_model.py` checks the fitted [fairness model](../docs/map-generators/FAIRNESS_MODEL.md):
+that the fit recovers coefficients from a tournament simulated out of the model itself, that a
+measurement deciding nothing is fitted near zero, that the fairness definition reads the same at
+every colony count and ignores the offset softmax leaves unidentified, and that every measurement
+the model may select has a C++ expression waiting for it. The fitting checks need numpy and scipy
+and skip without them; the rest is stdlib.
 Build `scons -j4 release=1 server=0 tournament-compatibility-test` and run
 `build/src/TournamentCompatibilityTest` for real per-player Cortex/Maxima and partial
 network-header checks. `python3 test/tournament_cli_integration.py --output DIR`

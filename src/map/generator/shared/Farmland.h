@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationRequest.h"
 #include "Geometry.h"
 #include "FertilityField.h"
 #include <string>
@@ -20,7 +21,7 @@ namespace MapGeneration
 // ground out into fields joined to their homes (by equal yield for their rows' angles), layFarm lays
 // the rows over a field, and plantFarm plants them once the terrain is written. Around a laid farm,
 // sand does three jobs: a cap ring closes the crop rows so wheat and wood never spread into the ground
-// round the farm; bridges cross the whole farm, water rows and crop rows alike, so workers need not walk
+// round the farm; bridges cross the whole farm, water rows and crop rows alike (FarmBridges), so workers need not walk
 // round a long row nor cut through one; and a ring round the building plot keeps crops off it. Walls
 // round a farm are the map's business, not the farm's.
 
@@ -148,6 +149,24 @@ struct FarmPlot
 /// stays unbroken.
 constexpr double kBridgeHalfWidth = 0.75;
 
+/// A farm's sand bridges: a line of sand every `spacing` tiles along its rows (0 lays none), over the
+/// water rows (`water`) and through the crop rows (`crops`). Over water a bridge is a crossing; through
+/// crops it is a lane no crop grows over, so a filled row is never a wall a worker must cut through or
+/// walk the length of. Both are on by default, on every map that lays farm rows, and each is a
+/// player control (waterCrossingsControl, cropCrossingsControl) so a map can be played with either off.
+struct FarmBridges
+{
+	int spacing = 0;
+	bool water = true, crops = true;
+	/// Whether a bridge line is laid over a vertex in a water row (`waterRow`) or a crop row.
+	bool crosses(bool waterRow) const { return spacing > 0 && (waterRow ? water : crops); }
+};
+
+/// The two toggles every farm-row map offers, both on by default: "water-crossings" switches the
+/// bridges over its water rows and "crop-crossings" the lanes through its crop rows.
+GeneratorControl waterCrossingsControl();
+GeneratorControl cropCrossingsControl();
+
 /// The least a field is opened by (growFarmFields): a beach and a wall each side fill any strip narrower
 /// than twice this. A map with a wider rim round its rows passes that rim instead.
 constexpr int kFarmOpening = 3;
@@ -157,11 +176,11 @@ constexpr int kFarmOpening = 3;
 /// margin of land and every crop row joins the rim at both ends. Then, in order:
 ///  - with `caps` (on), a ring of sand vertices just inside the rim, where the water rows' beaches begin,
 ///    closes every crop row, so its wheat and wood never spread out of the farm;
-///  - with a `bridgeSpacing`, a line of sand vertices crosses the whole farm inside its cap, water rows
-///    and crop rows alike, each that many tiles along the rows, starting at the origin: across a water
-///    row the tiles either side are no longer pure water, so workers walk across, two tiles wide, and
-///    across a crop row the line is a lane no crop grows over, so the farm is cut into bays a worker
-///    walks round without clearing anything;
+///  - with a `bridges.spacing`, a line of sand vertices crosses the whole farm inside its cap every that
+///    many tiles along the rows, starting at the origin: over the water (with `bridges.water`) the tiles
+///    either side are no longer pure water, so workers walk across, two tiles wide, and through the
+///    crops (with `bridges.crops`) the line is a lane no crop grows over, so the farm is cut into bays a
+///    worker walks round without clearing anything;
 ///  - with a `plot`, a building clearing is stamped at the region's most inland point, clear of every
 ///    water row by its sand ring and a vertex more and at least `rim` from the edge (a region too small
 ///    for it gets none); its grass always wins over a cap or bridge running through it.
@@ -169,7 +188,7 @@ constexpr int kFarmOpening = 3;
 /// (`Farm::sand`) out of any beach flood, as a sand road is.
 Farm layFarm(TerrainSketch &sketch, const Torus &, const std::vector<unsigned char> &region,
 			 double angle, ShapePoint origin, int rim, const FarmRows &rows,
-			 const FarmPlot *plot = nullptr, int bridgeSpacing = 0, bool caps = true);
+			 const FarmPlot *plot = nullptr, const FarmBridges &bridges = {}, bool caps = true);
 
 /// Stamps one building plot with its top-left grass tile at (x0, y0) into a laid farm: the plot's
 /// grass tiles win over any water row, bridge or cap running through them, and its ring of sand

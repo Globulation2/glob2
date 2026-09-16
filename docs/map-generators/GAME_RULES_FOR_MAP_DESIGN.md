@@ -16,7 +16,12 @@ comments can say "because grass may not touch water" and a reader can check it h
 - **Grass may never touch water.** There is no grass-to-water tile graphic, so every grass corner
   beside water must become sand. `Map::controlSand` does it in place in row order, which makes a
   shoreline depend on scan direction; the designed generators use `layBeaches`, which applies the
-  same rule to every corner at once.
+  same rule to every corner at once. The pass is not a step in a fixed order, it is a postcondition:
+  anything that cuts terrain after it — a late pond, a farm plot stamped against a lake — needs
+  another pass, or that shoreline ships as a hard grass/water edge that reads immediately as a bug
+  in the finished game (the fractal maps' garden beds and bank plots did, 2026-09-16). Size a crop
+  bed knowing the beach will take its innermost row: three rows of farmable grass means four rows
+  of grass laid down.
 - **Buildings need pure grass.** `Map::isFreeForBuilding` requires grass, no resource and no unit
   on every tile of the footprint (`Map::checkTile`). Sand is walkable but unbuildable, so a map's
   building room is its grass, not its land. A swarm is 4×4; the start scorer counts free 4×4
@@ -68,6 +73,31 @@ Consequences a generator has to design around:
   with lots of sand grows its fields back slowly — a lever, not just decoration.
 - **Growth can shut a map.** Wheat and wood that spread unchecked cover grass, and covered grass is
   unwalkable and unbuildable. Lanes, sand roads and levees exist to stop a map growing shut.
+- **Wood overgrowth is the usual way it happens, and it is slow enough to miss.** A deposit first
+  thickens in place; once its amount passes a random 0-7 it *extends* to one of its eight
+  neighbours instead. Timber scattered as decoration therefore creeps outward a tile at a time
+  wherever the water probe succeeds, and tens of thousands of ticks later the map is forest. It
+  does not show in a preview or in any measurement of the map as generated: it needs a long game,
+  or a count of wood tiles on a final save against the same count at tick zero. Treat a sprinkle
+  of timber across open land as a promise that the land will eventually be woods, and either keep
+  the sprinkle sparse and contained or leave it out.
+- **No-growth zones are forbidden on generated maps.** The engine keeps a saved per-tile
+  `canResourcesGrow` flag, and it exists for hand-made scenarios such as the tutorial, where a
+  designer freezes the ground a lesson needs. A generator may not set it on any tile: the shared
+  structural check (`validateGeneratedWorld`) refuses a generated world with even one no-growth
+  tile, and the toolkit no longer has a helper that sets it. A frozen tile is invisible to the
+  player, stops farmland regrowing where they expect it to, and hides an overgrowth problem the
+  design should have solved (the fractal maps used it and were stripped of it on 2026-09-16).
+  Contain crops with terrain instead, which players can see and reason about:
+  - **Sand.** A deposit cannot occupy sand, so a sand cap or aisle contains a plot permanently.
+    One row of sand *corners* is enough: the two tile rows either side of it are no longer pure
+    grass, and no crop can extend across them.
+  - **Dry ground.** A wheat or wood deposit whose growth probe can never find water never
+    thickens or extends. Scenery on dry ground (`Fertility::forMap` reads zero) stays the size it
+    was planted.
+  - **Leaving it out.** A copse that would have to be held back by anything else does not belong
+    on fertile ground.
+  Stone and fruit need none of this: neither extends (their resource types are not expendable).
 - **Fruit is a weapon.** A colony whose inns hold all three fruits can pull hungry enemy units
   across to its side, so an orchard of all three kinds in contested ground is the strongest prize
   a map can offer, and fruit spread unevenly between colonies is a real unfairness.
@@ -88,7 +118,7 @@ The shared tools encode a few measurable promises every generator is expected to
 - **Room to build.** `openCrampedStarts` makes sure a colony can walk to at least 16 free 4×4
   building sites within 24 steps. A colony walled in by its own deposits cannot grow at all.
 - **Workers can leave the swarm.** A clear ring of `kSwarmClearance` tiles round each swarm.
-- **Fair starts.** `scoreStarts` rates each colony on wheat and wood distance, fertility, deposit
+- **Fair starts.** `scoreStarts` measures each colony on wheat and wood distance, fertility, deposit
   depth, room and isolation from rivals; fairness is the weakest start divided by the strongest,
   and the lobby keeps the best-scoring of several seeds. Designed generators get fairness by
   construction instead: they design one colony's share and turn or mirror it onto every other
@@ -144,8 +174,12 @@ Allotments, Caravanserai). The engine rules it is built on, each verified in the
 - **The structural check counts only WORKER units**, against `GeneratorDefinition::startingWorkers`
   when set; a premade base's warriors and explorers pass freely.
 - **A fed unit walks 264 tiles before it is hungry** (`HUNGRY_MAX` 150000 over 425 per completed
-  move at level 0) and 352 before it starves, at 16 ticks a tile. Inn spacing on a map of walks is
-  about supply throughput (an inn feeds 4, 7 or 17 at once) and forward feeding, not survival.
+  move at level 0) and 352 before it starves, at 16 ticks a tile. Those are walked tiles, detours
+  included: a map that forces long detours round rows, walls or crops can starve an army on its way
+  to a base that looks close (Polder, until 2026-09-16, when its rows under crop were crossed only at
+  the ditches). Keep colony-to-rival walks well inside that budget, with crossings through every kind
+  of linear obstacle and forward inn ground on the way. On a map of short walks, inn spacing is about
+  supply throughput (an inn feeds 4, 7 or 17 at once) and forward feeding, not survival.
 - **Every AI adopts what it finds** (Echo and Nicowar through `BuildingRegister::initiate`, Numbi,
   Castor and Cortex by reading `myBuildings` live), but their openings drift: Cortex sets the first
   swarm's workers to 4 and tracks at most 24 sites and 16 inns; Nicowar does not count pre-placed

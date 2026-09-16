@@ -1988,6 +1988,10 @@ Szerokość ścieżki
 Mur między zakrętami
 [Farm building plots]
 Działki budowlane na farmach
+[Sand bridges over water]
+Piaszczyste mosty nad wodą
+[Sand lanes through crops]
+Piaszczyste ścieżki przez uprawy
 [Carousels need at least two colonies.]
 Karuzela wymaga co najmniej dwóch kolonii.
 [Switchbacks need at least two colonies.]
@@ -2200,24 +2204,22 @@ Losuj parametry
 Jakość startu
 [Fairness]
 Sprawiedliwość
-[Score]
-Wynik
-[Weight]
-Waga
+[Fitness]
+Siła
+[Win chance]
+Szansa na wygraną
+[Coefficient]
+Współczynnik
+[Average]
+Średnia
+[Fitted on games:]
+Dopasowano na grach:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Start każdej kolonii jest mierzony na gotowej mapie, a model dopasowany do tysięcy gier między równorzędnymi przeciwnikami zamienia te pomiary w siłę. Siła mówi, jak prawdopodobne jest zwycięstwo tej kolonii. Sprawiedliwość opisuje, jak równo rozłożone są te szanse: 1, gdy każda kolonia ma taką samą szansę na wygraną, 0, gdy jedna kolonia przejęłaby całą mapę.
 [Worst]
 Najgorszy
 [Best]
 Najlepszy
-[Fertility]
-Żyzność
-[Deposits]
-Zasoby
-[Room]
-Miejsce
-[Isolation]
-Odosobnienie
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Start każdej kolonii mierzony jest na gotowej mapie: droga do zboża i do drewna, jak dobrze odrasta jej grunt, zasoby i miejsca pod budowę w zasięgu oraz odległość od rywali. Każdy czynnik otrzymuje od 0 do 1 względem stałej miary, suma je waży, sprawiedliwość to suma najgorszej kolonii podzielona przez sumę najlepszej, a wynik to najgorsza suma pomnożona przez sprawiedliwość.
 [Map preview controls]
 Przeciągaj przez krawędzie. Kółko zmienia powiększenie. Prawy lub podwójny klik resetuje widok.
 [Map preview drag help]
@@ -2636,8 +2638,18 @@ Szerokość pasów poziomicowych
 Schody na wzgórze
 [Valley river]
 Rzeka w dolinie
-[Vultures]
-Sępy
+[Hills]
+Wzgórza
+[Hillsides]
+Stoki
+[Terraces per slope]
+Tarasy na stok
+[Waviness]
+Falistość
+[Stair spacing]
+Odstęp schodów
+[Locust]
+Szarańcza
 [Plantations]
 Plantacje
 [Plot size]

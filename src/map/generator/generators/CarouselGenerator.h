@@ -5,7 +5,7 @@
 struct CarouselOptions
 {
 	int homeSize, corridorWidth, spokeWidth, courtSize, courtWall, plazaSize, towers, towerCount;
-	bool sandRoads, farmPlots;
+	bool sandRoads, farmPlots, waterCrossings, cropCrossings;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit CarouselOptions(const GenerationRequest &r);
 };

@@ -1405,12 +1405,13 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 			dimensions + "  /  " + std::to_string(setup.capacity) + " " + tr("colonies"), "little",
 			rightW, true);
 	// The generated map's start quality (FEEDBACK 2026-09-14): the fairness the lobby ranked its
-	// candidate rolls by, and a small (i) that opens the breakdown behind it.
+	// candidate rolls by, and a small (i) that opens the breakdown behind it. Fairness is the
+	// whole ranking now, so there is no second number to show beside it.
 	if (setup.random && (validMap || previewBusy()) && quality.measured)
 	{
 		char summary[96];
-		std::snprintf(summary, sizeof summary, "%s %.2f  /  %s %.2f", tr("Fairness").c_str(),
-					  quality.fairness, tr("Score").c_str(), quality.score);
+		std::snprintf(summary, sizeof summary, "%s %.2f", tr("Fairness").c_str(),
+					  quality.fairness);
 		const int sw = Toolkit::getFont("little")->getStringWidth(summary);
 		ui.text(rightX + rightW - sw - 30, top + 29, summary, "little", sw + 2, true);
 		ui.button(

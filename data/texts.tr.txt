@@ -1996,6 +1996,10 @@ Patika genişliği
 Virajlar arası duvar
 [Farm building plots]
 Çiftliklerde yapı arsaları
+[Sand bridges over water]
+Su üzerinde kum köprüler
+[Sand lanes through crops]
+Ekinler arasından kum yollar
 [Carousels need at least two colonies.]
 Atlıkarınca en az iki koloni gerektirir.
 [Switchbacks need at least two colonies.]
@@ -2208,24 +2212,22 @@ Parametreleri rastgele seç
 Başlangıç kalitesi
 [Fairness]
 Adalet
-[Score]
-Puan
-[Weight]
-Ağırlık
+[Fitness]
+Güç
+[Win chance]
+Kazanma şansı
+[Coefficient]
+Katsayı
+[Average]
+Ortalama
+[Fitted on games:]
+Uydurulan oyun sayısı:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Her koloninin başlangıcı tamamlanmış haritada ölçülür ve denk rakipler arasındaki binlerce oyuna uydurulmuş bir model bu ölçümleri güce dönüştürür. Güç, o koloninin kazanma olasılığını gösterir. Adalet, bu şansların ne kadar eşit dağıldığını gösterir: her koloninin kazanma şansı eşit olduğunda 1, tek bir koloni haritayı ele geçirecekse 0.
 [Worst]
 En kötü
 [Best]
 En iyi
-[Fertility]
-Verimlilik
-[Deposits]
-Yataklar
-[Room]
-Alan
-[Isolation]
-Uzaklık
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Her koloninin başlangıcı bitmiş haritada ölçülür: buğdaya ve oduna yürüme mesafesi, toprağının ne kadar iyi yeniden yeşerdiği, erişilebilir yataklar ve inşaat alanları ile rakiplere olan uzaklığı. Her etken sabit bir ölçüte göre 0 ile 1 arasında puanlanır, toplam bunları ağırlıklandırır, adalet en kötü koloninin toplamının en iyisine bölümüdür ve puan en kötü toplam çarpı adalettir.
 [Map preview controls]
 Kenarları geçmek için sürükleyin. Tekerlekle yakınlaştırın. Sıfırlamak için sağ veya çift tıklayın.
 [Map preview drag help]
@@ -2644,8 +2646,18 @@ Eşyükselti şeridi genişliği
 Tepe başına merdiven
 [Valley river]
 Vadi nehri
-[Vultures]
-Akbabalar
+[Hills]
+Tepeler
+[Hillsides]
+Yamaçlar
+[Terraces per slope]
+Yamaç başına teras
+[Waviness]
+Dalgalılık
+[Stair spacing]
+Merdiven aralığı
+[Locust]
+Çekirge
 [Plantations]
 Plantasyonlar
 [Plot size]

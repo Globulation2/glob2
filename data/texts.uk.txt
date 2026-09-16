@@ -1984,6 +1984,10 @@ OpenGL недоступний у цій збірці.
 Стіна між витками
 [Farm building plots]
 Ділянки під забудову на фермах
+[Sand bridges over water]
+Піщані мости через воду
+[Sand lanes through crops]
+Піщані доріжки через посіви
 [Carousels need at least two colonies.]
 Для каруселі потрібні принаймні дві колонії.
 [Switchbacks need at least two colonies.]
@@ -2196,24 +2200,22 @@ OpenGL недоступний у цій збірці.
 Якість старту
 [Fairness]
 Справедливість
-[Score]
-Оцінка
-[Weight]
-Вага
+[Fitness]
+Сила
+[Win chance]
+Шанс перемоги
+[Coefficient]
+Коефіцієнт
+[Average]
+Середнє
+[Fitted on games:]
+Підібрано за іграми:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Старт кожної колонії вимірюється на готовій мапі, а модель, підібрана за тисячами ігор між рівними суперниками, перетворює ці вимірювання на силу. Сила показує, наскільки ймовірна перемога цієї колонії. Справедливість показує, наскільки рівномірно розподілені ці шанси: 1, коли кожна колонія має однаковий шанс на перемогу, 0, коли одна колонія забрала б усю мапу.
 [Worst]
 Найгірший
 [Best]
 Найкращий
-[Fertility]
-Родючість
-[Deposits]
-Запаси
-[Room]
-Простір
-[Isolation]
-Віддаленість
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Старт кожної колонії вимірюється на готовій карті: шлях до пшениці та до лісу, наскільки добре відновлюється її земля, запаси та місця для будівництва в межах досяжності й відстань до суперників. Кожен чинник оцінюється від 0 до 1 відносно сталої планки, підсумок їх зважує, справедливість — це підсумок найгіршої колонії, поділений на підсумок найкращої, а оцінка — найгірший підсумок, помножений на справедливість.
 [Map preview controls]
 Перетягуйте через краї. Коліщатко змінює масштаб. Права кнопка або подвійне клацання скидає вигляд.
 [Map preview drag help]
@@ -2632,8 +2634,18 @@ Emoji
 Сходів на пагорб
 [Valley river]
 Річка в долині
-[Vultures]
-Стерв’ятники
+[Hills]
+Пагорби
+[Hillsides]
+Схили
+[Terraces per slope]
+Терас на схил
+[Waviness]
+Хвилястість
+[Stair spacing]
+Крок сходів
+[Locust]
+Сарана
 [Plantations]
 Плантації
 [Plot size]

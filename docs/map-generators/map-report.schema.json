@@ -611,99 +611,21 @@
       ],
       "additionalProperties": false
     },
-    "weights": {
-      "type": "object",
-      "properties": {
-        "wheat": {
-          "type": "number",
-          "description": "Coefficient in the weighted mean."
-        },
-        "wood": {
-          "type": "number",
-          "description": "Coefficient in the weighted mean."
-        },
-        "fertility": {
-          "type": "number",
-          "description": "Coefficient in the weighted mean."
-        },
-        "depth": {
-          "type": "number",
-          "description": "Coefficient in the weighted mean."
-        },
-        "room": {
-          "type": "number",
-          "description": "Coefficient in the weighted mean."
-        },
-        "isolation": {
-          "type": "number",
-          "description": "Coefficient in the weighted mean."
-        }
-      },
-      "required": [
-        "wheat",
-        "wood",
-        "fertility",
-        "depth",
-        "room",
-        "isolation"
-      ],
-      "additionalProperties": false
-    },
     "scale": {
       "type": "object",
       "properties": {
         "catchment_steps": {
           "type": "integer",
-          "description": ""
-        },
-        "wheat_reference": {
-          "type": "integer",
-          "description": ""
-        },
-        "wood_reference": {
-          "type": "integer",
-          "description": ""
-        },
-        "fertility_reference": {
-          "type": "integer",
-          "description": ""
-        },
-        "depth_reference": {
-          "type": "integer",
-          "description": ""
-        },
-        "room_reference": {
-          "type": "integer",
-          "description": ""
-        },
-        "isolation_reference": {
-          "type": "integer",
-          "description": ""
+          "description": "Walking steps a young colony works within."
         },
         "threat_radius": {
           "type": "integer",
-          "description": ""
-        },
-        "crowd_penalty": {
-          "type": "number",
-          "description": ""
-        },
-        "fairness_exponent": {
-          "type": "number",
-          "description": ""
+          "description": "Rivals nearer than this crowd a colony."
         }
       },
       "required": [
         "catchment_steps",
-        "wheat_reference",
-        "wood_reference",
-        "fertility_reference",
-        "depth_reference",
-        "room_reference",
-        "isolation_reference",
-        "threat_radius",
-        "crowd_penalty",
-        "fairness_exponent"
+        "threat_radius"
       ],
       "additionalProperties": false
     },
@@ -880,48 +802,6 @@
           ],
           "additionalProperties": false
         },
-        "normalized": {
-          "type": "object",
-          "properties": {
-            "wheat": {
-              "type": "number",
-              "description": "Dimensionless factor in [0,1]."
-            },
-            "wood": {
-              "type": "number",
-              "description": "Dimensionless factor in [0,1]."
-            },
-            "fertility": {
-              "type": "number",
-              "description": "Dimensionless factor in [0,1]."
-            },
-            "depth": {
-              "type": "number",
-              "description": "Dimensionless factor in [0,1]."
-            },
-            "room": {
-              "type": "number",
-              "description": "Dimensionless factor in [0,1]."
-            },
-            "isolation": {
-              "type": "number",
-              "description": "Dimensionless factor in [0,1]."
-            }
-          },
-          "required": [
-            "wheat",
-            "wood",
-            "fertility",
-            "depth",
-            "room",
-            "isolation"
-          ],
-          "additionalProperties": false
-        },
-        "total": {
-          "type": "number",
-          "description": "Weighted mean, forced to zero if wheat or wood is unreachable."
-        },
         "distance_bands": {
           "type": "array",
           "minItems": 3,
@@ -930,13 +810,21 @@
             "$ref": "#/$defs/quality_distance_band"
           },
           "description": "Fixed 12, 24, 48-step views in that order."
+        },
+        "fitness": {
+          "type": "number",
+          "description": "What the fitted model makes of this start; see FAIRNESS_MODEL.md."
+        },
+        "win_probability": {
+          "type": "number",
+          "description": "Softmax of the fitnesses over this map’s colonies."
         }
       },
       "required": [
         "team",
         "raw",
-        "normalized",
-        "total",
+        "fitness",
+        "win_probability",
         "distance_bands"
       ],
       "additionalProperties": false
@@ -955,42 +843,22 @@
           ],
           "description": ""
         },
-        "weights": {
-          "$ref": "#/$defs/weights"
-        },
         "scale": {
           "$ref": "#/$defs/scale"
-        },
-        "worst": {
-          "type": [
-            "number",
-            "null"
-          ],
-          "description": "See REPORT.md for formula; null if unmeasured."
-        },
-        "best": {
-          "type": [
-            "number",
-            "null"
-          ],
-          "description": "See REPORT.md for formula; null if unmeasured."
         },
         "fairness": {
           "type": [
             "number",
             "null"
           ],
-          "description": "See REPORT.md for formula; null if unmeasured."
+          "description": "1 minus the colony-count-normalised Gini of the win probabilities; null if unmeasured."
         },
         "score": {
           "type": [
             "number",
             "null"
           ],
-          "description": "See REPORT.md for formula; null if unmeasured."
-        },
-        "colony_totals": {
-          "$ref": "#/$defs/distribution"
+          "description": "What the lobby keeps its best candidate roll by; equals the fairness."
         },
         "colonies": {
           "type": "array",
@@ -1038,52 +906,51 @@
           ],
           "additionalProperties": false
         },
-        "normalized_spreads": {
-          "type": "object",
-          "properties": {
-            "wheat": {
-              "$ref": "#/$defs/distribution"
-            },
-            "wood": {
-              "$ref": "#/$defs/distribution"
-            },
-            "fertility": {
-              "$ref": "#/$defs/distribution"
-            },
-            "depth": {
-              "$ref": "#/$defs/distribution"
-            },
-            "room": {
-              "$ref": "#/$defs/distribution"
-            },
-            "isolation": {
-              "$ref": "#/$defs/distribution"
-            }
-          },
-          "required": [
-            "wheat",
-            "wood",
-            "fertility",
-            "depth",
-            "room",
-            "isolation"
+        "model": {
+          "$ref": "#/$defs/model"
+        },
+        "worst_fitness": {
+          "type": [
+            "number",
+            "null"
           ],
-          "additionalProperties": false
+          "description": "Lowest colony fitness; null if unmeasured."
+        },
+        "best_fitness": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Highest colony fitness; null if unmeasured."
+        },
+        "mean_fitness": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Mean colony fitness; null if unmeasured."
+        },
+        "colony_fitness": {
+          "$ref": "#/$defs/distribution"
+        },
+        "colony_win_probability": {
+          "$ref": "#/$defs/distribution"
         }
       },
       "required": [
         "measured",
         "unavailable_reason",
-        "weights",
+        "model",
         "scale",
-        "worst",
-        "best",
+        "worst_fitness",
+        "best_fitness",
+        "mean_fitness",
         "fairness",
         "score",
-        "colony_totals",
+        "colony_fitness",
+        "colony_win_probability",
         "colonies",
-        "raw_spreads",
-        "normalized_spreads"
+        "raw_spreads"
       ],
       "additionalProperties": false
     },
@@ -1836,6 +1703,57 @@
         "exclusive_nearest_tiles",
         "tied_nearest_tiles",
         "resources"
+      ],
+      "additionalProperties": false
+    },
+    "model": {
+      "type": "object",
+      "properties": {
+        "intercept": {
+          "type": "number",
+          "description": "Fitness offset; softmax fixes the scale of the fitness but not its zero."
+        },
+        "games": {
+          "type": "integer",
+          "description": "Games the coefficients were fitted to."
+        },
+        "terms": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "measurement": {
+                "type": "string",
+                "description": "The ColonyQuality measurement, named as tools/fairness_model.py names it."
+              },
+              "transform": {
+                "type": "string",
+                "description": "identity, log, sqrt, square, share or decay24."
+              },
+              "label": {
+                "type": "string",
+                "description": "The phrase the lobby shows for it."
+              },
+              "coefficient": {
+                "type": "number",
+                "description": "Fitted coefficient on the transformed measurement."
+              }
+            },
+            "required": [
+              "measurement",
+              "transform",
+              "label",
+              "coefficient"
+            ],
+            "additionalProperties": false
+          },
+          "description": "The fitted terms, in the order the model applies them."
+        }
+      },
+      "required": [
+        "intercept",
+        "games",
+        "terms"
       ],
       "additionalProperties": false
     }

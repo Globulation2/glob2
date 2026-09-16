@@ -1,12 +1,17 @@
-# Vultures
+# Locust
+
+Named **Locust** until 2026-09-16; renamed to evoke a locust swarm stripping a country of its food and leaving nothing behind. The string id is now `locust`; the numeric id 47, the revision and the seed streams (`vultures-*`) are unchanged, so the maps are too. Evidence recorded before the rename keeps the old name.
 
 **Play contract:** strip the dry wheat fields and attack before the finite food supply runs out.
-Vultures uses Old Growth's sand-ringed home clearings and distant lakes. Wheat replaces the dry
+Locust uses Old Growth's sand-ringed home clearings and distant lakes. Wheat replaces the dry
 forest in irregular fields; wood grows beside water. Homes retain building room, and starting
 trails connect opponents without requiring swimming or an initial clearing campaign.
 
-Every wheat tile starts with **one harvest** and has exactly zero growth probability under the
-engine's water-and-sand rule. This includes the starting rations. There are no renewable wheat
+Every wheat tile starts with **three to five harvests**, drawn at random per tile from the map's
+own `vultures-rations` stream once every repair is done, and has exactly zero growth probability
+under the engine's water-and-sand rule. Until revision 4 (2026-09-16) every tile held one harvest,
+which the engine draws as a nearly spent field; a maintainer's review asked for full-looking wheat,
+so the food on a default map is about four times what the playtests below measured. This includes the starting rations. There are no renewable wheat
 plots, fruit or algae. Wheat therefore cannot spread into irrigated ground: no initial wheat
 source can grow. Wood starts within eight tiles (wrapped Chebyshev distance) of pure water;
 normal shoreline wood regrowth remains enabled. No simulation rules or tile growth flags change.
@@ -19,7 +24,7 @@ walking route between all colonies. These establish an opening, not indefinite s
 ## Controls
 
 - **Wheat amount:** scales the default 65% coverage of eligible dry ground outside home clearings
-  (full cover from about 155%). Every tile remains one harvest. At zero, only starting rations remain.
+  (full cover from about 155%). Every tile holds three to five harvests. At zero, only starting rations remain.
 - **Wood amount:** scales the default 20% scatter chance on eligible ground within eight tiles
   of water. At zero, the starter wood remains.
 - **Home size:** requested radius 16–30, default 24. Homes shrink when needed to preserve the
@@ -39,8 +44,8 @@ zero weight because renewable food is deliberately absent.
 ## Implementation
 
 `ClearingLandscape` shares Old Growth's layout construction, preserving its arithmetic, seed
-streams and traversal order for already playable requests. Vultures opts into a vacancy
-fallback only when the ordinary clearing geometry cannot fit; Old Growth does not. Vultures
+streams and traversal order for already playable requests. Locust opts into a vacancy
+fallback only when the ordinary clearing geometry cannot fit; Old Growth does not. Locust
 has its own furnishing and final validation. Common crop
 repairs are deliberately avoided because they could insert renewable wheat; trail and room
 repairs can only remove resources. Numeric ID 47 is additive; save, replay and network formats
@@ -66,7 +71,7 @@ and three buildings per side, without an army. These are AI behaviors observed o
 food scenario, not final judgments on human pacing or every map size.
 
 The tuning probe raised the existing **Wheat amount** control to 125%, increasing initial wheat
-from 3,347 to 4,182 rations on each sampled Linux map; each tile still held one harvest with
+from 3,347 to 4,182 rations on each sampled Linux map (revision 3); each tile still held one harvest with
 zero fertility. On seed 7 one Nicowar rotation won earlier, while the other fought past the cap.
 On seed 11 the 100% opening won in one rotation but both 125% openings remained active at the
 cap. Hunger and starvation moved in both directions, and Maxima still made no army. Because
@@ -102,11 +107,11 @@ to hide difficult maps.
 
 ```sh
 scons release=1 server=0 -j6 build/src/glob2
-GLOB2_USER_DIR=/tmp/glob2-vultures-profile build/src/glob2 --generate-map vultures \
+GLOB2_USER_DIR=/tmp/glob2-locust-profile build/src/glob2 --generate-map locust \
   --seed 7 --width 256 --height 256 --teams 4 \
-  --output artifacts/vultures/vultures-7.map \
-  --preview artifacts/vultures/vultures-7.png \
-  --json artifacts/vultures/vultures-7.json
+  --output artifacts/locust/locust-7.map \
+  --preview artifacts/locust/locust-7.png \
+  --json artifacts/locust/locust-7.json
 ```
 
 Verification results and retained examples are recorded in
@@ -115,11 +120,11 @@ Verification results and retained examples are recorded in
 ## Budgets and tuning rationale
 
 These numbers define a scenario, not universal engine balance rules. They are named in
-`VulturesGenerator.cpp`; the shared geometry retains Old Growth's construction values.
+`LocustGenerator.cpp`; the shared geometry retains Old Growth's construction values.
 
 | Budget / heuristic | Reason and limitation |
 | --- | --- |
-| 48 starter wheat tiles, one harvest each | A finite bridge to exterior foraging. Kept at zero abundance. Actual survival depends on staffing, travel and population decisions. |
+| 48 starter wheat tiles, three to five harvests each | A finite bridge to exterior foraging. Kept at zero abundance. Actual survival depends on staffing, travel and population decisions. |
 | 24 starter wood tiles | Construction must not depend on a lucky ambient scatter. Normal engine stock amounts and regrowth remain. |
 | Five quarry tiles | Permanent mining frontage for upgrades and ammunition. Stone is eternal, so this does not describe five pieces of stone. A partial quarry fails generation. |
 | 65% exterior wheat cover at 100% abundance | The fields are the ground and the pockets the exception, so moving off the trails means harvesting a way through; the first calibration's 35% left the plain mostly open. Quantile ties can change the exact fraction; trails can remove more. Cover is capped at 100% from about 155% abundance. |
@@ -137,7 +142,7 @@ These numbers define a scenario, not universal engine balance rules. They are na
 Homes use Old Growth's roomiest lattice, dealt randomly to team indices. Their effective radius
 is the smaller of the requested radius and `floor(spacing / 3 - 3 - 2)`: one-third of spacing,
 minus a three-tile clearing margin and two-tile sand containment ring. If the shared pond/swarm
-room test fails, Vultures alone tries the opt-in vacancy lattice before rejecting. The fallback
+room test fails, Locust alone tries the opt-in vacancy lattice before rejecting. The fallback
 compares the ordinary team-count lattice with grids of one to four extra sites. At each removal,
 it picks the site whose omission gives the largest minimum wrapped whole-tile separation;
 ties keep the first site in lattice order. It accepts only a strict spacing improvement that
@@ -159,8 +164,8 @@ Existing arithmetic and stream names are preserved for Old Growth compatibility.
 ### Fallback and error policy
 
 - Shrinking homes and omitting lakes are the shared layout's explicit, telemetered fallbacks.
-  Vultures requests no peripheral home pools because they would eliminate dry starting ground.
-- Only a crowded, failing Vultures layout invokes the vacancy search. A passing result records
+  Locust requests no peripheral home pools because they would eliminate dry starting ground.
+- Only a crowded, failing Locust layout invokes the vacancy search. A passing result records
   both its count and a fallback message; if none passes the existing room rule, the request
   remains an explicit geometry rejection. Old Growth never invokes it.
 - A kit search may leave the home outline to find dry wheat, but never ignores fertility,
@@ -187,13 +192,15 @@ that adjudication noisy; read the per-start economy instead. The defaults are un
 
 ## Reusable framework additions
 
-- `ClearingLandscape`: layout construction extracted unchanged from Old Growth. Vultures supplies
+- `ClearingLandscape`: layout construction extracted unchanged from Old Growth. Locust supplies
   its home/lake settings and telemetry namespace; the resource policy stays outside the primitive.
 - `pureTiles(Map, TerrainType)`: finished-map counterpart to `pureTiles(TerrainSketch, Torus, type)`.
   Mixed beach tiles are excluded. This supports final-world habitat validation after repairs.
 - `capResourceStock`: caps existing stocks without refilling, creating deposits, changing sprites
   or drawing RNG. Returns tile count and remaining stock from the same pass for telemetry. It
-  does not disable growth; callers must establish dryness separately.
+  does not disable growth; callers must establish dryness separately. Locust capped its wheat
+  at one harvest with it until revision 4 and now sets three to five per tile itself; the
+  primitive stays for a finite crop that wants a cap.
 - `startingAccessFailure`: read-only supply and room validator. Callers supply resource types,
   names and travel budgets; it supports stone or fruit targets as well as wheat and wood. It
   floods from actual workers with the engine's non-swimmer predicate and reports the first
@@ -214,13 +221,13 @@ budget. It grows the nearest eligible patch, then the next nearest eligible patc
 budget is filled or eligible seeds are exhausted. Existing deposits and terrain/occupancy the
 engine disallows are excluded internally. Each successful iteration places at least one tile,
 so the requested tile budget bounds the iterations. It returns both tiles and patch count;
-Vultures records a per-colony `split-rations` fallback when more than one patch is needed.
+Locust records a per-colony `split-rations` fallback when more than one patch is needed.
 Seed searches stay within the requested box, but patch growth can extend outside it wherever
 the predicate permits; the final walking audit remains mandatory. A dedicated disconnected-
 pocket fixture verifies both complete placement and termination when the habitat is exhausted.
 
 This keeps placement mechanics general and leaves only the habitat choice and opening budget
-in Vultures. The original failed requests are retained alongside the corrected sweep.
+in Locust. The original failed requests are retained alongside the corrected sweep.
 
 Retesting that rectangle fixed all ration shortfalls and exposed a second instance of the same
 problem: seed 202's fourth colony had a one-tile nearest quarry pocket. Wood and quarry budgets
@@ -229,7 +236,7 @@ now use the same shared operation as wheat. Per-colony patch counts and `split-w
 by the existing CI-wired defaults harness.
 
 The JSON report's `canonical_quality` intentionally retains the common cross-generator weights;
-it is not Vultures' candidate-selection score. Use the raw supply/room/contact measurements and
+it is not Locust' candidate-selection score. Use the raw supply/room/contact measurements and
 the generator's own weights when interpreting this deliberately dry scenario.
 
 ### Revision 3 on the same protocol

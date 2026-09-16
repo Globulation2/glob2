@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "BreachableHighlandsGenerator.h"
+#include "Centrepieces.h"
 #include "Drawing.h"
 #include "FertilityField.h"
 #include "Game.h"
@@ -37,6 +38,12 @@ constexpr int kFarmRadius = 12, kFarmRing = 14, kCentreClearance = 28;
 // generous valley aprons and game checks provide the practical expansion budget.
 constexpr int kHomeWheat = 54, kHomeWood = 24, kMinimumRoom = 32;
 constexpr double kRoadHalfWidth = 1.5;
+// Sand blotches on each valley's open ground (maintainer review 2026-09-16, as for Hedgerow
+// Country: "some terrain variety to break up the monotony"): two to four rough discs of radius 2
+// to 4, clear of the farm ring and its beaches, kBlotchKeepOut tiles from any ridge, saddle or
+// lane, and never on a home's swarm apron. Sand holds no crop and waters nothing, so a blotch
+// cannot water a saddle or close a pass.
+constexpr int kBlotchKeepOut = 3, kBlotchTries = 12;
 
 struct Layout
 {
@@ -195,12 +202,42 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		strokePath(L.road, t, path);
 	}
 	// All water is well inland. A sand rim contains crops and joins the approach roads.
-	std::vector<unsigned char> water(n, 0);
+	// Each valley's pond is one of the shared centrepiece designs (maintainer review 2026-09-16:
+	// "a few different designs and patterns for each square"); Round is the map's own rough pond.
+	// Every home draws the same design, since a design's water sets how fast its crops regrow.
+	// Designs with square corners are drawn a corner smaller, so none reaches further from the
+	// centre than the rough round pond the saddle clearance was measured against.
+	std::vector<unsigned char> water(n, 0), islet(n, 0);
 	const RadialShape pond(o.pondSize, 0.15, context, "breachable-ponds");
+	const auto drawDesign = [&]
+	{
+		const auto design =
+			PondDesign(context.bounded("breachable-pond-designs", int(PondDesign::Count)));
+		return pondDesignMinimumRadius(design) > o.pondSize - 1 ? PondDesign::Round : design;
+	};
+	const PondDesign homeDesign = drawDesign();
+	const int homeTurn = int(context.bounded("breachable-pond-designs", 2));
 	for (int cell = 0; cell < g.cellCount(); ++cell)
 	{
 		const ShapePoint c = tilePoint(g.cells[cell].centre);
-		fillShape(water, t, c.x, c.y, pond, context.bounded("breachable-ponds", 360) * kPi / 180);
+		const double turn = context.bounded("breachable-ponds", 360) * kPi / 180;
+		PondDesign design = drawDesign();
+		int quarter = int(context.bounded("breachable-pond-designs", 2));
+		if (isHome[cell])
+		{
+			design = homeDesign;
+			quarter = homeTurn;
+		}
+		const bool rounded = design == PondDesign::Round || design == PondDesign::Ring ||
+							 design == PondDesign::Diamond;
+		const int radius = rounded ? o.pondSize : o.pondSize - 1;
+		if (design == PondDesign::Round)
+			fillShape(water, t, c.x, c.y, pond, turn);
+		else
+			for (int dy = -radius; dy <= radius; ++dy)
+				for (int dx = -radius; dx <= radius; ++dx)
+					if (const char at = pondDesignAt(design, radius, quarter, dx, dy))
+						(at == 'w' ? water : islet)[t.at(int(c.x) + dx, int(c.y) + dy)] = 1;
 		strokePath(L.road, t, arcPath(c.x, c.y, kFarmRing, 0, 2 * kPi, 1.2, 1));
 		// A grass access lane survives only until crops spread into it. Join both banks to
 		// the outer ring with sand instead: the pond and these spokes divide the fertile
@@ -223,7 +260,46 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const auto protectedCorners = tileCorners(t, L.protectedTiles);
 	L.terrain.assign(n, GRASS);
 	for (int i = 0; i < n; ++i)
-		L.terrain[i] = water[i] ? WATER : L.road[i] && !protectedCorners[i] ? SAND : GRASS;
+		L.terrain[i] = water[i] ? WATER
+					   : (L.road[i] || islet[i]) && !protectedCorners[i] ? SAND
+																		  : GRASS;
+	{
+		std::vector<unsigned char> busy(n, 0);
+		for (int i = 0; i < n; ++i)
+			busy[i] = L.protectedTiles[i] || L.road[i];
+		busy = dilate(t, busy, kBlotchKeepOut);
+		int blotches = 0;
+		for (int cell = 0; cell < g.cellCount(); ++cell)
+		{
+			const int x = g.centreTileX(cell), y = g.centreTileY(cell), half = o.valleySize / 2;
+			const int wanted = 2 + int(context.bounded("breachable-blotches", 3));
+			for (int b = 0, tries = 0; b < wanted && tries < kBlotchTries; ++tries)
+			{
+				const int dx = int(context.bounded("breachable-blotches", 2 * half + 1)) - half;
+				const int dy = int(context.bounded("breachable-blotches", 2 * half + 1)) - half;
+				const int radius = 2 + int(context.bounded("breachable-blotches", 3));
+				const double turn = context.bounded("breachable-blotches", 360) * kPi / 180;
+				const int i = t.at(x + dx, y + dy);
+				// The home swarm's apron, round its anchor 19 west and 12 north of the pond.
+				const bool apron = dx >= -30 && dx <= -8 && dy >= -23 && dy <= -1;
+				if (L.labels[i] != cell || busy[i] || apron ||
+					dx * dx + dy * dy < (kFarmRing + radius + 4) * (kFarmRing + radius + 4))
+					continue;
+				const RadialShape shape(radius, 0.35, context, "breachable-blotches");
+				forEachTileInShape(t, x + dx, y + dy, shape, turn,
+								   [&](int tile, double, double)
+								   {
+									   if (!busy[tile] && L.labels[tile] == cell &&
+										   L.terrain[tile] == GRASS)
+										   L.terrain[tile] = SAND;
+								   });
+				++b;
+				++blotches;
+			}
+		}
+		context.telemetry.measure("breachable.blotches", blotches);
+		context.telemetry.choice("breachable.ponds.home-design", pondDesignName(homeDesign));
+	}
 	layBeaches(L.terrain, t);
 	const auto grass = pureTiles(L.terrain, t, GRASS);
 	const auto fertility = cropGrowthField(L.terrain, t);
@@ -355,6 +431,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
+	const BreachableHighlandsOptions o(context.request);
 	const Map &map = game.map;
 	if (const auto error = designMismatch(L, map, "breachable highlands"); !error.empty())
 		return error;
@@ -376,7 +453,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (int cell = 0; cell < L.cells.cellCount(); ++cell)
 	{
 		const int cx = L.cells.centreTileX(cell), cy = L.cells.centreTileY(cell);
-		if (!map.isWater(cx, cy))
+		bool pondWater = false;
+		for (int y = -o.pondSize; y <= o.pondSize && !pondWater; ++y)
+			for (int x = -o.pondSize; x <= o.pondSize && !pondWater; ++x)
+				pondWater = map.isWater(t.x(cx + x), t.y(cy + y));
+		if (!pondWater)
 			return "A valley lost its farm pond.";
 		bool reached = false;
 		for (int y = -18; y <= 18; ++y)
@@ -447,7 +528,7 @@ GeneratorDefinition breachableHighlandsDefinition()
 	return {"breachable-highlands",
 			37,
 			"Breachable highlands",
-			4,
+			5,
 			false,
 			{{"valley-size", "Valley size", 64, 96, 8, 64, ControlGroup::Layout},
 			 {"ridge-depth", "Ridge depth", 3, 11, 2, 5, ControlGroup::Terrain},

@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HedgerowCountryGenerator.h"
+#include "Centrepieces.h"
 #include "Drawing.h"
 #include "FertilityField.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GraphMaze.h"
+#include "Geometry.h"
 #include "Growth.h"
+#include "Morphology.h"
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Sketch.h"
@@ -31,10 +34,32 @@ constexpr int kWideFieldClearance = 34;
 // increasing starter wheat caused faster expansion followed by worse hunger for
 // Maxima. A 100-water-tile pond and wider capped plots instead budget ongoing
 // renewal and gathering frontage. Sand still confines both crops to the farm.
-constexpr int kPondRadius = 5;
-constexpr int kPlotRadius = 14;
 constexpr int kHomeWheat = 48; // buffer while the first inn and harvesting routes establish
 constexpr int kHomeWood = 24;
+// Every field's village, scaled to its field. Fields of 64 and more keep the measured village: a
+// pond of radius 5 in a capped plot of 14, lanes cleared within 20 of the centre and the swarm 20
+// north. Fields of 48 (maintainer review 2026-09-16: "allow a couple smaller values for field
+// size") shrink it so the pond's whole growth reach (radius + 15) still clears a 24-tile half field
+// and its hedges: a pond of 4 in a plot of 11, lanes cleared within 16, the swarm 16 north. The
+// smaller pond holds fewer water tiles, so a 48 field's crops regrow more slowly: small fields
+// trade food for the number of fields and fronts.
+struct Village
+{
+	int pond, plot, clear, swarmDy, originDy, accessDy, warpClearance;
+};
+Village villageFor(int fieldSize)
+{
+	if (fieldSize < 64)
+		return {4, 11, 16, -16, -17, -12, 22};
+	return {5, 14, 20, -20, -21, -16, fieldSize > 64 ? kWideFieldClearance : kClearance};
+}
+// Sand blotches in each field's open ground (maintainer review 2026-09-16: "some random sand
+// blotches in the outer section of each square, just to break up the monotony"): two to four
+// rough discs of radius 2 to 4, clear of the plot and its beaches, kBlotchKeepOut tiles from any
+// hedge or lane, and never on a village's swarm apron. Sand is walkable, holds no crop and waters
+// nothing, so a blotch changes where a colony builds, never whether a hedge stays dry or a lane
+// stays open.
+constexpr int kBlotchKeepOut = 3, kBlotchTries = 12;
 
 struct Layout
 {
@@ -42,6 +67,8 @@ struct Layout
 	Tessellation fields;
 	TerrainSketch terrain;
 	std::vector<unsigned char> hedge, road, plot;
+	std::vector<PondDesign> ponds; // every field's centrepiece design
+	std::vector<int> pondTurns;
 	std::vector<int> starts;
 	std::string failure;
 };
@@ -122,6 +149,7 @@ HomeScore scoreHomes(const std::vector<std::vector<int>> &distance, const std::v
 Layout design(const GenerationRequest &r, GenerationContext &c)
 {
 	const HedgerowCountryOptions o(r);
+	const Village v = villageFor(o.fieldSize);
 	Layout L;
 	L.t = {1 << r.wDec, 1 << r.hDec};
 	const Torus &t = L.t;
@@ -140,7 +168,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	// (retained failure: seed 30002, field size 80, thickness 4). Reserve the larger
 	// diagonal budget there. Compact fields retain their already limited warping;
 	// final exact fertility validation remains authoritative for every setting.
-	const int clearance = o.fieldSize > 64 ? kWideFieldClearance : kClearance;
+	const int clearance = v.warpClearance;
 	const auto regularCorners = g.corners;
 	warpCorners(g, warpLimit(g), boundary, 12, clearance, c, "hedgerow-warp");
 	// Circular centre clearance alone misses the square corners of the engine's
@@ -156,7 +184,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	// random draws. Safe layouts retain their exact geometry and RNG streams.
 	// Halving preserves some irregularity, and the bounded final lattice fallback
 	// has >=64-tile pitch: even a seven-tile hedge lies beyond the 41-tile envelope.
-	constexpr int growthReach = kPondRadius + 15;
+	const int growthReach = v.pond + 15;
 	std::vector<unsigned char> farmEnvelope(t.size(), 0);
 	for (int cell = 0; cell < g.cellCount(); ++cell)
 		for (int dy = -growthReach; dy <= growthReach; ++dy)
@@ -172,10 +200,22 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	c.telemetry.measure("hedgerow.warp-contractions", contractions);
 	// A spanning tree guarantees initial access to EVERY field, including unoccupied ones.
 	// The backtracker makes winding routes; opening some extra edges adds flanks without
-	// immediately making every hedge redundant. The control counts extra edges per 100 cells,
-	// not a percentage of all boundaries. Zero still retains the entire spanning tree.
+	// immediately making every hedge redundant. The control is the percentage of the boundaries
+	// the tree left closed that get a gateway too: 0 keeps only the tree, 100 opens every
+	// boundary. It counted extra edges per 100 fields until 2026-09-16, when a maintainer found it
+	// seemed to do nothing: 25 opened four short lane stubs on a 256 map. The default of 25 opens
+	// about as many there, and 100 now visibly opens the whole country.
 	carveSpanningTree(g, c, "hedgerow-lanes", blocked, open);
-	openLoops(g, c, "hedgerow-gateways", blocked, o.gateways, open);
+	{
+		std::vector<int> closed;
+		for (int e = 0; e < int(g.edges.size()); ++e)
+			if (!open[e])
+				closed.push_back(e);
+		c.shuffle(closed.begin(), closed.end(), "hedgerow-gateways");
+		const size_t extra = std::min(closed.size(), (closed.size() * size_t(o.gateways) + 50) / 100);
+		for (size_t k = 0; k < extra; ++k)
+			open[closed[k]] = 1;
+	}
 	L.hedge.assign(t.size(), 0);
 	L.road.assign(t.size(), 0);
 	L.plot.assign(t.size(), 0);
@@ -214,21 +254,19 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	for (int cell = 0; cell < g.cellCount(); ++cell)
 	{
 		const int x = g.centreTileX(cell), y = g.centreTileY(cell);
-		for (int dy = -20; dy <= 20; ++dy)
-			for (int dx = -20; dx <= 20; ++dx)
+		for (int dy = -v.clear; dy <= v.clear; ++dy)
+			for (int dx = -v.clear; dx <= v.clear; ++dx)
 				L.road[t.at(x + dx, y + dy)] = 0;
-		for (int dy = -kPlotRadius; dy <= kPlotRadius; ++dy)
-			for (int dx = -kPlotRadius; dx <= kPlotRadius; ++dx)
+		for (int dy = -v.plot; dy <= v.plot; ++dy)
+			for (int dx = -v.plot; dx <= v.plot; ++dx)
 			{
 				const int i = t.at(x + dx, y + dy);
 				const int d = std::max(std::abs(dx), std::abs(dy));
-				L.terrain[i] = d >= kPlotRadius - 1 ? SAND : GRASS;
-				L.plot[i] = d < kPlotRadius - 1;
+				L.terrain[i] = d >= v.plot - 1 ? SAND : GRASS;
+				L.plot[i] = d < v.plot - 1;
 				// A sand divider keeps the renewable woodlot out of the wheat plot.
 				if (std::abs(dx) <= 1)
 					L.terrain[i] = SAND;
-				if (std::abs(dx) <= kPondRadius && std::abs(dy) <= kPondRadius)
-					L.terrain[i] = WATER;
 			}
 	}
 	for (int i = 0; i < t.size(); ++i)
@@ -237,6 +275,43 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			L.terrain[i] = SAND;
 			L.hedge[i] = 0;
 		}
+	{
+		const auto labels = labelTiles(g);
+		std::vector<unsigned char> busy(t.size(), 0);
+		for (int i = 0; i < t.size(); ++i)
+			busy[i] = L.hedge[i] || L.road[i];
+		busy = dilate(t, busy, kBlotchKeepOut);
+		int blotches = 0;
+		for (int cell = 0; cell < g.cellCount() && !labels.empty(); ++cell)
+		{
+			const int x = g.centreTileX(cell), y = g.centreTileY(cell), half = o.fieldSize / 2;
+			const int wanted = 2 + int(c.bounded("hedgerow-blotches", 3));
+			for (int b = 0, tries = 0; b < wanted && tries < kBlotchTries; ++tries)
+			{
+				const int dx = int(c.bounded("hedgerow-blotches", 2 * half + 1)) - half;
+				const int dy = int(c.bounded("hedgerow-blotches", 2 * half + 1)) - half;
+				const int radius = 2 + int(c.bounded("hedgerow-blotches", 3));
+				const double turn = c.bounded("hedgerow-blotches", 360) * kPi / 180;
+				const int i = t.at(x + dx, y + dy);
+				// The swarm's apron: the rectangle the settlement searches, and its workers' ring.
+				const bool apron =
+					dx >= -15 && dx <= 5 && dy >= v.swarmDy - 9 && dy <= v.swarmDy + 9;
+				if (labels[i] != cell || busy[i] || apron ||
+					std::max(std::abs(dx), std::abs(dy)) < v.plot + radius + 3)
+					continue;
+				const RadialShape shape(radius, 0.35, c, "hedgerow-blotches");
+				forEachTileInShape(t, x + dx, y + dy, shape, turn,
+								   [&](int tile, double, double)
+								   {
+									   if (!busy[tile] && L.terrain[tile] == GRASS)
+										   L.terrain[tile] = SAND;
+								   });
+				++b;
+				++blotches;
+			}
+		}
+		c.telemetry.measure("hedgerow.blotches", blotches);
+	}
 	layBeaches(L.terrain, t);
 	// Sand is stored at corners, whereas wood occupies pure-grass tiles. Remove the road's
 	// mixed-terrain shoulders from the hedge mask too; otherwise the validator would demand
@@ -269,7 +344,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			// A tile on the north side of the planned swarm, consistently placed in
 			// every village. Actual workers may start on another side; final reports
 			// measure from those real workers after crops and settlements are present.
-			const int origin = t.at(g.centreTileX(cell) - 3, g.centreTileY(cell) - 21);
+			const int origin = t.at(g.centreTileX(cell) - 3, g.centreTileY(cell) + v.originDy);
 			origins.push_back(origin);
 			distance.push_back(stepsFrom(t, tileMask(t, {origin}), walkable));
 		}
@@ -307,6 +382,40 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	else
 		c.telemetry.choice("hedgerow.homes.selection",
 						   r.nbTeams == 1 ? "single-colony" : "all-fields");
+	// Every field's pond in one of the shared centrepiece designs, all inside the pond square, so
+	// the growth envelope above holds for each (maintainer review 2026-09-16: "the shape the
+	// central fountain in each square varied a little bit more"). Every home draws the same design,
+	// since a design's water sets how fast its crops regrow; the rest draw their own. Ponds lie
+	// inside the plots the start search already excludes, so they cannot change its choice.
+	{
+		const auto draw = [&]
+		{
+			auto design = PondDesign(c.bounded("hedgerow-ponds", int(PondDesign::Count)));
+			return pondDesignMinimumRadius(design) > v.pond ? PondDesign::Round : design;
+		};
+		const PondDesign homeDesign = draw();
+		const int homeTurn = int(c.bounded("hedgerow-ponds", 2));
+		L.ponds.assign(g.cellCount(), homeDesign);
+		L.pondTurns.assign(g.cellCount(), homeTurn);
+		for (int cell = 0; cell < g.cellCount(); ++cell)
+		{
+			const PondDesign design = draw();
+			const int turn = int(c.bounded("hedgerow-ponds", 2));
+			if (std::find(L.starts.begin(), L.starts.end(), cell) != L.starts.end())
+				continue;
+			L.ponds[cell] = design;
+			L.pondTurns[cell] = turn;
+		}
+		for (int cell = 0; cell < g.cellCount(); ++cell)
+			for (int dy = -v.pond; dy <= v.pond; ++dy)
+				for (int dx = -v.pond; dx <= v.pond; ++dx)
+					if (const char at =
+							pondDesignAt(L.ponds[cell], v.pond, L.pondTurns[cell], dx, dy))
+						L.terrain[t.at(g.centreTileX(cell) + dx, g.centreTileY(cell) + dy)] =
+							at == 'w' ? WATER : SAND;
+		layBeaches(L.terrain, t);
+		c.telemetry.choice("hedgerow.ponds.home-design", pondDesignName(homeDesign));
+	}
 	dealStarts(c, L.starts);
 	c.telemetry.measure("hedgerow.fields", g.cellCount());
 	c.telemetry.measure("hedgerow.wooded-boundaries", wooded);
@@ -324,6 +433,7 @@ bool generate(Game &game, GenerationContext &c)
 		return false;
 	}
 	const HedgerowCountryOptions o(c.request);
+	const Village v = villageFor(o.fieldSize);
 	const Torus &t = L.t;
 	Map &map = game.map;
 	writeUndermap(map, L.terrain);
@@ -336,7 +446,8 @@ bool generate(Game &game, GenerationContext &c)
 	const auto anchor = [&](int team)
 	{
 		const int cell = L.starts[team];
-		return MapGeneratorPoint(L.fields.centreTileX(cell) - 5, L.fields.centreTileY(cell) - 20);
+		return MapGeneratorPoint(L.fields.centreTileX(cell) - 5,
+								 L.fields.centreTileY(cell) + v.swarmDy);
 	};
 	if (!settleColonies(
 			game, c, "hedgerow-settlements",
@@ -365,7 +476,7 @@ bool generate(Game &game, GenerationContext &c)
 			const auto eligible = [&](int i)
 			{
 				return L.plot[i] && !reserved[i] &&
-					   t.chebyshev(x, y, i % t.w, i / t.w) < kPlotRadius - 1 &&
+					   t.chebyshev(x, y, i % t.w, i / t.w) < v.plot - 1 &&
 					   t.offsetX(x, i % t.w) * side > 1 && clearGround(map, i % t.w, i / t.w);
 			};
 			const int seed = seedNear(t, x + side * 5, y, 4, eligible);
@@ -380,13 +491,13 @@ bool generate(Game &game, GenerationContext &c)
 		// keeps the old mean amount (2.5) but gives matching plot shapes matching stocks.
 		// Keep the existing draws and varieties; this changes neither hedge effort nor
 		// the random stream consumed by furnishing subsequent fields.
-		for (int dy = -kPlotRadius; dy <= kPlotRadius; ++dy)
-			for (int dx = -kPlotRadius; dx <= kPlotRadius; ++dx)
+		for (int dy = -v.plot; dy <= v.plot; ++dy)
+			for (int dx = -v.plot; dx <= v.plot; ++dx)
 			{
 				const int i = t.at(x + dx, y + dy);
 				auto &resource = map.getResource(i % t.w, i / t.w);
 				if (L.plot[i] && (resource.type == WHEAT || resource.type == WOOD))
-					resource.amount = 2 + ((dx + dy + 2 * kPlotRadius) % 2);
+					resource.amount = 2 + ((dx + dy + 2 * v.plot) % 2);
 			}
 		// Small quarries and orchards reward occupation of additional fields. Their
 		// bounded patches stay away from village footprints, hedges and crop plots.
@@ -407,6 +518,9 @@ bool generate(Game &game, GenerationContext &c)
 		}
 	}
 	plantCover(map, t, L.hedge, WOOD, [&](int i) { return clearGround(map, i % t.w, i / t.w); });
+	// Algae in the ponds (maintainer review 2026-09-16: "a distinct lack of algae in any pond on the
+	// default parameters"; the map seeded none and had no algae control).
+	seedAlgae(map, c, t, "hedgerow-algae", o.algae, AlgaeBand::anyWater(25));
 	// Only the existing opening backstop may clear local starter congestion. Protect every
 	// hedge so resource repair cannot silently turn a difficult route into an extra gateway.
 	secureStartingCrops(game, c, t, 24, 32, 0, &L.hedge);
@@ -436,8 +550,10 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 		if (L.road[i] && (game.map.isWater(x, y) || game.map.isResource(x, y)))
 			return "An existing lane is blocked.";
 	}
+	const int accessDy = villageFor(HedgerowCountryOptions(c.request).fieldSize).accessDy;
 	for (int cell = 0; cell < L.fields.cellCount(); ++cell)
-		if (walk.steps[L.t.at(L.fields.centreTileX(cell), L.fields.centreTileY(cell) - 16)] < 0)
+		if (walk.steps[L.t.at(L.fields.centreTileX(cell), L.fields.centreTileY(cell) + accessDy)] <
+			0)
 			return "A field has no initial road access.";
 	return "";
 }
@@ -446,7 +562,8 @@ HedgerowCountryOptions::HedgerowCountryOptions(const GenerationRequest &r)
 	: fieldSize(r.option("field-size")), hedgeThickness(r.option("hedge-thickness")),
 	  gateways(r.option("existing-gateways")), woodedShare(r.option("wooded-boundary-share")),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
-	  stone(r.option("stone-amount")), fruit(r.option("fruit-amount"))
+	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
+	  fruit(r.option("fruit-amount"))
 {
 }
 GeneratorDefinition hedgerowCountryDefinition()
@@ -455,15 +572,16 @@ GeneratorDefinition hedgerowCountryDefinition()
 		"hedgerow-country",
 		38,
 		"Hedgerow Country",
-		6,
+		7,
 		false,
-		{{"field-size", "Field size", 64, 96, 16, 64, ControlGroup::Layout},
+		{{"field-size", "Field size", 48, 96, 16, 64, ControlGroup::Layout},
 		 {"hedge-thickness", "Hedge thickness", 2, 4, 1, 3, ControlGroup::Terrain},
-		 {"existing-gateways", "Existing gateways", 0, 75, 25, 25, ControlGroup::Layout},
+		 {"existing-gateways", "Existing gateways", 0, 100, 25, 25, ControlGroup::Layout},
 		 {"wooded-boundary-share", "Wooded boundary share", 50, 100, 10, 90, ControlGroup::Terrain},
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
 		generate,
 		true,

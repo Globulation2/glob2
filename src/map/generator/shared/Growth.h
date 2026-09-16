@@ -122,12 +122,10 @@ int digPond(TerrainSketch &sketch, const Torus &t, int site, int nearest, int fa
 		}
 	return dug;
 }
-/// Disable incoming resource growth on a tile mask using the engine's existing
-/// serialized canResourcesGrow flag. Leaves terrain, resources and unmarked tiles
-/// unchanged; callers must leave protected construction/circulation tiles unseeded.
-/// Returns changed flags, or -1 for a wrong-sized mask without changing the map.
-/// This supports grass service courts directly beside crops, where a sand barrier
-/// would make harvesting trips too long. Existing resources are not cleared.
-int preventResourceGrowth(Map &, const std::vector<unsigned char> &protectedTiles);
+// There is deliberately no helper here for the engine's saved canResourcesGrow flag.
+// Generated maps may not disable resource growth anywhere: no-growth zones are for
+// hand-made scenarios such as the tutorial, and validateGeneratedWorld refuses any generated
+// world that has one. Contain crops with terrain — sand, or ground the water probe cannot
+// reach — as docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md describes.
 
 } // namespace MapGeneration

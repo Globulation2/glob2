@@ -43,8 +43,9 @@
 #include "DrumlinFieldGenerator.h"
 #include "ContinentsGenerator.h"
 #include "SavannahGenerator.h"
+#include "HillsGenerator.h"
 #include "RiceTerracesGenerator.h"
-#include "VulturesGenerator.h"
+#include "LocustGenerator.h"
 #include "PlantationsGenerator.h"
 #include "SierpinskiGardensGenerator.h"
 #include "HilbertRiverGenerator.h"
@@ -182,8 +183,9 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 drumlinFieldDefinition(),
 											 continentsDefinition(),
 											 savannahDefinition(),
+											 hillsDefinition(),
 											 riceTerracesDefinition(),
-											 vulturesDefinition(),
+											 locustDefinition(),
 											 plantationsDefinition(),
 											 uniformDefinition()});
 	return registry;
