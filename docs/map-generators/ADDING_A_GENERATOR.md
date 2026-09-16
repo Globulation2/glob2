@@ -144,6 +144,20 @@ is enough to stop a crop extending), dry ground for scenery that must not spread
 the deposit out. [Game rules for map design](GAME_RULES_FOR_MAP_DESIGN.md) has the engine
 detail.
 
+### Hand-drawn shapes come in several designs
+
+When a generator stamps a specific drawn shape (a home module, a fort, a town plot, a garden,
+a pond), give it several designs that meet the same contract, and turns and mirrors where the
+concept allows. Choose one per map from its own named stream and give every colony the same
+design, so the opening stays fair; neutral copies may draw their own. The same stamp on every
+map is too boring, however well it plays. Canals' block kinds, City states' home kinds,
+Hedgerow Country's and Breachable Highlands' centrepieces, and the home designs of
+[Forts](FORTS.md), [Lava shield](LAVA_SHIELD.md) and the [fractal maps](FRACTAL_MAPS.md)
+are working examples. Record the choice with `telemetry.choice`, and verify each design
+pinned on its own against the previous release across sizes and colony counts. The
+map-design skill's shaped-generators reference lists the traps the first sets hit: mirrored
+corners, sand opposite water, closed designs costing reach, and paths paving unheld tiles.
+
 ### Maps can't be ugly
 
 A change made for mobility, fairness or a healthier economy must not destroy the aesthetic vision the map was built on. When the fix and the picture disagree, find the version of the fix that keeps the picture; it nearly always exists. Three checks catch most of what previews miss:

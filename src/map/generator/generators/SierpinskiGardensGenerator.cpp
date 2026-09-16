@@ -114,7 +114,8 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	// water, crop corners, and building courts; empty external lanes may still meet
 	// a causeway. Protecting an entire bounding square would reject safe narrow-map
 	// approaches, while stamping farms afterwards could erase the selected road.
-	layHomeEconomies(L);
+	if (!layHomeEconomies(L, context))
+		return L;
 	auto protectedPlots = L.wheat;
 	for (int i = 0; i < t.size(); ++i)
 		protectedPlots[i] |= L.wood[i];
@@ -372,7 +373,8 @@ GeneratorDefinition sierpinskiGardensDefinition()
 	return {"sierpinski-gardens",
 			49,
 			"Sierpiński Gardens",
-			7,
+			// Revision 8: one of four home garden designs per map (FractalMapSupport.h).
+			8,
 			false,
 			controls,
 			generate,

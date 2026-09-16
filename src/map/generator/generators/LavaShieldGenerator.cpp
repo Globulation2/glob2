@@ -18,6 +18,7 @@
 #include "Sketch.h"
 #include "StartQuality.h"
 #include <algorithm>
+#include <climits>
 #include <cmath>
 #include <limits>
 #include <string>
@@ -44,14 +45,11 @@ constexpr int kMinimumLake = 8;
 // Four-corner terrain conversion spoils a tile beside sand. A 1.5-corner road half
 // width keeps an eight-connected sand circuit; crops cannot grow across its pure sand.
 constexpr double kRoadHalfWidth = 1.5;
-// A 16x16 clear grass town seats several non-overlapping buildings and their upgrades.
-// A two-corner sand ring isolates it from spreading crops without a new inland pond.
-constexpr int kHomeSide = 16, kHomeRing = 2;
-constexpr int kHomeHalf = kHomeSide / 2;
+// A two-corner sand ring isolates a town from spreading crops without a new inland pond.
+constexpr int kHomeRing = 2;
 // Search on a four-tile grid: independent of angles and cheap enough to score whole
 // finished candidate worlds. Four complete deals are tried, never a wall-clock budget.
 constexpr int kSiteStride = 4, kDeals = 4;
-constexpr int kCandidateClearance = kHomeHalf + kHomeRing + 2;
 // The home centre must be close enough to shore for external starter fields to renew,
 // but not so close that its sand ring eats the beach. Engine probes reach 15 per axis.
 constexpr int kHomeWaterMin = 12, kHomeWaterMax = 21;
@@ -288,15 +286,147 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	return L;
 }
 
+// The towns' plan: one shape per map, drawn at every town with the same frayed edge, so every
+// colony starts on the same ground while maps differ (maintainer review 2026-09-16: "the most
+// basic" square every time, "not so exacting"). Each shape seats about as many buildings as the
+// 16x16 square it replaced: roughly 250 clear tiles.
+enum class TownShape
+{
+	Square,  // 16x16
+	Wide,    // 18x14, about 4:3
+	Long,    // 19x13, about 3:2
+	Strip,   // 22x11, 2:1
+	Rounded, // 17x17 with rounded corners
+	Octagon, // 17x17 with its corners cut
+	Oval,    // 20x16
+	Count
+};
+const char *const kTownShapeNames[] = {"square",  "wide",    "long", "strip",
+									   "rounded", "octagon", "oval"};
+struct Town
+{
+	TownShape shape = TownShape::Square;
+	bool turned = false;
+	// Corner offsets from the town's centre: its clear grass, and the sand ring round it.
+	std::vector<std::pair<int, int>> grass, ring;
+	// Half the town's longer and shorter sides, before fraying.
+	int half = 0, narrow = 0;
+	// Every tile the town needs usable (pure grass, no lava) before it is stamped: each tile with a
+	// corner in the ring, thicker stretches included, so the sand can never take a corner from a
+	// tile of stone.
+	std::vector<std::pair<int, int>> footprint;
+	// Where a town's protected approach may leave from: two corners beyond its plain ring.
+	std::vector<std::pair<int, int>> departures;
+};
+Town townPlan(GenerationContext &context)
+{
+	Town town;
+	town.shape = TownShape(context.bounded("lava-town", unsigned(TownShape::Count)));
+	town.turned = context.bounded("lava-town", 2);
+	static const int sizes[][2] = {{16, 16}, {18, 14}, {19, 13}, {22, 11},
+								   {17, 17}, {17, 17}, {20, 16}};
+	int w = sizes[int(town.shape)][0], h = sizes[int(town.shape)][1];
+	if (town.turned)
+		std::swap(w, h);
+	town.narrow = std::min(w, h) / 2;
+	// Spacing and starter catchments go by the plan's own size, not its frayed edge, so a square
+	// town keeps the square's 28-tile spacing and 16-tile starter fields.
+	town.half = std::max(w, h) / 2;
+	// The edge frays: round the town, a stretch of its boundary sits a corner in or out of the
+	// plan, and here and there the sand ring runs a corner thicker. Thirty-two stretches, each a
+	// couple of tiles, so the edge wanders rather than jitters; the same for every town.
+	constexpr int kStretches = 32;
+	int fray[kStretches], thick[kStretches];
+	for (int k = 0; k < kStretches; ++k)
+	{
+		const int roll = int(context.bounded("lava-town", 4));
+		fray[k] = roll == 0 ? -1 : roll == 3 ? 1 : 0;
+		thick[k] = context.bounded("lava-town", 3) == 0;
+	}
+	// Positions are doubled so odd sides stay centred: X runs -w..w over the corners 0..w.
+	const auto stretch = [&](int X, int Y)
+	{
+		const int ax = std::abs(X), ay = std::abs(Y);
+		const int q = ax + ay == 0 ? 0 : std::min(7, 8 * ay / (ax + ay));
+		return X >= 0 ? (Y >= 0 ? q : 31 - q) : (Y >= 0 ? 15 - q : 16 + q);
+	};
+	const auto inside = [&](int X, int Y)
+	{
+		const int grow = 2 * fray[stretch(X, Y)];
+		const int W = w + grow, H = h + grow, ax = std::abs(X), ay = std::abs(Y);
+		if (ax > W || ay > H)
+			return false;
+		switch (town.shape)
+		{
+		case TownShape::Rounded:
+		{
+			constexpr int round = 10; // a five-tile corner radius
+			const int qx = ax - (W - round), qy = ay - (H - round);
+			return qx <= 0 || qy <= 0 || qx * qx + qy * qy <= round * round + round;
+		}
+		case TownShape::Octagon:
+			return ax + ay <= W + H - 10; // corners cut five tiles back along each side
+		case TownShape::Oval:
+		{
+			const long long rx = W + 1, ry = H + 1;
+			return ax * ax * ry * ry + ay * ay * rx * rx <= rx * rx * ry * ry;
+		}
+		default:
+			return true;
+		}
+	};
+	const int reach = std::max(w, h) / 2 + 2, span = reach + kHomeRing + 3;
+	for (int dy = -reach; dy <= reach; ++dy)
+		for (int dx = -reach; dx <= reach; ++dx)
+			if (inside(2 * dx + w / 2 * 2 - w, 2 * dy + h / 2 * 2 - h))
+				town.grass.push_back({dx, dy});
+	const int edge = reach + kHomeRing + 2;
+	std::vector<unsigned char> footprint((2 * span + 1) * (2 * span + 1), 0);
+	const auto cell = [&](int dx, int dy) { return (dy + span) * (2 * span + 1) + dx + span; };
+	for (int dy = -edge; dy <= edge; ++dy)
+		for (int dx = -edge; dx <= edge; ++dx)
+		{
+			int nearest = INT_MAX;
+			for (const auto &[gx, gy] : town.grass)
+				nearest = std::min(nearest, std::max(std::abs(dx - gx), std::abs(dy - gy)));
+			const bool bump = thick[stretch(2 * dx + w / 2 * 2 - w, 2 * dy + h / 2 * 2 - h)];
+			if (nearest >= 1 && nearest <= kHomeRing + bump)
+				town.ring.push_back({dx, dy});
+			if (nearest <= kHomeRing + 1)
+				for (int ty = dy - 1; ty <= dy; ++ty)
+					for (int tx = dx - 1; tx <= dx; ++tx)
+						footprint[cell(tx, ty)] = 1;
+			if (nearest == kHomeRing + 2)
+				town.departures.push_back({dx, dy});
+		}
+	for (int dy = -span; dy <= span; ++dy)
+		for (int dx = -span; dx <= span; ++dx)
+			if (footprint[cell(dx, dy)])
+				town.footprint.push_back({dx, dy});
+	context.telemetry.choice("lava-shield.town.shape", kTownShapeNames[int(town.shape)]);
+	context.telemetry.measure("lava-shield.town.grass-corners", town.grass.size());
+	context.telemetry.measure("lava-shield.town.half-extent", town.half);
+	return town;
+}
+
 // Rank terrain candidates after beaches and structural stone. The completed colony
 // score below is the deciding measurement; this shortlist only bounds its cost.
-std::vector<RankedSite> candidateSites(const Layout &L, Map &map)
+std::vector<RankedSite> candidateSites(const Layout &L, Map &map, const Town &town)
 {
 	const Torus &t = L.t;
 	auto usable = pureTiles(L.terrain, t, GRASS);
 	for (int i = 0; i < t.size(); ++i)
 		usable[i] = usable[i] && !L.rock[i];
+	// A cheap Chebyshev bound first, then the town's own footprint: a long town fits ground a
+	// square of its length would not.
 	const auto room = clearance(t, usable);
+	const auto fits = [&](int x, int y)
+	{
+		for (const auto &[dx, dy] : town.footprint)
+			if (!usable[t.at(x + dx, y + dy)])
+				return false;
+		return true;
+	};
 	auto water = pureTiles(L.terrain, t, WATER);
 	// Rank COASTAL candidates. Counting crater water here could select a town on
 	// the neutral rim because it has the same nominal water distance as a beach.
@@ -313,12 +443,14 @@ std::vector<RankedSite> candidateSites(const Layout &L, Map &map)
 			const int i = t.at(x, y);
 			const auto q = L.stretch.undo(x - L.cx, y - L.cy);
 			// Keep the summit neutral; shore distance alone would also admit crater homes.
-			if (room[i] < kCandidateClearance || offshore[i] < kHomeWaterMin ||
-				offshore[i] > kHomeWaterMax || std::hypot(q.x, q.y) < L.rootRadius + kHomeHalf)
+			if (offshore[i] < kHomeWaterMin || offshore[i] > kHomeWaterMax ||
+				std::hypot(q.x, q.y) < L.rootRadius + town.half ||
+				room[i] < town.narrow + kHomeRing + 2 ||
+				!fits(x, y))
 				continue;
 			double fertile = 0;
-			for (int dy = -kHomeHalf - 3; dy <= kHomeHalf + 3; ++dy)
-				for (int dx = -kHomeHalf - 3; dx <= kHomeHalf + 3; ++dx)
+			for (int dy = -town.half - 3; dy <= town.half + 3; ++dy)
+				for (int dx = -town.half - 3; dx <= town.half + 3; ++dx)
 					fertile += fertility.at(t.x(x + dx), t.y(y + dy));
 			sites.push_back({i, fertile});
 		}
@@ -328,7 +460,7 @@ std::vector<RankedSite> candidateSites(const Layout &L, Map &map)
 }
 
 std::vector<int> chooseSites(const Layout &L, const std::vector<RankedSite> &sites,
-							 GenerationContext &context, int deal)
+							 GenerationContext &context, int deal, const Town &town)
 {
 	if (sites.empty())
 		return {};
@@ -336,11 +468,12 @@ std::vector<int> chooseSites(const Layout &L, const std::vector<RankedSite> &sit
 	const size_t first = context.bounded(stream, std::max<size_t>(1, sites.size() / 2));
 	auto weighted = sites;
 	// Start in the fertile half; then spread with a .6 weight floor so fertility
-	// cannot overwhelm separation. 28 tiles leaves distinct 20-tile home envelopes
-	// plus an eight-tile gathering/expansion gap. Failed spreads do not shrink towns.
+	// cannot overwhelm separation. Two town envelopes (the square's was 20 tiles) plus an
+	// eight-tile gathering/expansion gap. Failed spreads do not shrink towns.
 	for (auto &site : weighted)
 		site.weight = 0.6 + 0.4 * site.weight / std::max(1.0, sites.front().weight);
-	auto picked = spreadRankedSites(L.t, weighted, context.request.nbTeams, 28, first);
+	auto picked = spreadRankedSites(L.t, weighted, context.request.nbTeams,
+									2 * (town.half + kHomeRing) + 8, first);
 	dealStarts(context, picked, stream.c_str());
 	return picked;
 }
@@ -348,7 +481,7 @@ std::vector<int> chooseSites(const Layout &L, const std::vector<RankedSite> &sit
 // Materialize a candidate and the winning world through exactly the same stages.
 // The caller restores engine RNG before each trial, so rejected worlds cannot alter
 // resource amounts/varieties in the chosen world. All other streams are local contexts.
-bool populate(Game &game, GenerationContext &context, const Layout &L,
+bool populate(Game &game, GenerationContext &context, const Layout &L, const Town &town,
 			  const std::vector<int> &homes)
 {
 	const Torus &t = L.t;
@@ -358,11 +491,26 @@ bool populate(Game &game, GenerationContext &context, const Layout &L,
 	clearings.water.assign(t.size(), 0);
 	clearings.sand.assign(t.size(), 0);
 	clearings.plot.assign(t.size(), 0);
+	// A dry town: clear grass inside a sand ring, no farm rows or new water. The plot is every
+	// tile whose four corners are the town's grass.
+	std::vector<unsigned char> townGrass(t.size(), 0);
 	for (int p : homes)
-		stampFarmPlot(terrain, t, clearings, p % t.w - kHomeHalf, p / t.w - kHomeHalf,
-					  {kHomeSide, kHomeSide, kHomeRing});
-	// Reuse the farm-plot primitive for a dry town: it already understands corner
-	// margins and growth containment. No farm rows or new water are needed.
+	{
+		for (const auto &[dx, dy] : town.grass)
+			townGrass[t.at(p % t.w + dx, p / t.w + dy)] = 1;
+		for (const auto &[dx, dy] : town.ring)
+		{
+			const int i = t.at(p % t.w + dx, p / t.w + dy);
+			clearings.sand[i] = 1;
+			terrain[i] = SAND;
+		}
+	}
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		clearings.plot[i] = townGrass[i] && townGrass[t.at(x + 1, y)] &&
+							townGrass[t.at(x, y + 1)] && townGrass[t.at(x + 1, y + 1)];
+	}
 	auto reserve = roadTiles(t, clearings.sand);
 	for (int i = 0; i < t.size(); ++i)
 		reserve[i] = reserve[i] || clearings.plot[i];
@@ -384,11 +532,8 @@ bool populate(Game &game, GenerationContext &context, const Layout &L,
 	for (int p : homes)
 	{
 		std::vector<int> sources;
-		constexpr int departure = kHomeHalf + kHomeRing + 2;
-		for (int dy = -departure; dy <= departure; ++dy)
-			for (int dx = -departure; dx <= departure; ++dx)
-				if (std::max(std::abs(dx), std::abs(dy)) == departure)
-					sources.push_back(t.at(p % t.w + dx, p / t.w + dy));
+		for (const auto &[dx, dy] : town.departures)
+			sources.push_back(t.at(p % t.w + dx, p / t.w + dy));
 		auto path = reserveSandRoute(terrain, t, sources, L.rim, protectedGround, 1, &trailCost,
 									 GridNeighbors::Eight);
 		int width = 3;
@@ -443,9 +588,11 @@ bool populate(Game &game, GenerationContext &context, const Layout &L,
 		game.addTeam();
 		const int p = homes[team];
 		std::vector<unsigned char> own(t.size(), 0);
-		for (int dy = -kHomeHalf; dy < kHomeHalf; ++dy)
-			for (int dx = -kHomeHalf; dx < kHomeHalf; ++dx)
-				own[t.at(p % t.w + dx, p / t.w + dy)] = 1;
+		for (const auto &[dx, dy] : town.grass)
+		{
+			const int i = t.at(p % t.w + dx, p / t.w + dy);
+			own[i] = clearings.plot[i];
+		}
 		if (!placeSettlement(game, context, team, own, {p % t.w - 2, p / t.w - 2}, "lava-settle"))
 			return false;
 	}
@@ -454,8 +601,9 @@ bool populate(Game &game, GenerationContext &context, const Layout &L,
 	// everywhere on this still-unseeded terrain. Final StartQuality uses the normal gate.
 	const auto fertility = Fertility::forMap(map, false);
 	// Two fields outside each town, selected by actual fertility, stay renewable at
-	// zero ambient abundance. A Chebyshev radius of 16 keeps their harvest edges near
-	// the workers while the town's sand ring prevents them invading its building land.
+	// zero ambient abundance. A Chebyshev radius eight past the town's edge (16 for the
+	// square town) keeps their harvest edges near the workers while the town's sand ring
+	// prevents them invading its building land.
 	for (int team = 0; team < int(homes.size()); ++team)
 	{
 		const int p = homes[team];
@@ -463,8 +611,9 @@ bool populate(Game &game, GenerationContext &context, const Layout &L,
 		{
 			int seed = -1;
 			std::uint32_t best = 0;
-			for (int dy = -16; dy <= 16; ++dy)
-				for (int dx = -16; dx <= 16; ++dx)
+			const int catchment = town.half + 8;
+			for (int dy = -catchment; dy <= catchment; ++dy)
+				for (int dx = -catchment; dx <= catchment; ++dx)
 				{
 					const int i = t.at(p % t.w + dx, p / t.w + dy);
 					if (reserve[i] || L.rock[i] || !clearGround(map, i % t.w, i / t.w))
@@ -487,7 +636,7 @@ bool populate(Game &game, GenerationContext &context, const Layout &L,
 					   clearGround(map, i % t.w, i / t.w) &&
 					   map.isResourceAllowed(i % t.w, i / t.w, type) &&
 					   fertility.at(i % t.w, i / t.w) > 0 &&
-					   t.chebyshev(p % t.w, p / t.w, i % t.w, i / t.w) <= 18;
+					   t.chebyshev(p % t.w, p / t.w, i % t.w, i / t.w) <= town.half + 10;
 			};
 			int planted = growPatch(map, t, seed, type, target, eligible);
 			// The highest-fertility seed can sit on a tiny isolated tile beside a
@@ -502,7 +651,7 @@ bool populate(Game &game, GenerationContext &context, const Layout &L,
 			for (int retry = 0; planted < target / 2 && retry < 3; ++retry)
 			{
 				const int extra = seedForPatchCapacity(
-					t, p % t.w, p / t.w, 16, 2, eligible,
+					t, p % t.w, p / t.w, town.half + 8, 2, eligible,
 					[&](int i) { return double(fertility.at(i % t.w, i / t.w)); });
 				if (extra < 0)
 					break; // No legal fertile tile remains in the starter catchment.
@@ -638,13 +787,14 @@ bool generate(Game &game, GenerationContext &context)
 		return false;
 	}
 	writeUndermap(game.map, L.terrain);
-	const auto sites = candidateSites(L, game.map);
+	const Town town = townPlan(context);
+	const auto sites = candidateSites(L, game.map, town);
 	context.telemetry.measure("lava-shield.starts.candidates", sites.size());
 	std::vector<std::vector<int>> proposals;
 	for (int deal = 0; deal < kDeals; ++deal)
-		proposals.push_back(chooseSites(L, sites, context, deal));
+		proposals.push_back(chooseSites(L, sites, context, deal, town));
 	const auto build = [&](Game &world, GenerationContext &c, const std::vector<int> &homes)
-	{ return populate(world, c, L, homes); };
+	{ return populate(world, c, L, town, homes); };
 	const auto selected = chooseScoredSettlements(context, proposals, build, qualityFailure);
 	if (selected.selected < 0)
 	{
@@ -704,7 +854,9 @@ GeneratorDefinition lavaShieldDefinition()
 			// (chooseScoredSettlements), and that score changed from the weakest town's quality
 			// gated by a worst-over-best ratio to how evenly the towns share the chance of
 			// winning, so a different proposal wins on some seeds.
-			3,
+			// Revision 4: towns take one of seven shapes per map, turned either way, with a frayed
+			// edge every town shares.
+			4,
 			false,
 			{{"tongue-count", "Lava tongues", 3, 9, 1, 5, ControlGroup::Layout},
 			 {"long-tongues", "Long tongues", 25, 75, 25, 50, ControlGroup::Layout},

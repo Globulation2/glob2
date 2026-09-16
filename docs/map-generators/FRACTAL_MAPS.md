@@ -2,7 +2,7 @@
 
 ## Play contract
 
-**Sierpiński Gardens** (`sierpinski-gardens`, numeric ID 49, revision 7) surrounds a
+**Sierpiński Gardens** (`sierpinski-gardens`, numeric ID 49, revision 8) surrounds a
 central orchard island with a rectangular lake, eight first-level districts, and
 smaller central-third lakes in eligible districts. Home reservations stop further
 cutting. Opposing causeway pairs provide distinct island approaches; the outside
@@ -14,7 +14,7 @@ meadows the recursion leaves between them.
 
 Engine map preview: seed 20001, default controls, 256×256, four colonies.
 
-**Hilbert River** (`hilbert-river`, numeric ID 50, revision 7) follows a continuous
+**Hilbert River** (`hilbert-river`, numeric ID 50, revision 8) follows a continuous
 Hilbert curve. Broad pockets between folds hold colonies. Walking around the river
 ends and across map seams remains possible; direct bank crossings shorten those
 routes, and swimming offers further alternatives. Orchards sit by the mandatory and
@@ -173,20 +173,48 @@ one 50,000-tick game per map (map seed 3001, game seed 19, four AIs) took wood f
 17,682 tiles on Gardens and 2,882 to 20,737 on Hilbert — 27% and 32% of the map, one forest of
 9,132 tiles.
 
-The home module's rim is a straight-edged rectangle, two corners of sand on every side,
-including beyond each water strip, so it is the same width as the paths that meet it. A
+The home module's rim is straight-edged, two corners of sand on every side, including
+beyond each water strip, so it is the same width as the paths that meet it. A
 ragged, frayed rim was tried so colonies would not all open inside an identical stamped box,
 and removed: it is exactly what a formal garden should not have, and a path cannot meet it
 flush.
+
+### Home gardens
+
+Since revision 8 a map draws its homes in one of four formal garden designs
+(`HomeDesign`, from the `fractal-home-design` stream, recorded as `fractal.homes.design`).
+Every home on the map gets the same design; the next map may draw another. All four are
+tidy and square, mostly wheat with a little timber, and all keep the same 24×24
+construction court, the service apron with wheat along its north edge, the starting point
+and the 56-tile footprint. Reservation, settlement and the finished-world checks are
+therefore the same for every design.
+
+| Design | Drawing |
+| --- | --- |
+| Parterre | Long canals north and south of the court, crops on their inner banks, timber bays at the ends of the north bed (the only design before revision 8) |
+| Horseshoe | One canal bent round the north, east and west, crops inside the bend, timber at the tips of its arms, a causeway north across it, and open lawn to the south |
+| Cloister | A canal all the way round, crops on its inner bank, timber in the southern corners, a causeway across it on each side, and the quarry as a well in a corner of the court |
+| Four beds | A short north canal feeding the wheat along the apron, and a square pool bed in each corner of the module, one of them timber |
+
+![The four home garden designs on Sierpiński Gardens (top) and Hilbert River (bottom)](images/fractal-home-designs.png)
+
+The horseshoe and cloister canals are narrower than a parterre's and keep two corners of
+lawn outside their sand, with a causeway beside the starting point. A home in a tight
+pocket between Hilbert's folds builds its first expansion on the ground round the module's
+edge. A canal out to the rim, with no northern way out, left such a home no expansion room
+within the 48-step check, where the open parterre had passed. Each design's crops are
+checked on the design itself: a flood over pure grass from its crops must stay inside the
+home's reservation, or the map fails. The opening quarry's tiles are held like an objective
+court, so a garden path running in to meet the court across open lawn cannot pave them
+first. Before revision 8 a path could, and some parterre maps failed their quarry check.
 
 ### Home and start policy
 
 `generators/FractalMapSupport` contains the economic policy shared by these two
 maps; it is deliberately outside the neutral geometry toolkit. A home module
-occupies roughly 56×56 corners. It contains 24×24 pure-grass construction tiles,
-a wheat plot north and a second wheat plot south (the home's renewable timber is the two
-bays at the ends of the north plot, and the rest is out on the map), several harvesting
-aisles, a quarry, and access to outside building ground. Sand caps contain most crop edges.
+occupies roughly 56×56 corners. It contains 24×24 pure-grass construction tiles, a
+garden of wheat with a little timber in one of the designs above, harvesting aisles, a
+quarry, and access to outside building ground. Sand caps contain most crop edges.
 A grass service apron directly beside wheat fits feeding buildings. Wheat may grow onto the
 apron as farmland does, but a single row of sand corners along its foot keeps it out of the
 court below. The near timber bays shorten inn construction and upgrade deliveries. No
