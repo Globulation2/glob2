@@ -29,7 +29,7 @@ mkdir -p "$OUT"
 pkill -f "[n]eurotica_serve.py.*neurotica_replay" 2>/dev/null || true
 sleep 1
 CUDA_VISIBLE_DEVICES=1 setsid nohup $ROOT/.venv/bin/python $ROOT/rl/neurotica_serve.py \
-  --checkpoint "$CKPT" --socket $SOCK --device cuda --max-batch 8 \
+  --checkpoint "$CKPT" --socket $SOCK --device cuda --max-batch 8 --top-k --placements 12 \
   > /tmp/replay_serve.log 2>&1 < /dev/null &
 sleep 12
 if [ ! -S $SOCK ]; then echo "policy server failed to start; see /tmp/replay_serve.log" >&2; exit 1; fi
