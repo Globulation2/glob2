@@ -242,17 +242,36 @@ def open_round(directory):
         return None
 
 
+def unfinished(status):
+    return bool(status['jobs'].get('pending') or status['jobs'].get('active'))
+
+
 def run_rounds(root, hosts, once=False, collect_only=False):
-    report = []
+    """Advance every round a bounded step at a time, not one round to the end.
+
+    Rounds share the same hosts, so running one to completion before touching
+    the next would leave the others' work queued behind it for hours.
+    """
+    report, coordinators = [], []
     for directory in round_directories(root):
         coordinator = open_round(directory)
         if coordinator is None:
             report.append({'round': directory.name, 'skipped': 'pinned to another worker package'})
             continue
-        try:
-            report.append({'round': directory.name,
-                           'result': coordinator.run(hosts, once or collect_only, collect_only)})
-        finally:
+        coordinators.append((directory.name, coordinator))
+    try:
+        while True:
+            live = False
+            for name, coordinator in coordinators:
+                coordinator.run(hosts, True, collect_only)
+                if not collect_only and unfinished(coordinator.status()):
+                    live = True
+            if once or collect_only or not live:
+                break
+        for name, coordinator in coordinators:
+            report.append({'round': name, 'status': coordinator.status()['jobs']})
+    finally:
+        for _, coordinator in coordinators:
             coordinator.close()
     return report
 
@@ -748,6 +767,7 @@ def screen(dataset, folds=5, ridge=1e-3, minimum_games=200):
             model = fit_model(dataset, [(name, transform)], ridge, problem=problem)
             score = cross_validated(dataset, [(name, transform)], folds, ridge, problem=problem)
             rows.append({'name': name, 'transform': transform,
+                         'eligible': eligible_measurement(name),
                          'coefficient': model['features'][0]['coefficient'],
                          'varying_games': within,
                          'train_r2': model['train']['mcfadden_r2'],
@@ -766,7 +786,7 @@ def forward_select(dataset, candidates, limit=8, folds=5, ridge=1e-3, tolerance=
     while len(chosen) < limit:
         trials = []
         for row in candidates:
-            if row['name'] in used:
+            if row['name'] in used or not eligible_measurement(row['name']):
                 continue
             option = chosen + [(row['name'], row['transform'])]
             score = cross_validated(dataset, option, folds, ridge)
@@ -901,9 +921,167 @@ def fairness_distribution(model, dataset):
 # Screened on the played tournament and checked by hand; `fit --mode explore`
 # is what produced this list, and `docs/map-generators/FAIRNESS_MODEL.md`
 # records why each measurement is in it.
-FINAL_FEATURES = []
-HEADER_PATH = 'src/map/generator/shared/FairnessModelCoefficients.h'
+FINAL_FEATURES = [
+    ('band48_wheat_exclusive_amount', 'log'),
+    ('nearest_rival_distance', 'identity'),
+    ('tied_nearest_tiles', 'share'),
+    ('mean_fertility', 'log'),
+]
+HEADER_PATH = 'src/map/generator/shared/FairnessModel.h'
 IDENTIFIER_PATTERN = re.compile(r'[^A-Za-z0-9]+')
+# Measurements the model may not use. The legacy factors are the arbitrary
+# normalisation this work replaces, and the team index is a control for engine
+# ordering, not something a map can be scored on.
+INELIGIBLE = ('legacy_', 'team_index')
+RESOURCE_SYMBOLS = {'wood': 'WOOD', 'wheat': 'WHEAT', 'papyrus': 'PAPYRUS', 'stone': 'STONE',
+                    'algae': 'ALGA', 'cherry': 'CHERRY', 'orange': 'ORANGE', 'prune': 'PRUNE'}
+BAND_INDEX = {12: 0, 24: 1, 48: 2}
+# ColonyQuality members that need no arithmetic, by the name the fit uses.
+PLAIN_FIELDS = {
+    'catchment_tiles': 'catchmentTiles', 'reachable_tiles': 'reachableTiles',
+    'catchment_grass_tiles': 'catchmentGrass', 'catchment_buildable_tiles': 'catchmentBuildable',
+    'catchment_fertile_grass_tiles': 'catchmentFertileGrass',
+    'catchment_growth_enabled_grass_tiles': 'catchmentGrowthEnabledGrass',
+    'exclusive_nearest_tiles': 'exclusiveNearestTiles', 'tied_nearest_tiles': 'tiedNearestTiles',
+    'exclusive_catchment_tiles': 'exclusiveCatchmentTiles',
+    'tied_catchment_tiles': 'tiedCatchmentTiles', 'build_sites_4x4': 'buildSites',
+    'wheat_and_wood_amount': 'resourceAmount', 'mean_fertility': 'meanFertility',
+    'reachable_rivals': 'reachableRivals', 'rivals_within_threat': 'rivalsWithinThreat',
+}
+DISTANCE_FIELDS = {'wheat_distance': 'wheatDistance', 'wood_distance': 'woodDistance',
+                   'nearest_rival_distance': 'rivalDistance',
+                   'farthest_rival_distance': 'farthestRivalDistance'}
+BAND_FIELDS = {'reached_tiles': 'reachedTiles', 'grass_tiles': 'grassTiles',
+               'buildable_tiles': 'buildableTiles', 'fertile_grass_tiles': 'fertileGrassTiles',
+               'exclusive_nearest_tiles': 'exclusiveNearestTiles',
+               'tied_nearest_tiles': 'tiedNearestTiles'}
+BAND_RESOURCE_FIELDS = {'amount': 'storedAmount', 'tiles': 'depositTiles',
+                        'exclusive_amount': 'exclusiveStoredAmount'}
+RESOURCE_FIELDS = {'catchment_tiles': 'catchmentDeposits', 'catchment_amount': 'catchmentAmount',
+                   'exclusive_amount': 'exclusiveCatchmentAmount'}
+
+
+def eligible_measurement(name):
+    return not name.startswith(INELIGIBLE[0]) and name != INELIGIBLE[1]
+
+
+def reachable(expression):
+    """An engine distance, with the same 'never reached' sentinel the fit used."""
+    return f'({expression} < 0 ? {UNREACHABLE} : double({expression}))'
+
+
+def cpp_expression(name):
+    """The C++ that reads one measurement off a ColonyQuality named `colony`.
+
+    Every name `colony_measurements` produces has an expression here, so the
+    generated header stays correct whichever measurements the fit selects.
+    """
+    colony = 'colony'
+    if name in PLAIN_FIELDS:
+        return f'double({colony}.{PLAIN_FIELDS[name]})'
+    if name in DISTANCE_FIELDS:
+        return reachable(f'{colony}.{DISTANCE_FIELDS[name]}')
+    for key, field in DISTANCE_FIELDS.items():
+        if name in (key.replace('_distance', '_unreachable'), key + '_unreachable'):
+            return f'({colony}.{field} < 0 ? 1.0 : 0.0)'
+    for resource, symbol in RESOURCE_SYMBOLS.items():
+        access = f'{colony}.resources[{symbol}]'
+        if name == f'{resource}_distance':
+            return reachable(f'{access}.nearestDistance')
+        if name == f'{resource}_missing':
+            return f'({access}.nearestDistance < 0 ? 1.0 : 0.0)'
+        for suffix, field in RESOURCE_FIELDS.items():
+            if name == f'{resource}_{suffix}':
+                return f'double({access}.{field})'
+    if name in ('fruit_catchment_amount', 'fruit_catchment_tiles'):
+        field = RESOURCE_FIELDS['catchment_amount' if name.endswith('amount') else 'catchment_tiles']
+        return ' + '.join(f'double({colony}.resources[{RESOURCE_SYMBOLS[fruit]}].{field})'
+                          for fruit in FRUITS)
+    if name == 'fruit_distance':
+        return 'std::min({' + ', '.join(
+            reachable(f'{colony}.resources[{RESOURCE_SYMBOLS[fruit]}].nearestDistance}}'.rstrip('}'))
+            for fruit in FRUITS) + '})'
+    match = re.match(r'band(12|24|48)_(.+)$', name)
+    if match:
+        band = f'{colony}.distanceBands[{BAND_INDEX[int(match.group(1))]}]'
+        rest = match.group(2)
+        if rest in BAND_FIELDS:
+            return f'double({band}.{BAND_FIELDS[rest]})'
+        for resource, symbol in RESOURCE_SYMBOLS.items():
+            for suffix, field in BAND_RESOURCE_FIELDS.items():
+                if rest == f'{resource}_{suffix}':
+                    return f'double({band}.{field}[{symbol}])'
+    raise ValueError('no C++ expression for measurement ' + name)
+
+
+def cpp_transform(transform, expression, total=None):
+    if transform == 'identity':
+        return expression
+    if transform == 'log':
+        return f'std::log1p(std::max({expression}, 0.0))'
+    if transform == 'sqrt':
+        return f'std::sqrt(std::max({expression}, 0.0))'
+    if transform == 'square':
+        return f'({expression}) * ({expression})'
+    if transform == 'decay24':
+        return f'std::exp(-std::max({expression}, 0.0) / 24.0)'
+    if transform == 'share':
+        return f'({total} > 0 ? ({expression}) / {total} : 0.0)'
+    raise ValueError('no C++ form for transform ' + transform)
+
+
+HUMAN_RESOURCES = {'wood': 'Wood', 'wheat': 'Wheat', 'papyrus': 'Papyrus', 'stone': 'Stone',
+                   'algae': 'Algae', 'cherry': 'Cherry', 'orange': 'Orange', 'prune': 'Prune',
+                   'fruit': 'Fruit'}
+PLAIN_LABELS = {
+    'catchment_tiles': 'Tiles within reach', 'reachable_tiles': 'Tiles reachable at all',
+    'catchment_grass_tiles': 'Grass within reach',
+    'catchment_buildable_tiles': 'Buildable ground within reach',
+    'catchment_fertile_grass_tiles': 'Fertile grass within reach',
+    'catchment_growth_enabled_grass_tiles': 'Grass where crops regrow',
+    'exclusive_nearest_tiles': 'Uncontested territory',
+    'tied_nearest_tiles': 'Contested territory',
+    'exclusive_catchment_tiles': 'Uncontested ground within reach',
+    'tied_catchment_tiles': 'Contested ground within reach',
+    'build_sites_4x4': 'Building sites', 'wheat_and_wood_amount': 'Wheat and wood in reach',
+    'mean_fertility': 'Ground fertility', 'reachable_rivals': 'Rivals reachable by land',
+    'rivals_within_threat': 'Rivals close by',
+    'nearest_rival_distance': 'Steps to the nearest rival',
+    'farthest_rival_distance': 'Steps to the farthest rival',
+}
+
+
+def measurement_label(name):
+    """A phrase a player can read, for the lobby's breakdown of the score."""
+    if name in PLAIN_LABELS:
+        return PLAIN_LABELS[name]
+    match = re.match(r'band(12|24|48)_(.+?)_(amount|tiles|exclusive_amount)$', name)
+    if match:
+        steps, resource, kind = match.groups()
+        label = HUMAN_RESOURCES.get(resource, resource.title())
+        if kind == 'exclusive_amount':
+            return f'Uncontested {label.lower()} stock within {steps} steps'
+        what = 'stock' if kind == 'amount' else 'patches'
+        return f'{label} {what} within {steps} steps'
+    match = re.match(r'band(12|24|48)_(.+)$', name)
+    if match:
+        steps, rest = match.groups()
+        return PLAIN_LABELS.get('catchment_' + rest, rest.replace('_', ' ').capitalize()) + \
+            f' within {steps} steps'
+    for resource, label in HUMAN_RESOURCES.items():
+        if name == f'{resource}_distance':
+            return f'Steps to {label.lower()}'
+        if name == f'{resource}_missing':
+            return f'No {label.lower()} in reach'
+        if name == f'{resource}_catchment_amount':
+            return f'{label} stock within reach'
+        if name == f'{resource}_catchment_tiles':
+            return f'{label} patches within reach'
+        if name == f'{resource}_exclusive_amount':
+            return f'Uncontested {label.lower()} within reach'
+    if name.endswith('_unreachable'):
+        return 'Never reached: ' + name[:-len('_unreachable')].replace('_', ' ')
+    return name.replace('_', ' ').capitalize()
 
 
 def constant_name(name, transform):
@@ -911,39 +1089,127 @@ def constant_name(name, transform):
     return 'FAIRNESS_MODEL_' + label
 
 
-def emit_header(model, dataset, path, provenance):
-    lines = [
-        '// SPDX-License-Identifier: GPL-3.0-or-later',
-        '// Generated by tools/fairness_model.py -- do not edit by hand.',
-        '//',
-        '// Conditional-logit coefficients for the start fitness F. The win',
-        '// probability of a start is softmax(F) over the colonies of one map, and',
-        '// map fairness is 1 - normalised Gini of those probabilities.',
-        '//',
-        f"// games:      {provenance['games']}",
-        f"// maps:       {provenance['maps']}",
-        f"// rounds:     {', '.join(provenance['rounds'])}",
-        f"// AIs:        {', '.join(provenance['ais'])}",
-        f"// fitted:     {provenance['revision']}",
-        f"// McFadden R2 {provenance['cv_r2']:.4f} cross-validated, "
-        f"{provenance['train_r2']:.4f} in sample",
-        '#pragma once',
-        '',
-        'namespace MapGeneration',
-        '{',
-        '/// Fitness offset. Softmax fixes the scale of F but not its zero, so this',
-        '/// anchors the mean fitness of the fitted starts at zero.',
-        f'constexpr double FAIRNESS_MODEL_INTERCEPT = {model["intercept"]!r};',
-        '',
-    ]
+def emit_header(model, path, provenance):
+    """Write the coefficients and the fitness function they belong to.
+
+    The feature arithmetic is generated with the coefficients rather than kept
+    by hand, so re-running the fit on new games -- even a fit that selects
+    different measurements -- needs no C++ edit.
+    """
+    terms, body, table, measures, contributions = [], [], [], [], []
     for item in model['features']:
-        lines.append(f'/// {item["name"]} ({item["transform"]})')
-        lines.append(f'constexpr double {constant_name(item["name"], item["transform"])}'
-                     f' = {item["coefficient"]!r};')
-    lines += ['', f'constexpr int FAIRNESS_MODEL_FEATURE_COUNT = {len(model["features"])};',
-              f'constexpr int FAIRNESS_MODEL_GAMES = {provenance["games"]};',
-              '} // namespace MapGeneration', '']
-    Path(path).write_text('\n'.join(lines))
+        expression = cpp_expression(item['name'])
+        symbol = constant_name(item['name'], item['transform'])
+        terms.append(f'/// {item["name"]} ({item["transform"]})\n'
+                     f'constexpr double {symbol} = {item["coefficient"]!r};')
+        table.append(f'\t\t{{"{item["name"]}", "{item["transform"]}", '
+                     f'"{measurement_label(item["name"])}", {symbol}}},')
+        if item['transform'] == 'share':
+            body.append('\t{ // ' + item['name'] + ', as this colony\'s share of the map\'s total\n'
+                        '\t\tdouble total = 0;\n'
+                        '\t\tfor (const ColonyQuality &other : colonies)\n'
+                        '\t\t\ttotal += ' + cpp_expression(item['name']).replace('colony', 'other') + ';\n'
+                        '\t\tfitness += ' + symbol + ' * ' +
+                        cpp_transform('share', expression, 'total') + ';\n\t}')
+        else:
+            body.append('\tfitness += ' + symbol + ' * ' +
+                        cpp_transform(item['transform'], expression) + ';')
+        index = len(measures)
+        measures.append(f'\tcase {index}: return {expression};')
+        if item['transform'] == 'share':
+            contributions.append(
+                f'\tcase {index}:\n\t{{\n\t\tdouble total = 0;\n'
+                '\t\tfor (const ColonyQuality &other : colonies)\n'
+                f'\t\t\ttotal += {cpp_expression(item["name"]).replace("colony", "other")};\n'
+                f'\t\treturn {symbol} * '
+                f'{cpp_transform("share", expression, "total")};\n\t}}')
+        else:
+            contributions.append(
+                f'\tcase {index}: return {symbol} * '
+                f'{cpp_transform(item["transform"], expression)};')
+    header = f"""// SPDX-License-Identifier: GPL-3.0-or-later
+// Generated by tools/fairness_model.py -- do not edit by hand.
+//
+// How good a start each colony got, fitted to real games rather than chosen.
+// Every start gets a fitness F; the probability that it wins its map is
+// softmax(F) over that map's colonies, and map fairness is 1 minus the
+// colony-count-normalised Gini of those probabilities.
+//
+// Fitted on {provenance['games']} free-for-all games over {provenance['maps']} randomly drawn maps,
+// the same AI in every slot ({', '.join(provenance['ais'])}), at {provenance['revision']}.
+// Cross-validated McFadden R2 {provenance['cv_r2']:.4f}, {provenance['train_r2']:.4f} in sample.
+// See docs/map-generators/FAIRNESS_MODEL.md.
+#pragma once
+#include "Ressource.h"
+#include "StartQuality.h"
+#include <algorithm>
+#include <cmath>
+#include <vector>
+
+namespace MapGeneration
+{{
+/// Softmax fixes the scale of F but not its zero: this anchors the mean fitness
+/// of the fitted starts at zero, so an absolute level is a convention, not a
+/// measurement. Differences between colonies are what the games determined.
+constexpr double FAIRNESS_MODEL_INTERCEPT = {model['intercept']!r};
+
+{chr(10).join(terms)}
+
+constexpr int FAIRNESS_MODEL_FEATURE_COUNT = {len(model['features'])};
+constexpr int FAIRNESS_MODEL_GAMES = {provenance['games']};
+
+/// The fitted terms by name, for reports and the lobby's breakdown screen.
+struct FairnessModelTerm
+{{
+	const char *name;
+	const char *transform;
+	const char *label;   ///< a phrase a player can read
+	double coefficient;
+}};
+inline const FairnessModelTerm *fairnessModelTerms()
+{{
+	static const FairnessModelTerm terms[] = {{
+{chr(10).join(table)}
+	}};
+	return terms;
+}}
+
+/// What one term measures on one colony, before its transform: the number the
+/// lobby's breakdown shows next to the term's contribution.
+inline double fairnessModelMeasurement(const std::vector<ColonyQuality> &colonies,
+									   std::size_t index, int term)
+{{
+	const ColonyQuality &colony = colonies[index];
+	switch (term)
+	{{
+{chr(10).join(measures)}
+	}}
+	return 0;
+}}
+
+/// That term's contribution to this colony's fitness: coefficient times transformed value.
+inline double fairnessModelContribution(const std::vector<ColonyQuality> &colonies,
+										std::size_t index, int term)
+{{
+	const ColonyQuality &colony = colonies[index];
+	switch (term)
+	{{
+{chr(10).join(contributions)}
+	}}
+	return 0;
+}}
+
+/// The fitness of one colony, given every colony on the same map.
+inline double startFitness(const std::vector<ColonyQuality> &colonies, std::size_t index)
+{{
+	const ColonyQuality &colony = colonies[index];
+	double fitness = FAIRNESS_MODEL_INTERCEPT;
+{chr(10).join(body)}
+	return fitness;
+}}
+}} // namespace MapGeneration
+"""
+    Path(path).write_text(header)
     return path
 
 
@@ -1083,7 +1349,7 @@ def run_fit(root, mode, output, folds, ridge, limit, policy, revision, draws=200
     if mode == 'final':
         rounds = sorted({game['round'] for game in dataset['games']})
         ais = sorted({game['ai'] for game in dataset['games']})
-        emit_header(model, dataset, HEADER_PATH,
+        emit_header(model, HEADER_PATH,
                     {'games': summary['games'], 'maps': summary['maps'], 'rounds': rounds,
                      'ais': ais, 'revision': revision,
                      'cv_r2': scores.get('mcfadden_r2', 0.0),

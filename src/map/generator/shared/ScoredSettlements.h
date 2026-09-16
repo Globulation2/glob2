@@ -38,7 +38,5 @@ using SettlementCheck = std::function<std::string(const StartQualityReport &)>;
 /// relaxed thresholds or wall-clock limits. Exceptions propagate with RNG restored.
 ScoredSettlementChoice chooseScoredSettlements(GenerationContext &,
 											   const std::vector<std::vector<int>> &proposals,
-											   const SettlementBuilder &, const SettlementCheck &,
-											   const StartQualityWeights & = {},
-											   const StartQualityScale & = {});
+											   const SettlementBuilder &, const SettlementCheck &);
 } // namespace MapGeneration
