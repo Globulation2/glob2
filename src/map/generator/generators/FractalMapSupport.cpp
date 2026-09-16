@@ -495,18 +495,18 @@ int gardenPaths(Layout &L, GenerationContext &context)
 	for (int a = 0; a < n; ++a)
 	{
 		const auto [ax, ay] = centre(L.features[size_t(a)]);
-		std::vector<Edge> near;
+		std::vector<Edge> closest;
 		for (int b = 0; b < n; ++b)
 			if (b != a)
 			{
 				const auto [bx, by] = centre(L.features[size_t(b)]);
-				near.push_back({std::abs(delta(ax, bx, t.w)) + std::abs(delta(ay, by, t.h)), a, b});
+				closest.push_back({std::abs(delta(ax, bx, t.w)) + std::abs(delta(ay, by, t.h)), a, b});
 			}
-		std::sort(near.begin(), near.end(),
+		std::sort(closest.begin(), closest.end(),
 				  [](const Edge &l, const Edge &r)
 				  { return l.length != r.length ? l.length < r.length : l.b < r.b; });
-		for (size_t k = 0; k < near.size() && k < 6; ++k)
-			edges.push_back(near[k]);
+		for (size_t k = 0; k < closest.size() && k < 6; ++k)
+			edges.push_back(closest[k]);
 	}
 	std::sort(edges.begin(), edges.end(),
 			  [](const Edge &l, const Edge &r)
