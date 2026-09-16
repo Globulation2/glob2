@@ -226,6 +226,28 @@ Wheat near the door carries most of the opening; the next ring matters more as t
 which is what the distance-decayed term encodes. Wood near the start does not constrain the
 opening at all, so the model's negative wood coefficient has no mechanism in it.
 
+## What the measurements cost
+
+`--report timing` runs every layer of measurement five times on the same finished map and
+records the medians. Serial runs (one at a time: parallel runs on this machine inflated the
+heaviest generators several-fold), all 48 playable generators, three seeds, 4 colonies:
+
+| Stage | 128×128 | 256×256 | Paid by |
+| --- | ---: | ---: | --- |
+| A whole candidate roll: generation including `scoreStarts` | 17 ms | 70 ms | every lobby roll |
+| `scoreStarts`, the model's inputs | 2.5 ms | 9.5 ms | every lobby roll |
+| The fitted model itself: fitness, softmax, Gini | 0.11 µs | 0.11 µs | every lobby roll |
+| Start diagnostics | 2.5 ms | 9.1 ms | `--report diagnostics` only |
+| Full map report | 14.5 ms | 51 ms | JSON reports only |
+
+At 256×256 `scoreStarts` is a median 13% of a roll (p90 27%) and ranges from 2.4 ms to 28 ms
+across generators; the model on top of it is free. Diagnostics cost about as much as
+`scoreStarts` again and are never paid in the lobby. Within the map report, movement analysis is
+the largest share (walking 7.7 ms, swimming 9.1 ms, clearing 13.7 ms at 256×256), followed by
+the report's own `scoreStarts` (9.6 ms) and the tile scan (4.3 ms). Telemetry collection adds
+nothing measurable. Building and tearing down the `Game` a roll fills is under 1 ms at the median
+(19 ms for the heaviest generator), so `candidate_rolls` timings are the roll's real cost.
+
 ## How many candidate rolls to keep
 
 The lobby generates `GenerationService::kSampledCandidates` rolls and keeps the fairest.

@@ -436,7 +436,7 @@ int runHeadlessCommand(int argc,char **argv)
 			if(write=="true")args.push_back("save="+(output/"map").string());
 			for(const auto &spec:many(options,"--perturb"))args.push_back("perturb="+spec);
 			for(const auto &report:many(options,"--report"))
-				if(report=="headroom"||report=="diagnostics")args.push_back(report);
+				if(report=="headroom"||report=="diagnostics"||report=="timing")args.push_back(report);
 				else if(report=="terrain")args.push_back("dump="+(output/"terrain.txt").string());
 				else throw std::invalid_argument("unknown report: " + report);
 			Headless::writeJson((output/"progress.json").string(),"{\"schema_version\":1,\"stage\":\"generation\"}");

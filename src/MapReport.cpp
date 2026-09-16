@@ -10,6 +10,7 @@
 #include "Room.h"
 #include "Topology.h"
 #include "FairnessModel.h"
+#include <chrono>
 #include "RessourceType.h"
 #include "Unit.h"
 #include "Building.h"
@@ -619,8 +620,18 @@ J movementReport(const Game &game, const StepCosts &costs,
 } // namespace
 
 std::string describeMap(Game &game, const GenerationRequest *request,
-						const GenerationResult *generation)
+						const GenerationResult *generation, MapReportTimings *timings)
 {
+	using Clock = std::chrono::steady_clock;
+	auto mark = Clock::now();
+	// Adds the time since the last lap to one stage, when anyone is counting.
+	const auto lap = [&](double MapReportTimings::*stage)
+	{
+		const auto now = Clock::now();
+		if (timings)
+			timings->*stage += std::chrono::duration<double>(now - mark).count();
+		mark = now;
+	};
 	const Map &map = game.map;
 	const Torus t(map);
 	std::array<int, 6> terrain{};
@@ -671,6 +682,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 			fertileGrass += fertility.values()[p] > 0;
 		}
 	}
+	lap(&MapReportTimings::tileScan);
 	std::vector<std::pair<std::string, J>> terrainJson, underlyingJson, resources;
 	const char *terrainNames[] = {
 		"grass", "grass_sand_border", "sand", "sand_water_border", "water", "unknown"};
@@ -697,6 +709,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 						{"amount_per_deposit", distribution(resourceAmountValues[r])},
 						{"patches", components(map, mask, GridNeighbors::Eight)}})});
 	}
+	lap(&MapReportTimings::resourcePatches);
 	const auto buildable = buildableTiles(map);
 	const auto anchors = buildAnchors(t, buildable);
 	int buildableCount = std::accumulate(buildable.begin(), buildable.end(), 0);
@@ -737,8 +750,18 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 		controllers.push_back(
 			J::object({{"slot", i}, {"team", p.teamNumber}, {"type", int(p.type)}}));
 	}
+	const J landRegions = components(map, land, GridNeighbors::Cardinal);
+	const J waterRegions = components(map, water, GridNeighbors::Cardinal);
+	lap(&MapReportTimings::space);
 	const auto quality = canonicalQuality(game);
-	return pretty(
+	lap(&MapReportTimings::startQuality);
+	J walking = movementReport(game, StepCosts::walking(), anchors);
+	lap(&MapReportTimings::walking);
+	J swimming = movementReport(game, StepCosts::swimming(), anchors);
+	lap(&MapReportTimings::swimming);
+	J clearing = movementReport(game, StepCosts::chopping(), anchors);
+	lap(&MapReportTimings::clearing);
+	const std::string text = pretty(
 			   J::object(
 				   {{"schema_version", 2},
 					{"report_type", "map"},
@@ -796,8 +819,8 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 						  {"buildable", coverage(buildableCount, t.size())},
 						  {"build_sites_4x4", sitesCount},
 						  {"growth_disabled", coverage(noGrowth, t.size())},
-						  {"land_regions", components(map, land, GridNeighbors::Cardinal)},
-						  {"water_regions", components(map, water, GridNeighbors::Cardinal)}})},
+						  {"land_regions", landRegions},
+						  {"water_regions", waterRegions}})},
 					{"fertility",
 					 J::object({{"scale", Fertility::kScale},
 								{"all_tiles", distribution(fertilityAll)},
@@ -808,13 +831,13 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 					{"canonical_quality", qualityJson(quality, {})},
 					{"start_position_euclidean_distances", J::array(geometry)},
 					{"movement",
-					 J::object({{"walking", movementReport(game, StepCosts::walking(), anchors)},
-								{"walking_and_swimming",
-								 movementReport(game, StepCosts::swimming(), anchors)},
-								{"walking_and_clearing",
-								 movementReport(game, StepCosts::chopping(), anchors)}})}})
+					 J::object({{"walking", walking},
+								{"walking_and_swimming", swimming},
+								{"walking_and_clearing", clearing}})}})
 				   .text) +
 		   "\n";
+	lap(&MapReportTimings::serialise);
+	return text;
 }
 
 std::string describeGenerationFailure(const GenerationRequest &request,

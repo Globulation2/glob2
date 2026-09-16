@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "GenerationService.h"
 #include "StartDiagnostics.h"
+#include "FairnessModel.h"
 #include "GeneratorRegistry.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
@@ -27,6 +28,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
+#include <functional>
 #include <map>
 #include <sstream>
 #include <queue>
@@ -51,6 +53,91 @@ std::string candidateRollsJson(const std::vector<GenerationService::CandidateRol
 			<< ",\"seconds\":" << rolls[i].seconds << '}';
 	}
 	out << ']';
+	return out.str();
+}
+// What each layer of map measurement costs, for `--report timing`: every stage is run several
+// times on the same finished map and the median kept, so one slow scheduling hiccup does not
+// become the answer. Generation is timed from an empty Game, as a lobby candidate roll pays it.
+std::string metricTimingJson(Game &game, const GenerationRequest &descriptor,
+							 const GenerationResult &result)
+{
+	using Clock = std::chrono::steady_clock;
+	constexpr int kRepeats = 5;
+	const auto median = [](std::vector<double> values)
+	{
+		std::sort(values.begin(), values.end());
+		return values[values.size() / 2];
+	};
+	const auto milliseconds = [](Clock::time_point since)
+	{ return std::chrono::duration<double, std::milli>(Clock::now() - since).count(); };
+	const auto timed = [&](const std::function<void()> &work)
+	{
+		std::vector<double> samples;
+		for (int i = 0; i < kRepeats; ++i)
+		{
+			const auto start = Clock::now();
+			work();
+			samples.push_back(milliseconds(start));
+		}
+		return median(samples);
+	};
+	const int teams = descriptor.nbTeams;
+	const double generation = timed([&] { Game fresh(nullptr); GenerationService().generate(fresh, descriptor, false); });
+	// The same roll with the clock around generate() alone, as GenerationService::bestSeed times
+	// a candidate: the difference is building and tearing down the Game it fills.
+	std::vector<double> generateOnly;
+	timed([&]
+	{
+		Game fresh(nullptr);
+		const auto start = Clock::now();
+		GenerationService().generate(fresh, descriptor, false);
+		generateOnly.push_back(milliseconds(start));
+	});
+	const double withTelemetry = timed([&] { Game fresh(nullptr); GenerationService().generate(fresh, descriptor, true); });
+	const double score = timed([&] { MapGeneration::scoreStarts(game, teams); });
+	// The fitted model alone takes microseconds; evaluate it many times and divide.
+	const auto quality = MapGeneration::scoreStarts(game, teams);
+	constexpr int kModelLoops = 2000;
+	const double model = timed([&]
+	{
+		std::vector<double> fitness(quality.colonies.size());
+		for (int loop = 0; loop < kModelLoops; ++loop)
+		{
+			for (std::size_t i = 0; i < fitness.size(); ++i)
+				fitness[i] = MapGeneration::startFitness(quality.colonies, i);
+			MapGeneration::mapFairness(MapGeneration::winProbabilities(fitness));
+		}
+	}) / kModelLoops;
+	const double diagnostics = timed([&] { MapGeneration::diagnoseStarts(game, teams); });
+	std::vector<MapReportTimings> reports(kRepeats);
+	std::vector<double> totals;
+	for (auto &report : reports)
+	{
+		const auto start = Clock::now();
+		describeMap(game, &descriptor, &result, &report);
+		totals.push_back(milliseconds(start));
+	}
+	const auto stage = [&](double MapReportTimings::*field)
+	{
+		std::vector<double> values;
+		for (const auto &report : reports)
+			values.push_back(report.*field * 1000.0);
+		return median(values);
+	};
+	std::ostringstream out;
+	out << "\"timing\":{\"repetitions\":" << kRepeats << ",\"tiles\":" << game.map.getW() * game.map.getH()
+		<< ",\"generation_ms\":" << generation << ",\"generate_call_ms\":" << median(generateOnly)
+		<< ",\"generation_with_telemetry_ms\":" << withTelemetry
+		<< ",\"score_starts_ms\":" << score << ",\"fairness_model_ms\":" << model
+		<< ",\"diagnostics_ms\":" << diagnostics << ",\"report_ms\":" << median(totals)
+		<< ",\"report_stages_ms\":{\"tile_scan\":" << stage(&MapReportTimings::tileScan)
+		<< ",\"resource_patches\":" << stage(&MapReportTimings::resourcePatches)
+		<< ",\"space\":" << stage(&MapReportTimings::space)
+		<< ",\"start_quality\":" << stage(&MapReportTimings::startQuality)
+		<< ",\"movement_walking\":" << stage(&MapReportTimings::walking)
+		<< ",\"movement_swimming\":" << stage(&MapReportTimings::swimming)
+		<< ",\"movement_clearing\":" << stage(&MapReportTimings::clearing)
+		<< ",\"serialise\":" << stage(&MapReportTimings::serialise) << "}},";
 	return out.str();
 }
 // Start diagnostics, emitted only for `--report diagnostics`: measurements of each colony's
@@ -505,7 +592,7 @@ int runMapStudy(int argc, char **argv)
 	descriptor.setMethodDefaults(method);
 	descriptor.seed = seed;
 	bool tuning = false;
-	bool headroom = false, diagnostics = false;
+	bool headroom = false, diagnostics = false, timing = false;
 	bool quality = false;
 	std::string dump, savePrefix, mapName, overlay, resultPath, resultJson;
 	std::ostringstream measurements;
@@ -531,6 +618,8 @@ int runMapStudy(int argc, char **argv)
 			headroom = true;
 		else if (arg == "diagnostics")
 			diagnostics = true;
+		else if (arg == "timing")
+			timing = true;
 		else if (arg.rfind("perturb=", 0) == 0)
 			perturbations.push_back(arg.substr(8));
 		else if (arg == "quality")
@@ -606,6 +695,7 @@ int runMapStudy(int argc, char **argv)
 	}
 	// Capture before study scorers, save/reload verification or team rotations mutate caches.
 	const std::string mapReport = resultPath.empty() ? "" : describeMap(game, &descriptor, &result);
+	const std::string timingJson = timing ? metricTimingJson(game, descriptor, result) : "";
 	auto &map = game.map;
 	int grass = 0, sand = 0, water = 0, shore = 0, free = 0, fit4 = 0;
 	int umGrass = 0, umSand = 0, umWater = 0;
@@ -965,6 +1055,7 @@ int runMapStudy(int argc, char **argv)
 			<< ",\"wheat_tiles\":" << resources[WHEAT] << ",\"wood_tiles\":" << resources[WOOD]
 			<< ",\"stone_tiles\":" << resources[STONE] << ",\"algae_tiles\":" << resources[ALGA]
 			<< measurements.str() << "}," << diagnosticsJson(game, descriptor.nbTeams, diagnostics)
+			<< timingJson
 			<< "\"quality\":{\"score\":" << result.quality.score
 			<< ",\"fairness\":" << result.quality.fairness
 			<< ",\"worst_fitness\":" << result.quality.worstFitness
