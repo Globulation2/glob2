@@ -118,16 +118,32 @@ namespace Atlas
 	  player moved one flag or destroyed one and built another — the field
 	  cannot tell us which, so the reconciler has to pick a reading.
 
-	  Delete-and-recreate is the wrong one for flags. It routes through the
+	  Delete-and-recreate is the wrong one. It routes through the
 	  demolish-persistence gate, so a war flag would take demolishPersistSteps
 	  policy steps to follow a battle it should track immediately, and it
-	  throws away the flag's construction in the process. So: match each unmet
-	  flag desire against a flag of the same type that the field no longer
-	  wants where it stands, and retarget it with OrderMoveFlag.
+	  throws the flag's construction away in the process.
 
-	  Greedy nearest-first matching. It is not optimal assignment, but flags of
-	  one type are few and the cost of a suboptimal pairing is a slightly
-	  longer walk, not a wrong plan.
+	  So: match desired flag positions against the flags we already have, move
+	  what can sensibly be moved, and fall back to create/destroy only for what
+	  is left over. This mirrors NewNicowar::compute_defense_flag_positioning
+	  (src/ai/nicowar/Flags.cpp), including the two judgements that make it
+	  work:
+
+	    * Globally-minimum pairing, not first-come. Each round scans every
+	      (flag, vacancy) pair of one type and consumes the closest, rather
+	      than walking the map and letting whichever desire is scanned first
+	      claim the nearest flag. Raster order is not a preference ordering,
+	      and matching by it strands flags far from where they were needed.
+	    * Stop, do not stretch. Once the closest surviving pair is beyond
+	      maxFlagMoveDist the round ends: everything left is genuinely a
+	      create and a destroy, not a move. A flag dragged across the map
+	      arrives instantly but its garrison walks.
+
+	  Leftovers need no special handling here. An unmatched vacancy is created
+	  by the normal pass, and an unmatched flag falls to the normal demolition
+	  path — which keeps the persistence gate, deliberately: Nicowar's target
+	  positions are computed and stable, a learned field's will flicker, and
+	  the gate is what stops that flicker from costing buildings.
 	*/
 	void Reconciler::planFlagMoves(const DesiredState &desired, FlagPlan &plan,
 	                               std::vector<Candidate> &out)
@@ -135,67 +151,92 @@ namespace Atlas
 		if (!map_ || config_.maxFlagMoveDist <= 0)
 			return;
 
-		// Flags the field no longer wants where they currently stand.
-		struct Orphan
+		struct Candidate2
 		{
 			Building *building;
 			size_t cell;
 			int shortType;
-			bool taken;
 		};
-		std::vector<Orphan> orphans;
+		// Flags the field no longer wants where they currently stand.
+		std::vector<Candidate2> orphans;
 		for (const auto &entry : observed_)
 		{
 			Building *b = entry.second;
 			if (!b || !b->type || !b->type->isVirtual)
 				continue;
-			const int shortType = b->type->shortTypeNum;
-			if (desired.building[entry.first] == Uint8(shortType + 1))
+			if (desired.building[entry.first] == Uint8(b->type->shortTypeNum + 1))
 				continue; // still wanted exactly where it is
-			orphans.push_back({b, entry.first, shortType, false});
+			orphans.push_back({b, entry.first, b->type->shortTypeNum});
 		}
 		if (orphans.empty())
 			return;
 
+		// Desired flag positions with nothing standing on them yet.
+		struct Vacancy
+		{
+			size_t cell;
+			Sint32 x, y;
+			int shortType;
+		};
+		std::vector<Vacancy> vacancies;
 		for (Sint32 y = 0; y < desired.h; y++)
 			for (Sint32 x = 0; x < desired.w; x++)
 			{
 				const size_t i = desired.index(x, y);
 				const Uint8 wanted = desired.building[i];
-				if (wanted == 0)
+				if (wanted == 0 || observed_.find(i) != observed_.end())
 					continue;
-				if (observed_.find(i) != observed_.end())
-					continue; // something is already here; not a move target
 				const int shortType = int(wanted) - 1;
-				Sint32 typeNum = -1;
-				BuildingType *type = placeableType(shortType, &typeNum);
+				BuildingType *type = placeableType(shortType, nullptr);
 				if (!type || !type->isVirtual)
 					continue;
+				vacancies.push_back({i, x, y, shortType});
+			}
+		if (vacancies.empty())
+			return;
 
-				Orphan *best = nullptr;
-				int bestDist = config_.maxFlagMoveDist + 1;
-				for (Orphan &orphan : orphans)
+		std::vector<bool> orphanUsed(orphans.size(), false);
+		std::vector<bool> vacancyUsed(vacancies.size(), false);
+
+		for (;;)
+		{
+			int bestDist = config_.maxFlagMoveDist + 1;
+			size_t bestOrphan = 0, bestVacancy = 0;
+			bool found = false;
+			for (size_t o = 0; o < orphans.size(); o++)
+			{
+				if (orphanUsed[o])
+					continue;
+				for (size_t v = 0; v < vacancies.size(); v++)
 				{
-					if (orphan.taken || orphan.shortType != shortType)
+					if (vacancyUsed[v] || vacancies[v].shortType != orphans[o].shortType)
 						continue;
-					const int dist = map_->warpDistMax(
-						x, y, orphan.building->posX, orphan.building->posY);
+					const int dist = map_->warpDistMax(vacancies[v].x, vacancies[v].y,
+					                                   orphans[o].building->posX,
+					                                   orphans[o].building->posY);
 					if (dist < bestDist)
 					{
 						bestDist = dist;
-						best = &orphan;
+						bestOrphan = o;
+						bestVacancy = v;
+						found = true;
 					}
 				}
-				if (!best)
-					continue;
-
-				best->taken = true;
-				plan.satisfied.insert(i);
-				plan.vacated.insert(best->cell);
-				out.push_back({std::make_shared<OrderMoveFlag>(best->building->gid, x, y, false),
-				               desired.urgency[i], sequence_++});
-				stats_.flagsMoved++;
 			}
+			if (!found)
+				break; // nothing left within range; the rest are create/destroy
+
+			orphanUsed[bestOrphan] = true;
+			vacancyUsed[bestVacancy] = true;
+			const Vacancy &target = vacancies[bestVacancy];
+			Building *flag = orphans[bestOrphan].building;
+
+			plan.moved[target.cell] = flag;
+			plan.vacated.insert(orphans[bestOrphan].cell);
+			out.push_back({std::make_shared<OrderMoveFlag>(flag->gid, target.x, target.y, false),
+			               desired.urgency[target.cell], sequence_++});
+			stats_.flagsMoved++;
+		}
 	}
 
 	void Reconciler::planBuildings(const DesiredState &desired, const FlagPlan &plan,
@@ -212,10 +253,9 @@ namespace Atlas
 				const Uint8 wanted = desired.building[i];
 				const Uint8 urgency = desired.urgency[i];
 
-				// A cell already handled by a flag move needs nothing further:
-				// the destination is satisfied, and the source has been
-				// vacated on purpose rather than abandoned.
-				if (plan.satisfied.count(i) || plan.vacated.count(i))
+				// A flag's old cell is vacated on purpose, not abandoned by the
+				// field, so it must not feed the demolition path.
+				if (plan.vacated.count(i))
 				{
 					emptyStreak_[i] = 0;
 					continue;
@@ -223,6 +263,14 @@ namespace Atlas
 
 				auto found = observed_.find(i);
 				Building *have = (found == observed_.end()) ? nullptr : found->second;
+				// A flag being moved here counts as present: the move order is
+				// already queued, so this cell must not also be built on — but
+				// its staffing, radius and min-level still need reconciling
+				// against the desired field, exactly as for a flag that was
+				// already standing here.
+				auto arriving = plan.moved.find(i);
+				if (arriving != plan.moved.end())
+					have = arriving->second;
 
 				if (wanted == 0)
 				{

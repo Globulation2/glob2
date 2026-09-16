@@ -28,6 +28,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <cmath>
 #include <memory>
 #include <vector>
 
@@ -262,6 +263,74 @@ int main()
 		Atlas::DesiredState wrongSize;
 		wrongSize.reset(8, 8);
 		check(reconciler.plan(wrongSize).empty(), "a field sized for another map is ignored");
+	}
+
+	// --- 11. A displaced flag is MOVED, not rebuilt ---------------------
+	// The flag-identity rule. A field that wants the same flag type a short
+	// hop away is describing a move; answering it with a delete and a create
+	// would put the flag through the demolish-persistence gate and throw its
+	// construction away.
+	{
+		reconciler.init(team, config);
+		Building *flag = addBuilding(20, 20, IntBuildingType::EXPLORATION_FLAG, 0, false);
+		check(flag != nullptr, "flag placed for the move test");
+
+		Atlas::DesiredState d = baseline();
+		d.building[d.index(20, 20)] = 0;
+		d.building[d.index(24, 20)] = Uint8(IntBuildingType::EXPLORATION_FLAG + 1);
+		auto plan = reconciler.plan(d);
+		check(countType(plan, ORDER_MOVE_FLAG) == 1, "a displaced flag yields one move order");
+		check(countType(plan, ORDER_DELETE) == 0, "and no delete");
+		check(countType(plan, ORDER_CREATE) == 0, "and no create");
+
+		// The destination's attributes must still be reconciled — a flag that
+		// arrives keeping its old garrison size is only half moved.
+		Atlas::DesiredState staffed = baseline();
+		staffed.building[staffed.index(20, 20)] = 0;
+		staffed.building[staffed.index(24, 20)] = Uint8(IntBuildingType::EXPLORATION_FLAG + 1);
+		staffed.workers[staffed.index(24, 20)] = Uint8(flag->maxUnitWorking + 1);
+		reconciler.init(team, config);
+		auto restaffed = reconciler.plan(staffed);
+		check(countType(restaffed, ORDER_MOVE_FLAG) == 1, "move order still issued when restaffing");
+		check(countType(restaffed, ORDER_MODIFY_BUILDING) == 1,
+		      "and the moved flag's destination staffing is reconciled");
+
+		// Beyond maxFlagMoveDist it is a create and a destroy, not a move:
+		// the flag would arrive instantly but its garrison would walk. The map
+		// here is 32x32 and wraps, so the greatest possible separation is 16 —
+		// (30,20) is 10 from (20,20), comfortably past the limit of 8.
+		Atlas::DesiredState far = baseline();
+		far.building[far.index(20, 20)] = 0;
+		far.building[far.index(30, 20)] = Uint8(IntBuildingType::EXPLORATION_FLAG + 1);
+		reconciler.init(team, config);
+		auto farPlan = reconciler.plan(far);
+		check(countType(farPlan, ORDER_MOVE_FLAG) == 0, "a distant flag desire is not a move");
+		check(countType(farPlan, ORDER_CREATE) == 1, "it is a create");
+
+		// Two flags and two vacancies: the matching loop has to consume both
+		// pairs, not stop after the first.
+		reconciler.init(team, config);
+		Building *first = addBuilding(2, 28, IntBuildingType::EXPLORATION_FLAG, 0, false);
+		Building *second = addBuilding(10, 28, IntBuildingType::EXPLORATION_FLAG, 0, false);
+		check(first && second, "two flags placed for the pairing test");
+		Atlas::DesiredState pairing = baseline();
+		pairing.building[pairing.index(2, 28)] = 0;
+		pairing.building[pairing.index(10, 28)] = 0;
+		pairing.building[pairing.index(3, 28)] = Uint8(IntBuildingType::EXPLORATION_FLAG + 1);
+		pairing.building[pairing.index(11, 28)] = Uint8(IntBuildingType::EXPLORATION_FLAG + 1);
+		auto pairPlan = reconciler.plan(pairing);
+		check(countType(pairPlan, ORDER_MOVE_FLAG) == 2, "both flags are matched by a move");
+		check(countType(pairPlan, ORDER_CREATE) == 0, "neither vacancy is built fresh");
+		int shortHops = 0;
+		for (const auto &order : pairPlan)
+			if (order->getOrderType() == ORDER_MOVE_FLAG)
+			{
+				auto move = std::static_pointer_cast<OrderMoveFlag>(order);
+				const int from = (move->gid == first->gid) ? 2 : 10;
+				if (std::abs(move->x - from) == 1)
+					shortHops++;
+			}
+		check(shortHops == 2, "each flag takes the adjacent vacancy, not the far one");
 	}
 
 	std::printf("Atlas reconciler: %d checks, %d failures\n", checks, failures);

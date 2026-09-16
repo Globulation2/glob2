@@ -70,7 +70,12 @@ namespace Atlas
 		//! a desired-state field describes configurations, not objects, so
 		//! "flag moved" and "flag replaced" are the same picture and the
 		//! reconciler has to choose a reading.
-		int maxFlagMoveDist = 64;
+		//!
+		//! 8 matches AI_NICOWAR_DEFENSE_FLAG_MAX_MOVE_TILES. A long move is
+		//! worse than a fresh flag, not better: the flag arrives instantly but
+		//! the units assigned to it have to walk the whole way, so a flag
+		//! dragged across the map takes its garrison out of the game twice.
+		int maxFlagMoveDist = 8;
 
 		//! Hard cap on orders emitted per policy step. Prevents one wild field
 		//! from monopolising the order channel for many seconds.
@@ -145,7 +150,13 @@ namespace Atlas
 		//! source.
 		struct FlagPlan
 		{
-			std::unordered_set<size_t> satisfied;
+			//! Destination cell -> the flag being retargeted there. Held as a
+			//! building rather than a bare flag so the main pass can still
+			//! reconcile the destination's staffing, radius and min-level: a
+			//! moved flag that keeps its old garrison size is half a move.
+			std::unordered_map<size_t, Building *> moved;
+			//! Source cells, which must not be read as buildings abandoned by
+			//! the field and demolished.
 			std::unordered_set<size_t> vacated;
 		};
 
