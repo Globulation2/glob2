@@ -2193,17 +2193,17 @@ Qualité du départ
 [Fairness]
 Équité
 [Fitness]
-Fitness
+Aptitude
 [Win chance]
-Win chance
+Chance de victoire
 [Coefficient]
-Coefficient
+Pondération
 [Average]
-Average
+Moyenne
 [Fitted on games:]
-Fitted on games:
+Ajusté sur des parties :
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+Le départ de chaque colonie est mesuré sur la carte terminée, et un modèle ajusté sur des milliers de parties entre adversaires de même niveau transforme ces mesures en aptitude. L'aptitude indique la probabilité que cette colonie gagne. L'équité indique à quel point ces chances sont réparties également : 1 quand chaque colonie a autant de chances de gagner que les autres, 0 quand une seule colonie s'emparerait de la carte.
 [Worst]
 Pire
 [Best]

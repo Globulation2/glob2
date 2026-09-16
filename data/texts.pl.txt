@@ -2183,17 +2183,17 @@ Jakość startu
 [Fairness]
 Sprawiedliwość
 [Fitness]
-Fitness
+Siła
 [Win chance]
-Win chance
+Szansa na wygraną
 [Coefficient]
-Coefficient
+Współczynnik
 [Average]
-Average
+Średnia
 [Fitted on games:]
-Fitted on games:
+Dopasowano na grach:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+Start każdej kolonii jest mierzony na gotowej mapie, a model dopasowany do tysięcy gier między równorzędnymi przeciwnikami zamienia te pomiary w siłę. Siła mówi, jak prawdopodobne jest zwycięstwo tej kolonii. Sprawiedliwość opisuje, jak równo rozłożone są te szanse: 1, gdy każda kolonia ma taką samą szansę na wygraną, 0, gdy jedna kolonia przejęłaby całą mapę.
 [Worst]
 Najgorszy
 [Best]

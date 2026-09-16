@@ -2179,17 +2179,17 @@ Chất lượng khởi đầu
 [Fairness]
 Công bằng
 [Fitness]
-Fitness
+Sức mạnh
 [Win chance]
-Win chance
+Khả năng thắng
 [Coefficient]
-Coefficient
+Hệ số
 [Average]
-Average
+Trung bình
 [Fitted on games:]
-Fitted on games:
+Khớp trên số trận:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+Khởi đầu của mỗi thuộc địa được đo trên bản đồ hoàn chỉnh, và một mô hình được khớp trên hàng nghìn trận đấu giữa các đối thủ ngang sức sẽ chuyển các số đo đó thành sức mạnh. Sức mạnh cho biết thuộc địa đó có khả năng thắng đến mức nào. Công bằng cho biết các cơ hội này được chia đều đến đâu: 1 khi mọi thuộc địa đều có cơ hội thắng như nhau, 0 khi một thuộc địa duy nhất sẽ chiếm cả bản đồ.
 [Worst]
 Kém nhất
 [Best]

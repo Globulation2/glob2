@@ -2181,17 +2181,17 @@ OpenGL در این بیلد موجود نیست.
 [Fairness]
 انصاف
 [Fitness]
-Fitness
+توان
 [Win chance]
-Win chance
+احتمال پیروزی
 [Coefficient]
-Coefficient
+ضریب
 [Average]
-Average
+میانگین
 [Fitted on games:]
-Fitted on games:
+برازش‌شده روی بازی‌ها:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+شروع هر مستعمره روی نقشهٔ نهایی سنجیده می‌شود و مدلی که با هزاران بازی میان حریفان هم‌تراز برازش شده، این سنجش‌ها را به توان تبدیل می‌کند. توان نشان می‌دهد آن مستعمره تا چه اندازه احتمال دارد برنده شود. انصاف یعنی این احتمال‌ها تا چه اندازه برابر تقسیم شده‌اند: ۱ وقتی همهٔ مستعمره‌ها احتمال برابری برای پیروزی دارند و ۰ وقتی یک مستعمره کل نقشه را تصاحب می‌کند.
 [Worst]
 بدترین
 [Best]

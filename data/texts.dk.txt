@@ -2259,17 +2259,17 @@ Startkvalitet
 [Fairness]
 Retfærdighed
 [Fitness]
-Fitness
+Styrke
 [Win chance]
-Win chance
+Vinderchance
 [Coefficient]
-Coefficient
+Koefficient
 [Average]
-Average
+Gennemsnit
 [Fitted on games:]
-Fitted on games:
+Tilpasset på spil:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+Hver kolonis start måles på det færdige kort, og en model tilpasset tusindvis af spil mellem jævnbyrdige modstandere omsætter målingerne til en styrke. Styrken angiver, hvor sandsynligt det er, at kolonien vinder. Retfærdighed er, hvor ligeligt chancerne er fordelt: 1, når alle kolonier har lige stor chance for at vinde, 0, når én koloni ville tage hele kortet.
 [Worst]
 Dårligst
 [Best]

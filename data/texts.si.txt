@@ -2183,17 +2183,17 @@ Kakovost začetka
 [Fairness]
 Pravičnost
 [Fitness]
-Fitness
+Moč
 [Win chance]
-Win chance
+Možnost zmage
 [Coefficient]
-Coefficient
+Koeficient
 [Average]
-Average
+Povprečje
 [Fitted on games:]
-Fitted on games:
+Prilagojeno na igrah:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+Začetek vsake kolonije se izmeri na dokončanem zemljevidu, model, prilagojen na tisoče iger med enakovrednimi nasprotniki, pa te meritve pretvori v moč. Moč pove, kako verjetno bo kolonija zmagala. Pravičnost pove, kako enakomerno so te možnosti porazdeljene: 1, ko ima vsaka kolonija enako možnost za zmago, 0, ko bi ena sama kolonija prevzela zemljevid.
 [Worst]
 Najslabši
 [Best]

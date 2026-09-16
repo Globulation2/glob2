@@ -2191,17 +2191,17 @@ Kvalita štartu
 [Fairness]
 Spravodlivosť
 [Fitness]
-Fitness
+Sila
 [Win chance]
-Win chance
+Šanca na výhru
 [Coefficient]
-Coefficient
+Koeficient
 [Average]
-Average
+Priemer
 [Fitted on games:]
-Fitted on games:
+Prispôsobené na hrách:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+Štart každej kolónie sa meria na hotovej mape a model prispôsobený tisícom hier medzi rovnocennými súpermi z týchto meraní určí silu. Sila hovorí, ako pravdepodobne kolónia vyhrá. Spravodlivosť vyjadruje, ako rovnomerne sú tieto šance rozdelené: 1, keď má každá kolónia rovnakú šancu na výhru, 0, keď by mapu ovládla jediná kolónia.
 [Worst]
 Najhorší
 [Best]

@@ -2179,17 +2179,17 @@ OpenGL недоступний у цій збірці.
 [Fairness]
 Справедливість
 [Fitness]
-Fitness
+Сила
 [Win chance]
-Win chance
+Шанс перемоги
 [Coefficient]
-Coefficient
+Коефіцієнт
 [Average]
-Average
+Середнє
 [Fitted on games:]
-Fitted on games:
+Підібрано за іграми:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+Старт кожної колонії вимірюється на готовій мапі, а модель, підібрана за тисячами ігор між рівними суперниками, перетворює ці вимірювання на силу. Сила показує, наскільки ймовірна перемога цієї колонії. Справедливість показує, наскільки рівномірно розподілені ці шанси: 1, коли кожна колонія має однаковий шанс на перемогу, 0, коли одна колонія забрала б усю мапу.
 [Worst]
 Найгірший
 [Best]

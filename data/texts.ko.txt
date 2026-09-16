@@ -2179,17 +2179,17 @@ Globulation 2 커서를 표시합니다.
 [Fairness]
 공정성
 [Fitness]
-Fitness
+강도
 [Win chance]
-Win chance
+승리 확률
 [Coefficient]
-Coefficient
+계수
 [Average]
-Average
+평균
 [Fitted on games:]
-Fitted on games:
+학습한 게임 수:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+각 식민지의 시작 지점은 완성된 지도에서 측정되며, 실력이 비슷한 상대끼리 치른 수천 번의 게임으로 학습한 모델이 그 측정값을 강도로 바꿉니다. 강도는 그 식민지가 이길 가능성이 얼마나 되는지를 나타냅니다. 공정성은 그 가능성이 얼마나 고르게 나뉘는지를 나타냅니다. 모든 식민지의 승리 가능성이 같으면 1, 한 식민지가 지도를 차지하게 되면 0입니다.
 [Worst]
 최저
 [Best]

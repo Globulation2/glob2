@@ -2191,17 +2191,17 @@ Başlangıç kalitesi
 [Fairness]
 Adalet
 [Fitness]
-Fitness
+Güç
 [Win chance]
-Win chance
+Kazanma şansı
 [Coefficient]
-Coefficient
+Katsayı
 [Average]
-Average
+Ortalama
 [Fitted on games:]
-Fitted on games:
+Uydurulan oyun sayısı:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+Her koloninin başlangıcı tamamlanmış haritada ölçülür ve denk rakipler arasındaki binlerce oyuna uydurulmuş bir model bu ölçümleri güce dönüştürür. Güç, o koloninin kazanma olasılığını gösterir. Adalet, bu şansların ne kadar eşit dağıldığını gösterir: her koloninin kazanma şansı eşit olduğunda 1, tek bir koloni haritayı ele geçirecekse 0.
 [Worst]
 En kötü
 [Best]

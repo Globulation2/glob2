@@ -2183,17 +2183,17 @@ Calidad del inicio
 [Fairness]
 Equidad
 [Fitness]
-Fitness
+Aptitud
 [Win chance]
-Win chance
+Probabilidad de ganar
 [Coefficient]
-Coefficient
+Coeficiente
 [Average]
-Average
+Media
 [Fitted on games:]
-Fitted on games:
+Ajustado con partidas:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+El inicio de cada colonia se mide en el mapa terminado, y un modelo ajustado con miles de partidas entre rivales equivalentes convierte esas medidas en aptitud. La aptitud indica qué probabilidad tiene esa colonia de ganar. La equidad indica cuán repartidas están esas probabilidades: 1 cuando todas las colonias tienen la misma probabilidad de ganar, 0 cuando una sola colonia se quedaría con el mapa.
 [Worst]
 Peor
 [Best]

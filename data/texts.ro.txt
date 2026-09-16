@@ -2183,17 +2183,17 @@ Calitatea startului
 [Fairness]
 Echitate
 [Fitness]
-Fitness
+Putere
 [Win chance]
-Win chance
+Șansă de câștig
 [Coefficient]
-Coefficient
+Coeficient
 [Average]
-Average
+Medie
 [Fitted on games:]
-Fitted on games:
+Ajustat pe partide:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+Startul fiecărei colonii este măsurat pe harta finalizată, iar un model ajustat pe mii de partide între adversari egali transformă aceste măsurători într-o putere. Puterea arată cât de probabil este ca acea colonie să câștige. Echitatea arată cât de egal sunt împărțite aceste șanse: 1 când fiecare colonie are aceeași șansă de câștig, 0 când o singură colonie ar lua harta.
 [Worst]
 Cel mai slab
 [Best]

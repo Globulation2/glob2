@@ -2207,17 +2207,17 @@ Startkwaliteit
 [Fairness]
 Eerlijkheid
 [Fitness]
-Fitness
+Sterkte
 [Win chance]
-Win chance
+Winkans
 [Coefficient]
-Coefficient
+Coëfficiënt
 [Average]
-Average
+Gemiddelde
 [Fitted on games:]
-Fitted on games:
+Gefit op spellen:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+De start van elke kolonie wordt op de voltooide kaart gemeten, en een model dat is gefit op duizenden spellen tussen gelijkwaardige tegenstanders zet die metingen om in een sterkte. De sterkte geeft aan hoe waarschijnlijk het is dat die kolonie wint. Eerlijkheid is hoe gelijk die kansen verdeeld zijn: 1 als elke kolonie even veel kans heeft om te winnen, 0 als één kolonie de hele kaart zou nemen.
 [Worst]
 Slechtste
 [Best]

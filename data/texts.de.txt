@@ -2183,17 +2183,17 @@ Startqualität
 [Fairness]
 Ausgeglichenheit
 [Fitness]
-Fitness
+Stärke
 [Win chance]
-Win chance
+Siegchance
 [Coefficient]
-Coefficient
+Koeffizient
 [Average]
-Average
+Durchschnitt
 [Fitted on games:]
-Fitted on games:
+Angepasst an Partien:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+Der Start jeder Kolonie wird auf der fertigen Karte vermessen, und ein an Tausenden von Partien zwischen gleich starken Gegnern angepasstes Modell macht aus diesen Messungen eine Stärke. Die Stärke gibt an, wie wahrscheinlich diese Kolonie gewinnt. Die Ausgeglichenheit zeigt, wie gleichmäßig diese Chancen verteilt sind: 1, wenn jede Kolonie gleich wahrscheinlich gewinnt, 0, wenn eine einzige Kolonie die Karte an sich reißen würde.
 [Worst]
 Schlechteste
 [Best]

@@ -2181,17 +2181,17 @@ Kvalito de la komenco
 [Fairness]
 Justeco
 [Fitness]
-Fitness
+Taŭgeco
 [Win chance]
-Win chance
+Ŝanco venki
 [Coefficient]
-Coefficient
+Koeficiento
 [Average]
-Average
+Mezumo
 [Fitted on games:]
-Fitted on games:
+Alĝustigita per ludoj:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+La komenco de ĉiu kolonio estas mezurata sur la preta mapo, kaj modelo alĝustigita per miloj da ludoj inter egalaj kontraŭuloj transformas tiujn mezurojn en taŭgecon. La taŭgeco montras, kiom verŝajne la kolonio venkos. Justeco estas, kiom egale tiuj ŝancoj estas dividitaj: 1 kiam ĉiu kolonio havas saman ŝancon venki, 0 kiam unu sola kolonio transprenus la mapon.
 [Worst]
 Plej malbona
 [Best]

@@ -2245,17 +2245,17 @@ Qualità della partenza
 [Fairness]
 Equità
 [Fitness]
-Fitness
+Idoneità
 [Win chance]
-Win chance
+Probabilità di vittoria
 [Coefficient]
-Coefficient
+Coefficiente
 [Average]
-Average
+Media
 [Fitted on games:]
-Fitted on games:
+Adattato su partite:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+La partenza di ogni colonia viene misurata sulla mappa finita, e un modello adattato su migliaia di partite tra avversari equivalenti trasforma queste misure in idoneità. L'idoneità indica quanto è probabile che la colonia vinca. L'equità indica quanto equamente sono distribuite queste probabilità: 1 quando ogni colonia ha la stessa probabilità di vincere, 0 quando una sola colonia si prenderebbe la mappa.
 [Worst]
 Peggiore
 [Best]

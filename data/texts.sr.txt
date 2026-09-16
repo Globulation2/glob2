@@ -2183,17 +2183,17 @@ OpenGL није доступан у овој верзији.
 [Fairness]
 Правичност
 [Fitness]
-Fitness
+Снага
 [Win chance]
-Win chance
+Шанса за победу
 [Coefficient]
-Coefficient
+Коефицијент
 [Average]
-Average
+Просек
 [Fitted on games:]
-Fitted on games:
+Прилагођено на партијама:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+Почетак сваке колоније мери се на завршеној мапи, а модел прилагођен хиљадама партија између равноправних противника претвара та мерења у снагу. Снага показује колико је вероватно да ће колонија победити. Правичност показује колико су те шансе равномерно распоређене: 1 када свака колонија има једнаку шансу за победу, 0 када би једна колонија преузела целу мапу.
 [Worst]
 Најслабији
 [Best]

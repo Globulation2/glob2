@@ -2183,17 +2183,17 @@ Kezdés minősége
 [Fairness]
 Méltányosság
 [Fitness]
-Fitness
+Erősség
 [Win chance]
-Win chance
+Nyerési esély
 [Coefficient]
-Coefficient
+Együttható
 [Average]
-Average
+Átlag
 [Fitted on games:]
-Fitted on games:
+Illesztve játszmákra:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+Minden kolónia kezdését a kész térképen mérjük, és egy egyenrangú ellenfelek közötti több ezer játszmára illesztett modell ezekből a mérésekből erősséget számol. Az erősség megmutatja, mennyire valószínű, hogy a kolónia nyer. A méltányosság azt mutatja, mennyire egyenletesen oszlanak meg ezek az esélyek: 1, ha minden kolóniának ugyanakkora esélye van a győzelemre, 0, ha egyetlen kolónia vinné el a térképet.
 [Worst]
 Leggyengébb
 [Best]

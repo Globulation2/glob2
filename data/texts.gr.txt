@@ -2253,17 +2253,17 @@ Cortex
 [Fairness]
 Δικαιοσύνη
 [Fitness]
-Fitness
+Ισχύς
 [Win chance]
-Win chance
+Πιθανότητα νίκης
 [Coefficient]
-Coefficient
+Συντελεστής
 [Average]
-Average
+Μέσος όρος
 [Fitted on games:]
-Fitted on games:
+Προσαρμογή σε παιχνίδια:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+Η εκκίνηση κάθε αποικίας μετριέται στον ολοκληρωμένο χάρτη και ένα μοντέλο προσαρμοσμένο σε χιλιάδες παιχνίδια μεταξύ ισάξιων αντιπάλων μετατρέπει αυτές τις μετρήσεις σε ισχύ. Η ισχύς δείχνει πόσο πιθανό είναι να κερδίσει η αποικία. Η δικαιοσύνη δείχνει πόσο ισόποσα μοιράζονται αυτές οι πιθανότητες: 1 όταν κάθε αποικία έχει την ίδια πιθανότητα νίκης, 0 όταν μία μόνο αποικία θα κυριαρχούσε στον χάρτη.
 [Worst]
 Χειρότερο
 [Best]

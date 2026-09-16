@@ -2179,17 +2179,17 @@ Globulation 2 のカーソルを表示します。
 [Fairness]
 公平性
 [Fitness]
-Fitness
+強さ
 [Win chance]
-Win chance
+勝率
 [Coefficient]
-Coefficient
+係数
 [Average]
-Average
+平均
 [Fitted on games:]
-Fitted on games:
+学習に使った対局数：
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+各コロニーの開始地点は完成したマップ上で測定され、互角の相手どうしによる数千回の対局に当てはめたモデルが、その測定値を強さに変換します。強さは、そのコロニーがどれだけ勝ちやすいかを示します。公平性は、その勝つ可能性がどれだけ均等に分かれているかを示します。すべてのコロニーの勝つ可能性が等しければ1、ひとつのコロニーがマップを独占するなら0です。
 [Worst]
 最低
 [Best]

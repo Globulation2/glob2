@@ -2191,17 +2191,17 @@ Qualitat de l'inici
 [Fairness]
 Equitat
 [Fitness]
-Fitness
+Aptitud
 [Win chance]
-Win chance
+Probabilitat de guanyar
 [Coefficient]
-Coefficient
+Coeficient
 [Average]
-Average
+Mitjana
 [Fitted on games:]
-Fitted on games:
+Ajustat amb partides:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+L'inici de cada colònia es mesura al mapa acabat, i un model ajustat a milers de partides entre rivals equivalents converteix aquestes mesures en aptitud. L'aptitud indica com de probable és que la colònia guanyi. L'equitat és com de repartides estan aquestes probabilitats: 1 quan totes les colònies tenen la mateixa probabilitat de guanyar, 0 quan una sola colònia s'emportaria el mapa.
 [Worst]
 Pitjor
 [Best]

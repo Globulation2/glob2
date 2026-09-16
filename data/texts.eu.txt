@@ -2193,17 +2193,17 @@ Hasieraren kalitatea
 [Fairness]
 Zuzentasuna
 [Fitness]
-Fitness
+Egokitasuna
 [Win chance]
-Win chance
+Irabazteko aukera
 [Coefficient]
-Coefficient
+Koefizientea
 [Average]
-Average
+Batez bestekoa
 [Fitted on games:]
-Fitted on games:
+Partidekin doitua:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+Kolonia bakoitzaren hasiera amaitutako mapan neurtzen da, eta aurkari parekoen arteko milaka partidarekin doitutako eredu batek neurketa horiek egokitasun bihurtzen ditu. Egokitasunak adierazten du kolonia horrek irabazteko zer aukera duen. Zuzentasunak adierazten du aukera horiek zenbateraino banatzen diren berdin: 1 kolonia guztiek irabazteko aukera bera dutenean, 0 kolonia bakar batek mapa osoa hartuko lukeenean.
 [Worst]
 Okerrena
 [Best]

@@ -2181,17 +2181,17 @@ OpenGL غير متوفر في هذا الإصدار.
 [Fairness]
 الإنصاف
 [Fitness]
-Fitness
+القوة
 [Win chance]
-Win chance
+فرصة الفوز
 [Coefficient]
-Coefficient
+المعامل
 [Average]
-Average
+المتوسط
 [Fitted on games:]
-Fitted on games:
+عدد المباريات المستخدمة للملاءمة:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+تُقاس بداية كل مستعمرة على الخريطة النهائية، ويحوّل نموذج مُلاءَم على آلاف المباريات بين خصوم متكافئين هذه القياسات إلى قوة. تدل القوة على مدى احتمال فوز تلك المستعمرة. الإنصاف هو مدى تساوي توزيع هذه الفرص: 1 عندما تتساوى فرص فوز جميع المستعمرات، و0 عندما تستحوذ مستعمرة واحدة على الخريطة.
 [Worst]
 الأدنى
 [Best]

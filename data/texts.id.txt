@@ -2179,17 +2179,17 @@ Kualitas awal
 [Fairness]
 Keadilan
 [Fitness]
-Fitness
+Kekuatan
 [Win chance]
-Win chance
+Peluang menang
 [Coefficient]
-Coefficient
+Koefisien
 [Average]
-Average
+Rata-rata
 [Fitted on games:]
-Fitted on games:
+Disesuaikan pada permainan:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+Awal setiap koloni diukur pada peta yang sudah jadi, dan model yang disesuaikan pada ribuan permainan antara lawan yang setara mengubah pengukuran tersebut menjadi kekuatan. Kekuatan menunjukkan seberapa besar peluang koloni itu menang. Keadilan menunjukkan seberapa merata peluang tersebut dibagi: 1 jika setiap koloni punya peluang menang yang sama, 0 jika satu koloni akan menguasai seluruh peta.
 [Worst]
 Terburuk
 [Best]

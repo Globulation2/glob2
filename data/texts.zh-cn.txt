@@ -2179,17 +2179,17 @@ OpenGL 在此版本中不可用。
 [Fairness]
 公平度
 [Fitness]
-Fitness
+强度
 [Win chance]
-Win chance
+胜率
 [Coefficient]
-Coefficient
+系数
 [Average]
-Average
+平均
 [Fitted on games:]
-Fitted on games:
+拟合对局数:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+每个殖民地的开局都在完成的地图上测量，并由以数千场实力相当对手之间的对局拟合出的模型，将这些测量转换为强度。强度表示该殖民地获胜的可能性。公平度表示这些机会分配得有多平均：当每个殖民地的获胜机会都相同时为 1，当单一殖民地会拿下整张地图时为 0。
 [Worst]
 最低
 [Best]

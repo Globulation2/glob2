@@ -2183,17 +2183,17 @@ Aloituksen laatu
 [Fairness]
 Tasapuolisuus
 [Fitness]
-Fitness
+Vahvuus
 [Win chance]
-Win chance
+Voittomahdollisuus
 [Coefficient]
-Coefficient
+Kerroin
 [Average]
-Average
+Keskiarvo
 [Fitted on games:]
-Fitted on games:
+Sovitettu peleihin:
 [Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
-Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.
+Jokaisen siirtokunnan aloitus mitataan valmiilla kartalla, ja tuhansiin tasaväkisten vastustajien peleihin sovitettu malli muuttaa mittaukset vahvuudeksi. Vahvuus kertoo, kuinka todennäköisesti siirtokunta voittaa. Tasapuolisuus kertoo, kuinka tasaisesti nämä mahdollisuudet jakautuvat: 1, kun jokaisella siirtokunnalla on yhtä hyvä mahdollisuus voittaa, 0, kun yksi siirtokunta ottaisi koko kartan.
 [Worst]
 Heikoin
 [Best]
