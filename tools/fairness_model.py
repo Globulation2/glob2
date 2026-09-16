@@ -56,7 +56,7 @@ COLONY_CHOICES = (2, 3, 4, 5, 6, 7, 8)
 EXPONENTS = (6, 7, 8, 9)
 # Weights keep the run affordable: a 512x512 game costs roughly sixty times a
 # 64x64 one, so the large sizes are sampled for coverage, not for bulk.
-EXPONENT_WEIGHTS = {6: 0.48, 7: 0.40, 8: 0.11, 9: 0.01}
+EXPONENT_WEIGHTS = {6: 0.55, 7: 0.38, 8: 0.065, 9: 0.005}
 # A colony needs somewhere to live. Below this many tiles per colony the
 # generators mostly fail or produce starts nobody could play.
 MIN_TILES_PER_COLONY = 2500
@@ -75,11 +75,12 @@ def ticks_for(width_exp, height_exp, colonies):
     """Tick cap for a drawn map.
 
     90,000 ticks is the engine default and what the earlier fairness tournament
-    used; on maps up to 512x256 it is enough for most games to end outright. The
-    largest maps are capped lower because nothing finishes there anyway and the
-    cost is linear in ticks played.
+    used. Small maps mostly end outright well inside it and cost only the ticks
+    they play, so they keep the full cap. Bigger maps almost never end at all,
+    so they are stopped sooner and adjudicated: the cost is linear in ticks
+    played, and a longer wait buys a finishing order we already have.
     """
-    return 90000 if 2 ** (width_exp + height_exp) <= 131072 else 60000
+    return 90000 if 2 ** (width_exp + height_exp) <= 16384 else 45000
 
 
 def playable_generators(capabilities):
@@ -135,6 +136,7 @@ def draw_matches(capabilities, count, games_per_map, ais, seed, round_index):
         params = draw_params(rng, generator, colonies, width, height, randomise)
         matches.append({
             'index': index,
+            'map_key': f'{round_index}:{index}',
             'generator': generator['method'],
             'generator_id': generator['id'],
             'colonies': colonies,
@@ -144,46 +146,43 @@ def draw_matches(capabilities, count, games_per_map, ais, seed, round_index):
             'map_seed': rng.getrandbits(32),
             'ai': rng.choice(list(ais)),
             'ticks': ticks_for(width, height, colonies),
-            'games': [{'game_seed': rng.getrandbits(32), 'rotation': rng.randrange(colonies)}
-                      for _ in range(games_per_map)],
+            'games': [{'game_seed': rng.getrandbits(32)} for _ in range(games_per_map)],
         })
     return matches
 
 
 def plan_round(capabilities, build, matches, identifier, design):
+    """One self-contained job per game.
+
+    The engine can generate the map inside the game process, so a game carries
+    its whole request -- generator, controls, map seed, AI roster -- and depends
+    on nothing. That costs one extra map generation per game (tens of
+    milliseconds against minutes of play) and buys a tournament with no
+    artifacts to move between hosts and no job that can be blocked by another.
+    """
     jobs = []
     for match in matches:
-        generation = job('generate_map', build, seeds={'map': match['map_seed']},
-                         config={'generator': match['generator'], 'params': match['params'],
-                                 'candidates': 0, 'rotations': match['colonies']},
-                         outputs={'map': True},
-                         limits={'timeout_seconds': 1800},
-                         labels={'kind': 'fairness_map', 'generator': match['generator'],
-                                 'generator_id': match['generator_id'],
-                                 'colonies': match['colonies'], 'map_seed': match['map_seed'],
-                                 'width': match['width'], 'height': match['height'],
-                                 'defaults': match['defaults'], 'draw': match['index']})
-        jobs.append(generation)
+        generation = {'generator': match['generator'], 'params': match['params'],
+                      'candidates': 0}
         for game in match['games']:
             jobs.append(job('game', build,
-                            inputs={'map': {'job': generation['id'],
-                                            'artifact': f"map-r{game['rotation']}.map"}},
-                            depends_on=[generation['id']], seeds={'game': game['game_seed']},
+                            seeds={'game': game['game_seed'], 'map': match['map_seed']},
                             config={'players': [match['ai']] * match['colonies'],
-                                    'ticks': match['ticks']},
+                                    'ticks': match['ticks'], **generation},
                             outputs={},
                             limits={'timeout_seconds': 7200,
                                     'estimated_seconds': max(30, match['ticks'] // 1200)},
-                            labels={'kind': 'fairness_game', 'map_job': generation['id'],
+                            labels={'kind': 'fairness_game', 'map': match['map_key'],
                                     'generator': match['generator'],
                                     'generator_id': match['generator_id'],
                                     'colonies': match['colonies'], 'ai': match['ai'],
-                                    'rotation': game['rotation'], 'ticks': match['ticks'],
+                                    'ticks': match['ticks'],
                                     'width': match['width'], 'height': match['height'],
                                     'defaults': match['defaults'], 'draw': match['index']}))
     jobs = list({value['id']: value for value in jobs}.values())
     manifest = {'schema_version': 1, 'id': identifier, 'kind': 'fairness_model',
-                'jobs': jobs, 'settings': {}, 'labels': {'design': design}, 'design': design}
+                'jobs': jobs, 'settings': design.get('settings', {}),
+                'labels': {'design': design}, 'design': design}
     return validate_experiment(manifest)
 
 
@@ -212,6 +211,8 @@ def create_round(root, bundle_paths, games, games_per_map, ais, seed):
               'exponent_weights': {str(k): v for k, v in EXPONENT_WEIGHTS.items()},
               'min_tiles_per_colony': MIN_TILES_PER_COLONY,
               'min_axis_exponent_for_crowd': MIN_AXIS_EXPONENT_FOR_CROWD, 'candidates': 0,
+              'inline_generation': True,
+              'settings': {'transfer_slots': 8, 'prefetch': 3},
               'bundle': bundle['id'], 'revision': bundle.get('revision')}
     identifier = f"fairness-model-r{index:02d}-{seed}"
     manifest = plan_round(bundle['capabilities'], bundle['id'], matches, identifier, design)
@@ -227,10 +228,27 @@ def create_round(root, bundle_paths, games, games_per_map, ais, seed):
             'status': status}
 
 
+def open_round(directory):
+    """A round pinned to an older worker package is finished, not resumable here.
+
+    Its committed results stay readable and keep counting towards the fit; only
+    further play needs the preserved `worker.pyz` in its own directory.
+    """
+    try:
+        return Coordinator(str(directory))
+    except ValueError as error:
+        if 'worker package' not in str(error):
+            raise
+        return None
+
+
 def run_rounds(root, hosts, once=False, collect_only=False):
     report = []
     for directory in round_directories(root):
-        coordinator = Coordinator(str(directory))
+        coordinator = open_round(directory)
+        if coordinator is None:
+            report.append({'round': directory.name, 'skipped': 'pinned to another worker package'})
+            continue
         try:
             report.append({'round': directory.name,
                            'result': coordinator.run(hosts, once or collect_only, collect_only)})
@@ -242,7 +260,10 @@ def run_rounds(root, hosts, once=False, collect_only=False):
 def status_rounds(root):
     report = []
     for directory in round_directories(root):
-        coordinator = Coordinator(str(directory))
+        coordinator = open_round(directory)
+        if coordinator is None:
+            report.append({'round': directory.name, 'skipped': 'pinned to another worker package'})
+            continue
         try:
             report.append({'round': directory.name, 'status': coordinator.status()})
         finally:
@@ -323,44 +344,48 @@ def colony_measurements(colony):
     return out
 
 
-def map_rows(record):
-    """Per-colony measurements of one generated map, keyed by start coordinates."""
-    result = record.get('result') or {}
-    report = result.get('map_report') or {}
+def map_starts(generation):
+    """Per-colony measurements of a generated map, in colony order.
+
+    Colonies are joined to teams by index, not by coordinates: a map whose teams
+    never had `startPosSet` reports a null start position, and those are exactly
+    the maps a coordinate join would silently drop. The coordinates that are
+    present are kept for a cross-check.
+    """
+    report = (generation or {}).get('map_report') or {}
     quality = report.get('canonical_quality') or {}
     if not quality.get('measured') or not quality.get('colonies'):
         return None
-    starts = {}
+    starts = []
     for index, colony in enumerate(quality['colonies']):
-        position = report['map']['colonies'][index]['start']
-        starts[(position['x'], position['y'])] = colony_measurements(colony)
-    statistics = result.get('statistics') or {}
-    return {'starts': starts, 'statistics': statistics,
-            'generator': record['job']['labels'].get('generator_id'),
-            'colonies': len(quality['colonies']),
-            'seconds': result.get('seconds'),
-            'legacy_score': quality.get('score'), 'legacy_fairness': quality.get('fairness')}
+        position = (report.get('map') or {}).get('colonies', [])
+        position = position[index]['start'] if index < len(position) else {}
+        starts.append({'measurements': colony_measurements(colony),
+                       'position': (position.get('x'), position.get('y'))})
+    return starts
 
 
 def load_dataset(root, policy='prestige'):
-    """Every played game joined to its map's start measurements."""
+    """Every played game joined to its map's start measurements.
+
+    Games either carry their own generation result (the map was generated inside
+    the game process) or name the separate generation job that produced their
+    map file; both shapes appear across rounds and both are read here.
+    """
     from tools.tournaments.analysis import adjudicate
-    games, maps, skipped = [], {}, {'no_map': 0, 'unmeasured': 0, 'failed_game': 0, 'start_mismatch': 0}
+    games, skipped = [], {'unmeasured': 0, 'failed_game': 0, 'start_mismatch': 0}
     for directory in round_directories(root):
         results = Results(str(directory))
-        records = {}
-        for record in results:
-            records[record['job']['id']] = record
+        records = {record['job']['id']: record for record in results}
+        separate = {}
         for record in records.values():
             if record['job']['type'] != 'generate_map':
                 continue
-            row = map_rows(record)
-            if row is None:
+            starts = map_starts(record.get('result') or {})
+            if starts is None:
                 skipped['unmeasured'] += 1
                 continue
-            row['round'] = directory.name
-            row['key'] = directory.name + ':' + record['job']['id']
-            maps[row['key']] = row
+            separate[record['job']['id']] = starts
         for record in records.values():
             job_value = record['job']
             if job_value['type'] != 'game':
@@ -368,36 +393,46 @@ def load_dataset(root, policy='prestige'):
             if record.get('category') != 'success' or not (record.get('result') or {}).get('teams'):
                 skipped['failed_game'] += 1
                 continue
-            key = directory.name + ':' + job_value['labels']['map_job']
-            source = maps.get(key)
-            if source is None:
-                skipped['no_map'] += 1
-                continue
             result = record['result']
+            labels = job_value['labels']
+            starts = (map_starts(result.get('generation'))
+                      if result.get('generation') else separate.get(labels.get('map_job')))
+            if starts is None:
+                skipped['unmeasured'] += 1
+                continue
+            key = directory.name + ':' + str(labels.get('map', labels.get('map_job', job_value['id'])))
             outcome = adjudicate(result, policy)
-            entries = []
+            # A rotated map file relabels the generator's colony t as team
+            # (t + r) mod N; an inline map is written with no rotation at all.
+            rotation = labels.get('rotation') or 0
+            count = len(starts)
+            entries, mismatch = [], False
             for team in result['teams']:
+                index = (team['team'] - rotation) % count
+                if index >= count or len(result['teams']) != count:
+                    mismatch = True
+                    break
+                colony = starts[index]
                 position = tuple(team['start'])
-                measurements = source['starts'].get(position)
-                if measurements is None:
-                    entries = None
+                if colony['position'][0] is not None and colony['position'] != position:
+                    mismatch = True
                     break
                 entries.append({'team': team['team'], 'start': position,
                                 'placement': outcome['placements'][team['team']],
                                 'won': team['team'] in outcome['winners'],
-                                'measurements': measurements})
-            if entries is None:
+                                'measurements': dict(colony['measurements'],
+                                                     team_index=float(team['team']))})
+            if mismatch:
                 skipped['start_mismatch'] += 1
                 continue
-            labels = job_value['labels']
             games.append({'map': key, 'round': directory.name, 'job': job_value['id'],
                           'generator': labels.get('generator_id'), 'ai': labels.get('ai'),
-                          'colonies': labels.get('colonies'), 'rotation': labels.get('rotation'),
-                          'width': labels.get('width'), 'height': labels.get('height'),
-                          'defaults': labels.get('defaults'),
-                          'ticks': result.get('ticks'), 'cap': result.get('termination') == 'tick_cap',
+                          'colonies': labels.get('colonies'), 'width': labels.get('width'),
+                          'height': labels.get('height'), 'defaults': labels.get('defaults'),
+                          'ticks': result.get('ticks'),
+                          'cap': result.get('termination') == 'tick_cap',
                           'engine_outcome': outcome['engine_outcome'], 'entries': entries})
-    return {'games': games, 'maps': maps, 'skipped': skipped}
+    return {'games': games, 'skipped': skipped}
 
 
 # ---------------------------------------------------------------------------
@@ -421,7 +456,7 @@ INDICATOR_PATTERN = re.compile(r'(_unreachable|_missing)$')
 
 
 def transform_candidates(name):
-    if INDICATOR_PATTERN.search(name):
+    if name == 'team_index' or INDICATOR_PATTERN.search(name):
         return ('identity',)
     if DISTANCE_PATTERN.search(name):
         return ('identity', 'log', 'sqrt', 'decay24')
