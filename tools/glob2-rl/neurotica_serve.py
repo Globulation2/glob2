@@ -151,6 +151,12 @@ def main() -> int:
     ap.add_argument("--placements", type=int, default=8,
                     help="new placements per policy step (sampled under "
                          "--sample, highest-probability under --top-k)")
+    ap.add_argument("--threshold", type=float, default=0.0,
+                    help="with --top-k, place on every empty cell whose "
+                         "occupancy probability exceeds this, instead of a "
+                         "fixed count. 0 disables (fixed --placements).")
+    ap.add_argument("--max-placements", type=int, default=64,
+                    help="upper bound on placements per step under --threshold")
     ap.add_argument("--top-k", action="store_true",
                     help="deterministic deployment: take the --placements "
                          "most probable cells. Without this or --sample the "
@@ -295,11 +301,38 @@ def main() -> int:
         # NeuroticaNet.placement_distribution samples from.
         if args.sample or args.top_k:
             best_type = probs[:, 1:].argmax(dim=1).to(torch.uint8) + 1
+            keep = None
             if args.sample:
                 idx = out["placements"]
             else:
                 occ = (1.0 - probs[:, 0]).masked_fill(existing, 0.0).flatten(1)
-                idx = occ.topk(min(args.placements, occ.shape[1]), dim=1).indices
+                if args.threshold > 0:
+                    # Let the model decide how many buildings it wants. top-k
+                    # imposes exactly k new placements every policy step
+                    # whatever the model believes, which over-builds badly:
+                    # k=12 every 25 ticks produced 94 buildings in 8000 ticks
+                    # against a teacher's 20-40. A probability threshold lets
+                    # the count be zero when nothing is wanted, which is what
+                    # the BC labels actually encode.
+                    #
+                    # The selection has to be the mask itself. Ranking the
+                    # masked scores with topk(n) still returns n cells --
+                    # below-threshold ones included, since masking them to zero
+                    # does not remove them -- so a "threshold" built that way
+                    # silently stays a fixed count, and a higher threshold then
+                    # produces MORE buildings rather than fewer, because fewer
+                    # simultaneous desires churn through more distinct cells.
+                    keep = occ > args.threshold
+                    over = keep.sum(dim=1) > args.max_placements
+                    if bool(over.any()):
+                        cut = occ.masked_fill(~keep, 0.0).topk(
+                            args.max_placements, dim=1).indices
+                        capped = torch.zeros_like(keep)
+                        capped.scatter_(1, cut, True)
+                        keep = torch.where(over.unsqueeze(1), capped, keep)
+                    idx = None
+                else:
+                    idx = occ.topk(min(args.placements, occ.shape[1]), dim=1).indices
             # Cells we already occupy re-assert the building that is observed
             # there, never the model's argmax. The building plane has no
             # DONT_CARE (0 means "none", 1..13 a type), so an occupied cell the
@@ -313,7 +346,10 @@ def main() -> int:
             observed_type = (my_buildings.argmax(dim=1).to(torch.uint8) + 1)
             field = torch.where(existing, observed_type, torch.zeros_like(cls))
             flat = field.flatten(1)
-            flat.scatter_(1, idx, best_type.flatten(1).gather(1, idx))
+            if idx is None:
+                flat = torch.where(keep, best_type.flatten(1), flat)
+            else:
+                flat.scatter_(1, idx, best_type.flatten(1).gather(1, idx))
             cls = flat.view_as(cls)
         elif args.score_floor > 0:
             cls = torch.where(score >= args.score_floor, cls, torch.zeros_like(cls))
