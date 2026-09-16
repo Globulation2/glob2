@@ -132,6 +132,80 @@ layout it picks on some seeds. After a refit, re-run
 `build/src/MapGeneratorGoldenTest PROFILE --update --force` and commit the rows; `--force`
 because a refit is new data for a shared score, not a new revision of that generator.
 
+The Linux rows can only be regenerated on Linux (or copied from the `--print` output in a CI
+log), so after a refit CI stays red for Lava shield until that is done.
+
+## Testing a new measurement without another tournament
+
+Every game stored the generator, every control value and the map seed it used, and generation
+is deterministic, so the tournament's maps can be rebuilt exactly and measured again:
+
+```sh
+python3 tools/fairness_model.py remeasure artifacts/fairness-model --jobs 6
+```
+
+It rebuilds every played map with `--report probe`, joins the candidate measurements in
+`StartProbe.cpp` to the games already played, and reports what each adds to the fitted model.
+About six minutes for 1,330 maps; no games. Three further layers are available to the fit
+without rebuilding anything: whole-map movement under walking, clearing and swimming
+(`move_`), the generator's own per-colony telemetry (`tel_`), and composites derived from
+ColonyQuality (`d_`). Movement, telemetry and probe measurements cannot enter the fitted model —
+they cost flood fills or are generator-specific — and exist to answer whether an idea predicts
+winning at all. Derived composites that read one colony are emittable, and one of them is in
+the model.
+
+### What does not predict winning
+
+Measured on 2,644 rebuilt games, cross-validated McFadden R² alone and gain on the model:
+
+| Idea | Alone | Gain |
+| --- | ---: | ---: |
+| Wheat weighted by distance (adopted) | +0.0233 | +0.0031 |
+| Regrowth capacity of the wheat field | +0.0075 | +0.0006 |
+| Harvest throughput (trip-weighted gathering edges) | +0.0064 | +0.0002 |
+| Forest front versus field front | +0.0045 | +0.0002 |
+| Best of 43 whole-map movement measurements | +0.0055 | +0.0013 |
+| An inn site next to grain | +0.0026 | +0.0007 |
+| Best of 228 generator telemetry records | +0.0020 | — |
+| Room for a second swarm; choke width to the nearest rival | ~0 | ~0 |
+| Forest overgrowing the base | +0.0001 | 0 |
+
+Boosted trees over every measurement above reach pairwise 0.595 on final placing, against
+0.589 for a linear model over the same inputs: the limit is what is measured, not how it is
+combined. A single shallow tree looked better only because it ties most colonies and a
+concordance that skips ties grades it on the easy pairs.
+
+### How much there is to find
+
+Each map was played twice with different game seeds, so how often the same colony comes out
+ahead in both measures how much the map itself decides:
+
+| Colonies ahead on | Replicate agreement | Best model over all measurements |
+| --- | ---: | ---: |
+| Units at 5k ticks | 0.816 | 0.712 |
+| Units at 10k ticks | 0.772 | 0.690 |
+| Final placing | 0.652 | 0.595 |
+
+The map largely decides the opening, and most of what it decides is still unmeasured. Training
+the fitness on the early economy instead of the winner does not help predict winners.
+
+### Causes, not correlations
+
+`--perturb KIND:TEAM:RADIUS` edits one colony's start after generation (removing wheat, wood or
+stone within a walking radius, without drawing a random number), so the same map can be played
+from the same game seed with and without the edit. Runs are deterministic, so every difference
+is the edit's. Over 80 maps and three seeds, twelve thousand ticks each:
+
+| Edit to colony 0 | Its unit share at 5k | at 10k |
+| --- | ---: | ---: |
+| Remove wheat within 12 steps (median 23 deposits) | −21% | −21% |
+| Remove wheat within 24 steps (median 48 deposits) | −24% | −28% |
+| Remove wood within 24 steps (median 39 deposits) | +1% (not significant) | +1% |
+
+Wheat near the door carries most of the opening; the next ring matters more as the game goes on,
+which is what the distance-decayed term encodes. Wood near the start does not constrain the
+opening at all, so the model's negative wood coefficient has no mechanism in it.
+
 ## How many candidate rolls to keep
 
 The lobby generates `GenerationService::kSampledCandidates` rolls and keeps the fairest.

@@ -175,6 +175,9 @@ def invariants(j):
         # published coefficients: the engine's fitness, win probabilities and fairness
         # must be exactly what the fitting tool's definitions produce.
         measured = [fairness_model.colony_measurements(c) for c in quality['colonies']]
+        # Some terms are composites the fitting tool derives across a map's colonies.
+        derived = fairness_model.derived_measurements([{'measurements': m} for m in measured])
+        measured = [dict(m, **extra) for m, extra in zip(measured, derived)]
         fitness = []
         for index in range(len(measured)):
             value = model['intercept']
