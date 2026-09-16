@@ -341,3 +341,24 @@ are separate from map generation time, and concurrent studies on this shared hos
 make throughput an unsuitable performance benchmark. The implementation avoids
 engine/save/replay/network changes. Local save/load and replay checks passed; a
 cross-platform per-tick checksum comparison for the final code remains unverified.
+
+## Rotation tournaments
+
+Six 256×256 maps (seeds 101 to 106), four colonies, every cyclic team rotation, four Nicowars,
+45,000 ticks, on each map at its defaults; every game reached the tick cap.
+
+- **Sierpiński Gardens** is food-capped. Pooled per-start units of 20 to 30 (peaks 35 to 42), ten
+  buildings, three or four warriors, 13 to 17 starvation deaths per colony, 23 eliminations in 96
+  colony-games, about 123 wheat and 490 wood harvested per colony in the whole game, no prestige.
+  Position bias 17 points (not significant). The home module's sealed wheat and wood plots are
+  worked the way every sealed-plot map in the framework is: a Nicowar colony harvests little of a
+  small capped plot whatever its density, and under about 150 wheat in 45,000 ticks a colony never
+  grows. Whether the map is meant to be played at that pace, or its plots should open toward the
+  district's building ground, is the design question for a maintainer.
+- **Hilbert River** grows more (pooled per-start units 23 to 48, peaks 38 to 62, 180 wheat and
+  620 wood harvested per colony, eight eliminations) but unevenly: the map's colony index 1 was
+  the weakest start on five of the six maps and won none of 24 games (position bias 28 points,
+  p = 0.004). The home modules are identical by construction and the finished maps' start
+  metrics (reachable tiles, catchment, building sites, quality) show no index pattern, and sites
+  are dealt at random, so what the index sees is not in the geometry the generator measures; it is
+  recorded as an open question for a larger sample and other AIs, as Drumlin field's index 2 is.
