@@ -22,6 +22,7 @@
 #include "echo/Echo.h"
 #include "cortex/AICortex.h"
 #include "AICabino.h"
+#include "atlas/AIAtlas.h"
 
 using std::shared_ptr;
 
@@ -57,6 +58,9 @@ AI::AI(ImplementationID implementationID, Player *player)
 		break;
 		case CABINO:
 			aiImplementation=new Cabino::AICabino(player);
+		break;
+		case ATLAS:
+			aiImplementation=new AIAtlas(player);
 		break;
 		default:
 			assert(false);
@@ -169,6 +173,15 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		break;
 		case CABINO:
 			aiImplementation=new Cabino::AICabino(stream, player, versionMinor);
+		break;
+		case ATLAS:
+			aiImplementation=new AIAtlas(player);
+			if (!aiImplementation->load(stream, player, versionMinor))
+			{
+				fprintf(stderr, "AI::load: AIAtlas load failed\n");
+				stream->readLeaveSection();
+				return false;
+			}
 		break;
 		default:
 			fprintf(stderr, "AI id %d does not exist, you probably try to load a map from a more recent version of glob2.\n", implementationID);

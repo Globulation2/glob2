@@ -12,6 +12,7 @@
 #include "CustomGameScreen.h"
 #include "ChooseMapScreen.h"
 #include "DatasetWriter.h"
+#include "ai/atlas/AtlasTrace.h"
 #include "Engine.h"
 #include "EngineTiming.h"
 #include "Game.h"
@@ -458,6 +459,31 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 			std::cerr << "GLOB2_DATASET_PATH: failed to open dataset file "
 				<< envDatasetPath << std::endl;
 			globalContainer->datasetWriter.reset();
+		}
+	}
+
+	// Initialise the Atlas desired-state trace if GLOB2_ATLAS_TRACE_PATH is
+	// set. One snapshot per team every GLOB2_ATLAS_TRACE_PERIOD ticks (default
+	// 25, matching Atlas's policy cadence) — see AtlasTrace.h. Teacher-
+	// agnostic: it records what each team HAD, so any AI can be recorded.
+	const char* envAtlasTrace = getenv("GLOB2_ATLAS_TRACE_PATH");
+	if (envAtlasTrace && !globalContainer->replaying)
+	{
+		Uint8 period = 25;
+		if (const char* envPeriod = getenv("GLOB2_ATLAS_TRACE_PERIOD"))
+		{
+			const long parsed = strtol(envPeriod, nullptr, 10);
+			if (parsed > 0 && parsed < 256)
+				period = Uint8(parsed);
+		}
+		globalContainer->atlasTraceWriter = std::make_unique<Atlas::TraceWriter>();
+		if (!globalContainer->atlasTraceWriter->open(
+				envAtlasTrace, gui.game.map.getW(), gui.game.map.getH(),
+				Uint8(gui.game.mapHeader.getNumberOfTeams()), period))
+		{
+			std::cerr << "GLOB2_ATLAS_TRACE_PATH: failed to open trace file "
+				<< envAtlasTrace << std::endl;
+			globalContainer->atlasTraceWriter.reset();
 		}
 	}
 

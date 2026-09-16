@@ -74,6 +74,10 @@ Econo
 Warrush ataca de pressa i amb duresa, sovint portant el defensor al límit. Dificultat mitjana.
 [AIWarrush]
 AIWarrush
+[AIAtlas-Description]
+Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AIAtlas]
+Atlas
 [AICabino-Description]
 Cabino gestiona la defensa, l'atac i la construcció com a departaments independents que cooperen en un sol pla: creix de pressa i envia exèrcits enormes contra els rivals. Dificultat alta.
 [AICabino]
@@ -1276,6 +1280,10 @@ Bases enormes i conversió en lloc d'atacs.
 Estratègia: ataca aviat i amb força, abans que els oponents s'acabin de preparar.\n\nPunts forts: aprofita l'expansió sense defensa i la preparació militar lenta.\n\nContrajoc suggerit: sobreviu al primer atac mantenint la teva economia i després contraataca.
 [AIWarrush-Summary]
 Atacs ràpids que posen a prova les teves primeres defenses.
+[AIAtlas-Profile]
+Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AIAtlas-Summary]
+Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 Estratègia principal: un gabinet de departaments especialistes independents (defensa, atac, construcció, millores, gestió d'unitats) que actuen per iniciativa pròpia però convergeixen en un sol pla: créixer de pressa i després llançar exèrcits enormes contra els rivals.\n\nPunts forts: l'expansió ràpida sosté una pressió militar agressiva; els departaments independents reaccionen de seguida a les amenaces locals sense esperar un pla central.\n\nContrajoc a provar: disputa la seva expansió d'hora i fes servir el terreny per limitar quantes tropes pot fer servir alhora.
 [AICabino-Summary]

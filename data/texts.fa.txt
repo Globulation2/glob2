@@ -74,6 +74,10 @@ V (Vision): نشان دادن محل همه‌ی ساختمانها
 وارراش، بسرعت و شدید حمله میکند که خیلی وقتها حریفهایش را به حاشیه‌ی بازی میبرد. (نه سخت و نه آسان!)
 [AIWarrush]
 وارراش
+[AIAtlas-Description]
+Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AIAtlas]
+Atlas
 [AICabino-Description]
 کابینو دفاع، حمله و ساخت‌وساز را مثل بخش‌های مستقل اداره می‌کند که هرکدام خودشان تصمیم می‌گیرند اما همه به یک برنامه می‌رسند: خیلی زود رشد زیادی می‌کند و جنگجویان زیادی را به جان حریف‌هایش می‌اندازد. (سخت)
 [AICabino]
@@ -1266,6 +1270,10 @@ Cortex
 استراتژی: حمله زودهنگام و با قدرت، قبل از اینکه حریف آماده سازی را تمام کند.\n\nنقاط قوت: از گسترش بدون دفاع و آمادگی نظامی کند بهره برداری می کند.\n\nپیشنهاد مقابله: با حفظ اقتصاد خود از اولین حمله جان سالم به در ببرید، سپس ضدحمله کنید.
 [AIWarrush-Summary]
 حملات سریعی که دفاع اولیه شما را آزمایش می کند.
+[AIAtlas-Profile]
+Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AIAtlas-Summary]
+Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 استراتژی اصلی: هیئتی از بخش‌های تخصصی مستقل (دفاع، حمله، ساخت‌وساز، ارتقاء، مدیریت واحدها) که هرکدام با ابتکار خودشان عمل می‌کنند اما به یک برنامه می‌رسند: رشد سریع و سپس فرستادن ارتش‌های عظیم به سوی حریفان.\n\nنقاط قوت: گسترش سریع فشار نظامی تهاجمی را ممکن می‌سازد؛ بخش‌های مستقل سریع به تهدیدهای محلی واکنش نشان می‌دهند بدون آنکه منتظر یک برنامه مرکزی بمانند.\n\nراه مقابله: زود جلوی گسترش او را بگیرید و از زمین برای محدود کردن تعداد نیروهایی که می‌تواند همزمان درگیر کند استفاده کنید.
 [AICabino-Summary]

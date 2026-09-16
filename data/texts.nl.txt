@@ -74,6 +74,10 @@ Econo
 Warrush is snel en onverbiddelijk. Voor je het weet staan zijn legers aan jouw deur en moet je verdedigen alsof je leven er van afhangt, want dat is ook zo. Moeilijkheidsgraad: Gemiddeld.
 [AIWarrush]
 Warrush
+[AIAtlas-Description]
+Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AIAtlas]
+Atlas
 [AICabino-Description]
 Cabino bestuurt verdediging, aanval en bouw als onafhankelijke afdelingen die toch naar één plan toewerken: snel groeien en machtige legers op zijn vijanden afsturen. Moeilijkheidsgraad: Moeilijk.
 [AICabino]
@@ -1292,6 +1296,10 @@ Enorme bases en conversie in plaats van aanvallen.
 Strategie: Valt vroeg en krachtig aan, voordat de tegenstanders klaar zijn met voorbereiden.\n\nSterke punten: maakt gebruik van onverdedigde expansie en trage militaire voorbereiding.\n\nVoorgesteld tegenspel: overleef de eerste aanval met behoud van je economie, en voer dan een tegenaanval uit.
 [AIWarrush-Summary]
 Snelle aanvallen die je vroege verdediging op de proef stellen.
+[AIAtlas-Profile]
+Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AIAtlas-Summary]
+Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 Kernstrategie: een kabinet van onafhankelijke gespecialiseerde afdelingen (verdediging, aanval, bouw, upgrades, eenheidsbeheer) die elk op eigen initiatief handelen maar naar één plan toewerken: snel groeien en daarna machtige legers op de vijand afsturen.\n\nSterke punten: snelle expansie ondersteunt agressieve militaire druk; de onafhankelijke afdelingen reageren snel op lokale dreigingen zonder op een centraal plan te wachten.\n\nTegenzet om te proberen: bestrijd zijn expansie vroeg en gebruik het terrein om te beperken hoeveel van zijn troepen tegelijk kunnen vechten.
 [AICabino-Summary]

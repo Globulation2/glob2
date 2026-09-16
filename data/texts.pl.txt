@@ -74,6 +74,10 @@ Econo
 Warrush - Atakuje szybko i skutecznie, często spychając broniącego się gracza na straconą pozycję. Średnia trudność.
 [AIWarrush]
 AIWarrush
+[AIAtlas-Description]
+Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AIAtlas]
+Atlas
 [AICabino-Description]
 Cabino zarządza obroną, atakiem i budową jako niezależnymi departamentami, które dążą do jednego planu: rozwija się szybko i wysyła ogromne armie na swoich przeciwników. Duża trudność.
 [AICabino]
@@ -1268,6 +1272,10 @@ Ogromne bazy i konwersja zamiast ataków.
 Strategia: Atakuje wcześnie i mocno, zanim przeciwnicy zakończą przygotowania.\n\nMocne strony: Wykorzystuje niebronioną ekspansję i powolne przygotowanie wojskowe.\n\nJak przeciwdziałać: Przetrwaj pierwszy atak, utrzymując gospodarkę, a następnie kontratakuj.
 [AIWarrush-Summary]
 Szybkie ataki, które sprawdzają twoją wczesną obronę.
+[AIAtlas-Profile]
+Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AIAtlas-Summary]
+Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 Podstawowa strategia: gabinet niezależnych wyspecjalizowanych departamentów (obrona, atak, budowa, ulepszenia, zarządzanie jednostkami), z których każdy działa z własnej inicjatywy, ale wszystkie dążą do jednego planu: szybki rozwój, a potem wysłanie ogromnych armii na przeciwników.\n\nMocne strony: szybka ekspansja wspiera agresywną presję militarną; niezależne departamenty szybko reagują na lokalne zagrożenia, nie czekając na centralny plan.\n\nJak przeciwdziałać: zwalczaj jego ekspansję wcześnie i wykorzystaj teren, by ograniczyć liczbę oddziałów, które może zaangażować naraz.
 [AICabino-Summary]

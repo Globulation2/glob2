@@ -14,6 +14,7 @@
 #include "Player.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
+#include "ai/atlas/AtlasTrace.h"
 #include "SDLCompat.h"
 #include "team/Team.h"
 #include "TeamStat.h"
@@ -529,6 +530,27 @@ void Engine::teardownSession()
 	{
 		globalContainer->datasetWriter->close();
 		globalContainer->datasetWriter.reset();
+	}
+
+	if (globalContainer->atlasTraceWriter)
+	{
+		// Outcomes are only knowable now, at teardown, which is why the trace
+		// carries them in a footer rather than its header.
+		std::vector<Uint8> outcomes;
+		for (int t=0; t<gui.game.mapHeader.getNumberOfTeams(); t++)
+		{
+			Team *team = gui.game.teams[t];
+			if (!team)
+				outcomes.push_back(Atlas::OUTCOME_UNKNOWN);
+			else if (team->hasWon)
+				outcomes.push_back(Atlas::OUTCOME_WON);
+			else if (team->hasLost || !team->isAlive)
+				outcomes.push_back(Atlas::OUTCOME_LOST);
+			else
+				outcomes.push_back(Atlas::OUTCOME_UNKNOWN);
+		}
+		globalContainer->atlasTraceWriter->close(outcomes);
+		globalContainer->atlasTraceWriter.reset();
 	}
 
 	net.reset();

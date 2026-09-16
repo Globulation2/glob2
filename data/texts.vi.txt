@@ -82,6 +82,10 @@ Econo
 Warrush - Tấn công nhanh và dữ dội, thường khiến người phòng thủ phải chống đỡ hết sức. Độ khó trung bình.
 [AIWarrush]
 Warrush
+[AIAtlas-Description]
+Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AIAtlas]
+Atlas
 [AICabino-Description]
 Cabino điều hành phòng thủ, tấn công và xây dựng như những bộ phận độc lập nhưng cùng hướng đến một kế hoạch: phát triển nhanh và tung những đạo quân lớn vào đối thủ. Độ khó cao.
 [AICabino]
@@ -1264,6 +1268,10 @@ Xây căn cứ lớn và chiêu dụ quân địch thay vì tấn công.
 Chiến lược: Tấn công nhanh và mạnh trước khi đối thủ xây dựng lực lượng xong.\n\nĐiểm mạnh: Trừng phạt việc mở rộng thiếu phòng thủ và chuẩn bị quân sự chậm.\n\nGợi ý đối phó: Duy trì kinh tế, chống đỡ đợt tấn công đầu rồi phản công.
 [AIWarrush-Summary]
 Các cuộc tấn công nhanh kiểm tra khả năng phòng thủ sớm của bạn.
+[AIAtlas-Profile]
+Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AIAtlas-Summary]
+Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 Chiến lược cốt lõi: một nội các gồm các bộ phận chuyên trách độc lập (phòng thủ, tấn công, xây dựng, nâng cấp, quản lý đơn vị), mỗi bộ phận tự hành động theo sáng kiến riêng nhưng cùng hướng đến một kế hoạch: phát triển nhanh rồi tung những đạo quân lớn vào đối thủ.\n\nĐiểm mạnh: mở rộng nhanh hỗ trợ áp lực quân sự mạnh mẽ; các bộ phận độc lập phản ứng nhanh với các mối đe dọa cục bộ mà không cần chờ một kế hoạch trung tâm.\n\nCách đối phó: ngăn chặn sự mở rộng của nó sớm và dùng địa hình để hạn chế số quân nó có thể huy động cùng lúc.
 [AICabino-Summary]

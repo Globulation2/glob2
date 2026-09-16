@@ -74,6 +74,10 @@ Econo
 Description d'AICastor
 [AIWarrush]
 AIWarrush
+[AIAtlas-Description]
+Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AIAtlas]
+Atlas
 [AICabino-Description]
 Cabino gère la défense, l'attaque et la construction comme des départements indépendants qui convergent vers un seul plan : croître vite et envoyer d'énormes armées contre ses adversaires. Difficulté élevée.
 [AICabino]
@@ -1278,6 +1282,10 @@ Bases énormes et conversion au lieu d'attaques.
 Stratégie : attaque tôt et avec force, avant que les adversaires aient fini de se préparer.\n\nPoints forts : exploite une expansion sans défense et une préparation militaire lente.\n\nTactiques à essayer : Survivez à la première attaque tout en maintenant votre économie, puis contre-attaquez.
 [AIWarrush-Summary]
 Des attaques rapides qui testent vos premières défenses.
+[AIAtlas-Profile]
+Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AIAtlas-Summary]
+Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 Stratégie principale : un cabinet de départements spécialisés indépendants (défense, attaque, construction, améliorations, gestion des unités) qui agissent chacun de leur propre initiative mais convergent vers un seul plan : croître vite puis envoyer d'énormes armées contre ses adversaires.\n\nPoints forts : une expansion rapide soutient une pression militaire agressive ; les départements indépendants réagissent vite aux menaces locales sans attendre un plan central.\n\nContre-jeu à essayer : contestez son expansion tôt et utilisez le terrain pour limiter le nombre de troupes qu'il peut engager à la fois.
 [AICabino-Summary]

@@ -74,6 +74,10 @@ AIEcono
 AIWarrush-描述
 [AIWarrush]
 AIWarrush
+[AIAtlas-Description]
+Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AIAtlas]
+Atlas
 [AICabino-Description]
 Cabino 将防御、进攻和建设作为各自独立的部门来运作，但都汇聚于同一个计划：快速壮大，然后向对手投入庞大的军队。难度：困难。
 [AICabino]
@@ -1264,6 +1268,10 @@ AI策略与对抗
 核心策略:在对手完成建设前，发动迅速而猛烈的进攻。\n\n优势:善于打击无防备的扩张和缓慢的备战。\n\n可尝试的对策:维持经济，撑过首轮进攻后再反击。
 [AIWarrush-Summary]
 快速攻击考验你的早期防御能力。
+[AIAtlas-Profile]
+Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AIAtlas-Summary]
+Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 核心策略：由独立的专职部门（防御、进攻、建设、升级、单位管理）组成的内阁，各部门自行其是，却共同汇聚于一个计划：快速壮大，然后向对手投入庞大的军队。\n\n优势：快速扩张支撑起进攻性的军事压力；独立部门无需等待中央计划即可迅速应对当地威胁。\n\n应对策略：尽早遏制其扩张，并利用地形限制其能同时投入交战的部队数量。
 [AICabino-Summary]

@@ -82,6 +82,10 @@ Econo
 Warrush - Attacks quickly and punishingly, often pushing a defending player to the edge of its game. Medium Difficulty.
 [AIWarrush]
 Warrush
+[AIAtlas-Description]
+Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AIAtlas]
+Atlas
 [AICabino-Description]
 Cabino runs its defense, offense and construction as independent departments that each act on their own initiative, but together they pursue one plan: grow large fast and throw huge armies at its opponents. Hard Difficulty.
 [AICabino]
@@ -1266,6 +1270,10 @@ Huge bases and conversion instead of attacks.
 Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
 [AIWarrush-Summary]
 Fast attacks that test your early defenses.
+[AIAtlas-Profile]
+Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AIAtlas-Summary]
+Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 Core strategy: A cabinet of independent specialist departments — defense, offense, construction, upgrades, unit management — that each act on their own initiative but converge on one plan: grow large fast, then throw huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure; independent departments react quickly to local threats without waiting on a central plan.\n\nCounterplay to try: Contest its expansion early and use terrain to limit how much of its army can engage at once.
 [AICabino-Summary]

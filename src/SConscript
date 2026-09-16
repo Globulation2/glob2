@@ -78,6 +78,10 @@ ai/cortex/CortexTuning.cpp
 ai/cortex/CortexWheat.cpp
 ai/cortex/CortexWater.cpp
 ai/cortex/CortexNet.cpp
+ai/atlas/AIAtlas.cpp
+ai/atlas/AtlasFieldSource.cpp
+ai/atlas/AtlasTrace.cpp
+ai/atlas/AtlasReconciler.cpp
 ai/cortex/AICortex.cpp
 ai/cortex/AICortexFlags.cpp
 ai/cortex/AICortexTranslate.cpp
@@ -627,6 +631,11 @@ if not env['server']:
     geometry_sources += local.Object('CortexGeometryHarness.o', '#test/CortexGeometryHarness.cpp')
     geometry_test = local.Program('CortexGeometryHarness', geometry_sources)
     local.Alias('cortex-geometry-test', geometry_test)
+
+    atlas_sources = [source for source in source_files if source != 'Glob2.cpp']
+    atlas_sources += local.Object('AtlasReconcilerHarness.o', '#test/AtlasReconcilerHarness.cpp')
+    atlas_test = local.Program('AtlasReconcilerHarness', atlas_sources)
+    local.Alias('atlas-reconciler-test', atlas_test)
 
 # Optional integration executable; normal game/server builds do not build it.
 if not env['server']:

@@ -24,8 +24,31 @@
 #include "FertilityCalculatorDialog.h"
 
 #include "ReplayWriter.h"
+#include "Player.h"
+#include "ai/AI.h"
+#include "ai/atlas/AtlasTrace.h"
 
 #define BULLET_IMGID 0
+
+namespace
+{
+	//! Which AI drives `teamNumber`, for labelling Atlas trace snapshots.
+	//! A team may hold several players; the first AI player decides, and a
+	//! team with no AI at all records as AI::NONE. Recorded but deliberately
+	//! not conditioned on — traces are pooled across teachers (see
+	//! AtlasTrace.h), and this exists so that choice stays revisitable
+	//! without regenerating the corpus.
+	Uint8 atlasTeacherIdFor(Game &game, int teamNumber)
+	{
+		for (int p = 0; p < game.gameHeader.getNumberOfPlayers(); p++)
+		{
+			Player *player = game.players[p];
+			if (player && player->team && player->team->teamNumber == teamNumber && player->ai)
+				return Uint8(player->ai->implementationID);
+		}
+		return Uint8(AI::NONE);
+	}
+} // namespace
 
 // Per-tick sync. Split out of Game.cpp.
 
@@ -179,6 +202,19 @@ void Game::syncStep(Sint32 localTeam)
 			prestigeSyncStep();
 			scriptSyncStep();
 			wonSyncStep();
+		}
+
+		// Snapshot every team's map state into the Atlas trace (see
+		// AtlasTrace.h). Recorded before stepCounter advances so a snapshot's
+		// tick is the tick whose state it describes.
+		if (globalContainer->atlasTraceWriter && globalContainer->atlasTraceWriter->isValid())
+		{
+			const Uint8 period = globalContainer->atlasTraceWriter->policyPeriod();
+			if (period > 0 && (stepCounter % period) == 0)
+				for (int t=0; t<mapHeader.getNumberOfTeams(); t++)
+					if (teams[t])
+						globalContainer->atlasTraceWriter->writeSnapshot(
+							teams[t], (Uint32)stepCounter, atlasTeacherIdFor(*this, t));
 		}
 
 		Uint64 endTick=SDL_GetTicks64();

@@ -1,0 +1,133 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 The Globulation 2 Authors
+
+#include "AIAtlas.h"
+
+#include "AtlasFieldSource.h"
+#include "Game.h"
+#include "Order.h"
+#include "Player.h"
+#include "Stream.h"
+#include "Team.h"
+
+#include <cstdlib>
+#include <iostream>
+
+AIAtlas::AIAtlas(Player *player)
+{
+	init(player);
+}
+
+AIAtlas::~AIAtlas() {}
+
+void AIAtlas::init(Player *player)
+{
+	player_ = player;
+	team_ = player_ ? player_->team : nullptr;
+	game_ = team_ ? team_->game : nullptr;
+
+	Atlas::ReconcilerConfig config;
+	reconciler_.init(team_, config);
+
+	if (team_)
+	{
+		// GLOB2_ATLAS_ORACLE points at a trace recorded from a teacher AI;
+		// GLOB2_ATLAS_ORACLE_DELTA is the label horizon in ticks. Together
+		// they run the M0 gate: drive the reconciler from a strong AI's own
+		// future map and see whether the declarative representation is enough
+		// to reproduce its play.
+		const char *oraclePath = getenv("GLOB2_ATLAS_ORACLE");
+		if (oraclePath)
+		{
+			auto trace = std::make_shared<Atlas::TraceReader>();
+			if (trace->load(oraclePath))
+			{
+				Uint32 delta = 500;
+				if (const char *env = getenv("GLOB2_ATLAS_ORACLE_DELTA"))
+				{
+					const long parsed = strtol(env, nullptr, 10);
+					if (parsed > 0)
+						delta = Uint32(parsed);
+				}
+				source_ = std::make_unique<Atlas::OracleFieldSource>(team_, trace, delta);
+			}
+			else
+			{
+				std::cerr << "GLOB2_ATLAS_ORACLE: failed to load trace " << oraclePath
+				          << "; falling back to the identity field" << std::endl;
+			}
+		}
+
+		// Default source is the identity field: Atlas asks for exactly what it
+		// already has, so it sits inert and emits nothing. That is the right
+		// default for an AI whose policy has not been attached yet — a
+		// half-wired Atlas should do nothing, not something arbitrary.
+		if (!source_)
+			source_ = std::make_unique<Atlas::IdentityFieldSource>(team_);
+	}
+
+	queue_.clear();
+	lastPlanTick_ = -1;
+	lastPlanSize_ = 0;
+}
+
+void AIAtlas::setFieldSource(std::unique_ptr<Atlas::FieldSource> source)
+{
+	source_ = std::move(source);
+	queue_.clear();
+	lastPlanTick_ = -1;
+}
+
+bool AIAtlas::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	(void)stream;
+	(void)versionMinor;
+	// Nothing Atlas-shaped is persisted (see AIAtlas.h): the field is
+	// recomputed from the live map on the next policy step, and the
+	// anti-thrash counters are safe to lose. Re-initialising against the
+	// loaded player is the whole of load().
+	init(player);
+	return true;
+}
+
+void AIAtlas::save(GAGCore::OutputStream *stream)
+{
+	(void)stream;
+}
+
+std::shared_ptr<Order> AIAtlas::getOrder(void)
+{
+	if (!team_ || !game_ || !source_)
+		return std::make_shared<NullOrder>();
+
+	const Sint64 tick = Sint64(game_->stepCounter);
+	const int period = reconciler_.config().policyPeriodTicks;
+
+	if (lastPlanTick_ < 0 || tick - lastPlanTick_ >= Sint64(period))
+	{
+		lastPlanTick_ = tick;
+		// Drop anything still queued from the previous plan. The new field is
+		// the current intent; draining stale orders would act on a target the
+		// policy has already moved on from, which is exactly the incoherence
+		// the level-triggered design exists to avoid.
+		queue_.clear();
+		if (source_->field(Uint32(tick), desired_))
+		{
+			auto orders = reconciler_.plan(desired_);
+			lastPlanSize_ = orders.size();
+			for (auto &order : orders)
+				queue_.push_back(std::move(order));
+		}
+		else
+		{
+			lastPlanSize_ = 0;
+		}
+	}
+
+	if (queue_.empty())
+		return std::make_shared<NullOrder>();
+
+	auto order = queue_.front();
+	queue_.pop_front();
+	return order;
+}

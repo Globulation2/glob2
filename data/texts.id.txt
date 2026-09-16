@@ -82,6 +82,10 @@ Econo
 Warrush - Menyerang dengan cepat dan keras, sering kali membuat pemain yang bertahan kewalahan. Tingkat kesulitan sedang.
 [AIWarrush]
 Warrush
+[AIAtlas-Description]
+Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AIAtlas]
+Atlas
 [AICabino-Description]
 Cabino menjalankan pertahanan, serangan, dan pembangunan sebagai departemen independen yang menuju satu rencana: berkembang pesat lalu mengerahkan pasukan besar untuk menyerang lawan. Tingkat kesulitan sulit.
 [AICabino]
@@ -1264,6 +1268,10 @@ Basis besar dan konversi, bukan serangan.
 Strategi: Menyerang dengan cepat dan keras sebelum lawan selesai bersiap.\n\nKekuatan: Menghukum ekspansi tanpa pertahanan dan persiapan militer yang lambat.\n\nSaran melawan: Pertahankan ekonomi sambil bertahan dari serangan pertama, lalu serang balik.
 [AIWarrush-Summary]
 Serangan cepat yang menguji pertahanan awal Anda.
+[AIAtlas-Profile]
+Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AIAtlas-Summary]
+Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 Strategi inti: sebuah kabinet departemen spesialis independen (pertahanan, serangan, pembangunan, peningkatan, manajemen unit) yang masing-masing bertindak atas inisiatifnya sendiri tetapi menuju satu rencana: berkembang pesat lalu mengerahkan pasukan besar melawan lawan.\n\nKekuatan: ekspansi cepat mendukung tekanan militer yang agresif; departemen independen bereaksi cepat terhadap ancaman lokal tanpa menunggu rencana terpusat.\n\nCara melawan: hadapi ekspansinya sejak awal dan gunakan medan untuk membatasi berapa banyak pasukannya yang bisa bertempur sekaligus.
 [AICabino-Summary]

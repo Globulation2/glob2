@@ -74,6 +74,10 @@ Econo
 Warrush gyorsan és kíméletlenül támad, gyakran a végsőkig szorítva a védekező játékost. Közepes nehézség.
 [AIWarrush]
 MIWarrush
+[AIAtlas-Description]
+Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AIAtlas]
+Atlas
 [AICabino-Description]
 A Cabino önálló osztályokként irányítja a védelmet, a támadást és az építkezést, amelyek egyetlen terv felé haladnak: gyorsan terjeszkedik, és hatalmas seregeket küld ellenfeleire. Nehéz.
 [AICabino]
@@ -1268,6 +1272,10 @@ Hatalmas bázisok és átalakítások támadások helyett.
 Stratégia: Korán és erőteljesen támad, mielőtt az ellenfél befejezné a felkészülést.\n\nErősségek: Kiaknázza a védtelen terjeszkedést és a lassú katonai felkészülést.\n\nJavasolt ellenjáték: Vészeld át az első támadást a gazdaságod fenntartásával, majd indíts ellentámadást.
 [AIWarrush-Summary]
 Gyors támadások, amelyek tesztelik a korai védekezést.
+[AIAtlas-Profile]
+Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AIAtlas-Summary]
+Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 Alapstratégia: önálló szakosztályok kabinetje (védelem, támadás, építkezés, fejlesztések, egységkezelés), amelyek saját kezdeményezésre cselekszenek, de egyetlen terv felé haladnak: gyors növekedés, majd hatalmas seregek küldése az ellenfelekre.\n\nErősségek: a gyors terjeszkedés agresszív katonai nyomást tesz lehetővé; az önálló osztályok gyorsan reagálnak a helyi fenyegetésekre, központi terv nélkül.\n\nEllenjáték: támadd meg korán a terjeszkedését, és használd a terepet, hogy korlátozd, hány egysége tud egyszerre harcolni.
 [AICabino-Summary]
