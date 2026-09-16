@@ -34,7 +34,33 @@ import torch
 
 from neurotica_net import NeuroticaNet, NUM_BUILDING_CLASSES
 
-MAGIC = b"NPS1"
+MAGIC = b"NPS2"
+
+# Plane ranges inside the DYNAMIC stack (NeuroticaObservation.h order):
+# 8 resources, 13 own buildings, level/site/workers, 13 enemy buildings,
+# ally, then units.
+MY_BUILDING_SLICE = slice(8, 21)
+ENEMY_BUILDING_SLICE = slice(24, 37)
+MY_UNIT_SLICE = slice(38, 41)
+ENEMY_UNIT_SLICE = slice(41, 44)
+
+
+def flush_trajectory(client, record_dir: str) -> None:
+    """Write one episode. The outcome is filled in later by the driver, which
+    is the only party that knows who won."""
+    if not client.logps:
+        return
+    import json
+    base = os.path.join(record_dir, f"g{client.game_id}_t{client.team_seen}")
+    np.save(base + ".obs.npy", np.stack(client.obs_u8))
+    np.savez(base + ".npz",
+             latents=np.stack(client.latents).astype(np.float32),
+             logps=np.array(client.logps, dtype=np.float32),
+             values=np.array(client.values, dtype=np.float32),
+             potentials=np.array(client.potentials, dtype=np.float32))
+    with open(base + ".json", "w") as fh:
+        json.dump({"game_id": int(client.game_id), "team": int(client.team_seen),
+                   "steps": len(client.logps), "outcome": None}, fh)
 
 
 class Client:
@@ -43,10 +69,11 @@ class Client:
     def __init__(self, conn: socket.socket, latent_std: float, latent_dim: int):
         self.conn = conn
         self.conn.setblocking(True)
-        head = _recv_exact(conn, 12)
+        head = _recv_exact(conn, 16)
         if head is None or head[:4] != MAGIC:
             raise ValueError("bad handshake")
         self.w, self.h, self.n_static, self.n_dynamic = struct.unpack_from("<HHBB", head, 4)
+        (self.game_id,) = struct.unpack_from("<I", head, 12)
         static_raw = _recv_exact(conn, self.n_static * self.w * self.h)
         if static_raw is None:
             raise ValueError("short static planes")
@@ -57,6 +84,12 @@ class Client:
                        if latent_std > 0 else np.zeros(latent_dim, dtype=np.float32))
         self.conn.setblocking(False)
         self.buf = bytearray()
+        # Trajectory buffers, only populated when recording.
+        self.obs_u8: list = []
+        self.latents: list = []
+        self.logps: list = []
+        self.values: list = []
+        self.potentials: list = []
 
 
 def _recv_exact(conn: socket.socket, n: int):
@@ -97,6 +130,11 @@ def main() -> int:
     ap.add_argument("--batch-wait-ms", type=float, default=2.0)
     ap.add_argument("--latent-std", type=float, default=0.0)
     ap.add_argument("--latent-dim", type=int, default=32)
+    ap.add_argument("--record-dir", default=None,
+                    help="write one trajectory per connection here, for PPO")
+    ap.add_argument("--sample", action="store_true",
+                    help="sample the exploration latent from the policy instead "
+                         "of using its mean (required for on-policy RL)")
     ap.add_argument("--score-floor", type=int, default=0,
                     help="drop predicted buildings whose softmax score is below "
                          "this (0..255); the reconciler still ranks by score")
@@ -121,6 +159,8 @@ def main() -> int:
     sel.register(listener, selectors.EVENT_READ, data=None)
     print(f"listening on {args.socket}", flush=True)
 
+    if args.record_dir:
+        os.makedirs(args.record_dir, exist_ok=True)
     clients = {}
     served = 0
     t_start = time.time()
@@ -152,6 +192,7 @@ def main() -> int:
                     if head is None:
                         raise ConnectionError
                     tick, team = struct.unpack_from("<IB", head, 0)
+                    client.team_seen = team
                     payload = _recv_exact(client.conn, client.dyn_bytes)
                     if payload is None:
                         raise ConnectionError
@@ -160,6 +201,11 @@ def main() -> int:
                     sel.unregister(client.conn)
                     clients.pop(client.conn.fileno(), None)
                     client.conn.close()
+                    if args.record_dir:
+                        try:
+                            flush_trajectory(client, args.record_dir)
+                        except Exception as exc:
+                            print("trajectory flush failed:", exc, flush=True)
                     print("client disconnected", flush=True)
                     continue
                 dynamic = np.frombuffer(payload, dtype=np.uint8).reshape(
@@ -176,7 +222,10 @@ def main() -> int:
         batch = np.stack([build_input(c, d, t) for c, d, t in pending])
         x = torch.from_numpy(batch).to(args.device).to(memory_format=torch.channels_last)
         with torch.no_grad(), torch.autocast("cuda", dtype=torch.float16):
-            out = net(x)
+            if args.sample:
+                out = net.act(x, deterministic=False)
+            else:
+                out = net(x)
         logits = out["building"].float()
         probs = torch.softmax(logits, dim=1)
         cls = probs.argmax(dim=1).to(torch.uint8)
@@ -187,6 +236,28 @@ def main() -> int:
         area_bits = (areas[:, 0].to(torch.uint8) * 1 + areas[:, 1].to(torch.uint8) * 2
                      + areas[:, 2].to(torch.uint8) * 4)
         packed = torch.stack([cls, score, area_bits], dim=-1).cpu().numpy()
+
+        if args.record_dir:
+            lat = out.get("latent")
+            lp = out.get("logp")
+            val = out.get("value")
+            for n, (client, dyn, _tick) in enumerate(pending):
+                client.obs_u8.append(dyn.copy())
+                if lat is not None:
+                    client.latents.append(lat[n].float().cpu().numpy())
+                    client.logps.append(float(lp[n]))
+                if val is not None:
+                    client.values.append(float(val[n]))
+                # Potential for shaping, read straight off the planes the
+                # server already holds: own buildings and units minus the
+                # enemy's. Potential-based shaping is policy-invariant, so this
+                # cannot introduce a strategy that wins the shaping instead of
+                # the game.
+                mine = float((dyn[MY_BUILDING_SLICE] > 0).sum() +
+                             (dyn[MY_UNIT_SLICE] > 0).sum())
+                theirs = float((dyn[ENEMY_BUILDING_SLICE] > 0).sum() +
+                               (dyn[ENEMY_UNIT_SLICE] > 0).sum())
+                client.potentials.append((mine - theirs) / 500.0)
 
         for (client, _d, _t), reply in zip(pending, packed):
             if not _send_all(client.conn, reply.tobytes()):

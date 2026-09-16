@@ -21,13 +21,18 @@
   Protocol (little-endian, no framing beyond the lengths shown):
 
     HANDSHAKE, client -> server, once per connection
-      [4B] magic "NPS1"
+      [4B] magic "NPS2"
       [2B] u16 map_w
       [2B] u16 map_h
       [1B] u8  num_static_planes
       [1B] u8  num_dynamic_planes
       [2B] pad
+      [4B] u32 game_id        (GLOB2_NEUROTICA_GAME_ID, 0 if unset)
       [...] static planes, num_static * w * h bytes
+
+  The game id exists for self-play: the server records one trajectory per
+  connection, and the driver needs to match a trajectory to the game whose
+  outcome it later reads. Without it, concurrent games are indistinguishable.
 
     REQUEST, client -> server, per policy step
       [4B] u32 tick

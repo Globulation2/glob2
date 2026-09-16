@@ -28,6 +28,17 @@ void AINeurotica::init(Player *player)
 	game_ = team_ ? team_->game : nullptr;
 
 	Neurotica::ReconcilerConfig config;
+	// Self-play wants a longer period than behaviour cloning: it decides both
+	// how many transitions an episode stores and how much GPU the rollout
+	// fleet demands, and both scale inversely with it. The reconciler drains
+	// one order per tick in between, so a longer period buys a bigger burst
+	// budget rather than less control.
+	if (const char *env = getenv("GLOB2_NEUROTICA_POLICY_PERIOD"))
+	{
+		const long parsed = strtol(env, nullptr, 10);
+		if (parsed > 0 && parsed < 100000)
+			config.policyPeriodTicks = int(parsed);
+	}
 	reconciler_.init(team_, config);
 
 	if (team_)

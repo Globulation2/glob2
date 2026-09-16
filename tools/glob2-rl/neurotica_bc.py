@@ -59,6 +59,14 @@ def evaluate(net, loader, device, weights, limit_batches=40):
     # not — the only place a prediction is being made at all.
     novel_tp = novel_fn = novel_fp = 0
     copy_tp = copy_fn = 0
+    # Precision@k is the metric that matches deployment. The reconciler does
+    # not threshold the field: it ranks cells by score and acts on the top of
+    # the queue (maxQueuedOrders). So what matters is whether the few cells the
+    # net is most confident about are right, not whether a global threshold
+    # separates 1 building from 16,383 empty cells — at that base rate,
+    # thresholded precision is punishing and uninformative.
+    topk_hits = {1: 0, 5: 0, 20: 0}
+    topk_total = {1: 0, 5: 0, 20: 0}
     for i, (obs, building, areas) in enumerate(loader):
         if i >= limit_batches:
             break
@@ -88,6 +96,22 @@ def evaluate(net, loader, device, weights, limit_batches=40):
         copy_tp += (pred_occ & kept).sum().item()
         copy_fn += (~pred_occ & kept).sum().item()
 
+        # Rank novel candidates by the probability the net assigns to any
+        # building at that cell, restricted to cells it does not already hold.
+        probs = torch.softmax(out["building"].float(), dim=1)
+        occupied_prob = 1.0 - probs[:, 0]
+        cand = occupied_prob.masked_fill(existing, -1.0).flatten(1)
+        truth = novel.flatten(1)
+        for k in topk_hits:
+            n_avail = min(k, cand.shape[1])
+            idx = cand.topk(n_avail, dim=1).indices
+            hits = truth.gather(1, idx).sum(dim=1)
+            # Only score samples that actually have something novel to find;
+            # a sample whose label adds nothing makes precision@k meaningless.
+            has_novel = truth.any(dim=1)
+            topk_hits[k] += hits[has_novel].sum().item()
+            topk_total[k] += int(has_novel.sum().item()) * k
+
         area_pred = (out["areas"].float() > 0)
         area_correct += (area_pred == (areas > 0.5)).sum().item()
         area_total += areas.numel()
@@ -101,7 +125,9 @@ def evaluate(net, loader, device, weights, limit_batches=40):
     precision = (occupied_tp / (occupied_tp + occupied_fp).clamp(min=1)).item()
     novel_recall = novel_tp / max(novel_tp + novel_fn, 1)
     novel_precision = novel_tp / max(novel_tp + novel_fp, 1)
-    return dict(loss=tot_loss / max(tot_n, 1), recall=recall, precision=precision,
+    prec_at = {k: topk_hits[k] / max(topk_total[k], 1) for k in topk_hits}
+    return dict(p1=prec_at[1], p5=prec_at[5], p20=prec_at[20],
+                loss=tot_loss / max(tot_n, 1), recall=recall, precision=precision,
                 f1=2 * recall * precision / max(recall + precision, 1e-9),
                 area_acc=area_correct / max(area_total, 1),
                 novel_recall=novel_recall, novel_precision=novel_precision,
@@ -119,7 +145,7 @@ def main() -> int:
     ap.add_argument("--width", type=int, default=48)
     ap.add_argument("--empty-weight", type=float, default=0.02,
                     help="loss weight for the 'no building' class")
-    ap.add_argument("--novel-weight", type=float, default=20.0,
+    ap.add_argument("--novel-weight", type=float, default=4.0,
                     help="extra per-cell loss weight on cells the label occupies "
                          "but the observation does not — the only cells where a "
                          "prediction is actually being made")
@@ -203,20 +229,21 @@ def main() -> int:
                 print(f"  e{epoch} step {step} loss {run_loss/max(run_n,1):.4f} "
                       f"({run_n/(time.time()-t_epoch):.0f} samp/s)", flush=True)
         m = evaluate(net, val_loader, device, weights)
-        print(f"epoch {epoch}: train {run_loss/max(run_n,1):.4f} | val {m['loss']:.4f} "
-              f"| all f1 {m['f1']:.3f} | COPY recall {m['copy_recall']:.3f} "
-              f"| NOVEL recall {m['novel_recall']:.3f} prec {m['novel_precision']:.3f} "
-              f"(n={m['novel_n']}) | area {m['area_acc']:.4f} | {time.time()-t_epoch:.0f}s",
-              flush=True)
+        print(f"epoch {epoch}: train {run_loss/max(run_n,1):.4f} val {m['loss']:.4f} "
+              f"| COPY {m['copy_recall']:.3f} | NOVEL rec {m['novel_recall']:.3f} "
+              f"| P@1 {m['p1']:.3f} P@5 {m['p5']:.3f} P@20 {m['p20']:.3f} "
+              f"| area {m['area_acc']:.4f} | {time.time()-t_epoch:.0f}s", flush=True)
         torch.save({"model": net.state_dict(), "args": vars(args),
                     "in_planes": in_planes, "metrics": m}, f"{args.out}/last.pt")
-        # Select on novel recall, not overall f1: overall f1 rewards copying.
-        selector = m["novel_recall"]
+        # Select on precision@5: it is the only metric that reflects how the
+        # field is consumed, and unlike recall it cannot be gamed by predicting
+        # buildings everywhere.
+        selector = m["p5"]
         if selector > best_f1:
             best_f1 = selector
             torch.save({"model": net.state_dict(), "args": vars(args),
                         "in_planes": in_planes, "metrics": m}, f"{args.out}/best.pt")
-    print(f"best novel recall {best_f1:.3f}")
+    print(f"best P@5 {best_f1:.3f}")
     return 0
 
 

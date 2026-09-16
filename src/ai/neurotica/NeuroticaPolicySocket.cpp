@@ -9,6 +9,7 @@
 #include "Team.h"
 
 #include <cerrno>
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <sys/socket.h>
@@ -111,14 +112,18 @@ namespace Neurotica
 			return false;
 		}
 
-		Uint8 header[12];
-		std::memcpy(header, "NPS1", 4);
+		Uint8 header[16];
+		std::memcpy(header, "NPS2", 4);
 		const Uint16 w = Uint16(map->getW()), h = Uint16(map->getH());
 		std::memcpy(header + 4, &w, 2);
 		std::memcpy(header + 6, &h, 2);
 		header[8] = Uint8(SP_COUNT);
 		header[9] = Uint8(DP_COUNT);
 		header[10] = header[11] = 0;
+		Uint32 gameId = 0;
+		if (const char *env = getenv("GLOB2_NEUROTICA_GAME_ID"))
+			gameId = Uint32(strtoul(env, nullptr, 10));
+		std::memcpy(header + 12, &gameId, 4);
 		if (!writeAll(header, sizeof(header)) || !writeAll(statics.data(), statics.size()))
 		{
 			std::cerr << "Neurotica: policy handshake failed" << std::endl;

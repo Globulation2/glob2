@@ -25,6 +25,7 @@ Design notes that are load-bearing rather than taste:
 
 from __future__ import annotations
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -74,10 +75,52 @@ class Block(nn.Module):
         return x + self.b(self.a(x))
 
 
+class FiLM(nn.Module):
+    """Feature-wise modulation of a plane stack by a global vector.
+
+    Used to condition the decoder on the exploration latent. Modulating
+    channels rather than concatenating a tiled vector keeps the latent's
+    influence global and coherent — it shifts what KIND of map the decoder
+    draws, rather than perturbing individual cells.
+    """
+
+    def __init__(self, latent_dim: int, ch: int):
+        super().__init__()
+        self.to_scale_shift = nn.Linear(latent_dim, ch * 2)
+        nn.init.zeros_(self.to_scale_shift.weight)
+        nn.init.zeros_(self.to_scale_shift.bias)
+
+    def forward(self, x, z):
+        scale, shift = self.to_scale_shift(z).chunk(2, dim=-1)
+        scale = scale[:, :, None, None]
+        shift = shift[:, :, None, None]
+        return x * (1 + scale) + shift
+
+
 class NeuroticaNet(nn.Module):
-    def __init__(self, in_planes: int, width: int = 48, levels: int = 3):
+    """Policy and value for Neurotica.
+
+    Behaviour cloning uses only the field heads. Self-play additionally uses
+    the latent and the value head:
+
+      * The field is a DETERMINISTIC function of (observation, z). Exploration
+        happens by sampling z from the policy's own Gaussian, not by sampling
+        each cell. Per-cell sampling would make log pi(a|s) a sum over ~16k
+        terms, so PPO's importance ratio exp(sum of log-prob deltas) explodes
+        on essentially every update — and it explores in a direction that is
+        not strategically meaningful anyway. Flipping one tile is noise;
+        shifting the latent is "expand north instead of teching".
+
+      * That makes the RL action space `latent_dim` continuous dimensions
+        rather than 13 x H x W discrete ones, which is what makes PPO
+        tractable here at all.
+    """
+
+    def __init__(self, in_planes: int, width: int = 48, levels: int = 3,
+                 latent_dim: int = 32):
         super().__init__()
         self.levels = levels
+        self.latent_dim = latent_dim
         chans = [width * (2 ** i) for i in range(levels + 1)]
 
         self.stem = nn.Sequential(nn.Conv2d(in_planes, chans[0], 1, bias=False),
@@ -99,6 +142,16 @@ class NeuroticaNet(nn.Module):
             self.up.append(nn.ConvTranspose2d(chans[i + 1], chans[i], 2, stride=2, bias=False))
             self.dec.append(Block(chans[i], separable=(i < 2)))
 
+        # Policy over the latent, and the critic, both read the pooled
+        # bottleneck: they are global judgements, not per-cell ones.
+        bottleneck = chans[levels]
+        self.latent_mu = nn.Sequential(nn.Linear(bottleneck, 128), nn.SiLU(),
+                                       nn.Linear(128, latent_dim))
+        self.latent_logstd = nn.Parameter(torch.zeros(latent_dim))
+        self.value = nn.Sequential(nn.Linear(bottleneck, 128), nn.SiLU(),
+                                   nn.Linear(128, 1))
+        self.film = nn.ModuleList([FiLM(latent_dim, chans[i]) for i in reversed(range(levels))])
+
         head_ch = chans[0]
         # One logit per building class per cell, plus the score that ranks
         # cells for the chosen class, plus the three area layers.
@@ -106,23 +159,68 @@ class NeuroticaNet(nn.Module):
         self.head_score = nn.Conv2d(head_ch, 1, 1)
         self.head_areas = nn.Conv2d(head_ch, 3, 1)
 
-    def forward(self, x):
+    def encode(self, x):
         x = self.stem(x)
         skips = []
         for i in range(self.levels):
             x = self.enc[i](x)
             skips.append(x)
             x = self.down[i](x)
-        x = self.mid(x)
+        return self.mid(x), skips
+
+    def decode(self, x, skips, z):
         for j, i in enumerate(reversed(range(self.levels))):
             x = self.up[j](x)
             x = x + skips[i]
+            x = self.film[j](x, z)
             x = self.dec[j](x)
         return {
             "building": self.head_building(x),
             "score": self.head_score(x),
             "areas": self.head_areas(x),
         }
+
+    def forward(self, x, z=None):
+        """z=None means the zero latent, which is what behaviour cloning uses:
+        FiLM is zero-initialised, so a zero latent is exactly the unconditioned
+        network and a BC checkpoint stays a valid starting point for RL."""
+        mid, skips = self.encode(x)
+        pooled = mid.mean(dim=(2, 3))
+        if z is None:
+            z = torch.zeros(x.shape[0], self.latent_dim, device=x.device, dtype=x.dtype)
+        out = self.decode(mid, skips, z)
+        out["latent_mu"] = self.latent_mu(pooled.float())
+        out["latent_logstd"] = self.latent_logstd.expand_as(out["latent_mu"])
+        out["value"] = self.value(pooled.float()).squeeze(-1)
+        return out
+
+    def act(self, x, deterministic: bool = False):
+        """Sample a latent from the policy and decode the field it implies."""
+        mid, skips = self.encode(x)
+        pooled = mid.mean(dim=(2, 3))
+        mu = self.latent_mu(pooled.float())
+        logstd = self.latent_logstd.expand_as(mu)
+        std = logstd.exp()
+        z = mu if deterministic else mu + std * torch.randn_like(mu)
+        logp = (-0.5 * (((z - mu) / std) ** 2) - logstd
+                - 0.5 * float(np.log(2 * np.pi))).sum(dim=-1)
+        out = self.decode(mid, skips, z.to(x.dtype))
+        out.update(latent=z, logp=logp, value=self.value(pooled.float()).squeeze(-1),
+                   latent_mu=mu, latent_logstd=logstd)
+        return out
+
+    def evaluate_latent(self, x, z):
+        """Re-score a stored latent under the current policy, for PPO."""
+        mid, skips = self.encode(x)
+        pooled = mid.mean(dim=(2, 3))
+        mu = self.latent_mu(pooled.float())
+        logstd = self.latent_logstd.expand_as(mu)
+        std = logstd.exp()
+        logp = (-0.5 * (((z - mu) / std) ** 2) - logstd
+                - 0.5 * float(np.log(2 * np.pi))).sum(dim=-1)
+        entropy = (logstd + 0.5 * float(np.log(2 * np.pi * np.e))).sum(dim=-1)
+        return dict(logp=logp, entropy=entropy,
+                    value=self.value(pooled.float()).squeeze(-1))
 
 
 def count_params(model: nn.Module) -> int:
