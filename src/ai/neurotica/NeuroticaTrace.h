@@ -4,10 +4,10 @@
 #pragma once
 
 /*
-  Atlas desired-state traces.
+  Neurotica desired-state traces.
 
   A trace is a recording of what a team's map actually looked like, sampled at
-  the Atlas policy cadence. It exists because of the labelling identity at the
+  the Neurotica policy cadence. It exists because of the labelling identity at the
   heart of this project:
 
       the desired state at tick t  :=  the observed state at tick t + delta
@@ -57,7 +57,7 @@
         [3B] u8  ratio[3]         (Building::ratio, one per unit type)
       [4B] u32 area_rle_pairs
       per pair (3 bytes):
-        [1B] u8  area bits        (Atlas::AreaBit mask)
+        [1B] u8  area bits        (Neurotica::AreaBit mask)
         [2B] u16 run length
 
     FOOTER
@@ -69,7 +69,7 @@
   Readers locate it by consuming exactly num_snapshots snapshots first.
 */
 
-#include "AtlasDesiredState.h"
+#include "NeuroticaDesiredState.h"
 
 #include <cstdio>
 #include <string>
@@ -78,7 +78,7 @@
 class Team;
 class Game;
 
-namespace Atlas
+namespace Neurotica
 {
 	enum TraceOutcome : Uint8
 	{
@@ -115,7 +115,7 @@ namespace Atlas
 
 	/*!
 	  Streams snapshots to disk during a game. Triggered by
-	  GLOB2_ATLAS_TRACE_PATH, mirroring GLOB2_DATASET_PATH.
+	  GLOB2_NEUROTICA_TRACE_PATH, mirroring GLOB2_DATASET_PATH.
 	*/
 	class TraceWriter
 	{
@@ -176,4 +176,4 @@ namespace Atlas
 		Sint32 mapH_ = 0;
 		Uint8 policyPeriod_ = 0;
 	};
-} // namespace Atlas
+} // namespace Neurotica

@@ -2,7 +2,7 @@
 // Copyright (C) 2026 The Globulation 2 Authors
 
 /*
-  Contract tests for the Atlas reconciler (src/ai/atlas/AtlasReconciler.cpp).
+  Contract tests for the Neurotica reconciler (src/ai/neurotica/NeuroticaReconciler.cpp).
 
   The reconciler is the actuator of a level-triggered control loop, so its
   contract is mostly about what it does NOT do: an already-satisfied field
@@ -11,7 +11,7 @@
   trivially "correct" on the first half and useless on the second, so every
   test here checks both directions.
 
-  Run: scons atlas-reconciler-test && ./build/src/AtlasReconcilerHarness
+  Run: scons neurotica-reconciler-test && ./build/src/NeuroticaReconcilerHarness
 */
 
 #include "Building.h"
@@ -23,8 +23,8 @@
 #include "Order.h"
 #include "Player.h"
 #include "Team.h"
-#include "ai/atlas/AtlasFieldSource.h"
-#include "ai/atlas/AtlasReconciler.h"
+#include "ai/neurotica/NeuroticaFieldSource.h"
+#include "ai/neurotica/NeuroticaReconciler.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -79,7 +79,7 @@ int main()
 	// Game::executeOrder resolves the sender through players[], so test 7 —
 	// which applies an area order through the real engine path rather than
 	// poking the map — needs one registered player.
-	game.players[0] = new Player(0, "atlas-harness", team, BasePlayer::P_LOCAL);
+	game.players[0] = new Player(0, "neurotica-harness", team, BasePlayer::P_LOCAL);
 	game.gameHeader.setNumberOfPlayers(1);
 
 	auto addBuilding = [&](int x, int y, int shortType, int level, bool site) {
@@ -94,8 +94,8 @@ int main()
 	Building *inn = addBuilding(8, 8, IntBuildingType::FOOD_BUILDING, 0, false);
 	addBuilding(16, 16, IntBuildingType::SWARM_BUILDING, 0, false);
 
-	Atlas::ReconcilerConfig config;
-	Atlas::Reconciler reconciler;
+	Neurotica::ReconcilerConfig config;
+	Neurotica::Reconciler reconciler;
 	reconciler.init(team, config);
 
 	// Every test starts from a freshly snapshotted identity field rather than
@@ -103,13 +103,13 @@ int main()
 	// baseline captured once at startup would go stale and later tests would
 	// see spurious diffs against state an earlier test changed.
 	auto baseline = [&]() {
-		Atlas::DesiredState d;
-		check(Atlas::IdentityFieldSource::snapshot(team, d), "baseline snapshot succeeds");
+		Neurotica::DesiredState d;
+		check(Neurotica::IdentityFieldSource::snapshot(team, d), "baseline snapshot succeeds");
 		return d;
 	};
 
-	Atlas::DesiredState desired;
-	check(Atlas::IdentityFieldSource::snapshot(team, desired), "identity snapshot succeeds");
+	Neurotica::DesiredState desired;
+	check(Neurotica::IdentityFieldSource::snapshot(team, desired), "identity snapshot succeeds");
 	check(desired.valid(), "identity snapshot is well formed");
 	check(desired.w == game.map.getW() && desired.h == game.map.getH(),
 	      "identity snapshot matches map size");
@@ -126,7 +126,7 @@ int main()
 
 	// --- 2. A new desire produces exactly one OrderCreate ------------------
 	{
-		Atlas::DesiredState d = baseline();
+		Neurotica::DesiredState d = baseline();
 		d.building[d.index(20, 20)] = Uint8(IntBuildingType::FOOD_BUILDING + 1);
 		auto plan = reconciler.plan(d);
 		check(plan.size() == 1, "one new desired building yields one order");
@@ -141,7 +141,7 @@ int main()
 	// that could then never be satisfied.
 	{
 		reconciler.init(team, config);
-		Atlas::DesiredState d = baseline();
+		Neurotica::DesiredState d = baseline();
 		d.building[d.index(8, 9)] = Uint8(IntBuildingType::FOOD_BUILDING + 1);
 		auto plan = reconciler.plan(d);
 		check(countType(plan, ORDER_CREATE) == 1, "a blocked desire is relocated, not dropped");
@@ -160,10 +160,10 @@ int main()
 	// what the oracle wants when it is being used to measure how faithfully a
 	// teacher's exact layout can be reproduced.
 	{
-		Atlas::ReconcilerConfig exact = config;
+		Neurotica::ReconcilerConfig exact = config;
 		exact.placementSearchRadius = 0;
 		reconciler.init(team, exact);
-		Atlas::DesiredState d = baseline();
+		Neurotica::DesiredState d = baseline();
 		d.building[d.index(8, 9)] = Uint8(IntBuildingType::FOOD_BUILDING + 1);
 		auto plan = reconciler.plan(d);
 		check(plan.empty(), "with relocation disabled the blocked desire is dropped");
@@ -175,7 +175,7 @@ int main()
 	// The anti-thrash rule, and the single most important behaviour here: a
 	// field that momentarily forgets a building must not tear it down.
 	{
-		Atlas::DesiredState d = baseline();
+		Neurotica::DesiredState d = baseline();
 		d.building[d.index(8, 8)] = 0;
 		bool demolishedEarly = false;
 		for (int step = 0; step < config.demolishPersistSteps - 1; step++)
@@ -190,7 +190,7 @@ int main()
 	// --- 5. commit shields a building from demolition ----------------------
 	{
 		reconciler.init(team, config); // clear the streak counters from test 4
-		Atlas::DesiredState d = baseline();
+		Neurotica::DesiredState d = baseline();
 		d.building[d.index(8, 8)] = 0;
 		d.commit[d.index(8, 8)] = config.commitBlocksDemolish;
 		bool demolished = false;
@@ -203,7 +203,7 @@ int main()
 	// --- 6. Restaffing --------------------------------------------------
 	{
 		reconciler.init(team, config);
-		Atlas::DesiredState d = baseline();
+		Neurotica::DesiredState d = baseline();
 		const size_t i = d.index(8, 8);
 		d.workers[i] = Uint8(inn->maxUnitWorking + 1);
 		auto plan = reconciler.plan(d);
@@ -216,10 +216,10 @@ int main()
 	// identity field must then be a fixed point again.
 	{
 		reconciler.init(team, config);
-		Atlas::DesiredState d = baseline();
+		Neurotica::DesiredState d = baseline();
 		for (Sint32 y = 4; y < 7; y++)
 			for (Sint32 x = 4; x < 7; x++)
-				d.areas[d.index(x, y)] |= Atlas::AREA_GUARD;
+				d.areas[d.index(x, y)] |= Neurotica::AREA_GUARD;
 		auto plan = reconciler.plan(d);
 		check(countType(plan, ORDER_ALTER_GUARD_AREA) == 1, "painting guard cells yields one area order");
 
@@ -236,18 +236,18 @@ int main()
 		auto after = reconciler.plan(d);
 		check(after.empty(), "after applying the area order the field is satisfied");
 
-		Atlas::DesiredState back;
-		check(Atlas::IdentityFieldSource::snapshot(team, back), "snapshot after area change");
-		check((back.areas[back.index(5, 5)] & Atlas::AREA_GUARD) != 0,
+		Neurotica::DesiredState back;
+		check(Neurotica::IdentityFieldSource::snapshot(team, back), "snapshot after area change");
+		check((back.areas[back.index(5, 5)] & Neurotica::AREA_GUARD) != 0,
 		      "the painted cell reads back as guard area");
-		check((back.areas[back.index(9, 9)] & Atlas::AREA_GUARD) == 0,
+		check((back.areas[back.index(9, 9)] & Neurotica::AREA_GUARD) == 0,
 		      "an unpainted cell does not");
 	}
 
 	// --- 8. Urgency orders the plan ---------------------------------------
 	{
 		reconciler.init(team, config);
-		Atlas::DesiredState d = baseline();
+		Neurotica::DesiredState d = baseline();
 		const size_t low = d.index(20, 20);
 		const size_t high = d.index(24, 24);
 		d.building[low] = Uint8(IntBuildingType::FOOD_BUILDING + 1);
@@ -266,10 +266,10 @@ int main()
 
 	// --- 9. The queue cap holds -------------------------------------------
 	{
-		Atlas::ReconcilerConfig capped = config;
+		Neurotica::ReconcilerConfig capped = config;
 		capped.maxQueuedOrders = 3;
 		reconciler.init(team, capped);
-		Atlas::DesiredState d = baseline();
+		Neurotica::DesiredState d = baseline();
 		for (Sint32 k = 0; k < 10; k++)
 			d.building[d.index(20 + k % 5, 20 + k / 5)] = Uint8(IntBuildingType::FOOD_BUILDING + 1);
 		auto plan = reconciler.plan(d);
@@ -282,12 +282,12 @@ int main()
 	// absorb it rather than assert.
 	{
 		reconciler.init(team, config);
-		Atlas::DesiredState d = baseline();
+		Neurotica::DesiredState d = baseline();
 		d.building[d.index(20, 20)] = 200; // no such building type
 		auto plan = reconciler.plan(d);
 		check(plan.empty(), "an out-of-range building type is ignored");
 
-		Atlas::DesiredState wrongSize;
+		Neurotica::DesiredState wrongSize;
 		wrongSize.reset(8, 8);
 		check(reconciler.plan(wrongSize).empty(), "a field sized for another map is ignored");
 	}
@@ -302,7 +302,7 @@ int main()
 		Building *flag = addBuilding(20, 20, IntBuildingType::EXPLORATION_FLAG, 0, false);
 		check(flag != nullptr, "flag placed for the move test");
 
-		Atlas::DesiredState d = baseline();
+		Neurotica::DesiredState d = baseline();
 		d.building[d.index(20, 20)] = 0;
 		d.building[d.index(24, 20)] = Uint8(IntBuildingType::EXPLORATION_FLAG + 1);
 		auto plan = reconciler.plan(d);
@@ -312,7 +312,7 @@ int main()
 
 		// The destination's attributes must still be reconciled — a flag that
 		// arrives keeping its old garrison size is only half moved.
-		Atlas::DesiredState staffed = baseline();
+		Neurotica::DesiredState staffed = baseline();
 		staffed.building[staffed.index(20, 20)] = 0;
 		staffed.building[staffed.index(24, 20)] = Uint8(IntBuildingType::EXPLORATION_FLAG + 1);
 		staffed.workers[staffed.index(24, 20)] = Uint8(flag->maxUnitWorking + 1);
@@ -326,7 +326,7 @@ int main()
 		// the flag would arrive instantly but its garrison would walk. The map
 		// here is 32x32 and wraps, so the greatest possible separation is 16 —
 		// (30,20) is 10 from (20,20), comfortably past the limit of 8.
-		Atlas::DesiredState far = baseline();
+		Neurotica::DesiredState far = baseline();
 		far.building[far.index(20, 20)] = 0;
 		far.building[far.index(30, 20)] = Uint8(IntBuildingType::EXPLORATION_FLAG + 1);
 		reconciler.init(team, config);
@@ -340,7 +340,7 @@ int main()
 		Building *first = addBuilding(2, 28, IntBuildingType::EXPLORATION_FLAG, 0, false);
 		Building *second = addBuilding(10, 28, IntBuildingType::EXPLORATION_FLAG, 0, false);
 		check(first && second, "two flags placed for the pairing test");
-		Atlas::DesiredState pairing = baseline();
+		Neurotica::DesiredState pairing = baseline();
 		pairing.building[pairing.index(2, 28)] = 0;
 		pairing.building[pairing.index(10, 28)] = 0;
 		pairing.building[pairing.index(3, 28)] = Uint8(IntBuildingType::EXPLORATION_FLAG + 1);
@@ -360,6 +360,6 @@ int main()
 		check(shortHops == 2, "each flag takes the adjacent vacancy, not the far one");
 	}
 
-	std::printf("Atlas reconciler: %d checks, %d failures\n", checks, failures);
+	std::printf("Neurotica reconciler: %d checks, %d failures\n", checks, failures);
 	return failures == 0 ? 0 : 1;
 }

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Reader for Atlas desired-state traces (.atr), the format written by
-GLOB2_ATLAS_TRACE_PATH.
+"""Reader for Neurotica desired-state traces (.atr), the format written by
+GLOB2_NEUROTICA_TRACE_PATH.
 
-The wire format is specified in src/ai/atlas/AtlasTrace.h; this module is the
+The wire format is specified in src/ai/neurotica/NeuroticaTrace.h; this module is the
 Python side of it, used by the M0 oracle comparison and by the M2 behaviour-
 cloning label pipeline. Keep the two in sync — the C++ header is the
 authority.
@@ -11,10 +11,10 @@ authority.
 CLI:
 
     # Summarise one trace
-    python3 -m tools.glob2-rl.atlas_trace summary FILE.atr
+    python3 -m tools.glob2-rl.neurotica_trace summary FILE.atr
 
     # Compare two traces tick-for-tick (the M0 gate)
-    python3 -m tools.glob2-rl.atlas_trace compare REF.atr CAND.atr --team 0
+    python3 -m tools.glob2-rl.neurotica_trace compare REF.atr CAND.atr --team 0
 """
 
 from __future__ import annotations
@@ -123,7 +123,7 @@ def load(path: str) -> Trace:
     with open(path, "rb") as handle:
         buf = handle.read()
     if len(buf) < HEADER_BYTES or buf[:4] != MAGIC:
-        raise ValueError(f"{path}: not an Atlas trace (bad magic)")
+        raise ValueError(f"{path}: not an Neurotica trace (bad magic)")
 
     cur = _Cursor(buf)
     cur.at = 4
@@ -213,7 +213,7 @@ def horizon(trace: Trace, team: int, delta: int) -> dict:
 
     Reports the mean number of buildings present in state(t+delta) but absent
     at t, and the fraction of sampled ticks where the target asks for anything
-    new at all. Pure property of the teacher trace — no Atlas run needed.
+    new at all. Pure property of the teacher trace — no Neurotica run needed.
     """
     per_team = trace.for_team(team)
     by_tick = {s.tick: s for s in per_team}

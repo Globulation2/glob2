@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
-#include "AtlasReconciler.h"
+#include "NeuroticaReconciler.h"
 
 #include "BitArray.h"
 #include "Brush.h"
@@ -19,10 +19,10 @@
 #include <algorithm>
 #include <cmath>
 
-static_assert(Atlas::SWARM_RATIO_STRIDE == NB_UNIT_TYPE,
+static_assert(Neurotica::SWARM_RATIO_STRIDE == NB_UNIT_TYPE,
               "DesiredState::swarmRatio stride must match the engine's unit-type count");
 
-namespace Atlas
+namespace Neurotica
 {
 	namespace
 	{
@@ -299,7 +299,7 @@ namespace Atlas
 	  over what is legal. Echo could survive its preferred tile being occupied
 	  because it never named a tile in the first place — it named an intent.
 
-	  Atlas keeps that split but learns the score half: the field supplies
+	  Neurotica keeps that split but learns the score half: the field supplies
 	  buildingScore, the engine supplies legality, and placement is the best
 	  legal cell near the preferred one. Demanding the exact cell instead is
 	  what turned a blocked footprint into a desire that could never be
@@ -737,4 +737,4 @@ namespace Atlas
 			result.push_back(std::move(candidate.order));
 		return result;
 	}
-} // namespace Atlas
+} // namespace Neurotica

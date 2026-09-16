@@ -19,8 +19,8 @@
 #include "VoiceRecorder.h"
 #ifndef YOG_SERVER_ONLY
 #include "DatasetWriter.h"
-#include "ai/atlas/AtlasTrace.h"
-#include "ai/atlas/AtlasObservation.h"
+#include "ai/neurotica/NeuroticaTrace.h"
+#include "ai/neurotica/NeuroticaObservation.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #endif  // !YOG_SERVER_ONLY

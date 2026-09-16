@@ -47,10 +47,10 @@ public:
 		///their own but cooperate toward one game plan, direct AIImplementation
 		///binding, no AIEcho involved.
 		CABINO=8,
-		///Reference to AIAtlas, a declarative spatial AI: its policy emits the
+		///Reference to AINeurotica, a declarative spatial AI: its policy emits the
 		///map configuration it wants and a reconciler issues the orders that
-		///close the gap. See src/ai/atlas/AtlasDesiredState.h.
-		ATLAS=9,
+		///close the gap. See src/ai/neurotica/NeuroticaDesiredState.h.
+		NEUROTICA=9,
 
 		SIZE
 	};

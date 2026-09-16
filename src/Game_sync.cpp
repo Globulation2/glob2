@@ -26,20 +26,20 @@
 #include "ReplayWriter.h"
 #include "Player.h"
 #include "ai/AI.h"
-#include "ai/atlas/AtlasTrace.h"
-#include "ai/atlas/AtlasObservation.h"
+#include "ai/neurotica/NeuroticaTrace.h"
+#include "ai/neurotica/NeuroticaObservation.h"
 
 #define BULLET_IMGID 0
 
 namespace
 {
-	//! Which AI drives `teamNumber`, for labelling Atlas trace snapshots.
+	//! Which AI drives `teamNumber`, for labelling Neurotica trace snapshots.
 	//! A team may hold several players; the first AI player decides, and a
 	//! team with no AI at all records as AI::NONE. Recorded but deliberately
 	//! not conditioned on — traces are pooled across teachers (see
-	//! AtlasTrace.h), and this exists so that choice stays revisitable
+	//! NeuroticaTrace.h), and this exists so that choice stays revisitable
 	//! without regenerating the corpus.
-	Uint8 atlasTeacherIdFor(Game &game, int teamNumber)
+	Uint8 neuroticaTeacherIdFor(Game &game, int teamNumber)
 	{
 		for (int p = 0; p < game.gameHeader.getNumberOfPlayers(); p++)
 		{
@@ -205,27 +205,27 @@ void Game::syncStep(Sint32 localTeam)
 			wonSyncStep();
 		}
 
-		// Snapshot every team's map state into the Atlas trace (see
-		// AtlasTrace.h). Recorded before stepCounter advances so a snapshot's
+		// Snapshot every team's map state into the Neurotica trace (see
+		// NeuroticaTrace.h). Recorded before stepCounter advances so a snapshot's
 		// tick is the tick whose state it describes.
-		if (globalContainer->atlasTraceWriter && globalContainer->atlasTraceWriter->isValid())
+		if (globalContainer->neuroticaTraceWriter && globalContainer->neuroticaTraceWriter->isValid())
 		{
-			const Uint8 period = globalContainer->atlasTraceWriter->policyPeriod();
+			const Uint8 period = globalContainer->neuroticaTraceWriter->policyPeriod();
 			if (period > 0 && (stepCounter % period) == 0)
 				for (int t=0; t<mapHeader.getNumberOfTeams(); t++)
 					if (teams[t])
-						globalContainer->atlasTraceWriter->writeSnapshot(
-							teams[t], (Uint32)stepCounter, atlasTeacherIdFor(*this, t));
+						globalContainer->neuroticaTraceWriter->writeSnapshot(
+							teams[t], (Uint32)stepCounter, neuroticaTeacherIdFor(*this, t));
 		}
 
-		if (globalContainer->atlasObsWriter && globalContainer->atlasObsWriter->isValid())
+		if (globalContainer->neuroticaObsWriter && globalContainer->neuroticaObsWriter->isValid())
 		{
-			const Uint32 period = globalContainer->atlasObsWriter->samplePeriod();
+			const Uint32 period = globalContainer->neuroticaObsWriter->samplePeriod();
 			if (period > 0 && (stepCounter % period) == 0)
 				for (int t=0; t<mapHeader.getNumberOfTeams(); t++)
 					if (teams[t])
-						globalContainer->atlasObsWriter->writeRecord(
-							teams[t], (Uint32)stepCounter, atlasTeacherIdFor(*this, t));
+						globalContainer->neuroticaObsWriter->writeRecord(
+							teams[t], (Uint32)stepCounter, neuroticaTeacherIdFor(*this, t));
 		}
 
 		Uint64 endTick=SDL_GetTicks64();

@@ -4,10 +4,10 @@
 #pragma once
 
 /*
-  Atlas reconciler: desired state + observed state -> orders.
+  Neurotica reconciler: desired state + observed state -> orders.
 
   This is the actuator half of the declarative design described in
-  AtlasDesiredState.h. It is deliberately mechanical. Every gram of strategy
+  NeuroticaDesiredState.h. It is deliberately mechanical. Every gram of strategy
   that leaks in here is strategy the policy cannot learn and a reviewer cannot
   see, so the rules below are the whole of its judgement:
 
@@ -32,7 +32,7 @@
   The urgency sort plus the queue cap is the whole of the throttling.
 */
 
-#include "AtlasDesiredState.h"
+#include "NeuroticaDesiredState.h"
 
 #include <memory>
 #include <unordered_map>
@@ -46,7 +46,7 @@ class Order;
 class Player;
 class Team;
 
-namespace Atlas
+namespace Neurotica
 {
 	struct ReconcilerConfig
 	{
@@ -248,4 +248,4 @@ namespace Atlas
 		//! Tick of the plan in progress, stamped onto new bindings.
 		Uint32 planTick_ = 0;
 	};
-} // namespace Atlas
+} // namespace Neurotica

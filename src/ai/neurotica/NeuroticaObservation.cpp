@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
-#include "AtlasObservation.h"
+#include "NeuroticaObservation.h"
 
 #include "Building.h"
 #include "BuildingType.h"
@@ -17,7 +17,7 @@
 #include <cstring>
 #include <zlib.h>
 
-namespace Atlas
+namespace Neurotica
 {
 	namespace
 	{
@@ -388,4 +388,4 @@ namespace Atlas
 		std::fclose(file_);
 		file_ = nullptr;
 	}
-} // namespace Atlas
+} // namespace Neurotica

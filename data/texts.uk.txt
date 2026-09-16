@@ -82,10 +82,10 @@ Econo
 Warrush — атакує рано й потужно, часто змушуючи гравця оборонятися з останніх сил. Середня складність.
 [AIWarrush]
 Warrush
-[AIAtlas-Description]
-Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
-[AIAtlas]
-Atlas
+[AINeurotica-Description]
+Neurotica decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AINeurotica]
+Neurotica
 [AICabino-Description]
 Cabino керує обороною, атакою та будівництвом як незалежними відділами, що прямують до єдиного плану: швидко розростається й кидає на супротивників величезні армії. Висока складність.
 [AICabino]
@@ -1268,9 +1268,9 @@ Ysagoon Online Gaming
 Стратегія: атакує рано і сильно, перш ніж супротивники закінчать підготовку.\n\nСильні сторони: використовує незахищене розширення та повільну військову підготовку.\n\nРекомендована контргра: переживіть першу атаку, зберігаючи свою економіку, а потім контратакуйте.
 [AIWarrush-Summary]
 Швидкі атаки, які перевіряють ваш ранній захист.
-[AIAtlas-Profile]
-Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
-[AIAtlas-Summary]
+[AINeurotica-Profile]
+Core strategy: Rather than choosing one order at a time, Neurotica maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AINeurotica-Summary]
 Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 Основна стратегія: кабінет незалежних спеціалізованих відділів (оборона, атака, будівництво, покращення, керування підрозділами), кожен з яких діє за власною ініціативою, але прямує до єдиного плану: швидке зростання, а потім величезні армії проти супротивників.\n\nСильні сторони: швидка експансія підтримує агресивний військовий тиск; незалежні відділи швидко реагують на локальні загрози, не чекаючи на центральний план.\n\nЯк протидіяти: оскаржуйте його експансію рано і використовуйте місцевість, щоб обмежити кількість військ, які можуть вступити в бій одночасно.
@@ -2642,7 +2642,7 @@ Emoji
 Острівці
 [Oases]
 Оази
-[The world atlas has no such continent.]
+[The world neurotica has no such continent.]
 В атласі світу немає такого материка.
 [The map is too small to hold a continent.]
 Карта замала, щоб вмістити материк.

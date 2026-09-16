@@ -4,16 +4,16 @@
 #pragma once
 
 /*
-  Where Atlas's desired-state field comes from.
+  Where Neurotica's desired-state field comes from.
 
-  AIAtlas itself has no opinion about the map; it polls a FieldSource every
+  AINeurotica itself has no opinion about the map; it polls a FieldSource every
   policy step and hands whatever comes back to the reconciler. That indirection
   is what lets the same actuator be driven by an oracle (M0), a neural net over
   a socket (M2) and an in-process policy (M4) without the AI changing.
 */
 
-#include "AtlasDesiredState.h"
-#include "AtlasTrace.h"
+#include "NeuroticaDesiredState.h"
+#include "NeuroticaTrace.h"
 
 #include <SDL_stdinc.h>
 
@@ -22,14 +22,14 @@
 class Team;
 class Map;
 
-namespace Atlas
+namespace Neurotica
 {
 	class FieldSource
 	{
 	public:
 		virtual ~FieldSource() {}
 
-		//! Produce the field wanted at `tick`. Returning false leaves Atlas
+		//! Produce the field wanted at `tick`. Returning false leaves Neurotica
 		//! inert for this policy step — the previous field is NOT reused,
 		//! because a stale target is worse than no target: the reconciler
 		//! would keep driving toward a plan the policy has abandoned.
@@ -75,7 +75,7 @@ namespace Atlas
 	  This is the M0 gate. It answers the question the whole declarative design
 	  rests on: is a desired-state field a sufficient action representation for
 	  Glob2? Drive the reconciler with a strong AI's own future map and, if the
-	  representation is adequate, Atlas should play roughly as that AI did —
+	  representation is adequate, Neurotica should play roughly as that AI did —
 	  with no policy, no network and no training involved.
 
 	  The field at tick t is the teacher's state at tick t + delta. Small delta
@@ -85,8 +85,8 @@ namespace Atlas
 	  currently reachable. Sweeping delta here is how the M2 label horizon gets
 	  chosen, before it costs a training run.
 
-	  Divergence is expected and is not a bug: once Atlas plays differently
-	  from the recording, the trace's later states stop describing a map Atlas
+	  Divergence is expected and is not a bug: once Neurotica plays differently
+	  from the recording, the trace's later states stop describing a map Neurotica
 	  actually has. The test is therefore informative over the opening
 	  thousands of ticks rather than a whole game.
 	*/
@@ -103,4 +103,4 @@ namespace Atlas
 		std::shared_ptr<TraceReader> trace_;
 		Uint32 delta_ = 0;
 	};
-} // namespace Atlas
+} // namespace Neurotica

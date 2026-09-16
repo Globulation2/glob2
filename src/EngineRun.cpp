@@ -14,8 +14,8 @@
 #include "Player.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
-#include "ai/atlas/AtlasTrace.h"
-#include "ai/atlas/AtlasObservation.h"
+#include "ai/neurotica/NeuroticaTrace.h"
+#include "ai/neurotica/NeuroticaObservation.h"
 #include "SDLCompat.h"
 #include "team/Team.h"
 #include "TeamStat.h"
@@ -533,7 +533,7 @@ void Engine::teardownSession()
 		globalContainer->datasetWriter.reset();
 	}
 
-	if (globalContainer->atlasTraceWriter)
+	if (globalContainer->neuroticaTraceWriter)
 	{
 		// Outcomes are only knowable now, at teardown, which is why the trace
 		// carries them in a footer rather than its header.
@@ -542,22 +542,22 @@ void Engine::teardownSession()
 		{
 			Team *team = gui.game.teams[t];
 			if (!team)
-				outcomes.push_back(Atlas::OUTCOME_UNKNOWN);
+				outcomes.push_back(Neurotica::OUTCOME_UNKNOWN);
 			else if (team->hasWon)
-				outcomes.push_back(Atlas::OUTCOME_WON);
+				outcomes.push_back(Neurotica::OUTCOME_WON);
 			else if (team->hasLost || !team->isAlive)
-				outcomes.push_back(Atlas::OUTCOME_LOST);
+				outcomes.push_back(Neurotica::OUTCOME_LOST);
 			else
-				outcomes.push_back(Atlas::OUTCOME_UNKNOWN);
+				outcomes.push_back(Neurotica::OUTCOME_UNKNOWN);
 		}
-		globalContainer->atlasTraceWriter->close(outcomes);
-		globalContainer->atlasTraceWriter.reset();
+		globalContainer->neuroticaTraceWriter->close(outcomes);
+		globalContainer->neuroticaTraceWriter.reset();
 	}
 
-	if (globalContainer->atlasObsWriter)
+	if (globalContainer->neuroticaObsWriter)
 	{
-		globalContainer->atlasObsWriter->close();
-		globalContainer->atlasObsWriter.reset();
+		globalContainer->neuroticaObsWriter->close();
+		globalContainer->neuroticaObsWriter.reset();
 	}
 
 	net.reset();

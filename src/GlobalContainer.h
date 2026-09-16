@@ -25,7 +25,7 @@ class VoiceRecorder;
 class ReplayReader;
 class ReplayWriter;
 class DatasetWriter;
-namespace Atlas { class TraceWriter; class ObservationWriter; }
+namespace Neurotica { class TraceWriter; class ObservationWriter; }
 
 class GlobalContainer
 {
@@ -160,8 +160,8 @@ public:
 	std::unique_ptr<ReplayReader> replayReader; //!< Owned. Reads and processes replay files, and outputs orders.
 	std::unique_ptr<ReplayWriter> replayWriter; //!< Owned. Writes orders into replay files.
 	std::unique_ptr<DatasetWriter> datasetWriter; //!< Owned. Writes (state, action) records for AI training (GLOB2_DATASET_PATH).
-	std::unique_ptr<Atlas::TraceWriter> atlasTraceWriter; //!< Owned. Writes per-team desired-state snapshots for Atlas (GLOB2_ATLAS_TRACE_PATH).
-	std::unique_ptr<Atlas::ObservationWriter> atlasObsWriter; //!< Owned. Writes fogged observation planes for Atlas BC (GLOB2_ATLAS_OBS_PATH).
+	std::unique_ptr<Neurotica::TraceWriter> neuroticaTraceWriter; //!< Owned. Writes per-team desired-state snapshots for Neurotica (GLOB2_NEUROTICA_TRACE_PATH).
+	std::unique_ptr<Neurotica::ObservationWriter> neuroticaObsWriter; //!< Owned. Writes fogged observation planes for Neurotica BC (GLOB2_NEUROTICA_OBS_PATH).
 #endif  // !YOG_SERVER_ONLY
 
 };

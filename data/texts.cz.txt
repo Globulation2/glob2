@@ -74,10 +74,10 @@ Econo
 Warrush útočí rychle a tvrdě a často zatlačí obránce na hranici jeho možností. Střední obtížnost.
 [AIWarrush]
 AIWarrush
-[AIAtlas-Description]
-Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
-[AIAtlas]
-Atlas
+[AINeurotica-Description]
+Neurotica decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AINeurotica]
+Neurotica
 [AICabino-Description]
 Cabino řídí obranu, útok i výstavbu jako nezávislá oddělení, která spolupracují na jednom plánu: rychle se rozrůstá a posílá na soupeře obrovské armády. Vysoká obtížnost.
 [AICabino]
@@ -1272,9 +1272,9 @@ Obrovské základny a konverze místo útoků.
 Strategie: Útočí včas a důrazně, než soupeř dokončí přípravu.\n\nSilné stránky: Využívá nechráněnou expanzi a pomalou vojenskou přípravu.\n\nDoporučená protihra: Přežijte první útok při zachování své ekonomiky a poté zaútočte.
 [AIWarrush-Summary]
 Rychlé útoky, které otestují vaši ranou obranu.
-[AIAtlas-Profile]
-Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
-[AIAtlas-Summary]
+[AINeurotica-Profile]
+Core strategy: Rather than choosing one order at a time, Neurotica maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AINeurotica-Summary]
 Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 Základní strategie: kabinet nezávislých specializovaných oddělení (obrana, útok, výstavba, vylepšení, správa jednotek), která jednají na vlastní popud, ale směřují k jednomu plánu: rychle růst a poté poslat na soupeře obrovské armády.\n\nSilné stránky: rychlá expanze podporuje agresivní vojenský tlak; nezávislá oddělení rychle reagují na místní hrozby, aniž by čekala na centrální plán.\n\nJak čelit: napadněte jeho expanzi včas a využijte terén k omezení počtu jednotek, které může nasadit najednou.
@@ -2646,8 +2646,8 @@ Veletoky
 Ostrůvky
 [Oases]
 Oázy
-[The world atlas has no such continent.]
-Světový atlas takový kontinent nemá.
+[The world neurotica has no such continent.]
+Světový neurotica takový kontinent nemá.
 [The map is too small to hold a continent.]
 Mapa je příliš malá, aby se na ni vešel kontinent.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]

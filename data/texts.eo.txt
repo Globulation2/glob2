@@ -74,10 +74,10 @@ Econo
 Warrush atakas rapide kaj sovaĝe, kaj ofte puŝas denendanta ludanto al la bordo de sia ludo. Ĝi mezfacilas.
 [AIWarrush]
 Warrush
-[AIAtlas-Description]
-Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
-[AIAtlas]
-Atlas
+[AINeurotica-Description]
+Neurotica decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AINeurotica]
+Neurotica
 [AICabino-Description]
 Cabino administras defendon, atakon kaj konstruadon kiel sendependajn fakojn, kiuj kunlaboras al unu plano: kreskas rapide kaj sendas grandegajn armeojn al siaj kontraŭuloj. Ĝi malfacilas.
 [AICabino]
@@ -1270,9 +1270,9 @@ Grandegaj bazoj kaj konvertiĝo anstataŭ atakoj.
 Strategio: Atakas frue kaj forte, antaŭ ol kontraŭuloj finas prepariĝi.\n\nFortoj: Ekspluatas nedefenditan ekspansion kaj malrapidan armean preparon.\n\nProponita kontraŭludo: Travivu la unuan atakon konservante vian ekonomion, poste kontraŭataku.
 [AIWarrush-Summary]
 Rapidaj atakoj, kiuj testas viajn fruajn defendojn.
-[AIAtlas-Profile]
-Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
-[AIAtlas-Summary]
+[AINeurotica-Profile]
+Core strategy: Rather than choosing one order at a time, Neurotica maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AINeurotica-Summary]
 Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 Ĉefa strategio: kabineto de sendependaj fakoj (defendo, atako, konstruado, plibonigoj, administrado de unuoj), kiuj ĉiu agas laŭ propra iniciato sed kunlaboras al unu plano: kreski rapide kaj poste sendi grandegajn armeojn kontraŭ la malamikojn.\n\nFortoj: Rapida kresko subtenas agreseman militan premon; la sendependaj fakoj reagas rapide al lokaj minacoj sen atendi centran planon.\n\nKontraŭludo provinda: Malhelpu ĝian kreskon frue kaj uzu la terenon por limigi kiom da ĝiaj trupoj povas batali samtempe.
@@ -2644,8 +2644,8 @@ Grandaj riveroj
 Insuletoj
 [Oases]
 Oazoj
-[The world atlas has no such continent.]
-La monda atlaso ne havas tian kontinenton.
+[The world neurotica has no such continent.]
+La monda neuroticao ne havas tian kontinenton.
 [The map is too small to hold a continent.]
 La mapo estas tro malgranda por enhavi kontinenton.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]

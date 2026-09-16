@@ -22,7 +22,7 @@
 #include "echo/Echo.h"
 #include "cortex/AICortex.h"
 #include "AICabino.h"
-#include "atlas/AIAtlas.h"
+#include "neurotica/AINeurotica.h"
 
 using std::shared_ptr;
 
@@ -59,8 +59,8 @@ AI::AI(ImplementationID implementationID, Player *player)
 		case CABINO:
 			aiImplementation=new Cabino::AICabino(player);
 		break;
-		case ATLAS:
-			aiImplementation=new AIAtlas(player);
+		case NEUROTICA:
+			aiImplementation=new AINeurotica(player);
 		break;
 		default:
 			assert(false);
@@ -174,11 +174,11 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		case CABINO:
 			aiImplementation=new Cabino::AICabino(stream, player, versionMinor);
 		break;
-		case ATLAS:
-			aiImplementation=new AIAtlas(player);
+		case NEUROTICA:
+			aiImplementation=new AINeurotica(player);
 			if (!aiImplementation->load(stream, player, versionMinor))
 			{
-				fprintf(stderr, "AI::load: AIAtlas load failed\n");
+				fprintf(stderr, "AI::load: AINeurotica load failed\n");
 				stream->readLeaveSection();
 				return false;
 			}

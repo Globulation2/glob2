@@ -78,11 +78,11 @@ ai/cortex/CortexTuning.cpp
 ai/cortex/CortexWheat.cpp
 ai/cortex/CortexWater.cpp
 ai/cortex/CortexNet.cpp
-ai/atlas/AIAtlas.cpp
-ai/atlas/AtlasFieldSource.cpp
-ai/atlas/AtlasTrace.cpp
-ai/atlas/AtlasObservation.cpp
-ai/atlas/AtlasReconciler.cpp
+ai/neurotica/AINeurotica.cpp
+ai/neurotica/NeuroticaFieldSource.cpp
+ai/neurotica/NeuroticaTrace.cpp
+ai/neurotica/NeuroticaObservation.cpp
+ai/neurotica/NeuroticaReconciler.cpp
 ai/cortex/AICortex.cpp
 ai/cortex/AICortexFlags.cpp
 ai/cortex/AICortexTranslate.cpp
@@ -633,10 +633,10 @@ if not env['server']:
     geometry_test = local.Program('CortexGeometryHarness', geometry_sources)
     local.Alias('cortex-geometry-test', geometry_test)
 
-    atlas_sources = [source for source in source_files if source != 'Glob2.cpp']
-    atlas_sources += local.Object('AtlasReconcilerHarness.o', '#test/AtlasReconcilerHarness.cpp')
-    atlas_test = local.Program('AtlasReconcilerHarness', atlas_sources)
-    local.Alias('atlas-reconciler-test', atlas_test)
+    neurotica_sources = [source for source in source_files if source != 'Glob2.cpp']
+    neurotica_sources += local.Object('NeuroticaReconcilerHarness.o', '#test/NeuroticaReconcilerHarness.cpp')
+    neurotica_test = local.Program('NeuroticaReconcilerHarness', neurotica_sources)
+    local.Alias('neurotica-reconciler-test', neurotica_test)
 
 # Optional integration executable; normal game/server builds do not build it.
 if not env['server']:

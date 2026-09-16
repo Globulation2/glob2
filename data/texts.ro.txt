@@ -74,10 +74,10 @@ Econo
 Warrush atacă rapid și necruțător, aducând adesea jucătorul care se apără la limita înfrângerii. Dificultate medie.
 [AIWarrush]
 AIWarrush
-[AIAtlas-Description]
-Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
-[AIAtlas]
-Atlas
+[AINeurotica-Description]
+Neurotica decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AINeurotica]
+Neurotica
 [AICabino-Description]
 Cabino conduce apărarea, atacul și construcția ca departamente independente care converg spre un singur plan: se dezvoltă rapid și trimite armate uriașe împotriva adversarilor. Dificultate ridicată.
 [AICabino]
@@ -1272,9 +1272,9 @@ Baze uriașe și conversie în loc de atacuri.
 Strategie: atacă devreme și cu forță, înainte ca adversarii să termine pregătirea.\n\nPuncte forte: exploatează extinderea lipsită de apărare și pregătirea militară lentă.\n\nTactici de încercat: Supraviețuiește primului atac menținându-ți economia, apoi contraatacă.
 [AIWarrush-Summary]
 Atacuri rapide care vă testează apărarea timpurie.
-[AIAtlas-Profile]
-Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
-[AIAtlas-Summary]
+[AINeurotica-Profile]
+Core strategy: Rather than choosing one order at a time, Neurotica maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AINeurotica-Summary]
 Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 Strategie de bază: un cabinet de departamente specializate independente (apărare, atac, construcție, îmbunătățiri, gestionarea unităților), fiecare acționând din proprie inițiativă, dar convergând spre un singur plan: creștere rapidă, apoi armate uriașe trimise împotriva adversarilor.\n\nPuncte forte: expansiunea rapidă susține o presiune militară agresivă; departamentele independente reacționează rapid la amenințările locale fără să aștepte un plan central.\n\nContraatac de încercat: contestă-i expansiunea devreme și folosește terenul pentru a limita câte trupe poate angaja simultan.
@@ -2646,8 +2646,8 @@ Fluvii mari
 Insulițe
 [Oases]
 Oaze
-[The world atlas has no such continent.]
-Atlasul lumii nu are un astfel de continent.
+[The world neurotica has no such continent.]
+Neuroticaul lumii nu are un astfel de continent.
 [The map is too small to hold a continent.]
 Harta este prea mică pentru a cuprinde un continent.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]

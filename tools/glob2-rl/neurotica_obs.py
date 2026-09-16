@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Reader for Atlas observation files (.aob), written by GLOB2_ATLAS_OBS_PATH.
+"""Reader for Neurotica observation files (.aob), written by GLOB2_NEUROTICA_OBS_PATH.
 
-The wire format is specified in src/ai/atlas/AtlasObservation.h, which is the
-authority; this is the Python side. Together with atlas_trace.py it forms the
+The wire format is specified in src/ai/neurotica/NeuroticaObservation.h, which is the
+authority; this is the Python side. Together with neurotica_trace.py it forms the
 behaviour-cloning pipeline:
 
     input  = observation planes at tick t        (this module)
-    label  = that team's state at tick t + delta (atlas_trace.py)
+    label  = that team's state at tick t + delta (neurotica_trace.py)
 
 The two live in separate files because the label is a property of the future
 and cannot be written at time t. Joining them here means delta can be swept
 without regenerating the corpus.
 
 CLI:
-    python3 tools/glob2-rl/atlas_obs.py summary FILE.aob
-    python3 tools/glob2-rl/atlas_obs.py check FILE.aob        # sanity + fog audit
-    python3 tools/glob2-rl/atlas_obs.py pairs FILE.aob FILE.atr --delta 500
+    python3 tools/glob2-rl/neurotica_obs.py summary FILE.aob
+    python3 tools/glob2-rl/neurotica_obs.py check FILE.aob        # sanity + fog audit
+    python3 tools/glob2-rl/neurotica_obs.py pairs FILE.aob FILE.atr --delta 500
 """
 
 from __future__ import annotations
@@ -73,7 +73,7 @@ class ObservationFile:
         with open(path, "rb") as handle:
             self.buf = handle.read()
         if len(self.buf) < 20 or self.buf[:4] != MAGIC:
-            raise ValueError(f"{path}: not an Atlas observation file")
+            raise ValueError(f"{path}: not an Neurotica observation file")
         (self.count, self.w, self.h, self.n_static, self.n_dynamic,
          self.num_teams, _pad, static_len) = struct.unpack_from("<IHHBBBBI", self.buf, 4)
         at = 20
@@ -144,9 +144,9 @@ def _cmd_check(args) -> int:
 
 
 def _cmd_pairs(args) -> int:
-    import atlas_trace
+    import neurotica_trace
     obs = ObservationFile(args.obs)
-    trace = atlas_trace.load(args.trace)
+    trace = neurotica_trace.load(args.trace)
     made, missing = 0, 0
     for record in obs.records():
         label = trace.at(record.team, record.tick + args.delta)

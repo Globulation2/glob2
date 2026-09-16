@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
-#include "AtlasTrace.h"
+#include "NeuroticaTrace.h"
 
 #include "Building.h"
 #include "BuildingType.h"
@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <cstring>
 
-namespace Atlas
+namespace Neurotica
 {
 	namespace
 	{
@@ -342,4 +342,4 @@ namespace Atlas
 			out.areas = snapshot.areas;
 		return true;
 	}
-} // namespace Atlas
+} // namespace Neurotica

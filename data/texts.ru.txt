@@ -74,10 +74,10 @@ Econo
 Warrush - Атакует быстро и беспощадно. Часто подталкивает играющих в оборонительную игру к наступлению развязки. Средняя сложность.
 [AIWarrush]
 Warrush
-[AIAtlas-Description]
-Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
-[AIAtlas]
-Atlas
+[AINeurotica-Description]
+Neurotica decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AINeurotica]
+Neurotica
 [AICabino-Description]
 Cabino управляет обороной, атакой и строительством как независимыми отделами, которые сходятся к единому плану: быстро отстраивается и бросает огромные армии на соперников. Высокий уровень сложности.
 [AICabino]
@@ -1270,9 +1270,9 @@ Cortex
 Стратегия: атакует рано и мощно, прежде чем противники закончат подготовку.\n\nСильные стороны: использует незащищенное расширение и медленную военную подготовку.\n\nРекомендуемая контригра: переживите первую атаку, сохранив при этом свою экономику, а затем контратакуйте.
 [AIWarrush-Summary]
 Быстрые атаки, которые проверят вашу раннюю защиту.
-[AIAtlas-Profile]
-Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
-[AIAtlas-Summary]
+[AINeurotica-Profile]
+Core strategy: Rather than choosing one order at a time, Neurotica maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AINeurotica-Summary]
 Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 Основная стратегия: кабинет независимых специализированных отделов (оборона, атака, строительство, улучшения, управление юнитами), каждый из которых действует по собственной инициативе, но сходится к единому плану: быстрый рост, а затем огромные армии против соперников.\n\nСильные стороны: быстрое расширение поддерживает агрессивное военное давление; независимые отделы быстро реагируют на локальные угрозы, не дожидаясь центрального плана.\n\nКак противодействовать: оспаривайте его расширение на раннем этапе и используйте местность, чтобы ограничить число войск, способных вступить в бой одновременно.
@@ -2644,7 +2644,7 @@ Emoji
 Островки
 [Oases]
 Оазисы
-[The world atlas has no such continent.]
+[The world neurotica has no such continent.]
 В атласе мира нет такого материка.
 [The map is too small to hold a continent.]
 Карта слишком мала, чтобы вместить материк.

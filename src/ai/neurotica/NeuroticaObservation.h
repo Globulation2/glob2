@@ -4,10 +4,10 @@
 #pragma once
 
 /*
-  Atlas observation planes — the network's input side.
+  Neurotica observation planes — the network's input side.
 
   An observation is one team's fog-limited view of the map, encoded as a stack
-  of w*h uint8 planes. It pairs with the desired-state label in AtlasTrace.h to
+  of w*h uint8 planes. It pairs with the desired-state label in NeuroticaTrace.h to
   form a behaviour-cloning example:
 
       input  = observation at tick t
@@ -65,7 +65,7 @@
 class Team;
 class Map;
 
-namespace Atlas
+namespace Neurotica
 {
 	//! Planes that never change during a game. Written once.
 	enum StaticPlane : Uint8
@@ -130,7 +130,7 @@ namespace Atlas
 	bool encodeDynamicPlanes(Team *team, std::vector<Uint8> &out);
 
 	/*!
-	  Streams observations to disk. Triggered by GLOB2_ATLAS_OBS_PATH, and
+	  Streams observations to disk. Triggered by GLOB2_NEUROTICA_OBS_PATH, and
 	  sampled independently of the trace because observations are two orders of
 	  magnitude larger per record.
 	*/
@@ -155,4 +155,4 @@ namespace Atlas
 		std::vector<Uint8> scratch_;
 		std::vector<Uint8> compressed_;
 	};
-} // namespace Atlas
+} // namespace Neurotica

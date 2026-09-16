@@ -74,10 +74,10 @@ Econo
 Warrush - Ataca rápido e com força, costuma fazer com que o jogador defensor seja levado ao limite. Dificuldade Média.
 [AIWarrush]
 Warrush
-[AIAtlas-Description]
-Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
-[AIAtlas]
-Atlas
+[AINeurotica-Description]
+Neurotica decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AINeurotica]
+Neurotica
 [AICabino-Description]
 Cabino administra a defesa, o ataque e a construção como departamentos independentes que cooperam em um único plano: cresce muito e rápido e lança enormes exércitos contra os adversários. Dificuldade Difícil.
 [AICabino]
@@ -1268,9 +1268,9 @@ Enormes bases e conversão em vez de ataques.
 Estratégia: Ataca cedo e com força, antes que os oponentes terminem de se preparar.\n\nPontos fortes: Explora a expansão sem defesa e a lenta preparação militar.\n\nTáticas a experimentar: Sobreviva ao primeiro ataque enquanto mantém sua economia e depois contra-ataque.
 [AIWarrush-Summary]
 Ataques rápidos que testam suas defesas iniciais.
-[AIAtlas-Profile]
-Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
-[AIAtlas-Summary]
+[AINeurotica-Profile]
+Core strategy: Rather than choosing one order at a time, Neurotica maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AINeurotica-Summary]
 Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 Estratégia principal: um gabinete de departamentos especialistas independentes (defesa, ataque, construção, melhorias, gestão de unidades) que agem por conta própria mas convergem para um único plano: crescer rápido e depois lançar exércitos enormes contra os adversários.\n\nPontos fortes: a expansão rápida sustenta uma pressão militar agressiva; os departamentos independentes reagem depressa a ameaças locais sem esperar por um plano central.\n\nComo contra-atacar: dispute sua expansão cedo e use o terreno para limitar quantas tropas ele consegue engajar de uma vez.
@@ -2642,8 +2642,8 @@ Grandes rios
 Ilhotas
 [Oases]
 Oásis
-[The world atlas has no such continent.]
-O atlas mundial não tem esse continente.
+[The world neurotica has no such continent.]
+O neurotica mundial não tem esse continente.
 [The map is too small to hold a continent.]
 O mapa é pequeno demais para conter um continente.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]

@@ -74,10 +74,10 @@ Econo
 Warrush 進攻迅速且猛烈，常讓防守的玩家陷入苦戰。中等難度。
 [AIWarrush]
 AIWarrush
-[AIAtlas-Description]
-Atlas decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
-[AIAtlas]
-Atlas
+[AINeurotica-Description]
+Neurotica decides what it wants the whole map to look like, then issues whatever orders bring the map into line with that plan. Medium Difficulty.
+[AINeurotica]
+Neurotica
 [AICabino-Description]
 Cabino 將防禦、進攻與建設當作各自獨立的部門運作，但都匯聚於同一個計畫：快速壯大，然後向對手投入龐大的軍隊。高難度。
 [AICabino]
@@ -1344,9 +1344,9 @@ AI策略與對抗
 核心策略:在對手完成建設前，發動迅速而猛烈的進攻。\n\n優勢:善於打擊無防備的擴張和緩慢的備戰。\n\n可嘗試的對策:維持經濟，撐過首輪進攻後再反擊。
 [AIWarrush-Summary]
 快速攻擊考驗你的早期防禦能力。
-[AIAtlas-Profile]
-Core strategy: Rather than choosing one order at a time, Atlas maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
-[AIAtlas-Summary]
+[AINeurotica-Profile]
+Core strategy: Rather than choosing one order at a time, Neurotica maintains a picture of the map it wants — which buildings stand where, how they are staffed, and which ground is guarded, cleared or forbidden — and continuously issues the orders that close the gap between that picture and reality.\n\nStrengths: Its intentions are stable and coherent across the whole map, and it never forgets a half-finished plan.\n\nCounterplay to try: Force it to revise its picture faster than it can build toward it, by pressuring several areas at once.
+[AINeurotica-Summary]
 Plans the map it wants, then continuously builds reality toward that plan.
 [AICabino-Profile]
 核心策略：由獨立的專職部門（防禦、進攻、建設、升級、單位管理）組成的內閣，各部門自行其是，卻共同匯聚於一個計畫：快速壯大，然後向對手投入龐大的軍隊。\n\n優勢：快速擴張支撐起進攻性的軍事壓力；獨立部門無需等待中央計畫即可迅速應對當地威脅。\n\n應對策略：儘早遏制其擴張，並利用地形限制其能同時投入交戰的部隊數量。
@@ -2718,7 +2718,7 @@ Emoji
 小島
 [Oases]
 綠洲
-[The world atlas has no such continent.]
+[The world neurotica has no such continent.]
 世界地圖集中沒有這個大洲。
 [The map is too small to hold a continent.]
 地圖太小，容納不下一個大洲。

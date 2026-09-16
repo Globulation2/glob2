@@ -4,10 +4,10 @@
 #pragma once
 
 /*
-  Atlas desired-state field.
+  Neurotica desired-state field.
 
-  Atlas is a declarative AI: instead of emitting orders, its policy emits the
-  map configuration it *wants*, and AtlasReconciler issues whatever orders
+  Neurotica is a declarative AI: instead of emitting orders, its policy emits the
+  map configuration it *wants*, and NeuroticaReconciler issues whatever orders
   bring the observed state into alignment with it. This header is the schema
   for that field — the single source of truth shared by the policy (which
   produces it), the reconciler (which consumes it) and the dataset writer
@@ -18,7 +18,7 @@
   already satisfied produces no order. That is what lets the policy be
   stateless — it never has to remember what it already ordered, because
   re-asserting a satisfied desire is a no-op. The cost of level-triggering is
-  thrash when the field flaps between steps; see AtlasReconciler for the
+  thrash when the field flaps between steps; see NeuroticaReconciler for the
   hysteresis that contains it.
 
   Layout: one Uint8 per cell per plane, row-major, index = y * w + x, matching
@@ -37,12 +37,12 @@
 #include <SDL_stdinc.h>
 #include <vector>
 
-namespace Atlas
+namespace Neurotica
 {
 	//! Sentinel for "no preference" in the scalar planes that have one. The
 	//! building plane has no don't-care: absence of desire is a real desire
 	//! (none), and demolition is gated on persistence instead — see
-	//! AtlasReconciler's demolish rule.
+	//! NeuroticaReconciler's demolish rule.
 	static constexpr Uint8 DONT_CARE = 255;
 
 	//! Entries per cell in DesiredState::swarmRatio, one per unit type
@@ -90,7 +90,7 @@ namespace Atlas
 		//! How strongly this cell is wanted for `building`, 0..255.
 		//!
 		//! This is the learned half of AIEcho's constraint split (see
-		//! AtlasReconciler's placement note): Echo's calculate_constraint
+		//! NeuroticaReconciler's placement note): Echo's calculate_constraint
 		//! scores a cell and passes_constraint decides whether it is legal at
 		//! all, and the placement is the argmax of the score over the legal
 		//! cells. Here the network supplies the score and the engine supplies
@@ -101,7 +101,7 @@ namespace Atlas
 
 		//! Wanted building level, 0-based to match BuildingType::level.
 		//! DONT_CARE leaves upgrades alone. A level above the building's
-		//! current one drives OrderConstruction (upgrade); Atlas never
+		//! current one drives OrderConstruction (upgrade); Neurotica never
 		//! downgrades, since the engine has no such operation.
 		std::vector<Uint8> level;
 
@@ -118,7 +118,7 @@ namespace Atlas
 		//! Wanted unit-production ratio for a swarm, one entry per unit type
 		//! (NB_UNIT_TYPE == 3: worker, explorer, warrior), stored at
 		//! index(x,y)*SWARM_RATIO_STRIDE + type. DONT_CARE in the worker slot
-		//! leaves the whole swarm alone. Without this plane Atlas can place a
+		//! leaves the whole swarm alone. Without this plane Neurotica can place a
 		//! swarm but not decide what comes out of it, which is most of what a
 		//! swarm is for.
 		std::vector<Uint8> swarmRatio;
@@ -190,4 +190,4 @@ namespace Atlas
 		//! silently aliasing to the wrong cell.
 		size_t index(Sint32 x, Sint32 y) const { return size_t(y) * size_t(w) + size_t(x); }
 	};
-} // namespace Atlas
+} // namespace Neurotica

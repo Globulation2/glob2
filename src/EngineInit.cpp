@@ -12,8 +12,8 @@
 #include "CustomGameScreen.h"
 #include "ChooseMapScreen.h"
 #include "DatasetWriter.h"
-#include "ai/atlas/AtlasTrace.h"
-#include "ai/atlas/AtlasObservation.h"
+#include "ai/neurotica/NeuroticaTrace.h"
+#include "ai/neurotica/NeuroticaObservation.h"
 #include "Engine.h"
 #include "EngineTiming.h"
 #include "Game.h"
@@ -463,52 +463,52 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 		}
 	}
 
-	// Initialise the Atlas desired-state trace if GLOB2_ATLAS_TRACE_PATH is
-	// set. One snapshot per team every GLOB2_ATLAS_TRACE_PERIOD ticks (default
-	// 25, matching Atlas's policy cadence) — see AtlasTrace.h. Teacher-
+	// Initialise the Neurotica desired-state trace if GLOB2_NEUROTICA_TRACE_PATH is
+	// set. One snapshot per team every GLOB2_NEUROTICA_TRACE_PERIOD ticks (default
+	// 25, matching Neurotica's policy cadence) — see NeuroticaTrace.h. Teacher-
 	// agnostic: it records what each team HAD, so any AI can be recorded.
-	const char* envAtlasTrace = getenv("GLOB2_ATLAS_TRACE_PATH");
-	if (envAtlasTrace && !globalContainer->replaying)
+	const char* envNeuroticaTrace = getenv("GLOB2_NEUROTICA_TRACE_PATH");
+	if (envNeuroticaTrace && !globalContainer->replaying)
 	{
 		Uint8 period = 25;
-		if (const char* envPeriod = getenv("GLOB2_ATLAS_TRACE_PERIOD"))
+		if (const char* envPeriod = getenv("GLOB2_NEUROTICA_TRACE_PERIOD"))
 		{
 			const long parsed = strtol(envPeriod, nullptr, 10);
 			if (parsed > 0 && parsed < 256)
 				period = Uint8(parsed);
 		}
-		globalContainer->atlasTraceWriter = std::make_unique<Atlas::TraceWriter>();
-		if (!globalContainer->atlasTraceWriter->open(
-				envAtlasTrace, gui.game.map.getW(), gui.game.map.getH(),
+		globalContainer->neuroticaTraceWriter = std::make_unique<Neurotica::TraceWriter>();
+		if (!globalContainer->neuroticaTraceWriter->open(
+				envNeuroticaTrace, gui.game.map.getW(), gui.game.map.getH(),
 				Uint8(gui.game.mapHeader.getNumberOfTeams()), period))
 		{
-			std::cerr << "GLOB2_ATLAS_TRACE_PATH: failed to open trace file "
-				<< envAtlasTrace << std::endl;
-			globalContainer->atlasTraceWriter.reset();
+			std::cerr << "GLOB2_NEUROTICA_TRACE_PATH: failed to open trace file "
+				<< envNeuroticaTrace << std::endl;
+			globalContainer->neuroticaTraceWriter.reset();
 		}
 	}
 
-	// Observation planes for behaviour cloning (GLOB2_ATLAS_OBS_PATH). Sampled
+	// Observation planes for behaviour cloning (GLOB2_NEUROTICA_OBS_PATH). Sampled
 	// far more sparsely than the trace by default: a record is ~58 dense planes,
 	// so at the trace's cadence this would be most of a gigabyte per game.
-	const char* envAtlasObs = getenv("GLOB2_ATLAS_OBS_PATH");
-	if (envAtlasObs && !globalContainer->replaying)
+	const char* envNeuroticaObs = getenv("GLOB2_NEUROTICA_OBS_PATH");
+	if (envNeuroticaObs && !globalContainer->replaying)
 	{
 		Uint32 period = 250;
-		if (const char* envObsPeriod = getenv("GLOB2_ATLAS_OBS_PERIOD"))
+		if (const char* envObsPeriod = getenv("GLOB2_NEUROTICA_OBS_PERIOD"))
 		{
 			const long parsed = strtol(envObsPeriod, nullptr, 10);
 			if (parsed > 0)
 				period = Uint32(parsed);
 		}
-		globalContainer->atlasObsWriter = std::make_unique<Atlas::ObservationWriter>();
-		if (!globalContainer->atlasObsWriter->open(
-				envAtlasObs, &gui.game.map,
+		globalContainer->neuroticaObsWriter = std::make_unique<Neurotica::ObservationWriter>();
+		if (!globalContainer->neuroticaObsWriter->open(
+				envNeuroticaObs, &gui.game.map,
 				Uint8(gui.game.mapHeader.getNumberOfTeams()), period))
 		{
-			std::cerr << "GLOB2_ATLAS_OBS_PATH: failed to open observation file "
-				<< envAtlasObs << std::endl;
-			globalContainer->atlasObsWriter.reset();
+			std::cerr << "GLOB2_NEUROTICA_OBS_PATH: failed to open observation file "
+				<< envNeuroticaObs << std::endl;
+			globalContainer->neuroticaObsWriter.reset();
 		}
 	}
 

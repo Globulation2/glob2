@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
-#include "AtlasFieldSource.h"
+#include "NeuroticaFieldSource.h"
 
 #include "Building.h"
 #include "BuildingType.h"
@@ -9,7 +9,7 @@
 #include "Map.h"
 #include "Team.h"
 
-namespace Atlas
+namespace Neurotica
 {
 	bool IdentityFieldSource::snapshot(Team *team, DesiredState &out)
 	{
@@ -118,4 +118,4 @@ namespace Atlas
 		}
 		return true;
 	}
-} // namespace Atlas
+} // namespace Neurotica
