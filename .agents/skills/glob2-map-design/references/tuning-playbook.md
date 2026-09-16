@@ -137,6 +137,14 @@ Every robust generator negotiates its layout in the same order: compute the room
 
 ## The picture is the first review
 
+**Maps can't be ugly.** A change made to improve mobility or playability must not destroy the aesthetic vision the map was built on. Access, fairness and economy are the reasons a repair exists; none of them is a licence to draw over the thing the map is. When a playability fix and the picture disagree, find the version of the fix that keeps the picture — it nearly always exists, usually costs a few tiles, and is the only version a maintainer will ship. Examples from one review of the fractal maps (2026-09-16):
+
+- **A causeway paints only what it crosses.** Sierpiński Gardens' causeways were stamped as full diameters: sand out past the lake onto the land and straight across the orchard island they were built to reach. The route's protection mask still covers the whole stroke; the paint stops at the water. Access unchanged, the diagram gone.
+- **A formal garden stays square.** The same causeways were struck at sixty degrees across a square lake. They now run horizontal and vertical, a third pair as parallels; the angled search survives only as a fallback when a home blocks a whole axis on a 128 map, and telemetry records every use.
+- **Grass never touches water.** Farm beds and bank plots laid after the shoreline pass shipped as hard grass-against-water edges. The beach pass is a postcondition of the design, not a step at a fixed point in it.
+- **Scenery must not become the map.** A scatter of copses for colour, with water added across the land for the crops, grew into forest over the whole map in a single long game. Decoration that the engine can spread is a future the preview does not show — see the overgrowth section of [gameplay and playability](gameplay-and-playability.md).
+- **Connections are drawn in the map's own language.** Paths joining a formal garden's features are straight legs meeting square — an L or a Z, never a staircase or a diagonal — laid only over open ground, so a path can lead to a feature but never cross one.
+
 A maintainer meets a new map as a preview before any number, and what the preview says about the concept decides whether the numbers get read. Four kinds of remark come up on first looks, and each has a cheap, structural answer:
 
 | What the eye catches | Why it jars | The answer that keeps the budget |

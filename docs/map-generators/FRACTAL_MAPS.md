@@ -85,13 +85,13 @@ plot:
   crops it waters, a sand cap that contains them — dropped on a jittered lattice
   through the open land, sized to the pockets between Hilbert's folds. They are the
   water away from the one fractal channel, in the same square-on-a-grid language.
-- **Ambient copses** cover the rest: timber, on every other cell of the same 8-lattice
-  the objective courts use, so 3×3 copses always alternate with permanent gathering
-  lanes and open ground still outweighs them. The engine's saved `canResourcesGrow`
-  flag holds each copse where it was put, so out here a patch is finite, something to
-  go and take, and it can never spread into a route. Renewable food stays inside the
-  contained plots. The lattice gaps are also what keep each module's expansion anchors
-  available, which the finished-world check requires.
+- **Ambient copses** are sparse: timber on one cell in eight of the same 8-lattice the
+  objective courts use, scattered rather than gridded, so 3×3 copses always sit apart
+  with permanent gathering lanes between them. Each is finite — the engine's saved
+  `canResourcesGrow` flag covers the copse *and the ring it could extend into* (see
+  below) — so out here a patch is something to go and take, not something that takes
+  the map. Renewable food stays inside the contained plots. The gaps are also what keep
+  each module's expansion anchors available, which the finished-world check requires.
 - **Stone** is not scattered at all. A handful of quarries — two plus half the colony
   count — go as far from every home as the map allows, each a clump the size of a
   building court, typically sixty tiles or more from the nearest module. The six-tile
@@ -102,10 +102,11 @@ plot:
   neither of them anywhere to be.
 
 Measured over 128/256/512 maps at two to eight colonies, six seeds each, this takes
-Hilbert from 1,871 to 4,902 resource tiles and Gardens from 1,422 to 4,442, against
-a 7,764 median across the 48 playable landscapes; the maps stay
-deliberately short of that median, since most of it is timber on landscapes that are
-forest first. Water rises from 10.2% to 13.0% and from 12.7% to 18.0%, still well
+Hilbert from 1,871 to 3,230 resource tiles and Gardens from 1,422 to 2,990, against
+a 7,764 median across the 48 playable landscapes. They stay deliberately short of that
+median: most of it is timber, and on a map with water across its open land every scattered
+tree is a future forest, so food and timber are held roughly level instead. Water rises
+from 10.2% to 13.8% and from 12.7% to 18.5%, still well
 under the field's 29.8%: these are maps of land
 cut by one fractal channel, and the median belongs to archipelagos. Widening the
 channel was tried and rejected — a seven-tile river leaves no room for a crossing
@@ -117,6 +118,42 @@ Inside a module, the two irrigation strips are five rows deep and continuous: th
 aisles that limit crop width stop at the crops, where they used to run on through the
 water and leave each strip as four short ponds. The timber side had two rows against the
 wheat side's four and read dry, which is also how fast it fed.
+
+### Garden paths, causeways and shorelines
+
+Both maps are formal gardens, and the connections between their parts are drawn that way.
+`gardenPaths` joins every recorded feature — home modules, beds, bank plots, lakes and
+crossing landings — with a spanning tree built shortest edge first. Each edge is an L or a
+Z of straight horizontal and vertical legs, never a staircase or a diagonal, laid only over
+open grass, so a path can lead to a feature but never cross one. Paths are sand two corners
+wide, the same slim line a module's rim is drawn in, which also makes them permanent: no
+crop can grow over sand, so the ways between the gardens survive overgrowth. A crossing's
+two landings count as already joined, and the approach from the end of its stroke to the
+shore is paved only when a path arrives, so every path meets its bridge and none ends short.
+At 256×256 with four colonies Gardens joins every feature; Hilbert leaves the few pockets
+that river folds seal off without a bridge, which a path could only reach through water.
+
+Gardens' causeways run horizontal and vertical only. A pair is a causeway and its mirror
+along its own axis, so the third pair is two parallels rather than a diagonal. On a 128 map a
+home's court can block a whole axis; only then does the original angled search return, for
+the missing axis alone, recorded as `sierpinski.crossings.angled-fallback`. On both maps a
+crossing's protection mask covers its whole stroke, but its sand is painted only over water:
+nothing is drawn onto the land beyond the lake, or across Gardens' orchard island.
+
+Grass never touches water. Both designs end with a full `layBeaches` pass once the last
+terrain is cut, because beds, plots and paths are all laid after the pass the home modules
+use. A bed lays four rows of grass round its pool so the beach can take the innermost and
+leave three rows of crops.
+
+Ambient copses and quarries are finite. `canResourcesGrow` blocks growth only on the flagged
+tile, and a deposit extends to its neighbours once its amount passes a random 0–7, so each
+copse and quarry is flagged together with the complete ring of tiles it could reach, and
+neither may sit beside a fruit court or a crop plot, whose own tiles cannot carry the flag.
+Copses sit on one lattice cell in eight. Over one 50,000-tick game per map on the same seeds
+(map seed 3001, game seed 19, four AIs), wood went from 2,858 to 17,682 tiles on Gardens and
+2,882 to 20,737 on Hilbert before this — 27% and 32% of the map, one forest of 9,132 tiles —
+and from 1,375 to 2,600 and 1,271 to 2,527 after: about 4% of the map, the growth being the
+contained plots filling in.
 
 The home module's outer sand cap is frayed one or two tiles outward over open grass,
 from a hash of the home's own coordinates rather than any random stream, so the

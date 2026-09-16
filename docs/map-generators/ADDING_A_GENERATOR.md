@@ -134,6 +134,16 @@ For targeted settings, pass a JSON configuration list with `id`, `method` and a 
 
 Before accepting a generator or structural refactor, inspect fixed-seed previews and poor-performing examples, exercise range endpoints and crowded/rectangular maps, and investigate changes beyond the documented statistical thresholds. Keep generated evidence under ignored `artifacts/` and summarize findings in the pull request. The comparison plotter requires an explicitly supplied baseline study summary.
 
+### Maps can't be ugly
+
+A change made for mobility, fairness or a healthier economy must not destroy the aesthetic vision the map was built on. When the fix and the picture disagree, find the version of the fix that keeps the picture; it nearly always exists. Three checks catch most of what previews miss:
+
+- **Look at a played game, not only a preview.** Wood that the engine can spread, and shorelines stamped after the beach pass, look correct in a preview and wrong forty thousand ticks later. Compare wood tiles on a final save with the same count at tick zero (`--save final`, then `--preview-map final.game --json`).
+- **Paint what the feature needs, not what protects it.** A route's protection mask and its visible surface are different things: a causeway's mask can cover its whole stroke while its sand stops at the water.
+- **Draw connections in the map's own language.** A formal map's paths are straight and square; a natural map's are not. A repair that drags a diagonal or a staircase across a square design has changed what the map is.
+
+The engine rules behind the first check — how a deposit extends, and why flagging it does not contain it — are in [game rules for map design](GAME_RULES_FOR_MAP_DESIGN.md).
+
 ## Instrument internal decisions
 
 Add [telemetry](TELEMETRY.md) alongside every generator's design: selected variants, effective

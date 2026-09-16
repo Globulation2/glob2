@@ -186,6 +186,10 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 								  (segment.id + side + int(along * 4)) % 4 == 0);
 			}
 	}
+	gardenPaths(L, context);
+	// The beds, plots and paths just laid may meet the river: give the whole map its
+	// shoreline again now that nothing further will cut terrain. Grass may never touch water.
+	layBeaches(L.terrain, t);
 	context.telemetry.measure("hilbert.bank-farms.proposed", path.segments.size() * 2);
 	context.telemetry.measure("hilbert.bank-farms.placed", farms);
 	context.telemetry.measure("hilbert.depth.requested", o.depth);
@@ -230,6 +234,6 @@ GeneratorDefinition hilbertRiverDefinition()
 		{"major-shortcuts", "Optional major shortcuts", 0, 4, 1, 2, ControlGroup::Layout}};
 	const auto resources = resourceControls();
 	controls.insert(controls.end(), resources.begin(), resources.end());
-	return {"hilbert-river", 50,           "Hilbert River", 3, false, controls, generate, true,
+	return {"hilbert-river", 50,           "Hilbert River", 4, false, controls, generate, true,
 			validateRequest, validateWorld};
 }

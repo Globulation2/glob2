@@ -21,6 +21,15 @@ struct Layout
 	TerrainSketch terrain;
 	std::vector<Home> homes;
 	std::vector<unsigned char> reserved, wheat, wood, objectives, crossings, growthRestricted;
+	/// The footprint of everything a garden path may lead to: home modules, beds, bank plots,
+	/// lakes and crossing landings. Appended as each is laid; read by gardenPaths.
+	std::vector<RegionBounds> features;
+	/// Pairs of features already joined by something other than a path — the two landings of
+	/// one crossing — so the path tree does not try to walk round the water between them.
+	std::vector<std::pair<int, int>> featureLinks;
+	/// Per feature, ground to pave if a path arrives: a crossing's approach from the end of its
+	/// stroke to the shore where its surface begins. Empty for every other feature.
+	std::vector<std::vector<int>> featureApproach;
 	std::string failure;
 };
 void initialize(Layout &, const GenerationRequest &);
@@ -40,6 +49,11 @@ bool bankFarm(Layout &, RegionBounds, bool timber);
 /// home module. Returns the number of pools placed.
 int gardenBeds(Layout &, GenerationContext &, int spacing, int half, int margin = 6);
 void stampCrossings(Layout &, const CrossingSelection &, GenerationContext &);
+/// Square garden paths joining every recorded feature: a spanning tree built shortest edge
+/// first, each edge an L or a Z of straight horizontal and vertical runs over open grass only,
+/// so a path can meet a feature but never cross one. Call after the last feature is laid and
+/// before the final shoreline pass. Returns the number of features left unjoined.
+int gardenPaths(Layout &, GenerationContext &);
 bool furnishAndSettle(Game &, GenerationContext &, const Layout &);
 std::string validate(const Game &, const GenerationContext &, const Layout &);
 std::vector<GeneratorControl> resourceControls();

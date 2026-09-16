@@ -16,7 +16,12 @@ comments can say "because grass may not touch water" and a reader can check it h
 - **Grass may never touch water.** There is no grass-to-water tile graphic, so every grass corner
   beside water must become sand. `Map::controlSand` does it in place in row order, which makes a
   shoreline depend on scan direction; the designed generators use `layBeaches`, which applies the
-  same rule to every corner at once.
+  same rule to every corner at once. The pass is not a step in a fixed order, it is a postcondition:
+  anything that cuts terrain after it — a late pond, a farm plot stamped against a lake — needs
+  another pass, or that shoreline ships as a hard grass/water edge that reads immediately as a bug
+  in the finished game (the fractal maps' garden beds and bank plots did, 2026-09-16). Size a crop
+  bed knowing the beach will take its innermost row: three rows of farmable grass means four rows
+  of grass laid down.
 - **Buildings need pure grass.** `Map::isFreeForBuilding` requires grass, no resource and no unit
   on every tile of the footprint (`Map::checkTile`). Sand is walkable but unbuildable, so a map's
   building room is its grass, not its land. A swarm is 4×4; the start scorer counts free 4×4
@@ -68,6 +73,23 @@ Consequences a generator has to design around:
   with lots of sand grows its fields back slowly — a lever, not just decoration.
 - **Growth can shut a map.** Wheat and wood that spread unchecked cover grass, and covered grass is
   unwalkable and unbuildable. Lanes, sand roads and levees exist to stop a map growing shut.
+- **Wood overgrowth is the usual way it happens, and it is slow enough to miss.** A deposit first
+  thickens in place; once its amount passes a random 0-7 it *extends* to one of its eight
+  neighbours instead. Timber scattered as decoration therefore creeps outward a tile at a time
+  wherever the water probe succeeds, and tens of thousands of ticks later the map is forest. It
+  does not show in a preview or in any measurement of the map as generated: it needs a long game,
+  or a count of wood tiles on a final save against the same count at tick zero. Treat a sprinkle
+  of timber across open land as a promise that the land will eventually be woods, and either keep
+  the sprinkle sparse and contained or leave it out.
+- **Containing a deposit means flagging its neighbours, not the deposit.** `canResourcesGrow` is a
+  per-tile saved flag that blocks growth *on that tile*. A patch whose own tiles are flagged can
+  still extend into unflagged ground beside it, so a genuinely finite patch is the patch plus the
+  ring it could reach (`preventResourceGrowth` over a dilated mask), or a patch on ground where
+  the water probe cannot succeed, or one capped with `capResourceStock`. The ring must be
+  complete: ground that cannot carry the flag, such as a fruit court whose fruit must regrow,
+  has to be kept away from the patch rather than carved out of its ring, or the patch spreads
+  from that side. Sand around a plot works because a deposit cannot occupy sand at all; that is
+  a different mechanism from the flag.
 - **Fruit is a weapon.** A colony whose inns hold all three fruits can pull hungry enemy units
   across to its side, so an orchard of all three kinds in contested ground is the strongest prize
   a map can offer, and fruit spread unevenly between colonies is a real unfairness.

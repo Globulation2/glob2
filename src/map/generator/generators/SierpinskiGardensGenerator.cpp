@@ -126,20 +126,45 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		fillRectangle(crossingExclusion, t, {h.x - 12, h.y - 10, h.x + 13, h.y + 15});
 	// Each candidate is a complete opposing pair of causeways, represented as one path
 	// across the island. Selecting halves independently could leave all approaches on
-	// one shore. Three different diameters give 2, 4 or 6 distinct island approaches.
+	// one shore.
+	//
+	// Every causeway is square to the lake: horizontal or vertical, never at an angle. This is
+	// a formal garden, and a causeway struck across a square lake at sixty degrees reads as a
+	// diagram of access rather than a garden path (2026-09-16). A pair is the causeway and its
+	// mirror image across the lake along its own axis, so a pair off the centre line is two
+	// parallel causeways rather than one diagonal. The centre lines come first; the parallels,
+	// still landing on the orchard island, are the third pair and the fallback when a home's
+	// ground blocks a centre line.
 	std::vector<CrossingCandidate> candidates;
-	const double shift = (context.bounded("garden-approaches", 3) - 1.0) * 0.12;
 	int blockedApproaches = 0;
-	const auto propose = [&](int k, double angle)
+	// How each candidate's far half mirrors its near one, recorded when it is proposed rather
+	// than guessed from geometry afterwards: a shallow angled causeway can sit within a
+	// parallel's offset of the centre line. Square ones mirror along their own axis, angled
+	// fallbacks through the centre, as the original design did.
+	enum class Mirror { Horizontal, Vertical, Centre };
+	std::vector<Mirror> mirrors;
+	const auto mirrorPoint = [&](ShapePoint p, Mirror m)
+	{
+		switch (m)
+		{
+		case Mirror::Horizontal:
+			return ShapePoint{2.0 * cx - p.x, p.y};
+		case Mirror::Vertical:
+			return ShapePoint{p.x, 2.0 * cy - p.y};
+		default:
+			return ShapePoint{2.0 * cx - p.x, 2.0 * cy - p.y};
+		}
+	};
+	const auto mirror = [&](const CrossingCandidate &c)
+	{ return mirrorPoint(c.from, mirrors[size_t(c.id)]); };
+	const auto propose = [&](int k, bool horizontal, double offset)
 	{
 		// Scale the APPROACH positions with the rectangle, not the causeway width.
 		// Unscaled angles bunched every approach onto the short bank on 128×512,
 		// making the second pair useless once seam routes were included.
-		const double dx = std::cos(angle) * lake.width(), dy = std::sin(angle) * lake.height();
-		const double reach = std::min((lake.width() / 2.0 + 5) / std::max(0.001, std::abs(dx)),
-									  (lake.height() / 2.0 + 5) / std::max(0.001, std::abs(dy)));
-		const ShapePoint bank{cx + dx * reach, cy + dy * reach};
-		const ShapePoint opposite{2 * cx - bank.x, 2 * cy - bank.y};
+		const ShapePoint bank = horizontal ? ShapePoint{lake.x0 - 5.0, cy + offset}
+										   : ShapePoint{cx + offset, lake.y0 - 5.0};
+		const ShapePoint opposite = mirrorPoint(bank, horizontal ? Mirror::Horizontal : Mirror::Vertical);
 		// Test the full opposing stroke against the protected economic footprint.
 		// The half represented in the graph alone would miss damage on the far bank
 		// (the original 128x256, seed 20001 regression).
@@ -149,28 +174,81 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 			++blockedApproaches;
 			return;
 		}
+		const ShapePoint landing = horizontal ? ShapePoint{double(cx), cy + offset}
+											  : ShapePoint{cx + offset, double(cy)};
+		// Ids index `mirrors`, so every proposal records one whether or not it is kept.
+		if (mirrors.size() <= size_t(k))
+			mirrors.resize(size_t(k) + 1, Mirror::Centre);
+		mirrors[size_t(k)] = horizontal ? Mirror::Horizontal : Mirror::Vertical;
 		candidates.push_back({k,
 							  0,
 							  0,
 							  0,
 							  0,
-							  int(reach * std::max(std::abs(dx), std::abs(dy))),
-							  {cx + dx * reach, cy + dy * reach},
-							  {double(cx), double(cy)}});
+							  int(horizontal ? lake.width() / 2.0 + 5 : lake.height() / 2.0 + 5),
+							  bank,
+							  landing});
 	};
-	// Preserve the established three approaches when they fit. Only a constrained
-	// shore needs the bounded five-degree search; no seed retry or home cutting.
-	for (int k = 0; k < 3; ++k)
-		propose(k, k * kPi / 3 + shift);
-	if (int(candidates.size()) < o.pairs)
-		for (int k = 0; k < 36; ++k)
-			if (k % 12 != 0)
-				propose(3 + k, k * kPi / 36 + shift);
+	// Centre lines, then parallels that still land on the island. The seeded choice of which
+	// axis leads is the variety: the drawing stays square either way.
+	const bool horizontalFirst = context.bounded("garden-approaches", 2) == 0;
+	propose(0, horizontalFirst, 0);
+	propose(1, !horizontalFirst, 0);
+	int k = 2;
+	for (const double fraction : {0.55, 0.3, 0.8})
+		for (const bool horizontal : {horizontalFirst, !horizontalFirst})
+			for (const double sign : {1.0, -1.0})
+			{
+				const double half = horizontal ? iy : ix;
+				propose(k++, horizontal, sign * fraction * half);
+			}
+	// Square is the rule, not a precondition. On a 128 map a home's court can block a whole
+	// axis — its centre line and every parallel share the same reach — and refusing the map
+	// there would trade the smallest supported size for a drawing. Only then, and only for the
+	// missing axis, the causeway may leave the square: the angled search the map used before.
+	// It is the one place a diagonal survives, and telemetry records every time it is used.
+	int squareAxes = 0;
+	for (const Mirror axis : {Mirror::Horizontal, Mirror::Vertical})
+		for (const auto &c : candidates)
+			if (mirrors[size_t(c.id)] == axis)
+			{
+				++squareAxes;
+				break;
+			}
+	const bool angledFallback = squareAxes < std::min(o.pairs, 2);
+	context.telemetry.measure("sierpinski.crossings.square-axes", squareAxes);
+	context.telemetry.measure("sierpinski.crossings.angled-fallback", angledFallback);
+	if (angledFallback)
+		for (int step = 1; step < 36; ++step)
+			if (step % 9 != 0)
+			{
+				const double angle = step * kPi / 36;
+				const double dx = std::cos(angle) * lake.width(), dy = std::sin(angle) * lake.height();
+				const double reach =
+					std::min((lake.width() / 2.0 + 5) / std::max(0.001, std::abs(dx)),
+							 (lake.height() / 2.0 + 5) / std::max(0.001, std::abs(dy)));
+				const ShapePoint bank{cx + dx * reach, cy + dy * reach};
+				const ShapePoint opposite{2 * cx - bank.x, 2 * cy - bank.y};
+				if (strokeIntersectsMask(t, {{bank.x, bank.y, 3.5}, {opposite.x, opposite.y, 3.5}},
+										 crossingExclusion))
+				{
+					++blockedApproaches;
+					continue;
+				}
+				if (mirrors.size() <= size_t(k))
+					mirrors.resize(size_t(k) + 1, Mirror::Centre);
+				mirrors[size_t(k)] = Mirror::Centre;
+				candidates.push_back({k++, 0, 0, 0, 0,
+									  int(reach * std::max(std::abs(dx), std::abs(dy))), bank,
+									  {double(cx), double(cy)}});
+			}
 	context.telemetry.measure("sierpinski.crossings.blocked-approaches", blockedApproaches);
 	context.telemetry.measure("sierpinski.crossings.legal-candidates", candidates.size());
 	// Garden pools in the meadows the recursion left empty. They go in before the causeway
 	// graph is measured, so a pool can never appear under a selected approach.
 	gardenBeds(L, context, 30, 13, 4);
+	// A provisional shoreline for the causeway graph below, which measures walking over the
+	// preliminary land mask. The real one is laid at the end, once the bank plots are down.
 	layBeaches(L.terrain, t);
 	// Graph travel uses the preliminary land mask. Finished-world validators later
 	// account for deposits, settlements, and actual engine movement predicates.
@@ -202,12 +280,10 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 			// A candidate represents BOTH banks. Keep at least
 			// 10 tiles between their approach centres: seven
 			// corners of road plus a visible shoulder gap.
-			for (int signA : {-1, 1})
-				for (int signB : {-1, 1})
-					if (t.dist2(int(std::floor(cx + signA * (a.from.x - cx))),
-								int(std::floor(cy + signA * (a.from.y - cy))),
-								int(std::floor(cx + signB * (b.from.x - cx))),
-								int(std::floor(cy + signB * (b.from.y - cy)))) < 100)
+			for (const ShapePoint pa : {a.from, mirror(a)})
+				for (const ShapePoint pb : {b.from, mirror(b)})
+					if (t.dist2(int(std::floor(pa.x)), int(std::floor(pa.y)), int(std::floor(pb.x)),
+								int(std::floor(pb.y))) < 100)
 						return false;
 			return true;
 		});
@@ -218,7 +294,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		return L;
 	}
 	for (auto &crossing : selected.selected)
-		crossing.to = {2 * cx - crossing.from.x, 2 * cy - crossing.from.y};
+		crossing.to = mirror(crossing);
 	stampCrossings(L, selected, context);
 	int farms = 0;
 	for (size_t k = 0; k < smallerLakes.size(); ++k)
@@ -241,6 +317,14 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		farms += bankFarm(L, {x - 12, b.y0 - 15, x + 12, b.y0 + 1}, !timber);
 		farms += bankFarm(L, {x - 12, b.y1 - 1, x + 12, b.y1 + 15}, timber);
 	}
+	// The lakes are features too, so paths lead to their shores as well as to the plots.
+	L.features.push_back({lake.x0 - 2, lake.y0 - 2, lake.x1 + 2, lake.y1 + 2});
+	for (const auto &b : smallerLakes)
+		L.features.push_back({b.x0 - 2, b.y0 - 2, b.x1 + 2, b.y1 + 2});
+	gardenPaths(L, context);
+	// Every plot and path that just went in may meet a lake: give the whole map its shoreline
+	// again now that nothing further will cut terrain. Grass may never touch water.
+	layBeaches(L.terrain, t);
 	context.telemetry.measure("sierpinski.bank-farms.proposed", smallerLakes.size() * 4);
 	context.telemetry.measure("sierpinski.bank-farms.placed", farms);
 	context.telemetry.measure("sierpinski.depth.requested", o.nesting);
@@ -286,7 +370,7 @@ GeneratorDefinition sierpinskiGardensDefinition()
 	return {"sierpinski-gardens",
 			49,
 			"Sierpiński Gardens",
-			3,
+			4,
 			false,
 			controls,
 			generate,
