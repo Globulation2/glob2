@@ -1978,6 +1978,10 @@ Trail width
 Wall between legs
 [Farm building plots]
 Farm building plots
+[Sand bridges over water]
+Sand bridges over water
+[Sand lanes through crops]
+Sand lanes through crops
 [Carousels need at least two colonies.]
 Carousels need at least two colonies.
 [Switchbacks need at least two colonies.]

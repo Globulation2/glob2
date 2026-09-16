@@ -1980,6 +1980,10 @@ Lățimea potecii
 Zid între serpentine
 [Farm building plots]
 Loturi de construcție în ferme
+[Sand bridges over water]
+Poduri de nisip peste apă
+[Sand lanes through crops]
+Cărări de nisip prin culturi
 [Carousels need at least two colonies.]
 Caruselul are nevoie de cel puțin două colonii.
 [Switchbacks need at least two colonies.]

@@ -1978,6 +1978,10 @@ Larĝo de la pado
 Muro inter kurboj
 [Farm building plots]
 Konstruejoj en la bienoj
+[Sand bridges over water]
+Sablaj pontoj super akvo
+[Sand lanes through crops]
+Sablaj vojetoj tra la kultivaĵoj
 [Carousels need at least two colonies.]
 Karuselo bezonas almenaŭ du koloniojn.
 [Switchbacks need at least two colonies.]

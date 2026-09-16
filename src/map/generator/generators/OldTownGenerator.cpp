@@ -302,7 +302,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	}
 	TerrainSketch rows(n, GRASS);
 	L.farm = layFarm(rows, t, L.farmRegion, 0.0, {L.cx, L.cy}, kFarmRim, bestFarmRows(0.0), nullptr,
-					 kFarmBridges, true);
+					 {kFarmBridges, o.waterCrossings, o.cropCrossings}, true);
 	const FarmPlot plot;
 	const std::vector<unsigned char> roomy = erode(t, L.farmRegion, kPlotMargin);
 	std::vector<unsigned char> keepClear(n, 0);
@@ -509,6 +509,7 @@ OldTownOptions::OldTownOptions(const GenerationRequest &r)
 	: citySize(r.option("city-size")), blockSize(r.option("block-size")),
 	  streetWidth(r.option("street-width")), warp(r.option("warp")), plazas(r.option("plazas")),
 	  farmPlots(r.option("farm-plots")), tendrils(r.option("tendrils") != 0),
+	  waterCrossings(r.option("water-crossings") != 0), cropCrossings(r.option("crop-crossings") != 0),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))
@@ -532,6 +533,10 @@ GeneratorDefinition oldTownDefinition()
 			 {"warp", "Warp", 0, 100, 10, 50, ControlGroup::Terrain},
 			 {"plazas", "Plazas", 0, 4, 1, 2, ControlGroup::Layout},
 			 {"farm-plots", "Farm plots", 0, 6, 1, 3, ControlGroup::Layout},
+			 // The farm rows' sand bridges over the water and lanes through the crops (FarmBridges),
+			 // both on by default so workers cross the rows rather than walking round them.
+			 waterCrossingsControl(),
+			 cropCrossingsControl(),
 			 GeneratorControl::toggle("tendrils", "Tendril roads", true, ControlGroup::Terrain),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),

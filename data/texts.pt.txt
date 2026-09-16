@@ -1986,6 +1986,10 @@ Largura do trilho
 Muro entre troços
 [Farm building plots]
 Lotes para construir nas quintas
+[Sand bridges over water]
+Pontes de areia sobre a água
+[Sand lanes through crops]
+Trilhas de areia entre as plantações
 [Carousels need at least two colonies.]
 O carrossel precisa de pelo menos duas colónias.
 [Switchbacks need at least two colonies.]

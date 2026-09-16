@@ -1980,6 +1980,10 @@ Velikost náhorní plošiny
 Zeď mezi serpentinami
 [Farm building plots]
 Stavební parcely na farmách
+[Sand bridges over water]
+Písečné mosty přes vodu
+[Sand lanes through crops]
+Písečné cesty přes pole
 [Carousels need at least two colonies.]
 Kolotoč potřebuje alespoň dvě kolonie.
 [Switchbacks need at least two colonies.]

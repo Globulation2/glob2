@@ -2050,6 +2050,10 @@ Cortex
 Τείχος ανάμεσα στις στροφές
 [Farm building plots]
 Οικόπεδα στα αγροκτήματα
+[Sand bridges over water]
+Αμμώδεις γέφυρες πάνω από το νερό
+[Sand lanes through crops]
+Αμμώδη μονοπάτια μέσα από τις καλλιέργειες
 [Carousels need at least two colonies.]
 Το καρουζέλ χρειάζεται τουλάχιστον δύο αποικίες.
 [Switchbacks need at least two colonies.]

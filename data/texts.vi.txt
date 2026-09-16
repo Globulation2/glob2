@@ -1976,6 +1976,10 @@ Kích thước cao nguyên
 Tường giữa các khúc
 [Farm building plots]
 Ô đất xây dựng trong nông trại
+[Sand bridges over water]
+Cầu cát qua mặt nước
+[Sand lanes through crops]
+Lối cát xuyên qua cánh đồng
 [Carousels need at least two colonies.]
 Vòng quay ngựa gỗ cần ít nhất hai thuộc địa.
 [Switchbacks need at least two colonies.]

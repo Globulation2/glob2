@@ -1980,6 +1980,10 @@ Velikost planote
 Zid med ovinki
 [Farm building plots]
 Gradbene parcele na kmetijah
+[Sand bridges over water]
+Peščeni mostovi čez vodo
+[Sand lanes through crops]
+Peščene poti skozi posevke
 [Carousels need at least two colonies.]
 Vrtiljak potrebuje vsaj dve koloniji.
 [Switchbacks need at least two colonies.]

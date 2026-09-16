@@ -1990,6 +1990,10 @@ Stigbredd
 Mur mellan kurvor
 [Farm building plots]
 Byggtomter på gårdarna
+[Sand bridges over water]
+Sandbroar över vatten
+[Sand lanes through crops]
+Sandstigar genom grödorna
 [Carousels need at least two colonies.]
 En karusell behöver minst två kolonier.
 [Switchbacks need at least two colonies.]

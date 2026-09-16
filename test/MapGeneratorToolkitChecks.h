@@ -1858,7 +1858,7 @@ inline void farmAndTowerChecks()
 		// farm, through the water rows and the crop rows alike (FEEDBACK 2026-09-14), so a colony
 		// crosses the whole field on one road. Only the rim keeps its crops.
 		TerrainSketch bridged(t.size(), GRASS);
-		const Farm crossed = layFarm(bridged, t, region, 0, {32, 32}, 4, {6, 4}, nullptr, 8);
+		const Farm crossed = layFarm(bridged, t, region, 0, {32, 32}, 4, {6, 4}, nullptr, FarmBridges{8});
 		assert(!crossed.water[t.at(32, 36)] && crossed.sand[t.at(32, 36)] &&
 			   bridged[t.at(32, 36)] == SAND);
 		assert(crossed.sand[t.at(24, 36)] && crossed.water[t.at(33, 36)] &&
@@ -1867,10 +1867,20 @@ inline void farmAndTowerChecks()
 			   crossed.rows == farm.rows);
 		assert(!crossed.sand[t.at(33, 32)] && bridged[t.at(33, 32)] == GRASS);
 		assert(!crossed.sand[t.at(32, 10)] && !crossed.sand[t.at(32, 53)]); // the rim stays grass
+		// Each half switches off alone: water-only bridges leave the crop rows whole, and crop-only
+		// lanes leave the water rows unbridged.
+		TerrainSketch overWater(t.size(), GRASS), throughCrops(t.size(), GRASS);
+		const Farm wet = layFarm(overWater, t, region, 0, {32, 32}, 4, {6, 4}, nullptr,
+								 FarmBridges{8, true, false});
+		const Farm dry = layFarm(throughCrops, t, region, 0, {32, 32}, 4, {6, 4}, nullptr,
+								 FarmBridges{8, false, true});
+		assert(wet.sand[t.at(32, 36)] && !wet.water[t.at(32, 36)] && overWater[t.at(32, 32)] == GRASS);
+		assert(dry.water[t.at(32, 36)] && throughCrops[t.at(32, 36)] == WATER);
+		assert(dry.sand[t.at(32, 32)] && throughCrops[t.at(32, 32)] == SAND);
 		// A building plot's grass trumps a bridge through it.
 		TerrainSketch plotted(t.size(), GRASS);
 		const FarmPlot clearing;
-		const Farm both = layFarm(plotted, t, region, 0, {32, 32}, 4, {6, 4}, &clearing, 4);
+		const Farm both = layFarm(plotted, t, region, 0, {32, 32}, 4, {6, 4}, &clearing, FarmBridges{4});
 		assert(both.plotX >= 0);
 		for (int dy = 0; dy <= clearing.height; ++dy)
 			for (int dx = 0; dx <= clearing.width; ++dx)

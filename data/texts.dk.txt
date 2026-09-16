@@ -2056,6 +2056,10 @@ Stibredde
 Mur mellem sving
 [Farm building plots]
 Byggegrunde på gårdene
+[Sand bridges over water]
+Sandbroer over vand
+[Sand lanes through crops]
+Sandstier gennem afgrøderne
 [Carousels need at least two colonies.]
 En karrusel kræver mindst to kolonier.
 [Switchbacks need at least two colonies.]

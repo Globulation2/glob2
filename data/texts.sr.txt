@@ -1980,6 +1980,10 @@ OpenGL није доступан у овој верзији.
 Зид између кривина
 [Farm building plots]
 Грађевинске парцеле на фармама
+[Sand bridges over water]
+Пешчани мостови преко воде
+[Sand lanes through crops]
+Пешчане стазе кроз усеве
 [Carousels need at least two colonies.]
 Вртешци су потребне бар две колоније.
 [Switchbacks need at least two colonies.]

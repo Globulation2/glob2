@@ -502,7 +502,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		const double across = L.axis[k] + kPi / 2;
 		TerrainSketch rows(n, GRASS);
 		L.farms.push_back(layFarm(rows, t, region, across, seeds[f], kFarmRim, bestFarmRows(across),
-								  o.farmPlots ? &plot : nullptr, kFarmBridgeSpacing));
+								  o.farmPlots ? &plot : nullptr,
+								  {kFarmBridgeSpacing, o.waterCrossings, o.cropCrossings}));
 		L.farmColony.push_back(k);
 		for (int i = 0; i < n; ++i)
 			if (region[i])
@@ -865,6 +866,7 @@ SwitchbacksOptions::SwitchbacksOptions(const GenerationRequest &r)
 	  plateauSize(r.option("plateau-size")), homeSize(r.option("home-size")),
 	  towers(r.option("starting-towers")), towerCount(r.option("tower-count")),
 	  sandRoads(r.option("sand-roads") != 0), farmPlots(r.option("farm-plots") != 0),
+	  waterCrossings(r.option("water-crossings") != 0), cropCrossings(r.option("crop-crossings") != 0),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))
@@ -896,6 +898,10 @@ GeneratorDefinition switchbacksDefinition()
 		 // On, every farm has a 10x4 clearing of grass ringed with sand in its middle, for a
 		 // swarm or an inn.
 		 GeneratorControl::toggle("farm-plots", "Farm building plots", true, ControlGroup::Layout),
+		 // The farm rows' sand bridges over the water and lanes through the crops (FarmBridges),
+		 // both on by default so workers cross the rows rather than walking round them.
+		 waterCrossingsControl(),
+		 cropCrossingsControl(),
 		 // Every home's scattered fields and grove, the farms' wheat and woodlots, the plateau's
 		 // orchard, and the algae; the mountains' stone and the towers are unscaled.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),

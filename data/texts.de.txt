@@ -1980,6 +1980,10 @@ Pfadbreite
 Mauer zwischen Kehren
 [Farm building plots]
 Bauplätze in den Farmen
+[Sand bridges over water]
+Sandbrücken über Wasser
+[Sand lanes through crops]
+Sandwege durch die Felder
 [Carousels need at least two colonies.]
 Ein Karussell braucht mindestens zwei Kolonien.
 [Switchbacks need at least two colonies.]

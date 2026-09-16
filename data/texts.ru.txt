@@ -1978,6 +1978,10 @@ OpenGL недоступен в этой сборке.
 Стена между витками
 [Farm building plots]
 Участки под застройку на фермах
+[Sand bridges over water]
+Песчаные мосты через воду
+[Sand lanes through crops]
+Песчаные дорожки через посевы
 [Carousels need at least two colonies.]
 Для карусели нужны хотя бы две колонии.
 [Switchbacks need at least two colonies.]

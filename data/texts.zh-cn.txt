@@ -1976,6 +1976,10 @@ OpenGL 在此版本中不可用。
 弯道之间的墙
 [Farm building plots]
 农场建筑用地
+[Sand bridges over water]
+水上沙桥
+[Sand lanes through crops]
+穿过农田的沙道
 [Carousels need at least two colonies.]
 旋转木马至少需要两个殖民地。
 [Switchbacks need at least two colonies.]

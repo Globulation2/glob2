@@ -987,6 +987,8 @@
 [Trail width]
 [Wall between legs]
 [Farm building plots]
+[Sand bridges over water]
+[Sand lanes through crops]
 [Carousels need at least two colonies.]
 [Switchbacks need at least two colonies.]
 [An amphitheatre needs at least two colonies.]

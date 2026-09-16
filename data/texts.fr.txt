@@ -1990,6 +1990,10 @@ Largeur du sentier
 Mur entre les lacets
 [Farm building plots]
 Parcelles à bâtir dans les fermes
+[Sand bridges over water]
+Ponts de sable sur l'eau
+[Sand lanes through crops]
+Allées de sable à travers les cultures
 [Carousels need at least two colonies.]
 Le carrousel nécessite au moins deux colonies.
 [Switchbacks need at least two colonies.]

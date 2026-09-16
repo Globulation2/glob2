@@ -2004,6 +2004,10 @@ Padbreedte
 Muur tussen bochten
 [Farm building plots]
 Bouwkavels in de boerderijen
+[Sand bridges over water]
+Zandbruggen over water
+[Sand lanes through crops]
+Zandpaden door de gewassen
 [Carousels need at least two colonies.]
 Een draaimolen heeft minstens twee kolonies nodig.
 [Switchbacks need at least two colonies.]

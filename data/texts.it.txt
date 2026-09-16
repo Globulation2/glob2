@@ -2042,6 +2042,10 @@ Larghezza del sentiero
 Muro tra i tornanti
 [Farm building plots]
 Lotti edificabili nelle fattorie
+[Sand bridges over water]
+Ponti di sabbia sull'acqua
+[Sand lanes through crops]
+Sentieri di sabbia tra le colture
 [Carousels need at least two colonies.]
 La giostra richiede almeno due colonie.
 [Switchbacks need at least two colonies.]

@@ -1988,6 +1988,10 @@ Veľkosť náhornej plošiny
 Múr medzi serpentínami
 [Farm building plots]
 Stavebné pozemky na farmách
+[Sand bridges over water]
+Piesočné mosty cez vodu
+[Sand lanes through crops]
+Piesočné cesty cez polia
 [Carousels need at least two colonies.]
 Kolotoč potrebuje aspoň dve kolónie.
 [Switchbacks need at least two colonies.]

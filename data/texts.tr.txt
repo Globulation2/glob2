@@ -1988,6 +1988,10 @@ Patika genişliği
 Virajlar arası duvar
 [Farm building plots]
 Çiftliklerde yapı arsaları
+[Sand bridges over water]
+Su üzerinde kum köprüler
+[Sand lanes through crops]
+Ekinler arasından kum yollar
 [Carousels need at least two colonies.]
 Atlıkarınca en az iki koloni gerektirir.
 [Switchbacks need at least two colonies.]

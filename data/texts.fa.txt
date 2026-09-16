@@ -1978,6 +1978,10 @@ OpenGL در این بیلد موجود نیست.
 دیوار میان پیچ‌ها
 [Farm building plots]
 قطعه‌های ساخت در مزرعه‌ها
+[Sand bridges over water]
+پل‌های شنی روی آب
+[Sand lanes through crops]
+راه‌های شنی از میان کشتزارها
 [Carousels need at least two colonies.]
 چرخ‌وفلک دست‌کم به دو مستعمره نیاز دارد.
 [Switchbacks need at least two colonies.]
