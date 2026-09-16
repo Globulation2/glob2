@@ -7,8 +7,7 @@ description: Design, implement, tune, or review Globulation 2 procedural map gen
 
 Treat a map as an economy and a travel network that evolve during play. Its silhouette is only one part of the design. Preserve the user's concept while finding geometry, resource policy, and controls that make its intended decisions possible.
 
-This skill is grounded in a code/comment review of all 34 built-in generators. The references distinguish current mechanisms from design recommendations; they do not certify that every existing generator is fun or balanced. Paths below are relative to this skill. Follow repository `AGENTS.md`; recheck relevant code when implementing because this guide is a source map, not a frozen engine specification.
-This skill is grounded in a code/comment review of all 32 built-in generators. The references distinguish current mechanisms from design recommendations; they do not certify that every existing generator is fun or balanced. Paths below are relative to this skill. Follow repository `AGENTS.md`; recheck relevant code when implementing because this guide is a source map, not a frozen engine specification.
+This skill is grounded in a code/comment review of all 49 built-in generators. The references distinguish current mechanisms from design recommendations; they do not certify that every existing generator is fun or balanced. Paths below are relative to this skill. Follow repository `AGENTS.md`; recheck relevant code when implementing because this guide is a source map, not a frozen engine specification.
 
 ## Turn the idea into a playable contract
 

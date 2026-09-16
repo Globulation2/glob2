@@ -22,6 +22,12 @@ namespace
 // timber bays beside the wheat stay reachable and are rechecked after workers are placed.
 // This is an economic tuning offset, not a change to the neutral site selector.
 constexpr int kStarterNorthOffset = 6;
+// A tile the design has already given a purpose: a home module, a crossing, an objective court
+// or a crop plot. Nothing laid later — a bed, a copse, a quarry, a spot of shore wheat — may sit on it.
+bool claimed(const Layout &L, int i)
+{
+	return L.reserved[i] || L.crossings[i] || L.objectives[i] || L.wheat[i] || L.wood[i];
+}
 } // namespace
 
 void initialize(Layout &L, const GenerationRequest &r)
@@ -120,7 +126,7 @@ void layHomeEconomies(Layout &L)
 	{
 		// Construction ground is 24×24 pure tiles (25×25 corners), surrounded by two
 		// corners of sand. The ring stops resource spread while remaining walkable;
-		// its northern opening is the persistently protected service apron below.
+		// its northern side opens onto the service apron below.
 		fillRectangle(L.terrain, t, {h.x - 14, h.y - 12, h.x + 15, h.y + 17}, SAND);
 		fillRectangle(L.terrain, t, {h.x - 12, h.y - 10, h.x + 13, h.y + 15}, GRASS);
 		// A long wheat frontage lets several workers harvest without queuing at a single
@@ -139,23 +145,22 @@ void layHomeEconomies(Layout &L)
 		// construction trip without giving free buildings or changing AI policy.
 		// The existing two-corner sand aisles separate these bays from the two
 		// inner wheat beds, so later forest growth cannot replace their grain.
-		// The union of crop masks is unchanged: protected bridge geometry and the
-		// 24x24 court do not move. They are the home's only renewable timber since the
-		// southern plot became wheat.
+		// The union of crop masks is unchanged, so crossing exclusions and the 24x24
+		// court do not move. These bays are the home's only renewable timber.
 		for (const RegionBounds bay : {RegionBounds{h.x - 23, h.y - 19, h.x - 16, h.y - 15},
 									   RegionBounds{h.x + 18, h.y - 19, h.x + 24, h.y - 15}})
 		{
 			fillRectangle(L.wheat, t, bay, 0);
 			fillRectangle(L.wood, t, bay, 1);
 		}
-		// The southern plot is wheat too (2026-09-16): a home's renewable timber is the two
-		// bays above, and the rest comes from copses and timber bank plots out on the map, so
-		// a colony that wants to build big has a reason to leave home. The finished-world
-		// check still refuses any home without reachable renewable wood.
+		// The southern plot is wheat too: a home's renewable timber is the two bays above, and
+		// the rest comes from copses and timber bank plots out on the map, so a colony that
+		// wants to build big has a reason to leave home. The finished-world check still refuses
+		// any home without reachable renewable wood.
 		fillRectangle(L.terrain, t, {h.x - 26, h.y + 17, h.x + 27, h.y + 31}, SAND);
-		// Five rows of water, matching the wheat side: two rows fed the timber slowly and left
-		// the south of every module looking dry (2026-09-16). Crops regrow at a rate set by how
-		// much water is near them, so the width of this strip is the timber supply.
+		// Five rows of water, matching the northern strip: two rows fed the plot slowly and left
+		// the south of every module looking dry. Crops regrow at a rate set by how much water is
+		// near them, so the width of this strip is the plot's supply.
 		fillRectangle(L.terrain, t, {h.x - 24, h.y + 24, h.x + 25, h.y + 29}, WATER);
 		fillRectangle(L.terrain, t, {h.x - 24, h.y + 19, h.x + 25, h.y + 23}, GRASS);
 		fillRectangle(L.wheat, t, {h.x - 23, h.y + 20, h.x + 24, h.y + 22}, 1);
@@ -175,21 +180,18 @@ void layHomeEconomies(Layout &L)
 		// does, but never into the construction court: a single row of sand corners
 		// along the apron's foot makes the two tile rows either side of it unplantable,
 		// which no crop can extend across. The court loses only its top row, which lies
-		// inside the building grid's inset margin. Generated maps may not use the saved
-		// no-growth flag at all — it belongs to hand-made scenarios such as the tutorial —
-		// and this apron used to be held clear with it (removed 2026-09-16).
+		// inside the building grid's inset margin. Terrain is the only containment: generated
+		// maps may not use the saved no-growth flag, which belongs to hand-made scenarios.
 		fillRectangle(L.terrain, t, {h.x - 12, h.y - 15, h.x + 13, h.y - 9}, GRASS);
 		fillRectangle(L.terrain, t, {h.x - 14, h.y - 10, h.x + 15, h.y - 9}, SAND);
-		// The module's rim is a straight-edged rectangle. It was frayed for a day so colonies
-		// would not all open inside the same stamped box, but these maps are formal gardens:
-		// clean, square and tidy is the aesthetic, and a two-wide path cannot meet a ragged
-		// edge flush (2026-09-16).
+		// The module's rim is a straight-edged rectangle: these maps are formal gardens, and a
+		// two-wide path can only meet a straight edge flush.
 		L.features.push_back({h.x - 29, h.y - 30, h.x + 30, h.y + 31});
 	}
 	// Grass may never touch water: the engine's terrain model expects a beach between them,
 	// and without one the shoreline renders as a hard edge that reads as a bug. Everything
 	// stamped after this call needs its own pass, which is why both maps finish their design
-	// with one (2026-09-16: garden beds and bank plots shipped a day without it).
+	// with one.
 	layBeaches(L.terrain, t);
 }
 namespace
@@ -200,7 +202,7 @@ int stampBankFarm(Layout &L, RegionBounds b, bool timber)
 {
 	// A plot sits against the water it borrows its irrigation from: how fast a crop grows back
 	// depends on how much water is near it, and a plot laid a few tiles inland off the shore
-	// regrew too slowly to be worth the walk (2026-09-16). So the box may run into the water
+	// regrew too slowly to be worth the walk. So the box may run into the water
 	// and its beach, and the plot simply takes whatever grass is inside it, sharing the shore's
 	// own sand as the cap on that side. Nothing designed may be underneath: a home module, a
 	// crossing or another plot still refuses the site outright.
@@ -255,7 +257,7 @@ bool bankFarm(Layout &L, RegionBounds b, bool timber)
 	// The first choice of box is often blocked by one corner of a neighbouring plot, a
 	// crossing's shoulder or a home module, and refusing there left the bank bare: Hilbert
 	// placed 12 of the 30 plots it proposed and Sierpiński offered six in total, which is
-	// most of why these two maps measured barren beside every other landscape (2026-09-16).
+	// most of why these two maps measured barren beside every other landscape.
 	// So slide along the bank before giving up, then try the same positions two tiles
 	// smaller. Deterministic, order-independent, and every candidate still has to be clean
 	// unreserved grass: this widens the search, it never weakens what a plot may sit on.
@@ -290,8 +292,7 @@ int gardenBeds(Layout &L, GenerationContext &context, int spacing, int half, int
 			for (int x = b.x0 - margin; x < b.x1 + margin; ++x)
 			{
 				const int i = t.at(x, y);
-				if (L.terrain[i] != GRASS || L.reserved[i] || L.crossings[i] || L.objectives[i] ||
-					L.wheat[i] || L.wood[i])
+				if (L.terrain[i] != GRASS || claimed(L, i))
 					return false;
 			}
 		return true;
@@ -319,8 +320,8 @@ int gardenBeds(Layout &L, GenerationContext &context, int spacing, int half, int
 			fillRectangle(L.terrain, t, ring, GRASS);
 			const RegionBounds pool{bed.x0 + 6, bed.y0 + 6, bed.x1 - 6, bed.y1 - 6};
 			fillRectangle(L.terrain, t, pool, WATER);
-			// Alternate the beds between food and timber so neither crop can be cornered by
-			// taking one part of the map, and so a bed is worth walking to from either home.
+			// Every third bed grows timber and the rest wheat, so neither crop can be cornered
+			// by taking one part of the map, and a bed is worth walking to from either home.
 			auto &crop = beds % 3 == 2 ? L.wood : L.wheat;
 			for (int py = ring.y0; py < ring.y1 - 1; ++py)
 				for (int px = ring.x0; px < ring.x1 - 1; ++px)
@@ -345,7 +346,7 @@ int gardenPaths(Layout &L, GenerationContext &context)
 {
 	// A formal garden's paths are clean, neat and tidy: straight edges, one width, square
 	// corners, and every path meeting what it joins flush, with nothing jutting past a junction
-	// and nothing missing from one (2026-09-16). Each edge is an L or a Z of horizontal and
+	// and nothing missing from one. Each edge is an L or a Z of horizontal and
 	// vertical legs laid over open grass, two tiles wide throughout — the path's line and the
 	// tile beside it, a full 2x2 at every bend. A route is only accepted when both of its tiles
 	// meet the feature at each end on the same line, when a bridge is met straight along its
@@ -370,11 +371,9 @@ int gardenPaths(Layout &L, GenerationContext &context)
 		return path[i] || (L.terrain[i] == GRASS && !owned[i] && !L.wheat[i] && !L.wood[i] &&
 						   !L.objectives[i]);
 	};
-	// Ground a path end may run over inside its own feature's box.
+	// Grass that is no crop or court: what a path end may run over inside its own feature's
+	// box, and the only ground a path may pass beside without grazing it.
 	const auto paveable = [&](int i)
-	{ return path[i] || (L.terrain[i] == GRASS && !L.wheat[i] && !L.wood[i] && !L.objectives[i]); };
-	// Ground a path may pass beside without grazing it.
-	const auto clearBeside = [&](int i)
 	{ return path[i] || (L.terrain[i] == GRASS && !L.wheat[i] && !L.wood[i] && !L.objectives[i]); };
 	const auto centre = [&](const RegionBounds &b)
 	{ return std::pair<int, int>{(b.x0 + b.x1) / 2, (b.y0 + b.y1) / 2}; };
@@ -388,8 +387,8 @@ int gardenPaths(Layout &L, GenerationContext &context)
 	{
 		int x, y, legs;
 	};
-	// The partner of a centre-line tile across the path's width.
-	const auto partner = [&](const Step &s, int dx, int dy)
+	// The partner of a centre-line tile across the path's width, on a leg stepping by dx.
+	const auto partner = [&](const Step &s, int dx)
 	{ return dx != 0 ? t.at(s.x, s.y + 1) : t.at(s.x + 1, s.y); };
 	const auto trace = [&](int a, int b, const std::vector<std::pair<int, int>> &corners)
 	{
@@ -464,8 +463,7 @@ int gardenPaths(Layout &L, GenerationContext &context)
 		// Flush at both ends: the tile beside the path's line must also stop against the
 		// feature, on the same line, and be open itself.
 		const Step &head = steps.front(), &tail = steps.back();
-		const int headPartner = partner(head, firstDx, firstDy),
-				  tailPartner = partner(tail, lastDx, lastDy);
+		const int headPartner = partner(head, firstDx), tailPartner = partner(tail, lastDx);
 		const int hpx = headPartner % t.w, hpy = headPartner / t.w, tpx = tailPartner % t.w,
 				  tpy = tailPartner / t.w;
 		if (!paveable(headPartner) || !paveable(tailPartner) ||
@@ -475,7 +473,7 @@ int gardenPaths(Layout &L, GenerationContext &context)
 		for (size_t k = 2; k + 2 < steps.size(); ++k)
 			for (int dy = -1; dy <= 2; ++dy)
 				for (int dx = -1; dx <= 2; ++dx)
-					if (!clearBeside(t.at(steps[k].x + dx, steps[k].y + dy)))
+					if (!paveable(t.at(steps[k].x + dx, steps[k].y + dy)))
 						return std::vector<Step>{};
 		// And the path's own second tile along its length must be open ground too.
 		for (size_t k = 0; k < steps.size(); ++k)
@@ -594,9 +592,7 @@ void stampCrossings(Layout &L, const CrossingSelection &selection, GenerationCon
 		strokePath(L.crossings, L.t, {{c.from.x, c.from.y, 3.5}, {c.to.x, c.to.y, 3.5}});
 		// A landing is the last grass tile before the shore on the crossing's own axis, offset
 		// so a two-wide path is centred on the bridge. A path must arrive along that axis and
-		// end flush against the bridge's sand. Landings used to be boxes round a paved approach
-		// from the end of the stroke, which left stubs jutting past the junction and paths
-		// meeting the bridge off its centre line (2026-09-16).
+		// end flush against the bridge's sand, so no stub juts past the junction.
 		const bool horizontal = std::abs(c.to.x - c.from.x) >= std::abs(c.to.y - c.from.y);
 		const int first = int(L.features.size());
 		for (const auto &[end, other] : {std::pair{c.from, c.to}, std::pair{c.to, c.from}})
@@ -628,7 +624,7 @@ void stampCrossings(Layout &L, const CrossingSelection &selection, GenerationCon
 	// that could reach it is contained already. But the paint stops at the water's edge.
 	// Painting the whole stroke drew a sand bar out past the lake onto the land and
 	// straight across the orchard island, and a causeway that crosses the thing it was
-	// built to reach reads as a diagram, not a garden (2026-09-16). Access is the reason a
+	// built to reach reads as a diagram, not a garden. Access is the reason a
 	// crossing exists; it is not a licence to draw over the map it serves.
 	for (int i = 0; i < L.t.size(); ++i)
 		if (L.crossings[i] && L.terrain[i] == WATER)
@@ -669,7 +665,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 	{
 		// Quarry is outside both farm plots and the central building district. A 2×3 patch
 		// has multiple gathering edges but does not make a wall. This opening minimum is
-		// deliberately retained at zero ambient stone, like the renewable food and wood.
+		// deliberately retained at zero stone amount, like the renewable food and wood.
 		for (int y = -3; y < 0; ++y)
 			for (int x = 20; x < 22; ++x)
 				map.setResource(t.x(h.x + x), t.y(h.y + y), STONE, 1);
@@ -687,29 +683,20 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 		// All three fruits and nothing else. A court sits on the central island or beside a
 		// crossing — the places both sides have to come to — and fruit is what an inn turns
 		// into a reason to hold ground, so this is where it belongs rather than sprinkled
-		// over the whole map. Stone left these courts at the same time and went out to the
-		// quarries below.
+		// over the whole map. Stone goes out to the quarries below instead.
 		const int type = CHERRY + ((x / 8) + (y / 8)) % 3;
-		// Full at the default amount, where it used to be a third: a court holding forty tiles
-		// of fruit across a whole map is not a prize anyone crosses a bridge for.
+		// Full at the default amount: at a third, a court holding forty tiles of fruit across a
+		// whole map was not a prize anyone crosses a bridge for.
 		if (int(context.bounded("fractal-objectives", 100)) < context.request.option("fruit-amount"))
 			map.setResource(x, y, type, 1);
 	}
-	// Outside those courts the open land carried nothing at all, which is most of why these
-	// two maps measured barren beside every other landscape: a quarter the resource tiles of
-	// the median map, and three quarters of the ground bare (2026-09-16). It now carries
-	// timber on the same 8-lattice the courts use, so 3x3 copses always alternate with
-	// permanent gathering lanes and no slider can build a wall across the land. Timber only:
-	// stone belongs at the quarries, fruit in the contested courts, and food inside the
-	// contained plots. A first pass scattered all three everywhere and the map read as
-	// confetti rather than as somewhere with places worth going.
 	// Spots of wheat along the shore of the water the design names — Hilbert's river,
 	// Gardens' central lake — so the banks of the map's centrepiece carry food of their own.
 	// A spot is a 3x3 of wheat right against the beach, at least a court's width from the
 	// next, and never on anything the design owns. It grows and spreads like any farmland:
 	// how fast wheat regrows depends on how much water its random probe finds, so a spot
 	// laid back from the shore barely grew, and the beaches and paths round it are sand, so
-	// it can spread along the bank without shutting a route (2026-09-16).
+	// it can spread along the bank without shutting a route.
 	{
 		const auto nearShore = dilate(t, L.wheatShore, 4);
 		std::vector<int> centres;
@@ -724,8 +711,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 				for (int dx = -1; clear && dx <= 1; ++dx)
 				{
 					const int x = t.x(cx + dx), y = t.y(cy + dy), j = t.at(x, y);
-					clear = map.isGrass(x, y) && clearGround(map, x, y) && !L.reserved[j] &&
-							!L.crossings[j] && !L.objectives[j] && !L.wheat[j] && !L.wood[j];
+					clear = map.isGrass(x, y) && clearGround(map, x, y) && !claimed(L, j);
 				}
 			if (!clear)
 				continue;
@@ -750,20 +736,27 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 		context.telemetry.measure("fractal.shore-wheat.spots", int(centres.size()));
 		context.telemetry.measure("fractal.shore-wheat.tiles", planted);
 	}
+	// Outside the courts and plots the open land once carried nothing at all, which is most of
+	// why these two maps measured barren beside every other landscape: a quarter the resource
+	// tiles of the median map, and three quarters of the ground bare. It carries timber on the
+	// same 8-lattice the courts use, so 3x3 copses always alternate with permanent gathering
+	// lanes and no slider can build a wall across the land. Timber only: stone belongs at the
+	// quarries, fruit in the contested courts, and food inside the contained plots and along the
+	// shore. Scattering all three everywhere read as confetti rather than as somewhere with
+	// places worth going.
 	// The growth field of the finished terrain, water from beds, plots and lakes included.
 	const auto dryGround = Fertility::forMap(map, false);
-	std::vector<unsigned char> ambient(t.size(), 0);
 	int ambientTiles = 0;
 	for (int i = 0; i < t.size(); ++i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		if (L.objectives[i] || L.reserved[i] || L.crossings[i] || L.wheat[i] || L.wood[i])
+		if (claimed(L, i))
 			continue;
 		// Only on dry ground, where the growth probe can never find water: a copse there
 		// cannot extend, so it stays the size it was planted. On fertile ground a scattered
 		// copse is a forest with a delay — one 50,000-tick game grew the fractal maps to a
-		// third wood (2026-09-16). Generated maps may not hold it back with the saved
-		// no-growth flag, so where the ground is fertile there is simply no copse.
+		// third wood. Generated maps may not hold it back with the saved no-growth flag, so
+		// where the ground is fertile there is simply no copse.
 		if (dryGround.at(x, y) != 0)
 			continue;
 		// 3x3 patches with five clear tiles between them, the same lattice the objective
@@ -780,7 +773,6 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 		if (int(context.bounded("fractal-ambient", 100)) >= context.request.option("wood-amount"))
 			continue;
 		map.setResource(x, y, WOOD, 1);
-		ambient[i] = 1;
 		++ambientTiles;
 	}
 	context.telemetry.measure("fractal.ambient.deposit-tiles", ambientTiles);
@@ -798,8 +790,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 			for (int x = 4; x < t.w; x += 8)
 			{
 				const int i = t.at(x, y);
-				if (L.reserved[i] || L.crossings[i] || L.objectives[i] || L.wheat[i] || L.wood[i] ||
-					!clearGround(map, x, y) || !map.isGrass(x, y))
+				if (claimed(L, i) || !clearGround(map, x, y) || !map.isGrass(x, y))
 					continue;
 				int score = INT_MAX;
 				for (Home h : L.homes)
@@ -827,8 +818,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 				if (dx * dx + dy * dy > 20)
 					continue;
 				const int x = t.x(cx + dx), y = t.y(cy + dy), i = t.at(x, y);
-				if (L.reserved[i] || L.crossings[i] || L.objectives[i] || L.wheat[i] ||
-					L.wood[i] || !map.isGrass(x, y) || !clearGround(map, x, y))
+				if (claimed(L, i) || !map.isGrass(x, y) || !clearGround(map, x, y))
 					continue;
 				if (int(context.bounded("fractal-quarries", 100)) >=
 					context.request.option("stone-amount"))
@@ -1027,7 +1017,6 @@ std::string validate(const Game &game, const GenerationContext &context, const L
 		if (L.crossings[i] && map.isWater(i % t.w, i / t.w))
 			return "A designed crossing was lost at (" + std::to_string(i % t.w) + "," +
 				   std::to_string(i / t.w) + ") during terrain rasterization.";
-
 	}
 	return "";
 }

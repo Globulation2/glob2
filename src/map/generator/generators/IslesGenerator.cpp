@@ -334,7 +334,7 @@ static bool generate(Game &game, GenerationContext &context)
 		return false;
 	}
 	// Whatever the amounts, a colony can end up walled into a pocket by the deposits laid
-	// around it: nothing here budgets its room. Opening it up costs a map that already has
+	// around it: nothing here budgets its room. Opening it up costs a colony that already has
 	// its room nothing (openStartsBuriedByResources leaves such a colony untouched).
 	// Wood is topped up only for a colony that cannot reach any, matching what this
 	// landscape's validator asks: how far the nearest stand is round the channels is a

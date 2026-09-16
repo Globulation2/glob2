@@ -344,7 +344,7 @@ static bool generate(Game &game, GenerationContext &context)
 	// within comfortable range; islands that were already generous are left untouched.
 	guaranteeStartingResources(game, context, 24, 32);
 	// Whatever the amounts, a colony can end up walled into a pocket by the deposits laid
-	// around it: nothing here budgets its room. Opening it up costs a map that already has
+	// around it: nothing here budgets its room. Opening it up costs a colony that already has
 	// its room nothing (openStartsBuriedByResources leaves such a colony untouched).
 	openStartsBuriedByResources(game, context);
 	return true;

@@ -130,7 +130,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	//
 	// Every causeway is square to the lake: horizontal or vertical, never at an angle. This is
 	// a formal garden, and a causeway struck across a square lake at sixty degrees reads as a
-	// diagram of access rather than a garden path (2026-09-16). A pair is the causeway and its
+	// diagram of access rather than a garden path. A pair is the causeway and its
 	// mirror image across the lake along its own axis, so a pair off the centre line is two
 	// parallel causeways rather than one diagonal. The centre lines come first; the parallels,
 	// still landing on the orchard island, are the third pair and the fallback when a home's
@@ -140,9 +140,16 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	// How each candidate's far half mirrors its near one, recorded when it is proposed rather
 	// than guessed from geometry afterwards: a shallow angled causeway can sit within a
 	// parallel's offset of the centre line. Square ones mirror along their own axis, angled
-	// fallbacks through the centre, as the original design did.
+	// fallbacks through the centre.
 	enum class Mirror { Horizontal, Vertical, Centre };
 	std::vector<Mirror> mirrors;
+	// Ids index `mirrors`, so every proposal records one whether or not it is kept.
+	const auto recordMirror = [&](int k, Mirror m)
+	{
+		if (mirrors.size() <= size_t(k))
+			mirrors.resize(size_t(k) + 1, Mirror::Centre);
+		mirrors[size_t(k)] = m;
+	};
 	const auto mirrorPoint = [&](ShapePoint p, Mirror m)
 	{
 		switch (m)
@@ -176,10 +183,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		}
 		const ShapePoint landing = horizontal ? ShapePoint{double(cx), cy + offset}
 											  : ShapePoint{cx + offset, double(cy)};
-		// Ids index `mirrors`, so every proposal records one whether or not it is kept.
-		if (mirrors.size() <= size_t(k))
-			mirrors.resize(size_t(k) + 1, Mirror::Centre);
-		mirrors[size_t(k)] = horizontal ? Mirror::Horizontal : Mirror::Vertical;
+		recordMirror(k, horizontal ? Mirror::Horizontal : Mirror::Vertical);
 		candidates.push_back({k,
 							  0,
 							  0,
@@ -235,9 +239,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 					++blockedApproaches;
 					continue;
 				}
-				if (mirrors.size() <= size_t(k))
-					mirrors.resize(size_t(k) + 1, Mirror::Centre);
-				mirrors[size_t(k)] = Mirror::Centre;
+				recordMirror(k, Mirror::Centre);
 				candidates.push_back({k++, 0, 0, 0, 0,
 									  int(reach * std::max(std::abs(dx), std::abs(dy))), bank,
 									  {double(cx), double(cy)}});
@@ -301,16 +303,15 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	{
 		const auto b = smallerLakes[k];
 		const int y = (b.y0 + b.y1) / 2;
-		// Banks alternate food and timber by seeded lake role; unsuccessful plots are
-		// genuine omissions, never an excuse to fill part of the recursive lake.
 		// Three banks of every lake grow wheat and exactly one grows timber, the seed choosing
 		// which: a garden lake is somewhere a colony feeds itself, with one stand of wood
-		// beside it. Alternating the kinds round the lake gave two of each (2026-09-16).
+		// beside it. Unsuccessful plots are genuine omissions, never an excuse to fill part of
+		// the recursive lake.
 		const int timberSide =
 			int(GenerationContext::deriveSeed(r.seed, "garden-farm-" + std::to_string(k)) % 4);
 		const int x = (b.x0 + b.x1) / 2;
-		// All four banks, not just the two sides: a garden lake with crops on one shore and
-		// bare grass on the other three was most of what made this map read as empty. Each box
+		// All four banks: a garden lake with crops on one shore and bare grass on the other
+		// three was most of what made this map read as empty. Each box
 		// runs up to the lake's own edge, so the plot shares the shore's sand and its crops
 		// stand in the water's growth range instead of a few tiles inland of it.
 		farms += bankFarm(L, {b.x0 - 15, y - 12, b.x0 + 1, y + 12}, timberSide == 0);
