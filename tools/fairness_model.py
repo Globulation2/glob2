@@ -484,6 +484,36 @@ def transform_candidates(name):
     return ('identity', 'log', 'sqrt', 'share')
 
 
+# Measurements that say the same thing in different words. The 24-step band, the
+# 48-step band and the catchment all count a colony's wheat; greedy selection will
+# happily take three of them, gaining a little cross-validated fit and leaving a
+# model whose coefficients cannot be read. One term per family keeps the model
+# interpretable and its coefficients identified.
+FAMILY_RULES = (
+    (re.compile(r'(^|_)(wheat)_(amount|tiles|exclusive_amount|catchment_amount|catchment_tiles)$'), 'wheat stock'),
+    (re.compile(r'(^|_)(wood)_(amount|tiles|exclusive_amount|catchment_amount|catchment_tiles)$'), 'wood stock'),
+    (re.compile(r'(^|_)(stone)_(amount|tiles|exclusive_amount|catchment_amount|catchment_tiles)$'), 'stone stock'),
+    (re.compile(r'(^|_)(algae|papyrus)_(amount|tiles|exclusive_amount|catchment_amount|catchment_tiles)$'), 'water stock'),
+    (re.compile(r'(^|_)(cherry|orange|prune|fruit)_(amount|tiles|exclusive_amount|catchment_amount|catchment_tiles)$'), 'fruit stock'),
+    (re.compile(r'_distance$|_missing$|_unreachable$'), None),  # handled below, per resource
+    (re.compile(r'exclusive_(nearest|catchment)_tiles$'), 'uncontested territory'),
+    (re.compile(r'tied_(nearest|catchment)_tiles$'), 'contested territory'),
+    (re.compile(r'(fertile_grass_tiles|growth_enabled_grass_tiles)$|^mean_fertility$'), 'fertility'),
+    (re.compile(r'(reached_tiles|catchment_tiles|reachable_tiles|grass_tiles|buildable_tiles)$|^build_sites_4x4$|^wheat_and_wood_amount$'), 'room'),
+    (re.compile(r'^(reachable_rivals|rivals_within_threat)$'), 'rivals'),
+)
+
+
+def family(name):
+    """Which group of interchangeable measurements a name belongs to."""
+    if name.endswith('_distance') or name.endswith('_missing') or name.endswith('_unreachable'):
+        return re.sub(r'_(distance|missing|unreachable)$', '', name) + ' distance'
+    for pattern, label in FAMILY_RULES:
+        if label and pattern.search(name):
+            return label
+    return name
+
+
 def base_names(dataset):
     for game in dataset['games']:
         return sorted(game['entries'][0]['measurements'])
@@ -767,6 +797,7 @@ def screen(dataset, folds=5, ridge=1e-3, minimum_games=200):
             model = fit_model(dataset, [(name, transform)], ridge, problem=problem)
             score = cross_validated(dataset, [(name, transform)], folds, ridge, problem=problem)
             rows.append({'name': name, 'transform': transform,
+                         'family': family(name),
                          'eligible': eligible_measurement(name),
                          'coefficient': model['features'][0]['coefficient'],
                          'varying_games': within,
@@ -779,14 +810,16 @@ def screen(dataset, folds=5, ridge=1e-3, minimum_games=200):
 
 
 def forward_select(dataset, candidates, limit=8, folds=5, ridge=1e-3, tolerance=0.0005):
-    """Greedy selection on cross-validated McFadden R2, one measurement each."""
+    """Greedy selection on cross-validated McFadden R2, one measurement per family."""
     chosen, used, history = [], set(), []
     best = cross_validated(dataset, [('legacy_total', 'identity')], folds, ridge)
     current = 0.0
     while len(chosen) < limit:
         trials = []
         for row in candidates:
-            if row['name'] in used or not eligible_measurement(row['name']):
+            if row['name'] in used or family(row['name']) in used:
+                continue
+            if not eligible_measurement(row['name']):
                 continue
             option = chosen + [(row['name'], row['transform'])]
             score = cross_validated(dataset, option, folds, ridge)
@@ -801,9 +834,11 @@ def forward_select(dataset, candidates, limit=8, folds=5, ridge=1e-3, tolerance=
             break
         chosen.append((row['name'], row['transform']))
         used.add(row['name'])
+        used.add(family(row['name']))
         current = value
         history.append({'added': row['name'], 'transform': row['transform'],
-                        'cv_r2': value, 'cv_accuracy': score.get('accuracy')})
+                        'family': family(row['name']), 'cv_r2': value,
+                        'cv_accuracy': score.get('accuracy')})
     return chosen, history, {'legacy_total_cv_r2': best.get('mcfadden_r2', 0.0)}
 
 
@@ -872,6 +907,25 @@ def subgroup_fits(dataset, features, folds=5, ridge=1e-3, minimum=150):
                        'coefficients': {item['name']: item['coefficient'] for item in model['features']},
                        'train_r2': model['train']['mcfadden_r2'],
                        'cv_r2': cross_validated(subset, features, folds, ridge).get('mcfadden_r2')})
+    return report
+
+
+def subgroup_agreement(model, groups):
+    """How often each coefficient keeps the pooled sign when the games are sliced.
+
+    A term that changes sign between AIs or between decided and capped games is
+    describing one slice, not a start position.
+    """
+    report = []
+    for item in model['features']:
+        pooled = item['coefficient']
+        signs = [group['coefficients'][item['name']] for group in groups
+                 if not group.get('skipped')]
+        if not signs:
+            continue
+        agreeing = sum(1 for value in signs if (value > 0) == (pooled > 0))
+        report.append({'name': item['name'], 'slices': len(signs),
+                       'agreeing': agreeing, 'agreement': agreeing / len(signs)})
     return report
 
 
@@ -1232,7 +1286,7 @@ def describe(dataset):
 
 
 def markdown_report(summary, screened, history, model, scores, legacy,
-                    intervals=(), groups=(), curve=(), spread=None):
+                    intervals=(), groups=(), curve=(), spread=None, agreement=()):
     lines = ['# Fairness model fit', '',
              f"{summary['games']} games on {summary['maps']} maps; "
              f"{summary['decided_by_engine']} decided outright, "
@@ -1254,7 +1308,8 @@ def markdown_report(summary, screened, history, model, scores, legacy,
             lines.append(f"- stopped: best remaining {step['best_candidate']} gained "
                          f"{step['gain']:+.5f}, below {step['tolerance']}")
         else:
-            lines.append(f"- added **{step['added']}** ({step['transform']}), "
+            lines.append(f"- added **{step['added']}** ({step['transform']}, "
+                         f"family: {step.get('family', '?')}), "
                          f"CV R2 {step['cv_r2']:.4f}, top-1 {step['cv_accuracy']:.3f}")
     if model:
         lines += ['', '## Fitted model', '',
@@ -1289,6 +1344,11 @@ def markdown_report(summary, screened, history, model, scores, legacy,
             cells = ' | '.join(f"{item['coefficients'][name]:+.4g}" for name in names)
             lines.append(f"| {item['group']} | {item['games']} | "
                          f"{item['cv_r2']:+.4f} | {cells} |")
+    if agreement:
+        lines += ['', '## Does each coefficient keep its sign when the games are sliced?', '',
+                  '| Measurement | Slices agreeing |', '| --- | ---: |']
+        for item in agreement:
+            lines.append(f"| {item['name']} | {item['agreeing']} of {item['slices']} |")
     if curve:
         lines += ['', '## Calibration', '', '| Predicted | Observed | Colonies |',
                   '| ---: | ---: | ---: |']
@@ -1331,21 +1391,22 @@ def run_fit(root, mode, output, folds, ridge, limit, policy, revision, draws=200
         legacy = {'legacy_total_cv_r2':
                   cross_validated(dataset, [('legacy_total', 'identity')], folds, ridge)
                   .get('mcfadden_r2', 0.0)}
-    intervals, groups, curve, spread = [], [], [], {}
+    intervals, groups, curve, spread, agreement = [], [], [], {}, []
     if model:
         intervals = bootstrap_coefficients(dataset, selected, draws, ridge)
         groups = subgroup_fits(dataset, selected, folds, ridge)
+        agreement = subgroup_agreement(model, groups)
         curve = calibration(model, dataset)
         spread = fairness_distribution(model, dataset)
     report = {'schema_version': SCHEMA_VERSION, 'mode': mode, 'policy': policy,
               'summary': summary, 'screened': screened, 'selection': history,
               'legacy': legacy, 'model': model, 'cross_validated': scores,
               'intervals': intervals, 'subgroups': groups, 'calibration': curve,
-              'fairness_distribution': spread}
+              'subgroup_agreement': agreement, 'fairness_distribution': spread}
     atomic_json(output / f'{mode}.json', report)
     (output / f'{mode}.md').write_text(markdown_report(summary, screened, history, model,
                                                        scores, legacy, intervals, groups,
-                                                       curve, spread))
+                                                       curve, spread, agreement))
     if mode == 'final':
         rounds = sorted({game['round'] for game in dataset['games']})
         ais = sorted({game['ai'] for game in dataset['games']})
