@@ -21,7 +21,7 @@ constexpr int LegacyBytes = 128 * 128 * 3;
 // Grass, water, sand, then wood, wheat, stone and algae, then ice and cobblestone.
 const int colors[9][3] = {{0, 90, 0},      {0, 40, 120},    {170, 170, 0}, {0, 60, 0},
 						  {211, 207, 167}, {104, 112, 124}, {41, 157, 165},
-						  {190, 225, 240}, {120, 116, 108}};
+						  {190, 225, 240}, {176, 138, 98}};
 std::vector<Uint8> compress(const std::vector<Uint8> &input)
 {
 	uLongf length = compressBound(input.size());

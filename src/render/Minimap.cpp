@@ -276,7 +276,7 @@ void Minimap::computeColors(int row, int localTeam)
 		{ 170, 170, 0 }, // Sand
 		{ 0, 90, 0 }, // Grass
 		{ 190, 225, 240 }, // Ice
-		{ 120, 116, 108 }, // Cobblestone
+		{ 176, 138, 98 }, // Cobblestone
 	};
 
 	const int buildingsUnitsColor[6][3] = {

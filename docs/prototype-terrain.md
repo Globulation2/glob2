@@ -44,6 +44,10 @@ terrains off:
 - **Watershed**, *Frozen crossings*: Half frozen lays every other ford in ice, All frozen every
   ford.
 - **City states**, *Road surface*: Cobblestone paves the sand roads.
+- **Old town**, *Cobblestone streets*: the city's streets are paved, leaving a grass verge
+  along every block so the blocks keep their stone.
+- **Fjord continent**, *Ice bridges*: ice spans the middle of every fjord from grass to grass,
+  a short way to a neighbour besides the walk round through the core.
 
 ## Compatibility
 

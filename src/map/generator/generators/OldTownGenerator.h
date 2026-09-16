@@ -5,7 +5,7 @@
 struct OldTownOptions
 {
 	int citySize, blockSize, streetWidth, warp, plazas, farmPlots;
-	bool tendrils;
+	bool tendrils, cobblestoneStreets;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit OldTownOptions(const GenerationRequest &r);
 };
