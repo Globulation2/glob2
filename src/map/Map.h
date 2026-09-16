@@ -420,6 +420,9 @@ public:
 	bool isIce(size_t pos) const { return isIceTile(getTerrain(pos)); }
 	bool isCobblestone(int x, int y) const { return isCobblestoneTile(getTerrain(x, y)); }
 	bool isCobblestone(size_t pos) const { return isCobblestoneTile(getTerrain(pos)); }
+	//! Ground a building may stand on: grass or cobblestone.
+	static bool isBuildableTile(Uint16 t) { return t < 16 || isCobblestoneTile(t); }
+	bool isBuildableGround(int x, int y) const { return isBuildableTile(getTerrain(x, y)); }
 	//! Whether any tile is cobblestone, which lowers the cheapest possible step (see minStepCost).
 	bool hasCobblestone() const { return cobblestoneTiles > 0; }
 

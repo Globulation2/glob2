@@ -976,7 +976,7 @@ void Maxima::initialize_topology_profile(Context& echo)
 			water+=here ? 1 : 0;
 			land+=here ? 0 : 1;
 			grass+=map.is_grass(x, y) ? 1 : 0;
-			buildable+=map.is_grass(x, y) && !resource ? 1 : 0;
+			buildable+=map.is_buildable_ground(x, y) && !resource ? 1 : 0;
 			corn+=map.is_resource(x, y, WHEAT) ? 1 : 0;
 			wood+=map.is_resource(x, y, WOOD) ? 1 : 0;
 			stone+=map.is_resource(x, y, STONE) ? 1 : 0;
@@ -1065,7 +1065,7 @@ void Maxima::initialize_topology_profile(Context& echo)
 			const int label=component[y*width+x];
 			if(label<0)
 				continue;
-			component_buildable[label]+=map.is_grass(x, y)
+			component_buildable[label]+=map.is_buildable_ground(x, y)
 				&& !map.is_resource(x, y) ? 1 : 0;
 			component_corn[label]+=map.is_resource(x, y, WHEAT) ? 1 : 0;
 			component_wood[label]+=map.is_resource(x, y, WOOD) ? 1 : 0;
@@ -1267,7 +1267,7 @@ void Maxima::update_environment_model(Context& echo)
 			observed.known_tiles+=1;
 			if(map.is_water(x, y))
 				observed.water_tiles+=1;
-			if(map.is_grass(x, y) && !map.is_resource(x, y))
+			if(map.is_buildable_ground(x, y) && !map.is_resource(x, y))
 				observed.buildable_tiles+=1;
 		}
 	}
