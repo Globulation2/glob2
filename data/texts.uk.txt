@@ -1848,6 +1848,14 @@ OpenGL недоступний у цій збірці.
 Посушливість
 [Fords]
 Броди
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 У річковому басейні замало заплавних земель для такої кількості колоній; використайте більшу карту або менше колоній.
 [Stone highlands]

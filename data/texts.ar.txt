@@ -1850,6 +1850,14 @@ OpenGL غير متوفر في هذا الإصدار.
 الجفاف
 [Fords]
 المخاضات
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 لا يحتوي مستجمع المياه على سهول فيضية كافية لهذا العدد من المستعمرات؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
 [Stone highlands]

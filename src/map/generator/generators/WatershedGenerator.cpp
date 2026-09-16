@@ -244,6 +244,7 @@ struct Ford
 {
 	Vec center, along, across;
 	double span;
+	bool frozen = false; // ice across the channel instead of sand
 };
 // A ford as Channels.h stamps and checks it.
 SandFord asSandFord(const Ford &f)
@@ -726,9 +727,8 @@ class RiverPlanner
 
 // Fords go where a river can be crossed cleanly: the middle of every straight, uncluttered run of
 // river, longest runs first, about one per `spacing` tiles of each reach.
-void chooseFords(Layout &layout, const WatershedOptions &o)
+void chooseFords(Layout &layout, double spacing)
 {
-	const double spacing = kFordSpacing[std::clamp(o.fords, 1, 5) - 1];
 	const Frame &frame = layout.frame;
 	auto distance2 = [&](Vec a, Vec b)
 	{ return sq(centred(a.x - b.x, frame.width)) + sq(centred(a.y - b.y, frame.height)); };
@@ -1058,10 +1058,20 @@ Layout planLayout(int width, int height, const WatershedOptions &o, GenerationCo
 	for (size_t r = 0; r < planner.joins.size(); ++r)
 		for (const auto &join : planner.joins[r])
 			layout.joins[r].push_back(join.first);
-	chooseFords(layout, o);
+	// Frozen crossings: the same fords, laid in ice across the channel, a way over that slows and
+	// hurts. Half frozen freezes every other ford, so the nearest crossing is often ice and the safe
+	// one further off; All frozen freezes them all. Straight stretches of river, not the spacing,
+	// limit how many fords there are, so the choice changes their surface rather than their number.
+	chooseFords(layout, kFordSpacing[std::clamp(o.fords, 1, 5) - 1]);
+	for (size_t i = 0; i < layout.fords.size(); ++i)
+		layout.fords[i].frozen = o.frozenCrossings == 2 || (o.frozenCrossings == 1 && i % 2 == 1);
 	context.telemetry.measure("watershed.tributaries.actual", count - trunk - 1);
 	context.telemetry.measure("watershed.delta.mouths", layout.mouths.size());
 	context.telemetry.measure("watershed.fords.actual", layout.fords.size());
+	if (o.frozenCrossings)
+		context.telemetry.measure(
+			"watershed.frozenCrossings.actual",
+			std::count_if(layout.fords.begin(), layout.fords.end(), [](const Ford &f) { return f.frozen; }));
 	if (count - trunk - 1 < wanted)
 		context.telemetry.fallback("watershed.springs.omitted",
 								   "Bounded resampling could not attach all requested springs");
@@ -1185,7 +1195,7 @@ std::vector<unsigned char> stampTerrain(const Layout &layout, const WatershedOpt
 					}
 		}
 	for (const Ford &f : layout.fords)
-		stampFord(terrain, Torus{w, h}, asSandFord(f));
+		stampFord(terrain, Torus{w, h}, asSandFord(f), f.frozen ? ICE : SAND);
 	return terrain;
 }
 
@@ -1922,7 +1932,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 
 WatershedOptions::WatershedOptions(const GenerationRequest &r)
 	: riverDensity(r.option("river-density")), riverWidth(r.option("river-width")),
-	  dryness(r.option("dryness")), fords(r.option("fords")), delta(r.option("river-delta") != 0),
+	  dryness(r.option("dryness")), fords(r.option("fords")),
+	  frozenCrossings(r.option("frozen-crossings")), delta(r.option("river-delta") != 0),
 	  meanders(r.option("meanders") != 0), wheat(r.option("wheat-amount")),
 	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
 	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
@@ -1946,6 +1957,11 @@ GeneratorDefinition watershedDefinition()
 			 // How often a ford crosses a river: about one per 80 tiles of river at 1, one per 26
 			 // at 5, and at least one on every reach long enough to hold one.
 			 {"fords", "Fords", 1, 5, 1, 3, ControlGroup::Layout},
+			 // Fords laid in ice instead of sand: crossings that are slow and painful to walk. Half
+			 // frozen freezes every other ford; All frozen, every one.
+			 GeneratorControl::choice("frozen-crossings", "Frozen crossings",
+									  {"Off", "Half frozen", "All frozen"}, 0,
+									  ControlGroup::Layout),
 			 // Off, the trunk reaches the sea through a single mouth, with no delta lobe.
 			 GeneratorControl::toggle("river-delta", "River delta", true, ControlGroup::Terrain),
 			 // Off, rivers run without their meanders.

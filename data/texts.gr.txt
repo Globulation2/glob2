@@ -1922,6 +1922,14 @@ Cortex
 Ξηρασία
 [Fords]
 Ρηχά περάσματα
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Η λεκάνη απορροής έχει πολύ λίγη πεδιάδα πλημμυρών για τόσες αποικίες. Χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
 [Stone highlands]

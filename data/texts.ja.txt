@@ -1848,6 +1848,14 @@ Globulation 2 のカーソルを表示します。
 乾燥度
 [Fords]
 浅瀬
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 このコロニー数に対して流域の氾濫原が少なすぎます。より大きなマップを使うか、コロニーを減らしてください。
 [Stone highlands]

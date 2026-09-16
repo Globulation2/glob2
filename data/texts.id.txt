@@ -1848,6 +1848,14 @@ Kepadatan sungai
 Kekeringan
 [Fords]
 Penyeberangan dangkal
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Daerah aliran sungai memiliki terlalu sedikit dataran banjir untuk koloni sebanyak ini; gunakan peta yang lebih besar atau lebih sedikit koloni.
 [Stone highlands]

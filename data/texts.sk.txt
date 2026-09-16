@@ -1860,6 +1860,14 @@ Hustota riek
 Vyprahnutosť
 [Fords]
 Brody
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Povodie má pre toľko kolónií príliš málo záplavovej nivy; použite väčšiu mapu alebo menej kolónií.
 [Stone highlands]

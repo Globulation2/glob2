@@ -1862,6 +1862,14 @@ Densité des rivières
 Aridité
 [Fords]
 Gués
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Le bassin versant a trop peu de plaines inondables pour autant de colonies ; utilisez une carte plus grande ou moins de colonies.
 [Stone highlands]

@@ -1862,6 +1862,14 @@ Ibaien dentsitatea
 Lehortasuna
 [Fords]
 Ibiak
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Ibai-arroak uholde-lautada gutxiegi du hainbeste koloniarentzat; erabili mapa handiagoa edo kolonia gutxiago.
 [Stone highlands]

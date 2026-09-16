@@ -1850,6 +1850,14 @@ OpenGL در این بیلد موجود نیست.
 خشکی
 [Fords]
 گدارها
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 حوضهٔ آبریز برای این تعداد مستعمره دشت سیلابی بسیار کمی دارد؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
 [Stone highlands]

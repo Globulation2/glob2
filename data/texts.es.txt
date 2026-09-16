@@ -1852,6 +1852,14 @@ Densidad de ríos
 Aridez
 [Fords]
 Vados
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 La cuenca tiene muy poca llanura aluvial para tantas colonias; use un mapa más grande o menos colonias.
 [Stone highlands]

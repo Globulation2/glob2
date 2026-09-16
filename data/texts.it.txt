@@ -1914,6 +1914,14 @@ Densità dei fiumi
 Aridità
 [Fords]
 Guadi
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Il bacino idrografico ha troppo poca pianura alluvionale per così tante colonie; usa una mappa più grande o meno colonie.
 [Stone highlands]

@@ -1852,6 +1852,14 @@ Gostota rek
 Sušnost
 [Fords]
 Brodi
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Porečje ima premalo poplavne ravnice za toliko kolonij; uporabite večji zemljevid ali manj kolonij.
 [Stone highlands]

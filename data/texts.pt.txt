@@ -1858,6 +1858,14 @@ Densidade de rios
 Aridez
 [Fords]
 Vaus
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 A bacia hidrográfica tem pouca planície aluvial para tantas colónias; use um mapa maior ou menos colónias.
 [Stone highlands]

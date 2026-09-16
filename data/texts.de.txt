@@ -1852,6 +1852,14 @@ Dichte der Flüsse
 Trockenheit
 [Fords]
 Furten
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Das Flusseinzugsgebiet hat zu wenig Auenland für so viele Kolonien; verwenden Sie eine größere Karte oder weniger Kolonien.
 [Stone highlands]

@@ -1852,6 +1852,14 @@ OpenGL није доступан у овој верзији.
 Сушност
 [Fords]
 Газови
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Речни слив има премало плавне равнице за толико колонија; користите већу мапу или мање колонија.
 [Stone highlands]

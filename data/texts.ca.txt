@@ -1860,6 +1860,14 @@ Densitat de rius
 Aridesa
 [Fords]
 Guals
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 La conca té massa poca plana al·luvial per a tantes colònies; feu servir un mapa més gran o menys colònies.
 [Stone highlands]

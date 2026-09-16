@@ -1924,6 +1924,14 @@ OpenGL 在此版本中不可用。
 乾旱程度
 [Fords]
 淺灘
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 流域中的氾濫平原太少，容納不下這麼多殖民地；請使用更大的地圖或減少殖民地數量。
 [Stone highlands]

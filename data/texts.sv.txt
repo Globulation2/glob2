@@ -1862,6 +1862,14 @@ Flodtäthet
 Torrhet
 [Fords]
 Vadställen
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Avrinningsområdet har för lite flodslätt för så många kolonier; använd en större karta eller färre kolonier.
 [Stone highlands]

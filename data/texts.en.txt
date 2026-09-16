@@ -1846,6 +1846,14 @@ River density
 Dryness
 [Fords]
 Fords
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.
 [Stone highlands]

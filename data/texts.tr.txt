@@ -1860,6 +1860,14 @@ Nehir yoğunluğu
 Kuraklık
 [Fords]
 Sığ geçitler
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Havzada bu kadar koloni için çok az taşkın ovası var; daha büyük bir harita veya daha az koloni kullanın.
 [Stone highlands]

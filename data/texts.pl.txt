@@ -1852,6 +1852,14 @@ Gęstość rzek
 Suchość
 [Fords]
 Brody
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Dorzecze ma za mało terenów zalewowych dla tylu kolonii; użyj większej mapy lub mniejszej liczby kolonii.
 [Stone highlands]
