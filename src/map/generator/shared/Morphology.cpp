@@ -20,13 +20,31 @@ void slideAny(const std::vector<unsigned char> &line, int radius, std::vector<un
 		return;
 	}
 	int count = 0;
-	for (int d = -radius; d <= radius; ++d)
-		count += line[((d % n) + n) % n] != 0;
-	for (int i = 0; i < n; ++i)
+	for (int d = -radius; d < 0; ++d)
+		count += line[n + d] != 0;
+	for (int d = 0; d <= radius; ++d)
+		count += line[d] != 0;
+	// 2 * radius + 1 < n was just established above, so i - radius and i + radius + 1 leave
+	// [0, n) only in these two disjoint end ranges of the line; splitting the loop this way
+	// replaces the pair of remainders every iteration used with plain indexing in between.
+	int i = 0;
+	for (; i < radius; ++i)
 	{
 		out[i] = count > 0;
-		count -= line[((i - radius) % n + n) % n] != 0;
-		count += line[(i + radius + 1) % n] != 0;
+		count -= line[i - radius + n] != 0;
+		count += line[i + radius + 1] != 0;
+	}
+	for (; i < n - radius - 1; ++i)
+	{
+		out[i] = count > 0;
+		count -= line[i - radius] != 0;
+		count += line[i + radius + 1] != 0;
+	}
+	for (; i < n; ++i)
+	{
+		out[i] = count > 0;
+		count -= line[i - radius] != 0;
+		count += line[i + radius + 1 - n] != 0;
 	}
 }
 
@@ -37,9 +55,15 @@ void distanceLine(const std::vector<std::int64_t> &f, std::vector<std::int64_t> 
 {
 	constexpr std::int64_t kHuge = std::int64_t(1) << 50;
 	const int n = int(f.size()), m = 3 * n;
+	// f laid out three times over turns every f[q % n] below into a plain index: q and the v[j]
+	// values recorded from it both stay within [0, m), so triple[q] is exactly f[q % n], without
+	// a division at every one of the O(m) lookups the two loops below make.
+	std::vector<std::int64_t> triple(m);
+	for (int rep = 0; rep < 3; ++rep)
+		std::copy(f.begin(), f.end(), triple.begin() + rep * n);
 	std::vector<int> v(m);
 	std::vector<double> z(m + 1);
-	const auto value = [&](int q) { return f[q % n]; };
+	const auto value = [&](int q) { return triple[q]; };
 	int k = -1;
 	for (int q = 0; q < m; ++q)
 	{

@@ -117,13 +117,14 @@ build/src/MapGeneratorDefaultsTest glob2-map-design-contracts
 build/src/CustomGameSetupHarness
 build/src/MapGeneratorGoldenTest glob2-map-design-golden --require-rows
 build/src/MapGeneratorGoldenTest glob2-map-design-sweep --sweep
+build/src/MapGeneratorGoldenTest glob2-map-design-perf --performance
 scons release=1 server=0
 build/src/glob2 --list-map-generators
 build/src/glob2 --list-map-generators canals
 build/src/glob2 --generate-map canals --seed 7 --width 128 --height 256 --teams 4 --output artifacts/map-design/canals-7.map --preview artifacts/map-design/canals-7.png --json artifacts/map-design/canals-7.json
 ```
 
-Use disposable test profiles, following the [test README](../../../../test/README.md). For intentional output changes, bump the affected revision and run `MapGeneratorGoldenTest <disposable-profile> --update`, then inspect the diff and rerun comparison. A golden hash proves reproducibility of a known snapshot, not quality. Without `--require-rows`, a platform with no baseline rows can report that fact and pass; obtain the affected platform's rows from an actual run rather than treating that as coverage.
+Use disposable test profiles, following the [test README](../../../../test/README.md). For intentional output changes, bump the affected revision and run `MapGeneratorGoldenTest <disposable-profile> --update`, then inspect the diff and rerun comparison. A golden hash proves reproducibility of a known snapshot, not quality. Without `--require-rows`, a platform with no baseline rows can report that fact and pass; obtain the affected platform's rows from an actual run rather than treating that as coverage. `--performance` times every generator at its own defaults (256x256, seed 42) and asserts identical bytes, outcomes and telemetry with the internal performance collector on and off; for a broader load, `MapGeneratorProfileFixture <profile-dir> <seed> <rounds>` (see the [framework doc](../../../../docs/map-generators/MAP_GENERATOR_FRAMEWORK.md)) round-robins every generator at randomly drawn parameters, which is also a fixed-seed/round-count way to compare a shared primitive's before/after cost, and a target for an external sampling profiler.
 
 The current golden `--sweep` is deliberately small: selected square sizes/counts, three or five seeds, passing an accepted cell if at least one succeeds. It skips invalid combinations and does not cover rectangles, all controls, 64-tile maps or every team count. Inspect success rates and supplement it. A cell surviving only one of five trials is a warning even though the harness passes.
 
