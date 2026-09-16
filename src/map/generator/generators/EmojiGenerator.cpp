@@ -192,20 +192,49 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		p.halfWidth = 1.5;
 	strokePath(L.roads, t, ring, 1, true);
 	const double phase = (context.bounded("emoji-crossings", 16) + 0.5) * kPi / 16;
+	int placed = 0;
 	for (int j = 0; j < o.crossings; ++j)
 	{
 		const double a = phase + 2 * kPi * j / o.crossings;
-		const auto from = polarPoint(cx, cy, 0.30 * t.w, a),
-				   to = polarPoint(cx, cy, 0.55 * radius, a);
+		const auto from = polarPoint(cx, cy, 0.30 * t.w, a);
+		// A crossing joins the bypass to the drawing: it runs inward to the first land beyond the
+		// first water and stops there. One with no water to cross is not needed, and one that
+		// finds no land before 0.55 of the radius only leads into a lake, where it would
+		// hand a single eye or mouth island to whichever colony stands nearest (maintainer review
+		// 2026-09-16: "they make one of the eyeballs connected but the other ones not"), so it
+		// is not laid at all.
+		bool wet = false, landed = false;
+		ShapePoint to = from;
+		for (double r = 0.30 * t.w; r >= 0.55 * radius && !landed; r -= 0.5)
+		{
+			to = polarPoint(cx, cy, r, a);
+			const bool water =
+				L.terrain[t.at(int(std::lround(to.x)), int(std::lround(to.y)))] == WATER;
+			landed = wet && !water;
+			wet |= water;
+		}
+		if (!landed)
+			continue;
+		++placed;
 		std::vector<StrokePoint> bridge{{from.x, from.y, 4}, {to.x, to.y, 4}};
 		strokePath(land, t, bridge);
 		for (auto &p : bridge)
 			p.halfWidth = 1.5;
 		strokePath(L.roads, t, bridge);
 	}
+	// Crossings are causeways: their land and sand spine are laid only over water, and their spine
+	// over the country outside the drawing, where it joins the bypass. Over the drawing's own land
+	// they draw nothing, so the face is not scored with sand lines; that land is walkable already
+	// (maintainer review 2026-09-16: bridges "ruining the nice appearance of the emoji itself").
 	for (int i = 0; i < t.size(); ++i)
+	{
+		const bool outside =
+			std::hypot(t.offsetX(int(cx), i % t.w), t.offsetY(int(cy), i / t.w)) > radius + 1;
+		if (L.roads[i] && !outside && L.terrain[i] != WATER)
+			L.roads[i] = 0;
 		if (land[i])
 			L.terrain[i] = L.roads[i] ? SAND : GRASS;
+	}
 	layBeaches(L.terrain, t);
 	context.telemetry.choice("emoji.character", kCharacters[character]);
 	context.telemetry.choice("emoji.style", outline ? "outline" : "filled");
@@ -213,7 +242,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	context.telemetry.measure("emoji.stroke.width-corners", thickness);
 	context.telemetry.measure("emoji.ink.corners", inkCorners);
 	context.telemetry.measure("emoji.crossings.requested", o.crossings);
-	context.telemetry.measure("emoji.crossings.placed", o.crossings);
+	context.telemetry.measure("emoji.crossings.placed", placed);
 	context.telemetry.measure("emoji.crossings.phase-radians", phase);
 	context.telemetry.measure("emoji.home.crop-target-tiles", kStarterCrop);
 	return L;
@@ -547,7 +576,7 @@ GeneratorDefinition emojiDefinition()
 		"emoji",
 		34,
 		"Emoji",
-		9,
+		10,
 		false,
 		{GeneratorControl::choice("character", "Emoji character",
 								  {"Random", "Smiley", "Sad face", "Winking face", "Surprised face",
