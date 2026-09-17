@@ -10,17 +10,25 @@ Each 512-tick sample of each game is one contest: the surviving players are its
 entries, their live state is the evidence, and the finishing order the game
 eventually produced is the observed outcome. Every entry gets a fitness
 
-    F_i = intercept + ramp(tick) * sum_k coefficient_k * transform_k(state_k(entry_i))
+    F_i = intercept + sum_k coefficient_k * transform_k(state_k(entry_i))
 
 and the probability that entry i wins is softmax(F)_i, exactly as in the
 fairness model -- the estimator is shared, in tools/conditional_logit.py.
 
-The ramp is what makes this a mid-game model rather than a snapshot scorer. The
-same lead means far less at tick 2,000 than at tick 80,000: measured over the
-2,016 games of the AI Elo campaign, whoever first held the HP lead for five
-straight samples went on to win only 40% of the time. Without a ramp one set of
-coefficients would have to call both cases, and would call the early one far too
-confidently.
+A mid-game model has to know that the same lead means far less at tick 2,000
+than at tick 80,000, and this one was fitted with an explicit confidence ramp on
+game age to enforce that. The ramp was then removed, because measurement said it
+earned nothing: fitted on cross-validated log-loss it went nearly flat, and a
+model with no ramp scored the same (0.5219 against 0.5220). The selected
+features are absolute counts, so they already carry the phase -- early on
+everybody has few units, the fitness differences are small of their own accord,
+and the model is unsure without being told to be. Held out by game, predicted
+and observed win rates agree to three decimals in every tick bucket.
+
+What the ramp turned out to be was a second confidence dial, redundant with the
+decision threshold: fitting it to 1.0 and calling at 97% gives the same error
+and the same saving as leaving it flat and calling at 95%. One dial is enough,
+and the threshold is the one a player can read.
 
 Features come only from TeamStat -- the per-team state the simulation itself
 maintains. The richer GameplayMeasurements and the per-AI telemetry are
@@ -31,7 +39,7 @@ that. Anything fitted here has to be computable in-engine.
 Commands:
   dataset  extract the per-sample dataset from tournament results and cache it
   screen   report what each candidate state measurement predicts on its own
-  fit      select features, fit the ramp and the coefficients, emit the header
+  fit      select features, fit the coefficients and emit the C++ header
   savings  what the winning condition would have saved on games already played
 """
 import argparse
@@ -55,11 +63,8 @@ SCHEMA_VERSION = 1
 # src/TeamStat.h). The model is only ever evaluated on these boundaries, in the
 # fit and in the engine alike.
 SAMPLE_INTERVAL = 512
-# The ramp is anchored here rather than at each game's own tick limit: a real
-# game has no known end, so "fraction of the way through" is not something the
-# engine could compute. This is the AI Elo campaign's cap, and the tick by which
-# the ramp has reached full confidence.
-RAMP_REFERENCE_TICK = 90000
+# Only used as a fallback when a game's record does not state its own tick limit.
+DEFAULT_TICK_CAP = 90000
 # Below this tick nothing is called, whatever the state says. Very early samples
 # can look extreme for silly reasons -- one team with two units and the other
 # with none -- and no useful model has to defend that region.
@@ -106,24 +111,57 @@ FAMILIES = {
 FAMILY_OF = {name: label for label, names in FAMILIES.items() for name in names}
 
 # A ratio is already scale-free, so a share of the contest total would say
-# something confusing about it; counts get the full set.
+# something confusing about it; counts get the rest.
+#
+# `log` is deliberately absent. The engine has to evaluate this model inside the
+# synchronised simulation, where the result decides a winning condition, so every
+# step of it must give bit-identical answers on every platform. identity, share
+# (an integer division) and sqrt (an integer square root) are exactly
+# representable in fixed point; log1p would need a polynomial approximation in
+# the one code path where being a bit off changes who wins. It buys nothing
+# anyway: selecting with log available scored a cross-validated McFadden R2 of
+# 0.4160 against 0.4149 without it, and slightly worse top-1 accuracy.
 RATIO_TRANSFORMS = ('identity',)
-COUNT_TRANSFORMS = ('identity', 'log', 'sqrt', 'share')
+COUNT_TRANSFORMS = ('identity', 'sqrt', 'share')
+
+# The selected, hand-checked model. Order is the order terms were added, which is
+# also decreasing order of what each one contributed.
+FINAL_FEATURES = [
+    ('units', 'share'),
+    ('prestige', 'identity'),
+    ('barracks', 'sqrt'),
+    ('explorers', 'sqrt'),
+    ('starving_ratio', 'identity'),
+    ('attack', 'share'),
+]
+
+# What each term reads, for the in-game breakdown. Phrases a player can read.
+LABELS = {
+    'units': 'Share of everyone alive',
+    'prestige': 'Prestige',
+    'barracks': 'Barracks',
+    'explorers': 'Explorers',
+    'starving_ratio': 'Share of your people starving',
+    'attack': 'Share of all attack strength',
+}
+
+# How the engine reads each measurement off a competitor, as a C++ expression on
+# a WinProbabilitySlot. Every one is a non-negative integer.
+CPP_MEASUREMENT = {
+    'units': 'slot.units',
+    'prestige': 'slot.prestige',
+    'barracks': 'slot.barracks',
+    'explorers': 'slot.explorers',
+    'food_critical': 'slot.foodCritical',
+    'attack': 'slot.attack',
+}
+# Ratios are a division of two of those, done as an integer division in the
+# engine and as the same division here.
+CPP_RATIO = {'starving_ratio': ('slot.foodCritical', 'slot.units')}
 
 
 def transform_candidates(name):
     return RATIO_TRANSFORMS if name in RATIOS else COUNT_TRANSFORMS
-
-
-def ramp(tick, gamma):
-    """How much the state at `tick` is allowed to say, from 0 at the start to 1.
-
-    Pinned to 1 at the reference tick so the coefficients mean "what this feature
-    is worth late in the game" and the ramp only bends the approach to it; that
-    keeps the ramp identified against the coefficient scale instead of the two
-    trading off freely.
-    """
-    return min(max(tick / RAMP_REFERENCE_TICK, 0.0), 1.0) ** gamma
 
 
 # ---------------------------------------------------------------------------
@@ -198,7 +236,7 @@ def game_slices(source, record, policy='prestige'):
     teams = result['teams']
     key_of = {t['team']: (t['alliance'] if allied else t['team']) for t in teams}
     eliminated = {t['team']: (t.get('eliminated_tick', -1)) for t in teams}
-    cap = (result.get('resolved') or {}).get('tick_limit') or result.get('ticks') or RAMP_REFERENCE_TICK
+    cap = (result.get('resolved') or {}).get('tick_limit') or result.get('ticks') or DEFAULT_TICK_CAP
     samples = timeline(source, record)
     by_tick = defaultdict(dict)
     for (tick, team), pair in samples.items():
@@ -288,30 +326,19 @@ def contests(cache, stride=1, formats=None, minimum_tick=0):
     return {'games': games, 'skipped': cache.get('skipped', {})}
 
 
-def ramped_column(gamma):
-    """Feature columns scaled by the ramp: the transform first, then the ramp."""
-    def column(dataset, name, transform):
-        base = feature_column(dataset, name, transform)
-        return [[value * ramp(game['tick'], gamma) for value in row]
-                for row, game in zip(base, dataset['games'])]
-    return column
-
-
 def by_game(game):
     return game['job_id']
 
 
 # ---------------------------------------------------------------------------
-# Selection and the ramp
+# Selection
 # ---------------------------------------------------------------------------
-def screen(data, gamma, folds=5, ridge=1e-3):
+def screen(data, folds=5, ridge=1e-3):
     """What each candidate measurement and transform predicts on its own."""
-    column = ramped_column(gamma)
     rows = []
     for name in MEASUREMENTS:
         for transform in transform_candidates(name):
-            score = cross_validated(data, [(name, transform)], folds, ridge,
-                                    group=by_game, column=column)
+            score = cross_validated(data, [(name, transform)], folds, ridge, group=by_game)
             if not score.get('folds'):
                 continue
             rows.append({'name': name, 'transform': transform, 'family': FAMILY_OF[name],
@@ -321,9 +348,8 @@ def screen(data, gamma, folds=5, ridge=1e-3):
     return rows
 
 
-def select(data, candidates, gamma, limit=6, folds=5, ridge=1e-3, tolerance=0.0005):
+def select(data, candidates, limit=6, folds=5, ridge=1e-3, tolerance=0.0005):
     """Greedy forward selection on cross-validated fit, one term per family."""
-    column = ramped_column(gamma)
     chosen, used, history, current = [], set(), [], 0.0
     while len(chosen) < limit:
         trials = []
@@ -331,7 +357,7 @@ def select(data, candidates, gamma, limit=6, folds=5, ridge=1e-3, tolerance=0.00
             if row['name'] in used or row['family'] in used:
                 continue
             option = chosen + [(row['name'], row['transform'])]
-            score = cross_validated(data, option, folds, ridge, group=by_game, column=column)
+            score = cross_validated(data, option, folds, ridge, group=by_game)
             if score.get('folds'):
                 trials.append((score['mcfadden_r2'], row, score))
         if not trials:
@@ -352,33 +378,11 @@ def select(data, candidates, gamma, limit=6, folds=5, ridge=1e-3, tolerance=0.00
     return chosen, history
 
 
-RAMP_GRID = (0.4, 0.6, 0.8, 1.0, 1.3, 1.7, 2.2, 3.0)
-
-
-def tune_ramp(data, features, grid=RAMP_GRID, folds=5, ridge=1e-3):
-    """Pick the ramp exponent on cross-validated log-loss, not on the training fit.
-
-    Log-loss rather than R2 because the ramp's whole job is calibration: it
-    decides how confident the model is allowed to be early, and an overconfident
-    early call is exactly what log-loss punishes and accuracy does not.
-    """
-    rows = []
-    for gamma in grid:
-        score = cross_validated(data, features, folds, ridge, group=by_game,
-                                column=ramped_column(gamma))
-        if score.get('folds'):
-            rows.append({'gamma': gamma, 'cv_log_loss': score['log_loss'],
-                         'cv_r2': score['mcfadden_r2'], 'cv_accuracy': score['accuracy']})
-    best = min(rows, key=lambda row: row['cv_log_loss']) if rows else None
-    return best, rows
-
-
 def probabilities(model, data):
     """Per-contest fitness and win probability under a fitted model."""
     features = [(item['name'], item['transform']) for item in model['features']]
     coefficients = [item['coefficient'] for item in model['features']]
-    columns = [ramped_column(model['gamma'])(data, name, transform)
-               for name, transform in features]
+    columns = [feature_column(data, name, transform) for name, transform in features]
     output = []
     for position, game in enumerate(data['games']):
         fitnesses = []
@@ -418,7 +422,7 @@ def trigger_tick(model, game_slices, threshold, dwell):
     return None
 
 
-def savings(cache, features, gamma, threshold=0.97, dwell=3, folds=4, ridge=1e-3, seed=1):
+def savings(cache, features, threshold=0.97, dwell=3, folds=4, ridge=1e-3, seed=1):
     """What the condition would have saved on games already played.
 
     Every game is scored by a model that never saw it: without cross-fitting, the
@@ -437,8 +441,7 @@ def savings(cache, features, gamma, threshold=0.97, dwell=3, folds=4, ridge=1e-3
                          stride=2, minimum_tick=MINIMUM_DECISION_TICK)
         if not train['games']:
             continue
-        model = fit_model(train, features, ridge, column=ramped_column(gamma))
-        model['gamma'] = gamma
+        model = fit_model(train, features, ridge)
         for game in games:
             if fold_of[game['job_id']] != fold:
                 continue
@@ -501,3 +504,282 @@ def calibration(model, data, buckets=12):
                        'predicted': sum(p for p, _ in block) / len(block),
                        'observed': sum(w for _, w in block) / len(block)})
     return report
+
+
+# ---------------------------------------------------------------------------
+# The fixed-point model, mirrored exactly
+# ---------------------------------------------------------------------------
+# The engine evaluates this model inside the synchronised simulation, where the
+# answer decides a winning condition, so it may not use floating point: two
+# machines that disagree by one bit would end the same game on different ticks.
+# Everything below is the integer algorithm src/WinProbability.cpp implements,
+# written again in Python so a test can assert the two agree exactly rather than
+# approximately. Python's ints are unbounded and its >> and // truncate towards
+# negative infinity for positives just as C++ does on non-negative values, so
+# the two really are the same arithmetic.
+FITNESS_SHIFT = 32
+FRACTION_SHIFT = 20
+ROOT_SHIFT = 10
+SERIES_SHIFT = 30
+FITNESS_ONE = 1 << FITNESS_SHIFT
+FRACTION_ONE = 1 << FRACTION_SHIFT
+COUNT_CLAMP = 1 << 24
+LOG_TWO_FIXED = 2977044472  # ln 2, with FITNESS_SHIFT fractional bits
+
+
+def to_fixed(value, shift=FITNESS_SHIFT):
+    """A coefficient as an integer, rounded here so the rounding is the fit's."""
+    return int(math.floor(value * (1 << shift) + 0.5))
+
+
+def clamp_count(value):
+    return 0 if value < 0 else min(int(value), COUNT_CLAMP)
+
+
+def share_value(value, total):
+    return 0 if total <= 0 else (clamp_count(value) << FRACTION_SHIFT) // int(total)
+
+
+def integer_sqrt(value):
+    return 0 if value <= 0 else math.isqrt(int(value))
+
+
+def root_value(value):
+    return integer_sqrt(clamp_count(value) << (2 * ROOT_SHIFT))
+
+
+def ratio_value(numerator, denominator):
+    if denominator <= 0:
+        return 0
+    return min((clamp_count(numerator) << FRACTION_SHIFT) // int(denominator), FRACTION_ONE)
+
+
+def exp_negative(value):
+    """exp(-value), both sides with FITNESS_SHIFT fractional bits."""
+    if value <= 0:
+        return FITNESS_ONE
+    whole = value // LOG_TWO_FIXED
+    if whole >= FITNESS_SHIFT + 1:
+        return 0
+    rest = value - whole * LOG_TWO_FIXED
+    series_one = 1 << SERIES_SHIFT
+    r = rest >> (FITNESS_SHIFT - SERIES_SHIFT)
+    term = series_one
+    for n in range(10, 1, -1):
+        term = series_one - ((r * term) >> SERIES_SHIFT) // n
+    result = series_one - ((r * term) >> SERIES_SHIFT)
+    result = max(result, 0)
+    return (result << (FITNESS_SHIFT - SERIES_SHIFT)) >> whole
+
+
+def fixed_term(model, slots, index, term):
+    """One term's contribution to a slot's fitness, as the engine computes it."""
+    item = model['features'][term]
+    name, transform = item['name'], item['transform']
+    coefficient = to_fixed(item['coefficient'])
+    slot = slots[index]
+    if name in RATIOS:
+        top, bottom = RATIOS[name]
+        return (coefficient * ratio_value(slot[top], slot[bottom])) >> FRACTION_SHIFT
+    if transform == 'share':
+        total = sum(clamp_count(other[name]) for other in slots if other.get('alive', True))
+        return (coefficient * share_value(slot[name], total)) >> FRACTION_SHIFT
+    if transform == 'sqrt':
+        return (coefficient * root_value(slot[name])) >> ROOT_SHIFT
+    return coefficient * clamp_count(slot[name])
+
+
+def fixed_fitness(model, slots, index):
+    value = to_fixed(model['intercept'])
+    for term in range(len(model['features'])):
+        value += fixed_term(model, slots, index, term)
+    return value
+
+
+def fixed_permille(model, slots):
+    """Each slot's win chance in permille, as the engine reports it."""
+    alive = [i for i, slot in enumerate(slots) if slot.get('alive', True)]
+    result = [0] * len(slots)
+    if not alive:
+        return result
+    fitness = {i: fixed_fitness(model, slots, i) for i in alive}
+    best = max(fitness.values())
+    weights = {i: exp_negative(best - fitness[i]) for i in alive}
+    total = sum(weights.values())
+    if total <= 0:
+        return result
+    for i in alive:
+        result[i] = (weights[i] * 1000) // total
+    return result
+
+
+# ---------------------------------------------------------------------------
+# C++ emission
+# ---------------------------------------------------------------------------
+HEADER_PATH = 'src/WinProbabilityModel.h'
+
+
+def constant_name(name, transform):
+    return f'WIN_PROBABILITY_{name.upper()}_{transform.upper()}'
+
+
+def cpp_kind(name, transform):
+    """How one term is read in C++: (kind, expression(s), shift)."""
+    if name in RATIOS:
+        if name not in CPP_RATIO:
+            raise ValueError(f'{name} has no engine expression; add one to CPP_RATIO')
+        top, bottom = CPP_RATIO[name]
+        return 'ratio', (top, bottom), 'FRACTION_SHIFT'
+    if name not in CPP_MEASUREMENT:
+        raise ValueError(f'{name} has no engine expression; add one to CPP_MEASUREMENT')
+    expression = CPP_MEASUREMENT[name]
+    if transform == 'share':
+        return 'share', (expression,), 'FRACTION_SHIFT'
+    if transform == 'sqrt':
+        return 'sqrt', (expression,), 'ROOT_SHIFT'
+    if transform == 'identity':
+        return 'identity', (expression,), None
+    # Anything else would need an approximation in the one code path that must be
+    # exact on every platform. Refuse rather than emit it.
+    raise ValueError(f'transform {transform!r} has no exact integer form; '
+                     'it must not reach the winning condition')
+
+
+def emit_header(model, path, provenance):
+    features = model['features']
+    lines = []
+    add = lines.append
+    add('// SPDX-License-Identifier: GPL-3.0-or-later')
+    add('// Generated by tools/win_probability_model.py -- do not edit by hand.')
+    add('//')
+    add("// How likely each side is to win, from the state of play. Every competitor")
+    add('// gets a fitness F; its probability of winning is softmax(F) over the sides')
+    add('// still standing. Allies are one competitor, because they win together.')
+    add('//')
+    for line in provenance:
+        add(f'// {line}')
+    add('// See docs/win-probability-model.md.')
+    add('#pragma once')
+    add('#include "WinProbability.h"')
+    add('#include <cstddef>')
+    add('#include <vector>')
+    add('')
+    add('namespace WinProbability')
+    add('{')
+    add('/// Softmax fixes the scale of F but not its zero, so this level is a')
+    add('/// convention and cancels between competitors. Differences are what the')
+    add('/// games determined.')
+    add(f'constexpr double WIN_PROBABILITY_INTERCEPT = {model["intercept"]!r};')
+    add(f'const Sint64 WIN_PROBABILITY_INTERCEPT_FIXED = {to_fixed(model["intercept"])}LL;')
+    add('')
+    for item in features:
+        name, transform = item['name'], item['transform']
+        constant = constant_name(name, transform)
+        add(f'/// {name} ({transform})')
+        add(f'constexpr double {constant} = {item["coefficient"]!r};')
+        add(f'const Sint64 {constant}_FIXED = {to_fixed(item["coefficient"])}LL;')
+    add('')
+    add(f'constexpr int WIN_PROBABILITY_FEATURE_COUNT = {len(features)};')
+    add(f'constexpr int WIN_PROBABILITY_GAMES = {model["games"]};')
+    add(f'constexpr int WIN_PROBABILITY_SAMPLES = {model["samples"]};')
+    add('')
+    add('/// The fitted terms by name, for the statistics screen\'s breakdown.')
+    add('struct WinProbabilityTerm')
+    add('{')
+    add('\tconst char *name;')
+    add('\tconst char *transform;')
+    add('\tconst char *label;   ///< a phrase a player can read')
+    add('\tdouble coefficient;')
+    add('};')
+    add('inline const WinProbabilityTerm *winProbabilityTerms()')
+    add('{')
+    add('\tstatic const WinProbabilityTerm terms[] = {')
+    for item in features:
+        name, transform = item['name'], item['transform']
+        label = LABELS.get(name, name)
+        add(f'\t\t{{"{name}", "{transform}", "{label}", {constant_name(name, transform)}}},')
+    add('\t};')
+    add('\treturn terms;')
+    add('}')
+    add('')
+    add('/// One term\'s contribution to a competitor\'s fitness, in fixed point.')
+    add('///')
+    add('/// Integer arithmetic throughout: this is read by the optional win')
+    add('/// probability victory condition from inside the synchronised simulation, so')
+    add('/// every platform has to reach the same answer bit for bit.')
+    add('inline Sint64 winProbabilityTermFixed(const std::vector<Slot> &slots, std::size_t index, int term)')
+    add('{')
+    add('\tconst Slot &slot = slots[index];')
+    add('\tswitch (term)')
+    add('\t{')
+    for position, item in enumerate(features):
+        name, transform = item['name'], item['transform']
+        kind, expressions, shift = cpp_kind(name, transform)
+        constant = constant_name(name, transform) + '_FIXED'
+        add(f'\tcase {position}: // {name} ({transform})')
+        if kind == 'identity':
+            add(f'\t\treturn {constant} * countValue({expressions[0]});')
+        elif kind == 'sqrt':
+            add(f'\t\treturn ({constant} * rootValue({expressions[0]})) >> {shift};')
+        elif kind == 'ratio':
+            top, bottom = expressions
+            add(f'\t\treturn ({constant} * ratioValue({top}, {bottom})) >> {shift};')
+        else:
+            field = expressions[0].split('.', 1)[1]
+            add('\t{')
+            add('\t\tSint64 total = 0;')
+            add('\t\tfor (std::size_t i = 0; i < slots.size(); ++i)')
+            add('\t\t\tif (slots[i].alive)')
+            add(f'\t\t\t\ttotal += clampCount(slots[i].{field});')
+            add(f'\t\treturn ({constant} * shareValue({expressions[0]}, total)) >> {shift};')
+            add('\t}')
+    add('\t}')
+    add('\treturn 0;')
+    add('}')
+    add('')
+    add('/// A competitor\'s fitness, given every competitor still standing.')
+    add('inline Sint64 winProbabilityFitness(const std::vector<Slot> &slots, std::size_t index)')
+    add('{')
+    add('\tSint64 fitness = WIN_PROBABILITY_INTERCEPT_FIXED;')
+    add('\tfor (int term = 0; term < WIN_PROBABILITY_FEATURE_COUNT; ++term)')
+    add('\t\tfitness += winProbabilityTermFixed(slots, index, term);')
+    add('\treturn fitness;')
+    add('}')
+    add('')
+    add('/// What one term measures, before its coefficient: the number the')
+    add('/// breakdown shows next to the term. Display only, so plain arithmetic.')
+    add('inline double winProbabilityMeasurement(const std::vector<Slot> &slots, std::size_t index, int term)')
+    add('{')
+    add('\tconst Slot &slot = slots[index];')
+    add('\tswitch (term)')
+    add('\t{')
+    for position, item in enumerate(features):
+        name, transform = item['name'], item['transform']
+        kind, expressions, _ = cpp_kind(name, transform)
+        add(f'\tcase {position}:')
+        if kind == 'ratio':
+            top, bottom = expressions
+            add(f'\t\treturn {bottom} > 0 ? double({top}) / double({bottom}) : 0.0;')
+        elif kind == 'share':
+            field = expressions[0].split('.', 1)[1]
+            add('\t{')
+            add('\t\tdouble total = 0;')
+            add('\t\tfor (std::size_t i = 0; i < slots.size(); ++i)')
+            add('\t\t\tif (slots[i].alive)')
+            add(f'\t\t\t\ttotal += double(slots[i].{field});')
+            add(f'\t\treturn total > 0 ? double({expressions[0]}) / total : 0.0;')
+            add('\t}')
+        else:
+            add(f'\t\treturn double({expressions[0]});')
+    add('\t}')
+    add('\treturn 0;')
+    add('}')
+    add('')
+    add('/// That term\'s share of the fitness, as a readable number. Display only.')
+    add('inline double winProbabilityContribution(const std::vector<Slot> &slots, std::size_t index, int term)')
+    add('{')
+    add('\treturn double(winProbabilityTermFixed(slots, index, term)) / double(FITNESS_ONE);')
+    add('}')
+    add('} // namespace WinProbability')
+    Path(path).write_text('\n'.join(lines) + '\n')
+    return len(lines)
