@@ -1143,3 +1143,21 @@ one configuration to another is unestablished.
 The sequence/phase question is premature: tick planes are already in the
 input, so "phase" is available to the network now. The binding constraints are
 measurement and the training/deployment mismatch, not representation.
+
+## Paired eval built (13:50)
+
+`tools/glob2-rl/paired_eval.py`. Every arm plays the same manifest of
+(opponent, generator, map seed, game seed) -- 25 per opponent, 100 games per
+arm -- with a tick cap instead of a wall-clock cap, the arm's exact server
+flags written into every result row, and Wilson intervals in the summary.
+
+Even at 100 games per arm the resolution is coarse: 25/100 is [18%, 34%] and
+35/100 is [26%, 45%], so a 10-point difference barely separates. Anything
+smaller than that is not going to be decidable at this budget, and the night's
+"results" were mostly claims of 5-15 point differences on 22 games.
+
+First two arms running concurrently: `inert` (no policy server; the
+do-nothing AI the night's headline was measured against) and `staff_topk`
+(`ckpt_staff`, `--top-k --placements 48 --use-count`, the best BC decode).
+This is the question the review said had to come first: does the best playing
+configuration beat doing nothing at all, on the same 100 games?
