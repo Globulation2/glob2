@@ -373,7 +373,21 @@ def main() -> int:
             # whichever type is commonest in the corpus, and thresholding turns
             # "inn-ness everywhere" into 57 inns. A per-cell marginal field has
             # no way to say "one more inn"; until a count head exists, bound it.
-            if args.type_caps or args.use_count:
+            # Anchors, computed once: they define both the re-assertion below
+            # and the count of what we already hold.
+            marked_ = my_buildings > 0.5
+            anchor_ = (marked_ & ~torch.roll(marked_, 1, dims=3)
+                                & ~torch.roll(marked_, 1, dims=2))
+
+            # Not under --sample: PPO credits the policy for exactly the
+            # placements it sampled, so trimming them here would train against
+            # an action that was never taken.
+            if (args.type_caps or args.use_count) and not args.sample:
+                if keep is None:
+                    # top-k hands back indices; the budget works on a mask.
+                    keep = torch.zeros_like(occ, dtype=torch.bool)
+                    keep.scatter_(1, idx, True)
+                    idx = None
                 if args.use_count and "count" in out:
                     # The model's own answer to "how many of each should I
                     # hold", which is what the per-cell marginal cannot say.
@@ -381,15 +395,36 @@ def main() -> int:
                     caps = caps.round().clamp(min=0, max=64).to(torch.long)
                 else:
                     caps = torch.tensor(TYPE_CAPS, device=cls.device).unsqueeze(0)
-                cells = torch.tensor(TYPE_CELLS, device=cls.device)
-                have = my_buildings.flatten(2).gt(0.5).sum(dim=2)          # (B,13) cells
-                have = (have.float() / cells).ceil().to(torch.long)        # -> buildings
+                # Count anchors. Dividing covered cells by a guessed footprint
+                # size read 4 swarms when the team held 1, so `allow` was ~0
+                # and the budget blocked everything: 2 buildings in 20000
+                # ticks. The count labels are per-building, so the comparison
+                # has to be per-building too.
+                have = anchor_.flatten(2).sum(dim=2).to(torch.long)         # (B,13)
                 allow = (caps - have).clamp(min=0)                         # (B,13)
                 if os.environ.get("NEUROTICA_CAP_DEBUG"):
                     print("CAP caps=", caps[0].tolist(), "have=", have[0].tolist(),
                           "allow=", allow[0].tolist(),
                           "keepN=", int(keep[0].sum()) if keep is not None else -1,
                           flush=True)
+                # Deadlock breaker. The count head predicts the count a team in
+                # THIS state should hold, so a stunted base -- which is out of
+                # distribution, teachers being much larger by the same tick --
+                # gets a low prediction, which forbids building, which keeps it
+                # stunted. Observed directly: holding 1 swarm and 1 inn, the
+                # head asked for 1 swarm and 0 inns, so allow was zero on every
+                # type for the rest of the game and it built nothing for 20000
+                # ticks. Never let the budget forbid everything: the
+                # highest-scoring type always keeps one slot, so the state can
+                # walk back toward the distribution the head was trained on.
+                stalled = allow.sum(dim=1) == 0
+                if bool(stalled.any()):
+                    top_cell = occ.masked_fill(~keep, -1.0).argmax(dim=1)
+                    top_type = best_type.flatten(1).gather(1, top_cell.unsqueeze(1))
+                    unblock = torch.zeros_like(allow)
+                    unblock.scatter_(1, (top_type.long() - 1).clamp(min=0), 1)
+                    allow = torch.where(stalled.unsqueeze(1), unblock, allow)
+
                 bt = best_type.flatten(1)                                  # (B,HW) 1..13
                 # NB: not `sel` -- that name is the selectors object driving
                 # the server loop, and shadowing it crashes on the next poll.
@@ -421,11 +456,8 @@ def main() -> int:
             # A cell is an anchor if it is marked and the cells above and to
             # its left are not. torch.roll is exactly right here: glob2 maps
             # are toroidal, so the wrap is the real neighbour.
-            marked = my_buildings > 0.5
-            anchor = (marked & ~torch.roll(marked, 1, dims=3)
-                             & ~torch.roll(marked, 1, dims=2))
-            anchor_any = anchor.any(dim=1)
-            anchor_type = (anchor.float().argmax(dim=1).to(torch.uint8) + 1)
+            anchor_any = anchor_.any(dim=1)
+            anchor_type = (anchor_.float().argmax(dim=1).to(torch.uint8) + 1)
             # Covered-but-not-anchor is DONT_CARE: not ours to decide, so
             # neither built on nor demolished.
             field = torch.where(anchor_any, anchor_type,
