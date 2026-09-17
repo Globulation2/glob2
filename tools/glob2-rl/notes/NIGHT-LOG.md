@@ -535,3 +535,91 @@ than cloning it.
 **Night's final configuration:** `ckpt_staff` (or `ckpt_cnt2`, identical
 placement), `--top-k --placements 48 --use-count`, staffing off = **5W/22**,
 with 3-4W vs numbi and a win each against warrush and nicowar.
+
+---
+
+# Morning summary
+
+## Where it ended
+
+Best configuration: `ckpt_staff/best.pt` (placement identical to `ckpt_full`),
+served with `--top-k --placements 48 --use-count`, staffing off.
+
+```
+vs numbi    3-4W  1-2L
+vs castor      0W    4-6L
+vs warrush   0-1W    4-5L
+vs nicowar   0-1W    4-5L
+                            = 5W / 22, reproduced twice on different checkpoints
+```
+
+Start of night: the AI was inert and the 4W/24 "baseline" was a do-nothing bug.
+End of night: it plays, builds a teacher-like base, and has a winning record
+against numbi. It is still swept by castor and warrush.
+
+Self-play restarted from that checkpoint and is healthy -- `mean_return` around
+-0.21 at iter 4, against the -0.9 that every previous run was pinned at, because
+the agent no longer dismantles its own base.
+
+## Bugs found and fixed (all invisible to training metrics)
+
+1. Per-cell argmax decoded to an EMPTY field. The AI did nothing for entire
+   games while BC metrics looked healthy.
+2. Occupied cells set from argmax read as "want empty here" -> the reconciler
+   demolished the base: 874 created / 683 demolished in 8000 ticks.
+3. **The anchor bug** -- the big one. The field is anchored top-left, the
+   observation marks whole footprints, and `observed_` is keyed by anchor, so
+   re-asserting a footprint requested a NEW building per non-anchor cell.
+   Swarms went 4 -> 28 -> 48 -> 80 in 1500 ticks with ZERO placements in the
+   field. Present under every decode tried; the reason they all over-built.
+4. `eval.sh` and `record_replays.sh` ran servers without the decode flag,
+   silently measuring the inert AI.
+5. A "threshold" built as `topk(n)` over masked scores is a fixed count.
+6. A local named `sel` shadowed the server's selector object; the server
+   crashed and, because Neurotica fails inert, games finished as a do-nothing
+   AI and looked merely bad.
+7. The socket folded DONT_CARE to 0, discarding the signal.
+8. `have` divided covered cells by a guessed footprint size (4 swarms for 1).
+9. The count budget deadlocked: a stunted base draws a low prediction, which
+   forbids building, which keeps it stunted.
+10. The corpus index cache had no schema version, so new label fields silently
+    reused a stale index.
+
+## What was added
+
+* `DONT_CARE` on the building plane, with harness tests (72 checks, 0 failures).
+* A per-type count head. Predicts per-type building counts accurately
+  (inn 5.38 vs true 5.27) and fixed composition.
+* NPS3: 4 bytes per cell, so the `workers` plane is reachable at all.
+* `play.sh` / `record_replays.sh` / `watch.sh` for human inspection.
+
+## What was rejected, with numbers
+
+* Population gate (`--build-per-unit 5`): 2W/22.
+* Staffing head, raw: 1W/22. Normalised to available labour: 0W/22.
+* `--count-scale` > 1: unproven, likely noise (n=1 evidence).
+
+## The lesson worth keeping
+
+**Every BC target is conditioned on teacher states, and the agent is never in a
+teacher's state.** Copy-vs-novel, the count budget, and staffing were all the
+same failure. But note the limit of that lesson: rescaling staffing to the
+agent's labour made it *worse*, so "rescale the magnitude" is not the general
+fix. Some teacher quantities encode decisions that only make sense inside the
+teacher's own sequenced opening, and importing them piecewise imports nothing.
+
+## The open structural question, for Bradley
+
+The desired-state design is vindicated for placement: once the anchor bug was
+fixed it went from unusable to beating numbi. What it has no representation of
+is **sequence**. Teachers run an opening -- wheat first, swarm fed, then expand
+-- and a stateless per-tick field predicting "what a team in this state holds"
+re-derives a plausible snapshot every tick and never commits to a plan. The
+economy ceiling (15 units at tick 19968 against a teacher's 107) is most likely
+this, not another missing plane.
+
+Two options, both his call:
+* a small amount of policy state, enough to commit to an opening;
+* condition the count head on game phase rather than current holdings, so early
+  targets mean "what to build NEXT" rather than "what a team like me holds".
+  Cheaper, keeps the policy stateless.
