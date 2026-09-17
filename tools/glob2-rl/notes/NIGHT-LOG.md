@@ -702,3 +702,46 @@ deserves to run longer before any architectural change is proposed.
 Plan: leave self-play running, re-eval every couple of hours. If PPO is
 learning, the gap against 0.227 should widen with drift; if it plateaus at
 parity, that is when the sequence argument becomes the live one.
+
+## Self-play was starving for positive reward (09:15)
+
+At iter 416, drift 5.286 (up from 2.855), the rollout win rate had gone the
+wrong way:
+
+```
+270 games   win rate 0.059
+915 games   win rate 0.037    -> ~2.8% over the last 645 games
+mean_return flat at -0.88 across the whole run
+```
+
+**The league was `nicowar,cabino,cortex,maxima` -- the four strongest AIs.**
+The agent lost ~97% of its games, so the advantage was negative almost
+everywhere: PPO is pushed away from whatever it just did and no positive
+direction is ever reinforced. Returns pinned at -0.88 is exactly what that
+looks like. Shaping was on (0.1) and is far too weak to carry the signal alone.
+
+This also explains why the 24-game eval showed 6W/22 while rollouts showed 3%:
+the eval includes numbi, which the agent beats; the league did not include a
+single opponent it could beat.
+
+Fix: a spread league (`numbi,warrush,castor,cortex,nicowar`) plus PFSP-style
+matchmaking -- weight each opponent by p*(1-p), maximal at a 50% win rate,
+which is where a game carries the most information. Opponents with fewer than
+8 games are sampled freely so the ladder fills in; a 0.05 floor keeps every
+opponent occasionally sampled so a hopeless matchup can become live again as
+the agent improves.
+
+Verified on synthetic records (numbi 90%, warrush 50%, castor 0%, cortex 10%,
+nicowar 0%):
+
+```
+warrush 53.4%   numbi 20.8%   cortex 20.6%   nicowar 2.9%   castor 2.3%
+```
+
+The rollout log now prints the per-opponent ladder so the curriculum is
+visible rather than inferred.
+
+**Lesson:** a win rate near 0 and a win rate near 1 are equally uninformative,
+and I set up a league that guaranteed the former. The eval opponents and the
+training opponents have to be chosen for different reasons -- the eval spans
+the difficulty range to measure, the league concentrates where the gradient is.

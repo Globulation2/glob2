@@ -53,13 +53,41 @@ def generate_map(glob2: str, root: str, generators, game_id: int, seed: int):
     return None, None
 
 
+# Per-opponent records, for PFSP-style matchmaking.
+LADDER: dict = {}
+
+
+def pick_opponent(league) -> str:
+    """Prefer opponents the agent is near even with.
+
+    A league of the four strongest AIs gave a ~3% win rate, so nearly every
+    episode was a loss: the advantage is negative almost everywhere, PPO is
+    pushed away from whatever it just did, and no positive direction is ever
+    reinforced. Measured over 915 games the policy got WORSE (0.059 -> 0.028
+    on recent games) while drifting 5.286 from its init.
+
+    Weight by p*(1-p), maximal at a 50% win rate, which is where a game
+    carries the most information. The floor keeps every opponent sampled so
+    the ladder keeps updating and a beaten opponent can be left behind.
+    """
+    weights = []
+    for name in league:
+        w, n = LADDER.get(name, (0, 0))
+        if n < 8:                      # too little data: sample it to find out
+            weights.append(1.0)
+            continue
+        p = w / n
+        weights.append(max(0.05, 4.0 * p * (1.0 - p)))
+    return random.choices(league, weights=weights, k=1)[0]
+
+
 def play_one(args, generators, game_id: int) -> dict:
     seed = game_id * 7919 + 13
     name, path = generate_map(args.glob2, args.root, generators, game_id, seed)
     if name is None:
         return {"game_id": game_id, "error": "mapgen"}
 
-    opponent = random.choice(args.league.split(","))
+    opponent = pick_opponent(args.league.split(","))
     env = dict(os.environ)
     env.update(GLOB2_TEST_SEED=str(seed),
                GLOB2_NEUROTICA_POLICY_SOCKET=args.socket,
@@ -127,8 +155,11 @@ def main() -> int:
     ap.add_argument("--socket", default="/tmp/neurotica.sock")
     ap.add_argument("--record-dir", default=os.path.expanduser("~/neurotica/rollouts"))
     ap.add_argument("--generators", default=os.path.expanduser("~/neurotica/generators.txt"))
-    ap.add_argument("--league", default="nicowar,cabino,cortex,maxima",
-                    help="frozen opponents to draw from each game")
+    ap.add_argument("--league", default="numbi,warrush,castor,cortex,nicowar",
+                    help="frozen opponents to draw from each game. Spans the "
+                         "range on purpose: a league of only the strongest AIs "
+                         "yields a ~3% win rate and almost no positive reward "
+                         "to learn from.")
     ap.add_argument("--parallel", type=int, default=4,
                     help="concurrent games; the GPU caps useful parallelism, "
                          "so more workers mostly means each game runs slower")
@@ -168,10 +199,16 @@ def main() -> int:
                 if "error" in res:
                     continue
                 played += 1
-                wins += 1 if res["outcome"] > 0 else 0
+                won = res["outcome"] > 0
+                wins += 1 if won else 0
+                w, n = LADDER.get(res["opponent"], (0, 0))
+                LADDER[res["opponent"]] = (w + (1 if won else 0), n + 1)
                 if played % 5 == 0:
+                    ladder = " ".join(f"{k}:{v[0]}/{v[1]}"
+                                      for k, v in sorted(LADDER.items()))
                     print(f"{played} games, win rate {wins/played:.3f}, "
-                          f"{played/(time.time()-t0)*3600:.0f} games/h", flush=True)
+                          f"{played/(time.time()-t0)*3600:.0f} games/h | {ladder}",
+                          flush=True)
     return 0
 
 
