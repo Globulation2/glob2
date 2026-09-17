@@ -672,3 +672,33 @@ under the same decode as the 5W/22 baseline. Same opponents, same protocol.
 If PPO is learning, it beats 5W/22; if it is drifting off a good BC init, it
 scores worse, and that would be the clearest possible argument that the
 sequence limitation -- not plumbing -- is now the binding constraint.
+
+## First evidence self-play helps (08:15)
+
+24-game eval of the live `ppo/policy.pt`, same decode and opponents as the
+baseline:
+
+```
+                     numbi        castor      warrush     nicowar    total
+BC baseline          3-4W 1-2L    0W 4-6L     0-1W 4-5L   0-1W 4-5L  5W/22
+PPO @ ~125 iters     3W 1L 2cap   1W 3L 2cap  2W 4L       0W 5L 1cap 6W/22
+```
+
+6W against 5W is not significant by itself -- pooling the two independent BC
+evals gives 10W/44 = 0.227, against PPO 6/22 = 0.273, and that gap needs far
+more games to resolve. What is new is the *shape*: wins come from three of four
+opponents instead of concentrating on numbi, including the **first win against
+castor in any configuration tonight**, and two against warrush where the best
+prior was one.
+
+The important negative: PPO has NOT degraded the BC init. That was the main
+risk of running RL on top of a cloned policy, and after ~125 iterations and an
+L2 drift of 2.855 it has not happened.
+
+So the sequence limitation is real but it is not yet the binding constraint --
+I was ready to call it that and the data does not support doing so. The loop
+deserves to run longer before any architectural change is proposed.
+
+Plan: leave self-play running, re-eval every couple of hours. If PPO is
+learning, the gap against 0.227 should widen with drift; if it plateaus at
+parity, that is when the sequence argument becomes the live one.
