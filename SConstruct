@@ -409,16 +409,24 @@ def main():
             BUNDLE_RESOURCEDIRS=["data","maps", "campaigns"],
             BUNDLE_PLIST="darwin/Info.plist",
             BUNDLE_ICON="darwin/Glob2.icns" )
-        bundle.createBundle(os.getcwd(), os.getcwd(), env)
-        dmg.create_dmg("Glob2-%s"%env["VERSION"],"%s.app"%env["BUNDLE_NAME"],env)
-        # createBundle/create_dmg above already did the actual work as a side effect of
-        # reading this SConscript; register the name so scons resolving "bundle" as a
-        # requested target finds an (empty) alias instead of failing to find a file by
-        # that name, which otherwise turns a successful bundle build into a reported
-        # failure.
-        env.Alias("bundle", [])
+        # Go through the builders rather than calling their actions directly.
+        # A direct call runs while scons is still *reading* this file, before
+        # anything has been compiled, so the bundle gets whatever binary happens
+        # to be lying in the build directory: one built with different flags, one
+        # left from an older revision, or none at all. Nothing in the build graph
+        # then relates the app to the binary, so scons cannot notice or complain,
+        # and the result looks healthy -- right size, valid signature -- while
+        # shipping the wrong code.
+        #
+        # Through the builder, bundleEmitter names the binary as the app's source,
+        # so scons compiles it first and rebuilds the app whenever it changes, and
+        # the app in turn is the dmg's source.
+        # A Dir node, not a string: bundleEmitter looks the app up as a directory,
+        # and a string target would already have been created as a File.
+        application = env.Bundle(env.Dir(env["BUNDLE_NAME"] + ".app"), env["BUNDLE_BINARIES"])
+        image = env.Dmg("Glob2-%s.dmg" % env["VERSION"], application)
+        env.Alias("bundle", [application, image])
 
-        #TODO mac_bundle should be dependency of Dmg:    
         import subprocess
         arch = subprocess.check_output(["uname", "-p"], text=True).strip()
 #        mac_packages = env.Dmg('Glob2-%s-%s.dmg'% (fullVersion, arch),  env.Dir('Glob2.app/') )
