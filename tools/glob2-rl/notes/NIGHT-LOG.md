@@ -505,3 +505,33 @@ trajectory). Staffing is the same thing in units of labour.
 
 Testing `--staffing-budget 0.8`: scale the total staffing request to a fraction
 of the units actually alive. Server-side only, no retrain.
+
+## Staffing rejected outright (06:45)
+
+```
+staffing off                        5W/22   <- best config
+staffing on, raw teacher numbers    1W/22
+staffing on, normalised to labour   0W/22
+```
+
+Normalising made it worse, not better, so the distribution-shift mechanism I
+proposed is NOT the whole story -- and I should not have presented it as
+confidently as I did before testing it. Rescaling the magnitude does not
+rescue it, which means the predicted staffing is wrong in kind, not merely in
+scale.
+
+Most likely reading: the engine default (`type->maxUnitWorking`, what the
+reconciler already applies when the plane is DONT_CARE) is simply a better
+policy at this economy size than anything the head predicts. The teachers'
+staffing numbers encode decisions that only make sense inside their own
+sequenced opening, so importing them piecewise imports nothing useful.
+
+NPS3 stays -- the protocol gap was real and the plane should be reachable --
+but `--staffing` remains off by default, and the staffing head is unused. This
+is a negative result and it cost about two hours; the value is that the
+capability now exists for RL to learn staffing directly, which is a better bet
+than cloning it.
+
+**Night's final configuration:** `ckpt_staff` (or `ckpt_cnt2`, identical
+placement), `--top-k --placements 48 --use-count`, staffing off = **5W/22**,
+with 3-4W vs numbi and a win each against warrush and nicowar.
