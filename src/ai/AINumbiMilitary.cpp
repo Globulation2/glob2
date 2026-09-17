@@ -81,6 +81,7 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 		for (int i=0; i<game->mapHeader.getNumberOfTeams(); i++)
 			if (game->teams[i]->me & enemies)
 				e=i;
+		telemetry.set(AITrace::AI1::AINumbi_offense_target_team, e);
 		if (e==-1)
 			return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayAttack_result,
 										   shared_ptr<Order>(new NullOrder));

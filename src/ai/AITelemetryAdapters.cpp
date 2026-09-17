@@ -152,6 +152,7 @@ void AICortex::captureTelemetry()
 	telemetry.set(AITrace::AI6::state_pendingUpgradeUntil, pendingUpgradeUntil);
 	telemetry.set(AITrace::AI6::state_flagPosture, flagPosture);
 	telemetry.set(AITrace::AI6::state_offenseHoldUntil, offenseHoldUntil);
+	telemetry.set(AITrace::AI6::state_lastOffenseTargetTeam, lastOffenseTargetTeam);
 	telemetry.set(AITrace::AI6::state_wheatOpenMargin, wheatOpenMargin);
 	telemetry.set(AITrace::AI6::state_swarmKickstarted, swarmKickstarted);
 	telemetry.set(AITrace::AI6::state_orderQueue_count, orderQueue.size());
@@ -1013,6 +1014,7 @@ void Cabino::PrioritizedBuildingAttack::captureTelemetry(const AITelemetry::Sink
 	if (!sink.series || !sink.series->current.values[AITrace::AI8::PrioritizedBuildingAttack_perform_calls].bits)
 		return;
 	sink.set(AITrace::AI8::module_PrioritizedBuildingAttack_attacks_count, attacks.size());
+	sink.set(AITrace::AI8::module_PrioritizedBuildingAttack_target_team, enemy ? enemy->teamNumber : -1);
 }
 
 void Cabino::DistributedNewConstructionManager::captureTelemetry(

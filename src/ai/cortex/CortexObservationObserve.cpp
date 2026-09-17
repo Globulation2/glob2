@@ -278,7 +278,7 @@ namespace Cortex
 			// ONLY from buildings we have legitimately seen (Building::seenByMask),
 			// never from unfogged truth — implemented (with the same visibility
 			// gating discipline as the enemy-intel pass below) by placeFlagTargets.
-			placeFlagTargets(game, team, obs.flagTargets);
+			placeFlagTargets(game, team, obs.flagTargets, obs.flagTargetTeam);
 
 			// Per-target SUPPORT DISTANCE (v18): how far each offense target sits
 			// from our nearest FINISHED inn — the attack-range gate's input. Food is
