@@ -2688,3 +2688,17 @@ Limbi de lavă
 Limbi lungi
 [Crater rim width]
 Lățimea marginii craterului
+[Honeycomb isle]
+Insula fagure
+[Blocks per colony]
+Cvartale per colonie
+[Rubble]
+Moloz
+[Outline gaps]
+Breșe în contururi
+[Craters per colony]
+Cratere per colonie
+[Wheat fields]
+Lanuri de grâu
+[Bridges]
+Poduri

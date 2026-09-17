@@ -95,7 +95,20 @@ Tune with games, not only the scorer. The loop, with the distributed tools:
 5. **Look at the maps that failed.** Render the played map with `--preview-map` and crop around the weak start; render the final save the same way. Most defects are visible: a start on a cape, a kit across water, a town inside a crop belt, a colony on a ribbon between two rivals.
 6. **Change one thing, re-run the same seeds, then fresh seeds.** Pin the affected variant through `generator_params` so the paired runs compare the same kind of map. Every generator tuned this way found that fresh seeds kept some favoured position; report that honestly.
 
-Read each AI's results separately; each exposes a different habit, and a map tuned for one can starve another:
+## Which AIs to play
+
+Play-test and calibrate with the newer AIs only: **Nicowar, Cortex, Cabino and Maxima**. Read each one's results separately; each exposes a different habit, and a map tuned for one can starve another.
+
+The older AIs, **Numbi, Castor and Warrush**, are not tuning targets (maintainer decision, 2026-09-16). Their stalls come from narrow local heuristics, like Numbi's straight-line wheat scan below, not from a map players would find unplayable, and bending geometry around them has cost several generators their look. When one of them fails on a map:
+
+- Don't change the map for it, and don't spend a tournament or calibration run on it.
+- Record the failure as a known limit in the generator's notes or PR if it's worth knowing.
+- If the failure is a real bug that should be fixed, fix it in the AI. That changes existing games and replays, so it follows the repository's compatibility and review rules, as a separate change.
+
+Rubble city's first calibration games (2026-09-16) show the split. On the same map, Nicowar grew to 48–145 units per colony and Maxima to 45–90, while Numbi stalled at 5–10 and Castor at 8–12, both harvesting food they never turned into units.
+
+The notes below on each AI's habits stay as a diagnostic reference, including the older AIs, whose entries explain failures seen in earlier generators:
+
 
 - **Nicowar** overbuilt swarms on premade bases and starved; it otherwise works most plot shapes and is the most forgiving measure of an economy.
 - **Castor** cannot run a base of construction sites.
@@ -109,9 +122,9 @@ Read each AI's results separately; each exposes a different habit, and a map tun
 A tournament costs an hour of a cluster; a food-capped or unbuildable home shows in a few minutes on one machine. Before the first tournament, and after every economy change:
 
 1. Generate the map the lobby would pick (`--generate-map --generator ID --map-seed S --candidates 5 --write-map true`) and the same seed of a reference generator whose AI games are known to grow (Forts, Hedgerow Country).
-2. Play both with four copies of each AI players are offered, 20,000 to 30,000 ticks, `--telemetry team-timeline` (commands in [`scripts/game_economy.py`](../scripts/game_economy.py)). Run them in the background side by side.
+2. Play both with four copies of each newer AI (Nicowar, Cortex, Cabino, Maxima; see [which AIs to play](#which-ais-to-play)), 20,000 to 30,000 ticks, `--telemetry team-timeline` (commands in [`scripts/game_economy.py`](../scripts/game_economy.py)). Run them in the background side by side.
 3. Compare per colony: wheat and wood harvested, worker births, starvation deaths, units over time and buildings. Absolute numbers depend on the AI and the tick count; the reference game is the yardstick. The Glacis' first rebuild harvested 155 to 291 wheat against Forts' 427 to 882 in the same 30,000 ticks, which found a cramped courtyard and gardens too small an hour before a tournament would have.
-4. When one AI stalls, read its own telemetry (`GLOB2_AI_FINAL`) for the gate that stopped it: `AINumbi.estimateFood.result`, `AINumbi.findNewEmplacement.true` against `.calls`, a building count that never passes one. Then look at the home in a terrain close-up (`scripts/render_terrain.py`) around that colony's swarm; the cause is nearly always within a dozen tiles of it.
+4. When one of those AIs stalls, read its own telemetry (`GLOB2_AI_FINAL`) for the gate that stopped it, such as a building count that never passes one. Then look at the home in a terrain close-up (`scripts/render_terrain.py`) around that colony's swarm; the cause is nearly always within a dozen tiles of it.
 5. A map built around the local game can still fail on others: the tournament over several map seeds and every rotation remains the evidence, and its per-start table is where AI-specific and facing-specific failures show.
 
 ## When results split by start, find the design draw
@@ -145,7 +158,9 @@ recognisable shapes. Name the shape before choosing a remedy:
 - **AI-specific collapse.** Maxima starving by the hundreds on Emoji's dry hinterland while
   Nicowar thrives, Nicowar overbuilding swarms on premade bases (until revision 2 of the three premade-base maps), Castor stalling on a base of
   sites. The map exposes an AI habit; record it as a limit unless the concept can cheaply feed
-  the habit (scattered ponds on a dry plain), and never tune the geometry to one AI's bug.
+  the habit (scattered ponds on a dry plain), and never tune the geometry to one AI's bug. A
+  collapse only Numbi, Castor or Warrush shows is not a map problem at all (see
+  [which AIs to play](#which-ais-to-play)).
 
 A generator can be under the fair-map floor and still have a doomed start on a third of its
 maps, because the floor averages over maps. Read the per-map counts and the per-start economy
@@ -191,6 +206,22 @@ A maintainer meets a new map as a preview before any number, and what the previe
 | Scenery the concept names but the map lacks (a savannah with no trees on its plain, too little water to look inhabited; a river's dry terrace that is one sheet of grass) | The concept is a picture in the maintainer's head before it is a contract | Add the scenery where it cannot break the contract: lone trees only on ground whose crop growth chance is zero, so the engine never spreads them; pools where no crop is planted; one more watering hole per area, a tile more pond radius; sand patches from a periodic noise, kept off the bank strip, the structural stone and every town's room |
 
 None of these needs a new control. Each is a default, a toggle or a few tiles, plus a revision bump and regenerated fingerprints on both platforms, and each deserves the same paired tournament as any other tuning change before the numbers are trusted. Record the remark and the answer in the generator's header comments: the next designer will meet the same eye.
+
+## Show the map, then measure the knobs, then roll everything
+
+The maintainer decides what a map is from pictures, so the cheap loop comes first: generate a handful of seeds and shapes, publish the previews on a page with the settings beside each, and wait for a reaction before any game or tournament. Each round of Honeycomb isle's design (hexagons, water, fields, rings, river width) came from a look, not a number.
+
+When the look is settled, **measure every control on its own.** Generate each control's values with everything else at defaults (six seeds at 256×256 with four colonies is enough), plus the default at every shape and colony count, plus a few extreme combinations, and tabulate the metric each control should move from the JSON report and the generator's telemetry. One 528-map study (19 s on eight cores) found:
+
+- **Dead ranges.** Wheat amount above 100% changed nothing because the fields were already full; wood saturated at 200%. Cap a percentage at the value where it stops mattering (`GeneratorControl::percentage(id, label, maximum)`).
+- **A variant that is a scale mismatch.** Square blocks used the block size as their pitch while hexagons used 150% of it, so squares had a fifth of the building sites. Give alternatives the same area, not the same number.
+- **A choice that barely differs.** "Many" wheat fields added 9% over "Normal" because the edge was already all fields; a choice should move its metric visibly.
+- **Ranges the map clamps anyway.** Block sizes above 21 shrank back on common maps; a minimum of 5 blocks per colony left almost no ruins.
+- **Visual-only controls.** Warp moved no metric at all; a pair of previews showed it working. Look before removing a control the numbers call useless.
+
+Then **roll everything at random**: every control over its full range, every shape and colony count, a few dozen maps on one page with their settings, for the maintainer to eyeball for degenerate rolls. That page is how "without the lagoon there is way too little water" was found; no metric had been asked about water on small maps.
+
+Finally run a **reliability pass**: every control at its minimum and maximum alone and all together on a small, a default and a large shape, plus about two thousand random rolls, classifying every failure as an expected refusal or a bug. Six of 1,620 Honeycomb isle maps failed a starter-wheat distance by one or two steps, all with the largest blocks and little wheat; the fix was geometric (the cistern moves forward on big blocks, wheat is planted nearest the swarm), and the pass was repeated on fresh seeds and on the old seeds before calling it done. Rename streams, telemetry keys or controls before this pass: a stream name is part of every random draw.
 
 ## What to write down
 

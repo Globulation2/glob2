@@ -2688,3 +2688,17 @@ Laavakielekkeet
 Pitkät kielekkeet
 [Crater rim width]
 Kraatterin reunan leveys
+[Honeycomb isle]
+Hunajakennosaari
+[Blocks per colony]
+Kortteleita siirtokuntaa kohden
+[Rubble]
+Kivimurska
+[Outline gaps]
+Aukot ääriviivoissa
+[Craters per colony]
+Kraattereita siirtokuntaa kohden
+[Wheat fields]
+Viljapellot
+[Bridges]
+Sillat

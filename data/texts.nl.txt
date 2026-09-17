@@ -2712,3 +2712,17 @@ Lavatongen
 Lange lavatongen
 [Crater rim width]
 Kraterrandbreedte
+[Honeycomb isle]
+Honingraateiland
+[Blocks per colony]
+Bouwblokken per kolonie
+[Rubble]
+Puin
+[Outline gaps]
+Bressen in de omtrek
+[Craters per colony]
+Kraters per kolonie
+[Wheat fields]
+Tarwevelden
+[Bridges]
+Bruggen

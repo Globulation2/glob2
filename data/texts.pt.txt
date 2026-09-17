@@ -2694,3 +2694,17 @@ Línguas de lava
 Línguas longas
 [Crater rim width]
 Largura da borda da cratera
+[Honeycomb isle]
+Ilha favo de mel
+[Blocks per colony]
+Quarteirões por colónia
+[Rubble]
+Escombros
+[Outline gaps]
+Brechas nos contornos
+[Craters per colony]
+Crateras por colónia
+[Wheat fields]
+Campos de trigo
+[Bridges]
+Pontes

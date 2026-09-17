@@ -50,3 +50,7 @@ reservoirs and folded roads. Keep hierarchy and validate the finished movement g
 and narrow beach detours, scored towns, crater-rim prize and validation evidence.
 Its [paired 504-request bulk study](LAVA_SHIELD_BULK_20260915.md) covers the
 control range, smallest layouts, rectangles and dense colony counts.
+
+[Honeycomb isle](HONEYCOMB_ISLE.md) documents the hexagon city on an island: street-sealed blocks,
+the river and its bridges, wheat edges and ruins, how an urban-combat concept became it, and its
+reliability, control-study, performance and AI-game evidence.

@@ -2688,3 +2688,17 @@ Emoji
 Дуги језици
 [Crater rim width]
 Ширина обода кратера
+[Honeycomb isle]
+Острво саћа
+[Blocks per colony]
+Блокова по колонији
+[Rubble]
+Рушевине
+[Outline gaps]
+Пролази у обрисима
+[Craters per colony]
+Кратера по колонији
+[Wheat fields]
+Житна поља
+[Bridges]
+Мостови

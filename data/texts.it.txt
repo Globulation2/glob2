@@ -2750,3 +2750,17 @@ Lingue di lava
 Lingue lunghe
 [Crater rim width]
 Larghezza del bordo del cratere
+[Honeycomb isle]
+Isola a nido d'ape
+[Blocks per colony]
+Isolati per colonia
+[Rubble]
+Macerie
+[Outline gaps]
+Brecce nei contorni
+[Craters per colony]
+Crateri per colonia
+[Wheat fields]
+Campi di frumento
+[Bridges]
+Ponti

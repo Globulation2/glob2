@@ -2684,3 +2684,17 @@ Teodoù lava
 Teodoù hir
 [Crater rim width]
 Ledander ribl ar c'hrater
+[Honeycomb isle]
+Ilha favo de mel
+[Blocks per colony]
+Quarteirões por colônia
+[Rubble]
+Escombros
+[Outline gaps]
+Brechas nos contornos
+[Craters per colony]
+Crateras por colônia
+[Wheat fields]
+Campos de trigo
+[Bridges]
+Pontes

@@ -7,9 +7,12 @@ roll the lobby would):
   build/src/glob2 --generate-map --generator 39 --map-seed 101 --param teams=4 --param width=8 \
       --param height=8 --candidates 5 --write-map true --output-dir /tmp/gen
   SDL_VIDEODRIVER=dummy build/src/glob2 --run-game --map-file /tmp/gen/map-r0.map --game-seed 1 \
-      --player numbi --player numbi --player numbi --player numbi --ticks 20000 \
+      --player nicowar --player nicowar --player nicowar --player nicowar --ticks 20000 \
       --telemetry team-timeline --save final --output-dir /tmp/play > /tmp/play.log 2>&1
-  python3 game_economy.py /tmp/play.log --result /tmp/play/result.json --ai estimateFood findNewEmplacement
+  python3 game_economy.py /tmp/play.log --result /tmp/play/result.json --ai <telemetry name fragments>
+
+Play-test with the newer AIs (Nicowar, Cortex, Cabino, Maxima); the older Numbi, Castor and
+Warrush are not tuning targets (references/tuning-playbook.md, "Which AIs to play").
 
 Prints, per team, the final GLOB2_MEASURE counters (births, wheat and wood harvested, starvation and
 combat deaths by unit type, hungry units), the unit history every 4,096 ticks and the building

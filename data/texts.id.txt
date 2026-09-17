@@ -2684,3 +2684,17 @@ Lidah lava
 Lidah panjang
 [Crater rim width]
 Lebar bibir kawah
+[Honeycomb isle]
+Pulau sarang lebah
+[Blocks per colony]
+Blok per koloni
+[Rubble]
+Puing
+[Outline gaps]
+Celah garis luar
+[Craters per colony]
+Kawah per koloni
+[Wheat fields]
+Ladang gandum
+[Bridges]
+Jembatan

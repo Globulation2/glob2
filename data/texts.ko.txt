@@ -2684,3 +2684,17 @@ Emoji
 긴 용암 흐름
 [Crater rim width]
 분화구 가장자리 폭
+[Honeycomb isle]
+벌집 섬
+[Blocks per colony]
+식민지당 블록 수
+[Rubble]
+잔해
+[Outline gaps]
+윤곽선 틈
+[Craters per colony]
+식민지당 분화구 수
+[Wheat fields]
+밀밭
+[Bridges]
+다리

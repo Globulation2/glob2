@@ -803,6 +803,118 @@ inline void rebuiltLandscapeContracts()
 		 "walls, bare glacis and village crops");
 }
 
+// Honeycomb isle: its envelope (every shape with the colonies it promises, the refusal only a
+// crowded smallest map gets), design variety, resource extremes, unattended growth that stays inside
+// every street-sealed block, a design cache that never changes a map or its telemetry, and a colony
+// whose starter wheat is taken away failing the validator.
+inline void honeycombIsleContracts()
+{
+	const auto &definition =
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("honeycomb-isle"));
+	assert(definition.legacyId == 53 && definition.revision == 1);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("block-shape") == 1 && request.option("river-width") == 12 &&
+		   request.option("blocks-per-colony") == 11 && request.option("crater-gardens") == 1);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 8}, std::pair{9, 8}})
+		for (int teams : {2, 4, 8})
+		{
+			if (dimensions == std::pair{7, 7} && teams == 8)
+				continue;
+			Game g(nullptr);
+			const auto result = service.generate(g, make(dimensions.first, dimensions.second, teams, 5));
+			if (!result)
+				std::fprintf(stderr, "Honeycomb isle contract (%d x %d, %d colonies): %s\n",
+							 1 << dimensions.first, 1 << dimensions.second, teams,
+							 result.diagnostic().c_str());
+			assert(result);
+		}
+	{
+		// Eight colonies never fit on the smallest map, even with the city squeezed.
+		Game g(nullptr);
+		assert(service.generate(g, make(7, 7, 8, 5)).error == GenerationError::InvalidRequest);
+		assert(g.teamsCount() == 0);
+	}
+	std::set<std::string> homeDesigns, landmarks;
+	for (unsigned seed = 1; seed <= 12; ++seed)
+	{
+		Game g(nullptr);
+		const auto result = service.generate(g, make(8, 8, 4, seed), true);
+		assert(result);
+		for (const auto &record : result.telemetry.records())
+		{
+			if (record.key == "honeycomb-isle.home-design")
+				homeDesigns.insert(std::get<std::string>(record.value));
+			if (record.key == "honeycomb-isle.landmark-design")
+				landmarks.insert(std::get<std::string>(record.value));
+		}
+	}
+	assert(homeDesigns.size() == 3 && landmarks.size() == 3);
+	{
+		// The design is cached between the request check, generation and validation. Generating a map,
+		// another map, then the first again must give the same map and the same telemetry.
+		Game first(nullptr), other(nullptr), again(nullptr);
+		const auto a = service.generate(first, make(8, 8, 4, 21), true);
+		assert(service.generate(other, make(8, 8, 6, 22), true));
+		const auto b = service.generate(again, make(8, 8, 4, 21), true);
+		assert(a && b);
+		assert(mapFingerprint(first) == mapFingerprint(again));
+		assert(a.telemetry.records() == b.telemetry.records());
+	}
+	D r = make(7, 8, 4, 37);
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = 0;
+	{
+		Game zero(nullptr);
+		assert(service.generate(zero, r));
+	}
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = control.maximum;
+	Game abundant(nullptr);
+	assert(service.generate(abundant, r));
+	GenerationContext context(r);
+	setSyncRandSeed(4211);
+	// Full-map growth with nobody harvesting: every field, garden and ruin near water grows, and
+	// the paved streets must keep each inside its own block.
+	for (int tick = 0; tick < 4096; ++tick)
+		abundant.map.growResources();
+	const std::string growthError = definition.validateWorld(abundant, context);
+	if (!growthError.empty())
+		std::fprintf(stderr, "Honeycomb isle growth: %s\n", growthError.c_str());
+	assert(growthError.empty());
+	{
+		// A colony whose starter wheat is cleared has none within reach.
+		Game game(nullptr);
+		const D damaged = make(8, 8, 4, 41);
+		assert(service.generate(game, damaged));
+		GenerationContext check(damaged);
+		assert(definition.validateWorld(game, check).empty());
+		const Team *team = game.teams[0];
+		for (int dy = -30; dy <= 30; ++dy)
+			for (int dx = -30; dx <= 30; ++dx)
+			{
+				const int x = (team->startPosX + dx + 256) % 256, y = (team->startPosY + dy + 256) % 256;
+				if (game.map.getResource(x, y).type == WHEAT)
+					game.map.setNoResource(x, y, 1);
+			}
+		assert(!definition.validateWorld(game, check).empty());
+	}
+	puts("PASS Honeycomb isle: envelope and refusal, design variety, resource extremes, sealed "
+		 "growth, cached designs, starter wheat");
+}
+
 inline void generatorContracts()
 {
 	rebuiltLandscapeContracts();
@@ -813,5 +925,6 @@ inline void generatorContracts()
 	braidedDeltaChecks();
 	fortsContracts();
 	emojiContracts();
+	honeycombIsleContracts();
 }
 } // namespace GeneratorContracts

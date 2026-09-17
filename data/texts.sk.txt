@@ -2696,3 +2696,17 @@ Lávové jazyky
 Dlhé jazyky
 [Crater rim width]
 Šírka okraja krátera
+[Honeycomb isle]
+Plástový ostrov
+[Blocks per colony]
+Blokov na kolóniu
+[Rubble]
+Sutiny
+[Outline gaps]
+Medzery v obrysoch
+[Craters per colony]
+Kráterov na kolóniu
+[Wheat fields]
+Pšeničné polia
+[Bridges]
+Mosty

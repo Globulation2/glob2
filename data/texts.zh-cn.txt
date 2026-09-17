@@ -2684,3 +2684,17 @@ Emoji
 长熔岩舌
 [Crater rim width]
 火山口边缘宽度
+[Honeycomb isle]
+蜂巢岛
+[Blocks per colony]
+每个殖民地的街区数
+[Rubble]
+瓦砾
+[Outline gaps]
+轮廓缺口
+[Craters per colony]
+每个殖民地的弹坑数
+[Wheat fields]
+麦田
+[Bridges]
+桥梁

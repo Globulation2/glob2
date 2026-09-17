@@ -2684,3 +2684,17 @@ Lưỡi dung nham
 Lưỡi dài
 [Crater rim width]
 Độ rộng vành miệng núi lửa
+[Honeycomb isle]
+Đảo tổ ong
+[Blocks per colony]
+Số khu phố mỗi thuộc địa
+[Rubble]
+Gạch vụn
+[Outline gaps]
+Khe hở đường viền
+[Craters per colony]
+Số hố bom mỗi thuộc địa
+[Wheat fields]
+Ruộng lúa mì
+[Bridges]
+Cầu

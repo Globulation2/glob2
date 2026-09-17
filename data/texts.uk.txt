@@ -2684,3 +2684,17 @@ Emoji
 Довгі язики
 [Crater rim width]
 Ширина краю кратера
+[Honeycomb isle]
+Стільниковий острів
+[Blocks per colony]
+Кварталів на колонію
+[Rubble]
+Уламки
+[Outline gaps]
+Проломи в контурах
+[Craters per colony]
+Кратерів на колонію
+[Wheat fields]
+Пшеничні поля
+[Bridges]
+Мости
