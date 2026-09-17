@@ -1066,6 +1066,7 @@ GeneratorDefinition plantationsDefinition()
 		true,
 		designFailure<design>,
 		validateWorld,
-		{"terrain:natural", "feature:islands", "feature:ocean", "style:sprawling"}};
+		{"terrain:natural", "feature:islands", "feature:ocean", "style:sprawling",
+		 "fairness:stamped-lattice"}};
 	return definition;
 }

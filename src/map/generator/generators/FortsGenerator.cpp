@@ -821,6 +821,8 @@ GeneratorDefinition fortsDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:arena", "feature:stone-walls", "feature:river", "style:siege", "style:fortified",
-			 "fairness:stamped-lattice"}};
+			// See BreachableHighlands: "arena" means one shared battleground elsewhere in this file
+			// set, but each colony here gets its own walled fort, so it uses "stronghold" instead.
+			{"terrain:stronghold", "feature:stone-walls", "feature:river", "style:siege",
+			 "style:fortified", "fairness:stamped-lattice"}};
 }

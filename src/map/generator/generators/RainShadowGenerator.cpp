@@ -483,5 +483,8 @@ GeneratorDefinition rainShadowDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:natural", "feature:mountains", "feature:river", "feature:desert", "style:wide-open"}};
+			// Identical ridge-and-valley bands repeat in parallel across the map, same mechanism
+			// as Bajada's fans.
+			{"terrain:natural", "feature:mountains", "feature:river", "feature:desert",
+			 "style:wide-open", "fairness:stamped-lattice"}};
 }

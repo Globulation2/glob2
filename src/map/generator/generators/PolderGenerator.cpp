@@ -390,5 +390,7 @@ GeneratorDefinition polderDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:natural", "feature:river", "feature:canals", "style:sprawling"}};
+			// Engineered grid of dead-straight canals and diked fields, not a natural landscape.
+			{"terrain:urban", "feature:river", "feature:canals", "style:sprawling",
+			 "fairness:stamped-lattice"}};
 }

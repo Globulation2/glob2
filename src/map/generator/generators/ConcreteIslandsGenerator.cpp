@@ -299,5 +299,7 @@ GeneratorDefinition concreteIslandsDefinition()
 			true,
 			nullptr,
 			validateWorld,
-			{"terrain:natural", "feature:islands", "feature:ocean", "style:sprawling"}};
+			// Sharp rectangular/triangular plots cut by channels, not a natural coastline, and no
+			// open ocean is visible in a render - the water is the channels themselves.
+			{"terrain:novelty", "feature:islands", "feature:canals", "style:sprawling"}};
 }

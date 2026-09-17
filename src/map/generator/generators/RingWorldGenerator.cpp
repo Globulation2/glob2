@@ -760,5 +760,8 @@ GeneratorDefinition ringWorldDefinition()
 			true,
 			validate,
 			validateWorld,
-			{"terrain:natural", "feature:ocean", "feature:lakes", "style:wide-open"}};
+			// The belt's start-bearing stretches are periodic along its length, not arranged around
+			// one shared centre, so this is a stamped lattice rather than a repeated wedge.
+			{"terrain:natural", "feature:ocean", "feature:lakes", "style:wide-open",
+			 "fairness:stamped-lattice"}};
 }

@@ -548,5 +548,6 @@ GeneratorDefinition oldTownDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:urban", "feature:stone-walls", "feature:plazas", "style:tight-building"}};
+			// The town's open spots are small ponds, not paved plazas.
+			{"terrain:urban", "feature:stone-walls", "feature:lakes", "style:tight-building"}};
 }

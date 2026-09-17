@@ -555,5 +555,7 @@ GeneratorDefinition drumlinFieldDefinition()
 			true,
 			homesFailure,
 			validateWorld,
-			{"terrain:natural", "feature:lakes", "style:tight-building"}};
+			// Elongated islands repeat in aligned parallel rows across the whole map.
+			{"terrain:natural", "feature:lakes", "style:tight-building",
+			 "fairness:stamped-lattice"}};
 }

@@ -382,5 +382,7 @@ GeneratorDefinition sierpinskiGardensDefinition()
 			true,
 			validateRequest,
 			validateWorld,
-			{"terrain:urban", "feature:canals", "feature:lakes", "style:tight-building", "fairness:exact-symmetry"}};
+			// The nested squares are lakes (see lakeIn/wheatShore above); the connectors between
+			// them are plain sand paths, not water, so there is no canal feature here.
+			{"terrain:urban", "feature:lakes", "style:tight-building", "fairness:exact-symmetry"}};
 }

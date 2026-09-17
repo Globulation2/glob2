@@ -347,5 +347,5 @@ GeneratorDefinition oldGrowthDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:natural", "feature:forest", "style:expansion"}};
+			{"terrain:natural", "feature:forest", "style:expansion", "fairness:stamped-lattice"}};
 }
