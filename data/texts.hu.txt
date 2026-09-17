@@ -2688,3 +2688,17 @@ Lávanyelvek
 Hosszú lávanyelvek
 [Crater rim width]
 Kráterperem szélessége
+[Honeycomb isle]
+Méhsejtsziget
+[Blocks per colony]
+Háztömbök kolóniánként
+[Rubble]
+Törmelék
+[Outline gaps]
+Rések a körvonalban
+[Craters per colony]
+Kráterek kolóniánként
+[Wheat fields]
+Búzamezők
+[Bridges]
+Hidak

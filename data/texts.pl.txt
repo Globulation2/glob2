@@ -2688,3 +2688,17 @@ Jęzory lawy
 Długie jęzory
 [Crater rim width]
 Szerokość krawędzi krateru
+[Honeycomb isle]
+Wyspa plastra miodu
+[Blocks per colony]
+Kwartały na kolonię
+[Rubble]
+Gruz
+[Outline gaps]
+Wyłomy w obrysach
+[Craters per colony]
+Kratery na kolonię
+[Wheat fields]
+Pola pszenicy
+[Bridges]
+Mosty

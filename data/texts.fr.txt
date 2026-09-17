@@ -2698,3 +2698,17 @@ Coulées de lave
 Longues coulées
 [Crater rim width]
 Largeur du bord du cratère
+[Honeycomb isle]
+Île en nid d'abeilles
+[Blocks per colony]
+Pâtés de maisons par colonie
+[Rubble]
+Décombres
+[Outline gaps]
+Brèches dans les contours
+[Craters per colony]
+Cratères par colonie
+[Wheat fields]
+Champs de blé
+[Bridges]
+Ponts

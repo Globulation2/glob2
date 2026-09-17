@@ -2686,3 +2686,17 @@ Lava tongues
 Long tongues
 [Crater rim width]
 Crater rim width
+[Honeycomb isle]
+Honeycomb isle
+[Blocks per colony]
+Blocks per colony
+[Rubble]
+Rubble
+[Outline gaps]
+Outline gaps
+[Craters per colony]
+Craters per colony
+[Wheat fields]
+Wheat fields
+[Bridges]
+Bridges

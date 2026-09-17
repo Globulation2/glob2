@@ -2696,3 +2696,17 @@ Lav dilleri
 Uzun lav dilleri
 [Crater rim width]
 Krater kenarı genişliği
+[Honeycomb isle]
+Petek adası
+[Blocks per colony]
+Koloni başına blok
+[Rubble]
+Moloz
+[Outline gaps]
+Ana hat gedikleri
+[Craters per colony]
+Koloni başına krater
+[Wheat fields]
+Buğday tarlaları
+[Bridges]
+Köprüler

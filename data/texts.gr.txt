@@ -2758,3 +2758,17 @@ Emoji
 Μακριές γλώσσες
 [Crater rim width]
 Πλάτος χείλους κρατήρα
+[Honeycomb isle]
+Νησί κηρήθρα
+[Blocks per colony]
+Τετράγωνα ανά αποικία
+[Rubble]
+Χαλάσματα
+[Outline gaps]
+Ανοίγματα περιγράμματος
+[Craters per colony]
+Κρατήρες ανά αποικία
+[Wheat fields]
+Χωράφια σιταριού
+[Bridges]
+Γέφυρες

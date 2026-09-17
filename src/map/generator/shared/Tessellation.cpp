@@ -400,7 +400,8 @@ void warpCorners(Tessellation &g, int reach, const std::vector<unsigned char> &w
 		o.radius = std::max(x1 - x0, y1 - y0) / 2 + 1;
 	};
 	// Steps between two obstacles, the short way round; anything at least `enough` apart by their
-	// boxes alone reports `enough`.
+	// boxes alone reports `enough`. A tile of `a` at least `least` from `b`'s box can be no nearer to
+	// any of `b`'s tiles, so it is skipped: the result is the same as comparing every pair of tiles.
 	const auto gap = [&](const Obstacle &a, const Obstacle &b, int enough)
 	{
 		const long long apart =
@@ -409,8 +410,12 @@ void warpCorners(Tessellation &g, int reach, const std::vector<unsigned char> &w
 			return enough;
 		int least = enough;
 		for (const auto &p : a.tiles)
+		{
+			if (t.chebyshev(p.first, p.second, int(b.cx), int(b.cy)) - b.radius >= least)
+				continue;
 			for (const auto &q : b.tiles)
 				least = std::min(least, t.chebyshev(p.first, p.second, q.first, q.second));
+		}
 		return least;
 	};
 	for (Obstacle &o : obstacles)

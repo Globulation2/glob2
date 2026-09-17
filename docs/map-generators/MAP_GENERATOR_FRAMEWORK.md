@@ -148,6 +148,7 @@ restores whatever landscape it had.
 | `sierpinski-gardens` | 49 | Sierpiński Gardens | [Recursive lakes, home districts and orchard causeways](FRACTAL_MAPS.md) |
 | `hilbert-river` | 50 | Hilbert River | [Folded river, contained bank farms and hierarchical shortcuts](FRACTAL_MAPS.md) |
 | `lava-shield` | 51 | Lava shield | [Volcanic island: crater rim, lava tongues, scored coastal towns](LAVA_SHIELD.md) |
+| `honeycomb-isle` | 53 | Honeycomb isle | [Hexagon city on an island: street-sealed blocks, a river, wheat edges, ruins](HONEYCOMB_ISLE.md) |
 | `rugged-archipelago` | 8 | Old islands | Island growth + beach passes, own resource search |
 | `contested-commons` | 9 | Contested commons | Point dispersion (`shared/legacy/Regions`) |
 | `rain-shadow` | 27 | Rain shadow | Its own — see below |
@@ -1763,8 +1764,9 @@ refusal) and every constant's reason.
   and 256 and three at 512, prints the success rate per cell and fails any valid cell where no
   seed generated: that is what a player would see as a failed generation. CI runs all three.
 - `test/MapGeneratorProfileFixture.cpp` builds to `MapGeneratorProfileFixture
-  <profile-dir> <seed> <rounds>`, a load generator for external sampling profilers (macOS
-  `sample`, Linux `perf record`): it round-robins every registered generator for `rounds` passes,
+  <profile-dir> <seed> <rounds> [generator-id...]`, a load generator for external sampling profilers
+  (macOS `sample`, Linux `perf record`): it round-robins every registered generator (or only the ids
+  named) for `rounds` passes,
   drawing shared and generator-specific controls at random each attempt the same way
   `GenerationRequest::randomizeControls` does, and prints a per-generator attempt/success/timing
   table. It is not wired into CI and makes no coverage claim; point a profiler at its PID while it
@@ -1821,3 +1823,17 @@ starter patch finds too little usable area, it ranks nearby legal seeds by
 eligible frontage, then caller-supplied preference such as fertility. It neither
 changes the patch-growth predicate nor spends work on already sufficient fields.
 The resource and terrain rules of other generators are unchanged.
+
+## Honeycomb isle
+
+See [the design and verification notes](HONEYCOMB_ISLE.md). A warped hexagon tiling
+(`hexTessellation`, or squares at the same block area) is cut to a city of at most three fifths of the
+map's blocks, so a lagoon always surrounds it; blocks shrink towards 16 on crowded maps first. Every
+street is paved, and the sand corners either side of a street seal each block into a plot of its
+own, so gardens, fields and the rubble in the ruins grow only inside their blocks and need no sand
+rings; the validator checks this with `containedPlotsMismatch` over one label per block. Homes are two
+adjoining blocks spread farthest apart, kept off the river's banks and dealt at random; a small map
+that runs out of such blocks is laid out without the river. The design is a pure function of the
+request, so the generator caches the last design per thread (the request check, generation and
+validation each ask for it) and replays its telemetry. Local disc scans stand in for whole-map
+distance transforms.

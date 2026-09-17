@@ -2688,3 +2688,17 @@ Lenguas de lava
 Lenguas largas
 [Crater rim width]
 Anchura del borde del cráter
+[Honeycomb isle]
+Isla panal
+[Blocks per colony]
+Manzanas por colonia
+[Rubble]
+Escombros
+[Outline gaps]
+Brechas en los contornos
+[Craters per colony]
+Cráteres por colonia
+[Wheat fields]
+Campos de trigo
+[Bridges]
+Puentes

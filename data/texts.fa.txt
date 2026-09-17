@@ -2686,3 +2686,17 @@ Emoji
 زبانه‌های بلند
 [Crater rim width]
 پهنای لبهٔ دهانه
+[Honeycomb isle]
+جزیرهٔ کندو
+[Blocks per colony]
+بلوک برای هر مستعمره
+[Rubble]
+آوار
+[Outline gaps]
+شکاف‌های خط دور
+[Craters per colony]
+دهانه برای هر مستعمره
+[Wheat fields]
+کشتزارهای گندم
+[Bridges]
+پل‌ها

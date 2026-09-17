@@ -2686,3 +2686,17 @@ Emoji
 Длинные языки
 [Crater rim width]
 Ширина края кратера
+[Honeycomb isle]
+Сотовый остров
+[Blocks per colony]
+Кварталов на колонию
+[Rubble]
+Обломки
+[Outline gaps]
+Проломы в контурах
+[Craters per colony]
+Кратеров на колонию
+[Wheat fields]
+Пшеничные поля
+[Bridges]
+Мосты

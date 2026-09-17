@@ -2698,3 +2698,17 @@ Laba-mihiak
 Mihi luzeak
 [Crater rim width]
 Kraterraren ertzaren zabalera
+[Honeycomb isle]
+Abaraska-uhartea
+[Blocks per colony]
+Etxadiak koloniako
+[Rubble]
+Hondakinak
+[Outline gaps]
+Arrakalak inguruetan
+[Craters per colony]
+Kraterrak koloniako
+[Wheat fields]
+Gari-soroak
+[Bridges]
+Zubiak

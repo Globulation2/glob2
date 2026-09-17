@@ -2688,3 +2688,17 @@ Lavazungen
 Lange Lavazungen
 [Crater rim width]
 Kraterrandbreite
+[Honeycomb isle]
+Wabeninsel
+[Blocks per colony]
+Blöcke pro Kolonie
+[Rubble]
+Trümmer
+[Outline gaps]
+Lücken im Umriss
+[Craters per colony]
+Krater pro Kolonie
+[Wheat fields]
+Weizenfelder
+[Bridges]
+Brücken

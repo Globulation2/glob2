@@ -50,6 +50,7 @@
 #include "SierpinskiGardensGenerator.h"
 #include "HilbertRiverGenerator.h"
 #include "LavaShieldGenerator.h"
+#include "HoneycombIsleGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -162,6 +163,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 sierpinskiGardensDefinition(),
 											 hilbertRiverDefinition(),
 											 lavaShieldDefinition(),
+											 honeycombIsleDefinition(),
 											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),

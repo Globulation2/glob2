@@ -2688,3 +2688,17 @@ Jeziki lave
 Dolgi jeziki
 [Crater rim width]
 Širina roba kraterja
+[Honeycomb isle]
+Satasti otok
+[Blocks per colony]
+Blokov na kolonijo
+[Rubble]
+Ruševine
+[Outline gaps]
+Vrzeli v obrisih
+[Craters per colony]
+Kraterjev na kolonijo
+[Wheat fields]
+Pšenična polja
+[Bridges]
+Mostovi

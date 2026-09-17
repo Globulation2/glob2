@@ -2696,3 +2696,17 @@ Llengües de lava
 Llengües llargues
 [Crater rim width]
 Amplada de la vora del cràter
+[Honeycomb isle]
+Illa bresca
+[Blocks per colony]
+Illes de cases per colònia
+[Rubble]
+Runa
+[Outline gaps]
+Bretxes als contorns
+[Craters per colony]
+Cràters per colònia
+[Wheat fields]
+Camps de blat
+[Bridges]
+Ponts

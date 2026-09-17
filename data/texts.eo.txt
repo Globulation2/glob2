@@ -2686,3 +2686,17 @@ Lavaj langoj
 Longaj langoj
 [Crater rim width]
 Larĝo de la kratera rando
+[Honeycomb isle]
+Vaksĉela insulo
+[Blocks per colony]
+Kvartaloj po kolonio
+[Rubble]
+Ruboj
+[Outline gaps]
+Breĉoj en la konturoj
+[Craters per colony]
+Krateroj po kolonio
+[Wheat fields]
+Tritikaj kampoj
+[Bridges]
+Pontoj

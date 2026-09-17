@@ -2698,3 +2698,17 @@ Lavatungor
 Långa lavatungor
 [Crater rim width]
 Kraterkantens bredd
+[Honeycomb isle]
+Vaxkakeö
+[Blocks per colony]
+Kvarter per koloni
+[Rubble]
+Bråte
+[Outline gaps]
+Luckor i konturerna
+[Craters per colony]
+Kratrar per koloni
+[Wheat fields]
+Vetefält
+[Bridges]
+Broar

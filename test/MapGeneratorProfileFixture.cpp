@@ -3,7 +3,9 @@
 // generator for external sampling profilers (macOS `sample`, Linux `perf record`) and as
 // a coarse per-generator wall-clock comparison when validating optimizations.
 //
-//   MapGeneratorProfileFixture <profile-dir> <seed> <rounds>
+//   MapGeneratorProfileFixture <profile-dir> <seed> <rounds> [generator-id...]
+//
+// Naming generator ids restricts the rounds to those generators, for profiling one of them.
 //
 // Each round asks every registered generator (including editor-only ones) for one map at
 // parameters drawn from its own registered controls: shared width/height/teams/workers are
@@ -74,9 +76,9 @@ bool randomizeRequest(GenerationRequest &request, std::mt19937 &rng, int sharedA
 
 int main(int argc, char **argv)
 {
-	if (argc != 4)
+	if (argc < 4)
 	{
-		std::fprintf(stderr, "usage: %s <profile-dir> <seed> <rounds>\n", argv[0]);
+		std::fprintf(stderr, "usage: %s <profile-dir> <seed> <rounds> [generator-id...]\n", argv[0]);
 		return 2;
 	}
 	const unsigned baseSeed = std::strtoul(argv[2], nullptr, 10);
@@ -90,7 +92,20 @@ int main(int argc, char **argv)
 	IntBuildingType::init();
 	Race::loadDefault();
 
-	const auto methods = GeneratorRegistry::builtins().methods(true);
+	std::vector<int> methods;
+	for (int method : GeneratorRegistry::builtins().methods(true))
+	{
+		bool named = argc == 4;
+		for (int i = 4; i < argc; ++i)
+			named |= std::string(GeneratorRegistry::builtins().at(method).id) == argv[i];
+		if (named)
+			methods.push_back(method);
+	}
+	if (methods.empty())
+	{
+		std::fprintf(stderr, "no registered generator matches the ids given\n");
+		return 2;
+	}
 	std::mt19937 rng(baseSeed);
 	std::vector<GeneratorStats> stats;
 	stats.reserve(methods.size());

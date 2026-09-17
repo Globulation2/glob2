@@ -2764,3 +2764,17 @@ Lavatunger
 Lange lavatunger
 [Crater rim width]
 Kraterkantens bredde
+[Honeycomb isle]
+Honningkageø
+[Blocks per colony]
+Karréer pr. koloni
+[Rubble]
+Murbrokker
+[Outline gaps]
+Huller i omridset
+[Craters per colony]
+Kratere pr. koloni
+[Wheat fields]
+Hvedemarker
+[Bridges]
+Broer

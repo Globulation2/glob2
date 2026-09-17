@@ -2684,3 +2684,17 @@ Emoji
 長い溶岩流
 [Crater rim width]
 火口縁の幅
+[Honeycomb isle]
+ハニカム島
+[Blocks per colony]
+コロニーごとの街区数
+[Rubble]
+瓦礫
+[Outline gaps]
+輪郭の切れ目
+[Craters per colony]
+コロニーごとのクレーター数
+[Wheat fields]
+小麦畑
+[Bridges]
+橋

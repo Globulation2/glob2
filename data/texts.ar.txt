@@ -2686,3 +2686,17 @@ Emoji
 الألسنة الطويلة
 [Crater rim width]
 عرض حافة الفوهة
+[Honeycomb isle]
+جزيرة قرص العسل
+[Blocks per colony]
+كتل لكل مستعمرة
+[Rubble]
+الأنقاض
+[Outline gaps]
+ثغرات المخططات
+[Craters per colony]
+فوهات لكل مستعمرة
+[Wheat fields]
+حقول القمح
+[Bridges]
+الجسور
