@@ -2776,3 +2776,21 @@ Emoji
 双泉
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 冲积扇山坡太窄，容不下基地；请使用更大的地图、更宽的山脉间距、更窄的山脊或更小的盐湖。
+[Central Quarry]
+中央采石场
+[Quarry size]
+采石场大小
+[Sand bars]
+沙洲
+[Woodland]
+林地
+[Central Quarry needs at least two colonies.]
+中央采石场至少需要两个殖民地。
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+湖泊放不进这张地图；请使用更小的湖泊或更大的地图。
+[A sand bar did not reach the island.]
+有一条沙洲没有连到岛上。
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+这张地图容纳不下这么多殖民地；请使用更大的地图或减少殖民地数量。
+[The island has no room for its quarry; use a bigger island.]
+岛上没有放置采石场的空间；请使用更大的岛屿。

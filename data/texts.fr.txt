@@ -2790,3 +2790,21 @@ Cône allongé
 Sources jumelles
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Les piémonts alluviaux sont trop étroits pour les bases ; utilisez une carte plus grande, un plus grand espacement des chaînes, des crêtes plus étroites ou des lacs salés plus petits.
+[Central Quarry]
+Carrière centrale
+[Quarry size]
+Taille de la carrière
+[Sand bars]
+Bancs de sable
+[Woodland]
+Forêts
+[Central Quarry needs at least two colonies.]
+Carrière centrale nécessite au moins deux colonies.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+Le lac ne tient pas sur cette carte ; utilisez un lac plus petit ou une carte plus grande.
+[A sand bar did not reach the island.]
+Un banc de sable n'a pas atteint l'île.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Cette carte n'a pas assez de place pour autant de colonies ; utilisez une carte plus grande ou moins de colonies.
+[The island has no room for its quarry; use a bigger island.]
+L'île n'a pas la place pour sa carrière ; utilisez une île plus grande.

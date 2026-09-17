@@ -2776,3 +2776,21 @@ Quạt dài
 Suối đôi
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Sườn quạt bồi tích quá hẹp cho các căn cứ; hãy dùng bản đồ lớn hơn, khoảng cách dãy núi rộng hơn, sống núi hẹp hơn hoặc hồ muối nhỏ hơn.
+[Central Quarry]
+Mỏ đá trung tâm
+[Quarry size]
+Kích thước mỏ đá
+[Sand bars]
+Doi cát
+[Woodland]
+Rừng
+[Central Quarry needs at least two colonies.]
+Mỏ đá trung tâm cần ít nhất hai thuộc địa.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+Hồ không vừa bản đồ này; hãy dùng hồ nhỏ hơn hoặc bản đồ lớn hơn.
+[A sand bar did not reach the island.]
+Một doi cát không nối tới đảo.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Bản đồ này không đủ chỗ cho số thuộc địa này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[The island has no room for its quarry; use a bigger island.]
+Đảo không đủ chỗ cho mỏ đá; hãy dùng đảo lớn hơn.

@@ -53,6 +53,7 @@
 #include "HoneycombIsleGenerator.h"
 #include "KarstTowersGenerator.h"
 #include "BajadaGenerator.h"
+#include "CentralQuarryGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -168,7 +169,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 lavaShieldDefinition(),
 											 honeycombIsleDefinition(),
 											 karstTowersDefinition(), bajadaDefinition(),
-											 ruggedArchipelagoDefinition(),
+											 centralQuarryDefinition(), ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
 											 evergladesDefinition(),

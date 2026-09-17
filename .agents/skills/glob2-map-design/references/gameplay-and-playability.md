@@ -115,6 +115,16 @@ Stone resources make useful permanent ridges, arena walls, and sealed coasts. Th
 
 A permanent boundary also provides permanent mining frontage. Consider whether it gives everyone effortless tower ammunition or makes a supposedly scarce upgrade resource abundant. Players can build their own walls on grass: test whether a one-tile door becomes an absolute lock, and provide a wider front or an eventual alternative if permanent stalemate is not the intended game.
 
+## A scarce resource as the prize
+
+A map about one resource is designed from the engine's cost tables outward (`src/game/entities/BuildingTypes*.cpp`). For stone:
+
+- **Every level-0 building is stone-free.** Inns, hospitals, schools, pools, barracks and swarms cost none. Towers can be built without it but fire it, and walls, racetracks, markets and every level-1 and level-2 upgrade cost it. Colonies without stone still grow and train warriors, so a monopoly shows up as unarmed towers and unupgraded buildings, not as starvation.
+- **One quarry is permanent,** because stone is eternal. Its output is limited by how many workers can stand beside it, so the quarry's size is a throughput control, and its shape decides frontage: a compact knot of 9 tiles has more standing room than a line of 9.
+- **The holder has to live there.** Nothing grows on a bare island, so a holder hauls food across the only approaches. A small garden sealed against the shore (wheat and wood that can't spread over the island) gives a holder a garrison's food and wood without turning the prize into a farm.
+- **Holdable, not lockable.** All approaches landing at one place let a few towers cover them. Shore grass within tower range of that landing lets attackers answer, and swimming (a level-0 pool) is a counter the holder can't close. A player can still wall a narrow landing with the holder's unlimited stone. Decide whether that is the game, and check it in human play.
+- **Distance is part of the price.** A 70–80-step walk each way is a tax on the holder and puts the prize outside some AIs' working range entirely. Cap it in steps, not as a share of the map.
+
 ## Rewards, fairness, and evidence of fun
 
 Fruit is more than decorative variety. [Inn happiness](../../../../src/building/Misc.cpp) counts stocked fruit kinds; [food selection](../../../../src/team/TeamRouting.cpp) considers enemy food sharing, conversion eligibility, happiness, reachability, and starvation-limited travel. [Unit armor](../../../../src/unit/UnitStats.cpp) also responds to fruit consumption. A contested three-fruit orchard is therefore a meaningful strategic reward, not automatically the best prize in every setting. Compare each fruit kind and access route across starts, and test the intended conversion opportunity in a real game.

@@ -2778,3 +2778,21 @@ Long fan
 Twin springs
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.
+[Central Quarry]
+Central Quarry
+[Quarry size]
+Quarry size
+[Sand bars]
+Sand bars
+[Woodland]
+Woodland
+[Central Quarry needs at least two colonies.]
+Central Quarry needs at least two colonies.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+The lake does not fit this map; use a smaller lake or a bigger map.
+[A sand bar did not reach the island.]
+A sand bar did not reach the island.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+This map has no room for that many colonies; use a bigger map or fewer colonies.
+[The island has no room for its quarry; use a bigger island.]
+The island has no room for its quarry; use a bigger island.

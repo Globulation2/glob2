@@ -2780,3 +2780,21 @@ Długi stożek
 Bliźniacze źródła
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Stoki ze stożkami napływowymi są zbyt wąskie dla baz; użyj większej mapy, większego odstępu pasm górskich, węższych grzbietów lub mniejszych słonych jezior.
+[Central Quarry]
+Centralny kamieniołom
+[Quarry size]
+Wielkość kamieniołomu
+[Sand bars]
+Mielizny
+[Woodland]
+Lasy
+[Central Quarry needs at least two colonies.]
+Centralny kamieniołom wymaga co najmniej dwóch kolonii.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+Jezioro nie mieści się na tej mapie; użyj mniejszego jeziora lub większej mapy.
+[A sand bar did not reach the island.]
+Mielizna nie dotarła do wyspy.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Na tej mapie nie ma miejsca na tyle kolonii; użyj większej mapy lub mniejszej liczby kolonii.
+[The island has no room for its quarry; use a bigger island.]
+Na wyspie nie ma miejsca na kamieniołom; użyj większej wyspy.

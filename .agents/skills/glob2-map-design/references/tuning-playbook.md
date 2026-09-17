@@ -16,6 +16,12 @@ The causes, roughly in order of frequency:
 6. **Ambient furnishing consuming the kit's ground.** At wheat 300% and wood 0%, Braided Delta let ambient wheat, stone and fruit occupy the wood kit's bank, and the emergency top-up then planted wood inside the sand-rimmed town. Plant guaranteed kits before any ambient layer.
 7. **Room bought with distance.** Bajada's fourth revision moved each town onto dry gravel beside its fan, which doubled town room and evened food between colonies, and put the kit and the water 12–16 tiles from the swarm: every AI on seed 202 food-capped at 15–36 units, where the previous revision had grown 55–81. Wheat within 12 tiles of the swarm went from 16–56 to 0. The fix was a garden: the swarm on the fan's side of the town, the kit's wheat in a band between the ring and the streams (kept seven tiles off the town), and a small pond at the garden's far end. A pond first drawn on the kit's own ground displaced the kit and slowed the opening again; move water beside the kit, never onto it. Count wheat within 12 tiles of the swarm on every revision; the stencil being identical says nothing about where its food is.
 
+8. **A later pass that clears or trims the kit.** Passes that run after the kits can take them away without any check noticing. Central Quarry (2026-09-17) found two:
+   - A trail to the objective cut straight through one colony's kit. Its route clearing removed every deposit within a tile, and that start failed with every AI on the seed.
+   - A cosmetic trim of straight field edges removed the ambient fields round several homes, and a seed whose colonies had grown to 172–236 units food-capped at 28–115.
+
+   Protect kit tiles from every clearing pass (routes, trails, sliver clean-up) by recording what the kit planted and passing it as a keep mask. Keep look passes a fixed distance (20 tiles) off every site. Validate a wheat floor near every swarm so the next pass that eats a kit is refused rather than shipped.
+
 The remedies, compared:
 
 | Remedy | Used by | What it costs | When it is the wrong tool |
@@ -106,6 +112,7 @@ Three fairness models are in use. Choose one deliberately and validate the thing
 | --- | --- | --- | --- |
 | Construction: identical modules on a lattice or orbit (`latticeSites`, `Orbits`, `dealStarts`) | The Glacis, Allotments, Caravanserai, Forts, Hills, Savannah, Emoji's crossing ring | Same home, same kit, same walk to the first objective; stencils stamped by quarter turns (`turnStencilTile`) copy a whole home exactly (The Glacis' forts, Allotments' villages, Caravanserai's home oases), and Caravanserai proves equal caravanserai costs with `unevenCosts` | Neighbours: which rival is nearest and what lies between; lattice rows on rectangles give some homes two neighbours in a line |
 | Search: candidate arrangements scored on the finished layout | Hedgerow Country (territory times contact ratio), Continents (fertile window, catchment floor, recentring with an undo when rivals come too close), Emoji (site refinement by the best fertile tiles plus room), Plantations and Braided Delta (farthest-point over islands, then dealt) | Bounded inequality in the measured quantity | Anything unmeasured; Hedgerow Country ships maps with a 7:1 expansion ratio and says so |
+| Search in a walk band round a shared objective: sites spread by walking distance (`farthestSites`) only among candidates within ±(walk ÷ 14) steps of a target walk to the prize, with floors on the swimming distance and on the nearest rival | Central Quarry | Equal walk to the prize within twice the band; no start a short swim from it; no rival closer than the floor; all checked on the finished map | Neighbours and the ring's shape. When every route to the prize lands at one place (Central Quarry's single landing), the ring of equal walk is offset toward that side, so colonies bunch on it; penalising lopsided spreads fought the geometry and refused six maps in 90. It also misses anything placed after the search: ponds dug for dry starts crossed routes and spread one 512 map's walks from 93 to 126 steps until they were kept off every site's shortest routes |
 | Measurement: the lobby keeps the best of five rolls by the start scorer | Everyone; the whole model for Continents, Drumlin field and Braided river | Rejects the worst rolls | Position bias in games: the scorer's rank correlation with win share ranges from 0.6 on good maps to negative on others |
 
 Whatever the model, deal sites to team indices with `dealStarts` before any per-team array is indexed, and sequence named-stream draws in separate statements: two `bounded()` calls inside one expression are evaluated in compiler-dependent order, and both Forts and Rice Terraces shipped lattices that differed per platform until they were split.
@@ -194,6 +201,19 @@ A generator can be under the fair-map floor and still have a doomed start on a t
 maps, because the floor averages over maps. Read the per-map counts and the per-start economy
 before the headline number.
 
+## A shared prize the AIs must want and a person must hold
+
+A map whose whole game is one contested site (Central Quarry's stone isle, 2026-09-17) raises three questions that fairness and the economy don't answer:
+
+- **Will the AIs go for it?** At walks of 80–100 steps from the homes, the quarry went almost unmined in the first round of games: at most 4 stone per team on seed 1. With walks capped at 70 steps (more on bigger maps and with more colonies), Nicowar and Cabino mined 20–350 stone per team. Maxima never did, because it counts stone only within 20 tiles of its own buildings. Measure stone per team (resource 3 in `GLOB2_MEASURE`) before anything else. Record an AI that ignores the prize as a limit rather than bending the map to it.
+- **Is holding it decisive?** Read the top miner's share of the stone, and whether the top miner was the biggest colony, over a set of games. Over eight review rounds the share went from a shared mine (about 45%, the biggest colony in 3 of 8 games) to a contest (50%, the biggest in 6 of 8, three eliminations). The changes that did it:
+  - every sand bar landing at one place on the island, where a couple of towers cover all of them;
+  - building room left at each bar's shore end;
+  - a small sealed garden of wheat and wood on the island, so a holder can build and feed a garrison there.
+  
+  Check that nobody is locked out: every colony still mined stone in every game.
+- **Can a person hold it?** The AIs never garrison a chokepoint, so no AI game tests the holdability the geometry was built for. Say so in the PR, and give the maintainer a playtest checklist: does a two-tower landing hold, is swimming a fair counter, is the haul tolerable, and does the holder's snowball feel earned.
+
 ## Route protection: which barrier for which promise
 
 | Promise | Mechanism | Generators | Validation |
@@ -235,6 +255,12 @@ A maintainer meets a new map as a preview before any number, and what the previe
 | The same home stamp on every map (the fractal maps' one parterre, Forts' yard always left of its plots, Lava shield's one plain square town) | However good the stamp, the second game looks like the first | Draw the home in one of several designs per map, give every colony the same one, and verify each design pinned against the previous release (see [shaped generators](shaped-generators.md#variety-without-dissolving-the-concept)). A natural concept may fray an edge; a formal one keeps its lines straight and varies the plan instead |
 | A desert of green gravel (Bajada's second revision, which made the desert grass for building room) | Grass is one green however dry it is meant to be, so the fans vanish into a park | Zone the ground instead of mixing it: gravel in a belt along the ranges beside the fans, dune sand gathering towards the basin by distance from the range, and lone scrub and outcrops on the dry gravel |
 | Every feature outlined (a sand fringe of constant width round every green shape) | A constant-width sand line on green reads as a sticker's cut edge | Fray the edge: one corner everywhere, a second and third where a noise field is high |
+| Features radiating from the prize at even angles (Central Quarry's bars and streams) | Straight spokes from a centre read as a diagram, a wheel or a spider | Fan the approaches from one landing at uneven angles. Draw streams as a Catmull-Rom curve through waypoints swayed sideways (straight legs between waypoints read as canals), with the source skewed off the radial, a width that swells, and no two streams within a dozen tiles except where they meet the lake |
+| Evenly spaced crossings (a sand ford every 24 tiles) | Beads on a string | Jitter each spacing (0.75–1.35×) and each width (±20%) |
+| A round plot with its own sand ring inside an island's beach | A ring inside a ring: a bullseye, an eye on the island | Put the plot on the shore so the beach seals half of it, stretch it along the shore, sway the seal's radius on noise, and deal its crops by noise rather than as two blobs |
+| A small resource knot grown by random frontier (a quarry) | A thin twig of single tiles | Grow it from the frontier tiles touching the most rock so far, picking at random among them: compact and still rough |
+| Fields ending in ruler-straight lines where no feature is straight | The growth probe is a square, and kits plant the most fertile ground first, so fields end along its square contours | Fray every field edge up to two tiles on noise, and bound watered fields by a noise-varied round distance from water. Keep both passes 20 tiles off every home: the first version starved a seed |
+| A band of dense fields across the top of the map | A reserve dealt to the first N tiles of a list in row order fills the top rows | Order any "first N" list by the preference it claims (patchiest first), never by index. Check wheat share by quarter of rows on a 512 preview. The shared Biomes dry reserve had this bug until Central Quarry's review (Continents moved 0–0.6% of its tiles when it was fixed) |
 | Scenery the concept names but the map lacks (a savannah with no trees on its plain, too little water to look inhabited; a river's dry terrace that is one sheet of grass) | The concept is a picture in the maintainer's head before it is a contract | Add the scenery where it cannot break the contract: lone trees only on ground whose crop growth chance is zero, so the engine never spreads them; pools where no crop is planted; one more watering hole per area, a tile more pond radius; sand patches from a periodic noise, kept off the bank strip, the structural stone and every town's room |
 
 None of these needs a new control. Each is a default, a toggle or a few tiles, plus a revision bump and regenerated fingerprints on both platforms, and each deserves the same paired tournament as any other tuning change before the numbers are trusted. Record the remark and the answer in the generator's header comments: the next designer will meet the same eye.
@@ -272,11 +298,18 @@ The author of a generator reads its previews through the design they intended. A
 
 Bajada went through five rounds (2026-09-17). Look went 5, 4.5, 6, 6, 6 out of 10 and playability 6, 7, 7, 4, 6: fixes to the look traded against the economy twice, and round four blocked the merge on a starved opening the author's own games had not yet caught. Ask for the verdict in so many words (would you block a merge, and on what), and make later rounds short verification rounds that name the previous block and the target the fix must reach (wheat within 12 tiles, 24-step yield, units on the failing seed).
 
+Central Quarry went through eight rounds (2026-09-17) with look 5, 6.5, 6, 6.5, 6.5, 7, 7.5, 8 and playability 5, 5, 5, 6, 6.5, 6.5, 7, 7.5. Twice a round's look or fairness fix cost food, and the next round caught it:
+- field trims near homes starved seed 1 in round 3;
+- halving the country lakes cut yield by a third on three seeds in round 6.
+
+Once the reviewer stopped blocking (round 4), asking it for "what would raise look and playability to 8+, with the change and its expected effect" produced the structural changes that got there: a single landing, streams, zoning, a garden and a bigger centrepiece on 512. Each later round was a short verification against the targets it had set.
+
 What made the rounds work:
 
 - **Freeze the build.** Copy the binary and the generator source to a scratch directory and point the reviewer there, so the author can keep working without moving the reviewer's target.
 - **Give it the standard, not the answer.** Point it at `AGENTS.md`, this skill and a comparable generator; list what changed since its last round and what the maintainer said, and ask for prioritised findings with evidence (seed, command, metric, file and line), a concrete fix for each and an estimated effect.
 - **Keep the same reviewer across rounds.** Its tools and reference measurements carry over, so round three compared against round two on the same seeds.
+- **Re-measure the economy after every look fix.** Yield, wheat near swarms and building sites are deterministic and cheap. A round that only checks the new picture misses the colonies it starved.
 - **Verify its proposals, don't copy them.** Some proposals the author had already made; some were simulated on terrain rather than generated. Measure the change with the reviewer's own tool after implementing it.
 
 ## What to write down

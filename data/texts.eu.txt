@@ -2790,3 +2790,21 @@ Kono luzea
 Iturburu bikiak
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Konoen maldak estuegiak dira etxeentzat; erabili mapa handiagoa, mendilerroen arteko tarte handiagoa, gailur estuagoak edo aintzira gazi txikiagoak.
+[Central Quarry]
+Erdiko harrobia
+[Quarry size]
+Harrobiaren tamaina
+[Sand bars]
+Hondar-bankuak
+[Woodland]
+Basoa
+[Central Quarry needs at least two colonies.]
+Erdiko harrobiak gutxienez bi kolonia behar ditu.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+Aintzira ez da mapa honetan sartzen; erabili aintzira txikiagoa edo mapa handiagoa.
+[A sand bar did not reach the island.]
+Hondar-banku bat ez da uhartera iritsi.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Mapa honetan ez dago leku nahikorik hainbeste koloniarentzat; erabili mapa handiagoa edo kolonia gutxiago.
+[The island has no room for its quarry; use a bigger island.]
+Uhartean ez dago lekurik harrobiarentzat; erabili uharte handiagoa.

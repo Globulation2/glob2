@@ -2780,3 +2780,21 @@ Hosszú kúp
 Ikerforrások
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 A hordalékkúpos lejtők túl keskenyek az otthonokhoz; használj nagyobb térképet, nagyobb hegyláncok közti távolságot, keskenyebb gerinceket vagy kisebb sós tavakat.
+[Central Quarry]
+Központi kőbánya
+[Quarry size]
+Kőbánya mérete
+[Sand bars]
+Homokpadok
+[Woodland]
+Erdőség
+[Central Quarry needs at least two colonies.]
+A Központi kőbányához legalább két kolónia szükséges.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+A tó nem fér el ezen a térképen; használj kisebb tavat vagy nagyobb térképet.
+[A sand bar did not reach the island.]
+Egy homokpad nem érte el a szigetet.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Ezen a térképen nincs hely ennyi kolóniának; használj nagyobb térképet vagy kevesebb kolóniát.
+[The island has no room for its quarry; use a bigger island.]
+A szigeten nincs hely a kőbányának; használj nagyobb szigetet.

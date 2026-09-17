@@ -2776,3 +2776,21 @@ Emoji
 Джерела-близнюки
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Схили з конусами виносу надто вузькі для баз; використайте більшу карту, більшу відстань між хребтами, вужчі гребені або менші солоні озера.
+[Central Quarry]
+Центральна каменоломня
+[Quarry size]
+Розмір каменоломні
+[Sand bars]
+Піщані коси
+[Woodland]
+Ліси
+[Central Quarry needs at least two colonies.]
+Для центральної каменоломні потрібно щонайменше дві колонії.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+Озеро не вміщується на цій карті; використайте менше озеро або більшу карту.
+[A sand bar did not reach the island.]
+Піщана коса не дійшла до острова.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+На цій карті немає місця для такої кількості колоній; використайте більшу карту або менше колоній.
+[The island has no room for its quarry; use a bigger island.]
+На острові немає місця для каменоломні; використайте більший острів.

@@ -2788,3 +2788,21 @@ Ventall llarg
 Fonts bessones
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Els ventalls al·luvials són massa estrets per a les bases; feu servir un mapa més gran, una separació més gran de les serralades, carenes més estretes o llacunes salades més petites.
+[Central Quarry]
+Pedrera central
+[Quarry size]
+Mida de la pedrera
+[Sand bars]
+Bancs de sorra
+[Woodland]
+Bosc
+[Central Quarry needs at least two colonies.]
+Pedrera central necessita almenys dues colònies.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+El llac no cap en aquest mapa; utilitzeu un llac més petit o un mapa més gran.
+[A sand bar did not reach the island.]
+Un banc de sorra no ha arribat a l'illa.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Aquest mapa no té espai per a tantes colònies; utilitzeu un mapa més gran o menys colònies.
+[The island has no room for its quarry; use a bigger island.]
+L'illa no té espai per a la seva pedrera; utilitzeu una illa més gran.

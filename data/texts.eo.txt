@@ -2778,3 +2778,21 @@ Longa ventumilo
 Ĝemelaj fontoj
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 La ventumilaj deklivoj estas tro mallarĝaj por la hejmoj; uzu pli grandan mapon, pli grandan interspacon de montaroj, pli mallarĝajn krestojn aŭ pli malgrandajn salajn lagojn.
+[Central Quarry]
+Centra ŝtonminejo
+[Quarry size]
+Grando de ŝtonminejo
+[Sand bars]
+Sablobenkoj
+[Woodland]
+Arbaro
+[Central Quarry needs at least two colonies.]
+Centra ŝtonminejo bezonas almenaŭ du koloniojn.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+La lago ne enteniĝas en ĉi tiu mapo; uzu pli malgrandan lagon aŭ pli grandan mapon.
+[A sand bar did not reach the island.]
+Sablobenko ne atingis la insulon.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Ĉi tiu mapo ne havas lokon por tiom da kolonioj; uzu pli grandan mapon aŭ malpli da kolonioj.
+[The island has no room for its quarry; use a bigger island.]
+La insulo ne havas lokon por sia ŝtonminejo; uzu pli grandan insulon.
