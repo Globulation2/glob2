@@ -1012,3 +1012,134 @@ nicowar and warrush sit at 0 wins, yet the 24-game eval shows 2W against both
 warrush and nicowar. Rollouts sample placements at policy-period 100; the eval
 decodes greedily at period 25. They are different policies and their win rates
 are not comparable -- a point that has now misled me twice.
+
+---
+
+# Independent review (13:30) -- and what it overturns
+
+Bradley asked for an adversarial third-party review. A separate agent was
+given the commit range and this log (not the conversation), read-only access,
+and told to find where I was fooling myself. It found a great deal. The
+findings below are its, verified by me where marked.
+
+## 1. The headline is false: the inert AI scored 5W, not 4W  [verified]
+
+The inert baseline row is `3W 2L | 1W 3L | 0W 4L | 1W 4L`. That sums to
+**five** wins. I wrote 4W/24 and carried it through the whole night. The best
+playing configuration is 5W/22. **The do-nothing AI and the best playing AI won
+the same number of games.** Every "first configuration to clear the do-nothing
+baseline" claim in this log rests on an addition error.
+
+## 2. Self-play was degrading and I called it "exploring"  [verified]
+
+`episodes.csv`, win rate by 200-episode bucket:
+
+```
+   0- 199  22.6%
+ 400- 599  18.0%
+ 800- 999  21.0%
+1200-1399  16.0%
+1600-1799  11.5%
+2000-2199   6.9%
+```
+
+Against numbi alone: 75W/251 in the first 400 episodes vs 39W/250 in the last
+400, Fisher p = 0.0002. The mix head IS moving (teacher-preset share 0.29 ->
+0.12) -- PPO is learning, and what it is learning is worse play. This is the
+clearest signal in the night's data and I read it backwards. Loop stopped;
+policy and CSV archived under `~/neurotica/archive/`.
+
+## 3. No cross-configuration conclusion in this log survives the statistics
+
+Wilson 95% intervals on k/22: 0 -> [0, .15]; 1 -> [.01, .22]; 3 -> [.05, .33];
+5 -> [.10, .43]; 6 -> [.13, .48]. Fisher, two-sided: 5 vs 1 p=0.185; 5 vs 3
+p=0.70; 6 vs 5 p=1.0; 0 vs 1 p=1.0. Detecting 0.23 -> 0.35 at 80% power needs
+~212 games per arm.
+
+So: "population gate rejected", "staffing rejected", "normalising made it
+worse, wrong in kind not scale", "PPO has not degraded the BC init", "PPO
+optimised for not losing", "ratio head: best result vs nicowar", "first win
+against castor" -- **none of these are distinguishable from noise.** And
+`eval.sh` draws a fresh generator, map seed and game seed per game, so arms are
+unpaired on top of that; it caps by wall-clock on the GPU self-play was using,
+so cap counts are load-dependent; and it never records which server flags a
+run used. I wrote a rule about n=1 and then ran every decision on n=22 as if
+that were different. It is not, at these effect sizes.
+
+## 4. "Training and deployment are aligned" is false in four ways
+
+Eval calls `net(x)` and never samples `head_mix`, so the one head PPO can now
+move for production is never exercised by eval. The per-type budget trims in
+eval but only excludes at-cap cells in self-play (which then draws k with
+replacement). The deadlock breaker exists only in eval; self-play falls to a
+uniform over ALL cells, including covered ones -- re-admitting the anchor
+hazard at a low rate. k=48/25 ticks vs k=8/100 ticks. I noticed period and
+sample, wrote "aligned", and never checked the rest.
+
+## 5. `budget_mask` is not observation-only  [the 07:05 claim is wrong]
+
+It reads `out["count"]`, which reads the pooled trunk features PPO is moving.
+So the mask at re-scoring differs from the mask that acted; a stored cell that
+becomes disallowed gets prob ~0, logp ~ -16, ratio ~ 0, and silently drops out
+of the gradient. `allclose True` held for identical weights, which is not the
+PPO situation.
+
+## 6. Anchor detection breaks when two same-type buildings touch
+
+Up/left test within one type plane: a second adjacent inn is not an anchor,
+gets DONT_CARE, is undercounted by the budget, is never restaffed, and for a
+1x1 flag the reconciler treats it as an orphan and MOVES it. The reconciler's
+own nearby-placement makes adjacency common.
+
+## 7. Smaller but real
+
+* `mix_all` guard drops the mix term for a whole batch if any episode lacks
+  one -- inflating ratios ~5x for the ones that had it.
+* The DONT_CARE harness test never places DONT_CARE at an anchor, which is the
+  case the decoder actually produces; the "never demolishes" half is vacuous.
+* `NeuroticaPolicySocket.h` still documents NPS2 / 3 bytes; `neurotica_ppo.py`
+  docstring still says the action is the latent. `TYPE_CELLS` is dead.
+* `--count-only` selects `best.pt` on P@5, which a frozen trunk cannot change,
+  so `best.pt` is always epoch 1 -- the auxiliary heads I credited with "3
+  epochs" got one. The served ratio checkpoint has count_mae 0.367, not the
+  0.3545 I logged.
+* Staffing is applied to NEWLY placed buildings too, overriding the engine's
+  `maxUnitWorking` at creation -- an under-prediction directly slows
+  construction. That is a plain alternative explanation for staffing "hurting".
+* The engine changes ARE additive per CLAUDE.md (only reachable when Neurotica
+  is selected; no save/replay format touched).
+
+## 8. The "governing lesson" is narrative fitted to noise
+
+Every instance was n=1 or p >= 0.185, and the revision from "rescale" to
+"hidden preconditions" was made to fit 0/22 vs 1/22 (p=1.0) and is
+unfalsifiable as stated. Alternatives consistent with the same data: sampling
+noise; one-epoch heads with ~40% relative error; staffing overriding creation
+defaults; the ratio re-sent every step so swarms thrash. The one part that IS
+right: heads outside the action get no policy gradient.
+
+## What stands
+
+The anchor/footprint bug and its fix (mechanism, reproducible, harness-tested).
+DONT_CARE passthrough. act/evaluate consistency under fixed weights. The data
+loader indexing. The PFSP code. The finding that non-action heads get zero
+gradient. The GUI/replay tooling. Everything else in this log that compares
+one configuration to another is unestablished.
+
+## Reviewer's recommended order, which I agree with
+
+1. A paired eval: fixed (generator, map seed, game seed) triples shared by
+   every arm, >=100 games per arm, tick cap not wall-clock, a GPU not shared
+   with self-play, server flags logged into the result. Re-measure inert,
+   `ckpt_staff`, and the archived PPO snapshots. Until this exists nothing has
+   been shown to beat doing nothing.
+2. One decode for eval and self-play; store the budget mask with the
+   trajectory instead of recomputing it from a moving trunk; deadlock-breaker
+   instead of uniform fallback; snapshot `policy.pt` every N iterations; make
+   the mix choice sticky rather than re-drawn every 100 ticks.
+3. Fix anchor detection (an anchor plane from the observation) before trusting
+   any count-budget number.
+
+The sequence/phase question is premature: tick planes are already in the
+input, so "phase" is available to the network now. The binding constraints are
+measurement and the training/deployment mismatch, not representation.
