@@ -203,15 +203,24 @@ class Problem:
 
 
 def cross_validated(dataset, features, folds=5, ridge=1e-3, seed=1, winner_only=False,
-                    problem=None):
-    """Grouped by map: every game of a map lands in the same fold."""
+                    problem=None, group=None):
+    """Cross-validate, keeping correlated contests together in one fold.
+
+    `group` names what must not be split. Contests that share the thing being
+    measured are not independent observations of it, so splitting them across
+    folds lets the fit see its own test set and reports an accuracy nobody will
+    reproduce. The fairness model groups by map, because two games on one map
+    share its starts. A win-probability fit must group by *game*, because a
+    game's hundred-odd time slices are near-identical views of one outcome.
+    """
     import numpy as np
     problem = problem or Problem(dataset, features, ridge, winner_only)
-    keys = sorted({game['map'] for game in dataset['games']})
+    group = group or (lambda game: game['map'])
+    keys = sorted({group(game) for game in dataset['games']})
     rng = random.Random(seed)
     rng.shuffle(keys)
     assignment = {key: index % folds for index, key in enumerate(keys)}
-    membership = np.array([assignment[game['map']] for game in dataset['games']])
+    membership = np.array([assignment[group(game)] for game in dataset['games']])
     scores = []
     for fold in range(folds):
         train = np.flatnonzero(membership != fold)
