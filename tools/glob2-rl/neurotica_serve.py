@@ -178,6 +178,10 @@ def main() -> int:
     ap.add_argument("--build-per-unit", type=float, default=0.0,
                     help="require this many units per building held before "
                          "allowing another; 0 disables")
+    ap.add_argument("--staffing-budget", type=float, default=0.8,
+                    help="cap total requested staffing at this fraction of "
+                         "current unit count; 0 disables the rescaling and "
+                         "sends raw teacher-scale numbers")
     ap.add_argument("--staffing", action="store_true",
                     help="send the staffing head's maxUnitWorking (NPS3). "
                          "Off sends DONT_CARE everywhere, which is the "
@@ -519,7 +523,25 @@ def main() -> int:
         # reconciler leaves those alone rather than reading a predicted 0 as
         # "unstaff this".
         if args.staffing and "workers" in out:
-            want_workers = out["workers"].float().round().clamp(0, 200).to(torch.uint8)
+            want = out["workers"].float().clamp(min=0)
+            if args.staffing_budget > 0:
+                # Teacher staffing numbers assume a teacher economy. The head
+                # learns what a building holds in a 70-worker base; applied
+                # unscaled to a 10-worker base it commits the entire workforce
+                # to whatever buildings exist, and measured that cost 5W/22 ->
+                # 1W/22. Normalise the total request to the labour actually
+                # available, which is the same correction the count budget
+                # needed: a target learned on teacher states has to be rescaled
+                # to the state the agent is really in.
+                wanted_cells = (cls > 0) & (cls != DONT_CARE)
+                total = (want * wanted_cells).flatten(1).sum(dim=1)
+                units = (x[:, 4 + MY_UNIT_SLICE.start:4 + MY_UNIT_SLICE.stop]
+                         > 0.5).flatten(1).sum(dim=1).float()
+                cap = units * args.staffing_budget
+                scale = torch.where(total > cap, cap / total.clamp(min=1e-6),
+                                    torch.ones_like(total))
+                want = want * scale.view(-1, 1, 1)
+            want_workers = want.round().clamp(0, 200).to(torch.uint8)
             staffing = torch.where((cls > 0) & (cls != DONT_CARE), want_workers,
                                    torch.full_like(cls, DONT_CARE))
         else:

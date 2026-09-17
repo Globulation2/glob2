@@ -471,3 +471,37 @@ economy. Applying those numbers to a 10-worker economy over-commits the entire
 workforce to whichever buildings exist, which is the same distribution-shift
 failure as the count budget -- a target learned on teacher states, applied to
 states this agent actually reaches. Third instance tonight.
+
+## Staffing attributed cleanly (06:25)
+
+```
+ckpt_staff, --staffing OFF:  numbi 3W2L1cap | warrush 1W5L | nicowar 1W4L1cap = 5W/22
+ckpt_staff, --staffing ON:                                                      1W/22
+```
+
+The control reproduces the 5W/22 baseline exactly, so the retrained count head
+and the NPS3 binary are exonerated and the staffing head itself causes the
+regression. Worth noting the control is a *different checkpoint* from the
+original 5W/22 (retrained count head, new binary) and landed on the same 5W --
+which is a small independent check that the 5W number is not itself noise.
+
+**Mechanism, as predicted before the control ran:** the head learns the
+staffing a building carries in a teacher economy of ~70 workers. Applied
+unscaled to a 10-worker economy it commits the entire workforce to whichever
+buildings happen to exist, starving wheat delivery -- the same failure the
+whole night has been about.
+
+This is now the third confirmed instance of one pattern, and it deserves to be
+the headline lesson of the night:
+
+> **Every BC target is conditioned on teacher states. The agent is never in a
+> teacher's state. Any target expressed in absolute quantities -- counts,
+> staffing, building totals -- has to be rescaled to the agent's actual
+> situation before it is applied.**
+
+Copy-vs-novel was the same thing (labels assume the teacher's base already
+exists). The count budget was the same thing (predictions assume the teacher's
+trajectory). Staffing is the same thing in units of labour.
+
+Testing `--staffing-budget 0.8`: scale the total staffing request to a fraction
+of the units actually alive. Server-side only, no retrain.
