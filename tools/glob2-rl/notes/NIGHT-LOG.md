@@ -93,3 +93,39 @@ Run: `~/neurotica/countrun.sh` -> `ckpt_count`, 12 epochs, ~39 min/epoch at
 Box reallocated: self-play stopped for the night. It was optimising a policy
 with the representational gap the count head addresses, so its episodes are of
 little value until this lands; restart it from the better checkpoint.
+
+## Count head, attempt 1: learned counts, destroyed placement
+
+`ckpt_count` (12 epochs, count head attached to the trunk, count_weight 1.0):
+
+```
+                 count_mae   novel_precision   P@1
+ckpt_full            --          0.185        0.554
+ckpt_count         0.116         0.035        0.268
+```
+
+The count head works: **count_mae 0.116** means it predicts per-type building
+counts to about a tenth of a building. But novel_precision fell 5x, and
+novel_precision is the deployment metric.
+
+Cause is loss scale, not the idea. The count loss sits around 0.1 while the
+building loss is ~0.004, so at count_weight=1.0 the count term dominated the
+shared encoder by ~25x and the trunk reorganised itself around counting.
+Visible in the logs: final train loss 0.0044 here against 0.0006 for the
+placement-only run.
+
+**Fix, two parts:**
+1. `out["count"] = self.head_count(pooled.detach())` -- the count head is
+   auxiliary and must never reshape the trunk.
+2. `--count-only --init <ckpt>` -- freeze everything but head_count and bolt a
+   count head onto the checkpoint that already places best. This makes the
+   trade structurally impossible rather than merely unlikely, and it is cheap:
+   332 samp/s against 116 (no backward through the trunk), ~14 min/epoch.
+
+Running as `ckpt_cnt2`. If count_mae stays near 0.1 with novel_precision
+unchanged at 0.185, the composition hypothesis can finally be tested on its
+own, with `--use-count`, against the standing 4W/24 do-nothing baseline.
+
+**General lesson:** when adding an auxiliary head to a shared trunk, compare
+the loss magnitudes before picking a weight. "Weight 1.0" is not neutral; it
+is whatever ratio the two losses happen to have.

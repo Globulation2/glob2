@@ -201,7 +201,13 @@ class NeuroticaNet(nn.Module):
         out["latent_mu"] = self.latent_mu(pooled.float())
         out["latent_logstd"] = self.latent_logstd.expand_as(out["latent_mu"])
         out["value"] = self.value(pooled.float()).squeeze(-1)
-        out["count"] = self.head_count(pooled.float())
+        # Detached: the count head is auxiliary, and must not reshape the
+        # trunk. Trained attached at count_weight=1.0 it dominated the shared
+        # encoder -- its loss is ~0.1 against the building head's ~0.004 -- and
+        # drove novel_precision from 0.185 down to 0.035 while learning counts
+        # almost exactly (count_mae 0.116). Counts are worth having only if
+        # placement survives them.
+        out["count"] = self.head_count(pooled.float().detach())
         return out
 
     def act(self, x, deterministic: bool = False):

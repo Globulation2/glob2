@@ -175,6 +175,12 @@ def main() -> int:
     ap.add_argument("--width", type=int, default=48)
     ap.add_argument("--empty-weight", type=float, default=0.02,
                     help="loss weight for the 'no building' class")
+    ap.add_argument("--init", type=str, default="",
+                    help="start from this checkpoint instead of scratch")
+    ap.add_argument("--count-only", action="store_true",
+                    help="train only the count head, everything else frozen. "
+                         "With --init this bolts a count head onto an existing "
+                         "checkpoint without touching what it already learned.")
     ap.add_argument("--count-weight", type=float, default=1.0,
                     help="weight on the per-type building-count loss")
     ap.add_argument("--novel-weight", type=float, default=4.0,
@@ -213,7 +219,21 @@ def main() -> int:
     net = NeuroticaNet(in_planes, width=args.width).to(device).to(memory_format=torch.channels_last)
     print(f"net: {count_params(net)/1e6:.2f}M params, {in_planes} input planes", flush=True)
 
-    opt = torch.optim.AdamW(net.parameters(), lr=args.lr, weight_decay=1e-4)
+    if args.init:
+        ck = torch.load(args.init, map_location=device, weights_only=False)
+        missing, _ = net.load_state_dict(ck["model"], strict=False)
+        print(f"init from {args.init}" + (f" (new: {len(missing)} tensors)" if missing else ""))
+    if args.count_only:
+        # Freeze everything but the count head, so a checkpoint that already
+        # places well keeps placing exactly as well: this cannot trade
+        # novel_precision for count accuracy, which is what the joint run did.
+        for n_, p_ in net.named_parameters():
+            p_.requires_grad = n_.startswith("head_count")
+        trainable = [p_ for p_ in net.parameters() if p_.requires_grad]
+        print(f"count-only: {sum(p_.numel() for p_ in trainable)} trainable params")
+        opt = torch.optim.AdamW(trainable, lr=args.lr, weight_decay=1e-4)
+    else:
+        opt = torch.optim.AdamW(net.parameters(), lr=args.lr, weight_decay=1e-4)
     sched = torch.optim.lr_scheduler.OneCycleLR(
         opt, max_lr=args.lr, total_steps=args.epochs * len(train_loader))
     # fp16, not bf16: torch.cuda.is_bf16_supported() returns True on sm_75 but
@@ -251,7 +271,8 @@ def main() -> int:
                 # which is precisely the failure the count head exists to fix.
                 loss_c = F.smooth_l1_loss(out["count"].float(),
                                           torch.log1p(counts))
-                loss = loss_b + 0.3 * loss_a + args.count_weight * loss_c
+                loss = (args.count_weight * loss_c if args.count_only
+                        else loss_b + 0.3 * loss_a + args.count_weight * loss_c)
             opt.zero_grad(set_to_none=True)
             scaler.scale(loss).backward()
             scaler.unscale_(opt)
