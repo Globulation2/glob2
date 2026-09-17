@@ -17,6 +17,9 @@ from __future__ import annotations
 
 import os
 import pickle
+
+# Bump whenever the contents of a Sample's label bytes change.
+LABEL_SCHEMA = 2
 import struct
 import zlib
 from dataclasses import dataclass
@@ -88,8 +91,13 @@ class NeuroticaBC(Dataset):
         self.static_cache = {}
 
         tag = f"{require_size[0]}x{require_size[1]}" if require_size else "any"
+        # LABEL_SCHEMA is in the filename on purpose: the index stores the
+        # label bytes themselves, so changing what a label contains must
+        # invalidate it. Without this, adding `workers` to the label quads
+        # silently reused an index full of triples and failed on reshape.
         cache = cache or os.path.join(
-            corpus_dir, f"index_d{delta}_w{int(winners_only)}_{tag}.pkl")
+            corpus_dir,
+            f"index_v{LABEL_SCHEMA}_d{delta}_w{int(winners_only)}_{tag}.pkl")
         if os.path.exists(cache):
             with open(cache, "rb") as fh:
                 self.samples, self.shape = pickle.load(fh)
