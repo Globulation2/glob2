@@ -649,3 +649,26 @@ agent being optimised has to be the agent being measured, and nothing in the
 PPO logs would ever have shown the difference.
 
 Self-play restarted from `ckpt_staff` with `--use-count` in the loop.
+
+## Self-play with the aligned decode (07:50)
+
+```
+                        rollout win rate      mean_return
+before (unaligned)      0.037 @ 360 games     -0.74
+after  (budget-aware)   0.059 @ 270 games     -0.78
+```
+
+Win rate is up (~16 wins in 270 against ~13 in 360) but the returns band is
+unchanged, and neither difference is large enough to call at this n. Not
+evidence of learning yet.
+
+PPO has moved: L2 drift from the BC init is **2.855** across 92 tensors, so
+the gradient is reaching the weights -- this is not the silently-frozen policy
+of the original action-space bug. The open question is whether the movement is
+an improvement, which drift cannot answer.
+
+Running the measurement that can: a 24-game eval of the live `ppo/policy.pt`
+under the same decode as the 5W/22 baseline. Same opponents, same protocol.
+If PPO is learning, it beats 5W/22; if it is drifting off a good BC init, it
+scores worse, and that would be the clearest possible argument that the
+sequence limitation -- not plumbing -- is now the binding constraint.
