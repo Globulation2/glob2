@@ -58,10 +58,15 @@ constexpr double kCrestMargin = 3;
 constexpr double kCap = 2;
 // The narrowest valley floor: a river and its beaches with walking ground either side.
 constexpr double kValleyMinimum = 16;
-// One terrace at 100% band width: five corners of rice, two of water. Real terraces are narrow and
-// many; a two-corner channel still leaves a row of pure water after the beaches, and every rice
-// tile lies within the engine's 15-tile growth probe of several channels.
-constexpr double kCropCorners = 5, kWaterCorners = 2;
+// One terrace at 100% band width: twelve corners of rice, six of water. layBeaches' eight-
+// neighbour rule, the four-corner pureness test and the wave sway's own narrowing at a turn (below)
+// each eat into a band's edges; the original five and two left both crop and water rows a single
+// tile wide at the median and often none at all, too thin for wheat to grow or spread and too thin
+// to read as an irrigation channel. These hold a plantable/pure width of at least two tiles
+// everywhere across the band-width and waviness range and three or more typical
+// (rice.crop-width.* and rice.water-width.* telemetry below). Every rice tile still lies within the
+// engine's 15-tile growth probe of several channels.
+constexpr double kCropCorners = 12, kWaterCorners = 6;
 // Stairs are five corners across, as Hills' are; valley roads three, as sand lanes elsewhere.
 constexpr double kStairHalf = 2.5, kRoadHalf = 1.5;
 // The river along the valley's middle, in corners either side of it.
@@ -71,8 +76,10 @@ constexpr double kRiverHalf = 1.5;
 // waviness control in these proportions, plus a fine fractal grain of kGrainPercent of a spacing.
 // Every contour of a hillside moves by the same amount at a point along it, so the terraces keep
 // their widths along the slope's normal and never fold; only steeper sway narrows them where the
-// hillside turns.
-constexpr std::array<double, 3> kWaveLengths{110, 60, 36}, kWaveShares{0.5, 0.3, 0.2};
+// hillside turns. Lengthened 2026-09-17 (from 110, 60, 36) so a given waviness amplitude turns more
+// gently: bigger, broader sweeps down the hillside instead of sharp doglegs, and less narrowing at
+// every turn for the same visual sway.
+constexpr std::array<double, 3> kWaveLengths{220, 120, 72}, kWaveShares{0.5, 0.3, 0.2};
 constexpr int kGrainPeriod = 24, kGrainPercent = 3;
 // The towns' starter supplies: two wheat patches on the first terrace below the town, one on either
 // slope's side, and one of wood; a quarry tile in town; and a completed inn for the first meal
@@ -314,6 +321,48 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	context.telemetry.measure("rice.stairs.per-turn", L.stairCount);
 	context.telemetry.measure("rice.river.water-corners", riverCorners);
 	context.telemetry.measure("rice.waves.first", waves[0]);
+	{
+		const auto grassPure = pureTiles(L.terrain, t, GRASS);
+		const auto waterPure = pureTiles(L.terrain, t, WATER);
+		const double heading = stripeNormal(t, L.across);
+		const int sx = int(std::lround(std::cos(heading))), sy = int(std::lround(std::sin(heading)));
+		const auto measure = [&](const std::vector<unsigned char> &pure, bool wet, const char *prefix)
+		{
+			std::vector<int> widths;
+			for (int i = 0; i < n; ++i)
+			{
+				if (!(L.row[i] >= 0 && bool(L.row[i] % 2) == wet && pure[i]))
+					continue;
+				int width = 1;
+				for (int dir : {-1, 1})
+				{
+					int x = i % t.w, y = i / t.w;
+					for (;;)
+					{
+						x += dir * sx;
+						y += dir * sy;
+						const int j = t.at(x, y);
+						if (pure[j] && L.row[j] == L.row[i])
+							++width;
+						else
+							break;
+					}
+				}
+				widths.push_back(width);
+			}
+			if (!widths.empty())
+			{
+				std::sort(widths.begin(), widths.end());
+				context.telemetry.measure((std::string(prefix) + ".min").c_str(), widths.front());
+				context.telemetry.measure((std::string(prefix) + ".p10").c_str(),
+										  widths[widths.size() / 10]);
+				context.telemetry.measure((std::string(prefix) + ".median").c_str(),
+										  widths[widths.size() / 2]);
+			}
+		};
+		measure(grassPure, false, "rice.crop-width");
+		measure(waterPure, true, "rice.water-width");
+	}
 	return L;
 }
 
@@ -532,17 +581,19 @@ GeneratorDefinition riceTerracesDefinition()
 	return {"rice-terraces",
 			52,
 			"Rice terraces",
-			1,
+			3,
 			false,
 			// One hillside at a slant of one is a single terraced slope spiralling round the torus: on
-			// a 256 map it crosses twice, with eight terraces down each side of its crest. Terraces
-			// should be most of the map (a first render with two hillsides of four terraces was
-			// mostly grass). Waviness is the long sway's amplitude in tiles.
+			// a 256 map it crosses twice. Terraces should be most of the map (a first render with two
+			// hillsides of four terraces was mostly grass); the `terraces` control asks for a count per
+			// slope but the room a slope actually holds, at a workable band width, wins (see
+			// rice.terraces.reduced telemetry) — a 256 map with one hillside fits about three at the
+			// default band width. Waviness is the long sway's amplitude in tiles.
 			{{"hillsides", "Hillsides", 1, 6, 1, 1, ControlGroup::Terrain},
 			 {"slant", "Slant", 0, 3, 1, 1, ControlGroup::Terrain},
 			 {"terraces", "Terraces per slope", 2, 12, 1, 8, ControlGroup::Terrain},
-			 {"band-width", "Contour band width", 80, 140, 10, 100, ControlGroup::Terrain},
-			 {"waviness", "Waviness", 0, 16, 2, 12, ControlGroup::Terrain},
+			 {"band-width", "Contour band width", 90, 140, 10, 100, ControlGroup::Terrain},
+			 {"waviness", "Waviness", 0, 20, 2, 16, ControlGroup::Terrain},
 			 {"stair-spacing", "Stair spacing", 24, 96, 8, 48, ControlGroup::Layout},
 			 {"home-size", "Home size", 10, 18, 1, 12, ControlGroup::Layout},
 			 GeneratorControl::toggle("valley-river", "Valley river", true, ControlGroup::Terrain),
