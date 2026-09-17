@@ -1711,7 +1711,10 @@ GeneratorDefinition centralQuarryDefinition()
 			true,
 			validateRequest,
 			validateWorld,
-			// Colonies are found by a walk-band search, not a symmetry, so no fairness tag.
-			{"terrain:natural", "feature:lakes", "feature:river", "feature:islands", "feature:forest",
+			// Tagged by the #336 vocabulary: the isle in its lake is the contested centre (as Contested
+			// commons' commons island); the streams read as rivers; woods are scenery here, not a
+			// forest map (Old growth, Locust). Colonies are found by a walk-band search, not a
+			// repeated module, so no fairness tag.
+			{"terrain:natural", "feature:lakes", "feature:islands", "feature:river",
 			 "style:contested-center", "style:wide-open"}};
 }
