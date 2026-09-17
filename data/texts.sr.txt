@@ -2752,3 +2752,9 @@ Emoji
 Четири капије
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 Реке нису нашле пут између база; користите већу мапу или мање колонија.
+[River meander]
+Кривудавост реке
+[Flooded terraces]
+Потопљене терасе
+[Sinkholes]
+Вртаче

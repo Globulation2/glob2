@@ -2824,3 +2824,9 @@ Emoji
 四門
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 河流無法在基地之間找到路徑；請使用更大的地圖或更少的殖民地。
+[River meander]
+河道蜿蜒
+[Flooded terraces]
+淹水梯田
+[Sinkholes]
+天坑

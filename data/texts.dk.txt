@@ -2828,3 +2828,9 @@ Tre porte
 Fire porte
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 Floderne fandt ingen vej mellem hjemmene; brug et større kort eller færre kolonier.
+[River meander]
+Flodens bugtning
+[Flooded terraces]
+Oversvømmede terrasser
+[Sinkholes]
+Synkehuller

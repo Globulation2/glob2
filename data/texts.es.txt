@@ -2752,3 +2752,9 @@ Tres puertas
 Cuatro puertas
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 Los ríos no encontraron paso entre las bases; usa un mapa más grande o menos colonias.
+[River meander]
+Meandro del río
+[Flooded terraces]
+Terrazas inundadas
+[Sinkholes]
+Dolinas

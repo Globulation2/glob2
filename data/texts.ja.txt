@@ -2748,3 +2748,9 @@ Emoji
 四つの門
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 本拠地の間に川を通せません。より大きなマップか、より少ない植民地を使ってください。
+[River meander]
+川の蛇行
+[Flooded terraces]
+水を張った棚田
+[Sinkholes]
+ドリーネ

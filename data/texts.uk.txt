@@ -2748,3 +2748,9 @@ Emoji
 Четверо воріт
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 Річки не знайшли шляху між базами; використайте більшу мапу або менше колоній.
+[River meander]
+Звивистість річки
+[Flooded terraces]
+Затоплені тераси
+[Sinkholes]
+Карстові лійки

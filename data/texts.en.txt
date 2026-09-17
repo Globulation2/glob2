@@ -2750,3 +2750,9 @@ Three gates
 Four gates
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 The rivers found no way between the homes; use a bigger map or fewer colonies.
+[River meander]
+River meander
+[Flooded terraces]
+Flooded terraces
+[Sinkholes]
+Sinkholes

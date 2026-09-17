@@ -2760,3 +2760,9 @@ Tres portes
 Quatre portes
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 Els rius no han trobat camí entre les bases; feu servir un mapa més gran o menys colònies.
+[River meander]
+Meandre del riu
+[Flooded terraces]
+Terrasses inundades
+[Sinkholes]
+Dolines

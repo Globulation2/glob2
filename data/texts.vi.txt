@@ -2748,3 +2748,9 @@ Ba cổng
 Bốn cổng
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 Các con sông không tìm được đường giữa các căn cứ; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[River meander]
+Độ uốn khúc của sông
+[Flooded terraces]
+Ruộng bậc thang ngập nước
+[Sinkholes]
+Hố sụt

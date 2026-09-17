@@ -2762,3 +2762,9 @@ Tre portar
 Fyra portar
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 Floderna hittade ingen väg mellan hemmen; använd en större karta eller färre kolonier.
+[River meander]
+Flodens slingrande
+[Flooded terraces]
+Översvämmade terrasser
+[Sinkholes]
+Slukhål

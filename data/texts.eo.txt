@@ -2750,3 +2750,9 @@ Tri pordegoj
 Kvar pordegoj
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 La riveroj trovis neniun vojon inter la hejmoj; uzu pli grandan mapon aŭ malpli da kolonioj.
+[River meander]
+Meandrado de rivero
+[Flooded terraces]
+Inunditaj terasoj
+[Sinkholes]
+Dolinoj

@@ -2760,3 +2760,9 @@ At nalı
 Dört kapı
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 Nehirler üsler arasında yol bulamadı; daha büyük bir harita veya daha az koloni kullanın.
+[River meander]
+Nehir kıvrımı
+[Flooded terraces]
+Su basmış teraslar
+[Sinkholes]
+Obruklar

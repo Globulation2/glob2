@@ -2752,3 +2752,9 @@ Kolme porttia
 Neljä porttia
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 Joet eivät löytäneet reittiä kotialueiden välistä; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[River meander]
+Joen mutkaisuus
+[Flooded terraces]
+Tulvitetut terassit
+[Sinkholes]
+Vajoamat

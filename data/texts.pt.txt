@@ -2758,3 +2758,9 @@ Três portões
 Quatro portões
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 Os rios não encontraram caminho entre as bases; use um mapa maior ou menos colónias.
+[River meander]
+Meandro do rio
+[Flooded terraces]
+Socalcos alagados
+[Sinkholes]
+Dolinas

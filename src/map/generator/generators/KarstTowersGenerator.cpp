@@ -68,6 +68,8 @@ constexpr double kClearingMargin = 2, kRingCore = 3, kRingOuter = 3, kBowlApron 
 constexpr double kRingWobble = 1.5;
 // The smallest home the Home size control offers, which a gap between rows must fit a river beside.
 constexpr int kSmallestHome = 12;
+// The narrowest river the River width control offers, which a crowded map narrows its rivers towards.
+constexpr int kNarrowestRiver = 4;
 // Homes whose cross-axis positions lie this close are one row.
 constexpr int kRowTolerance = 16;
 // The widest a river's band may be either side of its middle, and a river waypoint's spacing.
@@ -76,9 +78,10 @@ constexpr int kWidestBand = 24, kWaypointPitch = 32;
 // this many tiles deep (crops grow best in rows about 10 tiles wide between rows of water; the bunds
 // take a tile of each), cut across every this many tiles of river.
 constexpr int kCropRibbon = 9, kWaterRibbon = 6, kPaddyReach = 24;
-// The share (percent) of the water ribbon's paddies left dry, of the crop ribbon's flooded, and of the
-// dry ones sown with wheat at an amount of 100.
-constexpr int kFallowWater = 12, kFloodedCrop = 8, kPlantedPaddies = 60;
+// The share (percent) of the crop ribbon's paddies flooded when the Flooded terraces control is at its
+// default of 88 (the water ribbon's share; it scales with the control), and of the dry ones sown with
+// wheat at an amount of 100.
+constexpr int kFloodedCrop = 8, kPlantedPaddies = 60;
 // Lake fields' labels start here, above every river paddy's.
 constexpr int kLakeFieldLabel = 100000000;
 // Sinkhole ponds: one at every trough of the tower field deep in a thicket, this big.
@@ -162,9 +165,14 @@ void aroundHome(const Torus &t, const ShapePoint &home, int reach, Visit visit)
 			visit(t.at(hx + dx, hy + dy), dx, dy);
 }
 
-Layout design(const GenerationRequest &request, GenerationContext &context)
+const char *const kNoRiverWay =
+	"The rivers found no way between the homes; use a bigger map or fewer colonies.";
+
+// The layout with homes no bigger than `homeCap`.
+Layout designAt(const GenerationRequest &request, GenerationContext &context, int homeCap, int riverCap)
 {
 	const KarstTowersOptions o(request);
+	const int riverWidth = std::min(o.riverWidth, riverCap);
 	Layout L;
 	L.t = {1 << request.wDec, 1 << request.hDec};
 	const Torus &t = L.t;
@@ -181,7 +189,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// river; rows too close for that share a valley with no river. Rivers run along the longer side,
 	// or on a square map along whichever axis leaves more such gaps (either, drawn, on a tie).
 	const double ring = kClearingMargin + kRingWobble + kRingCore + kRingOuter + kBowlApron;
-	const double neededGap = 2 * (kSmallestHome + ring) + o.riverWidth + 6;
+	const double neededGap = 2 * (kSmallestHome + ring) + riverWidth + 6;
 	const auto gapsAlong = [&](bool alongX)
 	{
 		const int across = alongX ? t.h : t.w;
@@ -253,7 +261,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				std::min<double>(nearestRiver, std::abs(towards(homeCross(home), river.middle, across)));
 	const double spacing = nearestSiteDistance(t, L.homes);
 	L.homeRadius = std::floor(std::min<double>(
-		{double(o.homeSize), spacing / 2 - ring, nearestRiver - ring - o.riverWidth / 2.0 - 3}));
+		{double(std::min(o.homeSize, homeCap)), spacing / 2 - ring, nearestRiver - ring - riverWidth / 2.0 - 3}));
 	context.telemetry.measure("karst.home.radius-fitted", L.homeRadius);
 	context.telemetry.measure("karst.rivers", L.rivers.size());
 	context.telemetry.choice("karst.river.axis", L.alongX ? "along-width" : "along-height");
@@ -271,7 +279,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		for (const ShapePoint &home : L.homes)
 			room = std::min<double>(room, std::abs(towards(homeCross(home), river.middle, across)));
 		river.band = freeRiver ? across / 2
-							   : std::clamp(int(room - L.bowlRadius - o.riverWidth / 2.0 - 2), 0, kWidestBand);
+							   : std::clamp(int(room - L.bowlRadius - riverWidth / 2.0 - 2), 0, kWidestBand);
 	}
 	L.homeDesign =
 		o.homeDesign > 0 ? o.homeDesign - 1 : int(context.bounded("karst-home-design", 4));
@@ -289,8 +297,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const std::vector<int> field = turingPattern(t, style, context.stream("karst-pattern"));
 	const std::vector<int> thicketNoise = fractalNoise(
 		t.w, t.h, std::max(48, std::min(t.w, t.h) / 3), 2, context.stream("karst-thickets"));
-	const int thicketFrom = 32000 - o.towerDensity * 120;
-	const int sparse = percentile(field, 97);
+	const int thicketFrom = 26000 - (o.towerDensity - 50) * 240;
+	const int sparse = percentile(field, 97 - (o.towerDensity - 50) / 25);
 	const int dense = percentile(field, 60);
 	L.thicket.assign(n, 0);
 	for (int i = 0; i < n; ++i)
@@ -346,13 +354,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const std::vector<std::int64_t> nearTower = distanceSquaredTo(t, L.tower);
 	const std::vector<int> meander =
 		periodicNoise(t.w, t.h, std::max(12, o.towerSpacing), context.stream("karst-meander"));
-	const std::vector<unsigned char> riverless = dilate(t, L.bowl, freeRiver ? o.riverWidth / 2 + 2 : 0);
+	const std::vector<unsigned char> riverless = dilate(t, L.bowl, freeRiver ? riverWidth / 2 + 2 : 0);
 	std::vector<int> cost(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
 		const std::int64_t d2 = nearTower[i] < 0 ? 10000 : nearTower[i];
 		cost[i] = riverless[i] ? -1
-							: 20 + meander[i] * 160 / 65536 +
+							: 20 + int(std::int64_t(meander[i]) * o.meander * 16 / 5 / 65536) +
 								  int(std::max<std::int64_t>(0, 64 - d2) * 20);
 	}
 	std::vector<unsigned char> centre(n, 0);
@@ -373,7 +381,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			// A free river's next waypoint stays near its last, so a bowl cannot fall between the two.
 			const int wanted = freeRiver && !waypoints.empty()
 								   ? crossOf(L, waypoints.back()) + offset * 12 / std::max(1, river.band)
-								   : river.middle + offset * 7 / 10;
+								   : river.middle + std::clamp(offset * o.meander * 7 / 500, -river.band, river.band);
 			int best = -1;
 			for (int step = 0; step <= 2 * river.band && best < 0; ++step)
 				for (int side : {1, -1})
@@ -385,7 +393,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			if (best < 0)
 			{
 				L.failure =
-					"The rivers found no way between the homes; use a bigger map or fewer colonies.";
+					kNoRiverWay;
 				return L;
 			}
 			waypoints.push_back(best);
@@ -410,7 +418,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			if (walk.empty())
 			{
 				L.failure =
-					"The rivers found no way between the homes; use a bigger map or fewer colonies.";
+					kNoRiverWay;
 				return L;
 			}
 			std::reverse(walk.begin(), walk.end());
@@ -421,7 +429,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		context.telemetry.measure("karst.river.band", river.band, int(r));
 		context.telemetry.measure("karst.river.length", river.centreline.size(), int(r));
 	}
-	L.riverWater = dilateRound(t, centre, (o.riverWidth - 1) / 2.0);
+	L.riverWater = dilateRound(t, centre, (riverWidth - 1) / 2.0);
 
 	// Fords on every river, evenly spaced and half a step off the first home, so they fall between homes.
 	const int firstAlong = int(L.alongX ? L.homes[0].x : L.homes[0].y);
@@ -445,7 +453,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			const int a = river.centreline[wrapped(p - 4, count)], b = river.centreline[(p + 4) % count];
 			const double tx = t.offsetX(a % t.w, b % t.w), ty = t.offsetY(a / t.w, b / t.w);
 			const double norm = std::max(1e-6, std::hypot(tx, ty));
-			const double half = o.riverWidth / 2.0 + 3;
+			const double half = riverWidth / 2.0 + 3;
 			const double cx = river.centreline[p] % t.w + 0.5, cy = river.centreline[p] / t.w + 0.5;
 			L.fords.push_back({{cx + ty / norm * half, cy - tx / norm * half},
 							   {cx - ty / norm * half, cy + tx / norm * half},
@@ -491,7 +499,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 											  : wrapped(homeAlong(row[(j + 1) % row.size()]) - homeAlong(row[j]), length));
 		}
 		L.lakeRadius = std::min(9.0, (shortest - 2 * L.bowlRadius) / 2 - 5);
-		if (L.lakeRadius >= 4)
+		if (L.lakeRadius >= 4 && o.lakes)
 			for (const auto &row : rowHomes)
 				for (size_t j = 0; j < row.size(); ++j)
 				{
@@ -543,17 +551,20 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// alike (dolines).
 	const std::vector<std::int64_t> fromRiver = distanceSquaredTo(t, L.riverWater);
 	{
-		const std::vector<int> lowest = windowMinimum(t, field, 3 * o.towerSpacing / 2);
-		const double sinkholeFrom = o.riverWidth / 2.0 + o.paddyDepth + 10;
+		// Sinkholes set how many there are (a trough counts when nothing lower lies within the window) and,
+		// up to double, how big they grow.
+		const std::vector<int> lowest =
+			windowMinimum(t, field, std::max(4, 3 * o.towerSpacing * 100 / (2 * std::max(25, o.sinkholes))));
+		const double sinkholeFrom = riverWidth / 2.0 + o.paddyDepth + 10;
 		const std::vector<unsigned char> keepDry = dilate(t, L.bowl, 4);
 		std::vector<int> queued(n, 0), sinkholes;
 		int ponds = 0;
 		for (int i = 0; i < n; ++i)
-			if (field[i] == lowest[i] && !keepDry[i] && !L.tower[i] &&
+			if (o.sinkholes > 0 && field[i] == lowest[i] && !keepDry[i] && !L.tower[i] &&
 				fromRiver[i] > std::int64_t((sinkholeFrom) * (sinkholeFrom)))
 			{
 				growWater(
-					t, L.water, i, kSinkholeTiles, [&](int j) { return !keepDry[j]; },
+					t, L.water, i, kSinkholeTiles * std::min(o.sinkholes, 200) / 100, [&](int j) { return !keepDry[j]; },
 					[&](int j)
 					{
 						return std::int64_t(field[j]) +
@@ -567,7 +578,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		// Sinking streams: from each sinkhole, a chain of pools along the cheapest way towards the
 		// river, round the towers, sinking into the ground before it reaches the paddies. The gaps of
 		// land between the pools keep the thickets walkable.
-		const double valleyEdge = o.riverWidth / 2.0 + o.paddyDepth + 6;
+		const double valleyEdge = riverWidth / 2.0 + o.paddyDepth + 6;
 		std::vector<unsigned char> reached = L.riverWater;
 		int streams = 0, pools = 0;
 		for (int from : sinkholes)
@@ -586,7 +597,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				if (fromRiver[at] < std::int64_t(valleyEdge * valleyEdge))
 					break;
 				growWater(
-					t, L.water, at, kStreamPoolTiles, [&](int j) { return !keepDry[j]; },
+					t, L.water, at, kStreamPoolTiles * std::min(o.sinkholes, 200) / 100, [&](int j) { return !keepDry[j]; },
 					[&](int j)
 					{
 						return std::int64_t(t.dist2(at % t.w, at / t.w, j % t.w, j / t.w)) * 100 +
@@ -610,7 +621,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			for (int dy = -4; dy <= 4; ++dy)
 				for (int dx = -4; dx <= 4; ++dx)
 					shore[t.at(int(end.x) + dx, int(end.y) + dy)] = 1;
-	const double valley = o.riverWidth / 2.0 + o.paddyDepth + 4;
+	const double valley = riverWidth / 2.0 + o.paddyDepth + 4;
 	for (int i = 0; i < n; ++i)
 	{
 		if (L.bowl[i])
@@ -748,7 +759,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	{
 		const int draw = int(context.bounded("karst-flooded", 100));
 		L.flooded[p] = !L.lakeField[p] && poolSize[p] >= 4 &&
-					   (ribbonOf[p] % 2 ? draw >= kFallowWater : draw < kFloodedCrop);
+					   (ribbonOf[p] % 2 ? draw >= 100 - o.flooded : draw < kFloodedCrop * o.flooded / 88);
 		flooded += L.flooded[p];
 	}
 	for (int i : pool)
@@ -835,6 +846,33 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 						   L.paddyOf[i] = L.paddies + int(k);
 				   });
 	return L;
+}
+
+// The layout, with the homes shrunk a step at a time while their bowls leave a river no way through, and
+// then the rivers narrowed: big homes or wide rivers on a crowded map close every gap, and smaller homes
+// or a narrower river are a better map than none.
+Layout design(const GenerationRequest &request, GenerationContext &context)
+{
+	const KarstTowersOptions o(request);
+	int home = o.homeSize, river = o.riverWidth;
+	for (;;)
+	{
+		Layout L = designAt(request, context, home, river);
+		if (L.failure != kNoRiverWay)
+			return L;
+		if (home - 2 >= kSmallestHome)
+		{
+			home -= 2;
+			context.telemetry.fallback("karst.home.shrunk-for-river", "Homes shrank so a river could pass.");
+		}
+		else if (river - 2 >= kNarrowestRiver)
+		{
+			river -= 2;
+			context.telemetry.fallback("karst.river.narrowed", "The rivers narrowed to pass between the homes.");
+		}
+		else
+			return L;
+	}
 }
 
 bool generate(Game &game, GenerationContext &context)
@@ -995,6 +1033,8 @@ KarstTowersOptions::KarstTowersOptions(const GenerationRequest &r)
 	: towerSpacing(r.option("tower-spacing")), towerDensity(r.option("tower-density")),
 	  homeDesign(r.option("home-design")), riverWidth(r.option("river-width")),
 	  fords(r.option("fords")), paddyDepth(r.option("paddy-depth")), homeSize(r.option("home-size")),
+	  meander(r.option("river-meander")), sinkholes(r.option("sinkholes")), flooded(r.option("flooded-terraces")),
+	  lakes(r.option("lakes")),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")), algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))
 {
@@ -1009,14 +1049,18 @@ GeneratorDefinition karstTowersDefinition()
 			false,
 			{{"tower-spacing", "Tower spacing", 14, 32, 2, 16, ControlGroup::Terrain},
 			 {"tower-density", "Tower density", 0, 100, 10, 50, ControlGroup::Terrain},
-			 {"river-width", "River width", 4, 16, 1, 7, ControlGroup::Terrain},
+			 {"river-width", "River width", kNarrowestRiver, 16, 1, 7, ControlGroup::Terrain},
 			 {"fords", "Fords", 1, 6, 1, 2, ControlGroup::Terrain},
-			 {"paddy-depth", "Paddy depth", 8, 40, 2, 24, ControlGroup::Terrain},
+			 {"paddy-depth", "Paddy depth", 16, 40, 2, 24, ControlGroup::Terrain},
+			 {"river-meander", "River meander", 0, 100, 10, 50, ControlGroup::Terrain},
+			 {"flooded-terraces", "Flooded terraces", 0, 100, 4, 88, ControlGroup::Terrain},
+			 {"sinkholes", "Sinkholes", 0, 300, 25, 100, ControlGroup::Terrain},
+			 GeneratorControl::toggle("lakes", "Lakes", true, ControlGroup::Layout),
 			 GeneratorControl::choice("home-design", "Home design",
 									  {"Random", "Horseshoe", "Twin gates", "Three gates", "Four gates"},
 									  0, ControlGroup::Layout),
 			 {"home-size", "Home size", kSmallestHome, 22, 1, 15, ControlGroup::Layout},
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+			 GeneratorControl::percentage("wheat-amount", "Wheat amount", 200),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("algae-amount", "Algae amount"),
 			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},

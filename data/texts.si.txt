@@ -2752,3 +2752,9 @@ Troje vrat
 Četvero vrat
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 Reke niso našle poti med domovi; uporabite večji zemljevid ali manj kolonij.
+[River meander]
+Vijugavost reke
+[Flooded terraces]
+Poplavljene terase
+[Sinkholes]
+Vrtače

@@ -5,6 +5,7 @@
 struct KarstTowersOptions
 {
 	int towerSpacing, towerDensity, homeDesign, riverWidth, fords, paddyDepth, homeSize;
+	int meander, sinkholes, flooded, lakes;
 	int wheat, wood, algae, fruit; // percentages of the default amounts
 	explicit KarstTowersOptions(const GenerationRequest &r);
 };

@@ -2760,3 +2760,9 @@ Tri brány
 Štyri brány
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 Rieky nenašli cestu medzi domovmi; použite väčšiu mapu alebo menej kolónií.
+[River meander]
+Meandrovanie rieky
+[Flooded terraces]
+Zaplavené terasy
+[Sinkholes]
+Závrty
