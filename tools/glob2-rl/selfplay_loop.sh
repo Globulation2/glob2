@@ -26,7 +26,7 @@ sleep 2
 
 CUDA_VISIBLE_DEVICES=1 setsid nohup $VENV $ROOT/rl/neurotica_serve.py \
   --checkpoint "$ROOT/ppo/policy.pt" --socket $SOCK --device cuda \
-  --max-batch 16 --sample --record-dir "$ROLL" \
+  --max-batch 16 --sample --use-count --record-dir "$ROLL" \
   --reload-from "$ROOT/ppo/policy.pt" \
   > $ROOT/serve_sp.log 2>&1 < /dev/null &
 sleep 12

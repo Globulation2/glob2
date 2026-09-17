@@ -623,3 +623,29 @@ Two options, both his call:
 * condition the count head on game phase rather than current holdings, so early
   targets mean "what to build NEXT" rather than "what a team like me holds".
   Cheaper, keeps the policy stateless.
+
+## Self-play was training a different agent than the eval measured (07:05)
+
+```
+iter   4:  mean_return -0.21   <- small-sample noise, not progress
+iter 143:  mean_return -0.74     rollout win rate 0.037
+```
+
+Cause found: the eval decodes with `--use-count`, but the `--sample` path
+skipped the budget entirely (deliberately -- PPO must be credited for exactly
+the placements it sampled). So PPO was optimising a policy with no composition
+control, while every measurement of quality used one. Training and deployment
+were different agents.
+
+Fixed by sampling FROM the budgeted candidate set rather than trimming after:
+`NeuroticaNet.budget_mask` zeroes cells whose best type is already at its
+predicted count, and both `act_placements` and `evaluate_placements` apply it.
+The mask depends only on the observation, so it is reconstructible at training
+time and the credit stays honest. Verified end to end: logp when acting and
+logp when re-scoring are identical (-77.6325, `allclose` True).
+
+This is the same class of mistake as the decode bugs, one level up -- the
+agent being optimised has to be the agent being measured, and nothing in the
+PPO logs would ever have shown the difference.
+
+Self-play restarted from `ckpt_staff` with `--use-count` in the loop.

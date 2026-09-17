@@ -313,7 +313,11 @@ def main() -> int:
 
         with torch.no_grad(), torch.autocast("cuda", dtype=torch.float16):
             if args.sample:
-                out = net.act_placements(x, existing, k=args.placements)
+                # Same budget the greedy path applies, so PPO is credited
+                # for the action the deployed decode would actually take.
+                out = net.act_placements(x, existing, k=args.placements,
+                                         budget_planes=(my_buildings
+                                                        if args.use_count else None))
             else:
                 out = net(x)
         logits = out["building"].float()

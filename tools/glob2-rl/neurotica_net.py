@@ -256,30 +256,63 @@ class NeuroticaNet(nn.Module):
     # novelty.
 
     @staticmethod
-    def placement_distribution(building_logits, existing_mask):
+    def budget_mask(building_logits, count_out, existing_by_type):
+        """Cells eligible for a new placement, given the count head.
+
+        Deployment ranks cells and refuses types the team already has enough
+        of; self-play used to sample without that budget, so PPO optimised a
+        policy that is not the one being evaluated. Training and deployment
+        have to decode the same way or the gradient is for a different agent.
+
+        existing_by_type is (B, 13, H, W) of this team's building cells; the
+        count is taken over ANCHORS, matching how the labels were built.
+        """
+        marked = existing_by_type > 0.5
+        anchor = (marked & ~torch.roll(marked, 1, dims=3)
+                         & ~torch.roll(marked, 1, dims=2))
+        have = anchor.flatten(2).sum(dim=2)                       # (B,13)
+        caps = torch.expm1(count_out.float().clamp(max=6.0)).round().clamp(min=0)
+        allow = (caps - have).clamp(min=0)                        # (B,13)
+        best_type = building_logits[:, 1:].argmax(dim=1)          # (B,H,W) 0..12
+        per_cell_allow = allow.gather(1, best_type.flatten(1))    # (B,HW)
+        occupied = marked.any(dim=1).flatten(1)
+        return (per_cell_allow > 0) & ~occupied
+
+    @staticmethod
+    def placement_distribution(building_logits, existing_mask, allowed=None):
         """Categorical over empty cells, weighted by P(any building there)."""
         probs = torch.softmax(building_logits.float(), dim=1)
         occupied = 1.0 - probs[:, 0]
         cand = occupied.masked_fill(existing_mask, 0.0).flatten(1)
+        if allowed is not None:
+            cand = cand * allowed.float()
         # A row with no legal candidate would make a degenerate distribution;
         # fall back to uniform so sampling stays defined.
         empty_rows = cand.sum(dim=1, keepdim=True) <= 0
         cand = torch.where(empty_rows, torch.ones_like(cand), cand)
         return torch.distributions.Categorical(probs=cand / cand.sum(dim=1, keepdim=True))
 
-    def act_placements(self, x, existing_mask, k: int = 8):
+    def act_placements(self, x, existing_mask, k: int = 8, budget_planes=None):
         out = self.forward(x)
-        dist = self.placement_distribution(out["building"], existing_mask)
+        allowed = (None if budget_planes is None else
+                   self.budget_mask(out["building"], out["count"], budget_planes))
+        dist = self.placement_distribution(out["building"], existing_mask, allowed)
         idx = dist.sample((k,)).T.contiguous()            # (B, k)
         out["placements"] = idx
         out["logp"] = dist.log_prob(idx.T).sum(dim=0)     # (B,)
         out["entropy"] = dist.entropy()
         return out
 
-    def evaluate_placements(self, x, idx, existing_mask):
-        """Re-score stored placements under the current policy, for PPO."""
+    def evaluate_placements(self, x, idx, existing_mask, budget_planes=None):
+        """Re-score stored placements under the current policy, for PPO.
+
+        budget_planes must be passed whenever the server sampled with it, or
+        the re-scored distribution is not the one that acted.
+        """
         out = self.forward(x)
-        dist = self.placement_distribution(out["building"], existing_mask)
+        allowed = (None if budget_planes is None else
+                   self.budget_mask(out["building"], out["count"], budget_planes))
+        dist = self.placement_distribution(out["building"], existing_mask, allowed)
         return dict(logp=dist.log_prob(idx.T).sum(dim=0),
                     entropy=dist.entropy(),
                     value=out["value"])

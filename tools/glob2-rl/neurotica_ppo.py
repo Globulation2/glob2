@@ -148,7 +148,12 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
             # re-scored distribution would not be the one that acted.
             existing = x[:, 4 + 8:4 + 8 + 13].amax(dim=1) > 0.5
             with torch.autocast("cuda", dtype=torch.float16):
-                ev = net.evaluate_placements(x, ab, existing)
+                # Budget planes are the team's own building planes. The mask is
+                # recomputed from the observation, so it is identical to the one
+                # the server applied when the action was sampled -- otherwise
+                # the re-scored distribution is not the one that acted.
+                ev = net.evaluate_placements(
+                    x, ab, existing, budget_planes=x[:, 4 + 8:4 + 8 + 13])
             ratio = (ev["logp"] - torch.from_numpy(logp_old[idx]).to(device)).exp()
             a = torch.from_numpy(adv[idx]).to(device)
             pg = -torch.min(ratio * a,
