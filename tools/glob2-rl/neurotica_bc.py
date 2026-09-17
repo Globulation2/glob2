@@ -77,15 +77,22 @@ def evaluate(net, loader, device, weights, limit_batches=40):
     # within NEAR_RADIUS tiles of it.
     near_hits = 0
     near_total = 0
-    for i, (obs, building, areas) in enumerate(loader):
+    count_err = count_n = 0.0
+    for i, (obs, building, areas, counts) in enumerate(loader):
         if i >= limit_batches:
             break
         obs = obs.to(device, non_blocking=True).to(memory_format=torch.channels_last)
         building = building.to(device, non_blocking=True)
         areas = areas.to(device, non_blocking=True)
+        counts = counts.to(device, non_blocking=True)
         with torch.autocast("cuda", dtype=torch.float16):
             out = net(obs)
             loss = F.cross_entropy(out["building"].float(), building, weight=weights)
+        # Mean absolute error in actual buildings, not log space: the number a
+        # human can sanity-check against "a teacher holds 4-7 inns".
+        pred_counts = torch.expm1(out["count"].float().clamp(max=6.0))
+        count_err += (pred_counts - counts).abs().mean().item()
+        count_n += 1
         pred = out["building"].float().argmax(1)
         for c in range(NUM_BUILDING_CLASSES):
             p, t = (pred == c), (building == c)
@@ -147,7 +154,8 @@ def evaluate(net, loader, device, weights, limit_batches=40):
     novel_recall = novel_tp / max(novel_tp + novel_fn, 1)
     novel_precision = novel_tp / max(novel_tp + novel_fp, 1)
     prec_at = {k: topk_hits[k] / max(topk_total[k], 1) for k in topk_hits}
-    return dict(p1=prec_at[1], p5=prec_at[5], p20=prec_at[20],
+    return dict(count_mae=count_err / max(count_n, 1),
+                p1=prec_at[1], p5=prec_at[5], p20=prec_at[20],
                 near1=near_hits / max(near_total, 1),
                 loss=tot_loss / max(tot_n, 1), recall=recall, precision=precision,
                 f1=2 * recall * precision / max(recall + precision, 1e-9),
@@ -167,6 +175,8 @@ def main() -> int:
     ap.add_argument("--width", type=int, default=48)
     ap.add_argument("--empty-weight", type=float, default=0.02,
                     help="loss weight for the 'no building' class")
+    ap.add_argument("--count-weight", type=float, default=1.0,
+                    help="weight on the per-type building-count loss")
     ap.add_argument("--novel-weight", type=float, default=4.0,
                     help="extra per-cell loss weight on cells the label occupies "
                          "but the observation does not — the only cells where a "
@@ -217,10 +227,11 @@ def main() -> int:
     for epoch in range(args.epochs):
         t_epoch = time.time()
         run_loss, run_n = 0.0, 0
-        for obs, building, areas in train_loader:
+        for obs, building, areas, counts in train_loader:
             obs = obs.to(device, non_blocking=True).to(memory_format=torch.channels_last)
             building = building.to(device, non_blocking=True)
             areas = areas.to(device, non_blocking=True)
+            counts = counts.to(device, non_blocking=True)
             # Per-cell weighting toward the novel cells. Without it the loss is
             # dominated by cells whose answer is already sitting in the input,
             # and the net learns to copy: measured, that gives COPY recall 0.998
@@ -236,7 +247,11 @@ def main() -> int:
                                            weight=weights, reduction="none")
                 loss_b = (per_cell * cell_w).sum() / cell_w.sum()
                 loss_a = F.binary_cross_entropy_with_logits(out["areas"].float(), areas)
-                loss = loss_b + 0.3 * loss_a
+                # log1p so the loss is not dominated by the commonest types --
+                # which is precisely the failure the count head exists to fix.
+                loss_c = F.smooth_l1_loss(out["count"].float(),
+                                          torch.log1p(counts))
+                loss = loss_b + 0.3 * loss_a + args.count_weight * loss_c
             opt.zero_grad(set_to_none=True)
             scaler.scale(loss).backward()
             scaler.unscale_(opt)

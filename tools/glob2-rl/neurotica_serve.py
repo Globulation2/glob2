@@ -40,6 +40,16 @@ MAGIC = b"NPS2"
 # 8 resources, 13 own buildings, level/site/workers, 13 enemy buildings,
 # ally, then units.
 MY_BUILDING_SLICE = slice(8, 21)
+
+# IntBuildingType order: swarm, inn, hospital, racetrack, swimmingpool,
+# barracks, school, defencetower, explorationflag, warflag, clearingflag,
+# stonewall, market. Caps are roughly the most a strong teacher holds at once
+# (measured from Nicowar and Cortex telemetry), not a strategy -- just a bound
+# that stops the marginal decode running away.
+TYPE_CAPS = [6, 8, 4, 2, 2, 3, 3, 4, 2, 3, 3, 24, 2]
+# Approximate footprint cells per building, to turn marked cells back into a
+# building count. Flags and walls are 1x1; the rest are 2x2.
+TYPE_CELLS = [4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 1.0, 1.0, 1.0, 1.0, 4.0]
 ENEMY_BUILDING_SLICE = slice(24, 37)
 MY_UNIT_SLICE = slice(38, 41)
 ENEMY_UNIT_SLICE = slice(41, 44)
@@ -157,6 +167,12 @@ def main() -> int:
                          "fixed count. 0 disables (fixed --placements).")
     ap.add_argument("--max-placements", type=int, default=64,
                     help="upper bound on placements per step under --threshold")
+    ap.add_argument("--use-count", action="store_true",
+                    help="bound each type by the count head's prediction "
+                         "(requires a checkpoint trained with one)")
+    ap.add_argument("--type-caps", action="store_true",
+                    help="bound how many of each building type may be wanted "
+                         "at once (see TYPE_CAPS)")
     ap.add_argument("--top-k", action="store_true",
                     help="deterministic deployment: take the --placements "
                          "most probable cells. Without this or --sample the "
@@ -171,7 +187,8 @@ def main() -> int:
     in_planes = ckpt.get("in_planes", 60)
     width = ckpt.get("args", {}).get("width", 48)
     net = NeuroticaNet(in_planes, width=width).to(args.device)
-    net.load_state_dict(ckpt["model"])
+    # Checkpoints from before the count head exist; load what matches.
+    net.load_state_dict(ckpt["model"], strict=False)
     net.eval().to(memory_format=torch.channels_last)
     print(f"loaded {args.checkpoint}: {in_planes} planes, width {width}, "
           f"metrics {ckpt.get('metrics')}", flush=True)
@@ -343,6 +360,44 @@ def main() -> int:
             # fast as it built it. Re-asserting the observed type makes the
             # field idempotent on everything already standing, so only the k
             # new placements can ever be a change.
+            # Per-type budget. Telemetry says composition, not placement, is
+            # what loses games: on one seed Neurotica finished with swarm=48
+            # inn=57 school=19 and nothing else, against Nicowar's swarm=4
+            # inn=7 hospital=3 racetrack=2 pool=2 barracks=2 school=2 -- and
+            # 4 workers to Nicowar's 77. The model has learned the *marginal*
+            # distribution over building types, so an uncertain cell decodes to
+            # whichever type is commonest in the corpus, and thresholding turns
+            # "inn-ness everywhere" into 57 inns. A per-cell marginal field has
+            # no way to say "one more inn"; until a count head exists, bound it.
+            if args.type_caps or args.use_count:
+                if args.use_count and "count" in out:
+                    # The model's own answer to "how many of each should I
+                    # hold", which is what the per-cell marginal cannot say.
+                    caps = torch.expm1(out["count"].float().clamp(max=6.0))
+                    caps = caps.round().clamp(min=0, max=64).to(torch.long)
+                else:
+                    caps = torch.tensor(TYPE_CAPS, device=cls.device).unsqueeze(0)
+                cells = torch.tensor(TYPE_CELLS, device=cls.device)
+                have = my_buildings.flatten(2).gt(0.5).sum(dim=2)          # (B,13) cells
+                have = (have.float() / cells).ceil().to(torch.long)        # -> buildings
+                allow = (caps - have).clamp(min=0)                         # (B,13)
+                bt = best_type.flatten(1)                                  # (B,HW) 1..13
+                # NB: not `sel` -- that name is the selectors object driving
+                # the server loop, and shadowing it crashes on the next poll.
+                for t in range(len(TYPE_CAPS)):
+                    of_type = keep & (bt == (t + 1))
+                    over = of_type.sum(dim=1) > allow[:, t]
+                    if not bool(over.any()):
+                        continue
+                    ranked = occ.masked_fill(~of_type, -1.0).argsort(dim=1, descending=True)
+                    rank_pos = torch.empty_like(ranked)
+                    rank_pos.scatter_(1, ranked,
+                                      torch.arange(ranked.shape[1], device=cls.device)
+                                      .expand_as(ranked))
+                    within = rank_pos < allow[:, t].unsqueeze(1)
+                    keep = torch.where(over.unsqueeze(1) & of_type,
+                                       of_type & within, keep)
+
             observed_type = (my_buildings.argmax(dim=1).to(torch.uint8) + 1)
             field = torch.where(existing, observed_type, torch.zeros_like(cls))
             flat = field.flatten(1)

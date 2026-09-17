@@ -168,22 +168,28 @@ class NeuroticaBC(Dataset):
             tick_planes], axis=0)
 
         building = np.zeros((s.h, s.w), dtype=np.int64)
+        # One triple per building, so a bincount over the type column is the
+        # exact per-type building count -- not a cell count.
+        counts = np.zeros(13, dtype=np.float32)
         if s.label_buildings:
             triples = np.frombuffer(s.label_buildings, dtype=np.int16).reshape(-1, 3)
             inside = (triples[:, 0] >= 0) & (triples[:, 0] < s.w) & \
                      (triples[:, 1] >= 0) & (triples[:, 1] < s.h)
             t3 = triples[inside]
             building[t3[:, 1], t3[:, 0]] = t3[:, 2] + 1
+            valid = (t3[:, 2] >= 0) & (t3[:, 2] < 13)
+            counts = np.bincount(t3[valid, 2], minlength=13).astype(np.float32)
         a = np.frombuffer(zlib.decompress(s.label_areas), dtype=np.uint8).reshape(s.h, s.w)
         areas = np.stack([((a & 1) != 0), ((a & 2) != 0),
                           ((a & 4) != 0)]).astype(np.float32)
 
         return (torch.from_numpy(obs), torch.from_numpy(building),
-                torch.from_numpy(areas))
+                torch.from_numpy(areas), torch.from_numpy(counts))
 
 
 def collate(batch):
     obs = torch.stack([b[0] for b in batch])
     building = torch.stack([b[1] for b in batch])
     areas = torch.stack([b[2] for b in batch])
-    return obs, building, areas
+    counts = torch.stack([b[3] for b in batch])
+    return obs, building, areas, counts

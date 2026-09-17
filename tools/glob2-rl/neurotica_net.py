@@ -158,6 +158,15 @@ class NeuroticaNet(nn.Module):
         self.head_building = nn.Conv2d(head_ch, NUM_BUILDING_CLASSES, 1)
         self.head_score = nn.Conv2d(head_ch, 1, 1)
         self.head_areas = nn.Conv2d(head_ch, 3, 1)
+        # How many of each building type the team should HOLD. The per-cell
+        # building head is a marginal -- it says where inn-ness is high, never
+        # how many inns to own -- so decoding it by threshold or top-k turns
+        # "inn-ness everywhere" into dozens of inns. Measured: swarm=48 inn=57
+        # against a teacher's 4 and 7. Count is a global judgement, so it reads
+        # the pooled bottleneck like value does, and is trained on log1p counts
+        # so the loss is not dominated by the commonest types.
+        self.head_count = nn.Sequential(nn.Linear(bottleneck, 128), nn.SiLU(),
+                                        nn.Linear(128, NUM_BUILDING_CLASSES - 1))
 
     def encode(self, x):
         x = self.stem(x)
@@ -192,6 +201,7 @@ class NeuroticaNet(nn.Module):
         out["latent_mu"] = self.latent_mu(pooled.float())
         out["latent_logstd"] = self.latent_logstd.expand_as(out["latent_mu"])
         out["value"] = self.value(pooled.float()).squeeze(-1)
+        out["count"] = self.head_count(pooled.float())
         return out
 
     def act(self, x, deterministic: bool = False):
