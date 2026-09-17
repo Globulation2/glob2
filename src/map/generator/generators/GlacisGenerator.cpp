@@ -245,23 +245,15 @@ FortStencil buildStencil(int bastions, double tip, double glacis, int gates)
 		gateCurtains.push_back(best);
 		gateAngles.push_back(2 * kPi * best / bastions);
 	}
-	// The garden lane runs to the back gate's curtain (the curtain facing back when there is no
-	// back gate), splitting the gardens in two.
-	double back = kPi;
-	{
-		double nearest = 1e9;
-		for (int c = 0; c < bastions; ++c)
-		{
-			const double off = std::abs(std::remainder(2 * kPi * c / bastions - kPi, 2 * kPi));
-			if (off < nearest - 1e-9)
-			{
-				nearest = off;
-				back = 2 * kPi * c / bastions;
-			}
-		}
-		if (gateAngles.size() > 1)
-			back = gateAngles[1];
-	}
+	// The garden lane splits the gardens in two on the fort's true symmetry axis, always exactly
+	// kPi: bastion b's tip at half + 2*kPi*b/bastions always mirrors bastion (bastions-1-b)'s about
+	// the front-back line, for any bastion count. A curtain sits exactly on that axis only for an
+	// even bastion count (kPi is then also the back gate's curtain, so the lane still runs to its
+	// gate); an odd count has no curtain there, and snapping the axis to the nearest one instead
+	// (36 degrees off, for five bastions) threw the two rear gardens out of balance badly enough
+	// that one fell under its floor on every roll: five-pointed forts failed to generate at all on
+	// default settings (garden tiles 319/58/14 against a 40-tile floor).
+	const double back = kPi;
 	const double court = shape.curtain * tip - kWall;
 	// The cisterns shrink with a fort shrunk to fit a crowded map, so their beaches leave it gardens.
 	const double cistern = std::clamp(kCisternRadius * court / 18, 1.6, kCisternRadius);
@@ -399,6 +391,28 @@ FortStencil buildStencil(int bastions, double tip, double glacis, int gates)
 				spoils = spoils || s.kind[s.index(tx, ty)] == kWallTile;
 			if (!spoils)
 				s.vertex[s.index(dx, dy)] = SAND;
+		}
+	// A cistern's pond stops short of the wall's inner face the same way: stone stands on pure grass
+	// only, so a cistern whose circle reaches within beach range of a wall vertex would drown the
+	// wall instead of just its own garden. layBeaches spreads sand to every corner within one step
+	// (all eight neighbours) of a water corner, and a tile is pure only once all four of its own
+	// corners are, so a water vertex at (dx, dy) can spoil any wall tile with a corner in the 4x4
+	// block from (dx-2, dy-2) to (dx+1, dy+1), not just the four tiles it is a corner of itself. The
+	// along/across offsets that place a cistern are tuned for the curtain directly behind it; a
+	// bastion count whose curtains do not sit at even multiples of a quarter turn (five, for one) can
+	// swing a cistern's sideways offset close enough to a neighbouring curtain's wall to reach it, so
+	// every cistern vertex is checked here rather than trusted from its offset alone.
+	for (int dy = -s.extent + 1; dy <= s.extent; ++dy)
+		for (int dx = -s.extent + 1; dx <= s.extent; ++dx)
+		{
+			if (s.vertex[s.index(dx, dy)] != WATER)
+				continue;
+			bool spoils = false;
+			for (int ty = std::max(-s.extent, dy - 2); ty <= std::min(s.extent, dy + 1) && !spoils; ++ty)
+				for (int tx = std::max(-s.extent, dx - 2); tx <= std::min(s.extent, dx + 1) && !spoils; ++tx)
+					spoils = s.kind[s.index(tx, ty)] == kWallTile;
+			if (spoils)
+				s.vertex[s.index(dx, dy)] = GRASS;
 		}
 	// Where the garden line meets the wall's inner face at a slant, the corners it could not take
 	// can leave a diagonal of pure grass between the gardens and the courtyard. Any tile a crop in
@@ -1133,7 +1147,7 @@ GeneratorDefinition glacisDefinition()
 	return {"glacis",
 			39,
 			"The Glacis",
-			2,
+			3,
 			false,
 			// Fort size is the bastion tip radius: 28 holds a small town and three gardens; 20 is
 			// the least with a courtyard. Bastions Mixed deals four, five or six per map. A glacis of
