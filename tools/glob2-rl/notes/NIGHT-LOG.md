@@ -882,3 +882,49 @@ teacher economy; 2:1:1 means the same thing in a 10-worker base and a 70-worker
 one. If that reasoning is wrong the eval will say so, as it did for staffing.
 
 Harness: 72 checks, 0 failures.
+
+## The ratio head works, and the scale-free argument was still wrong (11:05)
+
+Head learns the teacher mix accurately, placement untouched:
+
+```
+warrior_share_pred  0.3426      <- teachers put ~1/3 of production into warriors
+warrior_share_true  0.3246
+novel_precision     0.1846      <- identical to ckpt_full
+p1                  0.5542
+```
+
+So teachers run about a third warriors and Neurotica has run 0% all night.
+
+End to end, same map and seed vs warrush:
+
+```
+ratio off:  warriors=0   draw at 20000   workers=9
+ratio on:   warriors=1   LOST at 8866    workers=5, foodCritical=3
+```
+
+First non-zero warrior count in the project -- and it lost a game it otherwise
+drew. Diverting a third of unit production in a 5-worker economy is fatal, and
+it only managed one warrior anyway.
+
+**I predicted this would transfer because a ratio is scale-free. That was
+wrong, and wrong in an interesting way.** The ratio is scale-free; the
+*decision* to run it is not. A teacher spends 32% on warriors while holding 70
+workers -- the affordability of that split is implicit context the ratio does
+not carry. Cloning the proportion without the precondition imports a decision
+that only makes sense at a scale the agent has not reached.
+
+Fourth instance of one pattern tonight, and the sharpest statement of it:
+
+> Teacher targets carry hidden preconditions. Counts assume a teacher's
+> trajectory, staffing assumes a teacher's labour pool, ratios assume a teacher's
+> economy can afford the split. Rescaling the number does not supply the
+> precondition.
+
+**Strategic consequence, and I think this is the right call:** stop adding
+cloned heads. The one thing that has demonstrably worked is PPO discovering
+these decisions from outcomes -- it cut flags 31 -> 4, tripled inns, dropped
+schools, all unprompted. NPS4 now makes the planes *reachable*; the value of
+that is that RL can learn to use them, not that BC can clone them. Every plane
+cloned from teachers has been a negative result (staffing 1W/22, ratio
+pending); every behaviour RL found has been an improvement.
