@@ -403,15 +403,21 @@ def main():
     if isDarwinPlatform and env["release"] and "bundle" in COMMAND_LINE_TARGETS:
         bundle.generate(env)
         dmg.generate(env)
-        env.Replace( 
-            BUNDLE_NAME="Glob2", 
-            BUNDLE_BINARIES=["src/glob2"],
+        env.Replace(
+            BUNDLE_NAME="Glob2",
+            BUNDLE_BINARIES=[GetOption('build') + "/src/glob2"],
             BUNDLE_RESOURCEDIRS=["data","maps", "campaigns"],
             BUNDLE_PLIST="darwin/Info.plist",
             BUNDLE_ICON="darwin/Glob2.icns" )
         bundle.createBundle(os.getcwd(), os.getcwd(), env)
         dmg.create_dmg("Glob2-%s"%env["VERSION"],"%s.app"%env["BUNDLE_NAME"],env)
-         
+        # createBundle/create_dmg above already did the actual work as a side effect of
+        # reading this SConscript; register the name so scons resolving "bundle" as a
+        # requested target finds an (empty) alias instead of failing to find a file by
+        # that name, which otherwise turns a successful bundle build into a reported
+        # failure.
+        env.Alias("bundle", [])
+
         #TODO mac_bundle should be dependency of Dmg:    
         import subprocess
         arch = subprocess.check_output(["uname", "-p"], text=True).strip()
