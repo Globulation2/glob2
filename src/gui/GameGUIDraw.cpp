@@ -861,10 +861,14 @@ void GameGUI::drawWinProbabilities(int x, int y)
 		// rates the alliance, not the player.
 		const int permille = chances[allianceOf[i]];
 		const int top = y + 16 + row * inc;
+		// The name is clipped rather than allowed to run into the figure: player
+		// names are arbitrary length and the panel is narrow.
+		const int percentX = x + RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET - 40;
 		globalContainer->gfx->drawFilledRect(x + 4, top + 3, 8, 8, team->color);
-		globalContainer->gfx->drawString(x + 16, top, font, displayPlayerName(*team).c_str());
-		globalContainer->gfx->drawString(x + RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET - 60, top, font,
-			FormattableString(slots[allianceOf[i]].alive ? "%0 %" : "-")
+		globalContainer->gfx->drawString(x + 16, top, font, displayPlayerName(*team).c_str(),
+			percentX - (x + 16) - 4);
+		globalContainer->gfx->drawString(percentX, top, font,
+			FormattableString(slots[allianceOf[i]].alive ? "%0%" : "-")
 				.arg(permille / 10).c_str());
 		++row;
 	}
