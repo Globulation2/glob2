@@ -175,6 +175,9 @@ def main() -> int:
                     help="multiply the predicted per-type counts before using "
                          "them as a budget; >1 lets the agent build toward the "
                          "predicted composition faster")
+    ap.add_argument("--build-per-unit", type=float, default=0.0,
+                    help="require this many units per building held before "
+                         "allowing another; 0 disables")
     ap.add_argument("--use-count", action="store_true",
                     help="bound each type by the count head's prediction "
                          "(requires a checkpoint trained with one)")
@@ -430,7 +433,26 @@ def main() -> int:
                 # ticks. Never let the budget forbid everything: the
                 # highest-scoring type always keeps one slot, so the state can
                 # walk back toward the distribution the head was trained on.
+                # Population gate. Teachers build in proportion to the
+                # population that has to staff the buildings; measured at tick
+                # 5632 on one seed: nicowar 30 units / 6 buildings, numbi 21/1,
+                # cortex 15/6, Neurotica 9/4. Numbi wins games holding ONE
+                # building, because early workers belong on wheat, not on
+                # construction -- a swarm only produces when wheat reaches it
+                # (Building TypeSteps.cpp). Neurotica ran 0.44 buildings per
+                # unit against nicowar's 0.20 and starved its own swarms.
+                if args.build_per_unit > 0:
+                    units = (x[:, 4 + MY_UNIT_SLICE.start:4 + MY_UNIT_SLICE.stop]
+                             > 0.5).flatten(1).sum(dim=1).float()
+                    budget_total = (units / args.build_per_unit).floor()
+                    saturated = have.sum(dim=1).float() >= budget_total
+                    allow = torch.where(saturated.unsqueeze(1),
+                                        torch.zeros_like(allow), allow)
+
                 stalled = allow.sum(dim=1) == 0
+                if args.build_per_unit > 0:
+                    # A saturated base is a deliberate stop, not a deadlock.
+                    stalled = stalled & ~saturated
                 if bool(stalled.any()):
                     top_cell = occ.masked_fill(~keep, -1.0).argmax(dim=1)
                     top_type = best_type.flatten(1).gather(1, top_cell.unsqueeze(1))

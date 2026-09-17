@@ -268,3 +268,50 @@ Testing `--count-scale`: multiply the predicted counts before using them as a
 budget, keeping the composition the head predicts while allowing faster
 approach to it. Sweeping 1.0 / 1.5 / 2.5 / 4.0 on a fixed seed, reading units
 and buildings at tick 5632 as the early-game measure.
+
+## Growth scale: loosening the budget makes it worse (04:45)
+
+```
+scale=1.0  draw   tick5632: units=9 bld=4   final workers=14
+scale=1.5  draw   tick5632: units=6 bld=2   final workers=18
+scale=2.5  LOSS   tick5632: units=5 bld=1   final workers= 4
+scale=4.0  LOSS                             final workers= 4
+```
+
+So the budget was never too tight. Loosening it reproduces the overextension
+pathology, and the hypothesis that slow growth came from a too-conservative
+budget is wrong. Keep scale 1.0.
+
+## Teacher control curves, same map (units/buildings)
+
+```
+tick     nicowar   numbi    cortex   Neurotica
+1536      8 / 2     8 / 1    7 / 1     5 / 1
+5632     30 / 6    21 / 1   15 / 6     9 / 4
+9728     51 /10    29 / 1   18 / 8    12 / 2
+19968   107 /21     --      22 /11    16 /14
+```
+
+**Numbi wins games holding ONE building.** It puts every early worker on wheat
+and lets the starting swarm pump units. Neurotica holds MORE buildings than
+numbi at tick 5632 and less than half the population.
+
+Buildings per unit at 5632: nicowar 0.20, numbi 0.05, cortex 0.40,
+**Neurotica 0.44**. It is over-built *relative to population*, and a swarm
+only produces when wheat reaches it (`src/building/TypeSteps.cpp:27`), so
+workers spent on construction are workers not feeding the swarm. The economy
+never bootstraps.
+
+This reframes the earlier "composition" finding: composition is now right, but
+composition was never the whole story -- *timing against population* is. The
+count head predicts what a team in a given state holds, and has no notion that
+those buildings must be staffed by units that do not exist yet.
+
+Testing `--build-per-unit`: require N units per building held before allowing
+another. Teacher-implied N is about 5 (nicowar) and far higher early.
+
+**Underlying structural gap, unchanged:** the policy socket carries 3 bytes per
+cell, so `workers`, `workersFuture`, `swarmRatio` and `priority` are never set
+by the network. Labour allocation -- which is what the early game IS -- is not
+expressible by the model at all. The population gate is a heuristic standing in
+for a head that should exist.
