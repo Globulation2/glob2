@@ -128,6 +128,12 @@ class Planner:
         else:
             ais = config.get('ais') or [a['name'] for a in self.bundles[self.builds[0]]['capabilities']['ais'] if a['id'] != 0]
             if not ais: raise ValueError('AI comparison needs selectable active AIs')
+            # AI Elo scoring wants each game's internal AI decisions available for
+            # later analysis (e.g. offense-target-team fields), not just engine
+            # outcomes -- default this on for ai_comparison specifically rather
+            # than for every Planner kind (fairness/ablations/generator_stress
+            # keep their own outputs default of none, set below via self.game()).
+            config.setdefault('outputs', {'telemetry': ['team-timeline']})
             formats = config.get('formats',['1v1','2v2','ffa'])
             for fmt in formats:
                 if fmt not in ('1v1','2v2','ffa'): raise ValueError('unknown format')

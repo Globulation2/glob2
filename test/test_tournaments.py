@@ -342,6 +342,11 @@ class AnalysisTests(unittest.TestCase):
         for seed in (1,2):
             block=[j for j in games if j['labels']['map_seed']==seed]
             self.assertEqual(sum(j['config']['players'][0]=='numbi' for j in block),2)
+        for j in games:
+            self.assertEqual(j['outputs'], {'telemetry': ['team-timeline']})  # default for ai_comparison, exhaustive path too
+        explicit=Planner('ai_comparison',{**config,'outputs':{}},[bundle]).plan()
+        for j in explicit['jobs']:
+            if j['type']=='game': self.assertEqual(j['outputs'], {})  # caller's own outputs, not overridden
         config={'id':'paired','map_seeds':[1],'held_out_map_seeds':[2],
                 'players':['cortex','nicowar'],'one_parameter':{'swarmWorkerCap':[4,7]}}
         manifest=Planner('ablations',config,[bundle]).plan()
@@ -372,6 +377,7 @@ class AnalysisTests(unittest.TestCase):
             self.assertNotIn('map', j['inputs'])  # inline generation, no generate_map dependency
             self.assertEqual(j['depends_on'], [])
             self.assertIn('generator', j['config'])
+            self.assertEqual(j['outputs'], {'telemetry': ['team-timeline']})  # AI decisions on by default
             formats.add(j['labels']['format'])
             generators.add(j['config']['generator'])
             n = 2 if j['labels']['format'] == '1v1' else 4
