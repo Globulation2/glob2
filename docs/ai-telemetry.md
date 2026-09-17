@@ -115,6 +115,36 @@ orders without executing AI decisions: it preserves loaded history but marks
 internal readouts unavailable and adds no synthetic AI history. It does not run
 shadow AIs. This telemetry is local diagnostic state, not network traffic.
 
+## Offense-engagement target (added 2026-09-17)
+
+For studying how much an FFA/2v2 outcome comes down to who got targeted first
+rather than skill, six of the eight AIs expose which enemy team they most
+recently chose to engage **offensively** (never defensive/reactive combat, and
+never fed back into any decision -- read-only telemetry, verified by checking
+every assignment site):
+
+| AI | Field | Notes |
+| --- | --- | --- |
+| Maxima | `state.budget.tactical_target_team`, `state.campaign.target_team` | Pre-existing; written only in `plan_offense()`/`control_offense()`, explicitly cleared during defensive emergencies |
+| Nicowar | `state.target` | Pre-existing; offense-only member, never touched by `compute_defense_flag_positioning()` |
+| Castor | `state.strikeTeam` (`state.strikeTeamSelected` gates validity) | Pre-existing |
+| Numbi | `AINumbi.offense.target_team` | New: the enemy team index `AINumbi::mayAttack` already computes each call |
+| Cabino | `module.PrioritizedBuildingAttack.target_team` | New: `AttackModule`/`DefenseModule` are separate class hierarchies; this exposes the `AttackModule`'s already-retained `enemy` member |
+| Cortex | `state.lastOffenseTargetTeam` | New: `placeFlagTargets()` deliberately discards team identity while ranking candidates by score alone; a parallel `flagTargetTeam[]` array (metadata only, never read by ranking/tie-break) carries it through, latched into a member when `translateActionPlaceWarFlag` commits to a slot |
+| Warrush | `AIWarrush.last_guard_area_team` | New, and different in kind from the others: `placeGuardAreas()` can guard several enemy teams' buildings in one call, so there is no single "chosen enemy" to expose -- this is only the last team touched that tick, not a prioritized target |
+| Econo | none | Confirmed zero offensive capability (`AI_ECHO_RTI_SWARM_RATIO_WARRIOR` is hardcoded 0; it never produces warriors) |
+
+All six new/verified fields report `na` (never observed) or `-1` (offense
+currently has no target) rather than a stale value when offense hasn't fired
+yet. Numbi, Cabino, Warrush and Cortex bumped `telemetrySchemaVersion()` to 2
+for the new fields; Maxima, Nicowar and Castor are unchanged since their
+existing fields already answered this without new plumbing.
+
+`tools/tournaments`'s `ai_comparison` experiments (including `sample_games`)
+default `outputs` to `{"telemetry": ["team-timeline"]}` so these fields are
+captured automatically; pass an explicit `outputs` in the experiment config to
+opt back out.
+
 ## Adding fields or an AI
 
 For an existing AI, append an `AI_FIELD` declaration to its section in the catalog.
