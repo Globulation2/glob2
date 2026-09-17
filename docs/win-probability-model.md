@@ -181,6 +181,8 @@ test asserts it.
 
 ## The winning condition
 
+![The rule in the custom game's Victory section](win-probability/custom-game-rule.png)
+
 Off by default. A normal game is unchanged: the model has no say in the outcome,
 and the statistics screen does not even show it.
 
@@ -190,6 +192,14 @@ at — the cadence it was fitted on — and never before tick 5,120, since the
 opening samples can look lopsided for reasons that mean nothing. It is placed
 last among the winning conditions, so an actual elimination or prestige win is
 always the reason a game ended when one is available on the same tick.
+
+With the rule on, the statistics screen shows each side's chance under the
+existing worker and food figures. Allies share one figure, because the model
+rates the alliance. With the rule off the panel is not drawn at all: the model
+has no say in a normal game, and putting a number on everyone's chances would
+tell players something the match does not run by.
+
+![Each side's chance of winning, under the statistics](win-probability/in-game-panel.png)
 
 The threshold is the only dial:
 
