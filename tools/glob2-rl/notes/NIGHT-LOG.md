@@ -414,3 +414,34 @@ everywhere, which is exactly pre-NPS3 behaviour. So the control and the
 treatment are the same checkpoint and the same binary, differing in one flag.
 
 Running 3 fixed seeds per arm -- `GLOB2_TEST_SEED` set this time.
+
+## Staffing A/B (05:20), fixed seeds, one checkpoint, one binary, one flag
+
+```
+              units@5632   units@19968   outcomes
+staffing off    6, 8, 4      11, --, 5    1 loss, 2 draws
+staffing on     8, 9, 9      13, 15, 5    0 losses, 3 draws
+```
+
+Early units are higher in all three seeds and there is one fewer loss. n=3, so
+this proposes rather than decides -- full eval running.
+
+But note the ceiling has barely moved: best case 15 units at tick 19968 against
+a teacher's 107. Staffing was necessary (the network genuinely could not
+allocate labour before) and is clearly not sufficient. The economy gap is
+roughly 7x and a staffing head closed maybe a tenth of it.
+
+Honest reading: the remaining gap is probably not one more missing plane. The
+teachers run a *sequenced opening* -- wheat first, swarm fed, then expand -- and
+a stateless per-tick field predicting "what a team in this state holds" has no
+representation of sequence at all. Every tick it re-derives a plausible
+snapshot; it never commits to a plan across ticks. That is the deepest
+structural limitation found tonight and it is inherent to the design, not a
+bug in it.
+
+Worth putting to Bradley rather than deciding unilaterally: the desired-state
+field is his design and it is a good one for placement -- it went from unusable
+to beating numbi 4W-1L once the anchor bug was fixed. But openings may need
+either (a) a small amount of policy state, or (b) the count head conditioned on
+game phase rather than current holdings, so early targets reflect "what to
+build NEXT", not "what a team like me has".
