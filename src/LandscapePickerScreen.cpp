@@ -538,11 +538,19 @@ void LandscapePickerScreen::render()
 		std::string note;
 		if (!enabled)
 		{
-			const auto &request = entries[i].request;
-			const auto area = MapPreviewGeometry::fit({frame.x, frame.y, frame.w, frame.h},
-													  1 << request.wDec, 1 << request.hDec);
-			ui.box({area.x, area.y, area.w, area.h}, Color(222, 226, 212), 3);
-			note = incompatible[i];
+			// The reason lives in the preview square itself, not a small caption under the name
+			// (FEEDBACK 2026-09-17: "instead of making the error message so small and underneath
+			// map name, can we move it into the main square block", "because otherwise its
+			// getting cutoff and ellipsed") - there is no map to preview for a disabled landscape
+			// anyway, so the square becomes the status message: paragraph() wraps onto as many
+			// lines as it needs rather than truncating with an ellipsis the way the old one-line
+			// caption did, and starting near the square's top rather than centring vertically
+			// gives it the square's full height to wrap into for a long reason, not just a third
+			// of it. Same muted fill a disabled control elsewhere on this screen already uses.
+			ui.box(frame, Color(222, 226, 212), 3);
+			const int pad = 12;
+			ui.paragraph(frame.x + pad, frame.y + pad, frame.w - 2 * pad, incompatible[i], "little",
+						true);
 		}
 		else if (tile.widget && tile.widget->isThumbnailLoaded())
 		{
