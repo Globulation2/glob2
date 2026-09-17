@@ -795,3 +795,48 @@ decodes greedily at period 25, so these are different policies in effect. Worth
 remembering before reading rollout numbers as eval numbers -- they are not
 comparable, which is part of how the strong-only league hid its own problem for
 so long.
+
+## What PPO actually learned (10:30) -- the clearest result of the night
+
+Behavioural diff, identical map and game seed, vs warrush:
+
+```
+                      BC init (ckpt_staff)         PPO (snap3)
+outcome               LOST at 11394 ticks          survived to 20000
+workers                4                           14
+foodCritical           4                            0
+inns                   1                            3
+schools                9                            0
+flags                 31 (11 exp/13 war/7 clear)    4
+defence towers         1                            4
+total buildings      ~52                           16
+units @5632            6                            7
+units @13824          (dead)                       11
+```
+
+Every change is one a human would call correct:
+
+* **Flags 31 -> 4.** The BC clone spammed exploration/war/clearing flags --
+  they are cheap, frequent in the corpus, and nearly free to want, so the
+  marginal field loved them. They do nothing for an economy. PPO cut them by
+  87%.
+* **Inns 1 -> 3, foodCritical 4 -> 0.** The BC clone starved. PPO learned to
+  feed itself. This is the single change that most explains the survival.
+* **Schools 9 -> 0.** Schools were the over-built type in every earlier
+  telemetry read. PPO dropped them entirely.
+* **Workers 4 -> 14**, from building 16 things instead of 52.
+* **Defence towers 1 -> 4**, against a rusher.
+
+So PPO is not making marginal adjustments -- it has reversed the specific
+pathologies behaviour cloning produced, and it found them from game outcomes
+alone. This is the first direct evidence that the RL half of the project does
+what it was built to do.
+
+It also vindicates Bradley's original call on pooling teachers rather than
+conditioning: the diffuse BC prior is a poor player but an adequate *starting
+point*, and the thing that fixes it is outcome, not more imitation.
+
+**Caveat:** one game per arm. The composition differences are far too large to
+be seed noise (52 buildings vs 16, 31 flags vs 4), but "survived vs lost" on
+n=1 is not an outcome claim. The 24-game eval of this snapshot is the outcome
+measurement and it is still running.
