@@ -1208,3 +1208,44 @@ inert AI or a dead learner.
   `episodes.csv` accumulating. iter 0 mean_return -0.16.
 
 The bar is now explicit and low: **beat 32.4% on the paired manifest.**
+
+## Three arms on the same 96 games (17:10)
+
+```
+                       W    L   cap   wins/played   score (cap = draw)
+inert                 23   48    25      24%            37.0%
+best BC, k=48 top-k   24   56    16      25%            33.3%
+unified, k=8 top-k    24   29    43      25%            47.4%
+```
+
+**Wins are identical across all three.** Nothing beats doing nothing on
+wins. What the unified decode changes is losses: 29 against 48-56. It turns
+deaths into draws (castor 3W 3L 18cap; nicowar 0W 15L 9cap). The tournament
+scores a cap as a draw, so on that scoring it leads -- and "wins of decided"
+would have hidden this entirely, which is why the summary now prints a score
+on the full denominator.
+
+This is the "learned to survive, not to win" pattern again, now visible in a
+controlled measurement rather than inferred from n=1. It is not yet a real
+result: 47.4% vs 37.0% on 96 games each is suggestive, and the intervals on
+per-opponent rows are 20-30 points wide.
+
+## The training policy is not the evaluated policy, still
+
+Same weights, same decode, one flag:
+
+```
+greedy (top-k)   vs numbi   14W  4L   7cap     78% of decided
+sampled          vs numbi    5W 23L   0cap     18%   (rollout ladder, 28 games)
+```
+
+Sampling k=8 placements from a distribution with novel precision ~0.18 mostly
+draws bad cells; the greedy top-8 draws the best ones. PPO optimises the
+sampled policy. So the arm being trained still is not the arm being scored,
+even with the decode unified -- the remaining gap is exploration itself.
+
+Running the sampled policy on the paired manifest (`ratio_sampled`) to get
+its true baseline, so PPO's progress can be read against the policy it
+actually trains. If the gap is as large as the ladder suggests, a temperature
+on the placement distribution (stored per step like the mask) is the next
+lever: sharpen sampling toward greedy while keeping enough entropy to learn.

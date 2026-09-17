@@ -179,6 +179,17 @@ def summarize(path, only=None):
                   f"win {p:5.1%}  [{lo:4.0%}, {hi:4.0%}]")
         p, lo, hi = wilson(tw, tn)
         print(f"  {'TOTAL':8} {tw:3}W of {tn:3} decided   win {p:5.1%}  [{lo:4.0%}, {hi:4.0%}]")
+        # Same denominator for every arm. "Wins of decided" hides an arm that
+        # turns losses into draws: three arms with identical wins (23/24/24 of
+        # 100) had 48, 56 and 29 losses. The tournament scores a cap as a
+        # draw, so score it as one here too.
+        played = [r for r in ar if r["winner"] != ""]
+        caps = sum(1 for r in played if r["winner"] == "-1")
+        n = len(played)
+        if n:
+            sc = (tw + 0.5 * caps) / n
+            print(f"  {'SCORE':8} (W + cap/2)/played = ({tw} + {caps}/2)/{n} = {sc:5.1%}"
+                  f"   losses {n - tw - caps}")
 
 
 def cmd_summary(args):
