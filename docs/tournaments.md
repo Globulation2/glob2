@@ -337,6 +337,24 @@ host. Generator defaults/ranges are always discoverable in its pinned catalog.
   participation through combinations and cyclic player orders. Map rotations and
   player-order rotations balance team indices and starts. Identical logical jobs
   are deduplicated, not counted as independent evidence.
+
+  An exhaustive `ai_comparison` sweep is a cross product of every dimension --
+  AIs x formats x generators x map seeds x sizes -- which reaches into the
+  hundreds of thousands of games for a broad generator sweep. Set `sample_games`
+  (an integer count) to draw a bounded random sample instead: each sample game
+  independently draws its own format, AI matchup, generator and size, submitted
+  as a single inline-generation job (`--generator`/`--map-seed` embedded directly
+  in `--run-game`, no separate `generate_map` dependency). `sample_seed` (default
+  1) makes the draw reproducible; `sizes` is a list of `generator_params`-shaped
+  dicts to choose from per sample (defaults to a single size built from
+  `generator_params`, i.e. unchanged behavior if omitted); `generators` still
+  restricts the pool as in the exhaustive design, defaulting to every non-editor-only
+  generator in the bundle's catalog rather than the exhaustive design's `[15]`.
+  `ais`/`formats`/`ticks`/`candidates` are shared with the exhaustive path and mean
+  the same thing. This is the *only* sampling path for `ai_comparison` -- do not
+  add a second, separate script that reimplements job construction outside this
+  Planner; `reanalyze` and every other analysis entry point already work on
+  either design unchanged, since both produce the same job/label shape.
 * `fairness`: colonies 4, ai nicowar. Reuses each identical map across every team
   rotation. Generator 15 supplies symmetric controls. Preserves the legacy tested
   multinomial/Fisher methods, unbiased squared-bias estimator, sampling floor,

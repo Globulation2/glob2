@@ -353,6 +353,45 @@ class AnalysisTests(unittest.TestCase):
             self.assertEqual(len(paired),3)
             self.assertEqual(len({j['inputs']['map']['job'] for j in paired}),1)
 
+    def test_sample_games_draws_independent_properties_via_inline_generation(self):
+        """sample_games is the one place ai_comparison departs from an exhaustive
+        cross product -- it must stay the only place, not a second, disconnected
+        script duplicating this logic outside the Planner."""
+        from tools.tournaments.experiments import Planner
+        bundle = {'id': 'a'*64, 'capabilities': {
+            'ais': [{'id': 1, 'name': 'numbi'}, {'id': 2, 'name': 'castor'},
+                    {'id': 3, 'name': 'warrush'}, {'id': 4, 'name': 'econo'}],
+            'generators': [{'method': 15, 'editorOnly': False}, {'method': 21, 'editorOnly': False},
+                           {'method': 0, 'editorOnly': True}]}}
+        config = {'id': 'sample', 'sample_games': 40, 'sample_seed': 7}
+        manifest = Planner('ai_comparison', config, [bundle]).plan()
+        games = [j for j in manifest['jobs'] if j['type'] == 'game']
+        self.assertEqual(len(games), 40)
+        formats, generators = set(), set()
+        for j in games:
+            self.assertNotIn('map', j['inputs'])  # inline generation, no generate_map dependency
+            self.assertEqual(j['depends_on'], [])
+            self.assertIn('generator', j['config'])
+            formats.add(j['labels']['format'])
+            generators.add(j['config']['generator'])
+            n = 2 if j['labels']['format'] == '1v1' else 4
+            self.assertEqual(len(j['config']['players']), n)
+        self.assertEqual(formats, {'1v1', '2v2', 'ffa'})
+        self.assertEqual(generators, {15, 21})  # editor-only generator never drawn
+        # Same seed is reproducible; a different one draws a different sample.
+        again = Planner('ai_comparison', config, [bundle]).plan()
+        self.assertEqual([j['id'] for j in manifest['jobs']], [j['id'] for j in again['jobs']])
+        different = Planner('ai_comparison', {**config, 'sample_seed': 8}, [bundle]).plan()
+        self.assertNotEqual([j['id'] for j in manifest['jobs']], [j['id'] for j in different['jobs']])
+        # Restricting generators/sizes/formats is respected.
+        narrow = Planner('ai_comparison', {**config, 'generators': [21], 'sizes': [{'width': 7, 'height': 8}],
+                                           'formats': ['ffa'], 'sample_games': 5}, [bundle]).plan()
+        for j in [job for job in narrow['jobs'] if job['type'] == 'game']:
+            self.assertEqual(j['config']['generator'], 21)
+            self.assertEqual(j['config']['params']['width'], 7)
+            self.assertEqual(j['config']['params']['height'], 8)
+            self.assertEqual(j['labels']['format'], 'ffa')
+
     def test_manifest_order_offline_reanalysis(self):
         from tools.tournaments.analysis import rate,observations
         from tools.tournaments.results import Results

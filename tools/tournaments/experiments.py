@@ -2,6 +2,7 @@
 import argparse
 import itertools
 import json
+import random
 from pathlib import Path
 
 from .analysis import POLICIES, reanalyze
@@ -36,6 +37,36 @@ class Planner:
                         labels={'map_seed': seed, 'generator': method, 'map': f'{method}:{seed}', 'variant': key[:8]})
             self.jobs.append(value); self.maps[key] = value
         return self.maps[key]
+
+    def sampled_game(self, rng, build, ais, methods, sizes, formats):
+        """One independently-drawn game: format, AI matchup, generator and map
+        size are each sampled fresh, using the engine's inline map-generation
+        (a single job, no separate generate_map dependency) -- for a broad but
+        bounded random sample instead of the exhaustive cross product plan()
+        otherwise builds. Reuses the same job/label shape as game() so
+        analysis.py's observations()/rate() need no changes to read either."""
+        config = self.config
+        fmt = rng.choice(formats)
+        n = 2 if fmt == '1v1' else 4
+        if fmt == '2v2':
+            a, b = rng.sample(ais, 2) if len(ais) >= 2 else (ais[0], ais[0])
+            players, alliances = [a, a, b, b], [1, 1, 2, 2]
+        else:
+            players = rng.sample(ais, n) if len(ais) >= n else [rng.choice(ais) for _ in range(n)]
+            alliances = None
+        method = rng.choice(methods)
+        params = dict(rng.choice(sizes), teams=n)
+        map_seed, game_seed = rng.getrandbits(32), rng.getrandbits(32)
+        labels = {'format': fmt, 'generator': method, 'map_seed': map_seed, 'map': f'{method}:{map_seed}',
+                  'rotation': 0, 'variant': 'baseline', 'subject_player': config.get('player', 0),
+                  'symmetric_control': method == 15, 'block': f'{method}:{map_seed}:{game_seed}'}
+        value = job('game', build, seeds={'map': map_seed, 'game': game_seed},
+                    config={'generator': method, 'params': params, 'candidates': config.get('candidates', 5),
+                            'players': players, 'ticks': config.get('ticks', 90000), 'ai_params': {},
+                            **({'alliances': alliances} if alliances else {})},
+                    outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
+                    labels=labels)
+        self.jobs.append(value)
 
     def game(self, generated, build, seed, players, rotation, fmt, variant='baseline', overrides=None, pair=None, held_out=False, alliances=None):
         config = self.config
@@ -97,25 +128,40 @@ class Planner:
         else:
             ais = config.get('ais') or [a['name'] for a in self.bundles[self.builds[0]]['capabilities']['ais'] if a['id'] != 0]
             if not ais: raise ValueError('AI comparison needs selectable active AIs')
-            for fmt in config.get('formats',['1v1','2v2','ffa']):
+            formats = config.get('formats',['1v1','2v2','ffa'])
+            for fmt in formats:
                 if fmt not in ('1v1','2v2','ffa'): raise ValueError('unknown format')
-                n = 2 if fmt=='1v1' else 4
-                if fmt == '2v2':
-                    rosters = config.get('rosters') or [[ai,ai] for ai in ais]
-                    if any(len(roster)!=2 for roster in rosters): raise ValueError('2v2 rosters must contain two AIs')
-                    schedules = [(a+b,[1,1,2,2]) for a,b in itertools.combinations(rosters,2)]
-                elif fmt == '1v1':
-                    schedules = [(list(pair),None) for pair in itertools.combinations(ais,2)]
-                else:
-                    selected = list(itertools.combinations(ais,n)) if len(ais)>=n else [tuple((ais*n)[:n])]
-                    schedules = [(list(group),None) for group in selected]
-                if not schedules: schedules=[(([ais[0]]*n),[1,1,2,2] if fmt=='2v2' else None)]
-                for method, map_seed in itertools.product(methods,seeds):
-                    generated = self.generated(method,map_seed,n)
-                    for build, game_seed, rotation, (players,allies), order in itertools.product(self.builds,game_seeds,range(n),schedules,range(n)):
-                        ordered = rotations(players)[order]
-                        groups = rotations(allies)[order] if allies else None
-                        self.game(generated,build,game_seed,ordered,rotation,fmt,alliances=groups)
+            if config.get('sample_games'):
+                # A bounded random sample instead of the exhaustive cross product
+                # below: each of sample_games draws its own format/matchup/
+                # generator/size independently, rather than every combination of
+                # every AI x format x generator x seed x size (which can reach
+                # hundreds of thousands of games -- see docs/tournaments.md).
+                rng = random.Random(config.get('sample_seed', 1))
+                sample_methods = config.get('generators') or [
+                    g['method'] for g in self.bundles[self.builds[0]]['capabilities']['generators'] if not g.get('editorOnly')]
+                sizes = config.get('sizes') or [config.get('generator_params', {})]
+                for _ in range(config['sample_games']):
+                    self.sampled_game(rng, rng.choice(self.builds), ais, sample_methods, sizes, formats)
+            else:
+                for fmt in formats:
+                    n = 2 if fmt=='1v1' else 4
+                    if fmt == '2v2':
+                        rosters = config.get('rosters') or [[ai,ai] for ai in ais]
+                        if any(len(roster)!=2 for roster in rosters): raise ValueError('2v2 rosters must contain two AIs')
+                        schedules = [(a+b,[1,1,2,2]) for a,b in itertools.combinations(rosters,2)]
+                    elif fmt == '1v1':
+                        schedules = [(list(pair),None) for pair in itertools.combinations(ais,2)]
+                    else:
+                        selected = list(itertools.combinations(ais,n)) if len(ais)>=n else [tuple((ais*n)[:n])]
+                        schedules = [(list(group),None) for group in selected]
+                    if not schedules: schedules=[(([ais[0]]*n),[1,1,2,2] if fmt=='2v2' else None)]
+                    for method, map_seed in itertools.product(methods,seeds):
+                        generated = self.generated(method,map_seed,n)
+                        for build, game_seed, rotation, (players,allies), order in itertools.product(self.builds,game_seeds,range(n),schedules,range(n)):
+                            ordered = rotations(players)[order]
+                            groups = rotations(allies)[order] if allies else None
+                            self.game(generated,build,game_seed,ordered,rotation,fmt,alliances=groups)
         # Cyclic rotations of homogeneous rosters can produce identical logical
         # jobs. Keep one occurrence: repeated identical attempts add no information.
         self.jobs = list({value['id']:value for value in self.jobs}.values())
