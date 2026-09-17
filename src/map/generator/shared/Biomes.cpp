@@ -315,6 +315,12 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 			for (int i : dry)
 				if (patch[i] >= cut)
 					fields.push_back(i);
+			// Patchiest first: plantFields keeps the head of the list, and in row order that head was
+			// the ground's top rows, so a reserve smaller than its fields lay in a band across the top
+			// of the map (Central Quarry review, 2026-09-17: 17% wheat in a 512 map's top eighth, 2% in
+			// its bottom half).
+			std::stable_sort(fields.begin(), fields.end(),
+							 [&](int a, int b) { return patch[a] > patch[b]; });
 			plantFields(map, t, fields, reserve * (100 - kit.woodPercent) / 100,
 						reserve * kit.woodPercent / 100, [&](int i) { return split[i]; });
 		}

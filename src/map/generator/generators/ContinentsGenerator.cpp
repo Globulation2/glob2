@@ -433,16 +433,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	};
 	// The least walk between any two sites, over walkable ground.
 	const auto spacingOf = [&](const std::vector<int> &sites)
-	{
-		int spacing = INT_MAX;
-		for (size_t a = 0; a < sites.size(); ++a)
-		{
-			const std::vector<int> steps = stepsFrom(t, tileMask(t, {sites[a]}), walkable);
-			for (size_t b = a + 1; b < sites.size(); ++b)
-				spacing = std::min(spacing, steps[sites[b]] < 0 ? 0 : steps[sites[b]]);
-		}
-		return sites.size() < 2 ? INT_MAX : spacing;
-	};
+	{ return closestWalk(t, sites, walkable); };
 	std::vector<unsigned char> candidates;
 	int bestSpacing = -1, bestRoom = 0;
 	bool bestChoosy = false;
@@ -551,50 +542,34 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const std::uint32_t floor = std::uint32_t(scaledCount(kFertilityFloor, o.oases));
 	if (floor > 0)
 	{
-		const auto fieldNow = [&]()
-		{
-			TerrainSketch drawn = L.terrain;
-			layBeaches(drawn, t);
-			return cropGrowthField(drawn, t);
-		};
-		Fertility::Field field = fieldNow();
 		const std::vector<int> ripple =
 			periodicNoise(t.w, t.h, 5, context.stream("continents-ponds"));
 		std::vector<int> queued(size_t(n), 0);
+		const DryStartPonds plan{kPondsPerColony, kPondCorners, kPondNearest, kPondFarthest + 1,
+								 kSecondPondStep};
 		for (int k = 0; k < teams; ++k)
 		{
-			const int site = L.sites[k];
-			const std::uint32_t before = meanFertilityAround(field, t, site, kRoomRadius);
-			context.telemetry.measure("continents.ponds.fertility-before", before, k);
-			std::uint32_t now = before;
-			int ponds = 0;
-			while (now < floor && ponds < kPondsPerColony)
+			const TerrainSketch was = L.terrain;
+			const DryStartWatering watered = waterDrySite(
+				L.terrain, t, L.sites[k], kRoomRadius, floor, plan,
+				[&](int i)
+				{
+					return L.territory[i] == k && L.terrain[i] == GRASS && !L.river[i] &&
+						   !L.ford[i];
+				},
+				[&](int i) { return ripple[i] / 65536.0; }, queued, k * kPondsPerColony + 1);
+			for (int i = 0; i < n; ++i)
+				L.pond[i] = L.pond[i] || (L.terrain[i] != was[i]);
+			context.telemetry.measure("continents.ponds.fertility-before", watered.before, k);
+			for (const int dug : watered.dug)
 			{
-				TerrainSketch was = L.terrain;
-				const int dug = digPond(
-					L.terrain, t, site, kPondNearest + ponds * kSecondPondStep,
-					kPondFarthest + ponds * kSecondPondStep + 1, kPondCorners,
-					[&](int i)
-					{
-						return L.territory[i] == k && L.terrain[i] == GRASS && !L.river[i] &&
-							   !L.ford[i];
-					},
-					[&](int i) { return ripple[i] / 65536.0; }, queued, k * kPondsPerColony + ponds + 1);
 				context.telemetry.measure("continents.ponds.dug-corners", dug, k);
 				if (dug == 0)
-				{
 					context.telemetry.fallback("continents.ponds.none",
 											   "No room for a pond beside a dry site", k);
-					break;
-				}
-				for (int i = 0; i < n; ++i)
-					L.pond[i] = L.pond[i] || (L.terrain[i] != was[i]);
-				++ponds;
-				field = fieldNow();
-				now = meanFertilityAround(field, t, site, kRoomRadius);
 			}
-			context.telemetry.measure("continents.ponds.fertility-after", now, k);
-			if (now < floor)
+			context.telemetry.measure("continents.ponds.fertility-after", watered.after, k);
+			if (watered.after < floor)
 				context.telemetry.fallback("continents.ponds.still-dry",
 										   "Fertility under the floor after its ponds", k);
 		}
@@ -755,7 +730,7 @@ GeneratorDefinition continentsDefinition()
 			44,
 			// 33 was Patchwork, retired 2026-09-13 and never reused
 			"Continents",
-			2,
+			3, // 3: the dry reserve's fields are dealt patchiest first, not from the top rows
 			false,
 			{GeneratorControl::choice("continent", "Continent",
 									  {"Random", "North America", "South America", "Africa",
