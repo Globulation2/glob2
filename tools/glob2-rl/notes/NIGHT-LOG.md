@@ -745,3 +745,31 @@ visible rather than inferred.
 and I set up a league that guaranteed the former. The eval opponents and the
 training opponents have to be chosen for different reasons -- the eval spans
 the difficulty range to measure, the league concentrates where the gradient is.
+
+## Learning curve so far (09:20)
+
+```
+                    numbi   castor  warrush  nicowar   total
+BC baseline         3-4W      0W      0-1W     0-1W    5W/22   (pooled 10W/44)
+PPO @125 iters      3W        1W      2W       0W      6W/22
+PPO @416 iters      2W        0W      3W       1W      6W/22
+```
+
+Two useful readings.
+
+**PPO has not degraded the BC init even while its rollout win rate collapsed.**
+Rollouts fell to ~2.8% because the league was strong-only; the eval includes
+opponents the agent can beat, and there it held 6W/22. So the rollout number
+was measuring the curriculum, not the policy. Worth remembering: a training
+metric computed against a fixed strong pool is not a measure of the agent.
+
+**The composition is moving in the right direction.** warrush 0 -> 2 -> 3 and
+nicowar 0 -> 0 -> 1, against numbi 3 -> 3 -> 2. A trend on a specific harder
+opponent across two snapshots is more convincing than the flat total, which
+hides it.
+
+But the total has plateaued at 6W across 291 iterations of training, which is
+consistent with the diagnosis above: with ~97% losses there was almost nothing
+to learn from. The curriculum fix landed after this snapshot, so the next
+snapshot is the first that will have been trained with winnable games in the
+league.
