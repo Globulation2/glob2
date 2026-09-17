@@ -149,6 +149,7 @@ restores whatever landscape it had.
 | `hilbert-river` | 50 | Hilbert River | [Folded river, contained bank farms and hierarchical shortcuts](FRACTAL_MAPS.md) |
 | `lava-shield` | 51 | Lava shield | [Volcanic island: crater rim, lava tongues, scored coastal towns](LAVA_SHIELD.md) |
 | `honeycomb-isle` | 53 | Honeycomb isle | [Hexagon city on an island: street-sealed blocks, a river, wheat edges, ruins](HONEYCOMB_ISLE.md) |
+| `karst-towers` | 54 | Karst towers | [Tower thickets, rivers between rows of homes, terraced paddies, gated bowls](KARST_TOWERS.md) |
 | `rugged-archipelago` | 8 | Old islands | Island growth + beach passes, own resource search |
 | `contested-commons` | 9 | Contested commons | Point dispersion (`shared/legacy/Regions`) |
 | `rain-shadow` | 27 | Rain shadow | Its own — see below |
@@ -1837,3 +1838,18 @@ that runs out of such blocks is laid out without the river. The design is a pure
 request, so the generator caches the last design per thread (the request check, generation and
 validation each ask for it) and replays its telemetry. Local disc scans stand in for whole-map
 distance transforms.
+
+## Karst towers
+
+See [the design and verification notes](KARST_TOWERS.md). Towers are a Turing pattern's spots
+(`turingPattern`) with a thicket noise lowering the cut. Rivers are placed from the homes rather than
+the other way round: homes on a lattice are grouped into rows across one axis, and a river winds as
+the cheapest walk (the same search as `cheapestWalk`, with its arrays reused) inside a band in the middle of every gap wide enough for it,
+stepping only forwards along its axis. Terraces are labelled corners (distance band from the river,
+cut by a flood of the centreline index) whose label changes become one-corner sand bunds; the
+validator checks that no pure-grass tile of one field touches pure grass of another. Bowl rings, gate
+pools and lake rims read one noise stencil at offsets from their home or lake, so every bowl is drawn
+the same and every lake has the same shape. When big homes or wide rivers close every gap, the design
+shrinks the homes and then narrows the rivers before refusing. Like Honeycomb isle, it caches the last
+design per thread and replays its telemetry (`GenerationTelemetry::replay`); it also winds every named
+stream the design drew from (`GenerationContext::namedStreams`) on to where building it left them.

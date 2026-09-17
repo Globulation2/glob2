@@ -2742,3 +2742,29 @@ Cratères par colonie
 Champs de blé
 [Bridges]
 Ponts
+[Karst towers]
+Pitons karstiques
+[Tower spacing]
+Espacement des pitons
+[Tower density]
+Densité des pitons
+[Paddy depth]
+Étendue des rizières
+[Home design]
+Forme de la base
+[Horseshoe]
+Fer à cheval
+[Twin gates]
+Portes jumelles
+[Three gates]
+Trois portes
+[Four gates]
+Quatre portes
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Les rivières ne trouvent aucun passage entre les bases ; utilisez une carte plus grande ou moins de colonies.
+[River meander]
+Méandres de la rivière
+[Flooded terraces]
+Terrasses inondées
+[Sinkholes]
+Dolines

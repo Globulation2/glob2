@@ -2732,3 +2732,29 @@ Kráterek kolóniánként
 Búzamezők
 [Bridges]
 Hidak
+[Karst towers]
+Karszttornyok
+[Tower spacing]
+Karszttornyok távolsága
+[Tower density]
+Karszttornyok sűrűsége
+[Paddy depth]
+Rizsföldek kiterjedése
+[Home design]
+Otthon kialakítása
+[Horseshoe]
+Patkó
+[Twin gates]
+Ikerkapuk
+[Three gates]
+Három kapu
+[Four gates]
+Négy kapu
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+A folyók nem találtak utat az otthonok között; használj nagyobb térképet vagy kevesebb kolóniát.
+[River meander]
+Folyó kanyargása
+[Flooded terraces]
+Elárasztott teraszok
+[Sinkholes]
+Víznyelők

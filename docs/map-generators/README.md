@@ -54,3 +54,7 @@ control range, smallest layouts, rectangles and dense colony counts.
 [Honeycomb isle](HONEYCOMB_ISLE.md) documents the hexagon city on an island: street-sealed blocks,
 the river and its bridges, wheat edges and ruins, how an urban-combat concept became it, and its
 reliability, control-study, performance and AI-game evidence.
+
+[Karst towers](KARST_TOWERS.md) documents river country among limestone towers: rivers placed between
+the rows of homes, terraced paddies of wheat and flooded strips, gated home bowls, doline lakes and
+sinkholes, and its growth-potential, control-study, reliability and AI-game evidence.

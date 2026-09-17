@@ -72,6 +72,31 @@ The second recurring defect is measuring room or fertility as area rather than a
 
 Use the start scorer, a fertile-grass window, catchment floods from the actual worker tiles and the report's per-colony metrics together; none alone predicts these.
 
+## Measure growth potential, not water share
+
+Water on the map is not food. A crop regrows when a random probe up to fifteen tiles away lands on pure water and the mirrored probe misses pure sand, so what feeds a colony is the **density of pure water right beside its crops**, and a map can hold a river, lakes and ponds and still starve. Karst towers' first review (2026-09-16) found 5% water, a quarter of Forts' growth potential near every home, and Maxima colonies breeding on the starter stock and then starving out, although every metric the generator already reported looked fine.
+
+Measure it with the engine's own kernel: [`scripts/growth_potential.c`](../scripts/growth_potential.c) reads a terrain dump, computes every tile's growth chance exactly as `Map::growResources` weights it, and sums the chance over farmland (pure grass or wheat) walkable from each colony within 24, 48 and 96 steps. Call that sum "yield", in full-fertility tiles; one yield tile holding wheat regrows about 5.4 times per thousand ticks, which matched the harvest rates in games. Compare with a reference generator on the same seeds:
+
+| Map, 256×256, 4 colonies | Water | Total yield | Yield ≤24 steps | ≤48 steps |
+| --- | --- | --- | --- | --- |
+| Hedgerow Country | 1.5–1.7% | 341–392 | 14–24 | 20–49 |
+| Forts | 13% | 1,530–1,650 | 28–47 | 61–156 |
+| Braided river | 10% | ~1,720 | 44–91 | 95–207 |
+| Everglades | 30–32% | ~2,200 | 41–91 | 115–301 |
+| Karst towers, first review | 5–6% | 513–603 | 11–14 | 11–54 |
+| Karst towers, shipped | 11–15% | 1,662–1,938 | 28–56 | 52–237 |
+
+What the measurement found, and what fixed it:
+
+- **The home water is the lever.** A one-row channel and a pond of radius three gave the home paddy a 3.7% growth chance. The yield within 24 steps is almost all home ground, so no amount of water further out moved it; a wider channel and a bigger pond on the clearing's rim did.
+- **Water narrower than its beach is sand.** Flooding only the corners two steps inside a paddy's bunds left most paddies with no pure water at all, and a pool of one or two water corners becomes a ring of beach: the "30% flooded paddies" never appeared on a default map. Flood every corner inside the bund, so the bund is the paddy's only sand.
+- **Sand beats the probe.** Bunds whose label noise wobbled per corner turned half of the paddy belt into sand-grass mix, and pure sand beside a crop blocks its regrowth. Jitter a cut line as a whole, cut less often, and let neighbouring fields share one bund.
+- **Water where nobody farms is scenery.** Sinkholes 40–70 tiles from any home added 4% of the map's yield. Put water beside the fields the colonies will actually work: the home, the gates, the ground between neighbours.
+- **Rows of crops between rows of water.** Alternating ribbons of wheat and flooded paddy along a bank (9 and 6 tiles deep) read as terraces and tripled the belt's yield; see `bestFarmRows` in `Farmland.h` for the row widths that yield most.
+- **Every new water source needs its fields sealed.** Unbunded wheat round Karst towers' doline lakes filled a halo 6–10 tiles wide in 50,000 ticks, on the ground between neighbouring homes; the lakes accounted for half of all the tiles that changed in the game. Water makes the ground fertile, so anything planted near it must be contained (see the overgrowth section of [gameplay and playability](gameplay-and-playability.md)).
+- **Water takes building room.** Two pools beside the swarm halved the bowl's 4×4 sites. Measure building room again after every water change, and move water to the rim before shrinking the clearing.
+
 ## Fair by construction, fair by search, or fair by measurement
 
 Three fairness models are in use. Choose one deliberately and validate the thing it promises:
@@ -179,7 +204,7 @@ Select whole boundaries, never independent tiles: random holes in a thin wall le
 
 ## Budget before stamping, refuse before shrinking below a floor
 
-Every robust generator negotiates its layout in the same order: compute the room each feature needs (a base's reach plus tower rows, a farm radius plus its ring plus the growth probe, a channel's width plus beaches), drop optional features first (Caravanserai's caravanserais, Plantations' neutral islands and crop band, Drumlin field's farm room), shrink homes only to a documented floor (The Glacis narrows its glacis to 4 and then its fort to 20, a drumlin's half width of 8, a plantation plot of 8, a summit fixed at 16), and refuse with a message that names the control to change. A repair that erases the concept (filling a channel, opening a saddle, planting the town) is a failed candidate, not a fix. Braided Delta translates a clipped town clearing by at most six tiles rather than shrinking it; Continents relaxes site room from four to two and says so in telemetry; Drumlin field takes the grain heading that keeps crowded homes farthest apart rather than refusing the request.
+Every robust generator negotiates its layout in the same order: compute the room each feature needs (a base's reach plus tower rows, a farm radius plus its ring plus the growth probe, a channel's width plus beaches), drop optional features first (Caravanserai's caravanserais, Plantations' neutral islands and crop band, Drumlin field's farm room), shrink homes only to a documented floor (The Glacis narrows its glacis to 4 and then its fort to 20, a drumlin's half width of 8, a plantation plot of 8, a summit fixed at 16), and refuse with a message that names the control to change. A repair that erases the concept (filling a channel, opening a saddle, planting the town) is a failed candidate, not a fix. Braided Delta translates a clipped town clearing by at most six tiles rather than shrinking it; Continents relaxes site room from four to two and says so in telemetry; Drumlin field takes the grain heading that keeps crowded homes farthest apart rather than refusing the request. Karst towers shrinks its homes two tiles at a time, then narrows its rivers, while their bowls leave a river no way through; the retry is deterministic because every draw is from a named stream and `validateWorld` replays the same loop, and it cut refusals in 2,000 random rolls from 318 to 123.
 
 ## The picture is the first review
 
@@ -218,10 +243,30 @@ When the look is settled, **measure every control on its own.** Generate each co
 - **A choice that barely differs.** "Many" wheat fields added 9% over "Normal" because the edge was already all fields; a choice should move its metric visibly.
 - **Ranges the map clamps anyway.** Block sizes above 21 shrank back on common maps; a minimum of 5 blocks per colony left almost no ruins.
 - **Visual-only controls.** Warp moved no metric at all; a pair of previews showed it working. Look before removing a control the numbers call useless.
+- **A control that only resizes barely moves its metric.** Karst towers' Sinkholes first scaled each pond's size; with three sinkholes a map, water went from 12.1% to 12.8% over the whole range. Letting it set the count too (by narrowing the trough window) gave 12.1% to 15.9% and 0 to 33 sinkholes.
+- **A new control must reproduce the old map at its default.** Rewriting a hard-coded threshold as a formula of the control is easy to get wrong: Tower density's `32000 - (density - 50) * 240` looked right and changed 17,000 tiles of every default map, because the old threshold at 50 was 26,000. Check each new control by comparing terrain dumps (`--report terrain`) of the old and new binaries at defaults on several shapes, not by looking at previews.
+- **Test values must be on the control's step.** Values off a control's step (25 on a step of 10) are refused before generation; a study that uses them measures nothing for those rows. Check the refusal message before reading a row of empty metrics.
 
 Then **roll everything at random**: every control over its full range, every shape and colony count, a few dozen maps on one page with their settings, for the maintainer to eyeball for degenerate rolls. That page is how "without the lagoon there is way too little water" was found; no metric had been asked about water on small maps.
 
 Finally run a **reliability pass**: every control at its minimum and maximum alone and all together on a small, a default and a large shape, plus about two thousand random rolls, classifying every failure as an expected refusal or a bug. Six of 1,620 Honeycomb isle maps failed a starter-wheat distance by one or two steps, all with the largest blocks and little wheat; the fix was geometric (the cistern moves forward on big blocks, wheat is planted nearest the swarm), and the pass was repeated on fresh seeds and on the old seeds before calling it done. Rename streams, telemetry keys or controls before this pass: a stream name is part of every random draw.
+
+On one machine, run these passes with the native CLI rather than the distributed framework: a small script that writes one `glob2 --generate-map ID ... --json FILE` line per request and runs them with `xargs -P 8` generated 2,330 Karst towers maps in under four minutes, where the tournament framework's per-experiment setup would have taken about 45 minutes for the same matrix. Read the per-map JSON reports (`terrain`, `resources`, `space`, `fertility`, `canonical_quality`, `movement`, and `generation.telemetry.records`) with a short analysis script: effect tables per control, Spearman correlations of every control with every metric over the random rolls, refusals grouped by message and shape. Keep the framework for several hosts or runs that must survive interruption ([distributed telemetry](distributed-telemetry.md)).
+
+## Ask an independent reviewer, in rounds
+
+The author of a generator reads its previews through the design they intended. A fresh agent that sees only the code, the handbook and the binary, with none of the author's reasoning, finds what the author cannot. Karst towers went through three such rounds (2026-09-16/17):
+
+1. **Round one, a general review:** "leopard print, not karst", food-capped in 25,000-tick games, uneven river access between colonies, a false claim of identical homes in a code comment, a size envelope too narrow, rivers that doubled back into hairpins, fords that decided nothing because one river round a torus parts nobody. Look 5/10, playability 3/10.
+2. **Round two, one question the maintainer asked:** "not enough water, not enough potential food yield". The reviewer wrote the growth-potential tool above, simulated each proposal on terrain dumps to estimate its effect before any code changed, and ranked the proposals.
+3. **Round three, verification:** it confirmed the author's numbers with its own tools, played 50,000-tick games, and found the regressions the fixes had caused (halved building room, lake wheat overgrowing the routes, stamped-looking pools).
+
+What made the rounds work:
+
+- **Freeze the build.** Copy the binary and the generator source to a scratch directory and point the reviewer there, so the author can keep working without moving the reviewer's target.
+- **Give it the standard, not the answer.** Point it at `AGENTS.md`, this skill and a comparable generator; list what changed since its last round and what the maintainer said, and ask for prioritised findings with evidence (seed, command, metric, file and line), a concrete fix for each and an estimated effect.
+- **Keep the same reviewer across rounds.** Its tools and reference measurements carry over, so round three compared against round two on the same seeds.
+- **Verify its proposals, don't copy them.** Some proposals the author had already made; some were simulated on terrain rather than generated. Measure the change with the reviewer's own tool after implementing it.
 
 ## What to write down
 

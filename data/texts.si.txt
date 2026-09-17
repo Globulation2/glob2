@@ -2732,3 +2732,29 @@ Kraterjev na kolonijo
 Pšenična polja
 [Bridges]
 Mostovi
+[Karst towers]
+Kraški stolpi
+[Tower spacing]
+Razmik kraških stolpov
+[Tower density]
+Gostota kraških stolpov
+[Paddy depth]
+Obseg riževih polj
+[Home design]
+Oblika doma
+[Horseshoe]
+Podkev
+[Twin gates]
+Dvojna vrata
+[Three gates]
+Troje vrat
+[Four gates]
+Četvero vrat
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Reke niso našle poti med domovi; uporabite večji zemljevid ali manj kolonij.
+[River meander]
+Vijugavost reke
+[Flooded terraces]
+Poplavljene terase
+[Sinkholes]
+Vrtače

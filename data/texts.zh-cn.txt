@@ -2728,3 +2728,29 @@ Emoji
 麦田
 [Bridges]
 桥梁
+[Karst towers]
+喀斯特石峰
+[Tower spacing]
+石峰间距
+[Tower density]
+石峰密度
+[Paddy depth]
+稻田纵深
+[Home design]
+基地样式
+[Horseshoe]
+马蹄形
+[Twin gates]
+双门
+[Three gates]
+三门
+[Four gates]
+四门
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+河流无法在基地之间找到路径；请使用更大的地图或更少的殖民地。
+[River meander]
+河道蜿蜒
+[Flooded terraces]
+淹水梯田
+[Sinkholes]
+落水洞

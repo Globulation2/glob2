@@ -2732,3 +2732,29 @@ Kratery na kolonię
 Pola pszenicy
 [Bridges]
 Mosty
+[Karst towers]
+Wieże krasowe
+[Tower spacing]
+Odstęp wież krasowych
+[Tower density]
+Gęstość wież krasowych
+[Paddy depth]
+Zasięg pól ryżowych
+[Home design]
+Układ bazy
+[Horseshoe]
+Podkowa
+[Twin gates]
+Bliźniacze bramy
+[Three gates]
+Trzy bramy
+[Four gates]
+Cztery bramy
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Rzeki nie znalazły drogi między bazami; użyj większej mapy lub mniejszej liczby kolonii.
+[River meander]
+Meandrowanie rzeki
+[Flooded terraces]
+Zalane tarasy
+[Sinkholes]
+Leje krasowe

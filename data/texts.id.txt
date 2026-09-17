@@ -2728,3 +2728,29 @@ Kawah per koloni
 Ladang gandum
 [Bridges]
 Jembatan
+[Karst towers]
+Menara karst
+[Tower spacing]
+Jarak menara karst
+[Tower density]
+Kerapatan menara karst
+[Paddy depth]
+Jangkauan sawah
+[Home design]
+Rancangan markas
+[Horseshoe]
+Tapal kuda
+[Twin gates]
+Gerbang kembar
+[Three gates]
+Tiga gerbang
+[Four gates]
+Empat gerbang
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Sungai tidak menemukan jalan di antara markas; gunakan peta yang lebih besar atau lebih sedikit koloni.
+[River meander]
+Kelokan sungai
+[Flooded terraces]
+Teras tergenang
+[Sinkholes]
+Dolina

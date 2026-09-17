@@ -2732,3 +2732,29 @@ Cratere per colonie
 Lanuri de grâu
 [Bridges]
 Poduri
+[Karst towers]
+Turnuri carstice
+[Tower spacing]
+Distanța dintre turnurile carstice
+[Tower density]
+Densitatea turnurilor carstice
+[Paddy depth]
+Întinderea orezăriilor
+[Home design]
+Forma bazei
+[Horseshoe]
+Potcoavă
+[Twin gates]
+Porți gemene
+[Three gates]
+Trei porți
+[Four gates]
+Patru porți
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Râurile nu au găsit drum printre baze; folosiți o hartă mai mare sau mai puține colonii.
+[River meander]
+Meandrele râului
+[Flooded terraces]
+Terase inundate
+[Sinkholes]
+Doline

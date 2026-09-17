@@ -2808,3 +2808,29 @@ Kratere pr. koloni
 Hvedemarker
 [Bridges]
 Broer
+[Karst towers]
+Karsttårne
+[Tower spacing]
+Afstand mellem karsttårne
+[Tower density]
+Karsttårnenes tæthed
+[Paddy depth]
+Rismarkernes udstrækning
+[Home design]
+Hjemmets udformning
+[Horseshoe]
+Hestesko
+[Twin gates]
+Tvillingeporte
+[Three gates]
+Tre porte
+[Four gates]
+Fire porte
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Floderne fandt ingen vej mellem hjemmene; brug et større kort eller færre kolonier.
+[River meander]
+Flodens bugtning
+[Flooded terraces]
+Oversvømmede terrasser
+[Sinkholes]
+Synkehuller

@@ -51,6 +51,7 @@
 #include "HilbertRiverGenerator.h"
 #include "LavaShieldGenerator.h"
 #include "HoneycombIsleGenerator.h"
+#include "KarstTowersGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -164,7 +165,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 hilbertRiverDefinition(),
 											 lavaShieldDefinition(),
 											 honeycombIsleDefinition(),
-											 ruggedArchipelagoDefinition(),
+											 karstTowersDefinition(), ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
 											 evergladesDefinition(),

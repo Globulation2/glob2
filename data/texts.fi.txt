@@ -2732,3 +2732,29 @@ Kraattereita siirtokuntaa kohden
 Viljapellot
 [Bridges]
 Sillat
+[Karst towers]
+Karstitornit
+[Tower spacing]
+Karstitornien väli
+[Tower density]
+Karstitornien tiheys
+[Paddy depth]
+Riisipeltojen laajuus
+[Home design]
+Kotialueen muoto
+[Horseshoe]
+Hevosenkenkä
+[Twin gates]
+Kaksoisportit
+[Three gates]
+Kolme porttia
+[Four gates]
+Neljä porttia
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Joet eivät löytäneet reittiä kotialueiden välistä; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[River meander]
+Joen mutkaisuus
+[Flooded terraces]
+Tulvitetut terassit
+[Sinkholes]
+Vajoamat

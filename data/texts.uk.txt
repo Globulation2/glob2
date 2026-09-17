@@ -2728,3 +2728,29 @@ Emoji
 Пшеничні поля
 [Bridges]
 Мости
+[Karst towers]
+Карстові вежі
+[Tower spacing]
+Крок карстових веж
+[Tower density]
+Густота карстових веж
+[Paddy depth]
+Протяжність рисових полів
+[Home design]
+Форма бази
+[Horseshoe]
+Підкова
+[Twin gates]
+Двоє воріт
+[Three gates]
+Троє воріт
+[Four gates]
+Четверо воріт
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Річки не знайшли шляху між базами; використайте більшу мапу або менше колоній.
+[River meander]
+Звивистість річки
+[Flooded terraces]
+Затоплені тераси
+[Sinkholes]
+Карстові лійки

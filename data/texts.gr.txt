@@ -2802,3 +2802,29 @@ Emoji
 Χωράφια σιταριού
 [Bridges]
 Γέφυρες
+[Karst towers]
+Καρστικοί πύργοι
+[Tower spacing]
+Απόσταση καρστικών πύργων
+[Tower density]
+Πυκνότητα καρστικών πύργων
+[Paddy depth]
+Έκταση ορυζώνων
+[Home design]
+Σχέδιο βάσης
+[Horseshoe]
+Πέταλο
+[Twin gates]
+Δίδυμες πύλες
+[Three gates]
+Τρεις πύλες
+[Four gates]
+Τέσσερις πύλες
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Τα ποτάμια δεν βρήκαν δρόμο ανάμεσα στις βάσεις· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
+[River meander]
+Μαιανδρισμός ποταμού
+[Flooded terraces]
+Πλημμυρισμένες αναβαθμίδες
+[Sinkholes]
+Καταβόθρες

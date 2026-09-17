@@ -2732,3 +2732,29 @@ Cráteres por colonia
 Campos de trigo
 [Bridges]
 Puentes
+[Karst towers]
+Torres kársticas
+[Tower spacing]
+Separación de las torres kársticas
+[Tower density]
+Densidad de las torres kársticas
+[Paddy depth]
+Extensión de los arrozales
+[Home design]
+Diseño de la base
+[Horseshoe]
+Herradura
+[Twin gates]
+Puertas gemelas
+[Three gates]
+Tres puertas
+[Four gates]
+Cuatro puertas
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Los ríos no encontraron paso entre las bases; usa un mapa más grande o menos colonias.
+[River meander]
+Meandros del río
+[Flooded terraces]
+Terrazas inundadas
+[Sinkholes]
+Dolinas

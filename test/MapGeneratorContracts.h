@@ -915,6 +915,113 @@ inline void honeycombIsleContracts()
 		 "growth, cached designs, starter wheat");
 }
 
+inline void karstTowersContracts()
+{
+	const auto &definition =
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("karst-towers"));
+	assert(definition.legacyId == 54 && definition.revision == 2);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("tower-spacing") == 16 && request.option("river-width") == 7 &&
+		   request.option("paddy-depth") == 24 && request.option("flooded-terraces") == 88 &&
+		   request.option("lakes") == 1);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 8}, std::pair{9, 8}})
+		for (int teams : {2, 4, 8})
+		{
+			if (dimensions.first == 7 && teams == 8)
+				continue;
+			Game g(nullptr);
+			const auto result = service.generate(g, make(dimensions.first, dimensions.second, teams, 5));
+			if (!result)
+				std::fprintf(stderr, "Karst towers contract (%d x %d, %d colonies): %s\n",
+							 1 << dimensions.first, 1 << dimensions.second, teams,
+							 result.diagnostic().c_str());
+			assert(result);
+		}
+	{
+		// Eight colonies never fit on the smallest map, even with the homes shrunk and the rivers narrowed.
+		Game g(nullptr);
+		assert(service.generate(g, make(7, 7, 8, 5)).error == GenerationError::InvalidRequest);
+		assert(g.teamsCount() == 0);
+	}
+	{
+		// Big homes and the widest river on a crowded map shrink rather than refuse.
+		D crowded = make(8, 8, 8, 1168);
+		crowded.options["home-size"] = 22;
+		crowded.options["river-width"] = 16;
+		Game g(nullptr);
+		assert(service.generate(g, crowded));
+	}
+	std::set<std::string> homeDesigns;
+	for (unsigned seed = 1; seed <= 16; ++seed)
+	{
+		Game g(nullptr);
+		const auto result = service.generate(g, make(8, 8, 4, seed), true);
+		assert(result);
+		for (const auto &record : result.telemetry.records())
+			if (record.key == "karst.home.design")
+				homeDesigns.insert(std::get<std::string>(record.value));
+	}
+	assert(homeDesigns.size() == 4);
+	D r = make(8, 8, 4, 37);
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = 0;
+	{
+		Game zero(nullptr);
+		assert(service.generate(zero, r));
+	}
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = control.maximum;
+	Game abundant(nullptr);
+	assert(service.generate(abundant, r));
+	GenerationContext context(r);
+	setSyncRandSeed(4211);
+	// Full-map growth with nobody harvesting: the terraces, home paddies and lake fields beside all that
+	// water grow, and their bunds must keep every crop inside its own field.
+	for (int tick = 0; tick < 4096; ++tick)
+		abundant.map.growResources();
+	const std::string growthError = definition.validateWorld(abundant, context);
+	if (!growthError.empty())
+		std::fprintf(stderr, "Karst towers growth: %s\n", growthError.c_str());
+	assert(growthError.empty());
+	{
+		// Stone laid round a home where its ring stands closes the gates, which the validator refuses. A
+		// round home's middle lies 6.5 tiles right of and 2 below its swarm's corner, and the ring's gates
+		// open 16 to 21 tiles from it at the default home size.
+		Game game(nullptr);
+		const D damaged = make(8, 8, 4, 41);
+		assert(service.generate(game, damaged));
+		GenerationContext check(damaged);
+		assert(definition.validateWorld(game, check).empty());
+		const Team *team = game.teams[1];
+		for (int dy = -22; dy <= 22; ++dy)
+			for (int dx = -22; dx <= 22; ++dx)
+			{
+				const double d = std::hypot(dx, dy);
+				if (d < 16 || d > 21)
+					continue;
+				const int x = (team->startPosX + 6 + dx + 256) % 256, y = (team->startPosY + 2 + dy + 256) % 256;
+				if (game.map.isGrass(x, y) && !game.map.isResource(x, y))
+					game.map.setResource(x, y, STONE, 1);
+			}
+		assert(!definition.validateWorld(game, check).empty());
+	}
+	puts("PASS Karst towers: envelope and refusal, crowded retry, home designs, resource extremes, "
+		 "sealed growth, closed gates");
+}
+
 inline void generatorContracts()
 {
 	rebuiltLandscapeContracts();
@@ -926,5 +1033,6 @@ inline void generatorContracts()
 	fortsContracts();
 	emojiContracts();
 	honeycombIsleContracts();
+	karstTowersContracts();
 }
 } // namespace GeneratorContracts

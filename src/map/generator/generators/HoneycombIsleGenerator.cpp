@@ -21,8 +21,6 @@
 #include <cmath>
 #include <numeric>
 #include <string>
-#include <type_traits>
-#include <variant>
 #include <vector>
 using namespace MapGeneration;
 
@@ -925,6 +923,12 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	return L;
 }
 
+bool sameDesign(const GenerationRequest &a, const GenerationRequest &b)
+{
+	return a.method == b.method && a.wDec == b.wDec && a.hDec == b.hDec && a.nbTeams == b.nbTeams &&
+		   a.nbWorkers == b.nbWorkers && a.seed == b.seed && a.options == b.options;
+}
+
 // The whole layout as a pure function of the request and the context's named streams. Homes keep
 // off the river, so on a small map the river can leave too few blocks for them; then the city is
 // laid out again without it (the lagoon still gives it its water), and only a map too small even
@@ -935,34 +939,6 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 // seeded by the request's seed), so the last design built on this thread is kept and handed out
 // again for the same request, its telemetry replayed so each context records what building it would
 // have.
-void replayTelemetry(const GenerationTelemetry &from, GenerationTelemetry &to)
-{
-	for (const GenerationTelemetry::Record &r : from.records())
-	{
-		if (r.kind == "measurement")
-			std::visit(
-				[&](const auto &value)
-				{
-					using T = std::decay_t<decltype(value)>;
-					if constexpr (!std::is_same_v<T, std::string>)
-						to.measure(r.key, value, r.subject);
-				},
-				r.value);
-		else if (r.kind == "choice")
-			to.choice(r.key, std::get<std::string>(r.value), r.subject);
-		else if (r.kind == "fallback")
-			to.fallback(r.key, std::get<std::string>(r.value), r.subject);
-		else
-			to.error(r.key, std::get<std::string>(r.value));
-	}
-}
-
-bool sameDesign(const GenerationRequest &a, const GenerationRequest &b)
-{
-	return a.method == b.method && a.wDec == b.wDec && a.hDec == b.hDec && a.nbTeams == b.nbTeams &&
-		   a.nbWorkers == b.nbWorkers && a.seed == b.seed && a.options == b.options;
-}
-
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
 	struct Cache
@@ -983,13 +959,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			both.fallback("honeycomb-isle.river.dropped",
 						  "The river left too few blocks for the homes; laid out without it.");
 			cache.layout = layout(request, context, 0);
-			replayTelemetry(cache.layout.telemetry, both);
+			both.replay(cache.layout.telemetry);
 			cache.layout.telemetry = std::move(both);
 		}
 		cache.request = request;
 		cache.valid = true;
 	}
-	replayTelemetry(cache.layout.telemetry, context.telemetry);
+	context.telemetry.replay(cache.layout.telemetry);
 	return cache.layout;
 }
 

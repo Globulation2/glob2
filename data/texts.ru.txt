@@ -2730,3 +2730,29 @@ Emoji
 Пшеничные поля
 [Bridges]
 Мосты
+[Karst towers]
+Карстовые башни
+[Tower spacing]
+Шаг карстовых башен
+[Tower density]
+Густота карстовых башен
+[Paddy depth]
+Протяжённость рисовых полей
+[Home design]
+Форма базы
+[Horseshoe]
+Подкова
+[Twin gates]
+Двое ворот
+[Three gates]
+Трое ворот
+[Four gates]
+Четверо ворот
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Реки не нашли пути между базами; используйте карту побольше или меньше колоний.
+[River meander]
+Извилистость реки
+[Flooded terraces]
+Затопленные террасы
+[Sinkholes]
+Карстовые воронки

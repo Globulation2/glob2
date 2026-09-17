@@ -2728,3 +2728,29 @@ Emoji
 小麦畑
 [Bridges]
 橋
+[Karst towers]
+カルストの岩峰
+[Tower spacing]
+岩峰の間隔
+[Tower density]
+岩峰の密度
+[Paddy depth]
+水田の奥行き
+[Home design]
+本拠地の形
+[Horseshoe]
+馬蹄形
+[Twin gates]
+二つの門
+[Three gates]
+三つの門
+[Four gates]
+四つの門
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+本拠地の間に川を通せません。より大きなマップか、より少ない植民地を使ってください。
+[River meander]
+川の蛇行
+[Flooded terraces]
+水を張った棚田
+[Sinkholes]
+ドリーネ
