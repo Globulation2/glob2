@@ -76,6 +76,19 @@ def addDependentLibsToBundle( bundle ) :
         for line in os.popen("otool -L "+binary).readlines()[1:] :
             libDependencies(line.split()[0], resolved, visited, doNotChange, searchDirs)
 
+    # Some bundled libraries dlopen() another one at runtime instead of declaring it
+    # as a normal linked dependency, so the otool -L walk above can never see it:
+    # Homebrew's sdl2 is sdl2-compat, a shim that wraps SDL3 and dlopen()s
+    # libSDL3.dylib (by @loader_path/@executable_path-relative name) the first time
+    # SDL initializes. Without SDL3 bundled alongside, that lookup fails and
+    # sdl2-compat aborts before glob2's own code ever runs.
+    runtimeDlopenDeps = {
+        "libSDL2-2.0.0.dylib": ["libSDL3.dylib"],
+    }
+    for real in list(resolved.values()) :
+        for dep in runtimeDlopenDeps.get(os.path.basename(real), []) :
+            libDependencies(dep, resolved, visited, doNotChange, searchDirs)
+
     libs = sorted(set( (os.path.basename(real), real) for real in resolved.values() ))
     run("mkdir -p %(bundle)s/Contents/Frameworks/" % locals() )
 
