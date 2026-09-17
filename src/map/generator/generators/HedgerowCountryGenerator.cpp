@@ -587,5 +587,7 @@ GeneratorDefinition hedgerowCountryDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:natural", "feature:forest", "style:tight-building"}};
+			// Thin hedge lines subdividing fields, not a forest canopy.
+			{"terrain:natural", "feature:farmland", "style:tight-building",
+			 "fairness:stamped-lattice"}};
 }

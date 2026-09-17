@@ -483,5 +483,6 @@ GeneratorDefinition anthillDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:arena", "feature:caves", "feature:stone-walls", "style:tight-building"}};
+			// An organic tunnel network in open stone, not a constructed battle arena.
+			{"terrain:natural", "feature:caves", "feature:stone-walls", "style:tight-building"}};
 }

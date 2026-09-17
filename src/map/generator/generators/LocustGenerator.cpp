@@ -260,5 +260,6 @@ GeneratorDefinition locustDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:natural", "feature:forest", "style:expansion"}};
+			// Circular and square oases repeat on an obvious regular grid, no shared centre.
+			{"terrain:natural", "feature:forest", "style:expansion", "fairness:stamped-lattice"}};
 }

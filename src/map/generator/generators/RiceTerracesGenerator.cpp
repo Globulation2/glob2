@@ -607,5 +607,6 @@ GeneratorDefinition riceTerracesDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:natural", "feature:terraces", "feature:river", "style:tight-building"}};
+			{"terrain:natural", "feature:terraces", "feature:river", "style:tight-building",
+			 "fairness:stamped-lattice"}};
 }

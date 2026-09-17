@@ -1673,6 +1673,8 @@ GeneratorDefinition cityStatesDefinition()
 			true,
 			validateRequest,
 			validateWorld,
-			{"terrain:urban", "feature:canals", "feature:islands", "style:tight-building",
-			 "style:contested-center", "fairness:repeated-wedge"}};
+			// The wedge dividers are stone roads/walls, not blue canals, and the city is one landmass
+			// (small ring islands in the surrounding ocean are decoration, not a mapped feature).
+			{"terrain:urban", "feature:stone-walls", "style:tight-building", "style:contested-center",
+			 "fairness:repeated-wedge"}};
 }

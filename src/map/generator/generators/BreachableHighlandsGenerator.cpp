@@ -548,5 +548,9 @@ GeneratorDefinition breachableHighlandsDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:arena", "feature:mountains", "feature:stone-walls", "style:siege"}};
+			// "Arena" is reserved for maps built around one shared, contested battleground
+			// (Carousel, Amphitheatre, ...); this is a lattice of separate walled valleys, each a
+			// colony's own stronghold, so it gets the other terrain value that pattern uses (Forts).
+			{"terrain:stronghold", "feature:mountains", "feature:stone-walls", "style:siege",
+			 "fairness:stamped-lattice"}};
 }

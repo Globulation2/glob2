@@ -618,5 +618,8 @@ GeneratorDefinition tidalFlatsDefinition()
 			true,
 			validateRequest,
 			validateWorld,
-			{"terrain:natural", "feature:islands", "feature:ocean", "style:contested-center", "fairness:repeated-wedge"}};
+			// The background is exposed sand/mud, not open ocean water - "tidal" reads more
+			// accurately than "ocean" for a render, and the two share no water color in common.
+			{"terrain:natural", "feature:islands", "feature:tidal", "style:contested-center",
+			 "fairness:repeated-wedge"}};
 }

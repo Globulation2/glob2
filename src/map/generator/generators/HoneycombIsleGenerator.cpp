@@ -1220,5 +1220,7 @@ GeneratorDefinition honeycombIsleDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:urban", "feature:river", "feature:hexagons", "feature:ruins", "style:tight-building"}};
+			// The hex tiling itself reads as stylised/artificial on top of the urban ruins.
+			{"terrain:urban", "terrain:novelty", "feature:river", "feature:hexagons", "feature:ruins",
+			 "style:tight-building"}};
 }
