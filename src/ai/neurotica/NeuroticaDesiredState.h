@@ -89,7 +89,13 @@ namespace Neurotica
 		Sint32 h = 0;
 
 		//! 0 = no building wanted here; 1..IntBuildingType::NB_BUILDING = the
-		//! wanted type, offset by one. Anchored top-left (see header comment).
+		//! wanted type, offset by one; DONT_CARE = leave this cell alone,
+		//! neither building on it nor demolishing what stands there.
+		//! Anchored top-left (see header comment) -- so a policy that can see
+		//! which cells a building covers, but not which of them is the anchor,
+		//! must mark the non-anchor cells DONT_CARE rather than repeating the
+		//! type (which asks for a further building at each of them) or leaving
+		//! them 0 (which asks for the building to be demolished).
 		std::vector<Uint8> building;
 
 		//! How strongly this cell is wanted for `building`, 0..255.

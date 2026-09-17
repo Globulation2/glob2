@@ -360,6 +360,60 @@ int main()
 		check(shortHops == 2, "each flag takes the adjacent vacancy, not the far one");
 	}
 
+	// DONT_CARE on the building plane: neither build nor demolish.
+	//
+	// A policy reading the observation sees which cells a building covers but
+	// not which one is its anchor. Repeating the type on every covered cell
+	// asks for a further building at each non-anchor cell; leaving them 0 asks
+	// for the building to be demolished. DONT_CARE is the third answer, and
+	// both halves of it need to hold.
+	{
+		Building *inn = addBuilding(20, 6, IntBuildingType::FOOD_BUILDING, 0, false);
+		check(inn != nullptr, "inn placed for the DONT_CARE test");
+
+		Neurotica::DesiredState dc = baseline();
+		// Anchor keeps its type; every other cell of the footprint is
+		// DONT_CARE, which is what an anchor-detecting decoder emits.
+		dc.building[dc.index(20, 6)] = Uint8(IntBuildingType::FOOD_BUILDING + 1);
+		for (int dy = 0; dy < 2; dy++)
+			for (int dx = 0; dx < 2; dx++)
+				if (dx || dy)
+					dc.building[dc.index(20 + dx, 6 + dy)] = Neurotica::DONT_CARE;
+
+		// Demolition is gated on a sustained empty desire, so re-plan past the
+		// persistence threshold: DONT_CARE must never accumulate that streak.
+		bool built = false, demolished = false;
+		for (int step = 0; step < config.demolishPersistSteps + 4; step++)
+		{
+			auto plan = reconciler.plan(dc);
+			if (countType(plan, ORDER_CREATE) > 0) built = true;
+			if (countType(plan, ORDER_DELETE) > 0) demolished = true;
+		}
+		check(!built, "DONT_CARE cells are never built on");
+		check(!demolished, "DONT_CARE cells never demolish what stands there");
+
+		// The contrast has to be drawn at the anchor, because observed_ is
+		// keyed by anchor alone: a non-anchor cell has no building under it, so
+		// 0 there demolishes nothing. That asymmetry is the whole hazard --
+		// repeating the type on a non-anchor cell asks for a NEW building,
+		// while 0 asks for nothing. At the anchor, 0 is a real demand for empty
+		// ground and does come down, which is what DONT_CARE has to avoid.
+		Neurotica::DesiredState zeroed = baseline();
+		zeroed.building[zeroed.index(20, 6)] = 0;
+		bool zeroDemolished = false;
+		for (int step = 0; step < config.demolishPersistSteps + 4; step++)
+			if (countType(reconciler.plan(zeroed), ORDER_DELETE) > 0)
+				zeroDemolished = true;
+		check(zeroDemolished, "a sustained 0 at the anchor still demolishes, so DONT_CARE is doing the work");
+
+		// And the hazard itself: the type repeated on a non-anchor cell is a
+		// request for another building, because nothing is observed there.
+		Neurotica::DesiredState repeated = baseline();
+		repeated.building[repeated.index(21, 6)] = Uint8(IntBuildingType::FOOD_BUILDING + 1);
+		check(countType(reconciler.plan(repeated), ORDER_CREATE) > 0,
+		      "repeating the type on a covered non-anchor cell asks for a further building");
+	}
+
 	std::printf("Neurotica reconciler: %d checks, %d failures\n", checks, failures);
 	return failures == 0 ? 0 : 1;
 }

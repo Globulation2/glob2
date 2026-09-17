@@ -41,6 +41,10 @@ MAGIC = b"NPS2"
 # ally, then units.
 MY_BUILDING_SLICE = slice(8, 21)
 
+# Matches Neurotica::DONT_CARE in NeuroticaDesiredState.h: leave this cell
+# alone, neither building on it nor demolishing what stands there.
+DONT_CARE = 255
+
 # IntBuildingType order: swarm, inn, hospital, racetrack, swimmingpool,
 # barracks, school, defencetower, explorationflag, warflag, clearingflag,
 # stonewall, market. Caps are roughly the most a strong teacher holds at once
@@ -381,6 +385,11 @@ def main() -> int:
                 have = my_buildings.flatten(2).gt(0.5).sum(dim=2)          # (B,13) cells
                 have = (have.float() / cells).ceil().to(torch.long)        # -> buildings
                 allow = (caps - have).clamp(min=0)                         # (B,13)
+                if os.environ.get("NEUROTICA_CAP_DEBUG"):
+                    print("CAP caps=", caps[0].tolist(), "have=", have[0].tolist(),
+                          "allow=", allow[0].tolist(),
+                          "keepN=", int(keep[0].sum()) if keep is not None else -1,
+                          flush=True)
                 bt = best_type.flatten(1)                                  # (B,HW) 1..13
                 # NB: not `sel` -- that name is the selectors object driving
                 # the server loop, and shadowing it crashes on the next poll.
@@ -398,8 +407,31 @@ def main() -> int:
                     keep = torch.where(over.unsqueeze(1) & of_type,
                                        of_type & within, keep)
 
-            observed_type = (my_buildings.argmax(dim=1).to(torch.uint8) + 1)
-            field = torch.where(existing, observed_type, torch.zeros_like(cls))
+            # Re-assert existing buildings at their ANCHOR cell only.
+            #
+            # The desired field is anchored top-left, but the observation marks
+            # every cell a building covers, and the reconciler keys observed
+            # buildings by anchor alone. So repeating the type across a
+            # footprint asks for a NEW building at each non-anchor cell, which
+            # then covers cells of its own: swarm count ran 4 -> 28 -> 48 -> 80
+            # in 1500 ticks with an empty placement set, and no per-type budget
+            # could stop it, because the budget bounds placements and these
+            # were never placements.
+            #
+            # A cell is an anchor if it is marked and the cells above and to
+            # its left are not. torch.roll is exactly right here: glob2 maps
+            # are toroidal, so the wrap is the real neighbour.
+            marked = my_buildings > 0.5
+            anchor = (marked & ~torch.roll(marked, 1, dims=3)
+                             & ~torch.roll(marked, 1, dims=2))
+            anchor_any = anchor.any(dim=1)
+            anchor_type = (anchor.float().argmax(dim=1).to(torch.uint8) + 1)
+            # Covered-but-not-anchor is DONT_CARE: not ours to decide, so
+            # neither built on nor demolished.
+            field = torch.where(anchor_any, anchor_type,
+                                torch.where(existing,
+                                            torch.full_like(cls, DONT_CARE),
+                                            torch.zeros_like(cls)))
             flat = field.flatten(1)
             if idx is None:
                 flat = torch.where(keep, best_type.flatten(1), flat)

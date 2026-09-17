@@ -129,3 +129,58 @@ own, with `--use-count`, against the standing 4W/24 do-nothing baseline.
 **General lesson:** when adding an auxiliary head to a shared trunk, compare
 the loss magnitudes before picking a weight. "Weight 1.0" is not neutral; it
 is whatever ratio the two losses happen to have.
+
+## The actual cause of the over-building (04:00)
+
+`--use-count` did nothing: the game still finished swarm=52 inn=99 with the
+count head predicting inn 5.38 against a true 5.27. The count head is fine --
+per-type predictions are all close:
+
+```
+type      pred    true
+swarm     2.56    2.69
+inn       5.38    5.27
+hosp      3.54    3.27
+barr      1.68    1.54
+```
+
+Instrumenting the cap showed why the budget never bit:
+
+```
+CAP caps=[1,1,0,...] have=[ 4,0,...] allow=[0,1,0,...] keepN=3
+CAP caps=[1,1,0,...] have=[28,0,...] allow=[0,1,0,...] keepN=0
+CAP caps=[2,2,0,...] have=[48,0,...] allow=[0,2,0,...] keepN=0
+CAP caps=[2,2,1,...] have=[80,0,...] allow=[0,2,1,...] keepN=0
+```
+
+`keepN=0` -- **no new placements at all** -- while the swarm count climbs 4 ->
+28 -> 48 -> 80. The buildings were never placements, so no placement budget
+could ever have bounded them.
+
+**Cause.** The desired field is anchored top-left; the observation marks every
+cell a building covers; and `observed_` in the reconciler is keyed by anchor
+alone (`NeuroticaReconciler.cpp:86`, from `posX/posY`). So re-asserting the
+observed type across a footprint asks for a NEW building at each non-anchor
+cell -- a 2x2 becomes four requests -- and each new building covers cells of
+its own. That is the exponential growth, and it has been present under every
+decode tried, which is why every decode over-built.
+
+Nothing in the per-cell metrics could see this: the model's output was fine,
+and the corruption happened in the translation from field to orders.
+
+**Fix, two halves:**
+* Decoder emits the type at the ANCHOR cell only. A cell is an anchor if it is
+  marked and the cells above and left are not -- `torch.roll` on both axes,
+  which is exactly right on a toroidal map.
+* Covered-but-not-anchor cells get `DONT_CARE` (255), newly honoured by the
+  building plane: never built on, never demolished. Every other plane already
+  had DONT_CARE; the building plane did not, which is why the earlier
+  idempotence fix had to re-assert types and walked into this.
+
+Harness: 72 checks, 0 failures, including a test that pins the hazard --
+"repeating the type on a covered non-anchor cell asks for a further building".
+
+**Asymmetry worth remembering:** at a non-anchor covered cell, a *type* asks
+for a new building but a *0* demolishes nothing, because nothing is observed
+there. So the two wrong answers fail in opposite directions, and only at the
+anchor does 0 mean demolish.

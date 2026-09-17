@@ -189,7 +189,8 @@ namespace Neurotica
 			{
 				const size_t i = desired.index(x, y);
 				const Uint8 wanted = desired.building[i];
-				if (wanted == 0 || observed_.find(i) != observed_.end())
+				if (wanted == 0 || wanted == DONT_CARE ||
+				    observed_.find(i) != observed_.end())
 					continue;
 				const int shortType = int(wanted) - 1;
 				BuildingType *type = placeableType(shortType, nullptr);
@@ -377,6 +378,22 @@ namespace Neurotica
 				const size_t i = desired.index(x, y);
 				const Uint8 wanted = desired.building[i];
 				const Uint8 urgency = desired.urgency[i];
+
+				// DONT_CARE means "this cell is not mine to decide": no
+				// creation, and explicitly no demolition. A policy that knows
+				// only which cells a building covers, and not which cell is its
+				// anchor, needs this. Without it such a policy has two bad
+				// options, and we shipped both: re-assert the type on every
+				// covered cell, and the three non-anchor cells of a 2x2 read as
+				// three more buildings wanted (swarm count ran 4 -> 28 -> 48 ->
+				// 80 in 1500 ticks from an empty placement set); or leave them
+				// 0, and they read as "want empty here" and the building is
+				// demolished out from under itself.
+				if (wanted == DONT_CARE)
+				{
+					emptyStreak_[i] = 0;
+					continue;
+				}
 
 				// A flag's old cell is vacated on purpose, not abandoned by the
 				// field, so it must not feed the demolition path.
