@@ -18,7 +18,11 @@ PREFIXES = {'GLOB2_MEASURE': 'gameplay', 'GLOB2_MEASURE_HISTORY': 'gameplay',
             # a bare `bld:` token that is not key=value and would only ever parse
             # as an error.
             'GLOB2_ECON': 'team_state', 'GLOB2_TL': 'team_state',
-            'GLOB2_TIMELINE': 'team_state'}
+            'GLOB2_TIMELINE': 'team_state',
+            # What the win probability model made of each sample, and the state it
+            # read. Lets a divergence between two platforms show up as a diff
+            # rather than as a game that ended on a different tick.
+            'GLOB2_WINPROB': 'team_state'}
 FAMILIES = ('gameplay', 'ai', 'performance', 'team_state')
 KEY = re.compile(r'([^\s=]+)=')
 INTEGER = re.compile(r'[+-]?\d+\Z')
