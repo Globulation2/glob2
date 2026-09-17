@@ -980,3 +980,35 @@ learn from outcomes -- which is exactly how it learned to cut flags 31 -> 4
 and triple its inns.
 
 Self-play restarted from `ckpt_ratio` with the mix action live.
+
+## Mix action: exploring, not yet converged (12:25)
+
+After 166 iterations with the mix as an action, preset usage is still close to
+uniform:
+
+```
+all-worker 15.3%  light-mil 12.9%  teacher 29.6%  heavy-mil 16.9%  explorer 25.3%
+```
+
+`mean_return` dipped to -0.56 from -0.17, which is expected rather than
+alarming: 85% of steps now divert production away from workers, and we already
+know that hurts a small economy. PPO has to discover that, and 166 iterations
+of a 5-way categorical is not enough to.
+
+**Instrumentation added, because the question was unanswerable.** The learner
+deletes episodes once consumed, so only ~6 existed at any moment and
+"does the military preset actually win" could not be asked. `ppo/episodes.csv`
+now records one line per episode before deletion: iteration, opponent, outcome,
+length, and the share of steps spent in each preset. Over a few hours that is a
+real dataset for the economy-vs-army tradeoff.
+
+**Mistake:** I restarted the learner with `--init ckpt_ratio` instead of
+`--init ppo/policy.pt`, discarding ~166 iterations of progress. Only time lost,
+but it was avoidable and worth writing down: when restarting a learner to pick
+up a code change, initialise from the LIVE policy, not the original checkpoint.
+
+Also worth recording: the rollout ladder reads numbi 48/177 while castor,
+nicowar and warrush sit at 0 wins, yet the 24-game eval shows 2W against both
+warrush and nicowar. Rollouts sample placements at policy-period 100; the eval
+decodes greedily at period 25. They are different policies and their win rates
+are not comparable -- a point that has now misled me twice.

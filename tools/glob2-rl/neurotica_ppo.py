@@ -46,6 +46,7 @@ class Trajectory:
     ticks: np.ndarray      # (T,)
     static: np.ndarray     # (n_static, H, W) uint8, constant for the episode
     outcome: float         # +1 win, -1 loss, 0 undecided
+    opponent: str = "?"    # for the per-episode log; not used in the update
 
 
 def build_observation(static: np.ndarray, dynamic: np.ndarray,
@@ -106,7 +107,8 @@ def load_trajectories(run_dir: str) -> List[Trajectory]:
                 mixes=(arrays["mixes"] if "mixes" in arrays.files else None),
                 values=arrays["values"], potentials=arrays["potentials"],
                 ticks=arrays["ticks"], static=arrays["static"],
-                outcome=float(meta["outcome"])))
+                outcome=float(meta["outcome"]),
+                opponent=str(meta.get("opponent", "?"))))
         except Exception:
             continue  # a partially written episode; skip rather than crash
     return out
@@ -225,6 +227,17 @@ def main() -> int:
         torch.save({"model": net.state_dict(), "in_planes": ckpt.get("in_planes", 60),
                     "args": ckpt.get("args", {}), "metrics": stats},
                    f"{args.out}/policy.pt")
+        # Episodes are deleted once consumed, so anything worth analysing
+        # later has to be recorded here. One line per episode: which mixes it
+        # played and how it ended, which is the only way to answer "does the
+        # military preset actually win" over a long run.
+        with open(f"{args.out}/episodes.csv", "a") as fh:
+            for traj in trajs:
+                mx = traj.mixes
+                share = ([float(np.mean(mx == k)) for k in range(5)]
+                         if mx is not None and len(mx) else [float("nan")] * 5)
+                fh.write(f"{it},{traj.opponent},{traj.outcome},{len(traj.logps)},"
+                         + ",".join(f"{v:.3f}" for v in share) + "\n")
         for traj in trajs:
             base = traj.obs_path[:-8]
             for suffix in (".json", ".npz", ".obs.npy"):
