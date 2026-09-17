@@ -184,3 +184,43 @@ Harness: 72 checks, 0 failures, including a test that pins the hazard --
 for a new building but a *0* demolishes nothing, because nothing is observed
 there. So the two wrong answers fail in opposite directions, and only at the
 anchor does 0 mean demolish.
+
+## Composition fixed (04:30). The economy is the next wall.
+
+Telemetry after the anchor fix + a working count budget, same seed, vs numbi:
+
+```
+Neurotica  swarm=4 inn=6 hosp=2 pool=3 barracks=2 school=9 tower=1 flags=14  workers= 4
+Nicowar    swarm=4 inn=7 hosp=3 race=2 pool=2 barracks=2 school=2 flags=4    workers=77
+```
+
+Composition finally resembles a teacher -- school and flags are over-built,
+everything else is in range. First time in this project that has been true.
+
+**But workers=4.** It builds a reasonable base and has no economy. That is now
+the whole gap.
+
+Two further bugs fixed to get here:
+* `have` divided covered cells by a guessed footprint size, reading 4 swarms
+  when the team held 1. Count labels are per-building, so count anchors.
+* The budget deadlocked: the count head predicts what a team in THIS state
+  should hold, so a stunted base (out of distribution -- teachers are far
+  bigger by the same tick) draws a low prediction, which forbids building,
+  which keeps it stunted. Holding 1 swarm and 1 inn it asked for 1 swarm and
+  0 inns, and built nothing for 20000 ticks. Now the highest-scoring type
+  always keeps one slot so the state can walk back into distribution.
+
+**Next, and it is structural:** the policy socket carries only 3 bytes per
+cell -- building class, score, area bits. `NeuroticaPolicySocket.cpp:176`.
+So `workers`, `workersFuture`, `swarmRatio`, `level`, `flagRadius`,
+`priority` and `minLevelToFlag` are never set by the network at all; they sit
+at DONT_CARE and the reconciler leaves staffing and swarm ratios alone.
+
+The net therefore cannot staff a building or tune a swarm, which is very
+likely why 4 workers. The desired-state schema has always had these planes;
+the wire format and the model heads never caught up. That is the next piece
+of work, and it needs a protocol bump plus heads for those planes.
+
+Also fixed: the socket folded any class above 13 to 0, so DONT_CARE never
+arrived. Harmless while `observed_` is anchor-keyed (0 on a non-anchor cell
+demolishes nothing) but wrong, and it would bite the moment that changed.

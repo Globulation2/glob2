@@ -173,7 +173,12 @@ namespace Neurotica
 			// A class the engine does not have is treated as "nothing wanted"
 			// rather than clamped: a policy emitting garbage should be inert at
 			// that cell, not build something arbitrary.
-			out.building[i] = (cls <= IntBuildingTypeCount) ? cls : Uint8(0);
+			// DONT_CARE passes through: it means "not mine to decide", which
+			// is what a policy that can see a building's footprint but not its
+			// anchor must say about the non-anchor cells. Folding it to 0 would
+			// turn that into "want empty here".
+			out.building[i] = (cls <= IntBuildingTypeCount || cls == DONT_CARE)
+			                  ? cls : Uint8(0);
 			out.buildingScore[i] = reply_[i * 3 + 1];
 			out.areas[i] = reply_[i * 3 + 2] & (AREA_GUARD | AREA_CLEAR | AREA_FORBIDDEN);
 			// Urgency follows the score until the policy learns a head for it,
