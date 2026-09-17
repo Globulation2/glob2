@@ -289,11 +289,26 @@ class NeuroticaNet(nn.Module):
     # novelty.
 
     @staticmethod
-    def placement_distribution(building_logits, existing_mask, allowed=None):
-        """Categorical over empty cells, weighted by P(any building there)."""
+    def placement_distribution(building_logits, existing_mask, allowed=None,
+                               temperature=1.0):
+        """Categorical over empty cells, weighted by P(any building there).
+
+        temperature < 1 sharpens the draw toward the greedy top-k. Measured on
+        the same weights: greedy top-8 scored 78% against numbi, sampled k=8
+        scored 18% -- the distribution is diffuse enough (novel precision
+        ~0.18) that sampling mostly draws bad cells, so PPO was training a
+        policy far from the one being evaluated. Like the allowed mask, the
+        temperature used to act is stored per step and passed back here for
+        evaluation, so the scored distribution is the one that acted.
+        temperature may be a float or a (B,) tensor.
+        """
         probs = torch.softmax(building_logits.float(), dim=1)
         occupied = 1.0 - probs[:, 0]
         cand = occupied.masked_fill(existing_mask, 0.0).flatten(1)
+        if not (isinstance(temperature, (int, float)) and temperature == 1.0):
+            inv = (1.0 / torch.as_tensor(temperature, dtype=cand.dtype,
+                                          device=cand.device)).reshape(-1, 1)
+            cand = cand.clamp(min=1e-12).pow(inv)
         if allowed is not None:
             cand = cand * allowed.float()
         # A row with no legal candidate would make a degenerate distribution.
@@ -308,7 +323,7 @@ class NeuroticaNet(nn.Module):
         return torch.distributions.Categorical(probs=cand / cand.sum(dim=1, keepdim=True))
 
     def act_placements(self, x, existing_mask, k: int = 8, allowed=None,
-                       decide_mix=None, out=None):
+                       decide_mix=None, out=None, temperature=1.0):
         """Sample the joint action.
 
         allowed: (B, H*W) bool, computed by the caller from the observation and
@@ -319,7 +334,8 @@ class NeuroticaNet(nn.Module):
         """
         if out is None:
             out = self.forward(x)
-        dist = self.placement_distribution(out["building"], existing_mask, allowed)
+        dist = self.placement_distribution(out["building"], existing_mask, allowed,
+                                           temperature)
         idx = dist.sample((k,)).T.contiguous()            # (B, k)
         mix_dist = torch.distributions.Categorical(logits=out["mix"].float())
         mix = mix_dist.sample()                           # (B,)
@@ -334,7 +350,7 @@ class NeuroticaNet(nn.Module):
         return out
 
     def evaluate_placements(self, x, idx, existing_mask, allowed=None,
-                            mix=None, decide_mix=None):
+                            mix=None, decide_mix=None, temperature=1.0):
         """Re-score stored placements under the current policy, for PPO.
 
         allowed and decide_mix must be the STORED values from when the action
@@ -344,7 +360,8 @@ class NeuroticaNet(nn.Module):
         out of the gradient silently.
         """
         out = self.forward(x)
-        dist = self.placement_distribution(out["building"], existing_mask, allowed)
+        dist = self.placement_distribution(out["building"], existing_mask, allowed,
+                                           temperature)
         logp = dist.log_prob(idx.T).sum(dim=0)
         entropy = dist.entropy()
         if mix is not None:

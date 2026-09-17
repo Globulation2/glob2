@@ -44,6 +44,7 @@ class Trajectory:
     opponent: str = "?"    # for the per-episode log; not used in the update
     mix_decided: np.ndarray = None  # (T,) bool: mix re-chosen this step (term in logp)
     allowed: np.ndarray = None      # (T, ceil(HW/8)) packbits of the placement mask
+    temperature: np.ndarray = None  # (T,) sampling temperature used to act
 
 
 def build_observation(static: np.ndarray, dynamic: np.ndarray,
@@ -105,6 +106,8 @@ def load_trajectories(run_dir: str) -> List[Trajectory]:
                 mix_decided=(arrays["mix_decided"] if "mix_decided" in arrays.files else None),
                 allowed=(arrays["allowed"] if "allowed" in arrays.files
                          and arrays["allowed"].size else None),
+                temperature=(arrays["temperature"] if "temperature" in arrays.files
+                             and arrays["temperature"].size else None),
                 values=arrays["values"], potentials=arrays["potentials"],
                 ticks=arrays["ticks"], static=arrays["static"],
                 outcome=float(meta["outcome"]),
@@ -132,7 +135,7 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
     if not trajs:
         return {}
     all_adv, all_ret, all_act, all_logp, obs_refs = [], [], [], [], []
-    all_mix, all_dec, all_allow = [], [], []
+    all_mix, all_dec, all_allow, all_temp = [], [], [], []
     for traj in trajs:
         rewards = compute_rewards(traj, args.gamma, args.shaping)
         adv, ret = gae(rewards, traj.values, args.gamma, args.lam)
@@ -143,6 +146,8 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
         all_mix.append(traj.mixes)
         all_dec.append(traj.mix_decided)
         all_allow.append(traj.allowed)
+        all_temp.append(traj.temperature if traj.temperature is not None
+                        else np.ones(len(traj.logps), dtype=np.float32))
         obs = np.load(traj.obs_path, mmap_mode="r")
         obs_refs.extend([(obs, i, traj) for i in range(len(traj.logps))])
 
@@ -156,6 +161,7 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
     mix_all = np.concatenate(all_mix)
     dec_all = np.concatenate(all_dec)
     allow_all = np.concatenate(all_allow)          # (N, ceil(HW/8)) uint8
+    temp_all = np.concatenate(all_temp).astype(np.float32)
     adv = (adv - adv.mean()) / (adv.std() + 1e-8)
 
     n = len(adv)
@@ -185,8 +191,9 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
                 hw = x.shape[2] * x.shape[3]
                 allow_b = torch.from_numpy(
                     np.unpackbits(allow_all[idx], axis=1)[:, :hw].astype(bool)).to(device)
+                tb = torch.from_numpy(temp_all[idx]).to(device)
                 ev = net.evaluate_placements(x, ab, existing, allowed=allow_b,
-                                             mix=mb, decide_mix=db)
+                                             mix=mb, decide_mix=db, temperature=tb)
             ratio = (ev["logp"] - torch.from_numpy(logp_old[idx]).to(device)).exp()
             a = torch.from_numpy(adv[idx]).to(device)
             pg = -torch.min(ratio * a,

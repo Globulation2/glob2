@@ -70,6 +70,7 @@ def flush_trajectory(client, record_dir: str) -> None:
              potentials=np.array(client.potentials, dtype=np.float32),
              mixes=np.array(client.mixes, dtype=np.int64),
              mix_decided=np.array(client.decided, dtype=bool),
+             temperature=np.array(client.temps, dtype=np.float32),
              allowed=(np.stack(client.allowed) if client.allowed
                       else np.zeros((0, 0), dtype=np.uint8)),
              ticks=np.array(client.ticks, dtype=np.int64),
@@ -112,6 +113,7 @@ class Client:
         self.allowed: list = []
         self.held_mix = None
         self.mix_step = 0
+        self.temps: list = []
         self.ticks: list = []
 
 
@@ -177,6 +179,9 @@ def main() -> int:
     ap.add_argument("--use-count", action="store_true",
                     help="bound each type by the count head's prediction "
                          "(requires a checkpoint trained with one)")
+    ap.add_argument("--temperature", type=float, default=1.0,
+                    help="sampling temperature for placements under --sample; "
+                         "<1 sharpens toward greedy top-k. Stored per step.")
     ap.add_argument("--min-base", type=int, default=4,
                     help="the deadlock breaker only fires while fewer than "
                          "this many buildings are held")
@@ -366,7 +371,8 @@ def main() -> int:
         if args.sample:
             with torch.no_grad(), torch.autocast("cuda", dtype=torch.float16):
                 act = net.act_placements(x, existing, k=args.placements,
-                                         allowed=allowed, decide_mix=decide, out=out)
+                                         allowed=allowed, decide_mix=decide, out=out,
+                                         temperature=args.temperature)
             idx = act["placements"]
             proposed_mix = act["mix_choice"]
             logp = act["logp"]
@@ -433,6 +439,7 @@ def main() -> int:
                     # Stored so PPO scores the distribution that acted, not one
                     # recomputed from a trunk it has since moved.
                     client.allowed.append(np.packbits(allowed_np[n]))
+                    client.temps.append(float(args.temperature))
                 if "value" in out:
                     client.values.append(float(out["value"][n]))
                 mine = float((dyn[MY_BUILDING_SLICE] > 0).sum() +
