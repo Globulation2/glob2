@@ -911,5 +911,6 @@ GeneratorDefinition fjordContinentDefinition()
 			true,
 			nullptr,
 			validateWorld,
-			{"terrain:natural", "feature:ocean", "feature:islands", "feature:lakes", "style:sprawling"}};
+			{"terrain:natural", "feature:ocean", "feature:islands", "feature:lakes", "style:sprawling",
+			 "fairness:repeated-wedge"}};
 }

@@ -776,5 +776,6 @@ GeneratorDefinition emojiDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:novelty", "feature:novelty-shapes", "style:tight-building"}};
+			{"terrain:novelty", "feature:novelty-shapes", "style:tight-building",
+			 "fairness:repeated-wedge"}};
 }

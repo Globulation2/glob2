@@ -821,5 +821,6 @@ GeneratorDefinition fortsDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:arena", "feature:stone-walls", "feature:river", "style:siege", "style:fortified"}};
+			{"terrain:arena", "feature:stone-walls", "feature:river", "style:siege", "style:fortified",
+			 "fairness:stamped-lattice"}};
 }

@@ -913,5 +913,6 @@ GeneratorDefinition switchbacksDefinition()
 			true,
 			validateRequest,
 			validateWorld,
-			{"terrain:arena", "feature:mountains", "feature:stone-walls", "style:siege", "style:contested-center"}};
+			{"terrain:arena", "feature:mountains", "feature:stone-walls", "style:siege",
+			 "style:contested-center", "fairness:repeated-wedge"}};
 }

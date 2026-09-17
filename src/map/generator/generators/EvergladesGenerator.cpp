@@ -566,5 +566,10 @@ GeneratorDefinition evergladesDefinition()
 			true,
 			validateRequest,
 			validateWorld,
-			{"terrain:natural", "feature:swamp", "feature:lakes", "style:wide-open"}};
+			// "style:wide-open" (from the code's own "sprawling" framing) was wrong at a glance:
+			// FEEDBACK 2026-09-17 asked for tags read off the rendered map, and this one is nearly
+			// wall-to-wall pools and sloughs, not open ground - dense and growth-pressured, not
+			// wide-open. Left with no style tag rather than a second guess; see the skill's own
+			// "A growth-pressure map can intentionally creep into bases" characterization.
+			{"terrain:natural", "feature:swamp", "feature:lakes"}};
 }

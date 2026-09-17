@@ -9,6 +9,8 @@
 #include <Toolkit.h>
 #include <algorithm>
 #include <functional>
+#include <map>
+#include <random>
 
 namespace
 {
@@ -44,22 +46,6 @@ categoriesOf(const std::vector<LandscapePickerScreen::Entry> &entries)
 	std::sort(found.begin(), found.end());
 	return found;
 }
-std::vector<std::string> valuesOf(const std::vector<LandscapePickerScreen::Entry> &entries,
-								  const std::string &category)
-{
-	std::vector<std::string> found;
-	const std::string prefix = category + ":";
-	for (const auto &entry : entries)
-		for (const auto &tag : entry.tags)
-			if (tag.compare(0, prefix.size(), prefix) == 0)
-			{
-				auto value = tag.substr(prefix.size());
-				if (std::find(found.begin(), found.end(), value) == found.end())
-					found.push_back(std::move(value));
-			}
-	std::sort(found.begin(), found.end());
-	return found;
-}
 } // namespace
 
 std::vector<GenerationRequest> LandscapePickerScreen::requestsOf(const std::vector<Entry> &entries)
@@ -84,36 +70,63 @@ LandscapePickerScreen::LandscapePickerScreen(const std::string &title, std::vect
 	controls->render = [this] { render(); };
 	controls->focus = "landscape/" + std::to_string(this->selected);
 	addWidget(controls);
-	incompatible.resize(this->entries.size());
-	for (std::size_t i = 0; i < this->entries.size(); ++i)
-	{
-		const auto &entry = this->entries[i];
-		if (entry.method < 0)
-			continue;
-		if (const auto *definition = GeneratorRegistry::builtins().find(entry.method))
-			incompatible[i] = validateGenerationRequest(entry.request, *definition);
-	}
+	recomputeIncompatible();
 	rebuild();
 }
 
 LandscapePickerScreen::~LandscapePickerScreen() = default;
 
+void LandscapePickerScreen::recomputeIncompatible()
+{
+	incompatible.assign(entries.size(), {});
+	for (std::size_t i = 0; i < entries.size(); ++i)
+	{
+		const auto &entry = entries[i];
+		if (entry.method < 0)
+			continue;
+		if (const auto *definition = GeneratorRegistry::builtins().find(entry.method))
+			incompatible[i] = validateGenerationRequest(entry.request, *definition);
+	}
+}
+
+void LandscapePickerScreen::setShared(const GeneratorControl &control, int value)
+{
+	for (auto &entry : entries)
+		control.set(entry.request, value);
+	recomputeIncompatible();
+	previewer.restart(requestsOf(entries));
+	rebuild();
+}
+
+bool LandscapePickerScreen::matchesFilters(int index, int skip) const
+{
+	const auto &tags = entries[index].tags;
+	for (int c = 0; c < int(filterCategories.size()); ++c)
+		if (c != skip && !filters[c].empty() &&
+			std::find(tags.begin(), tags.end(), filterCategories[c] + ":" + filters[c]) == tags.end())
+			return false;
+	return true;
+}
+
 void LandscapePickerScreen::rebuild()
 {
 	visible.clear();
 	for (int i = 0; i < int(entries.size()); ++i)
-	{
-		bool matches = true;
-		for (std::size_t c = 0; c < filterCategories.size() && matches; ++c)
-			if (!filters[c].empty())
-				matches = std::find(entries[i].tags.begin(), entries[i].tags.end(),
-									filterCategories[c] + ":" + filters[c]) != entries[i].tags.end();
-		if (matches)
+		if (matchesFilters(i, -1))
 			visible.push_back(i);
-	}
 	if (sortOrder == SortOrder::Alphabetical)
 		std::stable_sort(visible.begin(), visible.end(), [this](int a, int b)
 						 { return entries[a].name < entries[b].name; });
+	else
+	{
+		// A fresh shuffle, not a stable pseudo-random order: FEEDBACK 2026-09-17, "random isn't
+		// actually randomizing the order... I want it to be dynamically random" - every dialog
+		// open (this runs once from the constructor) and every return to Random after
+		// Alphabetical draws a new permutation, from real entropy so it never repeats a fixed
+		// sequence the way a seed derived from the entries themselves would.
+		std::mt19937 random(std::random_device{}());
+		std::shuffle(visible.begin(), visible.end(), random);
+	}
 	reveal = true;
 }
 
@@ -251,8 +264,6 @@ void LandscapePickerScreen::onSDLEvent(SDL_Event *event)
 	}
 	if (event->type == SDL_MOUSEMOTION)
 	{
-		pointerX = event->motion.x;
-		pointerY = event->motion.y;
 		for (auto &tile : tiles)
 			if (tile.widget)
 				tile.widget->handlePreviewEvent(event);
@@ -299,15 +310,9 @@ void LandscapePickerScreen::onSDLEvent(SDL_Event *event)
 				return;
 			}
 		}
-		// Keep normal grid scrolling outside the selected map image.
-		if (event->type == SDL_MOUSEWHEEL && selected >= 0 && selected < int(tiles.size()) &&
-			LobbyControls::inside(clip, pointerX, pointerY))
-		{
-			auto &tile = tiles[selected];
-			if (tile.widget && tile.preview.state == LandscapePreviewer::State::Ready &&
-				tile.widget->handlePreviewEvent(event))
-				return;
-		}
+		// A preview's own scroll-to-zoom is switched off on this sheet (FEEDBACK 2026-09-17: it
+		// competed with scrolling the grid of landscapes itself, so scroll wheel here is always
+		// grid scrolling - never zoom, whether or not the pointer sits over a card's image).
 	}
 	if (event->type == SDL_KEYDOWN && !controls->popup.open)
 	{
@@ -355,9 +360,14 @@ void LandscapePickerScreen::render()
 	ui.text(x + 8, 20, title, compact ? "standard" : "menu", w - 16);
 	const int subtitleY = compact ? 46 : 56;
 	const int barY = subtitleY + 6 +
+					 // Not tr(): this replaces an existing translated sentence with one describing
+					 // the new inline size/colony controls below, and there is no translation
+					 // key yet for the new wording (see the sort/filter labels above for the
+					 // same reasoning - catalog and UI-only text added this pass stays plain).
 					 ui.paragraph(x + 8, subtitleY, w - 16,
-								  tr("Each landscape is shown as a real map at your current size "
-									 "and colony count. Use one to play the map shown."));
+								  "Each landscape is shown as a real map at the size and colony "
+								  "count below, which you can change here. Use one to play the "
+								  "map shown.");
 	// Sort order and tag filters, browsed like a catalog: a category narrows the list to entries
 	// carrying its chosen value (AND across categories; "Any" leaves a category unfiltered).
 	// These are plain catalog labels, not translated (the tags themselves are not localized
@@ -380,10 +390,33 @@ void LandscapePickerScreen::render()
 	const int filterW = filterCount > 0 ? std::max(84, remaining / filterCount) : 0;
 	for (int c = 0; c < filterCount; ++c)
 	{
-		const auto values = valuesOf(entries, filterCategories[c]);
-		std::vector<std::string> options{"Any " + tagLabel(filterCategories[c])};
-		for (const auto &value : values)
-			options.push_back(tagLabel(value));
+		// Faceted like a shopping catalog: an option is only offered if it leaves at least one
+		// result once the OTHER active filters are applied too, so picking any shown option can
+		// never empty the sheet (FEEDBACK 2026-09-17). The count after each label is how many
+		// landscapes that choice would leave, "Any" showing how many the other filters alone
+		// allow; the currently chosen value stays listed (at 0) even on the rare frame it would
+		// otherwise have dropped out, so the dropdown never silently loses the person's choice.
+		int pool = 0;
+		std::map<std::string, int> counts;
+		const std::string prefix = filterCategories[c] + ":";
+		for (int i = 0; i < int(entries.size()); ++i)
+			if (matchesFilters(i, c))
+			{
+				++pool;
+				for (const auto &tag : entries[i].tags)
+					if (tag.compare(0, prefix.size(), prefix) == 0)
+						++counts[tag.substr(prefix.size())];
+			}
+		if (!filters[c].empty())
+			counts.try_emplace(filters[c], 0);
+		std::vector<std::string> values;
+		std::vector<std::string> options{"Any " + tagLabel(filterCategories[c]) + " (" +
+										 std::to_string(pool) + ")"};
+		for (const auto &[value, count] : counts)
+		{
+			values.push_back(value);
+			options.push_back(tagLabel(value) + " (" + std::to_string(count) + ")");
+		}
 		const auto match = std::find(values.begin(), values.end(), filters[c]);
 		const int current = filters[c].empty() || match == values.end()
 								? 0
@@ -397,12 +430,39 @@ void LandscapePickerScreen::render()
 					});
 		barX += filterW;
 	}
-	const int top = barY + barH + 10;
+	// Map size and colony count, editable right here rather than only inherited from the lobby
+	// behind this sheet (FEEDBACK 2026-09-17: "so that i can instantly see how it impacts all of
+	// the various available maps" - changing either reforms every entry's request and rerolls
+	// every visible preview at once via setShared(), so the whole grid updates together for fast
+	// comparison, the same immediacy "Regenerate all" already has). sharedWDec/HDec/Teams read
+	// back the sheet's current values (uniform across entries[]) so a caller can keep its own
+	// lobby setup showing the same size and count, in both directions, once this sheet closes.
+	const int sizeY = barY + barH + 8;
+	int sizeX = x + 8;
+	for (const auto &id : {"width", "height", "teams"})
+	{
+		const auto found = std::find_if(GenerationRequest::sharedControls().begin(),
+										GenerationRequest::sharedControls().end(),
+										[&](const GeneratorControl &c) { return c.id == id; });
+		const auto &control = *found;
+		const int labelW = compact ? 60 : 80, fieldW = compact ? 90 : 110;
+		ui.text(sizeX, sizeY + 7, tr(control.label), "little", labelW, true);
+		std::vector<std::string> options;
+		for (int v : control.values())
+			options.push_back(std::to_string(control.displayValue(v)));
+		ui.dropdown("landscape/" + std::string(id), {sizeX + labelW, sizeY, fieldW, barH}, options,
+					control.indexOf(control.get(entries.front().request)),
+					[this, control](int index) { setShared(control, control.valueAt(index)); });
+		sizeX += labelW + fieldW + 14;
+	}
+	const int top = sizeY + barH + 10;
 	const int bottom = height - 66;
 	const int gap = 12, scrollbar = 12;
+	// Card size is fixed by the sheet's own width, never by how many results a filter leaves: a
+	// single match sits at its normal size in an otherwise-empty grid rather than stretching to
+	// fill the row (FEEDBACK 2026-09-17, seen with the tag filters narrowed to one landscape).
 	const int tileMin = compact ? 176 : 200;
-	columns =
-		std::clamp((w - scrollbar + gap) / (tileMin + gap), 1, std::max(1, int(visible.size())));
+	columns = std::max(1, (w - scrollbar + gap) / (tileMin + gap));
 	const int tileW = (w - scrollbar - gap * (columns - 1)) / columns;
 	const int image = tileW - 16;
 	const int nameH = Toolkit::getFont("standard")->getStringHeight("Ag");

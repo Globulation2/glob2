@@ -952,5 +952,6 @@ GeneratorDefinition coralDefinition()
 			true,
 			validateRequest,
 			validateWorld,
-			{"terrain:natural", "feature:islands", "feature:ocean", "style:sprawling"}};
+			{"terrain:natural", "feature:islands", "feature:ocean", "style:sprawling",
+			 "fairness:repeated-wedge"}};
 }

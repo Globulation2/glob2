@@ -1266,5 +1266,6 @@ GeneratorDefinition karstTowersDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:natural", "feature:river", "feature:mountains", "feature:lakes", "style:tight-building"}};
+			{"terrain:natural", "feature:river", "feature:mountains", "feature:lakes",
+			 "style:tight-building", "fairness:stamped-lattice"}};
 }

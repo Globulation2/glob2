@@ -27,6 +27,7 @@
 #include <functional>
 #include <iostream>
 #include <memory>
+#include <numeric>
 #include <set>
 #include <unistd.h>
 
@@ -197,6 +198,38 @@ struct CustomGameSetupHarness
 		assert(!restored.decode(encoded.substr(0, at) + "options 3\nlake-connected 1\n" +
 								encoded.substr(end)));
 		std::cout << "PASS preferences keep every generator option, and older files still load\n";
+	}
+	// FEEDBACK 2026-09-17: "'random' isn't actually randomizing the order... I want it to be
+	// dynamically random" - Random must draw a fresh permutation every time the sheet opens, not
+	// a fixed order that looks shuffled once (the registry's own catalog order, which used to be
+	// exactly what Random fell through to) and then repeats identically on every subsequent open.
+	// Two freshly constructed sheets on the same entries must land on different orders from each
+	// other, and neither may be the untouched catalog order.
+	static void landscapeRandomOrder()
+	{
+		std::vector<LandscapePickerScreen::Entry> shown;
+		for (int method : GeneratorRegistry::builtins().methods(false))
+		{
+			GenerationRequest request;
+			request.setMethodDefaults(method);
+			shown.push_back({GenerationRequest::methodName(method), request, method});
+		}
+		std::vector<int> identity(shown.size());
+		std::iota(identity.begin(), identity.end(), 0);
+		LandscapePickerScreen first("Landscape", shown, 0);
+		LandscapePickerScreen second("Landscape", shown, 0);
+		assert(first.sortOrder == LandscapePickerScreen::SortOrder::Random &&
+			  second.sortOrder == LandscapePickerScreen::SortOrder::Random);
+		assert(first.visible != identity && second.visible != identity);
+		assert(first.visible != second.visible);
+		// Alphabetical stays the deterministic alternative: same entries, same order, every time.
+		LandscapePickerScreen sortedA("Landscape", shown, 0,
+									  LandscapePickerScreen::SortOrder::Alphabetical);
+		LandscapePickerScreen sortedB("Landscape", shown, 0,
+									  LandscapePickerScreen::SortOrder::Alphabetical);
+		assert(sortedA.visible == sortedB.visible);
+		std::cout << "PASS landscape picker Random order reshuffles on every open, Alphabetical "
+					 "stays stable\n";
 	}
 	static void preferencesScreen(bool write)
 	{
@@ -1412,6 +1445,7 @@ int main(int argc, char **argv)
 	Toolkit::getFileManager()->remove(CustomGamePreferences::filename);
 	CustomGameSetupHarness::preferencesModel();
 	CustomGameSetupHarness::preferencesOptions();
+	CustomGameSetupHarness::landscapeRandomOrder();
 	assert(SDLNet_Init() == 0);
 	if (argc > 2 && std::string(argv[2]) == "ui")
 	{

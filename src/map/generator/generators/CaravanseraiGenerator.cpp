@@ -848,5 +848,6 @@ GeneratorDefinition caravanseraiDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:natural", "feature:desert", "feature:oases", "style:sprawling"}};
+			{"terrain:natural", "feature:desert", "feature:oases", "style:sprawling",
+			 "fairness:stamped-lattice"}};
 }

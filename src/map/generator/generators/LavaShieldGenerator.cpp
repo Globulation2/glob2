@@ -881,5 +881,6 @@ GeneratorDefinition lavaShieldDefinition()
 			true,
 			requestFailure,
 			validateWorld,
-			{"terrain:natural", "feature:volcanic", "feature:mountains", "style:contested-center"}};
+			{"terrain:natural", "feature:volcanic", "feature:mountains", "style:contested-center",
+			 "fairness:repeated-wedge"}};
 }

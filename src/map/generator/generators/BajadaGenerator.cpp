@@ -1527,5 +1527,6 @@ GeneratorDefinition bajadaDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:natural", "feature:mountains", "feature:desert", "feature:lakes", "style:sprawling"}};
+			{"terrain:natural", "feature:mountains", "feature:desert", "feature:lakes",
+			 "style:sprawling", "fairness:stamped-lattice"}};
 }

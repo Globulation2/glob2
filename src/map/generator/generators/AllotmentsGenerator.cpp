@@ -640,5 +640,5 @@ GeneratorDefinition allotmentsDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:urban", "feature:farmland", "style:tight-building"}};
+			{"terrain:urban", "feature:farmland", "style:tight-building", "fairness:stamped-lattice"}};
 }

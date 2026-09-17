@@ -1154,5 +1154,6 @@ GeneratorDefinition glacisDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:arena", "feature:stone-walls", "feature:forest", "feature:river", "style:fortified", "style:siege"}};
+			{"terrain:arena", "feature:stone-walls", "feature:forest", "feature:river",
+			 "style:fortified", "style:siege", "fairness:stamped-lattice"}};
 }

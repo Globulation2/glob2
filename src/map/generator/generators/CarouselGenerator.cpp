@@ -1092,5 +1092,6 @@ GeneratorDefinition carouselDefinition()
 			true,
 			validateRequest,
 			validateWorld,
-			{"terrain:arena", "feature:stone-walls", "style:siege", "style:tight-building"}};
+			{"terrain:arena", "feature:stone-walls", "style:siege", "style:tight-building",
+			 "fairness:repeated-wedge"}};
 }

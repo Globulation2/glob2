@@ -71,6 +71,21 @@ class LandscapePickerScreen : public Glob2Screen
 	void resetParameters();
 	static constexpr int kRandomDraws = 6;
 	bool busy() const { return previewer.busy(); }
+	/// The shared width/height (tile exponents) and colony count every entry is currently shown
+	/// at - uniform across entries[] by construction (the caller's GenerationHistory already
+	/// carries these shared fields onto every method) and kept uniform by setShared(). A caller
+	/// reads these back after execute() returns, on any exit, and applies them to its own lobby
+	/// setup, the same two-way relationship currentSortOrder() has with a caller's preferences:
+	/// this sheet is a live view onto shared lobby settings, not a disconnected copy of them.
+	int sharedWDec() const { return entries.empty() ? 0 : entries.front().request.wDec; }
+	int sharedHDec() const { return entries.empty() ? 0 : entries.front().request.hDec; }
+	int sharedTeams() const { return entries.empty() ? 0 : entries.front().request.nbTeams; }
+	/// Sets one shared control (width/height/teams, from GenerationRequest::sharedControls) to
+	/// `value` on every entry, then rerolls every visible preview immediately at the new size or
+	/// colony count - no separate "Regenerate all" step - and recomputes which generators are
+	/// still compatible with it. FEEDBACK 2026-09-17: the point is instant comparison across the
+	/// whole grid of how every landscape responds, not editing one map's parameters in isolation.
+	void setShared(const GeneratorControl &control, int value);
 
   private:
 	struct Tile
@@ -85,6 +100,14 @@ class LandscapePickerScreen : public Glob2Screen
 	void refresh();
 	void select(int index);
 	void confirm();
+	/// Whether entries[index] matches every active filter except filterCategories[skip] (skip < 0
+	/// checks all of them) - the faceted-search rule that keeps a category's own dropdown, and
+	/// `rebuild`'s final list, from ever offering a choice that empties the results: a category's
+	/// options are drawn only from what the OTHER active filters still allow.
+	bool matchesFilters(int index, int skip) const;
+	/// Refills `incompatible` from a fresh validateGenerationRequest per entry, against each
+	/// entry's own (shared, per setShared) size and colony count.
+	void recomputeIncompatible();
 	/// Recomputes `visible` (entries[] indices, filtered by the active tag choices and ordered by
 	/// `sortOrder`) and `incompatible` (each entry's live validateGenerationRequest reason against
 	/// the sheet's own size/colony count, empty when it can generate). Called once at construction
@@ -100,8 +123,8 @@ class LandscapePickerScreen : public Glob2Screen
 	/// identity order 0..entries.size()-1.
 	std::vector<int> visible;
 	/// Parallel to entries[]: the live reason this entry cannot generate at the sheet's size and
-	/// colony count, or empty when it can. Computed once (that size/count do not change while the
-	/// sheet is open), never re-rolled, so it costs no worker time.
+	/// colony count, or empty when it can. Recomputed at construction and by setShared() whenever
+	/// that size or count changes; a validateGenerationRequest check, so it costs no worker time.
 	std::vector<std::string> incompatible;
 	/// Every tag category present across entries[]'s own tags (each generator's own
 	/// GeneratorDefinition::tags, carried in by the caller), fixed at construction in a stable
@@ -110,7 +133,7 @@ class LandscapePickerScreen : public Glob2Screen
 	std::vector<std::string> filterCategories;
 	std::vector<std::string> filters;
 	int selected, columns = 1;
-	int activePreview = -1, pointerX = 0, pointerY = 0;
+	int activePreview = -1;
 	bool reveal = true;
 	SortOrder sortOrder;
 	LobbyControls *controls;

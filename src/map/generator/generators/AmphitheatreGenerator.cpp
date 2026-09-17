@@ -787,5 +787,6 @@ GeneratorDefinition amphitheatreDefinition()
 			true,
 			validateRequest,
 			validateWorld,
-			{"terrain:arena", "feature:stone-walls", "feature:orchard", "style:siege", "style:contested-center"}};
+			{"terrain:arena", "feature:stone-walls", "feature:orchard", "style:siege",
+			 "style:contested-center", "fairness:repeated-wedge"}};
 }

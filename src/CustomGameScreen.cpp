@@ -324,6 +324,19 @@ void CustomGameScreen::chooseLandscape()
 	const int result = picker.execute(globalContainer->gfx, 40);
 	// Persisted the next time preferences save, the way any other lobby choice on this screen is.
 	landscapeSortOrder = int(picker.currentSortOrder());
+	// Size and colony count are shared lobby settings the picker can also change (FEEDBACK
+	// 2026-09-17); bring them back whether or not a landscape was actually picked, so backing
+	// out still keeps what was chosen there, the same two-way relationship the sort order has.
+	if (picker.sharedWDec() != setup.generator.wDec || picker.sharedHDec() != setup.generator.hDec ||
+		picker.sharedTeams() != setup.capacity)
+	{
+		setup.generator.wDec = picker.sharedWDec();
+		setup.generator.hDec = picker.sharedHDec();
+		setup.generator.nbTeams = picker.sharedTeams();
+		setup.setCapacity(picker.sharedTeams());
+		++setup.mapRevision;
+		invalidate();
+	}
 	if (result == QUIT_APPLICATION)
 		endExecute(QUIT_APPLICATION);
 	else if (result >= 0 && result < int(entries.size()))

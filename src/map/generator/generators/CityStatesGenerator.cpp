@@ -1673,5 +1673,6 @@ GeneratorDefinition cityStatesDefinition()
 			true,
 			validateRequest,
 			validateWorld,
-			{"terrain:urban", "feature:canals", "feature:islands", "style:tight-building", "style:contested-center"}};
+			{"terrain:urban", "feature:canals", "feature:islands", "style:tight-building",
+			 "style:contested-center", "fairness:repeated-wedge"}};
 }
