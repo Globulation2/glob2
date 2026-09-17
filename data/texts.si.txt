@@ -2758,3 +2758,25 @@ Vijugavost reke
 Poplavljene terase
 [Sinkholes]
 Vrtače
+[Bajada]
+Vršaji
+[Range spacing]
+Razmik gorovij
+[Ridge width]
+Širina grebenov
+[Passes]
+Prelazi
+[Fans per range]
+Vršajev na gorovje
+[Stream reach]
+Dolžina potokov
+[Playa]
+Slana jezera
+[Broad fan]
+Širok vršaj
+[Long fan]
+Dolg vršaj
+[Twin springs]
+Dva izvira
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Pobočja z vršaji so preozka za domove; uporabite večji zemljevid, večji razmik gorovij, ožje grebene ali manjša slana jezera.

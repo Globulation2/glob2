@@ -2754,3 +2754,25 @@ Emoji
 淹水梯田
 [Sinkholes]
 落水洞
+[Bajada]
+冲积扇
+[Range spacing]
+山脉间距
+[Ridge width]
+山脊宽度
+[Passes]
+山口
+[Fans per range]
+每条山脉的冲积扇
+[Stream reach]
+溪流长度
+[Playa]
+盐湖
+[Broad fan]
+宽冲积扇
+[Long fan]
+长冲积扇
+[Twin springs]
+双泉
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+冲积扇山坡太窄，容不下基地；请使用更大的地图、更宽的山脉间距、更窄的山脊或更小的盐湖。

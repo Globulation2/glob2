@@ -2754,3 +2754,25 @@ Kelokan sungai
 Teras tergenang
 [Sinkholes]
 Dolina
+[Bajada]
+Kipas aluvial
+[Range spacing]
+Jarak antarpegunungan
+[Ridge width]
+Lebar punggung gunung
+[Passes]
+Celah gunung
+[Fans per range]
+Kipas per pegunungan
+[Stream reach]
+Panjang anak sungai
+[Playa]
+Danau garam
+[Broad fan]
+Kipas lebar
+[Long fan]
+Kipas panjang
+[Twin springs]
+Mata air kembar
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Lereng kipas terlalu sempit untuk markas; gunakan peta yang lebih besar, jarak antarpegunungan yang lebih lebar, punggung gunung yang lebih sempit, atau danau garam yang lebih kecil.

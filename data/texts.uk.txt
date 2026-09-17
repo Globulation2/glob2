@@ -2754,3 +2754,25 @@ Emoji
 Затоплені тераси
 [Sinkholes]
 Карстові лійки
+[Bajada]
+Конуси виносу
+[Range spacing]
+Відстань між хребтами
+[Ridge width]
+Ширина гребенів
+[Passes]
+Перевали
+[Fans per range]
+Конусів на хребет
+[Stream reach]
+Довжина струмків
+[Playa]
+Солоні озера
+[Broad fan]
+Широкий конус
+[Long fan]
+Довгий конус
+[Twin springs]
+Джерела-близнюки
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Схили з конусами виносу надто вузькі для баз; використайте більшу карту, більшу відстань між хребтами, вужчі гребені або менші солоні озера.

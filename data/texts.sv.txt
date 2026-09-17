@@ -2768,3 +2768,25 @@ Flodens meandring
 Översvämmade terrasser
 [Sinkholes]
 Slukhål
+[Bajada]
+Svämkäglor
+[Range spacing]
+Avstånd mellan bergskedjor
+[Ridge width]
+Åsarnas bredd
+[Passes]
+Bergspass
+[Fans per range]
+Svämkäglor per bergskedja
+[Stream reach]
+Bäckarnas längd
+[Playa]
+Saltsjöar
+[Broad fan]
+Bred svämkägla
+[Long fan]
+Lång svämkägla
+[Twin springs]
+Tvillingkällor
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Svämkäglorna är för smala för hemmen; använd en större karta, större avstånd mellan bergskedjor, smalare åsar eller mindre saltsjöar.

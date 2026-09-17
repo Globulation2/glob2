@@ -2766,3 +2766,25 @@ Nehir kıvrımlılığı
 Su basmış teraslar
 [Sinkholes]
 Obruklar
+[Bajada]
+Alüvyon yelpazeleri
+[Range spacing]
+Sıradağ aralığı
+[Ridge width]
+Sırt genişliği
+[Passes]
+Geçitler
+[Fans per range]
+Sıradağ başına yelpaze
+[Stream reach]
+Dere uzunluğu
+[Playa]
+Tuz gölleri
+[Broad fan]
+Geniş yelpaze
+[Long fan]
+Uzun yelpaze
+[Twin springs]
+İkiz kaynaklar
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Yelpaze yamaçları üsler için çok dar; daha büyük bir harita, daha geniş sıradağ aralığı, daha dar sırtlar veya daha küçük tuz gölleri kullanın.

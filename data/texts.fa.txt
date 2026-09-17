@@ -2756,3 +2756,25 @@ Emoji
 پلکان‌های آب‌گرفته
 [Sinkholes]
 فروچاله‌ها
+[Bajada]
+مخروط‌افکنه‌ها
+[Range spacing]
+فاصلهٔ رشته‌کوه‌ها
+[Ridge width]
+پهنای ستیغ
+[Passes]
+گذرگاه‌ها
+[Fans per range]
+مخروط‌افکنه در هر رشته‌کوه
+[Stream reach]
+درازای جویبارها
+[Playa]
+دریاچه‌های نمکی
+[Broad fan]
+مخروط‌افکنهٔ پهن
+[Long fan]
+مخروط‌افکنهٔ دراز
+[Twin springs]
+چشمه‌های دوقلو
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+دامنه‌های مخروط‌افکنه برای پایگاه‌ها بیش از حد تنگ‌اند؛ از نقشهٔ بزرگ‌تر، فاصلهٔ بیشتر رشته‌کوه‌ها، ستیغ‌های باریک‌تر یا دریاچه‌های نمکی کوچک‌تر استفاده کنید.

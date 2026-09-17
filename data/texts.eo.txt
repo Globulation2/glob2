@@ -2756,3 +2756,25 @@ Meandrado de rivero
 Inunditaj terasoj
 [Sinkholes]
 Dolinoj
+[Bajada]
+Aluviaj ventumiloj
+[Range spacing]
+Interspaco de montaroj
+[Ridge width]
+Larĝo de krestoj
+[Passes]
+Montpasejoj
+[Fans per range]
+Ventumiloj po montaro
+[Stream reach]
+Longo de la riveretoj
+[Playa]
+Salaj lagoj
+[Broad fan]
+Larĝa ventumilo
+[Long fan]
+Longa ventumilo
+[Twin springs]
+Ĝemelaj fontoj
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+La ventumilaj deklivoj estas tro mallarĝaj por la hejmoj; uzu pli grandan mapon, pli grandan interspacon de montaroj, pli mallarĝajn krestojn aŭ pli malgrandajn salajn lagojn.

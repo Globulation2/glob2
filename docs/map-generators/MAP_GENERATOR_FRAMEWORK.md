@@ -150,6 +150,7 @@ restores whatever landscape it had.
 | `lava-shield` | 51 | Lava shield | [Volcanic island: crater rim, lava tongues, scored coastal towns](LAVA_SHIELD.md) |
 | `honeycomb-isle` | 53 | Honeycomb isle | [Hexagon city on an island: street-sealed blocks, a river, wheat edges, ruins](HONEYCOMB_ISLE.md) |
 | `karst-towers` | 54 | Karst towers | [Tower thickets, rivers between rows of homes, terraced paddies, gated bowls](KARST_TOWERS.md) |
+| `bajada` | 55 | Bajada | [Desert ranges with rows of alluvial fans, stamped home fans, playa lakes](BAJADA.md) |
 | `rugged-archipelago` | 8 | Old islands | Island growth + beach passes, own resource search |
 | `contested-commons` | 9 | Contested commons | Point dispersion (`shared/legacy/Regions`) |
 | `rain-shadow` | 27 | Rain shadow | Its own — see below |
@@ -1853,3 +1854,18 @@ the same and every lake has the same shape. When big homes or wide rivers close 
 shrinks the homes and then narrows the rivers before refusing. Like Honeycomb isle, it caches the last
 design per thread and replays its telemetry (`GenerationTelemetry::replay`); it also winds every named
 stream the design drew from (`GenerationContext::namedStreams`) on to where building it left them.
+
+
+## Bajada
+
+See [the design and verification notes](BAJADA.md). Ranges are centre lines that sway along the map
+(`PeriodicNoise`) but, per face, never towards a home, with massifs, spurs (`bentPath`) and a core that
+always stands; passes are wandering sand floors (`wanderingPath`) between stone shoulders. Fans are
+distributary trees (`growBranches`) grown downhill from a spring, their green a stroke of the branches
+widened by a taper, edged by a fraying fringe. One home fan is designed in its own frame (a 256-tile
+local torus), its crops sown on its own growth field (`cropGrowthField`), and stamped at every home over
+an erased footprint with `turnStencilVertex`/`turnStencilTile`, half a turn round below the far face;
+the validator compares the copies tile for tile and checks each still holds its stencil's crops.
+Neutral fans refuse home footprints; playa lakes are laid along each basin with their crossings; dune
+sand is a stretched Turing pattern mixed with fractal noise and weighted by distance from the ranges.
+Crowded homes that share more than a fifth of a footprint are refused.

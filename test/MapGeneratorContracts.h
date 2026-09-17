@@ -1022,6 +1022,123 @@ inline void karstTowersContracts()
 		 "sealed growth, closed gates");
 }
 
+inline void bajadaContracts()
+{
+	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("bajada"));
+	assert(definition.legacyId == 55 && definition.revision == 1);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("range-spacing") == 128 && request.option("passes") == 2 &&
+		   request.option("playa") == 80 && request.option("home-design") == 0);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}, std::pair{8, 8}, std::pair{9, 9}})
+		for (int teams : {1, 2, 4, 6, 8})
+		{
+			if (dimensions.first == 7 && teams > 4)
+				continue;
+			Game g(nullptr);
+			const auto result = service.generate(g, make(dimensions.first, dimensions.second, teams, 7));
+			if (!result)
+				std::fprintf(stderr, "Bajada contract (%d x %d, %d colonies): %s\n", 1 << dimensions.first,
+							 1 << dimensions.second, teams, result.diagnostic().c_str());
+			assert(result);
+		}
+	{
+		// Six colonies crowd the homes of a 128-tile map into one another.
+		Game g(nullptr);
+		assert(service.generate(g, make(7, 7, 6, 7)).error == GenerationError::InvalidRequest);
+		assert(g.teamsCount() == 0);
+	}
+	// Every home design comes up at random, and each can be pinned.
+	std::set<std::string> designs;
+	for (unsigned seed = 1; seed <= 16; ++seed)
+	{
+		Game g(nullptr);
+		const auto result = service.generate(g, make(8, 8, 4, seed), true);
+		assert(result);
+		for (const auto &record : result.telemetry.records())
+			if (record.key == "bajada.home.design")
+				designs.insert(std::get<std::string>(record.value));
+	}
+	assert(designs.size() == 3);
+	for (int design = 1; design <= 3; ++design)
+	{
+		D pinned = make(8, 8, 4, 11);
+		pinned.options["home-design"] = design;
+		Game g(nullptr);
+		assert(service.generate(g, pinned));
+	}
+	D r = make(8, 8, 4, 37);
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = 0;
+	{
+		// No ambient stone: every stone on the map is a designed range or spur, and taking one away
+		// is refused.
+		Game zero(nullptr);
+		assert(service.generate(zero, r));
+		GenerationContext check(r);
+		assert(definition.validateWorld(zero, check).empty());
+		bool damaged = false;
+		for (int i = 0; i < 256 * 256 && !damaged; ++i)
+			if (zero.map.isResource(i % 256, i / 256) && zero.map.getResource(i % 256, i / 256).type == STONE)
+			{
+				zero.map.getResource(i % 256, i / 256).clear();
+				damaged = true;
+			}
+		assert(damaged && !definition.validateWorld(zero, check).empty());
+	}
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = control.maximum;
+	Game abundant(nullptr);
+	assert(service.generate(abundant, r));
+	GenerationContext context(r);
+	setSyncRandSeed(4211);
+	// Full-map growth with nobody harvesting: the fans and meadows grow, and every town's ring must
+	// keep its crops out.
+	for (int tick = 0; tick < 4096; ++tick)
+		abundant.map.growResources();
+	const std::string growthError = definition.validateWorld(abundant, context);
+	if (!growthError.empty())
+		std::fprintf(stderr, "Bajada growth: %s\n", growthError.c_str());
+	assert(growthError.empty());
+	{
+		// A crop planted in a town is refused.
+		Game game(nullptr);
+		const D planted = make(8, 8, 4, 41);
+		assert(service.generate(game, planted));
+		GenerationContext check(planted);
+		assert(definition.validateWorld(game, check).empty());
+		const Team *team = game.teams[2];
+		bool sown = false;
+		// A ring of wheat four to five tiles from the swarm's middle, which lies inside the town's ring.
+		for (int dy = -5; dy <= 5; ++dy)
+			for (int dx = -5; dx <= 5; ++dx)
+			{
+				const int x = (team->startPosX + 2 + dx + 256) % 256, y = (team->startPosY + 2 + dy + 256) % 256;
+				if (std::max(std::abs(dx), std::abs(dy)) >= 4 && game.map.isResourceAllowed(x, y, WHEAT) &&
+					game.map.isFreeForGroundUnit(x, y, false, 0))
+				{
+					game.map.setResource(x, y, WHEAT, 1);
+					sown = true;
+				}
+			}
+		assert(sown && !definition.validateWorld(game, check).empty());
+	}
+	puts("PASS Bajada: envelope and refusal, home designs, resource extremes, designed stone, sealed "
+		 "towns under growth, crops refused in towns");
+}
+
 inline void generatorContracts()
 {
 	rebuiltLandscapeContracts();
@@ -1034,5 +1151,6 @@ inline void generatorContracts()
 	emojiContracts();
 	honeycombIsleContracts();
 	karstTowersContracts();
+	bajadaContracts();
 }
 } // namespace GeneratorContracts

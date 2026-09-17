@@ -2754,3 +2754,25 @@ Emoji
 水を張った棚田
 [Sinkholes]
 ドリーネ
+[Bajada]
+扇状地
+[Range spacing]
+山脈の間隔
+[Ridge width]
+尾根の幅
+[Passes]
+峠
+[Fans per range]
+山脈ごとの扇状地
+[Stream reach]
+小川の長さ
+[Playa]
+塩湖
+[Broad fan]
+広い扇状地
+[Long fan]
+長い扇状地
+[Twin springs]
+双子の泉
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+扇状地の斜面が狭すぎて本拠地が収まりません。より大きなマップ、より広い山脈の間隔、より狭い尾根、またはより小さな塩湖を使ってください。

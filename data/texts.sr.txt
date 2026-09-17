@@ -2758,3 +2758,25 @@ Emoji
 Потопљене терасе
 [Sinkholes]
 Вртаче
+[Bajada]
+Плавине
+[Range spacing]
+Размак планинских венаца
+[Ridge width]
+Ширина гребена
+[Passes]
+Превоји
+[Fans per range]
+Плавина по венцу
+[Stream reach]
+Дужина потока
+[Playa]
+Слана језера
+[Broad fan]
+Широка плавина
+[Long fan]
+Дуга плавина
+[Twin springs]
+Извори близанци
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Падине са плавинама су преуске за базе; користите већу мапу, већи размак планинских венаца, уже гребене или мања слана језера.
