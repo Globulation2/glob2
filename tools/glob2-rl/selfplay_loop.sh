@@ -21,7 +21,10 @@ mkdir -p "$ROLL" "$ROOT/ppo"
 # hot-reload from on the very first check.
 cp "$INIT" "$ROOT/ppo/policy.pt"
 
-pkill -f neurotica_serve.py 2>/dev/null || true
+# Only this loop's own server. A bare pkill on neurotica_serve.py also takes
+# down any eval arm's server running alongside, and a Neurotica whose server
+# vanishes fails inert -- the eval then quietly measures a do-nothing AI.
+for p in $(pgrep -f "neurotica_serve.py.*neurotica_sp.sock"); do kill "$p" 2>/dev/null || true; done
 sleep 2
 
 CUDA_VISIBLE_DEVICES=1 setsid nohup $VENV $ROOT/rl/neurotica_serve.py \

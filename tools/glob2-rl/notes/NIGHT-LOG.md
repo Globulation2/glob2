@@ -1161,3 +1161,50 @@ do-nothing AI the night's headline was measured against) and `staff_topk`
 (`ckpt_staff`, `--top-k --placements 48 --use-count`, the best BC decode).
 This is the question the review said had to come first: does the best playing
 configuration beat doing nothing at all, on the same 100 games?
+
+---
+
+# Afternoon: acting on the review (13:50-18:30)
+
+## The paired eval settles the headline
+
+100 shared games per arm (25 per opponent, same maps and seeds, 60000-tick
+cap, flags recorded per row):
+
+```
+                       numbi        castor       warrush      nicowar      TOTAL
+inert (do nothing)   61.9% [41,79]  22.2% [6,55]  35.0% [18,57]  4.8% [1,23]  32.4% [23,44]
+best BC decode       68.4% [46,85]  16.7% [6,39]  31.8% [16,53]  4.8% [1,23]  30.0% [21,41]
+```
+
+**The playing AI does not beat doing nothing.** The intervals overlap almost
+entirely. The do-nothing AI beats numbi 62% of the time on its own, which is
+why every "winning record against numbi" in this log meant nothing.
+
+## Fixes landed (commit 41f08b2d2 and after)
+
+* `neurotica_decode.anchors`: level-aware footprint tiling with wrap and claim
+  tracking. Self-test covers adjacent, stacked, wrapped and level-2 buildings.
+* One decode path for eval and self-play; same budget, trim, deadlock
+  handling, k=8 and period 25. The deadlock breaker is now gated on a small
+  base -- ungated it handed the top type a slot every step (hospital=8 vs cap 4).
+* The allowed mask and mix-decide flag are stored per step and loaded back, so
+  PPO scores the distribution that acted. Verified exact agreement with stored
+  context, no placements on covered cells even on the fallback path.
+* Mix held for 10 steps; mix term in the log-prob only on decide steps.
+* PPO drops episodes lacking action context; snapshots every 25 iterations.
+* Harness 75/75 incl. DONT_CARE at an anchor. Header documents NPS4.
+* `--count-only` selects on the aux metrics. The loop only kills its own server.
+
+Two bugs caught by smoke tests before they cost anything: a mangled import
+line, and the dataclass field order. Both would have shown up as a silent
+inert AI or a dead learner.
+
+## Running now
+
+* `ratio_unified` eval arm: `ckpt_ratio`, unified decode, k=8, period 25.
+* Self-play from `ckpt_ratio` on the fixed loop. Rollouts ~170 games/h (the
+  25-tick period is 4x the inference of the old 100), snapshots every 25 iters,
+  `episodes.csv` accumulating. iter 0 mean_return -0.16.
+
+The bar is now explicit and low: **beat 32.4% on the paired manifest.**

@@ -38,12 +38,12 @@ class Trajectory:
     values: np.ndarray     # (T,)
     potentials: np.ndarray # (T,)
     mixes: np.ndarray      # (T,) chosen production-mix preset, part of the action
-    mix_decided: np.ndarray = None  # (T,) bool: mix re-chosen this step (term in logp)
-    allowed: np.ndarray = None      # (T, ceil(HW/8)) packbits of the placement mask
     ticks: np.ndarray      # (T,)
     static: np.ndarray     # (n_static, H, W) uint8, constant for the episode
     outcome: float         # +1 win, -1 loss, 0 undecided
     opponent: str = "?"    # for the per-episode log; not used in the update
+    mix_decided: np.ndarray = None  # (T,) bool: mix re-chosen this step (term in logp)
+    allowed: np.ndarray = None      # (T, ceil(HW/8)) packbits of the placement mask
 
 
 def build_observation(static: np.ndarray, dynamic: np.ndarray,
