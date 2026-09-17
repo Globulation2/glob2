@@ -57,10 +57,27 @@ class Worker:
             CREATE TABLE IF NOT EXISTS controls (experiment TEXT PRIMARY KEY, mode TEXT NOT NULL);
         ''')
         path = self.root / 'host.json'
+        self._host_config_path = path
+        self._host_config_mtime = path.stat().st_mtime if path.exists() else None
         self.config = HOST_DEFAULTS | (read_json(path) if path.exists() else {})
 
     def close(self):
         self.db.close()
+
+    def reload_config(self):
+        """Pick up host.json edits (e.g. from `configure`) without a daemon restart.
+
+        A persistent daemon's Worker instance is constructed once at startup and
+        otherwise never re-reads host.json; a `configure` RPC updates the file via
+        a separate, short-lived Worker instance for that single call. Without this,
+        slot/build/budget changes silently have no effect until the daemon happens
+        to be restarted for an unrelated reason.
+        """
+        path = self._host_config_path
+        mtime = path.stat().st_mtime if path.exists() else None
+        if mtime != self._host_config_mtime:
+            self._host_config_mtime = mtime
+            self.config = HOST_DEFAULTS | (read_json(path) if path.exists() else {})
 
     def configure(self, values):
         unknown = set(values) - set(HOST_DEFAULTS)
@@ -201,6 +218,7 @@ class Worker:
         return {'starting': True}
 
     def tick(self):
+        self.reload_config()
         now = time.time()
         rows = self.db.execute("SELECT * FROM queue WHERE state IN ('running','packing','executed')").fetchall()
         for row in rows:
