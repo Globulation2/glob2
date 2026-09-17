@@ -2796,3 +2796,23 @@ Sablobenko ne atingis la insulon.
 Ĉi tiu mapo ne havas lokon por tiom da kolonioj; uzu pli grandan mapon aŭ malpli da kolonioj.
 [The island has no room for its quarry; use a bigger island.]
 La insulo ne havas lokon por sia ŝtonminejo; uzu pli grandan insulon.
+[Hidden Oasis]
+Kaŝita oazo
+[Pond algae]
+Algoj de la lageto
+[Starting towers]
+Komencaj turoj
+[Starting school]
+Komenca lernejo
+[Mesas]
+Tablomontoj
+[Springs]
+Fontoj
+[Hidden Oasis needs at least two colonies.]
+Kaŝita oazo bezonas almenaŭ du koloniojn.
+[Hidden Oasis holds at most eight colonies.]
+Kaŝita oazo enhavas maksimume ok koloniojn.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+La montmasivo ne enteniĝas en ĉi tiu mapo; uzu pli grandan mapon aŭ malpli da kolonioj.
+[The pond has no room for that much algae; use a bigger pond.]
+La lageto ne havas lokon por tiom da algoj; uzu pli grandan lageton.

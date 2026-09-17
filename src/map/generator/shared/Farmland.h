@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "GenerationRequest.h"
+struct GenerationContext;
 #include "Geometry.h"
 #include "FertilityField.h"
 #include <string>
 #include "Grid.h"
 #include "Sketch.h"
+#include <utility>
 #include <vector>
 class Map;
 struct GenerationContext;
@@ -241,6 +243,45 @@ void clearFarmPlots(Map &, const Torus &, const std::vector<Farm> &);
 /// water. Returns how many tiles were planted.
 template <typename Eligible>
 int plantFarm(Map &map, const Torus &t, const Farm &farm, int wheat, int wood, Eligible eligible);
+
+/// A sealed oval garden against a shore or a wall (Central Quarry's isle, Hidden Oasis' basin): a
+/// holder's foothold of wheat and wood that can never spread over the building ground round it.
+/// The plot is an oval `stretch` times as long across `angle` as along it, centred on (x, y), which
+/// a caller puts on the rim of its ground so the rim's own beach or rock closes the far half. A line
+/// of sand corners `sealWidth` wide closes the near half, its radius swaying by up to `sway` tiles on
+/// `swayNoise` (a round plot with a ruled ring read as a bullseye).
+struct SealedOval
+{
+	double x = 0, y = 0, angle = 0, radius = 4, stretch = 1.6, sealWidth = 1.2, sway = 0.6;
+};
+/// Lays the seal into the sketch on the corners of `ground`, and returns the garden's tiles inside it.
+std::vector<unsigned char> stampSealedOval(TerrainSketch &, const Torus &,
+										   const std::vector<unsigned char> &ground, const SealedOval &,
+										   const std::vector<int> &swayNoise);
+/// Plants a sealed garden on the written map: up to `wheat` wheat (at most half its clear tiles) and
+/// `wood` wood (at most two fifths), dealt over the plot by noise rather than grown as two blobs.
+/// Draws a noise field from `cropsStream`, then one from `splitStream`. Returns {wheat, wood} tiles
+/// standing in the garden afterwards.
+std::pair<int, int> plantSealedGarden(Map &, const Torus &, GenerationContext &,
+									  const std::vector<unsigned char> &garden, int wheat, int wood,
+									  const std::string &cropsStream, const std::string &splitStream);
+
+/// Crops regrow only within the engine's square growth probe of water, and kits plant the most fertile
+/// ground first, so fields end in ruler-straight lines along the probe's square contours. This takes
+/// off every wheat and wood deposit on watered ground farther than a round distance from pure water,
+/// `leastReach` to `leastReach + reachSpread` tiles by `noise`, so fields round a pond are round.
+/// Tiles of `keep` (the fields round a home) are never touched. Returns how many it took.
+int trimFieldsBeyondWater(Map &, const Torus &, const std::vector<unsigned char> &keep,
+						  const Fertility::Field &watered, int leastReach, int reachSpread,
+						  const std::vector<int> &noise);
+/// Frays every field's edge: wheat and wood up to `depth` tiles in from a field's edge are taken off
+/// where `noise` says so, so every edge wanders. Never on `keep`. Returns how many it took.
+int frayFieldEdges(Map &, const Torus &, const std::vector<unsigned char> &keep, int depth,
+				   const std::vector<int> &noise);
+/// Where trails and routes cut through fields they leave one-tile strips of crop between two lanes. In
+/// two passes, every wheat or wood tile open (clear grass) on two opposite sides goes, except on
+/// `protect` (the kits). Returns how many went.
+int removeCropSlivers(Map &, const Torus &, const std::vector<unsigned char> &protect);
 } // namespace MapGeneration
 
 #include "Map.h"

@@ -2822,3 +2822,23 @@ Een zandbank heeft het eiland niet bereikt.
 Deze kaart heeft geen ruimte voor zoveel kolonies; gebruik een grotere kaart of minder kolonies.
 [The island has no room for its quarry; use a bigger island.]
 Het eiland heeft geen ruimte voor zijn steengroeve; gebruik een groter eiland.
+[Hidden Oasis]
+Verborgen oase
+[Pond algae]
+Zeewier in de vijver
+[Starting towers]
+Starttorens
+[Starting school]
+Startschool
+[Mesas]
+Tafelbergen
+[Springs]
+Bronnen
+[Hidden Oasis needs at least two colonies.]
+Verborgen oase heeft minstens twee kolonies nodig.
+[Hidden Oasis holds at most eight colonies.]
+Verborgen oase biedt plaats aan hoogstens acht kolonies.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Het massief past niet op deze kaart; gebruik een grotere kaart of minder kolonies.
+[The pond has no room for that much algae; use a bigger pond.]
+De vijver heeft geen plaats voor zoveel zeewier; gebruik een grotere vijver.

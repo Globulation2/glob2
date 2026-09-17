@@ -141,4 +141,17 @@ int clearRoute(Map &, const Torus &, const std::vector<int> &route, int radius,
 /// behaviour, so existing maps are unchanged.
 bool openColonyRoutes(Map &, const GenerationContext &, const Torus &, const StepCosts &costs,
 					  int radius = 0, const std::vector<unsigned char> *keep = nullptr);
+
+/// A colony's trail to a shared objective: a cheap walk over land from `sources` to `goal` that bends
+/// with the lie of the land (`lie`, a noise field scaled by `bend`) and prefers the gaps between
+/// deposits to cutting through them, with every deposit within `radius` of it cleared, so the
+/// finished map's walk stays near the one the design balanced. Never through water, a building or
+/// `keep`; never clearing `protect` (the starter kits: a straight re-cut once cleared a colony's kit).
+/// Without `lie` it is the shortest walk over land, cutting straight through whatever deposits stand
+/// in the way. False when no walk exists. Central Quarry's trails to the isle, Hidden Oasis' to the
+/// gorge.
+bool openTrail(Map &, const Torus &, const std::vector<int> &sources,
+			   const std::vector<unsigned char> &goal, const std::vector<unsigned char> &keep,
+			   const std::vector<unsigned char> &protect, const std::vector<int> *lie, int bend,
+			   int radius);
 } // namespace MapGeneration

@@ -272,4 +272,25 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 	}
 	return changed;
 }
+
+bool openTrail(Map &map, const Torus &t, const std::vector<int> &sources,
+			   const std::vector<unsigned char> &goal, const std::vector<unsigned char> &keep,
+			   const std::vector<unsigned char> &protect, const std::vector<int> *lie, int bend,
+			   int radius)
+{
+	const auto cost = [&](int, int to, int, int)
+	{
+		const int x = to % t.w, y = to / t.w;
+		if (map.isWater(x, y) || map.getBuilding(x, y) != NOGBID || keep[to])
+			return -1;
+		if (!lie)
+			return map.isResource(x, y) ? 11 : 10;
+		return 10 + (*lie)[to] * bend / 65536 + (map.isResource(x, y) ? 30 : 0);
+	};
+	const std::vector<int> route = cheapestWalk(t, GridNeighbors::Eight, sources, goal, cost);
+	if (route.empty())
+		return false;
+	clearRoute(map, t, route, radius, &protect);
+	return true;
+}
 } // namespace MapGeneration

@@ -2804,3 +2804,23 @@ Um banco de areia não chegou à ilha.
 Este mapa não tem espaço para tantas colónias; use um mapa maior ou menos colónias.
 [The island has no room for its quarry; use a bigger island.]
 A ilha não tem espaço para a sua pedreira; use uma ilha maior.
+[Hidden Oasis]
+Oásis oculto
+[Pond algae]
+Algas da lagoa
+[Starting towers]
+Torres iniciais
+[Starting school]
+Escola inicial
+[Mesas]
+Mesetas rochosas
+[Springs]
+Nascentes
+[Hidden Oasis needs at least two colonies.]
+Oásis oculto precisa de pelo menos duas colónias.
+[Hidden Oasis holds at most eight colonies.]
+Oásis oculto comporta no máximo oito colónias.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+O maciço não cabe neste mapa; use um mapa maior ou menos colónias.
+[The pond has no room for that much algae; use a bigger pond.]
+A lagoa não tem espaço para tantas algas; use uma lagoa maior.

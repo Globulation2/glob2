@@ -2874,3 +2874,23 @@ En sandbanke nåede ikke øen.
 Dette kort har ikke plads til så mange kolonier; brug et større kort eller færre kolonier.
 [The island has no room for its quarry; use a bigger island.]
 Øen har ikke plads til sit stenbrud; brug en større ø.
+[Hidden Oasis]
+Skjult oase
+[Pond algae]
+Alger i dammen
+[Starting towers]
+Starttårne
+[Starting school]
+Startskole
+[Mesas]
+Taffelbjerge
+[Springs]
+Kilder
+[Hidden Oasis needs at least two colonies.]
+Skjult oase kræver mindst to kolonier.
+[Hidden Oasis holds at most eight colonies.]
+Skjult oase rummer højst otte kolonier.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Dette kort har ikke plads til massivet; brug et større kort eller færre kolonier.
+[The pond has no room for that much algae; use a bigger pond.]
+Dammen har ikke plads til så mange alger; brug en større dam.

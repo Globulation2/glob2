@@ -2798,3 +2798,23 @@ Hiekkasärkkä ei ulottunut saareen.
 Tällä kartalla ei ole tilaa näin monelle siirtokunnalle; käytä suurempaa karttaa tai vähemmän siirtokuntia.
 [The island has no room for its quarry; use a bigger island.]
 Saarella ei ole tilaa louhokselle; käytä suurempaa saarta.
+[Hidden Oasis]
+Kätketty keidas
+[Pond algae]
+Lammen levät
+[Starting towers]
+Aloitustornit
+[Starting school]
+Aloituskoulu
+[Mesas]
+Pöytävuoret
+[Springs]
+Lähteet
+[Hidden Oasis needs at least two colonies.]
+Kätketty keidas tarvitsee vähintään kaksi siirtokuntaa.
+[Hidden Oasis holds at most eight colonies.]
+Kätkettyyn keitaaseen mahtuu enintään kahdeksan siirtokuntaa.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Vuorimassiivi ei mahdu tälle kartalle; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[The pond has no room for that much algae; use a bigger pond.]
+Lammessa ei ole tilaa näin suurelle levämäärälle; käytä suurempaa lampea.

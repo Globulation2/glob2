@@ -2798,3 +2798,23 @@ Eine Sandbank hat die Insel nicht erreicht.
 Auf dieser Karte ist kein Platz für so viele Kolonien; verwenden Sie eine größere Karte oder weniger Kolonien.
 [The island has no room for its quarry; use a bigger island.]
 Die Insel hat keinen Platz für ihren Steinbruch; verwenden Sie eine größere Insel.
+[Hidden Oasis]
+Verborgene Oase
+[Pond algae]
+Teichalgen
+[Starting towers]
+Starttürme
+[Starting school]
+Startschule
+[Mesas]
+Tafelberge
+[Springs]
+Quellen
+[Hidden Oasis needs at least two colonies.]
+Verborgene Oase benötigt mindestens zwei Kolonien.
+[Hidden Oasis holds at most eight colonies.]
+Verborgene Oase fasst höchstens acht Kolonien.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Das Massiv passt nicht auf diese Karte; verwenden Sie eine größere Karte oder weniger Kolonien.
+[The pond has no room for that much algae; use a bigger pond.]
+Der Teich hat keinen Platz für so viele Algen; verwenden Sie einen größeren Teich.

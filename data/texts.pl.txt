@@ -2798,3 +2798,23 @@ Mielizna nie dotarła do wyspy.
 Na tej mapie nie ma miejsca na tyle kolonii; użyj większej mapy lub mniejszej liczby kolonii.
 [The island has no room for its quarry; use a bigger island.]
 Na wyspie nie ma miejsca na kamieniołom; użyj większej wyspy.
+[Hidden Oasis]
+Ukryta oaza
+[Pond algae]
+Algi w stawie
+[Starting towers]
+Wieże startowe
+[Starting school]
+Szkoła startowa
+[Mesas]
+Góry stołowe
+[Springs]
+Źródła
+[Hidden Oasis needs at least two colonies.]
+Ukryta oaza wymaga co najmniej dwóch kolonii.
+[Hidden Oasis holds at most eight colonies.]
+Ukryta oaza mieści najwyżej osiem kolonii.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Masyw nie mieści się na tej mapie; użyj większej mapy lub mniejszej liczby kolonii.
+[The pond has no room for that much algae; use a bigger pond.]
+W stawie nie ma miejsca na tyle alg; użyj większego stawu.

@@ -2796,3 +2796,23 @@ A sand bar did not reach the island.
 This map has no room for that many colonies; use a bigger map or fewer colonies.
 [The island has no room for its quarry; use a bigger island.]
 The island has no room for its quarry; use a bigger island.
+[Hidden Oasis]
+Hidden Oasis
+[Pond algae]
+Pond algae
+[Starting towers]
+Starting towers
+[Starting school]
+Starting school
+[Mesas]
+Mesas
+[Springs]
+Springs
+[Hidden Oasis needs at least two colonies.]
+Hidden Oasis needs at least two colonies.
+[Hidden Oasis holds at most eight colonies.]
+Hidden Oasis holds at most eight colonies.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+The massif does not fit this map; use a bigger map or fewer colonies.
+[The pond has no room for that much algae; use a bigger pond.]
+The pond has no room for that much algae; use a bigger pond.

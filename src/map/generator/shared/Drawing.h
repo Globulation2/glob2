@@ -99,6 +99,11 @@ std::vector<StrokePoint> bezierPath(ShapePoint from, ShapePoint control, ShapePo
 std::vector<StrokePoint> bentPath(ShapePoint from, double heading, double length, double bend,
 								  double fromHalfWidth, double toHalfWidth, int segments);
 
+/// A smooth curve through `waypoints` (Catmull-Rom, the ends repeated), sampled about every `step`
+/// tiles, every half width 0 for the caller to set: a stream, a gorge, a wash. Straight legs between
+/// waypoints read as drawn canals. No draws.
+std::vector<StrokePoint> splinePath(const std::vector<ShapePoint> &waypoints, double step);
+
 /// A path that wanders from `from` to `to` the short way round the torus: points about a tile apart,
 /// pushed sideways by up to `wander` tiles (three harmonics with random amplitudes, zero at both ends,
 /// so it leaves and arrives exactly where asked), and a half width of `halfWidth` swelling and

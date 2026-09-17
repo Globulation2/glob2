@@ -2794,3 +2794,23 @@ Emoji
 На цій карті немає місця для такої кількості колоній; використайте більшу карту або менше колоній.
 [The island has no room for its quarry; use a bigger island.]
 На острові немає місця для каменоломні; використайте більший острів.
+[Hidden Oasis]
+Прихована оаза
+[Pond algae]
+Водорості ставка
+[Starting towers]
+Початкові вежі
+[Starting school]
+Стартова школа
+[Mesas]
+Столові гори
+[Springs]
+Джерела
+[Hidden Oasis needs at least two colonies.]
+Для прихованої оази потрібно щонайменше дві колонії.
+[Hidden Oasis holds at most eight colonies.]
+Прихована оаза вміщує щонайбільше вісім колоній.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Масив не вміщується на цій карті; використайте більшу карту або менше колоній.
+[The pond has no room for that much algae; use a bigger pond.]
+У ставку немає місця для такої кількості водоростей; використайте більший ставок.

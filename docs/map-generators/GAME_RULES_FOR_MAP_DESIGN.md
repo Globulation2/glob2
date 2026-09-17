@@ -44,6 +44,19 @@ comments can say "because grass may not touch water" and a reader can check it h
   grass and puts the banks' nearest grass w + 4 tiles apart, so a level-1 tower on one bank covers the
   other across a single water corner and a level-3 tower across five (`shared/Channels`). A canal can
   start a tower duel long before either side can swim.
+- **A worker serves only buildings of its own build level or below.** `Building::canUnitWorkHere`
+  refuses a worker whose build level is under the building's level, for construction, repair and
+  resupply alike, and build level is raised only at a school, which costs algae. So a building a map
+  grants above level 0 (a level-2 tower, say) cannot be resupplied or repaired by a colony that has no
+  school yet: Hidden Oasis' first towers fired their 32 shots and stood empty in every game. Grant
+  level-0 buildings, or grant the school as well.
+- **A tower is an ammunition counter.** It holds 12, 16 or 20 shots and the stone for as many again
+  (`BuildingTypesDefence.cpp`), and a worker has 200 hp against 30 to 50 a shot: an unserved tower
+  kills about six workers and is then a landmark. A design that relies on towers must put each one
+  where its owner's workers can walk to it and find stone.
+- **Level-0 warriors barely scratch an upgraded tower.** A warrior hits for 13 to 16 less the
+  building's armour (8, 12, 15 by tower level), never under 1: about 5 a hit on a level-1 tower's 480
+  hp, and 1 a hit on a level-2 tower's 1,440.
 - **Players can plug gaps.** Players build stone walls, so a narrow gate, ramp or trail can be sealed
   by whoever holds it. How wide a map's doors are decides whether a colony can shut itself in.
 

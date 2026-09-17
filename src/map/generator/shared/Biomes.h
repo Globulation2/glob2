@@ -30,6 +30,11 @@ struct BiomeKit
 	int woodPercent = 33;       // of that farmland, the share that is wood
 	int outcropsPer1000 = 0;    // one-tile stone outcrops per 1000 tiles
 	int grovesPer1000 = 0;      // one-tile fruit groves per 1000 tiles
+	// Finer counts, added to the two above: per 100000 tiles. A kit of 3 outcrops per 1000 scaled by a
+	// resource amount has only whole numbers to land on (50% and 75% of 3 both come to 2), so its
+	// control has dead steps; a generator that scales these itself sets them here instead (Hidden
+	// Oasis). 0, the default, leaves every other kit as it was.
+	int outcropsPer100000 = 0, grovesPer100000 = 0;
 	int coverPercent = 0;       // of the open ground left, the share grown over with cover
 	int coverResource = WOOD;   // what the cover is: WOOD for a forest, STONE for scree
 	// Of the open ground where crops never regrow (no water within the growth probe's reach), the

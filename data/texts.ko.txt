@@ -2794,3 +2794,23 @@ Emoji
 이 지도에는 그만큼의 식민지를 둘 공간이 없습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
 [The island has no room for its quarry; use a bigger island.]
 섬에 채석장을 둘 공간이 없습니다. 더 큰 섬을 사용하세요.
+[Hidden Oasis]
+숨겨진 오아시스
+[Pond algae]
+연못 해조류
+[Starting towers]
+시작 탑
+[Starting school]
+시작 학교
+[Mesas]
+메사
+[Springs]
+샘
+[Hidden Oasis needs at least two colonies.]
+숨겨진 오아시스에는 식민지가 최소 두 개 필요합니다.
+[Hidden Oasis holds at most eight colonies.]
+숨겨진 오아시스에는 식민지가 최대 여덟 개까지 들어갑니다.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+암석 고원이 이 지도에 들어가지 않습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[The pond has no room for that much algae; use a bigger pond.]
+연못에 그만큼의 해조류를 둘 자리가 없습니다. 더 큰 연못을 사용하세요.
