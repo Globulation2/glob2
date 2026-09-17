@@ -750,8 +750,10 @@ ContinentsOptions::ContinentsOptions(const GenerationRequest &r)
 
 GeneratorDefinition continentsDefinition()
 {
-	return {"continents",
-			44, // 33 was Patchwork, retired 2026-09-13 and never reused
+	return {
+			"continents",
+			44,
+			// 33 was Patchwork, retired 2026-09-13 and never reused
 			"Continents",
 			2,
 			false,
@@ -772,5 +774,11 @@ GeneratorDefinition continentsDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			// FEEDBACK 2026-09-17: "'continents' counts as a 'novelty' map given that its based on
+			// real GIS data and not attempting to be balanced" - the rendered map is a recognisable
+			// real coastline (this build's atlas draws Australia and New Zealand), the same kind of
+			// signature Emoji's drawn shapes are tagged novelty for, not a landscape designed for play.
+			{"terrain:natural", "terrain:novelty", "feature:river", "feature:mountains",
+			 "feature:desert", "feature:lakes", "style:wide-open"}};
 }

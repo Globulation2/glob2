@@ -79,7 +79,8 @@ GeneratorRegistry::GeneratorRegistry(std::vector<GeneratorDefinition> values)
 	for (const auto &d : definitions)
 	{
 		if (!d.id || !*d.id || !d.nameKey || d.legacyId < 0 || !d.generate ||
-			!numbers.insert(d.legacyId).second || !ids.insert(d.id).second)
+			!numbers.insert(d.legacyId).second || !ids.insert(d.id).second ||
+			(d.tags.empty() && !d.editorOnly))
 			throw std::invalid_argument("Invalid generator registration");
 		std::set<std::string> controls;
 		for (const auto &c : sharedGeneratorControls())

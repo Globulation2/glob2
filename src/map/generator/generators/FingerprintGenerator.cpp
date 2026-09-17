@@ -266,7 +266,8 @@ FingerprintOptions::FingerprintOptions(const GenerationRequest &r)
 
 GeneratorDefinition fingerprintDefinition()
 {
-	return {"fingerprint",
+	return {
+			"fingerprint",
 			26,
 			"Fingerprint",
 			3,
@@ -287,5 +288,6 @@ GeneratorDefinition fingerprintDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "feature:river", "feature:maze", "style:tight-building"}};
 }

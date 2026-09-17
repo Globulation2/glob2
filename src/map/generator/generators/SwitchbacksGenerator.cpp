@@ -876,12 +876,12 @@ SwitchbacksOptions::SwitchbacksOptions(const GenerationRequest &r)
 GeneratorDefinition switchbacksDefinition()
 {
 	return {
-		"switchbacks",
-		24,
-		"Switchbacks",
-		4,
-		false,
-		// The trail's width and the stone between its legs in tiles; the plateau's radius as a
+			"switchbacks",
+			24,
+			"Switchbacks",
+			4,
+			false,
+			// The trail's width and the stone between its legs in tiles; the plateau's radius as a
 		// share of the half side (the mountains fill the rest with as many legs as fit); each home's
 		// radius as a percentage of the standard.
 		{{"trail-width", "Trail width", 5, 9, 2, 7, ControlGroup::Terrain},
@@ -909,8 +909,10 @@ GeneratorDefinition switchbacksDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		validateRequest,
-		validateWorld};
+			generate,
+			true,
+			validateRequest,
+			validateWorld,
+			{"terrain:arena", "feature:mountains", "feature:stone-walls", "style:siege",
+			 "style:contested-center", "fairness:repeated-wedge"}};
 }

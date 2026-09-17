@@ -846,7 +846,8 @@ LavaShieldOptions::LavaShieldOptions(const GenerationRequest &r)
 
 GeneratorDefinition lavaShieldDefinition()
 {
-	return {"lava-shield",
+	return {
+			"lava-shield",
 			51,
 			"Lava shield",
 			// Revision 3: the towns are chosen by the fitted fairness model now. Lava shield is
@@ -879,5 +880,7 @@ GeneratorDefinition lavaShieldDefinition()
 			generate,
 			true,
 			requestFailure,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "feature:volcanic", "feature:mountains", "style:contested-center",
+			 "fairness:repeated-wedge"}};
 }

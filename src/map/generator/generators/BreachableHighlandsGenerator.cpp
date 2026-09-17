@@ -525,7 +525,8 @@ BreachableHighlandsOptions::BreachableHighlandsOptions(const GenerationRequest &
 }
 GeneratorDefinition breachableHighlandsDefinition()
 {
-	return {"breachable-highlands",
+	return {
+			"breachable-highlands",
 			37,
 			"Breachable highlands",
 			5,
@@ -546,5 +547,6 @@ GeneratorDefinition breachableHighlandsDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			{"terrain:arena", "feature:mountains", "feature:stone-walls", "style:siege"}};
 }

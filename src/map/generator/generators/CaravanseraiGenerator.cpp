@@ -826,7 +826,8 @@ CaravanseraiOptions::CaravanseraiOptions(const GenerationRequest &r)
 
 GeneratorDefinition caravanseraiDefinition()
 {
-	return {"caravanserai",
+	return {
+			"caravanserai",
 			41,
 			"Caravanserai",
 			2,
@@ -846,5 +847,7 @@ GeneratorDefinition caravanseraiDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "feature:desert", "feature:oases", "style:sprawling",
+			 "fairness:stamped-lattice"}};
 }

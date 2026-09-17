@@ -1311,7 +1311,8 @@ BraidedRiverOptions::BraidedRiverOptions(const GenerationRequest &r)
 
 GeneratorDefinition braidedRiverDefinition()
 {
-	return {"braided-river",
+	return {
+			"braided-river",
 			42,
 			"Braided river",
 			2,
@@ -1347,5 +1348,6 @@ GeneratorDefinition braidedRiverDefinition()
 			generate,
 			true,
 			requestFault,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "feature:river", "feature:islands", "style:sprawling"}};
 }

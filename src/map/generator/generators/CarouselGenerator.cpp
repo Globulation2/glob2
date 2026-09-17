@@ -1053,12 +1053,12 @@ CarouselOptions::CarouselOptions(const GenerationRequest &r)
 GeneratorDefinition carouselDefinition()
 {
 	return {
-		"carousel",
-		22,
-		"Carousel",
-		2,
-		false,
-		// Each home's radius and each court's as percentages of the standard; the corridors' and the
+			"carousel",
+			22,
+			"Carousel",
+			2,
+			false,
+			// Each home's radius and each court's as percentages of the standard; the corridors' and the
 		// spokes' widths and the wall between a court and the next home in tiles; the plaza's radius as
 		// a share of the half side. The lanes and courts default tight: the siege only works in them.
 		{{"home-size", "Home size", 60, 160, 10, 100, ControlGroup::Layout},
@@ -1088,8 +1088,10 @@ GeneratorDefinition carouselDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		validateRequest,
-		validateWorld};
+			generate,
+			true,
+			validateRequest,
+			validateWorld,
+			{"terrain:arena", "feature:stone-walls", "style:siege", "style:tight-building",
+			 "fairness:repeated-wedge"}};
 }

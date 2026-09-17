@@ -1185,7 +1185,8 @@ HoneycombIsleOptions::HoneycombIsleOptions(const GenerationRequest &r)
 
 GeneratorDefinition honeycombIsleDefinition()
 {
-	return {"honeycomb-isle",
+	return {
+			"honeycomb-isle",
 			53,
 			"Honeycomb isle",
 			1,
@@ -1218,5 +1219,6 @@ GeneratorDefinition honeycombIsleDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			{"terrain:urban", "feature:river", "feature:hexagons", "feature:ruins", "style:tight-building"}};
 }

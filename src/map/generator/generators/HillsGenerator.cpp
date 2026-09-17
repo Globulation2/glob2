@@ -484,7 +484,8 @@ HillsOptions::HillsOptions(const GenerationRequest &r)
 }
 GeneratorDefinition hillsDefinition()
 {
-	return {"hills",
+	return {
+			"hills",
 			46,
 			"Hills",
 			7,
@@ -503,5 +504,7 @@ GeneratorDefinition hillsDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "feature:terraces", "feature:lakes", "style:tight-building",
+			 "fairness:stamped-lattice"}};
 }

@@ -1639,12 +1639,12 @@ CityStatesOptions::CityStatesOptions(const GenerationRequest &r)
 GeneratorDefinition cityStatesDefinition()
 {
 	return {
-		"city-states",
-		17,
-		"City states",
-		9,
-		false,
-		// The commons' radius as a share of half the shorter side, the strait's width as a share of
+			"city-states",
+			17,
+			"City states",
+			9,
+			false,
+			// The commons' radius as a share of half the shorter side, the strait's width as a share of
 		// the shorter side, the causeway's road in tiles; valleys per 128x128 of commons; rings of
 		// islets round the map's wrap point (see the header), 0 for the one on the point alone.
 		{{"commons-size", "Commons size", 30, 65, 5, 55, ControlGroup::Terrain},
@@ -1669,8 +1669,10 @@ GeneratorDefinition cityStatesDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		validateRequest,
-		validateWorld};
+			generate,
+			true,
+			validateRequest,
+			validateWorld,
+			{"terrain:urban", "feature:canals", "feature:islands", "style:tight-building",
+			 "style:contested-center", "fairness:repeated-wedge"}};
 }

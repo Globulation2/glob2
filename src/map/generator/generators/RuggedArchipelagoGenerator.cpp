@@ -361,12 +361,12 @@ static std::string validateWorld(const Game &game, const GenerationContext &cont
 GeneratorDefinition ruggedArchipelagoDefinition()
 {
 	return {
-		"rugged-archipelago",
-		8,
-		"Old islands",
-		3,
-		false,
-		// Island size scales the growth passes (see plantBootstraps for why its range is narrow);
+			"rugged-archipelago",
+			8,
+			"Old islands",
+			3,
+			false,
+			// Island size scales the growth passes (see plantBootstraps for why its range is narrow);
 		// beach size is the number of beach-widening passes.
 		{{"island-size", "Island size", 50, 70, 1, 65, ControlGroup::Terrain, false},
 		 {"beach-size", "Beach size", 0, 4, 1, 1, ControlGroup::Terrain, false},
@@ -378,8 +378,9 @@ GeneratorDefinition ruggedArchipelagoDefinition()
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount")},
-		generate,
-		true,
-		nullptr,
-		validateWorld};
+			generate,
+			true,
+			nullptr,
+			validateWorld,
+			{"terrain:natural", "feature:islands", "feature:ocean", "style:sprawling"}};
 }

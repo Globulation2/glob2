@@ -493,7 +493,8 @@ SavannahOptions::SavannahOptions(const GenerationRequest &r)
 }
 GeneratorDefinition savannahDefinition()
 {
-	return {"savannah",
+	return {
+			"savannah",
 			45,
 			"Savannah",
 			2,
@@ -509,5 +510,6 @@ GeneratorDefinition savannahDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "style:wide-open"}};
 }

@@ -457,12 +457,12 @@ AnthillOptions::AnthillOptions(const GenerationRequest &r)
 GeneratorDefinition anthillDefinition()
 {
 	return {
-		"anthill",
-		32,
-		"Anthill",
-		4,
-		false,
-		// Chambers 28 apart give a 256 map about a hundred of them; a chamber of radius 7 holds a
+			"anthill",
+			32,
+			"Anthill",
+			4,
+			false,
+			// Chambers 28 apart give a 256 map about a hundred of them; a chamber of radius 7 holds a
 		// pond and a few buildings; a queen chamber grown to 60 building sites (overlapping 4x4
 		// footprints, the start scorer's measure) holds a swarm, an inn and a few more; tunnels
 		// three wide take a column of units and are closed by one tower; a fifth of the chambers'
@@ -479,8 +479,9 @@ GeneratorDefinition anthillDefinition()
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		designFailure<design>,
-		validateWorld};
+			generate,
+			true,
+			designFailure<design>,
+			validateWorld,
+			{"terrain:arena", "feature:caves", "feature:stone-walls", "style:tight-building"}};
 }

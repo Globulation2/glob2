@@ -838,12 +838,12 @@ CanalsOptions::CanalsOptions(const GenerationRequest &r)
 GeneratorDefinition canalsDefinition()
 {
 	return {
-		"canals",
-		29,
-		"Canals",
-		6,
-		false,
-		// Blocks of 24 give a 256 map about a hundred blocks; a canal of 3 corners (two tiles of
+			"canals",
+			29,
+			"Canals",
+			6,
+			false,
+			// Blocks of 24 give a 256 map about a hundred blocks; a canal of 3 corners (two tiles of
 		// water) is sealed against diagonal steps and is reached by a level-2 tower, one upgrade
 		// from what the colonies start with; a fifth again in extra bridges keeps most blocks
 		// islands. Hexagonal blocks sit kHexPitchPercent of the block size apart.
@@ -862,8 +862,9 @@ GeneratorDefinition canalsDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		designFailure<design>,
-		validateWorld};
+			generate,
+			true,
+			designFailure<design>,
+			validateWorld,
+			{"terrain:urban", "feature:canals", "style:tight-building"}};
 }

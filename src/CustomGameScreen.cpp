@@ -213,6 +213,7 @@ CustomGameScreen::CustomGameScreen() : Glob2TabScreen(false, true)
 	{
 		setup = preferences.setup;
 		userMaps = preferences.userMaps && separateMapLibraries;
+		landscapeSortOrder = preferences.landscapeSortOrder;
 		std::copy(std::begin(preferences.expanded), std::end(preferences.expanded), expanded);
 		listMaps();
 		if (setup.random)
@@ -263,6 +264,7 @@ void CustomGameScreen::savePreferences()
 	CustomGamePreferences preferences;
 	preferences.setup = setup;
 	preferences.userMaps = userMaps;
+	preferences.landscapeSortOrder = landscapeSortOrder;
 	std::copy(std::begin(librarySelection), std::end(librarySelection),
 			  preferences.librarySelection);
 	std::copy(std::begin(expanded), std::end(expanded), preferences.expanded);
@@ -311,10 +313,30 @@ void CustomGameScreen::chooseLandscape()
 	{
 		if (method == setup.generator.method)
 			selected = int(shown.size());
-		shown.push_back({tr(GenerationRequest::methodName(method)), request});
+		LandscapePickerScreen::Entry entry{tr(GenerationRequest::methodName(method)), request,
+										   method};
+		if (const auto *definition = GeneratorRegistry::builtins().find(method))
+			entry.tags = definition->tags;
+		shown.push_back(std::move(entry));
 	}
-	LandscapePickerScreen picker(tr("Landscape"), std::move(shown), selected);
+	LandscapePickerScreen picker(tr("Landscape"), std::move(shown), selected,
+								 LandscapePickerScreen::SortOrder(landscapeSortOrder));
 	const int result = picker.execute(globalContainer->gfx, 40);
+	// Persisted the next time preferences save, the way any other lobby choice on this screen is.
+	landscapeSortOrder = int(picker.currentSortOrder());
+	// Size and colony count are shared lobby settings the picker can also change (FEEDBACK
+	// 2026-09-17); bring them back whether or not a landscape was actually picked, so backing
+	// out still keeps what was chosen there, the same two-way relationship the sort order has.
+	if (picker.sharedWDec() != setup.generator.wDec || picker.sharedHDec() != setup.generator.hDec ||
+		picker.sharedTeams() != setup.capacity)
+	{
+		setup.generator.wDec = picker.sharedWDec();
+		setup.generator.hDec = picker.sharedHDec();
+		setup.generator.nbTeams = picker.sharedTeams();
+		setup.setCapacity(picker.sharedTeams());
+		++setup.mapRevision;
+		invalidate();
+	}
 	if (result == QUIT_APPLICATION)
 		endExecute(QUIT_APPLICATION);
 	else if (result >= 0 && result < int(entries.size()))

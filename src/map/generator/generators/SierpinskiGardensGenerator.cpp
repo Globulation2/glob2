@@ -370,7 +370,8 @@ GeneratorDefinition sierpinskiGardensDefinition()
 		{"major-crossing-pairs", "Major crossing pairs", 1, 3, 1, 2, ControlGroup::Layout}};
 	const auto resources = resourceControls();
 	controls.insert(controls.end(), resources.begin(), resources.end());
-	return {"sierpinski-gardens",
+	return {
+			"sierpinski-gardens",
 			49,
 			"Sierpiński Gardens",
 			// Revision 8: one of four home garden designs per map (FractalMapSupport.h).
@@ -380,5 +381,6 @@ GeneratorDefinition sierpinskiGardensDefinition()
 			generate,
 			true,
 			validateRequest,
-			validateWorld};
+			validateWorld,
+			{"terrain:urban", "feature:canals", "feature:lakes", "style:tight-building", "fairness:exact-symmetry"}};
 }

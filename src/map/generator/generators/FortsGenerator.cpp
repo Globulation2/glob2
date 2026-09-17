@@ -799,7 +799,8 @@ FortsOptions::FortsOptions(const GenerationRequest &r)
 }
 GeneratorDefinition fortsDefinition()
 {
-	return {"forts",
+	return {
+			"forts",
 			35,
 			"Forts",
 			// Revision 7: one fort design per map (interior layout, wall style, quarter turn and
@@ -819,5 +820,7 @@ GeneratorDefinition fortsDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			{"terrain:arena", "feature:stone-walls", "feature:river", "style:siege", "style:fortified",
+			 "fairness:stamped-lattice"}};
 }

@@ -277,12 +277,12 @@ static std::string validateWorld(const Game &game, const GenerationContext &cont
 GeneratorDefinition concreteIslandsDefinition()
 {
 	return {
-		"concrete-islands",
-		5,
-		"Concrete islands",
-		2,
-		false,
-		// Channel width is how many steps from a boundary are dug (about two tiles of water per
+			"concrete-islands",
+			5,
+			"Concrete islands",
+			2,
+			false,
+			// Channel width is how many steps from a boundary are dug (about two tiles of water per
 		// step beyond 3); extra islands is the number of neutral islands.
 		{{"channel-width", "Channel width", 5, 8, 1, 5, ControlGroup::Terrain, false},
 		 {"extra-islands", "Extra islands", 0, 6, 1, 3, ControlGroup::Terrain, false},
@@ -295,8 +295,9 @@ GeneratorDefinition concreteIslandsDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		nullptr,
-		validateWorld};
+			generate,
+			true,
+			nullptr,
+			validateWorld,
+			{"terrain:natural", "feature:islands", "feature:ocean", "style:sprawling"}};
 }

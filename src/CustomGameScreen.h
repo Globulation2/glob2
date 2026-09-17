@@ -86,6 +86,9 @@ class CustomGameScreen : public Glob2TabScreen
 	void finishPreview();
 	bool previewBusy() const { return previewPending || candidates != nullptr; }
 	bool validMap = false, userMaps = false;
+	// LandscapePickerScreen::SortOrder, kept as a plain int here so this header does not need
+	// that screen's full declaration; see CustomGamePreferences::landscapeSortOrder.
+	int landscapeSortOrder = 0;
 	bool separateMapLibraries = true;
 	int currentTab = 0;
 	int groups[3];

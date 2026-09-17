@@ -362,12 +362,12 @@ PolderOptions::PolderOptions(const GenerationRequest &r)
 GeneratorDefinition polderDefinition()
 {
 	return {
-		"polder",
-		30,
-		"Polder",
-		5,
-		false,
-		// A dyke every 24 tiles is a lane every one and a half rows' walk; villages of radius 14
+			"polder",
+			30,
+			"Polder",
+			5,
+			false,
+			// A dyke every 24 tiles is a lane every one and a half rows' walk; villages of radius 14
 		// hold a swarm, its kit and a few more buildings and no more (11 before the first play, and
 		// the growth crowded them; FEEDBACK 2026-09-13: a random angle by default, and villages of
 		// 14 in a sand ring).
@@ -386,8 +386,9 @@ GeneratorDefinition polderDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		designFailure<design>,
-		validateWorld};
+			generate,
+			true,
+			designFailure<design>,
+			validateWorld,
+			{"terrain:natural", "feature:river", "feature:canals", "style:sprawling"}};
 }
