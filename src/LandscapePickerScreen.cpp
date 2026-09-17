@@ -565,12 +565,20 @@ void LandscapePickerScreen::render()
 		}
 		else
 		{
+			// An enabled tile with no thumbnail yet is either still rolling (Pending/Generating -
+			// normal right after opening the sheet or after setShared() rerolls every card at
+			// once) or, briefly, Ready with its texture not yet uploaded. Either way this box must
+			// never sit blank with no text at all: a screenshot taken mid-roll (FEEDBACK
+			// 2026-09-17, a few cards showing name-less, reason-less empty squares right after
+			// setting an unusual size/colony count) previously had nothing to show while waiting,
+			// which reads as broken rather than as "still working."
 			const auto &request = entries[i].request;
 			const auto area = MapPreviewGeometry::fit({frame.x, frame.y, frame.w, frame.h},
 													  1 << request.wDec, 1 << request.hDec);
 			ui.box({area.x, area.y, area.w, area.h}, Color(211, 223, 197), 3);
-			if (tile.preview.state == LandscapePreviewer::State::Failed)
-				note = tr("Preview unavailable");
+			note = tile.preview.state == LandscapePreviewer::State::Failed
+					   ? tr("Preview unavailable")
+					   : tr("Generating preview...");
 		}
 		ui.text(r.x + 8, r.y + 8 + image + 8, entries[i].name, "standard", tileW - 16);
 		ui.text(r.x + 8, r.y + 8 + image + 8 + nameH + 4, note, "little", tileW - 16, true);
