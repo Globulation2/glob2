@@ -269,7 +269,7 @@ def main() -> int:
     weights = build_loss_weights(args.empty_weight, device)
 
     os.makedirs(args.out, exist_ok=True)
-    best_f1 = 0.0
+    best_f1 = float("-inf")
     step = 0
     for epoch in range(args.epochs):
         t_epoch = time.time()
@@ -339,12 +339,17 @@ def main() -> int:
         # Select on precision@5: it is the only metric that reflects how the
         # field is consumed, and unlike recall it cannot be gamed by predicting
         # buildings everywhere.
-        selector = m["p5"]
+        # Under --count-only the trunk is frozen, so P@5 cannot change and
+        # selecting on it always keeps epoch 0 -- the auxiliary heads I
+        # credited with three epochs got one. Select on what is training.
+        selector = (-(m["count_mae"] + 0.1 * m["worker_mae"]
+                      + abs(m["warrior_share_pred"] - m["warrior_share_true"]))
+                    if args.count_only else m["p5"])
         if selector > best_f1:
             best_f1 = selector
             torch.save({"model": net.state_dict(), "args": vars(args),
                         "in_planes": in_planes, "metrics": m}, f"{args.out}/best.pt")
-    print(f"best P@5 {best_f1:.3f}")
+    print(("best aux score" if args.count_only else "best P@5") + f" {best_f1:.3f}")
     return 0
 
 

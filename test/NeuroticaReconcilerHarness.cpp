@@ -406,6 +406,25 @@ int main()
 				zeroDemolished = true;
 		check(zeroDemolished, "a sustained 0 at the anchor still demolishes, so DONT_CARE is doing the work");
 
+		// DONT_CARE at the ANCHOR is the case the decoder actually produces
+		// when anchor detection misses a building (adjacent same-type
+		// buildings did exactly that), so it is the case that must not
+		// demolish. The test above put DONT_CARE only on non-anchor cells,
+		// where a 0 would demolish nothing either -- vacuous. This one is not.
+		Neurotica::DesiredState dcAnchor = baseline();
+		for (int dy = 0; dy < 2; dy++)
+			for (int dx = 0; dx < 2; dx++)
+				dcAnchor.building[dcAnchor.index(20 + dx, 6 + dy)] = Neurotica::DONT_CARE;
+		bool anchorDemolished = false, anchorBuilt = false;
+		for (int step = 0; step < config.demolishPersistSteps + 4; step++)
+		{
+			auto plan = reconciler.plan(dcAnchor);
+			if (countType(plan, ORDER_DELETE) > 0) anchorDemolished = true;
+			if (countType(plan, ORDER_CREATE) > 0) anchorBuilt = true;
+		}
+		check(!anchorDemolished, "DONT_CARE at a building's anchor never demolishes it");
+		check(!anchorBuilt, "DONT_CARE at a building's anchor never builds either");
+
 		// And the hazard itself: the type repeated on a non-anchor cell is a
 		// request for another building, because nothing is observed there.
 		Neurotica::DesiredState repeated = baseline();

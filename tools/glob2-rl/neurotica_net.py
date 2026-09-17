@@ -289,29 +289,6 @@ class NeuroticaNet(nn.Module):
     # novelty.
 
     @staticmethod
-    def budget_mask(building_logits, count_out, existing_by_type):
-        """Cells eligible for a new placement, given the count head.
-
-        Deployment ranks cells and refuses types the team already has enough
-        of; self-play used to sample without that budget, so PPO optimised a
-        policy that is not the one being evaluated. Training and deployment
-        have to decode the same way or the gradient is for a different agent.
-
-        existing_by_type is (B, 13, H, W) of this team's building cells; the
-        count is taken over ANCHORS, matching how the labels were built.
-        """
-        marked = existing_by_type > 0.5
-        anchor = (marked & ~torch.roll(marked, 1, dims=3)
-                         & ~torch.roll(marked, 1, dims=2))
-        have = anchor.flatten(2).sum(dim=2)                       # (B,13)
-        caps = torch.expm1(count_out.float().clamp(max=6.0)).round().clamp(min=0)
-        allow = (caps - have).clamp(min=0)                        # (B,13)
-        best_type = building_logits[:, 1:].argmax(dim=1)          # (B,H,W) 0..12
-        per_cell_allow = allow.gather(1, best_type.flatten(1))    # (B,HW)
-        occupied = marked.any(dim=1).flatten(1)
-        return (per_cell_allow > 0) & ~occupied
-
-    @staticmethod
     def placement_distribution(building_logits, existing_mask, allowed=None):
         """Categorical over empty cells, weighted by P(any building there)."""
         probs = torch.softmax(building_logits.float(), dim=1)
@@ -319,44 +296,64 @@ class NeuroticaNet(nn.Module):
         cand = occupied.masked_fill(existing_mask, 0.0).flatten(1)
         if allowed is not None:
             cand = cand * allowed.float()
-        # A row with no legal candidate would make a degenerate distribution;
-        # fall back to uniform so sampling stays defined.
+        # A row with no legal candidate would make a degenerate distribution.
+        # Fall back to the EMPTY cells, never to every cell: a uniform over
+        # covered cells puts placements on non-anchor footprint cells, which the
+        # reconciler reads as requests for further buildings -- the anchor
+        # hazard re-entering through the back door.
         empty_rows = cand.sum(dim=1, keepdim=True) <= 0
-        cand = torch.where(empty_rows, torch.ones_like(cand), cand)
+        free = (~existing_mask).flatten(1).float()
+        free = torch.where(free.sum(dim=1, keepdim=True) <= 0, torch.ones_like(free), free)
+        cand = torch.where(empty_rows, free, cand)
         return torch.distributions.Categorical(probs=cand / cand.sum(dim=1, keepdim=True))
 
-    def act_placements(self, x, existing_mask, k: int = 8, budget_planes=None):
-        out = self.forward(x)
-        allowed = (None if budget_planes is None else
-                   self.budget_mask(out["building"], out["count"], budget_planes))
+    def act_placements(self, x, existing_mask, k: int = 8, allowed=None,
+                       decide_mix=None, out=None):
+        """Sample the joint action.
+
+        allowed: (B, H*W) bool, computed by the caller from the observation and
+        stored with the trajectory, so evaluation scores exactly the
+        distribution that acted. decide_mix: (B,) bool -- on steps where the
+        mix is held rather than re-chosen, no mix term enters the log-prob.
+        out: a forward already computed on x, to avoid running the trunk twice.
+        """
+        if out is None:
+            out = self.forward(x)
         dist = self.placement_distribution(out["building"], existing_mask, allowed)
         idx = dist.sample((k,)).T.contiguous()            # (B, k)
         mix_dist = torch.distributions.Categorical(logits=out["mix"].float())
         mix = mix_dist.sample()                           # (B,)
+        if decide_mix is None:
+            decide_mix = torch.ones_like(mix, dtype=torch.bool)
+        zero = torch.zeros(mix.shape[0], device=mix.device)
         out["placements"] = idx
         out["mix_choice"] = mix
-        # Joint action: where to build, and what the swarms should produce.
-        out["logp"] = dist.log_prob(idx.T).sum(dim=0) + mix_dist.log_prob(mix)
-        out["entropy"] = dist.entropy() + mix_dist.entropy()
+        out["logp"] = (dist.log_prob(idx.T).sum(dim=0)
+                       + torch.where(decide_mix, mix_dist.log_prob(mix), zero))
+        out["entropy"] = dist.entropy() + torch.where(decide_mix, mix_dist.entropy(), zero)
         return out
 
-    def evaluate_placements(self, x, idx, existing_mask, budget_planes=None,
-                            mix=None):
+    def evaluate_placements(self, x, idx, existing_mask, allowed=None,
+                            mix=None, decide_mix=None):
         """Re-score stored placements under the current policy, for PPO.
 
-        budget_planes must be passed whenever the server sampled with it, or
-        the re-scored distribution is not the one that acted.
+        allowed and decide_mix must be the STORED values from when the action
+        was taken. Recomputing the mask here from the current trunk scores a
+        different distribution than the one that acted: a stored cell that has
+        since become disallowed gets probability ~0, its ratio ~0, and it drops
+        out of the gradient silently.
         """
         out = self.forward(x)
-        allowed = (None if budget_planes is None else
-                   self.budget_mask(out["building"], out["count"], budget_planes))
         dist = self.placement_distribution(out["building"], existing_mask, allowed)
         logp = dist.log_prob(idx.T).sum(dim=0)
         entropy = dist.entropy()
         if mix is not None:
             mix_dist = torch.distributions.Categorical(logits=out["mix"].float())
-            logp = logp + mix_dist.log_prob(mix)
-            entropy = entropy + mix_dist.entropy()
+            if decide_mix is None:
+                decide_mix = torch.ones_like(mix, dtype=torch.bool)
+            zero = torch.zeros_like(logp)
+            logp = logp + torch.where(decide_mix, mix_dist.log_prob(mix), zero)
+            entropy = entropy + torch.where(decide_mix, mix_dist.entropy(), zero)
         return dict(logp=logp, entropy=entropy, value=out["value"])
 
     def evaluate_latent(self, x, z):

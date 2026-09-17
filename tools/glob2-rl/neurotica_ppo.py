@@ -1,21 +1,16 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""PPO over the latent, for Neurotica self-play.
+"""PPO learner for Neurotica self-play.
 
-The action is the 32-dimensional exploration latent, not the field. The field
-is a deterministic decode of (observation, latent), so a policy step is a draw
-from a 32-dim diagonal Gaussian rather than ~16k per-cell decisions. That is the
-whole reason PPO is tractable here: sampling each cell independently would make
-log pi(a|s) a sum over 16,384 terms, and the importance ratio
-exp(sum of log-prob deltas) would explode on essentially every update. It would
-also explore in a useless direction — flipping one tile is noise, while moving
-the latent changes what kind of game the net wants to play.
+The action is the set of k sampled placements plus a production-mix preset
+held for a number of steps (see neurotica_net.act_placements). Each step's
+stored context -- the allowed-cell mask and whether the mix was re-chosen --
+is loaded back and used to re-score, so the distribution scored is exactly
+the one that acted.
 
 Rewards are sparse win/loss plus POTENTIAL-BASED shaping. Potential shaping
 (gamma*Phi(s') - Phi(s)) is provably policy-invariant, so the shaping cannot
-introduce a strategy that wins the shaping rather than the game — which is the
-usual way shaped RTS agents go wrong. Phi is read off the observation planes
-the server already has, so it costs nothing extra.
+introduce a strategy that wins the shaping rather than the game.
 """
 
 from __future__ import annotations
@@ -43,6 +38,8 @@ class Trajectory:
     values: np.ndarray     # (T,)
     potentials: np.ndarray # (T,)
     mixes: np.ndarray      # (T,) chosen production-mix preset, part of the action
+    mix_decided: np.ndarray = None  # (T,) bool: mix re-chosen this step (term in logp)
+    allowed: np.ndarray = None      # (T, ceil(HW/8)) packbits of the placement mask
     ticks: np.ndarray      # (T,)
     static: np.ndarray     # (n_static, H, W) uint8, constant for the episode
     outcome: float         # +1 win, -1 loss, 0 undecided
@@ -105,6 +102,9 @@ def load_trajectories(run_dir: str) -> List[Trajectory]:
                 obs_path=base + ".obs.npy",
                 placements=arrays["placements"], logps=arrays["logps"],
                 mixes=(arrays["mixes"] if "mixes" in arrays.files else None),
+                mix_decided=(arrays["mix_decided"] if "mix_decided" in arrays.files else None),
+                allowed=(arrays["allowed"] if "allowed" in arrays.files
+                         and arrays["allowed"].size else None),
                 values=arrays["values"], potentials=arrays["potentials"],
                 ticks=arrays["ticks"], static=arrays["static"],
                 outcome=float(meta["outcome"]),
@@ -117,8 +117,22 @@ def load_trajectories(run_dir: str) -> List[Trajectory]:
 def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
     if not trajs:
         return {}
+    # An episode recorded without its action context (mask, mix, decide flag)
+    # cannot be scored against the distribution that acted. Drop it. The old
+    # guard dropped the MIX TERM for the whole batch instead, which scored
+    # episodes whose stored logp included the term against a distribution
+    # without it -- ratios inflated ~5x for exactly those samples.
+    complete = [t for t in trajs
+                if t.mixes is not None and t.mix_decided is not None
+                and t.allowed is not None and len(t.mixes) == len(t.logps)]
+    if len(complete) < len(trajs):
+        print(f"dropping {len(trajs) - len(complete)} episodes without action context",
+              flush=True)
+    trajs = complete
+    if not trajs:
+        return {}
     all_adv, all_ret, all_act, all_logp, obs_refs = [], [], [], [], []
-    all_mix = []
+    all_mix, all_dec, all_allow = [], [], []
     for traj in trajs:
         rewards = compute_rewards(traj, args.gamma, args.shaping)
         adv, ret = gae(rewards, traj.values, args.gamma, args.lam)
@@ -126,8 +140,9 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
         all_ret.append(ret)
         all_act.append(traj.placements)
         all_logp.append(traj.logps)
-        if traj.mixes is not None and len(traj.mixes) == len(traj.logps):
-            all_mix.append(traj.mixes)
+        all_mix.append(traj.mixes)
+        all_dec.append(traj.mix_decided)
+        all_allow.append(traj.allowed)
         obs = np.load(traj.obs_path, mmap_mode="r")
         obs_refs.extend([(obs, i, traj) for i in range(len(traj.logps))])
 
@@ -138,8 +153,9 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
     # Only score the mix when every episode in the batch carries one, so a
     # mixed batch of old and new trajectories cannot silently score a joint
     # action against a placements-only log-prob.
-    mix_all = (np.concatenate(all_mix) if len(all_mix) == len(trajs)
-               and all_mix else None)
+    mix_all = np.concatenate(all_mix)
+    dec_all = np.concatenate(all_dec)
+    allow_all = np.concatenate(all_allow)          # (N, ceil(HW/8)) uint8
     adv = (adv - adv.mean()) / (adv.std() + 1e-8)
 
     n = len(adv)
@@ -164,11 +180,13 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
                 # recomputed from the observation, so it is identical to the one
                 # the server applied when the action was sampled -- otherwise
                 # the re-scored distribution is not the one that acted.
-                mb = (None if mix_all is None else
-                      torch.from_numpy(mix_all[idx]).to(device))
-                ev = net.evaluate_placements(
-                    x, ab, existing, budget_planes=x[:, 4 + 8:4 + 8 + 13],
-                    mix=mb)
+                mb = torch.from_numpy(mix_all[idx]).to(device)
+                db = torch.from_numpy(dec_all[idx]).to(device)
+                hw = x.shape[2] * x.shape[3]
+                allow_b = torch.from_numpy(
+                    np.unpackbits(allow_all[idx], axis=1)[:, :hw].astype(bool)).to(device)
+                ev = net.evaluate_placements(x, ab, existing, allowed=allow_b,
+                                             mix=mb, decide_mix=db)
             ratio = (ev["logp"] - torch.from_numpy(logp_old[idx]).to(device)).exp()
             a = torch.from_numpy(adv[idx]).to(device)
             pg = -torch.min(ratio * a,
@@ -197,6 +215,8 @@ def main() -> int:
     ap.add_argument("--vf-coef", type=float, default=0.5)
     ap.add_argument("--ent-coef", type=float, default=0.003)
     ap.add_argument("--shaping", type=float, default=0.1)
+    ap.add_argument("--snapshot-every", type=int, default=25,
+                    help="keep a copy of policy.pt every N iterations")
     ap.add_argument("--ppo-epochs", type=int, default=2)
     ap.add_argument("--minibatch", type=int, default=16)
     ap.add_argument("--lr", type=float, default=1e-5)
@@ -224,9 +244,15 @@ def main() -> int:
             continue
         stats = ppo_update(net, opt, scaler, trajs, args, device)
         print(f"iter {it}: {stats}", flush=True)
-        torch.save({"model": net.state_dict(), "in_planes": ckpt.get("in_planes", 60),
-                    "args": ckpt.get("args", {}), "metrics": stats},
-                   f"{args.out}/policy.pt")
+        state = {"model": net.state_dict(), "in_planes": ckpt.get("in_planes", 60),
+                 "args": ckpt.get("args", {}), "metrics": stats, "iter": it}
+        torch.save(state, f"{args.out}/policy.pt")
+        # policy.pt is overwritten every iteration; without snapshots a run
+        # that degrades (measured: 22.6% -> 6.9% over 2200 episodes) leaves
+        # nothing to roll back to.
+        if args.snapshot_every > 0 and it % args.snapshot_every == 0:
+            os.makedirs(f"{args.out}/snapshots", exist_ok=True)
+            torch.save(state, f"{args.out}/snapshots/policy_{it:06d}.pt")
         # Episodes are deleted once consumed, so anything worth analysing
         # later has to be recorded here. One line per episode: which mixes it
         # played and how it ended, which is the only way to answer "does the

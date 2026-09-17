@@ -26,7 +26,7 @@ sleep 2
 
 CUDA_VISIBLE_DEVICES=1 setsid nohup $VENV $ROOT/rl/neurotica_serve.py \
   --checkpoint "$ROOT/ppo/policy.pt" --socket $SOCK --device cuda \
-  --max-batch 16 --sample --use-count --ratio --record-dir "$ROLL" \
+  --max-batch 16 --sample --use-count --ratio --placements 8 --record-dir "$ROLL" \
   --reload-from "$ROOT/ppo/policy.pt" \
   > $ROOT/serve_sp.log 2>&1 < /dev/null &
 sleep 12
@@ -39,7 +39,7 @@ sleep 2
 
 setsid nohup $VENV $ROOT/rl/neurotica_selfplay.py \
   --socket $SOCK --record-dir "$ROLL" --parallel "$PAR" \
-  --games 1000000 --policy-period 100 --start-id 20000 \
+  --games 1000000 --policy-period 25 --start-id 20000 \
   > $ROOT/rollout.log 2>&1 < /dev/null &
 
 echo "self-play running: serve_sp.log, ppo.log, rollout.log"

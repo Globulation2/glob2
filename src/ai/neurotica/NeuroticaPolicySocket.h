@@ -21,7 +21,7 @@
   Protocol (little-endian, no framing beyond the lengths shown):
 
     HANDSHAKE, client -> server, once per connection
-      [4B] magic "NPS2"
+      [4B] magic "NPS4"
       [2B] u16 map_w
       [2B] u16 map_h
       [1B] u8  num_static_planes
@@ -41,10 +41,22 @@
       [...] dynamic planes, num_dynamic * w * h bytes
 
     RESPONSE, server -> client
-      [...] 3 * w * h bytes, cell-major:
-              [0] building class, 0 = none, 1..13 = type + 1
+      [...] 7 * w * h bytes, cell-major:
+              [0] building class, 0 = none, 1..13 = type + 1,
+                  255 = DONT_CARE (leave this cell alone: neither build on it
+                  nor demolish what stands there -- what a policy that sees a
+                  building's footprint but not its anchor says of the
+                  non-anchor cells)
               [1] score 0..255 for that class at that cell
               [2] area bits (NeuroticaDesiredState.h AreaBit mask)
+              [3] staffing (Building::maxUnitWorking), 255 = DONT_CARE
+              [4..6] swarm production mix, worker/explorer/warrior weights,
+                  255 in [4] = DONT_CARE (leave the whole ratio alone)
+
+  Magic history: NPS2 3 bytes/cell; NPS3 added staffing (4); NPS4 added the
+  mix (7). The magic is bumped on every layout change on purpose: a
+  mismatched binary must fail the handshake loudly, not misparse a shifted
+  stream and play as if nothing were wrong.
 
   A failed connection, short read or short write leaves the source inert rather
   than throwing: an AI whose policy server has died should stand still, not
