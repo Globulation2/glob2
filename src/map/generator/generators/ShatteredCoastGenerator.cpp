@@ -911,12 +911,12 @@ static std::string validateWorld(const Game &game, const GenerationContext &cont
 GeneratorDefinition shatteredCoastDefinition()
 {
 	return {
-		"shattered-coast",
-		7,
-		"Old random",
-		4,
-		false,
-		// The three terrain weights are relative (40/4/60 asks for 38% water, 4% sand, 58% grass
+			"shattered-coast",
+			7,
+			"Old random",
+			4,
+			false,
+			// The three terrain weights are relative (40/4/60 asks for 38% water, 4% sand, 58% grass
 		// before sand control adds the beaches); smoothing is the number of passes, which sets the
 		// scale of the blobs from speckle (1) to broad coasts (8).
 		{{"water", "Water weight", 0, 100, 1, 40, ControlGroup::Terrain, false, true},
@@ -930,8 +930,9 @@ GeneratorDefinition shatteredCoastDefinition()
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount")},
-		generate,
-		true,
-		nullptr,
-		validateWorld};
+			generate,
+			true,
+			nullptr,
+			validateWorld,
+			{"terrain:natural", "feature:ocean", "style:wide-open"}};
 }

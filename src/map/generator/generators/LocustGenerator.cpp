@@ -245,7 +245,8 @@ GeneratorDefinition locustDefinition()
 	// a central pond, swarm and dry-side stock. Lakes are requested per 128x128 area, in 40..160
 	// corner patches; defaults are one 90-corner lake. The shared layout may omit a lake, but
 	// never shrink its exclusion zone to force one in. Resource percentages are 0..200.
-	return {"locust",
+	return {
+			"locust",
 			47,
 			"Locust",
 			4,
@@ -258,5 +259,6 @@ GeneratorDefinition locustDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "feature:forest", "style:expansion"}};
 }

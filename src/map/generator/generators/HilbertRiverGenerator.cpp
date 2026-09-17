@@ -236,6 +236,16 @@ GeneratorDefinition hilbertRiverDefinition()
 	const auto resources = resourceControls();
 	controls.insert(controls.end(), resources.begin(), resources.end());
 	// Revision 8: one of four home garden designs per map (FractalMapSupport.h).
-	return {"hilbert-river", 50,           "Hilbert River", 8, false, controls, generate, true,
-			validateRequest, validateWorld};
+	return {
+			"hilbert-river",
+			50,
+			"Hilbert River",
+			8,
+			false,
+			controls,
+			generate,
+			true,
+			validateRequest,
+			validateWorld,
+			{"terrain:urban", "feature:river", "feature:canals", "style:tight-building"}};
 }

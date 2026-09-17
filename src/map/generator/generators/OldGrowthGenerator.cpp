@@ -320,12 +320,12 @@ OldGrowthOptions::OldGrowthOptions(const GenerationRequest &r)
 GeneratorDefinition oldGrowthDefinition()
 {
 	return {
-		"old-growth",
-		28,
-		"Old growth",
-		4,
-		false,
-		// 90% cover reads as unbroken forest with the odd glade; one lake per 128x128 of 90
+			"old-growth",
+			28,
+			"Old growth",
+			4,
+			false,
+			// 90% cover reads as unbroken forest with the odd glade; one lake per 128x128 of 90
 		// tiles (four on a 256 map, each a few days' cutting from any home) keeps them rare enough
 		// to be prizes; the forest carries no wood amount, since the forest is the map.
 		{{"forest-density", "Forest density", 60, 100, 5, 90, ControlGroup::Terrain},
@@ -343,8 +343,9 @@ GeneratorDefinition oldGrowthDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		designFailure<design>,
-		validateWorld};
+			generate,
+			true,
+			designFailure<design>,
+			validateWorld,
+			{"terrain:natural", "feature:forest", "style:expansion"}};
 }

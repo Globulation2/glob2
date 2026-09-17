@@ -1150,7 +1150,8 @@ StoneHighlandsOptions::StoneHighlandsOptions(const GenerationRequest &r)
 
 GeneratorDefinition stoneHighlandsDefinition()
 {
-	return {"stone-highlands",
+	return {
+			"stone-highlands",
 			14,
 			"Stone highlands",
 			4,
@@ -1179,5 +1180,6 @@ GeneratorDefinition stoneHighlandsDefinition()
 			generate,
 			true,
 			validateRequest,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "feature:stone-walls", "feature:mountains", "style:tight-building"}};
 }

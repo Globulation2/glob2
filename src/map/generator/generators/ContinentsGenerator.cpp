@@ -750,8 +750,10 @@ ContinentsOptions::ContinentsOptions(const GenerationRequest &r)
 
 GeneratorDefinition continentsDefinition()
 {
-	return {"continents",
-			44, // 33 was Patchwork, retired 2026-09-13 and never reused
+	return {
+			"continents",
+			44,
+			// 33 was Patchwork, retired 2026-09-13 and never reused
 			"Continents",
 			2,
 			false,
@@ -772,5 +774,6 @@ GeneratorDefinition continentsDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "feature:river", "feature:mountains", "feature:desert", "feature:lakes", "style:wide-open"}};
 }

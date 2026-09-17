@@ -581,7 +581,8 @@ static std::string validateWorld(const Game &game, const GenerationContext &cont
 
 GeneratorDefinition contestedCommonsDefinition()
 {
-	return {"contested-commons",
+	return {
+			"contested-commons",
 			9,
 			"Contested commons",
 			3,
@@ -608,5 +609,6 @@ GeneratorDefinition contestedCommonsDefinition()
 			generate,
 			true,
 			nullptr,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "feature:islands", "style:contested-center"}};
 }

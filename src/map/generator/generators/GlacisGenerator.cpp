@@ -1130,7 +1130,8 @@ GlacisOptions::GlacisOptions(const GenerationRequest &r)
 
 GeneratorDefinition glacisDefinition()
 {
-	return {"glacis",
+	return {
+			"glacis",
 			39,
 			"The Glacis",
 			2,
@@ -1152,5 +1153,6 @@ GeneratorDefinition glacisDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			{"terrain:arena", "feature:stone-walls", "feature:forest", "feature:river", "style:fortified", "style:siege"}};
 }

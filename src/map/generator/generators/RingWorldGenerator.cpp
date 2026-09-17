@@ -732,7 +732,8 @@ RingWorldOptions::RingWorldOptions(const GenerationRequest &r)
 
 GeneratorDefinition ringWorldDefinition()
 {
-	return {"ring-world",
+	return {
+			"ring-world",
 			16,
 			"Ring world",
 			1,
@@ -758,5 +759,6 @@ GeneratorDefinition ringWorldDefinition()
 			generate,
 			true,
 			validate,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "feature:ocean", "feature:lakes", "style:wide-open"}};
 }

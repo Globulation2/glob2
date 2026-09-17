@@ -471,7 +471,8 @@ BraidedDeltaOptions::BraidedDeltaOptions(const GenerationRequest &r)
 
 GeneratorDefinition braidedDeltaDefinition()
 {
-	return {"braided-delta",
+	return {
+			"braided-delta",
 			36,
 			"Braided Delta",
 			3,
@@ -488,5 +489,6 @@ GeneratorDefinition braidedDeltaDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "feature:river", "feature:islands", "style:sprawling"}};
 }

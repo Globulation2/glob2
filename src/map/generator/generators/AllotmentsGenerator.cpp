@@ -619,7 +619,8 @@ AllotmentsOptions::AllotmentsOptions(const GenerationRequest &r)
 
 GeneratorDefinition allotmentsDefinition()
 {
-	return {"allotments",
+	return {
+			"allotments",
 			40,
 			"Allotments",
 			2,
@@ -638,5 +639,6 @@ GeneratorDefinition allotmentsDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			{"terrain:urban", "feature:farmland", "style:tight-building"}};
 }

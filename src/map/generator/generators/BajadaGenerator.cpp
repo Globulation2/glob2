@@ -1501,7 +1501,8 @@ BajadaOptions::BajadaOptions(const GenerationRequest &r)
 
 GeneratorDefinition bajadaDefinition()
 {
-	return {"bajada",
+	return {
+			"bajada",
 			55,
 			"Bajada",
 			1,
@@ -1525,5 +1526,6 @@ GeneratorDefinition bajadaDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "feature:mountains", "feature:desert", "feature:lakes", "style:sprawling"}};
 }

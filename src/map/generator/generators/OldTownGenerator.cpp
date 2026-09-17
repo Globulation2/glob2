@@ -518,7 +518,8 @@ OldTownOptions::OldTownOptions(const GenerationRequest &r)
 
 GeneratorDefinition oldTownDefinition()
 {
-	return {"old-town",
+	return {
+			"old-town",
 			31,
 			"Old town",
 			7,
@@ -546,5 +547,6 @@ GeneratorDefinition oldTownDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			{"terrain:urban", "feature:stone-walls", "feature:plazas", "style:tight-building"}};
 }

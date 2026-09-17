@@ -103,8 +103,10 @@ class LandscapePickerScreen : public Glob2Screen
 	/// colony count, or empty when it can. Computed once (that size/count do not change while the
 	/// sheet is open), never re-rolled, so it costs no worker time.
 	std::vector<std::string> incompatible;
-	/// GeneratorTags::categories(), fixed at construction, and one chosen filter value per
-	/// category (empty meaning "Any" - no filter on that category), parallel to it.
+	/// Every tag category present across entries[]'s own tags (each generator's own
+	/// GeneratorDefinition::tags, carried in by the caller), fixed at construction in a stable
+	/// order, and one chosen filter value per category (empty meaning "Any" - no filter on that
+	/// category), parallel to it.
 	std::vector<std::string> filterCategories;
 	std::vector<std::string> filters;
 	int selected, columns = 1;

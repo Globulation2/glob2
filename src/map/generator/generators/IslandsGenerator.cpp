@@ -70,6 +70,16 @@ GeneratorDefinition islandsDefinition()
 	for (auto &c : heightFieldResourceControls())
 		controls.push_back(std::move(c));
 	controls.push_back({"repeat", "Repeat landscape", 0, 5, 1, 0, ControlGroup::Layout, true});
-	return {"islands", 3, "Islands", 3, false, std::move(controls), generate, true, nullptr,
-			validateWorld};
+	return {
+			"islands",
+			3,
+			"Islands",
+			3,
+			false,
+			std::move(controls),
+			generate,
+			true,
+			nullptr,
+			validateWorld,
+			{"terrain:natural", "feature:islands", "feature:ocean", "style:sprawling"}};
 }

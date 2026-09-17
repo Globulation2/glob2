@@ -880,7 +880,8 @@ static std::string validateWorld(const Game &game, const GenerationContext &cont
 
 GeneratorDefinition fjordContinentDefinition()
 {
-	return {"fjord-continent",
+	return {
+			"fjord-continent",
 			12,
 			"Fjord continent",
 			13,
@@ -909,5 +910,6 @@ GeneratorDefinition fjordContinentDefinition()
 			generate,
 			true,
 			nullptr,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "feature:ocean", "feature:islands", "feature:lakes", "style:sprawling"}};
 }

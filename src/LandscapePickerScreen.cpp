@@ -5,7 +5,6 @@
 #include "GenerationContext.h"
 #include "GenerationValidation.h"
 #include "GeneratorRegistry.h"
-#include "GeneratorTags.h"
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
@@ -28,6 +27,39 @@ std::string tagLabel(const std::string &value)
 		label[0] = char(std::toupper(static_cast<unsigned char>(label[0])));
 	return label;
 }
+// Every tag on any of `entries` is "category:value"; the filter row groups by category, reading
+// the vocabulary straight from what these entries' own generators declared (each generator sets
+// its GeneratorDefinition::tags itself, so there is no separate catalog to keep in sync here).
+std::vector<std::string>
+categoriesOf(const std::vector<LandscapePickerScreen::Entry> &entries)
+{
+	std::vector<std::string> found;
+	for (const auto &entry : entries)
+		for (const auto &tag : entry.tags)
+		{
+			const auto category = tag.substr(0, tag.find(':'));
+			if (std::find(found.begin(), found.end(), category) == found.end())
+				found.push_back(category);
+		}
+	std::sort(found.begin(), found.end());
+	return found;
+}
+std::vector<std::string> valuesOf(const std::vector<LandscapePickerScreen::Entry> &entries,
+								  const std::string &category)
+{
+	std::vector<std::string> found;
+	const std::string prefix = category + ":";
+	for (const auto &entry : entries)
+		for (const auto &tag : entry.tags)
+			if (tag.compare(0, prefix.size(), prefix) == 0)
+			{
+				auto value = tag.substr(prefix.size());
+				if (std::find(found.begin(), found.end(), value) == found.end())
+					found.push_back(std::move(value));
+			}
+	std::sort(found.begin(), found.end());
+	return found;
+}
 } // namespace
 
 std::vector<GenerationRequest> LandscapePickerScreen::requestsOf(const std::vector<Entry> &entries)
@@ -42,7 +74,7 @@ LandscapePickerScreen::LandscapePickerScreen(const std::string &title, std::vect
 											 int selected, SortOrder sortOrder)
 	: title(title), entries(std::move(entries)), tiles(this->entries.size()),
 	  redraws(this->entries.size(), 0),
-	  filterCategories(GeneratorTags::categories()),
+	  filterCategories(categoriesOf(this->entries)),
 	  filters(filterCategories.size()),
 	  selected(std::clamp(selected, 0, std::max(0, int(this->entries.size()) - 1))),
 	  sortOrder(sortOrder), previewer(requestsOf(this->entries))
@@ -348,7 +380,7 @@ void LandscapePickerScreen::render()
 	const int filterW = filterCount > 0 ? std::max(84, remaining / filterCount) : 0;
 	for (int c = 0; c < filterCount; ++c)
 	{
-		const auto values = GeneratorTags::valuesFor(filterCategories[c]);
+		const auto values = valuesOf(entries, filterCategories[c]);
 		std::vector<std::string> options{"Any " + tagLabel(filterCategories[c])};
 		for (const auto &value : values)
 			options.push_back(tagLabel(value));

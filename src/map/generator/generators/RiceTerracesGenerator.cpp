@@ -529,7 +529,8 @@ RiceTerracesOptions::RiceTerracesOptions(const GenerationRequest &r)
 
 GeneratorDefinition riceTerracesDefinition()
 {
-	return {"rice-terraces",
+	return {
+			"rice-terraces",
 			52,
 			"Rice terraces",
 			1,
@@ -554,5 +555,6 @@ GeneratorDefinition riceTerracesDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "feature:terraces", "feature:river", "style:tight-building"}};
 }

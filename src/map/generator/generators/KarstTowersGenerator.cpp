@@ -1239,7 +1239,8 @@ KarstTowersOptions::KarstTowersOptions(const GenerationRequest &r)
 
 GeneratorDefinition karstTowersDefinition()
 {
-	return {"karst-towers",
+	return {
+			"karst-towers",
 			54,
 			"Karst towers",
 			2,
@@ -1264,5 +1265,6 @@ GeneratorDefinition karstTowersDefinition()
 			generate,
 			true,
 			designFailure<design>,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "feature:river", "feature:mountains", "feature:lakes", "style:tight-building"}};
 }

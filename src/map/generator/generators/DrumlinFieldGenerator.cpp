@@ -525,12 +525,12 @@ DrumlinFieldOptions::DrumlinFieldOptions(const GenerationRequest &r)
 GeneratorDefinition drumlinFieldDefinition()
 {
 	return {
-		"drumlin-field",
-		43,
-		"Drumlin field",
-		1,
-		false,
-		// Sites 20 apart across the grain and drumlins two and a half times as long as wide give a
+			"drumlin-field",
+			43,
+			"Drumlin field",
+			1,
+			false,
+			// Sites 20 apart across the grain and drumlins two and a half times as long as wide give a
 		// 256 map some fifty drumlins of about 16 by 40 tiles round four homes of 22 by 55, with
 		// two fifths of the sketch land (the sweep: 28% pure grass, 16% buildable, once the beaches
 		// are laid). The water gap is in undermap corners between any two drumlins: 6 corners is
@@ -551,8 +551,9 @@ GeneratorDefinition drumlinFieldDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		homesFailure,
-		validateWorld};
+			generate,
+			true,
+			homesFailure,
+			validateWorld,
+			{"terrain:natural", "feature:lakes", "style:tight-building"}};
 }

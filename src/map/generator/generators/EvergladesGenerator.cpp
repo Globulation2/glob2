@@ -542,12 +542,12 @@ EvergladesOptions::EvergladesOptions(const GenerationRequest &r)
 GeneratorDefinition evergladesDefinition()
 {
 	return {
-		"everglades",
-		19,
-		"Everglades",
-		2,
-		false,
-		// Pool spacing and pool size in tiles; sloughs is the share of pools grown and stretched
+			"everglades",
+			19,
+			"Everglades",
+			2,
+			false,
+			// Pool spacing and pool size in tiles; sloughs is the share of pools grown and stretched
 		// into sloughs; the clearings' radius in tiles; the levee is the share of each clearing's
 		// ring that is sand.
 		{{"pool-spacing", "Pool spacing", 8, 20, 1, 15, ControlGroup::Terrain},
@@ -562,8 +562,9 @@ GeneratorDefinition evergladesDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		validateRequest,
-		validateWorld};
+			generate,
+			true,
+			validateRequest,
+			validateWorld,
+			{"terrain:natural", "feature:swamp", "feature:lakes", "style:wide-open"}};
 }

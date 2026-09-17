@@ -569,12 +569,12 @@ HedgerowCountryOptions::HedgerowCountryOptions(const GenerationRequest &r)
 GeneratorDefinition hedgerowCountryDefinition()
 {
 	return {
-		"hedgerow-country",
-		38,
-		"Hedgerow Country",
-		7,
-		false,
-		{{"field-size", "Field size", 48, 96, 16, 64, ControlGroup::Layout},
+			"hedgerow-country",
+			38,
+			"Hedgerow Country",
+			7,
+			false,
+			{{"field-size", "Field size", 48, 96, 16, 64, ControlGroup::Layout},
 		 {"hedge-thickness", "Hedge thickness", 2, 4, 1, 3, ControlGroup::Terrain},
 		 {"existing-gateways", "Existing gateways", 0, 100, 25, 25, ControlGroup::Layout},
 		 {"wooded-boundary-share", "Wooded boundary share", 50, 100, 10, 90, ControlGroup::Terrain},
@@ -583,8 +583,9 @@ GeneratorDefinition hedgerowCountryDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		designFailure<design>,
-		validateWorld};
+			generate,
+			true,
+			designFailure<design>,
+			validateWorld,
+			{"terrain:natural", "feature:forest", "style:tight-building"}};
 }

@@ -21,8 +21,10 @@ struct GeneratorDefinition
 	std::string (*validateWorld)(const Game &, const GenerationContext &) = nullptr;
 	// Catalog facets for browsing (the landscape picker's tag filters), each "category:value"
 	// (e.g. "terrain:natural", "feature:river", "style:wide-open"): what a player scanning a
-	// shelf of landscapes would use to narrow the list. Filled in by GeneratorRegistry from
-	// GeneratorTags.cpp's curated table, keyed by `id`, rather than repeated in every
-	// generator's own file - see that file for the category list and how it is assigned.
+	// shelf of landscapes would use to narrow the list. Set by each generator's own
+	// ...Definition() alongside its other registration fields (controls, revision, ...) rather
+	// than in a separate lookup table, so tagging a generator stays colocated with the rest of
+	// its registration and there is nothing extra to keep in sync when adding one. Required for
+	// every non-editor-only generator (GeneratorRegistry's constructor checks it).
 	std::vector<std::string> tags;
 };

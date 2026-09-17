@@ -1931,7 +1931,8 @@ WatershedOptions::WatershedOptions(const GenerationRequest &r)
 
 GeneratorDefinition watershedDefinition()
 {
-	return {"watershed",
+	return {
+			"watershed",
 			13,
 			"Watershed",
 			1,
@@ -1961,5 +1962,6 @@ GeneratorDefinition watershedDefinition()
 			generate,
 			true,
 			validate,
-			validateWorld};
+			validateWorld,
+			{"terrain:natural", "feature:river", "style:wide-open"}};
 }

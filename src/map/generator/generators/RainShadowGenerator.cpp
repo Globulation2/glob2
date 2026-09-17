@@ -453,12 +453,12 @@ RainShadowOptions::RainShadowOptions(const GenerationRequest &r)
 GeneratorDefinition rainShadowDefinition()
 {
 	return {
-		"rain-shadow",
-		27,
-		"Rain shadow",
-		4,
-		false,
-		// Four ridges on a 256 map give 64-tile valleys: a 12-tile home, a pass every 48 tiles
+			"rain-shadow",
+			27,
+			"Rain shadow",
+			4,
+			false,
+			// Four ridges on a 256 map give 64-tile valleys: a 12-tile home, a pass every 48 tiles
 		// and a lee band of 6 leave a valley wide enough to farm and to fight in. Ridges three
 		// thick are sealed against diagonal steps and thin enough for a level-1 tower to shoot
 		// across (Walls.h's towerReach); passes five wide take a column of units and can be
@@ -479,8 +479,9 @@ GeneratorDefinition rainShadowDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		designFailure<design>,
-		validateWorld};
+			generate,
+			true,
+			designFailure<design>,
+			validateWorld,
+			{"terrain:natural", "feature:mountains", "feature:river", "feature:desert", "style:wide-open"}};
 }

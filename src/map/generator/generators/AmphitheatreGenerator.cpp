@@ -757,12 +757,12 @@ AmphitheatreOptions::AmphitheatreOptions(const GenerationRequest &r)
 GeneratorDefinition amphitheatreDefinition()
 {
 	return {
-		"amphitheatre",
-		23,
-		"Amphitheatre",
-		3,
-		false,
-		// Rings of wall; each ramp's width in tiles; the pit's radius and each terrace's width as
+			"amphitheatre",
+			23,
+			"Amphitheatre",
+			3,
+			false,
+			// Rings of wall; each ramp's width in tiles; the pit's radius and each terrace's width as
 		// shares of the half side; every colony's inland seas together as a percentage of the smallest
 		// territory; the borders' thickness in tiles.
 		{{"rings", "Rings", 2, 4, 1, 3, ControlGroup::Layout},
@@ -783,8 +783,9 @@ GeneratorDefinition amphitheatreDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		validateRequest,
-		validateWorld};
+			generate,
+			true,
+			validateRequest,
+			validateWorld,
+			{"terrain:arena", "feature:stone-walls", "feature:orchard", "style:siege", "style:contested-center"}};
 }

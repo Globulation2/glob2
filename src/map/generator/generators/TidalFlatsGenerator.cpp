@@ -592,12 +592,12 @@ TidalFlatsOptions::TidalFlatsOptions(const GenerationRequest &r)
 GeneratorDefinition tidalFlatsDefinition()
 {
 	return {
-		"tidal-flats",
-		18,
-		"Tidal flats",
-		6,
-		false,
-		// The home islands' radius as a share of the half side; extra islands (the oases) and
+			"tidal-flats",
+			18,
+			"Tidal flats",
+			6,
+			false,
+			// The home islands' radius as a share of the half side; extra islands (the oases) and
 		// sandbars (the green patches) per colony, six and eight since 2026-09-14; lagoons per
 		// colony; tide pools per 128x128 of flats.
 		{{"home-island-size", "Home island size", 14, 26, 1, 20, ControlGroup::Terrain},
@@ -614,8 +614,9 @@ GeneratorDefinition tidalFlatsDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		validateRequest,
-		validateWorld};
+			generate,
+			true,
+			validateRequest,
+			validateWorld,
+			{"terrain:natural", "feature:islands", "feature:ocean", "style:contested-center", "fairness:repeated-wedge"}};
 }

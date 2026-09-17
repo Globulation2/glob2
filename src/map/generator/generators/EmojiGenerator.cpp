@@ -750,12 +750,12 @@ EmojiOptions::EmojiOptions(const GenerationRequest &r)
 GeneratorDefinition emojiDefinition()
 {
 	return {
-		"emoji",
-		34,
-		"Emoji",
-		11,
-		false,
-		{GeneratorControl::choice("character", "Emoji character",
+			"emoji",
+			34,
+			"Emoji",
+			11,
+			false,
+			{GeneratorControl::choice("character", "Emoji character",
 								  {"Random", "Smiley", "Sad face", "Winking face", "Surprised face",
 								   "Heart eyes", "Sunglasses", "Heart", "Star", "Neutral face",
 								   "Sleeping face", "Grinning face", "Kissing face", "Angry face",
@@ -772,8 +772,9 @@ GeneratorDefinition emojiDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		designFailure<design>,
-		validateWorld};
+			generate,
+			true,
+			designFailure<design>,
+			validateWorld,
+			{"terrain:novelty", "feature:novelty-shapes", "style:tight-building"}};
 }
