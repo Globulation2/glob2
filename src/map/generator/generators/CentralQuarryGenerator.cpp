@@ -2,7 +2,9 @@
 #include "CentralQuarryGenerator.h"
 #include "Biomes.h"
 #include "Contact.h"
+#include "DesignCache.h"
 #include "Drawing.h"
+#include "Farmland.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
@@ -20,6 +22,7 @@
 #include "Settlements.h"
 #include "Sketch.h"
 #include "Territories.h"
+#include "WalkBandStarts.h"
 #include "Walls.h"
 #include <algorithm>
 #include <climits>
@@ -323,6 +326,34 @@ BiomeKit farmlandKit()
 	return stoneless(farmland());
 }
 
+// The constants above as the shared search's request (WalkBandStarts.h).
+WalkBandRequest walkBand()
+{
+	WalkBandRequest r;
+	r.percentiles.assign(std::begin(kDistancePercentiles), std::end(kDistancePercentiles));
+	r.greatestWalk = kGreatestWalk;
+	r.walkPerExtraColony = kWalkPerExtraColony;
+	r.greatestWalkCeiling = kGreatestWalkCeiling;
+	r.walkGrowth = kWalkGrowth;
+	r.walkStretch = kWalkStretch;
+	r.leastBand = kLeastBand;
+	r.bandDivisor = kBandDivisor;
+	r.siteSpacing = kSiteSpacing;
+	r.leastSpacing = kLeastSpacing;
+	r.goodEnoughSpacingPercent = kGoodEnoughSpacingPercent;
+	r.ringSpacingShare = kRingSpacingShare;
+	r.leastSwimPercent = kLeastSwimPercent;
+	r.yieldSteps = kYieldSteps;
+	r.yieldSamples = kYieldSamples;
+	r.yieldLowPercentile = kYieldLowPercentile;
+	r.yieldHighPercentile = kYieldHighPercentile;
+	r.catchmentSteps = kCatchmentSteps;
+	r.catchmentFloor = kCatchmentFloor;
+	r.roomRadius = kRoomRadius;
+	r.fertilityFloor = kFertilityFloor;
+	return r;
+}
+
 
 // A rough outline stretched `stretch` times along `axis` (radians) round (cx, cy): whether corner
 // (x, y) lies inside it.
@@ -518,34 +549,11 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 		L.gardenX = ix + std::cos(L.gardenAngle) * reach;
 		L.gardenY = iy + std::sin(L.gardenAngle) * reach;
 	}
-	L.garden.assign(n, 0);
-	{
-		const std::vector<int> sway =
-			periodicNoise(t.w, t.h, kGardenSealPeriod, context.stream("central-quarry-garden"));
-		// Distance in the oval's frame: along the shore (the rim's tangent) squeezed by the stretch.
-		const double ca = std::cos(L.gardenAngle), sa = std::sin(L.gardenAngle);
-		const auto ovalDistance = [&](double dx, double dy)
-		{
-			const double across = dx * ca + dy * sa, along = -dx * sa + dy * ca;
-			return std::hypot(along / kGardenStretch, across);
-		};
-		for (int i = 0; i < n; ++i)
-		{
-			if (!islandCorners[i])
-				continue;
-			const double dx = t.offsetX(int(std::lround(L.gardenX)), i % t.w) -
-							  (L.gardenX - std::lround(L.gardenX));
-			const double dy = t.offsetY(int(std::lround(L.gardenY)), i / t.w) -
-							  (L.gardenY - std::lround(L.gardenY));
-			const double radius = L.gardenRadius + (sway[i] / 65536.0 * 2 - 1) * kGardenSealSway;
-			const double d = ovalDistance(dx, dy);
-			if (d >= radius && d < radius + kGardenSealWidth)
-				L.terrain[i] = SAND;
-			// A tile's middle is half a tile past its corner.
-			if (ovalDistance(dx + 0.5, dy + 0.5) < radius - 0.7)
-				L.garden[i] = 1;
-		}
-	}
+	L.garden = stampSealedOval(
+		L.terrain, t, islandCorners,
+		SealedOval{L.gardenX, L.gardenY, L.gardenAngle, L.gardenRadius, kGardenStretch, kGardenSealWidth,
+				   kGardenSealSway},
+		periodicNoise(t.w, t.h, kGardenSealPeriod, context.stream("central-quarry-garden")));
 
 	// Streams from the country into the lake, keeping clear of the bars' shore ends, each crossed by
 	// sand fords.
@@ -597,27 +605,8 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 									 source.y + uy * f + ux / span * sway});
 			}
 			waypoints.push_back(mouth);
-			// A Catmull-Rom curve through the waypoints, the ends repeated.
-			path.clear();
-			std::vector<ShapePoint> knots{waypoints.front()};
-			knots.insert(knots.end(), waypoints.begin(), waypoints.end());
-			knots.push_back(waypoints.back());
-			for (size_t w = 1; w + 2 < knots.size(); ++w)
-			{
-				const ShapePoint &p0 = knots[w - 1], &p1 = knots[w], &p2 = knots[w + 1], &p3 = knots[w + 2];
-				const int samples =
-					std::max(2, int(std::hypot(p2.x - p1.x, p2.y - p1.y) / kStreamStep));
-				for (int q = (w == 1 ? 0 : 1); q <= samples; ++q)
-				{
-					const double u = double(q) / samples, u2 = u * u, u3 = u2 * u;
-					const auto blend = [&](double a, double b, double c, double d)
-					{
-						return 0.5 * (2 * b + (c - a) * u + (2 * a - 5 * b + 4 * c - d) * u2 +
-									  (3 * b - a - 3 * c + d) * u3);
-					};
-					path.push_back({blend(p0.x, p1.x, p2.x, p3.x), blend(p0.y, p1.y, p2.y, p3.y), 0});
-				}
-			}
+			// A Catmull-Rom curve through the waypoints (splinePath, Drawing.h).
+			path = splinePath(waypoints, kStreamStep);
 			// Width: tapering from source to mouth, varying along the stream.
 			std::vector<double> swell;
 			for (size_t q = 0; q <= path.size() / kStreamWidthCell + 1; ++q)
@@ -856,126 +845,16 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 		return L;
 	}
 	// A pick prefers a site whose crops already regrow and whose reachable room is enough, so a
-	// pond is dug only where the band holds no watered ground.
+	// pond is dug only where the band holds no watered ground (spreadInWalkBand, WalkBandStarts.h).
 	const Fertility::Field startField = cropGrowthField(beached, t);
-	// Both preferences flood from the site, and farthestSites asks them of the same tiles again and
-	// again across its trials and the targets tried, so the answers are kept (a 512 map with eight
-	// colonies spent 10 seconds asking).
-	std::unordered_map<int, bool> roomyOf;
-	// Which roomy tiles are watered, worked out once: the preferences ask it of the same tiles many
-	// times over.
-	std::vector<unsigned char> wateredSite(n, 0);
-	{
-		const std::vector<std::uint32_t> means = meanFertilityField(startField, t, kRoomRadius);
-		for (int i = 0; i < n; ++i)
-			wateredSite[i] = roomy[i] && means[i] >= kFertilityFloor;
-	}
-	const auto watered = [&](int site) { return wateredSite[site] != 0; };
-	const std::function<bool(int)> roomyEnough = [&](int site)
-	{
-		if (!watered(site))
-			return false;
-		if (const auto known = roomyOf.find(site); known != roomyOf.end())
-			return known->second;
-		const Flood reach = floodFrom(t, tileMask(t, {site}), walkable, kCatchmentSteps);
-		return roomyOf[site] = int(reach.visited.size()) >= kCatchmentFloor;
-	};
-	int bestSpacing = -1, lastTarget = -1;
-
-	const char *preferenceUsed = "";
-	// A site's yield: the crop growth chance summed over the ground its workers reach within
-	// kYieldSteps, the measure the review's growth-potential tool uses (review round 4: a square's mean
-	// fertility let one colony start with a 24-step yield of 15 beside neighbours on 36 to 67).
-	std::unordered_map<int, std::int64_t> yieldOf;
-	const auto yieldAt = [&](int site)
-	{
-		if (const auto known = yieldOf.find(site); known != yieldOf.end())
-			return known->second;
-		const Flood reach = floodFrom(t, tileMask(t, {site}), walkable, kYieldSteps);
-		std::int64_t yield = 0;
-		for (int i : reach.visited)
-			yield += startField.at(i % t.w, i / t.w);
-		return yieldOf[site] = yield;
-	};
-	std::int64_t yieldLow = 0, yieldHigh = INT64_MAX;
-	const std::function<bool(int)> evenlyFed = [&](int site)
-	{
-		if (!watered(site))
-			return false;
-		const std::int64_t yield = yieldAt(site);
-		return yield >= yieldLow && yield <= yieldHigh && roomyEnough(site);
-	};
-	bool spread = false;
-	for (const double stretch : {1.0, kWalkStretch})
-	for (const int percentile : kDistancePercentiles)
-	{
-		if (spread)
-			break;
-		const int greatestWalk = int(stretch * std::min(
-			int(kGreatestWalkCeiling * (1 + kWalkGrowth * (mapScale - 1))),
-			int(kGreatestWalk * (1 + kWalkGrowth * (mapScale - 1))) +
-				kWalkPerExtraColony * std::max(0, teams - 6)));
-		const int target = std::min(greatestWalk, MapGeneration::percentile(distances, percentile));
-		if (target == lastTarget)
-			continue;
-		lastTarget = target;
-		const int band = std::max(kLeastBand, target / kBandDivisor);
-		// The spacing worth searching for: kSiteSpacing, or what a ring of this many colonies round the
-		// lake at this walk can give (kRingSpacingShare of its circumference each), whichever is less.
-		// Searching every target for 60 steps with twelve colonies took 22 seconds a map on 512.
-		const int wantedSpacing = std::max(
-			kLeastSpacing, std::min(kSiteSpacing, int(kRingSpacingShare * 2 * kPi * (target + lakeR) / teams)));
-		std::vector<unsigned char> candidates(n, 0);
-		int count = 0;
-		for (int i = 0; i < n; ++i)
-		{
-			candidates[i] = roomy[i] && std::abs(toIsle[i] - target) <= band &&
-							swimToIsle[i] * 100 >= target * kLeastSwimPercent;
-			count += candidates[i];
-		}
-		context.telemetry.measure("central-quarry.sites.candidates", count, target);
-		if (count < teams)
-			continue;
-		// The percentiles from an even sample of the candidates, in row order: a flood each is too
-		// dear for thousands.
-		const int stride = std::max(1, count / kYieldSamples);
-		std::vector<std::int64_t> yields;
-		for (int i = 0, seen = 0; i < n; ++i)
-			if (candidates[i] && seen++ % stride == 0)
-				yields.push_back(yieldAt(i));
-		std::sort(yields.begin(), yields.end());
-		yieldLow = yields[(yields.size() - 1) * kYieldLowPercentile / 100];
-		yieldHigh = yields[(yields.size() - 1) * kYieldHighPercentile / 100];
-		// The picks prefer evenly fed, roomy sites; where that crowds the colonies together (the
-		// accepted ground can lie in one part of the band), roomy sites, then any.
-		const struct
-		{
-			const std::function<bool(int)> *prefer;
-			const char *name;
-		} preferences[] = {{&evenlyFed, "evenly-fed"}, {&roomyEnough, "roomy"}, {nullptr, "any"}};
-		for (const auto &preference : preferences)
-		{
-			const std::vector<int> sites = farthestSites(t, candidates, walkable, teams, context,
-														 "central-quarry-sites", 6, preference.prefer);
-			if (int(sites.size()) < teams)
-				continue;
-			const int spacing = closestWalk(t, sites, walkable);
-			if (spacing > bestSpacing)
-			{
-				bestSpacing = spacing;
-				L.sites = sites;
-				L.distance = target;
-				L.band = band;
-				preferenceUsed = preference.name;
-			}
-			if (spacing >= wantedSpacing ||
-				(preference.prefer != nullptr && spacing * 100 >= wantedSpacing * kGoodEnoughSpacingPercent))
-			{
-				spread = true;
-				break;
-			}
-		}
-	}
+	const WalkBandStarts starts =
+		spreadInWalkBand(t, roomy, walkable, toIsle, swimToIsle, startField, teams, mapScale, lakeR,
+						 context, "central-quarry-sites", "central-quarry.sites.candidates", walkBand());
+	L.sites = starts.sites;
+	L.distance = starts.distance;
+	L.band = starts.band;
+	const int bestSpacing = starts.spacing;
+	const char *preferenceUsed = starts.preference;
 	if (L.sites.empty() || bestSpacing < kLeastSpacing)
 	{
 		L.failure = "This map has no room for that many colonies; use a bigger map or fewer colonies.";
@@ -990,39 +869,10 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 	std::vector<unsigned char> land(n, 0);
 	for (int i = 0; i < n; ++i)
 		land[i] = mainland[i] && !L.island[i];
-	// Each tile belongs to the colony whose square it walks to first (a breadth-first flood from every
-	// square at once, ties to the lower colony): the territories only decide where a colony's ponds,
-	// kit and swarm may go, and growing balanced, noisy territories cost more than the whole trail stage.
-	L.territory.assign(n, -1);
-	{
-		std::vector<int> queue;
-		queue.reserve(n);
-		for (int k = 0; k < teams; ++k)
-			for (int dy = -kSiteRoom; dy <= kSiteRoom; ++dy)
-				for (int dx = -kSiteRoom; dx <= kSiteRoom; ++dx)
-				{
-					const int i = t.at(L.sites[k] % t.w + dx, L.sites[k] / t.w + dy);
-					if (land[i] && L.territory[i] < 0)
-					{
-						L.territory[i] = k;
-						queue.push_back(i);
-					}
-				}
-		for (size_t head = 0; head < queue.size(); ++head)
-		{
-			const int i = queue[head];
-			for (int dy = -1; dy <= 1; ++dy)
-				for (int dx = -1; dx <= 1; ++dx)
-				{
-					const int j = t.at(i % t.w + dx, i / t.w + dy);
-					if (land[j] && L.territory[j] < 0)
-					{
-						L.territory[j] = L.territory[i];
-						queue.push_back(j);
-					}
-				}
-		}
-	}
+	// Each tile belongs to the colony whose square it walks to first (firstWalkTerritories): the
+	// territories only decide where a colony's ponds, kit and swarm may go, and growing balanced, noisy
+	// territories cost more than the whole trail stage.
+	L.territory = firstWalkTerritories(t, land, L.sites, kSiteRoom);
 
 	// A pond for every start that landed dry (waterDrySite, as Continents waters its colonies).
 	const std::vector<int> ripple = periodicNoise(t.w, t.h, 5, context.stream("central-quarry-ponds"));
@@ -1082,70 +932,10 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 }
 
 // A generation asks for the design twice (generate and validateWorld), and building it was most of a
-// generation's time (78% on 512x512 with twelve colonies). The design depends only on the request and
-// the named streams it draws from, so the last one built on this thread, in a context of its own, is
-// kept and handed out again for the same request, as Karst towers does: its telemetry replayed into the
-// asking context, and every stream it drew from wound on to where building it left that stream. A
-// context that has already drawn from one of those streams gets the design built afresh.
-struct DesignCache
-{
-	bool valid = false;
-	GenerationRequest request;
-	Layout layout;
-	GenerationTelemetry telemetry;
-	std::map<std::string, std::mt19937> streams; // each as the design left it
-};
-
+// generation's time (78% on 512x512 with twelve colonies): cachedDesign (DesignCache.h) keeps the last.
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
-	thread_local DesignCache cache;
-	const GenerationRequest &was = cache.request;
-	if (!cache.valid || was.method != request.method || was.wDec != request.wDec ||
-		was.hDec != request.hDec || was.nbTeams != request.nbTeams || was.seed != request.seed ||
-		was.options != request.options)
-	{
-		cache.valid = false;
-		GenerationContext fresh(request, true);
-		cache.layout = designAfresh(request, fresh);
-		cache.telemetry = fresh.telemetry;
-		cache.streams = fresh.namedStreams();
-		cache.request = request;
-		cache.valid = true;
-	}
-	for (const auto &[name, state] : cache.streams)
-		if (context.stream(name) != std::mt19937(GenerationContext::deriveSeed(request.seed, name)))
-			return designAfresh(request, context);
-	for (const auto &[name, state] : cache.streams)
-		context.stream(name) = state;
-	context.telemetry.replay(cache.telemetry);
-	return cache.layout;
-}
-
-// A colony's trail to the isle: a cheap walk over land that bends with the lie of the land (`lie`, a
-// noise field) and prefers the gaps between deposits to cutting through them, with every deposit
-// within a tile of it cleared, so the finished map's walk stays near the one the design balanced.
-// Never through water, a building or `keep`; never clearing `protect` (the starter kits: review round
-// 2 found a straight re-cut had cleared one colony's kit). `bend` scales the lie's pull. Without
-// `lie` it is the shortest walk over land, cutting straight through whatever deposits stand in the
-// way.
-bool openTrail(Map &map, const Torus &t, const std::vector<int> &sources,
-			   const std::vector<unsigned char> &goal, const std::vector<unsigned char> &keep,
-			   const std::vector<unsigned char> &protect, const std::vector<int> *lie, int bend)
-{
-	const auto cost = [&](int, int to, int, int)
-	{
-		const int x = to % t.w, y = to / t.w;
-		if (map.isWater(x, y) || map.getBuilding(x, y) != NOGBID || keep[to])
-			return -1;
-		if (!lie)
-			return map.isResource(x, y) ? 11 : 10;
-		return 10 + (*lie)[to] * bend / 65536 + (map.isResource(x, y) ? 30 : 0);
-	};
-	const std::vector<int> route = cheapestWalk(t, GridNeighbors::Eight, sources, goal, cost);
-	if (route.empty())
-		return false;
-	clearRoute(map, t, route, kRouteRadius, &protect);
-	return true;
+	return cachedDesign<Layout>(request, context, designAfresh);
 }
 
 bool generate(Game &game, GenerationContext &context)
@@ -1205,46 +995,15 @@ bool generate(Game &game, GenerationContext &context)
 	for (int site : L.sites)
 		homeSites[site] = 1;
 	const std::vector<unsigned char> homeFields = dilate(t, homeSites, kHomeFields);
-	const std::vector<std::int64_t> toWater = distanceSquaredTo(t, pureTiles(map, WATER));
 	const std::vector<int> reachNoise =
 		periodicNoise(t.w, t.h, kFrayPeriod * 2, context.stream("central-quarry-field-reach"));
-	int trimmed = 0;
-	for (int i = 0; i < n; ++i)
-	{
-		const int x = i % t.w, y = i / t.w;
-		const int type = map.getResource(x, y).type;
-		if (type != WHEAT && type != WOOD)
-			continue;
-		const std::int64_t reach = kLeastFieldReach + reachNoise[i] * (kFieldReachSpread + 1) / 65536;
-		if (!homeFields[i] && watered.at(x, y) > 0 && toWater[i] > reach * reach)
-		{
-			map.setNoResource(x, y, 0);
-			++trimmed;
-		}
-	}
-	context.telemetry.measure("central-quarry.fields.trimmed", trimmed);
-	std::vector<unsigned char> unplanted(n, 0);
-	for (int i = 0; i < n; ++i)
-	{
-		const int type = map.getResource(i % t.w, i / t.w).type;
-		unplanted[i] = type != WHEAT && type != WOOD;
-	}
-	const std::vector<int> intoField = stepsFrom(t, unplanted);
+	context.telemetry.measure("central-quarry.fields.trimmed",
+							  trimFieldsBeyondWater(map, t, homeFields, watered, kLeastFieldReach,
+													kFieldReachSpread, reachNoise));
 	const std::vector<int> fray =
 		periodicNoise(t.w, t.h, kFrayPeriod, context.stream("central-quarry-fray"));
-	int frayed = 0;
-	for (int i = 0; i < n; ++i)
-	{
-		const int x = i % t.w, y = i / t.w;
-		const int type = map.getResource(x, y).type;
-		if ((type == WHEAT || type == WOOD) && !homeFields[i] &&
-			intoField[i] <= fray[i] * (kFrayDepth + 1) / 65536)
-		{
-			map.setNoResource(x, y, 0);
-			++frayed;
-		}
-	}
-	context.telemetry.measure("central-quarry.fields.frayed", frayed);
+	context.telemetry.measure("central-quarry.fields.frayed",
+							  frayFieldEdges(map, t, homeFields, kFrayDepth, fray));
 	seedAlgae(map, context, t, "central-quarry-algae", o.algae, AlgaeBand::shallows(1, 8).thriving(0.5));
 	std::vector<unsigned char> kit(n, 0);
 	for (int i = 0; i < n; ++i)
@@ -1304,49 +1063,19 @@ bool generate(Game &game, GenerationContext &context)
 	}
 
 	// A kit crowded by the country's fields and woods can come up short: it is topped up on clear
-	// ground near the site until kLeastWheatNearby + kWheatMargin wheat stands within kNearbyReach.
+	// ground near the site until kLeastWheatNearby + kWheatMargin wheat stands within kNearbyReach
+	// (topUpWheatNearby, Homes.h).
 	for (int k = 0; k < teams; ++k)
 	{
-		const int sx = L.sites[k] % t.w, sy = L.sites[k] / t.w;
-		int wheat = 0;
-		for (int dy = -kNearbyReach + kSiteRoom; dy <= kNearbyReach - kSiteRoom; ++dy)
-			for (int dx = -kNearbyReach + kSiteRoom; dx <= kNearbyReach - kSiteRoom; ++dx)
-				wheat += map.getResource(t.at(sx + dx, sy + dy) % t.w, t.at(sx + dx, sy + dy) / t.w).type ==
-						 WHEAT;
-		const int wanted = kLeastWheatNearby + kWheatMargin - wheat;
-		if (wanted <= 0)
+		const WheatTopUp topped = topUpWheatNearby(
+			map, t, L.sites[k], kNearbyReach - kSiteRoom, kLeastWheatNearby + kWheatMargin, kit,
+			[&](int i) { return L.territory[i] == k && !reserved[i] && !corridor[i]; });
+		if (!topped.needed)
 			continue;
-		const int reach = kNearbyReach - kSiteRoom;
-		const auto room = [&](int i)
-		{
-			return L.territory[i] == k && !reserved[i] && !corridor[i] &&
-				   t.chebyshev(sx, sy, i % t.w, i / t.w) <= reach;
-		};
-		PatchBudgetResult topped = growPatchesNear(map, t, sx, sy, reach, WHEAT, wanted, room);
 		context.telemetry.fallback("central-quarry.kit.topped-up", "A crowded kit was topped up", k);
-		if (topped.tiles < wanted)
-		{
-			// No clear ground left for it (wood at 300% on woodland, say): the country's own wood and
-			// fruit nearest the site make way, never the kit's.
-			std::vector<std::pair<int, int>> ambient;
-			for (int dy = -reach; dy <= reach; ++dy)
-				for (int dx = -reach; dx <= reach; ++dx)
-				{
-					const int i = t.at(sx + dx, sy + dy);
-					const int type = map.getResource(i % t.w, i / t.w).type;
-					if (room(i) && kit[i] && type != WHEAT && type != STONE && type != NO_RES_TYPE)
-						ambient.push_back({dx * dx + dy * dy, i});
-				}
-			std::sort(ambient.begin(), ambient.end());
-			const size_t clear = std::min(ambient.size(), size_t(wanted - topped.tiles));
-			for (size_t c = 0; c < clear; ++c)
-				map.setNoResource(ambient[c].second % t.w, ambient[c].second / t.w, 0);
-			const PatchBudgetResult more =
-				growPatchesNear(map, t, sx, sy, reach, WHEAT, wanted - topped.tiles, room);
-			topped.tiles += more.tiles;
+		if (topped.clearedAmbient)
 			context.telemetry.fallback("central-quarry.kit.cleared-for-top-up",
 									   "A crowded kit cleared the country's wood to be topped up", k);
-		}
 		context.telemetry.measure("central-quarry.kit.top-up-tiles", topped.tiles, k);
 	}
 	for (int i = 0; i < n; ++i)
@@ -1355,28 +1084,9 @@ bool generate(Game &game, GenerationContext &context)
 	// The island's garden, unscaled: a holder's foothold whatever the amounts say.
 	context.stage = "central-quarry garden";
 	{
-		const auto plot = [&](int i) { return L.garden[i] && clearGround(map, i % t.w, i / t.w); };
-		const int tiles = int(std::count(L.garden.begin(), L.garden.end(), 1));
-		const int wheatWanted = std::min(kGardenWheat, tiles / 2);
-		const int woodWanted = std::min(kGardenWood, tiles * 2 / 5);
-		const std::vector<int> order =
-			periodicNoise(t.w, t.h, 3, context.stream("central-quarry-garden-crops"));
-		const std::vector<int> split =
-			periodicNoise(t.w, t.h, 4, context.stream("central-quarry-garden-split"));
-		std::vector<int> plotTiles;
-		for (int i = 0; i < n; ++i)
-			if (plot(i))
-				plotTiles.push_back(i);
-		std::stable_sort(plotTiles.begin(), plotTiles.end(),
-						 [&](int a, int b) { return order[a] > order[b]; });
-		plantFields(map, t, plotTiles, wheatWanted, woodWanted, [&](int i) { return split[i]; });
-		int wheat = 0, wood = 0;
-		for (int i = 0; i < n; ++i)
-			if (L.garden[i])
-			{
-				wheat += map.getResource(i % t.w, i / t.w).type == WHEAT;
-				wood += map.getResource(i % t.w, i / t.w).type == WOOD;
-			}
+		const auto [wheat, wood] =
+			plantSealedGarden(map, t, context, L.garden, kGardenWheat, kGardenWood,
+							  "central-quarry-garden-crops", "central-quarry-garden-split");
 		context.telemetry.measure("central-quarry.garden.wheat", wheat);
 		context.telemetry.measure("central-quarry.garden.wood", wood);
 	}
@@ -1461,8 +1171,8 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		const std::vector<std::vector<int>> workers = unitTilesByTeam(map, teams);
 		for (int k = 0; k < teams; ++k)
-			if (!workers[k].empty() && !openTrail(map, t, workers[k], L.island, protect, protect, &lie, 10) &&
-				!openTrail(map, t, workers[k], L.island, quarryTiles, protect, &lie, 10))
+			if (!workers[k].empty() && !openTrail(map, t, workers[k], L.island, protect, protect, &lie, 10, kRouteRadius) &&
+				!openTrail(map, t, workers[k], L.island, quarryTiles, protect, &lie, 10, kRouteRadius))
 			{
 				context.detail = "Colony " + std::to_string(k) + " has no walk to the isle.";
 				return false;
@@ -1482,15 +1192,15 @@ bool generate(Game &game, GenerationContext &context)
 				// First a trail with half the bend, then, if that still wanders, a straight one.
 				context.telemetry.fallback("central-quarry.trails.recut",
 										   "A natural trail wandered; cut again with less bend", k);
-				if (!openTrail(map, t, workers[k], L.island, protect, protect, &lie, 5))
-					openTrail(map, t, workers[k], L.island, quarryTiles, protect, &lie, 5);
+				if (!openTrail(map, t, workers[k], L.island, protect, protect, &lie, 5, kRouteRadius))
+					openTrail(map, t, workers[k], L.island, quarryTiles, protect, &lie, 5, kRouteRadius);
 				if (reachesWithin(tileMask(t, workers[k]), walkableTiles(map), limit))
 					continue;
 				context.telemetry.fallback("central-quarry.trails.straightened",
 										   "A trail still wandered; cut straight", k);
 				// Round the kit, which it may not clear, and through it only if nothing else reaches.
-				if (!openTrail(map, t, workers[k], L.island, protect, protect, nullptr, 0) &&
-					!openTrail(map, t, workers[k], L.island, quarryTiles, protect, nullptr, 0))
+				if (!openTrail(map, t, workers[k], L.island, protect, protect, nullptr, 0, kRouteRadius) &&
+					!openTrail(map, t, workers[k], L.island, quarryTiles, protect, nullptr, 0, kRouteRadius))
 				{
 					context.detail = "Colony " + std::to_string(k) + " has no walk to the isle.";
 					return false;
@@ -1509,26 +1219,7 @@ bool generate(Game &game, GenerationContext &context)
 		return false;
 	// Where trails and routes cut through fields they leave one-tile strips of crop between two lanes
 	// (review round 4, 128 maps); a crop tile open on two opposite sides goes, outside the kits.
-	int slivers = 0;
-	for (int pass = 0; pass < 2; ++pass)
-		for (int i = 0; i < n; ++i)
-		{
-			const int x = i % t.w, y = i / t.w;
-			const int type = map.getResource(x, y).type;
-			if ((type != WHEAT && type != WOOD) || protect[i])
-				continue;
-			const auto open = [&](int dx, int dy)
-			{
-				const int j = t.at(x + dx, y + dy);
-				return map.isGrass(j % t.w, j / t.w) && !map.isResource(j % t.w, j / t.w) &&
-					   map.getBuilding(j % t.w, j / t.w) == NOGBID;
-			};
-			if ((open(-1, 0) && open(1, 0)) || (open(0, -1) && open(0, 1)))
-			{
-				map.setNoResource(x, y, 0);
-				++slivers;
-			}
-		}
+	const int slivers = removeCropSlivers(map, t, protect);
 	context.telemetry.measure("central-quarry.fields.slivers", slivers);
 	if (context.telemetry.enabled())
 	{

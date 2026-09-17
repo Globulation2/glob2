@@ -66,3 +66,8 @@ dunes, and playa lakes, with its review rounds, control-study, reliability and A
 [Central Quarry](CENTRAL_QUARRY.md) documents natural country draining to one lake whose island holds
 the only stone on the map: sand bars to a single landing, a sealed island garden, streams, starts
 balanced on the walk to the stone, and its eight review rounds, reliability and AI-game evidence.
+
+[Hidden Oasis](HIDDEN_OASIS.md) documents dry canyon country round a sandstone plateau that hides the
+map's only algae: one winding gorge sealed by every colony's own level-1 tower, each on a ledge with
+a box canyon for a back door, a basin to hold, and its three review rounds, 48 AI games, control
+study, profiling and reliability evidence.

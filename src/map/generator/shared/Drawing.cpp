@@ -374,4 +374,30 @@ Zigzag zigzagPath(const AxisFrame &frame, double start, double firstLeg, double 
 	zigzag.finishAcross = side;
 	return zigzag;
 }
+
+std::vector<StrokePoint> splinePath(const std::vector<ShapePoint> &waypoints, double step)
+{
+	std::vector<StrokePoint> path;
+	if (waypoints.empty())
+		return path;
+	std::vector<ShapePoint> knots{waypoints.front()};
+	knots.insert(knots.end(), waypoints.begin(), waypoints.end());
+	knots.push_back(waypoints.back());
+	for (size_t w = 1; w + 2 < knots.size(); ++w)
+	{
+		const ShapePoint &p0 = knots[w - 1], &p1 = knots[w], &p2 = knots[w + 1], &p3 = knots[w + 2];
+		const int samples = std::max(2, int(std::hypot(p2.x - p1.x, p2.y - p1.y) / step));
+		for (int q = (w == 1 ? 0 : 1); q <= samples; ++q)
+		{
+			const double u = double(q) / samples, u2 = u * u, u3 = u2 * u;
+			const auto blend = [&](double a, double b, double c, double d)
+			{
+				return 0.5 * (2 * b + (c - a) * u + (2 * a - 5 * b + 4 * c - d) * u2 +
+							  (3 * b - a - 3 * c + d) * u3);
+			};
+			path.push_back({blend(p0.x, p1.x, p2.x, p3.x), blend(p0.y, p1.y, p2.y, p3.y), 0});
+		}
+	}
+	return path;
+}
 } // namespace MapGeneration

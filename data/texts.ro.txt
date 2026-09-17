@@ -2798,3 +2798,23 @@ Un banc de nisip nu a ajuns la insulă.
 Această hartă nu are loc pentru atâtea colonii; folosiți o hartă mai mare sau mai puține colonii.
 [The island has no room for its quarry; use a bigger island.]
 Insula nu are loc pentru cariera sa; folosiți o insulă mai mare.
+[Hidden Oasis]
+Oaza ascunsă
+[Pond algae]
+Algele iazului
+[Starting towers]
+Turnuri de start
+[Starting school]
+Școală de start
+[Mesas]
+Platouri stâncoase
+[Springs]
+Izvoare
+[Hidden Oasis needs at least two colonies.]
+Oaza ascunsă are nevoie de cel puțin două colonii.
+[Hidden Oasis holds at most eight colonies.]
+Oaza ascunsă găzduiește cel mult opt colonii.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Masivul nu încape pe această hartă; folosiți o hartă mai mare sau mai puține colonii.
+[The pond has no room for that much algae; use a bigger pond.]
+Iazul nu are loc pentru atâtea alge; folosiți un iaz mai mare.

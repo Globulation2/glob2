@@ -2806,3 +2806,23 @@ Bir kum dili adaya ulaşmadı.
 Bu haritada bu kadar koloni için yer yok; daha büyük bir harita veya daha az koloni kullanın.
 [The island has no room for its quarry; use a bigger island.]
 Adada taş ocağı için yer yok; daha büyük bir ada kullanın.
+[Hidden Oasis]
+Gizli Vaha
+[Pond algae]
+Gölet yosunu
+[Starting towers]
+Başlangıç kuleleri
+[Starting school]
+Başlangıç akademisi
+[Mesas]
+Masa dağları
+[Springs]
+Pınarlar
+[Hidden Oasis needs at least two colonies.]
+Gizli Vaha için en az iki koloni gerekir.
+[Hidden Oasis holds at most eight colonies.]
+Gizli Vaha en fazla sekiz koloni alır.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Kaya kütlesi bu haritaya sığmıyor; daha büyük bir harita veya daha az koloni kullanın.
+[The pond has no room for that much algae; use a bigger pond.]
+Gölette bu kadar yosun için yer yok; daha büyük bir gölet kullanın.

@@ -2796,3 +2796,23 @@ Emoji
 لا تتسع هذه الخريطة لهذا العدد من المستعمرات؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
 [The island has no room for its quarry; use a bigger island.]
 لا تتسع الجزيرة لمحجرها؛ استخدم جزيرة أكبر.
+[Hidden Oasis]
+الواحة الخفية
+[Pond algae]
+طحالب البركة
+[Starting towers]
+أبراج أولية
+[Starting school]
+مدرسة أولية
+[Mesas]
+هضاب صخرية
+[Springs]
+ينابيع
+[Hidden Oasis needs at least two colonies.]
+تحتاج الواحة الخفية إلى مستعمرتين على الأقل.
+[Hidden Oasis holds at most eight colonies.]
+تتسع الواحة الخفية لثماني مستعمرات على الأكثر.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+لا تتسع هذه الخريطة للكتلة الصخرية؛ استخدم خريطة أكبر أو مستعمرات أقل.
+[The pond has no room for that much algae; use a bigger pond.]
+لا تتسع البركة لهذا القدر من الطحالب؛ استخدم بركة أكبر.

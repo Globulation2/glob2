@@ -100,6 +100,20 @@ struct Flood
 /// `limit` steps out is reached but not stepped on from.
 Flood floodFrom(const Torus &, const std::vector<unsigned char> &source,
 				const std::vector<unsigned char> &open, int limit = INT_MAX);
+
+/// What a bounded flood reached: the tiles in the order reached and each one's steps, side by side.
+struct Reach
+{
+	std::vector<int> tiles, steps;
+};
+/// floodFrom for a flood that is small beside the map: the same tiles in the same order as
+/// floodFrom(t, tileMask(t, sources), open, limit).visited, with their steps, but at the cost of the
+/// tiles reached rather than of the map. floodFrom clears a whole-map step field and scans a whole-map
+/// source mask on every call, which for a 48-step flood on a 512x512 map is fifty times the flood itself
+/// (profiling Hidden Oasis, 2026-09-17: the site search's yield floods). Sources may come in any order
+/// and repeat. Keeps a scratch field per thread, so it is not re-entrant from inside its own loop.
+Reach reachFrom(const Torus &, const std::vector<int> &sources, const std::vector<unsigned char> &open,
+				int limit);
 /// The steps of floodFrom.
 std::vector<int> stepsFrom(const Torus &, const std::vector<unsigned char> &source,
 						   const std::vector<unsigned char> &open);

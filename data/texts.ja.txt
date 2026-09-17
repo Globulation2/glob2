@@ -2794,3 +2794,23 @@ Emoji
 このマップにはそれだけのコロニーを置く場所がありません。より大きなマップを使うか、コロニーを減らしてください。
 [The island has no room for its quarry; use a bigger island.]
 島に採石場を置く場所がありません。島を大きくしてください。
+[Hidden Oasis]
+隠されたオアシス
+[Pond algae]
+池の藻
+[Starting towers]
+初期タワー
+[Starting school]
+初期の学校
+[Mesas]
+メサ
+[Springs]
+泉
+[Hidden Oasis needs at least two colonies.]
+隠されたオアシスには少なくとも2つのコロニーが必要です。
+[Hidden Oasis holds at most eight colonies.]
+隠されたオアシスに入るコロニーは最大8つです。
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+岩山がこのマップに収まりません。より大きなマップを使うか、コロニーを減らしてください。
+[The pond has no room for that much algae; use a bigger pond.]
+池にそれだけの藻を置く場所がありません。池を大きくしてください。

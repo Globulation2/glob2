@@ -2808,3 +2808,23 @@ En sandrevel nådde inte fram till ön.
 Den här kartan har inte plats för så många kolonier; använd en större karta eller färre kolonier.
 [The island has no room for its quarry; use a bigger island.]
 Ön har inte plats för sitt stenbrott; använd en större ö.
+[Hidden Oasis]
+Dold oas
+[Pond algae]
+Alger i dammen
+[Starting towers]
+Starttorn
+[Starting school]
+Startskola
+[Mesas]
+Taffelberg
+[Springs]
+Källor
+[Hidden Oasis needs at least two colonies.]
+Dold oas kräver minst två kolonier.
+[Hidden Oasis holds at most eight colonies.]
+Dold oas rymmer högst åtta kolonier.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Massivet får inte plats på den här kartan; använd en större karta eller färre kolonier.
+[The pond has no room for that much algae; use a bigger pond.]
+Dammen har inte plats för så många alger; använd en större damm.

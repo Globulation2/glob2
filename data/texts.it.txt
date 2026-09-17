@@ -2860,3 +2860,23 @@ Un banco di sabbia non ha raggiunto l'isola.
 Questa mappa non ha spazio per così tante colonie; usa una mappa più grande o meno colonie.
 [The island has no room for its quarry; use a bigger island.]
 L'isola non ha spazio per la sua cava; usa un'isola più grande.
+[Hidden Oasis]
+Oasi nascosta
+[Pond algae]
+Alghe dello stagno
+[Starting towers]
+Torri iniziali
+[Starting school]
+Scuola iniziale
+[Mesas]
+Mesas rocciose
+[Springs]
+Sorgenti
+[Hidden Oasis needs at least two colonies.]
+Oasi nascosta richiede almeno due colonie.
+[Hidden Oasis holds at most eight colonies.]
+Oasi nascosta ospita al massimo otto colonie.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Il massiccio non entra in questa mappa; usa una mappa più grande o meno colonie.
+[The pond has no room for that much algae; use a bigger pond.]
+Lo stagno non ha spazio per così tante alghe; usa uno stagno più grande.

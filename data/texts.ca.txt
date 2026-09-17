@@ -2806,3 +2806,23 @@ Un banc de sorra no ha arribat a l'illa.
 Aquest mapa no té espai per a tantes colònies; utilitzeu un mapa més gran o menys colònies.
 [The island has no room for its quarry; use a bigger island.]
 L'illa no té espai per a la seva pedrera; utilitzeu una illa més gran.
+[Hidden Oasis]
+Oasi amagat
+[Pond algae]
+Algues de la bassa
+[Starting towers]
+Torres inicials
+[Starting school]
+Escola inicial
+[Mesas]
+Altiplans rocosos
+[Springs]
+Fonts
+[Hidden Oasis needs at least two colonies.]
+Oasi amagat necessita almenys dues colònies.
+[Hidden Oasis holds at most eight colonies.]
+Oasi amagat admet com a màxim vuit colònies.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+El massís no cap en aquest mapa; utilitzeu un mapa més gran o menys colònies.
+[The pond has no room for that much algae; use a bigger pond.]
+La bassa no té prou espai per a tantes algues; utilitzeu una bassa més gran.

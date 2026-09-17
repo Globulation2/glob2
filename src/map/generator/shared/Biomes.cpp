@@ -286,8 +286,8 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 		[&](int area)
 		{
 			return GroundAmounts{farm * (100 - kit.woodPercent) / 100, farm * kit.woodPercent / 100,
-								 area * kit.outcropsPer1000 / 1000,
-								 area * kit.grovesPer1000 / 1000};
+								 int(std::int64_t(area) * (kit.outcropsPer1000 * 100 + kit.outcropsPer100000) / 100000),
+								 int(std::int64_t(area) * (kit.grovesPer1000 * 100 + kit.grovesPer100000) / 100000)};
 		},
 		stoneStream.c_str(), fruitStream.c_str());
 	int fruit = 0;

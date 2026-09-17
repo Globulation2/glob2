@@ -329,4 +329,54 @@ void furnishGround(
 		context, t, ground, amounts.groves, fruitStream, clumpGround, [&](MapGeneratorPoint p)
 		{ placeResourceClump(map, context, p, CHERRY + int(context.bounded(fruitStream, 3)), 1); });
 }
+
+/// What topUpWheatNearby did: whether the site was short at all, the wheat tiles it planted, and
+/// whether it had to clear the country's own deposits to make room.
+struct WheatTopUp
+{
+	bool needed = false, clearedAmbient = false;
+	int tiles = 0;
+};
+/// A kit crowded by the country's fields and woods can come up short. This counts the wheat within
+/// `reach` tiles of `site` and, when under `wanted`, grows patches (growPatchesNear) on clear ground
+/// `room` allows within that reach. When no clear ground is left (wood at 300% on woodland, say),
+/// the `ambient` deposits nearest the site make way, never wheat or stone and never the kit's own
+/// (which `ambient` leaves out). Central Quarry's and Hidden Oasis' found starts.
+template <typename Room>
+WheatTopUp topUpWheatNearby(Map &map, const Torus &t, int site, int reach, int wanted,
+							const std::vector<unsigned char> &ambient, Room room)
+{
+	const int sx = site % t.w, sy = site / t.w;
+	int wheat = 0;
+	for (int dy = -reach; dy <= reach; ++dy)
+		for (int dx = -reach; dx <= reach; ++dx)
+			wheat += map.getResource(t.at(sx + dx, sy + dy) % t.w, t.at(sx + dx, sy + dy) / t.w).type == WHEAT;
+	WheatTopUp result;
+	const int missing = wanted - wheat;
+	if (missing <= 0)
+		return result;
+	result.needed = true;
+	const auto nearby = [&](int i) { return room(i) && t.chebyshev(sx, sy, i % t.w, i / t.w) <= reach; };
+	PatchBudgetResult topped = growPatchesNear(map, t, sx, sy, reach, WHEAT, missing, nearby);
+	if (topped.tiles < missing)
+	{
+		std::vector<std::pair<int, int>> standing;
+		for (int dy = -reach; dy <= reach; ++dy)
+			for (int dx = -reach; dx <= reach; ++dx)
+			{
+				const int i = t.at(sx + dx, sy + dy);
+				const int type = map.getResource(i % t.w, i / t.w).type;
+				if (nearby(i) && ambient[i] && type != WHEAT && type != STONE && type != NO_RES_TYPE)
+					standing.push_back({dx * dx + dy * dy, i});
+			}
+		std::sort(standing.begin(), standing.end());
+		const size_t clear = std::min(standing.size(), size_t(missing - topped.tiles));
+		for (size_t c = 0; c < clear; ++c)
+			map.setNoResource(standing[c].second % t.w, standing[c].second / t.w, 0);
+		topped.tiles += growPatchesNear(map, t, sx, sy, reach, WHEAT, missing - topped.tiles, nearby).tiles;
+		result.clearedAmbient = true;
+	}
+	result.tiles = topped.tiles;
+	return result;
+}
 } // namespace MapGeneration

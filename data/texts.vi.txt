@@ -2794,3 +2794,23 @@ Một doi cát không nối tới đảo.
 Bản đồ này không đủ chỗ cho số thuộc địa này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
 [The island has no room for its quarry; use a bigger island.]
 Đảo không đủ chỗ cho mỏ đá; hãy dùng đảo lớn hơn.
+[Hidden Oasis]
+Ốc đảo ẩn
+[Pond algae]
+Tảo trong ao
+[Starting towers]
+Tháp ban đầu
+[Starting school]
+Trường học ban đầu
+[Mesas]
+Núi mặt bàn
+[Springs]
+Suối nguồn
+[Hidden Oasis needs at least two colonies.]
+Ốc đảo ẩn cần ít nhất hai thuộc địa.
+[Hidden Oasis holds at most eight colonies.]
+Ốc đảo ẩn chỉ chứa được tối đa tám thuộc địa.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Khối núi đá không vừa bản đồ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[The pond has no room for that much algae; use a bigger pond.]
+Ao không đủ chỗ cho từng ấy tảo; hãy dùng ao lớn hơn.

@@ -222,6 +222,7 @@ map/generator/generators/SymmetricArenaGenerator.cpp
 map/generator/generators/TidalFlatsGenerator.cpp
 map/generator/generators/UniformGenerator.cpp
 map/generator/generators/WatershedGenerator.cpp
+map/generator/generators/HiddenOasisGenerator.cpp
 map/generator/generators/CentralQuarryGenerator.cpp
 map/generator/generators/BajadaGenerator.cpp
 map/generator/generators/KarstTowersGenerator.cpp
@@ -262,6 +263,7 @@ map/generator/shared/HierarchicalCrossings.cpp
 map/generator/shared/Drawing.cpp
 map/generator/shared/Geometry.cpp
 map/generator/shared/Grid.cpp
+map/generator/shared/WalkBandStarts.cpp
 map/generator/shared/Walls.cpp
 map/generator/shared/Farmland.cpp
 map/generator/shared/Towers.cpp

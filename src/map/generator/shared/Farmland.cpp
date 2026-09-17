@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Farmland.h"
+#include "GenerationContext.h"
+#include "LatticeNoise.h"
 #include "Morphology.h"
 #include "Map.h"
 #include "Resources.h"
@@ -534,5 +536,134 @@ void clearFarmPlots(Map &map, const Torus &t, const std::vector<Farm> &farms)
 		for (int i = 0; i < t.size(); ++i)
 			if (farm.plot[i] && map.isResource(i % t.w, i / t.w))
 				map.setNoResource(i % t.w, i / t.w, 1);
+}
+
+std::vector<unsigned char> stampSealedOval(TerrainSketch &terrain, const Torus &t,
+										   const std::vector<unsigned char> &ground,
+										   const SealedOval &oval, const std::vector<int> &swayNoise)
+{
+	const int n = t.size();
+	std::vector<unsigned char> garden(n, 0);
+	// Distance in the oval's frame: along the rim's tangent squeezed by the stretch.
+	const double ca = std::cos(oval.angle), sa = std::sin(oval.angle);
+	const auto ovalDistance = [&](double dx, double dy)
+	{
+		const double across = dx * ca + dy * sa, along = -dx * sa + dy * ca;
+		return std::hypot(along / oval.stretch, across);
+	};
+	for (int i = 0; i < n; ++i)
+	{
+		if (!ground[i])
+			continue;
+		const double dx = t.offsetX(int(std::lround(oval.x)), i % t.w) - (oval.x - std::lround(oval.x));
+		const double dy = t.offsetY(int(std::lround(oval.y)), i / t.w) - (oval.y - std::lround(oval.y));
+		const double radius = oval.radius + (swayNoise[i] / 65536.0 * 2 - 1) * oval.sway;
+		const double d = ovalDistance(dx, dy);
+		if (d >= radius && d < radius + oval.sealWidth)
+			terrain[i] = SAND;
+		// A tile's middle is half a tile past its corner.
+		if (ovalDistance(dx + 0.5, dy + 0.5) < radius - 0.7)
+			garden[i] = 1;
+	}
+	return garden;
+}
+
+std::pair<int, int> plantSealedGarden(Map &map, const Torus &t, GenerationContext &context,
+									  const std::vector<unsigned char> &garden, int wheat, int wood,
+									  const std::string &cropsStream, const std::string &splitStream)
+{
+	const int n = t.size();
+	const auto plot = [&](int i) { return garden[i] && clearGround(map, i % t.w, i / t.w); };
+	const int tiles = int(std::count(garden.begin(), garden.end(), 1));
+	const int wheatWanted = std::min(wheat, tiles / 2);
+	const int woodWanted = std::min(wood, tiles * 2 / 5);
+	const std::vector<int> order = periodicNoise(t.w, t.h, 3, context.stream(cropsStream));
+	const std::vector<int> split = periodicNoise(t.w, t.h, 4, context.stream(splitStream));
+	std::vector<int> plotTiles;
+	for (int i = 0; i < n; ++i)
+		if (plot(i))
+			plotTiles.push_back(i);
+	std::stable_sort(plotTiles.begin(), plotTiles.end(), [&](int a, int b) { return order[a] > order[b]; });
+	plantFields(map, t, plotTiles, wheatWanted, woodWanted, [&](int i) { return split[i]; });
+	std::pair<int, int> standing{0, 0};
+	for (int i = 0; i < n; ++i)
+		if (garden[i])
+		{
+			standing.first += map.getResource(i % t.w, i / t.w).type == WHEAT;
+			standing.second += map.getResource(i % t.w, i / t.w).type == WOOD;
+		}
+	return standing;
+}
+
+int trimFieldsBeyondWater(Map &map, const Torus &t, const std::vector<unsigned char> &keep,
+						  const Fertility::Field &watered, int leastReach, int reachSpread,
+						  const std::vector<int> &noise)
+{
+	const std::vector<std::int64_t> toWater = distanceSquaredTo(t, pureTiles(map, WATER));
+	int trimmed = 0;
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		const int type = map.getResource(x, y).type;
+		if (type != WHEAT && type != WOOD)
+			continue;
+		const std::int64_t reach = leastReach + noise[i] * (reachSpread + 1) / 65536;
+		if (!keep[i] && watered.at(x, y) > 0 && toWater[i] > reach * reach)
+		{
+			map.setNoResource(x, y, 0);
+			++trimmed;
+		}
+	}
+	return trimmed;
+}
+
+int frayFieldEdges(Map &map, const Torus &t, const std::vector<unsigned char> &keep, int depth,
+				   const std::vector<int> &noise)
+{
+	const int n = t.size();
+	std::vector<unsigned char> unplanted(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		const int type = map.getResource(i % t.w, i / t.w).type;
+		unplanted[i] = type != WHEAT && type != WOOD;
+	}
+	const std::vector<int> intoField = stepsFrom(t, unplanted);
+	int frayed = 0;
+	for (int i = 0; i < n; ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		const int type = map.getResource(x, y).type;
+		if ((type == WHEAT || type == WOOD) && !keep[i] && intoField[i] <= noise[i] * (depth + 1) / 65536)
+		{
+			map.setNoResource(x, y, 0);
+			++frayed;
+		}
+	}
+	return frayed;
+}
+
+int removeCropSlivers(Map &map, const Torus &t, const std::vector<unsigned char> &protect)
+{
+	int slivers = 0;
+	for (int pass = 0; pass < 2; ++pass)
+		for (int i = 0; i < t.size(); ++i)
+		{
+			const int x = i % t.w, y = i / t.w;
+			const int type = map.getResource(x, y).type;
+			if ((type != WHEAT && type != WOOD) || protect[i])
+				continue;
+			const auto open = [&](int dx, int dy)
+			{
+				const int j = t.at(x + dx, y + dy);
+				return map.isGrass(j % t.w, j / t.w) && !map.isResource(j % t.w, j / t.w) &&
+					   map.getBuilding(j % t.w, j / t.w) == NOGBID;
+			};
+			if ((open(-1, 0) && open(1, 0)) || (open(0, -1) && open(0, 1)))
+			{
+				map.setNoResource(x, y, 0);
+				++slivers;
+			}
+		}
+	return slivers;
 }
 } // namespace MapGeneration

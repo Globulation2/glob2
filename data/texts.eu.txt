@@ -2808,3 +2808,23 @@ Hondar-banku bat ez da uhartera iritsi.
 Mapa honetan ez dago leku nahikorik hainbeste koloniarentzat; erabili mapa handiagoa edo kolonia gutxiago.
 [The island has no room for its quarry; use a bigger island.]
 Uhartean ez dago lekurik harrobiarentzat; erabili uharte handiagoa.
+[Hidden Oasis]
+Ezkutuko oasia
+[Pond algae]
+Urmaeleko algak
+[Starting towers]
+Hasierako dorreak
+[Starting school]
+Hasierako eskola
+[Mesas]
+Mahaimendiak
+[Springs]
+Iturburuak
+[Hidden Oasis needs at least two colonies.]
+Ezkutuko oasiak gutxienez bi kolonia behar ditu.
+[Hidden Oasis holds at most eight colonies.]
+Ezkutuko oasiak gehienez zortzi kolonia hartzen ditu.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Mendigunea ez da mapa honetan sartzen; erabili mapa handiagoa edo kolonia gutxiago.
+[The pond has no room for that much algae; use a bigger pond.]
+Urmaelak ez du hainbeste algarentzako lekurik; erabili urmael handiagoa.

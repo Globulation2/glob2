@@ -2868,3 +2868,23 @@ Emoji
 Αυτός ο χάρτης δεν έχει χώρο για τόσες αποικίες· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
 [The island has no room for its quarry; use a bigger island.]
 Το νησί δεν έχει χώρο για το λατομείο του· χρησιμοποιήστε μεγαλύτερο νησί.
+[Hidden Oasis]
+Κρυφή όαση
+[Pond algae]
+Φύκια της λιμνούλας
+[Starting towers]
+Αρχικοί πύργοι
+[Starting school]
+Αρχικό σχολείο
+[Mesas]
+Βραχώδη υψίπεδα
+[Springs]
+Πηγές
+[Hidden Oasis needs at least two colonies.]
+Η Κρυφή όαση χρειάζεται τουλάχιστον δύο αποικίες.
+[Hidden Oasis holds at most eight colonies.]
+Η Κρυφή όαση χωράει το πολύ οκτώ αποικίες.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Ο ορεινός όγκος δεν χωράει σε αυτόν τον χάρτη· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
+[The pond has no room for that much algae; use a bigger pond.]
+Η λιμνούλα δεν έχει χώρο για τόσα φύκια· χρησιμοποιήστε μεγαλύτερη λιμνούλα.

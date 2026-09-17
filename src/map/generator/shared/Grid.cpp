@@ -7,6 +7,54 @@ namespace MapGeneration
 {
 Torus::Torus(const Map &map) : w(map.getW()), h(map.getH()) {}
 
+Reach reachFrom(const Torus &t, const std::vector<int> &sources, const std::vector<unsigned char> &open,
+				int limit)
+{
+	// The step field lives on between calls, all -1; only the tiles a flood reached are put back.
+	thread_local std::vector<int> dist;
+	if (dist.size() != size_t(t.size()))
+		dist.assign(size_t(t.size()), -1);
+	Reach reach;
+	// floodFrom queues its sources in tile order, once each.
+	std::vector<int> ordered = sources;
+	std::sort(ordered.begin(), ordered.end());
+	ordered.erase(std::unique(ordered.begin(), ordered.end()), ordered.end());
+	for (int tile : ordered)
+	{
+		dist[tile] = 0;
+		reach.tiles.push_back(tile);
+	}
+	for (size_t head = 0; head < reach.tiles.size(); ++head)
+	{
+		const int tile = reach.tiles[head], here = dist[tile];
+		if (here >= limit)
+			continue;
+		const int x = tile % t.w, y = tile / t.w, stepped = here + 1;
+		for (int dy = -1; dy <= 1; ++dy)
+		{
+			const int row = t.y(y + dy) * t.w;
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				if (!dx && !dy)
+					continue;
+				const int n = row + t.x(x + dx);
+				if (dist[n] < 0 && open[n])
+				{
+					dist[n] = stepped;
+					reach.tiles.push_back(n);
+				}
+			}
+		}
+	}
+	reach.steps.reserve(reach.tiles.size());
+	for (int tile : reach.tiles)
+	{
+		reach.steps.push_back(dist[tile]);
+		dist[tile] = -1;
+	}
+	return reach;
+}
+
 Flood floodFrom(const Torus &t, const std::vector<unsigned char> &source,
 				const std::vector<unsigned char> &open, int limit)
 {
