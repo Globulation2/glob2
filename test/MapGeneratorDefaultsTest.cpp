@@ -293,6 +293,8 @@ class MapGeneratorDefaultsTest
 				 }
 				 return MapGeneration::placeStarts(game, context);
 			 }});
+		// Every playable registration needs catalog tags (#333).
+		definitions.back().tags = {"terrain:novelty"};
 		// A toggle is exactly 0 or 1, shown as a checkbox: any other domain is a registration error.
 		{
 			const auto rejected = [](GeneratorControl control)
@@ -304,6 +306,8 @@ class MapGeneratorDefaultsTest
 											   false,
 											   {std::move(control)},
 											   [](Game &, GenerationContext &) { return false; }};
+				// Tagged, so a rejection can only come from the control under test.
+				definition.tags = {"terrain:novelty"};
 				try
 				{
 					GeneratorRegistry({definition});

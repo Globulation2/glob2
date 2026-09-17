@@ -281,6 +281,7 @@ inline void frameworkChecks()
 		{ return r.option("room") > r.option("cell") ? "Room must fit inside cell" : ""; },
 		[](const Game &, const GenerationContext &ctx) -> std::string
 		{ return ctx.request.seed == 999 ? "Synthetic topology failure" : ""; }};
+	definition.tags = {"terrain:novelty"}; // every playable registration needs catalog tags (#333)
 	GeneratorRegistry registry({definition});
 	GenerationService service(registry);
 	request.setMethodDefaults(305, registry);
