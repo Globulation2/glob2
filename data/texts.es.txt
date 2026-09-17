@@ -2780,3 +2780,21 @@ Abanico largo
 Manantiales gemelos
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Los abanicos aluviales son demasiado estrechos para las bases; usa un mapa más grande, una mayor separación de las sierras, crestas más estrechas o lagunas salinas más pequeñas.
+[Central Quarry]
+Cantera central
+[Quarry size]
+Tamaño de la cantera
+[Sand bars]
+Bancos de arena
+[Woodland]
+Bosque
+[Central Quarry needs at least two colonies.]
+Cantera central necesita al menos dos colonias.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+El lago no cabe en este mapa; usa un lago más pequeño o un mapa más grande.
+[A sand bar did not reach the island.]
+Un banco de arena no llegó a la isla.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Este mapa no tiene espacio para tantas colonias; usa un mapa más grande o menos colonias.
+[The island has no room for its quarry; use a bigger island.]
+La isla no tiene espacio para su cantera; usa una isla más grande.

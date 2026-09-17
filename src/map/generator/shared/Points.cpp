@@ -722,4 +722,27 @@ std::vector<int> recentreSites(const Torus &t, const std::vector<int> &labels,
 	}
 	return moved;
 }
+int closestWalk(const Torus &t, const std::vector<int> &sites,
+				const std::vector<unsigned char> &walkable)
+{
+	if (sites.size() < 2)
+		return INT_MAX;
+	// The first site's flood is whole: any site it doesn't reach makes the answer 0. Otherwise every
+	// site shares its piece of ground (the walk is symmetric), so each later flood need only reach as
+	// far as the closest pair so far; a site it doesn't reach within that is no closer.
+	int spacing = INT_MAX;
+	for (size_t a = 0; a + 1 < sites.size(); ++a)
+	{
+		const Flood flood = floodFrom(t, tileMask(t, {sites[a]}), walkable, a == 0 ? INT_MAX : spacing);
+		for (size_t b = a + 1; b < sites.size(); ++b)
+		{
+			const int steps = flood.steps[size_t(sites[b])];
+			if (a == 0 && steps < 0)
+				return 0;
+			if (steps >= 0)
+				spacing = std::min(spacing, steps);
+		}
+	}
+	return spacing;
+}
 } // namespace MapGeneration

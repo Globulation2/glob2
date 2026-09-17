@@ -58,6 +58,10 @@ int drainWithin(TerrainSketch &, const std::vector<unsigned char> &zone);
 /// a colony's fields there could regrow. Under about 2000 a start starves once its kit is cut (games
 /// on real geography, 2026-09-15); a design that cannot move the site can dig it a pond (digPond).
 std::uint32_t meanFertilityAround(const Fertility::Field &, const Torus &, int site, int radius);
+/// meanFertilityAround for every tile at once, from running sums along rows then columns across the
+/// wrap: the same integer means, in time independent of the radius. For a search that asks the
+/// question of thousands of candidate sites.
+std::vector<std::uint32_t> meanFertilityField(const Fertility::Field &, const Torus &, int radius);
 
 /// A pond dug for a site that has no water: `corners` water corners grown (growWater) from the
 /// roomiest eligible corner between `nearest` and `farthest` Chebyshev steps of `site`, nearest the
@@ -122,6 +126,69 @@ int digPond(TerrainSketch &sketch, const Torus &t, int site, int nearest, int fa
 		}
 	return dug;
 }
+/// How a dry start is watered (waterDrySite): up to `ponds` ponds of `corners` corners each, the
+/// first dug between `nearest` and `farthest` Chebyshev steps of the site and each next one `step`
+/// steps farther out on both bounds, so it lands beyond the last.
+struct DryStartPonds
+{
+	int ponds, corners, nearest, farthest, step;
+};
+/// What waterDrySite did: the site's mean crop growth chance before and after, and the corners each
+/// attempt dug in order (a final 0 when the eligible ground ran out before the floor was met).
+struct DryStartWatering
+{
+	std::uint32_t before = 0, after = 0;
+	std::vector<int> dug;
+};
+/// Digs ponds (digPond) beside a site until the mean crop growth chance over the square `radius`
+/// round it, measured on the sketch as the game will draw it (beaches laid, cropGrowthField),
+/// reaches `floor`, or the ponds run out. A landscape that places colonies for fairness rather than
+/// beside water (Continents, Central Quarry) waters the ones that landed dry. Attempt `p` stamps its
+/// flood with `stampBase + p`; share `queued` across calls as digPond asks.
+template <typename Eligible, typename NoiseAt>
+DryStartWatering waterDrySite(TerrainSketch &sketch, const Torus &t, int site, int radius,
+							  std::uint32_t floor, const DryStartPonds &plan, Eligible eligible,
+							  NoiseAt noiseAt, std::vector<int> &queued, int stampBase)
+{
+	// The mean only reads tiles within `radius` of the site, a tile's growth chance only reads pure
+	// water and sand within kCropProbeReach, and a beach and a pure tile only look a corner or two
+	// away: so the sketch is cut to a window that reaches past all of them, and the window, a torus
+	// of its own, gives exactly the whole map's answer without its wrap ever being read. Building the
+	// whole map's field for every pond was most of the cost on 512 maps.
+	const int half = radius + kCropProbeReach + 5;
+	const bool windowed = 2 * half + 1 < t.w && 2 * half + 1 < t.h;
+	const auto mean = [&]()
+	{
+		if (!windowed)
+		{
+			TerrainSketch drawn = sketch;
+			layBeaches(drawn, t);
+			return meanFertilityAround(cropGrowthField(drawn, t), t, site, radius);
+		}
+		const Torus window(2 * half + 1, 2 * half + 1);
+		const int sx = site % t.w, sy = site / t.w;
+		TerrainSketch drawn(size_t(window.size()));
+		for (int y = 0; y < window.h; ++y)
+			for (int x = 0; x < window.w; ++x)
+				drawn[size_t(y * window.w + x)] = sketch[size_t(t.at(sx - half + x, sy - half + y))];
+		layBeaches(drawn, window);
+		return meanFertilityAround(cropGrowthField(drawn, window), window, half * window.w + half, radius);
+	};
+	DryStartWatering result;
+	result.before = result.after = mean();
+	for (int p = 0; result.after < floor && p < plan.ponds; ++p)
+	{
+		const int dug = digPond(sketch, t, site, plan.nearest + p * plan.step,
+								plan.farthest + p * plan.step, plan.corners, eligible, noiseAt,
+								queued, stampBase + p);
+		result.dug.push_back(dug);
+		if (dug == 0)
+			break;
+		result.after = mean();
+	}
+	return result;
+}
+
 // There is deliberately no helper here for the engine's saved canResourcesGrow flag.
 // Generated maps may not disable resource growth anywhere: no-growth zones are for
 // hand-made scenarios such as the tutorial, and validateGeneratedWorld refuses any generated

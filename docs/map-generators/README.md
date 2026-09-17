@@ -62,3 +62,7 @@ sinkholes, and its growth-potential, control-study, reliability and AI-game evid
 [Bajada](BAJADA.md) documents a desert mountain front: stone ranges with passes, rows of alluvial fans
 whose streams split downhill, identical home fans with their towns on the dry shoulder, gravel and
 dunes, and playa lakes, with its review rounds, control-study, reliability and AI-game evidence.
+
+[Central Quarry](CENTRAL_QUARRY.md) documents natural country draining to one lake whose island holds
+the only stone on the map: sand bars to a single landing, a sealed island garden, streams, starts
+balanced on the walk to the stone, and its eight review rounds, reliability and AI-game evidence.

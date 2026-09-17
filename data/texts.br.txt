@@ -2776,3 +2776,21 @@ Leque comprido
 Nascentes gêmeas
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Os leques aluviais são estreitos demais para as bases; use um mapa maior, um espaçamento maior das serras, cristas mais estreitas ou lagoas salinas menores.
+[Central Quarry]
+Pedreira central
+[Quarry size]
+Tamanho da pedreira
+[Sand bars]
+Bancos de areia
+[Woodland]
+Mata
+[Central Quarry needs at least two colonies.]
+Pedreira central precisa de pelo menos duas colônias.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+O lago não cabe neste mapa; use um lago menor ou um mapa maior.
+[A sand bar did not reach the island.]
+Um banco de areia não chegou à ilha.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Este mapa não tem espaço para tantas colônias; use um mapa maior ou menos colônias.
+[The island has no room for its quarry; use a bigger island.]
+A ilha não tem espaço para sua pedreira; use uma ilha maior.

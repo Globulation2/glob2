@@ -104,4 +104,39 @@ std::uint32_t meanFertilityAround(const Fertility::Field &field, const Torus &t,
 	const std::uint64_t tiles = std::uint64_t(2 * radius + 1) * (2 * radius + 1);
 	return std::uint32_t(sum / tiles);
 }
+
+std::vector<std::uint32_t> meanFertilityField(const Fertility::Field &field, const Torus &t, int radius)
+{
+	const int n = t.size();
+	const int span = 2 * radius + 1;
+	// Sums along each row over the window, then along each column over those sums.
+	std::vector<std::uint64_t> rows(size_t(n), 0);
+	for (int y = 0; y < t.h; ++y)
+	{
+		std::uint64_t sum = 0;
+		for (int dx = -radius; dx <= radius; ++dx)
+			sum += field.at(t.x(dx), y);
+		for (int x = 0; x < t.w; ++x)
+		{
+			rows[size_t(y * t.w + x)] = sum;
+			sum += field.at(t.x(x + radius + 1), y);
+			sum -= field.at(t.x(x - radius), y);
+		}
+	}
+	std::vector<std::uint32_t> means(size_t(n), 0);
+	const std::uint64_t tiles = std::uint64_t(span) * span;
+	for (int x = 0; x < t.w; ++x)
+	{
+		std::uint64_t sum = 0;
+		for (int dy = -radius; dy <= radius; ++dy)
+			sum += rows[size_t(t.y(dy) * t.w + x)];
+		for (int y = 0; y < t.h; ++y)
+		{
+			means[size_t(y * t.w + x)] = std::uint32_t(sum / tiles);
+			sum += rows[size_t(t.y(y + radius + 1) * t.w + x)];
+			sum -= rows[size_t(t.y(y - radius) * t.w + x)];
+		}
+	}
+	return means;
+}
 } // namespace MapGeneration

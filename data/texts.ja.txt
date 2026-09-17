@@ -2776,3 +2776,21 @@ Emoji
 双子の泉
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 扇状地の斜面が狭すぎて本拠地が収まりません。より大きなマップ、より広い山脈の間隔、より狭い尾根、またはより小さな塩湖を使ってください。
+[Central Quarry]
+中央の採石場
+[Quarry size]
+採石場の大きさ
+[Sand bars]
+砂州
+[Woodland]
+森林
+[Central Quarry needs at least two colonies.]
+中央の採石場には少なくとも2つのコロニーが必要です。
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+湖がこのマップに収まりません。湖を小さくするか、より大きなマップを使ってください。
+[A sand bar did not reach the island.]
+砂州が島まで届きませんでした。
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+このマップにはそれだけのコロニーを置く場所がありません。より大きなマップを使うか、コロニーを減らしてください。
+[The island has no room for its quarry; use a bigger island.]
+島に採石場を置く場所がありません。島を大きくしてください。

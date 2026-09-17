@@ -2780,3 +2780,21 @@ Emoji
 Извори близанци
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Падине са плавинама су преуске за базе; користите већу мапу, већи размак планинских венаца, уже гребене или мања слана језера.
+[Central Quarry]
+Средишњи каменолом
+[Quarry size]
+Величина каменолома
+[Sand bars]
+Пешчани спрудови
+[Woodland]
+Шуме
+[Central Quarry needs at least two colonies.]
+Средишњем каменолому су потребне најмање две колоније.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+Језеро не стаје на ову мапу; користите мање језеро или већу мапу.
+[A sand bar did not reach the island.]
+Пешчани спруд није стигао до острва.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+На овој мапи нема места за толико колонија; користите већу мапу или мање колонија.
+[The island has no room for its quarry; use a bigger island.]
+На острву нема места за каменолом; користите веће острво.

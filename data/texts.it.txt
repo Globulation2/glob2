@@ -2842,3 +2842,21 @@ Conoide lunga
 Sorgenti gemelle
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Le conoidi alluvionali sono troppo strette per le basi; usa una mappa più grande, una distanza maggiore tra le catene, creste più strette o laghi salati più piccoli.
+[Central Quarry]
+Cava centrale
+[Quarry size]
+Dimensione della cava
+[Sand bars]
+Banchi di sabbia
+[Woodland]
+Boschi
+[Central Quarry needs at least two colonies.]
+Cava centrale richiede almeno due colonie.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+Il lago non entra in questa mappa; usa un lago più piccolo o una mappa più grande.
+[A sand bar did not reach the island.]
+Un banco di sabbia non ha raggiunto l'isola.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Questa mappa non ha spazio per così tante colonie; usa una mappa più grande o meno colonie.
+[The island has no room for its quarry; use a bigger island.]
+L'isola non ha spazio per la sua cava; usa un'isola più grande.

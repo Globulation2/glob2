@@ -261,6 +261,11 @@ std::vector<int> farthestSites(const Torus &, const std::vector<unsigned char> &
 							   const std::function<bool(int)> *prefer = nullptr,
 							   int *rejected = nullptr);
 
+/// The fewest steps over `walkable` (eight-connected, across the wrap) between any two of `sites`:
+/// how close a spread's nearest neighbours are by any route a unit can take. 0 when two sites cannot
+/// reach each other; INT_MAX with fewer than two sites.
+int closestWalk(const Torus &, const std::vector<int> &sites, const std::vector<unsigned char> &walkable);
+
 /// Each site moved to the candidate nearest the middle of its own ground: for site k, the tile of
 /// `candidates` labelled k in `labels` (a territory of Territories.h, say) nearest, the short way
 /// round, to the mean position of every tile labelled k, measured as offsets from the site so a

@@ -2778,3 +2778,21 @@ Emoji
 Родники-близнецы
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Склоны с конусами выноса слишком узки для баз; используйте карту побольше, большее расстояние между хребтами, более узкие гребни или солёные озёра поменьше.
+[Central Quarry]
+Центральная каменоломня
+[Quarry size]
+Размер каменоломни
+[Sand bars]
+Песчаные косы
+[Woodland]
+Леса
+[Central Quarry needs at least two colonies.]
+Для центральной каменоломни нужно не меньше двух колоний.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+Озеро не помещается на этой карте; используйте озеро поменьше или карту побольше.
+[A sand bar did not reach the island.]
+Песчаная коса не дошла до острова.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+На этой карте нет места для такого числа колоний; используйте карту побольше или меньше колоний.
+[The island has no room for its quarry; use a bigger island.]
+На острове нет места для каменоломни; используйте остров побольше.

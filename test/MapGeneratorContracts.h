@@ -698,7 +698,8 @@ inline void rebuiltLandscapeContracts()
 	for (const char *id : {"glacis", "allotments", "caravanserai"})
 	{
 		const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf(id));
-		assert(definition.revision == 2);
+		// The Glacis went to revision 3 when its five-pointed forts were fixed (#331).
+		assert(definition.revision == (std::string(id) == "glacis" ? 3 : 2));
 		// The supported envelope: square and rectangular maps, one colony to a crowd.
 		for (const auto &[w, h, teams] :
 			 {std::tuple{8, 8, 1}, std::tuple{8, 8, 4}, std::tuple{8, 8, 6}, std::tuple{9, 8, 4},

@@ -206,7 +206,11 @@ GeneratorDefinition {lower}Definition()
 			generate,
 			true,
 			nullptr,
-			validateWorld}};
+			validateWorld,
+			// Catalog tags for the landscape picker's filters: several, one "terrain:" and every
+			// "feature:" a player would look for, a "style:", and a "fairness:" when the homes are
+			// fair by construction. Placeholders: replace them with the map's own.
+			{{"terrain:natural", "feature:lakes", "style:wide-open", "fairness:stamped-lattice"}}}};
 }}
 '''
 
