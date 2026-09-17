@@ -25,30 +25,31 @@ namespace AINames
 		//               and the description "[<key>-Description]".
 		//   strength  — measured, not judged: see the note below. 0 for NONE.
 		//
-		// Difficulty and strength both come from a tournament of 2,294 randomly
+		// Difficulty and strength both come from a tournament of 2,391 randomly
 		// drawn games covering every AI, all three formats and every map generator
 		// and size, rated by maximum likelihood over the finishing orders
 		// (tools/tournaments_ai_leaderboard.py). Strength is on Elo's scale --
 		// 400 points is a factor of ten in the odds -- averaged over the formats:
 		//
-		//   nicowar 1688 | maxima 1663 | cabino 1648 || cortex 1538 ||
-		//   econo 1410 | castor 1386 | warrush 1371 | numbi 1295
+		//   nicowar 1684 | maxima 1665 | cabino 1649 || cortex 1538 ||
+		//   econo 1411 | castor 1390 | warrush 1371 | numbi 1293
 		//
-		// The two widest gaps in that ladder are the 110 points below cabino and
-		// the 128 below cortex, and those are where the labels are cut, which is
+		// The two widest gaps in that ladder are the 111 points below cabino and
+		// the 127 below cortex, and those are where the labels are cut, which is
 		// why Medium holds one AI and Easy four. Earlier labels were assigned by
 		// judgement and had cabino, castor and warrush all as Medium; the games
 		// put cabino among the strongest and the other two near the bottom.
+		// See docs/ai-strength.md for the evidence, including the raw results.
 		const struct { int id; const char* cliName; const char* stringKey; const char* difficulty; int strength; } aiTable[] = {
 			{AI::NONE,            nullptr,           "AINone", "No AI orders", 0},
-			{AI::NUMBI,           "numbi",           "AINumbi", "Easy", 1295},
-			{AI::CASTOR,          "castor",          "AICastor", "Easy", 1386},
+			{AI::NUMBI,           "numbi",           "AINumbi", "Easy", 1293},
+			{AI::CASTOR,          "castor",          "AICastor", "Easy", 1390},
 			{AI::WARRUSH,         "warrush",         "AIWarrush", "Easy", 1371},
-			{AI::ECONO, "econo", "AIEcono", "Easy", 1410},
-			{AI::NICOWAR,         "nicowar",         "AINicowar", "Hard", 1688},
-			{AI::MAXIMA,          "maxima",          "AIMaxima", "Hard", 1663},
+			{AI::ECONO, "econo", "AIEcono", "Easy", 1411},
+			{AI::NICOWAR,         "nicowar",         "AINicowar", "Hard", 1684},
+			{AI::MAXIMA,          "maxima",          "AIMaxima", "Hard", 1665},
 			{AI::CORTEX,          "cortex",          "AICortex", "Medium", 1538},
-			{AI::CABINO,          "cabino",          "AICabino", "Hard", 1648},
+			{AI::CABINO,          "cabino",          "AICabino", "Hard", 1649},
 		};
 	}
 
