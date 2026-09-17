@@ -2526,6 +2526,36 @@ Solbriller
 Hjerte
 [Star]
 Stjerne
+[Neutral face]
+Neutralt ansigt
+[Sleeping face]
+Sovende ansigt
+[Grinning face]
+Grinende ansigt
+[Kissing face]
+Kyssende ansigt
+[Angry face]
+Vredt ansigt
+[Tongue out]
+Tungen ud
+[Skull]
+Kranie
+[Flower]
+Blomst
+[Four-leaf clover]
+Firkløver
+[Teardrop]
+Dråbe
+[Cloud]
+Sky
+[Gem]
+Ædelsten
+[Apple]
+Æble
+[Speech bubble]
+Taleboble
+[Shield]
+Skjold
 [Emoji style]
 Emoji-stil
 [Outline]

@@ -2474,6 +2474,36 @@ Zonnebril
 Hart
 [Star]
 Ster
+[Neutral face]
+Neutraal gezicht
+[Sleeping face]
+Slapend gezicht
+[Grinning face]
+Grijnzend gezicht
+[Kissing face]
+Kussend gezicht
+[Angry face]
+Boos gezicht
+[Tongue out]
+Tong uitsteken
+[Skull]
+Doodshoofd
+[Flower]
+Bloem
+[Four-leaf clover]
+Klavertjevier
+[Teardrop]
+Druppel
+[Cloud]
+Wolk
+[Gem]
+Edelsteen
+[Apple]
+Appel
+[Speech bubble]
+Tekstballon
+[Shield]
+Schild
 [Emoji style]
 Emoji-stijl
 [Outline]

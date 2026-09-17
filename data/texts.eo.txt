@@ -2448,6 +2448,36 @@ Sunokulvitroj
 Koro
 [Star]
 Stelo
+[Neutral face]
+Neŭtrala vizaĝo
+[Sleeping face]
+Dormanta vizaĝo
+[Grinning face]
+Rikanta vizaĝo
+[Kissing face]
+Kisanta vizaĝo
+[Angry face]
+Kolera vizaĝo
+[Tongue out]
+Elŝovita lango
+[Skull]
+Kranio
+[Flower]
+Floro
+[Four-leaf clover]
+Kvarfolia trifolio
+[Teardrop]
+Guto
+[Cloud]
+Nubo
+[Gem]
+Gemo
+[Apple]
+Pomo
+[Speech bubble]
+Parolbalono
+[Shield]
+Ŝildo
 [Emoji style]
 Emoĝia stilo
 [Outline]

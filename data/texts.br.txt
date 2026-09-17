@@ -2446,6 +2446,36 @@ Olhos de coração
 Coração
 [Star]
 Estrela
+[Neutral face]
+Rosto neutro
+[Sleeping face]
+Rosto dormindo
+[Grinning face]
+Rosto sorrindo
+[Kissing face]
+Rosto beijando
+[Angry face]
+Rosto zangado
+[Tongue out]
+Língua de fora
+[Skull]
+Caveira
+[Flower]
+Flor
+[Four-leaf clover]
+Trevo de quatro folhas
+[Teardrop]
+Gota
+[Cloud]
+Nuvem
+[Gem]
+Joia
+[Apple]
+Maçã
+[Speech bubble]
+Balão de fala
+[Shield]
+Escudo
 [Emoji style]
 Estilo do emoji
 [Outline]

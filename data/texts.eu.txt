@@ -2460,6 +2460,36 @@ Eguzkitako betaurrekoak
 Bihotza
 [Star]
 Izarra
+[Neutral face]
+Aurpegi neutroa
+[Sleeping face]
+Lo dagoen aurpegia
+[Grinning face]
+Barrez dagoen aurpegia
+[Kissing face]
+Musu ematen duen aurpegia
+[Angry face]
+Aurpegi haserrea
+[Tongue out]
+Mihia kanpoan
+[Skull]
+Garezurra
+[Flower]
+Lorea
+[Four-leaf clover]
+Lau hostoko hirusta
+[Teardrop]
+Tanta
+[Cloud]
+Hodeia
+[Gem]
+Harribitxia
+[Apple]
+Sagarra
+[Speech bubble]
+Hitz-puxika
+[Shield]
+Ezkutua
 [Emoji style]
 Emoji estiloa
 [Outline]

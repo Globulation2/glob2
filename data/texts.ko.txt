@@ -2446,6 +2446,36 @@ Emoji
 하트
 [Star]
 별
+[Neutral face]
+무표정
+[Sleeping face]
+자는 얼굴
+[Grinning face]
+활짝 웃는 얼굴
+[Kissing face]
+뽀뽀하는 얼굴
+[Angry face]
+화난 얼굴
+[Tongue out]
+메롱
+[Skull]
+해골
+[Flower]
+꽃
+[Four-leaf clover]
+네잎클로버
+[Teardrop]
+물방울
+[Cloud]
+구름
+[Gem]
+보석
+[Apple]
+사과
+[Speech bubble]
+말풍선
+[Shield]
+방패
 [Emoji style]
 이모지 스타일
 [Outline]

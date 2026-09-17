@@ -2522,6 +2522,36 @@ Emoji
 愛心
 [Star]
 星星
+[Neutral face]
+面無表情
+[Sleeping face]
+睡臉
+[Grinning face]
+咧嘴笑
+[Kissing face]
+親吻的臉
+[Angry face]
+生氣的臉
+[Tongue out]
+吐舌頭
+[Skull]
+骷髏
+[Flower]
+花
+[Four-leaf clover]
+四葉草
+[Teardrop]
+水滴
+[Cloud]
+雲
+[Gem]
+寶石
+[Apple]
+蘋果
+[Speech bubble]
+對話框
+[Shield]
+盾牌
 [Emoji style]
 表情樣式
 [Outline]

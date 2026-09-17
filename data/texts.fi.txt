@@ -2450,6 +2450,36 @@ Aurinkolasit
 Sydän
 [Star]
 Tähti
+[Neutral face]
+Neutraalit kasvot
+[Sleeping face]
+Nukkuvat kasvot
+[Grinning face]
+Virnistävät kasvot
+[Kissing face]
+Suukottavat kasvot
+[Angry face]
+Vihaiset kasvot
+[Tongue out]
+Kieli ulkona
+[Skull]
+Pääkallo
+[Flower]
+Kukka
+[Four-leaf clover]
+Neliapila
+[Teardrop]
+Pisara
+[Cloud]
+Pilvi
+[Gem]
+Jalokivi
+[Apple]
+Omena
+[Speech bubble]
+Puhekupla
+[Shield]
+Kilpi
 [Emoji style]
 Emojin tyyli
 [Outline]

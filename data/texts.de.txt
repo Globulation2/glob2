@@ -2450,6 +2450,36 @@ Sonnenbrille
 Herz
 [Star]
 Stern
+[Neutral face]
+Neutrales Gesicht
+[Sleeping face]
+Schlafendes Gesicht
+[Grinning face]
+Grinsendes Gesicht
+[Kissing face]
+Küssendes Gesicht
+[Angry face]
+Wütendes Gesicht
+[Tongue out]
+Herausgestreckte Zunge
+[Skull]
+Totenkopf
+[Flower]
+Blume
+[Four-leaf clover]
+Vierblättriges Kleeblatt
+[Teardrop]
+Tropfen
+[Cloud]
+Wolke
+[Gem]
+Edelstein
+[Apple]
+Apfel
+[Speech bubble]
+Sprechblase
+[Shield]
+Schild
 [Emoji style]
 Emoji-Stil
 [Outline]

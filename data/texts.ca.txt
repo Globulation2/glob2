@@ -2458,6 +2458,36 @@ Ulleres de sol
 Cor
 [Star]
 Estrella
+[Neutral face]
+Cara neutra
+[Sleeping face]
+Cara adormida
+[Grinning face]
+Cara rient
+[Kissing face]
+Cara fent un petó
+[Angry face]
+Cara enfadada
+[Tongue out]
+Llengua fora
+[Skull]
+Calavera
+[Flower]
+Flor
+[Four-leaf clover]
+Trèvol de quatre fulles
+[Teardrop]
+Gota
+[Cloud]
+Núvol
+[Gem]
+Gemma
+[Apple]
+Poma
+[Speech bubble]
+Bafarada
+[Shield]
+Escut
 [Emoji style]
 Estil de l’emoji
 [Outline]

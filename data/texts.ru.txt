@@ -2448,6 +2448,36 @@ Emoji
 Сердце
 [Star]
 Звезда
+[Neutral face]
+Нейтральное лицо
+[Sleeping face]
+Спящее лицо
+[Grinning face]
+Смеющееся лицо
+[Kissing face]
+Целующее лицо
+[Angry face]
+Сердитое лицо
+[Tongue out]
+Показывает язык
+[Skull]
+Череп
+[Flower]
+Цветок
+[Four-leaf clover]
+Четырёхлистный клевер
+[Teardrop]
+Капля
+[Cloud]
+Облако
+[Gem]
+Драгоценный камень
+[Apple]
+Яблоко
+[Speech bubble]
+Облачко с репликой
+[Shield]
+Щит
 [Emoji style]
 Стиль эмодзи
 [Outline]

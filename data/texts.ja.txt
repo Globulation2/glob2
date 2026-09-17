@@ -2446,6 +2446,36 @@ Emoji
 ハート
 [Star]
 星
+[Neutral face]
+無表情
+[Sleeping face]
+寝顔
+[Grinning face]
+にやけ顔
+[Kissing face]
+キス顔
+[Angry face]
+怒った顔
+[Tongue out]
+あっかんべー
+[Skull]
+ドクロ
+[Flower]
+花
+[Four-leaf clover]
+四つ葉のクローバー
+[Teardrop]
+しずく
+[Cloud]
+雲
+[Gem]
+宝石
+[Apple]
+リンゴ
+[Speech bubble]
+吹き出し
+[Shield]
+盾
 [Emoji style]
 絵文字の描画
 [Outline]

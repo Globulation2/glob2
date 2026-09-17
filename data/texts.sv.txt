@@ -2460,6 +2460,36 @@ Solglasögon
 Hjärta
 [Star]
 Stjärna
+[Neutral face]
+Neutralt ansikte
+[Sleeping face]
+Sovande ansikte
+[Grinning face]
+Flinande ansikte
+[Kissing face]
+Pussande ansikte
+[Angry face]
+Arg min
+[Tongue out]
+Räcker ut tungan
+[Skull]
+Dödskalle
+[Flower]
+Blomma
+[Four-leaf clover]
+Fyrklöver
+[Teardrop]
+Droppe
+[Cloud]
+Moln
+[Gem]
+Ädelsten
+[Apple]
+Äpple
+[Speech bubble]
+Pratbubbla
+[Shield]
+Sköld
 [Emoji style]
 Emoji-stil
 [Outline]

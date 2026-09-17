@@ -2448,6 +2448,36 @@ Emoji
 قلب
 [Star]
 ستاره
+[Neutral face]
+چهرهٔ بی‌حالت
+[Sleeping face]
+چهرهٔ خوابیده
+[Grinning face]
+چهرهٔ نیشخند
+[Kissing face]
+چهرهٔ بوسه
+[Angry face]
+چهرهٔ عصبانی
+[Tongue out]
+زبان بیرون
+[Skull]
+جمجمه
+[Flower]
+گل
+[Four-leaf clover]
+شبدر چهاربرگ
+[Teardrop]
+قطره
+[Cloud]
+ابر
+[Gem]
+جواهر
+[Apple]
+سیب
+[Speech bubble]
+حباب گفتگو
+[Shield]
+سپر
 [Emoji style]
 سبک شکلک
 [Outline]
