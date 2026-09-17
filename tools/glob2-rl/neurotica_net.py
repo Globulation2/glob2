@@ -158,6 +158,12 @@ class NeuroticaNet(nn.Module):
         self.head_building = nn.Conv2d(head_ch, NUM_BUILDING_CLASSES, 1)
         self.head_score = nn.Conv2d(head_ch, 1, 1)
         self.head_areas = nn.Conv2d(head_ch, 3, 1)
+        # Desired staffing (Building::maxUnitWorking) per cell. This is how the
+        # teachers concentrate labour, and labour is what the early economy
+        # turns on: a swarm only produces when wheat reaches it, so workers
+        # spread across every building are workers not feeding the swarm.
+        # Predicted in units, supervised only at building anchors.
+        self.head_workers = nn.Conv2d(head_ch, 1, 1)
         # How many of each building type the team should HOLD. The per-cell
         # building head is a marginal -- it says where inn-ness is high, never
         # how many inns to own -- so decoding it by threshold or top-k turns
@@ -187,6 +193,7 @@ class NeuroticaNet(nn.Module):
             "building": self.head_building(x),
             "score": self.head_score(x),
             "areas": self.head_areas(x),
+            "workers": self.head_workers(x).squeeze(1),
         }
 
     def forward(self, x, z=None):

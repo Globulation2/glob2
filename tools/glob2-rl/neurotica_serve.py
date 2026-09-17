@@ -34,7 +34,7 @@ import torch
 
 from neurotica_net import NeuroticaNet, NUM_BUILDING_CLASSES
 
-MAGIC = b"NPS2"
+MAGIC = b"NPS3"
 
 # Plane ranges inside the DYNAMIC stack (NeuroticaObservation.h order):
 # 8 resources, 13 own buildings, level/site/workers, 13 enemy buildings,
@@ -510,7 +510,14 @@ def main() -> int:
         areas = (torch.sigmoid(out["areas"].float()) > 0.5)
         area_bits = (areas[:, 0].to(torch.uint8) * 1 + areas[:, 1].to(torch.uint8) * 2
                      + areas[:, 2].to(torch.uint8) * 4)
-        packed = torch.stack([cls, score, area_bits], dim=-1).cpu().numpy()
+        # Staffing byte. DONT_CARE everywhere the head has nothing to say --
+        # which is every cell without a building wanted on it -- so the
+        # reconciler leaves those alone rather than reading a predicted 0 as
+        # "unstaff this".
+        want_workers = out["workers"].float().round().clamp(0, 200).to(torch.uint8)
+        staffing = torch.where((cls > 0) & (cls != DONT_CARE), want_workers,
+                               torch.full_like(cls, DONT_CARE))
+        packed = torch.stack([cls, score, area_bits, staffing], dim=-1).cpu().numpy()
 
         if args.record_dir:
             lat = out.get("placements")

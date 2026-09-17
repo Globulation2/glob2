@@ -349,3 +349,47 @@ Rules going forward, for real this time:
   the wrong types, does it demolish) -- just never for *outcome*.
 
 Running the proper eval for `--build-per-unit 5` against the 5W/22 baseline.
+
+## Population gate rejected (04:55)
+
+24-game eval, `--build-per-unit 5`:
+
+```
+vs numbi 1W 3L 2cap | castor 0W 4L 2cap | warrush 1W 5L | nicowar 0W 6L   = 2W/22
+```
+
+against the 5W/22 baseline. The gate hurts; default stays 0. Worth noting it
+produced the first win against warrush, but the total is clearly worse and one
+win is not a signal at this sample size.
+
+Best config remains: `ckpt_cnt2`, `--top-k --placements 48 --use-count` = 5W/22.
+
+## Closing the structural gap: staffing (NPS3)
+
+The network has never been able to allocate labour. The policy socket carried
+3 bytes per cell -- class, score, areas -- so `workers` (Building::
+maxUnitWorking) sat at DONT_CARE forever and every building was created at its
+type maximum. With ~10 workers and 14 buildings each demanding max staff, the
+labour spreads across schools and flags instead of concentrating on the swarm,
+and a swarm only produces when wheat reaches it. That is the measured economy
+failure.
+
+Scoped to the single plane that matters rather than all seven:
+
+* **Data**: labels now carry `workers` per building. The trace has recorded it
+  since ATR2; the loader was dropping it.
+* **Head**: `head_workers`, one channel, predicted in units, supervised only at
+  building anchors via a mask -- an unmasked loss would pull every empty cell
+  toward 0 and drown the signal.
+* **Protocol**: NPS3, 4 bytes per cell. The magic bump matters: a mismatched
+  binary now fails loudly instead of misparsing, which is the failure mode that
+  cost hours earlier tonight.
+* **Decode**: staffing byte is DONT_CARE wherever no building is wanted, so the
+  reconciler leaves existing staffing alone rather than reading a predicted 0
+  as "unstaff this".
+* **Training**: `--count-only` with the trunk frozen, weight 0.02. Deliberately
+  small -- staffing is in units (tens) against a building loss of ~0.004, and
+  the count head at weight 1.0 already demonstrated what an auxiliary head does
+  to a shared trunk.
+
+Harness still 72 checks, 0 failures.

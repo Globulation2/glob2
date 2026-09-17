@@ -18,6 +18,12 @@
 
 namespace Neurotica
 {
+	namespace
+	{
+		//! Bytes per cell in a policy reply (NPS3): building class, score,
+		//! area bits, staffing.
+		constexpr size_t kReplyStride = 4;
+	}
 	PolicySocketSource::PolicySocketSource(Team *team, const std::string &socketPath)
 		: team_(team), path_(socketPath)
 	{
@@ -113,7 +119,7 @@ namespace Neurotica
 		}
 
 		Uint8 header[16];
-		std::memcpy(header, "NPS2", 4);
+		std::memcpy(header, "NPS3", 4);
 		const Uint16 w = Uint16(map->getW()), h = Uint16(map->getH());
 		std::memcpy(header + 4, &w, 2);
 		std::memcpy(header + 6, &h, 2);
@@ -157,7 +163,8 @@ namespace Neurotica
 			return false;
 		}
 
-		reply_.resize(cells * 3);
+		// 4 bytes per cell since NPS3: class, score, area bits, staffing.
+		reply_.resize(cells * kReplyStride);
 		if (!readAll(reply_.data(), reply_.size()))
 		{
 			std::cerr << "Neurotica: policy reply truncated; going inert" << std::endl;
@@ -169,7 +176,7 @@ namespace Neurotica
 		out.reset(w, h);
 		for (size_t i = 0; i < cells; i++)
 		{
-			const Uint8 cls = reply_[i * 3 + 0];
+			const Uint8 cls = reply_[i * kReplyStride + 0];
 			// A class the engine does not have is treated as "nothing wanted"
 			// rather than clamped: a policy emitting garbage should be inert at
 			// that cell, not build something arbitrary.
@@ -179,12 +186,18 @@ namespace Neurotica
 			// turn that into "want empty here".
 			out.building[i] = (cls <= IntBuildingTypeCount || cls == DONT_CARE)
 			                  ? cls : Uint8(0);
-			out.buildingScore[i] = reply_[i * 3 + 1];
-			out.areas[i] = reply_[i * 3 + 2] & (AREA_GUARD | AREA_CLEAR | AREA_FORBIDDEN);
+			out.buildingScore[i] = reply_[i * kReplyStride + 1];
+			out.areas[i] = reply_[i * kReplyStride + 2] & (AREA_GUARD | AREA_CLEAR | AREA_FORBIDDEN);
+			// Staffing: how many units the policy wants working this building.
+			// DONT_CARE leaves it alone, which is what every cell said before
+			// NPS3 -- the plane existed in the schema from the start but no
+			// policy could reach it, so the network could not allocate labour
+			// at all.
+			out.workers[i] = reply_[i * kReplyStride + 3];
 			// Urgency follows the score until the policy learns a head for it,
 			// so the reconciler still prioritises the cells the net is most
 			// confident about rather than acting in scan order.
-			out.urgency[i] = reply_[i * 3 + 1];
+			out.urgency[i] = reply_[i * kReplyStride + 1];
 		}
 		return true;
 	}

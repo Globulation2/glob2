@@ -48,7 +48,7 @@ class Sample:
     # Label, extracted once at index time. Re-parsing the trace per sample
     # would re-read and re-decode a multi-megabyte file for every single
     # example; storing the label instead costs a few hundred bytes each.
-    label_buildings: bytes = b""   # int16 triples: x, y, short_type
+    label_buildings: bytes = b""   # int16 quads: x, y, short_type, workers
     label_areas: bytes = b""       # zlib(dense h*w area bitmask)
 
 
@@ -122,8 +122,11 @@ class NeuroticaBC(Dataset):
                 label = trace.at(rec["team"], rec["tick"] + delta)
                 if label is None:
                     continue  # no label this far ahead
+                # workers rides along: maxUnitWorking is how the teachers
+                # concentrate labour, and it is the one desired-state plane the
+                # early economy turns on. The trace has carried it all along.
                 triples = np.array(
-                    [(b.x, b.y, b.short_type) for b in label.buildings],
+                    [(b.x, b.y, b.short_type, b.workers) for b in label.buildings],
                     dtype=np.int16).tobytes() if label.buildings else b""
                 self.samples.append(Sample(
                     obs_path, trace_path, rec["off"], rec["clen"],
@@ -171,20 +174,28 @@ class NeuroticaBC(Dataset):
         # One triple per building, so a bincount over the type column is the
         # exact per-type building count -- not a cell count.
         counts = np.zeros(13, dtype=np.float32)
+        # Desired staffing per cell, and a mask marking where it is defined.
+        # Only anchor cells of labelled buildings carry a target; everywhere
+        # else the loss must not pull toward zero.
+        workers = np.zeros((s.h, s.w), dtype=np.float32)
+        wmask = np.zeros((s.h, s.w), dtype=np.float32)
         if s.label_buildings:
-            triples = np.frombuffer(s.label_buildings, dtype=np.int16).reshape(-1, 3)
+            triples = np.frombuffer(s.label_buildings, dtype=np.int16).reshape(-1, 4)
             inside = (triples[:, 0] >= 0) & (triples[:, 0] < s.w) & \
                      (triples[:, 1] >= 0) & (triples[:, 1] < s.h)
             t3 = triples[inside]
             building[t3[:, 1], t3[:, 0]] = t3[:, 2] + 1
             valid = (t3[:, 2] >= 0) & (t3[:, 2] < 13)
             counts = np.bincount(t3[valid, 2], minlength=13).astype(np.float32)
+            workers[t3[:, 1], t3[:, 0]] = np.clip(t3[:, 3], 0, 255)
+            wmask[t3[:, 1], t3[:, 0]] = 1.0
         a = np.frombuffer(zlib.decompress(s.label_areas), dtype=np.uint8).reshape(s.h, s.w)
         areas = np.stack([((a & 1) != 0), ((a & 2) != 0),
                           ((a & 4) != 0)]).astype(np.float32)
 
         return (torch.from_numpy(obs), torch.from_numpy(building),
-                torch.from_numpy(areas), torch.from_numpy(counts))
+                torch.from_numpy(areas), torch.from_numpy(counts),
+                torch.from_numpy(workers), torch.from_numpy(wmask))
 
 
 def collate(batch):
@@ -192,4 +203,6 @@ def collate(batch):
     building = torch.stack([b[1] for b in batch])
     areas = torch.stack([b[2] for b in batch])
     counts = torch.stack([b[3] for b in batch])
-    return obs, building, areas, counts
+    workers = torch.stack([b[4] for b in batch])
+    wmask = torch.stack([b[5] for b in batch])
+    return obs, building, areas, counts, workers, wmask
