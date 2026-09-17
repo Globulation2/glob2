@@ -2758,3 +2758,25 @@ Folyó kanyargása
 Elárasztott teraszok
 [Sinkholes]
 Víznyelők
+[Bajada]
+Hordalékkúpok
+[Range spacing]
+Hegyláncok távolsága
+[Ridge width]
+Gerincek szélessége
+[Passes]
+Hágók
+[Fans per range]
+Hordalékkúpok lánconként
+[Stream reach]
+Patakok hossza
+[Playa]
+Sós tavak
+[Broad fan]
+Széles kúp
+[Long fan]
+Hosszú kúp
+[Twin springs]
+Ikerforrások
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+A hordalékkúpos lejtők túl keskenyek az otthonokhoz; használj nagyobb térképet, nagyobb hegyláncok közti távolságot, keskenyebb gerinceket vagy kisebb sós tavakat.

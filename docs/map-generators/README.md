@@ -58,3 +58,7 @@ reliability, control-study, performance and AI-game evidence.
 [Karst towers](KARST_TOWERS.md) documents river country among limestone towers: rivers placed between
 the rows of homes, terraced paddies of wheat and flooded strips, gated home bowls, doline lakes and
 sinkholes, and its growth-potential, control-study, reliability and AI-game evidence.
+
+[Bajada](BAJADA.md) documents a desert mountain front: stone ranges with passes, rows of alluvial fans
+whose streams split downhill, identical home fans with their towns on the dry shoulder, gravel and
+dunes, and playa lakes, with its review rounds, control-study, reliability and AI-game evidence.

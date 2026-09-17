@@ -2756,3 +2756,25 @@ Emoji
 المدرجات المغمورة
 [Sinkholes]
 الحفر الكارستية
+[Bajada]
+سفوح المراوح الغرينية
+[Range spacing]
+المسافة بين السلاسل الجبلية
+[Ridge width]
+عرض الحافة الجبلية
+[Passes]
+الممرات الجبلية
+[Fans per range]
+المراوح لكل سلسلة
+[Stream reach]
+امتداد الجداول
+[Playa]
+البحيرات الملحية
+[Broad fan]
+مروحة عريضة
+[Long fan]
+مروحة طويلة
+[Twin springs]
+نبعان توأمان
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+السفوح أضيق من أن تتسع للمواطن؛ استخدم خريطة أكبر أو مسافة أوسع بين السلاسل الجبلية أو حوافَّ أضيق أو بحيرات ملحية أصغر.

@@ -2766,3 +2766,25 @@ Meandres del riu
 Terrasses inundades
 [Sinkholes]
 Dolines
+[Bajada]
+Ventalls al·luvials
+[Range spacing]
+Separació de les serralades
+[Ridge width]
+Amplada de les carenes
+[Passes]
+Colls
+[Fans per range]
+Ventalls per serralada
+[Stream reach]
+Llargada dels rierols
+[Playa]
+Llacunes salades
+[Broad fan]
+Ventall ample
+[Long fan]
+Ventall llarg
+[Twin springs]
+Fonts bessones
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Els ventalls al·luvials són massa estrets per a les bases; feu servir un mapa més gran, una separació més gran de les serralades, carenes més estretes o llacunes salades més petites.

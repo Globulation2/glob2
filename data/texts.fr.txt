@@ -2768,3 +2768,25 @@ Méandres de la rivière
 Terrasses inondées
 [Sinkholes]
 Dolines
+[Bajada]
+Cônes alluviaux
+[Range spacing]
+Espacement des chaînes
+[Ridge width]
+Largeur des crêtes
+[Passes]
+Cols
+[Fans per range]
+Cônes par chaîne
+[Stream reach]
+Longueur des ruisseaux
+[Playa]
+Lacs salés
+[Broad fan]
+Cône large
+[Long fan]
+Cône allongé
+[Twin springs]
+Sources jumelles
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Les piémonts alluviaux sont trop étroits pour les bases ; utilisez une carte plus grande, un plus grand espacement des chaînes, des crêtes plus étroites ou des lacs salés plus petits.
