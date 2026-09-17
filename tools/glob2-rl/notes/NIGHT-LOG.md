@@ -445,3 +445,29 @@ to beating numbi 4W-1L once the anchor bug was fixed. But openings may need
 either (a) a small amount of policy state, or (b) the count head conditioned on
 game phase rather than current holdings, so early targets reflect "what to
 build NEXT", not "what a team like me has".
+
+## Staffing rejected by the full eval (06:06)
+
+```
+ckpt_staff --staffing:  numbi 1W3L2cap | castor 0W4L2cap | warrush 0W5L1cap
+                        nicowar 0W5L1cap                             = 1W/22
+baseline (ckpt_cnt2, no staffing)                                    = 5W/22
+```
+
+The n=3 A/B said staffing helped -- higher early units in all three seeds and
+one fewer loss. The 24-game eval says the opposite. That is the second time
+tonight a 3-game signal pointed the wrong way, and it is the clearest possible
+argument for the rule: **sweeps propose, only a >=24-game eval decides.**
+
+Caveat before blaming staffing: two things changed against the 5W/22 baseline,
+not one. `ckpt_staff` retrained the count head (3 epochs, count_mae 0.3545 vs
+`ckpt_cnt2` 2 epochs, 0.3466) and the binary moved to NPS3. Running the proper
+control -- `ckpt_staff` with `--staffing` OFF -- before attributing the
+regression to staffing at all.
+
+A plausible mechanism if staffing is the cause: the head predicts the staffing
+a *teacher* building carries, and a teacher building sits in a 70-worker
+economy. Applying those numbers to a 10-worker economy over-commits the entire
+workforce to whichever buildings exist, which is the same distribution-shift
+failure as the count budget -- a target learned on teacher states, applied to
+states this agent actually reaches. Third instance tonight.
