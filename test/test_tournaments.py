@@ -358,6 +358,33 @@ class AnalysisTests(unittest.TestCase):
             self.assertEqual(len(paired),3)
             self.assertEqual(len({j['inputs']['map']['job'] for j in paired}),1)
 
+    def test_the_win_probability_rule_is_off_unless_the_design_asks(self):
+        """It changes the outcome that gets measured, so it must never arrive by
+        default -- and when it is asked for it has to reach the engine."""
+        from tools.tournaments.experiments import Planner
+        from tools.tournaments.jobs import EngineJob
+        bundle = {'id': 'a'*64, 'capabilities': {
+            'ais': [{'id': 1, 'name': 'numbi'}, {'id': 2, 'name': 'castor'}],
+            'generators': [{'method': 15, 'editorOnly': False}]}}
+        base = {'id': 'sample', 'sample_games': 5, 'sample_seed': 3}
+        plain = Planner('ai_comparison', dict(base), [bundle]).plan()
+        for job in plain['jobs']:
+            self.assertNotIn('win_probability_permille', job['config'])
+        asked = Planner('ai_comparison', dict(base, win_probability_permille=970), [bundle]).plan()
+        games = [j for j in asked['jobs'] if j['type'] == 'game']
+        self.assertTrue(games)
+        for job in games:
+            self.assertEqual(job['config']['win_probability_permille'], 970)
+        # And the flag has to survive the trip into the engine's command line,
+        # which is the only part the engine actually sees.
+        bundle_directory = {'directory': '/bundle', 'executable': 'glob2'}
+        arguments = EngineJob('game').command(games[0], bundle_directory, '/tmp/attempt', {})
+        self.assertIn('--win-probability', arguments)
+        self.assertEqual(arguments[arguments.index('--win-probability') + 1], '970')
+        plain_game = next(j for j in plain['jobs'] if j['type'] == 'game')
+        self.assertNotIn('--win-probability',
+                         EngineJob('game').command(plain_game, bundle_directory, '/tmp/attempt', {}))
+
     def test_sample_games_draws_independent_properties_via_inline_generation(self):
         """sample_games is the one place ai_comparison departs from an exhaustive
         cross product -- it must stay the only place, not a second, disconnected
