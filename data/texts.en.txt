@@ -2448,6 +2448,36 @@ Sunglasses
 Heart
 [Star]
 Star
+[Neutral face]
+Neutral face
+[Sleeping face]
+Sleeping face
+[Grinning face]
+Grinning face
+[Kissing face]
+Kissing face
+[Angry face]
+Angry face
+[Tongue out]
+Tongue out
+[Skull]
+Skull
+[Flower]
+Flower
+[Four-leaf clover]
+Four-leaf clover
+[Teardrop]
+Teardrop
+[Cloud]
+Cloud
+[Gem]
+Gem
+[Apple]
+Apple
+[Speech bubble]
+Speech bubble
+[Shield]
+Shield
 [Emoji style]
 Emoji style
 [Outline]

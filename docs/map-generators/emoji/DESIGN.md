@@ -14,14 +14,25 @@ reroll the artwork or roads.
 
 | Control | Values |
 | --- | --- |
-| `character` | 0 Random; 1 Smiley; 2 Sad face; 3 Winking face; 4 Surprised face; 5 Heart eyes; 6 Sunglasses; 7 Heart; 8 Star |
+| `character` | 0 Random; 1 Smiley; 2 Sad face; 3 Winking face; 4 Surprised face; 5 Heart eyes; 6 Sunglasses; 7 Heart; 8 Star; 9 Neutral face; 10 Sleeping face; 11 Grinning face; 12 Kissing face; 13 Angry face; 14 Tongue out; 15 Skull; 16 Flower; 17 Four-leaf clover; 18 Teardrop; 19 Cloud; 20 Gem; 21 Apple; 22 Speech bubble; 23 Shield |
 | `outline` | 0 Random; 1 Outline; 2 Filled |
 | `inverse` | 0 Random; 1 Regular (ink is water); 2 Inverse (ink is grass) |
 | `crossings` | 2, 4 (default), 6, 8 radial connections between bypass and artwork |
 | resource amounts | Ambient wheat, wood, stone, algae and fruit; 100% is normal |
 
 Faces retain their eyes and mouths in both styles: these are ink strokes in an
-outline and holes in a filled face. Heart and star have hollow outline variants.
+outline and holes in a filled face. Heart, star, clover, teardrop, cloud and apple are
+plain silhouettes with hollow outline variants; the skull, flower centre, gem facets,
+speech-bubble dots and shield cross are features like a face's. New characters are
+appended to the list, because an explicit `character` value stores its position.
+
+Keep feature land within about 0.55 of the radius, the depth at which a crossing gives
+up. The first versions of the sleeping and grinning eyes, the tongue and the gem facets
+reached further; a crossing then landed on them and a colony was placed on the cramped
+island, failing validation in eight-colony maps. Pulled inside, their failure rate over
+16 seeds at 256 and 512 with eight colonies (2.0% and 0.1%) matches the original
+characters' (2.5% and 0.2%); with four colonies no character failed. Start placement on
+feature islands reached by a crossing is a known limit of every face, not only new ones.
 Regular outlines divide a grass interior from the surrounding country; crossings
 bridge the rim's water. Filled lagoons make shoreline and swimming important. Inverse
 filled shapes provide a central continent. Inverse outlines use thicker strokes

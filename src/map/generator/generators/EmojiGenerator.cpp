@@ -36,8 +36,18 @@ constexpr int kFoodSearchRadius = 12;
 constexpr int kMinimumStartSpacing = 28;
 constexpr int kMinimumBuildingOrigins = 32;
 constexpr int kStarterCrop = 48;
-constexpr const char *kCharacters[] = {"smile",      "sad",        "wink",  "surprised",
-									   "heart-eyes", "sunglasses", "heart", "star"};
+// Append new characters: an explicit `character` option stores the position in this list.
+enum Character
+{
+	Smile, Sad, Wink, Surprised, HeartEyes, Sunglasses, Heart, Star, Neutral, Sleeping, Grin, Kissing,
+	Angry, TongueOut, Skull, Flower, Clover, Teardrop, Cloud, Gem, Apple, SpeechBubble, Shield,
+	CharacterCount
+};
+constexpr const char *kCharacters[CharacterCount] = {
+	"smile",   "sad",        "wink",       "surprised", "heart-eyes", "sunglasses",
+	"heart",   "star",       "neutral",    "sleeping",  "grin",       "kissing",
+	"angry",   "tongue-out", "skull",      "flower",    "clover",     "teardrop",
+	"cloud",   "gem",        "apple",      "speech-bubble", "shield"};
 struct Layout
 {
 	Torus t{1, 1};
@@ -47,51 +57,29 @@ struct Layout
 };
 
 // All artwork is native mask geometry, independent of installed fonts and emoji artwork.
+// Shapes are drawn in units of the radius about the map centre, with y pointing down.
 std::vector<unsigned char> glyph(const Torus &t, int character, bool outline, double radius,
 								 double thickness)
 {
 	std::vector<unsigned char> body(t.size(), 0), features(t.size(), 0);
 	const double cx = t.w / 2.0, cy = t.h / 2.0;
-	if (character < 6)
+	const auto fill = [&](std::vector<unsigned char> &mask,
+						  const std::function<bool(double, double)> &inside)
 	{
 		for (int i = 0; i < t.size(); ++i)
-			body[i] = std::hypot(i % t.w - cx, i / t.w - cy) <= radius;
-	}
-	else
+			if (inside((i % t.w - cx) / radius, (i / t.w - cy) / radius))
+				mask[i] = 1;
+	};
+	const auto polygon = [&](std::vector<unsigned char> &mask,
+							 const std::vector<std::pair<double, double>> &points)
 	{
-		std::vector<SubtilePoint> polygon;
-		const int points = character == 6 ? 120 : 10;
-		for (int j = 0; j < points; ++j)
-		{
-			const double a = 2 * kPi * j / points;
-			double x, y;
-			if (character == 6)
-			{
-				x = std::pow(std::sin(a), 3);
-				y = -(13 * std::cos(a) - 5 * std::cos(2 * a) - 2 * std::cos(3 * a) -
-					  std::cos(4 * a)) /
-					16;
-			}
-			else
-			{
-				const double reach = j % 2 ? 0.46 : 1.0;
-				x = reach * std::cos(a - kPi / 2);
-				y = reach * std::sin(a - kPi / 2);
-			}
-			polygon.push_back({std::llround((cx + x * radius) * kSubtile),
+		std::vector<SubtilePoint> outline;
+		for (const auto &[x, y] : points)
+			outline.push_back({std::llround((cx + x * radius) * kSubtile),
 							   std::llround((cy + y * radius) * kSubtile)});
-		}
-		fillPolygon(body, t, polygon);
-	}
-	if (outline)
-	{
-		const auto inside = erode(t, body, int(std::ceil(thickness)));
-		for (int i = 0; i < t.size(); ++i)
-			body[i] = body[i] && !inside[i];
-	}
-	if (character >= 6)
-		return body;
-	const auto stroke = [&](std::vector<StrokePoint> path)
+		fillPolygon(mask, t, outline);
+	};
+	const auto stroke = [&](std::vector<unsigned char> &mask, std::vector<StrokePoint> path)
 	{
 		for (auto &p : path)
 		{
@@ -99,8 +87,128 @@ std::vector<unsigned char> glyph(const Torus &t, int character, bool outline, do
 			p.y = cy + p.y * radius;
 			p.halfWidth *= radius;
 		}
-		strokePath(features, t, path);
+		strokePath(mask, t, path);
 	};
+	const auto disc = [](double u, double v, double x, double y, double r)
+	{ return (u - x) * (u - x) + (v - y) * (v - y) <= r * r; };
+	const auto roundedBox = [](double u, double v, double x, double y, double hw, double hh, double r)
+	{
+		const double dx = std::max(std::abs(u - x) - (hw - r), 0.0),
+					 dy = std::max(std::abs(v - y) - (hh - r), 0.0);
+		return std::abs(u - x) <= hw && std::abs(v - y) <= hh && dx * dx + dy * dy <= r * r;
+	};
+	switch (character)
+	{
+	case Skull:
+		fill(body, [&](double u, double v)
+			 { return disc(u, v, 0, -0.12, 0.86) || roundedBox(u, v, 0, 0.45, 0.50, 0.42, 0.15); });
+		break;
+	case Heart:
+	case Star:
+	{
+		std::vector<std::pair<double, double>> points;
+		const int count = character == Heart ? 120 : 10;
+		for (int j = 0; j < count; ++j)
+		{
+			const double a = 2 * kPi * j / count;
+			if (character == Heart)
+				points.push_back({std::pow(std::sin(a), 3), -(13 * std::cos(a) - 5 * std::cos(2 * a) -
+															  2 * std::cos(3 * a) - std::cos(4 * a)) /
+																16});
+			else
+			{
+				const double reach = j % 2 ? 0.46 : 1.0;
+				points.push_back({reach * std::cos(a - kPi / 2), reach * std::sin(a - kPi / 2)});
+			}
+		}
+		polygon(body, points);
+		break;
+	}
+	case Flower:
+	{
+		// Five petals that meet well outside the centre, so every petal stays one piece of land.
+		std::vector<std::pair<double, double>> points;
+		for (int j = 0; j < 180; ++j)
+		{
+			const double a = 2 * kPi * j / 180, reach = 0.62 + 0.38 * std::abs(std::cos(2.5 * a));
+			points.push_back({reach * std::cos(a - kPi / 2), reach * std::sin(a - kPi / 2)});
+		}
+		polygon(body, points);
+		break;
+	}
+	case Clover:
+		fill(body, [&](double u, double v)
+			 {
+				 return disc(u, v, 0, -0.08, 0.30) || disc(u, v, -0.34, -0.42, 0.38) ||
+						disc(u, v, 0.34, -0.42, 0.38) || disc(u, v, -0.34, 0.26, 0.38) ||
+						disc(u, v, 0.34, 0.26, 0.38);
+			 });
+		stroke(body, {{0, 0.42, 0.09}, {0.10, 0.72, 0.08}, {0.26, 0.94, 0.07}});
+		break;
+	case Teardrop:
+	{
+		std::vector<std::pair<double, double>> points;
+		for (int j = 0; j < 120; ++j)
+		{
+			const double a = 2 * kPi * j / 120;
+			points.push_back({std::sin(a) * std::sin(a / 2), -0.98 * std::cos(a)});
+		}
+		polygon(body, points);
+		break;
+	}
+	case Cloud:
+		fill(body, [&](double u, double v)
+			 {
+				 return disc(u, v, -0.55, 0.24, 0.34) || disc(u, v, -0.22, -0.02, 0.40) ||
+						disc(u, v, 0.25, -0.10, 0.48) || disc(u, v, 0.60, 0.24, 0.34) ||
+						(u >= -0.55 && u <= 0.60 && v >= 0.10 && v <= 0.58);
+			 });
+		break;
+	case Gem:
+		polygon(body, {{-0.45, -0.65}, {0.45, -0.65}, {0.95, -0.18}, {0, 0.92}, {-0.95, -0.18}});
+		break;
+	case Apple:
+		fill(body, [&](double u, double v)
+			 {
+				 // The leaf is an ellipse tilted up and away from the stem.
+				 const double c = std::cos(-0.44), s = std::sin(-0.44), lu = u - 0.30, lv = v + 0.68;
+				 const double along = (lu * c + lv * s) / 0.25, across = (-lu * s + lv * c) / 0.11;
+				 return disc(u, v, -0.33, 0.10, 0.60) || disc(u, v, 0.33, 0.10, 0.60) ||
+						along * along + across * across <= 1;
+			 });
+		stroke(body, {{0, -0.32, 0.06}, {0.06, -0.80, 0.05}});
+		break;
+	case SpeechBubble:
+		fill(body, [&](double u, double v) { return roundedBox(u, v, 0, -0.15, 0.95, 0.58, 0.32); });
+		polygon(body, {{-0.55, 0.30}, {-0.10, 0.30}, {-0.65, 0.95}});
+		break;
+	case Shield:
+	{
+		// Straight sides curving to a point: a quadratic Bezier on each side.
+		std::vector<std::pair<double, double>> points{{-0.82, -0.92}, {0.82, -0.92}};
+		for (int j = 0; j <= 24; ++j)
+		{
+			const double s = j / 24.0;
+			points.push_back({0.82 * (1 - s * s), -0.07 + 1.24 * s - 0.24 * s * s});
+		}
+		for (int j = 23; j >= 0; --j)
+		{
+			const double s = j / 24.0;
+			points.push_back({-0.82 * (1 - s * s), -0.07 + 1.24 * s - 0.24 * s * s});
+		}
+		polygon(body, points);
+		break;
+	}
+	default:
+		for (int i = 0; i < t.size(); ++i)
+			body[i] = std::hypot(i % t.w - cx, i / t.w - cy) <= radius;
+	}
+	if (outline)
+	{
+		const auto inside = erode(t, body, int(std::ceil(thickness)));
+		for (int i = 0; i < t.size(); ++i)
+			body[i] = body[i] && !inside[i];
+	}
 	const auto oval = [&](double x, double y, double rx, double ry)
 	{
 		for (int i = 0; i < t.size(); ++i)
@@ -111,48 +219,117 @@ std::vector<unsigned char> glyph(const Torus &t, int character, bool outline, do
 				features[i] = 1;
 		}
 	};
-	if (character == 4)
+	const auto mouth = [&](bool frown, double lift = 0)
 	{
+		std::vector<StrokePoint> path;
+		for (int j = 0; j <= 32; ++j)
+		{
+			const double x = -0.49 + 0.98 * j / 32;
+			path.push_back({x, (frown ? 0.23 + 0.85 * x * x : 0.52 - 0.85 * x * x) - lift, 0.05});
+		}
+		stroke(features, path);
+	};
+	// Keep feature land within about 0.55 of the radius: crossings stop short of that, so a larger
+	// eye, tongue or facet island would get a causeway and a cramped colony of its own.
+	const auto eyes = [&] { oval(-0.34, -0.28, 0.095, 0.14), oval(0.34, -0.28, 0.095, 0.14); };
+	switch (character)
+	{
+	case Smile:
+	case Sad:
+	case Surprised:
+		eyes();
+		break;
+	case Wink:
+		oval(-0.34, -0.28, 0.095, 0.14);
+		stroke(features, {{0.20, -0.23, 0.045}, {0.34, -0.31, 0.045}, {0.48, -0.23, 0.045}});
+		break;
+	case HeartEyes:
 		for (double x : {-0.36, 0.36})
 		{
 			oval(x - 0.08, -0.29, 0.12, 0.13);
 			oval(x + 0.08, -0.29, 0.12, 0.13);
-			stroke({{x - 0.14, -0.27, 0.08}, {x, -0.08, 0.06}, {x + 0.14, -0.27, 0.08}});
+			stroke(features, {{x - 0.14, -0.27, 0.08}, {x, -0.08, 0.06}, {x + 0.14, -0.27, 0.08}});
 		}
+		break;
+	case Sunglasses:
+		stroke(features, {{-0.76, -0.29, 0.055}, {0.76, -0.29, 0.055}});
+		stroke(features, {{-0.53, -0.25, 0.15}, {-0.30, -0.25, 0.15}});
+		stroke(features, {{0.30, -0.25, 0.15}, {0.53, -0.25, 0.15}});
+		break;
+	case Neutral:
+		eyes();
+		stroke(features, {{-0.38, 0.40, 0.05}, {0.38, 0.40, 0.05}});
+		break;
+	case Sleeping:
+		for (double x : {-0.30, 0.30})
+			stroke(features, {{x - 0.12, -0.29, 0.045}, {x, -0.22, 0.045}, {x + 0.12, -0.29, 0.045}});
+		oval(0, 0.45, 0.09, 0.07);
+		break;
+	case Grin:
+		for (double x : {-0.30, 0.30})
+			stroke(features, {{x - 0.12, -0.22, 0.045}, {x, -0.33, 0.045}, {x + 0.12, -0.22, 0.045}});
+		// A wide open D-shaped mouth: the lower half of an ellipse.
+		fill(features, [](double u, double v)
+			 {
+				 const double du = u / 0.50, dv = (v - 0.16) / 0.40;
+				 return v >= 0.16 && du * du + dv * dv <= 1;
+			 });
+		break;
+	case Kissing:
+		eyes();
+		oval(0.08, 0.42, 0.08, 0.11);
+		break;
+	case Angry:
+		eyes();
+		stroke(features, {{-0.58, -0.62, 0.05}, {-0.16, -0.50, 0.05}});
+		stroke(features, {{0.16, -0.50, 0.05}, {0.58, -0.62, 0.05}});
+		mouth(true);
+		break;
+	case TongueOut:
+		eyes();
+		mouth(false, 0.16);
+		oval(0.12, 0.42, 0.09, 0.08);
+		break;
+	case Skull:
+		oval(-0.33, -0.15, 0.19, 0.21);
+		oval(0.33, -0.15, 0.19, 0.21);
+		polygon(features, {{0, 0.12}, {0.09, 0.30}, {-0.09, 0.30}});
+		stroke(features, {{-0.36, 0.58, 0.035}, {0.36, 0.58, 0.035}});
+		for (double x : {-0.24, -0.08, 0.08, 0.24})
+			stroke(features, {{x, 0.48, 0.035}, {x, 0.70, 0.035}});
+		break;
+	case Flower:
+		oval(0, 0, 0.20, 0.20);
+		break;
+	case Gem:
+		// Facet lines stop short of each other and the edge, so they never cut the gem apart.
+		stroke(features, {{-0.46, -0.18, 0.04}, {0.46, -0.18, 0.04}});
+		stroke(features, {{-0.30, -0.04, 0.04}, {-0.04, 0.40, 0.04}});
+		stroke(features, {{0.30, -0.04, 0.04}, {0.04, 0.40, 0.04}});
+		break;
+	case SpeechBubble:
+		for (double x : {-0.42, 0.0, 0.42})
+			oval(x, -0.15, 0.12, 0.12);
+		break;
+	case Shield:
+		stroke(features, {{0, -0.62, 0.07}, {0, 0.50, 0.07}});
+		stroke(features, {{-0.50, -0.28, 0.07}, {0.50, -0.28, 0.07}});
+		break;
+	default:
+		return body;
 	}
-	else if (character == 5)
-	{
-		stroke({{-0.76, -0.29, 0.055}, {0.76, -0.29, 0.055}});
-		stroke({{-0.53, -0.25, 0.15}, {-0.30, -0.25, 0.15}});
-		stroke({{0.30, -0.25, 0.15}, {0.53, -0.25, 0.15}});
-	}
-	else
-	{
-		oval(-0.34, -0.28, 0.095, 0.14);
-		if (character == 2)
-			stroke({{0.20, -0.23, 0.045}, {0.34, -0.31, 0.045}, {0.48, -0.23, 0.045}});
-		else
-			oval(0.34, -0.28, 0.095, 0.14);
-	}
-	if (character == 3)
+	if (character == Smile || character == Wink || character == HeartEyes ||
+		character == Sunglasses)
+		mouth(false);
+	else if (character == Sad)
+		mouth(true);
+	else if (character == Surprised)
 		oval(0, 0.37, 0.15, 0.21);
-	else
-	{
-		std::vector<StrokePoint> mouth;
-		for (int j = 0; j <= 32; ++j)
-		{
-			const double x = -0.49 + 0.98 * j / 32;
-			const double y = character == 1 ? 0.23 + 0.85 * x * x : 0.52 - 0.85 * x * x;
-			mouth.push_back({x, y, 0.05});
-		}
-		stroke(mouth);
-	}
-	// Features are negative space in a filled face, and ink in an outlined face.
+	// Features are negative space in a filled shape, and ink in an outlined one.
 	for (int i = 0; i < t.size(); ++i)
 		body[i] = outline ? (body[i] || features[i]) : (body[i] && !features[i]);
 	return body;
 }
-
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
 	const EmojiOptions o(request);
@@ -166,7 +343,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	}
 	const double cx = t.w / 2.0, cy = t.h / 2.0, radius = 0.26 * t.w;
 	const int character =
-		o.character == 0 ? int(context.bounded("emoji-character", 8)) : o.character - 1;
+		o.character == 0 ? int(context.bounded("emoji-character", CharacterCount)) : o.character - 1;
 	const bool outline = o.outline == 0 ? context.bounded("emoji-style", 2) != 0 : o.outline == 1;
 	const bool inverse = o.inverse == 0 ? context.bounded("emoji-terrain", 2) != 0 : o.inverse == 2;
 	// An inverse outline is the only land: a rim ribbon every colony's town, farm and front share.
@@ -576,11 +753,14 @@ GeneratorDefinition emojiDefinition()
 		"emoji",
 		34,
 		"Emoji",
-		10,
+		11,
 		false,
 		{GeneratorControl::choice("character", "Emoji character",
 								  {"Random", "Smiley", "Sad face", "Winking face", "Surprised face",
-								   "Heart eyes", "Sunglasses", "Heart", "Star"},
+								   "Heart eyes", "Sunglasses", "Heart", "Star", "Neutral face",
+								   "Sleeping face", "Grinning face", "Kissing face", "Angry face",
+								   "Tongue out", "Skull", "Flower", "Four-leaf clover", "Teardrop",
+								   "Cloud", "Gem", "Apple", "Speech bubble", "Shield"},
 								  0, ControlGroup::Terrain),
 		 GeneratorControl::choice("outline", "Emoji style", {"Random", "Outline", "Filled"}, 0,
 								  ControlGroup::Terrain),

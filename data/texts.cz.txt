@@ -2450,6 +2450,36 @@ Sluneční brýle
 Srdce
 [Star]
 Hvězda
+[Neutral face]
+Neutrální tvář
+[Sleeping face]
+Spící tvář
+[Grinning face]
+Rozesmátá tvář
+[Kissing face]
+Líbající tvář
+[Angry face]
+Naštvaná tvář
+[Tongue out]
+Vyplazený jazyk
+[Skull]
+Lebka
+[Flower]
+Květina
+[Four-leaf clover]
+Čtyřlístek
+[Teardrop]
+Kapka
+[Cloud]
+Mrak
+[Gem]
+Drahokam
+[Apple]
+Jablko
+[Speech bubble]
+Bublina
+[Shield]
+Štít
 [Emoji style]
 Styl emoji
 [Outline]

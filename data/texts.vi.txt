@@ -2446,6 +2446,36 @@ Kính râm
 Trái tim
 [Star]
 Ngôi sao
+[Neutral face]
+Mặt bình thản
+[Sleeping face]
+Mặt đang ngủ
+[Grinning face]
+Mặt cười toe
+[Kissing face]
+Mặt hôn
+[Angry face]
+Mặt giận dữ
+[Tongue out]
+Lè lưỡi
+[Skull]
+Đầu lâu
+[Flower]
+Bông hoa
+[Four-leaf clover]
+Cỏ bốn lá
+[Teardrop]
+Giọt nước
+[Cloud]
+Đám mây
+[Gem]
+Đá quý
+[Apple]
+Quả táo
+[Speech bubble]
+Bong bóng thoại
+[Shield]
+Khiên
 [Emoji style]
 Kiểu biểu cảm
 [Outline]

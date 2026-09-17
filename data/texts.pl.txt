@@ -2450,6 +2450,36 @@ Okulary przeciwsłoneczne
 Serce
 [Star]
 Gwiazda
+[Neutral face]
+Neutralna twarz
+[Sleeping face]
+Śpiąca twarz
+[Grinning face]
+Roześmiana twarz
+[Kissing face]
+Całująca twarz
+[Angry face]
+Zła twarz
+[Tongue out]
+Wystawiony język
+[Skull]
+Czaszka
+[Flower]
+Kwiat
+[Four-leaf clover]
+Czterolistna koniczyna
+[Teardrop]
+Kropla
+[Cloud]
+Chmura
+[Gem]
+Klejnot
+[Apple]
+Jabłko
+[Speech bubble]
+Dymek
+[Shield]
+Tarcza
 [Emoji style]
 Styl emoji
 [Outline]

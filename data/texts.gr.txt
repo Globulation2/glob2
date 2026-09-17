@@ -2520,6 +2520,36 @@ Emoji
 Καρδιά
 [Star]
 Αστέρι
+[Neutral face]
+Ουδέτερο πρόσωπο
+[Sleeping face]
+Κοιμισμένο πρόσωπο
+[Grinning face]
+Γελαστό πρόσωπο
+[Kissing face]
+Πρόσωπο που φιλάει
+[Angry face]
+Θυμωμένο πρόσωπο
+[Tongue out]
+Βγαλμένη γλώσσα
+[Skull]
+Κρανίο
+[Flower]
+Λουλούδι
+[Four-leaf clover]
+Τετράφυλλο τριφύλλι
+[Teardrop]
+Σταγόνα
+[Cloud]
+Σύννεφο
+[Gem]
+Πολύτιμος λίθος
+[Apple]
+Μήλο
+[Speech bubble]
+Συννεφάκι διαλόγου
+[Shield]
+Ασπίδα
 [Emoji style]
 Στυλ emoji
 [Outline]

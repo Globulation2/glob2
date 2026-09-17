@@ -2512,6 +2512,36 @@ Occhiali da sole
 Cuore
 [Star]
 Stella
+[Neutral face]
+Viso neutro
+[Sleeping face]
+Viso addormentato
+[Grinning face]
+Viso che ride
+[Kissing face]
+Viso che bacia
+[Angry face]
+Viso arrabbiato
+[Tongue out]
+Linguaccia
+[Skull]
+Teschio
+[Flower]
+Fiore
+[Four-leaf clover]
+Quadrifoglio
+[Teardrop]
+Goccia
+[Cloud]
+Nuvola
+[Gem]
+Gemma
+[Apple]
+Mela
+[Speech bubble]
+Fumetto
+[Shield]
+Scudo
 [Emoji style]
 Stile emoji
 [Outline]

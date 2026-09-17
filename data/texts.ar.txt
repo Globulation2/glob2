@@ -2448,6 +2448,36 @@ Emoji
 قلب
 [Star]
 نجمة
+[Neutral face]
+وجه محايد
+[Sleeping face]
+وجه نائم
+[Grinning face]
+وجه ضاحك
+[Kissing face]
+وجه يرسل قبلة
+[Angry face]
+وجه غاضب
+[Tongue out]
+لسان مخرج
+[Skull]
+جمجمة
+[Flower]
+زهرة
+[Four-leaf clover]
+برسيم رباعي الأوراق
+[Teardrop]
+قطرة
+[Cloud]
+غيمة
+[Gem]
+جوهرة
+[Apple]
+تفاحة
+[Speech bubble]
+فقاعة كلام
+[Shield]
+درع
 [Emoji style]
 نمط الرمز التعبيري
 [Outline]

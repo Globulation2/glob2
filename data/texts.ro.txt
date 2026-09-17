@@ -2450,6 +2450,36 @@ Ochelari de soare
 Inimă
 [Star]
 Stea
+[Neutral face]
+Față neutră
+[Sleeping face]
+Față adormită
+[Grinning face]
+Față care râde
+[Kissing face]
+Față care sărută
+[Angry face]
+Față furioasă
+[Tongue out]
+Limba scoasă
+[Skull]
+Craniu
+[Flower]
+Floare
+[Four-leaf clover]
+Trifoi cu patru foi
+[Teardrop]
+Picătură
+[Cloud]
+Nor
+[Gem]
+Nestemată
+[Apple]
+Măr
+[Speech bubble]
+Bulă de dialog
+[Shield]
+Scut
 [Emoji style]
 Stil emoji
 [Outline]

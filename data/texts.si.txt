@@ -2450,6 +2450,36 @@ Sončna očala
 Srce
 [Star]
 Zvezda
+[Neutral face]
+Nevtralen obraz
+[Sleeping face]
+Speč obraz
+[Grinning face]
+Režeč obraz
+[Kissing face]
+Poljubljajoč obraz
+[Angry face]
+Jezen obraz
+[Tongue out]
+Iztegnjen jezik
+[Skull]
+Lobanja
+[Flower]
+Cvet
+[Four-leaf clover]
+Štiriperesna deteljica
+[Teardrop]
+Kapljica
+[Cloud]
+Oblak
+[Gem]
+Dragulj
+[Apple]
+Jabolko
+[Speech bubble]
+Oblaček z besedilom
+[Shield]
+Ščit
 [Emoji style]
 Slog emojija
 [Outline]

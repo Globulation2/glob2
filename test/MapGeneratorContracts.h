@@ -58,7 +58,7 @@ inline void emojiContracts()
 	assert(characters.size() >= 4 && styles.size() == 2 && terrains.size() == 2);
 	// All explicit variants must work and yield distinct maps at the same seed.
 	std::set<std::uint64_t> variants;
-	for (int character = 1; character <= 8; ++character)
+	for (int character = 1; character <= 23; ++character)
 		for (int outline : {1, 2})
 			for (int inverse : {1, 2})
 			{
@@ -82,7 +82,7 @@ inline void emojiContracts()
 					for (int x = 0; x < (1 << request.wDec); ++x)
 						assert(world.map.getUMTerrain(x, y) == alone.map.getUMTerrain(x, y));
 			}
-	assert(variants.size() == 32);
+	assert(variants.size() == 92);
 	// Playtest regression: dense deposits consumed the remaining construction room
 	// around an eight-colony filled-water sunglasses start. Relief must preserve terrain.
 	request.seed = 74021;
@@ -109,7 +109,7 @@ inline void emojiContracts()
 	request.nbTeams = 9;
 	Game crowded(nullptr);
 	assert(service.generate(crowded, request).error == GenerationError::InvalidRequest);
-	puts("PASS Emoji: random defaults, all 32 explicit variants, terrain independent of "
+	puts("PASS Emoji: random defaults, all 92 explicit variants, terrain independent of "
 		 "colonies/workers, unsupported geometry rejected");
 }
 

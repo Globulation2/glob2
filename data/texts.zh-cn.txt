@@ -2446,6 +2446,36 @@ Emoji
 爱心
 [Star]
 星星
+[Neutral face]
+面无表情
+[Sleeping face]
+睡脸
+[Grinning face]
+咧嘴笑
+[Kissing face]
+亲吻的脸
+[Angry face]
+生气的脸
+[Tongue out]
+吐舌头
+[Skull]
+骷髅
+[Flower]
+花
+[Four-leaf clover]
+四叶草
+[Teardrop]
+水滴
+[Cloud]
+云
+[Gem]
+宝石
+[Apple]
+苹果
+[Speech bubble]
+对话框
+[Shield]
+盾牌
 [Emoji style]
 表情样式
 [Outline]

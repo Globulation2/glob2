@@ -2458,6 +2458,36 @@ Güneş gözlüğü
 Kalp
 [Star]
 Yıldız
+[Neutral face]
+Nötr yüz
+[Sleeping face]
+Uyuyan yüz
+[Grinning face]
+Sırıtan yüz
+[Kissing face]
+Öpücük veren yüz
+[Angry face]
+Kızgın yüz
+[Tongue out]
+Dil çıkaran yüz
+[Skull]
+Kafatası
+[Flower]
+Çiçek
+[Four-leaf clover]
+Dört yapraklı yonca
+[Teardrop]
+Damla
+[Cloud]
+Bulut
+[Gem]
+Mücevher
+[Apple]
+Elma
+[Speech bubble]
+Konuşma balonu
+[Shield]
+Kalkan
 [Emoji style]
 Emoji biçimi
 [Outline]

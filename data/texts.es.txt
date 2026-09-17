@@ -2450,6 +2450,36 @@ Gafas de sol
 Corazón
 [Star]
 Estrella
+[Neutral face]
+Cara neutral
+[Sleeping face]
+Cara dormida
+[Grinning face]
+Cara sonriendo
+[Kissing face]
+Cara besando
+[Angry face]
+Cara enfadada
+[Tongue out]
+Lengua fuera
+[Skull]
+Calavera
+[Flower]
+Flor
+[Four-leaf clover]
+Trébol de cuatro hojas
+[Teardrop]
+Gota
+[Cloud]
+Nube
+[Gem]
+Gema
+[Apple]
+Manzana
+[Speech bubble]
+Bocadillo
+[Shield]
+Escudo
 [Emoji style]
 Estilo de emoji
 [Outline]

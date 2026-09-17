@@ -2450,6 +2450,36 @@ Napszemüveg
 Szív
 [Star]
 Csillag
+[Neutral face]
+Semleges arc
+[Sleeping face]
+Alvó arc
+[Grinning face]
+Vigyorgó arc
+[Kissing face]
+Csókot adó arc
+[Angry face]
+Dühös arc
+[Tongue out]
+Kinyújtott nyelv
+[Skull]
+Koponya
+[Flower]
+Virág
+[Four-leaf clover]
+Négylevelű lóhere
+[Teardrop]
+Csepp
+[Cloud]
+Felhő
+[Gem]
+Drágakő
+[Apple]
+Alma
+[Speech bubble]
+Szövegbuborék
+[Shield]
+Pajzs
 [Emoji style]
 Emodzsi stílusa
 [Outline]

@@ -2458,6 +2458,36 @@ Slnečné okuliare
 Srdce
 [Star]
 Hviezda
+[Neutral face]
+Neutrálna tvár
+[Sleeping face]
+Spiaca tvár
+[Grinning face]
+Rozosmiata tvár
+[Kissing face]
+Bozkávajúca tvár
+[Angry face]
+Nahnevaná tvár
+[Tongue out]
+Vyplazený jazyk
+[Skull]
+Lebka
+[Flower]
+Kvet
+[Four-leaf clover]
+Štvorlístok
+[Teardrop]
+Kvapka
+[Cloud]
+Oblak
+[Gem]
+Drahokam
+[Apple]
+Jablko
+[Speech bubble]
+Bublina
+[Shield]
+Štít
 [Emoji style]
 Štýl emoji
 [Outline]

@@ -2446,6 +2446,36 @@ Emoji
 Серце
 [Star]
 Зірка
+[Neutral face]
+Нейтральне обличчя
+[Sleeping face]
+Сонне обличчя
+[Grinning face]
+Усміхнене обличчя
+[Kissing face]
+Обличчя, що цілує
+[Angry face]
+Сердите обличчя
+[Tongue out]
+Показує язика
+[Skull]
+Череп
+[Flower]
+Квітка
+[Four-leaf clover]
+Чотирилиста конюшина
+[Teardrop]
+Крапля
+[Cloud]
+Хмара
+[Gem]
+Коштовний камінь
+[Apple]
+Яблуко
+[Speech bubble]
+Бульбашка з реплікою
+[Shield]
+Щит
 [Emoji style]
 Стиль емодзі
 [Outline]

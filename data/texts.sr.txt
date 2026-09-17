@@ -2450,6 +2450,36 @@ Emoji
 Срце
 [Star]
 Звезда
+[Neutral face]
+Неутрално лице
+[Sleeping face]
+Успавано лице
+[Grinning face]
+Лице које се кези
+[Kissing face]
+Лице које љуби
+[Angry face]
+Љутито лице
+[Tongue out]
+Исплажен језик
+[Skull]
+Лобања
+[Flower]
+Цвет
+[Four-leaf clover]
+Детелина са четири листа
+[Teardrop]
+Кап
+[Cloud]
+Облак
+[Gem]
+Драгуљ
+[Apple]
+Јабука
+[Speech bubble]
+Облачић говора
+[Shield]
+Штит
 [Emoji style]
 Стил емоџија
 [Outline]

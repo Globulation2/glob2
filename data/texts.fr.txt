@@ -2460,6 +2460,36 @@ Lunettes de soleil
 Cœur
 [Star]
 Étoile
+[Neutral face]
+Visage neutre
+[Sleeping face]
+Visage endormi
+[Grinning face]
+Visage rieur
+[Kissing face]
+Visage qui embrasse
+[Angry face]
+Visage en colère
+[Tongue out]
+Langue tirée
+[Skull]
+Crâne
+[Flower]
+Fleur
+[Four-leaf clover]
+Trèfle à quatre feuilles
+[Teardrop]
+Goutte
+[Cloud]
+Nuage
+[Gem]
+Gemme
+[Apple]
+Pomme
+[Speech bubble]
+Bulle de dialogue
+[Shield]
+Bouclier
 [Emoji style]
 Style d’émoji
 [Outline]

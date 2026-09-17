@@ -2446,6 +2446,36 @@ Kacamata hitam
 Hati
 [Star]
 Bintang
+[Neutral face]
+Wajah datar
+[Sleeping face]
+Wajah tidur
+[Grinning face]
+Wajah menyeringai
+[Kissing face]
+Wajah mencium
+[Angry face]
+Wajah marah
+[Tongue out]
+Menjulurkan lidah
+[Skull]
+Tengkorak
+[Flower]
+Bunga
+[Four-leaf clover]
+Semanggi berdaun empat
+[Teardrop]
+Tetesan
+[Cloud]
+Awan
+[Gem]
+Permata
+[Apple]
+Apel
+[Speech bubble]
+Balon kata
+[Shield]
+Perisai
 [Emoji style]
 Gaya emoji
 [Outline]
