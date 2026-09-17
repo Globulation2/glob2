@@ -52,6 +52,13 @@ namespace WinProbability
 	const Sint64 FITNESS_ONE = (Sint64)1 << FITNESS_SHIFT;
 	const Sint64 FRACTION_ONE = (Sint64)1 << FRACTION_SHIFT;
 
+	/// The model is read on the 512-tick boundary TeamStats already samples at,
+	/// which is the cadence it was fitted on, and never before this tick. The
+	/// opening samples can look lopsided for reasons that mean nothing -- one side
+	/// with two units and the other with none -- and no model has to defend that.
+	/// Kept in step with MINIMUM_DECISION_TICK in tools/win_probability_model.py.
+	const int MINIMUM_DECISION_TICK = 5120;
+
 	/// Measurements are clamped here before use. Nothing a team can accumulate
 	/// comes close, and the bound is what makes the overflow argument above hold
 	/// however strange the state gets.

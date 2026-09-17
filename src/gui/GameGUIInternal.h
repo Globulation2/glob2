@@ -29,6 +29,9 @@ using namespace GAGGUI;
 #define YPOS_BASE_UNIT (YPOS_BASE_DEFAULT + 10)
 #define YPOS_BASE_RESOURCE YPOS_BASE_DEFAULT
 
+// Below TeamStats::drawText, whose last line sits at +288.
+#define WIN_PROBABILITY_PANEL_YOFFSET 304
+
 #define YOFFSET_NAME 28
 #define YOFFSET_ICON 52
 #define YOFFSET_CARRYING 34
