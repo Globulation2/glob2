@@ -315,3 +315,37 @@ cell, so `workers`, `workersFuture`, `swarmRatio` and `priority` are never set
 by the network. Labour allocation -- which is what the early game IS -- is not
 expressible by the model at all. The population gate is a heuristic standing in
 for a head that should exist.
+
+## Methodology failure of my own (04:50)
+
+The `--build-per-unit` sweep returned this:
+
+```
+bpu=0  LOSS  tick5632: units=10 bld=1
+bpu=3  draw  tick5632: units=10 bld=1   tick19968: units=8 bld=1
+bpu=5  draw  tick5632: units=10 bld=1   tick19968: units=7 bld=1
+bpu=8  draw  tick5632: units=10 bld=1   tick19968: units=8 bld=1
+```
+
+`bpu=0` disables the gate, so it should reproduce the earlier scale=1.0 run --
+which gave units=9 bld=4 at 5632, 14 buildings by the end, and a draw. It did
+not. The server code is identical on that path; I checked.
+
+The explanation is that **the sweep scripts never set `GLOB2_TEST_SEED`**, so
+only the map was fixed and every game had a different game seed. These runs
+differ by variance, not by configuration.
+
+I wrote "single-game sweeps are worthless here, use >=6 games per config" in
+this very file at the start of the night, and then ran three more single-game
+sweeps and drew conclusions from two of them. The `--count-scale` conclusion
+("loosening makes it worse") rests on the same weak evidence and should be
+treated as unproven, not as the settled finding I recorded above.
+
+Rules going forward, for real this time:
+* Fix `GLOB2_TEST_SEED` in any diagnostic meant to be compared across configs.
+* Never change a default based on n=1. Sweeps propose; only a >=24-game eval
+  decides.
+* A single game is still useful for *mechanism* (does it crash, does it build
+  the wrong types, does it demolish) -- just never for *outcome*.
+
+Running the proper eval for `--build-per-unit 5` against the 5W/22 baseline.
