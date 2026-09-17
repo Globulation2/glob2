@@ -2794,3 +2794,23 @@ Crateri per colonia
 Campi di frumento
 [Bridges]
 Ponti
+[Karst towers]
+Torri carsiche
+[Tower spacing]
+Distanza tra le torri
+[Tower density]
+Densità delle torri
+[Paddy depth]
+Profondità delle risaie
+[Home design]
+Forma della base
+[Horseshoe]
+Ferro di cavallo
+[Twin gates]
+Porte gemelle
+[Three gates]
+Tre porte
+[Four gates]
+Quattro porte
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+I fiumi non trovano un passaggio tra le basi; usa una mappa più grande o meno colonie.

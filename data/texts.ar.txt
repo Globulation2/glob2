@@ -2730,3 +2730,23 @@ Emoji
 حقول القمح
 [Bridges]
 الجسور
+[Karst towers]
+أبراج كارستية
+[Tower spacing]
+تباعد الأبراج
+[Tower density]
+كثافة الأبراج
+[Paddy depth]
+عمق حقول الأرز
+[Home design]
+تصميم الموطن
+[Horseshoe]
+حدوة حصان
+[Twin gates]
+بوابتان متقابلتان
+[Three gates]
+ثلاث بوابات
+[Four gates]
+أربع بوابات
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+لم تجد الأنهار طريقًا بين المواطن؛ استخدم خريطة أكبر أو مستعمرات أقل.

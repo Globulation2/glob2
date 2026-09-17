@@ -2728,3 +2728,23 @@ Số hố bom mỗi thuộc địa
 Ruộng lúa mì
 [Bridges]
 Cầu
+[Karst towers]
+Tháp đá vôi
+[Tower spacing]
+Khoảng cách tháp
+[Tower density]
+Mật độ tháp
+[Paddy depth]
+Độ sâu ruộng lúa
+[Home design]
+Kiểu căn cứ
+[Horseshoe]
+Móng ngựa
+[Twin gates]
+Cổng đôi
+[Three gates]
+Ba cổng
+[Four gates]
+Bốn cổng
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Các con sông không tìm được đường giữa các căn cứ; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.

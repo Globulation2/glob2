@@ -2742,3 +2742,23 @@ Kratrar per koloni
 Vetefält
 [Bridges]
 Broar
+[Karst towers]
+Karsttorn
+[Tower spacing]
+Tornavstånd
+[Tower density]
+Torntäthet
+[Paddy depth]
+Risfältens djup
+[Home design]
+Hemmets utformning
+[Horseshoe]
+Hästsko
+[Twin gates]
+Tvillingportar
+[Three gates]
+Tre portar
+[Four gates]
+Fyra portar
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Floderna hittade ingen väg mellan hemmen; använd en större karta eller färre kolonier.

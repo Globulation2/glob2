@@ -2728,3 +2728,23 @@ Emoji
 밀밭
 [Bridges]
 다리
+[Karst towers]
+카르스트 봉우리
+[Tower spacing]
+봉우리 간격
+[Tower density]
+봉우리 밀도
+[Paddy depth]
+논 깊이
+[Home design]
+본거지 설계
+[Horseshoe]
+말굽
+[Twin gates]
+쌍둥이 문
+[Three gates]
+세 개의 문
+[Four gates]
+네 개의 문
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+강이 본거지 사이로 길을 찾지 못했습니다. 더 큰 맵이나 더 적은 식민지를 사용하세요.

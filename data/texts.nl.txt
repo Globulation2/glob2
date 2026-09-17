@@ -2756,3 +2756,23 @@ Kraters per kolonie
 Tarwevelden
 [Bridges]
 Bruggen
+[Karst towers]
+Karsttorens
+[Tower spacing]
+Torenafstand
+[Tower density]
+Torendichtheid
+[Paddy depth]
+Diepte van de rijstvelden
+[Home design]
+Vorm van de thuisbasis
+[Horseshoe]
+Hoefijzer
+[Twin gates]
+Tweelingpoorten
+[Three gates]
+Drie poorten
+[Four gates]
+Vier poorten
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+De rivieren vonden geen weg tussen de thuisbases; gebruik een grotere kaart of minder kolonies.

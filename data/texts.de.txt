@@ -2732,3 +2732,23 @@ Krater pro Kolonie
 Weizenfelder
 [Bridges]
 Brücken
+[Karst towers]
+Karsttürme
+[Tower spacing]
+Turmabstand
+[Tower density]
+Turmdichte
+[Paddy depth]
+Tiefe der Reisfelder
+[Home design]
+Heimatform
+[Horseshoe]
+Hufeisen
+[Twin gates]
+Zwei Tore
+[Three gates]
+Drei Tore
+[Four gates]
+Vier Tore
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Die Flüsse finden keinen Weg zwischen den Heimaten; verwenden Sie eine größere Karte oder weniger Kolonien.

@@ -2740,3 +2740,23 @@ Cràters per colònia
 Camps de blat
 [Bridges]
 Ponts
+[Karst towers]
+Torres càrstiques
+[Tower spacing]
+Separació de les torres
+[Tower density]
+Densitat de les torres
+[Paddy depth]
+Profunditat dels arrossars
+[Home design]
+Disseny de la base
+[Horseshoe]
+Ferradura
+[Twin gates]
+Portes bessones
+[Three gates]
+Tres portes
+[Four gates]
+Quatre portes
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Els rius no han trobat camí entre les bases; feu servir un mapa més gran o menys colònies.

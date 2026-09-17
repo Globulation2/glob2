@@ -2730,3 +2730,23 @@ Krateroj po kolonio
 Tritikaj kampoj
 [Bridges]
 Pontoj
+[Karst towers]
+Karstaj turoj
+[Tower spacing]
+Interspaco de turoj
+[Tower density]
+Denseco de turoj
+[Paddy depth]
+Profundo de rizejoj
+[Home design]
+Aspekto de la hejmo
+[Horseshoe]
+Hufumo
+[Twin gates]
+Ĝemelaj pordegoj
+[Three gates]
+Tri pordegoj
+[Four gates]
+Kvar pordegoj
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+La riveroj trovis neniun vojon inter la hejmoj; uzu pli grandan mapon aŭ malpli da kolonioj.

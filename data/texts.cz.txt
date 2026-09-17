@@ -2732,3 +2732,23 @@ Kráterů na kolonii
 Pšeničná pole
 [Bridges]
 Mosty
+[Karst towers]
+Krasové věže
+[Tower spacing]
+Rozestup věží
+[Tower density]
+Hustota věží
+[Paddy depth]
+Hloubka rýžovišť
+[Home design]
+Návrh domova
+[Horseshoe]
+Podkova
+[Twin gates]
+Dvojice bran
+[Three gates]
+Tři brány
+[Four gates]
+Čtyři brány
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Řeky nenašly cestu mezi domovy; použijte větší mapu nebo méně kolonií.

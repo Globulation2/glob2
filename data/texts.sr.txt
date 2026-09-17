@@ -2732,3 +2732,23 @@ Emoji
 Житна поља
 [Bridges]
 Мостови
+[Karst towers]
+Крашке куле
+[Tower spacing]
+Размак кула
+[Tower density]
+Густина кула
+[Paddy depth]
+Дубина пиринчаних поља
+[Home design]
+Облик базе
+[Horseshoe]
+Потковица
+[Twin gates]
+Две капије
+[Three gates]
+Три капије
+[Four gates]
+Четири капије
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Реке нису нашле пут између база; користите већу мапу или мање колонија.

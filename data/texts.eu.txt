@@ -2742,3 +2742,23 @@ Kraterrak koloniako
 Gari-soroak
 [Bridges]
 Zubiak
+[Karst towers]
+Karst dorreak
+[Tower spacing]
+Dorreen arteko tartea
+[Tower density]
+Dorreen dentsitatea
+[Paddy depth]
+Arrozadien sakonera
+[Home design]
+Etxearen diseinua
+[Horseshoe]
+Ferra
+[Twin gates]
+Ate bikiak
+[Three gates]
+Hiru ate
+[Four gates]
+Lau ate
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Ibaiek ez dute biderik aurkitu etxeen artean; erabili mapa handiagoa edo kolonia gutxiago.

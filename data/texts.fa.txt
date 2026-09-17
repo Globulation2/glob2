@@ -2730,3 +2730,23 @@ Emoji
 کشتزارهای گندم
 [Bridges]
 پل‌ها
+[Karst towers]
+برج‌های کارستی
+[Tower spacing]
+فاصلهٔ برج‌ها
+[Tower density]
+تراکم برج‌ها
+[Paddy depth]
+عمق شالیزارها
+[Home design]
+طرح پایگاه
+[Horseshoe]
+نعل اسبی
+[Twin gates]
+دو دروازهٔ روبه‌رو
+[Three gates]
+سه دروازه
+[Four gates]
+چهار دروازه
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+رودخانه‌ها راهی میان پایگاه‌ها نیافتند؛ از نقشهٔ بزرگ‌تر یا مستعمرهٔ کمتر استفاده کنید.
