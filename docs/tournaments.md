@@ -259,6 +259,28 @@ outbound SSH sessions. No port or service is opened on the coordinator.
 | diagnose RESULTS JOB --output MANIFEST | New one-job manifest with retained dependency artifacts, expanded saves/telemetry/core/stack |
 | cleanup RESULTS --reports/--transfers | Remove regenerable reports or inactive transfer staging |
 | cleanup RESULTS --worker-hosts FILE --objects/--bundles | Remove idle worker input caches and/or installed bundles |
+| audit --hosts FILE [--stale-hours N] | Discover every worker install found under each host's home directory, not just the ones named in FILE; read-only |
+| reap --hosts FILE --host NAME --directory DIR [--confirm] | Stop one stale install's daemon by exact PID; never deletes files; omit --confirm for a dry run |
+
+`audit` walks each host for the fixed `<directory>/workers/<package_id>/` layout
+every install shares (regardless of which package/protocol version it runs, since
+it only reads on-disk state, never that install's RPC) and flags an install stale
+when its daemon isn't running, or when it's still running but has had no
+running/queued work for `--stale-hours` (default 24) — a coordinator that died or
+a session that ended without cancelling leaves its worker idling indefinitely
+otherwise, invisible to anyone not already looking for it. `reap` stops exactly
+the PID `audit` reported for that directory, never a pattern match against
+process listings — a broad `pkill -f` risks matching its own invoking shell and
+killing the wrong session's work, which is how this tooling was actually being
+operated by hand before `audit`/`reap` existed. Deleting a stale install's files
+is a separate, deliberate decision left to a human; reap only frees the slot.
+
+A `doctor`/`run` deployment's `configure` RPC updates a worker's `host.json` but,
+before this, had no effect on an already-running daemon: the daemon holds its own
+`Worker` instance for its whole lifetime and never re-read the file, so slot/build/
+budget changes silently didn't take effect until something else caused the daemon
+to restart. The daemon now reloads `host.json` on every tick (sub-second), so
+raising `slots` (for example) takes effect on the next tick, no restart required.
 
 Continue `run` or invoke `collect` after changing controls so connected workers
 receive them. Disconnected workers may finish before learning cancellation; those

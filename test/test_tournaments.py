@@ -168,6 +168,115 @@ class Fixture(unittest.TestCase):
             self.assertFalse(worker.status()['accepting'])
         finally: worker.close()
 
+    def test_persistent_daemon_hot_reloads_configure(self):
+        """A `configure` RPC (used by `doctor`) runs against a fresh, short-lived
+        Worker instance, distinct from the one a long-running `daemon` process
+        holds for its whole lifetime. Without reload_config(), the daemon's own
+        copy of self.config never saw the change -- slots silently stayed at
+        whatever they were when the daemon started, no matter how many times
+        `doctor` rewrote host.json (this is exactly what happened in production
+        on 2026-09-17: three `doctor` redeploys never took effect until the
+        daemon processes were manually killed and restarted)."""
+        daemon_side = Worker(self.root / 'reload-worker')
+        try:
+            self.assertEqual(daemon_side.config['slots'], daemon_side.config['slots'])
+            original_slots = daemon_side.config['slots']
+            rpc_side = Worker(self.root / 'reload-worker')
+            try:
+                rpc_side.configure({'slots': original_slots + 7})
+            finally:
+                rpc_side.close()
+            # The persistent instance must not have silently mutated in lockstep.
+            self.assertEqual(daemon_side.config['slots'], original_slots)
+            daemon_side.tick()
+            self.assertEqual(daemon_side.config['slots'], original_slots + 7)
+        finally:
+            daemon_side.close()
+
+
+class InventoryTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = Path(self.temp.name)
+
+    def tearDown(self):
+        self.temp.cleanup()
+
+    def install(self, name, pid, package_id='pkg', slots=3, running=0, queued=0):
+        from tools.tournaments.common import database
+        directory = self.root / name
+        worker_root = directory / 'workers' / package_id
+        worker_root.mkdir(parents=True)
+        atomic_json(worker_root / 'daemon.json', {'pid': pid, 'package_id': package_id})
+        atomic_json(worker_root / 'host.json', {'slots': slots})
+        db = database(worker_root / 'queue.sqlite')
+        db.executescript('CREATE TABLE queue (state TEXT NOT NULL)')
+        db.executemany('INSERT INTO queue VALUES (?)', [('running',)] * running + [('queued',)] * queued)
+        db.commit(); db.close()
+        return directory
+
+    def test_discover_finds_installs_and_reports_liveness(self):
+        from tools.tournaments.inventory import discover
+        from tools.tournaments.transport import Transport
+        import os
+        live = self.install('mine', os.getpid(), running=2, queued=5)
+        dead_pid = 2**30 - 1  # exceedingly unlikely to be a real running pid
+        dead = self.install('abandoned', dead_pid)
+        transport = Transport({'name': 'localhost', 'transport': 'local', 'directory': str(live)}, '/dev/null')
+        found = {entry['directory']: entry for entry in discover(transport, root=str(self.root))}
+        self.assertEqual(set(found), {str(live), str(dead)})
+        self.assertTrue(found[str(live)]['alive'])
+        self.assertEqual(found[str(live)]['running'], 2)
+        self.assertEqual(found[str(live)]['queued'], 5)
+        self.assertFalse(found[str(dead)]['alive'])
+
+    def test_audit_flags_dead_and_idle_installs_as_stale(self):
+        from tools.tournaments.inventory import audit
+        import os
+        self.install('mine', os.getpid(), running=2)
+        dead = self.install('abandoned', 2**30 - 1)
+        old = time.time() - 999999
+        os.utime(dead / 'workers' / 'pkg' / 'queue.sqlite', (old, old))
+        # Alive but idle for days: the coordinator that owned it is gone, but
+        # nothing killed the daemon itself -- exactly the "orphaned run that
+        # never recovers" case, distinct from an outright-dead process.
+        idle_alive = self.install('idle-forever', os.getpid())
+        os.utime(idle_alive / 'workers' / 'pkg' / 'queue.sqlite', (old, old))
+        hosts = [{'name': 'localhost', 'transport': 'local', 'directory': str(self.root / 'mine')}]
+        report = audit(hosts, stale_hours=1, root=str(self.root))
+        installs = {i['directory']: i for i in report[0]['installs']}
+        self.assertFalse(installs[str(self.root / 'mine')]['stale'])
+        self.assertTrue(installs[str(dead)]['stale'])
+        self.assertTrue(installs[str(idle_alive)]['stale'])
+        self.assertTrue(installs[str(idle_alive)]['alive'])  # stale despite being alive
+        self.assertTrue(installs[str(self.root / 'mine')]['own'])
+        self.assertFalse(installs[str(dead)]['own'])
+
+    def test_reap_requires_confirm_and_only_stops_named_pid(self):
+        from tools.tournaments.inventory import reap
+        import subprocess, sys
+        process = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)'])
+        try:
+            directory = self.install('other-session', process.pid)
+            host = {'name': 'localhost', 'transport': 'local', 'directory': str(self.root / 'mine')}
+            dry_run = reap(host, str(directory), confirm=False, root=str(self.root))
+            self.assertEqual(dry_run['action'], 'dry-run')
+            self.assertIsNone(process.poll())  # still alive: dry run touched nothing
+            result = reap(host, str(directory), confirm=True, root=str(self.root))
+            self.assertEqual(result['action'], 'signalled')
+            process.wait(timeout=5)
+            self.assertIsNotNone(process.poll())
+        finally:
+            if process.poll() is None:
+                process.kill(); process.wait()
+
+    def test_reap_unknown_directory_raises(self):
+        from tools.tournaments.inventory import reap
+        self.install('mine', 999999999)
+        host = {'name': 'localhost', 'transport': 'local', 'directory': str(self.root / 'mine')}
+        with self.assertRaises(ValueError):
+            reap(host, str(self.root / 'never-existed'), confirm=True, root=str(self.root))
+
 
 class AnalysisTests(unittest.TestCase):
     def team(self, number, **extra):
