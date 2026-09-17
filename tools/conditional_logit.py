@@ -65,25 +65,30 @@ def orderings(dataset):
     return result
 
 
-def padded(dataset, features):
+def padded(dataset, features, column=None):
     """Pack the contests into rectangular arrays: [contest, slot, feature] plus masks.
 
     Contests differ in how many entries they have, so every array is padded to
     the widest one and a mask marks the real slots. Everything downstream works a
     finishing stage at a time across all contests at once, which keeps the fits
     fast enough to screen a hundred measurements.
+
+    `column` overrides how a feature's values are produced, for models whose
+    columns are not simply a transform of a measurement -- the win-probability
+    fit scales each transformed value by how far into the game the contest sits.
     """
     import numpy as np
+    column = column or feature_column
     games = dataset['games']
     widest = max(len(game['entries']) for game in games)
-    columns = [feature_column(dataset, name, transform) for name, transform in features]
+    columns = [column(dataset, name, transform) for name, transform in features]
     matrix = np.zeros((len(games), widest, len(features)))
     mask = np.zeros((len(games), widest), dtype=bool)
     for position, game in enumerate(games):
         size = len(game['entries'])
         mask[position, :size] = True
-        for index, column in enumerate(columns):
-            matrix[position, :size, index] = column[position]
+        for index, values in enumerate(columns):
+            matrix[position, :size, index] = values[position]
     return matrix, mask
 
 
@@ -115,11 +120,12 @@ def stages(dataset, widest, winner_only=False):
 class Problem:
     """A fitting problem: padded design, stage masks and the ridge penalty."""
 
-    def __init__(self, dataset, features, ridge=1e-3, winner_only=False, arrays=None):
+    def __init__(self, dataset, features, ridge=1e-3, winner_only=False, arrays=None, column=None):
         import numpy as np
         self.dataset, self.features, self.ridge = dataset, features, ridge
+        self.column = column
         if arrays is None:
-            matrix, mask = padded(dataset, features)
+            matrix, mask = padded(dataset, features, column)
             self.centre = matrix[mask].mean(axis=0)
             self.scale = matrix[mask].std(axis=0)
             self.scale[self.scale < 1e-12] = 1.0
@@ -132,6 +138,7 @@ class Problem:
         value = Problem.__new__(Problem)
         value.dataset = {'games': [self.dataset['games'][i] for i in index]}
         value.features, value.ridge = self.features, self.ridge
+        value.column = self.column
         value.centre, value.scale = self.centre, self.scale
         value.matrix, value.mask = self.matrix[index], self.mask[index]
         value.removed, value.alive = self.removed[:, index], self.alive[:, index]
@@ -203,7 +210,7 @@ class Problem:
 
 
 def cross_validated(dataset, features, folds=5, ridge=1e-3, seed=1, winner_only=False,
-                    problem=None, group=None):
+                    problem=None, group=None, column=None):
     """Cross-validate, keeping correlated contests together in one fold.
 
     `group` names what must not be split. Contests that share the thing being
@@ -214,7 +221,7 @@ def cross_validated(dataset, features, folds=5, ridge=1e-3, seed=1, winner_only=
     game's hundred-odd time slices are near-identical views of one outcome.
     """
     import numpy as np
-    problem = problem or Problem(dataset, features, ridge, winner_only)
+    problem = problem or Problem(dataset, features, ridge, winner_only, column=column)
     group = group or (lambda game: game['map'])
     keys = sorted({group(game) for game in dataset['games']})
     rng = random.Random(seed)
@@ -240,9 +247,9 @@ def cross_validated(dataset, features, folds=5, ridge=1e-3, seed=1, winner_only=
             'chance_accuracy': sum(s['chance_accuracy'] for s in scores) / len(scores)}
 
 
-def fit_model(dataset, features, ridge=1e-3, winner_only=False, problem=None):
+def fit_model(dataset, features, ridge=1e-3, winner_only=False, problem=None, column=None):
     """Fit and return coefficients on the raw (unstandardised) features."""
-    problem = problem or Problem(dataset, features, ridge, winner_only)
+    problem = problem or Problem(dataset, features, ridge, winner_only, column=column)
     weights, value = problem.fit()
     raw = weights / problem.scale
     # Softmax fixes the fitness scale but not its offset. Anchor the offset so
