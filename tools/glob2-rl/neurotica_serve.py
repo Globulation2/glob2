@@ -171,6 +171,10 @@ def main() -> int:
                          "fixed count. 0 disables (fixed --placements).")
     ap.add_argument("--max-placements", type=int, default=64,
                     help="upper bound on placements per step under --threshold")
+    ap.add_argument("--count-scale", type=float, default=1.0,
+                    help="multiply the predicted per-type counts before using "
+                         "them as a budget; >1 lets the agent build toward the "
+                         "predicted composition faster")
     ap.add_argument("--use-count", action="store_true",
                     help="bound each type by the count head's prediction "
                          "(requires a checkpoint trained with one)")
@@ -391,8 +395,17 @@ def main() -> int:
                 if args.use_count and "count" in out:
                     # The model's own answer to "how many of each should I
                     # hold", which is what the per-cell marginal cannot say.
+                    # --count-scale exists because the budget is a follower.
+                    # allow = predicted - held, and the prediction is made from
+                    # the CURRENT state, so an agent already behind the teacher
+                    # distribution is only ever permitted to creep. Measured at
+                    # scale 1.0: 2 buildings until tick 9728, units 5 -> 16 over
+                    # 20000 ticks, against a teacher's 77 workers. Scaling the
+                    # target keeps the composition the head predicts while
+                    # letting the agent build toward it faster.
                     caps = torch.expm1(out["count"].float().clamp(max=6.0))
-                    caps = caps.round().clamp(min=0, max=64).to(torch.long)
+                    caps = (caps * args.count_scale).round()
+                    caps = caps.clamp(min=0, max=64).to(torch.long)
                 else:
                     caps = torch.tensor(TYPE_CAPS, device=cls.device).unsqueeze(0)
                 # Count anchors. Dividing covered cells by a guessed footprint

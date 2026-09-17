@@ -224,3 +224,47 @@ of work, and it needs a protocol bump plus heads for those planes.
 Also fixed: the socket folded any class above 13 to 0, so DONT_CARE never
 arrived. Harmless while `observed_` is anchor-keyed (0 on a non-anchor cell
 demolishes nothing) but wrong, and it would bite the moment that changed.
+
+## First result that beats doing nothing (04:35)
+
+`ckpt_cnt2`, anchor decode + count budget, `--placements 48 --use-count`:
+
+| decode | vs numbi | vs castor | vs warrush | vs nicowar | total |
+| --- | --- | --- | --- | --- | --- |
+| inert (bug) | 3W 2L | 1W 3L | 0W 4L | 1W 4L | 4W/24 |
+| top-k k=12 | | | | | 1W/22 |
+| threshold 0.05 | | | | | 0W/22 |
+| **anchor + counts** | **4W 1L** | 0W 6L | 0W 5L | **1W 4L** | **5W/22** |
+
+A winning record against numbi, and a win against nicowar while actually
+playing. Still swept by castor and warrush. Small sample, but it is the first
+configuration to clear the do-nothing baseline.
+
+## The economy is a rate problem, not a collapse
+
+Timeline, team 0:
+
+```
+tick  1536  units= 5  bld= 1
+tick  5632  units= 9  bld= 2
+tick  9728  units=12  bld= 2
+tick 13824  units=14  bld=13
+tick 19968  units=16  bld=14
+```
+
+Nothing collapses -- it grows far too slowly, and sits at 2 buildings until
+tick 9728. The game is lost in the first third.
+
+**Cause: the count budget is a follower.** `allow = predicted - held`, and the
+prediction is made from the CURRENT state, so an agent already behind the
+teacher distribution is only ever permitted to creep toward where it already
+is. It can never catch up, by construction. This is the same shape as the
+copy/novel trap and the marginal/count gap: a quantity that looks right in
+validation (pred growth +2.27 vs true +1.88 per 1000 ticks, measured
+in-distribution) behaves quite differently once the agent's own state has
+drifted off the data manifold.
+
+Testing `--count-scale`: multiply the predicted counts before using them as a
+budget, keeping the composition the head predicts while allowing faster
+approach to it. Sweeping 1.0 / 1.5 / 2.5 / 4.0 on a fixed seed, reading units
+and buildings at tick 5632 as the early-game measure.
