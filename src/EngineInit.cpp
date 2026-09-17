@@ -202,6 +202,11 @@ namespace
 					WinningCondition::setSuddenDeathWinCondition(h.getWinningConditions(),
 						v ? std::optional<Uint32>(v) : std::nullopt);
 				}},
+			{"winProbabilityPermille", 1000, [](GameHeader& h, int v)
+				{
+					WinningCondition::setWinProbabilityWinCondition(h.getWinningConditions(),
+						v ? std::optional<Uint32>(v) : std::nullopt);
+				}},
 		};
 		std::stringstream list(environment);
 		std::string item;

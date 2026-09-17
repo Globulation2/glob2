@@ -24,7 +24,7 @@ struct CustomGameSetup
 		const char *label;
 		const char *category;
 	};
-	static constexpr std::array<RuleDefinition, 18> ruleDefinitions = {
+	static constexpr std::array<RuleDefinition, 19> ruleDefinitions = {
 		{{"Victory", "Victory"},
 		 {"Map knowledge", "World & diplomacy"},
 		 {"Alliances", "World & diplomacy"},
@@ -42,7 +42,8 @@ struct CustomGameSetup
 		 {"Peaceful mode", "Combat"},
 		 {"Fortress buildings", "Combat"},
 		 {"Veteran/Fast start", "Starting conditions & pace"},
-		 {"Sudden-death timer", "Victory"}}};
+		 {"Sudden-death timer", "Victory"},
+		 {"Probability victory", "Victory"}}};
 	bool ruleChanged(int index) const
 	{
 		switch (index)
@@ -85,6 +86,8 @@ struct CustomGameSetup
 			return random && startingUnitLevel != 0;
 		case 17:
 			return suddenDeathMinutes != 0;
+		case 18:
+			return winProbabilityPermille != 0;
 		default:
 			return false;
 		}
@@ -113,6 +116,12 @@ struct CustomGameSetup
 	// matches the first sole prestige leader appeared 13-28 minutes in.
 	static constexpr std::array<int, 5> suddenDeathMinuteChoices = {0, 30, 45, 60, 90};
 	int suddenDeathMinutes = 0;
+	// Confidence at which the fitted win probability model ends the game (0 = off,
+	// the default -- a normal game plays exactly as before). Measured on the AI
+	// tournament, 970 called the eventual winner in over 99% of the games it
+	// ended; 950 ends more of them and is wrong rather more often.
+	static constexpr std::array<int, 4> winProbabilityChoices = {0, 950, 970, 990};
+	int winProbabilityPermille = 0;
 	std::string format = "FFA", ruleset = "Standard";
 	std::string premadeMap;
 	unsigned mapRevision = 0;
@@ -221,6 +230,7 @@ struct CustomGameSetup
 			++mapRevision;
 		}
 		suddenDeathMinutes = 0;
+		winProbabilityPermille = 0;
 		ruleset = preset == 0	? "Standard"
 				  : preset == 1 ? "Quick clash"
 				  : preset == 2 ? "Open book"
@@ -289,5 +299,9 @@ struct CustomGameSetup
 		if (suddenDeathMinutes != 0)
 			endStepTick = static_cast<Uint32>(suddenDeathMinutes) * 60 * GAME_TICKS_PER_SECOND;
 		WinningCondition::setSuddenDeathWinCondition(header.getWinningConditions(), endStepTick);
+		std::optional<Uint32> winProbabilityThreshold;
+		if (winProbabilityPermille != 0)
+			winProbabilityThreshold = static_cast<Uint32>(winProbabilityPermille);
+		WinningCondition::setWinProbabilityWinCondition(header.getWinningConditions(), winProbabilityThreshold);
 	}
 };
