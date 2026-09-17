@@ -199,12 +199,15 @@ struct CustomGameSetupHarness
 								encoded.substr(end)));
 		std::cout << "PASS preferences keep every generator option, and older files still load\n";
 	}
-	// FEEDBACK 2026-09-17: "'random' isn't actually randomizing the order... I want it to be
-	// dynamically random" - Random must draw a fresh permutation every time the sheet opens, not
-	// a fixed order that looks shuffled once (the registry's own catalog order, which used to be
-	// exactly what Random fell through to) and then repeats identically on every subsequent open.
-	// Two freshly constructed sheets on the same entries must land on different orders from each
-	// other, and neither may be the untouched catalog order.
+	// FEEDBACK 2026-09-17, in two parts. First: "'random' isn't actually randomizing the order...
+	// I want it to be dynamically random" - Random must not be a fixed order that looks shuffled
+	// once (the registry's own catalog order, which used to be exactly what Random fell through
+	// to) and then repeats identically forever. Second, refining that fix once it was tried in
+	// the UI: "I don't like how the random order changes sometimes while I'm using the UI...
+	// randomized once when the app starts and then stays consistent for the duration of
+	// execution" - so the permutation itself must be a real shuffle (not the untouched catalog
+	// order), but two sheets built in the same process run must land on the SAME order as each
+	// other, not a fresh one each time; only a relaunch (a new process) draws again.
 	static void landscapeRandomOrder()
 	{
 		std::vector<LandscapePickerScreen::Entry> shown;
@@ -220,16 +223,30 @@ struct CustomGameSetupHarness
 		LandscapePickerScreen second("Landscape", shown, 0);
 		assert(first.sortOrder == LandscapePickerScreen::SortOrder::Random &&
 			  second.sortOrder == LandscapePickerScreen::SortOrder::Random);
-		assert(first.visible != identity && second.visible != identity);
-		assert(first.visible != second.visible);
+		// A real shuffle, not the untouched catalog order left alone...
+		assert(first.visible != identity);
+		// ...but the SAME shuffle every time within this one process run, however many sheets are
+		// opened - the process-lifetime permutation this fix's refinement asked for.
+		assert(first.visible == second.visible);
+		// Touching a filter must not redraw it either: narrowing still respects the one order
+		// this run drew, just with the excluded entries missing from it.
+		LandscapePickerScreen third("Landscape", shown, 0);
+		if (!third.filterCategories.empty())
+		{
+			third.filters[0] = "does-not-exist";
+			third.rebuild();
+			third.filters[0].clear();
+			third.rebuild();
+		}
+		assert(third.visible == first.visible);
 		// Alphabetical stays the deterministic alternative: same entries, same order, every time.
 		LandscapePickerScreen sortedA("Landscape", shown, 0,
 									  LandscapePickerScreen::SortOrder::Alphabetical);
 		LandscapePickerScreen sortedB("Landscape", shown, 0,
 									  LandscapePickerScreen::SortOrder::Alphabetical);
 		assert(sortedA.visible == sortedB.visible);
-		std::cout << "PASS landscape picker Random order reshuffles on every open, Alphabetical "
-					 "stays stable\n";
+		std::cout << "PASS landscape picker Random order is a real shuffle drawn once per process "
+					 "run, Alphabetical stays stable\n";
 	}
 	static void preferencesScreen(bool write)
 	{
