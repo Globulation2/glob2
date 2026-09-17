@@ -1,5 +1,9 @@
 # Larger map telemetry studies
 
+For a study on one machine, the native CLI run in parallel is much faster than the framework:
+see the end of [show the map, then measure the knobs](tuning-playbook.md#show-the-map-then-measure-the-knobs-then-roll-everything).
+Use the framework below when the work spans several hosts or has to survive interruption.
+
 Use the shared [tournament framework](../../../../docs/tournaments.md) for bulk studies
 that need several machines, resumable work, per-sample retries or durable diagnostics.
 Do not build another SSH runner or subprocess pool. Keep small native CLI probes for
