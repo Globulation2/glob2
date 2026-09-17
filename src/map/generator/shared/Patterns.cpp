@@ -9,78 +9,135 @@ namespace MapGeneration
 {
 namespace
 {
-// A box blur of radius r along one axis of the torus, by a running sum; the mean rounds towards minus
-// infinity so it is exact integers everywhere.
-void blurLine(const std::vector<int> &in, std::vector<int> &out, int r)
+// The floor of a sum of `span` values over `span`, exact in integers. A hardware division per tile
+// was most of a Turing pattern's time, so when no value lies further than `peak` from zero it
+// multiplies by a reciprocal instead. Lifted by (peak + 1) spans, a sum becomes a whole a with
+// 0 < a <= (2 peak + 1) span. With shift = 31 + ceil(log2 span) and reciprocal =
+// floor(2^shift / span) + 1 (which fits 32 bits), a * reciprocal / 2^shift exceeds a / span by at
+// most a / 2^shift, which is under 1 / span while a < 2^31: too little to carry a / span past the
+// next whole number, so the floors agree. When the lifted sums could reach 2^31 it divides.
+class SpanDivide
 {
-	const int n = int(in.size());
-	out.assign(in.size(), 0);
-	if (r <= 0)
+  public:
+	SpanDivide(int span, std::int64_t peak) : span(span)
 	{
-		out = in;
+		int bits = 0;
+		while ((std::int64_t(1) << bits) < span)
+			++bits;
+		shift = 31 + bits;
+		reciprocal = std::uint32_t((std::uint64_t(1) << shift) / std::uint64_t(span) + 1);
+		lift = peak + 1;
+		lifted = lift * span;
+		fast = (2 * peak + 1) * std::int64_t(span) < (std::int64_t(1) << 31);
+	}
+	bool exact() const { return fast; }
+	int reciprocalFloor(std::int64_t sum) const
+	{
+		return int(
+			std::int64_t((std::uint64_t(std::uint32_t(sum + lifted)) * reciprocal) >> shift) -
+			lift);
+	}
+	int divisionFloor(std::int64_t sum) const
+	{
+		return int(sum >= 0 ? sum / span : -((-sum + span - 1) / span));
+	}
+
+  private:
+	int span, shift = 0;
+	std::uint32_t reciprocal = 0;
+	std::int64_t lift = 0, lifted = 0;
+	bool fast = false;
+};
+
+// A box blur of radius rx across and ry down the torus into `result` by way of `rows`, by running
+// sums; the mean rounds towards minus infinity so it is exact integers everywhere. The rows are
+// blurred one at a time, the columns all at once from one running sum per column, stepping down the
+// rows: that walks the memory in order and leaves the per-column work for the compiler to vectorise.
+template <bool Reciprocal>
+void boxBlurWith(const Torus &t, const std::vector<int> &field, std::vector<int> &rows,
+				 std::vector<int> &result, int rx, int ry, const SpanDivide &divideX,
+				 const SpanDivide &divideY)
+{
+	const auto floorX = [&](std::int64_t sum)
+	{ return Reciprocal ? divideX.reciprocalFloor(sum) : divideX.divisionFloor(sum); };
+	const auto floorY = [&](std::int64_t sum)
+	{ return Reciprocal ? divideY.reciprocalFloor(sum) : divideY.divisionFloor(sum); };
+	const int w = t.w, h = t.h;
+	rows.resize(field.size());
+	result.resize(field.size());
+	for (int y = 0; y < h; ++y)
+	{
+		const int *in = &field[size_t(y) * w];
+		int *out = &rows[size_t(y) * w];
+		if (rx <= 0)
+		{
+			std::copy(in, in + w, out);
+			continue;
+		}
+		std::int64_t sum = 0;
+		for (int d = -rx; d <= rx; ++d)
+			sum += in[((d % w) + w) % w];
+		// i - rx and i + rx + 1 leave [0, w) only in the two end ranges; the middle indexes plainly.
+		int i = 0;
+		for (; i < rx; ++i)
+		{
+			out[i] = floorX(sum);
+			sum += std::int64_t(in[i + rx + 1]) - in[i - rx + w];
+		}
+		for (; i < w - rx - 1; ++i)
+		{
+			out[i] = floorX(sum);
+			sum += std::int64_t(in[i + rx + 1]) - in[i - rx];
+		}
+		for (; i < w; ++i)
+		{
+			out[i] = floorX(sum);
+			sum += std::int64_t(in[i + rx + 1 - w]) - in[i - rx];
+		}
+	}
+	if (ry <= 0)
+	{
+		result = rows;
 		return;
 	}
-	const int span = 2 * r + 1;
-	std::int64_t sum = 0;
-	for (int d = -r; d < 0; ++d)
-		sum += in[n + d];
-	for (int d = 0; d <= r; ++d)
-		sum += in[d];
-	// r <= (n - 2) / 2 here (the r >= n/2 line above returned already), so i - r and i + r + 1
-	// leave [0, n) only in these two disjoint end ranges; splitting the loop this way replaces
-	// the pair of remainders every iteration used with plain indexing in between.
-	int i = 0;
-	for (; i < r; ++i)
+	std::vector<std::int64_t> sums(w, 0);
+	for (int d = -ry; d <= ry; ++d)
 	{
-		const std::int64_t q = sum >= 0 ? sum / span : -((-sum + span - 1) / span);
-		out[i] = int(q);
-		sum -= in[i - r + n];
-		sum += in[i + r + 1];
+		const int *row = &rows[size_t(((d % h) + h) % h) * w];
+		for (int x = 0; x < w; ++x)
+			sums[x] += row[x];
 	}
-	for (; i < n - r - 1; ++i)
+	for (int y = 0; y < h; ++y)
 	{
-		const std::int64_t q = sum >= 0 ? sum / span : -((-sum + span - 1) / span);
-		out[i] = int(q);
-		sum -= in[i - r];
-		sum += in[i + r + 1];
-	}
-	for (; i < n; ++i)
-	{
-		const std::int64_t q = sum >= 0 ? sum / span : -((-sum + span - 1) / span);
-		out[i] = int(q);
-		sum -= in[i - r];
-		sum += in[i + r + 1 - n];
+		int *out = &result[size_t(y) * w];
+		for (int x = 0; x < w; ++x)
+			out[x] = floorY(sums[x]);
+		const int *leaving = &rows[size_t(((y - ry) % h + h) % h) * w];
+		const int *entering = &rows[size_t((y + ry + 1) % h) * w];
+		for (int x = 0; x < w; ++x)
+			sums[x] += std::int64_t(entering[x]) - leaving[x];
 	}
 }
 
-std::vector<int> boxBlur(const Torus &t, const std::vector<int> &field, int rx, int ry)
+void boxBlur(const Torus &t, const std::vector<int> &field, std::vector<int> &rows,
+			 std::vector<int> &result, int rx, int ry)
 {
-	std::vector<int> rows(field.size()), result(field.size()), line, out;
-	line.resize(t.w);
-	for (int y = 0; y < t.h; ++y)
-	{
-		for (int x = 0; x < t.w; ++x)
-			line[x] = field[size_t(y) * t.w + x];
-		blurLine(line, out, rx);
-		for (int x = 0; x < t.w; ++x)
-			rows[size_t(y) * t.w + x] = out[x];
-	}
-	line.resize(t.h);
-	for (int x = 0; x < t.w; ++x)
-	{
-		for (int y = 0; y < t.h; ++y)
-			line[y] = rows[size_t(y) * t.w + x];
-		blurLine(line, out, ry);
-		for (int y = 0; y < t.h; ++y)
-			result[size_t(y) * t.w + x] = out[y];
-	}
-	return result;
+	std::int64_t peak = 0;
+	for (int v : field)
+		peak = std::max(peak, std::abs(std::int64_t(v)));
+	const SpanDivide divideX(2 * std::max(0, rx) + 1, peak), divideY(2 * std::max(0, ry) + 1, peak);
+	if (divideX.exact() && divideY.exact())
+		boxBlurWith<true>(t, field, rows, result, rx, ry, divideX, divideY);
+	else
+		boxBlurWith<false>(t, field, rows, result, rx, ry, divideX, divideY);
 }
 
-// Two box passes, close to a Gaussian.
-std::vector<int> smooth(const Torus &t, const std::vector<int> &field, int rx, int ry)
+// Two box passes, close to a Gaussian, into `result`; `rows` and `once` are scratch.
+void smooth(const Torus &t, const std::vector<int> &field, std::vector<int> &rows,
+			std::vector<int> &once, std::vector<int> &result, int rx, int ry)
 {
-	return boxBlur(t, boxBlur(t, field, rx, ry), rx, ry);
+	boxBlur(t, field, rows, once, rx, ry);
+	boxBlur(t, once, rows, result, rx, ry);
 }
 } // namespace
 
@@ -100,10 +157,11 @@ std::vector<int> turingPattern(const Torus &t, const TuringStyle &style, std::mt
 	const int farX = std::max(nearX + 1, radius(style.stretchX, 2 / 10.5));
 	const int farY = std::max(nearY + 1, radius(style.stretchY, 2 / 10.5));
 	constexpr int kGain = 6;
+	std::vector<int> rows, once, nearBlur, farBlur; // reused by every pass
 	for (int pass = 0; pass < style.iterations; ++pass)
 	{
-		const std::vector<int> nearBlur = smooth(t, field, nearX, nearY);
-		const std::vector<int> farBlur = smooth(t, field, farX, farY);
+		smooth(t, field, rows, once, nearBlur, nearX, nearY);
+		smooth(t, field, rows, once, farBlur, farX, farY);
 		std::int64_t total = 0;
 		for (size_t i = 0; i < field.size(); ++i)
 		{

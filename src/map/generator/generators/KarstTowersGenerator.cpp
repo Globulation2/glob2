@@ -19,9 +19,15 @@
 #include "Sketch.h"
 #include <algorithm>
 #include <cmath>
+#include <climits>
 #include <cstdint>
+#include <functional>
 #include <map>
+#include <random>
 #include <string>
+#include <type_traits>
+#include <utility>
+#include <variant>
 #include <vector>
 using namespace MapGeneration;
 
@@ -204,6 +210,76 @@ void aroundPoint(const Torus &t, const ShapePoint &point, int reach, Visit visit
 		for (int dx = -reach; dx <= reach; ++dx)
 			visit(t.at(px + dx, py + dy), dx, dy);
 }
+
+// Roads.h's cheapestWalk, eight-connected from one tile, for the many short walks the rivers and the
+// sinking streams take. It is the same search, so it finds the same walk, but it keeps its arrays from
+// one walk to the next rather than filling a fresh pair the size of the map for every walk, and it can
+// give up once the cheapest tile left to try costs more than a walk worth having.
+class Walker
+{
+  public:
+	explicit Walker(const Torus &t) : t(t), cost(t.size(), INT_MAX), from(t.size(), -1) {}
+
+	// The walk from `source` to the first tile `goal` accepts, back from that tile to the source, or
+	// nothing when none is reached for at most `giveUp`.
+	template <typename Goal, typename StepCost>
+	std::vector<int> walk(int source, Goal goal, StepCost stepCost, int giveUp = INT_MAX)
+	{
+		using Entry = std::pair<int, int>;
+		const std::greater<Entry> later;
+		for (int i : touched)
+		{
+			cost[i] = INT_MAX;
+			from[i] = -1;
+		}
+		touched.assign(1, source);
+		cost[source] = 0;
+		// A heap kept with the same calls std::priority_queue makes, so ties pop in the same order.
+		heap.assign(1, {0, source});
+		int reached = -1;
+		while (!heap.empty())
+		{
+			std::pop_heap(heap.begin(), heap.end(), later);
+			const auto [c, i] = heap.back();
+			heap.pop_back();
+			if (c > giveUp)
+				break;
+			if (c > cost[i])
+				continue;
+			if (goal(i))
+			{
+				reached = i;
+				break;
+			}
+			const int x = i % t.w, y = i / t.w;
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+				{
+					if (!dx && !dy)
+						continue;
+					const int m = t.at(x + dx, y + dy);
+					const int step = stepCost(i, m, dx, dy);
+					if (step < 0 || c + step >= cost[m])
+						continue;
+					if (cost[m] == INT_MAX)
+						touched.push_back(m);
+					cost[m] = c + step;
+					from[m] = i;
+					heap.push_back({cost[m], m});
+					std::push_heap(heap.begin(), heap.end(), later);
+				}
+		}
+		std::vector<int> route;
+		for (int i = reached; i >= 0; i = from[i])
+			route.push_back(i);
+		return route;
+	}
+
+  private:
+	const Torus &t;
+	std::vector<int> cost, from, touched;
+	std::vector<std::pair<int, int>> heap;
+};
 
 // The homes in rows across an axis: each row the homes' indices and cross-axis positions, sorted by
 // position, a row wrapping round the torus kept whole (its wrapped positions carried past `across`).
@@ -417,6 +493,7 @@ bool routeRivers(Layout &L, Work &w)
 									 int(std::max<std::int64_t>(0, 64 - d2) * 20);
 	}
 	std::vector<unsigned char> centre(n, 0);
+	Walker walker(t);
 	for (size_t r = 0; r < L.rivers.size(); ++r)
 	{
 		River &river = L.rivers[r];
@@ -455,10 +532,8 @@ bool routeRivers(Layout &L, Work &w)
 			const int from = waypoints[s], to = waypoints[(s + 1) % segments];
 			const int from0 = alongOf(L, from);
 			const int span = wrapped(alongOf(L, to) - from0, length);
-			std::vector<unsigned char> goal(n, 0);
-			goal[to] = 1;
-			std::vector<int> walk = cheapestWalk(
-				t, GridNeighbors::Eight, {from}, goal,
+			std::vector<int> walk = walker.walk(
+				from, [&](int i) { return i == to; },
 				[&](int, int m, int dx, int dy)
 				{
 					const int forwards = L.alongX ? dx : dy;
@@ -631,12 +706,17 @@ void digSinkholes(Layout &L, const Work &w)
 
 	const double valleyEdge = w.riverWidth / 2.0 + o.paddyDepth + 6;
 	std::vector<unsigned char> reached = L.riverWater;
+	Walker walker(t);
 	int streams = 0, pools = 0;
 	for (int from : sinkholes)
 	{
-		std::vector<int> walk = cheapestWalk(t, GridNeighbors::Eight, {from}, reached,
-											 [&](int, int m, int dx, int dy)
-											 { return keepDry[m] || L.tower[m] ? -1 : (dx && dy ? 14 : 10); });
+		// A walk of more than kLongestStream tiles is given up, and every step costs at most 14, so
+		// once the cheapest tile left costs more than kLongestStream - 1 diagonal steps, any walk still
+		// to be found is too long.
+		std::vector<int> walk = walker.walk(
+			from, [&](int i) { return reached[i] != 0; }, [&](int, int m, int dx, int dy)
+			{ return keepDry[m] || L.tower[m] ? -1 : (dx && dy ? 14 : 10); },
+			(kLongestStream - 1) * 14);
 		if (walk.empty() || int(walk.size()) > kLongestStream)
 			continue;
 		++streams;
@@ -727,16 +807,19 @@ void terracePaddies(Layout &L, Work &w)
 	const Torus &t = L.t;
 	const KarstTowersOptions &o = w.o;
 	const int n = t.size();
-	const std::vector<std::int64_t> fromWater = distanceSquaredTo(t, L.water);
-	const std::vector<std::int64_t> fromTower = distanceSquaredTo(t, L.tower);
+	// A paddy keeps three tiles from water and towers. Within a squared distance under 9 is within two
+	// tiles along both axes, a square, so a dilation answers it without a distance field. There is
+	// always water: the rivers.
+	const std::vector<unsigned char> nearWater = dilate(t, L.water, 2);
+	const std::vector<unsigned char> nearTower = dilate(t, L.tower, 2);
 	const std::vector<int> reach = riverReach(L);
 	const std::vector<unsigned char> landings = fordLandings(L, 5);
 	const std::int64_t depth2 = std::int64_t(o.paddyDepth + 2) * (o.paddyDepth + 2);
 	w.apron = dilate(t, L.bowl, 2);
 	L.paddyZone.assign(n, 0);
 	for (int i = 0; i < n; ++i)
-		L.paddyZone[i] = !w.apron[i] && !landings[i] && fromWater[i] >= 9 && w.fromRiver[i] <= depth2 &&
-						 (fromTower[i] < 0 || fromTower[i] >= 9);
+		L.paddyZone[i] = !w.apron[i] && !landings[i] && !nearWater[i] && w.fromRiver[i] <= depth2 &&
+						 !nearTower[i];
 	L.paddyZone = dropSmallRegions(t, L.paddyZone, 30);
 	std::vector<int> label(n, -1);
 	const std::vector<int> jitter = periodicNoise(t.w, t.h, 24, w.context.stream("karst-paddy-jitter"));
@@ -749,13 +832,15 @@ void terracePaddies(Layout &L, Work &w)
 			const int ribbon = 2 * terrace + (depth - terrace * (kCropRibbon + kWaterRibbon) >= kCropRibbon);
 			label[i] = ribbon * 100000 + int(reach[i] + wobble * 4) / kPaddyReach;
 		}
-	const std::vector<unsigned char> lakeOuter = dilateRound(t, L.lakeWater, 10);
-	const std::vector<unsigned char> lakeInner = dilateRound(t, L.lakeWater, 2);
+	// The ring between 2 and 10 tiles out from the lakes, from one distance field.
+	const std::vector<std::int64_t> fromLake =
+		L.lakes.empty() ? std::vector<std::int64_t>() : distanceSquaredTo(t, L.lakeWater);
 	for (size_t k = 0; k < L.lakes.size(); ++k)
 		aroundPoint(t, L.lakes[k], int(L.lakeRadius * 1.35 * 1.4) + 12,
 					[&](int i, int dx, int dy)
 					{
-						if (!lakeOuter[i] || lakeInner[i] || w.apron[i] || L.paddyZone[i])
+						if (fromLake[i] < 0 || fromLake[i] > 100 || fromLake[i] <= 4 ||
+							w.apron[i] || L.paddyZone[i])
 							return;
 						L.tower[i] = 0;
 						L.paddyZone[i] = 1;
@@ -914,7 +999,7 @@ Layout designAt(const GenerationRequest &request, GenerationContext &context, in
 // The layout, with the homes shrunk a step at a time while their bowls leave a river no way through, and
 // then the rivers narrowed: big homes or wide rivers on a crowded map close every gap, and smaller homes
 // or a narrower river are a better map than none.
-Layout design(const GenerationRequest &request, GenerationContext &context)
+Layout designAfresh(const GenerationRequest &request, GenerationContext &context)
 {
 	const KarstTowersOptions o(request);
 	int home = o.homeSize, river = o.riverWidth;
@@ -936,6 +1021,84 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		else
 			return L;
 	}
+}
+
+// A generation asks for the same design three times: the request check (designFailure), generate and
+// validateWorld, and building it was most of a generation's time. The design depends only on the request
+// and the named streams it draws from, so the last one built on this thread is kept and handed out again
+// for the same request: its telemetry replayed into the asking context, and every stream it draws from
+// wound on to where building it would have left that stream, so whatever the context draws next is
+// unchanged. A context that has already drawn from one of those streams gets the design built afresh.
+struct DesignCache
+{
+	bool valid = false;
+	GenerationRequest request;
+	Layout layout;
+	GenerationTelemetry telemetry;
+	std::vector<std::pair<std::string, std::mt19937>> streams; // each as the design left it
+};
+
+// Every stream the design draws from, rivers' included (a map has no more rivers than colonies). A
+// stream the design comes to draw from belongs here too, or a cached design leaves it unwound.
+std::vector<std::string> designStreams(const GenerationRequest &request)
+{
+	std::vector<std::string> names = {
+		"karst-layout",      "starts-deal",       "karst-river-axis",   "karst-river-parity",
+		"karst-home-design", "karst-home-facing", "karst-pattern",      "karst-thickets",
+		"karst-ring",        "karst-meander",     "karst-paddy-jitter", "karst-pond",
+		"karst-flooded"};
+	for (int r = 0; r < std::max(1, request.nbTeams); ++r)
+		names.push_back("karst-river-" + std::to_string(r));
+	return names;
+}
+
+void replayTelemetry(const GenerationTelemetry &from, GenerationTelemetry &to)
+{
+	for (const GenerationTelemetry::Record &r : from.records())
+	{
+		if (r.kind == "measurement")
+			std::visit(
+				[&](const auto &value)
+				{
+					if constexpr (!std::is_same_v<std::decay_t<decltype(value)>, std::string>)
+						to.measure(r.key, value, r.subject);
+				},
+				r.value);
+		else if (r.kind == "choice")
+			to.choice(r.key, std::get<std::string>(r.value), r.subject);
+		else if (r.kind == "fallback")
+			to.fallback(r.key, std::get<std::string>(r.value), r.subject);
+		else
+			to.error(r.key, std::get<std::string>(r.value));
+	}
+}
+
+Layout design(const GenerationRequest &request, GenerationContext &context)
+{
+	thread_local DesignCache cache;
+	const std::vector<std::string> names = designStreams(request);
+	for (const std::string &name : names)
+		if (context.stream(name) != std::mt19937(GenerationContext::deriveSeed(request.seed, name)))
+			return designAfresh(request, context);
+	const GenerationRequest &was = cache.request;
+	if (!cache.valid || was.method != request.method || was.wDec != request.wDec ||
+		was.hDec != request.hDec || was.nbTeams != request.nbTeams || was.seed != request.seed ||
+		was.options != request.options)
+	{
+		cache.valid = false;
+		GenerationContext fresh(request, true);
+		cache.layout = designAfresh(request, fresh);
+		cache.telemetry = fresh.telemetry;
+		cache.streams.clear();
+		for (const std::string &name : names)
+			cache.streams.push_back({name, fresh.stream(name)});
+		cache.request = request;
+		cache.valid = true;
+	}
+	for (const auto &[name, state] : cache.streams)
+		context.stream(name) = state;
+	replayTelemetry(cache.telemetry, context.telemetry);
+	return cache.layout;
 }
 
 // Wheat on every open tile of `L`'s paddies that `sown` (by paddy id) and `keep` (by tile) allow.
