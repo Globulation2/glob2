@@ -2731,13 +2731,13 @@ Emoji
 [Bridges]
 الجسور
 [Karst towers]
-أبراج كارستية
+قمم كارستية
 [Tower spacing]
-تباعد الأبراج
+تباعد القمم الكارستية
 [Tower density]
-كثافة الأبراج
+كثافة القمم الكارستية
 [Paddy depth]
-عمق حقول الأرز
+امتداد حقول الأرز
 [Home design]
 تصميم الموطن
 [Horseshoe]

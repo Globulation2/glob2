@@ -2735,7 +2735,7 @@ Emoji
 [Tower density]
 봉우리 밀도
 [Paddy depth]
-논 깊이
+논 지대 폭
 [Home design]
 본거지 설계
 [Horseshoe]

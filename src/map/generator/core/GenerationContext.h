@@ -27,6 +27,8 @@ struct GenerationContext
 		for (auto n = last - first; n > 1; --n)
 			std::swap(first[n - 1], first[bounded(name, std::uint32_t(n))]);
 	}
+	/// Every stream asked for so far, by name, in its current state.
+	const std::map<std::string, std::mt19937> &namedStreams() const { return streams; }
 	static std::uint32_t deriveSeed(std::uint32_t seed, const std::string &name);
 	static std::uint32_t randomSeed();
 

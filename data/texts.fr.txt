@@ -2743,13 +2743,13 @@ Champs de blé
 [Bridges]
 Ponts
 [Karst towers]
-Tours karstiques
+Pitons karstiques
 [Tower spacing]
-Espacement des tours
+Espacement des pitons
 [Tower density]
-Densité des tours
+Densité des pitons
 [Paddy depth]
-Profondeur des rizières
+Étendue des rizières
 [Home design]
 Forme de la base
 [Horseshoe]

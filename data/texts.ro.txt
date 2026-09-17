@@ -2735,11 +2735,11 @@ Poduri
 [Karst towers]
 Turnuri carstice
 [Tower spacing]
-Distanța dintre turnuri
+Distanța dintre turnurile carstice
 [Tower density]
-Densitatea turnurilor
+Densitatea turnurilor carstice
 [Paddy depth]
-Adâncimea orezăriilor
+Întinderea orezăriilor
 [Home design]
 Forma bazei
 [Horseshoe]

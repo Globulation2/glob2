@@ -2741,11 +2741,11 @@ Pontes
 [Karst towers]
 Torres cársicas
 [Tower spacing]
-Espaçamento das torres
+Espaçamento das torres cársicas
 [Tower density]
-Densidade das torres
+Densidade das torres cársicas
 [Paddy depth]
-Profundidade dos arrozais
+Extensão dos arrozais
 [Home design]
 Desenho da base
 [Horseshoe]
@@ -2759,7 +2759,7 @@ Quatro portões
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 Os rios não encontraram caminho entre as bases; use um mapa maior ou menos colónias.
 [River meander]
-Meandro do rio
+Meandros do rio
 [Flooded terraces]
 Socalcos alagados
 [Sinkholes]

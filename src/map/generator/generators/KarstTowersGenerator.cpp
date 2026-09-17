@@ -25,9 +25,7 @@
 #include <map>
 #include <random>
 #include <string>
-#include <type_traits>
 #include <utility>
-#include <variant>
 #include <vector>
 using namespace MapGeneration;
 
@@ -38,7 +36,7 @@ using namespace MapGeneration;
 // Three shared primitives combine in a way no other map uses them:
 //  - the towers are the spots of a Turing pattern (Patterns.h). A slow noise lowers the cut where the
 //    karst is thick, so towers grow fatter and closer in thickets and stand alone on the valley floor,
-//    but a spot never pools into its neighbour;
+//    while staying spots rather than one mass;
 //  - each river is the cheapest walk round the torus (Roads.h) under a cost that climbs near a tower
 //    (Morphology.h's distance field), so it bends where the towers make it bend. It only ever steps
 //    forwards along its axis and stays inside a band between two rows of homes, so it cannot double
@@ -48,15 +46,16 @@ using namespace MapGeneration;
 //
 // Homes stand on a lattice in rows, and a river runs in the middle of every gap between rows that has
 // room for one, so every colony has a river at the same distance and each river parts the rows it
-// lies between: the fords, evenly spaced between the homes, are where the rows meet. On a map whose
+// lies between: the fords, evenly spaced along each river, are where the rows meet. On a map whose
 // homes make a single row there is one river, opposite them, and contact also runs along the row. On a
 // map too crowded for any banded river, one river runs free round the bowls.
 //
-// Every home is a bowl: a clearing with an irrigated paddy, a doline pond on its rim and pools by its
-// gates, walled by a ring of towers broken by gates. The ring and pools come from one stencil read at
-// each tile's offset from its home, in one of four gate designs drawn once per map (or chosen) and one
-// facing per map, so the bowls are exact translations. Between neighbouring homes in a row lies a
-// doline lake in a ring of sealed fields; beyond the valleys, sinkholes drain into chains of pools.
+// Every home is a bowl: a clearing with an irrigated paddy, a doline pond on its rim and a pool beside
+// one or two of its gates, walled by a ring of towers broken by gates. The ring, pools and pond are
+// drawn at the same offsets round every home, the ring's lumps read from one noise stencil, in one of
+// four gate designs drawn once per map (or chosen) and one facing per map, so every bowl is drawn the
+// same. Between neighbouring homes in a row lies a doline lake in a ring of sealed fields, where
+// there is room for one; beyond the valleys, sinkholes drain into chains of pools.
 //
 // WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Stone never runs out and cannot
 // be cleared, so the towers are permanent terrain and a bowl's gates are its only ways in. Crops
@@ -89,25 +88,28 @@ constexpr int kWidestBand = 24, kWaypointPitch = 32;
 // this many tiles deep (crops grow best in rows about 10 tiles wide between rows of water; the bunds
 // take a tile of each), cut across every this many tiles of river.
 constexpr int kCropRibbon = 9, kWaterRibbon = 6, kPaddyReach = 24;
-// The share (percent) of the crop ribbon's paddies flooded when the Flooded terraces control is at its
-// default of 88 (the water ribbon's share; it scales with the control), and of the dry ones sown with
-// wheat at an amount of 100.
+// The Flooded terraces control's default: the percentage of the water ribbon's paddies flooded.
+constexpr int kDefaultFlooded = 88;
+// The percentage of the crop ribbon's paddies flooded at that default (it scales with the control), and
+// of the dry river paddies sown with wheat at a Wheat amount of 100.
 constexpr int kFloodedCrop = 8, kPlantedPaddies = 60;
 // Lake fields' labels start here, above every river paddy's.
 constexpr int kLakeFieldLabel = 100000000;
 // A sinkhole pond's tiles at a Sinkholes setting of 100.
 constexpr int kSinkholeTiles = 48;
 // A sinking stream: pools of this many tiles every this many steps along the cheapest way from a
-// sinkhole towards the nearest river, gaps of land between them, drying up before the paddies and
-// given up beyond this many steps.
+// sinkhole to a river or an earlier stream, gaps of land between them, drying up before the paddies,
+// and no stream at all when that way is longer than this many tiles.
 constexpr int kStreamPoolTiles = 14, kStreamPoolPitch = 9, kLongestStream = 120;
-// No wood that can spread grows this close to a bowl or a lake.
+// No wood is planted this close to a bowl or a lake on ground that water makes fertile, where it would
+// spread.
 constexpr double kWetWoodClearance = 16;
-// The first and third gates each have a lobed pool of about this radius in the apron beside them, off
-// their walking line, turned this far past the gate's edge.
+// The first gate, and the third where a design has one, each have a lobed pool of about this radius
+// in the apron beside them, off their walking line, turned this far (radians) past the gate's edge.
 constexpr double kGatePool = 3.2, kGatePoolTurn = 0.4;
 
-// The gates of each home design, as headings (turns of the facing) and a half-width in radians.
+// The gates of each home design, as headings in radians from the map's facing, and each gate's
+// half-width in radians (widened where that is narrower than about seven tiles at the ring).
 struct HomeDesign
 {
 	std::vector<double> gates;
@@ -153,33 +155,33 @@ struct Layout
 	std::string failure;
 };
 
+int wrapped(int v, int period) { return ((v % period) + period) % period; }
+
 // What the design's stages share beyond the layout itself.
 struct Work
 {
 	const KarstTowersOptions &o;
 	GenerationContext &context;
-	int riverWidth = 0, length = 0, across = 0;
-	bool freeRiver = false;
+	int riverWidth = 0, length = 0, across = 0; // the rivers' width; the map along and across them
+	bool freeRiver = false;                     // one river running free round the bowls
 	std::vector<int> field;             // the towers' Turing pattern
 	int sparse = 0, dense = 0;          // its cut for a lone tower and for the thickest karst
-	std::vector<int> stencil;           // noise read at a tile's offset from its home or lake
-	double halfGate = 0;
+	std::vector<int> stencil;           // 128x128 noise read at a tile's offset from its home or lake
+	double halfGate = 0;                // the gates' half-width in radians, as widened for the ring
 	std::vector<std::int64_t> fromRiver; // squared distance to river water
-	std::vector<unsigned char> apron;    // the bowls grown two tiles
 
-	// The cut a tower's spot must reach at tile `i`, `thin` of the way towards the thicket's.
-	int levelAt(const Layout &L, int i, double thin) const
+	// The cut a tower's spot must reach at tile `i`: the lone-tower cut moved towards the thicket's by
+	// the karst's thickness there, times `share`.
+	int levelAt(const Layout &L, int i, double share) const
 	{
-		return sparse + int(std::int64_t(dense - sparse) * L.thicket[i] / 255 * thin);
+		return sparse + int(std::int64_t(dense - sparse) * L.thicket[i] / 255 * share);
 	}
+	// The stencil at an offset, shifted `shift` tiles on both axes so one stencil gives several fields.
 	int stencilAt(int dx, int dy, int shift) const
 	{
-		return stencil[wrapped(dy + shift) * 128 + wrapped(dx + shift)];
+		return stencil[wrapped(dy + shift, 128) * 128 + wrapped(dx + shift, 128)];
 	}
-	static int wrapped(int v) { return ((v % 128) + 128) % 128; }
 };
-
-int wrapped(int v, int period) { return ((v % period) + period) % period; }
 // The signed distance from `from` to `to` the short way round a period.
 int towards(int from, int to, int period)
 {
@@ -188,6 +190,8 @@ int towards(int from, int to, int period)
 }
 int alongOf(const Layout &L, int i) { return L.alongX ? i % L.t.w : i / L.t.w; }
 int crossOf(const Layout &L, int i) { return L.alongX ? i / L.t.w : i % L.t.w; }
+int alongOf(const Layout &L, const ShapePoint &p) { return int(L.alongX ? p.x : p.y); }
+int crossOf(const Layout &L, const ShapePoint &p) { return int(L.alongX ? p.y : p.x); }
 int tileAt(const Layout &L, int along, int cross)
 {
 	return L.alongX ? L.t.at(along, cross) : L.t.at(cross, along);
@@ -320,9 +324,10 @@ std::vector<std::pair<int, int>> rowGaps(const std::vector<ShapePoint> &homes, b
 }
 
 // Homes on a lattice, dealt to the colonies, and the rivers between their rows: one in the middle of every
-// gap wide enough for two of the smallest bowls and the river, along the longer side or, on a square map,
-// along whichever axis leaves more such gaps. The homes are sized to leave their rings, aprons and the
-// rivers room, and the gate design and facing drawn. False, with `L.failure`, when no home has room.
+// gap wide enough for two of the smallest bowls and the river, running along the longer side or, on a
+// square map, along whichever axis leaves more such gaps. The homes are sized to leave room for their
+// rings, aprons and the rivers, and the gate design and facing are drawn. False, with `L.failure`, when
+// no home has room.
 bool placeHomesAndRivers(Layout &L, Work &w, int homeCap)
 {
 	const Torus &t = L.t;
@@ -369,12 +374,12 @@ bool placeHomesAndRivers(Layout &L, Work &w, int homeCap)
 		w.freeRiver = true;
 		context.telemetry.fallback("karst.river.free", "No gap between rows fits a river beside its bowls.");
 	}
-	const auto homeCross = [&](const ShapePoint &home) { return int(L.alongX ? home.y : home.x); };
+	// How far across the axis a river's middle lies from the nearest home.
 	const auto riverRoom = [&](const River &river)
 	{
 		double room = w.across;
 		for (const ShapePoint &home : L.homes)
-			room = std::min<double>(room, std::abs(towards(homeCross(home), river.middle, w.across)));
+			room = std::min<double>(room, std::abs(towards(crossOf(L, home), river.middle, w.across)));
 		return room;
 	};
 	double nearestRiver = w.across;
@@ -401,9 +406,11 @@ bool placeHomesAndRivers(Layout &L, Work &w, int homeCap)
 											  kWidestBand);
 	L.homeDesign = o.homeDesign > 0 ? o.homeDesign - 1 : int(context.bounded("karst-home-design", 4));
 	// One facing per map, turned so the gates open across the rivers, towards the paddies, rather than
-	// along the row: the Horseshoe's and Three gates' first gate points at the design's quarter turn, the
-	// Twin gates' pair lies along the axis. Which of the two ways across is a draw.
-	const double acrossRivers = L.alongX ? 0 : kPi / 2; // turns a south-pointing gate across the rivers
+	// along the row. A gate at a quarter turn points south, across rivers that run along the width, and
+	// `acrossRivers` turns it across rivers that run along the height. The Horseshoe's and Three gates'
+	// first gate is at a quarter turn; the Twin gates' pair lies east and west, so it takes a further
+	// quarter; the Four gates' diagonals need no turn. Which of the two ways across is a draw.
+	const double acrossRivers = L.alongX ? 0 : kPi / 2;
 	const double facingBase[4] = {acrossRivers, acrossRivers + kPi / 2, acrossRivers, 0};
 	L.facing = facingBase[L.homeDesign] + context.bounded("karst-home-facing", 2) * kPi;
 	context.telemetry.choice("karst.home.design", std::to_string(L.homeDesign));
@@ -561,12 +568,13 @@ bool routeRivers(Layout &L, Work &w)
 	return true;
 }
 
-// Fords on every river, evenly spaced and half a step off the first home, so they fall between homes:
-// straight across the river where it crosses that position, at the middle of any run along it.
+// Fords on every river, evenly spaced along it and starting half a spacing from the first home, so with
+// as many fords as homes in a row they fall between the homes. Each lies straight across the river where
+// its centreline passes that position, at the middle of any run of the centreline along it.
 void placeFords(Layout &L, const Work &w)
 {
 	const Torus &t = L.t;
-	const int firstAlong = int(L.alongX ? L.homes[0].x : L.homes[0].y);
+	const int firstAlong = alongOf(L, L.homes[0]);
 	for (const River &river : L.rivers)
 	{
 		const int count = int(river.centreline.size());
@@ -609,15 +617,15 @@ std::vector<unsigned char> fordLandings(const Layout &L, int radius)
 
 // Doline lakes: one halfway between every two neighbouring homes in a row, the same lobed lake each
 // time (its rim read from the stencil at each heading, drawn out along the row), so the open ground
-// beside every bowl has water and the lakes are shared out exactly. A lake that would touch a bowl or
-// come near a river is left out.
+// beside every bowl has water and the lakes are shared out evenly. A lake that would touch a bowl or
+// come within eight tiles of river water is left out.
 void fillLakes(Layout &L, Work &w)
 {
 	const Torus &t = L.t;
 	const int length = w.length, across = w.across;
 	std::vector<Row> rows = homeRows(L.homes, L.alongX, across);
-	const auto homeAlong = [&](int k) { return int(L.alongX ? L.homes[k].x : L.homes[k].y); };
-	const auto homeCross = [&](int k) { return int(L.alongX ? L.homes[k].y : L.homes[k].x); };
+	const auto homeAlong = [&](int k) { return alongOf(L, L.homes[k]); };
+	const auto homeCross = [&](int k) { return crossOf(L, L.homes[k]); };
 	int shortest = length;
 	for (Row &row : rows)
 	{
@@ -801,24 +809,24 @@ std::vector<int> riverReach(const Layout &L)
 // another field, or any neighbour is off the fields: then no tile spanning two fields is pure grass,
 // and a crop cannot cross. The water ribbon's paddies are flooded, and a few of the crop ribbon's, on
 // every corner inside the bunds: the bund is the paddy's only sand (pure sand beside a crop stops it
-// regrowing) and stays walkable. A paddy too small to hold four such corners stays dry.
+// regrowing) and stays walkable. A paddy too small to hold four such corners stays dry, and lake fields
+// are never flooded.
 void terracePaddies(Layout &L, Work &w)
 {
 	const Torus &t = L.t;
 	const KarstTowersOptions &o = w.o;
 	const int n = t.size();
-	// A paddy keeps three tiles from water and towers. Within a squared distance under 9 is within two
-	// tiles along both axes, a square, so a dilation answers it without a distance field. There is
-	// always water: the rivers.
+	// A paddy keeps three tiles from water and towers: none within two tiles along both axes, the square
+	// that a squared distance under 9 covers exactly.
 	const std::vector<unsigned char> nearWater = dilate(t, L.water, 2);
 	const std::vector<unsigned char> nearTower = dilate(t, L.tower, 2);
 	const std::vector<int> reach = riverReach(L);
 	const std::vector<unsigned char> landings = fordLandings(L, 5);
 	const std::int64_t depth2 = std::int64_t(o.paddyDepth + 2) * (o.paddyDepth + 2);
-	w.apron = dilate(t, L.bowl, 2);
+	const std::vector<unsigned char> apron = dilate(t, L.bowl, 2);
 	L.paddyZone.assign(n, 0);
 	for (int i = 0; i < n; ++i)
-		L.paddyZone[i] = !w.apron[i] && !landings[i] && !nearWater[i] && w.fromRiver[i] <= depth2 &&
+		L.paddyZone[i] = !apron[i] && !landings[i] && !nearWater[i] && w.fromRiver[i] <= depth2 &&
 						 !nearTower[i];
 	L.paddyZone = dropSmallRegions(t, L.paddyZone, 30);
 	std::vector<int> label(n, -1);
@@ -840,7 +848,7 @@ void terracePaddies(Layout &L, Work &w)
 					[&](int i, int dx, int dy)
 					{
 						if (fromLake[i] < 0 || fromLake[i] > 100 || fromLake[i] <= 4 ||
-							w.apron[i] || L.paddyZone[i])
+							apron[i] || L.paddyZone[i])
 							return;
 						L.tower[i] = 0;
 						L.paddyZone[i] = 1;
@@ -886,7 +894,8 @@ void terracePaddies(Layout &L, Work &w)
 	{
 		const int draw = int(w.context.bounded("karst-flooded", 100));
 		L.flooded[p] = !L.lakeField[p] && poolSize[p] >= 4 &&
-					   (ribbonOf[p] % 2 ? draw >= 100 - o.flooded : draw < kFloodedCrop * o.flooded / 88);
+					   (ribbonOf[p] % 2 ? draw >= 100 - o.flooded
+										: draw < kFloodedCrop * o.flooded / kDefaultFlooded);
 		flooded += L.flooded[p];
 	}
 	for (int i : pool)
@@ -897,11 +906,11 @@ void terracePaddies(Layout &L, Work &w)
 }
 
 // Each home's own water, the same offsets round every home: a paddy north of its middle, bunded round,
-// with an irrigation channel two tiles wide along its far side; a lobed pool beside its first and third
-// gates, just inside the apron; and a doline pond, bigger than a round home's usual one, against the
-// clearing's rim east-south-east of the middle, so it leaves the middle free for building and its beach
-// keeps off the paddy. The starter kit is planted round the pond. Then the beaches, and the fords laid
-// across the rivers.
+// with an irrigation channel two tiles wide along its far side; a lobed pool just inside the apron beside
+// its first gate, and its third where it has one; and a doline pond, bigger than a round home's usual
+// one, against the clearing's rim east-south-east of the middle, so it leaves the middle free for
+// building and its beach keeps off the paddy. The starter kit is planted round the pond. Then the
+// beaches, and the fords laid across the rivers.
 void waterHomes(Layout &L, const Work &w)
 {
 	const Torus &t = L.t;
@@ -1025,61 +1034,24 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 
 // A generation asks for the same design three times: the request check (designFailure), generate and
 // validateWorld, and building it was most of a generation's time. The design depends only on the request
-// and the named streams it draws from, so the last one built on this thread is kept and handed out again
-// for the same request: its telemetry replayed into the asking context, and every stream it draws from
-// wound on to where building it would have left that stream, so whatever the context draws next is
-// unchanged. A context that has already drawn from one of those streams gets the design built afresh.
+// and the named streams it draws from, so the last one built on this thread, in a context of its own, is
+// kept and handed out again for the same request (nbWorkers plays no part in it): its telemetry replayed
+// into the asking context, and every stream it drew from wound on to where building it left that stream,
+// so whatever the context draws next is unchanged. The streams are the ones the building context asked
+// for, so a new draw in the design needs no list kept by hand. A context that has already drawn from one
+// of those streams gets the design built afresh from where its streams stand.
 struct DesignCache
 {
 	bool valid = false;
 	GenerationRequest request;
 	Layout layout;
 	GenerationTelemetry telemetry;
-	std::vector<std::pair<std::string, std::mt19937>> streams; // each as the design left it
+	std::map<std::string, std::mt19937> streams; // each as the design left it
 };
-
-// Every stream the design draws from, rivers' included (a map has no more rivers than colonies). A
-// stream the design comes to draw from belongs here too, or a cached design leaves it unwound.
-std::vector<std::string> designStreams(const GenerationRequest &request)
-{
-	std::vector<std::string> names = {
-		"karst-layout",      "starts-deal",       "karst-river-axis",   "karst-river-parity",
-		"karst-home-design", "karst-home-facing", "karst-pattern",      "karst-thickets",
-		"karst-ring",        "karst-meander",     "karst-paddy-jitter", "karst-pond",
-		"karst-flooded"};
-	for (int r = 0; r < std::max(1, request.nbTeams); ++r)
-		names.push_back("karst-river-" + std::to_string(r));
-	return names;
-}
-
-void replayTelemetry(const GenerationTelemetry &from, GenerationTelemetry &to)
-{
-	for (const GenerationTelemetry::Record &r : from.records())
-	{
-		if (r.kind == "measurement")
-			std::visit(
-				[&](const auto &value)
-				{
-					if constexpr (!std::is_same_v<std::decay_t<decltype(value)>, std::string>)
-						to.measure(r.key, value, r.subject);
-				},
-				r.value);
-		else if (r.kind == "choice")
-			to.choice(r.key, std::get<std::string>(r.value), r.subject);
-		else if (r.kind == "fallback")
-			to.fallback(r.key, std::get<std::string>(r.value), r.subject);
-		else
-			to.error(r.key, std::get<std::string>(r.value));
-	}
-}
 
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
 	thread_local DesignCache cache;
-	const std::vector<std::string> names = designStreams(request);
-	for (const std::string &name : names)
-		if (context.stream(name) != std::mt19937(GenerationContext::deriveSeed(request.seed, name)))
-			return designAfresh(request, context);
 	const GenerationRequest &was = cache.request;
 	if (!cache.valid || was.method != request.method || was.wDec != request.wDec ||
 		was.hDec != request.hDec || was.nbTeams != request.nbTeams || was.seed != request.seed ||
@@ -1089,15 +1061,16 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		GenerationContext fresh(request, true);
 		cache.layout = designAfresh(request, fresh);
 		cache.telemetry = fresh.telemetry;
-		cache.streams.clear();
-		for (const std::string &name : names)
-			cache.streams.push_back({name, fresh.stream(name)});
+		cache.streams = fresh.namedStreams();
 		cache.request = request;
 		cache.valid = true;
 	}
 	for (const auto &[name, state] : cache.streams)
+		if (context.stream(name) != std::mt19937(GenerationContext::deriveSeed(request.seed, name)))
+			return designAfresh(request, context);
+	for (const auto &[name, state] : cache.streams)
 		context.stream(name) = state;
-	replayTelemetry(cache.telemetry, context.telemetry);
+	context.telemetry.replay(cache.telemetry);
 	return cache.layout;
 }
 
@@ -1200,7 +1173,7 @@ bool generate(Game &game, GenerationContext &context)
 							map.setResource(i % t.w, i / t.w, WHEAT, 1);
 					});
 
-	// Orchards on the valley floor, off the paddies.
+	// Orchards anywhere on open ground off the bowls, paddies and towers.
 	const int groves = int(scaledCount(n / 2500, o.fruit));
 	for (int g = 0; g < groves; ++g)
 	{
@@ -1277,7 +1250,7 @@ GeneratorDefinition karstTowersDefinition()
 			 {"fords", "Fords", 1, 6, 1, 2, ControlGroup::Terrain},
 			 {"paddy-depth", "Paddy depth", 16, 40, 2, 24, ControlGroup::Terrain},
 			 {"river-meander", "River meander", 0, 100, 10, 50, ControlGroup::Terrain},
-			 {"flooded-terraces", "Flooded terraces", 0, 100, 4, 88, ControlGroup::Terrain},
+			 {"flooded-terraces", "Flooded terraces", 0, 100, 4, kDefaultFlooded, ControlGroup::Terrain},
 			 {"sinkholes", "Sinkholes", 0, 300, 25, 100, ControlGroup::Terrain},
 			 GeneratorControl::toggle("lakes", "Lakes", true, ControlGroup::Layout),
 			 GeneratorControl::choice("home-design", "Home design",

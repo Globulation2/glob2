@@ -268,6 +268,6 @@ What made the rounds work:
 - **Keep the same reviewer across rounds.** Its tools and reference measurements carry over, so round three compared against round two on the same seeds.
 - **Verify its proposals, don't copy them.** Some proposals the author had already made; some were simulated on terrain rather than generated. Measure the change with the reviewer's own tool after implementing it.
 
-## What to write down## What to write down
+## What to write down
 
 For every tuning change keep the seed, the request, the symptom (which colony, which tick, which metric), the hypothesis, the change and the paired re-run. The generators' headers carry this record in the comments on their constants; the pull requests carry the numbers. Both are what the next map's designer reads.

@@ -1844,10 +1844,12 @@ distance transforms.
 See [the design and verification notes](KARST_TOWERS.md). Towers are a Turing pattern's spots
 (`turingPattern`) with a thicket noise lowering the cut. Rivers are placed from the homes rather than
 the other way round: homes on a lattice are grouped into rows across one axis, and a river winds as
-the cheapest walk (`cheapestWalk`) inside a band in the middle of every gap wide enough for it,
+the cheapest walk (the same search as `cheapestWalk`, with its arrays reused) inside a band in the middle of every gap wide enough for it,
 stepping only forwards along its axis. Terraces are labelled corners (distance band from the river,
 cut by a flood of the centreline index) whose label changes become one-corner sand bunds; the
-validator checks that no pure-grass tile of one field touches pure grass of another. Bowls, gate
-pools and lakes read one noise stencil at each tile's offset from their home or lake, so they are
-exact translations. When big homes or wide rivers close every gap, the design shrinks the homes and
-then narrows the rivers before refusing.
+validator checks that no pure-grass tile of one field touches pure grass of another. Bowl rings, gate
+pools and lake rims read one noise stencil at offsets from their home or lake, so every bowl is drawn
+the same and every lake has the same shape. When big homes or wide rivers close every gap, the design
+shrinks the homes and then narrows the rivers before refusing. Like Honeycomb isle, it caches the last
+design per thread and replays its telemetry (`GenerationTelemetry::replay`); it also winds every named
+stream the design drew from (`GenerationContext::namedStreams`) on to where building it left them.

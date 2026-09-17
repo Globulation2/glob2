@@ -2735,11 +2735,11 @@ Mostovi
 [Karst towers]
 Kraški stolpi
 [Tower spacing]
-Razmik stolpov
+Razmik kraških stolpov
 [Tower density]
-Gostota stolpov
+Gostota kraških stolpov
 [Paddy depth]
-Globina riževih polj
+Obseg riževih polj
 [Home design]
 Oblika doma
 [Horseshoe]

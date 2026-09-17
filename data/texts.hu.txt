@@ -2733,13 +2733,13 @@ Búzamezők
 [Bridges]
 Hidak
 [Karst towers]
-Karsztos tornyok
+Karszttornyok
 [Tower spacing]
-Tornyok távolsága
+Karszttornyok távolsága
 [Tower density]
-Tornyok sűrűsége
+Karszttornyok sűrűsége
 [Paddy depth]
-Rizsföldek mélysége
+Rizsföldek kiterjedése
 [Home design]
 Otthon kialakítása
 [Horseshoe]

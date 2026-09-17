@@ -2743,13 +2743,13 @@ Mosty
 [Karst towers]
 Krasové veže
 [Tower spacing]
-Rozostup veží
+Rozostup krasových veží
 [Tower density]
-Hustota veží
+Hustota krasových veží
 [Paddy depth]
-Hĺbka ryžových polí
+Rozsah ryžových polí
 [Home design]
-Návrh domova
+Tvar domova
 [Horseshoe]
 Podkova
 [Twin gates]

@@ -2811,7 +2811,7 @@ Emoji
 [Tower density]
 石峰密度
 [Paddy depth]
-稻田深度
+稻田縱深
 [Home design]
 基地樣式
 [Horseshoe]
@@ -2829,4 +2829,4 @@ Emoji
 [Flooded terraces]
 淹水梯田
 [Sinkholes]
-天坑
+落水洞

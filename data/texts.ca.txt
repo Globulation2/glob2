@@ -2743,11 +2743,11 @@ Ponts
 [Karst towers]
 Torres càrstiques
 [Tower spacing]
-Separació de les torres
+Separació de les torres càrstiques
 [Tower density]
-Densitat de les torres
+Densitat de les torres càrstiques
 [Paddy depth]
-Profunditat dels arrossars
+Extensió dels arrossars
 [Home design]
 Disseny de la base
 [Horseshoe]
@@ -2761,7 +2761,7 @@ Quatre portes
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 Els rius no han trobat camí entre les bases; feu servir un mapa més gran o menys colònies.
 [River meander]
-Meandre del riu
+Meandres del riu
 [Flooded terraces]
 Terrasses inundades
 [Sinkholes]

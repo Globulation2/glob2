@@ -2743,11 +2743,11 @@ Köprüler
 [Karst towers]
 Karst kuleleri
 [Tower spacing]
-Kule aralığı
+Karst kulesi aralığı
 [Tower density]
-Kule yoğunluğu
+Karst kulesi yoğunluğu
 [Paddy depth]
-Çeltik tarlası derinliği
+Çeltik tarlası genişliği
 [Home design]
 Üs tasarımı
 [Horseshoe]
@@ -2761,7 +2761,7 @@ Dört kapı
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
 Nehirler üsler arasında yol bulamadı; daha büyük bir harita veya daha az koloni kullanın.
 [River meander]
-Nehir kıvrımı
+Nehir kıvrımlılığı
 [Flooded terraces]
 Su basmış teraslar
 [Sinkholes]

@@ -2811,11 +2811,11 @@ Broer
 [Karst towers]
 Karsttårne
 [Tower spacing]
-Tårnafstand
+Afstand mellem karsttårne
 [Tower density]
-Tårntæthed
+Karsttårnenes tæthed
 [Paddy depth]
-Rismarkernes dybde
+Rismarkernes udstrækning
 [Home design]
 Hjemmets udformning
 [Horseshoe]

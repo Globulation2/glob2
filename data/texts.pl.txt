@@ -2735,11 +2735,11 @@ Mosty
 [Karst towers]
 Wieże krasowe
 [Tower spacing]
-Odstęp wież
+Odstęp wież krasowych
 [Tower density]
-Gęstość wież
+Gęstość wież krasowych
 [Paddy depth]
-Głębokość pól ryżowych
+Zasięg pól ryżowych
 [Home design]
 Układ bazy
 [Horseshoe]

@@ -2735,11 +2735,11 @@ Emoji
 [Karst towers]
 Крашке куле
 [Tower spacing]
-Размак кула
+Размак крашких кула
 [Tower density]
-Густина кула
+Густина крашких кула
 [Paddy depth]
-Дубина пиринчаних поља
+Простирање пиринчаних поља
 [Home design]
 Облик базе
 [Horseshoe]

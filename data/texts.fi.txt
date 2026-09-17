@@ -2735,11 +2735,11 @@ Sillat
 [Karst towers]
 Karstitornit
 [Tower spacing]
-Tornien väli
+Karstitornien väli
 [Tower density]
-Tornien tiheys
+Karstitornien tiheys
 [Paddy depth]
-Riisipeltojen syvyys
+Riisipeltojen laajuus
 [Home design]
 Kotialueen muoto
 [Horseshoe]

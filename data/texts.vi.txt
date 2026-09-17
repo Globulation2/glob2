@@ -2731,11 +2731,11 @@ Cầu
 [Karst towers]
 Tháp đá vôi
 [Tower spacing]
-Khoảng cách tháp
+Khoảng cách tháp đá vôi
 [Tower density]
-Mật độ tháp
+Mật độ tháp đá vôi
 [Paddy depth]
-Độ sâu ruộng lúa
+Bề rộng dải ruộng lúa
 [Home design]
 Kiểu căn cứ
 [Horseshoe]

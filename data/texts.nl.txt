@@ -2759,11 +2759,11 @@ Bruggen
 [Karst towers]
 Karsttorens
 [Tower spacing]
-Torenafstand
+Afstand tussen karsttorens
 [Tower density]
-Torendichtheid
+Dichtheid van karsttorens
 [Paddy depth]
-Diepte van de rijstvelden
+Reikwijdte van de rijstvelden
 [Home design]
 Vorm van de thuisbasis
 [Horseshoe]

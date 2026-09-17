@@ -2735,11 +2735,11 @@ Brücken
 [Karst towers]
 Karsttürme
 [Tower spacing]
-Turmabstand
+Abstand der Karsttürme
 [Tower density]
-Turmdichte
+Dichte der Karsttürme
 [Paddy depth]
-Tiefe der Reisfelder
+Ausdehnung der Reisfelder
 [Home design]
 Heimatform
 [Horseshoe]
@@ -2755,6 +2755,6 @@ Die Flüsse finden keinen Weg zwischen den Heimaten; verwenden Sie eine größer
 [River meander]
 Flussmäander
 [Flooded terraces]
-Geflutete Terrassen
+Überflutete Terrassen
 [Sinkholes]
 Dolinen

@@ -2733,11 +2733,11 @@ Pontoj
 [Karst towers]
 Karstaj turoj
 [Tower spacing]
-Interspaco de turoj
+Interspaco de karstaj turoj
 [Tower density]
-Denseco de turoj
+Denseco de karstaj turoj
 [Paddy depth]
-Profundo de rizejoj
+Etendo de rizejoj
 [Home design]
 Aspekto de la hejmo
 [Horseshoe]

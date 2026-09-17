@@ -15,10 +15,9 @@
 //   cc -O2 -o /tmp/growth_potential .agents/skills/glob2-map-design/scripts/growth_potential.c
 //   build/src/glob2 --generate-map --generator 54 --map-seed 1 --param teams=4 --param width=8 \
 //       --param height=8 --report terrain --output-dir /tmp/dump
-//   build/src/glob2 --generate-map karst-towers --seed 1 --width 256 --height 256 --teams 4 \
-//       --json /tmp/dump.json --output /tmp/dump.map
 //   /tmp/growth_potential /tmp/dump/terrain.txt $(python3 -c "import json; print(' '.join( \
-//       '%d %d' % (c['start']['x'], c['start']['y']) for c in json.load(open('/tmp/dump.json'))['map']['colonies']))")
+//       '%d %d' % (c['start']['x'], c['start']['y']) \
+//       for c in json.load(open('/tmp/dump/result.json'))['map_report']['map']['colonies']))")
 //
 // Prints the map's water share, fertile share and total yield, then per colony the yield reachable
 // by walking within 24, 48 and 96 steps of its swarm, split into home plots (sealed farmland within
@@ -26,7 +25,8 @@
 // component of farmland smaller than 1,500 tiles, which bunded plots are and open country is not.
 // Walking passes grass, sand, beaches, wheat and buildings; water, stone, wood and fruit block it.
 // Tile codes are render_terrain.py's: 0 grass, 1 sand, 2 water, 3 mixed, 4 wheat, 5 wood, 6 stone,
-// 7 building, 8 fruit, 9 algae.
+// 7 building, 8 fruit, 9 algae. A dump records a resource rather than the ground under it, so a probe
+// landing on a resource other than algae counts as neither water nor sand.
 #include <stdio.h>
 #include <stdlib.h>
 

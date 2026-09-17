@@ -2797,11 +2797,11 @@ Ponti
 [Karst towers]
 Torri carsiche
 [Tower spacing]
-Distanza tra le torri
+Distanza tra le torri carsiche
 [Tower density]
-Densità delle torri
+Densità delle torri carsiche
 [Paddy depth]
-Profondità delle risaie
+Estensione delle risaie
 [Home design]
 Forma della base
 [Horseshoe]

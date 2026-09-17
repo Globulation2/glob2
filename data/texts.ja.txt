@@ -2729,11 +2729,11 @@ Emoji
 [Bridges]
 橋
 [Karst towers]
-カルストの塔
+カルストの岩峰
 [Tower spacing]
-塔の間隔
+岩峰の間隔
 [Tower density]
-塔の密度
+岩峰の密度
 [Paddy depth]
 水田の奥行き
 [Home design]

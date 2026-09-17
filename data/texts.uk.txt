@@ -2731,11 +2731,11 @@ Emoji
 [Karst towers]
 Карстові вежі
 [Tower spacing]
-Крок веж
+Крок карстових веж
 [Tower density]
-Густота веж
+Густота карстових веж
 [Paddy depth]
-Глибина рисових полів
+Протяжність рисових полів
 [Home design]
 Форма бази
 [Horseshoe]

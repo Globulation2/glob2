@@ -2731,11 +2731,11 @@ Jembatan
 [Karst towers]
 Menara karst
 [Tower spacing]
-Jarak menara
+Jarak menara karst
 [Tower density]
-Kerapatan menara
+Kerapatan menara karst
 [Paddy depth]
-Kedalaman sawah
+Jangkauan sawah
 [Home design]
 Rancangan markas
 [Horseshoe]
@@ -2753,4 +2753,4 @@ Kelokan sungai
 [Flooded terraces]
 Teras tergenang
 [Sinkholes]
-Luweng
+Dolina

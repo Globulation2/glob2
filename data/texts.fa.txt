@@ -2731,13 +2731,13 @@ Emoji
 [Bridges]
 پل‌ها
 [Karst towers]
-برج‌های کارستی
+قله‌های کارستی
 [Tower spacing]
-فاصلهٔ برج‌ها
+فاصلهٔ قله‌های کارستی
 [Tower density]
-تراکم برج‌ها
+تراکم قله‌های کارستی
 [Paddy depth]
-عمق شالیزارها
+گسترهٔ شالیزارها
 [Home design]
 طرح پایگاه
 [Horseshoe]
