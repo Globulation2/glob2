@@ -1074,6 +1074,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 				setup.stockpileStart = value;
 			if (index == 9)
 				setup.noHunger = value;
+			if (index == 10)
 				setup.unitUpgradesDisabled = value;
 			if (index == 11)
 				setup.glassCannonLevel = value;
