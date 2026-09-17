@@ -773,3 +773,25 @@ consistent with the diagnosis above: with ~97% losses there was almost nothing
 to learn from. The curriculum fix landed after this snapshot, so the next
 snapshot is the first that will have been trained with winnable games in the
 league.
+
+## Curriculum fix, immediate effect (09:25)
+
+First 15 games after the restart:
+
+```
+                 before      after
+mean_return      -0.88       -0.12
+rollout win rate  0.037       0.200
+ladder           invisible   castor:2/7 cortex:0/4 nicowar:0/1 numbi:1/2 warrush:0/1
+```
+
+`mean_return` moved from -0.88 to -0.12 within ten iterations. That is not the
+policy improving in ten iterations -- it is the reward signal finally being
+informative. The previous 416 iterations were spent almost entirely on losses.
+
+Unexpected: castor 2/7 in rollouts, when castor is 0W in every 24-game eval.
+Rollouts sample placements (`--sample`) and run at policy-period 100, the eval
+decodes greedily at period 25, so these are different policies in effect. Worth
+remembering before reading rollout numbers as eval numbers -- they are not
+comparable, which is part of how the strong-only league hid its own problem for
+so long.
