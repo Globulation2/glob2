@@ -703,7 +703,7 @@ void designHome(const BajadaOptions &o, GenerationContext &context, Layout &L)
 		const int sx = ox + int(d.swarm.x) - 2, sy = oy + int(d.swarm.y) - 2;
 		const auto sow = [&](ShapePoint seed, int count, unsigned char kind)
 		{
-			std::vector<std::pair<double, int>> near;
+			std::vector<std::pair<double, int>> closest;
 			for (int i = 0; i < ln; ++i)
 			{
 				const int x = i % local.w, y = i / local.w;
@@ -711,11 +711,11 @@ void designHome(const BajadaOptions &o, GenerationContext &context, Layout &L)
 					(x >= sx - kSwarmClearance && x < sx + 4 + kSwarmClearance && y >= sy - kSwarmClearance &&
 					 y < sy + 4 + kSwarmClearance))
 					continue;
-				near.push_back({std::hypot(x + 0.5 - ox - seed.x, y + 0.5 - oy - seed.y), i});
+				closest.push_back({std::hypot(x + 0.5 - ox - seed.x, y + 0.5 - oy - seed.y), i});
 			}
-			std::stable_sort(near.begin(), near.end());
-			for (int k = 0; k < std::min<int>(count, int(near.size())); ++k)
-				crop[near[k].second] = kind;
+			std::stable_sort(closest.begin(), closest.end());
+			for (int k = 0; k < std::min<int>(count, int(closest.size())); ++k)
+				crop[closest[k].second] = kind;
 		};
 		sow(d.wheat, kHomeWheat, 1);
 		sow(d.wood, kHomeWood, 2);
