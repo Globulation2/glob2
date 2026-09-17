@@ -63,7 +63,9 @@ class Planner:
         value = job('game', build, seeds={'map': map_seed, 'game': game_seed},
                     config={'generator': method, 'params': params, 'candidates': config.get('candidates', 5),
                             'players': players, 'ticks': config.get('ticks', 90000), 'ai_params': {},
-                            **({'alliances': alliances} if alliances else {})},
+                            **({'alliances': alliances} if alliances else {}),
+                            **({'win_probability_permille': config['win_probability_permille']}
+                               if config.get('win_probability_permille') else {})},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
                     labels=labels)
         self.jobs.append(value)
@@ -79,7 +81,9 @@ class Planner:
                     inputs={'map': {'job': generated['id'], 'artifact': f'map-r{rotation}.map'}},
                     depends_on=[generated['id']], seeds={'game': seed},
                     config={'players': players, 'ticks': config.get('ticks', 90000),
-                            'ai_params': overrides or {}, **({'alliances': alliances} if alliances else {})},
+                            'ai_params': overrides or {}, **({'alliances': alliances} if alliances else {}),
+                            **({'win_probability_permille': config['win_probability_permille']}
+                               if config.get('win_probability_permille') else {})},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
                     labels=labels)
         self.jobs.append(value)

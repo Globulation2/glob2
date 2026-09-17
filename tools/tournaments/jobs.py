@@ -25,7 +25,8 @@ class EngineJob:
     def validate(self, job):
         config, seeds = job['config'], job['seeds']
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions',
+                    'win_probability_permille'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
@@ -45,12 +46,15 @@ class EngineJob:
                     raise ValueError('new game requires players and game seed')
             if 'map' in job['inputs'] and (not config.get('players') or 'game' not in seeds):
                 raise ValueError('new game requires players and game seed')
-            if 'save' in job['inputs'] and any(k in config for k in ('players', 'alliances', 'ai_params', 'winning_conditions')):
+            if 'save' in job['inputs'] and any(k in config for k in ('players', 'alliances', 'ai_params', 'winning_conditions', 'win_probability_permille')):
                 raise ValueError('cannot override a saved game configuration')
             if type(config.get('ticks', 90000)) is not int or config.get('ticks', 90000) < 1:
                 raise ValueError('ticks must be a positive integer')
             if config.get('alliances') and len(config['alliances']) != len(config.get('players', [])):
                 raise ValueError('one alliance required per player')
+            permille = config.get('win_probability_permille')
+            if permille is not None and (type(permille) is not int or not 0 <= permille <= 1000):
+                raise ValueError('win_probability_permille must be a permille between 0 and 1000')
         elif 'map' not in seeds or type(config.get('generator')) is not int:
             raise ValueError('generation requires map seed and integer generator')
         if set(job['outputs']) - {'replay', 'saves', 'telemetry', 'map', 'reports', 'required', 'core', 'stack'}:
@@ -87,6 +91,14 @@ class EngineJob:
                 add('--alliance', group)
             for condition in config.get('winning_conditions', []):
                 add('--win-condition', condition)
+            # Ends a game once the fitted model is this sure of the result. Added
+            # to the conditions in force rather than replacing them, so a real win
+            # still decides the game when there is one. Off unless asked for: it
+            # changes the measured outcome, so an experiment that wants the compute
+            # back has to say so, and its results stay distinguishable by the
+            # "win_probability" termination the engine reports.
+            if config.get('win_probability_permille'):
+                add('--win-probability', config['win_probability_permille'])
             for save in outputs.get('saves', []):
                 add('--save', save)
             for telemetry in outputs.get('telemetry', []):

@@ -178,5 +178,13 @@ change deliberately does not repair those gameplay-affecting behaviors. Validati
 exact diagnostic restoration and repeatability of two continuations of the same save, while
 retaining the existing simulation continuation checks.
 
+These fields are for studying how an AI behaved, never for deciding anything.
+Where a model has to be evaluated *inside* the simulation -- the optional
+[win probability](win-probability-model.md) winning condition -- it may read only
+`TeamStat` and `Team::prestige`. The per-team `GLOB2_ECON` and `GLOB2_TL` lines
+qualify, because they are `TeamStat`-derived; the `GLOB2_MEASURE` gameplay
+measurements and everything in this document do not, and using them would make
+diagnostics decide games.
+
 Tournament workers retain these records in verified logs; their normal offline
 analysis exports typed JSONL and CSV. See [distributed telemetry](tournaments.md#gameplay-ai-and-performance-telemetry).
