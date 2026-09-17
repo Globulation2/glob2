@@ -10,7 +10,16 @@ import math
 from pathlib import Path
 import re
 
-PREFIXES = {'GLOB2_MEASURE': 'gameplay', 'GLOB2_MEASURE_HISTORY': 'gameplay'}
+PREFIXES = {'GLOB2_MEASURE': 'gameplay', 'GLOB2_MEASURE_HISTORY': 'gameplay',
+            # Per-team live state at the 512-tick boundary. Unlike the gameplay
+            # measurements these come straight off TeamStat, so they describe
+            # state the simulation itself reads and a model fitted to them can be
+            # evaluated in-engine. GLOB2_FINAL is deliberately absent: it carries
+            # a bare `bld:` token that is not key=value and would only ever parse
+            # as an error.
+            'GLOB2_ECON': 'team_state', 'GLOB2_TL': 'team_state',
+            'GLOB2_TIMELINE': 'team_state'}
+FAMILIES = ('gameplay', 'ai', 'performance', 'team_state')
 KEY = re.compile(r'([^\s=]+)=')
 INTEGER = re.compile(r'[+-]?\d+\Z')
 REAL = re.compile(r'[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?\Z')
@@ -127,7 +136,7 @@ def export(source, committed, output):
                          'host': record['host'], 'build': record['job']['build'],
                          'requested': 'team-timeline' in record['job']['outputs'].get('telemetry', []),
                          'records': dict(seen), 'final_records': dict(finals), 'errors': errors,
-                         'unavailable': [f for f in ('gameplay', 'ai', 'performance') if not seen[f]],
+                         'unavailable': [f for f in FAMILIES if not seen[f]],
                          'missing_final': [f for f in seen if not finals[f]]})
     return {'schema_version': 1, 'records': dict(counts), 'jobs': jobs,
             'jsonl': 'game-telemetry.jsonl', 'csv': 'game-telemetry-values.csv'}
