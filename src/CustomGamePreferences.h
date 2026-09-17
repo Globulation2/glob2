@@ -23,6 +23,11 @@ struct CustomGamePreferences
 	bool userMaps = false;
 	std::string librarySelection[2];
 	bool expanded[3] = {false, false, false};
+	// The landscape picker's sort order (LandscapePickerScreen::SortOrder): 0 random (its
+	// catalog order, shuffled once so no landscape is favoured), 1 alphabetical. Kept as a plain
+	// int here, the same way other UI choices in this struct are, so the wire format does not
+	// depend on that screen's header.
+	int landscapeSortOrder = 0;
 
 	struct Field
 	{
@@ -66,7 +71,7 @@ struct CustomGamePreferences
 		// stay unchanged regardless of which generator module is selected.
 		const auto legacy = toLegacyDescriptor(setup.generator);
 		std::ostringstream out;
-		out << "glob2-custom-game 1\n"
+		out << "glob2-custom-game 2\n"
 			<< "setup " << setup.random << ' ' << setup.capacity << ' '
 			<< setup.prestige << ' ' << setup.revealed << ' ' << setup.locked << ' '
 			<< setup.speed << ' ' << userMaps << '\n'
@@ -75,6 +80,7 @@ struct CustomGamePreferences
 			<< "libraries " << std::quoted(librarySelection[0]) << ' '
 			<< std::quoted(librarySelection[1]) << '\n'
 			<< "sections " << expanded[0] << ' ' << expanded[1] << ' ' << expanded[2] << '\n'
+			<< "picker " << landscapeSortOrder << '\n'
 			<< "generator " << int(legacy.method) << ' '
 			<< legacy.logRepeatAreaTimes << '\n';
 		for (const auto &f : fields())
@@ -110,7 +116,7 @@ struct CustomGamePreferences
 			return bool(in >> value) && value >= lo && value <= hi;
 		};
 		int version, random, prestige, revealed, locked, user, method, repeat;
-		if (!word("glob2-custom-game") || !number(version, 1, 1) || !word("setup") ||
+		if (!word("glob2-custom-game") || !number(version, 1, 2) || !word("setup") ||
 			!number(random, 0, 1) || !number(s.capacity, 1, Team::MAX_COUNT) ||
 			!number(prestige, 0, 1) || !number(revealed, 0, 1) || !number(locked, 0, 1) ||
 			!number(s.speed, 0, Settings::GAME_SPEED_MAXIMUM) || !number(user, 0, 1) ||
@@ -125,6 +131,8 @@ struct CustomGamePreferences
 			if (!number(value, 0, 1)) return false;
 			expanded = value;
 		}
+		// The sort-order line was added at version 2; a version-1 file keeps the random default.
+		if (version >= 2 && (!word("picker") || !number(draft.landscapeSortOrder, 0, 1))) return false;
 		if (!word("generator") || !number(method, 0, 1000) || !number(repeat, 0, 5)) return false;
 		// Method validity is checked against the live registry rather than a
 		// hardcoded range, so it stays correct as generators are added or

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GeneratorRegistry.h"
+#include "GeneratorTags.h"
 #include "CityStatesGenerator.h"
 #include "ConcreteIslandsGenerator.h"
 #include "ContestedCommonsGenerator.h"
@@ -74,12 +75,19 @@ bool validChoice(const GeneratorControl &c)
 GeneratorRegistry::GeneratorRegistry(std::vector<GeneratorDefinition> values)
 	: definitions(std::move(values))
 {
+	// Tags are curated centrally (GeneratorTags.cpp) rather than repeated in each generator's own
+	// file, so browsing the catalog stays consistent to review; a generator may still set its own
+	// non-empty tags directly and skip the table.
+	for (auto &d : definitions)
+		if (d.tags.empty())
+			d.tags = GeneratorTags::tagsFor(d.id ? d.id : "");
 	std::set<int> numbers;
 	std::set<std::string> ids;
 	for (const auto &d : definitions)
 	{
 		if (!d.id || !*d.id || !d.nameKey || d.legacyId < 0 || !d.generate ||
-			!numbers.insert(d.legacyId).second || !ids.insert(d.id).second)
+			!numbers.insert(d.legacyId).second || !ids.insert(d.id).second ||
+			(d.tags.empty() && !d.editorOnly))
 			throw std::invalid_argument("Invalid generator registration");
 		std::set<std::string> controls;
 		for (const auto &c : sharedGeneratorControls())

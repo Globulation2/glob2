@@ -66,6 +66,7 @@ struct CustomGameSetupHarness
 		original.librarySelection[0] = "maps/FourSquares1.map";
 		original.librarySelection[1] = original.setup.premadeMap;
 		original.expanded[0] = original.expanded[2] = true;
+		original.landscapeSortOrder = 1;
 		// Crater Lakes is one of the four modern height-map generators that
 		// still exposes a "repeat landscape" control; Old Islands (the prior
 		// choice) has no repeat option in the modular registry, so it would
@@ -85,13 +86,25 @@ struct CustomGameSetupHarness
 		const auto encoded = original.encode();
 		assert(restored.decode(encoded) && restored.encode() == encoded);
 		assert(restored.setup.mapRevision == 0);
+		assert(restored.landscapeSortOrder == 1);
+		// A version-1 file (written before the landscape picker's sort order existed) has no
+		// "picker" line; it still loads, defaulting that order to random.
+		{
+			const auto at = encoded.find("\npicker "), eol = encoded.find('\n', at + 1);
+			assert(at != std::string::npos && eol != std::string::npos);
+			auto asVersion1 = encoded.substr(0, at) + encoded.substr(eol);
+			asVersion1.replace(asVersion1.find("glob2-custom-game 2"), 20, "glob2-custom-game 1");
+			CustomGamePreferences fromOld;
+			assert(fromOld.decode(asVersion1) && fromOld.landscapeSortOrder == 0);
+			assert(fromOld.setup.premadeMap == original.setup.premadeMap);
+		}
 		for (size_t length : {size_t(0), size_t(10), encoded.size() / 2, encoded.size() - 5})
 		{
 			assert(!restored.decode(encoded.substr(0, length)));
 			assert(restored.encode() == encoded);
 		}
 		for (const auto &replacement : std::vector<std::pair<std::string, std::string>>{
-			{"glob2-custom-game 1", "glob2-custom-game 2"},
+			{"glob2-custom-game 2", "glob2-custom-game 3"},
 			{"wDec 9", "wDec 31"}, {"nbWorkers 8", "nbWorkers -1"},
 			{"generator 4 5", "generator 0 5"}, {"generator 4 5", "generator 4 100"},
 			{"colonies\n1 1 0", "colonies\n99 1 0"}})
