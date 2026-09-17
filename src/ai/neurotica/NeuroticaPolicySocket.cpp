@@ -20,9 +20,10 @@ namespace Neurotica
 {
 	namespace
 	{
-		//! Bytes per cell in a policy reply (NPS3): building class, score,
-		//! area bits, staffing.
-		constexpr size_t kReplyStride = 4;
+		//! Bytes per cell in a policy reply (NPS4): building class, score,
+		//! area bits, staffing, then the swarm production mix as three
+		//! worker/explorer/warrior weights.
+		constexpr size_t kReplyStride = 7;
 	}
 	PolicySocketSource::PolicySocketSource(Team *team, const std::string &socketPath)
 		: team_(team), path_(socketPath)
@@ -119,7 +120,7 @@ namespace Neurotica
 		}
 
 		Uint8 header[16];
-		std::memcpy(header, "NPS3", 4);
+		std::memcpy(header, "NPS4", 4);
 		const Uint16 w = Uint16(map->getW()), h = Uint16(map->getH());
 		std::memcpy(header + 4, &w, 2);
 		std::memcpy(header + 6, &h, 2);
@@ -194,6 +195,15 @@ namespace Neurotica
 			// policy could reach it, so the network could not allocate labour
 			// at all.
 			out.workers[i] = reply_[i * kReplyStride + 3];
+			// Swarm unit mix. A swarm is created with ratio[0]=1 and zero
+			// elsewhere (Building Lifecycle.cpp), so without this plane a
+			// Neurotica team produces workers and never a single warrior --
+			// it cannot win by force, only outlast. DONT_CARE in the worker
+			// slot leaves the whole ratio alone, per the schema.
+			const size_t ratioBase = i * SWARM_RATIO_STRIDE;
+			out.swarmRatio[ratioBase + 0] = reply_[i * kReplyStride + 4];
+			out.swarmRatio[ratioBase + 1] = reply_[i * kReplyStride + 5];
+			out.swarmRatio[ratioBase + 2] = reply_[i * kReplyStride + 6];
 			// Urgency follows the score until the policy learns a head for it,
 			// so the reconciler still prioritises the cells the net is most
 			// confident about rather than acting in scan order.

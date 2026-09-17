@@ -34,7 +34,7 @@ import torch
 
 from neurotica_net import NeuroticaNet, NUM_BUILDING_CLASSES
 
-MAGIC = b"NPS3"
+MAGIC = b"NPS4"
 
 # Plane ranges inside the DYNAMIC stack (NeuroticaObservation.h order):
 # 8 resources, 13 own buildings, level/site/workers, 13 enemy buildings,
@@ -182,6 +182,11 @@ def main() -> int:
                     help="cap total requested staffing at this fraction of "
                          "current unit count; 0 disables the rescaling and "
                          "sends raw teacher-scale numbers")
+    ap.add_argument("--ratio", action="store_true",
+                    help="send the swarm unit mix (NPS4). Off leaves it at "
+                         "the engine default, which is workers-only forever.")
+    ap.add_argument("--ratio-scale", type=float, default=8.0,
+                    help="integer scale for the ratio weights")
     ap.add_argument("--staffing", action="store_true",
                     help="send the staffing head's maxUnitWorking (NPS3). "
                          "Off sends DONT_CARE everywhere, which is the "
@@ -552,7 +557,18 @@ def main() -> int:
             # All DONT_CARE reproduces every build before NPS3, so the staffing
             # head can be A/B'd against it with one checkpoint and one binary.
             staffing = torch.full_like(cls, DONT_CARE)
-        packed = torch.stack([cls, score, area_bits, staffing], dim=-1).cpu().numpy()
+        # Swarm mix, as small integer weights. Sent only where a swarm is
+        # wanted; DONT_CARE in the worker slot leaves the ratio alone.
+        if args.ratio and "ratio" in out:
+            mix = torch.softmax(out["ratio"].float(), dim=1)
+            mix = (mix * args.ratio_scale).round().clamp(0, 16).to(torch.uint8)
+            is_swarm = (cls == 1)          # class 1 == SWARM_BUILDING + 1
+            r = [torch.where(is_swarm, mix[:, k],
+                             torch.full_like(cls, DONT_CARE)) for k in range(3)]
+        else:
+            r = [torch.full_like(cls, DONT_CARE) for _ in range(3)]
+        packed = torch.stack([cls, score, area_bits, staffing,
+                              r[0], r[1], r[2]], dim=-1).cpu().numpy()
 
         if args.record_dir:
             lat = out.get("placements")

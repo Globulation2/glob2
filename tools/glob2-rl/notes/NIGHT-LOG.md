@@ -840,3 +840,45 @@ point*, and the thing that fixes it is outcome, not more imitation.
 be seed noise (52 buildings vs 16, 31 flags vs 4), but "survived vs lost" on
 n=1 is not an outcome claim. The 24-game eval of this snapshot is the outcome
 measurement and it is still running.
+
+## Neurotica has never been able to build an army (10:30)
+
+Eval of the first curriculum-trained snapshot:
+
+```
+vs numbi   2W 0L 4cap   <- stopped losing, started drawing
+vs castor  0W 5L 1cap
+vs warrush 1W 4L 1cap
+vs nicowar 0W 5L 1cap        = 3W/22, with 7 caps
+```
+
+Wins fell 6 -> 3 while caps rose 5 -> 7, and losses to numbi went to zero. Read
+alongside the behavioural diff, PPO has optimised for **not losing**: a lean
+defensible base, four towers, no starvation, and no offence. A draw scores 0
+against a loss at -1, so survival is exactly what the reward asks for when
+winning is out of reach.
+
+And winning by force has been out of reach the whole time:
+
+> `Building/Lifecycle.cpp:93` -- a new swarm is created with `ratio[0]=1` and
+> zero for every other unit type. WORKER=0, EXPLORER=1, WARRIOR=2
+> (`UnitConsts.h`). `swarmRatio` was never in the wire protocol, so the network
+> could not change it. **Neurotica has produced zero warriors in every
+> telemetry read tonight, in every configuration, BC and PPO alike.** It cannot
+> win by conquest -- only outlast.
+
+That is the explanation for `warriors=0` appearing in every single telemetry
+dump since the first one, which I noted repeatedly and never chased.
+
+**NPS4** adds the mix: 7 bytes per cell, three worker/explorer/warrior weights,
+sent only where a swarm is wanted. Head is 3 logits per cell, supervised by
+cross-entropy against the normalised teacher mix, masked to cells where a swarm
+actually stands. Eval now reports `warrior_share_pred` against
+`warrior_share_true` so the head can be checked on the number that matters.
+
+**Why this should transfer where the staffing head did not:** a ratio is
+scale-free. Absolute staffing failed because teacher magnitudes assume a
+teacher economy; 2:1:1 means the same thing in a 10-worker base and a 70-worker
+one. If that reasoning is wrong the eval will say so, as it did for staffing.
+
+Harness: 72 checks, 0 failures.

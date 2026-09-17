@@ -78,7 +78,8 @@ def evaluate(net, loader, device, weights, limit_batches=40):
     near_hits = 0
     near_total = 0
     count_err = count_n = worker_err = 0.0
-    for i, (obs, building, areas, counts, workers, wmask) in enumerate(loader):
+    warrior_pred = warrior_true = 0.0
+    for i, (obs, building, areas, counts, workers, wmask, ratio, rmask) in enumerate(loader):
         if i >= limit_batches:
             break
         obs = obs.to(device, non_blocking=True).to(memory_format=torch.channels_last)
@@ -87,11 +88,20 @@ def evaluate(net, loader, device, weights, limit_batches=40):
         counts = counts.to(device, non_blocking=True)
         workers = workers.to(device, non_blocking=True)
         wmask = wmask.to(device, non_blocking=True)
+        ratio = ratio.to(device, non_blocking=True)
+        rmask = rmask.to(device, non_blocking=True)
         with torch.autocast("cuda", dtype=torch.float16):
             out = net(obs)
             loss = F.cross_entropy(out["building"].float(), building, weight=weights)
         # Mean absolute error in actual buildings, not log space: the number a
         # human can sanity-check against "a teacher holds 4-7 inns".
+        # Warrior share is the number that matters: the default a swarm gets
+        # is workers-only, so this says whether the head has learned that
+        # teachers ever ask for an army at all.
+        rm = rmask.sum().clamp(min=1.0)
+        pr = torch.softmax(out["ratio"].float(), dim=1)
+        warrior_pred += float((pr[:, 2] * rmask).sum() / rm)
+        warrior_true += float((ratio[:, 2] * rmask).sum() / rm)
         wm = wmask.sum().clamp(min=1.0)
         worker_err += float(((out["workers"].float() - workers).abs() * wmask).sum() / wm)
         pred_counts = torch.expm1(out["count"].float().clamp(max=6.0))
@@ -160,6 +170,8 @@ def evaluate(net, loader, device, weights, limit_batches=40):
     prec_at = {k: topk_hits[k] / max(topk_total[k], 1) for k in topk_hits}
     return dict(count_mae=count_err / max(count_n, 1),
                 worker_mae=worker_err / max(count_n, 1),
+                warrior_share_pred=warrior_pred / max(count_n, 1),
+                warrior_share_true=warrior_true / max(count_n, 1),
                 p1=prec_at[1], p5=prec_at[5], p20=prec_at[20],
                 near1=near_hits / max(near_total, 1),
                 loss=tot_loss / max(tot_n, 1), recall=recall, precision=precision,
@@ -192,6 +204,8 @@ def main() -> int:
                          "loss is ~0.004, and an auxiliary head that outweighs "
                          "the trunk's main job destroys it -- the count head "
                          "at weight 1.0 drove novel_precision 0.185 -> 0.035.")
+    ap.add_argument("--ratio-weight", type=float, default=0.3,
+                    help="weight on the masked swarm-ratio cross-entropy")
     ap.add_argument("--count-weight", type=float, default=1.0,
                     help="weight on the per-type building-count loss")
     ap.add_argument("--novel-weight", type=float, default=4.0,
@@ -240,7 +254,8 @@ def main() -> int:
         # novel_precision for count accuracy, which is what the joint run did.
         for n_, p_ in net.named_parameters():
             p_.requires_grad = (n_.startswith("head_count")
-                                or n_.startswith("head_workers"))
+                                or n_.startswith("head_workers")
+                                or n_.startswith("head_ratio"))
         trainable = [p_ for p_ in net.parameters() if p_.requires_grad]
         print(f"count-only: {sum(p_.numel() for p_ in trainable)} trainable params")
         opt = torch.optim.AdamW(trainable, lr=args.lr, weight_decay=1e-4)
@@ -259,13 +274,15 @@ def main() -> int:
     for epoch in range(args.epochs):
         t_epoch = time.time()
         run_loss, run_n = 0.0, 0
-        for obs, building, areas, counts, workers, wmask in train_loader:
+        for obs, building, areas, counts, workers, wmask, ratio, rmask in train_loader:
             obs = obs.to(device, non_blocking=True).to(memory_format=torch.channels_last)
             building = building.to(device, non_blocking=True)
             areas = areas.to(device, non_blocking=True)
             counts = counts.to(device, non_blocking=True)
             workers = workers.to(device, non_blocking=True)
             wmask = wmask.to(device, non_blocking=True)
+            ratio = ratio.to(device, non_blocking=True)
+            rmask = rmask.to(device, non_blocking=True)
             # Per-cell weighting toward the novel cells. Without it the loss is
             # dominated by cells whose answer is already sitting in the input,
             # and the net learns to copy: measured, that gives COPY recall 0.998
@@ -291,11 +308,14 @@ def main() -> int:
                 w_err = F.smooth_l1_loss(out["workers"].float(), workers,
                                          reduction="none")
                 loss_w = (w_err * wmask).sum() / wmask.sum().clamp(min=1.0)
-                if args.count_only:
-                    loss = args.count_weight * loss_c + args.workers_weight * loss_w
-                else:
-                    loss = (loss_b + 0.3 * loss_a + args.count_weight * loss_c
-                            + args.workers_weight * loss_w)
+                # Cross-entropy against the normalised mix, masked to cells
+                # where a swarm actually stands.
+                logp_r = F.log_softmax(out["ratio"].float(), dim=1)
+                r_err = -(ratio * logp_r).sum(dim=1)
+                loss_r = (r_err * rmask).sum() / rmask.sum().clamp(min=1.0)
+                aux = (args.count_weight * loss_c + args.workers_weight * loss_w
+                       + args.ratio_weight * loss_r)
+                loss = aux if args.count_only else (loss_b + 0.3 * loss_a + aux)
             opt.zero_grad(set_to_none=True)
             scaler.scale(loss).backward()
             scaler.unscale_(opt)

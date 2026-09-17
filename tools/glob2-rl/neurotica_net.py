@@ -164,6 +164,13 @@ class NeuroticaNet(nn.Module):
         # spread across every building are workers not feeding the swarm.
         # Predicted in units, supervised only at building anchors.
         self.head_workers = nn.Conv2d(head_ch, 1, 1)
+        # Swarm unit-production mix: worker / explorer / warrior, as logits
+        # over the three. A swarm defaults to workers-only and the policy had
+        # no way to change it, so Neurotica could never field an army --
+        # warriors=0 in every telemetry read regardless of checkpoint. Unlike
+        # absolute staffing, a ratio is scale-free and should survive being
+        # applied to a much smaller economy than the teachers had.
+        self.head_ratio = nn.Conv2d(head_ch, 3, 1)
         # How many of each building type the team should HOLD. The per-cell
         # building head is a marginal -- it says where inn-ness is high, never
         # how many inns to own -- so decoding it by threshold or top-k turns
@@ -194,6 +201,7 @@ class NeuroticaNet(nn.Module):
             "score": self.head_score(x),
             "areas": self.head_areas(x),
             "workers": self.head_workers(x).squeeze(1),
+            "ratio": self.head_ratio(x),
         }
 
     def forward(self, x, z=None):

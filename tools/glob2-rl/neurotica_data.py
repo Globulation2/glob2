@@ -19,7 +19,7 @@ import os
 import pickle
 
 # Bump whenever the contents of a Sample's label bytes change.
-LABEL_SCHEMA = 2
+LABEL_SCHEMA = 3
 import struct
 import zlib
 from dataclasses import dataclass
@@ -51,7 +51,7 @@ class Sample:
     # Label, extracted once at index time. Re-parsing the trace per sample
     # would re-read and re-decode a multi-megabyte file for every single
     # example; storing the label instead costs a few hundred bytes each.
-    label_buildings: bytes = b""   # int16 quads: x, y, short_type, workers
+    label_buildings: bytes = b""   # int16 x7: x, y, type, workers, ratio[3]
     label_areas: bytes = b""       # zlib(dense h*w area bitmask)
 
 
@@ -133,8 +133,14 @@ class NeuroticaBC(Dataset):
                 # workers rides along: maxUnitWorking is how the teachers
                 # concentrate labour, and it is the one desired-state plane the
                 # early economy turns on. The trace has carried it all along.
+                # ratio rides along too. A swarm defaults to ratio[0]=1 and
+                # zero elsewhere (Building Lifecycle.cpp), i.e. workers only
+                # and never a warrior, and the policy could not reach the
+                # plane -- so Neurotica has never been able to field an army.
                 triples = np.array(
-                    [(b.x, b.y, b.short_type, b.workers) for b in label.buildings],
+                    [(b.x, b.y, b.short_type, b.workers,
+                      b.ratio[0], b.ratio[1], b.ratio[2])
+                     for b in label.buildings],
                     dtype=np.int16).tobytes() if label.buildings else b""
                 self.samples.append(Sample(
                     obs_path, trace_path, rec["off"], rec["clen"],
@@ -187,8 +193,14 @@ class NeuroticaBC(Dataset):
         # else the loss must not pull toward zero.
         workers = np.zeros((s.h, s.w), dtype=np.float32)
         wmask = np.zeros((s.h, s.w), dtype=np.float32)
+        # Unit-production mix, as a proportion. Supervised only where a swarm
+        # actually stands, and stored normalised: a ratio is scale-free, which
+        # is exactly why it should transfer to this agent's small economy when
+        # absolute staffing did not.
+        ratio = np.zeros((3, s.h, s.w), dtype=np.float32)
+        rmask = np.zeros((s.h, s.w), dtype=np.float32)
         if s.label_buildings:
-            triples = np.frombuffer(s.label_buildings, dtype=np.int16).reshape(-1, 4)
+            triples = np.frombuffer(s.label_buildings, dtype=np.int16).reshape(-1, 7)
             inside = (triples[:, 0] >= 0) & (triples[:, 0] < s.w) & \
                      (triples[:, 1] >= 0) & (triples[:, 1] < s.h)
             t3 = triples[inside]
@@ -197,13 +209,23 @@ class NeuroticaBC(Dataset):
             counts = np.bincount(t3[valid, 2], minlength=13).astype(np.float32)
             workers[t3[:, 1], t3[:, 0]] = np.clip(t3[:, 3], 0, 255)
             wmask[t3[:, 1], t3[:, 0]] = 1.0
+            sw = t3[t3[:, 2] == 0]                      # SWARM_BUILDING == 0
+            if len(sw):
+                r = sw[:, 4:7].astype(np.float32)
+                tot = r.sum(axis=1, keepdims=True)
+                keep = tot[:, 0] > 0
+                if keep.any():
+                    r, sw = r[keep] / tot[keep], sw[keep]
+                    ratio[:, sw[:, 1], sw[:, 0]] = r.T
+                    rmask[sw[:, 1], sw[:, 0]] = 1.0
         a = np.frombuffer(zlib.decompress(s.label_areas), dtype=np.uint8).reshape(s.h, s.w)
         areas = np.stack([((a & 1) != 0), ((a & 2) != 0),
                           ((a & 4) != 0)]).astype(np.float32)
 
         return (torch.from_numpy(obs), torch.from_numpy(building),
                 torch.from_numpy(areas), torch.from_numpy(counts),
-                torch.from_numpy(workers), torch.from_numpy(wmask))
+                torch.from_numpy(workers), torch.from_numpy(wmask),
+                torch.from_numpy(ratio), torch.from_numpy(rmask))
 
 
 def collate(batch):
@@ -213,4 +235,6 @@ def collate(batch):
     counts = torch.stack([b[3] for b in batch])
     workers = torch.stack([b[4] for b in batch])
     wmask = torch.stack([b[5] for b in batch])
-    return obs, building, areas, counts, workers, wmask
+    ratio = torch.stack([b[6] for b in batch])
+    rmask = torch.stack([b[7] for b in batch])
+    return obs, building, areas, counts, workers, wmask, ratio, rmask
