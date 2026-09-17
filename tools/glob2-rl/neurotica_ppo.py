@@ -42,6 +42,7 @@ class Trajectory:
     logps: np.ndarray      # (T,)
     values: np.ndarray     # (T,)
     potentials: np.ndarray # (T,)
+    mixes: np.ndarray      # (T,) chosen production-mix preset, part of the action
     ticks: np.ndarray      # (T,)
     static: np.ndarray     # (n_static, H, W) uint8, constant for the episode
     outcome: float         # +1 win, -1 loss, 0 undecided
@@ -102,6 +103,7 @@ def load_trajectories(run_dir: str) -> List[Trajectory]:
             out.append(Trajectory(
                 obs_path=base + ".obs.npy",
                 placements=arrays["placements"], logps=arrays["logps"],
+                mixes=(arrays["mixes"] if "mixes" in arrays.files else None),
                 values=arrays["values"], potentials=arrays["potentials"],
                 ticks=arrays["ticks"], static=arrays["static"],
                 outcome=float(meta["outcome"])))
@@ -114,6 +116,7 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
     if not trajs:
         return {}
     all_adv, all_ret, all_act, all_logp, obs_refs = [], [], [], [], []
+    all_mix = []
     for traj in trajs:
         rewards = compute_rewards(traj, args.gamma, args.shaping)
         adv, ret = gae(rewards, traj.values, args.gamma, args.lam)
@@ -121,6 +124,8 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
         all_ret.append(ret)
         all_act.append(traj.placements)
         all_logp.append(traj.logps)
+        if traj.mixes is not None and len(traj.mixes) == len(traj.logps):
+            all_mix.append(traj.mixes)
         obs = np.load(traj.obs_path, mmap_mode="r")
         obs_refs.extend([(obs, i, traj) for i in range(len(traj.logps))])
 
@@ -128,6 +133,11 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
     ret = np.concatenate(all_ret)
     acts = np.concatenate(all_act)
     logp_old = np.concatenate(all_logp)
+    # Only score the mix when every episode in the batch carries one, so a
+    # mixed batch of old and new trajectories cannot silently score a joint
+    # action against a placements-only log-prob.
+    mix_all = (np.concatenate(all_mix) if len(all_mix) == len(trajs)
+               and all_mix else None)
     adv = (adv - adv.mean()) / (adv.std() + 1e-8)
 
     n = len(adv)
@@ -152,8 +162,11 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
                 # recomputed from the observation, so it is identical to the one
                 # the server applied when the action was sampled -- otherwise
                 # the re-scored distribution is not the one that acted.
+                mb = (None if mix_all is None else
+                      torch.from_numpy(mix_all[idx]).to(device))
                 ev = net.evaluate_placements(
-                    x, ab, existing, budget_planes=x[:, 4 + 8:4 + 8 + 13])
+                    x, ab, existing, budget_planes=x[:, 4 + 8:4 + 8 + 13],
+                    mix=mb)
             ratio = (ev["logp"] - torch.from_numpy(logp_old[idx]).to(device)).exp()
             a = torch.from_numpy(adv[idx]).to(device)
             pg = -torch.min(ratio * a,

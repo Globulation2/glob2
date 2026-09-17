@@ -928,3 +928,55 @@ schools, all unprompted. NPS4 now makes the planes *reachable*; the value of
 that is that RL can learn to use them, not that BC can clone them. Every plane
 cloned from teachers has been a negative result (staffing 1W/22, ratio
 pending); every behaviour RL found has been an improvement.
+
+## Correction: the ratio head is NOT a negative result (11:45)
+
+24-game eval:
+
+```
+                  numbi   castor  warrush  nicowar   total
+BC baseline       3-4W      0W      0-1W     0-1W    5W/22
+PPO curriculum    2W        0W      1W       0W      3W/22
+ratio head        1W        0W      2W       2W      5W/22
+```
+
+Parity with baseline, and **2 wins against nicowar -- the best result against
+the strongest AI all night**. It trades easy wins (numbi 2W -> 1W) for hard
+ones. I called it a negative result off a single game, and the single game was
+wrong again. That is the third time tonight n=1 has pointed the wrong way, and
+I had already written the rule twice.
+
+## PPO cannot improve the heads it does not act with
+
+Gradient from the PPO policy loss, trained checkpoint, real observations:
+
+```
+head_building  758.59
+head_ratio       0.00
+head_workers     0.00
+```
+
+Same class as the original latent bug: a head that shapes play but receives no
+policy gradient, so it sits at its BC value forever. "Expose the plane and let
+RL learn it" does not follow from exposing the plane -- the plane has to be
+part of the ACTION.
+
+(Also seen: one of four samples had 0 allowed cells under the budget, which
+falls back to a uniform distribution and contributes no gradient. Rare, but it
+means an over-tight budget silently costs learning signal as well as play.)
+
+## The production mix is now an action
+
+Five presets from all-worker to warrior-heavy, chosen globally per policy step
+from the pooled bottleneck, sampled with its log-prob added to the placement
+log-prob. Verified: sampled choices vary per state, act and evaluate agree
+exactly (`allclose` True), and `head_mix` receives gradient 665.75 where it
+previously received zero.
+
+This is the direct consequence of the night's governing lesson. Cloning the
+teacher mix imports a decision without its precondition and loses games;
+*choosing* the mix from the current state is a decision the agent can only
+learn from outcomes -- which is exactly how it learned to cut flags 31 -> 4
+and triple its inns.
+
+Self-play restarted from `ckpt_ratio` with the mix action live.

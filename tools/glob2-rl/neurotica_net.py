@@ -32,6 +32,22 @@ import torch.nn.functional as F
 
 NUM_BUILDING_CLASSES = 14  # none + 13 building types
 
+# Swarm production mixes the policy may choose between, as
+# (worker, explorer, warrior) weights. A discrete choice rather than a free
+# proportion because PPO needs a log-prob it can trust, and because the real
+# decision here is coarse: economy, or army, or the balance teachers strike
+# (~1/3 warriors, measured). Cloning the teacher mix outright lost games in a
+# small economy -- the affordability of a split is a precondition the ratio
+# does not carry -- so the mix has to be chosen from the state, by something
+# that learns from outcomes.
+MIX_PRESETS = [
+    (1, 0, 0),   # all workers: fastest economy, cannot ever win by force
+    (3, 0, 1),   # light military
+    (2, 0, 1),   # roughly the teacher split
+    (1, 0, 1),   # heavy military
+    (2, 1, 1),   # with explorers, for map control
+]
+
 
 def circ_pad(x: torch.Tensor, p: int) -> torch.Tensor:
     return F.pad(x, (p, p, p, p), mode="circular")
@@ -171,6 +187,14 @@ class NeuroticaNet(nn.Module):
         # absolute staffing, a ratio is scale-free and should survive being
         # applied to a much smaller economy than the teachers had.
         self.head_ratio = nn.Conv2d(head_ch, 3, 1)
+        # Which production mix to run, as a global choice off the pooled
+        # bottleneck. This is an ACTION, not a prediction: the per-cell ratio
+        # head above receives no policy gradient, because PPO only credits the
+        # placements, so it can never be improved by playing. Making the mix a
+        # sampled action is what lets RL discover the economy/army tradeoff the
+        # way it discovered to stop building flags.
+        self.head_mix = nn.Sequential(nn.Linear(bottleneck, 64), nn.SiLU(),
+                                      nn.Linear(64, len(MIX_PRESETS)))
         # How many of each building type the team should HOLD. The per-cell
         # building head is a marginal -- it says where inn-ness is high, never
         # how many inns to own -- so decoding it by threshold or top-k turns
@@ -223,6 +247,7 @@ class NeuroticaNet(nn.Module):
         # almost exactly (count_mae 0.116). Counts are worth having only if
         # placement survives them.
         out["count"] = self.head_count(pooled.float().detach())
+        out["mix"] = self.head_mix(pooled.float())
         return out
 
     def act(self, x, deterministic: bool = False):
@@ -306,12 +331,17 @@ class NeuroticaNet(nn.Module):
                    self.budget_mask(out["building"], out["count"], budget_planes))
         dist = self.placement_distribution(out["building"], existing_mask, allowed)
         idx = dist.sample((k,)).T.contiguous()            # (B, k)
+        mix_dist = torch.distributions.Categorical(logits=out["mix"].float())
+        mix = mix_dist.sample()                           # (B,)
         out["placements"] = idx
-        out["logp"] = dist.log_prob(idx.T).sum(dim=0)     # (B,)
-        out["entropy"] = dist.entropy()
+        out["mix_choice"] = mix
+        # Joint action: where to build, and what the swarms should produce.
+        out["logp"] = dist.log_prob(idx.T).sum(dim=0) + mix_dist.log_prob(mix)
+        out["entropy"] = dist.entropy() + mix_dist.entropy()
         return out
 
-    def evaluate_placements(self, x, idx, existing_mask, budget_planes=None):
+    def evaluate_placements(self, x, idx, existing_mask, budget_planes=None,
+                            mix=None):
         """Re-score stored placements under the current policy, for PPO.
 
         budget_planes must be passed whenever the server sampled with it, or
@@ -321,9 +351,13 @@ class NeuroticaNet(nn.Module):
         allowed = (None if budget_planes is None else
                    self.budget_mask(out["building"], out["count"], budget_planes))
         dist = self.placement_distribution(out["building"], existing_mask, allowed)
-        return dict(logp=dist.log_prob(idx.T).sum(dim=0),
-                    entropy=dist.entropy(),
-                    value=out["value"])
+        logp = dist.log_prob(idx.T).sum(dim=0)
+        entropy = dist.entropy()
+        if mix is not None:
+            mix_dist = torch.distributions.Categorical(logits=out["mix"].float())
+            logp = logp + mix_dist.log_prob(mix)
+            entropy = entropy + mix_dist.entropy()
+        return dict(logp=logp, entropy=entropy, value=out["value"])
 
     def evaluate_latent(self, x, z):
         """Re-score a stored latent under the current policy, for PPO."""

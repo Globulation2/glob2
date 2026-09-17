@@ -32,7 +32,7 @@ import time
 import numpy as np
 import torch
 
-from neurotica_net import NeuroticaNet, NUM_BUILDING_CLASSES
+from neurotica_net import NeuroticaNet, MIX_PRESETS, NUM_BUILDING_CLASSES
 
 MAGIC = b"NPS4"
 
@@ -75,6 +75,7 @@ def flush_trajectory(client, record_dir: str) -> None:
              logps=np.array(client.logps, dtype=np.float32),
              values=np.array(client.values, dtype=np.float32),
              potentials=np.array(client.potentials, dtype=np.float32),
+             mixes=np.array(client.mixes, dtype=np.int64),
              ticks=np.array(client.ticks, dtype=np.int64),
              static=client.static_u8)
     with open(base + ".json", "w") as fh:
@@ -110,6 +111,7 @@ class Client:
         self.logps: list = []
         self.values: list = []
         self.potentials: list = []
+        self.mixes: list = []
         self.ticks: list = []
 
 
@@ -560,11 +562,20 @@ def main() -> int:
         # Swarm mix, as small integer weights. Sent only where a swarm is
         # wanted; DONT_CARE in the worker slot leaves the ratio alone.
         if args.ratio and "ratio" in out:
-            mix = torch.softmax(out["ratio"].float(), dim=1)
-            mix = (mix * args.ratio_scale).round().clamp(0, 16).to(torch.uint8)
             is_swarm = (cls == 1)          # class 1 == SWARM_BUILDING + 1
-            r = [torch.where(is_swarm, mix[:, k],
-                             torch.full_like(cls, DONT_CARE)) for k in range(3)]
+            if "mix_choice" in out:
+                # The sampled action: one preset for the whole team this step.
+                presets = torch.tensor(MIX_PRESETS, device=cls.device,
+                                       dtype=torch.uint8)
+                chosen = presets[out["mix_choice"]]                # (B,3)
+                r = [torch.where(is_swarm,
+                                 chosen[:, k].view(-1, 1, 1).expand_as(cls),
+                                 torch.full_like(cls, DONT_CARE)) for k in range(3)]
+            else:
+                mix = torch.softmax(out["ratio"].float(), dim=1)
+                mix = (mix * args.ratio_scale).round().clamp(0, 16).to(torch.uint8)
+                r = [torch.where(is_swarm, mix[:, k],
+                                 torch.full_like(cls, DONT_CARE)) for k in range(3)]
         else:
             r = [torch.full_like(cls, DONT_CARE) for _ in range(3)]
         packed = torch.stack([cls, score, area_bits, staffing,
@@ -579,6 +590,8 @@ def main() -> int:
                 client.ticks.append(int(_tick))
                 if lat is not None:
                     client.latents.append(lat[n].cpu().numpy().astype(np.int64))
+                    if "mix_choice" in out:
+                        client.mixes.append(int(out["mix_choice"][n]))
                     client.logps.append(float(lp[n]))
                 if val is not None:
                     client.values.append(float(val[n]))
