@@ -393,3 +393,24 @@ Scoped to the single plane that matters rather than all seven:
   to a shared trunk.
 
 Harness still 72 checks, 0 failures.
+
+## Staffing head trained (05:15)
+
+`ckpt_staff` = `ckpt_full` trunk, frozen, plus count and staffing heads:
+
+```
+worker_mae        1.82   (staffing is typically 1-8 units, so within ~2)
+count_mae         0.35
+novel_precision   0.1846  <- identical to ckpt_full
+p1                0.5542  <- identical to ckpt_full
+```
+
+The freeze did its job: placement is bit-for-bit the checkpoint that scored
+5W/22, with two new heads bolted on. That is the property the joint count run
+lacked, and it makes every comparison from here an A/B of the heads alone.
+
+`--staffing` is opt-in and off by default: with it off the reply is DONT_CARE
+everywhere, which is exactly pre-NPS3 behaviour. So the control and the
+treatment are the same checkpoint and the same binary, differing in one flag.
+
+Running 3 fixed seeds per arm -- `GLOB2_TEST_SEED` set this time.

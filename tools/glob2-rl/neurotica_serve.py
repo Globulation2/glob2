@@ -178,6 +178,10 @@ def main() -> int:
     ap.add_argument("--build-per-unit", type=float, default=0.0,
                     help="require this many units per building held before "
                          "allowing another; 0 disables")
+    ap.add_argument("--staffing", action="store_true",
+                    help="send the staffing head's maxUnitWorking (NPS3). "
+                         "Off sends DONT_CARE everywhere, which is the "
+                         "pre-NPS3 behaviour and the A/B control.")
     ap.add_argument("--use-count", action="store_true",
                     help="bound each type by the count head's prediction "
                          "(requires a checkpoint trained with one)")
@@ -514,9 +518,14 @@ def main() -> int:
         # which is every cell without a building wanted on it -- so the
         # reconciler leaves those alone rather than reading a predicted 0 as
         # "unstaff this".
-        want_workers = out["workers"].float().round().clamp(0, 200).to(torch.uint8)
-        staffing = torch.where((cls > 0) & (cls != DONT_CARE), want_workers,
-                               torch.full_like(cls, DONT_CARE))
+        if args.staffing and "workers" in out:
+            want_workers = out["workers"].float().round().clamp(0, 200).to(torch.uint8)
+            staffing = torch.where((cls > 0) & (cls != DONT_CARE), want_workers,
+                                   torch.full_like(cls, DONT_CARE))
+        else:
+            # All DONT_CARE reproduces every build before NPS3, so the staffing
+            # head can be A/B'd against it with one checkpoint and one binary.
+            staffing = torch.full_like(cls, DONT_CARE)
         packed = torch.stack([cls, score, area_bits, staffing], dim=-1).cpu().numpy()
 
         if args.record_dir:
