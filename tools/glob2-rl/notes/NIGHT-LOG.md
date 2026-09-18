@@ -1686,3 +1686,67 @@ touched. Anything Neurotica should use that worktree until the branch is
 switched back.
 
 Health: server/learner/driver alive, 13 pending, GPU0 65% / 83 C, disk 128 GB.
+
+---
+
+# 17:25 review -- the margin decode works; the metric is now the problem
+
+## Fixed decode, BC checkpoint, no training
+
+```
+arm                          score    wins        losses  caps
+ratio_sampled (old, broken)  16.7%    14/96 14.6%    78      4
+margin_T10                   46.9%    25/96 26.0%    31     40
+margin_T20                   46.9%    24/96 25.0%    30     42
+BC greedy (ratio_unified)    47.4%    24/96 25.0%    29     43
+inert                        37.0%    23/96 24.0%    48     25
+```
+
+**16.7% -> 46.9% from two edits and no training.** The sampled decode now
+matches greedy (46.9 vs 47.4), which settles it: sampling was never
+structurally handicapped, it was decoding a quantity that carried no spatial
+information. Temperature 1 and 2 score identically, so T=2 is free
+exploration -- entropy 2.8-3.9 against 0.15 at T=1 -- and that is what the
+loop now trains at.
+
+## But on wins, still nothing beats doing nothing
+
+Wins across all eleven arms ever run: 14 to 25 of 96. Inert is 23. The best
+arm ever measured is +2 wins, well inside noise. Meanwhile caps span 4 to 43,
+and score correlates with cap rate at 0.965. **The score has been measuring
+draws all along**, and inert banks 25 free ones by holding its base.
+
+`paired_eval.py` now prints a WINS line beside every SCORE, with inert's
+24.0% as the standing reference, so this cannot be papered over again.
+
+## The reward and the metric agree, and that is the problem
+
+I had guessed a mismatch -- draw worth 0 reward but 0.5 score -- and the
+reviewer showed it is the opposite. `neurotica_selfplay.py:114` gives
+loss -1 / cap 0 / win +1, which is exactly `(r+1)/2 = 0, 0.5, 1`, an affine
+image of the score. **Both pay half price for stalling.** An agent that turns
+a loss into a tick-cap collects half a win under both, so a drawing policy is
+the correct answer to the question being asked. That is not a bug to fix in
+PPO; it is a decision about what the project is trying to produce, and it
+belongs to Bradley.
+
+Also found: `winner = int(...) if match else -1` labels a TIMED-OUT or crashed
+glob2 as a draw, rewarding it above a loss.
+
+## Restarted
+
+Self-play running from the BC checkpoint at T=2.0 with the margin decode.
+Every prior PPO checkpoint trained against a uniform placer and was archived,
+not resumed (`archive/snapshots_uniform/`, `archive/episodes_uniform_placer.csv`).
+The 3-hour review prompt is rewritten: wins vs inert is the bar, the old
+sampled numbers are void, paired tests only, and ppo.log's pg/vloss/ent_mix
+are last-minibatch values that must not be read as update averages.
+
+## Retraction
+
+The 11:25 entry, "mix entropy holding after the fix", rested on `ent_mix`
+from ppo.log, which is the last minibatch of the last epoch. At
+`--mix-hold 10` roughly 28% of minibatches contain no decide step at all, so
+that statistic cannot support the claim. The entropy split itself is
+implemented correctly; the mix head is simply at uniform, which is not the
+same as healthy.

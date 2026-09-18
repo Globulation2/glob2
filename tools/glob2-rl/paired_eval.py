@@ -188,8 +188,16 @@ def summarize(path, only=None):
         n = len(played)
         if n:
             sc = (tw + 0.5 * caps) / n
+            wp, wlo, whi = wilson(tw, n)
             print(f"  {'SCORE':8} (W + cap/2)/played = ({tw} + {caps}/2)/{n} = {sc:5.1%}"
                   f"   losses {n - tw - caps}")
+            # Wins over ALL played games, reported beside the score because the
+            # score is dominated by draws: across ten arms, wins spanned 14-24
+            # while caps spanned 4-43, and corr(score, cap rate) was 0.965. An
+            # arm can lead on score while being indistinguishable from doing
+            # nothing on the only channel that measures play.
+            print(f"  {'WINS':8} {tw}/{n} = {wp:5.1%}  [{wlo:4.0%}, {whi:4.0%}]"
+                  f"   (inert reference: 23/96 = 24.0%)")
 
 
 def cmd_summary(args):
