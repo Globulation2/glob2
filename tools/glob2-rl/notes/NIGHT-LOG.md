@@ -1399,3 +1399,51 @@ snapshot yet (next at 25 updates). Live policy archived.
 
 No change to the loop: temperature stays at 1.0 while the sampled policy is
 measurably improving under it.
+
+---
+
+# 02:25 scheduled review
+
+## Episodes by 200-bucket (fixed loop, 1199 episodes)
+
+```
+eps    0- 199   win 11.5%  loss 88.0%  cap  0.5%   expl .23
+eps  400- 599   win 23.5%  loss 65.5%  cap 11.0%   expl .28
+eps  800- 999   win 20.5%  loss 50.0%  cap 29.5%   expl .33
+eps 1000-1199   win 24.6%  loss 38.2%  cap 37.2%   expl .38
+```
+
+**Trend: improving.** Losses are the clean series (wins and caps trade
+against the 40000-tick cap) and they fall monotonically: 88 -> 77 -> 65 -> 66
+-> 50 -> 38%. The learner's own batch stats crossed zero: iter 68
+mean_return +0.14, batch win rate 0.43 -- the first positive return this
+project has produced. Mix: explorer preset rising steadily (.23 -> .38),
+heavy-military falling (.21 -> .10). PPO is choosing map control over army.
+
+## Paired arms, 96 games each
+
+```
+                            W    L   cap   score
+iter 0    sampled          14   78    4    16.7%
+iter 160  sampled          19   64   13    26.6%
+iter 0    greedy           24   29   43    47.4%   <- the standing bar
+iter 160  greedy           20   54   22    32.3%
+inert                      23   48   25    37.0%
+```
+
+**PPO improves the policy it trains and degrades the greedy decode of the same
+weights** (47.4 -> 32.3). That is not a contradiction: training sharpens the
+sampled distribution toward what wins under sampling, and the greedy top-8 of
+those logits is a different policy that nobody optimised. The deployment
+decode has to be the trained one -- sampled (or temperature-sharpened, stored
+per step) -- not greedy. The 47.4% bar was greedy-on-BC and is the wrong bar
+for a PPO checkpoint; the honest bars are inert 37.0% and the sampled
+iter-0 16.7%.
+
+Snapshot 49 of the restarted learner (archived as `policy_run2_iter049.pt`)
+is running as a sampled arm.
+
+## Health
+
+All three processes alive, 13 pending, GPU0 68% / 83 C, disk 129 GB free.
+No change to the loop.
