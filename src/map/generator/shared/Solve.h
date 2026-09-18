@@ -126,10 +126,10 @@ SolveReport anneal(const Anneal &schedule, GenerationContext &context, Propose p
 
 /// A cost built out of named terms rather than one number.
 ///
-/// A solved map with one summed cost can say how badly it did and never which target it missed, so
-/// tuning it is guesswork: weights get nudged by feel, and a term that is never the binding one goes
-/// on being nudged anyway. Naming the terms costs nothing at run time and turns that into evidence -
-/// every map can report, per seed, what each of its targets came out at and what each contributed.
+/// A solved map with one summed cost can say how badly it did and never which target it missed,
+/// so tuning it is guesswork: weights get nudged by feel, and a term that is never the binding one
+/// goes on being nudged anyway. Naming the terms costs nothing at run time and turns that into
+/// evidence - every map reports, per seed, what each target came out at and what each contributed.
 ///
 /// Storage is inline and fixed, so building one is free and the hot loop of a search can use the
 /// same code that reports to telemetry. There is no second expression of the weights to drift.
