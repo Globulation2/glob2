@@ -1249,3 +1249,48 @@ its true baseline, so PPO's progress can be read against the policy it
 actually trains. If the gap is as large as the ladder suggests, a temperature
 on the placement distribution (stored per step like the mask) is the next
 lever: sharpen sampling toward greedy while keeping enough entropy to learn.
+
+## Evening check-in (20:50): self-play is learning, and two plumbing faults
+
+**The training policy's own baseline** (`ratio_sampled`, same 96 games):
+
+```
+sampled k=8, T=1     14W  78L   4cap    score 16.7%
+greedy top-8         24W  29L  43cap    score 47.4%
+inert                23W  48L  25cap    score 37.0%
+```
+
+So the policy PPO actually trains starts at 16.7%, far below both the greedy
+decode of the same weights and doing nothing. The 78% vs 18% gap against
+numbi from the ladder was real. Temperature is implemented and verified but
+NOT enabled: the loop is improving under T=1 and I will not change the
+policy mid-run without a measurement of the alternative.
+
+**Self-play on the fixed loop, by 50-episode bucket:**
+
+```
+eps   0- 99   win  ~9%   loss ~90%   cap  ~1%
+eps 300-399   win  20%   loss  70%   cap  10%
+eps 400-499   win  26%   loss  61%   cap  13%
+eps 600-699   win  25%   loss  62%   cap  13%
+```
+
+Rising from 9% to ~25% over 700 episodes with losses falling 90% -> 61%. That
+is the opposite direction from last night's run and the first self-play
+trend worth the word. Caveat: the ladder is PFSP-weighted (numbi is 406 of
+725 games), so the absolute rate is inflated by opponent mix; the paired arm
+on snapshot 75 (sampled mode, launched) is the honest measure, and the
+16.7% baseline is what it has to beat.
+
+**Two plumbing faults found by looking:**
+* Snapshots stopped at 75 with the learner at 160: the check ran only on
+  iterations that had episodes. Now counts updates, not iterations.
+* Rollouts were 38 GB for 41 pending episodes. Self-play passed no tick cap,
+  so a 90000-tick game at period 25 is ~3 GB of observations, and six drivers
+  out-produce a learner that takes minutes per iteration. Disk fell 128 -> 80
+  GB in a few hours. Now: `--max-ticks 40000` for self-play and driver
+  backpressure at 14 pending. A deep backlog is also a learning fault -- PPO
+  was updating on episodes far off-policy.
+
+Learner restarted from the LIVE policy this time (archived as
+`policy_fixedloop_iter160_live.pt`), not the original checkpoint.

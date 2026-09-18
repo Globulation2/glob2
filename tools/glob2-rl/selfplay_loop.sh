@@ -43,6 +43,7 @@ sleep 2
 setsid nohup $VENV $ROOT/rl/neurotica_selfplay.py \
   --socket $SOCK --record-dir "$ROLL" --parallel "$PAR" \
   --games 1000000 --policy-period 25 --start-id 20000 \
+  --max-ticks 40000 --max-pending 14 \
   > $ROOT/rollout.log 2>&1 < /dev/null &
 
 echo "self-play running: serve_sp.log, ppo.log, rollout.log"

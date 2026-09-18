@@ -244,6 +244,8 @@ def main() -> int:
     scaler = torch.amp.GradScaler("cuda")
     os.makedirs(args.out, exist_ok=True)
 
+    updates = 0
+
     for it in range(args.iterations):
         trajs = load_trajectories(args.rollouts)
         if len(trajs) < 4:
@@ -257,7 +259,12 @@ def main() -> int:
         # policy.pt is overwritten every iteration; without snapshots a run
         # that degrades (measured: 22.6% -> 6.9% over 2200 episodes) leaves
         # nothing to roll back to.
-        if args.snapshot_every > 0 and it % args.snapshot_every == 0:
+        # Count UPDATES, not iterations: iterations with no episodes `continue`
+        # before reaching here, so `it % N == 0` only snapshots when a
+        # multiple of N happens to land on a non-empty iteration -- the loop
+        # ran to iter 160 with nothing saved past 75.
+        updates += 1
+        if args.snapshot_every > 0 and updates % args.snapshot_every == 0:
             os.makedirs(f"{args.out}/snapshots", exist_ok=True)
             torch.save(state, f"{args.out}/snapshots/policy_{it:06d}.pt")
         # Episodes are deleted once consumed, so anything worth analysing

@@ -20,6 +20,7 @@ won.
 from __future__ import annotations
 
 import argparse
+import glob
 import json
 import os
 import random
@@ -160,6 +161,9 @@ def main() -> int:
                          "range on purpose: a league of only the strongest AIs "
                          "yields a ~3% win rate and almost no positive reward "
                          "to learn from.")
+    ap.add_argument("--max-pending", type=int, default=14,
+                    help="stop launching games while this many episodes "
+                         "(in flight + waiting for the learner) exist")
     ap.add_argument("--parallel", type=int, default=4,
                     help="concurrent games; the GPU caps useful parallelism, "
                          "so more workers mostly means each game runs slower")
@@ -187,6 +191,14 @@ def main() -> int:
         end_id = args.start_id + args.games
         while next_id < end_id or futures:
             while len(futures) < args.parallel and next_id < end_id:
+                # Backpressure. Six drivers at ~170 games/h out-produce a
+                # learner that takes minutes per iteration, and at period 25
+                # an uncapped game is ~3 GB of observations: 41 pending
+                # episodes were 38 GB, and the disk was filling at ~15 GB/h.
+                # Also a learning problem, not only a disk one -- a deep
+                # backlog means PPO updates on episodes far off-policy.
+                if len(glob.glob(os.path.join(args.record_dir, "*.json"))) >= args.max_pending:
+                    break
                 futures[pool.submit(play_one, args, generators, next_id)] = next_id
                 next_id += 1
             done = [f for f in futures if f.done()]
