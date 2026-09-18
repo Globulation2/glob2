@@ -1621,3 +1621,68 @@ same choice) is the lever, not a bigger entropy bonus.
 
 server/learner/driver alive, 11 pending, GPU0 67% / 83 C, GPU1 28% / 76 C,
 disk 128 GB free, learner at iter 66 since the rollback.
+
+---
+
+# 14:25 scheduled review -- PLATEAU, second reviewer spawned
+
+## Paired: 58 updates produced nothing
+
+```
+run2_049 sampled (rollback point)     30.7%   20W 57L 19cap
+run3_058 sampled (after entropy fix)  30.7%   20W 57L 19cap
+```
+
+Identical. Per opponent run3_058 is numbi 70%, castor 7.7%, warrush 14.3%,
+nicowar 8.7%. The entropy fix stopped the collapse -- mix shares stay spread
+across four buckets (.19-.21 allw, .16-.23 light, .16-.21 teach, .16-.20
+heavy, .23-.27 expl) -- but it bought no ground.
+
+## Per opponent, post-rollback run (1040 episodes)
+
+```
+             numbi          warrush
+eps    0   47/142 (33%)   18/110 (16%)
+eps  300   43/162 (27%)   14/106 (13%)
+eps  600   56/168 (33%)    8/ 98 ( 8%)
+eps  900   19/ 77 (25%)    2/ 46 ( 4%)
+```
+
+**numbi: flat and noisy (33/27/33/25). warrush: degrading, 16% -> 4%**
+(18/110 vs 2/46, p~0.04). castor/cortex/nicowar remain at zero throughout.
+
+## Called stuck; second independent review commissioned
+
+Three signals together: the paired score has not moved in 58 updates, the one
+opponent that was improving is now declining, and the policy sits at 30.7%
+against a do-nothing bar of 37.0%. That is a plateau after a rollback and a
+targeted fix -- the condition Bradley set for getting an outside assessment
+rather than making another change on my own judgement.
+
+The reviewer is asked, specifically:
+* Is the plateau real under a PAIRED test? The arms share a manifest, so
+  McNemar on per-game outcomes is available and far more powerful than the
+  unpaired comparison I have been doing. It may change conclusions in both
+  directions.
+* **Can this setup beat inert at all?** Inert scores 37.0% largely by holding
+  its base and tick-capping. Scoring a cap as a draw may reward passivity, and
+  the reward (win/loss + shaping) gives a draw 0 while the metric gives it
+  0.5. If the reward and the score disagree, a policy that draws is the
+  correct answer to the wrong question, and no amount of PPO fixes that.
+* Is the sampled decode structurally handicapped (novel precision ~0.18), so
+  PPO is climbing a hill that tops out below greedy? Enable temperature, and
+  at what value?
+* Correctness of everything written since the first review.
+
+No changes to the loop pending that assessment.
+
+## Repo note
+
+`/Users/bradley/glob2-pr-help-2` was switched to branch `equilibrium-generator`
+with uncommitted map-generator work in progress, so this file is not in that
+working tree. This entry was committed from a separate worktree at
+`/tmp/neurotica-wt` on `atlas-desired-state-m0`; the owner's checkout was not
+touched. Anything Neurotica should use that worktree until the branch is
+switched back.
+
+Health: server/learner/driver alive, 13 pending, GPU0 65% / 83 C, disk 128 GB.
