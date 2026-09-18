@@ -1447,3 +1447,71 @@ is running as a sampled arm.
 
 All three processes alive, 13 pending, GPU0 68% / 83 C, disk 129 GB free.
 No change to the loop.
+
+---
+
+# 05:25 scheduled review
+
+## The aggregate episode trend is confounded; use per-opponent
+
+Aggregate losses by 200-bucket read 88 -> 38 -> 32 -> 63 -> 44 -> 54 -> 57%,
+which looks like improvement then collapse. It is not. PFSP shifts the
+opponent mix as the policy improves, so a rising loss rate can be a harder
+ladder rather than a worse policy. Per opponent, 300-episode buckets:
+
+```
+             0-299   300-599  600-899  900-1199 1200-1499 1500-1799 1800-2099
+numbi        19.7%    31.8%    25.1%    30.9%    30.5%     35.9%     36.4%     (154-192 games/bucket)
+warrush       2.4%    12.8%     9.5%    19.5%    18.4%     16.5%     10.5%     (42 -> 95 games/bucket)
+castor        2.5%     0%       6.3%     3.1%     3.4%     10.7%      3.4%
+nicowar       4.9%     0%       8.0%     0%       0%        0%         0%
+```
+
+**numbi: up, 19.7% -> 36.4%, monotone apart from one dip.** That is the clean
+signal -- a fixed opponent, 150+ games per bucket. **warrush: rose 2.4% ->
+19.5%, then fell to 10.5%** (10/95 vs 19/103, p~0.15 -- ambiguous, worth
+watching). castor and nicowar: flat near zero throughout.
+
+The aggregate "collapse" is warrush's share of games more than doubling
+(42/300 -> 95/300) as PFSP moved off numbi. So: **not degrading.** No
+rollback. I nearly acted on the aggregate series before breaking it out, which
+would have rolled back a policy that is improving against every opponent it is
+measured on.
+
+The 3-hour review prompt has been rewritten to require the per-opponent
+breakdown and to forbid comparing a PPO checkpoint against the greedy 47.4%
+bar.
+
+## Paired arms, sampled decode, 96 games each
+
+```
+iter 0        16.7%
+ppo160        26.6%
+run2_049      30.7%   (20W 57L 19cap)
+run2_174      running
+inert bar     37.0%
+```
+
+Monotone across three checkpoints and closing on the do-nothing bar. run2_049
+corresponds to about episode 1020 -- the good stretch -- so run2_174 is the
+one that tests whether the later period held up.
+
+## Mix: entropy collapsing onto explorer
+
+```
+          allw  light  teach  heavy  expl
+eps 0-199  .22   .16    .18    .21    .23
+eps 1200+  .13   .16    .21    .06    .44
+eps 1800+  .12   .13    .15    .07    .52
+```
+
+heavy-military .21 -> .07 and explorer .23 -> .52. PPO has converged on map
+control and is abandoning army production -- consistent with a policy that
+draws more than it wins (caps peaked at 45%). Worth a forced-preset A/B once
+the current arms finish: if explorer really is best, the concentration is
+learning; if it is entropy collapse, the mix head needs an entropy bonus.
+
+## Health
+
+server/learner/driver alive, 15 pending, GPU0 67% / 83 C, GPU1 25% / 76 C,
+disk 129 GB free. Learner at iter 184, snapshots every 25 updates.
