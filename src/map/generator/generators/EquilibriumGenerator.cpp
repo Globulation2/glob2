@@ -124,7 +124,12 @@ constexpr double kPassWeight = 1.0;
 // does - and an unreachable target is not a target but a constant: it contributed about seventy per
 // cent of the shape cost while never shrinking, which left the terms that could be improved with
 // almost no say in where the search went.
-constexpr double kShoreLeast = 1.05, kShoreMost = 1.65;
+constexpr double kShoreLeast = 0.85, kShoreMost = 2.10;
+/// How far a seed's own weather may swing what the sliders asked for: how wet the country is, and
+/// how much of it is under crop. The slider stays the middle of the band and its direction always
+/// holds; where in the band a seed falls is the difference between a lake country and dry downland.
+constexpr double kWetLeast = 0.35, kWetMost = 2.20;
+constexpr double kGreenLeast = 0.55, kGreenMost = 1.70;
 constexpr double kShoreWeight = 1.5;
 // How many separate bodies that water should form, drawn per seed from this range, and how heavily
 // that weighs. A short shoreline alone still allows a hundred tidy little lakes spread evenly over
@@ -132,7 +137,7 @@ constexpr double kShoreWeight = 1.5;
 // identical - and it makes every seed look like every other. Asking for a few bodies instead forces
 // the water into seas and lake districts big enough to give a map a face, and drawing the number
 // per seed is what makes one seed an inland sea and the next a chain of lakes.
-constexpr int kBodiesLeast = 2, kBodiesMost = 5;
+constexpr int kBodiesLeast = 1, kBodiesMost = 8;
 constexpr double kBodiesWeight = 1.2;
 // The heaviest the balance slider can make equal catchments weigh.
 constexpr double kBalanceWeight = 3.0;
@@ -145,7 +150,7 @@ constexpr double kLevelWeight = 2.0;
 // about half of each crop cell's neighbours to match gathers the same budget into belts with gaps
 // between them. Asking for all of it would build one wall per crop, which is why this is a target
 // and not something to maximise.
-constexpr double kFieldsLeast = 0.34, kFieldsMost = 0.62;
+constexpr double kFieldsLeast = 0.18, kFieldsMost = 0.78;
 constexpr double kFieldsWeight = 2.0;
 // How far a tile's cell is looked up from, as a share of a cell, and how far a cell's centre is
 // jostled off the lattice. Both kept well under half a cell, so cardinal neighbours on the lattice
@@ -357,7 +362,7 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 
 	s.cost = Objective()
 				 .add("reach", balance, s.reachSpread)
-				 .add("approach", kApproachWeight, s.approachSpread)
+				 .add("approach", wants.weight("approach", kApproachWeight), s.approachSpread)
 				 .add("pass", wants.weight("pass", kPassWeight),
 					  std::abs(s.passWidth - wantWidth) / std::max(1.0, wantWidth))
 				 .add("shore", kShoreWeight, std::abs(s.shoreRatio - shoreWanted) / shoreWanted)
@@ -435,7 +440,8 @@ SolveReport annealShape(Solved &solved, GenerationContext &context, double balan
 			return true;
 		},
 		[&] {
-			return scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted, shoreWanted, wants);
+			return scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted,
+							  shoreWanted, wants);
 		},
 		[&]
 		{
@@ -687,7 +693,8 @@ void floodToShare(Solved &solved, GenerationContext &context, int sharePercent)
 }
 
 /// The crops the amount sliders asked for, dealt over the land as a starting arrangement.
-void stockToAmounts(Solved &solved, GenerationContext &context, const EquilibriumOptions &o)
+void stockToAmounts(Solved &solved, GenerationContext &context, const EquilibriumOptions &o,
+					double greenness)
 {
 	const int cells = solved.lat.size();
 	std::vector<int> free;
@@ -697,8 +704,8 @@ void stockToAmounts(Solved &solved, GenerationContext &context, const Equilibriu
 	context.shuffle(free.begin(), free.end(), "equilibrium-stock");
 
 	const std::int64_t land = std::int64_t(free.size());
-	int wheat = int(scaledCount(land * kWheatCells / 100, o.wheat));
-	int wood = int(scaledCount(land * kWoodCells / 100, o.wood));
+	int wheat = int(scaledCount(land * kWheatCells / 100, o.wheat) * greenness);
+	int wood = int(scaledCount(land * kWoodCells / 100, o.wood) * greenness);
 	int stone = int(scaledCount(land * kStoneCells / 100, o.stone));
 	// Leave open ground to cross and build on however high the amounts go.
 	const int ceiling = int(land * kStockedCeiling / 100);
@@ -803,7 +810,21 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	dealStarts(context, solved.home, "equilibrium-homes-deal");
 
 	pinHomes(solved);
-	floodToShare(solved, context, o.water);
+	// How wet and how green this seed is, drawn round what the sliders asked for.
+	//
+	// This is where the variety actually was. Every target above can be drawn and every arrangement
+	// searched, and twelve seeds still came out with water between 8.2 and 8.9 per cent of the map
+	// and wheat between 4.7 and 5.1, because the budgets were exact and only their arrangement was
+	// ever in question - so every seed was the same country rearranged. Rearrangement is a weak
+	// lever on how a map looks; composition is a strong one. The sliders are now the middle of a
+	// band rather than a figure, which trades their exactness for one seed being a lake country and
+	// the next dry downland. What a slider still promises is its direction: more asked for is more
+	// on the map, always.
+	const double wetness = drawnTarget(context, "equilibrium-brief", kWetLeast, kWetMost);
+	const double greenness = drawnTarget(context, "equilibrium-brief", kGreenLeast, kGreenMost);
+	context.telemetry.measure("equilibrium.brief.wetness", wetness);
+	context.telemetry.measure("equilibrium.brief.greenness", greenness);
+	floodToShare(solved, context, std::clamp(int(std::lround(o.water * wetness)), 0, 90));
 
 	// Tight passes at 100, open country at 0, as a passage width in cells.
 	const double wantWidth = 1.0 + 6.0 * (1.0 - std::clamp(o.passes, 0, 100) / 100.0);
@@ -820,11 +841,14 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// Which of the optional targets this seed solves to. Equal catchments, building room and a
 	// joined-up country are not in here: they are what makes the result a map rather than what gives
 	// it a character, and a seed that dropped one would be broken, not varied.
-	// Approach parity is not in here, though it was at first: it says every colony is as exposed to
-	// attack as every other, which is a fairness property wearing a character property's clothes.
-	// Putting it up for the draw cost real balance on the seeds that dropped it, and by the rule
-	// above it never belonged there.
-	const Emphases wants(context, "equilibrium-brief", {"bodies", "pass", "fields"}, 2, 3);
+	// Approach parity is in the draw, and it is a fairness property: a seed that drops it can leave
+	// one colony far easier to hold than another. That is a deliberate choice for this map - variety
+	// is wanted more than an even contest, and a country where the ground genuinely favours somebody
+	// is a kind of map, where a country balanced in every dimension at once is only ever the one.
+	// What is never in the draw is playability: every colony joined to the rest (severed), with
+	// ground to build on (room) and a crop it can reach. Those are not character.
+	const Emphases wants(context, "equilibrium-brief", {"bodies", "pass", "fields", "approach"}, 1,
+						 4);
 	wants.report(context.telemetry, "equilibrium.brief.wants");
 	const int bodiesWanted =
 		kBodiesLeast +
@@ -851,7 +875,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// strength whatever the slider said. Here the slider is how many moves it gets: at 0 the crops
 	// stay where they were dealt and the map is as unfair as chance made it, at 100 it searches
 	// until the spread stops falling.
-	stockToAmounts(solved, context, o);
+	stockToAmounts(solved, context, o, greenness);
 	const int stockMoves =
 		int(std::int64_t(kStockMoves[effort]) * std::clamp(o.balance, 0, 100) / 100);
 	solved.stock = annealStock(solved, context, walk, decay, stockMoves,

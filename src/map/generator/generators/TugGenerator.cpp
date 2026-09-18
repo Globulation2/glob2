@@ -126,11 +126,11 @@ constexpr int kBorderWander = 4000;
 /// per seed. The rest of the country is commons: expansion ground, battlefield and the rope. At the
 /// low end the colonies are islands of farm in a wide shared country; at the high end they are
 /// neighbours with a march between them.
-constexpr double kHomelandLeast = 32, kHomelandMost = 58;
+constexpr double kHomelandLeast = 24, kHomelandMost = 66;
 /// How densely a homeland is farmed, drawn per seed. This is also what tells a homeland apart from
 /// the commons at a glance: the commons is planted to a fixed light share, so the further this is
 /// drawn above it the more sharply a colony's own country reads against the open ground.
-constexpr double kFarmedLeast = 20, kFarmedMost = 34;
+constexpr double kFarmedLeast = 13, kFarmedMost = 42;
 /// The dry collar between a homeland and the commons. Thin on purpose: it is there to stop a farm
 /// creeping out into ground that should be taken rather than grown into, not to wall the map off.
 constexpr int kCollarWidth = 6;
