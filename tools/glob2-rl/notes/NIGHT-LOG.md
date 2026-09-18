@@ -1294,3 +1294,30 @@ on snapshot 75 (sampled mode, launched) is the honest measure, and the
 
 Learner restarted from the LIVE policy this time (archived as
 `policy_fixedloop_iter160_live.pt`), not the original checkpoint.
+
+## Rollouts compressed (21:05)
+
+Bradley asked whether the data could be compressed. The rollouts could, by a
+lot: observations are 54 x 128 x 128 uint8 per step, nearly all zero or
+0/255 binary, and were saved raw so the learner could memmap them.
+
+Measured on a real pending episode (3600 steps, 3.19 GB raw on disk):
+
+```
+300 steps: 265 MB raw -> 2.2 MB     ratio 122x
+compress 1.1 ms/step   decompress 0.7 ms/step   round-trip byte-exact
+```
+
+Per-step zlib chunks with an offset table in the episode npz -- the corpus
+format -- compressed at flush so the serving path pays nothing; the learner
+inflates one step at a time (`CompressedObs`) and falls back to the raw
+memmap for episodes recorded before the change, so the 51-episode backlog
+still trains. A 3 GB episode is now ~26 MB; at the old rate of ~15 GB/h the
+rollout directory would have filled the disk tonight.
+
+The corpus (28 GB) is already zlib-compressed per record; replays are ~1.3 MB
+each; checkpoints 30 MB. None worth touching.
+
+Restart done from a script file rather than an inline ssh command, so the
+kill patterns cannot match the command that launches the replacements -- the
+self-match trap that killed my own shell four times last night.

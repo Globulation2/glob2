@@ -59,11 +59,23 @@ def flush_trajectory(client, record_dir: str) -> None:
         return
     import json
     base = os.path.join(record_dir, f"g{client.game_id}_t{client.team_seen}")
-    np.save(base + ".obs.npy", np.stack(client.obs_u8))
+    # Observations are 54 planes of 128x128 uint8 per step, nearly all zero or
+    # 0/255 binary: raw, a 3600-step episode is ~3 GB, and 41 pending episodes
+    # were 38 GB. Per-step zlib chunks with an offset table (the corpus format)
+    # compress that by tens of times, and the learner decompresses one step at
+    # a time exactly as the BC loader does. Compressed at flush, not per
+    # request, so the serving path pays nothing.
+    import zlib
+    chunks = [zlib.compress(o.tobytes(), 1) for o in client.obs_u8]
+    offsets = np.zeros(len(chunks) + 1, dtype=np.int64)
+    offsets[1:] = np.cumsum([len(c) for c in chunks])
+    shape = np.array(client.obs_u8[0].shape, dtype=np.int64)
     # Static planes and ticks travel with the episode: PPO has to rebuild the
     # exact network input, and storing only the dynamic planes would leave it
     # six channels short.
     np.savez(base + ".npz",
+             obs_blob=np.frombuffer(b"".join(chunks), dtype=np.uint8),
+             obs_offsets=offsets, obs_shape=shape,
              placements=np.stack(client.latents).astype(np.int64),
              logps=np.array(client.logps, dtype=np.float32),
              values=np.array(client.values, dtype=np.float32),

@@ -47,6 +47,37 @@ class Trajectory:
     temperature: np.ndarray = None  # (T,) sampling temperature used to act
 
 
+class CompressedObs:
+    """Per-step zlib chunks with an offset table; obs[i] decompresses one step.
+
+    Matches the corpus format and the server's flush. Only the requested step
+    is ever decompressed, so a minibatch costs a dozen small inflates rather
+    than a memmap of gigabytes.
+    """
+
+    def __init__(self, blob: np.ndarray, offsets: np.ndarray, shape: np.ndarray):
+        self.blob = blob.tobytes()
+        self.offsets = offsets
+        self.shape = tuple(int(v) for v in shape)
+
+    def __len__(self):
+        return len(self.offsets) - 1
+
+    def __getitem__(self, i: int) -> np.ndarray:
+        import zlib
+        raw = zlib.decompress(self.blob[self.offsets[i]:self.offsets[i + 1]])
+        return np.frombuffer(raw, dtype=np.uint8).reshape(self.shape)
+
+
+def load_obs(traj):
+    """Compressed chunks from the npz when present; the legacy raw memmap
+    otherwise, so episodes recorded before the format change still train."""
+    arrays = np.load(traj.obs_path[:-8] + ".npz")
+    if "obs_blob" in arrays.files and arrays["obs_blob"].size:
+        return CompressedObs(arrays["obs_blob"], arrays["obs_offsets"], arrays["obs_shape"])
+    return np.load(traj.obs_path, mmap_mode="r")
+
+
 def build_observation(static: np.ndarray, dynamic: np.ndarray,
                       tick: int) -> np.ndarray:
     """Reassemble the exact network input from a stored transition.
@@ -148,7 +179,7 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
         all_allow.append(traj.allowed)
         all_temp.append(traj.temperature if traj.temperature is not None
                         else np.ones(len(traj.logps), dtype=np.float32))
-        obs = np.load(traj.obs_path, mmap_mode="r")
+        obs = load_obs(traj)
         obs_refs.extend([(obs, i, traj) for i in range(len(traj.logps))])
 
     adv = np.concatenate(all_adv)
