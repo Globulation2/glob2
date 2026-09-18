@@ -124,7 +124,7 @@ constexpr double kPassWeight = 1.0;
 // does - and an unreachable target is not a target but a constant: it contributed about seventy per
 // cent of the shape cost while never shrinking, which left the terms that could be improved with
 // almost no say in where the search went.
-constexpr double kShoreWanted = 1.25;
+constexpr double kShoreLeast = 1.05, kShoreMost = 1.65;
 constexpr double kShoreWeight = 1.5;
 // How many separate bodies that water should form, drawn per seed from this range, and how heavily
 // that weighs. A short shoreline alone still allows a hundred tidy little lakes spread evenly over
@@ -145,7 +145,7 @@ constexpr double kLevelWeight = 2.0;
 // about half of each crop cell's neighbours to match gathers the same budget into belts with gaps
 // between them. Asking for all of it would build one wall per crop, which is why this is a target
 // and not something to maximise.
-constexpr double kFieldsWanted = 0.5;
+constexpr double kFieldsLeast = 0.34, kFieldsMost = 0.62;
 constexpr double kFieldsWeight = 2.0;
 // How far a tile's cell is looked up from, as a share of a cell, and how far a cell's centre is
 // jostled off the lattice. Both kept well under half a cell, so cardinal neighbours on the lattice
@@ -280,7 +280,7 @@ struct Shape
 /// Walks every colony over the land and scores the arrangement: equal reachable land, a way between
 /// neighbours about as wide as asked, clear ground near every home, and nobody cut off.
 double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance, double wantWidth,
-				  int roomWanted, int bodiesWanted)
+				  int roomWanted, int bodiesWanted, double shoreWanted)
 {
 	const int teams = int(solved.home.size());
 	for (int k = 0; k < teams; ++k)
@@ -336,7 +336,7 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 		for (const auto &step : kCardinalSteps)
 			shore += s.land[t.at(x + step[0], y + step[1])] != 0;
 	}
-	s.shoreRatio = wet > 0 ? double(shore) / double(wet) : kShoreWanted;
+	s.shoreRatio = wet > 0 ? double(shore) / double(wet) : shoreWanted;
 
 	// How many separate bodies that water forms. Cardinal, like everything else the search reasons
 	// about, so two lakes touching at a corner count as the two lakes the painted map will show.
@@ -358,7 +358,7 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 				 .add("reach", balance, s.reachSpread)
 				 .add("approach", kApproachWeight, s.approachSpread)
 				 .add("pass", kPassWeight, std::abs(s.passWidth - wantWidth) / std::max(1.0, wantWidth))
-				 .add("shore", kShoreWeight, std::abs(s.shoreRatio - kShoreWanted) / kShoreWanted)
+				 .add("shore", kShoreWeight, std::abs(s.shoreRatio - shoreWanted) / shoreWanted)
 				 .add("bodies", kBodiesWeight, std::abs(s.bodies - bodiesWanted) / double(bodiesWanted))
 				 .add("room", kRoomWeight, s.roomShort)
 				 .add("severed", kSeveredCost, s.severed);
@@ -368,7 +368,7 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 /// Anneals the water's arrangement, swapping a water cell with a land cell so the water the player
 /// asked for stays exactly what it is. Returns the moves taken.
 SolveReport annealShape(Solved &solved, GenerationContext &context, double balance,
-						double wantWidth, int bodiesWanted, int moves)
+						double wantWidth, int bodiesWanted, double shoreWanted, int moves)
 {
 	const Torus t = solved.lat.torus();
 	const int cells = solved.lat.size(), teams = int(solved.home.size());
@@ -430,7 +430,9 @@ SolveReport annealShape(Solved &solved, GenerationContext &context, double balan
 			solved.kind[dry] = kWater;
 			return true;
 		},
-		[&] { return scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted); },
+		[&] {
+			return scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted, shoreWanted);
+		},
 		[&]
 		{
 			s.land[wet] = 0;
@@ -443,7 +445,7 @@ SolveReport annealShape(Solved &solved, GenerationContext &context, double balan
 		s.land[i] = solved.kind[i] != kWater;
 	// The walks the stock pass inherits must match the shape it inherits, so measure the state the
 	// search actually ended on rather than trusting the last move's scratch.
-	scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted);
+	scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted, shoreWanted);
 	solved.reachSpread = s.reachSpread;
 	solved.passWidth = s.passWidth;
 	solved.roomShort = s.roomShort;
@@ -486,7 +488,8 @@ double stockSpread(const Catchments &had, int teams)
 /// level is divided by the number of cells of that crop, so it stays comparable between crops and
 /// across amount settings.
 Objective stockObjective(const Catchments &had, int teams,
-						 const std::array<int, kStockKinds> &counts, double clustering)
+						 const std::array<int, kStockKinds> &counts, double clustering,
+						 double fieldsWanted)
 {
 	double spread = 0, level = 0;
 	std::vector<double> shares(teams);
@@ -504,13 +507,13 @@ Objective stockObjective(const Catchments &had, int teams,
 	return Objective()
 		.add("spread", 1.0 / kStockKinds, spread)
 		.add("level", -kLevelWeight / kStockKinds, level)
-		.add("fields", kFieldsWeight, std::abs(clustering - kFieldsWanted) / kFieldsWanted);
+		.add("fields", kFieldsWeight, std::abs(clustering - fieldsWanted) / fieldsWanted);
 }
 
 double stockCost(const Catchments &had, int teams, const std::array<int, kStockKinds> &counts,
-				 double clustering)
+				 double clustering, double fieldsWanted)
 {
-	return stockObjective(had, teams, counts, clustering).total();
+	return stockObjective(had, teams, counts, clustering, fieldsWanted).total();
 }
 
 /// Anneals which land cells hold which crop, swapping the contents of two cells so the number of
@@ -520,7 +523,8 @@ double stockCost(const Catchments &had, int teams, const std::array<int, kStockK
 SolveReport annealStock(Solved &solved, GenerationContext &context,
 						const std::vector<std::vector<int>> &walk,
 						const std::vector<double> &decay, int moves, double &spreadBefore,
-						double &spreadAfter, double &stockShape, Objective &stockTerms)
+						double &spreadAfter, double &stockShape, Objective &stockTerms,
+						double fieldsWanted)
 {
 	const int cells = solved.lat.size(), teams = int(solved.home.size());
 	const auto worth = [&](int team, int cell)
@@ -563,7 +567,7 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 			matched += matching(i);
 		}
 	const auto clustering = [&]
-	{ return crops > 0 ? double(matched) / (4.0 * crops) : kFieldsWanted; };
+	{ return crops > 0 ? double(matched) / (4.0 * crops) : fieldsWanted; };
 
 	int a = -1, b = -1;
 	std::vector<unsigned char> best = solved.kind;
@@ -604,7 +608,8 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 			swapStock(a, b);
 			return true;
 		},
-		[&] { return stockCost(had, teams, counts, clustering()); }, [&] { swapStock(a, b); },
+		[&] { return stockCost(had, teams, counts, clustering(), fieldsWanted); },
+		[&] { swapStock(a, b); },
 		[&] { best = solved.kind; }, [&] { solved.kind = best; });
 	// The catchments must match whatever arrangement the run ended on, best-kept or not.
 	for (int k = 0; k < teams; ++k)
@@ -620,7 +625,7 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 			matched += matching(i);
 	spreadAfter = stockSpread(had, teams);
 	stockShape = clustering();
-	stockTerms = stockObjective(had, teams, counts, clustering());
+	stockTerms = stockObjective(had, teams, counts, clustering(), fieldsWanted);
 	return run;
 }
 
@@ -802,10 +807,17 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const int effort = std::clamp(o.effort, 0, 2);
 	// How many bodies this seed's water should form: one seed's inland sea is the next one's chain
 	// of lakes.
+	// The brief this seed is solving to. Ranges, not constants: the whole reason one seed of a solved
+	// map looks like another is that they were all handed the same targets.
+	const double shoreWanted = drawnTarget(context, "equilibrium-brief", kShoreLeast, kShoreMost);
+	const double fieldsWanted = drawnTarget(context, "equilibrium-brief", kFieldsLeast, kFieldsMost);
+	context.telemetry.measure("equilibrium.brief.shore-wanted", shoreWanted);
+	context.telemetry.measure("equilibrium.brief.fields-wanted", fieldsWanted);
 	const int bodiesWanted =
 		kBodiesLeast +
 		int(context.bounded("equilibrium-shape", kBodiesMost - kBodiesLeast + 1));
-	solved.shape = annealShape(solved, context, balance, wantWidth, bodiesWanted, kShapeMoves[effort]);
+	solved.shape = annealShape(solved, context, balance, wantWidth, bodiesWanted, shoreWanted,
+							   kShapeMoves[effort]);
 
 	// The stock pass inherits the shape pass's walks: the land is settled now, so every colony's
 	// distance to every cell is fixed and a crop's move is worth two known terms.
@@ -831,7 +843,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		int(std::int64_t(kStockMoves[effort]) * std::clamp(o.balance, 0, 100) / 100);
 	solved.stock = annealStock(solved, context, walk, decay, stockMoves,
 							   solved.stockSpreadBefore, solved.stockSpreadAfter, solved.fields,
-							   solved.stockCost);
+							   solved.stockCost, fieldsWanted);
 
 	L.kind = solved.kind;
 	L.pinned = solved.pinned;

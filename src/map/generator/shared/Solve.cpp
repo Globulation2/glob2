@@ -39,6 +39,12 @@ int spread(const std::vector<int> &shares)
 	return *most - *least;
 }
 
+double drawnTarget(GenerationContext &context, const char *stream, double least, double most)
+{
+	constexpr std::uint32_t kSteps = 1000;
+	return least + (most - least) * double(context.bounded(stream, kSteps)) / double(kSteps - 1);
+}
+
 void reportObjective(GenerationTelemetry &telemetry, const std::string &key,
 					 const Objective &objective)
 {

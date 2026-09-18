@@ -162,6 +162,20 @@ struct Objective
 	}
 };
 
+/// A target drawn per seed instead of fixed.
+///
+/// This is the answer to a solved map whose seeds all look alike. With fixed targets every seed is
+/// handed the identical problem, and a search is very good at finding the same answer to the same
+/// question: the layout moves about but the character never does, and twelve seeds come out looking
+/// like twelve photographs of one map. Drawing the target is what makes one seed an inland sea and
+/// the next a chain of lakes, one a country of big open fields and the next a patchwork.
+///
+/// The range is the map's design and should be chosen so that both ends are a map worth playing;
+/// where in the range a seed lands is the map's variety. Draw from a stream of the map's own, and
+/// report what was drawn - a reader looking at an odd seed should be able to see what it was asked
+/// for before wondering whether the search failed.
+double drawnTarget(GenerationContext &, const char *stream, double least, double most);
+
 /// Records what each of an objective's targets came out at, under `key`: every term's residual and
 /// what it contributed to the total. This is the report that says which constraint is binding.
 void reportObjective(GenerationTelemetry &, const std::string &key, const Objective &);

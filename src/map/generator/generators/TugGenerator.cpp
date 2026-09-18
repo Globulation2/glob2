@@ -94,7 +94,7 @@ constexpr int kHomeDepth = 16, kHomeDepthSpread = 28, kHomeRoom = 5;
 constexpr double kKitRadius = 18;
 // How the country's own crops are laid: the share of a territory's ground under each, and the
 // starter kit every colony gets whatever the sliders say.
-constexpr int kFieldCover = 22, kWoodCover = 17;
+constexpr double kWoodOfFarmed = 0.75;
 // How coarse the fields are. Finer than the 24 steps a colony's catchment is reckoned over, so that
 // every colony has some of both crops within reach whatever its share of the homeland looks like.
 constexpr int kFieldGrain = 12;
@@ -122,12 +122,18 @@ constexpr double kSiteJostle = 0.11;
 // How far a homeland border may bend to follow cheap ground, in growTerritories' units of a
 // thousand to the step: four steps' worth.
 constexpr int kBorderWander = 4000;
-/// How much of its fair share of the map a colony keeps as its own homeland, as a percentage. The
-/// rest of the country is commons: expansion ground, battlefield and the rope.
-constexpr int kHomelandShare = 45;
+/// How much of its fair share of the map a colony keeps as its own homeland, as a percentage, drawn
+/// per seed. The rest of the country is commons: expansion ground, battlefield and the rope. At the
+/// low end the colonies are islands of farm in a wide shared country; at the high end they are
+/// neighbours with a march between them.
+constexpr double kHomelandLeast = 32, kHomelandMost = 58;
+/// How densely a homeland is farmed, drawn per seed. This is also what tells a homeland apart from
+/// the commons at a glance: the commons is planted to a fixed light share, so the further this is
+/// drawn above it the more sharply a colony's own country reads against the open ground.
+constexpr double kFarmedLeast = 20, kFarmedMost = 34;
 /// The dry collar between a homeland and the commons. Thin on purpose: it is there to stop a farm
 /// creeping out into ground that should be taken rather than grown into, not to wall the map off.
-constexpr int kCollarWidth = 4;
+constexpr int kCollarWidth = 6;
 /// What the commons carries of its own, as a share of its ground: enough to be worth settling out
 /// into, well short of what a homeland grows.
 constexpr int kCommonsWheat = 9, kCommonsWood = 8;
@@ -194,6 +200,7 @@ struct Layout
 	std::vector<unsigned char> march;  // the no-man's land the rope is strung through
 	std::vector<unsigned char> ground; // the mainland: where everything happens
 	std::vector<RegionHome> homes;
+	double farmed = 0; // the share of a homeland under crops, drawn per seed
 	std::string failure;
 };
 
@@ -322,7 +329,14 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// nobody. Taking the nearest tiles by walk means the homelands come out the same size as each
 	// other whatever shape the territory around them was, which is the fairness that actually
 	// matters, and it leaves better than half the country neutral.
-	const std::int64_t homeland = std::int64_t(t.size()) * kHomelandShare / (100 * teams);
+	// How much of the country this seed's colonies keep, and how sharply their farmed ground reads
+	// against the commons. Drawn, not fixed: with constant targets every seed of a solved map comes
+	// out with the same character, however different its layout.
+	const double homelandShare = drawnTarget(context, "tug-brief", kHomelandLeast, kHomelandMost);
+	L.farmed = drawnTarget(context, "tug-brief", kFarmedLeast, kFarmedMost);
+	context.telemetry.measure("tug.brief.homeland-share", homelandShare);
+	context.telemetry.measure("tug.brief.farmed-share", L.farmed);
+	const std::int64_t homeland = std::int64_t(std::int64_t(t.size()) * homelandShare) / (100 * teams);
 	for (int k = 0; k < teams; ++k)
 	{
 		std::vector<unsigned char> own(t.size(), 0);
@@ -714,13 +728,14 @@ bool generate(Game &game, GenerationContext &context)
 		for (int i = 0; i < t.size(); ++i)
 			if (openCountry(i))
 				ground.push_back(i);
-		plantCoverShare(map, t, ground, WHEAT, int(scaledCount(kFieldCover, o.wheat)),
+		plantCoverShare(map, t, ground, WHEAT, int(scaledCount(std::int64_t(L.farmed), o.wheat)),
 						[&](int i) { return wheatGrain[i]; });
 		ground.clear();
 		for (int i = 0; i < t.size(); ++i)
 			if (openCountry(i))
 				ground.push_back(i);
-		plantCoverShare(map, t, ground, WOOD, int(scaledCount(kWoodCover, o.wood)),
+		plantCoverShare(map, t, ground, WOOD,
+						int(scaledCount(std::int64_t(L.farmed * kWoodOfFarmed), o.wood)),
 						[&](int i) { return woodGrain[i]; });
 	}
 
