@@ -246,7 +246,12 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
             pg = -torch.min(ratio * a,
                             ratio.clamp(1 - args.clip, 1 + args.clip) * a).mean()
             vloss = F.mse_loss(ev["value"], torch.from_numpy(ret[idx]).to(device))
-            loss = pg + args.vf_coef * vloss - args.ent_coef * ev["entropy"].mean()
+            # Separate coefficients. The placement entropy dominates the sum,
+            # so one coefficient on the total regularises placements and
+            # leaves the 5-way mix choice to collapse.
+            loss = (pg + args.vf_coef * vloss
+                    - args.ent_coef * ev["entropy_place"].mean()
+                    - args.mix_ent_coef * ev["entropy_mix"].mean())
             opt.zero_grad(set_to_none=True)
             scaler.scale(loss).backward()
             scaler.unscale_(opt)
@@ -255,6 +260,7 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
             scaler.update()
             stats["pg"] = float(pg.item())
             stats["vloss"] = float(vloss.item())
+            stats["ent_mix"] = float(ev["entropy_mix"].mean().item())
     return stats
 
 
@@ -268,6 +274,11 @@ def main() -> int:
     ap.add_argument("--clip", type=float, default=0.2)
     ap.add_argument("--vf-coef", type=float, default=0.5)
     ap.add_argument("--ent-coef", type=float, default=0.003)
+    ap.add_argument("--mix-ent-coef", type=float, default=0.05,
+                    help="entropy bonus on the production-mix choice, held "
+                         "separate because its entropy is ~6x smaller than "
+                         "the placement entropy it used to share a coefficient "
+                         "with")
     ap.add_argument("--shaping", type=float, default=0.1)
     ap.add_argument("--max-episodes", type=int, default=8,
                     help="episodes per update; older pending ones are discarded")

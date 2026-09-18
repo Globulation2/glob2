@@ -346,7 +346,14 @@ class NeuroticaNet(nn.Module):
         out["mix_choice"] = mix
         out["logp"] = (dist.log_prob(idx.T).sum(dim=0)
                        + torch.where(decide_mix, mix_dist.log_prob(mix), zero))
-        out["entropy"] = dist.entropy() + torch.where(decide_mix, mix_dist.entropy(), zero)
+        # Reported separately: the placement entropy runs to ~9.7 nats over
+        # ~16k cells while the mix entropy caps at ln 5 = 1.6, so a single
+        # coefficient on the sum leaves the mix almost unregularised and it
+        # collapses (measured: explorer preset .23 -> .52, heavy-military
+        # .21 -> .06, and the paired score fell 30.7% -> 19.8%).
+        out["entropy_place"] = dist.entropy()
+        out["entropy_mix"] = torch.where(decide_mix, mix_dist.entropy(), zero)
+        out["entropy"] = out["entropy_place"] + out["entropy_mix"]
         return out
 
     def evaluate_placements(self, x, idx, existing_mask, allowed=None,
@@ -364,14 +371,17 @@ class NeuroticaNet(nn.Module):
                                            temperature)
         logp = dist.log_prob(idx.T).sum(dim=0)
         entropy = dist.entropy()
+        entropy_mix = torch.zeros_like(logp)
         if mix is not None:
             mix_dist = torch.distributions.Categorical(logits=out["mix"].float())
             if decide_mix is None:
                 decide_mix = torch.ones_like(mix, dtype=torch.bool)
             zero = torch.zeros_like(logp)
             logp = logp + torch.where(decide_mix, mix_dist.log_prob(mix), zero)
-            entropy = entropy + torch.where(decide_mix, mix_dist.entropy(), zero)
-        return dict(logp=logp, entropy=entropy, value=out["value"])
+            entropy_mix = torch.where(decide_mix, mix_dist.entropy(), zero)
+        return dict(logp=logp, entropy=entropy + entropy_mix,
+                    entropy_place=entropy, entropy_mix=entropy_mix,
+                    value=out["value"])
 
     def evaluate_latent(self, x, z):
         """Re-score a stored latent under the current policy, for PPO."""

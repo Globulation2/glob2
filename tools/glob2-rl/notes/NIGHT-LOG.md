@@ -1515,3 +1515,58 @@ learning; if it is entropy collapse, the mix head needs an entropy bonus.
 
 server/learner/driver alive, 15 pending, GPU0 67% / 83 C, GPU1 25% / 76 C,
 disk 129 GB free. Learner at iter 184, snapshots every 25 updates.
+
+---
+
+# 08:25 scheduled review -- ROLLED BACK
+
+## The paired eval caught a degradation the ladder did not
+
+```
+sampled arms, 96 games each      W    L   cap   score
+iter 0                          14   78    4    16.7%
+ppo160                          19   64   13    26.6%
+run2_049                        20   57   19    30.7%   <- best, rolled back to this
+run2_174                        14   72   10    19.8%   <- degraded
+inert bar                       23   48   25    37.0%
+```
+
+run2_174 is 125 updates after run2_049 and lost 15 games' worth of ground
+(losses 57 -> 72, Fisher p ~ 0.03). Per-opponent ladder over the same span was
+ambiguous -- numbi 36% -> 34% -> 31%, warrush 11% -> 21% -> 13% -- so the
+ladder would not have triggered a rollback on its own. **The paired manifest
+is the only instrument that has caught either direction reliably.**
+
+## Mechanism: the mix entropy was never regularised
+
+```
+          allw  light  teach  heavy  expl
+eps 0-199  .22   .16    .18    .21    .23
+eps 2400+  .13   .15    .15    .06    .52
+```
+
+`--ent-coef 0.003` was applied to the SUM of placement entropy and mix
+entropy. Placement entropy runs to ~9.7 nats over ~16k cells; the mix entropy
+caps at ln 5 = 1.6. One coefficient on the sum regularises placements and
+leaves the 5-way mix choice effectively free to collapse, which it did:
+explorer .23 -> .52, heavy-military .21 -> .06. A policy that has abandoned
+army production draws rather than wins, and eventually loses to opponents that
+outgrow it.
+
+Fixed by reporting `entropy_place` and `entropy_mix` separately and giving the
+mix its own coefficient (`--mix-ent-coef`, default 0.05). `ent_mix` is now in
+the iteration stats so the collapse is visible next time instead of inferred
+from episode shares.
+
+## Action taken
+
+Archived the degraded policy (`policy_run2_iter255_degraded.pt`), rolled
+`ppo/policy.pt` back to `run2_049`, cleared the rollout backlog, and restarted
+server + learner + driver with `--mix-ent-coef 0.05`. Episode log rotated to
+`archive/episodes_run2.csv` so the new run's trend is not mixed with the
+degraded one.
+
+## Health
+
+server/learner/driver alive, 2 pending after the clear, GPU0 65% / 83 C,
+GPU1 26% / 74 C, disk 129 GB free.
