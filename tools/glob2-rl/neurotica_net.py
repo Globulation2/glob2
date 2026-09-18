@@ -291,36 +291,44 @@ class NeuroticaNet(nn.Module):
     @staticmethod
     def placement_distribution(building_logits, existing_mask, allowed=None,
                                temperature=1.0):
-        """Categorical over empty cells, weighted by P(any building there).
+        """Categorical over cells, from the PLACEMENT MARGIN.
 
-        temperature < 1 sharpens the draw toward the greedy top-k. Measured on
-        the same weights: greedy top-8 scored 78% against numbi, sampled k=8
-        scored 18% -- the distribution is diffuse enough (novel precision
-        ~0.18) that sampling mostly draws bad cells, so PPO was training a
-        policy far from the one being evaluated. Like the allowed mask, the
-        temperature used to act is stored per step and passed back here for
-        evaluation, so the scored distribution is the one that acted.
-        temperature may be a float or a (B,) tensor.
+        The margin is logit[best building type] - logit[none]: how much better
+        "put something here" is than "leave it empty", compared ACROSS cells.
+
+        It used to weight cells by 1 - P(none), which is not a distribution
+        over *where*. The per-cell softmax is over the 14 classes -- it answers
+        "if something is here, what is it" -- and P(none) is tiny almost
+        everywhere, so 1 - P(none) is ~1 on most of the map. Measured on a live
+        checkpoint: median 0.9988, 84% of legal cells above 0.99, and the
+        resulting draw had entropy 9.7014 against ln(n_legal) = 9.7031. That is
+        uniform to four decimals. **Every PPO run so far optimised a uniform
+        random placer**, which is why 58 updates moved nothing. The same
+        forward pass, decoded by margin, gives entropy 3.6-7.0 and top-64 mass
+        0.36-0.92: the information was always in the network, the decode threw
+        it away.
+
+        temperature divides the logits in the usual sense: >1 explores, <1
+        sharpens toward greedy. Note this reverses the old flag's meaning,
+        where <1 was the sharpening direction on a quantity that could not be
+        sharpened at all.
         """
-        probs = torch.softmax(building_logits.float(), dim=1)
-        occupied = 1.0 - probs[:, 0]
-        cand = occupied.masked_fill(existing_mask, 0.0).flatten(1)
-        if not (isinstance(temperature, (int, float)) and temperature == 1.0):
-            inv = (1.0 / torch.as_tensor(temperature, dtype=cand.dtype,
-                                          device=cand.device)).reshape(-1, 1)
-            cand = cand.clamp(min=1e-12).pow(inv)
+        margin = (building_logits[:, 1:].max(dim=1).values
+                  - building_logits[:, 0]).float().flatten(1)
+        blocked = existing_mask.flatten(1)
         if allowed is not None:
-            cand = cand * allowed.float()
-        # A row with no legal candidate would make a degenerate distribution.
-        # Fall back to the EMPTY cells, never to every cell: a uniform over
-        # covered cells puts placements on non-anchor footprint cells, which the
-        # reconciler reads as requests for further buildings -- the anchor
-        # hazard re-entering through the back door.
-        empty_rows = cand.sum(dim=1, keepdim=True) <= 0
-        free = (~existing_mask).flatten(1).float()
-        free = torch.where(free.sum(dim=1, keepdim=True) <= 0, torch.ones_like(free), free)
-        cand = torch.where(empty_rows, free, cand)
-        return torch.distributions.Categorical(probs=cand / cand.sum(dim=1, keepdim=True))
+            blocked = blocked | ~allowed
+        # If the budget blocks everything, fall back to the empty cells rather
+        # than to every cell: a draw on a covered non-anchor cell is a request
+        # for a further building, which is the anchor hazard.
+        all_blocked = blocked.all(dim=1, keepdim=True)
+        blocked = torch.where(all_blocked, existing_mask.flatten(1), blocked)
+        blocked = torch.where(blocked.all(dim=1, keepdim=True),
+                              torch.zeros_like(blocked), blocked)
+        t = torch.as_tensor(temperature, dtype=margin.dtype,
+                            device=margin.device).reshape(-1, 1)
+        logits = (margin / t.clamp(min=1e-6)).masked_fill(blocked, float("-inf"))
+        return torch.distributions.Categorical(logits=logits)
 
     def act_placements(self, x, existing_mask, k: int = 8, allowed=None,
                        decide_mix=None, out=None, temperature=1.0):

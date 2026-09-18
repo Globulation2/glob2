@@ -412,9 +412,15 @@ def main() -> int:
                                                             device=x.device).expand_as(anchor_type),
                                        torch.zeros_like(anchor_type)))
         flat = base.flatten(1)
+        # Mask disallowed draws in BOTH modes. Under --sample this used to be
+        # skipped, so when the count budget saturated -- which it does, because
+        # a uniform placer overbuilds until every type is at cap -- the
+        # all-blocked fallback's random cells were written to the field
+        # regardless, spamming 8 random buildings every policy step. The greedy
+        # path never did this, which is most of the greedy/sampled gap that was
+        # read as "sampling is structurally handicapped".
         want = bt.gather(1, idx).to(torch.uint8)
-        if not args.sample:
-            want = torch.where(allowed.gather(1, idx), want, flat.gather(1, idx))
+        want = torch.where(allowed.gather(1, idx), want, flat.gather(1, idx))
         flat.scatter_(1, idx, want)
         cls = flat.view_as(anchor_type)
 
