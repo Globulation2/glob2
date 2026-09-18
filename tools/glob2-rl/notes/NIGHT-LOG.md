@@ -1321,3 +1321,29 @@ each; checkpoints 30 MB. None worth touching.
 Restart done from a script file rather than an inline ssh command, so the
 kill patterns cannot match the command that launches the replacements -- the
 self-match trap that killed my own shell four times last night.
+
+## 21:25 check-in: the ladder flattered the trend; stale backlog fixed
+
+**Snapshot 75 on the paired manifest (sampled, the training policy):**
+
+```
+ratio_sampled  (iter 0)   14W  78L  4cap   score 16.7%
+ppo075_sampled (iter 75)  14W  77L  5cap   score 17.2%
+```
+
+No change. The rollout ladder's rise from 9% to ~25% over the same span was
+PFSP-weighted -- numbi was 406 of 725 games -- and on the manifest numbi went
+12W 12L both times. So the ladder win rate measures the curriculum's opponent
+mix as much as the policy, which is exactly what the reviewer warned about
+the old strong-only league, from the other side. Rule: the ladder is for
+matchmaking; only the paired manifest is a measure. The iter-160 archive is
+running as an arm now, since most of the ladder's rise came after iter 75.
+
+**Stale backlog.** The learner had not completed an iteration in 35 minutes:
+after the restart it loaded all 51 pending episodes (~100k samples) into one
+update -- all played by a policy many updates old. PPO is on-policy; that is
+drift, not data. The loader now keeps the newest `--max-episodes` (8) and
+deletes the rest. First effect: 43 stale episodes discarded, disk 82 -> 122 GB
+free, pending 12, driver resumed.
+
+Short-interval wakeups retired; the 3-hour cron carries the reviews from here.

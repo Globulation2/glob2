@@ -120,7 +120,7 @@ def gae(rewards: np.ndarray, values: np.ndarray, gamma: float, lam: float):
     return adv, adv + values
 
 
-def load_trajectories(run_dir: str) -> List[Trajectory]:
+def load_trajectories(run_dir: str, max_episodes: int = 8) -> List[Trajectory]:
     out = []
     for meta_path in sorted(glob.glob(os.path.join(run_dir, "*.json"))):
         try:
@@ -145,7 +145,23 @@ def load_trajectories(run_dir: str) -> List[Trajectory]:
                 opponent=str(meta.get("opponent", "?"))))
         except Exception:
             continue  # a partially written episode; skip rather than crash
-    return out
+    # Newest first, and only the newest few. PPO is on-policy: a backlog of
+    # episodes played by a policy many updates old is not training data, it
+    # is drift -- and one such backlog (51 episodes, ~100k samples) turned a
+    # single iteration into a 35+ minute grind on stale actions. Stale ones
+    # are deleted here so they are not reloaded next time.
+    out.sort(key=lambda t: os.path.getmtime(t.obs_path[:-8] + ".json"), reverse=True)
+    stale = out[max_episodes:]
+    for t in stale:
+        for suffix in (".json", ".npz", ".obs.npy"):
+            try:
+                os.unlink(t.obs_path[:-8] + suffix)
+            except OSError:
+                pass
+    if stale:
+        print(f"discarding {len(stale)} stale episodes beyond the newest {max_episodes}",
+              flush=True)
+    return out[:max_episodes]
 
 
 def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
@@ -253,6 +269,8 @@ def main() -> int:
     ap.add_argument("--vf-coef", type=float, default=0.5)
     ap.add_argument("--ent-coef", type=float, default=0.003)
     ap.add_argument("--shaping", type=float, default=0.1)
+    ap.add_argument("--max-episodes", type=int, default=8,
+                    help="episodes per update; older pending ones are discarded")
     ap.add_argument("--snapshot-every", type=int, default=25,
                     help="keep a copy of policy.pt every N iterations")
     ap.add_argument("--ppo-epochs", type=int, default=2)
@@ -278,7 +296,7 @@ def main() -> int:
     updates = 0
 
     for it in range(args.iterations):
-        trajs = load_trajectories(args.rollouts)
+        trajs = load_trajectories(args.rollouts, args.max_episodes)
         if len(trajs) < 4:
             time.sleep(10)
             continue
