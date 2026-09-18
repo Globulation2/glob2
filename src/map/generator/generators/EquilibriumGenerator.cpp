@@ -104,6 +104,12 @@ constexpr int kRoomWalk = 3;
 constexpr int kRoomCells = 8;
 // What one colony cut off from the rest costs: more than every other term together can pay for.
 constexpr double kSeveredCost = 20.0;
+// How far out a colony's approach is measured: the ring a rival arrives across. Equalising how much
+// open ground lies on it is the map's only statement about defensibility, which is otherwise the
+// largest thing neither of these maps looks at - a colony walled in by its own lakes is far cheaper
+// to hold than one in open country, however equal their crops.
+constexpr int kApproachWalk = 6;
+constexpr double kApproachWeight = 1.0;
 // How the shape pass weighs its targets against each other. Room outweighs tightness because a
 // colony with nowhere to build is unplayable whereas a route a little wider than asked is not.
 constexpr double kRoomWeight = 2.0;
@@ -113,7 +119,12 @@ constexpr double kPassWeight = 1.0;
 // so asking for about one shore cell per water cell asks for a handful of lobed lakes. This target
 // is not a matter of taste: without it the search discovers that a rash of puddles satisfies every
 // other target just as well as lakes do, and the map comes out as a grid of ponds.
-constexpr double kShoreWanted = 0.8;
+// The target is what the ground can actually reach, not what would be tidiest. Set to 0.8 it was
+// never met - at a tenth of the map under water the shoreline settles near 1.3 whatever the search
+// does - and an unreachable target is not a target but a constant: it contributed about seventy per
+// cent of the shape cost while never shrinking, which left the terms that could be improved with
+// almost no say in where the search went.
+constexpr double kShoreWanted = 1.25;
 constexpr double kShoreWeight = 1.5;
 // How many separate bodies that water should form, drawn per seed from this range, and how heavily
 // that weighs. A short shoreline alone still allows a hundred tidy little lakes spread evenly over
@@ -127,6 +138,15 @@ constexpr double kBodiesWeight = 1.2;
 constexpr double kBalanceWeight = 3.0;
 // How heavily the worst-served colony's own catchment weighs against the spread between them all.
 constexpr double kLevelWeight = 2.0;
+// How much of a crop cell's cardinal neighbourhood should be the same crop, and how heavily that
+// weighs. Without a word about it the search scatters the crops as finely as the fairness terms
+// allow, because a fine scatter is the easiest way to give everybody the same catchment - and the
+// country comes out as confetti with no field or wood anywhere a player could point at. Asking for
+// about half of each crop cell's neighbours to match gathers the same budget into belts with gaps
+// between them. Asking for all of it would build one wall per crop, which is why this is a target
+// and not something to maximise.
+constexpr double kFieldsWanted = 0.5;
+constexpr double kFieldsWeight = 2.0;
 // How far a tile's cell is looked up from, as a share of a cell, and how far a cell's centre is
 // jostled off the lattice. Both kept well under half a cell, so cardinal neighbours on the lattice
 // still touch on the ground and the arrangement the search settled on survives being painted.
@@ -206,7 +226,8 @@ struct Solved
 	// What the final state came out at, for telemetry: the residual of each target, and the pass
 	// width the shape pass settled on.
 	double reachSpread = 0, passWidth = 0, roomShort = 0, shoreRatio = 0;
-	double stockSpreadBefore = 0, stockSpreadAfter = 0;
+	Objective cost, stockCost;
+	double stockSpreadBefore = 0, stockSpreadAfter = 0, fields = 0;
 	int severed = 0, bodies = 0;
 	SolveReport shape, stock;
 };
@@ -251,8 +272,9 @@ struct Shape
 	std::vector<std::vector<int>> walk; // each colony's steps over land
 	std::vector<double> decay;          // e^(-steps / kCatchmentDecay), by step count
 	std::vector<int> queue;             // walkLand's scratch
-	double reachSpread = 0, passWidth = 0, roomShort = 0, shoreRatio = 0;
+	double reachSpread = 0, passWidth = 0, roomShort = 0, shoreRatio = 0, approachSpread = 0;
 	int severed = 0, bodies = 0;
+	Objective cost;
 };
 
 /// Walks every colony over the land and scores the arrangement: equal reachable land, a way between
@@ -264,7 +286,11 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 	for (int k = 0; k < teams; ++k)
 		walkLand(t, s.land, solved.home[k], s.walk[k], s.queue);
 
-	std::vector<double> reach(teams, 0.0), room(teams, 0.0);
+	// Equal reachable land, equal building room at home, and equal exposure. The last of those is
+	// how much open ground lies on the ring a rival arrives across: a colony whose approach is
+	// mostly water is far cheaper to hold than one standing in the open, and nothing else here
+	// measures that. It costs nothing extra to take, being another sum over the same walk field.
+	std::vector<double> reach(teams, 0.0), room(teams, 0.0), approach(teams, 0.0);
 	for (int k = 0; k < teams; ++k)
 		for (int i = 0; i < t.size(); ++i)
 		{
@@ -273,6 +299,8 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 			reach[k] += s.decay[s.walk[k][i]];
 			if (s.walk[k][i] <= kRoomWalk && solved.kind[i] == kOpen)
 				room[k] += 1;
+			if (s.walk[k][i] == kApproachWalk)
+				approach[k] += 1;
 		}
 
 	s.severed = 0;
@@ -320,16 +348,21 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 		s.bodies = std::max(s.bodies, part + 1);
 
 	s.reachSpread = imbalance(reach);
+	s.approachSpread = imbalance(approach);
 	s.roomShort = 0;
 	for (const double had : room)
 		s.roomShort += std::max(0.0, (roomWanted - had) / double(roomWanted));
 	s.roomShort /= double(teams);
 
-	return balance * s.reachSpread +
-		   kPassWeight * std::abs(s.passWidth - wantWidth) / std::max(1.0, wantWidth) +
-		   kShoreWeight * std::abs(s.shoreRatio - kShoreWanted) / kShoreWanted +
-		   kBodiesWeight * std::abs(s.bodies - bodiesWanted) / double(bodiesWanted) +
-		   kRoomWeight * s.roomShort + kSeveredCost * s.severed;
+	s.cost = Objective()
+				 .add("reach", balance, s.reachSpread)
+				 .add("approach", kApproachWeight, s.approachSpread)
+				 .add("pass", kPassWeight, std::abs(s.passWidth - wantWidth) / std::max(1.0, wantWidth))
+				 .add("shore", kShoreWeight, std::abs(s.shoreRatio - kShoreWanted) / kShoreWanted)
+				 .add("bodies", kBodiesWeight, std::abs(s.bodies - bodiesWanted) / double(bodiesWanted))
+				 .add("room", kRoomWeight, s.roomShort)
+				 .add("severed", kSeveredCost, s.severed);
+	return s.cost.total();
 }
 
 /// Anneals the water's arrangement, swapping a water cell with a land cell so the water the player
@@ -417,6 +450,7 @@ SolveReport annealShape(Solved &solved, GenerationContext &context, double balan
 	solved.shoreRatio = s.shoreRatio;
 	solved.severed = s.severed;
 	solved.bodies = s.bodies;
+	solved.cost = s.cost;
 	return run;
 }
 
@@ -451,9 +485,10 @@ double stockSpread(const Catchments &had, int teams)
 /// two together ask for what a fair map really is: everyone well served, and served alike. The
 /// level is divided by the number of cells of that crop, so it stays comparable between crops and
 /// across amount settings.
-double stockCost(const Catchments &had, int teams, const std::array<int, kStockKinds> &counts)
+Objective stockObjective(const Catchments &had, int teams,
+						 const std::array<int, kStockKinds> &counts, double clustering)
 {
-	double total = 0;
+	double spread = 0, level = 0;
 	std::vector<double> shares(teams);
 	for (int r = 0; r < kStockKinds; ++r)
 	{
@@ -463,9 +498,19 @@ double stockCost(const Catchments &had, int teams, const std::array<int, kStockK
 			shares[k] = had[k][r];
 			least = least < 0 ? shares[k] : std::min(least, shares[k]);
 		}
-		total += imbalance(shares) - kLevelWeight * std::max(0.0, least) / std::max(1, counts[r]);
+		spread += imbalance(shares);
+		level += std::max(0.0, least) / std::max(1, counts[r]);
 	}
-	return total / kStockKinds;
+	return Objective()
+		.add("spread", 1.0 / kStockKinds, spread)
+		.add("level", -kLevelWeight / kStockKinds, level)
+		.add("fields", kFieldsWeight, std::abs(clustering - kFieldsWanted) / kFieldsWanted);
+}
+
+double stockCost(const Catchments &had, int teams, const std::array<int, kStockKinds> &counts,
+				 double clustering)
+{
+	return stockObjective(had, teams, counts, clustering).total();
 }
 
 /// Anneals which land cells hold which crop, swapping the contents of two cells so the number of
@@ -475,7 +520,7 @@ double stockCost(const Catchments &had, int teams, const std::array<int, kStockK
 SolveReport annealStock(Solved &solved, GenerationContext &context,
 						const std::vector<std::vector<int>> &walk,
 						const std::vector<double> &decay, int moves, double &spreadBefore,
-						double &spreadAfter)
+						double &spreadAfter, double &stockShape, Objective &stockTerms)
 {
 	const int cells = solved.lat.size(), teams = int(solved.home.size());
 	const auto worth = [&](int team, int cell)
@@ -496,10 +541,35 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 	// what it was worth to each colony and takes on what b was worth, and b the other way round, so
 	// running it twice puts the lattice and the sums back exactly as they were. That is what lets
 	// the refusal path be the same call as the proposal.
+	// How much of the crops' neighbourhood is the same crop, kept as a running count so a swap stays
+	// a couple of dozen operations: only the two cells' own neighbourhoods can change, and a pair
+	// that happens to be adjacent is counted on both sides before and after, so the delta holds.
+	const Torus lattice = solved.lat.torus();
+	const auto matching = [&](int cell)
+	{
+		if (solved.kind[cell] < kWheat)
+			return 0;
+		int same = 0;
+		const int x = cell % lattice.w, y = cell / lattice.w;
+		for (const auto &step : kCardinalSteps)
+			same += solved.kind[lattice.at(x + step[0], y + step[1])] == solved.kind[cell];
+		return same;
+	};
+	int crops = 0, matched = 0;
+	for (int i = 0; i < cells; ++i)
+		if (solved.kind[i] >= kWheat)
+		{
+			++crops;
+			matched += matching(i);
+		}
+	const auto clustering = [&]
+	{ return crops > 0 ? double(matched) / (4.0 * crops) : kFieldsWanted; };
+
 	int a = -1, b = -1;
 	std::vector<unsigned char> best = solved.kind;
 	const auto swapStock = [&](int one, int other)
 	{
+		matched -= matching(one) + matching(other);
 		const unsigned char kindOne = solved.kind[one], kindOther = solved.kind[other];
 		for (int k = 0; k < teams; ++k)
 		{
@@ -510,6 +580,7 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 		}
 		solved.kind[one] = kindOther;
 		solved.kind[other] = kindOne;
+		matched += matching(one) + matching(other);
 	};
 	const SolveReport run = anneal(
 		Anneal{moves, kStockHeat[0], kStockHeat[1], "equilibrium-stock"}, context,
@@ -533,7 +604,7 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 			swapStock(a, b);
 			return true;
 		},
-		[&] { return stockCost(had, teams, counts); }, [&] { swapStock(a, b); },
+		[&] { return stockCost(had, teams, counts, clustering()); }, [&] { swapStock(a, b); },
 		[&] { best = solved.kind; }, [&] { solved.kind = best; });
 	// The catchments must match whatever arrangement the run ended on, best-kept or not.
 	for (int k = 0; k < teams; ++k)
@@ -543,7 +614,13 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 			if (solved.kind[i] >= kWheat)
 				had[k][solved.kind[i] - kWheat] += worth(k, i);
 	}
+	matched = 0;
+	for (int i = 0; i < cells; ++i)
+		if (solved.kind[i] >= kWheat)
+			matched += matching(i);
 	spreadAfter = stockSpread(had, teams);
+	stockShape = clustering();
+	stockTerms = stockObjective(had, teams, counts, clustering());
 	return run;
 }
 
@@ -753,7 +830,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const int stockMoves =
 		int(std::int64_t(kStockMoves[effort]) * std::clamp(o.balance, 0, 100) / 100);
 	solved.stock = annealStock(solved, context, walk, decay, stockMoves,
-							   solved.stockSpreadBefore, solved.stockSpreadAfter);
+							   solved.stockSpreadBefore, solved.stockSpreadAfter, solved.fields,
+							   solved.stockCost);
 
 	L.kind = solved.kind;
 	L.pinned = solved.pinned;
@@ -783,6 +861,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	context.telemetry.measure("equilibrium.lattice.cells", L.lat.size());
 	context.telemetry.measure("equilibrium.lattice.cell-tiles", L.lat.tiles);
 	reportSolve(context.telemetry, "equilibrium.shape", solved.shape);
+	reportObjective(context.telemetry, "equilibrium.shape", solved.cost);
 	context.telemetry.measure("equilibrium.shape.reach-spread", solved.reachSpread);
 	context.telemetry.measure("equilibrium.shape.pass-width-target", wantWidth);
 	context.telemetry.measure("equilibrium.shape.pass-width-cells", solved.passWidth);
@@ -791,8 +870,10 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	context.telemetry.measure("equilibrium.shape.bodies-target", bodiesWanted);
 	context.telemetry.measure("equilibrium.shape.bodies-actual", solved.bodies);
 	reportSolve(context.telemetry, "equilibrium.stock", solved.stock);
+	reportObjective(context.telemetry, "equilibrium.stock", solved.stockCost);
 	context.telemetry.measure("equilibrium.stock.spread-before", solved.stockSpreadBefore);
 	context.telemetry.measure("equilibrium.stock.spread-after", solved.stockSpreadAfter);
+	context.telemetry.measure("equilibrium.stock.field-clustering", solved.fields);
 	if (solved.severed > 0)
 		context.telemetry.fallback("equilibrium.shape.severed",
 								   "The search could not join every colony by land.");

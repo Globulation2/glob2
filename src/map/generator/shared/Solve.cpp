@@ -39,6 +39,22 @@ int spread(const std::vector<int> &shares)
 	return *most - *least;
 }
 
+void reportObjective(GenerationTelemetry &telemetry, const std::string &key,
+					 const Objective &objective)
+{
+	// The keys are built from the terms' names, so this is guarded: nothing is spent composing
+	// strings on the ordinary generation path where nobody is collecting.
+	if (!telemetry.enabled())
+		return;
+	for (int i = 0; i < objective.count; ++i)
+	{
+		const auto &term = objective.terms[i];
+		telemetry.measure(key + "." + term.name + ".residual", term.residual);
+		telemetry.measure(key + "." + term.name + ".weighted", term.weighted());
+	}
+	telemetry.measure(key + ".total", objective.total());
+}
+
 void reportSolve(GenerationTelemetry &telemetry, const std::string &key, const SolveReport &report)
 {
 	telemetry.measure(key + ".proposed", report.proposed);

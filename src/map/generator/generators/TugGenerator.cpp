@@ -114,7 +114,23 @@ constexpr int kPondReach = 30;
 // is the whole point of it.
 // How many times a colony's site is walked to the middle of its own ground before the homelands are
 // settled for good.
-constexpr int kRecentrePasses = 3;
+// Recentring is off: it walks a site to the middle of its own ground, which is the opposite of the
+// jostle above and would put the lattice straight back.
+constexpr int kRecentrePasses = 0;
+/// How far a colony is jostled off the spread that chose it, as a share of the shorter side.
+constexpr double kSiteJostle = 0.11;
+// How far a homeland border may bend to follow cheap ground, in growTerritories' units of a
+// thousand to the step: four steps' worth.
+constexpr int kBorderWander = 4000;
+/// How much of its fair share of the map a colony keeps as its own homeland, as a percentage. The
+/// rest of the country is commons: expansion ground, battlefield and the rope.
+constexpr int kHomelandShare = 45;
+/// The dry collar between a homeland and the commons. Thin on purpose: it is there to stop a farm
+/// creeping out into ground that should be taken rather than grown into, not to wall the map off.
+constexpr int kCollarWidth = 4;
+/// What the commons carries of its own, as a share of its ground: enough to be worth settling out
+/// into, well short of what a homeland grows.
+constexpr int kCommonsWheat = 9, kCommonsWood = 8;
 // The least ground a colony's homeland needs: a town, a lake, a farm and a door onto the march.
 constexpr int kLeastHomelandTiles = 2600;
 // How long a map may be before it needs a ring of colonies rather than a line of them.
@@ -233,13 +249,39 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		return L;
 	}
 	dealStarts(context, sites, "tug-homes-deal");
+	// Jostled off the spread that chose them, which is the whole reason this map stopped looking
+	// like a country and started looking like city blocks.
+	//
+	// farthestSites spreads colonies as far apart as it can, and on a torus the farthest-apart
+	// arrangement of four points is a regular 2x2 lattice. growTerritories then shares the ground
+	// out in equal areas, and the equal-area partition of a torus from a regular lattice of seeds is
+	// exactly a grid of straight lines - which separateTerritories widens into straight streets. No
+	// amount of wander in the border cost fixes that, because moving a border anywhere but locally
+	// would unbalance the areas the partition exists to keep equal: raising the wander sixty-fold
+	// moved about five hundred tiles of march and changed nothing anyone would notice. The premise
+	// to break is the regular lattice, not the straightness of the borders it implies.
+	const int jostle = std::max(4, int(std::min(t.w, t.h) * kSiteJostle));
+	for (int &site : sites)
+	{
+		const int dx = int(context.bounded("tug-homes", 2 * jostle + 1)) - jostle;
+		const int dy = int(context.bounded("tug-homes", 2 * jostle + 1)) - jostle;
+		const int moved = t.at(site % t.w + dx, site / t.w + dy);
+		if (mainlandMask[moved])
+			site = moved;
+	}
 
 	// Equal ground per colony, with borders that wander because the noise field makes some tiles
 	// cheaper to take than others. This is growTerritories doing exactly what it was written for.
 	// It shares out the whole torus, water included, so that the water rule below can move a lake
 	// off a homeland without the tile it vacates falling out of that homeland.
 	const std::vector<unsigned char> everywhere(t.size(), 1);
-	const auto wander = [&](int i) { return std::int64_t(relief[i]) * 999 / 65535; };
+	// growTerritories prices a tile at its steps from the seed times a thousand, plus this. So a
+	// wander that only spans 0..999 can never buy a border even one tile of detour - it breaks ties
+	// within a step and nothing more, and the borders come out as near-exact distance contours.
+	// With colonies on the near-regular lattice that farthestSites and recentreSites leave, that
+	// read as a grid of city blocks with right-angle crossroads in almost every seed. Spanning
+	// several steps' worth lets a border follow the lie of the land instead.
+	const auto wander = [&](int i) { return std::int64_t(relief[i]) * kBorderWander / 65535; };
 	const auto share = [&](const std::vector<int> &at)
 	{
 		std::vector<std::vector<int>> seeds;
@@ -263,9 +305,48 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		shared = share(sites);
 	}
 	L.ownerOf = shared.labels;
-	const std::vector<unsigned char> nothingKept(t.size(), 0);
-	smoothLabels(t, L.ownerOf, 2, nothingKept, 2, 0.6);
+	// Deliberately not smoothed. smoothLabels straightens a border by pulling every tile towards
+	// whatever its neighbourhood mostly is, which is exactly the meander the wander above buys, and
+	// running it here undid that: the marches came out as a grid of right-angle streets. A border
+	// grown by a race for the cheapest tile is a little ragged, and on this map that is the point -
+	// it is the difference between country and city blocks.
 	// The march: the ground between the homelands, opened by pushing every border back.
+
+	// A homeland is a core, not a share of everything.
+	//
+	// Sharing the whole map out between the colonies leaves a map with no neutral ground on it: every
+	// tile belongs to somebody, the only unowned strip is the border, and since that strip is what
+	// keeps the farms apart there is nowhere at all to expand into. A map wants commons - ground to
+	// settle out into, ground to fight over, ground that is nobody's until somebody takes it. So each
+	// colony keeps only the nearest kHomelandShare of its fair share and the rest goes back to
+	// nobody. Taking the nearest tiles by walk means the homelands come out the same size as each
+	// other whatever shape the territory around them was, which is the fairness that actually
+	// matters, and it leaves better than half the country neutral.
+	const std::int64_t homeland = std::int64_t(t.size()) * kHomelandShare / (100 * teams);
+	for (int k = 0; k < teams; ++k)
+	{
+		std::vector<unsigned char> own(t.size(), 0);
+		for (int i = 0; i < t.size(); ++i)
+			own[i] = L.ownerOf[i] == k;
+		const std::vector<int> walk = stepsFrom(t, tileMask(t, {sites[k]}), own);
+		std::vector<std::pair<int, int>> byWalk;
+		for (int i = 0; i < t.size(); ++i)
+			if (own[i] && walk[i] >= 0)
+				byWalk.push_back({walk[i], i});
+		std::sort(byWalk.begin(), byWalk.end());
+		for (size_t n = size_t(homeland); n < byWalk.size(); ++n)
+			L.ownerOf[byWalk[n].second] = -1;
+		// Ground the walk could not reach is not part of the homeland either.
+		for (int i = 0; i < t.size(); ++i)
+			if (own[i] && walk[i] < 0)
+				L.ownerOf[i] = -1;
+	}
+
+	// The minimum gap the march control asks for, applied once the cores are settled. Bounding the
+	// homelands already parts them on most maps; this is what still honours the control when the
+	// colonies are packed tightly enough that their cores would otherwise touch. It runs after the
+	// bounding, never before: on a crowded map it can strip a whole territory, seed and all, and a
+	// colony bounded out of an already-stripped territory ends up with no homeland at all.
 	separateTerritories(t, L.ownerOf, std::max(4, o.march));
 
 	// The water rule, and the reason this map does not simply take the lakes the noise gave it.
@@ -299,8 +380,12 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			if (!home[i])
 				continue;
 			const int x = i % t.w, y = i / t.w;
+			// The rim of the homeland, whatever lies beyond it. Asking specifically for a tile
+			// touching the commons fails a homeland whose whole edge happens to be shore, which
+			// bounding the homelands to a core made reachable: they are small enough now to sit
+			// wholly against their own lake.
 			for (const auto &step : kCardinalSteps)
-				if (L.march[t.at(x + step[0], y + step[1])])
+				if (L.ownerOf[t.at(x + step[0], y + step[1])] != k)
 				{
 					door.push_back(i);
 					break;
@@ -725,9 +810,18 @@ bool generate(Game &game, GenerationContext &context)
 				if (dx * dx + dy * dy <= kPrizeClearing * kPrizeClearing)
 					clearing[t.at(sx + dx, sy + dy)] = 1;
 	}
+	// Only a collar of it goes dry, not the whole commons. Sand carries no building and grows
+	// nothing, so sanding every unowned tile was the same as saying "there is nowhere to expand" -
+	// the map had a homeland each and a no-man's land nobody could ever use. A thin dry ring round
+	// each homeland does the job the sand was actually for: a farm cannot creep out of its own
+	// country. Past the collar the commons is living ground, to be settled if you can hold it.
+	std::vector<unsigned char> owned(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+		owned[i] = L.ownerOf[i] >= 0;
+	const std::vector<unsigned char> collar = dilateRound(t, owned, kCollarWidth);
 	int sanded = 0;
 	for (int i = 0; i < t.size(); ++i)
-		if (L.march[i] && !clearing[i] && dry[i] == GRASS)
+		if (L.march[i] && collar[i] && !clearing[i] && dry[i] == GRASS)
 		{
 			dry[i] = SAND;
 			++sanded;
@@ -767,6 +861,28 @@ bool generate(Game &game, GenerationContext &context)
 			placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), STONE,
 							   int(scaledCount(kQuarryRadius, o.stone)));
 	}
+
+	// What the commons carries: enough crop and wood to be worth settling out into, thinner than a
+	// homeland's so that leaving home is a decision and not an obvious upgrade. This is the
+	// expansion ground the map was missing.
+	std::vector<int> open2;
+	for (int i = 0; i < t.size(); ++i)
+		if (L.march[i] && !reserved[i] && clearGround(map, i % t.w, i / t.w) &&
+			map.isGrass(i % t.w, i / t.w))
+			open2.push_back(i);
+	context.telemetry.measure(
+		"tug.commons.wheat-tiles",
+		plantCoverShare(map, t, open2, WHEAT, int(scaledCount(kCommonsWheat, o.wheat)),
+						[&](int i) { return wheatGrain[i]; }));
+	open2.clear();
+	for (int i = 0; i < t.size(); ++i)
+		if (L.march[i] && !reserved[i] && clearGround(map, i % t.w, i / t.w) &&
+			map.isGrass(i % t.w, i / t.w))
+			open2.push_back(i);
+	context.telemetry.measure(
+		"tug.commons.wood-tiles",
+		plantCoverShare(map, t, open2, WOOD, int(scaledCount(kCommonsWood, o.wood)),
+						[&](int i) { return woodGrain[i]; }));
 
 	context.stage = "tug openings";
 	secureStartingCrops(game, context, t);

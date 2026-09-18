@@ -2,6 +2,7 @@
 #pragma once
 #include "GenerationContext.h"
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstdint>
 #include <string>
@@ -122,6 +123,48 @@ SolveReport anneal(const Anneal &schedule, GenerationContext &context, Propose p
 {
 	return anneal(schedule, context, propose, cost, undo, [] {}, [] {});
 }
+
+/// A cost built out of named terms rather than one number.
+///
+/// A solved map with one summed cost can say how badly it did and never which target it missed, so
+/// tuning it is guesswork: weights get nudged by feel, and a term that is never the binding one goes
+/// on being nudged anyway. Naming the terms costs nothing at run time and turns that into evidence -
+/// every map can report, per seed, what each of its targets came out at and what each contributed.
+///
+/// Storage is inline and fixed, so building one is free and the hot loop of a search can use the
+/// same code that reports to telemetry. There is no second expression of the weights to drift.
+struct Objective
+{
+	struct Term
+	{
+		const char *name = "";
+		double weight = 0, residual = 0;
+		double weighted() const { return weight * residual; }
+	};
+	static constexpr int kMaxTerms = 8;
+	std::array<Term, kMaxTerms> terms{};
+	int count = 0;
+
+	/// Adds a term. `residual` is how far the map is from that target, in whatever units make the
+	/// target readable; `weight` converts it into the cost's units.
+	Objective &add(const char *name, double weight, double residual)
+	{
+		if (count < kMaxTerms)
+			terms[count++] = {name, weight, residual};
+		return *this;
+	}
+	double total() const
+	{
+		double sum = 0;
+		for (int i = 0; i < count; ++i)
+			sum += terms[i].weighted();
+		return sum;
+	}
+};
+
+/// Records what each of an objective's targets came out at, under `key`: every term's residual and
+/// what it contributed to the total. This is the report that says which constraint is binding.
+void reportObjective(GenerationTelemetry &, const std::string &key, const Objective &);
 
 /// How unequally a quantity is shared out between claimants: the spread over the mean, so the
 /// figure does not depend on the quantity's units and weighs against other residuals. 0 for a
