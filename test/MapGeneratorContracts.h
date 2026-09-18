@@ -1149,15 +1149,6 @@ inline void equilibriumContracts()
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("water-share") == 10 && request.option("balance") == 70 &&
 		   request.option("passes") == 40 && request.option("effort") == 1);
-inline void tugContracts()
-{
-	const auto &definition =
-		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("tug"));
-	assert(definition.legacyId == 59 && definition.revision == 1);
-	D request;
-	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("prizes") == 6 && request.option("march") == 16 &&
-		   request.option("levelling") == 100 && request.option("lakes") == 10);
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -1178,13 +1169,6 @@ inline void tugContracts()
 			const auto result = service.generate(g, make(dimensions.first, dimensions.second, teams, 7));
 			if (!result)
 				std::fprintf(stderr, "Equilibrium contract (%d x %d, %d colonies): %s\n",
-	for (auto dimensions : {std::pair{8, 8}, std::pair{9, 9}, std::pair{8, 9}})
-		for (int teams : {2, 5, 8})
-		{
-			Game g(nullptr);
-			const auto result = service.generate(g, make(dimensions.first, dimensions.second, teams, 31001));
-			if (!result)
-				std::fprintf(stderr, "Tug contract (%d x %d, %d colonies): %s\n",
 							 1 << dimensions.first, 1 << dimensions.second, teams,
 							 result.diagnostic().c_str());
 			assert(result);
@@ -1252,6 +1236,38 @@ inline void tugContracts()
 	}
 	puts("PASS Equilibrium: envelope including thin maps and refusal, water budget ordering, "
 		 "balance buys a measurably smaller catchment spread, crop reach enforced");
+}
+
+inline void tugContracts()
+{
+	const auto &definition =
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("tug"));
+	assert(definition.legacyId == 59 && definition.revision == 1);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("prizes") == 6 && request.option("march") == 16 &&
+		   request.option("levelling") == 100 && request.option("lakes") == 10);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	for (auto dimensions : {std::pair{8, 8}, std::pair{9, 9}, std::pair{8, 9}})
+		for (int teams : {2, 5, 8})
+		{
+			Game g(nullptr);
+			const auto result = service.generate(g, make(dimensions.first, dimensions.second, teams, 31001));
+			if (!result)
+				std::fprintf(stderr, "Tug contract (%d x %d, %d colonies): %s\n",
+							 1 << dimensions.first, 1 << dimensions.second, teams,
+							 result.diagnostic().c_str());
+			assert(result);
+		}
 	// A long map needs a ring of colonies rather than a line of them, and gets one.
 	for (auto dimensions : {std::pair{7, 9}, std::pair{9, 7}})
 		for (int teams : {8, 12})
