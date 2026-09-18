@@ -39,6 +39,33 @@ int spread(const std::vector<int> &shares)
 	return *most - *least;
 }
 
+Emphases::Emphases(GenerationContext &context, const char *stream,
+				   std::vector<const char *> optional, int least, int most)
+{
+	const int fewest = std::clamp(least, 0, int(optional.size()));
+	const int many = std::clamp(most, fewest, int(optional.size()));
+	const int wanted =
+		fewest + int(context.bounded(stream, std::uint32_t(std::max(1, many - fewest + 1))));
+	context.shuffle(optional.begin(), optional.end(), stream);
+	for (int i = 0; i < wanted && i < int(optional.size()); ++i)
+		chosen.push_back(optional[i]);
+}
+
+bool Emphases::on(const char *name) const
+{
+	for (const char *have : chosen)
+		if (std::string(have) == name)
+			return true;
+	return false;
+}
+
+void Emphases::report(GenerationTelemetry &telemetry, const std::string &key) const
+{
+	telemetry.measure(key + ".count", int(chosen.size()));
+	for (const char *name : chosen)
+		telemetry.choice(key, name);
+}
+
 double drawnTarget(GenerationContext &context, const char *stream, double least, double most)
 {
 	constexpr std::uint32_t kSteps = 1000;

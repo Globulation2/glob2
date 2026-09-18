@@ -280,7 +280,8 @@ struct Shape
 /// Walks every colony over the land and scores the arrangement: equal reachable land, a way between
 /// neighbours about as wide as asked, clear ground near every home, and nobody cut off.
 double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance, double wantWidth,
-				  int roomWanted, int bodiesWanted, double shoreWanted)
+				  int roomWanted, int bodiesWanted, double shoreWanted,
+				  const Emphases &wants)
 {
 	const int teams = int(solved.home.size());
 	for (int k = 0; k < teams; ++k)
@@ -357,9 +358,11 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 	s.cost = Objective()
 				 .add("reach", balance, s.reachSpread)
 				 .add("approach", kApproachWeight, s.approachSpread)
-				 .add("pass", kPassWeight, std::abs(s.passWidth - wantWidth) / std::max(1.0, wantWidth))
+				 .add("pass", wants.weight("pass", kPassWeight),
+					  std::abs(s.passWidth - wantWidth) / std::max(1.0, wantWidth))
 				 .add("shore", kShoreWeight, std::abs(s.shoreRatio - shoreWanted) / shoreWanted)
-				 .add("bodies", kBodiesWeight, std::abs(s.bodies - bodiesWanted) / double(bodiesWanted))
+				 .add("bodies", wants.weight("bodies", kBodiesWeight),
+					  std::abs(s.bodies - bodiesWanted) / double(bodiesWanted))
 				 .add("room", kRoomWeight, s.roomShort)
 				 .add("severed", kSeveredCost, s.severed);
 	return s.cost.total();
@@ -368,7 +371,8 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 /// Anneals the water's arrangement, swapping a water cell with a land cell so the water the player
 /// asked for stays exactly what it is. Returns the moves taken.
 SolveReport annealShape(Solved &solved, GenerationContext &context, double balance,
-						double wantWidth, int bodiesWanted, double shoreWanted, int moves)
+						double wantWidth, int bodiesWanted, double shoreWanted,
+						const Emphases &wants, int moves)
 {
 	const Torus t = solved.lat.torus();
 	const int cells = solved.lat.size(), teams = int(solved.home.size());
@@ -431,7 +435,7 @@ SolveReport annealShape(Solved &solved, GenerationContext &context, double balan
 			return true;
 		},
 		[&] {
-			return scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted, shoreWanted);
+			return scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted, shoreWanted, wants);
 		},
 		[&]
 		{
@@ -445,7 +449,7 @@ SolveReport annealShape(Solved &solved, GenerationContext &context, double balan
 		s.land[i] = solved.kind[i] != kWater;
 	// The walks the stock pass inherits must match the shape it inherits, so measure the state the
 	// search actually ended on rather than trusting the last move's scratch.
-	scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted, shoreWanted);
+	scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted, shoreWanted, wants);
 	solved.reachSpread = s.reachSpread;
 	solved.passWidth = s.passWidth;
 	solved.roomShort = s.roomShort;
@@ -489,7 +493,7 @@ double stockSpread(const Catchments &had, int teams)
 /// across amount settings.
 Objective stockObjective(const Catchments &had, int teams,
 						 const std::array<int, kStockKinds> &counts, double clustering,
-						 double fieldsWanted)
+						 double fieldsWanted, double fieldsWeight)
 {
 	double spread = 0, level = 0;
 	std::vector<double> shares(teams);
@@ -507,13 +511,13 @@ Objective stockObjective(const Catchments &had, int teams,
 	return Objective()
 		.add("spread", 1.0 / kStockKinds, spread)
 		.add("level", -kLevelWeight / kStockKinds, level)
-		.add("fields", kFieldsWeight, std::abs(clustering - fieldsWanted) / fieldsWanted);
+		.add("fields", fieldsWeight, std::abs(clustering - fieldsWanted) / fieldsWanted);
 }
 
 double stockCost(const Catchments &had, int teams, const std::array<int, kStockKinds> &counts,
-				 double clustering, double fieldsWanted)
+				 double clustering, double fieldsWanted, double fieldsWeight)
 {
-	return stockObjective(had, teams, counts, clustering, fieldsWanted).total();
+	return stockObjective(had, teams, counts, clustering, fieldsWanted, fieldsWeight).total();
 }
 
 /// Anneals which land cells hold which crop, swapping the contents of two cells so the number of
@@ -524,7 +528,7 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 						const std::vector<std::vector<int>> &walk,
 						const std::vector<double> &decay, int moves, double &spreadBefore,
 						double &spreadAfter, double &stockShape, Objective &stockTerms,
-						double fieldsWanted)
+						double fieldsWanted, double fieldsWeight)
 {
 	const int cells = solved.lat.size(), teams = int(solved.home.size());
 	const auto worth = [&](int team, int cell)
@@ -608,7 +612,7 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 			swapStock(a, b);
 			return true;
 		},
-		[&] { return stockCost(had, teams, counts, clustering(), fieldsWanted); },
+		[&] { return stockCost(had, teams, counts, clustering(), fieldsWanted, fieldsWeight); },
 		[&] { swapStock(a, b); },
 		[&] { best = solved.kind; }, [&] { solved.kind = best; });
 	// The catchments must match whatever arrangement the run ended on, best-kept or not.
@@ -625,7 +629,7 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 			matched += matching(i);
 	spreadAfter = stockSpread(had, teams);
 	stockShape = clustering();
-	stockTerms = stockObjective(had, teams, counts, clustering(), fieldsWanted);
+	stockTerms = stockObjective(had, teams, counts, clustering(), fieldsWanted, fieldsWeight);
 	return run;
 }
 
@@ -813,10 +817,19 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const double fieldsWanted = drawnTarget(context, "equilibrium-brief", kFieldsLeast, kFieldsMost);
 	context.telemetry.measure("equilibrium.brief.shore-wanted", shoreWanted);
 	context.telemetry.measure("equilibrium.brief.fields-wanted", fieldsWanted);
+	// Which of the optional targets this seed solves to. Equal catchments, building room and a
+	// joined-up country are not in here: they are what makes the result a map rather than what gives
+	// it a character, and a seed that dropped one would be broken, not varied.
+	// Approach parity is not in here, though it was at first: it says every colony is as exposed to
+	// attack as every other, which is a fairness property wearing a character property's clothes.
+	// Putting it up for the draw cost real balance on the seeds that dropped it, and by the rule
+	// above it never belonged there.
+	const Emphases wants(context, "equilibrium-brief", {"bodies", "pass", "fields"}, 2, 3);
+	wants.report(context.telemetry, "equilibrium.brief.wants");
 	const int bodiesWanted =
 		kBodiesLeast +
 		int(context.bounded("equilibrium-shape", kBodiesMost - kBodiesLeast + 1));
-	solved.shape = annealShape(solved, context, balance, wantWidth, bodiesWanted, shoreWanted,
+	solved.shape = annealShape(solved, context, balance, wantWidth, bodiesWanted, shoreWanted, wants,
 							   kShapeMoves[effort]);
 
 	// The stock pass inherits the shape pass's walks: the land is settled now, so every colony's
@@ -843,7 +856,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		int(std::int64_t(kStockMoves[effort]) * std::clamp(o.balance, 0, 100) / 100);
 	solved.stock = annealStock(solved, context, walk, decay, stockMoves,
 							   solved.stockSpreadBefore, solved.stockSpreadAfter, solved.fields,
-							   solved.stockCost, fieldsWanted);
+							   solved.stockCost, fieldsWanted,
+							   wants.weight("fields", kFieldsWeight));
 
 	L.kind = solved.kind;
 	L.pinned = solved.pinned;

@@ -176,6 +176,39 @@ struct Objective
 /// for before wondering whether the search failed.
 double drawnTarget(GenerationContext &, const char *stream, double least, double most);
 
+/// Which of a map's optional targets this seed is solving to.
+///
+/// Drawing a target's value widens a map's character; dropping a target altogether widens it much
+/// further. A term that is off is not a weak preference but permission - the search is free to do
+/// whatever else it likes in that dimension, and what comes out is a different kind of map rather
+/// than the same map loosened. One seed cares where the water pinches the routes and the next does
+/// not care at all, and the two do not look related.
+///
+/// Only ever put the optional ones in here. A map's invariants - that every colony is joined to the
+/// rest, has ground to build on and a crop it can reach - are not character, and a seed that turned
+/// one of them off would not be a varied map but a broken one. The distinction is the whole reason
+/// this is a named set rather than a coin flipped over every term.
+///
+/// `least` and `most` bound how many are drawn, so a seed can neither be handed nothing to solve
+/// nor be asked for everything at once, which is the arrangement that makes every seed alike.
+class Emphases
+{
+  public:
+	Emphases(GenerationContext &, const char *stream, std::vector<const char *> optional, int least,
+			 int most);
+	/// Whether this seed solves to that target. An unknown name is not emphasised.
+	bool on(const char *name) const;
+	/// The weight to give a term: its full weight when emphasised this seed, nothing when not.
+	double weight(const char *name, double full) const { return on(name) ? full : 0.0; }
+	const std::vector<const char *> &active() const { return chosen; }
+	/// Records which targets this seed was given, so an unusual map can be read as the brief it was
+	/// solving rather than mistaken for a search that went wrong.
+	void report(GenerationTelemetry &, const std::string &key) const;
+
+  private:
+	std::vector<const char *> chosen;
+};
+
 /// Records what each of an objective's targets came out at, under `key`: every term's residual and
 /// what it contributed to the total. This is the report that says which constraint is binding.
 void reportObjective(GenerationTelemetry &, const std::string &key, const Objective &);
