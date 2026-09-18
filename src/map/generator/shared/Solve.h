@@ -19,8 +19,8 @@ namespace MapGeneration
 //   * the decisions are few, or at least cheap to re-score.
 //
 // When a property can be built instead, build it: equal ground per colony is growTerritories, an
-// equal lake apiece is growLakeBeside, and a search would be a worse way to get either. The two maps
-// this was extracted from measured the difference. Equilibrium points a search at the terrain itself
+// equal lake apiece is growLakeBeside, and a search would be a worse way to get either. The two
+// maps this came from measured the difference. Equilibrium points a search at the terrain itself
 // and lands a little behind the hand-designed landscapes it competes with, because a search over
 // terrain mostly rediscovers noise. Tug draws its country with the ordinary toolkit and points a
 // search at one decision - which sites in its no-man's land carry the prizes - and without that
@@ -43,7 +43,8 @@ struct Anneal
 	const char *stream = "solve";
 	double heat(int move) const
 	{
-		return moves < 2 ? to : from * std::pow(to / from, double(move) / double(std::max(1, moves - 1)));
+		return moves < 2 ? to
+						 : from * std::pow(to / from, double(move) / double(std::max(1, moves - 1)));
 	}
 };
 
@@ -66,10 +67,10 @@ bool accept(double rise, double heat, GenerationContext &, const char *stream);
 
 /// Anneals an arrangement in place.
 ///
-/// `propose()` makes one candidate change and returns whether it made one - false is not a failure,
-/// it is how a rejection-sampled draw says it found nothing this time, and costs the run only that
-/// proposal. `cost()` scores the arrangement as it currently stands. `undo()` puts back exactly what
-/// the last `propose()` changed, and is called only when the proposal is refused.
+/// `propose()` makes one candidate change and returns whether it made one - false is not a
+/// failure, it is how a rejection-sampled draw says it found nothing this time, and costs the run
+/// only that proposal. `cost()` scores the arrangement as it currently stands. `undo()` puts back
+/// exactly what the last `propose()` changed, and is called only when the proposal is refused.
 ///
 /// `remember()` is called whenever the arrangement betters everything seen so far, and `recall()`
 /// once at the end if the walk finished somewhere worse than its best. A search ends wherever its
@@ -122,8 +123,8 @@ SolveReport anneal(const Anneal &schedule, GenerationContext &context, Propose p
 	return anneal(schedule, context, propose, cost, undo, [] {}, [] {});
 }
 
-/// How unequally a quantity is shared out between claimants: the spread over the mean, so the figure
-/// does not depend on the quantity's units and can be weighed against other residuals. 0 for a
+/// How unequally a quantity is shared out between claimants: the spread over the mean, so the
+/// figure does not depend on the quantity's units and weighs against other residuals. 0 for a
 /// single claimant. A claimant with nothing at all is not merely behind - it has no economy of that
 /// thing - so that costs a whole extra point rather than being hidden by a healthy mean.
 double imbalance(const std::vector<double> &shares);
