@@ -1570,3 +1570,54 @@ degraded one.
 
 server/learner/driver alive, 2 pending after the clear, GPU0 65% / 83 C,
 GPU1 26% / 74 C, disk 129 GB free.
+
+---
+
+# 11:25 scheduled review -- the entropy fix is holding
+
+## Mix shares, post-rollback run (449 episodes)
+
+```
+             allw  light  teach  heavy  expl
+eps    0     .21    .17    .20    .16    .27
+eps  300     .20    .21    .16    .17    .26
+before fix   .13    .15    .15    .06    .52
+```
+
+No collapse. explorer sits at .26-.27 against .52 before, heavy-military at
+.16-.17 against .06. `ent_mix` now appears in the iteration stats (0.52 on a
+minibatch with decide steps, 0.0 on one without) so this is observable
+directly rather than inferred from episode shares three hours later.
+
+## Per opponent (too early to call)
+
+```
+             numbi        warrush
+eps    0   47/142 (33%)  18/110 (16%)
+eps  300   25/ 75 (33%)   8/ 63 (13%)
+```
+
+**numbi flat at 33%, warrush 16% -> 13% on 63 games.** Two buckets, 449
+episodes -- not enough to call anything. Worth noting the rollback point
+(run2_049) was itself around 31-33% on numbi, so the policy has not lost
+ground by being rolled back.
+
+`run3_058_sampled` is running on the manifest; that is the number that
+decides whether the entropy fix improves on the 30.7% it restarted from.
+
+## A cost of --mix-hold worth recording
+
+Decide steps are exactly 10.0% of steps (measured across 6 episodes), because
+`--mix-hold 10`. The mix log-prob and its entropy bonus only enter on those
+steps, so the mix head sees gradient from a tenth of the data. That is the
+intended trade -- holding the mix stopped swarms thrashing between ratios --
+but it means the mix head learns ~10x slower than the placement head, and the
+collapse it suffered before was therefore driven by a small number of
+high-leverage samples. If the mix stays uninformative after another few
+hundred updates, shortening the hold (or crediting the held steps with the
+same choice) is the lever, not a bigger entropy bonus.
+
+## Health
+
+server/learner/driver alive, 11 pending, GPU0 67% / 83 C, GPU1 28% / 76 C,
+disk 128 GB free, learner at iter 66 since the rollback.
