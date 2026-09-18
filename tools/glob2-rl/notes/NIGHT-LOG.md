@@ -1347,3 +1347,55 @@ deletes the rest. First effect: 43 stale episodes discarded, disk 82 -> 122 GB
 free, pending 12, driver resumed.
 
 Short-interval wakeups retired; the 3-hour cron carries the reviews from here.
+
+---
+
+# 23:25 scheduled review
+
+## Paired manifest, sampled (the policy PPO trains), 96 games each
+
+```
+                     W    L   cap   score
+iter 0   (start)    14   78    4    16.7%
+iter 75             14   77    5    17.2%
+iter 160            19   64   13    26.6%
+bar: inert          23   48   25    37.0%
+bar: greedy iter 0  24   29   43    47.4%
+```
+
+First paired evidence that PPO improves the policy it trains: +5 wins, -14
+losses, +9 caps between iter 75 and 160. On 96 games the win difference alone
+is not significant (19 vs 14); the loss difference is about 2 sigma. Direction
+matches the ladder, and unlike the ladder it is not confounded by opponent
+mix. Suggestive, not settled; the next snapshot arm decides. Still below the
+do-nothing bar. The greedy decode of iter 160 -- the deployment-relevant
+number, comparable to 47.4% -- is running now.
+
+## episodes.csv by 200-episode bucket (all of the fixed-loop run)
+
+```
+eps    0- 199   win 11.5%  loss 88.0%  cap  0.5%   allw .22 light .16 teach .18 heavy .21 expl .23
+eps  200- 399   win 15.0%  loss 77.5%  cap  7.5%   allw .25 light .13 teach .17 heavy .23 expl .22
+eps  400- 599   win 23.5%  loss 65.5%  cap 11.0%   allw .18 light .10 teach .27 heavy .17 expl .28
+eps  600- 799   win 13.6%  loss 69.4%  cap 17.0%   allw .19 light .09 teach .25 heavy .15 expl .31  (n=147)
+```
+
+**Trend: rose through bucket 3, then flat-to-noisy.** The last bucket's win
+drop (23.5 -> 13.6) coincides with the 40000-tick cap landing (caps 11 -> 17%):
+games that used to be won late now cap, so wins and caps are not comparable
+across that boundary. Losses are the cleaner series: 88 -> 77 -> 65 -> 69.
+Not degrading. Not clearly improving either since bucket 3.
+
+Mix shares are moving: light-military falling (.16 -> .09), teacher and
+explorer presets rising (.18 -> .25, .23 -> .31). PPO has a preference forming
+and it is not all-worker. Whether it is right is what the paired arms measure.
+
+## Health
+
+Server, learner, driver alive; 11 pending, all in the new compressed format;
+GPU0 68% / 83 C, GPU1 24% / 77 C; disk 129 GB free (was 80 before the stale
+backlog was dropped). Learner is at update 9 since its restart, so no new
+snapshot yet (next at 25 updates). Live policy archived.
+
+No change to the loop: temperature stays at 1.0 while the sampled policy is
+measurably improving under it.
