@@ -1140,8 +1140,107 @@ inline void bajadaContracts()
 		 "towns under growth, crops refused in towns");
 }
 
+inline void equilibriumContracts()
+{
+	const auto &definition =
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("equilibrium"));
+	assert(definition.legacyId == 58 && definition.revision == 1);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("water-share") == 10 && request.option("balance") == 70 &&
+		   request.option("passes") == 40 && request.option("effort") == 1);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	// The shapes the search supports, including the long thin ones: the lattice sizes its cells off
+	// the short side as well as the long one so that a 64 by 512 map is still searched in two
+	// dimensions rather than refused.
+	for (auto dimensions : {std::pair{7, 7}, std::pair{8, 8}, std::pair{6, 9}, std::pair{9, 6}})
+		for (int teams : {1, 2, 5, 8})
+		{
+			Game g(nullptr);
+			const auto result = service.generate(g, make(dimensions.first, dimensions.second, teams, 7));
+			if (!result)
+				std::fprintf(stderr, "Equilibrium contract (%d x %d, %d colonies): %s\n",
+							 1 << dimensions.first, 1 << dimensions.second, teams,
+							 result.diagnostic().c_str());
+			assert(result);
+		}
+	{
+		// A 64-tile map has too few cells to balance eight colonies over, and says so up front.
+		Game g(nullptr);
+		assert(service.generate(g, make(6, 6, 8, 7)).error == GenerationError::InvalidRequest);
+		assert(g.teamsCount() == 0);
+	}
+	// The water is a budget the search arranges rather than invents: more of it asked for is more of
+	// it on the finished map, every time. The painted share is below the requested one because the
+	// beaches take a tile from each bank, so this is an ordering, not an identity.
+	int previous = -1;
+	for (int share : {0, 10, 30, 60})
+	{
+		D r = make(8, 8, 4, 23);
+		r.options["water-share"] = share;
+		Game g(nullptr);
+		assert(service.generate(g, r));
+		int water = 0;
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+				water += g.map.isWater(x, y);
+		assert(water > previous);
+		previous = water;
+	}
+	// Balance is how much search the stock pass gets, so it has to show in what that pass achieved:
+	// at zero the crops sit where they were dealt, and at full the spread between the colonies'
+	// catchments is a fraction of that.
+	const auto spreadAt = [&](int balance)
+	{
+		D r = make(8, 8, 4, 23);
+		r.options["balance"] = balance;
+		Game g(nullptr);
+		const auto result = service.generate(g, r, true);
+		assert(result);
+		double before = -1, after = -1;
+		for (const auto &record : result.telemetry.records())
+		{
+			if (record.key == "equilibrium.stock.spread-before")
+				before = std::get<double>(record.value);
+			if (record.key == "equilibrium.stock.spread-after")
+				after = std::get<double>(record.value);
+		}
+		assert(before >= 0 && after >= 0);
+		return std::pair{before, after};
+	};
+	const auto unsolved = spreadAt(0), solved = spreadAt(100);
+	assert(unsolved.second == unsolved.first); // no moves: nothing moved
+	assert(solved.second < solved.first / 4);  // searched: the spread is a fraction of what it was
+	{
+		// The map promises every colony a crop within reach, and refuses a world where that has been
+		// taken away.
+		D r = make(8, 8, 4, 23);
+		Game g(nullptr);
+		assert(service.generate(g, r));
+		GenerationContext check(r);
+		assert(definition.validateWorld(g, check).empty());
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+				if (g.map.isResource(x, y) && g.map.getResource(x, y).type == WHEAT)
+					g.map.getResource(x, y).clear();
+		assert(!definition.validateWorld(g, check).empty());
+	}
+	puts("PASS Equilibrium: envelope including thin maps and refusal, water budget ordering, "
+		 "balance buys a measurably smaller catchment spread, crop reach enforced");
+}
+
 inline void generatorContracts()
 {
+	equilibriumContracts();
 	rebuiltLandscapeContracts();
 	savannahContracts();
 	locustFoodChecks();

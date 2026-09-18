@@ -2814,3 +2814,21 @@ Oásis oculto comporta no máximo oito colônias.
 O maciço não cabe neste mapa; use um mapa maior ou menos colônias.
 [The pond has no room for that much algae; use a bigger pond.]
 A lagoa não tem espaço para tantas algas; use uma lagoa maior.
+[Equilibrium]
+Equilibrium
+[Balance]
+Balance
+[Tight passes]
+Tight passes
+[Solver effort]
+Solver effort
+[Brief]
+Brief
+[Patient]
+Patient
+[This map is too small to solve on; use a bigger map.]
+This map is too small to solve on; use a bigger map.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Too many colonies to balance on a map this size; use a bigger map or fewer colonies.
+[The colonies could not be spread out on this map.]
+The colonies could not be spread out on this map.

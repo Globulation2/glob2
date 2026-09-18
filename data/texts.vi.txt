@@ -2814,3 +2814,21 @@ Suối nguồn
 Khối núi đá không vừa bản đồ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
 [The pond has no room for that much algae; use a bigger pond.]
 Ao không đủ chỗ cho từng ấy tảo; hãy dùng ao lớn hơn.
+[Equilibrium]
+Equilibrium
+[Balance]
+Balance
+[Tight passes]
+Tight passes
+[Solver effort]
+Solver effort
+[Brief]
+Brief
+[Patient]
+Patient
+[This map is too small to solve on; use a bigger map.]
+This map is too small to solve on; use a bigger map.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Too many colonies to balance on a map this size; use a bigger map or fewer colonies.
+[The colonies could not be spread out on this map.]
+The colonies could not be spread out on this map.

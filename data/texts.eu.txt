@@ -2828,3 +2828,21 @@ Ezkutuko oasiak gehienez zortzi kolonia hartzen ditu.
 Mendigunea ez da mapa honetan sartzen; erabili mapa handiagoa edo kolonia gutxiago.
 [The pond has no room for that much algae; use a bigger pond.]
 Urmaelak ez du hainbeste algarentzako lekurik; erabili urmael handiagoa.
+[Equilibrium]
+Equilibrium
+[Balance]
+Balance
+[Tight passes]
+Tight passes
+[Solver effort]
+Solver effort
+[Brief]
+Brief
+[Patient]
+Patient
+[This map is too small to solve on; use a bigger map.]
+This map is too small to solve on; use a bigger map.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Too many colonies to balance on a map this size; use a bigger map or fewer colonies.
+[The colonies could not be spread out on this map.]
+The colonies could not be spread out on this map.

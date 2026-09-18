@@ -2842,3 +2842,21 @@ Verborgen oase biedt plaats aan hoogstens acht kolonies.
 Het massief past niet op deze kaart; gebruik een grotere kaart of minder kolonies.
 [The pond has no room for that much algae; use a bigger pond.]
 De vijver heeft geen plaats voor zoveel zeewier; gebruik een grotere vijver.
+[Equilibrium]
+Equilibrium
+[Balance]
+Balance
+[Tight passes]
+Tight passes
+[Solver effort]
+Solver effort
+[Brief]
+Brief
+[Patient]
+Patient
+[This map is too small to solve on; use a bigger map.]
+This map is too small to solve on; use a bigger map.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Too many colonies to balance on a map this size; use a bigger map or fewer colonies.
+[The colonies could not be spread out on this map.]
+The colonies could not be spread out on this map.
