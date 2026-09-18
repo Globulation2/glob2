@@ -2842,3 +2842,25 @@ This map is too small to solve on; use a bigger map.
 Too many colonies to balance on a map this size; use a bigger map or fewer colonies.
 [The colonies could not be spread out on this map.]
 The colonies could not be spread out on this map.
+[Tug]
+Tug
+[Prizes on the rope]
+Prizes on the rope
+[March width]
+March width
+[Levelling]
+Levelling
+[A tug needs two sides; use at least two colonies.]
+A tug needs two sides; use at least two colonies.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+This map has no room to spread the colonies out; use a bigger map or fewer colonies.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+A colony's homeland has no way out onto the march; use a bigger map or a narrower march.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+The march has no room for a prize; use a bigger map, fewer colonies or a wider march.

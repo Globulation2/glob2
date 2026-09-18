@@ -177,6 +177,7 @@ restores whatever landscape it had.
 | `drumlin-field` | 43 | Drumlin field | Its own — see below |
 | `continents` | 44 | Continents | Its own — see below |
 | `equilibrium` | 58 | Equilibrium | [Terrain solved against desired-state targets rather than drawn](EQUILIBRIUM.md) |
+| `tug` | 59 | Tug | [Drawn homelands, a dry march, and a solved rope of prizes](TUG.md) |
 | `uniform` | 0 | uniform terrain | Editor-only; one terrain type, unstructured |
 
 Retired ids, never reused: 25 (Marches, a lattice of homelands with wooded border bands, dropped

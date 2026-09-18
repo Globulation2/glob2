@@ -56,6 +56,7 @@
 #include "CentralQuarryGenerator.h"
 #include "HiddenOasisGenerator.h"
 #include "EquilibriumGenerator.h"
+#include "TugGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -171,7 +172,9 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 lavaShieldDefinition(),
 											 honeycombIsleDefinition(),
 											 karstTowersDefinition(), bajadaDefinition(),
-											 centralQuarryDefinition(), hiddenOasisDefinition(), equilibriumDefinition(), ruggedArchipelagoDefinition(),
+											 centralQuarryDefinition(), hiddenOasisDefinition(),
+											 equilibriumDefinition(), tugDefinition(),
+											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
 											 evergladesDefinition(),

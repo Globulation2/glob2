@@ -1149,6 +1149,15 @@ inline void equilibriumContracts()
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("water-share") == 10 && request.option("balance") == 70 &&
 		   request.option("passes") == 40 && request.option("effort") == 1);
+inline void tugContracts()
+{
+	const auto &definition =
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("tug"));
+	assert(definition.legacyId == 59 && definition.revision == 1);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("prizes") == 6 && request.option("march") == 16 &&
+		   request.option("levelling") == 100 && request.option("lakes") == 10);
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -1169,6 +1178,13 @@ inline void equilibriumContracts()
 			const auto result = service.generate(g, make(dimensions.first, dimensions.second, teams, 7));
 			if (!result)
 				std::fprintf(stderr, "Equilibrium contract (%d x %d, %d colonies): %s\n",
+	for (auto dimensions : {std::pair{8, 8}, std::pair{9, 9}, std::pair{8, 9}})
+		for (int teams : {2, 5, 8})
+		{
+			Game g(nullptr);
+			const auto result = service.generate(g, make(dimensions.first, dimensions.second, teams, 31001));
+			if (!result)
+				std::fprintf(stderr, "Tug contract (%d x %d, %d colonies): %s\n",
 							 1 << dimensions.first, 1 << dimensions.second, teams,
 							 result.diagnostic().c_str());
 			assert(result);
@@ -1236,11 +1252,86 @@ inline void equilibriumContracts()
 	}
 	puts("PASS Equilibrium: envelope including thin maps and refusal, water budget ordering, "
 		 "balance buys a measurably smaller catchment spread, crop reach enforced");
+	// A long map needs a ring of colonies rather than a line of them, and gets one.
+	for (auto dimensions : {std::pair{7, 9}, std::pair{9, 7}})
+		for (int teams : {8, 12})
+		{
+			Game g(nullptr);
+			assert(service.generate(g, make(dimensions.first, dimensions.second, teams, 31001)));
+		}
+	{
+		// A rope needs two ends, a homeland needs room, and a long map needs enough colonies to
+		// ring it: all three are refused up front rather than failing seed after seed.
+		Game solo(nullptr);
+		assert(service.generate(solo, make(8, 8, 1, 7)).error == GenerationError::InvalidRequest);
+		assert(solo.teamsCount() == 0);
+		Game crowded(nullptr);
+		assert(service.generate(crowded, make(7, 7, 12, 7)).error ==
+			   GenerationError::InvalidRequest);
+		Game strung(nullptr);
+		assert(service.generate(strung, make(7, 9, 4, 7)).error ==
+			   GenerationError::InvalidRequest);
+	}
+	// Fruit grows on the rope and nowhere else, which is what makes the rope worth pulling, and
+	// every colony's own quarry and lake are guaranteed whatever the sliders say.
+	{
+		D bare = make(8, 8, 4, 401);
+		for (const auto &control : definition.controls)
+			if (control.group == ControlGroup::Resources)
+				bare.options[control.id] = 0;
+		Game g(nullptr);
+		assert(service.generate(g, bare));
+		GenerationContext check(bare);
+		assert(definition.validateWorld(g, check).empty());
+		int fruit = 0, water = 0;
+		for (int i = 0; i < 256 * 256; ++i)
+		{
+			const int type = g.map.getResource(i % 256, i / 256).type;
+			fruit += type >= CHERRY && type < CHERRY + 3;
+			water += g.map.isWater(i % 256, i / 256);
+		}
+		assert(fruit > 0 && water > 0);
+		// Take the fruit away and the map is no longer a tug; the validator must say so.
+		for (int i = 0; i < 256 * 256; ++i)
+		{
+			const int type = g.map.getResource(i % 256, i / 256).type;
+			if (type >= CHERRY && type < CHERRY + 3)
+				g.map.setNoResource(i % 256, i / 256, 1);
+		}
+		assert(!definition.validateWorld(g, check).empty());
+	}
+	// Levelling is the map's own argument, so it has to be worth something measurable: the search
+	// must cut the spread of the colonies' walks to the rope to a fraction of what dealing the
+	// prizes at random leaves. Both figures are recorded for every map this generator makes.
+	const auto rope = [&](int levelling)
+	{
+		D r = make(8, 8, 4, 401);
+		r.options["levelling"] = levelling;
+		Game g(nullptr);
+		const auto result = service.generate(g, r, true);
+		assert(result);
+		int dealt = -1, solved = -1;
+		for (const auto &record : result.telemetry.records())
+		{
+			if (record.key == "tug.rope.share-dealt")
+				dealt = int(std::get<std::int64_t>(record.value));
+			if (record.key == "tug.rope.share-solved")
+				solved = int(std::get<std::int64_t>(record.value));
+		}
+		assert(dealt >= 0 && solved >= 0);
+		return std::pair{dealt, solved};
+	};
+	const auto unsolved = rope(0), solved = rope(100);
+	assert(unsolved.second == unsolved.first); // no moves: the rope is where chance left it
+	assert(solved.second * 4 < solved.first);  // searched: a fraction of the spread it started with
+	puts("PASS Tug: envelope and refusals, fruit only on the rope, guaranteed home lake and quarry, "
+		 "levelling measurably shares the rope out");
 }
 
 inline void generatorContracts()
 {
 	equilibriumContracts();
+	tugContracts();
 	rebuiltLandscapeContracts();
 	savannahContracts();
 	locustFoodChecks();
