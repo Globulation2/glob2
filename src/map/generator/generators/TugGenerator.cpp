@@ -14,6 +14,7 @@
 #include "Resources.h"
 #include "Roads.h"
 #include "Settlements.h"
+#include "Solve.h"
 #include "Sketch.h"
 #include "Territories.h"
 #include "Topology.h"
@@ -466,7 +467,8 @@ struct Rope
 {
 	std::vector<int> prize; // the chosen sites, as tiles
 	RopeScore dealt, solved;
-	int moves = 0, candidates = 0;
+	SolveReport run;
+	int candidates = 0;
 };
 
 /// Chooses which of the march's candidate sites carry the prizes: every prize on a front between
@@ -510,36 +512,37 @@ Rope levelRope(const std::vector<int> &candidates, const std::vector<std::vector
 		rope.prize.push_back(chosen);
 	}
 	rope.dealt = rope.solved = scoreRope(rope.prize, cost, contestMargin(t));
-	// Levelling buys search. At zero the rope stays where chance put it, which is the baseline the
-	// map's own telemetry reports beside the solved figure.
-	const int moves = int(std::int64_t(kRopeMoves) * std::clamp(levelling, 0, 100) / 100);
-	for (int move = 0; move < moves && !rope.prize.empty(); ++move)
-	{
-		const int slot = int(context.bounded("tug-rope", std::uint32_t(rope.prize.size())));
-		const int site = candidates[context.bounded("tug-rope", std::uint32_t(candidates.size()))];
-		if (!apart(site, slot))
-			continue;
-		const int was = rope.prize[slot];
-		rope.prize[slot] = site;
-		const RopeScore after = scoreRope(rope.prize, cost, contestMargin(t));
-		const int rise = after.total() - rope.solved.total();
-		const double heat =
-			kRopeHeat[0] * std::pow(kRopeHeat[1] / kRopeHeat[0], double(move) / double(moves));
-		bool take = rise <= 0;
-		if (!take && heat > 0)
+	// Levelling buys search: the slider is how many proposals the solver gets. At zero the rope stays
+	// where chance put it, which is the baseline the map's telemetry reports beside the solved figure.
+	const Anneal schedule{int(std::int64_t(kRopeMoves) * std::clamp(levelling, 0, 100) / 100),
+						  kRopeHeat[0], kRopeHeat[1], "tug-rope"};
+	int slot = -1, was = -1;
+	std::vector<int> best = rope.prize;
+	rope.run = anneal(
+		schedule, context,
+		[&]
 		{
-			constexpr std::uint32_t kDraws = 1 << 20;
-			take = double(context.bounded("tug-rope", kDraws)) <
-				   std::exp(-double(rise) / heat) * double(kDraws);
-		}
-		if (take)
+			if (rope.prize.empty())
+				return false;
+			slot = int(context.bounded("tug-rope", std::uint32_t(rope.prize.size())));
+			const int site =
+				candidates[context.bounded("tug-rope", std::uint32_t(candidates.size()))];
+			if (!apart(site, slot))
+				return false;
+			was = rope.prize[slot];
+			rope.prize[slot] = site;
+			return true;
+		},
+		[&]
 		{
-			rope.solved = after;
-			++rope.moves;
-		}
-		else
-			rope.prize[slot] = was;
-	}
+			rope.solved = scoreRope(rope.prize, cost, contestMargin(t));
+			return double(rope.solved.total());
+		},
+		[&] { rope.prize[slot] = was; }, [&] { best = rope.prize; },
+		[&] { rope.prize = best; });
+	// anneal leaves `solved` holding whatever the last proposal scored, accepted or not; the state
+	// the run actually ended on is the one to report.
+	rope.solved = scoreRope(rope.prize, cost, contestMargin(t));
 	return rope;
 }
 
@@ -692,7 +695,7 @@ bool generate(Game &game, GenerationContext &context)
 	context.telemetry.measure("tug.rope.candidates", rope.candidates);
 	context.telemetry.measure("tug.rope.prizes-wanted", o.prizes);
 	context.telemetry.measure("tug.rope.prizes-strung", int(rope.prize.size()));
-	context.telemetry.measure("tug.rope.moves-taken", rope.moves);
+	reportSolve(context.telemetry, "tug.rope", rope.run);
 	context.telemetry.measure("tug.rope.contest-dealt", rope.dealt.contest);
 	context.telemetry.measure("tug.rope.contest-solved", rope.solved.contest);
 	context.telemetry.measure("tug.rope.share-dealt", rope.dealt.share);

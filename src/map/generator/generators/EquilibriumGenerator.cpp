@@ -13,6 +13,7 @@
 #include "Resources.h"
 #include "Roads.h"
 #include "Settlements.h"
+#include "Solve.h"
 #include "Sketch.h"
 #include <algorithm>
 #include <array>
@@ -206,7 +207,8 @@ struct Solved
 	// width the shape pass settled on.
 	double reachSpread = 0, passWidth = 0, roomShort = 0, shoreRatio = 0;
 	double stockSpreadBefore = 0, stockSpreadAfter = 0;
-	int severed = 0, bodies = 0, shapeTaken = 0, stockTaken = 0;
+	int severed = 0, bodies = 0;
+	SolveReport shape, stock;
 };
 
 /// A cardinal walk over the lattice's land from one cell, into `steps` (-1 where it never lands).
@@ -235,47 +237,6 @@ void walkLand(const Torus &t, const std::vector<unsigned char> &land, int from,
 			}
 		}
 	}
-}
-
-/// How unequally a quantity is shared between the colonies: the spread over the mean, so it does
-/// not depend on the quantity's units. 1 when nobody has any, and 0 for a single colony.
-double imbalance(const std::vector<double> &shares)
-{
-	if (shares.size() < 2)
-		return 0;
-	double least = shares[0], most = shares[0], total = 0;
-	for (const double share : shares)
-	{
-		least = std::min(least, share);
-		most = std::max(most, share);
-		total += share;
-	}
-	const double mean = total / double(shares.size());
-	if (!(mean > 0))
-		return 1.0;
-	// A colony with nothing at all is not merely behind; it has no economy of that crop. Say so
-	// rather than letting a large mean hide it.
-	return (most - least) / mean + (least > 0 ? 0.0 : 1.0);
-}
-
-/// The Metropolis rule: a move that improves the cost is always taken, and one that worsens it by
-/// `rise` is taken with probability e^(-rise / heat), drawn from the named stream so a seed
-/// replays.
-bool takeMove(double rise, double heat, GenerationContext &context, const char *stream)
-{
-	if (rise <= 0)
-		return true;
-	if (heat <= 0)
-		return false;
-	constexpr std::uint32_t kDraws = 1 << 20;
-	return double(context.bounded(stream, kDraws)) < std::exp(-rise / heat) * double(kDraws);
-}
-
-/// The heat at a point in a pass, falling geometrically from `from` to `to`.
-double heatAt(int move, int moves, const double (&range)[2])
-{
-	return moves < 2 ? range[1]
-					 : range[0] * std::pow(range[1] / range[0], double(move) / double(moves - 1));
 }
 
 // ---------------------------------------------------------------------------
@@ -373,8 +334,8 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 
 /// Anneals the water's arrangement, swapping a water cell with a land cell so the water the player
 /// asked for stays exactly what it is. Returns the moves taken.
-int annealShape(Solved &solved, GenerationContext &context, double balance, double wantWidth,
-				int bodiesWanted, int moves)
+SolveReport annealShape(Solved &solved, GenerationContext &context, double balance,
+						double wantWidth, int bodiesWanted, int moves)
 {
 	const Torus t = solved.lat.torus();
 	const int cells = solved.lat.size(), teams = int(solved.home.size());
@@ -389,75 +350,64 @@ int annealShape(Solved &solved, GenerationContext &context, double balance, doub
 	// A tiny lattice cannot spare kRoomCells per colony; ask for what there is room to ask for.
 	const int roomWanted = std::max(2, std::min(kRoomCells, cells / std::max(1, 3 * teams)));
 
-	double cost = scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted);
-	int taken = 0;
-	for (int move = 0; move < moves; ++move)
-	{
-		// One water cell to dry out and one land cell to drown, drawn by rejection.
-		//
-		// The land cell is looked for against an existing shore three times out of four. Drowning
-		// open country makes a new puddle, and the targets above ask for a few lakes, so a search
-		// spending its moves uniformly never gets there: at ten per cent water it left eleven
-		// separate bodies when it had been asked for three. Moving a shoreline instead consolidates.
-		// The remaining quarter is drawn from anywhere, which is what still lets water migrate
-		// across the map rather than only growing where the first noise put it.
-		const bool alongShore = context.bounded("equilibrium-shape", 4) != 0;
-		const auto onShore = [&](int i)
+	// One water cell to dry out and one land cell to drown, drawn by rejection.
+	//
+	// The land cell is looked for against an existing shore three times out of four. Drowning open
+	// country makes a new puddle, and the targets ask for a few lakes, so a search spending its
+	// moves uniformly never gets there: at ten per cent water it left eleven separate bodies when it
+	// had been asked for three. Moving a shoreline instead consolidates. The remaining quarter is
+	// drawn from anywhere, which is what still lets water migrate across the map rather than only
+	// growing where the first noise put it.
+	int wet = -1, dry = -1;
+	unsigned char wasDry = kOpen;
+	std::vector<unsigned char> best = solved.kind;
+	const SolveReport run = anneal(
+		Anneal{moves, kShapeHeat[0], kShapeHeat[1], "equilibrium-shape"}, context,
+		[&]
 		{
-			const int x = i % t.w, y = i / t.w;
-			for (const auto &step : kCardinalSteps)
-				if (!s.land[t.at(x + step[0], y + step[1])])
-					return true;
-			return false;
-		};
-		int wet = -1, dry = -1;
-		for (int attempt = 0; attempt < 48 && (wet < 0 || dry < 0); ++attempt)
-		{
-			const int i = int(context.bounded("equilibrium-shape", std::uint32_t(cells)));
-			if (solved.pinned[i])
-				continue;
-			if (!s.land[i])
+			const bool alongShore = context.bounded("equilibrium-shape", 4) != 0;
+			const auto onShore = [&](int i)
 			{
-				if (wet < 0)
-					wet = i;
+				const int x = i % t.w, y = i / t.w;
+				for (const auto &step : kCardinalSteps)
+					if (!s.land[t.at(x + step[0], y + step[1])])
+						return true;
+				return false;
+			};
+			wet = dry = -1;
+			for (int attempt = 0; attempt < 48 && (wet < 0 || dry < 0); ++attempt)
+			{
+				const int i = int(context.bounded("equilibrium-shape", std::uint32_t(cells)));
+				if (solved.pinned[i])
+					continue;
+				if (!s.land[i])
+				{
+					if (wet < 0)
+						wet = i;
+				}
+				else if (dry < 0 && (!alongShore || onShore(i)))
+					dry = i;
 			}
-			else if (dry < 0 && (!alongShore || onShore(i)))
-				dry = i;
-		}
-		if (wet < 0 || dry < 0)
-			continue;
-
-		const unsigned char wasDry = solved.kind[dry];
-		// The measurements to restore on a refusal. Not the walks: the next move measures those
-		// again from the arrangement it finds, so leaving them stale costs nothing and copying the
-		// whole lattice per move would cost more than the move itself.
-		const double wasReach = s.reachSpread, wasWidth = s.passWidth, wasRoom = s.roomShort,
-					 wasShore = s.shoreRatio;
-		const int wasSevered = s.severed, wasBodies = s.bodies;
-		s.land[wet] = 1;
-		s.land[dry] = 0;
-		solved.kind[wet] = kOpen;
-		solved.kind[dry] = kWater;
-		const double after = scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted);
-		if (takeMove(after - cost, heatAt(move, moves, kShapeHeat), context, "equilibrium-shape"))
-		{
-			cost = after;
-			++taken;
-		}
-		else
+			if (wet < 0 || dry < 0)
+				return false;
+			wasDry = solved.kind[dry];
+			s.land[wet] = 1;
+			s.land[dry] = 0;
+			solved.kind[wet] = kOpen;
+			solved.kind[dry] = kWater;
+			return true;
+		},
+		[&] { return scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted); },
+		[&]
 		{
 			s.land[wet] = 0;
 			s.land[dry] = 1;
 			solved.kind[wet] = kWater;
 			solved.kind[dry] = wasDry;
-			s.reachSpread = wasReach;
-			s.passWidth = wasWidth;
-			s.roomShort = wasRoom;
-			s.shoreRatio = wasShore;
-			s.severed = wasSevered;
-			s.bodies = wasBodies;
-		}
-	}
+		},
+		[&] { best = solved.kind; }, [&] { solved.kind = best; });
+	for (int i = 0; i < cells; ++i)
+		s.land[i] = solved.kind[i] != kWater;
 	// The walks the stock pass inherits must match the shape it inherits, so measure the state the
 	// search actually ended on rather than trusting the last move's scratch.
 	scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted);
@@ -467,7 +417,7 @@ int annealShape(Solved &solved, GenerationContext &context, double balance, doub
 	solved.shoreRatio = s.shoreRatio;
 	solved.severed = s.severed;
 	solved.bodies = s.bodies;
-	return taken;
+	return run;
 }
 
 // ---------------------------------------------------------------------------
@@ -522,9 +472,10 @@ double stockCost(const Catchments &had, int teams, const std::array<int, kStockK
 /// cells of each crop stays exactly what the amount sliders asked for. Every colony's walk is
 /// already known and does not change, so a move costs two terms per colony rather than a fresh walk
 /// of the lattice: this is the pass that can afford the moves that actually equalise the map.
-int annealStock(Solved &solved, GenerationContext &context,
-				const std::vector<std::vector<int>> &walk, const std::vector<double> &decay,
-				int moves, double &spreadBefore, double &spreadAfter)
+SolveReport annealStock(Solved &solved, GenerationContext &context,
+						const std::vector<std::vector<int>> &walk,
+						const std::vector<double> &decay, int moves, double &spreadBefore,
+						double &spreadAfter)
 {
 	const int cells = solved.lat.size(), teams = int(solved.home.size());
 	const auto worth = [&](int team, int cell)
@@ -539,51 +490,61 @@ int annealStock(Solved &solved, GenerationContext &context,
 		for (int i = 0; i < cells; ++i)
 			if (solved.kind[i] >= kWheat)
 				had[k][solved.kind[i] - kWheat] += worth(k, i);
-	double cost = stockCost(had, teams, counts);
 	spreadBefore = stockSpread(had, teams);
 
-	Catchments trial = had;
-	int taken = 0;
-	for (int move = 0; move < moves; ++move)
+	// Swapping the contents of two cells is its own inverse, catchments and all: cell a gives up
+	// what it was worth to each colony and takes on what b was worth, and b the other way round, so
+	// running it twice puts the lattice and the sums back exactly as they were. That is what lets
+	// the refusal path be the same call as the proposal.
+	int a = -1, b = -1;
+	std::vector<unsigned char> best = solved.kind;
+	const auto swapStock = [&](int one, int other)
 	{
-		// Two land cells the design does not pin, holding different things: a swap between two
-		// cells holding the same thing is not a move.
-		int a = -1, b = -1;
-		for (int attempt = 0; attempt < 32 && b < 0; ++attempt)
-		{
-			const int i = int(context.bounded("equilibrium-stock", std::uint32_t(cells)));
-			if (solved.pinned[i] || solved.kind[i] == kWater)
-				continue;
-			if (a < 0)
-				a = i;
-			else if (solved.kind[i] != solved.kind[a])
-				b = i;
-		}
-		if (b < 0)
-			continue;
-
-		const unsigned char kindA = solved.kind[a], kindB = solved.kind[b];
+		const unsigned char kindOne = solved.kind[one], kindOther = solved.kind[other];
 		for (int k = 0; k < teams; ++k)
 		{
-			if (kindA >= kWheat)
-				trial[k][kindA - kWheat] += worth(k, b) - worth(k, a);
-			if (kindB >= kWheat)
-				trial[k][kindB - kWheat] += worth(k, a) - worth(k, b);
+			if (kindOne >= kWheat)
+				had[k][kindOne - kWheat] += worth(k, other) - worth(k, one);
+			if (kindOther >= kWheat)
+				had[k][kindOther - kWheat] += worth(k, one) - worth(k, other);
 		}
-		const double after = stockCost(trial, teams, counts);
-		if (takeMove(after - cost, heatAt(move, moves, kStockHeat), context, "equilibrium-stock"))
+		solved.kind[one] = kindOther;
+		solved.kind[other] = kindOne;
+	};
+	const SolveReport run = anneal(
+		Anneal{moves, kStockHeat[0], kStockHeat[1], "equilibrium-stock"}, context,
+		[&]
 		{
-			solved.kind[a] = kindB;
-			solved.kind[b] = kindA;
-			had = trial;
-			cost = after;
-			++taken;
-		}
-		else
-			trial = had;
+			// Two land cells the design does not pin, holding different things: a swap between two
+			// cells holding the same thing is not a move.
+			a = b = -1;
+			for (int attempt = 0; attempt < 32 && b < 0; ++attempt)
+			{
+				const int i = int(context.bounded("equilibrium-stock", std::uint32_t(cells)));
+				if (solved.pinned[i] || solved.kind[i] == kWater)
+					continue;
+				if (a < 0)
+					a = i;
+				else if (solved.kind[i] != solved.kind[a])
+					b = i;
+			}
+			if (b < 0)
+				return false;
+			swapStock(a, b);
+			return true;
+		},
+		[&] { return stockCost(had, teams, counts); }, [&] { swapStock(a, b); },
+		[&] { best = solved.kind; }, [&] { solved.kind = best; });
+	// The catchments must match whatever arrangement the run ended on, best-kept or not.
+	for (int k = 0; k < teams; ++k)
+	{
+		had[k] = {0.0, 0.0, 0.0};
+		for (int i = 0; i < cells; ++i)
+			if (solved.kind[i] >= kWheat)
+				had[k][solved.kind[i] - kWheat] += worth(k, i);
 	}
 	spreadAfter = stockSpread(had, teams);
-	return taken;
+	return run;
 }
 
 // ---------------------------------------------------------------------------
@@ -767,8 +728,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const int bodiesWanted =
 		kBodiesLeast +
 		int(context.bounded("equilibrium-shape", kBodiesMost - kBodiesLeast + 1));
-	solved.shapeTaken =
-		annealShape(solved, context, balance, wantWidth, bodiesWanted, kShapeMoves[effort]);
+	solved.shape = annealShape(solved, context, balance, wantWidth, bodiesWanted, kShapeMoves[effort]);
 
 	// The stock pass inherits the shape pass's walks: the land is settled now, so every colony's
 	// distance to every cell is fixed and a crop's move is worth two known terms.
@@ -792,8 +752,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	stockToAmounts(solved, context, o);
 	const int stockMoves =
 		int(std::int64_t(kStockMoves[effort]) * std::clamp(o.balance, 0, 100) / 100);
-	solved.stockTaken = annealStock(solved, context, walk, decay, stockMoves,
-									solved.stockSpreadBefore, solved.stockSpreadAfter);
+	solved.stock = annealStock(solved, context, walk, decay, stockMoves,
+							   solved.stockSpreadBefore, solved.stockSpreadAfter);
 
 	L.kind = solved.kind;
 	L.pinned = solved.pinned;
@@ -822,7 +782,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 
 	context.telemetry.measure("equilibrium.lattice.cells", L.lat.size());
 	context.telemetry.measure("equilibrium.lattice.cell-tiles", L.lat.tiles);
-	context.telemetry.measure("equilibrium.shape.moves-taken", solved.shapeTaken);
+	reportSolve(context.telemetry, "equilibrium.shape", solved.shape);
 	context.telemetry.measure("equilibrium.shape.reach-spread", solved.reachSpread);
 	context.telemetry.measure("equilibrium.shape.pass-width-target", wantWidth);
 	context.telemetry.measure("equilibrium.shape.pass-width-cells", solved.passWidth);
@@ -830,7 +790,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	context.telemetry.measure("equilibrium.shape.shore-per-water-cell", solved.shoreRatio);
 	context.telemetry.measure("equilibrium.shape.bodies-target", bodiesWanted);
 	context.telemetry.measure("equilibrium.shape.bodies-actual", solved.bodies);
-	context.telemetry.measure("equilibrium.stock.moves-taken", solved.stockTaken);
+	reportSolve(context.telemetry, "equilibrium.stock", solved.stock);
 	context.telemetry.measure("equilibrium.stock.spread-before", solved.stockSpreadBefore);
 	context.telemetry.measure("equilibrium.stock.spread-after", solved.stockSpreadAfter);
 	if (solved.severed > 0)
