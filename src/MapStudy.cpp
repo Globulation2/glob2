@@ -19,6 +19,7 @@
 #include "StartQuality.h"
 #include "Utilities.h"
 #include <BinaryStream.h>
+#include <GzipUtil.h>
 #include <StreamBackend.h>
 #include <TextStream.h>
 #include <algorithm>
@@ -428,10 +429,8 @@ int saveRotatedMaps(Game &game, const GenerationResult &result, const Generation
 
 	auto write = [&](int k, const std::string &bytes)
 	{
-		const std::string path = prefix + "-r" + std::to_string(k) + ".map";
-		std::ofstream out(path, std::ios::binary);
-		out.write(bytes.data(), std::streamsize(bytes.size()));
-		if (!out)
+		const std::string path = glob2GzipWritePath(prefix + "-r" + std::to_string(k) + ".map");
+		if (!GAGCore::writeGzipAtomicToPath(path, bytes))
 			return false;
 		std::printf("MAPFILE,%d,%s,%zu,%llu\n", k, path.c_str(), bytes.size(),
 					(unsigned long long)fnvBytes(bytes));

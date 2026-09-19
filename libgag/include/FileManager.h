@@ -75,12 +75,27 @@ namespace GAGCore
 		StreamBackend *openOutputStreamBackend(const std::string filename);
 		//! Checked replacement; failure leaves the original intact.
 		bool writeFileAtomic(const std::string& filename, const std::string& contents);
-		
+
 		//! Replace a file only after the writer, flush, and close all succeed.
 		bool writeAtomically(const std::string& filename, const std::function<void(OutputStream&)>& writer);
 
+		//! Gzip-compresses contents at the given level and replaces filename with it
+		//! only after compression and the write both succeed (see writeAtomically).
+		//! The gzip header carries no timestamp or OS byte, so the same contents and
+		//! level always produce identical bytes on every platform.
+		bool writeGzipAtomic(const std::string& filename, const std::string& contents, int level = 6);
+		//! Serializes through writer into memory first (so seek-based backpatching
+		//! works exactly as it does for uncompressed output), then gzip-compresses
+		//! and atomically replaces filename with the result.
+		bool writeGzipAtomically(const std::string& filename, const std::function<void(OutputStream&)>& writer, int level = 6);
+
 		//! Open an input stream backend, use it to construct specific input streams
 		StreamBackend *openInputStreamBackend(const std::string filename);
+		//! Like openInputStreamBackend, but when filename ends in ".gz" the whole
+		//! file is inflated into a seekable in-memory backend first, so callers see
+		//! the original uncompressed bytes. Corrupt or truncated gzip data is
+		//! reported like a missing file (an invalid backend), never a crash.
+		StreamBackend *openInflatingInputStreamBackend(const std::string& filename);
 
 		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends
 		SDL_RWops *open(const std::string filename, const std::string mode="rb");

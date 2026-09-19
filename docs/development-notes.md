@@ -91,6 +91,20 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   games, update replay acceptance and `NET_PROTOCOL_VERSION`/YOG minimums as needed.
   Test acceptance/rejection at the version boundaries; unchanged saved bytes do not
   establish replay or network compatibility.
+- `.map`/`.game` files are gzip level 6 by default (`FileManager::writeGzipAtomic`/
+  `writeGzipAtomically` in `libgag/src/FileManagerGzip.cpp`; the gzip header carries
+  no timestamp or OS byte, so identical content always compresses to identical
+  bytes). This is a container change, not a save-format schema change: the bytes
+  inside the gzip stream are exactly what today's serializer already writes, so it
+  does not need a `VERSION_MINOR` bump. Reading is transparent and extension-driven:
+  `FileManager::openInflatingInputStreamBackend`/`glob2OpenMapOrSaveInputStreamBackend`
+  inflate a `.gz`-suffixed path and reject corrupt/truncated gzip data; a raw legacy
+  file with no `.gz` sibling still loads unchanged. `glob2PreferGzipReadPath`/
+  `glob2GzipWritePath`/`glob2ListMapOrSaveFiles` (`src/map/io/MapHeader.cpp`) are
+  the read/write path-resolution helpers most call sites should use rather than
+  hand-rolling the `.gz` suffix logic. Replays and YOG/network protocol gates are
+  unaffected; the YOG map-transfer wire payload was already a single gzip layer
+  and now skips re-gzipping a locally-compressed map.
 - Intentional bug fixes or gameplay changes may change old outcomes. Explain the
   difference and test the intended behavior rather than claiming old/new equivalence.
 - Before parallelizing gradients, inspect scratch ownership and input lifetimes in

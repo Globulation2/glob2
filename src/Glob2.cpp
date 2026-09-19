@@ -211,7 +211,7 @@ int Glob2::runTestMapGeneration()
 static int dumpResources(const std::string& mapName)
 {
 	using namespace GAGCore;
-	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapName));
+	InputStream* stream = new BinaryInputStream(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), mapName));
 	if (stream->isEndOfStream())
 	{
 		std::cerr << "dump-resources: cannot open " << mapName << std::endl;
@@ -285,7 +285,7 @@ static int dumpResources(const std::string& mapName)
 static int dumpWheatPlan(const std::string& mapName, int team)
 {
 	using namespace GAGCore;
-	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapName));
+	InputStream* stream = new BinaryInputStream(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), mapName));
 	if (stream->isEndOfStream())
 	{
 		std::cerr << "dump-wheat: cannot open " << mapName << std::endl;

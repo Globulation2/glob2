@@ -353,21 +353,24 @@ void Engine::createRandomGame()
 
 void Engine::saveInitialGameStateOrExit(const std::string& path, const std::string& label, const std::string& mapName)
 {
-	BinaryOutputStream stream(Toolkit::getFileManager()->openOutputStreamBackend(path));
-	if (stream.isEndOfStream())
+	const std::string gzipPath = glob2GzipWritePath(path);
+	const bool saved = Toolkit::getFileManager()->writeGzipAtomically(gzipPath,
+		[&](OutputStream &stream) { gui.save(&stream, mapName); });
+	if (!saved)
 	{
-		std::cerr << label << ": cannot open " << path << " for writing" << std::endl;
+		std::cerr << label << ": cannot open " << gzipPath << " for writing" << std::endl;
 		exit(1);
 	}
-	gui.save(&stream, mapName);
-	std::cout << label << ": wrote " << path << std::endl;
+	std::cout << label << ": wrote " << gzipPath << std::endl;
 }
 
 
 
 bool Engine::haveMap(const MapHeader& mapHeader)
 {
-	if (!Toolkit::getFileManager()->exists(mapHeader.getFileName()))
+	FileManager& files = *Toolkit::getFileManager();
+	const std::string resolved = glob2PreferGzipReadPath(files, mapHeader.getFileName());
+	if (!files.exists(resolved))
 		return false;
 	MapHeader mh = loadMapHeader(mapHeader.getFileName());
 	return mh == mapHeader;
@@ -508,7 +511,7 @@ GameHeader Engine::prepareCampaign(MapHeader& mapHeader, int& localPlayer, int& 
 
 bool Engine::loadGame(const std::string &filename)
 {
-	BinaryInputStream stream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	BinaryInputStream stream(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), filename));
 	if (stream.isEndOfStream())
 	{
 		std::cerr << "Engine::loadGame(\"" << filename << "\") : error, can't open file." << std::endl;

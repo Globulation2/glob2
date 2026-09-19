@@ -1,0 +1,176 @@
+[
+  {
+    "fixture": "gd-small-2ai",
+    "binary": "baseline",
+    "ok": 3,
+    "runs": 3,
+    "real_s": {
+      "min": 0.2,
+      "median": 0.21,
+      "max": 0.21
+    },
+    "user_s": {
+      "min": 0.17,
+      "median": 0.17,
+      "max": 0.17
+    },
+    "sys_s": {
+      "min": 0.02,
+      "median": 0.02,
+      "max": 0.03
+    },
+    "output_sizes": {
+      "checkpoint-1024.game": 903109,
+      "checkpoint-1536.game": 995728,
+      "checkpoint-2048.game": 1021304,
+      "checkpoint-512.game": 853617,
+      "final.game": 1021304,
+      "initial.game": 736897
+    }
+  },
+  {
+    "fixture": "gd-small-2ai",
+    "binary": "new",
+    "ok": 3,
+    "runs": 3,
+    "real_s": {
+      "min": 0.22,
+      "median": 0.23,
+      "max": 0.23
+    },
+    "user_s": {
+      "min": 0.21,
+      "median": 0.21,
+      "max": 0.21
+    },
+    "sys_s": {
+      "min": 0.01,
+      "median": 0.01,
+      "max": 0.01
+    },
+    "output_sizes": {
+      "checkpoint-1024.game.gz": 50451,
+      "checkpoint-1536.game.gz": 65588,
+      "checkpoint-2048.game.gz": 69785,
+      "checkpoint-512.game.gz": 45424,
+      "final.game.gz": 69785,
+      "initial.game.gz": 27708
+    }
+  },
+  {
+    "fixture": "mixed-ai-initial",
+    "binary": "baseline",
+    "ok": 3,
+    "runs": 3,
+    "real_s": {
+      "min": 3.32,
+      "median": 3.52,
+      "max": 3.6
+    },
+    "user_s": {
+      "min": 2.59,
+      "median": 2.6,
+      "max": 2.66
+    },
+    "sys_s": {
+      "min": 0.63,
+      "median": 0.66,
+      "max": 0.75
+    },
+    "output_sizes": {
+      "checkpoint-1024.game": 47460589,
+      "checkpoint-1536.game": 50198810,
+      "checkpoint-2048.game": 50315153,
+      "checkpoint-512.game": 45767146,
+      "final.game": 50315153,
+      "initial.game": 7215974
+    }
+  },
+  {
+    "fixture": "mixed-ai-initial",
+    "binary": "new",
+    "ok": 3,
+    "runs": 3,
+    "real_s": {
+      "min": 4.75,
+      "median": 4.76,
+      "max": 4.79
+    },
+    "user_s": {
+      "min": 4.68,
+      "median": 4.7,
+      "max": 4.71
+    },
+    "sys_s": {
+      "min": 0.04,
+      "median": 0.04,
+      "max": 0.04
+    },
+    "output_sizes": {
+      "checkpoint-1024.game.gz": 3169977,
+      "checkpoint-1536.game.gz": 3521353,
+      "checkpoint-2048.game.gz": 3475007,
+      "checkpoint-512.game.gz": 2853092,
+      "final.game.gz": 3475008,
+      "initial.game.gz": 288924
+    }
+  },
+  {
+    "fixture": "maxima-initial",
+    "binary": "baseline",
+    "ok": 3,
+    "runs": 3,
+    "real_s": {
+      "min": 1.11,
+      "median": 1.18,
+      "max": 1.2
+    },
+    "user_s": {
+      "min": 0.8,
+      "median": 0.81,
+      "max": 0.83
+    },
+    "sys_s": {
+      "min": 0.27,
+      "median": 0.29,
+      "max": 0.36
+    },
+    "output_sizes": {
+      "checkpoint-1024.game": 19643427,
+      "checkpoint-1536.game": 19662101,
+      "checkpoint-2048.game": 20113665,
+      "checkpoint-512.game": 18471017,
+      "final.game": 20113665,
+      "initial.game": 2477492
+    }
+  },
+  {
+    "fixture": "maxima-initial",
+    "binary": "new",
+    "ok": 3,
+    "runs": 3,
+    "real_s": {
+      "min": 1.72,
+      "median": 1.72,
+      "max": 1.73
+    },
+    "user_s": {
+      "min": 1.65,
+      "median": 1.69,
+      "max": 1.69
+    },
+    "sys_s": {
+      "min": 0.02,
+      "median": 0.02,
+      "max": 0.04
+    },
+    "output_sizes": {
+      "checkpoint-1024.game.gz": 1345831,
+      "checkpoint-1536.game.gz": 1371722,
+      "checkpoint-2048.game.gz": 1452058,
+      "checkpoint-512.game.gz": 1244173,
+      "final.game.gz": 1452055,
+      "initial.game.gz": 127389
+    }
+  }
+]

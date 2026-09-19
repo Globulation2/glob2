@@ -76,7 +76,7 @@ and save/network versions, plus map-report and generation-telemetry schema versi
 build/src/glob2 --generate-map --generator 15 --map-seed 42 \
   --param teams=2 --param width=7 --param height=7 \
   --write-map true --rotations 2 --output-dir /tmp/generated
-build/src/glob2 --run-game --map-file /tmp/generated/map-r0.map \
+build/src/glob2 --run-game --map-file /tmp/generated/map-r0.map.gz \
   --game-seed 19 --player cortex --player cortex \
   --ai-param 0:swarmWorkerCap=4 --ai-param 1:swarmWorkerCap=7 \
   --ticks 4096 --save initial --save every:512 --save final \
@@ -90,7 +90,7 @@ Generator options:
 | `--generator ID`, `--map-seed N` | Required method and independent uint32 seed |
 | `--param key=value` | Repeatable generator controls; defaults and valid ranges come from catalog. Width/height are power-of-two exponents, as in the existing study tool |
 | `--candidates N` | 0: explicit single-seed generation; positive: deterministic quality candidate selection, maximum 10000 |
-| `--write-map true/false` | false; emits `map-rN.map` when true |
+| `--write-map true/false` | false; emits `map-rN.map.gz` (gzip level 6) when true |
 | `--rotations N` | 1; cyclic team reindexings, verified for unchanged geography and rotated starts |
 | `--report headroom/terrain` | Headroom study measurements on stdout or terrain/resource grid in terrain.txt |
 | `--profile NAME` | Optional isolated profile name; profile files live inside this output directory |
@@ -176,7 +176,7 @@ Every job has these fields:
 | Field | Meaning/default |
 | --- | --- |
 | `schema_version`, `id`, `type`, `build` | 1, stable logical identity, game or generate_map, immutable bundle hash |
-| `inputs` | Map `map` or save `save`, or empty for generation. Values are imported artifact records or `{"job":"ID","artifact":"map-r0.map"}` |
+| `inputs` | Map `map` or save `save`, or empty for generation. Values are imported artifact records or `{"job":"ID","artifact":"map-r0.map.gz"}` (artifact names match the produced file, including its `.gz` suffix) |
 | `depends_on` | Job IDs; every input dependency must appear; cycles rejected |
 | `seeds` | `{"game":N}` or `{"map":N}`; empty on saved games |
 | `config` | Game: players, ticks, ai_params (player-string to key/value object), alliances, winning_conditions. Generator: generator, params, candidates, rotations. Defaults follow CLI |

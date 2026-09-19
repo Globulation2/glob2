@@ -52,7 +52,9 @@ returns success, including when SDL renames `main` to `SDL_main`.
 
 ![The same map after dragging half a period on both axes](custom-wide-wrapped.png)
 
-`generated-wide.map` is the exact generated map behind these two images. The
+`generated-wide.map.gz` is the exact generated map behind these two images (renamed
+with a `.gz` suffix since this repository's maps and saves are now gzip-compressed
+by default; its content is unchanged). The
 harness also compares the displayed terrain bytes with a fresh thumbnail loaded
 from that launch snapshot. The random generator was not seeded for this capture;
 use the retained map to reproduce the terrain, rather than rerolling it.
@@ -78,7 +80,8 @@ measures the original header + Game + thumbnail selection path.
 | New pipeline, first uncached selection | See `timings.txt` |
 | New pipeline, 20 cached selections | See `timings.txt` |
 
-The fixture is a byte-identical copy of `maps/FourSquares1.map`. These are single
+The fixture (now `selection-fixture.map.gz`) is a byte-identical copy of
+`maps/FourSquares1.map.gz`. These are single
 local diagnostic runs with a warm filesystem cache, not a general frame-rate or
 large-map benchmark. The old pipeline uses the original thumbnail implementation
 from `a9c5c13118eabb910a1055f9baa417bf5513aa92`, linked to the pre-rebase engine objects. This historical baseline predates the generator upgrade; it is not a new cross-version generator benchmark.

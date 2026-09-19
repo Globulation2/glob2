@@ -173,18 +173,14 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						defaultGameSaveName=((LoadSaveScreen *)gameMenuScreen.get())->getName();
 						// The player may be saving over the autosave: let a pending one land first.
 						waitForAutosave();
-						OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(locationName));
-						if (stream->isEndOfStream())
+						const std::string name = ((LoadSaveScreen *)gameMenuScreen.get())->getName();
+						assert(name.size());
+						const bool saved = Toolkit::getFileManager()->writeGzipAtomically(glob2GzipWritePath(locationName),
+							[&](OutputStream &stream) { save(&stream, name); });
+						if (!saved)
 						{
 							std::cerr << "GGU : Can't save map " << locationName << std::endl;
 						}
-						else
-						{
-							const std::string name = ((LoadSaveScreen *)gameMenuScreen.get())->getName();
-							assert(name.size());
-							save(stream, name);
-						}
-						delete stream;
 					}
 				}
 

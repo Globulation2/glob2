@@ -392,8 +392,8 @@ struct MapPreviewHarness
 			if (auto candidate = dynamic_cast<MapPreview *>(widget))
 				lobby = candidate;
 		assert(lobby);
-		const auto fixture = output + "/selection-fixture.map";
-		std::filesystem::copy_file("maps/FourSquares1.map", fixture,
+		const auto fixture = output + "/selection-fixture.map.gz";
+		std::filesystem::copy_file(glob2PreferGzipReadPath(*Toolkit::getFileManager(), "maps/FourSquares1.map"), fixture,
 								   std::filesystem::copy_options::overwrite_existing);
 		auto start = std::chrono::steady_clock::now();
 		assert(custom.loadMap(fixture));
@@ -437,7 +437,7 @@ struct MapPreviewHarness
 		MapThumbnail snapshot;
 		snapshot.loadFromMap(custom.snapshot);
 		assert(snapshot.isLoaded() && snapshot.pixels()->rgb == lobby->thumbnail.pixels()->rgb);
-		std::filesystem::copy_file(custom.snapshot, output + "/generated-wide.map",
+		std::filesystem::copy_file(glob2GzipWritePath(custom.snapshot), output + "/generated-wide.map.gz",
 								   std::filesystem::copy_options::overwrite_existing);
 		settle(custom, lobby);
 		globalContainer->gfx->printScreen(output + "/custom-wide-colonies.bmp");
@@ -477,7 +477,7 @@ struct MapPreviewHarness
 		globalContainer->gfx->printScreen(output + "/custom-reroll-retained.bmp");
 		std::cout
 			<< "PASS reroll preserves image, rectangle and scores without status-text flashes\n";
-		const auto invalidated = output + "/invalidated.map";
+		const auto invalidated = output + "/invalidated.map.gz";
 		std::filesystem::copy_file(fixture, invalidated,
 								   std::filesystem::copy_options::overwrite_existing);
 		MapThumbnail first, second;

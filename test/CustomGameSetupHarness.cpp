@@ -519,12 +519,12 @@ struct CustomGameSetupHarness
     // The first visit to the library preselects FourSquares1, the old opening map.
     screen.setMapMode(false);
     assert(!screen.setup.random && screen.validMap && !screen.previewPending &&
-           std::filesystem::path(screen.setup.premadeMap).filename() == "FourSquares1.map");
+           std::filesystem::path(screen.setup.premadeMap).filename() == "FourSquares1.map.gz");
     screen.separateMapLibraries = false;
     screen.listMaps();
     assert(std::any_of(
         screen.mapPaths.begin(), screen.mapPaths.end(), [](const auto &path) {
-          return std::filesystem::path(path).filename() == "FourSquares1.map";
+          return std::filesystem::path(path).filename() == "FourSquares1.map.gz";
         }));
     screen.separateMapLibraries = true;
     screen.listMaps();
@@ -1402,10 +1402,14 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
 		globalContainer->automaticEndingSteps = 500;
 		globalContainer->automaticGameGlobalEndConditions = false;
 		{
-			const auto transient = (std::filesystem::temp_directory_path() /
+			// Mirror whatever container the source map actually uses (raw or ".gz")
+			// so the copy holds a byte-identical, correctly-suffixed container.
+			const std::string resolvedMap = glob2PreferGzipReadPath(*Toolkit::getFileManager(), map);
+			const std::string transientBase = (std::filesystem::temp_directory_path() /
 									("glob2-live-test-" + std::to_string(getpid()) + ".map"))
 									   .string();
-			std::filesystem::copy_file(map, transient,
+			const std::string transient = glob2IsGzipPath(resolvedMap) ? glob2GzipWritePath(transientBase) : transientBase;
+			std::filesystem::copy_file(resolvedMap, transient,
 									   std::filesystem::copy_options::overwrite_existing);
 			Engine e;
 			auto header = Engine::loadMapHeader(transient);

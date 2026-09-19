@@ -181,9 +181,13 @@ struct HeadlessRunner
 			else if(save.rfind("every:",0)==0) engine.headlessSaveInterval=integer(save.substr(6),1,std::numeric_limits<int>::max());
 			else throw std::invalid_argument("unknown save request: " + save);
 		}
-		const auto mapFile=one(options,"--map-file"), saved=one(options,"--load-game");
+		auto mapFile=one(options,"--map-file"); auto saved=one(options,"--load-game");
 		if(mapFile.empty() == saved.empty()) throw std::invalid_argument("choose exactly one of --map-file and --load-game");
-		if(!fs::is_regular_file(mapFile.empty() ? saved : mapFile)) throw std::invalid_argument("input file does not exist");
+		auto &requested = mapFile.empty() ? saved : mapFile;
+		// A bare ".map"/".game" path prefers an existing ".gz" sibling, matching how
+		// the loaders resolve the same path a few lines below.
+		if(!glob2IsGzipPath(requested) && fs::exists(requested+".gz")) requested+=".gz";
+		if(!fs::is_regular_file(requested)) throw std::invalid_argument("input file does not exist");
 		if(!saved.empty())
 		{
 			for(const auto &key : {"--player","--ai-param","--alliance","--win-condition","--game-seed"})
@@ -404,7 +408,7 @@ int runHeadlessCommand(int argc,char **argv)
 					if(fs::exists(output/"generated/result.json")) fs::copy_file(output/"generated/result.json",output/"result.json");
 					manifest(output);return generated;
 				}
-				options["--map-file"]={(output/"generated/map-r0.map").string()};
+				options["--map-file"]={glob2GzipWritePath((output/"generated/map-r0.map").string())};
 				SDL_setenv("GLOB2_USER_DIR",(output/"profile").string().c_str(),1);
 			}
 			else if(options.count("--map-seed") || options.count("--param") || options.count("--candidates"))
