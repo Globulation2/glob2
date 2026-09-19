@@ -663,6 +663,17 @@ if not env['server']:
     gradient_test = local.Program('GlobalGradientHarness', gradient_sources)
     local.Alias('global-gradient-test', gradient_test)
 
+# Uint16 pathfinding kernel oracle; links the actual production Map implementation.
+if not env['server']:
+    path_gradient_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    path_gradient_sources += [source for source in source_files if not source.endswith('.cpp')]
+    path_gradient_sources += local.Object('PathGradientHarness.o', '#test/PathGradientHarness.cpp')
+    path_gradient_env = local.Clone()
+    path_gradient_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    path_gradient_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    path_gradient_test = path_gradient_env.Program('PathGradientHarness', path_gradient_sources)
+    local.Alias('path-gradient-test', path_gradient_test)
+
 if not env['server']:
     lan_sources = [source for source in source_files if source != 'Glob2.cpp']
     lan_sources += local.Object('LANSessionHarness.o', '#test/LANSessionHarness.cpp')

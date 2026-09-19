@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <utility>
+#include <type_traits>
 #include <vector>
 
 // Building and reading the pathfinding gradients (cell values: MapInternal.h).
@@ -99,58 +100,74 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 				deferredSeeds.push_back({cost, (int)i});
 		}
 	std::sort(deferredSeeds.begin(), deferredSeeds.end());
-	size_t nextSeed = 0;
-	for (int cur = 0; (pending > 0 || nextSeed < deferredSeeds.size()) && cur <= limit; cur++)
+	// Class zero never enters water; class EVEN pays the land rate there.
+	// Specializing this common case lets the compiler hoist both edge costs
+	// and queue references out of the per-cell loop.
+	auto sweep = [&](auto uniform)
 	{
-		if (pending == 0)
-			cur = deferredSeeds[nextSeed].first; // the queue is empty: jump to the next seed
-		for (; nextSeed < deferredSeeds.size() && deferredSeeds[nextSeed].first == cur; nextSeed++)
+		size_t nextSeed = 0;
+		for (int cur = 0; (pending > 0 || nextSeed < deferredSeeds.size()) && cur <= limit; cur++)
 		{
-			buckets[cur % BUCKETS].push_back(deferredSeeds[nextSeed].second);
-			pending++;
-		}
-		std::vector<int> &bucket = buckets[cur % BUCKETS];
-		// Relaxations may append to other buckets but never to this one
-		// (each step is positive and less than BUCKETS), so iteration is safe.
-		for (size_t bi = 0; bi < bucket.size(); bi++)
-		{
-			int i = bucket[bi];
-			pending--;
-			if (GRADIENT_AT_GOAL - gradient[i] != cur)
-				continue; // stale entry, a cheaper path was found later
-			size_t x = i & wMask;
-			size_t y = i >> wDec;
-			const size_t left = (x - 1) & wMask;
-			const size_t right = (x + 1) & wMask;
-			const size_t above = ((y - 1) & hMask) << wDec;
-			const size_t row = y << wDec;
-			const size_t below = ((y + 1) & hMask) << wDec;
-			// All reverse edges enter i, so they share its two terrain costs.
-			const int cardinalCost = cur + stepCost(1, 0, (size_t)i, swimClass);
-			const int diagonalCost = cur + stepCost(1, 1, (size_t)i, swimClass);
-			auto& cardinalBucket = buckets[cardinalCost % BUCKETS];
-			auto& diagonalBucket = buckets[diagonalCost % BUCKETS];
-			auto relax = [&](size_t n, int cost, std::vector<int>& destination)
+			if (pending == 0)
+				cur = deferredSeeds[nextSeed].first; // the queue is empty: jump to the next seed
+			for (; nextSeed < deferredSeeds.size() && deferredSeeds[nextSeed].first == cur; nextSeed++)
 			{
-				if (gradient[n] != GRADIENT_FORBIDDEN && cost <= limit && cost < GRADIENT_AT_GOAL - gradient[n])
+				buckets[cur % BUCKETS].push_back(deferredSeeds[nextSeed].second);
+				pending++;
+			}
+			std::vector<int> &bucket = buckets[cur % BUCKETS];
+			// Relaxations may append to other buckets but never to this one
+			// (each step is positive and less than BUCKETS), so iteration is safe.
+			for (size_t bi = 0; bi < bucket.size(); bi++)
+			{
+				int i = bucket[bi];
+				pending--;
+				if (GRADIENT_AT_GOAL - gradient[i] != cur)
+					continue; // stale entry, a cheaper path was found later
+				size_t x = i & wMask;
+				size_t y = i >> wDec;
+				const size_t left = (x - 1) & wMask;
+				const size_t right = (x + 1) & wMask;
+				const size_t above = ((y - 1) & hMask) << wDec;
+				const size_t row = y << wDec;
+				const size_t below = ((y + 1) & hMask) << wDec;
+				// All reverse edges enter i, so they share its two terrain costs.
+				int step = GRADIENT_STEP;
+				if constexpr (!decltype(uniform)::value)
+					step = isWater((unsigned)i) ? WATER_STEP[swimClass] : GRADIENT_STEP;
+				const int cardinalCost = cur + step;
+				const int diagonalCost = cur + step * GRADIENT_DIAGONAL_STEP / GRADIENT_STEP;
+				const unsigned cardinalValue = cardinalCost <= limit ? GRADIENT_AT_GOAL - cardinalCost : 1;
+				const unsigned diagonalValue = diagonalCost <= limit ? GRADIENT_AT_GOAL - diagonalCost : 1;
+				auto& cardinalBucket = buckets[cardinalCost % BUCKETS];
+				auto& diagonalBucket = buckets[diagonalCost % BUCKETS];
+				auto relax = [&](size_t n, unsigned value, std::vector<int>& destination)
 				{
-					gradient[n] = (Uint16)(GRADIENT_AT_GOAL - cost);
-					destination.push_back((int)n);
-					pending++;
-				}
-			};
-			// Preserve tabClose order: NW, N, NE, E, SE, S, SW, W.
-			relax(above | left, diagonalCost, diagonalBucket);
-			relax(above | x, cardinalCost, cardinalBucket);
-			relax(above | right, diagonalCost, diagonalBucket);
-			relax(row | right, cardinalCost, cardinalBucket);
-			relax(below | right, diagonalCost, diagonalBucket);
-			relax(below | x, cardinalCost, cardinalBucket);
-			relax(below | left, diagonalCost, diagonalBucket);
-			relax(row | left, cardinalCost, cardinalBucket);
+					// Zero wraps to UINT_MAX; a capped value of one admits no cell.
+					if (static_cast<unsigned>(gradient[n] - 1) < value - 1)
+					{
+						gradient[n] = (Uint16)value;
+						destination.push_back((int)n);
+						pending++;
+					}
+				};
+				// Preserve tabClose order: NW, N, NE, E, SE, S, SW, W.
+				relax(above | left, diagonalValue, diagonalBucket);
+				relax(above | x, cardinalValue, cardinalBucket);
+				relax(above | right, diagonalValue, diagonalBucket);
+				relax(row | right, cardinalValue, cardinalBucket);
+				relax(below | right, diagonalValue, diagonalBucket);
+				relax(below | x, cardinalValue, cardinalBucket);
+				relax(below | left, diagonalValue, diagonalBucket);
+				relax(row | left, cardinalValue, cardinalBucket);
+			}
+			bucket.clear();
 		}
-		bucket.clear();
-	}
+	};
+	if (swimClass == 0 || swimClass == SWIM_CLASS_EVEN)
+		sweep(std::true_type{});
+	else
+		sweep(std::false_type{});
 }
 
 bool Map::directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict) const
