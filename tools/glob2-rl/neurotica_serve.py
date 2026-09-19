@@ -35,7 +35,7 @@ import torch
 from neurotica_net import NeuroticaNet, MIX_PRESETS, NUM_BUILDING_CLASSES
 from neurotica_decode import anchors
 
-MAGIC = b"NPS4"
+MAGIC = b"NPS5"
 
 # Plane ranges inside the DYNAMIC stack (NeuroticaObservation.h order):
 # 8 resources, 13 own buildings, level/site/workers, 13 enemy buildings,
@@ -126,6 +126,7 @@ class Client:
         self.held_mix = None
         self.mix_step = 0
         self.temps: list = []
+        self.pending_phi = 0.5
         self.ticks: list = []
 
 
@@ -264,7 +265,9 @@ def main() -> int:
                     if head is None:
                         raise ConnectionError
                     tick, team = struct.unpack_from("<IB", head, 0)
+                    (win_permille,) = struct.unpack_from("<H", head, 5)
                     client.team_seen = team
+                    client.pending_phi = win_permille / 1000.0
                     payload = _recv_exact(client.conn, client.dyn_bytes)
                     if payload is None:
                         raise ConnectionError
@@ -460,11 +463,16 @@ def main() -> int:
                     client.temps.append(float(args.temperature))
                 if "value" in out:
                     client.values.append(float(out["value"][n]))
-                mine = float((dyn[MY_BUILDING_SLICE] > 0).sum() +
-                             (dyn[MY_UNIT_SLICE] > 0).sum())
-                theirs = float((dyn[ENEMY_BUILDING_SLICE] > 0).sum() +
-                               (dyn[ENEMY_UNIT_SLICE] > 0).sum())
-                client.potentials.append((mine - theirs) / 500.0)
+                # Potential = this alliance's fitted win probability, sent by
+                # the engine (WinProbability.h, PR #339). It replaces a count of
+                # occupied observation cells, which was wrong three ways: it
+                # counted footprint cells so a 6x6 racetrack scored 36 and it
+                # rewarded sprawl; the enemy planes are fog-limited so LOSING
+                # sight of the opponent raised it; and it had no units anyone
+                # could interpret. This one is a calibrated probability, so
+                # gamma*phi(s') - phi(s) is credit for actually improving the
+                # position.
+                client.potentials.append(client.pending_phi)
 
         for (client, _d, _t), reply in zip(pending, packed):
             if not _send_all(client.conn, reply.tobytes()):

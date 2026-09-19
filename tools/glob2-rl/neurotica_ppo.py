@@ -97,13 +97,39 @@ def build_observation(static: np.ndarray, dynamic: np.ndarray,
                            tick_planes], axis=0)
 
 
-def compute_rewards(traj: Trajectory, gamma: float, shaping: float) -> np.ndarray:
-    """Terminal win/loss plus potential-based shaping."""
+def compute_rewards(traj: Trajectory, gamma: float, shaping: float,
+                    truncated: bool = False) -> np.ndarray:
+    """Terminal win/loss plus potential-based shaping on win probability.
+
+    Phi is the fitted win probability of this alliance (WinProbability.h),
+    sent by the engine with every policy request. Potential-based shaping,
+    gamma*Phi(s') - Phi(s), is policy-invariant: it cannot introduce a
+    strategy that wins the shaping instead of the game, so a calibrated Phi
+    buys dense credit for free. It is the answer to a sparse terminal reward
+    on 1600-step episodes, where an advantage horizon of 1/(1-gamma*lam) ~ 20
+    steps means the outcome reaches early steps only through the value head.
+
+    The terminal term matters and was missing. Shaping telescopes to
+    Phi(terminal) - Phi(start); without the last step the sum is left short by
+    gamma*Phi(s_T) - Phi(s_{T-1}), which is exactly the credit for the final
+    swing, and the policy-invariance argument does not hold. For a DECIDED
+    game Phi(terminal) is 1 for a win and 0 for a loss, by definition. For a
+    game stopped by the tick cap there is no terminal state -- the episode is
+    truncated, not finished -- so the last potential stands in for the value
+    of continuing, which is what makes a capped game score its position
+    rather than a flat zero.
+    """
     T = len(traj.logps)
     rewards = np.zeros(T, dtype=np.float32)
     if shaping > 0 and T > 1:
         phi = traj.potentials.astype(np.float32)
         rewards[:-1] += shaping * (gamma * phi[1:] - phi[:-1])
+        if truncated:
+            phi_terminal = float(phi[-1])
+        else:
+            phi_terminal = 1.0 if traj.outcome > 0 else (
+                0.0 if traj.outcome < 0 else float(phi[-1]))
+        rewards[-1] += shaping * (gamma * phi_terminal - float(phi[-1]))
     rewards[-1] += traj.outcome
     return rewards
 
@@ -184,7 +210,10 @@ def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
     all_adv, all_ret, all_act, all_logp, obs_refs = [], [], [], [], []
     all_mix, all_dec, all_allow, all_temp = [], [], [], []
     for traj in trajs:
-        rewards = compute_rewards(traj, args.gamma, args.shaping)
+        # A tick-capped game is truncated, not terminated: the outcome is 0
+        # only because the clock ran out.
+        rewards = compute_rewards(traj, args.gamma, args.shaping,
+                                  truncated=(traj.outcome == 0))
         adv, ret = gae(rewards, traj.values, args.gamma, args.lam)
         all_adv.append(adv)
         all_ret.append(ret)

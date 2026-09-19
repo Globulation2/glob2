@@ -446,6 +446,7 @@ game/entities/UnitType.cpp
 unit/UnitUtils.cpp
 Utilities.cpp
 VoiceRecorder.cpp
+WinProbability.cpp
 WinningConditions.cpp
 yog/YOGAfterJoinGameInformation.cpp
 yog/YOGClientBlockedList.cpp
@@ -580,6 +581,7 @@ Settings.cpp
 unit/UnitUtils.cpp
 yog/YOGAfterJoinGameInformation.cpp
 yog/YOGDownloadableMapInfo.cpp
+WinProbability.cpp
 WinningConditions.cpp
 yog/YOGServerAdministratorCommands.cpp
 yog/YOGServerAdministrator.cpp

@@ -3,6 +3,9 @@
 
 #include "NeuroticaPolicySocket.h"
 
+#include "WinProbability.h"
+#include <algorithm>
+
 #include "Game.h"
 #include "Map.h"
 #include "NeuroticaObservation.h"
@@ -120,7 +123,7 @@ namespace Neurotica
 		}
 
 		Uint8 header[16];
-		std::memcpy(header, "NPS4", 4);
+		std::memcpy(header, "NPS5", 4);
 		const Uint16 w = Uint16(map->getW()), h = Uint16(map->getH());
 		std::memcpy(header + 4, &w, 2);
 		std::memcpy(header + 6, &h, 2);
@@ -152,10 +155,34 @@ namespace Neurotica
 		if (!encodeDynamicPlanes(team_, planes_))
 			return false;
 
+		// Win probability for this team's alliance, in permille, from the
+		// fitted model in WinProbability.h (PR #339). It rides in the request
+		// so the learner can use it as a shaping potential: the server cannot
+		// compute it, because the observation is fogged and the model needs
+		// both sides' true state. Shaping reads the reward, never the policy
+		// input, so using unfogged state here does not let the AI see through
+		// fog -- it only makes the credit assignment honest.
+		//
+		// Before MINIMUM_DECISION_TICK the model declines to judge (the opening
+		// samples are lopsided for reasons that mean nothing), so report even
+		// odds there: a constant potential contributes exactly zero shaping.
+		Uint16 permille = 500;
+		if (Sint32(tick) >= WinProbability::MINIMUM_DECISION_TICK)
+		{
+			std::vector<int> allianceOf;
+			const std::vector<WinProbability::Slot> slots =
+				WinProbability::slotsOf(*team_->game, allianceOf);
+			const int mine = allianceOf[team_->teamNumber];
+			const std::vector<int> odds = WinProbability::permille(slots);
+			if (mine >= 0 && size_t(mine) < odds.size())
+				permille = Uint16(std::max(0, std::min(1000, odds[mine])));
+		}
+
 		Uint8 header[8];
 		std::memcpy(header, &tick, 4);
 		header[4] = Uint8(team_->teamNumber);
-		header[5] = header[6] = header[7] = 0;
+		std::memcpy(header + 5, &permille, 2);
+		header[7] = 0;
 		if (!writeAll(header, sizeof(header)) || !writeAll(planes_.data(), planes_.size()))
 		{
 			std::cerr << "Neurotica: policy request failed; going inert" << std::endl;

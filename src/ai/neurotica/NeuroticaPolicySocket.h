@@ -21,7 +21,7 @@
   Protocol (little-endian, no framing beyond the lengths shown):
 
     HANDSHAKE, client -> server, once per connection
-      [4B] magic "NPS4"
+      [4B] magic "NPS5"
       [2B] u16 map_w
       [2B] u16 map_h
       [1B] u8  num_static_planes
@@ -37,7 +37,12 @@
     REQUEST, client -> server, per policy step
       [4B] u32 tick
       [1B] u8  team_number
-      [3B] pad
+      [2B] u16 win_permille   this alliance's win probability (WinProbability.h),
+                              500 before MINIMUM_DECISION_TICK. Carried for the
+                              learner to use as a shaping potential; the server
+                              cannot compute it because the observation is
+                              fogged and the model needs both sides' true state.
+      [1B] pad
       [...] dynamic planes, num_dynamic * w * h bytes
 
     RESPONSE, server -> client

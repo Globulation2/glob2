@@ -259,6 +259,9 @@ private:
 	void save(GAGCore::OutputStream *stream);
 
 public:
+	//! Read-only access for code that only measures, such as the win probability
+	//! model, so it does not need friendship to reach the sample ring.
+	const TeamStat *getLatestStat(void) const { return &(stats[statsIndex]); }
 	TeamStat *getLatestStat(void) { return &(stats[statsIndex]); }
 	//! Read-only access to the 512-tick EndOfGameStat history, used by the
 	//! headless team-timeline dump (Engine::printAutomaticEndingSummary).
