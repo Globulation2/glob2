@@ -1434,3 +1434,6 @@
 [The Gauntlet]
 [Partition thickness]
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+[Bastion Keys]
+[Plantation size]
+[Outlying islands]

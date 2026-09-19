@@ -420,6 +420,40 @@ What made the rounds work:
 - **Re-measure the economy after every look fix.** Yield, wheat near swarms and building sites are deterministic and cheap. A round that only checks the new picture misses the colonies it starved.
 - **Verify its proposals, don't copy them.** Some proposals the author had already made; some were simulated on terrain rather than generated. Measure the change with the reviewer's own tool after implementing it.
 
+## Keep the evidence attached to the design that produced it
+
+A change from causeways to swimming-only islands changes first contact, expansion
+and AI training requirements even when every home is unchanged. Archive the old
+games as development history and rerun movement checks, opening calibration and
+longer games on the new terrain. Verify swimming training and actual contact;
+static reachability alone cannot show that an AI uses its pool. Recheck detached
+new swarms too: units born on a neutral island may need a local pool.
+
+Validate log completeness before interpreting counters. Require the final
+`GLOB2_MEASURE` record for each team (`final=1`) and match its tick to `result.json`.
+A completed result does not establish a complete stdout log. During Bastion Keys
+work a full disk left a 60,000-tick game's log ending at tick 12,800; pairing those
+counters with its final population falsely suggested no combat. Check free space
+before large batches, compress completed logs/saves, and retain the saved world
+when a missing final counter must be recovered. Do not compress an active log.
+
+Opening failure can be a staffing threshold rather than lack of timber. In the
+Bastion Keys calibration, four-worker Cabino colonies never began their first inn,
+while an eight-worker control constructed inns and harvested timber. Inspect idle
+workers, assigned swarm workers and first-building demand before adding wood.
+Report the AI-specific limit instead of changing an unrelated AI or silently
+granting a premade base. Empty field area also does not prove inn space: enumerate
+complete footprints beside accessible grain, including the AI's upgrade reserve.
+
+Small decorative additions can consume the production margin at a control's
+minimum. Recount fertile, plantable capacity after landing fields, wall aprons,
+lanes and service courts have all been stamped. Preserve the starter guarantee
+and reserve capacity for upper abundance settings. Piecewise interpolation through
+0%, 100% and 300% can keep a tested default while making high settings meaningful;
+interpolate before rounding, and measure actual deposits rather than only targets.
+If the smallest advertised estate cannot fit its promises, change the supported
+range explicitly instead of weakening the court or supply guarantee seed by seed.
+
 ## What to write down
 
 For every tuning change keep the seed, the request, the symptom (which colony, which tick, which metric), the hypothesis, the change and the paired re-run. The generators' headers carry this record in the comments on their constants; the pull requests carry the numbers. Both are what the next map's designer reads.

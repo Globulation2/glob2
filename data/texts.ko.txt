@@ -2870,3 +2870,9 @@ Emoji
 분리벽 두께
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 시련의 투기장에서 각 식민지에 방어된 입구 두 개를 배치하려면 지도를 더 크게 하거나 식민지 수를 줄여야 합니다.
+[Bastion Keys]
+요새 군도
+[Plantation size]
+농장 크기
+[Outlying islands]
+주변 섬

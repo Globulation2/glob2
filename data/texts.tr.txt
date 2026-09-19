@@ -2882,3 +2882,9 @@ Sınav arenası
 Bölme duvarı kalınlığı
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Sınav arenasında her koloniye iki korunan giriş sığdırmak için daha büyük bir harita veya daha az koloni gerekir.
+[Bastion Keys]
+Burç Adacıkları
+[Plantation size]
+Plantasyon boyutu
+[Outlying islands]
+Dış adalar

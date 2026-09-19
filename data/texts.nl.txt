@@ -2898,3 +2898,9 @@ De beproevingsarena
 Dikte van de scheidingsmuren
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 De beproevingsarena heeft een grotere kaart of minder kolonies nodig om twee bewaakte ingangen per kolonie te kunnen plaatsen.
+[Bastion Keys]
+Bastioneilanden
+[Plantation size]
+Plantagegrootte
+[Outlying islands]
+Buiteneilanden

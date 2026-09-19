@@ -2874,3 +2874,9 @@ Emoji
 Дебљина преградних зидова
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Арени искушења је потребна већа мапа или мање колонија како би свака колонија имала места за два брањена улаза.
+[Bastion Keys]
+Утврђена острвца
+[Plantation size]
+Величина плантаже
+[Outlying islands]
+Спољна острва

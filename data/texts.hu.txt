@@ -2874,3 +2874,9 @@ Próbák arénája
 Válaszfalak vastagsága
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 A Próbák arénájához nagyobb térkép vagy kevesebb kolónia kell, hogy minden kolóniának elférjen két őrzött bejárata.
+[Bastion Keys]
+Bástyaszigetek
+[Plantation size]
+Ültetvény mérete
+[Outlying islands]
+Külső szigetek

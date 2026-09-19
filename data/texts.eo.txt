@@ -2872,3 +2872,9 @@ Areno de provoj
 Dikeco de disigaj muroj
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Areno de provoj bezonas pli grandan mapon aŭ malpli da kolonioj por havi lokon por du gardataj enirejoj ĉe ĉiu kolonio.
+[Bastion Keys]
+Bastionaj insuletoj
+[Plantation size]
+Grandeco de plantejoj
+[Outlying islands]
+Eksteraj insuloj

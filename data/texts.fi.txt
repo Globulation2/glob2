@@ -2874,3 +2874,9 @@ Koetusten areena
 Väliseinien paksuus
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Koetusten areena tarvitsee suuremman kartan tai vähemmän siirtokuntia, jotta jokaiselle siirtokunnalle mahtuu kaksi vartioitua sisäänkäyntiä.
+[Bastion Keys]
+Linnakesaaret
+[Plantation size]
+Viljelmän koko
+[Outlying islands]
+Ulkosaaret

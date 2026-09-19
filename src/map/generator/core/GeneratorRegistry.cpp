@@ -59,6 +59,7 @@
 #include "MarchlandGenerator.h"
 #include "OrchardCommonsGenerator.h"
 #include "GauntletGenerator.h"
+#include "BastionKeysGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -177,7 +178,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 centralQuarryDefinition(), hiddenOasisDefinition(),
 											 orchardCommonsDefinition(), gauntletDefinition(),
 											 evenGroundDefinition(), marchlandDefinition(),
-											 ruggedArchipelagoDefinition(),
+											 bastionKeysDefinition(), ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
 											 evergladesDefinition(),

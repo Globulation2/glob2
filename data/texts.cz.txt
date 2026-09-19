@@ -2874,3 +2874,9 @@ Aréna zkoušek
 Tloušťka dělicích zdí
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Aréna zkoušek potřebuje větší mapu nebo méně kolonií, aby se ke každé kolonii vešly dva bráněné vstupy.
+[Bastion Keys]
+Opevněné ostrůvky
+[Plantation size]
+Velikost plantáží
+[Outlying islands]
+Okolní ostrovy
