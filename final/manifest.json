@@ -1,0 +1,19 @@
+{
+  "base_commit": "f40819bb6fa30af4a11105974bc4a930f3c0242a",
+  "binary_sha256": "1dcd3cf9320d0b6da65011f72cfe1287791419a5836954a5aed9d5197b7c0745",
+  "source_sha256": "3be1724b0b0862fafbc2c1701f1cb25d384753c71233c1767c616d207419e607",
+  "generator": "who-ate-the-map",
+  "id": 60,
+  "revision": 1,
+  "play_revisions": [
+    "v6:12mixedrotations; three maps identical tofinal",
+    "v9:40k256regression and40k512island; geometry equal throughv10, finaloptimizationcorpus42byteequal"
+  ],
+  "parameter_revision": "v10",
+  "optimization_equivalence": [
+    "equivalence/performance.json",
+    "equivalence/play-v10-final.json"
+  ],
+  "final_review": "review6/review-summary.md",
+  "playtest_outcome": "12 mixed rotations plus two40k homogeneous regressions; local pools verified on detached island"
+}

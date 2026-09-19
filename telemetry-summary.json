@@ -1,0 +1,23 @@
+{
+  "bite_profiles": {
+    "shallow": 1978,
+    "lopsided": 1991,
+    "deep": 2043
+  },
+  "occupied_components": {
+    "1": 1909,
+    "2": 91
+  },
+  "start_search_trials": {
+    "1": 1990,
+    "3": 3,
+    "25": 1,
+    "14": 1,
+    "2": 3,
+    "12": 1,
+    "6": 1
+  },
+  "crowded_fallbacks": {
+    "Crescent needs twenty-tile spacing; farm and town capacity unchanged": 1
+  }
+}

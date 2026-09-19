@@ -1,0 +1,42 @@
+[
+  {
+    "version": "before",
+    "round": 0,
+    "rc": 0,
+    "timing": {
+      "real": "19.66",
+      "user": "2.98",
+      "sys": "0.02"
+    }
+  },
+  {
+    "version": "after",
+    "round": 0,
+    "rc": 0,
+    "timing": {
+      "real": "20.36",
+      "user": "2.93",
+      "sys": "0.02"
+    }
+  },
+  {
+    "version": "after",
+    "round": 1,
+    "rc": 0,
+    "timing": {
+      "real": "17.69",
+      "user": "2.87",
+      "sys": "0.02"
+    }
+  },
+  {
+    "version": "before",
+    "round": 1,
+    "rc": 0,
+    "timing": {
+      "real": "18.84",
+      "user": "3.07",
+      "sys": "0.02"
+    }
+  }
+]

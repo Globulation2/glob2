@@ -1,0 +1,2 @@
+Settings::load("preferences.txt") : error, can't open file.
+PASS Who Ate the Map: reproducibility, unchanged coastline at zero resources, corruption rejection, envelope

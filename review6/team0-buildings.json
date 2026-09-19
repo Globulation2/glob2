@@ -1,0 +1,344 @@
+[
+  {
+    "gid": 0,
+    "type": 1,
+    "x": 57,
+    "y": 232,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 1,
+    "type": 7,
+    "x": 52,
+    "y": 244,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 2,
+    "type": 1,
+    "x": 54,
+    "y": 247,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 3,
+    "type": 13,
+    "x": 54,
+    "y": 236,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 4,
+    "type": 31,
+    "x": 63,
+    "y": 234,
+    "hp": 1300,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 5,
+    "type": 7,
+    "x": 53,
+    "y": 254,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 6,
+    "type": 1,
+    "x": 69,
+    "y": 235,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 7,
+    "type": 15,
+    "x": 73,
+    "y": 235,
+    "hp": 675,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 8,
+    "type": 25,
+    "x": 58,
+    "y": 253,
+    "hp": 1500,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 9,
+    "type": 37,
+    "x": 57,
+    "y": 241,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 10,
+    "type": 19,
+    "x": 74,
+    "y": 241,
+    "hp": 1500,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 11,
+    "type": 44,
+    "x": 236,
+    "y": 224,
+    "hp": 0,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 12,
+    "type": 44,
+    "x": 461,
+    "y": 352,
+    "hp": 0,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 13,
+    "type": 44,
+    "x": 440,
+    "y": 323,
+    "hp": 0,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 14,
+    "type": 25,
+    "x": 65,
+    "y": 255,
+    "hp": 1500,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 15,
+    "type": 37,
+    "x": 61,
+    "y": 246,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 16,
+    "type": 31,
+    "x": 70,
+    "y": 240,
+    "hp": 1300,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 17,
+    "type": 1,
+    "x": 71,
+    "y": 254,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 18,
+    "type": 31,
+    "x": 64,
+    "y": 239,
+    "hp": 1300,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 19,
+    "type": 7,
+    "x": 50,
+    "y": 258,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 20,
+    "type": 5,
+    "x": 78,
+    "y": 257,
+    "hp": 500,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 21,
+    "type": 13,
+    "x": 53,
+    "y": 257,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 22,
+    "type": 5,
+    "x": 60,
+    "y": 262,
+    "hp": 500,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 23,
+    "type": 13,
+    "x": 78,
+    "y": 239,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 24,
+    "type": 7,
+    "x": 55,
+    "y": 263,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 25,
+    "type": 13,
+    "x": 56,
+    "y": 260,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 26,
+    "type": 13,
+    "x": 53,
+    "y": 260,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 27,
+    "type": 7,
+    "x": 83,
+    "y": 234,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 28,
+    "type": 7,
+    "x": 67,
+    "y": 249,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 29,
+    "type": 4,
+    "x": 454,
+    "y": 360,
+    "hp": 200,
+    "state": 1,
+    "construction_result": 2
+  },
+  {
+    "gid": 30,
+    "type": 13,
+    "x": 81,
+    "y": 257,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 31,
+    "type": 5,
+    "x": 86,
+    "y": 258,
+    "hp": 500,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 32,
+    "type": 13,
+    "x": 81,
+    "y": 237,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 33,
+    "type": 45,
+    "x": 354,
+    "y": 403,
+    "hp": 0,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 34,
+    "type": 45,
+    "x": 349,
+    "y": 401,
+    "hp": 0,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 35,
+    "type": 45,
+    "x": 351,
+    "y": 407,
+    "hp": 0,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 36,
+    "type": 45,
+    "x": 275,
+    "y": 415,
+    "hp": 0,
+    "state": 1,
+    "construction_result": 0
+  },
+  {
+    "gid": 37,
+    "type": 1,
+    "x": 76,
+    "y": 252,
+    "hp": 700,
+    "state": 1,
+    "construction_result": 0
+  }
+]

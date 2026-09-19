@@ -1,0 +1,2399 @@
+{
+  "binary_sha256": "13ad023185987588f01cf6b332ccd27418097580afaf9ee1600cbc7d0ce21672",
+  "jobs": [
+    {
+      "id": "pilot-00000",
+      "w": 128,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00001",
+      "w": 128,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00002",
+      "w": 128,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00003",
+      "w": 128,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00004",
+      "w": 128,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00005",
+      "w": 128,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00006",
+      "w": 128,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00007",
+      "w": 128,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00008",
+      "w": 128,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00009",
+      "w": 128,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00010",
+      "w": 128,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00011",
+      "w": 128,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00012",
+      "w": 128,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00013",
+      "w": 128,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00014",
+      "w": 128,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00015",
+      "w": 128,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00016",
+      "w": 128,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00017",
+      "w": 128,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00018",
+      "w": 128,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00019",
+      "w": 128,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00020",
+      "w": 128,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00021",
+      "w": 128,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00022",
+      "w": 128,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00023",
+      "w": 128,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00024",
+      "w": 128,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00025",
+      "w": 128,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00026",
+      "w": 128,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00027",
+      "w": 128,
+      "h": 256,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00028",
+      "w": 128,
+      "h": 256,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00029",
+      "w": 128,
+      "h": 256,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00030",
+      "w": 128,
+      "h": 256,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00031",
+      "w": 128,
+      "h": 256,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00032",
+      "w": 128,
+      "h": 256,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00033",
+      "w": 128,
+      "h": 256,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00034",
+      "w": 128,
+      "h": 256,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00035",
+      "w": 128,
+      "h": 256,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00036",
+      "w": 256,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00037",
+      "w": 256,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00038",
+      "w": 256,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00039",
+      "w": 256,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00040",
+      "w": 256,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00041",
+      "w": 256,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00042",
+      "w": 256,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00043",
+      "w": 256,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00044",
+      "w": 256,
+      "h": 128,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00045",
+      "w": 256,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00046",
+      "w": 256,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00047",
+      "w": 256,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00048",
+      "w": 256,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00049",
+      "w": 256,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00050",
+      "w": 256,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00051",
+      "w": 256,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00052",
+      "w": 256,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00053",
+      "w": 256,
+      "h": 128,
+      "teams": 4,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00054",
+      "w": 256,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00055",
+      "w": 256,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00056",
+      "w": 256,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00057",
+      "w": 256,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00058",
+      "w": 256,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00059",
+      "w": 256,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00060",
+      "w": 256,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00061",
+      "w": 256,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00062",
+      "w": 256,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00063",
+      "w": 256,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00064",
+      "w": 256,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00065",
+      "w": 256,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00066",
+      "w": 256,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00067",
+      "w": 256,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00068",
+      "w": 256,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00069",
+      "w": 256,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00070",
+      "w": 256,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00071",
+      "w": 256,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00072",
+      "w": 256,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00073",
+      "w": 256,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00074",
+      "w": 256,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00075",
+      "w": 256,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00076",
+      "w": 256,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00077",
+      "w": 256,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00078",
+      "w": 256,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00079",
+      "w": 256,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00080",
+      "w": 256,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00081",
+      "w": 256,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00082",
+      "w": 256,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00083",
+      "w": 256,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00084",
+      "w": 256,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00085",
+      "w": 256,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00086",
+      "w": 256,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00087",
+      "w": 256,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00088",
+      "w": 256,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00089",
+      "w": 256,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00090",
+      "w": 512,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00091",
+      "w": 512,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00092",
+      "w": 512,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00093",
+      "w": 512,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00094",
+      "w": 512,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00095",
+      "w": 512,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00096",
+      "w": 512,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00097",
+      "w": 512,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00098",
+      "w": 512,
+      "h": 256,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00099",
+      "w": 512,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00100",
+      "w": 512,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00101",
+      "w": 512,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00102",
+      "w": 512,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00103",
+      "w": 512,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00104",
+      "w": 512,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00105",
+      "w": 512,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00106",
+      "w": 512,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00107",
+      "w": 512,
+      "h": 256,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00108",
+      "w": 512,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00109",
+      "w": 512,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00110",
+      "w": 512,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00111",
+      "w": 512,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00112",
+      "w": 512,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00113",
+      "w": 512,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00114",
+      "w": 512,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00115",
+      "w": 512,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00116",
+      "w": 512,
+      "h": 512,
+      "teams": 1,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00117",
+      "w": 512,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00118",
+      "w": 512,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00119",
+      "w": 512,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 0,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00120",
+      "w": 512,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00121",
+      "w": 512,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00122",
+      "w": 512,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 1,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00123",
+      "w": 512,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 0,
+        "wood-amount": 0,
+        "stone-amount": 0,
+        "algae-amount": 0,
+        "fruit-amount": 0
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00124",
+      "w": 512,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 100,
+        "wood-amount": 100,
+        "stone-amount": 100,
+        "algae-amount": 100,
+        "fruit-amount": 100
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    },
+    {
+      "id": "pilot-00125",
+      "w": 512,
+      "h": 512,
+      "teams": 8,
+      "workers": 8,
+      "seed": 71,
+      "params": {
+        "appetite": 2,
+        "wheat-amount": 300,
+        "wood-amount": 300,
+        "stone-amount": 300,
+        "algae-amount": 300,
+        "fruit-amount": 300
+      },
+      "study": "extremes",
+      "control": "",
+      "value": 0
+    }
+  ]
+}

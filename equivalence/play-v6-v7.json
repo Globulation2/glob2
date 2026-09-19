@@ -1,0 +1,42 @@
+[
+  {
+    "size": 128,
+    "appetite": 2,
+    "seed": 1,
+    "sha256": [
+      "63149a1dd8e77d8d583de661b3640568c8389d40619a06aa8c1d7d6793d6d083",
+      "63149a1dd8e77d8d583de661b3640568c8389d40619a06aa8c1d7d6793d6d083"
+    ],
+    "equal": true
+  },
+  {
+    "size": 128,
+    "appetite": 1,
+    "seed": 7,
+    "sha256": [
+      "dea5fc5d5b8d20f5d3fbce5ef605106f7274fd50e7c76c75890631d68a7edeb6",
+      "dea5fc5d5b8d20f5d3fbce5ef605106f7274fd50e7c76c75890631d68a7edeb6"
+    ],
+    "equal": true
+  },
+  {
+    "size": 128,
+    "appetite": 2,
+    "seed": 7,
+    "sha256": [
+      "aab28b75bcca9a9fcadcf563cbc01c51bbf679ad73ea566f632935aaae4d22b1",
+      "aab28b75bcca9a9fcadcf563cbc01c51bbf679ad73ea566f632935aaae4d22b1"
+    ],
+    "equal": true
+  },
+  {
+    "size": 256,
+    "appetite": 2,
+    "seed": 7,
+    "sha256": [
+      "28ecc9a2ed17ebadaad91f0d83bc282ec7f7e90262115743781cc4edffaf0ea7",
+      "28ecc9a2ed17ebadaad91f0d83bc282ec7f7e90262115743781cc4edffaf0ea7"
+    ],
+    "equal": true
+  }
+]

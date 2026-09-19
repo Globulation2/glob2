@@ -1,0 +1,34 @@
+[
+  {
+    "map": "128x128-a2-s1",
+    "hashes": [
+      "d15127cac1be00ce973a6c9c5db25af0f1d14e180f03419ab885e642b01a336f",
+      "d15127cac1be00ce973a6c9c5db25af0f1d14e180f03419ab885e642b01a336f"
+    ],
+    "equal": true
+  },
+  {
+    "map": "128x128-a1-s7",
+    "hashes": [
+      "514a083668d9c04bae2ebd5a87cfef75414c748b56fd66ee6ccdfda5310ec7d1",
+      "514a083668d9c04bae2ebd5a87cfef75414c748b56fd66ee6ccdfda5310ec7d1"
+    ],
+    "equal": true
+  },
+  {
+    "map": "128x128-a2-s7",
+    "hashes": [
+      "1631bb2197c9b7a79aea80a68e5a96bf507760d6abb7425af87ae90e5a19a7c3",
+      "1631bb2197c9b7a79aea80a68e5a96bf507760d6abb7425af87ae90e5a19a7c3"
+    ],
+    "equal": true
+  },
+  {
+    "map": "256x256-a2-s7",
+    "hashes": [
+      "71ab3172eb310997d41ecd0ff21a39bda195e9d55417a41a7150e2420d8b7b07",
+      "3330d47dda45442ee94bc9ca8461ad270819c5350b30a0509a20bfb5452391c7"
+    ],
+    "equal": false
+  }
+]

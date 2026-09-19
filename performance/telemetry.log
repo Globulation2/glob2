@@ -1,0 +1,12 @@
+Settings::load("preferences.txt") : error, can't open file.
+generator,seed,off_ms,on_ms,records,status
+who-ate-the-map,1,1216.273,927.591,185,ok
+who-ate-the-map,2,860.653,943.723,189,ok
+who-ate-the-map,3,659.034,585.280,192,ok
+who-ate-the-map,4,951.295,1018.531,185,ok
+who-ate-the-map,5,829.397,888.723,188,ok
+who-ate-the-map,6,699.007,764.178,192,ok
+who-ate-the-map,7,783.052,775.156,185,ok
+who-ate-the-map,8,718.642,758.613,188,ok
+who-ate-the-map,9,445.692,425.166,191,ok
+# telemetry: 9 cases, 9 generated, 0 semantic failures, off 7163.045 ms, on 7086.960 ms

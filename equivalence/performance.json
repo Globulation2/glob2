@@ -1,0 +1,506 @@
+[
+  {
+    "w": 128,
+    "h": 128,
+    "teams": 4,
+    "appetite": 0,
+    "seed": 7,
+    "hashes": [
+      "6455598be358fa76e277b82a8258cd17425c7a3a8f1b21973b8ec88c17899478",
+      "6455598be358fa76e277b82a8258cd17425c7a3a8f1b21973b8ec88c17899478"
+    ],
+    "equal": true
+  },
+  {
+    "w": 128,
+    "h": 128,
+    "teams": 4,
+    "appetite": 0,
+    "seed": 11,
+    "hashes": [
+      "e393c7d456f9b3b211d4fc982f8b44a1dcddcffd011a2c6feef4c50c12c7b069",
+      "e393c7d456f9b3b211d4fc982f8b44a1dcddcffd011a2c6feef4c50c12c7b069"
+    ],
+    "equal": true
+  },
+  {
+    "w": 128,
+    "h": 128,
+    "teams": 4,
+    "appetite": 1,
+    "seed": 7,
+    "hashes": [
+      "9a34eedc4a17aaeaed79753f51e0cce7ae400ce6a521674372140e7fa7e26113",
+      "9a34eedc4a17aaeaed79753f51e0cce7ae400ce6a521674372140e7fa7e26113"
+    ],
+    "equal": true
+  },
+  {
+    "w": 128,
+    "h": 128,
+    "teams": 4,
+    "appetite": 1,
+    "seed": 11,
+    "hashes": [
+      "859d5b2bd56fdd547b54c92cd9011efd5e795e05a82a4a0a5fbe24a63a04d51b",
+      "859d5b2bd56fdd547b54c92cd9011efd5e795e05a82a4a0a5fbe24a63a04d51b"
+    ],
+    "equal": true
+  },
+  {
+    "w": 128,
+    "h": 128,
+    "teams": 4,
+    "appetite": 2,
+    "seed": 7,
+    "hashes": [
+      "4c423ad970024a155f06bfe81caa6ba43e356be3a86ef7626f3a4bd6dede25b9",
+      "4c423ad970024a155f06bfe81caa6ba43e356be3a86ef7626f3a4bd6dede25b9"
+    ],
+    "equal": true
+  },
+  {
+    "w": 128,
+    "h": 128,
+    "teams": 4,
+    "appetite": 2,
+    "seed": 11,
+    "hashes": [
+      "e0b3bcf08eaec82c93b90589d26f768a4b744a873645a52e7ccc067370207d41",
+      "e0b3bcf08eaec82c93b90589d26f768a4b744a873645a52e7ccc067370207d41"
+    ],
+    "equal": true
+  },
+  {
+    "w": 128,
+    "h": 256,
+    "teams": 4,
+    "appetite": 0,
+    "seed": 7,
+    "hashes": [
+      "b4bd34e068d5595afb6528532ff02dd526bc662be5c716727a938129da68f0d0",
+      "b4bd34e068d5595afb6528532ff02dd526bc662be5c716727a938129da68f0d0"
+    ],
+    "equal": true
+  },
+  {
+    "w": 128,
+    "h": 256,
+    "teams": 4,
+    "appetite": 0,
+    "seed": 11,
+    "hashes": [
+      "a74a34340bb14f40a3eee871fab81be6053a3efd61c3dcf4f3f6334cd45fdf5f",
+      "a74a34340bb14f40a3eee871fab81be6053a3efd61c3dcf4f3f6334cd45fdf5f"
+    ],
+    "equal": true
+  },
+  {
+    "w": 128,
+    "h": 256,
+    "teams": 4,
+    "appetite": 1,
+    "seed": 7,
+    "hashes": [
+      "c41ffdf64ee36df0f9baa28a10633a1f914e2e16c1b9b709ac97199d04c9a8a1",
+      "c41ffdf64ee36df0f9baa28a10633a1f914e2e16c1b9b709ac97199d04c9a8a1"
+    ],
+    "equal": true
+  },
+  {
+    "w": 128,
+    "h": 256,
+    "teams": 4,
+    "appetite": 1,
+    "seed": 11,
+    "hashes": [
+      "8ca67b2b23f6c70060e60836810b630c801affd39b8672412dce4479b78d03d4",
+      "8ca67b2b23f6c70060e60836810b630c801affd39b8672412dce4479b78d03d4"
+    ],
+    "equal": true
+  },
+  {
+    "w": 128,
+    "h": 256,
+    "teams": 4,
+    "appetite": 2,
+    "seed": 7,
+    "hashes": [
+      "4c758e0da63abe4fc6dbb7b1c1163978a8cded024e1e7cfd1361c85bda346c19",
+      "4c758e0da63abe4fc6dbb7b1c1163978a8cded024e1e7cfd1361c85bda346c19"
+    ],
+    "equal": true
+  },
+  {
+    "w": 128,
+    "h": 256,
+    "teams": 4,
+    "appetite": 2,
+    "seed": 11,
+    "hashes": [
+      "dd8d7c78efc842c81999276d08bc47b11bbc70ef28c86123ce227a195b30153a",
+      "dd8d7c78efc842c81999276d08bc47b11bbc70ef28c86123ce227a195b30153a"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 128,
+    "teams": 4,
+    "appetite": 0,
+    "seed": 7,
+    "hashes": [
+      "cc5cd67632bb999c45ada6dd7193a7e9d270aa11a60e490683bf5b917636d045",
+      "cc5cd67632bb999c45ada6dd7193a7e9d270aa11a60e490683bf5b917636d045"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 128,
+    "teams": 4,
+    "appetite": 0,
+    "seed": 11,
+    "hashes": [
+      "cf928bc3d7a88e2818170427db97a4dfefa7b5804415adff367e52630e7a97a8",
+      "cf928bc3d7a88e2818170427db97a4dfefa7b5804415adff367e52630e7a97a8"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 128,
+    "teams": 4,
+    "appetite": 1,
+    "seed": 7,
+    "hashes": [
+      "d78c1031eb86d12eca63a9c49de1ba81eec060371f796a45af0e65cc1ab8e6b8",
+      "d78c1031eb86d12eca63a9c49de1ba81eec060371f796a45af0e65cc1ab8e6b8"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 128,
+    "teams": 4,
+    "appetite": 1,
+    "seed": 11,
+    "hashes": [
+      "6059b952569c9c691e02a8ca104bd7b5318de5820f92172610bb9dd44f04f6a7",
+      "6059b952569c9c691e02a8ca104bd7b5318de5820f92172610bb9dd44f04f6a7"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 128,
+    "teams": 4,
+    "appetite": 2,
+    "seed": 7,
+    "hashes": [
+      "e10b4225faf18ae100a3d8652265a42072baebcca449271be80765d4c8519f2d",
+      "e10b4225faf18ae100a3d8652265a42072baebcca449271be80765d4c8519f2d"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 128,
+    "teams": 4,
+    "appetite": 2,
+    "seed": 11,
+    "hashes": [
+      "1e4c04fa56eecaecd93b3ba6277b1e49534246972c8cd08c4b16da8bd87974fd",
+      "1e4c04fa56eecaecd93b3ba6277b1e49534246972c8cd08c4b16da8bd87974fd"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 256,
+    "teams": 8,
+    "appetite": 0,
+    "seed": 7,
+    "hashes": [
+      "d3e99a35da410c7690d2bead91d30cc1182bfa138d6d34d3742194aa8c21f3da",
+      "d3e99a35da410c7690d2bead91d30cc1182bfa138d6d34d3742194aa8c21f3da"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 256,
+    "teams": 8,
+    "appetite": 0,
+    "seed": 11,
+    "hashes": [
+      "83dc7abcba239cf53814769c0525c22f32aa8596c4b7924da332acc786751932",
+      "83dc7abcba239cf53814769c0525c22f32aa8596c4b7924da332acc786751932"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 256,
+    "teams": 8,
+    "appetite": 1,
+    "seed": 7,
+    "hashes": [
+      "c904fcc9183d887465f4c75ce1ccaa58e85e8c7df7e42f448b4e9fbac6f0ecfa",
+      "c904fcc9183d887465f4c75ce1ccaa58e85e8c7df7e42f448b4e9fbac6f0ecfa"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 256,
+    "teams": 8,
+    "appetite": 1,
+    "seed": 11,
+    "hashes": [
+      "c3796b96f98b7913507e524617ea4b5b77cca68005c12ca5ed277a8258419ac5",
+      "c3796b96f98b7913507e524617ea4b5b77cca68005c12ca5ed277a8258419ac5"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 256,
+    "teams": 8,
+    "appetite": 2,
+    "seed": 7,
+    "hashes": [
+      "e623e19c1a96737914df51e98d57b02f834992f3f84e5ec43b8d8ce1dca259e2",
+      "e623e19c1a96737914df51e98d57b02f834992f3f84e5ec43b8d8ce1dca259e2"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 256,
+    "teams": 8,
+    "appetite": 2,
+    "seed": 11,
+    "hashes": [
+      "a456bec5f434a22c16485da676e0d1606433e99449a84922260f65934ea468be",
+      "a456bec5f434a22c16485da676e0d1606433e99449a84922260f65934ea468be"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 512,
+    "teams": 8,
+    "appetite": 0,
+    "seed": 7,
+    "hashes": [
+      "b5d85aaf621aa58d05c349d4886a4a26dceb0e2cbb255fc09835c37f8cf28cb5",
+      "b5d85aaf621aa58d05c349d4886a4a26dceb0e2cbb255fc09835c37f8cf28cb5"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 512,
+    "teams": 8,
+    "appetite": 0,
+    "seed": 11,
+    "hashes": [
+      "64f183746081839add7d5d69e173de9052824bbee898b81ea50ea1a65201d5dd",
+      "64f183746081839add7d5d69e173de9052824bbee898b81ea50ea1a65201d5dd"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 512,
+    "teams": 8,
+    "appetite": 1,
+    "seed": 7,
+    "hashes": [
+      "ad9235a154584b259f286a5077ac52324eef5044fdc3cd6551eed291837f94b0",
+      "ad9235a154584b259f286a5077ac52324eef5044fdc3cd6551eed291837f94b0"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 512,
+    "teams": 8,
+    "appetite": 1,
+    "seed": 11,
+    "hashes": [
+      "9201e547a54772061072fb034e26271decaa8ad8cf95c4d79f5f239c047319cc",
+      "9201e547a54772061072fb034e26271decaa8ad8cf95c4d79f5f239c047319cc"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 512,
+    "teams": 8,
+    "appetite": 2,
+    "seed": 7,
+    "hashes": [
+      "3e29f6697ff29a402e33fa7bce300ce8fc1b53c2f270bb8c739bdc84c3e1e4d1",
+      "3e29f6697ff29a402e33fa7bce300ce8fc1b53c2f270bb8c739bdc84c3e1e4d1"
+    ],
+    "equal": true
+  },
+  {
+    "w": 256,
+    "h": 512,
+    "teams": 8,
+    "appetite": 2,
+    "seed": 11,
+    "hashes": [
+      "de57b555afd5561dbf279c54a3ccc50fc2b35caaba28ba9eda8b322021fcfd16",
+      "de57b555afd5561dbf279c54a3ccc50fc2b35caaba28ba9eda8b322021fcfd16"
+    ],
+    "equal": true
+  },
+  {
+    "w": 512,
+    "h": 256,
+    "teams": 8,
+    "appetite": 0,
+    "seed": 7,
+    "hashes": [
+      "914a707c38b6e2f78acc3f5d334a8dc78a69c5de7ecd271b8d3c04a40fe17c70",
+      "914a707c38b6e2f78acc3f5d334a8dc78a69c5de7ecd271b8d3c04a40fe17c70"
+    ],
+    "equal": true
+  },
+  {
+    "w": 512,
+    "h": 256,
+    "teams": 8,
+    "appetite": 0,
+    "seed": 11,
+    "hashes": [
+      "1e6e6fc50f01562e431e086046a23c5e7f9f92f0f76304610cea4f432158d11b",
+      "1e6e6fc50f01562e431e086046a23c5e7f9f92f0f76304610cea4f432158d11b"
+    ],
+    "equal": true
+  },
+  {
+    "w": 512,
+    "h": 256,
+    "teams": 8,
+    "appetite": 1,
+    "seed": 7,
+    "hashes": [
+      "05975aa3dc6082b93262095d322a41a25e8fe46e9a614fb70b8fa396c2117026",
+      "05975aa3dc6082b93262095d322a41a25e8fe46e9a614fb70b8fa396c2117026"
+    ],
+    "equal": true
+  },
+  {
+    "w": 512,
+    "h": 256,
+    "teams": 8,
+    "appetite": 1,
+    "seed": 11,
+    "hashes": [
+      "54cfa7ab2c2313cf3823873599bb3cd99543048892b8b15d6ac1f785f8bda866",
+      "54cfa7ab2c2313cf3823873599bb3cd99543048892b8b15d6ac1f785f8bda866"
+    ],
+    "equal": true
+  },
+  {
+    "w": 512,
+    "h": 256,
+    "teams": 8,
+    "appetite": 2,
+    "seed": 7,
+    "hashes": [
+      "5040c962578a64476f2c6b30389883e786f7c3b2d81cc9d70cde0cc19d861443",
+      "5040c962578a64476f2c6b30389883e786f7c3b2d81cc9d70cde0cc19d861443"
+    ],
+    "equal": true
+  },
+  {
+    "w": 512,
+    "h": 256,
+    "teams": 8,
+    "appetite": 2,
+    "seed": 11,
+    "hashes": [
+      "b984d0fbff70db93b24b86f53131dfe85a1a0338d8cbbc1596fc0568f0234fd1",
+      "b984d0fbff70db93b24b86f53131dfe85a1a0338d8cbbc1596fc0568f0234fd1"
+    ],
+    "equal": true
+  },
+  {
+    "w": 512,
+    "h": 512,
+    "teams": 8,
+    "appetite": 0,
+    "seed": 7,
+    "hashes": [
+      "4d5d9b62473ce841d2a774d43913008c6a414cfa8e97ff609d29717d899d3b37",
+      "4d5d9b62473ce841d2a774d43913008c6a414cfa8e97ff609d29717d899d3b37"
+    ],
+    "equal": true
+  },
+  {
+    "w": 512,
+    "h": 512,
+    "teams": 8,
+    "appetite": 0,
+    "seed": 11,
+    "hashes": [
+      "cadbf797773e5b2ec8b5a3cbf70fa0c25ad27678bbe1a61e69945b900754a962",
+      "cadbf797773e5b2ec8b5a3cbf70fa0c25ad27678bbe1a61e69945b900754a962"
+    ],
+    "equal": true
+  },
+  {
+    "w": 512,
+    "h": 512,
+    "teams": 8,
+    "appetite": 1,
+    "seed": 7,
+    "hashes": [
+      "6eb36a1451b2d833b8906d5a36e7d38c720cb008b4943325735279e881693b74",
+      "6eb36a1451b2d833b8906d5a36e7d38c720cb008b4943325735279e881693b74"
+    ],
+    "equal": true
+  },
+  {
+    "w": 512,
+    "h": 512,
+    "teams": 8,
+    "appetite": 1,
+    "seed": 11,
+    "hashes": [
+      "b64b51ff6a22f16146c23627313c7c0082ef47a4b5f04705ff0cc77e36e46a1e",
+      "b64b51ff6a22f16146c23627313c7c0082ef47a4b5f04705ff0cc77e36e46a1e"
+    ],
+    "equal": true
+  },
+  {
+    "w": 512,
+    "h": 512,
+    "teams": 8,
+    "appetite": 2,
+    "seed": 7,
+    "hashes": [
+      "14e793613429299a712c2e94b4ec5d641aeea910d887e534031ddbc6e5508ce7",
+      "14e793613429299a712c2e94b4ec5d641aeea910d887e534031ddbc6e5508ce7"
+    ],
+    "equal": true
+  },
+  {
+    "w": 512,
+    "h": 512,
+    "teams": 8,
+    "appetite": 2,
+    "seed": 11,
+    "hashes": [
+      "ebd157a0cd9d5df7609e9065ce2a437b9812a79c445f867d49da09f6d28d6515",
+      "ebd157a0cd9d5df7609e9065ce2a437b9812a79c445f867d49da09f6d28d6515"
+    ],
+    "equal": true
+  }
+]

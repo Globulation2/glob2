@@ -1,0 +1,58 @@
+[
+  {
+    "game": "256-a2-s7-nicowar",
+    "team": 0,
+    "peak": 158,
+    "end": 158,
+    "buildings": 15,
+    "eliminated": -1,
+    "harvested_0": 490,
+    "harvested_1": 1990,
+    "deaths_0_0": 30,
+    "deaths_0_1": 0,
+    "births_0": 112,
+    "trainingVisits_0": 147
+  },
+  {
+    "game": "256-a2-s7-nicowar",
+    "team": 1,
+    "peak": 127,
+    "end": 85,
+    "buildings": 20,
+    "eliminated": -1,
+    "harvested_0": 360,
+    "harvested_1": 1386,
+    "deaths_0_0": 20,
+    "deaths_0_1": 1,
+    "births_0": 75,
+    "trainingVisits_0": 208
+  },
+  {
+    "game": "256-a2-s7-nicowar",
+    "team": 2,
+    "peak": 296,
+    "end": 294,
+    "buildings": 31,
+    "eliminated": -1,
+    "harvested_0": 548,
+    "harvested_1": 2752,
+    "deaths_0_0": 14,
+    "deaths_0_1": 6,
+    "births_0": 110,
+    "trainingVisits_0": 268
+  },
+  {
+    "game": "256-a2-s7-nicowar",
+    "team": 3,
+    "peak": 137,
+    "end": 3,
+    "buildings": 10,
+    "eliminated": -1,
+    "harvested_0": 433,
+    "harvested_1": 1960,
+    "deaths_0_0": 26,
+    "deaths_0_1": 0,
+    "births_0": 137,
+    "trainingVisits_0": 219
+  }
+]

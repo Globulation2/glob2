@@ -1,0 +1,218 @@
+[
+  {
+    "seed": 1,
+    "json_report": false,
+    "version": "v10",
+    "generator": "who-ate-the-map",
+    "rc": 0,
+    "timing": {
+      "real": "1.04",
+      "user": "0.43",
+      "sys": "0.05"
+    }
+  },
+  {
+    "seed": 1,
+    "json_report": false,
+    "version": "final",
+    "generator": "who-ate-the-map",
+    "rc": 0,
+    "timing": {
+      "real": "0.97",
+      "user": "0.38",
+      "sys": "0.06"
+    }
+  },
+  {
+    "seed": 1,
+    "json_report": false,
+    "version": "final",
+    "generator": "continents",
+    "rc": 0,
+    "timing": {
+      "real": "2.32",
+      "user": "0.94",
+      "sys": "0.05"
+    }
+  },
+  {
+    "seed": 1,
+    "json_report": true,
+    "version": "v10",
+    "generator": "who-ate-the-map",
+    "rc": 0,
+    "timing": {
+      "real": "1.80",
+      "user": "0.67",
+      "sys": "0.06"
+    }
+  },
+  {
+    "seed": 1,
+    "json_report": true,
+    "version": "final",
+    "generator": "who-ate-the-map",
+    "rc": 0,
+    "timing": {
+      "real": "1.71",
+      "user": "0.65",
+      "sys": "0.05"
+    }
+  },
+  {
+    "seed": 1,
+    "json_report": true,
+    "version": "final",
+    "generator": "continents",
+    "rc": 0,
+    "timing": {
+      "real": "3.19",
+      "user": "1.10",
+      "sys": "0.06"
+    }
+  },
+  {
+    "seed": 7,
+    "json_report": false,
+    "version": "v10",
+    "generator": "who-ate-the-map",
+    "rc": 0,
+    "timing": {
+      "real": "1.02",
+      "user": "0.42",
+      "sys": "0.06"
+    }
+  },
+  {
+    "seed": 7,
+    "json_report": false,
+    "version": "final",
+    "generator": "who-ate-the-map",
+    "rc": 0,
+    "timing": {
+      "real": "0.92",
+      "user": "0.38",
+      "sys": "0.05"
+    }
+  },
+  {
+    "seed": 7,
+    "json_report": false,
+    "version": "final",
+    "generator": "continents",
+    "rc": 0,
+    "timing": {
+      "real": "2.44",
+      "user": "0.94",
+      "sys": "0.06"
+    }
+  },
+  {
+    "seed": 7,
+    "json_report": true,
+    "version": "v10",
+    "generator": "who-ate-the-map",
+    "rc": 0,
+    "timing": {
+      "real": "1.81",
+      "user": "0.64",
+      "sys": "0.06"
+    }
+  },
+  {
+    "seed": 7,
+    "json_report": true,
+    "version": "final",
+    "generator": "who-ate-the-map",
+    "rc": 0,
+    "timing": {
+      "real": "1.54",
+      "user": "0.62",
+      "sys": "0.06"
+    }
+  },
+  {
+    "seed": 7,
+    "json_report": true,
+    "version": "final",
+    "generator": "continents",
+    "rc": 0,
+    "timing": {
+      "real": "2.66",
+      "user": "1.12",
+      "sys": "0.06"
+    }
+  },
+  {
+    "seed": 11,
+    "json_report": false,
+    "version": "v10",
+    "generator": "who-ate-the-map",
+    "rc": 0,
+    "timing": {
+      "real": "0.90",
+      "user": "0.42",
+      "sys": "0.05"
+    }
+  },
+  {
+    "seed": 11,
+    "json_report": false,
+    "version": "final",
+    "generator": "who-ate-the-map",
+    "rc": 0,
+    "timing": {
+      "real": "0.84",
+      "user": "0.39",
+      "sys": "0.05"
+    }
+  },
+  {
+    "seed": 11,
+    "json_report": false,
+    "version": "final",
+    "generator": "continents",
+    "rc": 0,
+    "timing": {
+      "real": "2.80",
+      "user": "1.23",
+      "sys": "0.06"
+    }
+  },
+  {
+    "seed": 11,
+    "json_report": true,
+    "version": "v10",
+    "generator": "who-ate-the-map",
+    "rc": 0,
+    "timing": {
+      "real": "1.43",
+      "user": "0.65",
+      "sys": "0.05"
+    }
+  },
+  {
+    "seed": 11,
+    "json_report": true,
+    "version": "final",
+    "generator": "who-ate-the-map",
+    "rc": 0,
+    "timing": {
+      "real": "1.20",
+      "user": "0.62",
+      "sys": "0.05"
+    }
+  },
+  {
+    "seed": 11,
+    "json_report": true,
+    "version": "final",
+    "generator": "continents",
+    "rc": 0,
+    "timing": {
+      "real": "2.94",
+      "user": "1.48",
+      "sys": "0.06"
+    }
+  }
+]
