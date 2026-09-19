@@ -222,6 +222,7 @@ map/generator/generators/SymmetricArenaGenerator.cpp
 map/generator/generators/TidalFlatsGenerator.cpp
 map/generator/generators/UniformGenerator.cpp
 map/generator/generators/WatershedGenerator.cpp
+map/generator/generators/CombGenerator.cpp
 map/generator/generators/OrchardCommonsGenerator.cpp
 map/generator/generators/GauntletGenerator.cpp
 map/generator/generators/HiddenOasisGenerator.cpp
@@ -903,3 +904,13 @@ if not env['server']:
     orchard_conversion_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
     orchard_conversion_test = orchard_conversion_env.Program('OrchardCommonsConversionTest', orchard_conversion_sources)
     local.Alias('orchard-conversion-test', orchard_conversion_test)
+
+# Comb contracts and cross-channel firing on generated terrain.
+if not env['server']:
+    comb_generator_sources = [source for source in source_files if source != 'Glob2.cpp']
+    comb_generator_sources += local.Object('CombGeneratorTest.o', '#test/CombGeneratorTest.cpp')
+    comb_generator_env = local.Clone()
+    comb_generator_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    comb_generator_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    comb_generator_test = comb_generator_env.Program('CombGeneratorTest', comb_generator_sources)
+    local.Alias('comb-generator-test', comb_generator_test)

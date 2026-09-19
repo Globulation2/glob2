@@ -1140,8 +1140,41 @@ inline void bajadaContracts()
 		 "towns under growth, crops refused in towns");
 }
 
+inline void combContracts()
+{
+	const int method = GeneratorRegistry::builtins().idOf("comb");
+	const auto &definition = GeneratorRegistry::builtins().at(method);
+	D request;
+	request.setMethodDefaults(method);
+	request.wDec = request.hDec = 8;
+	request.nbTeams = 4;
+	request.seed = 23;
+	std::set<std::uint64_t> shapes;
+	for (int count : {2, 3, 4})
+	{
+		request.options["peninsulas"] = count;
+		Game world(nullptr);
+		auto result = GenerationService().generate(world, request, true);
+		assert(result);
+		shapes.insert(mapFingerprint(world));
+		bool counted = false;
+		for (const auto &record : result.telemetry.records())
+			if (record.key == "comb.peninsulas.actual")
+			{
+				counted = true;
+				assert(std::get<std::int64_t>(record.value) == 2 * count);
+			}
+		assert(counted);
+		GenerationContext context(request);
+		assert(definition.validateWorld(world, context).empty());
+	}
+	assert(shapes.size() == 3);
+	puts("PASS Comb: distinct peninsula counts, finished-world contracts and telemetry");
+}
+
 inline void generatorContracts()
 {
+	combContracts();
 	rebuiltLandscapeContracts();
 	savannahContracts();
 	locustFoodChecks();

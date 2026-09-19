@@ -2830,3 +2830,7 @@ Arena tantangan
 Ketebalan dinding pemisah
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Arena tantangan memerlukan peta yang lebih besar atau lebih sedikit koloni agar setiap koloni memiliki ruang untuk dua pintu masuk yang dijaga.
+[The Comb]
+Sisir
+[Peninsulas per shore]
+Semenanjung per pantai

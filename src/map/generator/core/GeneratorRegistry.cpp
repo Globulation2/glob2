@@ -57,6 +57,7 @@
 #include "HiddenOasisGenerator.h"
 #include "OrchardCommonsGenerator.h"
 #include "GauntletGenerator.h"
+#include "CombGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -172,7 +173,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 lavaShieldDefinition(),
 											 honeycombIsleDefinition(),
 											 karstTowersDefinition(), bajadaDefinition(),
-											 centralQuarryDefinition(), hiddenOasisDefinition(), orchardCommonsDefinition(), gauntletDefinition(), ruggedArchipelagoDefinition(),
+											 centralQuarryDefinition(), hiddenOasisDefinition(), orchardCommonsDefinition(), gauntletDefinition(), combDefinition(), ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
 											 evergladesDefinition(),

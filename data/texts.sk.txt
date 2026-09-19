@@ -2842,3 +2842,7 @@ Aréna skúšok
 Hrúbka deliacich múrov
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Aréna skúšok potrebuje väčšiu mapu alebo menej kolónií, aby sa ku každej kolónii zmestili dva bránené vstupy.
+[The Comb]
+Hrebeň
+[Peninsulas per shore]
+Polostrovy na každom brehu

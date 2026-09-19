@@ -2834,3 +2834,7 @@ Die Bewährungsarena
 Trennwandstärke
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Die Bewährungsarena benötigt eine größere Karte oder weniger Kolonien, damit jede Kolonie zwei bewachte Zugänge erhält.
+[The Comb]
+Der Kamm
+[Peninsulas per shore]
+Halbinseln pro Ufer

@@ -2830,3 +2830,7 @@ Emoji
 仕切り壁の厚さ
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 試練の闘技場で各コロニーに防御された入口を2つ設けるには、マップを大きくするか、コロニー数を減らしてください。
+[The Comb]
+櫛
+[Peninsulas per shore]
+各岸の半島数
