@@ -1,5 +1,9 @@
 # Hospital shortfalls during attacks — 2026-09-19
 
+This is the historical count-policy analysis. The subsequent
+[unified bed-ratio ablation](../maxima-hospital-ratio/README.md) replaces the
+capacity rules described below.
+
 The tested surplus-worker tower rule is adopted on `ai/maxima-labour-economy`
 in commit `b806198f5`, based on the original `55439d0f1`. The telemetry/rendering/
 tournament branches remain in the diagnostic laboratory; they are not merged

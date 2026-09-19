@@ -1,0 +1,123 @@
+diff --git a/src/AIMaxima.cpp b/src/AIMaxima.cpp
+index 59a78cfa0..d12826d0d 100644
+--- a/src/AIMaxima.cpp
++++ b/src/AIMaxima.cpp
+@@ -5373,6 +5373,20 @@ Maxima::collect_development_intents(
+ 			result.push_back(intent);
+ 		}
+ 	}
++	// Once useful development is exhausted, idle builders fortify the colony.
++	// The planner ranks this purpose below every viable ordinary action.
++	const int spare=labour_observation.idle-labour_plan.trainingReserve;
++	if(spare>=strategy.staffing.construction_large_workers
++	   && budget.desired_towers<=development_planner.committedBuildingCount(
++		world,IntBuildingType::DEFENSE_BUILDING))
++	{
++		DevelopmentIntent tower;
++		tower.buildingType=IntBuildingType::DEFENSE_BUILDING;
++		tower.purpose=Fortification;
++		tower.unmetCount=1;
++		tower.workers=std::min(12,spare);
++		result.push_back(tower);
++	}
+ 	if(relocation_target_building>=0)
+ 	{
+ 		const WorldBuilding* old=world.building(relocation_target_building);
+@@ -5568,7 +5582,8 @@ void Maxima::emit_placement_diagnostics(Context& echo,const char* outcome,
+ 		fields<<"\trejected_"<<rejectionName(static_cast<RejectionReason>(r))<<"="<<d.rejected[r];
+ 	if(action)fields<<"\taction="<<action->id<<"\taction_type="<<action->type
+ 		<<"\tbuilding_type="<<action->buildingType
+-		<<"\tpurpose="<<(action->purpose==ColonySeed ? "colony_seed" : "core_capacity")
++		<<"\tpurpose="<<(action->purpose==ColonySeed ? "colony_seed"
++			: action->purpose==Fortification ? "fortification" : "core_capacity")
+ 		<<"\ttemplate="<<action->templateId<<"\tcampus="<<action->campusId
+ 		<<"\tslot="<<action->slotId<<"\tbuilding="<<action->buildingId
+ 		<<"\tx="<<action->centerX<<"\ty="<<action->centerY
+diff --git a/src/AIMaximaPlacement.cpp b/src/AIMaximaPlacement.cpp
+index 00c27c6d1..7c9113a27 100644
+--- a/src/AIMaximaPlacement.cpp
++++ b/src/AIMaximaPlacement.cpp
+@@ -2285,6 +2285,9 @@ void Planner::preferUpgrades(std::vector<Candidate>& candidates,
+ bool Planner::candidateBetter(const Candidate& lhs, const Candidate& rhs) const
+ {
+ 	const DevelopmentAction& a=lhs.action;const DevelopmentAction& b=rhs.action;
++	if((a.utility.total>=0)!=(b.utility.total>=0))return a.utility.total>=0;
++	if((a.purpose==Fortification)!=(b.purpose==Fortification))
++		return b.purpose==Fortification;
+ 	if(a.utility.total!=b.utility.total)return a.utility.total>b.utility.total;
+ 	if(a.fallbackWaterTier!=b.fallbackWaterTier)return !a.fallbackWaterTier;
+ 	if(a.type!=b.type)return a.type<b.type;
+@@ -2442,11 +2445,18 @@ bool Planner::selectAction(const WorldState& world,
+ 	{
+ 		prepareWaterDistanceCache(world);
+ 		for(size_t i=0;i<intents.size();++i)
+-			addBuildCandidates(world,intents[i],signature,hasNetwork,candidates);
++			if(intents[i].purpose!=Fortification)
++				addBuildCandidates(world,intents[i],signature,hasNetwork,candidates);
+ 	}
+ 	const size_t buildWinners=candidates.size();
+ 	addUpgradeAndRepairCandidates(world,limits,candidates);
+ 	lastDiagnostics.candidateCount+=candidates.size()-buildWinners;
++	if(limits.activeNewConstruction<limits.newConstruction
++	   && std::none_of(candidates.begin(),candidates.end(),
++		[](const Candidate& c){return c.action.utility.total>=0;}))
++		for(const DevelopmentIntent& intent:intents)
++			if(intent.purpose==Fortification)
++				addBuildCandidates(world,intent,signature,hasNetwork,candidates);
+ 	if(candidates.empty())
+ 	{
+ 		if(limits.activeNewConstruction<limits.newConstruction)
+@@ -2480,6 +2490,8 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
+ 		// updates must not mix candidate scores from different world states.
+ 		incrementalWorld=world;
+ 		incrementalIntents=intents;
++		std::stable_partition(incrementalIntents.begin(),incrementalIntents.end(),
++			[](const DevelopmentIntent& intent){return intent.purpose!=Fortification;});
+ 		incrementalLimits=limits;
+ 		incrementalOccupancySignature=occupancySignature;
+ 		incrementalSignature=stateSignature(occupancySignature);
+@@ -2525,9 +2537,28 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
+ 		return SelectionPending;
+ 	}
+ 
++	// A fallback must not delay ordinary work even by a map scan. Check it
++	// only after every ordinary intent; maintenance uses the same frozen world.
++	const auto ordinaryAvailable=[&]() {
++		for(const DevelopmentAction& action:incrementalCandidates)
++			if(action.purpose!=Fortification && action.utility.total>=0)return true;
++		const PlacementDiagnostics saved=lastDiagnostics;
++		std::vector<Candidate> maintenance;
++		addUpgradeAndRepairCandidates(incrementalWorld,incrementalLimits,maintenance);
++		lastDiagnostics=saved;
++		return std::any_of(maintenance.begin(),maintenance.end(),
++			[](const Candidate& c){return c.action.utility.total>=0;});
++	};
+ 	size_t remaining=size_t(std::max(1,originBudget));
+-	while(incrementalIntentIndex<incrementalIntents.size()&&remaining)
++	while(incrementalIntentIndex<incrementalIntents.size())
+ 	{
++		if(incrementalIntents[incrementalIntentIndex].purpose==Fortification
++		   && incrementalBuildOriginCursor==0 && ordinaryAvailable())
++		{
++			incrementalIntentIndex=incrementalIntents.size();
++			break;
++		}
++		if(!remaining)break;
+ 		const size_t before=incrementalBuildOriginCursor;
+ 		std::vector<Candidate> winners;
+ 		const bool complete=addBuildCandidatesRange(incrementalWorld,
+diff --git a/src/AIMaximaPlacement.h b/src/AIMaximaPlacement.h
+index 0b6fa15ee..9afd4175c 100644
+--- a/src/AIMaximaPlacement.h
++++ b/src/AIMaximaPlacement.h
+@@ -40,7 +40,9 @@ enum DevelopmentPurpose
+ 	ColonySeed,
+ 	/// Build a replacement for an existing inn or swarm at a better site; the
+ 	/// executor destroys the old one once the replacement is completed.
+-	Relocation
++	Relocation,
++	/// Spend spare construction capacity only after ordinary development.
++	Fortification
+ };
+ 
+ enum TemplateId

@@ -3,8 +3,8 @@
   "algorithm": "sorted-comment-string-stripped-numeric-token-sha256",
   "sources": {
     "src/AIMaxima.cpp": {
-      "tokens": 1815,
-      "sha256": "499dd73c6c5682de716d9eb397367356e3e1b50127e2447bba0c243dd42e2196",
+      "tokens": 1822,
+      "sha256": "08bd0d7008a0115deee2ca73b8cb96137d94dd7da5217d2213c135009de1701a",
       "classifications": [
         "live selection authorization, swimming-builder counts, and shared reactive-defense reserve",
         "schema-backed strategy member use",
@@ -45,7 +45,8 @@
         "swimming is worth training only where water separates the colony from something it could use",
         "idle labour opening further construction sites, and the ceiling on one site's crew",
         "version 109 labour continuation gate and active flag zero-based recruitment level",
-        "spare-labour fortification: one fallback tower intent, capped at the existing twelve construction workers"
+        "spare-labour fortification: one fallback tower intent, capped at the existing twelve construction workers",
+        "hospital bed rounding and single accounting of committed capacity"
       ]
     },
     "src/AIMaximaFarmingPolicy.cpp": {

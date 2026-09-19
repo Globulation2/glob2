@@ -1,0 +1,23 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "cases": [
+    4019,
+    4020,
+    4021,
+    4022,
+    4023,
+    4024
+  ],
+  "files": {
+    "src/AIMaxima.cpp": "9ea96feb49932984a95d1a4999d74d6fbacd169e511500529ed5cb09dcbf2974",
+    "src/AIMaxima.h": "dd2976f0aafac971ed9c3efb7ebdc57e2e4d62f4c041768a91cc818394003eb5",
+    "src/AIMaximaLabour.h": "064f4f3ea6d8f1d79bee0508165f46f29df3372d51e475229dde606a80e2fb94",
+    "src/AIMaximaStrategy.cpp": "41a0d4d9fd1c2f356cfb3873f195e6d7e8f2d22faa6f9f523bf895a12dcc332f",
+    "src/AIMaximaStrategy.h": "9c5a9cc7038e22e85427416ba355466dadfd85df2d12387aad7a37e08d464570",
+    "src/ai/AITelemetryAdapters.cpp": "f49ab5d190f9db8ae94f2efab4749d490630cc529fba267726791dc7996ffb5f",
+    "src/ai/AITelemetryFields.inc": "f01e8ba6545c1f490e3e39b9a9a877a5bf4f8faacc895f21bb4f306a86f477bf",
+    "data/maxima/base.strategy": "f55552fd9912b48c66276b52dd34f3447d3a37471486e0df33286aed64c77b1a",
+    "artifacts/defense-study/binaries/hospital-ratio": "000b43f6c7528f8b6e4741b961bce25254bfbe08418cb1d0ede712d35857dbbb",
+    "artifacts/defense-study/binaries/towers-lazy": "33261b9c27d28fc85f884b3839e5329b7854e611450e6f2396a5d0689bc6a124"
+  }
+}

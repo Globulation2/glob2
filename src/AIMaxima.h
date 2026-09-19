@@ -161,7 +161,7 @@ private:
 		int desired_schools;
 		int desired_pools;
 		int desired_racetracks;
-		int desired_hospitals;
+		int desired_hospital_beds;
 		int desired_towers;
 		int swarm_workers;
 		int worker_ratio;
@@ -345,7 +345,7 @@ private:
 		int desired_schools;
 		int desired_pools;
 		int desired_racetracks;
-		int desired_hospitals;
+		int desired_hospital_beds;
 		int desired_towers;
 		int swarm_workers;
 		int worker_ratio;
@@ -648,8 +648,11 @@ private:
 	std::vector<AIMaximaPlacement::DevelopmentIntent>
 		collect_development_intents(
 			const AIMaximaPlacement::WorldState& world) const;
+	int committed_hospital_beds(
+		const std::vector<AIMaximaPlacement::WorldBuilding>& buildings,
+		int excludedAction=-1) const;
 	AIMaximaPlacement::DevelopmentLimits collect_development_limits(
-		AIMaximaRuntime::Context& echo) const;
+		AIMaximaRuntime::Context& echo, int excludedHospitalAction=-1) const;
 	bool issue_development_action(AIMaximaRuntime::Context& echo,
 		AIMaximaPlacement::DevelopmentAction& action);
 	void emit_placement_diagnostics(AIMaximaRuntime::Context& echo,

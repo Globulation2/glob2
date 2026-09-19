@@ -1,0 +1,349 @@
+diff --git a/data/maxima/base.strategy b/data/maxima/base.strategy
+index 5d9b4f9cb..2f28438e9 100644
+--- a/data/maxima/base.strategy
++++ b/data/maxima/base.strategy
+@@ -345,9 +345,7 @@ military.second_barracks_enemy_min = 6
+ military.third_barracks_backlog_min = 12
+ military.third_barracks_enemy_min = 35
+ military.emergency_barracks_threat_min = 4
+-military.hospital_warrior_min = 10
+-military.hospital_cap = 8
+-military.hospital_units_per_building = 15
++military.hospital_beds_per_warrior_percent = 50
+ military.bomb_attack_explorers_min = 10
+ military.bomb_colony_explorers_min = 4
+ military.offense_warrior_floor = 16
+diff --git a/src/AIMaxima.cpp b/src/AIMaxima.cpp
+index d12826d0d..8f241f418 100644
+--- a/src/AIMaxima.cpp
++++ b/src/AIMaxima.cpp
+@@ -549,7 +549,7 @@ Maxima::ClearedEnemySite::ClearedEnemySite(int siteX, int siteY, int tick)
+ Maxima::DirectorPlan::DirectorPlan()
+ 	: construction_sites(1), desired_inns(2), desired_swarms(1),
+ 	  desired_barracks(0), desired_schools(0), desired_pools(0),
+-	  desired_racetracks(0), desired_hospitals(0), desired_towers(0), swarm_workers(3),
++	  desired_racetracks(0), desired_hospital_beds(0), desired_towers(0), swarm_workers(3),
+ 	  worker_ratio(4), explorer_ratio(1), warrior_ratio(0),
+ 	  desired_explorers(3), desired_warriors(12), defense_reserve(8), attack_flags(0),
+ 	  attack_units(10), allow_upgrades(false), allow_level2_upgrades(false),
+@@ -635,7 +635,7 @@ Maxima::DirectorPlan::DirectorPlan()
+ Maxima::PolicyBid::PolicyBid()
+ 	: utility(0), construction_sites(0), desired_inns(0), desired_swarms(0),
+ 	  desired_barracks(0), desired_schools(0), desired_pools(0),
+-	  desired_racetracks(0), desired_hospitals(0), desired_towers(0),
++	  desired_racetracks(0), desired_hospital_beds(0), desired_towers(0),
+ 	  swarm_workers(0), worker_ratio(0), explorer_ratio(0), warrior_ratio(0),
+ 	  desired_explorers(0), desired_warriors(0), defense_reserve(0),
+ 	  attack_flags(0), attack_units(0), request_upgrades(false)
+@@ -2771,11 +2771,8 @@ void Maxima::build_policy_bids()
+ 		defense.desired_barracks=3;
+ 	if(snapshot.visible_colony_threat>=strategy.military.emergency_barracks_threat_min)
+ 		defense.desired_barracks=std::max(defense.desired_barracks, 3);
+-	defense.desired_hospitals=(snapshot.need_heal>0
+-		|| snapshot.warriors>=strategy.military.hospital_warrior_min)
+-		? std::min(strategy.military.hospital_cap, std::max(1,
+-			(snapshot.warriors+strategy.military.hospital_units_per_building-1)
+-				/strategy.military.hospital_units_per_building)) : 0;
++	defense.desired_hospital_beds=Labour::hospitalBedsWanted(snapshot.warriors,
++		strategy.military.hospital_beds_per_warrior_percent);
+ 	const int active_towers=strategy.military.tower_active_count;
+ 	const int emergency_towers=active_towers+strategy.military.tower_emergency_increment;
+ 	const int bomb_towers=emergency_towers+strategy.military.tower_bomb_increment;
+@@ -2867,7 +2864,7 @@ void Maxima::arbitrate_policy_bids()
+ 		? technology.desired_racetracks : 0;
+ 	result.desired_barracks=defense.utility>=strategy.economy.barracks_bid_utility_min
+ 		? defense.desired_barracks : 0;
+-	result.desired_hospitals=defense.desired_hospitals;
++	result.desired_hospital_beds=defense.desired_hospital_beds;
+ 	result.desired_towers=defense.desired_towers;
+ 
+ 	result.construction_sites=std::max(survival.construction_sites,
+@@ -2983,10 +2980,7 @@ void Maxima::arbitrate_policy_bids()
+ 		if(snapshot.barracks==0)
+ 			barracks_priority_floor=result.priority_swarms+4;
+ 	}
+-	result.desired_hospitals=std::max(result.desired_hospitals,
+-		Labour::hospitalsWorthBuilding(snapshot.warriors,
+-			labour_observation.hospitals, labour_observation.hospitalSeats,
+-			labour_observation.hurtUnits, strategy.military.hospital_cap));
++
+ 	const int hospital_priority_floor=
+ 		labour_observation.hurtUnits>labour_observation.hospitalSeats
+ 			? result.priority_swarms+6 : 0;
+@@ -3526,7 +3520,7 @@ void Maxima::emit_director_snapshot(Context& echo) const
+ 		<<"\testablished_colonies="<<established_colonies
+ 		<<"\tcleared_hotspots="<<cleared_enemy_sites.size()
+ 		<<"\tdesired_barracks="<<budget.desired_barracks
+-		<<"\tdesired_hospitals="<<budget.desired_hospitals
++		<<"\tdesired_hospital_beds="<<budget.desired_hospital_beds
+ 		<<"\tdesired_schools="<<budget.desired_schools
+ 		<<"\tdesired_towers="<<budget.desired_towers
+ 		<<"\ttowers="<<snapshot.towers
+@@ -3888,7 +3882,8 @@ template<class Archive> void Maxima::executionState(Archive& a)
+ 	a("budget.desired_schools",budget.desired_schools);
+ 	a("budget.desired_pools",budget.desired_pools);
+ 	a("budget.desired_racetracks",budget.desired_racetracks);
+-	a("budget.desired_hospitals",budget.desired_hospitals);
++	// Retain the historical serialized slot; live demand is recomputed below.
++	a("budget.desired_hospitals",budget.desired_hospital_beds);
+ 	a("budget.desired_towers",budget.desired_towers);
+ 	a("budget.swarm_workers",budget.swarm_workers);
+ 	a("budget.worker_ratio",budget.worker_ratio);
+@@ -5326,12 +5321,48 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
+ }
+ 
+ 
++// Credit the finished capacity of sites and reserved upgrades exactly once.
++int Maxima::committed_hospital_beds(
++	const std::vector<AIMaximaPlacement::WorldBuilding>& buildings,
++	int excludedAction) const
++{
++	using namespace AIMaximaPlacement;
++	const auto beds=[](int level) {
++		return globalContainer->buildingsTypes.getByType("hospital",level-1,false)->maxUnitInside;
++	};
++	std::map<int,int> capacity;
++	for(const auto& b:buildings)
++		if(b.buildingType==IntBuildingType::HEAL_BUILDING)
++			capacity[b.id]=beds(b.level);
++	int unobserved=0;
++	for(const auto& entry:development_planner.actions())
++	{
++		const DevelopmentAction& a=entry.second;
++		if(a.id==excludedAction || a.buildingType!=IntBuildingType::HEAL_BUILDING
++		   || (a.state!=ParcelReserved && a.state!=CreateIssued && a.state!=SiteObserved)) continue;
++		if(a.type==UpgradeBuilding && capacity.count(a.buildingId))
++			capacity[a.buildingId]=std::max(capacity[a.buildingId],beds(a.targetLevel));
++		else if((a.type==BuildCampusMember || a.type==BuildStandalone)
++		        && !capacity.count(a.buildingId))
++			unobserved+=beds(1);
++	}
++	for(const auto& entry:capacity) unobserved+=entry.second;
++	return unobserved;
++}
++
++
+ std::vector<AIMaximaPlacement::DevelopmentIntent>
+ Maxima::collect_development_intents(
+ 	const AIMaximaPlacement::WorldState& world) const
+ {
+ 	using namespace AIMaximaPlacement;
+ 	std::vector<DevelopmentIntent> result;
++	const int bedDeficit=std::max(0, Labour::hospitalBedsWanted(snapshot.warriors,
++		strategy.military.hospital_beds_per_warrior_percent)
++		-committed_hospital_beds(world.buildings));
++	const int basicBeds=globalContainer->buildingsTypes.getByType("hospital",0,false)->maxUnitInside;
++	const int hospitals=development_planner.committedBuildingCount(world,
++		IntBuildingType::HEAL_BUILDING)+(bedDeficit+basicBeds-1)/basicBeds;
+ 	struct Demand {int type,desired,priority,workers;};
+ 	const Demand demands[]={
+ 		{IntBuildingType::FOOD_BUILDING,budget.desired_inns,
+@@ -5347,7 +5378,7 @@ Maxima::collect_development_intents(
+ 			budget.priority_schools,strategy.staffing.construction_training_workers},
+ 		{IntBuildingType::ATTACK_BUILDING,budget.desired_barracks,
+ 			budget.priority_barracks,strategy.staffing.construction_training_workers},
+-		{IntBuildingType::HEAL_BUILDING,budget.desired_hospitals,
++		{IntBuildingType::HEAL_BUILDING,hospitals,
+ 			budget.priority_hospitals,strategy.staffing.construction_hospital_workers},
+ 		{IntBuildingType::DEFENSE_BUILDING,budget.desired_towers,
+ 			budget.priority_towers,strategy.staffing.construction_large_workers}};
+@@ -5433,7 +5464,7 @@ Maxima::collect_development_intents(
+ 
+ 
+ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
+-	Context& echo) const
++	Context& echo, int excludedHospitalAction) const
+ {
+ 	using namespace AIMaximaPlacement;DevelopmentLimits limits;
+ 	limits.newConstruction=budget.construction_sites;
+@@ -5454,6 +5485,23 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
+ 		limits.upgradePriorities[std::make_pair(weightedTypes[i],1)]=firstWeights[i];
+ 		limits.upgradePriorities[std::make_pair(weightedTypes[i],2)]=secondWeights[i];
+ 	}
++	std::vector<WorldBuilding> hospitals;
++	for(const auto& record:echo.get_building_register().found())
++	{
++		const Building* b=echo.get_building_register().get_building(record.first);
++		if(!b || b->type->shortTypeNum!=IntBuildingType::HEAL_BUILDING) continue;
++		WorldBuilding hospital; hospital.id=record.first;
++		hospital.buildingType=IntBuildingType::HEAL_BUILDING;
++		hospital.level=b->type->level+1;
++		hospitals.push_back(hospital);
++	}
++	if(committed_hospital_beds(hospitals,excludedHospitalAction)
++	   >=Labour::hospitalBedsWanted(snapshot.warriors,
++		strategy.military.hospital_beds_per_warrior_percent))
++	{
++		limits.upgradePriorities[std::make_pair(IntBuildingType::HEAL_BUILDING,1)]=0;
++		limits.upgradePriorities[std::make_pair(IntBuildingType::HEAL_BUILDING,2)]=0;
++	}
+ 	TeamStat* stat=echo.player->team->stats.getLatestStat();
+ 	const int can1=stat->upgradeState[BUILD][1]+stat->upgradeState[BUILD][2]
+ 		+stat->upgradeState[BUILD][3];
+@@ -5526,7 +5574,7 @@ bool Maxima::issue_development_action(Context& echo,
+ 		if(action.type==UpgradeBuilding)
+ 		{
+ 			// A saved reservation may outlive its original director authorization.
+-			const DevelopmentLimits limits=collect_development_limits(echo);
++			const DevelopmentLimits limits=collect_development_limits(echo,action.id);
+ 			if(!limits.allowUpgrades
+ 			   || (action.fromLevel==2 && !limits.allowLevel2Upgrades)
+ 			   || limits.upgradePriority(action.buildingType,action.fromLevel)==0)
+@@ -5720,7 +5768,7 @@ void Maxima::development_cycle(Context& echo)
+ 		DevelopmentAction pending=found->second;RejectionReason reason=RejectedReservation;
+ 		if(pending.type==UpgradeBuilding
+ 		   &&!development_planner.revalidateSelection(refreshedWorld,{},
+-			collect_development_limits(echo),pending,&reason))
++			collect_development_limits(echo,pending.id),pending,&reason))
+ 		{
+ 			development_planner.markInvalidated(pending.id,UpgradeBlocked,worldSignature);
+ 			continue;
+diff --git a/src/AIMaxima.h b/src/AIMaxima.h
+index bfee0093e..9b0308065 100644
+--- a/src/AIMaxima.h
++++ b/src/AIMaxima.h
+@@ -161,7 +161,7 @@ private:
+ 		int desired_schools;
+ 		int desired_pools;
+ 		int desired_racetracks;
+-		int desired_hospitals;
++		int desired_hospital_beds;
+ 		int desired_towers;
+ 		int swarm_workers;
+ 		int worker_ratio;
+@@ -345,7 +345,7 @@ private:
+ 		int desired_schools;
+ 		int desired_pools;
+ 		int desired_racetracks;
+-		int desired_hospitals;
++		int desired_hospital_beds;
+ 		int desired_towers;
+ 		int swarm_workers;
+ 		int worker_ratio;
+@@ -648,8 +648,11 @@ private:
+ 	std::vector<AIMaximaPlacement::DevelopmentIntent>
+ 		collect_development_intents(
+ 			const AIMaximaPlacement::WorldState& world) const;
++	int committed_hospital_beds(
++		const std::vector<AIMaximaPlacement::WorldBuilding>& buildings,
++		int excludedAction=-1) const;
+ 	AIMaximaPlacement::DevelopmentLimits collect_development_limits(
+-		AIMaximaRuntime::Context& echo) const;
++		AIMaximaRuntime::Context& echo, int excludedHospitalAction=-1) const;
+ 	bool issue_development_action(AIMaximaRuntime::Context& echo,
+ 		AIMaximaPlacement::DevelopmentAction& action);
+ 	void emit_placement_diagnostics(AIMaximaRuntime::Context& echo,
+diff --git a/src/AIMaximaLabour.h b/src/AIMaximaLabour.h
+index 355330148..7365b48ae 100644
+--- a/src/AIMaximaLabour.h
++++ b/src/AIMaximaLabour.h
+@@ -151,20 +151,11 @@ inline int warriorBacklogLimit(int barracksSeats, int floorWarriors)
+ 	return std::max(std::max(0, floorWarriors), 2*std::max(0, barracksSeats));
+ }
+ 
+-/// A hospital recycles warriors that cost wheat and training, so one repays
+-/// itself with the first warrior it saves: one as soon as there is an army. It
+-/// is a service, and a service that is full makes its customers wait, here
+-/// under attack. Seats are therefore sized to twice the units currently hurt,
+-/// so the hospital is about half used at the load it is seeing; never fewer
+-/// than already stand, and one per eight warriors at the least.
+-inline int hospitalsWorthBuilding(int warriors, int hospitals, int hospitalSeats,
+-	int hurtUnits, int maximum)
++/// One capacity policy, rounded up to whole beds; sites and upgrades are
++/// credited separately by the development planner.
++inline int hospitalBedsWanted(int warriors, int bedsPerWarriorPercent)
+ {
+-	if(warriors<=0 && hurtUnits<=0) return std::max(0, hospitals);
+-	int wanted=std::max(1, (std::max(0, warriors)+7)/8);
+-	if(2*std::max(0, hurtUnits)>std::max(0, hospitalSeats))
+-		wanted=std::max(wanted, hospitals+1);
+-	return std::min(std::max(0, maximum), std::max(wanted, std::max(0, hospitals)));
++	return (std::max(0, warriors)*std::max(0, bedsPerWarriorPercent)+99)/100;
+ }
+ 
+ /// Damage rate of a warrior by combat level: attack speed times what its
+diff --git a/src/AIMaximaStrategy.cpp b/src/AIMaximaStrategy.cpp
+index c460a369e..a406fab9c 100644
+--- a/src/AIMaximaStrategy.cpp
++++ b/src/AIMaximaStrategy.cpp
+@@ -367,9 +367,7 @@ namespace
+ 		INT_SPEC(military, third_barracks_backlog_min, "military.third_barracks_backlog_min", 0, 1000, "units", "military", "Untrained-warrior backlog independently justifying a third barracks", StrategyImpactHigh),
+ 		INT_SPEC(military, third_barracks_enemy_min, "military.third_barracks_enemy_min", 0, 1000, "units", "military", "Enemy force independently justifying a third barracks", StrategyImpactHigh),
+ 		INT_SPEC(military, emergency_barracks_threat_min, "military.emergency_barracks_threat_min", 0, 1000, "units", "military", "Visible colony threat forcing three barracks", StrategyImpactHigh),
+-		INT_SPEC(military, hospital_warrior_min, "military.hospital_warrior_min", 0, 1000, "units", "military", "Warrior count that creates hospital demand without current injuries", StrategyImpactHigh),
+-		INT_SPEC(military, hospital_cap, "military.hospital_cap", 0, 64, "buildings", "military", "Maximum hospital target", StrategyImpactHigh),
+-		INT_SPEC(military, hospital_units_per_building, "military.hospital_units_per_building", 1, 200, "units", "military", "Warriors supported by each desired hospital", StrategyImpactHigh),
++		INT_SPEC(military, hospital_beds_per_warrior_percent, "military.hospital_beds_per_warrior_percent", 0, 200, "percent", "military", "Hospital beds per warrior (50 means half a bed)", StrategyImpactHigh),
+ 		INT_SPEC(military, bomb_attack_explorers_min, "military.bomb_attack_explorers_min", 0, 1000, "units", "military", "Visible attack explorers triggering maximum tower escalation", StrategyImpactHigh),
+ 		INT_SPEC(military, bomb_colony_explorers_min, "military.bomb_colony_explorers_min", 0, 1000, "units", "military", "Explorer threat near the colony triggering maximum tower escalation", StrategyImpactHigh),
+ 		INT_SPEC(military, offense_warrior_floor, "military.offense_warrior_floor", 0, 1000, "units", "military", "Minimum offensive warrior target", StrategyImpactCritical),
+@@ -1478,9 +1476,53 @@ bool StrategyResolver::restoreValues(const std::string& text, MaximaStrategy& va
+     // is ignored. Saves at the current version must still be exact, so a
+     // truncated one is refused rather than silently half-applied.
+     const bool exact=versionMinor>=98;
++    // Version 109 existed with the count-based hospital schema. Recognize
++    // that complete schema explicitly, without relaxing unknown/missing-key
++    // checks for any other saved setting. Old count policies become 0.5 beds.
++    std::string settings=text;
++    if(exact)
++    {
++        const char* legacy[]={"military.hospital_warrior_min",
++            "military.hospital_cap", "military.hospital_units_per_building"};
++        const int minimum[]={0,0,1}, maximum[]={1000,64,200};
++        std::string normalized=text, entry, migrated;
++        std::replace(normalized.begin(),normalized.end(),';',',');
++        std::istringstream entries(normalized);
++        std::set<std::string> retired;
++        bool current=false;
++        while(std::getline(entries,entry,','))
++        {
++            const size_t equals=entry.find('=');
++            const std::string key=trim(entry.substr(0,equals));
++            int index=0;
++            while(index<3 && key!=legacy[index]) ++index;
++            if(index<3)
++            {
++                const std::string value=equals==std::string::npos ? "" : trim(entry.substr(equals+1));
++                char* end=NULL;
++                errno=0;
++                const long parsed=std::strtol(value.c_str(),&end,10);
++                if(value.empty() || errno==ERANGE || *end || parsed<minimum[index]
++                   || parsed>maximum[index] || !retired.insert(key).second)
++                { error="Invalid legacy hospital setting: "+key; return false; }
++            }
++            else
++            {
++                if(key=="military.hospital_beds_per_warrior_percent") current=true;
++                if(!migrated.empty()) migrated+=",";
++                migrated+=entry;
++            }
++        }
++        if(!retired.empty())
++        {
++            if(current || retired.size()!=3)
++            { error="Mixed or incomplete saved hospital policy"; return false; }
++            settings=migrated+",military.hospital_beds_per_warrior_percent=50";
++        }
++    }
+     MaximaStrategy restored=exact ? MaximaStrategy{} : values;
+     std::map<std::string, std::string> provenance;
+-    if(!applyInline("saved strategy", text, restored, provenance, error, !exact))
++    if(!applyInline("saved strategy", settings, restored, provenance, error, !exact))
+         return false;
+     if(exact && provenance.size()!=parameterCount)
+     {
+diff --git a/src/AIMaximaStrategy.h b/src/AIMaximaStrategy.h
+index 7a7c88d3c..d10d0e9a4 100644
+--- a/src/AIMaximaStrategy.h
++++ b/src/AIMaximaStrategy.h
+@@ -383,9 +383,7 @@ struct MaximaStrategy
+ 		int third_barracks_backlog_min;
+ 		int third_barracks_enemy_min;
+ 		int emergency_barracks_threat_min;
+-		int hospital_warrior_min;
+-		int hospital_cap;
+-		int hospital_units_per_building;
++		int hospital_beds_per_warrior_percent;
+ 		int bomb_attack_explorers_min;
+ 		int bomb_colony_explorers_min;
+ 		int offense_warrior_floor;

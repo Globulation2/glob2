@@ -383,9 +383,7 @@ struct MaximaStrategy
 		int third_barracks_backlog_min;
 		int third_barracks_enemy_min;
 		int emergency_barracks_threat_min;
-		int hospital_warrior_min;
-		int hospital_cap;
-		int hospital_units_per_building;
+		int hospital_beds_per_warrior_percent;
 		int bomb_attack_explorers_min;
 		int bomb_colony_explorers_min;
 		int offense_warrior_floor;

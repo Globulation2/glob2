@@ -30,7 +30,7 @@ class MaximaDecouplingTest(unittest.TestCase):
         self.assertIn("public AIImplementation", header)
         self.assertIn("RuntimeEvent", runtime)
         self.assertIn("PlacementResult", runtime)
-        self.assertIn("if(!placement.found)", implementation)
+        self.assertRegex(implementation, r"if\s*\(\s*!\s*placement\.found\s*\)")
         self.assertIn("seenByMask", implementation)
         self.assertIn("queuedIndexes", runtime)
 

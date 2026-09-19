@@ -151,20 +151,11 @@ inline int warriorBacklogLimit(int barracksSeats, int floorWarriors)
 	return std::max(std::max(0, floorWarriors), 2*std::max(0, barracksSeats));
 }
 
-/// A hospital recycles warriors that cost wheat and training, so one repays
-/// itself with the first warrior it saves: one as soon as there is an army. It
-/// is a service, and a service that is full makes its customers wait, here
-/// under attack. Seats are therefore sized to twice the units currently hurt,
-/// so the hospital is about half used at the load it is seeing; never fewer
-/// than already stand, and one per eight warriors at the least.
-inline int hospitalsWorthBuilding(int warriors, int hospitals, int hospitalSeats,
-	int hurtUnits, int maximum)
+/// One capacity policy, rounded up to whole beds; sites and upgrades are
+/// credited separately by the development planner.
+inline int hospitalBedsWanted(int warriors, int bedsPerWarriorPercent)
 {
-	if(warriors<=0 && hurtUnits<=0) return std::max(0, hospitals);
-	int wanted=std::max(1, (std::max(0, warriors)+7)/8);
-	if(2*std::max(0, hurtUnits)>std::max(0, hospitalSeats))
-		wanted=std::max(wanted, hospitals+1);
-	return std::min(std::max(0, maximum), std::max(wanted, std::max(0, hospitals)));
+	return (std::max(0, warriors)*std::max(0, bedsPerWarriorPercent)+99)/100;
 }
 
 /// Damage rate of a warrior by combat level: attack speed times what its

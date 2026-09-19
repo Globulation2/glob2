@@ -367,9 +367,7 @@ namespace
 		INT_SPEC(military, third_barracks_backlog_min, "military.third_barracks_backlog_min", 0, 1000, "units", "military", "Untrained-warrior backlog independently justifying a third barracks", StrategyImpactHigh),
 		INT_SPEC(military, third_barracks_enemy_min, "military.third_barracks_enemy_min", 0, 1000, "units", "military", "Enemy force independently justifying a third barracks", StrategyImpactHigh),
 		INT_SPEC(military, emergency_barracks_threat_min, "military.emergency_barracks_threat_min", 0, 1000, "units", "military", "Visible colony threat forcing three barracks", StrategyImpactHigh),
-		INT_SPEC(military, hospital_warrior_min, "military.hospital_warrior_min", 0, 1000, "units", "military", "Warrior count that creates hospital demand without current injuries", StrategyImpactHigh),
-		INT_SPEC(military, hospital_cap, "military.hospital_cap", 0, 64, "buildings", "military", "Maximum hospital target", StrategyImpactHigh),
-		INT_SPEC(military, hospital_units_per_building, "military.hospital_units_per_building", 1, 200, "units", "military", "Warriors supported by each desired hospital", StrategyImpactHigh),
+		INT_SPEC(military, hospital_beds_per_warrior_percent, "military.hospital_beds_per_warrior_percent", 0, 200, "percent", "military", "Hospital beds per warrior (50 means half a bed)", StrategyImpactHigh),
 		INT_SPEC(military, bomb_attack_explorers_min, "military.bomb_attack_explorers_min", 0, 1000, "units", "military", "Visible attack explorers triggering maximum tower escalation", StrategyImpactHigh),
 		INT_SPEC(military, bomb_colony_explorers_min, "military.bomb_colony_explorers_min", 0, 1000, "units", "military", "Explorer threat near the colony triggering maximum tower escalation", StrategyImpactHigh),
 		INT_SPEC(military, offense_warrior_floor, "military.offense_warrior_floor", 0, 1000, "units", "military", "Minimum offensive warrior target", StrategyImpactCritical),
@@ -1478,9 +1476,55 @@ bool StrategyResolver::restoreValues(const std::string& text, MaximaStrategy& va
     // is ignored. Saves at the current version must still be exact, so a
     // truncated one is refused rather than silently half-applied.
     const bool exact=versionMinor>=98;
+    // Version 109 existed with the count-based hospital schema. Recognize
+    // that complete schema explicitly, without relaxing unknown/missing-key
+    // checks for any other saved setting. Old count policies become 0.6 beds.
+    std::string settings=text;
+    if(exact)
+    {
+        const char* legacy[]={"military.hospital_warrior_min",
+            "military.hospital_cap", "military.hospital_units_per_building"};
+        const int minimum[]={0,0,1}, maximum[]={1000,64,200};
+        std::string normalized=text, entry, migrated;
+        std::replace(normalized.begin(),normalized.end(),';',',');
+        std::istringstream entries(normalized);
+        std::set<std::string> retired;
+        bool current=false;
+        while(std::getline(entries,entry,','))
+        {
+            if(trim(entry).empty())
+            { error="Empty saved strategy assignment"; return false; }
+            const size_t equals=entry.find('=');
+            const std::string key=trim(entry.substr(0,equals));
+            int index=0;
+            while(index<3 && key!=legacy[index]) ++index;
+            if(index<3)
+            {
+                const std::string value=equals==std::string::npos ? "" : trim(entry.substr(equals+1));
+                char* end=NULL;
+                errno=0;
+                const long parsed=std::strtol(value.c_str(),&end,10);
+                if(value.empty() || errno==ERANGE || *end || parsed<minimum[index]
+                   || parsed>maximum[index] || !retired.insert(key).second)
+                { error="Invalid legacy hospital setting: "+key; return false; }
+            }
+            else
+            {
+                if(key=="military.hospital_beds_per_warrior_percent") current=true;
+                if(!migrated.empty()) migrated+=",";
+                migrated+=entry;
+            }
+        }
+        if(!retired.empty())
+        {
+            if(current || retired.size()!=3)
+            { error="Mixed or incomplete saved hospital policy"; return false; }
+            settings=migrated+",military.hospital_beds_per_warrior_percent=60";
+        }
+    }
     MaximaStrategy restored=exact ? MaximaStrategy{} : values;
     std::map<std::string, std::string> provenance;
-    if(!applyInline("saved strategy", text, restored, provenance, error, !exact))
+    if(!applyInline("saved strategy", settings, restored, provenance, error, !exact))
         return false;
     if(exact && provenance.size()!=parameterCount)
     {

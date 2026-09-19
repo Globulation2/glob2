@@ -142,7 +142,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         # food/tactical coupling knobs deliberately have no runtime authority.
         # Retiring a key is not free: restoreValues demands an exact key set
         # for saves at version 98 and later, so a deletion must come with a
-        # version bump rather than ride along with a behaviour change.
+        # specific save-schema migration rather than silently relaxing validation.
         self.assertEqual({
             "military.campaign_sustainable_food_percent",
             "emergencies.population_trend_threshold",
@@ -166,7 +166,8 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         ]
         # 689 with the gated tactical layer; the relentless offense removed 50
         # muster, casualty, relief and teamplay keys and added three.
-        self.assertEqual(656, len(specifications))
+        # Hospital capacity replaces three count knobs with one bed ratio.
+        self.assertEqual(654, len(specifications))
         self.assertTrue(all(len(impact) == 1 for impact in impacts))
         self.assertEqual(
             {"Critical", "High", "Medium", "Low"},

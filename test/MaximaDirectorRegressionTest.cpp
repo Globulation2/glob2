@@ -302,6 +302,59 @@ static void fortificationUsesOnlySpareLabour()
     assert(count(AIMaximaPlacement::Fortification)==1);
 }
 
+static void unifiedHospitalCapacity() {
+    using namespace AIMaximaPlacement;
+    Fixture f; auto& a=*f.ai;
+    a.snapshot.warriors=20;
+    a.strategy.military.hospital_beds_per_warrior_percent=50;
+    WorldState world;
+    WorldBuilding hospital; hospital.id=10;
+    hospital.buildingType=IntBuildingType::HEAL_BUILDING; hospital.level=1;
+    world.buildings.push_back(hospital);
+    const auto unmet=[&]() {
+        for(const auto& intent:a.collect_development_intents(world))
+            if(intent.buildingType==IntBuildingType::HEAL_BUILDING) return intent.unmetCount;
+        return 0;
+    };
+    assert(a.committed_hospital_beds(world.buildings)==2);
+    assert(unmet()==4);
+    DevelopmentAction upgrade; upgrade.id=1; upgrade.type=UpgradeBuilding;
+    upgrade.buildingType=IntBuildingType::HEAL_BUILDING;
+    upgrade.buildingId=10; upgrade.targetLevel=2; upgrade.state=ParcelReserved;
+    a.development_planner.actionMap[1]=upgrade;
+    assert(a.committed_hospital_beds(world.buildings)==5);
+    assert(a.committed_hospital_beds(world.buildings,1)==2);
+    assert(unmet()==3);
+    world.buildings[0].level=2; world.buildings[0].site=true;
+    assert(a.committed_hospital_beds(world.buildings)==5); // No double credit.
+    DevelopmentAction build; build.id=2; build.type=BuildStandalone;
+    build.buildingType=IntBuildingType::HEAL_BUILDING;
+    build.buildingId=11; build.state=CreateIssued;
+    a.development_planner.actionMap[2]=build;
+    assert(a.committed_hospital_beds(world.buildings)==7);
+    hospital.id=11; hospital.site=true; world.buildings.push_back(hospital);
+    assert(a.committed_hospital_beds(world.buildings)==7);
+    a.development_planner.actionMap[2].state=Completed;
+    assert(a.committed_hospital_beds(world.buildings)==7);
+    a.snapshot.warriors=0;
+    assert(unmet()==0); // No demolition when the army shrinks.
+    // Existing hospitals upgrade only while the same capacity target is unmet.
+    a.development_planner.actionMap.clear();
+    f.building(20,20,0,"hospital"); a.context.initialize();
+    a.budget.upgrade_level1_hospital_weight=20;
+    a.snapshot.warriors=4;
+    assert(a.collect_development_limits(a.context).upgradePriority(IntBuildingType::HEAL_BUILDING,1)==0);
+    a.snapshot.warriors=10;
+    assert(a.collect_development_limits(a.context).upgradePriority(IntBuildingType::HEAL_BUILDING,1)==20);
+    int id=-1;
+    for(const auto& entry:a.context.get_building_register().found())
+        if(a.context.get_building_register().get_building(entry.first)->type->shortTypeNum==IntBuildingType::HEAL_BUILDING) id=entry.first;
+    assert(id>=0); upgrade.buildingId=id;
+    a.development_planner.actionMap[1]=upgrade;
+    assert(a.collect_development_limits(a.context).upgradePriority(IntBuildingType::HEAL_BUILDING,1)==0);
+    assert(a.collect_development_limits(a.context,1).upgradePriority(IntBuildingType::HEAL_BUILDING,1)==20);
+}
+
 static void proactiveProtection() {
     Fixture f; f.building(10,10,0);auto& a=*f.ai;auto& c=a.context;c.initialize();
     for(int y=0;y<64;++y)f.game.map.setTerrain(0,y,256);
@@ -346,6 +399,7 @@ int main() {
     IntBuildingType::init();
     director_regressions::reconnaissanceWaitsForEightyPercent();
     director_regressions::fortificationUsesOnlySpareLabour();
+    director_regressions::unifiedHospitalCapacity();
     director_regressions::cadence();director_regressions::allyPrestige();
     director_regressions::thirdPartyTower();director_regressions::disconnectedArmy();
     director_regressions::proactiveProtection();director_regressions::reusedOwnId();

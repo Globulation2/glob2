@@ -49,6 +49,25 @@ int main()
         assert(!StrategyResolver::restoreValues(text+",unknown.key=1",restored,error,VERSION_MINOR));
         assert(!StrategyResolver::restoreValues(text+",staffing.control_minimum_workers=3",restored,error,VERSION_MINOR));
 
+        std::string oldHospitals;
+        for(const auto& assignment:split(text))
+            if(assignment.rfind("military.hospital_beds_per_warrior_percent=",0)!=0)
+                oldHospitals+=(oldHospitals.empty() ? "" : ",")+assignment;
+        const std::string oldSchema=oldHospitals+",military.hospital_warrior_min=10"
+            ",military.hospital_cap=8,military.hospital_units_per_building=15";
+        assert(StrategyResolver::restoreValues(oldSchema,restored,error,109));
+        assert(restored.military.hospital_beds_per_warrior_percent==60);
+        assert(!StrategyResolver::restoreValues(oldHospitals,restored,error,109));
+        assert(!StrategyResolver::restoreValues(oldSchema+",military.hospital_cap=8",restored,error,109));
+        assert(!StrategyResolver::restoreValues(oldSchema+",military.hospital_beds_per_warrior_percent=40",restored,error,109));
+        assert(!StrategyResolver::restoreValues(oldHospitals+",military.hospital_cap=8",restored,error,109));
+        assert(!StrategyResolver::restoreValues(oldSchema+",unknown.key=1",restored,error,109));
+        for(const char* invalid:{"0","201","invalid"})
+            assert(!StrategyResolver::restoreValues(oldHospitals+
+                ",military.hospital_warrior_min=10,military.hospital_cap=8,"
+                "military.hospital_units_per_building="+invalid,restored,error,109));
+        assert(!StrategyResolver::restoreValues(oldSchema+",,",restored,error,109));
+
         // Version 98 retired the muster/relief keys and added the offense's
         // own. An older save therefore names keys this build dropped and omits
         // keys it gained; it must still load, taking every value it recorded

@@ -61,14 +61,13 @@ static void militaryIsPulledByCapacity()
 	assert(warriorBacklogLimit(0, 8)==8);
 	assert(warriorBacklogLimit(2, 8)==8);
 	assert(warriorBacklogLimit(6, 8)==12);
-	// No army, nobody hurt: nothing. An army: one, then one per eight warriors.
-	assert(hospitalsWorthBuilding(0, 0, 0, 0, 8)==0);
-	assert(hospitalsWorthBuilding(1, 0, 0, 0, 8)==1);
-	assert(hospitalsWorthBuilding(20, 1, 2, 0, 8)==3);
-	// A hospital seeing more than half its seats in casualties gets a neighbour.
-	assert(hospitalsWorthBuilding(6, 1, 2, 1, 8)==1);
-	assert(hospitalsWorthBuilding(6, 1, 2, 2, 8)==2);
-	assert(hospitalsWorthBuilding(6, 8, 16, 30, 8)==8);
+	assert(hospitalBedsWanted(0,50)==0);
+	assert(hospitalBedsWanted(1,50)==1);
+	assert(hospitalBedsWanted(7,50)==4);
+	assert(hospitalBedsWanted(20,30)==6);
+	assert(hospitalBedsWanted(20,40)==8);
+	assert(hospitalBedsWanted(20,50)==10);
+	assert(hospitalBedsWanted(20,60)==12);
 	assert(innsWorthBuilding(3, 2, 8, 2, 24)==3);
 	assert(innsWorthBuilding(3, 4, 16, 3, 24)==4);
 	assert(innsWorthBuilding(3, 4, 16, 9, 24)==5);
