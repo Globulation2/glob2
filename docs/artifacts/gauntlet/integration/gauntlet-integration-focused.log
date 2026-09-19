@@ -1,0 +1,2 @@
+Settings::load("preferences.txt") : error, can't open file.
+PASS Gauntlet supported shapes, request rejection and final-world corruption checks

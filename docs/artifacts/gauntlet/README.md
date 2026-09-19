@@ -10,8 +10,9 @@ The original frozen playtest and profiling binaries used provisional ID 58. Orch
 Commons merged first and owns that ID, so the integrated Gauntlet uses **ID 59**;
 its string ID remains `gauntlet`. Historical raw reports and frozen-binary scripts
 retain their original IDs. Current reproduction commands use 59 or the string ID.
-The integration check regenerates golden rows and compares the seven successful
-Gauntlet fingerprints against the provisional build.
+The [integration check](integration/README.md) regenerated golden rows and confirmed
+all Gauntlet outcomes/fingerprints against the provisional build; both supported
+Linux compilers also produced the same observed maps.
 
 ## Final layouts
 
