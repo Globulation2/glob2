@@ -2285,6 +2285,9 @@ void Planner::preferUpgrades(std::vector<Candidate>& candidates,
 bool Planner::candidateBetter(const Candidate& lhs, const Candidate& rhs) const
 {
 	const DevelopmentAction& a=lhs.action;const DevelopmentAction& b=rhs.action;
+	if((a.utility.total>=0)!=(b.utility.total>=0))return a.utility.total>=0;
+	if((a.purpose==Fortification)!=(b.purpose==Fortification))
+		return b.purpose==Fortification;
 	if(a.utility.total!=b.utility.total)return a.utility.total>b.utility.total;
 	if(a.fallbackWaterTier!=b.fallbackWaterTier)return !a.fallbackWaterTier;
 	if(a.type!=b.type)return a.type<b.type;
@@ -2442,11 +2445,18 @@ bool Planner::selectAction(const WorldState& world,
 	{
 		prepareWaterDistanceCache(world);
 		for(size_t i=0;i<intents.size();++i)
-			addBuildCandidates(world,intents[i],signature,hasNetwork,candidates);
+			if(intents[i].purpose!=Fortification)
+				addBuildCandidates(world,intents[i],signature,hasNetwork,candidates);
 	}
 	const size_t buildWinners=candidates.size();
 	addUpgradeAndRepairCandidates(world,limits,candidates);
 	lastDiagnostics.candidateCount+=candidates.size()-buildWinners;
+	if(limits.activeNewConstruction<limits.newConstruction
+	   && std::none_of(candidates.begin(),candidates.end(),
+		[](const Candidate& c){return c.action.utility.total>=0;}))
+		for(const DevelopmentIntent& intent:intents)
+			if(intent.purpose==Fortification)
+				addBuildCandidates(world,intent,signature,hasNetwork,candidates);
 	if(candidates.empty())
 	{
 		if(limits.activeNewConstruction<limits.newConstruction)
@@ -2480,6 +2490,8 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 		// updates must not mix candidate scores from different world states.
 		incrementalWorld=world;
 		incrementalIntents=intents;
+		std::stable_partition(incrementalIntents.begin(),incrementalIntents.end(),
+			[](const DevelopmentIntent& intent){return intent.purpose!=Fortification;});
 		incrementalLimits=limits;
 		incrementalOccupancySignature=occupancySignature;
 		incrementalSignature=stateSignature(occupancySignature);
@@ -2525,9 +2537,28 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 		return SelectionPending;
 	}
 
+	// A fallback must not delay ordinary work even by a map scan. Check it
+	// only after every ordinary intent; maintenance uses the same frozen world.
+	const auto ordinaryAvailable=[&]() {
+		for(const DevelopmentAction& action:incrementalCandidates)
+			if(action.purpose!=Fortification && action.utility.total>=0)return true;
+		const PlacementDiagnostics saved=lastDiagnostics;
+		std::vector<Candidate> maintenance;
+		addUpgradeAndRepairCandidates(incrementalWorld,incrementalLimits,maintenance);
+		lastDiagnostics=saved;
+		return std::any_of(maintenance.begin(),maintenance.end(),
+			[](const Candidate& c){return c.action.utility.total>=0;});
+	};
 	size_t remaining=size_t(std::max(1,originBudget));
-	while(incrementalIntentIndex<incrementalIntents.size()&&remaining)
+	while(incrementalIntentIndex<incrementalIntents.size())
 	{
+		if(incrementalIntents[incrementalIntentIndex].purpose==Fortification
+		   && incrementalBuildOriginCursor==0 && ordinaryAvailable())
+		{
+			incrementalIntentIndex=incrementalIntents.size();
+			break;
+		}
+		if(!remaining)break;
 		const size_t before=incrementalBuildOriginCursor;
 		std::vector<Candidate> winners;
 		const bool complete=addBuildCandidatesRange(incrementalWorld,

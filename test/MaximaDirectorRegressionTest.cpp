@@ -277,6 +277,31 @@ static void reusedOwnId() {
     assert(loaded.get_building(id)==flag);
 }
 
+static void fortificationUsesOnlySpareLabour()
+{
+    Fixture f;auto& a=*f.ai;
+    AIMaximaPlacement::WorldState world;world.reset(16,16);
+    a.strategy.staffing.construction_large_workers=6;
+    a.labour_plan.trainingReserve=2;
+    auto count=[&](AIMaximaPlacement::DevelopmentPurpose purpose) {
+        int result=0;
+        for(const auto& intent:a.collect_development_intents(world))
+            if(intent.buildingType==IntBuildingType::DEFENSE_BUILDING && intent.purpose==purpose)
+                ++result;
+        return result;
+    };
+    a.labour_observation.idle=7;
+    assert(count(AIMaximaPlacement::Fortification)==0);
+    a.labour_observation.idle=8;
+    assert(count(AIMaximaPlacement::Fortification)==1);
+    a.budget.desired_towers=1;
+    assert(count(AIMaximaPlacement::Fortification)==0);
+    assert(count(AIMaximaPlacement::CoreCapacity)==1);
+    AIMaximaPlacement::WorldBuilding tower;tower.buildingType=IntBuildingType::DEFENSE_BUILDING;
+    world.buildings.push_back(tower);
+    assert(count(AIMaximaPlacement::Fortification)==1);
+}
+
 static void proactiveProtection() {
     Fixture f; f.building(10,10,0);auto& a=*f.ai;auto& c=a.context;c.initialize();
     for(int y=0;y<64;++y)f.game.map.setTerrain(0,y,256);
@@ -320,6 +345,7 @@ int main() {
     container.buildingsTypes.init();
     IntBuildingType::init();
     director_regressions::reconnaissanceWaitsForEightyPercent();
+    director_regressions::fortificationUsesOnlySpareLabour();
     director_regressions::cadence();director_regressions::allyPrestige();
     director_regressions::thirdPartyTower();director_regressions::disconnectedArmy();
     director_regressions::proactiveProtection();director_regressions::reusedOwnId();

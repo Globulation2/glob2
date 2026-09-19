@@ -5373,6 +5373,20 @@ Maxima::collect_development_intents(
 			result.push_back(intent);
 		}
 	}
+	// Once useful development is exhausted, idle builders fortify the colony.
+	// The planner ranks this purpose below every viable ordinary action.
+	const int spare=labour_observation.idle-labour_plan.trainingReserve;
+	if(spare>=strategy.staffing.construction_large_workers
+	   && budget.desired_towers<=development_planner.committedBuildingCount(
+		world,IntBuildingType::DEFENSE_BUILDING))
+	{
+		DevelopmentIntent tower;
+		tower.buildingType=IntBuildingType::DEFENSE_BUILDING;
+		tower.purpose=Fortification;
+		tower.unmetCount=1;
+		tower.workers=std::min(12,spare);
+		result.push_back(tower);
+	}
 	if(relocation_target_building>=0)
 	{
 		const WorldBuilding* old=world.building(relocation_target_building);
@@ -5568,7 +5582,8 @@ void Maxima::emit_placement_diagnostics(Context& echo,const char* outcome,
 		fields<<"\trejected_"<<rejectionName(static_cast<RejectionReason>(r))<<"="<<d.rejected[r];
 	if(action)fields<<"\taction="<<action->id<<"\taction_type="<<action->type
 		<<"\tbuilding_type="<<action->buildingType
-		<<"\tpurpose="<<(action->purpose==ColonySeed ? "colony_seed" : "core_capacity")
+		<<"\tpurpose="<<(action->purpose==ColonySeed ? "colony_seed"
+			: action->purpose==Fortification ? "fortification" : "core_capacity")
 		<<"\ttemplate="<<action->templateId<<"\tcampus="<<action->campusId
 		<<"\tslot="<<action->slotId<<"\tbuilding="<<action->buildingId
 		<<"\tx="<<action->centerX<<"\ty="<<action->centerY

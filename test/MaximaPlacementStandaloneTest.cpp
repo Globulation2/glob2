@@ -85,6 +85,78 @@ static void upgradesUsuallyBeatNewConstruction()
 	}
 }
 
+static void fortificationIsLastResort()
+{
+	WorldState world=makeWorld();
+	DevelopmentIntent tower;tower.buildingType=7;tower.purpose=Fortification;
+	tower.unmetCount=1;tower.priority=100;
+	DevelopmentIntent ordinary;ordinary.buildingType=2;
+	ordinary.unmetCount=1;ordinary.priority=1;
+	DevelopmentLimits limits;limits.newConstruction=1;
+	Planner planner;planner.configure(world.profiles,1,2,6,5,7);
+	planner.mutablePolicy().unmetDemandWeight=100;
+	DevelopmentAction selected;
+	assert(planner.selectAction(world,{tower,ordinary},limits,selected));
+	assert(selected.buildingType==2);
+	// Adding a fallback must leave ordinary construction's issue tick unchanged.
+	int expectedPasses=0;
+	for(bool fallback:{false,true})
+	{
+		Planner incremental=planner;SelectionProgress progress;int passes=0;
+		const std::vector<DevelopmentIntent> intents=fallback
+			? std::vector<DevelopmentIntent>{tower,ordinary}
+			: std::vector<DevelopmentIntent>{ordinary};
+		do {++passes;progress=incremental.selectActionIncremental(world,intents,limits,
+			selected,world.computeSignature(),128);}while(progress==SelectionPending);
+		assert(progress==SelectionFound && selected.buildingType==2);
+		if(fallback)assert(passes==expectedPasses);else expectedPasses=passes;
+	}
+	assert(planner.selectAction(world,{tower},limits,selected));
+	assert(selected.purpose==Fortification);
+	assert(planner.reserve(world,selected));
+	// The existing integer purpose field carries pending fortification through saves.
+	auto backend=new GAGCore::MemoryStreamBackend;
+	auto output=new GAGCore::BinaryOutputStream(backend);
+	planner.save(output);backend->seekFromStart(0);
+	auto inputBackend=new GAGCore::MemoryStreamBackend(*backend);delete output;
+	GAGCore::BinaryInputStream input(inputBackend);Planner restored;
+	restored.configure(world.profiles,1,2,6,5,7);
+	assert(restored.load(&input,VERSION_MINOR));
+	assert(restored.actions().at(selected.id).purpose==Fortification);
+
+	// Even an upgrade or repair with a lower score beats a spare-labour tower.
+	for(bool damaged:{false,true})
+	{
+		WorldState developed=makeWorld();
+		WorldBuilding b;b.id=10;b.buildingType=3;b.level=1;
+		b.centerX=10;b.centerY=12;b.hpMax=100;b.hp=damaged?80:100;
+		developed.buildings.push_back(b);
+		DevelopmentAction footprint;footprint.centerX=10;footprint.centerY=12;
+		footprint.initialFootprint=developed.profile(3)->atLevel(1)->footprint;
+		occupy(developed,footprint);
+		Planner next;next.configure(developed.profiles,1,2,6,5,7);
+		next.mutablePolicy().unmetDemandWeight=100;
+		next.adoptStartingBuildings(developed);
+		limits.allowUpgrades=true;limits.allowRepairs=true;limits.level1Upgrades=1;
+		limits.upgradePriorities[{3,1}]=1;
+		assert(next.selectAction(developed,{tower},limits,selected));
+		assert(selected.type==(damaged?RepairBuilding:UpgradeBuilding));
+		int ordinaryPasses=0;
+		for(bool fallback:{false,true})
+		{
+			Planner incremental=next;SelectionProgress progress;int passes=0;
+			const std::vector<DevelopmentIntent> intents=fallback
+				? std::vector<DevelopmentIntent>{tower}:std::vector<DevelopmentIntent>{};
+			do {++passes;progress=incremental.selectActionIncremental(developed,intents,
+				limits,selected,developed.computeSignature(),128);
+			}while(progress==SelectionPending);
+			assert(progress==SelectionFound);
+			assert(selected.type==(damaged?RepairBuilding:UpgradeBuilding));
+			if(fallback)assert(passes==ordinaryPasses);else ordinaryPasses=passes;
+		}
+	}
+}
+
 static void placementReviewRegressions()
 {
 	{
@@ -395,6 +467,7 @@ int main()
 {
 	placementReviewRegressions();
 	upgradesUsuallyBeatNewConstruction();
+	fortificationIsLastResort();
 	foodLedgerPlacementRegression();
 	relocationAppraisalRegression();
 	placementContinuationRegression();

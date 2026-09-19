@@ -35,6 +35,22 @@ A proposed redesign of staffing and construction around a single labour budget
 is recorded in [Maxima labour economy](MaximaLabourEconomy.md); it is a design,
 not current behaviour.
 
+Maxima uses surplus builders for tower fortification as its last construction
+priority. Once the existing tower demand is covered, it can request another tower
+when idle workers minus the training reserve meet the configured large-site crew
+(default six). It assigns at most twelve of those spare workers. Every viable
+ordinary build, repair and upgrade takes precedence, and the fallback does not
+spend placement-scan updates delaying that ordinary work. Normal construction
+quotas, placement legality and farm protection still apply.
+
+This is a current-opportunity rule: unmet needs blocked by prerequisites or siting
+do not prevent a tower, and temporary early-game surplus can trigger it. Existing
+sites are not automatically preempted when new needs appear. Tower repairs and
+upgrades subsequently use the ordinary planner. This adopted strategy does not
+imply a demonstrated win-rate improvement; the paired defense study found mixed
+results. [Hospital spike measurements](../docs/validation/maxima-hospital-spikes/README.md)
+quantify one remaining capacity pressure.
+
 ## Configuration
 
 `data/maxima/base.strategy` supplies every parameter. Match format selects one

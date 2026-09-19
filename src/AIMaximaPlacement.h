@@ -40,7 +40,9 @@ enum DevelopmentPurpose
 	ColonySeed,
 	/// Build a replacement for an existing inn or swarm at a better site; the
 	/// executor destroys the old one once the replacement is completed.
-	Relocation
+	Relocation,
+	/// Spend spare construction capacity only after ordinary development.
+	Fortification
 };
 
 enum TemplateId

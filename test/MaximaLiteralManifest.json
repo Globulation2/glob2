@@ -3,8 +3,8 @@
   "algorithm": "sorted-comment-string-stripped-numeric-token-sha256",
   "sources": {
     "src/AIMaxima.cpp": {
-      "tokens": 1813,
-      "sha256": "f1c513aed9aff307213031b9658649cfe81fe6eb60cf819293107b1d9177de12",
+      "tokens": 1815,
+      "sha256": "499dd73c6c5682de716d9eb397367356e3e1b50127e2447bba0c243dd42e2196",
       "classifications": [
         "live selection authorization, swimming-builder counts, and shared reactive-defense reserve",
         "schema-backed strategy member use",
@@ -44,7 +44,8 @@
         "enabling-capacity thresholds: workers before a first barracks, barracks before the seat-constraint rule stops adding more, and the priority floors those two raise",
         "swimming is worth training only where water separates the colony from something it could use",
         "idle labour opening further construction sites, and the ceiling on one site's crew",
-        "version 109 labour continuation gate and active flag zero-based recruitment level"
+        "version 109 labour continuation gate and active flag zero-based recruitment level",
+        "spare-labour fortification: one fallback tower intent, capped at the existing twelve construction workers"
       ]
     },
     "src/AIMaximaFarmingPolicy.cpp": {
@@ -96,8 +97,8 @@
       ]
     },
     "src/AIMaximaPlacement.cpp": {
-      "tokens": 1154,
-      "sha256": "ba2467eda9f8fa5c4c1de093fdeddf15adfc66ecbbe9da27c7fc6c4c8f39cd9a",
+      "tokens": 1161,
+      "sha256": "04032091433d957f436da6f04bce7ae049b00d909e176a6cc0345d747b531f31",
       "classifications": [
         "live authorization checks using existing construction caps and level contracts",
         "version-92 purpose-aware placement serialization fields",
@@ -116,7 +117,9 @@
         "placement contract repair: intermediate upgrade geometry, waiting-action authority, and deterministic worker-reachable circulation",
         "nearby productive land capacity independent of harvest amounts; fertility scale and capacity-based food staffing",
         "food ledger claim ordering, capacity margin, and corn resource index",
-        "carrier round trip priced against a reference site, and the blend of route cost against unclaimed capacity when siting food buildings"
+        "carrier round trip priced against a reference site, and the blend of route cost against unclaimed capacity when siting food buildings",
+        "nonnegative placement utility eligibility before last-resort fortification ordering",
+        "nonnegative ordinary-action eligibility and cursor identity for deferred last-priority fortification scans"
       ]
     },
     "src/AIMaximaRuntime.cpp": {
