@@ -13,7 +13,7 @@ def generation(method,seed):
  code=run(['--generate-map','--generator',str(method),'--map-seed',str(seed),'--param','width=8','--param','height=8','--param','teams=4','--write-map','true','--rotations','4'],folder)
  return method,seed,folder,code
 with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
- maps=list(ex.map(lambda x:generation(*x),([(38,101)] if a.reference else [(58,101),(58,202),(58,303),(58,404)])))
+ maps=list(ex.map(lambda x:generation(*x),([(38,101)] if a.reference else [(62,101),(62,202),(62,303),(62,404)])))
 jobs=[]
 for method,seed,folder,code in maps:
  if code:print('GEN FAILED',method,seed,flush=True);continue

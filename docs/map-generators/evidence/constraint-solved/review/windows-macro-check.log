@@ -1,0 +1,3 @@
+g++ -g -std=gnu++20 -Wall -fPIC -O3 -DHAVE_CONFIG_H -DGL_SILENCE_DEPRECATION -D_THREAD_SAFE -I/opt/homebrew/include -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/yog -Isrc/ai -Isrc/building -Isrc/game/entities -Isrc/gui -Isrc/map -Isrc/map/edit -Isrc/map/generator -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/generator/compatibility -Isrc/map/gradient -Isrc/map/io -Isrc/map/pathfind -Isrc/net -Isrc/net/irc -Isrc/net/message -Isrc/sgsl -Isrc/team -Isrc/unit -I/opt/homebrew/include/SDL2 src/map/generator/shared/Rivers.cpp -fsyntax-only -Dnear= -Dfar=
+
+exit=0

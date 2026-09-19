@@ -2814,6 +2814,62 @@ Emoji
 암석 고원이 이 지도에 들어가지 않습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
 [The pond has no room for that much algae; use a bigger pond.]
 연못에 그만큼의 해조류를 둘 자리가 없습니다. 더 큰 연못을 사용하세요.
+[Even Ground]
+공평한 들판
+[Balance]
+균형
+[Tight passes]
+좁은 통로
+[Solver effort]
+풀이 노력
+[Brief]
+짧게
+[Patient]
+끈기 있게
+[This map is too small to solve on; use a bigger map.]
+이 지도는 너무 작아 풀 수 없습니다. 더 큰 지도를 사용하세요.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+이 크기의 지도에서 균형을 맞추기에는 식민지가 너무 많습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[The colonies could not be spread out on this map.]
+이 지도에서는 식민지를 흩어 놓을 수 없었습니다.
+[Marchland]
+변경
+[Prizes on the rope]
+줄 위의 상품
+[March width]
+변경 너비
+[Levelling]
+균등화
+[A march needs a country on each side; use at least two colonies.]
+변경에는 양쪽에 나라가 있어야 합니다. 식민지를 최소 두 개 사용하세요.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+이 지도가 각 식민지에 본토를 주기에는 식민지가 너무 많습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+이 지도에는 식민지를 흩어 놓을 공간이 없습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+어떤 식민지의 본토에 변경으로 나가는 길이 없습니다. 더 큰 지도를 사용하거나 변경을 더 좁게 하세요.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+어떤 식민지의 본토에 둥지를 둘 공간이 없습니다. 더 큰 지도를 사용하거나, 식민지 수를 줄이거나, 변경을 더 좁게 하세요.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+변경에 경합 지역이 너무 적어 그만큼의 상품을 둘 수 없습니다. 상품을 줄이거나, 변경을 더 넓게 하거나, 더 큰 지도를 사용하세요.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+변경에 상품을 둘 공간이 없습니다. 더 큰 지도를 사용하거나, 식민지 수를 줄이거나, 변경을 더 넓게 하세요.
+[Orchard Commons]
+공동 과수원
+[Orchard spacing]
+과수원 간격
+[Compact]
+좁게
+[Balanced]
+균형 있게
+[Spread]
+넓게
+[The Gauntlet]
+시련의 투기장
+[Partition thickness]
+분리벽 두께
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+시련의 투기장에서 각 식민지에 방어된 입구 두 개를 배치하려면 지도를 더 크게 하거나 식민지 수를 줄여야 합니다.
 [The Faulted City]
 단층의 도시
 [Fault displacement]

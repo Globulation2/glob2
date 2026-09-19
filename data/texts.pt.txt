@@ -2824,6 +2824,62 @@ Oásis oculto comporta no máximo oito colónias.
 O maciço não cabe neste mapa; use um mapa maior ou menos colónias.
 [The pond has no room for that much algae; use a bigger pond.]
 A lagoa não tem espaço para tantas algas; use uma lagoa maior.
+[Even Ground]
+Terreno parelho
+[Balance]
+Equilibragem
+[Tight passes]
+Passagens estreitas
+[Solver effort]
+Esforço do solucionador
+[Brief]
+Breve
+[Patient]
+Paciente
+[This map is too small to solve on; use a bigger map.]
+Este mapa é demasiado pequeno para resolver; use um mapa maior.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Demasiadas colónias para equilibrar num mapa deste tamanho; use um mapa maior ou menos colónias.
+[The colonies could not be spread out on this map.]
+Não foi possível espalhar as colónias neste mapa.
+[Marchland]
+Terra de ninguém
+[Prizes on the rope]
+Prémios na corda
+[March width]
+Largura da terra de ninguém
+[Levelling]
+Nivelamento
+[A march needs a country on each side; use at least two colonies.]
+Uma terra de ninguém precisa de um país de cada lado; use pelo menos duas colónias.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Colónias a mais para este mapa dar a cada uma a sua terra natal; use um mapa maior ou menos colónias.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Este mapa não tem espaço para espalhar as colónias; use um mapa maior ou menos colónias.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+A terra natal de uma colónia não tem saída para a terra de ninguém; use um mapa maior ou uma terra de ninguém mais estreita.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+A terra natal de uma colónia não tem espaço para uma colmeia; use um mapa maior, menos colónias ou uma terra de ninguém mais estreita.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+A terra de ninguém tem pouco terreno disputado para tantos prémios; use menos prémios, uma terra de ninguém mais larga ou um mapa maior.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+A terra de ninguém não tem espaço para um prémio; use um mapa maior, menos colónias ou uma terra de ninguém mais larga.
+[Orchard Commons]
+Pomares comuns
+[Orchard spacing]
+Espaçamento dos pomares
+[Compact]
+Próximos
+[Balanced]
+Equilibrado
+[Spread]
+Afastados
+[The Gauntlet]
+Arena de desafios
+[Partition thickness]
+Espessura das divisórias
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+A Arena de desafios precisa de um mapa maior ou de menos colónias para acomodar duas entradas defendidas por colónia.
 [The Faulted City]
 A cidade fraturada
 [Fault displacement]

@@ -30,9 +30,11 @@
 #include <algorithm>
 #include <cassert>
 #include <chrono>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <set>
+#include <tuple>
 #include <utility>
 
 GlobalContainer *globalContainer = nullptr;
@@ -97,6 +99,7 @@ class MapGeneratorDefaultsTest
 		frameworkChecks();
 		ToolkitChecks::toolkitChecks();
 		LandscapeChecks::landscapeChecks();
+		gauntletContracts();
 		GenerationService service;
 		for (int method : GeneratorRegistry::builtins().methods())
 		{
@@ -403,6 +406,92 @@ class MapGeneratorDefaultsTest
 		puts("PASS registration extension, explicit seeds, interleaved repeatability, RNG "
 			 "isolation, errors and legacy sentinels");
 	}
+	static void gauntletContracts()
+	{
+		GenerationService service;
+		D request;
+		request.setMethodDefaults(GeneratorRegistry::builtins().idOf("gauntlet"));
+		request.seed = 22001;
+		const auto &definition = GeneratorRegistry::builtins().at(request.method);
+		// Exercise both opponents sharing two fronts, the usual four-colony arena,
+		// and the denser circuit at both supported sizes.
+		for (auto [dims, teams] : {std::pair{8, 2}, std::pair{8, 4}, std::pair{8, 8},
+								  std::pair{9, 8}})
+		{
+			D sized = request;
+			sized.wDec = sized.hDec = dims;
+			sized.nbTeams = teams;
+			Game world(nullptr);
+			const auto result = service.generate(world, sized);
+			if (!result)
+				std::cerr << "Gauntlet " << (1 << dims) << "x" << (1 << dims) << ", "
+						  << teams << " colonies: " << result.diagnostic() << std::endl;
+			assert(result && world.teamsCount() == teams);
+			GenerationContext probe(sized);
+			assert(definition.validateWorld(world, probe).empty());
+		}
+		for (auto [width, height, teams] : {std::tuple{7, 7, 4}, std::tuple{9, 7, 4},
+										   std::tuple{8, 8, 1}, std::tuple{9, 9, 13}})
+		{
+			D invalid = request;
+			invalid.wDec = width;
+			invalid.hDec = height;
+			invalid.nbTeams = teams;
+			Game untouched(nullptr);
+			assert(!validateGenerationRequest(invalid, definition).empty());
+			assert(service.generate(untouched, invalid).error == GenerationError::InvalidRequest);
+			assert(untouched.teamsCount() == 0);
+		}
+		// Test the final-world validator, not just generator success or a golden hash.
+		for (int corruption = 0; corruption < 3; ++corruption)
+		{
+			Game world(nullptr);
+			const auto result = service.generate(world, request, true);
+			assert(result);
+			GenerationContext probe(request);
+			assert(definition.validateWorld(world, probe).empty());
+			int changed = 0;
+			for (int y = 0; y < world.map.getH(); ++y)
+				for (int x = 0; x < world.map.getW(); ++x)
+				{
+					const int type = world.map.getResource(x, y).type;
+					// Retain cherries and prunes: total fruit alone cannot prove
+					// that a court supplies all three upgrade ingredients.
+					if ((corruption == 0 && type == STONE) ||
+						(corruption == 1 && type == ORANGE))
+					{
+						world.map.setNoResource(x, y, 1);
+						++changed;
+					}
+				}
+			if (corruption == 2)
+			{
+				// Close the circular home/court boundary, regardless of the seed's
+				// rotation. This plugs every door without removing any structural wall.
+				double outer = -1;
+				for (const auto &record : result.telemetry.records())
+					if (record.key == "gauntlet.arena.outer-radius")
+						outer = std::get<double>(record.value);
+				assert(outer > 0);
+				for (int y = 0; y < world.map.getH(); ++y)
+					for (int x = 0; x < world.map.getW(); ++x)
+						if (std::abs(std::hypot(x - world.map.getW() / 2.,
+											   y - world.map.getH() / 2.) - outer) < 1.5 &&
+							world.map.getResource(x, y).type != STONE)
+						{
+							world.map.setResource(x, y, STONE, 1);
+							++changed;
+						}
+			}
+			assert(changed > 0);
+			const auto error = definition.validateWorld(world, probe);
+			assert(!error.empty());
+			if (corruption == 1)
+				assert(error.find("orchard") != std::string::npos);
+			if (corruption == 2)
+				assert(error.find("entrance") != std::string::npos);
+		}
+	}
 	// scatterResources used to group algae candidates by land component, and land components
 	// never label water, so no algae density ever placed a single tile. Algae is now shared out
 	// between water bodies: a sea with an island, and a lake inside the island, must both get some.
@@ -579,6 +668,13 @@ int main(int argc, char **argv)
 	{
 		ToolkitChecks::toolkitChecks();
 		puts("PASS toolkit-only geometry, raster, resource and home contracts");
+		return 0;
+	}
+	if (argc == 3 && std::string(argv[2]) == "--gauntlet-only")
+	{
+		MapGeneratorDefaultsTest::globalsInit();
+		MapGeneratorDefaultsTest::gauntletContracts();
+		puts("PASS Gauntlet supported shapes, request rejection and final-world corruption checks");
 		return 0;
 	}
 	if (argc == 3 && std::string(argv[2]) == "--faulted-city-only")

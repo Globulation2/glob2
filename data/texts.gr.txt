@@ -2888,6 +2888,62 @@ Emoji
 Ο ορεινός όγκος δεν χωράει σε αυτόν τον χάρτη· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
 [The pond has no room for that much algae; use a bigger pond.]
 Η λιμνούλα δεν έχει χώρο για τόσα φύκια· χρησιμοποιήστε μεγαλύτερη λιμνούλα.
+[Even Ground]
+Ίσο έδαφος
+[Balance]
+Εξισορρόπηση
+[Tight passes]
+Στενά περάσματα
+[Solver effort]
+Προσπάθεια του επιλυτή
+[Brief]
+Σύντομα
+[Patient]
+Υπομονετικά
+[This map is too small to solve on; use a bigger map.]
+Αυτός ο χάρτης είναι πολύ μικρός για να επιλυθεί· χρησιμοποιήστε μεγαλύτερο χάρτη.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Πάρα πολλές αποικίες για εξισορρόπηση σε χάρτη αυτού του μεγέθους· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
+[The colonies could not be spread out on this map.]
+Οι αποικίες δεν μπόρεσαν να απλωθούν σε αυτόν τον χάρτη.
+[Marchland]
+Μεθόριος
+[Prizes on the rope]
+Έπαθλα στο σχοινί
+[March width]
+Πλάτος της μεθορίου
+[Levelling]
+Εξομάλυνση
+[A march needs a country on each side; use at least two colonies.]
+Η μεθόριος χρειάζεται μια χώρα σε κάθε πλευρά· χρησιμοποιήστε τουλάχιστον δύο αποικίες.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Πάρα πολλές αποικίες για να δώσει αυτός ο χάρτης σε καθεμία μια πατρίδα· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Αυτός ο χάρτης δεν έχει χώρο για να απλωθούν οι αποικίες· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Η πατρίδα μιας αποικίας δεν έχει διέξοδο προς τη μεθόριο· χρησιμοποιήστε μεγαλύτερο χάρτη ή στενότερη μεθόριο.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Η πατρίδα μιας αποικίας δεν έχει χώρο για σμήνος· χρησιμοποιήστε μεγαλύτερο χάρτη, λιγότερες αποικίες ή στενότερη μεθόριο.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Η μεθόριος έχει πολύ λίγο αμφισβητούμενο έδαφος για τόσα έπαθλα· χρησιμοποιήστε λιγότερα έπαθλα, πλατύτερη μεθόριο ή μεγαλύτερο χάρτη.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Η μεθόριος δεν έχει χώρο για έπαθλο· χρησιμοποιήστε μεγαλύτερο χάρτη, λιγότερες αποικίες ή πλατύτερη μεθόριο.
+[Orchard Commons]
+Κοινοί οπωρώνες
+[Orchard spacing]
+Απόσταση οπωρώνων
+[Compact]
+Κοντινοί
+[Balanced]
+Ισορροπημένη
+[Spread]
+Αραιοί
+[The Gauntlet]
+Αρένα δοκιμασιών
+[Partition thickness]
+Πάχος διαχωριστικών τοίχων
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Η Αρένα δοκιμασιών χρειάζεται μεγαλύτερο χάρτη ή λιγότερες αποικίες για να χωρέσουν δύο φρουρούμενες είσοδοι ανά αποικία.
 [The Faulted City]
 Η ρηγματωμένη πόλη
 [Fault displacement]

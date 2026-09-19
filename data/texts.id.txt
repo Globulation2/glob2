@@ -2814,6 +2814,62 @@ Oasis Tersembunyi menampung paling banyak delapan koloni.
 Masif batu tidak muat di peta ini; gunakan peta yang lebih besar atau koloni yang lebih sedikit.
 [The pond has no room for that much algae; use a bigger pond.]
 Kolam tidak punya ruang untuk ganggang sebanyak itu; gunakan kolam yang lebih besar.
+[Even Ground]
+Tanah Sama Rata
+[Balance]
+Penyeimbangan
+[Tight passes]
+Lorong sempit
+[Solver effort]
+Upaya penyelesaian
+[Brief]
+Singkat
+[Patient]
+Sabar
+[This map is too small to solve on; use a bigger map.]
+Peta ini terlalu kecil untuk dipecahkan; gunakan peta yang lebih besar.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Terlalu banyak koloni untuk diseimbangkan pada peta seukuran ini; gunakan peta yang lebih besar atau lebih sedikit koloni.
+[The colonies could not be spread out on this map.]
+Koloni tidak dapat disebar di peta ini.
+[Marchland]
+Perbatasan
+[Prizes on the rope]
+Hadiah pada tali
+[March width]
+Lebar perbatasan
+[Levelling]
+Penyetaraan
+[A march needs a country on each side; use at least two colonies.]
+Perbatasan memerlukan sebuah negeri di kedua sisinya; gunakan setidaknya dua koloni.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Terlalu banyak koloni bagi peta ini untuk memberi masing-masing tanah air; gunakan peta yang lebih besar atau lebih sedikit koloni.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Peta ini tidak punya ruang untuk menyebar koloni; gunakan peta yang lebih besar atau lebih sedikit koloni.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Tanah air sebuah koloni tidak punya jalan keluar ke perbatasan; gunakan peta yang lebih besar atau perbatasan yang lebih sempit.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Tanah air sebuah koloni tidak punya ruang untuk sarang; gunakan peta yang lebih besar, lebih sedikit koloni, atau perbatasan yang lebih sempit.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Perbatasan punya terlalu sedikit lahan sengketa untuk hadiah sebanyak itu; gunakan lebih sedikit hadiah, perbatasan yang lebih lebar, atau peta yang lebih besar.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Perbatasan tidak punya ruang untuk sebuah hadiah; gunakan peta yang lebih besar, lebih sedikit koloni, atau perbatasan yang lebih lebar.
+[Orchard Commons]
+Kebun Buah Bersama
+[Orchard spacing]
+Jarak antarkebun
+[Compact]
+Rapat
+[Balanced]
+Seimbang
+[Spread]
+Renggang
+[The Gauntlet]
+Arena tantangan
+[Partition thickness]
+Ketebalan dinding pemisah
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Arena tantangan memerlukan peta yang lebih besar atau lebih sedikit koloni agar setiap koloni memiliki ruang untuk dua pintu masuk yang dijaga.
 [The Faulted City]
 Kota yang Terbelah
 [Fault displacement]
