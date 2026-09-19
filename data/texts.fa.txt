@@ -2826,3 +2826,9 @@ Emoji
 متعادل
 [Spread]
 پراکنده
+[The Gauntlet]
+میدان چالش
+[Partition thickness]
+ضخامت دیوارهای جداکننده
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+میدان چالش به نقشه‌ای بزرگ‌تر یا مستعمره‌های کمتری نیاز دارد تا برای هر مستعمره دو ورودی محافظت‌شده جا شود.

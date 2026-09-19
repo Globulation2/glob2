@@ -1868,6 +1868,33 @@ inline void farmAndTowerChecks()
 	}
 	assert(farm.water[t.at(32, 36)] && !farm.water[t.at(32, 34)]);
 	{
+		// Requesting the existing edge flood must not change any farm output. Include
+		// an irregular field spanning both torus seams and the no-exterior boundary.
+		std::vector<unsigned char> wrapped(t.size(), 0);
+		for (int y = -18; y <= 18; ++y)
+			for (int x = -18; x <= 18; ++x)
+				if (x < 8 || y < 8)
+					wrapped[t.at(x, y)] = 1;
+		for (const auto &mask : {region, wrapped, std::vector<unsigned char>(t.size(), 1),
+								std::vector<unsigned char>(t.size(), 0)})
+		{
+			TerrainSketch plain(t.size(), GRASS), observed = plain;
+			const FarmPlot plot;
+			const Farm a = layFarm(plain, t, mask, kPi / 8, {0, 0}, 4, {6, 4}, &plot,
+								   FarmBridges{8});
+			std::vector<int> depth{123}; // The result replaces, rather than appends to, it.
+			const Farm b = layFarm(observed, t, mask, kPi / 8, {0, 0}, 4, {6, 4}, &plot,
+								   FarmBridges{8}, true, &depth);
+			assert(plain == observed && a.water == b.water && a.row == b.row &&
+				   a.sand == b.sand && a.plot == b.plot && a.rows == b.rows &&
+				   a.plotX == b.plotX && a.plotY == b.plotY);
+			std::vector<unsigned char> exterior(t.size(), 0);
+			for (int i = 0; i < t.size(); ++i)
+				exterior[i] = !mask[i];
+			assert(depth == stepsFrom(t, exterior));
+		}
+	}
+	{
 		// Bridges: every 8 tiles along the rows from the origin, a line of sand clean across the
 		// farm, through the water rows and the crop rows alike (FEEDBACK 2026-09-14), so a colony
 		// crosses the whole field on one road. Only the rim keeps its crops.

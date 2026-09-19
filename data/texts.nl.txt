@@ -2852,3 +2852,9 @@ Dicht bijeen
 Evenwichtig
 [Spread]
 Verspreid
+[The Gauntlet]
+De beproevingsarena
+[Partition thickness]
+Dikte van de scheidingsmuren
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+De beproevingsarena heeft een grotere kaart of minder kolonies nodig om twee bewaakte ingangen per kolonie te kunnen plaatsen.

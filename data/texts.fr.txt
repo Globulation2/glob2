@@ -2838,3 +2838,9 @@ Rapprochés
 Équilibré
 [Spread]
 Espacés
+[The Gauntlet]
+L’arène des épreuves
+[Partition thickness]
+Épaisseur des cloisons
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+L’arène des épreuves nécessite une carte plus grande ou moins de colonies pour ménager deux entrées défendues par colonie.
