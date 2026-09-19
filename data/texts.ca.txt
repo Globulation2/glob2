@@ -2836,3 +2836,9 @@ Propers
 Equilibrada
 [Spread]
 Separats
+[The Gauntlet]
+Arena de proves
+[Partition thickness]
+Gruix de les parets divisòries
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+L’Arena de proves necessita un mapa més gran o menys colònies per encabir dues entrades defensades per colònia.
