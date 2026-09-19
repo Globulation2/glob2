@@ -268,6 +268,9 @@ def main() -> int:
                     (win_permille,) = struct.unpack_from("<H", head, 5)
                     client.team_seen = team
                     client.pending_phi = win_permille / 1000.0
+                    if os.environ.get("NEUROTICA_PHI_DEBUG"):
+                        print(f"PHI tick={tick} team={team} "
+                              f"win_permille={win_permille}", flush=True)
                     payload = _recv_exact(client.conn, client.dyn_bytes)
                     if payload is None:
                         raise ConnectionError

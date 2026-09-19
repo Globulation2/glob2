@@ -1750,3 +1750,102 @@ from ppo.log, which is the last minibatch of the last epoch. At
 that statistic cannot support the claim. The entropy split itself is
 implemented correctly; the mix head is simply at uniform, which is not the
 same as healthy.
+
+---
+
+# Win-probability shaping (2026-09-18 evening)
+
+Bradley pointed at PR #339, which fits and validates an in-game win
+probability model, and asked whether the AI could optimise against it. It is a
+much better reward than anything here, and it lands as shaping rather than as
+the objective.
+
+## What was wired
+
+`WinProbability.{h,cpp}` and the fitted `WinProbabilityModel.h` ported from
+PR #339, with the two const-correctness changes it needs
+(`GameHeader::getAllyTeamNumber`, `TeamStats::getLatestStat`). Integer
+arithmetic with a hand-rolled fixed-point exp, so it is deterministic across
+platforms -- it was built to decide a victory condition inside the
+synchronised simulation.
+
+The engine computes its alliance's permille each policy step and sends it in
+the request header. Magic bumped NPS4 -> NPS5. **The server cannot compute
+this**: the observation is fogged and the model needs both sides' true state.
+Shaping enters the REWARD, never the policy input, so an unfogged potential
+does not let the AI see through fog; it only makes the credit honest.
+
+## Why shaping, not the objective
+
+Potential-based shaping is policy-invariant, so a calibrated Phi buys dense
+credit with no risk of winning the shaping instead of the game. Demonstrated
+rather than asserted, at gamma=1:
+
+```
+win from even   sum=+1.04999995  expected +1.05  EXACT
+loss from even  sum=-1.04999995  expected -1.05  EXACT
+
+same endpoints, different routes:
+  steady climb +1.04999995 | late surge +1.04999995 | dip then win +1.04999995
+  -> shaping pays for the destination, never the route
+```
+
+Rewarding the model directly would change the optimum and could be farmed.
+This cannot be.
+
+## The terminal term, and the draw problem
+
+The old shaping never applied `gamma*Phi(s_T) - Phi(s_{T-1})`, so the sum was
+short by exactly the credit for the final swing and the invariance argument
+did not hold. Added, and truncation separated from termination: a DECIDED game
+has Phi(terminal) = 1 or 0 by definition, while a tick-capped game is
+truncated, so its last potential stands in for the value of continuing.
+
+```
+capped while ahead   +0.0297
+capped while behind  -0.0301
+```
+
+Both were exactly 0.0 before. This is the first thing that pays differently
+for a good position and a bad one when the clock runs out -- which is the
+draw problem the second reviewer identified, approached from the reward side.
+
+## Verified on the wire
+
+```
+tick    0..5000   win_permille = 500   (model declines before MINIMUM_DECISION_TICK)
+tick 5625..6250   win_permille = 555
+GLOB2_GAME_END ticks=6434 winner_team=0
+```
+
+500 in the opening is the model refusing to judge, and a constant potential
+contributes exactly zero shaping, so that stretch is correctly neutral. Note
+the granularity: the model is read on the 512-tick boundary TeamStats samples
+at, not every 25-tick policy step, so Phi is piecewise constant and a
+40000-tick game carries ~78 updates rather than one terminal signal. The
+shaping is densest in long games, which are exactly the games where the
+terminal reward says least.
+
+## Also measured: the margin decode helps the ladder too
+
+```
+                numbi          warrush        overall
+margin decode   47/128 (37%)   21/87 (24%)    26%
+before          ~31%           4-13%          ~17%
+```
+
+Confounded by opponent mix as always, but it is the first time the ladder and
+the paired eval have moved the same way.
+
+## Running
+
+Loop restarted on NPS5 with `--shaping 1.0`; server 84 inferences/s. Episodes
+recorded before the swap carry the old count-based potential and were archived
+(`archive/episodes_margin_oldphi.csv`), not mixed in.
+
+A trap avoided worth recording: the running server held NPS4 in memory while
+the rebuilt binary spoke NPS5. Old games kept working because a live Python
+process does not reload its source, but the first NEW game would have
+handshake-failed into an inert AI and quietly poisoned the episode log. The
+driver was stopped before the binary landed. This is exactly what the magic
+bump exists to catch, and it nearly caught me.
