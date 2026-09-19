@@ -171,10 +171,52 @@ allowed to plant on runs out — which is a ceiling on the map rather than a dea
 - **Not promised**: equal room to expand into, equal defensibility, or equal contact costs. Only
   catchments, reachable land, building room at home and route width are searched for.
 
+## The tournament says this map is not fair
+
+It has now been played, and **it fails its own premise.** Six maps, every rotation, two engine
+seeds each — 48 games with `nicowar` in all four slots, against Symmetric arena as the control
+([full report](evidence/constraint-solved/fairness-tournament.md)).
+
+| | Position bias | Biased maps (BH) | Any-bias p | Best start / fair |
+| --- | ---: | ---: | ---: | ---: |
+| Symmetric arena (control) | 0.0 pp | 0 / 6 | 0.786 | 1.75 |
+| **Even Ground** | **25.9 pp** | **3 / 6** | **<0.001** | **2.50** |
+| Marchland | 12.2 pp | 0 / 6 | 0.059 | 2.00 |
+| *fair-map floor* | *11.6 pp* | | | |
+
+Position bias is the root-mean-square gap between each start's win rate and the fair 25%, corrected
+for the scatter a fair map shows anyway. Anything under the 11.6 pp floor cannot be told from fair.
+Even Ground is at more than twice that, Marchland is at it.
+
+The individual maps are worse than the average sounds. On seed 2006 start 3 won **8 games out of
+8**; on 2001 start 2 won 7 of 8; on 2005 start 3 won 6 of 8. Three of the six maps reject a uniform
+split after Benjamini-Hochberg correction. Pooled over maps, wins by the generator's own colony
+index run 3 / 11 / 16 / 18 (p 0.004) — a near-monotonic advantage to the colony it places last.
+
+**Why this matters more than a tuning miss:** this is the generator whose entire argument is that
+fairness should be *measured and searched for* rather than drawn. Its static fairness score is
+0.894, in the same band as the hand-designed maps. The games disagree, and the map's own per-colony
+fitness already disagreed — on seed 2006 the four starts scored 0.27 / 0.45 / 0.31 / 0.46, and the
+0.46 start won every game. So the search is equalising the thing it optimises (decayed catchment of
+each crop) while the thing that decides games varies widely across the same colonies.
+
+That is not an argument against solving for fairness. It is an argument that **this objective is
+the wrong one**: catchment equality with a short decay says nothing about expansion room, about
+defensibility, or about how contact goes, and the fairness model's own fitness — which the same
+tournament shows is genuinely predictive (rho 0.38 with win share, p 0.020, across both generators)
+— is not in the objective at all. The obvious next move is to put fitness spread into the shape
+pass's cost and re-run this tournament, not to widen a slider.
+
+Until that is done this generator should be treated as **experimental and not balanced**, whatever
+its start-quality score says.
+
 ## What has not been done
 
-- No AI games and no fairness tournament. The numbers above are static start quality, which the
-  existing study explicitly documents as capable of missing dominant positions.
+- **No human play**, so whether the contested middles produce the fights the design expects is still
+  untested; and the AI result above is `nicowar` only, on 128×128 with four colonies.
+- The tournament above is 6 maps a generator. It is enough to reject fairness for Even Ground (three
+  maps individually significant) but not enough to certify Marchland as fair — only to say it is
+  indistinguishable from fair at this sample size.
 - No human play, so whether the contested middles actually produce the fights the design expects is
   untested.
 - Single-platform (macos-arm64) golden rows only; generator floating-point output is not promised

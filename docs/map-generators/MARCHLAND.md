@@ -212,9 +212,38 @@ because a map that was never promised a level rope is not a broken one.
 - Two colonies on a 2:1 map occasionally find too little contested ground for a full rope; the map
   then strings a shorter one, and on rare seeds refuses. The lobby's retries cover it.
 
+## The tournament
+
+Played: six maps, every rotation, two engine seeds each — 48 games with `nicowar` in all four
+slots, against Symmetric arena as the control
+([full report](evidence/constraint-solved/fairness-tournament.md)).
+
+| | Position bias | Biased maps (BH) | Any-bias p |
+| --- | ---: | ---: | ---: |
+| Symmetric arena (control) | 0.0 pp | 0 / 6 | 0.786 |
+| **Marchland** | **12.2 pp** | **0 / 6** | **0.059** |
+| Even Ground | 25.9 pp | 3 / 6 | <0.001 |
+| *fair-map floor* | *11.6 pp* | | |
+
+At 12.2 pp against a fair-map floor of 11.6, Marchland sits on the line where a map cannot be told
+apart from a fair one, and no individual map's wins reject a uniform split. That is a pass, and it
+is worth saying it is a *narrow* one: 48 games over 6 maps can only fail a map convincingly, not
+certify it. The honest reading is "no bias detected at this sample size", not "fair".
+
+Two caveats that keep it honest. Wins by the generator's own colony index came out 16 / 11 / 4 / 17
+(p 0.018) — colony 2 under-wins, which is not a bias by *start* but does say the rope is not being
+shared out as evenly as the search's own residuals claim. And the map's static start-quality scorer
+barely predicted anything here (rho 0.23 with win share, p 0.350), so the levelling the search does
+is not what is deciding these games.
+
+The interesting comparison is with Even Ground, whose whole premise is searched fairness and which
+fails this test. Marchland searches one decision and draws everything else, and passes it. That is
+the branch's central claim, tested in games rather than argued.
+
 ## What has not been done
 
-- No AI games and no fairness tournament. Everything above is static measurement.
+- The tournament above is AI-only (`nicowar` in every slot), 128×128, four colonies, 6 maps. It is
+  not enough to certify fairness, and says nothing about other AIs or other sizes.
 - The river's effect on play is entirely unmeasured. It is a wall with fords across the middle of
   the contested ground, which is exactly the kind of change that reads fine statically and alters
   how a game actually goes; whether two fords per colony is the right number is a guess constrained
