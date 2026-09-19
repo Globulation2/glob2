@@ -6,6 +6,12 @@ Homelands of farmed country, parted by a dry march that nobody can build on, wit
 strung through it. Every prize is a fruit grove with a quarry beside it, on a clearing of living
 ground — the only fruit on the map, and the only quarry worth marching for.
 
+![Eight Tug seeds at 256×256 with four colonies](images/constraint-solved/tug-seeds.png)
+
+The pale ring round each homeland is the dry march; the winding channel on seeds 1, 3 and 7 is the
+river some seeds cut through the commons. The homelands are visibly squarish, which is a known
+limitation rather than a design: see [what has not been done](#what-has-not-been-done).
+
 ## The play contract
 
 Your homeland feeds you and cannot win for you. The march is sand: no buildings, no crops, nothing
@@ -155,6 +161,37 @@ water beside it to regrow a crop from. Measured per cell at ten to twelve seeds,
 rate runs about two thirds at 2730 tiles a colony and four fifths at 2978, against nought to a third
 at 3276 — so the floor now sits between them, and the cells above it are back to the ordinary rate
 the lobby's retries cover.
+
+## What the controls do
+
+Every value of every control, eight seeds each at 256×256 with four colonies, plus both extremes on
+a small, a large and a rectangular map — 833 maps. Each control was given a claim to answer, and the
+claim checked as a rank correlation against the value:
+
+| Control | What it should move | ρ | Range |
+| --- | --- | --- | --- |
+| `prizes` | prizes strung on the rope | +1.00 | 2 → 12 |
+| `march` | tiles of no-man's land | +1.00 | 30,865 → 34,527 |
+| `march` | largest finished homeland | −1.00 | 7,805 → 7,416 |
+| `levelling` | how unevenly the rope's walks are shared | −0.80 | 15.9 → 0.0 |
+| `lakes` | water share | +1.00 | 1.0% → 19.9% |
+| `wheat-amount` | wheat tiles | +1.00 | 88 → 31,361 |
+| `wood-amount` | wood tiles | +1.00 | 72 → 18,447 |
+| `stone-amount` | stone tiles | +0.86 | 49 → 106 |
+| `fruit-amount` | fruit tiles | +0.97 | 1.6 → 59.4 |
+
+![What each Tug control does](images/constraint-solved/tug-controls.png)
+
+Two honest caveats on that picture. `march` and `prizes` are near-invisible in a 256-pixel preview
+even though the table shows both moving — the march widens by about 12 per cent across its whole
+range, since the control sets a *minimum* gap that territory growth has usually already exceeded.
+And `stone` and `fruit` scale a small radius, so a thirteen-step slider lands on four or five
+distinct groves; they move, but in steps rather than smoothly. `lakes` and `levelling` are the two
+that change what the map is.
+
+`levelling` at 0 turns the rope search off outright: the search makes no proposals, the rope's cost
+stays at 131 against 8.2 at full levelling, and the finished-world check is relaxed to match,
+because a map that was never promised a level rope is not a broken one.
 
 ## Cost and limits
 

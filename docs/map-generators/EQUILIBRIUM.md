@@ -6,6 +6,13 @@ Every other landscape in the catalog decides what it looks like and then works t
 fair. This one has no drawn shape at all. It states what the finished map must be true of, and
 searches for ground that satisfies it.
 
+![Eight Equilibrium seeds at 256×256 with four colonies](images/constraint-solved/eq-seeds.png)
+
+Worth looking at before reading the numbers: the ground is speckled rather than composed, because a
+search over terrain mostly rediscovers noise. That is this generator's main finding about itself,
+and it is the reason [the toolkit's own guidance](../../src/map/generator/shared/Solve.h) says to
+point a search at a decision rather than at a landscape.
+
 ## The play contract
 
 Lake country: green plains with a handful of real lakes, no two seeds alike, and no colony better
@@ -118,6 +125,32 @@ The slider is a target, not a figure: the brief multiplies it by the seed's wetn
 (`kWetLeast`–`kWetMost`), so it sets the middle of a band and one seed comes out a lake country and
 the next dry downland. What it promises is its direction, and the study confirms it — mean actual
 water rises monotonically across the whole range.
+
+## What the controls do
+
+Every value of every control, eight seeds each at 256×256 with four colonies, plus both extremes on
+a small, a large and a rectangular map — 785 maps. Each control was given a claim, checked as a rank
+correlation against the value:
+
+| Control | What it should move | ρ | Range |
+| --- | --- | --- | --- |
+| `water-share` | water share | +1.00 | 0% → 37.2% |
+| `passes` | passage width in cells | −1.00 | 6.0 → 3.6 |
+| `balance` | catchment spread after the stock pass | −0.90 | 0.5 → 0.0 |
+| `balance` | stock proposals made | +1.00 | 0 → 20,000 |
+| `effort` | shape proposals made | +1.00 | 875 → 5,829 |
+| `effort` | shape cost finished at | −1.00 | 1.5 → 0.4 |
+| `wheat-amount` | wheat tiles | +0.99 | 43 → 7,462 |
+| `wood-amount` | wood tiles | +1.00 | 40 → 5,681 |
+| `stone-amount` | stone tiles | +1.00 | 0 → 982 |
+| `algae-amount` | algae tiles | +1.00 | 0 → 511 |
+
+![What each Equilibrium control does](images/constraint-solved/eq-controls.png)
+
+`balance` and `effort` both buy search rather than shape, so they move the arrangement without
+changing what the map is made of; `water-share` is the one that transforms it. The crop sliders
+saturate near the top — wheat is flat from 250 per cent upward at 256², because the ground it is
+allowed to plant on runs out — which is a ceiling on the map rather than a dead control.
 
 ## Cost and limits
 
