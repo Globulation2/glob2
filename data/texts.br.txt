@@ -2952,3 +2952,9 @@ Ilhotas fortificadas
 Tamanho das plantações
 [Outlying islands]
 Ilhas periféricas
+[The Hungry Marches]
+As Fronteiras Famintas
+[Opening ration]
+Ração inicial
+[Central concentration]
+Concentração central

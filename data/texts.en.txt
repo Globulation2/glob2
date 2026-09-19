@@ -2954,3 +2954,9 @@ Bastion Keys
 Plantation size
 [Outlying islands]
 Outlying islands
+[The Hungry Marches]
+The Hungry Marches
+[Opening ration]
+Opening ration
+[Central concentration]
+Central concentration

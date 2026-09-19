@@ -2956,3 +2956,9 @@ Ufortyfikowane wysepki
 Wielkość plantacji
 [Outlying islands]
 Pobliskie wyspy
+[The Hungry Marches]
+Głodne Pogranicze
+[Opening ration]
+Początkowy przydział
+[Central concentration]
+Koncentracja w centrum

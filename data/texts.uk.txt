@@ -2952,3 +2952,9 @@ Emoji
 Розмір плантацій
 [Outlying islands]
 Зовнішні острови
+[The Hungry Marches]
+Голодне прикордоння
+[Opening ration]
+Початковий пайок
+[Central concentration]
+Зосередження в центрі

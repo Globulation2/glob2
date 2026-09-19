@@ -2964,3 +2964,9 @@ Opevnené ostrovčeky
 Veľkosť plantáží
 [Outlying islands]
 Okolité ostrovy
+[The Hungry Marches]
+Hladné pohraničie
+[Opening ration]
+Počiatočný prídel
+[Central concentration]
+Sústredenie v strede

@@ -2952,3 +2952,9 @@ Emoji
 農園の大きさ
 [Outlying islands]
 周辺の島
+[The Hungry Marches]
+飢えの辺境
+[Opening ration]
+初期食糧
+[Central concentration]
+中央への集中度

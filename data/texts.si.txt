@@ -2956,3 +2956,9 @@ Utrjeni otočki
 Velikost plantaže
 [Outlying islands]
 Zunanji otoki
+[The Hungry Marches]
+Lačno obmejno ozemlje
+[Opening ration]
+Začetna zaloga hrane
+[Central concentration]
+Zgoščenost v središču

@@ -2954,3 +2954,9 @@ Emoji
 حجم المزرعة
 [Outlying islands]
 الجزر الخارجية
+[The Hungry Marches]
+التخوم الجائعة
+[Opening ration]
+المؤونة الأولية
+[Central concentration]
+تركيز الغذاء في الوسط

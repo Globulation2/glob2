@@ -1,0 +1,16 @@
+{
+  "commit": "0af5734d9c664f4f36790ba9aba169da40f9100f",
+  "upstream": "b932161e053fdfe4e376292141585a0f139918e9",
+  "previous_verified_commit": "aa86faf51",
+  "catalog_id_before": 65,
+  "catalog_id_after": 69,
+  "changes": "Resolve additive conflicts, preserve all upstream maps and translations, assign free catalog ID and update fixture commands. No Hungry Marches geometry changes.",
+  "binary_sha256": "b0ac11b4128716ba6a4c775f0c4878bfd9fd4b3eb8370f09ebeb749e9a5a8b29",
+  "logs": [
+    "integration-build.log",
+    "integration-contracts.log",
+    "integration-golden.log",
+    "integration-translations.log",
+    "integration-translations-tests.log"
+  ]
+}

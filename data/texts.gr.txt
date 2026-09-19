@@ -3026,3 +3026,9 @@ Emoji
 Μέγεθος φυτείας
 [Outlying islands]
 Περιφερειακά νησιά
+[The Hungry Marches]
+Οι Πεινασμένες Μεθόριοι
+[Opening ration]
+Αρχικό σιτηρέσιο
+[Central concentration]
+Συγκέντρωση στο κέντρο

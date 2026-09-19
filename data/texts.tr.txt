@@ -2964,3 +2964,9 @@ Burç Adacıkları
 Plantasyon boyutu
 [Outlying islands]
 Dış adalar
+[The Hungry Marches]
+Aç Sınır Toprakları
+[Opening ration]
+Başlangıç erzağı
+[Central concentration]
+Merkezde yoğunlaşma

@@ -12,6 +12,7 @@
 #include "LegacyGenerationDescriptor.h"
 #include "MapGeneratorFrameworkChecks.h"
 #include "MapGeneratorContracts.h"
+#include "HungryMarchesContracts.h"
 #include "MapGeneratorLandscapeChecks.h"
 #include "MapGeneratorToolkitChecks.h"
 #include "NewMapScreen.h"
@@ -96,6 +97,7 @@ class MapGeneratorDefaultsTest
 	{
 		globalsInit();
 		GeneratorContracts::generatorContracts();
+		GeneratorContracts::hungryMarchesContracts();
 		frameworkChecks();
 		ToolkitChecks::toolkitChecks();
 		LandscapeChecks::landscapeChecks();
@@ -692,6 +694,12 @@ int main(int argc, char **argv)
 		MapGeneratorDefaultsTest::globalsInit();
 		MapGeneratorDefaultsTest::gauntletContracts();
 		puts("PASS Gauntlet supported shapes, request rejection and final-world corruption checks");
+		return 0;
+	}
+	if (argc == 3 && std::string(argv[2]) == "--hungry-marches-only")
+	{
+		MapGeneratorDefaultsTest::globalsInit();
+		GeneratorContracts::hungryMarchesContracts();
 		return 0;
 	}
 	if (argc == 3 && std::string(argv[2]) == "--faulted-city-only")
