@@ -55,6 +55,17 @@ the engine's swimming movement predicate.
 The generator uses existing simulation rules. It changes no engine behavior,
 save format, replay acceptance, network protocol, AI, or existing generator.
 
-Development evidence is retained under `artifacts/bastion-keys/`. Entries with
-`swim` in their names describe the final swimming-required design. Earlier
-`v10`–`v12` causeway experiments are historical and do not establish its playability.
+Checked-in [review evidence](../../test/fixtures/bastion-keys/README.md) includes
+native maps and a final save, parameter measurements, gameplay counters,
+cross-platform checksums, translation review and profiling results.
+
+The final swimming layout passed 2,508 supported requests across control,
+random and shape studies; 2,773 unsupported requests were rejected explicitly.
+Wheat, wood, stone, algae and fruit abundance increased their measured deposits.
+Outlying islands saturate when the available water cannot fit another key.
+
+Nicowar and Maxima established growing colonies in the opening tests. Cabino
+struggled to staff its first inn with four starting workers, and Cortex resigned
+early; these are known AI limitations, also observed in the Forts reference.
+Automated games establish economy and combat behavior, not human enjoyment or
+exact competitive balance.
