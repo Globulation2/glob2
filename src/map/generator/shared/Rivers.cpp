@@ -3,7 +3,6 @@
 #include "GenerationContext.h"
 #include <algorithm>
 #include <cmath>
-#include <functional>
 namespace MapGeneration
 {
 namespace
@@ -113,7 +112,7 @@ std::vector<int> fordsToRejoin(const std::vector<RiverFord> &sites, int componen
 	std::vector<int> parent(std::max(0, components));
 	for (size_t i = 0; i < parent.size(); ++i)
 		parent[i] = int(i);
-	const std::function<int(int)> find = [&](int a)
+	const auto find = [&parent](int a)
 	{
 		while (parent[a] != a)
 			a = parent[a] = parent[parent[a]];

@@ -5,6 +5,7 @@
 #include "Geometry.h"
 #include "Grid.h"
 #include "Sketch.h"
+#include "Solve.h"
 #include <string>
 #include <vector>
 struct GenerationContext;
@@ -74,6 +75,49 @@ River drawRiver(const Torus &, GenerationContext &, const std::string &stream, b
 /// The corners a river floods: strokePath over its centre line, which joins every point with a
 /// round joint so the bed never gaps on a bend.
 std::vector<unsigned char> riverWater(const Torus &, const River &);
+
+/// A bed and what it was rated at.
+struct RiverChoice
+{
+	River bed;
+	std::vector<unsigned char> water;
+	Objective score;
+	bool found = false;
+};
+
+/// The best of `beds` laid across the map, rated by the caller.
+///
+/// Where a river should go is the part of it construction cannot settle, because a good bed depends
+/// on everything already on the ground. It is also a handful of options rather than a space, so it
+/// is scored outright: the beds are spread evenly across the map so the candidates genuinely differ
+/// instead of clustering by luck, each is rated, and the lowest wins. Reaching for an annealing run
+/// over a dozen candidates would be the mistake at the head of this file pointed the other way.
+///
+/// `rate(bed, water)` returns an Objective, so the winner arrives carrying every measurement that
+/// chose it - a caller wanting one of them back reads it off the returned score
+/// (Objective::residual) rather than keeping its own tally beside the loop.
+template <typename Rate>
+RiverChoice bestRiverAcross(const Torus &t, GenerationContext &context, const std::string &stream,
+							bool vertical, int beds, const RiverStyle &style, Rate rate)
+{
+	RiverChoice best;
+	const double across = vertical ? t.w : t.h;
+	for (int bed = 0; bed < beds; ++bed)
+	{
+		River candidate =
+			drawRiver(t, context, stream, vertical, across * (double(bed) + 0.5) / double(beds),
+					  style);
+		std::vector<unsigned char> water = riverWater(t, candidate);
+		const Objective score = rate(candidate, water);
+		if (best.found && score.total() >= best.score.total())
+			continue;
+		best.bed = std::move(candidate);
+		best.water = std::move(water);
+		best.score = score;
+		best.found = true;
+	}
+	return best;
+}
 
 /// A place a river can be forded, and what it would join.
 struct RiverFord

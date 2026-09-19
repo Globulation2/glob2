@@ -160,6 +160,16 @@ struct Objective
 			sum += terms[i].weighted();
 		return sum;
 	}
+	/// What a named term came out at, or `missing` if this objective has no such term. A chosen
+	/// candidate carries every measurement that chose it, so a caller wanting one of them back can
+	/// read it off rather than tracking a shadow copy alongside the search.
+	double residual(const char *name, double missing = 0) const
+	{
+		for (int i = 0; i < count; ++i)
+			if (std::string(terms[i].name) == name)
+				return terms[i].residual;
+		return missing;
+	}
 };
 
 /// A target drawn per seed instead of fixed.
@@ -171,9 +181,11 @@ struct Objective
 /// the next a chain of lakes, one a country of big open fields and the next a patchwork.
 ///
 /// The range is the map's design and should be chosen so that both ends are a map worth playing;
-/// where in the range a seed lands is the map's variety. Draw from a stream of the map's own, and
-/// report what was drawn - a reader looking at an odd seed should be able to see what it was asked
-/// for before wondering whether the search failed.
+/// where in the range a seed lands is the map's variety.
+///
+/// This is the bare draw. Prefer Brief below, which draws from the map's own stream and records what
+/// it drew, so a reader looking at an odd seed can always see what it was asked for before wondering
+/// whether the search failed. Reach for this one only where there is no brief to hang it on.
 double drawnTarget(GenerationContext &, const char *stream, double least, double most);
 
 /// Which of a map's optional targets this seed is solving to.
@@ -194,6 +206,8 @@ double drawnTarget(GenerationContext &, const char *stream, double least, double
 class Emphases
 {
   public:
+	/// Nothing emphasised: a map that has not drawn its optional terms yet, or has none.
+	Emphases() = default;
 	Emphases(GenerationContext &, const char *stream, std::vector<const char *> optional, int least,
 			 int most);
 	/// Whether this seed solves to that target. An unknown name is not emphasised.
@@ -207,6 +221,43 @@ class Emphases
 
   private:
 	std::vector<const char *> chosen;
+};
+
+/// What a map was asked to make this seed: the targets it drew and the optional ones it chose.
+///
+/// Both halves of this were conventions before they were a type, and conventions are the things
+/// that rot. Every drawn target was followed by a hand-written telemetry line recording it - in all
+/// seven places the first two maps drew one - and the stream and the telemetry key were spelled out
+/// separately at every call, always as `<map>-brief` and `<map>.brief.<name>`. Nothing enforced
+/// either, so a reader chasing an odd seed had to trust that nobody had forgotten a line, and two
+/// strings that must agree were free to drift apart. Holding the map's name once makes the record a
+/// consequence of drawing rather than a thing to remember.
+///
+/// Draw the whole brief in one place at the top of a design, so what a seed was asked for can be
+/// read without following the design through.
+class Brief
+{
+  public:
+	Brief(GenerationContext &context, std::string map) : context(context), map(std::move(map)) {}
+
+	/// A target for this seed, drawn from `least` to `most` and recorded. The range is the map's
+	/// design and both ends should be worth playing; where in it a seed lands is the map's variety.
+	double target(const char *name, double least, double most);
+
+	/// Which of the optional terms this seed solves to, drawn and recorded. Only ever the optional
+	/// ones: a map's invariants are not character, and a seed that switched one off would not be a
+	/// varied map but a broken one. See Emphases, which this is.
+	void choose(std::vector<const char *> optional, int least, int most);
+
+	/// Whether this seed solves to that target. An unknown name is not emphasised.
+	bool on(const char *name) const { return emphases.on(name); }
+	/// A term's weight: its full weight when this seed emphasises it, nothing when not.
+	double weight(const char *name, double full) const { return emphases.weight(name, full); }
+
+  private:
+	GenerationContext &context;
+	std::string map;
+	Emphases emphases;
 };
 
 /// Records what each of an objective's targets came out at, under `key`: every term's residual and

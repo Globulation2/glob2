@@ -66,6 +66,19 @@ void Emphases::report(GenerationTelemetry &telemetry, const std::string &key) co
 		telemetry.choice(key, name);
 }
 
+double Brief::target(const char *name, double least, double most)
+{
+	const double drawn = drawnTarget(context, (map + "-brief").c_str(), least, most);
+	context.telemetry.measure(map + ".brief." + name, drawn);
+	return drawn;
+}
+
+void Brief::choose(std::vector<const char *> optional, int least, int most)
+{
+	emphases = Emphases(context, (map + "-brief").c_str(), std::move(optional), least, most);
+	emphases.report(context.telemetry, map + ".brief.emphases");
+}
+
 double drawnTarget(GenerationContext &context, const char *stream, double least, double most)
 {
 	constexpr std::uint32_t kSteps = 1000;

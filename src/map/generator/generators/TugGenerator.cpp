@@ -145,7 +145,13 @@ constexpr int kFrayPeriod = 9;
 /// things is a search that should have been a loop.
 constexpr int kRiverBeds = 14;
 /// The bed itself, in undermap corners: wide enough that no unit steps over it, even diagonally.
+/// The wander is a share of the side the bed crosses, and it has to be read against that side: at
+/// 0.17 over 256 tiles the beds came out as canals, which is the ruled line the head of Rivers.h
+/// argues a positional constraint would give. A fourth harmonic wrinkles the long bends.
 constexpr double kRiverHalfWidth = 2.6, kRiverWander = 0.30, kRiverSwell = 0.35;
+/// Tiles between centre-line points, and how many harmonics the meander is built from.
+constexpr double kBedPointStep = 2.0;
+constexpr int kBedHarmonics = 4;
 /// The sand of a ford, and how near the bed's radius it reaches across.
 constexpr double kFordHalfWidth = 2.0, kFordReach = 2.5;
 /// How far apart candidate fords stand, in centre-line points. A river crossed every few tiles is
@@ -264,6 +270,121 @@ struct Layout
 	std::string failure;
 };
 
+/// What this country thinks of a bed laid across it, as named terms so a seed's river can be read
+/// back as the brief it was chosen against (Objective, Solve.h).
+Objective rateBed(const Layout &L, const Torus &t, int teams,
+				  const std::vector<unsigned char> &water,
+				  const std::vector<unsigned char> &towns, const std::vector<unsigned char> &bed)
+{
+	int bedTiles = 0, commonsTiles = 0, townTiles = 0;
+	std::vector<double> perColony(teams, 0.0);
+	for (int i = 0; i < t.size(); ++i)
+	{
+		if (!bed[i])
+			continue;
+		++bedTiles;
+		townTiles += towns[i];
+		if (L.ownerOf[i] < 0)
+			++commonsTiles;
+		else
+			perColony[L.ownerOf[i]] += 1.0;
+	}
+	Objective score;
+	if (bedTiles == 0)
+		return score.add("town", kBedTownWeight, 1.0); // a bed with no water never wins
+
+	// Which side of the bed each colony ends up on. A river leaving every colony on one bank is a
+	// coastline, not a front; one that parts them evenly is ground to fight over.
+	std::vector<unsigned char> dry(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+		dry[i] = !water[i] && !bed[i];
+	const std::vector<int> banks = connectedRegions(dry, t.w, t.h, true, GridNeighbors::Eight);
+	std::vector<int> swarmsPer;
+	int stranded = 0;
+	for (const RegionHome &home : L.homes)
+	{
+		const int bank = banks[home.site];
+		if (bank < 0)
+		{
+			++stranded; // its swarm is under the bed; the town term will have caught this
+			continue;
+		}
+		if (bank >= int(swarmsPer.size()))
+			swarmsPer.resize(bank + 1, 0);
+		++swarmsPer[bank];
+	}
+	const int largest = swarmsPer.empty()
+							? teams
+							: *std::max_element(swarmsPer.begin(), swarmsPer.end()) + stranded;
+
+	// A bed that touches nobody's farm is the best case, not the worst. imbalance() reads all-zero
+	// shares as "every claimant has none of a thing it needs" and charges a whole point, which is
+	// right for wheat and exactly inverted for water somebody did not want: measured, it made every
+	// clean bed score 40 and handed the choice to the other terms. Only ask how evenly the water
+	// fell once some of it has fallen.
+	double touched = 0;
+	for (const double share : perColony)
+		touched += share;
+	score.add("town", kBedTownWeight, double(townTiles));
+	score.add("homeland", kBedHomelandWeight, touched > 0 ? imbalance(perColony) : 0.0);
+	score.add("commons", kBedCommonsWeight, 1.0 - double(commonsTiles) / double(bedTiles));
+	score.add("split", kBedSplitWeight,
+			  teams > 1 ? double(2 * largest - teams) / double(teams) : 0.0);
+	return score;
+}
+
+/// This seed's river, if it drew one and the country has room for it.
+///
+/// The division of labour the whole map argues for, applied to scenery rather than to prizes. The
+/// bed is not something a solver could find - see the head of Rivers.h for why a target on where
+/// the water goes buys a blob or a ruled line and never a river - so it is drawn, closed and
+/// winding and the right width, for the cost of some trigonometry. What construction cannot settle
+/// is which bed to cut, because that depends on homelands and lakes already on the ground; that is
+/// a handful of discrete options, exactly measurable, so it is scored outright.
+///
+/// A country with no room simply gets no river. Cutting the best of a bad set anyway would put
+/// water through somebody's town or their fields, and a landform is character: a seed may have
+/// none, unlike the things that make the map playable at all.
+void cutRiver(Layout &L, const Torus &t, int teams, GenerationContext &context, const Brief &brief,
+			  std::vector<unsigned char> &water)
+{
+	if (!brief.on("river"))
+		return;
+
+	std::vector<unsigned char> swarms(t.size(), 0);
+	for (const RegionHome &home : L.homes)
+		swarms[home.site] = 1;
+	const std::vector<unsigned char> towns = dilateRound(t, swarms, kTownRadius);
+	const RiverStyle style{kRiverHalfWidth, kRiverWander, kRiverSwell, kBedPointStep, kBedHarmonics};
+	const RiverChoice chosen = bestRiverAcross(
+		t, context, "tug-river", context.bounded("tug-river", 2) != 0, kRiverBeds, style,
+		[&](const River &, const std::vector<unsigned char> &bed)
+		{ return rateBed(L, t, teams, water, towns, bed); });
+
+	// The winner carries every measurement that chose it, so the two things a bed must clear are
+	// read back off its own score rather than tracked alongside the loop.
+	const double commonsShare = 1.0 - chosen.score.residual("commons");
+	if (!chosen.found || chosen.score.residual("town") != 0 || commonsShare < kLeastCommonsShare)
+	{
+		context.telemetry.measure("tug.river.best-commons-share",
+								  chosen.found ? commonsShare : 0.0);
+		context.telemetry.fallback("tug.river.no-room",
+								   "This country had no bed a river could take.");
+		return;
+	}
+	L.hasRiver = true;
+	L.river = chosen.bed;
+	reportObjective(context.telemetry, "tug.river.bed", chosen.score);
+	int bedTiles = 0;
+	for (int i = 0; i < t.size(); ++i)
+		if (chosen.water[i])
+		{
+			water[i] = 1;
+			++bedTiles;
+		}
+	context.telemetry.measure("tug.river.tiles", bedTiles);
+}
+
 /// The country: lakes, homelands shared out equally, and a march opened between them. Every step of
 /// this is a shared primitive doing the job it was written for; none of it is searched.
 Layout design(const GenerationRequest &request, GenerationContext &context)
@@ -273,6 +394,21 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.t = {1 << request.wDec, 1 << request.hDec};
 	const Torus &t = L.t;
 	const int teams = request.nbTeams;
+
+	// What this seed was asked for, in one place.
+	//
+	// Drawn, not fixed: with constant targets every seed of a solved map comes out with the same
+	// character however different its layout, because a search is very good at finding the same
+	// answer to the same question. The homeland share and the farmed share are also what tells a
+	// colony's own country from the commons at a glance, and the ragged draw is how far its edge
+	// follows the lie of the land. A reader looking at an odd seed should be able to see what it
+	// was asked for before wondering whether the search failed.
+	Brief brief(context, "tug");
+	const double homelandShare = brief.target("homeland-share", kHomelandLeast, kHomelandMost);
+	L.farmed = brief.target("farmed-share", kFarmedLeast, kFarmedMost);
+	const std::int64_t ragged =
+		std::int64_t(brief.target("ragged-steps", kRaggedLeast, kRaggedMost) * 64);
+	brief.choose({"river"}, 0, 1);
 
 	// The country's water, from a smooth field: the first thing that makes one seed's march
 	// different from the next's, and the reason the walk to a prize is never the straight line.
@@ -389,22 +525,12 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// nobody. Taking the nearest tiles by walk means the homelands come out the same size as each
 	// other whatever shape the territory around them was, which is the fairness that actually
 	// matters, and it leaves better than half the country neutral.
-	// How much of the country this seed's colonies keep, and how sharply their farmed ground reads
-	// against the commons. Drawn, not fixed: with constant targets every seed of a solved map comes
-	// out with the same character, however different its layout.
-	const double homelandShare = drawnTarget(context, "tug-brief", kHomelandLeast, kHomelandMost);
-	L.farmed = drawnTarget(context, "tug-brief", kFarmedLeast, kFarmedMost);
-	context.telemetry.measure("tug.brief.homeland-share", homelandShare);
-	context.telemetry.measure("tug.brief.farmed-share", L.farmed);
 	const std::int64_t homeland = std::int64_t(std::int64_t(t.size()) * homelandShare) / (100 * teams);
 	// A field of its own, and a fine one. Bending the ranking with `relief` did almost nothing
 	// because relief undulates about every forty tiles and a homeland is only sixty or so across:
 	// over that span it is nearly a gradient, so it slid the square sideways instead of breaking up
 	// its edge. An edge frays at the scale of the fraying, not at the scale of the landscape.
 	const std::vector<int> fray = fractalNoise(t.w, t.h, kFrayPeriod, 3, rng);
-	const std::int64_t ragged =
-		std::int64_t(drawnTarget(context, "tug-brief", kRaggedLeast, kRaggedMost) * 64);
-	context.telemetry.measure("tug.brief.ragged-steps", double(ragged) / 64.0);
 	for (int k = 0; k < teams; ++k)
 	{
 		std::vector<unsigned char> own(t.size(), 0);
@@ -545,131 +671,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 									   "A homeland had no room for its whole lake.", k);
 	}
 
-	// A landform: drawn, then placed by search.
-	//
-	// This is the division of labour the whole map argues for, applied to scenery rather than to
-	// prizes. The bed is not something a solver could find - see the head of Rivers.h for why a
-	// target on where the water goes buys a blob or a ruled line and never a river - so it is drawn,
-	// closed and winding and the right width, for the cost of some trigonometry. What is left is the
-	// part construction has no way to settle: whether this particular country has room for a river,
-	// and if so which of several beds to cut, given homelands and lakes that are already on the
-	// ground. That is a handful of discrete options, each exactly measurable, each coupled to the
-	// whole layout - and so it is scored. Fourteen candidates is a loop, not an annealing run;
-	// reaching for a search here rather than an exhaustive score would be the same mistake in the
-	// other direction.
-	const Emphases landforms(context, "tug-brief", {"river"}, 0, 1);
-	landforms.report(context.telemetry, "tug.brief.landforms");
-	if (landforms.on("river"))
-	{
-		std::vector<unsigned char> townSeedsForRiver(t.size(), 0);
-		for (const RegionHome &home : L.homes)
-			townSeedsForRiver[home.site] = 1;
-		const std::vector<unsigned char> towns = dilateRound(t, townSeedsForRiver, kTownRadius);
-		const bool vertical = context.bounded("tug-river", 2) != 0;
-		const double across = vertical ? t.w : t.h;
-		const RiverStyle style{kRiverHalfWidth, kRiverWander, kRiverSwell, 2.0, 4};
-
-		River best;
-		Objective bestScore;
-		double bestTotal = 0;
-		int bestTownTiles = -1, bestBedTiles = 0;
-		double bestCommons = 0;
-		for (int bed = 0; bed < kRiverBeds; ++bed)
-		{
-			// The beds are spread evenly across the map rather than drawn at random offsets, so the
-			// candidates genuinely differ from one another instead of clustering by luck.
-			const double offset = across * (double(bed) + 0.5) / double(kRiverBeds);
-			const River candidate = drawRiver(t, context, "tug-river", vertical, offset, style);
-			const std::vector<unsigned char> bedWater = riverWater(t, candidate);
-
-			int bedTiles = 0, commonsTiles = 0, townTiles = 0;
-			std::vector<double> perColony(teams, 0.0);
-			for (int i = 0; i < t.size(); ++i)
-			{
-				if (!bedWater[i])
-					continue;
-				++bedTiles;
-				townTiles += towns[i];
-				if (L.ownerOf[i] < 0)
-					++commonsTiles;
-				else
-					perColony[L.ownerOf[i]] += 1.0;
-			}
-			if (bedTiles == 0)
-				continue;
-
-			// Which side of the bed each colony ends up on. A river that leaves every colony on one
-			// bank is a coastline, not a front; one that parts them evenly is ground to fight over.
-			std::vector<unsigned char> dry(t.size(), 0);
-			for (int i = 0; i < t.size(); ++i)
-				dry[i] = !water[i] && !bedWater[i];
-			const std::vector<int> banks =
-				connectedRegions(dry, t.w, t.h, true, GridNeighbors::Eight);
-			std::vector<int> swarmsPer;
-			int stranded = 0;
-			for (const RegionHome &home : L.homes)
-			{
-				const int bank = banks[home.site];
-				if (bank < 0)
-				{
-					++stranded; // its swarm is under the bed; the town term will have caught this
-					continue;
-				}
-				if (bank >= int(swarmsPer.size()))
-					swarmsPer.resize(bank + 1, 0);
-				++swarmsPer[bank];
-			}
-			const int largest =
-				swarmsPer.empty() ? teams
-								  : *std::max_element(swarmsPer.begin(), swarmsPer.end()) + stranded;
-			const double split =
-				teams > 1 ? double(2 * largest - teams) / double(teams) : 0.0;
-
-			// A bed that touches nobody's farm is the best case, not the worst. imbalance() reads a
-			// set of all-zero shares as "every claimant has none of a thing it needs" and charges a
-			// whole point for it, which is right for wheat and exactly inverted for water somebody
-			// did not want: measured, it made every clean bed score 40 and handed the choice to the
-			// other terms. Only ask how evenly the water fell once some of it has fallen.
-			double touched = 0;
-			for (const double share : perColony)
-				touched += share;
-			Objective score;
-			score.add("town", kBedTownWeight, double(townTiles));
-			score.add("homeland", kBedHomelandWeight, touched > 0 ? imbalance(perColony) : 0.0);
-			score.add("commons", kBedCommonsWeight, 1.0 - double(commonsTiles) / double(bedTiles));
-			score.add("split", kBedSplitWeight, split);
-			if (bestTownTiles < 0 || score.total() < bestTotal)
-			{
-				best = candidate;
-				bestScore = score;
-				bestTotal = score.total();
-				bestTownTiles = townTiles;
-				bestBedTiles = bedTiles;
-				bestCommons = double(commonsTiles) / double(bedTiles);
-			}
-		}
-
-		// A country with no room for a river simply does not get one. Cutting the best of a bad set
-		// anyway would put a bed through somebody's town, and a landform is character: it may be
-		// missing from a seed, unlike the things that make the map playable at all.
-		if (bestTownTiles == 0 && bestCommons >= kLeastCommonsShare)
-		{
-			L.hasRiver = true;
-			L.river = best;
-			reportObjective(context.telemetry, "tug.river.bed", bestScore);
-			context.telemetry.measure("tug.river.tiles", bestBedTiles);
-			const std::vector<unsigned char> bedWater = riverWater(t, best);
-			for (int i = 0; i < t.size(); ++i)
-				if (bedWater[i])
-					water[i] = 1;
-		}
-		else
-		{
-			context.telemetry.measure("tug.river.best-commons-share", bestCommons);
-			context.telemetry.fallback("tug.river.no-room",
-									   "This country had no bed a river could take.");
-		}
-	}
+	cutRiver(L, t, teams, context, brief, water);
 
 	L.ground.assign(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)

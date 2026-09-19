@@ -286,7 +286,7 @@ struct Shape
 /// neighbours about as wide as asked, clear ground near every home, and nobody cut off.
 double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance, double wantWidth,
 				  int roomWanted, int bodiesWanted, double shoreWanted,
-				  const Emphases &wants)
+				  const Brief &wants)
 {
 	const int teams = int(solved.home.size());
 	for (int k = 0; k < teams; ++k)
@@ -377,7 +377,7 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 /// asked for stays exactly what it is. Returns the moves taken.
 SolveReport annealShape(Solved &solved, GenerationContext &context, double balance,
 						double wantWidth, int bodiesWanted, double shoreWanted,
-						const Emphases &wants, int moves)
+						const Brief &wants, int moves)
 {
 	const Torus t = solved.lat.torus();
 	const int cells = solved.lat.size(), teams = int(solved.home.size());
@@ -820,10 +820,26 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// band rather than a figure, which trades their exactness for one seed being a lake country and
 	// the next dry downland. What a slider still promises is its direction: more asked for is more
 	// on the map, always.
-	const double wetness = drawnTarget(context, "equilibrium-brief", kWetLeast, kWetMost);
-	const double greenness = drawnTarget(context, "equilibrium-brief", kGreenLeast, kGreenMost);
-	context.telemetry.measure("equilibrium.brief.wetness", wetness);
-	context.telemetry.measure("equilibrium.brief.greenness", greenness);
+	//
+	// The whole brief is drawn here, before any of it is used, so what a seed was asked for can be
+	// read in one place rather than gathered from the design as it goes.
+	Brief brief(context, "equilibrium");
+	const double wetness = brief.target("wetness", kWetLeast, kWetMost);
+	const double greenness = brief.target("greenness", kGreenLeast, kGreenMost);
+	// Ranges, not constants: the whole reason one seed of a solved map looks like another is that
+	// they were all handed the same targets.
+	const double shoreWanted = brief.target("shore-wanted", kShoreLeast, kShoreMost);
+	const double fieldsWanted = brief.target("fields-wanted", kFieldsLeast, kFieldsMost);
+	// Which of the optional targets this seed solves to. Equal catchments, building room and a
+	// joined-up country are not in here: they are what makes the result a map rather than what gives
+	// it a character, and a seed that dropped one would be broken, not varied.
+	//
+	// Approach parity is in the draw, and it is a fairness property: a seed that drops it can leave
+	// one colony far easier to hold than another. That is a deliberate choice for this map - variety
+	// is wanted more than an even contest, and a country where the ground genuinely favours somebody
+	// is a kind of map, where a country balanced in every dimension at once is only ever the one.
+	brief.choose({"bodies", "pass", "fields", "approach"}, 1, 4);
+
 	floodToShare(solved, context, std::clamp(int(std::lround(o.water * wetness)), 0, 90));
 
 	// Tight passes at 100, open country at 0, as a passage width in cells.
@@ -831,29 +847,12 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const double balance = kBalanceWeight * std::clamp(o.balance, 0, 100) / 100.0;
 	const int effort = std::clamp(o.effort, 0, 2);
 	// How many bodies this seed's water should form: one seed's inland sea is the next one's chain
-	// of lakes.
-	// The brief this seed is solving to. Ranges, not constants: the whole reason one seed of a solved
-	// map looks like another is that they were all handed the same targets.
-	const double shoreWanted = drawnTarget(context, "equilibrium-brief", kShoreLeast, kShoreMost);
-	const double fieldsWanted = drawnTarget(context, "equilibrium-brief", kFieldsLeast, kFieldsMost);
-	context.telemetry.measure("equilibrium.brief.shore-wanted", shoreWanted);
-	context.telemetry.measure("equilibrium.brief.fields-wanted", fieldsWanted);
-	// Which of the optional targets this seed solves to. Equal catchments, building room and a
-	// joined-up country are not in here: they are what makes the result a map rather than what gives
-	// it a character, and a seed that dropped one would be broken, not varied.
-	// Approach parity is in the draw, and it is a fairness property: a seed that drops it can leave
-	// one colony far easier to hold than another. That is a deliberate choice for this map - variety
-	// is wanted more than an even contest, and a country where the ground genuinely favours somebody
-	// is a kind of map, where a country balanced in every dimension at once is only ever the one.
-	// What is never in the draw is playability: every colony joined to the rest (severed), with
-	// ground to build on (room) and a crop it can reach. Those are not character.
-	const Emphases wants(context, "equilibrium-brief", {"bodies", "pass", "fields", "approach"}, 1,
-						 4);
-	wants.report(context.telemetry, "equilibrium.brief.wants");
+	// of lakes. Drawn from the shape stream rather than the brief, because it is a target of the
+	// search rather than a statement of what the country is like.
 	const int bodiesWanted =
 		kBodiesLeast +
 		int(context.bounded("equilibrium-shape", kBodiesMost - kBodiesLeast + 1));
-	solved.shape = annealShape(solved, context, balance, wantWidth, bodiesWanted, shoreWanted, wants,
+	solved.shape = annealShape(solved, context, balance, wantWidth, bodiesWanted, shoreWanted, brief,
 							   kShapeMoves[effort]);
 
 	// The stock pass inherits the shape pass's walks: the land is settled now, so every colony's
@@ -881,7 +880,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	solved.stock = annealStock(solved, context, walk, decay, stockMoves,
 							   solved.stockSpreadBefore, solved.stockSpreadAfter, solved.fields,
 							   solved.stockCost, fieldsWanted,
-							   wants.weight("fields", kFieldsWeight));
+							   brief.weight("fields", kFieldsWeight));
 
 	L.kind = solved.kind;
 	L.pinned = solved.pinned;
