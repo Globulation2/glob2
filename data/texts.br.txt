@@ -2908,6 +2908,14 @@ Um bairro da cidade não tem plantações acessíveis ou espaço para construir.
 Os bairros da cidade são muito desiguais; tente outra semente.
 [The fractured civic plaza did not survive.]
 A praça pública fraturada não sobreviveu.
+[Who Ate the Map?]
+Quem comeu o mapa?
+[Appetite]
+Apetite
+[A Little Nibble]
+Uma mordidinha
+[Hungry]
+Com fome
 [Portage Lakes]
 Lennoù ha tremenlec’hioù koad
 [Lake elongation]

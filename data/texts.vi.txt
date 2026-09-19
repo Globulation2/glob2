@@ -2908,6 +2908,14 @@ Một khu phố thiếu cây trồng có thể tiếp cận hoặc không gian x
 Các khu phố quá mất cân bằng; hãy thử hạt giống khác.
 [The fractured civic plaza did not survive.]
 Quảng trường thành phố bị đứt gãy không còn tồn tại.
+[Who Ate the Map?]
+Ai đã ăn bản đồ?
+[Appetite]
+Sức ăn
+[A Little Nibble]
+Cắn một miếng nhỏ
+[Hungry]
+Đói bụng
 [Portage Lakes]
 Hồ và lối xuyên rừng
 [Lake elongation]

@@ -1656,6 +1656,101 @@ inline void faultedCityContracts()
 	puts("PASS Faulted City: envelope, refusal, resource extremes, growth containment, stable resource terrain, narrow junction, masonry and token food mutations");
 }
 
+inline void eatenMapContracts()
+{
+	GenerationService service;
+	D request;
+	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("who-ate-the-map"));
+	request.wDec = request.hDec = 7;
+	request.nbTeams = 4;
+	request.seed = 7;
+	const auto &definition = *GeneratorRegistry::builtins().find(request.method);
+	for (int appetite : {0, 1, 2})
+	{
+		request.options["appetite"] = appetite;
+		Game world(nullptr), repeated(nullptr), sparse(nullptr);
+		assert(service.generate(world, request));
+		const auto traced = service.generate(repeated, request, true);
+		assert(traced && !traced.telemetry.records().empty());
+		assert(traced.telemetry.invalidValues() == 0);
+		assert(mapFingerprint(world) == mapFingerprint(repeated));
+		auto zero = request;
+		for (const char *key :
+			 {"wheat-amount", "wood-amount", "stone-amount", "algae-amount", "fruit-amount"})
+			zero.options[key] = 0;
+		assert(service.generate(sparse, zero));
+		for (int y = 0; y < 128; ++y)
+			for (int x = 0; x < 128; ++x)
+				assert(world.map.getUMTerrain(x, y) == sparse.map.getUMTerrain(x, y));
+		GenerationContext check(request);
+		assert(definition.validateWorld(world, check).empty());
+		// Depleting the opening crops must be rejected even when the coastline survives.
+		for (int y = 0; y < 128; ++y)
+			for (int x = 0; x < 128; ++x)
+				if (repeated.map.getResource(x, y).type == WHEAT)
+					repeated.map.setNoResource(x, y, 0);
+		assert(!definition.validateWorld(repeated, check).empty());
+		world.map.setUMTerrain(0, 0, GRASS);
+		assert(!definition.validateWorld(world, check).empty());
+	}
+	// A single greedy spread used to reject this usable crescent. Retry sites, not terrain.
+	request.seed = 71;
+	request.nbWorkers = 8;
+	{
+		Game crescent(nullptr);
+		assert(service.generate(crescent, request));
+	}
+	{
+		auto crowded = request;
+		crowded.seed = 63577209;
+		crowded.nbWorkers = 6;
+		crowded.options["wheat-amount"] = 300;
+		crowded.options["wood-amount"] = 175;
+		crowded.options["algae-amount"] = crowded.options["fruit-amount"] = 0;
+		Game crescent(nullptr);
+		assert(service.generate(crescent, crowded));
+	}
+	request.seed = 7;
+	request.nbWorkers = 4;
+	for (auto dims :
+		 {std::pair{7, 8}, std::pair{8, 7}, std::pair{9, 8}, std::pair{8, 9}, std::pair{9, 9}})
+	{
+		request.wDec = dims.first;
+		request.hDec = dims.second;
+		request.nbTeams = std::min(dims.first, dims.second) == 7 ? 4 : 8;
+		Game world(nullptr);
+		assert(service.generate(world, request));
+	}
+	for (auto dims : {std::pair{6, 6}, std::pair{7, 9}, std::pair{9, 7}})
+	{
+		request.wDec = dims.first;
+		request.hDec = dims.second;
+		assert(!definition.validateRequest(request).empty());
+	}
+	// Small detached crescents are scenery; a larger lobe still supports an island colony.
+	for (const auto [dims, seed, expected] : {std::tuple{8, 7, 1}, std::tuple{9, 11, 2}})
+	{
+		auto split = request;
+		split.wDec = split.hDec = dims;
+		split.nbTeams = 4;
+		split.seed = seed;
+		split.options["appetite"] = 2;
+		Game world(nullptr);
+		assert(service.generate(world, split));
+		const MapGeneration::Torus t(world.map);
+		auto land = MapGeneration::pureTiles(world.map, WATER);
+		for (auto &tile : land) tile = !tile;
+		const auto labels = MapGeneration::connectedRegions(land, t.w, t.h, true,
+			MapGeneration::GridNeighbors::Eight);
+		std::set<int> occupied;
+		for (const auto &units : MapGeneration::unitTilesByTeam(world.map, 4))
+			occupied.insert(labels[units[0]]);
+		assert(occupied.size() == size_t(expected));
+	}
+	puts("PASS Who Ate the Map: reproducibility, unchanged coastline at zero resources, corruption "
+		 "rejection, envelope");
+}
+
 inline void portageLakesContracts()
 {
 	const auto &registry = GeneratorRegistry::builtins();
@@ -1799,6 +1894,7 @@ inline void generatorContracts()
 	combContracts();
 	evenGroundContracts();
 	marchlandContracts();
+	eatenMapContracts();
 	rebuiltLandscapeContracts();
 	savannahContracts();
 	locustFoodChecks();

@@ -2920,6 +2920,14 @@ Un barri de la ciutat no té conreus accessibles o espai per construir.
 Els barris de la ciutat són massa desiguals; proveu una altra llavor.
 [The fractured civic plaza did not survive.]
 La plaça pública fracturada no ha sobreviscut.
+[Who Ate the Map?]
+Qui s’ha menjat el mapa?
+[Appetite]
+Gana
+[A Little Nibble]
+Una mossegadeta
+[Hungry]
+Afamat
 [Portage Lakes]
 Llacs i passos boscosos
 [Lake elongation]

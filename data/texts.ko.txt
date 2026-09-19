@@ -2908,6 +2908,14 @@ Emoji
 도시 구역 간 조건이 너무 불균형합니다. 다른 시드를 시도하세요.
 [The fractured civic plaza did not survive.]
 단층으로 갈라진 도시 광장이 보존되지 않았습니다.
+[Who Ate the Map?]
+누가 지도를 먹었나요?
+[Appetite]
+식욕
+[A Little Nibble]
+살짝 한 입
+[Hungry]
+배고픔
 [Portage Lakes]
 호수와 숲 통로
 [Lake elongation]

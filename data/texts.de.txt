@@ -2912,6 +2912,14 @@ Einem Stadtviertel fehlen erreichbare Nutzpflanzen oder Bauflächen.
 Die Stadtviertel sind zu unausgewogen; versuchen Sie einen anderen Seed.
 [The fractured civic plaza did not survive.]
 Der zerbrochene Stadtplatz ist nicht erhalten geblieben.
+[Who Ate the Map?]
+Wer hat die Karte gegessen?
+[Appetite]
+Appetit
+[A Little Nibble]
+Ein kleiner Bissen
+[Hungry]
+Hungrig
 [Portage Lakes]
 Seen und Waldpassagen
 [Lake elongation]

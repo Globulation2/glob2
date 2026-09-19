@@ -2908,6 +2908,14 @@ Emoji
 各城区条件过于不均衡；请尝试其他种子。
 [The fractured civic plaza did not survive.]
 被断层分割的城市广场未能保留下来。
+[Who Ate the Map?]
+谁把地图吃了？
+[Appetite]
+胃口
+[A Little Nibble]
+咬一小口
+[Hungry]
+饿了
 [Portage Lakes]
 湖泊与林间通道
 [Lake elongation]

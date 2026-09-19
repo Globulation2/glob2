@@ -2910,6 +2910,14 @@ Emoji
 محله‌های شهر بیش از حد نامتوازن هستند؛ بذر دیگری را امتحان کنید.
 [The fractured civic plaza did not survive.]
 میدان عمومی ترک‌خورده باقی نماند.
+[Who Ate the Map?]
+چه کسی نقشه را خورد؟
+[Appetite]
+اشتها
+[A Little Nibble]
+یک گاز کوچک
+[Hungry]
+گرسنه
 [Portage Lakes]
 دریاچه‌ها و گذرگاه‌های جنگلی
 [Lake elongation]
