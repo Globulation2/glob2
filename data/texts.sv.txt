@@ -2884,6 +2884,44 @@ Prövningarnas arena
 Skiljemurarnas tjocklek
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Prövningarnas arena behöver en större karta eller färre kolonier för att rymma två bevakade ingångar per koloni.
+[The Comb]
+Kammen
+[Peninsulas per shore]
+Halvöar per strand
+[Encircled Kingdom]
+Omringat kungarike
+[Fortress plan]
+Fästningsplan
+[Automatic]
+Automatisk
+[Elongated enclosure]
+Avlång befästning
+[Bastioned enclosure]
+Bastionsbefästning
+[Paired courtyards]
+Två borggårdar
+[Heartland farmland]
+Åkermark i kärnlandet
+[The Faulted City]
+Den förskjutna staden
+[Fault displacement]
+Förkastningsförskjutning
+[Fault width]
+Förkastningsbredd
+[Ruin density]
+Ruintäthet
+[Surviving junctions]
+Bevarade korsningar
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Den förskjutna staden kräver 256 eller 512 rutor på varje sida och en till tolv kolonier.
+[The city has too few usable junctions.]
+Staden har för få användbara korsningar.
+[A city neighbourhood lacks reachable crops or building room.]
+En stadsdel saknar åtkomliga grödor eller byggutrymme.
+[The city neighbourhoods are too unequal; try another seed.]
+Stadsdelarna är alltför obalanserade; prova ett annat frö.
+[The fractured civic plaza did not survive.]
+Det spruckna stadstorget bevarades inte.
 [Bastion Keys]
 Bastionsöar
 [Plantation size]

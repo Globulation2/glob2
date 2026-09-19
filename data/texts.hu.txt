@@ -2874,6 +2874,44 @@ Próbák arénája
 Válaszfalak vastagsága
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 A Próbák arénájához nagyobb térkép vagy kevesebb kolónia kell, hogy minden kolóniának elférjen két őrzött bejárata.
+[The Comb]
+A Fésű
+[Peninsulas per shore]
+Félszigetek partonként
+[Encircled Kingdom]
+Körülzárt királyság
+[Fortress plan]
+Erőd alaprajza
+[Automatic]
+Automatikus
+[Elongated enclosure]
+Hosszúkás erőd
+[Bastioned enclosure]
+Bástyás erőd
+[Paired courtyards]
+Kettős udvar
+[Heartland farmland]
+Központi termőföld
+[The Faulted City]
+A szétszakadt város
+[Fault displacement]
+Vetődések eltolódása
+[Fault width]
+Vetődések szélessége
+[Ruin density]
+Romsűrűség
+[Surviving junctions]
+Megmaradt csomópontok
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+A szétszakadt városhoz oldalanként 256 vagy 512 mező és egy–tizenkét kolónia szükséges.
+[The city has too few usable junctions.]
+A városban túl kevés a használható csomópont.
+[A city neighbourhood lacks reachable crops or building room.]
+Egy városnegyedben nincs elérhető termény vagy elegendő hely az építkezéshez.
+[The city neighbourhoods are too unequal; try another seed.]
+A városnegyedek túl egyenlőtlenek; próbálj másik magot.
+[The fractured civic plaza did not survive.]
+A szétszakadt városi tér nem maradt fenn.
 [Bastion Keys]
 Bástyaszigetek
 [Plantation size]

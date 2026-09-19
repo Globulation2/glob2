@@ -2870,6 +2870,44 @@ Emoji
 분리벽 두께
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 시련의 투기장에서 각 식민지에 방어된 입구 두 개를 배치하려면 지도를 더 크게 하거나 식민지 수를 줄여야 합니다.
+[The Comb]
+빗
+[Peninsulas per shore]
+해안당 반도 수
+[Encircled Kingdom]
+포위된 왕국
+[Fortress plan]
+요새 형태
+[Automatic]
+자동
+[Elongated enclosure]
+길쭉한 성곽
+[Bastioned enclosure]
+보루형 성곽
+[Paired courtyards]
+두 안뜰
+[Heartland farmland]
+중심부 농지
+[The Faulted City]
+단층의 도시
+[Fault displacement]
+단층 변위
+[Fault width]
+단층 너비
+[Ruin density]
+폐허 밀도
+[Surviving junctions]
+남아 있는 교차로
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+단층의 도시는 각 변이 256 또는 512칸이어야 하며 식민지가 1~12개 필요합니다.
+[The city has too few usable junctions.]
+도시에 이용 가능한 교차로가 너무 적습니다.
+[A city neighbourhood lacks reachable crops or building room.]
+도시의 한 구역에 접근 가능한 작물이나 건설 공간이 부족합니다.
+[The city neighbourhoods are too unequal; try another seed.]
+도시 구역 간 조건이 너무 불균형합니다. 다른 시드를 시도하세요.
+[The fractured civic plaza did not survive.]
+단층으로 갈라진 도시 광장이 보존되지 않았습니다.
 [Bastion Keys]
 요새 군도
 [Plantation size]

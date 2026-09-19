@@ -1,0 +1,594 @@
+[
+  {
+    "game": "game-58-101-mixed-r0",
+    "teams": [
+      {
+        "team": 0,
+        "peak": 56,
+        "final": 0,
+        "buildings": 3,
+        "starved": "30",
+        "killed": "1"
+      },
+      {
+        "team": 1,
+        "peak": 27,
+        "final": 25,
+        "buildings": 2,
+        "starved": "1",
+        "killed": "4"
+      },
+      {
+        "team": 2,
+        "peak": 96,
+        "final": 96,
+        "buildings": 26,
+        "starved": "6",
+        "killed": "0"
+      },
+      {
+        "team": 3,
+        "peak": 59,
+        "final": 0,
+        "buildings": 0,
+        "starved": "35",
+        "killed": "11"
+      }
+    ]
+  },
+  {
+    "game": "game-58-101-mixed-r1",
+    "teams": [
+      {
+        "team": 0,
+        "peak": 46,
+        "final": 0,
+        "buildings": 2,
+        "starved": "21",
+        "killed": "3"
+      },
+      {
+        "team": 1,
+        "peak": 67,
+        "final": 67,
+        "buildings": 9,
+        "starved": "0",
+        "killed": "0"
+      },
+      {
+        "team": 2,
+        "peak": 87,
+        "final": 81,
+        "buildings": 13,
+        "starved": "14",
+        "killed": "5"
+      },
+      {
+        "team": 3,
+        "peak": 51,
+        "final": 10,
+        "buildings": 2,
+        "starved": "39",
+        "killed": "0"
+      }
+    ]
+  },
+  {
+    "game": "game-58-101-mixed-r2",
+    "teams": [
+      {
+        "team": 0,
+        "peak": 41,
+        "final": 0,
+        "buildings": 0,
+        "starved": "34",
+        "killed": "11"
+      },
+      {
+        "team": 1,
+        "peak": 38,
+        "final": 25,
+        "buildings": 0,
+        "starved": "0",
+        "killed": "4"
+      },
+      {
+        "team": 2,
+        "peak": 112,
+        "final": 112,
+        "buildings": 35,
+        "starved": "0",
+        "killed": "0"
+      },
+      {
+        "team": 3,
+        "peak": 51,
+        "final": 0,
+        "buildings": 0,
+        "starved": "17",
+        "killed": "18"
+      }
+    ]
+  },
+  {
+    "game": "game-58-101-mixed-r3",
+    "teams": [
+      {
+        "team": 0,
+        "peak": 51,
+        "final": 0,
+        "buildings": 9,
+        "starved": "28",
+        "killed": "2"
+      },
+      {
+        "team": 1,
+        "peak": 63,
+        "final": 54,
+        "buildings": 10,
+        "starved": "2",
+        "killed": "3"
+      },
+      {
+        "team": 2,
+        "peak": 120,
+        "final": 120,
+        "buildings": 22,
+        "starved": "0",
+        "killed": "3"
+      },
+      {
+        "team": 3,
+        "peak": 69,
+        "final": 66,
+        "buildings": 9,
+        "starved": "11",
+        "killed": "2"
+      }
+    ]
+  },
+  {
+    "game": "game-58-202-mixed-r0",
+    "teams": [
+      {
+        "team": 0,
+        "peak": 43,
+        "final": 0,
+        "buildings": 9,
+        "starved": "21",
+        "killed": "10"
+      },
+      {
+        "team": 1,
+        "peak": 51,
+        "final": 51,
+        "buildings": 13,
+        "starved": "0",
+        "killed": "0"
+      },
+      {
+        "team": 2,
+        "peak": 64,
+        "final": 59,
+        "buildings": 23,
+        "starved": "2",
+        "killed": "0"
+      },
+      {
+        "team": 3,
+        "peak": 51,
+        "final": 33,
+        "buildings": 4,
+        "starved": "11",
+        "killed": "4"
+      }
+    ]
+  },
+  {
+    "game": "game-58-202-mixed-r1",
+    "teams": [
+      {
+        "team": 0,
+        "peak": 40,
+        "final": 21,
+        "buildings": 2,
+        "starved": "9",
+        "killed": "9"
+      },
+      {
+        "team": 1,
+        "peak": 58,
+        "final": 58,
+        "buildings": 12,
+        "starved": "0",
+        "killed": "0"
+      },
+      {
+        "team": 2,
+        "peak": 71,
+        "final": 61,
+        "buildings": 12,
+        "starved": "14",
+        "killed": "3"
+      },
+      {
+        "team": 3,
+        "peak": 51,
+        "final": 28,
+        "buildings": 8,
+        "starved": "16",
+        "killed": "1"
+      }
+    ]
+  },
+  {
+    "game": "game-58-202-mixed-r2",
+    "teams": [
+      {
+        "team": 0,
+        "peak": 51,
+        "final": 35,
+        "buildings": 11,
+        "starved": "11",
+        "killed": "4"
+      },
+      {
+        "team": 1,
+        "peak": 28,
+        "final": 5,
+        "buildings": 2,
+        "starved": "17",
+        "killed": "1"
+      },
+      {
+        "team": 2,
+        "peak": 65,
+        "final": 56,
+        "buildings": 15,
+        "starved": "23",
+        "killed": "0"
+      },
+      {
+        "team": 3,
+        "peak": 52,
+        "final": 48,
+        "buildings": 11,
+        "starved": "20",
+        "killed": "0"
+      }
+    ]
+  },
+  {
+    "game": "game-58-202-mixed-r3",
+    "teams": [
+      {
+        "team": 0,
+        "peak": 128,
+        "final": 107,
+        "buildings": 19,
+        "starved": "6",
+        "killed": "0"
+      },
+      {
+        "team": 1,
+        "peak": 19,
+        "final": 3,
+        "buildings": 2,
+        "starved": "8",
+        "killed": "1"
+      },
+      {
+        "team": 2,
+        "peak": 63,
+        "final": 46,
+        "buildings": 13,
+        "starved": "5",
+        "killed": "1"
+      },
+      {
+        "team": 3,
+        "peak": 56,
+        "final": 0,
+        "buildings": 0,
+        "starved": "30",
+        "killed": "0"
+      }
+    ]
+  },
+  {
+    "game": "game-58-303-mixed-r0",
+    "teams": [
+      {
+        "team": 0,
+        "peak": 40,
+        "final": 39,
+        "buildings": 6,
+        "starved": "10",
+        "killed": "2"
+      },
+      {
+        "team": 1,
+        "peak": 47,
+        "final": 47,
+        "buildings": 13,
+        "starved": "0",
+        "killed": "0"
+      },
+      {
+        "team": 2,
+        "peak": 56,
+        "final": 56,
+        "buildings": 16,
+        "starved": "5",
+        "killed": "0"
+      },
+      {
+        "team": 3,
+        "peak": 50,
+        "final": 36,
+        "buildings": 11,
+        "starved": "26",
+        "killed": "0"
+      }
+    ]
+  },
+  {
+    "game": "game-58-303-mixed-r1",
+    "teams": [
+      {
+        "team": 0,
+        "peak": 47,
+        "final": 0,
+        "buildings": 2,
+        "starved": "18",
+        "killed": "13"
+      },
+      {
+        "team": 1,
+        "peak": 45,
+        "final": 45,
+        "buildings": 10,
+        "starved": "0",
+        "killed": "0"
+      },
+      {
+        "team": 2,
+        "peak": 95,
+        "final": 95,
+        "buildings": 26,
+        "starved": "0",
+        "killed": "0"
+      },
+      {
+        "team": 3,
+        "peak": 54,
+        "final": 0,
+        "buildings": 3,
+        "starved": "34",
+        "killed": "0"
+      }
+    ]
+  },
+  {
+    "game": "game-58-303-mixed-r2",
+    "teams": [
+      {
+        "team": 0,
+        "peak": 39,
+        "final": 0,
+        "buildings": 1,
+        "starved": "22",
+        "killed": "6"
+      },
+      {
+        "team": 1,
+        "peak": 77,
+        "final": 77,
+        "buildings": 10,
+        "starved": "2",
+        "killed": "0"
+      },
+      {
+        "team": 2,
+        "peak": 96,
+        "final": 96,
+        "buildings": 29,
+        "starved": "0",
+        "killed": "0"
+      },
+      {
+        "team": 3,
+        "peak": 51,
+        "final": 47,
+        "buildings": 10,
+        "starved": "29",
+        "killed": "0"
+      }
+    ]
+  },
+  {
+    "game": "game-58-303-mixed-r3",
+    "teams": [
+      {
+        "team": 0,
+        "peak": 48,
+        "final": 0,
+        "buildings": 6,
+        "starved": "24",
+        "killed": "6"
+      },
+      {
+        "team": 1,
+        "peak": 71,
+        "final": 53,
+        "buildings": 9,
+        "starved": "14",
+        "killed": "0"
+      },
+      {
+        "team": 2,
+        "peak": 100,
+        "final": 100,
+        "buildings": 31,
+        "starved": "0",
+        "killed": "0"
+      },
+      {
+        "team": 3,
+        "peak": 47,
+        "final": 36,
+        "buildings": 7,
+        "starved": "25",
+        "killed": "0"
+      }
+    ]
+  },
+  {
+    "game": "game-58-404-mixed-r0",
+    "teams": [
+      {
+        "team": 0,
+        "peak": 64,
+        "final": 0,
+        "buildings": 2,
+        "starved": "27",
+        "killed": "3"
+      },
+      {
+        "team": 1,
+        "peak": 18,
+        "final": 0,
+        "buildings": 0,
+        "starved": "10",
+        "killed": "0"
+      },
+      {
+        "team": 2,
+        "peak": 114,
+        "final": 114,
+        "buildings": 33,
+        "starved": "0",
+        "killed": "0"
+      },
+      {
+        "team": 3,
+        "peak": 57,
+        "final": 2,
+        "buildings": 0,
+        "starved": "37",
+        "killed": "10"
+      }
+    ]
+  },
+  {
+    "game": "game-58-404-mixed-r1",
+    "teams": [
+      {
+        "team": 0,
+        "peak": 44,
+        "final": 0,
+        "buildings": 0,
+        "starved": "17",
+        "killed": "9"
+      },
+      {
+        "team": 1,
+        "peak": 48,
+        "final": 28,
+        "buildings": 3,
+        "starved": "34",
+        "killed": "8"
+      },
+      {
+        "team": 2,
+        "peak": 143,
+        "final": 143,
+        "buildings": 37,
+        "starved": "0",
+        "killed": "2"
+      },
+      {
+        "team": 3,
+        "peak": 47,
+        "final": 4,
+        "buildings": 0,
+        "starved": "34",
+        "killed": "7"
+      }
+    ]
+  },
+  {
+    "game": "game-58-404-mixed-r2",
+    "teams": [
+      {
+        "team": 0,
+        "peak": 79,
+        "final": 62,
+        "buildings": 16,
+        "starved": "15",
+        "killed": "7"
+      },
+      {
+        "team": 1,
+        "peak": 40,
+        "final": 40,
+        "buildings": 9,
+        "starved": "0",
+        "killed": "0"
+      },
+      {
+        "team": 2,
+        "peak": 73,
+        "final": 28,
+        "buildings": 11,
+        "starved": "19",
+        "killed": "17"
+      },
+      {
+        "team": 3,
+        "peak": 53,
+        "final": 30,
+        "buildings": 9,
+        "starved": "14",
+        "killed": "1"
+      }
+    ]
+  },
+  {
+    "game": "game-58-404-mixed-r3",
+    "teams": [
+      {
+        "team": 0,
+        "peak": 72,
+        "final": 32,
+        "buildings": 13,
+        "starved": "22",
+        "killed": "6"
+      },
+      {
+        "team": 1,
+        "peak": 64,
+        "final": 64,
+        "buildings": 11,
+        "starved": "0",
+        "killed": "0"
+      },
+      {
+        "team": 2,
+        "peak": 102,
+        "final": 101,
+        "buildings": 29,
+        "starved": "0",
+        "killed": "0"
+      },
+      {
+        "team": 3,
+        "peak": 54,
+        "final": 53,
+        "buildings": 8,
+        "starved": "7",
+        "killed": "0"
+      }
+    ]
+  }
+]

@@ -683,5 +683,11 @@ int main(int argc, char **argv)
 		puts("PASS Gauntlet supported shapes, request rejection and final-world corruption checks");
 		return 0;
 	}
+	if (argc == 3 && std::string(argv[2]) == "--faulted-city-only")
+	{
+		MapGeneratorDefaultsTest::globalsInit();
+		GeneratorContracts::faultedCityContracts();
+		return 0;
+	}
 	MapGeneratorDefaultsTest::run(argc == 3 ? argv[2] : nullptr);
 }

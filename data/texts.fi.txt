@@ -2874,6 +2874,44 @@ Koetusten areena
 Väliseinien paksuus
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Koetusten areena tarvitsee suuremman kartan tai vähemmän siirtokuntia, jotta jokaiselle siirtokunnalle mahtuu kaksi vartioitua sisäänkäyntiä.
+[The Comb]
+Kampa
+[Peninsulas per shore]
+Niemiä rantaa kohti
+[Encircled Kingdom]
+Saarrettu valtakunta
+[Fortress plan]
+Linnoituksen pohjapiirros
+[Automatic]
+Automaattinen
+[Elongated enclosure]
+Pitkulainen linnoitus
+[Bastioned enclosure]
+Bastionilinnoitus
+[Paired courtyards]
+Kaksi sisäpihaa
+[Heartland farmland]
+Ydinalueen viljelymaa
+[The Faulted City]
+Murtunut kaupunki
+[Fault displacement]
+Siirrosten siirtymä
+[Fault width]
+Siirrosten leveys
+[Ruin density]
+Raunioiden tiheys
+[Surviving junctions]
+Säilyneet risteykset
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Murtunut kaupunki vaatii 256 tai 512 ruutua kummassakin suunnassa ja yhdestä kahteentoista siirtokuntaa.
+[The city has too few usable junctions.]
+Kaupungissa on liian vähän käyttökelpoisia risteyksiä.
+[A city neighbourhood lacks reachable crops or building room.]
+Kaupunginosasta puuttuu saavutettavia viljelykasveja tai rakennustilaa.
+[The city neighbourhoods are too unequal; try another seed.]
+Kaupunginosat ovat liian epätasapainoisia; kokeile toista siementä.
+[The fractured civic plaza did not survive.]
+Murtunut kaupunginaukio ei säilynyt.
 [Bastion Keys]
 Linnakesaaret
 [Plantation size]

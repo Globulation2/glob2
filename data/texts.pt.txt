@@ -2880,6 +2880,44 @@ Arena de desafios
 Espessura das divisórias
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 A Arena de desafios precisa de um mapa maior ou de menos colónias para acomodar duas entradas defendidas por colónia.
+[The Comb]
+O Pente
+[Peninsulas per shore]
+Penínsulas por margem
+[Encircled Kingdom]
+Reino cercado
+[Fortress plan]
+Planta da fortaleza
+[Automatic]
+Automática
+[Elongated enclosure]
+Recinto alongado
+[Bastioned enclosure]
+Recinto abaluartado
+[Paired courtyards]
+Pátios duplos
+[Heartland farmland]
+Terras agrícolas centrais
+[The Faulted City]
+A cidade fraturada
+[Fault displacement]
+Deslocamento das falhas
+[Fault width]
+Largura das falhas
+[Ruin density]
+Densidade de ruínas
+[Surviving junctions]
+Cruzamentos preservados
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+A cidade fraturada requer 256 ou 512 casas por lado e uma a doze colónias.
+[The city has too few usable junctions.]
+A cidade tem poucos cruzamentos utilizáveis.
+[A city neighbourhood lacks reachable crops or building room.]
+Um bairro da cidade não tem culturas acessíveis ou espaço para construir.
+[The city neighbourhoods are too unequal; try another seed.]
+Os bairros da cidade são demasiado desiguais; experimente outra semente.
+[The fractured civic plaza did not survive.]
+A praça pública fraturada não sobreviveu.
 [Bastion Keys]
 Ilhotas fortificadas
 [Plantation size]

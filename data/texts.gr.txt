@@ -2944,6 +2944,44 @@ Emoji
 Πάχος διαχωριστικών τοίχων
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Η Αρένα δοκιμασιών χρειάζεται μεγαλύτερο χάρτη ή λιγότερες αποικίες για να χωρέσουν δύο φρουρούμενες είσοδοι ανά αποικία.
+[The Comb]
+Η Χτένα
+[Peninsulas per shore]
+Χερσόνησοι ανά ακτή
+[Encircled Kingdom]
+Περικυκλωμένο βασίλειο
+[Fortress plan]
+Σχέδιο οχυρού
+[Automatic]
+Αυτόματο
+[Elongated enclosure]
+Επιμήκης περίβολος
+[Bastioned enclosure]
+Περίβολος με προμαχώνες
+[Paired courtyards]
+Δύο αυλές
+[Heartland farmland]
+Αγροτική γη της ενδοχώρας
+[The Faulted City]
+Η ρηγματωμένη πόλη
+[Fault displacement]
+Μετατόπιση ρηγμάτων
+[Fault width]
+Πλάτος ρηγμάτων
+[Ruin density]
+Πυκνότητα ερειπίων
+[Surviving junctions]
+Διατηρημένες διασταυρώσεις
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Η ρηγματωμένη πόλη απαιτεί 256 ή 512 πλακίδια ανά πλευρά και μία έως δώδεκα αποικίες.
+[The city has too few usable junctions.]
+Η πόλη έχει πολύ λίγες βατές διασταυρώσεις.
+[A city neighbourhood lacks reachable crops or building room.]
+Μια συνοικία της πόλης δεν έχει προσβάσιμες καλλιέργειες ή χώρο για κτίρια.
+[The city neighbourhoods are too unequal; try another seed.]
+Οι συνοικίες της πόλης είναι υπερβολικά άνισες· δοκιμάστε άλλον σπόρο.
+[The fractured civic plaza did not survive.]
+Η ρηγματωμένη πλατεία της πόλης δεν διατηρήθηκε.
 [Bastion Keys]
 Οχυρωμένες νησίδες
 [Plantation size]

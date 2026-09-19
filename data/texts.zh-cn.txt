@@ -2870,6 +2870,44 @@ Emoji
 隔墙厚度
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 试炼竞技场需要更大的地图或更少的殖民地，才能为每个殖民地安排两个设防入口。
+[The Comb]
+梳子
+[Peninsulas per shore]
+每岸半岛数
+[Encircled Kingdom]
+被包围的王国
+[Fortress plan]
+要塞布局
+[Automatic]
+自动
+[Elongated enclosure]
+狭长围城
+[Bastioned enclosure]
+棱堡围城
+[Paired courtyards]
+双庭院
+[Heartland farmland]
+腹地农田
+[The Faulted City]
+断层之城
+[Fault displacement]
+断层位移
+[Fault width]
+断层宽度
+[Ruin density]
+废墟密度
+[Surviving junctions]
+保留路口
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+断层之城要求每边为256或512格，并有一至十二个殖民地。
+[The city has too few usable junctions.]
+城市中可用的路口太少。
+[A city neighbourhood lacks reachable crops or building room.]
+某个城区缺少可到达的作物或建筑空间。
+[The city neighbourhoods are too unequal; try another seed.]
+各城区条件过于不均衡；请尝试其他种子。
+[The fractured civic plaza did not survive.]
+被断层分割的城市广场未能保留下来。
 [Bastion Keys]
 堡垒群岛
 [Plantation size]

@@ -2874,6 +2874,44 @@ Emoji
 Дебљина преградних зидова
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Арени искушења је потребна већа мапа или мање колонија како би свака колонија имала места за два брањена улаза.
+[The Comb]
+Чешаљ
+[Peninsulas per shore]
+Полуострва по обали
+[Encircled Kingdom]
+Опкољено краљевство
+[Fortress plan]
+План тврђаве
+[Automatic]
+Аутоматски
+[Elongated enclosure]
+Издужено утврђење
+[Bastioned enclosure]
+Бастионско утврђење
+[Paired courtyards]
+Два дворишта
+[Heartland farmland]
+Њиве у средишту краљевства
+[The Faulted City]
+Расцепљени град
+[Fault displacement]
+Померај раседа
+[Fault width]
+Ширина раседа
+[Ruin density]
+Густина рушевина
+[Surviving junctions]
+Очуване раскрснице
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Расцепљени град захтева 256 или 512 поља по страни и једну до дванаест колонија.
+[The city has too few usable junctions.]
+Град има премало проходних раскрсница.
+[A city neighbourhood lacks reachable crops or building room.]
+Једној градској четврти недостају доступни усеви или простор за градњу.
+[The city neighbourhoods are too unequal; try another seed.]
+Градске четврти су превише неуједначене; покушајте са другим семеном.
+[The fractured civic plaza did not survive.]
+Расцепљени градски трг није очуван.
 [Bastion Keys]
 Утврђена острвца
 [Plantation size]

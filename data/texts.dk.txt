@@ -2950,6 +2950,44 @@ Prøvelsernes arena
 Skillemurenes tykkelse
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Prøvelsernes arena kræver et større kort eller færre kolonier for at få plads til to bevogtede indgange pr. koloni.
+[The Comb]
+Kammen
+[Peninsulas per shore]
+Halvøer pr. bred
+[Encircled Kingdom]
+Omringet kongerige
+[Fortress plan]
+Fæstningsplan
+[Automatic]
+Automatisk
+[Elongated enclosure]
+Aflangt fæstningsværk
+[Bastioned enclosure]
+Bastionsanlæg
+[Paired courtyards]
+To gårdspladser
+[Heartland farmland]
+Agerland i rigets kerne
+[The Faulted City]
+Den forskudte by
+[Fault displacement]
+Forkastningsforskydning
+[Fault width]
+Forkastningsbredde
+[Ruin density]
+Ruintæthed
+[Surviving junctions]
+Bevarede vejkryds
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Den forskudte by kræver 256 eller 512 felter på hver led og en til tolv kolonier.
+[The city has too few usable junctions.]
+Byen har for få brugbare vejkryds.
+[A city neighbourhood lacks reachable crops or building room.]
+En bydel mangler tilgængelige afgrøder eller byggeplads.
+[The city neighbourhoods are too unequal; try another seed.]
+Bydelene er for ulige; prøv et andet seed.
+[The fractured civic plaza did not survive.]
+Den opsprækkede byplads blev ikke bevaret.
 [Bastion Keys]
 Bastionsøer
 [Plantation size]

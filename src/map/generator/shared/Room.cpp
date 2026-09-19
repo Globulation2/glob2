@@ -97,7 +97,10 @@ BuildingArrangement arrangeBuildingGrid(const Torus &t, const std::vector<unsign
 				for (int dx = 0; dx < grid.width; ++dx)
 					remaining[t.at(int(x) + dx, int(y) + dy)] = 0;
 		}
-	std::vector<unsigned char> sources(t.size(), 0);
+	// Only reachability matters here. Stop once every proposed building has a
+	// reachable cardinal face instead of flooding the entire world for a local grid.
+	std::vector<unsigned char> visited(t.size(), 0);
+	std::vector<int> queue;
 	for (int i : entrances)
 	{
 		if (i < 0 || i >= t.size())
@@ -105,22 +108,47 @@ BuildingArrangement arrangeBuildingGrid(const Torus &t, const std::vector<unsign
 			result.failure = "Invalid building-arrangement entrance.";
 			return result;
 		}
-		sources[i] = remaining[i]; // Never seed through an existing/proposed building.
-	}
-	const auto reached = stepsFrom(t, sources, remaining);
-	for (const auto &box : result.footprints)
-	{
-		bool accessible = false;
-		for (int y = box.y0; y < box.y1; ++y)
-			accessible |= reached[t.at(box.x0 - 1, y)] >= 0 || reached[t.at(box.x1, y)] >= 0;
-		for (int x = box.x0; x < box.x1; ++x)
-			accessible |= reached[t.at(x, box.y0 - 1)] >= 0 || reached[t.at(x, box.y1)] >= 0;
-		if (!accessible)
+		if (remaining[i] && !visited[i])
 		{
-			result.failure = "A proposed building has no reachable gathering/circulation face.";
-			return result;
+			visited[i] = 1;
+			queue.push_back(i);
 		}
 	}
+	std::vector<int> footprintAt(t.size(), -1);
+	for (size_t id = 0; id < result.footprints.size(); ++id)
+	{
+		const auto &box = result.footprints[id];
+		for (int y = box.y0; y < box.y1; ++y)
+			for (int x = box.x0; x < box.x1; ++x)
+				footprintAt[t.at(x, y)] = int(id);
+	}
+	std::vector<unsigned char> accessible(result.footprints.size(), 0);
+	size_t missing = accessible.size();
+	for (size_t head = 0; missing && head < queue.size(); ++head)
+	{
+		const int tile = queue[head], x = tile % t.w, y = tile / t.w;
+		for (int n : {t.at(x - 1, y), t.at(x + 1, y), t.at(x, y - 1), t.at(x, y + 1)})
+		{
+			const int id = footprintAt[n];
+			if (id >= 0 && !accessible[id])
+			{
+				accessible[id] = 1;
+				--missing;
+			}
+		}
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				const int n = t.at(x + dx, y + dy);
+				if (remaining[n] && !visited[n])
+				{
+					visited[n] = 1;
+					queue.push_back(n);
+				}
+			}
+	}
+	if (missing)
+		result.failure = "A proposed building has no reachable gathering/circulation face.";
 	return result;
 }
 } // namespace MapGeneration

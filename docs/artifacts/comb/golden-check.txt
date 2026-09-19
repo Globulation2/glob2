@@ -1,0 +1,3 @@
+Settings::load("preferences.txt") : error, can't open file.
+MISSING generator wadi (59): no golden rows; run --update
+macos-arm64: 456 golden rows compared, 1 failures

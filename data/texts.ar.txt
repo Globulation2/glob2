@@ -2872,6 +2872,44 @@ Emoji
 سماكة الجدران الفاصلة
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 تحتاج ساحة التحدي إلى خريطة أكبر أو مستعمرات أقل لتوفير مدخلين محروسين لكل مستعمرة.
+[The Comb]
+المشط
+[Peninsulas per shore]
+عدد أشباه الجزر لكل ضفة
+[Encircled Kingdom]
+المملكة المطوّقة
+[Fortress plan]
+مخطط الحصن
+[Automatic]
+تلقائي
+[Elongated enclosure]
+سور ممدود
+[Bastioned enclosure]
+سور ذو معاقل
+[Paired courtyards]
+فناءان متجاوران
+[Heartland farmland]
+أراضي القلب الزراعية
+[The Faulted City]
+المدينة المتصدعة
+[Fault displacement]
+إزاحة الصدوع
+[Fault width]
+عرض الصدوع
+[Ruin density]
+كثافة الأطلال
+[Surviving junctions]
+التقاطعات الباقية
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+تتطلب المدينة المتصدعة 256 أو 512 خانة لكل ضلع ومن مستعمرة واحدة إلى اثنتي عشرة مستعمرة.
+[The city has too few usable junctions.]
+لا توجد في المدينة تقاطعات صالحة كافية.
+[A city neighbourhood lacks reachable crops or building room.]
+يفتقر أحد أحياء المدينة إلى محاصيل يمكن الوصول إليها أو مساحة للبناء.
+[The city neighbourhoods are too unequal; try another seed.]
+أحياء المدينة غير متكافئة إلى حد كبير؛ جرّب بذرة أخرى.
+[The fractured civic plaza did not survive.]
+لم تصمد الساحة العامة المتصدعة.
 [Bastion Keys]
 جزر الحصون
 [Plantation size]

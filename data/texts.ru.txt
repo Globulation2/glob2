@@ -2872,6 +2872,44 @@ Emoji
 Толщина разделительных стен
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Арене испытаний нужна карта большего размера или меньше колоний, чтобы у каждой колонии поместились два защищённых входа.
+[The Comb]
+Гребень
+[Peninsulas per shore]
+Полуостровов на каждом берегу
+[Encircled Kingdom]
+Окружённое королевство
+[Fortress plan]
+План крепости
+[Automatic]
+Автоматически
+[Elongated enclosure]
+Вытянутая крепость
+[Bastioned enclosure]
+Бастионная крепость
+[Paired courtyards]
+Два двора
+[Heartland farmland]
+Поля в центре королевства
+[The Faulted City]
+Расколотый город
+[Fault displacement]
+Смещение разломов
+[Fault width]
+Ширина разломов
+[Ruin density]
+Плотность руин
+[Surviving junctions]
+Уцелевшие перекрёстки
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Для расколотого города нужны 256 или 512 клеток по каждой стороне и от одной до двенадцати колоний.
+[The city has too few usable junctions.]
+В городе слишком мало пригодных для прохода перекрёстков.
+[A city neighbourhood lacks reachable crops or building room.]
+В одном из районов города не хватает доступных посевов или места для строительства.
+[The city neighbourhoods are too unequal; try another seed.]
+Районы города слишком неравноценны; попробуйте другое зерно.
+[The fractured civic plaza did not survive.]
+Расколотая городская площадь не сохранилась.
 [Bastion Keys]
 Острова-бастионы
 [Plantation size]

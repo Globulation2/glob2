@@ -2884,6 +2884,44 @@ Erronken arena
 Banaketa-hormen lodiera
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Erronken arenak mapa handiagoa edo kolonia gutxiago behar ditu, kolonia bakoitzak bi sarrera zaindu izan ditzan.
+[The Comb]
+Orrazia
+[Peninsulas per shore]
+Penintsulak ertz bakoitzeko
+[Encircled Kingdom]
+Erresuma inguratua
+[Fortress plan]
+Gotorlekuaren oinplanoa
+[Automatic]
+Automatikoa
+[Elongated enclosure]
+Esparru luzanga
+[Bastioned enclosure]
+Bastioidun esparrua
+[Paired courtyards]
+Bi patio
+[Heartland farmland]
+Erdiguneko nekazaritza-lurrak
+[The Faulted City]
+Hiri hautsia
+[Fault displacement]
+Failen desplazamendua
+[Fault width]
+Failen zabalera
+[Ruin density]
+Hondakinen dentsitatea
+[Surviving junctions]
+Mantendutako bidegurutzeak
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Hiri hautsiak 256 edo 512 lauki behar ditu alde bakoitzeko, eta kolonia batetik hamabira.
+[The city has too few usable junctions.]
+Hiriak bidegurutze erabilgarri gutxiegi ditu.
+[A city neighbourhood lacks reachable crops or building room.]
+Hiriko auzo batek ez du labore irisgarririk edo eraikitzeko lekurik.
+[The city neighbourhoods are too unequal; try another seed.]
+Hiriko auzoak desorekatuegiak dira; saiatu beste hazi batekin.
+[The fractured civic plaza did not survive.]
+Pitzatutako herriko plaza ez da mantendu.
 [Bastion Keys]
 Gotorleku-uharteak
 [Plantation size]

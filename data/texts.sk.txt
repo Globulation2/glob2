@@ -2882,6 +2882,44 @@ Aréna skúšok
 Hrúbka deliacich múrov
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Aréna skúšok potrebuje väčšiu mapu alebo menej kolónií, aby sa ku každej kolónii zmestili dva bránené vstupy.
+[The Comb]
+Hrebeň
+[Peninsulas per shore]
+Polostrovy na každom brehu
+[Encircled Kingdom]
+Obkľúčené kráľovstvo
+[Fortress plan]
+Pôdorys pevnosti
+[Automatic]
+Automatický
+[Elongated enclosure]
+Podlhovasté opevnenie
+[Bastioned enclosure]
+Bastiónové opevnenie
+[Paired courtyards]
+Dvojica nádvorí
+[Heartland farmland]
+Polia v jadre kráľovstva
+[The Faulted City]
+Rozlámané mesto
+[Fault displacement]
+Posun zlomov
+[Fault width]
+Šírka zlomov
+[Ruin density]
+Hustota ruín
+[Surviving junctions]
+Zachované križovatky
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Rozlámané mesto vyžaduje 256 alebo 512 políčok na každej strane a jednu až dvanásť kolónií.
+[The city has too few usable junctions.]
+Mesto má príliš málo použiteľných križovatiek.
+[A city neighbourhood lacks reachable crops or building room.]
+Jednej mestskej štvrti chýbajú dostupné plodiny alebo priestor na stavby.
+[The city neighbourhoods are too unequal; try another seed.]
+Mestské štvrte sú príliš nevyvážené; skúste iné semienko.
+[The fractured civic plaza did not survive.]
+Rozlámané mestské námestie sa nezachovalo.
 [Bastion Keys]
 Opevnené ostrovčeky
 [Plantation size]

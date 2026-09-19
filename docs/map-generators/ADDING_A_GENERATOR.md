@@ -188,3 +188,6 @@ contained starter farms, see [Hedgerow Country](HEDGEROW_COUNTRY.md).
 [Fractal maps and recursive geometry](FRACTAL_MAPS.md) documents reusable halves/thirds,
 rectangular Hilbert paths, travel-benefit crossing selection, and examples for cities,
 reservoirs and folded roads. Keep hierarchy and validate the finished movement graph.
+
+For an example of a city sampled through displaced district coordinates, found starts and
+contained urban gardens, see [The Faulted City](FAULTED_CITY.md).
