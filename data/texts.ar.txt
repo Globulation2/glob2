@@ -2817,42 +2817,42 @@ Emoji
 [The pond has no room for that much algae; use a bigger pond.]
 لا تتسع البركة لهذا القدر من الطحالب؛ استخدم بركة أكبر.
 [Equilibrium]
-Equilibrium
+التوازن
 [Balance]
-Balance
+الموازنة
 [Tight passes]
-Tight passes
+ممرات ضيقة
 [Solver effort]
-Solver effort
+جهد الحل
 [Brief]
-Brief
+قصير
 [Patient]
-Patient
+صبور
 [This map is too small to solve on; use a bigger map.]
-This map is too small to solve on; use a bigger map.
+هذه الخريطة أصغر من أن تُحل؛ استخدم خريطة أكبر.
 [Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
-Too many colonies to balance on a map this size; use a bigger map or fewer colonies.
+عدد المستعمرات كبير جدًا على موازنتها في خريطة بهذا الحجم؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
 [The colonies could not be spread out on this map.]
-The colonies could not be spread out on this map.
+تعذّر توزيع المستعمرات على هذه الخريطة.
 [Tug]
-Tug
+شد الحبل
 [Prizes on the rope]
-Prizes on the rope
+الجوائز على الحبل
 [March width]
-March width
+عرض المنطقة الحدودية
 [Levelling]
-Levelling
+التسوية
 [A tug needs two sides; use at least two colonies.]
-A tug needs two sides; use at least two colonies.
+يحتاج شد الحبل إلى طرفين؛ استخدم مستعمرتين على الأقل.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
-Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+عدد المستعمرات كبير جدًا على أن تمنح هذه الخريطة كلًا منها موطنًا؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
-This map has no room to spread the colonies out; use a bigger map or fewer colonies.
+لا تتسع هذه الخريطة لتوزيع المستعمرات؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
 [A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
-A colony's homeland has no way out onto the march; use a bigger map or a narrower march.
+ليس لموطن إحدى المستعمرات منفذ إلى المنطقة الحدودية؛ استخدم خريطة أكبر أو منطقة حدودية أضيق.
 [A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
-A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.
+لا يتسع موطن إحدى المستعمرات لوكر؛ استخدم خريطة أكبر أو مستعمرات أقل أو منطقة حدودية أضيق.
 [The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
-The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.
+الأرض المتنازع عليها في المنطقة الحدودية أقل من أن تكفي لهذا العدد من الجوائز؛ استخدم جوائز أقل أو منطقة حدودية أوسع أو خريطة أكبر.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
-The march has no room for a prize; use a bigger map, fewer colonies or a wider march.
+لا تتسع المنطقة الحدودية لجائزة؛ استخدم خريطة أكبر أو مستعمرات أقل أو منطقة حدودية أوسع.

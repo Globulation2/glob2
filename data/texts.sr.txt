@@ -2819,42 +2819,42 @@ Emoji
 [The pond has no room for that much algae; use a bigger pond.]
 У бари нема места за толико алги; користите већу бару.
 [Equilibrium]
-Equilibrium
+Равнотежа
 [Balance]
-Balance
+Уравнотежење
 [Tight passes]
-Tight passes
+Уски пролази
 [Solver effort]
-Solver effort
+Труд решавача
 [Brief]
-Brief
+Кратко
 [Patient]
-Patient
+Стрпљиво
 [This map is too small to solve on; use a bigger map.]
-This map is too small to solve on; use a bigger map.
+Ова мапа је премала за решавање; користите већу мапу.
 [Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
-Too many colonies to balance on a map this size; use a bigger map or fewer colonies.
+Превише колонија за уравнотежење на мапи ове величине; користите већу мапу или мање колонија.
 [The colonies could not be spread out on this map.]
-The colonies could not be spread out on this map.
+Колоније није било могуће распоредити на овој мапи.
 [Tug]
-Tug
+Потезање конопца
 [Prizes on the rope]
-Prizes on the rope
+Награде на конопцу
 [March width]
-March width
+Ширина пограничја
 [Levelling]
-Levelling
+Изједначавање
 [A tug needs two sides; use at least two colonies.]
-A tug needs two sides; use at least two colonies.
+Потезању конопца су потребне две стране; користите бар две колоније.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
-Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+Превише колонија да би ова мапа свакој дала домовину; користите већу мапу или мање колонија.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
-This map has no room to spread the colonies out; use a bigger map or fewer colonies.
+На овој мапи нема места да се колоније распореде; користите већу мапу или мање колонија.
 [A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
-A colony's homeland has no way out onto the march; use a bigger map or a narrower march.
+Домовина колоније нема излаз на пограничје; користите већу мапу или уже пограничје.
 [A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
-A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.
+Домовина колоније нема места за рој; користите већу мапу, мање колонија или уже пограничје.
 [The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
-The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.
+Пограничје има премало спорног земљишта за толико награда; користите мање награда, шире пограничје или већу мапу.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
-The march has no room for a prize; use a bigger map, fewer colonies or a wider march.
+Пограничје нема места за награду; користите већу мапу, мање колонија или шире пограничје.

@@ -2817,42 +2817,42 @@ Emoji
 [The pond has no room for that much algae; use a bigger pond.]
 В пруду нет места для такого количества водорослей; используйте пруд побольше.
 [Equilibrium]
-Equilibrium
+Равновесие
 [Balance]
-Balance
+Баланс
 [Tight passes]
-Tight passes
+Узкие перешейки
 [Solver effort]
-Solver effort
+Усилия решателя
 [Brief]
-Brief
+Кратко
 [Patient]
-Patient
+Терпеливо
 [This map is too small to solve on; use a bigger map.]
-This map is too small to solve on; use a bigger map.
+Эта карта слишком мала для решения; используйте карту побольше.
 [Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
-Too many colonies to balance on a map this size; use a bigger map or fewer colonies.
+Слишком много колоний, чтобы уравновесить их на карте такого размера; используйте карту побольше или меньше колоний.
 [The colonies could not be spread out on this map.]
-The colonies could not be spread out on this map.
+Не удалось расселить колонии на этой карте.
 [Tug]
-Tug
+Перетягивание каната
 [Prizes on the rope]
-Prizes on the rope
+Награды на канате
 [March width]
-March width
+Ширина пограничья
 [Levelling]
-Levelling
+Выравнивание
 [A tug needs two sides; use at least two colonies.]
-A tug needs two sides; use at least two colonies.
+Для перетягивания каната нужны две стороны; используйте не меньше двух колоний.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
-Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+Слишком много колоний, чтобы эта карта дала каждой родину; используйте карту побольше или меньше колоний.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
-This map has no room to spread the colonies out; use a bigger map or fewer colonies.
+На этой карте нет места, чтобы расселить колонии; используйте карту побольше или меньше колоний.
 [A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
-A colony's homeland has no way out onto the march; use a bigger map or a narrower march.
+У родины колонии нет выхода в пограничье; используйте карту побольше или пограничье поуже.
 [A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
-A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.
+На родине колонии нет места для роя; используйте карту побольше, меньше колоний или пограничье поуже.
 [The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
-The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.
+В пограничье слишком мало спорной земли для такого числа наград; используйте меньше наград, пограничье пошире или карту побольше.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
-The march has no room for a prize; use a bigger map, fewer colonies or a wider march.
+В пограничье нет места для награды; используйте карту побольше, меньше колоний или пограничье пошире.

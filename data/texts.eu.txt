@@ -2829,42 +2829,42 @@ Mendigunea ez da mapa honetan sartzen; erabili mapa handiagoa edo kolonia gutxia
 [The pond has no room for that much algae; use a bigger pond.]
 Urmaelak ez du hainbeste algarentzako lekurik; erabili urmael handiagoa.
 [Equilibrium]
-Equilibrium
+Oreka
 [Balance]
-Balance
+Orekatzea
 [Tight passes]
-Tight passes
+Pasabide estuak
 [Solver effort]
-Solver effort
+Ebazlearen ahalegina
 [Brief]
-Brief
+Laburra
 [Patient]
-Patient
+Pazientea
 [This map is too small to solve on; use a bigger map.]
-This map is too small to solve on; use a bigger map.
+Mapa hau txikiegia da ebazteko; erabili mapa handiagoa.
 [Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
-Too many colonies to balance on a map this size; use a bigger map or fewer colonies.
+Kolonia gehiegi tamaina honetako mapan orekatzeko; erabili mapa handiagoa edo kolonia gutxiago.
 [The colonies could not be spread out on this map.]
-The colonies could not be spread out on this map.
+Ezin izan dira koloniak mapa honetan banatu.
 [Tug]
-Tug
+Sokatira
 [Prizes on the rope]
-Prizes on the rope
+Sariak sokan
 [March width]
-March width
+Mugaldearen zabalera
 [Levelling]
-Levelling
+Berdintzea
 [A tug needs two sides; use at least two colonies.]
-A tug needs two sides; use at least two colonies.
+Sokatirak bi alde behar ditu; erabili gutxienez bi kolonia.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
-Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+Kolonia gehiegi mapa honek bakoitzari sorterri bat emateko; erabili mapa handiagoa edo kolonia gutxiago.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
-This map has no room to spread the colonies out; use a bigger map or fewer colonies.
+Mapa honetan ez dago lekurik koloniak banatzeko; erabili mapa handiagoa edo kolonia gutxiago.
 [A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
-A colony's homeland has no way out onto the march; use a bigger map or a narrower march.
+Kolonia baten sorterriak ez du irteerarik mugaldera; erabili mapa handiagoa edo mugalde estuagoa.
 [A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
-A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.
+Kolonia baten sorterrian ez dago lekurik kofoina batentzat; erabili mapa handiagoa, kolonia gutxiago edo mugalde estuagoa.
 [The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
-The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.
+Mugaldeak lur eztabaidatu gutxiegi du hainbeste sarirentzat; erabili sari gutxiago, mugalde zabalagoa edo mapa handiagoa.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
-The march has no room for a prize; use a bigger map, fewer colonies or a wider march.
+Mugaldean ez dago lekurik sari batentzat; erabili mapa handiagoa, kolonia gutxiago edo mugalde zabalagoa.

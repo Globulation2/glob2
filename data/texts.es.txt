@@ -2819,42 +2819,42 @@ El macizo no cabe en este mapa; usa un mapa más grande o menos colonias.
 [The pond has no room for that much algae; use a bigger pond.]
 El estanque no tiene sitio para tantas algas; usa un estanque más grande.
 [Equilibrium]
-Equilibrium
+Equilibrio
 [Balance]
-Balance
+Equilibrado
 [Tight passes]
-Tight passes
+Pasos estrechos
 [Solver effort]
-Solver effort
+Esfuerzo del solucionador
 [Brief]
-Brief
+Breve
 [Patient]
-Patient
+Paciente
 [This map is too small to solve on; use a bigger map.]
-This map is too small to solve on; use a bigger map.
+Este mapa es demasiado pequeño para resolverlo; usa un mapa más grande.
 [Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
-Too many colonies to balance on a map this size; use a bigger map or fewer colonies.
+Demasiadas colonias para equilibrar en un mapa de este tamaño; usa un mapa más grande o menos colonias.
 [The colonies could not be spread out on this map.]
-The colonies could not be spread out on this map.
+No se pudieron repartir las colonias en este mapa.
 [Tug]
-Tug
+Tira y afloja
 [Prizes on the rope]
-Prizes on the rope
+Premios en la cuerda
 [March width]
-March width
+Anchura de la tierra de nadie
 [Levelling]
-Levelling
+Nivelación
 [A tug needs two sides; use at least two colonies.]
-A tug needs two sides; use at least two colonies.
+Tira y afloja necesita dos bandos; usa al menos dos colonias.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
-Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+Demasiadas colonias para que este mapa dé a cada una su tierra natal; usa un mapa más grande o menos colonias.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
-This map has no room to spread the colonies out; use a bigger map or fewer colonies.
+Este mapa no tiene espacio para repartir las colonias; usa un mapa más grande o menos colonias.
 [A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
-A colony's homeland has no way out onto the march; use a bigger map or a narrower march.
+La tierra natal de una colonia no tiene salida a la tierra de nadie; usa un mapa más grande o una tierra de nadie más estrecha.
 [A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
-A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.
+La tierra natal de una colonia no tiene sitio para una colmena; usa un mapa más grande, menos colonias o una tierra de nadie más estrecha.
 [The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
-The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.
+La tierra de nadie tiene muy poco terreno disputado para tantos premios; usa menos premios, una tierra de nadie más ancha o un mapa más grande.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
-The march has no room for a prize; use a bigger map, fewer colonies or a wider march.
+La tierra de nadie no tiene sitio para un premio; usa un mapa más grande, menos colonias o una tierra de nadie más ancha.

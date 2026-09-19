@@ -2815,42 +2815,42 @@ Emoji
 [The pond has no room for that much algae; use a bigger pond.]
 池にそれだけの藻を置く場所がありません。池を大きくしてください。
 [Equilibrium]
-Equilibrium
+均衡
 [Balance]
-Balance
+バランス
 [Tight passes]
-Tight passes
+狭い地峡
 [Solver effort]
-Solver effort
+ソルバーの労力
 [Brief]
-Brief
+短め
 [Patient]
-Patient
+じっくり
 [This map is too small to solve on; use a bigger map.]
-This map is too small to solve on; use a bigger map.
+このマップは小さすぎて解けません。より大きなマップを使ってください。
 [Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
-Too many colonies to balance on a map this size; use a bigger map or fewer colonies.
+この大きさのマップで釣り合いを取るにはコロニーが多すぎます。より大きなマップを使うか、コロニーを減らしてください。
 [The colonies could not be spread out on this map.]
-The colonies could not be spread out on this map.
+このマップではコロニーを散らばらせることができませんでした。
 [Tug]
-Tug
+綱引き
 [Prizes on the rope]
-Prizes on the rope
+綱の上の賞品
 [March width]
-March width
+辺境の幅
 [Levelling]
-Levelling
+均等化
 [A tug needs two sides; use at least two colonies.]
-A tug needs two sides; use at least two colonies.
+綱引きには二つの陣営が必要です。少なくとも2つのコロニーを使ってください。
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
-Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+このマップがそれぞれに本国を与えるにはコロニーが多すぎます。より大きなマップを使うか、コロニーを減らしてください。
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
-This map has no room to spread the colonies out; use a bigger map or fewer colonies.
+このマップにはコロニーを散らばらせる場所がありません。より大きなマップを使うか、コロニーを減らしてください。
 [A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
-A colony's homeland has no way out onto the march; use a bigger map or a narrower march.
+あるコロニーの本国から辺境への出口がありません。より大きなマップを使うか、辺境を狭くしてください。
 [A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
-A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.
+あるコロニーの本国に巣を置く場所がありません。より大きなマップを使うか、コロニーを減らすか、辺境を狭くしてください。
 [The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
-The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.
+辺境の係争地がそれだけの賞品には少なすぎます。賞品を減らすか、辺境を広くするか、より大きなマップを使ってください。
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
-The march has no room for a prize; use a bigger map, fewer colonies or a wider march.
+辺境に賞品を置く場所がありません。より大きなマップを使うか、コロニーを減らすか、辺境を広くしてください。

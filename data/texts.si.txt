@@ -2819,42 +2819,42 @@ Masiv ne gre na ta zemljevid; uporabite večji zemljevid ali manj kolonij.
 [The pond has no room for that much algae; use a bigger pond.]
 V mlaki ni prostora za toliko alg; uporabite večjo mlako.
 [Equilibrium]
-Equilibrium
+Ravnovesje
 [Balance]
-Balance
+Uravnoteženje
 [Tight passes]
-Tight passes
+Ozki prehodi
 [Solver effort]
-Solver effort
+Trud reševalnika
 [Brief]
-Brief
+Kratko
 [Patient]
-Patient
+Potrpežljivo
 [This map is too small to solve on; use a bigger map.]
-This map is too small to solve on; use a bigger map.
+Ta zemljevid je premajhen za reševanje; uporabite večji zemljevid.
 [Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
-Too many colonies to balance on a map this size; use a bigger map or fewer colonies.
+Preveč kolonij za uravnoteženje na zemljevidu te velikosti; uporabite večji zemljevid ali manj kolonij.
 [The colonies could not be spread out on this map.]
-The colonies could not be spread out on this map.
+Kolonij na tem zemljevidu ni bilo mogoče razporediti.
 [Tug]
-Tug
+Vlečenje vrvi
 [Prizes on the rope]
-Prizes on the rope
+Nagrade na vrvi
 [March width]
-March width
+Širina obmejnega pasu
 [Levelling]
-Levelling
+Izenačevanje
 [A tug needs two sides; use at least two colonies.]
-A tug needs two sides; use at least two colonies.
+Vlečenje vrvi potrebuje dve strani; uporabite vsaj dve koloniji.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
-Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+Preveč kolonij, da bi ta zemljevid vsaki dal domovino; uporabite večji zemljevid ali manj kolonij.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
-This map has no room to spread the colonies out; use a bigger map or fewer colonies.
+Na tem zemljevidu ni prostora za razporeditev kolonij; uporabite večji zemljevid ali manj kolonij.
 [A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
-A colony's homeland has no way out onto the march; use a bigger map or a narrower march.
+Domovina kolonije nima izhoda na obmejni pas; uporabite večji zemljevid ali ožji obmejni pas.
 [A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
-A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.
+Domovina kolonije nima prostora za porodnišnico; uporabite večji zemljevid, manj kolonij ali ožji obmejni pas.
 [The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
-The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.
+Obmejni pas ima premalo spornega ozemlja za toliko nagrad; uporabite manj nagrad, širši obmejni pas ali večji zemljevid.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
-The march has no room for a prize; use a bigger map, fewer colonies or a wider march.
+Obmejni pas nima prostora za nagrado; uporabite večji zemljevid, manj kolonij ali širši obmejni pas.

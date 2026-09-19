@@ -2889,42 +2889,42 @@ Emoji
 [The pond has no room for that much algae; use a bigger pond.]
 Η λιμνούλα δεν έχει χώρο για τόσα φύκια· χρησιμοποιήστε μεγαλύτερη λιμνούλα.
 [Equilibrium]
-Equilibrium
+Ισορροπία
 [Balance]
-Balance
+Εξισορρόπηση
 [Tight passes]
-Tight passes
+Στενά περάσματα
 [Solver effort]
-Solver effort
+Προσπάθεια του επιλυτή
 [Brief]
-Brief
+Σύντομα
 [Patient]
-Patient
+Υπομονετικά
 [This map is too small to solve on; use a bigger map.]
-This map is too small to solve on; use a bigger map.
+Αυτός ο χάρτης είναι πολύ μικρός για να επιλυθεί· χρησιμοποιήστε μεγαλύτερο χάρτη.
 [Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
-Too many colonies to balance on a map this size; use a bigger map or fewer colonies.
+Πάρα πολλές αποικίες για εξισορρόπηση σε χάρτη αυτού του μεγέθους· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
 [The colonies could not be spread out on this map.]
-The colonies could not be spread out on this map.
+Οι αποικίες δεν μπόρεσαν να απλωθούν σε αυτόν τον χάρτη.
 [Tug]
-Tug
+Διελκυστίνδα
 [Prizes on the rope]
-Prizes on the rope
+Έπαθλα στο σχοινί
 [March width]
-March width
+Πλάτος της μεθορίου
 [Levelling]
-Levelling
+Εξομάλυνση
 [A tug needs two sides; use at least two colonies.]
-A tug needs two sides; use at least two colonies.
+Η Διελκυστίνδα χρειάζεται δύο πλευρές· χρησιμοποιήστε τουλάχιστον δύο αποικίες.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
-Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+Πάρα πολλές αποικίες για να δώσει αυτός ο χάρτης σε καθεμία μια πατρίδα· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
-This map has no room to spread the colonies out; use a bigger map or fewer colonies.
+Αυτός ο χάρτης δεν έχει χώρο για να απλωθούν οι αποικίες· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
 [A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
-A colony's homeland has no way out onto the march; use a bigger map or a narrower march.
+Η πατρίδα μιας αποικίας δεν έχει διέξοδο προς τη μεθόριο· χρησιμοποιήστε μεγαλύτερο χάρτη ή στενότερη μεθόριο.
 [A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
-A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.
+Η πατρίδα μιας αποικίας δεν έχει χώρο για σμήνος· χρησιμοποιήστε μεγαλύτερο χάρτη, λιγότερες αποικίες ή στενότερη μεθόριο.
 [The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
-The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.
+Η μεθόριος έχει πολύ λίγο αμφισβητούμενο έδαφος για τόσα έπαθλα· χρησιμοποιήστε λιγότερα έπαθλα, πλατύτερη μεθόριο ή μεγαλύτερο χάρτη.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
-The march has no room for a prize; use a bigger map, fewer colonies or a wider march.
+Η μεθόριος δεν έχει χώρο για έπαθλο· χρησιμοποιήστε μεγαλύτερο χάρτη, λιγότερες αποικίες ή πλατύτερη μεθόριο.
