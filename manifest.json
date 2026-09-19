@@ -111,8 +111,8 @@
   },
   {
     "path": "country-update/golden-check.log",
-    "bytes": 60,
-    "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    "bytes": 110,
+    "sha256": "f8c2eea7c9f170c5a7f61764a1c366f58ef710e4394a09fb5a540469b73ee77b"
   },
   {
     "path": "country-update/golden-update.log",

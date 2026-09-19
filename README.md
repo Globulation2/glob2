@@ -6,4 +6,6 @@ Start with `country-update/README.md`. Final data are in `country-update/swales-
 
 `manifest.json` lists every archived evidence file with size and SHA-256. Commands and parameter sets are retained with the runs; see the implementation branch's `docs/artifacts/orchard-commons/README.md` for the concise interpretation and reproducible entry points.
 
-Archive SHA-256: `79e4813aebe49ef476f3a68e658189d555c336dda6e1c48c10722164e26c5465`
+Archive SHA-256: `e937fe01517fece978616815d0782cab002e2d36d5bf46e4e3354d724ce3cfdd`
+
+The manifest now includes the completed golden-check log; an earlier evidence commit hashed that log before it finished.
