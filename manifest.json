@@ -1,0 +1,1857 @@
+[
+  {
+    "path": "country-update/README.md",
+    "bytes": 4442,
+    "sha256": "e951ccd9dc8366f47636a87e02ea3e3895df00d378f5eaa909d9f5a8b10dcdbf"
+  },
+  {
+    "path": "country-update/before-play/artifacts.json",
+    "bytes": 150,
+    "sha256": "cedc6361d3400c9ecfbbe8def6989ecae3a88c5d69999ac343d473988091fb8a"
+  },
+  {
+    "path": "country-update/before-play/result.json",
+    "bytes": 38783,
+    "sha256": "3903cadac82848ab63a8622099ca3d2b396f8f91c78abb33acf50f9e23403434"
+  },
+  {
+    "path": "country-update/before-play.log",
+    "bytes": 33603651,
+    "sha256": "8837d5ae59e6244688087325a44407ae26f63b89e13b7efe24f679032342a2db"
+  },
+  {
+    "path": "country-update/before.cpp",
+    "bytes": 24526,
+    "sha256": "829c43d84b31dcdedfc2000502331de134d46f5c556fb56c7c7f8ab44af0b7c7"
+  },
+  {
+    "path": "country-update/build_gallery.py",
+    "bytes": 3976,
+    "sha256": "d8ff5d7564fe8633eb16250f31d37f225b4a4b3460498a18acf05a8ce0065fc0"
+  },
+  {
+    "path": "country-update/control-effects.json",
+    "bytes": 1229,
+    "sha256": "8758a2cc895d6c86c06844f74d2e30d8b01e0dd379dec6313c41a54ee336fe4a"
+  },
+  {
+    "path": "country-update/conversion/equal-friendly-diet.game",
+    "bytes": 4768664,
+    "sha256": "32dded4f87ca9af07183ab3a1d29649c6aeadcc871fb3a1ed933e15cdff78129"
+  },
+  {
+    "path": "country-update/conversion/fruit-supply-lost.game",
+    "bytes": 4768662,
+    "sha256": "9c92acfd88aec3315c565a24882e6d525ca744782593ec7bddf9d0a2c12f25bd"
+  },
+  {
+    "path": "country-update/conversion/no-advertising.game",
+    "bytes": 4637587,
+    "sha256": "90c5539060300da6cfc43ca69e9a203e8580ce90b53da3cea88f1b579763ca94"
+  },
+  {
+    "path": "country-update/conversion/superior-variety.game",
+    "bytes": 4637589,
+    "sha256": "0019446e0332ea30ff63fb367554867a7e10b133d54f1ffc1483fe5c1a7055e2"
+  },
+  {
+    "path": "country-update/conversion/wheat-supply-lost.game",
+    "bytes": 4637590,
+    "sha256": "4a02617b3607ebca5b425f8abd968493d490a13b111ba6bc533e086a5928c9cd"
+  },
+  {
+    "path": "country-update/conversion.log",
+    "bytes": 955,
+    "sha256": "788162e57bcb578a6df6bf1547a57b90aac3e6b02819964581105fbab42bb1bf"
+  },
+  {
+    "path": "country-update/defaults.log",
+    "bytes": 2469,
+    "sha256": "d6f4479bc12136a97bff0abafd4d0472c98917de384fefea561f6bcf60f13f39"
+  },
+  {
+    "path": "country-update/final-access-comparison.json",
+    "bytes": 5030,
+    "sha256": "0ff4471e6e5c27bccebdf73ff7ccf0a1abebd57758bb52eb49450984427a593c"
+  },
+  {
+    "path": "country-update/final-economy.txt",
+    "bytes": 1051,
+    "sha256": "2f6fe4716120ac86cf3f62df210d0420b98f0596e2f7e6ab04f3489bb3d53da8"
+  },
+  {
+    "path": "country-update/final-play/artifacts.json",
+    "bytes": 150,
+    "sha256": "fd792e322daaa840c716c18d33c15eb97f40455a060c8cbf3f770feeebe4edb2"
+  },
+  {
+    "path": "country-update/final-play/final.game",
+    "bytes": 51875209,
+    "sha256": "329faf2be17b6423429de8ff97dffed1df69350012810b169d6a3b00692eca60"
+  },
+  {
+    "path": "country-update/final-play/result.json",
+    "bytes": 38984,
+    "sha256": "231f5b14c3eccb96f30161467bd8ee35c2d9042fba16663b46478270f03d61c4"
+  },
+  {
+    "path": "country-update/final-play.log",
+    "bytes": 33613146,
+    "sha256": "c8d83ddc4fa7c08c7c09b4ef9f2435fb244c3c609cad75a74d751d7fde5fb644"
+  },
+  {
+    "path": "country-update/final-played.json",
+    "bytes": 54081,
+    "sha256": "4e8a09b421cb6545bd3605618d0fd5d98c6570f21a42f02ff0d26a5fa52380f7"
+  },
+  {
+    "path": "country-update/final-upgrade-timing.json",
+    "bytes": 1638,
+    "sha256": "1714508850f481604b17463ed9a5a7bcdcfccd39ccd13efe0b0158dc95682368"
+  },
+  {
+    "path": "country-update/golden-check.log",
+    "bytes": 60,
+    "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+  },
+  {
+    "path": "country-update/golden-update.log",
+    "bytes": 124,
+    "sha256": "9483550ad4a63530b8fcf68821889297b44fc553dd303fe54a3f67f7c010496e"
+  },
+  {
+    "path": "country-update/profile.log",
+    "bytes": 406,
+    "sha256": "90f3dfdf7e0e467255c3d1a076c4d280255b0a9dd97e1513aefa8b0195695744"
+  },
+  {
+    "path": "country-update/retries/100017/artifacts.json",
+    "bytes": 109,
+    "sha256": "52b05ab15f199bc974689f8198bb2770d55ea02a219a57c21ca71182cebf2a76"
+  },
+  {
+    "path": "country-update/retries/100017/command.json",
+    "bytes": 503,
+    "sha256": "41bdc0fee8f90936181765637664f2c46133d167baf6ba32476383cf7271b0d3"
+  },
+  {
+    "path": "country-update/retries/100017/command.log",
+    "bytes": 828,
+    "sha256": "d8c0cbe2e34666afd8d3324d0dd961088055d351baa872e0cfa7b5714e726206"
+  },
+  {
+    "path": "country-update/retries/100017/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100017/result.json",
+    "bytes": 255651,
+    "sha256": "da539a5f3dc71e0cb01cf185a3bf5e23d9a6b21b17934931e26649587a74b4bd"
+  },
+  {
+    "path": "country-update/retries/100030/artifacts.json",
+    "bytes": 109,
+    "sha256": "b7820fb6cd8524c803d198cdefbdbf412a42c9eccd9c5d24695615d20d578d80"
+  },
+  {
+    "path": "country-update/retries/100030/command.json",
+    "bytes": 501,
+    "sha256": "e62321f1987d707fcee3ca66e7c3560a1507db35d6096cbdb0bdd4791e21623b"
+  },
+  {
+    "path": "country-update/retries/100030/command.log",
+    "bytes": 601,
+    "sha256": "87402182e64d4e3785a1b7a548192b3b33994e0b8b1f316c71a5d0155d31d226"
+  },
+  {
+    "path": "country-update/retries/100030/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100030/result.json",
+    "bytes": 103815,
+    "sha256": "8bb14e3df79648b518c57183929f57c4dd2524a63e201f4a11a41433458ff800"
+  },
+  {
+    "path": "country-update/retries/100055/artifacts.json",
+    "bytes": 109,
+    "sha256": "874621467b1595fb2829ffb0d5d4d589fe51248667d25dd53e5f94cbdb7e9aa7"
+  },
+  {
+    "path": "country-update/retries/100055/command.json",
+    "bytes": 503,
+    "sha256": "568944a6372a6df503186a00db31ed0b29fe4eacfe16604d678456254783b733"
+  },
+  {
+    "path": "country-update/retries/100055/command.log",
+    "bytes": 763,
+    "sha256": "8760045e6cd6fb68133d1c7373864915239dfc07502138925ef6dcaa4651d763"
+  },
+  {
+    "path": "country-update/retries/100055/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100055/result.json",
+    "bytes": 218930,
+    "sha256": "a02d230fa24863514ab2dfd594138cf4e4c9d5d2ff983ffbc427714765d96475"
+  },
+  {
+    "path": "country-update/retries/100063/artifacts.json",
+    "bytes": 109,
+    "sha256": "48a09d769e0fcb13af3939fe59220ee374fb2924ea2c63a7e9d30352ac7821ee"
+  },
+  {
+    "path": "country-update/retries/100063/command.json",
+    "bytes": 503,
+    "sha256": "65df56ed0eb999615825b9392965f3b2e04f86644493a5174accb88e4561bc80"
+  },
+  {
+    "path": "country-update/retries/100063/command.log",
+    "bytes": 943,
+    "sha256": "32e8b6d60232a337b581ea932aeb48b8182b75f1e6f0b00a0f61ca7cce4f88e2"
+  },
+  {
+    "path": "country-update/retries/100063/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100063/result.json",
+    "bytes": 332388,
+    "sha256": "3b44e8ab2daeecba580c75ba02c8ff95114e3bec5ebbc021c4a24f8729d77981"
+  },
+  {
+    "path": "country-update/retries/100094/artifacts.json",
+    "bytes": 109,
+    "sha256": "143589b898c2fc571f77ecf7535e81f6000facfdb6bbbe13d141f9f6da979f8b"
+  },
+  {
+    "path": "country-update/retries/100094/command.json",
+    "bytes": 503,
+    "sha256": "4a9b330896887e88bccb24e46b2f8dfe23d15ed8e404a245c6f81c9fcec2876b"
+  },
+  {
+    "path": "country-update/retries/100094/command.log",
+    "bytes": 769,
+    "sha256": "d11aadfa48b7615f53686f66288401960ba0168e7e0fa84904d9c41e9ce7384c"
+  },
+  {
+    "path": "country-update/retries/100094/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100094/result.json",
+    "bytes": 219971,
+    "sha256": "3573700770bf69ec7edd4ce4c066cd8463daee9fc419c8320bb4eb555d011805"
+  },
+  {
+    "path": "country-update/retries/100215/artifacts.json",
+    "bytes": 109,
+    "sha256": "f38bfeee0a27c90ac47faadf28c755a31a94bae9fd88383b0d5529e87e32fa63"
+  },
+  {
+    "path": "country-update/retries/100215/command.json",
+    "bytes": 502,
+    "sha256": "00713e980472f483b2eb05a76a09b9b200cf2871912901d9f79a2682b26772c6"
+  },
+  {
+    "path": "country-update/retries/100215/command.log",
+    "bytes": 827,
+    "sha256": "2c1557f73aa177d03be81e6e31ca23500c0037ea428ab69fb43f7a99e0c6fbb8"
+  },
+  {
+    "path": "country-update/retries/100215/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100215/result.json",
+    "bytes": 255333,
+    "sha256": "8bc45d1a853edbb18b0eafead7f88ffadce3d70c785b03b7065a3de78b251e87"
+  },
+  {
+    "path": "country-update/retries/100224/artifacts.json",
+    "bytes": 109,
+    "sha256": "70b69499c51aab1ba30f8447cc11eeabca7735fdab6156ffda43a750aa72a32b"
+  },
+  {
+    "path": "country-update/retries/100224/command.json",
+    "bytes": 504,
+    "sha256": "7a05ee6c02630d445b18aa48fa61a1c3bb2011c28d350e0fe929b46dfbb420a0"
+  },
+  {
+    "path": "country-update/retries/100224/command.log",
+    "bytes": 950,
+    "sha256": "a7a0154f530b3e93ff8bd83a50642a24c3f442c6ab251ab2e62c72a03b7b5e86"
+  },
+  {
+    "path": "country-update/retries/100224/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100224/result.json",
+    "bytes": 331815,
+    "sha256": "290d30c207a190191539e553ea6391e7a24e76fba0ee9cef8ca302c65c123ec8"
+  },
+  {
+    "path": "country-update/retries/100295/artifacts.json",
+    "bytes": 109,
+    "sha256": "d0b02d41317379c71116795771eb18e3ccde7ff8ce5ba0f162737a07b93b207f"
+  },
+  {
+    "path": "country-update/retries/100295/command.json",
+    "bytes": 503,
+    "sha256": "30385510ca4a832a998c89a3c00d34d57d3cc9e4decc03d3e5c56f22fc914858"
+  },
+  {
+    "path": "country-update/retries/100295/command.log",
+    "bytes": 598,
+    "sha256": "91e050b19f975b4526f6d4c655bdfd26626712fb897b971ae64acbc3271e9fb1"
+  },
+  {
+    "path": "country-update/retries/100295/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100295/result.json",
+    "bytes": 103723,
+    "sha256": "b62dfe13232d04fe1967b16c704c9acb016583cd2da93564c927454ce4ed7a2f"
+  },
+  {
+    "path": "country-update/retries/100343/artifacts.json",
+    "bytes": 109,
+    "sha256": "d6a0c837bb612a61eb75ca41aa6428b2bc07524cd7d2d98cfce23c825917bb62"
+  },
+  {
+    "path": "country-update/retries/100343/command.json",
+    "bytes": 504,
+    "sha256": "3ace6aa3244cb2a713809736b3bcf15270e26fb6f8ae99f7d1d355b7ae085c7f"
+  },
+  {
+    "path": "country-update/retries/100343/command.log",
+    "bytes": 709,
+    "sha256": "9e91df2def19cf04a8d385d188494502d251361fc509f43f0c5fc848ff4a0bd8"
+  },
+  {
+    "path": "country-update/retries/100343/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100343/result.json",
+    "bytes": 178796,
+    "sha256": "8b50d3b44e167630dcae5c77285de4c637765f93fa40931c2234361db8e1096c"
+  },
+  {
+    "path": "country-update/retries/100443/artifacts.json",
+    "bytes": 109,
+    "sha256": "4ddf911724979b133d20b97a2e7f8e6e3cf607134a689c0355ed9bb87cb2a030"
+  },
+  {
+    "path": "country-update/retries/100443/command.json",
+    "bytes": 504,
+    "sha256": "a7329a2c0c9766e441b0411784045e0861e38f418c6f7627a1aadf23877b8510"
+  },
+  {
+    "path": "country-update/retries/100443/command.log",
+    "bytes": 932,
+    "sha256": "9b98a22311ad56e9a6ea71b2ffebfcb80f0ded0cb9827632cdc391181664435e"
+  },
+  {
+    "path": "country-update/retries/100443/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100443/result.json",
+    "bytes": 329845,
+    "sha256": "b367e1e7d46a90182027ac9218b90b2c68d967750ffe788b0fa73b0bc9af9833"
+  },
+  {
+    "path": "country-update/retries/100446/artifacts.json",
+    "bytes": 109,
+    "sha256": "8c561d988d819755fd9e840c8773b58eaa97e4913c030b6661a25d75b2e67ce6"
+  },
+  {
+    "path": "country-update/retries/100446/command.json",
+    "bytes": 500,
+    "sha256": "2e8402c68e8cd36d2e96f8fcd5b64c928bc3609fcb93eda5983c507366ad0ee9"
+  },
+  {
+    "path": "country-update/retries/100446/command.log",
+    "bytes": 704,
+    "sha256": "c5f803dad636c9ec5d33a0b2cfe64910eef248907ca518a3fbb2bf9e7d0b5e9a"
+  },
+  {
+    "path": "country-update/retries/100446/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100446/result.json",
+    "bytes": 178523,
+    "sha256": "d5d98b5e9ca6b979ce4355b3180a1ce59c7bad9e3238cd679ed8252f781ae926"
+  },
+  {
+    "path": "country-update/retries/100587/artifacts.json",
+    "bytes": 109,
+    "sha256": "f3903df371323ffe574d6c412f1c862ec7f351064049bdbf8eb77f5a35e3c3e1"
+  },
+  {
+    "path": "country-update/retries/100587/command.json",
+    "bytes": 501,
+    "sha256": "c565527cc68830ef6dfd5d69cdf79e908ae63f705ee4e08051788007bbd9d5e7"
+  },
+  {
+    "path": "country-update/retries/100587/command.log",
+    "bytes": 827,
+    "sha256": "6894628a2511009a7f800e1425ea3d3b265192901600717595b6f2091972e9ec"
+  },
+  {
+    "path": "country-update/retries/100587/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100587/result.json",
+    "bytes": 254082,
+    "sha256": "f47da22f751bfc0b059e39caa0a4b8dbd88e51fd48664eb1c558e38c3b7cab1d"
+  },
+  {
+    "path": "country-update/retries/100634/artifacts.json",
+    "bytes": 109,
+    "sha256": "8fb7c2b73d40a94c24feffb1c206759b9842105a2d7bc5fac1b99f25ac4647b9"
+  },
+  {
+    "path": "country-update/retries/100634/command.json",
+    "bytes": 504,
+    "sha256": "3328a41b6c19519ba1f77de8d69cb3d54c02eb27c40f3c33da64f061d63080e4"
+  },
+  {
+    "path": "country-update/retries/100634/command.log",
+    "bytes": 705,
+    "sha256": "25b0914a73c5c0fb3af998f6b23f13f2989441eb360b99fea5f7e951d71055e9"
+  },
+  {
+    "path": "country-update/retries/100634/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100634/result.json",
+    "bytes": 178919,
+    "sha256": "83b68caa07635730af9063a18172cd3346697904976e18a043ef1b254db0e145"
+  },
+  {
+    "path": "country-update/retries/100758/artifacts.json",
+    "bytes": 109,
+    "sha256": "e3e2ad31a9106f02a9fe3931bab191cb68c12b3c4acb5407a894dcfd47ba4a31"
+  },
+  {
+    "path": "country-update/retries/100758/command.json",
+    "bytes": 503,
+    "sha256": "68f948ff3dd5067069f254248d372dbbd0211499903115b3532cf99ca8a15b81"
+  },
+  {
+    "path": "country-update/retries/100758/command.log",
+    "bytes": 814,
+    "sha256": "d62f8e47ac455aa077e05832f0588429dc92e695053b86ecfa4258aae12c8845"
+  },
+  {
+    "path": "country-update/retries/100758/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100758/result.json",
+    "bytes": 253886,
+    "sha256": "cebe8b1e91ad2545cbfcda0465e04a7754eebf5e4143f5834f0bbc1db6c16d59"
+  },
+  {
+    "path": "country-update/retries/100909/artifacts.json",
+    "bytes": 109,
+    "sha256": "b2d46371099f53f04b88d1487adc2d931780c689343561f7eb938e6e13893f8f"
+  },
+  {
+    "path": "country-update/retries/100909/command.json",
+    "bytes": 501,
+    "sha256": "71412aadbe7b4bd188d1cb75e7e94777256be979871534cd2208769e7c0bde82"
+  },
+  {
+    "path": "country-update/retries/100909/command.log",
+    "bytes": 706,
+    "sha256": "20d1c56a33dad417d77711003b5f009f6d1d982bd9ae9b0f5c93f373aa67be6e"
+  },
+  {
+    "path": "country-update/retries/100909/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100909/result.json",
+    "bytes": 178594,
+    "sha256": "26b863378987513c68d0704c418af97b6ab3d9600fa22ff4b17175fab7148d71"
+  },
+  {
+    "path": "country-update/retries/100934/artifacts.json",
+    "bytes": 109,
+    "sha256": "5d8559eac09fd7418089b538e0d507196e1ab02c0a0ccefc3a0ced4d43efa6fe"
+  },
+  {
+    "path": "country-update/retries/100934/command.json",
+    "bytes": 502,
+    "sha256": "2480fcbb1ed2817485bcf484f2d3129caecf0345f167856f0f824d8a8a53e001"
+  },
+  {
+    "path": "country-update/retries/100934/command.log",
+    "bytes": 948,
+    "sha256": "e9f55791d2e63ce48207a608a2d602a0eafef274e089a1af461bf4f8e5b144f0"
+  },
+  {
+    "path": "country-update/retries/100934/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100934/result.json",
+    "bytes": 330123,
+    "sha256": "7311d6dd0bddeccc776705656c2201188db12d2b1740cd2f3bdd81ee9fe34477"
+  },
+  {
+    "path": "country-update/retries/100946/artifacts.json",
+    "bytes": 109,
+    "sha256": "04d6f26e01442bfd9d5137085536247e91bc52b703fdd451f34cbdce21d0b982"
+  },
+  {
+    "path": "country-update/retries/100946/command.json",
+    "bytes": 503,
+    "sha256": "19135d53f1061572029d95766402fa9c7d4bfee9b2a95faa9e31acfa1b75d4b2"
+  },
+  {
+    "path": "country-update/retries/100946/command.log",
+    "bytes": 932,
+    "sha256": "4dfbeb6f35def475547ff6001a0d28dd345579287c2a05ae386e6c40f570c271"
+  },
+  {
+    "path": "country-update/retries/100946/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/100946/result.json",
+    "bytes": 329705,
+    "sha256": "ffd6e2d22d4a08f8eeaa761f580f8b94f82daeb7c3d8344d1887d6e0eb683aa4"
+  },
+  {
+    "path": "country-update/retries/101064/artifacts.json",
+    "bytes": 109,
+    "sha256": "db804711e23cb55a643c925b35cb2c16d6dcf14a590e7a069b1682b18861a05a"
+  },
+  {
+    "path": "country-update/retries/101064/command.json",
+    "bytes": 502,
+    "sha256": "ed1275fad672c838a4ae3a37986fcf596c9933880fd10fae80230824dbcaf8e9"
+  },
+  {
+    "path": "country-update/retries/101064/command.log",
+    "bytes": 815,
+    "sha256": "12dd35980096ce0f80cc2c5a4561264b44a152f5340cd280c689776fdf9f2037"
+  },
+  {
+    "path": "country-update/retries/101064/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/101064/result.json",
+    "bytes": 253707,
+    "sha256": "b6f392cec58e309dd9cc2a38c51aa45f49aa17c35248cbfafd0c016755524764"
+  },
+  {
+    "path": "country-update/retries/101081/artifacts.json",
+    "bytes": 109,
+    "sha256": "7e9526a3432c551ff82320753addb632974358c85bd83df31efc9d7324bd24ed"
+  },
+  {
+    "path": "country-update/retries/101081/command.json",
+    "bytes": 503,
+    "sha256": "1ed7d8f9ebf4cd742ab218019686efff8fd0976a1586b38596209dc59678bed4"
+  },
+  {
+    "path": "country-update/retries/101081/command.log",
+    "bytes": 824,
+    "sha256": "39dec18c6cb6316bbbf258e5611311ad05c84606f22a9f177716d38404fd9a0b"
+  },
+  {
+    "path": "country-update/retries/101081/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/101081/result.json",
+    "bytes": 254157,
+    "sha256": "6db58425b3d2888bd1c9172adcd11d95b6abaf2d8ba8e83a7b5c94880b260523"
+  },
+  {
+    "path": "country-update/retries/101112/artifacts.json",
+    "bytes": 109,
+    "sha256": "6115729e2d6bdc92482e8f6b5782a75163768c8732147402f1da3150aaf83e8f"
+  },
+  {
+    "path": "country-update/retries/101112/command.json",
+    "bytes": 502,
+    "sha256": "4b42387f7bb29b871e7440fb1b9654af642a493d02fd68a6edf1431fc593929b"
+  },
+  {
+    "path": "country-update/retries/101112/command.log",
+    "bytes": 931,
+    "sha256": "f8b6382071bd921fc916ed84a73113a45a3bb26da269fcf12a752b6b669ae658"
+  },
+  {
+    "path": "country-update/retries/101112/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/101112/result.json",
+    "bytes": 329614,
+    "sha256": "b781aa6fcf326b8b938f543800160a89aa854cac4c9ae9722d9843ca2d94d737"
+  },
+  {
+    "path": "country-update/retries/101309/artifacts.json",
+    "bytes": 109,
+    "sha256": "4254afe4c241804ebe7047de5c774ff1cf1b627049badac5808fb8754503bf15"
+  },
+  {
+    "path": "country-update/retries/101309/command.json",
+    "bytes": 502,
+    "sha256": "d9d2e0945a7563cd4024e4bc2db8e68277b6bfb57b97f4010b0dcb8ca6e6fcc3"
+  },
+  {
+    "path": "country-update/retries/101309/command.log",
+    "bytes": 887,
+    "sha256": "07b8c807516880f6424f3ff58c22570b8485fcbb406a922dc66fc9ccf09dfd96"
+  },
+  {
+    "path": "country-update/retries/101309/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/101309/result.json",
+    "bytes": 294514,
+    "sha256": "4f35103436b8d958fead714044f0caa504d6386fbe6fa114df98a513d1c0ce9b"
+  },
+  {
+    "path": "country-update/retries/101385/artifacts.json",
+    "bytes": 109,
+    "sha256": "4e2f79f071ef8c89a48bbf76a02a8aaa4a6e5da8cd152914a0e680ff8a92793c"
+  },
+  {
+    "path": "country-update/retries/101385/command.json",
+    "bytes": 503,
+    "sha256": "b147fa195d789aa5a4c32b826f063242963cf0f144b8c58b16bbdf0b9e528356"
+  },
+  {
+    "path": "country-update/retries/101385/command.log",
+    "bytes": 826,
+    "sha256": "62f7a6bdecc8265123d7a3acf66f6dd31bf152a3fd763c8eefe35a462547e02d"
+  },
+  {
+    "path": "country-update/retries/101385/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/101385/result.json",
+    "bytes": 256348,
+    "sha256": "03ec268fbe938d871513f4cb169e7668edaaf9d1be2ff14ee9e6c5a88c80ecce"
+  },
+  {
+    "path": "country-update/retries/101413/artifacts.json",
+    "bytes": 109,
+    "sha256": "a9cb342c50c11d92c308b6ccbdac9b14a68265181c521435eb09c0d8d0023df6"
+  },
+  {
+    "path": "country-update/retries/101413/command.json",
+    "bytes": 500,
+    "sha256": "ab9507af74432ba3e75fc11cabb21342a15fb0b9e2a07c2c7f06ec362908d608"
+  },
+  {
+    "path": "country-update/retries/101413/command.log",
+    "bytes": 699,
+    "sha256": "4ea76262e6b64a0bf71b7ed44ae504c1c0ce74b33e93a164a2797cd1fa1f237e"
+  },
+  {
+    "path": "country-update/retries/101413/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/101413/result.json",
+    "bytes": 178572,
+    "sha256": "dc79ce56b8262bbe634e1727a9958c883a584c874a83e07ad305aa668a03f790"
+  },
+  {
+    "path": "country-update/retries/101440/artifacts.json",
+    "bytes": 109,
+    "sha256": "f5e13a4f5da3267d9be969086b7b335a9a8e2ca07d3f467218c4f7f5442738ce"
+  },
+  {
+    "path": "country-update/retries/101440/command.json",
+    "bytes": 502,
+    "sha256": "282b9d648b019a144ce519112b0cf1eafefb371a6d44dd1b4b5aa7381fdacc11"
+  },
+  {
+    "path": "country-update/retries/101440/command.log",
+    "bytes": 705,
+    "sha256": "a1ba57575f213f3452928459dd6fac6a0f5d77adf219fae5f05fc6920d0641f1"
+  },
+  {
+    "path": "country-update/retries/101440/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/101440/result.json",
+    "bytes": 179554,
+    "sha256": "5e3a863333aa0bdb49a89c2751dd1efefb6517f0d902a509c04383382b8feca3"
+  },
+  {
+    "path": "country-update/retries/101513/artifacts.json",
+    "bytes": 109,
+    "sha256": "b4a285afdbdfafc4fc054717718a4178829273f4c6313f43fa39b8a89fed1040"
+  },
+  {
+    "path": "country-update/retries/101513/command.json",
+    "bytes": 504,
+    "sha256": "b664caf871c49fa8b75a6f41cb3f3c0d64b20ad031ad650f11702c272b92f696"
+  },
+  {
+    "path": "country-update/retries/101513/command.log",
+    "bytes": 938,
+    "sha256": "66be175a12b5ad4d8da43acfc0c5a6245fd0909a361e4ef948cc5ae5608e6147"
+  },
+  {
+    "path": "country-update/retries/101513/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/101513/result.json",
+    "bytes": 329703,
+    "sha256": "48dd3a20bd4e1a329f117e55f43ff65abb74238543bc032f3bf8e0eb6fc657ee"
+  },
+  {
+    "path": "country-update/retries/101594/artifacts.json",
+    "bytes": 109,
+    "sha256": "e641cbd67c6981c1183336f26633df6fba1e52dc9f5fdab882e71ed165c6473c"
+  },
+  {
+    "path": "country-update/retries/101594/command.json",
+    "bytes": 503,
+    "sha256": "e838b7f4ee3f60cae6ea8713f5f2e47b771f7eaca50b367738fd3f82b967b457"
+  },
+  {
+    "path": "country-update/retries/101594/command.log",
+    "bytes": 937,
+    "sha256": "670f3ccae8077c58f7837c5e69a155573e4c3bb108581ff20ac148f7157a3ec6"
+  },
+  {
+    "path": "country-update/retries/101594/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/101594/result.json",
+    "bytes": 329824,
+    "sha256": "e390f1e0ad369a5317fdee3375bb8c9464e6b4aef5836ff7e7d4e41e9a1fa003"
+  },
+  {
+    "path": "country-update/retries/101625/artifacts.json",
+    "bytes": 109,
+    "sha256": "fa6e5513cb8e3c195fad69facb83cda44ac2c3e2211e5127f9ebe087bf43ed56"
+  },
+  {
+    "path": "country-update/retries/101625/command.json",
+    "bytes": 502,
+    "sha256": "4fd5f81b6221bf6d19ffd3565c045c431606b54d5a21d1bf9dc06123d30ea690"
+  },
+  {
+    "path": "country-update/retries/101625/command.log",
+    "bytes": 704,
+    "sha256": "2e0fd87113f7121f23d1184a9bce4b7db404ff6bed26341d13e436e0020dc491"
+  },
+  {
+    "path": "country-update/retries/101625/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/101625/result.json",
+    "bytes": 179654,
+    "sha256": "3ce2dedf2e903322bfd6d04f2385ca1c993b700f42775dfa2b0610bc12acc15f"
+  },
+  {
+    "path": "country-update/retries/101639/artifacts.json",
+    "bytes": 109,
+    "sha256": "6b00f50de5c7c23e01df6fa391ff507c4dfd4e0f7b272a849fdb1fbdca4fc4b5"
+  },
+  {
+    "path": "country-update/retries/101639/command.json",
+    "bytes": 501,
+    "sha256": "f69dd0bfd02d36033875fa6c8bbabb08bc747c0e79c1fface21bbf122fe5b8e1"
+  },
+  {
+    "path": "country-update/retries/101639/command.log",
+    "bytes": 869,
+    "sha256": "ae8d66cb7691e635f9bce1f748534cd3ddbe81b809d857dc449d181746f4ce37"
+  },
+  {
+    "path": "country-update/retries/101639/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/101639/result.json",
+    "bytes": 294238,
+    "sha256": "4049712d55476d3dd543dc16a34c452872ee8e0d8baf9dc82f97663165541fb7"
+  },
+  {
+    "path": "country-update/retries/101643/artifacts.json",
+    "bytes": 109,
+    "sha256": "297c56b550eb020dc13be8b0cc20ebe340279669015d5d0a3870ff1f1cdb4fa3"
+  },
+  {
+    "path": "country-update/retries/101643/command.json",
+    "bytes": 504,
+    "sha256": "0a3d626c642a7f15e68d191545542b5e685393c7cfb8849904b4e63ee5981401"
+  },
+  {
+    "path": "country-update/retries/101643/command.log",
+    "bytes": 939,
+    "sha256": "b871f090b62ef8d20a1bb4ecfc31cf0425e0ab95714613173a0359bdd45a5001"
+  },
+  {
+    "path": "country-update/retries/101643/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/101643/result.json",
+    "bytes": 329850,
+    "sha256": "0d47ed54d57514e97a9750b4bebcfe19f71ab26ddc7154e0e043adcda51355ab"
+  },
+  {
+    "path": "country-update/retries/101797/artifacts.json",
+    "bytes": 109,
+    "sha256": "a76eeef2331edee494d3230c88bcd385f492f6a15897e5023e88ec6da50565e1"
+  },
+  {
+    "path": "country-update/retries/101797/command.json",
+    "bytes": 501,
+    "sha256": "866ce9c2dcc52ad55419fdc556e20a115ee03818e0b0e09259259c15a6ed631e"
+  },
+  {
+    "path": "country-update/retries/101797/command.log",
+    "bytes": 704,
+    "sha256": "86aa875a19d529a469f0bd564990189d4f30a6e1c232253b8b7811e50d4d6ad6"
+  },
+  {
+    "path": "country-update/retries/101797/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/101797/result.json",
+    "bytes": 178462,
+    "sha256": "64acb6da208112da7423cf37e1bd138f1024730f47f0a764a6fd4bafcc660604"
+  },
+  {
+    "path": "country-update/retries/101913/artifacts.json",
+    "bytes": 109,
+    "sha256": "35da4e77f55c6252576e2196ca92d83598684bdf6384d776c8f035ac484d2152"
+  },
+  {
+    "path": "country-update/retries/101913/command.json",
+    "bytes": 502,
+    "sha256": "147af2cbcf34397a79dc2f45381aa18e7fe34a98057a69dc1b402883c6e4fe1e"
+  },
+  {
+    "path": "country-update/retries/101913/command.log",
+    "bytes": 893,
+    "sha256": "fa5ab5ba57ba86e00eb9d407b914a3fb00465b5f1cc512f160e4873497a8a481"
+  },
+  {
+    "path": "country-update/retries/101913/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/101913/result.json",
+    "bytes": 294812,
+    "sha256": "6fff0eea5c2b06713fc336cab9178af95dd1bd572b026d201443e5e8b6ede840"
+  },
+  {
+    "path": "country-update/retries/101953/artifacts.json",
+    "bytes": 109,
+    "sha256": "6e136c535643f1789567ff2c6d7370c182af47d2efeff85c3758ce1275a563d9"
+  },
+  {
+    "path": "country-update/retries/101953/command.json",
+    "bytes": 499,
+    "sha256": "43846e983fe11d2ce226caf7153058df8be4f4130ee863fec5532172972109a5"
+  },
+  {
+    "path": "country-update/retries/101953/command.log",
+    "bytes": 589,
+    "sha256": "abbb7588e615db289ccdef18bc5983e633f0c9e9182891fb47947cfb1db243b9"
+  },
+  {
+    "path": "country-update/retries/101953/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/101953/result.json",
+    "bytes": 103464,
+    "sha256": "e6df075f275300f212c0ec3b752fad53b7b75066321c8a55fd27971fd3303113"
+  },
+  {
+    "path": "country-update/retries/102027/artifacts.json",
+    "bytes": 109,
+    "sha256": "e68119808f1d91c1e3b2c56eea6489af443ff2938434131222e48850f86fc767"
+  },
+  {
+    "path": "country-update/retries/102027/command.json",
+    "bytes": 502,
+    "sha256": "7c12c028995b2f1fc9f72feb43d7737aad0f6522472fd173e8035c5b0fa556fb"
+  },
+  {
+    "path": "country-update/retries/102027/command.log",
+    "bytes": 754,
+    "sha256": "53cfcf82e2b2aa4a2998879f537c7a9cb37e0ed3663dafae029dce93ebe2912a"
+  },
+  {
+    "path": "country-update/retries/102027/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/102027/result.json",
+    "bytes": 218552,
+    "sha256": "6516bd3fccab71589f2693256c10710ebc5f67e1aa25cea98f70b60911200a2a"
+  },
+  {
+    "path": "country-update/retries/102054/artifacts.json",
+    "bytes": 109,
+    "sha256": "9150602edbd3e8c686d5aae3b8524977f62d9fe0e9f0e181dae40b9420aae322"
+  },
+  {
+    "path": "country-update/retries/102054/command.json",
+    "bytes": 503,
+    "sha256": "f5d38570b240d5d131a9e2af11705fde89ed77fa4153ad4383e8b498bc88e488"
+  },
+  {
+    "path": "country-update/retries/102054/command.log",
+    "bytes": 718,
+    "sha256": "6a5baa70960d40bd03b559a1c6719286ebc6538aa0aac91782dba28bde9d3d8f"
+  },
+  {
+    "path": "country-update/retries/102054/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/102054/result.json",
+    "bytes": 178973,
+    "sha256": "4d6e6b120ec490a505429c273647a53f2ff4f29916dc7d49b1f26ec856eeb3e8"
+  },
+  {
+    "path": "country-update/retries/102138/artifacts.json",
+    "bytes": 109,
+    "sha256": "a399f57c1f57a2499bdab780febcc9328f0a1dbd7445143cd36aca43a512a812"
+  },
+  {
+    "path": "country-update/retries/102138/command.json",
+    "bytes": 504,
+    "sha256": "a6603c086ae44d0f0dfe8ee00fa1646d64a2e70356d6075235c7bd00f8130965"
+  },
+  {
+    "path": "country-update/retries/102138/command.log",
+    "bytes": 942,
+    "sha256": "c1a794f62e1ebb75f84d3902509f9f2e57bfef65d8464b62f766a39d10935b5f"
+  },
+  {
+    "path": "country-update/retries/102138/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/102138/result.json",
+    "bytes": 330848,
+    "sha256": "6ecb02139b84715fc99404f6da121ab9b4db919377604e4406aca07c3f221c0b"
+  },
+  {
+    "path": "country-update/retries/102263/artifacts.json",
+    "bytes": 109,
+    "sha256": "b9d5ff482750a117f5e5baad10f65322a4a4478c5affca9711478e3546ad256e"
+  },
+  {
+    "path": "country-update/retries/102263/command.json",
+    "bytes": 501,
+    "sha256": "ea9bfe7f96cf2a8c4df25e41f328f431010e78bf528fc770e96ab0eba8dc5f54"
+  },
+  {
+    "path": "country-update/retries/102263/command.log",
+    "bytes": 594,
+    "sha256": "6db82e7e83d3612ec1edaa2b5499815a2ecf9d98394d99f97ddd73b6767afa9d"
+  },
+  {
+    "path": "country-update/retries/102263/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/102263/result.json",
+    "bytes": 103734,
+    "sha256": "f0a8168cb7da6831220d2e413c05d86b0f12530a23beb5336c293d2d5c6e9f57"
+  },
+  {
+    "path": "country-update/retries/102277/artifacts.json",
+    "bytes": 109,
+    "sha256": "879a94e912b96af0d34c78cf81dfc93dc8596a0457c8433168569fa067b444c0"
+  },
+  {
+    "path": "country-update/retries/102277/command.json",
+    "bytes": 500,
+    "sha256": "6ffe90ea8902af6738a85c2138df4169e88d6d911b422bef2a582215e18ed694"
+  },
+  {
+    "path": "country-update/retries/102277/command.log",
+    "bytes": 943,
+    "sha256": "9f823af8fb436eaed744d1b625824d5ee21624f118a7cceb286e6a1fe2319026"
+  },
+  {
+    "path": "country-update/retries/102277/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/102277/result.json",
+    "bytes": 329447,
+    "sha256": "02b715614f3f3b68e24c09535907781203229c83b340cfe436c97325558778af"
+  },
+  {
+    "path": "country-update/retries/102326/artifacts.json",
+    "bytes": 109,
+    "sha256": "21708d3f58137065932659b85b8884e1c51e28a52b8a7a999d703e4aa6640642"
+  },
+  {
+    "path": "country-update/retries/102326/command.json",
+    "bytes": 503,
+    "sha256": "fecf8d34f2e1bb46d017ddb71e401087290b8dda817574a4f8c615fbbf668fdb"
+  },
+  {
+    "path": "country-update/retries/102326/command.log",
+    "bytes": 824,
+    "sha256": "e00d82418765308a5ada8425198a2ad1cbb6df5775474cd1127c1f04d00e5a7f"
+  },
+  {
+    "path": "country-update/retries/102326/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/102326/result.json",
+    "bytes": 254158,
+    "sha256": "792d7a99840da73b224d8f44f0621dfb6d860baf40c5d9efa6acdbceacb9de35"
+  },
+  {
+    "path": "country-update/retries/102348/artifacts.json",
+    "bytes": 109,
+    "sha256": "3bfb52fbafda51420819621d7b14d5197f1c9818e53132b720ae3d450e837076"
+  },
+  {
+    "path": "country-update/retries/102348/command.json",
+    "bytes": 501,
+    "sha256": "724285948c94d79a5a74fc4a1c189baabc1f7216a212c24bef212b7bab271aa1"
+  },
+  {
+    "path": "country-update/retries/102348/command.log",
+    "bytes": 700,
+    "sha256": "a3a0258e1bc5d3b54bea3dd410cd0743b145e0eaf19182257f38173b41d9b14c"
+  },
+  {
+    "path": "country-update/retries/102348/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/102348/result.json",
+    "bytes": 178520,
+    "sha256": "5a0ddd7074a6189f3403b2baa72f5118f4953d2af6755ea1852c1d7cd520196d"
+  },
+  {
+    "path": "country-update/retries/102386/artifacts.json",
+    "bytes": 109,
+    "sha256": "39d82deedc432c0bc40e3a09eee680820834d75f9924b505ef9469f6998acbd1"
+  },
+  {
+    "path": "country-update/retries/102386/command.json",
+    "bytes": 503,
+    "sha256": "c54c19816995cc5cad9c9fa398a3258c7a4f1971118d1cdadba717e959536613"
+  },
+  {
+    "path": "country-update/retries/102386/command.log",
+    "bytes": 710,
+    "sha256": "057c54fae3aa9c4d248013c7b153822a1cafb5342b02407221f7576b2f07a0b5"
+  },
+  {
+    "path": "country-update/retries/102386/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/102386/result.json",
+    "bytes": 178641,
+    "sha256": "a12dfe141b76a6e89f862165f6df27b75d77a2d1ea0f1a8f14e367203061969b"
+  },
+  {
+    "path": "country-update/retries/102402/artifacts.json",
+    "bytes": 109,
+    "sha256": "d3acb96599828fa337311911246fd521cf1adc31c60ca25280731a65d68d1e2c"
+  },
+  {
+    "path": "country-update/retries/102402/command.json",
+    "bytes": 500,
+    "sha256": "f2b86889a92c0e063cb484cf8959c409ee51b931e0afeb525675c64561806d35"
+  },
+  {
+    "path": "country-update/retries/102402/command.log",
+    "bytes": 699,
+    "sha256": "d25b7b6a75479c2b0bdada06e78f996cbf99bcc108b592b909c6e4edea95ce96"
+  },
+  {
+    "path": "country-update/retries/102402/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/102402/result.json",
+    "bytes": 178281,
+    "sha256": "6b5ace0bd29f01a3972a942a9c561b3e95dd151badc6466a755ac6df4fb64b7c"
+  },
+  {
+    "path": "country-update/retries/102414/artifacts.json",
+    "bytes": 109,
+    "sha256": "b1e28c5c5558c7569f719f80657e12b490486b384d279b354498ff171fc362a4"
+  },
+  {
+    "path": "country-update/retries/102414/command.json",
+    "bytes": 503,
+    "sha256": "a6b02f38dd30f4b28d69e5d4fbdb27866bdaadec82f60fd5b1d19930decd1569"
+  },
+  {
+    "path": "country-update/retries/102414/command.log",
+    "bytes": 940,
+    "sha256": "d593eb505fe75f3df70ee318585bfbfe9d4dfcbd3225ad881040b04d6c97510d"
+  },
+  {
+    "path": "country-update/retries/102414/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/102414/result.json",
+    "bytes": 331062,
+    "sha256": "4362d87edef9a01280bb5e930b3dabf8185a5c027cd209d9a8e2b29b06f8f3ab"
+  },
+  {
+    "path": "country-update/retries/102439/artifacts.json",
+    "bytes": 109,
+    "sha256": "71bed30c640bb0e1a4d5c1402b6c97891f2e375e49e0a15e4c540f858a38be85"
+  },
+  {
+    "path": "country-update/retries/102439/command.json",
+    "bytes": 501,
+    "sha256": "098d8e87520d9e9271be898c5ce4f043efcaa86241117796d6da3ad58fbe344f"
+  },
+  {
+    "path": "country-update/retries/102439/command.log",
+    "bytes": 704,
+    "sha256": "1cd383901e86cecb5b766f56a2eaca2cf0d01d9ccf9cf6038417386f0c8573c9"
+  },
+  {
+    "path": "country-update/retries/102439/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/102439/result.json",
+    "bytes": 178620,
+    "sha256": "5446a1fd9717956edf74f4dcc176073643b2879a2c9bfa7d8649ae988fab2a15"
+  },
+  {
+    "path": "country-update/retries/102549/artifacts.json",
+    "bytes": 109,
+    "sha256": "18c50478db98643979ea21a64838a464c04d31341235a86191b03e012126b083"
+  },
+  {
+    "path": "country-update/retries/102549/command.json",
+    "bytes": 504,
+    "sha256": "5c1edbb5ba07cececd57f744f7c96763d7c21f7af74ae7e72e6c007aea5e7ecd"
+  },
+  {
+    "path": "country-update/retries/102549/command.log",
+    "bytes": 947,
+    "sha256": "eab087652485ec2f40049fe758f36d1ddc3cc48a4ecf252d517b1e44cc36a0bc"
+  },
+  {
+    "path": "country-update/retries/102549/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/102549/result.json",
+    "bytes": 330549,
+    "sha256": "ec8bfc8b2b8c32916b9f66bdc973c3c51a22eface34c6ef7270322170c95632a"
+  },
+  {
+    "path": "country-update/retries/102757/artifacts.json",
+    "bytes": 109,
+    "sha256": "30bab1bd9f5e6388366f66a4e867ef022a15e05b89322a9a3eb19867bfe54deb"
+  },
+  {
+    "path": "country-update/retries/102757/command.json",
+    "bytes": 500,
+    "sha256": "a12a5de7bde9dd74bc1a88ccc8764e4b3bc0a635c1f814a3b93b7f9725690638"
+  },
+  {
+    "path": "country-update/retries/102757/command.log",
+    "bytes": 698,
+    "sha256": "8d881c65c8a7b9777125ee704377a6a3396afe0fdffa202cfb648f51eac8c622"
+  },
+  {
+    "path": "country-update/retries/102757/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/102757/result.json",
+    "bytes": 178093,
+    "sha256": "8ce1b9f584e22c41051d95681d15bf1cb3b796e22012e9479a4e75c1ff9c0f7c"
+  },
+  {
+    "path": "country-update/retries/102912/artifacts.json",
+    "bytes": 109,
+    "sha256": "60cd358dc591b08f6602c83290cf84460d9d1c6e72eec48856b05e912654ee24"
+  },
+  {
+    "path": "country-update/retries/102912/command.json",
+    "bytes": 502,
+    "sha256": "5476a2a121ee4f7ca8c98953f0125912d55aefd9459555a477292c89e9f111a1"
+  },
+  {
+    "path": "country-update/retries/102912/command.log",
+    "bytes": 944,
+    "sha256": "d8314bf7f773a5f775b66e3779dbd4aa32ff57703f1c97e31ffffe5c3010b648"
+  },
+  {
+    "path": "country-update/retries/102912/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/102912/result.json",
+    "bytes": 330109,
+    "sha256": "07df79decc6f2f329de57d89c0d220df6d733004673f83636589351bb4ba8da0"
+  },
+  {
+    "path": "country-update/retries/102921/artifacts.json",
+    "bytes": 109,
+    "sha256": "19640f26258c666e73c85e2b74e787249305f7afc4e2e1e08a1ff1e72a27d8a8"
+  },
+  {
+    "path": "country-update/retries/102921/command.json",
+    "bytes": 504,
+    "sha256": "4d5ac065e8ad0beb8203eb4fc019dc32fd5f1300a445209b5312b9052c4a5c23"
+  },
+  {
+    "path": "country-update/retries/102921/command.log",
+    "bytes": 940,
+    "sha256": "e03ab502e3063238ba5bb8c87cba08c7be48a7899e80c4486b44a6e13b36e43b"
+  },
+  {
+    "path": "country-update/retries/102921/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/102921/result.json",
+    "bytes": 329896,
+    "sha256": "6128a882eace4969862570a4a65e43509fd6415a6f826717f081bb45b125a343"
+  },
+  {
+    "path": "country-update/retries/102976/artifacts.json",
+    "bytes": 109,
+    "sha256": "8f2fd4a8326dbd5ac4bd87d74e85ad63aa28d889ab9c3087c2ca5d523c4411ce"
+  },
+  {
+    "path": "country-update/retries/102976/command.json",
+    "bytes": 503,
+    "sha256": "6352f1dfbb0e285dffdfc7fc5f336e8cff1e1b98aa2f16506ac3e2e2ed35110f"
+  },
+  {
+    "path": "country-update/retries/102976/command.log",
+    "bytes": 938,
+    "sha256": "522c22ac6775572e6db8b7de89b8f95c4b75cabf02cf494a192ff89b3f9df0e9"
+  },
+  {
+    "path": "country-update/retries/102976/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/retries/102976/result.json",
+    "bytes": 329969,
+    "sha256": "21ee2cb2fe5457e5e5813ff2e1cc538335e2706d0090a05dbffbc248fbc4115d"
+  },
+  {
+    "path": "country-update/retries/summary.json",
+    "bytes": 3650,
+    "sha256": "9332f88a2816aab5480c2d10a9f440f76edb45b67446408af13d6736bb3e6dda"
+  },
+  {
+    "path": "country-update/retry.py",
+    "bytes": 1031,
+    "sha256": "48a8dbfb9580318b08dd8515afac2a0d4b82045cb685c09e5019ba2c063b9f4e"
+  },
+  {
+    "path": "country-update/swales-gallery/0/artifacts.json",
+    "bytes": 185,
+    "sha256": "b91f3b07e853ca5d2097e24f66843507f29084dae748ec71b9d4cb287cba6609"
+  },
+  {
+    "path": "country-update/swales-gallery/0/command.json",
+    "bytes": 383,
+    "sha256": "8985857c3672956f445d6b1a85d61f6907043016cc470d6fb522ff78581afdc8"
+  },
+  {
+    "path": "country-update/swales-gallery/0/command.log",
+    "bytes": 875,
+    "sha256": "e3e5146b8927417051a0405d2045e2ce0f3d445a165692ed063e7347d3c66cba"
+  },
+  {
+    "path": "country-update/swales-gallery/0/map-r0.map",
+    "bytes": 3119654,
+    "sha256": "4af9244ca731c728c99ee5d4151695ee44fdb6c305870151d6548f8fd0ae251c"
+  },
+  {
+    "path": "country-update/swales-gallery/0/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/swales-gallery/0/result.json",
+    "bytes": 178099,
+    "sha256": "26aa29bac698abdccb5804608a5012c7042a337c95c5a48bc339a2bd64121fb4"
+  },
+  {
+    "path": "country-update/swales-gallery/0/terrain.png",
+    "bytes": 10048,
+    "sha256": "e9decae486810525d8a16bbf2ff6d1fb12c5eb6ab1418ecbac1ffd9eba0961d3"
+  },
+  {
+    "path": "country-update/swales-gallery/0/terrain.txt",
+    "bytes": 131336,
+    "sha256": "eed970cf5814783feba2769b151ce3c131ef19ad4f7c4f11f026c4a9e4e77f04"
+  },
+  {
+    "path": "country-update/swales-gallery/1/artifacts.json",
+    "bytes": 185,
+    "sha256": "76ac10f44e47ed6a69626d0d075da9d5f7a178ddecf8a890c855e5ba9d273a36"
+  },
+  {
+    "path": "country-update/swales-gallery/1/command.json",
+    "bytes": 383,
+    "sha256": "4d1fa3400ce85d2a4e1e27c8feaad16e84eee6c9e54694941ac5691ac35ee5a1"
+  },
+  {
+    "path": "country-update/swales-gallery/1/command.log",
+    "bytes": 876,
+    "sha256": "8a9037fa8012a8eed61ab97f32de6206a6b021dd445ccf6182cc164c1850eddb"
+  },
+  {
+    "path": "country-update/swales-gallery/1/map-r0.map",
+    "bytes": 3119654,
+    "sha256": "a994b6378dec909cd82201696c737313b7bea1b633e684f210fab43dac36363f"
+  },
+  {
+    "path": "country-update/swales-gallery/1/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/swales-gallery/1/result.json",
+    "bytes": 178207,
+    "sha256": "450fbe7c780a9e6578df9253f8bcd615a27765162bca07a77dc53e12965be6d6"
+  },
+  {
+    "path": "country-update/swales-gallery/1/terrain.png",
+    "bytes": 9977,
+    "sha256": "da1e58b93d7c4e883aa76265a3b36c3e46c52def15a724b56ce5663c5db1dfaa"
+  },
+  {
+    "path": "country-update/swales-gallery/1/terrain.txt",
+    "bytes": 131336,
+    "sha256": "dc28814e5e46f3ab01dea40dc2964fb73106c41c882581dca65d95a48c341ab7"
+  },
+  {
+    "path": "country-update/swales-gallery/2/artifacts.json",
+    "bytes": 185,
+    "sha256": "185d722f38158e743b665448a70d92afe6260617347808ac0f0e5f308251be60"
+  },
+  {
+    "path": "country-update/swales-gallery/2/command.json",
+    "bytes": 383,
+    "sha256": "e6ddf48037efae3f33addd53098581af030ed783b46b50dc193a03e6c9fc66a2"
+  },
+  {
+    "path": "country-update/swales-gallery/2/command.log",
+    "bytes": 876,
+    "sha256": "c2179ee45e05943fa2e55ce0a03114afc89629db395d0f14eff2f6009d1124ff"
+  },
+  {
+    "path": "country-update/swales-gallery/2/map-r0.map",
+    "bytes": 3119654,
+    "sha256": "c917d10f6b242ae2d74bf6cbafe9c5c99559e0ae70c28d9c4a06179e0412fd3a"
+  },
+  {
+    "path": "country-update/swales-gallery/2/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/swales-gallery/2/result.json",
+    "bytes": 178196,
+    "sha256": "21c4e0307657ea767058afd3c8e8da89d9bf409a2fc36ee69eb2d47aa7defb03"
+  },
+  {
+    "path": "country-update/swales-gallery/2/terrain.png",
+    "bytes": 9917,
+    "sha256": "7a291fcba6e7916f60e9028824f4a03e488565f10b353e83f420dcb0d1fb0dd4"
+  },
+  {
+    "path": "country-update/swales-gallery/2/terrain.txt",
+    "bytes": 131336,
+    "sha256": "101c2139b618eb7ee07c96136c2a7ad74eff70f4de82ba8892262a112f1936b4"
+  },
+  {
+    "path": "country-update/swales-gallery/3/artifacts.json",
+    "bytes": 185,
+    "sha256": "783add2dcccff3317e78eda11d4c01f2d4a093ee6dd98c6002d0f9ce3538a071"
+  },
+  {
+    "path": "country-update/swales-gallery/3/command.json",
+    "bytes": 383,
+    "sha256": "c811f91dbb519fab975ad02ef421d2ec4308eb82be5e610c8bce5e415f384ae5"
+  },
+  {
+    "path": "country-update/swales-gallery/3/command.log",
+    "bytes": 874,
+    "sha256": "9fb11ac3d79a3c8935d5f8cf84aa3e45e94d0770cec6754db544ff758647f3f0"
+  },
+  {
+    "path": "country-update/swales-gallery/3/map-r0.map",
+    "bytes": 3119654,
+    "sha256": "01c9c49bbb86fe195e6af416fa78836127defa4190c93946db037d349c951607"
+  },
+  {
+    "path": "country-update/swales-gallery/3/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/swales-gallery/3/result.json",
+    "bytes": 178025,
+    "sha256": "06c046288ea258bd1dbb177c74c1b57d41abc441828828370d233df5fbca6c6a"
+  },
+  {
+    "path": "country-update/swales-gallery/3/terrain.png",
+    "bytes": 10515,
+    "sha256": "c29ea985a5a2afd068aded611d9252a593f5f0f032a16d68f5f844de2af855c4"
+  },
+  {
+    "path": "country-update/swales-gallery/3/terrain.txt",
+    "bytes": 131336,
+    "sha256": "9ebdddde3620dbf1d87db21890325b56341d006989c5b7aff976795e2057792a"
+  },
+  {
+    "path": "country-update/swales-gallery/4/artifacts.json",
+    "bytes": 185,
+    "sha256": "f5978720f2c6881930d7d6d33f630c970a42ad380720ac522fae713c94a5d539"
+  },
+  {
+    "path": "country-update/swales-gallery/4/command.json",
+    "bytes": 383,
+    "sha256": "9c0dd967c38cb09b7db909cb7c3885578a7e57a0bdcc23bb14a2d523af490102"
+  },
+  {
+    "path": "country-update/swales-gallery/4/command.log",
+    "bytes": 878,
+    "sha256": "cffc8ae5335045e447ac48c9be9fc25d448573c8c97152962608f6856e2f4083"
+  },
+  {
+    "path": "country-update/swales-gallery/4/map-r0.map",
+    "bytes": 3119654,
+    "sha256": "89b474e68ce1e185437191343bcee1aef7a1c0112349f02e0ac5cdc5eafeda46"
+  },
+  {
+    "path": "country-update/swales-gallery/4/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/swales-gallery/4/result.json",
+    "bytes": 177946,
+    "sha256": "57dd576069f2230b3f91a21d003735a0e273c15a35b9fb9cbd27f697ac7323a2"
+  },
+  {
+    "path": "country-update/swales-gallery/4/terrain.png",
+    "bytes": 11362,
+    "sha256": "755f1d5f9bdcf5fdb9668b9649fd4d30fd05a1a05e75ebfa44a67a3946a6abe1"
+  },
+  {
+    "path": "country-update/swales-gallery/4/terrain.txt",
+    "bytes": 131336,
+    "sha256": "ac3f3a387287e0f52c2e0bd123a32a6248d20b2ef691bef56824828555cb0978"
+  },
+  {
+    "path": "country-update/swales-gallery/5/artifacts.json",
+    "bytes": 185,
+    "sha256": "3ace94ee09dc9820b709633fd3f894d4c428f4c97fcdeda511fb1da0ce6ec71a"
+  },
+  {
+    "path": "country-update/swales-gallery/5/command.json",
+    "bytes": 384,
+    "sha256": "603af7b045a9390f49f73821cec53bbcc5d6a1d3030ae4f233a50944d1162ffb"
+  },
+  {
+    "path": "country-update/swales-gallery/5/command.log",
+    "bytes": 876,
+    "sha256": "c1c75f131de641020be718fcc6aa78873cfdcace36bacf22d01e1e9f833d5b1b"
+  },
+  {
+    "path": "country-update/swales-gallery/5/map-r0.map",
+    "bytes": 3119655,
+    "sha256": "4b04a139affce4849cf9399249410c0df1e2e2f3cf9d3329d79997872da52b17"
+  },
+  {
+    "path": "country-update/swales-gallery/5/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/swales-gallery/5/result.json",
+    "bytes": 178312,
+    "sha256": "5ab5e80e2ee659d0f82b49cb4c2635db4511d7573d98f3f11bd35609c7e730ca"
+  },
+  {
+    "path": "country-update/swales-gallery/5/terrain.png",
+    "bytes": 9843,
+    "sha256": "ec175104271e41f271138e7a2a46d93c7e66d12275accae5ef1f2dfac0a17c50"
+  },
+  {
+    "path": "country-update/swales-gallery/5/terrain.txt",
+    "bytes": 131336,
+    "sha256": "8cf7db71edb6d66cf086462895b03e7e2bbbce35219d45d33ed728257a8d104a"
+  },
+  {
+    "path": "country-update/swales-gallery/6/artifacts.json",
+    "bytes": 184,
+    "sha256": "cfea6bf24fafae9c17692ec82a5af1bf5be145f09f31b5b3f2ee832a7c537c9b"
+  },
+  {
+    "path": "country-update/swales-gallery/6/command.json",
+    "bytes": 383,
+    "sha256": "dc0d4146b1735503aae90b763d59e21fdc56c8efab9ba0b913c0bf05e3192057"
+  },
+  {
+    "path": "country-update/swales-gallery/6/command.log",
+    "bytes": 724,
+    "sha256": "3f6616b6ae33d5604b07637bf5e32b4bd5d480852097036e34b9d7527aed8434"
+  },
+  {
+    "path": "country-update/swales-gallery/6/map-r0.map",
+    "bytes": 1003318,
+    "sha256": "a0c5939e906b5696530d6acd5c8119b15dccb1a7d1ddb9e4ca64464be1657d0c"
+  },
+  {
+    "path": "country-update/swales-gallery/6/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/swales-gallery/6/result.json",
+    "bytes": 102957,
+    "sha256": "502135562760e8b07320e2a5f8ef54f7f21276c7807871306dcb242fc8b74e16"
+  },
+  {
+    "path": "country-update/swales-gallery/6/terrain.png",
+    "bytes": 3441,
+    "sha256": "fe4601c30e0f0ea6560ea1c2e3d428d4cac819aa52a0422ddef54624ffeebddb"
+  },
+  {
+    "path": "country-update/swales-gallery/6/terrain.txt",
+    "bytes": 32904,
+    "sha256": "049f9ccf4ac9e8b040cf4f76e4c1b0f304c8673f8fd19532ddbb3114feda2a1a"
+  },
+  {
+    "path": "country-update/swales-gallery/7/artifacts.json",
+    "bytes": 185,
+    "sha256": "cabfabd4e18da86956aae6206313277bb7d43905a23ed020d2e3fab5ffb6bca8"
+  },
+  {
+    "path": "country-update/swales-gallery/7/command.json",
+    "bytes": 383,
+    "sha256": "aec96c125f2293e4fe36eda878d5594cdd7e84083485012cddfdd0f6e01369b7"
+  },
+  {
+    "path": "country-update/swales-gallery/7/command.log",
+    "bytes": 1025,
+    "sha256": "88b3ba4b9953c55f992749d0f32bb4719f8ac95381de86c3477ad7fe20528862"
+  },
+  {
+    "path": "country-update/swales-gallery/7/map-r0.map",
+    "bytes": 5793302,
+    "sha256": "7e5083bac9afeb4210e31edb9e914937d1f0c47625ce5dc39057bbe56fb0519c"
+  },
+  {
+    "path": "country-update/swales-gallery/7/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/swales-gallery/7/result.json",
+    "bytes": 253286,
+    "sha256": "3e50e7b653e4570a7d2b21b9e772432cc5849d7eb94ef8eb6756cba556b70525"
+  },
+  {
+    "path": "country-update/swales-gallery/7/terrain.png",
+    "bytes": 20649,
+    "sha256": "2b5830a9568638a7fef5f75c1a532723ee0257eb8b3b6e05810fc629e7a4680c"
+  },
+  {
+    "path": "country-update/swales-gallery/7/terrain.txt",
+    "bytes": 262664,
+    "sha256": "2e581eaecb3b717c0d4acf65508d80172784ba13253159c9ac59bffb963e605d"
+  },
+  {
+    "path": "country-update/swales-gallery/8/artifacts.json",
+    "bytes": 186,
+    "sha256": "1c8f1c99817b949cbc5586d4d548d7a5c6b980812123555af95f1a413730b80a"
+  },
+  {
+    "path": "country-update/swales-gallery/8/command.json",
+    "bytes": 384,
+    "sha256": "9314ef5b9dd4846940b2763e82ce1596efb116b6457f687f22f12456271c518e"
+  },
+  {
+    "path": "country-update/swales-gallery/8/command.log",
+    "bytes": 1187,
+    "sha256": "7b16730d3f939c5b29e3c1ad87571707429ec97f9e3e947ad29871af27393102"
+  },
+  {
+    "path": "country-update/swales-gallery/8/map-r0.map",
+    "bytes": 10696199,
+    "sha256": "731f39e81355ee3b59abe18c8e17f43ac539d8e2a3a50fc076942d08e4c8a3ed"
+  },
+  {
+    "path": "country-update/swales-gallery/8/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "country-update/swales-gallery/8/result.json",
+    "bytes": 329354,
+    "sha256": "b7d7b96ef6a637b82017ed8ee02bae33048c685ffbb3f6eed45eacff4691d265"
+  },
+  {
+    "path": "country-update/swales-gallery/8/terrain.png",
+    "bytes": 33252,
+    "sha256": "f55e481b6135f99835b14d788fd72ec312c350db87f50e0d4ab7875d634e35e6"
+  },
+  {
+    "path": "country-update/swales-gallery/8/terrain.txt",
+    "bytes": 524808,
+    "sha256": "3eb2b1d64ce7fc66b967675d7d3982bbec5b90178339eb69cbdec8328e39ba76"
+  },
+  {
+    "path": "country-update/swales-gallery/gallery.png",
+    "bytes": 138675,
+    "sha256": "d9e275737e98200b8b922eb0a35728ccfdf699040167c26a46796464cb2795eb"
+  },
+  {
+    "path": "country-update/swales-gallery/index.html",
+    "bytes": 2975,
+    "sha256": "e355ccc4f93b5c5a0f3d693c22cc0368bd6c0a32bb9cbf3e83d2b33af77e0a09"
+  },
+  {
+    "path": "country-update/swales-study/ablation.jsonl",
+    "bytes": 602657,
+    "sha256": "c033b43d54af54320ab58457a9e4e3c877ef22e09ccf6428b0ad574a2ba64cd7"
+  },
+  {
+    "path": "country-update/swales-study/random.jsonl",
+    "bytes": 4255014,
+    "sha256": "dad9142f15d55b4a8805daeed5635d3bac71984bcb788b2d5dae07274dda01f5"
+  },
+  {
+    "path": "country-update/swales-study/rejected-supported.json",
+    "bytes": 73898,
+    "sha256": "4fe78cb361773bec335e9a45c51f99586f4d13bdddb5a3181894ef4f1ca12000"
+  },
+  {
+    "path": "country-update/swales-study/report.txt",
+    "bytes": 4976,
+    "sha256": "1e52fcacee38bcce2518cbf4ef40286d62ce958e4a263780c455578eb3d8916d"
+  },
+  {
+    "path": "custom-setup.log",
+    "bytes": 4145,
+    "sha256": "cd13fcc6a975d06e456c0ece7a24c69e8edba1d217c9504cb8d740138c9a5b59"
+  },
+  {
+    "path": "eight-player/artifacts.json",
+    "bytes": 341,
+    "sha256": "f59f2cb38d3c715307330f5209dd21269a2c18f82ecc58db0d9814b8353cd2f5"
+  },
+  {
+    "path": "eight-player/result.json",
+    "bytes": 401122,
+    "sha256": "adfc583eb6672cccd6835da493a9adb5d72c7c451e344c0c0afdf3d29fbc329d"
+  },
+  {
+    "path": "eight-player.log",
+    "bytes": 44360722,
+    "sha256": "058ff96fcbe2cb979a645d747e7511b2867720846b3d375867f602bb3affaade"
+  },
+  {
+    "path": "final/game-counters.txt",
+    "bytes": 4057,
+    "sha256": "889c198b4ef59c5fde0a282e4d3d05d6657660010ff6f4ac8cf5afdd87bc0b72"
+  },
+  {
+    "path": "final/growth.txt",
+    "bytes": 1605,
+    "sha256": "17f4a3668e07379185fd880f5bdea0cc4a3caf8e0580d57cd58db8f4320c5cd4"
+  },
+  {
+    "path": "hedgerow/artifacts.json",
+    "bytes": 341,
+    "sha256": "6c35f81e2856a655ec152365193093ccc127a1eef70417cb916b0cef59e8fc3c"
+  },
+  {
+    "path": "hedgerow/result.json",
+    "bytes": 206270,
+    "sha256": "e8a373dc80a97fde31d5bba8e56da2d5f4e8c28e83fa750757baa439ec6b85f6"
+  },
+  {
+    "path": "hedgerow.log",
+    "bytes": 22661994,
+    "sha256": "1713759920b64b60c28cac040be79324e1b3acd7d8c1420b74784dd8fd01ad08"
+  },
+  {
+    "path": "rotation11/map-r0.map",
+    "bytes": 3119654,
+    "sha256": "ca3799e54c2e9b1a8d935cf4a97d8187365b36f6eead8e35789c05fb9a5d6d7e"
+  },
+  {
+    "path": "rotation11/map-r1.map",
+    "bytes": 3119654,
+    "sha256": "c2f7f24b48279bfdad79abcf22f106da61eeec56eb4a855175888bb5a03f4d50"
+  },
+  {
+    "path": "rotation11/map-r2.map",
+    "bytes": 3119654,
+    "sha256": "96cd56e26b4c259329eeeac1e978a8b4c35ccad721c785d31a69d701ab332ca7"
+  },
+  {
+    "path": "rotation11/map-r3.map",
+    "bytes": 3119654,
+    "sha256": "240ba5a17c61981bd43ca1946f7cb7edc16f5c19d5ba2c4423ee806f705af913"
+  },
+  {
+    "path": "rotation11-play0/artifacts.json",
+    "bytes": 150,
+    "sha256": "3c299ce0f1f5a1aaff6e9bc82a060c10f3c55aa1590c103522d18081afa45555"
+  },
+  {
+    "path": "rotation11-play0/result.json",
+    "bytes": 38840,
+    "sha256": "6d292579e851b03b2440cad7bc4cf678b42c7f51186eb9f02f2f08d70c61e5e0"
+  },
+  {
+    "path": "rotation11-play0.log",
+    "bytes": 33607468,
+    "sha256": "75bfe2f8cb55ad92aa70ac93c26cc469924ba232ed43f9cad7a3a3180c998586"
+  },
+  {
+    "path": "rotation11-play1/artifacts.json",
+    "bytes": 150,
+    "sha256": "e9864efee2e9542e91daaa3de47c3737646a1094495bc64c9c5326515609a6e5"
+  },
+  {
+    "path": "rotation11-play1/result.json",
+    "bytes": 39096,
+    "sha256": "20331483e393d1d03adcc7c9c96da487a08f92973b4d707ca2d2f1be22aa8091"
+  },
+  {
+    "path": "rotation11-play1.log",
+    "bytes": 33619640,
+    "sha256": "4182b78e98f3c524b39aba96cf1b7420be9cf5847e6182033e0158ad3568555f"
+  },
+  {
+    "path": "rotation11-play2/artifacts.json",
+    "bytes": 150,
+    "sha256": "68575acf047e01370c80b4efc30b140f7412a4abdc2d0862b249ba1bc26bd080"
+  },
+  {
+    "path": "rotation11-play2/result.json",
+    "bytes": 39105,
+    "sha256": "98f189deb45498c09fa126a8178b712ab198970d86ad571b37951422ff792f7c"
+  },
+  {
+    "path": "rotation11-play2.log",
+    "bytes": 33576999,
+    "sha256": "661e9b4189ef98e49f8f512cceeba56cfafa3a8aaadb4e155b8755af393bced6"
+  },
+  {
+    "path": "rotation11-play3/artifacts.json",
+    "bytes": 150,
+    "sha256": "a92291c4e7ec3f1ee8e05bb48a944de0bd0b3eba4264cd2567e3ef00333277af"
+  },
+  {
+    "path": "rotation11-play3/final.game",
+    "bytes": 70779280,
+    "sha256": "abee905b4efce35b1cdf57b35f0a1058b71dc1babdb8e4c176ac41b0c5f92166"
+  },
+  {
+    "path": "rotation11-play3/result.json",
+    "bytes": 39229,
+    "sha256": "075dd03fe8012faf519f1f6c3e9b18455241f01f507f1c5162fee2efd7e5b22e"
+  },
+  {
+    "path": "rotation11-play3.log",
+    "bytes": 33613835,
+    "sha256": "7a97bbd924a48d37341cf2f691466b7bc6e47d889e5eca0fb8768e11e69ad162"
+  }
+]
