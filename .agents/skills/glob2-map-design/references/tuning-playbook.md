@@ -67,6 +67,22 @@ Under about 150 wheat in that time a colony never grows, whatever else the map o
 
 Premade bases were their own case, and why The Glacis, Allotments and Caravanserai dropped them in revision 2: in rotation tournaments at 45,000 ticks (2026-09-16) a finished base of fifty-odd units bred 14 to 15 times a colony with Nicowar and 4 to 9 with Numbi, and Caravanserai's capitals starved out in 67 and 70 of 96 colony-games; only Allotments' base of construction sites bred (82 births with Nicowar), because the AI had to build it. A premade population is not a growing economy.
 
+## An opening court must be legal, reachable and discovered
+
+Portage Lakes (2026-09-19) exposed three separate constraints on a contained farm: the inn must fit beside actual planted grain, workers must reach it after sowing, and the AI must discover the placement it checks. Outside grass did not solve the first problem because the plot's sand boundary separated the inn from its wheat. A 4×4 unseeded court inside the field, with an entrance through the grain, supplied legal opening sites. Those dimensions are a worked example, not a universal home template; use the building and AI placement rules for the intended design.
+
+A narrow-map colony still harvested no wood: Cortex's inn court was at the far end of the field, in fog. Revealing a copy of the saved map immediately produced legal candidates; leaving crops to grow unattended through 4,096 ticks did not remove them. This distinguished discovery from illegal geometry or early overgrowth. Moving the court and entrance toward home and sowing grain around its rim gave ordinary haulers a reason to discover it. All four rotated Cortex starts then completed inns within 1,024–2,048 ticks.
+
+When a farm stalls, diagnose it in this order:
+
+1. Check the actual placement predicate, including upgrade room, crop adjacency, local grain requirements and checkerboard harvesting parity. A count of empty grass tiles does not answer these questions.
+2. Flood from the initial workers on the finished resource map. An empty pocket surrounded by wheat is not an accessible opening.
+3. Compare placement candidates under the colony's real discovery state with a revealed **diagnostic copy** of the same save. Do not grant permanent map knowledge to hide a discovery problem; shape the approach and harvesting frontage instead.
+4. Compare initial candidates, unattended growth and early played saves. Exclude reserved court/entrance tiles from productive-food budgets. An unseeded opening may grow over naturally; only promise it remains open permanently if terrain actually enforces that promise.
+5. Check construction in every rotation, then continue the games. Portage Lakes' repaired narrow openings had no worker starvation through 15,000 ticks, but a later Maxima collapse remained. Early construction success does not establish late sustainability, and starvation should not be reported as combat loss.
+
+Scarcity needs its own planting check. Ranking seeds only by fertility can put the entire minimum food allowance at a rich tip, away from the inn. Portage Lakes failed four of 2,000 random requests at zero wheat abundance despite enough total grain. Re-sowing the **same** budget around the court repaired them; adding food would have concealed a placement defect and weakened the abundance control. Validate the final planted pattern, not merely the available fertile area. See the [Portage Lakes record](../../../../docs/map-generators/PORTAGE_LAKES.md) for results and limits.
+
 ## Ground a colony can reach beats ground it can see
 
 The second recurring defect is measuring room or fertility as area rather than as walkable catchment:
@@ -163,6 +179,16 @@ A tournament costs an hour of a cluster; a food-capped or unbuildable home shows
 3. Compare per colony: wheat and wood harvested, worker births, starvation deaths, units over time and buildings. Absolute numbers depend on the AI and the tick count; the reference game is the yardstick. The Glacis' first rebuild harvested 155 to 291 wheat against Forts' 427 to 882 in the same 30,000 ticks, which found a cramped courtyard and gardens too small an hour before a tournament would have.
 4. When one of those AIs stalls, read its own telemetry (`GLOB2_AI_FINAL`) for the gate that stopped it, such as a building count that never passes one. Then look at the home in a terrain close-up (`scripts/render_terrain.py`) around that colony's swarm; the cause is nearly always within a dozen tiles of it.
 5. A map built around the local game can still fail on others: the tournament over several map seeds and every rotation remains the evidence, and its per-start table is where AI-specific and facing-specific failures show.
+
+## Prove local swimming access, not just a swimming flag
+
+Nicowar's `state.can_swim` means at least one swimming worker exists ([phase logic](../../../../src/ai/nicowar/Phases.cpp)); it does not prove a pool is accessible from the home swarm. Conversions can introduce swimmers temporarily, and a team-wide completed-pool count can refer to another island. In Who Ate the Map?'s failed game, the home stayed on a cramped southern crescent while both pools were built on the northern mainland. Nearby wood remained abundant: adding supplies would have treated the wrong cause.
+
+Check completed pool locations against the home land component and actual worker routes, then examine swimming ability gains, continued training and combat contact. Use a saved-world inspection or building records when the preview omits building sprites. The repaired map's 40,000-tick island test confirmed two local pools and 15 swimming workers; the last counter sample also showed training and combat. Keep that a representative success, not a proof for every seed or AI.
+
+### Keep evidence times and unit types explicit
+
+A run's tick cap, actual termination tick, last telemetry sample and final-save tick can differ. The island test saved at 40,000 ticks but its last complete counters were at 38,400. Report each observation at its own time; distinguish natural match endings from capped runs. Break starvation down by unit type: zero worker and warrior starvation coexisted with 82 explorer starvation deaths. Do not summarize that as “no starvation.”
 
 ## When results split by start, find the design draw
 
@@ -274,6 +300,9 @@ Every robust generator negotiates its layout in the same order: compute the room
 
 
 **Share a budget; don't leave one feature the remainder.** Bajada first sized its fans as whatever the playa left, clamped to a floor, and its fans stayed at the floor (34 tiles) at every range spacing from 144 to 192 while the lakes took all the extra room; a control study showed the range-spacing control changing nothing a player would see. Give each feature a share of the room (fans 60% of the slope between their floor and ceiling, the widest playa the rest) so every wider setting grows both. Size fixed features for the widest setting of the control that varies (the fans for the widest playa) so that control moves only its own feature.
+
+**Retry settlement before changing a sound silhouette.** A greedy spread can fail because its first site crowds out later colonies. Who Ate the Map? recovered such seeds through bounded retries from a named start stream, then a documented spacing fallback, while keeping farm and town capacity floors intact. Record retry counts and fallback use, retain failing seeds, and re-run the parameter study. A search failure is not automatically evidence that the coastline needs repair.
+
 ### Construct a fitting, don't search for one
 
 Hidden Oasis' tower ledges were first *searched for*: a disc of grass tried at growing distances from the gorge until its wall stood and a tower on it covered the pinch. A quarter of requests failed, and every loosening moved the failure somewhere else (the far tower out of range of the near one, the ledge of one pinch inside the next). Carving the ledge *from the constraint* ended it: the ledge is the band of ground from exactly the wall's thickness back from the gorge's floor (`stepsFrom` the floor) to a few tiles more, so the wall is right by construction, the tower hugs it, and the reach is arithmetic (wall + pinch <= range). What is left to choose is ranked, not searched (the tower site that only just covers, which leaves room for its neighbour). Rules that fell out of the failures:
@@ -293,6 +322,8 @@ Hidden Oasis' tower ledges were first *searched for*: a disc of grass tried at g
 - **Scenery must not become the map.** A scatter of copses for colour, with water added across the land for the crops, grew into forest over the whole map in a single long game. Decoration that the engine can spread is a future the preview does not show — see the overgrowth section of [gameplay and playability](gameplay-and-playability.md).
 - **Connections are drawn in the map's own language.** Paths joining a formal garden's features are straight legs meeting square — an L or a Z, never a staircase or a diagonal — laid only over open ground, so a path can lead to a feature but never cross one.
 - **Tidy means every join is flush.** A formal map's aesthetic is clean, neat and tidy: no bit of road jutting past a join, no bit missing, every join at a right angle and every edge straight. A two-wide path that met a home's rim showed one tile of sand, because it stopped at the rim's recorded box rather than the rim; paths now end with both tiles against the sand they join, meet a bridge along its axis and centred on it, keep a grass tile clear of anything they pass, and are not drawn at all where that is impossible. The home rim lost its decorative fray and gained a second corner of sand beyond its water, so it is the same width as the paths on every side.
+
+- **A bite is one mouth with teeth.** Independent circular coastal cutouts read as bays. Who Ate the Map? became legible when a broad jaw cut carried overlapping rounded tooth impressions along its front. Tune their rasterized size on the smallest supported map, vary shallow/deep/lopsided profiles, and keep teeth round on stretched maps. Compose the whole missing shape before tuning its small edge details.
 
 - **Model the real thing, not the nearest primitive.** Rice terraces were first built from the contour-farm primitive the toolkit already had: concentric crop and water bands round point summits. The first look said centre-pivot farm; the fix lobed the rings, and the map still did not read as rice terraces, because the real thing is not a ring round a point at all. Real terraces are many narrow strips following the contour of a long slope, stacked down the hillside, winding together, joined into one landscape across the valley. Where the concept went wrong was the first step: the design brief named the mechanism (contour bands, stairs, summits) before it named the look, and each later fix decorated the mechanism instead of questioning it. Before choosing a construction, write down the three or four visual signatures a person would use to recognise the subject in a photograph, and check the planned geometry produces each one; when a first look says "this reads as X", ask whether the model is wrong before tuning the drawing. The ring map was good, so it kept its geometry under the name it looks like (Hills), and Rice terraces was rebuilt from stripes that wrap the torus with a shared sway along them (2026-09-16).
 
@@ -365,6 +396,8 @@ When the look is settled, **measure every control on its own.** Generate each co
 - **Round a small shared budget once, then distribute it.** Orchard Commons rounded extra stone per quarry, leaving several 25% steps identical. Scaling the map-wide extra budget first and dealing tiles across quarries restored each step's effect. Keep supply floors separate, respect each quarry's capacity, and record unplaced surplus. For spacing controls, measure actual nearest-feature distances too: widening groups can bring adjacent groups closer, so the requested spacing is not itself evidence of the resulting geometry.
 - **A structural quantity can hide a control in the random rolls.** Stone amount correlated at r = 0.04 with stone tiles, because the plateau's rock (r = 0.97 with the colony count) swamped it; against stone *off the plateau* it read 0.42 beside the mesa control's 0.46. Give each ambient layer its own telemetry measure and correlate against that, and scale every ambient layer of a resource by its amount (the mesas as well as the outcrops), leaving only the structure unscaled and saying so.
 - **A searched fairness number is the search's opinion of itself.** The fairness tournament is the only check that caught Even Ground, whose objective drove catchment spread to near zero while one start won every game; everything cheaper passed. When a generator *optimises* a fairness measure, weight the tournament more heavily than the score, not less ([solved maps](constraint-solving.md)).
+- **Scored proposals can change when a control changes.** Portage Lakes' total wood fell at one higher setting because a different complete settlement proposal won, while renewable timber planting still increased. Record proposal identity and separate controlled planting from structural forest before diagnosing a broken scaler. Likewise, rescuing a previously rejected proposal can change an already successful request even when its newly selected map never invokes the repair.
+- **Measure where saturation occurs.** A wholly dead upper range should be reduced or redesigned; capacity on particular shapes needs a different diagnosis. Portage Lakes' optional trails saturated on some tiny one/two-colony maps while remaining useful on larger maps. Report paired effects by shape and colony count, distinguish integer rounding from physical capacity, and disclose retained plateaus rather than promising an effect at every step.
 - **Let the report find them.** [`scripts/control_study.py`](../scripts/control_study.py) reads any generator's controls from `--list-map-generators`, runs the one-at-a-time study and the random rolls natively in parallel (about 1,000 maps a minute), and its report flags every value whose maps measure the same as the value below it, groups refusals by message, and lists each control's strongest correlations.
 - **State the claim before reading the table.** A report says what moved; it does not say whether the right thing moved. Write down, per control, the metric it should move and which way, then check it — the rank correlation over the control's values is enough. That turns "here are some numbers" into a pass or fail per control, and it catches a control that moves a metric it should not as well as one that moves nothing. [`evidence/constraint-solved/control_expectations.py`](../../../../docs/map-generators/evidence/constraint-solved/control_expectations.py) is a worked harness: a table of claims per generator, checked against a `control_study.py` ablation.
 - **Two cheap sweeps worth having beside the study.** [`scripts/refusal_sweep.py`](../scripts/refusal_sweep.py) takes one control and many seeds and reports the refusal *rate* per value, which is how the top of a range gets found (Equilibrium's water refused 1 seed in 5 at its old maximum while delivering no more water). [`scripts/final_map_stats.py`](../scripts/final_map_stats.py) puts several generators' finished maps side by side at their defaults — terrain shares, resource tiles, building sites, fairness — which is the comparison a reviewer asks for and the one a single-generator study never shows.
@@ -396,6 +429,8 @@ Finally run a **reliability pass**: every control at its minimum and maximum alo
 Freeze the executable for each long study or tournament and retain the exact request, outcome and build identity. After tuning, rerun failures and the final broad matrix on the same revision; do not add successes from superseded builds to the final denominator. Count returned records, internal layout attempts and rare variants as well as failures: a successful outer request can hide repeated layout rejection. Full-range sampling is evidence, not an exhaustive Cartesian proof.
 
 Report reliability with separate denominators: unsupported requests, supported first-seed successes, and supported failures that succeed through the actual lobby candidate-selection path. Retain the failed seeds and parameters; do not replace them with successful re-rolls in the original table. A five-candidate success rate is useful user-experience evidence, but is not a 100% single-seed guarantee or a reason to weaken fairness checks.
+
+Inspect the **retry margin**, not only pass/fail. Portage Lakes' crowded all-low 64×512 and 512×64 cases passed only on attempts 22 and 23 of 24. Fixing court placement and scarce sowing brought both to the first attempt. Preserve exact failing and near-limit requests, including transposed rectangles and worker counts; diagnose their recurring failure before raising the retry cap. Re-run them and the full randomized cohort on the final frozen build. Keep old and new cohorts labeled separately, with source/binary identities, unique request counts and missing reports checked.
 
 On one machine, run these passes with the native CLI rather than the distributed framework: a small script that writes one `glob2 --generate-map ID ... --json FILE` line per request and runs them with `xargs -P 8` generated 2,330 Karst towers maps in under four minutes, where the tournament framework's per-experiment setup would have taken about 45 minutes for the same matrix. Read the per-map JSON reports (`terrain`, `resources`, `space`, `fertility`, `canonical_quality`, `movement`, and `generation.telemetry.records`) with a short analysis script: effect tables per control, Spearman correlations of every control with every metric over the random rolls, refusals grouped by message and shape. Keep the framework for several hosts or runs that must survive interruption ([distributed telemetry](distributed-telemetry.md)).
 
@@ -465,3 +500,32 @@ range explicitly instead of weakening the court or supply guarantee seed by seed
 ## What to write down
 
 For every tuning change keep the seed, the request, the symptom (which colony, which tick, which metric), the hypothesis, the change and the paired re-run. The generators' headers carry this record in the comments on their constants; the pull requests carry the numbers. Both are what the next map's designer reads.
+
+## Drowned Forest: distinguish a route, a future route and a feeding route
+
+Use the actual resource-aware walking mask to measure a timber shortcut's current
+benefit. A conservative mask that treats all eventual forest grass as blocked is
+useful for proving permanent roads, but can invent detours that players do not face.
+Measure both mouth-to-mouth savings and a real home-to-usable-destination journey.
+Prove harvesting with ordinary workers and a matched unflagged baseline; keep AI
+strategy recognition separate from the physical mechanism working.
+
+Place a found start relative to its actual farm orientation. A central-looking
+swarm can have a poor opening food haul when the farm faces away from it. Conversely,
+late starvation beside available wheat can mean a lost inn or a long trip to the
+remaining inn. Inspect feeding buildings, real walks and losses before enlarging
+farmland. Rotate several AIs through each start and distinguish farm potential from
+observed food delivery.
+
+For compact layouts, try bounded alternate orientations of a neutral destination
+before abandoning otherwise good terrain. Preserve the same random state between
+alternatives and keep finished-world room, arrival and shortcut requirements intact.
+A larger retry cap is a latency tradeoff, not a geometry repair or universal success
+proof; retain the failures that motivated it and measure the tail.
+
+Profile the complete generator, including repeated validation and search attempts.
+Bound a flood only after proving that every queried goal and reconstructed path lies
+within the bound. Local building-room checks need a global fallback and checks for
+blocked external roots; compare ordered footprints and failure results against the
+original helper. Preserve map-byte comparisons when optimizing exact behavior.
+**Carry forward evidence only when its inputs still match.** Freeze the executable and requests for each review round. After an output-preserving change, compare the exact played maps against the final generator, including colony counts and options; a larger-map comparison with eight colonies does not cover a four-colony game. Exact serialized comparisons may require the same output path. Reuse play evidence only when the saved world matches and simulation/AI behavior is unchanged. Re-test changed maps, retain the failed version, and state the review's remaining limits.

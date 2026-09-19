@@ -1,0 +1,12 @@
+{
+  "equal": true,
+  "mac_sha256": "daaf7aee9837ac1ce855aa2d970767a37240164ca179d0e65eb244c063b80de1",
+  "linux_sha256": "daaf7aee9837ac1ce855aa2d970767a37240164ca179d0e65eb244c063b80de1",
+  "bytes": 22392374,
+  "header": [
+    4,
+    4,
+    4096,
+    0
+  ]
+}

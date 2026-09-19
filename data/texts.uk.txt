@@ -2908,6 +2908,44 @@ Emoji
 Райони міста надто нерівноцінні; спробуйте інше зерно.
 [The fractured civic plaza did not survive.]
 Розколота міська площа не збереглася.
+[Who Ate the Map?]
+Хто з’їв карту?
+[Appetite]
+Апетит
+[A Little Nibble]
+Маленький шматочок
+[Hungry]
+Голодний
+[Portage Lakes]
+Озера й лісові волоки
+[Lake elongation]
+Витягнутість озер
+[Portage depth]
+Товщина лісового проходу
+[Extra trails]
+Додаткові стежки
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Сторони цієї карти мають бути від 64 до 512 клітинок.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+За цього початкового числа не вдається розмістити поселення біля берегів.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Біля кожного поселення не вміщаються відновлювані прибережні поля.
+[Portage Lakes cannot connect its shoreline trails.]
+Не вдається з’єднати прибережні стежки.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+За цього початкового числа не вдається створити корисний короткий шлях через сухий ліс.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+За цього початкового числа не вдається створити корисний короткий шлях уплав.
+[Portage Lakes needs separate swimming lakes on this seed.]
+За цього початкового числа озера для плавання мають залишатися відокремленими.
+[Drowned Forest]
+Затоплений ліс
+[Sandbar connections]
+Піщані переходи
+[Wooded neck thickness]
+Товщина лісових перешкод
+[Neutral clearing size]
+Розмір нейтральних галявин
 [Bastion Keys]
 Острови-бастіони
 [Plantation size]

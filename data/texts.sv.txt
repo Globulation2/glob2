@@ -2922,6 +2922,44 @@ En stadsdel saknar åtkomliga grödor eller byggutrymme.
 Stadsdelarna är alltför obalanserade; prova ett annat frö.
 [The fractured civic plaza did not survive.]
 Det spruckna stadstorget bevarades inte.
+[Who Ate the Map?]
+Vem åt upp kartan?
+[Appetite]
+Aptit
+[A Little Nibble]
+En liten tugga
+[Hungry]
+Hungrig
+[Portage Lakes]
+Sjöar och skogspassager
+[Lake elongation]
+Sjöarnas långsträckthet
+[Portage depth]
+Skogspassagens tjocklek
+[Extra trails]
+Fler stigar
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Denna kartas sidor måste vara mellan 64 och 512 rutor.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Detta frö ger inte plats för kolonier vid stränderna.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Det finns inte plats för förnybara åkrar vid varje koloni.
+[Portage Lakes cannot connect its shoreline trails.]
+Strandstigarna kan inte kopplas samman.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Detta frö ger inte plats för en användbar genväg genom torr skog.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Detta frö ger inte plats för en användbar simgenväg.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Med detta frö måste sjöarna för simning förbli åtskilda.
+[Drowned Forest]
+Översvämmad skog
+[Sandbar connections]
+Sandbanksförbindelser
+[Wooded neck thickness]
+Skogsbarriärernas tjocklek
+[Neutral clearing size]
+Neutrala gläntors storlek
 [Bastion Keys]
 Bastionsöar
 [Plantation size]

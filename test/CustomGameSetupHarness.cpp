@@ -1576,7 +1576,7 @@ int main(int argc, char **argv)
 	// Exercise new terrain through the real match/replay path, not just map bytes.
 	// Explicit seeds and no rerolls keep failures reviewable; the engine's normal
 	// replay checksum assertions remain active throughout playback.
-	for (const char *id : {"sierpinski-gardens", "hilbert-river"})
+	for (const char *id : {"sierpinski-gardens", "hilbert-river", "drowned-forest"})
 	{
 		Game game(nullptr);
 		GenerationRequest request;
@@ -1593,7 +1593,7 @@ int main(int argc, char **argv)
 			game.save(&out, true, id);
 		}
 		CustomGameSetupHarness::sessionReplay(fractalMap, CustomGameSetup::Computer);
-		std::cout << "PASS generated fractal replay: " << id << "\n";
+		std::cout << "PASS generated landscape replay: " << id << "\n";
 	}
 
 	std::filesystem::remove_all(dir);

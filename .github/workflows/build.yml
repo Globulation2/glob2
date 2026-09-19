@@ -231,7 +231,8 @@ jobs:
 
       - name: Build and run custom-game setup regressions
         run: |
-          timeout 120s ./build/src/MapGeneratorDefaultsTest glob2-map-defaults-ci
+          # The growing generator catalog exercises hundreds of complete worlds.
+          timeout 300s ./build/src/MapGeneratorDefaultsTest glob2-map-defaults-ci
           timeout 180s ./build/src/CustomGameSetupHarness
           mkdir -p artifacts/custom-game-ci
           timeout 180s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/CustomGameSetupHarness artifacts/custom-game-ci 2>&1 | grep -v '^Map generation\|^Landscape preview\|^Settings::load' | tee artifacts/custom-game-ci/ui.log

@@ -2922,6 +2922,44 @@ Un quartier de la ville manque de cultures accessibles ou d'espace constructible
 Les quartiers de la ville sont trop déséquilibrés ; essayez une autre graine.
 [The fractured civic plaza did not survive.]
 La place publique fracturée n'a pas subsisté.
+[Who Ate the Map?]
+Qui a mangé la carte ?
+[Appetite]
+Appétit
+[A Little Nibble]
+Une petite bouchée
+[Hungry]
+Affamé
+[Portage Lakes]
+Lacs et passages
+[Lake elongation]
+Allongement des lacs
+[Portage depth]
+Épaisseur à déboiser
+[Extra trails]
+Sentiers supplémentaires
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Les côtés de cette carte doivent mesurer entre 64 et 512 cases.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Cette graine ne permet pas de placer les colonies sur les rives.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Impossible de placer des champs renouvelables près de chaque colonie.
+[Portage Lakes cannot connect its shoreline trails.]
+Impossible de relier les sentiers des rives.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Cette graine ne permet pas de créer un raccourci utile dans une forêt sèche.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Cette graine ne permet pas de créer un raccourci utile à la nage.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Avec cette graine, les lacs permettant la nage doivent rester séparés.
+[Drowned Forest]
+Forêt engloutie
+[Sandbar connections]
+Liaisons de sable
+[Wooded neck thickness]
+Épaisseur des barrières boisées
+[Neutral clearing size]
+Taille des clairières neutres
 [Bastion Keys]
 Îlots fortifiés
 [Plantation size]

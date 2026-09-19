@@ -1,0 +1,113 @@
+{
+  "random.jsonl.gz": {
+    "original": "verified/linux-native/random.jsonl",
+    "uncompressed_sha256": "36aef3dcfa55a7dc6caa40bbdad61fe959f591fd1682919a9251888b2b90bc55",
+    "uncompressed_bytes": 5302930
+  },
+  "ablation.jsonl.gz": {
+    "original": "verified/linux-native/ablation.jsonl",
+    "uncompressed_sha256": "8059671720e753ac0a3a89edfd301bdfba123f3c86c00e4a83ebacced0e171fb",
+    "uncompressed_bytes": 1983067
+  },
+  "envelope.jsonl.gz": {
+    "original": "verified/linux-native/envelope.jsonl",
+    "uncompressed_sha256": "1fff6c2c38532b59ab129bdecdd92704e57eb664717cf675f53ec598309a8c4d",
+    "uncompressed_bytes": 9800
+  },
+  "envelope-requests.json": {
+    "original": "verified/linux-native/envelope.requests.json",
+    "uncompressed_sha256": "1ab84f973724f4d859ce8f2f47a3fba9deb0d8cf550d02664e66902223d0a5b9",
+    "uncompressed_bytes": 958
+  },
+  "parameter-audit.json": {
+    "original": "verified/linux-native/parameter-audit.json",
+    "uncompressed_sha256": "664567c46ff0c4d4722194bb2aa6745b1dc4499034daa17fa57d2664b1947d7c",
+    "uncompressed_bytes": 115199
+  },
+  "parameter-report.txt": {
+    "original": "verified/linux-native/parameter-report.txt",
+    "uncompressed_sha256": "9a5b282d6c7a385ac1150f66491e91c13ae43768568782e21c2d8e8cb4f53627",
+    "uncompressed_bytes": 3127
+  },
+  "retest-101727.json": {
+    "original": "verified/release/retest-101727.json",
+    "uncompressed_sha256": "30b5777f125c1abd9aec126f891f8264a26ce83722eade264711e6494228ac1a",
+    "uncompressed_bytes": 181138
+  },
+  "retest-101727.log": {
+    "original": "verified/release/retest-101727.log",
+    "uncompressed_sha256": "3f5acb4ec2a4a374dc4412b8b8b77c2fc2cffd6b3e7423da02794ce31fe43baf",
+    "uncompressed_bytes": 123,
+    "normalization": "trailing whitespace removed"
+  },
+  "timings.json": {
+    "original": "verified/release/timings.json",
+    "uncompressed_sha256": "0fd0cb290ba066d78896f8e19d8fd6e64331d44ca769f4af0e59f719b83d6eb7",
+    "uncompressed_bytes": 2005
+  },
+  "PROFILE.md": {
+    "original": "verified/release/PROFILE.md",
+    "uncompressed_sha256": "5b34c74a71567c4f1545c70c0be14c770ac6fca8e44a9d1bf30550bda71ae04e",
+    "uncompressed_bytes": 1407
+  },
+  "replay-comparison.json": {
+    "original": "verified/cross-platform/comparison.json",
+    "uncompressed_sha256": "41a1dfad6eaa13488b2dc4277bf2f26b2cf1253d69cc949ad0731d6bb3fd0251",
+    "uncompressed_bytes": 259
+  },
+  "game.replay.gz": {
+    "original": "verified/cross-platform/recording/game.replay",
+    "uncompressed_sha256": "57b8918c4d05dc0a691e32321ca55c28bf63fe6ce148bb160af0e1c06ec08f32",
+    "uncompressed_bytes": 5057223
+  },
+  "game.replay.checksums.gz": {
+    "original": "verified/cross-platform/linux/game.replay.checksums",
+    "uncompressed_sha256": "daaf7aee9837ac1ce855aa2d970767a37240164ca179d0e65eb244c063b80de1",
+    "uncompressed_bytes": 22392374
+  },
+  "replay-check.cpp": {
+    "original": "verified/cross-platform/replay-check.cpp",
+    "uncompressed_sha256": "5840847b602186f9afd390f57e6f26542e10453ce9fa373aaebc28b77ffd15a1",
+    "uncompressed_bytes": 812
+  },
+  "play-summary.json": {
+    "original": "final/play-summary.json",
+    "uncompressed_sha256": "fbb3a7b4d4282dab4d6ccf307645c85603471aa7450fb42d41acce2dafd69391",
+    "uncompressed_bytes": 6328
+  },
+  "seed-7.png": {
+    "original": "final/seed-7.png",
+    "uncompressed_sha256": "ab5ab861686b32362f6f82cb7d342fd88afdb8307f6d7dedfc8f079a2639691c",
+    "uncompressed_bytes": 26172
+  },
+  "seed-19.png": {
+    "original": "final/seed-19.png",
+    "uncompressed_sha256": "46a99c9671eb7bd681f57918f0ace3233a8421117f78214d211cc6b5da55d864",
+    "uncompressed_bytes": 26754
+  },
+  "seed-7.map.gz": {
+    "original": "final/seed-7.map",
+    "uncompressed_sha256": "fe7f690969ac717c142c5f2f6fa874788ae4d43a93ed5386839f545464c0f4d6",
+    "uncompressed_bytes": 3119647
+  },
+  "seed-19.map.gz": {
+    "original": "final/seed-19.map",
+    "uncompressed_sha256": "95b8a5239273d8b4531d0f39c82eb416e94ab38772ccb86ff86ece25571f5cc9",
+    "uncompressed_bytes": 3119648
+  },
+  "translation-review.md": {
+    "original": "translation-review.md",
+    "uncompressed_sha256": "eb36f285d9301aa63f5c1757b4a7cdac6b97e1a2506e1a62a7f90c11c4ebaa53",
+    "uncompressed_bytes": 2061
+  },
+  "map-review.md": {
+    "original": "late-review/FINAL-REVIEW.md",
+    "uncompressed_sha256": "637a2f0e0e3067ec285b2ef8d4d5965b488993a60ed3d63abfa56c2075578334",
+    "uncompressed_bytes": 7769
+  },
+  "late-economy-review.md": {
+    "original": "late-review/FINAL19.md",
+    "uncompressed_sha256": "a03db34381a63a6d20c075d1de133c3bda8dc18e80d73a8c386a7c7267e21fe0",
+    "uncompressed_bytes": 4076
+  }
+}

@@ -1,6 +1,6 @@
 # Bastion Keys
 
-Bastion Keys (`bastion-keys`, numeric ID 67) is an archipelago of harbour forts
+Bastion Keys (`bastion-keys`, numeric ID 68) is an archipelago of harbour forts
 whose wheat and timber grow outside their ramparts from the beginning.
 **Swimming is required between estates and to reach outlying islands.** There
 are no inter-fort roads or causeways. Each colony starts with a swarm and a

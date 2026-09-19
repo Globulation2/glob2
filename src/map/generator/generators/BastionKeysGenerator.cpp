@@ -675,7 +675,7 @@ BastionKeysOptions::BastionKeysOptions(const GenerationRequest &r)
 GeneratorDefinition bastionKeysDefinition()
 {
 	return {"bastion-keys",
-			67,
+			68,
 			"Bastion Keys",
 			1,
 			false,

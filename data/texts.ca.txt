@@ -2920,6 +2920,44 @@ Un barri de la ciutat no té conreus accessibles o espai per construir.
 Els barris de la ciutat són massa desiguals; proveu una altra llavor.
 [The fractured civic plaza did not survive.]
 La plaça pública fracturada no ha sobreviscut.
+[Who Ate the Map?]
+Qui s’ha menjat el mapa?
+[Appetite]
+Gana
+[A Little Nibble]
+Una mossegadeta
+[Hungry]
+Afamat
+[Portage Lakes]
+Llacs i passos boscosos
+[Lake elongation]
+Allargament dels llacs
+[Portage depth]
+Gruix del pas boscós
+[Extra trails]
+Corriols addicionals
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Els costats d’aquest mapa han de fer entre 64 i 512 caselles.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Aquesta llavor no permet situar colònies a les ribes.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+No hi caben camps renovables al costat de cada colònia.
+[Portage Lakes cannot connect its shoreline trails.]
+No es poden connectar els corriols de les ribes.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Aquesta llavor no permet crear una drecera útil per un bosc sec.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Aquesta llavor no permet crear una drecera útil nedant.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Amb aquesta llavor, els llacs per nedar han de quedar separats.
+[Drowned Forest]
+Bosc inundat
+[Sandbar connections]
+Connexions de sorra
+[Wooded neck thickness]
+Gruix de les barreres d’arbres
+[Neutral clearing size]
+Mida de les clarianes neutrals
 [Bastion Keys]
 Illots fortificats
 [Plantation size]

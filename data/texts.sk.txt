@@ -2920,6 +2920,44 @@ Jednej mestskej štvrti chýbajú dostupné plodiny alebo priestor na stavby.
 Mestské štvrte sú príliš nevyvážené; skúste iné semienko.
 [The fractured civic plaza did not survive.]
 Rozlámané mestské námestie sa nezachovalo.
+[Who Ate the Map?]
+Kto zjedol mapu?
+[Appetite]
+Chuť do jedla
+[A Little Nibble]
+Malé sústo
+[Hungry]
+Hladný
+[Portage Lakes]
+Jazerá a lesné priechody
+[Lake elongation]
+Pretiahnutosť jazier
+[Portage depth]
+Hrúbka lesného priechodu
+[Extra trails]
+Ďalšie chodníky
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Strany tejto mapy musia merať 64 až 512 polí.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+S týmto seedom nemožno na brehy umiestniť kolónie.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Vedľa každej kolónie sa nezmestia obnoviteľné pobrežné polia.
+[Portage Lakes cannot connect its shoreline trails.]
+Pobrežné chodníky nemožno prepojiť.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+S týmto seedom nemožno vytvoriť užitočnú skratku suchým lesom.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+S týmto seedom nemožno vytvoriť užitočnú skratku plávaním.
+[Portage Lakes needs separate swimming lakes on this seed.]
+S týmto seedom musia jazerá na plávanie zostať oddelené.
+[Drowned Forest]
+Zaplavený les
+[Sandbar connections]
+Piesočné spojenia
+[Wooded neck thickness]
+Hrúbka lesných bariér
+[Neutral clearing size]
+Veľkosť neutrálnych čistín
 [Bastion Keys]
 Opevnené ostrovčeky
 [Plantation size]

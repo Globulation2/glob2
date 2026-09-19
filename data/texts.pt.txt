@@ -2918,6 +2918,44 @@ Um bairro da cidade não tem culturas acessíveis ou espaço para construir.
 Os bairros da cidade são demasiado desiguais; experimente outra semente.
 [The fractured civic plaza did not survive.]
 A praça pública fraturada não sobreviveu.
+[Who Ate the Map?]
+Quem comeu o mapa?
+[Appetite]
+Apetite
+[A Little Nibble]
+Uma dentadinha
+[Hungry]
+Com fome
+[Portage Lakes]
+Lagos e passagens florestais
+[Lake elongation]
+Alongamento dos lagos
+[Portage depth]
+Espessura da floresta
+[Extra trails]
+Trilhos adicionais
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Os lados deste mapa devem medir entre 64 e 512 casas.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Esta semente não permite colocar colónias nas margens.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Não cabem campos renováveis junto de cada colónia.
+[Portage Lakes cannot connect its shoreline trails.]
+Não é possível ligar os trilhos das margens.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Esta semente não permite criar um atalho útil numa floresta seca.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Esta semente não permite criar um atalho útil a nado.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Com esta semente, os lagos para nadar devem permanecer separados.
+[Drowned Forest]
+Floresta inundada
+[Sandbar connections]
+Ligações entre bancos de areia
+[Wooded neck thickness]
+Espessura das barreiras de árvores
+[Neutral clearing size]
+Tamanho das clareiras neutras
 [Bastion Keys]
 Ilhotas fortificadas
 [Plantation size]

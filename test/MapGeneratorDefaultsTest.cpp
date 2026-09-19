@@ -676,6 +676,17 @@ int main(int argc, char **argv)
 		GeneratorContracts::bastionKeysContracts();
 		return 0;
 	}
+	if (argc == 3 && std::string(argv[2]) == "--eaten-only")
+	{
+		MapGeneratorDefaultsTest::globalsInit();
+		GeneratorContracts::eatenMapContracts();
+		return 0;
+	}
+	if (argc == 3 && std::string(argv[2]) == "--drowned-forest-only")
+	{
+		GeneratorContracts::drownedForestContracts();
+		return 0;
+	}
 	if (argc == 3 && std::string(argv[2]) == "--gauntlet-only")
 	{
 		MapGeneratorDefaultsTest::globalsInit();
@@ -687,6 +698,12 @@ int main(int argc, char **argv)
 	{
 		MapGeneratorDefaultsTest::globalsInit();
 		GeneratorContracts::faultedCityContracts();
+		return 0;
+	}
+	if (argc == 3 && std::string(argv[2]) == "--portage-lakes-only")
+	{
+		MapGeneratorDefaultsTest::globalsInit();
+		GeneratorContracts::portageLakesContracts();
 		return 0;
 	}
 	MapGeneratorDefaultsTest::run(argc == 3 ? argv[2] : nullptr);

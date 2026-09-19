@@ -1,0 +1,32 @@
+random: 1999/2000 observed rows passed; complete, expected 2000.
+ablation: 793/793 observed rows passed; complete, expected 793.
+envelope: 4/4 observed rows passed; complete, expected 4.
+
+sandbar-connections → tel:drowned-forest.sandbars.actual
+0: 24.25 (n=8/8) | 10: 25.625 (n=8/8) | 20: 26.875 (n=8/8) | 30: 30.0 (n=8/8) | 40: 30.75 (n=8/8) | 50: 33.25 (n=8/8) | 60: 35.25 (n=8/8) | 70: 35.625 (n=8/8) | 80: 36.875 (n=8/8) | 90: 39.0 (n=8/8) | 100: 39.0 (n=8/8)
+
+wooded-neck-thickness → tel:drowned-forest.shortcut.wood-tiles
+3: 15.0 (n=8/8) | 5: 25.0 (n=8/8) | 7: 35.0 (n=8/8) | 9: 45.0 (n=8/8)
+
+neutral-clearing-size → tel:drowned-forest.meadow.building-tiles
+12: 406.95354155916755 (n=8/8) | 14: 419.93343545751634 (n=8/8) | 16: 427.28196110681114 (n=8/8) | 18: 438.63077001633985 (n=8/8) | 20: 448.86002536979703 (n=8/8) | 22: 458.89331516597866 (n=8/8) | 24: 466.40112336601305 (n=8/8)
+
+wheat-amount → tiles:wheat
+0: 522.375 (n=8/8) | 25: 678.25 (n=8/8) | 50: 814.75 (n=8/8) | 75: 935.25 (n=8/8) | 100: 1046.375 (n=8/8) | 125: 1159.125 (n=8/8) | 150: 1267.375 (n=8/8) | 175: 1341.125 (n=8/8) | 200: 1412.25 (n=8/8) | 225: 1445.75 (n=8/8) | 250: 1530 (n=8/8) | 275: 1562.125 (n=8/8) | 300: 1589.375 (n=8/8)
+
+wood-amount → tiles:wood
+0: 5335.75 (n=8/8) | 25: 11114.625 (n=8/8) | 50: 13328.125 (n=8/8) | 75: 14359.75 (n=8/8) | 100: 14985.125 (n=8/8) | 125: 15409.25 (n=8/8) | 150: 15694.875 (n=8/8) | 175: 16000.5 (n=8/8) | 200: 16201.625 (n=8/8) | 225: 16333.5 (n=8/8) | 250: 16456.25 (n=8/8) | 275: 16555.75 (n=8/8) | 300: 17021.25 (n=8/8)
+
+stone-amount → tiles:stone
+0: 8 (n=8/8) | 25: 16.5 (n=8/8) | 50: 25.5 (n=8/8) | 75: 34 (n=8/8) | 100: 42.75 (n=8/8) | 125: 51.5 (n=8/8) | 150: 60.5 (n=8/8) | 175: 68.5 (n=8/8) | 200: 77.5 (n=8/8) | 225: 85.875 (n=8/8) | 250: 94.875 (n=8/8) | 275: 103.875 (n=8/8) | 300: 112.25 (n=8/8)
+
+algae-amount → tiles:algae
+0: 12 (n=8/8) | 25: 426.125 (n=8/8) | 50: 840.125 (n=8/8) | 75: 1242.75 (n=8/8) | 100: 1625.625 (n=8/8) | 125: 2016.625 (n=8/8) | 150: 2388.125 (n=8/8) | 175: 2744.375 (n=8/8) | 200: 3099.25 (n=8/8) | 225: 3456.375 (n=8/8) | 250: 3784.625 (n=8/8) | 275: 4122.375 (n=8/8) | 300: 4452.5 (n=8/8)
+
+fruit-amount → fruit
+0: 0 (n=8/8) | 25: 13.5 (n=8/8) | 50: 27 (n=8/8) | 75: 40.5 (n=8/8) | 100: 53.5 (n=8/8) | 125: 67.5 (n=8/8) | 150: 81 (n=8/8) | 175: 93.625 (n=8/8) | 200: 107 (n=8/8) | 225: 120.375 (n=8/8) | 250: 133.75 (n=8/8) | 275: 147.125 (n=8/8) | 300: 160.5 (n=8/8)
+
+Neutral clearing size uses mean building tiles across all home and neutral meadows; no neutral-only numeric telemetry is exported. This dilutes the intended effect and is not a direct neutral-area measurement.
+Worker telemetry is averaged across colonies. Matching its mean cannot establish each colony has the requested count.
+Paired seeds hold inputs constant except one control, but generation retries may choose different landscapes. Per-seed reversals can occur; these are observed effects, not a fixed-geometry intervention.
+Size/team/worker envelope coverage is not the Cartesian product of every control combination. Random sampling does not prove universal reliability.

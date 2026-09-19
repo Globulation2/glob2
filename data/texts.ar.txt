@@ -2910,6 +2910,44 @@ Emoji
 أحياء المدينة غير متكافئة إلى حد كبير؛ جرّب بذرة أخرى.
 [The fractured civic plaza did not survive.]
 لم تصمد الساحة العامة المتصدعة.
+[Who Ate the Map?]
+من أكل الخريطة؟
+[Appetite]
+الشهية
+[A Little Nibble]
+قضمة صغيرة
+[Hungry]
+جائع
+[Portage Lakes]
+بحيرات وممرات الغابة
+[Lake elongation]
+استطالة البحيرات
+[Portage depth]
+سماكة الغابة في الممر
+[Extra trails]
+دروب إضافية
+[Portage Lakes needs sides between 64 and 512 tiles.]
+يجب أن يتراوح طول ضلعي هذه الخريطة بين 64 و512 خانة.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+لا تسمح هذه البذرة بوضع مستوطنات على الضفاف.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+لا تتسع المساحة لحقول متجددة قرب كل مستوطنة.
+[Portage Lakes cannot connect its shoreline trails.]
+يتعذر وصل الدروب على الضفاف.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+لا تسمح هذه البذرة بإنشاء طريق مختصر مفيد عبر غابة جافة.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+لا تسمح هذه البذرة بإنشاء طريق مختصر مفيد بالسباحة.
+[Portage Lakes needs separate swimming lakes on this seed.]
+تحتاج هذه البذرة إلى بحيرات منفصلة للسباحة.
+[Drowned Forest]
+الغابة المغمورة
+[Sandbar connections]
+وصلات الممرات الرملية
+[Wooded neck thickness]
+سماكة الحواجز الشجرية
+[Neutral clearing size]
+حجم الفسحات المحايدة
 [Bastion Keys]
 جزر الحصون
 [Plantation size]

@@ -223,6 +223,8 @@ map/generator/generators/TidalFlatsGenerator.cpp
 map/generator/generators/UniformGenerator.cpp
 map/generator/generators/WatershedGenerator.cpp
 map/generator/generators/BastionKeysGenerator.cpp
+map/generator/generators/DrownedForestGenerator.cpp
+map/generator/generators/WhoAteTheMapGenerator.cpp
 map/generator/generators/CombGenerator.cpp
 map/generator/generators/EvenGroundGenerator.cpp
 map/generator/generators/MarchlandGenerator.cpp
@@ -231,6 +233,7 @@ map/generator/generators/OrchardCommonsGenerator.cpp
 map/generator/generators/GauntletGenerator.cpp
 map/generator/generators/FaultedCityGenerator.cpp
 map/generator/generators/HiddenOasisGenerator.cpp
+map/generator/generators/PortageLakesGenerator.cpp
 map/generator/generators/CentralQuarryGenerator.cpp
 map/generator/generators/BajadaGenerator.cpp
 map/generator/generators/KarstTowersGenerator.cpp

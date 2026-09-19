@@ -1,3 +1,4 @@
+#include "BastionKeysGenerator.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GeneratorRegistry.h"
 #include "CityStatesGenerator.h"
@@ -55,14 +56,16 @@
 #include "BajadaGenerator.h"
 #include "CentralQuarryGenerator.h"
 #include "HiddenOasisGenerator.h"
+#include "DrownedForestGenerator.h"
+#include "PortageLakesGenerator.h"
 #include "FaultedCityGenerator.h"
 #include "EvenGroundGenerator.h"
 #include "MarchlandGenerator.h"
 #include "OrchardCommonsGenerator.h"
 #include "GauntletGenerator.h"
-#include "BastionKeysGenerator.h"
 #include "CombGenerator.h"
 #include "EncircledKingdomGenerator.h"
+#include "WhoAteTheMapGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -178,10 +181,10 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 lavaShieldDefinition(),
 											 honeycombIsleDefinition(),
 											 karstTowersDefinition(), bajadaDefinition(),
-											 centralQuarryDefinition(), hiddenOasisDefinition(),
+											 centralQuarryDefinition(), hiddenOasisDefinition(), drownedForestDefinition(), portageLakesDefinition(),
 											 orchardCommonsDefinition(), gauntletDefinition(), faultedCityDefinition(), combDefinition(), encircledKingdomDefinition(), bastionKeysDefinition(),
 											 evenGroundDefinition(), marchlandDefinition(),
-											 ruggedArchipelagoDefinition(),
+											 whoAteTheMapDefinition(), ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
 											 evergladesDefinition(),
