@@ -2828,3 +2828,23 @@ Oasis cachée accueille au plus huit colonies.
 Le massif ne tient pas sur cette carte ; utilisez une carte plus grande ou moins de colonies.
 [The pond has no room for that much algae; use a bigger pond.]
 L'étang n'a pas la place pour autant d'algues ; utilisez un étang plus grand.
+[The Faulted City]
+La ville fracturée
+[Fault displacement]
+Décalage des failles
+[Fault width]
+Largeur des failles
+[Ruin density]
+Densité des ruines
+[Surviving junctions]
+Jonctions préservées
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+La ville fracturée nécessite 256 ou 512 cases par côté et une à douze colonies.
+[The city has too few usable junctions.]
+La ville compte trop peu de jonctions praticables.
+[A city neighbourhood lacks reachable crops or building room.]
+Un quartier de la ville manque de cultures accessibles ou d'espace constructible.
+[The city neighbourhoods are too unequal; try another seed.]
+Les quartiers de la ville sont trop déséquilibrés ; essayez une autre graine.
+[The fractured civic plaza did not survive.]
+La place publique fracturée n'a pas subsisté.

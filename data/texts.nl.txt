@@ -2842,3 +2842,23 @@ Verborgen oase biedt plaats aan hoogstens acht kolonies.
 Het massief past niet op deze kaart; gebruik een grotere kaart of minder kolonies.
 [The pond has no room for that much algae; use a bigger pond.]
 De vijver heeft geen plaats voor zoveel zeewier; gebruik een grotere vijver.
+[The Faulted City]
+De gebroken stad
+[Fault displacement]
+Breukverschuiving
+[Fault width]
+Breukbreedte
+[Ruin density]
+Ruïnedichtheid
+[Surviving junctions]
+Behouden kruisingen
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+De gebroken stad vereist 256 of 512 vakjes per zijde en één tot twaalf kolonies.
+[The city has too few usable junctions.]
+De stad heeft te weinig bruikbare kruisingen.
+[A city neighbourhood lacks reachable crops or building room.]
+Een stadswijk mist bereikbare gewassen of bouwruimte.
+[The city neighbourhoods are too unequal; try another seed.]
+De stadswijken zijn te ongelijkwaardig; probeer een ander zaadje.
+[The fractured civic plaza did not survive.]
+Het gebroken stadsplein is niet behouden gebleven.

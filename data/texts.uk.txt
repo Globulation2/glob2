@@ -2814,3 +2814,23 @@ Emoji
 Масив не вміщується на цій карті; використайте більшу карту або менше колоній.
 [The pond has no room for that much algae; use a bigger pond.]
 У ставку немає місця для такої кількості водоростей; використайте більший ставок.
+[The Faulted City]
+Розколоте місто
+[Fault displacement]
+Зсув розломів
+[Fault width]
+Ширина розломів
+[Ruin density]
+Щільність руїн
+[Surviving junctions]
+Уцілілі перехрестя
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Для розколотого міста потрібно 256 або 512 клітинок на кожному боці та від однієї до дванадцяти колоній.
+[The city has too few usable junctions.]
+У місті замало придатних для проходу перехресть.
+[A city neighbourhood lacks reachable crops or building room.]
+Одному з районів міста бракує доступних посівів або місця для будівництва.
+[The city neighbourhoods are too unequal; try another seed.]
+Райони міста надто нерівноцінні; спробуйте інше зерно.
+[The fractured civic plaza did not survive.]
+Розколота міська площа не збереглася.

@@ -2818,3 +2818,23 @@ Skrytá oáza pojme nejvýše osm kolonií.
 Masiv se na tuto mapu nevejde; použijte větší mapu nebo méně kolonií.
 [The pond has no room for that much algae; use a bigger pond.]
 V tůni není místo pro tolik řas; použijte větší tůň.
+[The Faulted City]
+Rozlámané město
+[Fault displacement]
+Posun zlomů
+[Fault width]
+Šířka zlomů
+[Ruin density]
+Hustota ruin
+[Surviving junctions]
+Zachované křižovatky
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Rozlámané město vyžaduje 256 nebo 512 políček na každé straně a jednu až dvanáct kolonií.
+[The city has too few usable junctions.]
+Město má příliš málo použitelných křižovatek.
+[A city neighbourhood lacks reachable crops or building room.]
+Jedné městské čtvrti chybí dostupné plodiny nebo prostor pro stavby.
+[The city neighbourhoods are too unequal; try another seed.]
+Městské čtvrti jsou příliš nevyvážené; zkuste jiné semínko.
+[The fractured civic plaza did not survive.]
+Rozlámané městské náměstí se nezachovalo.

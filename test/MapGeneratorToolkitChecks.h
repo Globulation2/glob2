@@ -2351,6 +2351,53 @@ inline void siteOperationChecks()
 								{t.at(-13, 0)})
 				.failure.empty());
 	assert(!arrangeBuildingGrid(t, clear, clear, {{0, 0, 65, 24}}, {0}).failure.empty());
+	assert(!arrangeBuildingGrid(t, clear, clear, grid, {-1}).failure.empty());
+	const BuildingGrid single{{0, 0, 3, 3}, 1, 1, 1, 1};
+	std::vector<unsigned char> isolated(t.size(), 0);
+	isolated[t.at(0, 0)] = 1;
+	assert(!arrangeBuildingGrid(t, clear, isolated, single, {t.at(0, 0)}).failure.empty());
+	isolated[t.at(0, 1)] = 1;
+	assert(arrangeBuildingGrid(t, clear, isolated, single, {0, 0}).failure.empty());
+	assert(!arrangeBuildingGrid(t, clear, clear, single, {}).failure.empty());
+	assert(!arrangeBuildingGrid(t, clear, clear, single, {t.at(1, 1)}).failure.empty());
+	assert(arrangeBuildingGrid(t, std::vector<unsigned char>(t.size(), 0), clear,
+		single, {}).failure.empty());
+	// Compare the early-exit circulation search against the original exhaustive
+	// flood on fragmented, seam-crossing worlds and several footprint/gap sizes.
+	std::mt19937 circulationRng(20260919);
+	for (int trial = 0; trial < 200; ++trial)
+	{
+		auto walk = clear, build = clear;
+		for (int i = 0; i < t.size(); ++i)
+		{
+			walk[i] = circulationRng() % 100 >= unsigned(trial % 80);
+			build[i] = circulationRng() % 100 >= 3;
+		}
+		const BuildingGrid probe{{-20, -18, 20, 22}, 2 + trial % 5,
+			2 + trial % 3, 1 + trial % 3, 1};
+		const std::vector<int> entries{int(circulationRng() % t.size()),
+			int(circulationRng() % t.size())};
+		const auto arranged = arrangeBuildingGrid(t, build, walk, probe, entries);
+		for (const auto &box : arranged.footprints)
+			for (int y = box.y0; y < box.y1; ++y)
+				for (int x = box.x0; x < box.x1; ++x)
+					walk[t.at(x, y)] = 0;
+		std::vector<unsigned char> sources(t.size(), 0);
+		for (int i : entries) sources[i] = walk[i];
+		const auto reached = stepsFrom(t, sources, walk);
+		bool allReached = true;
+		for (const auto &box : arranged.footprints)
+		{
+			bool face = false;
+			for (int y = box.y0; y < box.y1; ++y)
+				face |= reached[t.at(box.x0 - 1, y)] >= 0 || reached[t.at(box.x1, y)] >= 0;
+			for (int x = box.x0; x < box.x1; ++x)
+				face |= reached[t.at(x, box.y0 - 1)] >= 0 || reached[t.at(x, box.y1)] >= 0;
+			allReached &= face;
+		}
+		assert(arranged.failure.empty() == allReached);
+	}
+
 
 	Game game(nullptr);
 	grassMap(game, 6, 6);

@@ -2816,3 +2816,23 @@ Emoji
 لا تتسع هذه الخريطة للكتلة الصخرية؛ استخدم خريطة أكبر أو مستعمرات أقل.
 [The pond has no room for that much algae; use a bigger pond.]
 لا تتسع البركة لهذا القدر من الطحالب؛ استخدم بركة أكبر.
+[The Faulted City]
+المدينة المتصدعة
+[Fault displacement]
+إزاحة الصدوع
+[Fault width]
+عرض الصدوع
+[Ruin density]
+كثافة الأطلال
+[Surviving junctions]
+التقاطعات الباقية
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+تتطلب المدينة المتصدعة 256 أو 512 خانة لكل ضلع ومن مستعمرة واحدة إلى اثنتي عشرة مستعمرة.
+[The city has too few usable junctions.]
+لا توجد في المدينة تقاطعات صالحة كافية.
+[A city neighbourhood lacks reachable crops or building room.]
+يفتقر أحد أحياء المدينة إلى محاصيل يمكن الوصول إليها أو مساحة للبناء.
+[The city neighbourhoods are too unequal; try another seed.]
+أحياء المدينة غير متكافئة إلى حد كبير؛ جرّب بذرة أخرى.
+[The fractured civic plaza did not survive.]
+لم تصمد الساحة العامة المتصدعة.

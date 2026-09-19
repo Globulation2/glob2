@@ -2826,3 +2826,23 @@ Oasi amagat admet com a màxim vuit colònies.
 El massís no cap en aquest mapa; utilitzeu un mapa més gran o menys colònies.
 [The pond has no room for that much algae; use a bigger pond.]
 La bassa no té prou espai per a tantes algues; utilitzeu una bassa més gran.
+[The Faulted City]
+La ciutat fracturada
+[Fault displacement]
+Desplaçament de les falles
+[Fault width]
+Amplada de les falles
+[Ruin density]
+Densitat de ruïnes
+[Surviving junctions]
+Encreuaments conservats
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+La ciutat fracturada requereix 256 o 512 caselles per costat i entre una i dotze colònies.
+[The city has too few usable junctions.]
+La ciutat té massa pocs encreuaments utilitzables.
+[A city neighbourhood lacks reachable crops or building room.]
+Un barri de la ciutat no té conreus accessibles o espai per construir.
+[The city neighbourhoods are too unequal; try another seed.]
+Els barris de la ciutat són massa desiguals; proveu una altra llavor.
+[The fractured civic plaza did not survive.]
+La plaça pública fracturada no ha sobreviscut.

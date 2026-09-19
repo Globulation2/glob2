@@ -2818,3 +2818,23 @@ Kätkettyyn keitaaseen mahtuu enintään kahdeksan siirtokuntaa.
 Vuorimassiivi ei mahdu tälle kartalle; käytä suurempaa karttaa tai vähemmän siirtokuntia.
 [The pond has no room for that much algae; use a bigger pond.]
 Lammessa ei ole tilaa näin suurelle levämäärälle; käytä suurempaa lampea.
+[The Faulted City]
+Murtunut kaupunki
+[Fault displacement]
+Siirrosten siirtymä
+[Fault width]
+Siirrosten leveys
+[Ruin density]
+Raunioiden tiheys
+[Surviving junctions]
+Säilyneet risteykset
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Murtunut kaupunki vaatii 256 tai 512 ruutua kummassakin suunnassa ja yhdestä kahteentoista siirtokuntaa.
+[The city has too few usable junctions.]
+Kaupungissa on liian vähän käyttökelpoisia risteyksiä.
+[A city neighbourhood lacks reachable crops or building room.]
+Kaupunginosasta puuttuu saavutettavia viljelykasveja tai rakennustilaa.
+[The city neighbourhoods are too unequal; try another seed.]
+Kaupunginosat ovat liian epätasapainoisia; kokeile toista siementä.
+[The fractured civic plaza did not survive.]
+Murtunut kaupunginaukio ei säilynyt.

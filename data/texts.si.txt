@@ -2818,3 +2818,23 @@ Skrita oaza sprejme največ osem kolonij.
 Masiv ne gre na ta zemljevid; uporabite večji zemljevid ali manj kolonij.
 [The pond has no room for that much algae; use a bigger pond.]
 V mlaki ni prostora za toliko alg; uporabite večjo mlako.
+[The Faulted City]
+Razlomljeno mesto
+[Fault displacement]
+Premik prelomov
+[Fault width]
+Širina prelomov
+[Ruin density]
+Gostota ruševin
+[Surviving junctions]
+Ohranjena križišča
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Razlomljeno mesto zahteva 256 ali 512 polj na vsaki stranici in eno do dvanajst kolonij.
+[The city has too few usable junctions.]
+Mesto ima premalo uporabnih križišč.
+[A city neighbourhood lacks reachable crops or building room.]
+Mestni četrti manjka dostopnih poljščin ali prostora za gradnjo.
+[The city neighbourhoods are too unequal; try another seed.]
+Mestne četrti so preveč neuravnotežene; poskusite drugo seme.
+[The fractured civic plaza did not survive.]
+Razlomljeni mestni trg se ni ohranil.

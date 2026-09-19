@@ -2818,3 +2818,23 @@ Oaza ascunsă găzduiește cel mult opt colonii.
 Masivul nu încape pe această hartă; folosiți o hartă mai mare sau mai puține colonii.
 [The pond has no room for that much algae; use a bigger pond.]
 Iazul nu are loc pentru atâtea alge; folosiți un iaz mai mare.
+[The Faulted City]
+Orașul fracturat
+[Fault displacement]
+Deplasarea faliilor
+[Fault width]
+Lățimea faliilor
+[Ruin density]
+Densitatea ruinelor
+[Surviving junctions]
+Intersecții păstrate
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Orașul fracturat necesită 256 sau 512 celule pe fiecare latură și una până la douăsprezece colonii.
+[The city has too few usable junctions.]
+Orașul are prea puține intersecții utilizabile.
+[A city neighbourhood lacks reachable crops or building room.]
+Un cartier al orașului nu are culturi accesibile sau spațiu pentru construcții.
+[The city neighbourhoods are too unequal; try another seed.]
+Cartierele orașului sunt prea dezechilibrate; încercați altă sămânță.
+[The fractured civic plaza did not survive.]
+Piața orașului, străbătută de fisuri, nu s-a păstrat.

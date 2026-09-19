@@ -2894,3 +2894,23 @@ Skjult oase rummer højst otte kolonier.
 Dette kort har ikke plads til massivet; brug et større kort eller færre kolonier.
 [The pond has no room for that much algae; use a bigger pond.]
 Dammen har ikke plads til så mange alger; brug en større dam.
+[The Faulted City]
+Den forskudte by
+[Fault displacement]
+Forkastningsforskydning
+[Fault width]
+Forkastningsbredde
+[Ruin density]
+Ruintæthed
+[Surviving junctions]
+Bevarede vejkryds
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Den forskudte by kræver 256 eller 512 felter på hver led og en til tolv kolonier.
+[The city has too few usable junctions.]
+Byen har for få brugbare vejkryds.
+[A city neighbourhood lacks reachable crops or building room.]
+En bydel mangler tilgængelige afgrøder eller byggeplads.
+[The city neighbourhoods are too unequal; try another seed.]
+Bydelene er for ulige; prøv et andet seed.
+[The fractured civic plaza did not survive.]
+Den opsprækkede byplads blev ikke bevaret.

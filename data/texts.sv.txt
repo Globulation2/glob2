@@ -2828,3 +2828,23 @@ Dold oas rymmer högst åtta kolonier.
 Massivet får inte plats på den här kartan; använd en större karta eller färre kolonier.
 [The pond has no room for that much algae; use a bigger pond.]
 Dammen har inte plats för så många alger; använd en större damm.
+[The Faulted City]
+Den förskjutna staden
+[Fault displacement]
+Förkastningsförskjutning
+[Fault width]
+Förkastningsbredd
+[Ruin density]
+Ruintäthet
+[Surviving junctions]
+Bevarade korsningar
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Den förskjutna staden kräver 256 eller 512 rutor på varje sida och en till tolv kolonier.
+[The city has too few usable junctions.]
+Staden har för få användbara korsningar.
+[A city neighbourhood lacks reachable crops or building room.]
+En stadsdel saknar åtkomliga grödor eller byggutrymme.
+[The city neighbourhoods are too unequal; try another seed.]
+Stadsdelarna är alltför obalanserade; prova ett annat frö.
+[The fractured civic plaza did not survive.]
+Det spruckna stadstorget bevarades inte.
