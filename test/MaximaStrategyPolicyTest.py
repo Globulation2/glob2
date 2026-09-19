@@ -140,10 +140,19 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
                 unused.append(key)
         # Retained so existing strategy overlays remain loadable. These former
         # food/tactical coupling knobs deliberately have no runtime authority.
+        # Retiring a key is not free: restoreValues demands an exact key set
+        # for saves at version 98 and later, so a deletion must come with a
+        # version bump rather than ride along with a behaviour change.
         self.assertEqual({
             "military.campaign_sustainable_food_percent",
             "emergencies.population_trend_threshold",
             "emergencies.food_trend_threshold",
+            # The warrior backlog is paced by barracks seats, which counts
+            # places to train in rather than buildings, so the per-building
+            # figure no longer describes anything. It is kept loadable and
+            # inert until a retirement bump can take it; the floor beside it
+            # has its authority back, as the floor of that seat-based rule.
+            "military.training_backlog_per_barracks",
         }, set(unused))
 
     def test_every_parameter_has_an_explicit_impact_tier(self) -> None:
@@ -215,8 +224,11 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
                                self.maxima.index("void Maxima::OffenseDiagnostics::reset")]
         # Staffing is the building's own closed loop, but birth funding stays a
         # colony decision: the executor may consult the budget to pause
-        # production and must never derive its own.
-        self.assertIn("staff_building(echo, id);", staffing)
+        # production and must never derive its own. The loop's request now
+        # passes through the labour budget's per-swarm allowance, so the
+        # executor must consult that too and must not issue a raw request.
+        self.assertIn("update_staffing_request(echo, id)", staffing)
+        self.assertIn("swarm_allowance.find(id)", staffing)
         self.assertIn("if(budget.swarm_workers<=0)", staffing)
         self.assertNotIn("SwarmController::plan(", staffing)
         self.assertNotIn("needFood", staffing)

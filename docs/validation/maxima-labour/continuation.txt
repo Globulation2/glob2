@@ -1,0 +1,2 @@
+Save v109 at tick 1700: 1300 resumed tick records match uninterrupted execution through tick 3000.
+Existing v108 Maxima snapshot at tick 2000 loads and runs through tick 2100.

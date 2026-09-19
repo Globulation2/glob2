@@ -1374,7 +1374,24 @@ int Planner::foodLocationQuality(const WorldState& world,
 	const long long reach=foodLedger.reachableResidual(foodInput,foodResult,
 		action.centerX,action.centerY,shape.left,shape.top,shape.width,
 		shape.height,static_cast<long long>(demand)*2);
-	return clamp100(int(reach*100/demand));
+	const int capacity=clamp100(int(reach*100/demand));
+	if(capacity<=0)return 0;
+	// Capacity says whether the wheat is there; the route says what carrying it
+	// costs. Most sites reach twice their demand, so capacity alone ties them
+	// all at a hundred and siting goes distance-blind: measured, Maxima's inns
+	// cut wheat nineteen tiles out where Cabino's cut at nine, and by the
+	// carrier constants that is twice the worker-ticks for the same wheat.
+	// Price the round trip against a reference site, so this is throughput per
+	// worker-tick rather than an arbitrary distance penalty.
+	const int tiles=std::max(0,foodLedger.residualQuality(foodInput,foodResult,
+		action.centerX,action.centerY,shape.left,shape.top,shape.width,
+		shape.height,demand)/100);
+	const int trip=placementPolicy.carrierFixedTicksPerTrip
+		+2*placementPolicy.carrierTicksPerTile*tiles;
+	const int reference=placementPolicy.carrierFixedTicksPerTrip
+		+2*placementPolicy.carrierTicksPerTile*8;
+	const int nearness=clamp100(int(100LL*reference/std::max(1,trip)));
+	return clamp100((capacity+2*nearness)/3);
 }
 
 uint32_t Planner::stateSignature(const WorldState& world) const

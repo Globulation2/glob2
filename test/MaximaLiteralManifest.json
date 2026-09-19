@@ -3,8 +3,8 @@
   "algorithm": "sorted-comment-string-stripped-numeric-token-sha256",
   "sources": {
     "src/AIMaxima.cpp": {
-      "tokens": 1757,
-      "sha256": "3fe0abf4ce1336d7282fb6d959209e896d47a551ec42e28525ebb87d9703c625",
+      "tokens": 1813,
+      "sha256": "f1c513aed9aff307213031b9658649cfe81fe6eb60cf819293107b1d9177de12",
       "classifications": [
         "live selection authorization, swimming-builder counts, and shared reactive-defense reserve",
         "schema-backed strategy member use",
@@ -38,7 +38,13 @@
         "minimum nonzero explorer production weight for any unmet colony target",
         "food ledger demand rates, coverage thresholds, and retirement timing",
         "per-building staffing control band, window and worker bounds",
-        "relentless offense target scoring, dwell, and flag geometry"
+        "relentless offense target scoring, dwell, and flag geometry",
+        "labour budget shares: construction and birth split of the divisible workforce, the reserve ceiling and buffer, and the workforce below which the opening is left alone",
+        "wheat supply as both recurring growth and standing stock: the wild-cell discount and the horizon a stack is amortised over",
+        "enabling-capacity thresholds: workers before a first barracks, barracks before the seat-constraint rule stops adding more, and the priority floors those two raise",
+        "swimming is worth training only where water separates the colony from something it could use",
+        "idle labour opening further construction sites, and the ceiling on one site's crew",
+        "version 109 labour continuation gate and active flag zero-based recruitment level"
       ]
     },
     "src/AIMaximaFarmingPolicy.cpp": {
@@ -78,19 +84,20 @@
       ]
     },
     "src/AIMaximaRecon.cpp": {
-      "tokens": 155,
-      "sha256": "e1e409ea8af5e9d962d659043fb096935683c4fa232447d886a6093e1a4d2489",
+      "tokens": 160,
+      "sha256": "7274e2079114ade8e0d0d51666c62abe57a149ed89db3c6f4070bfe905c0af72",
       "classifications": [
         "coordinate and distance arithmetic",
         "neutral arithmetic scale or identity",
         "sentinel and invalid-id state",
         "fixed deterministic algorithm shape",
-        "force-memory hold and bounded linear-decay arithmetic"
+        "force-memory hold and bounded linear-decay arithmetic",
+        "enemy army estimated from a sighting: the measured share of an army that is ever in view, and the warriors a known building implies before any is seen"
       ]
     },
     "src/AIMaximaPlacement.cpp": {
-      "tokens": 1141,
-      "sha256": "5b10a317231f7bcd8c10bb49c6b3654c934a8864b481ad9affa2ca5ec99e5a08",
+      "tokens": 1154,
+      "sha256": "ba2467eda9f8fa5c4c1de093fdeddf15adfc66ecbbe9da27c7fc6c4c8f39cd9a",
       "classifications": [
         "live authorization checks using existing construction caps and level contracts",
         "version-92 purpose-aware placement serialization fields",
@@ -108,7 +115,8 @@
         "retry keys include live utility inputs; new construction has no previous capability",
         "placement contract repair: intermediate upgrade geometry, waiting-action authority, and deterministic worker-reachable circulation",
         "nearby productive land capacity independent of harvest amounts; fertility scale and capacity-based food staffing",
-        "food ledger claim ordering, capacity margin, and corn resource index"
+        "food ledger claim ordering, capacity margin, and corn resource index",
+        "carrier round trip priced against a reference site, and the blend of route cost against unclaimed capacity when siting food buildings"
       ]
     },
     "src/AIMaximaRuntime.cpp": {

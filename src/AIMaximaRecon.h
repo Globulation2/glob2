@@ -165,6 +165,12 @@ private:
 	ReconReport current;
 	int memoryHorizonTicks;
 	int forceMemoryHoldTicks;
+	/// Seen warriors are a sample of the army: most of it is at home, inside
+	/// barracks or at inns. Measured against the true count in headless games the
+	/// decayed peak recalls about 40%, so it is scaled up, and the enemy's known
+	/// buildings set a floor of about 1.5 warriors each even before any is seen.
+	int visibleRecallInversePercent;
+	int warriorsPerKnownBuildingPercent;
 	int staleContactAgeTicks;
 	bool forceMemoryEnabled;
 };

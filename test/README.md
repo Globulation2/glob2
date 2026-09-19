@@ -644,3 +644,13 @@ wheat disappear, and preservation of building clearing strips.
 scons release=1 server=0 nicowar-farming-test
 python3 test/run-savegame-safety-tests.py build/src/NicowarFarmingHarness .
 ```
+
+## Maxima labour continuation and combat eligibility
+
+`python3 test/run_maxima_implementation_regressions.py --test MaximaEconomyRegressionTest --test MaximaCombatIntegrationTest --test MaximaLifecycleTest --test MaximaLabourStandaloneTest --test MaximaStrategyPolicyTest`
+checks saved labour allowances before a completion event, the version-108
+execution layout and its trailing sentinel, live save/load continuation, and
+level-1 offensive flags across pending creation and later director reviews.
+Version 109 preserves labour observations, plans and allowances; saves through
+108 reconstruct a conservative starting allowance from their restored requests.
+Network protocol 34 rejects older peers, which would run different Maxima orders.

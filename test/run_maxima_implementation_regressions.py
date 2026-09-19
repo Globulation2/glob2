@@ -28,7 +28,7 @@ def main():
         "MaximaFarmingIntegrationTest",
         "MaximaEconomyRegressionTest", "MaximaDirectorRegressionTest",
         "MaximaTacticsStandaloneTest", "MaximaPlacementStandaloneTest",
-        "MaximaFarmingStandaloneTest", "MaximaFoodLedgerStandaloneTest", "MaximaStaffingControlStandaloneTest", "MaximaDefenseStandaloneTest", "MaximaReconStandaloneTest", "MaximaStrategyTest", "MaximaLifecycleTest", "MaximaDiagnosticsTest", "MaximaStrategyConfigTest"], help="Run only the named test (repeatable)")
+        "MaximaFarmingStandaloneTest", "MaximaFoodLedgerStandaloneTest", "MaximaStaffingControlStandaloneTest", "MaximaLabourStandaloneTest", "MaximaDefenseStandaloneTest", "MaximaReconStandaloneTest", "MaximaStrategyTest", "MaximaLifecycleTest", "MaximaDiagnosticsTest", "MaximaStrategyConfigTest", "MaximaStrategyPolicyTest"], help="Run only the named test (repeatable)")
     parser.add_argument("--placement-only", action="store_true",
                         help="Run placement/farming units and placement engine integration")
     parser.add_argument("--production-only", action="store_true",
@@ -85,6 +85,7 @@ def main():
             ("MaximaDefenseStandaloneTest", [temporary / "AIMaximaDefense.o"]),
             ("MaximaReconStandaloneTest", [temporary / "AIMaximaRecon.o"]),
             ("MaximaStaffingControlStandaloneTest", []),
+            ("MaximaLabourStandaloneTest", []),
             ("MaximaStrategyTest", objects),
             ("MaximaLifecycleTest", objects),
             ("MaximaDiagnosticsTest", objects),
@@ -105,7 +106,8 @@ def main():
             if args.production_only and name == "MaximaImplementationIntegrationTest":
                 arguments = ["--production-only"]
             result = subprocess.run([str(binary), *arguments], cwd=ROOT, capture_output=True, text=True,
-                                    env=dict(os.environ, TMPDIR=str(temporary), TEMP=str(temporary), TMP=str(temporary)))
+                                    env=dict(os.environ, GLOB2_USER_DIR=str(temporary / "profile"),
+                                             TMPDIR=str(temporary), TEMP=str(temporary), TMP=str(temporary)))
             if result.returncode:
                 sys.stderr.write(result.stdout + result.stderr)
                 result.check_returncode()
@@ -117,6 +119,15 @@ def main():
             subprocess.run([sys.executable, "test/MaximaStrategyConfigTest.py"], cwd=ROOT,
                            env=dict(os.environ, MAXIMA_STRATEGY_DUMP=str(dump)), check=True)
             print("MaximaStrategyConfigTest: PASS", flush=True)
+        if not args.test or "MaximaStrategyPolicyTest" in args.test:
+            # Source-only structural policy: every strategy parameter must
+            # reach a decision, every hard-coded literal must be reviewed
+            # against the manifest, and the executors must not re-derive what
+            # the director owns. It needs no build, and it was not wired in
+            # here before, so it went unrun while three of its checks failed.
+            subprocess.run([sys.executable, "-m", "unittest",
+                            "MaximaStrategyPolicyTest"], cwd=ROOT / "test", check=True)
+            print("MaximaStrategyPolicyTest: PASS", flush=True)
 
 
 if __name__ == "__main__":

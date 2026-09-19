@@ -31,6 +31,10 @@ relentless: whenever enough eligible warriors can reach a remembered enemy
 building or a visible worker cluster, one war flag sits on the best target and
 moves only when that target falls or a clearly better one appears.
 
+A proposed redesign of staffing and construction around a single labour budget
+is recorded in [Maxima labour economy](MaximaLabourEconomy.md); it is a design,
+not current behaviour.
+
 ## Configuration
 
 `data/maxima/base.strategy` supplies every parameter. Match format selects one

@@ -1,0 +1,66 @@
+[
+  {
+    "name": "whole",
+    "command": [
+      "/Users/bradley/glob2-pr-help-3-prs/maxima/build/src/glob2",
+      "--run-game",
+      "--generator",
+      "15",
+      "--map-seed",
+      "42",
+      "--param",
+      "teams=2",
+      "--param",
+      "width=6",
+      "--param",
+      "height=6",
+      "--game-seed",
+      "731",
+      "--player",
+      "maxima",
+      "--player",
+      "cabino",
+      "--ticks",
+      "3000",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "every:1700",
+      "--output-dir",
+      "/Users/bradley/glob2-pr-help-3-prs/maxima/artifacts/review/continuation/whole"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "resumed",
+    "command": [
+      "/Users/bradley/glob2-pr-help-3-prs/maxima/build/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/Users/bradley/glob2-pr-help-3-prs/maxima/artifacts/review/continuation/whole/checkpoint-1700.game",
+      "--ticks",
+      "3000",
+      "--telemetry",
+      "checksums",
+      "--output-dir",
+      "/Users/bradley/glob2-pr-help-3-prs/maxima/artifacts/review/continuation/resumed"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "v108-load",
+    "command": [
+      "/Users/bradley/glob2-pr-help-3-prs/maxima/build/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/Users/bradley/glob2-pr-help-3-prs/diagnostics/artifacts/review/exports/snapshots/tick-0002000.game",
+      "--ticks",
+      "2100",
+      "--telemetry",
+      "checksums",
+      "--output-dir",
+      "/Users/bradley/glob2-pr-help-3-prs/maxima/artifacts/review/continuation/v108-load"
+    ],
+    "exit_code": 0
+  }
+]

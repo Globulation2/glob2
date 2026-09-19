@@ -587,8 +587,12 @@ static void directorExecutionRegressions()
     ai.budget.desired_warriors=0;
     assert(birthRatio(0)==0);
 
-    const int backlog=std::max(ai.strategy.military.training_backlog_floor,
-        ai.strategy.military.training_backlog_per_barracks);
+    // Births are pulled by barracks seats: two untrained warriors per seat.
+    ai.labour_observation.barracksSeats=4;
+    // Pinned, not recomputed from the function under test: four seats hold
+    // two untrained warriors each, which clears the configured floor of eight.
+    ai.strategy.military.training_backlog_floor=8;
+    const int backlog=8;
     ai.snapshot.warriors=backlog+20;
     ai.snapshot.trained_warriors=20;
     ai.build_policy_bids(); ai.arbitrate_policy_bids();
@@ -691,6 +695,8 @@ static void economyStaffingRegressions()
     ai.strategy.military.training_backlog_floor=10;
     ai.strategy.military.training_backlog_per_barracks=4;
     ai.strategy.military.warrior_training_backlog_throttle_enabled=true;
+    // Births are pulled by barracks seats: two untrained warriors per seat.
+    ai.labour_observation.barracksSeats=5;
     ai.build_policy_bids(); ai.arbitrate_policy_bids();
     assert(ai.policy_bids[AIMaxima::Maxima::PolicyOffense].warrior_ratio>0);
     assert(ai.budget.warrior_ratio==0);
