@@ -2818,6 +2818,46 @@ A Rejtett oázis legfeljebb nyolc kolóniát fogad be.
 A masszívum nem fér el ezen a térképen; használj nagyobb térképet vagy kevesebb kolóniát.
 [The pond has no room for that much algae; use a bigger pond.]
 A tavacskában nincs hely ennyi algának; használj nagyobb tavacskát.
+[Even Ground]
+Egyenlő terep
+[Balance]
+Kiegyensúlyozás
+[Tight passes]
+Szűk átjárók
+[Solver effort]
+Megoldó ráfordítása
+[Brief]
+Rövid
+[Patient]
+Türelmes
+[This map is too small to solve on; use a bigger map.]
+Ez a térkép túl kicsi a megoldáshoz; használj nagyobb térképet.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Túl sok kolónia ahhoz, hogy ekkora térképen kiegyensúlyozhatók legyenek; használj nagyobb térképet vagy kevesebb kolóniát.
+[The colonies could not be spread out on this map.]
+A kolóniákat nem sikerült elosztani ezen a térképen.
+[Marchland]
+Határvidék
+[Prizes on the rope]
+Díjak a kötélen
+[March width]
+A határvidék szélessége
+[Levelling]
+Kiegyenlítés
+[A march needs a country on each side; use at least two colonies.]
+A határvidékhez mindkét oldalon kell egy ország; használj legalább két kolóniát.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Túl sok kolónia ahhoz, hogy ez a térkép mindegyiknek hazát adjon; használj nagyobb térképet vagy kevesebb kolóniát.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Ezen a térképen nincs hely a kolóniák elosztására; használj nagyobb térképet vagy kevesebb kolóniát.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Egy kolónia hazájának nincs kijárata a határvidékre; használj nagyobb térképet vagy keskenyebb határvidéket.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Egy kolónia hazájában nincs hely rajnak; használj nagyobb térképet, kevesebb kolóniát vagy keskenyebb határvidéket.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+A határvidéken túl kevés a vitatott terület ennyi díjhoz; használj kevesebb díjat, szélesebb határvidéket vagy nagyobb térképet.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+A határvidéken nincs hely díjnak; használj nagyobb térképet, kevesebb kolóniát vagy szélesebb határvidéket.
 [Orchard Commons]
 Közös gyümölcsösök
 [Orchard spacing]

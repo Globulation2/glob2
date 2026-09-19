@@ -2826,6 +2826,46 @@ Gizli Vaha en fazla sekiz koloni alır.
 Kaya kütlesi bu haritaya sığmıyor; daha büyük bir harita veya daha az koloni kullanın.
 [The pond has no room for that much algae; use a bigger pond.]
 Gölette bu kadar yosun için yer yok; daha büyük bir gölet kullanın.
+[Even Ground]
+Eşit Zemin
+[Balance]
+Dengeleme
+[Tight passes]
+Dar geçitler
+[Solver effort]
+Çözücü çabası
+[Brief]
+Kısa
+[Patient]
+Sabırlı
+[This map is too small to solve on; use a bigger map.]
+Bu harita çözülmek için çok küçük; daha büyük bir harita kullanın.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Bu boyutta bir haritada dengelenemeyecek kadar çok koloni var; daha büyük bir harita veya daha az koloni kullanın.
+[The colonies could not be spread out on this map.]
+Koloniler bu haritaya yayılamadı.
+[Marchland]
+Sınır Bölgesi
+[Prizes on the rope]
+Halattaki ödüller
+[March width]
+Sınır bölgesi genişliği
+[Levelling]
+Eşitleme
+[A march needs a country on each side; use at least two colonies.]
+Bir sınır bölgesi her iki yanında bir ülke gerektirir; en az iki koloni kullanın.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Bu haritanın her birine bir anayurt verebilmesi için çok fazla koloni var; daha büyük bir harita veya daha az koloni kullanın.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Bu haritada kolonileri yaymak için yer yok; daha büyük bir harita veya daha az koloni kullanın.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Bir koloninin anayurdunun sınır bölgesine çıkışı yok; daha büyük bir harita veya daha dar bir sınır bölgesi kullanın.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Bir koloninin anayurdunda yuva için yer yok; daha büyük bir harita, daha az koloni veya daha dar bir sınır bölgesi kullanın.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Sınır bölgesinde bu kadar ödül için çok az çekişmeli alan var; daha az ödül, daha geniş bir sınır bölgesi veya daha büyük bir harita kullanın.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Sınır bölgesinde bir ödül için yer yok; daha büyük bir harita, daha az koloni veya daha geniş bir sınır bölgesi kullanın.
 [Orchard Commons]
 Ortak Meyve Bahçeleri
 [Orchard spacing]

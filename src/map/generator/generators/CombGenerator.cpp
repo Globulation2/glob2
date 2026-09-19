@@ -691,7 +691,7 @@ GeneratorDefinition combDefinition()
 {
 	return {
 		"comb",
-		60,
+		62,
 		"The Comb",
 		2,
 		false,

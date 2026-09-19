@@ -2814,6 +2814,46 @@ Emoji
 岩石高地放不进这张地图；请使用更大的地图或更少的殖民地。
 [The pond has no room for that much algae; use a bigger pond.]
 池塘放不下这么多海藻；请使用更大的池塘。
+[Even Ground]
+公平原野
+[Balance]
+平衡度
+[Tight passes]
+狭窄通道
+[Solver effort]
+求解强度
+[Brief]
+简略
+[Patient]
+耐心
+[This map is too small to solve on; use a bigger map.]
+这张地图太小，无法求解；请使用更大的地图。
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+在这个大小的地图上殖民地太多，无法平衡；请使用更大的地图或减少殖民地数量。
+[The colonies could not be spread out on this map.]
+无法在这张地图上把殖民地分散开。
+[Marchland]
+边疆
+[Prizes on the rope]
+绳上的奖品
+[March width]
+边疆宽度
+[Levelling]
+均等化
+[A march needs a country on each side; use at least two colonies.]
+边疆需要两侧各有一个国度；请至少使用两个殖民地。
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+殖民地太多，这张地图无法为每个殖民地提供家园；请使用更大的地图或减少殖民地数量。
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+这张地图没有空间把殖民地分散开；请使用更大的地图或减少殖民地数量。
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+有殖民地的家园没有通往边疆的出口；请使用更大的地图或更窄的边疆。
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+有殖民地的家园没有放置孢子堆的空间；请使用更大的地图、更少的殖民地或更窄的边疆。
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+边疆的争夺地带太少，容纳不下这么多奖品；请减少奖品、加宽边疆或使用更大的地图。
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+边疆没有放置奖品的空间；请使用更大的地图、更少的殖民地或更宽的边疆。
 [Orchard Commons]
 共有果园
 [Orchard spacing]

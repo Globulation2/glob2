@@ -2880,6 +2880,46 @@ Oasi nascosta ospita al massimo otto colonie.
 Il massiccio non entra in questa mappa; usa una mappa più grande o meno colonie.
 [The pond has no room for that much algae; use a bigger pond.]
 Lo stagno non ha spazio per così tante alghe; usa uno stagno più grande.
+[Even Ground]
+Terreno pari
+[Balance]
+Bilanciamento
+[Tight passes]
+Passaggi stretti
+[Solver effort]
+Sforzo del risolutore
+[Brief]
+Breve
+[Patient]
+Paziente
+[This map is too small to solve on; use a bigger map.]
+Questa mappa è troppo piccola per essere risolta; usa una mappa più grande.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Troppe colonie da bilanciare su una mappa di queste dimensioni; usa una mappa più grande o meno colonie.
+[The colonies could not be spread out on this map.]
+Non è stato possibile distribuire le colonie su questa mappa.
+[Marchland]
+Terra di nessuno
+[Prizes on the rope]
+Premi sulla fune
+[March width]
+Larghezza della terra di nessuno
+[Levelling]
+Livellamento
+[A march needs a country on each side; use at least two colonies.]
+Una terra di nessuno richiede un paese su ciascun lato; usa almeno due colonie.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Troppe colonie perché questa mappa dia a ciascuna una terra natale; usa una mappa più grande o meno colonie.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Questa mappa non ha spazio per distribuire le colonie; usa una mappa più grande o meno colonie.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+La terra natale di una colonia non ha uno sbocco sulla terra di nessuno; usa una mappa più grande o una terra di nessuno più stretta.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+La terra natale di una colonia non ha spazio per un magazzino; usa una mappa più grande, meno colonie o una terra di nessuno più stretta.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+La terra di nessuno ha troppo poco terreno conteso per così tanti premi; usa meno premi, una terra di nessuno più larga o una mappa più grande.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+La terra di nessuno non ha spazio per un premio; usa una mappa più grande, meno colonie o una terra di nessuno più larga.
 [Orchard Commons]
 Frutteti comuni
 [Orchard spacing]

@@ -2818,6 +2818,46 @@ Skrytá oáza pojme nejvýše osm kolonií.
 Masiv se na tuto mapu nevejde; použijte větší mapu nebo méně kolonií.
 [The pond has no room for that much algae; use a bigger pond.]
 V tůni není místo pro tolik řas; použijte větší tůň.
+[Even Ground]
+Rovný terén
+[Balance]
+Vyvážení
+[Tight passes]
+Úzké průchody
+[Solver effort]
+Úsilí řešiče
+[Brief]
+Krátké
+[Patient]
+Trpělivé
+[This map is too small to solve on; use a bigger map.]
+Tato mapa je příliš malá na řešení; použijte větší mapu.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Příliš mnoho kolonií na vyvážení na mapě této velikosti; použijte větší mapu nebo méně kolonií.
+[The colonies could not be spread out on this map.]
+Kolonie se na této mapě nepodařilo rozmístit.
+[Marchland]
+Pohraničí
+[Prizes on the rope]
+Trofeje na laně
+[March width]
+Šířka pohraničí
+[Levelling]
+Vyrovnávání
+[A march needs a country on each side; use at least two colonies.]
+Pohraničí potřebuje zemi na každé straně; použijte alespoň dvě kolonie.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Příliš mnoho kolonií na to, aby tato mapa dala každé domovinu; použijte větší mapu nebo méně kolonií.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Na této mapě není místo pro rozmístění kolonií; použijte větší mapu nebo méně kolonií.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Domovina kolonie nemá východ do pohraničí; použijte větší mapu nebo užší pohraničí.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Domovina kolonie nemá místo pro úl; použijte větší mapu, méně kolonií nebo užší pohraničí.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Pohraničí má příliš málo sporné půdy pro tolik trofejí; použijte méně trofejí, širší pohraničí nebo větší mapu.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Pohraničí nemá místo pro trofej; použijte větší mapu, méně kolonií nebo širší pohraničí.
 [Orchard Commons]
 Společné sady
 [Orchard spacing]

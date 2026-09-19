@@ -51,7 +51,7 @@ xargs -0 -n 1 -P 6 /bin/bash -c < artifacts/comb/reproduce/jobs.nul
 python3 docs/artifacts/comb/study.py report "$PWD/artifacts/comb/reproduce"
 # Repeat with `workers` instead of `prepare` and a different output directory.
 
-build/src/glob2 --generate-map --generator 60 --map-seed 401 \
+build/src/glob2 --generate-map --generator 62 --map-seed 401 \
   --param width=8 --param height=8 --param teams=4 --write-map true \
   --report terrain --output-dir "$PWD/artifacts/comb/replay"
 build/src/glob2 --run-game --map-file "$PWD/artifacts/comb/replay/map-r0.map" \
@@ -104,3 +104,6 @@ Those include CLI startup and serialization and are not the microbenchmark above
 20,000-tick Cortex save. Decompress with `gzip -dk` before loading.
 `final401-result.json`, `cortex401-result.json` and `cabino401-result.json` retain
 the generated request and both latest playtest results.
+
+Comb uses numeric ID 62 after integration; historical JSON and saved fixtures
+record its development ID 60. Named seed streams and terrain are unchanged.

@@ -55,6 +55,8 @@
 #include "BajadaGenerator.h"
 #include "CentralQuarryGenerator.h"
 #include "HiddenOasisGenerator.h"
+#include "EvenGroundGenerator.h"
+#include "MarchlandGenerator.h"
 #include "OrchardCommonsGenerator.h"
 #include "GauntletGenerator.h"
 #include "CombGenerator.h"
@@ -173,7 +175,10 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 lavaShieldDefinition(),
 											 honeycombIsleDefinition(),
 											 karstTowersDefinition(), bajadaDefinition(),
-											 centralQuarryDefinition(), hiddenOasisDefinition(), orchardCommonsDefinition(), gauntletDefinition(), combDefinition(), ruggedArchipelagoDefinition(),
+											 centralQuarryDefinition(), hiddenOasisDefinition(),
+											 orchardCommonsDefinition(), gauntletDefinition(), combDefinition(),
+											 evenGroundDefinition(), marchlandDefinition(),
+											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
 											 evergladesDefinition(),

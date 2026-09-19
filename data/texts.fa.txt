@@ -2816,6 +2816,46 @@ Emoji
 تودهٔ صخره‌ای در این نقشه جا نمی‌شود؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
 [The pond has no room for that much algae; use a bigger pond.]
 برکه برای این مقدار جلبک جا ندارد؛ از برکهٔ بزرگ‌تر استفاده کنید.
+[Even Ground]
+زمین برابر
+[Balance]
+توازن
+[Tight passes]
+گذرگاه‌های تنگ
+[Solver effort]
+تلاش حل‌کننده
+[Brief]
+کوتاه
+[Patient]
+صبور
+[This map is too small to solve on; use a bigger map.]
+این نقشه برای حل کردن بیش از حد کوچک است؛ از نقشهٔ بزرگ‌تر استفاده کنید.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+تعداد مستعمره‌ها برای متوازن کردن در نقشه‌ای به این اندازه زیاد است؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
+[The colonies could not be spread out on this map.]
+نمی‌توان مستعمره‌ها را در این نقشه پراکنده کرد.
+[Marchland]
+سرزمین مرزی
+[Prizes on the rope]
+جایزه‌ها روی طناب
+[March width]
+پهنای سرزمین مرزی
+[Levelling]
+همسان‌سازی
+[A march needs a country on each side; use at least two colonies.]
+سرزمین مرزی به یک کشور در هر سو نیاز دارد؛ دست‌کم از دو مستعمره استفاده کنید.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+تعداد مستعمره‌ها بیش از آن است که این نقشه به هر کدام سرزمین مادری بدهد؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+این نقشه جایی برای پراکندن مستعمره‌ها ندارد؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+سرزمین مادری یک مستعمره راهی به سرزمین مرزی ندارد؛ از نقشهٔ بزرگ‌تر یا سرزمین مرزی باریک‌تر استفاده کنید.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+سرزمین مادری یک مستعمره جایی برای کندو ندارد؛ از نقشهٔ بزرگ‌تر، مستعمره‌های کمتر یا سرزمین مرزی باریک‌تر استفاده کنید.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+سرزمین مرزی برای این تعداد جایزه زمین مورد نزاع بسیار کمی دارد؛ از جایزه‌های کمتر، سرزمین مرزی پهن‌تر یا نقشهٔ بزرگ‌تر استفاده کنید.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+سرزمین مرزی جایی برای یک جایزه ندارد؛ از نقشهٔ بزرگ‌تر، مستعمره‌های کمتر یا سرزمین مرزی پهن‌تر استفاده کنید.
 [Orchard Commons]
 باغ‌های میوهٔ مشترک
 [Orchard spacing]
