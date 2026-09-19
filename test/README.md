@@ -704,6 +704,5 @@ python3 test/compare_save_continuation.py uninterrupted/game.replay.checksums \
 
 The comparator checks every consecutive team/entity record, reports the first
 mismatch, rejects missing/truncated records, and excludes the aggregate checksum
-because it includes the save header/version. See
-[save continuation investigation](../docs/save-continuation.md) for reproduction
-commands and retained evidence.
+because it includes the save header/version. Run the retained late-game regression
+with `python3 test/check_save_continuation_fixture.py build/src/glob2`.

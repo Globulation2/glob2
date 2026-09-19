@@ -43,8 +43,9 @@ Save format 112 records wave identity, phase, recruitment, locations and assembl
 clocks alongside the execution queue. Production saves through version 111 retain
 their original assault behavior; missing assault controls default off. The minimum
 readable save format remains 58. Save format 113 additionally preserves the
-engine continuation state described in [save continuation](../docs/save-continuation.md). Network protocol 38 excludes older peers because
-AIs execute locally; recorded-order replay acceptance retains its floor of 99.
+unit and building continuation state. Network protocol 38 excludes older peers
+because AIs execute locally and saved-state layouts differ; recorded-order replay
+acceptance retains its floor of 99.
 
 The discarded private experiments reused versions 110–112 before consolidation;
 their files are not production-format fixtures and were deleted during cleanup.
