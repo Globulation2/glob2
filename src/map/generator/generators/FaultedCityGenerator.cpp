@@ -668,7 +668,7 @@ FaultedCityOptions::FaultedCityOptions(const GenerationRequest &r)
 	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount")) {}
 GeneratorDefinition faultedCityDefinition()
 {
-	return {"faulted-city", 62, "The Faulted City", 1, false,
+	return {"faulted-city", 63, "The Faulted City", 1, false,
 		{{"fault-displacement", "Fault displacement", 4, 14, 1, 10, ControlGroup::Terrain},
 		 {"fault-width", "Fault width", 8, 16, 2, 12, ControlGroup::Terrain},
 		 {"ruin-density", "Ruin density", 20, 60, 5, 35, ControlGroup::Layout},

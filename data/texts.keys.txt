@@ -1434,6 +1434,8 @@
 [The Gauntlet]
 [Partition thickness]
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+[The Comb]
+[Peninsulas per shore]
 [The Faulted City]
 [Fault displacement]
 [Fault width]

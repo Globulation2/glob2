@@ -2950,6 +2950,10 @@ Prøvelsernes arena
 Skillemurenes tykkelse
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Prøvelsernes arena kræver et større kort eller færre kolonier for at få plads til to bevogtede indgange pr. koloni.
+[The Comb]
+Kammen
+[Peninsulas per shore]
+Halvøer pr. bred
 [The Faulted City]
 Den forskudte by
 [Fault displacement]

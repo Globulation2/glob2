@@ -1,0 +1,3 @@
+456 existing macOS golden rows match freshly generated output.
+8 Comb rows updated to revision 2.
+Wadi coverage remains outside this change.

@@ -2874,6 +2874,10 @@ Arena încercărilor
 Grosimea zidurilor despărțitoare
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Arena încercărilor necesită o hartă mai mare sau mai puține colonii pentru a face loc pentru două intrări apărate la fiecare colonie.
+[The Comb]
+Pieptenele
+[Peninsulas per shore]
+Peninsule pe fiecare mal
 [The Faulted City]
 Orașul fracturat
 [Fault displacement]

@@ -2872,6 +2872,10 @@ Emoji
 Толщина разделительных стен
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Арене испытаний нужна карта большего размера или меньше колоний, чтобы у каждой колонии поместились два защищённых входа.
+[The Comb]
+Гребень
+[Peninsulas per shore]
+Полуостровов на каждом берегу
 [The Faulted City]
 Расколотый город
 [Fault displacement]
