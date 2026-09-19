@@ -131,6 +131,12 @@ constexpr double kHomelandLeast = 24, kHomelandMost = 66;
 /// the commons at a glance: the commons is planted to a fixed light share, so the further this is
 /// drawn above it the more sharply a colony's own country reads against the open ground.
 constexpr double kFarmedLeast = 13, kFarmedMost = 42;
+/// How many steps' worth of the relief field the edge of a homeland may wander by, drawn per seed:
+/// at the low end a compact country, at the high end one that follows the valleys.
+constexpr double kRaggedLeast = 2.0, kRaggedMost = 16.0;
+/// How coarse the fraying field is: a few tiles, so a homeland's edge breaks up along its length
+/// rather than being shifted bodily.
+constexpr int kFrayPeriod = 9;
 /// The dry collar between a homeland and the commons. Thin on purpose: it is there to stop a farm
 /// creeping out into ground that should be taken rather than grown into, not to wall the map off.
 constexpr int kCollarWidth = 6;
@@ -337,16 +343,34 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	context.telemetry.measure("tug.brief.homeland-share", homelandShare);
 	context.telemetry.measure("tug.brief.farmed-share", L.farmed);
 	const std::int64_t homeland = std::int64_t(std::int64_t(t.size()) * homelandShare) / (100 * teams);
+	// A field of its own, and a fine one. Bending the ranking with `relief` did almost nothing
+	// because relief undulates about every forty tiles and a homeland is only sixty or so across:
+	// over that span it is nearly a gradient, so it slid the square sideways instead of breaking up
+	// its edge. An edge frays at the scale of the fraying, not at the scale of the landscape.
+	const std::vector<int> fray = fractalNoise(t.w, t.h, kFrayPeriod, 3, rng);
+	const std::int64_t ragged =
+		std::int64_t(drawnTarget(context, "tug-brief", kRaggedLeast, kRaggedMost) * 64);
+	context.telemetry.measure("tug.brief.ragged-steps", double(ragged) / 64.0);
 	for (int k = 0; k < teams; ++k)
 	{
 		std::vector<unsigned char> own(t.size(), 0);
 		for (int i = 0; i < t.size(); ++i)
 			own[i] = L.ownerOf[i] == k;
 		const std::vector<int> walk = stepsFrom(t, tileMask(t, {sites[k]}), own);
-		std::vector<std::pair<int, int>> byWalk;
+		// Ranked by the walk bent with the lie of the land, not by the walk alone.
+		//
+		// The walk here is eight-connected, and eight-connected distance is the Chebyshev metric,
+		// whose balls are squares - so taking a colony's nearest N tiles by walk carved it a square
+		// homeland, and the collar dilated round that came out as the square sand outline these maps
+		// all wore. The collar was never the problem. Adding a few steps' worth of the relief field
+		// to the ranking lets the boundary wander into the cheap ground and out of the dear, which is
+		// what makes a country's edge look like a country's edge. The swing is drawn per seed, so
+		// one seed's homelands are compact and the next's sprawl along the valleys.
+		std::vector<std::pair<std::int64_t, int>> byWalk;
 		for (int i = 0; i < t.size(); ++i)
 			if (own[i] && walk[i] >= 0)
-				byWalk.push_back({walk[i], i});
+				byWalk.push_back(
+					{std::int64_t(walk[i]) * 64 + std::int64_t(fray[i]) * ragged / 65535, i});
 		std::sort(byWalk.begin(), byWalk.end());
 		for (size_t n = size_t(homeland); n < byWalk.size(); ++n)
 			L.ownerOf[byWalk[n].second] = -1;
