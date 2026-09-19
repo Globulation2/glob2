@@ -937,13 +937,28 @@ def resolve_paths(args, out):
             'git_revision': git_revision()}
 
 
+def verification_games(records, games, count):
+    """Deterministic round robin across generators, then maps, then rotations."""
+    groups = {}
+    for game in games:
+        if game['outcome']['status'] == 'ok':
+            groups.setdefault(records[game['map']]['method'], []).append(game)
+    for group in groups.values():
+        group.sort(key=lambda g: (g['rotation'], g['game'], g['map']))
+    selected = []
+    for index in range(max((len(g) for g in groups.values()), default=0)):
+        for generator in sorted(groups):
+            if index < len(groups[generator]):
+                selected.append(groups[generator][index])
+    return selected[:max(0, count)]
+
+
 def verify(config, paths, records, games):
     """Re-run a few finished games from scratch and require identical outcomes."""
     count = int(config.get('verify_games') or 0)
-    finished = sorted((g for g in games if g['outcome']['status'] == 'ok'),
-                      key=lambda g: (g['map'], g['rotation'], g['game']))
+    finished = verification_games(records, games, count)
     checks = []
-    for game in finished[:count]:
+    for game in finished:
         job = {k: game[k] for k in ('map', 'rotation', 'game', 'seed')}
         directory = paths['out'] / 'verify' / game['map'] / f'r{game["rotation"]}-k{game["game"]}'
         again = run_game(config, paths, records[game['map']], job, directory=directory, force=True)

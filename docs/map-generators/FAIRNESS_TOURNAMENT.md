@@ -259,3 +259,7 @@ proportional cost in wall time.
   them.
 - Games stopped at the cap are judged on prestige, which rewards building over military position.
   Check the cap share before reading much into a generator whose games mostly hit it.
+
+Verification repeats are selected round-robin across generators, then maps, then rotations.
+Use at least one repeat per generator to cover every generator. These compare final states,
+not cross-platform per-tick simulation traces.

@@ -56,7 +56,8 @@ River drawRiver(const Torus &, GenerationContext &, const std::string &stream, b
 				double offset, const RiverStyle & = {});
 
 /// The corners a river floods: strokePath over its centre line, which joins every point with a
-/// round joint so the bed never gaps on a bend.
+/// round joint so the bed never gaps on a bend. Empty rivers produce an empty mask; mismatched
+/// point/radius arrays are rejected.
 std::vector<unsigned char> riverWater(const Torus &, const River &);
 
 /// A bed and what it was rated at.
@@ -119,16 +120,19 @@ std::vector<RiverFord> fordSites(const Torus &, const River &,
 								 const std::vector<unsigned char> &walkable,
 								 const std::vector<int> &components, double reach, int apart);
 
-/// The fewest of `sites` that put the banks back into one piece, chosen greedily: a river that cuts
-/// a map in two is not a feature but a broken map, so this is construction's job and not a
-/// search's. Union-find over the components the sites join; returns the indices into `sites` taken.
-/// A map that wants its remaining fords placed well should choose those with a search, over what
-/// this leaves - the connectivity is the invariant, where the rest of the crossings fall is the
-/// character.
-std::vector<int> fordsToRejoin(const std::vector<RiverFord> &sites, int components);
+/// Connectivity achieved by a greedy spanning forest over the bank components. The selected
+/// indices refer to the input sites. Missing candidate edges can leave disconnected components;
+/// callers must inspect connected() and still validate the rasterized, finished terrain.
+struct FordConnections
+{
+	std::vector<int> sites;
+	int remainingComponents = 0;
+	bool connected() const { return remainingComponents <= 1; }
+};
+FordConnections fordsToRejoin(const std::vector<RiverFord> &sites, int components);
 
 /// More crossings than bare connectivity, spread along the bed: starting from `taken` (indices into
-/// `sites`, as fordsToRejoin gives them), adds sites until there are `wanted` of them, each time
+/// `sites`, as FordConnections::sites gives them), adds sites until there are `wanted` of them, each time
 /// taking whichever is farthest along the river from every ford already chosen. `points` is the
 /// centre line's length, the distance being measured the short way round the loop.
 ///

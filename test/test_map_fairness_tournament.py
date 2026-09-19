@@ -186,7 +186,21 @@ def check_scorer():
     print('scorer checks passed')
 
 
+def check_verification_coverage():
+    records = {f'g{g}-s{s}': {'method': g} for g in (15, 59, 60) for s in (1, 2)}
+    games = [dict(map=m, rotation=r, game=0, outcome={'status': 'ok'})
+             for m in records for r in range(4)]
+    selected = t.verification_games(records, list(reversed(games)), 6)
+    assert [records[g['map']]['method'] for g in selected] == [15, 59, 60, 15, 59, 60]
+    assert len({g['map'] for g in selected}) == 6
+    assert not t.verification_games(records, games, 0)
+    games[0]['outcome']['status'] = 'failed'
+    assert all(g['outcome']['status'] == 'ok' for g in t.verification_games(records, games, 100))
+    print('verification coverage checks passed')
+
+
 if __name__ == '__main__':
+    check_verification_coverage()
     check_adjudication()
     check_parsing()
     check_statistics()

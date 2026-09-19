@@ -29,6 +29,7 @@ Validate post-furnishing home capacity, protected-wall continuity, exits, target
 | Renewable plots and growth containment | `Growth`, `Farmland`, `Planting`, `Resources` | Choose water and dry buffers before planting; stock only terrain that can sustain the intended role. |
 | Homes and finite building capacity | `Homes`, `Room`, `Territories`, `Settlements` | Measure complete footprints, fair regional capacity, and space for all starting workers. |
 | Fronts, shortcuts and defense | `Channels`, `Roads`, `Contact`, `Walls`, `Towers` | Measure actual entry costs and firing envelopes; preserve structural boundaries during repairs. |
+| Coupled placement preferences | `Solve`, `Rivers` | Construct hard requirements first; search cheap decisions over shared geometry/costs, then validate the finished world. See [search integration](../../../../docs/map-generators/CONSTRAINT_SEARCH.md). |
 | Ordered generation and start selection | `Pipeline`, `Terrain`, `BalancedStarts`, `StartQuality` | Select the composition appropriate to the map and score the finished colony. |
 
 All modules are under [shared/](../../../../src/map/generator/shared/). Read implementations as well as declarations. `shared/legacy/` explains older generators but its area-grid representation does not compose directly with current tile masks; use the current toolkit for new designs.

@@ -1,5 +1,8 @@
 # Solved maps: stating what a map must be true of, and searching for it
 
+For the current API contracts, state ownership, feasibility rules and study tooling, see
+[Search as a map-generation stage](../../../../docs/map-generators/CONSTRAINT_SEARCH.md).
+
 Every other generator in this catalog decides what it looks like and then works to make that shape
 fair. A *solved* map inverts that: it states properties as numbers it can measure on a candidate
 world and searches the arrangements for one that satisfies them. `shared/Solve.h` is the machinery —

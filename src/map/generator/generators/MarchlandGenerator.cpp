@@ -280,7 +280,7 @@ Objective rateBed(const Layout &L, const Torus &t, int teams,
 	}
 	Objective score;
 	if (bedTiles == 0)
-		return score.add("town", kBedTownWeight, 1.0); // a bed with no water never wins
+		return score.add("town", kBedTownWeight, 1.0).add("commons", 0.0, 1.0);
 
 	// There is no term here for which bank a colony ends up on, and there was one until it was
 	// measured. A river that leaves everybody on one side is a coastline rather than a front, so it
@@ -334,11 +334,13 @@ void cutRiver(Layout &L, const Torus &t, int teams, GenerationContext &context, 
 
 	// The winner carries every measurement that chose it, so the two things a bed must clear are
 	// read back off its own score rather than tracked alongside the loop.
+	if (!chosen.found)
+		return;
 	const double commonsShare = 1.0 - chosen.score.residual("commons");
-	if (!chosen.found || chosen.score.residual("town") != 0 || commonsShare < kLeastCommonsShare)
+	if (chosen.score.residual("town") != 0 || commonsShare < kLeastCommonsShare)
 	{
 		context.telemetry.measure("marchland.river.best-commons-share",
-								  chosen.found ? commonsShare : 0.0);
+								  commonsShare);
 		context.telemetry.fallback("marchland.river.no-room",
 								   "This country had no bed a river could take.");
 		return;
@@ -358,6 +360,193 @@ void cutRiver(Layout &L, const Torus &t, int teams, GenerationContext &context, 
 
 /// The country: lakes, homelands shared out equally, and a march opened between them. Every step of
 /// this is a shared primitive doing the job it was written for; none of it is searched.
+Territories partitionHomelands(Layout &L, int teams, const std::vector<int> &sites,
+	const std::vector<int> &relief, double homelandShare, std::int64_t ragged,
+	int marchWidth, std::mt19937 &rng)
+{
+	const Torus &t = L.t;
+	// Allocate territories over the torus, including water that the homeland stage may remove.
+	const std::vector<unsigned char> everywhere(t.size(), 1);
+	// Border noise spans several walking steps so it can bend, rather than only break ties.
+	const auto wander = [&](int i) { return std::int64_t(relief[i]) * kBorderWander / 65535; };
+	const auto share = [&](const std::vector<int> &at)
+	{
+		std::vector<std::vector<int>> seeds;
+		for (const int site : at)
+			seeds.push_back({site});
+		return growTerritories(t, everywhere, seeds, wander);
+	};
+	const Territories shared = share(sites);
+	L.ownerOf = shared.labels;
+	// Keep the irregular grown borders; smoothing would undo their intended shape.
+
+	// Retain a bounded core of each territory and leave the remainder as expandable commons.
+	const std::int64_t homeland = std::int64_t(std::int64_t(t.size()) * homelandShare) / (100 * teams);
+	// Use finer noise for homeland edges than for the overall landscape.
+	const std::vector<int> fray = fractalNoise(t.w, t.h, kFrayPeriod, 3, rng);
+	for (int k = 0; k < teams; ++k)
+	{
+		std::vector<unsigned char> own(t.size(), 0);
+		for (int i = 0; i < t.size(); ++i)
+			own[i] = L.ownerOf[i] == k;
+		const std::vector<int> walk = stepsFrom(t, tileMask(t, {sites[k]}), own);
+		// Rank reachable tiles by walk plus local noise to avoid square Chebyshev contours.
+		std::vector<std::pair<std::int64_t, int>> byWalk;
+		for (int i = 0; i < t.size(); ++i)
+			if (own[i] && walk[i] >= 0)
+				byWalk.push_back(
+					{std::int64_t(walk[i]) * 64 + std::int64_t(fray[i]) * ragged / 65535, i});
+		std::sort(byWalk.begin(), byWalk.end());
+		for (size_t n = size_t(homeland); n < byWalk.size(); ++n)
+			L.ownerOf[byWalk[n].second] = -1;
+		// Ground the walk could not reach is not part of the homeland either.
+		for (int i = 0; i < t.size(); ++i)
+			if (own[i] && walk[i] < 0)
+				L.ownerOf[i] = -1;
+	}
+
+	// Separate after bounding the cores: separating first can remove crowded seed sites.
+	separateTerritories(t, L.ownerOf, std::max(4, marchWidth));
+
+	return shared;
+}
+
+bool placeHomelandHomes(Layout &L, int teams)
+{
+	const Torus &t = L.t;
+	// Target a common depth inside each homeland; regionHome permits depth slack.
+	for (int k = 0; k < teams; ++k)
+	{
+		std::vector<unsigned char> home(t.size(), 0);
+		for (int i = 0; i < t.size(); ++i)
+			home[i] = L.ownerOf[i] == k;
+		std::vector<int> door;
+		for (int i = 0; i < t.size(); ++i)
+		{
+			if (!home[i])
+				continue;
+			const int x = i % t.w, y = i / t.w;
+			// The rim of the homeland, whatever lies beyond it. Asking specifically for a tile
+			// touching the commons fails a homeland whose whole edge happens to be shore, which
+			// bounding the homelands to a core made reachable: they are small enough now to sit
+			// wholly against their own lake.
+			for (const auto &step : kCardinalSteps)
+				if (L.ownerOf[t.at(x + step[0], y + step[1])] != k)
+				{
+					door.push_back(i);
+					break;
+				}
+		}
+		if (door.empty())
+		{
+			L.failure = "A colony's homeland has no way out onto the march; use a bigger map or a "
+						"narrower march.";
+			return false;
+		}
+		const RegionHome home_ = regionHome(t, home, door, kHomeDepth, kHomeDepthSpread, kHomeRoom);
+		if (home_.site < 0)
+		{
+			L.failure = "A colony's homeland has no room for a swarm; use a bigger map, fewer "
+						"colonies or a narrower march.";
+			return false;
+		}
+		L.homes.push_back(home_);
+	}
+
+	return true;
+}
+
+void placeHomelandLakes(Layout &L, int teams, const std::vector<int> &relief,
+	GenerationContext &context, std::vector<unsigned char> &water)
+{
+	const Torus &t = L.t;
+	// Reserve dry space around homes before cutting their individual lakes.
+	std::vector<unsigned char> townSeeds(t.size(), 0);
+	for (const RegionHome &home : L.homes)
+		townSeeds[home.site] = 1;
+	const std::vector<unsigned char> dry = dilateRound(t, townSeeds, kHomeDryMargin);
+	for (int i = 0; i < t.size(); ++i)
+		if (dry[i])
+			water[i] = 0;
+
+	// Use a common lake-size target. A constrained homeland may receive less; record that fallback.
+	std::vector<int> queued(t.size(), 0);
+	for (int k = 0; k < teams; ++k)
+	{
+		std::vector<unsigned char> home(t.size(), 0), blocked(t.size(), 0);
+		for (int i = 0; i < t.size(); ++i)
+		{
+			home[i] = L.ownerOf[i] == k;
+			blocked[i] = L.ownerOf[i] != k;
+		}
+		const int sx = L.homes[k].site % t.w, sy = L.homes[k].site / t.w;
+		for (int dy = -kHomeRoom; dy <= kHomeRoom; ++dy)
+			for (int dx = -kHomeRoom; dx <= kHomeRoom; ++dx)
+				blocked[t.at(sx + dx, sy + dy)] = 1;
+		const std::vector<int> depth = stepsFrom(t, tileMask(t, {L.homes[k].site}), home);
+		const std::vector<int> room = stepsFrom(t, blocked);
+		const int side = context.bounded("marchland-lakes", 2) ? 1 : -1;
+		const int grown = growLakeBeside(
+			t, water, depth, room, kLakeGap, kHomeLakeTiles, L.homes[k].site, L.homes[k].axis, side,
+			kLakeFromSwarm, kLakeReach, [&](int i) { return relief[i] / 65535.0; }, queued, k + 1);
+		context.telemetry.measure("marchland.home.lake-tiles", grown, k);
+		if (grown < kHomeLakeTiles)
+			context.telemetry.fallback("marchland.home.lake-short",
+									   "A homeland had no room for its whole lake.", k);
+	}
+
+}
+
+void finishRiverTerrain(Layout &L, int teams, GenerationContext &context,
+	const std::vector<unsigned char> &water)
+{
+	const Torus &t = L.t;
+	L.ground.assign(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+		L.ground[i] = !water[i];
+
+	// Choose a spanning forest of available bank connections, then add spaced crossings.
+	if (L.hasRiver)
+	{
+		const std::vector<int> banks =
+			connectedRegions(L.ground, t.w, t.h, true, GridNeighbors::Eight);
+		int pieces = 0;
+		for (const int bank : banks)
+			pieces = std::max(pieces, bank + 1);
+		const std::vector<RiverFord> sites =
+			fordSites(t, L.river, L.ground, banks, kBankReach, kFordApart);
+		const FordConnections connections = fordsToRejoin(sites, pieces);
+		context.telemetry.measure("marchland.river.unjoined-components",
+			std::max(0, connections.remainingComponents - 1));
+		// Keep the established fallback: final-world reachability decides whether to refuse.
+		const std::vector<int> taken =
+			fordsSpreadAlong(sites, connections.sites, teams * kFordsPerColony,
+							 int(L.river.line.size()));
+		for (const int site : taken)
+			L.fords.push_back(sites[site].index);
+		context.telemetry.measure("marchland.river.ford-sites", int(sites.size()));
+		context.telemetry.measure("marchland.river.fords", int(L.fords.size()));
+	}
+
+	L.terrain.assign(t.size(), GRASS);
+	for (int i = 0; i < t.size(); ++i)
+		if (water[i])
+			L.terrain[i] = WATER;
+	layBeaches(L.terrain, t);
+	// Fords are sand laid over the bed's water, so they go on after the beaches, whose own sand they
+	// leave alone. The ground and the march are then re-read from the terrain, because a ford is
+	// walkable and the prizes may be strung along one.
+	for (const int ford : L.fords)
+		layFord(L.terrain, t, L.river, ford, kFordHalfWidth, kFordReach);
+	if (L.hasRiver)
+		for (int i = 0; i < t.size(); ++i)
+		{
+			L.ground[i] = L.terrain[i] != WATER;
+			L.march[i] = L.ownerOf[i] < 0 && L.ground[i];
+		}
+
+}
+
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
 	const MarchlandOptions o(request);
@@ -366,14 +555,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const Torus &t = L.t;
 	const int teams = request.nbTeams;
 
-	// What this seed was asked for, in one place.
-	//
-	// Drawn, not fixed: with constant targets every seed of a solved map comes out with the same
-	// character however different its layout, because a search is very good at finding the same
-	// answer to the same question. The homeland share and the farmed share are also what tells a
-	// colony's own country from the commons at a glance, and the ragged draw is how far its edge
-	// follows the lie of the land. A reader looking at an odd seed should be able to see what it
-	// was asked for before wondering whether the search failed.
+	// Draw all per-seed character before construction; names and order are part of map identity.
 	Brief brief(context, "marchland");
 	const double homelandShare = brief.target("homeland-share", kHomelandLeast, kHomelandMost);
 	L.farmed = brief.target("farmed-share", kFarmedLeast, kFarmedMost);
@@ -423,17 +605,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		return L;
 	}
 	dealStarts(context, sites, "marchland-homes-deal");
-	// Jostled off the spread that chose them, which is the whole reason this map stopped looking
-	// like a country and started looking like city blocks.
-	//
-	// farthestSites spreads colonies as far apart as it can, and on a torus the farthest-apart
-	// arrangement of four points is a regular 2x2 lattice. growTerritories then shares the ground
-	// out in equal areas, and the equal-area partition of a torus from a regular lattice of seeds is
-	// exactly a grid of straight lines - which separateTerritories widens into straight streets. No
-	// amount of wander in the border cost fixes that, because moving a border anywhere but locally
-	// would unbalance the areas the partition exists to keep equal: raising the wander sixty-fold
-	// moved about five hundred tiles of march and changed nothing anyone would notice. The premise
-	// to break is the regular lattice, not the straightness of the borders it implies.
+	// Jostle the spread seeds within the mainland to avoid a rigid lattice of territories.
 	const int jostle = std::max(4, int(std::min(t.w, t.h) * kSiteJostle));
 	for (int &site : sites)
 	{
@@ -444,97 +616,10 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			site = moved;
 	}
 
-	// Equal ground per colony, with borders that wander because the noise field makes some tiles
-	// cheaper to take than others. This is growTerritories doing exactly what it was written for.
-	// It shares out the whole torus, water included, so that the water rule below can move a lake
-	// off a homeland without the tile it vacates falling out of that homeland.
-	const std::vector<unsigned char> everywhere(t.size(), 1);
-	// growTerritories prices a tile at its steps from the seed times a thousand, plus this. So a
-	// wander that only spans 0..999 can never buy a border even one tile of detour - it breaks ties
-	// within a step and nothing more, and the borders come out as near-exact distance contours.
-	// With colonies on the near-regular lattice that farthestSites and recentreSites leave, that
-	// read as a grid of city blocks with right-angle crossroads in almost every seed. Spanning
-	// several steps' worth lets a border follow the lie of the land instead.
-	const auto wander = [&](int i) { return std::int64_t(relief[i]) * kBorderWander / 65535; };
-	const auto share = [&](const std::vector<int> &at)
-	{
-		std::vector<std::vector<int>> seeds;
-		for (const int site : at)
-			seeds.push_back({site});
-		return growTerritories(t, everywhere, seeds, wander);
-	};
-	const Territories shared = share(sites);
-	L.ownerOf = shared.labels;
-	// Deliberately not smoothed. smoothLabels straightens a border by pulling every tile towards
-	// whatever its neighbourhood mostly is, which is exactly the meander the wander above buys, and
-	// running it here undid that: the marches came out as a grid of right-angle streets. A border
-	// grown by a race for the cheapest tile is a little ragged, and on this map that is the point -
-	// it is the difference between country and city blocks.
-	// The march: the ground between the homelands, opened by pushing every border back.
+	const Territories shared = partitionHomelands(
+		L, teams, sites, relief, homelandShare, ragged, o.march, rng);
 
-	// A homeland is a core, not a share of everything.
-	//
-	// Sharing the whole map out between the colonies leaves a map with no neutral ground on it: every
-	// tile belongs to somebody, the only unowned strip is the border, and since that strip is what
-	// keeps the farms apart there is nowhere at all to expand into. A map wants commons - ground to
-	// settle out into, ground to fight over, ground that is nobody's until somebody takes it. So each
-	// colony keeps only the nearest kHomelandShare of its fair share and the rest goes back to
-	// nobody. Taking the nearest tiles by walk means the homelands come out the same size as each
-	// other whatever shape the territory around them was, which is the fairness that actually
-	// matters, and it leaves better than half the country neutral.
-	const std::int64_t homeland = std::int64_t(std::int64_t(t.size()) * homelandShare) / (100 * teams);
-	// A field of its own, and a fine one. Bending the ranking with `relief` did almost nothing
-	// because relief undulates about every forty tiles and a homeland is only sixty or so across:
-	// over that span it is nearly a gradient, so it slid the square sideways instead of breaking up
-	// its edge. An edge frays at the scale of the fraying, not at the scale of the landscape.
-	const std::vector<int> fray = fractalNoise(t.w, t.h, kFrayPeriod, 3, rng);
-	for (int k = 0; k < teams; ++k)
-	{
-		std::vector<unsigned char> own(t.size(), 0);
-		for (int i = 0; i < t.size(); ++i)
-			own[i] = L.ownerOf[i] == k;
-		const std::vector<int> walk = stepsFrom(t, tileMask(t, {sites[k]}), own);
-		// Ranked by the walk bent with the lie of the land, not by the walk alone.
-		//
-		// The walk here is eight-connected, and eight-connected distance is the Chebyshev metric,
-		// whose balls are squares - so taking a colony's nearest N tiles by walk carved it a square
-		// homeland, and the collar dilated round that came out as the square sand outline these maps
-		// all wore. The collar was never the problem. Adding a few steps' worth of the relief field
-		// to the ranking lets the boundary wander into the cheap ground and out of the dear, which is
-		// what makes a country's edge look like a country's edge. The swing is drawn per seed, so
-		// one seed's homelands are compact and the next's sprawl along the valleys.
-		std::vector<std::pair<std::int64_t, int>> byWalk;
-		for (int i = 0; i < t.size(); ++i)
-			if (own[i] && walk[i] >= 0)
-				byWalk.push_back(
-					{std::int64_t(walk[i]) * 64 + std::int64_t(fray[i]) * ragged / 65535, i});
-		std::sort(byWalk.begin(), byWalk.end());
-		for (size_t n = size_t(homeland); n < byWalk.size(); ++n)
-			L.ownerOf[byWalk[n].second] = -1;
-		// Ground the walk could not reach is not part of the homeland either.
-		for (int i = 0; i < t.size(); ++i)
-			if (own[i] && walk[i] < 0)
-				L.ownerOf[i] = -1;
-	}
-
-	// The minimum gap the march control asks for, applied once the cores are settled. Bounding the
-	// homelands already parts them on most maps; this is what still honours the control when the
-	// colonies are packed tightly enough that their cores would otherwise touch. It runs after the
-	// bounding, never before: on a crowded map it can strip a whole territory, seed and all, and a
-	// colony bounded out of an already-stripped territory ends up with no homeland at all.
-	separateTerritories(t, L.ownerOf, std::max(4, o.march));
-
-	// The water rule, and the reason this map does not simply take the lakes the noise gave it.
-	//
-	// Crops regrow from the water beside them, so water in a homeland is not scenery: it is that
-	// colony's larder refilling. Noise lakes land where they land, and measured that way one colony
-	// had four times another's fertile ground and a third had none - a difference no amount of
-	// levelling the rope can make up for, because it compounds over the whole game.
-	//
-	// So: no ambient water in anybody's homeland, one private lake of exactly the same size beside
-	// every swarm, and every other lake out in the march where it belongs to nobody and shapes the
-	// routes the rope is strung along. Equal by construction, which is always better than equal by
-	// search when construction can reach it.
+	// Remove ambient homeland water before placing lakes against a common target.
 	for (int i = 0; i < t.size(); ++i)
 		if (L.ownerOf[i] >= 0)
 			water[i] = 0;
@@ -542,142 +627,17 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	for (int i = 0; i < t.size(); ++i)
 		L.march[i] = L.ownerOf[i] < 0 && !water[i];
 
-	// Every swarm the same walk in from its own doorstep onto the march, so no colony starts nearer
-	// the rope than another. regionHome is the toolkit's answer to "a home in ground of any shape".
-	for (int k = 0; k < teams; ++k)
-	{
-		std::vector<unsigned char> home(t.size(), 0);
-		for (int i = 0; i < t.size(); ++i)
-			home[i] = L.ownerOf[i] == k;
-		std::vector<int> door;
-		for (int i = 0; i < t.size(); ++i)
-		{
-			if (!home[i])
-				continue;
-			const int x = i % t.w, y = i / t.w;
-			// The rim of the homeland, whatever lies beyond it. Asking specifically for a tile
-			// touching the commons fails a homeland whose whole edge happens to be shore, which
-			// bounding the homelands to a core made reachable: they are small enough now to sit
-			// wholly against their own lake.
-			for (const auto &step : kCardinalSteps)
-				if (L.ownerOf[t.at(x + step[0], y + step[1])] != k)
-				{
-					door.push_back(i);
-					break;
-				}
-		}
-		if (door.empty())
-		{
-			L.failure = "A colony's homeland has no way out onto the march; use a bigger map or a "
-						"narrower march.";
-			return L;
-		}
-		const RegionHome home_ = regionHome(t, home, door, kHomeDepth, kHomeDepthSpread, kHomeRoom);
-		if (home_.site < 0)
-		{
-			L.failure = "A colony's homeland has no room for a swarm; use a bigger map, fewer "
-						"colonies or a narrower march.";
-			return L;
-		}
-		L.homes.push_back(home_);
-	}
+	if (!placeHomelandHomes(L, teams))
+		return L;
 
-	// The march's own lakes are pushed back off the towns before the private ones are cut. A swarm
-	// sits about kHomeDepth from the march, so a lake lying against the border is still inside the
-	// neighbourhood a colony farms, and one colony drawing a march lake next door while another
-	// draws none puts the fertility back out of step - which is the very thing the private lakes
-	// are here to fix.
-	std::vector<unsigned char> townSeeds(t.size(), 0);
-	for (const RegionHome &home : L.homes)
-		townSeeds[home.site] = 1;
-	const std::vector<unsigned char> dry = dilateRound(t, townSeeds, kHomeDryMargin);
-	for (int i = 0; i < t.size(); ++i)
-		if (dry[i])
-			water[i] = 0;
-
-	// Every colony's private lake, beside its swarm and exactly the same size as every other's.
-	// growLakeBeside exists for this: it takes a target in tiles and grows to it, so homelands of
-	// different shapes still end up with the same water. The flank it sits on is drawn per colony,
-	// so the homes are not copies of each other.
-	std::vector<int> queued(t.size(), 0);
-	for (int k = 0; k < teams; ++k)
-	{
-		std::vector<unsigned char> home(t.size(), 0), blocked(t.size(), 0);
-		for (int i = 0; i < t.size(); ++i)
-		{
-			home[i] = L.ownerOf[i] == k;
-			blocked[i] = L.ownerOf[i] != k;
-		}
-		const int sx = L.homes[k].site % t.w, sy = L.homes[k].site / t.w;
-		for (int dy = -kHomeRoom; dy <= kHomeRoom; ++dy)
-			for (int dx = -kHomeRoom; dx <= kHomeRoom; ++dx)
-				blocked[t.at(sx + dx, sy + dy)] = 1;
-		std::vector<int> door;
-		for (int i = 0; i < t.size(); ++i)
-			if (home[i] && L.march[i])
-				door.push_back(i);
-		const std::vector<int> depth = stepsFrom(t, tileMask(t, {L.homes[k].site}), home);
-		const std::vector<int> room = stepsFrom(t, blocked);
-		const int side = context.bounded("marchland-lakes", 2) ? 1 : -1;
-		const int grown = growLakeBeside(
-			t, water, depth, room, kLakeGap, kHomeLakeTiles, L.homes[k].site, L.homes[k].axis, side,
-			kLakeFromSwarm, kLakeReach, [&](int i) { return relief[i] / 65535.0; }, queued, k + 1);
-		context.telemetry.measure("marchland.home.lake-tiles", grown, k);
-		if (grown < kHomeLakeTiles)
-			context.telemetry.fallback("marchland.home.lake-short",
-									   "A homeland had no room for its whole lake.", k);
-	}
+	placeHomelandLakes(L, teams, relief, context, water);
 
 	cutRiver(L, t, teams, context, brief, water);
 
-	L.ground.assign(t.size(), 0);
-	for (int i = 0; i < t.size(); ++i)
-		L.ground[i] = !water[i];
-
-	// The crossings. That the country stays in one piece is an invariant, not character, so it is
-	// construction that guarantees it: fords are opened greedily until every bank is joined again
-	// (fordsToRejoin). Where the rest of the crossings fall would be a thing worth searching; there
-	// are none yet, and a search over the empty set is not worth writing.
-	if (L.hasRiver)
-	{
-		const std::vector<int> banks =
-			connectedRegions(L.ground, t.w, t.h, true, GridNeighbors::Eight);
-		int pieces = 0;
-		for (const int bank : banks)
-			pieces = std::max(pieces, bank + 1);
-		const std::vector<RiverFord> sites =
-			fordSites(t, L.river, L.ground, banks, kBankReach, kFordApart);
-		const std::vector<int> taken =
-			fordsSpreadAlong(sites, fordsToRejoin(sites, pieces), teams * kFordsPerColony,
-							 int(L.river.line.size()));
-		for (const int site : taken)
-			L.fords.push_back(sites[site].index);
-		context.telemetry.measure("marchland.river.ford-sites", int(sites.size()));
-		context.telemetry.measure("marchland.river.fords", int(L.fords.size()));
-	}
-
-	L.terrain.assign(t.size(), GRASS);
-	for (int i = 0; i < t.size(); ++i)
-		if (water[i])
-			L.terrain[i] = WATER;
-	layBeaches(L.terrain, t);
-	// Fords are sand laid over the bed's water, so they go on after the beaches, whose own sand they
-	// leave alone. The ground and the march are then re-read from the terrain, because a ford is
-	// walkable and the prizes may be strung along one.
-	for (const int ford : L.fords)
-		layFord(L.terrain, t, L.river, ford, kFordHalfWidth, kFordReach);
-	if (L.hasRiver)
-		for (int i = 0; i < t.size(); ++i)
-		{
-			L.ground[i] = L.terrain[i] != WATER;
-			L.march[i] = L.ownerOf[i] < 0 && L.ground[i];
-		}
+	finishRiverTerrain(L, teams, context, water);
 
 	context.telemetry.measure("marchland.ground.mainland-tiles", partSize[mainland]);
-	// What growTerritories dealt out, which is the equal-ground guarantee the map's fairness rests
-	// on. It is named for the territory and not the homeland because that is what it is: it is read
-	// before the march is opened, so it does not move when the march control widens the gap. The
-	// homeland a colony actually keeps is counted below, from the finished ground.
+	// Report territory allocation separately from the smaller, finished homelands.
 	context.telemetry.measure("marchland.territory.smallest-tiles", shared.smallest());
 	context.telemetry.measure("marchland.territory.largest-tiles", shared.largest());
 	int marchTiles = 0;
@@ -783,6 +743,44 @@ struct Rope
 	int candidates = 0;
 };
 
+// A feasible proposal preserves prize spacing; the objective ranks those feasible placements.
+struct RopeSearch
+{
+	Rope &rope;
+	const std::vector<int> &candidates;
+	const std::vector<std::vector<int>> &walkCosts;
+	const Torus &t;
+	int gap;
+	GenerationContext &context;
+	int slot = -1, was = -1;
+	std::vector<int> best;
+
+	bool apart(int site, int ignore) const
+	{
+		for (size_t p = 0; p < rope.prize.size(); ++p)
+			if (int(p) != ignore &&
+				t.dist2(site % t.w, site / t.w, rope.prize[p] % t.w, rope.prize[p] / t.w) < gap * gap)
+				return false;
+		return true;
+	}
+	bool propose()
+	{
+		if (rope.prize.empty())
+			return false;
+		slot = int(context.bounded("marchland-rope", std::uint32_t(rope.prize.size())));
+		const int site = candidates[context.bounded("marchland-rope", std::uint32_t(candidates.size()))];
+		if (!apart(site, slot))
+			return false;
+		was = rope.prize[slot];
+		rope.prize[slot] = site;
+		return true;
+	}
+	double cost() const { return double(scoreRope(rope.prize, walkCosts, contestMargin(t)).total()); }
+	void undo() { rope.prize[slot] = was; }
+	void remember() { best = rope.prize; }
+	void recall() { rope.prize = best; }
+};
+
 /// Chooses which of the march's candidate sites carry the prizes: every prize on a front between
 /// the two colonies contending for it, the rope shared evenly between all of them, and no two
 /// prizes in a huddle.
@@ -800,14 +798,7 @@ Rope levelRope(const std::vector<int> &candidates, const std::vector<std::vector
 	rope.candidates = int(candidates.size());
 	if (candidates.empty() || wanted <= 0)
 		return rope;
-	const auto apart = [&](int site, int ignore)
-	{
-		for (size_t p = 0; p < rope.prize.size(); ++p)
-			if (int(p) != ignore &&
-				t.dist2(site % t.w, site / t.w, rope.prize[p] % t.w, rope.prize[p] / t.w) < gap * gap)
-				return false;
-		return true;
-	};
+	RopeSearch state{rope, candidates, cost, t, gap, context};
 	// A first rope of separated sites, taken at random: this is what an ordinary generator would
 	// place, and it is exactly what the search is measured against.
 	for (int k = 0; k < wanted; ++k)
@@ -816,7 +807,7 @@ Rope levelRope(const std::vector<int> &candidates, const std::vector<std::vector
 		for (int attempt = 0; attempt < 256 && chosen < 0; ++attempt)
 		{
 			const int site = candidates[context.bounded("marchland-rope", std::uint32_t(candidates.size()))];
-			if (apart(site, -1))
+			if (state.apart(site, -1))
 				chosen = site;
 		}
 		if (chosen < 0)
@@ -828,32 +819,8 @@ Rope levelRope(const std::vector<int> &candidates, const std::vector<std::vector
 	// where chance put it, which is the baseline the map's telemetry reports beside the solved figure.
 	const Anneal schedule{int(std::int64_t(kRopeMoves) * std::clamp(levelling, 0, 100) / 100),
 						  kRopeHeat[0], kRopeHeat[1], "marchland-rope"};
-	int slot = -1, was = -1;
-	std::vector<int> best = rope.prize;
-	rope.run = anneal(
-		schedule, context,
-		[&]
-		{
-			if (rope.prize.empty())
-				return false;
-			slot = int(context.bounded("marchland-rope", std::uint32_t(rope.prize.size())));
-			const int site =
-				candidates[context.bounded("marchland-rope", std::uint32_t(candidates.size()))];
-			if (!apart(site, slot))
-				return false;
-			was = rope.prize[slot];
-			rope.prize[slot] = site;
-			return true;
-		},
-		[&]
-		{
-			rope.solved = scoreRope(rope.prize, cost, contestMargin(t));
-			return double(rope.solved.total());
-		},
-		[&] { rope.prize[slot] = was; }, [&] { best = rope.prize; },
-		[&] { rope.prize = best; });
-	// anneal leaves `solved` holding whatever the last proposal scored, accepted or not; the state
-	// the run actually ended on is the one to report.
+	rope.run = anneal(schedule, context, state);
+	// Publish diagnostics for the restored arrangement, independently of the last proposal.
 	rope.solved = scoreRope(rope.prize, cost, contestMargin(t));
 	return rope;
 }

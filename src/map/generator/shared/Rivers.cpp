@@ -18,6 +18,10 @@ double unitDraw(GenerationContext &context, const std::string &stream)
 River drawRiver(const Torus &t, GenerationContext &context, const std::string &stream,
 				bool vertical, double offset, const RiverStyle &style)
 {
+	if (!std::isfinite(offset) || !std::isfinite(style.halfWidth) || style.halfWidth <= 0 ||
+		!std::isfinite(style.wander) || style.wander < 0 || !std::isfinite(style.swell) ||
+		style.swell < 0 || style.swell > 1 || !std::isfinite(style.step) || style.step <= 0)
+		throw std::invalid_argument("Invalid river style");
 	River river;
 	river.vertical = vertical;
 	const double along = vertical ? t.h : t.w;     // the side the bed crosses
@@ -62,6 +66,10 @@ River drawRiver(const Torus &t, GenerationContext &context, const std::string &s
 
 std::vector<unsigned char> riverWater(const Torus &t, const River &river)
 {
+	if (river.line.size() != river.radius.size())
+		throw std::invalid_argument("River points and radii must correspond");
+	if (river.line.empty())
+		return std::vector<unsigned char>(t.size(), 0);
 	std::vector<StrokePoint> stroke;
 	stroke.reserve(river.line.size() + 1);
 	for (size_t i = 0; i < river.line.size(); ++i)
@@ -86,6 +94,9 @@ std::vector<RiverFord> fordSites(const Torus &t, const River &river,
 								 const std::vector<unsigned char> &walkable,
 								 const std::vector<int> &components, double reach, int apart)
 {
+	if (river.line.size() != river.radius.size() || walkable.size() != size_t(t.size()) ||
+		components.size() != size_t(t.size()) || !std::isfinite(reach) || reach < 0 || apart < 0)
+		throw std::invalid_argument("Invalid river bank inputs");
 	std::vector<RiverFord> sites;
 	const int n = int(river.line.size());
 	int lastTaken = -apart;
@@ -106,9 +117,11 @@ std::vector<RiverFord> fordSites(const Torus &t, const River &river,
 	return sites;
 }
 
-std::vector<int> fordsToRejoin(const std::vector<RiverFord> &sites, int components)
+FordConnections fordsToRejoin(const std::vector<RiverFord> &sites, int components)
 {
-	std::vector<int> parent(std::max(0, components));
+	if (components < 0)
+		throw std::invalid_argument("Negative river component count");
+	std::vector<int> parent(components);
 	for (size_t i = 0; i < parent.size(); ++i)
 		parent[i] = int(i);
 	const auto find = [&parent](int a)
@@ -117,7 +130,8 @@ std::vector<int> fordsToRejoin(const std::vector<RiverFord> &sites, int componen
 			a = parent[a] = parent[parent[a]];
 		return a;
 	};
-	std::vector<int> taken;
+	FordConnections result;
+	result.remainingComponents = int(parent.size());
 	for (size_t i = 0; i < sites.size(); ++i)
 	{
 		const RiverFord &site = sites[i];
@@ -128,14 +142,24 @@ std::vector<int> fordsToRejoin(const std::vector<RiverFord> &sites, int componen
 		if (a == b)
 			continue;
 		parent[a] = b;
-		taken.push_back(int(i));
+		result.sites.push_back(int(i));
+		--result.remainingComponents;
 	}
-	return taken;
+	return result;
 }
 
 std::vector<int> fordsSpreadAlong(const std::vector<RiverFord> &sites, std::vector<int> taken,
 								  int wanted, int points)
 {
+	if (points <= 0 || wanted < 0)
+		throw std::invalid_argument("Invalid river crossing budget");
+	for (const auto &site : sites)
+		if (site.index < 0 || site.index >= points)
+			throw std::invalid_argument("Ford point is outside the river");
+	for (const int index : taken)
+		if (index < 0 || index >= int(sites.size()))
+			throw std::invalid_argument("Selected ford is outside the candidates");
+
 	const auto apart = [&](int a, int b)
 	{
 		const int gap = std::abs(sites[a].index - sites[b].index);

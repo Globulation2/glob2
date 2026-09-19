@@ -113,7 +113,62 @@ inline void solvingAndRiverChecks()
 	assert(!accept(1, 0, context, "test-solve"));
 	assert(accept(-1, 0, context, "test-solve"));
 
+	const auto rejects = [](auto action)
+	{
+		bool threw = false;
+		try { action(); } catch (const std::exception &) { threw = true; }
+		assert(threw);
+	};
+	Objective objective;
+	objective.add("access", 2, 3).add("reward", -1, 2);
+	assert(objective.total() == 4 && objective.residual("access") == 3);
+	assert(!objective.findResidual("missing"));
+	rejects([&] { objective.residual("missing"); });
+	rejects([&] { objective.add("access", 1, 0); });
+	rejects([&] { objective.add("nan", 1, std::numeric_limits<double>::quiet_NaN()); });
+	Objective full;
+	for (const char *name : {"a", "b", "c", "d", "e", "f", "g", "h"})
+		full.add(name, 1, 1);
+	rejects([&] { full.add("overflow", 1, 1); });
+	assert(full.total() == 8);
+	rejects([&] { Anneal{-1, 1, 1, "bad"}.validate(); });
+	rejects([&] { Anneal{1, 0, 1, "bad"}.validate(); });
+	rejects([&] { finiteCost(std::numeric_limits<double>::infinity()); });
+	// A state with a derived cache exercises skipped, rejected and best-restored moves.
+	struct SearchState
+	{
+		int value = 4, cached = 16, old = 0, best = 0, move = 0;
+		bool propose()
+		{
+			++move;
+			if (move == 1) return false;
+			old = value;
+			value = move == 2 ? 1 : 3;
+			cached = value * value;
+			return true;
+		}
+		double cost() const { assert(cached == value * value); return cached; }
+		void undo() { value = old; cached = value * value; }
+		void remember() { best = value; }
+		void recall() { value = best; cached = value * value; }
+	};
+	SearchState hot;
+	const auto hotRun = anneal(Anneal{3, 1e30, 1e30, "test-state"}, context, hot);
+	assert(hotRun.attempted == 3 && hotRun.proposed == 2 && hotRun.taken == 2);
+	assert(hot.value == 1 && hot.cost() == hotRun.after);
+	SearchState cold;
+	const auto coldRun = anneal(Anneal{3, 1e-30, 1e-30, "test-state"}, context, cold);
+	assert(coldRun.taken == 1 && cold.value == 1 && cold.cost() == coldRun.after);
+	SearchState idle;
+	const auto idleRun = anneal(Anneal{}, context, idle);
+	assert(idleRun.attempted == 0 && idle.value == 4 && idle.best == 4);
+
 	const Torus t(32, 16);
+	assert(riverWater(t, River{}) == std::vector<unsigned char>(t.size(), 0));
+	River malformed;
+	malformed.line = {{0, 0}};
+	rejects([&] { riverWater(t, malformed); });
+	rejects([&] { fordsSpreadAlong({{0, 0, 1}}, {2}, 1, 16); });
 	for (bool vertical : {false, true})
 	{
 		RiverStyle style;
@@ -136,8 +191,12 @@ inline void solvingAndRiverChecks()
 	assert(water[t.at(31, 4)] && !water[t.at(16, 4)]);
 	const std::vector<RiverFord> sites = {{0, 0, 1}, {4, 1, 2}, {8, 0, 2}, {12, -1, 2}};
 	const auto joining = fordsToRejoin(sites, 3);
-	assert((joining == std::vector<int>{0, 1}));
-	const auto spread = fordsSpreadAlong(sites, joining, 3, 16);
+	assert((joining.sites == std::vector<int>{0, 1}));
+	assert(joining.connected() && joining.remainingComponents == 1);
+	const auto disconnected = fordsToRejoin({{0, 0, 1}}, 3);
+	assert(!disconnected.connected() && disconnected.remainingComponents == 2);
+	assert(fordsToRejoin({}, 0).connected());
+	const auto spread = fordsSpreadAlong(sites, joining.sites, 3, 16);
 	assert((spread == std::vector<int>{0, 1, 2}));
 }
 

@@ -406,87 +406,104 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 
 /// Anneals the water's arrangement, swapping a water cell with a land cell so the water the player
 /// asked for stays exactly what it is. Returns the moves taken.
+// The shape arrangement and land mask move together; walks and objective terms are scratch
+// recomputed by cost(). Final measurements are explicitly refreshed after the best state returns.
+struct ShapeSearch
+{
+	Solved &solved;
+	GenerationContext &context;
+	double balance, wantWidth;
+	int bodiesWanted;
+	double shoreWanted;
+	const Brief &wants;
+	Torus t;
+	int cells, teams, roomWanted = 0;
+	Shape s;
+	int wet = -1, dry = -1;
+	unsigned char wasDry = kOpen;
+	std::vector<unsigned char> best;
+
+	ShapeSearch(Solved &solved, GenerationContext &context, double balance, double wantWidth,
+		int bodiesWanted, double shoreWanted, const Brief &wants)
+		: solved(solved), context(context), balance(balance), wantWidth(wantWidth),
+		  bodiesWanted(bodiesWanted), shoreWanted(shoreWanted), wants(wants),
+		  t(solved.lat.torus()), cells(solved.lat.size()), teams(int(solved.home.size()))
+	{
+		s.land.assign(cells, 0);
+		for (int i = 0; i < cells; ++i)
+			s.land[i] = solved.kind[i] != kWater;
+		s.walk.assign(teams, std::vector<int>(cells, -1));
+		s.decay.resize(cells + 1);
+		for (int step = 0; step <= cells; ++step)
+			s.decay[step] = std::exp(-double(step) / kCatchmentDecay);
+		// A tiny lattice cannot spare kRoomCells per colony; ask for what there is room to ask for.
+		roomWanted = std::max(2, std::min(kRoomCells, cells / std::max(1, 3 * teams)));
+	}
+	bool propose()
+	{
+		const bool alongShore = context.bounded("even-ground-shape", 4) != 0;
+		const auto onShore = [&](int i)
+		{
+			const int x = i % t.w, y = i / t.w;
+			for (const auto &step : kCardinalSteps)
+				if (!s.land[t.at(x + step[0], y + step[1])])
+					return true;
+			return false;
+		};
+		wet = dry = -1;
+		for (int attempt = 0; attempt < 48 && (wet < 0 || dry < 0); ++attempt)
+		{
+			const int i = int(context.bounded("even-ground-shape", std::uint32_t(cells)));
+			if (solved.pinned[i])
+				continue;
+			if (!s.land[i])
+			{
+				if (wet < 0)
+					wet = i;
+			}
+			else if (dry < 0 && (!alongShore || onShore(i)))
+				dry = i;
+		}
+		if (wet < 0 || dry < 0)
+			return false;
+		wasDry = solved.kind[dry];
+		s.land[wet] = 1;
+		s.land[dry] = 0;
+		solved.kind[wet] = kOpen;
+		solved.kind[dry] = kWater;
+		return true;
+	}
+	double cost()
+	{
+		return scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted,
+			shoreWanted, wants);
+	}
+	void undo()
+	{
+		s.land[wet] = 0;
+		s.land[dry] = 1;
+		solved.kind[wet] = kWater;
+		solved.kind[dry] = wasDry;
+	}
+	void remember() { best = solved.kind; }
+	void recall() { solved.kind = best; syncLand(); }
+	void syncLand()
+	{
+		for (int i = 0; i < cells; ++i)
+			s.land[i] = solved.kind[i] != kWater;
+	}
+};
+
 SolveReport annealShape(Solved &solved, GenerationContext &context, double balance,
 						double wantWidth, int bodiesWanted, double shoreWanted,
 						const Brief &wants, int moves)
 {
-	const Torus t = solved.lat.torus();
-	const int cells = solved.lat.size(), teams = int(solved.home.size());
-	Shape s;
-	s.land.assign(cells, 0);
-	for (int i = 0; i < cells; ++i)
-		s.land[i] = solved.kind[i] != kWater;
-	s.walk.assign(teams, std::vector<int>(cells, -1));
-	s.decay.resize(cells + 1);
-	for (int step = 0; step <= cells; ++step)
-		s.decay[step] = std::exp(-double(step) / kCatchmentDecay);
-	// A tiny lattice cannot spare kRoomCells per colony; ask for what there is room to ask for.
-	const int roomWanted = std::max(2, std::min(kRoomCells, cells / std::max(1, 3 * teams)));
-
-	// One water cell to dry out and one land cell to drown, drawn by rejection.
-	//
-	// The land cell is looked for against an existing shore three times out of four. Drowning open
-	// country makes a new puddle, and the targets ask for a few lakes, so a search spending its
-	// moves uniformly never gets there: at ten per cent water it left eleven separate bodies when it
-	// had been asked for three. Moving a shoreline instead consolidates. The remaining quarter is
-	// drawn from anywhere, which is what still lets water migrate across the map rather than only
-	// growing where the first noise put it.
-	int wet = -1, dry = -1;
-	unsigned char wasDry = kOpen;
-	std::vector<unsigned char> best = solved.kind;
+	ShapeSearch state(solved, context, balance, wantWidth, bodiesWanted, shoreWanted, wants);
 	const SolveReport run = anneal(
-		Anneal{moves, kShapeHeat[0], kShapeHeat[1], "even-ground-shape"}, context,
-		[&]
-		{
-			const bool alongShore = context.bounded("even-ground-shape", 4) != 0;
-			const auto onShore = [&](int i)
-			{
-				const int x = i % t.w, y = i / t.w;
-				for (const auto &step : kCardinalSteps)
-					if (!s.land[t.at(x + step[0], y + step[1])])
-						return true;
-				return false;
-			};
-			wet = dry = -1;
-			for (int attempt = 0; attempt < 48 && (wet < 0 || dry < 0); ++attempt)
-			{
-				const int i = int(context.bounded("even-ground-shape", std::uint32_t(cells)));
-				if (solved.pinned[i])
-					continue;
-				if (!s.land[i])
-				{
-					if (wet < 0)
-						wet = i;
-				}
-				else if (dry < 0 && (!alongShore || onShore(i)))
-					dry = i;
-			}
-			if (wet < 0 || dry < 0)
-				return false;
-			wasDry = solved.kind[dry];
-			s.land[wet] = 1;
-			s.land[dry] = 0;
-			solved.kind[wet] = kOpen;
-			solved.kind[dry] = kWater;
-			return true;
-		},
-		[&] {
-			return scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted,
-							  shoreWanted, wants);
-		},
-		[&]
-		{
-			s.land[wet] = 0;
-			s.land[dry] = 1;
-			solved.kind[wet] = kWater;
-			solved.kind[dry] = wasDry;
-		},
-		[&] { best = solved.kind; }, [&] { solved.kind = best; });
-	for (int i = 0; i < cells; ++i)
-		s.land[i] = solved.kind[i] != kWater;
-	// The walks the stock pass inherits must match the shape it inherits, so measure the state the
-	// search actually ended on rather than trusting the last move's scratch.
-	scoreShape(s, solved, t, balance, wantWidth, roomWanted, bodiesWanted, shoreWanted, wants);
+		Anneal{moves, kShapeHeat[0], kShapeHeat[1], "even-ground-shape"}, context, state);
+	state.syncLand();
+	state.cost();
+	const Shape &s = state.s;
 	solved.reachSpread = s.reachSpread;
 	solved.passWidth = s.passWidth;
 	solved.roomShort = s.roomShort;
@@ -551,47 +568,82 @@ Objective stockObjective(const Catchments &had, int teams,
 		.add("fields", fieldsWeight, std::abs(clustering - fieldsWanted) / fieldsWanted);
 }
 
-double stockCost(const Catchments &had, int teams, const std::array<int, kStockKinds> &counts,
-				 double clustering, double fieldsWanted, double fieldsWeight)
-{
-	return stockObjective(had, teams, counts, clustering, fieldsWanted, fieldsWeight).total();
-}
+
 
 /// Anneals which land cells hold which crop, swapping the contents of two cells so the number of
 /// cells of each crop stays exactly what the amount sliders asked for. Every colony's walk is
 /// already known and does not change, so a move costs two terms per colony rather than a fresh walk
 /// of the lattice: this is the pass that can afford the moves that actually equalise the map.
-SolveReport annealStock(Solved &solved, GenerationContext &context,
-						const std::vector<std::vector<int>> &walk,
-						const std::vector<double> &decay, int moves, double &spreadBefore,
-						double &spreadAfter, double &stockShape, Objective &stockTerms,
-						double fieldsWanted, double fieldsWeight)
+// Owns both the arrangement and the incremental measurements used to score it. Snapshot restore
+// rebuilds derived measurements; rejected swaps retain the original incremental arithmetic.
+class StockSearch
 {
-	const int cells = solved.lat.size(), teams = int(solved.home.size());
-	const auto worth = [&](int team, int cell)
-	{ return walk[team][cell] < 0 ? 0.0 : decay[walk[team][cell]]; };
-
-	Catchments had(teams, {0.0, 0.0, 0.0});
-	std::array<int, kStockKinds> counts{};
-	for (int i = 0; i < cells; ++i)
-		if (solved.kind[i] >= kWheat)
-			++counts[solved.kind[i] - kWheat];
-	for (int k = 0; k < teams; ++k)
+  public:
+	StockSearch(Solved &solved, GenerationContext &context,
+		const std::vector<std::vector<int>> &walk, const std::vector<double> &decay,
+		double fieldsWanted, double fieldsWeight)
+		: solved(solved), context(context), walk(walk), decay(decay),
+		  fieldsWanted(fieldsWanted), fieldsWeight(fieldsWeight),
+		  cells(solved.lat.size()), teams(int(solved.home.size())), lattice(solved.lat.torus()),
+		  had(teams, {0.0, 0.0, 0.0})
+	{
 		for (int i = 0; i < cells; ++i)
 			if (solved.kind[i] >= kWheat)
-				had[k][solved.kind[i] - kWheat] += worth(k, i);
-	spreadBefore = stockSpread(had, teams);
+			{
+				++counts[solved.kind[i] - kWheat];
+				++crops;
+			}
+		recompute();
+	}
 
-	// Swapping the contents of two cells is its own inverse, catchments and all: cell a gives up
-	// what it was worth to each colony and takes on what b was worth, and b the other way round, so
-	// running it twice puts the lattice and the sums back exactly as they were. That is what lets
-	// the refusal path be the same call as the proposal.
-	// How much of the crops' neighbourhood is the same crop, kept as a running count so a swap stays
-	// a couple of dozen operations. Each matching edge is counted at both ends, so the change at
-	// the swapped cells must be doubled to include their neighbours. The cells hold different
-	// kinds, so an edge between them never matches, before or after the swap.
-	const Torus lattice = solved.lat.torus();
-	const auto matching = [&](int cell)
+	bool propose()
+	{
+		// Two land cells the design does not pin, holding different things: a swap between two
+		// cells holding the same thing is not a move.
+		a = b = -1;
+		for (int attempt = 0; attempt < 32 && b < 0; ++attempt)
+		{
+			const int i = int(context.bounded("even-ground-stock", std::uint32_t(cells)));
+			if (solved.pinned[i] || solved.kind[i] == kWater)
+				continue;
+			if (a < 0)
+				a = i;
+			else if (solved.kind[i] != solved.kind[a])
+				b = i;
+		}
+		if (b < 0)
+			return false;
+		swapStock(a, b);
+		return true;
+	}
+	void undo() { swapStock(a, b); }
+	void remember() { best = solved.kind; }
+	void recall() { solved.kind = best; recompute(); }
+	double cost() const { return objective().total(); }
+	Objective objective() const
+	{ return stockObjective(had, teams, counts, clustering(), fieldsWanted, fieldsWeight); }
+	double spread() const { return stockSpread(had, teams); }
+	double clustering() const
+	{ return crops > 0 ? double(matched) / (4.0 * crops) : fieldsWanted; }
+	void recompute()
+	{
+		for (int k = 0; k < teams; ++k)
+		{
+			had[k] = {0.0, 0.0, 0.0};
+			for (int i = 0; i < cells; ++i)
+				if (solved.kind[i] >= kWheat)
+					had[k][solved.kind[i] - kWheat] += worth(k, i);
+		}
+		matched = 0;
+		for (int i = 0; i < cells; ++i)
+			if (solved.kind[i] >= kWheat)
+				matched += matching(i);
+	}
+
+  private:
+	double worth(int team, int cell) const
+	{ return walk[team][cell] < 0 ? 0.0 : decay[walk[team][cell]]; }
+	int matching(int cell) const
 	{
 		if (solved.kind[cell] < kWheat)
 			return 0;
@@ -600,21 +652,12 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 		for (const auto &step : kCardinalSteps)
 			same += solved.kind[lattice.at(x + step[0], y + step[1])] == solved.kind[cell];
 		return same;
-	};
-	int crops = 0, matched = 0;
-	for (int i = 0; i < cells; ++i)
-		if (solved.kind[i] >= kWheat)
-		{
-			++crops;
-			matched += matching(i);
-		}
-	const auto clustering = [&]
-	{ return crops > 0 ? double(matched) / (4.0 * crops) : fieldsWanted; };
-
-	int a = -1, b = -1;
-	std::vector<unsigned char> best = solved.kind;
-	const auto swapStock = [&](int one, int other)
+	}
+	void swapStock(int one, int other)
 	{
+		// Directed matching edges are counted at both ends. Different swapped kinds never
+		// match each other, so doubling their local deltas also accounts for their neighbours.
+
 		matched -= 2 * (matching(one) + matching(other));
 		const unsigned char kindOne = solved.kind[one], kindOther = solved.kind[other];
 		for (int k = 0; k < teams; ++k)
@@ -627,47 +670,35 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 		solved.kind[one] = kindOther;
 		solved.kind[other] = kindOne;
 		matched += 2 * (matching(one) + matching(other));
-	};
-	const SolveReport run = anneal(
-		Anneal{moves, kStockHeat[0], kStockHeat[1], "even-ground-stock"}, context,
-		[&]
-		{
-			// Two land cells the design does not pin, holding different things: a swap between two
-			// cells holding the same thing is not a move.
-			a = b = -1;
-			for (int attempt = 0; attempt < 32 && b < 0; ++attempt)
-			{
-				const int i = int(context.bounded("even-ground-stock", std::uint32_t(cells)));
-				if (solved.pinned[i] || solved.kind[i] == kWater)
-					continue;
-				if (a < 0)
-					a = i;
-				else if (solved.kind[i] != solved.kind[a])
-					b = i;
-			}
-			if (b < 0)
-				return false;
-			swapStock(a, b);
-			return true;
-		},
-		[&] { return stockCost(had, teams, counts, clustering(), fieldsWanted, fieldsWeight); },
-		[&] { swapStock(a, b); },
-		[&] { best = solved.kind; }, [&] { solved.kind = best; });
-	// The catchments must match whatever arrangement the run ended on, best-kept or not.
-	for (int k = 0; k < teams; ++k)
-	{
-		had[k] = {0.0, 0.0, 0.0};
-		for (int i = 0; i < cells; ++i)
-			if (solved.kind[i] >= kWheat)
-				had[k][solved.kind[i] - kWheat] += worth(k, i);
 	}
-	matched = 0;
-	for (int i = 0; i < cells; ++i)
-		if (solved.kind[i] >= kWheat)
-			matched += matching(i);
-	spreadAfter = stockSpread(had, teams);
-	stockShape = clustering();
-	stockTerms = stockObjective(had, teams, counts, clustering(), fieldsWanted, fieldsWeight);
+	Solved &solved;
+	GenerationContext &context;
+	const std::vector<std::vector<int>> &walk;
+	const std::vector<double> &decay;
+	double fieldsWanted, fieldsWeight;
+	int cells, teams;
+	Torus lattice;
+	Catchments had;
+	std::array<int, kStockKinds> counts{};
+	int crops = 0, matched = 0, a = -1, b = -1;
+	std::vector<unsigned char> best;
+};
+
+SolveReport annealStock(Solved &solved, GenerationContext &context,
+						const std::vector<std::vector<int>> &walk,
+						const std::vector<double> &decay, int moves, double &spreadBefore,
+						double &spreadAfter, double &stockShape, Objective &stockTerms,
+						double fieldsWanted, double fieldsWeight)
+{
+	StockSearch state(solved, context, walk, decay, fieldsWanted, fieldsWeight);
+	spreadBefore = state.spread();
+	const SolveReport run = anneal(
+		Anneal{moves, kStockHeat[0], kStockHeat[1], "even-ground-stock"}, context, state);
+	// Rescan once for final telemetry rather than reporting accumulated roundoff.
+	state.recompute();
+	spreadAfter = state.spread();
+	stockShape = state.clustering();
+	stockTerms = state.objective();
 	return run;
 }
 
