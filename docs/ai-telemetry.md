@@ -150,3 +150,33 @@ retaining the existing simulation continuation checks.
 
 Tournament workers retain these records in verified logs; their normal offline
 analysis exports typed JSONL and CSV. See [distributed telemetry](tournaments.md#gameplay-ai-and-performance-telemetry).
+
+## Maxima geospatial fields
+
+Maxima's placement reasons about geography — threat, protection, food
+opportunity — and reading the scoring function tells you what it intends, not
+what it does on a given map. `GLOB2_FIELD_DIR` writes those per-tile surfaces so
+they can be looked at against the map that produced them.
+
+| variable | meaning |
+| --- | --- |
+| `GLOB2_FIELD_DIR` | directory to write into; unset disables the whole feature |
+| `GLOB2_FIELD_INTERVAL` | ticks between dumps, default 2500 |
+| `GLOB2_FIELD_RENDER` | also paint each field over a full-map PNG at that moment |
+
+Each dump writes `tick-NNNNNNN.team<N>.<field>.field` for `threat`,
+`protectedness`, `foodOpportunity`, `farmCapacity` and `protectedYield`, in the
+format [the map CLI](map-generators/CLI.md) reads: `width height`, then
+`width * height` integers. With `GLOB2_FIELD_RENDER` a matching `.png` is written
+beside each one. Rendering uses a temporary software surface and preserves the
+live window, graphics mode, UI scale and clipping state, including on errors.
+
+This lives in `src/AIMaximaFieldDump.cpp`, outside the strategy consumers, on
+purpose. Those files must not read external configuration at all, so that
+everything shaping a decision comes from the resolved strategy and a recorded
+game reproduces from it; `MaximaStrategyPolicyTest` enforces that by banning
+`getenv` in them. The switches that turn diagnostics on therefore belong here.
+
+Dumping is keyed on ticks elapsed since the last dump, not `tick % interval`: it
+runs from the placement pass, which has its own cadence, so an exact multiple
+would almost never coincide with it.

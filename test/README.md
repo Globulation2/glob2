@@ -551,6 +551,22 @@ directory. `--initial FILE --ticks N` runs a retained initial state on another p
 It requires immutable macOS/Linux bundles and explicitly configured disposable
 worker directories, and kills only processes belonging to that pilot. See
 [the tournament guide](../docs/tournaments.md) for commands and validation policy.
+## Full-map rendering regression
+
+```sh
+scons -j4 release=1 server=0 map-render-test
+python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderRegressionTest . artifacts/map-render
+```
+
+The fixture renders a whole map through a scaled graphics context and verifies
+that the original window dimensions, software surface, graphics flags, UI scale
+and clip survive successful output, a rejected field and an output failure.
+Append `--gl` to the runner command to exercise a native OpenGL context; this
+requires a display. Both modes use 150% UI scale.
+It retains a PNG in the supplied artifact directory. Rendering uses a borrowed
+software surface without resizing or presenting the live window.
+
+
 ## Map CLI
 
 Build the normal client with `scons release=1 server=0`, then run

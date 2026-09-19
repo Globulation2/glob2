@@ -732,6 +732,40 @@ namespace GAGCore
 		}
 	}
 
+	void GraphicContext::drawToSurface(SDL_Surface *surface, const std::function<void()> &draw)
+	{
+		assert(surface);
+		// Finish the window's queued text before borrowing its drawing interface.
+		DrawableSurface::nextFrame();
+		SDL_Surface *previous = sdlsurface;
+		const Uint32 flags = optionFlags;
+		const float targetScale = renderTargetScale;
+		int x, y, w, h;
+		getClipRect(&x, &y, &w, &h);
+		const auto restore = [&]() {
+			sdlsurface = previous;
+			optionFlags = flags;
+			renderTargetScale = targetScale;
+			setClipRect(x, y, w, h);
+		};
+		sdlsurface = surface;
+		optionFlags = 0;
+		renderTargetScale = 1.0f;
+		setClipRect();
+		try
+		{
+			draw();
+			DrawableSurface::nextFrame();
+		}
+		catch (...)
+		{
+			DrawableSurface::nextFrame();
+			restore();
+			throw;
+		}
+		restore();
+	}
+
 	void GraphicContext::nextFrame(void)
 	{
 		DrawableSurface::nextFrame();

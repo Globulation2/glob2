@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapCommand.h"
 #include "MapReport.h"
+#include "MapRender.h"
 #include "GUIMapPreview.h"
 #include "Glob2Style.h"
 #include <SDL_image.h>
@@ -27,7 +28,9 @@
 #include <iostream>
 #include <limits>
 #include <map>
+#include <cstdio>
 #include <stdexcept>
+#include <vector>
 
 namespace
 {
@@ -219,7 +222,8 @@ void exportPreview(const Game &game, const std::string &path, int size, int scal
 bool isMapCommand(const char *arg)
 {
 	const std::string s = arg;
-	return s == "--generate-map" || s == "--preview-map" || s == "--list-map-generators";
+	return s == "--generate-map" || s == "--preview-map" || s == "--render-game" ||
+		   s == "--list-map-generators";
 }
 void printMapCommandHelp()
 {
@@ -230,6 +234,14 @@ void printMapCommandHelp()
 		   "    [--config file] [--set key=value ...] [--seed N]\n"
 		   "    [--width tiles] [--height tiles] [--teams N] [--workers N]\n"
 		   "  --preview-map <file.map|file.game> [--output file.png] [--json report.json]\n"
+		   "  --render-game <file.game|file.map> --output file.png\n"
+		   "    [--render-max-pixels N] [--render-field file] [--field-color r,g,b]\n"
+		   "    Full-map render through the game renderer: buildings, units and resources,\n"
+		   "    fog off, every team visible. Long edge capped at --render-max-pixels\n"
+		   "    (default 4096; 32 pixels a tile, so a 128-tile map is 4096 across).\n"
+		   "    --render-field paints a scalar per-tile field over it: a text file of\n"
+		   "    \"width height\" then width*height integers, shaded by each value's\n"
+		   "    share of the field maximum.\n"
 		   "  --list-map-generators [generator]  List IDs, or settings and allowed values\n"
 		   "Preview scale: --preview-scale 2|4|8 (default 2, relative to retained thumbnail "
 		   "pixels).\n"
@@ -261,10 +273,12 @@ int runMapCommand(int argc, char **argv)
 		if (argc < 3 || std::string(argv[2]).rfind("--", 0) == 0)
 			throw std::runtime_error("Missing generator or input path; use " + mode + " --help");
 		const bool generate = mode == "--generate-map";
+		const bool render = mode == "--render-game";
 		std::string output, preview, config, json;
 		MapSettings overrides, settings;
 		std::vector<std::string> directories;
-		int previewSize = 0, previewScale = 2;
+		int previewSize = 0, previewScale = 2, renderMaxPixels = 4096;
+		std::string fieldPath, fieldColour;
 		bool sizeSpecified = false, scaleSpecified = false;
 		for (int i = 3; i < argc; ++i)
 		{
@@ -292,6 +306,17 @@ int runMapCommand(int argc, char **argv)
 			else if (generate && (arg == "--seed" || arg == "--width" || arg == "--height" ||
 								  arg == "--teams" || arg == "--workers"))
 				overrides[arg.substr(2)] = value;
+			else if (arg == "--render-field")
+				fieldPath = value;
+			else if (arg == "--field-color")
+				fieldColour = value;
+			else if (arg == "--render-max-pixels")
+			{
+				const auto n = number(value);
+				if (n < 128 || n > 16384)
+					throw std::runtime_error("Render max pixels must be 128..16384");
+				renderMaxPixels = int(n);
+			}
 			else if (arg == "--preview-scale")
 			{
 				const auto n = number(value);
@@ -313,7 +338,10 @@ int runMapCommand(int argc, char **argv)
 			else
 				throw std::runtime_error("Unknown option for " + mode + ": " + arg);
 		}
-		if (!generate)
+		// --preview-map names its PNG with --output; --render-game uses the same
+		// option for its own, much larger, image and must not alias into the
+		// thumbnail path.
+		if (!generate && !render)
 			preview = output;
 		if (output.empty() && preview.empty() && json.empty())
 			throw std::runtime_error("Specify an output path; use " + mode + " --help");
@@ -367,6 +395,9 @@ int runMapCommand(int argc, char **argv)
 		} clear;
 		GlobalContainer globals;
 		globalContainer = &globals;
+		// Stays headless even when rendering: MapRender::ensureAssets brings up the
+		// offscreen context and attaches the sprites itself, and it must run after
+		// the building types load, not before them.
 		globals.runNoX = true;
 		globals.settings.rememberUnit = false;
 		for (const auto &directory : directories)
@@ -406,7 +437,25 @@ int runMapCommand(int argc, char **argv)
 			std::cout << "Preview: " << preview << " (" << game.map.getW() << "x" << game.map.getH()
 					  << " tiles)\n";
 		}
-		if (generate && !output.empty())
+		if (render)
+		{
+			if (output.empty())
+				throw std::runtime_error("--render-game needs --output file.png");
+			MapRender::Field field;
+			if (!fieldPath.empty())
+			{
+				field = MapRender::readField(fieldPath);
+				if (!fieldColour.empty() &&
+					std::sscanf(fieldColour.c_str(), "%d,%d,%d", &field.red, &field.green,
+								&field.blue) != 3)
+					throw std::runtime_error("Field colour must be r,g,b: " + fieldColour);
+			}
+			MapRender::toPng(game, output, renderMaxPixels,
+							 fieldPath.empty() ? nullptr : &field);
+			std::cout << "Render: " << output << " (" << game.map.getW() << "x"
+					  << game.map.getH() << " tiles, tick " << game.stepCounter << ")\n";
+		}
+		else if (generate && !output.empty())
 			saveMap(game, output, std::filesystem::path(output).stem().string());
 		if (!json.empty())
 			writeJsonReport(json, report);

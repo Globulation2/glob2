@@ -1,0 +1,14 @@
+Native macOS release build: PASS
+
+render-tests.log
+Map render preserves resolution, scale, surface, flags and clip on success/failure
+PASS: disposable profile preferences unchanged
+Map render preserves resolution, scale, surface, flags and clip on success/failure
+PASS: disposable profile preferences unchanged
+
+export-tests.log
+macOS-26.6.2-arm64-arm-64bit-Mach-O
+3000 ticks from the same saved initial state: diagnostics off/on checksum sidecars byte-identical
+SHA-256: 1604ff61943976545f1c730692c4111ed9a00d94260bece93a50402f4fca18ba
+15 fields, 15 PNGs, 3 snapshots; snapshot reload matches remaining 1000 tick records
+
