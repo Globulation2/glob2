@@ -261,6 +261,7 @@ map/generator/shared/HeightMap.cpp
 map/generator/shared/Noise.cpp
 map/generator/shared/BalancedStarts.cpp
 map/generator/shared/RecursiveGeometry.cpp
+map/generator/shared/Rivers.cpp
 map/generator/shared/HierarchicalCrossings.cpp
 map/generator/shared/Drawing.cpp
 map/generator/shared/Geometry.cpp

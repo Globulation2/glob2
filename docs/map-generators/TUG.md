@@ -39,6 +39,37 @@ flooded once, so a move is a table lookup and the whole search costs microsecond
 The `levelling` slider is how many moves that search gets, so its worth is measurable rather than
 asserted.
 
+### The river: a third category
+
+A river is neither of the above, and it is the case that made the split worth naming. It cannot be
+solved for — see the head of `shared/Rivers.h` — because a target on where the water goes is met by
+a blob or a ruled line just as well as by a river, and "one joined-up channel crossing the map" is
+topological rather than statistical: nine tenths of a river is a lake and a pond, and scores no
+better than one tenth of one, so there is no gradient for a search to descend.
+
+So the bed is **drawn** (a closed wandering loop across the torus, joined up and the right width by
+construction), and only its **placement is scored**: fourteen candidate beds, each rated on whether
+it keeps out of the towns, how evenly it touches the homelands, how much of it lies in the commons,
+and whether it puts the colonies on both banks. Fourteen candidates is an exhaustive loop, not an
+annealing run — reaching for a search there would be the same mistake in the other direction.
+
+Which crossings exist splits the same way. That the country stays in one piece is an *invariant*, so
+`fordsToRejoin` guarantees it by construction; how many more fords there are beyond that minimum is
+*character*, and is what keeps the bed a landform instead of a wall.
+
+| Seeds (256×256, 4 colonies) | Count |
+|---|---|
+| Drew the river emphasis | 11 of 24 |
+| Actually got one | 5 |
+| Turned away for want of room in the commons | 6 |
+
+A seed is allowed to have no river. Crowded country genuinely has nowhere to put one: at 512×512
+with four colonies the homelands are large enough that the best of fourteen beds still ran 58% of
+its length through somebody's fields, which is ambient water in one larder and not another's — the
+inequality the water rule exists to prevent. Beds below `kLeastCommonsShare` (0.60) are refused, a
+figure taken from measurement: the bed that broke the rope check sat at 0.42, and every bed at 0.63
+and above made a valid map.
+
 ## What the search buys
 
 Median of 16 seeds at 256×256 with four colonies, in walking steps. *Contest* is how much nearer the
@@ -112,6 +143,11 @@ colonies, and on 6–8 of 8 on 2:1 rectangles. Refused up front:
 ## What has not been done
 
 - No AI games and no fairness tournament. Everything above is static measurement.
+- The river's effect on play is entirely unmeasured. It is a wall with fords across the middle of
+  the contested ground, which is exactly the kind of change that reads fine statically and alters
+  how a game actually goes; whether two fords per colony is the right number is a guess constrained
+  only by the rope check, not by anyone playing across one.
+- Beds still come out near-straight when the meander's harmonics happen to cancel (seed 9013).
 - No human play, so whether the rope actually produces back-and-forth — the thing the map is named
   for — is untested.
 - Single-platform (macos-arm64) golden rows; this generator uses floating-point scoring throughout

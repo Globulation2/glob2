@@ -1242,7 +1242,7 @@ inline void tugContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("tug"));
-	assert(definition.legacyId == 59 && definition.revision == 1);
+	assert(definition.legacyId == 59 && definition.revision == 2);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("prizes") == 6 && request.option("march") == 16 &&
@@ -1287,6 +1287,48 @@ inline void tugContracts()
 		Game strung(nullptr);
 		assert(service.generate(strung, make(7, 9, 4, 7)).error ==
 			   GenerationError::InvalidRequest);
+	}
+	// A river is character, not structure: some seeds cut one and some do not, and a seed that does
+	// is still a country every colony can cross. The bed is drawn and only its placement scored, so
+	// what is checked here is the placement's two promises - that it keeps out of every town, and
+	// that it is forded more often than bare connectivity would need. Crossed only where it must
+	// be, the bed walls the march off and the rope stops being contestable, which is the failure
+	// this map's own rope check caught at 512x512.
+	{
+		int withRiver = 0, without = 0;
+		for (std::uint32_t seed : {9002u, 9009u, 9013u, 9016u, 9024u, 9001u, 9006u, 9012u})
+		{
+			Game g(nullptr);
+			const auto result = service.generate(g, make(8, 8, 4, seed), true);
+			assert(result);
+			// Counts are recorded as integers and residuals as doubles, so read either.
+			const auto number = [](const auto &record)
+			{
+				return std::holds_alternative<double>(record.value)
+						   ? std::get<double>(record.value)
+						   : double(std::get<std::int64_t>(record.value));
+			};
+			double tiles = -1, fords = -1, town = -1;
+			for (const auto &record : result.telemetry.records())
+			{
+				if (record.key == "tug.river.tiles")
+					tiles = number(record);
+				if (record.key == "tug.river.fords")
+					fords = number(record);
+				if (record.key == "tug.river.bed.town.residual")
+					town = number(record);
+			}
+			if (tiles < 0)
+			{
+				++without;
+				assert(fords < 0); // nothing is forded where nothing was cut
+				continue;
+			}
+			++withRiver;
+			assert(tiles > 0 && town == 0 && fords >= 4);
+		}
+		// Both outcomes happen, so the emphasis is genuinely a draw and not a constant.
+		assert(withRiver > 0 && without > 0);
 	}
 	// Fruit grows on the rope and nowhere else, which is what makes the rope worth pulling, and
 	// every colony's own quarry and lake are guaranteed whatever the sliders say.
@@ -1341,7 +1383,8 @@ inline void tugContracts()
 	assert(unsolved.second == unsolved.first); // no moves: the rope is where chance left it
 	assert(solved.second * 4 < solved.first);  // searched: a fraction of the spread it started with
 	puts("PASS Tug: envelope and refusals, fruit only on the rope, guaranteed home lake and quarry, "
-		 "levelling measurably shares the rope out");
+		 "levelling measurably shares the rope out, rivers drawn on some seeds and forded on all "
+		 "of them");
 }
 
 inline void generatorContracts()
