@@ -2920,3 +2920,25 @@ Tek
 Majhen grižljaj
 [Hungry]
 Lačen
+[Portage Lakes]
+Jezera in gozdni prehodi
+[Lake elongation]
+Podolgovatost jezer
+[Portage depth]
+Debelina gozdnega prehoda
+[Extra trails]
+Dodatne poti
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Stranice tega zemljevida morajo meriti od 64 do 512 polj.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+S tem semenom kolonij ni mogoče postaviti na bregove.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Ob vsaki koloniji ni prostora za obnovljiva obrežna polja.
+[Portage Lakes cannot connect its shoreline trails.]
+Obrežnih poti ni mogoče povezati.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+S tem semenom ni mogoče ustvariti uporabne bližnjice skozi suh gozd.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+S tem semenom ni mogoče ustvariti uporabne plavalne bližnjice.
+[Portage Lakes needs separate swimming lakes on this seed.]
+S tem semenom morajo jezera za plavanje ostati ločena.

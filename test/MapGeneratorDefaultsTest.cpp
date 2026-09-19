@@ -689,5 +689,11 @@ int main(int argc, char **argv)
 		GeneratorContracts::faultedCityContracts();
 		return 0;
 	}
+	if (argc == 3 && std::string(argv[2]) == "--portage-lakes-only")
+	{
+		MapGeneratorDefaultsTest::globalsInit();
+		GeneratorContracts::portageLakesContracts();
+		return 0;
+	}
 	MapGeneratorDefaultsTest::run(argc == 3 ? argv[2] : nullptr);
 }

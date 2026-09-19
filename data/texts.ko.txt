@@ -2916,3 +2916,25 @@ Emoji
 살짝 한 입
 [Hungry]
 배고픔
+[Portage Lakes]
+호수와 숲 통로
+[Lake elongation]
+호수의 길쭉한 정도
+[Portage depth]
+벌목할 숲의 두께
+[Extra trails]
+추가 오솔길
+[Portage Lakes needs sides between 64 and 512 tiles.]
+이 지도의 각 변은 64~512칸이어야 합니다.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+이 시드에서는 호숫가에 정착지를 배치할 수 없습니다.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+각 정착지 옆에 다시 자라는 호숫가 농지를 배치할 수 없습니다.
+[Portage Lakes cannot connect its shoreline trails.]
+호숫가 오솔길을 연결할 수 없습니다.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+이 시드에서는 마른 숲을 통과하는 유용한 지름길을 만들 수 없습니다.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+이 시드에서는 헤엄쳐 갈 수 있는 유용한 지름길을 만들 수 없습니다.
+[Portage Lakes needs separate swimming lakes on this seed.]
+이 시드에서는 헤엄쳐 건너는 호수들이 서로 분리되어 있어야 합니다.

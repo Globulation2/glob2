@@ -2920,3 +2920,25 @@ Poftă de mâncare
 O mușcătură mică
 [Hungry]
 Flămând
+[Portage Lakes]
+Lacuri și treceri împădurite
+[Lake elongation]
+Alungirea lacurilor
+[Portage depth]
+Grosimea trecerii
+[Extra trails]
+Poteci suplimentare
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Laturile acestei hărți trebuie să aibă între 64 și 512 dale.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Această sămânță nu permite amplasarea coloniilor pe maluri.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Nu încap câmpuri regenerabile lângă fiecare colonie.
+[Portage Lakes cannot connect its shoreline trails.]
+Potecile de pe maluri nu pot fi conectate.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Această sămânță nu permite o scurtătură utilă prin pădure uscată.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Această sămânță nu permite o scurtătură utilă prin înot.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Cu această sămânță, lacurile pentru înot trebuie să rămână separate.

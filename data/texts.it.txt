@@ -2982,3 +2982,25 @@ Appetito
 Un piccolo morso
 [Hungry]
 Affamato
+[Portage Lakes]
+Laghi e passaggi boscosi
+[Lake elongation]
+Allungamento dei laghi
+[Portage depth]
+Spessore del bosco
+[Extra trails]
+Sentieri aggiuntivi
+[Portage Lakes needs sides between 64 and 512 tiles.]
+I lati di questa mappa devono misurare da 64 a 512 caselle.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Questo seme non permette di collocare colonie sulle rive.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Non c’è spazio per campi rinnovabili accanto a ogni colonia.
+[Portage Lakes cannot connect its shoreline trails.]
+Impossibile collegare i sentieri lungo le rive.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Questo seme non permette di creare una scorciatoia utile nel bosco asciutto.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Questo seme non permette di creare una scorciatoia utile a nuoto.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Con questo seme, i laghi attraversabili a nuoto devono restare separati.

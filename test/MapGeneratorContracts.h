@@ -1751,8 +1751,144 @@ inline void eatenMapContracts()
 		 "rejection, envelope");
 }
 
+inline void portageLakesContracts()
+{
+	const auto &registry = GeneratorRegistry::builtins();
+	const int method = registry.idOf("portage-lakes");
+	const auto &definition = registry.at(method);
+	GenerationService service;
+	D r;
+	r.setMethodDefaults(method);
+	r.wDec = r.hDec = 8;
+	r.nbTeams = 4;
+	r.seed = 1;
+	Game first(nullptr);
+	auto report = service.generate(first, r, true);
+	if (!report)
+		std::fprintf(stderr, "%s\n", report.diagnostic().c_str());
+	assert(report);
+	const auto fingerprint = mapFingerprint(first);
+	GenerationContext context(r);
+	assert(definition.validateWorld(first, context).empty());
+	// Telemetry must not change either placement or RNG, even between other requests.
+	D compact = r;
+	compact.wDec = compact.hDec = 6;
+	compact.nbTeams = 2;
+	Game small(nullptr);
+	auto smallReport = service.generate(small, compact);
+	if (!smallReport)
+		std::fprintf(stderr, "%s\n", smallReport.diagnostic().c_str());
+	assert(smallReport);
+	Game repeated(nullptr);
+	assert(service.generate(repeated, r, false));
+	assert(mapFingerprint(repeated) == fingerprint);
+	// Regrowth cannot invade the terrain-contained farms or refill a dry portage.
+	setSyncRandSeed(4211);
+	for (int tick = 0; tick < 4096; ++tick)
+		first.map.growResources();
+	auto error = definition.validateWorld(first, context);
+	if (!error.empty())
+		std::fprintf(stderr, "Portage Lakes growth: %s\n", error.c_str());
+	assert(error.empty());
+	// Missing dry structural wood must be caught, without relying on fixed coordinates.
+	auto fertility = Fertility::forMap(repeated.map, false);
+	bool removed = false;
+	for (int y = 0; y < 256; ++y)
+		for (int x = 0; x < 256; ++x)
+			if (repeated.map.getResource(x, y).type == WOOD && !fertility.at(x, y))
+			{
+				repeated.map.getResource(x, y).clear();
+				removed = true;
+			}
+	assert(removed && !definition.validateWorld(repeated, context).empty());
+	// The compact policy applies to long rectangles too; each distant colony needs algae.
+	for (const auto shape : {std::array<int, 3>{6, 8, 4}, std::array<int, 3>{7, 7, 4}})
+	{
+		D rectangular = r;
+		rectangular.wDec = shape[0];
+		rectangular.hDec = shape[1];
+		rectangular.nbTeams = shape[2];
+		rectangular.nbWorkers = 8;
+		rectangular.seed = 31;
+		Game world(nullptr);
+		auto result = service.generate(world, rectangular);
+		if (!result)
+			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+		assert(result);
+	}
+	// A change to the lake/road terrain cannot silently validate as the original design.
+	const auto originalTerrain = small.map.getUMTerrain(0, 0);
+	small.map.setUMTerrain(0, 0, originalTerrain == WATER ? GRASS : WATER);
+	small.map.rebuildTerrain();
+	GenerationContext compactContext(compact);
+	assert(!definition.validateWorld(small, compactContext).empty());
+	// Failed neutral bays restore a working layout; that must not invalidate its candidate scan.
+	// This crowded request exposed both nondeterministic reconstruction and an iterator lifetime bug.
+	{
+		D crowded = r;
+		crowded.nbTeams = 12;
+		crowded.nbWorkers = 6;
+		crowded.seed = 100078;
+		crowded.options["lake-elongation"] = 175;
+		crowded.options["portage-depth"] = 3;
+		crowded.options["extra-trails"] = 0;
+		crowded.options["wheat-amount"] = 200;
+		crowded.options["wood-amount"] = 175;
+		crowded.options["stone-amount"] = 175;
+		crowded.options["algae-amount"] = 0;
+		crowded.options["fruit-amount"] = 150;
+		Game one(nullptr), two(nullptr);
+		auto result = service.generate(one, crowded, true);
+		if (!result)
+			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+		assert(result && service.generate(two, crowded));
+		assert(mapFingerprint(one) == mapFingerprint(two));
+	}
+	// At zero abundance the guaranteed seed budget must still service the inn.
+	// Fertility-only sowing previously exhausted all landscape attempts here.
+	{
+		D scarce = r;
+		scarce.wDec = 9;
+		scarce.hDec = 8;
+		scarce.nbTeams = 9;
+		scarce.nbWorkers = 1;
+		scarce.seed = 100908;
+		scarce.options["lake-elongation"] = 225;
+		scarce.options["portage-depth"] = 2;
+		scarce.options["extra-trails"] = 0;
+		scarce.options["wheat-amount"] = 0;
+		scarce.options["wood-amount"] = 50;
+		scarce.options["stone-amount"] = 125;
+		scarce.options["algae-amount"] = 75;
+		scarce.options["fruit-amount"] = 250;
+		Game world(nullptr);
+		auto result = service.generate(world, scarce);
+		if (!result)
+			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+		assert(result);
+	}
+	// Deliberately unsupported requests are rejected before touching the world.
+	D invalid = compact;
+	invalid.nbTeams = 3;
+	assert(!definition.validateRequest(invalid).empty());
+	for (int amount : {0, 300})
+	{
+		D extreme = r;
+		for (const auto &control : definition.controls)
+			if (control.group == ControlGroup::Resources)
+				extreme.options[control.id] = amount;
+		Game world(nullptr);
+		auto result = service.generate(world, extreme);
+		if (!result)
+			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+		assert(result);
+	}
+	puts("PASS Portage Lakes: compact/full, repeatability, growth containment, missing portage, "
+		 "abundance extremes");
+}
 inline void generatorContracts()
 {
+	portageLakesContracts();
 	faultedCityContracts();
 	encircledKingdomContracts();
 	combContracts();

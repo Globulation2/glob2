@@ -2916,3 +2916,25 @@ Sức ăn
 Cắn một miếng nhỏ
 [Hungry]
 Đói bụng
+[Portage Lakes]
+Hồ và lối xuyên rừng
+[Lake elongation]
+Độ thuôn dài của hồ
+[Portage depth]
+Độ dày rừng cần chặt
+[Extra trails]
+Đường mòn bổ sung
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Các cạnh bản đồ này phải dài từ 64 đến 512 ô.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Hạt giống này không đủ chỗ đặt các khu định cư ven hồ.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Không đủ chỗ đặt ruộng ven hồ có thể tái sinh cạnh mỗi khu định cư.
+[Portage Lakes cannot connect its shoreline trails.]
+Không thể nối các đường mòn ven hồ.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Hạt giống này không tạo được lối tắt hữu ích qua rừng khô.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Hạt giống này không tạo được lối tắt hữu ích bằng cách bơi.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Với hạt giống này, các hồ để bơi phải tách biệt nhau.
