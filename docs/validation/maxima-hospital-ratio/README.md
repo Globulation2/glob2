@@ -213,3 +213,12 @@ measured runtime before any complete five-policy group finished. Those partial
 attempts are excluded; their original Linux assignments were retained. The
 cancellation record is in `provenance/`. No outcome was used for this decision. `run.py` can instead run the whole fixed design
 on Linux. Per-game commands identify the actual execution path used here.
+
+## Integration after the ablation
+
+The selected 0.6 policy and confirmed tower fallback were merged with upstream
+labour commit `8624e3b94` (fruit, fitted force beliefs, army growth and gathered
+waves) in `08b59bc63`. See [integration validation](integration/README.md) for the
+combined branch's regression and cross-platform checks. The 240-game results
+above describe the frozen experimental baseline; they are not a new performance
+estimate for all the subsequently merged policies together.

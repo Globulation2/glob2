@@ -83,6 +83,16 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
         )
         for start, end in ranges:
             executor = function(self.source, start, end)
+            # The newer saved-policy paths dispatch on their recorded mode;
+            # reachable fruit also checks whether flag staffing is enabled.
+            permitted = {
+                "void Maxima::control_offense": ("strategy.assault.waves_enabled",),
+                "void Maxima::update_fruit_flags": (
+                    "strategy.fruit.reachable_supply", "strategy.fruit.units_per_flag"),
+            }
+            for setting in permitted.get(start, ()):
+                self.assertEqual(executor.count(setting), 1, setting)
+                executor = executor.replace(setting, "", 1)
             self.assertNotIn("strategy.", executor, start)
             if start == "void Maxima::development_cycle":
                 self.assertIn("collect_development_intents(world)", executor)
