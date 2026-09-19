@@ -2876,6 +2876,20 @@ Areno de provoj bezonas pli grandan mapon aŭ malpli da kolonioj por havi lokon 
 La Kombilo
 [Peninsulas per shore]
 Duoninsuloj ĉe ĉiu bordo
+[Encircled Kingdom]
+Ĉirkaŭita regno
+[Fortress plan]
+Fortikaĵa plano
+[Automatic]
+Aŭtomata
+[Elongated enclosure]
+Longforma ĉirkaŭmuro
+[Bastioned enclosure]
+Bastiona ĉirkaŭmuro
+[Paired courtyards]
+Du kortoj
+[Heartland farmland]
+Kerna agraro
 [The Faulted City]
 La fendita urbo
 [Fault displacement]

@@ -2874,6 +2874,20 @@ Arena tantangan memerlukan peta yang lebih besar atau lebih sedikit koloni agar 
 Sisir
 [Peninsulas per shore]
 Semenanjung per pantai
+[Encircled Kingdom]
+Kerajaan terkepung
+[Fortress plan]
+Denah benteng
+[Automatic]
+Otomatis
+[Elongated enclosure]
+Benteng memanjang
+[Bastioned enclosure]
+Benteng berbastion
+[Paired courtyards]
+Halaman kembar
+[Heartland farmland]
+Lahan pertanian pusat
 [The Faulted City]
 Kota yang Terbelah
 [Fault displacement]

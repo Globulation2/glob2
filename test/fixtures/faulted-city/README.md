@@ -1,8 +1,8 @@
 # Faulted City implementation evidence
 
 See [design and results](../../../docs/map-generators/FAULTED_CITY.md). These are
-2026-09-19 measurements, not universal balance claims. Map id 63, revision 1. Historical evidence used provisional id 58 before integration;
-that id now belongs to Orchard Commons. Reproduction scripts use 63. Terrain and
+2026-09-19 measurements, not universal balance claims. Map id 64, revision 1. Historical evidence used provisional id 58 before integration;
+that id now belongs to Orchard Commons. Reproduction scripts use 64. Terrain and
 settlement algorithms were unchanged by the renumbering.
 
 ## Retained artifacts

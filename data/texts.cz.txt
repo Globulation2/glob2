@@ -2878,6 +2878,20 @@ Aréna zkoušek potřebuje větší mapu nebo méně kolonií, aby se ke každé
 Hřeben
 [Peninsulas per shore]
 Poloostrovy na každém břehu
+[Encircled Kingdom]
+Obklíčené království
+[Fortress plan]
+Půdorys pevnosti
+[Automatic]
+Automatický
+[Elongated enclosure]
+Protáhlé opevnění
+[Bastioned enclosure]
+Bastionové opevnění
+[Paired courtyards]
+Dvojice nádvoří
+[Heartland farmland]
+Pole v jádru království
 [The Faulted City]
 Rozlámané město
 [Fault displacement]

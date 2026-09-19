@@ -2874,6 +2874,20 @@ Emoji
 Гребінець
 [Peninsulas per shore]
 Півостровів на кожному березі
+[Encircled Kingdom]
+Оточене королівство
+[Fortress plan]
+План фортеці
+[Automatic]
+Автоматично
+[Elongated enclosure]
+Видовжена фортеця
+[Bastioned enclosure]
+Бастіонна фортеця
+[Paired courtyards]
+Два подвір’я
+[Heartland farmland]
+Поля в центрі королівства
 [The Faulted City]
 Розколоте місто
 [Fault displacement]

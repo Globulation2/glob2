@@ -2878,6 +2878,20 @@ La Arena de pruebas necesita un mapa más grande o menos colonias para dar cabid
 El Peine
 [Peninsulas per shore]
 Penínsulas por orilla
+[Encircled Kingdom]
+Reino rodeado
+[Fortress plan]
+Planta de la fortaleza
+[Automatic]
+Automática
+[Elongated enclosure]
+Recinto alargado
+[Bastioned enclosure]
+Recinto abaluartado
+[Paired courtyards]
+Patios gemelos
+[Heartland farmland]
+Tierras agrícolas centrales
 [The Faulted City]
 La ciudad fracturada
 [Fault displacement]

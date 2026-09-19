@@ -2878,6 +2878,20 @@ A Próbák arénájához nagyobb térkép vagy kevesebb kolónia kell, hogy mind
 A Fésű
 [Peninsulas per shore]
 Félszigetek partonként
+[Encircled Kingdom]
+Körülzárt királyság
+[Fortress plan]
+Erőd alaprajza
+[Automatic]
+Automatikus
+[Elongated enclosure]
+Hosszúkás erőd
+[Bastioned enclosure]
+Bástyás erőd
+[Paired courtyards]
+Kettős udvar
+[Heartland farmland]
+Központi termőföld
 [The Faulted City]
 A szétszakadt város
 [Fault displacement]

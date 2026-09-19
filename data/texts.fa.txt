@@ -2876,6 +2876,20 @@ Emoji
 شانه
 [Peninsulas per shore]
 تعداد شبه‌جزیره در هر ساحل
+[Encircled Kingdom]
+پادشاهی محاصره‌شده
+[Fortress plan]
+طرح دژ
+[Automatic]
+خودکار
+[Elongated enclosure]
+محوطهٔ کشیده
+[Bastioned enclosure]
+محوطهٔ بارودار
+[Paired courtyards]
+دو حیاط
+[Heartland farmland]
+کشتزارهای مرکزی
 [The Faulted City]
 شهر گسسته
 [Fault displacement]

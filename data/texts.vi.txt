@@ -2874,6 +2874,20 @@ Cách xa
 Chiếc lược
 [Peninsulas per shore]
 Số bán đảo mỗi bờ
+[Encircled Kingdom]
+Vương quốc bị bao vây
+[Fortress plan]
+Bố cục pháo đài
+[Automatic]
+Tự động
+[Elongated enclosure]
+Thành lũy thuôn dài
+[Bastioned enclosure]
+Thành lũy có pháo đài góc
+[Paired courtyards]
+Hai sân trong
+[Heartland farmland]
+Đất nông nghiệp trung tâm
 [The Faulted City]
 Thành phố đứt gãy
 [Fault displacement]

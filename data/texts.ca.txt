@@ -2886,6 +2886,20 @@ L’Arena de proves necessita un mapa més gran o menys colònies per encabir du
 La Pinta
 [Peninsulas per shore]
 Penínsules per riba
+[Encircled Kingdom]
+Regne encerclat
+[Fortress plan]
+Planta de la fortalesa
+[Automatic]
+Automàtica
+[Elongated enclosure]
+Recinte allargat
+[Bastioned enclosure]
+Recinte amb baluards
+[Paired courtyards]
+Patis aparellats
+[Heartland farmland]
+Terres de conreu centrals
 [The Faulted City]
 La ciutat fracturada
 [Fault displacement]

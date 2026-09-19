@@ -157,6 +157,7 @@ restores whatever landscape it had.
 | `bajada` | 55 | Bajada | [Desert ranges with rows of alluvial fans, stamped home fans, playa lakes](BAJADA.md) |
 | `central-quarry` | 56 | Central Quarry | [Natural country round a lake whose island holds the only stone](CENTRAL_QUARRY.md) |
 | `hidden-oasis` | 57 | Hidden Oasis | [Canyon country round a plateau whose hidden pond holds the only algae, sealed by the colonies' own towers](HIDDEN_OASIS.md) |
+| `encircled-kingdom` | 63 | Encircled Kingdom | [Colony zero holds an agricultural fortress against outer towns, with land gates and swimming waterfronts](ENCIRCLED_KINGDOM.md) |
 | `rugged-archipelago` | 8 | Old islands | Island growth + beach passes, own resource search |
 | `contested-commons` | 9 | Contested commons | Point dispersion (`shared/legacy/Regions`) |
 | `rain-shadow` | 27 | Rain shadow | Its own — see below |

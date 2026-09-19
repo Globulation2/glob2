@@ -2874,6 +2874,20 @@ Emoji
 梳子
 [Peninsulas per shore]
 每岸半岛数
+[Encircled Kingdom]
+被包围的王国
+[Fortress plan]
+要塞布局
+[Automatic]
+自动
+[Elongated enclosure]
+狭长围城
+[Bastioned enclosure]
+棱堡围城
+[Paired courtyards]
+双庭院
+[Heartland farmland]
+腹地农田
 [The Faulted City]
 断层之城
 [Fault displacement]

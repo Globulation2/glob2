@@ -1436,6 +1436,129 @@ inline void combContracts()
 	puts("PASS Comb: distinct peninsula counts, finished-world contracts and telemetry");
 }
 
+inline void encircledKingdomContracts()
+{
+	D request;
+	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("encircled-kingdom"));
+	const auto &definition = GeneratorRegistry::builtins().at(request.method);
+	for (int teams : {1, 2, 13})
+	{
+		request.nbTeams = teams;
+		assert(!definition.validateRequest(request).empty());
+	}
+	request.nbTeams = 7;
+	assert(!definition.validateRequest(request).empty());
+	request.nbTeams = 4;
+	request.wDec = 7;
+	assert(!definition.validateRequest(request).empty());
+	request.wDec = 8;
+	for (int teams = 3; teams <= 12; ++teams)
+		for (int plan = 1; plan <= 3; ++plan)
+		{
+			request.nbTeams = teams;
+			request.wDec = teams >= 7 ? 9 : 8;
+			request.hDec = 8;
+			request.seed = 17 + teams;
+			request.options["fortress-plan"] = plan;
+			request.nbWorkers = teams % 2 ? 1 : 8;
+			for (const char *key :
+				 {"wheat-amount", "wood-amount", "stone-amount", "algae-amount", "fruit-amount"})
+				request.options[key] = plan == 1 ? 0 : plan == 2 ? 300 : 100;
+			request.options["gate-width"] = plan == 1 ? 6 : 14;
+			request.options["heartland-farmland"] = plan == 1 ? 75 : 150;
+			Game game(nullptr);
+			const auto result = GenerationService().generate(game, request, true);
+			if (!result)
+				std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+			assert(result);
+			const Torus t(game.map);
+			assert(std::abs(game.teams[0]->startPosX - t.w / 2) < 20);
+			assert(std::abs(game.teams[0]->startPosY - t.h / 2) < 20);
+			for (int k = 1; k < teams; ++k)
+				assert(std::max(std::abs(game.teams[k]->startPosX - t.w / 2),
+								std::abs(game.teams[k]->startPosY - t.h / 2)) > 60);
+			GenerationContext check(request);
+			assert(definition.validateWorld(game, check).empty());
+			// Plant a resource directly beside the capital, outside all gardens: containment
+			// must reject it even though all original starting supplies remain intact.
+			const int x = t.w / 2 + 2, y = t.h / 2 - 20;
+			assert(game.map.isResourceAllowed(x, y, WHEAT));
+			game.map.setResource(x, y, WHEAT, 1);
+			assert(!definition.validateWorld(game, check).empty());
+		}
+	// Retained random-study failures: a concave rectangular approach and a remote outer town.
+	for (bool rectangular : {true, false})
+	{
+		D edge;
+		edge.setMethodDefaults(GeneratorRegistry::builtins().idOf("encircled-kingdom"));
+		edge.seed = rectangular ? 100897 : 100972;
+		edge.nbTeams = rectangular ? 9 : 5;
+		edge.wDec = rectangular ? 8 : 9;
+		edge.hDec = 9;
+		edge.nbWorkers = rectangular ? 1 : 7;
+		edge.options = {{"fortress-plan", 3},
+						{"gate-width", rectangular ? 10 : 6},
+						{"heartland-farmland", 75},
+						{"wheat-amount", rectangular ? 200 : 275},
+						{"wood-amount", rectangular ? 200 : 150},
+						{"stone-amount", rectangular ? 75 : 150},
+						{"algae-amount", rectangular ? 200 : 0},
+						{"fruit-amount", rectangular ? 0 : 300}};
+		Game game(nullptr);
+		const auto result = GenerationService().generate(game, edge, true);
+		if (!result)
+			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+		assert(result);
+	}
+	// Telemetry and intervening requests must not alter seeded terrain or colonies.
+	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("encircled-kingdom"));
+	request.seed = 7;
+	request.nbTeams = 4;
+	request.wDec = request.hDec = 8;
+	request.nbWorkers = 4;
+	Game plain(nullptr), traced(nullptr), other(nullptr), repeated(nullptr);
+	assert(GenerationService().generate(plain, request));
+	const auto observed = GenerationService().generate(traced, request, true);
+	assert(observed && mapFingerprint(plain) == mapFingerprint(traced));
+	D alternate = request;
+	alternate.seed = 91;
+	alternate.options["fortress-plan"] = 2;
+	assert(GenerationService().generate(other, alternate));
+	const auto again = GenerationService().generate(repeated, request, true);
+	assert(again && mapFingerprint(traced) == mapFingerprint(repeated));
+	assert(observed.telemetry.records() == again.telemetry.records());
+	for (int plan = 1; plan <= 3; ++plan)
+	{
+		D grown = request;
+		grown.options["fortress-plan"] = plan;
+		for (const auto &control : definition.controls)
+			if (control.group == ControlGroup::Resources)
+				grown.options[control.id] = control.maximum;
+		Game abundant(nullptr);
+		assert(GenerationService().generate(abundant, grown));
+		setSyncRandSeed(4211);
+		for (int tick = 0; tick < 4096; ++tick)
+			abundant.map.growResources();
+		GenerationContext check(grown);
+		const auto error = definition.validateWorld(abundant, check);
+		if (!error.empty())
+			std::fprintf(stderr, "Kingdom growth: %s\n", error.c_str());
+		assert(error.empty());
+		// Stone is the fortress structure even with all renewable fields fully grown.
+		bool removed = false;
+		for (int y = 0; y < abundant.map.getH(); ++y)
+			for (int x = 0; x < abundant.map.getW(); ++x)
+				if (abundant.map.getResource(x, y).type == STONE)
+				{
+					abundant.map.getResource(x, y).clear();
+					removed = true;
+				}
+		assert(removed && !definition.validateWorld(abundant, check).empty());
+	}
+	puts("PASS Encircled Kingdom: 3-12 colonies, all fortress plans, extremes, fixed capital, "
+		 "containment");
+}
+
 inline void faultedCityContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("faulted-city"));
@@ -1536,6 +1659,7 @@ inline void faultedCityContracts()
 inline void generatorContracts()
 {
 	faultedCityContracts();
+	encircledKingdomContracts();
 	combContracts();
 	evenGroundContracts();
 	marchlandContracts();

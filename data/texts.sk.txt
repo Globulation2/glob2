@@ -2886,6 +2886,20 @@ Aréna skúšok potrebuje väčšiu mapu alebo menej kolónií, aby sa ku každe
 Hrebeň
 [Peninsulas per shore]
 Polostrovy na každom brehu
+[Encircled Kingdom]
+Obkľúčené kráľovstvo
+[Fortress plan]
+Pôdorys pevnosti
+[Automatic]
+Automatický
+[Elongated enclosure]
+Podlhovasté opevnenie
+[Bastioned enclosure]
+Bastiónové opevnenie
+[Paired courtyards]
+Dvojica nádvorí
+[Heartland farmland]
+Polia v jadre kráľovstva
 [The Faulted City]
 Rozlámané mesto
 [Fault displacement]
