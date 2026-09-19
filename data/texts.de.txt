@@ -2920,6 +2920,28 @@ Appetit
 Ein kleiner Bissen
 [Hungry]
 Hungrig
+[Portage Lakes]
+Seen und Waldpassagen
+[Lake elongation]
+Länglichkeit der Seen
+[Portage depth]
+Dicke der Waldpassage
+[Extra trails]
+Zusätzliche Pfade
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Die Seiten dieser Karte müssen zwischen 64 und 512 Feldern lang sein.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Mit diesem Startwert lassen sich keine Siedlungen am Ufer platzieren.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Neben jeder Siedlung lassen sich keine nachwachsenden Uferfelder platzieren.
+[Portage Lakes cannot connect its shoreline trails.]
+Die Uferpfade lassen sich nicht verbinden.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Mit diesem Startwert lässt sich keine nützliche Abkürzung durch trockenen Wald anlegen.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Mit diesem Startwert lässt sich keine nützliche Schwimmabkürzung anlegen.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Mit diesem Startwert müssen die Schwimmseen voneinander getrennt bleiben.
 [Drowned Forest]
 Versunkener Wald
 [Sandbar connections]

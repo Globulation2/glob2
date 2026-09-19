@@ -2918,6 +2918,28 @@ Emoji
 یک گاز کوچک
 [Hungry]
 گرسنه
+[Portage Lakes]
+دریاچه‌ها و گذرگاه‌های جنگلی
+[Lake elongation]
+کشیدگی دریاچه‌ها
+[Portage depth]
+ضخامت جنگل در گذرگاه
+[Extra trails]
+کوره‌راه‌های بیشتر
+[Portage Lakes needs sides between 64 and 512 tiles.]
+طول ضلع‌های این نقشه باید بین 64 و 512 خانه باشد.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+با این بذر نمی‌توان سکونتگاه‌ها را در ساحل جای داد.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+برای زمین‌های کشاورزی تجدیدپذیر در کنار هر سکونتگاه جا نیست.
+[Portage Lakes cannot connect its shoreline trails.]
+نمی‌توان کوره‌راه‌های ساحلی را به هم وصل کرد.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+با این بذر نمی‌توان میان‌بری مفید از جنگل خشک ساخت.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+با این بذر نمی‌توان میان‌بری مفید برای شنا ساخت.
+[Portage Lakes needs separate swimming lakes on this seed.]
+با این بذر، دریاچه‌های مناسب شنا باید از هم جدا بمانند.
 [Drowned Forest]
 جنگل آب‌گرفته
 [Sandbar connections]

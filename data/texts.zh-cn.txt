@@ -2916,6 +2916,28 @@ Emoji
 咬一小口
 [Hungry]
 饿了
+[Portage Lakes]
+湖泊与林间通道
+[Lake elongation]
+湖泊狭长度
+[Portage depth]
+通道伐木厚度
+[Extra trails]
+额外小径
+[Portage Lakes needs sides between 64 and 512 tiles.]
+此地图的边长必须为64至512格。
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+此种子无法在湖岸安置定居点。
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+无法在每个定居点旁布置可再生的湖岸农田。
+[Portage Lakes cannot connect its shoreline trails.]
+无法连接湖岸小径。
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+此种子无法生成穿过干燥树林的有效捷径。
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+此种子无法生成有效的游泳捷径。
+[Portage Lakes needs separate swimming lakes on this seed.]
+使用此种子时，可供游泳的湖泊必须保持互不相连。
 [Drowned Forest]
 淹没森林
 [Sandbar connections]

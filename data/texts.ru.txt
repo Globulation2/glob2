@@ -2918,6 +2918,28 @@ Emoji
 Маленький кусочек
 [Hungry]
 Голодный
+[Portage Lakes]
+Озёра и лесные волоки
+[Lake elongation]
+Вытянутость озёр
+[Portage depth]
+Толщина лесного прохода
+[Extra trails]
+Дополнительные тропы
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Стороны этой карты должны быть от 64 до 512 клеток.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+При этом начальном числе не удаётся разместить поселения у берегов.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Рядом с каждым поселением не помещаются возобновляемые прибрежные поля.
+[Portage Lakes cannot connect its shoreline trails.]
+Не удаётся соединить прибрежные тропы.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+При этом начальном числе не удаётся создать полезный короткий путь через сухой лес.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+При этом начальном числе не удаётся создать полезный короткий путь вплавь.
+[Portage Lakes needs separate swimming lakes on this seed.]
+При этом начальном числе озёра для плавания должны оставаться раздельными.
 [Drowned Forest]
 Затопленный лес
 [Sandbar connections]

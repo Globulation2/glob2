@@ -2920,6 +2920,28 @@ Emoji
 Мали залогај
 [Hungry]
 Гладан
+[Portage Lakes]
+Језера и шумски пролази
+[Lake elongation]
+Издуженост језера
+[Portage depth]
+Дебљина шумског пролаза
+[Extra trails]
+Додатне стазе
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Странице ове мапе морају имати од 64 до 512 поља.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Са овим семеном није могуће поставити колоније уз обале.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Поред сваке колоније нема места за обновљива приобална поља.
+[Portage Lakes cannot connect its shoreline trails.]
+Није могуће повезати приобалне стазе.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Са овим семеном није могуће направити корисну пречицу кроз суву шуму.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Са овим семеном није могуће направити корисну пречицу пливањем.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Са овим семеном језера за пливање морају остати одвојена.
 [Drowned Forest]
 Поплављена шума
 [Sandbar connections]

@@ -2920,6 +2920,28 @@ Ruokahalu
 Pieni haukkaus
 [Hungry]
 Nälkäinen
+[Portage Lakes]
+Järvet ja metsätaipaleet
+[Lake elongation]
+Järvien pitkänomaisuus
+[Portage depth]
+Raivaussyvyys
+[Extra trails]
+Lisäpolut
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Kartan sivujen on oltava 64–512 ruudun pituisia.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Tällä siemenellä rannoille ei mahdu siirtokuntia.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Jokaisen siirtokunnan viereen ei mahdu uusiutuvia rantapeltoja.
+[Portage Lakes cannot connect its shoreline trails.]
+Rantapolkuja ei voi yhdistää.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Tällä siemenellä ei mahdu hyödyllistä oikopolkua kuivan metsän läpi.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Tällä siemenellä ei mahdu hyödyllistä uintioikoreittiä.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Tällä siemenellä uintijärvien on pysyttävä erillisinä.
 [Drowned Forest]
 Uponnut metsä
 [Sandbar connections]

@@ -2930,6 +2930,28 @@ Jateko gogoa
 Hozkada txiki bat
 [Hungry]
 Gose
+[Portage Lakes]
+Aintzirak eta basoko pasabideak
+[Lake elongation]
+Aintziren luzapena
+[Portage depth]
+Basoko pasabidearen lodiera
+[Extra trails]
+Bidezidor gehigarriak
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Mapa honen aldeek 64 eta 512 lauki arteko luzera izan behar dute.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Hazi honekin ezin dira kokalekuak ertzetan jarri.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Ez dago lekurik kokaleku bakoitzaren ondoan soro berriztagarriak jartzeko.
+[Portage Lakes cannot connect its shoreline trails.]
+Ezin dira ertzetako bidezidorrak lotu.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Hazi honekin ezin da baso lehorrean lasterbide erabilgarririk sortu.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Hazi honekin ezin da igerian egiteko lasterbide erabilgarririk sortu.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Hazi honekin, igeri egiteko aintzirek bereizita egon behar dute.
 [Drowned Forest]
 Baso urperatua
 [Sandbar connections]

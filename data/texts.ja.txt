@@ -2916,6 +2916,28 @@ Emoji
 ちょっとひとかじり
 [Hungry]
 腹ぺこ
+[Portage Lakes]
+湖と森の抜け道
+[Lake elongation]
+湖の細長さ
+[Portage depth]
+伐採する森の厚さ
+[Extra trails]
+追加の小道
+[Portage Lakes needs sides between 64 and 512 tiles.]
+このマップの各辺は64～512マスである必要があります。
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+このシードでは湖畔に集落を配置できません。
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+各集落の隣に再生可能な湖畔の畑を配置できません。
+[Portage Lakes cannot connect its shoreline trails.]
+湖畔の小道をつなげられません。
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+このシードでは乾燥した森に有用な近道を作れません。
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+このシードでは泳いで使える有用な近道を作れません。
+[Portage Lakes needs separate swimming lakes on this seed.]
+このシードでは泳いで渡る湖を互いにつながらないように配置する必要があります。
 [Drowned Forest]
 水没の森
 [Sandbar connections]
