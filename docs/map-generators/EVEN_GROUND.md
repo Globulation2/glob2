@@ -16,14 +16,15 @@ point a search at a decision rather than at a landscape.
 > **These figures predate the stream rename and describe different maps.** Renaming the
 > generator's random streams moved every map it makes, so the numbers below — control
 > correlations, fairness scores, refusal rates, river rates and the tournament — were measured
-> on the previous maps. The conclusions are structural and expected to hold; the figures need
-> taking again. Everything checked by the test suite (golden rows, all 17 contract suites,
-> telemetry) has been re-run and passes on the current maps.
+> on the previous maps. Revision 2 also corrects the crop-clustering objective. Treat the historical conclusions
+> as hypotheses until remeasured. Current checks and results are recorded in the
+> [review evidence](evidence/constraint-solved/review/README.md).
 
 ## The play contract
 
-Lake country: green plains with a handful of real lakes, no two seeds alike, and no colony better
-placed than another in a way a player could read off the map. Because the balance is found by
+Experimental lake country: green plains with lakes and crop fields, with a search intended to
+reduce differences in reachable resources and building room. This is a design target, not a
+promise of balanced games. Because the balance is found by
 measurement rather than by mirroring, the map is asymmetric — you cannot infer your opponent's
 position from your own — and the ground between colonies tends to be the richest on the map, which
 is where the fighting goes.
@@ -224,7 +225,5 @@ its start-quality score says.
 - The tournament above is 6 maps a generator. It is enough to reject fairness for Even Ground (three
   maps individually significant) but not enough to certify Marchland as fair — only to say it is
   indistinguishable from fair at this sample size.
-- No human play, so whether the contested middles actually produce the fights the design expects is
-  untested.
 - Single-platform (macos-arm64) golden rows only; generator floating-point output is not promised
   identical across platforms, and this generator uses floating-point scoring throughout.

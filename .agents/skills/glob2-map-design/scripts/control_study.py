@@ -31,7 +31,8 @@ def controls(binary, generator):
             # A choice lists its values as `0(Brief) 1(Normal)`: the stored value is the number, the
             # name is only what the lobby shows. Without this a generator with any choice control
             # cannot be studied at all.
-            found[m.group(1)] = [int(v.split('(')[0]) for v in m.group(3).split()]
+            found[m.group(1)] = [int(v) for v in re.findall(
+                r'(?:^|\s)(-?\d+)(?:\([^)]*\))?(?=\s|$)', m.group(3))]
             defaults[m.group(1)] = int(m.group(2))
     return found, defaults
 

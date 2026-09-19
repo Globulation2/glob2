@@ -121,9 +121,10 @@ std::vector<int> fordsToRejoin(const std::vector<RiverFord> &sites, int componen
 	for (size_t i = 0; i < sites.size(); ++i)
 	{
 		const RiverFord &site = sites[i];
-		if (site.near < 0 || site.far < 0 || site.near >= components || site.far >= components)
+		if (site.firstBank < 0 || site.secondBank < 0 || site.firstBank >= components ||
+			site.secondBank >= components)
 			continue;
-		const int a = find(site.near), b = find(site.far);
+		const int a = find(site.firstBank), b = find(site.secondBank);
 		if (a == b)
 			continue;
 		parent[a] = b;

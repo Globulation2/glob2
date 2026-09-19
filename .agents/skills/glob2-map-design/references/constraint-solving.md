@@ -21,11 +21,13 @@ The pair disagree, and the disagreement is the most useful thing here.
 | | What it searches | Static fairness | Fairness tournament |
 |---|---|---|---|
 | Even Ground | the whole terrain | 0.894 — competitive | **fails**: 25.9 pp position bias, 3 of 6 maps biased, one start won 8 games of 8 |
-| Marchland | which sites carry the prizes | 0.890 — competitive | **passes**: 12.2 pp against a fair-map floor of 11.6 |
+| Marchland | which sites carry the prizes | 0.890 — competitive | **inconclusive**: 12.2 pp against a fair-map floor of 11.6 |
 | Symmetric arena (control) | nothing, it is symmetric | 0.999 | 0.0 pp |
 
-Both score the same statically. In games, the map that searched everything is measurably unfair and
-the map that searched one decision is not. Meanwhile Marchland produces **zero valid maps** without
+These measurements predate the stream rename and the revision-2 clustering fix; they describe
+historical maps. Marchland had no individually significant map after correction, but its pooled
+colony-index bias was significant (p 0.018). The sample does not establish fairness or show that
+the different search strategies caused the difference. Meanwhile Marchland produces **zero valid maps** without
 its search — a rope dealt at random missed its own contest bar on 16 seeds out of 16 — so the search
 there is not polish, it is the thing that makes the map possible.
 

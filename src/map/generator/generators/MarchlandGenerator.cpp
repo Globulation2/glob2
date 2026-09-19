@@ -1015,8 +1015,10 @@ bool generate(Game &game, GenerationContext &context)
 		return false;
 	}
 	const int side = std::min(t.w, t.h);
+	// On a supported 64-tile-wide map the quarter-side cap is below the usual minimum.
+	// Keep that cap while lowering the minimum; std::clamp requires ordered bounds.
 	const int gap = std::clamp(int(side * kPrizeGapShare * kPrizeGapPrizes / std::max(2, o.prizes)),
-							   kLeastPrizeGap, side / 4);
+							   std::min(kLeastPrizeGap, side / 4), side / 4);
 	const Rope rope = levelRope(candidates, cost, t, o.prizes, gap, o.levelling, context);
 	if (rope.prize.empty())
 	{
@@ -1292,7 +1294,7 @@ GeneratorDefinition marchlandDefinition()
 	return {"marchland",
 			59,
 			"Marchland",
-			1,
+			2,
 			false,
 			// Levelling is the map's own argument: at 0 the prizes are merely spread out, the way
 			// any generator would place them, and at 100 they are spread out and the same walk from

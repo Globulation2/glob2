@@ -2,8 +2,8 @@
 
 `marchland`, legacy id 59. Source: [MarchlandGenerator.cpp](../../src/map/generator/generators/MarchlandGenerator.cpp).
 
-Homelands of farmed country, parted by a dry march that nobody can build on, with a rope of prizes
-strung through it. Every prize is a fruit grove with a quarry beside it, on a clearing of living
+Homelands of farmed country, bounded by dry collars and separated by shared grassland, with a rope
+of prizes strung through it. Every prize is a fruit grove with a quarry beside it, on a clearing of living
 ground — the only fruit on the map, and the only quarry worth marching for.
 
 ![Eight Marchland seeds at 256×256 with four colonies](images/constraint-solved/marchland-seeds.png)
@@ -15,16 +15,16 @@ limitation rather than a design: see [what has not been done](#what-has-not-been
 > **These figures predate the stream rename and describe different maps.** Renaming the
 > generator's random streams moved every map it makes, so the numbers below — control
 > correlations, fairness scores, refusal rates, river rates and the tournament — were measured
-> on the previous maps. The conclusions are structural and expected to hold; the figures need
-> taking again. Everything checked by the test suite (golden rows, all 17 contract suites,
-> telemetry) has been re-run and passes on the current maps.
+> on the previous maps. Treat their conclusions as hypotheses until remeasured. Current revision-2 checks and
+> results are recorded in the [review evidence](evidence/constraint-solved/review/README.md).
 
 ## The play contract
 
-Your homeland feeds you and cannot win for you. The march is sand: no buildings, no crops, nothing
-grows, so territory never moves. The only thing that can move is the rope. Every prize is a front
-where two colonies arrive on equal terms, and every colony is a contender for the same number of
-prizes, so which way the rope goes is play rather than spawn.
+Your homeland supplies the opening economy. A thin sand collar contains its crops; beyond it,
+the commons has grass, sparse wheat and wood, and room to expand. The fruit groves and quarries
+give colonies reasons to cross that collar. The search places each prize near a front between
+two colonies and limits the difference in how many prizes each colony can contest. These walking
+cost checks do not establish equal starting economies or equal chances of winning.
 
 ## What is drawn and what is solved
 
@@ -38,7 +38,7 @@ be a worse way to get any of them:
 |---|---|
 | Equal ground per colony | `growTerritories` over the whole torus |
 | A march between homelands | `separateTerritories` |
-| Homes evenly placed, not at the edge of their own ground | `farthestSites` then `recentreSites`, twice |
+| Spread-out homes, seated inside their own ground | `farthestSites`, then `regionHome`; sites are not recentered |
 | A swarm the same walk in from the march everywhere | `Homes.h`'s `regionHome` |
 | **A private lake of exactly the same size for everyone** | `growLakeBeside` with a fixed target |
 | Ambient fields that leave a clear town to build in | `plantCoverShare` outside a `dilateRound` town |
@@ -233,9 +233,9 @@ slots, against Symmetric arena as the control
 | *fair-map floor* | *11.6 pp* | | |
 
 At 12.2 pp against a fair-map floor of 11.6, Marchland sits on the line where a map cannot be told
-apart from a fair one, and no individual map's wins reject a uniform split. That is a pass, and it
-is worth saying it is a *narrow* one: 48 games over 6 maps can only fail a map convincingly, not
-certify it. The honest reading is "no bias detected at this sample size", not "fair".
+apart from a fair one, and no individual map's wins reject a uniform split. No individual map rejected a uniform split after correction, but the headline exceeds that
+floor and the pooled colony-index result below is significant. This is inconclusive evidence,
+not a fairness pass.
 
 Two caveats that keep it honest. Wins by the generator's own colony index came out 16 / 11 / 4 / 17
 (p 0.018) — colony 2 under-wins, which is not a bias by *start* but does say the rope is not being
@@ -244,8 +244,8 @@ barely predicted anything here (rho 0.23 with win share, p 0.350), so the levell
 is not what is deciding these games.
 
 The interesting comparison is with Even Ground, whose whole premise is searched fairness and which
-fails this test. Marchland searches one decision and draws everything else, and passes it. That is
-the branch's central claim, tested in games rather than argued.
+fails this test. Marchland searches one decision and draws everything else. Its historical result was less
+biased in this small sample; it does not establish that the search strategy caused the difference.
 
 ## What has not been done
 

@@ -98,12 +98,23 @@ def check_parsing():
     study = t.parse_study('\n'.join([
         'SAMPLED,1001,42,5', 'ROTATIONS,4,4,0,1,1,1,1', 'START,0,7,9',
         'MAPFILE,0,/tmp/map-r0.map,1024,123', 'OPTION,width,7',
-        'COLONY,0,' + ','.join(['1'] * 15)]))
+        'COLONY,0,2,3,400,50,600,70,2,80.5,-0.125,0.25']))
     assert study['rotation_checks'] == {'teams': 4, 'rotations': 4, 'save_load_stable': 0,
                                        'references_consistent': 1, 'colonies_placed': 1,
                                        'round_trip': 1, 'reload_idempotent': 1}, study['rotation_checks']
     assert study['chosen_seed'] == 42 and study['starts'] == [[7, 9]]
-    assert len(study['colony_quality']) == 1 and study['colony_quality'][0]['total'] == 1.0
+    assert study['colony_quality'] == [{
+        'wheat_distance': 2.0, 'wood_distance': 3.0, 'catchment_tiles': 400.0,
+        'build_sites': 50.0, 'resource_amount': 600.0, 'rival_distance': 70.0,
+        'rivals_within_threat': 2.0, 'mean_fertility': 80.5,
+        'fitness': -0.125, 'win_probability': 0.25}]
+    for count in (9, 11, 15):
+        try:
+            t.parse_study('COLONY,0,' + ','.join(['1'] * count))
+        except ValueError as error:
+            assert 'COLONY field count' in str(error)
+        else:
+            raise AssertionError('malformed colony data was silently accepted')
     assert t.parse_int_list('1001-1003,1007') == [1001, 1002, 1003, 1007]
     print('parsing checks passed')
 

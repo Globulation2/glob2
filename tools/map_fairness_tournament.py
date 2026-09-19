@@ -36,16 +36,15 @@ import threading
 import time
 from pathlib import Path
 from tournaments.local import run_job as shared_job, export_artifacts, parallel_map
+from tournaments.fairness_statistics import (
+    MIN_MAPS_FOR_INTERVAL, benjamini_hochberg, bias_interval, bootstrap, chi_square_uniform,
+    exact_uniform_p, fair_map_floor, gamma_q, holm, pearson, ranks, rms_points, seed_for,
+    share_table, spearman, squared_bias, t975, wilson,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 PRESET_DIR = ROOT / 'tools' / 'map-fairness'
 BASELINE_METHOD = 15  # Symmetric arena: exactly symmetric starts, the fairness baseline.
-Z95 = 1.959963984540054
-# Two-sided 95% Student t quantiles for 1..30 degrees of freedom.
-T975 = [12.706, 4.303, 3.182, 2.776, 2.571, 2.447, 2.365, 2.306, 2.262, 2.228, 2.201, 2.179, 2.160, 2.145,
-        2.131, 2.120, 2.110, 2.101, 2.093, 2.086, 2.080, 2.074, 2.069, 2.064, 2.060, 2.056, 2.052, 2.048,
-        2.045, 2.042]
-MIN_MAPS_FOR_INTERVAL = 5  # below this a bootstrap over maps cannot say much
 # What MapGeneratorStudy's COLONY line actually carries, in order. It used to end with each
 # fairness factor's contribution and a total; it now ends with the model's fitness for that colony
 # and the win probability it implies. The names here must match that line exactly: zip() below
@@ -180,6 +179,9 @@ def parse_study(stdout):
                                  'fairness': float(parts[3]), 'worst': float(parts[4]),
                                  'best': float(parts[5])}
         elif tag == 'COLONY':
+            if len(parts) != len(COLONY_FIELDS) + 2:
+                raise ValueError(f'Unexpected COLONY field count: {len(parts) - 2}; '
+                                 f'expected {len(COLONY_FIELDS)}')
             record['colony_quality'].append(dict(zip(COLONY_FIELDS, (float(v) for v in parts[2:]))))
         elif tag == 'REQUEST':
             record['request'] = {'generator_id': parts[1], 'revision': int(parts[2]),
@@ -437,9 +439,6 @@ def run_pool(tasks, jobs, work, describe):
 
 # ---------------------------------------------------------------------------- statistics
 
-from tournaments.fairness_statistics import *  # shared tested estimators
-
-
 def load_results(out):
     records = {}
     for manifest in sorted((out / 'maps').glob('*/map.json')):
@@ -466,7 +465,8 @@ def analyse_map(record, games, config):
         for slot, place in outcome['placement'].items():
             placement_points[int(slot)] += (n - place) / (n - 1) if n > 1 else 1.0
     rows = record.get('colony_quality', [])
-    quality = [c['fitness'] for c in rows] if len(rows) == n else None
+    quality = ([c['fitness'] for c in rows]
+               if len(rows) == n and all('fitness' in c for c in rows) else None)
     analysis = {
         'key': record['key'], 'method': record['method'], 'map_seed': record['map_seed'],
         'chosen_seed': record.get('chosen_seed'), 'games': len(games), 'played': len(played),
@@ -562,6 +562,8 @@ def scorer_check(maps, draws, seed):
     top_wins = top_n = 0
     alternatives = []
     for m in maps:
+        if any('fitness' not in c for c in m['record_colonies']):
+            continue
         values = [c['fitness'] for c in m['record_colonies']]
         if not values or max(values) - min(values) < 1e-9 or not m['slot']['n']:
             continue
@@ -774,7 +776,8 @@ def write_csvs(out, records, games):
                              int(bool(record.get('ok'))), record.get('failure'),
                              record.get('quality', {}).get('score'), record.get('quality', {}).get('fairness'),
                              ';'.join(f'{x}:{y}' for x, y in record.get('starts', [])),
-                             ';'.join(f'{c["fitness"]:.3f}' for c in record.get('colony_quality', [])),
+                             ';'.join(f'{c["fitness"]:.3f}' if 'fitness' in c else ''
+                                      for c in record.get('colony_quality', [])),
                              next((f['fnv1a64'] for f in record.get('files', []) if f['rotation'] == 0), None),
                              record.get('generation_seconds')])
 

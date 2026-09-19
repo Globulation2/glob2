@@ -1,11 +1,7 @@
-<!-- Captured from tools/map_fairness_tournament.py. The run predates the rename, so it
-     says Equilibrium (58) and Tug (59); those are Even Ground and Marchland. The maps are
-     unchanged by the rename - the random streams kept their old names precisely so that this
-     evidence still describes the maps the code makes. -->
-
-> Run before the generators' random streams were renamed, so these 18 maps are not the
-> maps the current code produces. The result — Even Ground biased, Marchland not — is a
-> property of the objectives rather than of these seeds, but the run wants repeating.
+> Historical run from before the generators' random streams were renamed. These are not
+> the maps produced by the current code. The dirty source revision and temporary preset
+> were not preserved here; the tables are historical observations, not reproducible validation
+> of the current branch. See [current review evidence](review/README.md).
 
 # Map fairness tournament: constraint-solved-light
 

@@ -31,6 +31,8 @@
 #include "Planting.h"
 #include "Points.h"
 #include "Resources.h"
+#include "Rivers.h"
+#include "Solve.h"
 #include "Room.h"
 #include "Growth.h"
 #include "Roads.h"
@@ -59,6 +61,85 @@
 namespace ToolkitChecks
 {
 using namespace MapGeneration;
+
+// Compare the bucket-based widest path with independent threshold reachability, including
+// blocked, fully open, rectangular, and seam-crossing masks and multiple starting tiles.
+inline void widestWalkChecks()
+{
+	const Torus t(16, 8);
+	std::uint32_t random = 71;
+	for (int trial = 0; trial < 80; ++trial)
+	{
+		std::vector<unsigned char> mask(t.size()), goal(t.size(), 0), source(t.size(), 0);
+		for (auto &tile : mask)
+		{
+			random = random * 1664525u + 1013904223u;
+			tile = trial == 0 ? 1 : trial == 1 ? 0 : (random >> 24) > 45;
+		}
+		const std::vector<int> sources = {t.at(0, 3), t.at(14, 2)};
+		goal[t.at(15, 4)] = goal[t.at(7, 6)] = 1;
+		const auto room = clearance(t, mask);
+		int expected = 0;
+		for (int width = 1; width <= *std::max_element(room.begin(), room.end()); ++width)
+		{
+			std::vector<unsigned char> open(t.size());
+			for (int i = 0; i < t.size(); ++i)
+				open[i] = mask[i] && room[i] >= width;
+			std::fill(source.begin(), source.end(), 0);
+			for (const int i : sources)
+				source[i] = open[i];
+			const auto steps = stepsFrom(t, source, open);
+			for (int i = 0; i < t.size(); ++i)
+				if (goal[i] && steps[i] >= 0)
+					expected = width;
+		}
+		assert(widestWalkClearance(t, mask, sources, goal) == expected);
+		assert(widestWalkClearance(t, mask, room, sources, goal) == expected);
+		assert(stepsFrom(t, goal) == stepsFrom(t, goal, std::vector<unsigned char>(t.size(), 1)));
+	}
+}
+
+inline void solvingAndRiverChecks()
+{
+	GenerationRequest request;
+	GenerationContext context(request);
+	int state = 4, best = -1;
+	// A hot final move leaves the walk worse than its best; recall must restore that best.
+	const auto run = anneal(Anneal{2, 1e30, 1e30, "test-solve"}, context,
+		[&] { state = state == 4 ? 1 : 3; return true; }, [&] { return double(state); },
+		[] { assert(false); }, [&] { best = state; }, [&] { state = best; });
+	assert(state == 1 && run.before == 4 && run.after == 1 && run.kept == 1);
+	assert(run.proposed == 2 && run.taken == 2);
+	assert(!accept(1, 0, context, "test-solve"));
+	assert(accept(-1, 0, context, "test-solve"));
+
+	const Torus t(32, 16);
+	for (bool vertical : {false, true})
+	{
+		RiverStyle style;
+		style.wander = style.swell = 0;
+		style.halfWidth = 2;
+		const auto river = drawRiver(t, context, "test-river", vertical, 8, style);
+		const auto water = riverWater(t, river);
+		const int length = vertical ? t.h : t.w;
+		for (int i = 0; i < length; ++i)
+		{
+			assert(water[vertical ? t.at(8, i) : t.at(i, 8)]);
+			assert(!water[vertical ? t.at(0, i) : t.at(i, 0)]);
+		}
+	}
+	// A bent loop must close over the seam, never by a straight chord through its interior.
+	River bent;
+	bent.line = {{0, 4}, {8, 12}, {16, 12}, {24, 12}, {30, 4}};
+	bent.radius.assign(bent.line.size(), 1);
+	const auto water = riverWater(t, bent);
+	assert(water[t.at(31, 4)] && !water[t.at(16, 4)]);
+	const std::vector<RiverFord> sites = {{0, 0, 1}, {4, 1, 2}, {8, 0, 2}, {12, -1, 2}};
+	const auto joining = fordsToRejoin(sites, 3);
+	assert((joining == std::vector<int>{0, 1}));
+	const auto spread = fordsSpreadAlong(sites, joining, 3, 16);
+	assert((spread == std::vector<int>{0, 1, 2}));
+}
 
 inline void grassMap(Game &game, int wDec, int hDec)
 {
@@ -2651,6 +2732,8 @@ inline void fractalCrossingRegressionChecks()
 
 inline void toolkitChecks()
 {
+	widestWalkChecks();
+	solvingAndRiverChecks();
 	boundaryExclusionChecks();
 	containedPlotChecks();
 	siteOperationChecks();

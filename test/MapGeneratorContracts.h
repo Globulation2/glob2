@@ -1144,7 +1144,7 @@ inline void evenGroundContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("even-ground"));
-	assert(definition.legacyId == 58 && definition.revision == 1);
+	assert(definition.legacyId == 58 && definition.revision == 2);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("water-share") == 10 && request.option("balance") == 70 &&
@@ -1208,15 +1208,21 @@ inline void evenGroundContracts()
 		Game g(nullptr);
 		const auto result = service.generate(g, r, true);
 		assert(result);
-		double before = -1, after = -1;
+		double before = -1, after = -1, searchedCost = NAN, finalCost = NAN;
 		for (const auto &record : result.telemetry.records())
 		{
+			if (record.key == "even-ground.stock.cost-after")
+				searchedCost = std::get<double>(record.value);
+			if (record.key == "even-ground.stock.total")
+				finalCost = std::get<double>(record.value);
 			if (record.key == "even-ground.stock.spread-before")
 				before = std::get<double>(record.value);
 			if (record.key == "even-ground.stock.spread-after")
 				after = std::get<double>(record.value);
 		}
 		assert(before >= 0 && after >= 0);
+		// Incrementally scored swaps and the full rescan of the best arrangement must agree.
+		assert(std::abs(searchedCost - finalCost) < 1e-9);
 		return std::pair{before, after};
 	};
 	const auto unsolved = spreadAt(0), solved = spreadAt(100);
@@ -1244,7 +1250,7 @@ inline void marchlandContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("marchland"));
-	assert(definition.legacyId == 59 && definition.revision == 1);
+	assert(definition.legacyId == 59 && definition.revision == 2);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("prizes") == 6 && request.option("march") == 16 &&
@@ -1270,6 +1276,12 @@ inline void marchlandContracts()
 							 result.diagnostic().c_str());
 			assert(result);
 		}
+	// The 64-tile side used to invert the prize-gap clamp bounds (20 > 16).
+	for (auto dimensions : {std::pair{6, 9}, std::pair{9, 6}})
+	{
+		Game g(nullptr);
+		assert(service.generate(g, make(dimensions.first, dimensions.second, 6, 31001)));
+	}
 	// A long map needs a ring of colonies rather than a line of them, and gets one.
 	for (auto dimensions : {std::pair{7, 9}, std::pair{9, 7}})
 		for (int teams : {8, 12})

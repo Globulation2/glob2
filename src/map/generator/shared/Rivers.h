@@ -126,7 +126,7 @@ struct RiverFord
 	/// The centre-line point the ford crosses at.
 	int index = 0;
 	/// The walkable components either side of the bed there, or -1 where the bank is not walkable.
-	int near = -1, far = -1;
+	int firstBank = -1, secondBank = -1;
 };
 
 /// Every point along a river where both banks are walkable ground, with the component each bank

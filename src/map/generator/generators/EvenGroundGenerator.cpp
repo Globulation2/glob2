@@ -587,8 +587,9 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 	// running it twice puts the lattice and the sums back exactly as they were. That is what lets
 	// the refusal path be the same call as the proposal.
 	// How much of the crops' neighbourhood is the same crop, kept as a running count so a swap stays
-	// a couple of dozen operations: only the two cells' own neighbourhoods can change, and a pair
-	// that happens to be adjacent is counted on both sides before and after, so the delta holds.
+	// a couple of dozen operations. Each matching edge is counted at both ends, so the change at
+	// the swapped cells must be doubled to include their neighbours. The cells hold different
+	// kinds, so an edge between them never matches, before or after the swap.
 	const Torus lattice = solved.lat.torus();
 	const auto matching = [&](int cell)
 	{
@@ -614,7 +615,7 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 	std::vector<unsigned char> best = solved.kind;
 	const auto swapStock = [&](int one, int other)
 	{
-		matched -= matching(one) + matching(other);
+		matched -= 2 * (matching(one) + matching(other));
 		const unsigned char kindOne = solved.kind[one], kindOther = solved.kind[other];
 		for (int k = 0; k < teams; ++k)
 		{
@@ -625,7 +626,7 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 		}
 		solved.kind[one] = kindOther;
 		solved.kind[other] = kindOne;
-		matched += matching(one) + matching(other);
+		matched += 2 * (matching(one) + matching(other));
 	};
 	const SolveReport run = anneal(
 		Anneal{moves, kStockHeat[0], kStockHeat[1], "even-ground-stock"}, context,
@@ -1057,7 +1058,7 @@ GeneratorDefinition evenGroundDefinition()
 	return {"even-ground",
 			58,
 			"Even Ground",
-			1,
+			2,
 			false,
 			// The sliders are the targets the solver is given, not the terrain it draws. Water share
 			// and the resource amounts are budgets it may arrange but never change; balance and
