@@ -179,9 +179,9 @@ allowed to plant on runs out — which is a ceiling on the map rather than a dea
 - **Not promised**: equal room to expand into, equal defensibility, or equal contact costs. Only
   catchments, reachable land, building room at home and route width are searched for.
 
-## The tournament says this map is not fair
+## Historical tournament: position bias before the rename
 
-It has now been played, and **it fails its own premise.** Six maps, every rotation, two engine
+The historical build was played and **failed its fairness premise.** Six maps, every rotation, two engine
 seeds each — 48 games with `nicowar` in all four slots, against Symmetric arena as the control
 ([full report](evidence/constraint-solved/fairness-tournament.md)).
 

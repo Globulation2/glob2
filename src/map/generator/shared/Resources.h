@@ -25,8 +25,9 @@ inline double scaledShare(double share, int percent)
 // The same percentage applied to the *radius* of a round deposit, which is not a count and must not
 // be scaled like one: tiles go as the square of the radius, so scaling the radius directly makes a
 // 300 per cent slider deliver nine times the resource, and a small radius collapses a thirteen-step
-// slider onto three or four distinct maps. Scaling the area instead keeps "200 per cent" meaning
-// twice the resource, as it does everywhere else. 100 returns the radius unchanged.
+// slider onto three or four distinct maps. Scaling by the square root instead approximates an
+// area budget. Integer radii and rasterization still produce discrete steps, especially for small
+// deposits; callers may retain the centre tile even at zero. 100 returns the radius unchanged.
 inline int scaledRadius(int radius, int percent)
 {
 	if (percent == 100 || radius <= 0)

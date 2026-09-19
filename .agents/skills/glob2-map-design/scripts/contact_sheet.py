@@ -7,7 +7,7 @@
 Each --panel is "LABEL" or "LABEL:k=v,k=v"; seed=N inside the settings picks the seed.
 """
 import argparse, os, subprocess, tempfile
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 
 def font(size):
@@ -81,8 +81,8 @@ def main():
     for i, (label, img, ok, err) in enumerate(panels):
         x, y = pad + (i % cols) * cw, pad + title_h + (i // cols) * ch
         if img:
-            img = img.resize((a.cell, a.cell), Image.LANCZOS)
-            sheet.paste(img, (x, y))
+            img = ImageOps.contain(img, (a.cell, a.cell), Image.Resampling.NEAREST)
+            sheet.paste(img, (x + (a.cell - img.width) // 2, y + (a.cell - img.height) // 2))
         else:
             draw.rectangle([x, y, x + a.cell, y + a.cell], fill=(70, 30, 30))
             draw.text((x + 8, y + a.cell // 2), 'refused', font=font(14), fill=(255, 180, 180))

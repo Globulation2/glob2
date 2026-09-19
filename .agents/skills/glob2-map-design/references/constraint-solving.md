@@ -27,9 +27,9 @@ The pair disagree, and the disagreement is the most useful thing here.
 These measurements predate the stream rename and the revision-2 clustering fix; they describe
 historical maps. Marchland had no individually significant map after correction, but its pooled
 colony-index bias was significant (p 0.018). The sample does not establish fairness or show that
-the different search strategies caused the difference. Meanwhile Marchland produces **zero valid maps** without
-its search — a rope dealt at random missed its own contest bar on 16 seeds out of 16 — so the search
-there is not polish, it is the thing that makes the map possible.
+the different search strategies caused the difference. In a historical sample, random prize placement missed Marchland's full contest bar on 16 seeds
+out of 16. The current zero-levelling setting deliberately relaxes that bar; the search is what
+aims to satisfy the stronger contract at nonzero levelling.
 
 That is the rule: **a search earns its place on a small set of coupled discrete decisions that
 construction genuinely cannot reach.** Pointed at terrain it mostly rediscovers noise, and the
@@ -71,14 +71,14 @@ Three things follow.
 3. **Read your own per-colony numbers before believing your aggregate.** The aggregate said fine; the
    per-colony breakdown, printed in the same telemetry, said otherwise.
 
-## Statistical targets have gradients; topological ones are needles
+## Choose objectives that distinguish useful intermediate states
 
 Annealing needs a direction. Every target that works well here is **statistical** — a share, a
 ratio, a count, a spread — because moving one cell moves the number readably.
 
-**Topological targets do not work.** "One joined-up channel that crosses the map" has no partial
-credit: nine tenths of a river is a lake and a pond, and scores no better than one tenth of one. The
-search spends its whole budget wandering.
+A binary "one joined-up channel that crosses the map" target gives no partial credit to disconnected
+intermediate states. That formulation gave these local moves little guidance. Other topological
+objectives or move sets may work; Even Ground already uses water-component count as one term.
 
 The river in Marchland is the worked example, and it produced a third category beyond drawn and
 searched:

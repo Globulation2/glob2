@@ -36,11 +36,11 @@ be a worse way to get any of them:
 
 | Property | Primitive |
 |---|---|
-| Equal ground per colony | `growTerritories` over the whole torus |
+| Similar homeland-area budgets | `growTerritories` over the whole torus |
 | A march between homelands | `separateTerritories` |
 | Spread-out homes, seated inside their own ground | `farthestSites`, then `regionHome`; sites are not recentered |
-| A swarm the same walk in from the march everywhere | `Homes.h`'s `regionHome` |
-| **A private lake of exactly the same size for everyone** | `growLakeBeside` with a fixed target |
+| A swarm at a target depth inside each homeland | `Homes.h`'s `regionHome` |
+| A private lake for each colony, with a common size target | `growLakeBeside`; shortages are recorded, and the final check requires nearby water |
 | Ambient fields that leave a clear town to build in | `plantCoverShare` outside a `dilateRound` town |
 
 **Solved** — one decision, because it is the only one construction cannot reach: *which candidate
@@ -54,16 +54,14 @@ asserted.
 
 ### The river: a third category
 
-A river is neither of the above, and it is the case that made the split worth naming. It cannot be
-solved for — see the head of `shared/Rivers.h` — because a target on where the water goes is met by
-a blob or a ruled line just as well as by a river, and "one joined-up channel crossing the map" is
-topological rather than statistical: nine tenths of a river is a lake and a pond, and scores no
-better than one tenth of one, so there is no gradient for a search to descend.
+Marchland uses a third approach for rivers: construct each candidate's shape, then score its
+placement. The attempted positional water targets also accepted blobs or ruled lines. A binary
+"connected channel" objective offered little guidance to those local moves; this is a limitation
+of that formulation, not proof that river topology cannot be optimized.
 
 So the bed is **drawn** (a closed wandering loop across the torus, joined up and the right width by
 construction), and only its **placement is scored**: fourteen candidate beds, each rated on whether
-it keeps out of the towns, how evenly it touches the homelands, how much of it lies in the commons,
-and whether it puts the colonies on both banks. Fourteen candidates is an exhaustive loop, not an
+it keeps out of the towns, how evenly it touches the homelands, and how much of it lies in the commons. Fourteen candidates is an exhaustive loop, not an
 annealing run — reaching for a search there would be the same mistake in the other direction.
 
 Which crossings exist splits the same way. That the country stays in one piece is an *invariant*, so
@@ -121,8 +119,8 @@ every map the generator makes, so any seed carries its own before-and-after.
 Canonical start quality is 0.856 fairness / 0.006 worst-colony fitness, against Savannah's
 0.940/0.392 and Watershed's 0.824/0.155. That model measures advantage in the *starting economy*,
 and Marchland deliberately moves the map's contested value out of the homelands and onto the rope, which
-the model does not weigh. The homelands themselves are level by construction — equal ground, equal
-lake, equal kit — and a typical map gives its four colonies 209–388 wheat, 100–275 wood and 839–1067
+the model does not weigh. The homelands target similar ground and lake budgets with the same opening kit, but their
+finished economies can differ. A historical map gave its four colonies 209–388 wheat, 100–275 wood and 839–1067
 building sites each.
 
 ## Four things that were wrong on the way
@@ -207,6 +205,10 @@ And `stone` and `fruit` scale a small radius, so a thirteen-step slider lands on
 distinct groves; they move, but in steps rather than smoothly. `lakes` and `levelling` are the two
 that change what the map is.
 
+The resource controls preserve the opening kit. At zero, the prize grove and quarry radii
+shrink to a single-cell footprint rather than removing the prizes. Small integer radii make
+intermediate percentage steps approximate.
+
 `levelling` at 0 turns the rope search off outright: the search makes no proposals, the rope's cost
 stays at 131 against 8.2 at full levelling, and the finished-world check is relaxed to match,
 because a map that was never promised a level rope is not a broken one.
@@ -219,7 +221,7 @@ because a map that was never promised a level rope is not a broken one.
 - Two colonies on a 2:1 map occasionally find too little contested ground for a full rope; the map
   then strings a shorter one, and on rare seeds refuses. The lobby's retries cover it.
 
-## The tournament
+## Historical tournament
 
 Played: six maps, every rotation, two engine seeds each — 48 games with `nicowar` in all four
 slots, against Symmetric arena as the control

@@ -11,29 +11,11 @@
 struct GenerationContext;
 namespace MapGeneration
 {
-// A river a map draws and a search places.
-//
-// WHY THIS IS NOT A CONSTRAINT. The obvious way to ask a solver for a river is to ask for water in
-// the middle of the map, and it does not work. A positional target is met just as well by a blob, a
-// ring or a scatter of ponds with the right centre-weighted share; nothing in such a measure
-// selects for thin, long or joined-up. Tighten it until only a one-cell band satisfies it and a
-// channel does appear - ruler-straight, at a fixed offset, because a band is the only shape the
-// measure named. Making it meander means describing the meander, and at that point the route is
-// drawn and the search has coloured it in.
-//
-// The deeper reason is the shape of the search. Every target a solver handles well here is
-// statistical - a share, a ratio, a count, a spread - and those have gradients: move one cell and
-// the number moves readably, so annealing always has a direction. "One joined-up channel that
-// crosses the map" is topological, and topological targets are needles. Nine tenths of a river is a
-// lake and a pond, and it scores no better than one tenth of one. There is no partial credit, so
-// there is nothing to descend, and a search spends its whole budget wandering.
-//
-// So the bed is drawn. A closed wandering loop across the torus is a dozen lines of trigonometry,
-// is joined up and the right width by construction, and costs one pass. What is left over is the
-// part construction genuinely cannot do: which of several beds to lay given where the colonies and
-// their farms already are, and where to ford it so the map stays one country. Those are few,
-// discrete, and exactly measurable on a candidate - which is the shape of thing Solve.h is for.
-// Draw the landform; search its placement.
+// Construct a closed, meandering river, score candidate placements, and choose crossings.
+// The caller supplies placement objectives and the desired number of fords. Constructing the
+// channel directly guarantees its shape; scoring placements can then account for existing homes
+// and lakes. Marchland uses this instead of asking its terrain search to discover a river from
+// positional water-share targets, which did not constrain the channel's shape.
 
 /// The shape of a river bed. Widths are in undermap corners, and a tile is pure water only when its
 /// four corners are, so a bed of half width `w` leaves about 2w - 1 tiles of open water and spoils
@@ -92,7 +74,7 @@ struct RiverChoice
 /// on everything already on the ground. It is also a handful of options rather than a space, so it
 /// is scored outright: the beds are spread evenly across the map so the candidates genuinely differ
 /// instead of clustering by luck, each is rated, and the lowest wins. Reaching for an annealing run
-/// over a dozen candidates would be the mistake at the head of this file pointed the other way.
+/// over a dozen candidates is unnecessary when each candidate can be evaluated directly.
 ///
 /// `rate(bed, water)` returns an Objective, so the winner arrives carrying every measurement that
 /// chose it - a caller wanting one of them back reads it off the returned score

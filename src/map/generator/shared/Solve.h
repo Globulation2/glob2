@@ -25,7 +25,8 @@ namespace MapGeneration
 // and lands a little behind the hand-designed landscapes it competes with, because a search over
 // terrain mostly rediscovers noise. Marchland draws its country with the ordinary toolkit and
 // points a search at one decision - which sites in its no-man's land carry the prizes - and
-// without that search no seed at all produces a valid map. Aim it narrowly.
+// historical random placements missed its contest targets. Levelling at zero now permits those
+// unbalanced placements explicitly. Aim the search at the decision that needs it.
 //
 // A map using this owes its reader two things: the targets stated as numbers, and the cost with and
 // without the search, so the search's worth can be read off rather than taken on trust. SolveReport
