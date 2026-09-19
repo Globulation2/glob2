@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Final-map statistics at default settings: what a player actually gets.
 
-  python3 final_map_stats.py --binary build/src/glob2 --generators equilibrium,tug,contested-commons
+  python3 final_map_stats.py --binary build/src/glob2 --generators even-ground,marchland,contested-commons
 """
 import argparse, json, os, statistics as st, subprocess, tempfile
 from concurrent.futures import ThreadPoolExecutor

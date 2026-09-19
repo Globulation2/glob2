@@ -27,35 +27,16 @@
 #include <vector>
 using namespace MapGeneration;
 
-// Marchland (id "marchland", legacy id 60): a country of home territories parted by a march of
-// no-man's land, with a rope of prizes strung through it. Every prize is a fruit grove with a
-// quarry beside it - the only fruit on the map and the only quarry worth marching for - and every
-// prize is the same walk from every colony.
+// Marchland (id "marchland", legacy id 60) draws private homelands, dry crop-containment
+// collars and expandable commons. Fruit groves with nearby quarries form contested prizes.
+// The solver chooses prize sites using walking costs on the drawn terrain: each prize should
+// have at least two nearby contenders, and colonies should contest similar numbers of prizes.
+// It does not equalise every colony's walk to every prize or guarantee balanced games.
 //
-// WHAT THE GAME IS. Your territory feeds you and cannot win for you: it has crops, wood and a small
-// quarry, and no fruit at all. The prizes are the rope. Taking one pulls your economy ahead and
-// your opponent's back, and because the rope is level the only thing that decides which way it
-// moves is play. There is no near end and no far end of this map.
-//
-// WHY THIS IS A SOLVED MAP AND NOT A DRAWN ONE. The shape of the country is drawn, entirely out of
-// the shared toolkit: lakes from a noise field, homelands shared out by growTerritories (equal
-// ground per colony by construction), a march opened between them with separateTerritories, and a
-// swarm seated the same walk in from the march in every one of them (Homes.h's regionHome). None
-// of that needs a search, and a search would be a poor way to get any of it.
-//
-// What cannot be drawn is the rope. On ground this asymmetric, "every prize is the same walk from
-// every colony" is a property of the finished terrain that no amount of careful placement gets
-// right: it is a constraint over an N-colony by K-prize matrix of walking costs, on a map with
-// lakes and territory borders in the way. So that one decision - which of some hundreds of
-// candidate sites in the march become the K prizes - is handed to a search, scored with the
-// engine's own cost model (Contact.h) on the actual finished map. Everything else is drawn.
-//
-// That is the whole argument for aiming a solver at a map: not at the terrain, where it merely
-// reinvents noise, but at a small set of discrete decisions whose quality is exactly measurable and
-// whose right answer depends on all of the terrain at once. The search here is over a few hundred
-// candidates and costs microseconds, because every colony's cost field is flooded once up front and
-// a move is then a table lookup. The `levelling` slider turns it off, which is what makes its worth
-// something a player - or a reviewer - can measure rather than take on trust.
+// Territory, lake and home construction use the shared toolkit. Only prize selection is annealed;
+// cached colony cost fields make each proposal a table lookup. Levelling controls search effort,
+// with zero leaving a random selection and relaxing only the final rope-balance checks.
+// See docs/map-generators/MARCHLAND.md for the play contract and measured limitations.
 //
 // GAME RULES IT LEANS ON (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
 // - Fruit is a weapon: it wins hungry enemy units over to your inns. Putting every fruit tree on
@@ -1173,7 +1154,8 @@ std::string requestFailure(const GenerationRequest &request)
 
 /// The finished world against the promise. The rope's levelness is checked directly, from the
 /// fruit standing on the map: fruit grows nowhere else on this map, so each connected grove is a
-/// prize, and every colony's walk to it must be within kLevelTolerance of every other's. This is
+/// prize. Its two nearest colonies must arrive within contestTolerance, and the number of prizes
+/// each colony can contest must differ by at most kFrontTolerance. This is
 /// the same measurement the search minimised, taken again on the finished world with the prizes
 /// themselves now standing in the way, which is why it is a tolerance and not an equality.
 std::string validateWorld(const Game &game, const GenerationContext &context)
@@ -1296,9 +1278,8 @@ GeneratorDefinition marchlandDefinition()
 			"Marchland",
 			2,
 			false,
-			// Levelling is the map's own argument: at 0 the prizes are merely spread out, the way
-			// any generator would place them, and at 100 they are spread out and the same walk from
-			// everywhere. The map's telemetry reports both figures for every seed.
+			// Levelling controls the search for contested, evenly shared prizes. Zero keeps
+			// the initial random selection; telemetry records the result at every setting.
 			{{"prizes", "Prizes on the rope", 2, 12, 1, 6, ControlGroup::Layout},
 			 {"march", "March width", 8, 40, 4, 16, ControlGroup::Layout},
 			 {"levelling", "Levelling", 0, 100, 10, 100, ControlGroup::Layout},

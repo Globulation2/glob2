@@ -277,7 +277,7 @@ int widestWalkClearance(const Torus &t, const std::vector<unsigned char> &mask,
 	// Best bottleneck so far per tile, and a bucket queue on it rather than a comparison heap.
 	//
 	// This is widest-path Dijkstra, so it wants the largest tentative width next - but the widths are
-	// clearances, which are small bounded integers (at most half the shorter side), not arbitrary
+	// clearances, which are small bounded integers (at most half the longer side), not arbitrary
 	// keys. A bucket per width and a walk downwards through them gives the same order for O(1) a push
 	// and a pop, where a binary heap pays a logarithm and chases pointers over a growing array for
 	// every one of them. Even Ground's shape pass scores thousands of arrangements and this was the

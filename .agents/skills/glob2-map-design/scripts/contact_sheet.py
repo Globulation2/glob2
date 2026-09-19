@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Render a labelled grid of map previews.
 
-  python3 contact_sheet.py OUT.png --binary B --generator tug --cell 256 --cols 4 \
-      --panel "seed=1" --panel "seed=2:march=40" ...
+  python3 contact_sheet.py OUT.png --binary B --generator marchland --cell 256 --cols 4 \
+      --panel "seed 1:seed=1" --panel "seed 2:seed=2,march=40" ...
 
 Each --panel is "LABEL" or "LABEL:k=v,k=v"; seed=N inside the settings picks the seed.
 """
-import argparse, os, re, subprocess, tempfile
+import argparse, os, subprocess, tempfile
 from PIL import Image, ImageDraw, ImageFont
 
 
@@ -32,7 +32,7 @@ def render(binary, generator, seed, w, h, teams, settings, cell):
     if img:
         img = img.copy()
     os.unlink(png)
-    return img, ok, (p.stdout + p.stderr).strip().splitlines()[-1] if not ok else ''
+    return img, ok, ((p.stdout + p.stderr).strip().splitlines() or [f'exit {p.returncode}'])[-1] if not ok else ''
 
 
 def main():

@@ -82,7 +82,9 @@ statistics against synthetic engine output and known values. It needs no build a
 Per game, `games.csv` has the winner's start and team, the winning start's coordinates, how the
 game ended (`elimination`, `prestige` or `cap`), elimination order with ticks, placements, wall time
 and the checksum at the cap. `colonies.csv` has one row per colony per game with its final state and
-start-quality factors; `maps.csv` has one row per map.
+fitness and win probability; `maps.csv` has one row per map. The study parser checks the
+colony field count against the current engine schema. Summaries of historical manifests with
+only the old `total` score retain game outcomes and leave current fitness comparisons blank.
 
 ## Separating the start from the team index
 

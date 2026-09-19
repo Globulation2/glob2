@@ -1208,9 +1208,11 @@ inline void evenGroundContracts()
 		Game g(nullptr);
 		const auto result = service.generate(g, r, true);
 		assert(result);
-		double before = -1, after = -1, searchedCost = NAN, finalCost = NAN;
+		double before = -1, after = -1, searchedCost = NAN, finalCost = NAN, fieldsCost = NAN;
 		for (const auto &record : result.telemetry.records())
 		{
+			if (record.key == "even-ground.stock.fields.weighted")
+				fieldsCost = std::get<double>(record.value);
 			if (record.key == "even-ground.stock.cost-after")
 				searchedCost = std::get<double>(record.value);
 			if (record.key == "even-ground.stock.total")
@@ -1222,6 +1224,7 @@ inline void evenGroundContracts()
 		}
 		assert(before >= 0 && after >= 0);
 		// Incrementally scored swaps and the full rescan of the best arrangement must agree.
+		assert(fieldsCost > 0); // this seed exercises the optional clustering term
 		assert(std::abs(searchedCost - finalCost) < 1e-9);
 		return std::pair{before, after};
 	};

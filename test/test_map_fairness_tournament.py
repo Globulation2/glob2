@@ -175,6 +175,14 @@ def check_scorer():
                 for q, w in zip((-1.5, -0.5, 0.5, 1.5), (0.1, -0.1, 0.15, -0.15))]
     rho = t.spearman([p[1] for p in shuffled], [p[2] for p in shuffled])
     assert t.scorer_permutation_p(shuffled, rho, 2, 500, 1) > 0.1
+    # Historical manifests have the old score schema. Keep their games, but do not
+    # reinterpret the old total as the current fitness measure.
+    legacy = dict(RECORD, key='old', method=9, map_seed=1,
+                  colony_quality=[{'total': value} for value in range(4)])
+    analysed = t.analyse_map(legacy, [], CONFIG)
+    assert analysed['quality'] is None
+    check = t.scorer_check([analysed], 10, 1)
+    assert check['fitness'] is None and check['top_rated_start']['n'] == 0
     print('scorer checks passed')
 
 

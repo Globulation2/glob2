@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """How often does one control value refuse? Many seeds at a few values of one control.
 
-  python3 refusal_sweep.py tug lakes 0,10,20,25,30,35,40 --seeds 40
+  python3 refusal_sweep.py marchland lakes 0,10,20,25,30,35,40 --seeds 40
 """
 import argparse, json, os, subprocess, tempfile
 from concurrent.futures import ThreadPoolExecutor

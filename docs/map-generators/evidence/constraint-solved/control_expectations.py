@@ -109,7 +109,8 @@ def main():
         print(f'{verdict} {control:14s} {metric:42s} rho={rho:+.2f} '
               f'{per[0][0]}:{lo:.1f} -> {per[-1][0]}:{hi:.1f}   {claim}')
     print('\nALL CLAIMS HOLD' if ok_all else '\nSOME CLAIMS FAILED')
+    return 0 if ok_all else 1
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
