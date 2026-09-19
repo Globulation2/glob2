@@ -55,6 +55,7 @@
 #include "BajadaGenerator.h"
 #include "CentralQuarryGenerator.h"
 #include "HiddenOasisGenerator.h"
+#include "DrownedForestGenerator.h"
 #include "PortageLakesGenerator.h"
 #include "FaultedCityGenerator.h"
 #include "EvenGroundGenerator.h"
@@ -179,7 +180,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 lavaShieldDefinition(),
 											 honeycombIsleDefinition(),
 											 karstTowersDefinition(), bajadaDefinition(),
-											 centralQuarryDefinition(), hiddenOasisDefinition(), portageLakesDefinition(),
+											 centralQuarryDefinition(), hiddenOasisDefinition(), drownedForestDefinition(), portageLakesDefinition(),
 											 orchardCommonsDefinition(), gauntletDefinition(), faultedCityDefinition(), combDefinition(), encircledKingdomDefinition(),
 											 evenGroundDefinition(), marchlandDefinition(),
 											 whoAteTheMapDefinition(), ruggedArchipelagoDefinition(),

@@ -2938,3 +2938,11 @@ Emoji
 このシードでは泳いで使える有用な近道を作れません。
 [Portage Lakes needs separate swimming lakes on this seed.]
 このシードでは泳いで渡る湖を互いにつながらないように配置する必要があります。
+[Drowned Forest]
+水没の森
+[Sandbar connections]
+砂州の接続
+[Wooded neck thickness]
+樹木の障壁の厚さ
+[Neutral clearing size]
+中立の林間空地の広さ

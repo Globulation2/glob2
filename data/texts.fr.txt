@@ -2952,3 +2952,11 @@ Cette graine ne permet pas de créer un raccourci utile dans une forêt sèche.
 Cette graine ne permet pas de créer un raccourci utile à la nage.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Avec cette graine, les lacs permettant la nage doivent rester séparés.
+[Drowned Forest]
+Forêt engloutie
+[Sandbar connections]
+Liaisons de sable
+[Wooded neck thickness]
+Épaisseur des barrières boisées
+[Neutral clearing size]
+Taille des clairières neutres

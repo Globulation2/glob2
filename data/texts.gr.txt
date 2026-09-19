@@ -3012,3 +3012,11 @@ Emoji
 Αυτός ο σπόρος δεν επιτρέπει χρήσιμη συντόμευση με κολύμπι.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Με αυτόν τον σπόρο, οι λίμνες για κολύμπι πρέπει να παραμένουν χωριστές.
+[Drowned Forest]
+Πλημμυρισμένο δάσος
+[Sandbar connections]
+Αμμώδεις συνδέσεις
+[Wooded neck thickness]
+Πάχος δασικών φραγμών
+[Neutral clearing size]
+Μέγεθος ουδέτερων ξέφωτων

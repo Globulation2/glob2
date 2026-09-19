@@ -3018,3 +3018,11 @@ Dette frø giver ikke plads til en nyttig genvej gennem tør skov.
 Dette frø giver ikke plads til en nyttig svømmegenvej.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Med dette frø skal søerne til svømning være adskilte.
+[Drowned Forest]
+Oversvømmet skov
+[Sandbar connections]
+Sandbankeforbindelser
+[Wooded neck thickness]
+Skovbarrierernes tykkelse
+[Neutral clearing size]
+Neutrale lysningers størrelse

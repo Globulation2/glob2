@@ -157,6 +157,7 @@ restores whatever landscape it had.
 | `bajada` | 55 | Bajada | [Desert ranges with rows of alluvial fans, stamped home fans, playa lakes](BAJADA.md) |
 | `central-quarry` | 56 | Central Quarry | [Natural country round a lake whose island holds the only stone](CENTRAL_QUARRY.md) |
 | `hidden-oasis` | 57 | Hidden Oasis | [Canyon country round a plateau whose hidden pond holds the only algae, sealed by the colonies' own towers](HIDDEN_OASIS.md) |
+| `drowned-forest` | 67 | Drowned Forest | [Woodland islands, sandbar routes, found meadow colonies and regrowing timber cuts](DROWNED_FOREST.md) |
 | `portage-lakes` | 65 | Portage Lakes | [Irregular lakes, dry woodland portages and distinct swimming flanks](PORTAGE_LAKES.md) |
 | `encircled-kingdom` | 63 | Encircled Kingdom | [Colony zero holds an agricultural fortress against outer towns, with land gates and swimming waterfronts](ENCIRCLED_KINGDOM.md) |
 | `rugged-archipelago` | 8 | Old islands | Island growth + beach passes, own resource search |

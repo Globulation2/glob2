@@ -2938,3 +2938,11 @@ Hạt giống này không tạo được lối tắt hữu ích qua rừng khô.
 Hạt giống này không tạo được lối tắt hữu ích bằng cách bơi.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Với hạt giống này, các hồ để bơi phải tách biệt nhau.
+[Drowned Forest]
+Rừng ngập nước
+[Sandbar connections]
+Kết nối bãi cát
+[Wooded neck thickness]
+Độ dày rào cây
+[Neutral clearing size]
+Kích thước khoảng trống trung lập

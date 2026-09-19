@@ -2942,3 +2942,11 @@ Tällä siemenellä ei mahdu hyödyllistä oikopolkua kuivan metsän läpi.
 Tällä siemenellä ei mahdu hyödyllistä uintioikoreittiä.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Tällä siemenellä uintijärvien on pysyttävä erillisinä.
+[Drowned Forest]
+Uponnut metsä
+[Sandbar connections]
+Hiekkasärkkäyhteydet
+[Wooded neck thickness]
+Metsäesteiden paksuus
+[Neutral clearing size]
+Neutraalien aukioiden koko

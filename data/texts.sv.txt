@@ -2952,3 +2952,11 @@ Detta frö ger inte plats för en användbar genväg genom torr skog.
 Detta frö ger inte plats för en användbar simgenväg.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Med detta frö måste sjöarna för simning förbli åtskilda.
+[Drowned Forest]
+Översvämmad skog
+[Sandbar connections]
+Sandbanksförbindelser
+[Wooded neck thickness]
+Skogsbarriärernas tjocklek
+[Neutral clearing size]
+Neutrala gläntors storlek

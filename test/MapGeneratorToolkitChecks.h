@@ -2469,6 +2469,25 @@ inline void containedPlotChecks()
 	writeUndermap(game.map, sketch);
 	assert(!containedPlotsMismatch(game.map, t, labels).empty());
 
+	// The thinner natural-map bund must seal an irregular plot at both wrapped seams,
+	// just like the default. A two-corner diagonal breach must be detected.
+	{
+		TerrainSketch thin(t.size(), GRASS);
+		const auto inside = stampContainedPlot(thin, t, corners, 1);
+		std::vector<int> plotLabels(t.size(), -1);
+		for (int i : inside)
+			plotLabels[i] = 0;
+		Game probe(nullptr);
+		grassMap(probe, 6, 6);
+		writeUndermap(probe.map, thin);
+		assert(containedPlotsMismatch(probe.map, t, plotLabels).empty());
+		for (int x = 0; x <= 8; ++x)
+			for (int y = 0; y <= 2; ++y)
+				thin[t.at(x, y)] = GRASS;
+		writeUndermap(probe.map, thin);
+		assert(!containedPlotsMismatch(probe.map, t, plotLabels).empty());
+	}
+
 	GenerationRequest request;
 	request.seed = 912;
 	GenerationContext a(request), b(request);

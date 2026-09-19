@@ -2938,3 +2938,11 @@ Gant an had-mañ ne c’haller ket krouiñ un hent-berr talvoudus dre goad sec�
 Gant an had-mañ ne c’haller ket krouiñ un hent-berr talvoudus dre neuial.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Gant an had-mañ e rank al lennoù evit neuial bezañ dispartiet.
+[Drowned Forest]
+Floresta inundada
+[Sandbar connections]
+Conexões entre bancos de areia
+[Wooded neck thickness]
+Espessura das barreiras de árvores
+[Neutral clearing size]
+Tamanho das clareiras neutras

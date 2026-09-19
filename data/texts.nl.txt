@@ -2966,3 +2966,11 @@ Met deze startwaarde past er geen nuttige afkorting door droog bos.
 Met deze startwaarde past er geen nuttige zwemroute als afkorting.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Met deze startwaarde moeten de meren om doorheen te zwemmen gescheiden blijven.
+[Drowned Forest]
+Verdronken bos
+[Sandbar connections]
+Zandbankverbindingen
+[Wooded neck thickness]
+Dikte van bosbarrières
+[Neutral clearing size]
+Grootte van neutrale open plekken

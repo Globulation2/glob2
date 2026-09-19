@@ -467,4 +467,31 @@ What made the rounds work:
 
 For every tuning change keep the seed, the request, the symptom (which colony, which tick, which metric), the hypothesis, the change and the paired re-run. The generators' headers carry this record in the comments on their constants; the pull requests carry the numbers. Both are what the next map's designer reads.
 
+## Drowned Forest: distinguish a route, a future route and a feeding route
+
+Use the actual resource-aware walking mask to measure a timber shortcut's current
+benefit. A conservative mask that treats all eventual forest grass as blocked is
+useful for proving permanent roads, but can invent detours that players do not face.
+Measure both mouth-to-mouth savings and a real home-to-usable-destination journey.
+Prove harvesting with ordinary workers and a matched unflagged baseline; keep AI
+strategy recognition separate from the physical mechanism working.
+
+Place a found start relative to its actual farm orientation. A central-looking
+swarm can have a poor opening food haul when the farm faces away from it. Conversely,
+late starvation beside available wheat can mean a lost inn or a long trip to the
+remaining inn. Inspect feeding buildings, real walks and losses before enlarging
+farmland. Rotate several AIs through each start and distinguish farm potential from
+observed food delivery.
+
+For compact layouts, try bounded alternate orientations of a neutral destination
+before abandoning otherwise good terrain. Preserve the same random state between
+alternatives and keep finished-world room, arrival and shortcut requirements intact.
+A larger retry cap is a latency tradeoff, not a geometry repair or universal success
+proof; retain the failures that motivated it and measure the tail.
+
+Profile the complete generator, including repeated validation and search attempts.
+Bound a flood only after proving that every queried goal and reconstructed path lies
+within the bound. Local building-room checks need a global fallback and checks for
+blocked external roots; compare ordered footprints and failure results against the
+original helper. Preserve map-byte comparisons when optimizing exact behavior.
 **Carry forward evidence only when its inputs still match.** Freeze the executable and requests for each review round. After an output-preserving change, compare the exact played maps against the final generator, including colony counts and options; a larger-map comparison with eight colonies does not cover a four-colony game. Exact serialized comparisons may require the same output path. Reuse play evidence only when the saved world matches and simulation/AI behavior is unchanged. Re-test changed maps, retain the failed version, and state the review's remaining limits.

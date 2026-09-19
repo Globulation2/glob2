@@ -2950,3 +2950,11 @@ Bu tohumla kuru ormandan geçen yararlı bir kestirme oluşturulamıyor.
 Bu tohumla yüzerek kullanılabilecek yararlı bir kestirme oluşturulamıyor.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Bu tohumda yüzülebilen göllerin birbirinden ayrı kalması gerekir.
+[Drowned Forest]
+Sular altında kalan orman
+[Sandbar connections]
+Kum geçidi bağlantıları
+[Wooded neck thickness]
+Ağaç engellerinin kalınlığı
+[Neutral clearing size]
+Tarafsız açıklıkların boyutu

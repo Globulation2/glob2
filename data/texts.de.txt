@@ -2942,3 +2942,11 @@ Mit diesem Startwert lässt sich keine nützliche Abkürzung durch trockenen Wal
 Mit diesem Startwert lässt sich keine nützliche Schwimmabkürzung anlegen.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Mit diesem Startwert müssen die Schwimmseen voneinander getrennt bleiben.
+[Drowned Forest]
+Versunkener Wald
+[Sandbar connections]
+Sandbankverbindungen
+[Wooded neck thickness]
+Dicke der Waldbarrieren
+[Neutral clearing size]
+Größe neutraler Lichtungen

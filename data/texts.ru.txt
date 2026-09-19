@@ -2940,3 +2940,11 @@ Emoji
 При этом начальном числе не удаётся создать полезный короткий путь вплавь.
 [Portage Lakes needs separate swimming lakes on this seed.]
 При этом начальном числе озёра для плавания должны оставаться раздельными.
+[Drowned Forest]
+Затопленный лес
+[Sandbar connections]
+Песчаные переходы
+[Wooded neck thickness]
+Толщина лесных преград
+[Neutral clearing size]
+Размер нейтральных полян

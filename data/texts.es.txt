@@ -2942,3 +2942,11 @@ Esta semilla no permite crear un atajo útil por un bosque seco.
 Esta semilla no permite crear un atajo útil a nado.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Con esta semilla, los lagos para nadar deben quedar separados.
+[Drowned Forest]
+Bosque inundado
+[Sandbar connections]
+Conexiones de arena
+[Wooded neck thickness]
+Grosor de las barreras de árboles
+[Neutral clearing size]
+Tamaño de los claros neutrales

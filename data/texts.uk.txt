@@ -2938,3 +2938,11 @@ Emoji
 За цього початкового числа не вдається створити корисний короткий шлях уплав.
 [Portage Lakes needs separate swimming lakes on this seed.]
 За цього початкового числа озера для плавання мають залишатися відокремленими.
+[Drowned Forest]
+Затоплений ліс
+[Sandbar connections]
+Піщані переходи
+[Wooded neck thickness]
+Товщина лісових перешкод
+[Neutral clearing size]
+Розмір нейтральних галявин

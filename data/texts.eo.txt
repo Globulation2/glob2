@@ -2940,3 +2940,11 @@ Ne eblas kunligi la bordajn padojn.
 Ĉi tiu semo ne ebligas utilan naĝan ŝparvojon.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Kun ĉi tiu semo la lagoj por naĝado devas resti apartaj.
+[Drowned Forest]
+Inundita arbaro
+[Sandbar connections]
+Sablaj ligoj
+[Wooded neck thickness]
+Dikeco de arbaj baroj
+[Neutral clearing size]
+Grandeco de neŭtralaj maldensejoj

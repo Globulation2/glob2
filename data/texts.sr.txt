@@ -2942,3 +2942,11 @@ Emoji
 Са овим семеном није могуће направити корисну пречицу пливањем.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Са овим семеном језера за пливање морају остати одвојена.
+[Drowned Forest]
+Поплављена шума
+[Sandbar connections]
+Пешчане везе
+[Wooded neck thickness]
+Дебљина шумских препрека
+[Neutral clearing size]
+Величина неутралних пропланака

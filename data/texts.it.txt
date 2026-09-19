@@ -3004,3 +3004,11 @@ Questo seme non permette di creare una scorciatoia utile nel bosco asciutto.
 Questo seme non permette di creare una scorciatoia utile a nuoto.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Con questo seme, i laghi attraversabili a nuoto devono restare separati.
+[Drowned Forest]
+Foresta sommersa
+[Sandbar connections]
+Collegamenti sabbiosi
+[Wooded neck thickness]
+Spessore delle barriere boschive
+[Neutral clearing size]
+Dimensione delle radure neutrali

@@ -2942,3 +2942,11 @@ S tem semenom ni mogoče ustvariti uporabne bližnjice skozi suh gozd.
 S tem semenom ni mogoče ustvariti uporabne plavalne bližnjice.
 [Portage Lakes needs separate swimming lakes on this seed.]
 S tem semenom morajo jezera za plavanje ostati ločena.
+[Drowned Forest]
+Poplavljen gozd
+[Sandbar connections]
+Peščene povezave
+[Wooded neck thickness]
+Debelina gozdnih pregrad
+[Neutral clearing size]
+Velikost nevtralnih jas

@@ -2940,3 +2940,11 @@ Emoji
 لا تسمح هذه البذرة بإنشاء طريق مختصر مفيد بالسباحة.
 [Portage Lakes needs separate swimming lakes on this seed.]
 تحتاج هذه البذرة إلى بحيرات منفصلة للسباحة.
+[Drowned Forest]
+الغابة المغمورة
+[Sandbar connections]
+وصلات الممرات الرملية
+[Wooded neck thickness]
+سماكة الحواجز الشجرية
+[Neutral clearing size]
+حجم الفسحات المحايدة

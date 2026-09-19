@@ -2942,3 +2942,11 @@ To ziarno nie pozwala utworzyć użytecznego skrótu przez suchy las.
 To ziarno nie pozwala utworzyć użytecznego skrótu wpław.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Przy tym ziarnie jeziora do pływania muszą pozostać oddzielone.
+[Drowned Forest]
+Zatopiony las
+[Sandbar connections]
+Piaszczyste połączenia
+[Wooded neck thickness]
+Grubość leśnych barier
+[Neutral clearing size]
+Rozmiar neutralnych polan

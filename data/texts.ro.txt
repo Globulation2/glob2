@@ -2942,3 +2942,11 @@ Această sămânță nu permite o scurtătură utilă prin pădure uscată.
 Această sămânță nu permite o scurtătură utilă prin înot.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Cu această sămânță, lacurile pentru înot trebuie să rămână separate.
+[Drowned Forest]
+Pădure inundată
+[Sandbar connections]
+Legături de nisip
+[Wooded neck thickness]
+Grosimea barierelor de copaci
+[Neutral clearing size]
+Mărimea poienilor neutre

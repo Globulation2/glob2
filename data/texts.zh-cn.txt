@@ -2938,3 +2938,11 @@ Emoji
 此种子无法生成有效的游泳捷径。
 [Portage Lakes needs separate swimming lakes on this seed.]
 使用此种子时，可供游泳的湖泊必须保持互不相连。
+[Drowned Forest]
+淹没森林
+[Sandbar connections]
+沙洲连接
+[Wooded neck thickness]
+林木屏障厚度
+[Neutral clearing size]
+中立林间空地大小

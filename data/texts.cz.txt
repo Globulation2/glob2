@@ -2942,3 +2942,11 @@ S tímto seedem nelze vytvořit užitečnou zkratku suchým lesem.
 S tímto seedem nelze vytvořit užitečnou zkratku plaváním.
 [Portage Lakes needs separate swimming lakes on this seed.]
 S tímto seedem musí jezera pro plavání zůstat oddělená.
+[Drowned Forest]
+Zatopený les
+[Sandbar connections]
+Písečná spojení
+[Wooded neck thickness]
+Tloušťka lesních bariér
+[Neutral clearing size]
+Velikost neutrálních mýtin

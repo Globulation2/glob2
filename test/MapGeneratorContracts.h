@@ -1886,8 +1886,160 @@ inline void portageLakesContracts()
 	puts("PASS Portage Lakes: compact/full, repeatability, growth containment, missing portage, "
 		 "abundance extremes");
 }
+inline void drownedForestContracts()
+{
+	const auto &definition =
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("drowned-forest"));
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	request.wDec = request.hDec = 8;
+	request.nbTeams = 4;
+	request.seed = 7;
+	for (auto dimensions :
+		 {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}, std::pair{8, 8}, std::pair{9, 9}})
+	{
+		auto r = request;
+		r.wDec = dimensions.first;
+		r.hDec = dimensions.second;
+		r.nbTeams = std::min(8, (1 << r.wDec) * (1 << r.hDec) / 8192);
+		assert(definition.validateRequest(r).empty());
+		if (r.nbTeams < 8)
+		{
+			++r.nbTeams;
+			assert(!definition.validateRequest(r).empty());
+		}
+	}
+	for (auto dimensions : {std::pair{6, 7}, std::pair{7, 9}, std::pair{10, 9}})
+	{
+		auto r = request;
+		r.wDec = dimensions.first;
+		r.hDec = dimensions.second;
+		assert(!definition.validateRequest(r).empty());
+	}
+	GenerationService service;
+	Game first(nullptr), warm(nullptr);
+	assert(service.generate(first, request));
+	assert(service.generate(warm, request, true));
+	assert(mapFingerprint(first) == mapFingerprint(warm));
+	const auto fingerprint = mapFingerprint(first);
+	GenerationContext check(request);
+	assert(definition.validateWorld(first, check).empty());
+	// Forced late growth must not seal circulation or invade the protected towns.
+	setSyncRandSeed(58007);
+	for (int tick = 0; tick < 4096; ++tick)
+		first.map.growResources();
+	assert(definition.validateWorld(first, check).empty());
+	// Damage to a designated neck must be detected.
+	Game observedWorld(nullptr);
+	const auto observed = service.generate(observedWorld, request, true);
+	int neck = -1;
+	for (const auto &record : observed.telemetry.records())
+		if (record.key == "drowned-forest.shortcut.centre")
+		{
+			neck = int(std::get<std::int64_t>(record.value));
+			break;
+		}
+	assert(neck >= 0);
+	observedWorld.map.setNoResource(neck % 256, neck / 256, 1);
+	assert(!definition.validateWorld(observedWorld, check).empty());
+	auto compact = request;
+	compact.wDec = compact.hDec = 7;
+	compact.nbTeams = 2;
+	compact.nbWorkers = 8;
+	Game crowded(nullptr);
+	assert(service.generate(crowded, compact));
+	for (int amount : {0, 300})
+	{
+		auto extreme = request;
+		extreme.nbWorkers = 8;
+		for (const auto &control : definition.controls)
+			if (control.group == ControlGroup::Resources)
+				extreme.options[control.id] = amount;
+		Game world(nullptr);
+		assert(service.generate(world, extreme));
+		GenerationContext verify(extreme);
+		assert(definition.validateWorld(world, verify).empty());
+		if (amount == 0)
+		{
+			for (int y = 0; y < 256; ++y)
+				for (int x = 0; x < 256; ++x)
+					if (world.map.getResource(x, y).type == WHEAT)
+						world.map.setNoResource(x, y, 1);
+			assert(!definition.validateWorld(world, verify).empty());
+		}
+	}
+	// A worker can stand inside a hypothetical future building rectangle. Circulation
+	// may instead start at reachable gathering faces of its existing swarm.
+	auto futureRoom = compact;
+	futureRoom.seed = 100111;
+	futureRoom.nbWorkers = 1;
+	futureRoom.options["wooded-neck-thickness"] = 7;
+	futureRoom.options["neutral-clearing-size"] = 24;
+	futureRoom.options["wheat-amount"] = 300;
+	futureRoom.options["wood-amount"] = 200;
+	futureRoom.options["stone-amount"] = 250;
+	futureRoom.options["algae-amount"] = 75;
+	futureRoom.options["fruit-amount"] = 275;
+	Game roomRegression(nullptr);
+	assert(service.generate(roomRegression, futureRoom));
+	// Sparse woods on the smallest map still need useful destinations for both homes.
+	auto sparse = compact;
+	sparse.seed = 2;
+	sparse.nbWorkers = 4;
+	sparse.options["wood-amount"] = 0;
+	Game sparseRegression(nullptr);
+	assert(service.generate(sparseRegression, sparse));
+	sparse.seed = 100260;
+	sparse.nbWorkers = 3;
+	sparse.options["wooded-neck-thickness"] = 7;
+	sparse.options["neutral-clearing-size"] = 22;
+	sparse.options["wheat-amount"] = 175;
+	sparse.options["stone-amount"] = 50;
+	sparse.options["algae-amount"] = 75;
+	sparse.options["fruit-amount"] = 75;
+	Game scarceRegression(nullptr);
+	assert(service.generate(scarceRegression, sparse));
+	// At full colony density, many alternate bars and thick necks need a longer
+	// bounded search while retaining the same useful-shortcut requirement.
+	auto dense = request;
+	dense.nbTeams = 8;
+	dense.seed = 100801;
+	dense.options["sandbar-connections"] = 90;
+	dense.options["wooded-neck-thickness"] = 9;
+	dense.options["neutral-clearing-size"] = 16;
+	dense.options["wheat-amount"] = 250;
+	dense.options["wood-amount"] = 125;
+	dense.options["stone-amount"] = 75;
+	dense.options["algae-amount"] = 275;
+	dense.options["fruit-amount"] = 275;
+	Game denseRegression(nullptr);
+	assert(service.generate(denseRegression, dense));
+	// Fully occupied rectangular maps need the same bounded tail as dense squares.
+	auto rectangle = request;
+	rectangle.wDec = 7;
+	rectangle.nbWorkers = 7;
+	rectangle.seed = 101727;
+	rectangle.options["sandbar-connections"] = 100;
+	rectangle.options["wooded-neck-thickness"] = 9;
+	rectangle.options["neutral-clearing-size"] = 24;
+	rectangle.options["wood-amount"] = 0;
+	rectangle.options["stone-amount"] = 50;
+	rectangle.options["algae-amount"] = 200;
+	Game rectangularRegression(nullptr);
+	assert(service.generate(rectangularRegression, rectangle));
+	Game cold(nullptr);
+	assert(service.generate(cold, request));
+	// The worker-sensitive compact request evicted the cache; reconstruction is identical.
+	Game original(nullptr);
+	assert(service.generate(original, request));
+	assert(mapFingerprint(cold) == fingerprint && mapFingerprint(original) == fingerprint);
+	puts("PASS Drowned Forest: envelope, repeatability, cache, growth containment, neck damage, "
+		 "compact workers");
+}
+
 inline void generatorContracts()
 {
+	drownedForestContracts();
 	portageLakesContracts();
 	faultedCityContracts();
 	encircledKingdomContracts();

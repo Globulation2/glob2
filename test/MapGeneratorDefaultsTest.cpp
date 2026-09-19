@@ -676,6 +676,11 @@ int main(int argc, char **argv)
 		GeneratorContracts::eatenMapContracts();
 		return 0;
 	}
+	if (argc == 3 && std::string(argv[2]) == "--drowned-forest-only")
+	{
+		GeneratorContracts::drownedForestContracts();
+		return 0;
+	}
 	if (argc == 3 && std::string(argv[2]) == "--gauntlet-only")
 	{
 		MapGeneratorDefaultsTest::globalsInit();

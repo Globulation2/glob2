@@ -2940,3 +2940,11 @@ Emoji
 با این بذر نمی‌توان میان‌بری مفید برای شنا ساخت.
 [Portage Lakes needs separate swimming lakes on this seed.]
 با این بذر، دریاچه‌های مناسب شنا باید از هم جدا بمانند.
+[Drowned Forest]
+جنگل آب‌گرفته
+[Sandbar connections]
+اتصال‌های گذرگاه شنی
+[Wooded neck thickness]
+ضخامت موانع درختی
+[Neutral clearing size]
+اندازهٔ فضای باز بی‌طرف

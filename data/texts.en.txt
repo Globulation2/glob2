@@ -2940,3 +2940,11 @@ Portage Lakes cannot fit a useful dry woodland shortcut on this seed.
 Portage Lakes cannot fit a useful swimming shortcut on this seed.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Portage Lakes needs separate swimming lakes on this seed.
+[Drowned Forest]
+Drowned Forest
+[Sandbar connections]
+Sandbar connections
+[Wooded neck thickness]
+Wooded neck thickness
+[Neutral clearing size]
+Neutral clearing size

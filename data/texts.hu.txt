@@ -2942,3 +2942,11 @@ Ezzel a maggal nem alakítható ki hasznos rövidítés száraz erdőn át.
 Ezzel a maggal nem alakítható ki hasznos úszó rövidítés.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Ezzel a maggal az úszásra szolgáló tavaknak különállónak kell maradniuk.
+[Drowned Forest]
+Elárasztott erdő
+[Sandbar connections]
+Homokpadi összeköttetések
+[Wooded neck thickness]
+Erdős akadályok vastagsága
+[Neutral clearing size]
+Semleges tisztások mérete

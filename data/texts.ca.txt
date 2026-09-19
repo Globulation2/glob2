@@ -2950,3 +2950,11 @@ Aquesta llavor no permet crear una drecera útil per un bosc sec.
 Aquesta llavor no permet crear una drecera útil nedant.
 [Portage Lakes needs separate swimming lakes on this seed.]
 Amb aquesta llavor, els llacs per nedar han de quedar separats.
+[Drowned Forest]
+Bosc inundat
+[Sandbar connections]
+Connexions de sorra
+[Wooded neck thickness]
+Gruix de les barreres d’arbres
+[Neutral clearing size]
+Mida de les clarianes neutrals
