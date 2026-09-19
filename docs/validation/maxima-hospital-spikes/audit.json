@@ -11,5 +11,11 @@
   "current_branch_policy_tests": {
     "tests": 12,
     "passed": true
+  },
+  "per_warrior_followup": {
+    "games": 96,
+    "pressure_samples": 3109,
+    "ratios_verified": true,
+    "hospital_setting_changed": false
   }
 }

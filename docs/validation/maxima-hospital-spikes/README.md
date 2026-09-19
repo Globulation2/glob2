@@ -88,6 +88,67 @@ calculation can understate its intended headroom requirement.
 - When multiple samples share a game's maximum deficit, the first is retained
   for the peak-state fields and the zero-capacity count.
 
+## Per-warrior follow-up and the existing setting
+
+The adopted tower games give the following **equal-weight per-game averages
+within shortage samples**. Army size is all living warriors, including wounded
+and hospitalized warriors. This is conditional on a shortage, not the normal
+healing requirement of every army.
+
+| Per 10 living warriors, during shortages | 128×128 | 256×256 FFA |
+| --- | ---: | ---: |
+| Wounded warriors | 5.2 | 4.2 |
+| Operating hospital beds | 1.5 | 1.4 |
+| Missing beds | **3.7** | **2.8** |
+| Missing beds when restricting to samples with positive bed capacity | 2.1 | 1.6 |
+
+At each affected game's largest absolute shortage, the median army sizes are
+13 and 25.5 warriors respectively. Across *all* attack samples, the average
+bed-to-warrior ratios are 0.35 and 0.48, and wounded fractions are 0.28 and 0.22.
+Those broader averages hide the timing of the shortages. A universal target
+based only on the shortage-conditioned ratios would overstate typical demand.
+
+The configurable `military.hospital_units_per_building` is currently **15**, but
+`Labour::hospitalsWorthBuilding` separately enforces **one hospital per eight
+warriors**. The director takes the larger target. Consequently, changing 15 to
+12, 10 or even 8 cannot increase the target under the current policy. Injury
+response can request still more hospitals; both paths use `hospital_cap = 8`.
+
+A small change that actually raises the demographic target would be
+`military.hospital_units_per_building = 7`: one per seven rather than one per
+eight, about 14% denser before rounding and the cap. For armies of 16, 32, 48
+and 64 warriors, the demographic targets would change from 2/4/6/8 hospitals
+to 3/5/7/8. Injury-driven demand may already exceed either demographic target.
+This is a proposed one-setting experiment, **not an adopted or tested change**.
+
+Basic hospitals provide two beds, so the existing uncapped demographic target
+corresponds to approximately 0.25 beds per warrior if all requested hospitals
+are basic and completed. At the middle/top hospital levels the same building
+count provides 0.625/0.875 beds per warrior. The setting controls buildings,
+not seats directly, and upgrades temporarily remove capacity.
+
+During shortages, the observed hospital count (including sites) is below the
+existing demographic floor in **55.5% / 65.7%** of samples, averaged per affected
+game. It reaches the eight-hospital cap in only **0.3% / 1.4%**. Thus a higher cap
+has little direct scope in these observed states. More aggressive demographic
+demand could provide a buffer before an attack, but these data also show failure
+to deliver or retain capacity already requested by the existing policy. Those
+are descriptive observations, not proof that a density change cannot help.
+
+[Per-warrior summaries](per-warrior-summary.json), [game rows](per-warrior-games.csv)
+and [sample rows](per-warrior-samples.csv) retain the calculation. Hospital counts
+come from same-tick `GLOB2_MEASURE buildings_2_*` fields; even long-level indices
+are construction/upgrade sites, odd indices are completed hospitals. Counts do
+not include unissued planner reservations. Samples with zero living warriors
+are excluded from ratios. No independent-tick significance claim is made.
+
+Reproduce from the complete raw study and the first analysis's retained
+`hospital-spikes/pressure-samples.csv`:
+
+```sh
+python3 per-warrior.py /path/to/artifacts/defense-study /tmp/hospital-spikes
+```
+
 ## Evidence and reproduction
 
 [summary.json](summary.json) contains all four cohort/policy summaries and the

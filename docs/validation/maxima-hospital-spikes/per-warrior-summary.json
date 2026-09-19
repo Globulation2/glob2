@@ -1,0 +1,41 @@
+{
+  "definition": "Equal-weight per-game ratios for adopted towers only. Army = live home + away + field warriors. Shortage-conditioned metrics use affected games only. Building totals include construction/upgrade sites; not unissued reservations.",
+  "groups": {
+    "128": {
+      "games": 72,
+      "games_with_pressure": 68,
+      "games_with_shortages": 51,
+      "mean_beds_per_warrior": 0.34797767573643135,
+      "mean_hurt_per_warrior": 0.27954855467033163,
+      "mean_missing_per_warrior_when_short": 0.3675989763259051,
+      "mean_beds_per_warrior_when_short": 0.15069685436237099,
+      "mean_hurt_per_warrior_when_short": 0.518295830688276,
+      "mean_missing_per_warrior_when_short_with_beds": 0.20941455470356046,
+      "short_fraction_below_demographic_floor": 0.5549497285494662,
+      "short_fraction_at_hospital_cap": 0.00326797385620915,
+      "short_fraction_with_hospital_sites": 0.36899479844522987,
+      "median_peak_warriors": 13.0,
+      "median_peak_missing_fraction": 0.45454545454545453,
+      "median_peak_hospitals": 1.0,
+      "median_peak_beds": 0.0
+    },
+    "256": {
+      "games": 24,
+      "games_with_pressure": 23,
+      "games_with_shortages": 12,
+      "mean_beds_per_warrior": 0.47524278917553076,
+      "mean_hurt_per_warrior": 0.2190729454245209,
+      "mean_missing_per_warrior_when_short": 0.28220828646430757,
+      "mean_beds_per_warrior_when_short": 0.13672825493225554,
+      "mean_hurt_per_warrior_when_short": 0.4189365413965631,
+      "mean_missing_per_warrior_when_short_with_beds": 0.16414613473282266,
+      "short_fraction_below_demographic_floor": 0.6565285204991087,
+      "short_fraction_at_hospital_cap": 0.013636363636363636,
+      "short_fraction_with_hospital_sites": 0.3356978397419574,
+      "median_peak_warriors": 25.5,
+      "median_peak_missing_fraction": 0.47903726708074534,
+      "median_peak_hospitals": 2.5,
+      "median_peak_beds": 4.0
+    }
+  }
+}
