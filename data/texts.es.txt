@@ -2828,3 +2828,17 @@ Cercanos
 Equilibrada
 [Spread]
 Separados
+[Encircled Kingdom]
+Reino rodeado
+[Fortress plan]
+Planta de la fortaleza
+[Automatic]
+Automática
+[Elongated enclosure]
+Recinto alargado
+[Bastioned enclosure]
+Recinto abaluartado
+[Paired courtyards]
+Patios gemelos
+[Heartland farmland]
+Tierras agrícolas centrales

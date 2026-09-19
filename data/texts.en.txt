@@ -2826,3 +2826,17 @@ Compact
 Balanced
 [Spread]
 Spread
+[Encircled Kingdom]
+Encircled Kingdom
+[Fortress plan]
+Fortress plan
+[Automatic]
+Automatic
+[Elongated enclosure]
+Elongated enclosure
+[Bastioned enclosure]
+Bastioned enclosure
+[Paired courtyards]
+Paired courtyards
+[Heartland farmland]
+Heartland farmland

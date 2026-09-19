@@ -2828,3 +2828,17 @@ Blízko sebe
 Vyvážené
 [Spread]
 Daleko od sebe
+[Encircled Kingdom]
+Obklíčené království
+[Fortress plan]
+Půdorys pevnosti
+[Automatic]
+Automatický
+[Elongated enclosure]
+Protáhlé opevnění
+[Bastioned enclosure]
+Bastionové opevnění
+[Paired courtyards]
+Dvojice nádvoří
+[Heartland farmland]
+Pole v jádru království

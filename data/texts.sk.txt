@@ -2836,3 +2836,17 @@ Blízko seba
 Vyvážené
 [Spread]
 Ďaleko od seba
+[Encircled Kingdom]
+Obkľúčené kráľovstvo
+[Fortress plan]
+Pôdorys pevnosti
+[Automatic]
+Automatický
+[Elongated enclosure]
+Podlhovasté opevnenie
+[Bastioned enclosure]
+Bastiónové opevnenie
+[Paired courtyards]
+Dvojica nádvorí
+[Heartland farmland]
+Polia v jadre kráľovstva

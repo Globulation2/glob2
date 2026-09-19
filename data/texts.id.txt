@@ -2824,3 +2824,17 @@ Rapat
 Seimbang
 [Spread]
 Renggang
+[Encircled Kingdom]
+Kerajaan terkepung
+[Fortress plan]
+Denah benteng
+[Automatic]
+Otomatis
+[Elongated enclosure]
+Benteng memanjang
+[Bastioned enclosure]
+Benteng berbastion
+[Paired courtyards]
+Halaman kembar
+[Heartland farmland]
+Lahan pertanian pusat

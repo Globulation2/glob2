@@ -2828,3 +2828,17 @@ Tiivis
 Tasapainoinen
 [Spread]
 Väljä
+[Encircled Kingdom]
+Saarrettu valtakunta
+[Fortress plan]
+Linnoituksen pohjapiirros
+[Automatic]
+Automaattinen
+[Elongated enclosure]
+Pitkulainen linnoitus
+[Bastioned enclosure]
+Bastionilinnoitus
+[Paired courtyards]
+Kaksi sisäpihaa
+[Heartland farmland]
+Ydinalueen viljelymaa

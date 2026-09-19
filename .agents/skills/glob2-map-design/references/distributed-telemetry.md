@@ -75,6 +75,31 @@ once. Never delete an unacknowledged spool to recover disk. Invalid requests and
 generation failures are retained without automatic reruns. Inspect process failures
 and missing jobs as well as accepted samples before drawing conclusions.
 
+## Local study integrity and recovery
+
+The same evidence rules apply to a small native-CLI harness. Assert that catalog
+discovery found the intended controls and nonempty domains before scheduling work;
+an empty discovery result can silently turn a control search into repeated defaults.
+A zero process exit is insufficient: require a parsed report, the requested
+telemetry, and the metrics needed for the analysis. Missing measurements are an
+artifact failure, never zero or an accepted sample.
+
+Write one complete request/result record per job. Resume against the saved ordered
+request list or stable job IDs, verifying the full request and immutable build.
+Count a rerun once, retain the failed attempt and its reason, and distinguish
+infrastructure recovery from a generator retry with a different seed. Before
+publishing, check expected versus completed counts and parse every retained record.
+Encircled Kingdom's disk-full interruption left one successful command's measurement
+file empty; rerunning that exact request was necessary even after the other jobs
+resumed successfully.
+
+Budget disk space for late saves and logs as well as initial maps. Compress completed
+artifacts without changing active outputs. For a review bundle, include requests,
+analysis scripts, build provenance, representative maps/saves and the telemetry
+used for conclusions. If filtering noisy logs, retain every record the analysis
+uses and say what was omitted. Finish analyses before packaging, then verify the
+archive's contents against its manifest so it cannot contain a half-written summary.
+
 ## Analyze the returned observations
 
 Every generated result contains `result.map_report`, the complete version-2 native

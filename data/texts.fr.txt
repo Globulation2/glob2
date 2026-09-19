@@ -2838,3 +2838,17 @@ Rapprochés
 Équilibré
 [Spread]
 Espacés
+[Encircled Kingdom]
+Royaume encerclé
+[Fortress plan]
+Plan de la forteresse
+[Automatic]
+Automatique
+[Elongated enclosure]
+Enceinte allongée
+[Bastioned enclosure]
+Enceinte bastionnée
+[Paired courtyards]
+Cours jumelles
+[Heartland farmland]
+Terres agricoles centrales

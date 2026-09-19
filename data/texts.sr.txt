@@ -2828,3 +2828,17 @@ Emoji
 Уравнотежен
 [Spread]
 Велики
+[Encircled Kingdom]
+Опкољено краљевство
+[Fortress plan]
+План тврђаве
+[Automatic]
+Аутоматски
+[Elongated enclosure]
+Издужено утврђење
+[Bastioned enclosure]
+Бастионско утврђење
+[Paired courtyards]
+Два дворишта
+[Heartland farmland]
+Њиве у средишту краљевства

@@ -56,6 +56,7 @@
 #include "CentralQuarryGenerator.h"
 #include "HiddenOasisGenerator.h"
 #include "OrchardCommonsGenerator.h"
+#include "EncircledKingdomGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -170,8 +171,13 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 hilbertRiverDefinition(),
 											 lavaShieldDefinition(),
 											 honeycombIsleDefinition(),
-											 karstTowersDefinition(), bajadaDefinition(),
-											 centralQuarryDefinition(), hiddenOasisDefinition(), orchardCommonsDefinition(), ruggedArchipelagoDefinition(),
+											 karstTowersDefinition(),
+											 bajadaDefinition(),
+											 centralQuarryDefinition(),
+											 hiddenOasisDefinition(),
+											 orchardCommonsDefinition(),
+											 encircledKingdomDefinition(),
+											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
 											 evergladesDefinition(),

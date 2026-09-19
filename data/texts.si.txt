@@ -2828,3 +2828,17 @@ Majhen
 Uravnotežen
 [Spread]
 Velik
+[Encircled Kingdom]
+Obkoljeno kraljestvo
+[Fortress plan]
+Načrt trdnjave
+[Automatic]
+Samodejno
+[Elongated enclosure]
+Podolgovata utrdba
+[Bastioned enclosure]
+Utrdba z bastijoni
+[Paired courtyards]
+Dve dvorišči
+[Heartland farmland]
+Osrednja kmetijska zemljišča

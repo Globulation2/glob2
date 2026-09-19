@@ -2828,3 +2828,17 @@ Eng
 Ausgewogen
 [Spread]
 Weit
+[Encircled Kingdom]
+Eingekreistes Königreich
+[Fortress plan]
+Festungsgrundriss
+[Automatic]
+Automatisch
+[Elongated enclosure]
+Langgestreckte Anlage
+[Bastioned enclosure]
+Bastionsanlage
+[Paired courtyards]
+Zwei Innenhöfe
+[Heartland farmland]
+Ackerland im Kerngebiet

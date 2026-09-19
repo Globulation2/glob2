@@ -2838,3 +2838,17 @@ Tätt
 Balanserat
 [Spread]
 Glest
+[Encircled Kingdom]
+Omringat kungarike
+[Fortress plan]
+Fästningsplan
+[Automatic]
+Automatisk
+[Elongated enclosure]
+Avlång befästning
+[Bastioned enclosure]
+Bastionsbefästning
+[Paired courtyards]
+Två borggårdar
+[Heartland farmland]
+Åkermark i kärnlandet

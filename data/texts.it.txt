@@ -2890,3 +2890,17 @@ Ravvicinati
 Equilibrata
 [Spread]
 Distanziati
+[Encircled Kingdom]
+Regno accerchiato
+[Fortress plan]
+Pianta della fortezza
+[Automatic]
+Automatica
+[Elongated enclosure]
+Cinta allungata
+[Bastioned enclosure]
+Cinta bastionata
+[Paired courtyards]
+Cortili gemelli
+[Heartland farmland]
+Terreni agricoli centrali

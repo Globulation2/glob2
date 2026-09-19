@@ -2828,3 +2828,17 @@ Közeli
 Kiegyensúlyozott
 [Spread]
 Távoli
+[Encircled Kingdom]
+Körülzárt királyság
+[Fortress plan]
+Erőd alaprajza
+[Automatic]
+Automatikus
+[Elongated enclosure]
+Hosszúkás erőd
+[Bastioned enclosure]
+Bástyás erőd
+[Paired courtyards]
+Kettős udvar
+[Heartland farmland]
+Központi termőföld

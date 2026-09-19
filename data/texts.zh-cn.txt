@@ -2824,3 +2824,17 @@ Emoji
 均衡
 [Spread]
 分散
+[Encircled Kingdom]
+被包围的王国
+[Fortress plan]
+要塞布局
+[Automatic]
+自动
+[Elongated enclosure]
+狭长围城
+[Bastioned enclosure]
+棱堡围城
+[Paired courtyards]
+双庭院
+[Heartland farmland]
+腹地农田

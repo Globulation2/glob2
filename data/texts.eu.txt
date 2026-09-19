@@ -2838,3 +2838,17 @@ Hurbil
 Orekatua
 [Spread]
 Sakabanatuta
+[Encircled Kingdom]
+Erresuma inguratua
+[Fortress plan]
+Gotorlekuaren oinplanoa
+[Automatic]
+Automatikoa
+[Elongated enclosure]
+Esparru luzanga
+[Bastioned enclosure]
+Bastioidun esparrua
+[Paired courtyards]
+Bi patio
+[Heartland farmland]
+Erdiguneko nekazaritza-lurrak

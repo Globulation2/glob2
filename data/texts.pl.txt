@@ -2828,3 +2828,17 @@ Bliski
 Zrównoważony
 [Spread]
 Szeroki
+[Encircled Kingdom]
+Otoczone królestwo
+[Fortress plan]
+Plan twierdzy
+[Automatic]
+Automatyczny
+[Elongated enclosure]
+Wydłużone obwarowanie
+[Bastioned enclosure]
+Obwarowanie bastionowe
+[Paired courtyards]
+Dwa dziedzińce
+[Heartland farmland]
+Pola w centrum królestwa

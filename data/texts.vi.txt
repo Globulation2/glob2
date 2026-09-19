@@ -2824,3 +2824,17 @@ Gần nhau
 Cân bằng
 [Spread]
 Cách xa
+[Encircled Kingdom]
+Vương quốc bị bao vây
+[Fortress plan]
+Bố cục pháo đài
+[Automatic]
+Tự động
+[Elongated enclosure]
+Thành lũy thuôn dài
+[Bastioned enclosure]
+Thành lũy có pháo đài góc
+[Paired courtyards]
+Hai sân trong
+[Heartland farmland]
+Đất nông nghiệp trung tâm

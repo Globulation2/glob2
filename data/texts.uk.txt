@@ -2824,3 +2824,17 @@ Emoji
 Збалансована
 [Spread]
 Далеко
+[Encircled Kingdom]
+Оточене королівство
+[Fortress plan]
+План фортеці
+[Automatic]
+Автоматично
+[Elongated enclosure]
+Видовжена фортеця
+[Bastioned enclosure]
+Бастіонна фортеця
+[Paired courtyards]
+Два подвір’я
+[Heartland farmland]
+Поля в центрі королівства

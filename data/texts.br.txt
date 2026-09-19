@@ -2824,3 +2824,17 @@ Próximos
 Equilibrado
 [Spread]
 Afastados
+[Encircled Kingdom]
+Reino cercado
+[Fortress plan]
+Planta da fortaleza
+[Automatic]
+Automática
+[Elongated enclosure]
+Recinto alongado
+[Bastioned enclosure]
+Recinto abaluartado
+[Paired courtyards]
+Pátios duplos
+[Heartland farmland]
+Terras agrícolas centrais

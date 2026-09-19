@@ -2898,3 +2898,17 @@ Emoji
 Ισορροπημένη
 [Spread]
 Αραιοί
+[Encircled Kingdom]
+Περικυκλωμένο βασίλειο
+[Fortress plan]
+Σχέδιο οχυρού
+[Automatic]
+Αυτόματο
+[Elongated enclosure]
+Επιμήκης περίβολος
+[Bastioned enclosure]
+Περίβολος με προμαχώνες
+[Paired courtyards]
+Δύο αυλές
+[Heartland farmland]
+Αγροτική γη της ενδοχώρας

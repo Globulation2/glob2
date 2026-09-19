@@ -2852,3 +2852,17 @@ Dicht bijeen
 Evenwichtig
 [Spread]
 Verspreid
+[Encircled Kingdom]
+Omsingeld koninkrijk
+[Fortress plan]
+Vestingplan
+[Automatic]
+Automatisch
+[Elongated enclosure]
+Langgerekte omwalling
+[Bastioned enclosure]
+Omwalling met bastions
+[Paired courtyards]
+Twee binnenplaatsen
+[Heartland farmland]
+Landbouwgrond in het kerngebied

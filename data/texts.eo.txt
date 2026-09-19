@@ -2826,3 +2826,17 @@ Proksimaj
 Ekvilibra
 [Spread]
 Disaj
+[Encircled Kingdom]
+Ĉirkaŭita regno
+[Fortress plan]
+Fortikaĵa plano
+[Automatic]
+Aŭtomata
+[Elongated enclosure]
+Longforma ĉirkaŭmuro
+[Bastioned enclosure]
+Bastiona ĉirkaŭmuro
+[Paired courtyards]
+Du kortoj
+[Heartland farmland]
+Kerna agraro

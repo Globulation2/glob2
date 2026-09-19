@@ -2826,3 +2826,17 @@ Emoji
 متوازنة
 [Spread]
 متباعدة
+[Encircled Kingdom]
+المملكة المطوّقة
+[Fortress plan]
+مخطط الحصن
+[Automatic]
+تلقائي
+[Elongated enclosure]
+سور ممدود
+[Bastioned enclosure]
+سور ذو معاقل
+[Paired courtyards]
+فناءان متجاوران
+[Heartland farmland]
+أراضي القلب الزراعية

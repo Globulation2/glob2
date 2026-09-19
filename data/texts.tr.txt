@@ -2836,3 +2836,17 @@ Yakın
 Dengeli
 [Spread]
 Seyrek
+[Encircled Kingdom]
+Kuşatılmış Krallık
+[Fortress plan]
+Kale planı
+[Automatic]
+Otomatik
+[Elongated enclosure]
+Uzun sur çevresi
+[Bastioned enclosure]
+Tabyalı sur çevresi
+[Paired courtyards]
+İkiz avlular
+[Heartland farmland]
+Merkezdeki tarım arazisi
