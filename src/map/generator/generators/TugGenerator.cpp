@@ -177,11 +177,16 @@ constexpr double kBedTownWeight = 1000;
 /// prizes to another's two. Wide country gets a river; crowded country does not. A landform is
 /// character, so a seed is allowed to have none.
 ///
-/// Where the line sits is measured, not guessed. The 512x512 bed that broke the rope ran 0.42 of
-/// its length in the commons; over 24 seeds at 256x256 every bed at 0.63 and above made a valid map
-/// and the eleven seeds that asked for a river came out with six. 0.60 keeps clear of the one
-/// failure without turning away the beds that were fine.
-constexpr double kLeastCommonsShare = 0.60;
+/// Where the line sits is measured. Over 40 seeds at 256x256 with four colonies, 16 cut a river and
+/// none failed; the same sweep at 0.40 also passed, and the golden set - including the 512x512 case
+/// a walled march once broke - passes at both. So the floor is not set by validity but by what a
+/// river costs: with one, fairness averages 0.871 against 0.910 without. 0.45 buys a river on about
+/// four seeds in ten for four points of a static score, which is the trade this map wants.
+///
+/// An earlier 0.60 was calibrated against a polluted measurement - the bed then carried a spurious
+/// straight chord across the whole map (see riverWater in Rivers.h), whose tiles counted as commons
+/// and flattered every candidate's share.
+constexpr double kLeastCommonsShare = 0.45;
 constexpr double kBedHomelandWeight = 40, kBedCommonsWeight = 6, kBedSplitWeight = 8;
 /// The dry collar between a homeland and the commons. Thin on purpose: it is there to stop a farm
 /// creeping out into ground that should be taken rather than grown into, not to wall the map off.

@@ -57,18 +57,25 @@ Which crossings exist splits the same way. That the country stays in one piece i
 `fordsToRejoin` guarantees it by construction; how many more fords there are beyond that minimum is
 *character*, and is what keeps the bed a landform instead of a wall.
 
-| Seeds (256×256, 4 colonies) | Count |
-|---|---|
-| Drew the river emphasis | 11 of 24 |
-| Actually got one | 5 |
-| Turned away for want of room in the commons | 6 |
+Over 40 seeds at 256×256 with four colonies, 16 cut a river and 24 did not, and none failed.
 
-A seed is allowed to have no river. Crowded country genuinely has nowhere to put one: at 512×512
-with four colonies the homelands are large enough that the best of fourteen beds still ran 58% of
-its length through somebody's fields, which is ambient water in one larder and not another's — the
-inequality the water rule exists to prevent. Beds below `kLeastCommonsShare` (0.60) are refused, a
-figure taken from measurement: the bed that broke the rope check sat at 0.42, and every bed at 0.63
-and above made a valid map.
+A seed is allowed to have no river: crowded country has nowhere to put one, and beds lying less than
+`kLeastCommonsShare` (0.45) in the commons are refused rather than run through somebody's fields,
+which would be ambient water in one larder and not another's — the inequality the water rule exists
+to prevent.
+
+**A river costs fairness, and the figure is the reason this is a deliberate choice rather than a
+free win:**
+
+| 40 seeds, 256×256, 4 colonies | Fairness | Worst start | Lowest seed |
+|---|---|---|---|
+| With a river (16) | 0.871 | −0.111 | 0.746 |
+| Without (24) | 0.910 | −0.075 | 0.783 |
+
+A bed across the contested ground is terrain one colony is nearer to than another, and no amount of
+levelling the rope buys that back. The map takes the trade because varied country is worth more here
+than the last four points of a static fairness score; `kLeastCommonsShare` is the single constant
+that moves it.
 
 ## What the search buys
 
@@ -147,7 +154,8 @@ colonies, and on 6–8 of 8 on 2:1 rectangles. Refused up front:
   the contested ground, which is exactly the kind of change that reads fine statically and alters
   how a game actually goes; whether two fords per colony is the right number is a guess constrained
   only by the rope check, not by anyone playing across one.
-- Beds still come out near-straight when the meander's harmonics happen to cancel (seed 9013).
+- The fairness cost above is static scoring only; whether a river makes a game *better* is exactly
+  the question no measurement here answers.
 - No human play, so whether the rope actually produces back-and-forth — the thing the map is named
   for — is untested.
 - Single-platform (macos-arm64) golden rows; this generator uses floating-point scoring throughout

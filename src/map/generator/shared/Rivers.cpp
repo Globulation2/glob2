@@ -65,11 +65,22 @@ River drawRiver(const Torus &t, GenerationContext &context, const std::string &s
 std::vector<unsigned char> riverWater(const Torus &t, const River &river)
 {
 	std::vector<StrokePoint> stroke;
-	stroke.reserve(river.line.size());
+	stroke.reserve(river.line.size() + 1);
 	for (size_t i = 0; i < river.line.size(); ++i)
 		stroke.push_back({river.line[i].x, river.line[i].y, river.radius[i]});
+	// Closed across the seam by running past it, not by strokePath's `closed`.
+	//
+	// strokePath works in continuous coordinates and wraps only its writes - its own contract is
+	// that a path may run past the edge - so asking it to close the loop draws a segment from the
+	// last point back to the first the long way, straight across the whole map. Every bed came out
+	// with a ruler-straight reach as well as its meander, and those tiles were scored as part of
+	// the bed. The meander is periodic over the crossing, so the point one step past the end is
+	// exactly the first point shifted by a whole map, and stepping to it closes the loop over the
+	// seam with an ordinary segment.
+	stroke.push_back({river.line[0].x + (river.vertical ? 0.0 : double(t.w)),
+					  river.line[0].y + (river.vertical ? double(t.h) : 0.0), river.radius[0]});
 	std::vector<unsigned char> water(t.size(), 0);
-	strokePath(water, t, stroke, 1, true);
+	strokePath(water, t, stroke, 1, false);
 	return water;
 }
 
