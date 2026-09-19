@@ -128,6 +128,7 @@ jobs:
             performance-telemetry-test \
             terrain-test \
             global-gradient-test \
+            path-gradient-test \
             nicowar-farming-test \
             lan-test \
             aspect-test \
@@ -351,6 +352,9 @@ jobs:
       - name: Test Nicowar farming wood clearance
         run: |
           python3 test/run-savegame-safety-tests.py build/src/NicowarFarmingHarness .
+
+      - name: Verify weighted path gradients against the independent oracle
+        run: ./build/src/PathGradientHarness
 
       - name: Build and run the global gradient regression
         run: |
@@ -691,6 +695,7 @@ jobs:
             orchard-conversion-test \
             tournament-compatibility-test \
             clearing-gradient-test \
+            path-gradient-test \
             point-bar-render-test \
             trapped-unit-test \
             hiring-bucket-test \
@@ -731,6 +736,9 @@ jobs:
         with:
           name: map-cli-windows
           path: artifacts/map-cli/
+
+      - name: Verify weighted path gradients against the independent oracle
+        run: ./build/src/PathGradientHarness.exe
 
       - name: Test clearing flag resource bounds
         run: |
