@@ -685,3 +685,25 @@ and exact wave state plus pending-order continuation. The tactics suite checks
 army growth arithmetic and gathering thresholds. Strategy tests verify enabled
 new-game defaults and migration from production saves through version 111.
 See [attack strategy](../doc/MaximaAttacks.md).
+
+## Engine save continuation
+
+Build `scons release=1 server=0 unit-continuation-test`, then run
+`build/src/UnitContinuationHarness`. Five checkpoints compare 256 subsequent
+simulation ticks and the RNG state, including idle timers, clearing reservations,
+service-list ordering and building worker membership. Linux and Windows CI run
+this harness. New saved games preserve live state without running building updates
+during load; legacy formats keep their historical reconstruction path.
+
+For full games, compare an uninterrupted sidecar with one or more resumed traces:
+
+```sh
+python3 test/compare_save_continuation.py uninterrupted/game.replay.checksums \
+  resumed/game.replay.checksums
+```
+
+The comparator checks every consecutive team/entity record, reports the first
+mismatch, rejects missing/truncated records, and excludes the aggregate checksum
+because it includes the save header/version. See
+[save continuation investigation](../docs/save-continuation.md) for reproduction
+commands and retained evidence.

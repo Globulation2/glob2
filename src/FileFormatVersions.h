@@ -146,3 +146,6 @@ inline constexpr const char FILE_SIG_CHECKSUM_SIDECAR[5] = "GCS1";
 
 //! SHA-1 hash byte length, used by the checksum sidecar (Game_io.cpp:459-461).
 static constexpr int SHA1_BYTE_LEN = 20;
+
+//! Unit clearing/idle state, building service state and ordered team/unit lists.
+static constexpr int FILE_FORMAT_VERSION_SIMULATION_CONTINUATION = 113;

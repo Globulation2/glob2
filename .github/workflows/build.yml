@@ -125,6 +125,7 @@ jobs:
             maxima-relocation-test \
             buffered-file-test \
             team-stats-save-test \
+            unit-continuation-test \
             performance-telemetry-test \
             terrain-test \
             global-gradient-test \
@@ -338,6 +339,8 @@ jobs:
       - name: Test team statistics save compatibility
         run: |
           build/libgag/src/PerformanceTelemetryHarness
+          ./build/src/UnitContinuationHarness
+          python3 test/check_save_continuation_fixture.py build/src/glob2
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/TeamStatsSaveHarness .
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness . --legacy test/fixtures/team-stats/version88.game
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness . --legacy games/gd-small-2ai.game
@@ -704,6 +707,7 @@ jobs:
             savegame-safety-test \
             maxima-continuation-test \
             team-stats-save-test \
+            unit-continuation-test \
             performance-telemetry-test
 
       - name: Test Orchard Commons generation and fruit conversion
@@ -786,6 +790,8 @@ jobs:
       - name: Test team statistics save compatibility
         run: |
           build/libgag/src/PerformanceTelemetryHarness.exe
+          ./build/src/UnitContinuationHarness.exe
+          python3 test/check_save_continuation_fixture.py build/src/glob2.exe
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/TeamStatsSaveHarness.exe .
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness.exe . --legacy test/fixtures/team-stats/version88.game
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness.exe . --legacy games/gd-small-2ai.game
