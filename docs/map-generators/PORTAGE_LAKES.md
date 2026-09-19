@@ -94,8 +94,9 @@ JSON, native maps/previews, initial/final saves, game telemetry, reviews, profil
 samples and benchmark scripts. Historical completed logs and saves are losslessly
 compressed as `.gz`; study JSON and game-result summaries remain directly readable.
 `REVIEW.md` records the repeated map-review and separate translation-review rounds.
-The artifact directory is ignored by Git; preserve it alongside the change when
-sharing review evidence.
+The artifact directory is ignored by Git. A [published evidence snapshot](https://github.com/Globulation2/glob2/tree/d5b750fe9d1f325c33ec7cc852f53487233c8080)
+retains the raw studies, maps, previews, game logs, representative initial/final
+saves, checksum traces and profile samples with a SHA-256 manifest.
 
 ### Reliability
 
