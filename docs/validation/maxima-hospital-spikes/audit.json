@@ -1,0 +1,15 @@
+{
+  "unique_games": 192,
+  "unique_pressure_samples": 6308,
+  "sample_shortfall_arithmetic_verified": true,
+  "source_identical_to_previously_validated_tower_candidate": true,
+  "adopted_commit": "b806198f5",
+  "current_branch_build": {
+    "command": "scons -j4 release=1 server=0",
+    "exit": 0
+  },
+  "current_branch_policy_tests": {
+    "tests": 12,
+    "passed": true
+  }
+}
