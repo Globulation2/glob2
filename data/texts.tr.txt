@@ -2826,3 +2826,11 @@ Gizli Vaha en fazla sekiz koloni alır.
 Kaya kütlesi bu haritaya sığmıyor; daha büyük bir harita veya daha az koloni kullanın.
 [The pond has no room for that much algae; use a bigger pond.]
 Gölette bu kadar yosun için yer yok; daha büyük bir gölet kullanın.
+[Drowned Forest]
+Sular altında kalan orman
+[Sandbar connections]
+Kum geçidi bağlantıları
+[Wooded neck thickness]
+Ağaç engellerinin kalınlığı
+[Neutral clearing size]
+Tarafsız açıklıkların boyutu

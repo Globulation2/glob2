@@ -2818,3 +2818,11 @@ Verborgene Oase fasst höchstens acht Kolonien.
 Das Massiv passt nicht auf diese Karte; verwenden Sie eine größere Karte oder weniger Kolonien.
 [The pond has no room for that much algae; use a bigger pond.]
 Der Teich hat keinen Platz für so viele Algen; verwenden Sie einen größeren Teich.
+[Drowned Forest]
+Versunkener Wald
+[Sandbar connections]
+Sandbankverbindungen
+[Wooded neck thickness]
+Dicke der Waldbarrieren
+[Neutral clearing size]
+Größe neutraler Lichtungen

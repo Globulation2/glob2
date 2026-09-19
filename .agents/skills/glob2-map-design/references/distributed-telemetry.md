@@ -168,3 +168,26 @@ Things the first run teaches the hard way:
   (a facing, a variant), which is how a start-split result is traced to its cause.
 - The played map is an artifact of its generation job (`map-r0.map`); `--preview-map` renders
   it and the final save headlessly with `SDL_VIDEODRIVER=dummy`.
+
+### Audit the study as well as the generator
+
+Freeze the binary and source identity before a large sweep. Keep platform and
+revision cohorts separate, and distinguish generator rejection from infrastructure
+failures such as a full temporary disk. Retain completed rows; do not label an
+interrupted study complete or silently combine diagnostic revisions into its totals.
+Use native parallel processes for a single machine; SSH orchestration is worthwhile
+when distributing work, not as an extra transport layer for each local probe.
+
+Check every registered level against an explicit request plan. Paired control
+comparisons require the same seed, dimensions, teams, workers and other settings;
+report missing, failed and duplicate endpoints rather than dropping them. Compare
+adjacent registered levels, not merely adjacent observed levels. Record all-seed
+plateaus and per-seed reversals alongside means: retries can select a new landscape,
+so one seed need not be monotone even when the control has a clear aggregate effect.
+
+Count successful size/team/worker combinations, then fill only combinations absent
+from the random plan. That coverage is not an exhaustive Cartesian product of all
+controls. Preserve per-colony records when judging per-colony guarantees: averaged
+worker counts can conceal unequal colonies, and a metric mixing home and neutral
+meadows dilutes a control that only enlarges neutral meadows. State these limits when
+only aggregated telemetry was retained.

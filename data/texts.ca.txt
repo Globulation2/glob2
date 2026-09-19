@@ -2826,3 +2826,11 @@ Oasi amagat admet com a màxim vuit colònies.
 El massís no cap en aquest mapa; utilitzeu un mapa més gran o menys colònies.
 [The pond has no room for that much algae; use a bigger pond.]
 La bassa no té prou espai per a tantes algues; utilitzeu una bassa més gran.
+[Drowned Forest]
+Bosc inundat
+[Sandbar connections]
+Connexions de sorra
+[Wooded neck thickness]
+Gruix de les barreres d’arbres
+[Neutral clearing size]
+Mida de les clarianes neutrals

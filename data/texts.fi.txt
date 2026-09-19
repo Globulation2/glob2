@@ -2818,3 +2818,11 @@ Kätkettyyn keitaaseen mahtuu enintään kahdeksan siirtokuntaa.
 Vuorimassiivi ei mahdu tälle kartalle; käytä suurempaa karttaa tai vähemmän siirtokuntia.
 [The pond has no room for that much algae; use a bigger pond.]
 Lammessa ei ole tilaa näin suurelle levämäärälle; käytä suurempaa lampea.
+[Drowned Forest]
+Uponnut metsä
+[Sandbar connections]
+Hiekkasärkkäyhteydet
+[Wooded neck thickness]
+Metsäesteiden paksuus
+[Neutral clearing size]
+Neutraalien aukioiden koko

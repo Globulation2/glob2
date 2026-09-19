@@ -2814,3 +2814,11 @@ Emoji
 岩石高地放不进这张地图；请使用更大的地图或更少的殖民地。
 [The pond has no room for that much algae; use a bigger pond.]
 池塘放不下这么多海藻；请使用更大的池塘。
+[Drowned Forest]
+淹没森林
+[Sandbar connections]
+沙洲连接
+[Wooded neck thickness]
+林木屏障厚度
+[Neutral clearing size]
+中立林间空地大小

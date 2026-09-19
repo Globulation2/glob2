@@ -21,14 +21,15 @@ constexpr int kSeedSearch = 16;
 } // namespace
 
 std::vector<int> stampContainedPlot(TerrainSketch &sketch, const Torus &t,
-									const std::vector<int> &corners)
+									const std::vector<int> &corners, int margin)
 {
+	margin = std::max(1, margin);
 	const std::set<int> inside(corners.begin(), corners.end());
 	// Two corner rows include a pure-sand tile even on a straight edge. Using a square
 	// stencil also seals diagonal steps; radial offsets alone need not seal raster corners.
 	for (int i : inside)
-		for (int dy = -2; dy <= 2; ++dy)
-			for (int dx = -2; dx <= 2; ++dx)
+		for (int dy = -margin; dy <= margin; ++dy)
+			for (int dx = -margin; dx <= margin; ++dx)
 				sketch[t.at(i % t.w + dx, i / t.w + dy)] = SAND;
 	for (int i : inside)
 		sketch[i] = GRASS;

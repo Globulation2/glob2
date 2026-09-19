@@ -2818,3 +2818,11 @@ Skrytá oáza pojme nejvýše osm kolonií.
 Masiv se na tuto mapu nevejde; použijte větší mapu nebo méně kolonií.
 [The pond has no room for that much algae; use a bigger pond.]
 V tůni není místo pro tolik řas; použijte větší tůň.
+[Drowned Forest]
+Zatopený les
+[Sandbar connections]
+Písečná spojení
+[Wooded neck thickness]
+Tloušťka lesních bariér
+[Neutral clearing size]
+Velikost neutrálních mýtin

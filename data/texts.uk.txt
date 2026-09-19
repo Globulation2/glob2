@@ -2814,3 +2814,11 @@ Emoji
 Масив не вміщується на цій карті; використайте більшу карту або менше колоній.
 [The pond has no room for that much algae; use a bigger pond.]
 У ставку немає місця для такої кількості водоростей; використайте більший ставок.
+[Drowned Forest]
+Затоплений ліс
+[Sandbar connections]
+Піщані переходи
+[Wooded neck thickness]
+Товщина лісових перешкод
+[Neutral clearing size]
+Розмір нейтральних галявин

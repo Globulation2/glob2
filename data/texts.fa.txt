@@ -2816,3 +2816,11 @@ Emoji
 تودهٔ صخره‌ای در این نقشه جا نمی‌شود؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
 [The pond has no room for that much algae; use a bigger pond.]
 برکه برای این مقدار جلبک جا ندارد؛ از برکهٔ بزرگ‌تر استفاده کنید.
+[Drowned Forest]
+جنگل آب‌گرفته
+[Sandbar connections]
+اتصال‌های گذرگاه شنی
+[Wooded neck thickness]
+ضخامت موانع درختی
+[Neutral clearing size]
+اندازهٔ فضای باز بی‌طرف

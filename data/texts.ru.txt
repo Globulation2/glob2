@@ -2816,3 +2816,11 @@ Emoji
 Массив не помещается на этой карте; используйте карту побольше или меньше колоний.
 [The pond has no room for that much algae; use a bigger pond.]
 В пруду нет места для такого количества водорослей; используйте пруд побольше.
+[Drowned Forest]
+Затопленный лес
+[Sandbar connections]
+Песчаные переходы
+[Wooded neck thickness]
+Толщина лесных преград
+[Neutral clearing size]
+Размер нейтральных полян

@@ -581,5 +581,10 @@ int main(int argc, char **argv)
 		puts("PASS toolkit-only geometry, raster, resource and home contracts");
 		return 0;
 	}
+	if (argc == 3 && std::string(argv[2]) == "--drowned-forest-only")
+	{
+		GeneratorContracts::drownedForestContracts();
+		return 0;
+	}
 	MapGeneratorDefaultsTest::run(argc == 3 ? argv[2] : nullptr);
 }

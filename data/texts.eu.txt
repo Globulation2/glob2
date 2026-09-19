@@ -2828,3 +2828,11 @@ Ezkutuko oasiak gehienez zortzi kolonia hartzen ditu.
 Mendigunea ez da mapa honetan sartzen; erabili mapa handiagoa edo kolonia gutxiago.
 [The pond has no room for that much algae; use a bigger pond.]
 Urmaelak ez du hainbeste algarentzako lekurik; erabili urmael handiagoa.
+[Drowned Forest]
+Baso urperatua
+[Sandbar connections]
+Hondarrezko loturak
+[Wooded neck thickness]
+Zuhaitz-hesien lodiera
+[Neutral clearing size]
+Soilgune neutralen tamaina

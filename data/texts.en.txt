@@ -2816,3 +2816,11 @@ Hidden Oasis holds at most eight colonies.
 The massif does not fit this map; use a bigger map or fewer colonies.
 [The pond has no room for that much algae; use a bigger pond.]
 The pond has no room for that much algae; use a bigger pond.
+[Drowned Forest]
+Drowned Forest
+[Sandbar connections]
+Sandbar connections
+[Wooded neck thickness]
+Wooded neck thickness
+[Neutral clearing size]
+Neutral clearing size

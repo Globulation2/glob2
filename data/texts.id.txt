@@ -2814,3 +2814,11 @@ Oasis Tersembunyi menampung paling banyak delapan koloni.
 Masif batu tidak muat di peta ini; gunakan peta yang lebih besar atau koloni yang lebih sedikit.
 [The pond has no room for that much algae; use a bigger pond.]
 Kolam tidak punya ruang untuk ganggang sebanyak itu; gunakan kolam yang lebih besar.
+[Drowned Forest]
+Hutan terendam
+[Sandbar connections]
+Sambungan jalur pasir
+[Wooded neck thickness]
+Ketebalan penghalang pohon
+[Neutral clearing size]
+Ukuran lahan terbuka netral

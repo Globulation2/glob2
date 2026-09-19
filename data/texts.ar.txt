@@ -2816,3 +2816,11 @@ Emoji
 لا تتسع هذه الخريطة للكتلة الصخرية؛ استخدم خريطة أكبر أو مستعمرات أقل.
 [The pond has no room for that much algae; use a bigger pond.]
 لا تتسع البركة لهذا القدر من الطحالب؛ استخدم بركة أكبر.
+[Drowned Forest]
+الغابة المغمورة
+[Sandbar connections]
+وصلات الممرات الرملية
+[Wooded neck thickness]
+سماكة الحواجز الشجرية
+[Neutral clearing size]
+حجم الفسحات المحايدة

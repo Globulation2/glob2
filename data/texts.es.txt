@@ -2818,3 +2818,11 @@ Oasis oculto admite como máximo ocho colonias.
 El macizo no cabe en este mapa; usa un mapa más grande o menos colonias.
 [The pond has no room for that much algae; use a bigger pond.]
 El estanque no tiene sitio para tantas algas; usa un estanque más grande.
+[Drowned Forest]
+Bosque inundado
+[Sandbar connections]
+Conexiones de arena
+[Wooded neck thickness]
+Grosor de las barreras de árboles
+[Neutral clearing size]
+Tamaño de los claros neutrales

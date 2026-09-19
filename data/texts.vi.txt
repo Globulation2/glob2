@@ -2814,3 +2814,11 @@ Suối nguồn
 Khối núi đá không vừa bản đồ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
 [The pond has no room for that much algae; use a bigger pond.]
 Ao không đủ chỗ cho từng ấy tảo; hãy dùng ao lớn hơn.
+[Drowned Forest]
+Rừng ngập nước
+[Sandbar connections]
+Kết nối bãi cát
+[Wooded neck thickness]
+Độ dày rào cây
+[Neutral clearing size]
+Kích thước khoảng trống trung lập

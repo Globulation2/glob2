@@ -2818,3 +2818,11 @@ Emoji
 Масив не стаје на ову мапу; користите већу мапу или мање колонија.
 [The pond has no room for that much algae; use a bigger pond.]
 У бари нема места за толико алги; користите већу бару.
+[Drowned Forest]
+Поплављена шума
+[Sandbar connections]
+Пешчане везе
+[Wooded neck thickness]
+Дебљина шумских препрека
+[Neutral clearing size]
+Величина неутралних пропланака

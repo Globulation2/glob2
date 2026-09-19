@@ -2842,3 +2842,11 @@ Verborgen oase biedt plaats aan hoogstens acht kolonies.
 Het massief past niet op deze kaart; gebruik een grotere kaart of minder kolonies.
 [The pond has no room for that much algae; use a bigger pond.]
 De vijver heeft geen plaats voor zoveel zeewier; gebruik een grotere vijver.
+[Drowned Forest]
+Verdronken bos
+[Sandbar connections]
+Zandbankverbindingen
+[Wooded neck thickness]
+Dikte van bosbarrières
+[Neutral clearing size]
+Grootte van neutrale open plekken

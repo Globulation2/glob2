@@ -28,12 +28,14 @@ namespace MapGeneration
 // round a farm are the map's business, not the farm's.
 
 /// An irregular grass plot surrounded by sand. `corners` is an arbitrary, nonempty set of
-/// undermap vertices; a two-vertex Chebyshev margin seals even diagonal growth across the wrap.
+/// undermap vertices; a Chebyshev margin seals diagonal growth across the wrap.
+/// The default two rows preserve existing gardens; one row is a thinner, still sealed bund.
+/// margin must be positive.
 /// Returns the pure grass tiles inside it, suitable for a crop eligibility list. The caller must
 /// reserve the plot AND its margin before stamping: this operation intentionally overwrites terrain.
 /// Run beaches afterwards and check final tiles if later stages can overlap the plot.
 std::vector<int> stampContainedPlot(TerrainSketch &, const Torus &,
-									const std::vector<int> &corners);
+									const std::vector<int> &corners, int margin = 2);
 
 /// Plant up to `wanted` deposits in a contained plot, preferring exact crop fertility (tile index
 /// breaks ties). With renewable=true, dry tiles are excluded; false also serves finite dry groves

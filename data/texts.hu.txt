@@ -2818,3 +2818,11 @@ A Rejtett oázis legfeljebb nyolc kolóniát fogad be.
 A masszívum nem fér el ezen a térképen; használj nagyobb térképet vagy kevesebb kolóniát.
 [The pond has no room for that much algae; use a bigger pond.]
 A tavacskában nincs hely ennyi algának; használj nagyobb tavacskát.
+[Drowned Forest]
+Elárasztott erdő
+[Sandbar connections]
+Homokpadi összeköttetések
+[Wooded neck thickness]
+Erdős akadályok vastagsága
+[Neutral clearing size]
+Semleges tisztások mérete

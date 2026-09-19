@@ -2818,3 +2818,11 @@ Ukryta oaza mieści najwyżej osiem kolonii.
 Masyw nie mieści się na tej mapie; użyj większej mapy lub mniejszej liczby kolonii.
 [The pond has no room for that much algae; use a bigger pond.]
 W stawie nie ma miejsca na tyle alg; użyj większego stawu.
+[Drowned Forest]
+Zatopiony las
+[Sandbar connections]
+Piaszczyste połączenia
+[Wooded neck thickness]
+Grubość leśnych barier
+[Neutral clearing size]
+Rozmiar neutralnych polan

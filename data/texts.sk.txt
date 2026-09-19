@@ -2826,3 +2826,11 @@ Skrytá oáza pojme najviac osem kolónií.
 Masív sa na túto mapu nezmestí; použite väčšiu mapu alebo menej kolónií.
 [The pond has no room for that much algae; use a bigger pond.]
 V jazierku nie je miesto pre toľko rias; použite väčšie jazierko.
+[Drowned Forest]
+Zaplavený les
+[Sandbar connections]
+Piesočné spojenia
+[Wooded neck thickness]
+Hrúbka lesných bariér
+[Neutral clearing size]
+Veľkosť neutrálnych čistín

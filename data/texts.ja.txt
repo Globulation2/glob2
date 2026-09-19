@@ -2814,3 +2814,11 @@ Emoji
 岩山がこのマップに収まりません。より大きなマップを使うか、コロニーを減らしてください。
 [The pond has no room for that much algae; use a bigger pond.]
 池にそれだけの藻を置く場所がありません。池を大きくしてください。
+[Drowned Forest]
+水没の森
+[Sandbar connections]
+砂州の接続
+[Wooded neck thickness]
+樹木の障壁の厚さ
+[Neutral clearing size]
+中立の林間空地の広さ

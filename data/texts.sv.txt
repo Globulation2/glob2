@@ -2828,3 +2828,11 @@ Dold oas rymmer högst åtta kolonier.
 Massivet får inte plats på den här kartan; använd en större karta eller färre kolonier.
 [The pond has no room for that much algae; use a bigger pond.]
 Dammen har inte plats för så många alger; använd en större damm.
+[Drowned Forest]
+Översvämmad skog
+[Sandbar connections]
+Sandbanksförbindelser
+[Wooded neck thickness]
+Skogsbarriärernas tjocklek
+[Neutral clearing size]
+Neutrala gläntors storlek
