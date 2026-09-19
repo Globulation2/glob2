@@ -27,6 +27,7 @@
 #include "../src/game/entities/BuildingType.h"
 #include "../src/building/IntBuildingType.h"
 #include "../src/unit/Unit.h"
+#include "../src/AIMaximaContinuation.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <cassert>
@@ -290,11 +291,22 @@ void nearbyCornDeterminesStaffing()
 
     const long long before=ai.nearby_farm_capacity(c,0);
     assert(before>0);
+    const int originalAmount=f.game.map.getTile(16,11).resource.amount;
+    // A cell with no wheat is no supply. A cell with wheat supplies its
+    // recurring growth plus the stock standing on it, amortised over the
+    // planning horizon, so a deeper stack is more supply and not the same
+    // supply: on ground where nothing regrows the stock is the only food there
+    // is, and treating it as nothing left Maxima unable to play such a map.
+    long long previous=0;
     for(int amount=0;amount<=8;++amount)
     {
         f.game.map.getTile(16,11).resource.amount=amount;
-        assert(ai.nearby_farm_capacity(c,0)==(amount>0 ? before : 0));
+        const long long capacity=ai.nearby_farm_capacity(c,0);
+        if(amount==0) assert(capacity==0);
+        else assert(capacity>0 && capacity>=previous);
+        previous=capacity;
     }
+    f.game.map.getTile(16,11).resource.amount=originalAmount;
     auto world=ai.collect_development_world(c);
     assert(world.tile(16,11).foodOpportunity>0);
     assert(world.tile(15,11).fertility>0);
@@ -324,7 +336,15 @@ void nearbyCornDeterminesStaffing()
     assert(first->maxUnitWorking>second->maxUnitWorking);
     assert(first->maxUnitWorking>0 && second->maxUnitWorking>0);
     std::set<int> shared;
-    assert(ai.nearby_farm_capacity(c,0,&shared)==before);
+    // Two readings of the same patch at the same moment must agree, and the
+    // second must take nothing, because the first claimed every tile. The
+    // comparison is against a reading taken here rather than against the one
+    // at the top of the test: farming has since published its protection mask,
+    // which admits tiles that were forbidden before, so the colony genuinely
+    // reaches more wheat than it did then.
+    const long long steady=ai.nearby_farm_capacity(c,0);
+    assert(steady>0);
+    assert(ai.nearby_farm_capacity(c,0,&shared)==steady);
     assert(ai.nearby_farm_capacity(c,0,&shared)==0);
     f.game.map.unsetMapDiscovered();
     assert(ai.nearby_farm_capacity(c,0)==0);
@@ -608,6 +628,66 @@ static void schoolsDoNotRequireKnownAlgae()
     assert(schoolRequested);
 }
 
+static void labourContinuation()
+{
+    Fixture f;
+    f.swarm(10,10,1);
+    auto& a=*f.ai;
+    a.context.initialize();
+    a.ensure_strategy();
+    a.labour_observation.workers=24;
+    a.labour_observation.idle=9;
+    a.labour_plan.trainingReserve=5;
+    a.labour_plan.swarmCap=2;
+    a.swarm_allowance[0]=2;
+    a.staffing_control[0].request=12;
+    auto* storage=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(storage);
+    a.save(&output);
+    const std::string bytes(storage->getBuffer(),storage->getPosition());
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0);
+    AIMaxima::Maxima restored(&input,&f.player,VERSION_MINOR);
+    assert(restored.labour_observation.workers==24);
+    assert(restored.labour_observation.idle==9);
+    assert(restored.labour_plan.trainingReserve==5);
+    assert(restored.labour_plan.swarmCap==2);
+    assert(restored.swarm_allowance==a.swarm_allowance);
+    // A completion event before the next building pass must retain the cap.
+    for(auto* ai:{&a,&restored})
+    {
+        ai->context.managementOrders.clear();
+        ai->handle_event(ai->context,RuntimeEvent(RuntimeEvent::UpdateSwarm,0));
+        bool assigned=false;
+        for(auto order:ai->context.managementOrders)
+            if(auto request=dynamic_cast<Management::AssignWorkers*>(order.get()))
+            {
+                assert(request->workers==2);
+                assigned=true;
+            }
+        assert(assigned);
+    }
+    // Write the v108 execution layout, with a sentinel after the record, to
+    // ensure the new reader neither consumes new fields nor loses alignment.
+    auto* legacyStorage=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream legacyOutput(legacyStorage);
+    legacyOutput.writeEnterSection("MaximaExecution");
+    legacyOutput.writeText(AIMaxima::StrategyResolver::canonicalValues(a.strategy),"strategy");
+    AIMaximaContinuation::Writer writer(&legacyOutput,108);
+    a.executionState(writer);
+    a.development_planner.saveExecutionState(&legacyOutput);
+    a.context.saveExecutionState(&legacyOutput);
+    legacyOutput.writeLeaveSection();
+    legacyOutput.writeUint32(0x12345678,"sentinel");
+    const std::string legacyBytes(legacyStorage->getBuffer(),legacyStorage->getPosition());
+    GAGCore::BinaryInputStream legacyInput(new GAGCore::MemoryStreamBackend(legacyBytes.data(),legacyBytes.size()));
+    legacyInput.seekFromStart(0);
+    restored.loadExecutionState(&legacyInput,108);
+    assert(legacyInput.readUint32("sentinel")==0x12345678);
+    assert(restored.labour_observation.workers==0);
+    assert(restored.swarm_allowance.empty()); // Below the bootstrap workforce.
+}
+
 int main()
 {
     GlobalContainer container; globalContainer=&container; container.runNoX=true;
@@ -615,6 +695,7 @@ int main()
     IntBuildingType::init();
 
 
+    labourContinuation();
     schoolsDoNotRequireKnownAlgae();
     birthBudgetScalesBeyondTwenty();
     growingFoodFundsCapacity();

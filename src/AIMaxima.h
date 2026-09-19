@@ -24,6 +24,7 @@
 #include "AIMaximaFarming.h"
 #include "AIMaximaPlacement.h"
 #include "AIMaximaRecon.h"
+#include "AIMaximaLabour.h"
 #include "AIMaximaStaffingControl.h"
 #include "AIMaximaStrategy.h"
 #include "AIMaximaTactics.h"
@@ -44,16 +45,16 @@ public:
   }
 	explicit Maxima(Player *player);
 	Maxima(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor) override;
 	/// Consume versions 84-88 using their original serialized field layout.
 	bool loadLegacyState(GAGCore::InputStream *stream, Player *player,
 		Sint32 versionMinor);
 	bool loadState(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-	void save(GAGCore::OutputStream *stream);
-	std::shared_ptr<Order> getOrder();
+	void save(GAGCore::OutputStream *stream) override;
+	std::shared_ptr<Order> getOrder() override;
 	std::string auditStrategyJson() const;
-	void tick(AIMaximaRuntime::Context& echo);
-	void handle_event(AIMaximaRuntime::Context& echo, const AIMaximaRuntime::RuntimeEvent& event);
+	void tick(AIMaximaRuntime::Context& echo) override;
+	void handle_event(AIMaximaRuntime::Context& echo, const AIMaximaRuntime::RuntimeEvent& event) override;
 private:
 	AIMaximaRuntime::Context context;
 	///Owns strategic cadence and invalidation. Maxima's remaining methods are
@@ -665,6 +666,21 @@ private:
 	std::map<int, StaffingControl::State> staffing_control;
 	///Runs one control pass and issues the order when the request changes.
 	int staff_building(AIMaximaRuntime::Context& echo, int id);
+	/// One control pass for a building: advances its loop and returns the
+	/// request, without issuing it.
+	int update_staffing_request(AIMaximaRuntime::Context& echo, int id);
+	/// Labour snapshots retained between scheduler passes and saved from v109.
+	Labour::Observation labour_observation;
+	Labour::Plan labour_plan;
+	/// Carriers each completed swarm may hold, from the last labour budget.
+	/// It deliberately outlives the building pass: `manage_swarm` is also
+	/// reached from the UpdateSwarm event, and clearing this at the end of the
+	/// pass let that path reissue the untrimmed request and undo the budget.
+	/// A swarm with no entry yet is unbounded until the next pass.
+	std::map<int, int> swarm_allowance;
+	Labour::Policy labour_policy() const;
+	bool labour_swimming_matters() const;
+	Labour::Observation observe_labour(AIMaximaRuntime::Context& echo) const;
 	///Food ledger retirement. A building whose protected farm capacity stays
 	///below its burden threshold for the confirmation window is removed, but
 	///only while doing so cannot leave the population without inn seats.

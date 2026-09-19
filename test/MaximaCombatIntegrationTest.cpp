@@ -409,6 +409,41 @@ static void untrainedWarriorsFightAtLevelOne()
     }
 }
 
+static void loweredFlagLevelSurvivesReview()
+{
+    Fixture f;
+    f.building(10,10,0);
+    auto target=f.building(35,30,1);
+    for(int i=0;i<8;++i) f.warrior(15+i,15,0);
+    auto& a=*f.ai; auto& c=a.context; c.initialize(); f.remember(target);
+    a.strategy.tactics.flag_minimum_level=2;
+    a.opponents[1].alive=true;
+    a.opponents[1].estimated_warriors=1;
+    a.plan_offense(c);
+    assert(a.budget.tactical_kind==Tactics::MissionSiege);
+    assert(a.budget.tactical_flag_level==1);
+    a.control_offense(c);
+    const int flagId=a.tactical_mission.flagId;
+    assert(flagId>=0);
+    // A director refresh must not reset the level while creation is pending.
+    a.finalize_director_plan(c);
+    a.plan_offense(c);
+    assert(a.budget.tactical_flag_level==1);
+    assert(a.budget.tactical_target_gid==target->gid);
+    auto flag=materializeFlag(f);
+    assert(flag->minLevelToFlag==0);
+    flag->updateCallLists();
+    for(int step=0;step<33;++step) flag->subscribeForFlagingStep();
+    assert(!flag->unitsWorking.empty());
+    // Even a stale budget must defer to the actual flag after creation.
+    a.budget.tactical_flag_level=2;
+    a.plan_offense(c);
+    assert(a.budget.tactical_flag_level==1);
+    assert(a.budget.tactical_target_gid==target->gid);
+    a.control_offense(c);
+    assert(a.tactical_mission.flagId==flagId);
+}
+
 static void minimumForceGate()
 {
     for(int warriors:{3,4}) {
@@ -742,6 +777,7 @@ static void run()
     warriorEligibility();
     untrainedWarriorsFightAtLevelOne();
     minimumForceGate();
+    loweredFlagLevelSurvivesReview();
     barracksAreFilledBeforeAttacking();
     unusableTrainingDoesNotBlockAttacks();
     trainingReservationsMatchDifferentLevels();

@@ -25,7 +25,7 @@
 #include <vector>
 
 class Building;
-class BuildingType;
+struct BuildingType;
 
 namespace AIMaximaRuntime
 {

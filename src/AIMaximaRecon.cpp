@@ -129,7 +129,9 @@ ReconReport::ReconReport()
 }
 
 Program::Program()
-	: memoryHorizonTicks(1), forceMemoryHoldTicks(0), staleContactAgeTicks(1),
+	: memoryHorizonTicks(1), forceMemoryHoldTicks(0),
+	  visibleRecallInversePercent(250), warriorsPerKnownBuildingPercent(150),
+	  staleContactAgeTicks(1),
 	  forceMemoryEnabled(true)
 {
 	reset();
@@ -296,10 +298,17 @@ void Program::finishForceObservation()
 			intel.lastSeenTick=current.tick;
 		intel.confidence=confidenceForAge(current.tick-intel.lastSeenTick,
 			memoryHorizonTicks);
-		intel.estimatedWarriors=std::max(intel.visibleWarriors,
+		const int sampled=std::max(intel.visibleWarriors,
 			weightedEstimate(intel.lastObservedWarriors,
 				current.tick-intel.lastWarriorSeenTick, forceMemoryHoldTicks,
 				memoryHorizonTicks));
+		// The building floor is a prior for an army nobody has seen yet. Once
+		// warriors have been observed the calibrated sample is the estimate: a
+		// floor that grows with every building seen would over-read a large
+		// colony with a small army and keep the offense home for good.
+		intel.estimatedWarriors=sampled>0
+			? sampled*visibleRecallInversePercent/100
+			: int(intel.buildings.size())*warriorsPerKnownBuildingPercent/100;
 		intel.estimatedExplorers=std::max(intel.visibleExplorers,
 			weightedEstimate(intel.lastObservedExplorers,
 				current.tick-intel.lastExplorerSeenTick, forceMemoryHoldTicks,

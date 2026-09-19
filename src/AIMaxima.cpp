@@ -80,11 +80,6 @@ namespace
 		return stream.str();
 	}
 
-	std::string diagnostic_score(int value)
-	{
-		return value==INT_MIN ? "-" : diagnostic_value(value);
-	}
-
 	bool building_currently_visible(Player* player, const Building* building)
 	{
 		if(!player || !player->map || !building)
@@ -685,6 +680,14 @@ Maxima::CampaignPlan::CampaignPlan()
 {
 }
 
+
+namespace
+{
+	/// Share of a wild wheat cell's regrowth the food ledger counts as supply.
+	const int kWildWheatYieldPercent=50;
+	/// Ticks over which a standing stack of wheat is amortised as supply.
+	const int kWheatStockHorizonTicks=15000;
+}
 
 void Maxima::StrategyDirector::evaluate(Maxima& owner, Context& echo)
 {
@@ -2590,7 +2593,9 @@ void Maxima::build_policy_bids()
 		service_required_inns=std::max(service_required_inns,
 			nominal_service_inns+1);
 	const int sustainable_inns=std::max(strategy.economy.sustainable_inn_floor,
-		environment.accessible_corn/strategy.economy.sustainable_inn_corn_divisor
+		std::max(environment.accessible_corn,
+			strategy.food.enabled && food_ledger_valid ? 6*food_supported_swarms : 0)
+			/strategy.economy.sustainable_inn_corn_divisor
 			+strategy.economy.sustainable_inn_offset);
 	int demographic_inns=(snapshot.population
 		+strategy.economy.inn_population_offset)
@@ -2622,9 +2627,16 @@ void Maxima::build_policy_bids()
 
 	PolicyBid& growth=policy_bids[PolicyGrowth];
 	growth.utility=demands.growth;
+	// Food funds births. The local acreage is what existing buildings can
+	// reach; the ledger's supported swarms say what the discovered wheat as a
+	// whole could feed, including stacks a colony would have to move to. A
+	// swarm's full demand is about six full tiles of regrowth.
+	const long long ledger_food=strategy.food.enabled && food_ledger_valid
+		? 6LL*65536*std::max(0, food_supported_swarms) : 0;
 	const SwarmController::Plan birth=SwarmController::plan(snapshot.workers,
 		snapshot.population, snapshot.critical_food, snapshot.unserved_food,
-		environment.accessible_corn*65536LL+environment.accessible_corn_fraction,
+		std::max(ledger_food,
+			environment.accessible_corn*65536LL+environment.accessible_corn_fraction),
 		strategy.economy.swarm_labor_scale_percent,
 		strategy.economy.swarm_food_per_worker_percent,
 		strategy.economy.swarm_pressure_sensitivity,
@@ -2840,7 +2852,11 @@ void Maxima::arbitrate_policy_bids()
 	const PolicyBid& defense=policy_bids[PolicyDefense];
 	const PolicyBid& offense=policy_bids[PolicyOffense];
 
-	result.desired_inns=survival.desired_inns;
+	result.desired_inns=Labour::innsWorthBuilding(survival.desired_inns,
+		labour_observation.inns, labour_observation.innSeats,
+		labour_observation.hungryUnits,
+		abundance_surge ? strategy.economy.abundance_inn_target_cap
+			: strategy.economy.inn_target_cap);
 	result.desired_swarms=growth.desired_swarms;
 	result.desired_pools=access.utility>=strategy.economy.pool_bid_utility_min
 		? access.desired_pools : 0;
@@ -2866,6 +2882,14 @@ void Maxima::arbitrate_policy_bids()
 			? strategy.construction.sites_mid : strategy.construction.sites_high);
 	result.construction_sites=std::min(result.construction_sites,
 		workforce_site_cap);
+	// Idle labour is the one thing a site cannot make up for later. Every
+	// eight free workers beyond the training reserve open another site, so a
+	// large colony with nothing to do builds instead of standing still.
+	{
+		const int spare=std::max(0, labour_observation.idle-labour_plan.trainingReserve);
+		result.construction_sites=std::min(8,
+			std::max(result.construction_sites, result.construction_sites+spare/8));
+	}
 	if(severe_food_emergency())
 		result.construction_sites=std::max(strategy.construction.emergency_min_sites,
 			std::min(strategy.construction.emergency_max_sites,
@@ -2887,18 +2911,32 @@ void Maxima::arbitrate_policy_bids()
 	// which policy requested the warriors.
 	const int untrained_warriors=std::max(0,
 		snapshot.warriors-snapshot.trained_warriors);
-	const int training_backlog_limit=std::max(
-		strategy.military.training_backlog_floor,
-		std::max(1, snapshot.barracks)
-			*strategy.military.training_backlog_per_barracks);
+	// Births are paced to the seats that can train them (pull, not push).
+	const int training_backlog_limit=Labour::warriorBacklogLimit(
+		labour_observation.barracksSeats,
+		strategy.military.training_backlog_floor);
 	if(strategy.military.warrior_training_backlog_throttle_enabled
 	   && untrained_warriors>=training_backlog_limit)
+	{
 		result.warrior_ratio=0;
+		// Seats are the constraint on the army, so the constraint is what gets
+		// built: another barracks while warriors are still wanted.
+		if(snapshot.barracks>0 && snapshot.barracks<5 && !severe_food_emergency()
+		   && std::max(defense.desired_warriors, offense.desired_warriors)
+				>snapshot.warriors)
+			result.desired_barracks=std::max(result.desired_barracks,
+				snapshot.barracks+1);
+	}
 	result.desired_explorers=std::max(access.desired_explorers,
 		std::max(defense.desired_explorers, offense.desired_explorers));
 	result.desired_warriors=std::max(defense.desired_warriors,
 		offense.utility>=strategy.economy.offense_bid_utility_min
 			? offense.desired_warriors : 0);
+	// A rule that raised the warrior ratio for a large colony short of its army
+	// used to sit here. It ran after the training-capacity throttle above and
+	// silently overrode it, so births outran barracks seats and the colony made
+	// untrained warriors, which carry a third of a trained one's damage. It
+	// came from a batch that measured worse and was never justified on its own.
 	result.defense_reserve=defense.defense_reserve;
 	result.allow_upgrades=survival.request_upgrades
 		|| technology.request_upgrades;
@@ -2925,11 +2963,45 @@ void Maxima::arbitrate_policy_bids()
 		? strategy.scoring.priority_abundance_school_bonus : 0);
 	result.priority_racetracks=std::max(0,
 		technology.utility-strategy.scoring.priority_racetrack_penalty);
-	result.priority_barracks=std::max(defense.utility, offense.utility)
+	// Maxima used to buy a racetrack on a payback appraisal of walking speed,
+	// and a school behind it. Measured over 228 paired games, dropping both is
+	// worth 26 games turned from loss to win against 11 the other way. The
+	// appraisal was right that faster walking pays and wrong about what it
+	// competes with: the engine sends a free worker to whichever training
+	// building is nearest, idle time is the scarcest thing the colony has, and
+	// a racetrack spends it on walking when the same visit at a school would
+	// buy the build level Maxima is actually short of. Technology is left to
+	// the strategy values again, which also makes those values mean something.
+	int barracks_priority_floor=0;
+	// Military capital is different: warriors are work in progress until a
+	// barracks has trained them, so the first barracks comes with the workforce
+	// that can afford it rather than at a population mark, and a hospital
+	// follows it, because recycling one trained warrior repays the building.
+	if(snapshot.workers>=14 && !severe_food_emergency())
+	{
+		result.desired_barracks=std::max(result.desired_barracks, 1);
+		if(snapshot.barracks==0)
+			barracks_priority_floor=result.priority_swarms+4;
+	}
+	result.desired_hospitals=std::max(result.desired_hospitals,
+		Labour::hospitalsWorthBuilding(snapshot.warriors,
+			labour_observation.hospitals, labour_observation.hospitalSeats,
+			labour_observation.hurtUnits, strategy.military.hospital_cap));
+	const int hospital_priority_floor=
+		labour_observation.hurtUnits>labour_observation.hospitalSeats
+			? result.priority_swarms+6 : 0;
+	// Swimming lessons cost the same thousand worker-ticks as any other and
+	// return nothing where water separates the colony from nothing.
+	if(!labour_swimming_matters())
+		result.desired_pools=0;
+
+	result.priority_barracks=std::max(barracks_priority_floor,
+		std::max(defense.utility, offense.utility)
 		+std::min(strategy.scoring.priority_threat_cap,
-			snapshot.visible_colony_threat*strategy.scoring.priority_threat_weight);
-	result.priority_hospitals=defense.utility+(snapshot.need_heal>0
-		? strategy.scoring.priority_healing_bonus : 0);
+			snapshot.visible_colony_threat*strategy.scoring.priority_threat_weight));
+	result.priority_hospitals=std::max(hospital_priority_floor,
+		defense.utility+(snapshot.need_heal>0
+			? strategy.scoring.priority_healing_bonus : 0));
 	result.priority_towers=defense.utility
 		+(large_economy_established() && snapshot.enemy_prestige>0
 			? strategy.scoring.priority_large_tower_bonus : 0)
@@ -2993,6 +3065,15 @@ void Maxima::finalize_director_plan(Context& echo)
 		budget.upgrade_level2_racetrack_weight=0;
 		budget.upgrade_level2_pool_weight=0;
 		budget.upgrade_level2_barracks_weight=0;
+	}
+	// An inn being upgraded feeds nobody. When the hungry already outnumber
+	// half the seats the queue is forming, and taking an inn offline then is
+	// the wrong way to add capacity: a new inn adds seats without losing any.
+	// Upgrades wait for slack, whatever food pressure says.
+	if(2*labour_observation.hungryUnits>labour_observation.innSeats)
+	{
+		budget.upgrade_level1_inn_weight=0;
+		budget.upgrade_level2_inn_weight=0;
 	}
 	budget.first_prestige_trained_workers=
 		strategy.upgrades.first_prestige_trained_workers;
@@ -3115,7 +3196,8 @@ void Maxima::finalize_director_plan(Context& echo)
 		strategy.reactive_defense.advantage_percent;
 	budget.tactical_review_interval=strategy.tactics.review_interval_ticks;
 	budget.tactics_enabled=strategy.tactics.enabled;
-	budget.tactical_flag_level=strategy.tactics.flag_minimum_level;
+	if(tactical_mission.flagId<0)
+		budget.tactical_flag_level=strategy.tactics.flag_minimum_level;
 	budget.tactical_siege_radius=strategy.tactics.siege_flag_radius;
 	budget.raid_flag_radius=strategy.raiding.flag_radius;
 	budget.tactical_stall_ticks=strategy.tactics.stall_ticks;
@@ -3521,6 +3603,7 @@ void Maxima::evaluate_strategy(Context& echo)
 	}
 	prune_cleared_enemy_sites();
 	StrategicSnapshot next=collect_snapshot(echo);
+	labour_observation=observe_labour(echo);
 	if(director.initialized)
 	{
 		previous_snapshot=snapshot;
@@ -4015,6 +4098,12 @@ template<class Archive> void Maxima::executionState(Archive& a)
 	a("reactive_defense_pending",reactive_defense_pending);
 	if(a.version()>=107)
 		a("environment.accessible_corn_fraction",environment.accessible_corn_fraction);
+	if(a.version()>=109)
+	{
+		a("labour_observation",labour_observation);
+		a("labour_plan",labour_plan);
+		a("swarm_allowance",swarm_allowance);
+	}
 }
 void Maxima::saveExecutionState(GAGCore::OutputStream* stream)
 {
@@ -4046,6 +4135,20 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
     development_planner.loadExecutionState(stream,versionMinor);
     context.loadExecutionState(stream, versionMinor);
     stream->readLeaveSection();
+    if(versionMinor<109)
+    {
+        // Older saves have no labour snapshot. Rebuild a conservative allowance
+        // from the restored requests without advancing the staffing controllers.
+        labour_observation=observe_labour(context);
+        labour_plan=Labour::plan(labour_observation, labour_policy(), budget.swarm_workers);
+        swarm_allowance.clear();
+        BuildingSearch swarms(context);
+        swarms.add_condition(new SpecificBuildingType(IntBuildingType::SWARM_BUILDING));
+        swarms.add_condition(new NotUnderConstruction);
+        if(!labour_plan.uncapped)
+            for(building_search_iterator i=swarms.begin(); i!=swarms.end(); ++i)
+                swarm_allowance[*i]=context.get_building_register().get_assigned(*i);
+    }
 
 }
 
@@ -4770,7 +4873,11 @@ void Maxima::handle_event(Context& echo, const RuntimeEvent& event)
 {
 	telemetry.count(AITrace::AI7::Maxima_handle_event_calls);
 	if(event.type>=RuntimeEvent::BuildingResolved && event.type<=RuntimeEvent::DevelopmentEngineRejected)
-		telemetry.count(AITrace::AI7::runtime_event_BuildingResolved+event.type);
+		// Both sides are enumerations, and adding them directly is deprecated in
+		// C++20. The intent is an offset into the per-event counter block, so the
+		// index is computed as the integer it always was.
+		telemetry.count(AITrace::AI7::Field(
+			int(AITrace::AI7::runtime_event_BuildingResolved)+int(event.type)));
 	telemetry.set(AITrace::AI7::runtime_event_first,event.first);
 	telemetry.set(AITrace::AI7::runtime_event_second,event.second);
 	if(event.type==RuntimeEvent::BuildingResolved
@@ -5120,7 +5227,10 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		if(tile.discovered && tile.grass && !tile.occupied
 		   && tile.resourceType==WHEAT && tile.resourceAmount>0)
 		{
-			tile.foodOpportunity=tile.fertility;
+			// A stack is an opportunity even where nothing regrows: a colony
+			// seeded beside it lives by mining it (Locust).
+			tile.foodOpportunity=tile.fertility
+				+uint32_t(wheatStockFertilityEquivalent(tile.resourceAmount));
 			tile.farmCapacity=tile.fertility;
 		}
 		// Standing food supply is protected wheat that currently carries wheat.
@@ -5128,13 +5238,26 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		// capacity a settlement can plan against. A protected stack feeds the
 		// harvestable cells around it, so its growth is only worth what its
 		// neighbours can absorb.
+		// Wild wheat is counted too, at a discount: it regrows by the same rule
+		// but can be harvested to nothing, so it is a stock with a yield rather
+		// than a kept farm. Without it a rich map's abundance never turns into
+		// buildings, and the colony is sized to its farms instead of its land.
 		if(strategy.food.enabled && tile.resourceType==WHEAT
-		   && tile.resourceAmount>0
-		   && index<int(wheat_farm_protection_mask.size())
-		   && wheat_farm_protection_mask[index])
-			tile.protectedYield=AIMaximaFoodLedger::cellYield(tile.fertility,
+		   && tile.resourceAmount>0 && tile.discovered)
+		{
+			const bool farm=index<int(wheat_farm_protection_mask.size())
+				&& wheat_farm_protection_mask[index];
+			const uint32_t cell=AIMaximaFoodLedger::cellYield(tile.fertility,
 				growth_absorbing_neighbors(echo,x,y),
 				strategy.food.growth_period_ticks);
+			// A stack of wheat is also a stock. Spread over the planning horizon
+			// it is a rate like any other, and on infertile ground (Locust) it
+			// is the only one: the colony lives by mining it out.
+			const uint32_t stock=uint32_t(static_cast<long long>(tile.resourceAmount)
+				*AIMaximaFoodLedger::RateScale/kWheatStockHorizonTicks);
+			tile.protectedYield=(farm ? cell : cell*kWildWheatYieldPercent/100)
+				+(farm ? 0 : stock);
+		}
 		tile.protectedness=map->isGuardArea(x,y,echo.player->team->me)
 			? strategy.placement.guard_area_protectedness
 			: strategy.placement.baseline_protectedness;
@@ -5237,7 +5360,13 @@ Maxima::collect_development_intents(
 			DevelopmentIntent intent;intent.buildingType=demands[i].type;
 			intent.unmetCount=demands[i].desired-current;
 			intent.priority=clamp_score(demands[i].priority);
-			intent.workers=demands[i].workers;
+			// A site is staffed from what is idle, not from a fixed number: the
+			// configured count is a floor, and spare hands are shared across the
+			// sites the budget allows, up to what one site can use.
+			intent.workers=std::min(12, std::max(demands[i].workers,
+				demands[i].workers+std::max(0, labour_observation.idle
+					-labour_plan.trainingReserve)
+					/std::max(1, budget.construction_sites)));
 			intent.emergency=demands[i].type==IntBuildingType::FOOD_BUILDING
 				?budget.recovery_active:demands[i].type==IntBuildingType::DEFENSE_BUILDING
 				&&explorer_defense_active();
@@ -5648,7 +5777,7 @@ void Maxima::development_cycle(Context& echo)
 		DevelopmentAction action;
 		const SelectionProgress selection=
 			development_planner.selectActionIncremental(world,intents,limits,action,
-				worldSignature,1024);
+				worldSignature,4096);
 		if(selection==SelectionPending)
 		{
 			development_cycle_pending=true;
@@ -6152,8 +6281,139 @@ void Maxima::update_food_relocation(Context& echo,
 	emit_telemetry(echo,"food_relocation_nominated",fields.str());
 }
 
+Labour::Policy Maxima::labour_policy() const
+{
+	// The seam where strategy would shape the labour plan. Every field is at its
+	// default today: the one value this used to set, a material haul trip priced
+	// from the carrier constants, was never read by the plan, so it was removed
+	// rather than left looking meaningful.
+	return Labour::Policy();
+}
+
+
+bool Maxima::labour_swimming_matters() const
+{
+	// Swimming is worth a worker's training time only where water separates the
+	// colony from land or resources it could use.
+	return environment.mobility_opportunity>=15;
+}
+
+
+Labour::Observation Maxima::observe_labour(Context& echo) const
+{
+	Labour::Observation result;
+	Team* team=echo.player->team;
+	const bool swimming=labour_swimming_matters();
+	std::vector<const Building*> schools;
+	for(int id=0; id<Building::MAX_COUNT; ++id)
+	{
+		const Building* b=team->myBuildings[id];
+		if(!b || !b->type || b->buildingState!=Building::ALIVE) continue;
+		const bool site=b->type->isBuildingSite;
+		const bool swarm=b->type->shortTypeNum==IntBuildingType::SWARM_BUILDING;
+		if(swarm && !site)
+		{
+			++result.swarms;
+			result.swarmRequested+=b->maxUnitWorking;
+		}
+		else if(site)
+			result.siteRequested+=std::max(0, b->desiredMaxUnitWorking);
+		// A barracks being upgraded keeps counting as two seats: its warriors are
+		// still coming, and a pause in births for every upgrade starves the army.
+		if(site && b->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING
+		   && b->type->level>0)
+			result.barracksSeats+=2;
+		if(site) continue;
+		if(b->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING)
+			result.barracksSeats+=b->maxUnitInside;
+		if(b->type->shortTypeNum==IntBuildingType::HEAL_BUILDING)
+		{
+			++result.hospitals;
+			result.hospitalSeats+=b->maxUnitInside;
+		}
+		if(b->type->shortTypeNum==IntBuildingType::FOOD_BUILDING)
+		{
+			++result.inns;
+			result.innSeats+=b->maxUnitInside;
+		}
+		const bool trains=b->type->upgrade[WALK] || b->type->upgrade[BUILD]
+			|| b->type->upgrade[HARVEST] || (swimming && b->type->upgrade[SWIM]);
+		if(trains)
+		{
+			schools.push_back(b);
+			result.trainingSlots+=b->maxUnitInside;
+		}
+	}
+	for(int id=0; id<Unit::MAX_COUNT; ++id)
+	{
+		const Unit* u=team->myUnits[id];
+		if(!u || u->isDead) continue;
+		if(u->medical==Unit::MED_DAMAGED) ++result.hurtUnits;
+		if(u->medical==Unit::MED_HUNGRY) ++result.hungryUnits;
+		if(u->typeNum!=WORKER) continue;
+		++result.workers;
+		if(u->level[WALK]==0) ++result.untrainedWalkers;
+		if(u->medical==Unit::MED_HUNGRY){++result.eating;continue;}
+		if(u->medical==Unit::MED_DAMAGED){++result.hurt;continue;}
+		if(u->activity==Unit::ACT_UPGRADING)
+		{
+			if(u->destinationPurpose==HEAL) ++result.hurt; else ++result.training;
+			continue;
+		}
+		if(u->activity==Unit::ACT_RANDOM) ++result.idle;
+		else if(u->attachedBuilding && u->attachedBuilding->type)
+		{
+			const BuildingType* type=u->attachedBuilding->type;
+			if(type->isBuildingSite) ++result.builders;
+			else if(type->shortTypeNum==IntBuildingType::SWARM_BUILDING) ++result.swarmCarriers;
+			else if(type->shortTypeNum==IntBuildingType::FOOD_BUILDING) ++result.innCarriers;
+			else ++result.otherAssigned;
+		}
+		else ++result.otherAssigned;
+		bool canTrain=false;
+		for(size_t b=0;b<schools.size() && !canTrain;++b)
+			for(int ability=WALK;ability<ARMOR && !canTrain;++ability)
+				if((ability!=SWIM || swimming) && u->canLearn[ability]
+				   && schools[b]->type->upgrade[ability]
+				   && u->level[ability]<=schools[b]->type->level)
+					canTrain=true;
+		if(canTrain) ++result.trainable;
+	}
+	return result;
+}
+
+
 void Maxima::manage_buildings(Context& echo)
 {
+	labour_observation=observe_labour(echo);
+	labour_plan=Labour::plan(labour_observation, labour_policy(), budget.swarm_workers);
+	// Births take the labour that subsistence, the training reserve and
+	// construction leave. Each swarm's loop still owns its request; the budget
+	// only bounds the sum, from the requests the loops held after the last pass.
+	// A trimmed swarm is not receiving what it asked for, so its loop holds
+	// instead of winding up.
+	std::vector<int> swarm_ids;
+	std::vector<int> swarm_requests;
+	{
+		BuildingSearch swarms(echo);
+		swarms.add_condition(new NotUnderConstruction);
+		for(building_search_iterator i=swarms.begin(); i!=swarms.end(); ++i)
+			if(echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
+			{
+				std::map<int,StaffingControl::State>::const_iterator state=
+					staffing_control.find(*i);
+				swarm_ids.push_back(*i);
+				swarm_requests.push_back(state==staffing_control.end()
+					? budget.staffing_new_swarm_workers : state->second.request);
+			}
+	}
+	const int trimmed=labour_plan.uncapped ? 0
+		: Labour::trimToCap(swarm_requests, labour_plan.swarmCap,
+			std::max(1, budget.staffing_minimum_workers));
+	swarm_allowance.clear();
+	if(!labour_plan.uncapped)
+		for(size_t i=0;i<swarm_ids.size();++i)
+			swarm_allowance[swarm_ids[i]]=swarm_requests[i];
 	BuildingSearch bs(echo);
 	bs.add_condition(new NotUnderConstruction);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
@@ -6180,6 +6440,28 @@ void Maxima::manage_buildings(Context& echo)
 				: strategy.staffing.completed_tower_workers, *i));
 		}
 	}
+	{
+		std::ostringstream fields;
+		fields<<"\tworkers="<<labour_observation.workers
+			<<"\teating="<<labour_observation.eating
+			<<"\thurt="<<labour_observation.hurt
+			<<"\ttraining="<<labour_observation.training
+			<<"\tidle="<<labour_observation.idle
+			<<"\tswarm_carriers="<<labour_observation.swarmCarriers
+			<<"\tinn_carriers="<<labour_observation.innCarriers
+			<<"\tbuilders="<<labour_observation.builders
+			<<"\tother="<<labour_observation.otherAssigned
+			<<"\ttrainable="<<labour_observation.trainable
+			<<"\ttraining_slots="<<labour_observation.trainingSlots
+			<<"\tuntrained_walkers="<<labour_observation.untrainedWalkers
+			<<"\tsite_requested="<<labour_observation.siteRequested
+			<<"\treserve="<<labour_plan.trainingReserve
+			<<"\tassignable="<<labour_plan.assignable
+			<<"\tfunded_swarm_workers="<<budget.swarm_workers
+			<<"\tswarm_cap="<<labour_plan.swarmCap
+			<<"\tswarm_trimmed="<<trimmed;
+		emit_telemetry(echo,"labour_budget",fields.str());
+	}
 	// A destroyed building must not leave its control loop behind, or a later
 	// building reusing the id would inherit a stranger's integral state.
 	for(std::map<int,StaffingControl::State>::iterator entry=staffing_control.begin();
@@ -6193,6 +6475,15 @@ void Maxima::manage_buildings(Context& echo)
 
 
 int Maxima::staff_building(Context& echo, int id)
+{
+	const int request=update_staffing_request(echo, id);
+	if(request!=echo.get_building_register().get_assigned(id))
+		echo.add_management_order(new AssignWorkers(request, id));
+	return request;
+}
+
+
+int Maxima::update_staffing_request(Context& echo, int id)
 {
 	Building* building=echo.get_building_register().get_building(id);
 	if(!building || !building->type) return 0;
@@ -6219,8 +6510,6 @@ int Maxima::staff_building(Context& echo, int id)
 	const int request=StaffingControl::update(state, policy,
 		building->resources[WHEAT], building->type->maxResource[WHEAT],
 		echo.get_building_register().get_enrolled(id));
-	if(request!=echo.get_building_register().get_assigned(id))
-		echo.add_management_order(new AssignWorkers(request, id));
 	if(request!=previous)
 	{
 		std::ostringstream fields;
@@ -6264,8 +6553,14 @@ void Maxima::manage_swarm(Context& echo, int id)
 		return;
 
 	// Staffing is the building's own business: it regulates its carriers from
-	// its own wheat stock, so there is no colony budget to apportion here.
-	staff_building(echo, id);
+	// its own wheat stock. The labour budget only bounds the sum over swarms.
+	{
+		int request=update_staffing_request(echo, id);
+		std::map<int,int>::const_iterator allowed=swarm_allowance.find(id);
+		if(allowed!=swarm_allowance.end()) request=std::min(request, allowed->second);
+		if(request!=echo.get_building_register().get_assigned(id))
+			echo.add_management_order(new AssignWorkers(request, id));
+	}
 
 	int worker_ratio=budget.worker_ratio;
 
@@ -6352,16 +6647,61 @@ void Maxima::plan_offense(Context& echo)
 	const Building* flag=tactical_mission.flagId>=0
 		&& echo.get_building_register().is_building_found(tactical_mission.flagId)
 		? echo.get_building_register().get_building(tactical_mission.flagId) : NULL;
-	TacticalReachability reachability(map, strategy.tactics.flag_minimum_level);
+	const bool active=tactical_mission.flagId>=0;
+	int believed_defenders=0;
+	for(int team=0; team<Team::MAX_COUNT; ++team)
+		if(opponents[team].alive)
+			believed_defenders=std::max(believed_defenders,
+				opponents[team].estimated_warriors);
 	int eligible=0;
+	long long eligible_damage_rate=0;
+	// Warriors eating, healing or training are away from the flag but not lost
+	// to the offense: they come back, and a siege dropped every time its army
+	// cycles through the inns is a siege that never finishes.
+	int recovering=0;
 	std::vector<const Unit*> trainees;
-	for(int id=0; id<Unit::MAX_COUNT; ++id)
-		if(tactical_warrior_available(echo.player->team->myUnits[id], flag,
-			strategy.tactics.flag_minimum_level))
+	const auto muster=[&](int level) {
+		eligible=0;eligible_damage_rate=0;recovering=0;trainees.clear();
+		for(int id=0; id<Unit::MAX_COUNT; ++id)
 		{
-			++eligible;
-			trainees.push_back(echo.player->team->myUnits[id]);
+			const Unit* warrior=echo.player->team->myUnits[id];
+			if(tactical_warrior_available(warrior, flag, level))
+			{
+				++eligible;
+				eligible_damage_rate+=Labour::WarriorDamageRate[std::max(0, std::min(3,
+					std::min(warrior->level[ATTACK_SPEED], warrior->level[ATTACK_STRENGTH])))];
+				trainees.push_back(warrior);
+			}
+			else if(warrior && warrior->typeNum==WARRIOR && !warrior->isDead
+				&& (warrior->medical!=Unit::MED_FREE
+					|| warrior->activity==Unit::ACT_UPGRADING))
+				++recovering;
 		}
+	};
+	// The configured flag level takes only warriors trained in both combat
+	// abilities. Training is a long queue, so most of an army sits below that
+	// bar; when the trained few are not strong enough for the defenders but
+	// the whole army is, the flag is raised for everyone. Its strength, not its
+	// paperwork, is what the gate measures.
+	// A pending flag uses the saved requested level until the engine creates it.
+	// Once found, its recruitment rule is authoritative (stored zero-based).
+	int flag_level=active ? (flag ? flag->minLevelToFlag+1
+		: budget.tactical_flag_level) : strategy.tactics.flag_minimum_level;
+	muster(flag_level);
+	if(!active && flag_level>1
+	   && !Labour::attackStrengthSufficient(eligible_damage_rate, believed_defenders))
+	{
+		muster(1);
+		if(Labour::attackStrengthSufficient(eligible_damage_rate, believed_defenders))
+			flag_level=1;
+		else
+		{
+			flag_level=strategy.tactics.flag_minimum_level;
+			muster(flag_level);
+		}
+	}
+	budget.tactical_flag_level=flag_level;
+	TacticalReachability reachability(map, flag_level);
 	offense_diagnostics.eligibleWarriors=eligible;
 	// Reserve training only for available warriors who can learn there.
 	// Match trainees to capacity so overlapping barracks do not reserve the
@@ -6409,9 +6749,22 @@ void Maxima::plan_offense(Context& echo)
 	// The minimum force only gates raising a new flag. An existing flag keeps
 	// its target while any warrior can still reach it, so that warriors cycling
 	// through inns and training halls do not make the offense flap.
-	const bool active=tactical_mission.flagId>=0;
+	// A new attack needs the configured minimum and the strength to clear the
+	// believed defenders; an army that trained needs fewer heads for that.
 	const int minimum=active ? 1 : std::max(1, strategy.tactics.min_force);
-	if(surplus<minimum)
+	if(!active && !Labour::attackStrengthSufficient(eligible_damage_rate,
+		believed_defenders))
+	{
+		offense_diagnostics.gate="blocked: "+diagnostic_value(eligible)
+			+" eligible warriors are not strong enough for "
+			+diagnostic_value(believed_defenders)+" believed defenders";
+		return;
+	}
+	// An active siege is judged on the army it still has, recovering warriors
+	// included, and does not yield to open training slots: those are filled by
+	// warriors between fights, not by abandoning the target.
+	const int committed=active ? eligible+recovering : surplus;
+	if(committed<minimum)
 	{
 		offense_diagnostics.gate="blocked: "+diagnostic_value(eligible)
 			+" eligible warriors minus "+diagnostic_value(open_training_slots)

@@ -20,7 +20,11 @@ int main()
 	program.observeEconomicActivity(1, 7, 9);
 	program.finishObservation();
 	assert(program.opponent(1)->confidence==100);
-	assert(program.opponent(1)->estimatedWarriors==10);
+	// Seen warriors are a sample of an army, not the army: most of it is at
+	// home, inside a barracks or at an inn. Measured against the true count in
+	// headless games the decayed peak recalls about two fifths, so the estimate
+	// scales the sample up by visibleRecallInversePercent (250).
+	assert(program.opponent(1)->estimatedWarriors==25);
 	assert(program.opponent(1)->lastEconomicSeenTick==100);
 	assert(program.opponent(1)->lastEconomicX==7);
 	assert(program.opponent(1)->lastEconomicY==9);
@@ -28,17 +32,17 @@ int main()
 	program.beginObservation(2600, living);
 	program.finishObservation();
 	assert(program.opponent(1)->confidence==75);
-	assert(program.opponent(1)->estimatedWarriors==10);
+	assert(program.opponent(1)->estimatedWarriors==25);
 	assert(program.opponent(1)->knownBuildings==1);
 	program.beginObservation(2650, living);
 	program.observeUnit(1, false, true, false, false, false);
 	program.finishObservation();
-	assert(program.opponent(1)->estimatedWarriors==10);
+	assert(program.opponent(1)->estimatedWarriors==25);
 	program.beginForceObservation(2660, living);
 	for(int i=0; i<14; ++i)
 		program.observeUnit(1, true, false, false, false, false);
 	program.finishForceObservation();
-	assert(program.opponent(1)->estimatedWarriors==14);
+	assert(program.opponent(1)->estimatedWarriors==35);
 	assert(program.opponent(1)->knownBuildings==1);
 	program.beginObservation(2700, living);
 	program.confirmBuildingAbsent(1, 11);
@@ -51,6 +55,7 @@ int main()
 	for(int i=0; i<10; ++i)
 		noForceMemory.observeUnit(1, true, false, false, false, false);
 	noForceMemory.finishForceObservation();
+	// Without force memory the estimate is the plain sighting, uncalibrated.
 	assert(noForceMemory.opponent(1)->estimatedWarriors==10);
 	noForceMemory.beginForceObservation(110, living);
 	noForceMemory.finishForceObservation();

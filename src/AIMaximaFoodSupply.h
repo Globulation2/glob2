@@ -23,6 +23,19 @@ inline bool foodTileAccessible(Map* map,int x,int y,Uint32 teamMask,
         && (canSwim || !map->isWater(x,y));
 }
 
+/// A standing stack of wheat is supply as well as regrowth: mined over a
+/// planning horizon it is a rate. A full-fertility cell regrows about one unit
+/// per growth period, so a stack of `amount` spread over the horizon is worth
+/// amount * period / horizon of a full tile. On infertile ground (Locust) this
+/// is the only food there is, and a colony that ignores it never grows.
+const int WheatStockHorizonTicks=15000;
+const int WheatGrowthPeriodTicks=186;
+inline long long wheatStockFertilityEquivalent(int amount)
+{
+	amount=std::max(0, std::min(8, amount));
+	return 65536LL*amount*WheatGrowthPeriodTicks/WheatStockHorizonTicks;
+}
+
 // Recovery estimate used only when all local catchments are empty. Search once
 // from every completed food building, stopping one local radius beyond the
 // nearest growing wheat. Discount distant supply for the longer carrier trip.
@@ -49,11 +62,11 @@ inline long long distantFoodCapacity(Map* map,const std::vector<Building*>& buil
         const int index=queue[next],x=index%width,y=index/width,steps=distance[index];
         if(steps>stop)break;
         const Tile& tile=map->getTile(x,y);
-        if(map->isGrass(x,y) && tile.resource.type==WHEAT && tile.resource.amount>0
-           && fertility.at(x,y)>0)
+        if(map->isGrass(x,y) && tile.resource.type==WHEAT && tile.resource.amount>0)
         {
             if(stop==size)stop=std::min(size,steps+localRadius);
-            capacity+=static_cast<long long>(fertility.at(x,y))*localRadius
+            capacity+=(static_cast<long long>(fertility.at(x,y))
+                +wheatStockFertilityEquivalent(tile.resource.amount))*localRadius
                 /std::max(localRadius,steps);
         }
         if(steps>=stop)continue;
@@ -98,7 +111,8 @@ inline long long reachableFoodCapacity(Map* map, Building* building,
 		if(map->isGrass(x,y) && tile.resource.type==WHEAT
 		   && tile.resource.amount>0
 		   && (!shared_tiles || shared_tiles->insert(index).second))
-			capacity+=fertility.at(x,y);
+			capacity+=fertility.at(x,y)
+				+wheatStockFertilityEquivalent(tile.resource.amount);
 		if(distance[index]>=radius) continue;
 		for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
 		{
