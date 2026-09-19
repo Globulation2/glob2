@@ -2856,3 +2856,13 @@ La hejmlando de kolonio ne havas lokon por globulejo; uzu pli grandan mapon, mal
 La limregiono havas tro malmulte da disputata tero por tiom da premioj; uzu malpli da premioj, pli larĝan limregionon aŭ pli grandan mapon.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 La limregiono ne havas lokon por premio; uzu pli grandan mapon, malpli da kolonioj aŭ pli larĝan limregionon.
+[Orchard Commons]
+Komunaj fruktoĝardenoj
+[Orchard spacing]
+Distanco inter fruktoĝardenoj
+[Compact]
+Proksimaj
+[Balanced]
+Ekvilibra
+[Spread]
+Disaj

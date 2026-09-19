@@ -57,6 +57,7 @@
 #include "HiddenOasisGenerator.h"
 #include "EvenGroundGenerator.h"
 #include "MarchlandGenerator.h"
+#include "OrchardCommonsGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -173,7 +174,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 honeycombIsleDefinition(),
 											 karstTowersDefinition(), bajadaDefinition(),
 											 centralQuarryDefinition(), hiddenOasisDefinition(),
-											 evenGroundDefinition(), marchlandDefinition(),
+											 orchardCommonsDefinition(), evenGroundDefinition(), marchlandDefinition(),
 											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),

@@ -2858,3 +2858,13 @@ La tierra natal de una colonia no tiene sitio para una colmena; usa un mapa más
 La tierra de nadie tiene muy poco terreno disputado para tantos premios; usa menos premios, una tierra de nadie más ancha o un mapa más grande.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 La tierra de nadie no tiene sitio para un premio; usa un mapa más grande, menos colonias o una tierra de nadie más ancha.
+[Orchard Commons]
+Vergeles comunales
+[Orchard spacing]
+Separación de los vergeles
+[Compact]
+Cercanos
+[Balanced]
+Equilibrada
+[Spread]
+Separados

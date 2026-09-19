@@ -2858,3 +2858,13 @@ Emoji
 Пограничје има премало спорног земљишта за толико награда; користите мање награда, шире пограничје или већу мапу.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 Пограничје нема места за награду; користите већу мапу, мање колонија или шире пограничје.
+[Orchard Commons]
+Заједнички воћњаци
+[Orchard spacing]
+Размак између воћњака
+[Compact]
+Мали
+[Balanced]
+Уравнотежен
+[Spread]
+Велики

@@ -2858,3 +2858,13 @@ Patria unei colonii nu are loc pentru un stup; folosiți o hartă mai mare, mai 
 Ținutul de graniță are prea puțin teren disputat pentru atâtea premii; folosiți mai puține premii, un ținut de graniță mai lat sau o hartă mai mare.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 Ținutul de graniță nu are loc pentru un premiu; folosiți o hartă mai mare, mai puține colonii sau un ținut de graniță mai lat.
+[Orchard Commons]
+Livezi comune
+[Orchard spacing]
+Distanța dintre livezi
+[Compact]
+Apropiate
+[Balanced]
+Echilibrată
+[Spread]
+Răsfirate

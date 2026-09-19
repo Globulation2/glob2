@@ -2858,3 +2858,13 @@ Egy kolónia hazájában nincs hely rajnak; használj nagyobb térképet, kevese
 A határvidéken túl kevés a vitatott terület ennyi díjhoz; használj kevesebb díjat, szélesebb határvidéket vagy nagyobb térképet.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 A határvidéken nincs hely díjnak; használj nagyobb térképet, kevesebb kolóniát vagy szélesebb határvidéket.
+[Orchard Commons]
+Közös gyümölcsösök
+[Orchard spacing]
+Gyümölcsösök távolsága
+[Compact]
+Közeli
+[Balanced]
+Kiegyensúlyozott
+[Spread]
+Távoli

@@ -176,8 +176,8 @@ restores whatever landscape it had.
 | `caravanserai` | 41 | Caravanserai | The caravanserais' groves, quarries, grain and palms, the oases' palms and grain, and the algae; every home oasis's field ring and palm grove are planted to a share of their ground scaled by the wheat and wood amounts but never below the floors that feed an opening, and the caravanserais' walls and the mesas' stone are unscaled | None |
 | `drumlin-field` | 43 | Drumlin field | Its own — see below |
 | `continents` | 44 | Continents | Its own — see below |
-| `even-ground` | 58 | Even Ground | [Terrain solved against desired-state targets rather than drawn](EVEN_GROUND.md) |
-| `marchland` | 59 | Marchland | [Drawn homelands, a dry march, and a solved rope of prizes](MARCHLAND.md) |
+| `even-ground` | 59 | Even Ground | [Terrain solved against desired-state targets rather than drawn](EVEN_GROUND.md) |
+| `marchland` | 60 | Marchland | [Drawn homelands, a dry march, and a solved rope of prizes](MARCHLAND.md) |
 | `uniform` | 0 | uniform terrain | Editor-only; one terrain type, unstructured |
 
 Retired ids, never reused: 25 (Marches, a lattice of homelands with wooded border bands, dropped

@@ -2854,3 +2854,13 @@ A terra natal de uma colônia não tem espaço para um núcleo de reprodução; 
 A terra de ninguém tem pouco terreno disputado para tantos prêmios; use menos prêmios, uma terra de ninguém mais larga ou um mapa maior.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 A terra de ninguém não tem espaço para um prêmio; use um mapa maior, menos colônias ou uma terra de ninguém mais larga.
+[Orchard Commons]
+Pomares comuns
+[Orchard spacing]
+Espaçamento dos pomares
+[Compact]
+Próximos
+[Balanced]
+Equilibrado
+[Spread]
+Afastados

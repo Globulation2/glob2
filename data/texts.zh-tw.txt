@@ -2930,3 +2930,13 @@ Emoji
 邊疆的爭奪地帶太少，容納不下這麼多獎品；請減少獎品、加寬邊疆或使用更大的地圖。
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 邊疆沒有放置獎品的空間；請使用更大的地圖、更少的殖民地或更寬的邊疆。
+[Orchard Commons]
+共有果園
+[Orchard spacing]
+果園間距
+[Compact]
+緊湊
+[Balanced]
+均衡
+[Spread]
+分散

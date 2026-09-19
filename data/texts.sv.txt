@@ -2868,3 +2868,13 @@ En kolonis hemland har inte plats för en svärm; använd en större karta, fär
 Gränslandet har för lite omstridd mark för så många priser; använd färre priser, ett bredare gränsland eller en större karta.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 Gränslandet har inte plats för ett pris; använd en större karta, färre kolonier eller ett bredare gränsland.
+[Orchard Commons]
+Gemensamma fruktlundar
+[Orchard spacing]
+Avstånd mellan fruktlundar
+[Compact]
+Tätt
+[Balanced]
+Balanserat
+[Spread]
+Glest

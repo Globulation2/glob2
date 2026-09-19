@@ -2868,3 +2868,13 @@ La terre natale d'une colonie n'a pas la place pour une ruche ; utilisez une car
 La marche a trop peu de terrain disputé pour autant de trophées ; utilisez moins de trophées, une marche plus large ou une carte plus grande.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 La marche n'a pas la place pour un trophée ; utilisez une carte plus grande, moins de colonies ou une marche plus large.
+[Orchard Commons]
+Vergers communaux
+[Orchard spacing]
+Espacement des vergers
+[Compact]
+Rapprochés
+[Balanced]
+Équilibré
+[Spread]
+Espacés

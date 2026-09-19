@@ -2858,3 +2858,13 @@ Domovina kolonie nemá místo pro úl; použijte větší mapu, méně kolonií 
 Pohraničí má příliš málo sporné půdy pro tolik trofejí; použijte méně trofejí, širší pohraničí nebo větší mapu.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 Pohraničí nemá místo pro trofej; použijte větší mapu, méně kolonií nebo širší pohraničí.
+[Orchard Commons]
+Společné sady
+[Orchard spacing]
+Rozestupy sadů
+[Compact]
+Blízko sebe
+[Balanced]
+Vyvážené
+[Spread]
+Daleko od sebe

@@ -2858,3 +2858,13 @@ Ojczyzna kolonii nie ma miejsca na rój; użyj większej mapy, mniejszej liczby 
 Pogranicze ma za mało spornego terenu na tyle nagród; użyj mniejszej liczby nagród, szerszego pogranicza lub większej mapy.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 Pogranicze nie ma miejsca na nagrodę; użyj większej mapy, mniejszej liczby kolonii lub szerszego pogranicza.
+[Orchard Commons]
+Wspólne sady
+[Orchard spacing]
+Rozstaw sadów
+[Compact]
+Bliski
+[Balanced]
+Zrównoważony
+[Spread]
+Szeroki

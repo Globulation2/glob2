@@ -224,6 +224,7 @@ map/generator/generators/UniformGenerator.cpp
 map/generator/generators/WatershedGenerator.cpp
 map/generator/generators/EvenGroundGenerator.cpp
 map/generator/generators/MarchlandGenerator.cpp
+map/generator/generators/OrchardCommonsGenerator.cpp
 map/generator/generators/HiddenOasisGenerator.cpp
 map/generator/generators/CentralQuarryGenerator.cpp
 map/generator/generators/BajadaGenerator.cpp
@@ -895,3 +896,13 @@ if not env['server']:
     report_sources += local.Object('MapReportHarness.o', '#test/MapReportHarness.cpp')
     report_test = local.Program('MapReportHarness', report_sources)
     local.Alias('map-report-test', report_test)
+
+# Controlled fruit-conversion scenarios on Orchard Commons generated terrain.
+if not env['server']:
+    orchard_conversion_sources = [source for source in source_files if source != 'Glob2.cpp']
+    orchard_conversion_sources += local.Object('OrchardCommonsConversionTest.o', '#test/OrchardCommonsConversionTest.cpp')
+    orchard_conversion_env = local.Clone()
+    orchard_conversion_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    orchard_conversion_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    orchard_conversion_test = orchard_conversion_env.Program('OrchardCommonsConversionTest', orchard_conversion_sources)
+    local.Alias('orchard-conversion-test', orchard_conversion_test)

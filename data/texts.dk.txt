@@ -2934,3 +2934,13 @@ En kolonis hjemland har ikke plads til en sværm; brug et større kort, færre k
 Grænselandet har for lidt omstridt jord til så mange præmier; brug færre præmier, et bredere grænseland eller et større kort.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 Grænselandet har ikke plads til en præmie; brug et større kort, færre kolonier eller et bredere grænseland.
+[Orchard Commons]
+Fælles frugtlunde
+[Orchard spacing]
+Afstand mellem frugtlunde
+[Compact]
+Tæt
+[Balanced]
+Afbalanceret
+[Spread]
+Spredt

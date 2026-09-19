@@ -2868,3 +2868,13 @@ Kolonia baten sorterrian ez dago lekurik kofoina batentzat; erabili mapa handiag
 Mugaldeak lur eztabaidatu gutxiegi du hainbeste sarirentzat; erabili sari gutxiago, mugalde zabalagoa edo mapa handiagoa.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 Mugaldean ez dago lekurik sari batentzat; erabili mapa handiagoa, kolonia gutxiago edo mugalde zabalagoa.
+[Orchard Commons]
+Fruta-baratze komunalak
+[Orchard spacing]
+Fruta-baratzeen arteko tartea
+[Compact]
+Hurbil
+[Balanced]
+Orekatua
+[Spread]
+Sakabanatuta

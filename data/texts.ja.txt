@@ -2854,3 +2854,13 @@ Emoji
 辺境の係争地がそれだけの賞品には少なすぎます。賞品を減らすか、辺境を広くするか、より大きなマップを使ってください。
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 辺境に賞品を置く場所がありません。より大きなマップを使うか、コロニーを減らすか、辺境を広くしてください。
+[Orchard Commons]
+共有の果樹園
+[Orchard spacing]
+果樹園の間隔
+[Compact]
+狭い
+[Balanced]
+標準
+[Spread]
+広い

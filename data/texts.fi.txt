@@ -2858,3 +2858,13 @@ Siirtokunnan kotimaassa ei ole tilaa pesälle; käytä suurempaa karttaa, vähem
 Rajamaalla on liian vähän kiisteltyä maata näin monelle palkinnolle; käytä vähemmän palkintoja, leveämpää rajamaata tai suurempaa karttaa.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 Rajamaalla ei ole tilaa palkinnolle; käytä suurempaa karttaa, vähemmän siirtokuntia tai leveämpää rajamaata.
+[Orchard Commons]
+Yhteiset hedelmätarhat
+[Orchard spacing]
+Hedelmätarhojen välimatka
+[Compact]
+Tiivis
+[Balanced]
+Tasapainoinen
+[Spread]
+Väljä

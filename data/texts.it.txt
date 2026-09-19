@@ -2920,3 +2920,13 @@ La terra natale di una colonia non ha spazio per un magazzino; usa una mappa pi�
 La terra di nessuno ha troppo poco terreno conteso per così tanti premi; usa meno premi, una terra di nessuno più larga o una mappa più grande.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 La terra di nessuno non ha spazio per un premio; usa una mappa più grande, meno colonie o una terra di nessuno più larga.
+[Orchard Commons]
+Frutteti comuni
+[Orchard spacing]
+Distanza tra i frutteti
+[Compact]
+Ravvicinati
+[Balanced]
+Equilibrata
+[Spread]
+Distanziati

@@ -2858,3 +2858,13 @@ Die Heimat einer Kolonie hat keinen Platz für einen Stock; verwenden Sie eine g
 Das Grenzland hat zu wenig umkämpften Boden für so viele Trophäen; verwenden Sie weniger Trophäen, ein breiteres Grenzland oder eine größere Karte.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 Das Grenzland hat keinen Platz für eine Trophäe; verwenden Sie eine größere Karte, weniger Kolonien oder ein breiteres Grenzland.
+[Orchard Commons]
+Gemeinschaftsobstgärten
+[Orchard spacing]
+Abstand der Obstgärten
+[Compact]
+Eng
+[Balanced]
+Ausgewogen
+[Spread]
+Weit

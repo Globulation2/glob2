@@ -2866,3 +2866,13 @@ La terra natal d'una colònia no té espai per a una granja; utilitzeu un mapa m
 La terra de ningú té massa poc terreny disputat per a tants premis; utilitzeu menys premis, una terra de ningú més ampla o un mapa més gran.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 La terra de ningú no té espai per a un premi; utilitzeu un mapa més gran, menys colònies o una terra de ningú més ampla.
+[Orchard Commons]
+Vergers comunals
+[Orchard spacing]
+Separació dels vergers
+[Compact]
+Propers
+[Balanced]
+Equilibrada
+[Spread]
+Separats

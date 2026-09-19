@@ -2858,3 +2858,13 @@ Domovina kolonije nima prostora za porodnišnico; uporabite večji zemljevid, ma
 Obmejni pas ima premalo spornega ozemlja za toliko nagrad; uporabite manj nagrad, širši obmejni pas ali večji zemljevid.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 Obmejni pas nima prostora za nagrado; uporabite večji zemljevid, manj kolonij ali širši obmejni pas.
+[Orchard Commons]
+Skupni sadovnjaki
+[Orchard spacing]
+Razmik med sadovnjaki
+[Compact]
+Majhen
+[Balanced]
+Uravnotežen
+[Spread]
+Velik

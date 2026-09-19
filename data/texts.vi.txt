@@ -2854,3 +2854,13 @@ Quê hương của một thuộc địa không đủ chỗ cho một tổ; hãy 
 Vùng biên có quá ít đất tranh chấp cho từng ấy phần thưởng; hãy dùng ít phần thưởng hơn, vùng biên rộng hơn hoặc bản đồ lớn hơn.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 Vùng biên không đủ chỗ cho một phần thưởng; hãy dùng bản đồ lớn hơn, ít thuộc địa hơn hoặc vùng biên rộng hơn.
+[Orchard Commons]
+Vườn cây ăn quả chung
+[Orchard spacing]
+Khoảng cách giữa các vườn
+[Compact]
+Gần nhau
+[Balanced]
+Cân bằng
+[Spread]
+Cách xa

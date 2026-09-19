@@ -2856,3 +2856,13 @@ A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or
 The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 The march has no room for a prize; use a bigger map, fewer colonies or a wider march.
+[Orchard Commons]
+Orchard Commons
+[Orchard spacing]
+Orchard spacing
+[Compact]
+Compact
+[Balanced]
+Balanced
+[Spread]
+Spread

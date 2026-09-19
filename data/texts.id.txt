@@ -2854,3 +2854,13 @@ Tanah air sebuah koloni tidak punya ruang untuk sarang; gunakan peta yang lebih 
 Perbatasan punya terlalu sedikit lahan sengketa untuk hadiah sebanyak itu; gunakan lebih sedikit hadiah, perbatasan yang lebih lebar, atau peta yang lebih besar.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 Perbatasan tidak punya ruang untuk sebuah hadiah; gunakan peta yang lebih besar, lebih sedikit koloni, atau perbatasan yang lebih lebar.
+[Orchard Commons]
+Kebun Buah Bersama
+[Orchard spacing]
+Jarak antarkebun
+[Compact]
+Rapat
+[Balanced]
+Seimbang
+[Spread]
+Renggang

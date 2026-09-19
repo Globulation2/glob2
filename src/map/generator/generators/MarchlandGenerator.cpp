@@ -27,7 +27,7 @@
 #include <vector>
 using namespace MapGeneration;
 
-// Marchland (id "marchland", legacy id 59): a country of home territories parted by a march of
+// Marchland (id "marchland", legacy id 60): a country of home territories parted by a march of
 // no-man's land, with a rope of prizes strung through it. Every prize is a fruit grove with a
 // quarry beside it - the only fruit on the map and the only quarry worth marching for - and every
 // prize is the same walk from every colony.
@@ -1292,7 +1292,7 @@ MarchlandOptions::MarchlandOptions(const GenerationRequest &r)
 GeneratorDefinition marchlandDefinition()
 {
 	return {"marchland",
-			59,
+			60,
 			"Marchland",
 			2,
 			false,

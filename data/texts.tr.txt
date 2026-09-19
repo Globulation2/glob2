@@ -2866,3 +2866,13 @@ Bir koloninin anayurdunda yuva için yer yok; daha büyük bir harita, daha az k
 Sınır bölgesinde bu kadar ödül için çok az çekişmeli alan var; daha az ödül, daha geniş bir sınır bölgesi veya daha büyük bir harita kullanın.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 Sınır bölgesinde bir ödül için yer yok; daha büyük bir harita, daha az koloni veya daha geniş bir sınır bölgesi kullanın.
+[Orchard Commons]
+Ortak Meyve Bahçeleri
+[Orchard spacing]
+Meyve bahçeleri aralığı
+[Compact]
+Yakın
+[Balanced]
+Dengeli
+[Spread]
+Seyrek

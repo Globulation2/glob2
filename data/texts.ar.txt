@@ -2856,3 +2856,13 @@ Emoji
 الأرض المتنازع عليها في المنطقة الحدودية أقل من أن تكفي لهذا العدد من الجوائز؛ استخدم جوائز أقل أو منطقة حدودية أوسع أو خريطة أكبر.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 لا تتسع المنطقة الحدودية لجائزة؛ استخدم خريطة أكبر أو مستعمرات أقل أو منطقة حدودية أوسع.
+[Orchard Commons]
+البساتين المشتركة
+[Orchard spacing]
+تباعد البساتين
+[Compact]
+متقاربة
+[Balanced]
+متوازنة
+[Spread]
+متباعدة

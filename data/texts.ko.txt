@@ -2854,3 +2854,13 @@ Emoji
 변경에 경합 지역이 너무 적어 그만큼의 상품을 둘 수 없습니다. 상품을 줄이거나, 변경을 더 넓게 하거나, 더 큰 지도를 사용하세요.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 변경에 상품을 둘 공간이 없습니다. 더 큰 지도를 사용하거나, 식민지 수를 줄이거나, 변경을 더 넓게 하세요.
+[Orchard Commons]
+공동 과수원
+[Orchard spacing]
+과수원 간격
+[Compact]
+좁게
+[Balanced]
+균형 있게
+[Spread]
+넓게

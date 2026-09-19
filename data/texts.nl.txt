@@ -2882,3 +2882,13 @@ Het thuisland van een kolonie heeft geen ruimte voor een zwerm; gebruik een grot
 Het niemandsland heeft te weinig betwiste grond voor zoveel prijzen; gebruik minder prijzen, een breder niemandsland of een grotere kaart.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
 Het niemandsland heeft geen ruimte voor een prijs; gebruik een grotere kaart, minder kolonies of een breder niemandsland.
+[Orchard Commons]
+Gemeenschappelijke boomgaarden
+[Orchard spacing]
+Afstand tussen boomgaarden
+[Compact]
+Dicht bijeen
+[Balanced]
+Evenwichtig
+[Spread]
+Verspreid

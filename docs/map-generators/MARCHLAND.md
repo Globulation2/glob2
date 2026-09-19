@@ -1,6 +1,6 @@
 # Marchland: drawn country, solved rope
 
-`marchland`, legacy id 59. Source: [MarchlandGenerator.cpp](../../src/map/generator/generators/MarchlandGenerator.cpp).
+`marchland`, legacy id 60. Source: [MarchlandGenerator.cpp](../../src/map/generator/generators/MarchlandGenerator.cpp).
 
 Homelands of farmed country, bounded by dry collars and separated by shared grassland, with a rope
 of prizes strung through it. Every prize is a fruit grove with a quarry beside it, on a clearing of living
