@@ -191,5 +191,6 @@ The generator was assigned numeric ID **63** when merging with master, where
 The Gauntlet had already taken ID 59 and The Comb took ID 62. The stable ID remains `encircled-kingdom`.
 The archive records the original development IDs and source snapshot. When using
 its numeric headless commands on the merged build, replace this generator's 59
-with 63; existing saved terrain can be loaded directly. Post-integration checks
-are recorded separately below.
+with 63; existing saved terrain can be loaded directly. The archive bundles its original control-study helper so its reproduction script
+continues to work after master's study-tool API refactor. Post-integration checks
+are recorded in the pull request.
