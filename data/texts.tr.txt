@@ -2970,3 +2970,7 @@ Aç Sınır Toprakları
 Başlangıç erzağı
 [Central concentration]
 Merkezde yoğunlaşma
+[The Last Treeline]
+Son orman kuşağı
+[Woodland depth]
+Koruların genişliği

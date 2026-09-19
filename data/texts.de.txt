@@ -2962,3 +2962,7 @@ Die hungrigen Grenzlande
 Anfangsration
 [Central concentration]
 Konzentration im Zentrum
+[The Last Treeline]
+Der letzte Waldstreifen
+[Woodland depth]
+Breite der Gehölze

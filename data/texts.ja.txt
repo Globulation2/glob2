@@ -2958,3 +2958,7 @@ Emoji
 初期食糧
 [Central concentration]
 中央への集中度
+[The Last Treeline]
+最後の森林帯
+[Woodland depth]
+林の幅

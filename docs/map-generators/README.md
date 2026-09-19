@@ -14,6 +14,11 @@ its contained crop plots, controls, numerical budgets and supported request enve
 [The Comb design and validation](COMB.md) describes its interlocking shores,
 cross-channel military positions, contained mainland farms and controls.
 
+## The Last Treeline
+
+[The Last Treeline](LAST_TREELINE.md) puts finite opening timber on the dry outer
+plain and renewable woodland on a shared, retreating lake shore.
+
 ## Development tools
 
 Build the study executable with `scons release=1 map-generator-study`.

@@ -2960,3 +2960,7 @@ Emoji
 جیرهٔ آغازین
 [Central concentration]
 تمرکز غذا در مرکز
+[The Last Treeline]
+آخرین نوار جنگلی
+[Woodland depth]
+پهنای بیشه‌ها

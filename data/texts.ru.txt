@@ -2960,3 +2960,7 @@ Emoji
 Начальный паёк
 [Central concentration]
 Сосредоточение в центре
+[The Last Treeline]
+Последняя лесополоса
+[Woodland depth]
+Ширина рощ

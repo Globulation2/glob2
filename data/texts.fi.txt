@@ -2962,3 +2962,7 @@ Nälkäiset rajamaat
 Aloitusannos
 [Central concentration]
 Keskustan painotus
+[The Last Treeline]
+Viimeinen metsävyöhyke
+[Woodland depth]
+Metsiköiden leveys
