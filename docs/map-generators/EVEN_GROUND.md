@@ -1,6 +1,6 @@
 # Even Ground: terrain solved against targets instead of drawn
 
-`even-ground`, legacy id 59. Source: [EvenGroundGenerator.cpp](../../src/map/generator/generators/EvenGroundGenerator.cpp).
+`even-ground`, legacy id 60. Source: [EvenGroundGenerator.cpp](../../src/map/generator/generators/EvenGroundGenerator.cpp).
 
 Every other landscape in the catalog decides what it looks like and then works to make that shape
 fair. This one has no drawn shape at all. It states what the finished map must be true of, and

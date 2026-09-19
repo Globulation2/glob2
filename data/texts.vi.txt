@@ -2864,3 +2864,9 @@ Gần nhau
 Cân bằng
 [Spread]
 Cách xa
+[The Gauntlet]
+Đấu trường thử thách
+[Partition thickness]
+Độ dày tường ngăn
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Đấu trường thử thách cần bản đồ lớn hơn hoặc ít thuộc địa hơn để mỗi thuộc địa có đủ chỗ cho hai lối vào được phòng thủ.

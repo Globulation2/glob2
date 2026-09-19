@@ -313,13 +313,39 @@ A maintainer meets a new map as a preview before any number, and what the previe
 
 None of these needs a new control. Each is a default, a toggle or a few tiles, plus a revision bump and regenerated fingerprints on both platforms, and each deserves the same paired tournament as any other tuning change before the numbers are trusted. Record the remark and the answer in the generator's header comments: the next designer will meet the same eye.
 
+## A stalled builder can look like a resource shortage
+
+Zero wood harvested does not establish that timber is inaccessible. In Gauntlet's
+rotation games, Cabino had reachable wood but never constructed anything beyond
+its starting buildings. More nearby wood did not fix the failed positions.
+`AICabino::setCenter` chose the centroid of discovered tiles; the starting towers
+pulled it onto stone. `Gradient::update` rejected obstacles before recognizing
+sources, leaving the construction gradient without a source. Recheck these methods
+in `src/ai/AICabino.cpp` when diagnosing a similar stall; this is an observed AI
+limitation, not a requirement that all map centers be empty.
+
+Check construction history and reachable supplies separately, then inspect the
+AI's placement origin and rejection conditions. For granted buildings, visibility
+can matter as much as firing range. Gauntlet's first tower setback fixed the known
+four-colony failures but missed two-colony and higher-level-tower cases. A bounded
+physical frontage, rather than a fixed fraction of the colony's wedge, kept both
+entrances near home on sparse large arenas. It improved supply routes as well as
+avoiding the bad origin. Prefer a remedy that serves the map's play contract; do
+not carve arbitrary holes in its walls to accommodate an AI bug.
+
+Test the proposed remedy across colony counts, sizes and building levels, then
+replay the failed positions. Reconstructed building visibility is a useful screen,
+but workers reveal more terrain before AI initialization: actual games remain the
+check. The [Gauntlet evidence](../../../../docs/artifacts/gauntlet/README.md) retains
+the failed games, centroid studies and successful final rotations.
+
 ## Show the map, then measure the knobs, then roll everything
 
 The maintainer decides what a map is from pictures, so the cheap loop comes first: generate a handful of seeds and shapes, publish the previews on a page with the settings beside each, and wait for a reaction before any game or tournament. Each round of Honeycomb isle's design (hexagons, water, fields, rings, river width) came from a look, not a number.
 
 When the look is settled, **measure every control on its own.** Generate each control's values with everything else at defaults (six seeds at 256×256 with four colonies is enough), plus the default at every shape and colony count, plus a few extreme combinations, and tabulate the metric each control should move from the JSON report and the generator's telemetry. One 528-map study (19 s on eight cores) found:
 
-- **Dead ranges.** Wheat amount above 100% changed nothing because the fields were already full; wood saturated at 200%. Cap a percentage at the value where it stops mattering (`GeneratorControl::percentage(id, label, maximum)`).
+- **Dead ranges.** Wheat amount above 100% changed nothing because the fields were already full; wood saturated at 200%. Check other supported sizes and layouts before capping a percentage at the value where it stops mattering (`GeneratorControl::percentage(id, label, maximum)`). A universally dead range should be removed; layout-dependent saturation needs separate treatment below.
 - **A variant that is a scale mismatch.** Square blocks used the block size as their pitch while hexagons used 150% of it, so squares had a fifth of the building sites. Give alternatives the same area, not the same number.
 - **A choice that barely differs.** "Many" wheat fields added 9% over "Normal" because the edge was already all fields; a choice should move its metric visibly.
 - **Ranges the map clamps anyway.** Block sizes above 21 shrank back on common maps; a minimum of 5 blocks per colony left almost no ruins.
@@ -341,6 +367,23 @@ When the look is settled, **measure every control on its own.** Generate each co
 - **Test values must be on the control's step.** Values off a control's step (25 on a step of 10) are refused before generation; a study that uses them measures nothing for those rows. Check the refusal message before reading a row of empty metrics.
 
 Then **roll everything at random**: every control over its full range, every shape and colony count, a few dozen maps on one page with their settings, for the maintainer to eyeball for degenerate rolls. That page is how "without the lagoon there is way too little water" was found; no metric had been asked about water on small maps.
+
+Choose a primary metric that matches the control. Gauntlet's tower levels 1–3
+all supplied two towers, so a count-only report falsely flagged dead steps; record
+and verify the actual building levels too. For finite fields, retain requested and
+placed crop counts and compare adjacent values on matched seeds. Gauntlet's wheat
+plateaued at 275–300% on the sampled 256 maps. If retaining such a range, document
+where it saturates and measure whether it remains useful on other layouts; do not
+widen beds through protected lanes just to force a linear graph. Correlations over
+mixed sizes and colony counts can hide these effects.
+
+Report expected request refusals separately from supported generation failures.
+A broad random draw can spend most of its budget on intentionally unsupported
+shapes; add a held-out draw restricted to the supported envelope. State which
+values and combinations were exercised: every slider value in isolation plus
+random combinations is not the full Cartesian product. Tie each report to its
+frozen binary, and refresh retained raw files after a run completes so a final
+summary never links to an earlier partial copy.
 
 Finally run a **reliability pass**: every control at its minimum and maximum alone and all together on a small, a default and a large shape, plus about two thousand random rolls, classifying every failure as an expected refusal or a bug. Six of 1,620 Honeycomb isle maps failed a starter-wheat distance by one or two steps, all with the largest blocks and little wheat; the fix was geometric (the cistern moves forward on big blocks, wheat is planted nearest the swarm), and the pass was repeated on fresh seeds and on the old seeds before calling it done. Rename streams, telemetry keys or controls before this pass: a stream name is part of every random draw.
 

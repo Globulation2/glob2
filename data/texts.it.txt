@@ -2930,3 +2930,9 @@ Ravvicinati
 Equilibrata
 [Spread]
 Distanziati
+[The Gauntlet]
+L’arena delle prove
+[Partition thickness]
+Spessore dei muri divisori
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+L’arena delle prove richiede una mappa più grande o meno colonie per ospitare due ingressi difesi per colonia.

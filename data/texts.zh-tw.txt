@@ -2940,3 +2940,9 @@ Emoji
 均衡
 [Spread]
 分散
+[The Gauntlet]
+試煉競技場
+[Partition thickness]
+隔牆厚度
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+試煉競技場需要更大的地圖或更少的殖民地，才能為每個殖民地安排兩個設防入口。

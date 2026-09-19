@@ -1087,7 +1087,7 @@ EvenGroundOptions::EvenGroundOptions(const GenerationRequest &r)
 GeneratorDefinition evenGroundDefinition()
 {
 	return {"even-ground",
-			59,
+			60,
 			"Even Ground",
 			2,
 			false,

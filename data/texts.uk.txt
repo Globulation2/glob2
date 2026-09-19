@@ -2864,3 +2864,9 @@ Emoji
 Збалансована
 [Spread]
 Далеко
+[The Gauntlet]
+Арена випробувань
+[Partition thickness]
+Товщина розділових стін
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Арена випробувань потребує більшої карти або меншої кількості колоній, щоб біля кожної колонії вмістилися два захищені входи.

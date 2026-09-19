@@ -2878,3 +2878,9 @@ Tätt
 Balanserat
 [Spread]
 Glest
+[The Gauntlet]
+Prövningarnas arena
+[Partition thickness]
+Skiljemurarnas tjocklek
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Prövningarnas arena behöver en större karta eller färre kolonier för att rymma två bevakade ingångar per koloni.

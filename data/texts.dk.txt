@@ -2944,3 +2944,9 @@ Tæt
 Afbalanceret
 [Spread]
 Spredt
+[The Gauntlet]
+Prøvelsernes arena
+[Partition thickness]
+Skillemurenes tykkelse
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Prøvelsernes arena kræver et større kort eller færre kolonier for at få plads til to bevogtede indgange pr. koloni.

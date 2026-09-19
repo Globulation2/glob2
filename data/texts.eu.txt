@@ -2878,3 +2878,9 @@ Hurbil
 Orekatua
 [Spread]
 Sakabanatuta
+[The Gauntlet]
+Erronken arena
+[Partition thickness]
+Banaketa-hormen lodiera
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Erronken arenak mapa handiagoa edo kolonia gutxiago behar ditu, kolonia bakoitzak bi sarrera zaindu izan ditzan.

@@ -1,5 +1,10 @@
 # Constraint toolkit refactor evidence
 
+**Historical numeric IDs:** these artifacts use Even Ground 59 and Marchland 60.
+The later merge of The Gauntlet (master ID 59) moves them to 60 and 61 respectively.
+Retain the recorded IDs when using the frozen binaries; use the textual generator
+names with the current catalog.
+
 This change reorganizes searches and strengthens shared contracts without retuning the
 maps. Generator IDs, revisions, seed streams and golden rows remain unchanged.
 The shared interface is described in [Constraint searches](../../../CONSTRAINT_SEARCH.md).

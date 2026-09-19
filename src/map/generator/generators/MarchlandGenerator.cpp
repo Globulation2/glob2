@@ -27,7 +27,7 @@
 #include <vector>
 using namespace MapGeneration;
 
-// Marchland (id "marchland", legacy id 60) draws private homelands, dry crop-containment
+// Marchland (id "marchland", legacy id 61) draws private homelands, dry crop-containment
 // collars and expandable commons. Fruit groves with nearby quarries form contested prizes.
 // The solver chooses prize sites using walking costs on the drawn terrain: each prize should
 // have at least two nearby contenders, and colonies should contest similar numbers of prizes.
@@ -1241,7 +1241,7 @@ MarchlandOptions::MarchlandOptions(const GenerationRequest &r)
 GeneratorDefinition marchlandDefinition()
 {
 	return {"marchland",
-			60,
+			61,
 			"Marchland",
 			2,
 			false,

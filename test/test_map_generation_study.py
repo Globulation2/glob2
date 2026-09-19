@@ -39,7 +39,7 @@ class StudyTests(unittest.TestCase):
             # Misleading console output must not determine success.
             return subprocess.CompletedProcess(command, code, '[complete]', 'failure')
         with patch.object(study.subprocess, 'run', side_effect=native):
-            result = study.generate_map('glob2', 59, 12, 128, 512, 6)
+            result = study.generate_map('glob2', 60, 12, 128, 512, 6)
         self.assertTrue(directories)
         self.assertFalse(directories[0].exists(), 'temporary profile leaked')
         return result
@@ -95,8 +95,8 @@ class StudyTests(unittest.TestCase):
         self.assertNotIn('optional', output.getvalue())
 
     def test_catalog_and_dimensions(self):
-        catalog = {'generators': [{'method': 59, 'id': 'even-ground', 'controls': []}]}
-        self.assertEqual(study.generator_definition(catalog, '59'), catalog['generators'][0])
+        catalog = {'generators': [{'method': 60, 'id': 'even-ground', 'controls': []}]}
+        self.assertEqual(study.generator_definition(catalog, '60'), catalog['generators'][0])
         self.assertEqual(study.generator_definition(catalog, 'even-ground'), catalog['generators'][0])
         with self.assertRaises(ValueError): study.generator_definition(catalog, 'missing')
         for size in (0, 127, -128):

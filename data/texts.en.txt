@@ -2866,3 +2866,9 @@ Compact
 Balanced
 [Spread]
 Spread
+[The Gauntlet]
+The Gauntlet
+[Partition thickness]
+Partition thickness
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.

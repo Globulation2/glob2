@@ -2938,3 +2938,9 @@ Emoji
 Ισορροπημένη
 [Spread]
 Αραιοί
+[The Gauntlet]
+Αρένα δοκιμασιών
+[Partition thickness]
+Πάχος διαχωριστικών τοίχων
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Η Αρένα δοκιμασιών χρειάζεται μεγαλύτερο χάρτη ή λιγότερες αποικίες για να χωρέσουν δύο φρουρούμενες είσοδοι ανά αποικία.

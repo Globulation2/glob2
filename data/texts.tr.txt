@@ -2876,3 +2876,9 @@ Yakın
 Dengeli
 [Spread]
 Seyrek
+[The Gauntlet]
+Sınav arenası
+[Partition thickness]
+Bölme duvarı kalınlığı
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Sınav arenasında her koloniye iki korunan giriş sığdırmak için daha büyük bir harita veya daha az koloni gerekir.

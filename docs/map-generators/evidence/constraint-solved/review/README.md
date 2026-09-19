@@ -1,5 +1,10 @@
 # Revision 2 review evidence
 
+**Historical numeric IDs:** these artifacts use Even Ground 59 and Marchland 60.
+The later merge of The Gauntlet (master ID 59) moves them to 60 and 61 respectively.
+Retain the recorded IDs when using the frozen binaries; use the textual generator
+names with the current catalog.
+
 This review covers Even Ground (59) and Marchland (60), both revision 2. The IDs were
 moved when integrating Orchard Commons (58) from master. The source revision and frozen
 macOS executable hash are in [provenance.json](provenance.json).

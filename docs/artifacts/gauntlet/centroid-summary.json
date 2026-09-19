@@ -1,0 +1,218 @@
+[
+  {
+    "size": 256,
+    "teams": 2,
+    "level": 0,
+    "maps": 6,
+    "homes": 12,
+    "resource_centroids": 0,
+    "minimum_margin": 8
+  },
+  {
+    "size": 256,
+    "teams": 2,
+    "level": 1,
+    "maps": 6,
+    "homes": 12,
+    "resource_centroids": 0,
+    "minimum_margin": 3
+  },
+  {
+    "size": 256,
+    "teams": 2,
+    "level": 2,
+    "maps": 6,
+    "homes": 12,
+    "resource_centroids": 0,
+    "minimum_margin": 3
+  },
+  {
+    "size": 256,
+    "teams": 2,
+    "level": 3,
+    "maps": 6,
+    "homes": 12,
+    "resource_centroids": 0,
+    "minimum_margin": 4
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "level": 0,
+    "maps": 6,
+    "homes": 24,
+    "resource_centroids": 0,
+    "minimum_margin": 8
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "level": 1,
+    "maps": 6,
+    "homes": 24,
+    "resource_centroids": 0,
+    "minimum_margin": 3
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "level": 2,
+    "maps": 6,
+    "homes": 24,
+    "resource_centroids": 0,
+    "minimum_margin": 3
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "level": 3,
+    "maps": 6,
+    "homes": 24,
+    "resource_centroids": 0,
+    "minimum_margin": 3
+  },
+  {
+    "size": 256,
+    "teams": 8,
+    "level": 0,
+    "maps": 6,
+    "homes": 48,
+    "resource_centroids": 0,
+    "minimum_margin": 8
+  },
+  {
+    "size": 256,
+    "teams": 8,
+    "level": 1,
+    "maps": 6,
+    "homes": 48,
+    "resource_centroids": 0,
+    "minimum_margin": 4
+  },
+  {
+    "size": 256,
+    "teams": 8,
+    "level": 2,
+    "maps": 6,
+    "homes": 48,
+    "resource_centroids": 0,
+    "minimum_margin": 5
+  },
+  {
+    "size": 256,
+    "teams": 8,
+    "level": 3,
+    "maps": 6,
+    "homes": 48,
+    "resource_centroids": 0,
+    "minimum_margin": 5
+  },
+  {
+    "size": 512,
+    "teams": 2,
+    "level": 0,
+    "maps": 6,
+    "homes": 12,
+    "resource_centroids": 0,
+    "minimum_margin": 9
+  },
+  {
+    "size": 512,
+    "teams": 2,
+    "level": 1,
+    "maps": 6,
+    "homes": 12,
+    "resource_centroids": 0,
+    "minimum_margin": 5
+  },
+  {
+    "size": 512,
+    "teams": 2,
+    "level": 2,
+    "maps": 6,
+    "homes": 12,
+    "resource_centroids": 0,
+    "minimum_margin": 5
+  },
+  {
+    "size": 512,
+    "teams": 2,
+    "level": 3,
+    "maps": 6,
+    "homes": 12,
+    "resource_centroids": 0,
+    "minimum_margin": 6
+  },
+  {
+    "size": 512,
+    "teams": 4,
+    "level": 0,
+    "maps": 6,
+    "homes": 24,
+    "resource_centroids": 0,
+    "minimum_margin": 8
+  },
+  {
+    "size": 512,
+    "teams": 4,
+    "level": 1,
+    "maps": 6,
+    "homes": 24,
+    "resource_centroids": 0,
+    "minimum_margin": 4
+  },
+  {
+    "size": 512,
+    "teams": 4,
+    "level": 2,
+    "maps": 6,
+    "homes": 24,
+    "resource_centroids": 0,
+    "minimum_margin": 5
+  },
+  {
+    "size": 512,
+    "teams": 4,
+    "level": 3,
+    "maps": 6,
+    "homes": 24,
+    "resource_centroids": 0,
+    "minimum_margin": 5
+  },
+  {
+    "size": 512,
+    "teams": 12,
+    "level": 0,
+    "maps": 6,
+    "homes": 72,
+    "resource_centroids": 0,
+    "minimum_margin": 8
+  },
+  {
+    "size": 512,
+    "teams": 12,
+    "level": 1,
+    "maps": 6,
+    "homes": 72,
+    "resource_centroids": 0,
+    "minimum_margin": 4
+  },
+  {
+    "size": 512,
+    "teams": 12,
+    "level": 2,
+    "maps": 6,
+    "homes": 72,
+    "resource_centroids": 0,
+    "minimum_margin": 5
+  },
+  {
+    "size": 512,
+    "teams": 12,
+    "level": 3,
+    "maps": 6,
+    "homes": 72,
+    "resource_centroids": 0,
+    "minimum_margin": 6
+  }
+]

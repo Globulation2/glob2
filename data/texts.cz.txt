@@ -2868,3 +2868,9 @@ Blízko sebe
 Vyvážené
 [Spread]
 Daleko od sebe
+[The Gauntlet]
+Aréna zkoušek
+[Partition thickness]
+Tloušťka dělicích zdí
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Aréna zkoušek potřebuje větší mapu nebo méně kolonií, aby se ke každé kolonii vešly dva bráněné vstupy.

@@ -1,0 +1,9 @@
+PASS: all original lines preserved byte-for-byte; exactly 8 added rows, all macos-arm64 generator 58.
+macos-arm64 58 1 7 7 4 1 invalid 0
+macos-arm64 58 1 8 8 2 1 ok 13647775807565606179
+macos-arm64 58 1 8 8 4 1 ok 10112539446223581566
+macos-arm64 58 1 8 8 4 2 ok 10012188533467858723
+macos-arm64 58 1 8 8 4 3 ok 5608436585274177502
+macos-arm64 58 1 8 8 8 1 ok 7969512992554246107
+macos-arm64 58 1 9 8 4 1 ok 14510916977650021427
+macos-arm64 58 1 9 9 4 1 ok 37295554217669317
