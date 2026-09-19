@@ -244,7 +244,7 @@ GeneratorControl cropCrossingsControl()
 
 Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned char> &region,
 			 double angle, ShapePoint origin, int rim, const FarmRows &rows, const FarmPlot *plot,
-			 const FarmBridges &bridges, bool caps)
+			 const FarmBridges &bridges, bool caps, std::vector<int> *edgeDepthOut)
 {
 	const int n = t.size();
 	Farm farm;
@@ -253,7 +253,7 @@ Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned c
 	std::vector<unsigned char> outside(n, 0);
 	for (int i = 0; i < n; ++i)
 		outside[i] = !region[i];
-	const std::vector<int> fromEdge = stepsFrom(t, outside);
+	std::vector<int> fromEdge = stepsFrom(t, outside);
 	// Across the rows: the rows run along `angle`, so a vertex's place across them is its offset along
 	// the normal, shifted so the crop row at the origin is centred on it.
 	const double nx = -std::sin(angle), ny = std::cos(angle), period = rows.period();
@@ -355,6 +355,8 @@ Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned c
 		}
 	}
 	farm.rows = int(std::count(seen.begin(), seen.end(), 1));
+	if (edgeDepthOut)
+		*edgeDepthOut = std::move(fromEdge);
 	return farm;
 }
 

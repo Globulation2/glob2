@@ -2828,6 +2828,100 @@ Dold oas rymmer högst åtta kolonier.
 Massivet får inte plats på den här kartan; använd en större karta eller färre kolonier.
 [The pond has no room for that much algae; use a bigger pond.]
 Dammen har inte plats för så många alger; använd en större damm.
+[Even Ground]
+Jämn mark
+[Balance]
+Balans
+[Tight passes]
+Trånga passager
+[Solver effort]
+Lösarens ansträngning
+[Brief]
+Kort
+[Patient]
+Tålmodig
+[This map is too small to solve on; use a bigger map.]
+Den här kartan är för liten att lösa på; använd en större karta.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+För många kolonier att balansera på en karta av den här storleken; använd en större karta eller färre kolonier.
+[The colonies could not be spread out on this map.]
+Kolonierna kunde inte spridas ut på den här kartan.
+[Marchland]
+Gränsland
+[Prizes on the rope]
+Priser på repet
+[March width]
+Gränslandets bredd
+[Levelling]
+Utjämning
+[A march needs a country on each side; use at least two colonies.]
+Ett gränsland behöver ett land på var sida; använd minst två kolonier.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+För många kolonier för att den här kartan ska ge var och en ett hemland; använd en större karta eller färre kolonier.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Den här kartan har ingen plats att sprida ut kolonierna på; använd en större karta eller färre kolonier.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+En kolonis hemland har ingen utväg till gränslandet; använd en större karta eller ett smalare gränsland.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+En kolonis hemland har inte plats för en svärm; använd en större karta, färre kolonier eller ett smalare gränsland.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Gränslandet har för lite omstridd mark för så många priser; använd färre priser, ett bredare gränsland eller en större karta.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Gränslandet har inte plats för ett pris; använd en större karta, färre kolonier eller ett bredare gränsland.
+[Orchard Commons]
+Gemensamma fruktlundar
+[Orchard spacing]
+Avstånd mellan fruktlundar
+[Compact]
+Tätt
+[Balanced]
+Balanserat
+[Spread]
+Glest
+[The Gauntlet]
+Prövningarnas arena
+[Partition thickness]
+Skiljemurarnas tjocklek
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Prövningarnas arena behöver en större karta eller färre kolonier för att rymma två bevakade ingångar per koloni.
+[The Comb]
+Kammen
+[Peninsulas per shore]
+Halvöar per strand
+[Encircled Kingdom]
+Omringat kungarike
+[Fortress plan]
+Fästningsplan
+[Automatic]
+Automatisk
+[Elongated enclosure]
+Avlång befästning
+[Bastioned enclosure]
+Bastionsbefästning
+[Paired courtyards]
+Två borggårdar
+[Heartland farmland]
+Åkermark i kärnlandet
+[The Faulted City]
+Den förskjutna staden
+[Fault displacement]
+Förkastningsförskjutning
+[Fault width]
+Förkastningsbredd
+[Ruin density]
+Ruintäthet
+[Surviving junctions]
+Bevarade korsningar
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Den förskjutna staden kräver 256 eller 512 rutor på varje sida och en till tolv kolonier.
+[The city has too few usable junctions.]
+Staden har för få användbara korsningar.
+[A city neighbourhood lacks reachable crops or building room.]
+En stadsdel saknar åtkomliga grödor eller byggutrymme.
+[The city neighbourhoods are too unequal; try another seed.]
+Stadsdelarna är alltför obalanserade; prova ett annat frö.
+[The fractured civic plaza did not survive.]
+Det spruckna stadstorget bevarades inte.
 [Drowned Forest]
 Översvämmad skog
 [Sandbar connections]

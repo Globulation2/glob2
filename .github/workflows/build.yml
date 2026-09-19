@@ -96,6 +96,7 @@ jobs:
         run: |
           scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 build/src/glob2 \
             map-report-test \
+            orchard-conversion-test \
             maxima-food-ledger-test \
             tournament-compatibility-test \
             torus-render-test \
@@ -167,6 +168,7 @@ jobs:
           python3 test/test_distributed_map_telemetry.py
           python3 test/test_distributed_game_telemetry.py
           python3 test/test_map_fairness_tournament.py
+          python3 test/test_map_generation_study.py
           python3 test/test_fairness_model.py
           ./build/src/TournamentCompatibilityTest
           python3 test/tournament_cli_integration.py --output artifacts/tournament-cli
@@ -213,6 +215,18 @@ jobs:
         with:
           name: map-preview-${{ matrix.runner }}-${{ matrix.compiler }}
           path: artifacts/map-preview/
+          if-no-files-found: ignore
+
+      - name: Test Orchard Commons generation and fruit conversion
+        run: |
+          timeout 120s ./build/src/OrchardCommonsConversionTest glob2-orchard-ci "$PWD" "$PWD/artifacts/orchard-conversion"
+
+      - name: Retain Orchard Commons conversion fixtures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orchard-conversion-${{ matrix.runner }}
+          path: artifacts/orchard-conversion/
           if-no-files-found: ignore
 
       - name: Build and run custom-game setup regressions
@@ -673,6 +687,7 @@ jobs:
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 build/src/glob2.exe \
             map-report-test \
+            orchard-conversion-test \
             tournament-compatibility-test \
             clearing-gradient-test \
             point-bar-render-test \
@@ -684,6 +699,17 @@ jobs:
             maxima-continuation-test \
             team-stats-save-test \
             performance-telemetry-test
+
+      - name: Test Orchard Commons generation and fruit conversion
+        run: ./build/src/OrchardCommonsConversionTest.exe glob2-orchard-ci "$PWD" "$PWD/artifacts/orchard-conversion"
+
+      - name: Retain Orchard Commons conversion fixtures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orchard-conversion-windows
+          path: artifacts/orchard-conversion/
+          if-no-files-found: ignore
 
       - name: Test map JSON reports
         run: |

@@ -2818,6 +2818,100 @@ Ukryta oaza mieści najwyżej osiem kolonii.
 Masyw nie mieści się na tej mapie; użyj większej mapy lub mniejszej liczby kolonii.
 [The pond has no room for that much algae; use a bigger pond.]
 W stawie nie ma miejsca na tyle alg; użyj większego stawu.
+[Even Ground]
+Równy teren
+[Balance]
+Zrównoważenie
+[Tight passes]
+Wąskie przesmyki
+[Solver effort]
+Nakład obliczeń
+[Brief]
+Krótki
+[Patient]
+Cierpliwy
+[This map is too small to solve on; use a bigger map.]
+Ta mapa jest za mała, aby ją rozwiązać; użyj większej mapy.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Za dużo kolonii do zrównoważenia na mapie tego rozmiaru; użyj większej mapy lub mniejszej liczby kolonii.
+[The colonies could not be spread out on this map.]
+Nie udało się rozmieścić kolonii na tej mapie.
+[Marchland]
+Pogranicze
+[Prizes on the rope]
+Nagrody na linie
+[March width]
+Szerokość pogranicza
+[Levelling]
+Wyrównywanie
+[A march needs a country on each side; use at least two colonies.]
+Pogranicze wymaga kraju po każdej stronie; użyj co najmniej dwóch kolonii.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Za dużo kolonii, by ta mapa dała każdej ojczyznę; użyj większej mapy lub mniejszej liczby kolonii.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Na tej mapie nie ma miejsca, by rozmieścić kolonie; użyj większej mapy lub mniejszej liczby kolonii.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Ojczyzna kolonii nie ma wyjścia na pogranicze; użyj większej mapy lub węższego pogranicza.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Ojczyzna kolonii nie ma miejsca na rój; użyj większej mapy, mniejszej liczby kolonii lub węższego pogranicza.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Pogranicze ma za mało spornego terenu na tyle nagród; użyj mniejszej liczby nagród, szerszego pogranicza lub większej mapy.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Pogranicze nie ma miejsca na nagrodę; użyj większej mapy, mniejszej liczby kolonii lub szerszego pogranicza.
+[Orchard Commons]
+Wspólne sady
+[Orchard spacing]
+Rozstaw sadów
+[Compact]
+Bliski
+[Balanced]
+Zrównoważony
+[Spread]
+Szeroki
+[The Gauntlet]
+Arena prób
+[Partition thickness]
+Grubość murów działowych
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Arena prób wymaga większej mapy lub mniejszej liczby kolonii, aby przy każdej kolonii zmieściły się dwa strzeżone wejścia.
+[The Comb]
+Grzebień
+[Peninsulas per shore]
+Półwyspy na każdym brzegu
+[Encircled Kingdom]
+Otoczone królestwo
+[Fortress plan]
+Plan twierdzy
+[Automatic]
+Automatyczny
+[Elongated enclosure]
+Wydłużone obwarowanie
+[Bastioned enclosure]
+Obwarowanie bastionowe
+[Paired courtyards]
+Dwa dziedzińce
+[Heartland farmland]
+Pola w centrum królestwa
+[The Faulted City]
+Pęknięte miasto
+[Fault displacement]
+Przesunięcie uskoków
+[Fault width]
+Szerokość uskoków
+[Ruin density]
+Gęstość ruin
+[Surviving junctions]
+Zachowane skrzyżowania
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Pęknięte miasto wymaga 256 lub 512 pól na każdy bok oraz od jednej do dwunastu kolonii.
+[The city has too few usable junctions.]
+Miasto ma zbyt mało dostępnych skrzyżowań.
+[A city neighbourhood lacks reachable crops or building room.]
+Jednej z dzielnic miasta brakuje dostępnych upraw lub miejsca na budowę.
+[The city neighbourhoods are too unequal; try another seed.]
+Dzielnice miasta są zbyt nierówne; spróbuj innego ziarna.
+[The fractured civic plaza did not survive.]
+Pęknięty plac miejski nie przetrwał.
 [Drowned Forest]
 Zatopiony las
 [Sandbar connections]

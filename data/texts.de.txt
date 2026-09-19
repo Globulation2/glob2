@@ -2818,6 +2818,100 @@ Verborgene Oase fasst höchstens acht Kolonien.
 Das Massiv passt nicht auf diese Karte; verwenden Sie eine größere Karte oder weniger Kolonien.
 [The pond has no room for that much algae; use a bigger pond.]
 Der Teich hat keinen Platz für so viele Algen; verwenden Sie einen größeren Teich.
+[Even Ground]
+Gleiches Terrain
+[Balance]
+Ausgewogenheit
+[Tight passes]
+Enge Durchlässe
+[Solver effort]
+Löseraufwand
+[Brief]
+Kurz
+[Patient]
+Gründlich
+[This map is too small to solve on; use a bigger map.]
+Diese Karte ist zu klein für den Löser; verwenden Sie eine größere Karte.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Zu viele Kolonien, um sie auf einer Karte dieser Größe auszugleichen; verwenden Sie eine größere Karte oder weniger Kolonien.
+[The colonies could not be spread out on this map.]
+Die Kolonien konnten auf dieser Karte nicht verteilt werden.
+[Marchland]
+Grenzland
+[Prizes on the rope]
+Trophäen am Seil
+[March width]
+Breite des Grenzlands
+[Levelling]
+Angleichung
+[A march needs a country on each side; use at least two colonies.]
+Ein Grenzland braucht auf jeder Seite ein Land; verwenden Sie mindestens zwei Kolonien.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Zu viele Kolonien, als dass diese Karte jeder eine Heimat geben könnte; verwenden Sie eine größere Karte oder weniger Kolonien.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Auf dieser Karte ist kein Platz, um die Kolonien zu verteilen; verwenden Sie eine größere Karte oder weniger Kolonien.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Die Heimat einer Kolonie hat keinen Ausgang zum Grenzland; verwenden Sie eine größere Karte oder ein schmaleres Grenzland.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Die Heimat einer Kolonie hat keinen Platz für einen Stock; verwenden Sie eine größere Karte, weniger Kolonien oder ein schmaleres Grenzland.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Das Grenzland hat zu wenig umkämpften Boden für so viele Trophäen; verwenden Sie weniger Trophäen, ein breiteres Grenzland oder eine größere Karte.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Das Grenzland hat keinen Platz für eine Trophäe; verwenden Sie eine größere Karte, weniger Kolonien oder ein breiteres Grenzland.
+[Orchard Commons]
+Gemeinschaftsobstgärten
+[Orchard spacing]
+Abstand der Obstgärten
+[Compact]
+Eng
+[Balanced]
+Ausgewogen
+[Spread]
+Weit
+[The Gauntlet]
+Die Bewährungsarena
+[Partition thickness]
+Trennwandstärke
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Die Bewährungsarena benötigt eine größere Karte oder weniger Kolonien, damit jede Kolonie zwei bewachte Zugänge erhält.
+[The Comb]
+Der Kamm
+[Peninsulas per shore]
+Halbinseln pro Ufer
+[Encircled Kingdom]
+Eingekreistes Königreich
+[Fortress plan]
+Festungsgrundriss
+[Automatic]
+Automatisch
+[Elongated enclosure]
+Langgestreckte Anlage
+[Bastioned enclosure]
+Bastionsanlage
+[Paired courtyards]
+Zwei Innenhöfe
+[Heartland farmland]
+Ackerland im Kerngebiet
+[The Faulted City]
+Die zerbrochene Stadt
+[Fault displacement]
+Verwerfungsversatz
+[Fault width]
+Verwerfungsbreite
+[Ruin density]
+Ruinendichte
+[Surviving junctions]
+Erhaltene Kreuzungen
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Die zerbrochene Stadt benötigt 256 oder 512 Felder pro Seite und eine bis zwölf Kolonien.
+[The city has too few usable junctions.]
+Die Stadt hat zu wenige nutzbare Kreuzungen.
+[A city neighbourhood lacks reachable crops or building room.]
+Einem Stadtviertel fehlen erreichbare Nutzpflanzen oder Bauflächen.
+[The city neighbourhoods are too unequal; try another seed.]
+Die Stadtviertel sind zu unausgewogen; versuchen Sie einen anderen Seed.
+[The fractured civic plaza did not survive.]
+Der zerbrochene Stadtplatz ist nicht erhalten geblieben.
 [Drowned Forest]
 Versunkener Wald
 [Sandbar connections]

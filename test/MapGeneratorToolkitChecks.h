@@ -31,6 +31,8 @@
 #include "Planting.h"
 #include "Points.h"
 #include "Resources.h"
+#include "Rivers.h"
+#include "Solve.h"
 #include "Room.h"
 #include "Growth.h"
 #include "Roads.h"
@@ -59,6 +61,144 @@
 namespace ToolkitChecks
 {
 using namespace MapGeneration;
+
+// Compare the bucket-based widest path with independent threshold reachability, including
+// blocked, fully open, rectangular, and seam-crossing masks and multiple starting tiles.
+inline void widestWalkChecks()
+{
+	const Torus t(16, 8);
+	std::uint32_t random = 71;
+	for (int trial = 0; trial < 80; ++trial)
+	{
+		std::vector<unsigned char> mask(t.size()), goal(t.size(), 0), source(t.size(), 0);
+		for (auto &tile : mask)
+		{
+			random = random * 1664525u + 1013904223u;
+			tile = trial == 0 ? 1 : trial == 1 ? 0 : (random >> 24) > 45;
+		}
+		const std::vector<int> sources = {t.at(0, 3), t.at(14, 2)};
+		goal[t.at(15, 4)] = goal[t.at(7, 6)] = 1;
+		const auto room = clearance(t, mask);
+		int expected = 0;
+		for (int width = 1; width <= *std::max_element(room.begin(), room.end()); ++width)
+		{
+			std::vector<unsigned char> open(t.size());
+			for (int i = 0; i < t.size(); ++i)
+				open[i] = mask[i] && room[i] >= width;
+			std::fill(source.begin(), source.end(), 0);
+			for (const int i : sources)
+				source[i] = open[i];
+			const auto steps = stepsFrom(t, source, open);
+			for (int i = 0; i < t.size(); ++i)
+				if (goal[i] && steps[i] >= 0)
+					expected = width;
+		}
+		assert(widestWalkClearance(t, mask, sources, goal) == expected);
+		assert(widestWalkClearance(t, mask, room, sources, goal) == expected);
+		assert(stepsFrom(t, goal) == stepsFrom(t, goal, std::vector<unsigned char>(t.size(), 1)));
+	}
+}
+
+inline void solvingAndRiverChecks()
+{
+	GenerationRequest request;
+	GenerationContext context(request);
+	int state = 4, best = -1;
+	// A hot final move leaves the walk worse than its best; recall must restore that best.
+	const auto run = anneal(Anneal{2, 1e30, 1e30, "test-solve"}, context,
+		[&] { state = state == 4 ? 1 : 3; return true; }, [&] { return double(state); },
+		[] { assert(false); }, [&] { best = state; }, [&] { state = best; });
+	assert(state == 1 && run.before == 4 && run.after == 1 && run.kept == 1);
+	assert(run.proposed == 2 && run.taken == 2);
+	assert(!accept(1, 0, context, "test-solve"));
+	assert(accept(-1, 0, context, "test-solve"));
+
+	const auto rejects = [](auto action)
+	{
+		bool threw = false;
+		try { action(); } catch (const std::exception &) { threw = true; }
+		assert(threw);
+	};
+	Objective objective;
+	objective.add("access", 2, 3).add("reward", -1, 2);
+	assert(objective.total() == 4 && objective.residual("access") == 3);
+	assert(!objective.findResidual("missing"));
+	rejects([&] { objective.residual("missing"); });
+	rejects([&] { objective.add("access", 1, 0); });
+	rejects([&] { objective.add("nan", 1, std::numeric_limits<double>::quiet_NaN()); });
+	Objective full;
+	for (const char *name : {"a", "b", "c", "d", "e", "f", "g", "h"})
+		full.add(name, 1, 1);
+	rejects([&] { full.add("overflow", 1, 1); });
+	assert(full.total() == 8);
+	rejects([&] { Anneal{-1, 1, 1, "bad"}.validate(); });
+	rejects([&] { Anneal{1, 0, 1, "bad"}.validate(); });
+	rejects([&] { finiteCost(std::numeric_limits<double>::infinity()); });
+	// A state with a derived cache exercises skipped, rejected and best-restored moves.
+	struct SearchState
+	{
+		int value = 4, cached = 16, old = 0, best = 0, move = 0;
+		bool propose()
+		{
+			++move;
+			if (move == 1) return false;
+			old = value;
+			value = move == 2 ? 1 : 3;
+			cached = value * value;
+			return true;
+		}
+		double cost() const { assert(cached == value * value); return cached; }
+		void undo() { value = old; cached = value * value; }
+		void remember() { best = value; }
+		void recall() { value = best; cached = value * value; }
+	};
+	SearchState hot;
+	const auto hotRun = anneal(Anneal{3, 1e30, 1e30, "test-state"}, context, hot);
+	assert(hotRun.attempted == 3 && hotRun.proposed == 2 && hotRun.taken == 2);
+	assert(hot.value == 1 && hot.cost() == hotRun.after);
+	SearchState cold;
+	const auto coldRun = anneal(Anneal{3, 1e-30, 1e-30, "test-state"}, context, cold);
+	assert(coldRun.taken == 1 && cold.value == 1 && cold.cost() == coldRun.after);
+	SearchState idle;
+	const auto idleRun = anneal(Anneal{}, context, idle);
+	assert(idleRun.attempted == 0 && idle.value == 4 && idle.best == 4);
+
+	const Torus t(32, 16);
+	assert(riverWater(t, River{}) == std::vector<unsigned char>(t.size(), 0));
+	River malformed;
+	malformed.line = {{0, 0}};
+	rejects([&] { riverWater(t, malformed); });
+	rejects([&] { fordsSpreadAlong({{0, 0, 1}}, {2}, 1, 16); });
+	for (bool vertical : {false, true})
+	{
+		RiverStyle style;
+		style.wander = style.swell = 0;
+		style.halfWidth = 2;
+		const auto river = drawRiver(t, context, "test-river", vertical, 8, style);
+		const auto water = riverWater(t, river);
+		const int length = vertical ? t.h : t.w;
+		for (int i = 0; i < length; ++i)
+		{
+			assert(water[vertical ? t.at(8, i) : t.at(i, 8)]);
+			assert(!water[vertical ? t.at(0, i) : t.at(i, 0)]);
+		}
+	}
+	// A bent loop must close over the seam, never by a straight chord through its interior.
+	River bent;
+	bent.line = {{0, 4}, {8, 12}, {16, 12}, {24, 12}, {30, 4}};
+	bent.radius.assign(bent.line.size(), 1);
+	const auto water = riverWater(t, bent);
+	assert(water[t.at(31, 4)] && !water[t.at(16, 4)]);
+	const std::vector<RiverFord> sites = {{0, 0, 1}, {4, 1, 2}, {8, 0, 2}, {12, -1, 2}};
+	const auto joining = fordsToRejoin(sites, 3);
+	assert((joining.sites == std::vector<int>{0, 1}));
+	assert(joining.connected() && joining.remainingComponents == 1);
+	const auto disconnected = fordsToRejoin({{0, 0, 1}}, 3);
+	assert(!disconnected.connected() && disconnected.remainingComponents == 2);
+	assert(fordsToRejoin({}, 0).connected());
+	const auto spread = fordsSpreadAlong(sites, joining.sites, 3, 16);
+	assert((spread == std::vector<int>{0, 1, 2}));
+}
 
 inline void grassMap(Game &game, int wDec, int hDec)
 {
@@ -1868,6 +2008,33 @@ inline void farmAndTowerChecks()
 	}
 	assert(farm.water[t.at(32, 36)] && !farm.water[t.at(32, 34)]);
 	{
+		// Requesting the existing edge flood must not change any farm output. Include
+		// an irregular field spanning both torus seams and the no-exterior boundary.
+		std::vector<unsigned char> wrapped(t.size(), 0);
+		for (int y = -18; y <= 18; ++y)
+			for (int x = -18; x <= 18; ++x)
+				if (x < 8 || y < 8)
+					wrapped[t.at(x, y)] = 1;
+		for (const auto &mask : {region, wrapped, std::vector<unsigned char>(t.size(), 1),
+								std::vector<unsigned char>(t.size(), 0)})
+		{
+			TerrainSketch plain(t.size(), GRASS), observed = plain;
+			const FarmPlot plot;
+			const Farm a = layFarm(plain, t, mask, kPi / 8, {0, 0}, 4, {6, 4}, &plot,
+								   FarmBridges{8});
+			std::vector<int> depth{123}; // The result replaces, rather than appends to, it.
+			const Farm b = layFarm(observed, t, mask, kPi / 8, {0, 0}, 4, {6, 4}, &plot,
+								   FarmBridges{8}, true, &depth);
+			assert(plain == observed && a.water == b.water && a.row == b.row &&
+				   a.sand == b.sand && a.plot == b.plot && a.rows == b.rows &&
+				   a.plotX == b.plotX && a.plotY == b.plotY);
+			std::vector<unsigned char> exterior(t.size(), 0);
+			for (int i = 0; i < t.size(); ++i)
+				exterior[i] = !mask[i];
+			assert(depth == stepsFrom(t, exterior));
+		}
+	}
+	{
 		// Bridges: every 8 tiles along the rows from the origin, a line of sand clean across the
 		// farm, through the water rows and the crop rows alike (FEEDBACK 2026-09-14), so a colony
 		// crosses the whole field on one road. Only the rim keeps its crops.
@@ -2370,6 +2537,53 @@ inline void siteOperationChecks()
 								{t.at(-13, 0)})
 				.failure.empty());
 	assert(!arrangeBuildingGrid(t, clear, clear, {{0, 0, 65, 24}}, {0}).failure.empty());
+	assert(!arrangeBuildingGrid(t, clear, clear, grid, {-1}).failure.empty());
+	const BuildingGrid single{{0, 0, 3, 3}, 1, 1, 1, 1};
+	std::vector<unsigned char> isolated(t.size(), 0);
+	isolated[t.at(0, 0)] = 1;
+	assert(!arrangeBuildingGrid(t, clear, isolated, single, {t.at(0, 0)}).failure.empty());
+	isolated[t.at(0, 1)] = 1;
+	assert(arrangeBuildingGrid(t, clear, isolated, single, {0, 0}).failure.empty());
+	assert(!arrangeBuildingGrid(t, clear, clear, single, {}).failure.empty());
+	assert(!arrangeBuildingGrid(t, clear, clear, single, {t.at(1, 1)}).failure.empty());
+	assert(arrangeBuildingGrid(t, std::vector<unsigned char>(t.size(), 0), clear,
+		single, {}).failure.empty());
+	// Compare the early-exit circulation search against the original exhaustive
+	// flood on fragmented, seam-crossing worlds and several footprint/gap sizes.
+	std::mt19937 circulationRng(20260919);
+	for (int trial = 0; trial < 200; ++trial)
+	{
+		auto walk = clear, build = clear;
+		for (int i = 0; i < t.size(); ++i)
+		{
+			walk[i] = circulationRng() % 100 >= unsigned(trial % 80);
+			build[i] = circulationRng() % 100 >= 3;
+		}
+		const BuildingGrid probe{{-20, -18, 20, 22}, 2 + trial % 5,
+			2 + trial % 3, 1 + trial % 3, 1};
+		const std::vector<int> entries{int(circulationRng() % t.size()),
+			int(circulationRng() % t.size())};
+		const auto arranged = arrangeBuildingGrid(t, build, walk, probe, entries);
+		for (const auto &box : arranged.footprints)
+			for (int y = box.y0; y < box.y1; ++y)
+				for (int x = box.x0; x < box.x1; ++x)
+					walk[t.at(x, y)] = 0;
+		std::vector<unsigned char> sources(t.size(), 0);
+		for (int i : entries) sources[i] = walk[i];
+		const auto reached = stepsFrom(t, sources, walk);
+		bool allReached = true;
+		for (const auto &box : arranged.footprints)
+		{
+			bool face = false;
+			for (int y = box.y0; y < box.y1; ++y)
+				face |= reached[t.at(box.x0 - 1, y)] >= 0 || reached[t.at(box.x1, y)] >= 0;
+			for (int x = box.x0; x < box.x1; ++x)
+				face |= reached[t.at(x, box.y0 - 1)] >= 0 || reached[t.at(x, box.y1)] >= 0;
+			allReached &= face;
+		}
+		assert(arranged.failure.empty() == allReached);
+	}
+
 
 	Game game(nullptr);
 	grassMap(game, 6, 6);
@@ -2670,6 +2884,8 @@ inline void fractalCrossingRegressionChecks()
 
 inline void toolkitChecks()
 {
+	widestWalkChecks();
+	solvingAndRiverChecks();
 	boundaryExclusionChecks();
 	containedPlotChecks();
 	siteOperationChecks();

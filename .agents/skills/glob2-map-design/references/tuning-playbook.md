@@ -115,6 +115,8 @@ Three fairness models are in use. Choose one deliberately and validate the thing
 | Search in a walk band round a shared objective: sites spread by walking distance (`farthestSites`) only among candidates within ±(walk ÷ 14) steps of a target walk to the prize, with floors on the swimming distance and on the nearest rival | Central Quarry | Equal walk to the prize within twice the band; no start a short swim from it; no rival closer than the floor; all checked on the finished map | Neighbours and the ring's shape. When every route to the prize lands at one place (Central Quarry's single landing), the ring of equal walk is offset toward that side, so colonies bunch on it; penalising lopsided spreads fought the geometry and refused six maps in 90. It also misses anything placed after the search: ponds dug for dry starts crossed routes and spread one 512 map's walks from 93 to 126 steps until they were kept off every site's shortest routes |
 | Measurement: the lobby keeps the best of five rolls by the start scorer | Everyone; the whole model for Continents, Drumlin field and Braided river | Rejects the worst rolls | Position bias in games: the scorer's rank correlation with win share ranges from 0.6 on good maps to negative on others |
 
+**Separate the selection world from the delivered world.** Selecting sites at a fixed resource abundance can keep a resource slider from changing the terrain or relocating colonies. It does not transfer the selection world's fairness score to the requested abundance. Recheck hard economy and room guarantees on the delivered map, report its fairness separately, and decide explicitly whether a fairness floor is a final invariant or only a selection criterion. Faulted City selected above 0.80 at maximum abundance but measured as low as 0.701 at actual resource extremes; calling all those maps “above 0.80” would be false. If a final floor is promised, enforce it there and measure the resulting refusals.
+
 Whatever the model, deal sites to team indices with `dealStarts` before any per-team array is indexed, and sequence named-stream draws in separate statements: two `bounded()` calls inside one expression are evaluated in compiler-dependent order, and both Forts and Rice Terraces shipped lattices that differed per platform until they were split.
 
 ## The measurement loop
@@ -123,7 +125,7 @@ Tune with games, not only the scorer. The loop, with the distributed tools:
 
 1. **Build a Linux bundle** of the branch and register it with `tools.tournaments bundle`. Build on the host with the oldest glibc among the workers so one bundle runs everywhere.
 2. **Play a rotation tournament** with `tools.tournaments.fairness`: four to six map seeds at 256x256 with four colonies, every cyclic rotation of team indices over the starts, one AI in every slot, 40,000 to 45,000 ticks, and `outputs.telemetry` set to `team-timeline` so the `GLOB2_MEASURE` rows are retained; add `saves: ["final"]` when the end state will be looked at. Set `settings.prefetch` to 0 and list the biggest host first, or the small hosts queue three waves of games while the big one idles. Do not put `map: true` in the game outputs: it is a generation output, and a game that cannot produce it is recorded as an artifact failure and retried. A 45,000-tick four-Nicowar game at 256x256 takes about four minutes of one core.
-3. **Read per-start economy before win counts.** For every start slot, pooled over rotations: final and peak units, buildings, prestige, eliminations, combat and starvation deaths (`deaths_<unit>_<cause>` in the final `GLOB2_MEASURE` row, cause 0 combat and 1 starvation) and `hungry`. A start that never passes twenty units is the defect, whoever wins. A start that peaks at fifty and is eliminated in every rotation is being overrun, not starved; look at its neighbours and its routes.
+3. **Read per-start economy before win counts.** For every start slot, pooled over rotations: final and peak units, buildings, prestige, eliminations, combat and starvation deaths (`deaths_<unit>_<cause>` in the final `GLOB2_MEASURE` row, cause 0 combat and 1 starvation) and `hungry`. A start that never passes twenty units is the defect, whoever wins. A healthy peak followed by elimination does not identify the cause: compare starvation with combat deaths and inspect the population timeline before blaming exposure. A colony can grow well on its opening stock and collapse later from food logistics.
 4. **Then read position bias.** `reanalyze` gives wins by start pooled over rotations, an exact test per map and the RMS position bias per generator. With one game seed and four rotations a map has four games; only gross dominance is visible, which is what tuning needs to catch.
 5. **Look at the maps that failed.** Render the played map with `--preview-map` and crop around the weak start; render the final save the same way. Most defects are visible: a start on a cape, a kit across water, a town inside a crop belt, a colony on a ribbon between two rivals.
 6. **Change one thing, re-run the same seeds, then fresh seeds.** Pin the affected variant through `generator_params` so the paired runs compare the same kind of map. Every generator tuned this way found that fresh seeds kept some favoured position; report that honestly.
@@ -197,6 +199,8 @@ recognisable shapes. Name the shape before choosing a remedy:
   collapse only Numbi, Castor or Warrush shows is not a map problem at all (see
   [which AIs to play](#which-ais-to-play)).
 
+Success with another AI rules out a universally unusable start, not a map-induced logistics problem. Faulted City's four-AI rotations supported substantial growth at every physical start, yet Nicowar and Maxima sometimes collapsed with few combat deaths. Compare late starvation, final population and expansion with a reference under the same game settings, separately for each AI. Label the cause unresolved when those observations do not distinguish map geometry from AI policy; do not use a high mean peak as the completion criterion. See the [retained city results](../../../../test/fixtures/faulted-city/README.md).
+
 A generator can be under the fair-map floor and still have a doomed start on a third of its
 maps, because the floor averages over maps. Read the per-map counts and the per-start economy
 before the headline number.
@@ -216,7 +220,42 @@ A map whose whole game is one contested site (Central Quarry's stone isle, 2026-
 - **A lock made of buildings must be one its owner can serve.** Three engine rules decide whether granted towers are a seal or scenery (all in [the game rules](../../../../docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md)): a worker may only construct, repair or resupply a building at or below its own build level (`Building::canUnitWorkHere`), and build level comes from a school; a tower holds 12 to 20 shots and the stone for as many again, about six dead workers; a level-0 warrior does 5 a hit to a level-1 tower and 1 a hit to a level-2 one. Hidden Oasis granted level-2 towers under a lock that denied everyone a school: in every game of two review rounds each tower fired exactly 32 shots (`shots_2`), burned exactly its starting reserve (`consumed_2_3` = 4) and stood empty, and the "seal" opened by itself. With level-1 towers within a walk of their owners, the same counters read 100 to 220 shots and 29 to 74 stone, and AIs destroyed towers. Prove the mechanism with its own counters in one game before polishing anything else.
 - **When two walks must both be fair, make them the same walk.** Each colony's tower stood on the gorge, so a map could be fair on the walk to the prize (the mouth) or on the walk to one's own tower, never both: placing colonies by the mouth left owners 18 to 133 steps from their towers, and placing them by their towers put mouth walks 2.6 times apart. Moving every tower's door to the same place as the prize's (box canyons that run forwards to the mouth's cliff) made one search fair for both, within 1.2 times on every map. A deeper tower then has a longer canyon, for its attackers as much as for its owner, which is a trade rather than an unfairness; record each colony's draw (`posts.depth-order`) so a tournament can be read by it.
 - **A lock that works stops the AIs entirely; decide that with the maintainer.** Once the seal held, no AI finished a school in any game, so an AI game ran at level 0 throughout. That is the concept working against opponents who cannot play it. Put the consequence to the maintainer in numbers, and offer the least intrusive grant that keeps the prize (a finished level-0 school as a default-on toggle, the pond still gating every upgrade of it) rather than deciding for them. Grants have their own AI traps: check whether an AI spends the grant (upgrades its only school into a site that needs the prize).
+- **Does the counter prove the intended cause?** Orchard Commons recorded worker conversions both with and without fruit delivery: ordinary hunger also drives conversion. Pair unmodified AI games with a small real-engine fixture on the generated terrain. Its two legal inns tested superior advertised diet against equal friendly diet, advertising off, lost fruit advantage and lost wheat. Change one condition at a time and keep terrain unmodified, so the fixture proves the map accommodates the mechanism rather than repairing the map for the test. Keep save/load eligibility separate: if loading rebuilds a cooldown, record the settling interval and do not call that immediate continuation equivalence. See [OrchardCommonsConversionTest](../../../../test/OrchardCommonsConversionTest.cpp).
 - **Can a person hold it?** The AIs never garrison a chokepoint, so no AI game tests the holdability the geometry was built for. Say so in the PR, and give the maintainer a playtest checklist: does a two-tower landing hold, is swimming a fair counter, is the haul tolerable, and does the holder's snowball feel earned.
+
+## Give spare territory a job
+
+A compact objective should not become a longer opening march merely because the map
+is larger. Keep the opening access budget, then give the surplus land useful terrain.
+Orchard Commons (2026-09-19) initially surrounded its fruit corridor with scattered
+woods; a same-seed gallery made the unused area obvious. Lakes and desert improved
+the picture, but the next review found that broad sand blobs still replaced one
+empty surface with another. The useful refinement was directional sand tongues,
+winding grass swales and open lake bypasses.
+
+- **Compose landforms and choices.** A lake makes a detour; a grass shoulder offers
+  potential staging ground; a broad sandy approach stays open for movement. Sand
+  cannot hold buildings. A noise band that reserves grass does not prove a usable
+  8×8 footprint: measure reachable anchors before promising staging sites.
+- **Give dry country a grain.** Stretch or warp a coarse periodic field into broad,
+  interrupted tongues, with grass bays between them. Avoid both speckled decoration
+  and repeated thin stripes. Keep substantial dry regions so the landscape remains
+  readable after adding routes.
+- **Protect function through furnishing.** Exclude intended open swales from ambient
+  woodland. Fade optional terrain away from farms and objective approaches rather
+  than cutting every landform off at the same straight boundary. Measure final
+  walking routes after beaches and resources; allow small maps to omit outer
+  features instead of squeezing their openings.
+- **Treat new water as a gameplay change.** Lakes alter fertility and may change
+  algae placement even when no home tile moves. Compare nearest gather walks, home
+  building room, delivery and upgrade timing, then inspect late growth. Preserve
+  crop containment and the dry-only rule for finite ambient wood. A prettier map
+  with passing access checks is not evidence of unchanged AI balance.
+
+Show the same seeds before and after, including a small map, a rectangle and the
+largest map. A close-up answers whether a route works; the full-map view reveals
+whether most of the territory still has no purpose. Keep the central prize unique:
+outer terrain can support manoeuvres without acquiring another copy of its fruit.
 
 ## Route protection: which barrier for which promise
 
@@ -278,13 +317,39 @@ A maintainer meets a new map as a preview before any number, and what the previe
 
 None of these needs a new control. Each is a default, a toggle or a few tiles, plus a revision bump and regenerated fingerprints on both platforms, and each deserves the same paired tournament as any other tuning change before the numbers are trusted. Record the remark and the answer in the generator's header comments: the next designer will meet the same eye.
 
+## A stalled builder can look like a resource shortage
+
+Zero wood harvested does not establish that timber is inaccessible. In Gauntlet's
+rotation games, Cabino had reachable wood but never constructed anything beyond
+its starting buildings. More nearby wood did not fix the failed positions.
+`AICabino::setCenter` chose the centroid of discovered tiles; the starting towers
+pulled it onto stone. `Gradient::update` rejected obstacles before recognizing
+sources, leaving the construction gradient without a source. Recheck these methods
+in `src/ai/AICabino.cpp` when diagnosing a similar stall; this is an observed AI
+limitation, not a requirement that all map centers be empty.
+
+Check construction history and reachable supplies separately, then inspect the
+AI's placement origin and rejection conditions. For granted buildings, visibility
+can matter as much as firing range. Gauntlet's first tower setback fixed the known
+four-colony failures but missed two-colony and higher-level-tower cases. A bounded
+physical frontage, rather than a fixed fraction of the colony's wedge, kept both
+entrances near home on sparse large arenas. It improved supply routes as well as
+avoiding the bad origin. Prefer a remedy that serves the map's play contract; do
+not carve arbitrary holes in its walls to accommodate an AI bug.
+
+Test the proposed remedy across colony counts, sizes and building levels, then
+replay the failed positions. Reconstructed building visibility is a useful screen,
+but workers reveal more terrain before AI initialization: actual games remain the
+check. The [Gauntlet evidence](../../../../docs/artifacts/gauntlet/README.md) retains
+the failed games, centroid studies and successful final rotations.
+
 ## Show the map, then measure the knobs, then roll everything
 
 The maintainer decides what a map is from pictures, so the cheap loop comes first: generate a handful of seeds and shapes, publish the previews on a page with the settings beside each, and wait for a reaction before any game or tournament. Each round of Honeycomb isle's design (hexagons, water, fields, rings, river width) came from a look, not a number.
 
 When the look is settled, **measure every control on its own.** Generate each control's values with everything else at defaults (six seeds at 256×256 with four colonies is enough), plus the default at every shape and colony count, plus a few extreme combinations, and tabulate the metric each control should move from the JSON report and the generator's telemetry. One 528-map study (19 s on eight cores) found:
 
-- **Dead ranges.** Wheat amount above 100% changed nothing because the fields were already full; wood saturated at 200%. Cap a percentage at the value where it stops mattering (`GeneratorControl::percentage(id, label, maximum)`).
+- **Dead ranges.** Wheat amount above 100% changed nothing because the fields were already full; wood saturated at 200%. Check other supported sizes and layouts before capping a percentage at the value where it stops mattering (`GeneratorControl::percentage(id, label, maximum)`). A universally dead range should be removed; layout-dependent saturation needs separate treatment below. Alternatively, remap the planting curve when the intended range should progressively fill spare capacity, then measure every adjacent step again.
 - **A variant that is a scale mismatch.** Square blocks used the block size as their pitch while hexagons used 150% of it, so squares had a fifth of the building sites. Give alternatives the same area, not the same number.
 - **A choice that barely differs.** "Many" wheat fields added 9% over "Normal" because the edge was already all fields; a choice should move its metric visibly.
 - **Ranges the map clamps anyway.** Block sizes above 21 shrank back on common maps; a minimum of 5 blocks per colony left almost no ruins.
@@ -294,13 +359,43 @@ When the look is settled, **measure every control on its own.** Generate each co
 - **A spacing control rounded to a count has dead steps.** Bajada's fan spacing (32–64 in steps of 4) became `round(width / spacing)` slots, so 40 and 44 gave the same map on 256 tiles. Expose the count itself ("Fans per range", per 256 tiles of map) when a count is what the design uses.
 - **A clamp that always binds makes the top of a control dead.** Every default Bajada map narrowed its playa to fit (telemetry said so on every map), so playa 50–100 gave identical terrain. When a fallback fires at the defaults, the budget is wrong, not the control.
 - **A small whole number scaled by a percentage has dead steps.** A kit's 3 outcrops per 1,000 tiles scaled by the stone amount lands on 2 at both 50% and 75%, and 1 grove per 1,000 moved only at 50, 150 and 250 (Hidden Oasis, 2026-09-17; the shared `BiomeKit` still scales that way for every other generator). Scale at a finer grain (`outcropsPer100000`, `grovesPer100000`), or scale the final count with `scaledCount`. The same study found a count written as "the colony count plus a rounded share" giving one map for 5 and 6 and five springs for 1: make a count linear in its control, `round(control x factor)` with a factor of at least 1 per step at the common size.
+- **A radius scaled by a percentage delivers the square of what it says.** Tiles go as the radius squared, so putting a 0–300% amount straight onto a round deposit's radius gives nine times the resource at 300, and on a small radius collapses a thirteen-step slider onto three or four distinct maps (`scaledCount(1, p)` is 0 below 50%, then 1, 2, 3). Use `scaledRadius` in `Resources.h`, which scales the area, so "200 per cent" means twice the resource as it does everywhere else. Tug's prize grove was the case that named it: at 300% a directly scaled radius would have ringed every prize with a nine-times grove of fruit, which can never be cleared, right where the fighting happens.
+- **A control read only in a branch that rarely runs measures as completely dead.** Tug's `fruit-amount` was wired to nothing but the cramped-start relief, so all thirteen values produced identical maps while the option still appeared in the lobby and in `--list-map-generators`. Grep for the option's field, not just its id: a `TugOptions` member that is constructed and never read is invisible at the registration site, and only the study says so.
+- **The study cannot read a choice control until it strips the label.** `--list-map-generators` prints a choice as `0(Brief) 1(Normal) 2(Patient)`; parsing that as an integer throws, and the whole study for that generator dies before it generates a map. Fixed in `control_study.py`, but check a new study harness against a generator that has one.
+- **Round a small shared budget once, then distribute it.** Orchard Commons rounded extra stone per quarry, leaving several 25% steps identical. Scaling the map-wide extra budget first and dealing tiles across quarries restored each step's effect. Keep supply floors separate, respect each quarry's capacity, and record unplaced surplus. For spacing controls, measure actual nearest-feature distances too: widening groups can bring adjacent groups closer, so the requested spacing is not itself evidence of the resulting geometry.
 - **A structural quantity can hide a control in the random rolls.** Stone amount correlated at r = 0.04 with stone tiles, because the plateau's rock (r = 0.97 with the colony count) swamped it; against stone *off the plateau* it read 0.42 beside the mesa control's 0.46. Give each ambient layer its own telemetry measure and correlate against that, and scale every ambient layer of a resource by its amount (the mesas as well as the outcrops), leaving only the structure unscaled and saying so.
+- **A searched fairness number is the search's opinion of itself.** The fairness tournament is the only check that caught Even Ground, whose objective drove catchment spread to near zero while one start won every game; everything cheaper passed. When a generator *optimises* a fairness measure, weight the tournament more heavily than the score, not less ([solved maps](constraint-solving.md)).
 - **Let the report find them.** [`scripts/control_study.py`](../scripts/control_study.py) reads any generator's controls from `--list-map-generators`, runs the one-at-a-time study and the random rolls natively in parallel (about 1,000 maps a minute), and its report flags every value whose maps measure the same as the value below it, groups refusals by message, and lists each control's strongest correlations.
+- **State the claim before reading the table.** A report says what moved; it does not say whether the right thing moved. Write down, per control, the metric it should move and which way, then check it — the rank correlation over the control's values is enough. That turns "here are some numbers" into a pass or fail per control, and it catches a control that moves a metric it should not as well as one that moves nothing. [`evidence/constraint-solved/control_expectations.py`](../../../../docs/map-generators/evidence/constraint-solved/control_expectations.py) is a worked harness: a table of claims per generator, checked against a `control_study.py` ablation.
+- **Two cheap sweeps worth having beside the study.** [`scripts/refusal_sweep.py`](../scripts/refusal_sweep.py) takes one control and many seeds and reports the refusal *rate* per value, which is how the top of a range gets found (Equilibrium's water refused 1 seed in 5 at its old maximum while delivering no more water). [`scripts/final_map_stats.py`](../scripts/final_map_stats.py) puts several generators' finished maps side by side at their defaults — terrain shares, resource tiles, building sites, fairness — which is the comparison a reviewer asks for and the one a single-generator study never shows.
 - **Test values must be on the control's step.** Values off a control's step (25 on a step of 10) are refused before generation; a study that uses them measures nothing for those rows. Check the refusal message before reading a row of empty metrics.
+
+Measure the finished feature as well as the design draw. Faulted City's ruin-block count increased while finished masonry initially decreased, because reclaimed ruins contained less stone than the blocks they replaced. Its junction count proved reserved mouths existed; demonstrating useful shortcuts required comparing walking distances between the same local endpoints. A clear five-by-five mouth is not a five-wide route through the district. Hold layout and unrelated decoration fixed for paired route studies, and distinguish a sampled maximum saving from a typical saving.
 
 Then **roll everything at random**: every control over its full range, every shape and colony count, a few dozen maps on one page with their settings, for the maintainer to eyeball for degenerate rolls. That page is how "without the lagoon there is way too little water" was found; no metric had been asked about water on small maps.
 
-Finally run a **reliability pass**: every control at its minimum and maximum alone and all together on a small, a default and a large shape, plus about two thousand random rolls, classifying every failure as an expected refusal or a bug. Six of 1,620 Honeycomb isle maps failed a starter-wheat distance by one or two steps, all with the largest blocks and little wheat; the fix was geometric (the cistern moves forward on big blocks, wheat is planted nearest the swarm), and the pass was repeated on fresh seeds and on the old seeds before calling it done. Rename streams, telemetry keys or controls before this pass: a stream name is part of every random draw.
+Choose a primary metric that matches the control. Gauntlet's tower levels 1–3
+all supplied two towers, so a count-only report falsely flagged dead steps; record
+and verify the actual building levels too. For finite fields, retain requested and
+placed crop counts and compare adjacent values on matched seeds. Gauntlet's wheat
+plateaued at 275–300% on the sampled 256 maps. If retaining such a range, document
+where it saturates and measure whether it remains useful on other layouts; do not
+widen beds through protected lanes just to force a linear graph. Correlations over
+mixed sizes and colony counts can hide these effects.
+
+Report expected request refusals separately from supported generation failures.
+A broad random draw can spend most of its budget on intentionally unsupported
+shapes; add a held-out draw restricted to the supported envelope. State which
+values and combinations were exercised: every slider value in isolation plus
+random combinations is not the full Cartesian product. Tie each report to its
+frozen binary, and refresh retained raw files after a run completes so a final
+summary never links to an earlier partial copy.
+
+Finally run a **reliability pass**: every control at its minimum and maximum alone and all together on a small, a default and a large shape, plus about two thousand random rolls, including starting-worker counts where configurable, classifying every failure as an expected refusal or a bug. Six of 1,620 Honeycomb isle maps failed a starter-wheat distance by one or two steps, all with the largest blocks and little wheat; the fix was geometric (the cistern moves forward on big blocks, wheat is planted nearest the swarm), and the pass was repeated on fresh seeds and on the old seeds before calling it done. Rename streams, telemetry keys or controls before this pass: a stream name is part of every random draw.
+
+Freeze the executable for each long study or tournament and retain the exact request, outcome and build identity. After tuning, rerun failures and the final broad matrix on the same revision; do not add successes from superseded builds to the final denominator. Count returned records, internal layout attempts and rare variants as well as failures: a successful outer request can hide repeated layout rejection. Full-range sampling is evidence, not an exhaustive Cartesian proof.
+
+Report reliability with separate denominators: unsupported requests, supported first-seed successes, and supported failures that succeed through the actual lobby candidate-selection path. Retain the failed seeds and parameters; do not replace them with successful re-rolls in the original table. A five-candidate success rate is useful user-experience evidence, but is not a 100% single-seed guarantee or a reason to weaken fairness checks.
 
 On one machine, run these passes with the native CLI rather than the distributed framework: a small script that writes one `glob2 --generate-map ID ... --json FILE` line per request and runs them with `xargs -P 8` generated 2,330 Karst towers maps in under four minutes, where the tournament framework's per-experiment setup would have taken about 45 minutes for the same matrix. Read the per-map JSON reports (`terrain`, `resources`, `space`, `fertility`, `canonical_quality`, `movement`, and `generation.telemetry.records`) with a short analysis script: effect tables per control, Spearman correlations of every control with every metric over the random rolls, refusals grouped by message and shape. Keep the framework for several hosts or runs that must survive interruption ([distributed telemetry](distributed-telemetry.md)).
 
@@ -328,6 +423,7 @@ What made the rounds work:
 
 - **Freeze the build.** Copy the binary and the generator source to a scratch directory and point the reviewer there, so the author can keep working without moving the reviewer's target.
 - **Give it the standard, not the answer.** Point it at `AGENTS.md`, this skill and a comparable generator; list what changed since its last round and what the maintainer said, and ask for prioritised findings with evidence (seed, command, metric, file and line), a concrete fix for each and an estimated effect.
+- **Ask for design improvement after correctness passes.** “No blocker” need not mean the landscape is interesting. Ask what concrete terrain change would improve navigation, occupation or visual character. Orchard Commons' extra design review produced grass swales and directional sand after the lake/desert version was already valid. Implement the useful suggestions, show the same seeds again, and return to the reviewer; an optional fresh design reviewer can challenge a shared assumption. Stop when remaining remarks are acceptable variation rather than defects, and keep human play distinct from an agent's visual judgment.
 - **Keep the same reviewer across rounds.** Its tools and reference measurements carry over, so round three compared against round two on the same seeds.
 - **Re-measure the economy after every look fix.** Yield, wheat near swarms and building sites are deterministic and cheap. A round that only checks the new picture misses the colonies it starved.
 - **Verify its proposals, don't copy them.** Some proposals the author had already made; some were simulated on terrain rather than generated. Measure the change with the reviewer's own tool after implementing it.

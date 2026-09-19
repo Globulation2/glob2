@@ -3,9 +3,10 @@
 // generator for external sampling profilers (macOS `sample`, Linux `perf record`) and as
 // a coarse per-generator wall-clock comparison when validating optimizations.
 //
-//   MapGeneratorProfileFixture <profile-dir> <seed> <rounds> [generator-id...]
+//   MapGeneratorProfileFixture <profile-dir> <seed> <rounds> [generator-id...] [--telemetry] [--largest]
 //
 // Naming generator ids restricts the rounds to those generators, for profiling one of them.
+// --telemetry enables collection; --largest uses default controls at 512x512, 12 teams.
 //
 // Each round asks every registered generator (including editor-only ones) for one map at
 // parameters drawn from its own registered controls: shared width/height/teams/workers are
@@ -78,7 +79,7 @@ int main(int argc, char **argv)
 {
 	if (argc < 4)
 	{
-		std::fprintf(stderr, "usage: %s <profile-dir> <seed> <rounds> [generator-id...]\n", argv[0]);
+		std::fprintf(stderr, "usage: %s <profile-dir> <seed> <rounds> [generator-id...] [--telemetry] [--largest]\n", argv[0]);
 		return 2;
 	}
 	const unsigned baseSeed = std::strtoul(argv[2], nullptr, 10);
@@ -92,10 +93,17 @@ int main(int argc, char **argv)
 	IntBuildingType::init();
 	Race::loadDefault();
 
+	bool telemetry = false, largest = false, hasNamedGenerator = false;
+	for (int i = 4; i < argc; ++i)
+	{
+		hasNamedGenerator |= std::string(argv[i]).rfind("--", 0) != 0;
+		telemetry |= std::string(argv[i]) == "--telemetry";
+		largest |= std::string(argv[i]) == "--largest";
+	}
 	std::vector<int> methods;
 	for (int method : GeneratorRegistry::builtins().methods(true))
 	{
-		bool named = argc == 4;
+		bool named = !hasNamedGenerator;
 		for (int i = 4; i < argc; ++i)
 			named |= std::string(GeneratorRegistry::builtins().at(method).id) == argv[i];
 		if (named)
@@ -120,12 +128,18 @@ int main(int argc, char **argv)
 			GenerationRequest request;
 			request.setMethodDefaults(methods[i]);
 			auto &s = stats[i];
-			if (!randomizeRequest(request, rng, 32))
+			if (largest)
+			{
+				request.wDec = request.hDec = 9;
+				request.nbTeams = 12;
+				request.seed = baseSeed + round;
+			}
+			else if (!randomizeRequest(request, rng, 32))
 				continue;
 			++s.attempts;
 			Game game(nullptr);
 			const auto before = std::chrono::steady_clock::now();
-			const auto result = service.generate(game, request, false);
+			const auto result = service.generate(game, request, telemetry);
 			const auto after = std::chrono::steady_clock::now();
 			const auto ns = std::uint64_t(
 				std::chrono::duration_cast<std::chrono::nanoseconds>(after - before).count());

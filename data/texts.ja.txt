@@ -2814,6 +2814,100 @@ Emoji
 岩山がこのマップに収まりません。より大きなマップを使うか、コロニーを減らしてください。
 [The pond has no room for that much algae; use a bigger pond.]
 池にそれだけの藻を置く場所がありません。池を大きくしてください。
+[Even Ground]
+平等な大地
+[Balance]
+バランス
+[Tight passes]
+狭い地峡
+[Solver effort]
+ソルバーの労力
+[Brief]
+短め
+[Patient]
+じっくり
+[This map is too small to solve on; use a bigger map.]
+このマップは小さすぎて解けません。より大きなマップを使ってください。
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+この大きさのマップで釣り合いを取るにはコロニーが多すぎます。より大きなマップを使うか、コロニーを減らしてください。
+[The colonies could not be spread out on this map.]
+このマップではコロニーを散らばらせることができませんでした。
+[Marchland]
+辺境
+[Prizes on the rope]
+綱の上の賞品
+[March width]
+辺境の幅
+[Levelling]
+均等化
+[A march needs a country on each side; use at least two colonies.]
+辺境には両側に国が必要です。少なくとも2つのコロニーを使ってください。
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+このマップがそれぞれに本国を与えるにはコロニーが多すぎます。より大きなマップを使うか、コロニーを減らしてください。
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+このマップにはコロニーを散らばらせる場所がありません。より大きなマップを使うか、コロニーを減らしてください。
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+あるコロニーの本国から辺境への出口がありません。より大きなマップを使うか、辺境を狭くしてください。
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+あるコロニーの本国に巣を置く場所がありません。より大きなマップを使うか、コロニーを減らすか、辺境を狭くしてください。
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+辺境の係争地がそれだけの賞品には少なすぎます。賞品を減らすか、辺境を広くするか、より大きなマップを使ってください。
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+辺境に賞品を置く場所がありません。より大きなマップを使うか、コロニーを減らすか、辺境を広くしてください。
+[Orchard Commons]
+共有の果樹園
+[Orchard spacing]
+果樹園の間隔
+[Compact]
+狭い
+[Balanced]
+標準
+[Spread]
+広い
+[The Gauntlet]
+試練の闘技場
+[Partition thickness]
+仕切り壁の厚さ
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+試練の闘技場で各コロニーに防御された入口を2つ設けるには、マップを大きくするか、コロニー数を減らしてください。
+[The Comb]
+櫛
+[Peninsulas per shore]
+各岸の半島数
+[Encircled Kingdom]
+包囲された王国
+[Fortress plan]
+城郭の形
+[Automatic]
+自動
+[Elongated enclosure]
+細長い城郭
+[Bastioned enclosure]
+稜堡付き城郭
+[Paired courtyards]
+二つの中庭
+[Heartland farmland]
+中心部の農地
+[The Faulted City]
+断層の街
+[Fault displacement]
+断層のずれ
+[Fault width]
+断層の幅
+[Ruin density]
+廃墟の密度
+[Surviving junctions]
+残された交差点
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+「断層の街」には各辺256または512マス、1～12のコロニーが必要です。
+[The city has too few usable junctions.]
+街に通行可能な交差点が不足しています。
+[A city neighbourhood lacks reachable crops or building room.]
+街の一地区に到達可能な作物または建設用地が不足しています。
+[The city neighbourhoods are too unequal; try another seed.]
+街の地区間の条件が不均等すぎます。別のシードを試してください。
+[The fractured civic plaza did not survive.]
+断層で分断された街の広場が残りませんでした。
 [Drowned Forest]
 水没の森
 [Sandbar connections]

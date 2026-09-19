@@ -55,7 +55,7 @@ forward meadows are chosen and connected using actual toroidal walking distances
 The search is deterministic and bounded; it never relaxes the validation contract
 to accept a difficult request. On 128×128 maps it tries alternate sides for forward
 meadows before discarding the landscape, with at most 512 landscape attempts;
-256×256 maps with eight colonies use at most 256, and other requests use at most
+Fully occupied 128×256, 256×128 and 256×256 maps use at most 256, and other requests use at most
 64. Difficult compact or crowded requests can therefore take longer.
 
 The finished-world checks require:
@@ -121,4 +121,22 @@ repairs. These are seed-7 process measurements; difficult search tails can take
 substantially longer, and Forts remains faster. Telemetry-on timings and all commands
 are retained in the profiling artifacts.
 
-Final parameter-study totals are pending completion of the Linux runs.
+The Linux study completed 793/793 control and extreme cases and 1,999/2,000 random
+requests. The remaining request, seed 101727 at 128×256 with four colonies, exhausted
+the former 64-attempt cap. Extending the dense-map tail to rectangular maps fixed it;
+all earlier successful prefixes are unchanged. The failed row and successful retest
+are retained separately. Four supplemental requests completed successful coverage of
+all 336 supported size/colony/worker combinations. This is sampled reliability, not
+an exhaustive test of every combination of controls.
+
+Across eight paired seeds, minimum-to-maximum controls changed mean sandbar count
+from 24.25 to 39, neck wood from 15 to 45 tiles, and mean meadow building area from
+407 to 466 tiles (the latter combines home and neutral meadows). Wheat increased
+522→1,589 tiles, wood 5,336→17,021, stone 8→112, algae 12→4,452 and fruit 0→160.5.
+No adjacent control step was unchanged on all eight seeds. Connections 90→100 had
+the same overall mean, with individual changes; discrete edges and layout retries
+prevent a strict per-seed monotonicity promise.
+
+A compact, committed evidence bundle is in [evidence/drowned-forest](evidence/drowned-forest/README.md).
+Earlier local artifacts used provisional generator ID 58. Integration assigns ID 65
+because upstream allocated 58 while development was in progress.

@@ -13,6 +13,10 @@ launch mode first; these modes do not combine with game, replay, or server launc
 For the fortified countryside generator, see [Forts](FORTS.md) for its controls,
 resource guarantees, supported combinations and validation evidence.
 
+For a valley built around contested fruit and competing inns, see [Orchard Commons](ORCHARD_COMMONS.md).
+
+For an asymmetric player-zero siege supporting 3–12 colonies, see [Encircled Kingdom](ENCIRCLED_KINGDOM.md).
+
 ## Generate a map and preview
 
 ```sh

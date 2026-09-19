@@ -1,0 +1,4 @@
+Settings::load("preferences.txt") : error, can't open file.
+generator                 attempts        ok    failed     mean_ms      max_ms
+hedgerow-country                 6         6         0    1639.698    1745.453
+# 6 rounds, 1 generators, 6 attempts (6 ok, 0 failed), 9.839s wall, 9.838s summed generation time

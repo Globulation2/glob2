@@ -1,0 +1,52 @@
+{
+  "maps": 80,
+  "homes": 448,
+  "generation_errors": 0,
+  "terrain_codes": {
+    "0": 448
+  },
+  "minimum_resource_margin": 2,
+  "resource_collisions": 0,
+  "ownership_deviations": 0,
+  "minimum_margin_cases": [
+    {
+      "size": 256,
+      "n": 2,
+      "court": 80,
+      "gate": 9,
+      "level": 1,
+      "seed": 2,
+      "team": 1,
+      "center": [
+        187,
+        91
+      ]
+    },
+    {
+      "size": 256,
+      "n": 4,
+      "court": 80,
+      "gate": 9,
+      "level": 1,
+      "seed": 2,
+      "team": 0,
+      "center": [
+        163,
+        187
+      ]
+    },
+    {
+      "size": 256,
+      "n": 4,
+      "court": 80,
+      "gate": 9,
+      "level": 1,
+      "seed": 2,
+      "team": 2,
+      "center": [
+        187,
+        91
+      ]
+    }
+  ]
+}

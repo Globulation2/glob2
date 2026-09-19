@@ -2890,6 +2890,100 @@ Emoji
 岩石高地放不進這張地圖；請使用更大的地圖或更少的殖民地。
 [The pond has no room for that much algae; use a bigger pond.]
 池塘放不下這麼多海藻；請使用更大的池塘。
+[Even Ground]
+公平原野
+[Balance]
+平衡度
+[Tight passes]
+狹窄通道
+[Solver effort]
+求解強度
+[Brief]
+簡略
+[Patient]
+耐心
+[This map is too small to solve on; use a bigger map.]
+這張地圖太小，無法求解；請使用更大的地圖。
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+在這個大小的地圖上殖民地太多，無法平衡；請使用更大的地圖或減少殖民地數量。
+[The colonies could not be spread out on this map.]
+無法在這張地圖上把殖民地分散開。
+[Marchland]
+邊疆
+[Prizes on the rope]
+繩上的獎品
+[March width]
+邊疆寬度
+[Levelling]
+均等化
+[A march needs a country on each side; use at least two colonies.]
+邊疆需要兩側各有一個國度；請至少使用兩個殖民地。
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+殖民地太多，這張地圖無法為每個殖民地提供家園；請使用更大的地圖或減少殖民地數量。
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+這張地圖沒有空間把殖民地分散開；請使用更大的地圖或減少殖民地數量。
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+有殖民地的家園沒有通往邊疆的出口；請使用更大的地圖或更窄的邊疆。
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+有殖民地的家園沒有放置孢子堆的空間；請使用更大的地圖、更少的殖民地或更窄的邊疆。
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+邊疆的爭奪地帶太少，容納不下這麼多獎品；請減少獎品、加寬邊疆或使用更大的地圖。
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+邊疆沒有放置獎品的空間；請使用更大的地圖、更少的殖民地或更寬的邊疆。
+[Orchard Commons]
+共有果園
+[Orchard spacing]
+果園間距
+[Compact]
+緊湊
+[Balanced]
+均衡
+[Spread]
+分散
+[The Gauntlet]
+試煉競技場
+[Partition thickness]
+隔牆厚度
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+試煉競技場需要更大的地圖或更少的殖民地，才能為每個殖民地安排兩個設防入口。
+[The Comb]
+梳子
+[Peninsulas per shore]
+每岸半島數
+[Encircled Kingdom]
+被包圍的王國
+[Fortress plan]
+要塞布局
+[Automatic]
+自動
+[Elongated enclosure]
+狹長圍城
+[Bastioned enclosure]
+稜堡圍城
+[Paired courtyards]
+雙庭院
+[Heartland farmland]
+腹地農田
+[The Faulted City]
+斷層之城
+[Fault displacement]
+斷層位移
+[Fault width]
+斷層寬度
+[Ruin density]
+廢墟密度
+[Surviving junctions]
+保留路口
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+斷層之城要求每邊為256或512格，並有一至十二個殖民地。
+[The city has too few usable junctions.]
+城市中可用的路口太少。
+[A city neighbourhood lacks reachable crops or building room.]
+某個城區缺少可到達的作物或建築空間。
+[The city neighbourhoods are too unequal; try another seed.]
+各城區條件過於不均衡；請嘗試其他種子。
+[The fractured civic plaza did not survive.]
+被斷層分割的城市廣場未能保留下來。
 [Drowned Forest]
 沉沒森林
 [Sandbar connections]
