@@ -1,6 +1,6 @@
 # The Comb
 
-The Comb (`comb`, numeric ID 60, revision 2) creates two curving shores with broad,
+The Comb (`comb`, numeric ID 62, revision 2) creates two curving shores with broad,
 interlocking peninsulas. Land around both ends of the inlet connects the shores;
 outer sea keeps the toroidal seam from creating another walking route. Opponents
 can threaten a nearby waterfront while their armies take a longer land route.
