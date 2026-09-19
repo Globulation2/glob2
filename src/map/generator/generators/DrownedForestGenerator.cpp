@@ -999,11 +999,11 @@ void addJunctions(Layout &L, const std::vector<int> &homes, int size)
 		std::vector<int> attachments;
 		for (const auto &[score, i] : ranked)
 		{
-			bool near = false;
+			bool nearbyJunction = false;
 			for (int q : attachments)
 				if (t.dist2(i % t.w, i / t.w, q % t.w, q / t.w) < 64)
-					near = true;
-			if (!near)
+					nearbyJunction = true;
+			if (!nearbyJunction)
 				attachments.push_back(i);
 			if (attachments.size() == 12)
 				break;
