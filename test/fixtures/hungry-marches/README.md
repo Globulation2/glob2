@@ -35,7 +35,8 @@ promise monotonic geometry in every seed.
 The local September 2026 evidence is indexed in
 `artifacts/hungry-marches/VERIFICATION.md`: raw studies, exact game commands,
 compressed logs and final saves, previews, binary hashes and performance samples.
-Artifacts are intentionally outside Git. The final optimized executable reproduces
+A portable subset is checked in under [evidence](evidence/README.md); the complete
+local artifacts remain outside Git. The final optimized executable reproduces
 the played maps byte for byte; the late large-layout radius fix was separately
 retested. Do not count abandoned prototypes or incomplete disk-full runs as games.
 
