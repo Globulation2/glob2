@@ -12,6 +12,13 @@ The pale ring round each homeland is the dry march; the winding channel on seeds
 river some seeds cut through the commons. The homelands are visibly squarish, which is a known
 limitation rather than a design: see [what has not been done](#what-has-not-been-done).
 
+> **These figures predate the stream rename and describe different maps.** Renaming the
+> generator's random streams moved every map it makes, so the numbers below — control
+> correlations, fairness scores, refusal rates, river rates and the tournament — were measured
+> on the previous maps. The conclusions are structural and expected to hold; the figures need
+> taking again. Everything checked by the test suite (golden rows, all 17 contract suites,
+> telemetry) has been re-run and passes on the current maps.
+
 ## The play contract
 
 Your homeland feeds you and cannot win for you. The march is sand: no buildings, no crops, nothing

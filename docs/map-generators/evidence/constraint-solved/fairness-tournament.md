@@ -3,6 +3,10 @@
      unchanged by the rename - the random streams kept their old names precisely so that this
      evidence still describes the maps the code makes. -->
 
+> Run before the generators' random streams were renamed, so these 18 maps are not the
+> maps the current code produces. The result — Even Ground biased, Marchland not — is a
+> property of the objectives rather than of these seeds, but the run wants repeating.
+
 # Map fairness tournament: constraint-solved-light
 
 Light playtest of Equilibrium (58) and Tug (59) against the Symmetric arena baseline (15).

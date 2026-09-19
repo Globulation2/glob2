@@ -1,6 +1,6 @@
 # Even Ground: terrain solved against targets instead of drawn
 
-`even-ground`, legacy id 58. Source: [Even GroundGenerator.cpp](../../src/map/generator/generators/Even GroundGenerator.cpp).
+`even-ground`, legacy id 58. Source: [EvenGroundGenerator.cpp](../../src/map/generator/generators/EvenGroundGenerator.cpp).
 
 Every other landscape in the catalog decides what it looks like and then works to make that shape
 fair. This one has no drawn shape at all. It states what the finished map must be true of, and
@@ -12,6 +12,13 @@ Worth looking at before reading the numbers: the ground is speckled rather than 
 search over terrain mostly rediscovers noise. That is this generator's main finding about itself,
 and it is the reason [the toolkit's own guidance](../../src/map/generator/shared/Solve.h) says to
 point a search at a decision rather than at a landscape.
+
+> **These figures predate the stream rename and describe different maps.** Renaming the
+> generator's random streams moved every map it makes, so the numbers below — control
+> correlations, fairness scores, refusal rates, river rates and the tournament — were measured
+> on the previous maps. The conclusions are structural and expected to hold; the figures need
+> taking again. Everything checked by the test suite (golden rows, all 17 contract suites,
+> telemetry) has been re-run and passes on the current maps.
 
 ## The play contract
 
