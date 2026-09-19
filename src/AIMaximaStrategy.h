@@ -616,6 +616,7 @@ struct MaximaStrategy
 
 	struct Fruit
 	{
+		bool reachable_supply;
 		bool enabled;
 		int population_min;
 		int units_per_flag;

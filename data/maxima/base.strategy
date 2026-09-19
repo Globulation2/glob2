@@ -562,8 +562,10 @@ explorer_campaign.multi_flag_trained_min = 20
 explorer_campaign.max_flags = 2
 explorer_campaign.units_per_flag = 10
 
-# Fruit operations: population gate and flag staffing.
+# Maintain reachable fruit varieties at inns, including during defense/recovery.
+fruit.reachable_supply = true
 fruit.enabled = true
+# Only used when restoring the legacy fruit policy.
 fruit.population_min = 50
 fruit.units_per_flag = 2
 fruit.flag_radius = 4

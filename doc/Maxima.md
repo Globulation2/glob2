@@ -62,3 +62,8 @@ The runner covers standalone policy modules, engine order integration, building
 identity reuse, configuration errors, and deterministic saved-game continuation.
 Use `--test NAME` to select one regression program. Tests create temporary binaries;
 they need no external services or tournament tooling.
+
+Maxima maintains [reachable fruit supply](MaximaFruit.md) at completed inns by
+default. It favors inns with several reachable varieties, maintains explorer
+coverage through defense and recovery, and releases missions when buildings
+provide vision. Normal construction, staffing and military policies remain in use.

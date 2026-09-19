@@ -3,8 +3,8 @@
   "algorithm": "sorted-comment-string-stripped-numeric-token-sha256",
   "sources": {
     "src/AIMaxima.cpp": {
-      "tokens": 1876,
-      "sha256": "1a31e1a76ca3605a76b6913c25ad3e673d005939c692fafa4ed74ea3770bd7cd",
+      "tokens": 1907,
+      "sha256": "e33ad76f657df16f7c9092ecf8cf6dd29d0be1736d54c60d9928b5abc3cf5d58",
       "classifications": [
         "live selection authorization, swimming-builder counts, and shared reactive-defense reserve",
         "schema-backed strategy member use",
@@ -47,7 +47,8 @@
         "version 109 labour continuation gate and active flag zero-based recruitment level",
         "opt-in reconnaissance audit labels, four combat levels, shadow observations and shared target-ranking result fields",
         "opt-in reconnaissance staffing samples and wrapped flag-footprint diagnostics",
-        "raid reward bounded by the flag footprint and read-only offensive occupancy/outcome audit"
+        "raid reward bounded by the flag footprint and read-only offensive occupancy/outcome audit",
+        "reachable fruit collection, completed building vision, and explorer mission reconciliation"
       ]
     },
     "src/AIMaximaFarmingPolicy.cpp": {
@@ -158,6 +159,13 @@
         "engine fertility denominator and growth direction count",
         "micro-wheat rate scale and percentage scale",
         "reported coverage bound and quality scale"
+      ]
+    },
+    "src/AIMaximaFruit.h": {
+      "tokens": 44,
+      "sha256": "43e2c59fb06d88bcb1c4490e7a76aa4ed2dc08da37d78c281f492216e98bf625",
+      "classifications": [
+        "three distinct fruit varieties, bounded wrapped collection routes, stable row-major tie breaking, masks and missing-source sentinels"
       ]
     }
   }

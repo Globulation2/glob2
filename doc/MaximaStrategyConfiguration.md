@@ -415,3 +415,10 @@ increase that shared budget through the existing smooth controller.
 Telemetry includes `colony_new_food`, `colony_value`, and the eligibility gate.
 Legacy serialized utility slots are retained for compatibility, with their new
 meanings documented in the placement code.
+
+[Reachable fruit supply](MaximaFruit.md) is enabled by default through
+`fruit.reachable_supply=true`. `fruit.enabled` remains the overall switch;
+`fruit.units_per_flag` and `fruit.flag_radius` control explorer assignments.
+Pre-version-110 saved configurations restore `fruit.reachable_supply=false` to
+continue their original policy. `fruit.population_min` applies only to that legacy
+policy. The current policy needs no population threshold or posture switch.

@@ -3398,8 +3398,16 @@ void Maxima::finalize_director_plan(Context& echo)
 	budget.explorer_campaign_units_per_flag=
 		strategy.explorer_campaign.units_per_flag;
 	budget.fruit_active=strategy.fruit.enabled && echo.is_fruit_on_map()
-		&& snapshot.population>=strategy.fruit.population_min
-		&& posture!=PostureRecover && posture!=PostureDefend;
+		&& (strategy.fruit.reachable_supply
+			|| (snapshot.population>=strategy.fruit.population_min
+				&& posture!=PostureRecover && posture!=PostureDefend));
+	if(strategy.fruit.reachable_supply && budget.fruit_active)
+	{
+		int missions=0;
+		for(int fruit=CHERRY;fruit<=PRUNE;++fruit)
+			missions+=echo.resource_flags(fruit).size();
+		budget.desired_explorers+=missions*strategy.fruit.units_per_flag;
+	}
 	budget.fruit_units_per_flag=strategy.fruit.units_per_flag;
 	budget.fruit_flag_radius=strategy.fruit.flag_radius;
 
@@ -8719,6 +8727,44 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 
 
 
+AIMaximaFruit::Field Maxima::collect_fruit_field(Context& echo) const
+{
+	AIMaximaFruit::Field field;
+	if(!strategy.fruit.enabled || !strategy.fruit.reachable_supply || !echo.is_fruit_on_map())return field;
+	Map* map=echo.player->map;
+	field.width=map->getW();
+	field.height=map->getH();
+	field.tiles.resize(field.width*field.height);
+	for(int y=0;y<field.height;++y)for(int x=0;x<field.width;++x)
+	{
+		AIMaximaFruit::Tile& tile=field.tiles[field.index(x,y)];
+		const ::Tile& cell=map->getTile(x,y);
+		tile.passable=cell.building==NOGBID && cell.resource.type==NO_RES_TYPE
+			&& !(cell.forbidden&echo.player->team->me)
+			&& (budget.can_swim || !(cell.terrain>=256 && cell.terrain<272));
+		tile.visible=cell.resource.amount>0 && map->isFOWDiscovered(x,y,echo.player->team->allies);
+		if(cell.resource.type>=CHERRY && cell.resource.type<=PRUNE
+		   && map->isMapDiscovered(x,y,echo.player->team->allies))
+			tile.variety=cell.resource.type-CHERRY;
+	}
+	bool knownFruit=false;
+	for(const auto& tile:field.tiles)knownFruit=knownFruit || tile.variety>=0;
+	if(!knownFruit)return AIMaximaFruit::Field();
+	// Completed friendly buildings provide persistent vision using the same
+	// rectangular footprint as Building::setMapDiscovered.
+	for(const auto& entry:echo.get_building_register().found())
+	{
+		Building* building=echo.get_building_register().get_building(entry.first);
+		if(!building || building->type->isVirtual || building->type->isBuildingSite)continue;
+		const int radius=building->type->viewingRange;
+		for(int dy=-radius;dy<building->type->height+radius;++dy)
+			for(int dx=-radius;dx<building->type->width+radius;++dx)
+				field.tiles[field.index(building->posX+dx,building->posY+dy)].buildingVision=true;
+	}
+	field.build();
+	return field;
+}
+
 void Maxima::update_fruit_flags(AIMaximaRuntime::Context& echo)
 {
 	// Reconcile per resource against the serialized runtime, rather than trusting
@@ -8726,6 +8772,67 @@ void Maxima::update_fruit_flags(AIMaximaRuntime::Context& echo)
 	std::set<int> other_flags(explorer_attack_flags.begin(), explorer_attack_flags.end());
 	for(const Recon::ReconMission& mission:reconnaissance.report().missions)
 		other_flags.insert(mission.flagId);
+	if(strategy.fruit.reachable_supply)
+	{
+		const auto field=collect_fruit_field(echo);
+		int selected[3]={-1,-1,-1},varieties[3]={0,0,0};
+		bool supply=false;
+		for(const auto& entry:echo.get_building_register().found())
+		{
+			Building* inn=echo.get_building_register().get_building(entry.first);
+			if(!inn || inn->type->shortTypeNum!=IntBuildingType::FOOD_BUILDING
+			   || inn->type->isBuildingSite)continue;
+			const auto assessment=field.assessBuilding(inn->posX,inn->posY,
+				inn->type->width,inn->type->height);
+			supply=supply || assessment.collectable || assessment.covered;
+			for(int v=0;v<3;++v)
+			{
+				if(!(assessment.available&(1u<<v)))continue;
+				supply=supply || inn->resources[CHERRY+v]>0;
+				if(!(assessment.covered&(1u<<v)) && assessment.varietyCount>varieties[v])
+				{
+					selected[v]=assessment.source[v];
+					varieties[v]=assessment.varietyCount;
+				}
+			}
+		}
+		exploration_on_fruit=false;
+		for(int v=0;v<3;++v)
+		{
+			auto flags=echo.resource_flags(CHERRY+v);
+			flags.erase(std::remove_if(flags.begin(),flags.end(),
+				[&](int id){return other_flags.count(id)!=0;}),flags.end());
+			const int source=budget.fruit_active?selected[v]:-1;
+			const size_t keep=(source>=0 && strategy.fruit.units_per_flag>0)?1:0;
+			for(size_t n=keep;n<flags.size();++n)
+			{
+				echo.cancel_or_destroy_building(flags[n]);
+			}
+			if(!keep)continue;
+			exploration_on_fruit=true;
+			const int x=source%field.width,y=source/field.width;
+			if(!flags.empty())
+			{
+				int oldX,oldY;
+				if(echo.get_building_position(flags[0],oldX,oldY) && (x!=oldX || y!=oldY))
+					echo.add_management_order(new ChangeFlagPosition(x,y,flags[0]));
+				continue;
+			}
+			GradientInfo resource;resource.add_source(new Entities::Resource(CHERRY+v));
+			BuildingOrder* order=new BuildingOrder(IntBuildingType::EXPLORATION_FLAG,
+				budget.fruit_units_per_flag);
+			order->add_constraint(new SinglePosition(x,y));
+			order->add_constraint(new MaximumDistance(resource,0));
+			const int id=echo.add_building_order(order);
+			echo.add_management_order(new ChangeFlagSize(budget.fruit_flag_radius,id));
+		}
+		// Supply maintained by buildings also merits advertising. mV remains
+		// untouched; fV shares the inns that can recruit visitors.
+		for(enemy_team_iterator i(echo);i!=enemy_team_iterator();++i)
+			echo.add_management_order(new ChangeAlliances(*i,KeepValue,KeepValue,
+				KeepValue,budget.fruit_active && supply?SetValue:ClearValue,KeepValue));
+		return;
+	}
 	const int fruits[]={CHERRY, ORANGE, PRUNE};
 	exploration_on_fruit=false;
 	for(int fruit:fruits)

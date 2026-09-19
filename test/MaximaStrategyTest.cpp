@@ -49,6 +49,21 @@ int main()
         assert(!StrategyResolver::restoreValues(text+",unknown.key=1",restored,error,VERSION_MINOR));
         assert(!StrategyResolver::restoreValues(text+",staffing.control_minimum_workers=3",restored,error,VERSION_MINOR));
 
+        assert(resolved.values.fruit.enabled && resolved.values.fruit.reachable_supply);
+        std::string preFruit;
+        for(const auto& assignment:split(text))
+            if(assignment.rfind("fruit.reachable_supply=",0)!=0)
+                preFruit+=(preFruit.empty() ? "" : ",")+assignment;
+        for(int version:{98,109})
+        {
+            MaximaStrategy old=resolved.values;
+            assert(StrategyResolver::restoreValues(preFruit,old,error,version));
+            assert(!old.fruit.reachable_supply);
+            old.fruit.reachable_supply=true;
+            assert(StrategyResolver::canonicalValues(old)==text);
+        }
+        assert(!StrategyResolver::restoreValues(preFruit,restored,error,VERSION_MINOR));
+
         // Version 98 retired the muster/relief keys and added the offense's
         // own. An older save therefore names keys this build dropped and omits
         // keys it gained; it must still load, taking every value it recorded

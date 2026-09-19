@@ -22,6 +22,7 @@
 #include "AIMaximaRuntime.h"
 #include "AIMaximaDefense.h"
 #include "AIMaximaFarming.h"
+#include "AIMaximaFruit.h"
 #include "AIMaximaPlacement.h"
 #include "AIMaximaRecon.h"
 #include "AIMaximaLabour.h"
@@ -855,9 +856,9 @@ private:
 	bool preemptive_defense_pending;
 	bool reactive_defense_pending;
 
-	///This function puts exploration flags on fruit trees once the fruit phase
-	///has been activated.
+	///Maintain explorer vision for reachable fruit varieties at completed inns.
 	void update_fruit_flags(AIMaximaRuntime::Context& echo);
+	AIMaximaFruit::Field collect_fruit_field(AIMaximaRuntime::Context& echo) const;
 	///This function updates the alliances with opponents once the fruit phase
 	///has been activated.
 	void update_fruit_alliances(AIMaximaRuntime::Context& echo);
