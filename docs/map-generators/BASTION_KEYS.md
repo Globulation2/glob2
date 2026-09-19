@@ -17,6 +17,8 @@ at least 72 wheat and 32 timber tiles on its plantations, plus 48 wheat in two
 small landing fields. Sand and water contain crop growth; no no-growth flags are
 used. The pool and courtyard leave room for construction and upgrades.
 
+![Bastion Keys variants](images/bastion-keys-variants.png)
+
 ## Controls and supported settings
 
 | Control | Default | Range | Effect |
@@ -47,8 +49,8 @@ The validator checks ramparts, gate isolation, outside production, permanent
 building courts, starter access, completed pools, and swimming reachability.
 After treating buildings and harvestable crops as cleared, no walking component
 may join two estates or connect an estate to a neutral key. Both local plantation
-courts must remain connected to their own town. Outlying courts and all colony
-workers must be reachable using the engine's swimming movement predicate.
+courts must remain connected to their own town. Outlying courts and at least one worker from each colony must be reachable using
+the engine's swimming movement predicate.
 
 The generator uses existing simulation rules. It changes no engine behavior,
 save format, replay acceptance, network protocol, AI, or existing generator.

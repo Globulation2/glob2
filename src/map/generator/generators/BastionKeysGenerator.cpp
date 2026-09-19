@@ -12,7 +12,6 @@
 #include "Planting.h"
 #include "Resources.h"
 #include "Room.h"
-#include "Roads.h"
 #include "Settlements.h"
 #include "Sketch.h"
 #include "Walls.h"
@@ -56,6 +55,42 @@ struct Layout
 		return t.at(int(p.x), int(p.y));
 	}
 };
+
+// Each lane occupies a small, unwrapped local box. Rasterize with the shared brush,
+// then visit only that box instead of scanning the entire map for every fort gate.
+// Updating the four tiles touched by each corner is exactly roadTiles' operation.
+void localLane(Layout &L, const std::vector<StrokePoint> &path, bool gate, bool paintNow)
+{
+	const Torus &t = L.t;
+	std::vector<unsigned char> mask(t.size());
+	strokePath(mask, t, path);
+	int x0 = INT_MAX, y0 = INT_MAX, x1 = INT_MIN, y1 = INT_MIN;
+	for (const auto &p : path)
+	{
+		x0 = std::min(x0, int(std::floor(p.x - p.halfWidth)) - 1);
+		y0 = std::min(y0, int(std::floor(p.y - p.halfWidth)) - 1);
+		x1 = std::max(x1, int(std::ceil(p.x + p.halfWidth)) + 1);
+		y1 = std::max(y1, int(std::ceil(p.y + p.halfWidth)) + 1);
+	}
+	for (int y = y0; y <= y1; ++y)
+		for (int x = x0; x <= x1; ++x)
+		{
+			const int i = t.at(x, y);
+			if (!mask[i])
+				continue;
+			L.roads[i] = 1;
+			if (paintNow)
+				L.terrain[i] = SAND;
+			for (int dy = -1; dy <= 0; ++dy)
+				for (int dx = -1; dx <= 0; ++dx)
+				{
+					const int j = t.at(x + dx, y + dy);
+					L.wall[j] = 0;
+					if (gate)
+						L.gates[j] = 1;
+				}
+		}
+}
 
 // Same facing and fort design for all homes. Only the natural island fringes differ.
 void fort(Layout &L, int team, const BastionKeysOptions &o, GenerationContext &context)
@@ -103,23 +138,7 @@ void fort(Layout &L, int team, const BastionKeysOptions &o, GenerationContext &c
 	const auto lane = [&](int u0, int v0, int u1, int v1, bool gate)
 	{
 		const auto a = L.point(team, u0, v0), b = L.point(team, u1, v1);
-		std::vector<unsigned char> mask(L.t.size());
-		strokePath(mask, L.t, {{a.x, a.y, 1.5}, {b.x, b.y, 1.5}});
-		const auto tiles = roadTiles(L.t, mask);
-		for (int i = 0; i < L.t.size(); ++i)
-		{
-			if (mask[i])
-			{
-				L.terrain[i] = SAND;
-				L.roads[i] = 1;
-			}
-			if (tiles[i])
-			{
-				L.wall[i] = 0;
-				if (gate)
-					L.gates[i] = 1;
-			}
-		}
+		localLane(L, {{a.x, a.y, 1.5}, {b.x, b.y, 1.5}}, gate, true);
 	};
 	lane(5, bottom - 3, 5, bottom + 2, true);
 	lane(5, bottom + 2, -1, bottom + 2, false);
@@ -305,22 +324,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		{
 			const auto shoulder = L.point(team, sign * 24, bottom + 2);
 			const auto end = L.point(team, sign * 22, 24);
-			std::vector<unsigned char> pier(t.size());
-			strokePath(
-				pier, t,
-				{{inner.x, inner.y, 1.0}, {shoulder.x, shoulder.y, 1.0}, {end.x, end.y, 1.0}});
+			localLane(L,
+					  {{inner.x, inner.y, 1.0}, {shoulder.x, shoulder.y, 1.0}, {end.x, end.y, 1.0}},
+					  false, false);
 			const auto fieldFrom = L.point(team, sign * 14, bottom + 2);
 			const auto fieldLanding = L.point(team, sign * 14, bottom + 7);
-			strokePath(pier, t,
-					   {{fieldFrom.x, fieldFrom.y, 1.0}, {fieldLanding.x, fieldLanding.y, 1.0}});
-			const auto pierTiles = roadTiles(t, pier);
-			for (int i = 0; i < t.size(); ++i)
-			{
-				if (pier[i])
-					L.roads[i] = 1;
-				if (pierTiles[i])
-					L.wall[i] = 0;
-			}
+			localLane(L, {{fieldFrom.x, fieldFrom.y, 1.0}, {fieldLanding.x, fieldLanding.y, 1.0}},
+					  false, false);
 		}
 	}
 	// Outlying keys remain separate islands. Their spacing protects open-water passages

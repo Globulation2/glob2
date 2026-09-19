@@ -443,7 +443,7 @@ A completed result does not establish a complete stdout log. During Bastion Keys
 work a full disk left a 60,000-tick game's log ending at tick 12,800; pairing those
 counters with its final population falsely suggested no combat. Check free space
 before large batches, compress completed logs/saves, and retain the saved world
-when a missing final counter must be recovered. Do not compress an active log.
+to inspect the outcome when final counters are missing. Do not compress an active log.
 
 Opening failure can be a staffing threshold rather than lack of timber. In the
 Bastion Keys calibration, four-worker Cabino colonies never began their first inn,
