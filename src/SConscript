@@ -222,8 +222,8 @@ map/generator/generators/SymmetricArenaGenerator.cpp
 map/generator/generators/TidalFlatsGenerator.cpp
 map/generator/generators/UniformGenerator.cpp
 map/generator/generators/WatershedGenerator.cpp
-map/generator/generators/EquilibriumGenerator.cpp
-map/generator/generators/TugGenerator.cpp
+map/generator/generators/EvenGroundGenerator.cpp
+map/generator/generators/MarchlandGenerator.cpp
 map/generator/generators/HiddenOasisGenerator.cpp
 map/generator/generators/CentralQuarryGenerator.cpp
 map/generator/generators/BajadaGenerator.cpp

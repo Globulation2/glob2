@@ -64,7 +64,7 @@ int widestWalkClearance(const Torus &, const std::vector<unsigned char> &mask,
 ///
 /// `clearance` is a full distance transform and depends on nothing but the mask, so asking for
 /// several walks over one mask - every colony's way out of the same country, say - recomputes the
-/// identical field once per walk. Equilibrium's shape pass did exactly that, four times per
+/// identical field once per walk. Even Ground's shape pass did exactly that, four times per
 /// proposal for thousands of proposals, and it was about 30 per cent of the generator's whole run
 /// time. Compute it once with `clearance(t, mask)` and pass it here.
 int widestWalkClearance(const Torus &, const std::vector<unsigned char> &mask,

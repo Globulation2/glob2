@@ -1,12 +1,12 @@
-# Equilibrium: terrain solved against targets instead of drawn
+# Even Ground: terrain solved against targets instead of drawn
 
-`equilibrium`, legacy id 58. Source: [EquilibriumGenerator.cpp](../../src/map/generator/generators/EquilibriumGenerator.cpp).
+`even-ground`, legacy id 58. Source: [Even GroundGenerator.cpp](../../src/map/generator/generators/Even GroundGenerator.cpp).
 
 Every other landscape in the catalog decides what it looks like and then works to make that shape
 fair. This one has no drawn shape at all. It states what the finished map must be true of, and
 searches for ground that satisfies it.
 
-![Eight Equilibrium seeds at 256×256 with four colonies](images/constraint-solved/eq-seeds.png)
+![Eight Even Ground seeds at 256×256 with four colonies](images/constraint-solved/even-ground-seeds.png)
 
 Worth looking at before reading the numbers: the ground is speckled rather than composed, because a
 search over terrain mostly rediscovers noise. That is this generator's main finding about itself,
@@ -52,7 +52,7 @@ is the weakest colony's fitness, which is an absolute measure rather than a rela
 |---|---|---|---|
 | symmetric-arena | 0.998 | 0.001 | 0.497 |
 | savannah | 0.940 | 0.057 | 0.392 |
-| **equilibrium** | **0.930** | **0.065** | **0.204** |
+| **even ground** | **0.930** | **0.065** | **0.204** |
 | rain-shadow | 0.927 | 0.063 | 0.139 |
 | watershed | 0.824 | 0.163 | 0.155 |
 | continents | 0.796 | 0.198 | −0.144 |
@@ -145,7 +145,7 @@ correlation against the value:
 | `stone-amount` | stone tiles | +1.00 | 0 → 982 |
 | `algae-amount` | algae tiles | +1.00 | 0 → 511 |
 
-![What each Equilibrium control does](images/constraint-solved/eq-controls.png)
+![What each Even Ground control does](images/constraint-solved/even-ground-controls.png)
 
 `balance` and `effort` both buy search rather than shape, so they move the arrangement without
 changing what the map is made of; `water-share` is the one that transforms it. The crop sliders

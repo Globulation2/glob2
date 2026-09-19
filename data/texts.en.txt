@@ -2816,8 +2816,8 @@ Hidden Oasis holds at most eight colonies.
 The massif does not fit this map; use a bigger map or fewer colonies.
 [The pond has no room for that much algae; use a bigger pond.]
 The pond has no room for that much algae; use a bigger pond.
-[Equilibrium]
-Equilibrium
+[Even Ground]
+Even Ground
 [Balance]
 Balance
 [Tight passes]
@@ -2834,16 +2834,16 @@ This map is too small to solve on; use a bigger map.
 Too many colonies to balance on a map this size; use a bigger map or fewer colonies.
 [The colonies could not be spread out on this map.]
 The colonies could not be spread out on this map.
-[Tug]
-Tug
+[Marchland]
+Marchland
 [Prizes on the rope]
 Prizes on the rope
 [March width]
 March width
 [Levelling]
 Levelling
-[A tug needs two sides; use at least two colonies.]
-A tug needs two sides; use at least two colonies.
+[A march needs a country on each side; use at least two colonies.]
+A march needs a country on each side; use at least two colonies.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

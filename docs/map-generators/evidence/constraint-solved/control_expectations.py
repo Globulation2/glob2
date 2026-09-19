@@ -5,31 +5,31 @@ The control study reports what moved. This states, per control, what *should* mo
 then reads the ablation rows back and passes or fails each claim. A control whose metric does not
 follow it is either a dead slider or a mislabelled one; both are bugs.
 
-  python3 expectations.py /tmp/study/tug tug
+  python3 control_expectations.py /tmp/study/marchland marchland
 """
 import collections, json, math, os, re, statistics as st, subprocess, sys
 
 # control -> (metric, expected sign, human claim). Sign +1 means "more of the control, more of the
 # metric"; -1 the other way.
 EXPECT = {
-    'tug': [
-        ('prizes', 'tel:tug.rope.prizes-strung', +1, 'more prizes asked for, more strung'),
-        ('march', 'tel:tug.march.tiles', +1, 'a wider march is more no-man\'s land'),
-        ('march', 'tel:tug.homeland.largest-tiles', -1, 'a wider march leaves smaller homelands'),
+    'marchland': [
+        ('prizes', 'tel:marchland.rope.prizes-strung', +1, 'more prizes asked for, more strung'),
+        ('march', 'tel:marchland.march.tiles', +1, 'a wider march is more no-man\'s land'),
+        ('march', 'tel:marchland.homeland.largest-tiles', -1, 'a wider march leaves smaller homelands'),
         ('lakes', 'terrain%:water', +1, 'more lakes is more water'),
-        ('levelling', 'tel:tug.rope.share-solved', -1, 'levelling evens the prizes\' walk'),
+        ('levelling', 'tel:marchland.rope.share-solved', -1, 'levelling evens the prizes\' walk'),
         ('wheat-amount', 'tiles:wheat', +1, 'the wheat slider moves wheat'),
         ('wood-amount', 'tiles:wood', +1, 'the wood slider moves wood'),
         ('stone-amount', 'tiles:stone', +1, 'the stone slider moves stone'),
         ('fruit-amount', 'tiles:cherry', +1, 'the fruit slider moves fruit'),
     ],
-    'equilibrium': [
+    'even-ground': [
         ('water-share', 'terrain%:water', +1, 'more water asked for, more water'),
-        ('passes', 'tel:equilibrium.shape.pass-width-cells', -1, 'tighter passes are narrower'),
-        ('balance', 'tel:equilibrium.stock.spread-after', -1, 'balance evens the catchments'),
-        ('balance', 'tel:equilibrium.stock.proposed', +1, 'balance buys search'),
-        ('effort', 'tel:equilibrium.shape.proposed', +1, 'more effort is more proposals'),
-        ('effort', 'tel:equilibrium.shape.cost-after', -1, 'more effort ends cheaper'),
+        ('passes', 'tel:even-ground.shape.pass-width-cells', -1, 'tighter passes are narrower'),
+        ('balance', 'tel:even-ground.stock.spread-after', -1, 'balance evens the catchments'),
+        ('balance', 'tel:even-ground.stock.proposed', +1, 'balance buys search'),
+        ('effort', 'tel:even-ground.shape.proposed', +1, 'more effort is more proposals'),
+        ('effort', 'tel:even-ground.shape.cost-after', -1, 'more effort ends cheaper'),
         ('wheat-amount', 'tiles:wheat', +1, 'the wheat slider moves wheat'),
         ('wood-amount', 'tiles:wood', +1, 'the wood slider moves wood'),
         ('stone-amount', 'tiles:stone', +1, 'the stone slider moves stone'),

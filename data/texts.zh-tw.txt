@@ -2890,8 +2890,8 @@ Emoji
 岩石高地放不進這張地圖；請使用更大的地圖或更少的殖民地。
 [The pond has no room for that much algae; use a bigger pond.]
 池塘放不下這麼多海藻；請使用更大的池塘。
-[Equilibrium]
-均衡
+[Even Ground]
+公平原野
 [Balance]
 平衡度
 [Tight passes]
@@ -2908,16 +2908,16 @@ Emoji
 在這個大小的地圖上殖民地太多，無法平衡；請使用更大的地圖或減少殖民地數量。
 [The colonies could not be spread out on this map.]
 無法在這張地圖上把殖民地分散開。
-[Tug]
-拔河
+[Marchland]
+邊疆
 [Prizes on the rope]
 繩上的獎品
 [March width]
 邊疆寬度
 [Levelling]
 均等化
-[A tug needs two sides; use at least two colonies.]
-拔河需要兩方；請至少使用兩個殖民地。
+[A march needs a country on each side; use at least two colonies.]
+邊疆需要兩側各有一個國度；請至少使用兩個殖民地。
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 殖民地太多，這張地圖無法為每個殖民地提供家園；請使用更大的地圖或減少殖民地數量。
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

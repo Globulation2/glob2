@@ -2818,8 +2818,8 @@ Verborgene Oase fasst höchstens acht Kolonien.
 Das Massiv passt nicht auf diese Karte; verwenden Sie eine größere Karte oder weniger Kolonien.
 [The pond has no room for that much algae; use a bigger pond.]
 Der Teich hat keinen Platz für so viele Algen; verwenden Sie einen größeren Teich.
-[Equilibrium]
-Gleichgewicht
+[Even Ground]
+Gleiches Terrain
 [Balance]
 Ausgewogenheit
 [Tight passes]
@@ -2836,16 +2836,16 @@ Diese Karte ist zu klein für den Löser; verwenden Sie eine größere Karte.
 Zu viele Kolonien, um sie auf einer Karte dieser Größe auszugleichen; verwenden Sie eine größere Karte oder weniger Kolonien.
 [The colonies could not be spread out on this map.]
 Die Kolonien konnten auf dieser Karte nicht verteilt werden.
-[Tug]
-Tauziehen
+[Marchland]
+Grenzland
 [Prizes on the rope]
 Trophäen am Seil
 [March width]
 Breite des Grenzlands
 [Levelling]
 Angleichung
-[A tug needs two sides; use at least two colonies.]
-Ein Tauziehen braucht zwei Seiten; verwenden Sie mindestens zwei Kolonien.
+[A march needs a country on each side; use at least two colonies.]
+Ein Grenzland braucht auf jeder Seite ein Land; verwenden Sie mindestens zwei Kolonien.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Zu viele Kolonien, als dass diese Karte jeder eine Heimat geben könnte; verwenden Sie eine größere Karte oder weniger Kolonien.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

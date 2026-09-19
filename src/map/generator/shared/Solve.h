@@ -21,11 +21,11 @@ namespace MapGeneration
 //
 // When a property can be built instead, build it: equal ground per colony is growTerritories, an
 // equal lake apiece is growLakeBeside, and a search would be a worse way to get either. The two
-// maps this came from measured the difference. Equilibrium points a search at the terrain itself
+// maps this came from measured the difference. Even Ground points a search at the terrain itself
 // and lands a little behind the hand-designed landscapes it competes with, because a search over
-// terrain mostly rediscovers noise. Tug draws its country with the ordinary toolkit and points a
-// search at one decision - which sites in its no-man's land carry the prizes - and without that
-// search no seed at all produces a valid map. Aim it narrowly.
+// terrain mostly rediscovers noise. Marchland draws its country with the ordinary toolkit and
+// points a search at one decision - which sites in its no-man's land carry the prizes - and
+// without that search no seed at all produces a valid map. Aim it narrowly.
 //
 // A map using this owes its reader two things: the targets stated as numbers, and the cost with and
 // without the search, so the search's worth can be read off rather than taken on trust. SolveReport
@@ -76,7 +76,7 @@ bool accept(double rise, double heat, GenerationContext &, const char *stream);
 /// `remember()` is called whenever the arrangement betters everything seen so far, and `recall()`
 /// once at the end if the walk finished somewhere worse than its best. A search ends wherever its
 /// last accepted move left it, and on a schedule even slightly too warm at the end that is not the
-/// best place it visited: before this existed, Equilibrium's shape pass finished worse than it
+/// best place it visited: before this existed, Even Ground's shape pass finished worse than it
 /// started on five seeds out of twelve, having passed through much better arrangements on the way.
 /// Keeping the best costs one snapshot per improvement, which is far rarer than a proposal.
 ///
@@ -181,16 +181,25 @@ struct Objective
 ///
 /// This is one type because it was three, and the two that are gone were conventions nothing
 /// enforced. Every drawn target was followed by a hand-written telemetry line, and the stream and
-/// the key were spelled separately at every call, always `<map>-brief` and `<map>.brief.<name>`: two
-/// strings that must agree were free to drift, and a forgotten line left a seed unreadable. Holding
-/// the map's name once makes the record a consequence of drawing rather than a thing to remember.
+/// the key were spelled separately at every call, always `<map>-brief` and `<map>.brief.<name>`:
+/// two strings that must agree were free to drift, and a forgotten line left a seed unreadable.
+/// Holding the names here makes the record a consequence of drawing rather than a thing to
+/// remember. They are two names rather than one only so that a map can be renamed without moving
+/// its draws; they are the same string unless a caller says otherwise.
 ///
 /// Draw the whole brief in one place at the top of a design, so what a seed was asked for can be
 /// read without following the design through.
 class Brief
 {
   public:
-	Brief(GenerationContext &context, std::string map) : context(context), map(std::move(map)) {}
+	/// `map` names the telemetry keys this records under. `stream` names the random stream it draws
+	/// from, and defaults to the same thing; give it separately only when a map has been renamed,
+	/// because a stream's name is part of every draw taken from it, so changing it moves every map
+	/// the generator has ever made.
+	Brief(GenerationContext &context, std::string map, std::string stream = {})
+		: context(context), map(std::move(map)), draws(stream.empty() ? this->map : std::move(stream))
+	{
+	}
 
 	/// A target for this seed, drawn from `least` to `most` and recorded. The range is the map's
 	/// design and both ends should be worth playing; where in it a seed lands is the map's variety.
@@ -208,7 +217,7 @@ class Brief
 
   private:
 	GenerationContext &context;
-	std::string map;
+	std::string map, draws;
 	std::vector<const char *> chosen;
 };
 

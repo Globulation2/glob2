@@ -2826,8 +2826,8 @@ Gizli Vaha en fazla sekiz koloni alır.
 Kaya kütlesi bu haritaya sığmıyor; daha büyük bir harita veya daha az koloni kullanın.
 [The pond has no room for that much algae; use a bigger pond.]
 Gölette bu kadar yosun için yer yok; daha büyük bir gölet kullanın.
-[Equilibrium]
-Denge
+[Even Ground]
+Eşit Zemin
 [Balance]
 Dengeleme
 [Tight passes]
@@ -2844,16 +2844,16 @@ Bu harita çözülmek için çok küçük; daha büyük bir harita kullanın.
 Bu boyutta bir haritada dengelenemeyecek kadar çok koloni var; daha büyük bir harita veya daha az koloni kullanın.
 [The colonies could not be spread out on this map.]
 Koloniler bu haritaya yayılamadı.
-[Tug]
-Halat Çekme
+[Marchland]
+Sınır Bölgesi
 [Prizes on the rope]
 Halattaki ödüller
 [March width]
 Sınır bölgesi genişliği
 [Levelling]
 Eşitleme
-[A tug needs two sides; use at least two colonies.]
-Halat Çekme için iki taraf gerekir; en az iki koloni kullanın.
+[A march needs a country on each side; use at least two colonies.]
+Bir sınır bölgesi her iki yanında bir ülke gerektirir; en az iki koloni kullanın.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Bu haritanın her birine bir anayurt verebilmesi için çok fazla koloni var; daha büyük bir harita veya daha az koloni kullanın.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

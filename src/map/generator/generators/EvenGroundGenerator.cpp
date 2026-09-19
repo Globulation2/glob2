@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EquilibriumGenerator.h"
+#include "EvenGroundGenerator.h"
 #include "Contact.h"
 #include "Game.h"
 #include "GenerationContext.h"
@@ -23,13 +23,20 @@
 #include <vector>
 using namespace MapGeneration;
 
-// Equilibrium: a country with no drawn shape at all. Every other landscape here decides what it
+// Even Ground: a country with no drawn shape at all. Every other landscape here decides what it
 // looks like - a moat, a braid, a ring of forts - and then works to make that shape fair. This one
 // starts from what the finished map must be true of, and searches for ground that satisfies it: the
 // colonies' catchments of each crop must come out equal, everyone must be able to walk to everyone,
 // every colony must have clear ground to build on, and the ways between neighbours must be about as
 // tight as the player asked for. The terrain is whatever meets those conditions, so two seeds at
 // the same settings look nothing alike and play to the same balance.
+//
+// WHY THE RANDOM STREAMS STILL SAY "equilibrium". This map was called Equilibrium until shortly
+// before it merged. A stream's name is mixed into every draw taken from it, so renaming
+// "equilibrium-shape" and its siblings would move every map this generator has ever made, and the
+// golden rows, the figures in EVEN_GROUND.md and the games already played would all describe maps
+// that no longer exist. Stream names are internal and never shown, so they stay and the public name
+// changed around them. Brief is given the two names separately for the same reason.
 //
 // HOW IT IS SOLVED. A map is far too big to search tile by tile, so the search runs on a coarse
 // lattice of cells (8 to 32 tiles a side), each of which is water, open ground, or a field of one
@@ -717,7 +724,7 @@ void floodToShare(Solved &solved, GenerationContext &context, int sharePercent)
 }
 
 /// The crops the amount sliders asked for, dealt over the land as a starting arrangement.
-void stockToAmounts(Solved &solved, GenerationContext &context, const EquilibriumOptions &o,
+void stockToAmounts(Solved &solved, GenerationContext &context, const EvenGroundOptions &o,
 					double greenness)
 {
 	const int cells = solved.lat.size();
@@ -807,7 +814,7 @@ std::string latticeFailure(const GenerationRequest &request)
 
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
-	const EquilibriumOptions o(request);
+	const EvenGroundOptions o(request);
 	Layout L;
 	L.t = {1 << request.wDec, 1 << request.hDec};
 	L.failure = latticeFailure(request);
@@ -847,7 +854,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	//
 	// The whole brief is drawn here, before any of it is used, so what a seed was asked for can be
 	// read in one place rather than gathered from the design as it goes.
-	Brief brief(context, "equilibrium");
+	Brief brief(context, "even-ground", "equilibrium");
 	const double wetness = brief.target("wetness", kWetLeast, kWetMost);
 	const double greenness = brief.target("greenness", kGreenLeast, kGreenMost);
 	// Ranges, not constants: the whole reason one seed of a solved map looks like another is that
@@ -931,32 +938,32 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	for (int i = 0; i < L.t.size(); ++i)
 		L.homeOf[i] = ownerOf[L.cellOf[i]];
 
-	context.telemetry.measure("equilibrium.lattice.cells", L.lat.size());
-	context.telemetry.measure("equilibrium.lattice.cell-tiles", L.lat.tiles);
-	reportSolve(context.telemetry, "equilibrium.shape", solved.shape);
-	reportObjective(context.telemetry, "equilibrium.shape", solved.cost);
-	context.telemetry.measure("equilibrium.shape.reach-spread", solved.reachSpread);
-	context.telemetry.measure("equilibrium.shape.pass-width-target", wantWidth);
-	context.telemetry.measure("equilibrium.shape.pass-width-cells", solved.passWidth);
-	context.telemetry.measure("equilibrium.shape.room-shortfall", solved.roomShort);
-	context.telemetry.measure("equilibrium.shape.shore-per-water-cell", solved.shoreRatio);
-	context.telemetry.measure("equilibrium.shape.bodies-target", bodiesWanted);
-	context.telemetry.measure("equilibrium.shape.bodies-actual", solved.bodies);
-	reportSolve(context.telemetry, "equilibrium.stock", solved.stock);
-	reportObjective(context.telemetry, "equilibrium.stock", solved.stockCost);
-	context.telemetry.measure("equilibrium.stock.spread-before", solved.stockSpreadBefore);
-	context.telemetry.measure("equilibrium.stock.spread-after", solved.stockSpreadAfter);
-	context.telemetry.measure("equilibrium.stock.field-clustering", solved.fields);
+	context.telemetry.measure("even-ground.lattice.cells", L.lat.size());
+	context.telemetry.measure("even-ground.lattice.cell-tiles", L.lat.tiles);
+	reportSolve(context.telemetry, "even-ground.shape", solved.shape);
+	reportObjective(context.telemetry, "even-ground.shape", solved.cost);
+	context.telemetry.measure("even-ground.shape.reach-spread", solved.reachSpread);
+	context.telemetry.measure("even-ground.shape.pass-width-target", wantWidth);
+	context.telemetry.measure("even-ground.shape.pass-width-cells", solved.passWidth);
+	context.telemetry.measure("even-ground.shape.room-shortfall", solved.roomShort);
+	context.telemetry.measure("even-ground.shape.shore-per-water-cell", solved.shoreRatio);
+	context.telemetry.measure("even-ground.shape.bodies-target", bodiesWanted);
+	context.telemetry.measure("even-ground.shape.bodies-actual", solved.bodies);
+	reportSolve(context.telemetry, "even-ground.stock", solved.stock);
+	reportObjective(context.telemetry, "even-ground.stock", solved.stockCost);
+	context.telemetry.measure("even-ground.stock.spread-before", solved.stockSpreadBefore);
+	context.telemetry.measure("even-ground.stock.spread-after", solved.stockSpreadAfter);
+	context.telemetry.measure("even-ground.stock.field-clustering", solved.fields);
 	if (solved.severed > 0)
-		context.telemetry.fallback("equilibrium.shape.severed",
+		context.telemetry.fallback("even-ground.shape.severed",
 								   "The search could not join every colony by land.");
 	return L;
 }
 
 bool generate(Game &game, GenerationContext &context)
 {
-	context.stage = "equilibrium solve";
-	const EquilibriumOptions o(context.request);
+	context.stage = "even ground solve";
+	const EvenGroundOptions o(context.request);
 	const Layout L = design(context.request, context);
 	if (!L.failure.empty())
 	{
@@ -969,10 +976,10 @@ bool generate(Game &game, GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 		game.addTeam();
 
-	context.stage = "equilibrium terrain";
+	context.stage = "even ground terrain";
 	writeUndermap(map, L.terrain);
 
-	context.stage = "equilibrium colonies";
+	context.stage = "even ground colonies";
 	const auto homeMask = [&](int team)
 	{
 		std::vector<unsigned char> ground(size_t(t.size()), 0);
@@ -989,7 +996,7 @@ bool generate(Game &game, GenerationContext &context)
 	if (!settleColonies(game, context, "equilibrium-starts", homeMask, anchor))
 		return false;
 
-	context.stage = "equilibrium resources";
+	context.stage = "even ground resources";
 	// Each crop cell is planted to a share of its own ground, chosen by a smooth field so the cover
 	// comes out as patches with gaps rather than a solid block: fields stay walkable and gatherable
 	// from inside, which a solid one would not be.
@@ -1005,15 +1012,15 @@ bool generate(Game &game, GenerationContext &context)
 			ground[kind].push_back(i);
 	}
 	const auto level = [&](int i) { return grain[i]; };
-	context.telemetry.measure("equilibrium.wheat.tiles",
+	context.telemetry.measure("even-ground.wheat.tiles",
 							  plantCoverShare(map, t, ground[kWheat], WHEAT, kWheatCover, level));
-	context.telemetry.measure("equilibrium.wood.tiles",
+	context.telemetry.measure("even-ground.wood.tiles",
 							  plantCoverShare(map, t, ground[kWood], WOOD, kWoodCover, level));
-	context.telemetry.measure("equilibrium.stone.tiles",
+	context.telemetry.measure("even-ground.stone.tiles",
 							  plantCoverShare(map, t, ground[kStone], STONE, kStoneCover, level));
 	seedAlgae(map, context, t, "equilibrium-algae", o.algae, AlgaeBand::shallows(1, 4).thriving(0.5));
 
-	context.stage = "equilibrium openings";
+	context.stage = "even ground openings";
 	secureStartingCrops(game, context, t);
 	// The solved lattice joins every colony by land, but the warp and the beaches can pinch a
 	// one-cell isthmus shut. This is the backstop: it clears the deposits on one walk and, only if
@@ -1038,18 +1045,18 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 }
 } // namespace
 
-EquilibriumOptions::EquilibriumOptions(const GenerationRequest &r)
+EvenGroundOptions::EvenGroundOptions(const GenerationRequest &r)
 	: water(r.option("water-share")), balance(r.option("balance")), passes(r.option("passes")),
 	  effort(r.option("effort")), wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount"))
 {
 }
 
-GeneratorDefinition equilibriumDefinition()
+GeneratorDefinition evenGroundDefinition()
 {
-	return {"equilibrium",
+	return {"even-ground",
 			58,
-			"Equilibrium",
+			"Even Ground",
 			1,
 			false,
 			// The sliders are the targets the solver is given, not the terrain it draws. Water share

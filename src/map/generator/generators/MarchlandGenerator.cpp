@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "TugGenerator.h"
+#include "MarchlandGenerator.h"
 #include "Contact.h"
 #include "Game.h"
 #include "GenerationContext.h"
@@ -27,10 +27,17 @@
 #include <vector>
 using namespace MapGeneration;
 
-// Tug (id "tug", legacy id 59): a country of home territories parted by a march of no-man's land,
-// with a rope of prizes strung through it. Every prize is a fruit grove with a quarry beside it -
-// the only fruit on the map and the only quarry worth marching for - and every prize is the same
-// walk from every colony.
+// Marchland (id "marchland", legacy id 59): a country of home territories parted by a march of
+// no-man's land, with a rope of prizes strung through it. Every prize is a fruit grove with a
+// quarry beside it - the only fruit on the map and the only quarry worth marching for - and every
+// prize is the same walk from every colony.
+//
+// WHY THE RANDOM STREAMS STILL SAY "tug". This map was called Tug until shortly before it merged.
+// A stream's name is mixed into every draw taken from it, so renaming "tug-terrain" and its
+// siblings would move every map this generator has ever made, and the golden rows, the figures in
+// MARCHLAND.md and the games already played would all describe maps that no longer exist. Stream
+// names are internal and never shown, so they stay and the public name changed around them. Brief
+// is given the two names separately for the same reason.
 //
 // WHAT THE GAME IS. Your territory feeds you and cannot win for you: it has crops, wood and a small
 // quarry, and no fruit at all. The prizes are the rope. Taking one pulls your economy ahead and
@@ -229,7 +236,8 @@ constexpr StepCosts kWalk{1, 3, -1, -1, -1};
 // colony is naturally near the prizes on its own fronts and far from the ones across the country,
 // so the mean walk measures the shape of the map at least as much as the fairness of the rope: on a
 // 4:1 map it came out 126 steps apart for reasons no arrangement of prizes could fix, and chasing
-// it only moved the homelands about to no good end. What a tug actually needs is that everybody has
+// it only moved the homelands about to no good end. What this map actually needs is that
+// everybody has
 // the same number of prizes they can fight for on equal terms, which is what this asks for and what
 // the search delivers on every shape.
 //
@@ -355,15 +363,15 @@ void cutRiver(Layout &L, const Torus &t, int teams, GenerationContext &context, 
 	const double commonsShare = 1.0 - chosen.score.residual("commons");
 	if (!chosen.found || chosen.score.residual("town") != 0 || commonsShare < kLeastCommonsShare)
 	{
-		context.telemetry.measure("tug.river.best-commons-share",
+		context.telemetry.measure("marchland.river.best-commons-share",
 								  chosen.found ? commonsShare : 0.0);
-		context.telemetry.fallback("tug.river.no-room",
+		context.telemetry.fallback("marchland.river.no-room",
 								   "This country had no bed a river could take.");
 		return;
 	}
 	L.hasRiver = true;
 	L.river = chosen.bed;
-	reportObjective(context.telemetry, "tug.river.bed", chosen.score);
+	reportObjective(context.telemetry, "marchland.river.bed", chosen.score);
 	int bedTiles = 0;
 	for (int i = 0; i < t.size(); ++i)
 		if (chosen.water[i])
@@ -371,14 +379,14 @@ void cutRiver(Layout &L, const Torus &t, int teams, GenerationContext &context, 
 			water[i] = 1;
 			++bedTiles;
 		}
-	context.telemetry.measure("tug.river.tiles", bedTiles);
+	context.telemetry.measure("marchland.river.tiles", bedTiles);
 }
 
 /// The country: lakes, homelands shared out equally, and a march opened between them. Every step of
 /// this is a shared primitive doing the job it was written for; none of it is searched.
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
-	const TugOptions o(request);
+	const MarchlandOptions o(request);
 	Layout L;
 	L.t = {1 << request.wDec, 1 << request.hDec};
 	const Torus &t = L.t;
@@ -392,7 +400,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// colony's own country from the commons at a glance, and the ragged draw is how far its edge
 	// follows the lie of the land. A reader looking at an odd seed should be able to see what it
 	// was asked for before wondering whether the search failed.
-	Brief brief(context, "tug");
+	Brief brief(context, "marchland", "tug");
 	const double homelandShare = brief.target("homeland-share", kHomelandLeast, kHomelandMost);
 	L.farmed = brief.target("farmed-share", kFarmedLeast, kFarmedMost);
 	const std::int64_t ragged =
@@ -640,9 +648,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		const int grown = growLakeBeside(
 			t, water, depth, room, kLakeGap, kHomeLakeTiles, L.homes[k].site, L.homes[k].axis, side,
 			kLakeFromSwarm, kLakeReach, [&](int i) { return relief[i] / 65535.0; }, queued, k + 1);
-		context.telemetry.measure("tug.home.lake-tiles", grown, k);
+		context.telemetry.measure("marchland.home.lake-tiles", grown, k);
 		if (grown < kHomeLakeTiles)
-			context.telemetry.fallback("tug.home.lake-short",
+			context.telemetry.fallback("marchland.home.lake-short",
 									   "A homeland had no room for its whole lake.", k);
 	}
 
@@ -670,8 +678,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 							 int(L.river.line.size()));
 		for (const int site : taken)
 			L.fords.push_back(sites[site].index);
-		context.telemetry.measure("tug.river.ford-sites", int(sites.size()));
-		context.telemetry.measure("tug.river.fords", int(L.fords.size()));
+		context.telemetry.measure("marchland.river.ford-sites", int(sites.size()));
+		context.telemetry.measure("marchland.river.fords", int(L.fords.size()));
 	}
 
 	L.terrain.assign(t.size(), GRASS);
@@ -691,13 +699,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			L.march[i] = L.ownerOf[i] < 0 && L.ground[i];
 		}
 
-	context.telemetry.measure("tug.ground.mainland-tiles", partSize[mainland]);
+	context.telemetry.measure("marchland.ground.mainland-tiles", partSize[mainland]);
 	// What growTerritories dealt out, which is the equal-ground guarantee the map's fairness rests
 	// on. It is named for the territory and not the homeland because that is what it is: it is read
 	// before the march is opened, so it does not move when the march control widens the gap. The
 	// homeland a colony actually keeps is counted below, from the finished ground.
-	context.telemetry.measure("tug.territory.smallest-tiles", shared.smallest());
-	context.telemetry.measure("tug.territory.largest-tiles", shared.largest());
+	context.telemetry.measure("marchland.territory.smallest-tiles", shared.smallest());
+	context.telemetry.measure("marchland.territory.largest-tiles", shared.largest());
 	int marchTiles = 0;
 	std::vector<int> homelandTiles(teams, 0);
 	for (int i = 0; i < t.size(); ++i)
@@ -706,13 +714,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		if (L.ownerOf[i] >= 0 && L.ownerOf[i] < teams && L.ground[i])
 			++homelandTiles[L.ownerOf[i]];
 	}
-	context.telemetry.measure("tug.march.tiles", marchTiles);
+	context.telemetry.measure("marchland.march.tiles", marchTiles);
 	// The homelands as they finish: what the march control takes away, and what the lakes and the
 	// river leave. The territory above is equal by construction; this is not promised to be, and the
 	// gap between the two is the part of a colony's ground that the water took.
 	const auto [least, most] = std::minmax_element(homelandTiles.begin(), homelandTiles.end());
-	context.telemetry.measure("tug.homeland.smallest-tiles", *least);
-	context.telemetry.measure("tug.homeland.largest-tiles", *most);
+	context.telemetry.measure("marchland.homeland.smallest-tiles", *least);
+	context.telemetry.measure("marchland.homeland.largest-tiles", *most);
 	return L;
 }
 
@@ -731,10 +739,12 @@ constexpr int kNoWalk = 1 << 20;
 /// colony - and it was the wrong property twice over. It is over-constrained: a site equidistant
 /// from all of four colonies lies near one place on the map, so asking for six such sites that are
 /// also well separated asks for something the ground does not contain, and the search stalled at a
-/// spread of 31 steps having started at 72. And it was not even what a tug of war wants, because a
+/// spread of 31 steps having started at 72. And it was not even what a tug of war wants,
+/// because a
 /// rope with no near end for anybody is a rope nobody can start pulling.
 ///
-/// What a tug wants is that each prize sits on a front between the two colonies contending for it,
+/// What this map wants is that each prize sits on a front between the two colonies contending
+/// for it,
 /// and that no colony is near more of the rope than any other. Both are satisfiable at once, and
 /// together they say the real thing: every prize is a fight, and the fights are shared out evenly.
 struct RopeScore
@@ -885,8 +895,8 @@ std::vector<std::vector<int>> colonyCosts(const Map &map, const Torus &t, int te
 
 bool generate(Game &game, GenerationContext &context)
 {
-	context.stage = "tug country";
-	const TugOptions o(context.request);
+	context.stage = "marchland country";
+	const MarchlandOptions o(context.request);
 	const Layout L = design(context.request, context);
 	if (!L.failure.empty())
 	{
@@ -899,10 +909,10 @@ bool generate(Game &game, GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 		game.addTeam();
 
-	context.stage = "tug terrain";
+	context.stage = "marchland terrain";
 	writeUndermap(map, L.terrain);
 
-	context.stage = "tug colonies";
+	context.stage = "marchland colonies";
 	const auto homeMask = [&](int team)
 	{
 		std::vector<unsigned char> home(size_t(t.size()), 0);
@@ -914,7 +924,7 @@ bool generate(Game &game, GenerationContext &context)
 	if (!settleColonies(game, context, "tug-starts", homeMask, anchor))
 		return false;
 
-	context.stage = "tug homelands";
+	context.stage = "marchland homelands";
 	// What a homeland carries: a starter kit at the swarm, then fields and woods over its own
 	// ground. No fruit, and no quarry worth marching for: those are on the rope.
 	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
@@ -968,7 +978,7 @@ bool generate(Game &game, GenerationContext &context)
 						[&](int i) { return woodGrain[i]; });
 	}
 
-	context.stage = "tug rope";
+	context.stage = "marchland rope";
 	// The march's candidate sites: open ground out in the no-man's land with room for a prize and
 	// the fighting round it.
 	const std::vector<std::vector<int>> cost = colonyCosts(map, t, teams);
@@ -1000,7 +1010,7 @@ bool generate(Game &game, GenerationContext &context)
 		if (teams < 2 || walk[1] - walk[0] <= contestMargin(t))
 			candidates.push_back(i);
 	}
-	context.telemetry.measure("tug.rope.contested-candidates", int(candidates.size()));
+	context.telemetry.measure("marchland.rope.contested-candidates", int(candidates.size()));
 	// Too little contested ground for the whole rope is not a failure: a shorter rope is still a
 	// rope, and it is a far better answer than refusing the map. Two colonies have only one front
 	// between them, so a long rope asked for on a cramped march simply cannot be strung, and the
@@ -1021,16 +1031,16 @@ bool generate(Game &game, GenerationContext &context)
 						 "wider march.";
 		return false;
 	}
-	context.telemetry.measure("tug.rope.candidates", rope.candidates);
-	context.telemetry.measure("tug.rope.prizes-wanted", o.prizes);
-	context.telemetry.measure("tug.rope.prizes-strung", int(rope.prize.size()));
-	reportSolve(context.telemetry, "tug.rope", rope.run);
-	context.telemetry.measure("tug.rope.contest-dealt", rope.dealt.contest);
-	context.telemetry.measure("tug.rope.contest-solved", rope.solved.contest);
-	context.telemetry.measure("tug.rope.share-dealt", rope.dealt.share);
-	context.telemetry.measure("tug.rope.share-solved", rope.solved.share);
+	context.telemetry.measure("marchland.rope.candidates", rope.candidates);
+	context.telemetry.measure("marchland.rope.prizes-wanted", o.prizes);
+	context.telemetry.measure("marchland.rope.prizes-strung", int(rope.prize.size()));
+	reportSolve(context.telemetry, "marchland.rope", rope.run);
+	context.telemetry.measure("marchland.rope.contest-dealt", rope.dealt.contest);
+	context.telemetry.measure("marchland.rope.contest-solved", rope.solved.contest);
+	context.telemetry.measure("marchland.rope.share-dealt", rope.dealt.share);
+	context.telemetry.measure("marchland.rope.share-solved", rope.solved.share);
 	if (int(rope.prize.size()) < o.prizes)
-		context.telemetry.fallback("tug.rope.short",
+		context.telemetry.fallback("marchland.rope.short",
 								   "The march had room for fewer prizes than were asked for.");
 
 	// The march goes dry, now that the rope is decided and before a single prize is placed.
@@ -1072,7 +1082,7 @@ bool generate(Game &game, GenerationContext &context)
 		}
 	layBeaches(dry, t);
 	writeUndermap(map, dry);
-	context.telemetry.measure("tug.march.sand-tiles", sanded);
+	context.telemetry.measure("marchland.march.sand-tiles", sanded);
 
 	// Every prize is the same prize: a grove of one fruit with a quarry beside it, on the one patch
 	// of living ground for a long way in any direction. Identical value is what leaves position as
@@ -1121,7 +1131,7 @@ bool generate(Game &game, GenerationContext &context)
 			map.isGrass(i % t.w, i / t.w))
 			open2.push_back(i);
 	context.telemetry.measure(
-		"tug.commons.wheat-tiles",
+		"marchland.commons.wheat-tiles",
 		plantCoverShare(map, t, open2, WHEAT, int(scaledCount(kCommonsWheat, o.wheat)),
 						[&](int i) { return wheatGrain[i]; }));
 	open2.clear();
@@ -1130,23 +1140,23 @@ bool generate(Game &game, GenerationContext &context)
 			map.isGrass(i % t.w, i / t.w))
 			open2.push_back(i);
 	context.telemetry.measure(
-		"tug.commons.wood-tiles",
+		"marchland.commons.wood-tiles",
 		plantCoverShare(map, t, open2, WOOD, int(scaledCount(kCommonsWood, o.wood)),
 						[&](int i) { return woodGrain[i]; }));
 
-	context.stage = "tug openings";
+	context.stage = "marchland openings";
 	secureStartingCrops(game, context, t);
 	openColonyRoutes(map, context, t, kWalk);
 	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, 100, o.fruit});
 	return true;
 }
 
-/// Why a request cannot be a tug, or "". A rope needs two ends: with a single colony
+/// Why a request cannot be a marchland, or "". A rope needs two ends: with a single colony
 /// separateTerritories has nothing to part, there is no march, and the map has nothing to be about.
 std::string requestFailure(const GenerationRequest &request)
 {
 	if (request.nbTeams < 2)
-		return "A tug needs two sides; use at least two colonies.";
+		return "A march needs a country on each side; use at least two colonies.";
 	// Each homeland has to hold a town, a lake, a farm and a way out onto the march. Below about
 	// this much ground per colony it holds none of them and every seed fails late instead of the
 	// request failing early.
@@ -1277,18 +1287,18 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 }
 } // namespace
 
-TugOptions::TugOptions(const GenerationRequest &r)
+MarchlandOptions::MarchlandOptions(const GenerationRequest &r)
 	: prizes(r.option("prizes")), march(r.option("march")), levelling(r.option("levelling")),
 	  lakes(r.option("lakes")), wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
 	  stone(r.option("stone-amount")), fruit(r.option("fruit-amount"))
 {
 }
 
-GeneratorDefinition tugDefinition()
+GeneratorDefinition marchlandDefinition()
 {
-	return {"tug",
+	return {"marchland",
 			59,
-			"Tug",
+			"Marchland",
 			// 2: some seeds now cut a river through the commons, which moves their terrain.
 			2,
 			false,

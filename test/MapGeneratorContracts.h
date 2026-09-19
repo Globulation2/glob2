@@ -1140,10 +1140,10 @@ inline void bajadaContracts()
 		 "towns under growth, crops refused in towns");
 }
 
-inline void equilibriumContracts()
+inline void evenGroundContracts()
 {
 	const auto &definition =
-		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("equilibrium"));
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("even-ground"));
 	assert(definition.legacyId == 58 && definition.revision == 1);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
@@ -1168,7 +1168,7 @@ inline void equilibriumContracts()
 			Game g(nullptr);
 			const auto result = service.generate(g, make(dimensions.first, dimensions.second, teams, 7));
 			if (!result)
-				std::fprintf(stderr, "Equilibrium contract (%d x %d, %d colonies): %s\n",
+				std::fprintf(stderr, "Even Ground contract (%d x %d, %d colonies): %s\n",
 							 1 << dimensions.first, 1 << dimensions.second, teams,
 							 result.diagnostic().c_str());
 			assert(result);
@@ -1211,9 +1211,9 @@ inline void equilibriumContracts()
 		double before = -1, after = -1;
 		for (const auto &record : result.telemetry.records())
 		{
-			if (record.key == "equilibrium.stock.spread-before")
+			if (record.key == "even-ground.stock.spread-before")
 				before = std::get<double>(record.value);
-			if (record.key == "equilibrium.stock.spread-after")
+			if (record.key == "even-ground.stock.spread-after")
 				after = std::get<double>(record.value);
 		}
 		assert(before >= 0 && after >= 0);
@@ -1236,14 +1236,14 @@ inline void equilibriumContracts()
 					g.map.getResource(x, y).clear();
 		assert(!definition.validateWorld(g, check).empty());
 	}
-	puts("PASS Equilibrium: envelope including thin maps and refusal, water budget ordering, "
+	puts("PASS Even Ground: envelope including thin maps and refusal, water budget ordering, "
 		 "balance buys a measurably smaller catchment spread, crop reach enforced");
 }
 
-inline void tugContracts()
+inline void marchlandContracts()
 {
 	const auto &definition =
-		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("tug"));
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("marchland"));
 	assert(definition.legacyId == 59 && definition.revision == 2);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
@@ -1265,7 +1265,7 @@ inline void tugContracts()
 			Game g(nullptr);
 			const auto result = service.generate(g, make(dimensions.first, dimensions.second, teams, 31001));
 			if (!result)
-				std::fprintf(stderr, "Tug contract (%d x %d, %d colonies): %s\n",
+				std::fprintf(stderr, "Marchland contract (%d x %d, %d colonies): %s\n",
 							 1 << dimensions.first, 1 << dimensions.second, teams,
 							 result.diagnostic().c_str());
 			assert(result);
@@ -1313,11 +1313,11 @@ inline void tugContracts()
 			double tiles = -1, fords = -1, town = -1;
 			for (const auto &record : result.telemetry.records())
 			{
-				if (record.key == "tug.river.tiles")
+				if (record.key == "marchland.river.tiles")
 					tiles = number(record);
-				if (record.key == "tug.river.fords")
+				if (record.key == "marchland.river.fords")
 					fords = number(record);
-				if (record.key == "tug.river.bed.town.residual")
+				if (record.key == "marchland.river.bed.town.residual")
 					town = number(record);
 			}
 			if (tiles < 0)
@@ -1351,7 +1351,7 @@ inline void tugContracts()
 			water += g.map.isWater(i % 256, i / 256);
 		}
 		assert(fruit > 0 && water > 0);
-		// Take the fruit away and the map is no longer a tug; the validator must say so.
+		// Take the fruit away and the map is no longer a marchland; the validator must say so.
 		for (int i = 0; i < 256 * 256; ++i)
 		{
 			const int type = g.map.getResource(i % 256, i / 256).type;
@@ -1373,9 +1373,9 @@ inline void tugContracts()
 		int dealt = -1, solved = -1;
 		for (const auto &record : result.telemetry.records())
 		{
-			if (record.key == "tug.rope.share-dealt")
+			if (record.key == "marchland.rope.share-dealt")
 				dealt = int(std::get<std::int64_t>(record.value));
-			if (record.key == "tug.rope.share-solved")
+			if (record.key == "marchland.rope.share-solved")
 				solved = int(std::get<std::int64_t>(record.value));
 		}
 		assert(dealt >= 0 && solved >= 0);
@@ -1384,15 +1384,15 @@ inline void tugContracts()
 	const auto unsolved = rope(0), solved = rope(100);
 	assert(unsolved.second == unsolved.first); // no moves: the rope is where chance left it
 	assert(solved.second * 4 < solved.first);  // searched: a fraction of the spread it started with
-	puts("PASS Tug: envelope and refusals, fruit only on the rope, guaranteed home lake and quarry, "
+	puts("PASS Marchland: envelope and refusals, fruit only on the rope, guaranteed home lake and quarry, "
 		 "levelling measurably shares the rope out, rivers drawn on some seeds and forded on all "
 		 "of them");
 }
 
 inline void generatorContracts()
 {
-	equilibriumContracts();
-	tugContracts();
+	evenGroundContracts();
+	marchlandContracts();
 	rebuiltLandscapeContracts();
 	savannahContracts();
 	locustFoodChecks();

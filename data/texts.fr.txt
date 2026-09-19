@@ -2828,8 +2828,8 @@ Oasis cachée accueille au plus huit colonies.
 Le massif ne tient pas sur cette carte ; utilisez une carte plus grande ou moins de colonies.
 [The pond has no room for that much algae; use a bigger pond.]
 L'étang n'a pas la place pour autant d'algues ; utilisez un étang plus grand.
-[Equilibrium]
-Équilibre
+[Even Ground]
+Terrain égal
 [Balance]
 Équilibrage
 [Tight passes]
@@ -2846,16 +2846,16 @@ Cette carte est trop petite pour être résolue ; utilisez une carte plus grande
 Trop de colonies à équilibrer sur une carte de cette taille ; utilisez une carte plus grande ou moins de colonies.
 [The colonies could not be spread out on this map.]
 Les colonies n'ont pas pu être réparties sur cette carte.
-[Tug]
-Tir à la corde
+[Marchland]
+Les Marches
 [Prizes on the rope]
 Trophées sur la corde
 [March width]
 Largeur de la marche
 [Levelling]
 Égalisation
-[A tug needs two sides; use at least two colonies.]
-Un tir à la corde nécessite deux camps ; utilisez au moins deux colonies.
+[A march needs a country on each side; use at least two colonies.]
+Une marche a besoin d'un pays de chaque côté ; utilisez au moins deux colonies.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Trop de colonies pour que cette carte donne à chacune une terre natale ; utilisez une carte plus grande ou moins de colonies.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

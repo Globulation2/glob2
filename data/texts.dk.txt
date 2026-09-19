@@ -2894,8 +2894,8 @@ Skjult oase rummer højst otte kolonier.
 Dette kort har ikke plads til massivet; brug et større kort eller færre kolonier.
 [The pond has no room for that much algae; use a bigger pond.]
 Dammen har ikke plads til så mange alger; brug en større dam.
-[Equilibrium]
-Ligevægt
+[Even Ground]
+Jævn mark
 [Balance]
 Balancering
 [Tight passes]
@@ -2912,16 +2912,16 @@ Dette kort er for lille at løse på; brug et større kort.
 For mange kolonier at balancere på et kort af denne størrelse; brug et større kort eller færre kolonier.
 [The colonies could not be spread out on this map.]
 Kolonierne kunne ikke spredes ud på dette kort.
-[Tug]
-Tovtrækning
+[Marchland]
+Grænseland
 [Prizes on the rope]
 Præmier på tovet
 [March width]
 Grænselandets bredde
 [Levelling]
 Udjævning
-[A tug needs two sides; use at least two colonies.]
-En tovtrækning kræver to sider; brug mindst to kolonier.
+[A march needs a country on each side; use at least two colonies.]
+Et grænseland kræver et land på hver side; brug mindst to kolonier.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 For mange kolonier til at dette kort kan give hver af dem et hjemland; brug et større kort eller færre kolonier.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

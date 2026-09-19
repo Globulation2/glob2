@@ -2818,8 +2818,8 @@ A Rejtett oázis legfeljebb nyolc kolóniát fogad be.
 A masszívum nem fér el ezen a térképen; használj nagyobb térképet vagy kevesebb kolóniát.
 [The pond has no room for that much algae; use a bigger pond.]
 A tavacskában nincs hely ennyi algának; használj nagyobb tavacskát.
-[Equilibrium]
-Egyensúly
+[Even Ground]
+Egyenlő terep
 [Balance]
 Kiegyensúlyozás
 [Tight passes]
@@ -2836,16 +2836,16 @@ Ez a térkép túl kicsi a megoldáshoz; használj nagyobb térképet.
 Túl sok kolónia ahhoz, hogy ekkora térképen kiegyensúlyozhatók legyenek; használj nagyobb térképet vagy kevesebb kolóniát.
 [The colonies could not be spread out on this map.]
 A kolóniákat nem sikerült elosztani ezen a térképen.
-[Tug]
-Kötélhúzás
+[Marchland]
+Határvidék
 [Prizes on the rope]
 Díjak a kötélen
 [March width]
 A határvidék szélessége
 [Levelling]
 Kiegyenlítés
-[A tug needs two sides; use at least two colonies.]
-A kötélhúzáshoz két oldal kell; használj legalább két kolóniát.
+[A march needs a country on each side; use at least two colonies.]
+A határvidékhez mindkét oldalon kell egy ország; használj legalább két kolóniát.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Túl sok kolónia ahhoz, hogy ez a térkép mindegyiknek hazát adjon; használj nagyobb térképet vagy kevesebb kolóniát.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

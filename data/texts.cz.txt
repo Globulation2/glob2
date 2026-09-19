@@ -2818,8 +2818,8 @@ Skrytá oáza pojme nejvýše osm kolonií.
 Masiv se na tuto mapu nevejde; použijte větší mapu nebo méně kolonií.
 [The pond has no room for that much algae; use a bigger pond.]
 V tůni není místo pro tolik řas; použijte větší tůň.
-[Equilibrium]
-Rovnováha
+[Even Ground]
+Rovný terén
 [Balance]
 Vyvážení
 [Tight passes]
@@ -2836,16 +2836,16 @@ Tato mapa je příliš malá na řešení; použijte větší mapu.
 Příliš mnoho kolonií na vyvážení na mapě této velikosti; použijte větší mapu nebo méně kolonií.
 [The colonies could not be spread out on this map.]
 Kolonie se na této mapě nepodařilo rozmístit.
-[Tug]
-Přetahování lanem
+[Marchland]
+Pohraničí
 [Prizes on the rope]
 Trofeje na laně
 [March width]
 Šířka pohraničí
 [Levelling]
 Vyrovnávání
-[A tug needs two sides; use at least two colonies.]
-Přetahování lanem potřebuje dvě strany; použijte alespoň dvě kolonie.
+[A march needs a country on each side; use at least two colonies.]
+Pohraničí potřebuje zemi na každé straně; použijte alespoň dvě kolonie.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Příliš mnoho kolonií na to, aby tato mapa dala každé domovinu; použijte větší mapu nebo méně kolonií.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

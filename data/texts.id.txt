@@ -2814,8 +2814,8 @@ Oasis Tersembunyi menampung paling banyak delapan koloni.
 Masif batu tidak muat di peta ini; gunakan peta yang lebih besar atau koloni yang lebih sedikit.
 [The pond has no room for that much algae; use a bigger pond.]
 Kolam tidak punya ruang untuk ganggang sebanyak itu; gunakan kolam yang lebih besar.
-[Equilibrium]
-Keseimbangan
+[Even Ground]
+Tanah Sama Rata
 [Balance]
 Penyeimbangan
 [Tight passes]
@@ -2832,16 +2832,16 @@ Peta ini terlalu kecil untuk dipecahkan; gunakan peta yang lebih besar.
 Terlalu banyak koloni untuk diseimbangkan pada peta seukuran ini; gunakan peta yang lebih besar atau lebih sedikit koloni.
 [The colonies could not be spread out on this map.]
 Koloni tidak dapat disebar di peta ini.
-[Tug]
-Tarik Tambang
+[Marchland]
+Perbatasan
 [Prizes on the rope]
 Hadiah pada tali
 [March width]
 Lebar perbatasan
 [Levelling]
 Penyetaraan
-[A tug needs two sides; use at least two colonies.]
-Tarik Tambang memerlukan dua pihak; gunakan setidaknya dua koloni.
+[A march needs a country on each side; use at least two colonies.]
+Perbatasan memerlukan sebuah negeri di kedua sisinya; gunakan setidaknya dua koloni.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Terlalu banyak koloni bagi peta ini untuk memberi masing-masing tanah air; gunakan peta yang lebih besar atau lebih sedikit koloni.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

@@ -2816,8 +2816,8 @@ Emoji
 لا تتسع هذه الخريطة للكتلة الصخرية؛ استخدم خريطة أكبر أو مستعمرات أقل.
 [The pond has no room for that much algae; use a bigger pond.]
 لا تتسع البركة لهذا القدر من الطحالب؛ استخدم بركة أكبر.
-[Equilibrium]
-التوازن
+[Even Ground]
+أرض متكافئة
 [Balance]
 الموازنة
 [Tight passes]
@@ -2834,16 +2834,16 @@ Emoji
 عدد المستعمرات كبير جدًا على موازنتها في خريطة بهذا الحجم؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
 [The colonies could not be spread out on this map.]
 تعذّر توزيع المستعمرات على هذه الخريطة.
-[Tug]
-شد الحبل
+[Marchland]
+المنطقة الحدودية
 [Prizes on the rope]
 الجوائز على الحبل
 [March width]
 عرض المنطقة الحدودية
 [Levelling]
 التسوية
-[A tug needs two sides; use at least two colonies.]
-يحتاج شد الحبل إلى طرفين؛ استخدم مستعمرتين على الأقل.
+[A march needs a country on each side; use at least two colonies.]
+تحتاج المنطقة الحدودية إلى بلد على كل جانب؛ استخدم مستعمرتين على الأقل.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 عدد المستعمرات كبير جدًا على أن تمنح هذه الخريطة كلًا منها موطنًا؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

@@ -2828,8 +2828,8 @@ Dold oas rymmer högst åtta kolonier.
 Massivet får inte plats på den här kartan; använd en större karta eller färre kolonier.
 [The pond has no room for that much algae; use a bigger pond.]
 Dammen har inte plats för så många alger; använd en större damm.
-[Equilibrium]
-Jämvikt
+[Even Ground]
+Jämn mark
 [Balance]
 Balans
 [Tight passes]
@@ -2846,16 +2846,16 @@ Den här kartan är för liten att lösa på; använd en större karta.
 För många kolonier att balansera på en karta av den här storleken; använd en större karta eller färre kolonier.
 [The colonies could not be spread out on this map.]
 Kolonierna kunde inte spridas ut på den här kartan.
-[Tug]
-Dragkamp
+[Marchland]
+Gränsland
 [Prizes on the rope]
 Priser på repet
 [March width]
 Gränslandets bredd
 [Levelling]
 Utjämning
-[A tug needs two sides; use at least two colonies.]
-En dragkamp behöver två sidor; använd minst två kolonier.
+[A march needs a country on each side; use at least two colonies.]
+Ett gränsland behöver ett land på var sida; använd minst två kolonier.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 För många kolonier för att den här kartan ska ge var och en ett hemland; använd en större karta eller färre kolonier.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

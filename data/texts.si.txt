@@ -2818,8 +2818,8 @@ Skrita oaza sprejme največ osem kolonij.
 Masiv ne gre na ta zemljevid; uporabite večji zemljevid ali manj kolonij.
 [The pond has no room for that much algae; use a bigger pond.]
 V mlaki ni prostora za toliko alg; uporabite večjo mlako.
-[Equilibrium]
-Ravnovesje
+[Even Ground]
+Izenačen teren
 [Balance]
 Uravnoteženje
 [Tight passes]
@@ -2836,16 +2836,16 @@ Ta zemljevid je premajhen za reševanje; uporabite večji zemljevid.
 Preveč kolonij za uravnoteženje na zemljevidu te velikosti; uporabite večji zemljevid ali manj kolonij.
 [The colonies could not be spread out on this map.]
 Kolonij na tem zemljevidu ni bilo mogoče razporediti.
-[Tug]
-Vlečenje vrvi
+[Marchland]
+Obmejni pas
 [Prizes on the rope]
 Nagrade na vrvi
 [March width]
 Širina obmejnega pasu
 [Levelling]
 Izenačevanje
-[A tug needs two sides; use at least two colonies.]
-Vlečenje vrvi potrebuje dve strani; uporabite vsaj dve koloniji.
+[A march needs a country on each side; use at least two colonies.]
+Obmejni pas potrebuje deželo na vsaki strani; uporabite vsaj dve koloniji.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Preveč kolonij, da bi ta zemljevid vsaki dal domovino; uporabite večji zemljevid ali manj kolonij.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

@@ -1,12 +1,12 @@
-# Tug: drawn country, solved rope
+# Marchland: drawn country, solved rope
 
-`tug`, legacy id 59. Source: [TugGenerator.cpp](../../src/map/generator/generators/TugGenerator.cpp).
+`marchland`, legacy id 59. Source: [MarchlandGenerator.cpp](../../src/map/generator/generators/MarchlandGenerator.cpp).
 
 Homelands of farmed country, parted by a dry march that nobody can build on, with a rope of prizes
 strung through it. Every prize is a fruit grove with a quarry beside it, on a clearing of living
 ground — the only fruit on the map, and the only quarry worth marching for.
 
-![Eight Tug seeds at 256×256 with four colonies](images/constraint-solved/tug-seeds.png)
+![Eight Marchland seeds at 256×256 with four colonies](images/constraint-solved/marchland-seeds.png)
 
 The pale ring round each homeland is the dry march; the winding channel on seeds 1, 3 and 7 is the
 river some seeds cut through the commons. The homelands are visibly squarish, which is a known
@@ -21,7 +21,7 @@ prizes, so which way the rope goes is play rather than spawn.
 
 ## What is drawn and what is solved
 
-This is the point of the map, and the reason it exists alongside [Equilibrium](EQUILIBRIUM.md),
+This is the point of the map, and the reason it exists alongside [Even Ground](EVEN_GROUND.md),
 which solves its terrain outright.
 
 **Drawn, entirely from the shared toolkit** — because construction reaches these, and a search would
@@ -90,7 +90,7 @@ And a figure that justified a design decision outlived the code it was measured 
 reason these tables carry their seed counts and their date in the history.
 
 Not every seed that wants a river gets one: over 40 seeds the brief asked for a river on 17 and 12
-were cut, the other 5 refused for want of room. That is the `tug.river.no-room` fallback firing on
+were cut, the other 5 refused for want of room. That is the `marchland.river.no-room` fallback firing on
 just under a third of the seeds that ask, which is worth knowing when reading the split above — the
 "without a river" column is not all seeds that were never offered one.
 
@@ -113,7 +113,7 @@ every map the generator makes, so any seed carries its own before-and-after.
 
 Canonical start quality is 0.856 fairness / 0.006 worst-colony fitness, against Savannah's
 0.940/0.392 and Watershed's 0.824/0.155. That model measures advantage in the *starting economy*,
-and Tug deliberately moves the map's contested value out of the homelands and onto the rope, which
+and Marchland deliberately moves the map's contested value out of the homelands and onto the rope, which
 the model does not weigh. The homelands themselves are level by construction — equal ground, equal
 lake, equal kit — and a typical map gives its four colonies 209–388 wheat, 100–275 wood and 839–1067
 building sites each.
@@ -124,7 +124,7 @@ building sites each.
    walk from every colony" has no solution once you also want the prizes spread out — a site
    equidistant from four colonies lies near one place on the map — and the search stalled at 31
    steps from a start of 72. Worse, a rope with no near end for anybody is a rope nobody can start
-   pulling. The property a tug actually wants is per-prize: each one sits on a front between the two
+   pulling. The property this map actually wants is per-prize: each one sits on a front between the two
    colonies contending for it.
 2. **"Equal mean walk to the whole rope" was also a mis-statement.** With more than two colonies a
    colony is naturally near its own fronts and far from the ones across the country, so that measure
@@ -160,7 +160,7 @@ Swept over seven shapes (64² to 512², plus 64×256, 512×128 and 128×512) aga
 seeds a cell: every one of the 196 attempts either produced a valid map or was **refused up front
 with a reason**. No combination generates a map and then fails its own validator. Refused up front:
 
-- fewer than two colonies (a tug needs two sides);
+- fewer than two colonies (a march needs a country on each side);
 - fewer than 3000 tiles of map per colony;
 - maps longer than 2:1 with fewer than six colonies — too few to ring a long map, so the fronts come
   out lopsided and no arrangement of prizes shares the rope out. Every seed tried failed, so it is
@@ -191,7 +191,7 @@ claim checked as a rank correlation against the value:
 | `stone-amount` | stone tiles | +0.86 | 49 → 106 |
 | `fruit-amount` | fruit tiles | +0.97 | 1.6 → 59.4 |
 
-![What each Tug control does](images/constraint-solved/tug-controls.png)
+![What each Marchland control does](images/constraint-solved/marchland-controls.png)
 
 Two honest caveats on that picture. `march` and `prizes` are near-invisible in a 256-pixel preview
 even though the table shows both moving — the march widens by about 12 per cent across its whole

@@ -2880,8 +2880,8 @@ Oasi nascosta ospita al massimo otto colonie.
 Il massiccio non entra in questa mappa; usa una mappa più grande o meno colonie.
 [The pond has no room for that much algae; use a bigger pond.]
 Lo stagno non ha spazio per così tante alghe; usa uno stagno più grande.
-[Equilibrium]
-Equilibrio
+[Even Ground]
+Terreno pari
 [Balance]
 Bilanciamento
 [Tight passes]
@@ -2898,16 +2898,16 @@ Questa mappa è troppo piccola per essere risolta; usa una mappa più grande.
 Troppe colonie da bilanciare su una mappa di queste dimensioni; usa una mappa più grande o meno colonie.
 [The colonies could not be spread out on this map.]
 Non è stato possibile distribuire le colonie su questa mappa.
-[Tug]
-Tiro alla fune
+[Marchland]
+Terra di nessuno
 [Prizes on the rope]
 Premi sulla fune
 [March width]
 Larghezza della terra di nessuno
 [Levelling]
 Livellamento
-[A tug needs two sides; use at least two colonies.]
-Tiro alla fune richiede due schieramenti; usa almeno due colonie.
+[A march needs a country on each side; use at least two colonies.]
+Una terra di nessuno richiede un paese su ciascun lato; usa almeno due colonie.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Troppe colonie perché questa mappa dia a ciascuna una terra natale; usa una mappa più grande o meno colonie.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

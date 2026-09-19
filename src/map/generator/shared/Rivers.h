@@ -151,8 +151,9 @@ std::vector<int> fordsToRejoin(const std::vector<RiverFord> &sites, int componen
 /// centre line's length, the distance being measured the short way round the loop.
 ///
 /// A river forded only where it must be is not a landform but a wall, and a wall across the middle
-/// of a map does not shape a fight so much as end it: on Tug, the minimum crossing set left one
-/// colony contesting five prizes and another one, which is the map's own fairness check failing.
+/// of a map does not shape a fight so much as end it: on Marchland, the minimum crossing set left
+/// one colony contesting five prizes and another one, which is the map's own fairness check
+/// failing.
 /// How many crossings there are is the dial between a river that routes a war and a river that
 /// stops it, and it belongs to the map, not to this.
 std::vector<int> fordsSpreadAlong(const std::vector<RiverFord> &sites, std::vector<int> taken,

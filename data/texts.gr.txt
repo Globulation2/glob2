@@ -2888,8 +2888,8 @@ Emoji
 Ο ορεινός όγκος δεν χωράει σε αυτόν τον χάρτη· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
 [The pond has no room for that much algae; use a bigger pond.]
 Η λιμνούλα δεν έχει χώρο για τόσα φύκια· χρησιμοποιήστε μεγαλύτερη λιμνούλα.
-[Equilibrium]
-Ισορροπία
+[Even Ground]
+Ίσο έδαφος
 [Balance]
 Εξισορρόπηση
 [Tight passes]
@@ -2906,16 +2906,16 @@ Emoji
 Πάρα πολλές αποικίες για εξισορρόπηση σε χάρτη αυτού του μεγέθους· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
 [The colonies could not be spread out on this map.]
 Οι αποικίες δεν μπόρεσαν να απλωθούν σε αυτόν τον χάρτη.
-[Tug]
-Διελκυστίνδα
+[Marchland]
+Μεθόριος
 [Prizes on the rope]
 Έπαθλα στο σχοινί
 [March width]
 Πλάτος της μεθορίου
 [Levelling]
 Εξομάλυνση
-[A tug needs two sides; use at least two colonies.]
-Η Διελκυστίνδα χρειάζεται δύο πλευρές· χρησιμοποιήστε τουλάχιστον δύο αποικίες.
+[A march needs a country on each side; use at least two colonies.]
+Η μεθόριος χρειάζεται μια χώρα σε κάθε πλευρά· χρησιμοποιήστε τουλάχιστον δύο αποικίες.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Πάρα πολλές αποικίες για να δώσει αυτός ο χάρτης σε καθεμία μια πατρίδα· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

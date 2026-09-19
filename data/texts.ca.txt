@@ -2826,8 +2826,8 @@ Oasi amagat admet com a màxim vuit colònies.
 El massís no cap en aquest mapa; utilitzeu un mapa més gran o menys colònies.
 [The pond has no room for that much algae; use a bigger pond.]
 La bassa no té prou espai per a tantes algues; utilitzeu una bassa més gran.
-[Equilibrium]
-Equilibri
+[Even Ground]
+Terreny igualat
 [Balance]
 Equilibratge
 [Tight passes]
@@ -2844,16 +2844,16 @@ Aquest mapa és massa petit per resoldre'l; utilitzeu un mapa més gran.
 Massa colònies per equilibrar en un mapa d'aquesta mida; utilitzeu un mapa més gran o menys colònies.
 [The colonies could not be spread out on this map.]
 No s'han pogut repartir les colònies en aquest mapa.
-[Tug]
-Estira-i-arronsa
+[Marchland]
+Terra de ningú
 [Prizes on the rope]
 Premis a la corda
 [March width]
 Amplada de la terra de ningú
 [Levelling]
 Anivellament
-[A tug needs two sides; use at least two colonies.]
-Estira-i-arronsa necessita dos bàndols; utilitzeu almenys dues colònies.
+[A march needs a country on each side; use at least two colonies.]
+Una terra de ningú necessita un país a cada costat; utilitzeu almenys dues colònies.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Massa colònies perquè aquest mapa doni a cadascuna una terra natal; utilitzeu un mapa més gran o menys colònies.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

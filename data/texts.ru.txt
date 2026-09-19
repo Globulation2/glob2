@@ -2816,8 +2816,8 @@ Emoji
 Массив не помещается на этой карте; используйте карту побольше или меньше колоний.
 [The pond has no room for that much algae; use a bigger pond.]
 В пруду нет места для такого количества водорослей; используйте пруд побольше.
-[Equilibrium]
-Равновесие
+[Even Ground]
+Ровное поле
 [Balance]
 Баланс
 [Tight passes]
@@ -2834,16 +2834,16 @@ Emoji
 Слишком много колоний, чтобы уравновесить их на карте такого размера; используйте карту побольше или меньше колоний.
 [The colonies could not be spread out on this map.]
 Не удалось расселить колонии на этой карте.
-[Tug]
-Перетягивание каната
+[Marchland]
+Пограничье
 [Prizes on the rope]
 Награды на канате
 [March width]
 Ширина пограничья
 [Levelling]
 Выравнивание
-[A tug needs two sides; use at least two colonies.]
-Для перетягивания каната нужны две стороны; используйте не меньше двух колоний.
+[A march needs a country on each side; use at least two colonies.]
+Пограничью нужна страна с каждой стороны; используйте не меньше двух колоний.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Слишком много колоний, чтобы эта карта дала каждой родину; используйте карту побольше или меньше колоний.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

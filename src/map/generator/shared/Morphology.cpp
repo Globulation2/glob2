@@ -280,7 +280,7 @@ int widestWalkClearance(const Torus &t, const std::vector<unsigned char> &mask,
 	// clearances, which are small bounded integers (at most half the shorter side), not arbitrary
 	// keys. A bucket per width and a walk downwards through them gives the same order for O(1) a push
 	// and a pop, where a binary heap pays a logarithm and chases pointers over a growing array for
-	// every one of them. Equilibrium's shape pass scores thousands of arrangements and this was the
+	// every one of them. Even Ground's shape pass scores thousands of arrangements and this was the
 	// single hottest thing in it once the clearance field stopped being rebuilt per colony: two
 	// fifths of the search's time was inside __pop_heap alone.
 	//

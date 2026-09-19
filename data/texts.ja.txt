@@ -2814,8 +2814,8 @@ Emoji
 岩山がこのマップに収まりません。より大きなマップを使うか、コロニーを減らしてください。
 [The pond has no room for that much algae; use a bigger pond.]
 池にそれだけの藻を置く場所がありません。池を大きくしてください。
-[Equilibrium]
-均衡
+[Even Ground]
+平等な大地
 [Balance]
 バランス
 [Tight passes]
@@ -2832,16 +2832,16 @@ Emoji
 この大きさのマップで釣り合いを取るにはコロニーが多すぎます。より大きなマップを使うか、コロニーを減らしてください。
 [The colonies could not be spread out on this map.]
 このマップではコロニーを散らばらせることができませんでした。
-[Tug]
-綱引き
+[Marchland]
+辺境
 [Prizes on the rope]
 綱の上の賞品
 [March width]
 辺境の幅
 [Levelling]
 均等化
-[A tug needs two sides; use at least two colonies.]
-綱引きには二つの陣営が必要です。少なくとも2つのコロニーを使ってください。
+[A march needs a country on each side; use at least two colonies.]
+辺境には両側に国が必要です。少なくとも2つのコロニーを使ってください。
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 このマップがそれぞれに本国を与えるにはコロニーが多すぎます。より大きなマップを使うか、コロニーを減らしてください。
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

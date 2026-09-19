@@ -2814,8 +2814,8 @@ Emoji
 암석 고원이 이 지도에 들어가지 않습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
 [The pond has no room for that much algae; use a bigger pond.]
 연못에 그만큼의 해조류를 둘 자리가 없습니다. 더 큰 연못을 사용하세요.
-[Equilibrium]
-평형
+[Even Ground]
+공평한 들판
 [Balance]
 균형
 [Tight passes]
@@ -2832,16 +2832,16 @@ Emoji
 이 크기의 지도에서 균형을 맞추기에는 식민지가 너무 많습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
 [The colonies could not be spread out on this map.]
 이 지도에서는 식민지를 흩어 놓을 수 없었습니다.
-[Tug]
-줄다리기
+[Marchland]
+변경
 [Prizes on the rope]
 줄 위의 상품
 [March width]
 변경 너비
 [Levelling]
 균등화
-[A tug needs two sides; use at least two colonies.]
-줄다리기에는 양편이 필요합니다. 식민지를 최소 두 개 사용하세요.
+[A march needs a country on each side; use at least two colonies.]
+변경에는 양쪽에 나라가 있어야 합니다. 식민지를 최소 두 개 사용하세요.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 이 지도가 각 식민지에 본토를 주기에는 식민지가 너무 많습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

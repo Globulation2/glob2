@@ -2842,8 +2842,8 @@ Verborgen oase biedt plaats aan hoogstens acht kolonies.
 Het massief past niet op deze kaart; gebruik een grotere kaart of minder kolonies.
 [The pond has no room for that much algae; use a bigger pond.]
 De vijver heeft geen plaats voor zoveel zeewier; gebruik een grotere vijver.
-[Equilibrium]
-Evenwicht
+[Even Ground]
+Gelijk terrein
 [Balance]
 Balans
 [Tight passes]
@@ -2860,16 +2860,16 @@ Deze kaart is te klein om op te lossen; gebruik een grotere kaart.
 Te veel kolonies om op een kaart van dit formaat in balans te brengen; gebruik een grotere kaart of minder kolonies.
 [The colonies could not be spread out on this map.]
 De kolonies konden niet over deze kaart worden verspreid.
-[Tug]
-Touwtrekken
+[Marchland]
+Niemandsland
 [Prizes on the rope]
 Prijzen aan het touw
 [March width]
 Breedte van het niemandsland
 [Levelling]
 Nivellering
-[A tug needs two sides; use at least two colonies.]
-Touwtrekken heeft twee kanten nodig; gebruik minstens twee kolonies.
+[A march needs a country on each side; use at least two colonies.]
+Een niemandsland heeft aan beide kanten een land nodig; gebruik minstens twee kolonies.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Te veel kolonies om elke kolonie op deze kaart een thuisland te geven; gebruik een grotere kaart of minder kolonies.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

@@ -2816,8 +2816,8 @@ Kaŝita oazo enhavas maksimume ok koloniojn.
 La montmasivo ne enteniĝas en ĉi tiu mapo; uzu pli grandan mapon aŭ malpli da kolonioj.
 [The pond has no room for that much algae; use a bigger pond.]
 La lageto ne havas lokon por tiom da algoj; uzu pli grandan lageton.
-[Equilibrium]
-Ekvilibro
+[Even Ground]
+Egala tero
 [Balance]
 Ekvilibrigo
 [Tight passes]
@@ -2834,16 +2834,16 @@ Pacienca
 Tro da kolonioj por ekvilibrigi sur mapo de ĉi tiu grandeco; uzu pli grandan mapon aŭ malpli da kolonioj.
 [The colonies could not be spread out on this map.]
 Ne eblis disigi la koloniojn sur ĉi tiu mapo.
-[Tug]
-Ŝnurtirado
+[Marchland]
+Limregiono
 [Prizes on the rope]
 Premioj sur la ŝnuro
 [March width]
 Larĝo de la limregiono
 [Levelling]
 Egaligo
-[A tug needs two sides; use at least two colonies.]
-Ŝnurtirado bezonas du flankojn; uzu almenaŭ du koloniojn.
+[A march needs a country on each side; use at least two colonies.]
+Limregiono bezonas landon ĉe ĉiu flanko; uzu almenaŭ du koloniojn.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Tro da kolonioj por ke ĉi tiu mapo donu al ĉiu hejmlandon; uzu pli grandan mapon aŭ malpli da kolonioj.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

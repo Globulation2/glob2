@@ -2818,8 +2818,8 @@ Emoji
 Масив не стаје на ову мапу; користите већу мапу или мање колонија.
 [The pond has no room for that much algae; use a bigger pond.]
 У бари нема места за толико алги; користите већу бару.
-[Equilibrium]
-Равнотежа
+[Even Ground]
+Равно поље
 [Balance]
 Уравнотежење
 [Tight passes]
@@ -2836,16 +2836,16 @@ Emoji
 Превише колонија за уравнотежење на мапи ове величине; користите већу мапу или мање колонија.
 [The colonies could not be spread out on this map.]
 Колоније није било могуће распоредити на овој мапи.
-[Tug]
-Потезање конопца
+[Marchland]
+Пограничје
 [Prizes on the rope]
 Награде на конопцу
 [March width]
 Ширина пограничја
 [Levelling]
 Изједначавање
-[A tug needs two sides; use at least two colonies.]
-Потезању конопца су потребне две стране; користите бар две колоније.
+[A march needs a country on each side; use at least two colonies.]
+Пограничју је потребна земља са сваке стране; користите бар две колоније.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Превише колонија да би ова мапа свакој дала домовину; користите већу мапу или мање колонија.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

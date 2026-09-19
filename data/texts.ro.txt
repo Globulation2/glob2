@@ -2818,8 +2818,8 @@ Oaza ascunsă găzduiește cel mult opt colonii.
 Masivul nu încape pe această hartă; folosiți o hartă mai mare sau mai puține colonii.
 [The pond has no room for that much algae; use a bigger pond.]
 Iazul nu are loc pentru atâtea alge; folosiți un iaz mai mare.
-[Equilibrium]
-Echilibru
+[Even Ground]
+Teren egal
 [Balance]
 Echilibrare
 [Tight passes]
@@ -2836,16 +2836,16 @@ Această hartă este prea mică pentru a fi rezolvată; folosiți o hartă mai m
 Prea multe colonii de echilibrat pe o hartă de această mărime; folosiți o hartă mai mare sau mai puține colonii.
 [The colonies could not be spread out on this map.]
 Coloniile nu au putut fi răspândite pe această hartă.
-[Tug]
-Trasul funiei
+[Marchland]
+Ținut de graniță
 [Prizes on the rope]
 Premii pe funie
 [March width]
 Lățimea ținutului de graniță
 [Levelling]
 Nivelare
-[A tug needs two sides; use at least two colonies.]
-Trasul funiei are nevoie de două tabere; folosiți cel puțin două colonii.
+[A march needs a country on each side; use at least two colonies.]
+Un ținut de graniță are nevoie de câte o țară pe fiecare parte; folosiți cel puțin două colonii.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Prea multe colonii pentru ca această hartă să dea fiecăreia o patrie; folosiți o hartă mai mare sau mai puține colonii.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

@@ -2814,8 +2814,8 @@ Suối nguồn
 Khối núi đá không vừa bản đồ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
 [The pond has no room for that much algae; use a bigger pond.]
 Ao không đủ chỗ cho từng ấy tảo; hãy dùng ao lớn hơn.
-[Equilibrium]
-Thế cân bằng
+[Even Ground]
+Đất bằng
 [Balance]
 Độ cân bằng
 [Tight passes]
@@ -2832,16 +2832,16 @@ Bản đồ này quá nhỏ để giải; hãy dùng bản đồ lớn hơn.
 Quá nhiều thuộc địa để cân bằng trên bản đồ cỡ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
 [The colonies could not be spread out on this map.]
 Không thể trải các thuộc địa ra trên bản đồ này.
-[Tug]
-Kéo co
+[Marchland]
+Vùng biên
 [Prizes on the rope]
 Phần thưởng trên dây
 [March width]
 Độ rộng vùng biên
 [Levelling]
 San đều
-[A tug needs two sides; use at least two colonies.]
-Kéo co cần hai phe; hãy dùng ít nhất hai thuộc địa.
+[A march needs a country on each side; use at least two colonies.]
+Vùng biên cần một xứ sở ở mỗi bên; hãy dùng ít nhất hai thuộc địa.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Quá nhiều thuộc địa để bản đồ này cho mỗi thuộc địa một quê hương; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]

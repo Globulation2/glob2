@@ -2818,8 +2818,8 @@ Oasis oculto admite como máximo ocho colonias.
 El macizo no cabe en este mapa; usa un mapa más grande o menos colonias.
 [The pond has no room for that much algae; use a bigger pond.]
 El estanque no tiene sitio para tantas algas; usa un estanque más grande.
-[Equilibrium]
-Equilibrio
+[Even Ground]
+Terreno parejo
 [Balance]
 Equilibrado
 [Tight passes]
@@ -2836,16 +2836,16 @@ Este mapa es demasiado pequeño para resolverlo; usa un mapa más grande.
 Demasiadas colonias para equilibrar en un mapa de este tamaño; usa un mapa más grande o menos colonias.
 [The colonies could not be spread out on this map.]
 No se pudieron repartir las colonias en este mapa.
-[Tug]
-Tira y afloja
+[Marchland]
+Tierra de nadie
 [Prizes on the rope]
 Premios en la cuerda
 [March width]
 Anchura de la tierra de nadie
 [Levelling]
 Nivelación
-[A tug needs two sides; use at least two colonies.]
-Tira y afloja necesita dos bandos; usa al menos dos colonias.
+[A march needs a country on each side; use at least two colonies.]
+Una tierra de nadie necesita un país a cada lado; usa al menos dos colonias.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 Demasiadas colonias para que este mapa dé a cada una su tierra natal; usa un mapa más grande o menos colonias.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
