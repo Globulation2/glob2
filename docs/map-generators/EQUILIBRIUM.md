@@ -107,6 +107,18 @@ Water share was set from a sweep over three seed ranges: fairness is flat from 1
 while the worst colony's building sites fall steadily with every extra lake (about 1470 sites at 10
 per cent, 1200 at 20, 750 at 35), so the default is 10.
 
+The slider's *ceiling* was set the same way, after a later control study found the top of its
+original range was not a map. Over 40 seeds at 256×256 with four colonies it refused on 10 per cent
+of seeds at 50, 15 per cent at 55 and 20 per cent at 60 — colonies with no wood in reach, or too few
+4×4 building origins to settle — and the band bought less and less of what it asked, the flood
+saturating near 53 per cent actual water however much more was requested while build sites fell from
+about 13,000 at 40 to 7,700 at 60. The range now ends at 40, where 80 seeds refused once.
+
+The slider is a target, not a figure: the brief multiplies it by the seed's wetness
+(`kWetLeast`–`kWetMost`), so it sets the middle of a band and one seed comes out a lake country and
+the next dry downland. What it promises is its direction, and the study confirms it — mean actual
+water rises monotonically across the whole range.
+
 ## Cost and limits
 
 - About 1.0–1.25 s at 256×256 with four colonies at Normal; 3.5 s at 512×512 with eight colonies at
@@ -115,6 +127,12 @@ per cent, 1200 at 20, 750 at 35), so the default is 10.
 - Generation succeeds on 24/24 seeds at every shape tested except 512×128 with 8 and with 12
   colonies, which were 23/24; the failing seed is refused by the generator's own validator for a
   colony 25 steps from wheat against a limit of 24. The lobby retries, so this is not player-visible.
+- A later sweep over seven shapes against 4–8 colonies, twelve seeds a cell, puts that rate at 9 late
+  failures in 384 attempts (2.3 per cent). They are not spread evenly: every one falls on 512×512,
+  512×128 or 128×512 — about 8 per cent of seeds on those cells and none at all at 256² or below —
+  and every one is a marginal miss of the starting-crop guarantee (25 steps against 24, 33 against
+  32) rather than a colony left without a crop. The 36 other refusals in that sweep are 64² with six
+  or more colonies, refused up front with a reason.
 - Requests refused up front: fewer than 6 cells on either lattice axis, or fewer than 12 cells per
   colony (a 64-tile map takes at most 5 colonies).
 - **Not promised**: equal room to expand into, equal defensibility, or equal contact costs. Only

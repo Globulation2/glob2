@@ -201,7 +201,15 @@ constexpr int kCollarWidth = 6;
 /// into, well short of what a homeland grows.
 constexpr int kCommonsWheat = 9, kCommonsWood = 8;
 // The least ground a colony's homeland needs: a town, a lake, a farm and a door onto the march.
-constexpr int kLeastHomelandTiles = 2600;
+//
+// Set from where the late failures actually start, because the whole point of the figure is to
+// refuse early instead of failing late, and at 2600 it did not. Ten to twelve seeds per cell: at
+// 2730 tiles a colony (128x128 with 6, 64x256 with 6, 128x256 with 12) only a third to a half of
+// seeds finish, and at 2978 (128x256 with 11) a fifth, almost always because a homeland ends up
+// with no water beside it to regrow a crop from. At 3276 (128x128 with 5, 128x256 with 10) it is
+// eight to twelve in twelve, which is the ordinary rate the lobby's retries already cover. So the
+// floor sits between them rather than at the bottom of the range that technically fits.
+constexpr int kLeastHomelandTiles = 3000;
 // How long a map may be before it needs a ring of colonies rather than a line of them.
 constexpr int kSquarishAspect = 2;
 constexpr int kLeastColoniesOnALongMap = 6;

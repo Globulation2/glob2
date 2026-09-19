@@ -128,16 +128,33 @@ same field inverted*, which makes the two perfectly anti-correlated. One colony 
 wood while another had 43 and 401 on the same map. They get an independent field each now, finer
 than the 24 steps a catchment is reckoned over.
 
+A sixth came out of a control study that ran every value of every control: **`fruit-amount` was not
+connected to anything.** The prize groves were planted at a fixed radius, so all thirteen values of
+the slider produced identical maps — the only place the option was read was the cramped-start
+relief, which rarely runs. The grove now answers to it, scaled by *area* rather than by radius,
+because scaling a radius directly delivers the square of what the slider asks: 300 per cent would
+have ringed every prize with a nine-times grove of uncleanable fruit, which is finding 4 above
+reintroduced through a slider. `scaledRadius` lives in `Resources.h` beside `scaledCount`, and the
+quarry uses it too.
+
 ## Envelope
 
-Generation succeeds on 8/8 seeds for every square size from 128 to 512 at 2, 3, 4, 5, 8 and 12
-colonies, and on 6–8 of 8 on 2:1 rectangles. Refused up front:
+Swept over seven shapes (64² to 512², plus 64×256, 512×128 and 128×512) against 2–8 colonies, four
+seeds a cell: every one of the 196 attempts either produced a valid map or was **refused up front
+with a reason**. No combination generates a map and then fails its own validator. Refused up front:
 
 - fewer than two colonies (a tug needs two sides);
-- fewer than about 2600 tiles of map per colony;
+- fewer than 3000 tiles of map per colony;
 - maps longer than 2:1 with fewer than six colonies — too few to ring a long map, so the fronts come
   out lopsided and no arrangement of prizes shares the rope out. Every seed tried failed, so it is
   refused rather than retried.
+
+That floor was 2600 and was too low, which the sweep caught: 128×128 with six colonies (2730 tiles
+each) passed the check and then failed late on two thirds of seeds, almost always a homeland with no
+water beside it to regrow a crop from. Measured per cell at ten to twelve seeds, the late-failure
+rate runs about two thirds at 2730 tiles a colony and four fifths at 2978, against nought to a third
+at 3276 — so the floor now sits between them, and the cells above it are back to the ordinary rate
+the lobby's retries cover.
 
 ## Cost and limits
 
