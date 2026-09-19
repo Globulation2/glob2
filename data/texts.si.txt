@@ -2874,6 +2874,10 @@ Arena preizkušenj
 Debelina predelnih zidov
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Arena preizkušenj potrebuje večji zemljevid ali manj kolonij, da bo pri vsaki koloniji dovolj prostora za dva varovana vhoda.
+[The Comb]
+Glavnik
+[Peninsulas per shore]
+Polotoki na vsakem bregu
 [Encircled Kingdom]
 Obkoljeno kraljestvo
 [Fortress plan]

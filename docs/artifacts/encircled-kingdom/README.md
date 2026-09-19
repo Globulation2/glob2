@@ -187,9 +187,9 @@ tick 30,000 to 30,512 successfully.
 
 ## Integration with master
 
-The generator was assigned numeric ID **62** when merging with master, where
-The Gauntlet had already taken ID 59. The stable ID remains `encircled-kingdom`.
+The generator was assigned numeric ID **63** when merging with master, where
+The Gauntlet had already taken ID 59 and The Comb took ID 62. The stable ID remains `encircled-kingdom`.
 The archive records the original development IDs and source snapshot. When using
 its numeric headless commands on the merged build, replace this generator's 59
-with 62; existing saved terrain can be loaded directly. Post-integration checks
+with 63; existing saved terrain can be loaded directly. Post-integration checks
 are recorded separately below.

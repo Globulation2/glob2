@@ -2884,6 +2884,10 @@ Prövningarnas arena
 Skiljemurarnas tjocklek
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Prövningarnas arena behöver en större karta eller färre kolonier för att rymma två bevakade ingångar per koloni.
+[The Comb]
+Kammen
+[Peninsulas per shore]
+Halvöar per strand
 [Encircled Kingdom]
 Omringat kungarike
 [Fortress plan]

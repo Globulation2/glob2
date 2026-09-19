@@ -923,7 +923,7 @@ GeneratorDefinition encircledKingdomDefinition()
 {
 	return {
 		"encircled-kingdom",
-		62,
+		63,
 		"Encircled Kingdom",
 		1,
 		false,

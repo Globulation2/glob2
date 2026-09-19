@@ -59,6 +59,7 @@
 #include "MarchlandGenerator.h"
 #include "OrchardCommonsGenerator.h"
 #include "GauntletGenerator.h"
+#include "CombGenerator.h"
 #include "EncircledKingdomGenerator.h"
 #include <algorithm>
 #include <set>
@@ -176,9 +177,8 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 honeycombIsleDefinition(),
 											 karstTowersDefinition(), bajadaDefinition(),
 											 centralQuarryDefinition(), hiddenOasisDefinition(),
-											 orchardCommonsDefinition(), gauntletDefinition(),
+											 orchardCommonsDefinition(), gauntletDefinition(), combDefinition(), encircledKingdomDefinition(),
 											 evenGroundDefinition(), marchlandDefinition(),
-											 encircledKingdomDefinition(),
 											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),

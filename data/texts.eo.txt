@@ -2872,6 +2872,10 @@ Areno de provoj
 Dikeco de disigaj muroj
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Areno de provoj bezonas pli grandan mapon aŭ malpli da kolonioj por havi lokon por du gardataj enirejoj ĉe ĉiu kolonio.
+[The Comb]
+La Kombilo
+[Peninsulas per shore]
+Duoninsuloj ĉe ĉiu bordo
 [Encircled Kingdom]
 Ĉirkaŭita regno
 [Fortress plan]

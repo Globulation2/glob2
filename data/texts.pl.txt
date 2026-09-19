@@ -2874,6 +2874,10 @@ Arena prób
 Grubość murów działowych
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Arena prób wymaga większej mapy lub mniejszej liczby kolonii, aby przy każdej kolonii zmieściły się dwa strzeżone wejścia.
+[The Comb]
+Grzebień
+[Peninsulas per shore]
+Półwyspy na każdym brzegu
 [Encircled Kingdom]
 Otoczone królestwo
 [Fortress plan]

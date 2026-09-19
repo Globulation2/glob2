@@ -2874,6 +2874,10 @@ Próbák arénája
 Válaszfalak vastagsága
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 A Próbák arénájához nagyobb térkép vagy kevesebb kolónia kell, hogy minden kolóniának elférjen két őrzött bejárata.
+[The Comb]
+A Fésű
+[Peninsulas per shore]
+Félszigetek partonként
 [Encircled Kingdom]
 Körülzárt királyság
 [Fortress plan]

@@ -2870,6 +2870,10 @@ Cách xa
 Độ dày tường ngăn
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 Đấu trường thử thách cần bản đồ lớn hơn hoặc ít thuộc địa hơn để mỗi thuộc địa có đủ chỗ cho hai lối vào được phòng thủ.
+[The Comb]
+Chiếc lược
+[Peninsulas per shore]
+Số bán đảo mỗi bờ
 [Encircled Kingdom]
 Vương quốc bị bao vây
 [Fortress plan]

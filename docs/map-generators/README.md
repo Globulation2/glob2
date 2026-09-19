@@ -9,6 +9,11 @@ Normal lobby generation rolls a fresh random map; the preview snapshot is the ma
 [Savannah design and validation](SAVANNAH.md) documents the open grassland generator,
 its contained crop plots, controls, numerical budgets and supported request envelope.
 
+## The Comb
+
+[The Comb design and validation](COMB.md) describes its interlocking shores,
+cross-channel military positions, contained mainland farms and controls.
+
 ## Development tools
 
 Build the study executable with `scons release=1 map-generator-study`.

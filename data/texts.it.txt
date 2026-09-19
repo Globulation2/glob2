@@ -2936,6 +2936,10 @@ L’arena delle prove
 Spessore dei muri divisori
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 L’arena delle prove richiede una mappa più grande o meno colonie per ospitare due ingressi difesi per colonia.
+[The Comb]
+Il Pettine
+[Peninsulas per shore]
+Penisole per sponda
 [Encircled Kingdom]
 Regno accerchiato
 [Fortress plan]
