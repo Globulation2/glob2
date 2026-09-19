@@ -267,6 +267,185 @@ TeamStats::~TeamStats()
 	
 }
 
+// The worker time-use and combat-death counters are development diagnostics.
+// They are read by nothing in the simulation, but they are not free either: the
+// death scan walks every team's buildings. Gate them on the same switch as
+// their only consumer, and cache it, so a shipped game pays nothing.
+static bool diagnosticsEnabled()
+{
+	static const bool enabled = getenv("GLOB2_TEAM_TIMELINE") != nullptr;
+	return enabled;
+}
+
+// Snapshot of the defensive picture: where this team's warriors are, how
+// trained and how hurt, and the hostile warriors inside its colony.
+void TeamStats::printDefenceSample(Team *team) const
+{
+	Game *game = team->game;
+	const int w = team->map->getW(), h = team->map->getH();
+	std::vector<std::pair<int,int>> own, enemy;
+	int hospitalSeats = 0, hospitalInside = 0, towers = 0;
+	for (int t = 0; t < game->mapHeader.getNumberOfTeams(); ++t)
+	{
+		Team *other = game->teams[t];
+		if (!other) continue;
+		for (int i = 0; i < Building::MAX_COUNT; ++i)
+		{
+			Building *b = other->myBuildings[i];
+			if (!b || !b->type || b->type->isVirtual) continue;
+			(other == team ? own : enemy).push_back(std::make_pair(b->getMidX(), b->getMidY()));
+			if (other == team && !b->type->isBuildingSite)
+			{
+				if (b->type->shortTypeNum == IntBuildingType::HEAL_BUILDING)
+				{ hospitalSeats += b->maxUnitInside; hospitalInside += int(b->unitsInside.size()); }
+				if (b->type->shortTypeNum == IntBuildingType::DEFENSE_BUILDING) ++towers;
+			}
+		}
+	}
+	auto nearest = [&](const std::vector<std::pair<int,int>> &list, int x, int y) {
+		int best = 1 << 30;
+		for (const auto &p : list)
+		{
+			int dx = abs(x - p.first) % w, dy = abs(y - p.second) % h;
+			dx = std::min(dx, w - dx); dy = std::min(dy, h - dy);
+			best = std::min(best, std::max(dx, dy));
+		}
+		return best;
+	};
+	int place[3] = {0, 0, 0}, levels[3] = {0, 0, 0}, hurt = 0, flagged = 0, inside = 0;
+	for (int i = 0; i < Unit::MAX_COUNT; ++i)
+	{
+		Unit *u = team->myUnits[i];
+		if (!u || u->typeNum != WARRIOR || u->isDead) continue;
+		const int o = nearest(own, u->posX, u->posY), e = nearest(enemy, u->posX, u->posY);
+		const int p = o <= 12 && o <= e ? 0 : (e <= 12 ? 1 : 2);
+		++place[p];
+		levels[p] += u->level[ATTACK_SPEED] + u->level[ATTACK_STRENGTH];
+		if (u->medical == Unit::MED_DAMAGED) ++hurt;
+		if (u->attachedBuilding && u->attachedBuilding->type->shortTypeNum == IntBuildingType::WAR_FLAG) ++flagged;
+		if (u->displacement == Unit::DIS_INSIDE) ++inside;
+	}
+	int intruders = 0, intruderLevels = 0;
+	for (int t = 0; t < game->mapHeader.getNumberOfTeams(); ++t)
+	{
+		Team *other = game->teams[t];
+		if (!other || other == team || (team->allies & other->me)) continue;
+		for (int i = 0; i < Unit::MAX_COUNT; ++i)
+		{
+			Unit *u = other->myUnits[i];
+			if (!u || u->typeNum != WARRIOR || u->isDead) continue;
+			if (nearest(own, u->posX, u->posY) <= 12)
+			{ ++intruders; intruderLevels += u->level[ATTACK_SPEED] + u->level[ATTACK_STRENGTH]; }
+		}
+	}
+	std::cout << "GLOB2_DEFENCE team=" << team->teamNumber << " tick=" << measurements.tick
+		<< " home=" << place[0] << " away=" << place[1] << " field=" << place[2]
+		<< " home_levels=" << levels[0] << " away_levels=" << levels[1] << " field_levels=" << levels[2]
+		<< " hurt=" << hurt << " flagged=" << flagged << " inside=" << inside
+		<< " intruders=" << intruders << " intruder_levels=" << intruderLevels
+		<< " hospital_seats=" << hospitalSeats << " hospital_inside=" << hospitalInside
+		<< " towers=" << towers << std::endl;
+}
+
+void TeamStats::recordCombatDeath(Unit *u)
+{
+	if (!diagnosticsEnabled() || !u || u->typeNum < 0 || u->typeNum > 2)
+		return;
+	Game *game = u->owner->game;
+	const int w = u->owner->map->getW(), h = u->owner->map->getH();
+	int own = 1 << 30, enemy = 1 << 30;
+	for (int t = 0; t < game->mapHeader.getNumberOfTeams(); ++t)
+	{
+		Team *team = game->teams[t];
+		if (!team) continue;
+		for (int i = 0; i < Building::MAX_COUNT; ++i)
+		{
+			Building *b = team->myBuildings[i];
+			if (!b || !b->type || b->type->isVirtual) continue;
+			int dx = abs(u->posX - b->getMidX()) % w, dy = abs(u->posY - b->getMidY()) % h;
+			dx = std::min(dx, w - dx); dy = std::min(dy, h - dy);
+			const int d = std::max(dx, dy);
+			if (team == u->owner) own = std::min(own, d); else enemy = std::min(enemy, d);
+		}
+	}
+	const int place = own <= 12 && own <= enemy ? 0 : (enemy <= 12 ? 1 : 2);
+	++combatDeathPlace[u->typeNum][place];
+	int job = 0;
+	if (u->attachedBuilding)
+	{
+		const int type = u->attachedBuilding->type->shortTypeNum;
+		job = type == IntBuildingType::WAR_FLAG ? 1 : type == IntBuildingType::CLEARING_FLAG ? 2
+			: type == IntBuildingType::EXPLORATION_FLAG ? 3 : 4;
+	}
+	++combatDeathJob[u->typeNum][job];
+}
+
+// Buckets: 0 idle; 1 eat_walk 2 eat_inside 3 eat_no_inn; 4 heal_walk 5 heal_inside
+// 6 heal_no_hospital; 7 train_walk 8 train_inside; 9+4*class+phase for filling jobs
+// (class: 0 swarm 1 inn 2 site 3 other; phase: 0 to_resource 1 harvesting
+// 2 to_building 3 other); 25 flag; 26 other; 27 total.
+void TeamStats::observeLabour(Unit *u)
+{
+	if (!diagnosticsEnabled() || !u || u->typeNum != WORKER || u->isDead)
+		return;
+	++labourTicks[27];
+	auto wrapDistance = [&](int x, int y, Building *b) {
+		const int w = u->owner->map->getW(), h = u->owner->map->getH();
+		int dx = abs(x - b->getMidX()) % w, dy = abs(y - b->getMidY()) % h;
+		dx = std::min(dx, w - dx); dy = std::min(dy, h - dy);
+		return std::max(dx, dy);
+	};
+	const bool inside = u->displacement == Unit::DIS_INSIDE
+		|| u->displacement == Unit::DIS_ENTERING_BUILDING
+		|| u->displacement == Unit::DIS_EXITING_BUILDING;
+	if (u->medical != Unit::MED_FREE)
+	{
+		const int base = u->medical == Unit::MED_HUNGRY ? 1 : 4;
+		if (inside) ++labourTicks[base + 1];
+		else if (u->targetBuilding)
+		{
+			++labourTicks[base];
+			if (base == 1)
+			{
+				labourWalkToEatDistance += wrapDistance(u->posX, u->posY, u->targetBuilding);
+				++labourWalkToEatSamples;
+			}
+		}
+		else ++labourTicks[base + 2];
+		return;
+	}
+	switch (u->activity)
+	{
+		case Unit::ACT_RANDOM: ++labourTicks[0]; return;
+		case Unit::ACT_UPGRADING:
+			if (u->destinationPurpose == HEAL) ++labourTicks[inside ? 5 : 4];
+			else ++labourTicks[inside ? 8 : 7];
+			return;
+		case Unit::ACT_FLAG: ++labourTicks[25]; return;
+		case Unit::ACT_FILLING:
+		{
+			Building *b = u->attachedBuilding;
+			if (!b) { ++labourTicks[26]; return; }
+			int cls = 3;
+			if (b->type->isBuildingSite) cls = 2;
+			else if (b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING) cls = 0;
+			else if (b->type->shortTypeNum == IntBuildingType::FOOD_BUILDING) cls = 1;
+			int phase = 3;
+			if (u->displacement == Unit::DIS_GOING_TO_RESOURCE) phase = 0;
+			else if (u->displacement == Unit::DIS_HARVESTING)
+			{
+				phase = 1;
+				labourHarvestDistance[cls] += wrapDistance(u->posX, u->posY, b);
+				++labourHarvestSamples[cls];
+			}
+			else if (u->displacement == Unit::DIS_GOING_TO_BUILDING) phase = 2;
+			++labourTicks[9 + 4 * cls + phase];
+			return;
+		}
+		default: ++labourTicks[26];
+	}
+}
+
 void TeamStats::step(Team *team, bool reloaded)
 {
 	PERF_SCOPE_TIME(Stats);
@@ -299,6 +478,14 @@ void TeamStats::step(Team *team, bool reloaded)
 				<< " inn=" << s.numberBuildingPerType[IntBuildingType::FOOD_BUILDING]
 				<< " school=" << s.numberBuildingPerType[IntBuildingType::SCIENCE_BUILDING]
 				<< " barracks=" << s.numberBuildingPerType[IntBuildingType::ATTACK_BUILDING]
+				// Hospitals were the one building type this trace omitted, which
+				// is the one whose whole job is surviving damage. Comparing two
+				// AIs' ability to absorb losses was therefore impossible from the
+				// trace alone: the gap between their building counts sat exactly
+				// where the unmeasured type was.
+				<< " hospital=" << s.numberBuildingPerType[IntBuildingType::HEAL_BUILDING]
+				<< " racetrack=" << s.numberBuildingPerType[IntBuildingType::WALKSPEED_BUILDING]
+				<< " pool=" << s.numberBuildingPerType[IntBuildingType::SWIMSPEED_BUILDING]
 				<< " tower=" << s.numberBuildingPerType[IntBuildingType::DEFENSE_BUILDING]
 				<< std::endl;
 		}
@@ -311,6 +498,8 @@ void TeamStats::step(Team *team, bool reloaded)
 	{
 		Unit *u=team->myUnits[i];
 		observeMeasurementUnit(u);
+		if (!reloaded)
+			observeLabour(u);
 		if ((u)&&(u->medical==Unit::MED_FREE)&&(u->activity==Unit::ACT_RANDOM))
 		{
 			smoothedStat.isFree[(int)u->typeNum]++;
@@ -340,7 +529,22 @@ void TeamStats::step(Team *team, bool reloaded)
 		measurementHistory.push_back(measurements);
 		AITelemetry::capture(team, true, getenv("GLOB2_TEAM_TIMELINE") != nullptr);
 		if (getenv("GLOB2_TEAM_TIMELINE"))
+		{
 			printMeasurements(team->teamNumber);
+			printDefenceSample(team);
+			std::cout << "GLOB2_LABOUR team=" << team->teamNumber << " tick=" << measurements.tick;
+			for (int i = 0; i < LABOUR_BUCKETS; ++i)
+				std::cout << " b" << i << "=" << labourTicks[i];
+			for (int i = 0; i < LABOUR_CLASSES; ++i)
+				std::cout << " hd" << i << "=" << labourHarvestDistance[i] << " hn" << i << "=" << labourHarvestSamples[i];
+			std::cout << " ed=" << labourWalkToEatDistance << " en=" << labourWalkToEatSamples;
+			for (int t = 0; t < 3; ++t)
+			{
+				for (int i = 0; i < 3; ++i) std::cout << " cdp" << t << "_" << i << "=" << combatDeathPlace[t][i];
+				for (int i = 0; i < 5; ++i) std::cout << " cdj" << t << "_" << i << "=" << combatDeathJob[t][i];
+			}
+			std::cout << std::endl;
+		}
 	}
 	smoothedIndex++;
 	smoothedIndex%=STATS_SMOOTH_SIZE;

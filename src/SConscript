@@ -639,6 +639,12 @@ if not env['server']:
 # Integration harness: reuse the client objects with a test entry point.
 # Explicit target only; the server and normal client build remain unchanged.
 if not env['server']:
+    worker_telemetry_sources = [source for source in source_files if source != 'Glob2.cpp']
+    worker_telemetry_sources += local.Object('WorkerTelemetryTest.o', '#test/WorkerTelemetryTest.cpp')
+    local.Alias('worker-telemetry-test', local.Program('WorkerTelemetryTest', worker_telemetry_sources))
+
+
+if not env['server']:
     selection_sources = [source for source in source_files if source != 'Glob2.cpp']
     selection_sources += local.Object('GameGUISelectionHarness.o', '#test/GameGUISelectionHarness.cpp')
     selection_test = local.Program('GameGUISelectionHarness', selection_sources)

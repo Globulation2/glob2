@@ -211,6 +211,20 @@ public:
   void observeMeasurementUnit(class Unit *unit);
   void observeMeasurementBuilding(class Building *building);
   void printMeasurements(int team, bool final = false) const;
+  // Local diagnostic (not saved, not in checksums): worker-ticks by activity.
+  enum { LABOUR_BUCKETS = 28, LABOUR_CLASSES = 4 };
+  Uint64 labourTicks[LABOUR_BUCKETS] = {};
+  Uint64 labourHarvestDistance[LABOUR_CLASSES] = {};
+  Uint64 labourHarvestSamples[LABOUR_CLASSES] = {};
+  Uint64 labourWalkToEatDistance = 0, labourWalkToEatSamples = 0;
+  void observeLabour(class Unit *unit);
+  // Combat deaths by unit type and place: 0 near own buildings, 1 near enemy
+  // buildings, 2 in the field; and by job: 0 none, 1 war flag, 2 clearing flag,
+  // 3 exploration flag, 4 other building.
+  Uint64 combatDeathPlace[3][3] = {};
+  Uint64 combatDeathJob[3][5] = {};
+  void recordCombatDeath(class Unit *unit);
+  void printDefenceSample(Team *team) const;
   static void recordDamage(Team *source, Team *target, int kind, int targetKind, int hp,
 						   int damage);
   void drawMeasurements(int x, int y);
