@@ -840,6 +840,7 @@ public:
 	/// True when GLOB2_MAXIMA_TELEMETRY is set to anything but "0". Telemetry
 	/// only prints; it never changes a decision.
 	static bool telemetryEnabled();
+	static bool reconAuditEnabled();
 	/// Resolves the strategy for one player of `gameHeader`, adding that player's
 	/// GLOB2_MAXIMA_TEAM_OVERRIDES and GLOB2_MAXIMA_PLAYER_OVERRIDES entries
 	/// ("<number>:<assignments>|<number>:<assignments>") to environmentOptions().

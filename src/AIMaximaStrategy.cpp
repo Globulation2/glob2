@@ -554,7 +554,7 @@ namespace
 		INT_SPEC(tactics, failed_target_quarantine_ticks, "tactics.failed_target_quarantine_ticks", 0, 1000000, "ticks", "tactics", "Time before a fast failed attack target may be selected again", StrategyImpactMedium),
 
 		BOOL_SPEC(raiding, enabled, "raiding.enabled", "enabled", "raiding", "Enable warrior raids against visible worker clusters", StrategyImpactHigh),
-		INT_SPEC(raiding, worker_min, "raiding.worker_min", 1, 100, "workers", "raiding", "Minimum currently visible workers in a raid cluster", StrategyImpactMedium),
+		INT_SPEC(raiding, worker_min, "raiding.worker_min", 1, 100, "workers", "raiding", "Minimum currently visible cluster workers inside the raid flag radius", StrategyImpactMedium),
 		INT_SPEC(raiding, cluster_radius, "raiding.cluster_radius", 1, 64, "tiles", "raiding", "Distance joining visible workers into a cluster", StrategyImpactMedium),
 		INT_SPEC(raiding, threat_radius, "raiding.threat_radius", 1, 64, "tiles", "raiding", "Escort detection radius around a worker cluster", StrategyImpactMedium),
 		INT_SPEC(raiding, flag_radius, "raiding.flag_radius", 1, 8, "tiles", "raiding", "Tight worker-raid engagement radius", StrategyImpactMedium),
@@ -1311,6 +1311,17 @@ bool StrategyResolver::telemetryEnabled()
 	}();
 	return enabled;
 }
+
+bool StrategyResolver::reconAuditEnabled()
+{
+	static const bool enabled=[]
+	{
+		const std::string value=environmentValue("GLOB2_MAXIMA_RECON_AUDIT");
+		return !value.empty() && value!="0";
+	}();
+	return telemetryEnabled() && enabled;
+}
+
 
 StrategyConfigOptions StrategyResolver::environmentOptions()
 {

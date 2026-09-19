@@ -1757,6 +1757,7 @@ void Maxima::update_reconnaissance(Context& echo)
 	raid_rules.height=echo.player->map->getH();
 	raid_rules.tick=timer;
 	raid_rules.clusterRadius=strategy.raiding.cluster_radius;
+	raid_rules.flagRadius=strategy.raiding.flag_radius;
 	raid_rules.threatRadius=strategy.raiding.threat_radius;
 	raid_rules.workerMinimum=strategy.raiding.worker_min;
 	raid_rules.workerWeight=strategy.raiding.worker_weight;
@@ -1773,6 +1774,223 @@ void Maxima::update_reconnaissance(Context& echo)
 		explored+=*tile ? 1 : 0;
 	reconnaissance.setExploredPercent(discovered.empty()
 		? 0 : explored*100/int(discovered.size()));
+}
+
+
+void Maxima::audit_recon_staffing(Context& echo) const
+{
+	const Recon::ReconReport& report=reconnaissance.report();
+	std::map<const Building*, bool> flags;
+	int requested=0;
+	for(const Recon::ReconMission& mission:report.missions)
+	{
+		const Building* flag=echo.get_building_register().get_building(mission.flagId);
+		if(!flag) continue;
+		flags[flag]=mission.economicWatch;
+		requested+=flag->maxUnitWorking;
+	}
+	int explorers=0, workers=0, warriors=0, assigned=0, on_site=0;
+	int contact=0, watch=0, other_flag=0;
+	Map* map=echo.player->map;
+	for(int i=0;i<Unit::MAX_COUNT;++i)
+	{
+		const Unit* unit=echo.player->team->myUnits[i];
+		if(!unit || unit->isDead) continue;
+		workers+=unit->typeNum==WORKER;
+		warriors+=unit->typeNum==WARRIOR;
+		if(unit->typeNum!=EXPLORER) continue;
+		++explorers;
+		const Building* flag=unit->attachedBuilding;
+		const auto found=flags.find(flag);
+		if(found==flags.end())
+		{
+			other_flag+=flag && flag->type->isVirtual;
+			continue;
+		}
+		++assigned;
+		contact+=!found->second;
+		watch+=found->second;
+		int dx=std::abs(unit->posX-flag->posX);
+		int dy=std::abs(unit->posY-flag->posY);
+		dx=std::min(dx,map->getW()-dx);
+		dy=std::min(dy,map->getH()-dy);
+		on_site+=dx*dx+dy*dy<=flag->unitStayRange*flag->unitStayRange;
+	}
+	std::ostringstream fields;
+	fields<<"\texplorers="<<explorers<<"\tworkers="<<workers
+		<<"\twarriors="<<warriors<<"\trecon_assigned="<<assigned
+		<<"\trecon_on_site="<<on_site<<"\tcontact_assigned="<<contact
+		<<"\twatch_assigned="<<watch<<"\tother_flag_assigned="<<other_flag
+		<<"\trecon_requested="<<requested<<"\trecon_flags="<<flags.size()
+		<<"\tdesired_explorers="<<budget.desired_explorers
+		<<"\texplored_percent="<<report.exploredPercent;
+	emit_telemetry(echo,"recon_staffing",fields.str());
+}
+
+
+void Maxima::audit_offense(Context& echo) const
+{
+	// Omniscient labels stay entirely in this opt-in diagnostic. No observations,
+	// orders, mission state or RNG are changed by taking a sample.
+	if(!StrategyResolver::reconAuditEnabled()) return;
+	Map* map=echo.player->map;
+	const Team* own=echo.player->team;
+	const Building* flag=tactical_mission.flagId>=0
+		? echo.get_building_register().get_building(tactical_mission.flagId) : NULL;
+	const int x=flag ? flag->posX : tactical_mission.targetX;
+	const int y=flag ? flag->posY : tactical_mission.targetY;
+	const int radius=flag ? flag->unitStayRange : 0;
+	const auto inside=[&](int px, int py)
+	{
+		return flag && map->warpDistSquare(x,y,px,py)<=radius*radius;
+	};
+	int assigned=0, on_site=0;
+	int workers=0, visible_workers=0, ground_units=0, visible_ground_units=0;
+	int buildings=0, visible_buildings=0;
+	int target_present=0, target_visible=0, target_hp=-1;
+	for(int team=0;team<Team::MAX_COUNT;++team)
+	{
+		const Team* colony=echo.player->game->teams[team];
+		if(!colony || (colony!=own && !(own->enemies & colony->me))) continue;
+		// Cumulative counters for every hostile team allow a fixed outcome
+		// window to continue after an objective is moved or abandoned.
+		const GameplayMeasurements& totals=colony->stats.measurements;
+		std::ostringstream outcome;
+		outcome<<"\tteam="<<team
+			<<"\tworker_combat_deaths="<<totals.deaths[WORKER][GameplayMeasurements::COMBAT]
+			<<"\twarrior_combat_deaths="<<totals.deaths[WARRIOR][GameplayMeasurements::COMBAT]
+			<<"\tmelee_unit_damage="<<totals.damageDealt[GameplayMeasurements::MELEE][GameplayMeasurements::UNIT]
+			<<"\tmelee_building_damage="<<totals.damageDealt[GameplayMeasurements::MELEE][GameplayMeasurements::BUILDING]
+			<<"\twheat_harvested="<<totals.harvested[WHEAT];
+		emit_telemetry(echo,"offense_outcome",outcome.str());
+		if(!flag) continue;
+		for(int id=0;id<Unit::MAX_COUNT;++id)
+		{
+			const Unit* unit=colony->myUnits[id];
+			if(!unit || unit->isDead) continue;
+			const bool ground=map->getGroundUnit(unit->posX,unit->posY)==unit->gid;
+			if(colony==own)
+			{
+				if(unit->typeNum==WARRIOR && unit->attachedBuilding==flag)
+				{
+					++assigned;
+					on_site+=ground && inside(unit->posX,unit->posY);
+				}
+				continue;
+			}
+			// Hidden units inside buildings and flying explorers are not ground
+			// targets available to a warrior searching this flag's footprint.
+			if(!ground || !inside(unit->posX,unit->posY)) continue;
+			const bool visible=map->isFOWDiscovered(unit->posX,unit->posY,own->me);
+			++ground_units;
+			visible_ground_units+=visible;
+			workers+=unit->typeNum==WORKER;
+			visible_workers+=visible && unit->typeNum==WORKER;
+		}
+		if(colony==own) continue;
+		for(int id=0;id<Building::MAX_COUNT;++id)
+		{
+			const Building* building=colony->myBuildings[id];
+			if(!building || building->type->isVirtual) continue;
+			bool intersects=false, visible=false;
+			for(int dx=0;dx<building->type->width;++dx)
+				for(int dy=0;dy<building->type->height;++dy)
+					if(inside(building->posX+dx,building->posY+dy))
+					{
+						intersects=true;
+						visible|=map->isFOWDiscovered(building->posX+dx,building->posY+dy,own->me);
+					}
+			buildings+=intersects;
+			visible_buildings+=visible;
+			if(team==tactical_mission.targetTeam && building->gid==tactical_mission.targetGid)
+			{
+				target_present=1;
+				target_visible=building_currently_visible(echo.player,building);
+				target_hp=building->hp;
+			}
+		}
+	}
+	int observed_workers=-1, observation_tick=-1;
+	if(tactical_mission.kind==Tactics::MissionRaid)
+		for(const Tactics::RaidCandidate& raid:tactics.raidCandidates())
+			if(raid.team==tactical_mission.targetTeam && raid.x==x && raid.y==y)
+			{
+				observed_workers=raid.workers;
+				observation_tick=raid.tick;
+				break;
+			}
+	std::ostringstream sample;
+	sample<<"\tflag="<<tactical_mission.flagId<<"\tflag_present="<<(flag ? 1 : 0)
+		<<"\tkind="<<Tactics::missionKindName(tactical_mission.kind)
+		<<"\tstarted_tick="<<tactical_mission.startedTick
+		<<"\ttarget_since_tick="<<tactical_mission.phaseSinceTick
+		<<"\tenemy="<<tactical_mission.targetTeam<<"\tgid="<<tactical_mission.targetGid
+		<<"\tx="<<x<<"\ty="<<y<<"\tradius="<<radius
+		<<"\trequested="<<(flag ? flag->maxUnitWorking : 0)
+		<<"\tassigned="<<assigned<<"\ton_site="<<on_site
+		<<"\ttruth_workers="<<workers<<"\tvisible_workers="<<visible_workers
+		<<"\ttruth_ground_units="<<ground_units<<"\tvisible_ground_units="<<visible_ground_units
+		<<"\ttruth_buildings="<<buildings<<"\tvisible_buildings="<<visible_buildings
+		<<"\ttarget_present="<<target_present<<"\ttarget_visible="<<target_visible
+		<<"\ttarget_hp="<<target_hp<<"\tobserved_workers="<<observed_workers
+		<<"\tobservation_tick="<<observation_tick;
+	emit_telemetry(echo,"offense_sample",sample.str());
+}
+
+
+void Maxima::audit_reconnaissance(Context& echo) const
+{
+	if(!StrategyResolver::reconAuditEnabled()) return;
+	const Recon::ReconReport& report=reconnaissance.report();
+	for(const auto& entry:report.opponents)
+	{
+		const Recon::OpponentIntel& intel=entry.second;
+		if(!intel.alive) continue;
+		const Team* enemy=echo.player->game->teams[entry.first];
+		int warriors=0, explorers=0, workers=0, visible_workers=0, buildings=0;
+		long long power=0, visible_power=0;
+		int levels[4]={0,0,0,0};
+		for(int i=0;i<Unit::MAX_COUNT;++i)
+		{
+			const Unit* unit=enemy->myUnits[i];
+			if(!unit || unit->isDead) continue;
+			const bool visible=echo.player->map->isFOWDiscovered(
+				unit->posX,unit->posY,echo.player->team->me);
+			if(unit->typeNum==WARRIOR)
+			{
+				++warriors;
+				power+=warrior_power(unit);
+				if(visible) visible_power+=warrior_power(unit);
+				++levels[std::max(0,std::min(3,std::min(
+					unit->level[ATTACK_SPEED],unit->level[ATTACK_STRENGTH])))];
+			}
+			if(unit->typeNum==EXPLORER) ++explorers;
+			if(unit->typeNum==WORKER) { ++workers; if(visible) ++visible_workers; }
+		}
+		for(int i=0;i<Building::MAX_COUNT;++i)
+			if(enemy->myBuildings[i] && !enemy->myBuildings[i]->type->isVirtual) ++buildings;
+		std::ostringstream fields;
+		fields<<"\tenemy="<<entry.first<<"\tobservation_tick="<<report.tick
+			<<"\tvisible_warriors="<<intel.visibleWarriors
+			<<"\testimated_warriors="<<intel.estimatedWarriors
+			<<"\tremembered_warriors="<<intel.lastObservedWarriors
+			<<"\twarrior_age="<<timer-intel.lastWarriorSeenTick
+			<<"\tforce_age="<<timer-intel.lastForceSeenTick
+			<<"\tbuilding_age="<<timer-intel.lastBuildingSeenTick
+			<<"\tvisible_explorers="<<intel.visibleExplorers
+			<<"\testimated_explorers="<<intel.estimatedExplorers
+			<<"\tvisible_workers="<<visible_workers
+			<<"\tvisible_power="<<visible_power
+			<<"\tknown_buildings="<<intel.knownBuildings
+			<<"\tvisible_buildings="<<intel.visibleBuildings
+			<<"\tconfidence="<<intel.confidence
+			<<"\texplored_percent="<<report.exploredPercent
+			<<"\ttruth_warriors="<<warriors<<"\ttruth_explorers="<<explorers
+			<<"\ttruth_workers="<<workers<<"\ttruth_buildings="<<buildings
+			<<"\ttruth_power="<<power;
+		for(int level=0;level<4;++level) fields<<"\ttruth_level"<<level<<"="<<levels[level];
+		emit_telemetry(echo,"recon_audit",fields.str());
+	}
 }
 
 
@@ -3666,6 +3884,7 @@ void Maxima::evaluate_strategy(Context& echo)
 			+"\tposture="+posture_name(posture));
 	if(timer-last_director_telemetry_tick>=1000)
 	{
+		audit_reconnaissance(echo);
 		emit_director_snapshot(echo);
 		std::ostringstream recon_fields;
 		const Recon::ReconReport& recon=reconnaissance.report();
@@ -4744,6 +4963,12 @@ void Maxima::tick(Context& echo)
 {
 	ensure_strategy();
 	timer++;
+	// Sample existing assignment links only; diagnostics never recruit units.
+	if(StrategyResolver::reconAuditEnabled() && timer%128==0)
+	{
+		audit_recon_staffing(echo);
+		audit_offense(echo);
+	}
 	const int team=echo.player->team->teamNumber;
 	// A new game and every loaded save start with no executable plan. Likewise,
 	// completion events invalidate director assumptions. Replan before any
@@ -6785,160 +7010,305 @@ void Maxima::plan_offense(Context& echo)
 	swim_info.add_obstacle(new Entities::AnyResource);
 	Gradient& swim_route=echo.get_gradient_manager().get_gradient(swim_info);
 
-	// Route length to a point, or -1 when it is unreachable or too few of the
-	// surplus can get there. Walkers go first; swimmers carry the crossing when
-	// the only route is over water.
 	const int cap=strategy.military.attack_unit_cap;
-	std::map<std::string,int>& why=offense_diagnostics.rejections;
-	const auto route_to=[&](int x, int y)
+	const bool audit=StrategyResolver::reconAuditEnabled()
+		&& timer-last_director_telemetry_tick>=1000;
+	struct Ranking
 	{
-		int distance=land_route.get_height(x,y);
-		const bool amphibious=distance<0;
-		if(amphibious)
-			distance=swim_route.get_height(x,y);
-		if(distance<0)
-		{
-			++why["no_route"];
-			return -1;
-		}
-		if(int(reachability.powersAt(echo.player->team, flag, x, y, cap,
-			amphibious).size())<minimum)
-		{
-			++why["too_few_reachable"];
-			return -1;
-		}
-		return distance;
+		int score;
+		Tactics::MissionKind kind;
+		int team, gid, x, y;
+		bool unreachable;
+		int unreachableTeam;
 	};
-
-	int best_score=INT_MIN;
-	Tactics::MissionKind best_kind=Tactics::MissionNone;
-	int best_team=-1, best_gid=-1, best_x=0, best_y=0;
-	// A young objective that is still alive is kept whatever else appears, so
-	// the army actually arrives somewhere instead of chasing every sighting.
-	const bool dwelling=active
-		&& timer-tactical_mission.phaseSinceTick<strategy.tactics.dwell_ticks;
-	bool current_alive=false;
-	int current_score=INT_MIN, current_x=0, current_y=0;
-	bool known_unreachable=false;
-	int unreachable_team=-1;
-	int unreachable_score=INT_MIN;
-
-	if(strategy.tactics.siege_enabled)
+	const auto rank=[&](const Recon::ReconReport& report,
+		const std::vector<Tactics::RaidCandidate>& raids,
+		const OpponentAssessment* assessments, OffenseDiagnostics& diagnostics,
+		const char* view) -> Ranking
 	{
-		const Recon::ReconReport& report=reconnaissance.report();
-		for(std::map<int, Recon::OpponentIntel>::const_iterator opponent=
-			report.opponents.begin(); opponent!=report.opponents.end(); ++opponent)
+		// Route length to a point, or -1 when it is unreachable or too few of the
+		// surplus can get there. Walkers go first; swimmers carry the crossing when
+		// the only route is over water.
+		std::map<std::string,int>& why=diagnostics.rejections;
+		const auto route_to=[&](int x, int y)
 		{
-			if(!opponent->second.alive) continue;
-			for(std::map<int, Recon::BuildingSighting>::const_iterator building=
-				opponent->second.buildings.begin();
-				building!=opponent->second.buildings.end(); ++building)
+			int distance=land_route.get_height(x,y);
+			const bool amphibious=distance<0;
+			if(amphibious)
+				distance=swim_route.get_height(x,y);
+			if(distance<0)
 			{
-				const Recon::BuildingSighting& sighting=building->second;
-				++offense_diagnostics.buildingCandidates;
-				if(Tactics::Program::targetQuarantined(sighting.gid, timer,
-					strategy.tactics.failed_target_quarantine_enabled,
-					attack_target_quarantine_until))
-				{
-					++why["quarantined"];
-					continue;
-				}
-				const int x=wrapped_center(sighting.x, sighting.width, map->getW());
-				const int y=wrapped_center(sighting.y, sighting.height, map->getH());
-				const int distance=route_to(x, y);
-				if(distance<0)
-				{
-					if(opponents[opponent->first].score>unreachable_score)
-					{
-						known_unreachable=true;
-						unreachable_team=opponent->first;
-						unreachable_score=opponents[opponent->first].score;
-					}
-					continue;
-				}
-				++offense_diagnostics.viableBuildings;
-				int nearby_towers=0;
-				for(std::map<int, Recon::BuildingSighting>::const_iterator tower=
+				++why["no_route"];
+				return -1;
+			}
+			if(int(reachability.powersAt(echo.player->team, flag, x, y, cap,
+				amphibious).size())<minimum)
+			{
+				++why["too_few_reachable"];
+				return -1;
+			}
+			return distance;
+		};
+
+		int best_score=INT_MIN;
+		Tactics::MissionKind best_kind=Tactics::MissionNone;
+		int best_team=-1, best_gid=-1, best_x=0, best_y=0;
+		// A young objective that is still alive is kept whatever else appears, so
+		// the army actually arrives somewhere instead of chasing every sighting.
+		const bool dwelling=active
+			&& timer-tactical_mission.phaseSinceTick<strategy.tactics.dwell_ticks;
+		bool current_alive=false;
+		int current_score=INT_MIN, current_x=0, current_y=0;
+		bool known_unreachable=false;
+		int unreachable_team=-1;
+		int unreachable_score=INT_MIN;
+
+		if(strategy.tactics.siege_enabled)
+		{
+			for(std::map<int, Recon::OpponentIntel>::const_iterator opponent=
+				report.opponents.begin(); opponent!=report.opponents.end(); ++opponent)
+			{
+				if(!opponent->second.alive) continue;
+				for(std::map<int, Recon::BuildingSighting>::const_iterator building=
 					opponent->second.buildings.begin();
-					tower!=opponent->second.buildings.end(); ++tower)
-					if(tower->second.type==IntBuildingType::DEFENSE_BUILDING
-					   && map->warpDistSquare(sighting.x, sighting.y,
-						tower->second.x, tower->second.y)<=64)
-						++nearby_towers;
-				int score=tactical_building_value(sighting.type, strategy.tactics)
-					+std::max(0, opponents[opponent->first].score)
-					+(sighting.construction ? strategy.tactics.target_construction_bonus : 0)
-					-nearby_towers*strategy.tactics.target_tower_penalty
-					-distance*strategy.tactics.route_distance_weight;
-				if(active && sighting.gid==tactical_mission.targetGid)
+					building!=opponent->second.buildings.end(); ++building)
+				{
+					const Recon::BuildingSighting& sighting=building->second;
+					++diagnostics.buildingCandidates;
+					if(Tactics::Program::targetQuarantined(sighting.gid, timer,
+						strategy.tactics.failed_target_quarantine_enabled,
+						attack_target_quarantine_until))
+					{
+						++why["quarantined"];
+						continue;
+					}
+					const int x=wrapped_center(sighting.x, sighting.width, map->getW());
+					const int y=wrapped_center(sighting.y, sighting.height, map->getH());
+					const int distance=route_to(x, y);
+					if(distance<0)
+					{
+						if(assessments[opponent->first].score>unreachable_score)
+						{
+							known_unreachable=true;
+							unreachable_team=opponent->first;
+							unreachable_score=assessments[opponent->first].score;
+						}
+						continue;
+					}
+					++diagnostics.viableBuildings;
+					int nearby_towers=0;
+					for(std::map<int, Recon::BuildingSighting>::const_iterator tower=
+						opponent->second.buildings.begin();
+						tower!=opponent->second.buildings.end(); ++tower)
+						if(tower->second.type==IntBuildingType::DEFENSE_BUILDING
+						   && map->warpDistSquare(sighting.x, sighting.y,
+							tower->second.x, tower->second.y)<=64)
+							++nearby_towers;
+					int score=tactical_building_value(sighting.type, strategy.tactics)
+						+std::max(0, assessments[opponent->first].score)
+						+(sighting.construction ? strategy.tactics.target_construction_bonus : 0)
+						-nearby_towers*strategy.tactics.target_tower_penalty
+						-distance*strategy.tactics.route_distance_weight;
+					if(active && sighting.gid==tactical_mission.targetGid)
+					{
+						score+=strategy.tactics.retarget_margin;
+						current_alive=true;
+						current_score=score;
+						current_x=x;
+						current_y=y;
+					}
+					if(audit)
+					{
+						std::ostringstream fields;
+						fields<<"\tview="<<view<<"\tkind=siege\tenemy="<<opponent->first
+							<<"\tgid="<<sighting.gid<<"\tx="<<x<<"\ty="<<y
+							<<"\tscore="<<score<<"\tdistance="<<distance
+							<<"\ttowers="<<nearby_towers<<"\ttype="<<sighting.type
+							<<"\topponent_score="<<assessments[opponent->first].score;
+						emit_telemetry(echo,"target_candidate",fields.str());
+					}
+					if(score>best_score)
+					{
+						best_score=score;
+						best_kind=Tactics::MissionSiege;
+						best_team=opponent->first;
+						best_gid=sighting.gid;
+						best_x=x;
+						best_y=y;
+					}
+				}
+			}
+		}
+		if(strategy.raiding.enabled)
+		{
+			for(std::vector<Tactics::RaidCandidate>::const_iterator candidate=
+				raids.begin(); candidate!=raids.end();
+				++candidate)
+			{
+				++diagnostics.clusterCandidates;
+				const int distance=route_to(candidate->x, candidate->y);
+				if(distance<0) continue;
+				++diagnostics.viableClusters;
+				int score=candidate->score
+					-distance*strategy.raiding.route_distance_weight;
+				// A cluster that drifted within the threat radius of the current
+				// raid is the same objective moving, not a new one.
+				if(active && tactical_mission.kind==Tactics::MissionRaid
+				   && candidate->team==tactical_mission.targetTeam
+				   && map->warpDistSquare(candidate->x, candidate->y,
+					tactical_mission.targetX, tactical_mission.targetY)
+					<=strategy.raiding.threat_radius*strategy.raiding.threat_radius)
 				{
 					score+=strategy.tactics.retarget_margin;
-					current_alive=true;
-					current_score=score;
-					current_x=x;
-					current_y=y;
+					if(!current_alive || score>current_score)
+					{
+						current_alive=true;
+						current_score=score;
+						current_x=candidate->x;
+						current_y=candidate->y;
+					}
+				}
+				if(audit)
+				{
+					int in_radius=0;
+					for(int gid:candidate->workerGids)
+					{
+						const Unit* worker=echo.player->game->teams[candidate->team]
+							->myUnits[Unit::GIDtoID(gid)];
+						if(worker && map->warpDistSquare(worker->posX,worker->posY,
+							candidate->x,candidate->y)<=strategy.raiding.flag_radius*strategy.raiding.flag_radius)
+							++in_radius;
+					}
+					std::ostringstream fields;
+					fields<<"\tview="<<view<<"\tkind=raid\tenemy="<<candidate->team
+						<<"\tgid=-1\tx="<<candidate->x<<"\ty="<<candidate->y
+						<<"\tscore="<<score<<"\tdistance="<<distance
+						<<"\tworkers="<<candidate->workers<<"\tworkers_in_radius="<<in_radius
+						<<"\tdefenders="<<candidate->defenders<<"\tdefender_power="<<candidate->defenderPower;
+					emit_telemetry(echo,"target_candidate",fields.str());
 				}
 				if(score>best_score)
 				{
 					best_score=score;
-					best_kind=Tactics::MissionSiege;
-					best_team=opponent->first;
-					best_gid=sighting.gid;
-					best_x=x;
-					best_y=y;
+					best_kind=Tactics::MissionRaid;
+					best_team=candidate->team;
+					best_gid=-1;
+					best_x=candidate->x;
+					best_y=candidate->y;
 				}
 			}
 		}
-	}
-	if(strategy.raiding.enabled)
-	{
-		for(std::vector<Tactics::RaidCandidate>::const_iterator candidate=
-			tactics.raidCandidates().begin(); candidate!=tactics.raidCandidates().end();
-			++candidate)
+		if(dwelling && current_alive)
 		{
-			++offense_diagnostics.clusterCandidates;
-			const int distance=route_to(candidate->x, candidate->y);
-			if(distance<0) continue;
-			++offense_diagnostics.viableClusters;
-			int score=candidate->score
-				-distance*strategy.raiding.route_distance_weight;
-			// A cluster that drifted within the threat radius of the current
-			// raid is the same objective moving, not a new one.
-			if(active && tactical_mission.kind==Tactics::MissionRaid
-			   && candidate->team==tactical_mission.targetTeam
-			   && map->warpDistSquare(candidate->x, candidate->y,
-				tactical_mission.targetX, tactical_mission.targetY)
-				<=strategy.raiding.threat_radius*strategy.raiding.threat_radius)
+			best_kind=tactical_mission.kind;
+			best_team=tactical_mission.targetTeam;
+			best_gid=tactical_mission.targetGid;
+			best_x=current_x;
+			best_y=current_y;
+			best_score=current_score;
+		}
+
+		if(audit)
+		{
+			std::ostringstream fields;
+			fields<<"\tview="<<view<<"\tkind="<<Tactics::missionKindName(best_kind)
+				<<"\tenemy="<<best_team<<"\tgid="<<best_gid
+				<<"\tx="<<best_x<<"\ty="<<best_y<<"\tscore="<<best_score
+				<<"\tdwelling="<<(dwelling && current_alive);
+			for(const auto& rejection:why) fields<<"\trejected_"<<rejection.first<<"="<<rejection.second;
+			emit_telemetry(echo,"target_choice",fields.str());
+		}
+		return {best_score,best_kind,best_team,best_gid,best_x,best_y,
+			known_unreachable,unreachable_team};
+	};
+	const auto [best_score,best_kind,best_team,best_gid,best_x,best_y,
+		known_unreachable,unreachable_team]=rank(reconnaissance.report(),
+			tactics.raidCandidates(),opponents,offense_diagnostics,"fog");
+	if(audit)
+	{
+		// Local shadow inputs only. Never publish omniscient observations to the AI.
+		Recon::ReconReport truth;
+		Tactics::Program oracle;
+		oracle.beginObservation(timer);
+		OpponentAssessment assessments[Team::MAX_COUNT];
+		for(const auto& entry:reconnaissance.report().opponents)
+		{
+			if(!entry.second.alive) continue;
+			const int team=entry.first;
+			const Team* enemy=echo.player->game->teams[team];
+			Recon::OpponentIntel& intel=truth.opponents[team];
+			intel.alive=true;
+			OpponentAssessment& model=assessments[team];
+			model.alive=true;
+			for(int id=0;id<Unit::MAX_COUNT;++id)
 			{
-				score+=strategy.tactics.retarget_margin;
-				if(!current_alive || score>current_score)
+				const Unit* unit=enemy->myUnits[id];
+				if(!unit || unit->isDead) continue;
+				if(unit->typeNum==WARRIOR)
 				{
-					current_alive=true;
-					current_score=score;
-					current_x=candidate->x;
-					current_y=candidate->y;
+					++model.estimated_warriors;
+					oracle.observeThreat(Tactics::ThreatSighting(unit->gid,team,
+						unit->posX,unit->posY,warrior_power(unit)));
+				}
+				if(unit->typeNum!=WORKER) continue;
+				int value=strategy.raiding.other_resource_value;
+				if(unit->carriedResource==WHEAT) value=strategy.raiding.food_resource_value;
+				else if(unit->carriedResource==WOOD || unit->carriedResource==STONE
+					|| unit->carriedResource==ALGA) value=strategy.raiding.material_resource_value;
+				else if(unit->carriedResource>=HAPPINESS_BASE && unit->carriedResource<MAX_RESOURCES)
+					value=strategy.raiding.fruit_resource_value;
+				oracle.observeWorker(Tactics::WorkerSighting(unit->gid,team,unit->posX,
+					unit->posY,timer,unit->displacement==Unit::DIS_HARVESTING,
+					unit->carriedResource>=0,value));
+			}
+			for(int id=0;id<Building::MAX_COUNT;++id)
+			{
+				const Building* b=enemy->myBuildings[id];
+				if(!b || b->type->isVirtual) continue;
+				intel.buildings.emplace(b->gid,Recon::BuildingSighting(b->gid,team,
+					b->type->shortTypeNum,b->posX,b->posY,b->type->width,b->type->height,
+					b->type->isBuildingSite,timer));
+				++model.known_buildings;
+				model.strategic_value+=reconnaissance_building_value(b->type->shortTypeNum,
+					strategy.reconnaissance);
+				const int distance=(snapshot.swimming_warriors<6 ? land_route : swim_route)
+					.get_height(b->posX,b->posY);
+				if(distance>=0)
+				{
+					++model.reachable_buildings;
+					model.nearest_building=std::min(model.nearest_building,distance);
 				}
 			}
-			if(score>best_score)
+			if(model.known_buildings>0)
 			{
-				best_score=score;
-				best_kind=Tactics::MissionRaid;
-				best_team=candidate->team;
-				best_gid=-1;
-				best_x=candidate->x;
-				best_y=candidate->y;
+				model.score=model.strategic_value+model.known_buildings*strategy.reconnaissance.building_count_weight
+					+model.reachable_buildings*strategy.scoring.target_reachable_weight
+					+model.estimated_warriors*strategy.scoring.target_warrior_weight;
+				if(model.nearest_building!=INT_MAX)
+					model.score+=std::max(0,strategy.scoring.target_distance_bias-model.nearest_building);
+				else model.score-=strategy.reconnaissance.unreachable_penalty;
+				if(team==target && model.known_buildings<=strategy.postures.finish_building_max)
+					model.score+=strategy.reconnaissance.finishing_bonus
+						-model.known_buildings*strategy.reconnaissance.finishing_building_penalty;
 			}
 		}
+		Tactics::RaidRules rules;
+		rules.width=map->getW(); rules.height=map->getH(); rules.tick=timer;
+		rules.clusterRadius=strategy.raiding.cluster_radius;
+		rules.flagRadius=strategy.raiding.flag_radius;
+		rules.threatRadius=strategy.raiding.threat_radius;
+		rules.workerMinimum=strategy.raiding.worker_min;
+		rules.workerWeight=strategy.raiding.worker_weight;
+		rules.harvestingBonus=strategy.raiding.harvesting_bonus;
+		rules.carryingBonus=strategy.raiding.carrying_bonus;
+		rules.resourceWeight=strategy.raiding.resource_weight;
+		rules.defenderPenalty=strategy.raiding.defender_penalty;
+		oracle.finishObservation(rules);
+		OffenseDiagnostics diagnostics;
+		diagnostics.reset(timer);
+		rank(truth,oracle.raidCandidates(),assessments,diagnostics,"oracle");
 	}
-	if(dwelling && current_alive)
-	{
-		best_kind=tactical_mission.kind;
-		best_team=tactical_mission.targetTeam;
-		best_gid=tactical_mission.targetGid;
-		best_x=current_x;
-		best_y=current_y;
-		best_score=current_score;
-	}
+
 	offense_diagnostics.bestScore=best_score;
 	if(best_kind!=Tactics::MissionNone)
 	{

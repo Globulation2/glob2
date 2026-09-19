@@ -71,6 +71,7 @@ struct RaidRules
 	int height;
 	int tick;
 	int clusterRadius;
+	int flagRadius;
 	int threatRadius;
 	int workerMinimum;
 	int workerWeight;

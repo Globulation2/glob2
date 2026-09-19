@@ -150,3 +150,10 @@ retaining the existing simulation continuation checks.
 
 Tournament workers retain these records in verified logs; their normal offline
 analysis exports typed JSONL and CSV. See [distributed telemetry](tournaments.md#gameplay-ai-and-performance-telemetry).
+
+## Maxima reconnaissance calibration
+
+`--telemetry maxima-recon` explicitly enables additional same-tick world scans
+and shadow target ranking. This research audit is separate from indexed snapshot
+capture and ordinary `maxima` telemetry. See [reconnaissance calibration](maxima-recon-calibration.md)
+for event semantics, oracle limitations, campaign planning and grouped model fitting.

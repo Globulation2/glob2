@@ -5,8 +5,60 @@
 
 using namespace AIMaxima::Tactics;
 
+static void raidFootprintRegression()
+{
+	RaidRules rules;
+	rules.width=rules.height=32;
+	rules.flagRadius=2;
+	Program program;
+	// One connected chain, but only the middle three workers fit the flag.
+	// The outliers carry much more value and must contribute no bonus.
+	for(int i=0;i<7;++i)
+		program.observeWorker(WorkerSighting(i, 1, 4+2*i, 10, 0,
+			i<2 || i>4, i<2 || i>4, i<2 || i>4 ? 100 : 1));
+	program.finishObservation(rules);
+	assert(program.raidCandidates().size()==1);
+	const RaidCandidate candidate=program.raidCandidates()[0];
+	assert(candidate.x==10 && candidate.y==10);
+	assert(candidate.workers==3 && candidate.harvesters==0 && candidate.carriers==0);
+	assert(candidate.economicValue==3);
+	assert(candidate.workerGids==std::vector<int>({2,3,4}));
+	assert(candidate.score==3*rules.workerWeight+3*rules.resourceWeight);
+	// The existing strategy flag radius, not clustering radius, controls reward.
+	rules.flagRadius=4;
+	program.finishObservation(rules);
+	assert(program.raidCandidates()[0].workers==5);
+	rules.flagRadius=1;
+	program.finishObservation(rules);
+	assert(program.raidCandidates().empty());
+
+	// Wrap both axes and reject diagonal points outside the circular radius.
+	program.beginObservation(1);
+	program.observeWorker(WorkerSighting(0, 1, 0, 0, 1, false, false, 0));
+	program.observeWorker(WorkerSighting(1, 1, 30, 0, 1, false, false, 0));
+	program.observeWorker(WorkerSighting(2, 1, 2, 0, 1, false, false, 0));
+	program.observeWorker(WorkerSighting(3, 1, 0, 30, 1, false, false, 0));
+	program.observeWorker(WorkerSighting(4, 1, 0, 2, 1, false, false, 0));
+	program.observeWorker(WorkerSighting(5, 1, 2, 2, 1, true, true, 100));
+	program.observeWorker(WorkerSighting(6, 1, 30, 30, 1, true, true, 100));
+	rules.flagRadius=2;
+	program.finishObservation(rules);
+	assert(program.raidCandidates().size()==1);
+	assert(program.raidCandidates()[0].x==0 && program.raidCandidates()[0].y==0);
+	assert(program.raidCandidates()[0].workers==5);
+	assert(program.raidCandidates()[0].score==5*rules.workerWeight);
+	// Arrival order must not change the candidate or its credited workers.
+	Program reversed;
+	for(auto it=program.workers().rbegin();it!=program.workers().rend();++it)
+		reversed.observeWorker(*it);
+	reversed.finishObservation(rules);
+	assert(reversed.raidCandidates()[0].workerGids==program.raidCandidates()[0].workerGids);
+	assert(reversed.raidCandidates()[0].score==program.raidCandidates()[0].score);
+}
+
 int main()
 {
+	raidFootprintRegression();
 	Program program;
 	program.beginObservation(100);
 	program.observeWorker(WorkerSighting(1, 2, 0, 5, 100, true, false, 2));

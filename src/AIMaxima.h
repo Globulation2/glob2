@@ -507,6 +507,9 @@ private:
 	void emit_telemetry(AIMaximaRuntime::Context& echo, const std::string& event,
 		const std::string& fields=std::string()) const;
 	void emit_ablation_opportunities(AIMaximaRuntime::Context& echo) const;
+	void audit_reconnaissance(AIMaximaRuntime::Context& echo) const;
+	void audit_recon_staffing(AIMaximaRuntime::Context& echo) const;
+	void audit_offense(AIMaximaRuntime::Context& echo) const;
 	void emit_director_snapshot(AIMaximaRuntime::Context& echo) const;
 	const char* posture_name(StrategicPosture posture) const;
 	bool severe_food_emergency() const;

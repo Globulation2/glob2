@@ -64,7 +64,7 @@ ThreatSighting::ThreatSighting(int gid, int team, int x, int y, int power)
 }
 
 RaidRules::RaidRules()
-	: width(1), height(1), tick(0), clusterRadius(5), threatRadius(7),
+	: width(1), height(1), tick(0), clusterRadius(5), flagRadius(2), threatRadius(7),
 	  workerMinimum(3), workerWeight(100), harvestingBonus(30),
 	  carryingBonus(40), resourceWeight(10), defenderPenalty(120)
 {
@@ -204,17 +204,23 @@ void Program::finishObservation(const RaidRules& rules)
 		}
 		candidate.x=currentWorkers[medoid].x;
 		candidate.y=currentWorkers[medoid].y;
-		candidate.workers=static_cast<int>(members.size());
+		// Clustering chooses a location; only the flag's circular footprint
+		// supplies its reward. A transitive cluster can span an entire colony.
 		for(std::vector<int>::const_iterator member=members.begin();
 			member!=members.end(); ++member)
 		{
 			const WorkerSighting& worker=currentWorkers[*member];
+			if(distanceSquare(candidate.x, candidate.y, worker.x, worker.y,
+				rules.width, rules.height)>rules.flagRadius*rules.flagRadius)
+				continue;
+			++candidate.workers;
 			candidate.workerGids.push_back(worker.gid);
 			if(worker.harvesting) ++candidate.harvesters;
 			if(worker.carrying) ++candidate.carriers;
 			candidate.economicValue+=worker.economicValue;
 		}
-		raids.push_back(candidate);
+		if(candidate.workers>=rules.workerMinimum)
+			raids.push_back(candidate);
 	}
 	refreshRaidThreats();
 }

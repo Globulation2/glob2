@@ -3,8 +3,8 @@
   "algorithm": "sorted-comment-string-stripped-numeric-token-sha256",
   "sources": {
     "src/AIMaxima.cpp": {
-      "tokens": 1813,
-      "sha256": "f1c513aed9aff307213031b9658649cfe81fe6eb60cf819293107b1d9177de12",
+      "tokens": 1876,
+      "sha256": "1a31e1a76ca3605a76b6913c25ad3e673d005939c692fafa4ed74ea3770bd7cd",
       "classifications": [
         "live selection authorization, swimming-builder counts, and shared reactive-defense reserve",
         "schema-backed strategy member use",
@@ -44,7 +44,10 @@
         "enabling-capacity thresholds: workers before a first barracks, barracks before the seat-constraint rule stops adding more, and the priority floors those two raise",
         "swimming is worth training only where water separates the colony from something it could use",
         "idle labour opening further construction sites, and the ceiling on one site's crew",
-        "version 109 labour continuation gate and active flag zero-based recruitment level"
+        "version 109 labour continuation gate and active flag zero-based recruitment level",
+        "opt-in reconnaissance audit labels, four combat levels, shadow observations and shared target-ranking result fields",
+        "opt-in reconnaissance staffing samples and wrapped flag-footprint diagnostics",
+        "raid reward bounded by the flag footprint and read-only offensive occupancy/outcome audit"
       ]
     },
     "src/AIMaximaFarmingPolicy.cpp": {
@@ -134,8 +137,8 @@
       ]
     },
     "src/AIMaximaTactics.cpp": {
-      "tokens": 50,
-      "sha256": "0926bec4a52ccaef82923cbc4cf503193ae290eee2b5b73a661edb322d04d812",
+      "tokens": 51,
+      "sha256": "6c22092ff33ee276d3fa510a0534eda65c1f0ba74a15e7791199c9a25949550a",
       "classifications": [
         "recomputed raid defenders and scores after threat replacement",
         "schema-backed tactical rule defaults",
@@ -144,7 +147,8 @@
         "sentinel and invalid-id state",
         "fixed deterministic clustering and tie-breaking",
         "fog-safe siege target continuity classification",
-        "configurable proportional offensive muster without an absolute minimum override"
+        "configurable proportional offensive muster without an absolute minimum override",
+        "raid reward bounded by the flag footprint and read-only offensive occupancy/outcome audit"
       ]
     },
     "src/AIMaximaFoodLedger.cpp": {
