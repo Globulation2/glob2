@@ -2826,3 +2826,13 @@ Oasi amagat admet com a màxim vuit colònies.
 El massís no cap en aquest mapa; utilitzeu un mapa més gran o menys colònies.
 [The pond has no room for that much algae; use a bigger pond.]
 La bassa no té prou espai per a tantes algues; utilitzeu una bassa més gran.
+[Orchard Commons]
+Vergers comunals
+[Orchard spacing]
+Separació dels vergers
+[Compact]
+Propers
+[Balanced]
+Equilibrada
+[Spread]
+Separats

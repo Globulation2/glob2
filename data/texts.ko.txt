@@ -2814,3 +2814,13 @@ Emoji
 암석 고원이 이 지도에 들어가지 않습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
 [The pond has no room for that much algae; use a bigger pond.]
 연못에 그만큼의 해조류를 둘 자리가 없습니다. 더 큰 연못을 사용하세요.
+[Orchard Commons]
+공동 과수원
+[Orchard spacing]
+과수원 간격
+[Compact]
+좁게
+[Balanced]
+균형 있게
+[Spread]
+넓게

@@ -2890,3 +2890,13 @@ Emoji
 岩石高地放不進這張地圖；請使用更大的地圖或更少的殖民地。
 [The pond has no room for that much algae; use a bigger pond.]
 池塘放不下這麼多海藻；請使用更大的池塘。
+[Orchard Commons]
+共有果園
+[Orchard spacing]
+果園間距
+[Compact]
+緊湊
+[Balanced]
+均衡
+[Spread]
+分散

@@ -102,6 +102,26 @@ flaky performance threshold. `python3 test/test_map_telemetry.py` tests the bulk
 retention and aggregation. The existing JSON-report test covers typed telemetry, malformed reports,
 service failures and raw invalid requests. See [telemetry](../docs/map-generators/TELEMETRY.md).
 
+## Orchard Commons fruit conversion
+
+Build `scons release=1 server=0 orchard-conversion-test`, then run from the repository root:
+
+```sh
+build/src/OrchardCommonsConversionTest orchard-contracts "$PWD" "$PWD/artifacts/orchard-conversion"
+```
+
+The harness places competing inns on unmodified generated terrain and checks superior
+advertised fruit variety, equal friendly diet, advertising off, lost fruit and lost
+wheat using real game ticks. It also checks full-save generation repeatability,
+telemetry neutrality, terrain/resource save-load preservation and invalid requests.
+Saved fixtures retain each scenario. Loading rebuilds the existing conversion cooldown;
+the test explicitly matures eligibility after loading, not immediate continuation.
+CI builds and runs this harness on Linux and Windows and retains the fixtures.
+
+For generation-only timing at 512×512/eight teams, append `--benchmark 60` to the
+command. This skips the scenarios and reports separate telemetry-off/on means and
+failure counts; it is a local profiling tool, not a timing threshold in CI.
+
 ## Map generator profiling fixture
 
 `scons -j8 release=1 server=0 map-generator-profile-fixture` builds

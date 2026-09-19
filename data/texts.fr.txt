@@ -2828,3 +2828,13 @@ Oasis cachée accueille au plus huit colonies.
 Le massif ne tient pas sur cette carte ; utilisez une carte plus grande ou moins de colonies.
 [The pond has no room for that much algae; use a bigger pond.]
 L'étang n'a pas la place pour autant d'algues ; utilisez un étang plus grand.
+[Orchard Commons]
+Vergers communaux
+[Orchard spacing]
+Espacement des vergers
+[Compact]
+Rapprochés
+[Balanced]
+Équilibré
+[Spread]
+Espacés
