@@ -1,0 +1,110 @@
+[
+  {
+    "size": 128,
+    "teams": 2,
+    "method": "drowned-forest",
+    "telemetry": false,
+    "wall": 1.1711545829894021,
+    "cpu": 0.501593,
+    "exit": 0
+  },
+  {
+    "size": 128,
+    "teams": 2,
+    "method": "drowned-forest",
+    "telemetry": true,
+    "wall": 0.8547070000786334,
+    "cpu": 0.50092,
+    "exit": 0
+  },
+  {
+    "size": 128,
+    "teams": 2,
+    "method": "forts",
+    "telemetry": false,
+    "wall": 0.06169433402828872,
+    "cpu": 0.05406300000000005,
+    "exit": 0
+  },
+  {
+    "size": 128,
+    "teams": 2,
+    "method": "forts",
+    "telemetry": true,
+    "wall": 0.06117208395153284,
+    "cpu": 0.05787399999999995,
+    "exit": 0
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "method": "drowned-forest",
+    "telemetry": false,
+    "wall": 1.9711796250194311,
+    "cpu": 1.0967780000000003,
+    "exit": 0
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "method": "drowned-forest",
+    "telemetry": true,
+    "wall": 2.623594042030163,
+    "cpu": 1.1846999999999999,
+    "exit": 0
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "method": "forts",
+    "telemetry": false,
+    "wall": 0.16846079204697162,
+    "cpu": 0.1528999999999998,
+    "exit": 0
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "method": "forts",
+    "telemetry": true,
+    "wall": 0.24390241608489305,
+    "cpu": 0.18771500000000022,
+    "exit": 0
+  },
+  {
+    "size": 512,
+    "teams": 8,
+    "method": "drowned-forest",
+    "telemetry": false,
+    "wall": 24.610774375032634,
+    "cpu": 10.003303,
+    "exit": 0
+  },
+  {
+    "size": 512,
+    "teams": 8,
+    "method": "drowned-forest",
+    "telemetry": true,
+    "wall": 32.2204508750001,
+    "cpu": 10.349602,
+    "exit": 0
+  },
+  {
+    "size": 512,
+    "teams": 8,
+    "method": "forts",
+    "telemetry": false,
+    "wall": 3.094606416998431,
+    "cpu": 0.9022539999999999,
+    "exit": 0
+  },
+  {
+    "size": 512,
+    "teams": 8,
+    "method": "forts",
+    "telemetry": true,
+    "wall": 4.019706999999471,
+    "cpu": 1.1920709999999974,
+    "exit": 0
+  }
+]

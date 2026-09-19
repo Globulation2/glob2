@@ -1,0 +1,98 @@
+[
+  {
+    "seed": 7,
+    "rotation": 0,
+    "ais": [
+      "nicowar",
+      "cortex",
+      "cabino",
+      "maxima"
+    ],
+    "exit": 0,
+    "economy": "team 0: tick 25000, worker births 41, wheat 547, wood 133, workers starved 3, warriors starved 3, workers killed 7, warriors killed 4, hungry 11, critical 10\nteam 1: tick 25000, worker births 18, wheat 402, wood 77, workers starved 0, warriors starved 0, workers killed 0, warriors killed 6, hungry 6, critical 2\nteam 2: tick 25000, worker births 35, wheat 580, wood 151, workers starved 0, warriors starved 0, workers killed 0, warriors killed 0, hungry 15, critical 8\nteam 3: tick 25000, worker births 57, wheat 685, wood 52, workers starved 1, warriors starved 0, workers killed 0, warriors killed 0, hungry 34, critical 24\n"
+  },
+  {
+    "seed": 7,
+    "rotation": 1,
+    "ais": [
+      "cortex",
+      "cabino",
+      "maxima",
+      "nicowar"
+    ],
+    "exit": 0,
+    "economy": "team 0: tick 25000, worker births 23, wheat 536, wood 71, workers starved 0, warriors starved 0, workers killed 0, warriors killed 0, hungry 9, critical 0\nteam 1: tick 25000, worker births 32, wheat 578, wood 137, workers starved 0, warriors starved 0, workers killed 0, warriors killed 0, hungry 20, critical 10\nteam 2: tick 25000, worker births 34, wheat 495, wood 120, workers starved 0, warriors starved 0, workers killed 1, warriors killed 1, hungry 13, critical 10\nteam 3: tick 25000, worker births 52, wheat 677, wood 120, workers starved 0, warriors starved 0, workers killed 7, warriors killed 3, hungry 5, critical 3\n"
+  },
+  {
+    "seed": 7,
+    "rotation": 2,
+    "ais": [
+      "cabino",
+      "maxima",
+      "nicowar",
+      "cortex"
+    ],
+    "exit": 0,
+    "economy": "team 0: tick 25000, worker births 24, wheat 422, wood 136, workers starved 0, warriors starved 0, workers killed 0, warriors killed 0, hungry 13, critical 4\nteam 1: tick 25000, worker births 42, wheat 513, wood 48, workers starved 6, warriors starved 3, workers killed 0, warriors killed 0, hungry 25, critical 20\nteam 2: tick 25000, worker births 42, wheat 556, wood 137, workers starved 9, warriors starved 2, workers killed 20, warriors killed 9, hungry 3, critical 3\nteam 3: tick 25000, worker births 26, wheat 755, wood 172, workers starved 2, warriors starved 8, workers killed 0, warriors killed 0, hungry 19, critical 12\n"
+  },
+  {
+    "seed": 7,
+    "rotation": 3,
+    "ais": [
+      "maxima",
+      "nicowar",
+      "cortex",
+      "cabino"
+    ],
+    "exit": 0,
+    "economy": "team 0: tick 25000, worker births 27, wheat 357, wood 64, workers starved 3, warriors starved 2, workers killed 8, warriors killed 5, hungry 5, critical 5\nteam 1: tick 25000, worker births 58, wheat 702, wood 118, workers starved 0, warriors starved 0, workers killed 0, warriors killed 0, hungry 13, critical 8\nteam 2: tick 25000, worker births 8, wheat 121, wood 75, workers starved 0, warriors starved 0, workers killed 0, warriors killed 1, hungry 3, critical 0\nteam 3: tick 25000, worker births 34, wheat 622, wood 219, workers starved 1, warriors starved 0, workers killed 0, warriors killed 0, hungry 27, critical 13\n"
+  },
+  {
+    "seed": 19,
+    "rotation": 0,
+    "ais": [
+      "nicowar",
+      "cortex",
+      "cabino",
+      "maxima"
+    ],
+    "exit": 0,
+    "economy": "team 0: tick 25000, worker births 53, wheat 711, wood 128, workers starved 1, warriors starved 2, workers killed 0, warriors killed 1, hungry 17, critical 12\nteam 1: tick 25000, worker births 5, wheat 82, wood 53, workers starved 2, warriors starved 2, workers killed 2, warriors killed 0, hungry 1, critical 1\nteam 2: tick 25000, worker births 36, wheat 603, wood 142, workers starved 1, warriors starved 0, workers killed 0, warriors killed 0, hungry 17, critical 9\nteam 3: tick 25000, worker births 38, wheat 418, wood 66, workers starved 16, warriors starved 5, workers killed 1, warriors killed 8, hungry 17, critical 17\n"
+  },
+  {
+    "seed": 19,
+    "rotation": 1,
+    "ais": [
+      "cortex",
+      "cabino",
+      "maxima",
+      "nicowar"
+    ],
+    "exit": 0,
+    "economy": "team 0: tick 25000, worker births 12, wheat 239, wood 120, workers starved 0, warriors starved 0, workers killed 0, warriors killed 0, hungry 7, critical 4\nteam 1: tick 25000, worker births 27, wheat 496, wood 156, workers starved 3, warriors starved 0, workers killed 0, warriors killed 0, hungry 11, critical 5\nteam 2: tick 25000, worker births 39, wheat 454, wood 83, workers starved 8, warriors starved 6, workers killed 0, warriors killed 2, hungry 25, critical 23\nteam 3: tick 25000, worker births 35, wheat 522, wood 89, workers starved 8, warriors starved 5, workers killed 7, warriors killed 2, hungry 2, critical 2\n"
+  },
+  {
+    "seed": 19,
+    "rotation": 2,
+    "ais": [
+      "cabino",
+      "maxima",
+      "nicowar",
+      "cortex"
+    ],
+    "exit": 0,
+    "economy": "team 0: tick 25000, worker births 34, wheat 553, wood 180, workers starved 0, warriors starved 0, workers killed 0, warriors killed 0, hungry 16, critical 7\nteam 1: tick 25000, worker births 31, wheat 460, wood 91, workers starved 0, warriors starved 0, workers killed 1, warriors killed 13, hungry 9, critical 7\nteam 2: tick 25000, worker births 38, wheat 514, wood 108, workers starved 0, warriors starved 4, workers killed 8, warriors killed 1, hungry 3, critical 3\nteam 3: tick 25000, worker births 10, wheat 250, wood 140, workers starved 0, warriors starved 0, workers killed 0, warriors killed 0, hungry 1, critical 0\n"
+  },
+  {
+    "seed": 19,
+    "rotation": 3,
+    "ais": [
+      "maxima",
+      "nicowar",
+      "cortex",
+      "cabino"
+    ],
+    "exit": 0,
+    "economy": "team 0: tick 25000, worker births 28, wheat 348, wood 51, workers starved 15, warriors starved 8, workers killed 7, warriors killed 4, hungry 1, critical 1\nteam 1: tick 25000, worker births 47, wheat 585, wood 161, workers starved 2, warriors starved 1, workers killed 15, warriors killed 7, hungry 11, critical 8\nteam 2: tick 25000, worker births 21, wheat 425, wood 147, workers starved 0, warriors starved 0, workers killed 0, warriors killed 0, hungry 4, critical 3\nteam 3: tick 25000, worker births 31, wheat 499, wood 110, workers starved 1, warriors starved 0, workers killed 4, warriors killed 0, hungry 15, critical 6\n"
+  }
+]
