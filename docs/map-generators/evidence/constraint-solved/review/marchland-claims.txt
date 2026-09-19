@@ -1,0 +1,13 @@
+# marchland: do the controls do what they say?
+
+ok   prizes         tel:marchland.rope.prizes-strung           rho=+1.00 2:2.0 -> 12:12.0   more prizes asked for, more strung
+ok   march          tel:marchland.march.tiles                  rho=+1.00 8:36529.0 -> 40:39894.2   a wider march is more no-man's land
+ok   march          tel:marchland.homeland.largest-tiles       rho=-1.00 8:6290.5 -> 40:5611.2   a wider march leaves smaller homelands
+ok   lakes          terrain%:water                             rho=+1.00 0:1.5 -> 40:21.6   more lakes is more water
+ok   levelling      tel:marchland.rope.share-solved            rho=-0.64 0:23.8 -> 100:0.0   levelling evens the prizes' walk
+ok   wheat-amount   tiles:wheat                                rho=+1.00 0:88.0 -> 300:25562.0   the wheat slider moves wheat
+ok   wood-amount    tiles:wood                                 rho=+1.00 0:72.0 -> 300:15903.5   the wood slider moves wood
+ok   stone-amount   tiles:stone                                rho=+0.86 0:49.5 -> 300:106.5   the stone slider moves stone
+ok   fruit-amount   tiles:cherry                               rho=+0.97 0:2.2 -> 300:83.2   the fruit slider moves fruit
+
+ALL CLAIMS HOLD

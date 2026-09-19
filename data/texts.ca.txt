@@ -2826,6 +2826,46 @@ Oasi amagat admet com a màxim vuit colònies.
 El massís no cap en aquest mapa; utilitzeu un mapa més gran o menys colònies.
 [The pond has no room for that much algae; use a bigger pond.]
 La bassa no té prou espai per a tantes algues; utilitzeu una bassa més gran.
+[Even Ground]
+Terreny igualat
+[Balance]
+Equilibratge
+[Tight passes]
+Passos estrets
+[Solver effort]
+Esforç del resolutor
+[Brief]
+Breu
+[Patient]
+Pacient
+[This map is too small to solve on; use a bigger map.]
+Aquest mapa és massa petit per resoldre'l; utilitzeu un mapa més gran.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Massa colònies per equilibrar en un mapa d'aquesta mida; utilitzeu un mapa més gran o menys colònies.
+[The colonies could not be spread out on this map.]
+No s'han pogut repartir les colònies en aquest mapa.
+[Marchland]
+Terra de ningú
+[Prizes on the rope]
+Premis a la corda
+[March width]
+Amplada de la terra de ningú
+[Levelling]
+Anivellament
+[A march needs a country on each side; use at least two colonies.]
+Una terra de ningú necessita un país a cada costat; utilitzeu almenys dues colònies.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Massa colònies perquè aquest mapa doni a cadascuna una terra natal; utilitzeu un mapa més gran o menys colònies.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Aquest mapa no té espai per repartir les colònies; utilitzeu un mapa més gran o menys colònies.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+La terra natal d'una colònia no té sortida a la terra de ningú; utilitzeu un mapa més gran o una terra de ningú més estreta.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+La terra natal d'una colònia no té espai per a una granja; utilitzeu un mapa més gran, menys colònies o una terra de ningú més estreta.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+La terra de ningú té massa poc terreny disputat per a tants premis; utilitzeu menys premis, una terra de ningú més ampla o un mapa més gran.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+La terra de ningú no té espai per a un premi; utilitzeu un mapa més gran, menys colònies o una terra de ningú més ampla.
 [Orchard Commons]
 Vergers comunals
 [Orchard spacing]

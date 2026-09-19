@@ -2816,6 +2816,46 @@ Kaŝita oazo enhavas maksimume ok koloniojn.
 La montmasivo ne enteniĝas en ĉi tiu mapo; uzu pli grandan mapon aŭ malpli da kolonioj.
 [The pond has no room for that much algae; use a bigger pond.]
 La lageto ne havas lokon por tiom da algoj; uzu pli grandan lageton.
+[Even Ground]
+Egala tero
+[Balance]
+Ekvilibrigo
+[Tight passes]
+Mallarĝaj trapasejoj
+[Solver effort]
+Peno de la solvilo
+[Brief]
+Mallonga
+[Patient]
+Pacienca
+[This map is too small to solve on; use a bigger map.]
+Ĉi tiu mapo estas tro malgranda por solvi; uzu pli grandan mapon.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Tro da kolonioj por ekvilibrigi sur mapo de ĉi tiu grandeco; uzu pli grandan mapon aŭ malpli da kolonioj.
+[The colonies could not be spread out on this map.]
+Ne eblis disigi la koloniojn sur ĉi tiu mapo.
+[Marchland]
+Limregiono
+[Prizes on the rope]
+Premioj sur la ŝnuro
+[March width]
+Larĝo de la limregiono
+[Levelling]
+Egaligo
+[A march needs a country on each side; use at least two colonies.]
+Limregiono bezonas landon ĉe ĉiu flanko; uzu almenaŭ du koloniojn.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Tro da kolonioj por ke ĉi tiu mapo donu al ĉiu hejmlandon; uzu pli grandan mapon aŭ malpli da kolonioj.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Ĉi tiu mapo ne havas lokon por disigi la koloniojn; uzu pli grandan mapon aŭ malpli da kolonioj.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+La hejmlando de kolonio havas neniun elirejon al la limregiono; uzu pli grandan mapon aŭ pli mallarĝan limregionon.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+La hejmlando de kolonio ne havas lokon por globulejo; uzu pli grandan mapon, malpli da kolonioj aŭ pli mallarĝan limregionon.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+La limregiono havas tro malmulte da disputata tero por tiom da premioj; uzu malpli da premioj, pli larĝan limregionon aŭ pli grandan mapon.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+La limregiono ne havas lokon por premio; uzu pli grandan mapon, malpli da kolonioj aŭ pli larĝan limregionon.
 [Orchard Commons]
 Komunaj fruktoĝardenoj
 [Orchard spacing]

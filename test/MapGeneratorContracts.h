@@ -1140,8 +1140,274 @@ inline void bajadaContracts()
 		 "towns under growth, crops refused in towns");
 }
 
+inline void evenGroundContracts()
+{
+	const auto &definition =
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("even-ground"));
+	assert(definition.legacyId == 60 && definition.revision == 2);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("water-share") == 10 && request.option("balance") == 70 &&
+		   request.option("passes") == 40 && request.option("effort") == 1);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	// The shapes the search supports, including the long thin ones: the lattice sizes its cells off
+	// the short side as well as the long one so that a 64 by 512 map is still searched in two
+	// dimensions rather than refused.
+	for (auto dimensions : {std::pair{7, 7}, std::pair{8, 8}, std::pair{6, 9}, std::pair{9, 6}})
+		for (int teams : {1, 2, 5, 8})
+		{
+			Game g(nullptr);
+			const auto result = service.generate(g, make(dimensions.first, dimensions.second, teams, 7));
+			if (!result)
+				std::fprintf(stderr, "Even Ground contract (%d x %d, %d colonies): %s\n",
+							 1 << dimensions.first, 1 << dimensions.second, teams,
+							 result.diagnostic().c_str());
+			assert(result);
+		}
+	{
+		// A 64-tile map has too few cells to balance eight colonies over, and says so up front.
+		Game g(nullptr);
+		assert(service.generate(g, make(6, 6, 8, 7)).error == GenerationError::InvalidRequest);
+		assert(g.teamsCount() == 0);
+	}
+	// The water is a budget the search arranges rather than invents: more of it asked for is more of
+	// it on the finished map, every time. The painted share is below the requested one because the
+	// beaches take a tile from each bank, so this is an ordering, not an identity. The top of the
+	// range is 40: past that the map drowns - a fifth of seeds at 60 had a colony with no wood in
+	// reach or too little ground to build on - so the control stops where the map still is one.
+	int previous = -1;
+	for (int share : {0, 10, 25, 40})
+	{
+		D r = make(8, 8, 4, 23);
+		r.options["water-share"] = share;
+		Game g(nullptr);
+		assert(service.generate(g, r));
+		int water = 0;
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+				water += g.map.isWater(x, y);
+		assert(water > previous);
+		previous = water;
+	}
+	// Balance is how much search the stock pass gets, so it has to show in what that pass achieved:
+	// at zero the crops sit where they were dealt, and at full the spread between the colonies'
+	// catchments is a fraction of that.
+	const auto spreadAt = [&](int balance)
+	{
+		D r = make(8, 8, 4, 23);
+		r.options["balance"] = balance;
+		Game g(nullptr);
+		const auto result = service.generate(g, r, true);
+		assert(result);
+		double before = -1, after = -1, searchedCost = NAN, finalCost = NAN, fieldsCost = NAN;
+		for (const auto &record : result.telemetry.records())
+		{
+			if (record.key == "even-ground.stock.fields.weighted")
+				fieldsCost = std::get<double>(record.value);
+			if (record.key == "even-ground.stock.cost-after")
+				searchedCost = std::get<double>(record.value);
+			if (record.key == "even-ground.stock.total")
+				finalCost = std::get<double>(record.value);
+			if (record.key == "even-ground.stock.spread-before")
+				before = std::get<double>(record.value);
+			if (record.key == "even-ground.stock.spread-after")
+				after = std::get<double>(record.value);
+		}
+		assert(before >= 0 && after >= 0);
+		// Incrementally scored swaps and the full rescan of the best arrangement must agree.
+		assert(fieldsCost > 0); // this seed exercises the optional clustering term
+		assert(std::abs(searchedCost - finalCost) < 1e-9);
+		return std::pair{before, after};
+	};
+	const auto unsolved = spreadAt(0), solved = spreadAt(100);
+	assert(unsolved.second == unsolved.first); // no moves: nothing moved
+	assert(solved.second < solved.first / 4);  // searched: the spread is a fraction of what it was
+	{
+		// The map promises every colony a crop within reach, and refuses a world where that has been
+		// taken away.
+		D r = make(8, 8, 4, 23);
+		Game g(nullptr);
+		assert(service.generate(g, r));
+		GenerationContext check(r);
+		assert(definition.validateWorld(g, check).empty());
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+				if (g.map.isResource(x, y) && g.map.getResource(x, y).type == WHEAT)
+					g.map.getResource(x, y).clear();
+		assert(!definition.validateWorld(g, check).empty());
+	}
+	puts("PASS Even Ground: envelope including thin maps and refusal, water budget ordering, "
+		 "balance buys a measurably smaller catchment spread, crop reach enforced");
+}
+
+inline void marchlandContracts()
+{
+	const auto &definition =
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("marchland"));
+	assert(definition.legacyId == 61 && definition.revision == 2);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("prizes") == 6 && request.option("march") == 16 &&
+		   request.option("levelling") == 100 && request.option("lakes") == 10);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	for (auto dimensions : {std::pair{8, 8}, std::pair{9, 9}, std::pair{8, 9}})
+		for (int teams : {2, 5, 8})
+		{
+			Game g(nullptr);
+			const auto result = service.generate(g, make(dimensions.first, dimensions.second, teams, 31001));
+			if (!result)
+				std::fprintf(stderr, "Marchland contract (%d x %d, %d colonies): %s\n",
+							 1 << dimensions.first, 1 << dimensions.second, teams,
+							 result.diagnostic().c_str());
+			assert(result);
+		}
+	// The 64-tile side used to invert the prize-gap clamp bounds (20 > 16).
+	for (auto dimensions : {std::pair{6, 9}, std::pair{9, 6}})
+	{
+		Game g(nullptr);
+		assert(service.generate(g, make(dimensions.first, dimensions.second, 6, 31001)));
+	}
+	// A long map needs a ring of colonies rather than a line of them, and gets one.
+	for (auto dimensions : {std::pair{7, 9}, std::pair{9, 7}})
+		for (int teams : {8, 12})
+		{
+			Game g(nullptr);
+			assert(service.generate(g, make(dimensions.first, dimensions.second, teams, 31001)));
+		}
+	{
+		// A rope needs two ends, a homeland needs room, and a long map needs enough colonies to
+		// ring it: all three are refused up front rather than failing seed after seed.
+		Game solo(nullptr);
+		assert(service.generate(solo, make(8, 8, 1, 7)).error == GenerationError::InvalidRequest);
+		assert(solo.teamsCount() == 0);
+		Game crowded(nullptr);
+		assert(service.generate(crowded, make(7, 7, 12, 7)).error ==
+			   GenerationError::InvalidRequest);
+		Game strung(nullptr);
+		assert(service.generate(strung, make(7, 9, 4, 7)).error ==
+			   GenerationError::InvalidRequest);
+	}
+	// A river is character, not structure: some seeds cut one and some do not, and a seed that does
+	// is still a country every colony can cross. The bed is drawn and only its placement scored, so
+	// what is checked here is the placement's two promises - that it keeps out of every town, and
+	// that it is forded more often than bare connectivity would need. Crossed only where it must
+	// be, the bed walls the march off and the rope stops being contestable, which is the failure
+	// this map's own rope check caught at 512x512.
+	{
+		int withRiver = 0, without = 0;
+		for (std::uint32_t seed : {9002u, 9009u, 9013u, 9016u, 9024u, 9001u, 9006u, 9012u})
+		{
+			Game g(nullptr);
+			const auto result = service.generate(g, make(8, 8, 4, seed), true);
+			assert(result);
+			// Counts are recorded as integers and residuals as doubles, so read either.
+			const auto number = [](const auto &record)
+			{
+				return std::holds_alternative<double>(record.value)
+						   ? std::get<double>(record.value)
+						   : double(std::get<std::int64_t>(record.value));
+			};
+			double tiles = -1, fords = -1, town = -1;
+			for (const auto &record : result.telemetry.records())
+			{
+				if (record.key == "marchland.river.tiles")
+					tiles = number(record);
+				if (record.key == "marchland.river.fords")
+					fords = number(record);
+				if (record.key == "marchland.river.bed.town.residual")
+					town = number(record);
+			}
+			if (tiles < 0)
+			{
+				++without;
+				assert(fords < 0); // nothing is forded where nothing was cut
+				continue;
+			}
+			++withRiver;
+			assert(tiles > 0 && town == 0 && fords >= 4);
+		}
+		// Both outcomes happen, so the emphasis is genuinely a draw and not a constant.
+		assert(withRiver > 0 && without > 0);
+	}
+	// Fruit grows on the rope and nowhere else, which is what makes the rope worth pulling, and
+	// every colony's own quarry and lake are guaranteed whatever the sliders say.
+	{
+		D bare = make(8, 8, 4, 401);
+		for (const auto &control : definition.controls)
+			if (control.group == ControlGroup::Resources)
+				bare.options[control.id] = 0;
+		Game g(nullptr);
+		assert(service.generate(g, bare));
+		GenerationContext check(bare);
+		assert(definition.validateWorld(g, check).empty());
+		int fruit = 0, water = 0;
+		for (int i = 0; i < 256 * 256; ++i)
+		{
+			const int type = g.map.getResource(i % 256, i / 256).type;
+			fruit += type >= CHERRY && type < CHERRY + 3;
+			water += g.map.isWater(i % 256, i / 256);
+		}
+		assert(fruit > 0 && water > 0);
+		// Take the fruit away and the map is no longer a marchland; the validator must say so.
+		for (int i = 0; i < 256 * 256; ++i)
+		{
+			const int type = g.map.getResource(i % 256, i / 256).type;
+			if (type >= CHERRY && type < CHERRY + 3)
+				g.map.setNoResource(i % 256, i / 256, 1);
+		}
+		assert(!definition.validateWorld(g, check).empty());
+	}
+	// Levelling is the map's own argument, so it has to be worth something measurable: the search
+	// must cut the spread of the colonies' walks to the rope to a fraction of what dealing the
+	// prizes at random leaves. Both figures are recorded for every map this generator makes.
+	const auto rope = [&](int levelling)
+	{
+		D r = make(8, 8, 4, 401);
+		r.options["levelling"] = levelling;
+		Game g(nullptr);
+		const auto result = service.generate(g, r, true);
+		assert(result);
+		int dealt = -1, solved = -1;
+		for (const auto &record : result.telemetry.records())
+		{
+			if (record.key == "marchland.rope.share-dealt")
+				dealt = int(std::get<std::int64_t>(record.value));
+			if (record.key == "marchland.rope.share-solved")
+				solved = int(std::get<std::int64_t>(record.value));
+		}
+		assert(dealt >= 0 && solved >= 0);
+		return std::pair{dealt, solved};
+	};
+	const auto unsolved = rope(0), solved = rope(100);
+	assert(unsolved.second == unsolved.first); // no moves: the rope is where chance left it
+	assert(solved.second * 4 < solved.first);  // searched: a fraction of the spread it started with
+	puts("PASS Marchland: envelope and refusals, fruit only on the rope, guaranteed home lake and quarry, "
+		 "levelling measurably shares the rope out, rivers drawn on some seeds and forded on all "
+		 "of them");
+}
+
 inline void generatorContracts()
 {
+	evenGroundContracts();
+	marchlandContracts();
 	rebuiltLandscapeContracts();
 	savannahContracts();
 	locustFoodChecks();

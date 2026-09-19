@@ -1,0 +1,1676 @@
+{
+  "config": {
+    "name": "constraint-solved-review",
+    "description": "Revision-2 smoke tournament: two seeds per generator, all four rotations, one engine seed per rotation. Checks playable games and parsing; too small to establish fairness.",
+    "generators": [
+      {
+        "method": 15
+      },
+      {
+        "method": 59
+      },
+      {
+        "method": 60
+      }
+    ],
+    "map_seeds": [
+      2001,
+      2002
+    ],
+    "games_per_rotation": 1,
+    "engine_seed_base": 1,
+    "rotations": "all",
+    "size": 128,
+    "colonies": 4,
+    "workers": null,
+    "controls": {},
+    "candidates": 5,
+    "ai": "nicowar",
+    "tick_cap": 90000,
+    "jobs": 3,
+    "game_timeout_seconds": 3600,
+    "keep_replays": false,
+    "timeline": true,
+    "verify_games": 2,
+    "bootstrap_draws": 4000,
+    "preset_file": "docs/map-generators/evidence/constraint-solved/review/preset.json",
+    "width": 128,
+    "height": 128,
+    "rotation_count": 4
+  },
+  "git_revision": "c3cf78569c376806383cdbf81ca50b389f001555",
+  "generated_at": "2026-09-19T09:04:19",
+  "balanced": true,
+  "games": 24,
+  "played": 24,
+  "wall_seconds": {
+    "mean": 205.73220833333335,
+    "median": 170.964,
+    "max": 438.156,
+    "total": 4937.573,
+    "per_1000_ticks": 4.260649524798987
+  },
+  "ticks": {
+    "median": 43858.0,
+    "max": 90000
+  },
+  "end_reasons": {
+    "cap": 1,
+    "elimination": 23
+  },
+  "engine_team_index": {
+    "all_generators": {
+      "counts": [
+        10,
+        7,
+        5,
+        2
+      ],
+      "n": 24,
+      "chi2": 5.666666666666666,
+      "p_chi2": 0.12900306143743656,
+      "p": 0.11464594926903303,
+      "p_method": "exact",
+      "best": 0,
+      "best_share": 0.4166666666666667,
+      "best_share_wilson": [
+        0.24467602609811764,
+        0.6116533413477124
+      ],
+      "dominance": 1.6666666666666667,
+      "squared_bias": 0.028985507246376805,
+      "rms_points": 8.512565307587485,
+      "shares_wilson": [
+        [
+          0.24467602609811764,
+          0.6116533413477124
+        ],
+        [
+          0.14914648196960875,
+          0.49167693664496637
+        ],
+        [
+          0.09244825352851857,
+          0.40470453253188665
+        ],
+        [
+          0.023158815297043306,
+          0.25848802193210685
+        ]
+      ]
+    },
+    "baseline": {
+      "counts": [
+        3,
+        3,
+        1,
+        1
+      ],
+      "n": 8,
+      "chi2": 2.0,
+      "p_chi2": 0.5724067044708797,
+      "p": 0.6539306640625012,
+      "p_method": "exact",
+      "best": 0,
+      "best_share": 0.375,
+      "best_share_wilson": [
+        0.13684428582359742,
+        0.6942576053973727
+      ],
+      "dominance": 1.5,
+      "squared_bias": -0.03571428571428571,
+      "rms_points": 0.0,
+      "shares_wilson": [
+        [
+          0.13684428582359742,
+          0.6942576053973727
+        ],
+        [
+          0.13684428582359742,
+          0.6942576053973727
+        ],
+        [
+          0.02241749145005667,
+          0.4708881822128535
+        ],
+        [
+          0.02241749145005667,
+          0.4708881822128535
+        ]
+      ]
+    }
+  },
+  "scorer_all_generators": {
+    "fitness": {
+      "maps": 4,
+      "colonies": 16,
+      "wins_rho": 0.33264037092374465,
+      "placement_rho": 0.3914366349794684,
+      "wins_rho_ci": null,
+      "placement_rho_ci": null,
+      "wins_rho_p": 0.280359820089955,
+      "placement_rho_p": 0.22188905547226387
+    },
+    "win_probability": {
+      "maps": 4,
+      "colonies": 16,
+      "wins_rho": 0.3054534175309386,
+      "placement_rho": 0.38257391871578234,
+      "wins_rho_ci": null,
+      "placement_rho_ci": null
+    },
+    "top_rated_start": {
+      "wins": 4,
+      "n": 16,
+      "maps": 4,
+      "share": 0.25,
+      "p_one_sided": 0.5297351324337831
+    }
+  },
+  "generators": [
+    {
+      "method": 15,
+      "name": "Symmetric arena",
+      "id": "symmetric-arena",
+      "revision": 1,
+      "maps": 2,
+      "maps_with_winners": 2,
+      "games": 8,
+      "played": 8,
+      "errors": 0,
+      "cap_share": 0.125,
+      "prestige_share": 0.0,
+      "unresolved": 0,
+      "start_mismatches": 0,
+      "headline_rms_points": 20.41241452319315,
+      "headline_rms_points_ci": [
+        0.0,
+        55.35115174953453
+      ],
+      "headline_fair_floor": 25.0,
+      "mean_squared_bias": 0.16666666666666666,
+      "decisive_maps": 2,
+      "decisive_games": 7,
+      "decisive_rms_points": 20.41241452319315,
+      "decisive_rms_points_ci": [
+        0.0,
+        55.35115174953453
+      ],
+      "decisive_fair_floor": 28.867513459481287,
+      "decisive_maps_p05": 0,
+      "maps_p05": 0,
+      "maps_bh05": 0,
+      "maps_holm05": 0,
+      "expected_p05_by_chance": 0.1,
+      "dominance": {
+        "min": 2.0,
+        "median": 2.5,
+        "max": 3.0
+      },
+      "pooled_chi2": 10.0,
+      "pooled_p": 0.11247188202949263,
+      "slot_index": {
+        "counts": [
+          0,
+          3,
+          2,
+          3
+        ],
+        "n": 8,
+        "chi2": 3.0,
+        "p_chi2": 0.39162517627108884,
+        "p": 0.39758300781250067,
+        "p_method": "exact",
+        "best": 1,
+        "best_share": 0.375,
+        "best_share_wilson": [
+          0.13684428582359742,
+          0.6942576053973727
+        ],
+        "dominance": 1.5,
+        "squared_bias": 0.0,
+        "rms_points": 0.0,
+        "shares_wilson": [
+          [
+            0.0,
+            0.32440756488388023
+          ],
+          [
+            0.13684428582359742,
+            0.6942576053973727
+          ],
+          [
+            0.071479212752109,
+            0.5907245696898311
+          ],
+          [
+            0.13684428582359742,
+            0.6942576053973727
+          ]
+        ]
+      },
+      "team_index": {
+        "counts": [
+          3,
+          3,
+          1,
+          1
+        ],
+        "n": 8,
+        "chi2": 2.0,
+        "p_chi2": 0.5724067044708797,
+        "p": 0.6539306640625012,
+        "p_method": "exact",
+        "best": 0,
+        "best_share": 0.375,
+        "best_share_wilson": [
+          0.13684428582359742,
+          0.6942576053973727
+        ],
+        "dominance": 1.5,
+        "squared_bias": -0.03571428571428571,
+        "rms_points": 0.0,
+        "shares_wilson": [
+          [
+            0.13684428582359742,
+            0.6942576053973727
+          ],
+          [
+            0.13684428582359742,
+            0.6942576053973727
+          ],
+          [
+            0.02241749145005667,
+            0.4708881822128535
+          ],
+          [
+            0.02241749145005667,
+            0.4708881822128535
+          ]
+        ]
+      },
+      "scorer": null,
+      "ticks_median": 51530.0,
+      "wall_seconds_mean": 266.86625,
+      "map_keys": [
+        "g15-s2001",
+        "g15-s2002"
+      ],
+      "failed_maps": []
+    },
+    {
+      "method": 59,
+      "name": "Even Ground",
+      "id": "even-ground",
+      "revision": 2,
+      "maps": 2,
+      "maps_with_winners": 2,
+      "games": 8,
+      "played": 8,
+      "errors": 0,
+      "cap_share": 0.0,
+      "prestige_share": 0.0,
+      "unresolved": 0,
+      "start_mismatches": 0,
+      "headline_rms_points": 32.27486121839514,
+      "headline_rms_points_ci": [
+        0.0,
+        107.84247771634328
+      ],
+      "headline_fair_floor": 25.0,
+      "mean_squared_bias": 0.4166666666666667,
+      "decisive_maps": 2,
+      "decisive_games": 8,
+      "decisive_rms_points": 32.27486121839514,
+      "decisive_rms_points_ci": [
+        0.0,
+        107.84247771634328
+      ],
+      "decisive_fair_floor": 25.0,
+      "decisive_maps_p05": 1,
+      "maps_p05": 1,
+      "maps_bh05": 1,
+      "maps_holm05": 1,
+      "expected_p05_by_chance": 0.1,
+      "dominance": {
+        "min": 2.0,
+        "median": 3.0,
+        "max": 4.0
+      },
+      "pooled_chi2": 16.0,
+      "pooled_p": 0.011497125718570358,
+      "slot_index": {
+        "counts": [
+          4,
+          2,
+          0,
+          2
+        ],
+        "n": 8,
+        "chi2": 4.0,
+        "p_chi2": 0.2614641299491104,
+        "p": 0.2950439453125005,
+        "p_method": "exact",
+        "best": 0,
+        "best_share": 0.5,
+        "best_share_wilson": [
+          0.21521606221387757,
+          0.7847839377861224
+        ],
+        "dominance": 2.0,
+        "squared_bias": 0.03571428571428571,
+        "rms_points": 9.44911182523068,
+        "shares_wilson": [
+          [
+            0.21521606221387757,
+            0.7847839377861224
+          ],
+          [
+            0.071479212752109,
+            0.5907245696898311
+          ],
+          [
+            0.0,
+            0.32440756488388023
+          ],
+          [
+            0.071479212752109,
+            0.5907245696898311
+          ]
+        ]
+      },
+      "team_index": {
+        "counts": [
+          3,
+          3,
+          1,
+          1
+        ],
+        "n": 8,
+        "chi2": 2.0,
+        "p_chi2": 0.5724067044708797,
+        "p": 0.6539306640625012,
+        "p_method": "exact",
+        "best": 0,
+        "best_share": 0.375,
+        "best_share_wilson": [
+          0.13684428582359742,
+          0.6942576053973727
+        ],
+        "dominance": 1.5,
+        "squared_bias": -0.03571428571428571,
+        "rms_points": 0.0,
+        "shares_wilson": [
+          [
+            0.13684428582359742,
+            0.6942576053973727
+          ],
+          [
+            0.13684428582359742,
+            0.6942576053973727
+          ],
+          [
+            0.02241749145005667,
+            0.4708881822128535
+          ],
+          [
+            0.02241749145005667,
+            0.4708881822128535
+          ]
+        ]
+      },
+      "scorer": {
+        "fitness": {
+          "maps": 2,
+          "colonies": 8,
+          "wins_rho": 0.5910967041703311,
+          "placement_rho": 0.2857142857142857,
+          "wins_rho_ci": null,
+          "placement_rho_ci": null,
+          "wins_rho_p": 0.15942028985507245,
+          "placement_rho_p": 0.5247376311844077
+        },
+        "win_probability": {
+          "maps": 2,
+          "colonies": 8,
+          "wins_rho": 0.5910967041703311,
+          "placement_rho": 0.2857142857142857,
+          "wins_rho_ci": null,
+          "placement_rho_ci": null
+        },
+        "top_rated_start": {
+          "wins": 2,
+          "n": 8,
+          "maps": 2,
+          "share": 0.25,
+          "p_one_sided": 0.6111944027986007
+        }
+      },
+      "ticks_median": 43802.0,
+      "wall_seconds_mean": 177.323875,
+      "map_keys": [
+        "g59-s2001",
+        "g59-s2002"
+      ],
+      "failed_maps": []
+    },
+    {
+      "method": 60,
+      "name": "Marchland",
+      "id": "marchland",
+      "revision": 2,
+      "maps": 2,
+      "maps_with_winners": 2,
+      "games": 8,
+      "played": 8,
+      "errors": 0,
+      "cap_share": 0.0,
+      "prestige_share": 0.0,
+      "unresolved": 0,
+      "start_mismatches": 0,
+      "headline_rms_points": 0.0,
+      "headline_rms_points_ci": [
+        0.0,
+        51.44981373468064
+      ],
+      "headline_fair_floor": 25.0,
+      "mean_squared_bias": 0.0,
+      "decisive_maps": 2,
+      "decisive_games": 8,
+      "decisive_rms_points": 0.0,
+      "decisive_rms_points_ci": [
+        0.0,
+        51.44981373468064
+      ],
+      "decisive_fair_floor": 25.0,
+      "decisive_maps_p05": 0,
+      "maps_p05": 0,
+      "maps_bh05": 0,
+      "maps_holm05": 0,
+      "expected_p05_by_chance": 0.1,
+      "dominance": {
+        "min": 2.0,
+        "median": 2.0,
+        "max": 2.0
+      },
+      "pooled_chi2": 6.0,
+      "pooled_p": 0.5311172206948263,
+      "slot_index": {
+        "counts": [
+          2,
+          0,
+          3,
+          3
+        ],
+        "n": 8,
+        "chi2": 3.0,
+        "p_chi2": 0.39162517627108884,
+        "p": 0.39758300781250067,
+        "p_method": "exact",
+        "best": 2,
+        "best_share": 0.375,
+        "best_share_wilson": [
+          0.13684428582359742,
+          0.6942576053973727
+        ],
+        "dominance": 1.5,
+        "squared_bias": 0.0,
+        "rms_points": 0.0,
+        "shares_wilson": [
+          [
+            0.071479212752109,
+            0.5907245696898311
+          ],
+          [
+            0.0,
+            0.32440756488388023
+          ],
+          [
+            0.13684428582359742,
+            0.6942576053973727
+          ],
+          [
+            0.13684428582359742,
+            0.6942576053973727
+          ]
+        ]
+      },
+      "team_index": {
+        "counts": [
+          4,
+          1,
+          3,
+          0
+        ],
+        "n": 8,
+        "chi2": 5.0,
+        "p_chi2": 0.17179714429673365,
+        "p": 0.19763183593750025,
+        "p_method": "exact",
+        "best": 0,
+        "best_share": 0.5,
+        "best_share_wilson": [
+          0.21521606221387757,
+          0.7847839377861224
+        ],
+        "dominance": 2.0,
+        "squared_bias": 0.07142857142857142,
+        "rms_points": 13.36306209562122,
+        "shares_wilson": [
+          [
+            0.21521606221387757,
+            0.7847839377861224
+          ],
+          [
+            0.02241749145005667,
+            0.4708881822128535
+          ],
+          [
+            0.13684428582359742,
+            0.6942576053973727
+          ],
+          [
+            0.0,
+            0.32440756488388023
+          ]
+        ]
+      },
+      "scorer": {
+        "fitness": {
+          "maps": 2,
+          "colonies": 8,
+          "wins_rho": -0.25197631533948484,
+          "placement_rho": 0.263477777620917,
+          "wins_rho_ci": null,
+          "placement_rho_ci": null,
+          "wins_rho_p": 0.6201899050474763,
+          "placement_rho_p": 0.5037481259370314
+        },
+        "win_probability": {
+          "maps": 2,
+          "colonies": 8,
+          "wins_rho": -0.25197631533948484,
+          "placement_rho": 0.263477777620917,
+          "wins_rho_ci": null,
+          "placement_rho_ci": null
+        },
+        "top_rated_start": {
+          "wins": 2,
+          "n": 8,
+          "maps": 2,
+          "share": 0.25,
+          "p_one_sided": 0.6121939030484758
+        }
+      },
+      "ticks_median": 41322.0,
+      "wall_seconds_mean": 173.00650000000002,
+      "map_keys": [
+        "g60-s2001",
+        "g60-s2002"
+      ],
+      "failed_maps": []
+    }
+  ],
+  "maps": [
+    {
+      "key": "g15-s2001",
+      "method": 15,
+      "map_seed": 2001,
+      "chosen_seed": 546346630,
+      "games": 4,
+      "played": 4,
+      "errors": 0,
+      "cap_games": 0,
+      "prestige_games": 0,
+      "unresolved": 0,
+      "start_mismatches": 0,
+      "ticks_median": 48482.0,
+      "wall_seconds_mean": 255.33775,
+      "slot": {
+        "counts": [
+          0,
+          3,
+          0,
+          1
+        ],
+        "n": 4,
+        "chi2": 6.0,
+        "p_chi2": 0.11161022509471287,
+        "p": 0.2031249999999999,
+        "p_method": "exact",
+        "best": 1,
+        "best_share": 0.75,
+        "best_share_wilson": [
+          0.30064184258240184,
+          0.9544127391902995
+        ],
+        "dominance": 3.0,
+        "squared_bias": 0.25,
+        "rms_points": 25.0,
+        "shares_wilson": [
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.30064184258240184,
+            0.9544127391902995
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.04558726080970055,
+            0.6993581574175981
+          ]
+        ],
+        "q_bh": 0.34374999999999983,
+        "p_holm": 0.4062499999999998
+      },
+      "decisive_slot": {
+        "counts": [
+          0,
+          3,
+          0,
+          1
+        ],
+        "n": 4,
+        "chi2": 6.0,
+        "p_chi2": 0.11161022509471287,
+        "p": 0.2031249999999999,
+        "p_method": "exact",
+        "best": 1,
+        "best_share": 0.75,
+        "best_share_wilson": [
+          0.30064184258240184,
+          0.9544127391902995
+        ],
+        "dominance": 3.0,
+        "squared_bias": 0.25,
+        "rms_points": 25.0,
+        "shares_wilson": [
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.30064184258240184,
+            0.9544127391902995
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.04558726080970055,
+            0.6993581574175981
+          ]
+        ]
+      },
+      "team": {
+        "counts": [
+          1,
+          2,
+          1,
+          0
+        ],
+        "n": 4,
+        "chi2": 2.0,
+        "p_chi2": 0.5724067044708797,
+        "p": 0.9062499999999996,
+        "p_method": "exact",
+        "best": 1,
+        "best_share": 0.5,
+        "best_share_wilson": [
+          0.15003898915214947,
+          0.8499610108478506
+        ],
+        "dominance": 2.0,
+        "squared_bias": -0.08333333333333333,
+        "rms_points": 0.0,
+        "shares_wilson": [
+          [
+            0.04558726080970055,
+            0.6993581574175981
+          ],
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ],
+          [
+            0.04558726080970055,
+            0.6993581574175981
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ]
+        ]
+      },
+      "placement_score": [
+        0.08333333333333333,
+        0.9166666666666666,
+        0.5,
+        0.49999999999999994
+      ],
+      "quality": [
+        0.365358,
+        0.36198,
+        0.364289,
+        0.365491
+      ],
+      "quality_score": 0.999034,
+      "starts": [
+        [
+          97,
+          38
+        ],
+        [
+          86,
+          97
+        ],
+        [
+          27,
+          86
+        ],
+        [
+          38,
+          27
+        ]
+      ],
+      "quality_spearman": -0.31622776601683794
+    },
+    {
+      "key": "g15-s2002",
+      "method": 15,
+      "map_seed": 2002,
+      "chosen_seed": 3034067026,
+      "games": 4,
+      "played": 4,
+      "errors": 0,
+      "cap_games": 1,
+      "prestige_games": 0,
+      "unresolved": 0,
+      "start_mismatches": 0,
+      "ticks_median": 54578.0,
+      "wall_seconds_mean": 278.39475,
+      "slot": {
+        "counts": [
+          0,
+          0,
+          2,
+          2
+        ],
+        "n": 4,
+        "chi2": 4.0,
+        "p_chi2": 0.2614641299491104,
+        "p": 0.34374999999999983,
+        "p_method": "exact",
+        "best": 2,
+        "best_share": 0.5,
+        "best_share_wilson": [
+          0.15003898915214947,
+          0.8499610108478506
+        ],
+        "dominance": 2.0,
+        "squared_bias": 0.08333333333333333,
+        "rms_points": 14.433756729740644,
+        "shares_wilson": [
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ],
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ]
+        ],
+        "q_bh": 0.34374999999999983,
+        "p_holm": 0.4062499999999998
+      },
+      "decisive_slot": {
+        "counts": [
+          0,
+          0,
+          1,
+          2
+        ],
+        "n": 3,
+        "chi2": 3.666666666666667,
+        "p_chi2": 0.2997805885957119,
+        "p": 0.6250000000000004,
+        "p_method": "exact",
+        "best": 3,
+        "best_share": 0.6666666666666666,
+        "best_share_wilson": [
+          0.2076596008020477,
+          0.9385080552796037
+        ],
+        "dominance": 2.6666666666666665,
+        "squared_bias": 0.08333333333333337,
+        "rms_points": 14.433756729740645,
+        "shares_wilson": [
+          [
+            5.551115123125783e-17,
+            0.5614970317550454
+          ],
+          [
+            5.551115123125783e-17,
+            0.5614970317550454
+          ],
+          [
+            0.06149194472039621,
+            0.7923403991979522
+          ],
+          [
+            0.2076596008020477,
+            0.9385080552796037
+          ]
+        ]
+      },
+      "team": {
+        "counts": [
+          2,
+          1,
+          0,
+          1
+        ],
+        "n": 4,
+        "chi2": 2.0,
+        "p_chi2": 0.5724067044708797,
+        "p": 0.9062499999999996,
+        "p_method": "exact",
+        "best": 0,
+        "best_share": 0.5,
+        "best_share_wilson": [
+          0.15003898915214947,
+          0.8499610108478506
+        ],
+        "dominance": 2.0,
+        "squared_bias": -0.08333333333333333,
+        "rms_points": 0.0,
+        "shares_wilson": [
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ],
+          [
+            0.04558726080970055,
+            0.6993581574175981
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.04558726080970055,
+            0.6993581574175981
+          ]
+        ]
+      },
+      "placement_score": [
+        0.08333333333333333,
+        0.5833333333333333,
+        0.6666666666666666,
+        0.6666666666666666
+      ],
+      "quality": [
+        0.245096,
+        0.244182,
+        0.245096,
+        0.245096
+      ],
+      "quality_score": 0.999772,
+      "starts": [
+        [
+          99,
+          36
+        ],
+        [
+          88,
+          99
+        ],
+        [
+          25,
+          88
+        ],
+        [
+          36,
+          25
+        ]
+      ],
+      "quality_spearman": 0.5773502691896258
+    },
+    {
+      "key": "g59-s2001",
+      "method": 59,
+      "map_seed": 2001,
+      "chosen_seed": 1188153717,
+      "games": 4,
+      "played": 4,
+      "errors": 0,
+      "cap_games": 0,
+      "prestige_games": 0,
+      "unresolved": 0,
+      "start_mismatches": 0,
+      "ticks_median": 35698.0,
+      "wall_seconds_mean": 138.84975,
+      "slot": {
+        "counts": [
+          4,
+          0,
+          0,
+          0
+        ],
+        "n": 4,
+        "chi2": 12.0,
+        "p_chi2": 0.007383160505359776,
+        "p": 0.015625000000000003,
+        "p_method": "exact",
+        "best": 0,
+        "best_share": 1.0,
+        "best_share_wilson": [
+          0.5101091635454027,
+          1.0
+        ],
+        "dominance": 4.0,
+        "squared_bias": 0.75,
+        "rms_points": 43.30127018922193,
+        "shares_wilson": [
+          [
+            0.5101091635454027,
+            1.0
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ]
+        ],
+        "q_bh": 0.03125000000000001,
+        "p_holm": 0.03125000000000001
+      },
+      "decisive_slot": {
+        "counts": [
+          4,
+          0,
+          0,
+          0
+        ],
+        "n": 4,
+        "chi2": 12.0,
+        "p_chi2": 0.007383160505359776,
+        "p": 0.015625000000000003,
+        "p_method": "exact",
+        "best": 0,
+        "best_share": 1.0,
+        "best_share_wilson": [
+          0.5101091635454027,
+          1.0
+        ],
+        "dominance": 4.0,
+        "squared_bias": 0.75,
+        "rms_points": 43.30127018922193,
+        "shares_wilson": [
+          [
+            0.5101091635454027,
+            1.0
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ]
+        ]
+      },
+      "team": {
+        "counts": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "n": 4,
+        "chi2": 0.0,
+        "p_chi2": 1.0,
+        "p": 0.9999999999999994,
+        "p_method": "exact",
+        "best": 0,
+        "best_share": 0.25,
+        "best_share_wilson": [
+          0.04558726080970055,
+          0.6993581574175981
+        ],
+        "dominance": 1.0,
+        "squared_bias": -0.25,
+        "rms_points": 0.0,
+        "shares_wilson": [
+          [
+            0.04558726080970055,
+            0.6993581574175981
+          ],
+          [
+            0.04558726080970055,
+            0.6993581574175981
+          ],
+          [
+            0.04558726080970055,
+            0.6993581574175981
+          ],
+          [
+            0.04558726080970055,
+            0.6993581574175981
+          ]
+        ]
+      },
+      "placement_score": [
+        1.0,
+        0.08333333333333333,
+        0.5,
+        0.41666666666666663
+      ],
+      "quality": [
+        0.238357,
+        0.269072,
+        0.166086,
+        -0.043206
+      ],
+      "quality_score": 0.919316,
+      "starts": [
+        [
+          28,
+          68
+        ],
+        [
+          28,
+          4
+        ],
+        [
+          92,
+          116
+        ],
+        [
+          92,
+          52
+        ]
+      ],
+      "quality_spearman": 0.2581988897471611
+    },
+    {
+      "key": "g59-s2002",
+      "method": 59,
+      "map_seed": 2002,
+      "chosen_seed": 23265159,
+      "games": 4,
+      "played": 4,
+      "errors": 0,
+      "cap_games": 0,
+      "prestige_games": 0,
+      "unresolved": 0,
+      "start_mismatches": 0,
+      "ticks_median": 51906.0,
+      "wall_seconds_mean": 215.798,
+      "slot": {
+        "counts": [
+          0,
+          2,
+          0,
+          2
+        ],
+        "n": 4,
+        "chi2": 4.0,
+        "p_chi2": 0.2614641299491104,
+        "p": 0.34374999999999983,
+        "p_method": "exact",
+        "best": 1,
+        "best_share": 0.5,
+        "best_share_wilson": [
+          0.15003898915214947,
+          0.8499610108478506
+        ],
+        "dominance": 2.0,
+        "squared_bias": 0.08333333333333333,
+        "rms_points": 14.433756729740644,
+        "shares_wilson": [
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ]
+        ],
+        "q_bh": 0.34374999999999983,
+        "p_holm": 0.34374999999999983
+      },
+      "decisive_slot": {
+        "counts": [
+          0,
+          2,
+          0,
+          2
+        ],
+        "n": 4,
+        "chi2": 4.0,
+        "p_chi2": 0.2614641299491104,
+        "p": 0.34374999999999983,
+        "p_method": "exact",
+        "best": 1,
+        "best_share": 0.5,
+        "best_share_wilson": [
+          0.15003898915214947,
+          0.8499610108478506
+        ],
+        "dominance": 2.0,
+        "squared_bias": 0.08333333333333333,
+        "rms_points": 14.433756729740644,
+        "shares_wilson": [
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ]
+        ]
+      },
+      "team": {
+        "counts": [
+          2,
+          2,
+          0,
+          0
+        ],
+        "n": 4,
+        "chi2": 4.0,
+        "p_chi2": 0.2614641299491104,
+        "p": 0.34374999999999983,
+        "p_method": "exact",
+        "best": 0,
+        "best_share": 0.5,
+        "best_share_wilson": [
+          0.15003898915214947,
+          0.8499610108478506
+        ],
+        "dominance": 2.0,
+        "squared_bias": 0.08333333333333333,
+        "rms_points": 14.433756729740644,
+        "shares_wilson": [
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ],
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ]
+        ]
+      },
+      "placement_score": [
+        0.3333333333333333,
+        0.8333333333333333,
+        0.16666666666666666,
+        0.6666666666666666
+      ],
+      "quality": [
+        0.163112,
+        0.343978,
+        0.173223,
+        0.525265
+      ],
+      "quality_score": 0.892544,
+      "starts": [
+        [
+          124,
+          68
+        ],
+        [
+          60,
+          68
+        ],
+        [
+          68,
+          4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "quality_spearman": 0.8944271909999159
+    },
+    {
+      "key": "g60-s2001",
+      "method": 60,
+      "map_seed": 2001,
+      "chosen_seed": 844529007,
+      "games": 4,
+      "played": 4,
+      "errors": 0,
+      "cap_games": 0,
+      "prestige_games": 0,
+      "unresolved": 0,
+      "start_mismatches": 0,
+      "ticks_median": 35538.0,
+      "wall_seconds_mean": 127.14275,
+      "slot": {
+        "counts": [
+          2,
+          0,
+          1,
+          1
+        ],
+        "n": 4,
+        "chi2": 2.0,
+        "p_chi2": 0.5724067044708797,
+        "p": 0.9062499999999996,
+        "p_method": "exact",
+        "best": 0,
+        "best_share": 0.5,
+        "best_share_wilson": [
+          0.15003898915214947,
+          0.8499610108478506
+        ],
+        "dominance": 2.0,
+        "squared_bias": -0.08333333333333333,
+        "rms_points": 0.0,
+        "shares_wilson": [
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.04558726080970055,
+            0.6993581574175981
+          ],
+          [
+            0.04558726080970055,
+            0.6993581574175981
+          ]
+        ],
+        "q_bh": 0.9062499999999996,
+        "p_holm": 0.9062499999999996
+      },
+      "decisive_slot": {
+        "counts": [
+          2,
+          0,
+          1,
+          1
+        ],
+        "n": 4,
+        "chi2": 2.0,
+        "p_chi2": 0.5724067044708797,
+        "p": 0.9062499999999996,
+        "p_method": "exact",
+        "best": 0,
+        "best_share": 0.5,
+        "best_share_wilson": [
+          0.15003898915214947,
+          0.8499610108478506
+        ],
+        "dominance": 2.0,
+        "squared_bias": -0.08333333333333333,
+        "rms_points": 0.0,
+        "shares_wilson": [
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.04558726080970055,
+            0.6993581574175981
+          ],
+          [
+            0.04558726080970055,
+            0.6993581574175981
+          ]
+        ]
+      },
+      "team": {
+        "counts": [
+          2,
+          1,
+          1,
+          0
+        ],
+        "n": 4,
+        "chi2": 2.0,
+        "p_chi2": 0.5724067044708797,
+        "p": 0.9062499999999996,
+        "p_method": "exact",
+        "best": 0,
+        "best_share": 0.5,
+        "best_share_wilson": [
+          0.15003898915214947,
+          0.8499610108478506
+        ],
+        "dominance": 2.0,
+        "squared_bias": -0.08333333333333333,
+        "rms_points": 0.0,
+        "shares_wilson": [
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ],
+          [
+            0.04558726080970055,
+            0.6993581574175981
+          ],
+          [
+            0.04558726080970055,
+            0.6993581574175981
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ]
+        ]
+      },
+      "placement_score": [
+        0.5833333333333334,
+        0.5833333333333333,
+        0.3333333333333333,
+        0.5
+      ],
+      "quality": [
+        -0.062977,
+        0.059808,
+        -0.176526,
+        -0.020455
+      ],
+      "quality_score": 0.937921,
+      "starts": [
+        [
+          113,
+          116
+        ],
+        [
+          43,
+          71
+        ],
+        [
+          97,
+          62
+        ],
+        [
+          40,
+          24
+        ]
+      ],
+      "quality_spearman": -0.6324555320336759
+    },
+    {
+      "key": "g60-s2002",
+      "method": 60,
+      "map_seed": 2002,
+      "chosen_seed": 23265159,
+      "games": 4,
+      "played": 4,
+      "errors": 0,
+      "cap_games": 0,
+      "prestige_games": 0,
+      "unresolved": 0,
+      "start_mismatches": 0,
+      "ticks_median": 47106.0,
+      "wall_seconds_mean": 218.87025,
+      "slot": {
+        "counts": [
+          0,
+          0,
+          2,
+          2
+        ],
+        "n": 4,
+        "chi2": 4.0,
+        "p_chi2": 0.2614641299491104,
+        "p": 0.34374999999999983,
+        "p_method": "exact",
+        "best": 2,
+        "best_share": 0.5,
+        "best_share_wilson": [
+          0.15003898915214947,
+          0.8499610108478506
+        ],
+        "dominance": 2.0,
+        "squared_bias": 0.08333333333333333,
+        "rms_points": 14.433756729740644,
+        "shares_wilson": [
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ],
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ]
+        ],
+        "q_bh": 0.6874999999999997,
+        "p_holm": 0.6874999999999997
+      },
+      "decisive_slot": {
+        "counts": [
+          0,
+          0,
+          2,
+          2
+        ],
+        "n": 4,
+        "chi2": 4.0,
+        "p_chi2": 0.2614641299491104,
+        "p": 0.34374999999999983,
+        "p_method": "exact",
+        "best": 2,
+        "best_share": 0.5,
+        "best_share_wilson": [
+          0.15003898915214947,
+          0.8499610108478506
+        ],
+        "dominance": 2.0,
+        "squared_bias": 0.08333333333333333,
+        "rms_points": 14.433756729740644,
+        "shares_wilson": [
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ],
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ]
+        ]
+      },
+      "team": {
+        "counts": [
+          2,
+          0,
+          2,
+          0
+        ],
+        "n": 4,
+        "chi2": 4.0,
+        "p_chi2": 0.2614641299491104,
+        "p": 0.34374999999999983,
+        "p_method": "exact",
+        "best": 0,
+        "best_share": 0.5,
+        "best_share_wilson": [
+          0.15003898915214947,
+          0.8499610108478506
+        ],
+        "dominance": 2.0,
+        "squared_bias": 0.08333333333333333,
+        "rms_points": 14.433756729740644,
+        "shares_wilson": [
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ],
+          [
+            0.15003898915214947,
+            0.8499610108478506
+          ],
+          [
+            0.0,
+            0.4898908364545973
+          ]
+        ]
+      },
+      "placement_score": [
+        0.41666666666666663,
+        0.16666666666666666,
+        0.6666666666666666,
+        0.75
+      ],
+      "quality": [
+        -0.097667,
+        -0.021632,
+        -0.126401,
+        0.013462
+      ],
+      "quality_score": 0.958688,
+      "starts": [
+        [
+          51,
+          46
+        ],
+        [
+          6,
+          104
+        ],
+        [
+          77,
+          114
+        ],
+        [
+          126,
+          27
+        ]
+      ],
+      "quality_spearman": 0.0
+    }
+  ],
+  "verification": {
+    "checked": 2,
+    "identical": 2,
+    "games": [
+      {
+        "map": "g15-s2001",
+        "rotation": 0,
+        "seed": 1,
+        "identical": true,
+        "first": {
+          "ticks": 47746,
+          "winner_team": 1,
+          "seed": 1,
+          "map": "study-15-2001-r0",
+          "orders": 0
+        },
+        "again": {
+          "ticks": 47746,
+          "winner_team": 1,
+          "seed": 1,
+          "map": "study-15-2001-r0",
+          "orders": 0
+        }
+      },
+      {
+        "map": "g15-s2001",
+        "rotation": 1,
+        "seed": 2,
+        "identical": true,
+        "first": {
+          "ticks": 49282,
+          "winner_team": 2,
+          "seed": 2,
+          "map": "study-15-2001-r1",
+          "orders": 0
+        },
+        "again": {
+          "ticks": 49282,
+          "winner_team": 2,
+          "seed": 2,
+          "map": "study-15-2001-r1",
+          "orders": 0
+        }
+      }
+    ]
+  }
+}
