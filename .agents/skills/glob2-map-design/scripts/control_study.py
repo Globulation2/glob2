@@ -28,7 +28,10 @@ def controls(binary, generator):
     for line in out.splitlines():
         m = re.match(r'\s+([\w-]+)=(-?\d+)\s+values: (.*)', line)
         if m and m.group(1) not in ('width', 'height', 'teams', 'workers'):
-            found[m.group(1)] = [int(v) for v in m.group(3).split()]
+            # A choice lists its values as `0(Brief) 1(Normal)`: the stored value is the number, the
+            # name is only what the lobby shows. Without this a generator with any choice control
+            # cannot be studied at all.
+            found[m.group(1)] = [int(v.split('(')[0]) for v in m.group(3).split()]
             defaults[m.group(1)] = int(m.group(2))
     return found, defaults
 

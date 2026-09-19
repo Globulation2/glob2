@@ -69,7 +69,8 @@ namespace
 {
 
 // The march's prizes: a fruit grove with a quarry beside it, the same at every prize, so the only
-// thing that distinguishes one from another is where it is - which is the thing being solved.
+// thing that distinguishes one from another is where it is - which is the thing being solved. Both
+// radii are what the resource sliders ask for at 100 per cent, scaled by area from there.
 constexpr int kGroveRadius = 3;
 constexpr int kQuarryRadius = 1;
 constexpr int kQuarryOffset = 5;
@@ -683,12 +684,27 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		}
 
 	context.telemetry.measure("tug.ground.mainland-tiles", partSize[mainland]);
-	context.telemetry.measure("tug.homeland.smallest-tiles", shared.smallest());
-	context.telemetry.measure("tug.homeland.largest-tiles", shared.largest());
+	// What growTerritories dealt out, which is the equal-ground guarantee the map's fairness rests
+	// on. It is named for the territory and not the homeland because that is what it is: it is read
+	// before the march is opened, so it does not move when the march control widens the gap. The
+	// homeland a colony actually keeps is counted below, from the finished ground.
+	context.telemetry.measure("tug.territory.smallest-tiles", shared.smallest());
+	context.telemetry.measure("tug.territory.largest-tiles", shared.largest());
 	int marchTiles = 0;
+	std::vector<int> homelandTiles(teams, 0);
 	for (int i = 0; i < t.size(); ++i)
+	{
 		marchTiles += L.march[i];
+		if (L.ownerOf[i] >= 0 && L.ownerOf[i] < teams && L.ground[i])
+			++homelandTiles[L.ownerOf[i]];
+	}
 	context.telemetry.measure("tug.march.tiles", marchTiles);
+	// The homelands as they finish: what the march control takes away, and what the lakes and the
+	// river leave. The territory above is equal by construction; this is not promised to be, and the
+	// gap between the two is the part of a colony's ground that the water took.
+	const auto [least, most] = std::minmax_element(homelandTiles.begin(), homelandTiles.end());
+	context.telemetry.measure("tug.homeland.smallest-tiles", *least);
+	context.telemetry.measure("tug.homeland.largest-tiles", *most);
 	return L;
 }
 
@@ -1063,11 +1079,17 @@ bool generate(Game &game, GenerationContext &context)
 		// radius it moved one colony 43 steps out of step on seed 21.
 		const int fruit = CHERRY + int(context.bounded("tug-prizes", 3));
 		const int sx = site % t.w, sy = site / t.w;
-		for (int dy = -kGroveRadius; dy <= kGroveRadius; ++dy)
-			for (int dx = -kGroveRadius; dx <= kGroveRadius; ++dx)
+		// The grove answers to the fruit slider, like every other resource on the map answers to
+		// its own. The radius is scaled by area rather than directly, so the slider delivers the
+		// proportion of fruit it says; scaled directly, 300 per cent would ring each prize with a
+		// nine-times grove, and fruit cannot be cleared, so that is a permanent wall planted exactly
+		// where the fighting is supposed to happen.
+		const int groveRadius = scaledRadius(kGroveRadius, o.fruit);
+		for (int dy = -groveRadius; dy <= groveRadius; ++dy)
+			for (int dx = -groveRadius; dx <= groveRadius; ++dx)
 			{
 				const int i = t.at(sx + dx, sy + dy);
-				if (dx * dx + dy * dy <= kGroveRadius * kGroveRadius && (dx + dy) % 2 == 0 &&
+				if (dx * dx + dy * dy <= groveRadius * groveRadius && (dx + dy) % 2 == 0 &&
 					clearGround(map, i % t.w, i / t.w) &&
 					map.isResourceAllowed(i % t.w, i / t.w, fruit))
 					map.setResource(i % t.w, i / t.w, fruit, 1);
@@ -1079,7 +1101,7 @@ bool generate(Game &game, GenerationContext &context)
 									  { return clearGround(map, i % t.w, i / t.w); });
 			seed >= 0)
 			placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), STONE,
-							   int(scaledCount(kQuarryRadius, o.stone)));
+							   scaledRadius(kQuarryRadius, o.stone));
 	}
 
 	// What the commons carries: enough crop and wood to be worth settling out into, thinner than a

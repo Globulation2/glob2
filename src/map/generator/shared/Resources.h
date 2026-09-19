@@ -2,6 +2,8 @@
 #pragma once
 #include "Regions.h"
 #include "Grid.h"
+#include <algorithm>
+#include <cmath>
 #include <cstdint>
 #include <map>
 namespace Fertility
@@ -19,6 +21,17 @@ inline std::int64_t scaledCount(std::int64_t count, int percent)
 inline double scaledShare(double share, int percent)
 {
 	return percent == 100 ? share : share * percent / 100.0;
+}
+// The same percentage applied to the *radius* of a round deposit, which is not a count and must not
+// be scaled like one: tiles go as the square of the radius, so scaling the radius directly makes a
+// 300 per cent slider deliver nine times the resource, and a small radius collapses a thirteen-step
+// slider onto three or four distinct maps. Scaling the area instead keeps "200 per cent" meaning
+// twice the resource, as it does everywhere else. 100 returns the radius unchanged.
+inline int scaledRadius(int radius, int percent)
+{
+	if (percent == 100 || radius <= 0)
+		return radius;
+	return int(std::lround(radius * std::sqrt(std::max(0, percent) / 100.0)));
 }
 struct ResourceDensities
 {
