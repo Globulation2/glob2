@@ -2886,3 +2886,17 @@ Sınav arenasında her koloniye iki korunan giriş sığdırmak için daha büy�
 Tarak
 [Peninsulas per shore]
 Kıyı başına yarımada
+[Encircled Kingdom]
+Kuşatılmış Krallık
+[Fortress plan]
+Kale planı
+[Automatic]
+Otomatik
+[Elongated enclosure]
+Uzun sur çevresi
+[Bastioned enclosure]
+Tabyalı sur çevresi
+[Paired courtyards]
+İkiz avlular
+[Heartland farmland]
+Merkezdeki tarım arazisi

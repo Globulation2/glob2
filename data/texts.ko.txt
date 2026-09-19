@@ -2874,3 +2874,17 @@ Emoji
 빗
 [Peninsulas per shore]
 해안당 반도 수
+[Encircled Kingdom]
+포위된 왕국
+[Fortress plan]
+요새 형태
+[Automatic]
+자동
+[Elongated enclosure]
+길쭉한 성곽
+[Bastioned enclosure]
+보루형 성곽
+[Paired courtyards]
+두 안뜰
+[Heartland farmland]
+중심부 농지

@@ -2950,3 +2950,17 @@ Emoji
 梳子
 [Peninsulas per shore]
 每岸半島數
+[Encircled Kingdom]
+被包圍的王國
+[Fortress plan]
+要塞布局
+[Automatic]
+自動
+[Elongated enclosure]
+狹長圍城
+[Bastioned enclosure]
+稜堡圍城
+[Paired courtyards]
+雙庭院
+[Heartland farmland]
+腹地農田

@@ -2888,3 +2888,17 @@ L’arène des épreuves nécessite une carte plus grande ou moins de colonies p
 Le Peigne
 [Peninsulas per shore]
 Péninsules par rive
+[Encircled Kingdom]
+Royaume encerclé
+[Fortress plan]
+Plan de la forteresse
+[Automatic]
+Automatique
+[Elongated enclosure]
+Enceinte allongée
+[Bastioned enclosure]
+Enceinte bastionnée
+[Paired courtyards]
+Cours jumelles
+[Heartland farmland]
+Terres agricoles centrales

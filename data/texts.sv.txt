@@ -2888,3 +2888,17 @@ Prövningarnas arena behöver en större karta eller färre kolonier för att ry
 Kammen
 [Peninsulas per shore]
 Halvöar per strand
+[Encircled Kingdom]
+Omringat kungarike
+[Fortress plan]
+Fästningsplan
+[Automatic]
+Automatisk
+[Elongated enclosure]
+Avlång befästning
+[Bastioned enclosure]
+Bastionsbefästning
+[Paired courtyards]
+Två borggårdar
+[Heartland farmland]
+Åkermark i kärnlandet

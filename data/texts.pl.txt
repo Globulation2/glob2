@@ -2878,3 +2878,17 @@ Arena prób wymaga większej mapy lub mniejszej liczby kolonii, aby przy każdej
 Grzebień
 [Peninsulas per shore]
 Półwyspy na każdym brzegu
+[Encircled Kingdom]
+Otoczone królestwo
+[Fortress plan]
+Plan twierdzy
+[Automatic]
+Automatyczny
+[Elongated enclosure]
+Wydłużone obwarowanie
+[Bastioned enclosure]
+Obwarowanie bastionowe
+[Paired courtyards]
+Dwa dziedzińce
+[Heartland farmland]
+Pola w centrum królestwa

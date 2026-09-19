@@ -2878,3 +2878,17 @@ Arena încercărilor necesită o hartă mai mare sau mai puține colonii pentru 
 Pieptenele
 [Peninsulas per shore]
 Peninsule pe fiecare mal
+[Encircled Kingdom]
+Regat încercuit
+[Fortress plan]
+Planul fortăreței
+[Automatic]
+Automat
+[Elongated enclosure]
+Incintă alungită
+[Bastioned enclosure]
+Incintă cu bastioane
+[Paired courtyards]
+Două curți
+[Heartland farmland]
+Teren agricol central

@@ -2902,3 +2902,17 @@ De beproevingsarena heeft een grotere kaart of minder kolonies nodig om twee bew
 De Kam
 [Peninsulas per shore]
 Schiereilanden per oever
+[Encircled Kingdom]
+Omsingeld koninkrijk
+[Fortress plan]
+Vestingplan
+[Automatic]
+Automatisch
+[Elongated enclosure]
+Langgerekte omwalling
+[Bastioned enclosure]
+Omwalling met bastions
+[Paired courtyards]
+Twee binnenplaatsen
+[Heartland farmland]
+Landbouwgrond in het kerngebied

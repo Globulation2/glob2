@@ -2874,3 +2874,17 @@ Emoji
 櫛
 [Peninsulas per shore]
 各岸の半島数
+[Encircled Kingdom]
+包囲された王国
+[Fortress plan]
+城郭の形
+[Automatic]
+自動
+[Elongated enclosure]
+細長い城郭
+[Bastioned enclosure]
+稜堡付き城郭
+[Paired courtyards]
+二つの中庭
+[Heartland farmland]
+中心部の農地

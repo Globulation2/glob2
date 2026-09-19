@@ -2878,3 +2878,17 @@ Arena preizkušenj potrebuje večji zemljevid ali manj kolonij, da bo pri vsaki 
 Glavnik
 [Peninsulas per shore]
 Polotoki na vsakem bregu
+[Encircled Kingdom]
+Obkoljeno kraljestvo
+[Fortress plan]
+Načrt trdnjave
+[Automatic]
+Samodejno
+[Elongated enclosure]
+Podolgovata utrdba
+[Bastioned enclosure]
+Utrdba z bastijoni
+[Paired courtyards]
+Dve dvorišči
+[Heartland farmland]
+Osrednja kmetijska zemljišča

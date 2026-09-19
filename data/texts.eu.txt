@@ -2888,3 +2888,17 @@ Erronken arenak mapa handiagoa edo kolonia gutxiago behar ditu, kolonia bakoitza
 Orrazia
 [Peninsulas per shore]
 Penintsulak ertz bakoitzeko
+[Encircled Kingdom]
+Erresuma inguratua
+[Fortress plan]
+Gotorlekuaren oinplanoa
+[Automatic]
+Automatikoa
+[Elongated enclosure]
+Esparru luzanga
+[Bastioned enclosure]
+Bastioidun esparrua
+[Paired courtyards]
+Bi patio
+[Heartland farmland]
+Erdiguneko nekazaritza-lurrak

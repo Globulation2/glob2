@@ -2874,3 +2874,17 @@ A Arena de desafios precisa de um mapa maior ou de menos colônias para acomodar
 O Pente
 [Peninsulas per shore]
 Penínsulas por margem
+[Encircled Kingdom]
+Reino cercado
+[Fortress plan]
+Planta da fortaleza
+[Automatic]
+Automática
+[Elongated enclosure]
+Recinto alongado
+[Bastioned enclosure]
+Recinto abaluartado
+[Paired courtyards]
+Pátios duplos
+[Heartland farmland]
+Terras agrícolas centrais

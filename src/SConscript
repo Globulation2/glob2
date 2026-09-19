@@ -225,6 +225,7 @@ map/generator/generators/WatershedGenerator.cpp
 map/generator/generators/CombGenerator.cpp
 map/generator/generators/EvenGroundGenerator.cpp
 map/generator/generators/MarchlandGenerator.cpp
+map/generator/generators/EncircledKingdomGenerator.cpp
 map/generator/generators/OrchardCommonsGenerator.cpp
 map/generator/generators/GauntletGenerator.cpp
 map/generator/generators/HiddenOasisGenerator.cpp

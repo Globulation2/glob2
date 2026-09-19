@@ -2876,3 +2876,17 @@ The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.
 The Comb
 [Peninsulas per shore]
 Peninsulas per shore
+[Encircled Kingdom]
+Encircled Kingdom
+[Fortress plan]
+Fortress plan
+[Automatic]
+Automatic
+[Elongated enclosure]
+Elongated enclosure
+[Bastioned enclosure]
+Bastioned enclosure
+[Paired courtyards]
+Paired courtyards
+[Heartland farmland]
+Heartland farmland

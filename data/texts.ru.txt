@@ -2876,3 +2876,17 @@ Emoji
 Гребень
 [Peninsulas per shore]
 Полуостровов на каждом берегу
+[Encircled Kingdom]
+Окружённое королевство
+[Fortress plan]
+План крепости
+[Automatic]
+Автоматически
+[Elongated enclosure]
+Вытянутая крепость
+[Bastioned enclosure]
+Бастионная крепость
+[Paired courtyards]
+Два двора
+[Heartland farmland]
+Поля в центре королевства

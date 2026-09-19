@@ -2878,3 +2878,17 @@ Die Bewährungsarena benötigt eine größere Karte oder weniger Kolonien, damit
 Der Kamm
 [Peninsulas per shore]
 Halbinseln pro Ufer
+[Encircled Kingdom]
+Eingekreistes Königreich
+[Fortress plan]
+Festungsgrundriss
+[Automatic]
+Automatisch
+[Elongated enclosure]
+Langgestreckte Anlage
+[Bastioned enclosure]
+Bastionsanlage
+[Paired courtyards]
+Zwei Innenhöfe
+[Heartland farmland]
+Ackerland im Kerngebiet

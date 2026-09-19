@@ -2954,3 +2954,17 @@ Prøvelsernes arena kræver et større kort eller færre kolonier for at få pla
 Kammen
 [Peninsulas per shore]
 Halvøer pr. bred
+[Encircled Kingdom]
+Omringet kongerige
+[Fortress plan]
+Fæstningsplan
+[Automatic]
+Automatisk
+[Elongated enclosure]
+Aflangt fæstningsværk
+[Bastioned enclosure]
+Bastionsanlæg
+[Paired courtyards]
+To gårdspladser
+[Heartland farmland]
+Agerland i rigets kerne
