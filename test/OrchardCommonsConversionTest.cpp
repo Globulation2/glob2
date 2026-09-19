@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Controlled mechanism test on unmodified generated terrain, not an AI balance test.
 #define SDL_MAIN_HANDLED
+#ifdef main
+#undef main
+#endif
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"
