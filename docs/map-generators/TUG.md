@@ -63,25 +63,36 @@ Which crossings exist splits the same way. That the country stays in one piece i
 `fordsToRejoin` guarantees it by construction; how many more fords there are beyond that minimum is
 *character*, and is what keeps the bed a landform instead of a wall.
 
-Over 40 seeds at 256×256 with four colonies, 16 cut a river and 24 did not, and none failed.
+Over 120 seeds at 256×256 with four colonies, 34 cut a river and 86 did not, and none failed.
 
 A seed is allowed to have no river: crowded country has nowhere to put one, and beds lying less than
 `kLeastCommonsShare` (0.45) in the commons are refused rather than run through somebody's fields,
 which would be ambient water in one larder and not another's — the inequality the water rule exists
 to prevent.
 
-**A river costs fairness, and the figure is the reason this is a deliberate choice rather than a
-free win:**
+**A river was thought to cost fairness. It does not, and the earlier figure was measuring a bug.**
 
-| 40 seeds, 256×256, 4 colonies | Fairness | Worst start | Lowest seed |
+| 120 seeds, 256×256, 4 colonies | Fairness | Worst start | Lowest seed |
 |---|---|---|---|
-| With a river (16) | 0.871 | −0.111 | 0.746 |
-| Without (24) | 0.910 | −0.075 | 0.783 |
+| With a river (34) | 0.895 | −0.074 | 0.789 |
+| Without (86) | 0.892 | −0.104 | 0.748 |
 
-A bed across the contested ground is terrain one colony is nearer to than another, and no amount of
-levelling the rope buys that back. The map takes the trade because varied country is worth more here
-than the last four points of a static fairness score; `kLeastCommonsShare` is the single constant
-that moves it.
+This table replaces one that read 0.871 with a river against 0.910 without, over 40 seeds, and was
+used here to argue that varied country was worth a few points of fairness. That measurement was
+taken while `strokePath` was still being asked to close the bed's loop, which drew — and scored — a
+ruler-straight reach clear across the map alongside the meander. A straight chord through the
+contested ground really is terrain one colony is nearer to than another; the meander that replaced
+it is not. Re-measured on the fixed bed over three times the seeds, a river is worth about nothing
+either way, and if anything slightly helps the worst start.
+
+Two things follow. The map is not trading fairness for character here, so that argument is gone.
+And a figure that justified a design decision outlived the code it was measured on, which is the
+reason these tables carry their seed counts and their date in the history.
+
+Not every seed that wants a river gets one: over 40 seeds the brief asked for a river on 17 and 12
+were cut, the other 5 refused for want of room. That is the `tug.river.no-room` fallback firing on
+just under a third of the seeds that ask, which is worth knowing when reading the split above — the
+"without a river" column is not all seeds that were never offered one.
 
 ## What the search buys
 
