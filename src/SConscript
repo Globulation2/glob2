@@ -13,6 +13,7 @@ AIMaximaFarmingPolicy.cpp
 AIMaximaFoodLedger.cpp
 AIMaximaPlacement.cpp
 AIMaximaRecon.cpp
+AIMaximaForceModel.cpp
 AIMaximaRuntime.cpp
 AIMaximaStrategy.cpp
 AIMaximaTactics.cpp

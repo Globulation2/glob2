@@ -1,5 +1,6 @@
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "../src/GlobalContainer.h"
+#include "../src/Version.h"
 #include "../src/Game.h"
 #include "../src/team/Team.h"
 #include "../src/ai/AIImplementation.h"
@@ -770,8 +771,95 @@ static void offensiveControlSwitches()
     std::cout << "offensive controls: tactics/siege eligible, ineligible, parent-disabled; explorer eligible/ineligible; inherited flag removal PASS\n";
 }
 
+static void fittedForceUsesOnlyVisibleUnits()
+{
+    Fixture f;
+    f.building(10,10,0);f.building(35,30,1);
+    auto& a=*f.ai;auto& c=a.context;c.initialize();
+    f.game.map.unsetMapDiscovered();
+    std::fill(f.game.map.fogOfWarA.begin(),f.game.map.fogOfWarA.end(),0);
+    std::fill(f.game.map.fogOfWarB.begin(),f.game.map.fogOfWarB.end(),0);
+    Unit* seen=f.game.addUnit(30,30,1,WARRIOR,1,0,0,0);
+    assert(seen);f.game.map.setMapDiscovered(30,30,f.player.team->me);
+    a.update_reconnaissance(c);
+    assert(a.force_beliefs.count(1));
+    const auto baseline=a.force_beliefs.at(1);
+    assert(baseline.features[ForceModel::VisibleWarriors]==1);
+    // Adding hidden forces cannot affect any input or prediction.
+    assert(f.game.addUnit(50,50,1,WARRIOR,3,0,0,0));
+    assert(f.game.addUnit(51,50,1,WORKER,0,0,0,0));
+    a.force_beliefs.clear();a.update_reconnaissance(c);
+    const auto& hidden=a.force_beliefs.at(1);
+    for(int i=0;i<ForceModel::FeatureCount;++i) assert(hidden.features[i]==baseline.features[i]);
+    for(int t=0;t<ForceModel::TargetCount;++t)
+        for(int q=0;q<ForceModel::QuantileCount;++q)
+            assert(hidden.prediction.values[t][q]==baseline.prediction.values[t][q]);
+    assert(a.reconnaissance.opponent(1)->estimatedWarriors==hidden.prediction.rounded(ForceModel::Warriors));
+    a.sample_reconnaissance_forces(c);
+    assert(a.reconnaissance.opponent(1)->estimatedWarriors==hidden.prediction.rounded(ForceModel::Warriors));
+    a.update_opponent_models(c);
+    assert(a.opponents[1].estimated_warriors==a.reconnaissance.opponent(1)->estimatedWarriors);
+    a.strategy.reconnaissance.force_memory_enabled=false;
+    a.reconnaissance.configure(10000,2500,2500,false);
+    a.sample_reconnaissance_forces(c);
+    assert(a.reconnaissance.opponent(1)->estimatedWarriors==1);
+}
+
+static void fittedHistorySurvivesSave()
+{
+    Fixture f;f.building(10,10,0);f.building(35,30,1);
+    auto& a=*f.ai;a.context.initialize();
+    int64_t observation[ForceModel::ObservationFeatures]={12,20,0,0,0,2,40,800,9,3,70,40,1000};
+    auto& before=a.force_beliefs[1];before.observe(observation);
+    observation[ForceModel::Tick]=2200;observation[ForceModel::VisibleWarriors]=9;
+    before.observe(observation);before.forecast(2400);a.timer=2400;
+    auto* storage=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(storage);a.save(&output);
+    const std::string bytes(storage->getBuffer(),storage->getPosition());
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0);
+    Maxima restored(&f.player);assert(restored.load(&input,&f.player,VERSION_MINOR));
+    assert(restored.strategy.reconnaissance.learned_force_enabled);
+    auto& after=restored.force_beliefs.at(1);
+    assert(after.initialized);
+    for(int i=0;i<ForceModel::FeatureCount;++i) assert(after.features[i]==before.features[i]);
+    for(int t=0;t<ForceModel::TargetCount;++t)
+        for(int q=0;q<ForceModel::QuantileCount;++q) assert(after.prediction.values[t][q]==before.prediction.values[t][q]);
+    observation[ForceModel::Tick]=2600;after.observe(observation);before.observe(observation);
+    assert(after.features[ForceModel::Tick]==2200); // Cadence also survives loading.
+    observation[ForceModel::Tick]=3400;after.observe(observation);before.observe(observation);
+    after.forecast(3600);before.forecast(3600);
+    for(int i=0;i<ForceModel::FeatureCount;++i) assert(after.features[i]==before.features[i]);
+    for(int t=0;t<ForceModel::TargetCount;++t)
+        for(int q=0;q<ForceModel::QuantileCount;++q) assert(after.prediction.values[t][q]==before.prediction.values[t][q]);
+}
+
+static void fittedPowerControlsAttackGate()
+{
+    Fixture f;
+    f.building(10,10,0);auto target=f.building(35,30,1);
+    for(int i=0;i<8;++i) f.warrior(15+i,15);
+    auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
+    a.opponents[1].alive=true;a.opponents[1].estimated_warriors=1;
+    auto& belief=a.force_beliefs[1];belief.initialized=true;
+    belief.prediction.values[ForceModel::Power][ForceModel::Median]=1000000*ForceModel::Scale;
+    a.plan_offense(c);
+    assert(a.offense_diagnostics.gate.find("not strong enough")!=std::string::npos);
+    belief.prediction.values[ForceModel::Power][ForceModel::Median]=ForceModel::Scale;
+    a.plan_offense(c);
+    assert(a.budget.tactical_kind==Tactics::MissionSiege);
+    // The old save policy ignores learned power entirely.
+    a.strategy.reconnaissance.learned_force_enabled=false;
+    belief.prediction.values[ForceModel::Power][ForceModel::Median]=1000000*ForceModel::Scale;
+    a.plan_offense(c);
+    assert(a.budget.tactical_kind==Tactics::MissionSiege);
+}
+
 static void run()
 {
+    fittedForceUsesOnlyVisibleUnits();
+    fittedPowerControlsAttackGate();
+    fittedHistorySurvivesSave();
     defenseWrapsBuildingOrigins();
     defenseCoverage();
     warriorEligibility();

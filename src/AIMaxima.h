@@ -25,6 +25,7 @@
 #include "AIMaximaFruit.h"
 #include "AIMaximaPlacement.h"
 #include "AIMaximaRecon.h"
+#include "AIMaximaForceModel.h"
 #include "AIMaximaLabour.h"
 #include "AIMaximaStaffingControl.h"
 #include "AIMaximaStrategy.h"
@@ -508,9 +509,6 @@ private:
 	void emit_telemetry(AIMaximaRuntime::Context& echo, const std::string& event,
 		const std::string& fields=std::string()) const;
 	void emit_ablation_opportunities(AIMaximaRuntime::Context& echo) const;
-	void audit_reconnaissance(AIMaximaRuntime::Context& echo) const;
-	void audit_recon_staffing(AIMaximaRuntime::Context& echo) const;
-	void audit_offense(AIMaximaRuntime::Context& echo) const;
 	void emit_director_snapshot(AIMaximaRuntime::Context& echo) const;
 	const char* posture_name(StrategicPosture posture) const;
 	bool severe_food_emergency() const;
@@ -537,6 +535,8 @@ private:
 	PolicyBid policy_bids[PolicyCount];
 	OpponentAssessment opponents[Team::MAX_COUNT];
 	Recon::Program reconnaissance;
+	std::map<int, ForceModel::State> force_beliefs;
+	void apply_force_beliefs();
 	int last_recon_mission_tick;
 	bool reconnaissance_suspended;
 	CampaignPlan campaign;

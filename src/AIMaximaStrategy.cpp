@@ -586,6 +586,7 @@ namespace
 		BOOL_SPEC(reconnaissance, enabled, "recon.enabled", "enabled", "recon", "Enable strategic reconnaissance observation, memory, and missions", StrategyImpactCritical),
 		BOOL_SPEC(reconnaissance, scouting_missions_enabled, "recon.scouting_missions_enabled", "enabled", "recon", "Enable contact and frontier reconnaissance flags", StrategyImpactHigh),
 		BOOL_SPEC(reconnaissance, economic_watch_enabled, "recon.economic_watch_enabled", "enabled", "recon", "Enable late-game economic watch patrols", StrategyImpactMedium),
+		BOOL_SPEC(reconnaissance, learned_force_enabled, "recon.learned_force_enabled", "enabled", "recon", "Use the fitted fog-only force model; false preserves pre-111 saves", StrategyImpactHigh),
 		BOOL_SPEC(reconnaissance, force_memory_enabled, "recon.force_memory_enabled", "enabled", "recon", "Retain and decay previously observed enemy force strength", StrategyImpactHigh),
 		INT_SPEC(reconnaissance, explorer_attack_warning_threshold, "recon.attack_warning_threshold", 0, 1000, "units", "recon", "Visible enemy attack explorers that trigger warning", StrategyImpactMedium),
 		INT_SPEC(reconnaissance, explorer_colony_warning_threshold, "recon.colony_warning_threshold", 0, 1000, "units", "recon", "Visible colony explorer threat that triggers warning", StrategyImpactMedium),
@@ -1313,15 +1314,6 @@ bool StrategyResolver::telemetryEnabled()
 	return enabled;
 }
 
-bool StrategyResolver::reconAuditEnabled()
-{
-	static const bool enabled=[]
-	{
-		const std::string value=environmentValue("GLOB2_MAXIMA_RECON_AUDIT");
-		return !value.empty() && value!="0";
-	}();
-	return telemetryEnabled() && enabled;
-}
 
 
 StrategyConfigOptions StrategyResolver::environmentOptions()
@@ -1487,12 +1479,13 @@ bool StrategyResolver::restoreValues(const std::string& text, MaximaStrategy& va
     // retired the muster, relief and teamplay keys and added the offense's own,
     // so an older save is restored key by key: what it recorded wins, what it
     // never held keeps this build's resolved value, and what this build retired
-    // is ignored. Version 110's reachable-supply policy defaults to the legacy path
-    // for older saves. Saves at the current version must still be exact, so a
+    // is ignored. The fruit (110) and fitted-force (111) policies default to
+    // their legacy paths for older saves. Saves at the current version must still be exact, so a
     // truncated one is refused rather than silently half-applied.
     const bool exact=versionMinor>=98;
     MaximaStrategy restored=exact ? MaximaStrategy{} : values;
     if(versionMinor<110)restored.fruit.reachable_supply=false;
+    if(versionMinor<111)restored.reconnaissance.learned_force_enabled=false;
     std::map<std::string, std::string> provenance;
     if(!applyInline("saved strategy", text, restored, provenance, error, !exact))
         return false;
@@ -1500,7 +1493,8 @@ bool StrategyResolver::restoreValues(const std::string& text, MaximaStrategy& va
         for(const auto& spec:parameterSpecs)
         {
             const std::string key=spec.key;
-            if(!provenance.count(key) && !(versionMinor<110 && key=="fruit.reachable_supply"))
+            if(!provenance.count(key) && !(versionMinor<110 && key=="fruit.reachable_supply")
+                && !(versionMinor<111 && key=="recon.learned_force_enabled"))
             {
                 error="Incomplete saved Maxima strategy";
                 return false;

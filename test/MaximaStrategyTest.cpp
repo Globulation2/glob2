@@ -49,6 +49,15 @@ int main()
         assert(!StrategyResolver::restoreValues(text+",unknown.key=1",restored,error,VERSION_MINOR));
         assert(!StrategyResolver::restoreValues(text+",staffing.control_minimum_workers=3",restored,error,VERSION_MINOR));
 
+        assert(resolved.values.reconnaissance.learned_force_enabled);
+        std::string preModel;
+        for(const auto& assignment:split(text))
+            if(assignment.rfind("recon.learned_force_enabled=",0)!=0)
+                preModel+=(preModel.empty() ? "" : ",")+assignment;
+        assert(StrategyResolver::restoreValues(preModel,restored,error,110));
+        assert(!restored.reconnaissance.learned_force_enabled);
+        assert(restored.fruit.reachable_supply);
+        assert(!StrategyResolver::restoreValues(preModel,restored,error,VERSION_MINOR));
         assert(resolved.values.fruit.enabled && resolved.values.fruit.reachable_supply);
         std::string preFruit;
         for(const auto& assignment:split(text))

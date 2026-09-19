@@ -576,6 +576,7 @@ recon.enabled = true
 recon.scouting_missions_enabled = true
 recon.economic_watch_enabled = true
 recon.force_memory_enabled = true
+recon.learned_force_enabled = true
 recon.attack_warning_threshold = 12
 recon.colony_warning_threshold = 5
 recon.offense_population_divisor = 7

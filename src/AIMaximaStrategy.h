@@ -629,6 +629,7 @@ struct MaximaStrategy
 		bool scouting_missions_enabled;
 		bool economic_watch_enabled;
 		bool force_memory_enabled;
+		bool learned_force_enabled;
 		int explorer_attack_warning_threshold;
 		int explorer_colony_warning_threshold;
 		int offense_explorer_population_divisor;
@@ -841,7 +842,6 @@ public:
 	/// True when GLOB2_MAXIMA_TELEMETRY is set to anything but "0". Telemetry
 	/// only prints; it never changes a decision.
 	static bool telemetryEnabled();
-	static bool reconAuditEnabled();
 	/// Resolves the strategy for one player of `gameHeader`, adding that player's
 	/// GLOB2_MAXIMA_TEAM_OVERRIDES and GLOB2_MAXIMA_PLAYER_OVERRIDES entries
 	/// ("<number>:<assignments>|<number>:<assignments>") to environmentOptions().
