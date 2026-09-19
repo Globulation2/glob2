@@ -55,7 +55,10 @@
 #include "BajadaGenerator.h"
 #include "CentralQuarryGenerator.h"
 #include "HiddenOasisGenerator.h"
+#include "EvenGroundGenerator.h"
+#include "MarchlandGenerator.h"
 #include "OrchardCommonsGenerator.h"
+#include "GauntletGenerator.h"
 #include "EncircledKingdomGenerator.h"
 #include <algorithm>
 #include <set>
@@ -171,11 +174,10 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 hilbertRiverDefinition(),
 											 lavaShieldDefinition(),
 											 honeycombIsleDefinition(),
-											 karstTowersDefinition(),
-											 bajadaDefinition(),
-											 centralQuarryDefinition(),
-											 hiddenOasisDefinition(),
-											 orchardCommonsDefinition(),
+											 karstTowersDefinition(), bajadaDefinition(),
+											 centralQuarryDefinition(), hiddenOasisDefinition(),
+											 orchardCommonsDefinition(), gauntletDefinition(),
+											 evenGroundDefinition(), marchlandDefinition(),
 											 encircledKingdomDefinition(),
 											 ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),

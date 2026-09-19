@@ -1,0 +1,2 @@
+PASS: all eight Gauntlet outcomes/fingerprints match the provisional build after ID 58 → 59.
+PASS: every upstream golden line is preserved, including Orchard Commons; only eight ID 59 rows added.

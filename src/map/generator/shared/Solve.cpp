@@ -1,0 +1,152 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#include "Solve.h"
+namespace MapGeneration
+{
+void Anneal::validate() const
+{
+	if (moves < 0 || !std::isfinite(from) || !std::isfinite(to) || from <= 0 || to <= 0 ||
+		!std::isfinite(to / from) || to / from <= 0 || !stream || !*stream)
+		throw std::invalid_argument("Invalid map-search schedule");
+}
+
+Objective &Objective::add(std::string_view name, double weight, double residual)
+{
+	if (name.empty() || !std::isfinite(weight) || !std::isfinite(residual) ||
+		!std::isfinite(weight * residual))
+		throw std::invalid_argument("Invalid map-search objective term");
+	if (findResidual(name))
+		throw std::invalid_argument("Duplicate map-search objective term: " + std::string(name));
+	if (count == kMaxTerms)
+		throw std::length_error("Too many map-search objective terms");
+	terms[count++] = {name, weight, residual};
+	return *this;
+}
+
+double Objective::total() const
+{
+	double sum = 0;
+	for (const auto &term : *this)
+		sum += term.weighted();
+	return finiteCost(sum);
+}
+
+std::optional<double> Objective::findResidual(std::string_view name) const
+{
+	for (const auto &term : *this)
+		if (term.name == name)
+			return term.residual;
+	return std::nullopt;
+}
+
+double Objective::residual(std::string_view name) const
+{
+	if (const auto value = findResidual(name))
+		return *value;
+	throw std::out_of_range("Missing map-search objective term: " + std::string(name));
+}
+
+bool accept(double rise, double heat, GenerationContext &context, const char *stream)
+{
+	if (!std::isfinite(rise) || !std::isfinite(heat) || heat < 0 || !stream || !*stream)
+		throw std::invalid_argument("Invalid map-search acceptance inputs");
+	if (rise <= 0)
+		return true;
+	if (heat <= 0)
+		return false;
+	// The draw is an integer one so the decision is exactly reproducible from the seed: a bounded
+	// draw over a power of two, compared against the Metropolis probability scaled to it.
+	constexpr std::uint32_t kDraws = 1 << 20;
+	return double(context.bounded(stream, kDraws)) < std::exp(-rise / heat) * double(kDraws);
+}
+
+double imbalance(const std::vector<double> &shares)
+{
+	if (shares.size() < 2)
+		return 0;
+	double least = shares[0], most = shares[0], total = 0;
+	for (const double share : shares)
+	{
+		least = std::min(least, share);
+		most = std::max(most, share);
+		total += share;
+	}
+	const double mean = total / double(shares.size());
+	if (!(mean > 0))
+		return 1.0;
+	return (most - least) / mean + (least > 0 ? 0.0 : 1.0);
+}
+
+int spread(const std::vector<int> &shares)
+{
+	if (shares.empty())
+		return 0;
+	const auto [least, most] = std::minmax_element(shares.begin(), shares.end());
+	return *most - *least;
+}
+
+double Brief::target(const char *name, double least, double most)
+{
+	constexpr std::uint32_t kSteps = 1000;
+	const double drawn =
+		least +
+		(most - least) * double(context.bounded(map + "-brief", kSteps)) / double(kSteps - 1);
+	if (context.telemetry.enabled())
+		context.telemetry.measure(map + ".brief." + name, drawn);
+	return drawn;
+}
+
+void Brief::choose(std::vector<const char *> optional, int least, int most)
+{
+	const std::string stream = map + "-brief";
+	const int fewest = std::clamp(least, 0, int(optional.size()));
+	const int many = std::clamp(most, fewest, int(optional.size()));
+	const int wanted =
+		fewest + int(context.bounded(stream, std::uint32_t(std::max(1, many - fewest + 1))));
+	context.shuffle(optional.begin(), optional.end(), stream);
+	chosen.assign(optional.begin(),
+				  optional.begin() + std::min<std::size_t>(std::max(0, wanted), optional.size()));
+	// Recorded, so an unusual map can be read as the brief it was solving rather than mistaken for
+	// a search that went wrong.
+	if (!context.telemetry.enabled())
+		return;
+	context.telemetry.measure(map + ".brief.emphases.count", int(chosen.size()));
+	for (const char *name : chosen)
+		context.telemetry.choice(map + ".brief.emphases", name);
+}
+
+bool Brief::on(const char *name) const
+{
+	for (const char *have : chosen)
+		if (std::string_view(have) == name)
+			return true;
+	return false;
+}
+
+void reportObjective(GenerationTelemetry &telemetry, const std::string &key,
+					 const Objective &objective)
+{
+	// The keys are built from the terms' names, so this is guarded: nothing is spent composing
+	// strings on the ordinary generation path where nobody is collecting.
+	if (!telemetry.enabled())
+		return;
+	for (const auto &term : objective)
+	{
+		telemetry.measure(key + "." + std::string(term.name) + ".residual", term.residual);
+		telemetry.measure(key + "." + std::string(term.name) + ".weighted", term.weighted());
+	}
+	telemetry.measure(key + ".total", objective.total());
+}
+
+void reportSolve(GenerationTelemetry &telemetry, const std::string &key, const SolveReport &report)
+{
+	if (!telemetry.enabled())
+		return;
+	telemetry.measure(key + ".attempted", report.attempted);
+	telemetry.measure(key + ".skipped", report.attempted - report.proposed);
+	telemetry.measure(key + ".proposed", report.proposed);
+	telemetry.measure(key + ".taken", report.taken);
+	telemetry.measure(key + ".kept", report.kept);
+	telemetry.measure(key + ".cost-before", report.before);
+	telemetry.measure(key + ".cost-after", report.after);
+}
+} // namespace MapGeneration

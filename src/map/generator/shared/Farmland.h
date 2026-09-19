@@ -188,9 +188,12 @@ constexpr int kFarmOpening = 3;
 ///    for it gets none); its grass always wins over a cap or bridge running through it.
 /// Stamps the water and the sand into `sketch`; lay beaches afterwards as usual, keeping the farm's sand
 /// (`Farm::sand`) out of any beach flood, as a sand road is.
+/// If requested, edgeDepthOut receives the computed distance to the region exterior (0 outside,
+/// -1 when there is no exterior). Reuse it for planting clearance instead of repeating the flood.
 Farm layFarm(TerrainSketch &sketch, const Torus &, const std::vector<unsigned char> &region,
 			 double angle, ShapePoint origin, int rim, const FarmRows &rows,
-			 const FarmPlot *plot = nullptr, const FarmBridges &bridges = {}, bool caps = true);
+			 const FarmPlot *plot = nullptr, const FarmBridges &bridges = {}, bool caps = true,
+			 std::vector<int> *edgeDepthOut = nullptr);
 
 /// Stamps one building plot with its top-left grass tile at (x0, y0) into a laid farm: the plot's
 /// grass tiles win over any water row, bridge or cap running through them, and its ring of sand

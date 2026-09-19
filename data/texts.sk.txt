@@ -2826,6 +2826,46 @@ Skrytá oáza pojme najviac osem kolónií.
 Masív sa na túto mapu nezmestí; použite väčšiu mapu alebo menej kolónií.
 [The pond has no room for that much algae; use a bigger pond.]
 V jazierku nie je miesto pre toľko rias; použite väčšie jazierko.
+[Even Ground]
+Rovný terén
+[Balance]
+Vyváženie
+[Tight passes]
+Úzke prechody
+[Solver effort]
+Úsilie riešiteľa
+[Brief]
+Krátke
+[Patient]
+Trpezlivé
+[This map is too small to solve on; use a bigger map.]
+Táto mapa je príliš malá na riešenie; použite väčšiu mapu.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Príliš veľa kolónií na vyváženie na mape tejto veľkosti; použite väčšiu mapu alebo menej kolónií.
+[The colonies could not be spread out on this map.]
+Kolónie sa na tejto mape nepodarilo rozmiestniť.
+[Marchland]
+Pohraničie
+[Prizes on the rope]
+Trofeje na lane
+[March width]
+Šírka pohraničia
+[Levelling]
+Vyrovnávanie
+[A march needs a country on each side; use at least two colonies.]
+Pohraničie potrebuje krajinu na každej strane; použite aspoň dve kolónie.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Príliš veľa kolónií na to, aby táto mapa dala každej domovinu; použite väčšiu mapu alebo menej kolónií.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Na tejto mape nie je miesto na rozmiestnenie kolónií; použite väčšiu mapu alebo menej kolónií.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Domovina kolónie nemá východ do pohraničia; použite väčšiu mapu alebo užšie pohraničie.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Domovina kolónie nemá miesto pre hniezdo; použite väčšiu mapu, menej kolónií alebo užšie pohraničie.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Pohraničie má príliš málo sporného územia pre toľko trofejí; použite menej trofejí, širšie pohraničie alebo väčšiu mapu.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Pohraničie nemá miesto pre trofej; použite väčšiu mapu, menej kolónií alebo širšie pohraničie.
 [Orchard Commons]
 Spoločné sady
 [Orchard spacing]
@@ -2836,6 +2876,12 @@ Blízko seba
 Vyvážené
 [Spread]
 Ďaleko od seba
+[The Gauntlet]
+Aréna skúšok
+[Partition thickness]
+Hrúbka deliacich múrov
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Aréna skúšok potrebuje väčšiu mapu alebo menej kolónií, aby sa ku každej kolónii zmestili dva bránené vstupy.
 [Encircled Kingdom]
 Obkľúčené kráľovstvo
 [Fortress plan]

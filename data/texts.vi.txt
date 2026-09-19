@@ -2814,6 +2814,46 @@ Suối nguồn
 Khối núi đá không vừa bản đồ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
 [The pond has no room for that much algae; use a bigger pond.]
 Ao không đủ chỗ cho từng ấy tảo; hãy dùng ao lớn hơn.
+[Even Ground]
+Đất bằng
+[Balance]
+Độ cân bằng
+[Tight passes]
+Lối hẹp
+[Solver effort]
+Công sức giải
+[Brief]
+Ngắn
+[Patient]
+Kiên nhẫn
+[This map is too small to solve on; use a bigger map.]
+Bản đồ này quá nhỏ để giải; hãy dùng bản đồ lớn hơn.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Quá nhiều thuộc địa để cân bằng trên bản đồ cỡ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[The colonies could not be spread out on this map.]
+Không thể trải các thuộc địa ra trên bản đồ này.
+[Marchland]
+Vùng biên
+[Prizes on the rope]
+Phần thưởng trên dây
+[March width]
+Độ rộng vùng biên
+[Levelling]
+San đều
+[A march needs a country on each side; use at least two colonies.]
+Vùng biên cần một xứ sở ở mỗi bên; hãy dùng ít nhất hai thuộc địa.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Quá nhiều thuộc địa để bản đồ này cho mỗi thuộc địa một quê hương; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Bản đồ này không đủ chỗ để trải các thuộc địa ra; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Quê hương của một thuộc địa không có lối ra vùng biên; hãy dùng bản đồ lớn hơn hoặc vùng biên hẹp hơn.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Quê hương của một thuộc địa không đủ chỗ cho một tổ; hãy dùng bản đồ lớn hơn, ít thuộc địa hơn hoặc vùng biên hẹp hơn.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Vùng biên có quá ít đất tranh chấp cho từng ấy phần thưởng; hãy dùng ít phần thưởng hơn, vùng biên rộng hơn hoặc bản đồ lớn hơn.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Vùng biên không đủ chỗ cho một phần thưởng; hãy dùng bản đồ lớn hơn, ít thuộc địa hơn hoặc vùng biên rộng hơn.
 [Orchard Commons]
 Vườn cây ăn quả chung
 [Orchard spacing]
@@ -2824,6 +2864,12 @@ Gần nhau
 Cân bằng
 [Spread]
 Cách xa
+[The Gauntlet]
+Đấu trường thử thách
+[Partition thickness]
+Độ dày tường ngăn
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Đấu trường thử thách cần bản đồ lớn hơn hoặc ít thuộc địa hơn để mỗi thuộc địa có đủ chỗ cho hai lối vào được phòng thủ.
 [Encircled Kingdom]
 Vương quốc bị bao vây
 [Fortress plan]

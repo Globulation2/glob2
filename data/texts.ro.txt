@@ -2818,6 +2818,46 @@ Oaza ascunsă găzduiește cel mult opt colonii.
 Masivul nu încape pe această hartă; folosiți o hartă mai mare sau mai puține colonii.
 [The pond has no room for that much algae; use a bigger pond.]
 Iazul nu are loc pentru atâtea alge; folosiți un iaz mai mare.
+[Even Ground]
+Teren egal
+[Balance]
+Echilibrare
+[Tight passes]
+Treceri înguste
+[Solver effort]
+Efortul rezolvatorului
+[Brief]
+Scurt
+[Patient]
+Răbdător
+[This map is too small to solve on; use a bigger map.]
+Această hartă este prea mică pentru a fi rezolvată; folosiți o hartă mai mare.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Prea multe colonii de echilibrat pe o hartă de această mărime; folosiți o hartă mai mare sau mai puține colonii.
+[The colonies could not be spread out on this map.]
+Coloniile nu au putut fi răspândite pe această hartă.
+[Marchland]
+Ținut de graniță
+[Prizes on the rope]
+Premii pe funie
+[March width]
+Lățimea ținutului de graniță
+[Levelling]
+Nivelare
+[A march needs a country on each side; use at least two colonies.]
+Un ținut de graniță are nevoie de câte o țară pe fiecare parte; folosiți cel puțin două colonii.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Prea multe colonii pentru ca această hartă să dea fiecăreia o patrie; folosiți o hartă mai mare sau mai puține colonii.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Această hartă nu are loc pentru a răspândi coloniile; folosiți o hartă mai mare sau mai puține colonii.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Patria unei colonii nu are ieșire spre ținutul de graniță; folosiți o hartă mai mare sau un ținut de graniță mai îngust.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Patria unei colonii nu are loc pentru un stup; folosiți o hartă mai mare, mai puține colonii sau un ținut de graniță mai îngust.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Ținutul de graniță are prea puțin teren disputat pentru atâtea premii; folosiți mai puține premii, un ținut de graniță mai lat sau o hartă mai mare.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Ținutul de graniță nu are loc pentru un premiu; folosiți o hartă mai mare, mai puține colonii sau un ținut de graniță mai lat.
 [Orchard Commons]
 Livezi comune
 [Orchard spacing]
@@ -2828,6 +2868,12 @@ Apropiate
 Echilibrată
 [Spread]
 Răsfirate
+[The Gauntlet]
+Arena încercărilor
+[Partition thickness]
+Grosimea zidurilor despărțitoare
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Arena încercărilor necesită o hartă mai mare sau mai puține colonii pentru a face loc pentru două intrări apărate la fiecare colonie.
 [Encircled Kingdom]
 Regat încercuit
 [Fortress plan]

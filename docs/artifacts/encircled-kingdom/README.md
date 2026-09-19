@@ -150,7 +150,7 @@ local working collection. `game-provenance.json` distinguishes developmental
 from final-terrain games. Starting maps, the final three-player save, and
 per-team results make those observations inspectable without frozen executables.
 The larger eight- and twelve-player final saves remain in the local working
-collection as `timber-8/final.game` and `final-twelve/final.game`.
+collection as `timber-8/final.game.gz` and `final-twelve/final.game.gz`.
 
 ```sh
 tar -xzf docs/artifacts/encircled-kingdom/evidence.tar.gz
@@ -184,3 +184,12 @@ Validation was run on macOS arm64. No Linux/Windows simulation-checksum parity i
 claimed. No save format, replay acceptance, network version, existing generator,
 AI, or simulation rule is changed. The final three-player save was loaded and continued from
 tick 30,000 to 30,512 successfully.
+
+## Integration with master
+
+The generator was assigned numeric ID **62** when merging with master, where
+The Gauntlet had already taken ID 59. The stable ID remains `encircled-kingdom`.
+The archive records the original development IDs and source snapshot. When using
+its numeric headless commands on the merged build, replace this generator's 59
+with 62; existing saved terrain can be loaded directly. Post-integration checks
+are recorded separately below.

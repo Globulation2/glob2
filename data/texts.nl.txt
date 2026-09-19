@@ -2842,6 +2842,46 @@ Verborgen oase biedt plaats aan hoogstens acht kolonies.
 Het massief past niet op deze kaart; gebruik een grotere kaart of minder kolonies.
 [The pond has no room for that much algae; use a bigger pond.]
 De vijver heeft geen plaats voor zoveel zeewier; gebruik een grotere vijver.
+[Even Ground]
+Gelijk terrein
+[Balance]
+Balans
+[Tight passes]
+Nauwe doorgangen
+[Solver effort]
+Inspanning van de oplosser
+[Brief]
+Kort
+[Patient]
+Geduldig
+[This map is too small to solve on; use a bigger map.]
+Deze kaart is te klein om op te lossen; gebruik een grotere kaart.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Te veel kolonies om op een kaart van dit formaat in balans te brengen; gebruik een grotere kaart of minder kolonies.
+[The colonies could not be spread out on this map.]
+De kolonies konden niet over deze kaart worden verspreid.
+[Marchland]
+Niemandsland
+[Prizes on the rope]
+Prijzen aan het touw
+[March width]
+Breedte van het niemandsland
+[Levelling]
+Nivellering
+[A march needs a country on each side; use at least two colonies.]
+Een niemandsland heeft aan beide kanten een land nodig; gebruik minstens twee kolonies.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Te veel kolonies om elke kolonie op deze kaart een thuisland te geven; gebruik een grotere kaart of minder kolonies.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Deze kaart heeft geen ruimte om de kolonies te verspreiden; gebruik een grotere kaart of minder kolonies.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Het thuisland van een kolonie heeft geen uitweg naar het niemandsland; gebruik een grotere kaart of een smaller niemandsland.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Het thuisland van een kolonie heeft geen ruimte voor een zwerm; gebruik een grotere kaart, minder kolonies of een smaller niemandsland.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Het niemandsland heeft te weinig betwiste grond voor zoveel prijzen; gebruik minder prijzen, een breder niemandsland of een grotere kaart.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Het niemandsland heeft geen ruimte voor een prijs; gebruik een grotere kaart, minder kolonies of een breder niemandsland.
 [Orchard Commons]
 Gemeenschappelijke boomgaarden
 [Orchard spacing]
@@ -2852,6 +2892,12 @@ Dicht bijeen
 Evenwichtig
 [Spread]
 Verspreid
+[The Gauntlet]
+De beproevingsarena
+[Partition thickness]
+Dikte van de scheidingsmuren
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+De beproevingsarena heeft een grotere kaart of minder kolonies nodig om twee bewaakte ingangen per kolonie te kunnen plaatsen.
 [Encircled Kingdom]
 Omsingeld koninkrijk
 [Fortress plan]

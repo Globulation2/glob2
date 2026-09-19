@@ -2828,6 +2828,46 @@ Oasis cachée accueille au plus huit colonies.
 Le massif ne tient pas sur cette carte ; utilisez une carte plus grande ou moins de colonies.
 [The pond has no room for that much algae; use a bigger pond.]
 L'étang n'a pas la place pour autant d'algues ; utilisez un étang plus grand.
+[Even Ground]
+Terrain égal
+[Balance]
+Équilibrage
+[Tight passes]
+Passages étroits
+[Solver effort]
+Effort du solveur
+[Brief]
+Bref
+[Patient]
+Minutieux
+[This map is too small to solve on; use a bigger map.]
+Cette carte est trop petite pour être résolue ; utilisez une carte plus grande.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Trop de colonies à équilibrer sur une carte de cette taille ; utilisez une carte plus grande ou moins de colonies.
+[The colonies could not be spread out on this map.]
+Les colonies n'ont pas pu être réparties sur cette carte.
+[Marchland]
+Les Marches
+[Prizes on the rope]
+Trophées sur la corde
+[March width]
+Largeur de la marche
+[Levelling]
+Égalisation
+[A march needs a country on each side; use at least two colonies.]
+Une marche a besoin d'un pays de chaque côté ; utilisez au moins deux colonies.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Trop de colonies pour que cette carte donne à chacune une terre natale ; utilisez une carte plus grande ou moins de colonies.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Cette carte n'a pas la place pour répartir les colonies ; utilisez une carte plus grande ou moins de colonies.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+La terre natale d'une colonie n'a aucune issue vers la marche ; utilisez une carte plus grande ou une marche plus étroite.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+La terre natale d'une colonie n'a pas la place pour une ruche ; utilisez une carte plus grande, moins de colonies ou une marche plus étroite.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+La marche a trop peu de terrain disputé pour autant de trophées ; utilisez moins de trophées, une marche plus large ou une carte plus grande.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+La marche n'a pas la place pour un trophée ; utilisez une carte plus grande, moins de colonies ou une marche plus large.
 [Orchard Commons]
 Vergers communaux
 [Orchard spacing]
@@ -2838,6 +2878,12 @@ Rapprochés
 Équilibré
 [Spread]
 Espacés
+[The Gauntlet]
+L’arène des épreuves
+[Partition thickness]
+Épaisseur des cloisons
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+L’arène des épreuves nécessite une carte plus grande ou moins de colonies pour ménager deux entrées défendues par colonie.
 [Encircled Kingdom]
 Royaume encerclé
 [Fortress plan]

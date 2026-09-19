@@ -60,6 +60,17 @@ std::vector<unsigned char> dropSmallRegions(const Torus &, const std::vector<uns
 int widestWalkClearance(const Torus &, const std::vector<unsigned char> &mask,
 						const std::vector<int> &sources, const std::vector<unsigned char> &goal);
 
+/// The same walk over a clearance field the caller already has.
+///
+/// `clearance` is a full distance transform and depends on nothing but the mask, so asking for
+/// several walks over one mask - every colony's way out of the same country, say - recomputes the
+/// identical field once per walk. Even Ground's shape pass did exactly that, four times per
+/// proposal for thousands of proposals, and it was about 30 per cent of the generator's whole run
+/// time. Compute it once with `clearance(t, mask)` and pass it here.
+int widestWalkClearance(const Torus &, const std::vector<unsigned char> &mask,
+						const std::vector<int> &room, const std::vector<int> &sources,
+						const std::vector<unsigned char> &goal);
+
 /// widestWalkClearance as a passage width in tiles (2c - 1), 0 when no walk exists: the check a
 /// validator makes that a designed tunnel, lane or street still takes a column of units.
 int narrowestPassage(const Torus &, const std::vector<unsigned char> &mask,

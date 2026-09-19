@@ -71,3 +71,7 @@ balanced on the walk to the stone, and its eight review rounds, reliability and 
 map's only algae: one winding gorge sealed by every colony's own level-1 tower, each on a ledge with
 a box canyon for a back door, a basin to hold, and its three review rounds, 48 AI games, control
 study, profiling and reliability evidence.
+
+[The Gauntlet](GAUNTLET.md) documents a battle arena with two guarded home fronts,
+a court circuit around a sealed lake, irrigated gardens and orchards, three layout
+families, and its iterative review, rotation games, control studies and profiling evidence.
