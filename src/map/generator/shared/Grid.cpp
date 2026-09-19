@@ -55,7 +55,18 @@ Reach reachFrom(const Torus &t, const std::vector<int> &sources, const std::vect
 	return reach;
 }
 
-Flood floodFrom(const Torus &t, const std::vector<unsigned char> &source,
+namespace
+{
+// The flood, with the "every tile is open" case folded out at compile time.
+//
+// The open-everywhere overload of stepsFrom used to build an all-ones mask the size of the map on
+// every call and then test it once per neighbour, which is an allocation, a fill and eight loads a
+// tile to answer a question whose answer is always yes. It is one of the most called things in the
+// generator - clearance() is built on it, and clearance is what every passage width is measured
+// over - so the branch is worth removing rather than paying. Traversal order is identical either
+// way; only the test disappears.
+template <bool AllOpen>
+Flood floodImpl(const Torus &t, const std::vector<unsigned char> &source,
 				const std::vector<unsigned char> &open, int limit)
 {
 	Flood flood;
@@ -86,7 +97,7 @@ Flood floodFrom(const Torus &t, const std::vector<unsigned char> &source,
 				if (!dx && !dy)
 					continue;
 				const int n = row + t.x(x + dx);
-				if (dist[n] < 0 && open[n])
+				if (dist[n] < 0 && (AllOpen || open[n]))
 				{
 					dist[n] = stepped;
 					queue.push_back(n);
@@ -95,6 +106,13 @@ Flood floodFrom(const Torus &t, const std::vector<unsigned char> &source,
 		}
 	}
 	return flood;
+}
+} // namespace
+
+Flood floodFrom(const Torus &t, const std::vector<unsigned char> &source,
+				const std::vector<unsigned char> &open, int limit)
+{
+	return floodImpl<false>(t, source, open, limit);
 }
 
 std::vector<int> stepsFrom(const Torus &t, const std::vector<unsigned char> &source,
@@ -105,7 +123,9 @@ std::vector<int> stepsFrom(const Torus &t, const std::vector<unsigned char> &sou
 
 std::vector<int> stepsFrom(const Torus &t, const std::vector<unsigned char> &source)
 {
-	return stepsFrom(t, source, std::vector<unsigned char>(size_t(t.size()), 1));
+	// `open` is never read under AllOpen, so nothing is built for it.
+	static const std::vector<unsigned char> none;
+	return floodImpl<true>(t, source, none, INT_MAX).steps;
 }
 
 std::vector<unsigned char> tileMask(const Torus &t, const std::vector<int> &tiles)
