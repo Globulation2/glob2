@@ -1559,8 +1559,106 @@ inline void encircledKingdomContracts()
 		 "containment");
 }
 
+inline void faultedCityContracts()
+{
+	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("faulted-city"));
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	request.wDec = request.hDec = 8;
+	request.nbTeams = 4;
+	request.seed = 101;
+	GenerationService service;
+	{
+		Game plain(nullptr), observed(nullptr);
+		assert(service.generate(plain, request));
+		const auto measured = service.generate(observed, request, true);
+		assert(measured && !measured.telemetry.records().empty());
+		assert(!measured.telemetry.droppedRecords() && !measured.telemetry.invalidValues());
+		assert(mapFingerprint(plain) == mapFingerprint(observed));
+	}
+	for (auto shape : {std::pair{8, 8}, std::pair{8, 9}, std::pair{9, 8}, std::pair{9, 9}})
+		for (int teams : {1, 4, 12})
+		{
+			D r = request;
+			r.wDec = shape.first; r.hDec = shape.second; r.nbTeams = teams;
+			Game world(nullptr);
+			const auto result = service.generate(world, r);
+			if (!result) std::fprintf(stderr, "Faulted City %dx%d/%d: %s\n", 1 << r.wDec, 1 << r.hDec, teams, result.diagnostic().c_str());
+			assert(result);
+		}
+	{
+		D r = request; r.wDec = 7;
+		Game world(nullptr);
+		assert(service.generate(world, r).error == GenerationError::InvalidRequest);
+		assert(world.teamsCount() == 0);
+	}
+	for (int amount : {0, 300})
+	{
+		D r = request;
+		for (const auto &control : definition.controls)
+			if (control.group == ControlGroup::Resources) r.options[control.id] = amount;
+		Game world(nullptr);
+		assert(service.generate(world, r));
+		GenerationContext context(r);
+		if (amount == 300)
+		{
+			setSyncRandSeed(2026);
+			for (int tick = 0; tick < 4096; ++tick) world.map.growResources();
+			const auto error = definition.validateWorld(world, context);
+			if (!error.empty()) std::fprintf(stderr, "Faulted City growth: %s\n", error.c_str());
+			assert(error.empty());
+		}
+		// Structural stone is still required at zero ordinary stone abundance.
+		bool damaged = false;
+		for (int y = 0; y < world.map.getH() && !damaged; ++y)
+			for (int x = 0; x < world.map.getW() && !damaged; ++x)
+				if (amount == 0 && world.map.getResource(x, y).type == STONE)
+				{ world.map.setNoResource(x, y, 1); damaged = true; }
+		if (amount == 0) assert(damaged && !definition.validateWorld(world, context).empty());
+	}
+	{
+		D scarce = request, rich = request;
+		for (const auto &control : definition.controls) if (control.group == ControlGroup::Resources)
+		{ scarce.options[control.id] = 0; rich.options[control.id] = 300; }
+		Game low(nullptr), high(nullptr);
+		assert(service.generate(low, scarce) && service.generate(high, rich));
+		for (int y = 0; y < low.map.getH(); ++y) for (int x = 0; x < low.map.getW(); ++x)
+			assert(low.map.getUMTerrain(x, y) == high.map.getUMTerrain(x, y));
+	}
+	{
+		Game world(nullptr);
+		const auto result = service.generate(world, request, true);
+		assert(result);
+		int x = -1, y = -1;
+		for (const auto &record : result.telemetry.records()) if (record.subject == 0)
+		{
+			if (record.key == "faulted-city.junction.x") x = int(std::get<std::int64_t>(record.value));
+			if (record.key == "faulted-city.junction.y") y = int(std::get<std::int64_t>(record.value));
+		}
+		assert(x >= 0 && y >= 0);
+		// Leave the centre open, but obstruct its reserved gathering/circulation width.
+		world.map.setResource((x + 1) % world.map.getW(), y, STONE, 1);
+		GenerationContext context(request);
+		assert(!definition.validateWorld(world, context).empty());
+	}
+
+	{
+		Game world(nullptr);
+		assert(service.generate(world, request));
+		bool retained = false;
+		for (int y = 0; y < world.map.getH(); ++y)
+			for (int x = 0; x < world.map.getW(); ++x)
+				if (world.map.getResource(x, y).type == WHEAT)
+				{ if (retained) world.map.setNoResource(x, y, 1); retained = true; }
+		GenerationContext context(request);
+		assert(!definition.validateWorld(world, context).empty());
+	}
+	puts("PASS Faulted City: envelope, refusal, resource extremes, growth containment, stable resource terrain, narrow junction, masonry and token food mutations");
+}
+
 inline void generatorContracts()
 {
+	faultedCityContracts();
 	encircledKingdomContracts();
 	combContracts();
 	evenGroundContracts();

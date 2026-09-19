@@ -2890,3 +2890,23 @@ Bastioned enclosure
 Paired courtyards
 [Heartland farmland]
 Heartland farmland
+[The Faulted City]
+The Faulted City
+[Fault displacement]
+Fault displacement
+[Fault width]
+Fault width
+[Ruin density]
+Ruin density
+[Surviving junctions]
+Surviving junctions
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.
+[The city has too few usable junctions.]
+The city has too few usable junctions.
+[A city neighbourhood lacks reachable crops or building room.]
+A city neighbourhood lacks reachable crops or building room.
+[The city neighbourhoods are too unequal; try another seed.]
+The city neighbourhoods are too unequal; try another seed.
+[The fractured civic plaza did not survive.]
+The fractured civic plaza did not survive.

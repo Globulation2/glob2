@@ -2900,3 +2900,23 @@ Tabyalı sur çevresi
 İkiz avlular
 [Heartland farmland]
 Merkezdeki tarım arazisi
+[The Faulted City]
+Kırılmış Şehir
+[Fault displacement]
+Fay yer değiştirmesi
+[Fault width]
+Fay genişliği
+[Ruin density]
+Harabe yoğunluğu
+[Surviving junctions]
+Korunan kavşaklar
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Kırılmış Şehir, her kenarda 256 veya 512 kare ve bir ila on iki koloni gerektirir.
+[The city has too few usable junctions.]
+Şehirde kullanılabilir kavşak sayısı çok az.
+[A city neighbourhood lacks reachable crops or building room.]
+Şehrin bir mahallesinde erişilebilir ekin veya inşaat alanı eksik.
+[The city neighbourhoods are too unequal; try another seed.]
+Şehrin mahalleleri çok dengesiz; başka bir tohum deneyin.
+[The fractured civic plaza did not survive.]
+Kırılmış şehir meydanı korunamadı.

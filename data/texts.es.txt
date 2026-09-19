@@ -2892,3 +2892,23 @@ Recinto abaluartado
 Patios gemelos
 [Heartland farmland]
 Tierras agrícolas centrales
+[The Faulted City]
+La ciudad fracturada
+[Fault displacement]
+Desplazamiento de las fallas
+[Fault width]
+Anchura de las fallas
+[Ruin density]
+Densidad de ruinas
+[Surviving junctions]
+Cruces conservados
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+La ciudad fracturada requiere 256 o 512 casillas por lado y entre una y doce colonias.
+[The city has too few usable junctions.]
+La ciudad tiene muy pocos cruces utilizables.
+[A city neighbourhood lacks reachable crops or building room.]
+Un barrio de la ciudad carece de cultivos accesibles o de espacio para construir.
+[The city neighbourhoods are too unequal; try another seed.]
+Los barrios de la ciudad son demasiado desiguales; prueba otra semilla.
+[The fractured civic plaza did not survive.]
+La plaza pública fracturada no ha sobrevivido.

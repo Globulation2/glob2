@@ -2892,3 +2892,23 @@ Obwarowanie bastionowe
 Dwa dziedzińce
 [Heartland farmland]
 Pola w centrum królestwa
+[The Faulted City]
+Pęknięte miasto
+[Fault displacement]
+Przesunięcie uskoków
+[Fault width]
+Szerokość uskoków
+[Ruin density]
+Gęstość ruin
+[Surviving junctions]
+Zachowane skrzyżowania
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Pęknięte miasto wymaga 256 lub 512 pól na każdy bok oraz od jednej do dwunastu kolonii.
+[The city has too few usable junctions.]
+Miasto ma zbyt mało dostępnych skrzyżowań.
+[A city neighbourhood lacks reachable crops or building room.]
+Jednej z dzielnic miasta brakuje dostępnych upraw lub miejsca na budowę.
+[The city neighbourhoods are too unequal; try another seed.]
+Dzielnice miasta są zbyt nierówne; spróbuj innego ziarna.
+[The fractured civic plaza did not survive.]
+Pęknięty plac miejski nie przetrwał.

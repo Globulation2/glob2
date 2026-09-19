@@ -2890,3 +2890,23 @@ Emoji
 دو حیاط
 [Heartland farmland]
 کشتزارهای مرکزی
+[The Faulted City]
+شهر گسسته
+[Fault displacement]
+جابه‌جایی گسل‌ها
+[Fault width]
+پهنای گسل‌ها
+[Ruin density]
+تراکم ویرانه‌ها
+[Surviving junctions]
+تقاطع‌های باقی‌مانده
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+شهر گسسته به 256 یا 512 خانه در هر ضلع و یک تا دوازده مستعمره نیاز دارد.
+[The city has too few usable junctions.]
+شهر تقاطع‌های قابل استفادهٔ کافی ندارد.
+[A city neighbourhood lacks reachable crops or building room.]
+یکی از محله‌های شهر فاقد محصولات قابل دسترس یا فضای ساخت‌وساز است.
+[The city neighbourhoods are too unequal; try another seed.]
+محله‌های شهر بیش از حد نامتوازن هستند؛ بذر دیگری را امتحان کنید.
+[The fractured civic plaza did not survive.]
+میدان عمومی ترک‌خورده باقی نماند.

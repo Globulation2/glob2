@@ -2888,3 +2888,23 @@ Benteng berbastion
 Halaman kembar
 [Heartland farmland]
 Lahan pertanian pusat
+[The Faulted City]
+Kota yang Terbelah
+[Fault displacement]
+Pergeseran sesar
+[Fault width]
+Lebar sesar
+[Ruin density]
+Kepadatan reruntuhan
+[Surviving junctions]
+Persimpangan tersisa
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Kota yang Terbelah memerlukan 256 atau 512 petak per sisi dan satu hingga dua belas koloni.
+[The city has too few usable junctions.]
+Kota ini memiliki terlalu sedikit persimpangan yang dapat dilalui.
+[A city neighbourhood lacks reachable crops or building room.]
+Sebuah kawasan kota kekurangan tanaman yang dapat dijangkau atau ruang untuk membangun.
+[The city neighbourhoods are too unequal; try another seed.]
+Kawasan kota terlalu tidak seimbang; coba benih lain.
+[The fractured civic plaza did not survive.]
+Alun-alun kota yang terbelah tidak tersisa.

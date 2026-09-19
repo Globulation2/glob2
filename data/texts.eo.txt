@@ -2890,3 +2890,23 @@ Bastiona ĉirkaŭmuro
 Du kortoj
 [Heartland farmland]
 Kerna agraro
+[The Faulted City]
+La fendita urbo
+[Fault displacement]
+Delokiĝo ĉe faŭltoj
+[Fault width]
+Larĝo de faŭltoj
+[Ruin density]
+Denseco de ruinoj
+[Surviving junctions]
+Konservitaj vojkruciĝoj
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+La fendita urbo bezonas 256 aŭ 512 kahelojn ĉiuflanke kaj unu ĝis dek du koloniojn.
+[The city has too few usable junctions.]
+La urbo havas tro malmultajn uzeblajn vojkruciĝojn.
+[A city neighbourhood lacks reachable crops or building room.]
+Al urba kvartalo mankas atingeblaj kultivaĵoj aŭ konstruspaco.
+[The city neighbourhoods are too unequal; try another seed.]
+La urbaj kvartaloj estas tro malegalaj; provu alian semon.
+[The fractured civic plaza did not survive.]
+La fendita urba placo ne konserviĝis.

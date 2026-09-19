@@ -2892,3 +2892,23 @@ Bastionsanlage
 Zwei Innenhöfe
 [Heartland farmland]
 Ackerland im Kerngebiet
+[The Faulted City]
+Die zerbrochene Stadt
+[Fault displacement]
+Verwerfungsversatz
+[Fault width]
+Verwerfungsbreite
+[Ruin density]
+Ruinendichte
+[Surviving junctions]
+Erhaltene Kreuzungen
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Die zerbrochene Stadt benötigt 256 oder 512 Felder pro Seite und eine bis zwölf Kolonien.
+[The city has too few usable junctions.]
+Die Stadt hat zu wenige nutzbare Kreuzungen.
+[A city neighbourhood lacks reachable crops or building room.]
+Einem Stadtviertel fehlen erreichbare Nutzpflanzen oder Bauflächen.
+[The city neighbourhoods are too unequal; try another seed.]
+Die Stadtviertel sind zu unausgewogen; versuchen Sie einen anderen Seed.
+[The fractured civic plaza did not survive.]
+Der zerbrochene Stadtplatz ist nicht erhalten geblieben.

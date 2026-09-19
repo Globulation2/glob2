@@ -2888,3 +2888,23 @@ Thành lũy có pháo đài góc
 Hai sân trong
 [Heartland farmland]
 Đất nông nghiệp trung tâm
+[The Faulted City]
+Thành phố đứt gãy
+[Fault displacement]
+Độ dịch chuyển đứt gãy
+[Fault width]
+Độ rộng đứt gãy
+[Ruin density]
+Mật độ phế tích
+[Surviving junctions]
+Giao lộ còn lại
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Thành phố đứt gãy cần 256 hoặc 512 ô mỗi chiều và từ một đến mười hai thuộc địa.
+[The city has too few usable junctions.]
+Thành phố có quá ít giao lộ có thể đi qua.
+[A city neighbourhood lacks reachable crops or building room.]
+Một khu phố thiếu cây trồng có thể tiếp cận hoặc không gian xây dựng.
+[The city neighbourhoods are too unequal; try another seed.]
+Các khu phố quá mất cân bằng; hãy thử hạt giống khác.
+[The fractured civic plaza did not survive.]
+Quảng trường thành phố bị đứt gãy không còn tồn tại.

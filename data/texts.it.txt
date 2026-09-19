@@ -2954,3 +2954,23 @@ Cinta bastionata
 Cortili gemelli
 [Heartland farmland]
 Terreni agricoli centrali
+[The Faulted City]
+La città fratturata
+[Fault displacement]
+Spostamento delle faglie
+[Fault width]
+Larghezza delle faglie
+[Ruin density]
+Densità delle rovine
+[Surviving junctions]
+Incroci conservati
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+La città fratturata richiede 256 o 512 caselle per lato e da una a dodici colonie.
+[The city has too few usable junctions.]
+La città ha troppo pochi incroci utilizzabili.
+[A city neighbourhood lacks reachable crops or building room.]
+Un quartiere della città non ha colture raggiungibili o spazio per costruire.
+[The city neighbourhoods are too unequal; try another seed.]
+I quartieri della città sono troppo squilibrati; prova un altro seme.
+[The fractured civic plaza did not survive.]
+La piazza cittadina fratturata non si è conservata.
