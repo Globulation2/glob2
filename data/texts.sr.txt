@@ -2956,3 +2956,9 @@ Emoji
 Величина плантаже
 [Outlying islands]
 Спољна острва
+[The Hungry Marches]
+Гладна крајина
+[Opening ration]
+Почетне залихе хране
+[Central concentration]
+Концентрација у средишту

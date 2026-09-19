@@ -3032,3 +3032,9 @@ Bastionsøer
 Plantagestørrelse
 [Outlying islands]
 Ydre øer
+[The Hungry Marches]
+De sultne grænseegne
+[Opening ration]
+Startration
+[Central concentration]
+Koncentration i midten

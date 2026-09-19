@@ -2956,3 +2956,9 @@ Insulițe fortificate
 Mărimea plantației
 [Outlying islands]
 Insule periferice
+[The Hungry Marches]
+Ținuturile de frontieră înfometate
+[Opening ration]
+Rație inițială
+[Central concentration]
+Concentrare în centru

@@ -91,6 +91,41 @@ Extract on the second use even when the first user is an old generator. Central 
 
 Changing a shared primitive can alter many golden maps. Identify all affected generator revisions; record intentional output changes and update those golden rows. Do not bump unrelated versions or force-update a baseline simply to hide an unexplained difference. If the primitive is also used by simulation, follow the repository's stronger simulation compatibility checks.
 
+### Count changes to the world, not successful-looking calls
+
+`Map::isResourceAllowed` checks placement terrain and occupancy by units/buildings;
+it does **not** establish that a tile has no resource. A second sowing pass can
+revisit an already-seeded tile, reset its stock and count it as another deposit.
+Use a vacancy check when adding new deposits, and increment telemetry only for
+actual additions. A Hungry Marches prototype reported 536 wheat tiles where the
+finished map contained 507 because its density pass revisited its bank guarantees.
+Add a small regression comparing summed placement telemetry with the finished
+resource count; telemetry that merely repeats requested budgets will not catch it.
+
+For resource controls, distinguish geometric capacity, seeded reachable capacity,
+initial deposits and initial stored amount. Use the metric that matches the label's
+promise. Collect existing counts during placement and validation rather than
+adding expensive telemetry-only analysis.
+
+When a local game study is large, budget its artifacts as well as its CPU. Final
+saves and verbose logs can exhaust disk while games are running. Compress completed
+saves and stream verbose logs through compression when useful; preserve exact
+commands, parsed outcomes and binary identity. An interrupted log or failed final
+save is an incomplete verification run, not evidence of an AI defeat or successful
+playtest. Rerun affected jobs, and validate the final source's maps after later
+placement changes rather than treating an earlier tournament as current evidence.
+
+A performance run is also a reliability run: record failed generations beside
+its timings. A largest-map benchmark found a Hungry Marches central-access failure
+outside the earlier random sample. Preserve the failing request and fix its
+geometry before timing the final version. When optimizing repeated design work,
+compare against a frozen binary of the **same geometry**, including telemetry
+on/off; a simultaneous layout change would hide an accidental output change.
+Shared `DesignCache.h` can replay named-stream states and telemetry, but only use
+it when its request key covers every input the design reads. For spatial culling,
+prove a conservative bound that includes bends and shoreline distortions before
+skipping expensive samples, then compare generated map bytes.
+
 ## Fairness mechanisms and their limits
 
 [Orbits.h](../../../../src/map/generator/shared/Orbits.h) distinguishes:

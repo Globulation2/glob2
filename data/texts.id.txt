@@ -2952,3 +2952,9 @@ Kepulauan Benteng
 Ukuran perkebunan
 [Outlying islands]
 Pulau luar
+[The Hungry Marches]
+Perbatasan Kelaparan
+[Opening ration]
+Jatah awal
+[Central concentration]
+Pemusatan di tengah

@@ -2952,3 +2952,9 @@ Emoji
 농장 크기
 [Outlying islands]
 주변 섬
+[The Hungry Marches]
+굶주린 변경
+[Opening ration]
+초기 식량
+[Central concentration]
+중앙 집중도

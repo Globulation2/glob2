@@ -1475,3 +1475,6 @@
 [Bastion Keys]
 [Plantation size]
 [Outlying islands]
+[The Hungry Marches]
+[Opening ration]
+[Central concentration]

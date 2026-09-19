@@ -2956,3 +2956,9 @@ Bastionsinseln
 Plantagengröße
 [Outlying islands]
 Vorgelagerte Inseln
+[The Hungry Marches]
+Die hungrigen Grenzlande
+[Opening ration]
+Anfangsration
+[Central concentration]
+Konzentration im Zentrum

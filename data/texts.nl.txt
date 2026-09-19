@@ -2980,3 +2980,9 @@ Bastioneilanden
 Plantagegrootte
 [Outlying islands]
 Buiteneilanden
+[The Hungry Marches]
+De hongerige grenslanden
+[Opening ration]
+Beginrantsoen
+[Central concentration]
+Concentratie in het midden

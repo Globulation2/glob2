@@ -2952,3 +2952,9 @@ Emoji
 种植园大小
 [Outlying islands]
 外围岛屿
+[The Hungry Marches]
+饥饿边境
+[Opening ration]
+起始口粮
+[Central concentration]
+中央集中度

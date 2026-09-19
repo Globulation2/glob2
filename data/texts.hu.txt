@@ -2956,3 +2956,9 @@ Bástyaszigetek
 Ültetvény mérete
 [Outlying islands]
 Külső szigetek
+[The Hungry Marches]
+Az éhező határvidék
+[Opening ration]
+Kezdő élelemkészlet
+[Central concentration]
+Központi koncentráció

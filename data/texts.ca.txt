@@ -2964,3 +2964,9 @@ Illots fortificats
 Mida de les plantacions
 [Outlying islands]
 Illes exteriors
+[The Hungry Marches]
+Les Marques Famolenques
+[Opening ration]
+Ració inicial
+[Central concentration]
+Concentració central

@@ -2956,3 +2956,9 @@ Linnakesaaret
 Viljelmän koko
 [Outlying islands]
 Ulkosaaret
+[The Hungry Marches]
+Nälkäiset rajamaat
+[Opening ration]
+Aloitusannos
+[Central concentration]
+Keskustan painotus

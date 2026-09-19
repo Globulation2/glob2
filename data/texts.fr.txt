@@ -2966,3 +2966,9 @@ Taille des clairières neutres
 Taille des plantations
 [Outlying islands]
 Îles périphériques
+[The Hungry Marches]
+Les Marches affamées
+[Opening ration]
+Ration de départ
+[Central concentration]
+Concentration centrale

@@ -3018,3 +3018,9 @@ Isole fortificate
 Dimensione delle piantagioni
 [Outlying islands]
 Isole periferiche
+[The Hungry Marches]
+Le Marche Affamate
+[Opening ration]
+Razione iniziale
+[Central concentration]
+Concentrazione centrale

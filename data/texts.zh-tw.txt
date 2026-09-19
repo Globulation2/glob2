@@ -3028,3 +3028,9 @@ Emoji
 種植園大小
 [Outlying islands]
 外圍島嶼
+[The Hungry Marches]
+飢餓邊境
+[Opening ration]
+起始口糧
+[Central concentration]
+中央集中度

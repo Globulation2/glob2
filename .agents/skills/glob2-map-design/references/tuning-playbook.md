@@ -95,6 +95,37 @@ The second recurring defect is measuring room or fertility as area rather than a
 
 Use the start scorer, a fertile-grass window, catchment floods from the actual worker tiles and the report's per-colony metrics together; none alone predicts these.
 
+## Scarcity layouts at different scales
+
+Do not shrink a productive farm uniformly to fit a smaller world. Beaches, corner
+to tile conversion and crossing widths have fixed costs. Hungry Marches' first
+128-tile prototypes retained the same visual ingredients but only about 9–14
+units of shared wheat growth potential, versus about 168 on its four-colony
+256-tile example. Wider minimum banks restored roughly 112–123 in subsequent
+compact previews. These are prototype measurements, not universal food budgets;
+small-map games still have to establish harvesting, growth and fighting.
+
+Before increasing the number of fields to remedy scarcity, compare their full
+rotated footprints with neighbour spacing. Overlapping elongated fields can turn
+an intended open floodplain into a circular maze. Separate districts first, then
+vary their shapes and positions; coordinate warping alone does not change the
+underlying route layout. Conversely, increasing map dimensions while capping all
+features in one small central cluster adds scenery rather than new fronts.
+
+Check what a shared feature points toward. A central strip drawn along the home
+ring's starting angle points one end at the first home; odd colony counts can
+make the other end behave differently. Hungry Marches improved by bending the
+strip toward gaps between actual neighbouring homes, then checking walking
+access on the finished banks. Preserve crossing paths through overlaps: assigning
+a tile to its nearest pond must not erase a neighbouring pond's designed route.
+
+Treat starter supplies as a joint space budget. Wheat can exhaust the nearest dry
+patch before a later wood or quarry pass gets a chance to place its guarantee.
+Check actual placed counts for every supply, and search the eligible home region
+before refusing a request merely because one preferred anchor is crowded. The
+finite-food restriction need not apply to stone, which does not grow, or to the
+entire timber economy. Keep building room and walking access in the same check.
+
 ## Measure growth potential, not water share
 
 Water on the map is not food. A crop regrows when a random probe up to fifteen tiles away lands on pure water and the mirrored probe misses pure sand, so what feeds a colony is the **density of pure water right beside its crops**, and a map can hold a river, lakes and ponds and still starve. Karst towers' first review (2026-09-16) found 5% water, a quarter of Forts' growth potential near every home, and Maxima colonies breeding on the starter stock and then starving out, although every metric the generator already reported looked fine.

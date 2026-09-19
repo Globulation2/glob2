@@ -2966,3 +2966,9 @@ Gotorleku-uharteak
 Plantazioaren tamaina
 [Outlying islands]
 Kanpoko uharteak
+[The Hungry Marches]
+Mugalde Gosetiak
+[Opening ration]
+Hasierako anoa
+[Central concentration]
+Erdialdeko kontzentrazioa

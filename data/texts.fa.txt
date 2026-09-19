@@ -2954,3 +2954,9 @@ Emoji
 اندازهٔ کشتزار
 [Outlying islands]
 جزیره‌های پیرامونی
+[The Hungry Marches]
+سرزمین‌های مرزی گرسنه
+[Opening ration]
+جیرهٔ آغازین
+[Central concentration]
+تمرکز غذا در مرکز

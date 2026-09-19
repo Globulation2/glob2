@@ -137,6 +137,49 @@ A map about one resource is designed from the engine's cost tables outward (`src
 - **Holdable, not lockable.** All approaches landing at one place let a few towers cover them. Shore grass within tower range of that landing lets attackers answer, and swimming (a level-0 pool) is a counter the holder can't close. A player can still wall a narrow landing with the holder's unlimited stone. Decide whether that is the game, and check it in human play.
 - **Distance is part of the price.** A 70–80-step walk each way is a tax on the holder and puts the prize outside some AIs' working range entirely. Cap it in steps, not as a share of the map.
 
+## Food scarcity: contest access and production separately
+
+For a map promising exposed food, record the closest **two rival walking distances**
+to each district's harvesting edges. Two colonies reaching it within a generous
+ceiling does not make it contested: a Hungry Marches prototype admitted fields
+3 steps from one colony and 73 from another. Choose relative-access bounds for
+that map's intended response time, and inspect tower coverage and the alternative
+fields too. There is no universal distance that establishes contestedness. A duel
+may need a different food arrangement from a many-colony game: a ring around two
+opposite homes tends to give each its own half, whereas middle-ground fields can
+face both colonies. Measure the finished, stocked terrain and the future crop
+footprint, including toroidal shortcuts.
+
+Balance the usable banks, not just the pond centres. A timber section at one end
+of a shared field can give the opposite colony the only nearby grain, even when
+the pond centre is equidistant. Orient or distribute the grain and timber so both
+approaches reach useful crops. Check colony-to-colony connectivity with mature
+fields occupied as well as each colony's access to food: disconnected groups can
+each have enough fields while the intended raiding routes have disappeared.
+
+Separate **opening stock, seeded renewable capacity, and delivered food**. Finite
+home wheat needs zero growth probability under the actual kernel; a low initial
+tile count alone does not make it finite. A control promising a richer centre
+should change productive bank geometry or fertility, not just its initial wheat
+density, which natural growth can erase. Keep rebuilding possible: making all
+wood finite by copying the dry-wheat policy introduces a second scarcity. Use
+separate grass components for renewable timber and wheat so faster tree growth
+cannot take over the food banks.
+
+A field split by sand or water may contain several independent growing banks.
+Measure potential only on components a planted crop can reach, or deliberately
+seed every productive component. A per-district minimum of two randomly selected
+seeds can leave some banks empty forever. Check this especially at low resource
+settings; summing fertility over all designed farmland overstates the actual
+supply when some of it can never be colonised by wheat.
+
+Check whether an AI models finite stock at all before enlarging the opening kit.
+On Hungry Marches' dry-start duels, Maxima completed an inn but held its population
+at four: its fertility-weighted food estimate funded zero birth workers, including
+scouts. More dry wheat could not change that estimate. Distinguish this planning
+assumption from an inaccessible field; use another AI or a mirrored game to study
+the map, and track an AI fix separately rather than breaking the scarcity promise.
+
 ## Rewards, fairness, and evidence of fun
 
 Fruit is more than decorative variety. [Inn happiness](../../../../src/building/Misc.cpp) counts stocked fruit kinds; [food selection](../../../../src/team/TeamRouting.cpp) considers enemy food sharing, conversion eligibility, happiness, reachability, and starvation-limited travel. [Unit armor](../../../../src/unit/UnitStats.cpp) also responds to fruit consumption. A contested three-fruit orchard is therefore a meaningful strategic reward, not automatically the best prize in every setting. Compare each fruit kind and access route across starts, and test the intended conversion opportunity in a real game.

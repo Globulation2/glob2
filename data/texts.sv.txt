@@ -2966,3 +2966,9 @@ Bastionsöar
 Plantagestorlek
 [Outlying islands]
 Yttre öar
+[The Hungry Marches]
+De hungriga gränsmarkerna
+[Opening ration]
+Startranson
+[Central concentration]
+Koncentration i mitten

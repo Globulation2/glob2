@@ -2954,3 +2954,9 @@ Bastionaj insuletoj
 Grandeco de plantejoj
 [Outlying islands]
 Eksteraj insuloj
+[The Hungry Marches]
+La Malsataj Limlandoj
+[Opening ration]
+Komenca porcio
+[Central concentration]
+Koncentriĝo en la centro

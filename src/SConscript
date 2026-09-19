@@ -225,6 +225,7 @@ map/generator/generators/WatershedGenerator.cpp
 map/generator/generators/BastionKeysGenerator.cpp
 map/generator/generators/DrownedForestGenerator.cpp
 map/generator/generators/WhoAteTheMapGenerator.cpp
+map/generator/generators/HungryMarchesGenerator.cpp
 map/generator/generators/CombGenerator.cpp
 map/generator/generators/EvenGroundGenerator.cpp
 map/generator/generators/MarchlandGenerator.cpp

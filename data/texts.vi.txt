@@ -2952,3 +2952,9 @@ Quần đảo pháo đài
 Kích thước đồn điền
 [Outlying islands]
 Đảo ngoại vi
+[The Hungry Marches]
+Miền Biên Ải Đói Kém
+[Opening ration]
+Khẩu phần ban đầu
+[Central concentration]
+Mức tập trung ở trung tâm

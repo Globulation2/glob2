@@ -2956,3 +2956,9 @@ Cayos fortificados
 Tamaño de las plantaciones
 [Outlying islands]
 Islas exteriores
+[The Hungry Marches]
+Las Marcas Hambrientas
+[Opening ration]
+Ración inicial
+[Central concentration]
+Concentración central
