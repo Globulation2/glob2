@@ -39,6 +39,8 @@ int main()
         ResolvedStrategy resolved;
         std::string error;
         assert(StrategyResolver::resolveForFormat(StrategyConfigOptions(),format,resolved,error));
+        assert(resolved.values.assault.force_ramp_enabled);
+        assert(resolved.values.assault.waves_enabled);
         const auto text=StrategyResolver::canonicalValues(resolved.values);
         MaximaStrategy restored{};
         assert(StrategyResolver::restoreValues(text,restored,error,VERSION_MINOR));
@@ -72,6 +74,19 @@ int main()
             assert(StrategyResolver::canonicalValues(old)==text);
         }
         assert(!StrategyResolver::restoreValues(preFruit,restored,error,VERSION_MINOR));
+
+        std::string preWave;
+        for(const auto& assignment:split(text))
+            if(assignment.rfind("assault.",0)!=0)
+                preWave+=(preWave.empty() ? "" : ",")+assignment;
+        for(int version:{109,110,111})
+        {
+            assert(StrategyResolver::restoreValues(preWave,restored,error,version));
+            assert(!restored.assault.waves_enabled);
+            assert(!restored.assault.force_ramp_enabled);
+            assert(restored.assault.force_growth_ticks==1000);
+        }
+        assert(!StrategyResolver::restoreValues(preWave,restored,error,VERSION_MINOR));
 
         // Version 98 retired the muster/relief keys and added the offense's
         // own. An older save therefore names keys this build dropped and omits

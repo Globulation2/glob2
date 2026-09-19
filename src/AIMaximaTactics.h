@@ -28,13 +28,43 @@ enum MissionKind
 	MissionSiege
 };
 
-/// The offense either holds a flag on a target or it does not; there are no
-/// muster, transit, withdrawal or cooldown states to pass through.
+/// Objective state; individual wave assembly is tracked separately.
 enum MissionPhase
 {
 	PhaseIdle,
 	PhaseEngage
 };
+
+const int WaveSaveVersion=112;
+
+enum WavePhase { WaveMuster, WaveAdvance };
+struct Wave
+{
+	int flagId=NoFlag;
+	WavePhase phase=WaveMuster;
+	int requestedForce=0;
+	int startedTick=0;
+	int progressTick=0;
+	int bestArrived=0;
+	int rallyX=0;
+	int rallyY=0;
+	int targetX=0;
+	int targetY=0;
+};
+
+template<class Archive> void fields(Archive& a, Wave& wave)
+{
+	a("flag",wave.flagId); a("phase",wave.phase);
+	a("requested",wave.requestedForce); a("started",wave.startedTick);
+	a("progress",wave.progressTick); a("arrived",wave.bestArrived);
+	a("rally_x",wave.rallyX); a("rally_y",wave.rallyY);
+	a("target_x",wave.targetX); a("target_y",wave.targetY);
+}
+
+/// Fixed-point army controller: no floating point, wall clocks or RNG.
+int desiredArmy(int enemy, unsigned int tick, int ticksPerPoint, int floor, int ceiling);
+bool waveReady(Wave& wave, int arrived, int tick, int readyPercent,
+	int stallTicks, int maximumTicks, int minimumForce, int cohort, int capacity);
 
 struct WorkerSighting
 {

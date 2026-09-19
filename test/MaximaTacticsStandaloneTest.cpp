@@ -1,4 +1,5 @@
 #include "../src/AIMaximaTactics.h"
+#include <climits>
 
 #include <cassert>
 #include <string>
@@ -59,6 +60,27 @@ static void raidFootprintRegression()
 int main()
 {
 	raidFootprintRegression();
+	assert(desiredArmy(100,0,1000,12,1024)==100);
+	assert(desiredArmy(100,10000,1000,12,1024)==110);
+	assert(desiredArmy(100,50000,1000,12,1024)==150);
+	assert(desiredArmy(0,50000,1000,12,1024)==12);
+	assert(desiredArmy(100,~0u,1000,12,1024)==1024);
+	assert(desiredArmy(INT_MAX,~0u,1000000,12,1024)==1024);
+	Wave wave;
+	wave.requestedForce=20;
+	assert(!waveReady(wave,0,500,75,500,3000,4,20,20));
+	assert(!waveReady(wave,10,1000,75,500,3000,4,12,20));
+	assert(wave.progressTick==1000);
+	assert(!waveReady(wave,9,1400,75,500,3000,4,12,20));
+	assert(waveReady(wave,10,1500,75,500,3000,4,12,20));
+	assert(waveReady(wave,15,1501,75,500,3000,4,20,20));
+	assert(!waveReady(wave,3,4000,75,500,3000,4,4,20));
+	// Neither timeout can turn four gathered warriors plus sixteen stragglers
+	// into a wave; a small but concentrated force can leave after waiting.
+	assert(!waveReady(wave,4,4000,75,500,3000,4,20,20));
+	Wave small; small.requestedForce=4;
+	assert(!waveReady(small,4,100,75,500,3000,4,4,20));
+	assert(waveReady(small,4,600,75,500,3000,4,4,20));
 	Program program;
 	program.beginObservation(100);
 	program.observeWorker(WorkerSighting(1, 2, 0, 5, 100, true, false, 2));

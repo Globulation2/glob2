@@ -585,6 +585,21 @@ struct MaximaStrategy
 		int failed_target_quarantine_ticks;
 	} tactics;
 
+	// Defaults also supply the fields absent from pre-wave saved strategies.
+	struct Assault
+	{
+		// Migration defaults for saves without assault keys. New games resolve
+		// base.strategy, which enables the force ramp.
+		bool force_ramp_enabled=false;
+		bool waves_enabled=false;
+		int force_growth_ticks=1000;
+		int max_waves=16;
+		int muster_radius=3;
+		int muster_ready_percent=75;
+		int muster_stall_ticks=500;
+		int muster_max_ticks=3000;
+	} assault;
+
 	struct Raiding
 	{
 		bool enabled;

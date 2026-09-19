@@ -542,6 +542,8 @@ private:
 	CampaignPlan campaign;
 	Tactics::Program tactics;
 	Tactics::Mission tactical_mission;
+	std::vector<Tactics::Wave> offense_waves;
+	bool control_offense_waves(AIMaximaRuntime::Context& echo);
 	OffenseDiagnostics offense_diagnostics;
 	std::vector<ClearedEnemySite> cleared_enemy_sites;
 	// Runtime startup latch; saves before version 95 recheck workers and food.

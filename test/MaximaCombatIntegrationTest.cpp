@@ -6,6 +6,7 @@
 #include "../src/ai/AIImplementation.h"
 #include "../src/map/Map.h"
 #include "../src/Order.h"
+#include "../src/AIMaximaContinuation.h"
 #include "../src/Player.h"
 #include "../src/TeamStat.h"
 #include <memory>
@@ -70,6 +71,9 @@ struct Fixture
         ai->budget.defense_reserve=0;
         ai->budget.food_emergency=false;
         ai->budget.colony_emergency=false;
+        // Single-flag regressions explicitly exercise the streaming fallback;
+        // wave assembly tests opt into their controller below.
+        ai->strategy.assault.waves_enabled=false;
         ai->strategy.tactics.enabled=true;
         ai->strategy.tactics.siege_enabled=true;
         ai->strategy.tactics.min_force=4;
@@ -342,6 +346,110 @@ static ::Building* materializeFlag(Fixture& f)
     }
     c.orders.clear();
     return flag;
+}
+
+static void waveAssemblyAndPipeline()
+{
+    Fixture f;
+    f.building(10,10,0);
+    auto target=f.building(35,30,1);
+    std::vector<Unit*> warriors;
+    for(int i=0;i<40;++i)warriors.push_back(f.warrior(15+i%10,15+i/10,3));
+    auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
+    a.strategy.assault.waves_enabled=true;
+    a.director.dirty=false;
+    a.budget.tactical_kind=Tactics::MissionNone;
+    a.control_offense(c);
+    assert(!a.director.dirty); // Idle wave reviews must not reschedule the economy.
+    a.plan_offense(c);
+    assert(a.budget.tactical_requested_force==40);
+    a.control_offense(c);
+    assert(a.offense_waves.size()==1);
+    assert(a.offense_waves[0].requestedForce==20);
+    const int first=a.offense_waves[0].flagId;
+    auto flag=materializeFlag(f);
+    assert(flag->posX==10 && flag->posY==10);
+    for(int i=0;i<20;++i)f.attach(warriors[i],flag);
+    a.timer+=100;
+    a.plan_offense(c);a.control_offense(c);
+    // Enrollment alone must not release the cohort; nobody has arrived.
+    assert(a.offense_waves.size()==1);
+    assert(a.offense_waves[0].phase==Tactics::WaveMuster);
+    for(int i=0;i<15;++i){warriors[i]->posX=10;warriors[i]->posY=10;}
+    a.timer+=100;
+    a.plan_offense(c);a.control_offense(c);
+    assert(a.offense_waves.size()==2);
+    assert(a.offense_waves[0].phase==Tactics::WaveAdvance);
+    assert(a.offense_waves[1].phase==Tactics::WaveMuster);
+    bool moved=false,lowPriority=false;
+    for(auto order:c.managementOrders) {
+        if(auto move=dynamic_cast<Management::ChangeFlagPosition*>(order.get()))
+            moved=moved || (move->id==first && move->x==a.budget.tactical_target_x);
+        if(auto priority=dynamic_cast<Management::ChangePriority*>(order.get()))
+            lowPriority=lowPriority || (priority->id==first && priority->priority==-1);
+    }
+    assert(moved && lowPriority);
+    // Save with one advancing and one pending muster flag. Restore the real
+    // Maxima execution queue and verify all wave fields, including clocks.
+    auto* saved=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(saved);
+    a.save(&output);
+    const std::string bytes(saved->getBuffer(),saved->getPosition());
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0);
+    Maxima restored(&input,&f.player,VERSION_MINOR);
+    const auto waveBytes=[](const std::vector<Tactics::Wave>& waves) {
+        auto* storage=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream stream(storage);
+        AIMaximaContinuation::Writer archive(&stream);
+        archive("waves",waves);
+        return std::string(storage->getBuffer(),storage->getPosition());
+    };
+    assert(waveBytes(restored.offense_waves)==waveBytes(a.offense_waves));
+    assert(restored.context.get_building_register().is_building_pending(a.offense_waves[1].flagId));
+    a.timer+=100;restored.timer+=100;
+    a.control_offense(c);restored.control_offense(restored.context);
+    assert(waveBytes(restored.offense_waves)==waveBytes(a.offense_waves));
+    assert(restored.context.managementOrders.size()==c.managementOrders.size());
+    // A flag lifecycle notification cannot discard another live cohort.
+    a.handle_event(c,RuntimeEvent(RuntimeEvent::AttackFinished,first));
+    assert(a.offense_waves.size()==1);
+    assert(a.tactical_mission.flagId==a.offense_waves[0].flagId);
+    a.end_offense(c,"test");
+    assert(a.offense_waves.empty() && a.attack_flags.empty());
+}
+
+static void smallWaveKeepsRecruiting()
+{
+    Fixture f;
+    f.building(10,10,0);
+    auto target=f.building(35,30,1);
+    std::vector<Unit*> warriors;
+    for(int i=0;i<4;++i)warriors.push_back(f.warrior(15+i,15,3));
+    auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
+    a.strategy.assault.waves_enabled=true;
+    a.plan_offense(c);a.control_offense(c);
+    assert(a.offense_waves.size()==1 && a.offense_waves[0].requestedForce==4);
+    auto flag=materializeFlag(f);
+    for(auto warrior:warriors){f.attach(warrior,flag);warrior->posX=10;warrior->posY=10;}
+    a.timer+=100;
+    a.plan_offense(c);a.control_offense(c);
+    // Four of four present is not a full wave: allow time for the army to grow.
+    assert(a.offense_waves[0].phase==Tactics::WaveMuster);
+    for(int i=4;i<20;++i)warriors.push_back(f.warrior(20+i%10,20+i/10,3));
+    a.timer+=100;
+    a.plan_offense(c);a.control_offense(c);
+    assert(a.offense_waves[0].requestedForce==20);
+    assert(assigned(c,a.offense_waves[0].flagId,20));
+    for(int i=4;i<20;++i)f.attach(warriors[i],flag);
+    a.timer+=a.strategy.assault.muster_stall_ticks;
+    a.plan_offense(c);a.control_offense(c);
+    // A timeout cannot launch four arrived warriors with sixteen stragglers.
+    assert(a.offense_waves[0].phase==Tactics::WaveMuster);
+    for(int i=0;i<15;++i){warriors[i]->posX=10;warriors[i]->posY=10;}
+    a.timer+=100;
+    a.plan_offense(c);a.control_offense(c);
+    assert(a.offense_waves[0].phase==Tactics::WaveAdvance);
 }
 
 static void warriorEligibility()
@@ -860,6 +968,8 @@ static void run()
     fittedForceUsesOnlyVisibleUnits();
     fittedPowerControlsAttackGate();
     fittedHistorySurvivesSave();
+    waveAssemblyAndPipeline();
+    smallWaveKeepsRecruiting();
     defenseWrapsBuildingOrigins();
     defenseCoverage();
     warriorEligibility();

@@ -744,3 +744,13 @@ economy.swarm_workers_per_building = 5
 # Initial colony thresholds; calibrate across resource densities.
 colonization.minimum_new_food = 8
 colonization.minimum_value = 5
+
+# Army ramp and gathered waves are new-game defaults.
+assault.force_ramp_enabled = true
+assault.waves_enabled = true
+assault.force_growth_ticks = 1000
+assault.max_waves = 16
+assault.muster_radius = 3
+assault.muster_ready_percent = 75
+assault.muster_stall_ticks = 500
+assault.muster_max_ticks = 3000

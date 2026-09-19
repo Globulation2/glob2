@@ -654,3 +654,12 @@ level-1 offensive flags across pending creation and later director reviews.
 Version 109 preserves labour observations, plans and allowances; saves through
 108 reconstruct a conservative starting allowance from their restored requests.
 Network protocol 34 rejects older peers, which would run different Maxima orders.
+
+## Maxima gathered attacks
+
+The combat integration suite checks rally arrival separately from flag enrollment,
+continued recruitment, successive waves, flag deletion, idle scheduler neutrality,
+and exact wave state plus pending-order continuation. The tactics suite checks
+army growth arithmetic and gathering thresholds. Strategy tests verify enabled
+new-game defaults and migration from production saves through version 111.
+See [attack strategy](../doc/MaximaAttacks.md).

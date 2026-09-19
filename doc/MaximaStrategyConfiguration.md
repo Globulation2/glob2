@@ -422,3 +422,10 @@ meanings documented in the placement code.
 Pre-version-110 saved configurations restore `fruit.reachable_supply=false` to
 continue their original policy. `fruit.population_min` applies only to that legacy
 policy. The current policy needs no population threshold or posture switch.
+
+## Attack controls
+
+The `assault.*` schema controls age-based army demand and gathered land attacks.
+Both default on for new games. See [attack strategy](MaximaAttacks.md) for the
+formula, assembly rules and version-112 migration. Earlier production saves
+retain their original policy with both controls disabled.

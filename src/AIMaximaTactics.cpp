@@ -40,6 +40,30 @@ namespace
 	}
 }
 
+int desiredArmy(int enemy, unsigned int tick, int ticksPerPoint, int floor, int ceiling)
+{
+	const long long denominator=100LL*std::max(1,ticksPerPoint);
+	const long long growth=static_cast<long long>(std::max(0,enemy))*tick;
+	const long long wanted=std::max(0,enemy)+growth/denominator+(growth%denominator!=0);
+	return int(std::min<long long>(ceiling,std::max<long long>(floor,wanted)));
+}
+
+bool waveReady(Wave& wave, int arrived, int tick, int readyPercent,
+	int stallTicks, int maximumTicks, int minimumForce, int cohort, int capacity)
+{
+	if(arrived>wave.bestArrived)
+	{
+		wave.bestArrived=arrived;
+		wave.progressTick=tick;
+	}
+	// A small recruitment budget is not a completed wave. Give it time to grow
+	// toward a full cohort, and never use a timeout to send a scattered cohort.
+	return arrived>=minimumForce && arrived*100>=cohort*readyPercent &&
+		(arrived*100>=capacity*readyPercent
+		 || tick-wave.progressTick>=stallTicks
+		 || tick-wave.startedTick>=maximumTicks);
+}
+
 WorkerSighting::WorkerSighting()
 	: gid(-1), team(NoTeam), x(0), y(0), tick(0), harvesting(false),
 	  carrying(false), economicValue(0)

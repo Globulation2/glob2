@@ -3,8 +3,8 @@
   "algorithm": "sorted-comment-string-stripped-numeric-token-sha256",
   "sources": {
     "src/AIMaxima.cpp": {
-      "tokens": 1847,
-      "sha256": "e8595e4911331fd16f39ec06bf6f7e5a0c0089b9b2e9c3f9d805ae38c6e75c80",
+      "tokens": 1873,
+      "sha256": "9c7c544db73af90a0147098cc860d8bffff708909e77718bfdf20bb5f03c7b23",
       "classifications": [
         "live selection authorization, swimming-builder counts, and shared reactive-defense reserve",
         "schema-backed strategy member use",
@@ -139,8 +139,8 @@
       ]
     },
     "src/AIMaximaTactics.cpp": {
-      "tokens": 51,
-      "sha256": "6c22092ff33ee276d3fa510a0534eda65c1f0ba74a15e7791199c9a25949550a",
+      "tokens": 58,
+      "sha256": "8ebe22d85a86f0b8c60e80532330ca8dee1083ba6af9a2a8da3a7d599528f5a8",
       "classifications": [
         "recomputed raid defenders and scores after threat replacement",
         "schema-backed tactical rule defaults",

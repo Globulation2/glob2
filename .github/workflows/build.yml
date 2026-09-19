@@ -256,9 +256,9 @@ jobs:
         run: |
           GLOB2_USER_DIR="$(mktemp -d)" ./build/src/MaximaRelocationIntegrationTest
 
-      - name: Test Maxima opening production and economy
+      - name: Test Maxima economy, attack controllers and continuation
         run: |
-          GLOB2_USER_DIR="$(mktemp -d)" python3 test/run_maxima_implementation_regressions.py --build-dir build --reuse-built-objects --test MaximaEconomyRegressionTest
+          GLOB2_USER_DIR="$(mktemp -d)" python3 test/run_maxima_implementation_regressions.py --build-dir build --reuse-built-objects --test MaximaEconomyRegressionTest --test MaximaCombatIntegrationTest --test MaximaTacticsStandaloneTest --test MaximaStrategyTest --test MaximaLifecycleTest --test MaximaStrategyPolicyTest
 
       - name: Test clearing flag resource bounds
         run: |
