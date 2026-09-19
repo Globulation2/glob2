@@ -2908,3 +2908,25 @@ Um bairro da cidade não tem plantações acessíveis ou espaço para construir.
 Os bairros da cidade são muito desiguais; tente outra semente.
 [The fractured civic plaza did not survive.]
 A praça pública fraturada não sobreviveu.
+[Portage Lakes]
+Lennoù ha tremenlec’hioù koad
+[Lake elongation]
+Astenn al lennoù
+[Portage depth]
+Tevder ar c’hoad
+[Extra trails]
+Gwenodennoù ouzhpenn
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Ret eo da gostezioù ar gartenn-mañ bezañ etre 64 ha 512 karrez hed.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Gant an had-mañ ne c’haller ket lakaat trevadennoù war ar ribloù.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+N’eus ket plas evit parkeier a gresk en-dro e-kichen pep trevadenn.
+[Portage Lakes cannot connect its shoreline trails.]
+Ne c’haller ket kevreañ gwenodennoù ar ribloù.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Gant an had-mañ ne c’haller ket krouiñ un hent-berr talvoudus dre goad sec’h.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Gant an had-mañ ne c’haller ket krouiñ un hent-berr talvoudus dre neuial.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Gant an had-mañ e rank al lennoù evit neuial bezañ dispartiet.

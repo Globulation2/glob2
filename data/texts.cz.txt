@@ -2912,3 +2912,25 @@ Jedné městské čtvrti chybí dostupné plodiny nebo prostor pro stavby.
 Městské čtvrti jsou příliš nevyvážené; zkuste jiné semínko.
 [The fractured civic plaza did not survive.]
 Rozlámané městské náměstí se nezachovalo.
+[Portage Lakes]
+Jezera a lesní průchody
+[Lake elongation]
+Protáhlost jezer
+[Portage depth]
+Tloušťka lesního průchodu
+[Extra trails]
+Další stezky
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Strany této mapy musí měřit 64 až 512 polí.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+S tímto seedem nelze na břehy umístit kolonie.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Vedle každé kolonie se nevejdou obnovitelná pobřežní pole.
+[Portage Lakes cannot connect its shoreline trails.]
+Pobřežní stezky nelze propojit.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+S tímto seedem nelze vytvořit užitečnou zkratku suchým lesem.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+S tímto seedem nelze vytvořit užitečnou zkratku plaváním.
+[Portage Lakes needs separate swimming lakes on this seed.]
+S tímto seedem musí jezera pro plavání zůstat oddělená.

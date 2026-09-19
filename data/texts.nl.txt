@@ -2936,3 +2936,25 @@ Een stadswijk mist bereikbare gewassen of bouwruimte.
 De stadswijken zijn te ongelijkwaardig; probeer een ander zaadje.
 [The fractured civic plaza did not survive.]
 Het gebroken stadsplein is niet behouden gebleven.
+[Portage Lakes]
+Meren en bospassages
+[Lake elongation]
+Langgerektheid meren
+[Portage depth]
+Dikte van bospassage
+[Extra trails]
+Extra paden
+[Portage Lakes needs sides between 64 and 512 tiles.]
+De zijden van deze kaart moeten 64 tot 512 vakjes lang zijn.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Met deze startwaarde passen er geen nederzettingen aan de oevers.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Er passen geen hernieuwbare akkers naast elke nederzetting.
+[Portage Lakes cannot connect its shoreline trails.]
+De oeverpaden kunnen niet worden verbonden.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Met deze startwaarde past er geen nuttige afkorting door droog bos.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Met deze startwaarde past er geen nuttige zwemroute als afkorting.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Met deze startwaarde moeten de meren om doorheen te zwemmen gescheiden blijven.

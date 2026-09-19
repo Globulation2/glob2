@@ -2908,3 +2908,25 @@ Sebuah kawasan kota kekurangan tanaman yang dapat dijangkau atau ruang untuk mem
 Kawasan kota terlalu tidak seimbang; coba benih lain.
 [The fractured civic plaza did not survive.]
 Alun-alun kota yang terbelah tidak tersisa.
+[Portage Lakes]
+Danau dan lintasan hutan
+[Lake elongation]
+Kelonjongan danau
+[Portage depth]
+Ketebalan lintasan hutan
+[Extra trails]
+Jalur tambahan
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Sisi peta ini harus berukuran 64 hingga 512 petak.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Benih ini tidak menyediakan ruang untuk permukiman di tepi danau.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Ladang tepi danau yang dapat tumbuh kembali tidak muat di samping setiap permukiman.
+[Portage Lakes cannot connect its shoreline trails.]
+Jalur di tepi danau tidak dapat dihubungkan.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Benih ini tidak menyediakan jalan pintas yang berguna melalui hutan kering.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Benih ini tidak menyediakan jalan pintas renang yang berguna.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Dengan benih ini, danau untuk berenang harus tetap terpisah.

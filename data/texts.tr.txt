@@ -2920,3 +2920,25 @@ Kırılmış Şehir, her kenarda 256 veya 512 kare ve bir ila on iki koloni gere
 Şehrin mahalleleri çok dengesiz; başka bir tohum deneyin.
 [The fractured civic plaza did not survive.]
 Kırılmış şehir meydanı korunamadı.
+[Portage Lakes]
+Göller ve orman geçitleri
+[Lake elongation]
+Göl uzunluk oranı
+[Portage depth]
+Orman geçidi kalınlığı
+[Extra trails]
+Ek patikalar
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Bu haritanın kenarları 64 ile 512 kare arasında olmalıdır.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Bu tohumla kıyılara yerleşimler sığdırılamıyor.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Her yerleşimin yanına yenilenebilir kıyı tarlaları sığdırılamıyor.
+[Portage Lakes cannot connect its shoreline trails.]
+Kıyı patikaları birbirine bağlanamıyor.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Bu tohumla kuru ormandan geçen yararlı bir kestirme oluşturulamıyor.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Bu tohumla yüzerek kullanılabilecek yararlı bir kestirme oluşturulamıyor.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Bu tohumda yüzülebilen göllerin birbirinden ayrı kalması gerekir.

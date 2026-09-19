@@ -2988,3 +2988,25 @@ En bydel mangler tilgængelige afgrøder eller byggeplads.
 Bydelene er for ulige; prøv et andet seed.
 [The fractured civic plaza did not survive.]
 Den opsprækkede byplads blev ikke bevaret.
+[Portage Lakes]
+Søer og skovpassager
+[Lake elongation]
+Søernes langstrakthed
+[Portage depth]
+Skovpassagens tykkelse
+[Extra trails]
+Flere stier
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Denne korttypes sider skal være mellem 64 og 512 felter.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Dette frø giver ikke plads til kolonier ved bredderne.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Der er ikke plads til fornybare marker ved hver koloni.
+[Portage Lakes cannot connect its shoreline trails.]
+Stierne langs bredderne kan ikke forbindes.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Dette frø giver ikke plads til en nyttig genvej gennem tør skov.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Dette frø giver ikke plads til en nyttig svømmegenvej.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Med dette frø skal søerne til svømning være adskilte.

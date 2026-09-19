@@ -2912,3 +2912,25 @@ Un barrio de la ciudad carece de cultivos accesibles o de espacio para construir
 Los barrios de la ciudad son demasiado desiguales; prueba otra semilla.
 [The fractured civic plaza did not survive.]
 La plaza pública fracturada no ha sobrevivido.
+[Portage Lakes]
+Lagos y pasos boscosos
+[Lake elongation]
+Alargamiento de lagos
+[Portage depth]
+Grosor del paso boscoso
+[Extra trails]
+Senderos adicionales
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Los lados de este mapa deben medir entre 64 y 512 casillas.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Esta semilla no permite colocar colonias en las orillas.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+No caben campos renovables junto a cada colonia.
+[Portage Lakes cannot connect its shoreline trails.]
+No se pueden conectar los senderos de las orillas.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Esta semilla no permite crear un atajo útil por un bosque seco.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Esta semilla no permite crear un atajo útil a nado.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Con esta semilla, los lagos para nadar deben quedar separados.

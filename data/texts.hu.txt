@@ -2912,3 +2912,25 @@ Egy városnegyedben nincs elérhető termény vagy elegendő hely az építkezé
 A városnegyedek túl egyenlőtlenek; próbálj másik magot.
 [The fractured civic plaza did not survive.]
 A szétszakadt városi tér nem maradt fenn.
+[Portage Lakes]
+Tavak és erdei átjárók
+[Lake elongation]
+Tavak nyújtottsága
+[Portage depth]
+Erdei átjáró vastagsága
+[Extra trails]
+További ösvények
+[Portage Lakes needs sides between 64 and 512 tiles.]
+A térkép oldalainak 64 és 512 mező közé kell esniük.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Ezzel a maggal nem helyezhetők telepek a partokra.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Nem férnek el megújuló parti földek minden telep mellett.
+[Portage Lakes cannot connect its shoreline trails.]
+A parti ösvények nem köthetők össze.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Ezzel a maggal nem alakítható ki hasznos rövidítés száraz erdőn át.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Ezzel a maggal nem alakítható ki hasznos úszó rövidítés.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Ezzel a maggal az úszásra szolgáló tavaknak különállónak kell maradniuk.

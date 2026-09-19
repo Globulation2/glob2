@@ -2982,3 +2982,25 @@ Emoji
 Οι συνοικίες της πόλης είναι υπερβολικά άνισες· δοκιμάστε άλλον σπόρο.
 [The fractured civic plaza did not survive.]
 Η ρηγματωμένη πλατεία της πόλης δεν διατηρήθηκε.
+[Portage Lakes]
+Λίμνες και δασικά περάσματα
+[Lake elongation]
+Επιμήκυνση λιμνών
+[Portage depth]
+Πάχος δασικού περάσματος
+[Extra trails]
+Πρόσθετα μονοπάτια
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Οι πλευρές αυτού του χάρτη πρέπει να έχουν 64 έως 512 πλακίδια.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Αυτός ο σπόρος δεν επιτρέπει οικισμούς στις όχθες.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Δεν χωρούν ανανεώσιμα χωράφια δίπλα σε κάθε οικισμό.
+[Portage Lakes cannot connect its shoreline trails.]
+Δεν μπορούν να συνδεθούν τα παραλίμνια μονοπάτια.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Αυτός ο σπόρος δεν επιτρέπει χρήσιμη συντόμευση μέσα από ξηρό δάσος.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Αυτός ο σπόρος δεν επιτρέπει χρήσιμη συντόμευση με κολύμπι.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Με αυτόν τον σπόρο, οι λίμνες για κολύμπι πρέπει να παραμένουν χωριστές.

@@ -2912,3 +2912,25 @@ Jednej z dzielnic miasta brakuje dostępnych upraw lub miejsca na budowę.
 Dzielnice miasta są zbyt nierówne; spróbuj innego ziarna.
 [The fractured civic plaza did not survive.]
 Pęknięty plac miejski nie przetrwał.
+[Portage Lakes]
+Jeziora i leśne przejścia
+[Lake elongation]
+Wydłużenie jezior
+[Portage depth]
+Grubość leśnego przejścia
+[Extra trails]
+Dodatkowe ścieżki
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Boki tej mapy muszą mieć od 64 do 512 pól.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+To ziarno nie pozwala rozmieścić kolonii na brzegach.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Obok każdej kolonii nie mieszczą się odnawialne pola.
+[Portage Lakes cannot connect its shoreline trails.]
+Nie można połączyć ścieżek wzdłuż brzegów.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+To ziarno nie pozwala utworzyć użytecznego skrótu przez suchy las.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+To ziarno nie pozwala utworzyć użytecznego skrótu wpław.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Przy tym ziarnie jeziora do pływania muszą pozostać oddzielone.

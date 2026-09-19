@@ -2910,3 +2910,25 @@ Al urba kvartalo mankas atingeblaj kultivaĵoj aŭ konstruspaco.
 La urbaj kvartaloj estas tro malegalaj; provu alian semon.
 [The fractured civic plaza did not survive.]
 La fendita urba placo ne konserviĝis.
+[Portage Lakes]
+Lagoj kaj arbaraj pasejoj
+[Lake elongation]
+Laga longformeco
+[Portage depth]
+Dikeco de arbara pasejo
+[Extra trails]
+Pliaj padoj
+[Portage Lakes needs sides between 64 and 512 tiles.]
+La flankoj de ĉi tiu mapo devas longi inter 64 kaj 512 kaheloj.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Ĉi tiu semo ne ebligas loki koloniojn ĉe la bordoj.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Ne estas loko por renovigeblaj kampoj apud ĉiu kolonio.
+[Portage Lakes cannot connect its shoreline trails.]
+Ne eblas kunligi la bordajn padojn.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Ĉi tiu semo ne ebligas utilan ŝparvojon tra seka arbaro.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Ĉi tiu semo ne ebligas utilan naĝan ŝparvojon.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Kun ĉi tiu semo la lagoj por naĝado devas resti apartaj.

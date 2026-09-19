@@ -230,6 +230,7 @@ map/generator/generators/OrchardCommonsGenerator.cpp
 map/generator/generators/GauntletGenerator.cpp
 map/generator/generators/FaultedCityGenerator.cpp
 map/generator/generators/HiddenOasisGenerator.cpp
+map/generator/generators/PortageLakesGenerator.cpp
 map/generator/generators/CentralQuarryGenerator.cpp
 map/generator/generators/BajadaGenerator.cpp
 map/generator/generators/KarstTowersGenerator.cpp
