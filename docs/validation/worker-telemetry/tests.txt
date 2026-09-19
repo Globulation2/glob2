@@ -1,0 +1,23 @@
+Native macOS release build: PASS
+
+worker-tests.log
+Worker telemetry enabled: buckets, totals, combat attribution and unchanged checksums PASS
+Worker telemetry disabled: buckets, totals, combat attribution and unchanged checksums PASS
+
+compatibility-tests.log
+PASS gd-large-4ai.game: 1024 ticks, identical checksum sidecar: 3f36e16da805f072bb5bc52481dcde29043814e1cd15457b9a3400f2d9faf1c5
+PASS gd-bigarena-long.game: 2048 ticks, identical checksum sidecar: 9890c690cd768897e79458f8bd70c590c3b5b9d6a184434069a8751889fbdf86
+PASS v108 checkpoint: 256 reloaded ticks, identical parent team/entity checksum records
+
+parser-tests.log
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.005s
+
+OK
+
+export-tests.log
+macOS-26.6.2-arm64-arm-64bit-Mach-O
+3000 ticks from the same saved initial state: diagnostics off/on checksum sidecars byte-identical
+SHA-256: 2609da81d8a665add18933ef02faac82068d3dd603cb1560f1b2a9d6da6272b5
+

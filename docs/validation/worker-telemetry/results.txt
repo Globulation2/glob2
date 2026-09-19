@@ -1,0 +1,3 @@
+macOS-26.6.2-arm64-arm-64bit-Mach-O
+3000 ticks from the same saved initial state: diagnostics off/on checksum sidecars byte-identical
+SHA-256: 2609da81d8a665add18933ef02faac82068d3dd603cb1560f1b2a9d6da6272b5

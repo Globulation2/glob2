@@ -89,7 +89,11 @@ fields do not change simulation execution or order formats.
 ## Existing timeline output
 
 Set `GLOB2_TEAM_TIMELINE=1` to include measurements with the existing output.
-Legacy `GLOB2_ECON`, `GLOB2_TL` and `GLOB2_FINAL` formats are unchanged.
+`GLOB2_TL` and `GLOB2_FINAL` are unchanged. `GLOB2_ECON` gained `hospital`,
+`racetrack` and `pool` counts, so every building type is now traced: it
+previously reported only swarm, inn, school, barracks and tower, which made
+hospitals — the one building whose job is absorbing damage — invisible when
+comparing how two AIs survive losses.
 
 ```
 GLOB2_MEASURE team=0 tick=512 coverage_start=0 final=0 births_0=... deaths_0_0=... stock_1=... ...
@@ -143,3 +147,28 @@ cannot have the same aggregate checksum as a format-107 save. CI runs the
 same check on Linux and Windows (with `.exe` on Windows).
 Actual results and platform/performance coverage are recorded with the change's
 validation artifacts; CI compilation alone is not deterministic execution proof.
+
+### Worker activity and defence diagnostics
+
+The same switch emits `GLOB2_LABOUR` and `GLOB2_DEFENCE` at measurement
+boundaries. These local counters are neither saved nor included in checksums;
+they restart on load. They are not part of the structured AI telemetry schema.
+
+Labour counters are cumulative worker-ticks: `b0` is idle; `b1..3` are eating
+(walking, inside, no inn); `b4..6` are healing (walking, inside, no hospital);
+`b7..8` are training (walking, inside). `b9..24` group swarm, inn, construction
+and other carrying jobs, each with four phases: walking to a resource,
+harvesting, carrying back, other. `b25` is flags, `b26` other activity and `b27`
+the total. `hdN/hnN` and `ed/en` give distance sums/sample counts for harvesting
+and walking to eat. Differences between consecutive samples yield interval use.
+
+`cdpT_P` counts combat deaths by unit type and place (home, away, field), and
+`cdjT_J` by attachment (none, war flag, clearing flag, exploration flag, other).
+Defence samples report warrior positions, combined training levels, injured and
+flagged units, nearby hostile warriors, hospital use and towers. Place labels
+use wrapped proximity to buildings, not strategic ownership of terrain.
+
+Build `scons release=1 server=0 worker-telemetry-test`, then run
+`build/src/WorkerTelemetryTest` and, with `GLOB2_TEAM_TIMELINE` unset,
+`build/src/WorkerTelemetryTest --disabled`. The fixture checks classification,
+exclusive totals, combat attribution and unchanged simulation checksums.

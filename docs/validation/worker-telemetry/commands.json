@@ -1,0 +1,73 @@
+[
+  {
+    "name": "initial",
+    "command": [
+      "/Users/bradley/glob2-pr-help-3-prs/telemetry/build/src/glob2",
+      "--run-game",
+      "--generator",
+      "15",
+      "--map-seed",
+      "42",
+      "--param",
+      "teams=2",
+      "--param",
+      "width=6",
+      "--param",
+      "height=6",
+      "--game-seed",
+      "731",
+      "--player",
+      "cabino",
+      "--player",
+      "cabino",
+      "--ticks",
+      "1",
+      "--save",
+      "initial",
+      "--output-dir",
+      "/Users/bradley/glob2-pr-help-3-prs/telemetry/artifacts/review/exports/initial"
+    ],
+    "environment": {},
+    "exit_code": 0
+  },
+  {
+    "name": "off",
+    "command": [
+      "/Users/bradley/glob2-pr-help-3-prs/telemetry/build/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/Users/bradley/glob2-pr-help-3-prs/telemetry/artifacts/review/exports/initial/initial.game",
+      "--ticks",
+      "3000",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--output-dir",
+      "/Users/bradley/glob2-pr-help-3-prs/telemetry/artifacts/review/exports/off"
+    ],
+    "environment": {},
+    "exit_code": 0
+  },
+  {
+    "name": "on",
+    "command": [
+      "/Users/bradley/glob2-pr-help-3-prs/telemetry/build/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/Users/bradley/glob2-pr-help-3-prs/telemetry/artifacts/review/exports/initial/initial.game",
+      "--ticks",
+      "3000",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--telemetry",
+      "team-timeline",
+      "--output-dir",
+      "/Users/bradley/glob2-pr-help-3-prs/telemetry/artifacts/review/exports/on"
+    ],
+    "environment": {},
+    "exit_code": 0
+  }
+]
