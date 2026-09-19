@@ -36,8 +36,9 @@
   },
   "retest-101727.log": {
     "original": "verified/release/retest-101727.log",
-    "uncompressed_sha256": "ecbb6e3f177fc783892528ba834576a94b01bbeb23ed2bfeaf4109cd581d4820",
-    "uncompressed_bytes": 124
+    "uncompressed_sha256": "3f5acb4ec2a4a374dc4412b8b8b77c2fc2cffd6b3e7423da02794ce31fe43baf",
+    "uncompressed_bytes": 123,
+    "normalization": "trailing whitespace removed"
   },
   "timings.json": {
     "original": "verified/release/timings.json",
