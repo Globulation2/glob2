@@ -65,7 +65,7 @@ The addition is optional: existing generators and core simulation are unchanged,
 
 ## Evidence and reproduction
 
-[Downloadable maps, saves, logs, request matrices and manifest](https://github.com/Globulation2/glob2/tree/d649de8de38a557791c5e50689019c422cfa729e). The evidence commit is separate from implementation history and includes final maps/requests, all final sweep rows and retry records, final game and conversion saves, earlier rotation logs/results, and per-file hashes. Some bulky earlier final saves are omitted; final candidate and rotation 3 saves are retained. Start with `country-update/README.md` inside the archive.
+[Downloadable maps, saves, logs, request matrices and manifest](https://github.com/Globulation2/glob2/tree/8802f37da1030c47abb6da1981fd994363814438). The evidence commit is separate from implementation history and includes final maps/requests, all final sweep rows and retry records, final game and conversion saves, earlier rotation logs/results, and per-file hashes. Some bulky earlier final saves are omitted; final candidate and rotation 3 saves are retained. Start with `country-update/README.md` inside the archive.
 
 ```sh
 scons release=1 server=0 -j8 build/src/glob2 orchard-conversion-test map-generator-defaults-test map-generator-golden-test
