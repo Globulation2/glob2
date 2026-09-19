@@ -1181,9 +1181,11 @@ inline void equilibriumContracts()
 	}
 	// The water is a budget the search arranges rather than invents: more of it asked for is more of
 	// it on the finished map, every time. The painted share is below the requested one because the
-	// beaches take a tile from each bank, so this is an ordering, not an identity.
+	// beaches take a tile from each bank, so this is an ordering, not an identity. The top of the
+	// range is 40: past that the map drowns - a fifth of seeds at 60 had a colony with no wood in
+	// reach or too little ground to build on - so the control stops where the map still is one.
 	int previous = -1;
-	for (int share : {0, 10, 30, 60})
+	for (int share : {0, 10, 25, 40})
 	{
 		D r = make(8, 8, 4, 23);
 		r.options["water-share"] = share;
