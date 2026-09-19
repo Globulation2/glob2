@@ -22,8 +22,10 @@
 #include "AIMaximaRuntime.h"
 #include "AIMaximaDefense.h"
 #include "AIMaximaFarming.h"
+#include "AIMaximaFruit.h"
 #include "AIMaximaPlacement.h"
 #include "AIMaximaRecon.h"
+#include "AIMaximaForceModel.h"
 #include "AIMaximaLabour.h"
 #include "AIMaximaStaffingControl.h"
 #include "AIMaximaStrategy.h"
@@ -533,11 +535,15 @@ private:
 	PolicyBid policy_bids[PolicyCount];
 	OpponentAssessment opponents[Team::MAX_COUNT];
 	Recon::Program reconnaissance;
+	std::map<int, ForceModel::State> force_beliefs;
+	void apply_force_beliefs();
 	int last_recon_mission_tick;
 	bool reconnaissance_suspended;
 	CampaignPlan campaign;
 	Tactics::Program tactics;
 	Tactics::Mission tactical_mission;
+	std::vector<Tactics::Wave> offense_waves;
+	bool control_offense_waves(AIMaximaRuntime::Context& echo);
 	OffenseDiagnostics offense_diagnostics;
 	std::vector<ClearedEnemySite> cleared_enemy_sites;
 	// Runtime startup latch; saves before version 95 recheck workers and food.
@@ -855,9 +861,9 @@ private:
 	bool preemptive_defense_pending;
 	bool reactive_defense_pending;
 
-	///This function puts exploration flags on fruit trees once the fruit phase
-	///has been activated.
+	///Maintain explorer vision for reachable fruit varieties at completed inns.
 	void update_fruit_flags(AIMaximaRuntime::Context& echo);
+	AIMaximaFruit::Field collect_fruit_field(AIMaximaRuntime::Context& echo) const;
 	///This function updates the alliances with opponents once the fruit phase
 	///has been activated.
 	void update_fruit_alliances(AIMaximaRuntime::Context& echo);

@@ -1,0 +1,1766 @@
+[
+  {
+    "size": 256,
+    "teams": 4,
+    "seed": 1,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.45267912501003593,
+        "stdout": "gauntlet revision 1 seed 1 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.39930004195775837,
+        "stdout": "gauntlet revision 1 seed 1 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "fc78008e63fa372fabc3b2ad443cdfd684ec4a3d6e1e9e7e1d741b9093e395b7",
+      "after": "fc78008e63fa372fabc3b2ad443cdfd684ec4a3d6e1e9e7e1d741b9093e395b7"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "seed": 2,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.5284048339817673,
+        "stdout": "gauntlet revision 1 seed 2 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.3810493750497699,
+        "stdout": "gauntlet revision 1 seed 2 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "f3a5f9c16aa19abf400ee683d5e831600f292e93178876288b0359a63a747b84",
+      "after": "f3a5f9c16aa19abf400ee683d5e831600f292e93178876288b0359a63a747b84"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "seed": 3,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.3021635829936713,
+        "stdout": "gauntlet revision 1 seed 3 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.3970972920069471,
+        "stdout": "gauntlet revision 1 seed 3 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "8836b9737dc05cf4591a672a0325f07239b916ef8951dc4b54330d33ebc8e0ca",
+      "after": "8836b9737dc05cf4591a672a0325f07239b916ef8951dc4b54330d33ebc8e0ca"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "seed": 4,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.4118874160340056,
+        "stdout": "gauntlet revision 1 seed 4 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.29457237501628697,
+        "stdout": "gauntlet revision 1 seed 4 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "fb32e960535f47a0984c43cc09a6b0f160811808e58c9d087003d1c22fbe16ef",
+      "after": "fb32e960535f47a0984c43cc09a6b0f160811808e58c9d087003d1c22fbe16ef"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "seed": 5,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.3686155410250649,
+        "stdout": "gauntlet revision 1 seed 5 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.3633780420059338,
+        "stdout": "gauntlet revision 1 seed 5 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "ae405f463b674a6d964b73c9217a50f8fef3d34e11fae4054532206eca44b00f",
+      "after": "ae405f463b674a6d964b73c9217a50f8fef3d34e11fae4054532206eca44b00f"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "seed": 6,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.28534254198893905,
+        "stdout": "gauntlet revision 1 seed 6 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.21754533296916634,
+        "stdout": "gauntlet revision 1 seed 6 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "9db58f4f945652e3dc6daa7edfc7927af2687696c49d1553b8f9e35a9acb6348",
+      "after": "9db58f4f945652e3dc6daa7edfc7927af2687696c49d1553b8f9e35a9acb6348"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "seed": 7,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.3065341670298949,
+        "stdout": "gauntlet revision 1 seed 7 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.22916049999184906,
+        "stdout": "gauntlet revision 1 seed 7 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "f0f9fdbf873bfc9465f0571b6f36fb2a5b036936f0c39e35e559a63e8b7b9f92",
+      "after": "f0f9fdbf873bfc9465f0571b6f36fb2a5b036936f0c39e35e559a63e8b7b9f92"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "seed": 8,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.28091741690877825,
+        "stdout": "gauntlet revision 1 seed 8 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.3545296249212697,
+        "stdout": "gauntlet revision 1 seed 8 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "6513d3a0cc51457e1b6112c2f7430bd5af05f63e934d66120ed74033c49c3b70",
+      "after": "6513d3a0cc51457e1b6112c2f7430bd5af05f63e934d66120ed74033c49c3b70"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "seed": 9,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.5084624999435619,
+        "stdout": "gauntlet revision 1 seed 9 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.4400227089645341,
+        "stdout": "gauntlet revision 1 seed 9 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "143dbc3a196718e93eb1be00261ac132820f21887195d5fc259af419da0e16e4",
+      "after": "143dbc3a196718e93eb1be00261ac132820f21887195d5fc259af419da0e16e4"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "seed": 10,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.36180633294861764,
+        "stdout": "gauntlet revision 1 seed 10 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.3961418329272419,
+        "stdout": "gauntlet revision 1 seed 10 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "5b24babe1d44942acc02c57fbe4d079b00bc4b08f08656727395125d118bade0",
+      "after": "5b24babe1d44942acc02c57fbe4d079b00bc4b08f08656727395125d118bade0"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "seed": 11,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.33181445801164955,
+        "stdout": "gauntlet revision 1 seed 11 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.2720457080285996,
+        "stdout": "gauntlet revision 1 seed 11 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "56395d049cab95d25c8b3ef03734458d1f95c0226eac94186a8c064cc05087c0",
+      "after": "56395d049cab95d25c8b3ef03734458d1f95c0226eac94186a8c064cc05087c0"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 4,
+    "seed": 12,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.4205818339250982,
+        "stdout": "gauntlet revision 1 seed 12 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.2717284579994157,
+        "stdout": "gauntlet revision 1 seed 12 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "94ce52d85df0c7f66617a537b7a6296136c33cfedbfeb7bc7899c3b0897ecf57",
+      "after": "94ce52d85df0c7f66617a537b7a6296136c33cfedbfeb7bc7899c3b0897ecf57"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 8,
+    "seed": 1,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.7393287080340087,
+        "stdout": "gauntlet revision 1 seed 1 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.5473496669437736,
+        "stdout": "gauntlet revision 1 seed 1 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "ccb2aa785151f583c694e5dfbd5c2ca093d5e04f4ec2ead83145a85611454124",
+      "after": "ccb2aa785151f583c694e5dfbd5c2ca093d5e04f4ec2ead83145a85611454124"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 8,
+    "seed": 2,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.4640715420246124,
+        "stdout": "gauntlet revision 1 seed 2 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.5195246250368655,
+        "stdout": "gauntlet revision 1 seed 2 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "ebe72ee2d77e966c7804f4ed3587bf85fdc3c69120a0e2b659fda9743c10eb72",
+      "after": "ebe72ee2d77e966c7804f4ed3587bf85fdc3c69120a0e2b659fda9743c10eb72"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 8,
+    "seed": 3,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.5858005830086768,
+        "stdout": "gauntlet revision 1 seed 3 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.5147497090511024,
+        "stdout": "gauntlet revision 1 seed 3 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "0858dc106aa67d939399d4c9f9d90ba250ed4c164e7fea326c9db0f1eb8f2bb7",
+      "after": "0858dc106aa67d939399d4c9f9d90ba250ed4c164e7fea326c9db0f1eb8f2bb7"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 8,
+    "seed": 4,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.5586827090010047,
+        "stdout": "gauntlet revision 1 seed 4 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.5069389579584822,
+        "stdout": "gauntlet revision 1 seed 4 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "e7b68e82620b6563e2f4652c000586498e955a88288ef5b1aa77eea3611141fa",
+      "after": "e7b68e82620b6563e2f4652c000586498e955a88288ef5b1aa77eea3611141fa"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 8,
+    "seed": 5,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.5700972499325871,
+        "stdout": "gauntlet revision 1 seed 5 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.5959912920370698,
+        "stdout": "gauntlet revision 1 seed 5 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "5f7805c29829ac20a29ba6e1ec33c29b53aad0f475ca6a253c0b98552bca7c31",
+      "after": "5f7805c29829ac20a29ba6e1ec33c29b53aad0f475ca6a253c0b98552bca7c31"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 8,
+    "seed": 6,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.6917771669104695,
+        "stdout": "gauntlet revision 1 seed 6 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.5833717910572886,
+        "stdout": "gauntlet revision 1 seed 6 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "b2533754051a5493c4db93183ddf74ab129b614db95f1cf7f95d3c7801ac862c",
+      "after": "b2533754051a5493c4db93183ddf74ab129b614db95f1cf7f95d3c7801ac862c"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 8,
+    "seed": 7,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.5649922080338001,
+        "stdout": "gauntlet revision 1 seed 7 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.4363300839904696,
+        "stdout": "gauntlet revision 1 seed 7 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "b185f17a4111626b4c05d632b62b9a126e2bbcd9e47163db4dc716c93d8263df",
+      "after": "b185f17a4111626b4c05d632b62b9a126e2bbcd9e47163db4dc716c93d8263df"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 8,
+    "seed": 8,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.4350306249689311,
+        "stdout": "gauntlet revision 1 seed 8 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.5371507089585066,
+        "stdout": "gauntlet revision 1 seed 8 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "74bef803ca5ab2206177f7fe1204b7e6914fd4bd2a9bc8b03e6b9d359cc07253",
+      "after": "74bef803ca5ab2206177f7fe1204b7e6914fd4bd2a9bc8b03e6b9d359cc07253"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 8,
+    "seed": 9,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.522330416017212,
+        "stdout": "gauntlet revision 1 seed 9 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.5198511250782758,
+        "stdout": "gauntlet revision 1 seed 9 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "96bdd69175f4d88d2ae4336f7ec8ea0049a17dc506bc3adbf38fac9a242767c5",
+      "after": "96bdd69175f4d88d2ae4336f7ec8ea0049a17dc506bc3adbf38fac9a242767c5"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 8,
+    "seed": 10,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.6113983750110492,
+        "stdout": "gauntlet revision 1 seed 10 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.5608772919513285,
+        "stdout": "gauntlet revision 1 seed 10 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "65a0af48fd08316258b7c21a8fd3c4b4c663e804e4002cb6372ccdf8c8562c56",
+      "after": "65a0af48fd08316258b7c21a8fd3c4b4c663e804e4002cb6372ccdf8c8562c56"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 8,
+    "seed": 11,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.49764795799274,
+        "stdout": "gauntlet revision 1 seed 11 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.5855518749449402,
+        "stdout": "gauntlet revision 1 seed 11 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "5d2aa2940c687ce0bac2e6fe77a03d72e8b7361f5ecea705aca0eb51705ff69f",
+      "after": "5d2aa2940c687ce0bac2e6fe77a03d72e8b7361f5ecea705aca0eb51705ff69f"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 8,
+    "seed": 12,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 0.6082485420629382,
+        "stdout": "gauntlet revision 1 seed 12 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 0.547649666084908,
+        "stdout": "gauntlet revision 1 seed 12 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "05f34abcbbac83d8930983ae874136c8d67a5c0be61e4977112b6f482467ae8c",
+      "after": "05f34abcbbac83d8930983ae874136c8d67a5c0be61e4977112b6f482467ae8c"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 12,
+    "seed": 1,
+    "runs": {
+      "before": {
+        "exit": 1,
+        "seconds": 0.03192483400925994,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 1 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      },
+      "after": {
+        "exit": 1,
+        "seconds": 0.03784366603940725,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 1 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {},
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 12,
+    "seed": 2,
+    "runs": {
+      "before": {
+        "exit": 1,
+        "seconds": 0.03676283301319927,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 2 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      },
+      "after": {
+        "exit": 1,
+        "seconds": 0.03689300001133233,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 2 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {},
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 12,
+    "seed": 3,
+    "runs": {
+      "before": {
+        "exit": 1,
+        "seconds": 0.03819849994033575,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 3 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      },
+      "after": {
+        "exit": 1,
+        "seconds": 0.03409262502100319,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 3 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {},
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 12,
+    "seed": 4,
+    "runs": {
+      "before": {
+        "exit": 1,
+        "seconds": 0.04385345906484872,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 4 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      },
+      "after": {
+        "exit": 1,
+        "seconds": 0.0331190419383347,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 4 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {},
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 12,
+    "seed": 5,
+    "runs": {
+      "before": {
+        "exit": 1,
+        "seconds": 0.03327520901802927,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 5 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      },
+      "after": {
+        "exit": 1,
+        "seconds": 0.03791170904878527,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 5 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {},
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 12,
+    "seed": 6,
+    "runs": {
+      "before": {
+        "exit": 1,
+        "seconds": 0.03155070904176682,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 6 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      },
+      "after": {
+        "exit": 1,
+        "seconds": 0.029509708052501082,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 6 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {},
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 12,
+    "seed": 7,
+    "runs": {
+      "before": {
+        "exit": 1,
+        "seconds": 0.036174000008031726,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 7 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      },
+      "after": {
+        "exit": 1,
+        "seconds": 0.027394833974540234,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 7 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {},
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 12,
+    "seed": 8,
+    "runs": {
+      "before": {
+        "exit": 1,
+        "seconds": 0.0388302089413628,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 8 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      },
+      "after": {
+        "exit": 1,
+        "seconds": 0.03582441702019423,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 8 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {},
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 12,
+    "seed": 9,
+    "runs": {
+      "before": {
+        "exit": 1,
+        "seconds": 0.030415041954256594,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 9 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      },
+      "after": {
+        "exit": 1,
+        "seconds": 0.034072167007252574,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 9 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {},
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 12,
+    "seed": 10,
+    "runs": {
+      "before": {
+        "exit": 1,
+        "seconds": 0.04143566603306681,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 10 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      },
+      "after": {
+        "exit": 1,
+        "seconds": 0.033316834014840424,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 10 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {},
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 12,
+    "seed": 11,
+    "runs": {
+      "before": {
+        "exit": 1,
+        "seconds": 0.03099504194688052,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 11 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      },
+      "after": {
+        "exit": 1,
+        "seconds": 0.03427408402785659,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 11 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {},
+    "maps_equal": true
+  },
+  {
+    "size": 256,
+    "teams": 12,
+    "seed": 12,
+    "runs": {
+      "before": {
+        "exit": 1,
+        "seconds": 0.033561083022505045,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 12 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      },
+      "after": {
+        "exit": 1,
+        "seconds": 0.031131832976825535,
+        "stdout": "Map report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": "Map command: gauntlet revision 1 seed 12 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.\n"
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {},
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 4,
+    "seed": 1,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 1.8019582090200856,
+        "stdout": "gauntlet revision 1 seed 1 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 1.6983748340280727,
+        "stdout": "gauntlet revision 1 seed 1 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "8f2fce250565f4ee8e54d2cc5925cb1587790323aa8f2390774ae3a25d86e2dd",
+      "after": "8f2fce250565f4ee8e54d2cc5925cb1587790323aa8f2390774ae3a25d86e2dd"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 4,
+    "seed": 2,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 1.7557850000448525,
+        "stdout": "gauntlet revision 1 seed 2 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 1.976404083892703,
+        "stdout": "gauntlet revision 1 seed 2 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "db2600f0fd48a2d9066f4268bd42d587bdfefb32e6cdc609d3f7907cbcae3634",
+      "after": "db2600f0fd48a2d9066f4268bd42d587bdfefb32e6cdc609d3f7907cbcae3634"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 4,
+    "seed": 3,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 1.75024770910386,
+        "stdout": "gauntlet revision 1 seed 3 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 1.6601381660439074,
+        "stdout": "gauntlet revision 1 seed 3 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "0faa3302a0a7cf95408f589bca5d8e3afb159e258655d7178a05f58041c5394b",
+      "after": "0faa3302a0a7cf95408f589bca5d8e3afb159e258655d7178a05f58041c5394b"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 4,
+    "seed": 4,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 1.6494757500477135,
+        "stdout": "gauntlet revision 1 seed 4 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 1.6075917910784483,
+        "stdout": "gauntlet revision 1 seed 4 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "8265fa7721ade3ef3630bb90127629151797f832f703b453920d2b115082e636",
+      "after": "8265fa7721ade3ef3630bb90127629151797f832f703b453920d2b115082e636"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 4,
+    "seed": 5,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 1.593940749997273,
+        "stdout": "gauntlet revision 1 seed 5 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 1.8672450830927119,
+        "stdout": "gauntlet revision 1 seed 5 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "1f19fee7c1cf54ab53ef2f207f58ba4715d06fdaa31700f5be05423847a3ee7c",
+      "after": "1f19fee7c1cf54ab53ef2f207f58ba4715d06fdaa31700f5be05423847a3ee7c"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 4,
+    "seed": 6,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 1.6259635410970077,
+        "stdout": "gauntlet revision 1 seed 6 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 1.6160323339281604,
+        "stdout": "gauntlet revision 1 seed 6 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "d3fd03bde63ab4db802d753b45026361387d3f8e4fa467c0a051da66224b2966",
+      "after": "d3fd03bde63ab4db802d753b45026361387d3f8e4fa467c0a051da66224b2966"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 4,
+    "seed": 7,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 1.7448820000281557,
+        "stdout": "gauntlet revision 1 seed 7 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 1.5541493749478832,
+        "stdout": "gauntlet revision 1 seed 7 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "c36c5f58cb7834d9472889c24cc077a68470fc6e7641cbc56ff185a1c2a90594",
+      "after": "c36c5f58cb7834d9472889c24cc077a68470fc6e7641cbc56ff185a1c2a90594"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 4,
+    "seed": 8,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 1.5470677920384333,
+        "stdout": "gauntlet revision 1 seed 8 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 1.566076457966119,
+        "stdout": "gauntlet revision 1 seed 8 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "842e0875e054b73dc8015e5f7772695f4db7710ad66c918b63e7c4f368f116b0",
+      "after": "842e0875e054b73dc8015e5f7772695f4db7710ad66c918b63e7c4f368f116b0"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 4,
+    "seed": 9,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 1.8804144579917192,
+        "stdout": "gauntlet revision 1 seed 9 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 1.984784375061281,
+        "stdout": "gauntlet revision 1 seed 9 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "44597dd5f4aa111f7f29b78b437db4cf2cef4e920cb62d82a64b4fa8ebfc681e",
+      "after": "44597dd5f4aa111f7f29b78b437db4cf2cef4e920cb62d82a64b4fa8ebfc681e"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 4,
+    "seed": 10,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 2.403512875083834,
+        "stdout": "gauntlet revision 1 seed 10 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 1.9385499999625608,
+        "stdout": "gauntlet revision 1 seed 10 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "3ddc663fdda3bfd1cd5b898ca7e4823e9940166e7b1bab4ad6bfcfb2608888b9",
+      "after": "3ddc663fdda3bfd1cd5b898ca7e4823e9940166e7b1bab4ad6bfcfb2608888b9"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 4,
+    "seed": 11,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 2.030646707979031,
+        "stdout": "gauntlet revision 1 seed 11 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 1.8941972079919651,
+        "stdout": "gauntlet revision 1 seed 11 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "f7bb89283aea59ecb3c7c8c7fdc90f871ea111f7412199384d516f822f42a117",
+      "after": "f7bb89283aea59ecb3c7c8c7fdc90f871ea111f7412199384d516f822f42a117"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 4,
+    "seed": 12,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 2.304954709019512,
+        "stdout": "gauntlet revision 1 seed 12 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 2.45330316608306,
+        "stdout": "gauntlet revision 1 seed 12 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "03021abfd37c0a7e325ae1fc786c0d336ef7ac9d0878755ee8436128444b5e20",
+      "after": "03021abfd37c0a7e325ae1fc786c0d336ef7ac9d0878755ee8436128444b5e20"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 8,
+    "seed": 1,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 3.2818967499770224,
+        "stdout": "gauntlet revision 1 seed 1 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 2.91762562491931,
+        "stdout": "gauntlet revision 1 seed 1 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "3447b26da3ed0beb886aa5559ce54e79877094247fca3d585f477af5da9187d2",
+      "after": "3447b26da3ed0beb886aa5559ce54e79877094247fca3d585f477af5da9187d2"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 8,
+    "seed": 2,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 3.3821344999596477,
+        "stdout": "gauntlet revision 1 seed 2 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 3.16815866692923,
+        "stdout": "gauntlet revision 1 seed 2 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "a039cfad46557ef0c9e534f9172ecc5446267ef7546824553186555a7d2b4ee9",
+      "after": "a039cfad46557ef0c9e534f9172ecc5446267ef7546824553186555a7d2b4ee9"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 8,
+    "seed": 3,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 3.333090625004843,
+        "stdout": "gauntlet revision 1 seed 3 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 3.105481541948393,
+        "stdout": "gauntlet revision 1 seed 3 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "1d5366f89923b265136d61bb28a480bdb16fa80c36bc3697631a5091de21b055",
+      "after": "1d5366f89923b265136d61bb28a480bdb16fa80c36bc3697631a5091de21b055"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 8,
+    "seed": 4,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 3.399204917019233,
+        "stdout": "gauntlet revision 1 seed 4 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 2.9673805839847773,
+        "stdout": "gauntlet revision 1 seed 4 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "3d407c46deced62043bfd688c99c96d8ad57bf590a665ac2a6298505cbe38231",
+      "after": "3d407c46deced62043bfd688c99c96d8ad57bf590a665ac2a6298505cbe38231"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 8,
+    "seed": 5,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 3.3153157079359517,
+        "stdout": "gauntlet revision 1 seed 5 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 3.181593000073917,
+        "stdout": "gauntlet revision 1 seed 5 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "ff604dc1dc055f3546c9bbc1281eb3c000958765ed7019307bbeec4352dca0e5",
+      "after": "ff604dc1dc055f3546c9bbc1281eb3c000958765ed7019307bbeec4352dca0e5"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 8,
+    "seed": 6,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 3.6371658330317587,
+        "stdout": "gauntlet revision 1 seed 6 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 3.6261268330272287,
+        "stdout": "gauntlet revision 1 seed 6 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "5f90b2d8ca66a41d82f4819d2952b34300146048357a5e33111cd8a4b5aedbca",
+      "after": "5f90b2d8ca66a41d82f4819d2952b34300146048357a5e33111cd8a4b5aedbca"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 8,
+    "seed": 7,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 4.015286915935576,
+        "stdout": "gauntlet revision 1 seed 7 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 3.5040978339966387,
+        "stdout": "gauntlet revision 1 seed 7 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "dfffc1aa304989c424db44de75439fa3d57cc39256a1c8bce84a684ee191730b",
+      "after": "dfffc1aa304989c424db44de75439fa3d57cc39256a1c8bce84a684ee191730b"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 8,
+    "seed": 8,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 5.299298292025924,
+        "stdout": "gauntlet revision 1 seed 8 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 5.350654916954227,
+        "stdout": "gauntlet revision 1 seed 8 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "2c12fb40d2f1ad931da99497921d88aba85948a737b9b5b150c021f3f7648e7f",
+      "after": "2c12fb40d2f1ad931da99497921d88aba85948a737b9b5b150c021f3f7648e7f"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 8,
+    "seed": 9,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 5.46795491699595,
+        "stdout": "gauntlet revision 1 seed 9 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 4.471927542006597,
+        "stdout": "gauntlet revision 1 seed 9 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "b53e81a4b3891cf5cfa4628b48fb771a678564376e10c9fab38f722b4b5011fa",
+      "after": "b53e81a4b3891cf5cfa4628b48fb771a678564376e10c9fab38f722b4b5011fa"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 8,
+    "seed": 10,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 4.941064957994968,
+        "stdout": "gauntlet revision 1 seed 10 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 4.4477958750212565,
+        "stdout": "gauntlet revision 1 seed 10 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "146efcd8953b4689990ee6b013f779be37803f70447d577a40a60f7036aff620",
+      "after": "146efcd8953b4689990ee6b013f779be37803f70447d577a40a60f7036aff620"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 8,
+    "seed": 11,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 4.770028957980685,
+        "stdout": "gauntlet revision 1 seed 11 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 4.280075415968895,
+        "stdout": "gauntlet revision 1 seed 11 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "75a5147669cd2edf0418bceeddbc62d76869b03e640d24fea080b39775afa3ec",
+      "after": "75a5147669cd2edf0418bceeddbc62d76869b03e640d24fea080b39775afa3ec"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 8,
+    "seed": 12,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 4.2852104579797015,
+        "stdout": "gauntlet revision 1 seed 12 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 3.9442250420106575,
+        "stdout": "gauntlet revision 1 seed 12 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "a3117bd662a661200e3fce2b9437ac1cb1ffb60482c463f686cbe7a5290dc2e6",
+      "after": "a3117bd662a661200e3fce2b9437ac1cb1ffb60482c463f686cbe7a5290dc2e6"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 12,
+    "seed": 1,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 5.902359750005417,
+        "stdout": "gauntlet revision 1 seed 1 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 5.604767916025594,
+        "stdout": "gauntlet revision 1 seed 1 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "8c1fcd011afa6f86f77ec53468ada0de434cd17db302ae5db5c4b7511307bc50",
+      "after": "8c1fcd011afa6f86f77ec53468ada0de434cd17db302ae5db5c4b7511307bc50"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 12,
+    "seed": 2,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 6.237256541964598,
+        "stdout": "gauntlet revision 1 seed 2 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 5.597630874952301,
+        "stdout": "gauntlet revision 1 seed 2 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "d46a46210a5b9f9c49f36da9695dfbb70ea5fce5483190ab175b04d2618c7477",
+      "after": "d46a46210a5b9f9c49f36da9695dfbb70ea5fce5483190ab175b04d2618c7477"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 12,
+    "seed": 3,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 6.252779667032883,
+        "stdout": "gauntlet revision 1 seed 3 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 5.837336124968715,
+        "stdout": "gauntlet revision 1 seed 3 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "2278b5b5b5951301cb382e0330ebc76e781813d93a2f4673153e0d3e5fe428d7",
+      "after": "2278b5b5b5951301cb382e0330ebc76e781813d93a2f4673153e0d3e5fe428d7"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 12,
+    "seed": 4,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 5.716036041965708,
+        "stdout": "gauntlet revision 1 seed 4 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 5.073003083001822,
+        "stdout": "gauntlet revision 1 seed 4 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "3dea42012edcfffe5e73075b20a433aadd708c186fb4585a2746006a509eb161",
+      "after": "3dea42012edcfffe5e73075b20a433aadd708c186fb4585a2746006a509eb161"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 12,
+    "seed": 5,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 5.321256416034885,
+        "stdout": "gauntlet revision 1 seed 5 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 4.767281417036429,
+        "stdout": "gauntlet revision 1 seed 5 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "b7b3800388fb10bba0041af503f05dc2231c431c37efe7e5630e47ad2885ef5d",
+      "after": "b7b3800388fb10bba0041af503f05dc2231c431c37efe7e5630e47ad2885ef5d"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 12,
+    "seed": 6,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 5.416471416945569,
+        "stdout": "gauntlet revision 1 seed 6 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 5.425630333949812,
+        "stdout": "gauntlet revision 1 seed 6 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "b651878b862702002209940dbaf94ab06f013a18320639cd23c100567de70649",
+      "after": "b651878b862702002209940dbaf94ab06f013a18320639cd23c100567de70649"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 12,
+    "seed": 7,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 5.350874374969862,
+        "stdout": "gauntlet revision 1 seed 7 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 4.921086625079624,
+        "stdout": "gauntlet revision 1 seed 7 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "adc96fdc4724b9460fb13a5ccacff7e77e2fae10bf14262174eb98579311986e",
+      "after": "adc96fdc4724b9460fb13a5ccacff7e77e2fae10bf14262174eb98579311986e"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 12,
+    "seed": 8,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 4.705567415920086,
+        "stdout": "gauntlet revision 1 seed 8 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 4.435959791066125,
+        "stdout": "gauntlet revision 1 seed 8 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "78c1cbf43dbc8c886779d939fdeaec723f43c356d6deace52645f11a899aa740",
+      "after": "78c1cbf43dbc8c886779d939fdeaec723f43c356d6deace52645f11a899aa740"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 12,
+    "seed": 9,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 4.898773167049512,
+        "stdout": "gauntlet revision 1 seed 9 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 5.09483541699592,
+        "stdout": "gauntlet revision 1 seed 9 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "048747e448a944f4284e566b6d53bd218725946c350880dd2478022dbdea4d6d",
+      "after": "048747e448a944f4284e566b6d53bd218725946c350880dd2478022dbdea4d6d"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 12,
+    "seed": 10,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 5.956589291919954,
+        "stdout": "gauntlet revision 1 seed 10 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 5.054725999943912,
+        "stdout": "gauntlet revision 1 seed 10 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "a69fbcd90d69a978f45cb84b580192dddbd7cd14ab1d0e7fcec84ae5bc0e565e",
+      "after": "a69fbcd90d69a978f45cb84b580192dddbd7cd14ab1d0e7fcec84ae5bc0e565e"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 12,
+    "seed": 11,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 4.687716000014916,
+        "stdout": "gauntlet revision 1 seed 11 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 4.250434625078924,
+        "stdout": "gauntlet revision 1 seed 11 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "264770ebff89e63fb51e688b49afbed9581b70c76767921f04778eded17e65d4",
+      "after": "264770ebff89e63fb51e688b49afbed9581b70c76767921f04778eded17e65d4"
+    },
+    "maps_equal": true
+  },
+  {
+    "size": 512,
+    "teams": 12,
+    "seed": 12,
+    "runs": {
+      "before": {
+        "exit": 0,
+        "seconds": 5.105463292100467,
+        "stdout": "gauntlet revision 1 seed 12 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      },
+      "after": {
+        "exit": 0,
+        "seconds": 4.657529000076465,
+        "stdout": "gauntlet revision 1 seed 12 [complete]: \nMap report: /tmp/gauntlet-evidence/profile-comparison/current.json\n",
+        "stderr": ""
+      }
+    },
+    "reports_equal": true,
+    "map_hashes": {
+      "before": "27ff9c485217fe99129f767ecd782368f6e6006b873371398cd9f0c5c778bf7a",
+      "after": "27ff9c485217fe99129f767ecd782368f6e6006b873371398cd9f0c5c778bf7a"
+    },
+    "maps_equal": true
+  }
+]

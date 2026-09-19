@@ -2814,3 +2814,147 @@ Emoji
 Масив не вміщується на цій карті; використайте більшу карту або менше колоній.
 [The pond has no room for that much algae; use a bigger pond.]
 У ставку немає місця для такої кількості водоростей; використайте більший ставок.
+[Even Ground]
+Рівне поле
+[Balance]
+Баланс
+[Tight passes]
+Вузькі перешийки
+[Solver effort]
+Зусилля розв'язувача
+[Brief]
+Коротко
+[Patient]
+Терпляче
+[This map is too small to solve on; use a bigger map.]
+Ця карта замала для розв'язання; використайте більшу карту.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Забагато колоній, щоб їх зрівноважити на карті такого розміру; використайте більшу карту або менше колоній.
+[The colonies could not be spread out on this map.]
+Не вдалося розселити колонії на цій карті.
+[Marchland]
+Порубіжжя
+[Prizes on the rope]
+Нагороди на канаті
+[March width]
+Ширина порубіжжя
+[Levelling]
+Вирівнювання
+[A march needs a country on each side; use at least two colonies.]
+Порубіжжю потрібна країна з кожного боку; використайте щонайменше дві колонії.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Забагато колоній, щоб ця карта дала кожній батьківщину; використайте більшу карту або менше колоній.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+На цій карті немає місця, щоб розселити колонії; використайте більшу карту або менше колоній.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Батьківщина колонії не має виходу на порубіжжя; використайте більшу карту або вужче порубіжжя.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+На батьківщині колонії немає місця для рою; використайте більшу карту, менше колоній або вужче порубіжжя.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+На порубіжжі замало спірної землі для такої кількості нагород; використайте менше нагород, ширше порубіжжя або більшу карту.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+На порубіжжі немає місця для нагороди; використайте більшу карту, менше колоній або ширше порубіжжя.
+[Orchard Commons]
+Спільні сади
+[Orchard spacing]
+Відстань між садами
+[Compact]
+Близько
+[Balanced]
+Збалансована
+[Spread]
+Далеко
+[The Gauntlet]
+Арена випробувань
+[Partition thickness]
+Товщина розділових стін
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Арена випробувань потребує більшої карти або меншої кількості колоній, щоб біля кожної колонії вмістилися два захищені входи.
+[The Comb]
+Гребінець
+[Peninsulas per shore]
+Півостровів на кожному березі
+[Encircled Kingdom]
+Оточене королівство
+[Fortress plan]
+План фортеці
+[Automatic]
+Автоматично
+[Elongated enclosure]
+Видовжена фортеця
+[Bastioned enclosure]
+Бастіонна фортеця
+[Paired courtyards]
+Два подвір’я
+[Heartland farmland]
+Поля в центрі королівства
+[The Faulted City]
+Розколоте місто
+[Fault displacement]
+Зсув розломів
+[Fault width]
+Ширина розломів
+[Ruin density]
+Щільність руїн
+[Surviving junctions]
+Уцілілі перехрестя
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Для розколотого міста потрібно 256 або 512 клітинок на кожному боці та від однієї до дванадцяти колоній.
+[The city has too few usable junctions.]
+У місті замало придатних для проходу перехресть.
+[A city neighbourhood lacks reachable crops or building room.]
+Одному з районів міста бракує доступних посівів або місця для будівництва.
+[The city neighbourhoods are too unequal; try another seed.]
+Райони міста надто нерівноцінні; спробуйте інше зерно.
+[The fractured civic plaza did not survive.]
+Розколота міська площа не збереглася.
+[Who Ate the Map?]
+Хто з’їв карту?
+[Appetite]
+Апетит
+[A Little Nibble]
+Маленький шматочок
+[Hungry]
+Голодний
+[Portage Lakes]
+Озера й лісові волоки
+[Lake elongation]
+Витягнутість озер
+[Portage depth]
+Товщина лісового проходу
+[Extra trails]
+Додаткові стежки
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Сторони цієї карти мають бути від 64 до 512 клітинок.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+За цього початкового числа не вдається розмістити поселення біля берегів.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Біля кожного поселення не вміщаються відновлювані прибережні поля.
+[Portage Lakes cannot connect its shoreline trails.]
+Не вдається з’єднати прибережні стежки.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+За цього початкового числа не вдається створити корисний короткий шлях через сухий ліс.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+За цього початкового числа не вдається створити корисний короткий шлях уплав.
+[Portage Lakes needs separate swimming lakes on this seed.]
+За цього початкового числа озера для плавання мають залишатися відокремленими.
+[Drowned Forest]
+Затоплений ліс
+[Sandbar connections]
+Піщані переходи
+[Wooded neck thickness]
+Товщина лісових перешкод
+[Neutral clearing size]
+Розмір нейтральних галявин
+[Bastion Keys]
+Острови-бастіони
+[Plantation size]
+Розмір плантацій
+[Outlying islands]
+Зовнішні острови
+[The Hungry Marches]
+Голодне прикордоння
+[Opening ration]
+Початковий пайок
+[Central concentration]
+Зосередження в центрі

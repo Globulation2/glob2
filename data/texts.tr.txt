@@ -2826,3 +2826,147 @@ Gizli Vaha en fazla sekiz koloni alır.
 Kaya kütlesi bu haritaya sığmıyor; daha büyük bir harita veya daha az koloni kullanın.
 [The pond has no room for that much algae; use a bigger pond.]
 Gölette bu kadar yosun için yer yok; daha büyük bir gölet kullanın.
+[Even Ground]
+Eşit Zemin
+[Balance]
+Dengeleme
+[Tight passes]
+Dar geçitler
+[Solver effort]
+Çözücü çabası
+[Brief]
+Kısa
+[Patient]
+Sabırlı
+[This map is too small to solve on; use a bigger map.]
+Bu harita çözülmek için çok küçük; daha büyük bir harita kullanın.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Bu boyutta bir haritada dengelenemeyecek kadar çok koloni var; daha büyük bir harita veya daha az koloni kullanın.
+[The colonies could not be spread out on this map.]
+Koloniler bu haritaya yayılamadı.
+[Marchland]
+Sınır Bölgesi
+[Prizes on the rope]
+Halattaki ödüller
+[March width]
+Sınır bölgesi genişliği
+[Levelling]
+Eşitleme
+[A march needs a country on each side; use at least two colonies.]
+Bir sınır bölgesi her iki yanında bir ülke gerektirir; en az iki koloni kullanın.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Bu haritanın her birine bir anayurt verebilmesi için çok fazla koloni var; daha büyük bir harita veya daha az koloni kullanın.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Bu haritada kolonileri yaymak için yer yok; daha büyük bir harita veya daha az koloni kullanın.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Bir koloninin anayurdunun sınır bölgesine çıkışı yok; daha büyük bir harita veya daha dar bir sınır bölgesi kullanın.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Bir koloninin anayurdunda yuva için yer yok; daha büyük bir harita, daha az koloni veya daha dar bir sınır bölgesi kullanın.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Sınır bölgesinde bu kadar ödül için çok az çekişmeli alan var; daha az ödül, daha geniş bir sınır bölgesi veya daha büyük bir harita kullanın.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Sınır bölgesinde bir ödül için yer yok; daha büyük bir harita, daha az koloni veya daha geniş bir sınır bölgesi kullanın.
+[Orchard Commons]
+Ortak Meyve Bahçeleri
+[Orchard spacing]
+Meyve bahçeleri aralığı
+[Compact]
+Yakın
+[Balanced]
+Dengeli
+[Spread]
+Seyrek
+[The Gauntlet]
+Sınav arenası
+[Partition thickness]
+Bölme duvarı kalınlığı
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Sınav arenasında her koloniye iki korunan giriş sığdırmak için daha büyük bir harita veya daha az koloni gerekir.
+[The Comb]
+Tarak
+[Peninsulas per shore]
+Kıyı başına yarımada
+[Encircled Kingdom]
+Kuşatılmış Krallık
+[Fortress plan]
+Kale planı
+[Automatic]
+Otomatik
+[Elongated enclosure]
+Uzun sur çevresi
+[Bastioned enclosure]
+Tabyalı sur çevresi
+[Paired courtyards]
+İkiz avlular
+[Heartland farmland]
+Merkezdeki tarım arazisi
+[The Faulted City]
+Kırılmış Şehir
+[Fault displacement]
+Fay yer değiştirmesi
+[Fault width]
+Fay genişliği
+[Ruin density]
+Harabe yoğunluğu
+[Surviving junctions]
+Korunan kavşaklar
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Kırılmış Şehir, her kenarda 256 veya 512 kare ve bir ila on iki koloni gerektirir.
+[The city has too few usable junctions.]
+Şehirde kullanılabilir kavşak sayısı çok az.
+[A city neighbourhood lacks reachable crops or building room.]
+Şehrin bir mahallesinde erişilebilir ekin veya inşaat alanı eksik.
+[The city neighbourhoods are too unequal; try another seed.]
+Şehrin mahalleleri çok dengesiz; başka bir tohum deneyin.
+[The fractured civic plaza did not survive.]
+Kırılmış şehir meydanı korunamadı.
+[Who Ate the Map?]
+Haritayı kim yedi?
+[Appetite]
+İştah
+[A Little Nibble]
+Küçük bir ısırık
+[Hungry]
+Aç
+[Portage Lakes]
+Göller ve orman geçitleri
+[Lake elongation]
+Göl uzunluk oranı
+[Portage depth]
+Orman geçidi kalınlığı
+[Extra trails]
+Ek patikalar
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Bu haritanın kenarları 64 ile 512 kare arasında olmalıdır.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Bu tohumla kıyılara yerleşimler sığdırılamıyor.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Her yerleşimin yanına yenilenebilir kıyı tarlaları sığdırılamıyor.
+[Portage Lakes cannot connect its shoreline trails.]
+Kıyı patikaları birbirine bağlanamıyor.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Bu tohumla kuru ormandan geçen yararlı bir kestirme oluşturulamıyor.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Bu tohumla yüzerek kullanılabilecek yararlı bir kestirme oluşturulamıyor.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Bu tohumda yüzülebilen göllerin birbirinden ayrı kalması gerekir.
+[Drowned Forest]
+Sular altında kalan orman
+[Sandbar connections]
+Kum geçidi bağlantıları
+[Wooded neck thickness]
+Ağaç engellerinin kalınlığı
+[Neutral clearing size]
+Tarafsız açıklıkların boyutu
+[Bastion Keys]
+Burç Adacıkları
+[Plantation size]
+Plantasyon boyutu
+[Outlying islands]
+Dış adalar
+[The Hungry Marches]
+Aç Sınır Toprakları
+[Opening ration]
+Başlangıç erzağı
+[Central concentration]
+Merkezde yoğunlaşma

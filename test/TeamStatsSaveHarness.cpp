@@ -769,9 +769,9 @@ static void measurementAttributionFields()
 
 static void measurementReplayBoundaries()
 {
-	require(REPLAY_MINIMUM_VERSION_MINOR == 99 && NET_PROTOCOL_VERSION == 33 &&
-				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 33,
-			"diagnostic save fields preserve replay floor and network gates");
+	require(REPLAY_MINIMUM_VERSION_MINOR == 99 && NET_PROTOCOL_VERSION == 37 &&
+				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 37,
+			"current save format preserves replay floor and uses current network gates");
 	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, VERSION_MINOR, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;

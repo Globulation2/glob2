@@ -1,0 +1,40 @@
+{
+  "name": "constraint-solved-review",
+  "description": "Revision-2 smoke tournament: two seeds per generator, all four rotations, one engine seed per rotation. Checks playable games and parsing; too small to establish fairness.",
+  "generators": [
+    {
+      "method": 15
+    },
+    {
+      "method": 59
+    },
+    {
+      "method": 60
+    }
+  ],
+  "map_seeds": [
+    2001,
+    2002
+  ],
+  "games_per_rotation": 1,
+  "engine_seed_base": 1,
+  "rotations": "all",
+  "size": 128,
+  "colonies": 4,
+  "workers": null,
+  "controls": {},
+  "candidates": 5,
+  "ai": "nicowar",
+  "tick_cap": 90000,
+  "jobs": 3,
+  "game_timeout_seconds": 3600,
+  "keep_replays": false,
+  "timeline": true,
+  "verify_games": 2,
+  "bootstrap_draws": 4000,
+  "preset_file": "docs/map-generators/evidence/constraint-solved/review/preset.json",
+  "width": 128,
+  "height": 128,
+  "rotation_count": 4,
+  "git_revision": "c3cf78569c376806383cdbf81ca50b389f001555"
+}

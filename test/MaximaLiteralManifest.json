@@ -3,8 +3,8 @@
   "algorithm": "sorted-comment-string-stripped-numeric-token-sha256",
   "sources": {
     "src/AIMaxima.cpp": {
-      "tokens": 1822,
-      "sha256": "08bd0d7008a0115deee2ca73b8cb96137d94dd7da5217d2213c135009de1701a",
+      "tokens": 1882,
+      "sha256": "7103860f42f336aa057698f7fbc39245a3bc73f2763e5029ae6bd6db97bdd236",
       "classifications": [
         "live selection authorization, swimming-builder counts, and shared reactive-defense reserve",
         "schema-backed strategy member use",
@@ -45,6 +45,11 @@
         "swimming is worth training only where water separates the colony from something it could use",
         "idle labour opening further construction sites, and the ceiling on one site's crew",
         "version 109 labour continuation gate and active flag zero-based recruitment level",
+        "opt-in reconnaissance audit labels, four combat levels, shadow observations and shared target-ranking result fields",
+        "opt-in reconnaissance staffing samples and wrapped flag-footprint diagnostics",
+        "raid reward bounded by the flag footprint and read-only offensive occupancy/outcome audit",
+        "reachable fruit collection, completed building vision, and explorer mission reconciliation",
+        "fog-only fitted force observations and version-gated belief persistence",
         "spare-labour fortification: one fallback tower intent, capped at the existing twelve construction workers",
         "hospital bed rounding and single accounting of committed capacity"
       ]
@@ -138,8 +143,8 @@
       ]
     },
     "src/AIMaximaTactics.cpp": {
-      "tokens": 50,
-      "sha256": "0926bec4a52ccaef82923cbc4cf503193ae290eee2b5b73a661edb322d04d812",
+      "tokens": 58,
+      "sha256": "8ebe22d85a86f0b8c60e80532330ca8dee1083ba6af9a2a8da3a7d599528f5a8",
       "classifications": [
         "recomputed raid defenders and scores after threat replacement",
         "schema-backed tactical rule defaults",
@@ -148,7 +153,8 @@
         "sentinel and invalid-id state",
         "fixed deterministic clustering and tie-breaking",
         "fog-safe siege target continuity classification",
-        "configurable proportional offensive muster without an absolute minimum override"
+        "configurable proportional offensive muster without an absolute minimum override",
+        "raid reward bounded by the flag footprint and read-only offensive occupancy/outcome audit"
       ]
     },
     "src/AIMaximaFoodLedger.cpp": {
@@ -158,6 +164,34 @@
         "engine fertility denominator and growth direction count",
         "micro-wheat rate scale and percentage scale",
         "reported coverage bound and quality scale"
+      ]
+    },
+    "src/AIMaximaFruit.h": {
+      "tokens": 44,
+      "sha256": "43e2c59fb06d88bcb1c4490e7a76aa4ed2dc08da37d78c281f492216e98bf625",
+      "classifications": [
+        "three distinct fruit varieties, bounded wrapped collection routes, stable row-major tie breaking, masks and missing-source sentinels"
+      ]
+    },
+    "src/AIMaximaForceModel.cpp": {
+      "tokens": 22,
+      "sha256": "25cd64cf254e8589755d2bcc8531034fafcc7e5d71860248059753f0bb4382b2",
+      "classifications": [
+        "frozen fitted model weights, feature layout, fixed-point scale and causal observation cadence"
+      ]
+    },
+    "src/AIMaximaForceModel.h": {
+      "tokens": 4,
+      "sha256": "91bc58f91ec32928d7d3747dbb03704310d8c18ff4a352b20c4a8b6d04958f7f",
+      "classifications": [
+        "frozen fitted model weights, feature layout, fixed-point scale and causal observation cadence"
+      ]
+    },
+    "src/AIMaximaForceModelData.inc": {
+      "tokens": 34409,
+      "sha256": "cf06fd8d9b82d913278ad3e342ae245eea4acf7c843313290ae5a5ff2bf1b749",
+      "classifications": [
+        "frozen fitted model weights, feature layout, fixed-point scale and causal observation cadence"
       ]
     }
   }

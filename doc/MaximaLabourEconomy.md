@@ -205,9 +205,13 @@ Implemented so far:
   backlog may hold two per seat and never less than the home guard.
 - **Barracks with the workforce.** The first barracks follows the first
   racetrack once fourteen workers can carry it, not a population mark.
-- **Hospitals.** One from the first barracks on, then one per eight warriors.
-- **Attack gate.** A new attack needs the configured minimum force and a quarter
-  more than the defenders the enemy is believed to have.
+- **Hospitals.** One shared target of 0.6 beds per warrior, rounded up, covers
+  new hospitals and upgrades. This replaces the former count rules; see the
+  [hospital ablation](../docs/validation/maxima-hospital-ratio/README.md).
+- **Attack gate.** A new attack needs the configured minimum force and enough
+  available combat power to match the fitted median enemy power. The
+  [force model](../docs/maxima-force-model.md) uses fog-visible observations and
+  their history; older saves retain their original attack-strength policy.
 - **Seats are the constraint.** While the backlog limit is holding warrior
   births and warriors are still wanted, another barracks is requested (up to
   three). Measured neutral so far.

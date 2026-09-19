@@ -1,0 +1,14 @@
+# even-ground: do the controls do what they say?
+
+ok   water-share    terrain%:water                             rho=+1.00 0:0.0 -> 40:40.2   more water asked for, more water
+ok   passes         tel:even-ground.shape.pass-width-cells     rho=-1.00 0:3.4 -> 100:1.9   tighter passes are narrower
+ok   balance        tel:even-ground.stock.spread-after         rho=-0.97 0:0.6 -> 100:0.0   balance evens the catchments
+ok   balance        tel:even-ground.stock.proposed             rho=+1.00 0:0.0 -> 100:19999.5   balance buys search
+ok   effort         tel:even-ground.shape.proposed             rho=+1.00 0:889.8 -> 2:5937.8   more effort is more proposals
+ok   effort         tel:even-ground.shape.cost-after           rho=-1.00 0:0.9 -> 2:0.3   more effort ends cheaper
+ok   wheat-amount   tiles:wheat                                rho=+1.00 0:41.0 -> 300:7501.2   the wheat slider moves wheat
+ok   wood-amount    tiles:wood                                 rho=+1.00 0:40.8 -> 300:5496.0   the wood slider moves wood
+ok   stone-amount   tiles:stone                                rho=+1.00 0:0.0 -> 300:944.0   the stone slider moves stone
+ok   algae-amount   tiles:algae                                rho=+1.00 0:0.0 -> 300:555.2   the algae slider moves algae
+
+ALL CLAIMS HOLD

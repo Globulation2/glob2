@@ -2818,3 +2818,147 @@ A Rejtett oázis legfeljebb nyolc kolóniát fogad be.
 A masszívum nem fér el ezen a térképen; használj nagyobb térképet vagy kevesebb kolóniát.
 [The pond has no room for that much algae; use a bigger pond.]
 A tavacskában nincs hely ennyi algának; használj nagyobb tavacskát.
+[Even Ground]
+Egyenlő terep
+[Balance]
+Kiegyensúlyozás
+[Tight passes]
+Szűk átjárók
+[Solver effort]
+Megoldó ráfordítása
+[Brief]
+Rövid
+[Patient]
+Türelmes
+[This map is too small to solve on; use a bigger map.]
+Ez a térkép túl kicsi a megoldáshoz; használj nagyobb térképet.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Túl sok kolónia ahhoz, hogy ekkora térképen kiegyensúlyozhatók legyenek; használj nagyobb térképet vagy kevesebb kolóniát.
+[The colonies could not be spread out on this map.]
+A kolóniákat nem sikerült elosztani ezen a térképen.
+[Marchland]
+Határvidék
+[Prizes on the rope]
+Díjak a kötélen
+[March width]
+A határvidék szélessége
+[Levelling]
+Kiegyenlítés
+[A march needs a country on each side; use at least two colonies.]
+A határvidékhez mindkét oldalon kell egy ország; használj legalább két kolóniát.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Túl sok kolónia ahhoz, hogy ez a térkép mindegyiknek hazát adjon; használj nagyobb térképet vagy kevesebb kolóniát.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Ezen a térképen nincs hely a kolóniák elosztására; használj nagyobb térképet vagy kevesebb kolóniát.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Egy kolónia hazájának nincs kijárata a határvidékre; használj nagyobb térképet vagy keskenyebb határvidéket.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Egy kolónia hazájában nincs hely rajnak; használj nagyobb térképet, kevesebb kolóniát vagy keskenyebb határvidéket.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+A határvidéken túl kevés a vitatott terület ennyi díjhoz; használj kevesebb díjat, szélesebb határvidéket vagy nagyobb térképet.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+A határvidéken nincs hely díjnak; használj nagyobb térképet, kevesebb kolóniát vagy szélesebb határvidéket.
+[Orchard Commons]
+Közös gyümölcsösök
+[Orchard spacing]
+Gyümölcsösök távolsága
+[Compact]
+Közeli
+[Balanced]
+Kiegyensúlyozott
+[Spread]
+Távoli
+[The Gauntlet]
+Próbák arénája
+[Partition thickness]
+Válaszfalak vastagsága
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+A Próbák arénájához nagyobb térkép vagy kevesebb kolónia kell, hogy minden kolóniának elférjen két őrzött bejárata.
+[The Comb]
+A Fésű
+[Peninsulas per shore]
+Félszigetek partonként
+[Encircled Kingdom]
+Körülzárt királyság
+[Fortress plan]
+Erőd alaprajza
+[Automatic]
+Automatikus
+[Elongated enclosure]
+Hosszúkás erőd
+[Bastioned enclosure]
+Bástyás erőd
+[Paired courtyards]
+Kettős udvar
+[Heartland farmland]
+Központi termőföld
+[The Faulted City]
+A szétszakadt város
+[Fault displacement]
+Vetődések eltolódása
+[Fault width]
+Vetődések szélessége
+[Ruin density]
+Romsűrűség
+[Surviving junctions]
+Megmaradt csomópontok
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+A szétszakadt városhoz oldalanként 256 vagy 512 mező és egy–tizenkét kolónia szükséges.
+[The city has too few usable junctions.]
+A városban túl kevés a használható csomópont.
+[A city neighbourhood lacks reachable crops or building room.]
+Egy városnegyedben nincs elérhető termény vagy elegendő hely az építkezéshez.
+[The city neighbourhoods are too unequal; try another seed.]
+A városnegyedek túl egyenlőtlenek; próbálj másik magot.
+[The fractured civic plaza did not survive.]
+A szétszakadt városi tér nem maradt fenn.
+[Who Ate the Map?]
+Ki ette meg a térképet?
+[Appetite]
+Étvágy
+[A Little Nibble]
+Egy kis harapás
+[Hungry]
+Éhes
+[Portage Lakes]
+Tavak és erdei átjárók
+[Lake elongation]
+Tavak nyújtottsága
+[Portage depth]
+Erdei átjáró vastagsága
+[Extra trails]
+További ösvények
+[Portage Lakes needs sides between 64 and 512 tiles.]
+A térkép oldalainak 64 és 512 mező közé kell esniük.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Ezzel a maggal nem helyezhetők telepek a partokra.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Nem férnek el megújuló parti földek minden telep mellett.
+[Portage Lakes cannot connect its shoreline trails.]
+A parti ösvények nem köthetők össze.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Ezzel a maggal nem alakítható ki hasznos rövidítés száraz erdőn át.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Ezzel a maggal nem alakítható ki hasznos úszó rövidítés.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Ezzel a maggal az úszásra szolgáló tavaknak különállónak kell maradniuk.
+[Drowned Forest]
+Elárasztott erdő
+[Sandbar connections]
+Homokpadi összeköttetések
+[Wooded neck thickness]
+Erdős akadályok vastagsága
+[Neutral clearing size]
+Semleges tisztások mérete
+[Bastion Keys]
+Bástyaszigetek
+[Plantation size]
+Ültetvény mérete
+[Outlying islands]
+Külső szigetek
+[The Hungry Marches]
+Az éhező határvidék
+[Opening ration]
+Kezdő élelemkészlet
+[Central concentration]
+Központi koncentráció

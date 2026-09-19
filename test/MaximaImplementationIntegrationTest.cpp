@@ -325,8 +325,8 @@ static void executionRegressions()
     c.orders.clear(); c.managementOrders.clear(); ai.attack_flags.clear();
     c.managementOrders.clear();
 
-    // Failed searches retry independently, while pending/successful fruit flags
-    // survive save/load without duplicate creation. No save format change needed.
+    // Legacy fruit missions retain their old retry behavior after loading.
+    ai.strategy.fruit.reachable_supply=false;
     ai.budget.fruit_active=true; ai.budget.fruit_units_per_flag=1;
     ai.budget.fruit_flag_radius=3;
     ai.update_fruit_flags(c);
@@ -368,6 +368,7 @@ static void executionRegressions()
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
     assert(loaded.context.load(&input,92));
+    loaded.strategy.fruit.reachable_supply=false;
     loaded.budget.fruit_active=true;
     loaded.update_fruit_flags(loaded.context);
     assert(loaded.context.buildingOrders.size()==2);
@@ -382,6 +383,119 @@ static void executionRegressions()
     std::cout << "execution handoff regressions passed\n";
 }
 
+
+static void fruitSupplyRoutes()
+{
+    using namespace AIMaximaFruit;
+    Field field;field.width=64;field.height=64;field.tiles.resize(4096);
+    for(auto& tile:field.tiles)tile.passable=true;
+    field.tiles[field.index(10,10)].passable=false;
+    field.build();
+    assert(field.assessBuilding(10,10,1,1).available==0);
+    auto& cherry=field.tiles[field.index(12,10)];
+    cherry.variety=0;cherry.passable=false;cherry.visible=true;
+    field.build();
+    auto one=field.assessBuilding(10,10,1,1);
+    assert(one.available==1 && one.collectable==1 && one.distance[0]==1);
+    field.tiles[field.index(13,10)]=cherry;field.build();
+    assert(field.assessBuilding(10,10,1,1).varietyCount==1);
+    field.tiles[field.index(10,12)].variety=1;field.build();
+    assert(field.assessBuilding(10,10,1,1).varietyCount==2);
+
+    Field island;island.width=64;island.height=64;island.tiles.resize(4096);
+    island.tiles[island.index(14,10)]=cherry;
+    island.tiles[island.index(11,10)].passable=true;
+    island.build();assert(island.assessBuilding(10,10,1,1).available==0);
+    // Opening a previously impassable route models newly available swimming.
+    for(int x=12;x<14;++x)island.tiles[island.index(x,10)].passable=true;
+    island.build();assert(island.assessBuilding(10,10,1,1).available==1);
+    auto& patch=island.tiles[island.index(14,10)];patch.buildingVision=true;
+    assert(island.assessBuilding(10,10,1,1).covered==1);
+    patch.visible=false;
+    assert(island.assessBuilding(10,10,1,1).collectable==0);
+    patch.buildingVision=false;
+    assert(island.assessBuilding(10,10,1,1).covered==0);
+
+    Field wrapped;wrapped.width=128;wrapped.height=128;wrapped.tiles.resize(16384);
+    for(auto& tile:wrapped.tiles)tile.passable=true;
+    wrapped.tiles[wrapped.index(127,10)]=cherry;wrapped.build();
+    assert(wrapped.assessBuilding(1,10,1,1).distance[0]==1);
+    assert(wrapped.assessBuilding(64,64,1,1).available==0);
+}
+
+static void fruitStrategyRegressions()
+{
+    Game game(NULL);game.map.setSize(6,6,GRASS);game.map.setGame(&game);
+    for(int team=0;team<2;++team){game.addTeam();game.teams[team]->race.loadDefault();}
+    Player player;player.setTeam(game.teams[0]);
+    player.team->enemies=game.teams[1]->me;
+    const int innType=globalContainer->buildingsTypes.getTypeNum("inn",0,false);
+    ::Building* inn=game.addBuilding(10,10,innType,0);assert(inn);
+    AIMaxima::Maxima ai(&player);Context& c=ai.context;
+    assert(ai.strategy.fruit.reachable_supply);
+    ai.strategy.fruit.enabled=true;
+    ai.budget.fruit_active=true;ai.budget.fruit_units_per_flag=1;
+    ai.budget.fruit_flag_radius=3;
+    game.map.setMapDiscovered();
+    game.map.setResource(24,10,CHERRY,1);
+    c.initialize();
+    int innId=-1;
+    for(const auto& entry:c.buildings.found())
+        if(c.buildings.get_building(entry.first)==inn)innId=entry.first;
+    assert(innId>=0);
+    game.map.setMapDiscovered(24,10,player.team->me);
+    auto field=ai.collect_fruit_field(c);
+    auto opportunity=field.assessBuilding(10,10,inn->type->width,inn->type->height);
+    assert(opportunity.available==1 && opportunity.covered==0);
+    ai.update_fruit_flags(c);
+    assert(c.resource_flags(CHERRY).size()==1);
+    bool advertisesInn=false;
+    for(const auto& order:c.managementOrders)
+        if(auto* alliance=dynamic_cast<Management::ChangeAlliances*>(order.get()))
+        {
+            assert(alliance->market==KeepValue);
+            advertisesInn|=alliance->inn==SetValue;
+        }
+    assert(advertisesInn);
+    ai.update_fruit_flags(c);
+    assert(c.resource_flags(CHERRY).size()==1);
+    for(auto posture:{AIMaxima::Maxima::PostureDefend,AIMaxima::Maxima::PostureRecover})
+    {
+        ai.posture=posture;
+        ai.snapshot.population=1;
+        ai.finalize_director_plan(c);
+        assert(ai.budget.fruit_active);
+        assert(ai.budget.desired_explorers>=ai.strategy.fruit.units_per_flag);
+        ai.update_fruit_flags(c);
+        assert(c.resource_flags(CHERRY).size()==1);
+    }
+    // Pending mission identity survives a save; the next pass must reuse it.
+    auto* backend=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(backend);
+    ai.save(&output);
+    const std::string bytes(backend->getBuffer(),backend->getPosition());
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0);
+    AIMaxima::Maxima restored(&player);
+    assert(restored.load(&input,&player,VERSION_MINOR));
+    assert(restored.strategy.fruit.reachable_supply);
+    assert(restored.context.resource_flags(CHERRY)==c.resource_flags(CHERRY));
+    restored.update_fruit_flags(restored.context);
+    assert(restored.context.resource_flags(CHERRY)==c.resource_flags(CHERRY));
+    // Completed building vision replaces the pending explorer assignment.
+    ::Building* covering=game.addBuilding(22,11,innType,0);assert(covering);
+    const int coverId=c.buildings.register_building();
+    c.buildings.issue_order(coverId,22,11,IntBuildingType::FOOD_BUILDING);
+    c.buildings.tick();
+    ai.update_fruit_flags(c);
+    assert(c.resource_flags(CHERRY).empty());
+    covering->kill();player.team->syncStep();c.buildings.tick();
+    ai.update_fruit_flags(c);
+    assert(c.resource_flags(CHERRY).size()==1);
+    ai.strategy.fruit.enabled=false;ai.budget.fruit_active=false;
+    ai.update_fruit_flags(c);
+    assert(c.resource_flags(CHERRY).empty());
+}
 
 static void reviewBugRegressions()
 {
@@ -1558,6 +1672,8 @@ int main(int argc,char** argv)
     maximaBootstrapRegression();
     integrationRegressions();
     executionRegressions();
+    fruitSupplyRoutes();
+    fruitStrategyRegressions();
     reviewBugRegressions();
     missionForceRegressions();
     economyStaffingRegressions();

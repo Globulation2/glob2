@@ -551,8 +551,17 @@ namespace
 		INT_SPEC(tactics, route_distance_weight, "tactics.route_distance_weight", 0, 100, "weight", "tactics", "Siege route-distance penalty", StrategyImpactMedium),
 		INT_SPEC(tactics, failed_target_quarantine_ticks, "tactics.failed_target_quarantine_ticks", 0, 1000000, "ticks", "tactics", "Time before a fast failed attack target may be selected again", StrategyImpactMedium),
 
+		BOOL_SPEC(assault, force_ramp_enabled, "assault.force_ramp_enabled", "enabled", "assault", "Grow enemy-relative army demand with game age", StrategyImpactHigh),
+		BOOL_SPEC(assault, waves_enabled, "assault.waves_enabled", "enabled", "assault", "Gather successive offensive cohorts before advancing", StrategyImpactHigh),
+		INT_SPEC(assault, force_growth_ticks, "assault.force_growth_ticks", 1, 1000000, "ticks", "assault", "Ticks per percentage point of additional enemy-relative army demand", StrategyImpactHigh),
+		INT_SPEC(assault, max_waves, "assault.max_waves", 1, 64, "flags", "assault", "Maximum simultaneous offensive wave flags", StrategyImpactHigh),
+		INT_SPEC(assault, muster_radius, "assault.muster_radius", 1, 16, "tiles", "assault", "Arrival radius of the rally flag", StrategyImpactHigh),
+		INT_SPEC(assault, muster_ready_percent, "assault.muster_ready_percent", 1, 100, "percent", "assault", "Full-wave readiness and minimum gathered fraction of enrolled warriors", StrategyImpactHigh),
+		INT_SPEC(assault, muster_stall_ticks, "assault.muster_stall_ticks", 1, 100000, "ticks", "assault", "Assembly inactivity before launching a viable partial wave", StrategyImpactHigh),
+		INT_SPEC(assault, muster_max_ticks, "assault.muster_max_ticks", 1, 100000, "ticks", "assault", "Absolute assembly limit before launching or releasing a stalled cohort", StrategyImpactHigh),
+
 		BOOL_SPEC(raiding, enabled, "raiding.enabled", "enabled", "raiding", "Enable warrior raids against visible worker clusters", StrategyImpactHigh),
-		INT_SPEC(raiding, worker_min, "raiding.worker_min", 1, 100, "workers", "raiding", "Minimum currently visible workers in a raid cluster", StrategyImpactMedium),
+		INT_SPEC(raiding, worker_min, "raiding.worker_min", 1, 100, "workers", "raiding", "Minimum currently visible cluster workers inside the raid flag radius", StrategyImpactMedium),
 		INT_SPEC(raiding, cluster_radius, "raiding.cluster_radius", 1, 64, "tiles", "raiding", "Distance joining visible workers into a cluster", StrategyImpactMedium),
 		INT_SPEC(raiding, threat_radius, "raiding.threat_radius", 1, 64, "tiles", "raiding", "Escort detection radius around a worker cluster", StrategyImpactMedium),
 		INT_SPEC(raiding, flag_radius, "raiding.flag_radius", 1, 8, "tiles", "raiding", "Tight worker-raid engagement radius", StrategyImpactMedium),
@@ -575,14 +584,16 @@ namespace
 		INT_SPEC(explorer_campaign, max_flags, "explorer_campaign.max_flags", 0, 32, "flags", "explorer_campaign", "Maximum simultaneous explorer campaign flags", StrategyImpactMedium),
 		INT_SPEC(explorer_campaign, units_per_flag, "explorer_campaign.units_per_flag", 0, 20, "units", "explorer_campaign", "Explorers assigned to each campaign flag", StrategyImpactHigh),
 
+		BOOL_SPEC(fruit, reachable_supply, "fruit.reachable_supply", "enabled", "fruit", "Maintain reachable fruit supply at inns; false preserves pre-110 save behavior", StrategyImpactHigh),
 		BOOL_SPEC(fruit, enabled, "fruit.enabled", "enabled", "fruit", "Enable fruit exploration flags and inn sharing", StrategyImpactMedium),
-		INT_SPEC(fruit, population_min, "fruit.population_min", 0, 1000, "units", "fruit", "Population required for fruit operations", StrategyImpactLow),
+		INT_SPEC(fruit, population_min, "fruit.population_min", 0, 1000, "units", "fruit", "Population required by the legacy fruit policy", StrategyImpactLow),
 		INT_SPEC(fruit, units_per_flag, "fruit.units_per_flag", 0, 20, "units", "fruit", "Explorers assigned to each fruit flag", StrategyImpactLow),
 		INT_SPEC(fruit, flag_radius, "fruit.flag_radius", 1, 32, "tiles", "fruit", "Fruit flag radius", StrategyImpactLow),
 
 		BOOL_SPEC(reconnaissance, enabled, "recon.enabled", "enabled", "recon", "Enable strategic reconnaissance observation, memory, and missions", StrategyImpactCritical),
 		BOOL_SPEC(reconnaissance, scouting_missions_enabled, "recon.scouting_missions_enabled", "enabled", "recon", "Enable contact and frontier reconnaissance flags", StrategyImpactHigh),
 		BOOL_SPEC(reconnaissance, economic_watch_enabled, "recon.economic_watch_enabled", "enabled", "recon", "Enable late-game economic watch patrols", StrategyImpactMedium),
+		BOOL_SPEC(reconnaissance, learned_force_enabled, "recon.learned_force_enabled", "enabled", "recon", "Use the fitted fog-only force model; false preserves pre-111 saves", StrategyImpactHigh),
 		BOOL_SPEC(reconnaissance, force_memory_enabled, "recon.force_memory_enabled", "enabled", "recon", "Retain and decay previously observed enemy force strength", StrategyImpactHigh),
 		INT_SPEC(reconnaissance, explorer_attack_warning_threshold, "recon.attack_warning_threshold", 0, 1000, "units", "recon", "Visible enemy attack explorers that trigger warning", StrategyImpactMedium),
 		INT_SPEC(reconnaissance, explorer_colony_warning_threshold, "recon.colony_warning_threshold", 0, 1000, "units", "recon", "Visible colony explorer threat that triggers warning", StrategyImpactMedium),
@@ -1310,6 +1321,8 @@ bool StrategyResolver::telemetryEnabled()
 	return enabled;
 }
 
+
+
 StrategyConfigOptions StrategyResolver::environmentOptions()
 {
 	StrategyConfigOptions options;
@@ -1473,7 +1486,9 @@ bool StrategyResolver::restoreValues(const std::string& text, MaximaStrategy& va
     // retired the muster, relief and teamplay keys and added the offense's own,
     // so an older save is restored key by key: what it recorded wins, what it
     // never held keeps this build's resolved value, and what this build retired
-    // is ignored. Saves at the current version must still be exact, so a
+    // is ignored. The fruit (110) and fitted-force (111) policies default to
+    // their legacy paths for older saves, as do the assault controls (112).
+    // Saves at the current version must still be exact, so a
     // truncated one is refused rather than silently half-applied.
     const bool exact=versionMinor>=98;
     // Version 109 existed with the count-based hospital schema. Recognize
@@ -1523,14 +1538,28 @@ bool StrategyResolver::restoreValues(const std::string& text, MaximaStrategy& va
         }
     }
     MaximaStrategy restored=exact ? MaximaStrategy{} : values;
+    if(versionMinor<110)restored.fruit.reachable_supply=false;
+    if(versionMinor<111)restored.reconnaissance.learned_force_enabled=false;
+    if(versionMinor<112)
+    {
+        restored.assault.force_ramp_enabled=false;
+        restored.assault.waves_enabled=false;
+    }
     std::map<std::string, std::string> provenance;
     if(!applyInline("saved strategy", settings, restored, provenance, error, !exact))
         return false;
-    if(exact && provenance.size()!=parameterCount)
-    {
-        error="Incomplete saved Maxima strategy";
-        return false;
-    }
+    if(exact)
+        for(const auto& spec:parameterSpecs)
+        {
+            const std::string key=spec.key;
+            if(!provenance.count(key) && !(versionMinor<110 && key=="fruit.reachable_supply")
+                && !(versionMinor<111 && key=="recon.learned_force_enabled")
+                && !(versionMinor<112 && key.rfind("assault.",0)==0))
+            {
+                error="Incomplete saved Maxima strategy";
+                return false;
+            }
+        }
     if(!validateRelations(restored, provenance, error)) return false;
     values=restored;
     return true;

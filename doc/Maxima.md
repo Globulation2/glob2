@@ -27,13 +27,15 @@ building being upgraded is raised to high worker priority for as long as its
 site is live, and returns to normal priority when the upgrade completes: a
 half-finished upgrade serves nobody, so it outranks its equals until it is
 done. Combat policy is
-relentless: whenever enough eligible warriors can reach a remembered enemy
-building or a visible worker cluster, one war flag sits on the best target and
-moves only when that target falls or a clearly better one appears.
+persistent: eligible warriors gather at a rally flag before advancing in successive
+waves toward a remembered enemy building or visible worker cluster. Targets
+change when they fall or a clearly better one appears. Army demand grows with
+game age. See [attack strategy](MaximaAttacks.md) for the controls and save behavior.
 
-A proposed redesign of staffing and construction around a single labour budget
-is recorded in [Maxima labour economy](MaximaLabourEconomy.md); it is a design,
-not current behaviour.
+The shared labour budget coordinates food delivery, construction and training;
+[Maxima labour economy](MaximaLabourEconomy.md) records its design and calibration.
+The [force model](../docs/maxima-force-model.md) estimates enemy warriors and
+combat power from fog-visible observation history.
 
 Maxima uses surplus builders for tower fortification as its last construction
 priority. Once the existing tower demand is covered, it can request another tower
@@ -49,7 +51,15 @@ sites are not automatically preempted when new needs appear. Tower repairs and
 upgrades subsequently use the ordinary planner. This adopted strategy does not
 imply a demonstrated win-rate improvement; the paired defense study found mixed
 results. [Hospital spike measurements](../docs/validation/maxima-hospital-spikes/README.md)
-quantify one remaining capacity pressure.
+record the capacity pressure that motivated the unified hospital policy.
+
+Hospital construction and upgrades share one target: **0.6 beds per live warrior,
+rounded up** (`military.hospital_beds_per_warrior_percent = 60`). Committed sites
+and upgrades count toward that target once. Injuries raise priority without
+creating a second quantity rule; hospitals are not demolished when the army
+shrinks. The target counts physical beds, so healing speed still depends on the
+hospital tiers built. See the [240-game hospital ablation](../docs/validation/maxima-hospital-ratio/README.md)
+for the selected tradeoff and statistical limits.
 
 ## Configuration
 
@@ -78,3 +88,8 @@ The runner covers standalone policy modules, engine order integration, building
 identity reuse, configuration errors, and deterministic saved-game continuation.
 Use `--test NAME` to select one regression program. Tests create temporary binaries;
 they need no external services or tournament tooling.
+
+Maxima maintains [reachable fruit supply](MaximaFruit.md) at completed inns by
+default. It favors inns with several reachable varieties, maintains explorer
+coverage through defense and recovery, and releases missions when buildings
+provide vision. Normal construction, staffing and military policies remain in use.

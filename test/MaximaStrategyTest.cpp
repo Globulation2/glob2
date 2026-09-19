@@ -39,6 +39,8 @@ int main()
         ResolvedStrategy resolved;
         std::string error;
         assert(StrategyResolver::resolveForFormat(StrategyConfigOptions(),format,resolved,error));
+        assert(resolved.values.assault.force_ramp_enabled);
+        assert(resolved.values.assault.waves_enabled);
         const auto text=StrategyResolver::canonicalValues(resolved.values);
         MaximaStrategy restored{};
         assert(StrategyResolver::restoreValues(text,restored,error,VERSION_MINOR));
@@ -67,6 +69,54 @@ int main()
                 ",military.hospital_warrior_min=10,military.hospital_cap=8,"
                 "military.hospital_units_per_building="+invalid,restored,error,109));
         assert(!StrategyResolver::restoreValues(oldSchema+",,",restored,error,109));
+        // Hospital migration composes with the later fruit/force/assault migrations.
+        std::string actual109;
+        for(const auto& assignment:split(oldSchema))
+            if(assignment.rfind("fruit.reachable_supply=",0)!=0
+                && assignment.rfind("recon.learned_force_enabled=",0)!=0
+                && assignment.rfind("assault.",0)!=0)
+                actual109+=(actual109.empty() ? "" : ",")+assignment;
+        assert(StrategyResolver::restoreValues(actual109,restored,error,109));
+        assert(restored.military.hospital_beds_per_warrior_percent==60);
+        assert(!restored.fruit.reachable_supply);
+        assert(!restored.reconnaissance.learned_force_enabled);
+        assert(!restored.assault.force_ramp_enabled && !restored.assault.waves_enabled);
+        assert(resolved.values.reconnaissance.learned_force_enabled);
+        std::string preModel;
+        for(const auto& assignment:split(text))
+            if(assignment.rfind("recon.learned_force_enabled=",0)!=0)
+                preModel+=(preModel.empty() ? "" : ",")+assignment;
+        assert(StrategyResolver::restoreValues(preModel,restored,error,110));
+        assert(!restored.reconnaissance.learned_force_enabled);
+        assert(restored.fruit.reachable_supply);
+        assert(!StrategyResolver::restoreValues(preModel,restored,error,VERSION_MINOR));
+        assert(resolved.values.fruit.enabled && resolved.values.fruit.reachable_supply);
+        std::string preFruit;
+        for(const auto& assignment:split(text))
+            if(assignment.rfind("fruit.reachable_supply=",0)!=0)
+                preFruit+=(preFruit.empty() ? "" : ",")+assignment;
+        for(int version:{98,109})
+        {
+            MaximaStrategy old=resolved.values;
+            assert(StrategyResolver::restoreValues(preFruit,old,error,version));
+            assert(!old.fruit.reachable_supply);
+            old.fruit.reachable_supply=true;
+            assert(StrategyResolver::canonicalValues(old)==text);
+        }
+        assert(!StrategyResolver::restoreValues(preFruit,restored,error,VERSION_MINOR));
+
+        std::string preWave;
+        for(const auto& assignment:split(text))
+            if(assignment.rfind("assault.",0)!=0)
+                preWave+=(preWave.empty() ? "" : ",")+assignment;
+        for(int version:{109,110,111})
+        {
+            assert(StrategyResolver::restoreValues(preWave,restored,error,version));
+            assert(!restored.assault.waves_enabled);
+            assert(!restored.assault.force_ramp_enabled);
+            assert(restored.assault.force_growth_ticks==1000);
+        }
+        assert(!StrategyResolver::restoreValues(preWave,restored,error,VERSION_MINOR));
 
         // Version 98 retired the muster/relief keys and added the offense's
         // own. An older save therefore names keys this build dropped and omits

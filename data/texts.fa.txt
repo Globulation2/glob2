@@ -2816,3 +2816,147 @@ Emoji
 تودهٔ صخره‌ای در این نقشه جا نمی‌شود؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
 [The pond has no room for that much algae; use a bigger pond.]
 برکه برای این مقدار جلبک جا ندارد؛ از برکهٔ بزرگ‌تر استفاده کنید.
+[Even Ground]
+زمین برابر
+[Balance]
+توازن
+[Tight passes]
+گذرگاه‌های تنگ
+[Solver effort]
+تلاش حل‌کننده
+[Brief]
+کوتاه
+[Patient]
+صبور
+[This map is too small to solve on; use a bigger map.]
+این نقشه برای حل کردن بیش از حد کوچک است؛ از نقشهٔ بزرگ‌تر استفاده کنید.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+تعداد مستعمره‌ها برای متوازن کردن در نقشه‌ای به این اندازه زیاد است؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
+[The colonies could not be spread out on this map.]
+نمی‌توان مستعمره‌ها را در این نقشه پراکنده کرد.
+[Marchland]
+سرزمین مرزی
+[Prizes on the rope]
+جایزه‌ها روی طناب
+[March width]
+پهنای سرزمین مرزی
+[Levelling]
+همسان‌سازی
+[A march needs a country on each side; use at least two colonies.]
+سرزمین مرزی به یک کشور در هر سو نیاز دارد؛ دست‌کم از دو مستعمره استفاده کنید.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+تعداد مستعمره‌ها بیش از آن است که این نقشه به هر کدام سرزمین مادری بدهد؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+این نقشه جایی برای پراکندن مستعمره‌ها ندارد؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+سرزمین مادری یک مستعمره راهی به سرزمین مرزی ندارد؛ از نقشهٔ بزرگ‌تر یا سرزمین مرزی باریک‌تر استفاده کنید.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+سرزمین مادری یک مستعمره جایی برای کندو ندارد؛ از نقشهٔ بزرگ‌تر، مستعمره‌های کمتر یا سرزمین مرزی باریک‌تر استفاده کنید.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+سرزمین مرزی برای این تعداد جایزه زمین مورد نزاع بسیار کمی دارد؛ از جایزه‌های کمتر، سرزمین مرزی پهن‌تر یا نقشهٔ بزرگ‌تر استفاده کنید.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+سرزمین مرزی جایی برای یک جایزه ندارد؛ از نقشهٔ بزرگ‌تر، مستعمره‌های کمتر یا سرزمین مرزی پهن‌تر استفاده کنید.
+[Orchard Commons]
+باغ‌های میوهٔ مشترک
+[Orchard spacing]
+فاصلهٔ باغ‌ها
+[Compact]
+نزدیک
+[Balanced]
+متعادل
+[Spread]
+پراکنده
+[The Gauntlet]
+میدان چالش
+[Partition thickness]
+ضخامت دیوارهای جداکننده
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+میدان چالش به نقشه‌ای بزرگ‌تر یا مستعمره‌های کمتری نیاز دارد تا برای هر مستعمره دو ورودی محافظت‌شده جا شود.
+[The Comb]
+شانه
+[Peninsulas per shore]
+تعداد شبه‌جزیره در هر ساحل
+[Encircled Kingdom]
+پادشاهی محاصره‌شده
+[Fortress plan]
+طرح دژ
+[Automatic]
+خودکار
+[Elongated enclosure]
+محوطهٔ کشیده
+[Bastioned enclosure]
+محوطهٔ بارودار
+[Paired courtyards]
+دو حیاط
+[Heartland farmland]
+کشتزارهای مرکزی
+[The Faulted City]
+شهر گسسته
+[Fault displacement]
+جابه‌جایی گسل‌ها
+[Fault width]
+پهنای گسل‌ها
+[Ruin density]
+تراکم ویرانه‌ها
+[Surviving junctions]
+تقاطع‌های باقی‌مانده
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+شهر گسسته به 256 یا 512 خانه در هر ضلع و یک تا دوازده مستعمره نیاز دارد.
+[The city has too few usable junctions.]
+شهر تقاطع‌های قابل استفادهٔ کافی ندارد.
+[A city neighbourhood lacks reachable crops or building room.]
+یکی از محله‌های شهر فاقد محصولات قابل دسترس یا فضای ساخت‌وساز است.
+[The city neighbourhoods are too unequal; try another seed.]
+محله‌های شهر بیش از حد نامتوازن هستند؛ بذر دیگری را امتحان کنید.
+[The fractured civic plaza did not survive.]
+میدان عمومی ترک‌خورده باقی نماند.
+[Who Ate the Map?]
+چه کسی نقشه را خورد؟
+[Appetite]
+اشتها
+[A Little Nibble]
+یک گاز کوچک
+[Hungry]
+گرسنه
+[Portage Lakes]
+دریاچه‌ها و گذرگاه‌های جنگلی
+[Lake elongation]
+کشیدگی دریاچه‌ها
+[Portage depth]
+ضخامت جنگل در گذرگاه
+[Extra trails]
+کوره‌راه‌های بیشتر
+[Portage Lakes needs sides between 64 and 512 tiles.]
+طول ضلع‌های این نقشه باید بین 64 و 512 خانه باشد.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+با این بذر نمی‌توان سکونتگاه‌ها را در ساحل جای داد.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+برای زمین‌های کشاورزی تجدیدپذیر در کنار هر سکونتگاه جا نیست.
+[Portage Lakes cannot connect its shoreline trails.]
+نمی‌توان کوره‌راه‌های ساحلی را به هم وصل کرد.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+با این بذر نمی‌توان میان‌بری مفید از جنگل خشک ساخت.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+با این بذر نمی‌توان میان‌بری مفید برای شنا ساخت.
+[Portage Lakes needs separate swimming lakes on this seed.]
+با این بذر، دریاچه‌های مناسب شنا باید از هم جدا بمانند.
+[Drowned Forest]
+جنگل آب‌گرفته
+[Sandbar connections]
+اتصال‌های گذرگاه شنی
+[Wooded neck thickness]
+ضخامت موانع درختی
+[Neutral clearing size]
+اندازهٔ فضای باز بی‌طرف
+[Bastion Keys]
+جزیره‌های دژدار
+[Plantation size]
+اندازهٔ کشتزار
+[Outlying islands]
+جزیره‌های پیرامونی
+[The Hungry Marches]
+سرزمین‌های مرزی گرسنه
+[Opening ration]
+جیرهٔ آغازین
+[Central concentration]
+تمرکز غذا در مرکز

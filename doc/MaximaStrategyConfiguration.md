@@ -415,3 +415,26 @@ increase that shared budget through the existing smooth controller.
 Telemetry includes `colony_new_food`, `colony_value`, and the eligibility gate.
 Legacy serialized utility slots are retained for compatibility, with their new
 meanings documented in the placement code.
+
+[Reachable fruit supply](MaximaFruit.md) is enabled by default through
+`fruit.reachable_supply=true`. `fruit.enabled` remains the overall switch;
+`fruit.units_per_flag` and `fruit.flag_radius` control explorer assignments.
+Pre-version-110 saved configurations restore `fruit.reachable_supply=false` to
+continue their original policy. `fruit.population_min` applies only to that legacy
+policy. The current policy needs no population threshold or posture switch.
+
+## Attack controls
+
+The `assault.*` schema controls age-based army demand and gathered land attacks.
+Both default on for new games. See [attack strategy](MaximaAttacks.md) for the
+formula, assembly rules and version-112 migration. Earlier production saves
+retain their original policy with both controls disabled.
+
+## Hospital capacity
+
+`military.hospital_beds_per_warrior_percent = 60` requests 0.6 physical hospital
+beds per live warrior, rounded up. New hospitals and upgrades serve that same
+target, including capacity already reserved or under construction. The old
+`hospital_warrior_min`, `hospital_cap` and `hospital_units_per_building` keys are
+retired; live overlays must use the new ratio. Complete old saved schemas migrate
+to 0.6, while later saved ratio settings retain their recorded value.

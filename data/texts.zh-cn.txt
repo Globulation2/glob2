@@ -2814,3 +2814,147 @@ Emoji
 岩石高地放不进这张地图；请使用更大的地图或更少的殖民地。
 [The pond has no room for that much algae; use a bigger pond.]
 池塘放不下这么多海藻；请使用更大的池塘。
+[Even Ground]
+公平原野
+[Balance]
+平衡度
+[Tight passes]
+狭窄通道
+[Solver effort]
+求解强度
+[Brief]
+简略
+[Patient]
+耐心
+[This map is too small to solve on; use a bigger map.]
+这张地图太小，无法求解；请使用更大的地图。
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+在这个大小的地图上殖民地太多，无法平衡；请使用更大的地图或减少殖民地数量。
+[The colonies could not be spread out on this map.]
+无法在这张地图上把殖民地分散开。
+[Marchland]
+边疆
+[Prizes on the rope]
+绳上的奖品
+[March width]
+边疆宽度
+[Levelling]
+均等化
+[A march needs a country on each side; use at least two colonies.]
+边疆需要两侧各有一个国度；请至少使用两个殖民地。
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+殖民地太多，这张地图无法为每个殖民地提供家园；请使用更大的地图或减少殖民地数量。
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+这张地图没有空间把殖民地分散开；请使用更大的地图或减少殖民地数量。
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+有殖民地的家园没有通往边疆的出口；请使用更大的地图或更窄的边疆。
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+有殖民地的家园没有放置孢子堆的空间；请使用更大的地图、更少的殖民地或更窄的边疆。
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+边疆的争夺地带太少，容纳不下这么多奖品；请减少奖品、加宽边疆或使用更大的地图。
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+边疆没有放置奖品的空间；请使用更大的地图、更少的殖民地或更宽的边疆。
+[Orchard Commons]
+共有果园
+[Orchard spacing]
+果园间距
+[Compact]
+紧凑
+[Balanced]
+均衡
+[Spread]
+分散
+[The Gauntlet]
+试炼竞技场
+[Partition thickness]
+隔墙厚度
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+试炼竞技场需要更大的地图或更少的殖民地，才能为每个殖民地安排两个设防入口。
+[The Comb]
+梳子
+[Peninsulas per shore]
+每岸半岛数
+[Encircled Kingdom]
+被包围的王国
+[Fortress plan]
+要塞布局
+[Automatic]
+自动
+[Elongated enclosure]
+狭长围城
+[Bastioned enclosure]
+棱堡围城
+[Paired courtyards]
+双庭院
+[Heartland farmland]
+腹地农田
+[The Faulted City]
+断层之城
+[Fault displacement]
+断层位移
+[Fault width]
+断层宽度
+[Ruin density]
+废墟密度
+[Surviving junctions]
+保留路口
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+断层之城要求每边为256或512格，并有一至十二个殖民地。
+[The city has too few usable junctions.]
+城市中可用的路口太少。
+[A city neighbourhood lacks reachable crops or building room.]
+某个城区缺少可到达的作物或建筑空间。
+[The city neighbourhoods are too unequal; try another seed.]
+各城区条件过于不均衡；请尝试其他种子。
+[The fractured civic plaza did not survive.]
+被断层分割的城市广场未能保留下来。
+[Who Ate the Map?]
+谁把地图吃了？
+[Appetite]
+胃口
+[A Little Nibble]
+咬一小口
+[Hungry]
+饿了
+[Portage Lakes]
+湖泊与林间通道
+[Lake elongation]
+湖泊狭长度
+[Portage depth]
+通道伐木厚度
+[Extra trails]
+额外小径
+[Portage Lakes needs sides between 64 and 512 tiles.]
+此地图的边长必须为64至512格。
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+此种子无法在湖岸安置定居点。
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+无法在每个定居点旁布置可再生的湖岸农田。
+[Portage Lakes cannot connect its shoreline trails.]
+无法连接湖岸小径。
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+此种子无法生成穿过干燥树林的有效捷径。
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+此种子无法生成有效的游泳捷径。
+[Portage Lakes needs separate swimming lakes on this seed.]
+使用此种子时，可供游泳的湖泊必须保持互不相连。
+[Drowned Forest]
+淹没森林
+[Sandbar connections]
+沙洲连接
+[Wooded neck thickness]
+林木屏障厚度
+[Neutral clearing size]
+中立林间空地大小
+[Bastion Keys]
+堡垒群岛
+[Plantation size]
+种植园大小
+[Outlying islands]
+外围岛屿
+[The Hungry Marches]
+饥饿边境
+[Opening ration]
+起始口粮
+[Central concentration]
+中央集中度

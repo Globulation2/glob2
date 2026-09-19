@@ -167,7 +167,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         # 689 with the gated tactical layer; the relentless offense removed 50
         # muster, casualty, relief and teamplay keys and added three.
         # Hospital capacity replaces three count knobs with one bed ratio.
-        self.assertEqual(654, len(specifications))
+        self.assertEqual(664, len(specifications))
         self.assertTrue(all(len(impact) == 1 for impact in impacts))
         self.assertEqual(
             {"Critical", "High", "Medium", "Low"},

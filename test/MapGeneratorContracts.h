@@ -1140,8 +1140,1004 @@ inline void bajadaContracts()
 		 "towns under growth, crops refused in towns");
 }
 
+inline void evenGroundContracts()
+{
+	const auto &definition =
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("even-ground"));
+	assert(definition.legacyId == 60 && definition.revision == 2);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("water-share") == 10 && request.option("balance") == 70 &&
+		   request.option("passes") == 40 && request.option("effort") == 1);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	// The shapes the search supports, including the long thin ones: the lattice sizes its cells off
+	// the short side as well as the long one so that a 64 by 512 map is still searched in two
+	// dimensions rather than refused.
+	for (auto dimensions : {std::pair{7, 7}, std::pair{8, 8}, std::pair{6, 9}, std::pair{9, 6}})
+		for (int teams : {1, 2, 5, 8})
+		{
+			Game g(nullptr);
+			const auto result = service.generate(g, make(dimensions.first, dimensions.second, teams, 7));
+			if (!result)
+				std::fprintf(stderr, "Even Ground contract (%d x %d, %d colonies): %s\n",
+							 1 << dimensions.first, 1 << dimensions.second, teams,
+							 result.diagnostic().c_str());
+			assert(result);
+		}
+	{
+		// A 64-tile map has too few cells to balance eight colonies over, and says so up front.
+		Game g(nullptr);
+		assert(service.generate(g, make(6, 6, 8, 7)).error == GenerationError::InvalidRequest);
+		assert(g.teamsCount() == 0);
+	}
+	// The water is a budget the search arranges rather than invents: more of it asked for is more of
+	// it on the finished map, every time. The painted share is below the requested one because the
+	// beaches take a tile from each bank, so this is an ordering, not an identity. The top of the
+	// range is 40: past that the map drowns - a fifth of seeds at 60 had a colony with no wood in
+	// reach or too little ground to build on - so the control stops where the map still is one.
+	int previous = -1;
+	for (int share : {0, 10, 25, 40})
+	{
+		D r = make(8, 8, 4, 23);
+		r.options["water-share"] = share;
+		Game g(nullptr);
+		assert(service.generate(g, r));
+		int water = 0;
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+				water += g.map.isWater(x, y);
+		assert(water > previous);
+		previous = water;
+	}
+	// Balance is how much search the stock pass gets, so it has to show in what that pass achieved:
+	// at zero the crops sit where they were dealt, and at full the spread between the colonies'
+	// catchments is a fraction of that.
+	const auto spreadAt = [&](int balance)
+	{
+		D r = make(8, 8, 4, 23);
+		r.options["balance"] = balance;
+		Game g(nullptr);
+		const auto result = service.generate(g, r, true);
+		assert(result);
+		double before = -1, after = -1, searchedCost = NAN, finalCost = NAN, fieldsCost = NAN;
+		for (const auto &record : result.telemetry.records())
+		{
+			if (record.key == "even-ground.stock.fields.weighted")
+				fieldsCost = std::get<double>(record.value);
+			if (record.key == "even-ground.stock.cost-after")
+				searchedCost = std::get<double>(record.value);
+			if (record.key == "even-ground.stock.total")
+				finalCost = std::get<double>(record.value);
+			if (record.key == "even-ground.stock.spread-before")
+				before = std::get<double>(record.value);
+			if (record.key == "even-ground.stock.spread-after")
+				after = std::get<double>(record.value);
+		}
+		assert(before >= 0 && after >= 0);
+		// Incrementally scored swaps and the full rescan of the best arrangement must agree.
+		assert(fieldsCost > 0); // this seed exercises the optional clustering term
+		assert(std::abs(searchedCost - finalCost) < 1e-9);
+		return std::pair{before, after};
+	};
+	const auto unsolved = spreadAt(0), solved = spreadAt(100);
+	assert(unsolved.second == unsolved.first); // no moves: nothing moved
+	assert(solved.second < solved.first / 4);  // searched: the spread is a fraction of what it was
+	{
+		// The map promises every colony a crop within reach, and refuses a world where that has been
+		// taken away.
+		D r = make(8, 8, 4, 23);
+		Game g(nullptr);
+		assert(service.generate(g, r));
+		GenerationContext check(r);
+		assert(definition.validateWorld(g, check).empty());
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+				if (g.map.isResource(x, y) && g.map.getResource(x, y).type == WHEAT)
+					g.map.getResource(x, y).clear();
+		assert(!definition.validateWorld(g, check).empty());
+	}
+	puts("PASS Even Ground: envelope including thin maps and refusal, water budget ordering, "
+		 "balance buys a measurably smaller catchment spread, crop reach enforced");
+}
+
+inline void marchlandContracts()
+{
+	const auto &definition =
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("marchland"));
+	assert(definition.legacyId == 61 && definition.revision == 2);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("prizes") == 6 && request.option("march") == 16 &&
+		   request.option("levelling") == 100 && request.option("lakes") == 10);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	for (auto dimensions : {std::pair{8, 8}, std::pair{9, 9}, std::pair{8, 9}})
+		for (int teams : {2, 5, 8})
+		{
+			Game g(nullptr);
+			const auto result = service.generate(g, make(dimensions.first, dimensions.second, teams, 31001));
+			if (!result)
+				std::fprintf(stderr, "Marchland contract (%d x %d, %d colonies): %s\n",
+							 1 << dimensions.first, 1 << dimensions.second, teams,
+							 result.diagnostic().c_str());
+			assert(result);
+		}
+	// The 64-tile side used to invert the prize-gap clamp bounds (20 > 16).
+	for (auto dimensions : {std::pair{6, 9}, std::pair{9, 6}})
+	{
+		Game g(nullptr);
+		assert(service.generate(g, make(dimensions.first, dimensions.second, 6, 31001)));
+	}
+	// A long map needs a ring of colonies rather than a line of them, and gets one.
+	for (auto dimensions : {std::pair{7, 9}, std::pair{9, 7}})
+		for (int teams : {8, 12})
+		{
+			Game g(nullptr);
+			assert(service.generate(g, make(dimensions.first, dimensions.second, teams, 31001)));
+		}
+	{
+		// A rope needs two ends, a homeland needs room, and a long map needs enough colonies to
+		// ring it: all three are refused up front rather than failing seed after seed.
+		Game solo(nullptr);
+		assert(service.generate(solo, make(8, 8, 1, 7)).error == GenerationError::InvalidRequest);
+		assert(solo.teamsCount() == 0);
+		Game crowded(nullptr);
+		assert(service.generate(crowded, make(7, 7, 12, 7)).error ==
+			   GenerationError::InvalidRequest);
+		Game strung(nullptr);
+		assert(service.generate(strung, make(7, 9, 4, 7)).error ==
+			   GenerationError::InvalidRequest);
+	}
+	// A river is character, not structure: some seeds cut one and some do not, and a seed that does
+	// is still a country every colony can cross. The bed is drawn and only its placement scored, so
+	// what is checked here is the placement's two promises - that it keeps out of every town, and
+	// that it is forded more often than bare connectivity would need. Crossed only where it must
+	// be, the bed walls the march off and the rope stops being contestable, which is the failure
+	// this map's own rope check caught at 512x512.
+	{
+		int withRiver = 0, without = 0;
+		for (std::uint32_t seed : {9002u, 9009u, 9013u, 9016u, 9024u, 9001u, 9006u, 9012u})
+		{
+			Game g(nullptr);
+			const auto result = service.generate(g, make(8, 8, 4, seed), true);
+			assert(result);
+			// Counts are recorded as integers and residuals as doubles, so read either.
+			const auto number = [](const auto &record)
+			{
+				return std::holds_alternative<double>(record.value)
+						   ? std::get<double>(record.value)
+						   : double(std::get<std::int64_t>(record.value));
+			};
+			double tiles = -1, fords = -1, town = -1;
+			for (const auto &record : result.telemetry.records())
+			{
+				if (record.key == "marchland.river.tiles")
+					tiles = number(record);
+				if (record.key == "marchland.river.fords")
+					fords = number(record);
+				if (record.key == "marchland.river.bed.town.residual")
+					town = number(record);
+			}
+			if (tiles < 0)
+			{
+				++without;
+				assert(fords < 0); // nothing is forded where nothing was cut
+				continue;
+			}
+			++withRiver;
+			assert(tiles > 0 && town == 0 && fords >= 4);
+		}
+		// Both outcomes happen, so the emphasis is genuinely a draw and not a constant.
+		assert(withRiver > 0 && without > 0);
+	}
+	// Fruit grows on the rope and nowhere else, which is what makes the rope worth pulling, and
+	// every colony's own quarry and lake are guaranteed whatever the sliders say.
+	{
+		D bare = make(8, 8, 4, 401);
+		for (const auto &control : definition.controls)
+			if (control.group == ControlGroup::Resources)
+				bare.options[control.id] = 0;
+		Game g(nullptr);
+		assert(service.generate(g, bare));
+		GenerationContext check(bare);
+		assert(definition.validateWorld(g, check).empty());
+		int fruit = 0, water = 0;
+		for (int i = 0; i < 256 * 256; ++i)
+		{
+			const int type = g.map.getResource(i % 256, i / 256).type;
+			fruit += type >= CHERRY && type < CHERRY + 3;
+			water += g.map.isWater(i % 256, i / 256);
+		}
+		assert(fruit > 0 && water > 0);
+		// Take the fruit away and the map is no longer a marchland; the validator must say so.
+		for (int i = 0; i < 256 * 256; ++i)
+		{
+			const int type = g.map.getResource(i % 256, i / 256).type;
+			if (type >= CHERRY && type < CHERRY + 3)
+				g.map.setNoResource(i % 256, i / 256, 1);
+		}
+		assert(!definition.validateWorld(g, check).empty());
+	}
+	// Levelling is the map's own argument, so it has to be worth something measurable: the search
+	// must cut the spread of the colonies' walks to the rope to a fraction of what dealing the
+	// prizes at random leaves. Both figures are recorded for every map this generator makes.
+	const auto rope = [&](int levelling)
+	{
+		D r = make(8, 8, 4, 401);
+		r.options["levelling"] = levelling;
+		Game g(nullptr);
+		const auto result = service.generate(g, r, true);
+		assert(result);
+		int dealt = -1, solved = -1;
+		for (const auto &record : result.telemetry.records())
+		{
+			if (record.key == "marchland.rope.share-dealt")
+				dealt = int(std::get<std::int64_t>(record.value));
+			if (record.key == "marchland.rope.share-solved")
+				solved = int(std::get<std::int64_t>(record.value));
+		}
+		assert(dealt >= 0 && solved >= 0);
+		return std::pair{dealt, solved};
+	};
+	const auto unsolved = rope(0), solved = rope(100);
+	assert(unsolved.second == unsolved.first); // no moves: the rope is where chance left it
+	assert(solved.second * 4 < solved.first);  // searched: a fraction of the spread it started with
+	puts("PASS Marchland: envelope and refusals, fruit only on the rope, guaranteed home lake and quarry, "
+		 "levelling measurably shares the rope out, rivers drawn on some seeds and forded on all "
+		 "of them");
+}
+
+inline void combContracts()
+{
+	const int method = GeneratorRegistry::builtins().idOf("comb");
+	const auto &definition = GeneratorRegistry::builtins().at(method);
+	D request;
+	request.setMethodDefaults(method);
+	request.wDec = request.hDec = 8;
+	request.nbTeams = 4;
+	request.seed = 23;
+	std::set<std::uint64_t> shapes;
+	for (int count : {2, 3, 4})
+	{
+		request.options["peninsulas"] = count;
+		Game world(nullptr);
+		auto result = GenerationService().generate(world, request, true);
+		assert(result);
+		shapes.insert(mapFingerprint(world));
+		bool counted = false;
+		for (const auto &record : result.telemetry.records())
+			if (record.key == "comb.peninsulas.actual")
+			{
+				counted = true;
+				assert(std::get<std::int64_t>(record.value) == 2 * count);
+			}
+		assert(counted);
+		GenerationContext context(request);
+		assert(definition.validateWorld(world, context).empty());
+	}
+	assert(shapes.size() == 3);
+	puts("PASS Comb: distinct peninsula counts, finished-world contracts and telemetry");
+}
+
+inline void encircledKingdomContracts()
+{
+	D request;
+	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("encircled-kingdom"));
+	const auto &definition = GeneratorRegistry::builtins().at(request.method);
+	for (int teams : {1, 2, 13})
+	{
+		request.nbTeams = teams;
+		assert(!definition.validateRequest(request).empty());
+	}
+	request.nbTeams = 7;
+	assert(!definition.validateRequest(request).empty());
+	request.nbTeams = 4;
+	request.wDec = 7;
+	assert(!definition.validateRequest(request).empty());
+	request.wDec = 8;
+	for (int teams = 3; teams <= 12; ++teams)
+		for (int plan = 1; plan <= 3; ++plan)
+		{
+			request.nbTeams = teams;
+			request.wDec = teams >= 7 ? 9 : 8;
+			request.hDec = 8;
+			request.seed = 17 + teams;
+			request.options["fortress-plan"] = plan;
+			request.nbWorkers = teams % 2 ? 1 : 8;
+			for (const char *key :
+				 {"wheat-amount", "wood-amount", "stone-amount", "algae-amount", "fruit-amount"})
+				request.options[key] = plan == 1 ? 0 : plan == 2 ? 300 : 100;
+			request.options["gate-width"] = plan == 1 ? 6 : 14;
+			request.options["heartland-farmland"] = plan == 1 ? 75 : 150;
+			Game game(nullptr);
+			const auto result = GenerationService().generate(game, request, true);
+			if (!result)
+				std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+			assert(result);
+			const Torus t(game.map);
+			assert(std::abs(game.teams[0]->startPosX - t.w / 2) < 20);
+			assert(std::abs(game.teams[0]->startPosY - t.h / 2) < 20);
+			for (int k = 1; k < teams; ++k)
+				assert(std::max(std::abs(game.teams[k]->startPosX - t.w / 2),
+								std::abs(game.teams[k]->startPosY - t.h / 2)) > 60);
+			GenerationContext check(request);
+			assert(definition.validateWorld(game, check).empty());
+			// Plant a resource directly beside the capital, outside all gardens: containment
+			// must reject it even though all original starting supplies remain intact.
+			const int x = t.w / 2 + 2, y = t.h / 2 - 20;
+			assert(game.map.isResourceAllowed(x, y, WHEAT));
+			game.map.setResource(x, y, WHEAT, 1);
+			assert(!definition.validateWorld(game, check).empty());
+		}
+	// Retained random-study failures: a concave rectangular approach and a remote outer town.
+	for (bool rectangular : {true, false})
+	{
+		D edge;
+		edge.setMethodDefaults(GeneratorRegistry::builtins().idOf("encircled-kingdom"));
+		edge.seed = rectangular ? 100897 : 100972;
+		edge.nbTeams = rectangular ? 9 : 5;
+		edge.wDec = rectangular ? 8 : 9;
+		edge.hDec = 9;
+		edge.nbWorkers = rectangular ? 1 : 7;
+		edge.options = {{"fortress-plan", 3},
+						{"gate-width", rectangular ? 10 : 6},
+						{"heartland-farmland", 75},
+						{"wheat-amount", rectangular ? 200 : 275},
+						{"wood-amount", rectangular ? 200 : 150},
+						{"stone-amount", rectangular ? 75 : 150},
+						{"algae-amount", rectangular ? 200 : 0},
+						{"fruit-amount", rectangular ? 0 : 300}};
+		Game game(nullptr);
+		const auto result = GenerationService().generate(game, edge, true);
+		if (!result)
+			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+		assert(result);
+	}
+	// Telemetry and intervening requests must not alter seeded terrain or colonies.
+	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("encircled-kingdom"));
+	request.seed = 7;
+	request.nbTeams = 4;
+	request.wDec = request.hDec = 8;
+	request.nbWorkers = 4;
+	Game plain(nullptr), traced(nullptr), other(nullptr), repeated(nullptr);
+	assert(GenerationService().generate(plain, request));
+	const auto observed = GenerationService().generate(traced, request, true);
+	assert(observed && mapFingerprint(plain) == mapFingerprint(traced));
+	D alternate = request;
+	alternate.seed = 91;
+	alternate.options["fortress-plan"] = 2;
+	assert(GenerationService().generate(other, alternate));
+	const auto again = GenerationService().generate(repeated, request, true);
+	assert(again && mapFingerprint(traced) == mapFingerprint(repeated));
+	assert(observed.telemetry.records() == again.telemetry.records());
+	for (int plan = 1; plan <= 3; ++plan)
+	{
+		D grown = request;
+		grown.options["fortress-plan"] = plan;
+		for (const auto &control : definition.controls)
+			if (control.group == ControlGroup::Resources)
+				grown.options[control.id] = control.maximum;
+		Game abundant(nullptr);
+		assert(GenerationService().generate(abundant, grown));
+		setSyncRandSeed(4211);
+		for (int tick = 0; tick < 4096; ++tick)
+			abundant.map.growResources();
+		GenerationContext check(grown);
+		const auto error = definition.validateWorld(abundant, check);
+		if (!error.empty())
+			std::fprintf(stderr, "Kingdom growth: %s\n", error.c_str());
+		assert(error.empty());
+		// Stone is the fortress structure even with all renewable fields fully grown.
+		bool removed = false;
+		for (int y = 0; y < abundant.map.getH(); ++y)
+			for (int x = 0; x < abundant.map.getW(); ++x)
+				if (abundant.map.getResource(x, y).type == STONE)
+				{
+					abundant.map.getResource(x, y).clear();
+					removed = true;
+				}
+		assert(removed && !definition.validateWorld(abundant, check).empty());
+	}
+	puts("PASS Encircled Kingdom: 3-12 colonies, all fortress plans, extremes, fixed capital, "
+		 "containment");
+}
+
+inline void faultedCityContracts()
+{
+	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("faulted-city"));
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	request.wDec = request.hDec = 8;
+	request.nbTeams = 4;
+	request.seed = 101;
+	GenerationService service;
+	{
+		Game plain(nullptr), observed(nullptr);
+		assert(service.generate(plain, request));
+		const auto measured = service.generate(observed, request, true);
+		assert(measured && !measured.telemetry.records().empty());
+		assert(!measured.telemetry.droppedRecords() && !measured.telemetry.invalidValues());
+		assert(mapFingerprint(plain) == mapFingerprint(observed));
+	}
+	for (auto shape : {std::pair{8, 8}, std::pair{8, 9}, std::pair{9, 8}, std::pair{9, 9}})
+		for (int teams : {1, 4, 12})
+		{
+			D r = request;
+			r.wDec = shape.first; r.hDec = shape.second; r.nbTeams = teams;
+			Game world(nullptr);
+			const auto result = service.generate(world, r);
+			if (!result) std::fprintf(stderr, "Faulted City %dx%d/%d: %s\n", 1 << r.wDec, 1 << r.hDec, teams, result.diagnostic().c_str());
+			assert(result);
+		}
+	{
+		D r = request; r.wDec = 7;
+		Game world(nullptr);
+		assert(service.generate(world, r).error == GenerationError::InvalidRequest);
+		assert(world.teamsCount() == 0);
+	}
+	for (int amount : {0, 300})
+	{
+		D r = request;
+		for (const auto &control : definition.controls)
+			if (control.group == ControlGroup::Resources) r.options[control.id] = amount;
+		Game world(nullptr);
+		assert(service.generate(world, r));
+		GenerationContext context(r);
+		if (amount == 300)
+		{
+			setSyncRandSeed(2026);
+			for (int tick = 0; tick < 4096; ++tick) world.map.growResources();
+			const auto error = definition.validateWorld(world, context);
+			if (!error.empty()) std::fprintf(stderr, "Faulted City growth: %s\n", error.c_str());
+			assert(error.empty());
+		}
+		// Structural stone is still required at zero ordinary stone abundance.
+		bool damaged = false;
+		for (int y = 0; y < world.map.getH() && !damaged; ++y)
+			for (int x = 0; x < world.map.getW() && !damaged; ++x)
+				if (amount == 0 && world.map.getResource(x, y).type == STONE)
+				{ world.map.setNoResource(x, y, 1); damaged = true; }
+		if (amount == 0) assert(damaged && !definition.validateWorld(world, context).empty());
+	}
+	{
+		D scarce = request, rich = request;
+		for (const auto &control : definition.controls) if (control.group == ControlGroup::Resources)
+		{ scarce.options[control.id] = 0; rich.options[control.id] = 300; }
+		Game low(nullptr), high(nullptr);
+		assert(service.generate(low, scarce) && service.generate(high, rich));
+		for (int y = 0; y < low.map.getH(); ++y) for (int x = 0; x < low.map.getW(); ++x)
+			assert(low.map.getUMTerrain(x, y) == high.map.getUMTerrain(x, y));
+	}
+	{
+		Game world(nullptr);
+		const auto result = service.generate(world, request, true);
+		assert(result);
+		int x = -1, y = -1;
+		for (const auto &record : result.telemetry.records()) if (record.subject == 0)
+		{
+			if (record.key == "faulted-city.junction.x") x = int(std::get<std::int64_t>(record.value));
+			if (record.key == "faulted-city.junction.y") y = int(std::get<std::int64_t>(record.value));
+		}
+		assert(x >= 0 && y >= 0);
+		// Leave the centre open, but obstruct its reserved gathering/circulation width.
+		world.map.setResource((x + 1) % world.map.getW(), y, STONE, 1);
+		GenerationContext context(request);
+		assert(!definition.validateWorld(world, context).empty());
+	}
+
+	{
+		Game world(nullptr);
+		assert(service.generate(world, request));
+		bool retained = false;
+		for (int y = 0; y < world.map.getH(); ++y)
+			for (int x = 0; x < world.map.getW(); ++x)
+				if (world.map.getResource(x, y).type == WHEAT)
+				{ if (retained) world.map.setNoResource(x, y, 1); retained = true; }
+		GenerationContext context(request);
+		assert(!definition.validateWorld(world, context).empty());
+	}
+	puts("PASS Faulted City: envelope, refusal, resource extremes, growth containment, stable resource terrain, narrow junction, masonry and token food mutations");
+}
+
+inline void eatenMapContracts()
+{
+	GenerationService service;
+	D request;
+	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("who-ate-the-map"));
+	request.wDec = request.hDec = 7;
+	request.nbTeams = 4;
+	request.seed = 7;
+	const auto &definition = *GeneratorRegistry::builtins().find(request.method);
+	for (int appetite : {0, 1, 2})
+	{
+		request.options["appetite"] = appetite;
+		Game world(nullptr), repeated(nullptr), sparse(nullptr);
+		assert(service.generate(world, request));
+		const auto traced = service.generate(repeated, request, true);
+		assert(traced && !traced.telemetry.records().empty());
+		assert(traced.telemetry.invalidValues() == 0);
+		assert(mapFingerprint(world) == mapFingerprint(repeated));
+		auto zero = request;
+		for (const char *key :
+			 {"wheat-amount", "wood-amount", "stone-amount", "algae-amount", "fruit-amount"})
+			zero.options[key] = 0;
+		assert(service.generate(sparse, zero));
+		for (int y = 0; y < 128; ++y)
+			for (int x = 0; x < 128; ++x)
+				assert(world.map.getUMTerrain(x, y) == sparse.map.getUMTerrain(x, y));
+		GenerationContext check(request);
+		assert(definition.validateWorld(world, check).empty());
+		// Depleting the opening crops must be rejected even when the coastline survives.
+		for (int y = 0; y < 128; ++y)
+			for (int x = 0; x < 128; ++x)
+				if (repeated.map.getResource(x, y).type == WHEAT)
+					repeated.map.setNoResource(x, y, 0);
+		assert(!definition.validateWorld(repeated, check).empty());
+		world.map.setUMTerrain(0, 0, GRASS);
+		assert(!definition.validateWorld(world, check).empty());
+	}
+	// A single greedy spread used to reject this usable crescent. Retry sites, not terrain.
+	request.seed = 71;
+	request.nbWorkers = 8;
+	{
+		Game crescent(nullptr);
+		assert(service.generate(crescent, request));
+	}
+	{
+		auto crowded = request;
+		crowded.seed = 63577209;
+		crowded.nbWorkers = 6;
+		crowded.options["wheat-amount"] = 300;
+		crowded.options["wood-amount"] = 175;
+		crowded.options["algae-amount"] = crowded.options["fruit-amount"] = 0;
+		Game crescent(nullptr);
+		assert(service.generate(crescent, crowded));
+	}
+	request.seed = 7;
+	request.nbWorkers = 4;
+	for (auto dims :
+		 {std::pair{7, 8}, std::pair{8, 7}, std::pair{9, 8}, std::pair{8, 9}, std::pair{9, 9}})
+	{
+		request.wDec = dims.first;
+		request.hDec = dims.second;
+		request.nbTeams = std::min(dims.first, dims.second) == 7 ? 4 : 8;
+		Game world(nullptr);
+		assert(service.generate(world, request));
+	}
+	for (auto dims : {std::pair{6, 6}, std::pair{7, 9}, std::pair{9, 7}})
+	{
+		request.wDec = dims.first;
+		request.hDec = dims.second;
+		assert(!definition.validateRequest(request).empty());
+	}
+	// Small detached crescents are scenery; a larger lobe still supports an island colony.
+	for (const auto [dims, seed, expected] : {std::tuple{8, 7, 1}, std::tuple{9, 11, 2}})
+	{
+		auto split = request;
+		split.wDec = split.hDec = dims;
+		split.nbTeams = 4;
+		split.seed = seed;
+		split.options["appetite"] = 2;
+		Game world(nullptr);
+		assert(service.generate(world, split));
+		const MapGeneration::Torus t(world.map);
+		auto land = MapGeneration::pureTiles(world.map, WATER);
+		for (auto &tile : land) tile = !tile;
+		const auto labels = MapGeneration::connectedRegions(land, t.w, t.h, true,
+			MapGeneration::GridNeighbors::Eight);
+		std::set<int> occupied;
+		for (const auto &units : MapGeneration::unitTilesByTeam(world.map, 4))
+			occupied.insert(labels[units[0]]);
+		assert(occupied.size() == size_t(expected));
+	}
+	puts("PASS Who Ate the Map: reproducibility, unchanged coastline at zero resources, corruption "
+		 "rejection, envelope");
+}
+
+inline void portageLakesContracts()
+{
+	const auto &registry = GeneratorRegistry::builtins();
+	const int method = registry.idOf("portage-lakes");
+	const auto &definition = registry.at(method);
+	GenerationService service;
+	D r;
+	r.setMethodDefaults(method);
+	r.wDec = r.hDec = 8;
+	r.nbTeams = 4;
+	r.seed = 1;
+	Game first(nullptr);
+	auto report = service.generate(first, r, true);
+	if (!report)
+		std::fprintf(stderr, "%s\n", report.diagnostic().c_str());
+	assert(report);
+	const auto fingerprint = mapFingerprint(first);
+	GenerationContext context(r);
+	assert(definition.validateWorld(first, context).empty());
+	// Telemetry must not change either placement or RNG, even between other requests.
+	D compact = r;
+	compact.wDec = compact.hDec = 6;
+	compact.nbTeams = 2;
+	Game small(nullptr);
+	auto smallReport = service.generate(small, compact);
+	if (!smallReport)
+		std::fprintf(stderr, "%s\n", smallReport.diagnostic().c_str());
+	assert(smallReport);
+	Game repeated(nullptr);
+	assert(service.generate(repeated, r, false));
+	assert(mapFingerprint(repeated) == fingerprint);
+	// Regrowth cannot invade the terrain-contained farms or refill a dry portage.
+	setSyncRandSeed(4211);
+	for (int tick = 0; tick < 4096; ++tick)
+		first.map.growResources();
+	auto error = definition.validateWorld(first, context);
+	if (!error.empty())
+		std::fprintf(stderr, "Portage Lakes growth: %s\n", error.c_str());
+	assert(error.empty());
+	// Missing dry structural wood must be caught, without relying on fixed coordinates.
+	auto fertility = Fertility::forMap(repeated.map, false);
+	bool removed = false;
+	for (int y = 0; y < 256; ++y)
+		for (int x = 0; x < 256; ++x)
+			if (repeated.map.getResource(x, y).type == WOOD && !fertility.at(x, y))
+			{
+				repeated.map.getResource(x, y).clear();
+				removed = true;
+			}
+	assert(removed && !definition.validateWorld(repeated, context).empty());
+	// The compact policy applies to long rectangles too; each distant colony needs algae.
+	for (const auto shape : {std::array<int, 3>{6, 8, 4}, std::array<int, 3>{7, 7, 4}})
+	{
+		D rectangular = r;
+		rectangular.wDec = shape[0];
+		rectangular.hDec = shape[1];
+		rectangular.nbTeams = shape[2];
+		rectangular.nbWorkers = 8;
+		rectangular.seed = 31;
+		Game world(nullptr);
+		auto result = service.generate(world, rectangular);
+		if (!result)
+			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+		assert(result);
+	}
+	// A change to the lake/road terrain cannot silently validate as the original design.
+	const auto originalTerrain = small.map.getUMTerrain(0, 0);
+	small.map.setUMTerrain(0, 0, originalTerrain == WATER ? GRASS : WATER);
+	small.map.rebuildTerrain();
+	GenerationContext compactContext(compact);
+	assert(!definition.validateWorld(small, compactContext).empty());
+	// Failed neutral bays restore a working layout; that must not invalidate its candidate scan.
+	// This crowded request exposed both nondeterministic reconstruction and an iterator lifetime bug.
+	{
+		D crowded = r;
+		crowded.nbTeams = 12;
+		crowded.nbWorkers = 6;
+		crowded.seed = 100078;
+		crowded.options["lake-elongation"] = 175;
+		crowded.options["portage-depth"] = 3;
+		crowded.options["extra-trails"] = 0;
+		crowded.options["wheat-amount"] = 200;
+		crowded.options["wood-amount"] = 175;
+		crowded.options["stone-amount"] = 175;
+		crowded.options["algae-amount"] = 0;
+		crowded.options["fruit-amount"] = 150;
+		Game one(nullptr), two(nullptr);
+		auto result = service.generate(one, crowded, true);
+		if (!result)
+			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+		assert(result && service.generate(two, crowded));
+		assert(mapFingerprint(one) == mapFingerprint(two));
+	}
+	// At zero abundance the guaranteed seed budget must still service the inn.
+	// Fertility-only sowing previously exhausted all landscape attempts here.
+	{
+		D scarce = r;
+		scarce.wDec = 9;
+		scarce.hDec = 8;
+		scarce.nbTeams = 9;
+		scarce.nbWorkers = 1;
+		scarce.seed = 100908;
+		scarce.options["lake-elongation"] = 225;
+		scarce.options["portage-depth"] = 2;
+		scarce.options["extra-trails"] = 0;
+		scarce.options["wheat-amount"] = 0;
+		scarce.options["wood-amount"] = 50;
+		scarce.options["stone-amount"] = 125;
+		scarce.options["algae-amount"] = 75;
+		scarce.options["fruit-amount"] = 250;
+		Game world(nullptr);
+		auto result = service.generate(world, scarce);
+		if (!result)
+			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+		assert(result);
+	}
+	// Deliberately unsupported requests are rejected before touching the world.
+	D invalid = compact;
+	invalid.nbTeams = 3;
+	assert(!definition.validateRequest(invalid).empty());
+	for (int amount : {0, 300})
+	{
+		D extreme = r;
+		for (const auto &control : definition.controls)
+			if (control.group == ControlGroup::Resources)
+				extreme.options[control.id] = amount;
+		Game world(nullptr);
+		auto result = service.generate(world, extreme);
+		if (!result)
+			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+		assert(result);
+	}
+	puts("PASS Portage Lakes: compact/full, repeatability, growth containment, missing portage, "
+		 "abundance extremes");
+}
+inline void drownedForestContracts()
+{
+	const auto &definition =
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("drowned-forest"));
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	request.wDec = request.hDec = 8;
+	request.nbTeams = 4;
+	request.seed = 7;
+	for (auto dimensions :
+		 {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}, std::pair{8, 8}, std::pair{9, 9}})
+	{
+		auto r = request;
+		r.wDec = dimensions.first;
+		r.hDec = dimensions.second;
+		r.nbTeams = std::min(8, (1 << r.wDec) * (1 << r.hDec) / 8192);
+		assert(definition.validateRequest(r).empty());
+		if (r.nbTeams < 8)
+		{
+			++r.nbTeams;
+			assert(!definition.validateRequest(r).empty());
+		}
+	}
+	for (auto dimensions : {std::pair{6, 7}, std::pair{7, 9}, std::pair{10, 9}})
+	{
+		auto r = request;
+		r.wDec = dimensions.first;
+		r.hDec = dimensions.second;
+		assert(!definition.validateRequest(r).empty());
+	}
+	GenerationService service;
+	Game first(nullptr), warm(nullptr);
+	assert(service.generate(first, request));
+	assert(service.generate(warm, request, true));
+	assert(mapFingerprint(first) == mapFingerprint(warm));
+	const auto fingerprint = mapFingerprint(first);
+	GenerationContext check(request);
+	assert(definition.validateWorld(first, check).empty());
+	// Forced late growth must not seal circulation or invade the protected towns.
+	setSyncRandSeed(58007);
+	for (int tick = 0; tick < 4096; ++tick)
+		first.map.growResources();
+	assert(definition.validateWorld(first, check).empty());
+	// Damage to a designated neck must be detected.
+	Game observedWorld(nullptr);
+	const auto observed = service.generate(observedWorld, request, true);
+	int neck = -1;
+	for (const auto &record : observed.telemetry.records())
+		if (record.key == "drowned-forest.shortcut.centre")
+		{
+			neck = int(std::get<std::int64_t>(record.value));
+			break;
+		}
+	assert(neck >= 0);
+	observedWorld.map.setNoResource(neck % 256, neck / 256, 1);
+	assert(!definition.validateWorld(observedWorld, check).empty());
+	auto compact = request;
+	compact.wDec = compact.hDec = 7;
+	compact.nbTeams = 2;
+	compact.nbWorkers = 8;
+	Game crowded(nullptr);
+	assert(service.generate(crowded, compact));
+	for (int amount : {0, 300})
+	{
+		auto extreme = request;
+		extreme.nbWorkers = 8;
+		for (const auto &control : definition.controls)
+			if (control.group == ControlGroup::Resources)
+				extreme.options[control.id] = amount;
+		Game world(nullptr);
+		assert(service.generate(world, extreme));
+		GenerationContext verify(extreme);
+		assert(definition.validateWorld(world, verify).empty());
+		if (amount == 0)
+		{
+			for (int y = 0; y < 256; ++y)
+				for (int x = 0; x < 256; ++x)
+					if (world.map.getResource(x, y).type == WHEAT)
+						world.map.setNoResource(x, y, 1);
+			assert(!definition.validateWorld(world, verify).empty());
+		}
+	}
+	// A worker can stand inside a hypothetical future building rectangle. Circulation
+	// may instead start at reachable gathering faces of its existing swarm.
+	auto futureRoom = compact;
+	futureRoom.seed = 100111;
+	futureRoom.nbWorkers = 1;
+	futureRoom.options["wooded-neck-thickness"] = 7;
+	futureRoom.options["neutral-clearing-size"] = 24;
+	futureRoom.options["wheat-amount"] = 300;
+	futureRoom.options["wood-amount"] = 200;
+	futureRoom.options["stone-amount"] = 250;
+	futureRoom.options["algae-amount"] = 75;
+	futureRoom.options["fruit-amount"] = 275;
+	Game roomRegression(nullptr);
+	assert(service.generate(roomRegression, futureRoom));
+	// Sparse woods on the smallest map still need useful destinations for both homes.
+	auto sparse = compact;
+	sparse.seed = 2;
+	sparse.nbWorkers = 4;
+	sparse.options["wood-amount"] = 0;
+	Game sparseRegression(nullptr);
+	assert(service.generate(sparseRegression, sparse));
+	sparse.seed = 100260;
+	sparse.nbWorkers = 3;
+	sparse.options["wooded-neck-thickness"] = 7;
+	sparse.options["neutral-clearing-size"] = 22;
+	sparse.options["wheat-amount"] = 175;
+	sparse.options["stone-amount"] = 50;
+	sparse.options["algae-amount"] = 75;
+	sparse.options["fruit-amount"] = 75;
+	Game scarceRegression(nullptr);
+	assert(service.generate(scarceRegression, sparse));
+	// At full colony density, many alternate bars and thick necks need a longer
+	// bounded search while retaining the same useful-shortcut requirement.
+	auto dense = request;
+	dense.nbTeams = 8;
+	dense.seed = 100801;
+	dense.options["sandbar-connections"] = 90;
+	dense.options["wooded-neck-thickness"] = 9;
+	dense.options["neutral-clearing-size"] = 16;
+	dense.options["wheat-amount"] = 250;
+	dense.options["wood-amount"] = 125;
+	dense.options["stone-amount"] = 75;
+	dense.options["algae-amount"] = 275;
+	dense.options["fruit-amount"] = 275;
+	Game denseRegression(nullptr);
+	assert(service.generate(denseRegression, dense));
+	// Fully occupied rectangular maps need the same bounded tail as dense squares.
+	auto rectangle = request;
+	rectangle.wDec = 7;
+	rectangle.nbWorkers = 7;
+	rectangle.seed = 101727;
+	rectangle.options["sandbar-connections"] = 100;
+	rectangle.options["wooded-neck-thickness"] = 9;
+	rectangle.options["neutral-clearing-size"] = 24;
+	rectangle.options["wood-amount"] = 0;
+	rectangle.options["stone-amount"] = 50;
+	rectangle.options["algae-amount"] = 200;
+	Game rectangularRegression(nullptr);
+	assert(service.generate(rectangularRegression, rectangle));
+	Game cold(nullptr);
+	assert(service.generate(cold, request));
+	// The worker-sensitive compact request evicted the cache; reconstruction is identical.
+	Game original(nullptr);
+	assert(service.generate(original, request));
+	assert(mapFingerprint(cold) == fingerprint && mapFingerprint(original) == fingerprint);
+	puts("PASS Drowned Forest: envelope, repeatability, cache, growth containment, neck damage, "
+		 "compact workers");
+}
+
+inline void bastionKeysContracts()
+{
+	D request;
+	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("bastion-keys"));
+	const auto &definition = GeneratorRegistry::builtins().at(request.method);
+	request.wDec = request.hDec = 7;
+	request.nbTeams = 1;
+	request.nbWorkers = 8;
+	for (int size : {14, 18})
+		for (int amount : {0, 300})
+		{
+			request.options["plantation-size"] = size;
+			for (const char *key :
+				 {"wheat-amount", "wood-amount", "stone-amount", "algae-amount", "fruit-amount"})
+				request.options[key] = amount;
+			Game game(nullptr);
+			const auto result = GenerationService().generate(game, request, true);
+			if (!result)
+				std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+			assert(result);
+			GenerationContext check(request);
+			assert(definition.validateWorld(game, check).empty());
+			assert(countBuildings(game, 0, "swimmingpool") == 1);
+			if (amount == 0)
+			{
+				setSyncRandSeed(917);
+				for (int tick = 0; tick < 20000; ++tick)
+					game.map.growResources();
+				assert(definition.validateWorld(game, check).empty());
+			}
+			// A missing permanent rampart is an invalid map, even when the rest is playable.
+			int wall = -1;
+			for (int i = 0; i < 128 * 128; ++i)
+				if (game.map.getResource(i).type == STONE)
+				{
+					wall = i;
+					break;
+				}
+			assert(wall >= 0);
+			game.map.setNoResource(wall % 128, wall / 128, 1);
+			assert(!definition.validateWorld(game, check).empty());
+		}
+	request.nbTeams = 2;
+	assert(!definition.validateRequest(request).empty());
+	request.wDec = 8;
+	assert(definition.validateRequest(request).empty());
+	// Exercise all fort styles/facings over held-out seeds, both rectangular orientations,
+	// scarce/dense crops, open-water isolation and the full twelve-colony envelope.
+	for (int seed : {207, 208, 211, 307})
+		for (int shape = 0; shape < 3; ++shape)
+		{
+			request.setMethodDefaults(GeneratorRegistry::builtins().idOf("bastion-keys"));
+			request.seed = seed;
+			request.wDec = shape == 0 ? 7 : 9;
+			request.hDec = shape == 1 ? 7 : 9;
+			request.nbTeams = shape == 2 ? 12 : 4;
+			request.nbWorkers = seed % 2 ? 1 : 8;
+			request.options["home-size"] = seed % 2 ? 13 : 15;
+			request.options["plantation-size"] = seed % 2 ? 14 : 18;
+			request.options["outer-islands"] = seed % 2 ? 1 : 5;
+			Game game(nullptr);
+			const auto result = GenerationService().generate(game, request, true);
+			if (!result)
+				std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+			assert(result);
+			assert(coloniesApart(game.map, request.nbTeams, "without swimming").empty());
+		}
+	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("bastion-keys"));
+	request.wDec = 8;
+	request.hDec = 7;
+	request.nbTeams = 2;
+	Game bridged(nullptr);
+	assert(GenerationService().generate(bridged, request));
+	assert(coloniesApart(bridged.map, 2, "without swimming").empty());
+	const Torus t(bridged.map);
+	TerrainSketch landBridge(t.size());
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int corner = bridged.map.getUMTerrain(i % t.w, i / t.w);
+		landBridge[i] = corner == WATER ? SAND : corner;
+	}
+	writeUndermap(bridged.map, landBridge);
+	GenerationContext check(request);
+	assert(definition.validateWorld(bridged, check).find("walking connection") !=
+		   std::string::npos);
+	puts("PASS Bastion Keys: envelope, variants, rectangles, twelve colonies, swimming isolation, "
+		 "land-bridge corruption, external crops, "
+		 "growth, pools and rampart corruption");
+}
+
 inline void generatorContracts()
 {
+	bastionKeysContracts();
+	drownedForestContracts();
+	portageLakesContracts();
+	faultedCityContracts();
+	encircledKingdomContracts();
+	combContracts();
+	evenGroundContracts();
+	marchlandContracts();
+	eatenMapContracts();
 	rebuiltLandscapeContracts();
 	savannahContracts();
 	locustFoodChecks();

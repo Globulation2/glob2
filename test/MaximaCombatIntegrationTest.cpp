@@ -1,10 +1,12 @@
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "../src/GlobalContainer.h"
+#include "../src/Version.h"
 #include "../src/Game.h"
 #include "../src/team/Team.h"
 #include "../src/ai/AIImplementation.h"
 #include "../src/map/Map.h"
 #include "../src/Order.h"
+#include "../src/AIMaximaContinuation.h"
 #include "../src/Player.h"
 #include "../src/TeamStat.h"
 #include <memory>
@@ -69,6 +71,9 @@ struct Fixture
         ai->budget.defense_reserve=0;
         ai->budget.food_emergency=false;
         ai->budget.colony_emergency=false;
+        // Single-flag regressions explicitly exercise the streaming fallback;
+        // wave assembly tests opt into their controller below.
+        ai->strategy.assault.waves_enabled=false;
         ai->strategy.tactics.enabled=true;
         ai->strategy.tactics.siege_enabled=true;
         ai->strategy.tactics.min_force=4;
@@ -341,6 +346,110 @@ static ::Building* materializeFlag(Fixture& f)
     }
     c.orders.clear();
     return flag;
+}
+
+static void waveAssemblyAndPipeline()
+{
+    Fixture f;
+    f.building(10,10,0);
+    auto target=f.building(35,30,1);
+    std::vector<Unit*> warriors;
+    for(int i=0;i<40;++i)warriors.push_back(f.warrior(15+i%10,15+i/10,3));
+    auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
+    a.strategy.assault.waves_enabled=true;
+    a.director.dirty=false;
+    a.budget.tactical_kind=Tactics::MissionNone;
+    a.control_offense(c);
+    assert(!a.director.dirty); // Idle wave reviews must not reschedule the economy.
+    a.plan_offense(c);
+    assert(a.budget.tactical_requested_force==40);
+    a.control_offense(c);
+    assert(a.offense_waves.size()==1);
+    assert(a.offense_waves[0].requestedForce==20);
+    const int first=a.offense_waves[0].flagId;
+    auto flag=materializeFlag(f);
+    assert(flag->posX==10 && flag->posY==10);
+    for(int i=0;i<20;++i)f.attach(warriors[i],flag);
+    a.timer+=100;
+    a.plan_offense(c);a.control_offense(c);
+    // Enrollment alone must not release the cohort; nobody has arrived.
+    assert(a.offense_waves.size()==1);
+    assert(a.offense_waves[0].phase==Tactics::WaveMuster);
+    for(int i=0;i<15;++i){warriors[i]->posX=10;warriors[i]->posY=10;}
+    a.timer+=100;
+    a.plan_offense(c);a.control_offense(c);
+    assert(a.offense_waves.size()==2);
+    assert(a.offense_waves[0].phase==Tactics::WaveAdvance);
+    assert(a.offense_waves[1].phase==Tactics::WaveMuster);
+    bool moved=false,lowPriority=false;
+    for(auto order:c.managementOrders) {
+        if(auto move=dynamic_cast<Management::ChangeFlagPosition*>(order.get()))
+            moved=moved || (move->id==first && move->x==a.budget.tactical_target_x);
+        if(auto priority=dynamic_cast<Management::ChangePriority*>(order.get()))
+            lowPriority=lowPriority || (priority->id==first && priority->priority==-1);
+    }
+    assert(moved && lowPriority);
+    // Save with one advancing and one pending muster flag. Restore the real
+    // Maxima execution queue and verify all wave fields, including clocks.
+    auto* saved=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(saved);
+    a.save(&output);
+    const std::string bytes(saved->getBuffer(),saved->getPosition());
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0);
+    Maxima restored(&input,&f.player,VERSION_MINOR);
+    const auto waveBytes=[](const std::vector<Tactics::Wave>& waves) {
+        auto* storage=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream stream(storage);
+        AIMaximaContinuation::Writer archive(&stream);
+        archive("waves",waves);
+        return std::string(storage->getBuffer(),storage->getPosition());
+    };
+    assert(waveBytes(restored.offense_waves)==waveBytes(a.offense_waves));
+    assert(restored.context.get_building_register().is_building_pending(a.offense_waves[1].flagId));
+    a.timer+=100;restored.timer+=100;
+    a.control_offense(c);restored.control_offense(restored.context);
+    assert(waveBytes(restored.offense_waves)==waveBytes(a.offense_waves));
+    assert(restored.context.managementOrders.size()==c.managementOrders.size());
+    // A flag lifecycle notification cannot discard another live cohort.
+    a.handle_event(c,RuntimeEvent(RuntimeEvent::AttackFinished,first));
+    assert(a.offense_waves.size()==1);
+    assert(a.tactical_mission.flagId==a.offense_waves[0].flagId);
+    a.end_offense(c,"test");
+    assert(a.offense_waves.empty() && a.attack_flags.empty());
+}
+
+static void smallWaveKeepsRecruiting()
+{
+    Fixture f;
+    f.building(10,10,0);
+    auto target=f.building(35,30,1);
+    std::vector<Unit*> warriors;
+    for(int i=0;i<4;++i)warriors.push_back(f.warrior(15+i,15,3));
+    auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
+    a.strategy.assault.waves_enabled=true;
+    a.plan_offense(c);a.control_offense(c);
+    assert(a.offense_waves.size()==1 && a.offense_waves[0].requestedForce==4);
+    auto flag=materializeFlag(f);
+    for(auto warrior:warriors){f.attach(warrior,flag);warrior->posX=10;warrior->posY=10;}
+    a.timer+=100;
+    a.plan_offense(c);a.control_offense(c);
+    // Four of four present is not a full wave: allow time for the army to grow.
+    assert(a.offense_waves[0].phase==Tactics::WaveMuster);
+    for(int i=4;i<20;++i)warriors.push_back(f.warrior(20+i%10,20+i/10,3));
+    a.timer+=100;
+    a.plan_offense(c);a.control_offense(c);
+    assert(a.offense_waves[0].requestedForce==20);
+    assert(assigned(c,a.offense_waves[0].flagId,20));
+    for(int i=4;i<20;++i)f.attach(warriors[i],flag);
+    a.timer+=a.strategy.assault.muster_stall_ticks;
+    a.plan_offense(c);a.control_offense(c);
+    // A timeout cannot launch four arrived warriors with sixteen stragglers.
+    assert(a.offense_waves[0].phase==Tactics::WaveMuster);
+    for(int i=0;i<15;++i){warriors[i]->posX=10;warriors[i]->posY=10;}
+    a.timer+=100;
+    a.plan_offense(c);a.control_offense(c);
+    assert(a.offense_waves[0].phase==Tactics::WaveAdvance);
 }
 
 static void warriorEligibility()
@@ -770,8 +879,97 @@ static void offensiveControlSwitches()
     std::cout << "offensive controls: tactics/siege eligible, ineligible, parent-disabled; explorer eligible/ineligible; inherited flag removal PASS\n";
 }
 
+static void fittedForceUsesOnlyVisibleUnits()
+{
+    Fixture f;
+    f.building(10,10,0);f.building(35,30,1);
+    auto& a=*f.ai;auto& c=a.context;c.initialize();
+    f.game.map.unsetMapDiscovered();
+    std::fill(f.game.map.fogOfWarA.begin(),f.game.map.fogOfWarA.end(),0);
+    std::fill(f.game.map.fogOfWarB.begin(),f.game.map.fogOfWarB.end(),0);
+    Unit* seen=f.game.addUnit(30,30,1,WARRIOR,1,0,0,0);
+    assert(seen);f.game.map.setMapDiscovered(30,30,f.player.team->me);
+    a.update_reconnaissance(c);
+    assert(a.force_beliefs.count(1));
+    const auto baseline=a.force_beliefs.at(1);
+    assert(baseline.features[ForceModel::VisibleWarriors]==1);
+    // Adding hidden forces cannot affect any input or prediction.
+    assert(f.game.addUnit(50,50,1,WARRIOR,3,0,0,0));
+    assert(f.game.addUnit(51,50,1,WORKER,0,0,0,0));
+    a.force_beliefs.clear();a.update_reconnaissance(c);
+    const auto& hidden=a.force_beliefs.at(1);
+    for(int i=0;i<ForceModel::FeatureCount;++i) assert(hidden.features[i]==baseline.features[i]);
+    for(int t=0;t<ForceModel::TargetCount;++t)
+        for(int q=0;q<ForceModel::QuantileCount;++q)
+            assert(hidden.prediction.values[t][q]==baseline.prediction.values[t][q]);
+    assert(a.reconnaissance.opponent(1)->estimatedWarriors==hidden.prediction.rounded(ForceModel::Warriors));
+    a.sample_reconnaissance_forces(c);
+    assert(a.reconnaissance.opponent(1)->estimatedWarriors==hidden.prediction.rounded(ForceModel::Warriors));
+    a.update_opponent_models(c);
+    assert(a.opponents[1].estimated_warriors==a.reconnaissance.opponent(1)->estimatedWarriors);
+    a.strategy.reconnaissance.force_memory_enabled=false;
+    a.reconnaissance.configure(10000,2500,2500,false);
+    a.sample_reconnaissance_forces(c);
+    assert(a.reconnaissance.opponent(1)->estimatedWarriors==1);
+}
+
+static void fittedHistorySurvivesSave()
+{
+    Fixture f;f.building(10,10,0);f.building(35,30,1);
+    auto& a=*f.ai;a.context.initialize();
+    int64_t observation[ForceModel::ObservationFeatures]={12,20,0,0,0,2,40,800,9,3,70,40,1000};
+    auto& before=a.force_beliefs[1];before.observe(observation);
+    observation[ForceModel::Tick]=2200;observation[ForceModel::VisibleWarriors]=9;
+    before.observe(observation);before.forecast(2400);a.timer=2400;
+    auto* storage=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(storage);a.save(&output);
+    const std::string bytes(storage->getBuffer(),storage->getPosition());
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0);
+    Maxima restored(&f.player);assert(restored.load(&input,&f.player,VERSION_MINOR));
+    assert(restored.strategy.reconnaissance.learned_force_enabled);
+    auto& after=restored.force_beliefs.at(1);
+    assert(after.initialized);
+    for(int i=0;i<ForceModel::FeatureCount;++i) assert(after.features[i]==before.features[i]);
+    for(int t=0;t<ForceModel::TargetCount;++t)
+        for(int q=0;q<ForceModel::QuantileCount;++q) assert(after.prediction.values[t][q]==before.prediction.values[t][q]);
+    observation[ForceModel::Tick]=2600;after.observe(observation);before.observe(observation);
+    assert(after.features[ForceModel::Tick]==2200); // Cadence also survives loading.
+    observation[ForceModel::Tick]=3400;after.observe(observation);before.observe(observation);
+    after.forecast(3600);before.forecast(3600);
+    for(int i=0;i<ForceModel::FeatureCount;++i) assert(after.features[i]==before.features[i]);
+    for(int t=0;t<ForceModel::TargetCount;++t)
+        for(int q=0;q<ForceModel::QuantileCount;++q) assert(after.prediction.values[t][q]==before.prediction.values[t][q]);
+}
+
+static void fittedPowerControlsAttackGate()
+{
+    Fixture f;
+    f.building(10,10,0);auto target=f.building(35,30,1);
+    for(int i=0;i<8;++i) f.warrior(15+i,15);
+    auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
+    a.opponents[1].alive=true;a.opponents[1].estimated_warriors=1;
+    auto& belief=a.force_beliefs[1];belief.initialized=true;
+    belief.prediction.values[ForceModel::Power][ForceModel::Median]=1000000*ForceModel::Scale;
+    a.plan_offense(c);
+    assert(a.offense_diagnostics.gate.find("not strong enough")!=std::string::npos);
+    belief.prediction.values[ForceModel::Power][ForceModel::Median]=ForceModel::Scale;
+    a.plan_offense(c);
+    assert(a.budget.tactical_kind==Tactics::MissionSiege);
+    // The old save policy ignores learned power entirely.
+    a.strategy.reconnaissance.learned_force_enabled=false;
+    belief.prediction.values[ForceModel::Power][ForceModel::Median]=1000000*ForceModel::Scale;
+    a.plan_offense(c);
+    assert(a.budget.tactical_kind==Tactics::MissionSiege);
+}
+
 static void run()
 {
+    fittedForceUsesOnlyVisibleUnits();
+    fittedPowerControlsAttackGate();
+    fittedHistorySurvivesSave();
+    waveAssemblyAndPipeline();
+    smallWaveKeepsRecruiting();
     defenseWrapsBuildingOrigins();
     defenseCoverage();
     warriorEligibility();
