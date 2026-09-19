@@ -32,9 +32,10 @@ waves toward a remembered enemy building or visible worker cluster. Targets
 change when they fall or a clearly better one appears. Army demand grows with
 game age. See [attack strategy](MaximaAttacks.md) for the controls and save behavior.
 
-A proposed redesign of staffing and construction around a single labour budget
-is recorded in [Maxima labour economy](MaximaLabourEconomy.md); it is a design,
-not current behaviour.
+The shared labour budget coordinates food delivery, construction and training;
+[Maxima labour economy](MaximaLabourEconomy.md) records its design and calibration.
+The [force model](../docs/maxima-force-model.md) estimates enemy warriors and
+combat power from fog-visible observation history.
 
 ## Configuration
 
