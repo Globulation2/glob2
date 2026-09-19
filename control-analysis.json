@@ -1,0 +1,3151 @@
+{
+  "inputs": {
+    "controls": 777,
+    "envelope": 436
+  },
+  "failures": [],
+  "default_curves": {
+    "lake-elongation": [
+      {
+        "value": 125,
+        "seeds": 8,
+        "means": {
+          "terrain%:water": 11.36932373046875,
+          "tel:portage-lakes.swim.final-saving": 50.5
+        }
+      },
+      {
+        "value": 150,
+        "seeds": 8,
+        "means": {
+          "terrain%:water": 10.562324523925781,
+          "tel:portage-lakes.swim.final-saving": 54.375
+        }
+      },
+      {
+        "value": 175,
+        "seeds": 8,
+        "means": {
+          "terrain%:water": 9.99908447265625,
+          "tel:portage-lakes.swim.final-saving": 59.375
+        }
+      },
+      {
+        "value": 200,
+        "seeds": 8,
+        "means": {
+          "terrain%:water": 9.630012512207031,
+          "tel:portage-lakes.swim.final-saving": 61.125
+        }
+      },
+      {
+        "value": 225,
+        "seeds": 8,
+        "means": {
+          "terrain%:water": 9.332466125488281,
+          "tel:portage-lakes.swim.final-saving": 62.625
+        }
+      },
+      {
+        "value": 250,
+        "seeds": 8,
+        "means": {
+          "terrain%:water": 9.084701538085938,
+          "tel:portage-lakes.swim.final-saving": 65.875
+        }
+      },
+      {
+        "value": 275,
+        "seeds": 8,
+        "means": {
+          "terrain%:water": 8.9141845703125,
+          "tel:portage-lakes.swim.final-saving": 71.125
+        }
+      },
+      {
+        "value": 300,
+        "seeds": 8,
+        "means": {
+          "terrain%:water": 8.748817443847656,
+          "tel:portage-lakes.swim.final-saving": 74.625
+        }
+      }
+    ],
+    "portage-depth": [
+      {
+        "value": 2,
+        "seeds": 8,
+        "means": {
+          "tel:portage-lakes.portage.wood-tiles": 6.0
+        }
+      },
+      {
+        "value": 3,
+        "seeds": 8,
+        "means": {
+          "tel:portage-lakes.portage.wood-tiles": 9.0
+        }
+      },
+      {
+        "value": 4,
+        "seeds": 8,
+        "means": {
+          "tel:portage-lakes.portage.wood-tiles": 12.0
+        }
+      },
+      {
+        "value": 5,
+        "seeds": 8,
+        "means": {
+          "tel:portage-lakes.portage.wood-tiles": 15.0
+        }
+      },
+      {
+        "value": 6,
+        "seeds": 8,
+        "means": {
+          "tel:portage-lakes.portage.wood-tiles": 18.0
+        }
+      },
+      {
+        "value": 7,
+        "seeds": 8,
+        "means": {
+          "tel:portage-lakes.portage.wood-tiles": 21.0
+        }
+      },
+      {
+        "value": 8,
+        "seeds": 8,
+        "means": {
+          "tel:portage-lakes.portage.wood-tiles": 24.0
+        }
+      }
+    ],
+    "extra-trails": [
+      {
+        "value": 0,
+        "seeds": 8,
+        "means": {
+          "tel:portage-lakes.trails.placed": 3.0
+        }
+      },
+      {
+        "value": 25,
+        "seeds": 8,
+        "means": {
+          "tel:portage-lakes.trails.placed": 3.25
+        }
+      },
+      {
+        "value": 50,
+        "seeds": 8,
+        "means": {
+          "tel:portage-lakes.trails.placed": 4.0
+        }
+      },
+      {
+        "value": 75,
+        "seeds": 8,
+        "means": {
+          "tel:portage-lakes.trails.placed": 4.75
+        }
+      },
+      {
+        "value": 100,
+        "seeds": 8,
+        "means": {
+          "tel:portage-lakes.trails.placed": 6.0
+        }
+      }
+    ],
+    "wheat-amount": [
+      {
+        "value": 0,
+        "seeds": 8,
+        "means": {
+          "tiles:wheat": 128
+        }
+      },
+      {
+        "value": 25,
+        "seeds": 8,
+        "means": {
+          "tiles:wheat": 256
+        }
+      },
+      {
+        "value": 50,
+        "seeds": 8,
+        "means": {
+          "tiles:wheat": 384
+        }
+      },
+      {
+        "value": 75,
+        "seeds": 8,
+        "means": {
+          "tiles:wheat": 512
+        }
+      },
+      {
+        "value": 100,
+        "seeds": 8,
+        "means": {
+          "tiles:wheat": 640
+        }
+      },
+      {
+        "value": 125,
+        "seeds": 8,
+        "means": {
+          "tiles:wheat": 768
+        }
+      },
+      {
+        "value": 150,
+        "seeds": 8,
+        "means": {
+          "tiles:wheat": 895.125
+        }
+      },
+      {
+        "value": 175,
+        "seeds": 8,
+        "means": {
+          "tiles:wheat": 1021.125
+        }
+      },
+      {
+        "value": 200,
+        "seeds": 8,
+        "means": {
+          "tiles:wheat": 1146.625
+        }
+      },
+      {
+        "value": 225,
+        "seeds": 8,
+        "means": {
+          "tiles:wheat": 1268.875
+        }
+      },
+      {
+        "value": 250,
+        "seeds": 8,
+        "means": {
+          "tiles:wheat": 1389.25
+        }
+      },
+      {
+        "value": 275,
+        "seeds": 8,
+        "means": {
+          "tiles:wheat": 1507
+        }
+      },
+      {
+        "value": 300,
+        "seeds": 8,
+        "means": {
+          "tiles:wheat": 1620
+        }
+      }
+    ],
+    "wood-amount": [
+      {
+        "value": 0,
+        "seeds": 8,
+        "means": {
+          "tiles:wood": 17440.75,
+          "tel:portage-lakes.timber.planted": 6.0
+        }
+      },
+      {
+        "value": 25,
+        "seeds": 8,
+        "means": {
+          "tiles:wood": 17508.125,
+          "tel:portage-lakes.timber.planted": 8.765625
+        }
+      },
+      {
+        "value": 50,
+        "seeds": 8,
+        "means": {
+          "tiles:wood": 17530.25,
+          "tel:portage-lakes.timber.planted": 11.53125
+        }
+      },
+      {
+        "value": 75,
+        "seeds": 8,
+        "means": {
+          "tiles:wood": 17551.875,
+          "tel:portage-lakes.timber.planted": 14.234375
+        }
+      },
+      {
+        "value": 100,
+        "seeds": 8,
+        "means": {
+          "tiles:wood": 17573.25,
+          "tel:portage-lakes.timber.planted": 16.90625
+        }
+      },
+      {
+        "value": 125,
+        "seeds": 8,
+        "means": {
+          "tiles:wood": 17594.625,
+          "tel:portage-lakes.timber.planted": 19.578125
+        }
+      },
+      {
+        "value": 150,
+        "seeds": 8,
+        "means": {
+          "tiles:wood": 17615.5,
+          "tel:portage-lakes.timber.planted": 22.1875
+        }
+      },
+      {
+        "value": 175,
+        "seeds": 8,
+        "means": {
+          "tiles:wood": 17635.5,
+          "tel:portage-lakes.timber.planted": 24.6875
+        }
+      },
+      {
+        "value": 200,
+        "seeds": 8,
+        "means": {
+          "tiles:wood": 17655,
+          "tel:portage-lakes.timber.planted": 27.125
+        }
+      },
+      {
+        "value": 225,
+        "seeds": 8,
+        "means": {
+          "tiles:wood": 17779.25,
+          "tel:portage-lakes.timber.planted": 29.53125
+        }
+      },
+      {
+        "value": 250,
+        "seeds": 8,
+        "means": {
+          "tiles:wood": 17797.625,
+          "tel:portage-lakes.timber.planted": 31.828125
+        }
+      },
+      {
+        "value": 275,
+        "seeds": 8,
+        "means": {
+          "tiles:wood": 17815.625,
+          "tel:portage-lakes.timber.planted": 34.078125
+        }
+      },
+      {
+        "value": 300,
+        "seeds": 8,
+        "means": {
+          "tiles:wood": 17727.5,
+          "tel:portage-lakes.timber.planted": 36.1875
+        }
+      }
+    ],
+    "stone-amount": [
+      {
+        "value": 0,
+        "seeds": 8,
+        "means": {
+          "tiles:stone": 802.125
+        }
+      },
+      {
+        "value": 25,
+        "seeds": 8,
+        "means": {
+          "tiles:stone": 805.875
+        }
+      },
+      {
+        "value": 50,
+        "seeds": 8,
+        "means": {
+          "tiles:stone": 809.625
+        }
+      },
+      {
+        "value": 75,
+        "seeds": 8,
+        "means": {
+          "tiles:stone": 809.625
+        }
+      },
+      {
+        "value": 100,
+        "seeds": 8,
+        "means": {
+          "tiles:stone": 813.25
+        }
+      },
+      {
+        "value": 125,
+        "seeds": 8,
+        "means": {
+          "tiles:stone": 816.875
+        }
+      },
+      {
+        "value": 150,
+        "seeds": 8,
+        "means": {
+          "tiles:stone": 820.25
+        }
+      },
+      {
+        "value": 175,
+        "seeds": 8,
+        "means": {
+          "tiles:stone": 820.25
+        }
+      },
+      {
+        "value": 200,
+        "seeds": 8,
+        "means": {
+          "tiles:stone": 823.5
+        }
+      },
+      {
+        "value": 225,
+        "seeds": 8,
+        "means": {
+          "tiles:stone": 826.75
+        }
+      },
+      {
+        "value": 250,
+        "seeds": 8,
+        "means": {
+          "tiles:stone": 830
+        }
+      },
+      {
+        "value": 275,
+        "seeds": 8,
+        "means": {
+          "tiles:stone": 830
+        }
+      },
+      {
+        "value": 300,
+        "seeds": 8,
+        "means": {
+          "tiles:stone": 833
+        }
+      }
+    ],
+    "algae-amount": [
+      {
+        "value": 0,
+        "seeds": 8,
+        "means": {
+          "tiles:algae": 32
+        }
+      },
+      {
+        "value": 25,
+        "seeds": 8,
+        "means": {
+          "tiles:algae": 40
+        }
+      },
+      {
+        "value": 50,
+        "seeds": 8,
+        "means": {
+          "tiles:algae": 48
+        }
+      },
+      {
+        "value": 75,
+        "seeds": 8,
+        "means": {
+          "tiles:algae": 56
+        }
+      },
+      {
+        "value": 100,
+        "seeds": 8,
+        "means": {
+          "tiles:algae": 64
+        }
+      },
+      {
+        "value": 125,
+        "seeds": 8,
+        "means": {
+          "tiles:algae": 72
+        }
+      },
+      {
+        "value": 150,
+        "seeds": 8,
+        "means": {
+          "tiles:algae": 80
+        }
+      },
+      {
+        "value": 175,
+        "seeds": 8,
+        "means": {
+          "tiles:algae": 88
+        }
+      },
+      {
+        "value": 200,
+        "seeds": 8,
+        "means": {
+          "tiles:algae": 96
+        }
+      },
+      {
+        "value": 225,
+        "seeds": 8,
+        "means": {
+          "tiles:algae": 103.625
+        }
+      },
+      {
+        "value": 250,
+        "seeds": 8,
+        "means": {
+          "tiles:algae": 104.75
+        }
+      },
+      {
+        "value": 275,
+        "seeds": 8,
+        "means": {
+          "tiles:algae": 104.75
+        }
+      },
+      {
+        "value": 300,
+        "seeds": 8,
+        "means": {
+          "tiles:algae": 104.75
+        }
+      }
+    ],
+    "fruit-amount": [
+      {
+        "value": 0,
+        "seeds": 8,
+        "means": {
+          "tiles:fruit": 0
+        }
+      },
+      {
+        "value": 25,
+        "seeds": 8,
+        "means": {
+          "tiles:fruit": 10
+        }
+      },
+      {
+        "value": 50,
+        "seeds": 8,
+        "means": {
+          "tiles:fruit": 16
+        }
+      },
+      {
+        "value": 75,
+        "seeds": 8,
+        "means": {
+          "tiles:fruit": 20
+        }
+      },
+      {
+        "value": 100,
+        "seeds": 8,
+        "means": {
+          "tiles:fruit": 26
+        }
+      },
+      {
+        "value": 125,
+        "seeds": 8,
+        "means": {
+          "tiles:fruit": 36
+        }
+      },
+      {
+        "value": 150,
+        "seeds": 8,
+        "means": {
+          "tiles:fruit": 42
+        }
+      },
+      {
+        "value": 175,
+        "seeds": 8,
+        "means": {
+          "tiles:fruit": 46
+        }
+      },
+      {
+        "value": 200,
+        "seeds": 8,
+        "means": {
+          "tiles:fruit": 52
+        }
+      },
+      {
+        "value": 225,
+        "seeds": 8,
+        "means": {
+          "tiles:fruit": 60.625
+        }
+      },
+      {
+        "value": 250,
+        "seeds": 8,
+        "means": {
+          "tiles:fruit": 66.5
+        }
+      },
+      {
+        "value": 275,
+        "seeds": 8,
+        "means": {
+          "tiles:fruit": 70.25
+        }
+      },
+      {
+        "value": 300,
+        "seeds": 8,
+        "means": {
+          "tiles:fruit": 76.125
+        }
+      }
+    ]
+  },
+  "paired_transitions": {
+    "lake-elongation": {
+      "terrain%:water": {
+        "count": 74,
+        "flat": [],
+        "decreases": [
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              1
+            ],
+            "from": 125,
+            "to": 150,
+            "before": 9.9029541015625,
+            "after": 9.23614501953125,
+            "proposal_before": 0.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              1
+            ],
+            "from": 150,
+            "to": 175,
+            "before": 9.23614501953125,
+            "after": 8.79058837890625,
+            "proposal_before": 3.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              1
+            ],
+            "from": 175,
+            "to": 200,
+            "before": 8.79058837890625,
+            "after": 8.50677490234375,
+            "proposal_before": 2.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              1
+            ],
+            "from": 200,
+            "to": 225,
+            "before": 8.50677490234375,
+            "after": 8.2275390625,
+            "proposal_before": 3.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              1
+            ],
+            "from": 225,
+            "to": 250,
+            "before": 8.2275390625,
+            "after": 8.0810546875,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              1
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 8.0810546875,
+            "after": 7.9132080078125,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              1
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 7.9132080078125,
+            "after": 7.78961181640625,
+            "proposal_before": 0.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 125,
+            "to": 150,
+            "before": 11.78436279296875,
+            "after": 10.9161376953125,
+            "proposal_before": 2.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 150,
+            "to": 175,
+            "before": 10.9161376953125,
+            "after": 10.2569580078125,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 175,
+            "to": 200,
+            "before": 10.2569580078125,
+            "after": 9.82666015625,
+            "proposal_before": 0.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 200,
+            "to": 225,
+            "before": 9.82666015625,
+            "after": 9.47418212890625,
+            "proposal_before": 2.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 225,
+            "to": 250,
+            "before": 9.47418212890625,
+            "after": 9.21173095703125,
+            "proposal_before": 1.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 9.21173095703125,
+            "after": 9.02099609375,
+            "proposal_before": 3.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 9.02099609375,
+            "after": 8.8134765625,
+            "proposal_before": 2.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              3
+            ],
+            "from": 125,
+            "to": 150,
+            "before": 12.29248046875,
+            "after": 11.44256591796875,
+            "proposal_before": 1.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              3
+            ],
+            "from": 150,
+            "to": 175,
+            "before": 11.44256591796875,
+            "after": 10.8978271484375,
+            "proposal_before": 2.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              3
+            ],
+            "from": 175,
+            "to": 200,
+            "before": 10.8978271484375,
+            "after": 10.49957275390625,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              3
+            ],
+            "from": 200,
+            "to": 225,
+            "before": 10.49957275390625,
+            "after": 10.22796630859375,
+            "proposal_before": 3.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              3
+            ],
+            "from": 225,
+            "to": 250,
+            "before": 10.22796630859375,
+            "after": 9.95941162109375,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              3
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 9.95941162109375,
+            "after": 9.77630615234375,
+            "proposal_before": 2.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              3
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 9.77630615234375,
+            "after": 9.60540771484375,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 125,
+            "to": 150,
+            "before": 11.749267578125,
+            "after": 10.97869873046875,
+            "proposal_before": 1.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 150,
+            "to": 175,
+            "before": 10.97869873046875,
+            "after": 10.41107177734375,
+            "proposal_before": 3.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 175,
+            "to": 200,
+            "before": 10.41107177734375,
+            "after": 10.09521484375,
+            "proposal_before": 2.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 200,
+            "to": 225,
+            "before": 10.09521484375,
+            "after": 9.79156494140625,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 225,
+            "to": 250,
+            "before": 9.79156494140625,
+            "after": 9.5611572265625,
+            "proposal_before": 3.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 9.5611572265625,
+            "after": 9.3780517578125,
+            "proposal_before": 2.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 9.3780517578125,
+            "after": 9.27886962890625,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              5
+            ],
+            "from": 125,
+            "to": 150,
+            "before": 11.38763427734375,
+            "after": 10.55450439453125,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              5
+            ],
+            "from": 150,
+            "to": 175,
+            "before": 10.55450439453125,
+            "after": 9.9517822265625,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              5
+            ],
+            "from": 175,
+            "to": 200,
+            "before": 9.9517822265625,
+            "after": 9.600830078125,
+            "proposal_before": 2.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              5
+            ],
+            "from": 200,
+            "to": 225,
+            "before": 9.600830078125,
+            "after": 9.32464599609375,
+            "proposal_before": 1.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              5
+            ],
+            "from": 225,
+            "to": 250,
+            "before": 9.32464599609375,
+            "after": 9.027099609375,
+            "proposal_before": 2.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              5
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 9.027099609375,
+            "after": 8.88519287109375,
+            "proposal_before": 0.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              5
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 8.88519287109375,
+            "after": 8.7127685546875,
+            "proposal_before": 3.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              6
+            ],
+            "from": 125,
+            "to": 150,
+            "before": 12.20245361328125,
+            "after": 11.285400390625,
+            "proposal_before": 3.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              6
+            ],
+            "from": 150,
+            "to": 175,
+            "before": 11.285400390625,
+            "after": 10.6475830078125,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              6
+            ],
+            "from": 175,
+            "to": 200,
+            "before": 10.6475830078125,
+            "after": 10.16998291015625,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              6
+            ],
+            "from": 200,
+            "to": 225,
+            "before": 10.16998291015625,
+            "after": 9.8541259765625,
+            "proposal_before": 0.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              6
+            ],
+            "from": 225,
+            "to": 250,
+            "before": 9.8541259765625,
+            "after": 9.56878662109375,
+            "proposal_before": 2.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              6
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 9.56878662109375,
+            "after": 9.36126708984375,
+            "proposal_before": 1.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              6
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 9.36126708984375,
+            "after": 9.17816162109375,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              7
+            ],
+            "from": 125,
+            "to": 150,
+            "before": 11.6912841796875,
+            "after": 10.845947265625,
+            "proposal_before": 1.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              7
+            ],
+            "from": 150,
+            "to": 175,
+            "before": 10.845947265625,
+            "after": 10.25390625,
+            "proposal_before": 2.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              7
+            ],
+            "from": 175,
+            "to": 200,
+            "before": 10.25390625,
+            "after": 9.8419189453125,
+            "proposal_before": 1.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              7
+            ],
+            "from": 200,
+            "to": 225,
+            "before": 9.8419189453125,
+            "after": 9.515380859375,
+            "proposal_before": 3.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              7
+            ],
+            "from": 225,
+            "to": 250,
+            "before": 9.515380859375,
+            "after": 9.24224853515625,
+            "proposal_before": 0.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              7
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 9.24224853515625,
+            "after": 9.08355712890625,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              7
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 9.08355712890625,
+            "after": 8.87451171875,
+            "proposal_before": 2.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              8
+            ],
+            "from": 125,
+            "to": 150,
+            "before": 9.94415283203125,
+            "after": 9.23919677734375,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              8
+            ],
+            "from": 150,
+            "to": 175,
+            "before": 9.23919677734375,
+            "after": 8.782958984375,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              8
+            ],
+            "from": 175,
+            "to": 200,
+            "before": 8.782958984375,
+            "after": 8.4991455078125,
+            "proposal_before": 3.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              8
+            ],
+            "from": 200,
+            "to": 225,
+            "before": 8.4991455078125,
+            "after": 8.24432373046875,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              8
+            ],
+            "from": 225,
+            "to": 250,
+            "before": 8.24432373046875,
+            "after": 8.026123046875,
+            "proposal_before": 2.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              8
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 8.026123046875,
+            "after": 7.8948974609375,
+            "proposal_before": 1.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              8
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 7.8948974609375,
+            "after": 7.73773193359375,
+            "proposal_before": 1.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              128,
+              128,
+              3,
+              1
+            ],
+            "from": 125,
+            "to": 200,
+            "before": 13.140869140625,
+            "after": 11.199951171875,
+            "proposal_before": 1.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              128,
+              128,
+              3,
+              1
+            ],
+            "from": 200,
+            "to": 300,
+            "before": 11.199951171875,
+            "after": 10.235595703125,
+            "proposal_before": 3.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              128,
+              128,
+              3,
+              2
+            ],
+            "from": 125,
+            "to": 200,
+            "before": 12.890625,
+            "after": 11.041259765625,
+            "proposal_before": 2.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              128,
+              128,
+              3,
+              2
+            ],
+            "from": 200,
+            "to": 300,
+            "before": 11.041259765625,
+            "after": 10.113525390625,
+            "proposal_before": 1.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              128,
+              128,
+              3,
+              3
+            ],
+            "from": 125,
+            "to": 200,
+            "before": 12.908935546875,
+            "after": 11.029052734375,
+            "proposal_before": 0.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              128,
+              128,
+              3,
+              3
+            ],
+            "from": 200,
+            "to": 300,
+            "before": 11.029052734375,
+            "after": 10.107421875,
+            "proposal_before": 3.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              512,
+              512,
+              6,
+              1
+            ],
+            "from": 125,
+            "to": 200,
+            "before": 11.063766479492188,
+            "after": 9.220504760742188,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              512,
+              512,
+              6,
+              1
+            ],
+            "from": 200,
+            "to": 300,
+            "before": 9.220504760742188,
+            "after": 8.425140380859375,
+            "proposal_before": 0.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              512,
+              512,
+              6,
+              2
+            ],
+            "from": 125,
+            "to": 200,
+            "before": 10.721588134765625,
+            "after": 9.151840209960938,
+            "proposal_before": 3.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              512,
+              512,
+              6,
+              2
+            ],
+            "from": 200,
+            "to": 300,
+            "before": 9.151840209960938,
+            "after": 8.351898193359375,
+            "proposal_before": 2.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              512,
+              512,
+              6,
+              3
+            ],
+            "from": 125,
+            "to": 200,
+            "before": 11.449432373046875,
+            "after": 9.672164916992188,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              512,
+              512,
+              6,
+              3
+            ],
+            "from": 200,
+            "to": 300,
+            "before": 9.672164916992188,
+            "after": 8.828353881835938,
+            "proposal_before": 0.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              512,
+              256,
+              5,
+              1
+            ],
+            "from": 125,
+            "to": 200,
+            "before": 11.7401123046875,
+            "after": 9.967041015625,
+            "proposal_before": 1.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              512,
+              256,
+              5,
+              1
+            ],
+            "from": 200,
+            "to": 300,
+            "before": 9.967041015625,
+            "after": 9.07440185546875,
+            "proposal_before": 2.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              512,
+              256,
+              5,
+              2
+            ],
+            "from": 125,
+            "to": 200,
+            "before": 12.06207275390625,
+            "after": 10.1470947265625,
+            "proposal_before": 3.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              512,
+              256,
+              5,
+              2
+            ],
+            "from": 200,
+            "to": 300,
+            "before": 10.1470947265625,
+            "after": 9.21783447265625,
+            "proposal_before": 0.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              512,
+              256,
+              5,
+              3
+            ],
+            "from": 125,
+            "to": 200,
+            "before": 11.25946044921875,
+            "after": 9.482574462890625,
+            "proposal_before": 0.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              512,
+              256,
+              5,
+              3
+            ],
+            "from": 200,
+            "to": 300,
+            "before": 9.482574462890625,
+            "after": 8.570098876953125,
+            "proposal_before": 2.0,
+            "proposal_after": 1.0
+          }
+        ]
+      },
+      "tel:portage-lakes.swim.final-saving": {
+        "count": 74,
+        "flat": [
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 125,
+            "to": 150,
+            "before": 47.0,
+            "after": 47.0,
+            "proposal_before": 2.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              5
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 74.0,
+            "after": 74.0,
+            "proposal_before": 3.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              6
+            ],
+            "from": 200,
+            "to": 225,
+            "before": 63.0,
+            "after": 63.0,
+            "proposal_before": 0.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              128,
+              128,
+              3,
+              2
+            ],
+            "from": 125,
+            "to": 200,
+            "before": 31.0,
+            "after": 31.0,
+            "proposal_before": 2.0,
+            "proposal_after": 1.0
+          }
+        ],
+        "decreases": [
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 200,
+            "to": 225,
+            "before": 62.0,
+            "after": 57.0,
+            "proposal_before": 2.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              3
+            ],
+            "from": 200,
+            "to": 225,
+            "before": 63.0,
+            "after": 60.0,
+            "proposal_before": 3.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              6
+            ],
+            "from": 125,
+            "to": 150,
+            "before": 55.0,
+            "after": 51.0,
+            "proposal_before": 3.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              7
+            ],
+            "from": 175,
+            "to": 200,
+            "before": 62.0,
+            "after": 56.0,
+            "proposal_before": 1.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              8
+            ],
+            "from": 225,
+            "to": 250,
+            "before": 67.0,
+            "after": 63.0,
+            "proposal_before": 2.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              128,
+              128,
+              3,
+              1
+            ],
+            "from": 125,
+            "to": 200,
+            "before": 53.0,
+            "after": 48.0,
+            "proposal_before": 1.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              128,
+              128,
+              3,
+              1
+            ],
+            "from": 200,
+            "to": 300,
+            "before": 48.0,
+            "after": 28.0,
+            "proposal_before": 3.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              128,
+              128,
+              3,
+              3
+            ],
+            "from": 200,
+            "to": 300,
+            "before": 52.0,
+            "after": 43.0,
+            "proposal_before": 3.0,
+            "proposal_after": 0.0
+          }
+        ]
+      }
+    },
+    "portage-depth": {
+      "tel:portage-lakes.portage.wood-tiles": {
+        "count": 66,
+        "flat": [],
+        "decreases": []
+      }
+    },
+    "extra-trails": {
+      "tel:portage-lakes.trails.placed": {
+        "count": 50,
+        "flat": [
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              1
+            ],
+            "from": 0,
+            "to": 25,
+            "before": 3.0,
+            "after": 3.0,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 0,
+            "to": 25,
+            "before": 3.0,
+            "after": 3.0,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 50,
+            "to": 75,
+            "before": 4.0,
+            "after": 4.0,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              3
+            ],
+            "from": 25,
+            "to": 50,
+            "before": 4.0,
+            "after": 4.0,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 0,
+            "to": 25,
+            "before": 3.0,
+            "after": 3.0,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 25,
+            "to": 50,
+            "before": 3.0,
+            "after": 3.0,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              5
+            ],
+            "from": 50,
+            "to": 75,
+            "before": 5.0,
+            "after": 5.0,
+            "proposal_before": 1.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              6
+            ],
+            "from": 0,
+            "to": 25,
+            "before": 3.0,
+            "after": 3.0,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              7
+            ],
+            "from": 0,
+            "to": 25,
+            "before": 3.0,
+            "after": 3.0,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              8
+            ],
+            "from": 0,
+            "to": 25,
+            "before": 3.0,
+            "after": 3.0,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              8
+            ],
+            "from": 50,
+            "to": 75,
+            "before": 4.0,
+            "after": 4.0,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              128,
+              128,
+              3,
+              1
+            ],
+            "from": 0,
+            "to": 25,
+            "before": 2.0,
+            "after": 2.0,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              128,
+              128,
+              3,
+              2
+            ],
+            "from": 0,
+            "to": 25,
+            "before": 2.0,
+            "after": 2.0,
+            "proposal_before": 1.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              128,
+              128,
+              3,
+              3
+            ],
+            "from": 25,
+            "to": 100,
+            "before": 3.0,
+            "after": 3.0,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              512,
+              512,
+              6,
+              1
+            ],
+            "from": 0,
+            "to": 25,
+            "before": 5.0,
+            "after": 5.0,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              512,
+              256,
+              5,
+              1
+            ],
+            "from": 0,
+            "to": 25,
+            "before": 4.0,
+            "after": 4.0,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              512,
+              256,
+              5,
+              2
+            ],
+            "from": 0,
+            "to": 25,
+            "before": 4.0,
+            "after": 4.0,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          }
+        ],
+        "decreases": []
+      }
+    },
+    "wheat-amount": {
+      "tiles:wheat": {
+        "count": 114,
+        "flat": [],
+        "decreases": []
+      }
+    },
+    "wood-amount": {
+      "tiles:wood": {
+        "count": 114,
+        "flat": [],
+        "decreases": [
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 16764,
+            "after": 15945,
+            "proposal_before": 2.0,
+            "proposal_after": 3.0
+          }
+        ]
+      },
+      "tel:portage-lakes.timber.planted": {
+        "count": 114,
+        "flat": [],
+        "decreases": []
+      }
+    },
+    "stone-amount": {
+      "tiles:stone": {
+        "count": 114,
+        "flat": [
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              1
+            ],
+            "from": 50,
+            "to": 75,
+            "before": 801,
+            "after": 801,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              1
+            ],
+            "from": 150,
+            "to": 175,
+            "before": 810,
+            "after": 810,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              1
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 819,
+            "after": 819,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 50,
+            "to": 75,
+            "before": 898,
+            "after": 898,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 150,
+            "to": 175,
+            "before": 907,
+            "after": 907,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 916,
+            "after": 916,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              3
+            ],
+            "from": 50,
+            "to": 75,
+            "before": 815,
+            "after": 815,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              3
+            ],
+            "from": 150,
+            "to": 175,
+            "before": 827,
+            "after": 827,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              3
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 836,
+            "after": 836,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 50,
+            "to": 75,
+            "before": 919,
+            "after": 919,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 150,
+            "to": 175,
+            "before": 931,
+            "after": 931,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 943,
+            "after": 943,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              5
+            ],
+            "from": 50,
+            "to": 75,
+            "before": 873,
+            "after": 873,
+            "proposal_before": 1.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              5
+            ],
+            "from": 150,
+            "to": 175,
+            "before": 885,
+            "after": 885,
+            "proposal_before": 1.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              5
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 897,
+            "after": 897,
+            "proposal_before": 1.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              6
+            ],
+            "from": 50,
+            "to": 75,
+            "before": 492,
+            "after": 492,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              6
+            ],
+            "from": 150,
+            "to": 175,
+            "before": 503,
+            "after": 503,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              6
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 512,
+            "after": 512,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              7
+            ],
+            "from": 50,
+            "to": 75,
+            "before": 719,
+            "after": 719,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              7
+            ],
+            "from": 150,
+            "to": 175,
+            "before": 731,
+            "after": 731,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              7
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 743,
+            "after": 743,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              8
+            ],
+            "from": 50,
+            "to": 75,
+            "before": 960,
+            "after": 960,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              8
+            ],
+            "from": 150,
+            "to": 175,
+            "before": 968,
+            "after": 968,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              8
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 974,
+            "after": 974,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          }
+        ],
+        "decreases": []
+      }
+    },
+    "algae-amount": {
+      "tiles:algae": {
+        "count": 114,
+        "flat": [
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              1
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 106,
+            "after": 106,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              1
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 106,
+            "after": 106,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 225,
+            "to": 250,
+            "before": 104,
+            "after": 104,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 104,
+            "after": 104,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              2
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 104,
+            "after": 104,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              3
+            ],
+            "from": 225,
+            "to": 250,
+            "before": 104,
+            "after": 104,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              3
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 104,
+            "after": 104,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              3
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 104,
+            "after": 104,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 225,
+            "to": 250,
+            "before": 104,
+            "after": 104,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 104,
+            "after": 104,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 104,
+            "after": 104,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              5
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 108,
+            "after": 108,
+            "proposal_before": 1.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              5
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 108,
+            "after": 108,
+            "proposal_before": 1.0,
+            "proposal_after": 1.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              6
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 102,
+            "after": 102,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              6
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 102,
+            "after": 102,
+            "proposal_before": 0.0,
+            "proposal_after": 0.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              7
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 105,
+            "after": 105,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              7
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 105,
+            "after": 105,
+            "proposal_before": 3.0,
+            "proposal_after": 3.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              8
+            ],
+            "from": 250,
+            "to": 275,
+            "before": 105,
+            "after": 105,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          },
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              8
+            ],
+            "from": 275,
+            "to": 300,
+            "before": 105,
+            "after": 105,
+            "proposal_before": 2.0,
+            "proposal_after": 2.0
+          }
+        ],
+        "decreases": []
+      }
+    },
+    "fruit-amount": {
+      "tiles:fruit": {
+        "count": 114,
+        "flat": [
+          {
+            "configuration": [
+              256,
+              256,
+              4,
+              4
+            ],
+            "from": 200,
+            "to": 225,
+            "before": 52,
+            "after": 52,
+            "proposal_before": 3.0,
+            "proposal_after": 2.0
+          }
+        ],
+        "decreases": []
+      }
+    }
+  },
+  "small_trails": [
+    {
+      "width": 64,
+      "height": 64,
+      "teams": 1,
+      "flat_seed_curves": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "curve": [
+        {
+          "value": 0,
+          "mean_trails": 0.0
+        },
+        {
+          "value": 25,
+          "mean_trails": 0.25
+        },
+        {
+          "value": 50,
+          "mean_trails": 0.375
+        },
+        {
+          "value": 75,
+          "mean_trails": 0.375
+        },
+        {
+          "value": 100,
+          "mean_trails": 0.375
+        }
+      ]
+    },
+    {
+      "width": 64,
+      "height": 64,
+      "teams": 2,
+      "flat_seed_curves": [
+        1,
+        2,
+        3
+      ],
+      "curve": [
+        {
+          "value": 0,
+          "mean_trails": 1.0
+        },
+        {
+          "value": 25,
+          "mean_trails": 1.5
+        },
+        {
+          "value": 50,
+          "mean_trails": 1.75
+        },
+        {
+          "value": 75,
+          "mean_trails": 1.875
+        },
+        {
+          "value": 100,
+          "mean_trails": 1.875
+        }
+      ]
+    },
+    {
+      "width": 256,
+      "height": 256,
+      "teams": 1,
+      "flat_seed_curves": [
+        2
+      ],
+      "curve": [
+        {
+          "value": 0,
+          "mean_trails": 0.0
+        },
+        {
+          "value": 25,
+          "mean_trails": 0.375
+        },
+        {
+          "value": 50,
+          "mean_trails": 0.625
+        },
+        {
+          "value": 75,
+          "mean_trails": 0.875
+        },
+        {
+          "value": 100,
+          "mean_trails": 0.875
+        }
+      ]
+    },
+    {
+      "width": 256,
+      "height": 256,
+      "teams": 2,
+      "flat_seed_curves": [],
+      "curve": [
+        {
+          "value": 0,
+          "mean_trails": 1.0
+        },
+        {
+          "value": 25,
+          "mean_trails": 1.75
+        },
+        {
+          "value": 50,
+          "mean_trails": 2.875
+        },
+        {
+          "value": 75,
+          "mean_trails": 3.375
+        },
+        {
+          "value": 100,
+          "mean_trails": 3.75
+        }
+      ]
+    }
+  ],
+  "envelope_coverage": [
+    {
+      "width": 64,
+      "height": 64,
+      "rows": 86,
+      "teams": [
+        1,
+        2
+      ]
+    },
+    {
+      "width": 64,
+      "height": 128,
+      "rows": 6,
+      "teams": [
+        1,
+        2
+      ]
+    },
+    {
+      "width": 64,
+      "height": 256,
+      "rows": 10,
+      "teams": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "width": 64,
+      "height": 512,
+      "rows": 18,
+      "teams": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "width": 128,
+      "height": 64,
+      "rows": 6,
+      "teams": [
+        1,
+        2
+      ]
+    },
+    {
+      "width": 128,
+      "height": 128,
+      "rows": 10,
+      "teams": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "width": 128,
+      "height": 256,
+      "rows": 18,
+      "teams": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "width": 128,
+      "height": 512,
+      "rows": 26,
+      "teams": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "width": 256,
+      "height": 64,
+      "rows": 10,
+      "teams": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "width": 256,
+      "height": 128,
+      "rows": 18,
+      "teams": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "width": 256,
+      "height": 256,
+      "rows": 106,
+      "teams": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "width": 256,
+      "height": 512,
+      "rows": 26,
+      "teams": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "width": 512,
+      "height": 64,
+      "rows": 18,
+      "teams": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "width": 512,
+      "height": 128,
+      "rows": 26,
+      "teams": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "width": 512,
+      "height": 256,
+      "rows": 26,
+      "teams": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "width": 512,
+      "height": 512,
+      "rows": 26,
+      "teams": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    }
+  ]
+}

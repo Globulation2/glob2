@@ -1,0 +1,11 @@
+{
+  "same_initial_save": "release-full-1-r0/initial.game",
+  "ticks": 6000,
+  "platforms": [
+    "macos-arm64",
+    "linux-x86_64"
+  ],
+  "identical_full_trace": true,
+  "bytes": 68147890,
+  "sha256": "6958049590ca7fbc1e90d5f37df099ac70f5234598939aaa9ac220f8d783917a"
+}

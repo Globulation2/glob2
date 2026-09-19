@@ -1,0 +1,76 @@
+[
+  {
+    "map": "release-compact-1",
+    "ok": true,
+    "statistics_identical": true,
+    "file_identical": false,
+    "identical_after_map_name": false,
+    "payload_sha256": "e832884ed3040e060e91230f7770710000d4a54a1cb92152501c5d7266a26aa3",
+    "identical_except_name_offset_and_digest": true,
+    "world_sha256": "2ddad079735078ecb6dd2c888b91b4ef104aa3a4130c6e00260dc6fd53ace433"
+  },
+  {
+    "map": "release-compact-41",
+    "ok": true,
+    "statistics_identical": true,
+    "file_identical": false,
+    "identical_after_map_name": false,
+    "payload_sha256": "b4aab5243c070df036041f3e3f434b9177eb7b4251fe80d4689f4a0ef24c1c8f",
+    "identical_except_name_offset_and_digest": true,
+    "world_sha256": "de50d304c2b1d93d308aa8dfeac83f679d93716790a22eca525411bd01e79dfb"
+  },
+  {
+    "map": "release-full-1",
+    "ok": true,
+    "statistics_identical": true,
+    "file_identical": false,
+    "identical_after_map_name": false,
+    "payload_sha256": "56dcfb3c39e27423ee5ab0cb18afeb2f6857b06bebc8c5a3244053ca9a9a154d",
+    "identical_except_name_offset_and_digest": true,
+    "world_sha256": "74bbe2368e3cc3760b4b6b72b54682d04d5a73202173ee6d627135b5f9876528"
+  },
+  {
+    "map": "release-full-17",
+    "ok": true,
+    "statistics_identical": true,
+    "file_identical": false,
+    "identical_after_map_name": false,
+    "payload_sha256": "541bdf7e07c11b217ba1b47545c017ae5631a563009e22b31798185f7676c8f8",
+    "identical_except_name_offset_and_digest": true,
+    "world_sha256": "216933833308e98e17a1060aa459fa11ce4d69a05ac3e5d832761e85c89c43a2"
+  },
+  {
+    "map": "release-full-41",
+    "ok": true,
+    "statistics_identical": true,
+    "file_identical": false,
+    "identical_after_map_name": false,
+    "payload_sha256": "26ac0f969d61853a744f960bcc26289b36ab87d9ea68d6e87816605be2de2ab1",
+    "identical_except_name_offset_and_digest": true,
+    "world_sha256": "947d0a9cdc04047ed349fded9de3350816765eda9d1763f27d51253f573680b0"
+  },
+  {
+    "map": "r18-narrow-17",
+    "ok": true,
+    "statistics_identical": true,
+    "file_identical": false,
+    "identical_after_map_name": false,
+    "payload_sha256": "324ee46fcf8d6e3d97803896b3f1894b880807482e8f2f418b8187a0468edab1",
+    "identical_except_name_offset_and_digest": true,
+    "world_sha256": "c7e5e93cc84a3419ecc1cbd451f6f0023403e5a4ea2a66f714fb26588a582ebb"
+  },
+  {
+    "map": "release-default-workers-compact",
+    "ok": true,
+    "statistics_identical": true,
+    "identical_except_name_offset_and_digest": true,
+    "world_sha256": "d245463d84b96750f7277ce37a4518753d30b7175d4b802caa3b34f8efa7503b"
+  },
+  {
+    "map": "release-default-workers-full",
+    "ok": true,
+    "statistics_identical": true,
+    "identical_except_name_offset_and_digest": true,
+    "world_sha256": "44dd9ef9834d77854eb89bb95791f6509a220128ffc6ee9b7a9bd98208fe88b0"
+  }
+]

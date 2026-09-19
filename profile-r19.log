@@ -1,0 +1,4 @@
+Settings::load("preferences.txt") : error, can't open file.
+generator                 attempts        ok    failed     mean_ms      max_ms
+portage-lakes                   30        30         0    9351.044   27571.394
+# 30 rounds, 1 generators, 30 attempts (30 ok, 0 failed), 280.539s wall, 280.531s summed generation time

@@ -1,0 +1,18 @@
+== play-r5.log
+team  peak   end  harvested_4  delivered_4  abilityGains_0_4  abilityGains_2_4  eliminated
+   0    50    28           17           16                23                 8  -1
+   1   338   338            2            2                 0                51  -1
+   2    77    75           20           18                37                18  -1
+   3    92     6           16           14                37                20  44296
+== holdout-17-play.log
+team  peak   end  harvested_4  delivered_4  abilityGains_0_4  abilityGains_2_4  eliminated
+   0    61    27           29           28                23                 8  -1
+   1    48    43           26           19                 8                24  -1
+   2   216   216           27           25                27                25  -1
+   3    52    45            2            2                21                18  -1
+== holdout-41-play.log
+team  peak   end  harvested_4  delivered_4  abilityGains_0_4  abilityGains_2_4  eliminated
+   0    49    30           17           16                39                 5  -1
+   1    60    60           14           14                 1                26  -1
+   2    88    88            4            4                24                16  -1
+   3    83    83           14           14                20                18  -1

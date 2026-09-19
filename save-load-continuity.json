@@ -1,0 +1,17 @@
+{
+  "same_first_6000_records_after_20_byte_header": true,
+  "loaded_bytes": 68147890,
+  "direct_prefix_bytes": 68147890,
+  "loaded_header_words": [
+    4,
+    4,
+    6000,
+    0
+  ],
+  "direct_header_words": [
+    4,
+    4,
+    30000,
+    0
+  ]
+}

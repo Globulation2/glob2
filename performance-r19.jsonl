@@ -1,0 +1,12 @@
+{"binary": "candidate19", "generator": "portage-lakes", "size": 256, "teams": 4, "seed": 1, "telemetry": false, "wall": 6.36097341706045, "cpu": 0.886242, "ok": true}
+{"binary": "candidate19", "generator": "portage-lakes", "size": 256, "teams": 4, "seed": 1, "telemetry": true, "wall": 6.023003124981187, "cpu": 0.9094549999999999, "ok": true}
+{"binary": "candidate19", "generator": "hedgerow-country", "size": 256, "teams": 4, "seed": 1, "telemetry": false, "wall": 0.48803608398884535, "cpu": 0.1217080000000001, "ok": true}
+{"binary": "candidate19", "generator": "hedgerow-country", "size": 256, "teams": 4, "seed": 1, "telemetry": true, "wall": 0.8439463330432773, "cpu": 0.1619869999999999, "ok": true}
+{"binary": "candidate19", "generator": "drumlin-field", "size": 256, "teams": 4, "seed": 1, "telemetry": false, "wall": 2.2366542500676587, "cpu": 0.3745580000000002, "ok": true}
+{"binary": "candidate19", "generator": "drumlin-field", "size": 256, "teams": 4, "seed": 1, "telemetry": true, "wall": 2.628820833051577, "cpu": 0.41593799999999986, "ok": true}
+{"binary": "candidate19", "generator": "portage-lakes", "size": 512, "teams": 12, "seed": 1, "telemetry": false, "wall": 28.77100808301475, "cpu": 3.940808, "ok": true}
+{"binary": "candidate19", "generator": "portage-lakes", "size": 512, "teams": 12, "seed": 1, "telemetry": true, "wall": 28.60082574991975, "cpu": 4.272954, "ok": true}
+{"binary": "candidate19", "generator": "hedgerow-country", "size": 512, "teams": 12, "seed": 1, "telemetry": false, "wall": 6.697695542010479, "cpu": 0.9623689999999996, "ok": true}
+{"binary": "candidate19", "generator": "hedgerow-country", "size": 512, "teams": 12, "seed": 1, "telemetry": true, "wall": 8.983972750022076, "cpu": 1.325541000000001, "ok": true}
+{"binary": "candidate19", "generator": "drumlin-field", "size": 512, "teams": 12, "seed": 1, "telemetry": false, "wall": 8.569402041961439, "cpu": 1.330719, "ok": true}
+{"binary": "candidate19", "generator": "drumlin-field", "size": 512, "teams": 12, "seed": 1, "telemetry": true, "wall": 11.277491666027345, "cpu": 1.686354999999999, "ok": true}
