@@ -62,6 +62,7 @@
 #include "GauntletGenerator.h"
 #include "CombGenerator.h"
 #include "EncircledKingdomGenerator.h"
+#include "WhoAteTheMapGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -180,7 +181,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 centralQuarryDefinition(), hiddenOasisDefinition(),
 											 orchardCommonsDefinition(), gauntletDefinition(), faultedCityDefinition(), combDefinition(), encircledKingdomDefinition(),
 											 evenGroundDefinition(), marchlandDefinition(),
-											 ruggedArchipelagoDefinition(),
+											 whoAteTheMapDefinition(), ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
 											 evergladesDefinition(),

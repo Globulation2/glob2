@@ -2912,3 +2912,11 @@ Emoji
 Градске четврти су превише неуједначене; покушајте са другим семеном.
 [The fractured civic plaza did not survive.]
 Расцепљени градски трг није очуван.
+[Who Ate the Map?]
+Ко је појео мапу?
+[Appetite]
+Апетит
+[A Little Nibble]
+Мали залогај
+[Hungry]
+Гладан

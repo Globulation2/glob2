@@ -2974,3 +2974,11 @@ Un quartiere della città non ha colture raggiungibili o spazio per costruire.
 I quartieri della città sono troppo squilibrati; prova un altro seme.
 [The fractured civic plaza did not survive.]
 La piazza cittadina fratturata non si è conservata.
+[Who Ate the Map?]
+Chi ha mangiato la mappa?
+[Appetite]
+Appetito
+[A Little Nibble]
+Un piccolo morso
+[Hungry]
+Affamato

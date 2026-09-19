@@ -2936,3 +2936,11 @@ Een stadswijk mist bereikbare gewassen of bouwruimte.
 De stadswijken zijn te ongelijkwaardig; probeer een ander zaadje.
 [The fractured civic plaza did not survive.]
 Het gebroken stadsplein is niet behouden gebleven.
+[Who Ate the Map?]
+Wie heeft de kaart opgegeten?
+[Appetite]
+Eetlust
+[A Little Nibble]
+Een klein hapje
+[Hungry]
+Hongerig

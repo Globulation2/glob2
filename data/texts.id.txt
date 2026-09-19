@@ -2908,3 +2908,11 @@ Sebuah kawasan kota kekurangan tanaman yang dapat dijangkau atau ruang untuk mem
 Kawasan kota terlalu tidak seimbang; coba benih lain.
 [The fractured civic plaza did not survive.]
 Alun-alun kota yang terbelah tidak tersisa.
+[Who Ate the Map?]
+Siapa yang memakan peta?
+[Appetite]
+Nafsu makan
+[A Little Nibble]
+Gigitan kecil
+[Hungry]
+Lapar

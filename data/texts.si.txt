@@ -2912,3 +2912,11 @@ Mestni četrti manjka dostopnih poljščin ali prostora za gradnjo.
 Mestne četrti so preveč neuravnotežene; poskusite drugo seme.
 [The fractured civic plaza did not survive.]
 Razlomljeni mestni trg se ni ohranil.
+[Who Ate the Map?]
+Kdo je pojedel zemljevid?
+[Appetite]
+Tek
+[A Little Nibble]
+Majhen grižljaj
+[Hungry]
+Lačen

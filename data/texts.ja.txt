@@ -2908,3 +2908,11 @@ Emoji
 街の地区間の条件が不均等すぎます。別のシードを試してください。
 [The fractured civic plaza did not survive.]
 断層で分断された街の広場が残りませんでした。
+[Who Ate the Map?]
+マップを食べたのは誰？
+[Appetite]
+食欲
+[A Little Nibble]
+ちょっとひとかじり
+[Hungry]
+腹ぺこ

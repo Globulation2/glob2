@@ -1453,3 +1453,7 @@
 [A city neighbourhood lacks reachable crops or building room.]
 [The city neighbourhoods are too unequal; try another seed.]
 [The fractured civic plaza did not survive.]
+[Who Ate the Map?]
+[Appetite]
+[A Little Nibble]
+[Hungry]

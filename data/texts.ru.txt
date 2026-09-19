@@ -2910,3 +2910,11 @@ Emoji
 Районы города слишком неравноценны; попробуйте другое зерно.
 [The fractured civic plaza did not survive.]
 Расколотая городская площадь не сохранилась.
+[Who Ate the Map?]
+Кто съел карту?
+[Appetite]
+Аппетит
+[A Little Nibble]
+Маленький кусочек
+[Hungry]
+Голодный
