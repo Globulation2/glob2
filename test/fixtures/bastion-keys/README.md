@@ -36,6 +36,9 @@ retain refusals and telemetry, not just successful cases.
 | Random combinations | 4,000 | 1,719 | 2,281 |
 | All 16 size pairs × 12 colony counts × 3 seeds | 576 | 135 | 441 |
 
+Run `python3 test/fixtures/bastion-keys/verify_evidence.py` to check the retained
+counts, hashes and complete game counters.
+
 No generation failure or execution error occurred. All shape outcomes matched
 the supported envelope. This samples the parameter space rather than proving
 every possible combination. The independent reviewer also checked seed 947 at
@@ -67,6 +70,15 @@ damage to enemy buildings proves attacks across water under the validated
 walking-isolation contract. First-event ticks are telemetry sampling bounds.
 Conversions are recorded separately from births and combat/starvation deaths.
 
+All ten games completed 60,000 ticks with valid final counters. Across the eight
+Nicowar games, all 32 colonies damaged enemy buildings and 31 harvested neutral
+fruit; 12 colonies were eliminated. Per-colony births ranged 62–430 and worker
+starvation deaths 0–29. Across two Maxima games, all eight colonies attacked enemy
+buildings and five harvested fruit; all survived, with 66–392 births and 6–93
+worker starvation deaths. The larger late-game starvation counts are a limitation,
+not evidence of a starvation-free economy. Outcomes include combat and conversion;
+the observed population spread is not a direct measure of starting-site fairness.
+
 `211-r0.map.gz` and `211-r0-nicowar-final.game.gz` retain a playable initial map
 and resulting saved game. Decompress outside the repository before loading.
 `compatibility.replay.gz`, `macos.checksums.gz` and `linux.checksums.gz` record a
@@ -97,7 +109,11 @@ The machine was shared with other builds, so wall-time comparisons are noisy.
 after optimization across seeds, sizes, counts and extreme controls.
 `compare_profile_worlds.py` documents that comparison; it requires the frozen
 pre-optimization binary under `artifacts/bastion-keys/profile-before/` (source
-commit 7819e1c54, ID 67), and uses current ID 68 for the after binary.
+commit 7819e1c54) and the optimized binary under `profile-after/` (source commit
+bdb7952cb). Both frozen binaries use ID 67. Do not substitute the current binary
+there: ID 67 now means Drowned Forest, and native map names themselves include
+the numeric ID. Current ID 68 is instead checked through the matching golden
+fingerprints, which exclude that study-name metadata.
 
 Repeated map-review rounds covered appearance, starter crops, reachable service
 courts, swimming isolation and the optimization. Final merged-source review found

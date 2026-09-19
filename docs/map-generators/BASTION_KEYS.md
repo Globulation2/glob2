@@ -64,7 +64,9 @@ random and shape studies; 2,773 unsupported requests were rejected explicitly.
 Wheat, wood, stone, algae and fruit abundance increased their measured deposits.
 Outlying islands saturate when the available water cannot fit another key.
 
-Nicowar and Maxima established growing colonies in the opening tests. Cabino
+Ten 60,000-tick games completed; every Nicowar and Maxima colony dealt damage
+to enemy buildings across the water. Nicowar and Maxima established growing
+colonies in the opening tests, with starvation occurring later in some games. Cabino
 struggled to staff its first inn with four starting workers, and Cortex resigned
 early; these are known AI limitations, also observed in the Forts reference.
 Automated games establish economy and combat behavior, not human enjoyment or
