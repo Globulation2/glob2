@@ -1822,7 +1822,7 @@ GeneratorDefinition drownedForestDefinition()
 {
 	return {
 		"drowned-forest",
-		65,
+		67,
 		"Drowned Forest",
 		1,
 		false,

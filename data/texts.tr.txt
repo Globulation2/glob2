@@ -2920,6 +2920,14 @@ Kırılmış Şehir, her kenarda 256 veya 512 kare ve bir ila on iki koloni gere
 Şehrin mahalleleri çok dengesiz; başka bir tohum deneyin.
 [The fractured civic plaza did not survive.]
 Kırılmış şehir meydanı korunamadı.
+[Who Ate the Map?]
+Haritayı kim yedi?
+[Appetite]
+İştah
+[A Little Nibble]
+Küçük bir ısırık
+[Hungry]
+Aç
 [Drowned Forest]
 Sular altında kalan orman
 [Sandbar connections]

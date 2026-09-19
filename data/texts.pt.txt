@@ -2918,6 +2918,14 @@ Um bairro da cidade não tem culturas acessíveis ou espaço para construir.
 Os bairros da cidade são demasiado desiguais; experimente outra semente.
 [The fractured civic plaza did not survive.]
 A praça pública fraturada não sobreviveu.
+[Who Ate the Map?]
+Quem comeu o mapa?
+[Appetite]
+Apetite
+[A Little Nibble]
+Uma dentadinha
+[Hungry]
+Com fome
 [Drowned Forest]
 Floresta inundada
 [Sandbar connections]

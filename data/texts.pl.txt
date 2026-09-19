@@ -2912,6 +2912,14 @@ Jednej z dzielnic miasta brakuje dostępnych upraw lub miejsca na budowę.
 Dzielnice miasta są zbyt nierówne; spróbuj innego ziarna.
 [The fractured civic plaza did not survive.]
 Pęknięty plac miejski nie przetrwał.
+[Who Ate the Map?]
+Kto zjadł mapę?
+[Appetite]
+Apetyt
+[A Little Nibble]
+Mały kęs
+[Hungry]
+Głodny
 [Drowned Forest]
 Zatopiony las
 [Sandbar connections]

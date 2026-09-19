@@ -2912,6 +2912,14 @@ Jedné městské čtvrti chybí dostupné plodiny nebo prostor pro stavby.
 Městské čtvrti jsou příliš nevyvážené; zkuste jiné semínko.
 [The fractured civic plaza did not survive.]
 Rozlámané městské náměstí se nezachovalo.
+[Who Ate the Map?]
+Kdo snědl mapu?
+[Appetite]
+Chuť k jídlu
+[A Little Nibble]
+Malé sousto
+[Hungry]
+Hladový
 [Drowned Forest]
 Zatopený les
 [Sandbar connections]

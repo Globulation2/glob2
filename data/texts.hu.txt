@@ -2912,6 +2912,14 @@ Egy városnegyedben nincs elérhető termény vagy elegendő hely az építkezé
 A városnegyedek túl egyenlőtlenek; próbálj másik magot.
 [The fractured civic plaza did not survive.]
 A szétszakadt városi tér nem maradt fenn.
+[Who Ate the Map?]
+Ki ette meg a térképet?
+[Appetite]
+Étvágy
+[A Little Nibble]
+Egy kis harapás
+[Hungry]
+Éhes
 [Drowned Forest]
 Elárasztott erdő
 [Sandbar connections]

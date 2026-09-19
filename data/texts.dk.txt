@@ -2988,6 +2988,14 @@ En bydel mangler tilgængelige afgrøder eller byggeplads.
 Bydelene er for ulige; prøv et andet seed.
 [The fractured civic plaza did not survive.]
 Den opsprækkede byplads blev ikke bevaret.
+[Who Ate the Map?]
+Hvem spiste kortet?
+[Appetite]
+Appetit
+[A Little Nibble]
+En lille bid
+[Hungry]
+Sulten
 [Drowned Forest]
 Oversvømmet skov
 [Sandbar connections]

@@ -30,7 +30,7 @@ not every diagnostic or game save is duplicated here.
   repository root with the absolute profile directory as its argument.
 - `PROFILE.md` reports the final seed-7 benchmark: 512×512/eight colonies fell from
   15.529 to 10.003 CPU seconds. Difficult searches can take considerably longer.
-- Historical evidence used provisional generator ID 58. Integration assigns ID 65
+- Historical evidence used provisional generator ID 58. Integration assigns ID 67
   because upstream allocated 58 during development. Named random streams depend on
   the seed and stream name, not this registration ID; integrated golden tests check
   the final registration. These are complete saved maps, not instructions to

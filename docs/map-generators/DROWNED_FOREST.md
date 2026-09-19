@@ -138,5 +138,5 @@ the same overall mean, with individual changes; discrete edges and layout retrie
 prevent a strict per-seed monotonicity promise.
 
 A compact, committed evidence bundle is in [evidence/drowned-forest](evidence/drowned-forest/README.md).
-Earlier local artifacts used provisional generator ID 58. Integration assigns ID 65
+Earlier local artifacts used provisional generator ID 58. Integration assigns ID 67
 because upstream allocated 58 while development was in progress.

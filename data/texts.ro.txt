@@ -2912,6 +2912,14 @@ Un cartier al orașului nu are culturi accesibile sau spațiu pentru construcți
 Cartierele orașului sunt prea dezechilibrate; încercați altă sămânță.
 [The fractured civic plaza did not survive.]
 Piața orașului, străbătută de fisuri, nu s-a păstrat.
+[Who Ate the Map?]
+Cine a mâncat harta?
+[Appetite]
+Poftă de mâncare
+[A Little Nibble]
+O mușcătură mică
+[Hungry]
+Flămând
 [Drowned Forest]
 Pădure inundată
 [Sandbar connections]

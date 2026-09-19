@@ -2920,6 +2920,14 @@ Jednej mestskej štvrti chýbajú dostupné plodiny alebo priestor na stavby.
 Mestské štvrte sú príliš nevyvážené; skúste iné semienko.
 [The fractured civic plaza did not survive.]
 Rozlámané mestské námestie sa nezachovalo.
+[Who Ate the Map?]
+Kto zjedol mapu?
+[Appetite]
+Chuť do jedla
+[A Little Nibble]
+Malé sústo
+[Hungry]
+Hladný
 [Drowned Forest]
 Zaplavený les
 [Sandbar connections]

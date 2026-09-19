@@ -2982,6 +2982,14 @@ Emoji
 Οι συνοικίες της πόλης είναι υπερβολικά άνισες· δοκιμάστε άλλον σπόρο.
 [The fractured civic plaza did not survive.]
 Η ρηγματωμένη πλατεία της πόλης δεν διατηρήθηκε.
+[Who Ate the Map?]
+Ποιος έφαγε τον χάρτη;
+[Appetite]
+Όρεξη
+[A Little Nibble]
+Μια μικρή μπουκιά
+[Hungry]
+Πεινασμένος
 [Drowned Forest]
 Πλημμυρισμένο δάσος
 [Sandbar connections]
