@@ -58,10 +58,11 @@ struct River
 {
 	std::vector<ShapePoint> line;
 	std::vector<double> radius;
-	/// Whether the bed crosses the map from top to bottom rather than side to side.
+	/// Whether the bed crosses the map from top to bottom rather than side to side. Which way it
+	/// runs is the one thing about a finished bed that its own points cannot answer, because on a
+	/// torus the loop has no ends to compare: riverWater needs it to know which way to step over
+	/// the seam.
 	bool vertical = false;
-	/// Where it crosses, in tiles along the other axis.
-	double offset = 0;
 };
 
 /// A river bed crossing the whole torus, entering at `offset` tiles along the axis it does not

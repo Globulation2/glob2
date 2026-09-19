@@ -20,7 +20,6 @@ River drawRiver(const Torus &t, GenerationContext &context, const std::string &s
 {
 	River river;
 	river.vertical = vertical;
-	river.offset = offset;
 	const double along = vertical ? t.h : t.w;     // the side the bed crosses
 	const double across = vertical ? t.w : t.h;    // the side it strays over
 	const int harmonics = std::max(1, style.harmonics);

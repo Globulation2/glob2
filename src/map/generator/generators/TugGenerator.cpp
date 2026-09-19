@@ -113,12 +113,11 @@ constexpr int kPondReach = 30;
 // Every colony's private lake: its size in tiles, how clear of the homeland's edge and its swarm it
 // keeps, and how far out from the swarm it may be sought. The size is the same for everyone, which
 // is the whole point of it.
-// How many times a colony's site is walked to the middle of its own ground before the homelands are
-// settled for good.
-// Recentring is off: it walks a site to the middle of its own ground, which is the opposite of the
-// jostle above and would put the lattice straight back.
-constexpr int kRecentrePasses = 0;
 /// How far a colony is jostled off the spread that chose it, as a share of the shorter side.
+///
+/// There is deliberately no recentreSites pass here, though the toolkit has one and most maps want
+/// it: walking a site to the middle of its own ground is the exact opposite of this jostle, and it
+/// puts back the regular lattice the jostle exists to break.
 constexpr double kSiteJostle = 0.11;
 // How far a homeland border may bend to follow cheap ground, in growTerritories' units of a
 // thousand to the step: four steps' worth.
@@ -193,7 +192,7 @@ constexpr double kBedTownWeight = 1000;
 /// straight chord across the whole map (see riverWater in Rivers.h), whose tiles counted as commons
 /// and flattered every candidate's share.
 constexpr double kLeastCommonsShare = 0.45;
-constexpr double kBedHomelandWeight = 40, kBedCommonsWeight = 6, kBedSplitWeight = 8;
+constexpr double kBedHomelandWeight = 40, kBedCommonsWeight = 6;
 /// The dry collar between a homeland and the commons. Thin on purpose: it is there to stop a farm
 /// creeping out into ground that should be taken rather than grown into, not to wall the map off.
 constexpr int kCollarWidth = 6;
@@ -273,7 +272,6 @@ struct Layout
 /// What this country thinks of a bed laid across it, as named terms so a seed's river can be read
 /// back as the brief it was chosen against (Objective, Solve.h).
 Objective rateBed(const Layout &L, const Torus &t, int teams,
-				  const std::vector<unsigned char> &water,
 				  const std::vector<unsigned char> &towns, const std::vector<unsigned char> &bed)
 {
 	int bedTiles = 0, commonsTiles = 0, townTiles = 0;
@@ -293,30 +291,14 @@ Objective rateBed(const Layout &L, const Torus &t, int teams,
 	if (bedTiles == 0)
 		return score.add("town", kBedTownWeight, 1.0); // a bed with no water never wins
 
-	// Which side of the bed each colony ends up on. A river leaving every colony on one bank is a
-	// coastline, not a front; one that parts them evenly is ground to fight over.
-	std::vector<unsigned char> dry(t.size(), 0);
-	for (int i = 0; i < t.size(); ++i)
-		dry[i] = !water[i] && !bed[i];
-	const std::vector<int> banks = connectedRegions(dry, t.w, t.h, true, GridNeighbors::Eight);
-	std::vector<int> swarmsPer;
-	int stranded = 0;
-	for (const RegionHome &home : L.homes)
-	{
-		const int bank = banks[home.site];
-		if (bank < 0)
-		{
-			++stranded; // its swarm is under the bed; the town term will have caught this
-			continue;
-		}
-		if (bank >= int(swarmsPer.size()))
-			swarmsPer.resize(bank + 1, 0);
-		++swarmsPer[bank];
-	}
-	const int largest = swarmsPer.empty()
-							? teams
-							: *std::max_element(swarmsPer.begin(), swarmsPer.end()) + stranded;
-
+	// There is no term here for which bank a colony ends up on, and there was one until it was
+	// measured. A river that leaves everybody on one side is a coastline rather than a front, so it
+	// looked worth scoring - but cutting a torus along a single loop that goes all the way round
+	// leaves it connected, the way slitting a bicycle tube along its circumference leaves a sheet.
+	// It takes two parallel cuts to part a torus. So every colony is always on one bank, the term
+	// was exactly 1.0 on all sixteen seeds that drew a river, and the flood fill per candidate that
+	// worked it out was fourteen passes a seed to recompute a constant.
+	//
 	// A bed that touches nobody's farm is the best case, not the worst. imbalance() reads all-zero
 	// shares as "every claimant has none of a thing it needs" and charges a whole point, which is
 	// right for wheat and exactly inverted for water somebody did not want: measured, it made every
@@ -328,8 +310,6 @@ Objective rateBed(const Layout &L, const Torus &t, int teams,
 	score.add("town", kBedTownWeight, double(townTiles));
 	score.add("homeland", kBedHomelandWeight, touched > 0 ? imbalance(perColony) : 0.0);
 	score.add("commons", kBedCommonsWeight, 1.0 - double(commonsTiles) / double(bedTiles));
-	score.add("split", kBedSplitWeight,
-			  teams > 1 ? double(2 * largest - teams) / double(teams) : 0.0);
 	return score;
 }
 
@@ -359,7 +339,7 @@ void cutRiver(Layout &L, const Torus &t, int teams, GenerationContext &context, 
 	const RiverChoice chosen = bestRiverAcross(
 		t, context, "tug-river", context.bounded("tug-river", 2) != 0, kRiverBeds, style,
 		[&](const River &, const std::vector<unsigned char> &bed)
-		{ return rateBed(L, t, teams, water, towns, bed); });
+		{ return rateBed(L, t, teams, towns, bed); });
 
 	// The winner carries every measurement that chose it, so the two things a bed must clear are
 	// read back off its own score rather than tracked alongside the loop.
@@ -492,21 +472,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			seeds.push_back({site});
 		return growTerritories(t, everywhere, seeds, wander);
 	};
-	Territories shared = share(sites);
-	// A site picked for being far from the others sits at the edge of the ground it wins, and on an
-	// elongated map that leaves the colonies unevenly spaced however well spread they look. Walking
-	// each one to the middle of its own territory and sharing the ground out again is the toolkit's
-	// own answer to it (recentreSites). Without it, four colonies on a 4:1 map could not be given a
-	// rope they were all the same distance from, whatever the search did with the prizes: the
-	// homelands themselves were not evenly placed, and no arrangement of prizes fixes that.
-	for (int pass = 0; pass < kRecentrePasses; ++pass)
-	{
-		const std::vector<int> moved = recentreSites(t, shared.labels, mainlandMask, sites);
-		if (moved == sites)
-			break;
-		sites = moved;
-		shared = share(sites);
-	}
+	const Territories shared = share(sites);
 	L.ownerOf = shared.labels;
 	// Deliberately not smoothed. smoothLabels straightens a border by pulling every tile towards
 	// whatever its neighbourhood mostly is, which is exactly the meander the wander above buys, and

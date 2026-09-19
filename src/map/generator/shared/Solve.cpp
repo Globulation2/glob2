@@ -39,50 +39,39 @@ int spread(const std::vector<int> &shares)
 	return *most - *least;
 }
 
-Emphases::Emphases(GenerationContext &context, const char *stream,
-				   std::vector<const char *> optional, int least, int most)
-{
-	const int fewest = std::clamp(least, 0, int(optional.size()));
-	const int many = std::clamp(most, fewest, int(optional.size()));
-	const int wanted =
-		fewest + int(context.bounded(stream, std::uint32_t(std::max(1, many - fewest + 1))));
-	context.shuffle(optional.begin(), optional.end(), stream);
-	for (int i = 0; i < wanted && i < int(optional.size()); ++i)
-		chosen.push_back(optional[i]);
-}
-
-bool Emphases::on(const char *name) const
-{
-	for (const char *have : chosen)
-		if (std::string(have) == name)
-			return true;
-	return false;
-}
-
-void Emphases::report(GenerationTelemetry &telemetry, const std::string &key) const
-{
-	telemetry.measure(key + ".count", int(chosen.size()));
-	for (const char *name : chosen)
-		telemetry.choice(key, name);
-}
-
 double Brief::target(const char *name, double least, double most)
 {
-	const double drawn = drawnTarget(context, (map + "-brief").c_str(), least, most);
+	constexpr std::uint32_t kSteps = 1000;
+	const double drawn =
+		least +
+		(most - least) * double(context.bounded(map + "-brief", kSteps)) / double(kSteps - 1);
 	context.telemetry.measure(map + ".brief." + name, drawn);
 	return drawn;
 }
 
 void Brief::choose(std::vector<const char *> optional, int least, int most)
 {
-	emphases = Emphases(context, (map + "-brief").c_str(), std::move(optional), least, most);
-	emphases.report(context.telemetry, map + ".brief.emphases");
+	const std::string stream = map + "-brief";
+	const int fewest = std::clamp(least, 0, int(optional.size()));
+	const int many = std::clamp(most, fewest, int(optional.size()));
+	const int wanted =
+		fewest + int(context.bounded(stream, std::uint32_t(std::max(1, many - fewest + 1))));
+	context.shuffle(optional.begin(), optional.end(), stream);
+	chosen.assign(optional.begin(),
+				  optional.begin() + std::min<std::size_t>(std::max(0, wanted), optional.size()));
+	// Recorded, so an unusual map can be read as the brief it was solving rather than mistaken for
+	// a search that went wrong.
+	context.telemetry.measure(map + ".brief.emphases.count", int(chosen.size()));
+	for (const char *name : chosen)
+		context.telemetry.choice(map + ".brief.emphases", name);
 }
 
-double drawnTarget(GenerationContext &context, const char *stream, double least, double most)
+bool Brief::on(const char *name) const
 {
-	constexpr std::uint32_t kSteps = 1000;
-	return least + (most - least) * double(context.bounded(stream, kSteps)) / double(kSteps - 1);
+	for (const char *have : chosen)
+		if (std::string(have) == name)
+			return true;
+	return false;
 }
 
 void reportObjective(GenerationTelemetry &telemetry, const std::string &key,

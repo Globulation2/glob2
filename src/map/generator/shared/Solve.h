@@ -115,15 +115,6 @@ SolveReport anneal(const Anneal &schedule, GenerationContext &context, Propose p
 	return report;
 }
 
-/// The same search without best-keeping, for an arrangement too expensive to snapshot or a cost
-/// that is already monotone.
-template <typename Propose, typename Cost, typename Undo>
-SolveReport anneal(const Anneal &schedule, GenerationContext &context, Propose propose, Cost cost,
-				   Undo undo)
-{
-	return anneal(schedule, context, propose, cost, undo, [] {}, [] {});
-}
-
 /// A cost built out of named terms rather than one number.
 ///
 /// A solved map with one summed cost can say how badly it did and never which target it missed,
@@ -172,66 +163,27 @@ struct Objective
 	}
 };
 
-/// A target drawn per seed instead of fixed.
+/// What a map was asked to make this seed, and the answer to a solved map whose seeds all look
+/// alike.
 ///
-/// This is the answer to a solved map whose seeds all look alike. With fixed targets every seed is
-/// handed the identical problem, and a search is very good at finding the same answer to the same
-/// question: the layout moves about but the character never does, and twelve seeds come out looking
-/// like twelve photographs of one map. Drawing the target is what makes one seed an inland sea and
-/// the next a chain of lakes, one a country of big open fields and the next a patchwork.
+/// With fixed targets every seed is handed the identical problem, and a search is very good at
+/// finding the same answer to the same question: the layout moves about but the character never
+/// does, and twelve seeds come out as twelve photographs of one map. Drawing the targets is what
+/// makes one seed an inland sea and the next a chain of lakes. Dropping a target altogether widens
+/// that much further - a term that is off is not a weak preference but permission, so the search is
+/// free to do as it likes in that dimension, and what comes out is a different kind of map rather
+/// than the same map loosened.
 ///
-/// The range is the map's design and should be chosen so that both ends are a map worth playing;
-/// where in the range a seed lands is the map's variety.
+/// Only ever put the optional terms in `choose`. A map's invariants - every colony joined to the
+/// rest, with ground to build on and a crop it can reach - are not character, and a seed that
+/// switched one off would not be a varied map but a broken one. That distinction is the whole
+/// reason this is a named set rather than a coin flipped over every term.
 ///
-/// This is the bare draw. Prefer Brief below, which draws from the map's own stream and records what
-/// it drew, so a reader looking at an odd seed can always see what it was asked for before wondering
-/// whether the search failed. Reach for this one only where there is no brief to hang it on.
-double drawnTarget(GenerationContext &, const char *stream, double least, double most);
-
-/// Which of a map's optional targets this seed is solving to.
-///
-/// Drawing a target's value widens a map's character; dropping a target altogether widens it much
-/// further. A term that is off is not a weak preference but permission - the search is free to do
-/// whatever else it likes in that dimension, and what comes out is a different kind of map rather
-/// than the same map loosened. One seed cares where the water pinches the routes and the next does
-/// not care at all, and the two do not look related.
-///
-/// Only ever put the optional ones in here. A map's invariants - that every colony is joined to the
-/// rest, has ground to build on and a crop it can reach - are not character, and a seed that turned
-/// one of them off would not be a varied map but a broken one. The distinction is the whole reason
-/// this is a named set rather than a coin flipped over every term.
-///
-/// `least` and `most` bound how many are drawn, so a seed can neither be handed nothing to solve
-/// nor be asked for everything at once, which is the arrangement that makes every seed alike.
-class Emphases
-{
-  public:
-	/// Nothing emphasised: a map that has not drawn its optional terms yet, or has none.
-	Emphases() = default;
-	Emphases(GenerationContext &, const char *stream, std::vector<const char *> optional, int least,
-			 int most);
-	/// Whether this seed solves to that target. An unknown name is not emphasised.
-	bool on(const char *name) const;
-	/// The weight to give a term: its full weight when emphasised this seed, nothing when not.
-	double weight(const char *name, double full) const { return on(name) ? full : 0.0; }
-	const std::vector<const char *> &active() const { return chosen; }
-	/// Records which targets this seed was given, so an unusual map can be read as the brief it was
-	/// solving rather than mistaken for a search that went wrong.
-	void report(GenerationTelemetry &, const std::string &key) const;
-
-  private:
-	std::vector<const char *> chosen;
-};
-
-/// What a map was asked to make this seed: the targets it drew and the optional ones it chose.
-///
-/// Both halves of this were conventions before they were a type, and conventions are the things
-/// that rot. Every drawn target was followed by a hand-written telemetry line recording it - in all
-/// seven places the first two maps drew one - and the stream and the telemetry key were spelled out
-/// separately at every call, always as `<map>-brief` and `<map>.brief.<name>`. Nothing enforced
-/// either, so a reader chasing an odd seed had to trust that nobody had forgotten a line, and two
-/// strings that must agree were free to drift apart. Holding the map's name once makes the record a
-/// consequence of drawing rather than a thing to remember.
+/// This is one type because it was three, and the two that are gone were conventions nothing
+/// enforced. Every drawn target was followed by a hand-written telemetry line, and the stream and
+/// the key were spelled separately at every call, always `<map>-brief` and `<map>.brief.<name>`: two
+/// strings that must agree were free to drift, and a forgotten line left a seed unreadable. Holding
+/// the map's name once makes the record a consequence of drawing rather than a thing to remember.
 ///
 /// Draw the whole brief in one place at the top of a design, so what a seed was asked for can be
 /// read without following the design through.
@@ -244,20 +196,20 @@ class Brief
 	/// design and both ends should be worth playing; where in it a seed lands is the map's variety.
 	double target(const char *name, double least, double most);
 
-	/// Which of the optional terms this seed solves to, drawn and recorded. Only ever the optional
-	/// ones: a map's invariants are not character, and a seed that switched one off would not be a
-	/// varied map but a broken one. See Emphases, which this is.
+	/// Which of the optional terms this seed solves to, drawn and recorded. `least` and `most` bound
+	/// how many, so a seed can neither be handed nothing to solve nor asked for everything at once -
+	/// the latter being the arrangement that makes every seed alike again.
 	void choose(std::vector<const char *> optional, int least, int most);
 
 	/// Whether this seed solves to that target. An unknown name is not emphasised.
-	bool on(const char *name) const { return emphases.on(name); }
+	bool on(const char *name) const;
 	/// A term's weight: its full weight when this seed emphasises it, nothing when not.
-	double weight(const char *name, double full) const { return emphases.weight(name, full); }
+	double weight(const char *name, double full) const { return on(name) ? full : 0.0; }
 
   private:
 	GenerationContext &context;
 	std::string map;
-	Emphases emphases;
+	std::vector<const char *> chosen;
 };
 
 /// Records what each of an objective's targets came out at, under `key`: every term's residual and
