@@ -277,6 +277,12 @@ struct Shape
 	std::vector<std::vector<int>> walk; // each colony's steps over land
 	std::vector<double> decay;          // e^(-steps / kCatchmentDecay), by step count
 	std::vector<int> queue;             // walkLand's scratch
+	// Scratch for scoreShape, which runs once per proposal: the clearance field every colony's walk
+	// out is measured over, the goal mask those walks aim at, and the water mask its bodies are
+	// counted in. Kept here rather than declared in the scoring function, which allocated three
+	// fresh map-sized buffers on every one of thousands of proposals.
+	std::vector<int> room;
+	std::vector<unsigned char> others, wetMask;
 	double reachSpread = 0, passWidth = 0, roomShort = 0, shoreRatio = 0, approachSpread = 0;
 	int severed = 0, bodies = 0;
 	Objective cost;
@@ -318,15 +324,20 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 	double widthTotal = 0;
 	if (teams > 1)
 	{
-		std::vector<unsigned char> others(t.size(), 0);
+		// One clearance field for all of them: it depends only on the land, so computing it inside
+		// the loop measured the same thing once per colony (Morphology.h).
+		s.room = clearance(t, s.land);
+		s.others.assign(t.size(), 0);
+		std::vector<int> source(1);
 		for (int k = 0; k < teams; ++k)
 		{
 			for (int j = 0; j < teams; ++j)
-				others[solved.home[j]] = j != k;
-			const int clear = widestWalkClearance(t, s.land, {solved.home[k]}, others);
+				s.others[solved.home[j]] = j != k;
+			source[0] = solved.home[k];
+			const int clear = widestWalkClearance(t, s.land, s.room, source, s.others);
 			widthTotal += clear > 0 ? 2 * clear - 1 : 0;
 			for (int j = 0; j < teams; ++j)
-				others[solved.home[j]] = 0;
+				s.others[solved.home[j]] = 0;
 		}
 	}
 	s.passWidth = teams > 1 ? widthTotal / double(teams) : wantWidth;
@@ -346,11 +357,11 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 
 	// How many separate bodies that water forms. Cardinal, like everything else the search reasons
 	// about, so two lakes touching at a corner count as the two lakes the painted map will show.
-	std::vector<unsigned char> wetMask(t.size(), 0);
+	s.wetMask.resize(t.size());
 	for (int i = 0; i < t.size(); ++i)
-		wetMask[i] = !s.land[i];
+		s.wetMask[i] = !s.land[i];
 	s.bodies = 0;
-	for (const int part : connectedRegions(wetMask, t.w, t.h, true, GridNeighbors::Cardinal))
+	for (const int part : connectedRegions(s.wetMask, t.w, t.h, true, GridNeighbors::Cardinal))
 		s.bodies = std::max(s.bodies, part + 1);
 
 	s.reachSpread = imbalance(reach);
