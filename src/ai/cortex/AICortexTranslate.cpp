@@ -214,9 +214,11 @@ void AICortex::translateActionPlaceWarFlag(const Cortex::CortexAction& action, c
 		clearAllOffenseFlags();
 		flagPosture = POSTURE_NONE;
 		offenseHoldUntil = 0;
+		lastOffenseTargetTeam = -1;
 		return;
 	}
 	const Cortex::BuildCandidate& target = obs.flagTargets[slot];
+	lastOffenseTargetTeam = obs.flagTargetTeam[slot];
 
 	// Arm the hold window on a FRESH commit (a posture transition INTO offense), so a
 	// minor-harassment defensive recall is ignored while the first wave forms and

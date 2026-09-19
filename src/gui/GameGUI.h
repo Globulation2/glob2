@@ -531,6 +531,9 @@ private:
 	TeamStats *teamStats;
 	int measurementPage = 0;
 	void drawStatisticsPage(int y);
+	//! Each side's chance of winning, under the statistics. Drawn only when the
+	//! optional win probability rule is enabled for this game.
+	void drawWinProbabilities(int x, int y);
 	Team *localTeam;
 
 	Uint32 chatMask;

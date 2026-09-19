@@ -497,6 +497,7 @@ std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 					{
 						if((map->getBuilding(b->posX, b->posY)!=NOGBID)&&(team->enemies & game->teams[Building::GIDtoTeam(map->getBuilding(b->posX, b->posY))]->me)) //paranoia
 						{
+							telemetry.set(AITrace::AI3::AIWarrush_last_guard_area_team, i);
 							for(int x = 0; x < bt->width; x++)
 							{
 								for(int y = 0; y < bt->height; y++)

@@ -6,7 +6,10 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 108
+#define VERSION_MINOR 109
+// version 109 adds the optional win-probability win condition. Off unless a
+//             player turns it on, and it adds no GameHeader field -- only a new
+//             winning-condition tag, which appears in a save only when enabled.
 // version 108 persists extended diagnostic gameplay measurements.
 // version 107 persists Maxima relocation relationships and fractional food supply.
 // version 101 persists resolved per-player runtime AI configuration in all header forms
@@ -135,9 +138,9 @@
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
-#define NET_PROTOCOL_VERSION 33
+#define NET_PROTOCOL_VERSION 34
 //Clients with older versions than this will be rejected
-#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 33
+#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 34
 // version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag
 // version 22 added ConfigCheckSum to check if all use has the same file config.
 // version 23 updated to allow custom prestige settings

@@ -29,6 +29,11 @@ def main():
     for name in ('run', 'collect', 'doctor'):
         p = sub.add_parser(name)
         p.add_argument('directory'); p.add_argument('--hosts', required=True); p.add_argument('--once', action='store_true')
+    p = sub.add_parser('audit', help='discover every worker install on each host (not just --hosts targets) and flag stale ones; read-only')
+    p.add_argument('--hosts', required=True); p.add_argument('--stale-hours', type=float, default=24.0)
+    p = sub.add_parser('reap', help='stop one stale install found by audit, by exact PID; never deletes files')
+    p.add_argument('--hosts', required=True); p.add_argument('--host', required=True)
+    p.add_argument('--directory', required=True); p.add_argument('--confirm', action='store_true')
     for name in ('status', 'pause', 'resume', 'cancel', 'retry', 'cleanup', 'diagnose'):
         p = sub.add_parser(name); p.add_argument('directory')
         if name == 'pause': p.add_argument('--drain', action='store_true')
@@ -54,6 +59,15 @@ def main():
             coordinator = Coordinator.submit(args.directory, read_json(args.manifest), args.bundle)
             try: value = coordinator.status()
             finally: coordinator.close()
+        elif args.command == 'audit':
+            from .inventory import audit
+            value = audit(read_json(args.hosts), args.stale_hours)
+        elif args.command == 'reap':
+            from .inventory import reap
+            configs = read_json(args.hosts)
+            config = next((c for c in configs if c['name'] == args.host), None)
+            if config is None: raise ValueError('unknown host: ' + args.host)
+            value = reap(config, args.directory, args.confirm)
         else:
             coordinator = Coordinator(args.directory)
             try:

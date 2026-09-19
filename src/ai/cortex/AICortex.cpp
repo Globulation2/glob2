@@ -87,6 +87,7 @@ void AICortex::init(Player* player)
 	rangeGateBindingSince = 0; // the attack-range gate is not binding at start.
 	flagPosture = POSTURE_NONE;
 	offenseHoldUntil = 0;
+	lastOffenseTargetTeam = -1; // telemetry only; never serialized, re-derived from play.
 	wheatOpenMargin = -1; // sentinel: drawn lazily on the first decision cycle.
 	attackDumped = false; // diagnostic one-shot; never serialized.
 	traceFile = nullptr; // gated ML training trace; lazily opened, never serialized.

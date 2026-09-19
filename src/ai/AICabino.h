@@ -137,6 +137,7 @@ namespace Cabino
 		  {
 			  return AITelemetry::schema(8);
 		  }
+		  Uint32 telemetrySchemaVersion() const override { return 2; }
 			AICabino(Player *player);
 			AICabino(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			~AICabino();

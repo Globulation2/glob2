@@ -191,6 +191,9 @@ public:
 
 	/// Check and update winning conditions
 	void wonSyncStep(void);
+	//! Optional per-sample win probability trace. Diagnostic only, gated by
+	//! GLOB2_TEAM_TIMELINE; reads state and changes nothing.
+	void winProbabilitySyncStep();
 
 	/// Advanced the map script and checks conditions
 	void scriptSyncStep();

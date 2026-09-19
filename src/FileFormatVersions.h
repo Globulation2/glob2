@@ -116,6 +116,12 @@ static constexpr int FILE_FORMAT_VERSION_AI_TELEMETRY = 106;
 //! Sampled blockage, health-band and nearby natural growth diagnostics.
 static constexpr int FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS = 108;
 
+//! The optional win-probability win condition. No new GameHeader field: the
+//! condition serialises itself through the existing winning-condition list, so a
+//! save only carries the new tag when a player enabled the rule. Older saves load
+//! unchanged, and MINIMUM_VERSION_MINOR does not move.
+static constexpr int FILE_FORMAT_VERSION_WIN_PROBABILITY_RULE = 109;
+
 // === Save-file section signatures (4-byte ASCII tags) ===
 // Embedded as four chars at the start of each save section so a corrupted
 // stream fails fast. NEVER change these values — old saves on disk depend
