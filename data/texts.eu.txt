@@ -2922,3 +2922,11 @@ Hiriko auzo batek ez du labore irisgarririk edo eraikitzeko lekurik.
 Hiriko auzoak desorekatuegiak dira; saiatu beste hazi batekin.
 [The fractured civic plaza did not survive.]
 Pitzatutako herriko plaza ez da mantendu.
+[Who Ate the Map?]
+Nork jan du mapa?
+[Appetite]
+Jateko gogoa
+[A Little Nibble]
+Hozkada txiki bat
+[Hungry]
+Gose

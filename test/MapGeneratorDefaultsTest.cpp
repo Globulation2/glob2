@@ -670,6 +670,12 @@ int main(int argc, char **argv)
 		puts("PASS toolkit-only geometry, raster, resource and home contracts");
 		return 0;
 	}
+	if (argc == 3 && std::string(argv[2]) == "--eaten-only")
+	{
+		MapGeneratorDefaultsTest::globalsInit();
+		GeneratorContracts::eatenMapContracts();
+		return 0;
+	}
 	if (argc == 3 && std::string(argv[2]) == "--gauntlet-only")
 	{
 		MapGeneratorDefaultsTest::globalsInit();

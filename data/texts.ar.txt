@@ -2910,3 +2910,11 @@ Emoji
 أحياء المدينة غير متكافئة إلى حد كبير؛ جرّب بذرة أخرى.
 [The fractured civic plaza did not survive.]
 لم تصمد الساحة العامة المتصدعة.
+[Who Ate the Map?]
+من أكل الخريطة؟
+[Appetite]
+الشهية
+[A Little Nibble]
+قضمة صغيرة
+[Hungry]
+جائع

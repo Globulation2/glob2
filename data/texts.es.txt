@@ -2912,3 +2912,11 @@ Un barrio de la ciudad carece de cultivos accesibles o de espacio para construir
 Los barrios de la ciudad son demasiado desiguales; prueba otra semilla.
 [The fractured civic plaza did not survive.]
 La plaza pública fracturada no ha sobrevivido.
+[Who Ate the Map?]
+¿Quién se comió el mapa?
+[Appetite]
+Apetito
+[A Little Nibble]
+Un mordisquito
+[Hungry]
+Con hambre

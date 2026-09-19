@@ -2922,3 +2922,11 @@ En stadsdel saknar åtkomliga grödor eller byggutrymme.
 Stadsdelarna är alltför obalanserade; prova ett annat frö.
 [The fractured civic plaza did not survive.]
 Det spruckna stadstorget bevarades inte.
+[Who Ate the Map?]
+Vem åt upp kartan?
+[Appetite]
+Aptit
+[A Little Nibble]
+En liten tugga
+[Hungry]
+Hungrig

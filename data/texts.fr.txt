@@ -2922,3 +2922,11 @@ Un quartier de la ville manque de cultures accessibles ou d'espace constructible
 Les quartiers de la ville sont trop déséquilibrés ; essayez une autre graine.
 [The fractured civic plaza did not survive.]
 La place publique fracturée n'a pas subsisté.
+[Who Ate the Map?]
+Qui a mangé la carte ?
+[Appetite]
+Appétit
+[A Little Nibble]
+Une petite bouchée
+[Hungry]
+Affamé

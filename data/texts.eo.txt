@@ -2910,3 +2910,11 @@ Al urba kvartalo mankas atingeblaj kultivaĵoj aŭ konstruspaco.
 La urbaj kvartaloj estas tro malegalaj; provu alian semon.
 [The fractured civic plaza did not survive.]
 La fendita urba placo ne konserviĝis.
+[Who Ate the Map?]
+Kiu manĝis la mapon?
+[Appetite]
+Apetito
+[A Little Nibble]
+Eta mordeto
+[Hungry]
+Malsata
