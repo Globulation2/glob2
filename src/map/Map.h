@@ -343,7 +343,9 @@ public:
 	
 	void setTerrain(int x, int y, Uint16 terrain)
 	{
-		tiles[coordToIndex(x, y)].terrain = terrain;
+		Uint16 &t = tiles[coordToIndex(x, y)].terrain;
+		cobblestoneTiles += int(isCobblestoneTile(terrain)) - int(isCobblestoneTile(t));
+		t = terrain;
 	}
 	
 	//! A bump throws away every cached route field in the game, so only paint
@@ -407,6 +409,26 @@ public:
 		return ((t>=128)&&(t<128+16));
 	}
 	
+	//! Sprite ranges of the prototype terrains: flat tiles with no transition art.
+	static constexpr Uint16 ICE_TILE_FIRST = 272;
+	static constexpr Uint16 COBBLESTONE_TILE_FIRST = 288;
+	//! Edge sprites laid over neighbouring terrain: 14 corner shapes x 8 variants each.
+	static constexpr Uint16 ICE_EDGE_FIRST = 304;
+	static constexpr Uint16 COBBLESTONE_EDGE_FIRST = 416;
+	static constexpr Uint16 TERRAIN_TILE_END = 528;
+	static bool isIceTile(Uint16 t) { return t >= ICE_TILE_FIRST && t < ICE_TILE_FIRST + 16; }
+	static bool isCobblestoneTile(Uint16 t) { return t >= COBBLESTONE_TILE_FIRST && t < COBBLESTONE_TILE_FIRST + 16; }
+
+	bool isIce(int x, int y) const { return isIceTile(getTerrain(x, y)); }
+	bool isIce(size_t pos) const { return isIceTile(getTerrain(pos)); }
+	bool isCobblestone(int x, int y) const { return isCobblestoneTile(getTerrain(x, y)); }
+	bool isCobblestone(size_t pos) const { return isCobblestoneTile(getTerrain(pos)); }
+	//! Ground a building may stand on: grass or cobblestone.
+	static bool isBuildableTile(Uint16 t) { return t < 16 || isCobblestoneTile(t); }
+	bool isBuildableGround(int x, int y) const { return isBuildableTile(getTerrain(x, y)); }
+	//! Whether any tile is cobblestone, which lowers the cheapest possible step (see minStepCost).
+	bool hasCobblestone() const { return cobblestoneTiles > 0; }
+
 	bool hasSand(int x, int y) const
 	{
 		int t=getTerrain(x, y);
@@ -460,7 +482,7 @@ private:
 		bool noResource    : 1; //!< reject if a resource sits on the tile
 		bool noUnit         : 1; //!< reject if a ground unit sits on the tile
 		bool waterBlocks    : 1; //!< reject water tiles unless canSwim is true
-		bool requireGrass   : 1; //!< reject any tile whose terrain isn't grass
+		bool requireBuildable : 1; //!< reject any tile whose terrain isn't grass or cobblestone
 		bool checkForbidden : 1; //!< reject if the tile's forbidden mask intersects teamMask
 	};
 	//! Returns true iff (x,y) passes every enabled check. A building whose gid
@@ -546,6 +568,8 @@ public:
 	TerrainType getUMTerrain(int x, int y) const { return (TerrainType)undermap[coordToIndex(x, y)]; }
 	//! Set undermap terrain type at (x,y) (undermap positions) on an area
 	void setUMatPos(int x, int y, TerrainType t, int l);
+	//! Whether any of the eight undermap corners around (x, y) is t.
+	bool touchesUMTerrain(int x, int y, TerrainType t) const;
 
 	//! With l==0, it will remove no resource. (Unaligned coordinates)
 	void setNoResource(int x, int y, int l);
@@ -605,8 +629,8 @@ public:
 	static int swimClass(int walkSpeed, int swimSpeed);
 	//! Swim class used where no unit is at hand: water costs the same as land.
 	static constexpr int SWIM_CLASS_EVEN = 3;
-	//! Cheapest possible step for a class, the A* heuristic unit.
-	static int minStepCost(int swimClass);
+	//! Cheapest possible step for a class on this map, the A* heuristic unit.
+	int minStepCost(int swimClass) const;
 	//! Highest cost a gradient can hold (see MapInternal.h).
 	static constexpr int GRADIENT_COST_LIMIT = 0xFFFF - 1 - 1 - 42;
 	//! Cost of stepping (dx, dy) into the cell at targetIndex, in gradient units.
@@ -689,6 +713,8 @@ public:
 	//! and immobile units are left out on purpose; they change far too often
 	//! and a unit blocked by one forces its own rebuild in pathfindBuilding.
 	Uint32 topologyGeneration;
+	//! Cobblestone tiles on the map, kept by setTerrain and load; derived, never saved.
+	int cobblestoneTiles = 0;
 	void bumpTopologyGeneration() { topologyGeneration++; }
 	bool pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
 	enum class AreaKind { Guard, Clear };
@@ -737,6 +763,16 @@ protected:
 	void regenerateMap(int x, int y, int w, int h);
 	
 	Uint16 lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const;
+public:
+	//! The grass/sand/water tile for four such corners, choosing the `variant`-th of its variants.
+	static Uint16 baseTerrainTile(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br, unsigned variant);
+	//! Drawing only: the terrain sprites to draw bottom-up for tile (x, y) when a corner of it is
+	//! ice or cobblestone, whose edges are laid over the terrain around them; returns how many
+	//! (at most 3), or 0 for a tile drawn from getTerrain as usual. A water base is not listed,
+	//! since water is drawn beneath the terrain. Variants come from the position, not the
+	//! synchronized RNG.
+	int prototypeTerrainLayers(int x, int y, Uint16 layers[3]) const;
+private:
 
 public:
 	// Rebuild rendered terrain after bulk undermap edits.

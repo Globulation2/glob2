@@ -1852,6 +1852,14 @@ Folyók sűrűsége
 Szárazság
 [Fords]
 Gázlók
+[Frozen crossings]
+Befagyott gázlók
+[Half frozen]
+Félig befagyva
+[All frozen]
+Mind befagyva
+[Off]
+Kikapcsolva
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 A vízgyűjtőn túl kevés az ártér ennyi kolóniához; használjon nagyobb térképet vagy kevesebb kolóniát.
 [Stone highlands]
@@ -2058,10 +2066,18 @@ Hidak a várárkon
 Tagolt partok
 [Sand roads]
 Homokutak
+[Road surface]
+Útburkolat
+[Sand]
+Homok
+[Cobblestone]
+Macskakő
 [Treasure in dead ends]
 Kincsek a zsákutcákban
 [Fjord bank deposits]
 Lelőhelyek a fjordok partján
+[Ice bridges]
+Jéghidak
 [Sandy lake shore]
 Homokos tópart
 [River delta]
@@ -2168,6 +2184,8 @@ Otthoni tavacskák
 Szántóparcellák
 [Tendril roads]
 Kacsutak
+[Cobblestone streets]
+Macskaköves utcák
 [Random]
 Véletlenszerű
 [Vertical]

@@ -1852,6 +1852,14 @@ Densidad de ríos
 Aridez
 [Fords]
 Vados
+[Frozen crossings]
+Vados helados
+[Half frozen]
+Mitad helados
+[All frozen]
+Todos helados
+[Off]
+Desactivado
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 La cuenca tiene muy poca llanura aluvial para tantas colonias; use un mapa más grande o menos colonias.
 [Stone highlands]
@@ -2058,10 +2066,18 @@ Puentes sobre el foso
 Costas escarpadas
 [Sand roads]
 Caminos de arena
+[Road surface]
+Pavimento
+[Sand]
+Arena
+[Cobblestone]
+Adoquines
 [Treasure in dead ends]
 Tesoros en los callejones sin salida
 [Fjord bank deposits]
 Depósitos en las orillas de los fiordos
+[Ice bridges]
+Puentes de hielo
 [Sandy lake shore]
 Orilla arenosa del lago
 [River delta]
@@ -2168,6 +2184,8 @@ Charcas de la base
 Parcelas de cultivo
 [Tendril roads]
 Caminos en zarcillo
+[Cobblestone streets]
+Calles de adoquines
 [Random]
 Aleatorio
 [Vertical]

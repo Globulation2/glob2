@@ -1,0 +1,72 @@
+# Prototype terrain: ice and cobblestone
+
+Two undermap terrain types beyond water, sand and grass, added to try their game rules
+before investing in artwork. Both are off in every existing map and generator default:
+a map without them simulates, generates and saves exactly as before.
+
+| | Ice (`ICE`, 3) | Cobblestone (`COBBLESTONE`, 4) |
+| --- | --- | --- |
+| Walking and swimming speed | halved | doubled |
+| Pathfinding step cost (land is 10) | 30, so routes avoid it when a detour is short | 5 |
+| Idle wandering | never steps onto it | as grass |
+| Harm | ground units outside buildings lose 1 HP every 32 ticks; explorers are unaffected | none |
+| Buildings | no | yes |
+| Resources | none placed or grown | none placed or grown |
+| May touch | anything | anything but water |
+
+Rules live in `Map::stepCost`/`minStepCost` (`src/map/gradient/MapGradientField.cpp`),
+`Unit::terrainSpeed` and `Unit::takeTerrainDamage` (`src/unit/`), `Map::checkTile`
+(`src/map/MapQuery.cpp`) and the tunables at the end of `src/unit/UnitConsts.h`. Deaths on ice
+count under the "unknown" cause: a new cause would change the saved measurement layout.
+The A* bound drops to the cobblestone step only on maps that contain cobblestone, so other
+maps search exactly as before.
+
+## Tiles
+
+For the rules, a tile with any ice corner is ice (sprites 272-287) and one with four
+cobblestone corners is cobblestone (288-303); any other tile uses the original
+grass/sand/water lookup with cobblestone corners read as sand. Both ranges fail `isGrass`,
+`isSand` and `isWater`, which is what keeps resources off them.
+
+Drawing works from the corners instead (`Map::prototypeTerrainLayers`, used by
+`Game::drawMapTerrain`): a tile touching ice or cobblestone first draws the ground beneath, the
+original tile its other corners make, then lays a cobblestone and then an ice edge sprite over
+it (304-415 ice, 416-527 cobblestone: 14 corner shapes, 8 variants). The edge sprites are cut
+to the alpha of the sand-over-water tiles of the same shape, so they meet other terrain with a
+beach's ragged outline. Variants come from the tile position, never the synchronized RNG, so
+drawing changes nothing in the simulation.
+
+`tools/placeholder_terrain.py` draws all of these from the game's own art: ice is the water
+tiles recoloured pale with faint cracks, cobblestone is rounded stones carrying the sand
+tiles' grain. Better artwork can replace the files under the same names.
+
+Grass never touches water (sand lies between), so a rule keeping ice off sand would leave
+no valid way to lay ice across a sand-banked river, even allowing diagonal contact; ice
+therefore touches anything.
+
+## Editing and generators
+
+The map editor's terrain panel has Ice and Cobblestone brushes; painting cobblestone beside
+water (or water beside cobblestone) turns the water corner to sand. Four generators show the
+terrains off:
+
+- **Watershed**, *Frozen crossings*: Half frozen lays every other ford in ice, All frozen every
+  ford.
+- **City states**, *Road surface*: Cobblestone paves the sand roads.
+- **Old town**, *Cobblestone streets*: the city's streets are paved, leaving a grass verge
+  along every block so the blocks keep their stone.
+- **Fjord continent**, *Ice bridges*: ice spans the middle of every fjord from grass to grass,
+  a short way to a neighbour besides the walk round through the core.
+
+## AI awareness
+
+Only the basics: every AI that places buildings through `Map::checkTile` sees cobblestone as
+buildable, as do Castor's building-space map and Maxima's buildable-ground counts
+(`Map::isBuildableGround`). Castor's own walking map treats ice as a wall. Route-finding keeps
+every AI's units off ice when a detour is short. No AI plans around ice damage or seeks roads out.
+
+## Compatibility
+
+Old saves, replays and maps load unchanged. `VERSION_MINOR` is not bumped yet: a map
+containing the new terrain opened by an older client would hit the renderer's unknown-tile
+assertion, so the bump belongs with merging.

@@ -1848,6 +1848,14 @@ Densidade de rios
 Aridez
 [Fords]
 Vaus
+[Frozen crossings]
+Vaus congelados
+[Half frozen]
+Metade congelados
+[All frozen]
+Todos congelados
+[Off]
+Desativado
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 A bacia hidrográfica tem pouca planície aluvial para tantas colônias; use um mapa maior ou menos colônias.
 [Stone highlands]
@@ -2054,10 +2062,18 @@ Pontes sobre o fosso
 Costas recortadas
 [Sand roads]
 Estradas de areia
+[Road surface]
+Pavimento
+[Sand]
+Areia
+[Cobblestone]
+Paralelepípedo
 [Treasure in dead ends]
 Tesouros em becos sem saída
 [Fjord bank deposits]
 Depósitos nas margens dos fiordes
+[Ice bridges]
+Pontes de gelo
 [Sandy lake shore]
 Margem arenosa do lago
 [River delta]
@@ -2164,6 +2180,8 @@ Poças da base
 Lotes agrícolas
 [Tendril roads]
 Estradas em gavinha
+[Cobblestone streets]
+Ruas de paralelepípedo
 [Random]
 Aleatório
 [Vertical]

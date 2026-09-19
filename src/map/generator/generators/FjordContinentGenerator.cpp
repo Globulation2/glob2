@@ -775,6 +775,98 @@ bool placeBankResources(Game &game, GenerationContext &context, const FjordLayou
 	return true;
 }
 
+// An ice bridge across a fjord: the tiles along its middle line, from grass on one bank to grass on
+// the other.
+struct IceBridge
+{
+	std::vector<MapGeneratorPoint> line;
+};
+
+// Ice laid straight across the middle of every fjord, over its water and both beaches, from grass
+// to grass: a way over for neighbours that is short but slow and harmful. A fjord whose banks are
+// not grass within reach of its middle gets none.
+std::vector<IceBridge> layIceBridges(Game &game, GenerationContext &context,
+									 const std::vector<std::vector<MapGeneratorPoint>> &centerlines)
+{
+	Map &map = game.map;
+	constexpr int kMaxReach = 24;
+	std::vector<IceBridge> bridges;
+	for (const auto &centerline : centerlines)
+	{
+		if (centerline.size() < 8)
+			continue;
+		const int i = int(centerline.size()) / 2;
+		// The signed step from two points before the middle to two after, the short way round.
+		const auto wrapped = [](int d, int size) { return d > size / 2 ? d - size : d < -size / 2 ? d + size : d; };
+		const double ax = wrapped(centerline[i + 2].x - centerline[i - 2].x, map.getW());
+		const double ay = wrapped(centerline[i + 2].y - centerline[i - 2].y, map.getH());
+		const double length = std::hypot(ax, ay);
+		if (length < 0.5)
+			continue;
+		const double alongX = ax / length, alongY = ay / length;
+		const double acrossX = -alongY, acrossY = alongX;
+		const auto corner = [&](double along, double across)
+		{
+			return MapGeneratorPoint(
+				map.normalizeX(int(std::lround(centerline[i].x + alongX * along + acrossX * across))),
+				map.normalizeY(int(std::lround(centerline[i].y + alongY * along + acrossY * across))));
+		};
+		// How far out, either way, the first grass corner on the middle line lies.
+		int reach[2] = {-1, -1};
+		for (int s = 0; s < 2; ++s)
+			for (int d = 0; d <= kMaxReach && reach[s] < 0; ++d)
+			{
+				const MapGeneratorPoint p = corner(0, s ? d : -d);
+				if (map.getUMTerrain(p.x, p.y) == GRASS)
+					reach[s] = d;
+			}
+		if (reach[0] < 0 || reach[1] < 0)
+			continue;
+		// The bridge's sides waver along its length, so it reads as a floe rather than a plank.
+		const double phase = context.bounded("ice-bridges", 628) / 100.0;
+		for (double across = -reach[0]; across <= reach[1] + 1e-9; across += 0.5)
+			for (double along = -2.0; along <= 2.0 + 1e-9; along += 0.5)
+			{
+				const double halfWidth = 1.25 + 0.75 * std::sin(across * 0.7 + phase);
+				if (std::abs(along) > halfWidth)
+					continue;
+				const MapGeneratorPoint p = corner(along, across);
+				const TerrainType t = map.getUMTerrain(p.x, p.y);
+				if (t == WATER || t == SAND)
+					map.setUMatPos(p.x, p.y, ICE, 1);
+			}
+		IceBridge bridge;
+		for (int d = -reach[0] - 2; d <= reach[1] + 2; ++d)
+			bridge.line.push_back(corner(0, d));
+		bridges.push_back(std::move(bridge));
+	}
+	context.telemetry.measure("fjord-continent.ice-bridges.actual", bridges.size());
+	return bridges;
+}
+
+// Deposits never close a bridge: the tiles within a tile of its middle line are cleared, and it
+// must then be walkable from bank to bank.
+bool openIceBridges(Game &game, GenerationContext &context, const std::vector<IceBridge> &bridges)
+{
+	Map &map = game.map;
+	for (const IceBridge &bridge : bridges)
+	{
+		for (const MapGeneratorPoint &p : bridge.line)
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+					if (map.isResource(map.normalizeX(p.x + dx), map.normalizeY(p.y + dy)))
+						map.setNoResource(map.normalizeX(p.x + dx), map.normalizeY(p.y + dy), 1);
+		for (const MapGeneratorPoint &p : bridge.line)
+			if (map.isWater(p.x, p.y))
+			{
+				context.detail = "The ice bridge at (" + std::to_string(p.x) + ", " +
+								 std::to_string(p.y) + ") leaves water to cross.";
+				return false;
+			}
+	}
+	return true;
+}
+
 static bool generate(Game &game, GenerationContext &context)
 {
 	context.stage = "continent";
@@ -802,6 +894,8 @@ static bool generate(Game &game, GenerationContext &context)
 	placeOutlierIslands(game, context, layout, options, grid, areaNumber);
 
 	game.map.controlSand();
+	const std::vector<IceBridge> bridges =
+		options.iceBridges ? layIceBridges(game, context, fjordCenterlines) : std::vector<IceBridge>{};
 
 	std::vector<MapGeneratorPoint> teamPts = anchorTeams(game, layout);
 	if (!verifyConnectivity(game, layout, teamPts))
@@ -854,7 +948,7 @@ static bool generate(Game &game, GenerationContext &context)
 	// around it: nothing here budgets its room. Opening it up costs a colony that already has
 	// its room nothing (openStartsBuriedByResources leaves such a colony untouched).
 	openStartsBuriedByResources(game, context);
-	return true;
+	return openIceBridges(game, context, bridges);
 }
 
 } // namespace
@@ -864,7 +958,8 @@ FjordContinentOptions::FjordContinentOptions(const GenerationRequest &r)
 	  fjordWidth(r.option("fjord-width")), resourceIslands(r.option("resource-islands")),
 	  lakeSize(r.option("lake-size")), lakeConnected(r.option("lake-connected")),
 	  sandyLakeShore(r.option("sandy-lake-shore") != 0),
-	  bankDeposits(r.option("bank-deposits") != 0), wheat(r.option("wheat-amount")),
+	  bankDeposits(r.option("bank-deposits") != 0), iceBridges(r.option("ice-bridges") != 0),
+	  wheat(r.option("wheat-amount")),
 	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
 	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
 {
@@ -896,6 +991,9 @@ GeneratorDefinition fjordContinentDefinition()
 			 // Off, the lake has an ordinary beach instead of a wide ring of sand.
 			 GeneratorControl::toggle("sandy-lake-shore", "Sandy lake shore", true,
 									  ControlGroup::Terrain),
+			 // On, ice spans the middle of every fjord: neighbours get a short way across that is
+			 // slow and hurts, besides the long walk round through the core.
+			 GeneratorControl::toggle("ice-bridges", "Ice bridges", false, ControlGroup::Terrain),
 			 // Off, each fjord bank keeps only its guaranteed wheat and wood.
 			 GeneratorControl::toggle("bank-deposits", "Fjord bank deposits", true,
 									  ControlGroup::Resources),

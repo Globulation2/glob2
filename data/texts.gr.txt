@@ -1922,6 +1922,14 @@ Cortex
 Ξηρασία
 [Fords]
 Ρηχά περάσματα
+[Frozen crossings]
+Παγωμένα περάσματα
+[Half frozen]
+Μισά παγωμένα
+[All frozen]
+Όλα παγωμένα
+[Off]
+Ανενεργό
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Η λεκάνη απορροής έχει πολύ λίγη πεδιάδα πλημμυρών για τόσες αποικίες. Χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
 [Stone highlands]
@@ -2128,10 +2136,18 @@ Cortex
 Οδοντωτές ακτές
 [Sand roads]
 Αμμώδεις δρόμοι
+[Road surface]
+Επιφάνεια δρόμων
+[Sand]
+Άμμος
+[Cobblestone]
+Λιθόστρωτο
 [Treasure in dead ends]
 Θησαυροί στα αδιέξοδα
 [Fjord bank deposits]
 Κοιτάσματα στις όχθες των φιόρδ
+[Ice bridges]
+Παγωμένες γέφυρες
 [Sandy lake shore]
 Αμμώδης όχθη λίμνης
 [River delta]
@@ -2238,6 +2254,8 @@ Cortex
 Αγροτεμάχια
 [Tendril roads]
 Δρόμοι-έλικες
+[Cobblestone streets]
+Λιθόστρωτοι δρόμοι
 [Random]
 Τυχαία
 [Vertical]

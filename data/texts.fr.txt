@@ -1862,6 +1862,14 @@ Densité des rivières
 Aridité
 [Fords]
 Gués
+[Frozen crossings]
+Gués gelés
+[Half frozen]
+Moitié gelés
+[All frozen]
+Tous gelés
+[Off]
+Désactivé
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Le bassin versant a trop peu de plaines inondables pour autant de colonies ; utilisez une carte plus grande ou moins de colonies.
 [Stone highlands]
@@ -2068,10 +2076,18 @@ Ponts sur les douves
 Côtes découpées
 [Sand roads]
 Chemins de sable
+[Road surface]
+Revêtement
+[Sand]
+Sable
+[Cobblestone]
+Pavés
 [Treasure in dead ends]
 Trésors dans les culs-de-sac
 [Fjord bank deposits]
 Gisements sur les rives des fjords
+[Ice bridges]
+Ponts de glace
 [Sandy lake shore]
 Rive sableuse du lac
 [River delta]
@@ -2178,6 +2194,8 @@ Mares de la base
 Parcelles agricoles
 [Tendril roads]
 Chemins en vrilles
+[Cobblestone streets]
+Rues pavées
 [Random]
 Aléatoire
 [Vertical]

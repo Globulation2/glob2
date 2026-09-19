@@ -1013,6 +1013,7 @@ bool MapInfo::is_resource(int x,int y)const{return context.player->map->isResour
 bool MapInfo::is_water(int x,int y)const{return context.player->map->isWater(x,y);}
 bool MapInfo::is_sand(int x,int y)const{return context.player->map->isSand(x,y);}
 bool MapInfo::is_grass(int x,int y)const{return context.player->map->isGrass(x,y);}
+bool MapInfo::is_buildable_ground(int x,int y)const{return context.player->map->isBuildableGround(x,y);}
 bool MapInfo::backs_onto_sand(int x,int y)const
 {for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)if((dx||dy)&&is_sand(x+dx,y+dy))return true;return false;}
 int MapInfo::get_ammount_resource(int x,int y)const{return context.player->map->getResource(x,y).amount;}

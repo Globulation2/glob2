@@ -1860,6 +1860,14 @@ Nehir yoğunluğu
 Kuraklık
 [Fords]
 Sığ geçitler
+[Frozen crossings]
+Donmuş geçitler
+[Half frozen]
+Yarısı donmuş
+[All frozen]
+Hepsi donmuş
+[Off]
+Kapalı
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Havzada bu kadar koloni için çok az taşkın ovası var; daha büyük bir harita veya daha az koloni kullanın.
 [Stone highlands]
@@ -2066,10 +2074,18 @@ Su hendeği köprüleri
 Girintili kıyılar
 [Sand roads]
 Kum yollar
+[Road surface]
+Yol kaplaması
+[Sand]
+Kum
+[Cobblestone]
+Arnavut kaldırımı
 [Treasure in dead ends]
 Çıkmaz yollarda hazine
 [Fjord bank deposits]
 Fiyort kıyılarında kaynaklar
+[Ice bridges]
+Buz köprüleri
 [Sandy lake shore]
 Kumlu göl kıyısı
 [River delta]
@@ -2176,6 +2192,8 @@ Döngüler
 Tarla parselleri
 [Tendril roads]
 Sarmaşık yollar
+[Cobblestone streets]
+Arnavut kaldırımı sokaklar
 [Random]
 Rastgele
 [Vertical]

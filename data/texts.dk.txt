@@ -1928,6 +1928,14 @@ Flodtæthed
 Tørhed
 [Fords]
 Vadesteder
+[Frozen crossings]
+Frosne vadesteder
+[Half frozen]
+Halvt frosne
+[All frozen]
+Alle frosne
+[Off]
+Fra
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Afvandingsområdet har for lidt flodslette til så mange kolonier; brug et større kort eller færre kolonier.
 [Stone highlands]
@@ -2134,10 +2142,18 @@ Broer over voldgraven
 Takkede kyster
 [Sand roads]
 Sandveje
+[Road surface]
+Vejbelægning
+[Sand]
+Sand
+[Cobblestone]
+Brosten
 [Treasure in dead ends]
 Skatte i blindgyder
 [Fjord bank deposits]
 Forekomster langs fjordbredderne
+[Ice bridges]
+Isbroer
 [Sandy lake shore]
 Sandet søbred
 [River delta]
@@ -2244,6 +2260,8 @@ Hjemmets vandhuller
 Marklodder
 [Tendril roads]
 Slyngveje
+[Cobblestone streets]
+Brostensgader
 [Random]
 Tilfældig
 [Vertical]

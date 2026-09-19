@@ -1852,6 +1852,14 @@ OpenGL није доступан у овој верзији.
 Сушност
 [Fords]
 Газови
+[Frozen crossings]
+Залеђени газови
+[Half frozen]
+Пола залеђено
+[All frozen]
+Сви залеђени
+[Off]
+Искључено
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Речни слив има премало плавне равнице за толико колонија; користите већу мапу или мање колонија.
 [Stone highlands]
@@ -2058,10 +2066,18 @@ OpenGL није доступан у овој верзији.
 Разуђене обале
 [Sand roads]
 Пешчани путеви
+[Road surface]
+Површина путева
+[Sand]
+Песак
+[Cobblestone]
+Калдрма
 [Treasure in dead ends]
 Благо у ћорсокацима
 [Fjord bank deposits]
 Налазишта на обалама фјордова
+[Ice bridges]
+Ледени мостови
 [Sandy lake shore]
 Пешчана обала језера
 [River delta]
@@ -2168,6 +2184,8 @@ OpenGL није доступан у овој верзији.
 Пољопривредне парцеле
 [Tendril roads]
 Путеви-витице
+[Cobblestone streets]
+Калдрмисане улице
 [Random]
 Насумично
 [Vertical]

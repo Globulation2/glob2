@@ -69,6 +69,7 @@ try
 
 	// We read what's inside the map:
 	stream->read(undermap, size, "undermap");
+	cobblestoneTiles = 0;
 	stream->readEnterSection("cases");
 	for (size_t i=0; i<size; i++)
 	{
@@ -76,6 +77,7 @@ try
 		mapDiscovered[i] = stream->readUint32("mapDiscovered");
 
 		tiles[i].terrain = stream->readUint16("terrain");
+		cobblestoneTiles += isCobblestoneTile(tiles[i].terrain);
 		tiles[i].building = stream->readUint16("building");
 		if (tiles[i].building != NOGBID && tiles[i].building >= Building::MAX_COUNT * header.getNumberOfTeams())
 			return false;

@@ -159,7 +159,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 {
 	// we add brush to accumulator
 	int mapX, mapY;
-	game.map.displayToMapCaseAligned(mx+(terrainType>TerrainSelector::Water ? 0 : 16), my+(terrainType>TerrainSelector::Water ? 0 : 16), &mapX, &mapY,  viewportX, viewportY);
+	game.map.displayToMapCaseAligned(mx+(!TerrainSelector::isBaseTerrain(terrainType) ? 0 : 16), my+(!TerrainSelector::isBaseTerrain(terrainType) ? 0 : 16), &mapX, &mapY,  viewportX, viewportY);
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
 		
@@ -216,6 +216,14 @@ void MapEdit::handleTerrainClick(int mx, int my)
 						game.map.removeUnallowedResources(x-2, y-2, 4, 4);
 						game.removeUnallowedUnitsAndBuildings(x-2, y-2, 4, 4);
 						break;
+					case TerrainSelector::Ice:
+					case TerrainSelector::Cobblestone:
+						game.map.setUMatPos(x, y, terrainType == TerrainSelector::Ice ? ICE : COBBLESTONE, 1);
+						// as for sand and water: the resources, buildings and units the repainted
+						// tiles no longer allow go
+						game.map.removeUnallowedResources(x-2, y-2, 4, 4);
+						game.removeUnallowedUnitsAndBuildings(x-2, y-2, 4, 4);
+						break;
 					case TerrainSelector::Wheat:
 						resToSet=WHEAT;
 						break;
@@ -261,6 +269,8 @@ void MapEdit::handleTerrainClick(int mx, int my)
 					{
 					case TerrainSelector::Sand:
 					case TerrainSelector::Water:
+					case TerrainSelector::Ice:
+					case TerrainSelector::Cobblestone:
 						game.map.setUMatPos(x, y, GRASS, 1);
 						game.map.removeUnallowedResources(x-2, y-2, 4, 4);
 						for (int ty=y-1; ty<=y; ty++)

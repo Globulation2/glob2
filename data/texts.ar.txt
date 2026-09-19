@@ -1850,6 +1850,14 @@ OpenGL غير متوفر في هذا الإصدار.
 الجفاف
 [Fords]
 المخاضات
+[Frozen crossings]
+مخاضات متجمدة
+[Half frozen]
+نصفها متجمد
+[All frozen]
+كلها متجمدة
+[Off]
+معطّل
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 لا يحتوي مستجمع المياه على سهول فيضية كافية لهذا العدد من المستعمرات؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
 [Stone highlands]
@@ -2056,10 +2064,18 @@ OpenGL غير متوفر في هذا الإصدار.
 سواحل متعرجة
 [Sand roads]
 طرق رملية
+[Road surface]
+سطح الطرق
+[Sand]
+رمل
+[Cobblestone]
+حجارة مرصوفة
 [Treasure in dead ends]
 كنوز في الطرق المسدودة
 [Fjord bank deposits]
 رواسب على ضفاف المضائق البحرية
+[Ice bridges]
+جسور جليدية
 [Sandy lake shore]
 شاطئ رملي حول البحيرة
 [River delta]
@@ -2166,6 +2182,8 @@ OpenGL غير متوفر في هذا الإصدار.
 قطع المزارع
 [Tendril roads]
 طرق متفرعة
+[Cobblestone streets]
+شوارع من حجارة مرصوفة
 [Random]
 عشوائي
 [Vertical]

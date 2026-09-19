@@ -380,6 +380,17 @@ bool generate(Game &game, GenerationContext &context)
 	TerrainSketch terrain(n, GRASS);
 	for (int i = 0; i < n; ++i)
 		terrain[i] = L.water[i] ? WATER : (L.farm.sand[i] || L.road[i]) ? SAND : GRASS;
+	// Cobblestone streets pave only the corners all four of whose tiles are street, so every block
+	// and plaza tile keeps four grass corners (and its stone); a street's edge tiles stay a grass
+	// verge. The beaches then take any paving beside a fountain back to sand.
+	if (o.cobblestoneStreets)
+		for (int i = 0; i < n; ++i)
+		{
+			const int x = i % t.w, y = i / t.w;
+			if (terrain[i] == GRASS && L.city[i] && L.street[i] && L.street[t.at(x - 1, y)] &&
+				L.street[t.at(x, y - 1)] && L.street[t.at(x - 1, y - 1)])
+				terrain[i] = COBBLESTONE;
+		}
 	layBeaches(terrain, t);
 	writeUndermap(map, terrain);
 	// The blocks are stone, wherever the beaches left pure grass.
@@ -510,6 +521,7 @@ OldTownOptions::OldTownOptions(const GenerationRequest &r)
 	  streetWidth(r.option("street-width")), warp(r.option("warp")), plazas(r.option("plazas")),
 	  farmPlots(r.option("farm-plots")), tendrils(r.option("tendrils") != 0),
 	  waterCrossings(r.option("water-crossings") != 0), cropCrossings(r.option("crop-crossings") != 0),
+	  cobblestoneStreets(r.option("cobblestone-streets") != 0),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))
@@ -539,6 +551,10 @@ GeneratorDefinition oldTownDefinition()
 			 waterCrossingsControl(),
 			 cropCrossingsControl(),
 			 GeneratorControl::toggle("tendrils", "Tendril roads", true, ControlGroup::Terrain),
+			 // Off, the streets are grass. On, cobblestone (prototype terrain): units cross the city
+			 // twice as fast, and the streets still take buildings.
+			 GeneratorControl::toggle("cobblestone-streets", "Cobblestone streets", false,
+									  ControlGroup::Terrain),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),

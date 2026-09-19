@@ -1852,6 +1852,14 @@ Gostota rek
 Sušnost
 [Fords]
 Brodi
+[Frozen crossings]
+Zamrznjeni brodi
+[Half frozen]
+Polovica zamrznjenih
+[All frozen]
+Vsi zamrznjeni
+[Off]
+Izklopljeno
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Porečje ima premalo poplavne ravnice za toliko kolonij; uporabite večji zemljevid ali manj kolonij.
 [Stone highlands]
@@ -2058,10 +2066,18 @@ Mostovi čez vodni jarek
 Razčlenjene obale
 [Sand roads]
 Peščene poti
+[Road surface]
+Površina poti
+[Sand]
+Pesek
+[Cobblestone]
+Tlakovci
 [Treasure in dead ends]
 Zakladi v slepih ulicah
 [Fjord bank deposits]
 Nahajališča na bregovih fjordov
+[Ice bridges]
+Ledeni mostovi
 [Sandy lake shore]
 Peščena obala jezera
 [River delta]
@@ -2168,6 +2184,8 @@ Mlake ob domu
 Njivske parcele
 [Tendril roads]
 Vitičaste poti
+[Cobblestone streets]
+Tlakovane ulice
 [Random]
 Naključno
 [Vertical]

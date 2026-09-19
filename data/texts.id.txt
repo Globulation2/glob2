@@ -1848,6 +1848,14 @@ Kepadatan sungai
 Kekeringan
 [Fords]
 Penyeberangan dangkal
+[Frozen crossings]
+Penyeberangan beku
+[Half frozen]
+Separuh beku
+[All frozen]
+Semua beku
+[Off]
+Nonaktif
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Daerah aliran sungai memiliki terlalu sedikit dataran banjir untuk koloni sebanyak ini; gunakan peta yang lebih besar atau lebih sedikit koloni.
 [Stone highlands]
@@ -2054,10 +2062,18 @@ Jembatan di atas parit air
 Pantai bergerigi
 [Sand roads]
 Jalan pasir
+[Road surface]
+Permukaan jalan
+[Sand]
+Pasir
+[Cobblestone]
+Batu bulat
 [Treasure in dead ends]
 Harta di jalan buntu
 [Fjord bank deposits]
 Sumber daya di tepi fjord
+[Ice bridges]
+Jembatan es
 [Sandy lake shore]
 Tepi danau berpasir
 [River delta]
@@ -2164,6 +2180,8 @@ Kolam markas
 Petak ladang
 [Tendril roads]
 Jalan sulur
+[Cobblestone streets]
+Jalan batu bulat
 [Random]
 Acak
 [Vertical]

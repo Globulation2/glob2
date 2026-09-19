@@ -173,6 +173,8 @@ public:
 		Grass,
 		Sand,
 		Water,
+		Ice,
+		Cobblestone,
 		Wheat,
 		Trees,
 		Stone,
@@ -185,6 +187,8 @@ public:
 	};
 	TerrainSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, TerrainType terrainType);
 	void draw();
+	//! Whether the brush paints undermap corners (terrain) rather than tiles (resources).
+	static bool isBaseTerrain(TerrainType t) { return t == Grass || t == Sand || t == Water || t == Ice || t == Cobblestone; }
 private:
 	TerrainType terrainType;
 };
@@ -557,6 +561,8 @@ private:
 	///@{
 	TerrainSelector* grass;
 	TerrainSelector* sand;
+	TerrainSelector* ice;
+	TerrainSelector* cobblestone;
 	TerrainSelector* water;
 	TerrainSelector* wheat;
 	TerrainSelector* trees;

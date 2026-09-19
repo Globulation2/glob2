@@ -1852,6 +1852,14 @@ Hustota řek
 Vyprahlost
 [Fords]
 Brody
+[Frozen crossings]
+Zamrzlé brody
+[Half frozen]
+Polovina zamrzlá
+[All frozen]
+Všechny zamrzlé
+[Off]
+Vypnuto
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Povodí má pro tolik kolonií příliš málo záplavové nivy; použijte větší mapu nebo méně kolonií.
 [Stone highlands]
@@ -2058,10 +2066,18 @@ Mosty přes příkop
 Členité pobřeží
 [Sand roads]
 Písečné cesty
+[Road surface]
+Povrch cest
+[Sand]
+Písek
+[Cobblestone]
+Dlažba
 [Treasure in dead ends]
 Poklady ve slepých uličkách
 [Fjord bank deposits]
 Ložiska na březích fjordů
+[Ice bridges]
+Ledové mosty
 [Sandy lake shore]
 Písečný břeh jezera
 [River delta]
@@ -2168,6 +2184,8 @@ Tůně u domova
 Zemědělské parcely
 [Tendril roads]
 Úponkové cesty
+[Cobblestone streets]
+Dlážděné ulice
 [Random]
 Náhodně
 [Vertical]

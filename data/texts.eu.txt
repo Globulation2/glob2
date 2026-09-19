@@ -1862,6 +1862,14 @@ Ibaien dentsitatea
 Lehortasuna
 [Fords]
 Ibiak
+[Frozen crossings]
+Ibi izoztuak
+[Half frozen]
+Erdiak izoztuta
+[All frozen]
+Guztiak izoztuta
+[Off]
+Desaktibatuta
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Ibai-arroak uholde-lautada gutxiegi du hainbeste koloniarentzat; erabili mapa handiagoa edo kolonia gutxiago.
 [Stone highlands]
@@ -2068,10 +2076,18 @@ Lubanarroko zubiak
 Kostalde malkarrak
 [Sand roads]
 Harea-bideak
+[Road surface]
+Bide-azala
+[Sand]
+Area
+[Cobblestone]
+Galtzada-harriak
 [Treasure in dead ends]
 Altxorrak kale itsuetan
 [Fjord bank deposits]
 Fiordoen ertzetako baliabideak
+[Ice bridges]
+Izotz-zubiak
 [Sandy lake shore]
 Aintziraren ertz hareatsua
 [River delta]
@@ -2178,6 +2194,8 @@ Etxeko putzuak
 Soro-lursailak
 [Tendril roads]
 Kiribil-bideak
+[Cobblestone streets]
+Galtzada-harrizko kaleak
 [Random]
 Ausazkoa
 [Vertical]

@@ -1862,6 +1862,14 @@ Flodtäthet
 Torrhet
 [Fords]
 Vadställen
+[Frozen crossings]
+Frusna vadställen
+[Half frozen]
+Hälften frusna
+[All frozen]
+Alla frusna
+[Off]
+Av
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Avrinningsområdet har för lite flodslätt för så många kolonier; använd en större karta eller färre kolonier.
 [Stone highlands]
@@ -2068,10 +2076,18 @@ Broar över vallgraven
 Taggiga kuster
 [Sand roads]
 Sandvägar
+[Road surface]
+Vägbeläggning
+[Sand]
+Sand
+[Cobblestone]
+Kullersten
 [Treasure in dead ends]
 Skatter i återvändsgränder
 [Fjord bank deposits]
 Fyndigheter längs fjordstränderna
+[Ice bridges]
+Isbroar
 [Sandy lake shore]
 Sandig sjöstrand
 [River delta]
@@ -2178,6 +2194,8 @@ Hemmets gölar
 Åkerlotter
 [Tendril roads]
 Slingervägar
+[Cobblestone streets]
+Kullerstensgator
 [Random]
 Slumpmässig
 [Vertical]

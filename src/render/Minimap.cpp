@@ -271,10 +271,12 @@ void Minimap::computeColors(int row, int localTeam)
 	assert(localTeam>=0);
 	assert(localTeam<Team::MAX_COUNT);
 
-	const int terrainColor[3][3] = {
+	const int terrainColor[TERRAIN_TYPE_COUNT][3] = {
 		{ 0, 40, 120 }, // Water
 		{ 170, 170, 0 }, // Sand
 		{ 0, 90, 0 }, // Grass
+		{ 190, 225, 240 }, // Ice
+		{ 176, 138, 98 }, // Cobblestone
 	};
 
 	const int buildingsUnitsColor[6][3] = {
@@ -286,7 +288,7 @@ void Minimap::computeColors(int row, int localTeam)
 		{ (220*3)/5, (25*3)/5, (30*3)/5 }, // enemy FOW
 	};
 
-	int pcol[3+MAX_RESOURCES];
+	int pcol[TERRAIN_TYPE_COUNT+MAX_RESOURCES];
 
 	// get data
 	int szX = mini_w;
@@ -363,7 +365,7 @@ void Minimap::computeColors(int row, int localTeam)
 					const auto& r = game->map.getResource(minidx, minidy);
 					if (r.type!=NO_RES_TYPE)
 					{
-						pcolIndex=r.type + 3;
+						pcolIndex=r.type + TERRAIN_TYPE_COUNT;
 					}
 					else
 					{
@@ -401,7 +403,7 @@ void Minimap::computeColors(int row, int localTeam)
 
 			int lr, lg, lb;
 			lr = lg = lb = 0;
-			for (int i=0; i<3; i++)
+			for (int i=0; i<TERRAIN_TYPE_COUNT; i++)
 			{
 				lr += pcol[i]*terrainColor[i][0];
 				lg += pcol[i]*terrainColor[i][1];
@@ -410,9 +412,9 @@ void Minimap::computeColors(int row, int localTeam)
 			for (int i=0; i<MAX_RESOURCES; i++)
 			{
 				const ResourceType *rt = globalContainer->resourcesTypes.get(i);
-				lr += pcol[i+3]*(rt->minimapR);
-				lg += pcol[i+3]*(rt->minimapG);
-				lb += pcol[i+3]*(rt->minimapB);
+				lr += pcol[i+TERRAIN_TYPE_COUNT]*(rt->minimapR);
+				lg += pcol[i+TERRAIN_TYPE_COUNT]*(rt->minimapG);
+				lb += pcol[i+TERRAIN_TYPE_COUNT]*(rt->minimapB);
 			}
 
 			r = lr/nCount;

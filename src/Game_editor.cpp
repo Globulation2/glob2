@@ -326,7 +326,7 @@ void Game::removeUnallowedUnitsAndBuildings(int x, int y, int w, int h)
 		{
 			int cx=dx&map.getMaskW();
 			int cy=dy&map.getMaskH();
-			if (!map.isGrass(cx, cy))
+			if (!map.isBuildableGround(cx, cy))
 				removeUnitAndBuildingAndFlags(cx, cy, 1, DEL_BUILDING);
 			Uint16 guid=map.getGroundUnit(cx, cy);
 			if (guid!=NOGUID && map.isWater(cx, cy) && !getUnit(guid)->performance[SWIM])

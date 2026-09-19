@@ -23,7 +23,12 @@ namespace
 	// cell costs GRADIENT_STEP). Class 0 cannot swim: its seeds mark water as an
 	// obstacle, so its entry is never used.
 	constexpr int WATER_STEP[SWIM_CLASS_COUNT] = { 0, 5, 7, 10, 13, 20, 30 };
+	// Cost of entering an ice cell (slow, and it hurts) and a cobblestone cell (fast), for
+	// every class: neither is water.
+	constexpr int ICE_STEP = 30;
+	constexpr int COBBLESTONE_STEP = 5;
 	constexpr int MAX_STEP = WATER_STEP[SWIM_CLASS_COUNT - 1] * GRADIENT_DIAGONAL_STEP / GRADIENT_STEP;
+	static_assert(ICE_STEP * GRADIENT_DIAGONAL_STEP / GRADIENT_STEP <= MAX_STEP);
 	constexpr int BUCKETS = MAX_STEP + 1;
 	// Costs above this would run into the sentinels; propagation stops there.
 	constexpr int COST_LIMIT = GRADIENT_AT_GOAL - GRADIENT_UNREACHABLE - 1 - MAX_STEP;
@@ -55,18 +60,27 @@ int Map::swimClass(int walkSpeed, int swimSpeed)
 	return best;
 }
 
-int Map::minStepCost(int swimClass)
+int Map::minStepCost(int swimClass) const
 {
-	if (swimClass > 0 && WATER_STEP[swimClass] < GRADIENT_STEP)
-		return WATER_STEP[swimClass];
-	return GRADIENT_STEP;
+	int step = GRADIENT_STEP;
+	if (swimClass > 0 && WATER_STEP[swimClass] < step)
+		step = WATER_STEP[swimClass];
+	// Only a map with cobblestone lowers the bound, so other maps search exactly as before.
+	if (hasCobblestone() && COBBLESTONE_STEP < step)
+		step = COBBLESTONE_STEP;
+	return step;
 }
 
 int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 {
 	int step = GRADIENT_STEP;
+	const Uint16 terrain = getTerrain(targetIndex);
 	if (swimClass > 0 && isWater((unsigned)targetIndex))
 		step = WATER_STEP[swimClass];
+	else if (isIceTile(terrain))
+		step = ICE_STEP;
+	else if (isCobblestoneTile(terrain))
+		step = COBBLESTONE_STEP;
 	if (dx != 0 && dy != 0)
 		step = step * GRADIENT_DIAGONAL_STEP / GRADIENT_STEP;
 	return step;

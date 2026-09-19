@@ -1848,6 +1848,14 @@ OpenGL недоступний у цій збірці.
 Посушливість
 [Fords]
 Броди
+[Frozen crossings]
+Замерзлі броди
+[Half frozen]
+Половина замерзла
+[All frozen]
+Усі замерзлі
+[Off]
+Вимкнено
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 У річковому басейні замало заплавних земель для такої кількості колоній; використайте більшу карту або менше колоній.
 [Stone highlands]
@@ -2054,10 +2062,18 @@ OpenGL недоступний у цій збірці.
 Порізані береги
 [Sand roads]
 Піщані дороги
+[Road surface]
+Покриття доріг
+[Sand]
+Пісок
+[Cobblestone]
+Бруківка
 [Treasure in dead ends]
 Скарби в глухих кутах
 [Fjord bank deposits]
 Поклади на берегах фіордів
+[Ice bridges]
+Крижані мости
 [Sandy lake shore]
 Піщаний берег озера
 [River delta]
@@ -2164,6 +2180,8 @@ OpenGL недоступний у цій збірці.
 Земельні наділи
 [Tendril roads]
 Дороги-вусики
+[Cobblestone streets]
+Бруковані вулиці
 [Random]
 Випадково
 [Vertical]

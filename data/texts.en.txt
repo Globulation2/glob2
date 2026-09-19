@@ -1846,6 +1846,14 @@ River density
 Dryness
 [Fords]
 Fords
+[Frozen crossings]
+Frozen crossings
+[Half frozen]
+Half frozen
+[All frozen]
+All frozen
+[Off]
+Off
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.
 [Stone highlands]
@@ -2056,10 +2064,18 @@ Moat bridges
 Jagged coastlines
 [Sand roads]
 Sand roads
+[Road surface]
+Road surface
+[Sand]
+Sand
+[Cobblestone]
+Cobblestone
 [Treasure in dead ends]
 Treasure in dead ends
 [Fjord bank deposits]
 Fjord bank deposits
+[Ice bridges]
+Ice bridges
 [Sandy lake shore]
 Sandy lake shore
 [River delta]
@@ -2166,6 +2182,8 @@ Home pools
 Farm plots
 [Tendril roads]
 Tendril roads
+[Cobblestone streets]
+Cobblestone streets
 [Random]
 Random
 [Vertical]

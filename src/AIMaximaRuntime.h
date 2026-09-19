@@ -619,7 +619,7 @@ namespace SearchTools
 		bool is_forbidden_area(int,int) const; bool is_guard_area(int,int) const;
 		bool is_clearing_area(int,int) const; bool is_discovered(int,int) const;
 		bool is_resource(int,int,int) const; bool is_resource(int,int) const;
-		bool is_water(int,int) const; bool is_sand(int,int) const; bool is_grass(int,int) const;
+		bool is_water(int,int) const; bool is_sand(int,int) const; bool is_grass(int,int) const; bool is_buildable_ground(int,int) const;
 		bool backs_onto_sand(int,int) const; int get_ammount_resource(int,int) const;
 	private: Context& context;
 	};

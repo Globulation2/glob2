@@ -35,6 +35,8 @@ void AICastor::computeObstacleUnitMap()
 			obstacleUnitMap[i]=0;
 		else if (!canSwim && (c.terrain>=AI_CASTOR_TERRAIN_WATER_FIRST) && (c.terrain<AI_CASTOR_TERRAIN_WATER_FIRST+AI_CASTOR_TERRAIN_WATER_COUNT)) // !canSwim && isWater ?
 			obstacleUnitMap[i]=0;
+		else if (Map::isIceTile(c.terrain)) // ice hurts: plan walks around it
+			obstacleUnitMap[i]=0;
 		else
 			obstacleUnitMap[i]=1;
 	}
@@ -53,7 +55,7 @@ void AICastor::computeObstacleBuildingMap()
 		const Tile& c=tiles[i];
 		if (c.building!=NOGBID)
 			obstacleBuildingMap[i]=0;
-		else  if (c.terrain>=AI_CASTOR_TERRAIN_GRASS_COUNT) // if (!isGrass)
+		else  if (!Map::isBuildableTile(c.terrain)) // neither grass nor cobblestone
 			obstacleBuildingMap[i]=0;
 		else if (c.resource.type!=NO_RES_TYPE)
 			obstacleBuildingMap[i]=0;

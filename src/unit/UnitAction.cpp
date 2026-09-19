@@ -56,7 +56,7 @@ void Unit::handleActionRandomGround()
 	owner->map->pathfindRandom(this);
 	wrapPosition();
 	selectPreferredGroundMovement();
-	speed=performance[action];
+	speed=terrainSpeed(performance[action]);
 	claimOccupiedMapSlot();
 }
 
@@ -91,7 +91,7 @@ void Unit::handleActionGoingTarget()
 		owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
 
 	selectPreferredGroundMovement();
-	speed=performance[action];
+	speed=terrainSpeed(performance[action]);
 	claimOccupiedMapSlot();
 }
 
@@ -124,7 +124,7 @@ void Unit::handleActionGoingDxDy()
 		owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
 
 	selectPreferredMovement();
-	speed=performance[action];
+	speed=terrainSpeed(performance[action]);
 
 	claimOccupiedMapSlot();
 
@@ -139,14 +139,14 @@ void Unit::handleActionEnteringBuilding()
 	wrapPosition();
 	directionFromDxDy();
 	selectPreferredMovement();
-	speed=performance[action];
+	speed=terrainSpeed(performance[action]);
 }
 
 void Unit::handleActionExitingBuilding()
 {
 	directionFromDxDy();
 	selectPreferredMovement();
-	speed=performance[action];
+	speed=terrainSpeed(performance[action]);
 	claimOccupiedMapSlot();
 }
 

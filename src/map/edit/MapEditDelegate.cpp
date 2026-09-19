@@ -219,7 +219,7 @@ void MapEdit::updateCoordinatesLabel()
 	int x;
 	int y;
 	if (panelMode==Terrain) //terrain has a slightly different coordinates system
-		game.map.displayToMapCaseAligned(mouseX+(terrainType>TerrainSelector::Water ? 0 : 16), mouseY+(terrainType>TerrainSelector::Water ? 0 : 16), &x, &y,  viewportX, viewportY);
+		game.map.displayToMapCaseAligned(mouseX+(!TerrainSelector::isBaseTerrain(terrainType) ? 0 : 16), mouseY+(!TerrainSelector::isBaseTerrain(terrainType) ? 0 : 16), &x, &y,  viewportX, viewportY);
 	else
 		game.map.displayToMapCaseAligned(mapMouseX(mouseX), mapMouseY(mouseY), &x, &y, viewportX, viewportY);
 	s << "X: " << x << " Y: " << y;

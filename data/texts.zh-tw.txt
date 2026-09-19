@@ -1924,6 +1924,14 @@ OpenGL 在此版本中不可用。
 乾旱程度
 [Fords]
 淺灘
+[Frozen crossings]
+冰凍淺灘
+[Half frozen]
+一半冰凍
+[All frozen]
+全部冰凍
+[Off]
+關閉
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 流域中的氾濫平原太少，容納不下這麼多殖民地；請使用更大的地圖或減少殖民地數量。
 [Stone highlands]
@@ -2130,10 +2138,18 @@ OpenGL 在此版本中不可用。
 曲折的海岸線
 [Sand roads]
 沙土路
+[Road surface]
+路面
+[Sand]
+沙土
+[Cobblestone]
+鵝卵石
 [Treasure in dead ends]
 死路盡頭的寶藏
 [Fjord bank deposits]
 峽灣岸邊的資源
+[Ice bridges]
+冰橋
 [Sandy lake shore]
 沙質湖岸
 [River delta]
@@ -2240,6 +2256,8 @@ OpenGL 在此版本中不可用。
 農田地塊
 [Tendril roads]
 藤蔓狀道路
+[Cobblestone streets]
+鵝卵石街道
 [Random]
 隨機
 [Vertical]

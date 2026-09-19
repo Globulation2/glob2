@@ -1914,6 +1914,14 @@ Densità dei fiumi
 Aridità
 [Fords]
 Guadi
+[Frozen crossings]
+Guadi ghiacciati
+[Half frozen]
+Metà ghiacciati
+[All frozen]
+Tutti ghiacciati
+[Off]
+Disattivato
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Il bacino idrografico ha troppo poca pianura alluvionale per così tante colonie; usa una mappa più grande o meno colonie.
 [Stone highlands]
@@ -2120,10 +2128,18 @@ Ponti sul fossato
 Coste frastagliate
 [Sand roads]
 Strade di sabbia
+[Road surface]
+Fondo stradale
+[Sand]
+Sabbia
+[Cobblestone]
+Ciottolato
 [Treasure in dead ends]
 Tesori nei vicoli ciechi
 [Fjord bank deposits]
 Giacimenti sulle rive dei fiordi
+[Ice bridges]
+Ponti di ghiaccio
 [Sandy lake shore]
 Riva sabbiosa del lago
 [River delta]
@@ -2230,6 +2246,8 @@ Stagni della base
 Appezzamenti agricoli
 [Tendril roads]
 Strade a viticcio
+[Cobblestone streets]
+Strade in ciottolato
 [Random]
 Casuale
 [Vertical]

@@ -1848,6 +1848,14 @@ Globulation 2 커서를 표시합니다.
 건조도
 [Fords]
 여울
+[Frozen crossings]
+얼어붙은 여울
+[Half frozen]
+절반 얼음
+[All frozen]
+모두 얼음
+[Off]
+꺼짐
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 이 식민지 수에 비해 유역의 범람원이 너무 적습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
 [Stone highlands]
@@ -2054,10 +2062,18 @@ Globulation 2 커서를 표시합니다.
 들쭉날쭉한 해안선
 [Sand roads]
 모래길
+[Road surface]
+도로 포장
+[Sand]
+모래
+[Cobblestone]
+조약돌
 [Treasure in dead ends]
 막다른 길의 보물
 [Fjord bank deposits]
 피오르 기슭의 자원
+[Ice bridges]
+얼음 다리
 [Sandy lake shore]
 모래 호숫가
 [River delta]
@@ -2164,6 +2180,8 @@ Globulation 2 커서를 표시합니다.
 농경지
 [Tendril roads]
 덩굴길
+[Cobblestone streets]
+조약돌 거리
 [Random]
 무작위
 [Vertical]

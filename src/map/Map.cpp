@@ -99,6 +99,7 @@ void Map::clear()
 	for (auto &buildings : growthCoverageBuildings) buildings.clear();
 	growthCoverageValid = false;
 	topologyGeneration=1;
+	cobblestoneTiles=0;
 	// A failed load can own only a subset of these arrays.
 	for (int t=0; t<Team::MAX_COUNT; ++t)
 	{
@@ -175,6 +176,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	displayedClearAreaView.resize(size, false);
 	
 	tiles.assign(size, Tile());
+	cobblestoneTiles = 0;
 
 	mapDiscovered.assign(size, 0);
 	

@@ -1848,6 +1848,14 @@ Globulation 2 のカーソルを表示します。
 乾燥度
 [Fords]
 浅瀬
+[Frozen crossings]
+凍った浅瀬
+[Half frozen]
+半分凍結
+[All frozen]
+すべて凍結
+[Off]
+オフ
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 このコロニー数に対して流域の氾濫原が少なすぎます。より大きなマップを使うか、コロニーを減らしてください。
 [Stone highlands]
@@ -2054,10 +2062,18 @@ Globulation 2 のカーソルを表示します。
 入り組んだ海岸線
 [Sand roads]
 砂の道
+[Road surface]
+道の舗装
+[Sand]
+砂
+[Cobblestone]
+石畳
 [Treasure in dead ends]
 行き止まりの宝
 [Fjord bank deposits]
 フィヨルド岸の資源
+[Ice bridges]
+氷の橋
 [Sandy lake shore]
 湖の砂浜
 [River delta]
@@ -2164,6 +2180,8 @@ Globulation 2 のカーソルを表示します。
 農地の区画
 [Tendril roads]
 つる状の道
+[Cobblestone streets]
+石畳の街路
 [Random]
 ランダム
 [Vertical]

@@ -1850,6 +1850,14 @@ OpenGL недоступен в этой сборке.
 Засушливость
 [Fords]
 Броды
+[Frozen crossings]
+Замёрзшие броды
+[Half frozen]
+Половина замёрзла
+[All frozen]
+Все замёрзли
+[Off]
+Выкл.
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 В речном бассейне слишком мало пойменных земель для такого числа колоний; используйте карту побольше или меньше колоний.
 [Stone highlands]
@@ -2056,10 +2064,18 @@ OpenGL недоступен в этой сборке.
 Изрезанные берега
 [Sand roads]
 Песчаные дороги
+[Road surface]
+Покрытие дорог
+[Sand]
+Песок
+[Cobblestone]
+Булыжник
 [Treasure in dead ends]
 Сокровища в тупиках
 [Fjord bank deposits]
 Залежи на берегах фьордов
+[Ice bridges]
+Ледяные мосты
 [Sandy lake shore]
 Песчаный берег озера
 [River delta]
@@ -2166,6 +2182,8 @@ OpenGL недоступен в этой сборке.
 Земельные наделы
 [Tendril roads]
 Дороги-усики
+[Cobblestone streets]
+Булыжные улицы
 [Random]
 Случайно
 [Vertical]
