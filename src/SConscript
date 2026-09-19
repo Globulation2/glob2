@@ -937,3 +937,14 @@ if not env['server']:
     comb_generator_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
     comb_generator_test = comb_generator_env.Program('CombGeneratorTest', comb_generator_sources)
     local.Alias('comb-generator-test', comb_generator_test)
+
+# Saved unit arbitration and activity state, linked without SDL's GUI entry point.
+if not env['server']:
+    unit_continuation_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    unit_continuation_sources += [source for source in source_files if not source.endswith('.cpp')]
+    unit_continuation_sources += local.Object('UnitContinuationHarness.o', '#test/UnitContinuationHarness.cpp')
+    unit_continuation_env = local.Clone()
+    unit_continuation_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    unit_continuation_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    unit_continuation_test = unit_continuation_env.Program('UnitContinuationHarness', unit_continuation_sources)
+    local.Alias('unit-continuation-test', unit_continuation_test)
