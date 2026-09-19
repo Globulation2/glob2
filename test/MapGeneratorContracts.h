@@ -1144,7 +1144,7 @@ inline void evenGroundContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("even-ground"));
-	assert(definition.legacyId == 59 && definition.revision == 2);
+	assert(definition.legacyId == 60 && definition.revision == 2);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("water-share") == 10 && request.option("balance") == 70 &&
@@ -1253,7 +1253,7 @@ inline void marchlandContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("marchland"));
-	assert(definition.legacyId == 60 && definition.revision == 2);
+	assert(definition.legacyId == 61 && definition.revision == 2);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("prizes") == 6 && request.option("march") == 16 &&
