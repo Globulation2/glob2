@@ -253,12 +253,16 @@ void walkLand(const Torus &t, const std::vector<unsigned char> &land, int from,
 	for (size_t head = 0; head < queue.size(); ++head)
 	{
 		const int i = queue[head], x = i % t.w, y = i / t.w;
+		// Read once. steps[i] cannot change under this loop - a cell is only ever written when it is
+		// still unvisited, and this one was dequeued - but the writes below are to the same array,
+		// so the compiler has to assume they may alias and reloads it four times otherwise.
+		const int next_step = steps[i] + 1;
 		for (const auto &step : kCardinalSteps)
 		{
 			const int next = t.at(x + step[0], y + step[1]);
 			if (land[next] && steps[next] < 0)
 			{
-				steps[next] = steps[i] + 1;
+				steps[next] = next_step;
 				queue.push_back(next);
 			}
 		}
@@ -304,16 +308,25 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 	// measures that. It costs nothing extra to take, being another sum over the same walk field.
 	std::vector<double> reach(teams, 0.0), room(teams, 0.0), approach(teams, 0.0);
 	for (int k = 0; k < teams; ++k)
+	{
+		// Walked once into locals: the three sums are doubles and the walk an int array, but the
+		// compiler cannot prove the vectors do not overlap, so written straight to reach[k] this
+		// reloads the step count and all three totals on every cell.
+		const std::vector<int> &walk = s.walk[k];
+		double reached = 0, roomy = 0, exposed = 0;
 		for (int i = 0; i < t.size(); ++i)
 		{
-			if (s.walk[k][i] < 0)
+			const int steps = walk[i];
+			if (steps < 0)
 				continue;
-			reach[k] += s.decay[s.walk[k][i]];
-			if (s.walk[k][i] <= kRoomWalk && solved.kind[i] == kOpen)
-				room[k] += 1;
-			if (s.walk[k][i] == kApproachWalk)
-				approach[k] += 1;
+			reached += s.decay[steps];
+			roomy += steps <= kRoomWalk && solved.kind[i] == kOpen;
+			exposed += steps == kApproachWalk;
 		}
+		reach[k] = reached;
+		room[k] = roomy;
+		approach[k] = exposed;
+	}
 
 	s.severed = 0;
 	for (int k = 1; k < teams; ++k)
