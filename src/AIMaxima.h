@@ -640,6 +640,9 @@ private:
 	///Unified deterministic construction, upgrade and repair selector.
 	void development_cycle(AIMaximaRuntime::Context& echo);
 	void configure_development_planner();
+	//! Tick of the last geospatial diagnostic dump. Diagnostic only, so it is
+	//! deliberately not serialized and cannot affect a loaded game.
+	int last_field_dump_tick=-1;
 	AIMaximaPlacement::WorldState collect_development_world(
 		AIMaximaRuntime::Context& echo, uint32_t* signature=NULL) const;
 	const std::vector<AIMaximaPlacement::BuildingProfile>&

@@ -129,6 +129,9 @@ private:
 	void finalAdjustments(void);
 	void showMapLoadError();
 	void saveInitialGameStateOrExit(const std::string& path, const std::string& label, const std::string& mapName);
+	//! Save the live state every GLOB2_SNAPSHOT_INTERVAL ticks into
+	//! GLOB2_SNAPSHOT_DIR. Off unless both are set; never alters simulation.
+	void writePeriodicSnapshot();
 
 	/// Choose a random map from the available maps. Returns std::nullopt
 	/// if maps/ is empty or unreadable (caller must surface this as a

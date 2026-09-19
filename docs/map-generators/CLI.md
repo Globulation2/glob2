@@ -54,6 +54,44 @@ For saved games, markers show the stored colony starts, not current unit positio
 The preview is not a screenshot of the main game view. Renderer changes shared
 with those screens also apply to CLI exports; there is no separate CLI renderer.
 
+## Render a game as the player would see it
+
+`--preview-map` draws terrain. When the question is where a colony actually put
+its buildings, `--render-game` draws the same picture the game itself draws —
+buildings, units, resources and health bars — through `Game::drawMap`, with fog
+of war off so every team is visible at once.
+
+```sh
+build/src/glob2 --render-game /path/to/colony.game --output artifacts/tick.png
+build/src/glob2 --render-game maps/SomeMap.map --output artifacts/map.png \
+    --render-max-pixels 1400
+```
+
+Tiles are 32 pixels, so a 128-tile map renders 4096 across; `--render-max-pixels`
+caps the long edge (default 4096) and scales the result down. Like
+`--preview-map`, the file is read through `Game::load`, no simulation ticks run,
+and the input is never written back.
+
+Rendering needs the drawing assets that a headless run skips — unit skins and
+per-building-type sprites — so `MapRender::ensureAssets` brings them up once
+against SDL's dummy video driver. No display is required.
+
+### Painting a scalar field over the render
+
+`--render-field <file>` shades a per-tile value over the render, so a scoring
+surface can be checked against the geography that produced it. `--field-color
+r,g,b` picks the colour (default `0,192,255`).
+
+The format is deliberately trivial: `width height`, then `width * height`
+integers in row-major order. Alpha is each value's share of the field's own
+maximum, so a field is readable without the renderer knowing its units, and a
+flat field paints flat. Anything that can walk the map can emit one.
+
+```sh
+build/src/glob2 --render-game colony.game --output threat.png \
+    --render-field threat.field --field-color 255,40,40
+```
+
 ## Discover and configure generators
 
 ```sh

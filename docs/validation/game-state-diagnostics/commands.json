@@ -1,0 +1,94 @@
+[
+  {
+    "name": "initial",
+    "command": [
+      "/Users/bradley/glob2-pr-help-3-prs/diagnostics/build/src/glob2",
+      "--run-game",
+      "--generator",
+      "15",
+      "--map-seed",
+      "42",
+      "--param",
+      "teams=2",
+      "--param",
+      "width=6",
+      "--param",
+      "height=6",
+      "--game-seed",
+      "731",
+      "--player",
+      "maxima",
+      "--player",
+      "cabino",
+      "--ticks",
+      "1",
+      "--save",
+      "initial",
+      "--output-dir",
+      "/Users/bradley/glob2-pr-help-3-prs/diagnostics/artifacts/review/exports/initial"
+    ],
+    "environment": {},
+    "exit_code": 0
+  },
+  {
+    "name": "off",
+    "command": [
+      "/Users/bradley/glob2-pr-help-3-prs/diagnostics/build/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/Users/bradley/glob2-pr-help-3-prs/diagnostics/artifacts/review/exports/initial/initial.game",
+      "--ticks",
+      "3000",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--output-dir",
+      "/Users/bradley/glob2-pr-help-3-prs/diagnostics/artifacts/review/exports/off"
+    ],
+    "environment": {},
+    "exit_code": 0
+  },
+  {
+    "name": "on",
+    "command": [
+      "/Users/bradley/glob2-pr-help-3-prs/diagnostics/build/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/Users/bradley/glob2-pr-help-3-prs/diagnostics/artifacts/review/exports/initial/initial.game",
+      "--ticks",
+      "3000",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--output-dir",
+      "/Users/bradley/glob2-pr-help-3-prs/diagnostics/artifacts/review/exports/on"
+    ],
+    "environment": {
+      "GLOB2_FIELD_DIR": "/Users/bradley/glob2-pr-help-3-prs/diagnostics/artifacts/review/exports/fields",
+      "GLOB2_FIELD_INTERVAL": "1000",
+      "GLOB2_FIELD_RENDER": "1",
+      "GLOB2_SNAPSHOT_DIR": "/Users/bradley/glob2-pr-help-3-prs/diagnostics/artifacts/review/exports/snapshots",
+      "GLOB2_SNAPSHOT_INTERVAL": "1000"
+    },
+    "exit_code": 0
+  },
+  {
+    "name": "resumed",
+    "command": [
+      "/Users/bradley/glob2-pr-help-3-prs/diagnostics/build/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/Users/bradley/glob2-pr-help-3-prs/diagnostics/artifacts/review/exports/snapshots/tick-0002000.game",
+      "--ticks",
+      "3000",
+      "--telemetry",
+      "checksums",
+      "--output-dir",
+      "/Users/bradley/glob2-pr-help-3-prs/diagnostics/artifacts/review/exports/resumed"
+    ],
+    "environment": {},
+    "exit_code": 0
+  }
+]

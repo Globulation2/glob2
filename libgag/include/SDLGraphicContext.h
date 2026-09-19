@@ -457,6 +457,8 @@ namespace GAGCore
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
 		virtual void nextFrame(void);
+		//! Draw into a borrowed software surface without resizing or presenting the window.
+		void drawToSurface(SDL_Surface *surface, const std::function<void()> &draw);
 		//! This function does not work for GraphicContext
 		virtual bool loadImage(const std::string name) { return false; }
 		//! This function does not work for GraphicContext

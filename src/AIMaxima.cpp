@@ -19,6 +19,7 @@
 
 #include "AITelemetryFields.h"
 #include "AIMaxima.h"
+#include "AIMaximaFieldDump.h"
 #include "AIMaximaSwarmController.h"
 #include "AIMaximaFoodSupply.h"
 #include "GlobalContainer.h"
@@ -5503,6 +5504,12 @@ void Maxima::development_cycle(Context& echo)
 			development_planner_initialized=true;
 		}
 		refreshedWorld=collect_development_world(echo,&worldSignature);
+		// Diagnostic only: writes per-tile scoring surfaces (and optionally
+		// rendered PNGs) when GLOB2_FIELD_DIR is set, and returns immediately
+		// otherwise. Verified by per-tick checksum to leave play unchanged.
+		last_field_dump_tick=AIMaximaFieldDump::maybeWrite(refreshedWorld,
+			*echo.player->game,echo.player->team->teamNumber,
+			int(echo.player->game->stepCounter),last_field_dump_tick);
 		development_planner.observe(refreshedWorld,worldSignature);
 		// An under-supplied building is a burden whatever its distance from
 		// wheat; with the ledger disabled nothing is retired. Relocation goes

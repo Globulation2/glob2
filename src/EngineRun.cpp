@@ -25,7 +25,9 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <BinaryStream.h>
 #include <cstdlib>
+#include <filesystem>
 #include "Version.h"
 
 using std::shared_ptr;
@@ -209,7 +211,36 @@ void Engine::executeOrdersAndStep(bool readyNow)
 		}
 
 		gui.game.syncStep(gui.localTeamNo);
+		writePeriodicSnapshot();
 	}
+}
+
+// A timeline of saved states, so a finished game can be looked at rather than
+// only summarised. Saving is the same call the initial and final states use, it
+// runs after the step rather than inside it, and it touches no simulation state,
+// so a run with snapshots on executes identically to one without.
+void Engine::writePeriodicSnapshot()
+{
+	static const char* directory = getenv("GLOB2_SNAPSHOT_DIR");
+	static const int interval = []() {
+		const char* value = getenv("GLOB2_SNAPSHOT_INTERVAL");
+		return value ? std::atoi(value) : 0;
+	}();
+	if (!directory || interval <= 0) return;
+	const Uint32 tick = gui.game.stepCounter;
+	if (tick % Uint32(interval) != 0) return;
+	std::ostringstream name;
+	name << directory << "/tick-" << std::setfill('0') << std::setw(7) << tick << ".game";
+	std::filesystem::create_directories(directory);
+	GAGCore::BinaryOutputStream stream(
+		Toolkit::getFileManager()->openOutputStreamBackend(name.str()));
+	if (stream.isEndOfStream())
+	{
+		std::cerr << "GLOB2_SNAPSHOT_DIR: cannot open " << name.str() << " for writing"
+				  << std::endl;
+		return;
+	}
+	gui.save(&stream, gui.game.mapHeader.getMapName());
 }
 
 void Engine::drawAndPaceFrame(MainLoopState& st, bool readyNow)

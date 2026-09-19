@@ -291,3 +291,26 @@ not reconstruct internal AI decisions from recorded orders.
 The same timeline option also exports [engine performance telemetry](performance-telemetry.md):
 frame/work timing, subsystem costs, sampled pathfinding, per-player AI time, and autosave work.
 Performance records describe this execution session and are not stored in saves.
+
+## Saving a timeline of game states
+
+`GLOB2_SNAPSHOT_DIR` with `GLOB2_SNAPSHOT_INTERVAL=<ticks>` writes
+`tick-NNNNNNN.game` into that directory every interval ticks, so a finished game
+can be looked at rather than only summarised. Both must be set; either missing
+turns it off.
+
+```sh
+GLOB2_SNAPSHOT_DIR=out/snaps GLOB2_SNAPSHOT_INTERVAL=2500 \
+  build/src/glob2 --run-game --generator 23 --player maxima --player cabino ...
+build/src/glob2 --render-game out/snaps/tick-0010000.game --output tick10k.png
+```
+
+Saving uses the same call as the initial and final states, runs after the step
+rather than inside it, and touches no simulation state: a run with snapshots on
+executes identically to one without. That was verified by comparing per-tick
+checksums (`--telemetry checksums`) over 3 000 ticks with and without the
+option — the files were byte-identical. The initial state, traces and a snapshot
+continuation check are retained in [diagnostic validation](validation/game-state-diagnostics/README.md). Snapshots are written every interval
+ticks regardless of speed, so they cost disk, not determinism.
+
+See [the map CLI](map-generators/CLI.md) for rendering a saved state to PNG.

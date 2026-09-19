@@ -168,6 +168,8 @@ GameObjectives.cpp
 GameUtilities.cpp
 Glob2.cpp
 MapCommand.cpp
+MapRender.cpp
+AIMaximaFieldDump.cpp
 MapReport.cpp
 Glob2Screen.cpp
 Glob2Style.cpp
@@ -891,3 +893,9 @@ if not env['server']:
     report_sources += local.Object('MapReportHarness.o', '#test/MapReportHarness.cpp')
     report_test = local.Program('MapReportHarness', report_sources)
     local.Alias('map-report-test', report_test)
+
+# Full-map diagnostic rendering must preserve a running client's graphics state.
+if not env['server']:
+    map_render_sources = [source for source in source_files if source != 'Glob2.cpp']
+    map_render_sources += local.Object('MapRenderRegressionTest.o', '#test/MapRenderRegressionTest.cpp')
+    local.Alias('map-render-test', local.Program('MapRenderRegressionTest', map_render_sources))
