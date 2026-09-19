@@ -1,0 +1,21 @@
+{
+  "game.replay.checksums": {
+    "identical": true,
+    "bytes": 29610656,
+    "macos_sha256": "be13c339e0991033c90882f8434f46556d4195caafebcd6523869fe191b0e8a0",
+    "linux_sha256": "be13c339e0991033c90882f8434f46556d4195caafebcd6523869fe191b0e8a0"
+  },
+  "game.replay": {
+    "identical": false,
+    "bytes": 4663600,
+    "macos_sha256": "dc426092e8fc946a378c81795002438547335da13c983e28e342b0436fbc3b44",
+    "linux_sha256": "45d4358236b6ed437cb8782f1095a06a0fa13e58391e1d9d898d01a673f8b500"
+  },
+  "replay_orders": {
+    "stream_offset": 4659874,
+    "records_including_terminal": 133,
+    "ticks": 4096,
+    "identical": true,
+    "sha256": "9c8ac660b85df6eb70630fd04e4a2427839fdc27bd7f12e03c995d6f0d780cbf"
+  }
+}

@@ -2826,3 +2826,147 @@ Oasi amagat admet com a màxim vuit colònies.
 El massís no cap en aquest mapa; utilitzeu un mapa més gran o menys colònies.
 [The pond has no room for that much algae; use a bigger pond.]
 La bassa no té prou espai per a tantes algues; utilitzeu una bassa més gran.
+[Even Ground]
+Terreny igualat
+[Balance]
+Equilibratge
+[Tight passes]
+Passos estrets
+[Solver effort]
+Esforç del resolutor
+[Brief]
+Breu
+[Patient]
+Pacient
+[This map is too small to solve on; use a bigger map.]
+Aquest mapa és massa petit per resoldre'l; utilitzeu un mapa més gran.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Massa colònies per equilibrar en un mapa d'aquesta mida; utilitzeu un mapa més gran o menys colònies.
+[The colonies could not be spread out on this map.]
+No s'han pogut repartir les colònies en aquest mapa.
+[Marchland]
+Terra de ningú
+[Prizes on the rope]
+Premis a la corda
+[March width]
+Amplada de la terra de ningú
+[Levelling]
+Anivellament
+[A march needs a country on each side; use at least two colonies.]
+Una terra de ningú necessita un país a cada costat; utilitzeu almenys dues colònies.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Massa colònies perquè aquest mapa doni a cadascuna una terra natal; utilitzeu un mapa més gran o menys colònies.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Aquest mapa no té espai per repartir les colònies; utilitzeu un mapa més gran o menys colònies.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+La terra natal d'una colònia no té sortida a la terra de ningú; utilitzeu un mapa més gran o una terra de ningú més estreta.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+La terra natal d'una colònia no té espai per a una granja; utilitzeu un mapa més gran, menys colònies o una terra de ningú més estreta.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+La terra de ningú té massa poc terreny disputat per a tants premis; utilitzeu menys premis, una terra de ningú més ampla o un mapa més gran.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+La terra de ningú no té espai per a un premi; utilitzeu un mapa més gran, menys colònies o una terra de ningú més ampla.
+[Orchard Commons]
+Vergers comunals
+[Orchard spacing]
+Separació dels vergers
+[Compact]
+Propers
+[Balanced]
+Equilibrada
+[Spread]
+Separats
+[The Gauntlet]
+Arena de proves
+[Partition thickness]
+Gruix de les parets divisòries
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+L’Arena de proves necessita un mapa més gran o menys colònies per encabir dues entrades defensades per colònia.
+[The Comb]
+La Pinta
+[Peninsulas per shore]
+Penínsules per riba
+[Encircled Kingdom]
+Regne encerclat
+[Fortress plan]
+Planta de la fortalesa
+[Automatic]
+Automàtica
+[Elongated enclosure]
+Recinte allargat
+[Bastioned enclosure]
+Recinte amb baluards
+[Paired courtyards]
+Patis aparellats
+[Heartland farmland]
+Terres de conreu centrals
+[The Faulted City]
+La ciutat fracturada
+[Fault displacement]
+Desplaçament de les falles
+[Fault width]
+Amplada de les falles
+[Ruin density]
+Densitat de ruïnes
+[Surviving junctions]
+Encreuaments conservats
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+La ciutat fracturada requereix 256 o 512 caselles per costat i entre una i dotze colònies.
+[The city has too few usable junctions.]
+La ciutat té massa pocs encreuaments utilitzables.
+[A city neighbourhood lacks reachable crops or building room.]
+Un barri de la ciutat no té conreus accessibles o espai per construir.
+[The city neighbourhoods are too unequal; try another seed.]
+Els barris de la ciutat són massa desiguals; proveu una altra llavor.
+[The fractured civic plaza did not survive.]
+La plaça pública fracturada no ha sobreviscut.
+[Who Ate the Map?]
+Qui s’ha menjat el mapa?
+[Appetite]
+Gana
+[A Little Nibble]
+Una mossegadeta
+[Hungry]
+Afamat
+[Portage Lakes]
+Llacs i passos boscosos
+[Lake elongation]
+Allargament dels llacs
+[Portage depth]
+Gruix del pas boscós
+[Extra trails]
+Corriols addicionals
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Els costats d’aquest mapa han de fer entre 64 i 512 caselles.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Aquesta llavor no permet situar colònies a les ribes.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+No hi caben camps renovables al costat de cada colònia.
+[Portage Lakes cannot connect its shoreline trails.]
+No es poden connectar els corriols de les ribes.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Aquesta llavor no permet crear una drecera útil per un bosc sec.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Aquesta llavor no permet crear una drecera útil nedant.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Amb aquesta llavor, els llacs per nedar han de quedar separats.
+[Drowned Forest]
+Bosc inundat
+[Sandbar connections]
+Connexions de sorra
+[Wooded neck thickness]
+Gruix de les barreres d’arbres
+[Neutral clearing size]
+Mida de les clarianes neutrals
+[Bastion Keys]
+Illots fortificats
+[Plantation size]
+Mida de les plantacions
+[Outlying islands]
+Illes exteriors
+[The Hungry Marches]
+Les Marques Famolenques
+[Opening ration]
+Ració inicial
+[Central concentration]
+Concentració central

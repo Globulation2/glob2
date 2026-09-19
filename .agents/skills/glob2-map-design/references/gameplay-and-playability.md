@@ -44,6 +44,10 @@ An empty grass lane is only initially open. `openRoad` removes deposits at gener
 
 Check resource access at the end of placement and repair. The [resource helpers](../../../../src/map/generator/shared/Resources.h) can guarantee nearby wheat/wood and open cramped starts; their common targets are wheat within 24 walking steps, wood within 32, and at least 16 reachable 4×4 placement origins within 24 steps. These are helper targets, **not engine survival thresholds or automatic guarantees for every generator**. In particular, [reopenCrampedStarts](../../../../src/map/generator/shared/Pipeline.cpp) runs its repairs only when resource amounts are non-default; default geometry must work on its own. Repairs can remove the nearest food, so rerun the resource guarantee after clearing and then validate the actual result.
 
+**Prove the starter supply independently of ambient abundance.** When starts are assigned existing plots, preserve the plot owner and reachable entry tile from the walking search. Plant from that entry, not the Euclidean-nearest bank across a pond or wall. Validate the completed workers' access to their assigned wheat and wood, so nearby ambient crops cannot hide an inaccessible starter plot. Faulted City's low-resource, one-worker rolls exposed this despite abundant settings passing. Build those labels from final terrain after beaches, and budget fertile, usable tiles rather than the plot's nominal area. These are access checks, not a universal prescription to fill every starter plot.
+
+An empty crop plot is not permanent building room. Exclude the possible future crop footprint when promising long-term construction space; low resource settings otherwise count unsown farmland as town room that disappears during play. Test disjoint footprints and their circulation after proposed buildings are placed, not only overlapping placement origins.
+
 Resource controls must affect the whole economic design: reserve size, scatter, planted plots, and optional strategic deposits, subject to the documented starting guarantees. Separate deliberately permanent structural stone from optional economic stone using a protected mask and the existing primitive contract. Do not silently dilute boundary stone when turning resource abundance down, or hide most of the map's economy in fixed unscaled deposits.
 
 ## Wood overgrowth: the failure a preview cannot show
@@ -76,7 +80,7 @@ Do not assume that an AI will recognize a beautiful farm design, clear a blocked
 
 **Design heuristic:** provide redundant local building space and multiple short routes to essential resources. Keep crop growth physically away from the town and its exits where possible. Do not make survival depend on opening a dense crop wall, building one precisely positioned swimming pool, or discovering one remote quarry first. Test several AI implementations; an advanced farmer succeeding does not establish that simpler opponents can play the map.
 
-**Seed the combination an AI cannot reason its way to.** The AIs place buildings from local rules, not from an understanding of the map's topology, so when a map makes a pairing essential they will not discover it. On Plantations' islands a swarm's units can leave only by swimming, which needs a pool on the same island; every shipped AI built swarms on islands without a pool and pools on islands without a swarm, and bred units that never left. The fix was not smarter AI but a premade pair on every island a colony starts with: a swarm packed beside a completed pool, with the pool's level-1 upgrade footprint kept clear (2026-09-16). When a map's rules make a building pairing, an ability or a specific placement a precondition of playing at all, grant it at the start, leave room for its first upgrade, and have the validator prove it survived.
+**Decide whether the essential pairing is granted or earned.** On Plantations' islands, AIs built swarms without a local pool and pools without a local swarm; the chosen remedy was a premade pair with upgrade room (2026-09-16). That is a precedent for an opening whose necessary pairing is granted, not a rule that every island map must supply a pool. If building swimming infrastructure is part of the intended progression, first budget enough local town, farm and service space to earn it. Who Ate the Map? kept ordinary starts by excluding cramped fragments from settlement while preserving them as scenery. Where a pairing truly must exist at the opening, grant it, preserve its access and upgrade room, and validate it. Where it is earned, prove local construction, training and eventual contact in a game.
 
 **Make the opening legible to the AIs' own measurements.** The AIs do not see a home the way a player does; they measure a few things near their swarm and act only when the measurement passes. This matters for the newer AIs the maps are tuned for (Nicowar, Cortex, Cabino, Maxima). The Numbi rules below explain failures in older generators, but Numbi is no longer a tuning target ([which AIs to play](tuning-playbook.md#which-ais-to-play)). Numbi places its first building only when the tiles round its swarm are open, and breeds only while the wheat nearest its swarm forms one compact rectangle of about three tiles a colonist (the [playbook](tuning-playbook.md) gives the code and the cases). A home that is generous in total but puts a sand path beside the swarm, plants its wheat as a thin ring or narrow strips, or sets a pond inside the wheat patch can feed Nicowar and starve Numbi. Put the swarm on the most open ground of its home, plant the opening wheat as a solid block beside it with its water behind rather than inside, and read each AI's telemetry in a short game before a tournament.
 
@@ -89,6 +93,12 @@ Run both unattended growth and staffed games. Unattended growth exposes structur
 The swarm footprint is 4×4, and shared [planting](../../../../src/map/generator/shared/Planting.h) uses a two-tile clearance around it. This is only the first reservation. Count reachable pure-grass building origins after beaches, resources, swarms, and workers exist. Placement origins overlap: 16 valid 4×4 origins do **not** mean 16 disjoint buildings fit. Measure contiguous usable patches and test a plausible settlement layout with movement lanes between structures.
 
 [Building::tryToBuildingSiteRoom](../../../../src/building/Update.cpp) checks the target upgrade footprint with its own offsets, ignoring only the upgrading building's current occupancy. Resources, shoreline, neighbors, and temporarily occupying ground units can block it. Consult the relevant [building tables](../../../../src/game/entities/) for the final widths, heights, and offsets rather than assuming every level has the initial footprint. Allow construction, harvesting, feeding, and army traffic to pass simultaneously. A row of inns can disconnect a narrow peninsula even if it was connected at tick zero.
+
+### Budget detached islands per assigned colony
+
+Count pure-grass area, inland service space and **disjoint** footprints with circulation gaps on each inhabited component, multiplied by its assigned colony count. Overlapping origins and total walkable area can flatter a thin crescent. Recheck clear service footprints and reachable crops after kits and repairs: making building room can erase the opening food or timber that made the start viable. Check worker access to the buildings in play. Match the AI's terrain predicates: `hasSand` includes mixed beach tiles; a pure-sand mask can overstate eligible pool space.
+
+[Who Ate the Map?](../../../../docs/map-generators/WHO_ATE_THE_MAP.md)'s failed crescent had 1,343 walkable tiles but only 835 pure-grass tiles and six spaced service footprints. Its replacement budget required 1,200 grass tiles, 400 inland service tiles and ten disjoint 4×4 footprints with two-tile gaps per detached colony, with two clear footprints retained after settlement. These are **map-specific tested budgets**, not universal engine minima or a guarantee of future AI choices. Prefer leaving a small fragment uninhabited to filling a signature bite, adding a bridge, or granting a building the concept intended players to earn. Novelty maps may be unequal; their starts still need functioning economies.
 
 ## Design worker routes and warrior routes separately
 
@@ -126,6 +136,49 @@ A map about one resource is designed from the engine's cost tables outward (`src
 - **The holder has to live there.** Nothing grows on a bare island, so a holder hauls food across the only approaches. A small garden sealed against the shore (wheat and wood that can't spread over the island) gives a holder a garrison's food and wood without turning the prize into a farm.
 - **Holdable, not lockable.** All approaches landing at one place let a few towers cover them. Shore grass within tower range of that landing lets attackers answer, and swimming (a level-0 pool) is a counter the holder can't close. A player can still wall a narrow landing with the holder's unlimited stone. Decide whether that is the game, and check it in human play.
 - **Distance is part of the price.** A 70–80-step walk each way is a tax on the holder and puts the prize outside some AIs' working range entirely. Cap it in steps, not as a share of the map.
+
+## Food scarcity: contest access and production separately
+
+For a map promising exposed food, record the closest **two rival walking distances**
+to each district's harvesting edges. Two colonies reaching it within a generous
+ceiling does not make it contested: a Hungry Marches prototype admitted fields
+3 steps from one colony and 73 from another. Choose relative-access bounds for
+that map's intended response time, and inspect tower coverage and the alternative
+fields too. There is no universal distance that establishes contestedness. A duel
+may need a different food arrangement from a many-colony game: a ring around two
+opposite homes tends to give each its own half, whereas middle-ground fields can
+face both colonies. Measure the finished, stocked terrain and the future crop
+footprint, including toroidal shortcuts.
+
+Balance the usable banks, not just the pond centres. A timber section at one end
+of a shared field can give the opposite colony the only nearby grain, even when
+the pond centre is equidistant. Orient or distribute the grain and timber so both
+approaches reach useful crops. Check colony-to-colony connectivity with mature
+fields occupied as well as each colony's access to food: disconnected groups can
+each have enough fields while the intended raiding routes have disappeared.
+
+Separate **opening stock, seeded renewable capacity, and delivered food**. Finite
+home wheat needs zero growth probability under the actual kernel; a low initial
+tile count alone does not make it finite. A control promising a richer centre
+should change productive bank geometry or fertility, not just its initial wheat
+density, which natural growth can erase. Keep rebuilding possible: making all
+wood finite by copying the dry-wheat policy introduces a second scarcity. Use
+separate grass components for renewable timber and wheat so faster tree growth
+cannot take over the food banks.
+
+A field split by sand or water may contain several independent growing banks.
+Measure potential only on components a planted crop can reach, or deliberately
+seed every productive component. A per-district minimum of two randomly selected
+seeds can leave some banks empty forever. Check this especially at low resource
+settings; summing fertility over all designed farmland overstates the actual
+supply when some of it can never be colonised by wheat.
+
+Check whether an AI models finite stock at all before enlarging the opening kit.
+On Hungry Marches' dry-start duels, Maxima completed an inn but held its population
+at four: its fertility-weighted food estimate funded zero birth workers, including
+scouts. More dry wheat could not change that estimate. Distinguish this planning
+assumption from an inaccessible field; use another AI or a mirrored game to study
+the map, and track an AI fix separately rather than breaking the scarcity promise.
 
 ## Rewards, fairness, and evidence of fun
 

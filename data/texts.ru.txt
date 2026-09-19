@@ -2816,3 +2816,147 @@ Emoji
 Массив не помещается на этой карте; используйте карту побольше или меньше колоний.
 [The pond has no room for that much algae; use a bigger pond.]
 В пруду нет места для такого количества водорослей; используйте пруд побольше.
+[Even Ground]
+Ровное поле
+[Balance]
+Баланс
+[Tight passes]
+Узкие перешейки
+[Solver effort]
+Усилия решателя
+[Brief]
+Кратко
+[Patient]
+Терпеливо
+[This map is too small to solve on; use a bigger map.]
+Эта карта слишком мала для решения; используйте карту побольше.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Слишком много колоний, чтобы уравновесить их на карте такого размера; используйте карту побольше или меньше колоний.
+[The colonies could not be spread out on this map.]
+Не удалось расселить колонии на этой карте.
+[Marchland]
+Пограничье
+[Prizes on the rope]
+Награды на канате
+[March width]
+Ширина пограничья
+[Levelling]
+Выравнивание
+[A march needs a country on each side; use at least two colonies.]
+Пограничью нужна страна с каждой стороны; используйте не меньше двух колоний.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Слишком много колоний, чтобы эта карта дала каждой родину; используйте карту побольше или меньше колоний.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+На этой карте нет места, чтобы расселить колонии; используйте карту побольше или меньше колоний.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+У родины колонии нет выхода в пограничье; используйте карту побольше или пограничье поуже.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+На родине колонии нет места для роя; используйте карту побольше, меньше колоний или пограничье поуже.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+В пограничье слишком мало спорной земли для такого числа наград; используйте меньше наград, пограничье пошире или карту побольше.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+В пограничье нет места для награды; используйте карту побольше, меньше колоний или пограничье пошире.
+[Orchard Commons]
+Общие сады
+[Orchard spacing]
+Расстояние между садами
+[Compact]
+Близко
+[Balanced]
+Сбалансированное
+[Spread]
+Далеко
+[The Gauntlet]
+Арена испытаний
+[Partition thickness]
+Толщина разделительных стен
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Арене испытаний нужна карта большего размера или меньше колоний, чтобы у каждой колонии поместились два защищённых входа.
+[The Comb]
+Гребень
+[Peninsulas per shore]
+Полуостровов на каждом берегу
+[Encircled Kingdom]
+Окружённое королевство
+[Fortress plan]
+План крепости
+[Automatic]
+Автоматически
+[Elongated enclosure]
+Вытянутая крепость
+[Bastioned enclosure]
+Бастионная крепость
+[Paired courtyards]
+Два двора
+[Heartland farmland]
+Поля в центре королевства
+[The Faulted City]
+Расколотый город
+[Fault displacement]
+Смещение разломов
+[Fault width]
+Ширина разломов
+[Ruin density]
+Плотность руин
+[Surviving junctions]
+Уцелевшие перекрёстки
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Для расколотого города нужны 256 или 512 клеток по каждой стороне и от одной до двенадцати колоний.
+[The city has too few usable junctions.]
+В городе слишком мало пригодных для прохода перекрёстков.
+[A city neighbourhood lacks reachable crops or building room.]
+В одном из районов города не хватает доступных посевов или места для строительства.
+[The city neighbourhoods are too unequal; try another seed.]
+Районы города слишком неравноценны; попробуйте другое зерно.
+[The fractured civic plaza did not survive.]
+Расколотая городская площадь не сохранилась.
+[Who Ate the Map?]
+Кто съел карту?
+[Appetite]
+Аппетит
+[A Little Nibble]
+Маленький кусочек
+[Hungry]
+Голодный
+[Portage Lakes]
+Озёра и лесные волоки
+[Lake elongation]
+Вытянутость озёр
+[Portage depth]
+Толщина лесного прохода
+[Extra trails]
+Дополнительные тропы
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Стороны этой карты должны быть от 64 до 512 клеток.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+При этом начальном числе не удаётся разместить поселения у берегов.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Рядом с каждым поселением не помещаются возобновляемые прибрежные поля.
+[Portage Lakes cannot connect its shoreline trails.]
+Не удаётся соединить прибрежные тропы.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+При этом начальном числе не удаётся создать полезный короткий путь через сухой лес.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+При этом начальном числе не удаётся создать полезный короткий путь вплавь.
+[Portage Lakes needs separate swimming lakes on this seed.]
+При этом начальном числе озёра для плавания должны оставаться раздельными.
+[Drowned Forest]
+Затопленный лес
+[Sandbar connections]
+Песчаные переходы
+[Wooded neck thickness]
+Толщина лесных преград
+[Neutral clearing size]
+Размер нейтральных полян
+[Bastion Keys]
+Острова-бастионы
+[Plantation size]
+Размер плантаций
+[Outlying islands]
+Внешние острова
+[The Hungry Marches]
+Голодное пограничье
+[Opening ration]
+Начальный паёк
+[Central concentration]
+Сосредоточение в центре

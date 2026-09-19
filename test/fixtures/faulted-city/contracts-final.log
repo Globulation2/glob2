@@ -1,0 +1,2 @@
+Settings::load("preferences.txt") : error, can't open file.
+PASS Faulted City: envelope, refusal, resource extremes, growth containment, stable resource terrain, narrow junction, masonry and token food mutations

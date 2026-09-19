@@ -1,0 +1,4 @@
+Settings::load("preferences.txt") : error, can't open file.
+generator                 attempts        ok    failed     mean_ms      max_ms
+hungry-marches                  40        40         0     139.754     152.815
+# 40 rounds, 1 generators, 40 attempts (40 ok, 0 failed), 5.593s wall, 5.590s summed generation time

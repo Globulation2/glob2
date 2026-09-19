@@ -1,0 +1,146 @@
+{
+  "main_study": {
+    "('shape', True)": 192,
+    "('knob', True)": 272,
+    "('extreme', True)": 1152,
+    "('random', True)": 2000
+  },
+  "worker_study": {
+    "('workers', True)": 128,
+    "('random-workers', True)": 512
+  },
+  "resource_controls": {
+    "wheat-amount": {
+      "strict_increase_all_four_seeds": true,
+      "mean_tiles": {
+        "0": 240,
+        "25": 360.75,
+        "50": 483,
+        "75": 600.25,
+        "100": 719,
+        "125": 814,
+        "150": 913.5,
+        "175": 1012,
+        "200": 1113.25,
+        "225": 1209.75,
+        "250": 1309.75,
+        "275": 1407.75,
+        "300": 1512.25
+      }
+    },
+    "wood-amount": {
+      "strict_increase_all_four_seeds": true,
+      "mean_tiles": {
+        "0": 120,
+        "25": 172,
+        "50": 229.5,
+        "75": 281.5,
+        "100": 331.5,
+        "125": 383.5,
+        "150": 441,
+        "175": 493,
+        "200": 543,
+        "225": 595,
+        "250": 652.5,
+        "275": 704.5,
+        "300": 754.5
+      }
+    },
+    "stone-amount": {
+      "strict_increase_all_four_seeds": true,
+      "mean_tiles": {
+        "0": 59.75,
+        "25": 80,
+        "50": 99.75,
+        "75": 119.75,
+        "100": 139.5,
+        "125": 159.75,
+        "150": 179.5,
+        "175": 199.5,
+        "200": 219.25,
+        "225": 239.5,
+        "250": 259.25,
+        "275": 279.25,
+        "300": 299
+      }
+    },
+    "algae-amount": {
+      "strict_increase_all_four_seeds": true,
+      "mean_tiles": {
+        "0": 0,
+        "25": 62.5,
+        "50": 125.5,
+        "75": 187.5,
+        "100": 250,
+        "125": 312.5,
+        "150": 375.5,
+        "175": 437.5,
+        "200": 500,
+        "225": 562.5,
+        "250": 625.5,
+        "275": 687.5,
+        "300": 750
+      }
+    },
+    "fruit-amount": {
+      "strict_increase_all_four_seeds": true,
+      "mean_tiles": {
+        "0": 0,
+        "25": 19.75,
+        "50": 39.5,
+        "75": 58.75,
+        "100": 78.25,
+        "125": 98,
+        "150": 117.75,
+        "175": 137,
+        "200": 156.5,
+        "225": 176.25,
+        "250": 196,
+        "275": 215.25,
+        "300": 234.75
+      }
+    }
+  },
+  "peninsulas": {
+    "2": 4,
+    "3": 6,
+    "4": 8
+  },
+  "initial_access": {
+    "comb.peninsula.food-walk": {
+      "min": 71,
+      "mean": 101.79895185975327,
+      "max": 145
+    },
+    "comb.peninsula.stone-walk": {
+      "min": 33,
+      "mean": 66.44049717094889,
+      "max": 113
+    },
+    "comb.peninsula.separate-buildings": {
+      "min": 2,
+      "mean": 2,
+      "max": 2
+    },
+    "comb.peninsula.firing-sites": {
+      "min": 32,
+      "mean": 201.53209349782023,
+      "max": 393
+    },
+    "comb.start.wheat-walk": {
+      "min": 3,
+      "mean": 6.087879620722825,
+      "max": 13
+    },
+    "comb.start.wood-walk": {
+      "min": 3,
+      "mean": 6.14250377902982,
+      "max": 14
+    },
+    "comb.start.build-sites": {
+      "min": 936,
+      "mean": 1174.7768311117218,
+      "max": 1495
+    }
+  }
+}

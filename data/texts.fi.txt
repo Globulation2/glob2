@@ -2818,3 +2818,147 @@ Kätkettyyn keitaaseen mahtuu enintään kahdeksan siirtokuntaa.
 Vuorimassiivi ei mahdu tälle kartalle; käytä suurempaa karttaa tai vähemmän siirtokuntia.
 [The pond has no room for that much algae; use a bigger pond.]
 Lammessa ei ole tilaa näin suurelle levämäärälle; käytä suurempaa lampea.
+[Even Ground]
+Tasainen maa
+[Balance]
+Tasapainotus
+[Tight passes]
+Kapeat kulkuväylät
+[Solver effort]
+Ratkaisijan työmäärä
+[Brief]
+Lyhyt
+[Patient]
+Kärsivällinen
+[This map is too small to solve on; use a bigger map.]
+Tämä kartta on liian pieni ratkaistavaksi; käytä suurempaa karttaa.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Liikaa siirtokuntia tasapainotettavaksi tämänkokoisella kartalla; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[The colonies could not be spread out on this map.]
+Siirtokuntia ei voitu levittää tälle kartalle.
+[Marchland]
+Rajamaa
+[Prizes on the rope]
+Palkinnot köydessä
+[March width]
+Rajamaan leveys
+[Levelling]
+Tasoitus
+[A march needs a country on each side; use at least two colonies.]
+Rajamaa tarvitsee maan kummallekin puolelleen; käytä vähintään kahta siirtokuntaa.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Liikaa siirtokuntia, jotta tämä kartta antaisi jokaiselle kotimaan; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Tällä kartalla ei ole tilaa levittää siirtokuntia; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Siirtokunnan kotimaasta ei ole uloskäyntiä rajamaalle; käytä suurempaa karttaa tai kapeampaa rajamaata.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Siirtokunnan kotimaassa ei ole tilaa pesälle; käytä suurempaa karttaa, vähemmän siirtokuntia tai kapeampaa rajamaata.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Rajamaalla on liian vähän kiisteltyä maata näin monelle palkinnolle; käytä vähemmän palkintoja, leveämpää rajamaata tai suurempaa karttaa.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Rajamaalla ei ole tilaa palkinnolle; käytä suurempaa karttaa, vähemmän siirtokuntia tai leveämpää rajamaata.
+[Orchard Commons]
+Yhteiset hedelmätarhat
+[Orchard spacing]
+Hedelmätarhojen välimatka
+[Compact]
+Tiivis
+[Balanced]
+Tasapainoinen
+[Spread]
+Väljä
+[The Gauntlet]
+Koetusten areena
+[Partition thickness]
+Väliseinien paksuus
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Koetusten areena tarvitsee suuremman kartan tai vähemmän siirtokuntia, jotta jokaiselle siirtokunnalle mahtuu kaksi vartioitua sisäänkäyntiä.
+[The Comb]
+Kampa
+[Peninsulas per shore]
+Niemiä rantaa kohti
+[Encircled Kingdom]
+Saarrettu valtakunta
+[Fortress plan]
+Linnoituksen pohjapiirros
+[Automatic]
+Automaattinen
+[Elongated enclosure]
+Pitkulainen linnoitus
+[Bastioned enclosure]
+Bastionilinnoitus
+[Paired courtyards]
+Kaksi sisäpihaa
+[Heartland farmland]
+Ydinalueen viljelymaa
+[The Faulted City]
+Murtunut kaupunki
+[Fault displacement]
+Siirrosten siirtymä
+[Fault width]
+Siirrosten leveys
+[Ruin density]
+Raunioiden tiheys
+[Surviving junctions]
+Säilyneet risteykset
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Murtunut kaupunki vaatii 256 tai 512 ruutua kummassakin suunnassa ja yhdestä kahteentoista siirtokuntaa.
+[The city has too few usable junctions.]
+Kaupungissa on liian vähän käyttökelpoisia risteyksiä.
+[A city neighbourhood lacks reachable crops or building room.]
+Kaupunginosasta puuttuu saavutettavia viljelykasveja tai rakennustilaa.
+[The city neighbourhoods are too unequal; try another seed.]
+Kaupunginosat ovat liian epätasapainoisia; kokeile toista siementä.
+[The fractured civic plaza did not survive.]
+Murtunut kaupunginaukio ei säilynyt.
+[Who Ate the Map?]
+Kuka söi kartan?
+[Appetite]
+Ruokahalu
+[A Little Nibble]
+Pieni haukkaus
+[Hungry]
+Nälkäinen
+[Portage Lakes]
+Järvet ja metsätaipaleet
+[Lake elongation]
+Järvien pitkänomaisuus
+[Portage depth]
+Raivaussyvyys
+[Extra trails]
+Lisäpolut
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Kartan sivujen on oltava 64–512 ruudun pituisia.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Tällä siemenellä rannoille ei mahdu siirtokuntia.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Jokaisen siirtokunnan viereen ei mahdu uusiutuvia rantapeltoja.
+[Portage Lakes cannot connect its shoreline trails.]
+Rantapolkuja ei voi yhdistää.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Tällä siemenellä ei mahdu hyödyllistä oikopolkua kuivan metsän läpi.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Tällä siemenellä ei mahdu hyödyllistä uintioikoreittiä.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Tällä siemenellä uintijärvien on pysyttävä erillisinä.
+[Drowned Forest]
+Uponnut metsä
+[Sandbar connections]
+Hiekkasärkkäyhteydet
+[Wooded neck thickness]
+Metsäesteiden paksuus
+[Neutral clearing size]
+Neutraalien aukioiden koko
+[Bastion Keys]
+Linnakesaaret
+[Plantation size]
+Viljelmän koko
+[Outlying islands]
+Ulkosaaret
+[The Hungry Marches]
+Nälkäiset rajamaat
+[Opening ration]
+Aloitusannos
+[Central concentration]
+Keskustan painotus

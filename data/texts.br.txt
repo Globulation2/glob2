@@ -2493,7 +2493,7 @@ Travessias
 [Forts]
 Kreñvlec’hioù
 [Gate width]
-Ledander an nor
+Largura do portão
 [Braided Delta]
 Delta entrelaçado
 [Braid count]
@@ -2814,3 +2814,147 @@ Oásis oculto comporta no máximo oito colônias.
 O maciço não cabe neste mapa; use um mapa maior ou menos colônias.
 [The pond has no room for that much algae; use a bigger pond.]
 A lagoa não tem espaço para tantas algas; use uma lagoa maior.
+[Even Ground]
+Terreno parelho
+[Balance]
+Equilibragem
+[Tight passes]
+Passagens estreitas
+[Solver effort]
+Esforço do solucionador
+[Brief]
+Breve
+[Patient]
+Paciente
+[This map is too small to solve on; use a bigger map.]
+Este mapa é pequeno demais para resolver; use um mapa maior.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Colônias demais para equilibrar num mapa deste tamanho; use um mapa maior ou menos colônias.
+[The colonies could not be spread out on this map.]
+Não foi possível espalhar as colônias neste mapa.
+[Marchland]
+Terra de ninguém
+[Prizes on the rope]
+Prêmios na corda
+[March width]
+Largura da terra de ninguém
+[Levelling]
+Nivelamento
+[A march needs a country on each side; use at least two colonies.]
+Uma terra de ninguém precisa de um país de cada lado; use pelo menos duas colônias.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Colônias demais para este mapa dar a cada uma a sua terra natal; use um mapa maior ou menos colônias.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Este mapa não tem espaço para espalhar as colônias; use um mapa maior ou menos colônias.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+A terra natal de uma colônia não tem saída para a terra de ninguém; use um mapa maior ou uma terra de ninguém mais estreita.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+A terra natal de uma colônia não tem espaço para um núcleo de reprodução; use um mapa maior, menos colônias ou uma terra de ninguém mais estreita.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+A terra de ninguém tem pouco terreno disputado para tantos prêmios; use menos prêmios, uma terra de ninguém mais larga ou um mapa maior.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+A terra de ninguém não tem espaço para um prêmio; use um mapa maior, menos colônias ou uma terra de ninguém mais larga.
+[Orchard Commons]
+Pomares comuns
+[Orchard spacing]
+Espaçamento dos pomares
+[Compact]
+Próximos
+[Balanced]
+Equilibrado
+[Spread]
+Afastados
+[The Gauntlet]
+Arena de desafios
+[Partition thickness]
+Espessura das divisórias
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+A Arena de desafios precisa de um mapa maior ou de menos colônias para acomodar duas entradas defendidas por colônia.
+[The Comb]
+O Pente
+[Peninsulas per shore]
+Penínsulas por margem
+[Encircled Kingdom]
+Reino cercado
+[Fortress plan]
+Planta da fortaleza
+[Automatic]
+Automática
+[Elongated enclosure]
+Recinto alongado
+[Bastioned enclosure]
+Recinto abaluartado
+[Paired courtyards]
+Pátios duplos
+[Heartland farmland]
+Terras agrícolas centrais
+[The Faulted City]
+A Cidade Fraturada
+[Fault displacement]
+Deslocamento das falhas
+[Fault width]
+Largura das falhas
+[Ruin density]
+Densidade de ruínas
+[Surviving junctions]
+Cruzamentos preservados
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+A Cidade Fraturada requer 256 ou 512 casas por lado e de uma a doze colônias.
+[The city has too few usable junctions.]
+A cidade tem poucos cruzamentos utilizáveis.
+[A city neighbourhood lacks reachable crops or building room.]
+Um bairro da cidade não tem plantações acessíveis ou espaço para construir.
+[The city neighbourhoods are too unequal; try another seed.]
+Os bairros da cidade são muito desiguais; tente outra semente.
+[The fractured civic plaza did not survive.]
+A praça pública fraturada não sobreviveu.
+[Who Ate the Map?]
+Quem comeu o mapa?
+[Appetite]
+Apetite
+[A Little Nibble]
+Uma mordidinha
+[Hungry]
+Com fome
+[Portage Lakes]
+Lennoù ha tremenlec’hioù koad
+[Lake elongation]
+Astenn al lennoù
+[Portage depth]
+Tevder ar c’hoad
+[Extra trails]
+Gwenodennoù ouzhpenn
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Ret eo da gostezioù ar gartenn-mañ bezañ etre 64 ha 512 karrez hed.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Gant an had-mañ ne c’haller ket lakaat trevadennoù war ar ribloù.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+N’eus ket plas evit parkeier a gresk en-dro e-kichen pep trevadenn.
+[Portage Lakes cannot connect its shoreline trails.]
+Ne c’haller ket kevreañ gwenodennoù ar ribloù.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Gant an had-mañ ne c’haller ket krouiñ un hent-berr talvoudus dre goad sec’h.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Gant an had-mañ ne c’haller ket krouiñ un hent-berr talvoudus dre neuial.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Gant an had-mañ e rank al lennoù evit neuial bezañ dispartiet.
+[Drowned Forest]
+Floresta inundada
+[Sandbar connections]
+Conexões entre bancos de areia
+[Wooded neck thickness]
+Espessura das barreiras de árvores
+[Neutral clearing size]
+Tamanho das clareiras neutras
+[Bastion Keys]
+Ilhotas fortificadas
+[Plantation size]
+Tamanho das plantações
+[Outlying islands]
+Ilhas periféricas
+[The Hungry Marches]
+As Fronteiras Famintas
+[Opening ration]
+Ração inicial
+[Central concentration]
+Concentração central

@@ -96,6 +96,7 @@ jobs:
         run: |
           scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 build/src/glob2 \
             map-report-test \
+            orchard-conversion-test \
             maxima-food-ledger-test \
             tournament-compatibility-test \
             torus-render-test \
@@ -127,6 +128,7 @@ jobs:
             performance-telemetry-test \
             terrain-test \
             global-gradient-test \
+            path-gradient-test \
             nicowar-farming-test \
             lan-test \
             aspect-test \
@@ -167,6 +169,7 @@ jobs:
           python3 test/test_distributed_map_telemetry.py
           python3 test/test_distributed_game_telemetry.py
           python3 test/test_map_fairness_tournament.py
+          python3 test/test_map_generation_study.py
           python3 test/test_fairness_model.py
           ./build/src/TournamentCompatibilityTest
           python3 test/tournament_cli_integration.py --output artifacts/tournament-cli
@@ -215,9 +218,22 @@ jobs:
           path: artifacts/map-preview/
           if-no-files-found: ignore
 
+      - name: Test Orchard Commons generation and fruit conversion
+        run: |
+          timeout 120s ./build/src/OrchardCommonsConversionTest glob2-orchard-ci "$PWD" "$PWD/artifacts/orchard-conversion"
+
+      - name: Retain Orchard Commons conversion fixtures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orchard-conversion-${{ matrix.runner }}
+          path: artifacts/orchard-conversion/
+          if-no-files-found: ignore
+
       - name: Build and run custom-game setup regressions
         run: |
-          timeout 120s ./build/src/MapGeneratorDefaultsTest glob2-map-defaults-ci
+          # The growing generator catalog exercises hundreds of complete worlds.
+          timeout 300s ./build/src/MapGeneratorDefaultsTest glob2-map-defaults-ci
           timeout 180s ./build/src/CustomGameSetupHarness
           mkdir -p artifacts/custom-game-ci
           timeout 180s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/CustomGameSetupHarness artifacts/custom-game-ci 2>&1 | grep -v '^Map generation\|^Landscape preview\|^Settings::load' | tee artifacts/custom-game-ci/ui.log
@@ -336,6 +352,9 @@ jobs:
       - name: Test Nicowar farming wood clearance
         run: |
           python3 test/run-savegame-safety-tests.py build/src/NicowarFarmingHarness .
+
+      - name: Verify weighted path gradients against the independent oracle
+        run: ./build/src/PathGradientHarness
 
       - name: Build and run the global gradient regression
         run: |
@@ -673,8 +692,10 @@ jobs:
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 build/src/glob2.exe \
             map-report-test \
+            orchard-conversion-test \
             tournament-compatibility-test \
             clearing-gradient-test \
+            path-gradient-test \
             point-bar-render-test \
             trapped-unit-test \
             hiring-bucket-test \
@@ -684,6 +705,17 @@ jobs:
             maxima-continuation-test \
             team-stats-save-test \
             performance-telemetry-test
+
+      - name: Test Orchard Commons generation and fruit conversion
+        run: ./build/src/OrchardCommonsConversionTest.exe glob2-orchard-ci "$PWD" "$PWD/artifacts/orchard-conversion"
+
+      - name: Retain Orchard Commons conversion fixtures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orchard-conversion-windows
+          path: artifacts/orchard-conversion/
+          if-no-files-found: ignore
 
       - name: Test map JSON reports
         run: |
@@ -704,6 +736,9 @@ jobs:
         with:
           name: map-cli-windows
           path: artifacts/map-cli/
+
+      - name: Verify weighted path gradients against the independent oracle
+        run: ./build/src/PathGradientHarness.exe
 
       - name: Test clearing flag resource bounds
         run: |

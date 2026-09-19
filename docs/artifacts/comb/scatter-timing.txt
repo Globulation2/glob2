@@ -1,0 +1,2 @@
+Settings::load("preferences.txt") : error, can't open file.
+Comb benchmark maps=24 telemetry=0 wall-ms/map=2000.085 cpu-ms/map=463.668

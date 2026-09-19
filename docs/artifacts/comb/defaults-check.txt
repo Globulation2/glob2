@@ -1,0 +1,4 @@
+Settings::load("preferences.txt") : error, can't open file.
+wadi revision 1 seed 101 [wadi terrain]: A Wadi start lacks two shared expansion banks.
+Assertion failed: (plain), function wadiContracts, file MapGeneratorContracts.h, line 1155.
+PASS Comb: distinct peninsula counts, finished-world contracts and telemetry

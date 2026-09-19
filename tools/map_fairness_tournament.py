@@ -36,20 +36,24 @@ import threading
 import time
 from pathlib import Path
 from tournaments.local import run_job as shared_job, export_artifacts, parallel_map
+from tournaments.fairness_statistics import (
+    MIN_MAPS_FOR_INTERVAL, benjamini_hochberg, bias_interval, bootstrap, chi_square_uniform,
+    exact_uniform_p, fair_map_floor, gamma_q, holm, pearson, ranks, rms_points, seed_for,
+    share_table, spearman, squared_bias, t975, wilson,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 PRESET_DIR = ROOT / 'tools' / 'map-fairness'
 BASELINE_METHOD = 15  # Symmetric arena: exactly symmetric starts, the fairness baseline.
-Z95 = 1.959963984540054
-# Two-sided 95% Student t quantiles for 1..30 degrees of freedom.
-T975 = [12.706, 4.303, 3.182, 2.776, 2.571, 2.447, 2.365, 2.306, 2.262, 2.228, 2.201, 2.179, 2.160, 2.145,
-        2.131, 2.120, 2.110, 2.101, 2.093, 2.086, 2.080, 2.074, 2.069, 2.064, 2.060, 2.056, 2.052, 2.048,
-        2.045, 2.042]
-MIN_MAPS_FOR_INTERVAL = 5  # below this a bootstrap over maps cannot say much
-FACTORS = ['wheat', 'wood', 'fertility', 'depth', 'room', 'isolation']
+# What MapGeneratorStudy's COLONY line actually carries, in order. It used to end with each
+# fairness factor's contribution and a total; it now ends with the model's fitness for that colony
+# and the win probability it implies. The names here must match that line exactly: zip() below
+# truncates silently, so a stale list does not raise - it quietly misnames every column and drops
+# the last ones, which is how 'fitness' came to be read as 'wheat' and 'total' ceased to exist.
+FACTORS = ['win_probability']
 COLONY_FIELDS = ['wheat_distance', 'wood_distance', 'catchment_tiles', 'build_sites',
                  'resource_amount', 'rival_distance', 'rivals_within_threat', 'mean_fertility',
-                 *FACTORS, 'total']
+                 'fitness', *FACTORS]
 RUN_FILES = ['config.json', 'summary.json', 'summary.md', 'games.csv', 'colonies.csv', 'maps.csv',
              'verification.json']
 RUN_DIRECTORIES = ['maps', 'games', 'profiles', 'verify']
@@ -175,6 +179,9 @@ def parse_study(stdout):
                                  'fairness': float(parts[3]), 'worst': float(parts[4]),
                                  'best': float(parts[5])}
         elif tag == 'COLONY':
+            if len(parts) != len(COLONY_FIELDS) + 2:
+                raise ValueError(f'Unexpected COLONY field count: {len(parts) - 2}; '
+                                 f'expected {len(COLONY_FIELDS)}')
             record['colony_quality'].append(dict(zip(COLONY_FIELDS, (float(v) for v in parts[2:]))))
         elif tag == 'REQUEST':
             record['request'] = {'generator_id': parts[1], 'revision': int(parts[2]),
@@ -432,9 +439,6 @@ def run_pool(tasks, jobs, work, describe):
 
 # ---------------------------------------------------------------------------- statistics
 
-from tournaments.fairness_statistics import *  # shared tested estimators
-
-
 def load_results(out):
     records = {}
     for manifest in sorted((out / 'maps').glob('*/map.json')):
@@ -461,7 +465,8 @@ def analyse_map(record, games, config):
         for slot, place in outcome['placement'].items():
             placement_points[int(slot)] += (n - place) / (n - 1) if n > 1 else 1.0
     rows = record.get('colony_quality', [])
-    quality = [c['total'] for c in rows] if len(rows) == n else None
+    quality = ([c['fitness'] for c in rows]
+               if len(rows) == n and all('fitness' in c for c in rows) else None)
     analysis = {
         'key': record['key'], 'method': record['method'], 'map_seed': record['map_seed'],
         'chosen_seed': record.get('chosen_seed'), 'games': len(games), 'played': len(played),
@@ -491,6 +496,11 @@ def scorer_points(maps, factor):
         wins = m['slot']['counts']
         n_wins = sum(wins)
         if not m['record_colonies'] or n_wins == 0:
+            continue
+        # A run recorded before a COLONY_FIELDS change can be missing a factor entirely. Skip it
+        # rather than abandoning the whole summary: the games are the expensive part and they are
+        # still perfectly good.
+        if any(factor not in c for c in m['record_colonies']):
             continue
         values = [c[factor] for c in m['record_colonies']]
         if max(values) - min(values) < 1e-9:
@@ -528,7 +538,7 @@ def scorer_permutation_p(points, observed, column, draws, seed):
 def scorer_check(maps, draws, seed):
     check = {}
     permutation_draws = min(draws, 2000)
-    for factor in ['total', *FACTORS]:
+    for factor in ['fitness', *FACTORS]:
         points = scorer_points(maps, factor)
         keys = sorted({p[0] for p in points})
         if len(points) < 3:
@@ -543,7 +553,7 @@ def scorer_check(maps, draws, seed):
                  'placement_rho': rho(keys, 3),
                  'wins_rho_ci': bootstrap(keys, lambda s: rho(s, 2), draws, seed) if enough else None,
                  'placement_rho_ci': bootstrap(keys, lambda s: rho(s, 3), draws, seed + 1) if enough else None}
-        if factor == 'total':
+        if factor == 'fitness':
             entry['wins_rho_p'] = scorer_permutation_p(points, entry['wins_rho'], 2, permutation_draws, seed + 2)
             entry['placement_rho_p'] = scorer_permutation_p(points, entry['placement_rho'], 3,
                                                             permutation_draws, seed + 3)
@@ -552,7 +562,9 @@ def scorer_check(maps, draws, seed):
     top_wins = top_n = 0
     alternatives = []
     for m in maps:
-        values = [c['total'] for c in m['record_colonies']]
+        if any('fitness' not in c for c in m['record_colonies']):
+            continue
+        values = [c['fitness'] for c in m['record_colonies']]
         if not values or max(values) - min(values) < 1e-9 or not m['slot']['n']:
             continue
         top = max(range(len(values)), key=lambda i: values[i])
@@ -739,7 +751,7 @@ def write_csvs(out, records, games):
     with open(out / 'colonies.csv', 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(['generator', 'map_seed', 'rotation', 'engine_seed', 'start', 'team', 'start_x',
-                         'start_y', 'placement', 'won', *team_fields, 'quality_total',
+                         'start_y', 'placement', 'won', *team_fields, 'quality_fitness',
                          *[f'quality_{f}' for f in FACTORS]])
         for g in ordered:
             record = records[g['map']]
@@ -752,7 +764,7 @@ def write_csvs(out, records, games):
                 writer.writerow([record['method'], record['map_seed'], g['rotation'], g['seed'], slot, team,
                                  *record['starts'][slot], placement.get(slot),
                                  int(g['outcome']['winner_slot'] == slot),
-                                 *[entry.get(k) for k in team_fields], quality.get('total'),
+                                 *[entry.get(k) for k in team_fields], quality.get('fitness'),
                                  *[quality.get(f) for f in FACTORS]])
     with open(out / 'maps.csv', 'w', newline='') as f:
         writer = csv.writer(f)
@@ -764,7 +776,8 @@ def write_csvs(out, records, games):
                              int(bool(record.get('ok'))), record.get('failure'),
                              record.get('quality', {}).get('score'), record.get('quality', {}).get('fairness'),
                              ';'.join(f'{x}:{y}' for x, y in record.get('starts', [])),
-                             ';'.join(f'{c["total"]:.3f}' for c in record.get('colony_quality', [])),
+                             ';'.join(f'{c["fitness"]:.3f}' if 'fitness' in c else ''
+                                      for c in record.get('colony_quality', [])),
                              next((f['fnv1a64'] for f in record.get('files', []) if f['rotation'] == 0), None),
                              record.get('generation_seconds')])
 
@@ -845,7 +858,7 @@ def markdown(summary, config):
               '| Generator | Maps | Games | Cap | Position bias (pp) [95%] | Fair-map floor (pp) | Decisive only (pp, games) | Biased maps p<.05 / BH | Best start / fair (median) | Any bias p | Scorer rho (wins) |',
               '| --- | ---: | ---: | ---: | --- | ---: | --- | --- | ---: | ---: | --- |']
     for g in summary['generators']:
-        scorer = (g['scorer'] or {}).get('total')
+        scorer = (g['scorer'] or {}).get('fitness')
         scorer_cell = rho_text(scorer, 'wins') if scorer else ('n/a' if g['method'] == BASELINE_METHOD else '-')
         lines.append(
             f'| {g["name"]} ({g["method"]}) | {g["maps_with_winners"]}/{g["maps"]} | {g["played"]} | {pct(g["cap_share"], 0)} '
@@ -894,8 +907,8 @@ def markdown(summary, config):
                   f'- Wins by team index, pooled: {" / ".join(map(str, team["counts"]))} (p {pval(team["p"])}).',
                   f'- Maps significant after Holm: {g["maps_holm05"]}; best-start dominance min / median / max: {dominance}.']
         scorer = g['scorer'] or {}
-        if scorer.get('total'):
-            total = scorer['total']
+        if scorer.get('fitness'):
+            total = scorer['fitness']
             lines.append(f'- Scorer check: rho with win share {rho_text(total, "wins")}, with placement '
                          f'{rho_text(total, "placement")}; {top_rated_text(scorer["top_rated_start"], n)}. '
                          'By factor (wins rho): '
@@ -905,8 +918,8 @@ def markdown(summary, config):
                          'score differences between them come from the build-site count, which is not symmetric '
                          'under rotation.')
     overall = summary['scorer_all_generators'] or {}
-    if overall.get('total'):
-        total = overall['total']
+    if overall.get('fitness'):
+        total = overall['fitness']
         lines += ['', '## Scorer check across generators', '',
                   f'Within-map rank correlation between start-quality score and win share over {total["colonies"]} '
                   f'colonies on {total["maps"]} maps, Symmetric arena left out: rho {rho_text(total, "wins")}; with '
@@ -924,13 +937,28 @@ def resolve_paths(args, out):
             'git_revision': git_revision()}
 
 
+def verification_games(records, games, count):
+    """Deterministic round robin across generators, then maps, then rotations."""
+    groups = {}
+    for game in games:
+        if game['outcome']['status'] == 'ok':
+            groups.setdefault(records[game['map']]['method'], []).append(game)
+    for group in groups.values():
+        group.sort(key=lambda g: (g['rotation'], g['game'], g['map']))
+    selected = []
+    for index in range(max((len(g) for g in groups.values()), default=0)):
+        for generator in sorted(groups):
+            if index < len(groups[generator]):
+                selected.append(groups[generator][index])
+    return selected[:max(0, count)]
+
+
 def verify(config, paths, records, games):
     """Re-run a few finished games from scratch and require identical outcomes."""
     count = int(config.get('verify_games') or 0)
-    finished = sorted((g for g in games if g['outcome']['status'] == 'ok'),
-                      key=lambda g: (g['map'], g['rotation'], g['game']))
+    finished = verification_games(records, games, count)
     checks = []
-    for game in finished[:count]:
+    for game in finished:
         job = {k: game[k] for k in ('map', 'rotation', 'game', 'seed')}
         directory = paths['out'] / 'verify' / game['map'] / f'r{game["rotation"]}-k{game["game"]}'
         again = run_game(config, paths, records[game['map']], job, directory=directory, force=True)

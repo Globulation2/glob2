@@ -2818,3 +2818,147 @@ Oaza ascunsă găzduiește cel mult opt colonii.
 Masivul nu încape pe această hartă; folosiți o hartă mai mare sau mai puține colonii.
 [The pond has no room for that much algae; use a bigger pond.]
 Iazul nu are loc pentru atâtea alge; folosiți un iaz mai mare.
+[Even Ground]
+Teren egal
+[Balance]
+Echilibrare
+[Tight passes]
+Treceri înguste
+[Solver effort]
+Efortul rezolvatorului
+[Brief]
+Scurt
+[Patient]
+Răbdător
+[This map is too small to solve on; use a bigger map.]
+Această hartă este prea mică pentru a fi rezolvată; folosiți o hartă mai mare.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Prea multe colonii de echilibrat pe o hartă de această mărime; folosiți o hartă mai mare sau mai puține colonii.
+[The colonies could not be spread out on this map.]
+Coloniile nu au putut fi răspândite pe această hartă.
+[Marchland]
+Ținut de graniță
+[Prizes on the rope]
+Premii pe funie
+[March width]
+Lățimea ținutului de graniță
+[Levelling]
+Nivelare
+[A march needs a country on each side; use at least two colonies.]
+Un ținut de graniță are nevoie de câte o țară pe fiecare parte; folosiți cel puțin două colonii.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Prea multe colonii pentru ca această hartă să dea fiecăreia o patrie; folosiți o hartă mai mare sau mai puține colonii.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Această hartă nu are loc pentru a răspândi coloniile; folosiți o hartă mai mare sau mai puține colonii.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Patria unei colonii nu are ieșire spre ținutul de graniță; folosiți o hartă mai mare sau un ținut de graniță mai îngust.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Patria unei colonii nu are loc pentru un stup; folosiți o hartă mai mare, mai puține colonii sau un ținut de graniță mai îngust.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Ținutul de graniță are prea puțin teren disputat pentru atâtea premii; folosiți mai puține premii, un ținut de graniță mai lat sau o hartă mai mare.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Ținutul de graniță nu are loc pentru un premiu; folosiți o hartă mai mare, mai puține colonii sau un ținut de graniță mai lat.
+[Orchard Commons]
+Livezi comune
+[Orchard spacing]
+Distanța dintre livezi
+[Compact]
+Apropiate
+[Balanced]
+Echilibrată
+[Spread]
+Răsfirate
+[The Gauntlet]
+Arena încercărilor
+[Partition thickness]
+Grosimea zidurilor despărțitoare
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Arena încercărilor necesită o hartă mai mare sau mai puține colonii pentru a face loc pentru două intrări apărate la fiecare colonie.
+[The Comb]
+Pieptenele
+[Peninsulas per shore]
+Peninsule pe fiecare mal
+[Encircled Kingdom]
+Regat încercuit
+[Fortress plan]
+Planul fortăreței
+[Automatic]
+Automat
+[Elongated enclosure]
+Incintă alungită
+[Bastioned enclosure]
+Incintă cu bastioane
+[Paired courtyards]
+Două curți
+[Heartland farmland]
+Teren agricol central
+[The Faulted City]
+Orașul fracturat
+[Fault displacement]
+Deplasarea faliilor
+[Fault width]
+Lățimea faliilor
+[Ruin density]
+Densitatea ruinelor
+[Surviving junctions]
+Intersecții păstrate
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Orașul fracturat necesită 256 sau 512 celule pe fiecare latură și una până la douăsprezece colonii.
+[The city has too few usable junctions.]
+Orașul are prea puține intersecții utilizabile.
+[A city neighbourhood lacks reachable crops or building room.]
+Un cartier al orașului nu are culturi accesibile sau spațiu pentru construcții.
+[The city neighbourhoods are too unequal; try another seed.]
+Cartierele orașului sunt prea dezechilibrate; încercați altă sămânță.
+[The fractured civic plaza did not survive.]
+Piața orașului, străbătută de fisuri, nu s-a păstrat.
+[Who Ate the Map?]
+Cine a mâncat harta?
+[Appetite]
+Poftă de mâncare
+[A Little Nibble]
+O mușcătură mică
+[Hungry]
+Flămând
+[Portage Lakes]
+Lacuri și treceri împădurite
+[Lake elongation]
+Alungirea lacurilor
+[Portage depth]
+Grosimea trecerii
+[Extra trails]
+Poteci suplimentare
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Laturile acestei hărți trebuie să aibă între 64 și 512 dale.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Această sămânță nu permite amplasarea coloniilor pe maluri.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Nu încap câmpuri regenerabile lângă fiecare colonie.
+[Portage Lakes cannot connect its shoreline trails.]
+Potecile de pe maluri nu pot fi conectate.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Această sămânță nu permite o scurtătură utilă prin pădure uscată.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Această sămânță nu permite o scurtătură utilă prin înot.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Cu această sămânță, lacurile pentru înot trebuie să rămână separate.
+[Drowned Forest]
+Pădure inundată
+[Sandbar connections]
+Legături de nisip
+[Wooded neck thickness]
+Grosimea barierelor de copaci
+[Neutral clearing size]
+Mărimea poienilor neutre
+[Bastion Keys]
+Insulițe fortificate
+[Plantation size]
+Mărimea plantației
+[Outlying islands]
+Insule periferice
+[The Hungry Marches]
+Ținuturile de frontieră înfometate
+[Opening ration]
+Rație inițială
+[Central concentration]
+Concentrare în centru
