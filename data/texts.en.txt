@@ -2816,3 +2816,13 @@ Hidden Oasis holds at most eight colonies.
 The massif does not fit this map; use a bigger map or fewer colonies.
 [The pond has no room for that much algae; use a bigger pond.]
 The pond has no room for that much algae; use a bigger pond.
+[Orchard Commons]
+Orchard Commons
+[Orchard spacing]
+Orchard spacing
+[Compact]
+Compact
+[Balanced]
+Balanced
+[Spread]
+Spread

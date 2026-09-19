@@ -2818,3 +2818,13 @@ Skrita oaza sprejme največ osem kolonij.
 Masiv ne gre na ta zemljevid; uporabite večji zemljevid ali manj kolonij.
 [The pond has no room for that much algae; use a bigger pond.]
 V mlaki ni prostora za toliko alg; uporabite večjo mlako.
+[Orchard Commons]
+Skupni sadovnjaki
+[Orchard spacing]
+Razmik med sadovnjaki
+[Compact]
+Majhen
+[Balanced]
+Uravnotežen
+[Spread]
+Velik

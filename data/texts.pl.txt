@@ -2818,3 +2818,13 @@ Ukryta oaza mieści najwyżej osiem kolonii.
 Masyw nie mieści się na tej mapie; użyj większej mapy lub mniejszej liczby kolonii.
 [The pond has no room for that much algae; use a bigger pond.]
 W stawie nie ma miejsca na tyle alg; użyj większego stawu.
+[Orchard Commons]
+Wspólne sady
+[Orchard spacing]
+Rozstaw sadów
+[Compact]
+Bliski
+[Balanced]
+Zrównoważony
+[Spread]
+Szeroki

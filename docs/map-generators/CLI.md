@@ -13,6 +13,8 @@ launch mode first; these modes do not combine with game, replay, or server launc
 For the fortified countryside generator, see [Forts](FORTS.md) for its controls,
 resource guarantees, supported combinations and validation evidence.
 
+For a valley built around contested fruit and competing inns, see [Orchard Commons](ORCHARD_COMMONS.md).
+
 ## Generate a map and preview
 
 ```sh

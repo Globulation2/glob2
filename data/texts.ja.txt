@@ -2814,3 +2814,13 @@ Emoji
 岩山がこのマップに収まりません。より大きなマップを使うか、コロニーを減らしてください。
 [The pond has no room for that much algae; use a bigger pond.]
 池にそれだけの藻を置く場所がありません。池を大きくしてください。
+[Orchard Commons]
+共有の果樹園
+[Orchard spacing]
+果樹園の間隔
+[Compact]
+狭い
+[Balanced]
+標準
+[Spread]
+広い

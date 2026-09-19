@@ -2894,3 +2894,13 @@ Skjult oase rummer højst otte kolonier.
 Dette kort har ikke plads til massivet; brug et større kort eller færre kolonier.
 [The pond has no room for that much algae; use a bigger pond.]
 Dammen har ikke plads til så mange alger; brug en større dam.
+[Orchard Commons]
+Fælles frugtlunde
+[Orchard spacing]
+Afstand mellem frugtlunde
+[Compact]
+Tæt
+[Balanced]
+Afbalanceret
+[Spread]
+Spredt

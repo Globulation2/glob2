@@ -2818,3 +2818,13 @@ Skrytá oáza pojme nejvýše osm kolonií.
 Masiv se na tuto mapu nevejde; použijte větší mapu nebo méně kolonií.
 [The pond has no room for that much algae; use a bigger pond.]
 V tůni není místo pro tolik řas; použijte větší tůň.
+[Orchard Commons]
+Společné sady
+[Orchard spacing]
+Rozestupy sadů
+[Compact]
+Blízko sebe
+[Balanced]
+Vyvážené
+[Spread]
+Daleko od sebe

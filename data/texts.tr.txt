@@ -2826,3 +2826,13 @@ Gizli Vaha en fazla sekiz koloni alır.
 Kaya kütlesi bu haritaya sığmıyor; daha büyük bir harita veya daha az koloni kullanın.
 [The pond has no room for that much algae; use a bigger pond.]
 Gölette bu kadar yosun için yer yok; daha büyük bir gölet kullanın.
+[Orchard Commons]
+Ortak Meyve Bahçeleri
+[Orchard spacing]
+Meyve bahçeleri aralığı
+[Compact]
+Yakın
+[Balanced]
+Dengeli
+[Spread]
+Seyrek

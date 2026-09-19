@@ -2818,3 +2818,13 @@ Oaza ascunsă găzduiește cel mult opt colonii.
 Masivul nu încape pe această hartă; folosiți o hartă mai mare sau mai puține colonii.
 [The pond has no room for that much algae; use a bigger pond.]
 Iazul nu are loc pentru atâtea alge; folosiți un iaz mai mare.
+[Orchard Commons]
+Livezi comune
+[Orchard spacing]
+Distanța dintre livezi
+[Compact]
+Apropiate
+[Balanced]
+Echilibrată
+[Spread]
+Răsfirate

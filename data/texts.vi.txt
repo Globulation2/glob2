@@ -2814,3 +2814,13 @@ Suối nguồn
 Khối núi đá không vừa bản đồ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
 [The pond has no room for that much algae; use a bigger pond.]
 Ao không đủ chỗ cho từng ấy tảo; hãy dùng ao lớn hơn.
+[Orchard Commons]
+Vườn cây ăn quả chung
+[Orchard spacing]
+Khoảng cách giữa các vườn
+[Compact]
+Gần nhau
+[Balanced]
+Cân bằng
+[Spread]
+Cách xa

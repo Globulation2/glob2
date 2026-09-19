@@ -2828,3 +2828,13 @@ Ezkutuko oasiak gehienez zortzi kolonia hartzen ditu.
 Mendigunea ez da mapa honetan sartzen; erabili mapa handiagoa edo kolonia gutxiago.
 [The pond has no room for that much algae; use a bigger pond.]
 Urmaelak ez du hainbeste algarentzako lekurik; erabili urmael handiagoa.
+[Orchard Commons]
+Fruta-baratze komunalak
+[Orchard spacing]
+Fruta-baratzeen arteko tartea
+[Compact]
+Hurbil
+[Balanced]
+Orekatua
+[Spread]
+Sakabanatuta

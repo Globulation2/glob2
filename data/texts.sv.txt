@@ -2828,3 +2828,13 @@ Dold oas rymmer högst åtta kolonier.
 Massivet får inte plats på den här kartan; använd en större karta eller färre kolonier.
 [The pond has no room for that much algae; use a bigger pond.]
 Dammen har inte plats för så många alger; använd en större damm.
+[Orchard Commons]
+Gemensamma fruktlundar
+[Orchard spacing]
+Avstånd mellan fruktlundar
+[Compact]
+Tätt
+[Balanced]
+Balanserat
+[Spread]
+Glest

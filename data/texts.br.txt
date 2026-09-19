@@ -2814,3 +2814,13 @@ Oásis oculto comporta no máximo oito colônias.
 O maciço não cabe neste mapa; use um mapa maior ou menos colônias.
 [The pond has no room for that much algae; use a bigger pond.]
 A lagoa não tem espaço para tantas algas; use uma lagoa maior.
+[Orchard Commons]
+Pomares comuns
+[Orchard spacing]
+Espaçamento dos pomares
+[Compact]
+Próximos
+[Balanced]
+Equilibrado
+[Spread]
+Afastados
