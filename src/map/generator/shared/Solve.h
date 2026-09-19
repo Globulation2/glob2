@@ -183,23 +183,15 @@ struct Objective
 /// enforced. Every drawn target was followed by a hand-written telemetry line, and the stream and
 /// the key were spelled separately at every call, always `<map>-brief` and `<map>.brief.<name>`:
 /// two strings that must agree were free to drift, and a forgotten line left a seed unreadable.
-/// Holding the names here makes the record a consequence of drawing rather than a thing to
-/// remember. They are two names rather than one only so that a map can be renamed without moving
-/// its draws; they are the same string unless a caller says otherwise.
+/// Holding the map's name once makes the record a consequence of drawing rather than a thing to
+/// remember.
 ///
 /// Draw the whole brief in one place at the top of a design, so what a seed was asked for can be
 /// read without following the design through.
 class Brief
 {
   public:
-	/// `map` names the telemetry keys this records under. `stream` names the random stream it draws
-	/// from, and defaults to the same thing; give it separately only when a map has been renamed,
-	/// because a stream's name is part of every draw taken from it, so changing it moves every map
-	/// the generator has ever made.
-	Brief(GenerationContext &context, std::string map, std::string stream = {})
-		: context(context), map(std::move(map)), draws(stream.empty() ? this->map : std::move(stream))
-	{
-	}
+	Brief(GenerationContext &context, std::string map) : context(context), map(std::move(map)) {}
 
 	/// A target for this seed, drawn from `least` to `most` and recorded. The range is the map's
 	/// design and both ends should be worth playing; where in it a seed lands is the map's variety.
@@ -217,7 +209,7 @@ class Brief
 
   private:
 	GenerationContext &context;
-	std::string map, draws;
+	std::string map;
 	std::vector<const char *> chosen;
 };
 

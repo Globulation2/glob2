@@ -33,7 +33,7 @@ using namespace MapGeneration;
 //
 // WHY THE RANDOM STREAMS STILL SAY "equilibrium". This map was called Equilibrium until shortly
 // before it merged. A stream's name is mixed into every draw taken from it, so renaming
-// "equilibrium-shape" and its siblings would move every map this generator has ever made, and the
+// "even-ground-shape" and its siblings would move every map this generator has ever made, and the
 // golden rows, the figures in EVEN_GROUND.md and the games already played would all describe maps
 // that no longer exist. Stream names are internal and never shown, so they stay and the public name
 // changed around them. Brief is given the two names separately for the same reason.
@@ -435,10 +435,10 @@ SolveReport annealShape(Solved &solved, GenerationContext &context, double balan
 	unsigned char wasDry = kOpen;
 	std::vector<unsigned char> best = solved.kind;
 	const SolveReport run = anneal(
-		Anneal{moves, kShapeHeat[0], kShapeHeat[1], "equilibrium-shape"}, context,
+		Anneal{moves, kShapeHeat[0], kShapeHeat[1], "even-ground-shape"}, context,
 		[&]
 		{
-			const bool alongShore = context.bounded("equilibrium-shape", 4) != 0;
+			const bool alongShore = context.bounded("even-ground-shape", 4) != 0;
 			const auto onShore = [&](int i)
 			{
 				const int x = i % t.w, y = i / t.w;
@@ -450,7 +450,7 @@ SolveReport annealShape(Solved &solved, GenerationContext &context, double balan
 			wet = dry = -1;
 			for (int attempt = 0; attempt < 48 && (wet < 0 || dry < 0); ++attempt)
 			{
-				const int i = int(context.bounded("equilibrium-shape", std::uint32_t(cells)));
+				const int i = int(context.bounded("even-ground-shape", std::uint32_t(cells)));
 				if (solved.pinned[i])
 					continue;
 				if (!s.land[i])
@@ -628,7 +628,7 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 		matched += matching(one) + matching(other);
 	};
 	const SolveReport run = anneal(
-		Anneal{moves, kStockHeat[0], kStockHeat[1], "equilibrium-stock"}, context,
+		Anneal{moves, kStockHeat[0], kStockHeat[1], "even-ground-stock"}, context,
 		[&]
 		{
 			// Two land cells the design does not pin, holding different things: a swap between two
@@ -636,7 +636,7 @@ SolveReport annealStock(Solved &solved, GenerationContext &context,
 			a = b = -1;
 			for (int attempt = 0; attempt < 32 && b < 0; ++attempt)
 			{
-				const int i = int(context.bounded("equilibrium-stock", std::uint32_t(cells)));
+				const int i = int(context.bounded("even-ground-stock", std::uint32_t(cells)));
 				if (solved.pinned[i] || solved.kind[i] == kWater)
 					continue;
 				if (a < 0)
@@ -717,7 +717,7 @@ void floodToShare(Solved &solved, GenerationContext &context, int sharePercent)
 		return;
 	const std::vector<int> noise =
 		fractalNoise(solved.lat.w, solved.lat.h, std::max(2, solved.lat.w / 4), 3,
-					 context.stream("equilibrium-shape"));
+					 context.stream("even-ground-shape"));
 	std::stable_sort(free.begin(), free.end(), [&](int a, int b) { return noise[a] > noise[b]; });
 	for (int k = 0; k < wanted; ++k)
 		solved.kind[free[k]] = kWater;
@@ -732,7 +732,7 @@ void stockToAmounts(Solved &solved, GenerationContext &context, const EvenGround
 	for (int i = 0; i < cells; ++i)
 		if (!solved.pinned[i] && solved.kind[i] != kWater)
 			free.push_back(i);
-	context.shuffle(free.begin(), free.end(), "equilibrium-stock");
+	context.shuffle(free.begin(), free.end(), "even-ground-stock");
 
 	const std::int64_t land = std::int64_t(free.size());
 	int wheat = int(scaledCount(land * kWheatCells / 100, o.wheat) * greenness);
@@ -767,15 +767,15 @@ void stockToAmounts(Solved &solved, GenerationContext &context, const EvenGround
 /// the search settled on survives being painted.
 std::vector<int> paintedCells(const Torus &t, const Lattice &lat, GenerationContext &context)
 {
-	std::mt19937 &rng = context.stream("equilibrium-warp");
+	std::mt19937 &rng = context.stream("even-ground-warp");
 	std::vector<Site> centres;
 	centres.reserve(lat.size());
 	for (int cy = 0; cy < lat.h; ++cy)
 		for (int cx = 0; cx < lat.w; ++cx)
 		{
 			const int jostle = int(lat.tiles * kCentreJostle);
-			const int dx = int(context.bounded("equilibrium-warp", 2 * jostle + 1)) - jostle;
-			const int dy = int(context.bounded("equilibrium-warp", 2 * jostle + 1)) - jostle;
+			const int dx = int(context.bounded("even-ground-warp", 2 * jostle + 1)) - jostle;
+			const int dy = int(context.bounded("even-ground-warp", 2 * jostle + 1)) - jostle;
 			centres.push_back({t.x(cx * lat.tiles + lat.tiles / 2 + dx),
 							   t.y(cy * lat.tiles + lat.tiles / 2 + dy)});
 		}
@@ -832,13 +832,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// number never lands on the same ground map after map.
 	const std::vector<unsigned char> everywhere(L.lat.size(), 1);
 	solved.home =
-		farthestSites(lattice, everywhere, everywhere, teams, context, "equilibrium-homes");
+		farthestSites(lattice, everywhere, everywhere, teams, context, "even-ground-homes");
 	if (int(solved.home.size()) < teams)
 	{
 		L.failure = "The colonies could not be spread out on this map.";
 		return L;
 	}
-	dealStarts(context, solved.home, "equilibrium-homes-deal");
+	dealStarts(context, solved.home, "even-ground-homes-deal");
 
 	pinHomes(solved);
 	// How wet and how green this seed is, drawn round what the sliders asked for.
@@ -854,7 +854,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	//
 	// The whole brief is drawn here, before any of it is used, so what a seed was asked for can be
 	// read in one place rather than gathered from the design as it goes.
-	Brief brief(context, "even-ground", "equilibrium");
+	Brief brief(context, "even-ground");
 	const double wetness = brief.target("wetness", kWetLeast, kWetMost);
 	const double greenness = brief.target("greenness", kGreenLeast, kGreenMost);
 	// Ranges, not constants: the whole reason one seed of a solved map looks like another is that
@@ -882,7 +882,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// search rather than a statement of what the country is like.
 	const int bodiesWanted =
 		kBodiesLeast +
-		int(context.bounded("equilibrium-shape", kBodiesMost - kBodiesLeast + 1));
+		int(context.bounded("even-ground-shape", kBodiesMost - kBodiesLeast + 1));
 	solved.shape = annealShape(solved, context, balance, wantWidth, bodiesWanted, shoreWanted, brief,
 							   kShapeMoves[effort]);
 
@@ -993,7 +993,7 @@ bool generate(Game &game, GenerationContext &context)
 		return MapGeneratorPoint((cell % L.lat.w) * L.lat.tiles + L.lat.tiles / 2,
 								 (cell / L.lat.w) * L.lat.tiles + L.lat.tiles / 2);
 	};
-	if (!settleColonies(game, context, "equilibrium-starts", homeMask, anchor))
+	if (!settleColonies(game, context, "even-ground-starts", homeMask, anchor))
 		return false;
 
 	context.stage = "even ground resources";
@@ -1002,7 +1002,7 @@ bool generate(Game &game, GenerationContext &context)
 	// from inside, which a solid one would not be.
 	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
 	const std::vector<int> grain =
-		fractalNoise(t.w, t.h, std::max(4, L.lat.tiles), 3, context.stream("equilibrium-cover"));
+		fractalNoise(t.w, t.h, std::max(4, L.lat.tiles), 3, context.stream("even-ground-cover"));
 	std::vector<std::vector<int>> ground(kCellKinds);
 	for (int i = 0; i < t.size(); ++i)
 	{
@@ -1018,7 +1018,7 @@ bool generate(Game &game, GenerationContext &context)
 							  plantCoverShare(map, t, ground[kWood], WOOD, kWoodCover, level));
 	context.telemetry.measure("even-ground.stone.tiles",
 							  plantCoverShare(map, t, ground[kStone], STONE, kStoneCover, level));
-	seedAlgae(map, context, t, "equilibrium-algae", o.algae, AlgaeBand::shallows(1, 4).thriving(0.5));
+	seedAlgae(map, context, t, "even-ground-algae", o.algae, AlgaeBand::shallows(1, 4).thriving(0.5));
 
 	context.stage = "even ground openings";
 	secureStartingCrops(game, context, t);

@@ -32,13 +32,6 @@ using namespace MapGeneration;
 // quarry beside it - the only fruit on the map and the only quarry worth marching for - and every
 // prize is the same walk from every colony.
 //
-// WHY THE RANDOM STREAMS STILL SAY "tug". This map was called Tug until shortly before it merged.
-// A stream's name is mixed into every draw taken from it, so renaming "tug-terrain" and its
-// siblings would move every map this generator has ever made, and the golden rows, the figures in
-// MARCHLAND.md and the games already played would all describe maps that no longer exist. Stream
-// names are internal and never shown, so they stay and the public name changed around them. Brief
-// is given the two names separately for the same reason.
-//
 // WHAT THE GAME IS. Your territory feeds you and cannot win for you: it has crops, wood and a small
 // quarry, and no fruit at all. The prizes are the rope. Taking one pulls your economy ahead and
 // your opponent's back, and because the rope is level the only thing that decides which way it
@@ -354,7 +347,7 @@ void cutRiver(Layout &L, const Torus &t, int teams, GenerationContext &context, 
 	const std::vector<unsigned char> towns = dilateRound(t, swarms, kTownRadius);
 	const RiverStyle style{kRiverHalfWidth, kRiverWander, kRiverSwell, kBedPointStep, kBedHarmonics};
 	const RiverChoice chosen = bestRiverAcross(
-		t, context, "tug-river", context.bounded("tug-river", 2) != 0, kRiverBeds, style,
+		t, context, "marchland-river", context.bounded("marchland-river", 2) != 0, kRiverBeds, style,
 		[&](const River &, const std::vector<unsigned char> &bed)
 		{ return rateBed(L, t, teams, towns, bed); });
 
@@ -400,7 +393,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// colony's own country from the commons at a glance, and the ragged draw is how far its edge
 	// follows the lie of the land. A reader looking at an odd seed should be able to see what it
 	// was asked for before wondering whether the search failed.
-	Brief brief(context, "marchland", "tug");
+	Brief brief(context, "marchland");
 	const double homelandShare = brief.target("homeland-share", kHomelandLeast, kHomelandMost);
 	L.farmed = brief.target("farmed-share", kFarmedLeast, kFarmedMost);
 	const std::int64_t ragged =
@@ -409,7 +402,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 
 	// The country's water, from a smooth field: the first thing that makes one seed's march
 	// different from the next's, and the reason the walk to a prize is never the straight line.
-	std::mt19937 &rng = context.stream("tug-terrain");
+	std::mt19937 &rng = context.stream("marchland-terrain");
 	const std::vector<int> relief =
 		fractalNoise(t.w, t.h, std::max(16, std::min(t.w, t.h) / 6), 4, rng);
 	std::vector<unsigned char> water(t.size(), 0);
@@ -441,14 +434,14 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// The homes, as far apart as the mainland's own walking distances allow, then dealt to the
 	// colonies so a team number never lands on the same ground map after map.
 	std::vector<int> sites =
-		farthestSites(t, mainlandMask, mainlandMask, teams, context, "tug-homes");
+		farthestSites(t, mainlandMask, mainlandMask, teams, context, "marchland-homes");
 	if (int(sites.size()) < teams)
 	{
 		L.failure = "This map has no room to spread the colonies out; use a bigger map or fewer "
 					"colonies.";
 		return L;
 	}
-	dealStarts(context, sites, "tug-homes-deal");
+	dealStarts(context, sites, "marchland-homes-deal");
 	// Jostled off the spread that chose them, which is the whole reason this map stopped looking
 	// like a country and started looking like city blocks.
 	//
@@ -463,8 +456,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const int jostle = std::max(4, int(std::min(t.w, t.h) * kSiteJostle));
 	for (int &site : sites)
 	{
-		const int dx = int(context.bounded("tug-homes", 2 * jostle + 1)) - jostle;
-		const int dy = int(context.bounded("tug-homes", 2 * jostle + 1)) - jostle;
+		const int dx = int(context.bounded("marchland-homes", 2 * jostle + 1)) - jostle;
+		const int dy = int(context.bounded("marchland-homes", 2 * jostle + 1)) - jostle;
 		const int moved = t.at(site % t.w + dx, site / t.w + dy);
 		if (mainlandMask[moved])
 			site = moved;
@@ -644,7 +637,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				door.push_back(i);
 		const std::vector<int> depth = stepsFrom(t, tileMask(t, {L.homes[k].site}), home);
 		const std::vector<int> room = stepsFrom(t, blocked);
-		const int side = context.bounded("tug-lakes", 2) ? 1 : -1;
+		const int side = context.bounded("marchland-lakes", 2) ? 1 : -1;
 		const int grown = growLakeBeside(
 			t, water, depth, room, kLakeGap, kHomeLakeTiles, L.homes[k].site, L.homes[k].axis, side,
 			kLakeFromSwarm, kLakeReach, [&](int i) { return relief[i] / 65535.0; }, queued, k + 1);
@@ -841,7 +834,7 @@ Rope levelRope(const std::vector<int> &candidates, const std::vector<std::vector
 		int chosen = -1;
 		for (int attempt = 0; attempt < 256 && chosen < 0; ++attempt)
 		{
-			const int site = candidates[context.bounded("tug-rope", std::uint32_t(candidates.size()))];
+			const int site = candidates[context.bounded("marchland-rope", std::uint32_t(candidates.size()))];
 			if (apart(site, -1))
 				chosen = site;
 		}
@@ -853,7 +846,7 @@ Rope levelRope(const std::vector<int> &candidates, const std::vector<std::vector
 	// Levelling buys search: the slider is how many proposals the solver gets. At zero the rope stays
 	// where chance put it, which is the baseline the map's telemetry reports beside the solved figure.
 	const Anneal schedule{int(std::int64_t(kRopeMoves) * std::clamp(levelling, 0, 100) / 100),
-						  kRopeHeat[0], kRopeHeat[1], "tug-rope"};
+						  kRopeHeat[0], kRopeHeat[1], "marchland-rope"};
 	int slot = -1, was = -1;
 	std::vector<int> best = rope.prize;
 	rope.run = anneal(
@@ -862,9 +855,9 @@ Rope levelRope(const std::vector<int> &candidates, const std::vector<std::vector
 		{
 			if (rope.prize.empty())
 				return false;
-			slot = int(context.bounded("tug-rope", std::uint32_t(rope.prize.size())));
+			slot = int(context.bounded("marchland-rope", std::uint32_t(rope.prize.size())));
 			const int site =
-				candidates[context.bounded("tug-rope", std::uint32_t(candidates.size()))];
+				candidates[context.bounded("marchland-rope", std::uint32_t(candidates.size()))];
 			if (!apart(site, slot))
 				return false;
 			was = rope.prize[slot];
@@ -921,7 +914,7 @@ bool generate(Game &game, GenerationContext &context)
 		return home;
 	};
 	const auto anchor = [&](int team) { return L.homes[team].swarm; };
-	if (!settleColonies(game, context, "tug-starts", homeMask, anchor))
+	if (!settleColonies(game, context, "marchland-starts", homeMask, anchor))
 		return false;
 
 	context.stage = "marchland homelands";
@@ -934,7 +927,7 @@ bool generate(Game &game, GenerationContext &context)
 	// share is taken over a whole homeland while a colony farms only the part of it within reach, a
 	// colony can land wholly on one side of the field. Measured that way one colony had 531 wheat
 	// and 46 wood in its catchment while another had 43 wheat and 401 wood on the same map.
-	std::mt19937 &fields = context.stream("tug-fields");
+	std::mt19937 &fields = context.stream("marchland-fields");
 	const std::vector<int> wheatGrain = fractalNoise(t.w, t.h, kFieldGrain, 3, fields);
 	const std::vector<int> woodGrain = fractalNoise(t.w, t.h, kFieldGrain, 3, fields);
 	// A town round every swarm that the country's fields stay out of. The kit's own crops go inside
@@ -1095,7 +1088,7 @@ bool generate(Game &game, GenerationContext &context)
 		// meant to happen - and worse than that, a wall whose two sides are not the same walk from
 		// everywhere, which quietly undoes the levelling the search just did. Planted solid at this
 		// radius it moved one colony 43 steps out of step on seed 21.
-		const int fruit = CHERRY + int(context.bounded("tug-prizes", 3));
+		const int fruit = CHERRY + int(context.bounded("marchland-prizes", 3));
 		const int sx = site % t.w, sy = site / t.w;
 		// The grove answers to the fruit slider, like every other resource on the map answers to
 		// its own. The radius is scaled by area rather than directly, so the slider delivers the
@@ -1112,7 +1105,7 @@ bool generate(Game &game, GenerationContext &context)
 					map.isResourceAllowed(i % t.w, i / t.w, fruit))
 					map.setResource(i % t.w, i / t.w, fruit, 1);
 			}
-		const double angle = context.bounded("tug-prizes", 360) * kPi / 180.0;
+		const double angle = context.bounded("marchland-prizes", 360) * kPi / 180.0;
 		const int qx = t.x(site % t.w + int(std::lround(kQuarryOffset * std::cos(angle))));
 		const int qy = t.y(site / t.w + int(std::lround(kQuarryOffset * std::sin(angle))));
 		if (const int seed = seedNear(t, qx, qy, 4, [&](int i)
@@ -1299,8 +1292,7 @@ GeneratorDefinition marchlandDefinition()
 	return {"marchland",
 			59,
 			"Marchland",
-			// 2: some seeds now cut a river through the commons, which moves their terrain.
-			2,
+			1,
 			false,
 			// Levelling is the map's own argument: at 0 the prizes are merely spread out, the way
 			// any generator would place them, and at 100 they are spread out and the same walk from

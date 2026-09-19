@@ -44,14 +44,14 @@ double Brief::target(const char *name, double least, double most)
 	constexpr std::uint32_t kSteps = 1000;
 	const double drawn =
 		least +
-		(most - least) * double(context.bounded(draws + "-brief", kSteps)) / double(kSteps - 1);
+		(most - least) * double(context.bounded(map + "-brief", kSteps)) / double(kSteps - 1);
 	context.telemetry.measure(map + ".brief." + name, drawn);
 	return drawn;
 }
 
 void Brief::choose(std::vector<const char *> optional, int least, int most)
 {
-	const std::string stream = draws + "-brief";
+	const std::string stream = map + "-brief";
 	const int fewest = std::clamp(least, 0, int(optional.size()));
 	const int many = std::clamp(most, fewest, int(optional.size()));
 	const int wanted =
