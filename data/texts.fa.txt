@@ -2948,3 +2948,9 @@ Emoji
 ضخامت موانع درختی
 [Neutral clearing size]
 اندازهٔ فضای باز بی‌طرف
+[Bastion Keys]
+جزیره‌های دژدار
+[Plantation size]
+اندازهٔ کشتزار
+[Outlying islands]
+جزیره‌های پیرامونی

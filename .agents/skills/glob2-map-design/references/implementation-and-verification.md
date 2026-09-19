@@ -62,6 +62,25 @@ check should not pass. Similarly, block a declared entrance while leaving its wa
 standing. These were real gaps found in Gauntlet's review, not extra guarantees
 that every generator needs.
 
+### Islands are a movement contract
+
+For a swimming-required archipelago, validate two different graphs on the finished
+map. Walking components must contain at most one estate even after harvestable
+resources and buildings are removed; use eight neighbours and torus wrapping so
+beaches, diagonal contacts and chains of neutral islands cannot hide a bridge.
+Then use `groundUnitTiles(map, true)` to check actual swimming access to colony
+workers and useful landing/building ground on expansion islands. A pool count is
+not a movement proof. `firstColonyCutOff` establishes that at least one worker in
+each colony is reachable, not that every worker is reachable.
+
+Separate local opening access from travel between estates. A fort may need short
+supply piers to its own external farms while every rival and neutral key remains
+across open water. State that scope explicitly. Legal stone requires grass corners
+and beaches leave walkable mixed tiles: a wall beside water does not automatically
+make its harbour gate swimming-only. Check the shore detour before making that claim.
+Bastion Keys instead proves separation between entire estates, with both gates
+inside that movement contract.
+
 ### Fix the primitive at the right boundary
 
 Before implementing a second flood, beach pass, clump grower, route clearer, kit frame, or swarm-clearance routine, search for the operation in `shared/` and its callers. A defect affecting multiple maps belongs in the helper when its contract is wrong. Add an explicit parameter when policies differ (for example a protected wall mask), instead of recognizing generator names inside a helper.

@@ -2958,3 +2958,9 @@ Piesočné spojenia
 Hrúbka lesných bariér
 [Neutral clearing size]
 Veľkosť neutrálnych čistín
+[Bastion Keys]
+Opevnené ostrovčeky
+[Plantation size]
+Veľkosť plantáží
+[Outlying islands]
+Okolité ostrovy

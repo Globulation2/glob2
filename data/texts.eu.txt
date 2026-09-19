@@ -2960,3 +2960,9 @@ Hondarrezko loturak
 Zuhaitz-hesien lodiera
 [Neutral clearing size]
 Soilgune neutralen tamaina
+[Bastion Keys]
+Gotorleku-uharteak
+[Plantation size]
+Plantazioaren tamaina
+[Outlying islands]
+Kanpoko uharteak

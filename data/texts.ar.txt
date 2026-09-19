@@ -2948,3 +2948,9 @@ Emoji
 سماكة الحواجز الشجرية
 [Neutral clearing size]
 حجم الفسحات المحايدة
+[Bastion Keys]
+جزر الحصون
+[Plantation size]
+حجم المزرعة
+[Outlying islands]
+الجزر الخارجية

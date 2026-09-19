@@ -2950,3 +2950,9 @@ Piaszczyste połączenia
 Grubość leśnych barier
 [Neutral clearing size]
 Rozmiar neutralnych polan
+[Bastion Keys]
+Ufortyfikowane wysepki
+[Plantation size]
+Wielkość plantacji
+[Outlying islands]
+Pobliskie wyspy

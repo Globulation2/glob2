@@ -2946,3 +2946,9 @@ Sambungan jalur pasir
 Ketebalan penghalang pohon
 [Neutral clearing size]
 Ukuran lahan terbuka netral
+[Bastion Keys]
+Kepulauan Benteng
+[Plantation size]
+Ukuran perkebunan
+[Outlying islands]
+Pulau luar

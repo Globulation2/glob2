@@ -2950,3 +2950,9 @@ Písečná spojení
 Tloušťka lesních bariér
 [Neutral clearing size]
 Velikost neutrálních mýtin
+[Bastion Keys]
+Opevněné ostrůvky
+[Plantation size]
+Velikost plantáží
+[Outlying islands]
+Okolní ostrovy

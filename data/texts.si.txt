@@ -2950,3 +2950,9 @@ Peščene povezave
 Debelina gozdnih pregrad
 [Neutral clearing size]
 Velikost nevtralnih jas
+[Bastion Keys]
+Utrjeni otočki
+[Plantation size]
+Velikost plantaže
+[Outlying islands]
+Zunanji otoki

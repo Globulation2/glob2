@@ -2948,3 +2948,9 @@ Sablaj ligoj
 Dikeco de arbaj baroj
 [Neutral clearing size]
 Grandeco de neŭtralaj maldensejoj
+[Bastion Keys]
+Bastionaj insuletoj
+[Plantation size]
+Grandeco de plantejoj
+[Outlying islands]
+Eksteraj insuloj

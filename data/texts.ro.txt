@@ -2950,3 +2950,9 @@ Legături de nisip
 Grosimea barierelor de copaci
 [Neutral clearing size]
 Mărimea poienilor neutre
+[Bastion Keys]
+Insulițe fortificate
+[Plantation size]
+Mărimea plantației
+[Outlying islands]
+Insule periferice

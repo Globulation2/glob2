@@ -2946,3 +2946,9 @@ Emoji
 Товщина лісових перешкод
 [Neutral clearing size]
 Розмір нейтральних галявин
+[Bastion Keys]
+Острови-бастіони
+[Plantation size]
+Розмір плантацій
+[Outlying islands]
+Зовнішні острови

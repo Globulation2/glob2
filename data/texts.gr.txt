@@ -3020,3 +3020,9 @@ Emoji
 Πάχος δασικών φραγμών
 [Neutral clearing size]
 Μέγεθος ουδέτερων ξέφωτων
+[Bastion Keys]
+Οχυρωμένες νησίδες
+[Plantation size]
+Μέγεθος φυτείας
+[Outlying islands]
+Περιφερειακά νησιά

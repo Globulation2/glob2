@@ -2956,3 +2956,9 @@ Ligações entre bancos de areia
 Espessura das barreiras de árvores
 [Neutral clearing size]
 Tamanho das clareiras neutras
+[Bastion Keys]
+Ilhotas fortificadas
+[Plantation size]
+Tamanho das plantações
+[Outlying islands]
+Ilhas periféricas

@@ -2037,8 +2037,99 @@ inline void drownedForestContracts()
 		 "compact workers");
 }
 
+inline void bastionKeysContracts()
+{
+	D request;
+	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("bastion-keys"));
+	const auto &definition = GeneratorRegistry::builtins().at(request.method);
+	request.wDec = request.hDec = 7;
+	request.nbTeams = 1;
+	request.nbWorkers = 8;
+	for (int size : {14, 18})
+		for (int amount : {0, 300})
+		{
+			request.options["plantation-size"] = size;
+			for (const char *key :
+				 {"wheat-amount", "wood-amount", "stone-amount", "algae-amount", "fruit-amount"})
+				request.options[key] = amount;
+			Game game(nullptr);
+			const auto result = GenerationService().generate(game, request, true);
+			if (!result)
+				std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+			assert(result);
+			GenerationContext check(request);
+			assert(definition.validateWorld(game, check).empty());
+			assert(countBuildings(game, 0, "swimmingpool") == 1);
+			if (amount == 0)
+			{
+				setSyncRandSeed(917);
+				for (int tick = 0; tick < 20000; ++tick)
+					game.map.growResources();
+				assert(definition.validateWorld(game, check).empty());
+			}
+			// A missing permanent rampart is an invalid map, even when the rest is playable.
+			int wall = -1;
+			for (int i = 0; i < 128 * 128; ++i)
+				if (game.map.getResource(i).type == STONE)
+				{
+					wall = i;
+					break;
+				}
+			assert(wall >= 0);
+			game.map.setNoResource(wall % 128, wall / 128, 1);
+			assert(!definition.validateWorld(game, check).empty());
+		}
+	request.nbTeams = 2;
+	assert(!definition.validateRequest(request).empty());
+	request.wDec = 8;
+	assert(definition.validateRequest(request).empty());
+	// Exercise all fort styles/facings over held-out seeds, both rectangular orientations,
+	// scarce/dense crops, open-water isolation and the full twelve-colony envelope.
+	for (int seed : {207, 208, 211, 307})
+		for (int shape = 0; shape < 3; ++shape)
+		{
+			request.setMethodDefaults(GeneratorRegistry::builtins().idOf("bastion-keys"));
+			request.seed = seed;
+			request.wDec = shape == 0 ? 7 : 9;
+			request.hDec = shape == 1 ? 7 : 9;
+			request.nbTeams = shape == 2 ? 12 : 4;
+			request.nbWorkers = seed % 2 ? 1 : 8;
+			request.options["home-size"] = seed % 2 ? 13 : 15;
+			request.options["plantation-size"] = seed % 2 ? 14 : 18;
+			request.options["outer-islands"] = seed % 2 ? 1 : 5;
+			Game game(nullptr);
+			const auto result = GenerationService().generate(game, request, true);
+			if (!result)
+				std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+			assert(result);
+			assert(coloniesApart(game.map, request.nbTeams, "without swimming").empty());
+		}
+	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("bastion-keys"));
+	request.wDec = 8;
+	request.hDec = 7;
+	request.nbTeams = 2;
+	Game bridged(nullptr);
+	assert(GenerationService().generate(bridged, request));
+	assert(coloniesApart(bridged.map, 2, "without swimming").empty());
+	const Torus t(bridged.map);
+	TerrainSketch landBridge(t.size());
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int corner = bridged.map.getUMTerrain(i % t.w, i / t.w);
+		landBridge[i] = corner == WATER ? SAND : corner;
+	}
+	writeUndermap(bridged.map, landBridge);
+	GenerationContext check(request);
+	assert(definition.validateWorld(bridged, check).find("walking connection") !=
+		   std::string::npos);
+	puts("PASS Bastion Keys: envelope, variants, rectangles, twelve colonies, swimming isolation, "
+		 "land-bridge corruption, external crops, "
+		 "growth, pools and rampart corruption");
+}
+
 inline void generatorContracts()
 {
+	bastionKeysContracts();
 	drownedForestContracts();
 	portageLakesContracts();
 	faultedCityContracts();

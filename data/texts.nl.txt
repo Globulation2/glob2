@@ -2974,3 +2974,9 @@ Zandbankverbindingen
 Dikte van bosbarrières
 [Neutral clearing size]
 Grootte van neutrale open plekken
+[Bastion Keys]
+Bastioneilanden
+[Plantation size]
+Plantagegrootte
+[Outlying islands]
+Buiteneilanden

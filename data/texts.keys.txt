@@ -1472,3 +1472,6 @@
 [Sandbar connections]
 [Wooded neck thickness]
 [Neutral clearing size]
+[Bastion Keys]
+[Plantation size]
+[Outlying islands]

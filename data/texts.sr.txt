@@ -2950,3 +2950,9 @@ Emoji
 Дебљина шумских препрека
 [Neutral clearing size]
 Величина неутралних пропланака
+[Bastion Keys]
+Утврђена острвца
+[Plantation size]
+Величина плантаже
+[Outlying islands]
+Спољна острва

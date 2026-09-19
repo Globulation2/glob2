@@ -2960,3 +2960,9 @@ Sandbanksförbindelser
 Skogsbarriärernas tjocklek
 [Neutral clearing size]
 Neutrala gläntors storlek
+[Bastion Keys]
+Bastionsöar
+[Plantation size]
+Plantagestorlek
+[Outlying islands]
+Yttre öar

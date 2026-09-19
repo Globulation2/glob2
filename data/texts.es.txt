@@ -2950,3 +2950,9 @@ Conexiones de arena
 Grosor de las barreras de árboles
 [Neutral clearing size]
 Tamaño de los claros neutrales
+[Bastion Keys]
+Cayos fortificados
+[Plantation size]
+Tamaño de las plantaciones
+[Outlying islands]
+Islas exteriores

@@ -2946,3 +2946,9 @@ Kết nối bãi cát
 Độ dày rào cây
 [Neutral clearing size]
 Kích thước khoảng trống trung lập
+[Bastion Keys]
+Quần đảo pháo đài
+[Plantation size]
+Kích thước đồn điền
+[Outlying islands]
+Đảo ngoại vi

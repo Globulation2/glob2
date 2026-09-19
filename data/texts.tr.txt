@@ -2958,3 +2958,9 @@ Kum geçidi bağlantıları
 Ağaç engellerinin kalınlığı
 [Neutral clearing size]
 Tarafsız açıklıkların boyutu
+[Bastion Keys]
+Burç Adacıkları
+[Plantation size]
+Plantasyon boyutu
+[Outlying islands]
+Dış adalar

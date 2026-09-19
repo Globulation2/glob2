@@ -3012,3 +3012,9 @@ Collegamenti sabbiosi
 Spessore delle barriere boschive
 [Neutral clearing size]
 Dimensione delle radure neutrali
+[Bastion Keys]
+Isole fortificate
+[Plantation size]
+Dimensione delle piantagioni
+[Outlying islands]
+Isole periferiche

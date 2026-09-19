@@ -670,6 +670,12 @@ int main(int argc, char **argv)
 		puts("PASS toolkit-only geometry, raster, resource and home contracts");
 		return 0;
 	}
+	if (argc == 3 && std::string(argv[2]) == "--bastion-keys-only")
+	{
+		MapGeneratorDefaultsTest::globalsInit();
+		GeneratorContracts::bastionKeysContracts();
+		return 0;
+	}
 	if (argc == 3 && std::string(argv[2]) == "--eaten-only")
 	{
 		MapGeneratorDefaultsTest::globalsInit();

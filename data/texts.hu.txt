@@ -2950,3 +2950,9 @@ Homokpadi összeköttetések
 Erdős akadályok vastagsága
 [Neutral clearing size]
 Semleges tisztások mérete
+[Bastion Keys]
+Bástyaszigetek
+[Plantation size]
+Ültetvény mérete
+[Outlying islands]
+Külső szigetek

@@ -2958,3 +2958,9 @@ Connexions de sorra
 Gruix de les barreres d’arbres
 [Neutral clearing size]
 Mida de les clarianes neutrals
+[Bastion Keys]
+Illots fortificats
+[Plantation size]
+Mida de les plantacions
+[Outlying islands]
+Illes exteriors

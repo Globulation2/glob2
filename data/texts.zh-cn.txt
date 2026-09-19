@@ -2946,3 +2946,9 @@ Emoji
 林木屏障厚度
 [Neutral clearing size]
 中立林间空地大小
+[Bastion Keys]
+堡垒群岛
+[Plantation size]
+种植园大小
+[Outlying islands]
+外围岛屿

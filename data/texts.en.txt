@@ -2948,3 +2948,9 @@ Sandbar connections
 Wooded neck thickness
 [Neutral clearing size]
 Neutral clearing size
+[Bastion Keys]
+Bastion Keys
+[Plantation size]
+Plantation size
+[Outlying islands]
+Outlying islands

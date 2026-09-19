@@ -2950,3 +2950,9 @@ Sandbankverbindungen
 Dicke der Waldbarrieren
 [Neutral clearing size]
 Größe neutraler Lichtungen
+[Bastion Keys]
+Bastionsinseln
+[Plantation size]
+Plantagengröße
+[Outlying islands]
+Vorgelagerte Inseln

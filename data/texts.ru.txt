@@ -2948,3 +2948,9 @@ Emoji
 Толщина лесных преград
 [Neutral clearing size]
 Размер нейтральных полян
+[Bastion Keys]
+Острова-бастионы
+[Plantation size]
+Размер плантаций
+[Outlying islands]
+Внешние острова

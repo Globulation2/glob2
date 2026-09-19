@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GeneratorRegistry.h"
+#include "BastionKeysGenerator.h"
 #include "CityStatesGenerator.h"
 #include "ConcreteIslandsGenerator.h"
 #include "ContestedCommonsGenerator.h"
@@ -181,7 +182,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 honeycombIsleDefinition(),
 											 karstTowersDefinition(), bajadaDefinition(),
 											 centralQuarryDefinition(), hiddenOasisDefinition(), drownedForestDefinition(), portageLakesDefinition(),
-											 orchardCommonsDefinition(), gauntletDefinition(), faultedCityDefinition(), combDefinition(), encircledKingdomDefinition(),
+											 orchardCommonsDefinition(), gauntletDefinition(), faultedCityDefinition(), combDefinition(), encircledKingdomDefinition(), bastionKeysDefinition(),
 											 evenGroundDefinition(), marchlandDefinition(),
 											 whoAteTheMapDefinition(), ruggedArchipelagoDefinition(),
 											 contestedCommonsDefinition(),

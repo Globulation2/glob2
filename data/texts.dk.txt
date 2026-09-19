@@ -3026,3 +3026,9 @@ Sandbankeforbindelser
 Skovbarrierernes tykkelse
 [Neutral clearing size]
 Neutrale lysningers størrelse
+[Bastion Keys]
+Bastionsøer
+[Plantation size]
+Plantagestørrelse
+[Outlying islands]
+Ydre øer

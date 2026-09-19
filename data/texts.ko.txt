@@ -2946,3 +2946,9 @@ Emoji
 나무 장벽 두께
 [Neutral clearing size]
 중립 숲 공터 크기
+[Bastion Keys]
+요새 군도
+[Plantation size]
+농장 크기
+[Outlying islands]
+주변 섬

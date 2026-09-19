@@ -2946,3 +2946,9 @@ Emoji
 樹木の障壁の厚さ
 [Neutral clearing size]
 中立の林間空地の広さ
+[Bastion Keys]
+要塞諸島
+[Plantation size]
+農園の大きさ
+[Outlying islands]
+周辺の島

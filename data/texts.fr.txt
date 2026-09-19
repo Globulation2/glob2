@@ -2960,3 +2960,9 @@ Liaisons de sable
 Épaisseur des barrières boisées
 [Neutral clearing size]
 Taille des clairières neutres
+[Bastion Keys]
+Îlots fortifiés
+[Plantation size]
+Taille des plantations
+[Outlying islands]
+Îles périphériques

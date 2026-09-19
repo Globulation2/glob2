@@ -2950,3 +2950,9 @@ Hiekkasärkkäyhteydet
 Metsäesteiden paksuus
 [Neutral clearing size]
 Neutraalien aukioiden koko
+[Bastion Keys]
+Linnakesaaret
+[Plantation size]
+Viljelmän koko
+[Outlying islands]
+Ulkosaaret
