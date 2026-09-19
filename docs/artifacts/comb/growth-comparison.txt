@@ -1,0 +1,30 @@
+reference
+map: water 5.4%, farmland 34244 tiles, fertile 51.8% of the map, 15008 tiles at 5% or more, yield 1603
+colony 0 (92, 65):  <=24 steps: yield 48 (home 36, plots 11, open 0)  <=48 steps: yield 142 (home 37, plots 104, open 0)  <=96 steps: yield 464 (home 37, plots 369, open 58)
+colony 1 (220, 65):  <=24 steps: yield 48 (home 36, plots 11, open 0)  <=48 steps: yield 146 (home 37, plots 109, open 0)  <=96 steps: yield 523 (home 37, plots 470, open 15)
+colony 2 (220, 193):  <=24 steps: yield 48 (home 36, plots 11, open 0)  <=48 steps: yield 144 (home 37, plots 106, open 1)  <=96 steps: yield 569 (home 37, plots 416, open 116)
+colony 3 (92, 193):  <=24 steps: yield 48 (home 36, plots 11, open 0)  <=48 steps: yield 143 (home 37, plots 104, open 2)  <=96 steps: yield 591 (home 37, plots 388, open 166)
+playtest-final/heldout
+map: water 27.8%, farmland 37936 tiles, fertile 37.6% of the map, 14938 tiles at 5% or more, yield 2498
+colony 0 (175, 217):  <=24 steps: yield 69 (home 33, plots 36, open 0)  <=48 steps: yield 173 (home 33, plots 73, open 67)  <=96 steps: yield 655 (home 33, plots 137, open 485)
+colony 1 (94, 223):  <=24 steps: yield 63 (home 50, plots 13, open 0)  <=48 steps: yield 161 (home 50, plots 73, open 38)  <=96 steps: yield 709 (home 50, plots 143, open 517)
+colony 2 (97, 27):  <=24 steps: yield 65 (home 53, plots 13, open 0)  <=48 steps: yield 159 (home 53, plots 63, open 43)  <=96 steps: yield 673 (home 53, plots 144, open 477)
+colony 3 (173, 31):  <=24 steps: yield 70 (home 52, plots 18, open 0)  <=48 steps: yield 180 (home 52, plots 56, open 73)  <=96 steps: yield 720 (home 52, plots 119, open 549)
+playtest-final/low
+map: water 29.0%, farmland 36014 tiles, fertile 38.2% of the map, 16174 tiles at 5% or more, yield 2814
+colony 0 (80, 219):  <=24 steps: yield 62 (home 46, plots 16, open 0)  <=48 steps: yield 224 (home 46, plots 81, open 98)  <=96 steps: yield 808 (home 46, plots 132, open 630)
+colony 1 (78, 33):  <=24 steps: yield 62 (home 49, plots 13, open 0)  <=48 steps: yield 198 (home 49, plots 66, open 82)  <=96 steps: yield 737 (home 49, plots 123, open 565)
+colony 2 (163, 28):  <=24 steps: yield 62 (home 45, plots 17, open 0)  <=48 steps: yield 169 (home 45, plots 79, open 44)  <=96 steps: yield 757 (home 45, plots 134, open 578)
+colony 3 (164, 219):  <=24 steps: yield 60 (home 40, plots 20, open 0)  <=48 steps: yield 204 (home 40, plots 87, open 78)  <=96 steps: yield 764 (home 40, plots 142, open 582)
+playtest-final/high
+map: water 29.1%, farmland 36016 tiles, fertile 36.9% of the map, 15555 tiles at 5% or more, yield 2749
+colony 0 (34, 170):  <=24 steps: yield 67 (home 52, plots 15, open 0)  <=48 steps: yield 198 (home 52, plots 65, open 81)  <=96 steps: yield 791 (home 52, plots 125, open 614)
+colony 1 (33, 76):  <=24 steps: yield 63 (home 51, plots 11, open 0)  <=48 steps: yield 179 (home 51, plots 66, open 61)  <=96 steps: yield 682 (home 51, plots 121, open 510)
+colony 2 (217, 79):  <=24 steps: yield 66 (home 41, plots 20, open 5)  <=48 steps: yield 239 (home 41, plots 78, open 121)  <=96 steps: yield 806 (home 41, plots 134, open 631)
+colony 3 (226, 165):  <=24 steps: yield 63 (home 49, plots 14, open 0)  <=48 steps: yield 149 (home 49, plots 74, open 26)  <=96 steps: yield 692 (home 49, plots 129, open 514)
+reference-hedgerow
+map: water 1.5%, farmland 42906 tiles, fertile 24.3% of the map, 3265 tiles at 5% or more, yield 363
+colony 0 (219, 12):  <=24 steps: yield 15 (home 9, plots 4, open 3)  <=48 steps: yield 22 (home 9, plots 8, open 5)  <=96 steps: yield 102 (home 9, plots 81, open 12)
+colony 1 (91, 140):  <=24 steps: yield 15 (home 9, plots 4, open 2)  <=48 steps: yield 37 (home 9, plots 22, open 6)  <=96 steps: yield 122 (home 9, plots 97, open 16)
+colony 2 (91, 12):  <=24 steps: yield 16 (home 9, plots 4, open 3)  <=48 steps: yield 39 (home 9, plots 24, open 6)  <=96 steps: yield 157 (home 9, plots 131, open 17)
+colony 3 (219, 140):  <=24 steps: yield 16 (home 9, plots 4, open 3)  <=48 steps: yield 23 (home 9, plots 9, open 5)  <=96 steps: yield 75 (home 9, plots 55, open 10)

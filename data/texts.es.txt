@@ -2874,3 +2874,7 @@ Arena de pruebas
 Grosor de los muros divisorios
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 La Arena de pruebas necesita un mapa más grande o menos colonias para dar cabida a dos entradas defendidas por colonia.
+[The Comb]
+El Peine
+[Peninsulas per shore]
+Penínsulas por orilla

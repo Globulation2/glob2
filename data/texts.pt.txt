@@ -2880,3 +2880,7 @@ Arena de desafios
 Espessura das divisórias
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 A Arena de desafios precisa de um mapa maior ou de menos colónias para acomodar duas entradas defendidas por colónia.
+[The Comb]
+O Pente
+[Peninsulas per shore]
+Penínsulas por margem

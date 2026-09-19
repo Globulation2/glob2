@@ -2946,3 +2946,7 @@ Emoji
 隔牆厚度
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 試煉競技場需要更大的地圖或更少的殖民地，才能為每個殖民地安排兩個設防入口。
+[The Comb]
+梳子
+[Peninsulas per shore]
+每岸半島數

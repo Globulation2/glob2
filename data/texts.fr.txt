@@ -2884,3 +2884,7 @@ L’arène des épreuves
 Épaisseur des cloisons
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 L’arène des épreuves nécessite une carte plus grande ou moins de colonies pour ménager deux entrées défendues par colonie.
+[The Comb]
+Le Peigne
+[Peninsulas per shore]
+Péninsules par rive

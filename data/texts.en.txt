@@ -2872,3 +2872,7 @@ The Gauntlet
 Partition thickness
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.
+[The Comb]
+The Comb
+[Peninsulas per shore]
+Peninsulas per shore

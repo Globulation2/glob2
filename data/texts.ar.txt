@@ -2872,3 +2872,7 @@ Emoji
 سماكة الجدران الفاصلة
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 تحتاج ساحة التحدي إلى خريطة أكبر أو مستعمرات أقل لتوفير مدخلين محروسين لكل مستعمرة.
+[The Comb]
+المشط
+[Peninsulas per shore]
+عدد أشباه الجزر لكل ضفة
