@@ -1,8 +1,0 @@
-{
-  "ticks": 4096,
-  "seed": 4019,
-  "ratio": 0.5,
-  "macos_loaded_sha256": "573058d0a04744c6423fadd6eced26d7edff8cd12e5ae81a47ac8c5a77177e82",
-  "linux_fresh_sha256": "573058d0a04744c6423fadd6eced26d7edff8cd12e5ae81a47ac8c5a77177e82",
-  "identical": true
-}
