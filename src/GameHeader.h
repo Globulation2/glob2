@@ -88,7 +88,7 @@ public:
 	///Returns the ally-team number for the given team for pre-game alliances.
 	///Ally team numbers are 1-based (the constructor assigns team i the value
 	///i+1); 0 only appears in a malformed or hand-edited header.
-	inline Uint8 getAllyTeamNumber(int teamNumber)
+	inline Uint8 getAllyTeamNumber(int teamNumber) const
 	{
 		assert(teamNumber >= 0 && teamNumber < Team::MAX_COUNT);
 		return allyTeamNumbers[teamNumber];

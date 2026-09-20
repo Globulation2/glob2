@@ -525,6 +525,12 @@ worker queues, immutable builds and offline statistical policies using stdlib fi
 `python3 test/test_map_fairness_tournament.py` retains the fairness estimator and repeat-selection regressions.
 `python3 test/test_map_generation_study.py` checks structured map-study result classification,
 timeouts, temporary-profile cleanup, catalog lookup and per-subject telemetry preservation.
+It also covers a persistent daemon hot-reloading `host.json` after a `configure` RPC
+(no restart required); `audit`/`reap` cross-host worker discovery and staleness
+flagging (dead daemon, or alive but idle past `--stale-hours`); and `ai_comparison`'s
+`sample_games` mode (a bounded random sample -- each game independently drawing its
+own format/matchup/generator/size via inline generation -- as an alternative to the
+exhaustive cross product, reusing the same Planner and analysis pipeline).
 `python3 test/test_fairness_model.py` checks the fitted [fairness model](../docs/map-generators/FAIRNESS_MODEL.md):
 that the fit recovers coefficients from a tournament simulated out of the model itself, that a
 measurement deciding nothing is fitted near zero, that the fairness definition reads the same at

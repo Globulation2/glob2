@@ -13,6 +13,7 @@
 #include "Game.h"
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
+#include "WinProbability.h"
 #include "GlobalContainer.h"
 #include "PanelButtonHit.h"
 #include "Player.h"
@@ -825,5 +826,46 @@ void GameGUI::drawStatisticsPage(int y)
 	else if (measurementPage == 2)
 		teamStats->drawExpandedMeasurements(x, y + 16);
 	else
+	{
 		teamStats->drawText(x, y);
+		drawWinProbabilities(x, y + WIN_PROBABILITY_PANEL_YOFFSET);
+	}
+}
+
+void GameGUI::drawWinProbabilities(int x, int y)
+{
+	// Spectators can use the model to follow any AI-only game. Players do not
+	// receive an extra prediction about an outcome that the game may not use.
+	if (!globalContainer->liveSpectating)
+		return;
+
+	std::vector<int> allianceOf;
+	const std::vector<WinProbability::Slot> slots = WinProbability::slotsOf(game, allianceOf);
+	const std::vector<int> chances = WinProbability::permille(slots);
+
+	Font *font = globalContainer->littleFont;
+	globalContainer->gfx->drawString(x + 4, y, font,
+		Toolkit::getStringTable()->getString("[Win chance]"));
+	const int inc = 14;
+	int row = 0;
+	for (int i = 0; i < game.teamsCount(); i++)
+	{
+		const Team *team = game.teams[i];
+		if (!team)
+			continue;
+		// Allies share one chance, because they win or lose together: the model
+		// rates the alliance, not the player.
+		const int permille = chances[allianceOf[i]];
+		const int top = y + 16 + row * inc;
+		// The name is clipped rather than allowed to run into the figure: player
+		// names are arbitrary length and the panel is narrow.
+		const int percentX = x + RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET - 40;
+		globalContainer->gfx->drawFilledRect(x + 4, top + 3, 8, 8, team->color);
+		globalContainer->gfx->drawString(x + 16, top, font, displayPlayerName(*team).c_str(),
+			percentX - (x + 16) - 4);
+		globalContainer->gfx->drawString(percentX, top, font,
+			FormattableString(slots[allianceOf[i]].alive ? "%0%" : "-")
+				.arg(permille / 10).c_str());
+		++row;
+	}
 }
