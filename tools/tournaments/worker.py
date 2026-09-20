@@ -58,10 +58,27 @@ class Worker:
             CREATE TABLE IF NOT EXISTS controls (experiment TEXT PRIMARY KEY, mode TEXT NOT NULL);
         ''')
         path = self.root / 'host.json'
+        self._host_config_path = path
+        self._host_config_mtime = path.stat().st_mtime if path.exists() else None
         self.config = HOST_DEFAULTS | (read_json(path) if path.exists() else {})
 
     def close(self):
         self.db.close()
+
+    def reload_config(self):
+        """Pick up host.json edits (e.g. from `configure`) without a daemon restart.
+
+        A persistent daemon's Worker instance is constructed once at startup and
+        otherwise never re-reads host.json; a `configure` RPC updates the file via
+        a separate, short-lived Worker instance for that single call. Without this,
+        slot/build/budget changes silently have no effect until the daemon happens
+        to be restarted for an unrelated reason.
+        """
+        path = self._host_config_path
+        mtime = path.stat().st_mtime if path.exists() else None
+        if mtime != self._host_config_mtime:
+            self._host_config_mtime = mtime
+            self.config = HOST_DEFAULTS | (read_json(path) if path.exists() else {})
 
     def configure(self, values):
         unknown = set(values) - set(HOST_DEFAULTS)
@@ -211,9 +228,7 @@ class Worker:
         return {'starting': True}
 
     def tick(self):
-        # Host limits are operational controls; changing them needs no daemon restart.
-        path = self.root / 'host.json'
-        self.config = HOST_DEFAULTS | (read_json(path) if path.exists() else {})
+        self.reload_config()
         now = time.time()
         rows = self.db.execute("SELECT * FROM queue WHERE state IN ('running','packing','executed')").fetchall()
         for row in rows:
@@ -368,15 +383,22 @@ def pack(root, identity):
         packing_started = time.time()
         attempt = read_json(directory / 'attempt.json')
         execution = read_json(directory / 'execution.json')
+        # A completed result is carried by execution.json, so an Elo job with no
+        # requested outputs need not copy incidental maps, logs and reports back
+        # to the coordinator. They can dominate a short duel's wall time and
+        # leave otherwise idle worker slots waiting for collection.
+        retain_incidental = bool(attempt['job']['outputs'])
         artifacts = []
-        for path in sorted(directory.rglob('*')):
-            relative = path.relative_to(directory).as_posix()
-            if not path.is_file() or path.is_symlink() or (relative.startswith(('home/', 'inputs/', 'output/profile/')) or relative.split('/')[0].startswith('packing-')) or '/profile/' in relative or relative in ('attempt.json', 'execution.json', 'record.json') or path.suffix == '.lock':
-                continue
-            # A packing restart replaces objects atomically with identical bytes.
-            meta = store_artifact(path, staging, compress=path.stat().st_size > 4096 and path.suffix not in ('.json',))
-            meta['path'] = relative[7:] if relative.startswith('output/') else relative
-            artifacts.append(meta)
+        if retain_incidental:
+            for path in sorted(directory.rglob('*')):
+                relative = path.relative_to(directory).as_posix()
+                if not path.is_file() or path.is_symlink() or (relative.startswith(('home/', 'inputs/', 'output/profile/')) or relative.split('/')[0].startswith('packing-')) or '/profile/' in relative or relative in ('attempt.json', 'execution.json', 'record.json') or path.suffix == '.lock':
+                    continue
+                # A packing restart replaces objects atomically with identical bytes.
+                meta = store_artifact(path, staging, compress=path.stat().st_size > 4096 and path.suffix not in ('.json',))
+                meta['path'] = relative[7:] if relative.startswith('output/') else relative
+                artifacts.append(meta)
+
         present = {a['path'] for a in artifacts}
         requested = list(attempt['job']['outputs'].get('required', []))
         requested += [f'{s}.game' for s in attempt['job']['outputs'].get('saves', []) if s in ('initial', 'final')]

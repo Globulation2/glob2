@@ -89,6 +89,7 @@ def observations(records, policy):
                      'subject_group': next((t['alliance'] if fmt == '2v2' else t['team'] for t in result['teams'] if t['team'] == labels.get('subject_player',0)), keys[0]),
                      'symmetric_control': labels.get('symmetric_control', False),
                      'ticks': result['ticks'], 'cap': result['termination'] == 'tick_cap',
+                     'termination': result['termination'],
                      'engine_outcome': outcome['engine_outcome'], 'groups': keys,
                      'competitors': competitors, 'placements': [outcome['placements'][key] for key in keys],
                      'winners': outcome['winners'], 'policy': outcome['policy'], 'teams': result['teams']})
