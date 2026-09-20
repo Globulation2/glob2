@@ -1,12 +1,17 @@
 import os
 
 def create_dmg( target, source, env) :
-    volume = str(target[0]).replace('.dmg', '')
-    os.system( "rm %s.dmg"%(target) )
+    # target and source are lists of scons Nodes, so each has to be named
+    # explicitly: formatting the list itself yields "[Glob2.app]" and the copy
+    # silently finds nothing to copy.
+    image = str(target[0])
+    volume = os.path.basename(image).replace('.dmg', '')
+    os.system( "rm -f %s"%image )
     os.system( "rm -rf DMG" )
     os.system( "mkdir DMG" )
-    os.system( "cp -r %s DMG"%source )
-    os.system( "hdiutil create -srcfolder DMG -volname %s %s"%(volume, target) )
+    for item in source :
+        os.system( "cp -r %s DMG"%str(item) )
+    os.system( "hdiutil create -srcfolder DMG -volname %s %s"%(volume, image) )
     os.system( "rm -rf DMG" )
 
 def create_dmg_message( target, source, env):
