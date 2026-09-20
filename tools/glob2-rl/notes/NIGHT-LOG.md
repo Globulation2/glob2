@@ -1849,3 +1849,30 @@ process does not reload its source, but the first NEW game would have
 handshake-failed into an inert AI and quietly poisoned the episode log. The
 driver was stopped before the binary landed. This is exactly what the magic
 bump exists to catch, and it nearly caught me.
+
+## 2026-09-20 — run stopped, rig cleaned
+
+Final arm `wp621_sampled` (first snapshot trained on the win-probability
+reward): 20W 30L 50cap, wins 20.0%, score 45.0%. Against inert it is +1/-4,
+McNemar p = 0.375 — not better. Caveat: it ran at `--max-ticks 40000` while
+every prior arm ran at 60000, my error; recomputing inert truncated to 40000
+gives 23W/42L/35cap and the conclusion is unchanged.
+
+The decisive measurement is the cross-tab, not the rate: 19 of the policy's 20
+wins are games inert also wins, and exactly one is a game inert loses. The win
+column is opponents losing to themselves. What the policy learned is survival —
+26 of inert's 48 losses become caps, losses fall 48 -> 30 — which is what the
+reward pays for, since `cap 0` beats `loss -1` and the mid-game shaping rewards
+holding a favourable board.
+
+Trend over the final 4,970 episodes, per opponent: numbi flat at ~31%, warrush
+drifting down 22% -> 11-17%, castor and nicowar at noise, cortex 0 wins in 155
+games. Mix-preset shares uniform start to finish.
+
+`ent_mix: 0.0` in the learner log was **not** entropy collapse. It is assigned
+inside the minibatch loop, so it reports the last minibatch; with `--minibatch 12`
+and the mix re-decided on 160 of 1600 steps, 428 of 795 iterations print exactly
+0.0. Stored mixes were near-uniform, e.g. [330, 350, 430, 270, 220].
+
+Training stopped at the maintainer's request. Full summary, the complete arm
+table with paired tests, and the lessons learned are in `HANDOFF.md`.
