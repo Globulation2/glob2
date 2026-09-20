@@ -54,3 +54,11 @@ stops further monitor actions. No automatic merge is enabled.
 
 Current scores in #364 remain those from the previous source revision until this
 new tournament finishes. All previous datasets and analysis are preserved.
+
+## Localhost withdrawn during the run
+
+At the user's request, localhost stopped running games. The active fleet is now devlaptop.local (16 slots), pharaoh-dev-{1,2,3}.local (4 each), and therig.local (32): **60 slots across five remote hosts**. `hosts.json` preserves the initial six-host configuration; [hosts-current.json](hosts-current.json) is the remaining fleet.
+
+The eight active local attempts were stopped, and the local worker daemons were shut down. The coordinator remains local. Completed results are preserved. To avoid mixed-build pairs, 1,070 unfinished macOS pairs (2,140 scheduled games) are rescheduled on the existing Linux build with the same map/game seeds and settings. Four completed original sides had unfinished partners; their raw results remain preserved but are superseded as full pairs. The [reassignment audit](localhost-reassignment.json) maps every original and replacement job ID.
+
+The existing Linux queue runs first; finalization then runs the rescheduled pairs on the same five remote hosts before analysis and publication. The final analysis combines the retained original results with these replacements exactly once. Validation confirmed 20,000 distinct scheduled games, 10,000 two-game pairs sharing seeds/build, unchanged generator quotas, and unchanged game configurations. Historical Maxima-version results remain separate. No PR is merged.
