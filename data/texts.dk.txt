@@ -1,3 +1,9 @@
+[AI strategy]
+AI-strategi
+[AIMaxima-Summary]
+Spejder, udbygger madforsyningen og samler bølger af krigere.
+[AIMaxima-Profile]
+Forventet adfærd: Spejder efter mål og samler angrebsbølger, men beholder krigere til forsvar og træning.\n\nStyrker: Spejderarbejdet hjælper med at vælge mål, mens angreb, forsvar og træning afbalanceres.\n\nSvagheder: Behøver mad, træningskapacitet og plads til at samle styrkerne.\n\nMulige modtræk: Udfordr udsatte mad- og træningsbygninger, før bølgerne samles. Hold en forsvarsstyrke med forsyninger samlet.
 [%0 has left the game]
 %0 har forladt spillet
 [%0 level %1]
@@ -51,11 +57,11 @@ AI
 [ai]
 AI
 [AICastor-Description]
-Castor spiller forsigtigt og klarer sig godt på kort med få ressourcer. Middel sværhedsgrad.
+Bygger og træner med vækst tilpasset madforsyningen.
 [AICastor]
 AICastor
 [AINicowar-Description]
-Nicowar spiller aggressivt, vokser hurtigt og sender enorme hære mod sine modstandere. Høj sværhedsgrad.
+Øger befolkningen, træner krigere og angriber så.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,11 +69,11 @@ Ingen – foretager sig intet.
 [AINone]
 Ingen
 [AINumbi-Description]
-Numbi udvider sig lidt, men hurtigt. Lav sværhedsgrad.
+En overkommelig modstander, som stadig udvider og angriber.
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-Econo angriber ikke, men bygger enorme baser og omvender ihærdigt enheder. Lav sværhedsgrad.
+Udvider og omvender enheder uden at producere krigere.
 [AIEcono]
 Econo
 [AIToubib-Description]
@@ -75,11 +81,11 @@ Econo
 [AIToubib]
 AIToubib
 [AIWarrush-Description]
-Warrush angriber hurtigt og hårdt og presser ofte den forsvarende spiller til det yderste. Middel sværhedsgrad.
+Hurtige angreb, der afprøver dit tidlige forsvar.
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-Cabino styrer forsvar, angreb og opbygning som uafhængige afdelinger, der arbejder mod én plan: vokser hurtigt og sender enorme hære mod sine modstandere. Høj sværhedsgrad.
+En stærk bygger, der stiller med trænede angrebsstyrker.
 [AICabino]
 Cabino
 [Alga]
@@ -1297,9 +1303,9 @@ Hastighed: 1x (flerspiller)
 [game speed help]
 Kun for én spiller og optagelser. Flerspillerspil kører med 1x hastighed.
 [AICortex-Description]
-Cortex udvider sig mod nye hvedemarker og sender grupper af krigere i kamp, støttet af kroer og hospitaler nær frontlinjen. Middel sværhedsgrad. Eksperimentel.
+Samlede bølger af krigere med støtte fra mad og helbredelse.
 [AIMaxima-Description]
-Maxima opbygger en velnæret koloni, spejder konstant og angriber uden pause med hver kriger, den kan undvære. Høj sværhedsgrad.
+Spejder, udbygger madforsyningen og samler bølger af krigere.
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1317,37 +1323,37 @@ Arbejder stadig: %0
 [AI strategy & counterplay]
 AI-strategi og modspil
 [AICastor-Profile]
-Strategi: Udvider sig forsigtigt og klarer sig godt på kort med få ressourcer.\n\nStyrker: Begrænset udvidelse er effektiv i spil med knappe ressourcer.\n\nForeslået modspil: Indtag territorium tidligt. Antag ikke, at mangel på ressourcer vil svække denne AI.
+Forventet adfærd: Udbygger og opgraderer kolonien, mens en hær trænes.\n\nStyrker: Tilpasser fødsler til evnen til at mætte enhederne og begrænser dermed for stor vækst.\n\nSvagheder: Madmangel kan standse produktionen af enheder.\n\nMulige modtræk: Sikr plads til udvidelse tidligt, og angrib derefter med trænede krigere og reserver.
 [AICastor-Summary]
-Forsigtig udvidelse; klarer sig godt med knappe ressourcer.
+Bygger og træner med vækst tilpasset madforsyningen.
 [AICortex-Profile]
-Strategi: Styrer fødevareforsyninger, ekspanderer mod nye hvedemarker og samler successive grupper af krigere. Kroer og hospitaler nær frontlinjen støtter angreb langt fra basen.\n\nStyrker: Sender forstærkninger sammen, opretholder militært pres og reagerer på fødevaremangel.\n\nForeslået modspil: Kæmp om kontrol over nye hvedemarker og angrib dens støttebygninger nær frontlinjen. Angrib før dets grupper af krigere er klar.\n\nEksperimentel AI. Middel sværhedsgrad; forslag til modspil er ikke bedømmelser fra sammenlignende test.
+Forventet adfærd: Samler bølger af krigere og støtter dem med fremskudte kroer og hospitaler.\n\nStyrker: Koncentrerer krigere i bølger med mad og helbredelse tæt på for at holde angreb i gang.\n\nSvagheder: Angrebene afhænger af forsyninger til de fremskudte mad- og behandlingsbygninger.\n\nMulige modtræk: Udfordr de fremskudte kroer og hvedeforsyningen. Hold forsvarerne samlet mod hver bølge.
 [AICortex-Summary]
-Udvider med fødevareforsyninger i tankerne og støtter sine angribende tropper.
+Samlede bølger af krigere med støtte fra mad og helbredelse.
 [AINicowar-Profile]
-Strategi: Ekspanderer hurtigt og angriber modstandere med enorme hære.\n\nStyrker: Hurtig ekspansion understøtter aggressive militærangreb.\n\nForeslået modspil: Forhindr dens udvidelse. Brug terræn til at reducere antallet af fjendtlige tropper, der kan kæmpe på én gang.
+Forventet adfærd: Udvider kolonien og træner krigere, før angrebene begynder.\n\nStyrker: Omsætter befolkningsvækst og træning til en stabil strøm af angribere.\n\nSvagheder: Behøver tid og træningskapacitet, før hovedangrebene kommer i gang.\n\nMulige modtræk: Udfordr nye madkilder under opbygningen. Mød hæren med en trænet styrke med forsyninger.
 [AINicowar-Summary]
-Ekspanderer hurtigt og bygger store hære til aggressive angreb.
+Øger befolkningen, træner krigere og angriber så.
 [AINone-Profile]
 Strategi: AI'en giver ingen kommandoer.\n\nStyrker: En forudsigelig, inaktiv modstander til eksperimenter.\n\nSvagheder: Udvider eller tilpasser sig ikke.
 [AINone-Summary]
 En inaktiv koloni til eksperimenter.
 [AINumbi-Profile]
-Strategi: Udvider sig hurtigt, men i lille skala. En lettere modstander til at praktisere kolonistyring.\n\nStyrker: Lader dig lære både økonomisk ledelse og kamp.\n\nForeslået modspil: Udvikl en stærkere økonomi og træn din hær, før du angriber.
+Forventet adfærd: Opbygger en koloni, træner enheder og angriber.\n\nStyrker: Udbygger mad, helbredelse og træning for at støtte en voksende koloni.\n\nSvagheder: Den gradvise opbygning giver en åbning for tidligt pres.\n\nMulige modtræk: Udvikl madproduktion og træning sammen, og angrib derefter uden at efterlade kolonien ubeskyttet.
 [AINumbi-Summary]
-Hurtig udvidelse i lille skala.
+En overkommelig modstander, som stadig udvider og angriber.
 [AIEcono-Profile]
-Strategi: Angriber ikke, men bygger enorme baser og konverterer aktivt fjendtlige enheder til sin egen side.\n\nStyrker: Udvidelse og enhedskonvertering truer modstandere uden direkte angreb.\n\nForeslået modspil: Udvikl din koloni tidligt og undgå at sende enheder, hvor fjenden kan konvertere dem.
+Forventet adfærd: Øger mad- og fødselskapaciteten, mens opdagelsesrejsende besøger frugt og fjendtlige kolonier.\n\nStyrker: Presser modstandere gennem vækst og omvendelse uden at producere krigere.\n\nSvagheder: Producerer ikke krigere til at standse et direkte militært angreb.\n\nMulige modtræk: Pres udsatte udvidelser. Forsyn kroerne med mad og frugt for at beholde dine enheder.
 [AIEcono-Summary]
-Kæmpe baser og konvertering i stedet for angreb.
+Udvider og omvender enheder uden at producere krigere.
 [AIWarrush-Profile]
-Strategi: Angriber tidligt og kraftigt, før modstanderne er færdige med at forberede sig.\n\nStyrker: Udnytter uforsvaret ekspansion og langsom militær forberedelse.\n\nForeslået modspil: Overlev det første angreb, mens du bevarer din økonomi, og gå derefter til modangreb.
+Forventet adfærd: Angriber tidligt, før du har tid til en lang opbygning.\n\nStyrker: Tidlig produktion af krigere presser modstanderne, før deres opbygning er færdig.\n\nSvagheder: Mindre pålidelig i terræn med mange floder.\n\nMulige modtræk: Beskyt mad- og fødselsbygninger tidligt. Fortsæt med at producere arbejdere, mens du erstatter forsvarere, og gå derefter til modangreb.
 [AIWarrush-Summary]
-Hurtige angreb, der tester dit tidlige forsvar.
+Hurtige angreb, der afprøver dit tidlige forsvar.
 [AICabino-Profile]
-Grundstrategi: Et kabinet af uafhængige specialistafdelinger (forsvar, angreb, opbygning, opgraderinger, enhedsstyring), der hver handler på eget initiativ, men arbejder mod én plan: vokse hurtigt og derefter sende enorme hære mod modstanderne.\n\nStyrker: Hurtig ekspansion understøtter aggressivt militært pres; de uafhængige afdelinger reagerer hurtigt på lokale trusler uden at vente på en central plan.\n\nModtræk at prøve: Bekæmp dets ekspansion tidligt, og brug terrænet til at begrænse, hvor mange af dets tropper der kan kæmpe på én gang.
+Forventet adfærd: Udvider, træner krigere og angriber bygninger, mens forsvarere sættes af derhjemme.\n\nStyrker: Støtter trænede angreb med fortsat udvidelse og forsvarere derhjemme.\n\nSvagheder: Behøver fungerende kaserner og nok trænede krigere til at angribe.\n\nMulige modtræk: Pres udsatte udvidelser, før hæren samles. Angrib mad- og træningsbygninger, når du kan.
 [AICabino-Summary]
-Uafhængige afdelinger, der samarbejder om hurtig vækst og enorme hære.
+En stærk bygger, der stiller med trænede angrebsstyrker.
 [Algae]
 Alger
 [Alliances]

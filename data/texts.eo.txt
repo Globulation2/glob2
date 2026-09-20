@@ -1,3 +1,9 @@
+[AI strategy]
+AI-strategio
+[AIMaxima-Summary]
+Esploras, disvolvas nutraĵprovizon kaj kolektas militistajn ondojn.
+[AIMaxima-Profile]
+Kion atendi: Esploras celojn kaj kolektas atakondojn, retenante militistojn por defendo kaj trejnado.\n\nFortoj: Esplorado helpas elekti celojn kaj ekvilibrigi atakon, defendon kaj trejnadon.\n\nMalfortoj: Bezonas nutraĵon, trejnan kapablon kaj spacon por kolekti siajn fortojn.\n\nEbla kontraŭludo: Konkurencu pri senprotektaj nutraj kaj trejnaj konstruaĵoj antaŭ la kolektiĝo de ondoj. Tenu provizitan defendan forton kune.
 [%0 has left the game]
 %0 forlasis la ludon.
 [%0 level %1]
@@ -51,11 +57,11 @@ AI
 [ai]
 AI
 [AICastor-Description]
-Kastoro ludas singardeme, kaj faras tre bone sur kartoj kiuj havas malmultajn da rezervaĵojn. Ĝi mezfacilas.
+Konstruas kaj trejnas, adaptante kreskon al la nutraĵprovizo.
 [AICastor]
 Kastoro
 [AINicowar-Description]
-Nicowar ludas kvereleme, kreskas rapide, kaj sendas grandegajn armeojn al siaj kontraŭanoj. Ĝi malfacilas.
+Kreskigas sian loĝantaron, trejnas militistojn, poste atakas.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ Nenio; Nenion faras!
 [AINone]
 Nenio
 [AINumbi-Description]
-Numbi Etendas singarde kaj rapide. Ĝi facilas.
+Pardonema kontraŭulo, kiu tamen vastiĝas kaj atakas.
 [AINumbi]
 Numbi
 [AIEcono-Description]
-Econo ne atakas, sed konstruas monstrajn fundojn kaj avide konvertigas globulojn. Ĝi facilas.
+Vastiĝas kaj varbas fremdajn unuojn sen produkti militistojn.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush atakas rapide kaj sovaĝe, kaj ofte puŝas denendanta ludanto al la bordo de sia ludo. Ĝi mezfacilas.
+Rapidaj atakoj provas vian fruan defendon.
 [AIWarrush]
 Warrush
 [AICabino-Description]
-Cabino administras defendon, atakon kaj konstruadon kiel sendependajn fakojn, kiuj kunlaboras al unu plano: kreskas rapide kaj sendas grandegajn armeojn al siaj kontraŭuloj. Ĝi malfacilas.
+Forta konstruanto, kiu sendas trejnitajn atakfortojn.
 [AICabino]
 Cabino
 [Alga]
@@ -1221,9 +1227,9 @@ Rapido: 1x (plurludanta)
 [game speed help]
 Nur por unuludantaj ludoj kaj reludoj. Plurludantaj ludoj funkcias je 1x.
 [AICortex-Description]
-Cortex disetendiĝas direkte al novaj tritikkampoj kaj sendas grupojn de militistoj en batalon, apogita fare de gastejoj kaj hospitaloj proksime de la frontlinio. Meza malfacileco. Eksperimenta.
+Kunigitaj ondoj de militistoj kun nutra kaj kuraca subteno.
 [AIMaxima-Description]
-Maxima kreskigas bone nutritan kolonion, konstante esploras kaj atakas senpaŭze, sendante ĉiun militiston, kiun ĝi povas rezervi. Malfacila.
+Esploras, disvolvas nutraĵprovizon kaj kolektas militistajn ondojn.
 [AIMaxima]
 Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1239,37 +1245,37 @@ Ankoraŭ laborantaj: %0
 [AI strategy & counterplay]
 AI-strategio kaj kontraŭludo
 [AICastor-Profile]
-Strategio: Vastiĝas singarde kaj funkcias bone sur mapoj kun malmultaj rimedoj.\n\nFortoj: Limigita ekspansio estas efika en ludoj kun malabundaj rimedoj.\n\nProponita kontraŭludo: Okupu teritorion frue. Ne supozu, ke manko de rimedoj malfortigos ĉi tiun AI.
+Kion atendi: Konstruas kaj plibonigas sian kolonion dum trejnado de armeo.\n\nFortoj: Adaptas naskiĝojn al la nutrokapablo, helpante limigi troan kreskon.\n\nMalfortoj: Nutraĵmanko povas haltigi la produktadon de unuoj.\n\nEbla kontraŭludo: Frue okupu terenon por vastiĝo, poste ataku per trejnitaj militistoj kaj rezervoj.
 [AICastor-Summary]
-Singarda ekspansio; funkcias bone kun malabundaj rimedoj.
+Konstruas kaj trejnas, adaptante kreskon al la nutraĵprovizo.
 [AICortex-Profile]
-Strategio: Administras manĝaĵojn, disetendiĝas al novaj tritikaj kampoj kaj kunvenas sinsekvajn grupojn de militistoj. Gastejoj kaj hospitaloj proksime de la frontlinio subtenas atakojn malproksime de la bazo.\n\nFortoj: sendas plifortigojn kune, konservas militan premon kaj reagas al manĝaĵmalabundoj.\n\nProponita kontraŭludo: Batalu por kontrolo de novaj tritikaj kampoj kaj ataku ĝiajn subtenajn konstruaĵojn proksime de la frontlinio. Ataku antaŭ ol ĝiaj grupoj de militistoj estas pretaj.\n\nEksperimenta AI. Meza malfacileco; la taktikaj sugestoj ne estas taksoj bazitaj sur komparaj testoj.
+Kion atendi: Kolektas ondojn de militistoj kaj subtenas ilin per antaŭaj gastejoj kaj hospitaloj.\n\nFortoj: Koncentras militistojn en ondojn, subtenante atakojn per proksimaj nutraĵo kaj kuracado.\n\nMalfortoj: Atakoj dependas de provizado de la antaŭaj nutraj kaj kuracaj konstruaĵoj.\n\nEbla kontraŭludo: Konkurencu pri antaŭaj gastejoj kaj tritiko. Tenu defendantojn kune kontraŭ ĉiu ondo.
 [AICortex-Summary]
-Kresko laŭ manĝaĵprovizo kaj subtenataj atakondoj.
+Kunigitaj ondoj de militistoj kun nutra kaj kuraca subteno.
 [AINicowar-Profile]
-Strategio: Vastiĝas rapide kaj atakas kontraŭulojn kun grandegaj armeoj.\n\nFortoj: Rapida ekspansio subtenas agresemajn militajn atakojn.\n\nProponita kontraŭludo: Malhelpu ĝian ekspansion. Uzu terenon por redukti la nombron da malamikaj trupoj, kiuj povas batali samtempe.
+Kion atendi: Vastigas sian kolonion kaj trejnas militistojn antaŭ ol ataki.\n\nFortoj: Loĝantara kresko kaj trejnado liveras konstantan fluon de atakantoj.\n\nMalfortoj: Antaŭ la ĉefaj atakoj ĝi bezonas tempon kaj trejnan kapablon.\n\nEbla kontraŭludo: Dum ĝia prepariĝo konkurencu pri novaj nutraĵfontoj. Renkontu ĝian armeon per provizita, trejnita forto.
 [AINicowar-Summary]
-Vastiĝas rapide kaj konstruas grandajn armeojn por agresemaj atakoj.
+Kreskigas sian loĝantaron, trejnas militistojn, poste atakas.
 [AINone-Profile]
 Strategio: La AI donas neniujn ordonojn.\n\nFortoj: Antaŭvidebla, neaktiva kontraŭulo por eksperimentoj.\n\nMalfortoj: Nek vastiĝas nek adaptiĝas.
 [AINone-Summary]
 Neaktiva kolonio por eksperimentoj.
 [AINumbi-Profile]
-Strategio: Vastiĝas rapide sed malgrandskale. Pli facila kontraŭulo por praktikado de kolonia administrado.\n\nFortoj: Permesas vin lerni kaj ekonomian administradon kaj batalon.\n\nProponita kontraŭludo: Disvolvu pli fortan ekonomion kaj trejnu vian armeon antaŭ ol ataki.
+Kion atendi: Disvolvas kolonion, trejnas unuojn kaj lanĉas atakojn.\n\nFortoj: Disvolvas nutradon, kuracadon kaj trejnadon por subteni kreskantan kolonion.\n\nMalfortoj: Ĝia laŭgrada disvolviĝo donas ŝancon por frua premo.\n\nEbla kontraŭludo: Disvolvu nutraĵproduktadon kaj trejnadon kune, poste ataku sen lasi la hejmon sendefenda.
 [AINumbi-Summary]
-Rapida ekspansio en malgranda skalo.
+Pardonema kontraŭulo, kiu tamen vastiĝas kaj atakas.
 [AIEcono-Profile]
-Strategio: Ne atakas, sed konstruas enormajn bazojn kaj aktive konvertas malamikunuojn al sia propra flanko.\n\nFortoj: Vastiĝo kaj unuokonverto minacas kontraŭulojn sen rektaj atakoj.\n\nProponita kontraŭludo: Disvolvu vian kolonion frue kaj evitu sendi unuojn kie la malamiko povas konverti ilin.
+Kion atendi: Disvolvas nutradon kaj naskiĝkapablon dum esploristoj vizitas fruktojn kaj malamikajn koloniojn.\n\nFortoj: Uzas kreskon kaj konvertadon por premi kontraŭulojn sen produkti militistojn.\n\nMalfortoj: Ne produktas militistojn por haltigi rektan militan atakon.\n\nEbla kontraŭludo: Premu senprotektan vastiĝon. Provizu viajn gastejojn per nutraĵo kaj fruktoj por reteni viajn unuojn.
 [AIEcono-Summary]
-Grandegaj bazoj kaj konvertiĝo anstataŭ atakoj.
+Vastiĝas kaj varbas fremdajn unuojn sen produkti militistojn.
 [AIWarrush-Profile]
-Strategio: Atakas frue kaj forte, antaŭ ol kontraŭuloj finas prepariĝi.\n\nFortoj: Ekspluatas nedefenditan ekspansion kaj malrapidan armean preparon.\n\nProponita kontraŭludo: Travivu la unuan atakon konservante vian ekonomion, poste kontraŭataku.
+Kion atendi: Atakas frue, antaŭ ol vi havas tempon por longa prepariĝo.\n\nFortoj: Frua produktado de militistoj premas kontraŭulojn antaŭ la fino de ilia disvolviĝo.\n\nMalfortoj: Malpli fidinda sur tereno kun multaj riveroj.\n\nEbla kontraŭludo: Frue protektu nutrajn kaj naskiĝajn konstruaĵojn. Daŭre produktu laboristojn kaj anstataŭigu defendantojn, poste kontraŭataku.
 [AIWarrush-Summary]
-Rapidaj atakoj, kiuj testas viajn fruajn defendojn.
+Rapidaj atakoj provas vian fruan defendon.
 [AICabino-Profile]
-Ĉefa strategio: kabineto de sendependaj fakoj (defendo, atako, konstruado, plibonigoj, administrado de unuoj), kiuj ĉiu agas laŭ propra iniciato sed kunlaboras al unu plano: kreski rapide kaj poste sendi grandegajn armeojn kontraŭ la malamikojn.\n\nFortoj: Rapida kresko subtenas agreseman militan premon; la sendependaj fakoj reagas rapide al lokaj minacoj sen atendi centran planon.\n\nKontraŭludo provinda: Malhelpu ĝian kreskon frue kaj uzu la terenon por limigi kiom da ĝiaj trupoj povas batali samtempe.
+Kion atendi: Vastiĝas, trejnas militistojn kaj atakas konstruaĵojn, samtempe asignante defendantojn hejme.\n\nFortoj: Subtenas trejnitajn atakojn per daŭra vastiĝo kaj hejma defendo.\n\nMalfortoj: Por ataki ĝi bezonas funkciantajn kazernojn kaj sufiĉe da trejnitaj militistoj.\n\nEbla kontraŭludo: Premu senprotektan vastiĝon antaŭ ol ĝia armeo kolektiĝas. Celu nutrajn kaj trejnajn konstruaĵojn kiam eblas.
 [AICabino-Summary]
-Sendependaj fakoj kunlaborantaj por rapida kresko kaj grandegaj armeoj.
+Forta konstruanto, kiu sendas trejnitajn atakfortojn.
 [Algae]
 algo
 [Alliances]

@@ -1,3 +1,9 @@
+[AI strategy]
+Tekoälytaktiikka
+[AIMaxima-Summary]
+Tiedustelee, kehittää ruoansaantia ja kokoaa soturiaaltoja.
+[AIMaxima-Profile]
+Odotettava toiminta: Tiedustelee kohteita ja kokoaa hyökkäysaaltoja mutta säästää sotureita puolustukseen ja koulutukseen.\n\nVahvuudet: Tiedustelu auttaa valitsemaan kohteita ja tasapainottamaan hyökkäykset, puolustuksen ja koulutuksen.\n\nHeikkoudet: Tarvitsee ruokaa, koulutuskapasiteettia ja tilaa joukkojen kokoamiseen.\n\nVastatoimet: Kiistä suojattomat ruoka- ja koulutusrakennukset ennen aaltojen kokoontumista. Pidä huollettu puolustusjoukko yhdessä.
 [%0 has left the game]
 %0 on poistunut pelistä.
 [%0 level %1]
@@ -51,11 +57,11 @@ AI
 [ai]
 AI
 [AICastor-Description]
-Castor pelaa varmistellen ja pärjää hyvin kartoilla, joissa on vähän resursseja. Vaikeustaso: normaali.
+Rakentaa ja kouluttaa sovittaen kasvun ruoansaantiin.
 [AICastor]
 Castor
 [AINicowar-Description]
-Nicowar pelaa aggressiivisesti, kasvaa nopeasti and hyökkää suurilla sotajoukkoilla vastustajiensa kimppuun. Vaikeustaso: haastava.
+Kasvattaa väestöä, kouluttaa sotureita ja hyökkää sitten.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ None ei tee mitään.
 [AINone]
 Ei mitään
 [AINumbi-Description]
-Numbi laajentaa nopeasti ja sulavasti. Vaikeustaso: aloittelija.
+Anteeksiantava vastustaja, joka silti laajentaa ja hyökkää.
 [AINumbi]
 Numbi
 [AIEcono-Description]
-Econo - Ei hyökkää, mutta rakentaa valtavan tukikohdan ja yrittää voimakkaasti käännyttää joukkoja omalle puolelleen. Vaikeustaso: aloittelija.
+Laajentaa ja houkuttelee yksiköitä puolelleen tuottamatta sotureita.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush - Hyökkää nopeasti työntäen puolustamiseen painottavan pelaajan häviön partaalle. Vaikeustaso: normaali.
+Nopeita hyökkäyksiä, jotka koettelevat alkupelin puolustusta.
 [AIWarrush]
 Warrush
 [AICabino-Description]
-Cabino johtaa puolustusta, hyökkäystä ja rakentamista itsenäisinä osastoina, jotka toimivat yhden suunnitelman mukaan: kasvaa nopeasti ja hyökkää suurilla sotajoukoilla vastustajiensa kimppuun. Vaikeustaso: haastava.
+Vahva rakentaja, joka lähettää koulutettuja hyökkäysjoukkoja.
 [AICabino]
 Cabino
 [Alga]
@@ -1223,9 +1229,9 @@ Nopeus: 1x (moninpeli)
 [game speed help]
 Vain yksinpeliin ja tallenteisiin. Moninpelin nopeus on 1x.
 [AICortex-Description]
-Cortex laajenee kohti uusia vehnäpeltoja ja lähettää soturiryhmiä taisteluun majatalojen ja sairaaloiden tukemana lähellä etulinjaa. Keskivaikeus. Kokeellinen.
+Koottuja soturiaaltoja, joita ruoka ja hoito tukevat.
 [AIMaxima-Description]
-Maxima kasvattaa hyvin ruokitun siirtokunnan, partioi jatkuvasti ja hyökkää tauotta jokaisella soturilla, jonka se voi irrottaa. Vaikea.
+Tiedustelee, kehittää ruoansaantia ja kokoaa soturiaaltoja.
 [AIMaxima]
 Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1241,37 +1247,37 @@ Yhä töissä: %0
 [AI strategy & counterplay]
 Tekoälyn strategia ja vastapeli
 [AICastor-Profile]
-Strategia: Laajentuu varovasti ja toimii hyvin kartoilla, joissa on vähän resursseja.\n\nVahvuudet: Rajoitettu laajennus on tehokas peleissä, joissa on niukkoja resursseja.\n\nEhdotettu vastapeli: Miehitä alue aikaisin. Älä oleta, että resurssien puute heikentää tätä tekoälyä.
+Odotettava toiminta: Rakentaa ja kehittää siirtokuntaansa samalla kun kouluttaa armeijaa.\n\nVahvuudet: Sovittaa syntyvyyden ruokintakykyyn ja hillitsee näin liiallista kasvua.\n\nHeikkoudet: Ruokapula voi pysäyttää yksiköiden tuotannon.\n\nVastatoimet: Varaa laajentumistilaa ajoissa ja hyökkää sitten koulutetuilla sotureilla ja reserveillä.
 [AICastor-Summary]
-Varovainen laajentaminen; toimii hyvin niukoilla resursseilla.
+Rakentaa ja kouluttaa sovittaen kasvun ruoansaantiin.
 [AICortex-Profile]
-Strategia: Hallitsee ruokavarastoja, laajenee kohti uusia vehnäpeltoja ja kokoaa peräkkäisiä soturiryhmiä. Majatalot ja sairaalat lähellä etulinjaa tukevat hyökkäyksiä kaukana tukikohdasta.\n\nVahvuudet: Lähettää vahvistuksia yhdessä, ylläpitää sotilaallista painetta ja reagoi ruokapulaan.\n\nEhdotettu vastapeli: Taistele uusien vehnäpeltojen hallinnasta ja hyökkää sen tukirakennuksiin lähellä etulinjaa. Hyökkää ennen kuin sen soturiryhmät ovat valmiita.\n\nKokeellinen tekoäly. Keskitaso; vastapeliehdotukset eivät ole vertailutesteihin perustuvia arvioita.
+Odotettava toiminta: Kokoaa soturiaaltoja ja tukee niitä eteen rakennetuilla majataloilla ja sairaaloilla.\n\nVahvuudet: Keskittää soturit aalloiksi ja ylläpitää hyökkäyksiä lähellä olevalla ruoalla ja hoidolla.\n\nHeikkoudet: Hyökkäykset riippuvat etulinjan ruoka- ja hoitorakennusten huollosta.\n\nVastatoimet: Haasta etulinjan majatalot ja vehnänsaanti. Pidä puolustajat yhdessä jokaista aaltoa vastaan.
 [AICortex-Summary]
-Laajentuu ruokavarat mielessään ja tukee hyökkääviä joukkojaan.
+Koottuja soturiaaltoja, joita ruoka ja hoito tukevat.
 [AINicowar-Profile]
-Strategia: Laajenee nopeasti ja hyökkää vastustajia vastaan valtavilla armeijoilla.\n\nVahvuudet: Nopea laajeneminen tukee aggressiivisia sotilaallisia hyökkäyksiä.\n\nEhdotettu vastapeli: Estä sen laajeneminen. Käytä maastoa vähentääksesi kerralla taistelevien vihollisjoukkojen määrää.
+Odotettava toiminta: Laajentaa siirtokuntaansa ja kouluttaa sotureita ennen hyökkäyksiä.\n\nVahvuudet: Muuttaa väestönkasvun ja koulutuksen tasaiseksi hyökkääjien virraksi.\n\nHeikkoudet: Tarvitsee aikaa ja koulutuskapasiteettia ennen päähyökkäyksiään.\n\nVastatoimet: Kiistä uudet ruokalähteet valmistelujen aikana. Kohtaa armeija huolletulla ja koulutetulla joukolla.
 [AINicowar-Summary]
-Laajenee nopeasti ja rakentaa suuria armeijoita aggressiivisia hyökkäyksiä varten.
+Kasvattaa väestöä, kouluttaa sotureita ja hyökkää sitten.
 [AINone-Profile]
 Strategia: AI ei anna komentoja.\n\nVahvuudet: Ennustettava, ei-aktiivinen vastustaja kokeissa.\n\nHeikkoudet: Ei laajene tai mukaudu.
 [AINone-Summary]
 Toimeton siirtokunta kokeiluja varten.
 [AINumbi-Profile]
-Strategia: Laajenee nopeasti, mutta pienessä mittakaavassa. Helpompi vastustaja siirtokunnan hallinnan harjoitteluun.\n\nVahvuudet: Voit oppia sekä talouden hallintaa että taistelua.\n\nEhdotettu vastapeli: Kehitä vahvempi talous ja kouluta armeijasi ennen hyökkäämistä.
+Odotettava toiminta: Rakentaa siirtokuntaa, kouluttaa yksiköitä ja hyökkää.\n\nVahvuudet: Kehittää ruokaa, hoitoa ja koulutusta kasvavan siirtokunnan tueksi.\n\nHeikkoudet: Asteittainen kehitys tarjoaa tilaisuuden varhaiseen painostukseen.\n\nVastatoimet: Kehitä ruoantuotantoa ja koulutusta yhdessä ja hyökkää sitten jättämättä kotia puolustamatta.
 [AINumbi-Summary]
-Nopea laajennus pienessä mittakaavassa.
+Anteeksiantava vastustaja, joka silti laajentaa ja hyökkää.
 [AIEcono-Profile]
-Strategia: Ei hyökkää, vaan rakentaa valtavia tukikohtia ja muuntaa aktiivisesti vihollisen yksiköitä omalle puolelleen.\n\nVahvuudet: Laajentuminen ja yksiköiden muuntaminen uhkaavat vastustajia ilman suoria hyökkäyksiä.\n\nEhdotettu vastapeli: Kehitä siirtokuntaasi ajoissa ja vältä yksiköiden lähettämistä sinne, missä vihollinen voi muuttaa ne.
+Odotettava toiminta: Kasvattaa ruoka- ja syntymäkapasiteettia samalla kun tutkimusmatkailijat käyvät hedelmien ja vihollissiirtokuntien luona.\n\nVahvuudet: Painostaa vastustajia kasvulla ja käännyttämisellä tuottamatta sotureita.\n\nHeikkoudet: Ei tuota sotureita pysäyttämään suoraa sotilaallista hyökkäystä.\n\nVastatoimet: Painosta suojattomia laajennuksia. Pidä majataloissa ruokaa ja hedelmiä säilyttääksesi yksikkösi.
 [AIEcono-Summary]
-Valtavat tukikohdat ja muunnos hyökkäysten sijaan.
+Laajentaa ja houkuttelee yksiköitä puolelleen tuottamatta sotureita.
 [AIWarrush-Profile]
-Strategia: Hyökkää aikaisin ja voimakkaasti, ennen kuin vastustajat ovat valmistautuneet.\n\nVahvuudet: Käyttää hyväkseen puolustamatonta laajentumista ja hidasta sotilaallista valmistautumista.\n\nEhdotettu vastapeli: Selviydy ensimmäisestä hyökkäyksestä pitäen samalla taloutesi toiminnassa ja aloita vastahyökkäys.
+Odotettava toiminta: Hyökkää aikaisin ennen kuin ehdit kehittää siirtokuntaasi pitkään.\n\nVahvuudet: Varhainen soturituotanto painostaa vastustajia ennen niiden kehityksen valmistumista.\n\nHeikkoudet: Epävarmempi maastossa, jossa on paljon jokia.\n\nVastatoimet: Suojaa ruoka- ja syntymärakennukset ajoissa. Tuota edelleen työläisiä samalla kun korvaat puolustajia ja tee sitten vastahyökkäys.
 [AIWarrush-Summary]
-Nopeat hyökkäykset, jotka testaavat varhaista puolustustasi.
+Nopeita hyökkäyksiä, jotka koettelevat alkupelin puolustusta.
 [AICabino-Profile]
-Ydinstrategia: itsenäisten erikoisosastojen (puolustus, hyökkäys, rakentaminen, päivitykset, yksikönhallinta) kabinetti, joka toimii omasta aloitteestaan mutta pyrkii yhteen suunnitelmaan: kasvaa nopeasti ja lähettää sitten valtavia armeijoita vastustajia vastaan.\n\nVahvuudet: nopea kasvu tukee hyökkäävää sotilaallista painetta; itsenäiset osastot reagoivat nopeasti paikallisiin uhkiin odottamatta keskitettyä suunnitelmaa.\n\nVastapeli: haasta sen kasvu ajoissa ja käytä maastoa rajoittaaksesi kuinka moni sen joukoista voi taistella kerralla.
+Odotettava toiminta: Laajentaa, kouluttaa sotureita ja hyökkää rakennuksiin samalla kun määrää puolustajia kotiin.\n\nVahvuudet: Tukee koulutettuja hyökkäyksiä jatkuvalla laajentumisella ja kotona olevilla puolustajilla.\n\nHeikkoudet: Tarvitsee toimivia kasarmeja ja tarpeeksi koulutettuja sotureita hyökkäyksiin.\n\nVastatoimet: Painosta suojattomia laajennuksia ennen armeijan kokoontumista. Iske ruoka- ja koulutusrakennuksiin tilaisuuden tullen.
 [AICabino-Summary]
-Itsenäiset osastot, jotka tekevät yhteistyötä nopean kasvun ja valtavien armeijoiden eteen.
+Vahva rakentaja, joka lähettää koulutettuja hyökkäysjoukkoja.
 [Algae]
 Levä
 [Alliances]

@@ -443,12 +443,12 @@ struct CustomGameSetupHarness
 		key(SDLK_DOWN);
 		key(SDLK_RETURN);
 		click("2 vs 2 preset", 235, 100);
-		click("Second colony AI", 350, 207);
+		click("Second colony AI", 350, 223);
 		// Select the following row; the profile interaction below moves up once.
 		const int aiSteps = AINames::selectionIndex(AI::NICOWAR) + 1 - AINames::selectionIndex(AI::NUMBI);
 		key(aiSteps >= 0 ? SDLK_DOWN : SDLK_UP, KMOD_NONE, aiSteps >= 0 ? aiSteps : -aiSteps);
 		key(SDLK_RETURN);
-		click("Second colony profile", 580, 238);
+		click("Second colony profile", 550, 262);
 		key(SDLK_UP);
 		key(SDLK_RETURN);
 		key(SDLK_3, KMOD_CTRL);
@@ -525,6 +525,37 @@ struct CustomGameSetupHarness
                  "random preview, "
                  "match launch and speed restoration\n";
   }
+
+	static void strategyVisual(const std::string &output)
+	{
+		FrontendTheme theme;
+		FrontendScope scope;
+		CustomGameScreen screen;
+		screen.gfx = globalContainer->gfx;
+		screen.dispatchInit();
+		screen.activateGroup(screen.groups[1]);
+		screen.setup.colonies[1].ai = AI::MAXIMA;
+		screen.dispatchPaint(false);
+		globalContainer->gfx->printScreen(output + "/players.bmp");
+		std::vector<std::string> labels;
+		for (int id : AINames::selectionOrder()) labels.push_back(AINames::getAISelectorText(id));
+		for (int id : AINames::selectionOrder())
+		{
+			auto text = AINames::getAIProfile(id);
+			assert(text.find("-Profile]") == std::string::npos);
+			assert(text.find("-Summary]") == std::string::npos);
+			CustomGameChoiceScreen profile("AI strategy & counterplay", labels,
+				AINames::selectionIndex(id), true, {});
+			profile.dispatchInit();
+			profile.dispatchPaint(false);
+			globalContainer->gfx->printScreen(output + "/" + AINames::getCLIName(id) + ".bmp");
+			profile.controls->regions[21].offset = 10000;
+			profile.dispatchPaint(false);
+			profile.dispatchPaint(false);
+			globalContainer->gfx->printScreen(output + "/" + AINames::getCLIName(id) + "-bottom.bmp");
+		}
+		std::cout << "PASS strategy profiles and scrolling for every AI\n";
+	}
 
 	static void visual(const std::string &output, bool onlyAIProfile = false)
 	{
@@ -1488,8 +1519,8 @@ int main(int argc, char **argv)
 	globalContainer = &globals;
 	globals.runNoX = argc < 2;
 	globals.settings.rememberUnit = false;
-	globals.settings.screenWidth = argc > 2 && std::string(argv[2]) == "large" ? 1000 : 640;
-	globals.settings.screenHeight = argc > 2 && std::string(argv[2]) == "large" ? 700 : 480;
+	globals.settings.screenWidth = argc > 2 && (std::string(argv[2]) == "large" || std::string(argv[2]) == "profiles-large") ? 1000 : 640;
+	globals.settings.screenHeight = argc > 2 && (std::string(argv[2]) == "large" || std::string(argv[2]) == "profiles-large") ? 700 : 480;
 	globals.settings.screenFlags = GraphicContext::USEGPU;
 	globals.settings.mute = true;
 	globals.load();
@@ -1508,6 +1539,11 @@ int main(int argc, char **argv)
 		for (int control : {int(CustomGameSetup::Computer), int(CustomGameSetup::Human),
 							int(CustomGameSetup::Shared)})
 			CustomGameSetupHarness::ui(argv[1], control);
+		return 0;
+	}
+	if (argc > 2 && (std::string(argv[2]) == "profiles" || std::string(argv[2]) == "profiles-large"))
+	{
+		CustomGameSetupHarness::strategyVisual(argv[1]);
 		return 0;
 	}
 	if (argc > 1)

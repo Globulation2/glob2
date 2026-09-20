@@ -1,3 +1,9 @@
+[AI strategy]
+AAren taktika
+[AIMaxima-Summary]
+Esploratu, elikagai-hornidura garatu eta gerlari-olatuak biltzen ditu.
+[AIMaxima-Profile]
+Espero daitekeena: Helburuak esploratzen ditu eta eraso-olatuak biltzen ditu, defentsarako eta entrenamendurako gerlariak gordez.\n\nIndarguneak: Esplorazioak helburuak aukeratzen laguntzen dio, erasoa, defentsa eta entrenamendua orekatuz.\n\nAhulguneak: Elikagaiak, entrenamendu-gaitasuna eta indarrak biltzeko tokia behar ditu.\n\nAurre egiteko aholkuak: Lehiatu babesik gabeko elikagai eta entrenamendu eraikinengatik olatuak bildu aurretik. Mantendu defentsa-indar hornitu bat elkartuta.
 [%0 has left the game]
 %0(e)k partida utzi du.
 [%0 level %1]
@@ -51,11 +57,11 @@ AI
 [ai]
 AI
 [AICastor-Description]
-Castorrek zuhur jokatzen du eta oso ondo moldatzen da baliabide gutxiko mapetan. Zailtasun ertaina.
+Eraiki eta entrenatzen du, hazkundea elikagai-hornidurara egokituz.
 [AICastor]
 AICastor
 [AINicowar-Description]
-Nicowarrek erasokor jokatzen du, azkar hazten da eta armada erraldoiak bidaltzen ditu aurkarien aurka. Zailtasun handia.
+Biztanleria handitzen du, gerlariak entrenatzen ditu eta gero erasotzen du.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ Bat ere ez: ez du ezer egiten.
 [AINone]
 Bat ere ez
 [AINumbi-Description]
-Numbi gutxi hedatzen da, baina azkar. Zailtasun txikia.
+Aurkari samurra da, baina hedatu eta eraso egiten du.
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-Econok ez du erasotzen, baina base erraldoiak eraikitzen ditu eta unitate asko bere taldera erakartzen ditu. Zailtasun txikia.
+Hedatu eta unitateak bereganatzeko lehiatzen da gerlaririk sortu gabe.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrushek azkar eta gogor erasotzen du, eta sarritan mugara eramaten du defendatzailea. Zailtasun ertaina.
+Hasierako defentsak probatzen dituzten eraso azkarrak.
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-Cabinok defentsa, erasoa eta eraikuntza sail independente gisa kudeatzen ditu, plan bakar baterantz elkarlanean: azkar hazten da eta armada erraldoiak bidaltzen ditu aurkarien aurka. Zailtasun handia.
+Eraikitzaile indartsua, entrenatutako eraso-indarrak bidaltzen dituena.
 [AICabino]
 Cabino
 [Alga]
@@ -1231,9 +1237,9 @@ Abiadura: 1x (hainbat jokalari)
 [game speed help]
 Jokalari bakarreko jokoetarako eta errepikapenetarako soilik. Jokalari anitzeko jokoak 1x abiaduran doaz.
 [AICortex-Description]
-Cortex gari-soro berrietara hedatzen da eta gudari taldeak borrokara bidaltzen ditu, frontetik gertu dauden ostatu eta ospitaleek lagunduta. Zailtasun ertaina. Esperimentala.
+Gerlari-olatuak biltzen ditu, elikagai eta sendaketa laguntzarekin.
 [AIMaxima-Description]
-Maxima ongi elikatutako kolonia bat hazten du, etengabe esploratzen du eta atsedenik gabe erasotzen du, libre duen gudari oro bidaliz. Zailtasun handia.
+Esploratu, elikagai-hornidura garatu eta gerlari-olatuak biltzen ditu.
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1251,37 +1257,37 @@ Oraindik lanean: %0
 [AI strategy & counterplay]
 AI estrategia eta kontrajokoa
 [AICastor-Profile]
-Estrategia: zuhurtziaz hedatzen da eta baliabide gutxiko mapetan ondo moldatzen da.\n\nIndarguneak: hazkunde neurritsua egokia da baliabide urriko partidetarako.\n\nProbatzeko taktikak: hartu lurraldea goiz; ez pentsa baliabide faltak AI hau ahulduko duenik.
+Espero daitekeena: Kolonia eraiki eta hobetzen du armada entrenatzen duen bitartean.\n\nIndarguneak: Jaiotzak elikatzeko gaitasunera egokitzen ditu, gehiegizko hazkundea mugatzeko.\n\nAhulguneak: Elikagai faltak unitateen ekoizpena geldiaraz dezake.\n\nAurre egiteko aholkuak: Hartu hedapenerako lurrak goiz, eta gero eraso entrenatutako gerlariekin eta erreserbekin.
 [AICastor-Summary]
-Hedapen zuhurra; ondo funtzionatzen du baliabide urriekin.
+Eraiki eta entrenatzen du, hazkundea elikagai-hornidurara egokituz.
 [AICortex-Profile]
-Estrategia: elikagaien hornidura kudeatzen du, gari-soro berrietara hedatzen da eta gudariak biltzen ditu eraso-bolada jarraituak egiteko. Fronteko ostatuek eta ospitaleek urruneko erasoei laguntzen diete.\n\nIndarguneak: errefortzuak taldean bidaltzen ditu, presioari eusten dio eta elikagai faltari erantzuten dio.\n\nProbatzeko taktikak: borrokatu gari-soro berriak eskuratzeko eta erasotu fronteko laguntza-eraikinak. Egin presioa eraso-boladak prest egon aurretik.\n\nAI esperimentala. Zailtasun ertaina; taktika-iradokizunak ez dira proben bidez neurtutako balorazioak.
+Espero daitekeena: Gerlari-olatuak biltzen ditu eta aurrealdeko ostatu eta ospitaleekin laguntzen die.\n\nIndarguneak: Gerlariak olatuetan pilatzen ditu, inguruko elikagai eta sendaketarekin erasoei eusteko.\n\nAhulguneak: Erasoek aurrealdeko elikagai eta sendaketa zerbitzuen hornidura behar dute.\n\nAurre egiteko aholkuak: Lehiatu aurrealdeko ostatuengatik eta gariagatik. Mantendu defendatzaileak elkartuta olatu bakoitzari aurre egiteko.
 [AICortex-Summary]
-Elikagaien araberako hedapena eta lagundutako eraso-boladak.
+Gerlari-olatuak biltzen ditu, elikagai eta sendaketa laguntzarekin.
 [AINicowar-Profile]
-Estrategia: azkar hazten da eta armada erraldoiak bidaltzen ditu aurkarien aurka.\n\nIndarguneak: hedapen azkarrak presio militar handia ahalbidetzen du.\n\nProbatzeko taktikak: oztopatu haren hedapena eta erabili lurra aldi berean borroka dezaketen etsaien kopurua mugatzeko.
+Espero daitekeena: Kolonia hedatzen du eta gerlariak entrenatzen ditu erasoak hasi aurretik.\n\nIndarguneak: Biztanleriaren hazkundea eta entrenamendua erasotzaileen etengabeko hornidura bihurtzen ditu.\n\nAhulguneak: Denbora eta entrenamendu-gaitasuna behar ditu eraso nagusiak hasteko.\n\nAurre egiteko aholkuak: Lehiatu elikagai-iturri berriengatik prestatzen ari den bitartean. Egin aurre haren armadari ondo hornitutako eta entrenatutako indar batekin.
 [AINicowar-Summary]
-Azkar hedatzen da eta armada handiak eraikitzen ditu eraso oldarkorretarako.
+Biztanleria handitzen du, gerlariak entrenatzen ditu eta gero erasotzen du.
 [AINone-Profile]
 Estrategia: AIak ez du agindurik ematen.\n\nIndarguneak: esperimentuetarako aurkari aurreikusgarria eta inaktiboa.\n\nAhuleziak: Ez da zabaltzen edo egokitzen.
 [AINone-Summary]
 Esperimentuetarako kolonia inaktiboa.
 [AINumbi-Profile]
-Estrategia: azkar hedatzen da baina eskala txikian. Kolonien kudeaketa praktikatzeko aurkari errazagoa.\n\nIndarguneak: kudeaketa ekonomikoa eta borroka ikasteko aukera ematen dizu.\n\nIradokitako kontrako jokua: garatu ekonomia indartsuagoa eta entrenatu zure armada erasotu aurretik.
+Espero daitekeena: Kolonia garatzen du, unitateak entrenatzen ditu eta erasoak egiten ditu.\n\nIndarguneak: Elikagaiak, sendaketa eta entrenamendua garatzen ditu hazten ari den koloniari eusteko.\n\nAhulguneak: Pixkanakako garapenak hasieran presioa egiteko aukera uzten du.\n\nAurre egiteko aholkuak: Garatu elikagaien ekoizpena eta entrenamendua batera, eta gero eraso etxea babesik gabe utzi gabe.
 [AINumbi-Summary]
-Hedapen azkarra eskala txikian.
+Aurkari samurra da, baina hedatu eta eraso egiten du.
 [AIEcono-Profile]
-Estrategia: ez du erasotzen, baina base erraldoiak eraikitzen ditu eta etsaien unitateak bere aldera bihurtzen ditu.\n\nIndarguneak: hazkundeak eta unitateen bihurketak presioa sortzen dute eraso arruntik gabe.\n\nProbatzeko taktikak: aprobetxatu hasiera zure kolonia garatzeko, eta ez bidali unitateak etsaiak bihur ditzakeen tokietara.
+Espero daitekeena: Elikatzeko eta jaiotzetarako gaitasuna handitzen du, esploratzaileek fruta eta etsaien koloniak bisitatzen dituzten bitartean.\n\nIndarguneak: Hazkundea eta unitateak bereganatzea erabiltzen ditu aurkariei presioa egiteko, gerlaririk sortu gabe.\n\nAhulguneak: Ez du gerlaririk sortzen eraso militar zuzen bat geldiarazteko.\n\nAurre egiteko aholkuak: Egin presioa babesik gabeko hedapenetan. Hornitu ostatuak elikagaiz eta frutaz, zure unitateei eusteko.
 [AIEcono-Summary]
-Oinarri erraldoiak eta erasoen ordez bihurketa.
+Hedatu eta unitateak bereganatzeko lehiatzen da gerlaririk sortu gabe.
 [AIWarrush-Profile]
-Estrategia: goiz eta gogor erasotzen du, aurkariek prestaketak amaitu aurretik.\n\nIndarguneak: defentsarik gabeko hedapena eta prestaketa militar motela aprobetxatzen ditu.\n\nProbatzeko taktikak: eutsi lehen erasoari ekonomia mantenduz, eta gero kontraerasoa egin.
+Espero daitekeena: Goiz erasotzen du, luzaroan garatzeko astirik eman aurretik.\n\nIndarguneak: Gerlariak goiz sortuz presioa egiten die aurkariei prestaketak amaitu aurretik.\n\nAhulguneak: Ez da hain fidagarria ibai asko dituzten lurretan.\n\nAurre egiteko aholkuak: Babestu elikagaien eta jaiotzen eraikinak hasieratik. Jarraitu langileak sortzen defendatzaileak ordezkatzen dituzun bitartean, eta gero kontraeraso.
 [AIWarrush-Summary]
-Zure hasierako defentsak probatzen dituzten eraso azkarrak.
+Hasierako defentsak probatzen dituzten eraso azkarrak.
 [AICabino-Profile]
-Oinarrizko estrategia: sail espezialista independenteen kabinete bat (defentsa, erasoa, eraikuntza, hobekuntzak, unitateen kudeaketa), bakoitza bere ekimenez jarduten duena baina plan bakar baterantz: azkar hazi eta gero armada erraldoiak bidali aurkarien aurka.\n\nIndarguneak: hedapen azkarrak presio militar erasokorra sostengatzen du; sail independenteek arin erantzuten diete tokiko mehatxuei, plan zentral baten zain egon gabe.\n\nAurkako jokoa: aurre egin bere hedapenari goiz eta erabili lurraldea aldi berean zenbat tropa engaia daitezkeen mugatzeko.
+Espero daitekeena: Hedatu, gerlariak entrenatu eta eraikinei erasotzen die, etxean defendatzaileak uzten dituen bitartean.\n\nIndarguneak: Entrenatutako erasoak etengabeko hedapenarekin eta etxeko defentsarekin babesten ditu.\n\nAhulguneak: Funtzionatzen duten kuartelak eta nahikoa gerlari entrenatu behar ditu erasotzeko.\n\nAurre egiteko aholkuak: Egin presioa babesik gabeko hedapenetan armada bildu aurretik. Ahal duzunean, jo elikagaien eta entrenamenduaren eraikinak.
 [AICabino-Summary]
-Sail independenteak elkarlanean, hazkunde azkarra eta armada erraldoiak lortzeko.
+Eraikitzaile indartsua, entrenatutako eraso-indarrak bidaltzen dituena.
 [Algae]
 algak
 [Alliances]

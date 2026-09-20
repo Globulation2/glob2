@@ -1,3 +1,9 @@
+[AI strategy]
+Estratègia IA
+[AIMaxima-Summary]
+Explora, desenvolupa el subministrament de menjar i reuneix onades de guerrers.
+[AIMaxima-Profile]
+Què cal esperar: Explora cercant objectius i reuneix onades d’atac, reservant guerrers per a defensa i entrenament.\n\nPunts forts: L’exploració ajuda a triar objectius i a equilibrar atacs, defensa i entrenament.\n\nPunts febles: Necessita menjar, capacitat d’entrenament i espai per reunir les forces.\n\nCom contrarestar-la: Disputa els edificis exposats de menjar i entrenament abans que reuneixi les onades. Mantén unida una força defensiva ben proveïda.
 [%0 has left the game]
 %0 ha marxat
 [%0 level %1]
@@ -51,11 +57,11 @@ IA
 [ai]
 IA
 [AICastor-Description]
-Castor juga de manera conservadora i se'n surt molt bé en mapes amb pocs recursos. Dificultat mitjana.
+Construeix i entrena, ajustant el creixement al subministrament de menjar.
 [AICastor]
 IACastor
 [AINicowar-Description]
-Nicowar juga agressivament, creix de pressa i envia exèrcits enormes contra els rivals. Dificultat alta.
+Augmenta la població, entrena guerrers i després ataca.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ Cap: no fa res.
 [AINone]
 Cap
 [AINumbi-Description]
-Numbi s'expandeix poc, però de pressa. Dificultat baixa.
+Un rival benèvol que també s’expandeix i ataca.
 [AINumbi]
 IANumbi
 [AIEcono-Description]
-Econo no ataca, però construeix bases enormes i intenta fer passar moltes unitats al seu bàndol. Dificultat baixa.
+S’expandeix i cerca conversions sense produir guerrers.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush ataca de pressa i amb duresa, sovint portant el defensor al límit. Dificultat mitjana.
+Atacs ràpids que posen a prova les primeres defenses.
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-Cabino gestiona la defensa, l'atac i la construcció com a departaments independents que cooperen en un sol pla: creix de pressa i envia exèrcits enormes contra els rivals. Dificultat alta.
+Un constructor eficaç que desplega forces d’atac entrenades.
 [AICabino]
 Cabino
 [Alga]
@@ -1229,9 +1235,9 @@ Velocitat: 1x (multijugador)
 [game speed help]
 Només per a un jugador i repeticions. Les partides multijugador van a 1x.
 [AICortex-Description]
-Cortex s'expandeix cap a nous camps de blat i envia grups de guerrers a la batalla, recolzats per fondes i hospitals prop de la línia del front. Dificultat mitjana. Experimental.
+Onades de guerrers agrupats amb suport de menjar i curació.
 [AIMaxima-Description]
-Maxima fa créixer una colònia bé alimentada, explora constantment i ataca sense pausa, enviant tots els guerrers que pot alliberar. Dificultat alta.
+Explora, desenvolupa el subministrament de menjar i reuneix onades de guerrers.
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1249,37 +1255,37 @@ Encara treballant: %0
 [AI strategy & counterplay]
 Estratègia d'IA i contrajoc
 [AICastor-Profile]
-Estratègia: s'expandeix amb precaució i funciona bé en mapes amb pocs recursos.\n\nPunts forts: l'expansió limitada és efectiva en jocs amb recursos escassos.\n\nContrajoc suggerit: ocupar el territori abans d'hora. No assumeixis que la manca de recursos debilitarà aquesta IA.
+Què cal esperar: Construeix i millora la colònia mentre entrena un exèrcit.\n\nPunts forts: Ajusta els naixements a la capacitat d’alimentar les unitats i limita el creixement excessiu.\n\nPunts febles: L’escassetat de menjar pot aturar la producció d’unitats.\n\nCom contrarestar-la: Ocupa aviat terreny per expandir-te i després ataca amb guerrers entrenats i reserves.
 [AICastor-Summary]
-Expansió prudent; funciona bé amb recursos escassos.
+Construeix i entrena, ajustant el creixement al subministrament de menjar.
 [AICortex-Profile]
-Estratègia: Gestiona els subministraments d'aliments, s'expandeix cap a nous camps de blat i reuneix grups successius de guerrers. Fondes i hospitals propers a la primera línia donen suport als atacs lluny de la base.\n\nPunts forts: envia reforços junts, manté la pressió militar i reacciona davant l'escassetat d'aliments.\n\nContrajoc suggerit: lluita pel control de nous camps de blat i ataca els seus edificis de suport a prop de la primera línia. Ataca abans que els seus grups de guerrers estiguin preparats.\n\nIA experimental. Dificultat mitjana; les tàctiques suggerides no són valoracions basades en proves comparatives.
+Què cal esperar: Agrupa onades de guerrers i les ajuda amb hostals i hospitals avançats.\n\nPunts forts: Concentra els guerrers en onades, amb menjar i curació propers per sostenir els atacs.\n\nPunts febles: Els atacs depenen del proveïment de les instal·lacions avançades de menjar i curació.\n\nCom contrarestar-la: Disputa els hostals avançats i el blat. Mantén units els defensors davant de cada onada.
 [AICortex-Summary]
-Expansió atenta als aliments i onades d’atac amb suport.
+Onades de guerrers agrupats amb suport de menjar i curació.
 [AINicowar-Profile]
-Estratègia: s'expandeix ràpidament i ataca els oponents amb exèrcits enormes.\n\nPunts forts: l'expansió ràpida afavoreix atacs militars agressius.\n\nContrajoc suggerit: evita la seva expansió. Utilitza el terreny per reduir el nombre de tropes enemigues que poden lluitar alhora.
+Què cal esperar: Expandeix la colònia i entrena guerrers abans de llançar atacs.\n\nPunts forts: Transforma el creixement de la població i l’entrenament en un flux constant d’atacants.\n\nPunts febles: Necessita temps i capacitat d’entrenament abans dels atacs principals.\n\nCom contrarestar-la: Disputa noves fonts de menjar durant els preparatius. Enfronta’t al seu exèrcit amb tropes entrenades i proveïdes.
 [AINicowar-Summary]
-S'expandeix ràpidament i construeix grans exèrcits per a atacs agressius.
+Augmenta la població, entrena guerrers i després ataca.
 [AINone-Profile]
 Estratègia: la IA no dóna ordres.\n\nPunts forts: un oponent previsible i inactiu per als experiments.\n\nDebilitats: No s'expandeix ni s'adapta.
 [AINone-Summary]
 Una colònia ociosa per a experiments.
 [AINumbi-Profile]
-Estratègia: s'expandeix ràpidament però a petita escala. Un oponent més fàcil per practicar la gestió de colònies.\n\nPunts forts: et permet aprendre tant la gestió econòmica com el combat.\n\nContrajoc suggerit: desenvolupa una economia més forta i entrena el teu exèrcit abans d'atacar.
+Què cal esperar: Desenvolupa una colònia, entrena unitats i llança atacs.\n\nPunts forts: Desenvolupa menjar, curació i entrenament per sostenir una colònia que creix.\n\nPunts febles: El desenvolupament gradual ofereix una oportunitat per pressionar aviat.\n\nCom contrarestar-la: Desenvolupa alhora la producció de menjar i l’entrenament i després ataca sense deixar la colònia indefensa.
 [AINumbi-Summary]
-Expansió ràpida a petita escala.
+Un rival benèvol que també s’expandeix i ataca.
 [AIEcono-Profile]
-Estratègia: no ataca, però construeix bases enormes i converteix activament les unitats enemigues al seu propi bàndol.\n\nPunts forts: l'expansió i la conversió d'unitats amenacen els oponents sense atacs directes.\n\nContrajoc suggerit: desenvolupa la teva colònia aviat i evita enviar unitats on l'enemic les pugui convertir.
+Què cal esperar: Augmenta la capacitat d’alimentació i naixements mentre els exploradors visiten fruites i colònies enemigues.\n\nPunts forts: Fa servir el creixement i la conversió per pressionar sense produir guerrers.\n\nPunts febles: No produeix guerrers per aturar un atac militar directe.\n\nCom contrarestar-la: Pressiona les expansions exposades. Proveeix els hostals de menjar i fruita per conservar les unitats.
 [AIEcono-Summary]
-Bases enormes i conversió en lloc d'atacs.
+S’expandeix i cerca conversions sense produir guerrers.
 [AIWarrush-Profile]
-Estratègia: ataca aviat i amb força, abans que els oponents s'acabin de preparar.\n\nPunts forts: aprofita l'expansió sense defensa i la preparació militar lenta.\n\nContrajoc suggerit: sobreviu al primer atac mantenint la teva economia i després contraataca.
+Què cal esperar: Ataca aviat, abans que tinguis temps per a un desenvolupament llarg.\n\nPunts forts: La producció primerenca de guerrers pressiona els rivals abans que acabin de desenvolupar-se.\n\nPunts febles: Menys fiable en terrenys amb molts rius.\n\nCom contrarestar-la: Protegeix aviat els edificis de menjar i naixements. Continua produint treballadors mentre reposes defensors i després contraataca.
 [AIWarrush-Summary]
-Atacs ràpids que posen a prova les teves primeres defenses.
+Atacs ràpids que posen a prova les primeres defenses.
 [AICabino-Profile]
-Estratègia principal: un gabinet de departaments especialistes independents (defensa, atac, construcció, millores, gestió d'unitats) que actuen per iniciativa pròpia però convergeixen en un sol pla: créixer de pressa i després llançar exèrcits enormes contra els rivals.\n\nPunts forts: l'expansió ràpida sosté una pressió militar agressiva; els departaments independents reaccionen de seguida a les amenaces locals sense esperar un pla central.\n\nContrajoc a provar: disputa la seva expansió d'hora i fes servir el terreny per limitar quantes tropes pot fer servir alhora.
+Què cal esperar: S’expandeix, entrena guerrers i ataca edificis mentre assigna defensors a la colònia.\n\nPunts forts: Dona suport als atacs entrenats amb expansió contínua i defensors a casa.\n\nPunts febles: Necessita casernes operatives i prou guerrers entrenats per atacar.\n\nCom contrarestar-la: Pressiona les expansions exposades abans que reuneixi l’exèrcit. Ataca edificis de menjar i entrenament quan puguis.
 [AICabino-Summary]
-Departaments independents que cooperen per créixer ràpid i enviar exèrcits enormes.
+Un constructor eficaç que desplega forces d’atac entrenades.
 [Algae]
 algues
 [Alliances]

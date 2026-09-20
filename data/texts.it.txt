@@ -1,3 +1,9 @@
+[AI strategy]
+Strategia IA
+[AIMaxima-Summary]
+Esplora, sviluppa le scorte di cibo e raduna ondate di guerrieri.
+[AIMaxima-Profile]
+Cosa aspettarsi: Esplora in cerca di bersagli e raduna ondate d’attacco, tenendo guerrieri per difesa e addestramento.\n\nPunti di forza: L’esplorazione aiuta a scegliere i bersagli, bilanciando attacchi, difesa e addestramento.\n\nPunti deboli: Richiede cibo, capacità di addestramento e spazio per radunare le forze.\n\nCome contrastarla: Contendi gli edifici esposti per il cibo e l’addestramento prima che le ondate si radunino. Mantieni unita una forza difensiva ben rifornita.
 [%0 has left the game]
 %0 ha lasciato la partita.
 [%0 level %1]
@@ -51,11 +57,11 @@ IA
 [ai]
 ia
 [AICastor-Description]
-Castor gioca in modo prudente e si comporta molto bene su mappe con poche risorse. Difficoltà media.
+Costruisce e addestra, adattando la crescita alla disponibilità di cibo.
 [AICastor]
 IACastor
 [AINicowar-Description]
-Nicowar gioca in modo aggressivo, si espande rapidamente e manda enormi eserciti contro gli avversari. Difficoltà alta.
+Aumenta la popolazione, addestra guerrieri e poi attacca.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ Nessuna - Non fa nulla.
 [AINone]
 NienteIA
 [AINumbi-Description]
-Numbi - Si espande poco e rapidamente. Difficoltà bassa.
+Un avversario indulgente che continua a espandersi e attaccare.
 [AINumbi]
 IANumbi
 [AIEcono-Description]
-Econo - Non attacca, ma costruisce basi enormi e converte le unità in modo aggressivo. Difficoltà bassa.
+Si espande e cerca conversioni senza produrre guerrieri.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush - Attacca rapidamente e con forza, mettendo spesso a dura prova chi si difende. Difficoltà media.
+Attacchi rapidi che mettono alla prova le difese iniziali.
 [AIWarrush]
 IAWarrush
 [AICabino-Description]
-Cabino gestisce difesa, attacco e costruzione come dipartimenti indipendenti che convergono su un solo piano: si espande rapidamente e manda enormi eserciti contro gli avversari. Difficoltà alta.
+Un valido costruttore che schiera forze d’attacco addestrate.
 [AICabino]
 Cabino
 [Alga]
@@ -1283,9 +1289,9 @@ Velocità: 1x (multigiocatore)
 [game speed help]
 Solo per giocatore singolo e replay. Le partite multigiocatore si svolgono a 1x.
 [AICortex-Description]
-Cortex si espande verso nuovi campi di grano e manda in battaglia gruppi di guerrieri, supportati da mense e ospedali vicini al fronte. Difficoltà media. Sperimentale.
+Ondate di guerrieri riuniti, sostenute da cibo e cure.
 [AIMaxima-Description]
-Maxima sviluppa una colonia ben nutrita, esplora costantemente e attacca senza sosta, inviando ogni guerriero di cui può fare a meno. Difficoltà alta.
+Esplora, sviluppa le scorte di cibo e raduna ondate di guerrieri.
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1303,37 +1309,37 @@ Ancora al lavoro: %0
 [AI strategy & counterplay]
 Strategia e contromisure dell’IA
 [AICastor-Profile]
-Strategia: si espande con cautela e funziona bene su mappe con poche risorse.\n\nPunti di forza: l'espansione limitata è efficace nei giochi con risorse scarse.\n\nContromisure suggerite: occupa il territorio in anticipo. Non dare per scontato che la mancanza di risorse indebolirà questa IA.
+Cosa aspettarsi: Costruisce e migliora la colonia mentre addestra un esercito.\n\nPunti di forza: Adatta le nascite alla capacità di nutrire le unità, limitando la crescita eccessiva.\n\nPunti deboli: La carenza di cibo può fermare la produzione di unità.\n\nCome contrastarla: Occupa presto lo spazio per espanderti, poi attacca con guerrieri addestrati e riserve.
 [AICastor-Summary]
-Espansione cauta; funziona bene con risorse scarse.
+Costruisce e addestra, adattando la crescita alla disponibilità di cibo.
 [AICortex-Profile]
-Strategia: gestisce le scorte di cibo, si espande verso nuovi campi di grano e riunisce gruppi successivi di guerrieri. Mense e ospedali vicino alla linea del fronte supportano gli attacchi lontani dalla base.\n\nPunti di forza: invia rinforzi insieme, mantiene la pressione militare e reagisce alla scarsità di cibo.\n\nContromisure suggerite: combatti per il controllo di nuovi campi di grano e attacca gli edifici di supporto vicino alla linea del fronte. Attacca prima che i suoi gruppi di guerrieri siano pronti.\n\nIA sperimentale. Difficoltà media; le contromisure suggerite non sono valutazioni basate su test comparativi.
+Cosa aspettarsi: Riunisce ondate di guerrieri e le sostiene con locande e ospedali avanzati.\n\nPunti di forza: Concentra i guerrieri in ondate, con cibo e cure vicini per sostenere gli attacchi.\n\nPunti deboli: Gli attacchi dipendono dal rifornimento delle strutture avanzate per cibo e cure.\n\nCome contrastarla: Contendi le locande avanzate e il grano. Tieni uniti i difensori contro ogni ondata.
 [AICortex-Summary]
-Espansione attenta al cibo e ondate d’attacco supportate.
+Ondate di guerrieri riuniti, sostenute da cibo e cure.
 [AINicowar-Profile]
-Strategia: si espande rapidamente e attacca gli avversari con eserciti enormi.\n\nPunti di forza: la rapida espansione supporta attacchi militari aggressivi.\n\nContromisure suggerite: Ostacola la sua espansione. Usa il terreno per ridurre il numero di truppe nemiche che possono combattere contemporaneamente.
+Cosa aspettarsi: Espande la colonia e addestra guerrieri prima di lanciare gli attacchi.\n\nPunti di forza: Trasforma la crescita della popolazione e l’addestramento in un flusso costante di attaccanti.\n\nPunti deboli: Ha bisogno di tempo e capacità di addestramento prima degli attacchi principali.\n\nCome contrastarla: Contendi le nuove fonti di cibo durante i preparativi. Affronta il suo esercito con una forza addestrata e rifornita.
 [AINicowar-Summary]
-Si espande rapidamente e costruisce grandi eserciti per attacchi aggressivi.
+Aumenta la popolazione, addestra guerrieri e poi attacca.
 [AINone-Profile]
 Strategia: l'IA non dà comandi.\n\nPunti di forza: un avversario prevedibile e inattivo per gli esperimenti.\n\nPunti deboli: Non si espande né si adatta.
 [AINone-Summary]
 Una colonia inattiva per gli esperimenti.
 [AINumbi-Profile]
-Strategia: si espande rapidamente ma su piccola scala. Un avversario più facile per praticare la gestione della colonia.\n\nPunti di forza: ti consente di apprendere sia la gestione economica che il combattimento.\n\nContromisure suggerite: sviluppa un'economia più forte e addestra il tuo esercito prima di attaccare.
+Cosa aspettarsi: Sviluppa una colonia, addestra unità e lancia attacchi.\n\nPunti di forza: Sviluppa cibo, cure e addestramento per sostenere una colonia in crescita.\n\nPunti deboli: Lo sviluppo graduale lascia un’apertura per la pressione iniziale.\n\nCome contrastarla: Sviluppa insieme produzione di cibo e addestramento, poi attacca senza lasciare la colonia indifesa.
 [AINumbi-Summary]
-Espansione rapida su piccola scala.
+Un avversario indulgente che continua a espandersi e attaccare.
 [AIEcono-Profile]
-Strategia: non attacca, ma costruisce basi enormi e converte attivamente le unità nemiche dalla propria parte.\n\nPunti di forza: l'espansione e la conversione delle unità minacciano gli avversari senza attacchi diretti.\n\nContromisure suggerite: sviluppa presto la tua colonia ed evita di inviare unità dove il nemico può convertirle.
+Cosa aspettarsi: Aumenta la capacità alimentare e le nascite mentre gli esploratori visitano frutti e colonie nemiche.\n\nPunti di forza: Usa crescita e conversione per fare pressione senza produrre guerrieri.\n\nPunti deboli: Non produce guerrieri per fermare un attacco militare diretto.\n\nCome contrastarla: Metti sotto pressione le espansioni esposte. Rifornisci le locande di cibo e frutta per conservare le tue unità.
 [AIEcono-Summary]
-Basi enormi e conversione invece di attacchi.
+Si espande e cerca conversioni senza produrre guerrieri.
 [AIWarrush-Profile]
-Strategia: attacca presto e con forza, prima che gli avversari finiscano di prepararsi.\n\nPunti di forza: sfrutta l'espansione indifesa e la lenta preparazione militare.\n\nContromisure suggerite: sopravvivi al primo attacco mantenendo la tua economia, quindi contrattacca.
+Cosa aspettarsi: Attacca presto, prima che tu abbia tempo per lunghi preparativi.\n\nPunti di forza: La produzione precoce di guerrieri mette pressione prima che gli avversari completino lo sviluppo.\n\nPunti deboli: Meno affidabile sui terreni ricchi di fiumi.\n\nCome contrastarla: Proteggi presto gli edifici per il cibo e le nascite. Continua a produrre lavoratori mentre rimpiazzi i difensori, poi contrattacca.
 [AIWarrush-Summary]
-Attacchi rapidi che mettono alla prova le tue difese iniziali.
+Attacchi rapidi che mettono alla prova le difese iniziali.
 [AICabino-Profile]
-Strategia principale: un gabinetto di dipartimenti specialisti indipendenti (difesa, attacco, costruzione, miglioramenti, gestione delle unità) che agiscono ciascuno di propria iniziativa ma convergono su un solo piano: crescere rapidamente e poi scagliare enormi eserciti contro gli avversari.\n\nPunti di forza: l'espansione rapida sostiene una pressione militare aggressiva; i dipartimenti indipendenti reagiscono velocemente alle minacce locali senza attendere un piano centrale.\n\nContromossa da provare: contrasta la sua espansione presto e usa il terreno per limitare quante truppe può impegnare contemporaneamente.
+Cosa aspettarsi: Si espande, addestra guerrieri e attacca edifici, assegnando al contempo difensori alla colonia.\n\nPunti di forza: Sostiene gli attacchi addestrati con un’espansione continua e difensori in patria.\n\nPunti deboli: Richiede caserme operative e abbastanza guerrieri addestrati per attaccare.\n\nCome contrastarla: Fai pressione sulle espansioni esposte prima che l’esercito si raduni. Colpisci gli edifici per il cibo e l’addestramento quando puoi.
 [AICabino-Summary]
-Dipartimenti indipendenti che collaborano per una crescita rapida ed eserciti enormi.
+Un valido costruttore che schiera forze d’attacco addestrate.
 [Algae]
 alghe
 [Alliances]

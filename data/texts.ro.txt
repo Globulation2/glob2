@@ -1,3 +1,9 @@
+[AI strategy]
+Strategia IA
+[AIMaxima-Summary]
+Explorează, dezvoltă aprovizionarea și adună valuri de războinici.
+[AIMaxima-Profile]
+La ce să te aștepți: Caută ținte și adună valuri de atac, păstrând războinici pentru apărare și instruire.\n\nPuncte forte: Explorarea ajută la alegerea țintelor și la echilibrarea atacului, apărării și instruirii.\n\nPuncte slabe: Are nevoie de hrană, capacitate de instruire și loc pentru adunarea forțelor.\n\nCum poți contracara: Dispută clădirile expuse de hrană și instruire înainte să se adune valurile. Ține împreună o forță defensivă aprovizionată.
 [%0 has left the game]
 %0 a părăsit jocul.
 [%0 level %1]
@@ -51,11 +57,11 @@ IA
 [ai]
 IA
 [AICastor-Description]
-Castor joacă prudent și se descurcă foarte bine pe hărți cu puține resurse. Dificultate medie.
+Construiește și instruiește, adaptând creșterea la rezervele de hrană.
 [AICastor]
 AICastor
 [AINicowar-Description]
-Nicowar joacă agresiv, se dezvoltă rapid și trimite armate uriașe împotriva adversarilor. Dificultate ridicată.
+Își crește populația, instruiește războinici, apoi atacă.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ Fără IA — nu face nimic.
 [AINone]
 Fără IA
 [AINumbi-Description]
-Numbi se extinde la scară mică, dar rapid. Dificultate scăzută.
+Un adversar îngăduitor, care totuși se extinde și atacă.
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-Econo nu atacă, dar construiește baze uriașe și convertește unități în număr mare. Dificultate scăzută.
+Se extinde și atrage unități străine fără a produce războinici.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush atacă rapid și necruțător, aducând adesea jucătorul care se apără la limita înfrângerii. Dificultate medie.
+Atacuri rapide care îți testează apărarea timpurie.
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-Cabino conduce apărarea, atacul și construcția ca departamente independente care converg spre un singur plan: se dezvoltă rapid și trimite armate uriașe împotriva adversarilor. Dificultate ridicată.
+Un constructor puternic, care trimite forțe de atac instruite.
 [AICabino]
 Cabino
 [Alga]
@@ -1221,9 +1227,9 @@ Viteză: 1x (multiplayer)
 [game speed help]
 Doar pentru un singur jucător și reluări. Jocurile multiplayer rulează la 1x.
 [AICortex-Description]
-Cortex se extinde către noi câmpuri de grâu și trimite grupuri de războinici în luptă, sprijiniți de popasuri și spitale de lângă linia frontului. Dificultate medie. Experimental.
+Valuri concentrate de războinici, sprijinite cu hrană și vindecare.
 [AIMaxima-Description]
-Maxima dezvoltă o colonie bine hrănită, cercetează constant și atacă fără pauză cu fiecare războinic pe care îl poate trimite. Dificultate ridicată.
+Explorează, dezvoltă aprovizionarea și adună valuri de războinici.
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1241,37 +1247,37 @@ Cortex
 [AI strategy & counterplay]
 Strategia IA și contracarare
 [AICastor-Profile]
-Strategie: se extinde cu precauție și funcționează bine pe hărți cu puține resurse.\n\nPuncte forte: Expansiunea limitată este eficientă în jocurile cu resurse limitate.\n\nTactici de încercat: ocupați teritoriul devreme. Nu presupuneți că lipsa de resurse va slăbi această inteligență artificială.
+La ce să te aștepți: Construiește și îmbunătățește colonia în timp ce instruiește o armată.\n\nPuncte forte: Adaptează nașterile la capacitatea de hrănire, limitând creșterea excesivă.\n\nPuncte slabe: Lipsa hranei poate opri producerea unităților.\n\nCum poți contracara: Ocupă devreme teren pentru extindere, apoi atacă folosind războinici instruiți și rezerve.
 [AICastor-Summary]
-Extindere prudentă; funcţionează bine cu resurse limitate.
+Construiește și instruiește, adaptând creșterea la rezervele de hrană.
 [AICortex-Profile]
-Strategie: Gestionează proviziile de hrană, se extinde către noi câmpuri de grâu și adună grupuri succesive de războinici. Popasurile și spitalele de lângă linia frontului susțin atacuri departe de bază.\n\nPuncte forte: Trimite întăriri împreună, menține presiunea militară și reacționează la penuria de alimente.\n\nTactici de încercat: Luptă pentru controlul noilor lanuri de grâu și atacă clădirile de sprijin din apropierea liniei frontului. Atacă înainte ca grupurile sale de războinici să fie gata.\n\nIA experimentală. Dificultate medie; sugestiile tactice nu reprezintă evaluări din teste comparative.
+La ce să te aștepți: Adună valuri de războinici și le sprijină cu hanuri și spitale avansate.\n\nPuncte forte: Concentrează războinicii în valuri, susținând atacurile prin hrană și vindecare în apropiere.\n\nPuncte slabe: Atacurile depind de aprovizionarea hanurilor și spitalelor avansate.\n\nCum poți contracara: Luptă pentru hanurile avansate și grâu. Ține apărătorii împreună împotriva fiecărui val.
 [AICortex-Summary]
-Se extinde având în vedere proviziile de hrană și își sprijină trupele atacatoare.
+Valuri concentrate de războinici, sprijinite cu hrană și vindecare.
 [AINicowar-Profile]
-Strategie: se extinde rapid și atacă adversarii cu armate enorme.\n\nPuncte forte: Expansiunea rapidă sprijină atacuri militare agresive.\n\nTactici de încercat: Preveniți extinderea acestuia. Utilizați terenul pentru a reduce numărul de trupe inamice care pot lupta simultan.
+La ce să te aștepți: Își extinde colonia și instruiește războinici înainte de a ataca.\n\nPuncte forte: Creșterea populației și instruirea asigură un flux constant de atacatori.\n\nPuncte slabe: Are nevoie de timp și capacitate de instruire înaintea atacurilor principale.\n\nCum poți contracara: Dispută noile surse de hrană în timpul pregătirilor sale. Întâmpină-i armata cu forțe instruite și aprovizionate.
 [AINicowar-Summary]
-Se extinde rapid și construiește armate mari pentru atacuri agresive.
+Își crește populația, instruiește războinici, apoi atacă.
 [AINone-Profile]
 Strategie: AI nu dă comenzi.\n\nPuncte forte: un adversar previzibil, inactiv pentru experimente.\n\nPuncte slabe: Nu se extinde sau nu se adaptează.
 [AINone-Summary]
 O colonie inactivă pentru experimente.
 [AINumbi-Profile]
-Strategie: se extinde rapid, dar la scară mică. Un adversar mai ușor pentru practicarea managementului coloniei.\n\nPuncte forte: Vă permite să învățați atât managementul economic, cât și lupta.\n\nTactici de încercat: dezvoltă o economie mai puternică și antrenează-ți armata înainte de a ataca.
+La ce să te aștepți: Dezvoltă o colonie, instruiește unități și lansează atacuri.\n\nPuncte forte: Dezvoltă hrana, vindecarea și instruirea pentru a susține colonia în creștere.\n\nPuncte slabe: Dezvoltarea treptată oferă o ocazie de presiune timpurie.\n\nCum poți contracara: Dezvoltă simultan hrana și instruirea, apoi atacă fără să lași colonia neapărată.
 [AINumbi-Summary]
-Extindere rapidă la scară mică.
+Un adversar îngăduitor, care totuși se extinde și atacă.
 [AIEcono-Profile]
-Strategie: Nu atacă, dar construiește baze enorme și transformă activ unitățile inamice în propria sa parte.\n\nPuncte forte: Expansiunea și conversia unităților amenință adversarii fără atacuri directe.\n\nTactici de încercat: Dezvoltați-vă colonia devreme și evitați trimiterea de unități unde inamicul le poate converti.
+La ce să te aștepți: Dezvoltă hrănirea și nașterile, în timp ce exploratorii vizitează fructe și colonii inamice.\n\nPuncte forte: Folosește creșterea și convertirea pentru a presa adversarii fără războinici.\n\nPuncte slabe: Nu produce războinici care să oprească un atac militar direct.\n\nCum poți contracara: Presează extinderile neprotejate. Aprovizionează hanurile cu hrană și fructe pentru a-ți păstra unitățile.
 [AIEcono-Summary]
-Baze uriașe și conversie în loc de atacuri.
+Se extinde și atrage unități străine fără a produce războinici.
 [AIWarrush-Profile]
-Strategie: atacă devreme și cu forță, înainte ca adversarii să termine pregătirea.\n\nPuncte forte: exploatează extinderea lipsită de apărare și pregătirea militară lentă.\n\nTactici de încercat: Supraviețuiește primului atac menținându-ți economia, apoi contraatacă.
+La ce să te aștepți: Atacă devreme, înainte să ai timp de pregătiri îndelungate.\n\nPuncte forte: Producerea timpurie de războinici presează adversarii înainte să-și încheie dezvoltarea.\n\nPuncte slabe: Este mai puțin fiabil pe terenuri cu multe râuri.\n\nCum poți contracara: Protejează devreme clădirile de hrană și naștere. Continuă să produci muncitori și să înlocuiești apărătorii, apoi contraatacă.
 [AIWarrush-Summary]
-Atacuri rapide care vă testează apărarea timpurie.
+Atacuri rapide care îți testează apărarea timpurie.
 [AICabino-Profile]
-Strategie de bază: un cabinet de departamente specializate independente (apărare, atac, construcție, îmbunătățiri, gestionarea unităților), fiecare acționând din proprie inițiativă, dar convergând spre un singur plan: creștere rapidă, apoi armate uriașe trimise împotriva adversarilor.\n\nPuncte forte: expansiunea rapidă susține o presiune militară agresivă; departamentele independente reacționează rapid la amenințările locale fără să aștepte un plan central.\n\nContraatac de încercat: contestă-i expansiunea devreme și folosește terenul pentru a limita câte trupe poate angaja simultan.
+La ce să te aștepți: Se extinde, instruiește războinici și atacă clădiri, păstrând apărători acasă.\n\nPuncte forte: Susține atacurile instruite prin extindere continuă și apărare acasă.\n\nPuncte slabe: Are nevoie de cazărmi funcționale și destui războinici instruiți pentru atacuri.\n\nCum poți contracara: Presează extinderile neprotejate înainte să-și adune armata. Atacă clădirile de hrană și instruire când poți.
 [AICabino-Summary]
-Departamente independente care cooperează pentru o creștere rapidă și armate uriașe.
+Un constructor puternic, care trimite forțe de atac instruite.
 [Algae]
 Alge
 [Alliances]
