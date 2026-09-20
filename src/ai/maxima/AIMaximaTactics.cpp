@@ -44,7 +44,10 @@ int desiredArmy(int enemy, unsigned int tick, int ticksPerPoint, int floor, int 
 {
 	const long long denominator=100LL*std::max(1,ticksPerPoint);
 	const long long growth=static_cast<long long>(std::max(0,enemy))*tick;
-	const long long wanted=std::max(0,enemy)+growth/denominator+(growth%denominator!=0);
+	const long long reconnaissanceWanted=
+		std::max(0,enemy)+growth/denominator+(growth%denominator!=0);
+	const long long secondaryWanted=tick/1000u;
+	const long long wanted=std::max(reconnaissanceWanted,secondaryWanted);
 	return int(std::min<long long>(ceiling,std::max<long long>(floor,wanted)));
 }
 
