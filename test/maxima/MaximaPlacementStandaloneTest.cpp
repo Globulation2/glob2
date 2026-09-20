@@ -578,6 +578,20 @@ int main()
 	assert(commitments.reserve(commitmentWorld,committed));
 	commitments.markIssued(committed.id,100,commitmentWorld.tick);
 	assert(commitments.committedBuildingCount(commitmentWorld,3)==2);
+	// A reduced upgrade quota must not consume the independent new-building
+	// allowance. This kept large saved colonies from adding training capacity.
+	{
+		Planner planner;planner.configure(makeProfiles(),1,2,6,5,7);
+		DevelopmentLimits limits;limits.newConstruction=1;
+		limits.activeLevel1Upgrades=4;limits.activeLevel2Upgrades=3;
+		limits.allowUpgrades=false;limits.allowLevel2Upgrades=false;
+		DevelopmentAction candidate;
+		assert(planner.selectAction(commitmentWorld,{oneBuilding},limits,candidate));
+		assert(limits.totalCapacity()==8);
+		assert(planner.revalidateSelection(commitmentWorld,{oneBuilding},limits,candidate));
+		limits.activeNewConstruction=1;
+		assert(!planner.revalidateSelection(commitmentWorld,{oneBuilding},limits,candidate));
+	}
 
 	// Repair generation has an independent master switch and must not fall
 	// through into an invalid upgrade candidate when repairs are disabled.

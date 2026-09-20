@@ -2740,31 +2740,53 @@ void Maxima::arbitrate_policy_bids()
 	result.explorer_ratio=std::max(1, std::max(access.explorer_ratio,
 		std::max(defense.explorer_ratio, offense.explorer_ratio)));
 	result.warrior_ratio=std::max(defense.warrior_ratio, offense.warrior_ratio);
+	result.desired_warriors=std::max(defense.desired_warriors,
+		offense.utility>=strategy.economy.offense_bid_utility_min
+			? offense.desired_warriors : 0);
+	const bool army_short=snapshot.warriors<result.desired_warriors;
+	const auto barracks=barracks_capacity(context);
+	if(army_short && snapshot.workers>=strategy.military.second_barracks_population_min)
+	{
+		// Keep one training place per four wanted warriors. Credit the finished
+		// capacity of existing upgrade sites instead of imposing a building cap.
+		const int seats_wanted=(result.desired_warriors+3)/4;
+		const int new_seats=std::max(0,seats_wanted-barracks.second);
+		const int basic_seats=std::max(1,globalContainer->buildingsTypes
+			.getByType("barracks",0,false)->maxUnitInside);
+		result.desired_barracks=std::max(result.desired_barracks,
+			snapshot.barracks+(new_seats+basic_seats-1)/basic_seats);
+	}
+	if(army_short && labour_observation.workers>=labour_policy().bootstrapWorkforce)
+	{
+		// A hungry or injured worker is still part of the workforce. Fund jobs
+		// plus one relief worker per three jobs, rather than replacing everybody
+		// temporarily away at an inn/hospital with another mouth to feed.
+		const int jobs=labour_observation.innCarriers+labour_observation.swarmCarriers
+			+labour_observation.builders+labour_observation.otherAssigned
+			+std::max(0,snapshot.worker_jobs_open);
+		const int workers_wanted=std::max(labour_policy().bootstrapWorkforce,
+			(jobs*4+2)/3+labour_plan.trainingReserve);
+		if(snapshot.workers>=workers_wanted)
+		{
+			result.worker_ratio=0;
+			result.warrior_ratio=std::max(1,result.warrior_ratio);
+		}
+	}
 	// Training capacity constrains the combined birth stream, regardless of
 	// which policy requested the warriors.
 	const int untrained_warriors=std::max(0,
 		snapshot.warriors-snapshot.trained_warriors);
 	// Births are paced to the seats that can train them (pull, not push).
 	const int training_backlog_limit=Labour::warriorBacklogLimit(
-		labour_observation.barracksSeats,
+		std::max(labour_observation.barracksSeats,barracks.second),
 		strategy.military.training_backlog_floor);
 	if(strategy.military.warrior_training_backlog_throttle_enabled
 	   && untrained_warriors>=training_backlog_limit)
 	{
 		result.warrior_ratio=0;
-		// Seats are the constraint on the army, so the constraint is what gets
-		// built: another barracks while warriors are still wanted.
-		if(snapshot.barracks>0 && snapshot.barracks<5 && !severe_food_emergency()
-		   && std::max(defense.desired_warriors, offense.desired_warriors)
-				>snapshot.warriors)
-			result.desired_barracks=std::max(result.desired_barracks,
-				snapshot.barracks+1);
 	}
 	result.desired_explorers=std::max(access.desired_explorers,
 		std::max(defense.desired_explorers, offense.desired_explorers));
-	result.desired_warriors=std::max(defense.desired_warriors,
-		offense.utility>=strategy.economy.offense_bid_utility_min
-			? offense.desired_warriors : 0);
 	// A rule that raised the warrior ratio for a large colony short of its army
 	// used to sit here. It ran after the training-capacity throttle above and
 	// silently overrode it, so births outran barracks seats and the colony made
@@ -4279,6 +4301,45 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 }
 
 
+std::pair<int,int> Maxima::barracks_capacity(Context& echo,int excludedAction) const
+{
+	using namespace AIMaximaPlacement;
+	std::map<int,std::pair<int,int>> seats;
+	for(int id=0;id<Building::MAX_COUNT;++id)
+	{
+		const Building* b=echo.player->team->myBuildings[id];
+		if(!b || b->type->shortTypeNum!=IntBuildingType::ATTACK_BUILDING
+		   || b->buildingState==Building::WAITING_FOR_DESTRUCTION)continue;
+		const int operational=b->buildingState==Building::ALIVE
+			&& !b->type->isBuildingSite && b->constructionResultState==Building::NO_CONSTRUCTION
+			? b->maxUnitInside : 0;
+		const int completed=globalContainer->buildingsTypes
+			.getByType("barracks",b->type->level,false)->maxUnitInside;
+		seats[b->gid]=std::make_pair(operational,completed);
+	}
+	for(const auto& entry:development_planner.actions())
+	{
+		const DevelopmentAction& a=entry.second;
+		if(a.id==excludedAction || a.type!=UpgradeBuilding
+		   || a.buildingType!=IntBuildingType::ATTACK_BUILDING
+		   || (a.state!=CreateIssued && a.state!=SiteObserved)
+		   || !echo.get_building_register().is_building_found(a.buildingId))continue;
+		const Building* b=echo.get_building_register().get_building(a.buildingId);
+		auto found=seats.find(b->gid);
+		if(found==seats.end())continue;
+		found->second.first=0;
+		found->second.second=std::max(found->second.second,
+			globalContainer->buildingsTypes.getByType("barracks",a.targetLevel-1,false)->maxUnitInside);
+	}
+	std::pair<int,int> result(0,0);
+	for(const auto& entry:seats)
+	{
+		result.first+=entry.second.first;
+		result.second+=entry.second.second;
+	}
+	return result;
+}
+
 // Credit the finished capacity of sites and reserved upgrades exactly once.
 int Maxima::committed_hospital_beds(
 	const std::vector<AIMaximaPlacement::WorldBuilding>& buildings,
@@ -4442,6 +4503,17 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
 	{
 		limits.upgradePriorities[std::make_pair(weightedTypes[i],1)]=firstWeights[i];
 		limits.upgradePriorities[std::make_pair(weightedTypes[i],2)]=secondWeights[i];
+	}
+	if(snapshot.warriors>snapshot.trained_warriors)
+	{
+		// Training must keep running while the next tier is built. Recheck at
+		// issue time too, including orders already issued but not yet observed.
+		const auto seats=barracks_capacity(echo,excludedHospitalAction);
+		const int keep=std::max(1,(seats.second+1)/2);
+		for(int level=1;level<=2;++level)
+			if(seats.first-globalContainer->buildingsTypes
+				.getByType("barracks",level-1,false)->maxUnitInside<keep)
+				limits.upgradePriorities[std::make_pair(IntBuildingType::ATTACK_BUILDING,level)]=0;
 	}
 	std::vector<WorldBuilding> hospitals;
 	for(const auto& record:echo.get_building_register().found())
@@ -4770,7 +4842,7 @@ void Maxima::development_cycle(Context& echo)
 
 	DevelopmentLimits limits=continuingSelection
 		? development_planner.selectionLimits() : collect_development_limits(echo);
-	const int totalLimit=limits.newConstruction+limits.level1Upgrades+limits.level2Upgrades;
+	const int totalLimit=limits.totalCapacity();
 	int activeDevelopment=0;
 	for(std::map<int,DevelopmentAction>::const_iterator i=development_planner.actions().begin();
 		i!=development_planner.actions().end();++i)
