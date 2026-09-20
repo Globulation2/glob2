@@ -358,7 +358,7 @@ class AnalysisTests(unittest.TestCase):
 
     def test_planning_balance_and_ablations(self):
         from tools.tournaments.experiments import Planner
-        bundle={'id':'a'*64,'capabilities':{'ais':[{'id':1,'name':'numbi'},{'id':2,'name':'castor'}]}}
+        bundle={'id':'a'*64,'capabilities':{'ais':[{'id':1,'name':'numbi'},{'id':2,'name':'castor'}], 'generators':[{'method':15,'editorOnly':False}]}}
         config={'id':'balance','ais':['numbi','castor'],'formats':['1v1'],'map_seeds':[1,2]}
         manifest=Planner('ai_comparison',config,[bundle]).plan()
         games=[j for j in manifest['jobs'] if j['type']=='game']
@@ -433,7 +433,7 @@ class AnalysisTests(unittest.TestCase):
             n = 2 if j['labels']['format'] == '1v1' else 4
             self.assertEqual(len(j['config']['players']), n)
         self.assertEqual(formats, {'1v1'})
-        self.assertEqual(generators, {15})  # default generator supports 128x128
+        self.assertEqual(generators, {15, 21})  # all playable generators, never editor-only
         for j in games:
             self.assertEqual(j['config']['params']['width'], 7)
             self.assertEqual(j['config']['params']['height'], 7)
@@ -450,6 +450,37 @@ class AnalysisTests(unittest.TestCase):
             self.assertEqual(j['config']['params']['width'], 7)
             self.assertEqual(j['config']['params']['height'], 8)
             self.assertEqual(j['labels']['format'], 'ffa')
+
+    def test_balanced_duels_cover_all_generators_and_swapped_pairs(self):
+        from collections import Counter, defaultdict
+        from tools.tournaments.experiments import Planner
+        bundle = {'id': 'a'*64, 'capabilities': {
+            'ais': [{'id': i+1, 'name': name} for i, name in enumerate(
+                ['numbi', 'castor', 'warrush', 'econo', 'cortex', 'cabino', 'nicowar', 'maxima'])],
+            'generators': [{'method': i, 'editorOnly': i == 0} for i in range(67)]}}
+        config = {'id': 'balanced', 'sample_games': 10000, 'sample_seed': 20260920,
+                  'balanced_duels': True, 'generator_overrides': {'52': {'slant': 0}}}
+        games = Planner('ai_comparison', config, [bundle]).plan()['jobs']
+        self.assertEqual(len(games), 10000)
+        counts = Counter(g['config']['generator'] for g in games)
+        self.assertEqual(set(counts), set(range(1, 67)))
+        self.assertEqual(Counter(counts.values()), {150: 16, 152: 50})
+        matchups = Counter(tuple(sorted(g['config']['players'])) for g in games)
+        self.assertEqual(len(matchups), 28)
+        self.assertEqual(set(matchups.values()), {356, 358})
+        blocks = defaultdict(list)
+        for game in games:
+            blocks[game['labels']['block']].append(game)
+            self.assertEqual(game['config']['params'], {'width': 7, 'height': 7, 'teams': 2,
+                **({'slant': 0} if game['config']['generator'] == 52 else {})})
+        self.assertEqual(len(blocks), 5000)
+        for a, b in blocks.values():
+            self.assertEqual(a['seeds'], b['seeds'])
+            self.assertEqual(a['build'], b['build'])
+            self.assertEqual(a['config']['players'], b['config']['players'][::-1])
+        self.assertEqual(games, Planner('ai_comparison', config, [bundle]).plan()['jobs'])
+        with self.assertRaises(ValueError):
+            Planner('ai_comparison', dict(config, sample_games=9999), [bundle]).plan()
 
     def test_manifest_order_offline_reanalysis(self):
         from tools.tournaments.analysis import rate,observations

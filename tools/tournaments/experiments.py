@@ -29,6 +29,7 @@ class Planner:
         default_params = {'width': 7, 'height': 7} if self.kind == 'ai_comparison' else {}
         generator = {'generator': method, 'params': dict(config.get('generator_params', default_params), teams=n),
                      'candidates': config.get('candidates', 5), 'rotations': n}
+        generator['params'].update(config.get('generator_overrides', {}).get(str(method), {}))
         if variant:
             generator['params'].update(variant)
         key = digest([generator, seed, self.map_build])
@@ -39,7 +40,7 @@ class Planner:
             self.jobs.append(value); self.maps[key] = value
         return self.maps[key]
 
-    def sampled_game(self, rng, build, ais, methods, sizes, formats):
+    def sampled_game(self, rng, build, ais, methods, sizes, formats, paired=None):
         """One independently-drawn game: format, AI matchup, generator and map
         size are each sampled fresh, using the engine's inline map-generation
         (a single job, no separate generate_map dependency) -- for a broad but
@@ -57,7 +58,10 @@ class Planner:
             alliances = None
         method = rng.choice(methods)
         params = dict(rng.choice(sizes), teams=n)
+        params.update(config.get('generator_overrides', {}).get(str(method), {}))
         map_seed, game_seed = rng.getrandbits(32), rng.getrandbits(32)
+        if paired is not None:
+            players, map_seed, game_seed = paired
         labels = {'format': fmt, 'generator': method, 'map_seed': map_seed, 'map': f'{method}:{map_seed}',
                   'rotation': 0, 'variant': 'baseline', 'subject_player': config.get('player', 0),
                   'symmetric_control': method == 15, 'block': f'{method}:{map_seed}:{game_seed}'}
@@ -70,6 +74,35 @@ class Planner:
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
                     labels=labels)
         self.jobs.append(value)
+
+    def balanced_duels(self, rng, ais, methods, sizes):
+        """Balance generators and matchups, with same-map seat-swapped pairs."""
+        count = self.config['sample_games']
+        if type(count) is not int or count <= 0 or count % 2 or len(ais) < 2:
+            raise ValueError('balanced duels need a positive even game count and at least two AIs')
+        methods = sorted(set(methods))
+        if not methods or len(sizes) != 1:
+            raise ValueError('balanced duels need generators and exactly one map size')
+        pairs = list(itertools.combinations(sorted(set(ais)), 2))
+        rng.shuffle(pairs)
+        rng.shuffle(methods)
+        blocks, offset = [], 0
+        for index, method in enumerate(methods):
+            quota = count // 2 // len(methods) + (index < count // 2 % len(methods))
+            for i in range(quota):
+                players = list(pairs[(offset + i) % len(pairs)])
+                rng.shuffle(players)
+                blocks.append((method, players, rng.getrandbits(32), rng.getrandbits(32)))
+            offset += quota
+        rng.shuffle(blocks)
+        # Repeated build IDs retain their weighting, while assignment order is
+        # randomized independently of generator, matchup and completion order.
+        builds = (self.builds * ((len(blocks) + len(self.builds) - 1) // len(self.builds)))[:len(blocks)]
+        rng.shuffle(builds)
+        for (method, players, map_seed, game_seed), build in zip(blocks, builds):
+            for side in (0, 1):
+                self.sampled_game(rng, build, ais, [method], sizes, ['1v1'],
+                                  (players if side == 0 else players[::-1], map_seed, game_seed))
 
     def game(self, generated, build, seed, players, rotation, fmt, variant='baseline', overrides=None, pair=None, held_out=False, alliances=None):
         config = self.config
@@ -91,7 +124,9 @@ class Planner:
 
     def plan(self):
         config = self.config
-        methods = config.get('generators', [15])
+        default_methods = ([g['method'] for g in self.bundles[self.builds[0]]['capabilities']['generators']
+                            if not g.get('editorOnly')] if self.kind == 'ai_comparison' else [15])
+        methods = config.get('generators', default_methods)
         seeds = config.get('map_seeds', [1001])
         game_seeds = config.get('game_seeds', [1])
         if self.kind == 'generator_stress':
@@ -150,11 +185,16 @@ class Planner:
                 # every AI x format x generator x seed x size (which can reach
                 # hundreds of thousands of games -- see docs/tournaments.md).
                 rng = random.Random(config.get('sample_seed', 1))
-                sample_methods = config.get('generators') or [15]
+                sample_methods = methods
                 default_params = {'width': 7, 'height': 7}
                 sizes = config.get('sizes') or [config.get('generator_params', default_params)]
-                for _ in range(config['sample_games']):
-                    self.sampled_game(rng, rng.choice(self.builds), ais, sample_methods, sizes, formats)
+                if config.get('balanced_duels'):
+                    if formats != ['1v1']:
+                        raise ValueError('balanced_duels requires the 1v1 format')
+                    self.balanced_duels(rng, ais, sample_methods, sizes)
+                else:
+                    for _ in range(config['sample_games']):
+                        self.sampled_game(rng, rng.choice(self.builds), ais, sample_methods, sizes, formats)
             else:
                 for fmt in formats:
                     n = 2 if fmt=='1v1' else 4

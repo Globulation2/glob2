@@ -385,9 +385,23 @@ host. Generator defaults/ranges are always discoverable in its pinned catalog.
   1) makes the draw reproducible; `sizes` is a list of `generator_params`-shaped
   dicts to choose from per sample (defaulting to one 128x128 size, or to an
   explicit `generator_params` value); `generators` still
-  restricts the pool as in the exhaustive design, defaulting to `[15]` (the
-  random symmetric arena, which supports 128x128 maps). Other generators must
-  be explicitly selected with sizes they support.
+  restricts the pool as in the exhaustive design. By default, **all playable
+  generators** in the supplied build are included; editor-only generators are
+  excluded. Catalog controls are not a compatibility guarantee: preflight the
+  chosen size and colony count against the engine, publish exclusions, and use
+  `generator_overrides` for documented generator-specific settings (for example,
+  `{"52": {"slant": 0}}` for Rice Terraces at 128x128). Never silently replace a
+  failed generator with another one. A single-generator cohort is a specialized experiment and must not
+  be presented as general AI strength.
+
+  Set `balanced_duels: true` for a balanced 1v1 sample: `sample_games` must be
+  even, with one map size and at least two AIs. Each block plays the same map and
+  game seed twice, swapping the AI starting sides. Generator quotas differ by at
+  most two games, as do total AI-pair quotas. Block order and build assignment are
+  shuffled reproducibly. For 10,000 games across 66 generators and eight AIs,
+  this means 150 or 152 games per generator and 356 or 358 games per AI pairing.
+  Bootstrap uncertainty must resample whole paired blocks. Build IDs repeated
+  in `builds` retain their weighting for heterogeneous worker capacity.
   `ais`/`formats`/`ticks`/`candidates` are shared with the exhaustive path and mean
   the same thing. This is the *only* sampling path for `ai_comparison` -- do not
   add a second, separate script that reimplements job construction outside this
