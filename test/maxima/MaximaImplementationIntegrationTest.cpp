@@ -1471,7 +1471,7 @@ static void schoolPopulationScalingRegressions()
     Player player;player.setTeam(game.teams[0]);AIMaxima::Maxima ai(&player);
     ai.environment.connected_abundance=50;ai.environment.mobility_opportunity=0;
     ai.demands.technology=100;
-    for(const auto& test:std::vector<std::pair<int,int>>{{47,0},{48,3},{199,3},{200,4},{250,5},{500,10}})
+    for(const auto& test:std::vector<std::pair<int,int>>{{47,0},{48,3},{279,3},{280,4},{350,5},{700,10}})
     {
         ai.snapshot.population=test.first;ai.build_policy_bids();
         assert(ai.policy_bids[AIMaxima::Maxima::PolicyTechnology].desired_schools==test.second);

@@ -56,8 +56,8 @@ Controller state belongs to the building's lifetime and is saved with Maxima.
 
 Schools retain their early population and technology gates. Once the higher
 technology gate passes, their target is the greater of the configured advanced
-school target (three by default) and population divided by 50, rounded down:
-four schools at 200 population, five at 250, and so on.
+school target (three by default) and population divided by 70, rounded down:
+four schools at 280 population, five at 350, and so on.
 
 The placement planner compares legal construction and upgrades incrementally,
 then revalidates the selected action against the live world. Demand, labour,

@@ -1,6 +1,10 @@
 # School and upgrade policy validation
 
-Final policy: preserve early school gates, then target max(advanced school target,
+This archive records the initial one-per-50 policy at `b050ac514`. Subsequent
+manual testing reduced the current target to one per 70; the original archived
+checksums and results below remain historical.
+
+Initially tested policy: preserve early school gates, then target max(advanced school target,
 population / 50), rounded down. Upgrades preserve at least half of each category
 with two or more existing buildings. A lone building may upgrade, including a
 lone barracks. The existing barracks-seat safeguard still applies when multiple

@@ -2562,7 +2562,7 @@ void Maxima::build_policy_bids()
 	technology.desired_schools=snapshot.population>=school_population_min
 		&& technology.utility>=strategy.economy.school_utility_min
 		? (technology.utility>=second_school_utility_min
-			? std::max(strategy.economy.second_school_target,snapshot.population/50)
+			? std::max(strategy.economy.second_school_target,snapshot.population/70)
 			: strategy.economy.first_school_target)
 		: 0;
 	technology.desired_racetracks=
