@@ -20,7 +20,7 @@ UI step 16: key 51
 UI step 17: Quick clash tile
 UI step 18: key 49
 UI step 19: Random mode (automatic preview)
-Map generation: fingerprint revision 3 seed 2660897930 [complete]:
+Map generation: fingerprint revision 3 seed 2661040585 [complete]:
 UI step 20: key 50
 UI step 21: Final controller
 UI step 22: key 1073741906
@@ -28,9 +28,9 @@ UI step 23: key 13
 UI step 24: Launch
 music dir found: original
 selecting music dir original
-nox::gui.game.checkSum() = e267a6c9
+nox::gui.game.checkSum() = 1aa1f3c8
 automaticEndingGame ended: 30 ticks, 0 minutes, 1 seconds
-GLOB2_GAME_END ticks=30 winner_team=-1 seed=1789908496 map="Random map" orders=0 players=team0:Numbi,team1:Nicowar,team2:Numbi,team3:Numbi
+GLOB2_GAME_END ticks=30 winner_team=-1 seed=1789910020 map="Random map" orders=0 players=team0:Numbi,team1:Nicowar,team2:Numbi,team3:Numbi
 PASS full SDL UI flow mode 1: clicks, nested choices, shared control, presets, profiles, random preview, match launch and speed restoration
 UI step 1: Premade maps
 UI step 2: Players tab
@@ -51,7 +51,7 @@ UI step 16: key 51
 UI step 17: Quick clash tile
 UI step 18: key 49
 UI step 19: Random mode (automatic preview)
-Map generation: fingerprint revision 3 seed 1531250348 [complete]:
+Map generation: fingerprint revision 3 seed 372960478 [complete]:
 UI step 20: key 50
 UI step 21: Final controller
 UI step 22: key 1073741906
@@ -59,9 +59,9 @@ UI step 23: key 13
 UI step 24: Launch
 music dir found: original
 selecting music dir original
-nox::gui.game.checkSum() = 867fb1c8
+nox::gui.game.checkSum() = ee15b4b6
 automaticEndingGame ended: 30 ticks, 0 minutes, 1 seconds
-GLOB2_GAME_END ticks=30 winner_team=-1 seed=1789908504 map="Random map" orders=0 players=team0:local,team1:Nicowar,team2:Numbi,team3:Numbi
+GLOB2_GAME_END ticks=30 winner_team=-1 seed=1789910029 map="Random map" orders=0 players=team0:local,team1:Nicowar,team2:Numbi,team3:Numbi
 PASS full SDL UI flow mode 0: clicks, nested choices, shared control, presets, profiles, random preview, match launch and speed restoration
 UI step 1: Premade maps
 UI step 2: Players tab
@@ -82,12 +82,12 @@ UI step 16: key 51
 UI step 17: Quick clash tile
 UI step 18: key 49
 UI step 19: Random mode (automatic preview)
-Map generation: fingerprint revision 3 seed 1284400993 [complete]:
+Map generation: fingerprint revision 3 seed 2535812035 [complete]:
 UI step 20: key 50
 UI step 21: Launch
 music dir found: original
 selecting music dir original
-nox::gui.game.checkSum() = 15daf850
+nox::gui.game.checkSum() = 58ff3210
 automaticEndingGame ended: 30 ticks, 0 minutes, 1 seconds
-GLOB2_GAME_END ticks=30 winner_team=-1 seed=1789908512 map="Random map" orders=0 players=team0:local,team0:Numbi,team1:Nicowar,team2:Numbi,team3:Numbi
+GLOB2_GAME_END ticks=30 winner_team=-1 seed=1789910037 map="Random map" orders=0 players=team0:local,team0:Numbi,team1:Nicowar,team2:Numbi,team3:Numbi
 PASS full SDL UI flow mode 2: clicks, nested choices, shared control, presets, profiles, random preview, match launch and speed restoration
