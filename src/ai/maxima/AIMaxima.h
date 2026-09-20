@@ -541,6 +541,11 @@ private:
 	Tactics::Program tactics;
 	Tactics::Mission tactical_mission;
 	std::vector<Tactics::Wave> offense_waves;
+	std::map<int, Tactics::WaveDelivery> wave_delivery;
+	// Four consecutive failures permanently select the streaming controller.
+	int failed_waves=0;
+	void observe_wave_delivery();
+	void fall_back_to_streaming();
 	bool control_offense_waves(AIMaximaRuntime::Context& echo);
 	OffenseDiagnostics offense_diagnostics;
 	std::vector<ClearedEnemySite> cleared_enemy_sites;
@@ -623,7 +628,7 @@ private:
 	std::pair<int,int> barracks_capacity(AIMaximaRuntime::Context& echo,
 		int excludedAction=-1) const;
 	AIMaximaPlacement::DevelopmentLimits collect_development_limits(
-		AIMaximaRuntime::Context& echo, int excludedHospitalAction=-1) const;
+		AIMaximaRuntime::Context& echo, int excludedAction=-1) const;
 	bool issue_development_action(AIMaximaRuntime::Context& echo,
 		AIMaximaPlacement::DevelopmentAction& action);
 	void emit_placement_diagnostics(AIMaximaRuntime::Context& echo,

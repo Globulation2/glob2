@@ -80,6 +80,9 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
             executor = function(source, start)
             permitted = {
                 "void Maxima::update_fruit_flags": ("strategy.fruit.units_per_flag",),
+                # Per-flag sizing is mechanical; the director still owns the
+                # target and total attack force, as it does for fruit flags.
+                "void Maxima::control_offense(": ("strategy.military.attack_unit_cap",),
             }
             for setting in permitted.get(start, ()):
                 self.assertEqual(executor.count(setting), 1, setting)
@@ -99,7 +102,7 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
             self.assertLess(replan, tick.index(executor))
         self.assertIn("director.invalidate();", self.source)
 
-    def test_amphibious_fallback_keeps_one_flag_without_withdrawal(self) -> None:
+    def test_amphibious_fallback_keeps_stable_flags_without_withdrawal(self) -> None:
         planner = function(self.combat, "void Maxima::plan_offense")
         control = function(self.combat, "void Maxima::control_offense(")
         tactics = (ROOT / "src/ai/maxima/AIMaximaTactics.h").read_text()

@@ -2562,7 +2562,7 @@ void Maxima::build_policy_bids()
 	technology.desired_schools=snapshot.population>=school_population_min
 		&& technology.utility>=strategy.economy.school_utility_min
 		? (technology.utility>=second_school_utility_min
-			? strategy.economy.second_school_target
+			? std::max(strategy.economy.second_school_target,snapshot.population/70)
 			: strategy.economy.first_school_target)
 		: 0;
 	technology.desired_racetracks=
@@ -3920,8 +3920,17 @@ void Maxima::handle_event(Context& echo, const RuntimeEvent& event)
 			tactical_mission.flagId=offense_waves.front().flagId;
 		if(tactical_flag && offense_waves.empty())
 		{
-			tactical_mission.reset();
-			campaign.state=CampaignIdle;
+			if(!attack_flags.empty())
+			{
+				tactical_mission.flagId=attack_flags.front();
+				if(tactical_mission.targetGid>=0)
+					attack_flag_targets[tactical_mission.flagId]=tactical_mission.targetGid;
+			}
+			else
+			{
+				tactical_mission.reset();
+				campaign.state=CampaignIdle;
+			}
 		}
 	}
 	if(event.type == RuntimeEvent::GuardFlagDeleted)
@@ -4483,7 +4492,7 @@ Maxima::collect_development_intents(
 
 
 AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
-	Context& echo, int excludedHospitalAction) const
+	Context& echo, int excludedAction) const
 {
 	using namespace AIMaximaPlacement;DevelopmentLimits limits;
 	limits.newConstruction=budget.construction_sites;
@@ -4504,11 +4513,49 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
 		limits.upgradePriorities[std::make_pair(weightedTypes[i],1)]=firstWeights[i];
 		limits.upgradePriorities[std::make_pair(weightedTypes[i],2)]=secondWeights[i];
 	}
-	if(snapshot.warriors>snapshot.trained_warriors)
+	// Except for a lone building, keep at least half of each category operational.
+	// New sites do not provide service yet and cannot authorize more downtime.
+	std::map<int,std::pair<int,bool>> service;
+	for(int id=0;id<Building::MAX_COUNT;++id)
+	{
+		const Building* b=echo.player->team->myBuildings[id];
+		if(!b || b->type->isVirtual || b->buildingState==Building::DEAD
+		   || b->buildingState==Building::WAITING_FOR_DESTRUCTION
+		   || b->constructionResultState==Building::NEW_BUILDING
+		   || (b->type->isBuildingSite && b->type->level==0
+			&& b->constructionResultState!=Building::REPAIR))continue;
+		service[b->gid]=std::make_pair(b->type->shortTypeNum,
+			b->buildingState==Building::ALIVE && !b->type->isBuildingSite
+			&& b->constructionResultState==Building::NO_CONSTRUCTION);
+	}
+	for(const auto& record:echo.get_building_register().found())
+		if(record.second.upgrading)
+		{
+			const Building* b=echo.get_building_register().get_building(record.first);
+			if(b && service.count(b->gid))service[b->gid].second=false;
+		}
+	for(const auto& entry:development_planner.actions())
+	{
+		const DevelopmentAction& a=entry.second;
+		if(a.id==excludedAction || (a.type!=UpgradeBuilding && a.type!=RepairBuilding)
+		   || a.state!=ParcelReserved
+		   || !echo.get_building_register().is_building_found(a.buildingId))continue;
+		const Building* b=echo.get_building_register().get_building(a.buildingId);
+		if(service.count(b->gid))service[b->gid].second=false;
+	}
+	std::map<int,std::pair<int,int>> categories;
+	for(const auto& entry:service)
+	{
+		auto& count=categories[entry.second.first];
+		count.first+=entry.second.second;
+		++count.second;
+	}
+	if(snapshot.warriors>snapshot.trained_warriors
+	   && categories[IntBuildingType::ATTACK_BUILDING].second>1)
 	{
 		// Training must keep running while the next tier is built. Recheck at
 		// issue time too, including orders already issued but not yet observed.
-		const auto seats=barracks_capacity(echo,excludedHospitalAction);
+		const auto seats=barracks_capacity(echo,excludedAction);
 		const int keep=std::max(1,(seats.second+1)/2);
 		for(int level=1;level<=2;++level)
 			if(seats.first-globalContainer->buildingsTypes
@@ -4525,7 +4572,7 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
 		hospital.level=b->type->level+1;
 		hospitals.push_back(hospital);
 	}
-	if(committed_hospital_beds(hospitals,excludedHospitalAction)
+	if(committed_hospital_beds(hospitals,excludedAction)
 	   >=Labour::hospitalBedsWanted(snapshot.warriors,
 		strategy.military.hospital_beds_per_warrior_percent))
 	{
@@ -4569,6 +4616,10 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
 		else if(i->second.type==UpgradeBuilding&&i->second.fromLevel==2)
 			++limits.activeLevel2Upgrades;
 	}
+	for(const auto& entry:categories)
+		if(entry.second.second>=2 && entry.second.first-1<(entry.second.second+1)/2)
+			for(int level=0;level<=2;++level)
+				limits.upgradePriorities[std::make_pair(entry.first,level)]=0;
 	limits.activeNewConstruction=std::max(limits.activeNewConstruction,
 		snapshot.building_sites);
 	return limits;
@@ -4610,6 +4661,9 @@ bool Maxima::issue_development_action(Context& echo,
 			   || limits.upgradePriority(action.buildingType,action.fromLevel)==0)
 				return false;
 		}
+		else if(action.type==RepairBuilding
+		        && !collect_development_limits(echo,action.id).repairAllowed(action.buildingType))
+			return false;
 		if(!echo.issue_upgrade_repair(buildingId,action.type==RepairBuilding))return false;
 		// Repairs execute the labor allocation used to score their cost and
 		// downtime; upgrade staffing still follows the current director plan.
@@ -4796,7 +4850,7 @@ void Maxima::development_cycle(Context& echo)
 			development_planner.actions().find(reservedActions[i]);
 		if(found==development_planner.actions().end())continue;
 		DevelopmentAction pending=found->second;RejectionReason reason=RejectedReservation;
-		if(pending.type==UpgradeBuilding
+		if((pending.type==UpgradeBuilding || pending.type==RepairBuilding)
 		   &&!development_planner.revalidateSelection(refreshedWorld,{},
 			collect_development_limits(echo,pending.id),pending,&reason))
 		{
