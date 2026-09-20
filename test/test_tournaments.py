@@ -173,6 +173,9 @@ class Fixture(unittest.TestCase):
         worker = Worker(self.root / 'lightweight-worker')
         try:
             attempt = self.coordinator.dispatch('one', self.status)[0]
+            attempt['job']['type'] = 'game'
+            attempt['job']['config']['players'] = ['numbi', 'castor']
+            attempt['job']['seeds']['game'] = 1
             shutil.copytree(self.root / 'bundles' / self.bundle['id'], worker.root / 'bundles' / self.bundle['id'])
             worker.enqueue(attempt)
             directory = worker.root / 'attempts' / attempt['id']

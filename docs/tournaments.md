@@ -365,7 +365,8 @@ host. Generator defaults/ranges are always discoverable in its pinned catalog.
   both exponent 7), which keeps ratings directly comparable while minimizing CPU.
   It records only each game's result by default; request `outputs.telemetry`
   explicitly when a study needs per-tick AI or team history. Incidental maps,
-  logs and reports are retained only when outputs are requested.
+  logs and reports are omitted for successful game jobs with no requested outputs;
+  failed jobs and map-generation jobs retain their diagnostic artifacts.
   `formats` and `generator_params` can explicitly request another study design. Duels
   pair every AI; 2v2 defaults to homogeneous
   pairs and accepts explicit two-player `rosters`; four-colony FFA balances AI

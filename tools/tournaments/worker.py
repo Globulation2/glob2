@@ -387,7 +387,9 @@ def pack(root, identity):
         # requested outputs need not copy incidental maps, logs and reports back
         # to the coordinator. They can dominate a short duel's wall time and
         # leave otherwise idle worker slots waiting for collection.
-        retain_incidental = bool(attempt['job']['outputs'])
+        retain_incidental = (attempt['job']['type'] != 'game' or
+                             execution['category'] != 'success' or
+                             bool(attempt['job']['outputs']))
         artifacts = []
         if retain_incidental:
             for path in sorted(directory.rglob('*')):
