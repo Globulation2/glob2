@@ -401,11 +401,18 @@ int saveRotatedMaps(Game &game, const GenerationResult &result, const Generation
 	Game canonical(nullptr);
 	if (!loadMapBytes(canonical, generated))
 		return 5;
-	const std::string first = saveMapBytes(canonical, label(0));
-	// A freshly generated Game and the same map read back from its file save identically except
-	// for the header's content SHA1: a fresh Game still holds map offset 0 when Game::save hashes
-	// its first header write, before the real offset is patched in. Games only ever start from
-	// the file, so rotations work from the reloaded form, which must re-save byte for byte.
+	const auto loadedOffset = canonical.mapHeader.getMapOffset();
+	std::string first = saveMapBytes(canonical, label(0));
+	// Loading a fresh map can initialize building call lists, changing the size of
+	// the team data before the map. Game::save hashes the old header offset before
+	// patching it, so prime the new offset before checking canonical saved bytes.
+	// Do not reload here: the following check must still detect loader mutations.
+	if (canonical.mapHeader.getMapOffset() != loadedOffset)
+		first = saveMapBytes(canonical, label(0));
+	// Fresh generation may differ from its loaded form in initialized building
+	// call lists and in the header SHA1 (the first save hashes map offset 0).
+	// Games start from the file, so rotations use the loaded form; subsequent
+	// reloads must preserve its canonical bytes without any further normalization.
 	const bool stable = first == generated;
 	bool idempotent = false;
 	{
