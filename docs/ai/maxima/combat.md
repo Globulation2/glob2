@@ -36,8 +36,9 @@ samples retain the prediction and enforce visible lower bounds.
 
 Army demand grows from the largest estimated enemy force by
 `1 + game_tick / (100 * assault.force_growth_ticks)`, rounded up. A warrior
-floor and the engine unit limit bound demand. Food, labour and training capacity
-constrain actual production.
+floor and an independent `game_tick / 1000` backup demand protect against
+incomplete reconnaissance; Maxima uses the larger target. The engine unit limit
+bounds demand. Food, labour and training capacity constrain actual production.
 
 Eligible warriors are those meeting the flag level requirement and available
 for offense. Usable barracks reservations take precedence: each warrior and

@@ -63,7 +63,8 @@ int main()
 	assert(desiredArmy(100,0,1000,12,1024)==100);
 	assert(desiredArmy(100,10000,1000,12,1024)==110);
 	assert(desiredArmy(100,50000,1000,12,1024)==150);
-	assert(desiredArmy(0,50000,1000,12,1024)==12);
+	assert(desiredArmy(0,50000,1000,12,1024)==50);
+	assert(desiredArmy(10,100000,1000,12,1024)==100);
 	assert(desiredArmy(100,~0u,1000,12,1024)==1024);
 	assert(desiredArmy(INT_MAX,~0u,1000000,12,1024)==1024);
 	Wave wave;
