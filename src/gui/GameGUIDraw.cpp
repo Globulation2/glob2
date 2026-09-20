@@ -834,13 +834,9 @@ void GameGUI::drawStatisticsPage(int y)
 
 void GameGUI::drawWinProbabilities(int x, int y)
 {
-	// Only shown when the win probability rule is on. In a normal game the
-	// model has no say in the outcome, and putting a number on everyone's
-	// chances would be telling players something the match does not run by.
-	const auto &conditions = game.gameHeader.getWinningConditions();
-	if (std::none_of(conditions.begin(), conditions.end(),
-			[](const std::shared_ptr<WinningCondition> &condition)
-			{ return condition->getType() == WCWinProbability; }))
+	// Spectators can use the model to follow any AI-only game. Players do not
+	// receive an extra prediction about an outcome that the game may not use.
+	if (!globalContainer->liveSpectating)
 		return;
 
 	std::vector<int> allianceOf;

@@ -1238,8 +1238,8 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 			ui.dropdown("rule/winProbability", {fieldX, yy + 5, fieldW, 29}, options,
 						current < int(choices.size()) ? current : 0,
 						[apply, choices](int v) { apply(choices[v]); });
-			help = tr("Ends the match once the result is no longer in doubt, and shows "
-					  "each player's chance of winning in the statistics.");
+			help = tr("Ends the match once the result is no longer in doubt. Spectators "
+					  "can always see each player's chance of winning in the statistics.");
 		}
 		ui.text(x + 10, yy + 39, help, "little", w - 40, true);
 		yy += 65;

@@ -183,8 +183,7 @@ test asserts it.
 
 ![The rule in the custom game's Victory section](win-probability/custom-game-rule.png)
 
-Off by default. A normal game is unchanged: the model has no say in the outcome,
-and the statistics screen does not even show it.
+Off by default. A normal game is unchanged: the model has no say in the outcome.
 
 Turned on from the custom game rules, the match ends as soon as the model is
 sure enough. It is evaluated on the 512-tick boundary `TeamStats` already samples
@@ -193,11 +192,9 @@ opening samples can look lopsided for reasons that mean nothing. It is placed
 last among the winning conditions, so an actual elimination or prestige win is
 always the reason a game ended when one is available on the same tick.
 
-With the rule on, the statistics screen shows each side's chance under the
-existing worker and food figures. Allies share one figure, because the model
-rates the alliance. With the rule off the panel is not drawn at all: the model
-has no say in a normal game, and putting a number on everyone's chances would
-tell players something the match does not run by.
+Live spectators always see each side's chance under the existing worker and food
+figures, whether the rule is on or off. Allies share one figure, because the model
+rates the alliance. Players do not see the panel during a normal game.
 
 ![Each side's chance of winning, under the statistics](win-probability/in-game-panel.png)
 

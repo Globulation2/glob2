@@ -332,8 +332,11 @@ cohorts use common generated maps
 unless generator variation itself is the experiment. Each build needs an eligible
 host. Generator defaults/ranges are always discoverable in its pinned catalog.
 
-* `ai_comparison`: ais defaults to all active selectable implementations;
-  formats defaults to 1v1, 2v2, ffa. Duels pair every AI; 2v2 defaults to homogeneous
+* `ai_comparison`: ais defaults to all active selectable implementations. The standard
+  Elo cohort defaults to 1v1 on generated 128x128 maps (`width` and `height` are
+  both exponent 7), which keeps ratings directly comparable while minimizing CPU.
+  `formats` and `generator_params` can explicitly request another study design. Duels
+  pair every AI; 2v2 defaults to homogeneous
   pairs and accepts explicit two-player `rosters`; four-colony FFA balances AI
   participation through combinations and cyclic player orders. Map rotations and
   player-order rotations balance team indices and starts. Identical logical jobs
@@ -343,12 +346,13 @@ host. Generator defaults/ranges are always discoverable in its pinned catalog.
   AIs x formats x generators x map seeds x sizes -- which reaches into the
   hundreds of thousands of games for a broad generator sweep. Set `sample_games`
   (an integer count) to draw a bounded random sample instead: each sample game
-  independently draws its own format, AI matchup, generator and size, submitted
+  independently draws its AI matchup and generator; the standard format and size
+  remain 1v1 and 128x128 unless the configuration overrides them. Games are submitted
   as a single inline-generation job (`--generator`/`--map-seed` embedded directly
   in `--run-game`, no separate `generate_map` dependency). `sample_seed` (default
   1) makes the draw reproducible; `sizes` is a list of `generator_params`-shaped
-  dicts to choose from per sample (defaults to a single size built from
-  `generator_params`, i.e. unchanged behavior if omitted); `generators` still
+  dicts to choose from per sample (defaulting to one 128x128 size, or to an
+  explicit `generator_params` value); `generators` still
   restricts the pool as in the exhaustive design, defaulting to every non-editor-only
   generator in the bundle's catalog rather than the exhaustive design's `[15]`.
   `ais`/`formats`/`ticks`/`candidates` are shared with the exhaustive path and mean

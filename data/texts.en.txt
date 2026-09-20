@@ -2342,8 +2342,8 @@ Off (play it out)
 97% sure
 [99% sure]
 99% sure
-[Ends the match once the result is no longer in doubt, and shows each player's chance of winning in the statistics.]
-Ends the match once the result is no longer in doubt, and shows each player's chance of winning in the statistics.
+[Ends the match once the result is no longer in doubt. Spectators can always see each player's chance of winning in the statistics.]
+Ends the match once the result is no longer in doubt. Spectators can always see each player's chance of winning in the statistics.
 [Stats births]
 Births
 [Stats deaths]

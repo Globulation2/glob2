@@ -26,7 +26,8 @@ class Planner:
 
     def generated(self, method, seed, n, variant=None):
         config = self.config
-        generator = {'generator': method, 'params': dict(config.get('generator_params', {}), teams=n),
+        default_params = {'width': 7, 'height': 7} if self.kind == 'ai_comparison' else {}
+        generator = {'generator': method, 'params': dict(config.get('generator_params', default_params), teams=n),
                      'candidates': config.get('candidates', 5), 'rotations': n}
         if variant:
             generator['params'].update(variant)
@@ -138,7 +139,9 @@ class Planner:
             # than for every Planner kind (fairness/ablations/generator_stress
             # keep their own outputs default of none, set below via self.game()).
             config.setdefault('outputs', {'telemetry': ['team-timeline']})
-            formats = config.get('formats',['1v1','2v2','ffa'])
+            # The standard Elo cohort is a cheap, directly comparable duel at one
+            # map size. Callers can still request teams or FFA explicitly.
+            formats = config.get('formats',['1v1'])
             for fmt in formats:
                 if fmt not in ('1v1','2v2','ffa'): raise ValueError('unknown format')
             if config.get('sample_games'):
@@ -150,7 +153,8 @@ class Planner:
                 rng = random.Random(config.get('sample_seed', 1))
                 sample_methods = config.get('generators') or [
                     g['method'] for g in self.bundles[self.builds[0]]['capabilities']['generators'] if not g.get('editorOnly')]
-                sizes = config.get('sizes') or [config.get('generator_params', {})]
+                default_params = {'width': 7, 'height': 7}
+                sizes = config.get('sizes') or [config.get('generator_params', default_params)]
                 for _ in range(config['sample_games']):
                     self.sampled_game(rng, rng.choice(self.builds), ais, sample_methods, sizes, formats)
             else:

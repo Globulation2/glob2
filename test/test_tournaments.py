@@ -385,10 +385,9 @@ class AnalysisTests(unittest.TestCase):
         self.assertNotIn('--win-probability',
                          EngineJob('game').command(plain_game, bundle_directory, '/tmp/attempt', {}))
 
-    def test_sample_games_draws_independent_properties_via_inline_generation(self):
-        """sample_games is the one place ai_comparison departs from an exhaustive
-        cross product -- it must stay the only place, not a second, disconnected
-        script duplicating this logic outside the Planner."""
+    def test_sample_games_uses_standard_duels_via_inline_generation(self):
+        """The standard Elo cohort uses 128x128 duels. Sampling remains the one
+        place ai_comparison departs from an exhaustive cross product."""
         from tools.tournaments.experiments import Planner
         bundle = {'id': 'a'*64, 'capabilities': {
             'ais': [{'id': 1, 'name': 'numbi'}, {'id': 2, 'name': 'castor'},
@@ -409,8 +408,11 @@ class AnalysisTests(unittest.TestCase):
             generators.add(j['config']['generator'])
             n = 2 if j['labels']['format'] == '1v1' else 4
             self.assertEqual(len(j['config']['players']), n)
-        self.assertEqual(formats, {'1v1', '2v2', 'ffa'})
+        self.assertEqual(formats, {'1v1'})
         self.assertEqual(generators, {15, 21})  # editor-only generator never drawn
+        for j in games:
+            self.assertEqual(j['config']['params']['width'], 7)
+            self.assertEqual(j['config']['params']['height'], 7)
         # Same seed is reproducible; a different one draws a different sample.
         again = Planner('ai_comparison', config, [bundle]).plan()
         self.assertEqual([j['id'] for j in manifest['jobs']], [j['id'] for j in again['jobs']])
