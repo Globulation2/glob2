@@ -182,12 +182,19 @@ class Coordinator:
         self.expire(now)
         if self.mode != 'running' or not status['accepting']:
             return []
-        count = self.db.execute("SELECT count(*) FROM attempts WHERE host=? AND state='leased'", (host,)).fetchone()[0]
+        # Finished results retain their leases until verified, but no longer consume
+        # compute prefetch capacity. Missing attempts remain counted (input delivery).
+        states = {a['id']: a.get('state') for a in status.get('attempts', [])}
+        computing = [r for r in self.db.execute(
+            "SELECT id,job_id FROM attempts WHERE host=? AND state='leased'", (host,))
+            if states.get(r['id']) not in ('executed', 'packing', 'done', 'acknowledged', 'cancelled')]
+        count = len(computing)
         other_work = sum(item.get('experiment') != self.manifest['id'] and item.get('state') in ('queued','running') for item in status.get('attempts', []))
         room = status['slots'] * (1 + self.settings['prefetch']) - count - other_work
         dispatched = []
-        buffered_seconds = sum(json.loads(r['spec'])['limits'].get('estimated_seconds',60)
-                               for r in self.db.execute("SELECT j.spec FROM attempts a JOIN jobs j ON j.id=a.job_id WHERE a.host=? AND a.state='leased'",(host,)))
+        buffered_seconds = sum(json.loads(self.db.execute('SELECT spec FROM jobs WHERE id=?',
+                               (r['job_id'],)).fetchone()[0])['limits'].get('estimated_seconds',60)
+                               for r in computing)
         for row in self.db.execute("SELECT * FROM jobs WHERE state='pending' ORDER BY ordinal").fetchall():
             if len(dispatched) >= room:
                 break
@@ -301,6 +308,54 @@ class Coordinator:
                 tmp.replace(path)
         return path
 
+    def poll_host(self, config, transport, collect_only=False):
+        """Control/renewal never waits on bulk input or result transfers."""
+        status = transport.rpc('status')
+        if not status['daemon_running']: transport.rpc('start')
+        self.host_status(config['name'], status)
+        self.renew(config['name'], status['attempts'])
+        # Keep locally reserved input deliveries alive while this host is reachable.
+        live = {a['id'] for a in status['attempts']}
+        reserved = [dict(r) for r in self.db.execute(
+            "SELECT id,token FROM attempts WHERE host=? AND state='leased'", (config['name'],))
+            if r['id'] not in live]
+        self.renew(config['name'], reserved)
+        transport.rpc('control', experiment=self.manifest['id'], mode=self.mode)
+        if not collect_only: self.dispatch(config['name'], status)
+        return status
+
+    def deliver_attempt(self, transport, identity):
+        row = self.db.execute("SELECT * FROM attempts WHERE id=? AND state='leased'", (identity,)).fetchone()
+        if not row: return True
+        if self.mode != 'running': return False
+        attempt = read_json(self.root / 'transfers' / (identity + '.json'))
+        build = attempt['job']['build']
+        if not transport.rpc('has_bundle', identity=build)['present']:
+            archive = self.archive_bundle(build)
+            archive_id = file_hash(archive)
+            if not send_file(transport, archive, archive_id): return False
+            transport.rpc('install', identity=archive_id, bundle_id=build)
+        for artifact in attempt['resolved_inputs'].values():
+            if not send_file(transport, self.root / 'artifacts' / artifact['sha256'], artifact['sha256']):
+                return False
+        # Controls may change during transfer. Enqueue is idempotent if its reply is lost.
+        row = self.db.execute("SELECT state FROM attempts WHERE id=?", (identity,)).fetchone()
+        if row['state'] != 'leased': return True
+        if self.mode != 'running': return False
+        return transport.rpc('enqueue', attempt=attempt)['enqueued']
+
+    def collect_attempt(self, transport, item):
+        record = transport.rpc('record', identity=item['id'])
+        for artifact in record['artifacts']:
+            # Two attempts may share the same artifact. Coordinate resumable offsets
+            # across all collection lanes, including distinct hosts.
+            with lock(self.root / 'transfers' / (artifact['sha256'] + '.receive.lock'), blocking=True):
+                if not receive_file(transport, self.root / 'artifacts', artifact['sha256'], artifact['bytes'], budget=8):
+                    return False
+        self.accept(record)
+        transport.rpc('ack', identity=item['id'], token=item['token'])
+        return True
+
     def sync_host(self, config, collect_only=False):
         # Each host loop gets its own SQLite connection. Network, compression and
         # copying never run under the lease authority's database transaction.
@@ -350,6 +405,9 @@ class Coordinator:
             transport.rpc('enqueue', attempt=attempt)
 
     def run(self, hosts, once=False, collect_only=False):
+        if not once:
+            from .pipeline import run
+            return run(self, hosts, collect_only)
         with lock(self.root / 'coordinator.lock'):
             with concurrent.futures.ThreadPoolExecutor(max_workers=min(len(hosts), self.settings.get('transfer_slots', 4))) as pool:
                 pending = {}

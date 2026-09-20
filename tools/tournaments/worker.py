@@ -10,6 +10,7 @@ import subprocess
 import sys
 import time
 import traceback
+import tempfile
 import uuid
 import zipfile
 
@@ -21,7 +22,7 @@ from .diagnostics import postmortem
 from .model import PROTOCOL_VERSION, validate_job
 from .transfer import get_chunk, offset, put_chunk
 
-HOST_DEFAULTS = {'slots': max(1, (os.cpu_count() or 1) - 1), 'collect_slots': 1,
+HOST_DEFAULTS = {'slots': max(1, (os.cpu_count() or 1) - 1), 'collect_slots': 2, 'result_backlog_limit': 128,
                  'disk_reserve_bytes': 1024**3, 'spool_budget_bytes': 10 * 1024**3,
                  'cache_budget_bytes': 20 * 1024**3, 'builds': [], 'memory_mb': None}
 
@@ -67,7 +68,7 @@ class Worker:
         if unknown:
             raise ValueError('unknown host fields: ' + ','.join(sorted(unknown)))
         config = HOST_DEFAULTS | values
-        for key in ('slots', 'collect_slots', 'spool_budget_bytes', 'cache_budget_bytes'):
+        for key in ('slots', 'collect_slots', 'result_backlog_limit', 'spool_budget_bytes', 'cache_budget_bytes'):
             if type(config[key]) is not int or config[key] < 1:
                 raise ValueError(key + ' must be a positive integer')
         if config['disk_reserve_bytes'] < 0:
@@ -83,9 +84,11 @@ class Worker:
         pending = [dict(row) for row in self.db.execute(
             "SELECT id,token,experiment,state,started FROM queue WHERE state NOT IN ('acknowledged','cancelled') ORDER BY updated")]
         return {'protocol_version': PROTOCOL_VERSION, 'package_id': package_identity(),
-                'platform': platform_identity(), 'slots': self.config['slots'], 'builds': self.config['builds'],
+                'platform': platform_identity(), 'slots': self.config['slots'],
+                'collect_slots': self.config['collect_slots'], 'result_backlog_limit': self.config['result_backlog_limit'], 'builds': self.config['builds'],
                 'counts': counts, 'attempts': pending, 'free_bytes': free, 'spool_bytes': spool, 'cache_bytes': usage(self.root / 'objects') + usage(self.root / 'bundles'),
-                'accepting': free > self.config['disk_reserve_bytes'] and spool < self.config['spool_budget_bytes'],
+                'accepting': (free > self.config['disk_reserve_bytes'] and spool < self.config['spool_budget_bytes']
+                              and sum(counts.get(state, 0) for state in ('executed','packing','done')) < self.config['result_backlog_limit']),
                 'daemon_running': locked(self.root / 'daemon.lock'),
                 'daemon_pid': read_json(self.root / 'daemon.json')['pid'] if (self.root / 'daemon.json').exists() else None}
 
@@ -144,6 +147,9 @@ class Worker:
         if usage(self.root / 'bundles') + archive.stat().st_size > self.config['cache_budget_bytes']:
             raise ValueError('bundle cache budget reached; explicit cleanup required')
         with lock(self.root / ('bundle-' + bundle_id + '.lock'), blocking=True):
+            if final.exists():
+                inspect_bundle(final)
+                return {'installed': True}
             temporary = self.root / 'bundles' / ('.' + bundle_id)
             if temporary.exists():
                 shutil.rmtree(temporary)
@@ -201,6 +207,9 @@ class Worker:
         return {'starting': True}
 
     def tick(self):
+        # Host limits are operational controls; changing them needs no daemon restart.
+        path = self.root / 'host.json'
+        self.config = HOST_DEFAULTS | (read_json(path) if path.exists() else {})
         now = time.time()
         rows = self.db.execute("SELECT * FROM queue WHERE state IN ('running','packing','executed')").fetchall()
         for row in rows:
@@ -346,18 +355,22 @@ def execute(root, identity):
 def pack(root, identity):
     worker = Worker(root)
     directory = worker.root / 'attempts' / identifier(identity)
-    with lock(directory / 'pack.lock'), lock(worker.root / 'spool.lock', blocking=True):
+    with lock(directory / 'pack.lock'), tempfile.TemporaryDirectory(prefix='packing-', dir=directory) as staging:
         if (directory / 'record.json').exists():
             return
+        # Remove only abandoned private staging left by a killed packer.
+        for old in directory.glob('packing-*'):
+            if old != Path(staging): shutil.rmtree(old)
+        packing_started = time.time()
         attempt = read_json(directory / 'attempt.json')
         execution = read_json(directory / 'execution.json')
         artifacts = []
         for path in sorted(directory.rglob('*')):
             relative = path.relative_to(directory).as_posix()
-            if not path.is_file() or path.is_symlink() or relative.startswith(('home/', 'inputs/', 'output/profile/')) or '/profile/' in relative or relative in ('attempt.json', 'execution.json', 'record.json') or path.suffix == '.lock':
+            if not path.is_file() or path.is_symlink() or (relative.startswith(('home/', 'inputs/', 'output/profile/')) or relative.split('/')[0].startswith('packing-')) or '/profile/' in relative or relative in ('attempt.json', 'execution.json', 'record.json') or path.suffix == '.lock':
                 continue
             # A packing restart replaces objects atomically with identical bytes.
-            meta = store_artifact(path, worker.root / 'spool', compress=path.stat().st_size > 4096 and path.suffix not in ('.json',))
+            meta = store_artifact(path, staging, compress=path.stat().st_size > 4096 and path.suffix not in ('.json',))
             meta['path'] = relative[7:] if relative.startswith('output/') else relative
             artifacts.append(meta)
         present = {a['path'] for a in artifacts}
@@ -376,8 +389,19 @@ def pack(root, identity):
             execution['category'] = 'artifact_failure'
         record = {'schema_version': 1, 'id': identity, 'token': attempt['token'], 'experiment': attempt['experiment'],
                   'job': attempt['job'], 'host': attempt['host'], 'package_id': attempt['package_id'],
-                  **execution, 'artifacts': artifacts, 'missing_artifacts': missing}
-        atomic_json(directory / 'record.json', record)
+                  **execution, 'artifacts': artifacts, 'missing_artifacts': missing,
+                  'packing': {'started': packing_started, 'seconds': time.time() - packing_started,
+                              'queue_seconds': max(0, packing_started - execution['finished'])}}
+        # Compression is private and parallel. Publication and acknowledgement cleanup
+        # share a short lock so no referenced object can disappear before record.json.
+        with lock(worker.root / 'spool.lock', blocking=True):
+            for artifact in artifacts:
+                src = Path(staging) / artifact['sha256']
+                if src.exists():
+                    os.replace(src, worker.root / 'spool' / artifact['sha256'])
+            from .common import fsync_directory
+            fsync_directory(worker.root / 'spool')
+            atomic_json(directory / 'record.json', record)
     worker.close()
 
 
@@ -429,17 +453,27 @@ def rpc(root, request):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('command', choices=('rpc', 'daemon', 'execute', 'pack'))
+    parser.add_argument('command', choices=('rpc', 'rpc-stream', 'daemon', 'execute', 'pack'))
     parser.add_argument('root')
     parser.add_argument('attempt', nargs='?')
     args = parser.parse_args()
-    if args.command == 'rpc':
-        try:
-            request = json.loads(sys.stdin.buffer.read(2 * 1024 * 1024 + 1))
-            result = {'ok': True, 'value': rpc(args.root, request)}
-        except Exception as error:
-            result = {'ok': False, 'error': str(error)}
-        sys.stdout.buffer.write(canonical(result) + b'\n')
+    if args.command in ('rpc', 'rpc-stream'):
+        while True:
+            payload = (sys.stdin.buffer.readline(2 * 1024 * 1024 + 1) if args.command == 'rpc-stream'
+                       else sys.stdin.buffer.read(2 * 1024 * 1024 + 1))
+            if not payload:
+                break
+            try:
+                if len(payload) > 2 * 1024 * 1024:
+                    raise ValueError('RPC request exceeds bound')
+                request = json.loads(payload)
+                result = {'ok': True, 'value': rpc(args.root, request)}
+            except Exception as error:
+                result = {'ok': False, 'error': str(error)}
+            sys.stdout.buffer.write(canonical(result) + b'\n')
+            sys.stdout.buffer.flush()
+            if args.command == 'rpc' or len(payload) > 2 * 1024 * 1024:
+                break
     elif args.command == 'daemon':
         try:
             with lock(Path(args.root) / 'daemon.lock'):

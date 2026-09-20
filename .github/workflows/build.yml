@@ -167,6 +167,7 @@ jobs:
       - name: Test tournament protocol, AI configuration and main CLI
         run: |
           python3 test/test_tournaments.py
+          python3 test/test_tournament_pipeline.py
           python3 test/test_distributed_map_telemetry.py
           python3 test/test_distributed_game_telemetry.py
           python3 test/test_map_fairness_tournament.py
