@@ -1,0 +1,24 @@
+{
+  "builds": [
+    "f0136211e8364bda475a4700354af613d00d12c1e514c7e6ed45b9b7c6751a66",
+    "eca75a26dfc37b947e43284aca1799fe731eed0ba42443170bce496d23130942",
+    "eca75a26dfc37b947e43284aca1799fe731eed0ba42443170bce496d23130942",
+    "eca75a26dfc37b947e43284aca1799fe731eed0ba42443170bce496d23130942"
+  ],
+  "candidates": 5,
+  "formats": [
+    "1v1"
+  ],
+  "generator_params": {
+    "height": 7,
+    "width": 7
+  },
+  "generators": [
+    15
+  ],
+  "id": "ai-elo-maxima-128-duels-final-20260919",
+  "outputs": {},
+  "sample_games": 3000,
+  "sample_seed": 20260919,
+  "ticks": 90000
+}

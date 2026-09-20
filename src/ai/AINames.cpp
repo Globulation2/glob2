@@ -23,33 +23,24 @@ namespace AINames
 		//               nullptr when the AI can't be picked from the CLI (NONE).
 		//   stringKey — StringTable base key: the display name is "[<key>]"
 		//               and the description "[<key>-Description]".
-		//   strength  — measured, not judged: see the note below. 0 for NONE.
-		//
-		// Difficulty and strength both come from a tournament of 2,391 randomly
-		// drawn games covering every AI, all three formats and every map generator
-		// and size, rated by maximum likelihood over the finishing orders
-		// (tools/tournaments_ai_leaderboard.py). Strength is on Elo's scale --
-		// 400 points is a factor of ten in the odds -- averaged over the formats:
-		//
-		//   nicowar 1684 | maxima 1665 | cabino 1649 || cortex 1538 ||
-		//   econo 1411 | castor 1390 | warrush 1371 | numbi 1293
-		//
-		// The two widest gaps in that ladder are the 111 points below cabino and
-		// the 127 below cortex, and those are where the labels are cut, which is
-		// why Medium holds one AI and Easy four. Earlier labels were assigned by
-		// judgement and had cabino, castor and warrush all as Medium; the games
-		// put cabino among the strongest and the other two near the bottom.
-		// See docs/ai-strength.md for the evidence, including the raw results.
+		//   strength — combined Elo from the completed 3,000-game duel tournament.
+		// All games use random 128x128 symmetric-arena maps, with probability
+		// victory disabled. Ratings start at 1500, use K=32 in manifest order,
+		// and pool the macOS and Linux builds of the same source revision.
+		// Displayed values are rounded once, after the full tournament.
+		// Difficulty tiers: below 1450 Easy, 1450-1699 Medium, 1700+ Hard.
+		// These describe this duel cohort, not every map, format or human game.
+		// See docs/ai-strength.md and docs/validation/ai-elo-20260919/.
 		const struct { int id; const char* cliName; const char* stringKey; const char* difficulty; int strength; } aiTable[] = {
 			{AI::NONE,            nullptr,           "AINone", "No AI orders", 0},
-			{AI::NUMBI,           "numbi",           "AINumbi", "Easy", 1293},
-			{AI::CASTOR,          "castor",          "AICastor", "Easy", 1390},
-			{AI::WARRUSH,         "warrush",         "AIWarrush", "Easy", 1371},
-			{AI::ECONO, "econo", "AIEcono", "Easy", 1411},
-			{AI::NICOWAR,         "nicowar",         "AINicowar", "Hard", 1684},
-			{AI::MAXIMA,          "maxima",          "AIMaxima", "Hard", 1665},
-			{AI::CORTEX,          "cortex",          "AICortex", "Medium", 1538},
-			{AI::CABINO,          "cabino",          "AICabino", "Hard", 1649},
+			{AI::NUMBI,           "numbi",           "AINumbi", "Easy", 1269},
+			{AI::CASTOR,          "castor",          "AICastor", "Easy", 1073},
+			{AI::WARRUSH,         "warrush",         "AIWarrush", "Easy", 1222},
+			{AI::ECONO, "econo", "AIEcono", "Easy", 1184},
+			{AI::NICOWAR,         "nicowar",         "AINicowar", "Hard", 1759},
+			{AI::MAXIMA,          "maxima",          "AIMaxima", "Hard", 1938},
+			{AI::CORTEX,          "cortex",          "AICortex", "Medium", 1656},
+			{AI::CABINO,          "cabino",          "AICabino", "Hard", 1899},
 		};
 	}
 
@@ -57,7 +48,7 @@ namespace AINames
 	{
 		// Weakest first, by measured strength rather than by guess, so the list
 		// a player scrolls reads as a ladder.
-		static const std::vector<int> order = {AI::NUMBI, AI::WARRUSH, AI::CASTOR, AI::ECONO, AI::CORTEX, AI::CABINO, AI::MAXIMA, AI::NICOWAR, AI::NONE};
+		static const std::vector<int> order = {AI::CASTOR, AI::ECONO, AI::WARRUSH, AI::NUMBI, AI::CORTEX, AI::NICOWAR, AI::CABINO, AI::MAXIMA, AI::NONE};
 		return order;
 	}
 	int selectionIndex(int id)
