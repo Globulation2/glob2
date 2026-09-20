@@ -66,6 +66,11 @@ and show the existing load error. Malformed or unsupported settings files, or an
 option value outside its control's range, fall back to the normal four-player
 setup. Writes replace the old file atomically.
 
+Preference format 3 also retains every economy and combat rule, Veteran/Fast start,
+and the sudden-death timer. Formats 1 and 2 remain readable; they did not store
+these choices, so those rules load at their normal defaults. Changing a rule
+only changes that control; it must not implicitly toggle No upgrades.
+
 Save/replay encodings are unchanged. Generated maps use owned temporary snapshots
 outside the map library; saves and replays remain self-contained after cleanup.
 All 32 non-English language tables include localized lobby labels, AI profiles,
