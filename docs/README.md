@@ -34,3 +34,5 @@ drafts. Neither location is committed.
 Evidence required for review should be attached to the pull request or stored on a
 dedicated evidence branch. Preserve only conclusions that remain useful after the
 change merges, and add those conclusions to the appropriate durable guide above.
+
+- [AI ratings](ai/ratings.md): measured opponent strength and interpretation.

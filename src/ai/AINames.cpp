@@ -23,28 +23,45 @@ namespace AINames
 		//               nullptr when the AI can't be picked from the CLI (NONE).
 		//   stringKey — StringTable base key: the display name is "[<key>]"
 		//               and the description "[<key>-Description]".
-		const struct { int id; const char* cliName; const char* stringKey; const char* difficulty; } aiTable[] = {
-			{AI::NONE,            nullptr,           "AINone", "No AI orders"},
-			{AI::NUMBI,           "numbi",           "AINumbi", "Easy"},
-			{AI::CASTOR,          "castor",          "AICastor", "Medium"},
-			{AI::WARRUSH,         "warrush",         "AIWarrush", "Medium"},
-			{AI::ECONO, "econo", "AIEcono", "Easy"},
-			{AI::NICOWAR,         "nicowar",         "AINicowar", "Hard"},
-			{AI::MAXIMA,          "maxima",          "AIMaxima", "Hard"},
-			{AI::CORTEX,          "cortex",          "AICortex", "Medium"},
-			{AI::CABINO,          "cabino",          "AICabino", "Medium"},
+		//   strength — Elo from 19,948 completed duels at source d37c0c353.
+		// All games use random 128x128 maps across 60 generators, with probability
+		// victory disabled. Ratings fit all outcomes equally (Bradley-Terry),
+		// are centred on 1500, and pool builds of the same source revision.
+		// Displayed values are rounded once, after the full tournament.
+		// Difficulty tiers: below 1450 Easy, 1450-1699 Medium, 1700+ Hard.
+		// These describe this duel cohort, not every map, format or human game.
+		// See docs/ai/ratings.md for exclusions and measurement scope.
+		const struct { int id; const char* cliName; const char* stringKey; const char* difficulty; int strength; } aiTable[] = {
+			{AI::NONE,            nullptr,           "AINone", "No AI orders", 0},
+			{AI::NUMBI,           "numbi",           "AINumbi", "Easy", 1204},
+			{AI::CASTOR,          "castor",          "AICastor", "Easy", 1280},
+			{AI::WARRUSH,         "warrush",         "AIWarrush", "Easy", 1401},
+			{AI::ECONO, "econo", "AIEcono", "Easy", 1310},
+			{AI::NICOWAR,         "nicowar",         "AINicowar", "Medium", 1653},
+			{AI::MAXIMA,          "maxima",          "AIMaxima", "Hard", 1873},
+			{AI::CORTEX,          "cortex",          "AICortex", "Medium", 1601},
+			{AI::CABINO,          "cabino",          "AICabino", "Medium", 1680},
 		};
 	}
 
 	const std::vector<int>& selectionOrder()
 	{
-		static const std::vector<int> order = {AI::ECONO, AI::NUMBI, AI::WARRUSH, AI::CASTOR, AI::CORTEX, AI::CABINO, AI::NICOWAR, AI::MAXIMA, AI::NONE};
+		// Weakest first, by measured strength rather than by guess, so the list
+		// a player scrolls reads as a ladder.
+		static const std::vector<int> order = {AI::NUMBI, AI::CASTOR, AI::ECONO, AI::WARRUSH, AI::CORTEX, AI::NICOWAR, AI::CABINO, AI::MAXIMA, AI::NONE};
 		return order;
 	}
 	int selectionIndex(int id)
 	{
 		const auto& order = selectionOrder();
 		return int(std::find(order.begin(), order.end(), id) - order.begin());
+	}
+
+	int getAIStrength(int id)
+	{
+		for (const auto& entry : aiTable)
+			if (entry.id == id) return entry.strength;
+		return 0;
 	}
 
 	std::string getCLIName(int id)
@@ -76,6 +93,9 @@ namespace AINames
             if (entry.id == id)
                 return (id == AI::NONE ? Toolkit::getStringTable()->getString("[Inactive]") : getAIText(id))
                     + std::string(" - ") + Toolkit::getStringTable()->getString("[" + std::string(entry.difficulty) + "]")
+                    // The number behind the label, so a player can see that two
+                    // AIs sharing one can still be far apart.
+                    + (entry.strength ? " (" + std::to_string(entry.strength) + ")" : "")
                     + (id == AI::ECONO ? std::string(" - ") + Toolkit::getStringTable()->getString("[No warriors]") : "");
         return "unknown AI";
     }

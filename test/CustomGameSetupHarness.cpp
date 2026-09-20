@@ -557,7 +557,7 @@ struct CustomGameSetupHarness
 		std::cout << "PASS strategy profiles and scrolling for every AI\n";
 	}
 
-	static void visual(const std::string &output)
+	static void visual(const std::string &output, bool onlyAIProfile = false)
 	{
 		FrontendTheme theme;
 		FrontendScope scope;
@@ -573,6 +573,8 @@ struct CustomGameSetupHarness
 			profile.onAction(nullptr, GAGGUI::BUTTON_SHORTCUT, -3, 0);
 			assert(profile.returnCode == AINames::selectionIndex(AI::CORTEX));
 		}
+		if (onlyAIProfile)
+			return;
 
     CustomGameScreen screen;
     screen.gfx = globalContainer->gfx;
@@ -1546,7 +1548,7 @@ int main(int argc, char **argv)
 	}
 	if (argc > 1)
 	{
-		CustomGameSetupHarness::visual(argv[1]);
+		CustomGameSetupHarness::visual(argv[1], argc > 2 && std::string(argv[2]) == "ai-profile");
 		return 0;
 	}
 	assert(SDLNet_Init() == 0);
@@ -1568,13 +1570,23 @@ int main(int argc, char **argv)
 	std::cout << "PASS all " << playableMethods.size() << " playable generator landscapes\n";
 
 	CustomGameSetupHarness::model();
-	assert((AINames::selectionOrder() == std::vector<int>{AI::ECONO, AI::NUMBI, AI::WARRUSH, AI::CASTOR, AI::CORTEX, AI::CABINO, AI::NICOWAR, AI::MAXIMA, AI::NONE}));
+	const auto &selection = AINames::selectionOrder();
+	assert(selection.back() == AI::NONE);
+	assert((std::set<int>(selection.begin(), selection.end()) ==
+		std::set<int>{AI::ECONO, AI::NUMBI, AI::WARRUSH, AI::CASTOR, AI::CORTEX,
+			AI::CABINO, AI::NICOWAR, AI::MAXIMA, AI::NONE}));
+	assert(selection.size() == 9);
+	for (size_t i = 1; i + 1 < selection.size(); ++i)
+		assert(AINames::getAIStrength(selection[i-1]) <= AINames::getAIStrength(selection[i]));
+	for (int id : selection)
+		if (id != AI::NONE)
+			assert(AINames::getAISelectorText(id).find("(" +
+				std::to_string(AINames::getAIStrength(id)) + ")") != std::string::npos);
 	for (int id : AINames::selectionOrder())
 		assert(AINames::selectionOrder()[AINames::selectionIndex(id)] == id);
 	static_assert(AI::ECONO == 4, "Econo must retain its save ID");
 	assert(AINames::parseAIName("Econo") == AI::ECONO);
-	assert(AINames::getAISelectorText(AI::ECONO) == "Econo - Easy - No warriors");
-	assert(AINames::getAISelectorText(AI::CORTEX).find("Medium") != std::string::npos);
+	assert(AINames::getAISelectorText(AI::ECONO) == "Econo - Easy (" + std::to_string(AINames::getAIStrength(AI::ECONO)) + ") - No warriors");
 	assert(AINames::getAIProfile(AI::CORTEX).find("wheat") != std::string::npos);
 	assert(AINames::getAIProfile(AI::CORTEX).find("\n\nStrengths:") != std::string::npos);
 	const auto dir =
