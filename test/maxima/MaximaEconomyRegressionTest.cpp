@@ -766,6 +766,36 @@ static void schoolsDoNotRequireKnownAlgae()
     assert(schoolRequested);
 }
 
+static void strandedAlgaeKeepsPoolDemand()
+{
+    Fixture f;
+    auto& ai=*f.ai;
+    ai.context.initialize();
+    ai.ensure_strategy();
+    ai.environment.mobility_opportunity=5;
+    ai.known_algae_units=100;
+    ai.walk_accessible_algae_units=20;
+    auto& access=ai.policy_bids[AIMaxima::Maxima::PolicyAccess];
+    access.utility=100;
+    access.desired_pools=1;
+
+    assert(ai.labour_swimming_matters());
+    ai.arbitrate_policy_bids();
+    assert(ai.budget.desired_pools==1);
+
+    // Connected maps without stranded water resources retain the cheap
+    // suppression that avoids spending labour on useless swimming lessons.
+    ai.walk_accessible_algae_units=ai.known_algae_units;
+    assert(!ai.labour_swimming_matters());
+    ai.arbitrate_policy_bids();
+    assert(ai.budget.desired_pools==0);
+
+    // Fragmented terrain remains sufficient even before algae is discovered.
+    ai.environment.mobility_opportunity=15;
+    ai.known_algae_units=ai.walk_accessible_algae_units=0;
+    assert(ai.labour_swimming_matters());
+}
+
 static void labourContinuation()
 {
     Fixture f;
@@ -816,6 +846,7 @@ int main()
 
 
     labourContinuation();
+    strandedAlgaeKeepsPoolDemand();
     schoolsDoNotRequireKnownAlgae();
     birthBudgetScalesBeyondTwenty();
     growingFoodFundsCapacity();

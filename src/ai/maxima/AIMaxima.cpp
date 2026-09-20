@@ -5441,8 +5441,11 @@ Labour::Policy Maxima::labour_policy() const
 bool Maxima::labour_swimming_matters() const
 {
 	// Swimming is worth a worker's training time only where water separates the
-	// colony from land or resources it could use.
-	return environment.mobility_opportunity>=15;
+	// colony from land or resources it could use.  Connected land does not make
+	// water resources walk-accessible: Isles' bridges keep its topology score low
+	// while most of its discovered algae still needs swimming.
+	return environment.mobility_opportunity>=15
+		|| known_algae_units>walk_accessible_algae_units;
 }
 
 
