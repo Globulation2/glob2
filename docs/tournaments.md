@@ -62,6 +62,9 @@ python3 -m tools.tournaments.ai_comparison reanalyze /tmp/glob2-results
 
 Planning validates and expands jobs without starting games. Generation jobs save
 verified rotations; dependent games consume the exact committed map artifact.
+Rotation export normalizes the save header after loading initializes generated
+building call lists. It still requires byte-identical reloads and a full rotation
+back to the original, alongside unchanged terrain and colony-state checks.
 Each generation sample is its own job, so a failed sample does not discard a batch.
 
 ## Production engine interface

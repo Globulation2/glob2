@@ -79,6 +79,16 @@ def main():
     assert json.loads(native_report.read_text())==report, 'native and distributed report contracts diverged'
     assert generated['rotations_verified'] and generated['request']['teams']==2
     assert generated['quality']['colonies'] and 'worst_wheat_distance' in generated['statistics']
+    # Loading generated towers populates resource call lists, moving the map
+    # offset. Canonicalization must prime that offset without weakening either
+    # the reload-idempotence or full team-rotation byte equality checks.
+    for generator,seed in [(24,4143377922),(23,2306931438),(22,3110978615)]:
+        rotated,directory=run(f'rotation-offset-{generator}',[
+            '--generate-map','--generator',str(generator),'--map-seed',str(seed),
+            '--param','width=7','--param','height=7','--param','teams=2',
+            '--param','workers=4','--candidates','0','--rotations','2','--write-map','true'])
+        assert rotated['rotations_verified'],(generator,seed)
+        assert all((directory/f'map-r{rotation}.map').is_file() for rotation in range(2))
     invalid,_=run('invalid-generator',['--generate-map','--generator','15','--map-seed','42','--param','teams=0'],2)
     assert invalid['status']=='invalid_request'
     assert invalid['map_report']['report_type']=='generation_failure'
