@@ -2688,6 +2688,15 @@ void Planner::addReservationReferences(const Reservation& reservation)
 		}
 }
 
+int DevelopmentLimits::totalCapacity() const
+{
+	// An upgrade already underway cannot be undone when its quota shrinks.
+	// Keep that commitment in its own category rather than charging it against
+	// the separately authorized slots for new buildings.
+	return newConstruction+std::max(level1Upgrades,activeLevel1Upgrades)
+		+std::max(level2Upgrades,activeLevel2Upgrades);
+}
+
 bool Planner::revalidateSelection(const WorldState& world,
 	const std::vector<DevelopmentIntent>& intents,
 	const DevelopmentLimits& suppliedLimits, const DevelopmentAction& action,
@@ -2712,7 +2721,7 @@ bool Planner::revalidateSelection(const WorldState& world,
 		if(activeState(i->second.state)&&i->first!=action.id)++active;
 	active=std::max(active,limits.activeNewConstruction
 		+limits.activeLevel1Upgrades+limits.activeLevel2Upgrades);
-	if(active<limits.newConstruction+limits.level1Upgrades+limits.level2Upgrades)
+	if(active<limits.totalCapacity())
 	{
 		if(action.type==BuildCampusMember || action.type==BuildStandalone)
 		{

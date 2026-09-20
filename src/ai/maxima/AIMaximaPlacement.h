@@ -283,6 +283,7 @@ struct DevelopmentLimits
 	// the upgrade; positive values supply its director demand score.
 	std::map<std::pair<int, int>, int> upgradePriorities;
 	int upgradePriority(int buildingType, int fromLevel) const;
+	int totalCapacity() const;
 };
 
 struct UtilityComponents
